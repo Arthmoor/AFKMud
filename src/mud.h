@@ -46,7 +46,7 @@ using namespace std;
  */
 #define CODENAME "AFKMud"
 #define CODEVERSION "2.1.6"
-#define COPYRIGHT "Copyright The Alsherok Team 1997-2012. All rights reserved. "
+#define COPYRIGHT "Copyright The Alsherok Team 1997-2014. All rights reserved. "
 
 const int LGST = 4096;  /* Large String */
 const int SMST = 1024;  /* Small String */
