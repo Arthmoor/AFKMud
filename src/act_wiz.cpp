@@ -2748,7 +2748,7 @@ CMDF( do_purge )
 
 void destroy_immdata( char_data * ch, const char *vicname )
 {
-   char buf[256], buf2[256];
+   char buf[MSL], buf2[MSL];
 
    snprintf( buf, MSL, "%s%s", GOD_DIR, capitalize( vicname ) );
 

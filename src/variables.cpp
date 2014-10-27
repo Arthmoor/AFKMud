@@ -192,7 +192,8 @@ CMDF( do_mptag )
    string::const_iterator ptr;
    char_data *victim;
    variable_data *vd;
-   char *p;
+   const char *p;
+   char *tmp = NULL;
    string arg1, arg2;
    int vnum = 0, exp = 0;
    bool error = false;
@@ -231,10 +232,10 @@ CMDF( do_mptag )
       return;
    }
 
-   if( ( p = strchr( arg2.c_str(), ':' ) ) != NULL )
+   if( ( p = strchr( arg2.c_str(  ), ':' ) ) != NULL ) 
    {
-      *p++ = '\0';
-      vnum = atoi( p );
+      mudstrlcpy( tmp, p, MSL );
+      vnum = atoi( tmp );
    }
    else
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;
@@ -276,7 +277,8 @@ CMDF( do_mptag )
 CMDF( do_mprmtag )
 {
    char_data *victim;
-   char *p;
+   const char *p;
+   char *tmp = NULL;
    string arg1, arg2;
    int vnum = 0;
 
@@ -301,10 +303,10 @@ CMDF( do_mprmtag )
       return;
    }
 
-   if( ( p = strchr( arg2.c_str(), ':' ) ) != NULL )
+   if( ( p = strchr( arg2.c_str(  ), ':' ) ) != NULL ) 
    {
-      *p++ = '\0';
-      vnum = atoi( p );
+      mudstrlcpy( tmp, p, MSL );
+      vnum = atoi( tmp );
    }
    else
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;

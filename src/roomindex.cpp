@@ -686,6 +686,7 @@ bool room_index::is_private(  )
 void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const string & argument )
 {
    list < affect_data * >::iterator paf;
+   affect_data *aff = NULL;
    short loc;
 
    if( argument.empty(  ) )
@@ -709,7 +710,7 @@ void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const stri
    {
       for( paf = affects.begin(  ); paf != affects.end(  ); )
       {
-         affect_data *aff = *paf;
+         aff = *paf;
          ++paf;
 
          if( ++count == loc )
@@ -726,7 +727,7 @@ void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const stri
    {
       for( paf = permaffects.begin(  ); paf != permaffects.end(  ); )
       {
-         affect_data *aff = *paf;
+         aff = *paf;
          ++paf;
 
          if( ++count == loc )

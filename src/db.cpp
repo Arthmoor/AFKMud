@@ -1135,7 +1135,7 @@ void fread_sysdata( FILE * fp )
             KEY( "Mapsize", sysdata->mapsize, fread_number( fp ) );
             KEY( "Motd", sysdata->motd, fread_number( fp ) );
             KEY( "Msetplayer", sysdata->level_mset_player, fread_number( fp ) );
-            KEY( "MudName", sysdata->mud_name, fread_string_nohash( fp ) );
+            STDSKEY( "MudName", sysdata->mud_name );
             KEY( "Maxvnum", sysdata->maxvnum, fread_number( fp ) );
             KEY( "Minguild", sysdata->minguildlevel, fread_number( fp ) );
             KEY( "Maxcond", sysdata->maxcondval, fread_number( fp ) );
@@ -1187,7 +1187,7 @@ void fread_sysdata( FILE * fp )
 
          case 'T':
             KEY( "Takeothersmail", sysdata->take_others_mail, fread_number( fp ) );
-            KEY( "Telnet", sysdata->telnet, fread_string_nohash( fp ) );
+            STDSKEY( "Telnet", sysdata->telnet );
             KEY( "Testmode", sysdata->TESTINGMODE, fread_number( fp ) );
             KEY( "Tumblemod", sysdata->tumble_mod, fread_number( fp ) );
             break;
@@ -1744,7 +1744,7 @@ CMDF( do_makewizlist )
 
 system_data::system_data(  )
 {
-   init_memory( &this->maxign, &this->crashhandler, sizeof( this->crashhandler ) );
+   init_memory( &this->motd, &this->crashhandler, sizeof( this->crashhandler ) );
 }
 
 system_data::~system_data(  )

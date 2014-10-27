@@ -753,7 +753,7 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
 {
    char_data *ch = NULL;
    bool ansi = false;
-   char *sympos = NULL;
+   const char *sympos = NULL;
 
    /*
     * No descriptor, assume ANSI conversion can't be done. 
@@ -1225,7 +1225,7 @@ const char *colorize( const string & txt, descriptor_data * d )
 
    if( !txt.empty(  ) && d )
    {
-      char *colstr;
+      const char *colstr;
       const char *prevstr = txt.c_str(  );
       char colbuf[20];
       int ln;

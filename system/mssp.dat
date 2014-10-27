@@ -1,0 +1,46 @@
+#MSSP_INFO
+Hostname          localhost
+IP                127.0.0.1
+Contact           admin@example.com
+Icon              
+Language          English
+Location          United States
+Family            DikuMUD
+Genre             Fantasy
+GamePlay          Hack and Slash
+GameSystem        D&D
+Intermud          IMC2
+Status            Closed
+SubGenre          Medieval Fantasy
+Created           2009
+MinAge            0
+Worlds            1
+Ansi              1
+MCCP              1
+MCP               0
+MSP               1
+SSL               0
+MXP               0
+Pueblo            0
+Vt100             0
+Xterm256          0
+Pay2Play          0
+Pay4Perks         0
+HiringBuilders    0
+HiringCoders      0
+AdultMaterial     0
+Multiclassing     0
+NewbieFriendly    0
+PlayerCities      0
+PlayerClans       1
+PlayerCrafting    1
+PlayerGuilds      1
+EquipmentSystem   Both
+Multiplaying      
+PlayerKilling     Restricted
+QuestSystem       
+RolePlaying       
+TrainingSystem    Both
+WorldOriginality  All Stock
+End
+

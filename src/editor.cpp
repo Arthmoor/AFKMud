@@ -287,11 +287,16 @@ string one_argument( const string & argument, string & first )
    return argument.substr( stop2 );
 }
 
+char *one_argument( char *argument, char *arg_first )
+{
+    return (char*) one_argument((const char*) argument, arg_first);
+}
+
 /*
  * Pick off one argument from a string and return the rest.
  * Understands quotes. No longer mangles case either. That used to be annoying.
  */
-char *one_argument( char *argument, char *arg_first )
+const char *one_argument( const char *argument, char *arg_first )
 {
    char cEnd;
    int count;

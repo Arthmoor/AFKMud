@@ -17,7 +17,7 @@ Status       115 1959394 320993749 68 124 101 -10
 Status2      2 451 -1000 0 0 0 2 0
 Configs      29 -1 -1 -1 -1 0 0 50000
 Motd         0 1080528906
-Age          1 21 10 770 1120736241
+Age          1 21 10 770 1120736528
 HpManaMove   30000 30000 30836 30836 30000 30000
 Regens       0 0 0
 Position     standing~
@@ -28,7 +28,7 @@ RentRooms    7078
 KillInfo     0 0 1 0 0
 AttrPerm     20 18 18 19 19 18 18
 AttrMod      0 0 0 0 0 0 0
-Condition    0 -1 -1 0
+Condition    0 -1 -1
 Bamfin       A large red moongate rises from the earth, $n steps forth from within!~
 Bamfout      A large red moongate rises from the earth, $n steps inside and vanishes!~
 ImmData      0 0 101 0 0 5

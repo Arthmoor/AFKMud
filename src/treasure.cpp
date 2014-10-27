@@ -190,7 +190,7 @@ void save_weapontable(  )
 void load_weapontable(  )
 {
    ifstream stream;
-   weapontable *wt;
+   weapontable *wt = NULL;
 
    w_table.clear(  );
 

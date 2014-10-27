@@ -29,13 +29,14 @@
 #ifndef __MUD_H__
 #define __MUD_H__
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <vector>
 #include <list>
 #include <map>
 #include <bitset>
 #include <typeinfo>
-#include <cstdlib>
-#include <cstring>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.1.2"
+#define CODEVERSION "2.1.3"
 #define COPYRIGHT "Copyright The Alsherok Team 1997-2009. All rights reserved."
 
 const int LGST = 4096;  /* Large String */
@@ -1266,6 +1267,7 @@ bool is_number( const string & );
 bool is_number( const char * );
 int number_argument( const string &, string & );
 int number_argument( char *, char * );
+const char *one_argument( const char *, char * );
 char *one_argument( char *, char * );
 string one_argument( const string &, string & );
 string invert_string( const string & );

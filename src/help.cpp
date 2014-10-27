@@ -169,7 +169,7 @@ void load_helps( void )
          stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
-         help->keyword = str_dup( value.c_str(  ) );
+         help->keyword = value;
       }
 
       else if( key == "Level" )
@@ -186,7 +186,7 @@ void load_helps( void )
          stream.getline( buf, MSL, '¢' );
          value = buf;
          strip_lspace( value );
-         help->text = str_dup( value.c_str(  ) );
+         help->text = value;
       }
 
       else if( key == "End" )
