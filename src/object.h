@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -112,7 +112,7 @@ class obj_data
    short count;   /* support for object grouping */
    short mx;   /* Object coordinates on overland maps - Samson 8-21-99 */
    short my;
-   short map;  /* Which map is it on? - Samson 8-21-99 */
+   short cmap;  /* Which map is it on? - Samson 8-21-99 */
    short day;  /* What day of the week was it offered or sold? */
    short month;   /* What month? */
    short year; /* What year? */

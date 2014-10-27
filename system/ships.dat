@@ -1,10 +1,10 @@
 #SHIP
-Name      the moongate~
-Owner     Samson~
-Flags     onmap~
+Name      the moongate
+Owner     Samson
+Flags     onmap
 Vnum      1
 Room      50000
-Type      Warship~
+Type      Warship
 Hull      32000
 Max_hull  32000
 Fuel      32000
@@ -12,4 +12,3 @@ Max_fuel  32000
 Coordinates 0 112 265
 End
 
-#END

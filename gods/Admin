@@ -1,4 +1,4 @@
 Level        115
-Pcflags      pager nstart flags sector aname passdoor checkboards autoexits blank automap holylight roomvnum ansi smartsac msp mxp compass mxpprompt~
+Pcflags      pager nstart flags sector aname passdoor checkboards autoexits blank automap holylight roomvnum ansi smartsac onmap msp compass~
 Realm        5
 End

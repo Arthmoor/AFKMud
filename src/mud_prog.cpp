@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -3822,7 +3822,7 @@ void set_supermob( obj_data * obj )
       if( obj->extra_flags.test( ITEM_ONMAP ) )
       {
          supermob->set_actflag( ACT_ONMAP );
-         supermob->map = obj->map;
+         supermob->cmap = obj->cmap;
          supermob->mx = obj->mx;
          supermob->my = obj->my;
       }
@@ -3838,7 +3838,7 @@ void release_supermob(  )
    if( supermob->has_actflag( ACT_ONMAP ) )
    {
       supermob->unset_actflag( ACT_ONMAP );
-      supermob->map = -1;
+      supermob->cmap = -1;
       supermob->mx = -1;
       supermob->my = -1;
    }

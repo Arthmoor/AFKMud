@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -114,6 +114,7 @@ class room_index
    void room_affect( affect_data *, bool );
    reset_data *add_reset( char, int, int, int, short, short, short, short, short, short, short, short );
    void reset(  );
+   void wipe_coord_resets( short, short, short );
    void wipe_resets(  );
    void clean_resets(  );
    void renumber_put_resets(  );

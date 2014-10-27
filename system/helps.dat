@@ -1,5 +1,5 @@
 #HELP
-Level 0
+Level    0
 Keywords !
 Text Syntax: !
 
@@ -8,7 +8,7 @@ Text Syntax: !
 End
 
 #HELP
-Level 103
+Level    103
 Keywords AASSIGN
 Text Syntax: aassign <filename>.are  Example:  aassign edo.are
  
@@ -28,7 +28,7 @@ area bestowed to you by a Greater God or higher.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords ABIT
 Text Syntax : abit <person>
 Syntax : abit <person> <abit>
@@ -43,7 +43,7 @@ See also: SETABIT, SHOWABIT, QBIT, SHOWQBIT, SETQBIT
 End
 
 #HELP
-Level 101
+Level    101
 Keywords MAPOUT
 Text Syntax: mapout <write/stat/clear/show/create>
 
@@ -99,7 +99,7 @@ and west by a normal exit.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords ACTFLAGS MOBFLAGS
 Text FLAG NAME     | DESCRIPTION
 ----------------------------------------------------------------------
@@ -141,7 +141,7 @@ proto         | Mob is a prototype. Used only by OLC system.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords ADEPT
 Text .
 As the player utilizes learned disciplines (spells, skills, weapons and
@@ -156,7 +156,7 @@ See also: SLIST
 End
 
 #HELP
-Level 110
+Level    110
 Keywords ADVANCE
 Text Syntax: advance <character> <level>
 
@@ -169,7 +169,7 @@ See also: IMMORTALIZE, PROMOTE, DEMOTE
 End
 
 #HELP
-Level 103
+Level    103
 Keywords ADVANCEDEXITS
 Text SMAUG supports having more than one exit in the same direction, as well as
 the special direction 'somewhere', represented by a '?'.
@@ -201,7 +201,7 @@ keyword for that exit:
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords ADVENTURE
 Text In our efforts to give credit to everyone who deserves it, we almost
    forgot to give credit to one of the "grandfathers" of computer adventure
@@ -213,7 +213,7 @@ Text In our efforts to give credit to everyone who deserves it, we almost
 End
 
 #HELP
-Level 103
+Level    103
 Keywords AEXIT
 Text Usage : aexit <area filename>
 
@@ -223,7 +223,7 @@ type the command without an argument, it uses the area you are currently in.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords AFF AFFECT
 Text Syntax: affect
 Syntax: aff
@@ -237,7 +237,7 @@ See also: SCORE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords AFFECTED 'AFFECTED BY'
 Text Usage:  affected       (abbrevation:  af)
 Usage:  affected by    (abbreviation: af by)
@@ -264,7 +264,7 @@ immunities if your character is level 20 or higher.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords AFFECTEDBY AFFECTED_BY
 Text The following are affect flags that can be used when osetting an item
 (with oset <item> affect affected <affect flag>).  These flags can also
@@ -316,7 +316,7 @@ See also: OSET AFFECTTYPES
 End
 
 #HELP
-Level 104
+Level    104
 Keywords AFFECTTYPES APPLYTYPES
 Text none        strength    dexterity   intelligence  wisdom       constitution
 sex         level       age         height        weight       mana     
@@ -340,7 +340,7 @@ See also: AFFECTEDBY
 End
 
 #HELP
-Level 0
+Level    0
 Keywords AFK
 Text Usage: afk
 Usage: afk <reason>
@@ -358,7 +358,7 @@ See also: BUSY
 End
 
 #HELP
-Level 1
+Level    1
 Keywords AGGRESSIVE 'AGGRESSIVE STYLE'
 Text Usage: style aggressive
  
@@ -372,7 +372,7 @@ See also: STYLE, EVASIVE, DEFENSIVE, STANDARD, AGGRESSIVE, BERSERK
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'AID'
 Text Usage        : aid <character>
 Level        : 23 Mage, 28 Necromancer, 2 Cleric, 6 Druid, 3 Warrior,
@@ -385,7 +385,7 @@ skill allows you to revive the character back to conciousness.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ALERT
 Text Syntax: alert
 Syntax: alert <board> <none|announce|ignore>
@@ -404,7 +404,7 @@ See also: BOARDS, READ, WRITE, REVIEW, ERASE, CHECKBOARD
 End
 
 #HELP
-Level 2
+Level    2
 Keywords ALIAS UNALIAS
 Text Usage: alias <shortcut> <command>
 Usage: unalias <shortcut>
@@ -427,7 +427,7 @@ wish to remove.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords ALIGNMENT ALIGN ZAPPING
 Text Alignment ranges from +1000 to -1000. When your alignment is at +1000
 you are of good alignment, at -1000 you are of evil alignment, and at 0
@@ -452,7 +452,7 @@ your PROMPT.
 End
 
 #HELP
-Level 108
+Level    108
 Keywords ALLOW BAN
 Text Syntax: allow <address>
 Syntax: ban <address> <type> <duration>
@@ -482,7 +482,7 @@ See also: WARN
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ANSI
 Text Usage: ansi <on/off>
 
@@ -494,7 +494,7 @@ display.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ANTIPALADIN ANTIPALADINS
 Text Out of the darkest parts of the land come the feared warriors of evil,
 the Anti-Paladins. These are the anathema to the goodly Paladins. 
@@ -516,7 +516,7 @@ can become Anti-Paladins.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords APPRAISE
 Text Usage: appraise <item>
 Usage: appraise all
@@ -529,7 +529,7 @@ how much the repairs will cost.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ARCHERY
 Text Level : 1 Warrior, Ranger, Bard, Antipaladin, Rogue, and Paladin
 
@@ -542,7 +542,7 @@ See also: AXES, BLOWGUNS, DAGGERS, MACES, HAMMERS, PUGILISM, SLINGS, SPEARS,
 End
 
 #HELP
-Level 113
+Level    113
 Keywords AREACONVERT
 Text Usage : areaconvert filename.are
 
@@ -579,7 +579,7 @@ work by hand. Once you've loaded the new area, renumber it, problem solved.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords AREAFLAGS
 Text The following area flags are available for setting your zone:
  
@@ -607,7 +607,7 @@ See also: ROOMFLAGS, CONTINENT
 End
 
 #HELP
-Level 1
+Level    1
 Keywords AREAS
 Text Usage: areas
 Usage: areas <level>
@@ -645,7 +645,7 @@ are wildly inaccurate, feel free to post a message.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords ARENA
 Text The arena area in the city of Graecia allows players to fight each other
 without fear of losing anything. Those that are killed there will reappear
@@ -663,7 +663,7 @@ See also: DEADLY, CONFIG
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'ARMOR CLASS' AC
 Text Armor Class, or AC, is based on the AD&&D system whereby the lower one's
 AC is, the less often one gets hit. Armor Class ranges from "barely
@@ -679,7 +679,7 @@ apply to monks.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords ARMORCLASS
 Text .
 &gThere are two values used with armor class for object type Armor:
@@ -712,7 +712,7 @@ WEAPONTYPES, and VARIABLES.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords ASET
 Text Syntax: aset <area filename> <field> <value>
  
@@ -752,7 +752,7 @@ See also: ASTAT, FOLDAREA
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'ASSASSINATE'
 Text Usage       : assassinate <victim>
 Level       : 70 Rogue
@@ -770,7 +770,7 @@ or sacrificed.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ASSIST
 Text Usage: assist <character>
 
@@ -793,7 +793,7 @@ See also: CONFIG, RESCUE, KILL
 End
 
 #HELP
-Level 107
+Level    107
 Keywords ASTAT
 Text Syntax: astat                      (area stats for the area you are in)
 Syntax: astat <filename of area>   (area stats for specified area)
@@ -824,7 +824,7 @@ See also: ASET
 End
 
 #HELP
-Level 103
+Level    103
 Keywords AT
 Text Syntax: at <location> <command>
 
@@ -839,9 +839,9 @@ location).
 End
 
 #HELP
-Level 105
+Level    105
 Keywords ATTACKS
-Text    bite claws tail sting punch kick trip bash stun
+Text bite claws tail sting punch kick trip bash stun
    gouge backstab age drain firebreath frostbreath
    acidbreath lightnbreath gasbreath poison nastypoison gaze
    blindness causeserious earthquake causecritical curse
@@ -852,7 +852,7 @@ See also: MSET, DEFENSES  (Some are not implemented).
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ATTRIB
 Text Usage: attrib
 
@@ -869,7 +869,7 @@ See also: SCORE, INTERFACE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords AUC AUCTION BID COLLECT
 Text Auctioning in the Lands is now handled via various auction houses that
 exist in some of the major cities. For specific details on how to use
@@ -908,7 +908,7 @@ See also: CALENDAR
 End
 
 #HELP
-Level 101
+Level    101
 Keywords AUTHORIZE
 Text Syntax: authorize <name>
 Syntax: authorize <name> reject
@@ -946,7 +946,7 @@ See also: NAME
 End
 
 #HELP
-Level 0
+Level    0
 Keywords AXE AXES
 Text Level : 1 Warrior, Ranger, Bard, Antipaladin, Rogue, and Paladin
 
@@ -959,7 +959,7 @@ See also: ARCHERY, BLOWGUNS, DAGGERS, MACES, HAMMERS, PUGILISM, SLINGS, SPEARS,
 End
 
 #HELP
-Level 1
+Level    1
 Keywords BACKFIRE
 Text Magical items (scrolls, staffs, and wands) which cast offensive spells
 have a chance of backfiring if the character using them is much lower in
@@ -971,7 +971,7 @@ fireball may injure themselves when the spell backfires.
 End
 
 #HELP
-Level 110
+Level    110
 Keywords BALZHUR
 Text .
                                        &R.                                  &D
@@ -1006,7 +1006,7 @@ player, as well as in their bank account, is scattered into oblivion also.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords BAMFIN BAMFOUT
 Text Syntax: bamfin  <message>
 Syntax: bamfout <message>
@@ -1027,7 +1027,7 @@ will look a bit odd on your score sheet.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords BANK BALANCE DEPOSIT WITHDRAW
 Text Usage: balance
 Usage: deposit <amount>
@@ -1049,7 +1049,7 @@ Code for banks courtesy of Minas Ravenblood of The Apocalypse Theatre.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords BARD BARDS
 Text The Bard is a jack of all trades. With the skills of a partial Warrior, 
 Mage and Rogue, a Bard combines it all to become a well-prepared 
@@ -1068,7 +1068,7 @@ enter the Bardic class.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'BARGAIN'
 Text Usage        : (automatic at time of purchase)
 Level        : 35 Human
@@ -1083,7 +1083,7 @@ See also: SWIM, VERSATILITY
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'BEACON'
 Text Usage        : cast 'beacon'
 Duration     : Permanent until cleared
@@ -1104,7 +1104,7 @@ See also: WORD OF RECALL
 End
 
 #HELP
-Level 2
+Level    2
 Keywords BEEP
 Text Syntax: beep <player>
  
@@ -1119,7 +1119,7 @@ See also: CONFIG
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'BEGUILE'
 Text Usage        : beguile <victim>
 Duration     : Varying, depending on caster's charisma.
@@ -1134,7 +1134,7 @@ Rogue's instructions.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords BERSERK 'BERSERK STYLE'
 Text Syntax: style berserk
  
@@ -1149,7 +1149,7 @@ See also: STYLE, EVASIVE, DEFENSIVE, STANDARD, AGGRESSIVE
 End
 
 #HELP
-Level 114
+Level    114
 Keywords BESTOW BESTOWMENTS
 Text Syntax: bestow <victim> command [command] [command] etc
 Syntax: bestow <victim> list
@@ -1163,7 +1163,7 @@ none will remove all bestowments.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords BESTOWAREA
 Text Syntax: bestowarea <victim> <filename>.are
  
@@ -1184,7 +1184,7 @@ bestowarea joe none              removes all of joe's bestowed areas
 End
 
 #HELP
-Level 0
+Level    0
 Keywords BLADESONG
 Text Usage        : bladesong
 Level        : 50 High Elf
@@ -1197,7 +1197,7 @@ hit and strike their foes with no mercy. This song can only be used once a day.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords BLINDED
 Text Certain spells and attacks can render a player blind for anywhere from a
 few rounds (gouge) to several hundred rounds (the blindness spell). If you
@@ -1212,7 +1212,7 @@ See also: GOUGE, BLIND
 End
 
 #HELP
-Level 0
+Level    0
 Keywords BLOWGUN BLOWGUNS
 Text Level : 1 Mage, Warrior, Ranger, Bard, Necromancer, Antipaladin, Rogue, Druid,
           and Paladin
@@ -1227,7 +1227,7 @@ See also: ARCHERY, AXES, DAGGERS, MACES, HAMMERS, PUGILISM, SLINGS, SPEARS,
 End
 
 #HELP
-Level 0
+Level    0
 Keywords BOARDS
 Text Syntax: boards
 
@@ -1242,7 +1242,7 @@ ALERT, READ, WRITE, REVIEW, ERASE, CHECKBOARD
 End
 
 #HELP
-Level 110
+Level    110
 Keywords BODYBAG
 Text Syntax: bodybag <name> <bag/yes>
         bodybag <name> will show the status of the corpse.
@@ -1257,7 +1257,7 @@ See also: TIMER
 End
 
 #HELP
-Level 0
+Level    0
 Keywords BOLT
 Text Usage : bolt <direction or door name>
 
@@ -1268,7 +1268,7 @@ See also: UNBOLT, OPEN, CLOSE, LOCK, UNLOCK
 End
 
 #HELP
-Level 1
+Level    1
 Keywords BRANDISH QUAFF RECITE ZAP
 Text Syntax: brandish                       (to invoke a staff)
 Syntax: quaff  <potion>                (to quaff potions)
@@ -1298,7 +1298,7 @@ See also: EAT, BACKFIRE, RECHARGE
 End
 
 #HELP
-Level 0
+Level    0
 Keywords BUSY
 Text Usage : busy
 
@@ -1311,7 +1311,7 @@ See also: AFK
 End
 
 #HELP
-Level 0
+Level    0
 Keywords BUY LIST SELL VALUE
 Text Syntax: buy   <object>
 Syntax: buy   <# of object> <object>
@@ -1334,7 +1334,7 @@ VALUE asks the shop keeper how much he, she, or it will buy the item for.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords CACHE
 Text Usage : cache
 
@@ -1344,7 +1344,7 @@ of mega-spam because the list can get really large, really quickly.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CALENDAR
 Text Time follows a custom calendar, which is as follows:
 
@@ -1374,7 +1374,7 @@ Text Time follows a custom calendar, which is as follows:
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'CALL LIGHTNING'
 Text Usage        : cast 'call lightning' <victim>
 Duration     : Combat - unable to process commands for 3 rounds
@@ -1394,7 +1394,7 @@ See also: WEATHER and CONTROL WEATHER
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CAST SPELL
 Text Syntax: cast <spell> <target>
 Syntax: c <spell> <target>
@@ -1420,7 +1420,7 @@ to include ' around multiple-word spells for better accuracy.
 End
 
 #HELP
-Level 114
+Level    114
 Keywords CEDIT
 Text Syntax:  cedit save
 Syntax:  cedit <command> create [code]
@@ -1452,7 +1452,7 @@ See also: RESTRICT
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CENTAUR CENTAURS
 Text With the upper body of a Human and the lower body of a horse, Centaurs 
 are among the most intriguing of all the races. Secretive and mysterious 
@@ -1483,7 +1483,7 @@ Centaur, never ever ask to ride on them as this is a grave insult.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords CHA CHARISMA
 Text Charisma (CHA in your 'score') represents your characters physical beauty
 and charm. It primarily affects:
@@ -1497,7 +1497,7 @@ No class receives charisma as a prime attribute.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'CHAIN LIGHTNING'
 Text Usage        : cast 'chain lightning' <victim>
 Duration     : Instant
@@ -1514,7 +1514,7 @@ off. Each jump will decrease the electrical damage dealt until it fizzles out.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords CHALLENGE SINDHAE
 Text There are four challenges of increasing difficulties. The recommended
 minimum levels before you attempt a particular challenge are listed below:
@@ -1543,7 +1543,7 @@ Good luck!
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'CHANGE FORM'
 Text Usage        : cast 'change form' <mobname>
 Duration     : Between 12-24 mud hours or until you revert or die
@@ -1582,7 +1582,7 @@ The list for Druid forms:
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'CHANGE SEX'
 Text Syntax: cast 'change sex' <victim>
 
@@ -1592,7 +1592,7 @@ Immortal command only.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords CHANNELS
 Text Syntax: channels
 
@@ -1606,14 +1606,14 @@ See also: LISTEN
 End
 
 #HELP
-Level 113
+Level    113
 Keywords CHARMIES
 Text This command will show you all pets currently in the world, along with their master.
 ¢
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CHAT . MUSIC ASK ANSWER SHOUT YELL
 Text Syntax: chat     <message>
 Syntax: music    <message>
@@ -1638,7 +1638,7 @@ You can use the CHANNELS command to hear, or not hear, any of these channels.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CHECKBOARDS
 Text Syntax: checkboards
  
@@ -1652,7 +1652,7 @@ See also: BOARDS, WRITE, READ, ERASE, ALERT
 End
 
 #HELP
-Level 113
+Level    113
 Keywords CHECKVNUMS
 Text Usage : checkvnums <low end> <high end>
 
@@ -1672,7 +1672,7 @@ See also: FREEVNUMS
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CLANS
 Text Syntax: clans
     or: clans <clan name>
@@ -1690,7 +1690,7 @@ See also: GUILDS
 End
 
 #HELP
-Level 1
+Level    1
 Keywords CLASS CLASSES
 Text The current classes are:
  
@@ -1711,7 +1711,7 @@ To get more information on each class, type 'help <class name>'.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CLERIC CLERICS
 Text A Cleric is a priestly healer and protector of the weak. Clerics have 
 in their control many varied and sundry healing spells, as well as
@@ -1725,7 +1725,7 @@ races can endeavor to become Clerics.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords CLIMATE
 Text Syntax: climate
 Syntax: climate <field> <name>
@@ -1751,7 +1751,7 @@ command always refers to the area which you are currently in.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'CLIMB'
 Text Usage        : climb <direction>
 Level        : 9 Rogue, 12 Ranger, 12 Monk, 12 Bard 
@@ -1761,7 +1761,7 @@ This skill enables you to climb into and out of rooms that require it.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'COLOR'
 Text Syntax: color [color type] [color] | default
 Syntax: color _reset_ (Resets all colors to default set)
@@ -1775,7 +1775,7 @@ change it to.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords COLORS
 Text The ability to color Help and other files is very useful. We ask
 that you try to stick to these guidelines for color usage so that
@@ -1810,7 +1810,7 @@ not be colored except by their defaults:
 End
 
 #HELP
-Level 1
+Level    1
 Keywords COMBAT
 Text You may choose a fight by finding a mob, and using LOOK, CONSIDER, and
 IDENTIFY to gauge the difficulty of the opponent. You can LOOK <mob>
@@ -1836,7 +1836,7 @@ loss.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords COMMANDS SOCIALS
 Text Syntax: commands <string>
 Syntax: commands sorted
@@ -1861,7 +1861,7 @@ See also: EMOTE
 End
 
 #HELP
-Level 108
+Level    108
 Keywords COMMENT
 Text Syntax: comment write
 Syntax: comment subject <subject>
@@ -1890,7 +1890,7 @@ important to another Immortal when dealing with the player in the future.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords COMPARE
 Text Syntax: compare <object-1> <object-2>
 Syntax: compare <object>
@@ -1907,7 +1907,7 @@ COMPARE doesn't consider any special modifiers of the objects.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COMPILE
 Text Syntax: compile
 Syntax: compile clean
@@ -1940,7 +1940,7 @@ See also: COPYCODE
 End
 
 #HELP
-Level 2
+Level    2
 Keywords COMPRESS
 Text This is a toggle that turns on or off the compression protocol if it's supported by your
 mud client.
@@ -1948,7 +1948,7 @@ mud client.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords CON CONSTITUTION
 Text Constitution (CON in your 'score') represents your character's physical
 stamina.  Among other things, it affects:
@@ -1968,7 +1968,7 @@ No class receives constitution as a prime attribute.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CONFIG
 Text Syntax: config + or - <option>
  
@@ -2006,7 +2006,7 @@ See also: PAGER, PROMPT, PCOLORS.
 End
 
 #HELP
-Level 2
+Level    2
 Keywords CONNECT
 Text Syntax : connect <obj1> <obj2>
 
@@ -2017,7 +2017,7 @@ combination.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CONSIDER
 Text Syntax: consider <character>
 
@@ -2027,7 +2027,7 @@ Of course, it's only a rough estimate.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords CONTAINER CONTAINERS
 Text Containers are almost a necessity in the Lands.  They are used to carry
 items, food, and drinks.  They help allow you to sort things, by using two
@@ -2052,7 +2052,7 @@ EMPTY <container> <different container> will transfer the contents.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords CONTAINERFLAGS
 Text Container flag values:
      Closeable = 1
@@ -2064,7 +2064,7 @@ Text Container flag values:
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'COOK'
 Text Usage        : cook <item>
 Level        : 1 All classes
@@ -2076,7 +2076,7 @@ may destroy the item.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords COORDS
 Text Usage: coords <x> <y>
  
@@ -2090,14 +2090,14 @@ See also: LANDMARKS
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPY
 Text Shortcut command to cacth copy commands which are not fully specified.
 ¢
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYBITS
 Text Usage : copybits
 
@@ -2106,7 +2106,7 @@ This command copies questbits over to the other ports.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYCLASS
 Text Syntax: copyclass all
 Syntax: copyclass skills
@@ -2127,7 +2127,7 @@ execute on any other port.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYCODE
 Text Syntax: copycode
  
@@ -2147,7 +2147,7 @@ See also: COMPILE
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYDEITY
 Text Syntax: copydeity all
 Syntax: copydeity <filename>
@@ -2167,7 +2167,7 @@ execute on any other port.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYMAP
 Text Syntax: copymap all
 Syntax: copymap <filename>
@@ -2183,7 +2183,7 @@ execute on any other port.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYMORPH
 Text Syntax: copymorph
  
@@ -2200,7 +2200,7 @@ not execute on any other port.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYRACE
 Text Syntax: copyrace all
 Syntax: copyrace <filename>
@@ -2219,7 +2219,7 @@ execute on any other port.
 End
 
 #HELP
-Level 110
+Level    110
 Keywords COPYRUNES
 Text Syntax: copyrunes
 
@@ -2234,7 +2234,7 @@ See also: MAKERUNE, SETRUNE, DESTROYRUNE, SHOWRUNES
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYSLAY
 Text Syntax : copyslay
 
@@ -2245,7 +2245,7 @@ See also: MAKESLAY, SETSLAY, SHOWSLAY, DESTROYSLAY
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYSOCIAL
 Text Syntax: copysocial
  
@@ -2262,7 +2262,7 @@ not execute on any other port.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords COPYZONE
 Text Syntax: copyzone all
 Syntax: copyzone <filename>
@@ -2282,7 +2282,7 @@ execute on any other port.
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords CREDITS
 Text /-------------------------------------------------------------------------\
 | o         M A N Y    S P E C I A L    T H A N K S    T O :            o |
@@ -2331,7 +2331,7 @@ Text /-------------------------------------------------------------------------\
 End
 
 #HELP
-Level 113
+Level    113
 Keywords CSET
 Text Syntax: cset [option] [value]
 
@@ -2354,7 +2354,7 @@ When an option is changed, the settings are automatically saved.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DAGGER DAGGERS
 Text Level : 1 Mage, Warrior, Ranger, Bard, Necromancer, Antipaladin, Rogue, Druid,
           and Paladin
@@ -2368,7 +2368,7 @@ See also: ARCHERY, AXES, BLOWGUNS, MACES, HAMMERS, PUGILISM, SLINGS, SPEARS,
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DAMAGE
 Text When one character attacks another, the severity of the damage is shown
 in the verb used in the damage message. Damage messages vary depending
@@ -2380,7 +2380,7 @@ The message shown will reflect the actual damage you are inflicting on
 End
 
 #HELP
-Level 104
+Level    104
 Keywords DAMAGETYPES
 Text For items of type "weapon", the value3 field specifies the damage type:
 
@@ -2399,7 +2399,7 @@ See also: OSET, MISSILES, WEAPONCONDITION, ITEMVALUES, WEAPONTYPES
 End
 
 #HELP
-Level 105
+Level    105
 Keywords DAMPLUS
 Text For those unsure of what damplus is, it is part of the damage
 equasion for a mob... ie:  10d6 + 10   (the +10 is the damplus)
@@ -2409,7 +2409,7 @@ wielding a weapon. This is basically the mob's damroll.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DAMROLL
 Text Represents the amount of damage you inflict upon an opponent.
 The higher the number, the better.
@@ -2417,7 +2417,7 @@ The higher the number, the better.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords DAMTYPES ACTTYPES CLASSTYPES POWERTYPES
 Text DAMAGE          ACTION       CLASS         POWER       SAVES
 none            none         none          none        none
@@ -2432,7 +2432,7 @@ drain           change       illusion
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DEADLY
 Text A "deadly" character is one who has chosen to become a pkiller. What this means
 is that you are free to engage another such deadly character in combat. There
@@ -2452,7 +2452,7 @@ decision!
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DEATH
 Text When your character dies, you are reincarnated at the temple.
 Up until you reach level 10, your corpse will be brought back to the temple
@@ -2483,7 +2483,7 @@ to supplicate to your god for your corpse. Also see 'help supplicate',
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DEATHTRAP DT
 Text A "death trap" refers to the scenario where one steps into a room and is
 immediately awakened from death with no equipment or corpse. A corpse
@@ -2499,7 +2499,7 @@ and favor are not affected by a death trap.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords DEBUG DEBUGGING BUGS THORIC CODING SOURCE CODE DEVELOPMENT
 Text .                              @%#$%&&*!@#!?!?!
   .-------------=======[ Debugging / Coding Credits ]=======-------------.
@@ -2519,7 +2519,7 @@ Text .                              @%#$%&&*!@#!?!?!
 End
 
 #HELP
-Level 105
+Level    105
 Keywords DEFENSES
 Text parry dodge heal curelight cureserious curecritical
 dispelmagic dispelevil sanctuary shield bless
@@ -2530,7 +2530,7 @@ See also: MSET, ATTACKS  (Some are not implemented).
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DEFENSIVE 'DEFENSIVE STYLE'
 Text Syntax: style defensive
  
@@ -2545,7 +2545,7 @@ See also: STYLE, EVASIVE, DEFENSIVE, STANDARD, AGGRESSIVE, BERSERK
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DEITIES DEITY
 Text Syntax: 'deities'
         'deities <deity>'
@@ -2556,7 +2556,7 @@ argument will display the target deity's description.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords DEITYFIELD2 DEITYFIELDS2
 Text Flee, flee_npcrace, flee_npcfoe: favor adjustment made when fleeing
  
@@ -2585,7 +2585,7 @@ See also: DEITYFIELDS
 End
 
 #HELP
-Level 107
+Level    107
 Keywords DEITYFIELDS DEITYFIELD
 Text Alignment: Deities alignment.  Followers lose favor for all actions when
 650 or more out of alignment.
@@ -2621,7 +2621,7 @@ See also: DEITYFIELDS2
 End
 
 #HELP
-Level 108
+Level    108
 Keywords DELAY
 Text Usage : delay <player> <# of rounds>
 
@@ -2633,7 +2633,7 @@ save to their pfile should they linkdead out of it or get manually saved.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DELETE DELET
 Text &zSyntax: DELETE (followed by password entry)
 
@@ -2660,7 +2660,7 @@ delete yourself.
 End
 
 #HELP
-Level 108
+Level    108
 Keywords DENY DISCONNECT FREEZE
 Text Syntax: deny       <character>
 Syntax: disconnect <character>
@@ -2679,7 +2679,7 @@ commands at all.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DESCRIPTION BIO
 Text Syntax: description
         bio
@@ -2698,7 +2698,7 @@ loss of character privileges.
 End
 
 #HELP
-Level 114
+Level    114
 Keywords DESTRO DESTROY
 Text Usage : destroy <player>
 
@@ -2711,7 +2711,7 @@ the entire command, so take the extra 1/1000 of a second and add the
 End
 
 #HELP
-Level 113
+Level    113
 Keywords DESTROYCHANNEL
 Text Syntax: destroychannel <name>
 
@@ -2722,7 +2722,7 @@ See also: MAKECHANNEL, SETCHANNEL, SHOWCHANNELS
 End
 
 #HELP
-Level 110
+Level    110
 Keywords DESTROYRUNE
 Text Syntax: destroyrune <rune name>
 
@@ -2734,7 +2734,7 @@ See also: MAKERUNE, SETRUNE, SHOWRUNES, COPYRUNES
 End
 
 #HELP
-Level 113
+Level    113
 Keywords DESTROYSLAY
 Text Usage : destroyslay <slaytype>
 
@@ -2743,7 +2743,7 @@ This command will delete a slay from the slaylist.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DEVOTE
 Text Syntax: 'devote <deity>'
         'devote none'
@@ -2760,7 +2760,7 @@ To see specific information about a deity, type 'deities [deityname]'
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DEX DEXTERITY
 Text Dexterity (DEX in your 'score') represents your character's agility, and
 it affects (among other things):
@@ -2788,7 +2788,7 @@ Dexterity is the prime attribute of rogues.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords DICEFORMULAS
 Text To make the special SMAUG spells possible, special dice formula handling
 had to be coded in.  (At least to make it nice).  This dice formula code
@@ -2805,7 +2805,7 @@ See also: SMAUGSPELLS, SSET.
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords DIKU
 Text .         SMAUG was originally based on the Merc 2.1 code which was
               based on the orignal DIKUMud code created by:
@@ -2833,7 +2833,7 @@ Text .         SMAUG was originally based on the Merc 2.1 code which was
 End
 
 #HELP
-Level 108
+Level    108
 Keywords DISCONNECT
 Text Syntax: disconnect <descriptor>
 Syntax: disconnect <name>
@@ -2850,7 +2850,7 @@ See also: USERS.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DISLODGE
 Text Usage : dislodge <projectile>
 
@@ -2860,7 +2860,7 @@ but it's much better than leaving it stuck in you ;)
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DISMISS
 Text Syntax: dismiss <target>
 
@@ -2870,7 +2870,7 @@ will negate the charm effect.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'DODGE'
 Text Syntax: operates automatically
 
@@ -2881,7 +2881,7 @@ take no damage. Dodge is an automatic skill and requires no weapon.
 End
 
 #HELP
-Level 10
+Level    10
 Keywords DONATE
 Text Usage : donate <item>
 
@@ -2895,7 +2895,7 @@ See also: JUNK and SACRIFICE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'DOORBASH'
 Text Usage        : doorbash <doorname>
 Level        : 4 Warrior
@@ -2914,7 +2914,7 @@ damage in the process.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords DOORDIRS
 Text Here is the order of the exits, and their corresponding values:
 
@@ -2939,7 +2939,7 @@ See also: REDIT, RESETCMDS.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DOTD
 Text Desolation of the Dragon II Mud: dotd@dotd.com
 
@@ -2950,7 +2950,7 @@ his crew for making their code available to the public.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords DRAG
 Text Syntax: drag <character> <direction>
  
@@ -2971,7 +2971,7 @@ are under attack.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DRAW
 Text Usage : draw
 
@@ -2985,7 +2985,7 @@ See also: FIRE and PROJECTILES
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DROP GET GIVE PUT TAKE
 Text Syntax: drop <object>
         drop <amount>  coins
@@ -3018,7 +3018,7 @@ Examples:
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DROW
 Text Drow, the Dark Elves, dwell in the deepest caverns below the surface 
 far away from the light of the sun. Obsidian-skinned kin to the Elves, 
@@ -3050,7 +3050,7 @@ are angry or upset.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DRUID DRUIDS
 Text The Druid is a lover and protector of the natural land. Be it the forests 
 full of birds  and deer, the streams full of fish, or the bug-infested
@@ -3073,7 +3073,7 @@ Wild-Elves and Pixies can become Druids.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'DUAL WIELD'
 Text Usage        : operates automatically
 Level        : 30 Warrior, 20 Ranger, 44 Rogue
@@ -3087,7 +3087,7 @@ must HOLD it. Some weapons cannot be held.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DUERGAR
 Text Duergar, or the Dark Dwarves, resemble their Dwarven cousins in most 
 aspects. As with the Dwarves, the Duergar are short, stocky and extremely 
@@ -3117,7 +3117,7 @@ the Duergar do not put much emphasis on growing beards.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords DUMP
 Text Usage : dump mobs
 Usage : dump objects
@@ -3127,7 +3127,7 @@ This will dump a file with all of the mobs or objects to disk, with stat info.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords DWARF DWARVES DWARFS
 Text The Dwarves are relatively short compared to most of the other races, 
 stocky and powerfully built creatures. Long-lived and extremely sturdy, 
@@ -3153,7 +3153,7 @@ pride in their facial hair.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'EASTER EGGS'
 Text Any number of brightly colored eggs.... no wait....
 
@@ -3163,7 +3163,7 @@ often with a humorous reason for existing. Sort of like this one.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords EAT DRINK
 Text Syntax: drink <object>                 (drink liquid from a drink container)
 Syntax: eat   <object>                 (eat food or a magical pill)
@@ -3192,7 +3192,7 @@ See also: MENTALSTATES
 End
 
 #HELP
-Level 1
+Level    1
 Keywords EATING DRINKING HUNGER THIRST
 Text Eating and drinking are very important...
  
@@ -3211,7 +3211,7 @@ rapid negative affect on your mental state.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords ECHO SYSTEM
 Text Syntax: system     <message>
         system imm <message>
@@ -3236,7 +3236,7 @@ See also: PCOLORS
 End
 
 #HELP
-Level 1
+Level    1
 Keywords EDITOR
 Text The SMAUG Editor is used when you're writing mail, notes, your bio,
 description or other long bodies of text. The commands in the editor are
@@ -3264,7 +3264,7 @@ Omit the space when using the commands in your notes):
 End
 
 #HELP
-Level 1
+Level    1
 Keywords EMAIL
 Text Syntax: email <address>
 Syntax: email clear
@@ -3279,7 +3279,7 @@ See also: FINGER, HOMEPAGE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords EMOTE ,
 Text Syntax:  emote <text>
  
@@ -3299,7 +3299,7 @@ See also: SOCIALS
 End
 
 #HELP
-Level 0
+Level    0
 Keywords EMPTY
 Text Syntax: empty <container>
 Syntax: empty <container> <container>
@@ -3314,7 +3314,7 @@ first container into the second container.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'ENHANCED DAMAGE'
 Text Usage        : operates automatically
 Level        : 25 Warrior, 12 Monk
@@ -3325,7 +3325,7 @@ skill is automatic once you have practiced it.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ENTER LEAVE
 Text Syntax: enter
 Syntax: leave
@@ -3341,7 +3341,7 @@ through to the other side.
 End
 
 #HELP
-Level 108
+Level    108
 Keywords ENV
 Text Usage : env
 
@@ -3350,7 +3350,7 @@ This command shows you all of the current environment effects in the world.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords EQ
 Text Syntax: eq
  
@@ -3363,7 +3363,7 @@ See also: EQUIPMENT INVENTORY LAYERING
 End
 
 #HELP
-Level 1
+Level    1
 Keywords EQDAMAGE
 Text While in combat, you may notice that your equipment is taking damage.
 For example, you may see "Your lifebane gets damaged". Each time this
@@ -3380,7 +3380,7 @@ repair the damage done by "pitting and etching".
 End
 
 #HELP
-Level 1
+Level    1
 Keywords EQUIPMENT INVENTORY
 Text Syntax: equipment
 Syntax: inventory
@@ -3391,7 +3391,7 @@ INVENTORY lists your inventory.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ERASE
 Text Syntax: erase <board> <note>
 Syntax: erase <board> <note>.<reply>
@@ -3407,7 +3407,7 @@ See also: BOARDS, WRITE, READ, CHECKBOARDS, ALERT
 End
 
 #HELP
-Level 1
+Level    1
 Keywords EVASIVE 'EVASIVE STYLE'
 Text Syntax: style evasive
  
@@ -3421,7 +3421,7 @@ See also: STYLE, DEFENSIVE, STANDARD, AGGRESSIVE, BERSERK
 End
 
 #HELP
-Level 0
+Level    0
 Keywords EXAMINE LOOK
 Text Syntax: look
 Syntax: look    <object>
@@ -3440,7 +3440,7 @@ EXAMINE is short for 'LOOK container' followed by 'LOOK IN container'.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords EXFLAGS
 Text The redit exflags <dir> [flag] ... command accepts the following flags:
  
@@ -3485,7 +3485,7 @@ is not fully implemented.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords EXITMAKING
 Text The 'redit exit' command is used to create, modify and remove exits in a room.
 Currently there can only be one exit in a certain direction.
@@ -3513,7 +3513,7 @@ See EXITTYPES for generating the exit-type value.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords EXITS
 Text Syntax: exits
 
@@ -3524,7 +3524,7 @@ certain direction and see what you bump into).
 End
 
 #HELP
-Level 103
+Level    103
 Keywords EXITTYPES
 Text These are the currently valid exit-types:
       0 - Plain exit
@@ -3551,7 +3551,7 @@ See also: EXFLAGS, EXITMAKING
 End
 
 #HELP
-Level 0
+Level    0
 Keywords EXPERIENCE LEVEL XP
 Text Syntax: level
 
@@ -3582,7 +3582,7 @@ advantage over you in combat.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords FAVOR
 Text Your favor reflects how much your deity favors you. It can increase if you
 follow the principles of your deity, and decrease if you go against those
@@ -3598,7 +3598,7 @@ See also: DEITIES, DEVOTE, SUPPLICATE
 End
 
 #HELP
-Level 0
+Level    0
 Keywords FILL
 Text Syntax: fill <drincon>
 Syntax: fill <container>
@@ -3614,7 +3614,7 @@ FILL can be used with drink containers, regular containers or pipes.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords FIND
 Text Syntax: find obj <keyword>
         find mob <keyword>
@@ -3628,7 +3628,7 @@ This consolidated command replaces OFIND and MFIND.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords FINGER
 Text Syntax: finger <name>
 
@@ -3644,7 +3644,7 @@ See also: EMAIL and HOMEPAGE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords FIRE
 Text Syntax: fire <direction> target
  
@@ -3657,7 +3657,7 @@ See also: DRAW and PROJECTILES
 End
 
 #HELP
-Level 109
+Level    109
 Keywords FIXCHAR
 Text Usage : fixchar <playername>
 
@@ -3667,7 +3667,7 @@ something really bad happens to their pfile that can't be fixed in any other way
 End
 
 #HELP
-Level 101
+Level    101
 Keywords FIXED
 Text Syntax: fixed <message>
         fixed list
@@ -3689,7 +3689,7 @@ NOTE: This file supports color tokens, be careful with them.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords FLEE 'RESCUE'
 Text Usage        : flee
                rescue <character>
@@ -3708,7 +3708,7 @@ In order to RESCUE successfully, you must practice the appropriate skill.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords FLOODFILL
 Text Syntax: mapedit fill <sectortype>
 Syntax: mapedit undo
@@ -3741,7 +3741,7 @@ See also: SECTORTYPES, MAPEDIT
 End
 
 #HELP
-Level 107
+Level    107
 Keywords FOLDAREA
 Text Syntax: foldarea <area filename>
  
@@ -3759,7 +3759,7 @@ See also: ASET, UNFOLDAREA, INSTALLAREA
 End
 
 #HELP
-Level 1
+Level    1
 Keywords FOLLOW
 Text Syntax: follow <character>
  
@@ -3774,7 +3774,7 @@ See also: GROUP
 End
 
 #HELP
-Level 110
+Level    110
 Keywords FOR
 Text Syntax: for <argument> <command>
 Syntax: for <argument> <command> <target>
@@ -3794,7 +3794,7 @@ every mob in the game.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords FORCE
 Text Syntax: force <character> <command>
 Syntax: force all <command>
@@ -3807,7 +3807,7 @@ This is typically used for 'force all save'.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords FORGE
 Text Usage: forge <ore type> <item>
  
@@ -3843,7 +3843,7 @@ For armour forged by a smith, there is a cost of &Ritem cost + 30%.&z
 End
 
 #HELP
-Level 114
+Level    114
 Keywords FORMPASS
 Text Syntax : formpass <new password> <character name>
 Example: formpass temporary Joseph
@@ -3864,7 +3864,7 @@ See also: NEWPASS
 End
 
 #HELP
-Level 113
+Level    113
 Keywords FREEVNUMS
 Text Usage : freevnums <low end> <high end>
 
@@ -3876,7 +3876,7 @@ See also: CHECKVNUMS
 End
 
 #HELP
-Level 0
+Level    0
 Keywords FURNITURE
 Text Syntax: <action> <object>
 
@@ -3891,7 +3891,7 @@ Furniture Code 1.01 provided by Xerves of Rafermand.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords FURNITUREVALUES
 Text It is now possible to sit/sleep/rest/stand on furniture.
 Here is how all of this works.
@@ -3918,7 +3918,7 @@ Furniture Code 1.01 provided by Xerves of Rafermand.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords GFIGHTING
 Text Usage : gfighting
 
@@ -3933,7 +3933,7 @@ Cam      |100 vs 80| Tarant the Defil [ 3605]  Haven Abbey          [ 3696]
 End
 
 #HELP
-Level 1
+Level    1
 Keywords GLANCE
 Text Syntax: glance
 Syntax: glance <victim>
@@ -3948,7 +3948,7 @@ Glance may be abbreviated as 'gl'.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords GNOME GNOMES
 Text The Gnomish race are without a doubt the among the most curious and 
 peculiar folk in the world. Quirky and easily excitable, they are also 
@@ -3983,7 +3983,7 @@ beardless.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords GOLD
 Text Syntax: gold
  
@@ -3992,7 +3992,7 @@ Displays the current total amount of gold you are carrying.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords GOTO
 Text Syntax: goto map <mapname> [x] [y]
 Syntax: goto <location>
@@ -4024,7 +4024,7 @@ See also: REDIT
 End
 
 #HELP
-Level 115
+Level    115
 Keywords GREP
 Text Syntax: grep <whatever>
 Syntax: grep help
@@ -4037,7 +4037,7 @@ server.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'GRIP'
 Text Level 11 Warrior, 15 Ranger, 15 Antipaladin, 15 Paladin
 
@@ -4049,7 +4049,7 @@ you are engaged in fights where someone is attempting to disarm you.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords GROUP GROUPING
 Text Syntax: group <character>, group all, group, group disband
  
@@ -4074,7 +4074,7 @@ following and are ungrouped).
 End
 
 #HELP
-Level 0
+Level    0
 Keywords GTELL REPLY SAY TELL
 Text Syntax: gtell <message>
 Syntax: say   <message>
@@ -4100,7 +4100,7 @@ is handy for talking to invisible or switched immortal players.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords GUILD GUILDS
 Text Guilds are special organizations for peaceful players in the lands.
 Belonging to a Guild has many advantages, such as gaining new knowledge,
@@ -4122,7 +4122,7 @@ to the Guild.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords GUILDFLAGS
 Text The following are guildarea related flags:
  
@@ -4139,7 +4139,7 @@ guildidmob - mobflag for the guild's object identifying mob
 End
 
 #HELP
-Level 0
+Level    0
 Keywords GUILDTALK
 Text Syntax: guildtalk <message>
 Syntax: ordertalk <message>
@@ -4151,7 +4151,7 @@ all members currently online.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HALF-ELF HALFELF HALFELVES
 Text A mixing of Human and Elven blood, these attractive creatures are neither 
 as intelligent as full-blood Elves, nor as hardy as full-blood Humans. 
@@ -4181,7 +4181,7 @@ Half-Elves also have pointed ears.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HALF-OGRE HALFOGRE
 Text Half-Ogres are the result of coupling between neanderthal-like Ogre with 
 other races. Half-Ogres combine the physical strength of pure Ogres with 
@@ -4214,7 +4214,7 @@ their battle prowess.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HALF-ORC HALF-ORCS HALFORC HALFORCS
 Text With the mingling of Orcish and Human blood arising in the darker areas 
 of the land, members of this half-blooded race are steadily becoming more 
@@ -4241,7 +4241,7 @@ ability of Infravision.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HALF-TROLL HALFTROLL
 Text Resulting from the mix of Trollish parenthood with that of another race, 
 the Half-Troll is as deadly and hideous as its origins. Though smaller 
@@ -4270,7 +4270,7 @@ before torturing them to death and then eating their raw flesh.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HALFLING HALFLINGS
 Text Short, chubby and very mischievous, the Halfling is among the most 
 fun-loving races in the land. The Halflings are known notoriously for 
@@ -4293,7 +4293,7 @@ to pursue the life of a Warrior, a Cleric, or a Bard.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords HEDIT
 Text Syntax: hedit [help topic]
  
@@ -4325,7 +4325,7 @@ See also: HSET, PCOLORS.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords HELL UNHELL
 Text Syntax: hell <character> <number> <hours or days>
 Syntax: unhell <character>
@@ -4346,7 +4346,7 @@ To release a player from hell, simply "unhell <character>".
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HELP
 Text You must really need Help!
 
@@ -4357,7 +4357,7 @@ a very long list of help files. If you'd like a shortened list, type
 End
 
 #HELP
-Level 101
+Level    101
 Keywords HELPCHECK
 Text Usage : helpcheck commands|skills|all
 
@@ -4368,7 +4368,7 @@ list.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HIGH-ELF HIGH-ELVES
 Text Tall, slender creatures with a spiritual affinity for nature and magic. 
 High Elves are distant cousins to the Pixies and share the intelligence 
@@ -4397,7 +4397,7 @@ distinctive feature about High Elves is their pointed ears.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords HIGHFIVE
 Text Usage : highfive <player>
 
@@ -4411,7 +4411,7 @@ see your name when it's displayed to the mud, anyone else will just see
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HISTORY
 Text Usage : history
 
@@ -4420,7 +4420,7 @@ Typing this will allow you to read the history.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords HITROLL HR
 Text Represents your chances of hitting your opponent. The higher
 the number, the better.
@@ -4428,7 +4428,7 @@ the number, the better.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords HLIST HL
 Text Syntax: hlist <low level range> <high level range>
  
@@ -4448,7 +4448,7 @@ Note - The list of help files is quite extensive, and the command does
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HOLD REMOVE WEAR WIELD
 Text Syntax:  hold   <object>
 Syntax:  remove <object>
@@ -4475,7 +4475,7 @@ REMOVE ALL will remove all your equipment and place it into inventory.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HOLIDAYS
 Text Usage : holidays
 
@@ -4485,7 +4485,7 @@ celebrated, along with the month and the day.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords HOLYLIGHT
 Text Syntax: holylight
 
@@ -4500,7 +4500,7 @@ higher level than you.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords HOMEPAGE
 Text Syntax: homepage <url>
 Syntax: homepage clear
@@ -4516,7 +4516,7 @@ See also: FINGER, EMAIL, BIO
 End
 
 #HELP
-Level 108
+Level    108
 Keywords HOTBOOT
 Text Usage : hotboot
 
@@ -4533,7 +4533,7 @@ See also: REBOOT
 End
 
 #HELP
-Level 1
+Level    1
 Keywords HP
 Text This is an abbreviation for hit points. All classes begin with a base
 10 hp at creation modified by race and class. The hp gain per level is
@@ -4543,7 +4543,7 @@ also add to your total hp.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords HSET
 Text Syntax: hset  <command> [value] [help topic]
  save                            Saves all help pages (to help.are)
@@ -4569,7 +4569,7 @@ See also: HEDIT
 End
 
 #HELP
-Level 0
+Level    0
 Keywords HUMAN HUMANS
 Text Humans are the most common and numerous of the races. This however makes 
 them no less interesting. They possess no special abilities or bonuses, 
@@ -4590,7 +4590,7 @@ human from another.
 End
 
 #HELP
-Level 2
+Level    2
 Keywords ICQ
 Text Syntax: icq <icq number>
 Syntax: icq clear
@@ -4606,7 +4606,7 @@ See also: FINGER, EMAIL, HOMEPAGE
 End
 
 #HELP
-Level 0
+Level    0
 Keywords IDEA IDEAS TYPO BUG
 Text Syntax: bug <message>
 Syntax: idea <message>
@@ -4618,7 +4618,7 @@ to the mud implementors.
 End
 
 #HELP
-Level 2
+Level    2
 Keywords IDENT IDE
 Text Usage : ident <item>
 
@@ -4630,7 +4630,7 @@ See also: IDENTIFY
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CANPKILL'
 Text &r*-------------------------------------------------------------------*
 
@@ -4650,7 +4650,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CANSEE'
 Text &r*-------------------------------------------------------------------*
 
@@ -4668,7 +4668,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CARRYINGVNUM'
 Text &r*-------------------------------------------------------------------*
 
@@ -4682,7 +4682,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CHA'
 Text &r*-------------------------------------------------------------------*
 
@@ -4700,7 +4700,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CHARCOUNT'
 Text &r*-------------------------------------------------------------------*
  
@@ -4731,7 +4731,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CLAN'
 Text &r*-------------------------------------------------------------------*
 
@@ -4749,7 +4749,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CLANTYPE'
 Text &r*-------------------------------------------------------------------*
 
@@ -4766,7 +4766,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CLASS'
 Text &r*-------------------------------------------------------------------*
 
@@ -4784,7 +4784,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK CON'
 Text &r*-------------------------------------------------------------------*
 
@@ -4802,7 +4802,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK DEITY'
 Text &r*-------------------------------------------------------------------*
 
@@ -4820,7 +4820,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK DEX'
 Text &r*-------------------------------------------------------------------*
 
@@ -4838,7 +4838,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK FAVOR'
 Text &r*-------------------------------------------------------------------*
 
@@ -4856,7 +4856,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK GOLDAMT'
 Text &r*-------------------------------------------------------------------*
 
@@ -4874,7 +4874,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK GUILD'
 Text &r*-------------------------------------------------------------------*
 
@@ -4892,7 +4892,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK HASABIT'
 Text &r*-------------------------------------------------------------------*
 
@@ -4910,7 +4910,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK HASQBIT'
 Text &r*-------------------------------------------------------------------*
 
@@ -4928,7 +4928,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK HITPRCNT'
 Text &r*-------------------------------------------------------------------*
 
@@ -4946,7 +4946,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK HPS'
 Text &r*-------------------------------------------------------------------*
 
@@ -4964,7 +4964,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK INROOM'
 Text &r*-------------------------------------------------------------------*
 
@@ -4982,7 +4982,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK INT'
 Text &r*-------------------------------------------------------------------*
 
@@ -5000,7 +5000,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISASUPRESSED'
 Text &r*-------------------------------------------------------------------*
 
@@ -5018,7 +5018,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISCHARMED'
 Text &r *-------------------------------------------------------------------*
 
@@ -5036,7 +5036,7 @@ Text &r *-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISDEVOTED'
 Text &r*-------------------------------------------------------------------*
 
@@ -5054,7 +5054,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISEVIL'
 Text &r*-------------------------------------------------------------------*
 
@@ -5072,7 +5072,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISFIGHT'
 Text &r*-------------------------------------------------------------------*
 
@@ -5089,7 +5089,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISFOLLOW'
 Text &r*--------------------------------------------------------------------------*&D
 
@@ -5109,7 +5109,7 @@ Text &r*------------------------------------------------------------------------
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISGOOD'
 Text &r*-------------------------------------------------------------------*
 
@@ -5126,7 +5126,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISIMMORT'
 Text &r*-------------------------------------------------------------------*
 
@@ -5144,7 +5144,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISLEADER'
 Text &r*-------------------------------------------------------------------*
    
@@ -5162,7 +5162,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISLOCKED'
 Text &r*-------------------------------------------------------------------*
 
@@ -5181,7 +5181,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISMORPHED'
 Text &r*-------------------------------------------------------------------*
 
@@ -5199,7 +5199,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISMOUNTED'
 Text &r*-------------------------------------------------------------------*
 
@@ -5217,7 +5217,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISNEUTRAL'
 Text &r*-------------------------------------------------------------------*
 
@@ -5237,7 +5237,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISNPC'
 Text &r*-------------------------------------------------------------------*
 
@@ -5255,7 +5255,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISNUISANCE'
 Text &r*-------------------------------------------------------------------*
 
@@ -5273,7 +5273,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISOPEN'
 Text &r*-------------------------------------------------------------------*
 
@@ -5292,7 +5292,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISPACIFIST'
 Text &r*-------------------------------------------------------------------*
 
@@ -5310,7 +5310,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISPASSAGE'
 Text &r*-------------------------------------------------------------------*
 
@@ -5329,7 +5329,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISPC'
 Text &r*-------------------------------------------------------------------*
 
@@ -5347,7 +5347,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISPKILL'
 Text &r*-------------------------------------------------------------------*
 
@@ -5365,7 +5365,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK ISSHELLED'
 Text &r*-------------------------------------------------------------------*
         
@@ -5383,7 +5383,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK LCK'
 Text &r*-------------------------------------------------------------------*
 
@@ -5401,7 +5401,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK LEVEL'
 Text &r*-------------------------------------------------------------------*
 
@@ -5419,7 +5419,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MANA'
 Text &r*-------------------------------------------------------------------*
 
@@ -5437,7 +5437,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MOBCOUNT'
 Text &r*-------------------------------------------------------------------*
  
@@ -5467,7 +5467,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MOBINAREA'
 Text &r*-------------------------------------------------------------------*
 
@@ -5485,7 +5485,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MOBINROOM'
 Text &r*-------------------------------------------------------------------*
 
@@ -5504,7 +5504,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MOBINVIS'
 Text &r*-------------------------------------------------------------------*
 
@@ -5522,7 +5522,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MOBINVISLEVEL'
 Text &r*-------------------------------------------------------------------*
 
@@ -5540,7 +5540,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MOBINWORLD'
 Text &r*-------------------------------------------------------------------*
 
@@ -5559,7 +5559,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MORTAL'
 Text &r*-------------------------------------------------------------------*
 
@@ -5577,7 +5577,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MORTCOUNT'
 Text &r*-------------------------------------------------------------------*
  
@@ -5607,7 +5607,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MORTINROOM'
 Text &r*-------------------------------------------------------------------*
 
@@ -5626,7 +5626,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MORTINWORLD'
 Text &r*-------------------------------------------------------------------*
 
@@ -5646,7 +5646,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK MULTI'
 Text &r*-------------------------------------------------------------------*
 
@@ -5665,7 +5665,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK NAME'
 Text &r*-------------------------------------------------------------------*
 
@@ -5683,7 +5683,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK NUISANCE'
 Text &r*-------------------------------------------------------------------*
 
@@ -5701,7 +5701,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OBJTYPE'
 Text &r*-------------------------------------------------------------------*
 
@@ -5719,7 +5719,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OBJVAL0'
 Text &r*-------------------------------------------------------------------*
 
@@ -5740,7 +5740,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OBJVAL1'
 Text &r*-------------------------------------------------------------------*
 
@@ -5761,7 +5761,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OBJVAL2'
 Text &r*-------------------------------------------------------------------*
 
@@ -5782,7 +5782,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OBJVAL3'
 Text &r*-------------------------------------------------------------------*
 
@@ -5803,7 +5803,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OBJVAL4'
 Text &r*-------------------------------------------------------------------*
 
@@ -5824,7 +5824,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OBJVAL5'
 Text &r*-------------------------------------------------------------------*
 
@@ -5845,7 +5845,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OTYPEHERE'
 Text EXAMPLE:
 
@@ -5861,7 +5861,7 @@ See also: mpedit, opedit, rpedit, ifchecks.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OTYPEINV'
 Text EXAMPLE:
 
@@ -5875,7 +5875,7 @@ See also: mpedit, opedit, rpedit, ifchecks.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OTYPEROOM'
 Text EXAMPLE:
 
@@ -5893,7 +5893,7 @@ See also: mpedit, opedit, rpedit, ifchecks.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OTYPEWEAR'
 Text EXAMPLE:
 
@@ -5907,7 +5907,7 @@ See also: mpedit, opedit, rpedit, ifchecks.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OVNUMCARRY'
 Text &r*-------------------------------------------------------------------*
  
@@ -5926,7 +5926,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OVNUMHERE'
 Text &r*-------------------------------------------------------------------*
 
@@ -5948,7 +5948,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OVNUMINV'
 Text &r*-------------------------------------------------------------------*
 
@@ -5967,7 +5967,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OVNUMROOM'
 Text &r*-------------------------------------------------------------------*
  
@@ -5985,7 +5985,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK OVNUMWEAR'
 Text &r*-------------------------------------------------------------------*
 
@@ -6004,7 +6004,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK POSITION'
 Text &r*-------------------------------------------------------------------*
 
@@ -6022,7 +6022,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK RACE'
 Text &r*-------------------------------------------------------------------*
 
@@ -6040,7 +6040,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK RAND'
 Text &r*-------------------------------------------------------------------*
 
@@ -6058,7 +6058,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK SEX'
 Text &r*-------------------------------------------------------------------*
 
@@ -6076,7 +6076,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK STR'
 Text &r*-------------------------------------------------------------------*
 
@@ -6094,7 +6094,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK TIME'
 Text &r*-------------------------------------------------------------------*
 
@@ -6113,7 +6113,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK WAITSTATE'
 Text &r*-------------------------------------------------------------------*
 
@@ -6132,7 +6132,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK WASINROOM'
 Text &r*-------------------------------------------------------------------*
 
@@ -6153,7 +6153,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK WEARINGVNUM'
 Text &r*-------------------------------------------------------------------*
 
@@ -6167,7 +6167,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords 'IFCHECK WIS'
 Text &r*-------------------------------------------------------------------*
 
@@ -6185,7 +6185,7 @@ Text &r*-------------------------------------------------------------------*
 End
 
 #HELP
-Level 106
+Level    106
 Keywords IFCHECKS
 Text VALUE CHECKS (If check == #/string/vnum)
 Ifcheck        Question                      Ifcheck    Question
@@ -6221,7 +6221,7 @@ and ! (not).  Combine for:  != (not equal) >= (greater than or equal).
 End
 
 #HELP
-Level 106
+Level    106
 Keywords IFCHECKS2
 Text &r----------  ------------------------    -----------  ------------------
 &GIsgood      &cAlign +350 or higher?       &GIsdevoted    &ctarget devoted?
@@ -6256,7 +6256,7 @@ and ! (not).  Combine for:  != (not equal) >= (greater than or equal).
 End
 
 #HELP
-Level 106
+Level    106
 Keywords IFCHECKS3
 Text .
 &GTimesKilled
@@ -6285,7 +6285,7 @@ Here  All of the above
 End
 
 #HELP
-Level 106
+Level    106
 Keywords IFCHECKS4
 Text &Yifcheck           syntax                 usage
 &Wisasupressed      if isasupressed($n)    is the target asupressed?
@@ -6303,7 +6303,7 @@ waitstate         if waitstate($n) (val) Is the target in waitstate?
 End
 
 #HELP
-Level 1
+Level    1
 Keywords IGNORE
 Text Syntax: ignore
 Syntax: ignore <character>
@@ -6327,7 +6327,7 @@ Typing 'ignore none' will clear your ignore list.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords IGUANADON IGUANADONS
 Text Well known throughout the free Lands for their fearsome visages and 
 ferocious savagery, the terrifying Iguanadons are also the most mysterious 
@@ -6360,7 +6360,7 @@ grey skin and their eyes are a dull yellow color.
 End
 
 #HELP
-Level 114
+Level    114
 Keywords IMMHOST
 Text Syntax: immhost add    <name> <host>
 Syntax: immhost delete <name> <host>
@@ -6381,7 +6381,7 @@ This file won't be saved until the immhost save command is issued.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords IMMORTALIZE
 Text Syntax: immortalize <character>
  
@@ -6395,7 +6395,7 @@ update the wizlist file.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords IMMPROGS
 Text These mpcommands are restricted knowledge (RoD stuff I guess :P)
  
@@ -6420,7 +6420,7 @@ mpdelay            mpdelay <victim><time>  Delays a victim for * rounds
 End
 
 #HELP
-Level 101
+Level    101
 Keywords IMMPROMPT
 Text In addition to the normal prompt tokens, the following are available for
 immortal use only:
@@ -6434,7 +6434,7 @@ See also PROMPT
 End
 
 #HELP
-Level 113
+Level    113
 Keywords IMMSETCLAN
 Text Syntax: setclan <clan name> <field> <player/text>
  
@@ -6465,7 +6465,7 @@ See also: MAKECLAN, SETCLAN
 End
 
 #HELP
-Level 101
+Level    101
 Keywords IMOTD
 Text Syntax: imotd
  
@@ -6474,7 +6474,7 @@ Shows the current Immortal Message of the Day.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords IMPLEMENTORS
 Text The most powerful beings in existence. Their function is mostly
 administrative. Don't whine too much in their presence.
@@ -6482,7 +6482,7 @@ administrative. Don't whine too much in their presence.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords IMPLOCK
 Text Syntax: implock
 
@@ -6510,7 +6510,7 @@ See also: WIZLOCK, LOCKDOWN
 End
 
 #HELP
-Level 10
+Level    10
 Keywords INDUCT OUTCAST
 Text Syntax: induct  <player>
         outcast <player>
@@ -6523,7 +6523,7 @@ clan/guild, while outcast will remove them.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords INFORMATION
 Text SLIST   - a command that lists all your spells and skills and the level at
           which you may practice them.
@@ -6553,7 +6553,7 @@ HELP files.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords INNS
 Text Inns are places where the weary traveler may rest while the innkeeper
 looks after his equipment and treasure. Specifically, you may use inns to
@@ -6565,7 +6565,7 @@ See also: OFFER, RENT
 End
 
 #HELP
-Level 113
+Level    113
 Keywords INSTALLAREA
 Text Syntax: installarea <current filename> <new filename> <full area name/title>
 
@@ -6584,7 +6584,7 @@ need to be set, this can be done before or after installarea.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords INSTAROOM
 Text Usage : instaroom
 
@@ -6600,7 +6600,7 @@ See also: INSTAZONE
 End
 
 #HELP
-Level 105
+Level    105
 Keywords INSTAZONE
 Text Usage : instazone
 
@@ -6618,7 +6618,7 @@ See also: INSTAROOM
 End
 
 #HELP
-Level 1
+Level    1
 Keywords INT INTELLIGENCE
 Text Intelligence (INT in your 'score') represents your character's mental
 capacity.  Among other things, it affects:
@@ -6641,7 +6641,7 @@ Intelligence is the prime attribute of the mage.
 End
 
 #HELP
-Level 102
+Level    102
 Keywords INVIS
 Text Syntax: invis
         invis level
@@ -6658,7 +6658,7 @@ say (Invis 101).
 End
 
 #HELP
-Level 0
+Level    0
 Keywords INVOKE
 Text Syntax: Invoke rune ( with an appropriate rune in your possession )
  
@@ -6671,7 +6671,7 @@ Runes only hold 5 charges, so use them wisely.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords ITEMVALUES
 Text In these values, 'sn' is a spell number;  a negative value means 'no spell'.
 Item Type |V0         |V1          |V2         |V3         |V4       |V5
@@ -6708,7 +6708,7 @@ ARMORCLASS, WEAPONCONDITION and MISSILES.
 End
 
 #HELP
-Level 2
+Level    2
 Keywords JUNK
 Text Usage : junk <item>
 
@@ -6723,7 +6723,7 @@ See also: SACRIFICE and DONATE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords KILL MURDER MURDE
 Text KILL MURDER
 Syntax: kill     <character>
@@ -6738,14 +6738,14 @@ be level 5 or higher to be able to use the murder command.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords LANDINGSITES
 Text The currently available landingsites are:
 ¢
 End
 
 #HELP
-Level 101
+Level    101
 Keywords LANDMARKS
 Text Usage : landmarks
 
@@ -6755,7 +6755,7 @@ short description.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords LANGUAGES
 Text Syntax: languages
 Syntax: language learn <language name>
@@ -6773,7 +6773,7 @@ See also: LANGUAGE, SPEAK
 End
 
 #HELP
-Level 1
+Level    1
 Keywords LCK LUCK
 Text Luck (LCK in your 'score') represents the tendency of a character to succeed
 or prosper through chance or good fortune.  As in life, the exact extent of
@@ -6786,7 +6786,7 @@ very direct manner, it can affect nearly every aspect to at least a degree.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords LEVERFLAGS SWITCHFLAGS BUTTONFLAGS PULLCHAINFLAGS DIALFLAGS
 Text FLAG NAME     |  BITVECTOR  |  DESCRIPTION
 ----------------------------------------------------------------------
@@ -6826,7 +6826,7 @@ See also: OSET and ITEMVALUES.  * = not yet implemented.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords LIGHT
 Text Syntax: light <pipe>
  
@@ -6836,7 +6836,7 @@ burn until it burns itself out, is smoked out, or you tamp your pipe.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords LIMBO
 Text The limitless void known as Limbo is a strange plane fabricated by
 the Gods to hold mortals who have been rendered unconscious or have
@@ -6846,7 +6846,7 @@ here of their own volition.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords LINKDEAD
 Text A lot of players have problems with their links to the game. This
 could be very dangerous to your health in the middle of a combat. But
@@ -6879,9 +6879,9 @@ See also: AUTORENT
 End
 
 #HELP
-Level 104
+Level    104
 Keywords LIQUIDTYPES
-Liquid Type
+Text Liquid Type
 ------------------------------
 #LIQUID
 water
@@ -6910,7 +6910,7 @@ See also: OSET, ITEMVALUES.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords LISTEN
 Text Syntax: listen <channelname>
 
@@ -6924,7 +6924,7 @@ See also: CHANNELS
 End
 
 #HELP
-Level 108
+Level    108
 Keywords LITTERBUG
 Text Syntax: litterbug <player>
 
@@ -6934,7 +6934,7 @@ dropping any objects.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords LOAD
 Text Syntax: load obj <vnum or keyword>
         load mob <vnum or keyword>
@@ -6947,7 +6947,7 @@ keywords. This consolidated command replaces MINVOKE and OINVOKE.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords LOADUP
 Text Usage : loadup <player>
 
@@ -6962,7 +6962,7 @@ when you're done ;)
 End
 
 #HELP
-Level 113
+Level    113
 Keywords LOCKDOWN
 Text Syntax: lockdown
 
@@ -6991,7 +6991,7 @@ See also: IMPLOCK, WIZLOCK
 End
 
 #HELP
-Level 108
+Level    108
 Keywords LOG SNOOP
 Text Syntax: log   <character>
 Syntax: log   all
@@ -7034,7 +7034,7 @@ a severe lashing, to possible termination of your immortal privileges.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords LORE
 Text Usage: consider <target>
 
@@ -7048,7 +7048,7 @@ something about.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords LOYAL LOYALTY
 Text The item flag 'loyal' reflects a weapon's loyal status to its deadly owner.
 Such a weapon will return to a player's inventory when disarmed by another
@@ -7061,7 +7061,7 @@ advantage with a loyal weapon.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords LSITES
 Text Usage : lsites
 
@@ -7071,7 +7071,7 @@ coordinates, area, and cost to use them.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords MACE MACES HAMMER HAMMERS 'MACES AND HAMMERS'
 Text Level : 1 Warrior, Ranger, Bard, Cleric, Antipaladin, Druid, and Paladin
 
@@ -7084,7 +7084,7 @@ See also: ARCHERY, AXES, BLOWGUNS, DAGGERS, PUGILISM, SLINGS, SPEARS, STAVES,
 End
 
 #HELP
-Level 0
+Level    0
 Keywords MAGE MAGES
 Text A Mage is one of the weakest classes when it comes to body, but their
 minds have no par. As a Mage you will begin weak, but as you grow in
@@ -7099,7 +7099,7 @@ Gnomes, Drow and Gith can become Mages.
 End
 
 #HELP
-Level 40
+Level    40
 Keywords MAKE
 Text Syntax: make <object>
  
@@ -7111,7 +7111,7 @@ See also: SETCLAN, ROSTER
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MAKECHANNEL
 Text Syntax: makechannel <name>
 
@@ -7124,7 +7124,7 @@ See also: SETCHANNEL, DESTROYCHANNEL, SHOWCHANNELS
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MAKECLAN
 Text Syntax: makeclan <filename> <leader's name> <name of clan or guild>
 
@@ -7145,7 +7145,7 @@ See also: SETCLAN, IMMSETCLAN
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MAKEDEITY
 Text Usage : makedeity <deity name>
 
@@ -7157,7 +7157,7 @@ See also: SETDEITY, SHOWDEITY
 End
 
 #HELP
-Level 108
+Level    108
 Keywords MAKEENV
 Text Usage: makeenv <type> <radius> <direction> <intensity>
 
@@ -7174,7 +7174,7 @@ See also: ENV
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MAKEREPAIR
 Text Syntax: makerepair <mobvnum>
  
@@ -7186,7 +7186,7 @@ See also: REPAIRSET, REPAIRSTAT, REPAIRSHOPS
 End
 
 #HELP
-Level 110
+Level    110
 Keywords MAKERUNE
 Text Syntax: makerune <rune name>
 
@@ -7199,7 +7199,7 @@ See also: SETRUNE, DESTROYRUNE, SHOWRUNES, COPYRUNES
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MAKESHOP
 Text Syntax: makeshop <mobile vnum>
 
@@ -7225,7 +7225,7 @@ See also: SHOPSTAT, SHOPSET, SHOPS.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords MAKESLAY
 Text Syntax: makeslay <type>
 
@@ -7237,7 +7237,7 @@ See also: DESTROYSLAY, SETSLAY, SHOWSLAY, SLAY
 End
 
 #HELP
-Level 107
+Level    107
 Keywords MAKEWIZLIST
 Text Usage : makewizlist
 
@@ -7248,7 +7248,7 @@ try using this.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords MANA
 Text Mana is the living inner power used by the spellcasting classes to cast
 their spells. Warriors also have mana, but do not cast spells. Certain
@@ -7257,7 +7257,7 @@ skills may also require the use of mana.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MAPEDIT
 Text Syntax: mapedit
 Syntax: mapedit sector <type>
@@ -7290,7 +7290,7 @@ See also: SECTORTYPES, REDIT, FLOODFILL, SETMARK, SETEXIT
 End
 
 #HELP
-Level 0
+Level    0
 Keywords MARK
 Text Syntax: mark ( with a blank rune in your possession )
  
@@ -7303,7 +7303,7 @@ is marked as non-recall. Runes only hold 5 charges, so use them wisely.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords MCREATE
 Text Syntax: mcreate <vnum> <keywords>
 
@@ -7317,7 +7317,7 @@ See also: MSET and MDELETE
 End
 
 #HELP
-Level 101
+Level    101
 Keywords MDEATHS MDEATH
 Text .
 This indicator, on the SCORE listing, shows the number of times that mobs
@@ -7331,7 +7331,7 @@ See also: SCORE
 End
 
 #HELP
-Level 105
+Level    105
 Keywords MDELETE
 Text Usage : mdelete <mob>
 
@@ -7344,7 +7344,7 @@ See also: MCREATE and MSET
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ME
 Text &YI'm sorry, there is no help for you. You are completely and hoplessly lost.&D
 &YIf there was ever a leader of lost people, you'd be it. I hope you feel good&D
@@ -7354,7 +7354,7 @@ Text &YI'm sorry, there is no help for you. You are completely and hoplessly los
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MEMBERS
 Text Usage: members show <guild/clan>
 Usage: members show all
@@ -7373,7 +7373,7 @@ DELETE <roster name> - will delete the selected guild/clan.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MEMORY
 Text So, your reading meaningless helpfiles again eh? That's pathetic. Really.
 But wait, the command isn't entirely obvious! ACK! Too bad, we REALLY wanted
@@ -7384,7 +7384,7 @@ Of course, you COULD be looking for your lost memory.....
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords MENTALSTATE MENTALSTATES 'MENTAL STATE' 'MENTAL STATES'
 Text .
 &gYour mental state is your current frame of mind, and how clearly and
@@ -7412,7 +7412,7 @@ See also: GROUP DISPLAY
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords MERC FUREY KHAN HATCHET
 Text SMAUG was originally based on the Merc 2.1 code which was created by Furey,
 Hatchet, and Kahn.
@@ -7440,7 +7440,7 @@ Merc would like to thank ...
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'METALLURGY'
 Text Usage        : automatic
 Level        : 70 dwarf
@@ -7456,7 +7456,7 @@ See also: TENACITY, MINING, FORGE
 End
 
 #HELP
-Level 0
+Level    0
 Keywords MINOTAUR MINOTAURS
 Text Tall, powerfully strong creatures who enjoy the life of the seafarer. 
 The Minotaurs are a race famed for their unyielding bravery and sense 
@@ -7486,7 +7486,7 @@ very little clothing and armor.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords MINPOS
 Text Minimum Positions affect both spells and skills. For example, if the minimum
 position for a spell was 8, it would work while sitting, fighting or any
@@ -7515,7 +7515,7 @@ See also: STYLE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords MISSILE
 Text Missile weapons have the unique ability to fire at one's opponent
 from a distance.  In order to be successful, the attacker must have a 
@@ -7530,7 +7530,7 @@ See help &Wfire and help &Wfletch
 End
 
 #HELP
-Level 104
+Level    104
 Keywords MISSILES
 Text Creating a projectile is basically the same as making any other
 weapon. The exception to this are its Values (see ITEMVALUES)
@@ -7561,7 +7561,7 @@ See also: PROJECTILES, ITEMVALUES, WEAPONTYPES and OSET.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords MIX
 Text Syntax: mix <item1> <item2>
 
@@ -7571,7 +7571,7 @@ to be mixed with each other.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords MKILL MKILLS
 Text This indicator, on the SCORE listing, shows the number of mobs
 that the player has vanquished in battle.
@@ -7581,7 +7581,7 @@ See also: SCORE
 End
 
 #HELP
-Level 108
+Level    108
 Keywords MOBLOG
 Text Syntax : moblog
 
@@ -7594,7 +7594,7 @@ See also: MPLOG
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords MOBPROG MOBPROGRAMS OBJPROG ROOMPROG MUDPROG
 Text .
          The MOBprograms have been contributed by N'Atas-ha.
@@ -7607,7 +7607,7 @@ Text .
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MOBTRIGGERS MUDTRIGGERS MPTRIGGERS
 Text Trigger Optnl Triggering Variable Explanation
 ------- ----- ------------------- -----------
@@ -7632,7 +7632,7 @@ For mobs, see also: MPSTAT, MPEDIT, TRIGGER, MPCOMMANDS, IFCHECKS, VARIABLES.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'MONK ATTACKS'
 Text The formula used for the number of attacks that a monk will get per 
 round will be: level / 16 +1  --The fractional portion will provide the
@@ -7648,7 +7648,7 @@ See also: MONK DAMAGE
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'MONK DAMAGE'
 Text This is a list of the bare hand damage a monk does at various levels.
 A monk must not be wielding a weapon, to do this damage.
@@ -7664,7 +7664,7 @@ See also: MONK ATTACKS
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'MONK SKILLS'
 Text Monks are the well known masters of disaster. Generally VERY good at
 hand-to-hand combat (i.e. going weaponless), kicking, and all manner of 
@@ -7681,7 +7681,7 @@ See also: MONK ATTACKS, MONK DAMAGE, KICK, SAFE FALL, SPRING LEAP,
 End
 
 #HELP
-Level 105
+Level    105
 Keywords MORPH UNMORPH
 Text Syntax: morph <vnum> <target>
 Syntax: unmorph
@@ -7694,7 +7694,7 @@ See also: POLYMORPH, MORPHCREATE, MORPHDESTROY, MORPHSTAT
 End
 
 #HELP
-Level 108
+Level    108
 Keywords MORPHCREATE MORPHDESTROY
 Text These commands are used for the creation or deletion of
 polymorph data.
@@ -7704,7 +7704,7 @@ See also: POLYPORPH, MORPH, MORPHSTAT
 End
 
 #HELP
-Level 107
+Level    107
 Keywords MORPHLIST
 Text Usage : morphlist
 
@@ -7716,7 +7716,7 @@ See also: MORPHSET, MORPHSTAT, MORPH, UNMORPH
 End
 
 #HELP
-Level 105
+Level    105
 Keywords MORPHSTAT
 Text Syntax: morphstat <vnum|name> [help|desc]
  
@@ -7727,7 +7727,7 @@ See also: POLYMORPH, MORPHCREATE, MORPHDESTROY, MORPH
 End
 
 #HELP
-Level 0
+Level    0
 Keywords MOTD
 Text Usage : motd
 
@@ -7739,7 +7739,7 @@ it.
 End
 
 #HELP
-Level 110
+Level    110
 Keywords MOTDEDIT
 Text Usage : motdedit <field>
 Usage : motdedit save <field>
@@ -7752,7 +7752,7 @@ after you're done.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords MOUNT DISMOUNT
 Text Usage        : mount <mob>
                dismount
@@ -7769,7 +7769,7 @@ should try to mount immediately.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords MOVE MOVEMENT
 Text This discusses the process of moving your character from one place in the
 Realms to another.  The common movements are north, east, south, west, up
@@ -7786,7 +7786,7 @@ your recovery, and wish to continue adventuring, type WAKE or STAND.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPADVANCE
 Text Syntax: MPADVANCE <name> <level>
 
@@ -7795,7 +7795,7 @@ Advances the level of a player (not functional in prototype programs).
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPAPPLY MPAPPLYB
 Text Syntax: MPAPPLYB <victim>
  
@@ -7809,7 +7809,7 @@ This program should never be used anywhere else except pre-auth.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPASET MPQSET
 Text Syntax : mpaset <victim> <abit number>
 Syntax : mpqset <victim> <qbit number>
@@ -7837,7 +7837,7 @@ See also: IFCHECK HASABIT, IFCHECK HASQBIT
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPASOUND
 Text Syntax: MPASOUND <phrase>
 
@@ -7846,7 +7846,7 @@ Displays a phrase to all surrounding rooms.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPASUPRESS
 Text Usage : mpasupress $n <# of rounds>
 
@@ -7856,7 +7856,7 @@ command. It stops the victim from being able to attack for 'x' rounds.&D
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPAT
 Text Syntax: MPAT <vnum> <command>
 
@@ -7865,7 +7865,7 @@ Lets the mobile perform a command at another location.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPBODYBAG
 Text Syntax : mpbodybag <player> now
 
@@ -7876,7 +7876,7 @@ See also: MPCOMMANDS, MPTRIGGERS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPCOMMANDS RPCOMMANDS OPCOMMANDS
 Text The following commands can be used for Room, Mob and Object progs.  The
 commands listed at the bottom are for mob progs only.  Each command also
@@ -7911,7 +7911,7 @@ See also: MPSTAT, RPSTAT, OPSTAT, MPEDIT, RPEDIT, OPEDIT, TRIGGER, MPTRIGGERS,
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPCOPY
 Text Syntax : mpcopy <source mobile> <program> [number] <destination mobile>
 Syntax : mpcopy <source mobile> all <destination mobile>
@@ -7925,7 +7925,7 @@ See also: MPEDIT, MPSTAT, MPCOMMANDS, MPTRIGGERS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPDAMAGE
 Text Syntax: MPDAMAGE <victim> <amount>
  
@@ -7938,7 +7938,7 @@ A mob should &Y_never_&D mpdamage itself.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPDELAY
 Text Usage : mpdelay <victim> <# of rounds>
 
@@ -7947,7 +7947,7 @@ This will delay a character for the specified number of rounds.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPDOPPLEGANGER
 Text Syntax: mpdoppleganger <victim>
 
@@ -7960,7 +7960,7 @@ it was using will disappear.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPDREAM
 Text Syntax: MPDREAM <name> <phrase>
 Sends a message to a sleeping character.
@@ -7968,7 +7968,7 @@ Sends a message to a sleeping character.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPECHO
 Text Syntax: MPECHO <phrase>
 
@@ -7977,7 +7977,7 @@ Displays a phrase to the entire room.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPECHOAROUND MER
 Text Syntax: MPECHOAROUND <name> <phrase>
 Syntax: MER <name> <phrase>
@@ -7988,7 +7988,7 @@ The abbreviation "mer" may be used for mpechoaround.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPECHOAT MEA
 Text Syntax: MPECHOAT <name> <phrase>
 Syntax: MEA <name> <phrase>
@@ -7999,7 +7999,7 @@ The abbreviation "mea" may be used for mpechoat.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPECHOZONE MEZ
 Text Usage : mpechozone <message>
 Usage : mez <message>
@@ -8010,7 +8010,7 @@ MEZ will also work.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPEDIT
 Text Syntax: mpedit <mobile> <command> [number]  [program] [arguments]
 Syntax: mpedit <mobile> add       <program> <arguments>
@@ -8031,7 +8031,7 @@ See MPSTAT, TRIGGER, MPTRIGGERS, MPCOMMANDS, IFCHECKS, IFCHECKS2, VARIABLES
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPFAVOR
 Text Usage : mpfavor <player> <value>
 
@@ -8045,7 +8045,7 @@ See also: MPCOMMANDS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPFEAR
 Text &WDO NOT USE.&D
 
@@ -8058,7 +8058,7 @@ See also: MPCOMMANDS, MPEDIT, MPTRIGGERS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPFORCE
 Text Syntax: MPFORCE <name/all>
 
@@ -8068,7 +8068,7 @@ only force all in room).
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPGOTO
 Text Syntax: MPGOTO <vnum>
 
@@ -8077,7 +8077,7 @@ Goes to any room which is not private.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPINVIS
 Text Syntax: MPINVIS
 Syntax: MPINVIS <level>
@@ -8102,7 +8102,7 @@ creature even if it is invisible.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPJUNK
 Text Syntax: MPJUNK <name>
 
@@ -8111,7 +8111,7 @@ Destroys an object in inventory/being worn - can be used with all.object .
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPKILL
 Text Syntax: MPKILL <name>
 
@@ -8120,7 +8120,7 @@ Kills a player without using murder.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPLOG
 Text Syntax : mplog <string>
 
@@ -8132,7 +8132,7 @@ See also: MOBLOG
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPMLOAD MPOLOAD
 Text Syntax: MPMLOAD <vnum>
         MPOLOAD <vnum> <level> <timer>
@@ -8144,7 +8144,7 @@ timer for objects.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPMSET
 Text Usage : mpmset <keyword> <field> <value>
 
@@ -8159,7 +8159,7 @@ See also: IMMPROGS and MSET
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPMUSIC
 Text Syntax : <volume> <musicfile>
 
@@ -8173,7 +8173,7 @@ See also: &YSOUND&D, MPSOUNDAROUND, MPSOUNDAT, MPSOUND, MPMUSICAROUND, MPMUSICAT
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPMUSICAROUND
 Text Syntax : mpmusicaround <victim> <volume> <musicfile>
 
@@ -8187,7 +8187,7 @@ See also: &YSOUND&D, MPSOUNDAROUND, MPSOUNDAT, MPSOUND, MPMUSICAT, MPMUSIC,
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPMUSICAT
 Text Syntax : mpmusicat <victim> <volume> <musicfile>
 
@@ -8201,7 +8201,7 @@ See also: &YSOUND&D, MPSOUNDAROUND, MPSOUNDAT, MPSOUND, MPMUSICAROUND, MPMUSIC,
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPNOTHING
 Text Syntax : mpnothing
 
@@ -8214,7 +8214,7 @@ See also: MPCOMMANDS, MPEDIT, MPTRIGGERS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPOPENPASSAGE MPCLOSEPASSAGE
 Text Syntax: MPOPENPASSAGE <origin> <destination> <direction>
 
@@ -8228,7 +8228,7 @@ not created with mpopenpassage)
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPOSET
 Text Usage : mposet <keyword> <field> <value>
 
@@ -8242,7 +8242,7 @@ See also: IMMPROGS and OSET
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPPARDON
 Text Syntax : mppardon <player>
 
@@ -8253,7 +8253,7 @@ See also: MPCOMMANDS, MPTRIGGERS
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPPEACE
 Text Usage : mppeace
 
@@ -8265,7 +8265,7 @@ See also: MPCOMMANDS and PEACE
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPPRACTICE
 Text Syntax: MPPRACTICE <victim> <skill/spell/language> <amount>
  
@@ -8280,7 +8280,7 @@ fireball, or a level 1 Rogue in gouge.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPPURGE
 Text Syntax: MPPURGE <object/mobile>
 
@@ -8289,7 +8289,7 @@ Purges the room, or a specified object/mobile.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPRESTORE
 Text Syntax: MPRESTORE <victim> <amount>
  
@@ -8298,7 +8298,7 @@ This command restores a specified number of hitpoints to the victim.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPSCATTER
 Text Syntax : mpscatter <victim>
 
@@ -8309,7 +8309,7 @@ See also: IMMPROGS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPSLAY
 Text Usage : mpslay <victim>
 
@@ -8319,7 +8319,7 @@ without any saves.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPSOUND
 Text Syntax : mpsound <volume> <soundfile>
 
@@ -8334,7 +8334,7 @@ See also: &YSOUND&D, MPSOUNDAROUND, MPSOUNDAT, MPMUSICAROUND, MPMUSICAT, MPMUSIC
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPSOUNDAROUND
 Text Syntax : mpsoundaround <victim> <volume> <soundfile>
 
@@ -8348,7 +8348,7 @@ See also: &YSOUND&D, MPSOUNDAT, MPSOUND, MPMUSICAROUND, MPMUSICAT, MPMUSIC,
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPSOUNDAT
 Text Syntax : mpsoundat <victim> <volume> <soundfile>
 
@@ -8362,7 +8362,7 @@ See also: &YSOUND&D, MPSOUNDAROUND, MPSOUND, MPMUSICAROUND, MPMUSICAT, MPMUSIC,
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPSOUNDZONE
 Text Syntax : mpsoundzone <volume> <soundfile>
 
@@ -8376,7 +8376,7 @@ See also: &YSOUND&D, MPSOUNDAROUND, MPSOUNDAT, MPSOUND, MPMUSICAROUND, MPMUSICAT
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPSTAT
 Text Syntax: MPSTAT <mob/mobvnum>
  
@@ -8389,7 +8389,7 @@ See MPEDIT, TRIGGER, MPTRIGGERS, MPCOMMANDS, IFCHECKS, IFCHECKS2, VARIABLES
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPSTATREROLL MPRACESET MPARTHMOOR MPSINDHAE MPGWRAGGEDD
 Text Informational only. These are internal functions and are not to be used on any
 mobs besides those which they were intended for.
@@ -8397,7 +8397,7 @@ mobs besides those which they were intended for.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords MPSTREW
 Text Syntax : mpstrew <victim> coins/inventory
 
@@ -8410,7 +8410,7 @@ See also: IMMPROGS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPTRANSFER
 Text Syntax: MPTRANSFER <name/all>
 
@@ -8419,7 +8419,7 @@ Transfers one or all in the room to a specified location.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords MPTRLOOK
 Text Syntax: MPTRLOOK <name> <vnum>
 
@@ -8429,7 +8429,7 @@ them to look when they arrive.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords MSET
 Text Syntax: mset <character> <field> <value>
         mset character on
@@ -8454,7 +8454,7 @@ See also: ACTFLAGS, SPECFUNCS, SAVINGTHROWS, RIS, NPC_RACES, ATTACKS,
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_ADVHERO_
 Text You suddenly feel a strange surge of power flow through your veins!
  
@@ -8464,7 +8464,7 @@ see immortality within your grasp...
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_BALZHUR_
 Text Suddenly, from seemingly nowhere, the dreaded Negative Magnetic Space
 Wedgy appears, bringing with it the horrible vacuum of the void!
@@ -8478,14 +8478,14 @@ oblivion, never to be seen again!
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL10_
 Text You suddenly feel much more powerful!
 ¢
 End
 
 #HELP
-Level 115
+Level    115
 Keywords M_GODLVL15_
 Text You feel a sudden rush of energy.....
 You now have absolute power!
@@ -8493,7 +8493,7 @@ You now have absolute power!
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL1_
 Text ...Everything begins to fade to black.
 
@@ -8515,7 +8515,7 @@ You feel yourself losing touch with reality... and all goes quiet.
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL2_
 Text ...You begin to feel light-headed.
 
@@ -8534,7 +8534,7 @@ You feel much more powerful, eager and inspired!
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL3_
 Text ...You feel slightly faint as your head begins to spin.
 
@@ -8559,7 +8559,7 @@ remains always.
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL4_
 Text ...You feel slightly faint as your head begins to spin.
 
@@ -8584,42 +8584,42 @@ remains always.
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL5_
 Text You suddenly feel much more powerful!
 ¢
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL6_
 Text You suddenly feel much more powerful!
 ¢
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL7_
 Text You suddenly feel much more powerful!
 ¢
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL8_
 Text You suddenly feel much more powerful!
 ¢
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords M_GODLVL9_
 Text You suddenly feel much more powerful!
 ¢
 End
 
 #HELP
-Level 0
+Level    0
 Keywords Monk
 Text A master of ancient hand-to-hand combat,the Monk stands without par.
 No other class has the ability to control and tone its physical form into
@@ -8638,7 +8638,7 @@ can become adept in this class.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords NAME NAMES
 Text &YSyntax: name <newname>&z
  
@@ -8676,7 +8676,7 @@ for anyone else to try and log on with it in the future.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords NECROMANCER NECROMANCERS
 Text The dark forces of shadow combined with the pure intensity of light to 
 form the energy of the Necromancer. They are Mages who have chosen the 
@@ -8692,7 +8692,7 @@ Gith can follow the ways of the Necromancer.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords REALMS
 Text This is the list of realm values for the wizinfo chart:
  
@@ -8708,7 +8708,7 @@ To set a realm: mset <person> realm #
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'NEW' 'NEWBIE' 'START' 'BEGIN'
 Text If you are new to Alsherok, here are a few help files that will help get you
 acquainted with our world. We are trying to make the help system as detailed
@@ -8742,7 +8742,7 @@ personally choose your own class within the mud itself&R)&z
 End
 
 #HELP
-Level 109
+Level    109
 Keywords NEWPASS NEWPASSWORD
 Text Syntax: newpass <player> <new password>
 
@@ -8761,7 +8761,7 @@ See also: LOADUP, PASSWORD
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords NEW_DEATH
 Text ...Everything begins to fade to black.  You feel yourself leaving your body.
 Rising up into the air, you feel more free than you have ever felt before...
@@ -8786,21 +8786,21 @@ pulling sensation as strange and colorful mists swirl around you...
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords NMOTD
 Text Put something interesting here.
 ¢
 End
 
 #HELP
-Level 115
+Level    115
 Keywords NORESOLVE
 Text Toggles the resolving of IP addresses on or off.
 ¢
 End
 
 #HELP
-Level 1
+Level    1
 Keywords NORTH SOUTH EAST WEST UP DOWN NE NW SE SW
 Text Syntax: north or n
 Syntax: south or s
@@ -8814,7 +8814,7 @@ Use these commands to walk in a particular direction.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords NORTHEAST NORTHWEST SOUTHEAST SOUTHWEST NE NW SE SW
 Text Syntax: northeast or ne
 Syntax: northwest or nw
@@ -8826,7 +8826,7 @@ Use these commands to walk in a particular direction.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords NOSUPPLICATE NOSUPP
 Text Nosupplicate as a room flag is only for use in hell, jails and some immortal
 rooms. It should never be used in an area without fair warning given to mortals
@@ -8835,7 +8835,7 @@ and after extensive consideration and approval by the Area council.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords NOTELL NOEMOTE NOTITLE SILENCE UNSILENCE
 Text Syntax: notitle <character>
 Syntax: noemote <character>
@@ -8854,7 +8854,7 @@ notitle on the character again to remove each of those restrictions.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords NPCCLASSES
 Text Classes are now set by name instead of number. The following is a list
 of valid classes to set on mobs or players:
@@ -8881,7 +8881,7 @@ See also: ACTFLAGS, SPECFUNCS, BODYPARTS, SAVINGTHROWS, RIS, NPCRACES,
 End
 
 #HELP
-Level 105
+Level    105
 Keywords NPCRACES NPC_RACES
 Text A mobile may be any of the following races:
  
@@ -8916,7 +8916,7 @@ See also: ACTFLAGS, SPECFUNCS, BODYPARTS, SAVINGTHROWS, RIS, NPCCLASSES,
 End
 
 #HELP
-Level 104
+Level    104
 Keywords OBJECTFLAGS
 Text Flags that objects can have:
  
@@ -8948,7 +8948,7 @@ Flag        Affect                Flag        Affect
 End
 
 #HELP
-Level 1
+Level    1
 Keywords OBJECTS
 Text To see the objects you currently possess, type INVENTORY and EQUIPMENT.
 INVENTORY is the items you are carrying, but are not currently wearing.
@@ -8965,7 +8965,7 @@ tells you the condition of your item, as a more detailed form of LOOK.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords OBJECTTYPES
 Text Object types listed in bit order:
  
@@ -8989,7 +8989,7 @@ See also: OSET, ITEMVALUES, ARMORCLASS.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords OBJTRIGGERS OPTRIGGERS
 Text Trigger Optnl Triggering Variable Explanation
 ------- ----- ------------------- -----------
@@ -9015,7 +9015,7 @@ For objects see also: OPSTAT, OPEDIT, TRIGGER, OPCOMMANDS, IFCHECKS, VARIABLES.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords OCREATE
 Text Syntax: ocreate <vnum> <keywords>
 
@@ -9029,7 +9029,7 @@ See also: OSET
 End
 
 #HELP
-Level 104
+Level    104
 Keywords ODELETE
 Text Syntax : odelete <item vnum>
 
@@ -9044,7 +9044,7 @@ See also: OCREATE, OSET
 End
 
 #HELP
-Level 105
+Level    105
 Keywords OMEDIT
 Text Syntax: omedit <mob>
 
@@ -9062,7 +9062,7 @@ See also: OREDIT, OOEDIT
 End
 
 #HELP
-Level 104
+Level    104
 Keywords OOEDIT
 Text Syntax: ooedit <object>
 
@@ -9081,7 +9081,7 @@ See also: OREDIT, OMEDIT
 End
 
 #HELP
-Level 106
+Level    106
 Keywords OPCOPY
 Text Syntax : opcopy <source object> <program> [number] <destination object>
 Syntax : opcopy <source object> all <destination object>
@@ -9097,7 +9097,7 @@ See also: OPEDIT, OPSTAT, OPTRIGGERS, OPCOMMANDS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords OPEDIT
 Text Syntax: opedit <object> <command> [number]  [program] [arguments]
 Syntax: opedit <object> add       <program> <arguments>
@@ -9117,7 +9117,7 @@ See OPSTAT, TRIGGER, OPTRIGGERS, OPCOMMANDS, IFCHECKS, IFCHECKS2, VARIABLES
 End
 
 #HELP
-Level 1
+Level    1
 Keywords OPEN CLOSE LOCK UNLOCK PICK
 Text Syntax: open   <object|direction>
 Syntax: close  <object|direction>
@@ -9136,7 +9136,7 @@ you must practice the appropriate skill.
 End
 
 #HELP
-Level 106
+Level    106
 Keywords OPSTAT
 Text Syntax: opstat <object/object vnum>
  
@@ -9149,7 +9149,7 @@ See OPEDIT, TRIGGER, OPTRIGGERS, OPCOMMANDS, IFCHECKS, IFCHECKS2 VARIABLES
 End
 
 #HELP
-Level 1
+Level    1
 Keywords ORDER
 Text Syntax: order <character> command
 Syntax: order all command
@@ -9166,7 +9166,7 @@ If your charmed creature engages in combat, that will break the charm.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords OREDIT
 Text Syntax: oredit
 
@@ -9184,7 +9184,7 @@ See also: OOEDIT, OMEDIT
 End
 
 #HELP
-Level 104
+Level    104
 Keywords OSET
 Text Syntax: oset <object> <field> <value>
         oset object on
@@ -9220,7 +9220,7 @@ See also: AFFECTTYPES, WEARFLAGS, OBJECTFLAGS, OBJECTTYPES, ARMORCLASS
 End
 
 #HELP
-Level 0
+Level    0
 Keywords OVERLAND WILDERNESS 'ANSI MAP' 'ASCII MAP'
 Text &zAFKMud now features an ANSI map which represents the
 terrain features of the area between zones. There is one map representing
@@ -9250,7 +9250,7 @@ The map is best viewed with ANSI color turned on.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PAGER
 Text Syntax: pager <# of lines per screen>
 Syntax: config +pager       (turns page pausing on)
@@ -9277,7 +9277,7 @@ See also: CONFIG
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PALADIN PALADINS
 Text A Paladin is the fighter soley dedicated to vanquishing evil. Holy 
 warriors without equal, the Paladin strives to bring about justice
@@ -9299,7 +9299,7 @@ strength and wisdom. Only Humans can become Paladins.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'PARRY'
 Text Syntax: operates automatically
  
@@ -9310,7 +9310,7 @@ automatic skill, but you must be wielding a weapon to use it.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords PART BODYPARTS XFLAGS
 Text Misc body parts:
 HEAD     ARMS    LEGS   HEART        BRAINS      GUTS        HANDS   FEET
@@ -9323,7 +9323,7 @@ CLAWS    HORNS   TUSKS  TAILATTACK   SHARPSCALES
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PASSWORD
 Text Syntax: password <new password> <new password>
  
@@ -9352,7 +9352,7 @@ See also: PASSWORD_ZMUD
 End
 
 #HELP
-Level 1
+Level    1
 Keywords PASSWORD_ZMUD
 Text When you're using zMUD and want to change your password, remember to change
 it in the zMUD character settings as well as on the mud.  The MUD's command
@@ -9376,7 +9376,7 @@ See also: PASSWORD
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PCOLORS 'PROMPT COLORS'
 Text The following are the tags used for adding color in your text.
 
@@ -9442,7 +9442,7 @@ See also: PROMPT, ANSI
 End
 
 #HELP
-Level 113
+Level    113
 Keywords PCRENAME
 Text Syntax: pcrename <oldname> <newname>
  
@@ -9453,7 +9453,7 @@ name already in the files.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords PEACE
 Text Syntax: peace
 
@@ -9462,7 +9462,7 @@ PEACE causes all characters in a room to stop fighting.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PET PETS
 Text You can buy pets in a pet shop. You may buy one more pet each time you
 advance in level. Your pet-buying opportunities do not accumulate; use
@@ -9475,7 +9475,7 @@ See also: PETSAVE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords PETSAVE
 Text Petsaving is automatic in the Lands. When you purchase a pet, it is
 loyal to you until its death. Your pet will automatically save when
@@ -9491,7 +9491,7 @@ In no instances will pets be reimbursed. Do not even ask.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords PFILES
 Text Syntax: pfiles
  
@@ -9500,7 +9500,7 @@ Forces the automated pfile cleanup to begin.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords PIPEFLAG
 Text The following flags may be used with the item type pipe in the v3 item
 value:
@@ -9516,7 +9516,7 @@ PIPE_FULLOFASH	Pipe is full of ashes, and needs to be emptied.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords PIT ETCH PITTING ETCHING
 Text Pitting and etching occurs when acid hits your armor, due to spells or
 breath. It permanently reduces the armor class of the item and reduces
@@ -9525,7 +9525,7 @@ the value of the armor.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PIXIE PIXIES
 Text Pixies resemble small Elfin creatures with thin gossamer wings. They are 
 well characterised with their tinkling laughter and their ability to fly 
@@ -9547,7 +9547,7 @@ Clerics and Druids.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PLAY
 Text Syntax: play <spell>
 
@@ -9559,7 +9559,7 @@ See also: CAST
 End
 
 #HELP
-Level 1
+Level    1
 Keywords POSITION
 Text .
 This indicator, on the SCORE listing, shows the current posture of
@@ -9571,7 +9571,7 @@ See also: SIT SLEEP REST STAND WAKE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords POSITIONS
 Text At current time, there are 14 "positions" in the game. Positions
 are in a special order.  If position b is below position a on the
@@ -9595,7 +9595,7 @@ See also: STYLES
 End
 
 #HELP
-Level 1
+Level    1
 Keywords PRACTICE
 Text Syntax: practice
 Syntax: practice <skill|spell|weapon>
@@ -9618,7 +9618,7 @@ All characters may practice skills, spells, and weapons in the Academy.
 End
 
 #HELP
-Level 2
+Level    2
 Keywords PRIVACY
 Text Usage : privacy
 
@@ -9628,7 +9628,7 @@ be able to use the &WFINGER&D command on you.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords PRIZE SINDHAE
 Text &RClass:   &OBronze     &wSilver     &YGold         &WPlatinum&z
 
@@ -9647,7 +9647,7 @@ Text &RClass:   &OBronze     &wSilver     &YGold         &WPlatinum&z
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PRIZEKEY
 Text Keywords are the words you use to manipulate the object with. They can
 be pretty much anything, so long as they are not obscene in any way.
@@ -9662,7 +9662,7 @@ See also: REDEEM, PRIZENAMING
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PRIZENAMING
 Text The name of your prize is the short description that other people will
 see when you are wearing the item and they look at you. It can be more or
@@ -9680,7 +9680,7 @@ An example of a named prize would look something like this:
 End
 
 #HELP
-Level 101
+Level    101
 Keywords PROJECT
 Text Syntax: project -- same as project list
         project save 
@@ -9709,7 +9709,7 @@ Add/ delete logs  <Level 60+, Code council and VC heads)
 End
 
 #HELP
-Level 1
+Level    1
 Keywords PROJECTILE PROJECTILES
 Text Syntax: fire <direction> <target>
  
@@ -9744,7 +9744,7 @@ See also: DRAW
 End
 
 #HELP
-Level 113
+Level    113
 Keywords PROMOTE DEMOTE
 Text Syntax: promote <character>
 Syntax: demote <character>
@@ -9756,7 +9756,7 @@ DEMOTE is used to lower an immortal one level.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PROMPT FPROMPT
 Text Syntax: prompt  <string>
 Syntax: fprompt <string>
@@ -9801,7 +9801,7 @@ there are separate prompt options for your use. See HELP IMMPROMPT.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PUGILISM
 Text Level : 1 All classes
 
@@ -9815,7 +9815,7 @@ See also: ARCHERY, AXES, BLOWGUNS, DAGGERS, MACES, HAMMERS, SLINGS, SPEARS,
 End
 
 #HELP
-Level 0
+Level    0
 Keywords PULL PUSH LEVERS PULLCHAINS SWITCHES BUTTONS
 Text Syntax: pull <trigger>
 Syntax: push <trigger>
@@ -9827,7 +9827,7 @@ location, cast a spell, summon a monster... you name it!
 End
 
 #HELP
-Level 103
+Level    103
 Keywords PULLTYPES
 Text Syntax: redit pushtype <direction> <type>
 Syntax: redit push <direction> <force>
@@ -9846,7 +9846,7 @@ will push or pull you.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords PURGE
 Text Syntax: purge
 Syntax: purge <mob or object>
@@ -9860,7 +9860,7 @@ PURGE will not get rid of PC's.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords QBIT
 Text Syntax : qbit <player>
 Syntax : qbit <player> <qbit>
@@ -9874,7 +9874,7 @@ See also: SETQBIT, SHOWQBIT, ABIT, SHOWABIT, SETABIT
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'RACE BONUS'
 Text This is a list of bonuses and penalties for each class:
  
@@ -9918,7 +9918,7 @@ Insectoid     |  0  |  1  |  1  | -1  |  0  | -2  | -1  |
 End
 
 #HELP
-Level 0
+Level    0
 Keywords RACE RACES
 Text There are currently 19 known races existing within these Realms.
 Type "help [race]" for specific information on the specified race:
@@ -9948,7 +9948,7 @@ See also: RACIAL ABILITY
 End
 
 #HELP
-Level 101
+Level    101
 Keywords 'RACES IMM'
 Text Keep in mind there are still changes to come, and that there's also
 a mort help file - 'race bonus' - listing the affects on basic stats.
@@ -10007,7 +10007,7 @@ Being :
 End
 
 #HELP
-Level 0
+Level    0
 Keywords 'RACIAL SKILLS'
 Text The character races all have three unique racial skills. Each of them has a
 low, a mid and a high level racial skill. These distinguish the races from
@@ -10041,7 +10041,7 @@ See also: RACE
 End
 
 #HELP
-Level 0
+Level    0
 Keywords RANGER RANGERS
 Text A Ranger is the outdoorsman and adventuresome free spirit of the times. 
 Known best as a defender of nature and the animals, the Ranger is a force
@@ -10064,7 +10064,7 @@ can be Ranger classed.
 End
 
 #HELP
-Level 110
+Level    110
 Keywords RANK
 Text Usage : rank <string>
 
@@ -10076,7 +10076,7 @@ but unlike your title it can't be very long.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords RAP
 Text Syntax: rap <doorname>
         rap <direction>
@@ -10088,7 +10088,7 @@ act_progs can be trigger by it.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords RAT
 Text Syntax: rat vnum1 vnum2 command [parameters]
  
@@ -10102,7 +10102,7 @@ This will clear the room flags in all rooms from 100 to 110 inclusive.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords RDELETE
 Text Syntax: rdelete <vnum>
 
@@ -10112,7 +10112,7 @@ be deleted.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords READ
 Text Syntax: read
 Syntax: read <board>
@@ -10132,7 +10132,7 @@ See also: BOARDS, WRITE, REVIEW, ERASE, CHECKBOARDS, ALERT
 End
 
 #HELP
-Level 108
+Level    108
 Keywords REBOOT REBOO
 Text Syntax: reboot
 Syntax: reboot mud now
@@ -10163,7 +10163,7 @@ This command will not function if the online compiler is in use.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords REDEEM
 Text Policy on use of the automated redeemer system:
  
@@ -10195,7 +10195,7 @@ See also: PRIZENAMING, PRIZEKEY
 End
 
 #HELP
-Level 104
+Level    104
 Keywords REDEMPTION SINDHAE
 Text The following are the instructions for redeeming Sindae prizes for mortals
 who complete the Sindhae Challenges. Please ensure you give the right prize
@@ -10225,7 +10225,7 @@ Have fun...and if in doubt, ask Karangi.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords REDIT
 Text Syntax: redit <field> [parameter list]
         redit on
@@ -10269,7 +10269,7 @@ See also: EXITTYPES, EXFLAGS, EXITMAKING, SECTORTYPES, ROOMFLAGS
 End
 
 #HELP
-Level 10
+Level    10
 Keywords REMAINS
 Text Syntax: remains
  
@@ -10285,7 +10285,7 @@ See also: SUPPLICATE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords RENT OFFER
 Text Syntax: rent (while at an innkeeper)
 Syntax: offer (while at an innkeeper)
@@ -10311,7 +10311,7 @@ See also: CAMP, QUIT, AUTORENT
 End
 
 #HELP
-Level 114
+Level    114
 Keywords RENUMBER
 Text &YSyntax: renumber <area filename> <new vnum base> [flags]
 Flags: fillgaps verbose
@@ -10359,7 +10359,7 @@ newdark.are, newacad.are&w.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords REPAIR
 Text Syntax: repair <object>
         repair all
@@ -10381,7 +10381,7 @@ See also: APPRAISE
 End
 
 #HELP
-Level 106
+Level    106
 Keywords REPAIRSET
 Text Syntax: repairset <mobile vnum> <field> <value>
  
@@ -10406,7 +10406,7 @@ See also: MAKEREPAIR, REPAIRSTAT, REPAIRSHOPS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords REPAIRSHOPS
 Text Syntax: repairshops
 
@@ -10417,7 +10417,7 @@ See also: MAKEREPAIR, REPAIRSET, REPAIRSTAT
 End
 
 #HELP
-Level 106
+Level    106
 Keywords REPAIRSTAT
 Text Syntax: repairstat <mobile vnum>
 
@@ -10428,7 +10428,7 @@ See also: MAKEREPAIR, REPAIRSET, REPAIRSHOPS
 End
 
 #HELP
-Level 1
+Level    1
 Keywords REPORT TIME WEATHER
 Text Syntax: report
 Syntax: time
@@ -10448,7 +10448,7 @@ See also: CALENDAR
 End
 
 #HELP
-Level 113
+Level    113
 Keywords RESERVE
 Text Syntax: reserve <name> add
 
@@ -10468,7 +10468,7 @@ See also: NAME, AUTHORIZE
 End
 
 #HELP
-Level 113
+Level    113
 Keywords RESOLVE
 Text Usage : resolve <host name or IP>
 
@@ -10478,7 +10478,7 @@ it on main too much because it will lag the mud.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords REST SLEEP STAND WAKE
 Text Syntax: rest
 Syntax: sleep
@@ -10497,7 +10497,7 @@ other sleeping characters.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords RESTORE
 Text Syntax: restore <character>
         restore all
@@ -10513,7 +10513,7 @@ restore all will NOT be done is to ask for one.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords RESTORETIME
 Text Syntax: restoretime
 
@@ -10523,7 +10523,7 @@ restore all.
 End
 
 #HELP
-Level 114
+Level    114
 Keywords RESTRICT
 Text Syntax: restrict <command> <level>
 Syntax: restrict <command> show
@@ -10544,7 +10544,7 @@ See also: CEDIT
 End
 
 #HELP
-Level 115
+Level    115
 Keywords RETIRE
 Text Syntax: retire <victim>
  
@@ -10556,7 +10556,7 @@ See also: RETIRED
 End
 
 #HELP
-Level 1
+Level    1
 Keywords RETIRED
 Text Retired immortals are imms who are no longer very active on the Lands.
 They keep their level but are limited in their commands and authority
@@ -10571,7 +10571,7 @@ See also: GUESTS
 End
 
 #HELP
-Level 10
+Level    10
 Keywords REVERT
 Text Syntax: revert
  
@@ -10583,7 +10583,7 @@ See also: POLYMORPH
 End
 
 #HELP
-Level 0
+Level    0
 Keywords REVIEW
 Text Syntax: review
 Syntax: review <board>
@@ -10601,7 +10601,7 @@ See also: BOARDS, WRITE, READ, ERASE, CHECKBOARDS, ALERT
 End
 
 #HELP
-Level 104
+Level    104
 Keywords RIS RESISTANT IMMUNE SUSCEPTIBLE
 Text Players and mobiles may have resistance, suceptibility, immunity or
 absorption of certain types of attack. The numerical values listed here
@@ -10637,7 +10637,7 @@ PARALYSIS   | 2097152
 End
 
 #HELP
-Level 0
+Level    0
 Keywords ROGUE ROGUES
 Text The Rogue is seen as a dark character which makes use of many skills 
 often deemed improper by the rest of society. The skills of the Rogue 
@@ -10656,7 +10656,7 @@ Centaurs can become Rogues.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords ROOMFLAGS
 Text FLAG NAME     |  DESCRIPTION
 ----------------------------------------------------------------------
@@ -10714,7 +10714,7 @@ Watchtowers - In order to set one, the room preceeding it needs to have the
 End
 
 #HELP
-Level 106
+Level    106
 Keywords ROOMTRIGGERS RPTRIGGERS
 Text Trigger Optnl Triggering Variable Explanation
 ------- ----- ------------------- -----------
@@ -10737,7 +10737,7 @@ For rooms, see also: RPSTAT, RPEDIT, TRIGGER, RPCOMMANDS, IFCHECKS, VARIABLES.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords ROSTER
 Text Syntax: roster
  
@@ -10750,7 +10750,7 @@ See also: SETCLAN, MAKE
 End
 
 #HELP
-Level 106
+Level    106
 Keywords RPEDIT
 Text Syntax: rpedit <command> [number]  [program] [arguments]
 Syntax: rpedit add       <program> <arguments>
@@ -10771,7 +10771,7 @@ See also: RPSTAT, TRIGGER, RPTRIGGERS, RPCOMMANDS, IFCHECKS,
 End
 
 #HELP
-Level 106
+Level    106
 Keywords RPSTAT
 Text Syntax: rpstat
  
@@ -10786,7 +10786,7 @@ See also: RPEDIT, TRIGGER, RPTRIGGERS, RPCOMMANDS, IFCHECKS,
 End
 
 #HELP
-Level 0
+Level    0
 Keywords RUN
 Text Syntax: run direction <distance>
 
@@ -10806,7 +10806,7 @@ WARNING : You CAN run into a DEATHTRAP this way!
 End
 
 #HELP
-Level 0
+Level    0
 Keywords RUNES SOCKET
 Text Usage: socket <rune> <item>
 
@@ -10824,7 +10824,7 @@ a Trial and Error Process.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SACRIFICE
 Text Syntax: sacrifice <object>
  
@@ -10839,7 +10839,7 @@ See also: DONATE and JUNK
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SAHUAGIN
 Text Sahuagin are shark-like humanoid creatures that live far beneath the
 surface of the seas, although they emerge occasionally on raids along
@@ -10867,7 +10867,7 @@ oceans, although this makes them somewhat less resistant to heat.
 End
 
 #HELP
-Level 2
+Level    2
 Keywords SALESLIST
 Text Usage : saleslist
 
@@ -10880,7 +10880,7 @@ See also: AUCTION
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SALVE APPLY
 Text Syntax: apply <itemname>
 
@@ -10890,7 +10890,7 @@ Use 'apply <itemname>' to rub some of the salve onto your skin.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SAVE
 Text Syntax: save
 
@@ -10908,7 +10908,7 @@ Some objects (such as keys) may not be saved.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords SAVEAREA LOADAREA
 Text Syntax: savearea
         loadarea
@@ -10918,7 +10918,7 @@ Savearea and loadarea will save or load your prototype area.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SAVEHOLIDAY
 Text Usage : saveholiday
 
@@ -10927,7 +10927,7 @@ This will save the holiday chart.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords SAVINGTHROWS
 Text Saving throws:
   sav1 - Saving vs. poison or death
@@ -10941,7 +10941,7 @@ See also: MSET or type MSET by itself.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SCAN
 Text Syntax: scan <direction>
  
@@ -10951,7 +10951,7 @@ specified.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SCATTER
 Text Syntax: scatter <victim>
 
@@ -10963,7 +10963,7 @@ They don't have to be connected for this to work.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SCORE
 Text Syntax: score
  
@@ -10975,7 +10975,7 @@ others see your characters health, you can type REPORT.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SDFAVOR
 Text These are favor adjustments you can set for your deity. This is the favor players
 will get from doing certain actions.
@@ -11015,7 +11015,7 @@ See also: MAKEDEITY, SETDEITY, SDFIELD, SDFAVORREQ, SDOBJSTAT, SDSEX
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SDFAVORREQ
 Text These are simply how much favor a player is required to have to supplicate each
 field. Not all of these have to be set if you don't plan having an object or 
@@ -11036,7 +11036,7 @@ See also: MAKEDEITY, SETDEITY, SDFIELD, SDFAVOR, SDOBJSTAT, SDSEX
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SDFIELD SDFIELDS
 Text The following flags contain vital statistics you can/need to set for your deity. To
 make it a little bit easier, I've marked the ones that need to be set to have a 
@@ -11107,7 +11107,7 @@ See also: MAKEDEITY, SETDEITY, SDFAVOR, SDFAVORREQ, SDOBJSTAT, SDSEX, RIS,
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SDOBJSTAT
 Text If your deity has an object, you can optionally set this field to add the
 increase of one stat (this is much better done through editing the actual
@@ -11123,7 +11123,7 @@ str | int | wis | con | dex | cha | lck
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SDSEX
 Text When setting the sex that can devote to the deity, use the following number 
 values. The sex field won't take correctly a lot of times unless you do it
@@ -11142,7 +11142,7 @@ See also: MAKEDEITY, SETDEITY, SDFIELD, SDFAVOR, SDFAVORREQ, SDOBJSTAT
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'SEARCH'
 Text Usage        : search
                search <container>
@@ -11154,7 +11154,7 @@ concealed or hidden, and will require some searching to find.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords SECTORTYPES
 Text Indoors *     - Represents a room which is sheltered from the weather.
 City          - Room is either part of a city, or part of a roadway.
@@ -11198,7 +11198,7 @@ See also: MAPEDIT, MAPAT, REDIT
 End
 
 #HELP
-Level 101
+Level    101
 Keywords SEDIT
 Text View, create, edit or delete socials online.
 Syntax: sedit <social>
@@ -11238,7 +11238,7 @@ Use sedit save to save the new social or changes to existing socials.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SETABIT
 Text Syntax : setabit <#> <description>
 
@@ -11250,7 +11250,7 @@ See also: ABIT, SHOWABIT, QBIT, SHOWQBIT, SETQBIT
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SETCHANNEL
 Text Syntax: setchannel <channel> <field> <value>
 
@@ -11286,7 +11286,7 @@ See also: MAKECHANNEL, DESTROYCHANNEL, SHOWCHANNELS
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SETCLAN
 Text Syntax: setclan <field> <player/text>
  
@@ -11322,7 +11322,7 @@ Immortals - See also: IMMSETCLAN
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SETCLASS
 Text Syntax: setclass <class> <field> <value>
 Syntax: setclass <class> create
@@ -11367,7 +11367,7 @@ See also: SHOWCLASS
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SETDEITY
 Text Usage : setdeity <deity> <field> <toggle>
 
@@ -11381,7 +11381,7 @@ See also: MAKEDEITY, SDFIELD, SDFAVOR, SDFAVORREQ, SDOBJSTAT, SDSEX
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SETEXIT
 Text Syntax: setexit create
 Syntax: setexit delete
@@ -11414,7 +11414,7 @@ See also: COORDS, MAPEDIT
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SETLANDING
 Text Syntax : setlanding add
 Syntax : setlanding delete
@@ -11438,7 +11438,7 @@ See also: LANDINGSITES
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SETLIQUID
 Text Syntax: setliquid create <name>
 Syntax: setliquid delete <name/vnum>
@@ -11464,7 +11464,7 @@ See also: LIQUIDS, SETMIXTURE
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SETMARK
 Text Syntax: setmark add
 Syntax: setmark delete
@@ -11500,7 +11500,7 @@ See also: MAPEDIT
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SETMIXTURE
 Text Syntax: setmixture create <name>
 Syntax: setmixture delete <name/vnum>
@@ -11528,7 +11528,7 @@ See also: LIQUIDS, SETLIQUID
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SETPRICE
 Text Usage : setprice <item> <price>
 
@@ -11541,7 +11541,7 @@ See also: SETCLAN
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SETQBIT
 Text Syntax : setqbit <#> <description>
 
@@ -11554,7 +11554,7 @@ See also: QBIT, SHOWQBIT, ABIT, SHOWABIT, SETABIT
 End
 
 #HELP
-Level 110
+Level    110
 Keywords SETRACE
 Text .&w
 Syntax: setrace <racename> <field> 
@@ -11585,7 +11585,7 @@ See also: SHOWRACE, SETRACE2
 End
 
 #HELP
-Level 110
+Level    110
 Keywords SETRACE2
 Text .&W
 .&w
@@ -11616,7 +11616,7 @@ See also: SHOWRACE, SETRACE1
 End
 
 #HELP
-Level 110
+Level    110
 Keywords SETRUNE
 Text Syntax: setrune <rune name> <field> <value> [second value]
 
@@ -11638,7 +11638,7 @@ See also: MAKERUNE, DESTROYRUNE, SHOWRUNES, COPYRUNES
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SETSLAY
 Text Syntax: setslay <type> <field> <value>
 
@@ -11669,7 +11669,7 @@ See also: SHOWSLAY, MAKESLAY, DESTROYSLAY, SLAY
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SETWEATHER
 Text Right. Don't ask. This command is unclear in its intent. But most likely
 it messes with global weather factors. :)
@@ -11677,14 +11677,14 @@ it messes with global weather factors. :)
 End
 
 #HELP
-Level 115
+Level    115
 Keywords SHELL
 Text Don't ask. If you don't already know, you have no business needing to.
 ¢
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SHOPS
 Text Syntax: shops
 
@@ -11695,7 +11695,7 @@ See also: MAKESHOP, SHOPSET, SHOPSTAT
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SHOPSET
 Text Syntax: shopset <mobile vnum> <field> <value>
 
@@ -11718,7 +11718,7 @@ See also: MAKESHOP, SHOPSTAT, SHOPS, SHOPVALUES
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SHOPSTAT
 Text Syntax: shopstat <mobile vnum>
 
@@ -11729,7 +11729,7 @@ See also: MAKESHOP, SHOPSET, SHOPS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SHOPVALUES
 Text Syntax: shopset <mobile vnum> buy# <value>
  
@@ -11757,7 +11757,7 @@ Text Syntax: shopset <mobile vnum> buy# <value>
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SHOVE
 Text Syntax: shove <character> <direction>
  
@@ -11774,7 +11774,7 @@ someone outside the 5-level pkill range.
 End
 
 #HELP
-Level 103
+Level    103
 Keywords SHOW
 Text Syntax: show room <lowvnum> <hivnum>
         show room <area filename>
@@ -11800,7 +11800,7 @@ This consolidated command replaces RLIST, OLIST, and MLIST.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords SHOWABIT
 Text Syntax : showabit <abit>
 Syntax : showabit all
@@ -11815,7 +11815,7 @@ See also: ABIT, SETABIT, QBIT, SHOWQBIT, SETQBIT
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SHOWCHANNELS
 Text Syntax: showchannels
 
@@ -11826,7 +11826,7 @@ See also: MAKECHANNEL, SETCHANNEL, DESTROYCHANNEL
 End
 
 #HELP
-Level 102
+Level    102
 Keywords SHOWCLAN SHOWORDER
 Text Syntax: showclan <clan name>
 
@@ -11835,7 +11835,7 @@ Displays statistics on a clan.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords SHOWCLASS
 Text Syntax: showclass <class> [level range]
  
@@ -11844,7 +11844,7 @@ Shows information on the specified class and level you specify.
 End
 
 #HELP
-Level 102
+Level    102
 Keywords SHOWDEITY
 Text Syntax: showdeity <deity>
 
@@ -11854,7 +11854,7 @@ This command will show you all the statistics of the chosen deity.
 End
 
 #HELP
-Level 102
+Level    102
 Keywords SHOWGUILD
 Text Syntax: showguild 'guild of <guild name>'
  
@@ -11863,7 +11863,7 @@ Displays the statistics on a guild.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords SHOWQBIT
 Text Syntax : showqbit <qbit>
 syntax : showqbit all
@@ -11878,7 +11878,7 @@ See also: QBIT, SETQBIT, ABIT, SHOWABIT, SETABIT
 End
 
 #HELP
-Level 101
+Level    101
 Keywords SHOWRACE
 Text Syntax: Showrace <name of race>
  
@@ -11905,7 +11905,7 @@ See also: SETRACE
 End
 
 #HELP
-Level 110
+Level    110
 Keywords SHOWRUNES
 Text Syntax: showrunes
 
@@ -11916,7 +11916,7 @@ See also: MAKERUNE, SETRUNE, DESTROYRUNE, COPYRUNES
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SHOWSLAY
 Text Syntax: showslay <type>
 
@@ -11958,7 +11958,7 @@ See also: MAKESLAY, DESTROYSLAY, SETSLAY, SLAY
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SHOWWEATHER
 Text Usage : showweather
 Usage : showweather <area>
@@ -11969,7 +11969,7 @@ With an area name, it will just show that area.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SHUTDOWN SHUTDOW
 Text Syntax: shutdown <nosave>
 
@@ -11985,7 +11985,7 @@ restart the mud manually when the time comes.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SIT
 Text Syntax: sit
 
@@ -11996,7 +11996,7 @@ See also: REST, SLEEP, STAND
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SKILLS
 Text Type 'practice' to get a list of skills currently available to you and
 to see to what extent you have them practiced. Type 'slist' to view a
@@ -12005,7 +12005,7 @@ list of all skills available at each level to your class.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SKYSHIP CALL
 Text The Skyship system is a mode of transportation which has been devised
 by the mages in the city of Palainth. Having been made safe for the
@@ -12030,7 +12030,7 @@ A list of destinations can be found under &W'help landingsites'&D.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords SLAY SLA
 Text Syntax: slay <victim> [option]
  
@@ -12050,7 +12050,7 @@ See also: MAKESLAY, DESTROYSLAY, SETSLAY, SHOWSLAY
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SLING SLINGS
 Text Level : 1 All classes except Monk.
 
@@ -12064,7 +12064,7 @@ See also: ARCHERY, AXES, BLOWGUNS, DAGGERS, MACES, HAMMERS, PUGILISM, SPEARS,
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SLIST
 Text Syntax: slist
 Syntax: slist <low level> <high level>
@@ -12087,7 +12087,7 @@ Example:  slist 2 2
 End
 
 #HELP
-Level 104
+Level    104
 Keywords SLOOKUP
 Text Syntax: slookup <skill-or-spell>
 Syntax: slookup all
@@ -12102,7 +12102,7 @@ SLOOKUP ALL shows this information for all skills and spells.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SMARTSAC
 Text Syntax: smartsac
  
@@ -12116,7 +12116,7 @@ See also: AUTOSAC, CONFIG
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords SMAUG THORIC
 Text .           [S]imulated [M]edieval multi-[U]ser [A]dventure game
 
@@ -12128,7 +12128,7 @@ taken on several assistants in expanding and improving the code.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords SMAUGSPELLS
 Text SMAUG has a specially coded spell type "spell_smaug", which is a generic
 spell handler that uses the extra spell fields to determine what the spell
@@ -12154,7 +12154,7 @@ value     an extra field reserved for things like the vnum used in spells
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SMOKE
 Text Syntax: smoke <pipe name>
 
@@ -12164,7 +12164,7 @@ tobacco.
 End
 
 #HELP
-Level 102
+Level    102
 Keywords SOBER
 Text Syntax: sober <player>
 
@@ -12174,7 +12174,7 @@ are in a drunken state.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SOCIAL
 Text The following information is needed to create a social:
 Use sedit <social> [field] to set one of the fields:
@@ -12198,7 +12198,7 @@ Variables you can use are:
 End
 
 #HELP
-Level 106
+Level    106
 Keywords SOUND
 Text &YIf you're planning on using music or sounds in your area there's a few things
 you need to know: 
@@ -12221,7 +12221,7 @@ See also: MPSOUNDAROUND, MPSOUNDAT, MPSOUND, MPMUSICAROUND, MPMUSICAT, MPMUSIC,
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SPAM SPAMGUARD
 Text No, we are not talking about a luncheon meat here. Spam is the repeated use
 of a phrase, command, or channel that causes screen scroll for others. Not
@@ -12245,7 +12245,7 @@ considered spam.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SPEAK LANGUAGE
 Text Syntax: speak
 Syntax: speak <language>
@@ -12263,7 +12263,7 @@ See also: LANGUAGES
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SPEAR SPEARS
 Text Level : 1 Warrior, Ranger, Bard, Monk, Antipaladin, Rogue, Druid, and Paladin
 
@@ -12277,7 +12277,7 @@ See also: ARCHERY, AXES, BLOWGUNS, DAGGERS, MACES, HAMMERS, PUGILISM, STAVES,
 End
 
 #HELP
-Level 105
+Level    105
 Keywords SPECFUNCS
 Text These special functions are available to assign to mobiles.
 Use them sparingly:
@@ -12306,7 +12306,7 @@ spec_rustmonster         Mobile eats items on the ground, destroying them.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords SPELLCOMPONENTS
 Text T###         check for item of type ###
 V#####       check for item of vnum #####
@@ -12335,7 +12335,7 @@ a value of 1 in the respective location for the spell to succeed.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords SPELLFLAGS
 Text water           water based (create water, ice spells)
 earth           interracts with nature (earthquake)
@@ -12359,7 +12359,7 @@ pksensitive     affects target as if they were double your level
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SPELLS
 Text Type 'practice' to get a list of spells currently available to you and
 to see to what extent you have them practiced.  Type 'slist' to view a
@@ -12368,7 +12368,7 @@ list of all spells available at each level to your class.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords SPELLSAVES
 Text Here are the saving throws you can set for use in SMAUG spells:
 none            victim doesn't get a saving throw
@@ -12381,7 +12381,7 @@ spell_staff     save vs. spells or staves
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SPLIT
 Text Syntax: split <amount>
 
@@ -12394,7 +12394,7 @@ a kill with every member of your group.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords SSET
 Text Syntax: sset <victim> <skill> <value>
 or:     sset <victim> all     <value>
@@ -12421,7 +12421,7 @@ For the special fields used by SMAUG spells (spell_smaug) see SMAUGSPELLS
 End
 
 #HELP
-Level 1
+Level    1
 Keywords STANDARD 'STANDARD STYLE'
 Text Syntax: style standard
  
@@ -12433,7 +12433,7 @@ See also: STYLE, EVASIVE, DEFENSIVE, STANDARD, AGGRESSIVE, BERSERK
 End
 
 #HELP
-Level 101
+Level    101
 Keywords STASH
 Text Usage : stash <item> <person>
 
@@ -12444,7 +12444,7 @@ things on mortals *cough*Samson*cough* ;)
 End
 
 #HELP
-Level 103
+Level    103
 Keywords STAT
 Text Syntax: stat obj <vnum or keyword>
         stat mob <vnum or keyword>
@@ -12460,7 +12460,7 @@ replaces OSTAT, RSTAT, and MSTAT.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords STAVE STAVES
 Text Level : 1 All classes
 
@@ -12474,7 +12474,7 @@ See also: ARCHERY, AXES, BLOWGUNS, DAGGERS, MACES, HAMMERS, PUGILISM, SPEARS,
 End
 
 #HELP
-Level 1
+Level    1
 Keywords STR STRENGTH
 Text Strength (STR in your 'score') represents your character's physical power.
  
@@ -12496,7 +12496,7 @@ Strength is the prime attribute of warriors, rangers and paladins.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords STREW
 Text Usage        : strew target coins/inventory
  
@@ -12511,7 +12511,7 @@ the items were sent to.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords STRIP
 Text Syntax: strip <victim>
  
@@ -12520,7 +12520,7 @@ Silently transfers their entire inventory and clothing to yours.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords STYLE STYLES
 Text Usage: style <style name>
  
@@ -12535,7 +12535,7 @@ See help files on AGGRESSIVE, BERSERK, DEFENSIVE, EVASIVE, STANDARD.
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords SUMMARY
 Text .           &B
 |----------------------------------|----------------------------------|
@@ -12566,7 +12566,7 @@ If you are new to the Lands, type HELP NEW to see a special help series.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords SUPPLICATE
 Text Syntax: supplicate <supplication>
  
@@ -12593,7 +12593,7 @@ See also: REMAINS, DEITIES, FAVOR, DEVOTE
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SURVEY
 Text The survey command is used on the overland maps to scan your
 surroundings for visible landmarks. You will get a rough
@@ -12614,7 +12614,7 @@ Haon Dor Forest.
 End
 
 #HELP
-Level 102
+Level    102
 Keywords SWITCH RETURN
 Text Syntax: switch <character>
 Syntax: return
@@ -12627,7 +12627,7 @@ RETURN returns you to your original body.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords SWORD SWORDS
 Text Level : 1 Warrior, Ranger, Bard, Antipaladin, Rogue, and Paladin
 
@@ -12640,7 +12640,7 @@ See also: ARCHERY, AXES, BLOWGUNS, DAGGERS, MACES, HAMMERS, PUGILISM, SPEARS,
 End
 
 #HELP
-Level 0
+Level    0
 Keywords TALONOUS 'TALONOUS ARMS'
 Text Level : 1 Mage, Warrior, Ranger, Bard, Necromancer, Antipaladin, Rogue, Druid,
           and Paladin
@@ -12655,7 +12655,7 @@ See also: ARCHERY, AXES, BLOWGUNS, DAGGERS, MACES, HAMMERS, PUGILISM, SPEARS,
 End
 
 #HELP
-Level 1
+Level    1
 Keywords TAMP
 Text Syntax: tamp <pipe name>
  
@@ -12664,7 +12664,7 @@ This empties your pipe so that you may fill it with fresh herbs.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'TAN'
 Text Usage: tan corpse <equipment type>
 
@@ -12688,7 +12688,7 @@ Example : tan dragon shield
 End
 
 #HELP
-Level 105
+Level    105
 Keywords TARGETTYPES
 Text Target                Function
 --------------------------------------------------------------------
@@ -12701,7 +12701,7 @@ objinv                Casted onto an object in the caster's inventory
 End
 
 #HELP
-Level 0
+Level    0
 Keywords TICK
 Text Many of the actions in Alsherok are based upon interval timers, including
 combat, most autonomous monster actions, hp/mana/move regeneration, spell
@@ -12715,7 +12715,7 @@ those found in Zmud.
 End
 
 #HELP
-Level 115
+Level    115
 Keywords TIMECMD
 Text Syntax: timecmd <command>
 
@@ -12727,7 +12727,7 @@ of a second.
 End
 
 #HELP
-Level 10
+Level    10
 Keywords TITLE
 Text Syntax: title <string>
  
@@ -12741,7 +12741,7 @@ advance a level.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords TODAM
 Text .
 This indicator, on the SCORE listing, when using Smaug interface, shows the 
@@ -12752,7 +12752,7 @@ See also: SCORE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords TOHIT
 Text .
 This indicator, on the SCORE listing, when using Smaug interface, shows the 
@@ -12763,7 +12763,7 @@ See also: SCORE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords TONGUE TONGUES
 Text The different PC languages include common, elvish, dwarven, pixie, ogre, 
 orcish, trollese, goblin, halfling and gith.
@@ -12774,7 +12774,7 @@ spiritual, magical, god, and ancient.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords TOPICS
 Text Additional topics you may want to look over:
 *TICK
@@ -12791,7 +12791,7 @@ To view a topic type: HELP <topic>
 End
 
 #HELP
-Level 104
+Level    104
 Keywords TRANSFER
 Text Syntax: trans <character>
 Syntax: transfer all
@@ -12804,7 +12804,7 @@ to your current location (default) or to a specified location.
 End
 
 #HELP
-Level 105
+Level    105
 Keywords TRAPFLAGS
 Text Flags to describe a trap and what triggers it:
 
@@ -12831,7 +12831,7 @@ See also: RESET, TRAPSETTING, TRAPTYPES
 End
 
 #HELP
-Level 105
+Level    105
 Keywords TRAPSETTING
 Text Setting a trap is a little tricky.
 
@@ -12847,7 +12847,7 @@ See also: RESETS, TRAPTYPES, TRAPFLAGS
 End
 
 #HELP
-Level 105
+Level    105
 Keywords TRAPTYPES
 Text Types of traps:
 
@@ -12868,7 +12868,7 @@ See also: RESET, TRAPSETTING, TRAPFLAGS
 End
 
 #HELP
-Level 106
+Level    106
 Keywords TRIGGER
 Text A trigger is an action, phrase, or game event that causes a program
 held within a room, mob or object, to begin playing out its commands.
@@ -12884,7 +12884,7 @@ RPTRIGGERS, MPTRIGGERS, OPTRIGGERS
 End
 
 #HELP
-Level 115
+Level    115
 Keywords TRUST
 Text Syntax: trust <character> <level>
 
@@ -12900,7 +12900,7 @@ A trust of 0 means to use the character's natural level again.
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords TSR D&&D AD&&D
 Text .               Dungeons && Dragons (tm) and TSR Hobbies Inc.
 
@@ -12922,7 +12922,7 @@ Ward, Jean Wells, Bill Wilkerson, Donald Paterson, and Frank Mentzer.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords 'TUMBLE'
 Text Usage        : operates automatically
 Level        : 20 Rogue
@@ -12934,7 +12934,7 @@ more dexterous Rogues.
 End
 
 #HELP
-Level 2
+Level    2
 Keywords UNBOLT
 Text Usage : unbolt <direction or door name>
 
@@ -12945,7 +12945,7 @@ See also: BOLT, OPEN, CLOSE, LOCK, UNLOCK
 End
 
 #HELP
-Level 106
+Level    106
 Keywords USEPROG
 Text Syntax: opedit <object> <command> [number] [use_prog] [percentage]
 
@@ -12974,7 +12974,7 @@ to accomplish this.
 End
 
 #HELP
-Level 102
+Level    102
 Keywords USERS
 Text Syntax: users <host ip>
 Syntax: users <playername>
@@ -13005,7 +13005,7 @@ descriptor number.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords VARIABLE VARIABLES
 Text This is the list of variables to be used in actiondescs for objects and in
 mob/room/object programs.
@@ -13024,7 +13024,7 @@ See also: MPSTAT, RPSTAT, OPSTAT, MPEDIT, RPEDIT, OPEDIT, TRIGGER, MPTRIGGERS,
 End
 
 #HELP
-Level 113
+Level    113
 Keywords VASSIGN
 Text Syntax: vassign <person> <low vnum> <hi vnum>
  
@@ -13044,7 +13044,7 @@ by another zone! You will end up overwriting it!
 End
 
 #HELP
-Level 10
+Level    10
 Keywords VICTORIES
 Text Syntax: victories
 
@@ -13054,7 +13054,7 @@ If you are not a member of a PK clan, then you will receive no output.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords VISIBLE VIS
 Text Usage : visible
 Usage : vis
@@ -13064,7 +13064,7 @@ This will cancel any invisibility spell that you currently have.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords VISITS
 Text Syntax: visits
 
@@ -13075,7 +13075,7 @@ can portal into.
 End
 
 #HELP
-Level 113
+Level    113
 Keywords VNUMS
 Text Syntax: vnums [low] [high]
 
@@ -13084,7 +13084,7 @@ Lists the vnum range for rooms/mobs/objects in all prototype areas.
 End
 
 #HELP
-Level 107
+Level    107
 Keywords VOICE
 Text Usage : voice <message>
 
@@ -13094,7 +13094,7 @@ added to the beginning.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords VSEARCH
 Text Syntax: vsearch <vnum>
 
@@ -13104,7 +13104,7 @@ are currently in the game.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords WARRIOR WARRIORS
 Text Warriors are the epitome of fighters, able to use all basic weapons and 
 armors in exercise of their most lethal of combat skills. A Warrior
@@ -13118,7 +13118,7 @@ are the basic hero, never leave home without one.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords WEAPONCONDITION WEAPONCONDITIONS
 Text Value0  Condition
 ------  ---------
@@ -13141,7 +13141,7 @@ See also: OSET, OBJECTTYPES, WEAPONTYPES, ITEMVALUES.
 End
 
 #HELP
-Level 1
+Level    1
 Keywords WEAPONS
 Text Weapons are the primary source of fighting power for most classes,
 especially at lower levels where other skills and spells remain
@@ -13155,7 +13155,7 @@ sure to practice and adept your favored weapontype for best results.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords WEAPONTYPES
 Text For items of type "weapon", the value4 field specifies the weapon type:
  
@@ -13179,7 +13179,7 @@ See also: OSET, MISSILES, WEAPONCONDITION, ITEMVALUES, DAMAGETYPES
 End
 
 #HELP
-Level 104
+Level    104
 Keywords WEARFLAGS
 Text These flags should be self explanatory:
 
@@ -13193,7 +13193,7 @@ See also: OSET, RESETCMDS, ARMORCLASS.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords WEARLOCS
 Text Here are the various locations where items may be equipped:
 
@@ -13214,7 +13214,7 @@ See also: RESETS, RESETCMDS
 End
 
 #HELP
-Level 113
+Level    113
 Keywords WEBROOM
 Text Syntax: webroom
 
@@ -13227,7 +13227,7 @@ at the time this command was invoked.
 End
 
 #HELP
-Level 104
+Level    104
 Keywords WHERE
 Text Syntax: where obj <keyword>
         where mob <keyword>
@@ -13245,7 +13245,7 @@ This consolidated command replaces OWHERE, MWHERE, and PWHERE.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords WHERE WHOZONE
 Text Syntax: where
 Syntax: where <character>
@@ -13259,7 +13259,7 @@ within your area, including monsters.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords WHIP WHIPS
 Text Level : 1 All classes except for Monk
 
@@ -13274,7 +13274,7 @@ See also: ARCHERY, AXES, BLOWGUNS, DAGGERS, MACES, HAMMERS, PUGILISM, SPEARS,
 End
 
 #HELP
-Level 1
+Level    1
 Keywords WHISPER
 Text Syntax: whisper <name> msg
  
@@ -13284,7 +13284,7 @@ of the whisper.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords WILD-ELF WILD-ELVES
 Text As their name implies, the Wild-Elves truly are a wild race. Fun-loving 
 thrill seekers, the Wild-Elves are an enigma to their High-Elven cousins. 
@@ -13324,7 +13324,7 @@ tattoos.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords WIMPY
 Text Syntax: wimpy
 Syntax: wimpy <value>
@@ -13348,7 +13348,7 @@ See also: FLEE
 End
 
 #HELP
-Level 1
+Level    1
 Keywords WIS WISDOM
 Text Wisdom (WIS in your 'score') represents your character's wisdom and ability
 to incorporate learning.  Among other things, it affects:
@@ -13368,7 +13368,7 @@ Wisdom is the prime attribute of druids and clerics.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords WIZHELP
 Text Syntax: wizhelp [level]
 
@@ -13381,7 +13381,7 @@ specified level.
 End
 
 #HELP
-Level 101
+Level    101
 Keywords WIZINFO
 Text Syntax: wizinfo
 
@@ -13392,7 +13392,7 @@ anyone without the prior consent of the Immortal concerned.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords WIZLIST
 Text Syntax: wizlist
 
@@ -13401,7 +13401,7 @@ Displays a list of the powerful beings who govern this SMAUG MUD!
 End
 
 #HELP
-Level 101
+Level    101
 Keywords WIZLOCK
 Text Syntax: wizlock
 
@@ -13426,7 +13426,7 @@ See also: IMPLOCK
 End
 
 #HELP
-Level 101
+Level    101
 Keywords WORLD
 Text Syntax: world
 
@@ -13438,7 +13438,7 @@ See also: TIME
 End
 
 #HELP
-Level 0
+Level    0
 Keywords WRITE
 Text Syntax: write <board>
 Syntax: write <board> <subject>
@@ -13459,7 +13459,7 @@ See also: BOARDS, READ, REVIEW, ERASE, CHECKBOARD, ALERT
 End
 
 #HELP
-Level 103
+Level    103
 Keywords ZONES
 Text Syntax: zones [low] [high]
 
@@ -13469,7 +13469,7 @@ non-prototype zone in the mud.
 End
 
 #HELP
-Level -1
+Level    -1
 Keywords _DIEMSG_
 Text ...Everything begins to fade to black.
 
@@ -13482,7 +13482,7 @@ pulling sensation as strange and colorful mists swirl around you...
 End
 
 #HELP
-Level 0
+Level    0
 Keywords GITH
 Text The Gith are an ancient race descended from Humans. Once, long ago, they 
 were a peaceful civilization of Humans that were captured by Mindflayers 
@@ -13511,7 +13511,7 @@ the Githyanki.
 End
 
 #HELP
-Level 0
+Level    0
 Keywords insectoid
 Text The Insectoid race lives in the arid wastelands of the Sarnen Isles to 
 the west of the Alatian continent. They live primarily in nomadic tribes
@@ -13533,7 +13533,7 @@ to cold.
 End
 
 #HELP
-Level 108
+Level    108
 Keywords warn
 Text Syntax: warn <field>
 Field is either #(ban_number) or the site.
@@ -13542,7 +13542,7 @@ Example:  warn #1
 End
 
 #HELP
-Level 108
+Level    108
 Keywords watch
 Text . &w
 &W Syntax: &Gwatch                  &W Shows you a help screen
@@ -13581,3 +13581,10 @@ Note from Samson: Since we have a disk quota in place, the above is
 EXTREMELY CRITICAL!!! Don't let watch files get too big!
 ¢
 End
+
+#HELP
+Level    0
+Keywords 
+Text ¢
+End
+

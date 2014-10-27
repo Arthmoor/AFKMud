@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -100,7 +100,7 @@ void save_mobile( FILE * fp, char_data * mob )
    }
    else
       fprintf( fp, "Room	%d\n", ROOM_VNUM_LIMBO );
-   fprintf( fp, "Coordinates  %d %d %d\n", mob->mx, mob->my, mob->map );
+   fprintf( fp, "Coordinates  %d %d %d\n", mob->mx, mob->my, mob->cmap );
    if( mob->name && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
       fprintf( fp, "Name     %s~\n", mob->name );
    if( mob->short_descr && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
@@ -346,9 +346,9 @@ char_data *load_mobile( FILE * fp )
          case 'C':
             if( !str_cmp( word, "Coordinates" ) )
             {
-               mob->mx = fread_number( fp );
-               mob->my = fread_number( fp );
-               mob->map = fread_number( fp );
+               mob->mx = fread_short( fp );
+               mob->my = fread_short( fp );
+               mob->cmap = fread_short( fp );
                break;
             }
             break;
@@ -514,14 +514,14 @@ void read_obj_file( const char *dirname, const char *filename )
          if( tobj->extra_flags.test( ITEM_ONMAP ) )
          {
             supermob->set_actflag( ACT_ONMAP );
-            supermob->map = tobj->map;
+            supermob->cmap = tobj->cmap;
             supermob->mx = tobj->mx;
             supermob->my = tobj->my;
          }
          tobj->from_char(  );
          tobj = tobj->to_room( room, supermob );
          supermob->unset_actflag( ACT_ONMAP );
-         supermob->map = -1;
+         supermob->cmap = -1;
          supermob->mx = -1;
          supermob->my = -1;
       }

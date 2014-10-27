@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -64,7 +64,7 @@ class landmark_data
 
    string description;  // Description of the landmark
    int distance;  // Distance the landmark is visible from
-   short map;  // Map the landmark is on
+   short cmap;  // Map the landmark is on
    short mx;   // X coordinate of landmark
    short my;   // Y coordinate of landmark
    bool Isdesc;   // If true is room desc. If not is landmark

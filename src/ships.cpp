@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -131,7 +131,7 @@ CMDF( do_shipstat )
    ch->printf( "Vnum:  %d\r\n", ship->vnum );
    if( ship->flags.test( SHIP_ONMAP ) )
    {
-      ch->printf( "On map: %s\r\n", map_names[ship->map] );
+      ch->printf( "On map: %s\r\n", map_names[ship->cmap] );
       ch->printf( "Coords: %4dX %4dY\r\n", ship->mx, ship->my );
    }
    else
@@ -144,7 +144,7 @@ CMDF( do_shipstat )
 
 ship_data::ship_data(  )
 {
-   init_memory( &flags, &map, sizeof( map ) );
+   init_memory( &flags, &cmap, sizeof( cmap ) );
 }
 
 ship_data::~ship_data(  )
@@ -180,7 +180,7 @@ void save_ships( void )
       stream << "Max_hull  " << ship->max_hull << endl;
       stream << "Fuel      " << ship->fuel << endl;
       stream << "Max_fuel  " << ship->max_fuel << endl;
-      stream << "Coordinates " << ship->map << " " << ship->mx << " " << ship->my << endl;
+      stream << "Coordinates " << ship->cmap << " " << ship->mx << " " << ship->my << endl;
       stream << "End" << endl << endl;
    }
    stream.close(  );
@@ -247,7 +247,7 @@ void load_ships( void )
          string coord;
 
          value = one_argument( value, coord );
-         ship->map = atoi( coord.c_str(  ) );
+         ship->cmap = atoi( coord.c_str(  ) );
 
          value = one_argument( value, coord );
          ship->mx = atoi( coord.c_str(  ) );
@@ -304,7 +304,7 @@ CMDF( do_shipset )
          return;
       }
       ship = new ship_data;
-      ship->map = -1;
+      ship->cmap = -1;
       ship->mx = -1;
       ship->my = -1;
       ship->name = arg;
@@ -502,7 +502,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
    from_room = ch->in_room;
    fx = ch->mx;
    fy = ch->my;
-   fmap = ch->map;
+   fmap = ch->cmap;
 
    retcode = rNONE;
    if( ch->has_pcflag( PCFLAG_MAPEDIT ) )
@@ -539,12 +539,12 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
                ++count;
 
                if( fch != ch  /* loop room bug fix here by Thoric */
-                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->map == fmap )
+                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->cmap == fmap )
                {
                   if( !fch->isnpc(  ) )
                   {
                      act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
-                     process_exit( fch, fch->map, x, y, dir, false );
+                     process_exit( fch, fch->cmap, x, y, dir, false );
                   }
                   else
                      enter_map( fch, NULL, mexit->therex, mexit->therey, mexit->tomap );
@@ -580,12 +580,12 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
             ++count;
 
             if( fch != ch  /* loop room bug fix here by Thoric */
-                && fch->master == ch && fch->position == POS_STANDING && fch->mx == fx && fch->my == fy && fch->map == fmap )
+                && fch->master == ch && fch->position == POS_STANDING && fch->mx == fx && fch->my == fy && fch->cmap == fmap )
             {
                if( !fch->isnpc(  ) )
                {
                   act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
-                  process_shipexit( fch, fch->map, x, y, dir );
+                  process_shipexit( fch, fch->cmap, x, y, dir );
                }
                else
                   leave_map( fch, ch, toroom );
@@ -709,7 +709,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
          if( !fch->isnpc(  ) )
          {
             act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
-            process_exit( fch, fch->map, x, y, dir, false );
+            process_exit( fch, fch->cmap, x, y, dir, false );
          }
          else
          {
@@ -774,7 +774,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       if( newx == ch->mx && newy == ch->my )
          return rSTOP;
 
-      retcode = process_shipexit( ch, ch->map, newx, newy, direction );
+      retcode = process_shipexit( ch, ch->cmap, newx, newy, direction );
       return retcode;
    }
 

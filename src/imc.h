@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -237,7 +237,7 @@ struct imc_siteinfo
    string incomm; // Um....
    char *outbuf;  // The output buffer for the IMC connection
    unsigned long outsize;  // The size of the current output buffer
-   int outtop; // Uh....
+   size_t outtop; // Uh....
    int desc;   // Descriptor number assigned to the IMC socket
    unsigned short state;   // The state of the connection to the IMC server
 };

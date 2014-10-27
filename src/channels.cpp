@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -839,14 +839,14 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
             mapped = true;
             origx = ch->mx;
             origy = ch->my;
-            origmap = ch->map;
+            origmap = ch->cmap;
          }
          if( ch->isnpc(  ) && ch->has_actflag( ACT_ONMAP ) )
          {
             mapped = true;
             origx = ch->mx;
             origy = ch->my;
-            origmap = ch->map;
+            origmap = ch->cmap;
          }
          fix_maps( vch, ch );
 
@@ -885,7 +885,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
           */
          if( mapped )
          {
-            ch->map = origmap;
+            ch->cmap = origmap;
             ch->mx = origx;
             ch->my = origy;
             if( ch->isnpc(  ) )
@@ -899,7 +899,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
                ch->unset_actflag( ACT_ONMAP );
             else
                ch->unset_pcflag( PCFLAG_ONMAP );
-            ch->map = -1;
+            ch->cmap = -1;
             ch->mx = -1;
             ch->my = -1;
          }

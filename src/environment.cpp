@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -43,7 +43,7 @@ struct environment_data
    short direction;
    short mx;
    short my;
-   short map;
+   short cmap;
    short type;
    short damage_per_shake;
    short radius;
@@ -194,7 +194,7 @@ void environment_actual_update( void )
 
       atx = ch->mx;
       aty = ch->my;
-      atmap = ch->map;
+      atmap = ch->cmap;
 
       for( ev = envlist.begin(  ); ev != envlist.end(  ); ++ev )
       {
@@ -292,7 +292,7 @@ void generate_random_environment( int type )
    q->type = type;
    q->mx = number_range( 0, MAX_X );
    q->my = number_range( 0, MAX_Y );
-   q->map = number_range( MAP_ONE, MAP_MAX - 1 );
+   q->cmap = number_range( MAP_ONE, MAP_MAX - 1 );
 
    switch ( type )
    {
@@ -404,7 +404,7 @@ CMDF( do_makeenv )
 
    atx = ch->mx;
    aty = ch->my;
-   atmap = ch->map;
+   atmap = ch->cmap;
 
    if( arg.empty(  ) )
    {
@@ -450,7 +450,7 @@ CMDF( do_makeenv )
    t = new environment_data;
    t->mx = atx;
    t->my = aty;
-   t->map = atmap;
+   t->cmap = atmap;
    t->type = atype;
    t->direction = door;
    t->radius = chosenradius;
@@ -472,12 +472,12 @@ CMDF( do_env )
       ++count;
       if( en->type == ENV_QUAKE )
       {
-         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n", en->radius, en->radius, en->intensity, en->mx, en->my, map_names[en->map] );
+         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n", en->radius, en->radius, en->intensity, en->mx, en->my, map_names[en->cmap] );
       }
       else
       {
          ch->printf( "&GA %d by %d %s bound %s at coordinates %d,%d on %s.\r\n",
-                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->mx, en->my, map_names[en->map] );
+                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->mx, en->my, map_names[en->cmap] );
       }
    }
 
@@ -505,7 +505,7 @@ bool survey_environment( char_data * ch )
    {
       environment_data *en = *env;
 
-      if( ch->map != en->map )
+      if( ch->cmap != en->cmap )
          continue;
 
       dist = ( int )distance( ch->mx, ch->my, en->mx, en->my );

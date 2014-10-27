@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -3710,7 +3710,7 @@ char_data *make_doppleganger( char_data * ch )
    mob->level = ch->level;
    mob->set_actflags( pMobIndex->actflags );
    mob->set_actflag( ACT_AGGRESSIVE );
-   mob->map = ch->map;
+   mob->cmap = ch->cmap;
    mob->mx = ch->mx;
    mob->my = ch->my;
 

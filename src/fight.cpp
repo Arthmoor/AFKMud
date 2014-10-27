@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -3833,7 +3833,7 @@ CMDF( do_flee )
 {
    room_index *was_in, *now_in;
    double los;
-   int attempt, oldmap = ch->map, oldx = ch->mx, oldy = ch->my;
+   int attempt, oldmap = ch->cmap, oldx = ch->mx, oldy = ch->my;
    short door;
    exit_data *pexit;
 
@@ -3890,7 +3890,7 @@ CMDF( do_flee )
       if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
       {
          now_in = ch->in_room;
-         if( ch->map == oldmap && ch->mx == oldx && ch->my == oldy )
+         if( ch->cmap == oldmap && ch->mx == oldx && ch->my == oldy )
             continue;
       }
       else

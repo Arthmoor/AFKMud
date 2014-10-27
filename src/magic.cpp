@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -3606,7 +3606,7 @@ SPELLF( spell_farsight )
    successful_casting( skill, ch, victim, NULL );
 
    original = ch->in_room;
-   origmap = ch->map;
+   origmap = ch->cmap;
    origx = ch->mx;
    origy = ch->my;
 
@@ -3616,20 +3616,20 @@ SPELLF( spell_farsight )
    if( location->flags.test( ROOM_MAP ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->set_pcflag( PCFLAG_ONMAP );
-      ch->map = victim->map;
+      ch->cmap = victim->cmap;
       ch->mx = victim->mx;
       ch->my = victim->my;
    }
    else if( location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
-      ch->map = victim->map;
+      ch->cmap = victim->cmap;
       ch->mx = victim->mx;
       ch->my = victim->my;
    }
    else if( !location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->unset_pcflag( PCFLAG_ONMAP );
-      ch->map = -1;
+      ch->cmap = -1;
       ch->mx = -1;
       ch->my = -1;
    }
@@ -3651,7 +3651,7 @@ SPELLF( spell_farsight )
    else if( !ch->has_pcflag( PCFLAG_ONMAP ) && original->flags.test( ROOM_MAP ) )
       ch->set_pcflag( PCFLAG_ONMAP );
 
-   ch->map = origmap;
+   ch->cmap = origmap;
    ch->mx = origx;
    ch->my = origy;
    return rNONE;
@@ -5205,7 +5205,7 @@ SPELLF( spell_tree_transport )
     * Need to explicitly set coordinates and map information with objects 
     */
    leave_map( ch, NULL, target );
-   ch->map = obj->map;
+   ch->cmap = obj->cmap;
    ch->mx = obj->mx;
    ch->my = obj->my;
 

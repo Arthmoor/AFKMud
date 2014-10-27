@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -669,7 +669,7 @@ void location_action( char_data * ch, const string & argument, room_index * loca
       return;
    }
 
-   short origmap = ch->map;
+   short origmap = ch->cmap;
    short origx = ch->mx;
    short origy = ch->my;
 
@@ -680,20 +680,20 @@ void location_action( char_data * ch, const string & argument, room_index * loca
    if( location->flags.test( ROOM_MAP ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->set_pcflag( PCFLAG_ONMAP );
-      ch->map = map;
+      ch->cmap = map;
       ch->mx = x;
       ch->my = y;
    }
    else if( location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
-      ch->map = map;
+      ch->cmap = map;
       ch->mx = x;
       ch->my = y;
    }
    else if( !location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->unset_pcflag( PCFLAG_ONMAP );
-      ch->map = -1;
+      ch->cmap = -1;
       ch->mx = -1;
       ch->my = -1;
    }
@@ -710,7 +710,7 @@ void location_action( char_data * ch, const string & argument, room_index * loca
    else if( !ch->has_pcflag( PCFLAG_ONMAP ) && original->flags.test( ROOM_MAP ) )
       ch->set_pcflag( PCFLAG_ONMAP );
 
-   ch->map = origmap;
+   ch->cmap = origmap;
    ch->mx = origx;
    ch->my = origy;
 
@@ -743,12 +743,12 @@ void atmob( char_data * ch, char_data * wch, const string & argument )
       ch->print( "No such location.\r\n" );
       return;
    }
-   location_action( ch, argument, wch->in_room, wch->map, wch->mx, wch->my );
+   location_action( ch, argument, wch->in_room, wch->cmap, wch->mx, wch->my );
 }
 
 void atobj( char_data * ch, obj_data * obj, const string & argument )
 {
-   location_action( ch, argument, obj->in_room, obj->map, obj->mx, obj->my );
+   location_action( ch, argument, obj->in_room, obj->cmap, obj->mx, obj->my );
 }
 
 /* Smaug 1.02a at command restored by Samson 8-14-98 */
@@ -1039,7 +1039,7 @@ CMDF( do_ostat )
    ch->printf( "|In room: &G%5d&w |In obj: &G%s&w |Level :  &G%5d&w |Limit: &G%5d&w\r\n",
                obj->in_room == NULL ? 0 : obj->in_room->vnum, obj->in_obj == NULL ? "(NONE)" : obj->in_obj->short_descr, obj->level, obj->pIndexData->limit );
 
-   ch->printf( "|On map       : &G%s&w\r\n", obj->extra_flags.test( ITEM_ONMAP ) ? map_names[obj->map] : "(NONE)" );
+   ch->printf( "|On map       : &G%s&w\r\n", obj->extra_flags.test( ITEM_ONMAP ) ? map_names[obj->cmap] : "(NONE)" );
 
    ch->printf( "|Object Coords: &G%d %d&w\r\n", obj->mx, obj->my );
    ch->printf( "|Wear flags   : &G%s&w\r\n", bitset_string( obj->wear_flags, w_flags ) );
@@ -1279,7 +1279,7 @@ CMDF( do_mstat )
                   ( victim->pcdata->deity == NULL ) ? "(NONE)" : victim->pcdata->deity->name.c_str(  ),
                   !victim->pcdata->authed_by.empty(  )? victim->pcdata->authed_by.c_str(  ) : "Unknown", victim->spellfail, victim->pcdata->version );
 
-      ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d&w\r\n", victim->has_pcflag( PCFLAG_ONMAP ) ? map_names[victim->map] : "(NONE)", victim->mx, victim->my );
+      ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d&w\r\n", victim->has_pcflag( PCFLAG_ONMAP ) ? map_names[victim->cmap] : "(NONE)", victim->mx, victim->my );
 
       ch->printf( "|Master: &G%10s &w|Leader: &G%s&w\r\n", victim->master ? victim->master->name : "(NONE)", victim->leader ? victim->leader->name : "(NONE)" );
 
@@ -1428,7 +1428,7 @@ CMDF( do_mstat )
       ch->printf( "|Race  : &G%10s &w|Leader: &G%s&w\r\n", capitalize( npc_race[victim->race] ), victim->leader ? victim->leader->name : "(NONE)" );
 
       ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d    &w|Native Sector: &G%s&w\r\n",
-                  victim->has_actflag( ACT_ONMAP ) ? map_names[victim->map] : "(NONE)",
+                  victim->has_actflag( ACT_ONMAP ) ? map_names[victim->cmap] : "(NONE)",
                   victim->mx, victim->my, victim->sector < 0 ? "Not set yet" : sect_types[victim->sector] );
 
       ch->printf( "|Saves : ---------- | ----------------- | ----------------- | -----------------\r\n" );
@@ -1680,7 +1680,7 @@ CMDF( do_mwhere )
       {
          found = true;
          if( victim->has_actflag( ACT_ONMAP ) )
-            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &YOverland: &C%s %d %d\r\n", victim->pIndexData->vnum, victim->short_descr, map_names[victim->map], victim->mx, victim->my );
+            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &YOverland: &C%s %d %d\r\n", victim->pIndexData->vnum, victim->short_descr, map_names[victim->cmap], victim->mx, victim->my );
          else
             ch->pagerf( "&Y[&W%5d&Y] &G%-28s &Y[&W%5d&Y] &C%s\r\n", victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
       }
@@ -1811,7 +1811,7 @@ CMDF( do_owhere )
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->map], obj->mx, obj->my );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->cmap], obj->mx, obj->my );
          else
             snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n", obj->in_room->vnum, obj->in_room->name );
       }
@@ -1848,7 +1848,7 @@ CMDF( do_owhere )
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->map], obj->mx, obj->my );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->cmap], obj->mx, obj->my );
          else
             snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n", obj->in_room->vnum, obj->in_room->name );
       }
@@ -1887,7 +1887,7 @@ CMDF( do_pwhere )
          {
             found = true;
             if( victim->has_pcflag( PCFLAG_ONMAP ) )
-               ch->pagerf( "&G%-28s &Y[&WOverland&Y] &C%s %d %d\r\n", victim->name, map_names[victim->map], victim->mx, victim->my );
+               ch->pagerf( "&G%-28s &Y[&WOverland&Y] &C%s %d %d\r\n", victim->name, map_names[victim->cmap], victim->mx, victim->my );
             else
                ch->pagerf( "&G%-28s &Y[&W%5d&Y]&C %s\r\n", victim->name, victim->in_room->vnum, victim->in_room->name );
          }
@@ -2534,7 +2534,7 @@ void mobinvoke( char_data * ch, string & argument )
     * If you load one on the map, make sure it gets placed properly - Samson 8-21-99 
     */
    fix_maps( ch, victim );
-   victim->sector = get_terrain( ch->map, ch->mx, ch->my );
+   victim->sector = get_terrain( ch->cmap, ch->mx, ch->my );
 
    act( AT_IMMORT, "$n peers into the ether, and plucks out $N!", ch, NULL, victim, TO_ROOM );
    /*

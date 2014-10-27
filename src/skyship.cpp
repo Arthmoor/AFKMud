@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -72,7 +72,7 @@ void land_skyship( char_data * ch, char_data * skyship, bool arrived )
       cancel_event( ev_skyship, ch );
    }
 
-   skyship->map = skyship->my_rider->map;
+   skyship->cmap = skyship->my_rider->cmap;
    skyship->mx = skyship->my_rider->mx;
    skyship->my = skyship->my_rider->my;
    skyship->backtracking = false;
@@ -266,7 +266,7 @@ void create_skyship( char_data * ch )
    skyship->set_actflag( ACT_ONMAP );
    skyship->inflight = true;
    skyship->heading = -1;
-   skyship->map = ch->map;
+   skyship->cmap = ch->cmap;
    skyship->mx = ch->mx;
    skyship->my = ch->my;
 
@@ -297,7 +297,7 @@ void create_skyship( char_data * ch )
  */
 CMDF( do_call )
 {
-   short terrain = get_terrain( ch->map, ch->mx, ch->my );
+   short terrain = get_terrain( ch->cmap, ch->mx, ch->my );
 
    /*
     * Sanity checks Reasons why a skyship wouldn't want to answer
@@ -337,7 +337,7 @@ CMDF( do_call )
    create_skyship( ch );
 }
 
-landing_data *check_landing_site( short map, short x, short y )
+landing_data *check_landing_site( short cmap, short x, short y )
 {
    list < landing_data * >::iterator ilanding;
 
@@ -345,7 +345,7 @@ landing_data *check_landing_site( short map, short x, short y )
    {
       landing_data *landing = *ilanding;
 
-      if( landing->map == map )
+      if( landing->cmap == cmap )
       {
          if( landing->mx == x && landing->my == y )
             return landing;
@@ -395,7 +395,7 @@ CMDF( do_fly )
       return;
    }
 
-   lsite = check_landing_site( ch->map, ch->mx, ch->my );
+   lsite = check_landing_site( ch->cmap, ch->mx, ch->my );
 
    list < landing_data * >::iterator ilanding;
    for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
@@ -410,7 +410,7 @@ CMDF( do_fly )
             return;
          }
 
-         if( landing->map != ch->map )
+         if( landing->cmap != ch->cmap )
          {
             /*
              * Simplifies things. Especially since it would look funny to see alien terrain below you - Samson 
@@ -526,7 +526,7 @@ void load_landing_sites( void )
          string coord;
 
          value = one_argument( value, coord );
-         landing->map = atoi( coord.c_str(  ) );
+         landing->cmap = atoi( coord.c_str(  ) );
 
          value = one_argument( value, coord );
          landing->mx = atoi( coord.c_str(  ) );
@@ -564,7 +564,7 @@ void save_landing_sites( void )
          landing_data *landing = *ilanding;
 
          stream << "#LANDING_SITE" << endl;
-         stream << "Coordinates     " << landing->map << " " << landing->mx << " " << landing->my << endl;
+         stream << "Coordinates     " << landing->cmap << " " << landing->mx << " " << landing->my << endl;
          if( !landing->area.empty(  ) )
             stream << "Area            " << landing->area << endl;
          stream << "Cost            " << landing->cost << endl;
@@ -574,12 +574,12 @@ void save_landing_sites( void )
    }
 }
 
-void add_landing( short map, short x, short y )
+void add_landing( short cmap, short x, short y )
 {
    landing_data *landing;
 
    landing = new landing_data;
-   landing->map = map;
+   landing->cmap = cmap;
    landing->mx = x;
    landing->my = y;
    landing->cost = 50000;
@@ -632,7 +632,7 @@ CMDF( do_landing_sites )
    {
       landing_data *landing = *ilanding;
 
-      ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", map_names[landing->map], landing->mx, landing->my, landing->area.c_str(  ), landing->cost );
+      ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", map_names[landing->cmap], landing->mx, landing->my, landing->area.c_str(  ), landing->cost );
    }
 }
 
@@ -665,7 +665,7 @@ CMDF( do_setlanding )
       return;
    }
 
-   landing = check_landing_site( ch->map, ch->mx, ch->my );
+   landing = check_landing_site( ch->cmap, ch->mx, ch->my );
 
    if( !str_cmp( arg, "add" ) )
    {
@@ -674,8 +674,8 @@ CMDF( do_setlanding )
          ch->print( "There's already a landing site at this location.\r\n" );
          return;
       }
-      add_landing( ch->map, ch->mx, ch->my );
-      putterr( ch->map, ch->mx, ch->my, SECT_LANDING );
+      add_landing( ch->cmap, ch->mx, ch->my );
+      putterr( ch->cmap, ch->mx, ch->my, SECT_LANDING );
       ch->print( "Landing site added.\r\n" );
       return;
    }
@@ -689,7 +689,7 @@ CMDF( do_setlanding )
    if( !str_cmp( arg, "delete" ) )
    {
       delete_landing_site( landing );
-      putterr( ch->map, ch->mx, ch->my, SECT_OCEAN );
+      putterr( ch->cmap, ch->mx, ch->my, SECT_OCEAN );
       ch->print( "Landing site deleted.\r\n" );
       return;
    }

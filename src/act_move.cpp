@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -137,7 +137,7 @@ CMDF( do_run )
    }
 
    from_room = ch->in_room;
-   frommap = ch->map;
+   frommap = ch->cmap;
    fromx = ch->mx;
    fromy = ch->my;
 
@@ -189,7 +189,7 @@ CMDF( do_run )
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
    {
-      if( ch->mx == fromx && ch->my == fromy && ch->map == frommap )
+      if( ch->mx == fromx && ch->my == fromy && ch->cmap == frommap )
       {
          ch->print( "You try to run but don't get anywhere.\r\n" );
          act( AT_ACTION, "$n tries to run but doesn't get anywhere.", ch, NULL, NULL, TO_ROOM );
@@ -298,7 +298,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       if( newx == ch->mx && newy == ch->my )
          return rSTOP;
 
-      retcode = process_exit( ch, ch->map, newx, newy, direction, running );
+      retcode = process_exit( ch, ch->cmap, newx, newy, direction, running );
       return retcode;
    }
 

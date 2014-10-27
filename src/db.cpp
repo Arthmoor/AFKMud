@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -2360,7 +2360,7 @@ void append_file( char_data * ch, const string & file, const char *fmt, ... )
    vsnprintf( str, MSL, fmt, arg );
    va_end( arg );
 
-   if( ch->isnpc(  ) || !str || str[0] == '\0' )
+   if( ch->isnpc(  ) || str[0] == '\0' )
       return;
 
    if( strlen( str ) < 1 || str[strlen( str ) - 1] != '\n' )
@@ -2391,7 +2391,7 @@ void append_to_file( const string & file, const char *fmt, ... )
    vsnprintf( str, MSL, fmt, arg );
    va_end( arg );
 
-   if( !str || str[0] == '\0' )
+   if( str[0] == '\0' )
       return;
 
    if( strlen( str ) < 1 || str[strlen( str ) - 1] != '\n' )

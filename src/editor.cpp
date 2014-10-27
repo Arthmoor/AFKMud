@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <cstdarg>
+#include <algorithm>
 #include "mud.h"
 #include "descriptor.h"
 
@@ -1211,7 +1212,7 @@ string char_data::copy_buffer(  )
    {
       mudstrlcpy( tmp, pcdata->editor->line[i], 100 );
       len = strlen( tmp );
-      if( tmp && tmp[len - 1] == '~' )
+      if( len > 0 && tmp[len - 1] == '~' )
          tmp[len - 1] = '\0';
       else
          mudstrlcat( tmp, "\n", 100 );
@@ -1240,7 +1241,7 @@ char *char_data::copy_buffer( bool hash )
    {
       mudstrlcpy( tmp, pcdata->editor->line[i], 100 );
       len = strlen( tmp );
-      if( tmp && tmp[len - 1] == '~' )
+      if( len > 0 && tmp[len - 1] == '~' )
          tmp[len - 1] = '\0';
       else
          mudstrlcat( tmp, "\n", 100 );
@@ -1249,7 +1250,7 @@ char *char_data::copy_buffer( bool hash )
    }
    if( hash )
    {
-      if( buf && buf[0] != '\0' )
+      if( buf[0] != '\0' )
          return STRALLOC( buf );
       return NULL;
    }

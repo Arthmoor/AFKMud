@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -89,7 +89,7 @@ const char *imcperm_names[] = {
 
 const char *imcflag_names[] = {
    "imctell", "imcdenytell", "imcbeep", "imcdenybeep", "imcinvis", "imcprivate",
-   "imcdenyfinger", "imcafk", "imccolor", "imcpermoverride", "imcnotify"
+   "imcdenyfinger", "imcafk", "imccolor", "imcpermoverride"
 };
 
 imc_siteinfo *this_imcmud;
@@ -411,7 +411,19 @@ bool imc_isignoring( char_data * ch, const string & ignore )
    {
       string ign = *iign;
 
-      if( !str_prefix( ign, ignore ) )
+      if( !str_cmp( imc_nameof( ign ), "*" ) )
+      {
+         if( !str_cmp( imc_mudof( ign ), imc_mudof( ignore ) ) )
+            return true;
+      }
+
+      if( !str_cmp( imc_mudof( ign ), "*" ) )
+      {
+         if( !str_cmp( imc_nameof( ign ), imc_nameof( ignore ) ) )
+            return true;
+      }
+
+      if( !str_prefix( ignore, ign ) )
          return true;
    }
    return false;
@@ -632,8 +644,8 @@ void imcformat_channel( char_data * ch, imc_channel * d, int format, bool all )
    imc_save_channels(  );
 }
 
-void imc_new_channel( const string & chan, const string & owner, const string & ops, const string & invite,
-                      const string & exclude, bool copen, int perm, const string & lname )
+void imc_new_channel( const string & chan, const string & owner, const string & ops, const string & invite, const string & exclude, bool copen, short perm,
+                      const string & lname )
 {
    if( chan.empty(  ) )
    {
@@ -724,7 +736,7 @@ string unescape_string( const string & sData )
          sDataReturn += '\"';
          ++i;
       }
-      else if( sData[i] == '\\' & sData[i + 1] == '\\' )
+      else if( sData[i] == '\\' && sData[i + 1] == '\\' )
       {
          sDataReturn.append( "\\" );
          i++;
@@ -1339,70 +1351,6 @@ PFUN( imc_recv_chanwho )
    p->data << "channel=" << c->chname;
    p->data << " list=" << escape_string( buf.str(  ) );
    p->send(  );
-}
-
-void imc_sendnotify( char_data * ch, const string & chan, bool chon )
-{
-   imc_packet *p;
-   imc_channel *channel;
-
-   if( !IMCIS_SET( IMCFLAG( ch ), IMC_NOTIFY ) )
-      return;
-
-   if( !( channel = imc_findchannel( chan ) ) )
-      return;
-
-   p = new imc_packet( CH_IMCNAME( ch ), "channel-notify", "*@*" );
-   p->data << "channel=" << channel->chname;
-   p->data << " status=" << chon;
-   p->send(  );
-}
-
-PFUN( imc_recv_channelnotify )
-{
-   imc_channel *c;
-   char_data *ch;
-   list < descriptor_data * >::iterator ds;
-   map < string, string > keymap = imc_getData( packet );
-   char buf[LGST];
-   bool chon = false;
-
-   chon = atoi( keymap["status"].c_str(  ) );
-
-   if( !( c = imc_findchannel( keymap["channel"] ) ) )
-      return;
-
-   if( c->local_name.empty(  ) )
-      return;
-
-   if( chon == true )
-      snprintf( buf, LGST, c->emoteformat.c_str(  ), q->from.c_str(  ), "has joined the channel." );
-   else
-      snprintf( buf, LGST, c->emoteformat.c_str(  ), q->from.c_str(  ), "has left the channel." );
-
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
-   {
-      descriptor_data *d = ( *ds );
-
-      ch = d->original ? d->original : d->character;
-
-      if( !ch || d->connected != CON_PLAYING )
-         continue;
-
-      /*
-       * Freaking stupid PC_DATA crap! 
-       */
-      if( ch->isnpc(  ) )
-         continue;
-
-      if( IMCPERM( ch ) < c->level || !hasname( IMC_LISTEN( ch ), c->local_name ) )
-         continue;
-
-      if( !IMCIS_SET( IMCFLAG( ch ), IMC_NOTIFY ) )
-         continue;
-
-      imc_printf( ch, "%s\r\n", buf );
-   }
 }
 
 string imccenterline( const string & src, int length )
@@ -2246,7 +2194,6 @@ void imc_register_default_packets( void )
    imc_register_packet_handler( "beep", imc_recv_beep );
    imc_register_packet_handler( "ice-chan-who", imc_recv_chanwho );
    imc_register_packet_handler( "ice-chan-whoreply", imc_recv_chanwhoreply );
-   imc_register_packet_handler( "channel-notify", imc_recv_channelnotify );
    imc_register_packet_handler( "close-notify", imc_recv_closenotify );
 
    default_packets_registered = true;
@@ -2395,7 +2342,8 @@ void imc_handle_autosetup( const string & source, const string & servername, con
 bool imc_write_socket( void )
 {
    const char *ptr = this_imcmud->outbuf;
-   int nleft = this_imcmud->outtop, nwritten = 0;
+   size_t nleft = this_imcmud->outtop;
+   ssize_t nwritten = 0; // No, the type isn't a typo. I assume it means "socket size_t"
 
    if( nleft <= 0 )
       return true;
@@ -2435,7 +2383,7 @@ bool imc_write_socket( void )
    if( imcpacketdebug )
    {
       imclog( "Packet Sent: %s", this_imcmud->outbuf );
-      imclog( "Bytes sent: %d", this_imcmud->outtop );
+      imclog( "Bytes sent: %zd", this_imcmud->outtop );
    }
    this_imcmud->outbuf[0] = '\0';
    this_imcmud->outtop = 0;
@@ -2580,14 +2528,19 @@ bool imc_read_buffer( void )
 
 bool imc_read_socket( void )
 {
-   unsigned int iStart, iErr;
+   size_t iStart;
+   int iErr;
+   short loop_count = 0;
    bool begin = true;
 
    iStart = strlen( this_imcmud->inbuf );
 
    for( ;; )
    {
-      int nRead;
+      ssize_t nRead;
+
+      if( ++loop_count > 100 ) // Yay hackish error traps! 100 loops likely means she's stuck. Break out with whatever is there.
+         break;
 
       nRead = recv( this_imcmud->desc, this_imcmud->inbuf + iStart, sizeof( this_imcmud->inbuf ) - 10 - iStart, 0 );
       iErr = errno;
@@ -2816,7 +2769,7 @@ void imc_loadchar( char_data * ch, FILE * fp, const char *word )
          break;
 
       case 'I':
-         KEY( "IMCPerm", IMCPERM( ch ), fread_number( fp ) );
+         KEY( "IMCPerm", IMCPERM( ch ), fread_short( fp ) );
          STDSLINE( "IMCEmail", IMC_EMAIL( ch ) );
          STDSLINE( "IMCAIM", IMC_AIM( ch ) );
          KEY( "IMCICQ", IMC_ICQ( ch ), fread_number( fp ) );
@@ -2867,8 +2820,6 @@ void imc_loadchar( char_data * ch, FILE * fp, const char *word )
                      removename( IMC_LISTEN( ch ), chan );
                   if( channel && IMCPERM( ch ) < channel->level )
                      removename( IMC_LISTEN( ch ), chan );
-                  if( hasname( IMC_LISTEN( ch ), chan ) )
-                     imc_sendnotify( ch, chan, true );
                }
             }
             break;
@@ -3310,7 +3261,7 @@ void imc_savehelps( void )
 
 void imc_load_helps( void )
 {
-   imc_help_table *help;
+   imc_help_table *help = NULL;
    ifstream stream;
 
    imc_helplist.clear(  );
@@ -4740,7 +4691,6 @@ IMC_CMD( imclisten )
          if( IMCPERM( ch ) >= chn->level && !hasname( IMC_LISTEN( ch ), chn->local_name ) )
          {
             addname( IMC_LISTEN( ch ), chn->local_name );
-            imc_sendnotify( ch, chn->local_name, true );
          }
       }
       imc_to_char( "~YYou are now listening to all available IMC2 channels.\r\n", ch );
@@ -4756,9 +4706,6 @@ IMC_CMD( imclisten )
 
          if( chn->local_name.empty(  ) )
             continue;
-
-         if( hasname( IMC_LISTEN( ch ), chn->local_name ) )
-            imc_sendnotify( ch, chn->local_name, false );
       }
       IMC_LISTEN( ch ).clear(  );
       imc_to_char( "~YYou no longer listen to any available IMC2 channels.\r\n", ch );
@@ -4782,13 +4729,11 @@ IMC_CMD( imclisten )
    {
       removename( IMC_LISTEN( ch ), c->local_name );
       imc_to_char( "Channel off.\r\n", ch );
-      imc_sendnotify( ch, c->local_name, false );
    }
    else
    {
       addname( IMC_LISTEN( ch ), c->local_name );
       imc_to_char( "Channel on.\r\n", ch );
-      imc_sendnotify( ch, c->local_name, true );
    }
 }
 
@@ -6440,20 +6385,6 @@ IMC_CMD( imchedit )
       return;
    }
    imchedit( ch, "" );
-}
-
-IMC_CMD( imcnotify )
-{
-   if( IMCIS_SET( IMCFLAG( ch ), IMC_NOTIFY ) )
-   {
-      IMCREMOVE_BIT( IMCFLAG( ch ), IMC_NOTIFY );
-      imc_to_char( "You no longer see channel notifications.\r\n", ch );
-   }
-   else
-   {
-      IMCSET_BIT( IMCFLAG( ch ), IMC_NOTIFY );
-      imc_to_char( "You now see channel notifications.\r\n", ch );
-   }
 }
 
 IMC_CMD( imcrefresh )

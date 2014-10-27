@@ -1,4352 +1,4350 @@
-#VERSION	3
+#VERSION 3
 #COMMAND
-Name        '~
+Name        '
 Code        do_say
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        ,~
+Name        ,
 Code        do_emote
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        ;~
+Name        ;
 Code        do_gtell
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        ?~
+Name        ?
 Code        do_help
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        alias~
+Name        alias
 Code        do_alias
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        authorize~
+Name        authorize
 Code        do_authorize
-Position    dead~
+Position    dead
 Level       103
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        at~
+Name        at
 Code        do_at
-Position    dead~
+Position    dead
 Level       103
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        attrib~
+Name        attrib
 Code        do_attrib
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        affected~
+Name        affected
 Code        do_affected
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        afk~
+Name        afk
 Code        do_afk
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        aassign~
+Name        aassign
 Code        do_aassign
-Position    dead~
+Position    dead
 Level       103
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        advance~
+Name        advance
 Code        do_advance
-Position    dead~
+Position    dead
 Level       110
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        allow~
+Name        allow
 Code        do_allow
-Position    dead~
+Position    dead
 Level       108
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        appraise~
+Name        appraise
 Code        do_appraise
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        areas~
+Name        areas
 Code        do_areas
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        aset~
+Name        aset
 Code        do_aset
-Position    dead~
+Position    dead
 Level       107
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        ask~
+Name        ask
 Code        do_ask
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
-Flags       possessed~
+Log         normal
+Flags       possessed
 End
 
 #COMMAND
-Name        assist~
+Name        assist
 Code        do_assist
-Position    fighting~
+Position    fighting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        astat~
+Name        astat
 Code        do_astat
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        apply~
+Name        apply
 Code        do_apply
-Position    resting~
+Position    resting
 Level       1
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        aexit~
+Name        aexit
 Code        do_aexit
-Position    dead~
+Position    dead
 Level       103
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        abit~
+Name        abit
 Code        do_abit
-Position    dead~
+Position    dead
 Level       105
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        areaconvert~
+Name        areaconvert
 Code        do_areaconvert
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        alert~
+Name        alert
 Code        do_board_alert
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        adelete~
+Name        adelete
 Code        do_adelete
-Position    dead~
+Position    dead
 Level       114
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        board~
+Name        board
 Code        do_board
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        beep~
+Name        beep
 Code        do_beep
-Position    sleeping~
+Position    sleeping
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        balance~
+Name        balance
 Code        do_balance
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        buy~
+Name        buy
 Code        do_buy
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        brandish~
+Name        brandish
 Code        do_brandish
-Position    aggressive~
+Position    aggressive
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        bs~
+Name        bs
 Code        do_backstab
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        balzhur~
+Name        balzhur
 Code        do_balzhur
-Position    dead~
+Position    dead
 Level       110
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        bamfin~
+Name        bamfin
 Code        do_bamfin
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        bamfout~
+Name        bamfout
 Code        do_bamfout
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        ban~
+Name        ban
 Code        do_ban
-Position    dead~
+Position    dead
 Level       108
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        bestow~
+Name        bestow
 Code        do_bestow
-Position    dead~
+Position    dead
 Level       114
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        bio~
+Name        bio
 Code        do_bio
-Position    sleeping~
+Position    sleeping
 Level       1
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        bodybag~
+Name        bodybag
 Code        do_bodybag
-Position    dead~
+Position    dead
 Level       110
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        bug~
+Name        bug
 Code        do_bug
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        bury~
+Name        bury
 Code        do_bury
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        bestowarea~
+Name        bestowarea
 Code        do_bestowarea
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        busy~
+Name        busy
 Code        do_busy
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        beacon~
+Name        beacon
 Code        do_beacon
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        bolt~
+Name        bolt
 Code        do_bolt
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        bind~
+Name        bind
 Code        do_charge
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        bid~
+Name        bid
 Code        do_bid
-Position    sleeping~
+Position    sleeping
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        basereport~
+Name        basereport
 Code        do_basereport
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        boards~
+Name        boards
 Code        do_board_list
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        bstat~
+Name        bstat
 Code        do_board_stat
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        bset~
+Name        bset
 Code        do_board_set
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        cast~
+Name        cast
 Code        do_cast
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        close~
+Name        close
 Code        do_close
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        consider~
+Name        consider
 Code        do_consider
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        channels~
+Name        channels
 Code        do_channels
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        clans~
+Name        clans
 Code        do_clans
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        cedit~
+Name        cedit
 Code        do_cedit
-Position    dead~
+Position    dead
 Level       114
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        compare~
+Name        compare
 Code        do_compare
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        commands~
+Name        commands
 Code        do_commands
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        comment~
+Name        comment
 Code        do_comment
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        config~
+Name        config
 Code        do_config
-Position    stunned~
+Position    stunned
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        credits~
+Name        credits
 Code        do_credits
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        cset~
+Name        cset
 Code        do_cset
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        climate~
+Name        climate
 Code        do_climate
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        cook~
+Name        cook
 Code        do_cook
-Position    resting~
+Position    resting
 Level       1
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        color~
+Name        color
 Code        do_color
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        camp~
+Name        camp
 Code        do_camp
-Position    standing~
+Position    standing
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        checkvnums~
+Name        checkvnums
 Code        do_check_vnums
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        coords~
+Name        coords
 Code        do_coords
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        collect~
+Name        collect
 Code        do_collect
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        compress~
+Name        compress
 Code        do_compress
-Position    dead~
+Position    dead
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        charmies~
+Name        charmies
 Code        do_petlist
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        checkboards~
+Name        checkboards
 Code        do_checkboards
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        call~
+Name        call
 Code        do_call
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        cache~
+Name        cache
 Code        do_cache
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        connect~
+Name        connect
 Code        do_connect
-Position    standing~
+Position    standing
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        down~
+Name        down
 Code        do_down
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        deposit~
+Name        deposit
 Code        do_deposit
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        delet~
+Name        delet
 Code        do_delet
-Position    dead~
+Position    dead
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        delete~
+Name        delete
 Code        do_delete
-Position    dead~
+Position    dead
 Level       1
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        demote~
+Name        demote
 Code        do_demote
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        donate~
+Name        donate
 Code        do_donate
-Position    resting~
+Position    resting
 Level       10
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        deadly~
+Name        deadly
 Code        do_deadly
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        drink~
+Name        drink
 Code        do_drink
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        drop~
+Name        drop
 Code        do_drop
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        deny~
+Name        deny
 Code        do_deny
-Position    dead~
+Position    dead
 Level       108
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        description~
+Name        description
 Code        do_description
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        destro~
+Name        destro
 Code        do_destro
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        destroy~
+Name        destroy
 Code        do_destroy
-Position    dead~
+Position    dead
 Level       114
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        destroyrepair~
+Name        destroyrepair
 Code        do_destroyrepair
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        destroyshop~
+Name        destroyshop
 Code        do_destroyshop
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        dig~
+Name        dig
 Code        do_dig
-Position    standing~
+Position    standing
 Level       3
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        disconnect~
+Name        disconnect
 Code        do_disconnect
-Position    dead~
+Position    dead
 Level       108
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        drag~
+Name        drag
 Code        do_drag
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        devote~
+Name        devote
 Code        do_devote
-Position    resting~
+Position    resting
 Level       10
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        deities~
+Name        deities
 Code        do_deities
-Position    sleeping~
+Position    sleeping
 Level       1
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        dismount~
+Name        dismount
 Code        do_dismount
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        dismiss~
+Name        dismiss
 Code        do_dismiss
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        delay~
+Name        delay
 Code        do_delay
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        destroyslay~
+Name        destroyslay
 Code        do_destroyslay
-Position    dead~
+Position    dead
 Level       114
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        draw~
+Name        draw
 Code        do_draw
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        dislodge~
+Name        dislodge
 Code        do_dislodge
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        dump~
+Name        dump
 Code        do_dump
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        destroychannel~
+Name        destroychannel
 Code        do_destroychannel
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        destroyrune~
+Name        destroyrune
 Code        do_destroyrune
-Position    dead~
+Position    dead
 Level       110
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        deleteboard~
+Name        deleteboard
 Code        do_board_remove
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        east~
+Name        east
 Code        do_east
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        emote~
+Name        emote
 Code        do_emote
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        email~
+Name        email
 Code        do_email
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        eat~
+Name        eat
 Code        do_eat
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        exits~
+Name        exits
 Code        do_exits
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        examine~
+Name        examine
 Code        do_examine
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        equipment~
+Name        equipment
 Code        do_equipment
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        echo~
+Name        echo
 Code        do_recho
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        empty~
+Name        empty
 Code        do_empty
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        enter~
+Name        enter
 Code        do_enter
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        env~
+Name        env
 Code        do_env
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        eventinfo~
+Name        eventinfo
 Code        do_eventinfo
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        erase~
+Name        erase
 Code        do_note_remove
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        find~
+Name        find
 Code        do_find
-Position    dead~
+Position    dead
 Level       104
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        finger~
+Name        finger
 Code        do_finger
-Position    sleeping~
+Position    sleeping
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        fill~
+Name        fill
 Code        do_fill
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        follow~
+Name        follow
 Code        do_follow
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        fixchar~
+Name        fixchar
 Code        do_fixchar
-Position    dead~
+Position    dead
 Level       109
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        flee~
+Name        flee
 Code        do_flee
-Position    berserk~
+Position    berserk
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        foldarea~
+Name        foldarea
 Code        do_foldarea
-Position    dead~
+Position    dead
 Level       107
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        for~
+Name        for
 Code        do_for
-Position    dead~
+Position    dead
 Level       110
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        force~
+Name        force
 Code        do_force
-Position    dead~
+Position    dead
 Level       105
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        formpass~
+Name        formpass
 Code        do_form_password
-Position    dead~
+Position    dead
 Level       114
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        freeze~
+Name        freeze
 Code        do_freeze
-Position    dead~
+Position    dead
 Level       108
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        fixed~
+Name        fixed
 Code        do_fixed
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        fire~
+Name        fire
 Code        do_fire
-Position    fighting~
+Position    fighting
 Level       5
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        fprompt~
+Name        fprompt
 Code        do_fprompt
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        forge~
+Name        forge
 Code        do_forge
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        freevnums~
+Name        freevnums
 Code        do_freevnums
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        fly~
+Name        fly
 Code        do_fly
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        forgefind~
+Name        forgefind
 Code        do_forgefind
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        get~
+Name        get
 Code        do_get
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        give~
+Name        give
 Code        do_give
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        gtell~
+Name        gtell
 Code        do_gtell
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        group~
+Name        group
 Code        do_group
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        goto~
+Name        goto
 Code        do_goto
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        glance~
+Name        glance
 Code        do_glance
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        guilds~
+Name        guilds
 Code        do_guilds
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        gold~
+Name        gold
 Code        do_gold
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        gfighting~
+Name        gfighting
 Code        do_gfighting
-Position    dead~
+Position    dead
 Level       105
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        help~
+Name        help
 Code        do_help
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        history~
+Name        history
 Code        do_history
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        highfive~
+Name        highfive
 Code        do_highfive
-Position    dead~
+Position    dead
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        hold~
+Name        hold
 Code        do_wear
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        hedit~
+Name        hedit
 Code        do_hedit
-Position    dead~
+Position    dead
 Level       101
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        hell~
+Name        hell
 Code        do_hell
-Position    dead~
+Position    dead
 Level       104
-Log         high~
-Flags       ghost~
+Log         high
+Flags       ghost
 End
 
 #COMMAND
-Name        hlist~
+Name        hlist
 Code        do_hlist
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        holylight~
+Name        holylight
 Code        do_holylight
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        homepage~
+Name        homepage
 Code        do_homepage
-Position    sleeping~
+Position    sleeping
 Level       10
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        hset~
+Name        hset
 Code        do_hset
-Position    dead~
+Position    dead
 Level       101
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        holidays~
+Name        holidays
 Code        do_holidays
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        helpcheck~
+Name        helpcheck
 Code        do_helpcheck
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        hotboot~
+Name        hotboot
 Code        do_hotboot
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        inventory~
+Name        inventory
 Code        do_inventory
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        imotd~
+Name        imotd
 Code        do_imotd
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        ide~
+Name        ide
 Code        do_ide
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        idea~
+Name        idea
 Code        do_idea
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        immortalize~
+Name        immortalize
 Code        do_immortalize
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        induct~
+Name        induct
 Code        do_induct
-Position    standing~
+Position    standing
 Level       10
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        installarea~
+Name        installarea
 Code        do_installarea
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        instazone~
+Name        instazone
 Code        do_instazone
-Position    dead~
+Position    dead
 Level       105
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        invis~
+Name        invis
 Code        do_invis
-Position    dead~
+Position    dead
 Level       102
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        instaroom~
+Name        instaroom
 Code        do_instaroom
-Position    dead~
+Position    dead
 Level       105
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        ignore~
+Name        ignore
 Code        do_ignore
-Position    dead~
+Position    dead
 Level       1
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        immhost~
+Name        immhost
 Code        do_immhost
-Position    dead~
+Position    dead
 Level       114
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        implock~
+Name        implock
 Code        do_implock
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        icq~
+Name        icq
 Code        do_icq_number
-Position    sleeping~
+Position    sleeping
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        ident~
+Name        ident
 Code        do_ident
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        identify~
+Name        identify
 Code        do_identify
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        invoke~
+Name        invoke
 Code        do_invoke
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        junk~
+Name        junk
 Code        do_junk
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        kill~
+Name        kill
 Code        do_kill
-Position    aggressive~
+Position    aggressive
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        knock~
+Name        knock
 Code        do_rap
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        look~
+Name        look
 Code        do_look
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        load~
+Name        load
 Code        do_load
-Position    dead~
+Position    dead
 Level       104
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        lock~
+Name        lock
 Code        do_lock
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        level~
+Name        level
 Code        do_level
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        list~
+Name        list
 Code        do_list
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        languages~
+Name        languages
 Code        do_languages
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        leave~
+Name        leave
 Code        do_leave
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        light~
+Name        light
 Code        do_light
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        litterbug~
+Name        litterbug
 Code        do_litterbug
-Position    dead~
+Position    dead
 Level       108
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        loadup~
+Name        loadup
 Code        do_loadup
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        log~
+Name        log
 Code        do_log
-Position    dead~
+Position    dead
 Level       107
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        lockdown~
+Name        lockdown
 Code        do_lockdown
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        landmarks~
+Name        landmarks
 Code        do_landmarks
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        lsites~
+Name        lsites
 Code        do_landing_sites
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        listen~
+Name        listen
 Code        do_listen
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        loadrune~
+Name        loadrune
 Code        do_loadrune
-Position    dead~
+Position    dead
 Level       110
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        logins~
+Name        logins
 Code        do_logins
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        levelup~
+Name        levelup
 Code        do_levelup
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        motd~
+Name        motd
 Code        do_motd
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        mpecho~
+Name        mpecho
 Code        do_mpecho
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed action mudprog~
+Log         normal
+Flags       possessed action mudprog
 End
 
 #COMMAND
-Name        mpechoat~
+Name        mpechoat
 Code        do_mpechoat
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       action mudprog~
+Log         normal
+Flags       action mudprog
 End
 
 #COMMAND
-Name        mea~
+Name        mea
 Code        do_mpechoat
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       action mudprog~
+Log         normal
+Flags       action mudprog
 End
 
 #COMMAND
-Name        mpat~
+Name        mpat
 Code        do_mpat
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpforce~
+Name        mpforce
 Code        do_mpforce
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpechoaround~
+Name        mpechoaround
 Code        do_mpechoaround
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       action mudprog~
+Log         normal
+Flags       action mudprog
 End
 
 #COMMAND
-Name        mer~
+Name        mer
 Code        do_mpechoaround
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       action mudprog~
+Log         normal
+Flags       action mudprog
 End
 
 #COMMAND
-Name        mpasound~
+Name        mpasound
 Code        do_mpasound
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed action mudprog~
+Log         normal
+Flags       possessed action mudprog
 End
 
 #COMMAND
-Name        mpoload~
+Name        mpoload
 Code        do_mpoload
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpjunk~
+Name        mpjunk
 Code        do_mpjunk
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed action mudprog~
+Log         normal
+Flags       possessed action mudprog
 End
 
 #COMMAND
-Name        mpgoto~
+Name        mpgoto
 Code        do_mpgoto
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpdamage~
+Name        mpdamage
 Code        do_mp_damage
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed action mudprog~
+Log         normal
+Flags       possessed action mudprog
 End
 
 #COMMAND
-Name        mpdelay~
+Name        mpdelay
 Code        do_mpdelay
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mprestore~
+Name        mprestore
 Code        do_mp_restore
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpkill~
+Name        mpkill
 Code        do_mpkill
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed action mudprog~
+Log         normal
+Flags       possessed action mudprog
 End
 
 #COMMAND
-Name        mptransfer~
+Name        mptransfer
 Code        do_mptransfer
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpmload~
+Name        mpmload
 Code        do_mpmload
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpnothing~
+Name        mpnothing
 Code        do_mpnothing
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mppurge~
+Name        mppurge
 Code        do_mppurge
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpinvis~
+Name        mpinvis
 Code        do_mpinvis
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpadvance~
+Name        mpadvance
 Code        do_mpadvance
-Position    dead~
+Position    dead
 Level       0
-Log         always~
-Flags       possessed mudprog~
+Log         always
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpapplyb~
+Name        mpapplyb
 Code        do_mpapplyb
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpclosepassage~
+Name        mpclosepassage
 Code        do_mp_close_passage
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpopenpassage~
+Name        mpopenpassage
 Code        do_mp_open_passage
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpdream~
+Name        mpdream
 Code        do_mpdream
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpslay~
+Name        mpslay
 Code        do_mp_slay
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mppractice~
+Name        mppractice
 Code        do_mp_practice
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        make~
+Name        make
 Code        do_make
-Position    standing~
+Position    standing
 Level       100
-Log         always~
-Flags       ~
+Log         always
 End
 
 #COMMAND
-Name        makeclan~
+Name        makeclan
 Code        do_makeclan
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        makerepair~
+Name        makerepair
 Code        do_makerepair
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        makeshop~
+Name        makeshop
 Code        do_makeshop
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        makewizlist~
+Name        makewizlist
 Code        do_makewizlist
-Position    dead~
+Position    dead
 Level       107
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        mcreate~
+Name        mcreate
 Code        do_mcreate
-Position    dead~
+Position    dead
 Level       105
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        mdelete~
+Name        mdelete
 Code        do_mdelete
-Position    dead~
+Position    dead
 Level       105
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        memory~
+Name        memory
 Code        do_memory
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mpedit~
+Name        mpedit
 Code        do_mpedit
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       possessed ghost~
+Log         build
+Flags       possessed ghost
 End
 
 #COMMAND
-Name        mpstat~
+Name        mpstat
 Code        do_mpstat
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       possessed ghost~
+Log         normal
+Flags       possessed ghost
 End
 
 #COMMAND
-Name        mset~
+Name        mset
 Code        do_mset
-Position    dead~
+Position    dead
 Level       105
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        mpfear~
+Name        mpfear
 Code        do_mpfear
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mphunt~
+Name        mphunt
 Code        do_mphunt
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mphate~
+Name        mphate
 Code        do_mphate
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mptrlook~
+Name        mptrlook
 Code        do_mptrlook
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        makedeity~
+Name        makedeity
 Code        do_makedeity
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        mpfavor~
+Name        mpfavor
 Code        do_mpfavor
-Position    dead~
+Position    dead
 Level       1
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mposet~
+Name        mposet
 Code        do_mposet
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpmset~
+Name        mpmset
 Code        do_mpmset
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mppardon~
+Name        mppardon
 Code        do_mppardon
-Position    dead~
+Position    dead
 Level       0
-Log         always~
-Flags       possessed mudprog~
+Log         always
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpscatter~
+Name        mpscatter
 Code        do_mpscatter
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mppeace~
+Name        mppeace
 Code        do_mppeace
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpechozone~
+Name        mpechozone
 Code        do_mpechozone
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mez~
+Name        mez
 Code        do_mpechozone
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mplog~
+Name        mplog
 Code        do_mp_log
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        moblog~
+Name        moblog
 Code        do_moblog
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mpasupress~
+Name        mpasupress
 Code        do_mpasupress
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        mpbodybag~
+Name        mpbodybag
 Code        do_mpbodybag
-Position    dead~
+Position    dead
 Level       1
-Log         normal~
-Flags       possessed mudprog~
+Log         normal
+Flags       possessed mudprog
 End
 
 #COMMAND
-Name        makeslay~
+Name        makeslay
 Code        do_makeslay
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mpstatreroll~
+Name        mpstatreroll
 Code        do_mpstatreroll
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpraceset~
+Name        mpraceset
 Code        do_mpraceset
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpcopy~
+Name        mpcopy
 Code        do_mpcopy
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mparthmoor~
+Name        mparthmoor
 Code        do_mparthmoor
-Position    dead~
+Position    dead
 Level       90
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        morph~
+Name        morph
 Code        do_imm_morph
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        morphset~
+Name        morphset
 Code        do_morphset
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        morphstat~
+Name        morphstat
 Code        do_morphstat
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        morphcreate~
+Name        morphcreate
 Code        do_morphcreate
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        morphdestroy~
+Name        morphdestroy
 Code        do_morphdestroy
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        morphlist~
+Name        morphlist
 Code        do_morphlist
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mpstrew~
+Name        mpstrew
 Code        do_mpstrew
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        map~
+Name        map
 Code        do_map
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mapedit~
+Name        mapedit
 Code        do_mapedit
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mpdoppleganger~
+Name        mpdoppleganger
 Code        do_mpdoppleganger
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpgwraggedd~
+Name        mpgwraggedd
 Code        do_mpgwraggedd
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpsindhae~
+Name        mpsindhae
 Code        do_mpsindhae
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        motdedit~
+Name        motdedit
 Code        do_motdedit
-Position    dead~
+Position    dead
 Level       110
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        makeenv~
+Name        makeenv
 Code        do_makeenv
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mark~
+Name        mark
 Code        do_mark
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        mpaset~
+Name        mpaset
 Code        do_mpaset
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpqset~
+Name        mpqset
 Code        do_mpqset
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mix~
+Name        mix
 Code        do_mix
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        mpsound~
+Name        mpsound
 Code        do_mpsound
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpsoundaround~
+Name        mpsoundaround
 Code        do_mpsoundaround
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpsoundat~
+Name        mpsoundat
 Code        do_mpsoundat
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpmusic~
+Name        mpmusic
 Code        do_mpmusic
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpmusicaround~
+Name        mpmusicaround
 Code        do_mpmusicaround
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpmusicat~
+Name        mpmusicat
 Code        do_mpmusicat
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        mpsoundzone~
+Name        mpsoundzone
 Code        do_mpsoundzone
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
-Flags       mudprog~
+Log         normal
+Flags       mudprog
 End
 
 #COMMAND
-Name        makechannel~
+Name        makechannel
 Code        do_makechannel
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        makerune~
+Name        makerune
 Code        do_makerune
-Position    dead~
+Position    dead
 Level       110
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        mcopy~
+Name        mcopy
 Code        do_mcopy
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        makeboard~
+Name        makeboard
 Code        do_board_make
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        north~
+Name        north
 Code        do_north
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        name~
+Name        name
 Code        do_name
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        ne~
+Name        ne
 Code        do_northeast
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        nw~
+Name        nw
 Code        do_northwest
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        newpass~
+Name        newpass
 Code        do_newpassword
-Position    dead~
+Position    dead
 Level       109
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        noemote~
+Name        noemote
 Code        do_noemote
-Position    dead~
+Position    dead
 Level       103
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        noresolve~
+Name        noresolve
 Code        do_noresolve
-Position    dead~
+Position    dead
 Level       115
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        northeast~
+Name        northeast
 Code        do_northeast
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        northwest~
+Name        northwest
 Code        do_northwest
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        notell~
+Name        notell
 Code        do_notell
-Position    dead~
+Position    dead
 Level       103
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        notitle~
+Name        notitle
 Code        do_notitle
-Position    dead~
+Position    dead
 Level       103
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        namegen~
+Name        namegen
 Code        do_name_generator
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        nset~
+Name        nset
 Code        do_note_set
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        order~
+Name        order
 Code        do_order
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        open~
+Name        open
 Code        do_open
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        ocreate~
+Name        ocreate
 Code        do_ocreate
-Position    dead~
+Position    dead
 Level       104
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        odelete~
+Name        odelete
 Code        do_odelete
-Position    dead~
+Position    dead
 Level       104
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        opedit~
+Name        opedit
 Code        do_opedit
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        opstat~
+Name        opstat
 Code        do_opstat
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        outcast~
+Name        outcast
 Code        do_outcast
-Position    standing~
+Position    standing
 Level       10
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        oset~
+Name        oset
 Code        do_oset
-Position    dead~
+Position    dead
 Level       104
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        opcopy~
+Name        opcopy
 Code        do_opcopy
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        oredit~
+Name        oredit
 Code        do_oredit
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        ooedit~
+Name        ooedit
 Code        do_ooedit
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        omedit~
+Name        omedit
 Code        do_omedit
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        ocopy~
+Name        ocopy
 Code        do_ocopy
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        promote~
+Name        promote
 Code        do_promote
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        put~
+Name        put
 Code        do_put
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        password~
+Name        password
 Code        do_password
-Position    dead~
+Position    dead
 Level       0
-Log         never~
+Log         never
 End
 
 #COMMAND
-Name        practice~
+Name        practice
 Code        do_practice
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        peace~
+Name        peace
 Code        do_peace
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        pull~
+Name        pull
 Code        do_pull
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        purge~
+Name        purge
 Code        do_purge
-Position    dead~
+Position    dead
 Level       104
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        push~
+Name        push
 Code        do_push
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        prompt~
+Name        prompt
 Code        do_prompt
-Position    sleeping~
+Position    sleeping
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        pager~
+Name        pager
 Code        do_pager
-Position    sleeping~
+Position    sleeping
 Level       1
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        project~
+Name        project
 Code        do_project
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        pcrename~
+Name        pcrename
 Code        do_pcrename
-Position    dead~
+Position    dead
 Level       114
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        pfiles~
+Name        pfiles
 Code        do_pfiles
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        play~
+Name        play
 Code        do_play
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        privacy~
+Name        privacy
 Code        do_privacy
-Position    sleeping~
+Position    sleeping
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        pclist~
+Name        pclist
 Code        do_pclist
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        quaff~
+Name        quaff
 Code        do_quaff
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        quit~
+Name        quit
 Code        do_quit
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        quiv~
+Name        quiv
 Code        do_quiv
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        qbit~
+Name        qbit
 Code        do_qbit
-Position    dead~
+Position    dead
 Level       105
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        quotes~
+Name        quotes
 Code        do_quotes
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        quoteset~
+Name        quoteset
 Code        do_quoteset
-Position    dead~
+Position    dead
 Level       105
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        remove~
+Name        remove
 Code        do_remove
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        rest~
+Name        rest
 Code        do_rest
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        report~
+Name        report
 Code        do_report
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        repair~
+Name        repair
 Code        do_repair
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        reply~
+Name        reply
 Code        do_reply
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        rank~
+Name        rank
 Code        do_rank
-Position    dead~
+Position    dead
 Level       110
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        rat~
+Name        rat
 Code        do_rat
-Position    dead~
+Position    dead
 Level       103
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        rdelete~
+Name        rdelete
 Code        do_rdelete
-Position    dead~
+Position    dead
 Level       103
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        reboo~
+Name        reboo
 Code        do_reboo
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        reboot~
+Name        reboot
 Code        do_reboot
-Position    dead~
+Position    dead
 Level       108
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        recite~
+Name        recite
 Code        do_recite
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        redit~
+Name        redit
 Code        do_redit
-Position    dead~
+Position    dead
 Level       103
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        rent~
+Name        rent
 Code        do_rent
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        repairset~
+Name        repairset
 Code        do_repairset
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        repairshops~
+Name        repairshops
 Code        do_repairshops
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        repairstat~
+Name        repairstat
 Code        do_repairstat
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        reset~
+Name        reset
 Code        do_reset
-Position    dead~
+Position    dead
 Level       105
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        restore~
+Name        restore
 Code        do_restore
-Position    dead~
+Position    dead
 Level       104
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        restoretime~
+Name        restoretime
 Code        do_restoretime
-Position    dead~
+Position    dead
 Level       104
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        restrict~
+Name        restrict
 Code        do_restrict
-Position    dead~
+Position    dead
 Level       114
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        retire~
+Name        retire
 Code        do_retire
-Position    dead~
+Position    dead
 Level       115
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        rpedit~
+Name        rpedit
 Code        do_rpedit
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        rpstat~
+Name        rpstat
 Code        do_rpstat
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        reserve~
+Name        reserve
 Code        do_reserve
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        rap~
+Name        rap
 Code        do_rap
-Position    resting~
+Position    resting
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        remains~
+Name        remains
 Code        do_remains
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        return~
+Name        return
 Code        do_return
-Position    dead~
+Position    dead
 Level       102
-Log         normal~
-Flags       action ghost~
+Log         normal
+Flags       action ghost
 End
 
 #COMMAND
-Name        run~
+Name        run
 Code        do_run
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        revert~
+Name        revert
 Code        do_revert
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        renumber~
+Name        renumber
 Code        do_renumber
-Position    dead~
+Position    dead
 Level       114
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        roster~
+Name        roster
 Code        do_roster
-Position    dead~
+Position    dead
 Level       10
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        rcopy~
+Name        rcopy
 Code        do_rcopy
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        runewords~
+Name        runewords
 Code        do_runewords
-Position    dead~
+Position    dead
 Level       105
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        review~
+Name        review
 Code        do_note_list
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        read~
+Name        read
 Code        do_note_read
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        rttest~
+Name        rttest
 Code        do_rttest
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        south~
+Name        south
 Code        do_south
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        score~
+Name        score
 Code        do_score
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        scan~
+Name        scan
 Code        do_scan
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        se~
+Name        se
 Code        do_southeast
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        sw~
+Name        sw
 Code        do_southwest
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        say~
+Name        say
 Code        do_say
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        save~
+Name        save
 Code        do_save
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        sacrifice~
+Name        sacrifice
 Code        do_sacrifice
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        sleep~
+Name        sleep
 Code        do_sleep
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        stand~
+Name        stand
 Code        do_stand
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        skills~
+Name        skills
 Code        do_viewskills
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        stat~
+Name        stat
 Code        do_stat
-Position    dead~
+Position    dead
 Level       103
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        savearea~
+Name        savearea
 Code        do_savearea
-Position    dead~
+Position    dead
 Level       103
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        sell~
+Name        sell
 Code        do_sell
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        sedit~
+Name        sedit
 Code        do_sedit
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setclan~
+Name        setclan
 Code        do_setclan
-Position    sleeping~
+Position    sleeping
 Level       40
-Log         always~
+Log         always
 End
 
 #COMMAND
-Name        shops~
+Name        shops
 Code        do_shops
-Position    dead~
+Position    dead
 Level       106
-Log         build~
-Flags       ghost~
+Log         build
+Flags       ghost
 End
 
 #COMMAND
-Name        shopset~
+Name        shopset
 Code        do_shopset
-Position    dead~
+Position    dead
 Level       106
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        shopstat~
+Name        shopstat
 Code        do_shopstat
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        shove~
+Name        shove
 Code        do_shove
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        show~
+Name        show
 Code        do_vlist
-Position    dead~
+Position    dead
 Level       103
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        system~
+Name        system
 Code        do_echo
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        showclan~
+Name        showclan
 Code        do_showclan
-Position    dead~
+Position    dead
 Level       102
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        shutdow~
+Name        shutdow
 Code        do_shutdow
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        shutdown~
+Name        shutdown
 Code        do_shutdown
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        sit~
+Name        sit
 Code        do_sit
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        silence~
+Name        silence
 Code        do_silence
-Position    dead~
+Position    dead
 Level       103
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        slay~
+Name        slay
 Code        do_slay
-Position    dead~
+Position    dead
 Level       107
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        slist~
+Name        slist
 Code        do_slist
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        slookup~
+Name        slookup
 Code        do_slookup
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        smoke~
+Name        smoke
 Code        do_smoke
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        snoop~
+Name        snoop
 Code        do_snoop
-Position    dead~
+Position    dead
 Level       108
-Log         high~
-Flags       ghost~
+Log         high
+Flags       ghost
 End
 
 #COMMAND
-Name        sober~
+Name        sober
 Code        do_sober
-Position    dead~
+Position    dead
 Level       102
-Log         high~
-Flags       ghost~
+Log         high
+Flags       ghost
 End
 
 #COMMAND
-Name        socials~
+Name        socials
 Code        do_socials
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        southeast~
+Name        southeast
 Code        do_southeast
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        southwest~
+Name        southwest
 Code        do_southwest
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        speak~
+Name        speak
 Code        do_speak
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        split~
+Name        split
 Code        do_split
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        sset~
+Name        sset
 Code        do_sset
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        switch~
+Name        switch
 Code        do_switch
-Position    dead~
+Position    dead
 Level       102
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        setdeity~
+Name        setdeity
 Code        do_setdeity
-Position    dead~
+Position    dead
 Level       107
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        showdeity~
+Name        showdeity
 Code        do_showdeity
-Position    dead~
+Position    dead
 Level       102
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        supplicate~
+Name        supplicate
 Code        do_supplicate
-Position    resting~
+Position    resting
 Level       10
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        showclass~
+Name        showclass
 Code        do_showclass
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setclass~
+Name        setclass
 Code        do_setclass
-Position    dead~
+Position    dead
 Level       113
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        scatter~
+Name        scatter
 Code        do_scatter
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        style~
+Name        style
 Code        do_style
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        showweather~
+Name        showweather
 Code        do_showweather
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setweather~
+Name        setweather
 Code        do_setweather
-Position    dead~
+Position    dead
 Level       106
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        strew~
+Name        strew
 Code        do_strew
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        showguild~
+Name        showguild
 Code        do_showclan
-Position    dead~
+Position    dead
 Level       102
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        strip~
+Name        strip
 Code        do_strip
-Position    dead~
+Position    dead
 Level       104
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        showrace~
+Name        showrace
 Code        do_showrace
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setrace~
+Name        setrace
 Code        do_setrace
-Position    dead~
+Position    dead
 Level       110
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setslay~
+Name        setslay
 Code        do_setslay
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        showslay~
+Name        showslay
 Code        do_showslay
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        smartsac~
+Name        smartsac
 Code        do_smartsac
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        setprice~
+Name        setprice
 Code        do_setprice
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        saleslist~
+Name        saleslist
 Code        do_saleslist
-Position    dead~
+Position    dead
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        survey~
+Name        survey
 Code        do_survey
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        setmark~
+Name        setmark
 Code        do_setmark
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setexit~
+Name        setexit
 Code        do_setexit
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        showabit~
+Name        showabit
 Code        do_showabit
-Position    dead~
+Position    dead
 Level       105
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        showqbit~
+Name        showqbit
 Code        do_showqbit
-Position    dead~
+Position    dead
 Level       105
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setabit~
+Name        setabit
 Code        do_setabit
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setqbit~
+Name        setqbit
 Code        do_setqbit
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setlanding~
+Name        setlanding
 Code        do_setlanding
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setliquid~
+Name        setliquid
 Code        do_setliquid
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setmixture~
+Name        setmixture
 Code        do_setmixture
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        stash~
+Name        stash
 Code        do_stash
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setchannel~
+Name        setchannel
 Code        do_setchannel
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        showchannels~
+Name        showchannels
 Code        do_showchannels
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        showrunes~
+Name        showrunes
 Code        do_showrunes
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        setrune~
+Name        setrune
 Code        do_setrune
-Position    dead~
+Position    dead
 Level       110
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        socket~
+Name        socket
 Code        do_socket
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        showliquid~
+Name        showliquid
 Code        do_showliquid
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        shatest~
+Name        shatest
 Code        do_shatest
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        scan2~
+Name        scan2
 Code        do_scan2
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        tell~
+Name        tell
 Code        do_tell
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       possessed~
+Log         normal
+Flags       possessed
 End
 
 #COMMAND
-Name        take~
+Name        take
 Code        do_get
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        tamp~
+Name        tamp
 Code        do_tamp
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        time~
+Name        time
 Code        do_time
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        title~
+Name        title
 Code        do_title
-Position    sleeping~
+Position    sleeping
 Level       10
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        transfer~
+Name        transfer
 Code        do_transfer
-Position    dead~
+Position    dead
 Level       104
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        trust~
+Name        trust
 Code        do_trust
-Position    dead~
+Position    dead
 Level       115
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        typo~
+Name        typo
 Code        do_typo
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        timecmd~
+Name        timecmd
 Code        do_timecmd
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        timezone~
+Name        timezone
 Code        do_timezone
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        up~
+Name        up
 Code        do_up
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        unlock~
+Name        unlock
 Code        do_unlock
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        unhell~
+Name        unhell
 Code        do_unhell
-Position    dead~
+Position    dead
 Level       104
-Log         high~
-Flags       ghost~
+Log         high
+Flags       ghost
 End
 
 #COMMAND
-Name        unalias~
+Name        unalias
 Code        do_alias
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        users~
+Name        users
 Code        do_users
-Position    dead~
+Position    dead
 Level       102
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        unbolt~
+Name        unbolt
 Code        do_unbolt
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        unmorph~
+Name        unmorph
 Code        do_imm_unmorph
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        value~
+Name        value
 Code        do_value
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        visible~
+Name        visible
 Code        do_visible
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        vsearch~
+Name        vsearch
 Code        do_vsearch
-Position    dead~
+Position    dead
 Level       104
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        victories~
+Name        victories
 Code        do_victories
-Position    resting~
+Position    resting
 Level       10
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        vassign~
+Name        vassign
 Code        do_vassign
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        voice~
+Name        voice
 Code        do_voice
-Position    dead~
+Position    dead
 Level       107
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        visits~
+Name        visits
 Code        do_visits
-Position    dead~
+Position    dead
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        viewskills~
+Name        viewskills
 Code        do_viewskills
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        west~
+Name        west
 Code        do_west
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        wake~
+Name        wake
 Code        do_wake
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        who~
+Name        who
 Code        do_who
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        wear~
+Name        wear
 Code        do_wear
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        wield~
+Name        wield
 Code        do_wear
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        withdraw~
+Name        withdraw
 Code        do_withdraw
-Position    resting~
+Position    resting
 Level       2
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        world~
+Name        world
 Code        do_world
-Position    sleeping~
+Position    sleeping
 Level       2
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        wizinfo~
+Name        wizinfo
 Code        do_wizinfo
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        weather~
+Name        weather
 Code        do_weather
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        wimpy~
+Name        wimpy
 Code        do_wimpy
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        wizlist~
+Name        wizlist
 Code        do_wizlist
-Position    sleeping~
+Position    sleeping
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        wizhelp~
+Name        wizhelp
 Code        do_wizhelp
-Position    dead~
+Position    dead
 Level       101
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        wizlock~
+Name        wizlock
 Code        do_wizlock
-Position    dead~
+Position    dead
 Level       103
-Log         always~
-Flags       ghost~
+Log         always
+Flags       ghost
 End
 
 #COMMAND
-Name        warn~
+Name        warn
 Code        do_warn
-Position    dead~
+Position    dead
 Level       108
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        whisper~
+Name        whisper
 Code        do_whisper
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
-Flags       possessed~
+Log         normal
+Flags       possessed
 End
 
 #COMMAND
-Name        web~
+Name        web
 Code        do_web
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        webroom~
+Name        webroom
 Code        do_webroom
-Position    dead~
+Position    dead
 Level       113
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        where~
+Name        where
 Code        do_where
-Position    resting~
+Position    resting
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        write~
+Name        write
 Code        do_note_write
-Position    standing~
+Position    standing
 Level       0
-Log         normal~
+Log         normal
 End
 
 #COMMAND
-Name        wtsave~
+Name        wtsave
 Code        do_wtsave
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        wtload~
+Name        wtload
 Code        do_wtload
-Position    dead~
+Position    dead
 Level       115
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
-Name        zap~
+Name        zap
 Code        do_zap
-Position    berserk~
+Position    berserk
 Level       0
-Log         normal~
-Flags       action~
+Log         normal
+Flags       action
 End
 
 #COMMAND
-Name        zones~
+Name        zones
 Code        do_zones
-Position    dead~
+Position    dead
 Level       103
-Log         normal~
-Flags       ghost~
+Log         normal
+Flags       ghost
 End
 
-#END

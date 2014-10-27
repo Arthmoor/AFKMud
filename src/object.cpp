@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -489,7 +489,7 @@ bool is_same_obj( obj_data * src, obj_data * dest )
        && src->value[10] == dest->value[10]
        && src->contents == dest->contents
        && src->count + dest->count > 0
-       && src->map == dest->map
+       && src->cmap == dest->cmap
        && src->mx == dest->mx && src->my == dest->my && !str_cmp( src->seller, dest->seller ) && !str_cmp( src->buyer, dest->buyer ) && src->bid == dest->bid )
       return true;
 
@@ -769,7 +769,7 @@ obj_data *obj_data::to_char( char_data * ch )
          if( ch != supermob )
          {
             extra_flags.reset( ITEM_ONMAP );
-            map = -1;
+            cmap = -1;
             mx = -1;
             my = -1;
          }
@@ -806,7 +806,7 @@ obj_data *obj_data::to_char( char_data * ch )
          if( ch != supermob )
          {
             extra_flags.reset( ITEM_ONMAP );
-            map = -1;
+            cmap = -1;
             mx = -1;
             my = -1;
          }
@@ -916,7 +916,7 @@ void obj_data::from_room(  )
    extra_flags.reset( ITEM_ONMAP );
    mx = -1;
    my = -1;
-   map = -1;
+   cmap = -1;
 
    list < affect_data * >::iterator paf;
    for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
@@ -1003,14 +1003,14 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
       if( ch->has_actflag( ACT_ONMAP ) || ch->has_pcflag( PCFLAG_ONMAP ) )
       {
          extra_flags.set( ITEM_ONMAP );
-         map = ch->map;
+         cmap = ch->cmap;
          mx = ch->mx;
          my = ch->my;
       }
       else
       {
          extra_flags.reset( ITEM_ONMAP );
-         map = -1;
+         cmap = -1;
          mx = -1;
          my = -1;
       }
@@ -1086,7 +1086,7 @@ void obj_data::from_obj(  )
    if( obj_from->extra_flags.test( ITEM_ONMAP ) )
    {
       extra_flags.set( ITEM_ONMAP );
-      map = obj_from->map;
+      cmap = obj_from->cmap;
       mx = obj_from->mx;
       my = obj_from->my;
    }
@@ -1271,7 +1271,7 @@ obj_data *obj_data::clone(  )
    oclone->cost = cost;
    oclone->level = level;
    oclone->timer = timer;
-   oclone->map = map;
+   oclone->cmap = cmap;
    oclone->mx = mx;
    oclone->my = my;
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
@@ -1303,7 +1303,7 @@ obj_data *group_obj( obj_data * obj, obj_data * obj2 )
    if( obj->pIndexData->vnum == OBJ_VNUM_TREASURE || obj2->pIndexData->vnum == OBJ_VNUM_TREASURE )
       return obj2;
 
-   if( obj->pIndexData == obj2->pIndexData && !str_cmp( obj->name, obj2->name ) && !str_cmp( obj->short_descr, obj2->short_descr ) && !str_cmp( obj->objdesc, obj2->objdesc ) && ( obj->action_desc && obj2->action_desc && !str_cmp( obj->action_desc, obj2->action_desc ) ) && !str_cmp( obj->socket[0], obj2->socket[0] ) && !str_cmp( obj->socket[1], obj2->socket[1] ) && !str_cmp( obj->socket[2], obj2->socket[2] ) && obj->item_type == obj2->item_type && obj->extra_flags == obj2->extra_flags && obj->wear_flags == obj2->wear_flags && obj->wear_loc == obj2->wear_loc && obj->weight == obj2->weight && obj->cost == obj2->cost && obj->level == obj2->level && obj->timer == obj2->timer && obj->value[0] == obj2->value[0] && obj->value[1] == obj2->value[1] && obj->value[2] == obj2->value[2] && obj->value[3] == obj2->value[3] && obj->value[4] == obj2->value[4] && obj->value[5] == obj2->value[5] && obj->value[6] == obj2->value[6] && obj->value[7] == obj2->value[7] && obj->value[8] == obj2->value[8] && obj->value[9] == obj2->value[9] && obj->value[10] == obj2->value[10] && obj->extradesc.empty(  ) && obj2->extradesc.empty(  ) && obj->affects.empty(  ) && obj2->affects.empty(  ) && obj->contents.empty(  ) && obj2->contents.empty(  ) && obj->count + obj2->count > 0 && obj->map == obj2->map && obj->mx == obj2->mx && obj->my == obj2->my && !str_cmp( obj->seller, obj2->seller ) && !str_cmp( obj->buyer, obj2->buyer ) && obj->bid == obj2->bid )   /* prevent count overflow */
+   if( obj->pIndexData == obj2->pIndexData && !str_cmp( obj->name, obj2->name ) && !str_cmp( obj->short_descr, obj2->short_descr ) && !str_cmp( obj->objdesc, obj2->objdesc ) && ( obj->action_desc && obj2->action_desc && !str_cmp( obj->action_desc, obj2->action_desc ) ) && !str_cmp( obj->socket[0], obj2->socket[0] ) && !str_cmp( obj->socket[1], obj2->socket[1] ) && !str_cmp( obj->socket[2], obj2->socket[2] ) && obj->item_type == obj2->item_type && obj->extra_flags == obj2->extra_flags && obj->wear_flags == obj2->wear_flags && obj->wear_loc == obj2->wear_loc && obj->weight == obj2->weight && obj->cost == obj2->cost && obj->level == obj2->level && obj->timer == obj2->timer && obj->value[0] == obj2->value[0] && obj->value[1] == obj2->value[1] && obj->value[2] == obj2->value[2] && obj->value[3] == obj2->value[3] && obj->value[4] == obj2->value[4] && obj->value[5] == obj2->value[5] && obj->value[6] == obj2->value[6] && obj->value[7] == obj2->value[7] && obj->value[8] == obj2->value[8] && obj->value[9] == obj2->value[9] && obj->value[10] == obj2->value[10] && obj->extradesc.empty(  ) && obj2->extradesc.empty(  ) && obj->affects.empty(  ) && obj2->affects.empty(  ) && obj->contents.empty(  ) && obj2->contents.empty(  ) && obj->count + obj2->count > 0 && obj->cmap == obj2->cmap && obj->mx == obj2->mx && obj->my == obj2->my && !str_cmp( obj->seller, obj2->seller ) && !str_cmp( obj->buyer, obj2->buyer ) && obj->bid == obj2->bid )   /* prevent count overflow */
    {
       obj->count += obj2->count;
       obj->pIndexData->count += obj2->count; /* to be decremented in */
@@ -1529,7 +1529,7 @@ void obj_data::make_scraps(  )
    if( extra_flags.test( ITEM_ONMAP ) )
    {
       scraps->extra_flags.set( ITEM_ONMAP );
-      scraps->map = map;
+      scraps->cmap = cmap;
       scraps->mx = mx;
       scraps->my = my;
    }

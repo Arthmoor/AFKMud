@@ -1,25 +1,24 @@
 #ENTRANCE
-ToMap	-1
-OnMap	0
-Here	500 500
-There	-1 -1
-Vnum	50499
+ToMap      -1
+OnMap      0
+Here       500 500
+There      -1 -1
+Vnum       50499
 End
 
 #ENTRANCE
-ToMap	-1
-OnMap	1
-Here	500 500
-There	-1 -1
-Vnum	51499
+ToMap      -1
+OnMap      1
+Here       500 500
+There      -1 -1
+Vnum       51499
 End
 
 #ENTRANCE
-ToMap	-1
-OnMap	2
-Here    500 500
-There	-1 -1
-Vnum	50999
+ToMap      -1
+OnMap      2
+Here       500 500
+There      -1 -1
+Vnum       50999
 End
 
-#END

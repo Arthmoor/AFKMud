@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -292,7 +292,7 @@ void char_data::music( const string & fname, int volume, bool toroom )
       if( !MSP_ON(  ) )
          return;
 
-      if( url && url[0] != '\0' )
+      if( url[0] != '\0' )
          printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type, url );
       else
          printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type );
@@ -308,7 +308,7 @@ void char_data::music( const string & fname, int volume, bool toroom )
          if( !vch->MSP_ON(  ) )
             return;
 
-         if( url && url[0] != '\0' )
+         if( url[0] != '\0' )
             vch->printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type, url );
          else
             vch->printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type );

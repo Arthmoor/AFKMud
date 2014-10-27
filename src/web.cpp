@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -226,6 +226,12 @@ void web_who(  )
       descriptor_data *d = *ds;
       char_data *person = d->original ? d->original : d->character;
 
+      if( !d )
+      {
+         bug( "%s: NULL DESCRIPTOR in list!", __FUNCTION__ );
+         continue;
+      }
+
       if( person && d->connected >= CON_PLAYING )
       {
          if( person->level >= LEVEL_IMMORTAL )
@@ -270,6 +276,12 @@ void web_who(  )
    {
       descriptor_data *d = *ds;
       char_data *person = d->original ? d->original : d->character;
+
+      if( !d )
+      {
+         bug( "%s: NULL DESCRIPTOR in list!", __FUNCTION__ );
+         continue;
+      }
 
       if( person && d->connected >= CON_PLAYING )
       {

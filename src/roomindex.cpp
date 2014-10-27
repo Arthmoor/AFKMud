@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -510,6 +510,24 @@ void room_index::extract_exit( exit_data * pexit )
    deleteptr( pexit );
 }
 
+void room_index::wipe_coord_resets( short cmap, short x, short y )
+{
+   reset_data *pReset;
+   list < reset_data * >::iterator rst;
+
+   for( rst = resets.begin(  ); rst != resets.end(  ); )
+   {
+      pReset = *rst;
+      ++rst;
+
+      if( ( pReset->arg4 == cmap ) && ( pReset->arg5 == x ) && ( pReset->arg6 == y ) )
+      {
+          resets.remove( pReset );
+          delete_reset( pReset );
+      }
+   }
+}
+
 void room_index::wipe_resets(  )
 {
    reset_data *pReset;
@@ -962,7 +980,7 @@ int count_obj_list( reset_data * pReset, obj_index * pObjIndex, list < obj_data 
       {
          if( pReset->command == 'M' || pReset->command == 'O' )
          {
-            if( pReset->arg4 == obj->map && pReset->arg5 == obj->mx && pReset->arg6 == obj->my )
+            if( pReset->arg4 == obj->cmap && pReset->arg5 == obj->mx && pReset->arg6 == obj->my )
             {
                if( obj->count > 1 )
                   nMatch += obj->count;
@@ -1211,7 +1229,7 @@ void room_index::reset(  )
             if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
             {
                mob->set_actflag( ACT_ONMAP );
-               mob->map = pReset->arg4;
+               mob->cmap = pReset->arg4;
                mob->mx = pReset->arg5;
                mob->my = pReset->arg6;
             }
@@ -1562,7 +1580,7 @@ void room_index::reset(  )
                if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
                {
                   obj->extra_flags.set( ITEM_ONMAP );
-                  obj->map = pReset->arg4;
+                  obj->cmap = pReset->arg4;
                   obj->mx = pReset->arg5;
                   obj->my = pReset->arg6;
                }
@@ -1580,7 +1598,7 @@ void room_index::reset(  )
                if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
                {
                   obj->extra_flags.set( ITEM_ONMAP );
-                  obj->map = pReset->arg4;
+                  obj->cmap = pReset->arg4;
                   obj->mx = pReset->arg5;
                   obj->my = pReset->arg6;
                }

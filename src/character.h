@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -456,7 +456,7 @@ class char_data
    {
       return ( position > POS_SLEEPING );
    }
-   void WAIT_STATE( int npulse )
+   void WAIT_STATE( short npulse )
    {
       ( wait = UMAX( wait, ( is_immortal(  )? 0 : npulse ) ) );
    }
@@ -605,7 +605,7 @@ class char_data
    short mobinvis;   /* Mobinvis level SB */
    short mx;   /* Coordinates on the overland map - Samson 7-31-99 */
    short my;
-   short map;  /* Which map are they on? - Samson 8-3-99 */
+   short cmap;  /* Which map are they on? - Samson 8-3-99 */
    short sector;  /* Type of terrain to restrict a wandering mob to on overland - Samson 7-27-00 */
    unsigned short mpscriptpos;
    bool has_skyship; /* Identifies has skyship */

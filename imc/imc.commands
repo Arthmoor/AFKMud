@@ -231,13 +231,6 @@ Connected 0
 End
 
 #COMMAND
-Name      imcnotify
-Code      imcnotify
-Perm      Mort
-Connected 0
-End
-
-#COMMAND
 Name      imclast
 Code      imclast
 Perm      Mort

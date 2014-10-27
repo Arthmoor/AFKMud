@@ -44,10 +44,10 @@ OPT_FLAG = -pipe -Os
 DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
-W_FLAGS = -Wall -Wformat-security -Wshadow -Wpointer-arith -Wcast-align -Wcast-qual -Wredundant-decls -Wconversion
+W_FLAGS = -Wall -Wformat-security -Wshadow -Wpointer-arith -Wcast-align -Wcast-qual -Wredundant-decls
 
 ifndef CYGWIN
-   W_FLAGS := -Werror $(W_FLAGS)
+   W_FLAGS := $(W_FLAGS) #-Werror
    OPT_FLAG := -rdynamic $(OPT_FLAG)
 endif
 
@@ -104,7 +104,7 @@ endif
 
 all:
 	@echo "Building AFKMud....";
-	$(MAKE) -s afkmud
+	$(MAKE) -j2 -s afkmud
 	@echo "Buidling DNS Resolver...";
 	$(MAKE) -s resolver
 #	@echo "Building modules...";

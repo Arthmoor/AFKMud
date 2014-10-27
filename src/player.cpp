@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -75,8 +75,7 @@ bool exists_player( const string & name )
 }
 
 /* Rank buffer code for use in IMC2 ( and elsewhere if we see fit I suppose ) */
-/* buffer size is 200 because IMC2 will be expecting it to be so, DON'T CHANGE THIS */
-string rankbuffer( char_data * ch )
+string rankbuffer( char_data* ch )
 {
    ostringstream rbuf;
 

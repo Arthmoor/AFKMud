@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -525,7 +525,7 @@ bool descriptor_data::flush_buffer( bool fPrompt )
       this->outbuf = this->outbuf.substr( 4097, this->outbuf.length(  ) - 4097 );
       if( snoop_by )
       {
-         buf[4096] = '\0';
+         buf[4095] = '\0';
          if( character && character->name )
          {
             if( original && original->name )

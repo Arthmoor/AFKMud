@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -264,7 +264,7 @@ char_data::char_data(  )
    this->perm_lck = 13;
    this->mx = -1; /* Overland Map - Samson 7-31-99 */
    this->my = -1;
-   this->map = -1;
+   this->cmap = -1;
    this->wait = 0;
    this->variables.clear(  );
 }
@@ -3571,7 +3571,7 @@ void char_data::extract( bool fPull )
 
          this->mx = -1;
          this->my = -1;
-         this->map = -1;
+         this->cmap = -1;
       }
 
       /*

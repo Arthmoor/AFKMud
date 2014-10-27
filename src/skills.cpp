@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -29,6 +29,7 @@
 #if defined(__CYGWIN__) || defined(WIN32)
 #include <sys/time.h>
 #endif
+#include <algorithm>
 #include "mud.h"
 #include "fight.h"
 #include "mobindex.h"
@@ -3630,7 +3631,7 @@ CMDF( do_dig )
             int sector;
 
             if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
-               sector = map_sector[ch->map][ch->mx][ch->my];
+               sector = map_sector[ch->cmap][ch->mx][ch->my];
             else
                sector = ch->in_room->sector_type;
 
@@ -7024,7 +7025,7 @@ CMDF( do_forage )
    }
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
-      sector = map_sector[ch->map][ch->mx][ch->my];
+      sector = map_sector[ch->cmap][ch->mx][ch->my];
    else
       sector = ch->in_room->sector_type;
 
@@ -7120,7 +7121,7 @@ CMDF( do_woodcall )
    }
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
-      sector = map_sector[ch->map][ch->mx][ch->my];
+      sector = map_sector[ch->cmap][ch->mx][ch->my];
    else
       sector = ch->in_room->sector_type;
 
@@ -7210,7 +7211,7 @@ CMDF( do_mining )
       return;
    }
 
-   if( ch->has_pcflag( PCFLAG_ONMAP ) && map_sector[ch->map][ch->mx][ch->my] != SECT_MOUNTAIN )
+   if( ch->has_pcflag( PCFLAG_ONMAP ) && map_sector[ch->cmap][ch->mx][ch->my] != SECT_MOUNTAIN )
    {
       ch->print( "You must be in the mountains to do mining.\r\n" );
       return;

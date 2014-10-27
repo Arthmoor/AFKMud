@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -813,8 +813,8 @@ void mobile_update( void )
        */
       if( ch->has_actflag( ACT_ONMAP ) )
       {
-         short sector = get_terrain( ch->map, ch->mx, ch->my );
-         short map = ch->map;
+         short sector = get_terrain( ch->cmap, ch->mx, ch->my );
+         short cmap = ch->cmap;
          short x = ch->mx;
          short y = ch->my;
          short dir = number_bits( 5 );
@@ -826,35 +826,35 @@ void mobile_update( void )
                default:
                   break;
                case DIR_NORTH:
-                  if( map_wander( ch, map, x, y - 1, sector ) )
+                  if( map_wander( ch, cmap, x, y - 1, sector ) )
                      move_char( ch, NULL, 0, DIR_NORTH, false );
                   break;
                case DIR_NORTHEAST:
-                  if( map_wander( ch, map, x + 1, y - 1, sector ) )
+                  if( map_wander( ch, cmap, x + 1, y - 1, sector ) )
                      move_char( ch, NULL, 0, DIR_NORTHEAST, false );
                   break;
                case DIR_EAST:
-                  if( map_wander( ch, map, x + 1, y, sector ) )
+                  if( map_wander( ch, cmap, x + 1, y, sector ) )
                      move_char( ch, NULL, 0, DIR_EAST, false );
                   break;
                case DIR_SOUTHEAST:
-                  if( map_wander( ch, map, x + 1, y + 1, sector ) )
+                  if( map_wander( ch, cmap, x + 1, y + 1, sector ) )
                      move_char( ch, NULL, 0, DIR_SOUTHEAST, false );
                   break;
                case DIR_SOUTH:
-                  if( map_wander( ch, map, x, y + 1, sector ) )
+                  if( map_wander( ch, cmap, x, y + 1, sector ) )
                      move_char( ch, NULL, 0, DIR_SOUTH, false );
                   break;
                case DIR_SOUTHWEST:
-                  if( map_wander( ch, map, x - 1, y + 1, sector ) )
+                  if( map_wander( ch, cmap, x - 1, y + 1, sector ) )
                      move_char( ch, NULL, 0, DIR_SOUTHWEST, false );
                   break;
                case DIR_WEST:
-                  if( map_wander( ch, map, x - 1, y, sector ) )
+                  if( map_wander( ch, cmap, x - 1, y, sector ) )
                      move_char( ch, NULL, 0, DIR_WEST, false );
                   break;
                case DIR_NORTHWEST:
-                  if( map_wander( ch, map, x - 1, y - 1, sector ) )
+                  if( map_wander( ch, cmap, x - 1, y - 1, sector ) )
                      move_char( ch, NULL, 0, DIR_NORTHWEST, false );
                   break;
             }
@@ -991,7 +991,7 @@ void char_calendar_update( void )
             int sector;
 
             if( ch->has_pcflag( PCFLAG_ONMAP ) )
-               sector = get_terrain( ch->map, ch->mx, ch->my );
+               sector = get_terrain( ch->cmap, ch->mx, ch->my );
             else
                sector = ch->in_room->sector_type;
 
@@ -1684,7 +1684,7 @@ void obj_update( void )
             log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          else
          {
-            firepit->map = obj->map;
+            firepit->cmap = obj->cmap;
             firepit->mx = obj->mx;
             firepit->my = obj->my;
             set_supermob( obj );
