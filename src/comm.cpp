@@ -51,6 +51,7 @@ const int WAIT_ANY = -1;   /* This is not guaranteed to work! */
 #include "mud.h"
 #include "descriptor.h"
 #include "auction.h"
+#include "clans.h"
 #include "connhist.h"
 #ifdef IMC
 #include "imc.h"
@@ -60,6 +61,7 @@ const int WAIT_ANY = -1;   /* This is not guaranteed to work! */
 #include "pfiles.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "shops.h"
 
 /*
  * Global variables.
@@ -170,7 +172,7 @@ void close_db(  );
 const char *directory_table[] = {
    AREA_CONVERT_DIR, PLAYER_DIR, GOD_DIR, BUILD_DIR, SYSTEM_DIR,
    PROG_DIR, CORPSE_DIR, CLASS_DIR, RACE_DIR, MOTD_DIR, HOTBOOT_DIR, AUC_DIR,
-   BOARD_DIR, COLOR_DIR, MAP_DIR
+   BOARD_DIR, COLOR_DIR, MAP_DIR, DEITY_DIR, WEB_DIR, SHOP_DIR, CLAN_DIR
 };
 
 void directory_check( void )
