@@ -498,6 +498,8 @@ void interpret( char_data * ch, string argument )
                found = true;
                break;
             }
+            if( found )
+               break;
          }
 
          if( !found )

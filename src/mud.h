@@ -44,7 +44,7 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.1.1"
+#define CODEVERSION "2.1.2"
 #define COPYRIGHT "Copyright The Alsherok Team 1997-2009. All rights reserved."
 
 const int LGST = 4096;  /* Large String */

@@ -86,6 +86,7 @@ extern int num_logins;
 extern bool compilelock;
 #endif
 
+void send_mssp_data( descriptor_data * );
 void set_alarm( long );
 auth_data *get_auth_name( const string & );
 void save_sysdata(  );
@@ -2437,6 +2438,15 @@ void descriptor_data::nanny( string & argument )
       case CON_GET_NAME:
          if( argument.empty(  ) )
          {
+            close_socket( this, false );
+            return;
+         }
+
+         if( !str_cmp( argument, "MSSP-REQUEST" ) )
+         {
+            send_mssp_data( this );
+            //Uncomment below if you want to know when an MSSP request occurs
+            //log_printf( "IP: %s requested MSSP data!", d->host );
             close_socket( this, false );
             return;
          }

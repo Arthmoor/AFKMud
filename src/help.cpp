@@ -64,6 +64,7 @@ void free_helps( void )
 
       deleteptr( help );
    }
+   top_help = 0;
 }
 
 /*
@@ -140,6 +141,7 @@ void load_helps( void )
    ifstream stream;
 
    helplist.clear(  );
+   top_help = 0;
 
    stream.open( HELP_FILE );
    if( !stream.is_open(  ) )
@@ -188,7 +190,10 @@ void load_helps( void )
       }
 
       else if( key == "End" )
+      {
          helplist.push_back( help );
+         ++top_help;
+      }
 
       else
       {
@@ -487,6 +492,7 @@ CMDF( do_hset )
    if( !str_cmp( arg1, "remove" ) )
    {
       deleteptr( pHelp );
+      --top_help;
       ch->print( "Removed.\r\n" );
       return;
    }

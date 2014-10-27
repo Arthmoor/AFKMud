@@ -70,6 +70,7 @@ bool mud_down; /* Shutdown       */
 char str_boot_time[MIL];
 char lastplayercmd[MIL * 2];
 time_t current_time; /* Time of this pulse      */
+time_t mud_start_time; // Used only by MSSP for now
 int control;   /* Controlling descriptor  */
 fd_set in_set; /* Set of desc's for reading  */
 fd_set out_set;   /* Set of desc's for writing  */
@@ -120,6 +121,7 @@ void update_connhistory( descriptor_data *, int ); /* connhist.c */
 void free_connhistory( int ); /* connhist.c */
 
 /* Used during memory cleanup */
+void free_mssp_info( void );
 void free_morphs(  );
 void free_quotes(  );
 void free_envs(  );
@@ -1180,6 +1182,8 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Abit/Qbit Data.\n" );
    free_questbits(  );
 
+   free_mssp_info();
+
    fprintf( stdout, "%s", "Checking string hash for leftovers.\n" );
    {
       for( hash = 0; hash < 1024; ++hash )
@@ -1249,6 +1253,7 @@ int main( int argc, char **argv )
    mudstrlcpy( str_boot_time, c_time( current_time, -1 ), MIL );  /* Records when the mud was last rebooted */
 
    new_pfile_time_t = current_time + 86400;
+   mud_start_time = current_time;
 
    // Get the port number.
    mud_port = 9500;

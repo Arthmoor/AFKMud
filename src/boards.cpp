@@ -1643,7 +1643,7 @@ void board_parse( descriptor_data * d, const string & argument )
          return;
 
       case SUB_BOARD_TO:
-         if( argument.empty(  ) )
+         if( argument.empty(  ) || !str_cmp( argument, "all" ) )
          {
             if( IS_BOARD_FLAG( ch->pcdata->board, BOARD_PRIVATE ) && !ch->is_immortal(  ) )
             {
@@ -1656,12 +1656,10 @@ void board_parse( descriptor_data * d, const string & argument )
             else
                ch->pcdata->pnote->to_list = STRALLOC( "All" );
 
-            ch->printf( "%sNo recipient specified. Defaulting to '%s%s%s'&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1 );
-         }
-         else if( !str_cmp( argument, "all" ) && ( ch->is_immortal(  ) || !IS_BOARD_FLAG( ch->pcdata->board, BOARD_PRIVATE ) ) )
-         {
-            ch->printf( "%sYou can not send a message to '%sAll%s' on this board!\r\nYou must specify a recipient:&D   ", s1, s2, s1 );
-            return;
+            if( str_cmp( argument, "all" ) )
+               ch->printf( "%sNo recipient specified. Defaulting to '%s%s%s'&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1 );
+            else
+               ch->printf( "%sRecipient set to '%sAll%s'&D\r\n", s1, s2, s1 );
          }
          else
          {

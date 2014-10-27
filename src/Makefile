@@ -64,7 +64,7 @@ C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           event_handler.cpp features.cpp fight.cpp finger.cpp handler.cpp \
           hashstr.cpp help.cpp hotboot.cpp imm_host.cpp liquids.cpp magic.cpp \
           mapout.cpp mapper.cpp md5.cpp misc.cpp mobindex.cpp modules.cpp \
-          mspecial.cpp mudcfg.cpp mud_comm.cpp mud_prog.cpp new_auth.cpp \
+          mspecial.cpp mssp.cpp mudcfg.cpp mud_comm.cpp mud_prog.cpp new_auth.cpp \
           object.cpp objindex.cpp olcmob.cpp olcobj.cpp olcroom.cpp overland.cpp \
           pfiles.cpp player.cpp polymorph.cpp rare.cpp renumber.cpp reset.cpp \
           roomindex.cpp save.cpp search.cpp sha256.cpp ships.cpp shops.cpp \

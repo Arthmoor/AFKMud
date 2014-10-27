@@ -3932,6 +3932,14 @@ Flags       ghost
 End
 
 #COMMAND
+Name        setmssp
+Code        do_setmssp
+Position    dead
+Level       113
+Log         normal
+End
+
+#COMMAND
 Name        tell
 Code        do_tell
 Position    resting

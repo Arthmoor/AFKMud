@@ -42,6 +42,7 @@
 
 int top_area;
 
+extern int top_prog;
 extern int top_affect;
 extern int top_shop;
 extern int top_repair;
@@ -1962,6 +1963,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
                mud_prog_data *mprg = new mud_prog_data;
                fread_afk_mudprog( fp, mprg, pMobIndex );
                pMobIndex->mudprogs.push_back( mprg );
+               ++top_prog;
                break;
             }
 
@@ -2378,6 +2380,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
                mud_prog_data *mprg = new mud_prog_data;
                fread_afk_mudprog( fp, mprg, pObjIndex );
                pObjIndex->mudprogs.push_back( mprg );
+               ++top_prog;
                break;
             }
             break;
@@ -2663,6 +2666,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                mud_prog_data *mprg = new mud_prog_data;
                fread_afk_mudprog( fp, mprg, pRoomIndex );
                pRoomIndex->mudprogs.push_back( mprg );
+               ++top_prog;
                break;
             }
             break;

@@ -126,6 +126,7 @@ int top_ed;
 int top_exit;
 int top_mob_index;
 int top_obj_index;
+int top_prog;
 int top_reset;
 int top_room;
 int top_shop;
@@ -182,6 +183,7 @@ void load_runes(  );
 void load_clans(  );
 void load_socials(  );
 void load_commands(  );
+void load_mssp_data( );
 void load_deity(  );
 void load_boards(  );
 void load_projects(  );
@@ -2031,6 +2033,9 @@ void boot_db( bool fCopyOver )
          exit( 1 );
       }
 
+      // Why were these never initialized before?!?
+      top_area = top_prog = top_room = top_exit = top_reset = top_mob_index = top_obj_index = 0;
+
       for( ;; )
       {
          if( feof( fpList ) )
@@ -2093,6 +2098,9 @@ void boot_db( bool fCopyOver )
 
    log_string( "Building wizinfo" );
    build_wizinfo(  );
+
+   log_string( "Loading MSSP Data..." );
+   load_mssp_data( );
 
    log_string( "Initializing area reset events..." );
    {
