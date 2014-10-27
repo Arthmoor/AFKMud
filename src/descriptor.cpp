@@ -1496,7 +1496,7 @@ void new_descriptor( int new_desc )
     */
    dnew->send_greeting(  );
 
-   dnew->write_to_buffer( "Enter your character's name, or type new: " );
+   dnew->send_color( "Enter your character's name, or type new: &d" );
 
    if( ++num_descriptors > sysdata->maxplayers )
       sysdata->maxplayers = num_descriptors;
