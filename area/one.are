@@ -128,6 +128,8 @@ Direction southwest~
 ToRoom    50000
 #ENDEXIT
 
+Reset M 2907 1 50000 0 908 933 100
+Reset M 2906 1 50000 0 923 931 100
 #ENDROOM
 
 #ROOM

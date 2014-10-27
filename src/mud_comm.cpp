@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -2134,7 +2134,10 @@ CMDF( do_mppurge )
    if( !( victim = ch->get_char_room( argument ) ) )
    {
       if( ( obj = ch->get_obj_here( argument ) ) != NULL )
-         obj->extract(  );
+      {
+         obj->separate( );
+         obj->extract( );
+      }
       else
          progbugf( ch, "%s", "Mppurge - Bad argument" );
       return;

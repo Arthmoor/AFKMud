@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -319,7 +319,7 @@ area_data *create_area( void )
    pArea->version = 0;
    pArea->rooms.clear(  );
    pArea->age = 15;
-   pArea->reset_frequency = 5;
+   pArea->reset_frequency = 15;
    pArea->hi_soft_range = MAX_LEVEL;
    pArea->hi_hard_range = MAX_LEVEL;
 
@@ -941,8 +941,8 @@ void load_resets( area_data * tarea, FILE * fp )
    {
       exit_data *pexit;
       char letter;
-      int extra, arg1, arg2, arg3;
-      short arg4, arg5, arg6, arg7 = 100;
+      int extra, arg1, arg2, arg3 = 0;
+      short arg4, arg5, arg6, arg7 = 0;
 
       if( ( letter = fread_letter( fp ) ) == 'S' )
          break;
@@ -958,8 +958,10 @@ void load_resets( area_data * tarea, FILE * fp )
          extra = 0;
       arg1 = fread_number( fp );
       arg2 = fread_number( fp );
-      arg3 = ( letter == 'G' || letter == 'R' ) ? 0 : fread_number( fp );
+      if( letter != 'G' && letter != 'R' )
+         arg3 = fread_number( fp );
       arg4 = arg5 = arg6 = -1;
+
       if( tarea->version > 18 )
       {
          if( letter == 'O' || letter == 'M' )
@@ -3585,32 +3587,29 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
 {
    if( install )
    {
-      /*
-       * remove prototype flag from room 
-       */
+      // remove prototype flag from room 
       room->flags.reset( ROOM_PROTOTYPE );
-      /*
-       * purge room of (prototyped) mobiles 
-       */
+
+      // purge room of (prototyped) mobiles 
       list < char_data * >::iterator ich;
       for( ich = room->people.begin(  ); ich != room->people.end(  ); )
       {
          char_data *victim = *ich;
          ++ich;
 
-         if( victim->isnpc(  ) )
+         if( victim->isnpc(  ) && victim->has_actflag( ACT_PROTOTYPE ) )
             victim->extract( true );
       }
-      /*
-       * purge room of (prototyped) objects 
-       */
+
+      // purge room of (prototyped) objects
       list < obj_data * >::iterator iobj;
       for( iobj = room->objects.begin(  ); iobj != room->objects.end(  ); )
       {
          obj_data *obj = *iobj;
          ++iobj;
 
-         obj->extract(  );
+         if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
+            obj->extract(  );
       }
    }
 

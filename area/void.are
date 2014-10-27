@@ -2020,6 +2020,16 @@ Stats     1 0 -1 9999 0 None None None
 #ENDOBJECT
 
 #OBJECT
+Vnum      11008
+Keywords  mort mortal board~
+Type      furniture~
+Short     A Mortal Board~
+Long      A message board is mounted to a wall here.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
 Vnum      11026
 Keywords  scroll succor~
 Type      scroll~

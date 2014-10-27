@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -548,12 +548,7 @@ void strip_lspace( string & line )
 {
    string::size_type space;
 
-   space = line.find_first_not_of( ' ' );
-   if( space == string::npos )
-      space = 0;
-   line = line.substr( space, line.length(  ) );
-
-   space = line.find_first_not_of( '\t' );
+   space = line.find_first_not_of( " \t" );
    if( space == string::npos )
       space = 0;
    line = line.substr( space, line.length(  ) );
@@ -564,7 +559,7 @@ void strip_tspace( string & line )
 {
    string::size_type space;
 
-   space = line.find_last_not_of( ' ' );
+   space = line.find_last_not_of( " \t" );
    if( space != string::npos )
       line = line.substr( 0, space + 1 );
 }
@@ -1017,6 +1012,7 @@ struct editor_data
 editor_data::editor_data(  )
 {
    init_memory( &line, &size, sizeof( size ) );
+   desc = "";
 }
 
 editor_data::~editor_data(  )
@@ -1329,9 +1325,9 @@ void char_data::edit_buffer( string & argument )
       }
       if( !str_cmp( cmd, "c" ) )
       {
-         memset( edit, '\0', sizeof( editor_data ) );
-         edit->numlines = 0;
-         edit->on_line = 0;
+         delete edit;
+         edit = new editor_data;
+
          print( "Buffer cleared.\r\n> " );
          return;
       }
@@ -1442,7 +1438,7 @@ void char_data::edit_buffer( string & argument )
       if( !str_cmp( cmd, "i" ) )
       {
          if( edit->numlines >= max_buf_lines )
-            print( "Buffer is full.\r\n> " );
+            print( "Your buffer is full.\r\n> " );
          else
          {
             if( argument[2] == ' ' )
@@ -1482,9 +1478,9 @@ void char_data::edit_buffer( string & argument )
             {
                if( line == 0 && edit->numlines == 1 )
                {
-                  memset( edit, '\0', sizeof( editor_data ) );
-                  edit->numlines = 0;
-                  edit->on_line = 0;
+                  delete edit;
+                  edit = new editor_data;
+
                   print( "Line deleted.\r\n> " );
                   return;
                }
@@ -1593,7 +1589,7 @@ void char_data::edit_buffer( string & argument )
    }
 
    if( edit->size + argument.length(  ) + 1 >= MSL - 2 )
-      print( "You buffer is full.\r\n" );
+      print( "Your buffer is full.\r\n" );
    else
    {
       if( argument.length(  ) > 80 )
@@ -1602,14 +1598,14 @@ void char_data::edit_buffer( string & argument )
          print( "(Long line trimmed)\r\n> " );
       }
       else
-         mudstrlcpy( buf, argument.c_str(  ), MIL );
+         mudstrlcpy( buf, argument.c_str(  ), 80 );
       mudstrlcpy( edit->line[edit->on_line++], buf, 81 );
-      if( edit->on_line > edit->numlines )
+      while( edit->on_line > edit->numlines )
          ++edit->numlines;
       if( edit->numlines > max_buf_lines )
       {
          edit->numlines = max_buf_lines;
-         print( "Buffer full.\r\n" );
+         print( "Your buffer is full.\r\n" );
          esave = true;
       }
    }

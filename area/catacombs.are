@@ -1,0 +1,4240 @@
+#AFKAREA
+#AREADATA
+Version         1
+Name            The Catacombs~
+Author          Capone~
+Vnums           1950 2099
+Continent       one~
+Coordinates     915 938
+Ranges          0 10 0 10
+ResetMsg        A putrid waft of stale air blows by you.~
+ResetFreq       10
+Flags           nocamp noportal nosummon noteleport~
+Climate         2 2 2
+Treasure        20 74 85 93 20 50 60 75
+#ENDAREADATA
+
+#MOBILE
+Vnum      1950
+Keywords  wraith~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A Wraith~
+Long      A Wraith advances out of the shadows toward you.
+~
+Desc      You see a dark, shadowy form of undead creature.  You can barely make out
+its features, but you know it is dangerous!
+~
+Nattacks  0.000000
+Stats1    -75 -1 0 0 150 100
+Stats2    5 16 15 0 1 6 0
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1951
+Keywords  ghoul~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A Ghoul~
+Long      A Ghoul stares hungrily at your flesh.
+~
+Desc      You see a dark, shadowy form of undead creature.  You can barely make out
+its features, but you know it is dangerous!
+~
+Nattacks  0.000000
+Stats1    -75 -1 0 0 150 100
+Stats2    4 16 15 0 1 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1952
+Keywords  ghost~
+Race      ghost~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A Ghost~
+Long      A Ghost shimmers and appears in the air right before your scared eyes.
+~
+Desc      You see a milky figure, or rather, you see right through the milky figure!
+~
+Nattacks  0.000000
+Stats1    -30 -1 0 0 150 100
+Stats2    3 16 15 0 1 5 0
+Speaks    common~
+Speaking  common~
+Actflags  npc noassist~
+Affected  detect_invis~
+Bodyparts guts hands~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1953
+Keywords  zombie~
+Race      undead~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A Zombie~
+Long      A Zombie stands here doing its master's bidding.
+~
+Desc      You see what was once a human corpse, and still is, except it is in a
+very bad state of decomposition, and it smells horribly.  It has an evil
+grin on its face, and try as you might, you cannot tell whether it is man
+or woman.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    1 16 30 0 1 3 0
+Speaks    common~
+Speaking  common~
+Actflags  npc noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1954
+Keywords  skeleton~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A Skeleton~
+Long      A Skeleton moves his skeletal form toward you.
+~
+Desc      You see a tall skeleton and its eye sockets appear to be staring intently
+in your direction!
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    2 16 30 0 1 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1955
+Keywords  shadow~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A Shadow~
+Long      A Shadow seems to blend in with its surroundings.
+~
+Desc      You see a dark figure shrouded in black.  It appears to have no face, but
+just a general outline of a body.
+~
+Nattacks  0.000000
+Stats1    -30 -1 0 0 150 100
+Stats2    4 16 15 0 1 5 0
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1956
+Keywords  spectre~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A Spectre~
+Long      A Spectre shimmers and disappears and re-appears right in front of your eyes!
+~
+Desc      You see a nasty looking apparition that looks like it has been dead a 
+very long time, better not mess with this one!
+~
+Nattacks  0.000000
+Stats1    -90 -1 0 0 150 100
+Stats2    5 16 15 0 1 6 0
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1957
+Keywords  phillip AAAG~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Ghost of Phillip~
+Long      The Ghost of Phillip
+~
+Desc      You see a small skeleton that appears to have had its head smashed
+in with some blunt object.  It looks quite nasty for his size.
+~
+Nattacks  0.000000
+Stats1    90 0 0 0 150 100
+Stats2    3 16 15 0 1 4 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel noassist~
+Affected  detect_invis detect_hidden truesight~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1958
+Keywords  pelasius AAAB~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Corpse of Pelasius~
+Long      The Corpse of Pelasius
+~
+Desc      You see the corpse of what was once the Chief Engineer for the Shire.
+All that was constructed was his design, so you can either
+blame him or praise him, but in any case, I doubt he will be listening.
+It looks as if he has been dead a very long time.
+~
+Nattacks  0.000000
+Stats1    500 0 0 0 150 100
+Stats2    5 16 10 0 1 6 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1959
+Keywords  fargo AAAC~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Ghost of Fargo III~
+Long      The Ghost of Fargo III
+~
+Desc      You see a ghostlike form that appears to be wearing a crown of some sort.
+From the way this ghost is carrying himself, the ghost appears to have been
+some sort of royalty long ago, but very young royalty at that.  
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    5 16 10 0 1 6 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#MUDPROG
+Progtype  death_prog~
+Arglist   100~
+Comlist   mpoload 1989
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      1960
+Keywords  agapthia~
+Race      undead~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     The Spirit of Agapthia~
+Long      The Spirit of Agapthia
+~
+Desc      You see a very beautiful young girl, a daughter of one of the architects 
+who worked under Pelasius.  Unfortunately, she is not quite as beautiful
+now as she was when she was living, but still she is quite lovely.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    3 16 20 1 1 6 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel noassist~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1962
+Keywords  morelius~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Corpse of Morelius~
+Long      The Corpse of Morelius
+~
+Desc      Morelius was the first Captain of the Guard in the Shire.  While alive,
+he was a fierce competitor, and was especially effective in the ancient
+giant wars.  As undead, he has not been able to capture the effectiveness
+of his youth, but he is still very dangerous indeed.
+~
+Nattacks  0.000000
+Stats1    85 0 0 0 150 100
+Stats2    6 16 0 1 1 8 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1963
+Keywords  antheus AAAH~
+Race      ghost~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Ghost of the Lord Antheus~
+Long      The Ghost of the Lord Antheus
+~
+Desc      You are staring into the face of the man (or ghost) that was the Lord and
+Ruler not to mention founder of The Shire. He was the greatgrandfather of 
+Ambrosius, and one hell of a fighter. Although he isn't as
+strong as he once was, he is still quite deadly. Better run from this one!
+~
+Nattacks  0.000000
+Stats1    100 0 0 0 150 100
+Stats2    5 16 -40 30 2 5 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Affected  detect_invis~
+Bodyparts guts hands~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1964
+Keywords  lich AAAJ~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A wicked lich~
+Long      A wicked lich
+~
+Desc      You look into the hollow skull of a very powerful former mage (or is he a
+former mage?).  He is a pure skeleton, yet he radiates pure evil.  He has
+taken up this abode unbeknownst to Ambrosius, or surely he would have been
+chased away.  The tunnel is his home for the time being, and he likes it
+here.  He is able to draw upon the powers of the undead to make himself
+stronger.  He is despicable even in death.
+~
+Nattacks  0.000000
+Stats1    -100 0 0 0 150 100
+Stats2    10 16 -40 0 1 8 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel aggressive~
+Affected  detect_invis sanctuary truesight~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1965
+Keywords  elantra AAAK~
+Race      undead~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     The Spirit of the Lady Elantra~
+Long      The Spirit of the Lady Elantra
+~
+Desc      You are looking at perhaps the loveliest apparition you have ever seen,
+the Lady Elantra, former wife of the Lord Ambrosius.  The Lady died under
+mysterious circumstances; rumor has it she was poisoned by a lady that was
+trying to gain the Lord's favor.  In any case, she died at an early age,
+but not before giving birth to three wonderful children.  Upon her death,
+the entire castle mourned, and the funeral lasted 3 days.  Although there
+is a cross in her behalf beneath the rare and beautiful lavender rose in
+the inner courtyard of the castle, this is where her body rests.
+~
+Nattacks  0.000000
+Stats1    100 0 0 0 150 100
+Stats2    10 16 -40 0 1 8 2
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1966
+Keywords  caretaker~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A caretaker~
+Long      A caretaker
+~
+Desc      This is a caretaker of the royal path.  He squints when he looks, because
+it has been such a long time since he has seen sunlight.
+~
+Nattacks  0.000000
+Stats1    100 -1 0 0 150 100
+Stats2    3 20 -10 0 1 5 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1967
+Keywords  keeper ~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Keeper of the Catacombs~
+Long      The Keeper of the Catacombs
+~
+Desc      You see an older man, with a fierce gleam in his eyes.  He is the keeper
+of these catacombs, and a tough man he must be to have survived down here
+all this time.  The undead have gotten used to him now though, and rarely
+ever attack him.  Beware trying to get past him if ye be of power.
+~
+Nattacks  0.000000
+Stats1    1000 -1 0 0 150 100
+Stats2    50 21 -10 500 3 10 5
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel stayarea~
+Affected  detect_invis detect_hidden sanctuary infrared flying truesight fireshield~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Resist    blunt pierce slash nonmagic~
+Immune    fire electricity energy acid poison drain sleep charm hold~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1968
+Keywords  hermann AAAM~
+Race      ghost~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Ghost of Hermann~
+Long      The Ghost of Hermann
+~
+Desc      You are looking at the Ghost of Hermann, guard dog for the Lord Ambrosius.
+He was killed while on a hunt.  Ambrosius heard him yelp but was too late.
+By the time he had arrived his prized dog had been run through by a wild
+piggie.
+~
+Nattacks  0.000000
+Stats1    100 0 0 0 150 100
+Stats2    5 16 20 30 2 3 2
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel aggressive~
+Affected  detect_invis~
+Bodyparts guts hands~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1969
+Keywords  weston AAAN~
+Race      undead~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Corpse of Weston~
+Long      The Corpse of Weston
+~
+Desc      You are looking at Weston, a rather dignified man, even if a corpse.  You
+can almost visualize the black coat and tie adorning him.  He was the
+personal butler of Antheus, long since gone.  He is honored here amongst
+the finest individuals that have lived in the realm.
+~
+Nattacks  0.000000
+Stats1    75 0 0 0 150 100
+Stats2    4 16 30 30 1 8 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel aggressive~
+Affected  detect_invis~
+Bodyparts head arms legs guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1971
+Keywords  belarius AAAQ~
+Race      ghost~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Ghost of Belarius~
+Long      The Ghost of Belarius rushes maliciously at you.
+~
+Desc      You are looking at Belarius.  He was known during his life as the Royal Thief.
+Although never caught red handed, he admitted as much during his final days.
+If he had been caught, he surely would not be allowed to spend the rest of
+his days amongst the fine group of corpses assembled in this hallway.
+He may have been a thief, but he was a ROYAL THIEF.
+~
+Nattacks  0.000000
+Stats1    500 0 0 0 150 100
+Stats2    3 16 30 30 1 4 2
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel aggressive~
+Affected  detect_invis~
+Bodyparts guts hands~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1973
+Keywords  tyrwydd AAAE~
+Race      ghost~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Corpse of Tyrwydd~
+Long      The Corpse of Tyrwydd lunges at you.
+~
+Desc      You are looking at Tyrwydd, formerly one of the Royal Guards. He was
+one of the best before being unfortunately roasted to death by a red
+dragon. Many regarded him as a great hero.
+~
+Nattacks  0.000000
+Stats1    500 0 0 0 150 100
+Stats2    3 16 30 20 1 4 2
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel aggressive~
+Affected  detect_invis~
+Bodyparts guts hands~
+#ENDMOBILE
+
+#MOBILE
+Vnum      1974
+Keywords  constance AAAP~
+Race      ghost~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     The Ghost of Constance ~
+Long      The Ghost of Constance backhands you painfully.
+~
+Desc      Being undead can certainly show the folley of one's vanity. When she
+was alive, Constance was the wife of Tyrwydd who partook in one too
+many dinner parties held by pompus nobles. There she fawned over her
+looks and was regarded as the most vain person in all of Bywater.
+~
+Nattacks  0.000000
+Stats1    500 0 0 0 150 100
+Stats2    3 16 30 25 1 4 2
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel aggressive~
+Affected  detect_invis~
+Bodyparts guts hands~
+#ENDMOBILE
+
+#MOBILE
+Vnum      2099
+Keywords  Last mob~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a newly created last mob~
+Long      Some god abandoned a newly created last mob here.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc proto~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#OBJECT
+Vnum      1950
+Keywords  potion vial silver~
+Type      potion~
+Short     A silver potion~
+Long      A silver potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'NONE' 'NONE' 'cure light'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1951
+Keywords  potion vial mucous~
+Type      potion~
+Short     A mucous colored potion~
+Long      A mucous colored potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'cure poison' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1952
+Keywords  potion vial red~
+Type      potion~
+Short     A red potion~
+Long      A red potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'kindred strength' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1953
+Keywords  potion vial clear~
+Type      potion~
+Short     A Clear Potion~
+Long      A Clear Potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'detect invis' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1954
+Keywords  potion vial opaque blue~
+Type      potion~
+Short     An opaque blue potion~
+Long      An opaque blue potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'invisibility' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1955
+Keywords  scroll rainbow~
+Type      scroll~
+Short     A rainbow scroll~
+Long      A rainbow colored scroll lies here.~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'recall' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1956
+Keywords  coffin~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    300 4 -1 0 0 0 0 0 0 0 0
+Stats     100 1 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1957
+Keywords  knife bone~
+Type      weapon~
+Short     A bone knife~
+Long      A bone knife~
+Flags     organic magic bless onlyrogue~
+WFlags    take wield~
+Values    12 1 4 2 2 0 12 0 0 0 0
+Stats     3 2000 -2 9999 0 None None None
+AffData hitroll 3 -1 -1 0
+AffData damroll 3 -1 -1 0
+AffData backstab 7 -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      1958
+Keywords  potion vial burgundy~
+Type      potion~
+Short     A burgundy potion~
+Long      A burgundy potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'bless' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1959
+Keywords  potion vial glowing green ~
+Type      potion~
+Short     A glowing green potion~
+Long      A glowing green potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'refresh' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1960
+Keywords  potion vial brown~
+Type      potion~
+Short     A brown potion~
+Long      A brown potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'fly' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1961
+Keywords  potion vial light green~
+Type      potion~
+Short     A light-green potion~
+Long      A light-green potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'armor' 'bless' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1962
+Keywords  potion vial fuchsia~
+Type      potion~
+Short     A fuchsia potion~
+Long      A fuchsia potion~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 500 -2 9999 0 None None None
+Spells       'armor' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1963
+Keywords  coffin pelasius~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAB~
+ExDesc       The Skeleton of Pelasius springs up out of the coffin angrily!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1964
+Keywords  coffin fargo~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAC~
+ExDesc       The Ghost of Fargo III forms!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1965
+Keywords  coffin agapthia~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAD~
+ExDesc       The Spirit of Agapthia looks at you and begins attacking!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1966
+Keywords  coffin tyrwydd~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAE~
+ExDesc       The Skeleton of Tyrwydd feebly climbs out of his coffin and backhands you!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1967
+Keywords  coffin morelius~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAF~
+ExDesc       The Corpse of Morelius dusts himself off and glares at you!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1968
+Keywords  coffin phillip~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAG~
+ExDesc       Phillip jumps up and kicks you in the kneecaps!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1969
+Keywords  coffin lich~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAJ~
+ExDesc       The lich begins chanting in some ancient tongue!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1970
+Keywords  coffin hermann~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAM~
+ExDesc       Hermann growls at you and prepares to bite you in the leg!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1971
+Keywords  coffin weston~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAN~
+ExDesc       Weston builds himself out of dust then throws it in your face!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1972
+Keywords  coffin antheus~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAH~
+ExDesc       The Lord Antheus says, 'Why have you disturbed me from my slumbers? You will pay!'
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1973
+Keywords  coffin elantra~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    AAAK~
+ExDesc       Elantra sadly arises and hits you in the forehead, you are knocked out!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1974
+Keywords  table~
+Type      container~
+Short     table~
+Values    10 0 -1 0 0 0 0 0 0 0 0
+Stats     30 1 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1975
+Keywords  flowers dried~
+Type      food~
+Short     Some dried flowers~
+Long      Some dried flowers~
+WFlags    take~
+Values    1 0 0 1 0 0 0 0 0 0 0
+Stats     1 50 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1976
+Keywords  moss~
+Type      light~
+Short     A handful of moss~
+Long      A handful of moss lies on the ground.~
+Flags     antisun~
+WFlags    take hold~
+Values    0 0 -1 0 0 0 0 0 0 0 0
+Stats     2 75 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1977
+Keywords  hall key~
+Type      key~
+Short     A skeleton key~
+Long      A skeleton key~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 5000 -1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1978
+Keywords  ruby gem~
+Type      treasure~
+Short     A ruby~
+Long      A ruby lies here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 2000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1979
+Keywords  emerald gem~
+Type      treasure~
+Short     An emerald~
+Long      An emerald lies here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 2000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1980
+Keywords  key door~
+Type      key~
+Short     A skeleton key~
+Long      A skeleton key~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 5000 -1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1981
+Keywords  chest~
+Type      container~
+Short     A Wooden Chest~
+Long      A Wooden Chest~
+Flags     invis~
+Values    10 2 1982 0 0 0 0 0 0 0 0
+Stats     30 500 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1982
+Keywords  key chest~
+Type      key~
+Short     A simple brass key~
+Long      A simple brass key~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 5000 -1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1983
+Keywords  topaz gem~
+Type      treasure~
+Short     A topaz~
+Long      A topaz~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 2000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1984
+Keywords  garnet gem stone~
+Type      treasure~
+Short     A garnet~
+Long      A garnet~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 2500 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1985
+Keywords  sapphire gem~
+Type      treasure~
+Short     A black star sapphire~
+Long      A black star sapphire~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 3000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      1986
+Keywords  wand levitation~
+Type      wand~
+Short     A wand of levitation~
+Long      A wand of levitation~
+Flags     glow magic~
+WFlags    take hold~
+Values    20 3 3 -1 0 0 0 0 0 0 0
+Stats     5 10000 -2 9999 0 None None None
+Spells       'float'
+#ENDOBJECT
+
+#OBJECT
+Vnum      1987
+Keywords  coffin constance~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    constance AAAP~
+ExDesc       Constance rises up from her slumbers and slaps you on the cheek!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1988
+Keywords  coffin belarius~
+Type      container~
+Short     A coffin~
+Long      A coffin~
+Values    150 5 -1 0 0 0 0 0 0 0 0
+Stats     150 1 1 9999 0 None None None
+#EXDESC
+ExDescKey    belarius AAAQ~
+ExDesc       Belarius appears, winks at you, and slams you against the wall!
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      1989
+Keywords  fargo heirloom ring~
+Type      treasure~
+Short     A tarnished gold ring~
+Long      A tarnished gold ring lies here on the floor.~
+WFlags    take finger~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      2099
+Keywords  Last obj~
+Type      trash~
+Short     a newly created last obj~
+Long      Some god dropped a newly created last obj here.~
+Flags     proto~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#ROOM
+Vnum      1950
+Name      Standing in Pure Nothingness~
+Sector    indoors~
+Flags     nomob proto~
+Stats     0 0 0 0
+#ENDROOM
+
+#ROOM
+Vnum      1951
+Name      Coffin Shotgun Room~
+Sector    indoors~
+Flags     dark nomob nosummon nomagic norecall~
+Stats     0 0 0 0
+Desc      This room no mortal will ever get into.  It is for the mobs to be transed
+out of when someone opens their coffin.  The special procedure transes them
+out of here and places them into room with the coffin along with a new
+message.  Thanks to Korath for this idea.
+~
+#ENDROOM
+
+#ROOM
+Vnum      1952
+Name      Lich's Abode~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You have entered a room that reeks of death.  Pieces of bodies are spread
+throughout this room and the stench is overwhelming.  There appears to be
+a coffin made out of ebony and it is propped up against the east wall.
+It looks dreadful.
+~
+#EXIT
+Direction south~
+ToRoom    2058
+#ENDEXIT
+
+Reset O 1969 1 1952 -1 -1 -1 100
+#EXDESC
+ExDescKey    coffin~
+ExDesc       The coffin is entirely black, including the hinges.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 13
+mpaset $n 13
+mpecho &wThe lich begins chanting in some ancient tongue!&z
+mpmload 1964
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1953
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction south~
+ToRoom    1961
+#ENDEXIT
+
+Reset M 1966 1 1953 -1 -1 -1 100
+  Reset G 1982 1 100
+Reset O 1981 1 1953 -1 -1 -1 100
+  Reset P 0 1980 1 1981 100
+#ENDROOM
+
+#ROOM
+Vnum      1954
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2038
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      1955
+Name      Tomb of Elantra~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You have entered a rather non-descript rough-hewn room. This is the 
+resting place of the Lady Elantra, wife, mother, and a friend to all that
+knew her. Although the townsfolk made a cross for her in the inner courtyard,
+beneath the lovely lavender rose, symbolizing her love for the castle, this
+is her true resting place. Do not wake her up, for the Lord Ambrosius will
+surely find out.
+~
+#EXIT
+Direction north~
+ToRoom    1954
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1956
+Desc      You see a faint crack in the wall.
+~
+Keywords  crack~
+Flags     isdoor closed locked pickproof~
+#ENDEXIT
+
+Reset O 1973 1 1955 -1 -1 -1 100
+Reset D 1955 3 2 100 -2
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 14
+mpaset $n 14
+mpecho &wElantra sadly arises and claws you in the forehead!&z
+mpmload 1965
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1956
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel. There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet. The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction east~
+ToRoom    1955
+Desc      You see a faint crack in the wall.
+~
+Keywords  crack~
+Flags     isdoor closed locked pickproof~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1957
+#ENDEXIT
+
+Reset D 1956 1 2 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      1957
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel. There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet. The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction east~
+ToRoom    1956
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1958
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      1958
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel. There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet. The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction north~
+ToRoom    1957
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1959
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      1959
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel. There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet. The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction north~
+ToRoom    1958
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    1960
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      1960
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel. There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet. The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction east~
+ToRoom    1961
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1959
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      1961
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel. There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet. The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction north~
+ToRoom    1953
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1960
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      1962
+Name      Within the Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are standing at the bottom of an ebon staircase. It is very dark
+and dusty down here, and the air is so thick you can barely breathe.  You
+get an eerie feeling as the hairs on your neck start to tingle. The tunnels 
+branch off in all directions.
+~
+#EXIT
+Direction north~
+ToRoom    1963
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    1999
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2011
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2007
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    2060
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      1963
+Name      Main Tunnel~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1968
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    1964
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1962
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1965
+#ENDEXIT
+
+Reset M 1953 33 1963 -1 -1 -1 100
+  Reset G 1950 1 100
+#ENDROOM
+
+#ROOM
+Vnum      1964
+Name      Crypt of Pelasius~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You have entered a small, simple room with only one exit to the west.
+In the center of this room is a large, ornately decorated coffin. There
+are paintings on the walls.  
+~
+#EXIT
+Direction west~
+ToRoom    1963
+#ENDEXIT
+
+Reset O 1963 1 1964 -1 -1 -1 100
+#EXDESC
+ExDescKey    paintings painting picture~
+ExDesc       The paintings show the old Shire in its earliest stages, with Pelasius walking
+around inspecting the foundations.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    coffin~
+ExDesc       The coffin has many wood carvings upon it, celebrating the building of
+life and prosperity in The Shire. The coffin also appears to be closed.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 15
+mpaset $n 15
+mpecho &wThe Skeleton of Pelasius springs up out of the coffin angrily!&z
+mpmload 1958
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1965
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    1963
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1966
+#ENDEXIT
+
+Reset M 1953 33 1965 -1 -1 -1 100
+  Reset G 1950 1 100
+#ENDROOM
+
+#ROOM
+Vnum      1966
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself. You have come to a dead-end.  
+The tunnel leads back to the east.
+~
+#EXIT
+Direction east~
+ToRoom    1965
+#ENDEXIT
+
+Reset M 1954 30 1966 -1 -1 -1 100
+Reset M 1954 30 1966 -1 -1 -1 100
+  Reset G 1951 1 100
+Reset M 1954 30 1966 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1967
+Name      Crypt of Fargo the Third~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This is a smaller room, with a smaller coffin sitting in the middle of it.
+There are pictures on the wall that you do not recognize, nor would you
+want to from the looks of them.  
+~
+#EXIT
+Direction west~
+ToRoom    1968
+#ENDEXIT
+
+Reset O 1964 1 1967 -1 -1 -1 100
+#EXDESC
+ExDescKey    coffin~
+ExDesc       The coffin is simply made, but with walnut, and is about the size to fit
+a young adult. It looks like it could easily be opened. It is covered
+with about an inch of dust.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    pictures paintings painting picture~
+ExDesc       There are odd beasts in the paintings that you cannot make out, probably
+some monsters that were killed off long ago. Too bad.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 16
+mpaset $n 16
+mpecho &w The Ghost of Fargo III forms!&z
+mpmload 1959
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1968
+Name      Main Tunnel~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself. The tunnel leads in all directions.
+~
+#EXIT
+Direction north~
+ToRoom    1975
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    1967
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1963
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1969
+#ENDEXIT
+
+Reset M 1953 33 1968 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1969
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself. The tunnel leads west and east 
+from here.
+~
+#EXIT
+Direction east~
+ToRoom    1968
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1970
+#ENDEXIT
+
+Reset M 1953 33 1969 -1 -1 -1 100
+Reset M 1953 33 1969 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1970
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself. The main tunnel continues east 
+and west from here, and a smaller tunnel leads south through a narrow 
+opening.
+~
+#EXIT
+Direction east~
+ToRoom    1969
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1966
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1971
+#ENDEXIT
+
+Reset M 1954 30 1970 -1 -1 -1 100
+Reset M 1954 30 1970 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1971
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself. The tunnel continues to the east 
+and west.
+~
+#EXIT
+Direction east~
+ToRoom    1970
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1972
+#ENDEXIT
+
+Reset M 1952 8 1971 -1 -1 -1 100
+  Reset G 1951 1 100
+#ENDROOM
+
+#ROOM
+Vnum      1972
+Name      Crypt of Agapthia~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You have entered the crypt of Agapthia. The small coffin is located against
+the west wall of the room, which really isn't as much a room as it is the end
+of a small tunnel. The tunnel itself leads back to the east. There are 
+dried flowers on a table in this room, no doubt a tribute left from passersby
+visiting her crypt and paying their respects.
+~
+#EXIT
+Direction east~
+ToRoom    1971
+#ENDEXIT
+
+Reset O 1965 1 1972 -1 -1 -1 100
+Reset O 1974 1 1972 -1 -1 -1 100
+  Reset P 0 1975 1 1974 100
+#EXDESC
+ExDescKey    coffin~
+ExDesc       It is just an ordinary wooden coffin.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 17
+mpaset $n 17
+mpecho &wThe Spirit of Agapthia looks at you and begins attacking!&z
+mpmload 1960
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1973
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      The tunnel is very dark and you occasionally hear scratching noises 
+coming from nearby. It sounds like something is trying to get out, but 
+perhaps they are trying to get in. It is very difficult to see down here 
+and you find yourself wishing you had bought that torch.
+~
+#EXIT
+Direction north~
+ToRoom    1980
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1974
+#ENDEXIT
+
+Reset M 1955 9 1973 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1974
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      The tunnel is very dark and you occasionally hear scratching noises 
+coming from nearby. It sounds like something is trying to get out, but 
+perhaps they are trying to get in. It is very difficult to see down here 
+and you find yourself wishing you had bought that torch.
+~
+#EXIT
+Direction east~
+ToRoom    1973
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1975
+#ENDEXIT
+
+Reset M 1954 30 1974 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1975
+Name      Main Tunnel~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1982
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    1974
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1968
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1976
+#ENDEXIT
+
+Reset M 1953 33 1975 -1 -1 -1 100
+Reset M 1953 33 1975 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1976
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      The tunnel is very dark and you occasionally hear scratching noises 
+coming from nearby. It sounds like something is trying to get out, but 
+perhaps they are trying to get in. It is very difficult to see down here 
+and you find yourself wishing you had bought that torch.
+~
+#EXIT
+Direction east~
+ToRoom    1975
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1977
+#ENDEXIT
+
+Reset M 1954 30 1976 -1 -1 -1 100
+Reset M 1954 30 1976 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1977
+Name      Crypt of Tyrwydd~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You have reached the western end of a large tunnel. However, here the tunnel
+has been widened to form a large room. There is not suprisingly a coffin
+resting up against the north wall, it appears for support. There are no
+pictures or paintings on the wall here. There is some moss that eerily lights
+this room up in a yellowish-green tint, but other than that, the place is
+fairly plain.
+~
+#EXIT
+Direction east~
+ToRoom    1976
+#ENDEXIT
+
+Reset O 1966 1 1977 -1 -1 -1 100
+Reset O 1976 1 1977 -1 -1 -1 100
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 18
+mpaset $n 18
+mpecho &wThe Skeleton of Tyrwydd climbs out of his coffin and backhands you!&z
+mpmload 1973
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1978
+Name      Crypt of Morelius~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This is a large oval room that leads into a tunnel to the west. There is
+a little crawlspace to your east, but you don't think you can manage to
+fit through it. There is a large coffin in the center of the room. On
+the walls here you can see several pieces of rusting armor, nothing worth
+taking, but probably quite effective in their time.
+~
+#EXIT
+Direction west~
+ToRoom    1979
+#ENDEXIT
+
+Reset O 1967 1 1978 -1 -1 -1 100
+#EXDESC
+ExDescKey    coffin~
+ExDesc       You see a large wooden coffin with a simple latch.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 19
+mpaset $n 19
+mpecho &wThe Corpse of Morelius dusts himself off and glares at you!!&z
+mpmload 1962
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1979
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      The tunnel is very dark and you occasionally hear scratching noises 
+coming from nearby. It sounds like something is trying to get out, but 
+perhaps they are trying to get in. It is very difficult to see down here 
+and you find yourself wishing you had bought that torch.
+~
+#EXIT
+Direction east~
+ToRoom    1978
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1980
+#ENDEXIT
+
+Reset M 1951 14 1979 -1 -1 -1 100
+  Reset G 1950 1 100
+Reset M 1951 14 1979 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1980
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      The tunnel is very dark and you occasionally hear scratching noises 
+coming from nearby. It sounds like something is trying to get out, but 
+perhaps they are trying to get in. It is very difficult to see down here 
+and you find yourself wishing you had bought that torch.
+~
+#EXIT
+Direction east~
+ToRoom    1979
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1981
+#ENDEXIT
+
+Reset M 1952 8 1980 -1 -1 -1 100
+  Reset G 1950 1 100
+Reset M 1952 8 1980 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1981
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      The tunnel is very dark and you occasionally hear scratching noises 
+coming from nearby. It sounds like something is trying to get out, but 
+perhaps they are trying to get in. It is very difficult to see down here 
+and you find yourself wishing you had bought that torch.
+~
+#EXIT
+Direction east~
+ToRoom    1980
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1982
+#ENDEXIT
+
+Reset M 1954 30 1981 -1 -1 -1 100
+Reset M 1955 9 1981 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1982
+Name      Main Tunnel~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    1981
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1975
+#ENDEXIT
+
+Reset M 1954 30 1982 -1 -1 -1 100
+Reset M 1954 30 1982 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1983
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      The tunnel is very dark and you occasionally hear scratching noises 
+coming from nearby. It sounds like something is trying to get out, but 
+perhaps they are trying to get in. It is very difficult to see down here 
+and you find yourself wishing you had bought that torch.
+~
+#EXIT
+Direction south~
+ToRoom    1987
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1978
+#ENDEXIT
+
+Reset M 1953 33 1983 -1 -1 -1 100
+Reset M 1953 33 1983 -1 -1 -1 100
+Reset M 1953 33 1983 -1 -1 -1 100
+Reset M 1953 33 1983 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1984
+Name      Hall of the Innocents~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are standing in the northern end of a long, lighted hallway.  
+There are numerous coffins filling the hallway as far as the eye can see.  
+There is a portrait of a small child on the wall, and you find it is very 
+odd no dust accumulates here.
+~
+#EXIT
+Direction south~
+ToRoom    1988
+#ENDEXIT
+
+Reset O 1968 1 1984 -1 -1 -1 100
+#EXDESC
+ExDescKey    portrait painting child picture~
+ExDesc       The small child appears to be questing after a beast of some 
+variety, which you can no longer make out because of the cracked paint.  
+However, there is an inscription engraved in a brass plate beneath the 
+portrait.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    inscription engraving plate brass~
+ExDesc       To my dearest uncle, the Lord Ambrosius. Wish you could have 
+joined me on my first hunt. Maybe next time.
+
+                                                 Yours,
+
+                                                  Phillip
+
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 20
+mpaset $n 20
+mpecho &wPhillip jumps up and kicks you in the kneecaps!&z
+mpmload 1957
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1985
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    1986
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1990
+#ENDEXIT
+
+Reset M 1952 8 1985 -1 -1 -1 100
+Reset M 1955 9 1985 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1986
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction west~
+ToRoom    1985
+#ENDEXIT
+
+Reset M 1956 6 1986 -1 -1 -1 100
+Reset M 1956 6 1986 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1987
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1983
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1992
+#ENDEXIT
+
+Reset M 1954 30 1987 -1 -1 -1 100
+Reset M 1954 30 1987 -1 -1 -1 100
+Reset M 1954 30 1987 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1988
+Name      Hall of the Innocents~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are standing in the northern half of a long, open hallway.  
+There are large murals painted on the walls, and for some strange reason 
+the dust is not present here. There are coffins filling the hall as far 
+as the eye can see.
+~
+#EXIT
+Direction north~
+ToRoom    1984
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1993
+#ENDEXIT
+
+Reset O 1988 1 1988 -1 -1 -1 100
+#EXDESC
+ExDescKey    murals paintings mural~
+ExDesc       The murals depict the evils of the world and the bystanders that 
+are affected by those evils. There are virgins being slaughtered, 
+babies being mutilated, and families being slain all shown in a rather 
+graphic portrayal. Although it appears to be in bad taste, you begin to 
+realize that these murals were commissioned to show how those lives, some 
+who lie in rest here, were so cruelly taken from them. May they rest in 
+peace.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    coffin~
+ExDesc       You see just a plain ordinary coffin.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 21
+mpaset $n 21
+mpecho &wBelarius appears, winks at you, and slams you against the wall!&z
+mpmload 1971
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1989
+Name      Catacombs~
+Sector    indoors~
+Flags     nomob indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+A small sign says: &YTo get out of here, recite the rainbow scroll!&D
+~
+Reset O 1955 1 1989 -1 -1 -1 100
+Reset O 1977 1 1989 -1 -1 -1 100
+Reset O 1985 1 1989 -1 -1 -1 100
+Reset O 1984 1 1989 -1 -1 -1 100
+Reset O 1983 1 1989 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1990
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1985
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    1991
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1989
+#ENDEXIT
+
+Reset M 1953 33 1990 -1 -1 -1 100
+Reset M 1951 14 1990 -1 -1 -1 100
+Reset M 1952 8 1990 -1 -1 -1 100
+  Reset G 1952 1 100
+#ENDROOM
+
+#ROOM
+Vnum      1991
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    1992
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1990
+#ENDEXIT
+
+Reset M 1951 14 1991 -1 -1 -1 100
+Reset M 1951 14 1991 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1992
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself. You see a large, wooden door
+to your east.
+~
+#EXIT
+Direction north~
+ToRoom    1987
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    1993
+Desc      You see a large wooden door.~
+Keywords  door~
+Flags     isdoor closed locked pickproof~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1997
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1991
+Flags     pickproof~
+#ENDEXIT
+
+Reset M 1955 9 1992 -1 -1 -1 100
+  Reset G 1960 1 100
+Reset M 1955 9 1992 -1 -1 -1 100
+Reset D 1992 1 2 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      1993
+Name      Hall of the Innocents~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are standing in the middle of a long, open hallway. There are large
+murals painted on the walls, and for some strange reason the dust is not
+present here. There are coffins filling the hall as far as the eye can see.
+~
+#EXIT
+Direction north~
+ToRoom    1988
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    1998
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1992
+Desc      You see a large wooden door.~
+Keywords  wooden door~
+Flags     isdoor closed locked pickproof~
+#ENDEXIT
+
+Reset O 1987 1 1993 -1 -1 -1 100
+Reset D 1993 3 2 100 -2
+#EXDESC
+ExDescKey    coffin~
+ExDesc       You see just a plain ordinary old coffin.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 22
+mpaset $n 22
+mpecho &wConstance rises up and slaps you painfully on the cheek!&z
+mpmload 1974
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1994
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction south~
+ToRoom    2000
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1964
+#ENDEXIT
+
+Reset M 1951 14 1994 -1 -1 -1 100
+Reset M 1953 33 1994 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1995
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction south~
+ToRoom    2001
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1994
+#ENDEXIT
+
+Reset M 1954 30 1995 -1 -1 -1 100
+Reset M 1953 33 1995 -1 -1 -1 100
+Reset M 1953 33 1995 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1996
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction south~
+ToRoom    2002
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1995
+#ENDEXIT
+
+Reset M 1953 33 1996 -1 -1 -1 100
+  Reset G 1950 1 100
+Reset M 1953 33 1996 -1 -1 -1 100
+Reset M 1953 33 1996 -1 -1 -1 100
+Reset M 1953 33 1996 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1997
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1992
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2003
+#ENDEXIT
+
+Reset M 1951 14 1997 -1 -1 -1 100
+Reset M 1955 9 1997 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      1998
+Name      Hall of the Innocents~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are standing in the southern half of a long, open hallway. There are
+large murals painted on the walls, and for some strange reason the dust is
+not present here. There are coffins filling the hall as far as the eye
+can see.
+~
+#EXIT
+Direction north~
+ToRoom    1993
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2004
+#ENDEXIT
+
+Reset O 1971 1 1998 -1 -1 -1 100
+#EXDESC
+ExDescKey    coffin~
+ExDesc       You see just an ordinary old coffin.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 23
+mpaset $n 23
+mpecho &wWeston builds himself out of dust then throws it in your face!&z
+mpmload 1969
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      1999
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2000
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1962
+#ENDEXIT
+
+Reset O 1950 1 1999 -1 -1 -1 100
+Reset O 1958 1 1999 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2000
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1994
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2001
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1999
+#ENDEXIT
+
+Reset M 1953 33 2000 -1 -1 -1 100
+Reset M 1953 33 2000 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2001
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1995
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2002
+#ENDEXIT
+
+Reset M 1953 33 2001 -1 -1 -1 100
+Reset M 1954 30 2001 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2002
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1996
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2003
+#ENDEXIT
+
+Reset M 1954 30 2002 -1 -1 -1 100
+Reset M 1954 30 2002 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2003
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    1997
+#ENDEXIT
+
+Reset M 1952 8 2003 -1 -1 -1 100
+Reset M 1953 33 2003 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2004
+Name      Hall of the Innocents~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are standing in the southern half of a long, open hallway. There are
+large murals painted on the walls, and for some strange reason the dust is
+not present here. There are coffins filling the hall as far as the eye
+can see.
+~
+#EXIT
+Direction north~
+ToRoom    1998
+#ENDEXIT
+
+Reset O 1970 1 2004 -1 -1 -1 100
+#EXDESC
+ExDescKey    coffin~
+ExDesc       You see just an ordinary old coffin.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 24
+mpaset $n 24
+mpecho &wHermann growls at you and prepares to bite you in the leg!&z
+mpmload 1968
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      2005
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2006
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2008
+#ENDEXIT
+
+Reset M 1954 30 2005 -1 -1 -1 100
+Reset M 1954 30 2005 -1 -1 -1 100
+Reset M 1953 33 2005 -1 -1 -1 100
+  Reset G 1959 1 100
+Reset M 1953 33 2005 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2006
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2007
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2005
+#ENDEXIT
+
+Reset M 1953 33 2006 -1 -1 -1 100
+Reset M 1953 33 2006 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2007
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation. It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    1962
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2006
+#ENDEXIT
+
+Reset M 1953 33 2007 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2008
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2005
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2009
+#ENDEXIT
+
+Reset M 1954 30 2008 -1 -1 -1 100
+Reset M 1954 30 2008 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2009
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction south~
+ToRoom    2012
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2008
+#ENDEXIT
+
+Reset M 1954 30 2009 -1 -1 -1 100
+Reset M 1954 30 2009 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2010
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2011
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2013
+#ENDEXIT
+
+Reset M 1954 30 2010 -1 -1 -1 100
+  Reset G 1959 1 100
+#ENDROOM
+
+#ROOM
+Vnum      2011
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You have entered a dark tunnel.  The hairs on the back of your neck seem
+to rise, and you hear a moaning sound coming from the west.  There is a small
+hole in the west wall, and you think that might be where the sound is coming
+from.  Whatever it is, it sounds very dangerous.  If you go that way, better
+be on your guard.
+~
+#EXIT
+Direction north~
+ToRoom    1962
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2023
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2010
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2012
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2009
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2015
+#ENDEXIT
+
+Reset M 1954 30 2012 -1 -1 -1 100
+Reset M 1954 30 2012 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2013
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2010
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2016
+#ENDEXIT
+
+Reset M 1954 30 2013 -1 -1 -1 100
+  Reset G 1959 1 100
+#ENDROOM
+
+#ROOM
+Vnum      2014
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2015
+#ENDEXIT
+
+Reset M 1950 2 2014 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2015
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2012
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2016
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2014
+#ENDEXIT
+
+Reset M 1951 14 2015 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2016
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2013
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2015
+#ENDEXIT
+
+Reset M 1955 9 2016 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2017
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2018
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2024
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2018
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2019
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2017
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2019
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2020
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2026
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2018
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2020
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2021
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2027
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2019
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2021
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2022
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2020
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2022
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction south~
+ToRoom    2029
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2021
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2023
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2011
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2024
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2030
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2024
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel 
+is very narrow, barely allowing you to squeeze through, while at other 
+points, it is quite large.  The tunnel also varies in height, forcing you 
+to duck down in order to proceed.  It is very eerie and chilling down here, 
+and you feel the need to step up the pace in order to get back to the 
+safety of the castle.
+~
+#EXIT
+Direction north~
+ToRoom    2017
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2025
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2023
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2025
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of 
+the castle.
+~
+#EXIT
+Direction west~
+ToRoom    2024
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2026
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of 
+the castle.
+~
+#EXIT
+Direction north~
+ToRoom    2019
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2027
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel 
+is very narrow, barely allowing you to squeeze through, while at other 
+points, it is quite large.  The tunnel also varies in height, forcing you 
+to duck down in order to proceed.  It is very eerie and chilling down here, 
+and you feel the need to step up the pace in order to get back to the 
+safety of the castle.
+~
+#EXIT
+Direction north~
+ToRoom    2020
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2034
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2028
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2029
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2029
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction north~
+ToRoom    2022
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2028
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2030
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction north~
+ToRoom    2023
+#ENDEXIT
+
+Reset M 1956 6 2030 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2031
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2032
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2041
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2032
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2033
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2031
+#ENDEXIT
+
+Reset M 1954 30 2032 -1 -1 -1 100
+Reset M 1954 30 2032 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2033
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2034
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2032
+#ENDEXIT
+
+Reset M 1953 33 2033 -1 -1 -1 100
+Reset M 1953 33 2033 -1 -1 -1 100
+Reset M 1953 33 2033 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2034
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction north~
+ToRoom    2027
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2035
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2033
+#ENDEXIT
+
+Reset M 1952 8 2034 -1 -1 -1 100
+Reset M 1952 8 2034 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2035
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2036
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2034
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2036
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction south~
+ToRoom    2046
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2035
+#ENDEXIT
+
+Reset M 1956 6 2036 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2037
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2038
+#ENDEXIT
+
+Reset M 1956 6 2037 -1 -1 -1 100
+  Reset G 1986 1 100
+Reset M 1956 6 2037 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2038
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2039
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2037
+#ENDEXIT
+
+Reset M 1951 14 2038 -1 -1 -1 100
+Reset M 1951 14 2038 -1 -1 -1 100
+Reset M 1951 14 2038 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2039
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2040
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2038
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2040
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2041
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2047
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2039
+#ENDEXIT
+
+Reset M 1951 14 2040 -1 -1 -1 100
+Reset M 1951 14 2040 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2041
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction north~
+ToRoom    2031
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2040
+#ENDEXIT
+
+Reset M 1955 9 2041 -1 -1 -1 100
+Reset M 1955 9 2041 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2042
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2043
+#ENDEXIT
+
+Reset M 1950 2 2042 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2043
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2044
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2042
+#ENDEXIT
+
+Reset M 1951 14 2043 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2044
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2045
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2043
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2045
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction east~
+ToRoom    2046
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2044
+#ENDEXIT
+
+Reset M 1953 33 2045 -1 -1 -1 100
+Reset M 1953 33 2045 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2046
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      This tunnel is a seemingly endless maze and you find it very 
+difficult to keep track of your location.  At some points, the tunnel is 
+very narrow, barely allowing you to squeeze through, while at other points, 
+it is quite large.  The tunnel also varies in height, forcing you to duck 
+down in order to proceed.  It is very eerie and chilling down here, and you 
+feel the need to step up the pace in order to get back to the safety of the 
+castle.
+~
+#EXIT
+Direction north~
+ToRoom    2036
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2045
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2047
+Name      Quiet Passageway~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in a very still passageway leading north and south.  There appear
+to be no tracks in the dust at this point but you feel a deepening sense of
+dread the further south you go.  You can hear screams of torment in the
+distance.
+~
+#EXIT
+Direction north~
+ToRoom    2040
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2048
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2048
+Name      Quiet Passageway~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2047
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2049
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2049
+Name      Quiet Passageway~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2048
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2050
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2050
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel.  There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet.  The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction north~
+ToRoom    2049
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2059
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2051
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2042
+#ENDEXIT
+
+Reset M 1953 33 2051 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      2052
+Name      Catacombs~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You have entered the tomb of Ambrosius' great-grandfather, the Lord Antheus.
+There is a thick coating of dust covering everything in here, but you can
+see that the walls are guilded in gold, and there are three dimensional 
+figures carved into them, with rubies for eyes, and emeralds for jewelry.
+There is a large coffin in the room, also guilded in gold.
+~
+#EXIT
+Direction north~
+ToRoom    2051
+#ENDEXIT
+
+Reset O 1972 1 2052 -1 -1 -1 100
+Reset O 1978 1 2052 -1 -1 -1 100
+Reset O 1978 1 2052 -1 -1 -1 100
+Reset O 1979 1 2052 -1 -1 -1 100
+#MUDPROG
+Progtype  act_prog~
+Arglist   p opens A coffin.~
+Comlist   if hasabit($n) != 25
+mpaset $n 25
+mpecho &wThe Lord Antheus says, 'Why have you disturbed me from my slumbers?&z
+mpmload 1963
+endif
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      2053
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel.  There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet.  The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction east~
+ToRoom    2054
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2052
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2054
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel.  There is little noise here, 
+but the dust along the pathway has been disturbed by the shuffling of 
+feet.  The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction south~
+ToRoom    2055
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2053
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2055
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2054
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    2056
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2056
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction north~
+ToRoom    2055
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2057
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2057
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are in the twisting maze of catacombs beneath the swamp.
+This is where the dead of the city have been buried since before the days
+of the Graecian Confederation.  It is very dark and dusty down here, and
+the stillness in the air gives you the impression that there is nothing
+left living down here besides yourself.
+~
+#EXIT
+Direction east~
+ToRoom    2056
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2058
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2058
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel.  There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet.  The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction north~
+ToRoom    1952
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    2057
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2059
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2059
+Name      Path of the Mourned~
+Sector    indoors~
+Flags     indoors noportal~
+Stats     0 0 0 0
+Desc      You are walking along a very quiet tunnel.  There is little noise 
+here, but the dust along the pathway has been disturbed by the shuffling 
+of feet.  The halls here are a rich burgundy color, which you can just 
+barely make out from the dim lighting in this place.
+~
+#EXIT
+Direction east~
+ToRoom    2058
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    2050
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2060
+Name      Entrance to the Catacombs~
+Sector    indoors~
+Flags     nomob indoors~
+Stats     0 0 0 0
+Desc      A dank odour wafts up from the ebon staircase set in the centre of this
+mausoleum room. The atmosphere here at the very edge of the swamps is very
+unnerving. Sounds of unseen creatures can be heard all around. It is dark
+below and you can only make out shadows and not much else. A sense of
+foreboding fills you as you wonder what kind of creatures would be found
+within the abandoned catacombs below.
+~
+#EXIT
+Direction north~
+ToRoom    50000
+ToCoords  915 938
+Flags     overland~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    50000
+ToCoords  916 939
+Flags     overland~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    50000
+ToCoords  915 940
+Flags     overland~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    50000
+ToCoords  914 939
+Flags     overland~
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    1962
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      2099
+Name      Standing in Pure Nothingness~
+Sector    indoors~
+Flags     nomob proto~
+Stats     0 0 0 0
+#ENDROOM
+
+#ENDAREA

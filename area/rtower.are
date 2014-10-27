@@ -1,0 +1,5948 @@
+#AFKAREA
+#AREADATA
+Version         1
+Name            The Radiant Tower~
+Author          Raine~
+Vnums           7700 7799
+Continent       one~
+Coordinates     911 928
+Ranges          0 10 0 10
+ResetMsg        &BA wave of soft blue light radiates through your surroundings...~
+ResetFreq       5
+Flags           nopkill nocamp noportal nosummon noteleport~
+Climate         1 1 0
+Treasure        20 74 85 93 20 50 60 75
+#ENDAREADATA
+
+#MOBILE
+Vnum      7700
+Keywords  first mob~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a newly created first mob~
+Long      Some god abandoned a newly created first mob here.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7701
+Keywords  two clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Two of Clubs~
+Long      The Two of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 2 printed upon two diametrically
+opposing corners, with one upside down. Also, two clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7702
+Keywords  three clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Three of Clubs~
+Long      The Three of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 3 printed upon two diametrically
+opposing corners, with one upside down. Also, three clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7703
+Keywords  four clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Four of Clubs~
+Long      The Four of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 4 printed upon two diametrically
+opposing corners, with one upside down. Also, four clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7704
+Keywords  five clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Five of Clubs~
+Long      The Five of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 5 printed upon two diametrically
+opposing corners, with one upside down. Also, five clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7705
+Keywords  six clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Six of Clubs~
+Long      The Six of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 6 printed upon two diametrically
+opposing corners, with one upside down. Also, six clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7706
+Keywords  seven clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Seven of Clubs~
+Long      The Seven of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 7 printed upon two diametrically
+opposing corners, with one upside down. Also, seven clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7707
+Keywords  eight clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Eight of Clubs~
+Long      The Eight of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 8 printed upon two diametrically
+opposing corners, with one upside down. Also, eight clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7708
+Keywords  nine clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Nine of Clubs~
+Long      The Nine of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 9 printed upon two diametrically
+opposing corners, with one upside down. Also, nine clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7709
+Keywords  ten clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ten of Clubs~
+Long      The Ten of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 10 printed upon two diametrically
+opposing corners, with one upside down. Also, ten clubs are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7710
+Keywords  jack clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Jack of Clubs~
+Long      The Jack of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see a picture printed on his torso and reflected
+upside down on the bottom half of the card. The picture is that of a
+smiling youth with a moustache, dressed quite richly. The letter J is
+also printed on two diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 15 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7711
+Keywords  queen clubs rtower~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Queen of Clubs~
+Long      The Queen of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. Her head, arms and legs are covered in tight black clothing, so
+that all you can see are her face and hands, where the cloth is cut away.
+Upon her body, you see a picture printed on her chest and reflected
+upside down on the bottom half of the card. The picture is that of a
+matriarch with a regal air. The letter Q is also printed on two
+diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    8 10 0 17 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7712
+Keywords  king clubs rtower~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The King of Clubs~
+Long      The King of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see a picture printed on his torso and reflected
+upside down on the bottom half of the card. The picture is that of a
+stately man with a crown upon his head. The letter K is also printed on
+two diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    8 10 0 20 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7713
+Keywords  ace clubs rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ace of Clubs~
+Long      The Ace of Clubs wanders the garden here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the letter A printed upon two diametrically
+opposing corners, with one upside down. Also, a single ornamented club
+is visible on the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    9 10 0 15 1 6 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7714
+Keywords  two diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Two of Diamonds~
+Long      The Two of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 2 printed upon two diametrically
+opposing corners, with one upside down. Also, two diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7715
+Keywords  three diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Three of Diamonds~
+Long      The Three of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 3 printed upon two diametrically
+opposing corners, with one upside down. Also, three diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7716
+Keywords  four diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Four of Diamonds~
+Long      The Four of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 4 printed upon two diametrically
+opposing corners, with one upside down. Also, four diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7717
+Keywords  five diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Five of Diamonds~
+Long      The Five of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 5 printed upon two diametrically
+opposing corners, with one upside down. Also, five diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7718
+Keywords  six diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Six of Diamonds~
+Long      The Six of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 6 printed upon two diametrically
+opposing corners, with one upside down. Also, six diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7719
+Keywords  seven diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Seven of Diamonds~
+Long      The Seven of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 7 printed upon two diametrically
+opposing corners, with one upside down. Also, seven diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7720
+Keywords  eight diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Eight of Diamonds~
+Long      The Eight of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 8 printed upon two diametrically
+opposing corners, with one upside down. Also, eight diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7721
+Keywords  nine diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Nine of Diamonds~
+Long      The Nine of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 9 printed upon two diametrically
+opposing corners, with one upside down. Also, nine diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7722
+Keywords  ten diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ten of Diamonds~
+Long      The Ten of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 10 printed upon two diametrically
+opposing corners, with one upside down. Also, ten diamonds are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7723
+Keywords  jack diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Jack of Diamonds~
+Long      The Jack of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see a picture printed on his torso and reflected
+upside down on the bottom half of the card. The picture is that of a
+smiling youth with a moustache, dressed quite richly. The letter J is
+also printed on two diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 15 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7724
+Keywords  queen diamonds rtower~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Queen of Diamonds~
+Long      The Queen of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are her face and hands, where the cloth is cut away.
+Upon her body, you see a picture printed on her chest and reflected
+upside down on the bottom half of the card. The picture is that of a
+matriarch with a regal air. The letter Q is also printed on two
+diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    8 10 0 17 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7725
+Keywords  king diamonds rtower~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The King of Diamonds~
+Long      The King of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see a picture printed on his torso and reflected
+upside down on the bottom half of the card. The picture is that of a
+stately man with a crown upon his head. The letter K is also printed on
+two diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    8 10 0 20 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7726
+Keywords  ace diamonds rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ace of Diamonds~
+Long      The Ace of Diamonds strolls leisurely among the rose trees here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the letter A printed upon two diametrically
+opposing corners, with one upside down. Also, a single elaborate diamond is
+visible on the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    9 10 0 15 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7727
+Keywords  two hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Two of Hearts~
+Long      The Two of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 2 printed upon two diametrically
+opposing corners, with one upside down. Also, two hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7728
+Keywords  three hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Three of Hearts~
+Long      The Three of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 3 printed upon two diametrically
+opposing corners, with one upside down. Also, three hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7729
+Keywords  four hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Four of Hearts~
+Long      The Four of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 4 printed upon two diametrically
+opposing corners, with one upside down. Also, four hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7730
+Keywords  five hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Five of Hearts~
+Long      The Five of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 5 printed upon two diametrically
+opposing corners, with one upside down. Also, five hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7731
+Keywords  six hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Six of Hearts~
+Long      The Six of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 6 printed upon two diametrically
+opposing corners, with one upside down. Also, six hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7732
+Keywords  seven hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Seven of Hearts~
+Long      The Seven of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 7 printed upon two diametrically
+opposing corners, with one upside down. Also, seven hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7733
+Keywords  eight hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Eight of Hearts~
+Long      The Eight of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 8 printed upon two diametrically
+opposing corners, with one upside down. Also, eight hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7734
+Keywords  nine hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Nine of Hearts~
+Long      The Nine of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 9 printed upon two diametrically
+opposing corners, with one upside down. Also, nine hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7735
+Keywords  ten hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ten of Hearts~
+Long      The Ten of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 10 printed upon two diametrically
+opposing corners, with one upside down. Also, ten hearts are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7736
+Keywords  jack hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Jack of Hearts~
+Long      The Jack of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see a picture printed on his torso and reflected
+upside down on the bottom half of the card. The picture is that of a
+smiling youth with a moustache, dressed quite richly. The letter J is
+also printed on two diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 15 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7737
+Keywords  queen hearts rtower~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Queen of Hearts~
+Long      The Queen of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. Her head, arms and legs are covered in tight red clothing, so
+that all you can see are her face and hands, where the cloth is cut away.
+Upon her body, you see a picture printed on her chest and reflected
+upside down on the bottom half of the card. The picture is that of a
+matriarch with a regal air. The letter Q is also printed on two
+diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    8 10 0 17 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7738
+Keywords  king hearts rtower~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The King of Hearts~
+Long      The King of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see a picture printed on his torso and reflected
+upside down on the bottom half of the card. The picture is that of a
+stately man with a crown upon his head. The letter K is also printed on
+two diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    8 10 0 20 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7739
+Keywords  ace hearts rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ace of Hearts~
+Long      The Ace of Hearts is walking about here
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight red clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the letter A printed upon two diametrically
+opposing corners, with one upside down. Also, a lone heart is visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    9 10 0 15 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7740
+Keywords  two spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Two of Spades~
+Long      The Two of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 2 printed upon two diametrically
+opposing corners, with one upside down. Also, two spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7741
+Keywords  three spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Three of Spades~
+Long      The Three of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 3 printed upon two diametrically
+opposing corners, with one upside down. Also, three spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7742
+Keywords  four spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Four of Spades~
+Long      The Four of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 4 printed upon two diametrically
+opposing corners, with one upside down. Also, four spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7743
+Keywords  five spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Five of Spades~
+Long      The Five of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 5 printed upon two diametrically
+opposing corners, with one upside down. Also, five spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    3 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7744
+Keywords  six spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Six of Spades~
+Long      The Six of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 6 printed upon two diametrically
+opposing corners, with one upside down. Also, six spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7745
+Keywords  seven spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Seven of Spades~
+Long      The Seven of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 7 printed upon two diametrically
+opposing corners, with one upside down. Also, seven spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7746
+Keywords  eight spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Eight of Spades~
+Long      The Eight of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 8 printed upon two diametrically
+opposing corners, with one upside down. Also, eight spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7747
+Keywords  nine spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Nine of Spades~
+Long      The Nine of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 9 printed upon two diametrically
+opposing corners, with one upside down. Also, nine spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7748
+Keywords  ten spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ten of Spades~
+Long      The Ten of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the number 10 printed upon two diametrically
+opposing corners, with one upside down. Also, ten spades are visible on
+the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7749
+Keywords  jack spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Jack of Spades~
+Long      The Jack of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see a picture printed on his torso and reflected
+upside down on the bottom half of the card. The picture is that of a
+smiling youth with a moustache, dressed quite richly. The letter J is
+also printed on two diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 10 0 15 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7750
+Keywords  queen spades rtower~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Queen of Spades~
+Long      The Queen of Spades regards you with curiosity as she stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. Her head, arms and legs are covered in tight black clothing, so
+that all you can see are her face and hands, where the cloth is cut away.
+Upon her body, you see a picture printed on her chest and reflected
+upside down on the bottom half of the card. The picture is that of a
+matriarch with a regal air. The letter Q is also printed on two
+diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    8 10 0 17 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7751
+Keywords  king spades rtower~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The King of Spades~
+Long      The King of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see a picture printed on his torso and reflected
+upside down on the bottom half of the card. The picture is that of a
+stately man with a crown upon his head. The letter K is also printed on
+two diametrically opposing corners.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    8 10 0 20 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7752
+Keywords  ace spades rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ace of Spades~
+Long      The Ace of Spades regards you with curiosity as he stands here.
+~
+Desc      This is one of the strange card people you keep seeing around the
+garden. His head, arms and legs are covered in tight black clothing, so
+that all you can see are his face and hands, where the cloth is cut away.
+Upon his body, you see the letter A printed upon two diametrically
+opposing corners, with one upside down. Also, a single elaborately
+decorated spade is visible on the white card face.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    9 10 0 15 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7753
+Keywords  inchworm worm rtower~
+Race      worm~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     An Inchworm~
+Long      A small white worm, about an inch long, squirms on the ground here.
+~
+Desc      The inchworm, is, as its name suggests, a mere inch in length. Its body is
+white, and it moves around by squirming its body to push itself along. No
+eyes or mouth can be seen, but it probably survives on the leaves in this
+place.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    1 16 30 0 1 3 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Affected  detect_invis~
+Bodyparts head~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7754
+Keywords  ladybird bug rtower~
+Race      insect~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A Ladybird~
+Long      A small bug with a black-spotted red shell flits about here.
+~
+Desc      This is one of the larger members of the ladybird family. It has twenty
+black spots spaced regularly on its scarlet shell, and is nearly as
+long as your torso. Peering at you with bright black eyes, it quickly
+dismisses you as a threat and turns to other things.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    4 16 0 10 1 2 1
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7755
+Keywords  ginger cat rtower~
+Race      cat~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Ginger Cat~
+Long      A cat sits sedately here, licking its paws fastidiously.
+~
+Desc      The cat is a lovely shade of ginger, with striped markings on its back
+and legs in a darker orange colour. It blinks unconcerned green eyes
+at you for mere moments before it goes back to licking itself once more.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    5 16 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7756
+Keywords  werehound dog rtower~
+Race      canine~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Werehound~
+Long      A dog runs about here, barking madly at everything.
+~
+Desc      This dog looks a little odd, and when you peer at it closely, you can
+almost make out human characteristics in its facial expression. Its coat
+is a ragged cocoa colour, and white foam is flecked on its muzzle and
+teeth as it stares at you with insane eyes.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    5 10 0 10 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7757
+Keywords  swarm bees rtower~
+Race      insect~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The swarm of bees~
+Long      A swarm of bees buzzes noisily in a huge, dark cloud here.
+~
+Desc      This is a huge swarm of bees, and they seem very angry at something. The
+mass of yellow and black bodies can hardly be made out, but here and there
+you see a sting glisten in the light.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    9 6 0 15 1 6 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7758
+Keywords  baby dragon rtower~
+Race      dragon~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The baby dragon~
+Long      A small dragon gazes at you fiercely as it attacks!
+~
+Desc      This dragon is very small and is likely to be a very young hatchling. Its
+scales are a metallic light blue, heralding it as a scion of the dragons
+of lightning. Although it is young, it looks every bit as ferocious as an
+adult might be, and its teeth do not advertise it as a herbivorous creature.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    13 21 0 15 1 8 0
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel aggressive stayarea noassist~
+Bodyparts head legs heart brains~
+Immune    electricity poison~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7759
+Keywords  girl rtower~
+Race      human~
+Class     Rogue~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     The girl~
+Long      A young girl wanders about here, looking hopelessly lost.
+~
+Desc      Her wide blue eyes dart around nervously, and she seems to be in a
+hurry to go somewhere. Yet, the small hands clutching at the hem of
+her apron are hesitant, and her face is filled with uncertainty. Raising
+a hand, she raises a strand of golden hair and nibbles the ends as she
+considers her options.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    5 10 0 0 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7760
+Keywords  head librarian man rtower~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Head Librarian~
+Long      A stern looking man moves with calm tranquillity as he sorts books here.
+~
+Desc      Robed in austere slate blue, he goes about his duties as Head Librarian
+in a slow, stately manner. His short wavy hair is touched at the temples
+in grey, but it does not seem likely that he will quit his work here
+any time soon.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    9 6 0 15 1 6 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7761
+Keywords  librarian figure rtower~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Librarian~
+Long      A robed figure watches over the library as he walks about here.
+~
+Desc      Dressed in simple robes of a slate blue colour, the librarian seems to
+be in no particular hurry as he moves about unhesitatingly to return
+books to the correct shelves. Occasionally, he picks up a stray book
+and returns it to its rightful place with nary a glance to its cover.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 4 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7762
+Keywords  caretaker priest rtower~
+Race      human~
+Class     Cleric~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The priest of Meia~
+Long      The caretaker of the temple is kneeling on the floor in prayer here.
+~
+Desc      Arinq Machivainius is an ancient man who looks as if he has seen 
+centuries pass by. His bent and wrinkled form is swathed in robes
+so voluminous it makes him seem smaller than he truly is. Most of
+his days are passed in going about the Temple and making sure that
+all is in order.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    9 6 0 15 1 6 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7763
+Keywords  priest tradiant~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The priest of Meia~
+Long      A priest of Meia treads slowly as he passes you by.
+~
+Desc      This is a priest of Meia, one of many who choose to remain at her temples
+instead of roaming the lands. However, his duties are such that he will
+not stay at any one temple indefinitely. Rather, the priest will move to
+another temple after a short tenure here.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 4 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7764
+Keywords  sentinel priest rtower~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The priest of Meia~
+Long      The sentinel of the Flame stands here, guarding the fiery blaze.
+~
+Desc      The stern look upon his face seems etched in the leathery skin with a
+carving instrument. He stands just beside the Flame, keeping watch to
+see that it burns continually. Like others of the same devotion, he
+does not stay here for long periods, moving to other duties as soon as
+a replacement arrives.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    7 4 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7765
+Keywords  meia's flame rtower~
+Race      dragon~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     Meia's Flame~
+Long      A bright blue flame burns here serenely.
+~
+Desc      This is the Flame of Meia. It burns without need of any fuel save true
+faith, and it is said that the fire will remain lighted till the day
+the last of Meia's followers disappear from the face of the Lands. The
+colour of the flame is a striking blue, and it hovers about 3 feet off
+the ground, giving off a gentle warmth instead of a searing heat.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    13 21 0 15 1 8 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+Immune    electricity poison~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7766
+Keywords  supplicant rtower~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The supplicant~
+Long      A supplicant kneels here in fervent prayer to Meia.
+~
+Desc      The supplicant is bent in fervent prayer, and you can see that he has
+probably travelled for quite a distance to kneel before the statue here.
+His clothes are travelworn, and he looks as if he had come here directly
+upon reaching the city.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    5 4 0 12 1 2 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea noassist~
+Bodyparts head legs heart brains~
+#ENDMOBILE
+
+#MOBILE
+Vnum      7767
+Keywords  tinker rtower~
+Race      magical~
+Class     Cleric~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The tinker~
+Long      A wandering tinker clanks his way around the garden here.
+~
+Desc      His azure eyes twinkle with the brightness of youth, even though his face
+and skin are wrinkled like the bark of an ancient oak. A multitude of
+pots and pans hang from his body, and a small bag of tools is hung from
+his belt.
+~
+Nattacks  0.000000
+Stats1    0 250000 0 0 150 100
+Stats2    20 10 0 4000 10 10 400
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea immortal~
+Bodyparts head heart~
+ShopData   0 0 0 0 0 7 1 0 27
+RepairData 3 4 0 10 2 1 0
+#MUDPROG
+Progtype  all_greet_prog~
+Arglist   100~
+Comlist   say Hello there! Would you like to buy something from me?
+say Or perhaps you want my help in recharging your wands?
+smile
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  speech_prog~
+Arglist   buy~
+Comlist   say Sure, sure! Type "list" to see my wares!
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  speech_prog~
+Arglist   recharge recharging wand wands~
+Comlist   say Of course! Just make sure your wand is in your inventory list.
+say Then type "repair wand". I'll do it for you then.
+smile
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      7799
+Keywords  Last mob~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a newly created last mob~
+Long      Some god abandoned a newly created last mob here.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#OBJECT
+Vnum      7700
+Keywords  first obj~
+Type      trash~
+Short     a newly created first obj~
+Long      Some god dropped a newly created first obj here.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      7701
+Keywords  pot paint rtower~
+Type      drinkcon~
+Short     A pot of red paint~
+Long      A pot of scarlet paint has been set down here.~
+Flags     metal~
+WFlags    take hold~
+Values    15 10 2 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    pot paint rtower~
+ExDesc       This is a small tin bucket utilised as a paint container. It seems that
+someone has exchanged the scarlet paint within with another liquid,
+since the smell rising from it now is the scent of good wine.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7702
+Keywords  ring circlet paper hearts rtower~
+Type      armor~
+Short     Paper heart ring~
+Long      A circlet of paper hearts lies here.~
+Flags     magic~
+WFlags    take finger~
+Values    2 2 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+AffData armor -2 -1 -1 0
+#EXDESC
+ExDescKey    ring circlet paper hearts rtower~
+ExDesc       This is a small ring of red paper hearts, cut out and joined in a
+bracelet. A tiny hook and loop forms the catch at the ends of the
+chain. It seems very fragile, but will probably last for a while.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7703
+Keywords  red stockings rtower~
+Type      armor~
+Short     A pair of red stockings~
+Long      A pair of red stockings have been dropped here~
+Flags     magic~
+WFlags    take legs~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    red stockings rtower~
+ExDesc       The stockings are woven of cotton, and dyed a bright red. You notice
+tiny initials embroidered into the toes, but they are otherwise plain.
+Examining the fine sewing, you see the letters "R.S".
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7704
+Keywords  black stockings rtower~
+Type      armor~
+Short     A pair of black stockings~
+Long      A pair of black stockings have been dropped here~
+Flags     magic~
+WFlags    take legs~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    black stockings rtower~
+ExDesc       The stockings are woven of cotton, and dyed a dull black. You notice
+tiny initials embroidered into the toes, but they are otherwise plain.
+Examining the fine sewing, you see the letters "R.S".
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7705
+Keywords  red crown rtower~
+Type      armor~
+Short     A Red Crown~
+Long      A crown made of red metal has been left carelessly here.~
+Flags     metal magic antievil anticleric antimage antidruid antinecro~
+WFlags    take head~
+Values    4 4 0 0 0 0 0 0 0 0 0
+Stats     1 150 -2 9999 0 None None None
+#EXDESC
+ExDescKey    red crown rtower~
+ExDesc       This crown is made of a strange reddish metal not unlike copper, but
+you have never seen any copper of so scarlet a shade before. It is
+also very light for something seemingly made of pure metal.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7706
+Keywords  black crown rtower~
+Type      armor~
+Short     A Black Crown~
+Long      A crown made of black metal has been left carelessly here.~
+Flags     metal magic antigood anticleric antimage antidruid antinecro~
+WFlags    take head~
+Values    4 4 0 0 0 0 0 0 0 0 0
+Stats     1 150 -2 9999 0 None None None
+#EXDESC
+ExDescKey    black crown rtower~
+ExDesc       This crown is made of a strange metal which shines with a dark gleam.
+It is very light for something seemingly made of pure metal. Shaped
+in a circle with eight points, the crown looks easy to wear.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7707
+Keywords  red diamond ring rtower~
+Type      armor~
+Short     Red Diamond Ring~
+Long      A ring with a red diamond set into it has been left carelessly here.~
+Flags     magic~
+WFlags    take finger~
+Values    2 2 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+AffData luck 1 -1 -1 0
+#EXDESC
+ExDescKey    Red Diamond Ring~
+ExDesc       The ring is made of a plain silver band with a red diamond affixed
+on the clawed setting on top. It slips on and off your finger with
+ease, and you find that it can change its size to match its wearer.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7708
+Keywords  red heart ring rtower~
+Type      armor~
+Short     Red Heart Ring~
+Long      A ring with a red heart set into it has been left carelessly here.~
+Flags     magic~
+WFlags    take finger~
+Values    2 2 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+AffData charisma 1 -1 -1 0
+#EXDESC
+ExDescKey    Red Heart Ring~
+ExDesc       The ring is made of a plain silver band with a red heart shaped stone
+affixed in the clawed setting on top. It slips on and off your finger with
+ease, and you find that it can change its size to match its wearer.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7709
+Keywords  black club ring rtower~
+Type      armor~
+Short     Black Club Ring~
+Long      A ring with a black club set into it has been left carelessly here.~
+Flags     magic~
+WFlags    take finger~
+Values    1 1 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+AffData dexterity 1 -1 -1 0
+#EXDESC
+ExDescKey    black club ring rtower~
+ExDesc       The ring is made of a plain silver band with a black club shaped stone
+affixed in the clawed setting on top. It slips on and off your finger with
+ease, and you find that it can change its size to match its wearer.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7710
+Keywords  black spade ring rtower~
+Type      armor~
+Short     Black Spade Ring~
+Long      A ring with a black spade set into it has been left carelessly here.~
+Flags     magic~
+WFlags    take finger~
+Values    1 1 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+AffData constitution 1 -1 -1 0
+#EXDESC
+ExDescKey    black spade ring rtower~
+ExDesc       The ring is made of a plain silver band with a black spade shaped stone
+affixed in the clawed setting on top. It slips on and off your finger with
+ease, and you find that it can change its size to match its wearer.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7711
+Keywords  ladybird's shell rtower~
+Type      armor~
+Short     A Ladybird's Shell~
+Long      The red and black shell of a ladybird has been left carelessly here.~
+Flags     magic~
+WFlags    take back~
+Values    4 4 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    ladybird's shell rtower~
+ExDesc       This is the curved shell of a giant ladybird. It appears to have been
+hacked forcibly off the insect, leaving an abandoned husk with slightly
+jagged edges here and there.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7712
+Keywords  red socks rtower~
+Type      armor~
+Short     A pair of red socks~
+Long      A pair of woolly red socks has been left carelessly here.~
+Flags     magic~
+WFlags    take feet~
+Values    1 1 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 1 None None None
+AffData move 10 -1 -1 0
+#EXDESC
+ExDescKey    red socks rtower~
+ExDesc       This is a pair of woolly red socks. They fit snugly upon your feet and
+are likely to keep you warm for a long time. The initials "R.S." have
+been embroidered on the toe of each sock.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7713
+Keywords  black socks rtower~
+Type      armor~
+Short     A pair of black socks~
+Long      A pair of woolly black socks has been left carelessly here.~
+Flags     magic~
+WFlags    take feet~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    black socks rtower~
+ExDesc       This is a pair of woolly black socks. They fit snugly upon your feet and
+are likely to keep you warm for a long time. The initials "R.S." have
+been embroidered on the toe of each sock.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7714
+Keywords  red hood rtower~
+Type      armor~
+Short     A red hood~
+Long      A red velvet hood has been left carelessly here.~
+Flags     magic antievil antiwarrior antimonk antiranger antipaladin~
+WFlags    take head~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    red hood rtower~
+ExDesc       The hood is sewn from pieces of velvet, and as you caress the soft material
+it is easy to feel how comfortable it would be to wear. When worn, it
+covers the entire head, with a hole for the wearer's face.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7715
+Keywords  black hood rtower~
+Type      armor~
+Short     a black hood~
+Long      A black velvet hood has been left carelessly here.~
+Flags     magic antigood antiwarrior antimonk antiranger antipaladin~
+WFlags    take head~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    black hood rtower~
+ExDesc       The hood is sewn from pieces of velvet, and as you caress the soft material
+it is easy to feel how comfortable it would be to wear. When worn, it
+covers the entire head, with a hole for the wearer's face.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7716
+Keywords  ruby locket rtower~
+Type      armor~
+Short     A ruby locket~
+Long      A ruby locket twinkles from the ground here.~
+Flags     magic~
+WFlags    take neck~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 150 -2 9999 0 None None None
+AffData hitroll 1 -1 -1 0
+#EXDESC
+ExDescKey    ruby locket rtower~
+ExDesc       A locket carved from glittering ruby hangs from a golden chain. The clasp
+is a simple hook and loop one, and the locket springs open to reveal a
+tiny picture of Meia Quickquill within.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7717
+Keywords  obsidian locket rtower~
+Type      armor~
+Short     An obsidian locket~
+Long      An obsidian locket twinkles from the ground here.~
+Flags     magic~
+WFlags    take neck~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 150 -2 9999 0 None None None
+AffData damroll 1 -1 -1 0
+#EXDESC
+ExDescKey    obsidian locket rtower~
+ExDesc       A locket carved from glittering obsidian hangs from a golden chain. The clasp
+is a simple hook and loop one, and the locket springs open to reveal a
+tiny picture of Meia Quickquill within.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7718
+Keywords  woollen earmuffs rtower~
+Type      armor~
+Short     A pair of woollen earmuffs~
+Long      A pair of woolen earmuffs have been dropped upon the ground here.~
+Flags     organic~
+WFlags    take ears~
+Values    2 2 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    woollen earmuffs rtower~
+ExDesc       This is a pair of earmuffs made from a strip of curved metal with two
+large balls of wool attached to each end. The wool looks a little dirty
+as if they have not been washed in a while.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7719
+Keywords  blue dress rtower~
+Type      armor~
+Short     A blue dress~
+Long      A blue dress has been dropped upon the ground here.~
+WFlags    take body~
+Values    2 2 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 1 None None None
+#EXDESC
+ExDescKey    blue dress rtower~
+ExDesc       This is a simple blue dress which might belong to a peasant daughter
+or some such person, save that the material is soft and sheer to the
+touch.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7720
+Keywords  white apron rtower~
+Type      armor~
+Short     A white apron~
+Long      A white cloth apron has been dropped upon the ground here.~
+Flags     antiwarrior antipaladin antiapal~
+WFlags    take body~
+Values    1 1 0 0 0 0 0 0 0 0 0
+Stats     1 100 -2 9999 2 None None None
+#EXDESC
+ExDescKey    white apron rtower~
+ExDesc       This is a simple piece of white cloth, with a thin, neatly hemmed band
+which can be tied around your waist to form an apron. Two small pockets
+are sewn on the cloth.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7721
+Keywords  pot helmet rtower~
+Type      armor~
+Short     A pot helmet~
+Long      A metal pot has been dropped upon the ground here.~
+Flags     metal magic anticleric antimage antidruid antinecro~
+WFlags    take head~
+Values    6 6 0 0 0 0 0 0 0 0 0
+Stats     1 1000 -2 9999 0 None None None
+#EXDESC
+ExDescKey    pot helmet rtower~
+ExDesc       This is a pot with a leather strap tacked loosely to it in place of
+a regular handle. You find that if you turn it upside down, it can
+be worn as a helmet.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7722
+Keywords  frying pan rtower~
+Type      armor~
+Short     A frying pan~
+Long      A frying pan has been dropped upon the ground here.~
+Flags     magic anticleric antimage antidruid antinecro~
+WFlags    take back~
+Values    6 6 0 0 0 0 0 0 0 0 0
+Stats     1 1000 -2 9999 0 None None None
+#EXDESC
+ExDescKey    frying pan rtower~
+ExDesc       A leather strap has been attached to the pan to allow a person to wear
+the pan on the back. It is made of dull steel, and is a little grimy
+but seems entirely wearable.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7723
+Keywords  club staff weapon rtower~
+Type      weapon~
+Short     A black club staff~
+Long      A black club staff has been dropped upon the ground here.~
+Flags     magic~
+WFlags    take wield~
+Values    12 1 5 4 11 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    club weapon rtower~
+ExDesc       This is a large club shaped staff made from a black piece of wood. It 
+feels quite light in your hands, and as you swing it through the air, you 
+find that the balance of the weapon is also very good.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7724
+Keywords  spade sword weapon rtower~
+Type      weapon~
+Short     A black spade sword~
+Long      A black spade sword has been dropped upon the ground here.~
+Flags     magic~
+WFlags    take wield~
+Values    12 2 6 1 1 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    spade weapon rtower~
+ExDesc       This is a sword shaped in the form of a slender spade. The stem of the
+spade is padded to form a comfortable grip, whilst the pointed tip and
+sharp edges make it easy to slash enemies.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7725
+Keywords  red diamond dagger weapon rtower~
+Type      weapon~
+Short     A red diamond dagger~
+Long      A red diamond dagger has been dropped upon the ground here.~
+Flags     magic~
+WFlags    take wield~
+Values    12 1 5 2 2 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    diamond weapon rtower~
+ExDesc       This is a dagger shaped like a diamond. It has been painted a lurid
+red, but the edges and point are still quite sharp. One of the points
+is blunter around the edges, whilst the sides diametrically opposing
+that bear finely honed blades.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7726
+Keywords  red heart bow weapon rtower~
+Type      missileweapon~
+Short     A red heart~
+Long      A red heart bow has been dropped upon the ground here.~
+Flags     magic~
+WFlags    take missile~
+Values    12 1 5 6 6 1 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    red heart weapon~
+ExDesc       This is a bow shaped like a red heart. A length of carmine catgut is
+strung across the curved peaks of the heart, and a furrow has been carved
+along the length of the heart to fit an arrow to be fired.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7727
+Keywords  red heart arrow rtower~
+Type      projectile~
+Short     A red heart arrow~
+Long      A red heart arrow has been dropped upon the ground here.~
+Flags     magic~
+WFlags    take hold~
+Values    10 1 5 6 1 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    red heart arrow rtower~
+ExDesc       This is a single arrow fletched in scarlet feathers. The tip is shaped
+like a small heart, and the shaft is painted a bright red shade. It
+looks like it can easily be fired from a bow.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7728
+Keywords  kaeburayn sword rtower~
+Type      weapon~
+Short     Kaeburayn~
+Long      A gleaming silver sword is embedded in the ground here.~
+Flags     glow metal magic~
+WFlags    wield~
+Values    12 16 12 1 1 0 0 0 0 0 0
+Stats     1 0 -2 9999 0 None None None
+#EXDESC
+ExDescKey    kaeburayn sword rtower~
+ExDesc       The sword is etched with mystic runes, which seem to crawl all over the
+gleaming silver blade with a life of their own. Each rune is a different
+shade of blue, and the symbol of Meia Quickquill is carved upon the pommel.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7729
+Keywords  beehive button rtower~
+Type      button~
+Short     A beehive~
+Long      A beehive hangs from a branch upon the rose tree here.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#EXDESC
+ExDescKey    beehive button rtower~
+ExDesc       This is a regular beehive, with many bees buzzing around it. It looks
+as if it is possible to either PUSH it or PULL it, but that probably
+is not a very good idea since the bees might get angry.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7730
+Keywords  hide satchel rtower~
+Type      container~
+Short     A hide satchel~
+Long      A travelworn satchel has been dropped carelessly here.~
+Flags     donated~
+WFlags    take~
+Values    50 0 0 0 0 0 0 0 0 0 0
+Stats     1 50 -2 9999 0 None None None
+#EXDESC
+ExDescKey    hide satchel rtower~
+ExDesc       This is a sling bag made of cured hides. It looks quite sturdy, and the
+stitches are fine and neat. A small insignia in one corner reveals that
+it was made in the Stronghold, which is well known for the quality of its
+tanned produce.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7731
+Keywords  fork weapon rtower~
+Type      weapon~
+Short     A fork~
+Long      A silver fork lies here, gleaming in the sun.~
+Flags     magic~
+WFlags    take wield~
+Values    12 1 6 2 2 0 0 0 0 0 0
+Stats     1 100 -2 9999 0 None None None
+#EXDESC
+ExDescKey    fork weapon rtower~
+ExDesc       As far as you can tell, this fork is pretty normal as most forks go. Other
+than the fact that it is made of silver, it has the usual number of prongs,
+and is of no remarkable size. It does make a fairly, effective weapon,
+however.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7732
+Keywords  kettle lid shield rtower~
+Type      armor~
+Short     A kettle lid~
+Long      A burnished blue kettle lid lies here.~
+Flags     metal magic antimage antirogue antimonk antinecro~
+WFlags    take shield~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 500 -2 9999 0 None None None
+#EXDESC
+ExDescKey    kettle lid shield rtower~
+ExDesc       This is a kettle lid without a proper pot, and looks as if it has
+been patched several times. It has been burnished in a bright blue
+shade, and a leather strap has been added to make it a viable shield.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      7799
+Keywords  Last obj~
+Type      trash~
+Short     a newly created last obj~
+Long      Some god dropped a newly created last obj here.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#ROOM
+Vnum      7700
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You stand at the northeastern corner of the garden, just beside a rose
+tree dripping paint from its white flowers. Scanning your surroundings
+briefly, you see the expanse of manicured botany stretching into the
+distance. It is visible that extreme care has been taken in the 
+maintenance of this place, from the measured height of the grass 
+underfoot, to the spherical shape of each tree's foliage.
+~
+#EXIT
+Direction east~
+ToRoom    7701
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7708
+#ENDEXIT
+
+Reset M 7740 1 7700 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7701
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Walking about, you let your gaze wander around the immaculately trimmed
+greenery. The grass is neatly weeded and cut short, and each tree is 
+pruned neatly into a spherical crown. The weather is lovely, neither 
+too warm, nor too cold, and the sweet scent of roses in full bloom
+is carried on a gentle breeze around the garden.
+~
+#EXIT
+Direction east~
+ToRoom    7702
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7709
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7700
+#ENDEXIT
+
+Reset M 7741 1 7701 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7702
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A rose tree stands here, with its snowy blossoms covered with a similar
+striking shade of paint to all the other roses in your vicinity. Moving
+carefully, you manage to avoid getting any of the cold, sticky substance
+on yourself or any of your equipment. The leaves bursting forth are a 
+rich, lustrous green, and from the perfection therein you surmise that the 
+roses, though white, must have been equally gorgeous, if not more so.
+~
+#EXIT
+Direction east~
+ToRoom    7703
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7710
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7701
+#ENDEXIT
+
+Reset M 7742 1 7702 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7703
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The grass crunches noisily underfoot as you move about, but there seems
+to be no lasting damage from your movement. Neatly weeded and trimmed,
+it is a lighter shade of green than the jagged leaves on the trees.
+To your north, a tall white fence blocks your way, but the garden
+spreads out into the distance in all other directions.
+~
+#EXIT
+Direction east~
+ToRoom    7704
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7711
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7702
+#ENDEXIT
+
+Reset M 7743 1 7703 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7704
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You stand at the base of a large rose tree. However, its flowers all
+seem to be dripping blood. Upon closer examination, it becomes clear
+that the roses, once a pure white, are actually wet with a thick sticky
+paint in a deep carmine shade. Before you can think too much about this,
+you notice the strange flat figures moving about near you.
+~
+#EXIT
+Direction east~
+ToRoom    7705
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7712
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7703
+#ENDEXIT
+
+Reset M 7730 1 7704 -1 -1 -1 100
+  Reset E 7703 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7705
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Raising your head, you bask for a moment in the warmth of the bright
+sunlight shining down upon you. The sky is a clear blue, and your
+view of the horizon is blocked by a whitewashed wooden fence which
+encircles the entire garden. A sudden thought of the fact that you
+are still within the confines of the tower fails to faze you, as
+you walk onward, enjoying the fair spring weather.
+~
+#EXIT
+Direction east~
+ToRoom    7706
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7713
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7704
+#ENDEXIT
+
+Reset M 7729 1 7705 -1 -1 -1 100
+  Reset E 7703 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7706
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A large rose tree grows here, rooted deeply and surrounded by neatly
+trimmed grass. Its crown has been carefully pruned into a spherical
+shape, and you note that its leaves are a deep shade of forest green.
+The flowers, however, are a mix of white and red, having been covered
+carelessly in an uneven coat of carmine paint.
+~
+#EXIT
+Direction east~
+ToRoom    7707
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7714
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7705
+#ENDEXIT
+
+Reset M 7728 1 7706 -1 -1 -1 100
+  Reset E 7703 1 7 100
+  Reset E 7701 1 17 100
+#ENDROOM
+
+#ROOM
+Vnum      7707
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Here, you come upon a pit leading downwards into the darkness. No matter
+how hard you try, the light you are holding cannot penetrate the shadows
+below. The gaping hole is edged in dangling grasses which grows some
+distance downward. Access to the north and east is blocked at this point
+by the fence encircling this garden, which cordons this off as a corner.
+~
+#EXIT
+Direction south~
+ToRoom    7715
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7706
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7764
+#ENDEXIT
+
+Reset M 7727 1 7707 -1 -1 -1 100
+  Reset E 7703 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7708
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Walking alongside the white fence encircling the garden, you are surprised
+to bump into a strange person here. Though he possesses a human head, arms
+and legs, his body comprises of a single card, no thicker than stiff board.
+The card-man looks startled to see you, and lets out a yelp of fear before
+running away.
+~
+#EXIT
+Direction north~
+ToRoom    7700
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7709
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7716
+#ENDEXIT
+
+Reset M 7747 1 7708 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7709
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You come upon a beautiful rose tree here, similar to all the others
+planted at regular intervals in this garden. The jagged leaves are
+a deep green shade, and you see no sign of fallen foilage upon the
+ground nearby. Its flowers are nearly perfect examples of their species
+save for the paint which drips off the once-snowy petals.
+~
+#EXIT
+Direction north~
+ToRoom    7701
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7710
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7717
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7708
+#ENDEXIT
+
+Reset M 7746 1 7709 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7710
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      As you wander about in this enchanted place, you catch sight of a strange
+figure walking about. It resembles a human with a card in place of its
+body. While you consider approaching it, the figure turns sideways, and
+you find it difficult to see the paper-thin body, save for the appendages
+which are clothed in red. Soon, it vanishes among the trees.
+~
+#EXIT
+Direction north~
+ToRoom    7702
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7711
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7718
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7709
+#ENDEXIT
+
+Reset M 7745 1 7710 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+  Reset E 7701 1 17 100
+#ENDROOM
+
+#ROOM
+Vnum      7711
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Wandering about amidst the trees, you find that all of them are in
+full bloom, including the one growing here before you. The leaves
+bursting forth are a rich, lustrous green, and from the perfection 
+therein you surmise that the roses, though white, must have been equally
+lovely. Unfortunately, they are covered in generous amounts of red paint.
+~
+#EXIT
+Direction north~
+ToRoom    7703
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7712
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7719
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7710
+#ENDEXIT
+
+Reset M 7744 1 7711 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7712
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Walking about this part of the garden, you glimpse a glint of metal
+shining in the distance. As you squint, trying to see the source, you
+catch sight of a strange card-man standing on a ladder nearby busily
+brushing at the roses with a pot of scarlet paint in hand. He seems to
+have no more than two dimensions, and at times when he turns sideways,
+you are unable to see more than a thin black line where his body is
+supposed to be.
+~
+#EXIT
+Direction north~
+ToRoom    7704
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7713
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7720
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7711
+#ENDEXIT
+
+Reset M 7731 1 7712 -1 -1 -1 100
+  Reset E 7703 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7713
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Standing just beside a large rose tree which has been planted here, you
+move carefully so as to avoid getting dripped upon by the wet paint which
+flows in a viscous manner off the soft white petals, leaving a trail of
+bloody splotches as it moves. The leaves are a vibrant green shade, and
+the scent of a light floral perfume wafts in the air.
+~
+#EXIT
+Direction north~
+ToRoom    7705
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7714
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7721
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7712
+#ENDEXIT
+
+Reset M 7732 1 7713 -1 -1 -1 100
+  Reset E 7703 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7714
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The grass crunches noisily underfoot as you move about, but there seems
+to be no lasting damage from your movement. Neatly weeded and trimmed
+to a length no higher than your ankles, it is a lighter shade of green
+than the jagged leaves on the trees. All the botany in this garden is
+obviously under meticulous care from experienced and capable people.
+~
+#EXIT
+Direction north~
+ToRoom    7706
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7715
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7722
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7713
+#ENDEXIT
+
+Reset M 7733 1 7714 -1 -1 -1 100
+  Reset E 7703 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7715
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Walking around, you are nearly marked by a patch of red staining the
+grass before you, at the base of a tree bursting with scarlet blooms.
+Closer examination reveals that the roses have actually been painted,
+and that they are not yet dry. The garden stretches out to all other
+directions save the east, where you see a tall white fence blocking
+your way.
+~
+#EXIT
+Direction north~
+ToRoom    7707
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7723
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7714
+#ENDEXIT
+
+Reset M 7734 1 7715 -1 -1 -1 100
+  Reset E 7703 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7716
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You stand at the base of a large rose tree, trying to avoid getting
+dripped upon by the wet paint which is apparently unable to cling to
+the velvet petals. The leaves bursting forth are a rich, lustrous green,
+and from the perfection therein you surmise that the roses, though white,
+must have been equally gorgeous, if not more so. You feel a mild sense
+of irritation at the painters for ruining the loveliness of the place.
+~
+#EXIT
+Direction north~
+ToRoom    7708
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7717
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7724
+#ENDEXIT
+
+Reset M 7748 1 7716 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7717
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Raising your head, you bask for a moment in the warmth of the bright
+sunlight shining down upon you. The sky is a clear blue, and your
+view of the horizon is blocked by a whitewashed wooden fence which
+encircles the entire garden. The only plants within this garden seem
+to be the grass underfoot, and several rose trees all over.
+~
+#EXIT
+Direction north~
+ToRoom    7709
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7718
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7725
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7716
+#ENDEXIT
+
+Reset M 7749 1 7717 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7715 1 6 100
+  Reset E 7724 1 16 100
+#ENDROOM
+
+#ROOM
+Vnum      7718
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You wander about the rose garden, among the flourishing trees. The leaves
+of each tree are a deep, rich green, with nary a touch of brown to be seen.
+The roses, however, seem to be in a fairly sad state. If they had been left
+in their pristine form, you have no doubt that they would be blossoms of
+surpassing beauty. As it is, though, you are hard pressed to admire more
+than the sweet floral scent which emanates from the crumpled petals.
+~
+#EXIT
+Direction north~
+ToRoom    7710
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7719
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7726
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7717
+#ENDEXIT
+
+Reset M 7750 1 7718 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7706 1 6 100
+  Reset E 7710 1 1 100
+  Reset E 7724 1 16 100
+#ENDROOM
+
+#ROOM
+Vnum      7719
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The grass in the garden is neatly cut to an ankle-length height. As you
+walk, you can hear the soft crunching of the green stems underfoot.
+However, when you look about, you can see no trace of your passage nor
+broken stems. Although you find this a little strange, you quickly
+attribute it to the magic of the place.
+~
+#EXIT
+Direction north~
+ToRoom    7711
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7720
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7727
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7718
+#ENDEXIT
+
+Reset M 7751 1 7719 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7706 1 6 100
+  Reset E 7724 1 16 100
+  Reset E 7710 1 1 100
+#ENDROOM
+
+#ROOM
+Vnum      7720
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A rose tree stands nearby here, its blossoms painted with the same
+striking shade of paint as all the other roses in this place. Moving
+carefully, you manage to avoid getting any of the cold, sticky substance
+on yourself or any of your equipment. Although its flowers are in
+full bloom, supposedly at the height of their loveliness, you find
+a sense of sorrow steal over you for the ruination of such perfection.
+~
+#EXIT
+Direction north~
+ToRoom    7712
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7721
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7728
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7719
+#ENDEXIT
+
+Reset M 7738 1 7720 -1 -1 -1 100
+  Reset E 7703 1 7 100
+  Reset E 7705 1 6 100
+  Reset E 7726 1 21 100
+  Reset E 7708 1 1 100
+  Reset G 7727 1 100
+#ENDROOM
+
+#ROOM
+Vnum      7721
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      At this part of the garden, you come upon a curious sight. The grass 
+here has been ground up, as if by the treading of too many feet, and
+a shining hilt atop a slender blade protrudes from the earth. Looking
+more closely, it seems that it would take no great effort to draw the
+sword and make use of it. The fact that so many others have tried and
+obviously failed makes no sense to you, since the ground within the
+garden is soft and earthy, and dug up quite easily.
+~
+#EXIT
+Direction north~
+ToRoom    7713
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7722
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7729
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7720
+#ENDEXIT
+
+Reset M 7737 1 7721 -1 -1 -1 100
+  Reset E 7703 1 7 100
+  Reset E 7705 1 6 100
+  Reset E 7726 1 21 100
+  Reset E 7708 1 1 100
+  Reset G 7727 1 100
+Reset O 7728 1 7721 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7722
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You stand at the base of a large rose tree, trying to avoid getting
+dripped upon by the wet paint which is apparently unable to cling to
+the velvet petals. The leaves bursting forth are a rich, lustrous green,
+and from the perfection therein you surmise that the roses, though white
+instead of the red obviously desired by the painter, must have been equally
+gorgeous, if not more so.
+~
+#EXIT
+Direction north~
+ToRoom    7714
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7723
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7730
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7721
+#ENDEXIT
+
+Reset M 7736 1 7722 -1 -1 -1 100
+  Reset E 7703 1 7 100
+  Reset E 7726 1 21 100
+  Reset E 7702 1 14 100
+  Reset G 7727 1 100
+#ENDROOM
+
+#ROOM
+Vnum      7723
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The sky above is a lovely shade of blue, with portions covered over by
+wispy clouds forming exotic shapes in the air. All around, you see the
+fragrant roses in full bloom dripping with carmine paint. To the east
+stands a whitewashed wooden fence, which prevents further passage in that
+direction.
+~
+#EXIT
+Direction north~
+ToRoom    7715
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7731
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7722
+#ENDEXIT
+
+Reset M 7735 1 7723 -1 -1 -1 100
+  Reset E 7703 1 7 100
+  Reset E 7701 1 17 100
+#ENDROOM
+
+#ROOM
+Vnum      7724
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The grass crunches noisily underfoot as you move about, but there seems
+to be no lasting damage from your movement. Neatly trimmed and weeded,
+it is a lighter shade of green than the jagged leaves on the trees.
+However, the grass is obviously taken care of, and maintained as meticulously
+as the rest of the garden.
+~
+#EXIT
+Direction north~
+ToRoom    7716
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7725
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7732
+#ENDEXIT
+
+Reset M 7759 1 7724 -1 -1 -1 100
+  Reset E 7719 1 5 100
+  Reset E 7720 1 13 100
+  Reset E 7718 1 19 100
+#ENDROOM
+
+#ROOM
+Vnum      7725
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You come upon a beautiful rose tree here, similar to all the others
+planted at regular intervals in this garden. The jagged leaves are
+a deep green shade, and you see no sign of fallen foilage upon the
+ground nearby. Its flowers are nearly perfect examples of their species
+save for one flaw. All of them are covered in a viscous scarlet paint
+which drips before your eyes onto the manicured grass.
+~
+#EXIT
+Direction north~
+ToRoom    7717
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7726
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7733
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7724
+#ENDEXIT
+
+Reset M 7752 1 7725 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7717 1 3 100
+#ENDROOM
+
+#ROOM
+Vnum      7726
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Within the garden, it is easy to see that every meticulous detail has 
+been taken care of. The grass is neatly weeded and trimmed to a regular
+length, and each tree is pruned neatly so that it has a spherical crown.
+Unfortunately, the flowers upon the trees have been ruined irreparably
+by a messy layer of paint spread liberally on all their petals.
+~
+#EXIT
+Direction north~
+ToRoom    7718
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7727
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7734
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7725
+#ENDEXIT
+
+Reset M 7756 3 7726 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7727
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Soft, jagged-edged leaves brush your face gently as you walk in this
+part of the garden. The tree which grows here is one of the rose species
+and quite short, reaching a height of no more than eight or so feet. Feeling
+a sudden wetness, you touch your cheek, only to find your hand covered in
+the paint which is liberally spread on all the snowy petals.
+~
+#EXIT
+Direction north~
+ToRoom    7719
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7728
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7735
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7726
+#ENDEXIT
+
+Reset M 7739 1 7727 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7716 1 3 100
+#ENDROOM
+
+#ROOM
+Vnum      7728
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Within the garden, you see that every meticulous detail has been taken
+care of. The grass is neatly weeded and trimmed to a length no higher
+than your ankles, and each tree is pruned neatly for a spherical crown.
+The only things which mar the perfection of this place are the splotches
+of paint which drip off each tree onto the grass, and patches drenched
+in spills are visible all over.
+~
+#EXIT
+Direction north~
+ToRoom    7720
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7729
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7736
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7727
+#ENDEXIT
+
+Reset M 7756 3 7728 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7729
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You wander about the rose garden, among the flourishing trees. The leaves
+of each tree are a deep, rich green, with nary a touch of brown to be seen.
+The roses, however, seem to be in a fairly sad state. If they had been left
+in their pristine form, you have no doubt that they would be blossoms of
+surpassing beauty. Each petal is as soft as velvet, and perfectly shaped.
+However, the red paint dripping off every flower makes it seem as if they
+are shedding tears or are suffering grievous wounds.
+~
+#EXIT
+Direction north~
+ToRoom    7721
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7730
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7737
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7728
+#ENDEXIT
+
+Reset M 7726 1 7729 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7716 1 3 100
+#ENDROOM
+
+#ROOM
+Vnum      7730
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Wandering about in the coolness of a spring morning, you make your
+way among the manicured grass and blossoming trees planted here. Here
+and there, you see a card-person running away, but for a moment, you
+think you glimpse a small girl in a dress as well. However, she is gone
+in a blink, and you have no idea where she could be now.
+~
+#EXIT
+Direction north~
+ToRoom    7722
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7731
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7738
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7729
+#ENDEXIT
+
+Reset M 7756 3 7730 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7731
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A rose tree stands nearby here, its blossoms painted with the same
+striking shade of paint as all the other roses in this place. Moving
+carefully, you manage to avoid getting any of the cold, sticky substance
+on yourself or any of your equipment. Although its flowers are in
+full bloom, supposedly at the height of their loveliness, it is difficult
+to admire them as they are right now.
+~
+#EXIT
+Direction north~
+ToRoom    7723
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7739
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7730
+#ENDEXIT
+
+Reset M 7713 1 7731 -1 -1 -1 100
+  Reset E 7713 1 8 100
+  Reset E 7717 1 3 100
+#ENDROOM
+
+#ROOM
+Vnum      7732
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You wander about the rose garden, among the flourishing trees. All the 
+roses, once a pure white, are wet with paint in a deep carmine shade, and 
+the nearby grass is splattered with the sticky, viscous liquid as well.
+The entire scenery, when taken in, looks as if a bloody massacre had
+taken place mere moments ago.
+~
+#EXIT
+Direction north~
+ToRoom    7724
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7733
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7740
+#ENDEXIT
+
+Reset M 7754 4 7732 -1 -1 -1 100
+  Reset E 7711 1 22 100
+#ENDROOM
+
+#ROOM
+Vnum      7733
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The grass crunches noisily underfoot as you move about, but there seems
+to be no lasting damage from your movement. Neatly weeded and trimmed
+to a length no higher than your ankles, it is a lighter shade of green
+than the deep colours on the trees. Most of the grass is a lovely emerald
+colour, though you detect spots which closely resemble dark jade instead.
+~
+#EXIT
+Direction north~
+ToRoom    7725
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7734
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7741
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7732
+#ENDEXIT
+
+Reset M 7767 1 7733 -1 -1 -1 100
+  Reset G 7730 1 100
+  Reset G 7732 1 100
+  Reset G 7731 1 100
+  Reset G 7722 1 100
+  Reset G 7721 1 100
+  Reset G 7727 1 100
+#ENDROOM
+
+#ROOM
+Vnum      7734
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You wander about the rose garden, among the flourishing trees. The leaves
+of each tree are a deep, rich green, with nary a touch of brown to be seen.
+The roses, however, are all covered in sticky scarlet paint. Had they been left
+in their pristine form, you have no doubt that they would be blossoms of
+surpassing beauty. Each petal is as soft as velvet, and perfectly shaped.
+However, you find it difficult to admire them as they are now.
+~
+#EXIT
+Direction north~
+ToRoom    7726
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7735
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7742
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7733
+#ENDEXIT
+
+Reset M 7754 4 7734 -1 -1 -1 100
+  Reset E 7711 1 22 100
+#ENDROOM
+
+#ROOM
+Vnum      7735
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Walking about, you admire the beauty of the immaculately maintained
+greenery. The grass is neatly weeded and trimmed to ankle-high length,
+and each tree is pruned neatly into a spherical crown. The weather is
+lovely, neither too warm, nor too cold, and the sweet scent of roses
+in full bloom permeates the air.
+~
+#EXIT
+Direction north~
+ToRoom    7727
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7736
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7743
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7734
+#ENDEXIT
+
+Reset M 7753 2 7735 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7736
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You stand at the base of a large rose tree. Oddly, you notice that its
+flowers all seem to be dripping blood. Upon closer examination, it
+becomes clear that the roses, once a pure white, are actually wet with
+paint in a deep carmine shade. Before you can think too much about this,
+your eyes take in the vision of a beautifully maintained garden which
+spreads out all around you into the distance. A small wooden sign grows
+out of the bark here, as if by magic.
+~
+#EXIT
+Direction north~
+ToRoom    7728
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7737
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7744
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7735
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    7765
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7798
+#ENDEXIT
+
+Reset M 7755 1 7736 -1 -1 -1 100
+#EXDESC
+ExDescKey    sign~
+ExDesc       The sign seems to have grown out of the tree itself, and you can detect
+no carve nor cut in its creation. It says:
+                 &PWelcome to the Garden Of Cards&z
+ 
+Below, in smaller letters, you can just make out more words...
+  &OIf you are thinking about how such a huge garden could exist in
+    the confines of a narrow tower, DON'T. It's magic, remember?&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7737
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Standing in the middle of a huge rose garden within a tower, you try
+looking upward to see a sky. Surprisingly enough, there is one, and the
+weather is that of a lovely spring morning. Fluffy white clouds scud
+slowly across the sky, and a light breeze caresses you as it passes by.
+The only plants within this garden seem to be the grass underfoot, and
+several rose trees all over.
+~
+#EXIT
+Direction north~
+ToRoom    7729
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7738
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7745
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7736
+#ENDEXIT
+
+Reset M 7754 4 7737 -1 -1 -1 100
+  Reset E 7711 1 22 100
+#ENDROOM
+
+#ROOM
+Vnum      7738
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Soft, jagged-edged leaves brush your face gently as you walk in this
+oart of the garden. The tree which grows here is one of the rose species
+and quite small, reaching a height no higher than eight or so feet. Feeling
+a sudden wetness, you touch your cheek, only to find your hand covered in
+a thick, sticky substance not unlike blood. After a few moments, however,
+you ascertain that it is actually paint. The liquid covers all the roses
+upon the tree.
+~
+#EXIT
+Direction north~
+ToRoom    7730
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7739
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7746
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7737
+#ENDEXIT
+
+Reset M 7753 2 7738 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7739
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The grass crunches noisily underfoot as you move about, but there seems
+to be no lasting damage from your movement. The grass is neatly weeded 
+and trimmed to ankle-high length, and each tree is pruned neatly into
+a spherical crown. You find yourself enjoying the walk as you feel 
+the warmth of the sunshine and scent the fragrance which fills the 
+air around you.
+~
+#EXIT
+Direction north~
+ToRoom    7731
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7747
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7738
+#ENDEXIT
+
+Reset M 7754 4 7739 -1 -1 -1 100
+  Reset E 7711 1 22 100
+#ENDROOM
+
+#ROOM
+Vnum      7740
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Standing in the middle of a huge rose garden within a tower, you try
+looking upward to see a sky. Surprisingly enough, there is one, and the
+weather is that of a lovely spring morning. The weather is lovely, 
+neither too warm, nor too cold, and the sweet scent of roses in full 
+in full bloom permeates the air. A thought comes to you, unbidden, that
+it must take a lot of effort and magic to create and keep something this
+beautiful.
+~
+#EXIT
+Direction north~
+ToRoom    7732
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7741
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7748
+#ENDEXIT
+
+Reset M 7722 1 7740 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7741
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A rose tree stands nearby here, its blossoms painted with the same
+striking shade of paint as all the other roses in this place. Moving
+carefully, you manage to avoid getting any of the cold, sticky substance
+on yourself or any of your equipment. Although its flowers are in
+full bloom, supposedly at the height of their loveliness, you cannot
+appreciate the logic which might have led to their vandalised state.
+~
+#EXIT
+Direction north~
+ToRoom    7733
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7742
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7749
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7740
+#ENDEXIT
+
+Reset M 7723 1 7741 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+  Reset E 7725 1 16 100
+#ENDROOM
+
+#ROOM
+Vnum      7742
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      As you walk about, the grass is crushed underfoot, but even as you look
+around guiltily, there is no visible trace of your passing. In fact,
+none of the greenery here bears any signs of ill maintenance. The trees
+are all planted at regular intervals from each other, and the grass
+grows no higher than a certain length.
+~
+#EXIT
+Direction north~
+ToRoom    7734
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7743
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7750
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7741
+#ENDEXIT
+
+Reset M 7724 1 7742 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7705 1 6 100
+  Reset E 7725 1 16 100
+  Reset E 7707 1 1 100
+#ENDROOM
+
+#ROOM
+Vnum      7743
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You stand by the slender stem of a large rose tree, trying to avoid getting
+dripped upon by the wet paint which covers all the velvet rose petals
+in an uneven layer. The leaves bursting forth are a rich, lustrous green,
+and from the perfection therein you surmise that the roses, though white,
+must have been equally gorgeous, if not more so, before being painted.
+~
+#EXIT
+Direction north~
+ToRoom    7735
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7744
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7751
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7742
+#ENDEXIT
+
+Reset M 7725 1 7743 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7705 1 6 100
+  Reset E 7725 1 16 100
+  Reset E 7707 1 1 100
+  Reset E 7701 1 17 100
+#ENDROOM
+
+#ROOM
+Vnum      7744
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      As you wander about in this enchanted rose garden, you meet a strange
+person with the head, arms and legs of a human and a body made up of a
+single card. Shapes and numbers are printed on it, but you fail to note
+precisely what they are in your surprise at seeing so strange a being.
+Dressed in red, he looks quite surprised to see you as well, but ignores
+you after the initial shock wears off.
+~
+#EXIT
+Direction north~
+ToRoom    7736
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7745
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7752
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7743
+#ENDEXIT
+
+Reset M 7712 1 7744 -1 -1 -1 100
+  Reset E 7704 1 7 100
+  Reset E 7723 1 16 100
+  Reset E 7709 1 1 100
+#ENDROOM
+
+#ROOM
+Vnum      7745
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A healthy rose tree thrives here, rising upon a thick, woody stem and
+sprouting into a crown of fragrant blossoms and lush foilage. The tree
+looks to be well maintained, with no sign of blight upon it anywhere.
+Yet, the flowers which are in full bloom have been painted in a layer
+of carmine, in an apparent effort to turn them into red roses instead
+of the white ones they are.
+~
+#EXIT
+Direction north~
+ToRoom    7737
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7746
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7753
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7744
+#ENDEXIT
+
+Reset M 7711 1 7745 -1 -1 -1 100
+  Reset E 7704 1 7 100
+  Reset E 7706 1 6 100
+  Reset E 7723 1 16 100
+  Reset E 7709 1 1 100
+#ENDROOM
+
+#ROOM
+Vnum      7746
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      As you roam in this beautiful garden, you take a moment to admire the
+loveliness of the grounds. A clear blue sky is overhead, and the
+grass under your feet is a healthy green colour, with no signs of
+dryness or wilting anywhere. For a short moment, a gentle breeze
+blows past, bringing the subtle scent of blooming roses.
+~
+#EXIT
+Direction north~
+ToRoom    7738
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7747
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7754
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7745
+#ENDEXIT
+
+Reset M 7710 1 7746 -1 -1 -1 100
+  Reset E 7704 1 7 100
+  Reset E 7723 1 16 100
+#ENDROOM
+
+#ROOM
+Vnum      7747
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A rose tree stands nearby to where you are now, with its blossoms painted
+the same striking carmine shade as all the other roses in this strange
+garden. The leaves of each tree are a deep, lustrous green, with hardly
+any signs of blight to be seen. The crown is trimmed to a perfect
+spherical shade, and no weeds can be seen anywhere.
+~
+#EXIT
+Direction north~
+ToRoom    7739
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7755
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7746
+#ENDEXIT
+
+Reset M 7709 1 7747 -1 -1 -1 100
+  Reset E 7704 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7748
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Here,you stand at the base of a large rose tree, trying to avoid getting
+dripped upon by the wet paint which is apparently unable to cling to
+the velvet petals. The leaves bursting forth are a vibrant shade of green,
+and from the perfection therein you surmise that the roses, though white,
+must have been equally gorgeous, if not more so. All around you, the rose
+garden stretches into the distance, save to the west, where further
+passage is blocked by a whitewashed wooden fence.
+~
+#EXIT
+Direction north~
+ToRoom    7740
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7749
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7756
+#ENDEXIT
+
+Reset M 7721 1 7748 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7749
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The grass crunches noisily underfoot as you move about, but there seems
+to be no lasting damage from your movement. Neatly weeded and trimmed
+to a length no higher than your ankles, it is a lighter shade of green
+than the jagged leaves on the trees. However, the grass is obviously
+as well maintained by the gardeners of the place, if not more so.
+~
+#EXIT
+Direction north~
+ToRoom    7741
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7750
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7757
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7748
+#ENDEXIT
+
+Reset M 7720 1 7749 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7750
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A beautiful rose tree grows here, similar to all the others planted
+at regular intervals all over this garden. The jagged leaves are
+a deep green shade, and you see no sign of fallen foilage upon the
+ground nearby. Its flowers have petals which are soft and velvety to
+the touch, save for the portions covered in thick, sticky paint.
+~
+#EXIT
+Direction north~
+ToRoom    7742
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7751
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7758
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7749
+#ENDEXIT
+
+Reset M 7719 1 7750 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7751
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Walking leisurely along, you chance to look upward into the sky and
+gaze upon the shifting cloud formations high above. Framed in a background
+of bright blue, they move from one shape to another, never once staying
+still. After a few moments of watching them, however, you feel that 
+it is time to move on.
+~
+#EXIT
+Direction north~
+ToRoom    7743
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7752
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7759
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7750
+#ENDEXIT
+
+Reset M 7718 1 7751 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7752
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You stand at the base of a large rose tree sprouting from the ground
+here, with its blossoms dripping bloody scarlet pools on the grass.
+Being so near the tree, you become especially aware of the sweet scent
+which wafts from the flowers. It is a heady fragrance which instantly
+revives your spirit and it is a while before you can bear to move away.
+~
+#EXIT
+Direction north~
+ToRoom    7744
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7753
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7760
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7751
+#ENDEXIT
+
+Reset M 7705 1 7752 -1 -1 -1 100
+  Reset E 7704 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7753
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      The grass crunches noisily underfoot as you walk leisurely within the
+garden. Scanning your surroundings, you see rose trees planted all
+about, with naught else but green grass and white fencing. Elusive
+figures of the card-men which populate this place are glimpsed from
+time to time.
+~
+#EXIT
+Direction north~
+ToRoom    7745
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7754
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7761
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7752
+#ENDEXIT
+
+Reset M 7706 1 7753 -1 -1 -1 100
+  Reset E 7704 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7754
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A healthy rose tree thrives here, rising upon a thick, woody stem and
+sprouting into a crown of fragrant blossoms and lush foilage. The tree
+looks to be well maintained, with no sign of blight upon it anywhere.
+However, the large snow white flowers have been painted badly, and you
+find yourself having to move carefully around the plant to avoid getting
+dripped on by the scarlet liquid.
+~
+#EXIT
+Direction north~
+ToRoom    7746
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7755
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7762
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7753
+#ENDEXIT
+
+Reset M 7707 1 7754 -1 -1 -1 100
+  Reset E 7704 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7755
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      As you wander about in this enchanted place, you catch sight of a strange
+figure walking about. It resembles a human with a card instead of a proper
+body. Even as you begin to approach, the figure turns sideways and moves
+off. The paper-thin body is easily hidden behind the proliferation of 
+rose trees and quickly disappears.
+~
+#EXIT
+Direction north~
+ToRoom    7747
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7763
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7754
+#ENDEXIT
+
+Reset M 7708 1 7755 -1 -1 -1 100
+  Reset E 7704 1 7 100
+  Reset E 7701 1 17 100
+#ENDROOM
+
+#ROOM
+Vnum      7756
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You wander about the rose garden, among the flourishing trees. The leaves
+of each tree are a deep, rich green, with hardly any sign of blight or wilting.
+The roses, however, are not as pleasant to the eye. If they had been left
+in their pristine form, you have no doubt that they would be blossoms of
+surpassing beauty. Reaching out a tentative hand, you feel the softness
+of the flowers beneath your fingers, but the chill clamminess of the paint
+makes you finally bear to draw your hand away.
+~
+#EXIT
+Direction north~
+ToRoom    7748
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7757
+#ENDEXIT
+
+Reset M 7714 1 7756 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7757
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You stand at the base of a large rose tree. Oddly, you notice that its
+flowers all seem to be dripping blood. Upon closer examination, it
+becomes clear that the roses, once a pure white, are actually wet with
+paint in a deep carmine shade. Looking at the ruined beauty, you cannot
+help but wonder the identity of someone so foolish as to tamper with
+such perfection.
+~
+#EXIT
+Direction north~
+ToRoom    7749
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7758
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7756
+#ENDEXIT
+
+Reset M 7715 1 7757 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+  Reset E 7701 1 17 100
+#MUDPROG
+Progtype  act_prog~
+Arglist   p pushes A beehive.~
+Comlist   mpechoat 0.$n _y You hear an angry buzzing sound emanating from within
+mpechoat 0.$n _y the beehive, and an uneasy feeling creeps over you.
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p pulls A beehive.~
+Comlist   mpechoat 0.$n _y The angry buzzing grows louder and more furious...
+mpechoat 0.$n _y Suddenly, a swarm of furious bees start pouring out of
+mpechoat 0.$n _y the hive!
+mpmload 7757
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      7758
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Looking upward, you bask in the full sunlight. Clouds wisp silently across
+the soft blue sky, and your heart feels lightened by the eternal spring
+in this place. A huge rose garden stretches out in all directions except
+south, where movement is barred by a high white fence.
+~
+#EXIT
+Direction north~
+ToRoom    7750
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7759
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7757
+#ENDEXIT
+
+Reset M 7716 1 7758 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+#ENDROOM
+
+#ROOM
+Vnum      7759
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Here, you stand at the base of a large rose tree. Its lovely blooms are
+marred by a thick layer of carmine paint, and you find yourself having
+to move carefully to avoid the dripping liquid. The rest of the tree
+seems largely maintained very well, with no sign of tampering other than
+being regularly pruned.
+~
+#EXIT
+Direction north~
+ToRoom    7751
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7760
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7758
+#ENDEXIT
+
+Reset M 7717 1 7759 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+  Reset E 7701 1 17 100
+#ENDROOM
+
+#ROOM
+Vnum      7760
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Walking alongside the white fence encircling the garden, you are surprised
+to bump into a strange person here. Though he possesses a human head, arms
+and legs, his body comprises of a single piece of card, with numbers and
+shapes printed upon it. The card-man appears very shocked to see you here, and
+lets out a frightened cry.
+~
+#EXIT
+Direction north~
+ToRoom    7752
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7761
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7759
+#ENDEXIT
+
+Reset M 7704 1 7760 -1 -1 -1 100
+  Reset E 7704 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7761
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      A single rose tree stands beside a tall wooden fence to the south
+here. The whitewash on the fence has recently been stained by a trail
+of wet scarlet liquid, and you find that it is paint which has flowed
+off the petals and down the wood. The grass nearby is also liberally
+splattered with paint.
+~
+#EXIT
+Direction north~
+ToRoom    7753
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7762
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7760
+#ENDEXIT
+
+Reset M 7703 1 7761 -1 -1 -1 100
+  Reset E 7704 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7762
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      Within the garden, you see that every tiny detail has been taken care
+of. The grass is neatly weeded and trimmed to a length no higher than
+your ankles, and the crown of each tree has been pruned into a sphere.
+The only things which mar the perfection of this place are the patches 
+of wet paint which drip off each tree onto the grass, and puddles of
+the liquid gathered everywhere.
+~
+#EXIT
+Direction north~
+ToRoom    7754
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7763
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7761
+#ENDEXIT
+
+Reset M 7702 1 7762 -1 -1 -1 100
+  Reset E 7704 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7763
+Name      Within the Rose Garden~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0
+Desc      You wander about the rose garden, among the flourishing trees. The roses
+are all in a state of severe mistreatment, having been covered in a layer
+of scarlet paint. If they had been left in their pristine form, you have
+no doubt that they would be blossoms of surpassing beauty. Each petal 
+is as soft as velvet, and perfectly shaped. However, the red paint dripping 
+off every flower makes it seem as if they are shedding tears or are suffering
+grievous wounds.
+~
+#EXIT
+Direction north~
+ToRoom    7755
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7762
+#ENDEXIT
+
+Reset M 7701 1 7763 -1 -1 -1 100
+  Reset E 7704 1 7 100
+#ENDROOM
+
+#ROOM
+Vnum      7764
+Name      In a Dark Lair~
+Sector    indoors~
+Flags     indoors cave~
+Stats     0 0 0 0
+Desc      Descending slowly, you find yourself in a small underground cavern. It is
+difficult for your light to penetrate the overwhelming darkness, and you
+see virtually nothing beyond the nimbus you are casting upon the ground.
+Suddenly, you hear a rasping sound, and a huge scaly shape rears up from
+the shadows to attack you!
+~
+#EXIT
+Direction up~
+ToRoom    7707
+#ENDEXIT
+
+Reset M 7758 1 7764 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7765
+Name      Among the Thorny Branches~
+Sector    indoors~
+Flags     nomob indoors~
+Stats     0 0 0 0
+Desc      Scrambling quickly, you manage to avoid getting pricked by the thorns
+in the lush foilage, sitting at last in a fork in the branches of the
+rose tree. A carefully disguised staircase woven from the green crown
+and dripping blossoms grows upward from the thick bole, stretching
+into somewhere obscured by the leaves which block your view upward.
+~
+#EXIT
+Direction up~
+ToRoom    7766
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7736
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7766
+Name      In A Crystal Casement~
+Sector    indoors~
+Flags     nomob indoors~
+Stats     0 0 0 0
+Desc      Clambering awkwardly up the twisted stair, you brush aside spiked branches
+to reveal a simpler series of steps after a while. They are carved from
+mahogany, and inscribed with intricate runes. After a few moments of
+exertion, you finally reach a casement. It is a small circular area panelled
+in softly glowing crystal. Another set of runed mahogany steps spirals
+upward toward the top of the tower. A single door is set into the northern
+wall. It is adorned with beautiful designs of mystic runes and carved from a
+singular piece of wood. Above the door, a large sign is displayed.
+&BAn ancient portal glows with magical power here.&z
+~
+#EXIT
+Direction north~
+ToRoom    7767
+Keywords  door~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    7779
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7765
+#ENDEXIT
+
+Reset D 7766 0 1 100 -2
+#EXDESC
+ExDescKey    sign~
+ExDesc       Carved from a strange bluish-silvery stone, it reads:
+                    &BThe Archives of Knowledge&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7767
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      You walk into one of the biggest libraries you have ever seen. Rows of
+books stretch into the distance on each side of you, and you feel reduced
+to an insignificant size by the towering shelves and mazy ladders
+leading up to dusty tomes on precipitous racks high above your head. The
+confusion striking you now seems to have no effect, however, on everyone
+else here. Librarians, dressed in their slate blue robes sweep regally
+along with books tucked under their arms, and visitors climb without
+hesitation to reach for obscure works hidden among thousands of other works.
+~
+#EXIT
+Direction east~
+ToRoom    7768
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7795
+Keywords  door~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7778
+#ENDEXIT
+
+Reset D 7767 2 1 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      7768
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Shelves line the walls on each side of you, and the floor is carpeted in
+a lush, thick material which muffles all but the heaviest of steps. Books
+of every size and description surround you, and you wonder how anyone
+could possibly find what they want with so many places to look. Looking
+around, you finally conclude that it must be sheer determination, since
+there is no visible sign of any organisation whatsoever.
+~
+#EXIT
+Direction east~
+ToRoom    7769
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7767
+#ENDEXIT
+
+Reset M 7760 1 7768 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7769
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Each step you take buries your feet deep in the furry carpet, and you
+can see people sitting at tables spread out about the place, deep in
+concentration as they peruse their chosen volumes. Even children are
+well-behaved, with nary a loud sound or moving faster than a walk. To
+one side, you notice a congregation of cowled wizards having a hushed
+discussion over a tattered book.
+~
+#EXIT
+Direction south~
+ToRoom    7770
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7768
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7770
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      This section of the library seems to store scrolls, rather than complete
+books. All the shelves here have been converted to honeycombed racks with
+a slot for each roll of parchment, tied neatly with various colours of
+ribbons or sealed with wax. Many clerics seem to frequent this area in
+particular, taking care to avoid black-robed necromancers who favour
+the knowledge hidden here as well.
+~
+#EXIT
+Direction north~
+ToRoom    7769
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7771
+#ENDEXIT
+
+Reset M 7761 5 7770 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7771
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Librarians are hard at work all around you, and it is difficult to see
+any one of the figures in slate blue robes without a book under their
+arm or clambering up a ladder in search of something. Here, one of them
+is poised carelessly upon a rung nearly five storeys above your head,
+clutching a brittle tome sealed in a translucent bag. He climbs down with
+startling speed, slipping serenely past you as he goes elsewhere.
+~
+#EXIT
+Direction north~
+ToRoom    7770
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7772
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7772
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Tables are spread out about the place, with padded chairs for people to
+peruse the books at leisure. On each side of you, shelves line the walls
+in unbreaking lines stretching into the distance. Upon them sit books of
+every possible size and description. Looking about, it is not hard to
+conclude that perhaps all the knowledge in the world could be held here,
+and possibly some lost lores as well.
+~
+#EXIT
+Direction east~
+ToRoom    7771
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7773
+#ENDEXIT
+
+Reset M 7761 5 7772 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7773
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      The lush carpet feels soft underfoot, and you have no doubt that it would
+be quite comfortable to walk on even if you were not wearing anything on
+your feet. Peering about this section, you realise that it is set aside for
+spellbooks of all kinds. Mystic tomes and runed texts sit all about, and
+mages young and old are gathered here to expand their power in their chosen
+art.
+~
+#EXIT
+Direction east~
+ToRoom    7772
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7774
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7774
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Rows of books fill your vision, rising a mere inch above the furry carpet
+all the way to the ceiling, nearly six or seven storeys above your head.
+To your untrained eye, the mess is completely unsorted, coming in books
+as thick as your handsbreadth or more slender than your finger in varied
+editions by people whose names you have never before heard. Yet, the
+librarians seem not to have a problem at all, walking unhurriedly and
+slotting stray books into their places without hesitation.
+~
+#EXIT
+Direction east~
+ToRoom    7773
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7775
+#ENDEXIT
+
+Reset M 7761 5 7774 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7775
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      You feel a mild dizziness coming over you as you contemplate the ladders
+which criss cross the multitude of shelves around you. Some only reach
+up for two storeys, while others stretch all the way to the top shelves,
+and yet more do not even extend below the first twenty shelves. Watching
+as nimble figures scale the rungs effortlessly, while changing ladders
+without any seeming thought or consideration, you wonder how it is that
+no two people seem to clash at all.
+~
+#EXIT
+Direction north~
+ToRoom    7776
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7774
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7776
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      This portion of the library is built with honeycombed shelves jutting out
+from the walls. Each alcove holds a single crystal, gleaming softly in the
+dim light in this section. Before you can wonder too much about it, you
+see a person sitting at a nearby table, with a crystal placed in its setting
+within a small box which is shining a single beam of light through the rosy
+gem. Wandering nearer, you realise that words are revealed by the light, and
+all the nearby tables are fitted with several of these boxes for the use of
+patrons.
+~
+#EXIT
+Direction north~
+ToRoom    7777
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7775
+#ENDEXIT
+
+Reset M 7761 5 7776 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7777
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Shelves line the walls on each side of you, and the floor is carpeted in
+a lush, thick material which muffles all but the heaviest noises. You can
+see people sitting at tables spread out about the place, deep in
+concentration as they read quietly. Here and there, you notice the slate
+blue-clad forms of the librarians sorting out books and returning them to
+their appropriate places.
+~
+#EXIT
+Direction east~
+ToRoom    7778
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7776
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7778
+Name      Along An Archive Corridor~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Walking through the Archives, you are mindful of the silence and the
+reminder to maintain it. All around you, books of all shapes and sizes
+fill the shelf space, with a confusing array of ladders leading all
+over to allow access to the books placed higher up. Tables are spread
+around, with padded chairs, to allow patrons a more comfortable read.
+~
+#EXIT
+Direction east~
+ToRoom    7767
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7777
+#ENDEXIT
+
+Reset M 7761 5 7778 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7779
+Name      In a Ceramic Chamber~
+Sector    indoors~
+Flags     nomob indoors~
+Stats     0 0 0 0
+Desc      Puffing with the effort, you finally scale the last step and stand upon
+smooth ceramic tiles covered in cerulean glaze. A quill encircled in laurel
+leaves is printed on each tile in darker blue. On one side, a glassy
+stepladder leads upward to a gleaming ceramic trapdoor. Eastward, a curtain
+made of translucent material with glittering blue beads forming the same
+pattern as that upon the tiles flutters softly on a gentle breeze. A sign
+is displayed prominently above the curtain.
+~
+#EXIT
+Direction east~
+ToRoom    7780
+Keywords  curtain~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    7793
+Keywords  trapdoor~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7794
+#ENDEXIT
+
+Reset D 7779 1 1 100 -2
+Reset D 7779 4 1 100 -2
+#EXDESC
+ExDescKey    sign~
+ExDesc       Carved from a blue stone which sparkles with a smattering of silver,
+the sign reads:
+                    &BThe Temple Of Meia Quickquill&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7780
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Standing in a wide hallway which stretches to the east, you are filled
+with a sense of deep respect for this hallowed place. The realisation
+that this is a place consecrated to a deity is clear to your mind,
+although you cannot identify how that could possibly be. A smaller
+passage stretches to your south, while a varnished door of a pale wood
+stands to the north. The floor is polished to a mirrored shine, whilst
+the walls are draped in translucent cloths of lightest blue.
+~
+#EXIT
+Direction north~
+ToRoom    7781
+Keywords  door~
+Flags     isdoor~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7783
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    7785
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7796
+Keywords  curtain~
+Flags     isdoor closed~
+#ENDEXIT
+
+Reset M 7763 5 7780 -1 -1 -1 100
+Reset D 7780 0 1 100 -2
+Reset D 7780 3 1 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      7781
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Entering this chamber, you recognise it as a place for meditation. An ivory
+statue of Meia is set upon an altar against the wall, which is draped in
+a gauzy blue cloth edged with silver threads. Arrayed upon the altar, you
+see a slender prayerbook, as well as other assorted items used in meditation.
+A soft carpet lines the floor, ensuring that all supplicants are comfortable
+whilst they are here. A small wooden door stands to the west, and another door
+made of a paler wood lies towards the south.
+~
+#EXIT
+Direction south~
+ToRoom    7780
+Keywords  door~
+Flags     isdoor~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7782
+Keywords  door~
+Flags     isdoor closed~
+#ENDEXIT
+
+Reset M 7766 4 7781 -1 -1 -1 100
+Reset D 7781 2 1 100 -2
+Reset D 7781 3 1 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      7782
+Name      In the Caretaker's Chambers~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      You walk into a neatly kept room. It is not as lavish as the rest of
+the temple, with plain slabs of grey stone upon the floor and a number
+of simple portraits hanging from the stone walls. A bed is tucked in
+one corner, next to a bookshelf full of assorted reading materials, and
+a sturdy wooden table sits in the centre of the room, with some utensils
+set upon it. A small wooden door stands to the east.
+~
+#EXIT
+Direction east~
+ToRoom    7781
+Keywords  door~
+Flags     isdoor closed~
+#ENDEXIT
+
+Reset M 7762 1 7782 -1 -1 -1 100
+Reset D 7782 1 1 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      7783
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Walking through the hallway, it is difficult for you to keep from
+going on tiptoes. Each sound you make sounds harsh and odd in this tranquil
+place, and each step you take seems to mar the lovely perfection of the
+smooth tiles upon the floor. On each side of you, small alcoves have been
+cut into the wall, and you see a tiny figurine set within each of them.
+Taking a closer look, you realise one to be of Meia herself, whilst the
+other is of Mithgilran. A sturdy door stands to the east, made of graven
+marble the colour of virgin snow and misted over in shades of skye.
+~
+#EXIT
+Direction east~
+ToRoom    7784
+Keywords  door~
+Flags     isdoor~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7780
+#ENDEXIT
+
+Reset D 7783 1 1 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      7784
+Name      Before the Flame of Meia~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      You find yourself standing in a sort of sheltered balcony. The walls
+are no more than three pillars of pale marble, with the floor covered
+in similar tiles. Above your head is a crackling net of energy which
+is anchored to each of the pillars and arches high overhead, protecting
+the balcony and everything upon it.
+~
+#EXIT
+Direction west~
+ToRoom    7783
+Keywords  door~
+Flags     isdoor~
+#ENDEXIT
+
+Reset M 7764 1 7784 -1 -1 -1 100
+Reset M 7765 1 7784 -1 -1 -1 100
+Reset D 7784 3 1 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      7785
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Taking care to walk as quietly as possible, you proceed down the hallway
+to a turn in the passage. Here, glowing orbs are set upon silver sconces
+high on the wall, lighting your way in a soft nimbus. The gleaming
+surface of the ground is perfectly smooth, and you can detect no seam in
+the tiling, if there is any at all. To the east, you notice a door carved
+of a pale bluish stone. The hallway continues westward, and you can see
+it turn another corner nearby.
+~
+#EXIT
+Direction north~
+ToRoom    7780
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7786
+Keywords  door~
+Flags     isdoor~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7787
+#ENDEXIT
+
+Reset M 7763 5 7785 -1 -1 -1 100
+Reset D 7785 1 1 100 -2
+#ENDROOM
+
+#ROOM
+Vnum      7786
+Name      Within the Study Chamber~
+Sector    indoors~
+Flags     indoors safe nosummon nomagic silence nomissile norecall noastral nodrop~
+Stats     0 0 0 0
+Desc      This room is panelled in dark, burnished wood. A large table surrounded
+by padded chairs stands in the centre of the room, and you notice an
+assortment of books already spread out on its surface. The furnishings
+look somewhat worn, and you suspect that it has been in use for quite
+some time. A sign is hung prominently just beside you.
+~
+#EXIT
+Direction west~
+ToRoom    7785
+Keywords  door~
+Flags     isdoor~
+#ENDEXIT
+
+Reset D 7786 3 1 100 -2
+#EXDESC
+ExDescKey    sign~
+ExDesc       The script is printed neatly, and it reads in clear letters:
+  &YWelcome, wayfarer, to the Temple. For your convenience, we have opened
+this chamber as a place for silent study. It is meant for the pursuit of
+higher learning, and you may bring your own books to be read here. We of
+the Radiant Tower reserve the right not to entertain anyone who flaunts
+our hospitality.&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7787
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      As you move through the hallway, your eyes stray to the elegant architecture
+which surrounds you. High latticed arches rise majestically to the curved
+ceiling, all carved from skie marble. The faint tints of the rare stone
+give the place a feeling of coolness and gentle tranquillity, and you are
+somehow reminded of a beautiful spring day.
+~
+#EXIT
+Direction east~
+ToRoom    7785
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7788
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7788
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      The hallway turns here, and you can see a bright glow radiating from the
+north. A small table sits in the corner, and you see a pitcher of water
+as well as several small cups on it. A spray of edelweiss stands within a
+slim vase, and the edges of the table are decked in fresh cornflowers and
+daisies. It occurs to you at this point that the people of the Tower must
+take a certain degree of pride in maintaining such a pristine environment
+whilst making all visitors feel welcome.
+~
+#EXIT
+Direction north~
+ToRoom    7789
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    7787
+#ENDEXIT
+
+Reset M 7763 5 7788 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7789
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      At this point, you stand at the foot of a marble span which stretches out
+into the air above Bywater. A bright light can be seen shining from the highest
+point of the arch, far to the west, and you surmise that this must be what you
+saw earlier. The bridge branches from the ledge just past a pair of crystal 
+doors and although the pathway is quite wide, you see no railings or any form
+of protection to catch you if you should fall. Peering out tentatively, you
+are nearly overcome by vertigo. A small blue mat lies on the floor here, with
+a sign beside it.
+~
+#EXIT
+Direction south~
+ToRoom    7788
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7790
+#ENDEXIT
+
+#EXDESC
+ExDescKey    sign~
+ExDesc       The sign is carved neatly in inch-high letters which glow blue. It says:
+
+               &BKindly Wipe Your Feet Before Stepping
+                   &BOnto The Sacred Arch of Meia
+                          &CThank You
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7790
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      As you try to walk as lightly as possible on this delicate arch, the
+scenery all around stuns you with its brilliance. From here, you can see
+the glittering ribbon of Branduin leading all the way to the Graecian
+Ocean. The colossal tree towers in the distance, and even at this height,
+you see it soar above, further into the clouds. Southward, the graceful
+spires of Palainth can be glimpsed past the murky shadows of Bloodmire
+and craggy mountains rise upward from the north. To the east, you see
+the arch ending in the tower chamber, whilst a bright glow emanates from
+the west.
+~
+#EXIT
+Direction east~
+ToRoom    7789
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7791
+#ENDEXIT
+
+Reset M 7763 5 7790 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7791
+Name      Within Meia's Temple~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Here, you stand just eastward of the radiant altar consecrated to Meia
+at the tip of the arch which seems to lead nowhere after that. As you
+walk leisurely, you note the intricate carving on the marble bridge and
+wonder at the identity of the artisans who built this tower. Simple
+lines cut into the stone weave into a complex image of a stylised storm
+and a figure superimposed somehow over the thunderclouds who seems
+familiar.
+~
+#EXIT
+Direction east~
+ToRoom    7790
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    7792
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7792
+Name      Before the High Altar of Meia~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      The bridge ends here, jutting out far above Bywater. Upon the edge stands
+a statue of Meia, dressed as she was in her youthful mortal years, blazing with
+a pearlesque radiance. It is carved from the same rare stone as the rest of her
+temple, but somehow imbued with an aura of raw elemental power which even you
+can detect easily. The statue seems more lifelike than any you have seen
+before, and at any moment, you expect her to string her bow, or speak gently
+to the supplicants before her. Before the statue is a silvertable, worked in
+such fine detail that you know it must be of dwarven make. A willow chalice
+shaped by the craft of wild  elves stands in the centre of the table, flanked
+by a fiery quill blazing in an adamantite stand and a pair of golden sandals.
+It has been said that the quill was a gift from the gods themselves, as well as
+the sandals, and Meia earned them through quests during her journeys.
+~
+#EXIT
+Direction east~
+ToRoom    7791
+#ENDEXIT
+
+Reset M 7763 5 7792 -1 -1 -1 100
+Reset M 7766 4 7792 -1 -1 -1 100
+Reset M 7766 4 7792 -1 -1 -1 100
+Reset M 7766 4 7792 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      7793
+Name      The Tower Turret~
+Sector    indoors~
+Flags     nomob indoors~
+Stats     0 0 0 0
+Desc      You stand in a nondescript room, right at the top of the Tower. Hay is
+scattered liberally around, and sleeping here seems like a very good
+idea. There is not much in the way of furniture, with only a small table
+on one side. A metal basin of water is set upon the table, and a soft
+towel is beside it. Two large windows are cut into the walls opposite
+to each other, and from them, you can gaze over the countryside around
+Bywater for miles around. A small card sits upon the towel, and you feel
+somehow drawn to examine it.
+~
+#EXIT
+Direction down~
+ToRoom    7797
+Keywords  trapdoor~
+Flags     isdoor closed~
+#ENDEXIT
+
+Reset D 7793 5 1 100 -2
+#EXDESC
+ExDescKey    card~
+ExDesc       In a beautiful cursive script, it reads:
+  &YWelcome, wayfarer, to The Radiant Tower. Here, you may rest, and
+partake of the simple fare provided. We of the Tower would appreciate
+it if you do not abuse the priviledge of staying here, and reserve the
+right not to entertain inappropriate guests.&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7794
+Name      In A Crystal Casement~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      You make your way leisurely down the spiralling mahogany steps into the
+small casement area at the base. Crystal panels are fitted on every
+available surface here, and each of the smooth surfaces glows softly
+with a gentle bluish light. A twisted stair of mahogany leads further
+downward into a dense growth of thorns, while a beautiful door cut from
+a single piece of thick wood and burnished with designs of mystic runes
+stands in the northern portion of the wall. A large sign is displayed
+above the doorway.
+&BAn ancient portal glows with magical power here.&z
+~
+#EXIT
+Direction north~
+ToRoom    7767
+Keywords  door~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    7779
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7765
+#ENDEXIT
+
+Reset D 7794 0 1 100 -2
+#EXDESC
+ExDescKey    sign~
+ExDesc       Carved from a strange bluish-silvery stone, it reads:
+                    &BThe Archives of Knowledge&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7795
+Name      In A Crystal Casement~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      Stepping once more into the small casement, you stand at the centre of
+the crystal panelled area. Each of the smooth mirrored surfaces glows
+softly with a light of its own, casting a soft bluish light on your
+surroundings. A twisted stair of mahogany leads downward into a dense
+growth of thorns, while another set of runed mahogany steps spirals
+upward towards the top of the tower. Looking back at the doorway you
+just walked through, you see a sign displayed above it.
+~
+#EXIT
+Direction north~
+ToRoom    7767
+Keywords  door~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    7779
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7765
+#ENDEXIT
+
+Reset D 7795 0 1 100 -2
+#EXDESC
+ExDescKey    sign~
+ExDesc       Carved from a strange bluish-silvery stone, it reads:
+                    &BThe Archives of Knowledge&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7796
+Name      In a Ceramic Chamber~
+Sector    indoors~
+Flags     ~
+Stats     0 0 0 0
+Desc      Sweeping aside the curtain, you enter a small chamber. The ground is
+covered in smooth ceramic tiles glazed with a cerulean tint. The symbol
+of a quill encircled in laurel leaves is printed upon each tile in a
+darker shade. To one side, you notice a glassy stepladder leading upward
+to a gleaming trapdoor made of the same material as the tiles, while a
+mahogany stairway spirals downward. Behind you, a sign is displayed
+prominently above the curtain.
+~
+#EXIT
+Direction east~
+ToRoom    7780
+Keywords  curtain~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    7793
+Keywords  trapdoor~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7794
+#ENDEXIT
+
+Reset D 7796 1 1 100 -2
+Reset D 7796 4 1 100 -2
+#EXDESC
+ExDescKey    sign~
+ExDesc       Carved from a blue stone which sparkles with a smattering of silver,
+the sign reads:
+                    &BThe Temple Of Meia Quickquill&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7797
+Name      In a Ceramic Chamber~
+Sector    indoors~
+Flags     ~
+Stats     0 0 0 0
+Desc      You gingerly descend the glassy stepladder. It seems so fragile at first
+glance, but holds your weight well. Standing once more in the small
+chamber upon the smooth ceramic tiles, you take a moment to admire the
+artwork of Meia's symbol printed upon each piece upon the floor. To the
+east, you see a curtain made of translucent material with glittering
+blue beads sewn in the same pattern as the symbols on the tiles. It
+flutters gently in a constant breeze. A sign is displayed prominently
+over the curtained archway. On one side, a mahogany stairway with an
+intricate design of runes spirals downward.
+~
+#EXIT
+Direction east~
+ToRoom    7780
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    7793
+Keywords  trapdoor~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    7794
+#ENDEXIT
+
+Reset D 7797 4 1 100 -2
+#EXDESC
+ExDescKey    sign~
+ExDesc       Carved from a blue stone which sparkles with a smattering of silver,
+the sign reads:
+                    &BThe Temple Of Meia Quickquill&z
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      7798
+Name      At the Base of The Radiant Tower~
+Sector    indoors~
+Flags     nomob indoors~
+Stats     0 0 0 0
+Desc      After trudging up the mountain, you finally reach the base of the ivory
+tower you have seen from a distance. The walls of the tower give off a
+radiant glow as though they are acting as mirrors reflecting all the
+sunlight from the sun. The funny thing is that this happens even though
+the sun is obscured by clouds. The sweet scent of roses waft down from
+within the tower and an ivory staircase leads up into the garden.
+~
+#EXIT
+Direction north~
+ToRoom    50000
+ToCoords  911 926
+Flags     overland nomob~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    50000
+ToCoords  912 927
+Flags     overland nomob~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    50000
+ToCoords  911 928
+Flags     overland nomob~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    50000
+ToCoords  910 927
+Flags     overland nomob~
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    7736
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      7799
+Name      Standing in Pure Nothingness~
+Sector    indoors~
+Flags     ~
+Stats     0 0 0 0
+#ENDROOM
+
+#ENDAREA

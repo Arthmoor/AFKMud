@@ -22,3 +22,47 @@ There      -1 -1
 Vnum       50999
 End
 
+#ENTRANCE
+ToMap      -1
+OnMap      0
+Here       911 927
+There      -1 -1
+Vnum       7798
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+OnMap      0
+Here       925 931
+There      -1 -1
+Vnum       2916
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+OnMap      0
+Here       915 939
+There      -1 -1
+Vnum       2060
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+OnMap      0
+Here       899 937
+There      -1 -1
+Vnum       2918
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+OnMap      0
+Here       902 930
+There      -1 -1
+Vnum       2925
+Prevsector 18
+End

@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <fstream>
+#include <algorithm>
 #include "mud.h"
 #include "commands.h"
 #include "help.h"
@@ -169,6 +170,7 @@ void load_helps( void )
          stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
+         std::transform(value.begin(), value.end(), value.begin(), (int(*)(int)) toupper);
          help->keyword = value;
       }
 
@@ -240,6 +242,7 @@ help_data *get_help( char_data * ch, string argument )
          argall.append( 1, ' ' );
       argall.append( argone );
    }
+   std::transform(argall.begin(), argall.end(), argall.begin(), (int(*)(int)) toupper);
 
    for( hlp = helplist.begin(  ); hlp != helplist.end(  ); ++hlp )
    {

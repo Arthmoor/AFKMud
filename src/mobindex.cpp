@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -435,7 +435,7 @@ mob_index *make_mobile( int vnum, int cvnum, const string & name, area_data * ar
       pMobIndex->absorb.reset(  );
       pMobIndex->attacks.reset(  );
       pMobIndex->defenses.reset(  );
-      pMobIndex->numattacks = 0;
+      pMobIndex->numattacks = 1;
       pMobIndex->height = 0;
       pMobIndex->weight = 0;
       pMobIndex->speaks.set( LANG_COMMON );

@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -162,11 +162,8 @@ bool descriptor_data::compressEnd(  )
    mccp->out_compress->avail_in = 0;
    mccp->out_compress->next_in = dummy;
 
-   if( deflate( mccp->out_compress, Z_FINISH ) != Z_STREAM_END )
-      return false;
-
-   if( !process_compressed(  ) ) /* try to send any residual data */
-      return false;
+   if( deflate( mccp->out_compress, Z_FINISH ) == Z_STREAM_END )
+      process_compressed();   /* try to send any residual data */
 
    deflateEnd( mccp->out_compress );
    DISPOSE( mccp->out_compress_buf );

@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -3482,6 +3482,7 @@ void char_data::extract( bool fPull )
     */
    if( this->isnpc(  ) && !mud_down )
    {
+      update_room_reset( this, true );
       this->unset_actflag( ACT_MOUNTED );
 
       list < char_data * >::iterator ich;
@@ -5116,7 +5117,7 @@ CMDF( do_order )
       char_data *och = *ich;
       ++ich;
 
-      if( och->has_aflag( AFF_CHARM ) && och->master == ch && ( fAll || och == victim ) )
+      if( och->has_aflag( AFF_CHARM ) && och->master == ch && ( fAll || och == victim ) && !och->is_immortal() )
       {
          found = true;
          act( AT_ACTION, "$n orders you to '$t'.", ch, argument.c_str(  ), och, TO_VICT );

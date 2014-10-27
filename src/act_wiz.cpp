@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -4511,7 +4511,8 @@ CMDF( do_bestowarea )
                  "bestowarea <victim> <filename>.are\r\n"
                  "bestowarea <victim> none                     removes bestowed areas\r\n"
                  "bestowarea <victim> remove <filename>.are    removes a specific area\r\n"
-                 "bestowarea <victim> list                     lists bestowed areas\r\n" "bestowarea <victim>                          lists bestowed areas\r\n" );
+                 "bestowarea <victim> list                     lists bestowed areas\r\n"
+                 "bestowarea <victim>                          lists bestowed areas\r\n" );
       return;
    }
 

@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -34,6 +34,7 @@
 char *color_align( const char *, int, int );
 int color_strlen( const char * );
 const char *colorize( const string &, descriptor_data * );
+int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int *vislen );
 
 /*
  * Color Alignment Parameters

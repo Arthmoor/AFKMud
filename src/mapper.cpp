@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -441,16 +441,30 @@ int get_line( const char *desc, size_t max_len )
    if( strlen( desc ) <= max_len )
       return 0;
 
-   /*
+    /*
     * Calculate end point in string without color 
     */
    for( i = 0; i <= strlen( desc ); ++i )
    {
-      /*
-       * Here you need to skip your color sequences 
-       */
-      ++j;
+      char dst[20];
+      int vislen;
 
+      switch ( desc[i] )
+      {
+         case '&':  /* NORMAL, Foreground colour */
+         case '{':  /* BACKGROUND colour */
+         case '}':  /* BLINK Foreground colour */
+            *dst = '\0';
+            vislen = 0;
+            i += colorcode( &desc[i], dst, NULL, 20, &vislen ); /* Skip input token */
+            j += vislen; /* Count output token length */
+            break;   /* this was missing - if you have issues, remove it */
+
+         default:   /* No conversion, just count */
+            ++j;
+            break;
+      }
+      
       if( j > max_len )
          break;
    }

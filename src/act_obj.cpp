@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -430,7 +430,7 @@ CMDF( do_get )
           */
          if( !( obj = get_obj_list( ch, arg1, container->contents ) ) )
          {
-            ch->printf( "I see nothing like that %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", arg2.c_str(  ) );
+            ch->printf( "I see nothing like that %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
             return;
          }
          obj->separate(  );
@@ -508,14 +508,14 @@ CMDF( do_get )
                if( container->item_type == ITEM_KEYRING && !container->extra_flags.test( ITEM_COVERING ) )
                   ch->printf( "The %s holds no keys.\r\n", arg2.c_str(  ) );
                else
-                  ch->printf( "I see nothing %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", arg2.c_str(  ) );
+                  ch->printf( "I see nothing %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
             }
             else
             {
                if( container->item_type == ITEM_KEYRING && !container->extra_flags.test( ITEM_COVERING ) )
                   ch->printf( "The %s does not hold that key.\r\n", arg2.c_str(  ) );
                else
-                  ch->printf( "I see nothing %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", arg2.c_str(  ) );
+                  ch->printf( "I see nothing %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
             }
          }
          else

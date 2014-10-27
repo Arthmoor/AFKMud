@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -1813,7 +1813,7 @@ bool check_ability( char_data * ch, const string & command, const string & argum
    /*
     * bsearch for the ability
     */
-   sn = ch_slookup( ch, command );
+   sn = find_ability( ch, command, true );
 
    if( sn == -1 )
       return false;
@@ -2046,7 +2046,7 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
    /*
     * bsearch for the skill
     */
-   sn = ch_slookup( ch, command );
+   sn = find_skill( ch, command, true );
 
    if( sn == -1 )
       return false;

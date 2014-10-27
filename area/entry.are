@@ -116,10 +116,8 @@ From somewhere high overhead a deep booming voice shouts:
 
 "Welcome stranger! Examine the &wpaintings&c before you and choose 
 your new race by saying its name out loud. For example, if you wish to
-become a High Elf, you would type: &wsay high-elf&c to do so.
-Refer to the website for further information on races and classes
-located at &whttp://www.alsherok.net&c. You may also get a brief overview
-of which classes are allowed by examining the &wscrolls&c here."&D
+become a High Elf, you would type: &wsay high-elf&c to do so. You may get a
+brief overview of which classes are allowed by examining the &wscrolls&c here."&D
 ~
 #EXDESC
 ExDescKey    scroll scrolls~
@@ -129,10 +127,7 @@ ExDesc       &cPlease look at &wscrolls1&c, &wscrolls2&c, &wscrolls3&c, or
 &wScrolls1&c contains Human, Dwarf, High-Elf, Wild-Elf, and Half-Elf.
 &wScrolls2&c contains Halfling, Pixie, Half-Orc, Half-Troll, and Gith.
 &wScrolls3&c contains Minotaur, Duergar, Centaur, and Half-Ogre.
-&wScrolls4&c contains Iguanadon, Gnome, Insectoid, and Sahuagin.
-
-The information on these scrolls is available on our webpage
-at www.alsherok.net under the Information/Races section.&D
+&wScrolls4&c contains Iguanadon, Gnome, Insectoid, and Sahuagin.&D
 ~
 #ENDEXDESC
 
@@ -218,9 +213,6 @@ displayed beneath it. The plaques display the following under each painting:
 Human, High-Elf, Wild-Elf, Half-Elf, Halfling, Pixie, Half-Orc,
 Half-Troll, Dwarf, Gith, Minotaur, Duergar, Centaur, Drow, Half-Ogre,
 Iguanadon, Gnome, Insectoid, and Sahuagin.
-
-The same information in these paintings is available on our webpage
-at www.alsherok.net under the Information/Races section.
 
 To pick your race, say its name out loud and you will be transformed.
 ~
@@ -475,9 +467,9 @@ From somewhere high overhead a deep booming voice shouts:
 "Welcome stranger! Examine the &wpaintings&c before you and choose 
 your new race by saying its name out loud. For example, if you wish to
 become a High Elf, you would type: &wsay high-elf&c to do so.
-Refer to the website for further information on races and classes
-located at &whttp://www.alsherok.net&c. You may also get a brief overview
-of which classes are allowed by examining the &wscrolls&c here."&D
+
+You may get a brief overview of which classes are allowed by examining the
+&wscrolls&c here."&D
 ~
 #EXDESC
 ExDescKey    scroll scrolls~
@@ -487,10 +479,7 @@ ExDesc       &cPlease look at &wscrolls1&c, &wscrolls2&c, &wscrolls3&c, or
 &wScrolls1&c contains Human, Dwarf, High-Elf, Wild-Elf, and Half-Elf.
 &wScrolls2&c contains Halfling, Pixie, Half-Orc, Half-Troll, and Gith.
 &wScrolls3&c contains Minotaur, Duergar, Centaur, and Half-Ogre.
-&wScrolls4&c contains Iguanadon, Gnome, Insectoid, and Sahuagin.
-
-The information on these scrolls is available on our webpage
-at www.alsherok.net under the Information/Races section.&D
+&wScrolls4&c contains Iguanadon, Gnome, Insectoid, and Sahuagin.&D
 ~
 #ENDEXDESC
 
@@ -576,9 +565,6 @@ displayed beneath it. The plaques display the following under each painting:
 Human, High-Elf, Wild-Elf, Half-Elf, Halfling, Pixie, Half-Orc,
 Half-Troll, Dwarf, Gith, Minotaur, Duergar, Centaur, Drow, Half-Ogre,
 Iguanadon, Gnome, Insectoid, and Sahuagin.
-
-The same information in these paintings is available on our webpage
-at www.alsherok.net under the Information/Races section.
 
 To pick your race, say its name out loud and you will be transformed.
 ~
@@ -815,8 +801,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -950,8 +935,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1119,8 +1103,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1232,8 +1215,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1345,8 +1327,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1436,8 +1417,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1538,8 +1518,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1618,8 +1597,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1687,8 +1665,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1767,8 +1744,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1880,8 +1856,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -1949,8 +1924,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -2040,8 +2014,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -2142,8 +2115,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -2209,7 +2181,7 @@ You may wish to review the statistics already generated for you during
 your process so far by typing &wscore&c, and if dissatisfied with them,
 simply type &wsay reroll&c and a new set will be rolled for you, with
 the option to accept or continue rerolling. If you are happy with your
-stats, type &wsay accept&c and you will be transported into Alsherok."
+stats, type &wsay accept&c and you will be transported into the world."
 
 With that, the voice is silent.&D
 ~
@@ -2287,8 +2259,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -2378,8 +2349,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -2469,8 +2439,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -2549,8 +2518,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D
@@ -2651,8 +2619,7 @@ if you wish to become a warrior, simply type &wsay warrior&c and it shall
 be so."
 
 Indeed, upon the wall adjacent to the mirror is a small pouch tacked
-to a board. Inside is a &wlist&c of what you can choose to become. This list
-is also available from the website at www.alsherok.net.
+to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
 &wsay go back&c and you will be able to start again.&D

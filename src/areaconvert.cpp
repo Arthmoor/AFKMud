@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -428,7 +428,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             sact = one_argument( sact, flag );
             value = get_actflag( flag );
             if( value < 0 || value >= MAX_ACT_FLAG )
-               bug( "Bad act_flag: %s", flag );
+               bug( "Unsupported act_flag dropped: %s", flag );
             else
                pMobIndex->actflags.set( value );
          }
@@ -442,7 +442,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             saff = one_argument( saff, flag );
             value = get_aflag( flag );
             if( value < 0 || value >= MAX_AFFECTED_BY )
-               bug( "Bad aff_flag: %s", flag );
+               bug( "Unsupported aff_flag dropped: %s", flag );
             else
                pMobIndex->affected_by.set( value );
          }
@@ -649,7 +649,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
                   speaks = one_argument( speaks, flag );
                   value = get_langnum( flag );
                   if( value == -1 )
-                     bug( "Bad speaks: %s", flag );
+                     bug( "Unsupported speaks flag dropped: %s", flag );
                   else
                      pMobIndex->speaks.set( value );
                }
@@ -661,7 +661,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
                   speaking = one_argument( speaking, flag );
                   value = get_langnum( flag );
                   if( value == -1 )
-                     bug( "Bad speaking: %s", flag );
+                     bug( "Unsupported speaking flag dropped: %s", flag );
                   else
                      pMobIndex->speaking = value;
                }
@@ -756,7 +756,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
                attacks = one_argument( attacks, flag );
                value = get_attackflag( flag );
                if( value < 0 || value >= MAX_ATTACK_TYPE )
-                  bug( "Bad attack: %s", flag );
+                  bug( "Unsupported attack flag dropped: %s", flag );
                else
                   pMobIndex->attacks.set( value );
             }
@@ -769,7 +769,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
                defenses = one_argument( defenses, flag );
                value = get_defenseflag( flag );
                if( value < 0 || value >= MAX_DEFENSE_TYPE )
-                  bug( "Bad defense: %s", flag );
+                  bug( "Unsupported defense flag dropped: %s", flag );
                else
                   pMobIndex->defenses.set( value );
             }
@@ -995,7 +995,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
             eflags = one_argument( eflags, flag );
             value = get_oflag( flag );
             if( value < 0 || value >= MAX_ITEM_FLAG )
-               bug( "Bad extra flag: %s", flag );
+               bug( "Unsupported flag dropped: %s", flag );
             else
                pObjIndex->extra_flags.set( value );
          }
@@ -1011,7 +1011,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
             wflags = one_argument( wflags, flag );
             value = get_wflag( flag );
             if( value < 0 || value >= MAX_WEAR_FLAG )
-               bug( "Bad wear flag: %s", flag );
+               bug( "Unsupported wear flag dropped: %s", flag );
             else
                pObjIndex->wear_flags.set( value );
          }
@@ -1370,7 +1370,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             roomflags = one_argument( roomflags, flag );
             value = get_rflag( flag );
             if( value < 0 || value >= ROOM_MAX )
-               bug( "Bad room flag: %s", flag );
+               bug( "Unsupported room flag dropped: %s", flag );
             else
                pRoomIndex->flags.set( value );
          }
@@ -1387,7 +1387,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
       if( pRoomIndex->sector_type < 0 || pRoomIndex->sector_type >= SECT_MAX )
       {
-         bug( "%s: vnum %d has bad sector_type %d.", __FUNCTION__, vnum, pRoomIndex->sector_type );
+         bug( "%s: vnum %d has unsupported sector_type %d.", __FUNCTION__, vnum, pRoomIndex->sector_type );
          pRoomIndex->sector_type = 1;
       }
 
@@ -1554,7 +1554,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                         oldexits = one_argument( oldexits, flag );
                         value = get_exflag( flag );
                         if( value < 0 || value >= MAX_EXFLAG )
-                           bug( "Bad exit flag: %s", flag );
+                           bug( "Unsupported exit flag dropped: %s", flag );
                         else
                            SET_EXIT_FLAG( pexit, value );
                      }
@@ -1670,8 +1670,8 @@ void load_stresets( area_data * tarea, FILE * fp )
    {
       exit_data *pexit;
       char letter;
-      int extra, arg1, arg2, arg3;
-      short arg4, arg5, arg6, arg7;
+      int extra, arg1, arg2, arg3 = 0;
+      short arg4, arg5, arg6, arg7 = 0;
 
       if( ( letter = fread_letter( fp ) ) == 'S' )
          break;
@@ -1687,8 +1687,10 @@ void load_stresets( area_data * tarea, FILE * fp )
          extra = 0;
       arg1 = fread_number( fp );
       arg2 = fread_number( fp );
-      arg3 = fread_number( fp );
-      arg4 = arg5 = arg6 = arg7 = -1;  // Converted resets have no overland coordinates
+      if( letter != 'G' && letter != 'R' )
+         arg3 = fread_number( fp );
+
+      arg4 = arg5 = arg6 = -1;  // Converted resets have no overland coordinates
       fread_to_eol( fp );
       ++count;
 
@@ -2027,7 +2029,7 @@ void load_stock_area_file( const string & filename, bool manual )
          fread_number( fpArea );
          key = fread_flagstring( fpArea );
          if( key[0] == '$' )
-            break;
+            continue;
          text = fread_flagstring( fpArea );
          if( text[0] == '\0' )
             continue;
@@ -2055,7 +2057,7 @@ void load_stock_area_file( const string & filename, bool manual )
             aflags = one_argument( aflags, flag );
             value = get_areaflag( flag );
             if( value < 0 || value >= AFLAG_MAX )
-               bug( "Bad area flag: %s", flag );
+               bug( "Unsupported area flag dropped: %s", flag );
             else
                tarea->flags.set( value );
          }

@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -1201,6 +1201,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
    const char *him_her[] = { "it", "him", "her", "it" };
    const char *his_her[] = { "its", "his", "her", "its" };
    string buf;
+   bool should_upper = false;
    char_data *vch = ( char_data * ) arg2;
    obj_data *obj1 = ( obj_data * ) arg1;
    obj_data *obj2 = ( obj_data * ) arg2;
@@ -1221,6 +1222,11 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
    string::const_iterator ptr = format.begin(  );
    while( ptr != format.end(  ) )
    {
+      if( *ptr == '.' || *ptr == '?' || *ptr == '!' )
+         should_upper = true;
+      else if( should_upper == true && !isspace( *ptr ) && *ptr != '$' )
+         should_upper = false;
+
       if( *ptr != '$' )
       {
          buf.append( 1, *ptr );
@@ -1300,42 +1306,60 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                // Just silently correct
                if( ch->sex >= SEX_MAX || ch->sex < 0 )
                   ch->sex = SEX_NEUTRAL;
-               buf.append( he_she[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
+               if( should_upper )
+                  buf.append( capitalize( he_she[URANGE( 0, ch->sex, SEX_MAX - 1 )] ) );
+               else
+                  buf.append( he_she[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'E':
                // Just silently correct
                if( vch->sex >= SEX_MAX || vch->sex < 0 )
                   vch->sex = SEX_NEUTRAL;
-               buf.append( he_she[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
+               if( should_upper )
+                  buf.append( capitalize( he_she[URANGE( 0, vch->sex, SEX_MAX - 1 )] ) );
+               else
+                  buf.append( he_she[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'm':
                // Just silently correct
                if( ch->sex >= SEX_MAX || ch->sex < 0 )
                   ch->sex = SEX_NEUTRAL;
-               buf.append( him_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
+               if( should_upper )
+                  buf.append( capitalize( him_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] ) );
+               else
+                  buf.append( him_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'M':
                // Just silently correct
                if( vch->sex >= SEX_MAX || vch->sex < 0 )
                   vch->sex = SEX_NEUTRAL;
-               buf.append( him_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
+               if( should_upper )
+                  buf.append( capitalize( him_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] ) );
+               else
+                  buf.append( him_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
                break;
 
             case 's':
                // Just silently correct
                if( ch->sex >= SEX_MAX || ch->sex < 0 )
                   ch->sex = SEX_NEUTRAL;
-               buf.append( his_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
+               if( should_upper )
+                  buf.append( capitalize( his_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] ) );
+               else
+                  buf.append( his_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'S':
                // Just silently correct
                if( vch->sex >= SEX_MAX || vch->sex < 0 )
                   vch->sex = SEX_NEUTRAL;
-               buf.append( his_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
+               if( should_upper )
+                  buf.append( capitalize( his_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] ) );
+               else
+                  buf.append( his_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'q':

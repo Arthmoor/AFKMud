@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2009 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -325,8 +325,8 @@ bool descriptor_data::write( const char *txt )
    /*
     * Won't send more then it has to so make sure we check if its under length 
     */
-   if( mccpsaved > strlen( txt ) )
-      mccpsaved = strlen( txt );
+   if( mccpsaved > length )
+      mccpsaved = length;
 
    if( this && mccp->out_compress )
    {
@@ -936,6 +936,7 @@ bool descriptor_data::pager_output(  )
          this->flush_buffer( true );
          this->pagebuf.clear(  );
          this->pageindex = 0;
+         this->pagecmd = 0;
          return true;
    }
 
