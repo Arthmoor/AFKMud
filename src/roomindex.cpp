@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -43,6 +43,7 @@ extern int top_reset;
 extern int top_affect;
 
 reset_data *make_reset( char, int, int, int, short, short, short, short, short, short, short, short );
+void update_room_reset( char_data *, bool );
 void delete_reset( reset_data * );
 void name_generator( char * );
 void pick_name( char *name, char * );
@@ -1157,7 +1158,7 @@ void room_index::reset(  )
    obj_index *pObjIndex = NULL, *pObjToIndex;
    exit_data *pexit;
    char *filename = area->filename;
-   int level = 0, num, lastnest;
+   int level = 0, num, lastnest, onreset = 0;
 
    mob = NULL;
    obj = NULL;
@@ -1171,6 +1172,7 @@ void room_index::reset(  )
    {
       reset_data *pReset = (*rst);
 
+      ++onreset;
       switch( pReset->command )
       {
          default:
@@ -1193,7 +1195,7 @@ void room_index::reset(  )
                bug( "%s: %s: 'M': bad room vnum %d.", __FUNCTION__, filename, pReset->arg3 );
                break;
             }
-            if( pMobIndex->count >= pReset->arg2 )
+            if( !pReset->sreset )
             {
                mob = NULL;
                break;
@@ -1213,6 +1215,9 @@ void room_index::reset(  )
 
             if( pRoomIndex->is_dark( mob ) )
                mob->set_aflag( AFF_INFRARED );
+            mob->resetvnum = pRoomIndex->vnum;
+            mob->resetnum = onreset;
+            pReset->sreset = false;
             if( !mob->to_room( pRoomIndex ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
             level = URANGE( 0, mob->level - 2, LEVEL_AVATAR );
@@ -1311,6 +1316,7 @@ void room_index::reset(  )
                {
                   reset_data *tReset = (*dst);
 
+                  ++onreset;
                   switch( tReset->command )
                   {
                      default:
@@ -1398,6 +1404,7 @@ void room_index::reset(  )
                               int iNest;
                               to_obj = lastobj;
 
+                              ++onreset;
                               switch( gReset->command )
                               {
                                  default:
@@ -1593,6 +1600,7 @@ void room_index::reset(  )
 
                   reset_data *tReset = (*dst);
                   to_obj = lastobj;
+                  ++onreset;
 
                   switch( tReset->command )
                   {

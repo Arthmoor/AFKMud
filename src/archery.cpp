@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -656,18 +656,18 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
       if( projectile )
       {
            * check dam type of projectile to determine skill to use - Grimm *
-	   switch( projectile->value[3] )
+	   switch( projectile->value[4] )
 	   {
-		case 13:
-		case 14:
+		case PROJ_BOLT:
+		case PROJ_ARROW:
                ch->learn_from_failure( gsn_archery );
 		   break;
 		 
-		case 15:
+		case PROJ_DART:
                ch->learn_from_failure( gsn_blowguns );
 		   break;
 
-		case 16:
+		case PROJ_STONE:
                ch->learn_from_failure( gsn_slings );
 		   break;
 	   }
@@ -689,24 +689,24 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
 */
 
    /*
-    * check dam type of projectile to determine value of wtype 
+    * check type of projectile to determine value of wtype 
     * * wtype points to same "short" as the skill assigned to that
     * * range by the code and as such the proper skill will be used. 
     * * Grimm 
     */
-   switch ( projectile->value[3] )
+   switch( projectile->value[4] )
    {
       default:
-      case 13:
-      case 14:
+      case PROJ_BOLT:
+      case PROJ_ARROW:
          wtype = gsn_archery;
          break;
 
-      case 15:
+      case PROJ_DART:
          wtype = gsn_blowguns;
          break;
 
-      case 16:
+      case PROJ_STONE:
          wtype = gsn_slings;
          break;
    }
@@ -722,19 +722,19 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
    }
    else
    {
-      switch ( projectile->value[3] )
+      switch ( projectile->value[4] )
       {
          default:
-         case 13:
-         case 14:
+         case PROJ_BOLT:
+         case PROJ_ARROW:
             ch->learn_from_failure( gsn_archery );
             break;
 
-         case 15:
+         case PROJ_DART:
             ch->learn_from_failure( gsn_blowguns );
             break;
 
-         case 16:
+         case PROJ_STONE:
             ch->learn_from_failure( gsn_slings );
             break;
       }

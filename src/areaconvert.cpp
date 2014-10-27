@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -29,6 +29,7 @@
 /* Converts stock Smaug version 0 and version 1 areas into AFKMud format - Samson 12-21-01 */
 /* Converts SmaugWiz version 1000 files into AFKMud format - Samson 4-24-03 */
 
+#include <sys/stat.h>
 #include "mud.h"
 #include "area.h"
 #include "mobindex.h"
@@ -1841,6 +1842,8 @@ void load_stock_area_file( const char *filename, bool manual )
 {
    area_data *tarea = NULL;
    char *word;
+   struct stat fst;
+   time_t umod = 0;
 
    if( manual )
    {
@@ -1853,6 +1856,8 @@ void load_stock_area_file( const char *filename, bool manual )
          bug( "%s: Error locating area file for conversion. Not present in conversion directory.", __FUNCTION__ );
          return;
       }
+      if( stat( fname, &fst ) != -1 )
+         umod = fst.st_mtime;
    }
    else if( !( fpArea = fopen( filename, "r" ) ) )
    {
@@ -1860,6 +1865,9 @@ void load_stock_area_file( const char *filename, bool manual )
       bug( "%s: error loading file (can't open) %s", __FUNCTION__, filename );
       return;
    }
+
+   if( umod == 0 && stat( filename, &fst ) != -1 )
+      umod = fst.st_mtime;
 
    if( fread_letter( fpArea ) != '#' )
    {
@@ -2179,11 +2187,13 @@ void load_stock_area_file( const char *filename, bool manual )
          bug( "%-20s: Bad Vnum Range", tarea->filename );
       if( !tarea->author )
          tarea->author = STRALLOC( "Unknown" );
+      if( !tarea->creation_date )
+         tarea->creation_date = umod;
+      if( !tarea->install_date )
+         tarea->install_date = umod;
    }
    else
       log_printf( "(%s)", filename );
-
-   return;
 }
 
 /* Use of the forceload argument with this command isn't recommended

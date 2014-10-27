@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -1188,7 +1188,6 @@ void load_commands( void )
 
    if( ( fp = fopen( COMMAND_FILE, "r" ) ) != NULL )
    {
-      top_sn = 0;
       for( ;; )
       {
          char letter;
@@ -2556,7 +2555,6 @@ void load_socials( void )
 
    if( ( fp = fopen( SOCIAL_FILE, "r" ) ) != NULL )
    {
-      top_sn = 0;
       for( ;; )
       {
          char letter;

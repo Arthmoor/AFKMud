@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -253,6 +253,8 @@ char_data *mob_index::create_mobile(  )
    mob->home_vnum = -1;
    mob->sector = -1;
    mob->timer = 0;
+   mob->resetvnum = -1;
+   mob->resetnum = -1;
 
    if( mob->has_actflag( ACT_MOBINVIS ) )
       mob->mobinvis = mob->level;

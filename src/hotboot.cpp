@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -54,6 +54,7 @@ extern int num_logins;
 void quotes( char_data * );
 void set_alarm( long );
 bool write_to_descriptor_old( int, char *, size_t );
+void update_room_reset( char_data *, bool );
 void music_to_char( const char *, int, char_data *, bool );
 void reset_sound( char_data * );
 void reset_music( char_data * );
@@ -82,6 +83,8 @@ void save_mobile( FILE * fp, char_data * mob )
    fprintf( fp, "Vnum	%d\n", mob->pIndexData->vnum );
    fprintf( fp, "Level   %d\n", mob->level );
    fprintf( fp, "Gold	%d\n", mob->gold );
+   fprintf( fp, "Resetvnum %d\n", mob->resetvnum );
+   fprintf( fp, "Resetnum  %d\n", mob->resetnum );
    if( mob->in_room )
    {
       if( mob->has_actflag( ACT_SENTINEL ) )
@@ -377,6 +380,7 @@ char_data *load_mobile( FILE * fp )
                mob->tempnum = -9998;   /* Yet another hackish fix! */
                if( !mob->to_room( pRoomIndex ) )
                   log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               update_room_reset( mob, false );
                return mob;
             }
             if( !str_cmp( word, "End" ) ) /* End of object, need to ignore this. sometimes they creep in there somehow -- Scion */
@@ -437,6 +441,8 @@ char_data *load_mobile( FILE * fp )
 
          case 'R':
             KEY( "Room", inroom, fread_number( fp ) );
+            KEY( "Resetvnum", mob->resetvnum, fread_number( fp ) );
+            KEY( "Resetnum", mob->resetnum, fread_number( fp ) );
             break;
 
          case 'S':

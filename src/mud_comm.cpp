@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -4361,7 +4361,7 @@ CMDF( do_mptrlook )
     * Thanks to Grodyn for the optional location parameter.
     */
    room_index *location;
-   if( arg2 && arg2[0] == '\0' )
+   if( !arg2 || arg2[0] == '\0' )
       location = ch->in_room;
    else
    {

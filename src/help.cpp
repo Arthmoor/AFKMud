@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -156,7 +156,7 @@ void load_helps( void )
       if( key == "#HELP" )
          help = new help_data;
 
-      if( key == "Keywords" )
+      else if( key == "Keywords" )
       {
          stream.getline( buf, MSL );
          value = buf;
@@ -164,7 +164,7 @@ void load_helps( void )
          help->keyword = str_dup( value.c_str() );
       }
 
-      if( key == "Level" )
+      else if( key == "Level" )
       {
          stream.getline( buf, MSL );
          value = buf;
@@ -173,7 +173,7 @@ void load_helps( void )
          help->level = atoi( value.c_str() );
       }
 
-      if( key == "Text" )
+      else if( key == "Text" )
       {
          stream.getline( buf, MSL, '¢' );
          value = buf;
@@ -181,9 +181,16 @@ void load_helps( void )
          help->text = str_dup( value.c_str() );
       }
 
-      if( key == "End" )
+      else if( key == "End" )
          helplist.push_back( help );
 
+      else
+      {
+         stream.getline( buf, MSL );
+         value = buf;
+         strip_lspace( value );
+         log_printf( "Bad line in help file: %s %s", key.c_str(), value.c_str() );
+      }
    }
    while( !stream.eof(  ) );
    stream.close(  );

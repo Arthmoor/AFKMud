@@ -2305,9 +2305,26 @@ Text /-------------------------------------------------------------------------\
 |                                                                         |
 | Merc 2.1: Hatchet, Furey and Kahn.                                      |
 |                                                                         |
-| DIKU: Hans Staerfeldt ( hhs@cbs.dtu.dk ),                               |
-| Tom Madsen, Katja Nyboe, Michael Seifert ( Seifert@Dikumud.com )        |
-| and Sebastian Hammer.                                                   |
+| DikuMUD was created by:                                                 |
+|                                                                         |
+| Sebastian Hammer                  Michael Seifert                       |
+| Prss. Maries Alle 15, 1           Nr. Soeg. 37C, 1, doer 3              |
+| 1908 Frb. C.                      1370 Copenhagen K.                    |
+| DENMARK                           DENMARK                               |
+| (email bombman@freja.diku.dk)     (email noop@freja.diku.dk)            |
+|                                                                         |
+| Hans Henrik St{rfeldt             Tom Madsen                            |
+| Langs} 19                         R|de Mellemvej 94B, 64                |
+| 3500 V{rl|se                      2300 Copenhagen S.                    |
+| DENMARK                           DENMARK                               |
+| (email bombman@freja.diku.dk)     (email noop@freja.diku.dk)            |
+|                                                                         |
+| Katja Nyboe                                                             |
+| Kildeg}rdsvej 2                                                         |
+| 2900 Hellerup                                                           |
+| 31 62 82 84                                                             | 
+| DENMARK                                                                 |
+|(email katz@freja.diku.dk)                                               |
 |                                                                         |
 \-------------------------------------------------------------------------/
 ¢
@@ -6864,9 +6881,8 @@ End
 #HELP
 Level 104
 Keywords LIQUIDTYPES
-Liquid Type
+Text Liquid Type
 ------------------------------
-#LIQUID
 water
 beer
 wine

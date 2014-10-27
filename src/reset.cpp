@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -852,4 +852,53 @@ CMDF( do_reset )
    }
    do_reset( ch, "" );
    return;
+}
+
+// Update the mobile resets to let it know to reset it again
+void update_room_reset( char_data *ch, bool setting )
+{
+   room_index *room;
+   list<reset_data*>::iterator pst;
+   int nfind = 0;
+
+   if( !ch )
+      return;
+
+   if( !( room = get_room_index( ch->resetvnum ) ) )
+      return;
+
+   for( pst = room->resets.begin(); pst != room->resets.end(); ++pst )
+   {
+      list<reset_data*>::iterator tst;
+      reset_data *pReset = *pst;
+
+      if( ++nfind == ch->resetnum )
+      {
+         pReset->sreset = setting;
+         return;
+      }
+
+      for( tst = pReset->resets.begin(); tst != pReset->resets.end(); ++tst )
+      {
+         list<reset_data*>::iterator gst;
+         reset_data *tReset = *tst;
+
+         if( ++nfind == ch->resetnum )
+         {
+            tReset->sreset = setting;
+            return;
+         }
+
+         for( gst = tReset->resets.begin(); gst != tReset->resets.end(); ++gst )
+         {
+            reset_data *gReset = *gst;
+
+            if( ++nfind == ch->resetnum )
+            {
+               gReset->sreset = setting;
+               return;
+            }
+         }
+      }
+   }
 }

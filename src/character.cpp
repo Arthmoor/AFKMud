@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -56,6 +56,7 @@ void free_fight( char_data * );
 void queue_extracted_char( char_data *, bool );
 room_index *check_room( char_data *, room_index * );
 void set_title( char_data *, char * );
+void update_room_reset( char_data *, bool );
 
 extern list<rel_data*> relationlist;
 
@@ -216,6 +217,16 @@ char_data::~char_data(  )
       ++pd;
 
       deleteptr( actp );
+   }
+
+   list<char_data*>::iterator ich;
+   for( ich = this->pets.begin(); ich != this->pets.end(); )
+   {
+      char_data *mob = *ich;
+      ++ich;
+
+      mob->extract( true );
+      deleteptr( mob );
    }
 }
 
@@ -3096,57 +3107,57 @@ void char_data::ClassSpecificStuff(  )
 
 void char_data::set_specfun( void )
 {
-   spec_funname.clear();
+   this->spec_funname.clear();
 
-   switch( Class )
+   switch( this->Class )
    {
       case CLASS_MAGE:
-         spec_fun = m_spec_lookup( "spec_cast_mage" );
-         spec_funname = "spec_cast_mage";
+         this->spec_fun = m_spec_lookup( "spec_cast_mage" );
+         this->spec_funname = "spec_cast_mage";
          break;
 
       case CLASS_CLERIC:
-         spec_fun = m_spec_lookup( "spec_cast_cleric" );
-         spec_funname = "spec_cast_cleric";
+         this->spec_fun = m_spec_lookup( "spec_cast_cleric" );
+         this->spec_funname = "spec_cast_cleric";
          break;
 
       case CLASS_WARRIOR:
-         spec_fun = m_spec_lookup( "spec_warrior" );
-         spec_funname = "spec_warrior";
+         this->spec_fun = m_spec_lookup( "spec_warrior" );
+         this->spec_funname = "spec_warrior";
          break;
 
       case CLASS_ROGUE:
-         spec_fun = m_spec_lookup( "spec_thief" );
-         spec_funname = "spec_thief";
+         this->spec_fun = m_spec_lookup( "spec_thief" );
+         this->spec_funname = "spec_thief";
          break;
 
       case CLASS_RANGER:
-         spec_fun = m_spec_lookup( "spec_ranger" );
-         spec_funname = "spec_ranger";
+         this->spec_fun = m_spec_lookup( "spec_ranger" );
+         this->spec_funname = "spec_ranger";
          break;
 
       case CLASS_PALADIN:
-         spec_fun = m_spec_lookup( "spec_paladin" );
-         spec_funname = STRALLOC( "spec_paladin" );
+         this->spec_fun = m_spec_lookup( "spec_paladin" );
+         this->spec_funname = "spec_paladin";
          break;
 
       case CLASS_DRUID:
-         spec_fun = m_spec_lookup( "spec_druid" );
-         spec_funname = STRALLOC( "spec_druid" );
+         this->spec_fun = m_spec_lookup( "spec_druid" );
+         this->spec_funname = "spec_druid";
          break;
 
       case CLASS_ANTIPALADIN:
-         spec_fun = m_spec_lookup( "spec_antipaladin" );
-         spec_funname = STRALLOC( "spec_antipaladin" );
+         this->spec_fun = m_spec_lookup( "spec_antipaladin" );
+         this->spec_funname = "spec_antipaladin";
          break;
 
       case CLASS_BARD:
-         spec_fun = m_spec_lookup( "spec_bard" );
-         spec_funname = STRALLOC( "spec_bard" );
+         this->spec_fun = m_spec_lookup( "spec_bard" );
+         this->spec_funname = "spec_bard";
          break;
 
       default:
-         spec_fun = NULL;
+         this->spec_fun = NULL;
          break;
    }
 }
@@ -3443,6 +3454,7 @@ void char_data::extract( bool fPull )
 
    if( mount )
    {
+      update_room_reset( this, true );
       mount->unset_actflag( ACT_MOUNTED );
       mount = NULL;
       position = POS_STANDING;

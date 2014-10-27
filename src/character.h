@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2008 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -500,6 +500,8 @@ public:
    int lcoordx;   /* Launch X coord  */
    int lcoordy;   /* Launch Y coord  */
    int heading;   /* The skyship's directional heading */
+   int resetvnum;
+   int resetnum;
    short substate;
    short num_fighting;
    short sex;
