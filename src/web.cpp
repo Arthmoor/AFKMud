@@ -36,7 +36,7 @@
 
 #define WEB_ROOMS "../public_html/"
 
-char *rankbuffer( char_data * );
+string rankbuffer( char_data* ch );
 extern int num_logins;
 
 int web_colour( char type, char *string, bool & firsttag )
@@ -193,7 +193,7 @@ void web_who(  )
 {
    FILE *webwho = NULL;
    list < descriptor_data * >::iterator ds;
-   ostringstream webbuf, buf;
+   ostringstream webbuf, buf1, buf2;
    string rank, outbuf, stats, clan_name;
    int pcount = 0, amount, xx = 0, yy = 0;
 
@@ -203,12 +203,11 @@ void web_who(  )
       return;
    }
 
-   buf << "&R-=[ &WPlayers on " << sysdata->mud_name << "&R]=-&d";
-   webbuf << color_align( buf.str(  ).c_str(  ), 80, ALIGN_CENTER ) << "\n";
+   buf1 << "&R-=[ &WPlayers on " << sysdata->mud_name << "&R]=-&d";
+   webbuf << color_align( buf1.str(  ).c_str(  ), 80, ALIGN_CENTER ) << "\n";
 
-   buf.clear(  );
-   buf << "&Y-=[&d &Wtelnet://" << sysdata->telnet << ":" << mud_port << "&d &Y]=-&d";
-   amount = 78 - color_strlen( buf.str(  ).c_str(  ) );  /* Determine amount to put in front of line */
+   buf2 << "&Y-=[&d &Wtelnet://" << sysdata->telnet << ":" << mud_port << "&d &Y]=-&d";
+   amount = 78 - color_strlen( buf2.str(  ).c_str(  ) );  /* Determine amount to put in front of line */
 
    if( amount < 1 )
       amount = 1;
@@ -218,7 +217,7 @@ void web_who(  )
    for( xx = 0; xx < amount; ++xx )
       webbuf << " ";
 
-   webbuf << buf << "\n";
+   webbuf << buf2.str() << "\n";
 
    xx = 0;
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
