@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -1102,7 +1102,7 @@ CMDF( do_delete )
    }
    ch->print( "\r\n&RType your password if you wish to delete your character.\r\n" );
    ch->print( "[DELETE] Password: " );
-   ch->desc->write_to_buffer( echo_off_str );
+   ch->desc->write_to_buffer( (const char*)echo_off_str );
    ch->desc->connected = CON_DELETE;
 }
 

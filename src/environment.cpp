@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -179,7 +179,7 @@ void environment_actual_update( void )
    {
       list < environment_data * >::iterator ev;
       descriptor_data *d = *ds;
-      int atx, aty, atmap;
+      int atx, aty;
 
       if( d->connected != CON_PLAYING )
          continue;
@@ -194,7 +194,6 @@ void environment_actual_update( void )
 
       atx = ch->mx;
       aty = ch->my;
-      atmap = ch->cmap;
 
       for( ev = envlist.begin(  ); ev != envlist.end(  ); ++ev )
       {

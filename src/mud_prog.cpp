@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -3779,15 +3779,12 @@ void set_supermob( obj_data * obj )
 {
    room_index *room;
    obj_data *in_obj;
-   char_data *mob;
 
    /*
     * Egad, how could this ever be true?? 
     */
    if( !supermob )
       supermob = get_mob_index( MOB_VNUM_SUPERMOB )->create_mobile(  );
-
-   mob = supermob;   /* debugging */
 
    if( !obj )
       return;

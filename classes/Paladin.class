@@ -108,350 +108,582 @@ Skill 'sahuagin' 1 95
 Skill 'trollese' 1 99
 Title
 Man~
+Man~
+Woman~
 Woman~
 Title
 Page~
 Page~
+Page~
+Page~
 Title
 Squire~
+Squire~
+Squiress~
 Squiress~
 Title
 Trainee~
 Trainee~
+Trainee~
+Trainee~
 Title
+Believer~
+Believer~
 Believer~
 Believer~
 Title
 Attendant~
 Attendant~
+Attendant~
+Attendant~
 Title
+Initiate~
+Initiate~
 Initiate~
 Initiate~
 Title
 Soldier~
 Soldier~
+Soldier~
+Soldier~
 Title
+Missionary~
+Missionary~
 Missionary~
 Missionary~
 Title
 Gallant~
 Gallant~
+Gallant~
+Gallant~
 Title
+Keeper~
+Keeper~
 Keeper~
 Keeper~
 Title
 Protector~
 Protector~
+Protector~
+Protector~
 Title
+Defender~
+Defender~
 Defender~
 Defender~
 Title
 Warder~
 Warder~
+Warder~
+Warder~
 Title
+Guardian~
+Guardian~
 Guardian~
 Guardian~
 Title
 Warrior of Fidelity~
 Warrior of Fidelity~
+Warrior of Fidelity~
+Warrior of Fidelity~
 Title
+Warrior of Valour~
+Warrior of Valour~
 Warrior of Valour~
 Warrior of Valour~
 Title
 Warrior of Honour~
 Warrior of Honour~
+Warrior of Honour~
+Warrior of Honour~
 Title
+Warrior of Justice~
+Warrior of Justice~
 Warrior of Justice~
 Warrior of Justice~
 Title
 Warrior of Humility~
 Warrior of Humility~
+Warrior of Humility~
+Warrior of Humility~
 Title
+Warrior of Righteousness~
+Warrior of Righteousness~
 Warrior of Righteousness~
 Warrior of Righteousness~
 Title
 Warrior of Faith~
 Warrior of Faith~
+Warrior of Faith~
+Warrior of Faith~
 Title
+Warrior of Zeal~
+Warrior of Zeal~
 Warrior of Zeal~
 Warrior of Zeal~
 Title
 Warrior of Piety~
 Warrior of Piety~
+Warrior of Piety~
+Warrior of Piety~
 Title
+Warrior of Light~
+Warrior of Light~
 Warrior of Light~
 Warrior of Light~
 Title
 Knight of Fidelity~
 Knight of Fidelity~
+Knight of Fidelity~
+Knight of Fidelity~
 Title
+Knight of Valour~
+Knight of Valour~
 Knight of Valour~
 Knight of Valour~
 Title
 Knight of Honour~
 Knight of Honour~
+Knight of Honour~
+Knight of Honour~
 Title
+Knight of Justice~
+Knight of Justice~
 Knight of Justice~
 Knight of Justice~
 Title
 Knight of Righteousness~
 Knight of Righteousness~
+Knight of Righteousness~
+Knight of Righteousness~
 Title
+Knight of Humility~
+Knight of Humility~
 Knight of Humility~
 Knight of Humility~
 Title
 Knight of Faith~
 Knight of Faith~
+Knight of Faith~
+Knight of Faith~
 Title
+Knight of Zeal~
+Knight of Zeal~
 Knight of Zeal~
 Knight of Zeal~
 Title
 Knight of Piety~
 Knight of Piety~
+Knight of Piety~
+Knight of Piety~
 Title
+Knight of Light~
+Knight of Light~
 Knight of Light~
 Knight of Light~
 Title
 Crusader of Fidelity~
 Crusader of Fidelity~
+Crusader of Fidelity~
+Crusader of Fidelity~
 Title
+Crusader of Valour~
+Crusader of Valour~
 Crusader of Valour~
 Crusader of Valour~
 Title
 Crusader of Honour~
 Crusader of Honour~
+Crusader of Honour~
+Crusader of Honour~
 Title
+Crusader of Justice~
+Crusader of Justice~
 Crusader of Justice~
 Crusader of Justice~
 Title
 Crusader of Righteousness~
 Crusader of Righteousness~
+Crusader of Righteousness~
+Crusader of Righteousness~
 Title
+Crusader of Humility~
+Crusader of Humility~
 Crusader of Humility~
 Crusader of Humility~
 Title
 Crusader of Faith~
 Crusader of Faith~
+Crusader of Faith~
+Crusader of Faith~
 Title
+Crusader of Zeal~
+Crusader of Zeal~
 Crusader of Zeal~
 Crusader of Zeal~
 Title
 Crusader of Piety~
 Crusader of Piety~
+Crusader of Piety~
+Crusader of Piety~
 Title
+Crusader of Light~
+Crusader of Light~
 Crusader of Light~
 Crusader of Light~
 Title
 Champion of Fidelity~
 Champion of Fidelity~
+Champion of Fidelity~
+Champion of Fidelity~
 Title
+Champion of Valour~
+Champion of Valour~
 Champion of Valour~
 Champion of Valour~
 Title
 Champion of Honour~
 Champion of Honour~
+Champion of Honour~
+Champion of Honour~
 Title
+Champion of Justice~
+Champion of Justice~
 Champion of Justice~
 Champion of Justice~
 Title
 Champion of Righteousness~
 Champion of Righteousness~
+Champion of Righteousness~
+Champion of Righteousness~
 Title
+Champion of Humility~
+Champion of Humility~
 Champion of Humility~
 Champion of Humility~
 Title
 Champion of Faith~
 Champion of Faith~
+Champion of Faith~
+Champion of Faith~
 Title
+Champion of Zeal~
+Champion of Zeal~
 Champion of Zeal~
 Champion of Zeal~
 Title
 Champion of Piety~
 Champion of Piety~
+Champion of Piety~
+Champion of Piety~
 Title
+Champion of Light~
+Champion of Light~
 Champion of Light~
 Champion of Light~
 Title
 Holy Warrior of Fidelity~
 Holy Warrior of Fidelity~
+Holy Warrior of Fidelity~
+Holy Warrior of Fidelity~
 Title
+Holy Warrior of Valour~
+Holy Warrior of Valour~
 Holy Warrior of Valour~
 Holy Warrior of Valour~
 Title
 Holy Warrior of Honour~
 Holy Warrior of Honour~
+Holy Warrior of Honour~
+Holy Warrior of Honour~
 Title
+Holy Warrior of Justice~
+Holy Warrior of Justice~
 Holy Warrior of Justice~
 Holy Warrior of Justice~
 Title
 Holy Warrior of Righteousness~
 Holy Warrior of Righteousness~
+Holy Warrior of Righteousness~
+Holy Warrior of Righteousness~
 Title
+Holy Warrior of Humility~
+Holy Warrior of Humility~
 Holy Warrior of Humility~
 Holy Warrior of Humility~
 Title
 Holy Warrior of Faith~
 Holy Warrior of Faith~
+Holy Warrior of Faith~
+Holy Warrior of Faith~
 Title
+Holy Warrior of Zeal~
+Holy Warrior of Zeal~
 Holy Warrior of Zeal~
 Holy Warrior of Zeal~
 Title
 Holy Warrior of Piety~
 Holy Warrior of Piety~
+Holy Warrior of Piety~
+Holy Warrior of Piety~
 Title
+Holy Warrior of Light~
+Holy Warrior of Light~
 Holy Warrior of Light~
 Holy Warrior of Light~
 Title
 Grand Knight of Fidelity~
 Grand Knight of Fidelity~
+Grand Knight of Fidelity~
+Grand Knight of Fidelity~
 Title
+Grand Knight of Valour~
+Grand Knight of Valour~
 Grand Knight of Valour~
 Grand Knight of Valour~
 Title
 Grand Knight of Honour~
 Grand Knight of Honour~
+Grand Knight of Honour~
+Grand Knight of Honour~
 Title
+Grand Knight of Justice~
+Grand Knight of Justice~
 Grand Knight of Justice~
 Grand Knight of Justice~
 Title
 Grand Knight of Righteousness~
 Grand Knight of Righteousness~
+Grand Knight of Righteousness~
+Grand Knight of Righteousness~
 Title
+Grand Knight of Humility~
+Grand Knight of Humility~
 Grand Knight of Humility~
 Grand Knight of Humility~
 Title
 Grand Knight of Faith~
 Grand Knight of Faith~
+Grand Knight of Faith~
+Grand Knight of Faith~
 Title
+Grand Knight of Zeal~
+Grand Knight of Zeal~
 Grand Knight of Zeal~
 Grand Knight of Zeal~
 Title
 Grand Knight of Piety~
 Grand Knight of Piety~
+Grand Knight of Piety~
+Grand Knight of Piety~
 Title
+Grand Knight of Light~
+Grand Knight of Light~
 Grand Knight of Light~
 Grand Knight of Light~
 Title
 Lesser Undead Slayer~
 Lesser Undead Slayer~
+Lesser Undead Slayer~
+Lesser Undead Slayer~
 Title
+Lesser Devil Slayer~
+Lesser Devil Slayer~
 Lesser Devil Slayer~
 Lesser Devil Slayer~
 Title
 Lesser Demon Slayer~
 Lesser Demon Slayer~
+Lesser Demon Slayer~
+Lesser Demon Slayer~
 Title
+Undead Slayer~
+Undead Slayer~
 Undead Slayer~
 Undead Slayer~
 Title
 Devil Slayer~
 Devil Slayer~
+Devil Slayer~
+Devil Slayer~
 Title
+Demon Slayer~
+Demon Slayer~
 Demon Slayer~
 Demon Slayer~
 Title
 Greater Undead Slayer~
 Greater Undead Slayer~
+Greater Undead Slayer~
+Greater Undead Slayer~
 Title
+Greater Devil Slayer~
+Greater Devil Slayer~
 Greater Devil Slayer~
 Greater Devil Slayer~
 Title
 Greater Demon Slayer~
 Greater Demon Slayer~
+Greater Demon Slayer~
+Greater Demon Slayer~
 Title
+Master Undead Slayer~
+Master Undead Slayer~
 Master Undead Slayer~
 Master Undead Slayer~
 Title
 Master Devil Slayer~
 Master Devil Slayer~
+Master Devil Slayer~
+Master Devil Slayer~
 Title
+Master Demon Slayer~
+Master Demon Slayer~
 Master Demon Slayer~
 Master Demon Slayer~
 Title
 Supreme Undead Slayer~
 Supreme Undead Slayer~
+Supreme Undead Slayer~
+Supreme Undead Slayer~
 Title
 Supreme Devil Slayer~
 Supreme Devil Slayer~
+Supreme Devil Slayer~
+Supreme Devil Slayer~
 Title
+Supreme Demon Slayer~
+Supreme Demon Slayer~
 Supreme Demon Slayer~
 Supreme Demon Slayer~
 Title
 Paladin Lord of Fidelity~
+Paladin Lord of Fidelity~
+Paladin Lady of Fidelity~
 Paladin Lady of Fidelity~
 Title
 Paladin Lord of Valour~
+Paladin Lord of Valour~
+Paladin Lady of Valour~
 Paladin Lady of Valour~
 Title
 Paladin Lord of Honour~
+Paladin Lord of Honour~
+Paladin Lady of Honour~
 Paladin Lady of Honour~
 Title
 Paladin Lord of Justice~
+Paladin Lord of Justice~
+Paladin Lady of Justice~
 Paladin Lady of Justice~
 Title
 Paladin Lord of Righteousness~
+Paladin Lord of Righteousness~
+Paladin Lady of Righteousness~
 Paladin Lady of Righteousness~
 Title
 Paladin Lord of Humility~
+Paladin Lord of Humility~
+Paladin Lady of Humility~
 Paladin Lady of Humility~
 Title
 Paladin Lord of Faith~
+Paladin Lord of Faith~
+Paladin Lady of Faith~
 Paladin Lady of Faith~
 Title
 Paladin Lord of Zeal~
+Paladin Lord of Zeal~
+Paladin Lady of Zeal~
 Paladin Lady of Zeal~
 Title
 Paladin Lord of Piety~
+Paladin Lord of Piety~
+Paladin Lady of Piety~
 Paladin Lady of Piety~
 Title
 Paladin Lord of Light~
+Paladin Lord of Light~
+Paladin Lady of Light~
 Paladin Lady of Light~
 Title
 Avatar of Light~
 Avatar of Light~
+Avatar of Light~
+Avatar of Light~
 Title
+Angel~
+Angel~
 Angel~
 Angel~
 Title
 Acolyte~
 Acolyte~
+Acolyte~
+Acolyte~
 Title
+Creator~
+Creator~
 Creator~
 Creator~
 Title
 Savior~
 Savior~
+Savior~
+Savior~
 Title
+Deity~
+Deity~
 Deity~
 Deity~
 Title
 Demi God~
+Demi God~
+Demi Goddess~
 Demi Goddess~
 Title
 God~
+God~
+Goddess~
 Goddess~
 Title
 Greater God~
+Greater God~
+Greater Goddess~
 Greater Goddess~
 Title
 Dream God~
+Dream God~
+Dream Goddess~
 Dream Goddess~
 Title
 Elemental God~
+Elemental God~
+Elemental Goddess~
 Elemental Goddess~
 Title
 Astral God~
+Astral God~
+Astral Goddess~
 Astral Goddess~
 Title
 Ancient One~
 Ancient One~
+Ancient One~
+Ancient One~
 Title
+Eternal One~
+Eternal One~
 Eternal One~
 Eternal One~
 Title
 Realm Lord~
 Realm Lord~
+Realm Lord~
+Realm Lord~
 Title
+Supreme Entity~
+Supreme Entity~
 Supreme Entity~
 Supreme Entity~
 End

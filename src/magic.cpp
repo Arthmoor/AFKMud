@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -1306,7 +1306,7 @@ CMDF( do_cast )
             int cnt = 1;
             char_data *tmp;
             list < char_data * >::iterator ich;
-            timer_data *t;
+            timer_data *t = NULL;
 
             for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
             {
@@ -4448,6 +4448,8 @@ SPELLF( spell_attack )
  */
 SPELLF( spell_area_attack )
 {
+   ch_ret retcode = rNONE;
+   list < char_data * >::iterator ich;
    skill_type *skill = get_skilltype( sn );
 
    if( ch->in_room->flags.test( ROOM_SAFE ) )
@@ -4462,9 +4464,6 @@ SPELLF( spell_area_attack )
    if( skill->hit_room && skill->hit_room[0] != '\0' )
       act( AT_MAGIC, skill->hit_room, ch, NULL, NULL, TO_ROOM );
 
-   bool ch_died = false;
-   ch_ret retcode = rNONE;
-   list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
       char_data *vch = *ich;
@@ -4524,7 +4523,6 @@ SPELLF( spell_area_attack )
                   retcode = spell_attack( sn, level, vch, ch );
                   if( ch->char_died(  ) )
                   {
-                     ch_died = true;
                      break;
                   }
                   continue;
@@ -4542,7 +4540,6 @@ SPELLF( spell_area_attack )
          retcode = spell_affectchar( sn, level, ch, vch );
       if( retcode == rCHAR_DIED || ch->char_died(  ) )
       {
-         ch_died = true;
          break;
       }
    }

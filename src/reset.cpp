@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -692,7 +692,6 @@ CMDF( do_reset )
          for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); )
          {
             list < reset_data * >::iterator gst;
-            reset_data *gReset;
             tReset = *dst;
             ++dst;
 
@@ -703,11 +702,8 @@ CMDF( do_reset )
                return;
             }
 
-            for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); )
+            for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); ++gst )
             {
-               gReset = *gst;
-               ++gst;
-
                ++nfind;
                if( nfind == num )
                {

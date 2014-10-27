@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -1127,9 +1127,12 @@ void load_boards( void )
       {
          bdlist.push_back( board );
          snprintf( notefile, 256, "%s%s", BOARD_DIR, board->filename );
+
          // This seems cheap, but functional. I want to back up old boards...
          snprintf( backupCmd, 1024, "cp %s %s.old", notefile, notefile );
-         system( backupCmd );
+         if( (system( backupCmd )) == -1 )
+            bug( "%s: Cannot execute backup command for old boards.", __FUNCTION__ );
+
          if( ( note_fp = fopen( notefile, "r" ) ) != NULL )
          {
             log_string( notefile );

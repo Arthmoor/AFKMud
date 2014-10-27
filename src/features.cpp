@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -67,10 +67,10 @@ const int ENOSR = 63;
 const int ENOSR = 63;
 #endif
 
-char will_compress2_str[] = { ( char )IAC, ( char )WILL, TELOPT_COMPRESS2, '\0' };
-char start_compress2_str[] = { ( char )IAC, SB, TELOPT_COMPRESS2, ( char )IAC, SE, '\0' };
-char will_msp_str[] = { ( char )IAC, ( char )WILL, TELOPT_MSP, '\0' };
-char start_msp_str[] = { ( char )IAC, SB, TELOPT_MSP, ( char )IAC, SE, '\0' };
+const unsigned char will_compress2_str[] = { IAC, WILL, TELOPT_COMPRESS2, '\0' };
+const unsigned char start_compress2_str[] = { IAC, SB, TELOPT_COMPRESS2, IAC, SE, '\0' };
+const unsigned char will_msp_str[] = { IAC, WILL, TELOPT_MSP, '\0' };
+const unsigned char start_msp_str[] = { IAC, SB, TELOPT_MSP, IAC, SE, '\0' };
 
 /* Begin MCCP Information */
 
@@ -146,7 +146,7 @@ bool descriptor_data::compressStart(  )
       return false;
    }
 
-   this->write( start_compress2_str );
+   this->write( (const char*)start_compress2_str );
    mccp->out_compress = s;
    is_compressing = true;
    return true;
@@ -206,7 +206,7 @@ CMDF( do_compress )
 
 void descriptor_data::send_msp_startup(  )
 {
-   write_to_buffer( start_msp_str );
+   write_to_buffer( (const char*)start_msp_str );
 }
 
 /* Trigger sound to character

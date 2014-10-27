@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -34,8 +34,9 @@
 const int TELOPT_COMPRESS2 = 86;
 const int COMPRESS_BUF_SIZE = MSL;
 
-extern char will_compress2_str[];
-extern char start_compress2_str[];
+extern const unsigned char will_compress2_str[];
+extern const unsigned char start_compress2_str[];
+extern const unsigned char will_msp_str[];
 
 struct mccp_data
 {
@@ -125,6 +126,7 @@ class descriptor_data
    bool msp_detected;
    bool can_compress;
    bool is_compressing;
+   bool disconnect;
 };
 
 extern list < descriptor_data * >dlist;

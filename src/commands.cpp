@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -1377,9 +1377,7 @@ CMDF( do_restrict )
    string arg;
    short level;
    cmd_type *cmd;
-   bool found;
 
-   found = false;
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg );
@@ -1408,6 +1406,7 @@ CMDF( do_restrict )
       ch->print( "No command by that name.\r\n" );
       return;
    }
+
    if( cmd->level > ch->get_trust(  ) )
    {
       ch->print( "You may not restrict that command.\r\n" );
@@ -1419,6 +1418,7 @@ CMDF( do_restrict )
       cmdf( ch, "%s show", cmd->name.c_str(  ) );
       return;
    }
+
    cmd->level = level;
    ch->printf( "You restrict %s to level %d\r\n", cmd->name.c_str(  ), level );
    log_printf( "%s restricting %s to level %d", ch->name, cmd->name.c_str(  ), level );

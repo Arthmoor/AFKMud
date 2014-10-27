@@ -6,8 +6,8 @@ Author          Samson~
 Vnums           100 199
 Continent       immortal~
 Coordinates     472 381
-Ranges          0 1 0 115
 Dates           902200000 902200000
+Ranges          0 1 0 115
 ResetMsg        A strange pulsing sound reverberates in the background...~
 ResetFreq       240
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport~
@@ -93,7 +93,7 @@ Vnum      199
 Keywords  Placeholder~
 Type      furniture~
 Short     a placeholder~
-Long      An evil placeholding object! RUN!~
+Long      An evil placeholding object! run!~
 Values    0 0 0 0 0 0 0 0 0 0 0
 Stats     1 1 1 9999 0 None None None
 #ENDOBJECT
@@ -103,7 +103,7 @@ Vnum      100
 Name      The Race Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cA thunderous roar echoes through the sky..... and suddenly you are
 transported into this tiny room! An odd blue mist begins to slowly
 fill the room, clouding your vision and giving you a very strange
@@ -453,7 +453,7 @@ Vnum      102
 Name      The Race Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cA thunderous roar echoes through the sky..... and suddenly you are
 transported into this tiny room! An odd blue mist begins to slowly
 fill the room, clouding your vision and giving you a very strange
@@ -786,7 +786,7 @@ Vnum      103
 Name      The High Elf Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into High Elf form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -920,7 +920,7 @@ Vnum      104
 Name      The Human Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Human form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1088,7 +1088,7 @@ Vnum      108
 Name      The Wild-Elf Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Wild Elf form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1200,7 +1200,7 @@ Vnum      109
 Name      The Half-Elf Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Half Elf form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1312,7 +1312,7 @@ Vnum      110
 Name      The Halfling Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Halfling form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1402,7 +1402,7 @@ Vnum      111
 Name      The Pixie Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Pixie form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1503,7 +1503,7 @@ Vnum      112
 Name      The Half-Orc Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Half Orc form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1582,7 +1582,7 @@ Vnum      113
 Name      The Half-Troll Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Half Troll form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1650,7 +1650,7 @@ Vnum      114
 Name      The Dwarf Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Dwarf form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1729,7 +1729,7 @@ Vnum      115
 Name      The Gith Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Gith form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1841,7 +1841,7 @@ Vnum      116
 Name      The Minotaur Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Minotaur form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1909,7 +1909,7 @@ Vnum      117
 Name      The Centaur Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Centaur form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -1999,7 +1999,7 @@ Vnum      118
 Name      The Drow Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Drow form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -2100,7 +2100,7 @@ Vnum      119
 Name      The Half-Ogre Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Half Ogre form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -2168,7 +2168,7 @@ Vnum      120
 Name      The Statistics Chamber~
 Sector    indoors~
 Flags     nomob indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cAnother brilliant flash of light follows your choice of class,
 and you are transported here. Charts and graphs line the walls, much
 of what they have to say is meaningless. However, one such chart
@@ -2212,7 +2212,7 @@ Vnum      121
 Name      An Odd Room~
 Sector    indoors~
 Flags     indoors norecall nodrop~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A final flash of light envelopes you and you are deposited inside what 
 appears to be a small closet of some kind. It's dark and musty in here, 
 and not very comfortable. Only the exit up is an option to explore now.
@@ -2223,6 +2223,11 @@ Only time will tell. Step out into your new world brave soul.......
 not satisfied with what you have, simply type &Wsay restart&D and you
 will be transported back to the race room to start again.)
 ~
+#EXIT
+Direction up~
+ToRoom    2850
+#ENDEXIT
+
 #MUDPROG
 Progtype  speech_prog~
 Arglist   p restart~
@@ -2244,7 +2249,7 @@ Vnum      122
 Name      The Iguanadon Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Iguanadon form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -2334,7 +2339,7 @@ Vnum      123
 Name      The Gnome Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Gnome form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -2424,7 +2429,7 @@ Vnum      124
 Name      The Duergar Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Duergar form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -2503,7 +2508,7 @@ Vnum      125
 Name      The Sahuagin Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Sahuagin form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -2604,7 +2609,7 @@ Vnum      126
 Name      The Insectoid Room~
 Sector    indoors~
 Flags     nomob indoors nomagic~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &cIn a brilliant flash, you are magically transformed into Insectoid form!
 A mirror stands along the back wall, allowing you to get a good look
 at yourself. Nobody would ever know you had been something other than
@@ -2705,7 +2710,7 @@ Vnum      199
 Name      Floating in a void~
 Sector    city~
 Flags     nomob~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Reset O 100 1 199 -1 -1 -1 100
 #ENDROOM
 

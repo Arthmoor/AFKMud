@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -2788,15 +2788,11 @@ void char_data::adjust_favor( int field, int mod )
 
 CMDF( do_supplicate )
 {
-   int oldfavor;
-
    if( ch->isnpc(  ) || !ch->pcdata->deity )
    {
       ch->print( "You have no deity to supplicate to.\r\n" );
       return;
    }
-
-   oldfavor = ch->pcdata->favor;
 
    if( argument.empty(  ) )
    {
@@ -2842,6 +2838,7 @@ CMDF( do_supplicate )
             obj->extra_flags.reset( ITEM_BURIED );
          }
       }
+
       if( !found )
       {
          ch->print( "No corpse of yours litters the world...\r\n" );

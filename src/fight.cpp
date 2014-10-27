@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -408,7 +408,7 @@ CMDF( do_gfighting )
    char_data *victim;
    list < char_data * >::iterator ich;
    string arg1, arg2;
-   bool found = false, pmobs = false, phating = false, phunting = false;
+   bool pmobs = false, phating = false, phunting = false;
    int low = 1, high = MAX_LEVEL, count = 0;
 
    argument = one_argument( argument, arg1 );
@@ -423,11 +423,13 @@ CMDF( do_gfighting )
       low = atoi( arg1.c_str(  ) );
       high = atoi( arg2.c_str(  ) );
    }
+
    if( low < 1 || high < low || low > high || high > MAX_LEVEL )
    {
       ch->pager( "&wInvalid level range.\r\n" );
       return;
    }
+
    if( !str_cmp( argument, "mobs" ) )
       pmobs = true;
    else if( !str_cmp( argument, "hating" ) )
@@ -448,7 +450,6 @@ CMDF( do_gfighting )
              && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room
              && ch->can_see( victim, false ) && victim->fighting && victim->level >= low && victim->level <= high )
          {
-            found = true;
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
                         victim->name, victim->level, victim->fighting->who->level,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->short_descr : victim->fighting->who->name,
@@ -466,7 +467,6 @@ CMDF( do_gfighting )
 
          if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->fighting && victim->level >= low && victim->level <= high )
          {
-            found = true;
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
                         victim->name, victim->level, victim->fighting->who->level,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->short_descr : victim->fighting->who->name,
@@ -484,7 +484,6 @@ CMDF( do_gfighting )
 
          if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->hating && victim->level >= low && victim->level <= high )
          {
-            found = true;
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
                         victim->name, victim->level, victim->hating->who->level, victim->hating->who->isnpc(  )?
                         victim->hating->who->short_descr : victim->hating->who->name, victim->hating->who->isnpc(  )?
@@ -501,7 +500,6 @@ CMDF( do_gfighting )
 
          if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->hunting && victim->level >= low && victim->level <= high )
          {
-            found = true;
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
                         victim->name, victim->level, victim->hunting->who->level, victim->hunting->who->isnpc(  )?
                         victim->hunting->who->short_descr : victim->hunting->who->name,
@@ -3824,7 +3822,7 @@ CMDF( do_kill )
       ch->print( "You do the best you can!\r\n" );
       return;
    }
-   ch->WAIT_STATE( 2 * sysdata->pulseviolence );
+   ch->WAIT_STATE( sysdata->pulseviolence );
    check_attacker( ch, victim );
    multi_hit( ch, victim, TYPE_UNDEFINED );
 }

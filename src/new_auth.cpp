@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -471,9 +471,9 @@ CMDF( do_authorize )
    list < auth_data * >::iterator auth;
    auth_data *nauth = NULL;
    int level;
-   bool offline, authed, changename, pending;
+   bool authed, changename, pending;
 
-   offline = authed = changename = pending = false;
+   authed = changename = pending = false;
 
    /*
     * Checks level of authorize command, for log messages. - Samson 10-18-98 
@@ -586,7 +586,6 @@ CMDF( do_authorize )
    {
       if( nauth->state == AUTH_OFFLINE || nauth->state == AUTH_LINK_DEAD )
       {
-         offline = true;
          if( argument.empty(  ) || !str_cmp( argument, "accept" ) || !str_cmp( argument, "yes" ) )
          {
             nauth->state = AUTH_AUTHED;

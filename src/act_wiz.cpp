@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -90,7 +90,7 @@ extern int reboot_counter;
 
 class_type *class_table[MAX_CLASS];
 race_type *race_table[MAX_RACE];
-char *title_table[MAX_CLASS][MAX_LEVEL + 1][2];
+char *title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
 int MAX_PC_CLASS;
 int MAX_PC_RACE;
 time_t last_restore_all_time = 0;
@@ -421,10 +421,10 @@ CMDF( do_disconnect )
             return;
          }
          if( victim )
-            log_printf( "%s has disconnected %s", ch->name, victim->name ? victim->name : "Someone" );
+            log_printf( "%s will be disconnected %s", ch->name, victim->name ? victim->name : "Someone" );
          else
-            log_printf( "%s has disconnected desc #%d", ch->name, desc );
-         close_socket( d, false );
+            log_printf( "%s will be disconnected desc #%d", ch->name, desc );
+         d->disconnect = true;
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -4029,7 +4029,7 @@ CMDF( do_notitle )
    else
    {
       victim->set_pcflag( PCFLAG_NOTITLE );
-      snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex == SEX_FEMALE ? 1 : 0] );
+      snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex] );
       victim->set_title( buf );
       victim->print( "You can't set your own title!\r\n" );
       ch->printf( "NOTITLE set on %s.\r\n", victim->name );
@@ -4355,7 +4355,6 @@ CMDF( do_loadup )
    descriptor_data *d;
    char fname[256];
    struct stat fst;
-   bool loaded;
    int old_room_vnum;
 
    ch->set_color( AT_IMMORT );
@@ -4394,7 +4393,7 @@ CMDF( do_loadup )
       d->init(  );
       d->connected = CON_PLOADED;
 
-      loaded = load_char_obj( d, argument, false, false );
+      load_char_obj( d, argument, false, false );
       charlist.push_back( d->character );
       pclist.push_back( d->character );
       if( !d->character->to_room( ch->in_room ) )
@@ -6160,8 +6159,10 @@ void free_all_titles( void )
    {
       for( loopa = 0; loopa < MAX_LEVEL + 1; ++loopa )
       {
-         STRFREE( title_table[hash][loopa][0] );
-         STRFREE( title_table[hash][loopa][1] );
+         STRFREE( title_table[hash][loopa][SEX_NEUTRAL] );
+         STRFREE( title_table[hash][loopa][SEX_MALE] );
+         STRFREE( title_table[hash][loopa][SEX_FEMALE] );
+         STRFREE( title_table[hash][loopa][SEX_HERMAPHRODYTE] );
       }
    }
 }
@@ -6338,8 +6339,11 @@ bool load_class_file( const char *fname )
                }
                else if( tlev < MAX_LEVEL + 1 )
                {
-                  title_table[cl][tlev][0] = fread_string( fp );
-                  title_table[cl][tlev][1] = fread_string( fp );
+                  title_table[cl][tlev][SEX_NEUTRAL] = fread_string( fp );
+                  title_table[cl][tlev][SEX_MALE] = fread_string( fp );
+                  title_table[cl][tlev][SEX_FEMALE] = fread_string( fp );
+                  title_table[cl][tlev][SEX_HERMAPHRODYTE] = fread_string( fp );
+
                   ++tlev;
                }
                else
@@ -6462,7 +6466,7 @@ void write_class_file( int cl )
          fprintf( fpout, "Skill '%s' %d %d\n", skill_table[x]->name, y, skill_table[x]->skill_adept[cl] );
    }
    for( int x = 0; x <= MAX_LEVEL; ++x )
-      fprintf( fpout, "Title\n%s~\n%s~\n", title_table[cl][x][0], title_table[cl][x][1] );
+      fprintf( fpout, "Title\n%s~\n%s~\n%s~\n%s~\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
 
    fprintf( fpout, "%s", "End\n" );
    FCLOSE( fpout );
@@ -6546,7 +6550,7 @@ CMDF( do_showclass )
       for( x = low; x <= hi; ++x )
       {
          ch->pagerf( "&wLevel: &W%d     &wExperience required: &W%ld\r\n", x, exp_level( x ) );
-         ch->pagerf( "&wMale: &W%-30s &wFemale: &W%s\r\n", title_table[cl][x][0], title_table[cl][x][1] );
+         ch->pagerf( "&wNeutral: &W%-20s &wMale: &W%-20s &wFemale: &W%-20s &wHermaphrodyte: &W%s\r\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
          cnt = 0;
          for( y = 0; y < num_skills; ++y )
             if( skill_table[y]->skill_level[cl] == x )
@@ -6584,8 +6588,10 @@ bool create_new_class( int Class, const string & argument )
    class_table[Class]->fMana = false;
    for( int i = 0; i < MAX_LEVEL; ++i )
    {
-      title_table[Class][i][0] = STRALLOC( "Not set." );
-      title_table[Class][i][1] = STRALLOC( "Not set." );
+      title_table[Class][i][SEX_NEUTRAL] = STRALLOC( "Not set." );
+      title_table[Class][i][SEX_MALE] = STRALLOC( "Not set." );
+      title_table[Class][i][SEX_FEMALE] = STRALLOC( "Not set." );
+      title_table[Class][i][SEX_HERMAPHRODYTE] = STRALLOC( "Not set." );
    }
    return true;
 }
@@ -6611,7 +6617,7 @@ CMDF( do_setclass )
       ch->print( "\r\nField being one of:\r\n" );
       ch->print( "  name prime weapon armor legwear headwear\r\n" );
       ch->print( "  armwear footwear shield held basethac0 thac0gain\r\n" );
-      ch->print( "  hpmin hpmax mana mtitle ftitle\r\n" );
+      ch->print( "  hpmin hpmax mana ntitle mtitle ftitle htitle\r\n" );
       ch->print( "  affected resist suscept skill\r\n" );
       return;
    }
@@ -6929,6 +6935,29 @@ CMDF( do_setclass )
       return;
    }
 
+   if( !str_cmp( arg2, "ntitle" ) )
+   {
+      string arg3;
+      int x;
+
+      argument = one_argument( argument, arg3 );
+      if( arg3.empty(  ) || argument.empty(  ) )
+      {
+         ch->print( "Syntax: setclass <Class> ntitle <level> <title>\r\n" );
+         return;
+      }
+      if( ( x = atoi( arg3.c_str(  ) ) ) < 0 || x > MAX_LEVEL )
+      {
+         ch->print( "Invalid level.\r\n" );
+         return;
+      }
+      STRFREE( title_table[cl][x][SEX_NEUTRAL] );
+      title_table[cl][x][SEX_NEUTRAL] = STRALLOC( argument.c_str(  ) );
+      ch->print( "Done.\r\n" );
+      write_class_file( cl );
+      return;
+   }
+
    if( !str_cmp( arg2, "mtitle" ) )
    {
       string arg3;
@@ -6970,10 +6999,31 @@ CMDF( do_setclass )
          return;
       }
       STRFREE( title_table[cl][x][SEX_FEMALE] );
-      /*
-       * Bug fix below -Shaddai
-       */
       title_table[cl][x][SEX_FEMALE] = STRALLOC( argument.c_str(  ) );
+      ch->print( "Done\r\n" );
+      write_class_file( cl );
+      return;
+   }
+
+   if( !str_cmp( arg2, "htitle" ) )
+   {
+      string arg3, arg4;
+      int x;
+
+      argument = one_argument( argument, arg3 );
+      argument = one_argument( argument, arg4 );
+      if( arg3.empty(  ) || argument.empty(  ) )
+      {
+         ch->print( "Syntax: setclass <Class> htitle <level> <title>\r\n" );
+         return;
+      }
+      if( ( x = atoi( arg4.c_str(  ) ) ) < 0 || x > MAX_LEVEL )
+      {
+         ch->print( "Invalid level.\r\n" );
+         return;
+      }
+      STRFREE( title_table[cl][x][SEX_HERMAPHRODYTE] );
+      title_table[cl][x][SEX_HERMAPHRODYTE] = STRALLOC( argument.c_str(  ) );
       ch->print( "Done\r\n" );
       write_class_file( cl );
       return;

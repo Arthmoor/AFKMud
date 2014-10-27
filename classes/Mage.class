@@ -140,350 +140,582 @@ Skill 'sahuagin' 1 95
 Skill 'trollese' 1 99
 Title
 Man~
+Man~
+Woman~
 Woman~
 Title
 Lesser Apprentice~
 Lesser Apprentice~
+Lesser Apprentice~
+Lesser Apprentice~
 Title
+Apprentice of Magic~
+Apprentice of Magic~
 Apprentice of Magic~
 Apprentice of Magic~
 Title
 Spell Student~
 Spell Student~
+Spell Student~
+Spell Student~
 Title
+Scholar of Magic~
+Scholar of Magic~
 Scholar of Magic~
 Scholar of Magic~
 Title
 Delver in Spells~
+Delver in Spells~
+Delveress in Spells~
 Delveress in Spells~
 Title
 Medium of Magic~
 Medium of Magic~
+Medium of Magic~
+Medium of Magic~
 Title
 Scribe of Magic~
+Scribe of Magic~
+Scribess of Magic~
 Scribess of Magic~
 Title
 Lesser Seer~
+Lesser Seer~
+Lesser Seeress~
 Lesser Seeress~
 Title
 Seer~
+Seer~
+Seeress~
 Seeress~
 Title
 Greater Seer~
+Greater Seer~
+Greater Seeress~
 Greater Seeress~
 Title
 Lesser Sage~
 Lesser Sage~
+Lesser Sage~
+Lesser Sage~
 Title
+Sage~
+Sage~
 Sage~
 Sage~
 Title
 Greater Sage~
 Greater Sage~
+Greater Sage~
+Greater Sage~
 Title
+Lesser Illusionist~
+Lesser Illusionist~
 Lesser Illusionist~
 Lesser Illusionist~
 Title
 Illusionist~
 Illusionist~
+Illusionist~
+Illusionist~
 Title
+Greater Illusionist~
+Greater Illusionist~
 Greater Illusionist~
 Greater Illusionist~
 Title
 Lesser Abjurer~
+Lesser Abjurer~
+Lesser Abjuress~
 Lesser Abjuress~
 Title
 Abjurer~
+Abjurer~
+Abjuress~
 Abjuress~
 Title
 Greater Abjurer~
+Greater Abjurer~
+Greater Abjuress~
 Greater Abjuress~
 Title
 Lesser Invoker~
 Lesser Invoker~
+Lesser Invoker~
+Lesser Invoker~
 Title
 Invoker~
 Invoker~
+Invoker~
+Invoker~
 Title
+Greater Invoker~
+Greater Invoker~
 Greater Invoker~
 Greater Invoker~
 Title
 Lesser Enchanter~
+Lesser Enchanter~
+Lesser Enchantress~
 Lesser Enchantress~
 Title
 Enchanter~
+Enchanter~
+Enchantress~
 Enchantress~
 Title
 Greater Enchanter~
+Greater Enchanter~
+Greater Enchantress~
 Greater Enchantress~
 Title
 Lesser Conjurer~
+Lesser Conjurer~
+Lesser Conjuress~
 Lesser Conjuress~
 Title
 Conjurer~
+Conjurer~
+Conjuress~
 Conjuress~
 Title
 Greater Conjurer~
+Greater Conjurer~
+Greater Conjuress~
 Greater Conjuress~
 Title
 Magician~
+Magician~
+Witch~
 Witch~
 Title
 Crafter~
 Crafter~
+Crafter~
+Crafter~
 Title
+Savant~
+Savant~
 Savant~
 Savant~
 Title
 Magus~
+Magus~
+Craftess~
 Craftess~
 Title
 Warlock~
+Warlock~
+War Witch~
 War Witch~
 Title
 Demi-Sorcerer~
+Demi-Sorcerer~
+Demi-Sorceress~
 Demi-Sorceress~
 Title
 Sorcerer~
+Sorcerer~
+Sorceress~
 Sorceress~
 Title
 Elder Sorcerer~
+Elder Sorcerer~
+Elder Sorceress~
 Elder Sorceress~
 Title
 Grand Sorcerer~
+Grand Sorcerer~
+Grand Sorceress~
 Grand Sorceress~
 Title
 Great Sorcerer~
+Great Sorcerer~
+Great Sorceress~
 Great Sorceress~
 Title
 Apprentice Golem Crafter~
 Apprentice Golem Crafter~
+Apprentice Golem Crafter~
+Apprentice Golem Crafter~
 Title
+Golem Crafter~
+Golem Crafter~
 Golem Crafter~
 Golem Crafter~
 Title
 Greater Golem Crafter~
 Greater Golem Crafter~
+Greater Golem Crafter~
+Greater Golem Crafter~
 Title
+Master Golem Crafter~
+Master Golem Crafter~
 Master Golem Crafter~
 Master Golem Crafter~
 Title
 Apprentice Crafter of Stones~
 Apprentice Crafter of Stones~
+Apprentice Crafter of Stones~
+Apprentice Crafter of Stones~
 Title
+Crafter of Stones~
+Crafter of Stones~
 Crafter of Stones~
 Crafter of Stones~
 Title
 Greater Crafter of Stones~
 Greater Crafter of Stones~
+Greater Crafter of Stones~
+Greater Crafter of Stones~
 Title
+Master Crafter of Stones~
+Master Crafter of Stones~
 Master Crafter of Stones~
 Master Crafter of Stones~
 Title
 Apprentice Crafter of Potions~
 Apprentice Crafter of Potions~
+Apprentice Crafter of Potions~
+Apprentice Crafter of Potions~
 Title
+Crafter of Potions~
+Crafter of Potions~
 Crafter of Potions~
 Crafter of Potions~
 Title
 Greater Crafter of Potions~
 Greater Crafter of Potions~
+Greater Crafter of Potions~
+Greater Crafter of Potions~
 Title
+Master Crafter of Potions~
+Master Crafter of Potions~
 Master Crafter of Potions~
 Master Crafter of Potions~
 Title
 Apprentice Crafter of Rods~
 Apprentice Crafter of Rods~
+Apprentice Crafter of Rods~
+Apprentice Crafter of Rods~
 Title
+Crafter of Rods~
+Crafter of Rods~
 Crafter of Rods~
 Crafter of Rods~
 Title
 Greater Crafter of Rods~
 Greater Crafter of Rods~
+Greater Crafter of Rods~
+Greater Crafter of Rods~
 Title
+Master Crafter of Rods~
+Master Crafter of Rods~
 Master Crafter of Rods~
 Master Crafter of Rods~
 Title
 Apprentice Crafter of Wands~
 Apprentice Crafter of Wands~
+Apprentice Crafter of Wands~
+Apprentice Crafter of Wands~
 Title
+Crafter of Wands~
+Crafter of Wands~
 Crafter of Wands~
 Crafter of Wands~
 Title
 Greater Crafter of Wands~
 Greater Crafter of Wands~
+Greater Crafter of Wands~
+Greater Crafter of Wands~
 Title
+Master Crafter of Wands~
+Master Crafter of Wands~
 Master Crafter of Wands~
 Master Crafter of Wands~
 Title
 Apprentice Crafter of Staves~
 Apprentice Crafter of Staves~
+Apprentice Crafter of Staves~
+Apprentice Crafter of Staves~
 Title
+Crafter of Staves~
+Crafter of Staves~
 Crafter of Staves~
 Crafter of Staves~
 Title
 Greater Crafter of Staves~
 Greater Crafter of Staves~
+Greater Crafter of Staves~
+Greater Crafter of Staves~
 Title
+Master Crafter of Staves~
+Master Crafter of Staves~
 Master Crafter of Staves~
 Master Crafter of Staves~
 Title
 Apprentice Crafter of Orbs~
 Apprentice Crafter of Orbs~
+Apprentice Crafter of Orbs~
+Apprentice Crafter of Orbs~
 Title
+Crafter of Orbs~
+Crafter of Orbs~
 Crafter of Orbs~
 Crafter of Orbs~
 Title
 Greater Crafter of Orbs~
 Greater Crafter of Orbs~
+Greater Crafter of Orbs~
+Greater Crafter of Orbs~
 Title
+Master Crafter of Orbs~
+Master Crafter of Orbs~
 Master Crafter of Orbs~
 Master Crafter of Orbs~
 Title
 Lesser Master of Creation~
 Lesser Master of Creation~
+Lesser Master of Creation~
+Lesser Master of Creation~
 Title
+Master of Creation~
+Master of Creation~
 Master of Creation~
 Master of Creation~
 Title
 Green Wizard~
 Green Wizard~
+Green Wizard~
+Green Wizard~
 Title
+Brown Wizard~
+Brown Wizard~
 Brown Wizard~
 Brown Wizard~
 Title
 Blue Wizard~
 Blue Wizard~
+Blue Wizard~
+Blue Wizard~
 Title
+Red Wizard~
+Red Wizard~
 Red Wizard~
 Red Wizard~
 Title
 Grey Wizard~
 Grey Wizard~
+Grey Wizard~
+Grey Wizard~
 Title
+White Wizard~
+White Wizard~
 White Wizard~
 White Wizard~
 Title
 Silver Wizard~
 Silver Wizard~
+Silver Wizard~
+Silver Wizard~
 Title
+Gold Wizard~
+Gold Wizard~
 Gold Wizard~
 Gold Wizard~
 Title
 Platinum Wizard~
 Platinum Wizard~
+Platinum Wizard~
+Platinum Wizard~
 Title
+Diamond Wizard~
+Diamond Wizard~
 Diamond Wizard~
 Diamond Wizard~
 Title
 Apprentice of Rods~
 Apprentice of Rods~
+Apprentice of Rods~
+Apprentice of Rods~
 Title
+Mage of Rods~
+Mage of Rods~
 Mage of Rods~
 Mage of Rods~
 Title
 Archmage of Rods~
 Archmage of Rods~
+Archmage of Rods~
+Archmage of Rods~
 Title
+Apprentice of Wands~
+Apprentice of Wands~
 Apprentice of Wands~
 Apprentice of Wands~
 Title
 Mage of Wands~
 Mage of Wands~
+Mage of Wands~
+Mage of Wands~
 Title
+Archmage of Wands~
+Archmage of Wands~
 Archmage of Wands~
 Archmage of Wands~
 Title
 Apprentice of Staves~
 Apprentice of Staves~
+Apprentice of Staves~
+Apprentice of Staves~
 Title
+Mage of Staves~
+Mage of Staves~
 Mage of Staves~
 Mage of Staves~
 Title
 Archmage of Staves~
 Archmage of Staves~
+Archmage of Staves~
+Archmage of Staves~
 Title
+Apprentice of Orbs~
+Apprentice of Orbs~
 Apprentice of Orbs~
 Apprentice of Orbs~
 Title
 Mage of Orbs~
 Mage of Orbs~
+Mage of Orbs~
+Mage of Orbs~
 Title
+Archmage of Orbs~
+Archmage of Orbs~
 Archmage of Orbs~
 Archmage of Orbs~
 Title
 Apprentice Demon Summoner~
 Apprentice Demon Summoner~
+Apprentice Demon Summoner~
+Apprentice Demon Summoner~
 Title
+Demon Summoner~
+Demon Summoner~
 Demon Summoner~
 Demon Summoner~
 Title
 Greater Demon Summoner~
 Greater Demon Summoner~
+Greater Demon Summoner~
+Greater Demon Summoner~
 Title
+Apprentice Dragon Charmer~
+Apprentice Dragon Charmer~
 Apprentice Dragon Charmer~
 Apprentice Dragon Charmer~
 Title
 Dragon Charmer~
 Dragon Charmer~
+Dragon Charmer~
+Dragon Charmer~
 Title
+Greater Dragon Charmer~
+Greater Dragon Charmer~
 Greater Dragon Charmer~
 Greater Dragon Charmer~
 Title
 Master of Demons~
+Master of Demons~
+Mistress of Demons~
 Mistress of Demons~
 Title
 Master of Dragons~
+Master of Dragons~
+Mistress of Dragons~
 Mistress of Dragons~
 Title
 Master of all Magic~
+Master of all Magic~
+Mistress of all Magic~
 Mistress of all Magic~
 Title
 Avatar of Magery~
 Avatar of Magery~
+Avatar of Magery~
+Avatar of Magery~
 Title
+Angel~
+Angel~
 Angel~
 Angel~
 Title
 Acolyte~
 Acolyte~
+Acolyte~
+Acolyte~
 Title
+Creator~
+Creator~
 Creator~
 Creator~
 Title
 Savior~
 Savior~
+Savior~
+Savior~
 Title
+Deity~
+Deity~
 Deity~
 Deity~
 Title
 Demi God~
+Demi God~
+Demi Goddess~
 Demi Goddess~
 Title
 God~
+God~
+Goddess~
 Goddess~
 Title
 Greater God~
+Greater God~
+Greater Goddess~
 Greater Goddess~
 Title
 Dream God~
+Dream God~
+Dream Goddess~
 Dream Goddess~
 Title
 Elemental God~
+Elemental God~
+Elemental Goddess~
 Elemental Goddess~
 Title
 Astral God~
+Astral God~
+Astral Goddess~
 Astral Goddess~
 Title
 Ancient One~
 Ancient One~
+Ancient One~
+Ancient One~
 Title
+Eternal One~
+Eternal One~
 Eternal One~
 Eternal One~
 Title
 Realm Lord~
 Realm Lord~
+Realm Lord~
+Realm Lord~
 Title
+Supreme Entity~
+Supreme Entity~
 Supreme Entity~
 Supreme Entity~
 End

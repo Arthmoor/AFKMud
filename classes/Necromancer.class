@@ -120,350 +120,582 @@ Skill 'sahuagin' 1 95
 Skill 'trollese' 1 99
 Title
 Man~
+Man~
+Woman~
 Woman~
 Title
 Initiate~
 Initiate~
+Initiate~
+Initiate~
 Title
+Student of Sacrifice~
+Student of Sacrifice~
 Student of Sacrifice~
 Student of Sacrifice~
 Title
 Acolyte of Sacrifice~
 Acolyte of Sacrifice~
+Acolyte of Sacrifice~
+Acolyte of Sacrifice~
 Title
+Practitioner of Sacrifice~
+Practitioner of Sacrifice~
 Practitioner of Sacrifice~
 Practitioner of Sacrifice~
 Title
 Master of Sacrifice~
+Master of Sacrifice~
+Mistress of Sacrifice~
 Mistress of Sacrifice~
 Title
 Student of Death~
 Student of Death~
+Student of Death~
+Student of Death~
 Title
 Acolyte of Death~
 Acolyte of Death~
+Acolyte of Death~
+Acolyte of Death~
 Title
+Practitioner of Death~
+Practitioner of Death~
 Practitioner of Death~
 Practitioner of Death~
 Title
 Master of Death~
+Master of Death~
+Mistress of Death~
 Mistress of Death~
 Title
 Student of Undeath~
 Student of Undeath~
+Student of Undeath~
+Student of Undeath~
 Title
 Acolyte of Undeath~
 Acolyte of Undeath~
+Acolyte of Undeath~
+Acolyte of Undeath~
 Title
+Practitioner of Undeath~
+Practitioner of Undeath~
 Practitioner of Undeath~
 Practitioner of Undeath~
 Title
 Master of Undeath~
+Master of Undeath~
+Mistress of Undeath~
 Mistress of Undeath~
 Title
 Lesser Skeleton Maker~
 Lesser Skeleton Maker~
+Lesser Skeleton Maker~
+Lesser Skeleton Maker~
 Title
+Skeleton Maker~
+Skeleton Maker~
 Skeleton Maker~
 Skeleton Maker~
 Title
 Greater Skeleton Maker~
 Greater Skeleton Maker~
+Greater Skeleton Maker~
+Greater Skeleton Maker~
 Title
+Master Skeleton Maker~
+Master Skeleton Maker~
 Master Skeleton Maker~
 Master Skeleton Maker~
 Title
 Lesser Zombie Maker~
 Lesser Zombie Maker~
+Lesser Zombie Maker~
+Lesser Zombie Maker~
 Title
+Zombie Maker~
+Zombie Maker~
 Zombie Maker~
 Zombie Maker~
 Title
 Greater Zombie Maker~
 Greater Zombie Maker~
+Greater Zombie Maker~
+Greater Zombie Maker~
 Title
+Master Zombie Maker~
+Master Zombie Maker~
 Master Zombie Maker~
 Master Zombie Maker~
 Title
 Lesser Ghoul Maker~
 Lesser Ghoul Maker~
+Lesser Ghoul Maker~
+Lesser Ghoul Maker~
 Title
+Ghoul Maker~
+Ghoul Maker~
 Ghoul Maker~
 Ghoul Maker~
 Title
 Greater Ghoul Maker~
 Greater Ghoul Maker~
+Greater Ghoul Maker~
+Greater Ghoul Maker~
 Title
+Master Ghoul Maker~
+Master Ghoul Maker~
 Master Ghoul Maker~
 Master Ghoul Maker~
 Title
 Lesser Crypt Thing Maker~
 Lesser Crypt Thing Maker~
+Lesser Crypt Thing Maker~
+Lesser Crypt Thing Maker~
 Title
+Crypt Thing Maker~
+Crypt Thing Maker~
 Crypt Thing Maker~
 Crypt Thing Maker~
 Title
 Greater Crypt Thing Maker~
 Greater Crypt Thing Maker~
+Greater Crypt Thing Maker~
+Greater Crypt Thing Maker~
 Title
+Master Crypt Thing Maker~
+Master Crypt Thing Maker~
 Master Crypt Thing Maker~
 Master Crypt Thing Maker~
 Title
 Lesser Mummy Maker~
 Lesser Mummy Maker~
+Lesser Mummy Maker~
+Lesser Mummy Maker~
 Title
+Mummy Maker~
+Mummy Maker~
 Mummy Maker~
 Mummy Maker~
 Title
 Greater Mummy Maker~
 Greater Mummy Maker~
+Greater Mummy Maker~
+Greater Mummy Maker~
 Title
+Master Mummy Maker~
+Master Mummy Maker~
 Master Mummy Maker~
 Master Mummy Maker~
 Title
 Lesser Ghost Maker~
 Lesser Ghost Maker~
+Lesser Ghost Maker~
+Lesser Ghost Maker~
 Title
+Ghost Maker~
+Ghost Maker~
 Ghost Maker~
 Ghost Maker~
 Title
 Greater Ghost Maker~
 Greater Ghost Maker~
+Greater Ghost Maker~
+Greater Ghost Maker~
 Title
+Master Ghost Maker~
+Master Ghost Maker~
 Master Ghost Maker~
 Master Ghost Maker~
 Title
 Lesser Death Knight Maker~
 Lesser Death Knight Maker~
+Lesser Death Knight Maker~
+Lesser Death Knight Maker~
 Title
+Death Knight Maker~
+Death Knight Maker~
 Death Knight Maker~
 Death Knight Maker~
 Title
 Greater Death Knight Maker~
 Greater Death Knight Maker~
+Greater Death Knight Maker~
+Greater Death Knight Maker~
 Title
+Master Death Knight Maker~
+Master Death Knight Maker~
 Master Death Knight Maker~
 Master Death Knight Maker~
 Title
 Lesser Dracolich Maker~
 Lesser Dracolich Maker~
+Lesser Dracolich Maker~
+Lesser Dracolich Maker~
 Title
+Dracolich Maker~
+Dracolich Maker~
 Dracolich Maker~
 Dracolich Maker~
 Title
 Greater Dracolich Maker~
 Greater Dracolich Maker~
+Greater Dracolich Maker~
+Greater Dracolich Maker~
 Title
 Student of Lesser Animation~
 Student of Lesser Animation~
+Student of Lesser Animation~
+Student of Lesser Animation~
 Title
+Acolyte of Lesser Animation~
+Acolyte of Lesser Animation~
 Acolyte of Lesser Animation~
 Acolyte of Lesser Animation~
 Title
 Lesser Master of Lesser Animation~
+Lesser Master of Lesser Animation~
+Lesser Mistress of Lesser Animation~
 Lesser Mistress of Lesser Animation~
 Title
 Master of Lesser Animation~
 Master of Lesser Animation~
+Master of Lesser Animation~
+Master of Lesser Animation~
 Title
 Greater Master of Lesser Animation~
+Greater Master of Lesser Animation~
+Greater Mistress of Lesser Animation~
 Greater Mistress of Lesser Animation~
 Title
 Student of Animation~
 Student of Animation~
+Student of Animation~
+Student of Animation~
 Title
+Acolyte of Animation~
+Acolyte of Animation~
 Acolyte of Animation~
 Acolyte of Animation~
 Title
 Lesser Master of Animation~
+Lesser Master of Animation~
+Lesser Mistress of Animation~
 Lesser Mistress of Animation~
 Title
 Master of Animation~
+Master of Animation~
+Mistress of Animation~
 Mistress of Animation~
 Title
 Greater Master of Animation~
+Greater Master of Animation~
+Greater Mistress of Animation~
 Greater Mistress of Animation~
 Title
 Student of Greater Animation~
 Student of Greater Animation~
+Student of Greater Animation~
+Student of Greater Animation~
 Title
+Acolyte of Greater Animation~
+Acolyte of Greater Animation~
 Acolyte of Greater Animation~
 Acolyte of Greater Animation~
 Title
 Lesser Master of Greater Animation~
+Lesser Master of Greater Animation~
+Lesser Mistress of Greater Animation~
 Lesser Mistress of Greater Animation~
 Title
 Master of Greater Animation~
+Master of Greater Animation~
+Mistress of Greater Animation~
 Mistress of Greater Animation~
 Title
 Greater Master of Greater Animation~
+Greater Master of Greater Animation~
+Greater Mistress of Greater Animation~
 Greater Mistress of Greater Animation~
 Title
 Lord of Lesser Animation~
+Lord of Lesser Animation~
+Lady of Lesser Animation~
 Lady of Lesser Animation~
 Title
 Lord of Animation~
+Lord of Animation~
+Lady of Animation~
 Lady of Animation~
 Title
 Lord of Greater Animation~
+Lord of Greater Animation~
+Lady of Greater Animation~
 Lady of Greater Animation~
 Title
 Lord of All Animation~
+Lord of All Animation~
+Lady of All Animation~
 Lady of All Animation~
 Title
 Student of Lesser Necromancy~
 Student of Lesser Necromancy~
+Student of Lesser Necromancy~
+Student of Lesser Necromancy~
 Title
+Acolyte of Lesser Necromancy~
+Acolyte of Lesser Necromancy~
 Acolyte of Lesser Necromancy~
 Acolyte of Lesser Necromancy~
 Title
 Lesser Master of Lesser Necromancy~
+Lesser Master of Lesser Necromancy~
+Lesser Mistress of Lesser Necromancy~
 Lesser Mistress of Lesser Necromancy~
 Title
 Master of Lesser Necromancy~
+Master of Lesser Necromancy~
+Mistress of Lesser Necromancy~
 Mistress of Lesser Necromancy~
 Title
 Greater Master of Lesser Necromancy~
+Greater Master of Lesser Necromancy~
+Greater Mistress of Lesser Necromancy~
 Greater Mistress of Lesser Necromancy~
 Title
 Student of Necromancy~
 Student of Necromancy~
+Student of Necromancy~
+Student of Necromancy~
 Title
+Acolyte of Necromancy~
+Acolyte of Necromancy~
 Acolyte of Necromancy~
 Acolyte of Necromancy~
 Title
 Lesser Master of Necromancy~
+Lesser Master of Necromancy~
+Lesser Mistress of Necromancy~
 Lesser Mistress of Necromancy~
 Title
 Master of Necromancy~
+Master of Necromancy~
+Mistress of Necromancy~
 Mistress of Necromancy~
 Title
 Greater Master of Necromancy~
+Greater Master of Necromancy~
+Greater Mistress of Necromancy~
 Greater Mistress of Necromancy~
 Title
 Student of Greater Necromancy~
 Student of Greater Necromancy~
+Student of Greater Necromancy~
+Student of Greater Necromancy~
 Title
+Acolyte of Greater Necromancy~
+Acolyte of Greater Necromancy~
 Acolyte of Greater Necromancy~
 Acolyte of Greater Necromancy~
 Title
 Lesser Master of Greater Necromancy~
+Lesser Master of Greater Necromancy~
+Lesser Mistress of Greater Necromancy~
 Lesser Mistress of Greater Necromancy~
 Title
 Master of Greater Necromancy~
+Master of Greater Necromancy~
+Mistress of Greater Necromancy~
 Mistress of Greater Necromancy~
 Title
 Greater Master of Greater Necromancy~
+Greater Master of Greater Necromancy~
+Greater Mistress of Greater Necromancy~
 Greater Mistress of Greater Necromancy~
 Title
 Lord of Lesser Necromancy~
+Lord of Lesser Necromancy~
+Lady of Lesser Necromancy~
 Lady of Lesser Necromancy~
 Title
 Lord of Necromancy~
+Lord of Necromancy~
+Lady of Necromancy~
 Lady of Necromancy~
 Title
 Lord of Greater Necromancy~
 Lord of Greater Necromancy~
+Lord of Greater Necromancy~
+Lord of Greater Necromancy~
 Title
+Student Necromancer~
+Student Necromancer~
 Student Necromancer~
 Student Necromancer~
 Title
 Necromantic Acolyte~
 Necromantic Acolyte~
+Necromantic Acolyte~
+Necromantic Acolyte~
 Title
 Necromancer~
 Necromancer~
+Necromancer~
+Necromancer~
 Title
+Master Necromancer~
+Master Necromancer~
 Master Necromancer~
 Master Necromancer~
 Title
 Lord Necromancer~
+Lord Necromancer~
+Lady Necromancer~
 Lady Necromancer~
 Title
 Master of All Necromancy~
+Master of All Necromancy~
+Mistress of All Necromancy~
 Mistress of All Necromancy~
 Title
 Lord of All Necromancy~
+Lord of All Necromancy~
+Lady of All Necromancy~
 Lady of All Necromancy~
 Title
 Master of All Necromancers~
+Master of All Necromancers~
+Mistress of All Necromancers~
 Mistress of All Necromancers~
 Title
 Lord of All Necromancers~
+Lord of All Necromancers~
+Lady of All Necromancers~
 Lady of All Necromancers~
 Title
 Master of the Dying~
+Master of the Dying~
+Mistress of the Dying~
 Mistress of the Dying~
 Title
 Lord of the Dying~
+Lord of the Dying~
+Lady of the Dying~
 Lady of the Dying~
 Title
 Master of the Dead~
+Master of the Dead~
+Mistress of the Dead~
 Mistress of the Dead~
 Title
 Lord of the Dead~
+Lord of the Dead~
+Lady of the Dead~
 Lady of the Dead~
 Title
 Master of the Undead~
+Master of the Undead~
+Mistress of the Undead~
 Mistress of the Undead~
 Title
 Lord of the Undead~
+Lord of the Undead~
+Lady of the Undead~
 Lady of the Undead~
 Title
 High Lord of the Dying~
+High Lord of the Dying~
+High Lady of the Dying~
 High Lady of the Dying~
 Title
 High Lord of the Dead~
 High Lord of the Dead~
+High Lord of the Dead~
+High Lord of the Dead~
 Title
+High Lord of the Undead~
+High Lord of the Undead~
 High Lord of the Undead~
 High Lord of the Undead~
 Title
 Avatar of Death~
 Avatar of Death~
+Avatar of Death~
+Avatar of Death~
 Title
+Angel~
+Angel~
 Angel~
 Angel~
 Title
 Acolyte~
 Acolyte~
+Acolyte~
+Acolyte~
 Title
+Creator~
+Creator~
 Creator~
 Creator~
 Title
 Savior~
 Savior~
+Savior~
+Savior~
 Title
+Deity~
+Deity~
 Deity~
 Deity~
 Title
 Demi God~
+Demi God~
+Demi Goddess~
 Demi Goddess~
 Title
 God~
+God~
+Goddess~
 Goddess~
 Title
 Greater God~
+Greater God~
+Greater Goddess~
 Greater Goddess~
 Title
 Dream God~
+Dream God~
+Dream Goddess~
 Dream Goddess~
 Title
 Elemental God~
+Elemental God~
+Elemental Goddess~
 Elemental Goddess~
 Title
 Astral God~
+Astral God~
+Astral Goddess~
 Astral Goddess~
 Title
 Ancient One~
 Ancient One~
+Ancient One~
+Ancient One~
 Title
+Eternal One~
+Eternal One~
 Eternal One~
 Eternal One~
 Title
 Realm Lord~
 Realm Lord~
+Realm Lord~
+Realm Lord~
 Title
+Supreme Entity~
+Supreme Entity~
 Supreme Entity~
 Supreme Entity~
 End

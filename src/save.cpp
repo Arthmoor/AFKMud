@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -864,12 +864,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 {
    const char *line;
    int x1, x2, x3, x4, x5, x6, x7, x8;
-   short killcnt;
    int max_colors = 0;  /* Color code */
    int max_beacons = 0; /* Beacon spell */
 
    file_ver = 0;
-   killcnt = 0;
 
    do
    {
@@ -1870,9 +1868,9 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                if( !fNest || !fVnum )
                {
                   if( obj->name )
-                     bug( "%s: %s incomplete object.", __FUNCTION__, obj->name );
+                     bug( "%s: %s incomplete object. obj_file_ver=%d", __FUNCTION__, obj->name, obj_file_ver );
                   else
-                     bug( "%s: incomplete object.", __FUNCTION__ );
+                     bug( "%s: incomplete object. obj_file_ver=%d", __FUNCTION__, obj_file_ver );
                   deleteptr( obj );
                   return;
                }
@@ -2116,11 +2114,10 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                /*
                 * Ugh, the price one pays for forgetting - had to keep corpses from doing this 
                 */
-               /*
-                * OK. So. Samson is left to wonder what this thing's purpose is? Disabling. Re-enable if problems erupt.
-                * if( file_ver < 10 && fVnum == true && os_type != OS_CORPSE )
-                * {
-                * obj->value[0] = obj->pIndexData->value[0];
+               if( file_ver < 10 && fVnum == true && os_type != OS_CORPSE )
+               {
+                  log_printf( "%s: != OS_CORPSE case encountered. file_ver=%d", __FUNCTION__, file_ver );
+                /* obj->value[0] = obj->pIndexData->value[0];
                 * obj->value[1] = obj->pIndexData->value[1];
                 * obj->value[2] = obj->pIndexData->value[2];
                 * obj->value[3] = obj->pIndexData->value[3];
@@ -2128,10 +2125,9 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                 * obj->value[5] = obj->pIndexData->value[5];
                 * 
                 * if( obj->item_type == ITEM_WEAPON )
-                * obj->value[2] = obj->pIndexData->value[1] * obj->pIndexData->value[2];
-                * }
-                */
-               break;
+                * obj->value[2] = obj->pIndexData->value[1] * obj->pIndexData->value[2]; */
+                }
+                break;
             }
 
             if( !str_cmp( word, "Vnum" ) )

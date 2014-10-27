@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -116,17 +116,15 @@ CMDF( do_destroy );
 #define  TERMINAL_TYPE      '\x18'
 #define  SEND	          '\x01'
 
-const char term_call_back_str[] = { ( char )IAC, SB, TERMINAL_TYPE, IS };
-const char req_termtype_str[] = { ( char )IAC, SB, TERMINAL_TYPE, SEND, ( char )IAC, SE, '\0' };
-const char do_term_type[] = { ( char )IAC, DO, TERMINAL_TYPE, '\0' };
+const unsigned char term_call_back_str[] = { IAC, SB, TERMINAL_TYPE, IS };
+const unsigned char req_termtype_str[] = { IAC, SB, TERMINAL_TYPE, SEND, IAC, SE, '\0' };
+const unsigned char do_term_type[] = { IAC, DO, TERMINAL_TYPE, '\0' };
 
 /* Terminal detection stuff end */
 
-const char echo_off_str[] = { ( char )IAC, ( char )WILL, TELOPT_ECHO, '\0' };
-const char echo_on_str[] = { ( char )IAC, ( char )WONT, TELOPT_ECHO, '\0' };
-const char go_ahead_str[] = { ( char )IAC, ( char )GA, '\0' };
-
-extern char will_msp_str[];
+const unsigned char echo_off_str[] = { IAC, WILL, TELOPT_ECHO, '\0' };
+const unsigned char echo_on_str[] = { IAC, WONT, TELOPT_ECHO, '\0' };
+const unsigned char go_ahead_str[] = { IAC, GA, '\0' };
 
 long tr_saved;
 long tr_in;
@@ -222,7 +220,7 @@ descriptor_data::~descriptor_data(  )
 
 descriptor_data::descriptor_data(  )
 {
-   init_memory( &snoop_by, &is_compressing, sizeof( is_compressing ) );
+   init_memory( &snoop_by, &disconnect, sizeof( disconnect ) );
    host.clear(  );
    outbuf.clear(  );
    pagebuf.clear(  );
@@ -559,7 +557,7 @@ bool descriptor_data::flush_buffer( bool fPrompt )
          write_to_buffer( ANSI_RESET );
 
       if( ch->has_pcflag( PCFLAG_TELNET_GA ) )
-         write_to_buffer( go_ahead_str );
+         write_to_buffer( (const char*)go_ahead_str );
    }
 
    /*
@@ -714,7 +712,7 @@ void descriptor_data::read_from_buffer(  )
          else if( this->inbuf[i] == ( signed char )TERMINAL_TYPE )
          {
             if( this->inbuf[i - 1] == ( signed char )WILL )
-               this->write_to_buffer( req_termtype_str );
+               this->write_to_buffer( (const char*)req_termtype_str );
          }
       }
       else if( this->inbuf[i] == '\b' && k > 0 )
@@ -977,7 +975,7 @@ bool descriptor_data::pager_output(  )
     * Telnet GA bit here suggested by Garil 
     */
    if( ch->has_pcflag( PCFLAG_TELNET_GA ) )
-      this->write_to_buffer( go_ahead_str );
+      this->write_to_buffer( (const char*)go_ahead_str );
    if( ch->has_pcflag( PCFLAG_ANSI ) )
    {
       char buf[32];
@@ -1481,17 +1479,17 @@ void new_descriptor( int new_desc )
    /*
     * Terminal detect 
     */
-   dnew->write_to_buffer( do_term_type );
+   dnew->write_to_buffer( (const char*)do_term_type );
 
    /*
     * MCCP Compression 
     */
-   dnew->write_to_buffer( will_compress2_str );
+   dnew->write_to_buffer( (const char*)will_compress2_str );
 
    /*
     * Mud Sound Protocol 
     */
-   dnew->write_to_buffer( will_msp_str );
+   dnew->write_to_buffer( (const char*)will_msp_str );
 
    /*
     * Send the greeting. No longer handled kludgely by a global variable.
@@ -2626,7 +2624,7 @@ void descriptor_data::nanny( string & argument )
              * Old player 
              */
             write_to_buffer( "\r\nEnter your password: " );
-            write_to_buffer( echo_off_str );
+            write_to_buffer( (const char*)echo_off_str );
             connected = CON_GET_OLD_PASSWORD;
             return;
          }
@@ -2679,7 +2677,7 @@ void descriptor_data::nanny( string & argument )
             return;
          }
 
-         write_to_buffer( echo_on_str );
+         write_to_buffer( (const char*)echo_on_str );
 
          if( check_playing( ch->pcdata->filename, true ) )
             return;
@@ -2789,7 +2787,7 @@ void descriptor_data::nanny( string & argument )
          }
 #endif
 
-         write_to_buffer( echo_on_str );
+         write_to_buffer( (const char*)echo_on_str );
 
          write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game." );
          write_to_buffer( "\r\nWhat is your sex? " );
@@ -2810,7 +2808,7 @@ void descriptor_data::nanny( string & argument )
             close_socket( this, false );
             return;
          }
-         write_to_buffer( echo_on_str );
+         write_to_buffer( (const char*)echo_on_str );
          write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game." );
          write_to_buffer( "\r\nWhat is your sex? " );
          write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodyte ?" );
@@ -2884,7 +2882,7 @@ void descriptor_data::nanny( string & argument )
          if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
          {
             write_to_buffer( "Wrong password entered, deletion cancelled.\r\n" );
-            write_to_buffer( echo_on_str );
+            write_to_buffer( (const char*)echo_on_str );
             connected = CON_PLAYING;
             return;
          }

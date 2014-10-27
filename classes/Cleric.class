@@ -137,350 +137,582 @@ Skill 'sahuagin' 1 95
 Skill 'trollese' 1 99
 Title
 Man~
+Man~
+Woman~
 Woman~
 Title
 Inquirer~
+Inquirer~
+Inquiress~
 Inquiress~
 Title
 Catecumen~
 Catecumen~
+Catecumen~
+Catecumen~
 Title
+Initiate~
+Initiate~
 Initiate~
 Initiate~
 Title
 Believer~
 Believer~
+Believer~
+Believer~
 Title
+Attendant~
+Attendant~
 Attendant~
 Attendant~
 Title
 Server~
 Server~
+Server~
+Server~
 Title
 Acolyte~
 Acolyte~
+Acolyte~
+Acolyte~
 Title
+Sacristan~
+Sacristan~
 Sacristan~
 Sacristan~
 Title
 Vestryman~
+Vestryman~
+Vestrywoman~
 Vestrywoman~
 Title
 Layman~
+Layman~
+Laywoman~
 Laywoman~
 Title
 Aspirant~
 Aspirant~
+Aspirant~
+Aspirant~
 Title
+Novice~
+Novice~
 Novice~
 Novice~
 Title
 Clergyman~
+Clergyman~
+Clergywoman~
 Clergywoman~
 Title
 Clerk~
 Clerk~
+Clerk~
+Clerk~
 Title
+Scribe~
+Scribe~
 Scribe~
 Scribe~
 Title
 Deacon~
+Deacon~
+Deaconess~
 Deaconess~
 Title
 Priest~
+Priest~
+Priestess~
 Priestess~
 Title
 Minister~
 Minister~
+Minister~
+Minister~
 Title
 Canon~
+Canon~
+Canoness~
 Canoness~
 Title
 Levite~
+Levite~
+Levitess~
 Levitess~
 Title
 Chaplain~
 Chaplain~
+Chaplain~
+Chaplain~
 Title
 Curate~
+Curate~
+Curess~
 Curess~
 Title
 Vicar~
+Vicar~
+Vicaress~
 Vicaress~
 Title
 Parson~
+Parson~
+Parsoness~
 Parsoness~
 Title
 Rector~
+Rector~
+Rectress~
 Rectress~
 Title
 Superior~
+Superior~
+Superioress~
 Superioress~
 Title
 Abbot~
+Abbot~
+Abbess~
 Abbess~
 Title
 Archimandrite~
+Archimandrite~
+Archimandritess~
 Archimandritess~
 Title
 Archdeacon~
+Archdeacon~
+Archdeaconess~
 Archdeaconess~
 Title
 Bishop of Faith~
 Bishop of Faith~
+Bishop of Faith~
+Bishop of Faith~
 Title
+Bishop of Hope~
+Bishop of Hope~
 Bishop of Hope~
 Bishop of Hope~
 Title
 Bishop of Charity~
 Bishop of Charity~
+Bishop of Charity~
+Bishop of Charity~
 Title
+Bishop of Virtues~
+Bishop of Virtues~
 Bishop of Virtues~
 Bishop of Virtues~
 Title
 Bishop of Sanctity~
 Bishop of Sanctity~
+Bishop of Sanctity~
+Bishop of Sanctity~
 Title
+Archbishop of Faith~
+Archbishop of Faith~
 Archbishop of Faith~
 Archbishop of Faith~
 Title
 Archbishop of Hope~
 Archbishop of Hope~
+Archbishop of Hope~
+Archbishop of Hope~
 Title
+Archbishop of Charity~
+Archbishop of Charity~
 Archbishop of Charity~
 Archbishop of Charity~
 Title
 Archbishop of Virtues~
 Archbishop of Virtues~
+Archbishop of Virtues~
+Archbishop of Virtues~
 Title
+Archbishop of Sanctity~
+Archbishop of Sanctity~
 Archbishop of Sanctity~
 Archbishop of Sanctity~
 Title
 Primate of Faith~
 Primate of Faith~
+Primate of Faith~
+Primate of Faith~
 Title
+Primate of Hope~
+Primate of Hope~
 Primate of Hope~
 Primate of Hope~
 Title
 Primate of Charity~
 Primate of Charity~
+Primate of Charity~
+Primate of Charity~
 Title
+Primate of Virtues~
+Primate of Virtues~
 Primate of Virtues~
 Primate of Virtues~
 Title
 Primate of Sanctity~
 Primate of Sanctity~
+Primate of Sanctity~
+Primate of Sanctity~
 Title
+Prelate of Faith~
+Prelate of Faith~
 Prelate of Faith~
 Prelate of Faith~
 Title
 Prelate of Hope~
 Prelate of Hope~
+Prelate of Hope~
+Prelate of Hope~
 Title
+Prelate of Charity~
+Prelate of Charity~
 Prelate of Charity~
 Prelate of Charity~
 Title
 Prelate of Virtues~
 Prelate of Virtues~
+Prelate of Virtues~
+Prelate of Virtues~
 Title
+Prelate of Sanctity~
+Prelate of Sanctity~
 Prelate of Sanctity~
 Prelate of Sanctity~
 Title
 High Priest of Faith~
+High Priest of Faith~
+High Priestess of Faith~
 High Priestess of Faith~
 Title
 High Priest of Hope~
+High Priest of Hope~
+High Priestess of Hope~
 High Priestess of Hope~
 Title
 High Priest of Charity~
+High Priest of Charity~
+High Priestess of Charity~
 High Priestess of Charity~
 Title
 High Priest of Virtues~
+High Priest of Virtues~
+High Priestess of Virtues~
 High Priestess of Virtues~
 Title
 High Priest of Sanctity~
+High Priest of Sanctity~
+High Priestess of Sanctity~
 High Priestess of Sanctity~
 Title
 Patriarch of Faith~
+Patriarch of Faith~
+Matriarch of Faith~
 Matriarch of Faith~
 Title
 Patriarch of Hope~
+Patriarch of Hope~
+Matriarch of Hope~
 Matriarch of Hope~
 Title
 Patriarch of Charity~
+Patriarch of Charity~
+Matriarch of Charity~
 Matriarch of Charity~
 Title
 Patriarch of Virtues~
+Patriarch of Virtues~
+Matriarch of Virtues~
 Matriarch of Virtues~
 Title
 Patriarch of Sanctity~
+Patriarch of Sanctity~
+Matriarch of Sanctity~
 Matriarch of Sanctity~
 Title
 Great Patriarch of Faith~
+Great Patriarch of Faith~
+Great Matriarch of Faith~
 Great Matriarch of Faith~
 Title
 Great Patriarch of Hope~
+Great Patriarch of Hope~
+Great Matriarch of Hope~
 Great Matriarch of Hope~
 Title
 Great Patriarch of Charity~
+Great Patriarch of Charity~
+Great Matriarch of Charity~
 Great Matriarch of Charity~
 Title
 Great Patriarch of Virtues~
+Great Patriarch of Virtues~
+Great Matriarch of Virtues~
 Great Matriarch of Virtues~
 Title
 Great Patriarch of Sanctity~
+Great Patriarch of Sanctity~
+Great Matriarch of Sanctity~
 Great Matriarch of Sanctity~
 Title
 Grand Patriarch of Faith~
+Grand Patriarch of Faith~
+Grand Matriarch of Faith~
 Grand Matriarch of Faith~
 Title
 Grand Patriarch of Hope~
+Grand Patriarch of Hope~
+Grand Matriarch of Hope~
 Grand Matriarch of Hope~
 Title
 Grand Patriarch of Charity~
+Grand Patriarch of Charity~
+Grand Matriarch of Charity~
 Grand Matriarch of Charity~
 Title
 Grand Patriarch of Virtues~
+Grand Patriarch of Virtues~
+Grand Matriarch of Virtues~
 Grand Matriarch of Virtues~
 Title
 Grand Patriarch of Sanctity~
+Grand Patriarch of Sanctity~
+Grand Matriarch of Sanctity~
 Grand Matriarch of Sanctity~
 Title
 Cardinal of Faith~
 Cardinal of Faith~
+Cardinal of Faith~
+Cardinal of Faith~
 Title
+Cardinal of Hope~
+Cardinal of Hope~
 Cardinal of Hope~
 Cardinal of Hope~
 Title
 Cardinal of Charity~
 Cardinal of Charity~
+Cardinal of Charity~
+Cardinal of Charity~
 Title
+Cardinal of Virtues~
+Cardinal of Virtues~
 Cardinal of Virtues~
 Cardinal of Virtues~
 Title
 Cardinal of Sanctity~
 Cardinal of Sanctity~
+Cardinal of Sanctity~
+Cardinal of Sanctity~
 Title
+Disciple of Faith~
+Disciple of Faith~
 Disciple of Faith~
 Disciple of Faith~
 Title
 Disciple of Hope~
 Disciple of Hope~
+Disciple of Hope~
+Disciple of Hope~
 Title
+Disciple of Charity~
+Disciple of Charity~
 Disciple of Charity~
 Disciple of Charity~
 Title
 Disciple of Virtues~
 Disciple of Virtues~
+Disciple of Virtues~
+Disciple of Virtues~
 Title
+Disciple of Sanctity~
+Disciple of Sanctity~
 Disciple of Sanctity~
 Disciple of Sanctity~
 Title
 Apostle of Faith~
 Apostle of Faith~
+Apostle of Faith~
+Apostle of Faith~
 Title
+Apostle of Hope~
+Apostle of Hope~
 Apostle of Hope~
 Apostle of Hope~
 Title
 Apostle of Charity~
 Apostle of Charity~
+Apostle of Charity~
+Apostle of Charity~
 Title
+Apostle of Virtues~
+Apostle of Virtues~
 Apostle of Virtues~
 Apostle of Virtues~
 Title
 Apostle of Sanctity~
 Apostle of Sanctity~
+Apostle of Sanctity~
+Apostle of Sanctity~
 Title
+Pontiff of Faith~
+Pontiff of Faith~
 Pontiff of Faith~
 Pontiff of Faith~
 Title
 Pontiff of Hope~
 Pontiff of Hope~
+Pontiff of Hope~
+Pontiff of Hope~
 Title
+Pontiff of Charity~
+Pontiff of Charity~
 Pontiff of Charity~
 Pontiff of Charity~
 Title
 Pontiff of Virtues~
 Pontiff of Virtues~
+Pontiff of Virtues~
+Pontiff of Virtues~
 Title
+Pontiff of Sanctity~
+Pontiff of Sanctity~
 Pontiff of Sanctity~
 Pontiff of Sanctity~
 Title
 Supreme Cleric of Faith~
 Supreme Cleric of Faith~
+Supreme Cleric of Faith~
+Supreme Cleric of Faith~
 Title
+Supreme Cleric of Hope~
+Supreme Cleric of Hope~
 Supreme Cleric of Hope~
 Supreme Cleric of Hope~
 Title
 Supreme Cleric of Charity~
 Supreme Cleric of Charity~
+Supreme Cleric of Charity~
+Supreme Cleric of Charity~
 Title
 Supreme Cleric of Virtues~
 Supreme Cleric of Virtues~
+Supreme Cleric of Virtues~
+Supreme Cleric of Virtues~
 Title
+Supreme Cleric of Sanctity~
+Supreme Cleric of Sanctity~
 Supreme Cleric of Sanctity~
 Supreme Cleric of Sanctity~
 Title
 Prophet of Faith~
+Prophet of Faith~
+Prophetess of Faith~
 Prophetess of Faith~
 Title
 Prophet of Hope~
+Prophet of Hope~
+Prophetess of Hope~
 Prophetess of Hope~
 Title
 Prophet of Charity~
+Prophet of Charity~
+Prophetess of Charity~
 Prophetess of Charity~
 Title
 Prophet of Virtues~
+Prophet of Virtues~
+Prophetess of Virtues~
 Prophetess of Virtues~
 Title
 Prophet of Sanctity~
+Prophet of Sanctity~
+Prophetess of Sanctity~
 Prophetess of Sanctity~
 Title
 Avatar of Faith~
 Avatar of Faith~
+Avatar of Faith~
+Avatar of Faith~
 Title
+Angel~
+Angel~
 Angel~
 Angel~
 Title
 Acolyte~
 Acolyte~
+Acolyte~
+Acolyte~
 Title
+Creator~
+Creator~
 Creator~
 Creator~
 Title
 Savior~
 Savior~
+Savior~
+Savior~
 Title
+Deity~
+Deity~
 Deity~
 Deity~
 Title
 Demi God~
+Demi God~
+Demi Goddess~
 Demi Goddess~
 Title
 God~
+God~
+Goddess~
 Goddess~
 Title
 Greater God~
+Greater God~
+Greater Goddess~
 Greater Goddess~
 Title
 Dream God~
+Dream God~
+Dream Goddess~
 Dream Goddess~
 Title
 Elemental God~
+Elemental God~
+Elemental Goddess~
 Elemental Goddess~
 Title
 Astral God~
+Astral God~
+Astral Goddess~
 Astral Goddess~
 Title
 Ancient One~
 Ancient One~
+Ancient One~
+Ancient One~
 Title
+Eternal One~
+Eternal One~
 Eternal One~
 Eternal One~
 Title
 Realm Lord~
 Realm Lord~
+Realm Lord~
+Realm Lord~
 Title
+Supreme Entity~
+Supreme Entity~
 Supreme Entity~
 Supreme Entity~
 End

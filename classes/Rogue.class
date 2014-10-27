@@ -88,350 +88,582 @@ Skill 'sahuagin' 1 95
 Skill 'trollese' 1 99
 Title
 Man~
+Man~
+Woman~
 Woman~
 Title
 Beggar~
 Beggar~
+Beggar~
+Beggar~
 Title
+Derelict~
+Derelict~
 Derelict~
 Derelict~
 Title
 Common Felon~
 Common Felon~
+Common Felon~
+Common Felon~
 Title
 Felon~
 Felon~
+Felon~
+Felon~
 Title
+Master Felon~
+Master Felon~
 Master Felon~
 Master Felon~
 Title
 Pilferer~
+Pilferer~
+Pilferess~
 Pilferess~
 Title
 Common Footpad~
 Common Footpad~
+Common Footpad~
+Common Footpad~
 Title
 Footpad~
 Footpad~
+Footpad~
+Footpad~
 Title
+Master Footpad~
+Master Footpad~
 Master Footpad~
 Master Footpad~
 Title
 Common Filcher~
+Common Filcher~
+Common Filcheress~
 Common Filcheress~
 Title
 Filcher~
+Filcher~
+Flicheress~
 Flicheress~
 Title
 Master Filcher~
+Master Filcher~
+Master Filcheress~
 Master Filcheress~
 Title
 Common-Crook~
 Common-Crook~
+Common-Crook~
+Common-Crook~
 Title
+Pick-Pocket~
+Pick-Pocket~
 Pick-Pocket~
 Pick-Pocket~
 Title
 Common Thug~
 Common Thug~
+Common Thug~
+Common Thug~
 Title
 Thug~
 Thug~
+Thug~
+Thug~
 Title
+Master Thug~
+Master Thug~
 Master Thug~
 Master Thug~
 Title
 Second-Storyman~
+Second-Storyman~
+Second-Storywoman~
 Second-Storywoman~
 Title
 Common Sneak~
 Common Sneak~
+Common Sneak~
+Common Sneak~
 Title
 Sneak~
 Sneak~
+Sneak~
+Sneak~
 Title
+Master Sneak~
+Master Sneak~
 Master Sneak~
 Master Sneak~
 Title
 Pincher~
+Pincher~
+Pincheress~
 Pincheress~
 Title
 Common Swindler~
 Common Swindler~
+Common Swindler~
+Common Swindler~
 Title
+Swindler~
+Swindler~
 Swindler~
 Swindler~
 Title
 Master Swindler~
 Master Swindler~
+Master Swindler~
+Master Swindler~
 Title
 Cut-Purse~
 Cut-Purse~
+Cut-Purse~
+Cut-Purse~
 Title
+Desperado~
+Desperado~
 Desperado~
 Desperado~
 Title
 Snatcher~
+Snatcher~
+Snatcheress~
 Snatcheress~
 Title
 Master-Crook~
 Master-Crook~
+Master-Crook~
+Master-Crook~
 Title
 Common Sharper~
+Common Sharper~
+Common Sharpress~
 Common Sharpress~
 Title
 Sharper~
+Sharper~
+Sharperess~
 Sharperess~
 Title
 Master Sharper~
+Master Sharper~
+Master Sharperess~
 Master Sharperess~
 Title
 Common Bandit~
 Common Bandit~
+Common Bandit~
+Common Bandit~
 Title
+Bandit~
+Bandit~
 Bandit~
 Bandit~
 Title
 Common-Criminal~
 Common-Criminal~
+Common-Criminal~
+Common-Criminal~
 Title
+Rogue~
+Rogue~
 Rogue~
 Rogue~
 Title
 Outlaw~
 Outlaw~
+Outlaw~
+Outlaw~
 Title
+Common Robber~
+Common Robber~
 Common Robber~
 Common Robber~
 Title
 Robber~
 Robber~
+Robber~
+Robber~
 Title
+Master Robber~
+Master Robber~
 Master Robber~
 Master Robber~
 Title
 Magsman~
+Magsman~
+Magswoman~
 Magswoman~
 Title
 Miscreant~
 Miscreant~
+Miscreant~
+Miscreant~
 Title
 Highwayman~
+Highwayman~
+Highwaywoman~
 Highwaywoman~
 Title
 Common Burglar~
+Common Burglar~
+Common Burglaress~
 Common Burglaress~
 Title
 Burglar~
+Burglar~
+Burglaress~
 Burglaress~
 Title
 Smuggler~
 Smuggler~
+Smuggler~
+Smuggler~
 Title
+Common-Thief~
+Common-Thief~
 Common-Thief~
 Common-Thief~
 Title
 Thief~
 Thief~
+Thief~
+Thief~
 Title
+Master-Criminal~
+Master-Criminal~
 Master-Criminal~
 Master-Criminal~
 Title
 Knifer~
 Knifer~
+Knifer~
+Knifer~
 Title
+Griffer~
+Griffer~
 Griffer~
 Griffer~
 Title
 Quick-Blade~
 Quick-Blade~
+Quick-Blade~
+Quick-Blade~
 Title
+Master-Thief~
+Master-Thief~
 Master-Thief~
 Master-Thief~
 Title
 Hitman~
+Hitman~
+Hitwoman~
 Hitwoman~
 Title
 Killer~
 Killer~
+Killer~
+Killer~
 Title
 Murderer~
+Murderer~
+Murderess~
 Murderess~
 Title
 Common-Brigand~
 Common-Brigand~
+Common-Brigand~
+Common-Brigand~
 Title
+Brigand~
+Brigand~
 Brigand~
 Brigand~
 Title
 Master Brigand~
 Master Brigand~
+Master Brigand~
+Master Brigand~
 Title
+Cut-Throat~
+Cut-Throat~
 Cut-Throat~
 Cut-Throat~
 Title
 Forger~
 Forger~
+Forger~
+Forger~
 Title
+Counterfeiter~
+Counterfeiter~
 Counterfeiter~
 Counterfeiter~
 Title
 Stool-Pigeon~
 Stool-Pigeon~
+Stool-Pigeon~
+Stool-Pigeon~
 Title
+Informer~
+Informer~
 Informer~
 Informer~
 Title
 Extortionist~
 Extortionist~
+Extortionist~
+Extortionist~
 Title
+Gangster~
+Gangster~
 Gangster~
 Gangster~
 Title
 Spy~
 Spy~
+Spy~
+Spy~
 Title
+Grand Spy~
+Grand Spy~
 Grand Spy~
 Grand Spy~
 Title
 Master Spy~
 Master Spy~
+Master Spy~
+Master Spy~
 Title
+Common Conspirator~
+Common Conspirator~
 Common Conspirator~
 Common Conspirator~
 Title
 Conspirator~
 Conspirator~
+Conspirator~
+Conspirator~
 Title
+Master Conspirator~
+Master Conspirator~
 Master Conspirator~
 Master Conspirator~
 Title
 Assassin~
 Assassin~
+Assassin~
+Assassin~
 Title
 Greater Assassin~
 Greater Assassin~
+Greater Assassin~
+Greater Assassin~
 Title
+Master Assassin~
+Master Assassin~
 Master Assassin~
 Master Assassin~
 Title
 Master of Vision~
+Master of Vision~
+Mistress of Vision~
 Mistress of Vision~
 Title
 Master of Hearing~
+Master of Hearing~
+Mistress of Hearing~
 Mistress of Hearing~
 Title
 Master of Smell~
+Master of Smell~
+Mistress of Smell~
 Mistress of Smell~
 Title
 Master of Taste~
+Master of Taste~
+Mistress of Taste~
 Mistress of Taste~
 Title
 Master of Touch~
+Master of Touch~
+Mistress of Touch~
 Mistress of Touch~
 Title
 Master of Reality~
+Master of Reality~
+Mistress of Reality~
 Mistress of Reality~
 Title
 Guildmaster of the Unseen~
+Guildmaster of the Unseen~
+Guildmistress of the Unseen~
 Guildmistress of the Unseen~
 Title
 Guildmaster of Stealth~
+Guildmaster of Stealth~
+Guildmistress of Stealth~
 Guildmistress of Stealth~
 Title
 Guildmaster of Assassination~
+Guildmaster of Assassination~
+Guidlmistress of Assassination~
 Guidlmistress of Assassination~
 Title
 High Guildmaster~
+High Guildmaster~
+High Guildmistress~
 High Guildmistress~
 Title
 Brother of Patience~
+Brother of Patience~
+Sister of Patience~
 Sister of Patience~
 Title
 Brother of the Dagger~
+Brother of the Dagger~
+Sister of the Dagger~
 Sister of the Dagger~
 Title
 Brother of the Coin~
+Brother of the Coin~
+Sister of the Coin~
 Sister of the Coin~
 Title
 Brother of the Shadows~
+Brother of the Shadows~
+Sister of the Shadows~
 Sister of the Shadows~
 Title
 Brother of the Guild~
+Brother of the Guild~
+Sister of the Guild~
 Sister of the Guild~
 Title
 Lord of the Wolf~
+Lord of the Wolf~
+Lady of the Wolf~
 Lady of the Wolf~
 Title
 Lord of the Snake~
+Lord of the Snake~
+Lady of the Snake~
 Lady of the Snake~
 Title
 Lord of the Hawk~
+Lord of the Hawk~
+Lady of the Hawk~
 Lady of the Hawk~
 Title
 Lord of the Panther~
+Lord of the Panther~
+Lady of the Panther~
 Lady of the Panther~
 Title
 Crime Lord~
+Crime Lord~
+Crime Mistress~
 Crime Mistress~
 Title
 Infamous Crime Lord~
+Infamous Crime Lord~
+Infamous Crime Mistress~
 Infamous Crime Mistress~
 Title
 Greater Crime Lord~
+Greater Crime Lord~
+Greater Crime Mistress~
 Greater Crime Mistress~
 Title
 Master Crime Lord~
+Master Crime Lord~
+Master Crime Mistress~
 Master Crime Mistress~
 Title
 Godfather~
+Godfather~
+Godmother~
 Godmother~
 Title
 Avatar of the Shadows~
 Avatar of the Shadows~
+Avatar of the Shadows~
+Avatar of the Shadows~
 Title
+Angel~
+Angel~
 Angel~
 Angel~
 Title
 Acolyte~
 Acolyte~
+Acolyte~
+Acolyte~
 Title
+Creator~
+Creator~
 Creator~
 Creator~
 Title
 Savior~
 Savior~
+Savior~
+Savior~
 Title
+Deity~
+Deity~
 Deity~
 Deity~
 Title
 Demi God~
+Demi God~
+Demi Goddess~
 Demi Goddess~
 Title
 God~
+God~
+Goddess~
 Goddess~
 Title
 Greater God~
+Greater God~
+Greater Goddess~
 Greater Goddess~
 Title
 Dream God~
+Dream God~
+Dream Goddess~
 Dream Goddess~
 Title
 Elemental God~
+Elemental God~
+Elemental Goddess~
 Elemental Goddess~
 Title
 Astral God~
+Astral God~
+Astral Goddess~
 Astral Goddess~
 Title
 Ancient One~
 Ancient One~
+Ancient One~
+Ancient One~
 Title
+Eternal One~
+Eternal One~
 Eternal One~
 Eternal One~
 Title
 Realm Lord~
 Realm Lord~
+Realm Lord~
+Realm Lord~
 Title
+Supreme Entity~
+Supreme Entity~
 Supreme Entity~
 Supreme Entity~
 End

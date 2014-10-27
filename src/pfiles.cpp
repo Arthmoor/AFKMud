@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -436,7 +436,7 @@ void search_pfiles( char_data * ch, const char *dirname, const char *filename, i
 
    for( ;; )
    {
-      int vnum, nest = 0, counter = 1;
+      int vnum, counter = 1;
       bool done = false;
 
       char letter = fread_letter( fpChar );
@@ -491,7 +491,11 @@ void search_pfiles( char_data * ch, const char *dirname, const char *filename, i
                   }
 
                case 'N':
-                  KEY( "Nest", nest, fread_number( fpChar ) );
+                  if( !str_cmp( word, "Nest" ) )
+                  {
+                     fread_number( fpChar );
+                     break;
+                  }
                   break;
 
                case 'O':
@@ -553,7 +557,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
    char *name = NULL;
    char *clan = NULL;
    char *deity = NULL;
-   short level = 0, file_ver = 0;
+   short level = 0;
    bitset < MAX_PCFLAG > pact;
 
    pact.reset(  );
@@ -608,7 +612,11 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
             break;
 
          case 'V':
-            KEY( "Version", file_ver, fread_number( fp ) );
+            if( !str_cmp( word, "Version" ) )
+            {
+               fread_number( fp );
+               break;
+            }
             break;
       }
    }

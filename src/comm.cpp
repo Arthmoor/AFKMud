@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -781,6 +781,14 @@ void process_input( void )
       }
 #endif
 
+      // True if do_disconnect is called. Hasta la vista baby!
+      if( d->disconnect )
+      {
+            d->outbuf.clear(  );
+            close_socket( d, true );
+            continue;
+      }
+
       ++d->idle;  /* make it so a descriptor can idle out */
       if( FD_ISSET( d->descriptor, &exc_set ) )
       {
@@ -890,6 +898,14 @@ void process_output( void )
    {
       descriptor_data *d = *ds;
       ++ds;
+
+      // True if do_disconnect is called. Hasta la vista baby!
+      if( d->disconnect )
+      {
+            d->outbuf.clear(  );
+            close_socket( d, true );
+            continue;
+      }
 
       if( ( d->fcommand || d->outbuf.length(  ) > 0 || d->pagebuf.length(  ) > 0 ) && FD_ISSET( d->descriptor, &out_set ) )
       {

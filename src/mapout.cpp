@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -449,7 +449,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
 {
    struct map_stuff rmap[49][78];   /* size of edit buffer */
    char *newmap;
-   int row, col, i, n, x, y, tvnum, proto_vnum = 0, leftmost, rightmost;
+   int row, col, i, n, x, y, tvnum, proto_vnum = 0;
    int newx, newy;
    char *l, c;
    room_index *newrm;
@@ -472,7 +472,6 @@ void map_to_rooms( char_data * ch, map_index * m_index )
 
    n = 0;
    row = col = 0;
-   leftmost = rightmost = 0;
 
    /*
     * Check to make sure map_index exists.  
@@ -506,7 +505,6 @@ void map_to_rooms( char_data * ch, map_index * m_index )
        */
       return;
    }
-
 
    for( x = 0; x < 49; ++x )
    {

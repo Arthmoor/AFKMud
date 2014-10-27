@@ -437,7 +437,6 @@ void search_DIR::search( room_index * start, search_callback * callback, dir_typ
    room_index *from, *to;
    exit_data *pexit;
    search_frame *frame;
-   bool found = false;
 
    // Flyweight Frame
    frame = new search_frame(  );
@@ -482,7 +481,6 @@ void search_DIR::search( room_index * start, search_callback * callback, dir_typ
       // Found
       if( callback->search( frame ) )
       {
-         found = true;
          break;
       }
       from = to;

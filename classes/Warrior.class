@@ -89,350 +89,582 @@ Skill 'sahuagin' 1 95
 Skill 'trollese' 1 99
 Title
 Man~
+Man~
+Woman~
 Woman~
 Title
 Novice~
 Novice~
+Novice~
+Novice~
 Title
 Swordpupil~
 Swordpupil~
+Swordpupil~
+Swordpupil~
 Title
+Recruit~
+Recruit~
 Recruit~
 Recruit~
 Title
 Watchman~
+Watchman~
+Watchwoman~
 Watchwoman~
 Title
 Guard~
 Guard~
+Guard~
+Guard~
 Title
 Sentry~
+Sentry~
+Sentress~
 Sentress~
 Title
 Fighter~
 Fighter~
+Fighter~
+Fighter~
 Title
+Soldier~
+Soldier~
 Soldier~
 Soldier~
 Title
 Warrior~
 Warrior~
+Warrior~
+Warrior~
 Title
+Veteran~
+Veteran~
 Veteran~
 Veteran~
 Title
 Swordsman~
+Swordsman~
+Swordswoman~
 Swordswoman~
 Title
 Fencer~
+Fencer~
+Fenceress~
 Fenceress~
 Title
 Combatant~
+Combatant~
+Combatess~
 Combatess~
 Title
 Hero~
+Hero~
+Heroine~
 Heroine~
 Title
 Myrmidon~
 Myrmidon~
+Myrmidon~
+Myrmidon~
 Title
+Hoplite~
+Hoplite~
 Hoplite~
 Hoplite~
 Title
 Legionary~
 Legionary~
+Legionary~
+Legionary~
 Title
+Centurion~
+Centurion~
 Centurion~
 Centurion~
 Title
 Tribune~
 Tribune~
+Tribune~
+Tribune~
 Title
+Praetorian~
+Praetorian~
 Praetorian~
 Praetorian~
 Title
 Swashbuckler~
+Swashbuckler~
+Swashbuckleress~
 Swashbuckleress~
 Title
 Mercenary~
+Mercenary~
+Mercenaress~
 Mercenaress~
 Title
 Axemaster~
+Axemaster~
+Axemistress~
 Axemistress~
 Title
 Stavesmaster~
+Stavesmaster~
+Stavesmistress~
 Stavesmistress~
 Title
 Bowmaster~
+Bowmaster~
+Bowmistress~
 Bowmistress~
 Title
 Swordmaster~
+Swordmaster~
+Swordmistress~
 Swordmistress~
 Title
 Armsmaster~
+Armsmaster~
+Armsmistress~
 Armsmistress~
 Title
 Weaponsmaster~
+Weaponsmaster~
+Weaponsmistress~
 Weaponsmistress~
 Title
 Sergeant~
 Sergeant~
+Sergeant~
+Sergeant~
 Title
 Lieutenant~
 Lieutenant~
+Lieutenant~
+Lieutenant~
 Title
+Captain~
+Captain~
 Captain~
 Captain~
 Title
 Champion~
+Champion~
+Lady Champion~
 Lady Champion~
 Title
 Dragoon~
+Dragoon~
+Lady Dragoon~
 Lady Dragoon~
 Title
 Cavalier~
+Cavalier~
+Lady Cavalier~
 Lady Cavalier~
 Title
 Companion~
 Companion~
+Companion~
+Companion~
 Title
+Novice Knight~
+Novice Knight~
 Novice Knight~
 Novice Knight~
 Title
 Knight~
+Knight~
+Lady Knight~
 Lady Knight~
 Title
 Grand Knight~
 Grand Knight~
+Grand Knight~
+Grand Knight~
 Title
+Master Knight~
+Master Knight~
 Master Knight~
 Master Knight~
 Title
 Novice Crusader~
 Novice Crusader~
+Novice Crusader~
+Novice Crusader~
 Title
+Crusader~
+Crusader~
 Crusader~
 Crusader~
 Title
 Grand Crusader~
 Grand Crusader~
+Grand Crusader~
+Grand Crusader~
 Title
+Lesser Demon Slayer~
+Lesser Demon Slayer~
 Lesser Demon Slayer~
 Lesser Demon Slayer~
 Title
 Demon Slayer~
 Demon Slayer~
+Demon Slayer~
+Demon Slayer~
 Title
+Greater Demon Slayer~
+Greater Demon Slayer~
 Greater Demon Slayer~
 Greater Demon Slayer~
 Title
 Master Demon Slayer~
 Master Demon Slayer~
+Master Demon Slayer~
+Master Demon Slayer~
 Title
+Lesser Dragon Slayer~
+Lesser Dragon Slayer~
 Lesser Dragon Slayer~
 Lesser Dragon Slayer~
 Title
 Dragon Slayer~
 Dragon Slayer~
+Dragon Slayer~
+Dragon Slayer~
 Title
+Greater Dragon Slayer~
+Greater Dragon Slayer~
 Greater Dragon Slayer~
 Greater Dragon Slayer~
 Title
 Master Dragon Slayer~
 Master Dragon Slayer~
+Master Dragon Slayer~
+Master Dragon Slayer~
 Title
+Underlord~
+Underlord~
 Underlord~
 Underlord~
 Title
 Lord~
+Lord~
+Lady~
 Lady~
 Title
 Overlord~
 Overlord~
+Overlord~
+Overlord~
 Title
+Knight of the Sword~
+Knight of the Sword~
 Knight of the Sword~
 Knight of the Sword~
 Title
 Master of the Sword~
+Master of the Sword~
+Mistress of the Sword~
 Mistress of the Sword~
 Title
 Lord of the Sword~
+Lord of the Sword~
+Lady of the Sword~
 Lady of the Sword~
 Title
 Knight of the Shield~
 Knight of the Shield~
+Knight of the Shield~
+Knight of the Shield~
 Title
 Master of the Shield~
+Master of the Shield~
+Mistress of the Shield~
 Mistress of the Shield~
 Title
 Lord of the Shield~
+Lord of the Shield~
+Lady of the Shield~
 Lady of the Shield~
 Title
 Knight of the Cross~
 Knight of the Cross~
+Knight of the Cross~
+Knight of the Cross~
 Title
 Master of the Cross~
+Master of the Cross~
+Mistress of the Cross~
 Mistress of the Cross~
 Title
 Lord of the Cross~
+Lord of the Cross~
+Lady of the Cross~
 Lady of the Cross~
 Title
 Knight of the Rings~
 Knight of the Rings~
+Knight of the Rings~
+Knight of the Rings~
 Title
 Master of the Rings~
+Master of the Rings~
+Mistress of the Rings~
 Mistress of the Rings~
 Title
 Lord of the Rings~
+Lord of the Rings~
+Lady of the Rings~
 Lady of the Rings~
 Title
 Knight of Battle~
 Knight of Battle~
+Knight of Battle~
+Knight of Battle~
 Title
 Master of Battle~
+Master of Battle~
+Mistress of Battle~
 Mistress of Battle~
 Title
 Lord of Battle~
+Lord of Battle~
+Lady of Battle~
 Lady of Battle~
 Title
 Baron of Thunder~
+Baron of Thunder~
+Baroness of Thunder~
 Baroness of Thunder~
 Title
 Baron of Storms~
+Baron of Storms~
+Baroness of Storms~
 Baroness of Storms~
 Title
 Baron of Tornadoes~
+Baron of Tornadoes~
+Baroness of Tornadoes~
 Baroness of Tornadoes~
 Title
 Baron of Hurricanes~
+Baron of Hurricanes~
+Baroness of Hurricanes~
 Baroness of Hurricanes~
 Title
 Baron of Meteors~
+Baron of Meteors~
+Baroness of Meteors~
 Baroness of Meteors~
 Title
 Baron of the Elements~
+Baron of the Elements~
+Baroness of the Elements~
 Baroness of the Elements~
 Title
 Baron of Nature~
+Baron of Nature~
+Baroness of Nature~
 Baroness of Nature~
 Title
 Duke of Thunder~
+Duke of Thunder~
+Dutchess of Thunder~
 Dutchess of Thunder~
 Title
 Duke of Storms~
+Duke of Storms~
+Dutchess of Storms~
 Dutchess of Storms~
 Title
 Duke of Tornadoes~
+Duke of Tornadoes~
+Dutchess of Tornadoes~
 Dutchess of Tornadoes~
 Title
 Duke of Hurricanes~
+Duke of Hurricanes~
+Dutchess of Hurricanes~
 Dutchess of Hurricanes~
 Title
 Duke of Meteors~
+Duke of Meteors~
+Dutchess of Meteors~
 Dutchess of Meteors~
 Title
 Duke of the Elements~
+Duke of the Elements~
+Duchess of the Elements~
 Duchess of the Elements~
 Title
 Duke of Nature~
+Duke of Nature~
+Duchess of Nature~
 Duchess of Nature~
 Title
 Prince of Thunder~
+Prince of Thunder~
+Princess of Thunder~
 Princess of Thunder~
 Title
 Prince of Storms~
+Prince of Storms~
+Princess of Storms~
 Princess of Storms~
 Title
 Prince of Tornadoes~
+Prince of Tornadoes~
+Princess of Tornadoes~
 Princess of Tornadoes~
 Title
 Prince of Hurricanes~
+Prince of Hurricanes~
+Princess of Hurricanes~
 Princess of Hurricanes~
 Title
 Prince of Meteors~
+Prince of Meteors~
+Princess of Meteors~
 Princess of Meteors~
 Title
 Prince of the Elements~
+Prince of the Elements~
+Princess of the Elements~
 Princess of the Elements~
 Title
 Prince of Nature~
+Prince of Nature~
+Princess of Nature~
 Princess of Nature~
 Title
 King of Courage~
+King of Courage~
+Queen of Courage~
 Queen of Courage~
 Title
 King of Honor~
+King of Honor~
+Queen of Honor~
 Queen of Honor~
 Title
 King of Strength~
+King of Strength~
+Queen of Strength~
 Queen of Strength~
 Title
 King of Wisdom~
+King of Wisdom~
+Queen of Wisdom~
 Queen of Wisdom~
 Title
 King of Humility~
+King of Humility~
+Queen of Humility~
 Queen of Humility~
 Title
 King of Virtue~
+King of Virtue~
+Queen of Virtue~
 Queen of Virtue~
 Title
 King of the Realm~
+King of the Realm~
+Queen of the Realm~
 Queen of the Realm~
 Title
 King of All~
+King of All~
+Queen of All~
 Queen of All~
 Title
 Emperor of the Realm~
+Emperor of the Realm~
+Emperess of the Realm~
 Emperess of the Realm~
 Title
 Emperor of the World~
+Emperor of the World~
+Emperess of the World~
 Emperess of the World~
 Title
 Avatar of Conquest~
 Avatar of Conquest~
+Avatar of Conquest~
+Avatar of Conquest~
 Title
+Angel~
+Angel~
 Angel~
 Angel~
 Title
 Acolyte~
 Acolyte~
+Acolyte~
+Acolyte~
 Title
+Creator~
+Creator~
 Creator~
 Creator~
 Title
 Savior~
 Savior~
+Savior~
+Savior~
 Title
+Deity~
+Deity~
 Deity~
 Deity~
 Title
 Demi God~
+Demi God~
+Demi Goddess~
 Demi Goddess~
 Title
 God~
+God~
+Goddess~
 Goddess~
 Title
 Greater God~
+Greater God~
+Greater Goddess~
 Greater Goddess~
 Title
 Dream God~
+Dream God~
+Dream Goddess~
 Dream Goddess~
 Title
 Elemental God~
+Elemental God~
+Elemental Goddess~
 Elemental Goddess~
 Title
 Astral God~
+Astral God~
+Astral Goddess~
 Astral Goddess~
 Title
 Ancient One~
 Ancient One~
+Ancient One~
+Ancient One~
 Title
+Eternal One~
+Eternal One~
 Eternal One~
 Eternal One~
 Title
 Realm Lord~
 Realm Lord~
+Realm Lord~
+Realm Lord~
 Title
+Supreme Entity~
+Supreme Entity~
 Supreme Entity~
 Supreme Entity~
 End

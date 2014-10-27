@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -482,7 +482,7 @@ CMDF( do_camp )
       }
    }
 
-   if( !fbed || !fgear )
+   if( !fbed || !fgear || !flint )
    {
       ch->print( "You must have a bedroll and camping gear before making camp.\r\n" );
       return;
@@ -727,7 +727,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
 
    for( ;; )
    {
-      int vnum = 0, temp = 0, counter = 1;
+      int vnum = 0, counter = 1;
       char letter;
       const char *word;
       string tempstring;
@@ -766,7 +766,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
 
          if( !str_cmp( word, "Nest" ) )
          {
-            temp = fread_number( fpChar );
+            fread_number( fpChar );
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
          }
 
@@ -846,7 +846,7 @@ void corpse_scan( const char *dirname, const char *filename )
 
    for( ;; )
    {
-      int vnum, counter = 1, nest = 0;
+      int vnum, counter = 1;
       char letter;
       const char *word;
       obj_index *pObjIndex;
@@ -882,7 +882,7 @@ void corpse_scan( const char *dirname, const char *filename )
 
          if( !str_cmp( word, "Nest" ) )
          {
-            nest = fread_number( fpChar );
+            fread_number( fpChar );
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
          }
 
@@ -930,7 +930,7 @@ void mobfile_scan( void )
 
    for( ;; )
    {
-      int vnum, counter = 1, nest = 0;
+      int vnum, counter = 1;
       char letter;
       const char *word;
       obj_index *pObjIndex;
@@ -966,7 +966,7 @@ void mobfile_scan( void )
 
          if( !str_cmp( word, "Nest" ) )
          {
-            nest = fread_number( fpChar );
+            fread_number( fpChar );
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
          }
 
@@ -1014,7 +1014,7 @@ void objfile_scan( const char *dirname, const char *filename )
 
    for( ;; )
    {
-      int vnum, counter = 1, nest = 0;
+      int vnum, counter = 1;
       char letter;
       const char *word;
       obj_index *pObjIndex;
@@ -1050,7 +1050,7 @@ void objfile_scan( const char *dirname, const char *filename )
 
          if( !str_cmp( word, "Nest" ) )
          {
-            nest = fread_number( fpChar );
+            fread_number( fpChar );
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
          }
 
@@ -1088,7 +1088,6 @@ void load_equipment_totals( bool fCopyOver )
    DIR *dp;
    struct dirent *dentry;
    char directory_name[100];
-   int adjust = 0;
    short alpha_loop;
 
    check_pfiles( 255 ); /* Clean up stragglers to get a better count - Samson 1-1-00 */
@@ -1114,8 +1113,7 @@ void load_equipment_totals( bool fCopyOver )
          }
          if( dentry->d_name[0] != '.' )
          {
-            adjust = scan_pfiles( directory_name, dentry->d_name, false );
-            adjust = 0;
+            scan_pfiles( directory_name, dentry->d_name, false );
          }
          dentry = readdir( dp );
       }

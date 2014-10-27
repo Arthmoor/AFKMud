@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -2264,7 +2264,6 @@ CMDF( do_makeclan )
    clan_data *clan;
    roster_data *member;
    char_data *victim;
-   bool found;
 
    ch->set_color( AT_IMMORT );
 
@@ -2298,7 +2297,6 @@ CMDF( do_makeclan )
       return;
    }
 
-   found = false;
    snprintf( filename, 256, "%s%s", CLAN_DIR, strlower( arg.c_str(  ) ) );
 
    clan = new clan_data;

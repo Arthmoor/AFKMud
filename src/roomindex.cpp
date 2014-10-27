@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -1370,10 +1370,9 @@ void room_index::reset(  )
 
                      case 'G':
                      case 'E':
-                        if( tReset->command == 'G' && number_percent(  ) > tReset->arg3 )
+                        if( number_percent(  ) > tReset->arg4 )
                            break;
-                        if( tReset->command == 'E' && number_percent(  ) > tReset->arg4 )
-                           break;
+
                         if( !( pObjIndex = get_obj_index( tReset->arg1 ) ) )
                         {
                            bug( "%s: %s: 'E' or 'G': bad obj vnum %d.", __FUNCTION__, filename, tReset->arg1 );

@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -2379,7 +2379,7 @@ CMDF( do_slist )
             }
 
             ch->pagerf( "%7s: %20.20s \t Current: %-3d Max: %-3d  MinPos: %s \r\n",
-                        skn, skill_table[sn]->name, ch->pcdata->learned[sn], skill_table[sn]->skill_adept[cl], npc_position[skill_table[sn]->minimum_position] );
+                        skn, skill_table[sn]->name, ch->pcdata->learned[sn], skill_table[sn]->skill_adept[xx], npc_position[skill_table[sn]->minimum_position] );
          }
       }
    }
@@ -6151,9 +6151,7 @@ CMDF( do_scan )
 CMDF( do_slice )
 {
    obj_data *corpse, *obj, *slice;
-   bool found;
    mob_index *pMobIndex;
-   found = false;
 
    if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->level < skill_table[gsn_slice]->skill_level[ch->Class] )
    {

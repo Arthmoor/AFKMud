@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -523,11 +523,8 @@ CMDF( do_medit_reset )
 void medit_parse( descriptor_data * d, string & arg )
 {
    char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
-   int number = 0, minattr, maxattr;
+   int number = 0;
    string arg1;
-
-   minattr = 1;
-   maxattr = 25;
 
    switch ( OLC_MODE( d ) )
    {

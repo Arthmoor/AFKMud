@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -929,7 +929,7 @@ void goto_obj( char_data * ch, obj_data * obj, const string & argument )
    /*
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
-   if( ch->pcdata && ch->pcdata->bamfout[0] )
+   if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
       act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, NULL, NULL, TO_CANSEE );
@@ -939,7 +939,7 @@ void goto_obj( char_data * ch, obj_data * obj, const string & argument )
    /*
     * Bamfin processing by Altrag, installed by Samson 12-10-97 
     */
-   if( ch->pcdata && ch->pcdata->bamfin[0] )
+   if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
       act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, NULL, NULL, TO_CANSEE );
@@ -948,7 +948,7 @@ void goto_obj( char_data * ch, obj_data * obj, const string & argument )
 CMDF( do_goto )
 {
    string arg;
-   room_index *location, *in_room;
+   room_index *location;
    char_data *wch;
    obj_data *obj;
    area_data *pArea;
@@ -1065,11 +1065,13 @@ CMDF( do_goto )
             return;
          }
       }
+
       if( vnum < 1 || vnum > sysdata->maxvnum )
       {
          ch->printf( "Invalid vnum. Allowable range is 1 to %d\r\n", sysdata->maxvnum );
          return;
       }
+
       location = make_room( vnum, ch->pcdata->area );
       if( !location )
       {
@@ -1096,7 +1098,6 @@ CMDF( do_goto )
       return;
    }
 
-   in_room = ch->in_room;
    if( ch->fighting )
       ch->stop_fighting( true );
 
@@ -3434,6 +3435,7 @@ CMDF( do_oset )
       else if( loc == APPLY_WEAPONSPELL
                || loc == APPLY_WEARSPELL || loc == APPLY_REMOVESPELL || loc == APPLY_STRIPSN || loc == APPLY_RECURRINGSPELL || loc == APPLY_EAT_SPELL )
       {
+         argument = one_argument( argument, arg3 );
          value = skill_lookup( arg3 );
 
          if( !IS_VALID_SN( value ) )
@@ -5020,7 +5022,6 @@ CMDF( do_rdig )
 CMDF( do_rgrid )
 {
    string arg, arg2;
-   exit_data *xit;
    room_index *location, *ch_location, *tmp;
    area_data *pArea;
    int vnum, maxnum, x, y, z;
@@ -5073,7 +5074,6 @@ CMDF( do_rgrid )
 
    if( pArea->low_vnum + maxnum > pArea->hi_vnum )
    {
-
       ch->print( "You don't even have that many rooms assigned to you.\r\n" );
       return;
    }
@@ -5133,7 +5133,7 @@ CMDF( do_rgrid )
          location = get_room_index( vnum );
          tmp = get_room_index( room_hold[room_count] );
 
-         xit = location->make_exit( tmp, DIR_NORTH );
+         location->make_exit( tmp, DIR_NORTH );
       }
 
       // Check to see if we can make S exits
@@ -5142,7 +5142,7 @@ CMDF( do_rgrid )
          location = get_room_index( vnum );
          tmp = get_room_index( room_hold[room_count - 2] );
 
-         xit = location->make_exit( tmp, DIR_SOUTH );
+         location->make_exit( tmp, DIR_SOUTH );
       }
 
       // Check to see if we can make E exits
@@ -5151,7 +5151,7 @@ CMDF( do_rgrid )
          location = get_room_index( vnum );
          tmp = get_room_index( room_hold[room_count + x - 1] );
 
-         xit = location->make_exit( tmp, DIR_EAST );
+         location->make_exit( tmp, DIR_EAST );
       }
 
       // Check to see if we can make W exits
@@ -5160,7 +5160,7 @@ CMDF( do_rgrid )
          location = get_room_index( vnum );
          tmp = get_room_index( room_hold[room_count - x - 1] );
 
-         xit = location->make_exit( tmp, DIR_WEST );
+         location->make_exit( tmp, DIR_WEST );
       }
 
       // Check to see if we can make D exits
@@ -5169,7 +5169,7 @@ CMDF( do_rgrid )
          location = get_room_index( vnum );
          tmp = get_room_index( room_hold[room_count - x * y - 1] );
 
-         xit = location->make_exit( tmp, DIR_DOWN );
+         location->make_exit( tmp, DIR_DOWN );
       }
 
       // Check to see if we can make U exits
@@ -5178,7 +5178,7 @@ CMDF( do_rgrid )
          location = get_room_index( vnum );
          tmp = get_room_index( room_hold[room_count + x * y - 1] );
 
-         xit = location->make_exit( tmp, DIR_UP );
+         location->make_exit( tmp, DIR_UP );
       }
    }
 }

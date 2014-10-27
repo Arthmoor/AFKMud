@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -2579,7 +2579,7 @@ CMDF( do_mp_practice )
 {
    string arg1, arg2;
    char_data *victim;
-   int sn, max, tmp, adept;
+   int sn, max, adept;
    char *skillname;
 
    if( !can_use_mprog( ch ) )
@@ -2629,8 +2629,6 @@ CMDF( do_mp_practice )
 
    /*
     * adept is how high the player can learn it 
-    */
-   /*
     * adept = class_table[ch->Class]->skill_adept; 
     */
    adept = victim->GET_ADEPT( sn );
@@ -2644,7 +2642,6 @@ CMDF( do_mp_practice )
    /*
     * past here, victim learns something 
     */
-   tmp = UMIN( victim->pcdata->learned[sn] + int_app[victim->get_curr_int(  )].learn, max );
    act( AT_ACTION, "$N demonstrates $t to you. You feel more learned in this subject.", victim, skill_table[sn]->name, ch, TO_CHAR );
 
    victim->pcdata->learned[sn] = max;
@@ -2871,9 +2868,6 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
    short dameq;
    bool npcvict;
    obj_data *damobj;
-   ch_ret retcode;
-
-   retcode = rNONE;
 
    if( !ch )
    {
@@ -4148,7 +4142,7 @@ CMDF( do_mpraceset )
    victim->max_mana = 100 + race->mana;
    victim->mana = victim->max_mana;
 
-   snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex == SEX_FEMALE ? 1 : 0] );
+   snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex] );
    victim->set_title( buf );
 
    if( Class->weapon != -1 )

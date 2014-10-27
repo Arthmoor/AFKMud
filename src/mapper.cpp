@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -486,7 +486,7 @@ int get_line( const char *desc, size_t max_len )
 
 char *whatColor( const char *str, const char *pos )
 {
-   static char col[2];
+   static char col[3];
 
    col[0] = '\0';
    while( str != pos )
@@ -505,6 +505,7 @@ char *whatColor( const char *str, const char *pos )
       }
       ++str;
    }
+   col[2] = '\0';
    return col;
 }
 
@@ -601,7 +602,7 @@ void show_map( char_data * ch, char *text )
       if( !alldesc )
       {
          pos = get_line( p, 63 );
-         char col[10], c[2];
+         char col[10], c[3];
 
          strcpy( c, whatColor( text, p ) );
          if( c[0] == '\0' )
@@ -631,7 +632,7 @@ void show_map( char_data * ch, char *text )
    mudstrlcat( buf, "&z+-----------+&D ", MSL * 2 );
    if( !alldesc )
    {
-      char col[10], c[2];
+      char col[10], c[3];
       pos = get_line( p, 63 );
 
       strcpy( c, whatColor( text, p ) );
@@ -660,7 +661,7 @@ void show_map( char_data * ch, char *text )
     */
    if( !alldesc )
    {
-      char col[10], c[2];
+      char col[10], c[3];
 
       do
       {

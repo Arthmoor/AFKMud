@@ -5,12 +5,12 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2010 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
  * All Rights Reserved.                                                     *
- * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
@@ -45,8 +45,8 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.1.4"
-#define COPYRIGHT "Copyright The Alsherok Team 1997-2010. All rights reserved."
+#define CODEVERSION "2.1.5"
+#define COPYRIGHT "Copyright The Alsherok Team 1997-2012. All rights reserved. "
 
 const int LGST = 4096;  /* Large String */
 const int SMST = 1024;  /* Small String */
@@ -1090,7 +1090,7 @@ extern bool MOBtrigger;
 extern bool mud_down;
 extern bool DONTSAVE;
 
-extern const char echo_off_str[];
+extern const unsigned char echo_off_str[];
 extern int top_area;
 extern int top_mob_index;
 extern int top_obj_index;
@@ -1113,7 +1113,7 @@ extern int top_herb;
 extern int top_disease;
 extern ch_ret global_retcode;
 
-extern char *title_table[MAX_CLASS][MAX_LEVEL + 1][2];
+extern char *title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
 
 extern skill_type *skill_table[MAX_SKILL];
 extern skill_type *herb_table[MAX_HERB];
