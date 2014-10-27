@@ -273,7 +273,7 @@ void clear_auth_list( void )
 void load_auth_list( void )
 {
    ifstream stream;
-   auth_data *auth;
+   auth_data *auth = NULL;
 
    authlist.clear(  );
 

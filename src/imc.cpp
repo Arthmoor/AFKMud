@@ -3441,7 +3441,7 @@ bool imc_load_commands( void )
 
 void imc_load_ucache( void )
 {
-   imc_ucache_data *user;
+   imc_ucache_data *user = NULL;
    ifstream stream;
 
    stream.open( IMC_UCACHE_FILE );

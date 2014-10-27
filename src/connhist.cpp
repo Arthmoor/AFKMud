@@ -97,7 +97,7 @@ int check_conn_entry( conn_data * conn )
 void load_connhistory( void )
 {
    ifstream stream;
-   conn_data *conn;
+   conn_data *conn = NULL;
    size_t conncount = 0;
 
    connlist.clear(  );

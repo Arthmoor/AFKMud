@@ -660,7 +660,7 @@ landmark_data::~landmark_data(  )
 
 void load_landmarks( void )
 {
-   landmark_data *landmark;
+   landmark_data *landmark = NULL;
    ifstream stream;
 
    landmarklist.clear(  );
@@ -1084,7 +1084,7 @@ mapexit_data::~mapexit_data(  )
 
 void load_mapexits( void )
 {
-   mapexit_data *mexit;
+   mapexit_data *mexit = NULL;
    ifstream stream;
 
    mapexitlist.clear(  );

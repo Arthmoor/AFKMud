@@ -88,7 +88,7 @@ int get_chanflag( const string & flag )
 /* Load the channel file */
 void load_mudchannels( void )
 {
-   mud_channel *channel;
+   mud_channel *channel = NULL;
    int filever = 0;
    ifstream stream;
 

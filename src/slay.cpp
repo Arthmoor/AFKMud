@@ -56,7 +56,7 @@ list < slay_data * >slaylist;
 /* Load the slay file */
 void load_slays( void )
 {
-   slay_data *slay;
+   slay_data *slay = NULL;
    ifstream stream;
    int file_ver = 0;
 

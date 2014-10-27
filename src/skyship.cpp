@@ -491,7 +491,7 @@ landing_data::~landing_data(  )
 
 void load_landing_sites( void )
 {
-   landing_data *landing;
+   landing_data *landing = NULL;
    ifstream stream;
 
    landinglist.clear(  );

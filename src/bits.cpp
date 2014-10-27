@@ -39,9 +39,7 @@
    to get a note from you at scion@divineright.org. Thanks! -- Scion
 */
 
-#if defined(WIN32)
 #include <unistd.h>
-#endif
 #include <fstream>
 #include "mud.h"
 #include "bits.h"

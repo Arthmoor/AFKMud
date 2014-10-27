@@ -208,7 +208,7 @@ void prune_sales( void )
 
 void load_sales( void )
 {
-   sale_data *sale;
+   sale_data *sale = NULL;
    ifstream stream;
 
    salelist.clear(  );
