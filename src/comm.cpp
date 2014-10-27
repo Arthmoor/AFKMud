@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2014 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -177,6 +177,7 @@ void directory_check( void )
 {
    char buf[256];
    size_t x;
+   int iError;
 
    // Successful directory check will drop this file in the area dir once done.
    if( exists_file( "DIR_CHECK_PASSED" ) )
@@ -230,16 +231,27 @@ void directory_check( void )
                   exit( 1 );
                }
             }
-            else
-               chdir( ".." );
+            else if( ( iError = chdir( ".." ) ) == -1 )
+            {
+               fprintf( stderr, "FATAL ERROR :: Unable to change directories during directory check! Cannot continue." );
+               exit( 1 );
+            }
          }
       }
    }
 
    // Made it? Sweet. Drop the check file so we don't do this on every last reboot.
    log_string( "Directory check passed." );
-   chdir( "../area" );
-   system( "touch DIR_CHECK_PASSED" );
+   if( ( iError = chdir( "../area" ) ) == -1 )
+   {
+      fprintf( stderr, "FATAL ERROR :: Unable to change directories during directory check! Cannot continue." );
+      exit( 1 );
+   }
+   if( ( iError = system( "touch DIR_CHECK_PASSED" ) ) == -1 )
+   {
+      fprintf( stderr, "FATAL ERROR :: Unable to generate DIR_CHECK_PASSED" );
+      exit( 1 );
+   }
 }
 
 #if defined(WIN32)   /* NJG */

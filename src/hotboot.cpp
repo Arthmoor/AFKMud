@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2014 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -778,6 +778,7 @@ void hotboot_recover( void )
    char name[100], host[MSL], client[MSL];
    int desc, dcompress, discompressing, room, dport, idle, dmsp, maxp = 0;
    bool fOld;
+   int iError;
 
    if( !( fp = fopen( HOTBOOT_FILE, "r" ) ) )   /* there are some descriptors open which will hang forever then ? */
    {
@@ -789,10 +790,14 @@ void hotboot_recover( void )
    unlink( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
    for( ;; )
    {
-      fscanf( fp, "%d %d %d %d %d %d %d %s %s %s\n", &desc, &dcompress, &discompressing, &dmsp, &room, &dport, &idle, client, name, host );
+      iError = fscanf( fp, "%d %d %d %d %d %d %d %s %s %s\n", &desc, &dcompress, &discompressing, &dmsp, &room, &dport, &idle, client, name, host );
 
       if( desc == -1 || feof( fp ) )
          break;
+
+      // Anything less than a full match gets tossed.
+      if( iError < 10 )
+         continue;
 
       if( !str_cmp( name, "maxp" ) || !str_cmp( host, "maxp" ) )
       {

@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2012 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2014 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -29,6 +29,7 @@
 #include <fstream>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include "mud.h"
 #include "clans.h"
 #include "deity.h"
@@ -859,7 +860,11 @@ CMDF( do_pfiles )
        * GAH, the shell pipe won't process the command that gets pieced
        * together in the preceeding lines! God only knows why. - Samson 
        */
-      system( buf );
+      if( ( system( buf ) ) )
+      {
+         ch->print( "An error occured while processing the system command for pfile backups. The cleanup was aborted.\r\n" );
+         return;
+      }
 
       log_printf( "Manual pfile cleanup started by %s.", ch->name );
       pfile_scan( false );
@@ -912,14 +917,21 @@ void check_pfiles( time_t reset )
           * Would use the shell pipe for this, but alas, it requires a ch in order
           * to work, this also gets called during boot_db before the rare item checks - Samson 
           */
-         system( buf );
-
-         new_pfile_time_t = current_time + 86400;
-         save_timedata(  );
-         log_string( "Automated pfile cleanup beginning...." );
-         pfile_scan( false );
-         if( reset == 0 )
-            rare_update(  );
+         if( ( system( buf ) ) )
+         {
+            log_string( "Error during Pfile backup. Cleanup code aborted. Skipping to rare items update." );
+            if( reset == 0 )
+               rare_update(  );
+         }
+         else
+         {
+            new_pfile_time_t = current_time + 86400;
+            save_timedata(  );
+            log_string( "Automated pfile cleanup beginning...." );
+            pfile_scan( false );
+            if( reset == 0 )
+               rare_update(  );
+         }
       }
       else
       {
