@@ -6332,7 +6332,7 @@ CMDF( do_showclass )
    argument = one_argument( argument, arg2 );
    if( !arg1 || arg1[0] == '\0' )
    {
-      ch->print( "Syntax: showclass <Class> [level range]\r\n" );
+      ch->print( "Syntax: showclass <class> [level range]\r\n" );
       return;
    }
    if( is_number( arg1 ) && ( cl = atoi( arg1 ) ) >= 0 && cl < MAX_CLASS )
@@ -6353,12 +6353,12 @@ CMDF( do_showclass )
       return;
    }
    ch->pagerf( "&wCLASS: &W%s\r\n", Class->who_name );
-   ch->pagerf( "&wStarting Weapon:  &W%-5.5d &wStarting Armor:     &W%-5d\r\n", Class->weapon, Class->armor );
-   ch->pagerf( "&wStarting Legwear: &W%-5.5d &wStarting Headwear:  &W%-5d\r\n", Class->legwear, Class->headwear );
-   ch->pagerf( "&wStarting Armwear: &W%-5.5d &wStarting Footwear:  &W%-5d\r\n", Class->armwear, Class->footwear );
-   ch->pagerf( "&wStarting Shield:  &W%-5.5d &wStarting Held Item: &W%-5d\r\n", Class->shield, Class->held );
-   ch->pagerf( "&wMax Skill Adept:  &W%-3.3d &wBaseThac0: &W%-5.5d &wThac0Gain: &W%f\r\n",
-               Class->skill_adept, Class->base_thac0, Class->thac0_gain );
+   ch->pagerf( "&wStarting Weapon:  &W%-6d &wStarting Armor:     &W%-6d\r\n", Class->weapon, Class->armor );
+   ch->pagerf( "&wStarting Legwear: &W%-6d &wStarting Headwear:  &W%-6d\r\n", Class->legwear, Class->headwear );
+   ch->pagerf( "&wStarting Armwear: &W%-6d &wStarting Footwear:  &W%-6d\r\n", Class->armwear, Class->footwear );
+   ch->pagerf( "&wStarting Shield:  &W%-6d &wStarting Held Item: &W%-6d\r\n", Class->shield, Class->held );
+   ch->pagerf( "&wBaseThac0:        &W%-6d &wThac0Gain: &W%f\r\n", Class->base_thac0, Class->thac0_gain );
+   ch->pagerf( "&wMax Skill Adept:  &W%-3d ", Class->skill_adept );
    ch->pagerf( "&wHp Min/Hp Max  : &W%-2d/%-2d           &wMana  : &W%-3s\r\n",
                Class->hp_min, Class->hp_max, Class->fMana ? "yes" : "no " );
    ch->pagerf( "&wAffected by:  &W%s\r\n", bitset_string( Class->affected, aff_flags ) );

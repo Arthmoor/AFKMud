@@ -411,6 +411,7 @@ class char_data
    bool isnpc(  ) { return( actflags.test( ACT_IS_NPC ) ); }
    bool is_immortal(  ) { return( !isnpc() && level >= LEVEL_IMMORTAL ); }
    bool is_imp(  ) { return( !isnpc() && level >= LEVEL_KL ); }
+   bool is_pet();
 
    bool IS_PKILL(  ) { return( has_pcflag( PCFLAG_DEADLY ) ); }
    bool CAN_PKILL(  ){ return( IS_PKILL(  ) ); }

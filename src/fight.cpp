@@ -729,7 +729,7 @@ bool is_safe( char_data * ch, char_data * victim )
       return true;
    }
 
-   if( victim->isnpc(  ) && victim->has_aflag( AFF_CHARM ) && victim->has_actflag( ACT_PET ) && victim->master != NULL )
+   if( victim->is_pet() )
    {
       if( check_illegal_pk( ch, victim->master ) )
       {
@@ -739,8 +739,6 @@ bool is_safe( char_data * ch, char_data * victim )
 
       /*
        * If check added to stop slaughtering pets by accident. (ie: burning hands spell on a pony ;) 
-       */
-      /*
        * Added by Tarl, 18 Mar 02 
        */
       if( !str_cmp( ch->name, victim->master->name ) )
@@ -750,16 +748,13 @@ bool is_safe( char_data * ch, char_data * victim )
       }
    }
 
-   if( ch->isnpc(  ) && victim->isnpc(  ) )
+   // Prevent one person's pets from attacking another person's pets.
+   if( ch->is_pet() && victim->is_pet() )
    {
-      if( ch->has_aflag( AFF_CHARM ) && victim->has_aflag( AFF_CHARM )
-          && ch->has_actflag( ACT_PET ) && victim->has_actflag( ACT_PET ) && ch->master != NULL && victim->master != NULL )
+      if( check_illegal_pk( ch->master, victim->master ) )
       {
-         if( check_illegal_pk( ch->master, victim->master ) )
-         {
-            ch->master->printf( "&RYou cannot have your followers engage %s's followers in combat.\r\n", victim->master->name );
-            return true;
-         }
+         ch->master->printf( "&RYou cannot have your followers engage %s's followers in combat.\r\n", victim->master->name );
+         return true;
       }
    }
 

@@ -1149,7 +1149,7 @@ int char_data::can_carry_n(  )
    /*
     * Come now, never heard of pack animals people? Altered so pets can hold up to 10 - Samson 4-12-98 
     */
-   if( has_actflag( ACT_PET ) )
+   if( is_pet() )
       return 10;
 
    if( has_actflag( ACT_IMMORTAL ) )
@@ -1518,6 +1518,20 @@ void char_data::update_aris(  )
       affected_by.set( AFF_HIDE );
 
    return;
+}
+
+// For an NPC to be a pet, all of these conditions must be met.
+bool char_data::is_pet()
+{
+   if( !isnpc() )
+      return false;
+   if( !has_actflag( ACT_PET ) )
+      return false;
+   if( !is_affected( gsn_charm_person ) )
+      return false;
+   if( !master )
+      return false;
+   return true;
 }
 
 /*

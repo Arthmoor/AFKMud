@@ -43,7 +43,6 @@
 #include "mud_prog.h"
 #include "roomindex.h"
 
-list<watch_data*> watchlist;
 cmd_type *command_hash[126];   /* hash table for cmd_table */
 social_type *social_index[27]; /* hash table for socials   */
 extern char lastplayercmd[MIL * 2];
@@ -77,644 +76,9 @@ char *extract_area_names( char_data * );
 bool can_use_mprog( char_data * );
 
 char *const cmd_flags[] = {
-   "possessed", "polymorphed", "watch", "action", "nospam", "ghost", "mudprog",
-   "noforce", "loaded", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "r16",
-   "r17", "r18", "r19", "r20", "r21", "r22", "r23", "r24", "r25", "r26", "r27",
-   "r28", "r29", "r30"
+   "possessed", "polymorphed", "action", "nospam", "ghost", "mudprog",
+   "noforce", "loaded"
 };
-
-watch_data::watch_data()
-{
-   init_memory( &imm_name, &imm_level, sizeof( imm_level ) );
-}
-
-watch_data::~watch_data()
-{
-   DISPOSE( imm_name );
-   DISPOSE( player_site );
-   DISPOSE( target_name );
-   watchlist.remove( this );
-}
-
-void free_watchlist( void )
-{
-   list<watch_data*>::iterator pw;
-
-   for( pw = watchlist.begin(); pw != watchlist.end(); )
-   {
-      watch_data *watch = (*pw);
-      ++pw;
-
-      deleteptr( watch );
-   }
-   return;
-}
-
-void save_watchlist( void )
-{
-   list<watch_data*>::iterator pw;
-   FILE *fp;
-
-   if( !( fp = fopen( SYSTEM_DIR WATCH_LIST, "w" ) ) )
-   {
-      bug( "%s: Cannot open %s", __FUNCTION__, WATCH_LIST );
-      perror( WATCH_LIST );
-      return;
-   }
-
-   for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-   {
-      watch_data *watch = (*pw);
-
-      fprintf( fp, "%d %s~%s~%s~\n", watch->imm_level, watch->imm_name,
-               watch->target_name ? watch->target_name : " ", watch->player_site ? watch->player_site : " " );
-   }
-   fprintf( fp, "%s", "-1\n" );
-   FCLOSE( fp );
-   return;
-}
-
-void load_watchlist( void )
-{
-   watch_data *pwatch;
-   FILE *fp;
-   int number;
-   cmd_type *cmd;
-
-   /*
-    * Bug fix - Samson 8-22-99 
-    */
-   watchlist.clear();
-
-   if( !( fp = fopen( SYSTEM_DIR WATCH_LIST, "r" ) ) )
-      return;
-
-   for( ;; )
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: no -1 found.", __FUNCTION__ );
-         FCLOSE( fp );
-         return;
-      }
-      number = fread_number( fp );
-      if( number == -1 )
-      {
-         FCLOSE( fp );
-         return;
-      }
-
-      pwatch = new watch_data;
-      pwatch->imm_level = number;
-      pwatch->imm_name = fread_string_nohash( fp );
-      pwatch->target_name = fread_string_nohash( fp );
-      if( strlen( pwatch->target_name ) < 2 )
-         DISPOSE( pwatch->target_name );
-      pwatch->player_site = fread_string_nohash( fp );
-      if( strlen( pwatch->player_site ) < 2 )
-         DISPOSE( pwatch->player_site );
-
-      /*
-       * Check for command watches 
-       */
-      if( pwatch->target_name )
-         for( cmd = command_hash[( int )pwatch->target_name[0]]; cmd; cmd = cmd->next )
-         {
-            if( !str_cmp( pwatch->target_name, cmd->name ) )
-            {
-               cmd->flags.set( CMD_WATCH );
-               break;
-            }
-         }
-      watchlist.push_back( pwatch );
-   }
-}
-
-/*
- * Determine if this input line is eligible for writing to a watch file.
- * We don't want to write movement commands like (n, s, e, w, etc.)
- */
-bool valid_watch( char *logline )
-{
-   int len = strlen( logline );
-   char c = logline[0];
-
-   if( len == 1 && ( c == 'n' || c == 's' || c == 'e' || c == 'w' || c == 'u' || c == 'd' ) )
-      return false;
-   if( len == 2 && c == 'n' && ( logline[1] == 'e' || logline[1] == 'w' ) )
-      return false;
-   if( len == 2 && c == 's' && ( logline[1] == 'e' || logline[1] == 'w' ) )
-      return false;
-
-   return true;
-}
-
-/*
- * Determine whether this player is to be watched  --Gorog
- */
-bool chk_watch( short player_level, char *player_name, char *player_site )
-{
-   list<watch_data*>::iterator pw;
-
-   if( watchlist.empty() )
-      return false;
-
-   for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-   {
-      watch_data *watch = (*pw);
-
-      if( watch->target_name )
-      {
-         if( !str_cmp( watch->target_name, player_name ) && player_level < watch->imm_level )
-            return true;
-      }
-      else if( watch->player_site )
-      {
-         if( !str_prefix( watch->player_site, player_site ) && player_level < watch->imm_level )
-            return true;
-      }
-   }
-   return false;
-}
-
-/*
- * Write input line to watch files if applicable
- */
-void write_watch_files( char_data * ch, cmd_type * cmd, char *logline )
-{
-   list<watch_data*>::iterator pw;
-   FILE *fp;
-   char fname[256];
-   struct tm *t = localtime( &current_time );
-
-   if( watchlist.empty() )   /* no active watches */
-      return;
-
-   /*
-    * if we're watching a command we need to do some special stuff 
-    * to avoid duplicating log lines - relies upon watch list being 
-    * sorted by imm name 
-    */
-   if( cmd )
-   {
-      char *cur_imm;
-      bool found;
-
-      pw = watchlist.begin();
-      while( pw != watchlist.end() )
-      {
-         watch_data *watch = (*pw);
-         found = false;
-
-         for( cur_imm = watch->imm_name; watch && !str_cmp( watch->imm_name, cur_imm ); ++pw )
-         {
-            if( !found && ch->desc && ch->get_trust(  ) < watch->imm_level
-                && ( ( watch->target_name && !str_cmp( cmd->name, watch->target_name ) )
-                     || ( watch->player_site && !str_prefix( watch->player_site, ch->desc->host ) ) ) )
-            {
-               snprintf( fname, 256, "%s%s", WATCH_DIR, strlower( watch->imm_name ) );
-               if( !( fp = fopen( fname, "a+" ) ) )
-               {
-                  bug( "%s: %s: Cannot open ", __FUNCTION__, fname );
-                  perror( fname );
-                  return;
-               }
-               fprintf( fp, "%.2d/%.2d %.2d:%.2d %s: %s\n",
-                        t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch->name, logline );
-               FCLOSE( fp );
-               found = true;
-            }
-         }
-      }
-   }
-   else
-   {
-      for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-      {
-         watch_data *watch = (*pw);
-
-         if( ( ( watch->target_name && !str_cmp( watch->target_name, ch->name ) )
-               || ( watch->player_site && !str_prefix( watch->player_site, ch->desc->host ) ) )
-             && ch->get_trust(  ) < watch->imm_level && ch->desc )
-         {
-            snprintf( fname, 256, "%s%s", WATCH_DIR, strlower( watch->imm_name ) );
-            if( !( fp = fopen( fname, "a+" ) ) )
-            {
-               bug( "%s: %s: Cannot open ", __FUNCTION__, fname );
-               perror( fname );
-               return;
-            }
-            fprintf( fp, "%.2d/%.2d %.2d:%.2d %s: %s\n",
-                     t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch->name, logline );
-            FCLOSE( fp );
-         }
-      }
-   }
-   return;
-}
-
-void check_watch_cmd( char_data * ch, cmd_type * cmd, char *logline )
-{
-   if( cmd && cmd->flags.test( CMD_WATCH ) )
-   {
-      char file_buf[256];
-
-      snprintf( file_buf, 256, "%s%s", WATCH_DIR, cmd->name );
-      append_file( ch, file_buf, "Used command: %s", logline );
-   }
-   return;
-}
-
-/*
- * The "watch" facility allows imms to specify the name of a player or
- * the name of a site to be watched. It is like "logging" a player except
- * the results are written to a file in the "watch" directory named with
- * the same name as the imm. The idea is to allow lower level imms to 
- * watch players or sites without having to have access to the log files.
- */
-CMDF( do_watch )
-{
-   char arg[MIL], arg2[MIL], arg3[MIL];
-
-   if( ch->isnpc(  ) )
-      return;
-
-   argument = one_argument( argument, arg );
-   ch->set_pager_color( AT_IMMORT );
-
-   if( !arg || arg[0] == '\0' || !str_cmp( arg, "help" ) )
-   {
-      ch->pager( "Syntax Examples:\r\n" );
-      /*
-       * Only IMP+ can see all the watches. The rest can just see their own.
-       */
-      if( ch->is_imp(  ) )
-         ch->pager( "   watch show all          show all watches\r\n" );
-      ch->pager( "   watch show              show all my watches\r\n" );
-      ch->pager( "   watch size              show the size of my watch file\r\n" );
-      ch->pager( "   watch player joe        add a new player watch\r\n" );
-      ch->pager( "   watch site 2.3.123      add a new site watch\r\n" );
-      ch->pager( "   watch command make      add a new command watch\r\n" );
-      ch->pager( "   watch site 2.3.12       matches 2.3.12x\r\n" );
-      ch->pager( "   watch site 2.3.12.      matches 2.3.12.x\r\n" );
-      ch->pager( "   watch delete n          delete my nth watch\r\n" );
-      ch->pager( "   watch print 500         print watch file starting at line 500\r\n" );
-      ch->pager( "   watch print 500 1000    print 1000 lines starting at line 500\r\n" );
-      ch->pager( "   watch clear             clear my watch file\r\n" );
-      return;
-   }
-
-   ch->set_pager_color( AT_PLAIN );
-   argument = one_argument( argument, arg2 );
-   argument = one_argument( argument, arg3 );
-
-   /*
-    * Clear watch file
-    */
-   if( !str_cmp( arg, "clear" ) )
-   {
-      char fname[256];
-
-      snprintf( fname, 256, "%s%s", WATCH_DIR, strlower( ch->name ) );
-      if( 0 == remove( fname ) )
-      {
-         ch->pager( "Ok. Your watch file has been cleared.\r\n" );
-         return;
-      }
-      ch->pager( "You have no valid watch file to clear.\r\n" );
-      return;
-   }
-
-   /*
-    * Display size of watch file
-    */
-   if( !str_cmp( arg, "size" ) )
-   {
-      FILE *fp;
-      char fname[256], s[MSL];
-      int rec_count = 0;
-
-      snprintf( fname, 256, "%s%s", WATCH_DIR, strlower( ch->name ) );
-
-      if( !( fp = fopen( fname, "r" ) ) )
-      {
-         ch->pager( "You have no watch file. Perhaps you cleared it?\r\n" );
-         return;
-      }
-
-      fgets( s, MSL, fp );
-      while( !feof( fp ) )
-      {
-         ++rec_count;
-         fgets( s, MSL, fp );
-      }
-      ch->pagerf( "You have %d lines in your watch file.\r\n", rec_count );
-      FCLOSE( fp );
-      return;
-   }
-
-   /*
-    * Print watch file
-    */
-   if( !str_cmp( arg, "print" ) )
-   {
-      FILE *fp;
-      char fname[256], s[MSL];
-      const int MAX_DISPLAY_LINES = 1000;
-      int start, limit, disp_count = 0, rec_count = 0;
-
-      if( !arg2 || arg2[0] == '\0' )
-      {
-         ch->pager( "Sorry. You must specify a starting line number.\r\n" );
-         return;
-      }
-
-      start = atoi( arg2 );
-      limit = ( arg3[0] == '\0' ) ? MAX_DISPLAY_LINES : atoi( arg3 );
-      limit = UMIN( limit, MAX_DISPLAY_LINES );
-
-      snprintf( fname, 256, "%s%s", WATCH_DIR, strlower( ch->name ) );
-      if( !( fp = fopen( fname, "r" ) ) )
-         return;
-      fgets( s, MSL, fp );
-
-      while( ( disp_count < limit ) && ( !feof( fp ) ) )
-      {
-         if( ++rec_count >= start )
-         {
-            ch->pager( s );
-            ++disp_count;
-         }
-         fgets( s, MSL, fp );
-      }
-      ch->pager( "\r\n" );
-      if( disp_count >= MAX_DISPLAY_LINES )
-         ch->pager( "Maximum display lines exceeded. List is terminated.\r\n"
-                    "Type 'help watch' to see how to print the rest of the list.\r\n\r\n"
-                    "Your watch file is large. Perhaps you should clear it?\r\n" );
-
-      FCLOSE( fp );
-      return;
-   }
-
-   /*
-    * Display all watches
-    * Only IMP+ can see all the watches. The rest can just see their own.
-    */
-   if( ch->is_imp(  ) && !str_cmp( arg, "show" ) && !str_cmp( arg2, "all" ) )
-   {
-      ch->pagerf( "%-12s %-14s %-15s\r\n", "Imm Name", "Player/Command", "Player Site" );
-      if( !watchlist.empty() )
-      {
-         list<watch_data*>::iterator pw;
-
-         for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-         {
-            watch_data *watch = (*pw);
-
-            if( ch->get_trust(  ) >= watch->imm_level )
-               ch->pagerf( "%-14s %-12s %-15s\r\n", watch->imm_name, watch->target_name ? watch->target_name : " ",
-                           watch->player_site ? watch->player_site : " " );
-         }
-      }
-      return;
-   }
-
-   /*
-    * Display only those watches belonging to the requesting imm 
-    */
-   if( !str_cmp( arg, "show" ) && ( !arg2 || arg2[0] == '\0' ) )
-   {
-      int cou = 0;
-      ch->pagerf( "%-3s %-12s %-14s %-15s\r\n", " ", "Imm Name", "Player/Command", "Player Site" );
-      if( !watchlist.empty() )
-      {
-         list<watch_data*>::iterator pw;
-
-         for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-         {
-            watch_data *watch = (*pw);
-
-            if( !str_cmp( ch->name, watch->imm_name ) )
-               ch->pagerf( "%3d %-12s %-14s %-15s\r\n", ++cou, watch->imm_name, watch->target_name ? watch->target_name : " ",
-                           watch->player_site ? watch->player_site : " " );
-         }
-      }
-      return;
-   }
-
-   /*
-    * Delete a watch belonging to the requesting imm
-    */
-   if( !str_cmp( arg, "delete" ) && isdigit( *arg2 ) )
-   {
-      int cou = 0, num;
-
-      num = atoi( arg2 );
-      if( !watchlist.empty() )
-      {
-         list<watch_data*>::iterator pw;
-
-         for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-         {
-            watch_data *wt = (*pw);
-
-            if( !str_cmp( ch->name, wt->imm_name ) )
-               if( num == ++cou )
-               {
-                  watchlist.remove( wt );
-                  deleteptr( wt );
-                  save_watchlist(  );
-                  ch->pager( "Deleted.\r\n" );
-                  return;
-               }
-         }
-      }
-      ch->pager( "Sorry. I found nothing to delete.\r\n" );
-      return;
-   }
-
-   /*
-    * Watch a specific player
-    */
-   if( !str_cmp( arg, "player" ) && *arg2 )
-   {
-      if( !watchlist.empty() ) /* check for dups */
-      {
-         list<watch_data*>::iterator pw;
-
-         for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-         {
-            watch_data *watch = (*pw);
-
-            if( !str_cmp( ch->name, watch->imm_name ) && watch->target_name && !str_cmp( arg2, watch->target_name ) )
-            {
-               ch->pager( "You are already watching that player.\r\n" );
-               return;
-            }
-         }
-      }
-
-      watch_data *pinsert = new watch_data;   /* create new watch */
-      pinsert->imm_level = ch->get_trust(  );
-      pinsert->imm_name = str_dup( strlower( ch->name ) );
-      pinsert->target_name = str_dup( strlower( arg2 ) );
-      pinsert->player_site = NULL;
-
-      /*
-       * stupid get_char_world returns ptr to "samantha" when given "sam" 
-       * so I do a str_cmp to make sure it finds the right player --Gorog 
-       */
-      char_data *victim;
-      char buf[MIL];
-      snprintf( buf, MIL, "0.%s", arg2 );
-      if( ( victim = ch->get_char_world( buf ) ) ) /* if victim is in game now */
-         if( !victim->isnpc(  ) && !str_cmp( arg2, victim->name ) )
-            victim->set_pcflag( PCFLAG_WATCH );
-
-      if( !watchlist.empty() ) /* ins new watch if app */
-      {
-         list<watch_data*>::iterator pw;
-
-         for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-         {
-            watch_data *watch = (*pw);
-
-            if( str_cmp( pinsert->imm_name, watch->imm_name ) )
-            {
-               watchlist.insert( pw, pinsert );
-               save_watchlist(  );
-               ch->pager( "Ok. That player will be watched.\r\n" );
-               return;
-            }
-         }
-      }
-      watchlist.push_back( pinsert ); /* link new watch */
-      save_watchlist(  );
-      ch->pager( "Ok. That player will be watched.\r\n" );
-      return;
-   }
-
-   /*
-    * Watch a specific site
-    */
-   if( !str_cmp( arg, "site" ) && arg2 && arg2[0] != '\0' )
-   {
-      if( !watchlist.empty() ) /* check for dups */
-      {
-         list<watch_data*>::iterator pw;
-         for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-         {
-            watch_data *watch = (*pw);
-
-            if( !str_cmp( ch->name, watch->imm_name ) && watch->player_site && !str_cmp( arg2, watch->player_site ) )
-            {
-               ch->pager( "You are already watching that site.\r\n" );
-               return;
-            }
-         }
-      }
-      watch_data *pinsert = new watch_data;   /* create new watch */
-      pinsert->imm_level = ch->get_trust(  );
-      pinsert->imm_name = str_dup( strlower( ch->name ) );
-      pinsert->player_site = str_dup( strlower( arg2 ) );
-      pinsert->target_name = NULL;
-
-      list<descriptor_data*>::iterator ds;
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
-      {
-         descriptor_data *d = (*ds);
-         char_data *victim = ( d->character ? d->character : d->original );
-
-         if( !victim )
-            continue;
-
-         if( !victim->isnpc(  ) && *pinsert->player_site && !str_prefix( pinsert->player_site, victim->desc->host )
-             && victim->get_trust(  ) < pinsert->imm_level )
-            victim->set_pcflag( PCFLAG_WATCH );
-      }
-
-      if( !watchlist.empty() ) /* ins new watch if app */
-      {
-         list<watch_data*>::iterator pw;
-         for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-         {
-            watch_data *watch = (*pw);
-            if( str_cmp( pinsert->imm_name, watch->imm_name ) )
-            {
-               watchlist.insert( pw, pinsert );
-               save_watchlist(  );
-               ch->pager( "Ok. That site will be watched.\r\n" );
-               return;
-            }
-         }
-      }
-      watchlist.push_back( pinsert );
-      save_watchlist(  );
-      ch->pager( "Ok. That site will be watched.\r\n" );
-      return;
-   }
-
-   /*
-    * Watch a specific command - FB
-    */
-   if( !str_cmp( arg, "command" ) && *arg2 )
-   {
-      list<watch_data*>::iterator pw;
-      for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-      {
-         watch_data *watch = (*pw);
-         if( !str_cmp( ch->name, watch->imm_name ) && watch->target_name && !str_cmp( arg2, watch->target_name ) )
-         {
-            ch->pager( "You are already watching that command.\r\n" );
-            return;
-         }
-      }
-
-      cmd_type *cmd;
-      bool found = false;
-      for( cmd = command_hash[LOWER( arg2[0] ) % 126]; cmd; cmd = cmd->next )
-      {
-         if( !str_cmp( arg2, cmd->name ) )
-         {
-            found = true;
-            break;
-         }
-      }
-
-      if( !found )
-      {
-         ch->pager( "No such command exists.\r\n" );
-         return;
-      }
-      else
-         cmd->flags.set( CMD_WATCH );
-
-      watch_data *pinsert = new watch_data;
-      pinsert->imm_level = ch->get_trust(  );
-      pinsert->imm_name = str_dup( strlower( ch->name ) );
-      pinsert->player_site = NULL;
-      pinsert->target_name = str_dup( arg2 );
-
-      for( pw = watchlist.begin(); pw != watchlist.end(); ++pw )
-      {
-         watch_data *watch = (*pw);
-         if( !str_cmp( pinsert->imm_name, watch->imm_name ) )
-         {
-            watchlist.insert( pw, pinsert );
-            save_watchlist(  );
-            ch->pager( "Ok, That command will be watched.\r\n" );
-            return;
-         }
-      }
-      watchlist.push_back( pinsert );
-      save_watchlist(  );
-      ch->print( "Ok. That command will be watched.\r\n" );
-      return;
-   }
-   ch->pager( "Sorry. I can't do anything with that. Please read the help file.\r\n" );
-   return;
-}
 
 void check_switches( )
 {
@@ -828,8 +192,8 @@ time_t end_timer( struct timeval * starttime )
 bool check_social( char_data * ch, char *command, char *argument )
 {
    char arg[MIL];
-   room_index *room = get_room_index( ROOM_VNUM_ALTERNATE_LIMBO );
    social_type *social;
+   char_data *victim = NULL;
 
    if( !( social = find_social( command ) ) )
       return false;
@@ -869,73 +233,16 @@ bool check_social( char_data * ch, char *command, char *argument )
          return true;
    }
 
-   /*
-    * Search room for chars ignoring social sender and 
-    * remove them from the room until social has been completed 
-    *
-    * Hmmmm. This all seems a bit on the dangerous side to me - Samson 
-    */
-   char_data *victim;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
-   {
-      victim = (*ich);
-      ++ich;
-
-      if( victim == ch )
-         continue;
-
-      if( is_ignoring( victim, ch ) )
-      {
-         if( !ch->is_immortal(  ) || victim->level > ch->level )
-         {
-            victim->from_room();
-            if( !victim->to_room( room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-         }
-         else
-            victim->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", ch->name );
-      }
-   }
-
    one_argument( argument, arg );
-   victim = NULL;
    if( !arg || arg[0] == '\0' )
    {
-      act( AT_SOCIAL, social->others_no_arg, ch, NULL, victim, TO_ROOM );
       act( AT_SOCIAL, social->char_no_arg, ch, NULL, victim, TO_CHAR );
-
-      /*
-       * Replace the chars in the ignoring list to the room 
-       * note that the ordering of the players in the room might change 
-       */
-      for( ich = room->people.begin(); ich != room->people.end(); )
-      {
-         victim = (*ich);
-         ++ich;
-
-         victim->from_room();
-         if( !victim->to_room( ch->in_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-      }
+      act( AT_SOCIAL, social->others_no_arg, ch, NULL, victim, TO_ROOM );
       return true;
    }
 
    if( !( victim = ch->get_char_room( arg ) ) )
    {
-      /*
-       * If they aren't in the room, they may be in the list of people ignoring... 
-       */
-      for( ich = room->people.begin(); ich != room->people.end(); ++ich )
-      {
-         victim = (*ich);
-         if( nifty_is_name( victim->name, arg ) || nifty_is_name_prefix( arg, victim->name ) )
-         {
-            ch->print( "They aren't here.\r\n" );
-            break;
-         }
-      }
-
       obj_data *obj; /* Object socials */
       if( ( ( obj = get_obj_list( ch, arg, ch->in_room->objects ) )
             || ( obj = get_obj_list( ch, arg, ch->carrying ) ) ) && !victim )
@@ -945,39 +252,12 @@ bool check_social( char_data * ch, char *command, char *argument )
             act( AT_SOCIAL, social->obj_self, ch, NULL, obj, TO_CHAR );
             act( AT_SOCIAL, social->obj_others, ch, NULL, obj, TO_ROOM );
          }
-
-         /*
-          * Replace the chars in the ignoring list to the room 
-          * note that the ordering of the players in the room might change 
-          */
-         for( ich = room->people.begin(); ich != room->people.end(); )
-         {
-            victim = (*ich);
-            ++ich;
-
-            victim->from_room();
-            if( !victim->to_room( ch->in_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-         }
          return true;
       }
 
       if( !victim )
          ch->print( "They aren't here.\r\n" );
 
-      /*
-       * Replace the chars in the ignoring list to the room 
-       * note that the ordering of the players in the room might change 
-       */
-      for( ich = room->people.begin(); ich != room->people.end(); )
-      {
-         victim = (*ich);
-         ++ich;
-
-         victim->from_room();
-         if( !victim->to_room( ch->in_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-      }
       return true;
    }
 
@@ -985,20 +265,6 @@ bool check_social( char_data * ch, char *command, char *argument )
    {
       act( AT_SOCIAL, social->others_auto, ch, NULL, victim, TO_ROOM );
       act( AT_SOCIAL, social->char_auto, ch, NULL, victim, TO_CHAR );
-
-      /*
-       * Replace the chars in the ignoring list to the room 
-       * note that the ordering of the players in the room might change 
-       */
-      for( ich = room->people.begin(); ich != room->people.end(); )
-      {
-         victim = (*ich);
-         ++ich;
-
-         victim->from_room();
-         if( !victim->to_room( ch->in_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-      }
       return true;
    }
 
@@ -1049,20 +315,6 @@ bool check_social( char_data * ch, char *command, char *argument )
             act( AT_ACTION, "$n slaps you.", victim, NULL, ch, TO_VICT );
             break;
       }
-   }
-
-   /*
-    * Replace the chars in the ignoring list to the room 
-    * note that the ordering of the players in the room might change 
-    */
-   for( ich = room->people.begin(); ich != room->people.end(); )
-   {
-      victim = (*ich);
-      ++ich;
-
-      victim->from_room();
-      if( !victim->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
    }
    return true;
 }
@@ -1389,17 +641,6 @@ void interpret( char_data * ch, char *argument )
    loglvl = found ? cmd->log : LOG_NORMAL;
 
    /*
-    * Write input line to watch files if applicable
-    */
-   if( !ch->isnpc(  ) && ch->desc && valid_watch( logline ) )
-   {
-      if( found && cmd->flags.test( CMD_WATCH ) )
-         write_watch_files( ch, cmd, logline );
-      else if( ch->has_pcflag( PCFLAG_WATCH ) )
-         write_watch_files( ch, NULL, logline );
-   }
-
-   /*
     * Cannot perform commands that aren't ghost approved 
     */
    if( found && !cmd->flags.test( CMD_GHOST ) && ch->has_pcflag( PCFLAG_GHOST ) )
@@ -1416,8 +657,6 @@ void interpret( char_data * ch, char *argument )
 
    if( ch->has_pcflag( PCFLAG_LOG ) || fLogAll || loglvl == LOG_BUILD || loglvl == LOG_HIGH || loglvl == LOG_ALWAYS )
    {
-      check_watch_cmd( ch, cmd, logline );
-
       /*
        * Make it so a 'log all' will send most output to the log
        * file only, and not spam the log channel to death - Thoric
@@ -3023,6 +2262,8 @@ social_type *find_social( string command )
 {
    social_type *social;
    int hash;
+
+   command[0] = LOWER(command[0]);
 
    if( command[0] < 'a' || command[0] > 'z' )
       hash = 0;

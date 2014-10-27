@@ -143,7 +143,6 @@ void free_commands( );
 void free_deities( );
 void free_clans( );
 void free_socials( );
-void free_watchlist( );
 void free_boards( );
 void free_teleports( );
 void close_all_areas( );
@@ -173,7 +172,7 @@ char *const directory_table[] =
 {
    AREA_CONVERT_DIR, PLAYER_DIR, GOD_DIR, BUILD_DIR, SYSTEM_DIR,
    PROG_DIR, CORPSE_DIR, CLASS_DIR, RACE_DIR, MOTD_DIR, HOTBOOT_DIR, AUC_DIR,
-   BOARD_DIR, COLOR_DIR, WATCH_DIR, MAP_DIR
+   BOARD_DIR, COLOR_DIR, MAP_DIR
 };
 
 void directory_check( void )
@@ -1111,10 +1110,6 @@ void cleanup_memory( void )
    // Socials 
    fprintf( stdout, "%s", "Socials.\n" );
    free_socials(  );
-
-   // Watches 
-   fprintf( stdout, "%s", "Watches.\n" );
-   free_watchlist(  );
 
    // Languages 
    fprintf( stdout, "%s", "Languages.\n" );

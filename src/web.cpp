@@ -29,9 +29,14 @@
 #include <cstdio>
 #include "mud.h"
 #include "area.h"
+#include "clans.h"
+#include "descriptor.h"
 #include "roomindex.h"
 
 #define WEB_ROOMS "../public_html/"
+
+char *rankbuffer( char_data * );
+extern int num_logins;
 
 int web_colour( char type, char *string, bool &firsttag )
 {
@@ -182,6 +187,193 @@ void web_colourconv( char *buffer, const char *txt )
    if( !firsttag )
       mudstrlcat( buffer, "</span>", MSL );
    return;
+}
+
+void web_who()
+{
+   FILE *webwho = NULL;
+   list<descriptor_data*>::iterator ds;
+   char rank[200], clan_name[MIL], buf[MSL], outbuf[MSL], webbuf[64000], stats[MIL], invis_str[50];
+   int pcount = 0, amount, xx = 0, yy = 0;
+
+   if( !( webwho = fopen( WEBWHO_FILE, "w" ) ) )
+   {
+      bug( "%s: Unable to open webwho file for writing!", __FUNCTION__ );
+      return;
+   }
+
+   snprintf( buf, MSL, "&R-=[ &WPlayers on %s &R]=-&d", sysdata->mud_name );
+   mudstrlcpy( webbuf, color_align( buf, 80, ALIGN_CENTER ), 64000 );
+
+   mudstrlcat( webbuf, "\n", 64000 );
+
+   snprintf( buf, MSL, "&Y-=[&d &Wtelnet://%s:%d&d &Y]=-&d", sysdata->telnet, mud_port );
+   amount = 78 - color_strlen( buf );  /* Determine amount to put in front of line */
+
+   if( amount < 1 )
+      amount = 1;
+
+   amount = amount / 2;
+
+   for( xx = 0; xx < amount; ++xx )
+      mudstrlcat( webbuf, " ", 64000 );
+
+   mudstrlcat( webbuf, buf, 64000 );
+   mudstrlcat( webbuf, "\n", 64000 );
+
+   outbuf[0] = '\0';
+   xx = 0;
+   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   {
+      descriptor_data *d = (*ds);
+      char_data *person = d->original ? d->original : d->character;
+
+      if( person && d->connected >= CON_PLAYING )
+      {
+         if( person->level >= LEVEL_IMMORTAL )
+            continue;
+
+         if( xx == 0 )
+            mudstrlcat( webbuf,
+               "\n&B--------------------------------=[&d &WPlayers&d &B]=---------------------------------&d\n\n", 64000 );
+
+         ++pcount;
+
+         snprintf( rank, 200, "%s", rankbuffer( person ) );
+         snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
+
+         mudstrlcat( webbuf, outbuf, 64000 );
+
+         mudstrlcpy( stats, "&z[", MIL );
+         if( person->has_pcflag( PCFLAG_AFK ) )
+            mudstrlcat( stats, "AFK", MIL );
+         else
+            mudstrlcat( stats, "---", MIL );
+         if( person->CAN_PKILL(  ) )
+            mudstrlcat( stats, "PK]&d", MIL );
+         else
+            mudstrlcat( stats, "--]&d", MIL );
+         mudstrlcat( stats, "&G", MIL );
+
+         if( person->pcdata->clan )
+         {
+            mudstrlcpy( clan_name, " &c[", MIL );
+            mudstrlcat( clan_name, person->pcdata->clan->name, MIL );
+            mudstrlcat( clan_name, "&c", MIL );
+            mudstrlcat( clan_name, "]&d", MIL );
+         }
+         else
+            clan_name[0] = '\0';
+
+         if( person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
+            snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+               "%s <a href=\"%s\" target=\"_blank\">%s</a>%s%s&d\n", stats, person->pcdata->homepage,
+               person->name, person->pcdata->title, clan_name );
+         else
+            snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+               "%s &G%s%s%s&d\n", stats, person->name, person->pcdata->title, clan_name );
+         ++xx;
+      }
+   }
+
+   yy = 0;
+   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   {
+      descriptor_data *d = (*ds);
+      char_data *person = d->original ? d->original : d->character;
+
+      if( person && d->connected >= CON_PLAYING )
+      {
+         if( person->level < LEVEL_IMMORTAL )
+            continue;
+
+         if( person->has_pcflag( PCFLAG_WIZINVIS ) )
+            continue;
+
+         if( yy == 0 )
+            mudstrlcat( webbuf,
+               "\n&R-------------------------------=[&d &WImmortals&d &R]=--------------------------------&d\n\n", 64000 );
+
+         ++pcount;
+
+         snprintf( rank, 200, "%s", rankbuffer( person ) );
+         snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
+
+         mudstrlcat( webbuf, outbuf, 64000 );
+
+         mudstrlcpy( stats, "&z[", MIL );
+         if( person->has_pcflag( PCFLAG_AFK ) )
+            mudstrlcat( stats, "AFK", MIL );
+         else
+            mudstrlcat( stats, "---", MIL );
+
+         if( person->CAN_PKILL(  ) )
+            mudstrlcat( stats, "PK]&d", MIL );
+         else
+            mudstrlcat( stats, "--]&d", MIL );
+         mudstrlcat( stats, "&G", MIL );
+
+         if( person->pcdata->clan )
+         {
+            mudstrlcpy( clan_name, " &c[", MIL );
+            mudstrlcat( clan_name, person->pcdata->clan->name, MIL );
+            mudstrlcat( clan_name, "&c", MIL );
+            mudstrlcat( clan_name, "]&d", MIL );
+         }
+         else
+            clan_name[0] = '\0';
+
+         if( person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
+            snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+               "%s <a href=\"%s\" target=\"_blank\">%s</a>%s%s&d\n", stats, person->pcdata->homepage,
+               person->name, person->pcdata->title, clan_name );
+         else
+            snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+               "%s &G%s%s%s&d\n", stats, person->name, person->pcdata->title, clan_name );
+         ++yy;
+      }
+   }
+
+   char col_buf[64000];
+
+   snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+      "\n&Y[&d&W%d Player%s&d&Y] ", pcount, pcount == 1 ? "" : "s" );
+   snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+      "[&d&WHomepage: <a href=\"%s\" target=\"_blank\">%s</a>&d&Y] [&d&W%d Max Since Reboot&d&Y]&d\n",
+      sysdata->http, sysdata->http, sysdata->maxplayers );
+   snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+      "&Y[&d&W%d login%s since last reboot on %s&d&Y]&d\n", num_logins, num_logins == 1 ? "" : "s", str_boot_time );
+   web_colourconv( col_buf, webbuf );
+   fprintf( webwho, "%s", col_buf );
+   FCLOSE( webwho );
+}
+
+void web_arealist()
+{
+   char *print_string =
+      "<tr><td><font color=\"red\">%s   </font></td><td><font color=\"yellow\">%s</font></td><td><font color=\"green\">%d - %d   </font></td><td><font color=\"blue\">%d - %d</font></td></tr>\n";
+   list<area_data*>::iterator pArea;
+   FILE *fp;
+
+   if( !( fp = fopen( AREALIST_FILE, "w" ) ) )
+   {
+      bug( "%s: Unable to open arealist file for writing!", __FUNCTION__ );
+      return;
+   }
+
+   fprintf( fp, 
+      "<table><tr><td><font color=\"red\">Author   </font></td><td><font color=\"yellow\">Area</font></td><td><font color=\"green\">Recommened   </font></td><td><font color=\"blue\">Enforced</font></td></tr>\n" );
+
+   for( pArea = area_nsort.begin(); pArea != area_nsort.end(); ++pArea )
+   {
+      area_data *area = (*pArea);
+
+      if( !area->flags.test( AFLAG_PROTOTYPE ) )
+         fprintf( fp, print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range,
+            area->low_hard_range, area->hi_hard_range );
+   }
+   fprintf( fp, "%s", "</table>\n" );
+   FCLOSE( fp );
 }
 
 /* Aurora's room-to-web toy - this could be quite fun to mess with */

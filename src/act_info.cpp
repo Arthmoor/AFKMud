@@ -1042,7 +1042,7 @@ CMDF( do_exits )
 
 void print_compass( char_data * ch )
 {
-   int exit_info[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+   int exit_info[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
    static char *const exit_colors[] = { "&w", "&Y", "&C", "&b", "&w", "&R" };
 
    list<exit_data*>::iterator iexit;
@@ -1096,7 +1096,10 @@ char *roomdesc( char_data *ch )
       if( ch->MXP_ON(  ) )
          mudstrlcat( rdesc, MXP_TAG_ROOMDESC, MSL );
       if( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset )
-         mudstrlcat( rdesc, ch->in_room->roomdesc, MSL );
+      {
+         if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
+            mudstrlcat( rdesc, ch->in_room->roomdesc, MSL );
+      }
       else
       {
          if( ch->in_room->nitedesc && ch->in_room->nitedesc[0] != '\0' )

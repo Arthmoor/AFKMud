@@ -53,9 +53,10 @@ list<area_data*> area_vsort;
 
 int recall( char_data *, int );
 void boot_log( const char *, ... );
-void save_sysdata( void );
+void save_sysdata( );
 int get_continent( const char * );
 bool check_area_conflict( area_data *, int, int );
+void web_arealist( );
 CMDF( do_areaconvert );
 
 neighbor_data::neighbor_data()
@@ -183,34 +184,6 @@ area_data::~area_data(  )
 area_data::area_data(  )
 {
    init_memory( &weather, &tg_armor, sizeof( tg_armor ) );
-}
-
-void web_arealist()
-{
-   char *print_string =
-      "<tr><td><font color=\"red\">%s   </font></td><td><font color=\"yellow\">%s</font></td><td><font color=\"green\">%d - %d   </font></td><td><font color=\"blue\">%d - %d</font></td></tr>\n";
-   list<area_data*>::iterator pArea;
-   FILE *fp;
-
-   if( !( fp = fopen( AREALIST_FILE, "w" ) ) )
-   {
-      bug( "%s: Unable to open arealist file for writing!", __FUNCTION__ );
-      return;
-   }
-
-   fprintf( fp, 
-      "<table><tr><td><font color=\"red\">Author   </font></td><td><font color=\"yellow\">Area</font></td><td><font color=\"green\">Recommened   </font></td><td><font color=\"blue\">Enforced</font></td></tr>\n" );
-
-   for( pArea = area_nsort.begin(); pArea != area_nsort.end(); ++pArea )
-   {
-      area_data *area = (*pArea);
-
-      if( !area->flags.test( AFLAG_PROTOTYPE ) )
-         fprintf( fp, print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range,
-            area->low_hard_range, area->hi_hard_range );
-   }
-   fprintf( fp, "%s", "</table>\n" );
-   FCLOSE( fp );
 }
 
 void area_data::fix_exits(  )
@@ -1880,6 +1853,15 @@ void fread_afk_areadata( FILE *fp, area_data *tarea )
                break;
             }
 
+         case 'D':
+            if( !str_cmp( word, "Dates" ) )
+            {
+               tarea->creation_date = fread_long( fp );
+               tarea->install_date = fread_long( fp );
+               break;
+            }
+            break;
+
          case 'F':
             if( !str_cmp( word, "Flags" ) )
             {
@@ -3420,6 +3402,7 @@ void fwrite_area_header( area_data *area, FILE *fpout )
    fprintf( fpout, "Vnums           %d %d\n", area->low_vnum, area->hi_vnum );
    fprintf( fpout, "Continent       %s~\n", continents[area->continent] );
    fprintf( fpout, "Coordinates     %d %d\n", area->mx, area->my );
+   fprintf( fpout, "Dates           %l %l\n", area->creation_date, area->install_date );
    fprintf( fpout, "Ranges          %d %d %d %d\n",
       area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    if( area->resetmsg ) /* Rennard */
@@ -4469,6 +4452,7 @@ CMDF( do_installarea )
        */
       tarea->flags.reset( AFLAG_PROTOTYPE );
       ch->printf( "Saving and installing %s...\r\n", tarea->filename );
+      tarea->install_date = current_time;
       tarea->fold( tarea->filename, true );
 
       /*
@@ -4536,7 +4520,9 @@ CMDF( do_astat )
 
    ch->printf( "\r\n&wName:     &W%s\r\n&wFilename: &W%-20s  &wPrototype: &W%s\r\n&wAuthor:   &W%s\r\n",
                tarea->name, tarea->filename, tarea->flags.test( AFLAG_PROTOTYPE ) ? "yes" : "no", tarea->author );
-   ch->printf( "&wLast reset at: &W%s\r\n", c_time( tarea->last_resettime, -1 ) );
+   ch->printf( "&wCreated on   : &W%s\r\n", c_time( tarea->creation_date, -1 ) );
+   ch->printf( "&wInstalled on : &W%s\r\n", c_time( tarea->install_date, -1 ) );
+   ch->printf( "&wLast reset on: &W%s\r\n", c_time( tarea->last_resettime, -1 ) );
    ch->printf( "&wVersion: &W%-3d &wAge: &W%-3d  &wCurrent number of players: &W%-3d\r\n",
                tarea->version, tarea->age, tarea->nplayer );
    ch->printf( "&wlow_vnum: &W%5d    &whi_vnum: &W%5d\r\n", tarea->low_vnum, tarea->hi_vnum );

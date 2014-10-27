@@ -52,6 +52,9 @@
  #include <fnmatch.h>
  #include <dlfcn.h>
 #endif
+#if defined(__FreeBSD__)
+ #include <netinet/in.h>
+#endif
 #include <cstdarg>
 #include <cerrno>
 #include <fstream>

@@ -219,7 +219,6 @@ const int OBJ_VNUM_NEWBIE_GUIDE      = 11479;
  * Defined in #ROOMS.
  */
 const int ROOM_VNUM_LIMBO            = 11401;
-const int ROOM_VNUM_ALTERNATE_LIMBO  = 11400;
 const int ROOM_VNUM_POLY             = 11402;
 const int ROOM_VNUM_CHAT             = 11406; /* Parlour of the Immortals */
 const int ROOM_NOAUTH_START          = 102;   /* Pregame Entry, auth system off */

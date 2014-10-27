@@ -583,7 +583,13 @@ bool is_same_char_map( char_data * ch, char_data * victim )
 bool is_same_obj_map( char_data * ch, obj_data * obj )
 {
    if( !obj->extra_flags.test( ITEM_ONMAP ) )
+   {
+      if( ch->has_pcflag( PCFLAG_ONMAP ) )
+         return false;
+      if( ch->has_actflag( ACT_ONMAP ) )
+         return false;
       return true;
+   }
 
    if( ch->map != obj->map || ch->mx != obj->mx || ch->my != obj->my )
       return false;

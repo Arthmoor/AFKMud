@@ -124,15 +124,13 @@ int bsearch_skill_prefix( const char *name, int first, int top )
    for( ;; )
    {
       sn = ( first + top ) >> 1;
-
       if( !IS_VALID_SN( sn ) )
          return -1;
-
       if( LOWER( name[0] ) == LOWER( skill_table[sn]->name[0] ) && !str_prefix( name, skill_table[sn]->name ) )
          return sn;
       if( first >= top )
          return -1;
-      if( strcmp( name, skill_table[sn]->name ) < 1 )
+      if( strcasecmp( name, skill_table[sn]->name ) < 1 )
          top = sn - 1;
       else
          first = sn + 1;
@@ -152,14 +150,13 @@ int bsearch_skill_exact( const char *name, int first, int top )
    for( ;; )
    {
       sn = ( first + top ) >> 1;
-
       if( !IS_VALID_SN( sn ) )
          return -1;
-      if( !str_cmp( name, skill_table[sn]->name ) )
+      if( !strcasecmp( name, skill_table[sn]->name ) )
          return sn;
       if( first >= top )
          return -1;
-      if( strcmp( name, skill_table[sn]->name ) < 1 )
+      if( strcasecmp( name, skill_table[sn]->name ) < 1 )
          top = sn - 1;
       else
          first = sn + 1;

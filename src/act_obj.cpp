@@ -1165,8 +1165,7 @@ CMDF( do_give )
     * Added by Tarl 5 May 2002 to ensure pets aren't given rent items.
     * * Moved up here to prevent a minor bug with the fact the item is purged on save ;)
     */
-   if( ( obj->extra_flags.test( ITEM_PERSONAL ) || obj->ego >= sysdata->minego )
-       && ( victim->has_actflag( ACT_PET ) || victim->has_aflag( AFF_CHARM ) ) )
+   if( ( obj->extra_flags.test( ITEM_PERSONAL ) || obj->ego >= sysdata->minego ) && victim->is_pet() )
    {
       ch->printf( "%s says 'I'm sorry master, but I can't carry this.'\r\n", victim->short_descr );
       ch->printf( "%s hands %s back to you.\r\n", victim->short_descr, obj->short_descr );

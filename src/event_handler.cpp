@@ -56,7 +56,7 @@ void purge_skyship( char_data *, char_data * );
 void check_pfiles( time_t );
 void check_boards( );
 void prune_dns( );
-int afk_who( char_data * ch, char *argument );
+void web_who( );
 
 int reboot_counter;
 
@@ -327,7 +327,7 @@ void ev_violence( void *data )
           */
          if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) || ch->has_actflag( ACT_PET ) )
          {
-            if( rch->isnpc(  ) && ( rch->has_aflag( AFF_CHARM ) || rch->has_actflag( ACT_PET ) ) )
+            if( rch->isnpc(  ) && ( rch->has_aflag( AFF_CHARM ) || rch->is_pet() ) )
             {
                multi_hit( rch, victim, TYPE_UNDEFINED );
                continue;
@@ -342,8 +342,7 @@ void ev_violence( void *data )
          /*
           * NPC's assist NPC's of same type or 12.5% chance regardless.
           */
-         if( rch->isnpc(  ) && !rch->has_aflag( AFF_CHARM ) && !rch->has_actflag( ACT_NOASSIST )
-             && !rch->has_actflag( ACT_PET ) )
+         if( !rch->is_pet(  ) && !rch->has_aflag( AFF_CHARM ) && !rch->has_actflag( ACT_NOASSIST ) )
          {
             if( ch->char_died(  ) )
                break;
@@ -592,7 +591,7 @@ void ev_dns_check( void *data )
 
 void ev_webwho_refresh( void *data )
 {
-   afk_who( NULL, "www" );
+   web_who( );
    add_event( sysdata->webwho, ev_webwho_refresh, NULL );
 }
 

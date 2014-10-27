@@ -7,6 +7,7 @@ Vnums           4350 4449
 Continent       astral~
 Coordinates     0 0
 Ranges          1 115 0 115
+Dates           895000000 895000000
 ResetMsg        Masses of energy spiral past you.~
 ResetFreq       30
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport nobeacon~

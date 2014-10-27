@@ -427,7 +427,7 @@ int skill_comp( skill_type ** sk1, skill_type ** sk2 )
       return -1;
    if( skill1->type > skill2->type )
       return 1;
-   return strcmp( skill1->name, skill2->name );
+   return strcasecmp( skill1->name, skill2->name );
 }
 
 int get_skill( char *skilltype )
@@ -1358,7 +1358,7 @@ bool check_ability( char_data * ch, char *command, char *argument )
 
       if( first >= top )
          return false;
-      if( strcmp( command, skill_table[sn]->name ) < 1 )
+      if( strcasecmp( command, skill_table[sn]->name ) < 1 )
          top = sn - 1;
       else
          first = sn + 1;
@@ -1605,7 +1605,7 @@ bool check_skill( char_data * ch, char *command, char *argument )
 
       if( first >= top )
          return false;
-      if( strcmp( command, skill_table[sn]->name ) < 1 )
+      if( strcasecmp( command, skill_table[sn]->name ) < 1 )
          top = sn - 1;
       else
          first = sn + 1;
@@ -4830,7 +4830,7 @@ int mount_ego_check( char_data * ch, char_data * horse )
       if( ch->is_affected( gsn_dragon_ride ) )
          ride_ego += ( ch->get_curr_int(  ) + ch->get_curr_wis(  ) );
       check = drag_ego + number_range( 1, 5 ) - ( ride_ego + number_range( 1, 10 ) );
-      if( horse->has_actflag( ACT_PET ) && horse->master == ch )
+      if( horse->is_pet() && horse->master == ch )
          check = -1;
       return ( check );
    }

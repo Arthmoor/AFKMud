@@ -230,10 +230,10 @@ char *const act_flags[] = {
 
 char *const pc_flags[] = {
    "NONE", "deadly", "unauthed", "norecall", "nointro", "gag", "retired", "guest",
-   "nosummon", "pager", "notitled", "groupwho", "highgag", "watch",
+   "nosummon", "pager", "notitled", "groupwho", "highgag",
    "nstart", "flags", "sector", "aname", "nobeep", "passdoor", "privacy",
    "notell", "checkboards", "noquote", "boughtpet", "shovedrag", "autoexits",
-   "autoloot", "autosac", "blank", "brief", "automap", "UNUSED2", "telnet_ga",
+   "autoloot", "autosac", "blank", "brief", "automap", "telnet_ga",
    "holylight", "wizinvis", "roomvnum", "silence", "noemote", "boarded", "notell",
    "log", "deny", "freeze", "exempt", "onship", "litterbug", "ansi",
    "flee", "autogold", "ghost", "afk", "invisprompt", "busy", "autoassist",
@@ -5231,12 +5231,12 @@ void mpedit( char_data *ch, mud_prog_data *mprg, int mptype, char *argument )
    {
       mprg->type = mptype;
       STRFREE( mprg->arglist );
-      mprg->arglist = STRALLOC( argument );
+      if( argument && argument[0] != '\0' )
+         mprg->arglist = STRALLOC( argument );
    }
    ch->substate = SUB_MPROG_EDIT;
    ch->pcdata->dest_buf = mprg;
-   if( !mprg->comlist )
-      mprg->comlist = STRALLOC( "" );
+
    ch->editor_desc_printf( "Program '%s %s'.", mprog_type_to_name( mprg->type ), mprg->arglist );
    ch->start_editing( mprg->comlist );
    return;
@@ -5981,7 +5981,7 @@ CMDF( do_rpedit )
       {
          mprog = (*mprg);
 
-         if( ++cnt == ( value - 1 ) )
+         if( ++cnt == value )
          {
             ch->in_room->mudprogs.remove( mprog );
             deleteptr( mprog );
@@ -6624,6 +6624,7 @@ CMDF( do_vassign )
     */
    victim->save(  );
 
+   tarea->creation_date = current_time;
    snprintf( filename, 256, "%s%s", BUILD_DIR, tarea->filename );
    tarea->fold( filename, false );
 

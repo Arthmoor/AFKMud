@@ -524,7 +524,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%sValue[1] - Purity: &c%d", olc ? "&gF&w) " : "&w", obj->value[1] );
          break;
       case ITEM_PIECE:
-         ch->printf( "%sValue[0] - Obj Vnum for Other Half: &c%d", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->printf( "%sValue[0] - Obj Vnum for Other Half: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[1] - Obj Vnum for Combined Object: &c%d", olc ? "&gF&w) " : "&w", obj->value[1] );
          break;
    }

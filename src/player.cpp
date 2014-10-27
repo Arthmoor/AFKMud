@@ -43,7 +43,7 @@
 
 char *default_fprompt( char_data * );
 char *default_prompt( char_data * );
-void web_colourconv( char *buffer, const char *txt );
+void web_who();
 
 extern char *const realm_string[];
 extern int num_logins;
@@ -1087,62 +1087,90 @@ CMDF( do_deadly )
    return;
 }
 
+char *output_person( char_data *ch, char_data *player )
+{
+   static char outbuf[MSL];
+   char stats[MIL], clan_name[MIL], rank[200];
+
+   snprintf( rank, 200, "%s", rankbuffer( player ) );
+   snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
+
+   snprintf( stats, MIL, "%s[", ch->color_str( AT_WHO3 ) );
+
+   if( player->has_pcflag( PCFLAG_AFK ) )
+      mudstrlcat( stats, "AFK", MIL );
+   else
+      mudstrlcat( stats, "---", MIL );
+   if( player->CAN_PKILL(  ) )
+      mudstrlcat( stats, "PK]&d", MIL );
+   else
+      mudstrlcat( stats, "--]&d", MIL );
+
+   mudstrlcat( stats, ch->color_str( AT_WHO3 ), MIL );
+
+   /*
+    * Modified by Tarl 24 April 02 to display an invis level on the AFKMud interface. 
+    */
+   if( player->has_pcflag( PCFLAG_WIZINVIS ) )
+   {
+      char invis_str[50];
+
+      snprintf( invis_str, 50, " (%d)", player->pcdata->wizinvis );
+      mudstrlcat( stats, invis_str, MIL );
+   }
+
+   mudstrlcat( outbuf, stats, MSL );
+
+   if( player->pcdata->clan )
+   {
+      snprintf( clan_name, MIL, " %s[", ch->color_str( AT_WHO5 ) );
+      mudstrlcat( clan_name, player->pcdata->clan->name, MIL );
+      mudstrlcat( clan_name, ch->color_str( AT_WHO5 ), MIL );
+      mudstrlcat( clan_name, "]&d", MIL );
+   }
+   else
+      clan_name[0] = '\0';
+
+   if( ch->MXP_ON(  ) && player->pcdata->homepage && player->pcdata->homepage[0] != '\0' )
+   {
+      snprintf( outbuf+strlen(outbuf), MSL-strlen(outbuf),
+         " %s" MXP_TAG_SECURE "<a href='%s'>%s</a>" MXP_TAG_LOCKED "%s%s\r\n",
+            ch->color_str( AT_WHO4 ), player->pcdata->homepage, player->name, player->pcdata->title, clan_name );
+   }
+   else
+      snprintf( outbuf+strlen(outbuf), MSL-strlen(outbuf),
+         " %s%s%s%s\r\n", ch->color_str( AT_WHO4 ), player->name, player->pcdata->title, clan_name );
+   return outbuf;
+}
+
 /* Derived directly from the i3who code, which is a hybrid mix of Smaug, RM, and Dale who. */
 int afk_who( char_data * ch, char *argument )
 {
-   FILE *webwho = NULL;
    list<descriptor_data*>::iterator ds;
+   vector<char_data*> players;
+   vector<char_data*> immortals;
+   vector<char_data*>::iterator iplr;
    char s1[16], s2[16], s3[16], s4[16], s5[16], s6[16], s7[16];
-   char rank[200], clan_name[MIL], buf[MSL], outbuf[MSL], webbuf[64000], stats[MIL], invis_str[50];
-   int pcount = 0, amount, xx = 0, yy = 0;
+   int pcount = 0;
 
-   /*
-    * Make sure the CH is before opening the file, don't need some yahoo trying to bug things out this way 
-    */
-   if( !str_cmp( argument, "www" ) && !ch )
+   if( !ch )
    {
-      if( !( webwho = fopen( WEBWHO_FILE, "w" ) ) )
-      {
-         bug( "%s: Unable to open webwho file for writing!", __FUNCTION__ );
-         return 0;
-      }
+      bug( "%s: Called with no *ch!", __FUNCTION__ );
+      return 0;
    }
 
-   if( ch )
-   {
-      snprintf( s1, 16, "%s", ch->color_str( AT_WHO ) );
-      snprintf( s2, 16, "%s", ch->color_str( AT_WHO2 ) );
-      snprintf( s3, 16, "%s", ch->color_str( AT_WHO3 ) );
-      snprintf( s4, 16, "%s", ch->color_str( AT_WHO4 ) );
-      snprintf( s5, 16, "%s", ch->color_str( AT_WHO5 ) );
-      snprintf( s6, 16, "%s", ch->color_str( AT_WHO6 ) );
-      snprintf( s7, 16, "%s", ch->color_str( AT_WHO7 ) );
-   }
+   snprintf( s1, 16, "%s", ch->color_str( AT_WHO ) );
+   snprintf( s2, 16, "%s", ch->color_str( AT_WHO2 ) );
+   snprintf( s3, 16, "%s", ch->color_str( AT_WHO3 ) );
+   snprintf( s4, 16, "%s", ch->color_str( AT_WHO4 ) );
+   snprintf( s5, 16, "%s", ch->color_str( AT_WHO5 ) );
+   snprintf( s6, 16, "%s", ch->color_str( AT_WHO6 ) );
+   snprintf( s7, 16, "%s", ch->color_str( AT_WHO7 ) );
 
-   if( webwho )
-   {
-      snprintf( buf, MSL, "&R-=[ &WPlayers on %s &R]=-&d", sysdata->mud_name );
-      mudstrlcpy( webbuf, color_align( buf, 80, ALIGN_CENTER ), 64000 );
+   players.clear();
+   immortals.clear();
 
-      mudstrlcat( webbuf, "\n", 64000 );
-
-      snprintf( buf, MSL, "&Y-=[&d &Wtelnet://%s:%d&d &Y]=-&d", sysdata->telnet, mud_port );
-      amount = 78 - color_strlen( buf );  /* Determine amount to put in front of line */
-
-      if( amount < 1 )
-         amount = 1;
-
-      amount = amount / 2;
-
-      for( xx = 0; xx < amount; ++xx )
-         mudstrlcat( webbuf, " ", 64000 );
-
-      mudstrlcat( webbuf, buf, 64000 );
-      mudstrlcat( webbuf, "\n", 64000 );
-   }
-
-   outbuf[0] = '\0';
-   xx = 0;
+   // Construct the two vectors.
    for( ds = dlist.begin(); ds != dlist.end(); ++ds )
    {
       descriptor_data *d = (*ds);
@@ -1150,210 +1178,46 @@ int afk_who( char_data * ch, char *argument )
 
       if( person && d->connected >= CON_PLAYING )
       {
+         if( !ch->can_see( person, true ) || is_ignoring( person, ch ) )
+            continue;
+
          if( person->level >= LEVEL_IMMORTAL )
-            continue;
-
-         if( ch )
-         {
-            if( !ch->can_see( person, true ) || is_ignoring( person, ch ) )
-               continue;
-         }
-         if( ch && xx == 0 )
-            ch->pagerf( "\r\n%s--------------------------------=[ %sPlayers %s]=---------------------------------\r\n\r\n",
-                        s7, s6, s7 );
-         else if( webwho && xx == 0 )
-            mudstrlcat( webbuf,
-               "\n&B--------------------------------=[&d &WPlayers&d &B]=---------------------------------&d\n\n", 64000 );
-
-         ++pcount;
-
-         snprintf( rank, 200, "%s", rankbuffer( person ) );
-         snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
-
-         if( ch )
-            ch->pager( outbuf );
-         if( webwho )
-            mudstrlcat( webbuf, outbuf, 64000 );
-
-         if( ch )
-            snprintf( stats, MIL, "%s[", s3 );
+            immortals.push_back( person );
          else
-            mudstrlcpy( stats, "&z[", MIL );
-         if( person->has_pcflag( PCFLAG_AFK ) )
-            mudstrlcat( stats, "AFK", MIL );
-         else
-            mudstrlcat( stats, "---", MIL );
-         if( person->CAN_PKILL(  ) )
-            mudstrlcat( stats, "PK]&d", MIL );
-         else
-            mudstrlcat( stats, "--]&d", MIL );
-         if( ch )
-            mudstrlcat( stats, s3, MIL );
-         else
-            mudstrlcat( stats, "&G", MIL );
-
-         if( person->pcdata->clan )
-         {
-            if( ch )
-               snprintf( clan_name, MIL, " %s[", s5 );
-            else
-               mudstrlcpy( clan_name, " &c[", MIL );
-
-            mudstrlcat( clan_name, person->pcdata->clan->name, MIL );
-            if( ch )
-               mudstrlcat( clan_name, s5, MIL );
-            else
-               mudstrlcat( clan_name, "&c", MIL );
-            mudstrlcat( clan_name, "]&d", MIL );
-         }
-         else
-            clan_name[0] = '\0';
-
-         if( ch )
-         {
-            if( ch->MXP_ON(  ) && person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
-            {
-               ch->pagerf( "%s %s" MXP_TAG_SECURE "<a href='%s'>%s</a>" MXP_TAG_LOCKED "%s%s\r\n",
-                           stats, s4, person->pcdata->homepage, person->name, person->pcdata->title, clan_name );
-            }
-            else
-               ch->pagerf( "%s %s%s%s%s\r\n", stats, s4, person->name, person->pcdata->title, clan_name );
-         }
-         if( webwho )
-         {
-            if( person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
-               snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-                  "%s <a href=\"%s\" target=\"_blank\">%s</a>%s%s&d\n", stats, person->pcdata->homepage,
-                  person->name, person->pcdata->title, clan_name );
-            else
-               snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-                  "%s &G%s%s%s&d\n", stats, person->name, person->pcdata->title, clan_name );
-         }
-         ++xx;
+            players.push_back( person );
       }
    }
 
-   yy = 0;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   // Display any players who were visible to the person calling the command.
+   if( !players.empty() )
    {
-      descriptor_data *d = (*ds);
-      char_data *person = d->original ? d->original : d->character;
+      pcount += players.size();
 
-      if( person && d->connected >= CON_PLAYING )
+      ch->pagerf( "\r\n%s--------------------------------=[ %sPlayers %s]=---------------------------------\r\n\r\n",
+         s7, s6, s7 );
+
+      for( iplr = players.begin(); iplr != players.end(); ++iplr )
       {
-         if( person->level < LEVEL_IMMORTAL )
-            continue;
+         char_data *player = *iplr;
 
-         if( ch )
-         {
-            if( !ch->can_see( person, true ) || is_ignoring( person, ch ) )
-               continue;
-         }
-         else
-         {
-            if( person->has_pcflag( PCFLAG_WIZINVIS ) )
-               continue;
-         }
-         if( ch && yy == 0 )
-         {
-            ch->pagerf( "\r\n%s-------------------------------=[ %sImmortals %s]=--------------------------------\r\n\r\n",
-                        s1, s6, s1 );
-         }
-         else if( webwho && yy == 0 )
-            mudstrlcat( webbuf,
-               "\n&R-------------------------------=[&d &WImmortals&d &R]=--------------------------------&d\n\n", 64000 );
-
-         ++pcount;
-
-         snprintf( rank, 200, "%s", rankbuffer( person ) );
-         snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
-         if( ch )
-            ch->pager( outbuf );
-         if( webwho )
-            mudstrlcat( webbuf, outbuf, 64000 );
-
-         if( ch )
-            snprintf( stats, MIL, "%s[", s3 );
-         else
-            mudstrlcpy( stats, "&z[", MIL );
-         if( person->has_pcflag( PCFLAG_AFK ) )
-            mudstrlcat( stats, "AFK", MIL );
-         else
-            mudstrlcat( stats, "---", MIL );
-
-         if( person->CAN_PKILL(  ) )
-            mudstrlcat( stats, "PK]&d", MIL );
-         else
-            mudstrlcat( stats, "--]&d", MIL );
-         if( ch )
-            mudstrlcat( stats, s3, MIL );
-         else
-            mudstrlcat( stats, "&G", MIL );
-         /*
-          * Modified by Tarl 24 April 02 to display an invis level on the AFKMud interface. 
-          */
-         if( person->has_pcflag( PCFLAG_WIZINVIS ) )
-         {
-            snprintf( invis_str, 50, " (%d)", person->pcdata->wizinvis );
-            mudstrlcat( stats, invis_str, MIL );
-         }
-
-         if( person->pcdata->clan )
-         {
-            if( ch )
-               snprintf( clan_name, MIL, " %s[", s5 );
-            else
-               mudstrlcpy( clan_name, " &c[", MIL );
-
-            mudstrlcat( clan_name, person->pcdata->clan->name, MIL );
-            if( ch )
-               mudstrlcat( clan_name, s5, MIL );
-            else
-               mudstrlcat( clan_name, "&c", MIL );
-            mudstrlcat( clan_name, "]&d", MIL );
-         }
-         else
-            clan_name[0] = '\0';
-
-         if( ch )
-         {
-            if( ch->MXP_ON(  ) && person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
-            {
-               ch->pagerf( "%s %s" MXP_TAG_SECURE "<a href='%s'>%s</a>" MXP_TAG_LOCKED "%s%s\r\n",
-                           stats, s4, person->pcdata->homepage, person->name, person->pcdata->title, clan_name );
-            }
-            else
-               ch->pagerf( "%s %s%s%s%s\r\n", stats, s4, person->name, person->pcdata->title, clan_name );
-         }
-         if( webwho )
-         {
-            if( person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
-               snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-                  "%s <a href=\"%s\" target=\"_blank\">%s</a>%s%s&d\n", stats, person->pcdata->homepage,
-                  person->name, person->pcdata->title, clan_name );
-            else
-               snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-                  "%s &G%s%s%s&d\n", stats, person->name, person->pcdata->title, clan_name );
-         }
-         ++yy;
+         ch->pager( output_person( ch, player ) );
       }
    }
 
-   if( webwho )
+   // Display any immortals who were visible to the person calling the command.
+   if( !immortals.empty() )
    {
-      char col_buf[64000];
+      pcount += immortals.size();
 
-      snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-         "\n&Y[&d&W%d Player%s&d&Y] ", pcount, pcount == 1 ? "" : "s" );
-      snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-         "[&d&WHomepage: <a href=\"%s\" target=\"_blank\">%s</a>&d&Y] [&d&W%d Max Since Reboot&d&Y]&d\n",
-         sysdata->http, sysdata->http, sysdata->maxplayers );
-      snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-         "&Y[&d&W%d login%s since last reboot on %s&d&Y]&d\n", num_logins, num_logins == 1 ? "" : "s", str_boot_time );
+      ch->pagerf( "\r\n%s-------------------------------=[ %sImmortals %s]=--------------------------------\r\n\r\n",
+         s1, s6, s1 );
 
-      web_colourconv( col_buf, webbuf );
-      fprintf( webwho, "%s", col_buf );
-      FCLOSE( webwho );
+      for( iplr = immortals.begin(); iplr != immortals.end(); ++iplr )
+      {
+         char_data *player = *iplr;
+
+         ch->pager( output_person( ch, player ) );
+      }
    }
    return pcount;
 }
@@ -1363,12 +1227,6 @@ CMDF( do_who )
    char buf[MSL], buf2[MSL], outbuf[MSL];
    char s1[16], s2[16], s3[16];
    int amount = 0, xx = 0, pcount = 0;
-
-   if( argument && !str_cmp( argument, "www" ) )
-   {
-      afk_who( NULL, "www" );
-      return;
-   }
 
    snprintf( s1, 16, "%s", ch->color_str( AT_WHO ) );
    snprintf( s2, 16, "%s", ch->color_str( AT_WHO6 ) );
@@ -1876,9 +1734,6 @@ CMDF( do_attrib )
    snprintf( s4, 16, "%s", ch->color_str( AT_SCORE4 ) );
    snprintf( s5, 16, "%s", ch->color_str( AT_SCORE5 ) );
 
-   ch->printf( "Memory address of ch->pcdata: %X\r\n", &ch->pcdata );
-   ch->printf( "Memory address of do_attrib:  %X\r\n\r\n", &do_attrib );
-
    ch->printf( "%sYou are %s%d %syears old.\r\n", s2, s3, ch->get_age(  ), s2 );
 
    ch->printf( "%sYou are %s%d%s inches tall, and weigh %s%d%s lbs.\r\n", s2, s3, ch->height, s2, s3, ch->weight, s2 );
@@ -1887,7 +1742,7 @@ CMDF( do_attrib )
       ch->printf( "%sToday is your birthday!\r\n", s2 );
    else
       ch->printf( "%sYour birthday is: %sDay of %s, %d%s day in the Month of %s, in the year %d.\r\n",
-                  s2, s1, day_name[ch->pcdata->day % 13], day, suf, month_name[ch->pcdata->month], ch->pcdata->year );
+                  s2, s1, day_name[ch->pcdata->day % sysdata->daysperweek], day, suf, month_name[ch->pcdata->month], ch->pcdata->year );
 
    ch->printf( "%sYou have played for %s%ld %shours.\r\n", s2, s3, ( long int )GET_TIME_PLAYED( ch ), s1 );
 

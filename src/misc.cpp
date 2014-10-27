@@ -1452,7 +1452,7 @@ CMDF( do_connect )
       /*
        * good connection  
        */
-      if( !( new_ob = get_obj_index( first_ob->value[2] )->create_object( ch->level ) ) )
+      if( !( new_ob = get_obj_index( first_ob->value[1] )->create_object( ch->level ) ) )
       {
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          return;

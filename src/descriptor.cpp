@@ -48,6 +48,7 @@
 #endif
 #if defined(__FreeBSD__)
 #include <sys/types.h>
+#include <netinet/in.h>
 #include <csignal>
 #endif
 #include <cstdarg>
@@ -107,7 +108,6 @@ char *attribtext( int );
 void quotes( char_data * );
 void reset_colors( char_data * );
 bool check_bans( char_data * );
-bool chk_watch( short, char *, char * );
 CMDF( do_help );
 CMDF( do_destroy );
 
@@ -619,8 +619,8 @@ bool descriptor_data::read(  )
          break;
       else
       {
-         log_printf( "%s: Descriptor error on #%d", __FUNCTION__, descriptor );
-         log_printf( "Descriptor belongs to: %s", ( character && character->name ) ? character->name : host );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __FUNCTION__, descriptor );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( character && character->name ) ? character->name : host );
          perror( __FUNCTION__ );
          return false;
       }
@@ -1216,7 +1216,7 @@ void descriptor_data::send_color( const char *txt )
    return;
 }
 
-void descriptor_data::pager( const char *txt, unsigned int length )
+void descriptor_data::pager( const char *txt, size_t length )
 {
    int pageroffset;  /* Pager fix by thoric */
 
@@ -2556,13 +2556,13 @@ void show_status( char_data * ch )
       interpret( ch, "checkboards" );
 
    if( str_cmp( ch->desc->client, "Unidentified" ) )
-      log_printf( "%s client detected for %s.", capitalize( ch->desc->client ), ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ), ch->name );
    if( ch->desc->can_compress )
-      log_printf( "MCCP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name );
    if( ch->desc->mxp_detected )
-      log_printf( "MXP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MXP support detected for %s.", ch->name );
    if( ch->desc->msp_detected )
-      log_printf( "MSP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name );
    quotes( ch );
    show_stateflags( ch );
    return;
@@ -2685,13 +2685,13 @@ short descriptor_data::check_playing( char *name, bool kick )
 void char_to_game( char_data * ch )
 {
    if( str_cmp( ch->desc->client, "Unidentified" ) )
-      log_printf( "%s client detected for %s.", capitalize( ch->desc->client ), ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ), ch->name );
    if( ch->desc->can_compress )
-      log_printf( "MCCP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name );
    if( ch->desc->mxp_detected )
-      log_printf( "MXP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MXP support detected for %s.", ch->name );
    if( ch->desc->msp_detected )
-      log_printf( "MSP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name );
 
    charlist.push_back( ch );
    pclist.push_back( ch );
@@ -3335,6 +3335,8 @@ void descriptor_data::nanny( char *argument )
           */
          ch->set_pcflag( PCFLAG_ANSI );
          reset_colors( ch );  /* Added for new configurable color code - Samson 3-27-98 */
+         ch->set_pcflag( PCFLAG_BLANK );
+         ch->set_pcflag( PCFLAG_AUTOMAP );
 
          /*
           * MXP and MSP terminal support. Activate once at creation - Samson 8-21-01 
@@ -3353,11 +3355,6 @@ void descriptor_data::nanny( char *argument )
          return;
 
       case CON_PRESS_ENTER:
-         if( chk_watch( ch->level, ch->name, host ) ) /*  --Gorog */
-            ch->set_pcflag( PCFLAG_WATCH );
-         else
-            ch->unset_pcflag( PCFLAG_WATCH );
-
          ch->set_pager_color( AT_PLAIN ); /* Set default color so they don't see blank space */
 
          if( ch->position == POS_MOUNTED )

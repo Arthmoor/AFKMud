@@ -427,31 +427,6 @@ obj_data *obj_index::create_object( int olevel )
          break;
    }
 
-   /*
-    * Wow. This hackish looking thing is pretty bad isn't it?
-    * * I thought so too, but hey. Dwip wanted to bring in a bunch of old stuff that needed to be armorgen'd.
-    * * This was about the only way I could think to do it.
-    * * Won't bother you much if you haven't set v3 or v4 on an armor though.
-    * * All in the name of being able to retain stats if deviating from the armorgen specs.
-    * * Samson 12-23-02
-    */
-   if( area->version < 18 )
-   {
-      if( obj->item_type == ITEM_ARMOR && obj->value[3] > 0 && obj->value[4] > 0 )
-      {
-         bool pflag = false;
-
-         if( extra_flags.test( ITEM_PROTOTYPE ) )
-            pflag = true;
-         obj->extra_flags.set( ITEM_PROTOTYPE );
-         obj->armorgen(  );
-         if( !pflag )
-         {
-            obj->extra_flags.reset( ITEM_PROTOTYPE );
-            extra_flags.reset( ITEM_PROTOTYPE );
-         }
-      }
-   }
    objlist.push_back( obj );
    ++count;
    ++numobjsloaded;

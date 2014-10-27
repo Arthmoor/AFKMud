@@ -436,6 +436,30 @@ int get_line( char *desc, size_t max_len )
    return j + 1;
 }
 
+char *whatColor( char *str, char *pos )
+{
+   static char col[2];
+
+   col[0] = '\0';
+   while( str != pos )
+   {
+      if( *str == '&' || *str == '{' || *str == '}' )
+      {
+         col[0] = *str;
+
+         ++str;
+         if( !str )
+         {
+            col[1] = '\0';
+            break;
+         }
+         col[1] = *str;
+      }
+      ++str;
+   }
+   return col;
+}
+
 /* Display the map to the player */
 void show_map( char_data *ch, char *text )
 {
@@ -521,19 +545,27 @@ void show_map( char_data *ch, char *text )
       if( !alldesc )
       {
          pos = get_line( p, 63 );
+         char col[10], c[2];
+
+         strcpy( c, whatColor( text, p ) );
+         if( c[0] == '\0' )
+            mudstrlcpy( col, ch->color_str( AT_RMDESC ), 10 );
+         else
+            snprintf( col, 10, "%s", c );
+
          if( pos > 0 )
          {
-            mudstrlcat( buf, ch->color_str( AT_RMDESC ), MSL*2 );
-            strncat( buf, p, pos );
-            p += pos;
+             mudstrlcat( buf, col, MSL*2 );
+             strncat( buf, p, pos );
+             p += pos;
          }
          else
          {
-            mudstrlcat( buf, ch->color_str( AT_RMDESC ), MSL*2 );
-            mudstrlcat( buf, p, MSL*2 );
-            alldesc = true;
+             mudstrlcat( buf, col, MSL*2 );
+             mudstrlcat( buf, p, MSL*2 );
+             alldesc = true;
          }
-      }
+      } 
       mudstrlcat( buf, "\r\n", MSL*2 );
    }
 
@@ -541,17 +573,25 @@ void show_map( char_data *ch, char *text )
    mudstrlcat( buf, "&z+-----------+&D ", MSL*2 );
    if( !alldesc )
    {
+      char col[10], c[2];
       pos = get_line( p, 63 );
+
+      strcpy( c, whatColor( text, p ) );
+      if( c[0] == '\0' )
+         mudstrlcpy( col, ch->color_str( AT_RMDESC ), 10 );
+      else
+         snprintf( col, 10, "%s", c );
+
       if( pos > 0 )
       {
-         mudstrlcat( buf, ch->color_str( AT_RMDESC ), MSL*2 );
+         mudstrlcat( buf, col, MSL*2 );
          strncat( buf, p, pos );
          p += pos;
          mudstrlcat( buf, "\r\n", MSL*2 );
       }
       else
       {
-         mudstrlcat( buf, ch->color_str( AT_RMDESC ), MSL*2 );
+         mudstrlcat( buf, col, MSL*2 );
          mudstrlcat( buf, p, MSL*2 );
          alldesc = true;
       }
@@ -560,20 +600,29 @@ void show_map( char_data *ch, char *text )
    /* Deal with any leftover text */
    if( !alldesc )
    {
+      char col[10], c[2];
+
       do
       {
          /* Note the number - no map to detract from width */
          pos = get_line( p, 78 );
+
+         strcpy( c, whatColor( text, p ) );
+         if( c[0] == '\0' )
+            mudstrlcpy( col, ch->color_str( AT_RMDESC ), 10 );
+         else
+            snprintf( col, 10, "%s", c );
+
          if( pos > 0 )
          {
-            mudstrlcat( buf, ch->color_str( AT_RMDESC ), MSL*2 );
+            mudstrlcat( buf, col, MSL*2 );
             strncat( buf, p, pos );
             p += pos;
             mudstrlcat( buf, "\r\n", MSL*2 );
          }
          else
          {
-            mudstrlcat( buf, ch->color_str( AT_RMDESC ), MSL*2 );
+            mudstrlcat( buf, col, MSL*2 );
             mudstrlcat( buf, p, MSL*2 );
             alldesc = true;
          }

@@ -34,16 +34,9 @@
  */
 enum command_flags
 {
-   CMD_POSSESS, CMD_POLYMORPHED, CMD_WATCH, CMD_ACTION, CMD_NOSPAM, CMD_GHOST,
+   CMD_POSSESS, CMD_POLYMORPHED, CMD_ACTION, CMD_NOSPAM, CMD_GHOST,
    CMD_MUDPROG, CMD_NOFORCE, CMD_LOADED, MAX_CMD_FLAG
 };
-
-/*
- * The watch directory contains a maximum of one file for each immortal
- * that contains output from "player watches". The name of each file
- * in this directory is the name of the immortal who requested the watch
- */
-#define WATCH_LIST "watch.lst"   /* List of watches              */
 
 /*
  * Structure for a command in the command lookup table.
@@ -103,25 +96,6 @@ extern cmd_type *command_hash[126];
 extern social_type *social_index[27];
 
 extern char *const cmd_flags[];
-
-/*
- * Player watch data structure  --Gorog
- */
-class watch_data
-{
- private:
-   watch_data( const watch_data& w );
-   watch_data& operator=( const watch_data& );
-
- public:
-   watch_data();
-   ~watch_data();
-
-   char *imm_name;   /* imm doing the watching */
-   char *target_name;   /* player or command being watched   */
-   char *player_site;   /* site being watched     */
-   short imm_level;
-};
 
 cmd_type *find_command( string );
 social_type *find_social( string );

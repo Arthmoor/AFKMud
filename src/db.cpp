@@ -190,7 +190,6 @@ void load_commands( );
 void load_deity( );
 void load_boards( );
 void load_projects( );
-void load_watchlist( );
 void assign_gsn_data( );
 int mob_xp( char_data * );
 void load_connhistory( );
@@ -2225,9 +2224,6 @@ void boot_db( bool fCopyOver )
 
    log_string( "Loading boards..." );
    load_boards(  );
-
-   log_string( "Loading watches..." );
-   load_watchlist(  );
 
    log_string( "Loading bans..." );
    load_banlist(  );

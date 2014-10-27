@@ -204,6 +204,10 @@ char *mini_c_time( time_t curtime, int tz )
       mudstrlcpy( tzonename, ptime->tm_zone, 50 );
 #endif
 
+   int year = ptime->tm_year - 100;
+   if( year < 0 )
+      year = 100 + year; // Fix negative years for < Y2K
+
    snprintf( strtime, 128, "%02d/%02d/%02d %02d:%02d%c", ptime->tm_mon + 1, ptime->tm_mday, ptime->tm_year - 100,
              ptime->tm_hour == 0 ? 12 : ptime->tm_hour > 12 ? ptime->tm_hour - 12 : ptime->tm_hour, ptime->tm_min,
              ptime->tm_hour < 12 ? 'A' : 'P' );

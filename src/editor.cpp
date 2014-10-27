@@ -653,33 +653,78 @@ char *add_percent( char *str )
 
 /*
  * Returns an initial-capped string.
+ * Rewritten by FearItself@AvP
  */
 char *capitalize( const char *str )
 {
-   static char strcap[MSL];
-   int i;
+   static char buf[MSL];
+   char *dest = buf;
+   enum { Normal, Color } state = Normal;
+   bool bFirst = true;
+   char c;
 
-   for( i = 0; str[i] != '\0'; ++i )
-      strcap[i] = LOWER( str[i] );
-   strcap[i] = '\0';
-   strcap[0] = UPPER( strcap[0] );
-   return strcap;
+   while( (c = *str++) )
+   {
+      if( state == Normal )
+      {
+         if( c == '&' || c == '{' || c == '}' )
+         {
+            state = Color;
+         }
+         else if( isalpha(c) )
+         {
+            c = bFirst ? toupper(c) : tolower(c);
+            bFirst = false;
+         }
+      }
+      else
+      {
+         state = Normal;
+      }
+      *dest++ = c;
+   }
+   *dest = c;
+
+   return buf;
 }
 
 /*
  * Returns an initial-capped string.
+ * Rewritten by FearItself@AvP
  */
 string capitalize( const string str )
 {
    string strcap;
-   char strc[MSL];
-   unsigned int i;
+   const char *src = str.c_str();
+   char buf[MSL];
+   char *dest = buf;
+   enum { Normal, Color } state = Normal;
+   bool bFirst = true;
+   char c;
 
-   for( i = 0; i < str.length(); ++i )
-      strc[i] = LOWER( str[i] );
-   strc[i] = '\0';
-   strc[0] = UPPER( strc[0] );
-   strcap = strc;
+   while( (c = *src++) )
+   {
+      if( state == Normal )
+      {
+         if( c == '&' || c == '{' || c == '}' )
+         {
+            state = Color;
+         }
+         else if( isalpha(c) )
+         {
+            c = bFirst ? toupper(c) : tolower(c);
+            bFirst = false;
+         }
+      }
+      else
+      {
+         state = Normal;
+      }
+      *dest++ = c;
+   }
+   *dest = c;
+
+   strcap = buf;
    return strcap;
 }
 
@@ -1049,9 +1094,8 @@ void char_data::start_editing( char *data )
    size = 0;
    lpos = 0;
    lines = 0;
-   if( !data )
-      bug( "%s: data is NULL!", __FUNCTION__ );
-   else
+   if( data )
+   {
       for( ;; )
       {
          c = data[size++];
@@ -1075,6 +1119,7 @@ void char_data::start_editing( char *data )
             break;
          }
       }
+   }
 
    if( lpos > 0 && lpos < 78 && lines < 49 )
    {
@@ -1143,7 +1188,11 @@ char *char_data::copy_buffer( bool hash )
       mudstrlcat( buf, tmp, MSL );
    }
    if( hash )
-      return STRALLOC( buf );
+   {
+      if( buf && buf[0] != '\0' )
+         return STRALLOC( buf );
+      return NULL;
+   }
    return str_dup( buf );
 }
 

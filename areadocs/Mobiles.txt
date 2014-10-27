@@ -424,12 +424,18 @@ If it is left out, the file will be assumed to be corrupt.
 An example of a finished mobile, with an attatched mobprogram:
 (Mudprogs are covered in a seperate file)
 
-#1203
-krusty iguana~
-Krusty~
-A spectral iguana roams the immortal halls.
+#MOBILE
+Vnum      1203
+Keywords  krusty iguana~
+Race      reptile~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     Krusty~
+Long      A spectral iguana roams the immortal halls.
 ~
-Wavering in and out of this diemsion and the afterlife, this spectral
+Desc      Wavering in and out of this diemsion and the afterlife, this spectral
 iguana is all that remains of Samson's once lively pet iguana.
 Considerably larger and meaner looking in undeath, the iguana is
 nearly 50 feet in length, and instead of the normal green color
@@ -441,24 +447,15 @@ through it. A shiny gold medallion identifies the spectre as Krusty.
 Only the magical forces of the immortal halls keep this beast of
 undeath from ravaging the world below.......
 ~
-npc stayarea immortal~
-detect_invis detect_hidden infrared flying truesight passdoor~
-0 0 -1 0 0 150 100 0.000000
-100 21 0 0 0d0+0
-common reptile~
-reptile~
-standing~
-standing~
-female~
-reptile~
-warrior~
-head legs guts feet eye tail scales claws~
-~
-poison drain sleep charm hold paralysis~
-~
-~
-~
-~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    100 21 0 0 0 0 0
+Speaks    common reptile~
+Speaking  reptile~
+Actflags  npc stayarea immortal~
+Affected  detect_invis detect_hidden infrared flying truesight passdoor~
+Bodyparts head legs guts feet eye tail scales claws~
+Immune    poison drain sleep charm hold paralysis~
 #MUDPROG
 Progtype  act_prog~
 Arglist   p has sent a swirling vortex to transport you.~
@@ -485,15 +482,4 @@ yell Nice try, but I found my way home!
 ~
 #ENDPROG
 
-This concludes a #MOBILE block.
-Refer to Objects.txt to continue building your area file.
-
-<exp>
-
-The amount of experience this mob gives to the player when killed.
-
-Set it to -1 to have the code calculate it automatically accordng to
-the abilities the mob is flagged with.
-
-If you want the mob to have a fixed exp value, just specify anything
-above 0.
+#ENDMOBILE

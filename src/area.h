@@ -112,7 +112,9 @@ class area_data
    char *filename;
    char *author;  /* Scryn */
    char *resetmsg;   /* Rennard */
-   time_t last_resettime;     // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
+   time_t creation_date;  // Timestamp for when this area was first created. Samson 1/20/07
+   time_t install_date;   // Timestamp for when this area was "live" installed. Samson 1/20/07
+   time_t last_resettime; // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
    int low_vnum;
    int hi_vnum;
    int low_soft_range;

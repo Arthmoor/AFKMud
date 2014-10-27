@@ -168,7 +168,16 @@ enum acon_types
 
 Add your new continent between ACON_IMMORTAL and ACON_MAX.
 
-6. In mudcfg.cpp, check_room, find:
+6. In build.cpp, in this section:
+
+/* Area continent table for continent/plane system */
+char *const continents[] = {
+   "one", "astral", "immortal"
+};
+
+Add your new continent plane in the appropriate place in the list.
+
+7. In mudcfg.cpp, check_room, find:
 
    if( dieroom->area->continent == ACON_ONE )
       location = get_room_index( ROOM_VNUM_ALTAR );
@@ -181,5 +190,5 @@ rooms section.
 Similar changes should be made in the recall_room function, as well as adding to the
 pc_data class to support additional locations for recalls.
 
-7. Make clean, recompile. With any luck you should now have yourself
+8. Make clean, recompile. With any luck you should now have yourself
 a nice shiny new continent :)

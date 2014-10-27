@@ -7,6 +7,7 @@ Vnums           100 199
 Continent       immortal~
 Coordinates     472 381
 Ranges          0 1 0 115
+Dates           902200000 902200000
 ResetMsg        A strange pulsing sound reverberates in the background...~
 ResetFreq       240
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport~
@@ -2730,23 +2731,6 @@ endif
 ~
 #ENDPROG
 
-#ENDROOM
-
-#ROOM
-Vnum      150
-Name      Lying in Bed?????~
-Sector    indoors~
-Flags     nomob teleport teleshowdesc~
-Stats     100 7078 0 0
-Desc      You awake with a jolt to the sound of the alarm clock buzzing away.
-Another boring day doing the same old thing awiats you. Bleary eyed,
-you reach up and whack the snooze button on the alarm..... just a
-few more minutes of sleep......
-
-
-Congratulations! You've completed the major quest! You will now be
-returned to the Green Dragon Inn in Bywater to continue playing.
-~
 #ENDROOM
 
 #ROOM
