@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2014 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2015 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -45,8 +45,8 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.1.6"
-#define COPYRIGHT "Copyright The Alsherok Team 1997-2014. All rights reserved. "
+#define CODEVERSION "2.1.7"
+#define COPYRIGHT "Copyright The Alsherok Team 1997-2015. All rights reserved. "
 
 const int LGST = 4096;  /* Large String */
 const int SMST = 1024;  /* Small String */
