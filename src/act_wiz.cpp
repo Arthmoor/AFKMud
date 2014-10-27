@@ -2349,6 +2349,7 @@ void objinvoke( char_data *ch, string argument )
       if( !ch->is_imp(  ) )
       {
          ch->print( "Loading of rare items is restricted to KLs and above on this port.\r\n" );
+         obj->extract(); // It got created, now we need to destroy it.
          return;
       }
       else

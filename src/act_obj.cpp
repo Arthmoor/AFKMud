@@ -64,10 +64,44 @@ void get_obj( char_data * ch, obj_data * obj, obj_data * container )
    else
       weight = obj->get_weight(  );
 
-   if( ch->carry_weight + weight > ch->can_carry_w(  ) )
+   /* Money weight shouldn't count */
+   if( obj->item_type != ITEM_MONEY )
    {
-      act( AT_PLAIN, "$d: you can't carry that much weight.", ch, NULL, obj->name, TO_CHAR );
-      return;
+      if( obj->in_obj )
+      {
+         obj_data *tobj = obj->in_obj;
+         int inobj = 1;
+         bool checkweight = false;
+
+         /* need to make it check weight if its in a magic container */
+         if( tobj->item_type == ITEM_CONTAINER && tobj->extra_flags.test( ITEM_MAGIC ) )
+            checkweight = true;
+
+         while( tobj->in_obj )
+         {
+            tobj = tobj->in_obj;
+            ++inobj;
+
+            /* need to make it check weight if its in a magic container */
+            if( tobj->item_type == ITEM_CONTAINER && tobj->extra_flags.test( ITEM_MAGIC ) )
+               checkweight = true;
+         }
+
+         /* need to check weight if not carried by ch or in a magic container. */
+         if( !tobj->carried_by || tobj->carried_by != ch || checkweight )
+         {
+            if( ( ch->carry_weight + weight ) > ch->can_carry_w( ) )
+            {
+               act( AT_PLAIN, "$d: you can't carry that much weight.", ch, NULL, obj->name, TO_CHAR );
+               return;
+            }
+         }
+      }
+      else if( ( ch->carry_weight + weight ) > ch->can_carry_w( ) )
+      {
+         act( AT_PLAIN, "$d: you can't carry that much weight.", ch, NULL, obj->name, TO_CHAR );
+         return;
+      }
    }
 
    if( container )

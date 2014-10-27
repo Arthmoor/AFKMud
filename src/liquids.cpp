@@ -159,7 +159,7 @@ void save_liquids( void )
    }
 
    fprintf( fp, "%s", "#VERSION 3\n" );
-   for( i = 0; i < top_liquid; ++i )
+   for( i = 0; i <= top_liquid; ++i )
    {
       if( !liquid_table[i] )
          continue;

@@ -341,8 +341,10 @@ void add_obj_reset( room_index *room, char cm, obj_data *obj, int v2, int v3 )
       if( obj->extra_flags.test( ITEM_HIDDEN ) && !obj->wear_flags.test( ITEM_TAKE ) )
          room->add_reset( 'H', 0, 0, 100, -2, -2, -2, -2, -2, -2, -2, -2 );
    }
+   else if( cm == 'P' )
+      room->add_reset( cm, iNest, obj->pIndexData->vnum, v2, v3, 100, 100, 100, 100, -2, -2, -2 );
    else
-      room->add_reset( cm, ( cm == 'P' ? iNest : 0 ), obj->pIndexData->vnum, v2, v3, 100, 100, 100, 100, -2, -2, -2 );
+      room->add_reset( cm, obj->pIndexData->vnum, v2, v3, 100, 100, 100, 100, -2, -2, -2, -2 );
 
    list<obj_data*>::iterator iobj;
    for( iobj = obj->contents.begin(); iobj != obj->contents.end(); ++iobj )

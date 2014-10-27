@@ -704,7 +704,7 @@ void mobile_update( void )
       if( ch->char_died(  ) )
          continue;
 
-      if( ch->has_actflag( ACT_PET ) && !ch->is_affected( gsn_charm_person ) && ch->master )
+      if( ch->has_actflag( ACT_PET ) && !ch->has_aflag( AFF_CHARM ) && ch->master )
          unbind_follower( ch, ch->master );
 
       if( !ch->has_actflag( ACT_SENTINEL ) && !ch->fighting && ch->hunting )

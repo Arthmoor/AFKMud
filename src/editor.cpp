@@ -38,7 +38,7 @@ struct editor_data
    ~editor_data();
 
    char *desc;
-   char line[49][81];
+   char line[max_buf_lines][81];
    short numlines;
    short on_line;
    short size;
@@ -1045,7 +1045,7 @@ void char_data::start_editing( string data )
          }
          else
             edit->line[lines][lpos++] = c;
-         if( lines >= 49 || size > 4096 )
+         if( lines >= max_buf_lines || size > MSL )
          {
             edit->line[lines][lpos] = '\0';
             break;
@@ -1053,7 +1053,7 @@ void char_data::start_editing( string data )
       }
    }
 
-   if( lpos > 0 && lpos < 78 && lines < 49 )
+   if( lpos > 0 && lpos < 78 && lines < max_buf_lines )
    {
       edit->line[lines][lpos] = '~';
       edit->line[lines][lpos + 1] = '\0';
@@ -1113,7 +1113,7 @@ void char_data::start_editing( char *data )
          }
          else
             edit->line[lines][lpos++] = c;
-         if( lines >= 49 || size > 4096 )
+         if( lines >= max_buf_lines || size > MSL )
          {
             edit->line[lines][lpos] = '\0';
             break;
@@ -1121,7 +1121,7 @@ void char_data::start_editing( char *data )
       }
    }
 
-   if( lpos > 0 && lpos < 78 && lines < 49 )
+   if( lpos > 0 && lpos < 78 && lines < max_buf_lines )
    {
       edit->line[lines][lpos] = '~';
       edit->line[lines][lpos + 1] = '\0';

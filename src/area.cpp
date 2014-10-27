@@ -1637,6 +1637,7 @@ void fread_afk_exit( FILE *fp, room_index *pRoomIndex )
             break;
 
          case 'K':
+            KEY( "Key", pexit->key, fread_number( fp ) );
             KEY( "Keywords", pexit->keyword, fread_string( fp ) );
             break;
 
@@ -3293,6 +3294,8 @@ void fwrite_afk_exit( FILE *fpout, exit_data *pexit )
    fprintf( fpout, "%s", "#EXIT\n" );
    fprintf( fpout, "Direction %s~\n", strip_cr( dir_name[pexit->vdir] ) );
    fprintf( fpout, "ToRoom    %d\n", pexit->vnum );
+   if( pexit->key )
+      fprintf( fpout, "Key       %d\n", pexit->key );
    if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) && pexit->mx != 0 && pexit->my != 0 )
       fprintf( fpout, "ToCoords  %d %d\n", pexit->mx, pexit->my );
    if( pexit->pull )
@@ -3402,7 +3405,7 @@ void fwrite_area_header( area_data *area, FILE *fpout )
    fprintf( fpout, "Vnums           %d %d\n", area->low_vnum, area->hi_vnum );
    fprintf( fpout, "Continent       %s~\n", continents[area->continent] );
    fprintf( fpout, "Coordinates     %d %d\n", area->mx, area->my );
-   fprintf( fpout, "Dates           %l %l\n", area->creation_date, area->install_date );
+   fprintf( fpout, "Dates           %ld %ld\n", (long)area->creation_date, (long)area->install_date );
    fprintf( fpout, "Ranges          %d %d %d %d\n",
       area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    if( area->resetmsg ) /* Rennard */

@@ -1579,8 +1579,9 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
 
    if( fAdd )
    {
-      /* if( paf->bit >= 0 && paf->bit < MAX_AFFECTED_BY )
-         affected_by.set( paf->bit ); -- Restore this if anything weird starts happening. Otherwise remove if found later. */
+      if( paf->bit >= 0 && paf->bit < MAX_AFFECTED_BY )
+         set_aflag( paf->bit );
+
       if( paf->location % REVERSE_APPLY == APPLY_RECURRINGSPELL )
       {
          mod = abs( mod );

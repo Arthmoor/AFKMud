@@ -2363,7 +2363,12 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             break;
 
          case 'D':
-            KEY( "Description", mob->chardesc, fread_string( fp ) );
+            if( !str_cmp( word, "Description" ) )
+            {
+               STRFREE( mob->chardesc );
+               mob->chardesc = fread_string( fp );
+               break;
+            }
             break;
 
          case 'E':
@@ -2413,11 +2418,21 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
 
          case 'L':
             KEY( "Level", mob->level, fread_number( fp ) );
-            KEY( "Long", mob->long_descr, fread_string( fp ) );
+            if( !str_cmp( word, "Long" ) )
+            {
+               STRFREE( mob->long_descr );
+               mob->long_descr = fread_string( fp );
+               break;
+            }
             break;
 
          case 'N':
-            KEY( "Name", mob->name, fread_string( fp ) );
+            if( !str_cmp( word, "Name" ) )
+            {
+               STRFREE( mob->name );
+               mob->name = fread_string( fp );
+               break;
+            }
             break;
 
          case 'P':
@@ -2429,7 +2444,12 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             break;
 
          case 'S':
-            KEY( "Short", mob->short_descr, fread_string( fp ) );
+            if( !str_cmp( word, "Short" ) )
+            {
+               STRFREE( mob->short_descr );
+               mob->short_descr = fread_string( fp );
+               break;
+            }
             break;
       }
       if( !str_cmp( word, "#OBJECT" ) )

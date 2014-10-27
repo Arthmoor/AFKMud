@@ -1610,6 +1610,7 @@ CMDF( do_group )
                  ( ( float )gch->mana / gch->max_mana ) * 100 + 0.5, ( ( float )gch->move / gch->max_move ) * 100 + 0.5 );
          }
       }
+      return;
    }
 
    if( !str_cmp( argument, "disband" ) )
