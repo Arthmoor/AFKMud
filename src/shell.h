@@ -64,22 +64,97 @@
 class shell_cmd
 {
  private:
-   shell_cmd( const shell_cmd& s );
-   shell_cmd& operator=( const shell_cmd& );
+   shell_cmd( const shell_cmd & s );
+     shell_cmd & operator=( const shell_cmd & );
 
  public:
-   shell_cmd( );
-   ~shell_cmd( );
+     shell_cmd(  );
+    ~shell_cmd(  );
 
      bitset < MAX_CMD_FLAG > flags; /* Added for Checking interpret stuff -Shaddai */
-   DO_FUN *do_fun;
-   char *name;
-   char *fun_name;   /* Added to hold the func name and dump some functions totally - Trax */
-   short position;
-   short level;
-   short log;
+
+   void set_func( DO_FUN * fun )
+   {
+      _do_fun = fun;
+   }
+   DO_FUN *get_func(  )
+   {
+      return _do_fun;
+   }
+
+   void set_name( const string & name )
+   {
+      _name = name;
+   }
+   string get_name(  )
+   {
+      return _name;
+   }
+   const char *get_cname(  )
+   {
+      return _name.c_str(  );
+   }
+
+   void set_func_name( const string & name )
+   {
+      _func_name = name;
+   }
+   string get_func_name(  )
+   {
+      if( _func_name.empty(  ) )
+         return "";
+      return _func_name;
+   }
+   const char *get_func_cname(  )
+   {
+      if( _func_name.empty(  ) )
+         return "";
+      return _func_name.c_str(  );
+   }
+
+   void set_position( const string & pos )
+   {
+      short newpos = get_npc_position( pos );
+      if( newpos < 0 || newpos > POS_MAX )
+         newpos = POS_STANDING;
+      _position = newpos;
+   }
+   short get_position(  )
+   {
+      return _position;
+   }
+
+   void set_level( short lvl )
+   {
+      lvl = URANGE( 1, lvl, LEVEL_SUPREME );
+      _level = lvl;
+   }
+   short get_level(  )
+   {
+      return _level;
+   }
+
+   void set_log( const string & log )
+   {
+      short newlog = get_logflag( log );
+      if( newlog < 0 || newlog > LOG_ALL )
+         newlog = 0;
+      _log = newlog;
+   }
+   short get_log(  )
+   {
+      return _log;
+   }
+
+ private:
+   string _name;
+   string _func_name;   /* Added to hold the func name and dump some functions totally - Trax */
+   DO_FUN *_do_fun;
+   short _position;
+   short _level;
+   short _log;
 };
 
-extern list<shell_cmd*> shellcmdlist;
-shell_cmd *find_shellcommand( char * );
+extern list < shell_cmd * >shellcmdlist;
+shell_cmd *find_shellcommand( const string & );
 #endif

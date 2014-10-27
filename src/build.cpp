@@ -39,16 +39,15 @@
 #include "treasure.h"
 
 extern int top_affect;
-list<rel_data*> relationlist;
+list < rel_data * >relationlist;
 
 void build_wizinfo( void );   /* For mset realm option - Samson 6-6-99 */
 CMDF( do_rstat );
 CMDF( do_mstat );
 CMDF( do_ostat );
-bool validate_spec_fun( char * );
+bool validate_spec_fun( const string & );
 int mob_xp( char_data * );
 char *sprint_reset( reset_data *, short & );
-void set_title( char_data *, char * );
 void assign_area( char_data * );
 bool check_area_conflicts( int, int );
 
@@ -56,68 +55,68 @@ bool check_area_conflicts( int, int );
  * Exit Pull/push types
  * (water, air, earth, fire)
  */
-char *const ex_pmisc[] = { "undefined", "vortex", "vacuum", "slip", "ice", "mysterious" };
+const char *ex_pmisc[] = { "undefined", "vortex", "vacuum", "slip", "ice", "mysterious" };
 
-char *const ex_pwater[] = { "current", "wave", "whirlpool", "geyser" };
+const char *ex_pwater[] = { "current", "wave", "whirlpool", "geyser" };
 
-char *const ex_pair[] = { "wind", "storm", "coldwind", "breeze" };
+const char *ex_pair[] = { "wind", "storm", "coldwind", "breeze" };
 
-char *const ex_pearth[] = { "landslide", "sinkhole", "quicksand", "earthquake" };
+const char *ex_pearth[] = { "landslide", "sinkhole", "quicksand", "earthquake" };
 
-char *const ex_pfire[] = { "lava", "hotair" };
+const char *ex_pfire[] = { "lava", "hotair" };
 
 /* Stuff that isn't from stock Smaug */
 
-char *const npc_sex[SEX_MAX] = {
+const char *npc_sex[SEX_MAX] = {
    "neuter", "male", "female", "hermaphrodyte"
 };
 
-char *const npc_position[POS_MAX] = {
+const char *npc_position[POS_MAX] = {
    "dead", "mortal", "incapacitated", "stunned", "sleeping",
    "resting", "sitting", "berserk", "aggressive", "fighting", "defensive",
    "evasive", "standing", "mounted", "shove", "drag"
 };
 
-char *const styles[] = {
+const char *styles[] = {
    "berserk", "aggressive", "standard", "defensive", "evasive"
 };
 
-char *const campgear[GEAR_MAX] = {
+const char *campgear[GEAR_MAX] = {
    "none", "bedroll", "misc", "firewood"
 };
 
-char *const ores[ORE_MAX] = {
+const char *ores[ORE_MAX] = {
    "unknown", "iron", "gold", "silver", "adamantine", "mithril", "blackmite",
    "titanium", "steel", "bronze", "dwarven", "elven"
 };
 
-char *const container_flags[] = {
+const char *container_flags[] = {
    "closeable", "pickproof", "closed", "locked", "eatkey", "r1", "r2", "r3",
    "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
    "r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23", "r24", "r25", "r26",
    "r27"
 };
 
-char *weapon_skills[WEP_MAX] = {
+const char *weapon_skills[WEP_MAX] = {
    "Barehand", "Sword", "Dagger", "Whip", "Talon",
    "Mace", "Archery", "Blowgun", "Sling", "Axe", "Spear",
    "Staff"
 };
 
-char *projectiles[PROJ_MAX] = {
+const char *projectiles[PROJ_MAX] = {
    "Bolt", "Arrow", "Dart", "Stone"
 };
 
 /* Area continent table for continent/plane system */
-char *const continents[] = {
+const char *continents[] = {
    "one", "astral", "immortal"
 };
 
-char *const log_flag[] = {
+const char *log_flag[] = {
    "normal", "always", "never", "build", "high", "comm", "warn", "info", "auth", "debug", "all"
 };
 
-char *const furniture_flags[] = {
+const char *furniture_flags[] = {
    "sit_on", "sit_in", "sit_at",
    "stand_on", "stand_in", "stand_at",
    "sleep_on", "sleep_in", "sleep_at",
@@ -126,12 +125,12 @@ char *const furniture_flags[] = {
 
 /* End of non-stock stuff */
 
-char *const save_flag[] = {
+const char *save_flag[] = {
    "death", "kill", "passwd", "drop", "put", "give", "auto", "zap",
    "auction", "get", "receive", "idle", "fill", "empty"
 };
 
-char *const ex_flags[] = {
+const char *ex_flags[] = {
    "isdoor", "closed", "locked", "secret", "swim", "pickproof", "fly", "climb",
    "dig", "eatkey", "nopassdoor", "hidden", "passage", "portal", "overland", "arrowslit",
    "can_climb", "can_enter", "can_leave", "auto", "noflee", "searchable",
@@ -139,7 +138,7 @@ char *const ex_flags[] = {
    "fortified", "heavy", "medium", "light", "crumbling", "destroyed"
 };
 
-char *const r_flags[] = {
+const char *r_flags[] = {
    "dark", "death", "nomob", "indoors", "safe", "nocamp", "nosummon",
    "nomagic", "tunnel", "private", "silence", "nosupplicate", "arena", "nomissile",
    "norecall", "noportal", "noastral", "nodrop", "clanstoreroom", "teleport",
@@ -149,7 +148,7 @@ char *const r_flags[] = {
    "noquit", "telenofly", "track"
 };
 
-char *const o_flags[] = {
+const char *o_flags[] = {
    "glow", "hum", "metal", "mineral", "organic", "invis", "magic", "nodrop", "bless",
    "antigood", "antievil", "antineutral", "anticleric", "antimage",
    "antirogue", "antiwarrior", "inventory", "noremove", "twohand", "evil",
@@ -163,19 +162,19 @@ char *const o_flags[] = {
    "mustmount", "noauction", "thrown"
 };
 
-char *const w_flags[] = {
+const char *w_flags[] = {
    "take", "finger", "neck", "body", "head", "legs", "feet", "hands", "arms",
    "shield", "about", "waist", "wrist", "wield", "hold", "dual", "ears", "eyes",
    "missile", "back", "face", "ankle", "lodge_rib", "lodge_arm", "lodge_leg"
 };
 
 /* Area Flags for continent and plane system - Samson 3-28-98 */
-char *const area_flags[] = {
+const char *area_flags[] = {
    "nopkill", "nocamp", "noastral", "noportal", "norecall", "nosummon", "noscry",
    "noteleport", "arena", "nobeacon", "noquit", "prototype"
 };
 
-char *const o_types[] = {
+const char *o_types[] = {
    "NONE", "light", "scroll", "wand", "staff", "weapon", "scabbard", "UNUSED2",
    "treasure", "armor", "potion", "clothing", "furniture", "trash", "UNUSED4",
    "container", "UNUSED5", "drinkcon", "key", "food", "money", "pen", "boat",
@@ -187,12 +186,12 @@ char *const o_types[] = {
    "salve", "cook", "keyring", "odor", "campgear", "drinkmix", "instrument", "ore"
 };
 
-char *const a_types[] = {
-   "NONE", "strength", "dexterity", "intelligence", "wisdom", "constitution",
-   "sex", "class", "level", "age", "height", "weight", "mana", "hit", "move",
+const char *a_types[] = {
+   "NONE", "strength", "intelligence", "wisdom", "dexterity", "constitution", "charisma",
+   "luck", "level", "age", "height", "weight", "mana", "hit", "move",
    "gold", "experience", "armor", "hitroll", "damroll", "save_poison", "save_rod",
-   "save_para", "save_breath", "save_spell", "charisma", "affected", "resistant",
-   "immune", "susceptible", "weaponspell", "luck", "backstab", "pick", "track",
+   "save_para", "save_breath", "save_spell", "sex", "affected", "resistant",
+   "immune", "susceptible", "weaponspell", "class", "backstab", "pick", "track",
    "steal", "sneak", "hide", "palm", "detrap", "dodge", "spellfail", "scan", "gouge",
    "search", "mount", "disarm", "kick", "parry", "bash", "stun", "punch", "climb",
    "grip", "scribe", "brew", "wearspell", "removespell", "UNUSED", "mentalstate",
@@ -203,7 +202,7 @@ char *const a_types[] = {
    "ext_affect", "odor", "peek", "absorb", "attacks", "extragold", "allstats"
 };
 
-char *const aff_flags[] = {
+const char *aff_flags[] = {
    "NONE", "blind", "invisible", "detect_evil", "detect_invis", "detect_magic",
    "detect_hidden", "hold", "sanctuary", "faerie_fire", "infrared", "curse",
    "spy", "poison", "protect", "paralysis", "sneak", "hide", "sleep",
@@ -217,7 +216,7 @@ char *const aff_flags[] = {
    "spamguard", "bash"
 };
 
-char *const act_flags[] = {
+const char *act_flags[] = {
    "npc", "sentinel", "scavenger", "innkeeper", "banker", "aggressive", "stayarea",
    "wimpy", "pet", "autonomous", "practice", "immortal", "deadly", "polyself",
    "meta_aggr", "guardian", "boarded", "nowander", "mountable", "mounted",
@@ -228,7 +227,7 @@ char *const act_flags[] = {
    "guildrepair", "guildforge", "idmob", "guildidmob"
 };
 
-char *const pc_flags[] = {
+const char *pc_flags[] = {
    "NONE", "deadly", "unauthed", "norecall", "nointro", "gag", "retired", "guest",
    "nosummon", "pager", "notitled", "groupwho", "highgag",
    "nstart", "flags", "sector", "aname", "nobeep", "passdoor", "privacy",
@@ -238,37 +237,37 @@ char *const pc_flags[] = {
    "log", "deny", "freeze", "exempt", "onship", "litterbug", "ansi",
    "flee", "autogold", "ghost", "afk", "invisprompt", "busy", "autoassist",
    "smartsac", "idle", "onmap", "mapedit", "guildsplit", "groupsplit",
-   "msp", "mxp", "compass", "mxpprompt"
+   "msp", "compass"
 };
 
-char *const trap_types[] = {
+const char *trap_types[] = {
    "Generic", "Poison Gas", "Poison Dart", "Poison Needle", "Poison Dagger",
    "Poison Arrow", "Blinding Gas", "Sleep Gas", "Flame", "Explosion",
    "Acid Spray", "Electric Shock", "Blade", "Sex Change"
 };
 
-char *const trap_flags[] = {
+const char *trap_flags[] = {
    "room", "obj", "enter", "leave", "open", "close", "get", "put", "pick",
    "unlock", "north", "south", "east", "west", "up", "down", "examine",
    "northeast", "northwest", "southeast", "southwest", "r6", "r7", "r8",
    "r9", "r10", "r11", "r12", "r13", "r14", "r15"
 };
 
-char *const wear_locs[] = {
+const char *wear_locs[] = {
    "light", "finger1", "finger2", "neck1", "neck2", "body", "head", "legs",
    "feet", "hands", "arms", "shield", "about", "waist", "wrist1", "wrist2",
    "wield", "hold", "dual_wield", "ears", "eyes", "missile_wield", "back",
    "face", "ankle1", "ankle2"
 };
 
-char *const ris_flags[] = {
+const char *ris_flags[] = {
    "NONE", "fire", "cold", "electricity", "energy", "blunt", "pierce", "slash", "acid",
    "poison", "drain", "sleep", "charm", "hold", "nonmagic", "plus1", "plus2",
    "plus3", "plus4", "plus5", "plus6", "magic", "paralysis", "good", "evil", "hack",
    "lash"
 };
 
-char *const trig_flags[] = {
+const char *trig_flags[] = {
    "up", "unlock", "lock", "north", "south", "east", "west", "d_up", "d_down",
    "door", "container", "open", "close", "passage", "oload", "mload", "teleport",
    "examine", "teleportall", "teleportplus", "death", "cast", "fakeblade", "rand4",
@@ -276,14 +275,14 @@ char *const trig_flags[] = {
    "r31"
 };
 
-char *const part_flags[] = {
+const char *part_flags[] = {
    "head", "arms", "legs", "heart", "brains", "guts", "hands", "feet", "fingers",
    "ear", "eye", "long_tongue", "eyestalks", "tentacles", "fins", "wings",
    "tail", "scales", "claws", "fangs", "horns", "tusks", "tailattack",
    "sharpscales", "beak", "haunches", "hooves", "paws", "forelegs", "feathers"
 };
 
-char *const attack_flags[] = {
+const char *attack_flags[] = {
    "bite", "claws", "tail", "sting", "punch", "kick", "trip", "bash", "stun",
    "gouge", "backstab", "age", "drain", "firebreath", "frostbreath",
    "acidbreath", "lightnbreath", "gasbreath", "poison", "nastypoison", "gaze",
@@ -291,14 +290,14 @@ char *const attack_flags[] = {
    "flamestrike", "harm", "fireball", "colorspray", "weaken", "spiralblast"
 };
 
-char *const defense_flags[] = {
+const char *defense_flags[] = {
    "parry", "dodge", "heal", "curelight", "cureserious", "curecritical",
    "dispelmagic", "dispelevil", "sanctuary", "r1", "r2", "shield", "bless",
    "stoneskin", "teleport", "r3", "r4", "r5", "r6", "disarm", "r7", "grip",
    "truesight"
 };
 
-char *const lang_names[] = {
+const char *lang_names[] = {
    "common", "elvish", "dwarven", "pixie", "ogre",
    "orcish", "trollese", "rodent", "insectoid",
    "mammal", "reptile", "dragon", "spiritual",
@@ -320,29 +319,24 @@ char *const lang_names[] = {
  *  hour and time, rand and randiw, speech and speechiw
  * 
  */
-char *const mprog_flags[] = {
+const char *mprog_flags[] = {
    "act", "speech", "rand", "fight", "death", "hitprcnt", "entry", "greet",
    "allgreet", "give", "bribe", "hour", "time", "wear", "remove", "sac",
    "look", "exa", "zap", "get", "drop", "damage", "repair", "randiw",
    "speechiw", "pull", "push", "sleep", "rest", "leave", "script", "use",
-   "speechand", "month", "keyword"
+   "speechand", "month", "keyword", "sell", "tell", "telland", "command"
 };
 
 /* Bamfin parsing code by Altrag, installed by Samson 12-10-97
    Allows use of $n where the player's name would be */
-char *bamf_print( char *fmt, char_data * ch )
+string bamf_print( const string & fmt, char_data * ch )
 {
-   static char buf[MSL];
    string bamf = fmt;
-   string::size_type iToken = 0;
 
-   while( ( iToken = bamf.find( "$n" ) ) != string::npos )
-      bamf = bamf.replace( iToken, 2, ch->name );
-   while( ( iToken = bamf.find( "$N" ) ) != string::npos )
-      bamf = bamf.replace( iToken, 2, ch->name );
+   string_replace( bamf, "$n", ch->name );
+   string_replace( bamf, "$N", ch->name );
 
-   mudstrlcpy( buf, bamf.c_str(), MSL );
-   return buf;
+   return bamf;
 }
 
 /*
@@ -351,7 +345,7 @@ char *bamf_print( char *fmt, char_data * ch )
  */
 void RelCreate( relation_type tp, void *actor, void *subject )
 {
-   list<rel_data*>::iterator tmp;
+   list < rel_data * >::iterator tmp;
    rel_data *rel;
 
    if( tp < relMSET_ON || tp > relOSET_ON )
@@ -369,9 +363,10 @@ void RelCreate( relation_type tp, void *actor, void *subject )
       bug( "%s: NULL subject", __FUNCTION__ );
       return;
    }
-   for( tmp = relationlist.begin(); tmp != relationlist.end(); ++tmp )
+
+   for( tmp = relationlist.begin(  ); tmp != relationlist.end(  ); ++tmp )
    {
-      rel = (*tmp);
+      rel = *tmp;
 
       if( rel->Type == tp && rel->Actor == actor && rel->Subject == subject )
       {
@@ -408,10 +403,10 @@ void RelDestroy( relation_type tp, void *actor, void *subject )
       return;
    }
 
-   list<rel_data*>::iterator rq;
-   for( rq = relationlist.begin(); rq != relationlist.end(); ++rq )
+   list < rel_data * >::iterator rq;
+   for( rq = relationlist.begin(  ); rq != relationlist.end(  ); ++rq )
    {
-      rel_data *rel = (*rq);
+      rel_data *rel = *rq;
 
       if( rel->Type == tp && rel->Actor == actor && rel->Subject == subject )
       {
@@ -420,10 +415,9 @@ void RelDestroy( relation_type tp, void *actor, void *subject )
          return;
       }
    }
-   return;
 }
 
-char *flag_string( int bitvector, char *const flagarray[] )
+char *flag_string( int bitvector, const char *flagarray[] )
 {
    static char buf[MSL];
    int x;
@@ -550,7 +544,7 @@ bool can_mmodify( char_data * ch, char_data * mob )
    return false;
 }
 
-int get_saveflag( char *name )
+int get_saveflag( const string & name )
 {
    for( size_t x = 0; x < sizeof( save_flag ) / sizeof( save_flag[0] ); ++x )
       if( !str_cmp( name, save_flag[x] ) )
@@ -558,7 +552,7 @@ int get_saveflag( char *name )
    return -1;
 }
 
-int get_logflag( char *flag )
+int get_logflag( const string & flag )
 {
    for( int x = 0; x <= LOG_ALL; ++x )
       if( !str_cmp( flag, log_flag[x] ) )
@@ -566,7 +560,7 @@ int get_logflag( char *flag )
    return -1;
 }
 
-int get_npc_sex( char *sex )
+int get_npc_sex( const string & sex )
 {
    for( int x = 0; x < SEX_MAX; ++x )
       if( !str_cmp( sex, npc_sex[x] ) )
@@ -574,7 +568,7 @@ int get_npc_sex( char *sex )
    return -1;
 }
 
-int get_style( char *style )
+int get_style( const string & style )
 {
    for( int x = 0; x <= STYLE_EVASIVE; ++x )
       if( !str_cmp( style, styles[x] ) )
@@ -582,7 +576,7 @@ int get_style( char *style )
    return -1;
 }
 
-int get_npc_position( char *position )
+int get_npc_position( const string & position )
 {
    for( int x = 0; x < POS_MAX; ++x )
       if( !str_cmp( position, npc_position[x] ) )
@@ -590,7 +584,7 @@ int get_npc_position( char *position )
    return -1;
 }
 
-int get_sectypes( char *sector )
+int get_sectypes( const string & sector )
 {
    for( int x = 0; x < SECT_MAX; ++x )
       if( !str_cmp( sector, sect_types[x] ) )
@@ -598,7 +592,7 @@ int get_sectypes( char *sector )
    return -1;
 }
 
-int get_pc_class( char *Class )
+int get_pc_class( const string & Class )
 {
    for( int x = 0; x < MAX_PC_CLASS; ++x )
       if( !str_cmp( Class, class_table[x]->who_name ) )
@@ -606,7 +600,7 @@ int get_pc_class( char *Class )
    return -1;
 }
 
-int get_npc_class( char *Class )
+int get_npc_class( const string & Class )
 {
    for( int x = 0; x < MAX_NPC_CLASS; ++x )
       if( !str_cmp( Class, npc_class[x] ) )
@@ -614,7 +608,7 @@ int get_npc_class( char *Class )
    return -1;
 }
 
-int get_continent( const char *continent )
+int get_continent( const string & continent )
 {
    for( int x = 0; x < ACON_MAX; ++x )
       if( !str_cmp( continent, continents[x] ) )
@@ -622,7 +616,7 @@ int get_continent( const char *continent )
    return -1;
 }
 
-int get_pc_race( char *type )
+int get_pc_race( const string & type )
 {
    for( int i = 0; i < MAX_PC_RACE; ++i )
       if( !str_cmp( type, race_table[i]->race_name ) )
@@ -630,7 +624,7 @@ int get_pc_race( char *type )
    return -1;
 }
 
-int get_otype( const char *type )
+int get_otype( const string & type )
 {
    for( size_t x = 0; x < ( sizeof( o_types ) / sizeof( o_types[0] ) ); ++x )
       if( !str_cmp( type, o_types[x] ) )
@@ -638,7 +632,7 @@ int get_otype( const char *type )
    return -1;
 }
 
-int get_aflag( const char *flag )
+int get_aflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( aff_flags ) / sizeof( aff_flags[0] ) ); ++x )
       if( !str_cmp( flag, aff_flags[x] ) )
@@ -646,7 +640,7 @@ int get_aflag( const char *flag )
    return -1;
 }
 
-int get_traptype( char *flag )
+int get_traptype( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( trap_types ) / sizeof( trap_types[0] ) ); ++x )
       if( !str_cmp( flag, trap_types[x] ) )
@@ -654,7 +648,7 @@ int get_traptype( char *flag )
    return -1;
 }
 
-int get_trapflag( char *flag )
+int get_trapflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( trap_flags ) / sizeof( trap_flags[0] ) ); ++x )
       if( !str_cmp( flag, trap_flags[x] ) )
@@ -662,7 +656,7 @@ int get_trapflag( char *flag )
    return -1;
 }
 
-int get_atype( const char *type )
+int get_atype( const string & type )
 {
    for( size_t x = 0; x < ( sizeof( a_types ) / sizeof( a_types[0] ) ); ++x )
       if( !str_cmp( type, a_types[x] ) )
@@ -670,7 +664,7 @@ int get_atype( const char *type )
    return -1;
 }
 
-int get_npc_race( char *type )
+int get_npc_race( const string & type )
 {
    for( int x = 0; x < MAX_NPC_RACE; ++x )
       if( !str_cmp( type, npc_race[x] ) )
@@ -678,7 +672,7 @@ int get_npc_race( char *type )
    return -1;
 }
 
-int get_wearloc( char *type )
+int get_wearloc( const string & type )
 {
    for( size_t x = 0; x < ( sizeof( wear_locs ) / sizeof( wear_locs[0] ) ); ++x )
       if( !str_cmp( type, wear_locs[x] ) )
@@ -686,7 +680,7 @@ int get_wearloc( char *type )
    return -1;
 }
 
-int get_exflag( char *flag )
+int get_exflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( ex_flags ) / sizeof( ex_flags[0] ) ); ++x )
       if( !str_cmp( flag, ex_flags[x] ) )
@@ -694,46 +688,48 @@ int get_exflag( char *flag )
    return -1;
 }
 
-int get_pulltype( char *type )
+int get_pulltype( const string & type )
 {
+   size_t x;
+
    if( !str_cmp( type, "none" ) || !str_cmp( type, "clear" ) )
       return 0;
 
-   for( size_t x = 0; x < ( sizeof( ex_pmisc ) / sizeof( ex_pmisc[0] ) ); ++x )
+   for( x = 0; x < ( sizeof( ex_pmisc ) / sizeof( ex_pmisc[0] ) ); ++x )
       if( !str_cmp( type, ex_pmisc[x] ) )
          return x;
 
-   for( size_t x = 0; x < ( sizeof( ex_pwater ) / sizeof( ex_pwater[0] ) ); ++x )
+   for( x = 0; x < ( sizeof( ex_pwater ) / sizeof( ex_pwater[0] ) ); ++x )
       if( !str_cmp( type, ex_pwater[x] ) )
          return x + PT_WATER;
 
-   for( size_t x = 0; x < ( sizeof( ex_pair ) / sizeof( ex_pair[0] ) ); ++x )
+   for( x = 0; x < ( sizeof( ex_pair ) / sizeof( ex_pair[0] ) ); ++x )
       if( !str_cmp( type, ex_pair[x] ) )
          return x + PT_AIR;
 
-   for( size_t x = 0; x < ( sizeof( ex_pearth ) / sizeof( ex_pearth[0] ) ); ++x )
+   for( x = 0; x < ( sizeof( ex_pearth ) / sizeof( ex_pearth[0] ) ); ++x )
       if( !str_cmp( type, ex_pearth[x] ) )
          return x + PT_EARTH;
 
-   for( size_t x = 0; x < ( sizeof( ex_pfire ) / sizeof( ex_pfire[0] ) ); ++x )
+   for( x = 0; x < ( sizeof( ex_pfire ) / sizeof( ex_pfire[0] ) ); ++x )
       if( !str_cmp( type, ex_pfire[x] ) )
          return x + PT_FIRE;
    return -1;
 }
 
 // This is part of a rather slick way to set flags on things during file I/O
-int get_flag( char *flag, char *const flagarray[], int max )
+int get_flag( const string & flag, const char *flagarray[], size_t max )
 {
-   if( !flag || flag[0] == '\0' || !flagarray )
+   if( flag.empty(  ) || !flagarray )
       return -1;
 
-   for( int x = 0; x < max; ++x )
+   for( size_t x = 0; x < max; ++x )
       if( !str_cmp( flag, flagarray[x] ) )
          return x;
    return -1;
 }
 
-int get_rflag( char *flag )
+int get_rflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( r_flags ) / sizeof( r_flags[0] ) ); ++x )
       if( !str_cmp( flag, r_flags[x] ) )
@@ -741,7 +737,7 @@ int get_rflag( char *flag )
    return -1;
 }
 
-int get_mpflag( char *flag )
+int get_mpflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( mprog_flags ) / sizeof( mprog_flags[0] ) ); ++x )
       if( !str_cmp( flag, mprog_flags[x] ) )
@@ -749,7 +745,7 @@ int get_mpflag( char *flag )
    return -1;
 }
 
-int get_oflag( char *flag )
+int get_oflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( o_flags ) / sizeof( o_flags[0] ) ); ++x )
       if( !str_cmp( flag, o_flags[x] ) )
@@ -757,7 +753,7 @@ int get_oflag( char *flag )
    return -1;
 }
 
-int get_areaflag( char *flag )
+int get_areaflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( area_flags ) / sizeof( area_flags[0] ) ); ++x )
       if( !str_cmp( flag, area_flags[x] ) )
@@ -765,7 +761,7 @@ int get_areaflag( char *flag )
    return -1;
 }
 
-int get_wflag( char *flag )
+int get_wflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( w_flags ) / sizeof( w_flags[0] ) ); ++x )
       if( !str_cmp( flag, w_flags[x] ) )
@@ -773,7 +769,7 @@ int get_wflag( char *flag )
    return -1;
 }
 
-int get_actflag( char *flag )
+int get_actflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( act_flags ) / sizeof( act_flags[0] ) ); ++x )
       if( !str_cmp( flag, act_flags[x] ) )
@@ -781,7 +777,7 @@ int get_actflag( char *flag )
    return -1;
 }
 
-int get_pcflag( char *flag )
+int get_pcflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( pc_flags ) / sizeof( pc_flags[0] ) ); ++x )
       if( !str_cmp( flag, pc_flags[x] ) )
@@ -789,7 +785,7 @@ int get_pcflag( char *flag )
    return -1;
 }
 
-int get_risflag( const char *flag )
+int get_risflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( ris_flags ) / sizeof( ris_flags[0] ) ); ++x )
       if( !str_cmp( flag, ris_flags[x] ) )
@@ -797,7 +793,7 @@ int get_risflag( const char *flag )
    return -1;
 }
 
-int get_trigflag( char *flag )
+int get_trigflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( trig_flags ) / sizeof( trig_flags[0] ) ); ++x )
       if( !str_cmp( flag, trig_flags[x] ) )
@@ -805,7 +801,7 @@ int get_trigflag( char *flag )
    return -1;
 }
 
-int get_partflag( char *flag )
+int get_partflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( part_flags ) / sizeof( part_flags[0] ) ); ++x )
       if( !str_cmp( flag, part_flags[x] ) )
@@ -813,7 +809,7 @@ int get_partflag( char *flag )
    return -1;
 }
 
-int get_attackflag( char *flag )
+int get_attackflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( attack_flags ) / sizeof( attack_flags[0] ) ); ++x )
       if( !str_cmp( flag, attack_flags[x] ) )
@@ -821,7 +817,7 @@ int get_attackflag( char *flag )
    return -1;
 }
 
-int get_defenseflag( char *flag )
+int get_defenseflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( defense_flags ) / sizeof( defense_flags[0] ) ); ++x )
       if( !str_cmp( flag, defense_flags[x] ) )
@@ -829,7 +825,7 @@ int get_defenseflag( char *flag )
    return -1;
 }
 
-int get_langnum( char *flag )
+int get_langnum( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( lang_names ) / sizeof( lang_names[0] ) ); ++x )
       if( !str_cmp( flag, lang_names[x] ) )
@@ -837,7 +833,7 @@ int get_langnum( char *flag )
    return -1;
 }
 
-void goto_char( char_data * ch, char_data * wch, char *argument )
+void goto_char( char_data * ch, char_data * wch, const string & argument )
 {
    room_index *location;
 
@@ -874,7 +870,7 @@ void goto_char( char_data * ch, char_data * wch, char *argument )
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, NULL, NULL, TO_CANSEE );
 
@@ -884,14 +880,12 @@ void goto_char( char_data * ch, char_data * wch, char *argument )
     * Bamfin processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, NULL, NULL, TO_CANSEE );
-
-   return;
 }
 
-void goto_obj( char_data * ch, obj_data * obj, char *argument )
+void goto_obj( char_data * ch, obj_data * obj, const string & argument )
 {
    room_index *location;
 
@@ -902,7 +896,7 @@ void goto_obj( char_data * ch, obj_data * obj, char *argument )
       location = obj->carried_by->in_room;
    else  /* It's in a container, this becomes too much hassle to recursively locate */
    {
-      ch->printf( "%s is inside a container. Try locating that container first.\r\n", argument );
+      ch->printf( "%s is inside a container. Try locating that container first.\r\n", argument.c_str(  ) );
       return;
    }
 
@@ -936,7 +930,7 @@ void goto_obj( char_data * ch, obj_data * obj, char *argument )
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfout[0] )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, NULL, NULL, TO_CANSEE );
 
@@ -946,16 +940,14 @@ void goto_obj( char_data * ch, obj_data * obj, char *argument )
     * Bamfin processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfin[0] )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, NULL, NULL, TO_CANSEE );
-
-   return;
 }
 
 CMDF( do_goto )
 {
-   char arg[MIL];
+   string arg;
    room_index *location, *in_room;
    char_data *wch;
    obj_data *obj;
@@ -964,7 +956,7 @@ CMDF( do_goto )
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Goto where?\r\n" );
       return;
@@ -975,15 +967,13 @@ CMDF( do_goto )
     */
    if( !str_cmp( arg, "map" ) )
    {
-      char arg1[MIL];
-      char arg2[MIL];
-      int x, y;
-      int map = -1;
+      string arg1, arg2;
+      int x, y, map = -1;
 
       argument = one_argument( argument, arg1 );
       argument = one_argument( argument, arg2 );
 
-      if( !arg1 || arg1[0] == '\0' )
+      if( arg1.empty(  ) )
       {
          ch->print( "Goto which map??\r\n" );
          return;
@@ -994,24 +984,24 @@ CMDF( do_goto )
 
       if( map == -1 )
       {
-         ch->printf( "There isn't a map for '%s'.\r\n", arg1 );
+         ch->printf( "There isn't a map for '%s'.\r\n", arg1.c_str(  ) );
          return;
       }
 
-      if( arg2[0] == '\0' && argument[0] == '\0' )
+      if( arg2.empty(  ) && argument.empty(  ) )
       {
          enter_map( ch, NULL, 499, 499, map );
          return;
       }
 
-      if( arg2[0] == '\0' || argument[0] == '\0' )
+      if( arg2.empty(  ) || argument.empty(  ) )
       {
          ch->print( "Usage: goto map <mapname> <X> <Y>\r\n" );
          return;
       }
 
-      x = atoi( arg2 );
-      y = atoi( argument );
+      x = atoi( arg2.c_str(  ) );
+      y = atoi( argument.c_str(  ) );
 
       if( x < 0 || x >= MAX_X )
       {
@@ -1049,7 +1039,7 @@ CMDF( do_goto )
 
    if( !( location = ch->find_location( arg ) ) )
    {
-      vnum = atoi( arg );
+      vnum = atoi( arg.c_str(  ) );
       if( vnum < 0 || get_room_index( vnum ) )
       {
          ch->print( "You cannot find that...\r\n" );
@@ -1114,7 +1104,7 @@ CMDF( do_goto )
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, NULL, NULL, TO_CANSEE );
 
@@ -1124,21 +1114,19 @@ CMDF( do_goto )
    leave_map( ch, NULL, location );
 
    if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, NULL, NULL, TO_CANSEE );
-
-   return;
 }
 
 CMDF( do_mset )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    int num, size, plus, value, minattr, maxattr;
    char char1, char2;
    char_data *victim, *tmpmob;
    bool lockvic;
-   char *origarg = argument;
+   string origarg = argument;
 
    ch->set_color( AT_PLAIN );
 
@@ -1158,6 +1146,7 @@ CMDF( do_mset )
    {
       default:
          break;
+
       case SUB_MOB_DESC:
          if( !ch->pcdata->dest_buf )
          {
@@ -1206,7 +1195,7 @@ CMDF( do_mset )
          ch->print( "Your victim died!\r\n" );
          argument = "done";
       }
-      if( !argument || argument[0] == '\0' || !str_cmp( argument, " " ) || !str_cmp( argument, "stat" ) )
+      if( argument.empty(  ) || !str_cmp( argument, " " ) || !str_cmp( argument, "stat" ) )
       {
          if( victim )
          {
@@ -1231,19 +1220,20 @@ CMDF( do_mset )
          return;
       }
    }
+
    if( victim )
    {
       lockvic = true;
-      mudstrlcpy( arg1, victim->name, MIL );
+      arg1 = victim->name;
       argument = one_argument( argument, arg2 );
-      mudstrlcpy( arg3, argument, MIL );
+      arg3 = argument;
    }
    else
    {
       lockvic = false;
       argument = one_argument( argument, arg1 );
       argument = one_argument( argument, arg2 );
-      mudstrlcpy( arg3, argument, MIL );
+      arg3 = argument;
    }
 
    if( !str_cmp( arg1, "on" ) )
@@ -1252,7 +1242,7 @@ CMDF( do_mset )
       return;
    }
 
-   if( arg1[0] == '\0' || ( arg2[0] == '\0' && ch->substate != SUB_REPEATCMD ) || !str_cmp( arg1, "?" ) )
+   if( arg1.empty(  ) || ( arg2.empty(  ) && ch->substate != SUB_REPEATCMD ) || !str_cmp( arg1, "?" ) || !str_cmp( arg1, "help" ) )
    {
       if( ch->substate == SUB_REPEATCMD )
       {
@@ -1265,7 +1255,7 @@ CMDF( do_mset )
       /*
        * Output reformatted by Whir - 8/27/98 
        */
-      ch->print( "Syntax: mset <victim> <field>  <value>\r\n\r\n" );
+      ch->print( "Syntax: mset <victim> <field> <value>\r\n\r\n" );
       ch->print( "Field being one of:\r\n" );
       ch->print( " [Naming]\r\n" );
       ch->print( "   |name       |short      |long       |title      |description\r\n" );
@@ -1294,6 +1284,7 @@ CMDF( do_mset )
       }
       return;
    }
+
    if( !victim && ch->get_trust(  ) < LEVEL_GOD )
    {
       if( !( victim = ch->get_char_room( arg1 ) ) )
@@ -1306,7 +1297,7 @@ CMDF( do_mset )
    {
       if( !( victim = ch->get_char_world( arg1 ) ) )
       {
-         ch->printf( "Sorry, %s doesn't seem to exist in this universe.\r\n", arg1 );
+         ch->printf( "Sorry, %s doesn't seem to exist in this universe.\r\n", arg1.c_str(  ) );
          return;
       }
    }
@@ -1348,10 +1339,10 @@ CMDF( do_mset )
       RelCreate( relMSET_ON, ch, victim );
       return;
    }
-   value = is_number( arg3 ) ? atoi( arg3 ) : -1;
+   value = is_number( arg3 ) ? atoi( arg3.c_str(  ) ) : -1;
 
-   if( atoi( arg3 ) < -1 && value == -1 )
-      value = atoi( arg3 );
+   if( atoi( arg3.c_str(  ) ) < -1 && value == -1 )
+      value = atoi( arg3.c_str(  ) );
 
    if( !str_cmp( arg2, "str" ) )
    {
@@ -1363,7 +1354,7 @@ CMDF( do_mset )
       victim->perm_str = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->perm_str = value;
-      ch->print( "victim str set.\r\n" );
+      ch->print( "Strength set.\r\n" );
       return;
    }
 
@@ -1377,7 +1368,7 @@ CMDF( do_mset )
       victim->perm_int = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->perm_int = value;
-      ch->print( "victim int set.\r\n" );
+      ch->print( "Intelligence set.\r\n" );
       return;
    }
 
@@ -1391,7 +1382,7 @@ CMDF( do_mset )
       victim->perm_wis = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->perm_wis = value;
-      ch->print( "victim wis set.\r\n" );
+      ch->print( "Wisdom set.\r\n" );
       return;
    }
 
@@ -1405,7 +1396,7 @@ CMDF( do_mset )
       victim->perm_dex = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->perm_dex = value;
-      ch->print( "victim dex set.\r\n" );
+      ch->print( "Dexterity set.\r\n" );
       return;
    }
 
@@ -1419,7 +1410,7 @@ CMDF( do_mset )
       victim->perm_con = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->perm_con = value;
-      ch->print( "victim con set.\r\n" );
+      ch->print( "Constitution set.\r\n" );
       return;
    }
 
@@ -1433,7 +1424,7 @@ CMDF( do_mset )
       victim->perm_cha = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->perm_cha = value;
-      ch->print( "victim cha set.\r\n" );
+      ch->print( "Charisma set.\r\n" );
       return;
    }
 
@@ -1447,7 +1438,7 @@ CMDF( do_mset )
       victim->perm_lck = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->perm_lck = value;
-      ch->print( "victim lck set.\r\n" );
+      ch->print( "Luck set.\r\n" );
       return;
    }
 
@@ -1458,10 +1449,14 @@ CMDF( do_mset )
          ch->print( "Height range is 0 to 500.\r\n" );
          return;
       }
+
+      if( value == 0 )
+         value = victim->calculate_race_height(  );
+
       victim->height = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->height = value;
-      ch->print( "victim height set.\r\n" );
+      ch->print( "Height set.\r\n" );
       return;
    }
 
@@ -1472,29 +1467,33 @@ CMDF( do_mset )
          ch->print( "Weight range is 0 to 30000.\r\n" );
          return;
       }
+
+      if( value == 0 )
+         value = victim->calculate_race_weight(  );
+
       victim->weight = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->weight = value;
-      ch->print( "victim weight set.\r\n" );
+      ch->print( "Weight set.\r\n" );
       return;
    }
 
    /*
     * Altered to allow sex changes by name instead of number - Samson 8-3-98 
     */
-   if( !str_cmp( arg2, "sex" ) )
+   if( !str_cmp( arg2, "sex" ) || !str_cmp( arg2, "gender" ) )
    {
       value = get_npc_sex( arg3 );
 
       if( value < 0 || value >= SEX_MAX )
       {
-         ch->print( "Invalid sex.\r\n" );
+         ch->print( "Invalid gender.\r\n" );
          return;
       }
       victim->sex = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->sex = value;
-      ch->print( "victim sex set.\r\n" );
+      ch->print( "Gender set.\r\n" );
       return;
    }
 
@@ -1507,18 +1506,18 @@ CMDF( do_mset )
 
       if( !victim->isnpc(  ) && ( value < 0 || value >= MAX_CLASS ) )
       {
-         ch->printf( "%s is not a valid player Class.\r\n", arg3 );
+         ch->printf( "%s is not a valid player class.\r\n", arg3.c_str(  ) );
          return;
       }
       if( victim->isnpc(  ) && ( value < 0 || value >= MAX_NPC_CLASS ) )
       {
-         ch->printf( "%s is not a valid NPC Class.\r\n", arg3 );
+         ch->printf( "%s is not a valid NPC class.\r\n", arg3.c_str(  ) );
          return;
       }
       victim->Class = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->Class = value;
-      ch->print( "victim Class set.\r\n" );
+      ch->print( "Class set.\r\n" );
       return;
    }
 
@@ -1531,18 +1530,23 @@ CMDF( do_mset )
 
       if( !victim->isnpc(  ) && ( value < 0 || value >= MAX_PC_RACE ) )
       {
-         ch->printf( "%s is not a valid player race.\r\n", arg3 );
+         ch->printf( "%s is not a valid player race.\r\n", arg3.c_str(  ) );
          return;
       }
       if( victim->isnpc(  ) && ( value < 0 || value >= MAX_NPC_RACE ) )
       {
-         ch->printf( "%s is not a valid NPC race.\r\n", arg3 );
+         ch->printf( "%s is not a valid NPC race.\r\n", arg3.c_str(  ) );
          return;
       }
+
+      // Change in race necessitates keeping height/weight values sane for that race. -- Samson 11/04/2007
       victim->race = value;
+      victim->calculate_race_height(  );
+      victim->calculate_race_weight(  );
+
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->race = value;
-      ch->print( "victim race set.\r\n" );
+      ch->print( "Race set.\r\n" );
       return;
    }
 
@@ -1556,7 +1560,7 @@ CMDF( do_mset )
       victim->armor = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->ac = value;
-      ch->print( "victim ac set.\r\n" );
+      ch->print( "AC set.\r\n" );
       return;
    }
 
@@ -1567,7 +1571,7 @@ CMDF( do_mset )
       victim->gold = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->gold = value;
-      ch->print( "victim gold set.\r\n" );
+      ch->print( "Gold set.\r\n" );
       return;
    }
 
@@ -1589,7 +1593,7 @@ CMDF( do_mset )
 
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->exp = value;
-      ch->print( "victim experience value set.\r\n" );
+      ch->print( "Experience value set.\r\n" );
       return;
    }
 
@@ -1601,7 +1605,7 @@ CMDF( do_mset )
          return;
       }
       victim->max_hit = value;
-      ch->print( "victim hp set.\r\n" );
+      ch->print( "HP set.\r\n" );
       return;
    }
 
@@ -1615,7 +1619,7 @@ CMDF( do_mset )
       victim->max_mana = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->max_mana = value;
-      ch->print( "victim mana set.\r\n" );
+      ch->print( "Mana set.\r\n" );
       return;
    }
 
@@ -1629,7 +1633,7 @@ CMDF( do_mset )
       victim->max_move = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->max_move = value;
-      ch->print( "victim moves set.\r\n" );
+      ch->print( "Movement set.\r\n" );
       return;
    }
 
@@ -1647,7 +1651,7 @@ CMDF( do_mset )
          return;
       }
       victim->pcdata->practice = value;
-      ch->print( "victim practices set.\r\n" );
+      ch->print( "Practices set.\r\n" );
       return;
    }
 
@@ -1661,7 +1665,7 @@ CMDF( do_mset )
       victim->alignment = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->alignment = value;
-      ch->print( "victim alignment set.\r\n" );
+      ch->print( "Alignment set.\r\n" );
       return;
    }
 
@@ -1684,9 +1688,9 @@ CMDF( do_mset )
       }
       smash_tilde( argument );
       STRFREE( victim->pcdata->rank );
-      if( argument && argument[0] != '\0' && str_cmp( argument, "none" ) )
-         victim->pcdata->rank = STRALLOC( argument );
-      ch->print( "Ok.\r\n" );
+      if( !argument.empty(  ) && str_cmp( argument, "none" ) )
+         victim->pcdata->rank = STRALLOC( argument.c_str(  ) );
+      ch->print( "Rank set.\r\n" );
       return;
    }
 
@@ -1705,6 +1709,7 @@ CMDF( do_mset )
       }
 
       victim->pcdata->favor = value;
+      ch->print( "Favor set.\r\n" );
       return;
    }
 
@@ -1716,7 +1721,7 @@ CMDF( do_mset )
          return;
       }
       victim->mental_state = value;
-      ch->print( "victim mental state set.\r\n" );
+      ch->print( "Mental state set.\r\n" );
       return;
    }
 
@@ -1734,7 +1739,7 @@ CMDF( do_mset )
          return;
       }
       victim->pcdata->condition[COND_THIRST] = value;
-      ch->print( "victim thirst set.\r\n" );
+      ch->print( "Thirst set.\r\n" );
       return;
    }
 
@@ -1752,7 +1757,7 @@ CMDF( do_mset )
          return;
       }
       victim->pcdata->condition[COND_DRUNK] = value;
-      ch->print( "victim drunk set.\r\n" );
+      ch->print( "Drunk set.\r\n" );
       return;
    }
 
@@ -1764,7 +1769,7 @@ CMDF( do_mset )
          return;
       }
       victim->pcdata->age_bonus = value;
-      ch->print( "victim agemod set.\r\n" );
+      ch->print( "Agemod set.\r\n" );
       return;
    }
 
@@ -1782,7 +1787,7 @@ CMDF( do_mset )
          return;
       }
       victim->pcdata->condition[COND_FULL] = value;
-      ch->print( "victim hunger set.\r\n" );
+      ch->print( "Hunger set.\r\n" );
       return;
    }
 
@@ -1808,13 +1813,11 @@ CMDF( do_mset )
          ch->print( "Valid range for realm is 0 - 5. See 'help realms'.\r\n" );
          return;
       }
-      if( victim->pcdata )
-      {
-         victim->pcdata->realm = value;
-         victim->save(  );
-         build_wizinfo(  );
-         return;
-      }
+      victim->pcdata->realm = value;
+      victim->save(  );
+      build_wizinfo(  );
+      ch->print( "Realm set.\r\n" );
+      return;
    }
 
    if( !str_cmp( arg2, "clan" ) || !str_cmp( arg2, "guild" ) )
@@ -1832,7 +1835,7 @@ CMDF( do_mset )
          return;
       }
 
-      if( !arg3 || arg3[0] == '\0' )
+      if( arg3.empty(  ) )
       {
          /*
           * Crash bug fix, oops guess I should have caught this one :)
@@ -1852,15 +1855,19 @@ CMDF( do_mset )
                victim->pcdata->clan->members = 0;
             save_clan( victim->pcdata->clan );
          }
-         STRFREE( victim->pcdata->clan_name );
+         victim->pcdata->clan_name.clear(  );
          victim->pcdata->clan = NULL;
+         victim->save(  );
+         ch->print( "Clan removed.\r\n" );
          return;
       }
+
       if( !( clan = get_clan( arg3 ) ) )
       {
          ch->print( "No such clan.\r\n" );
          return;
       }
+
       if( victim->pcdata->clan != NULL && !victim->is_immortal(  ) )
       {
          remove_roster( victim->pcdata->clan, victim->name );
@@ -1869,8 +1876,7 @@ CMDF( do_mset )
             victim->pcdata->clan->members = 0;
          save_clan( victim->pcdata->clan );
       }
-      STRFREE( victim->pcdata->clan_name );
-      victim->pcdata->clan_name = QUICKLINK( clan->name );
+      victim->pcdata->clan_name = clan->name;
       victim->pcdata->clan = clan;
       if( !victim->is_immortal(  ) )
       {
@@ -1878,6 +1884,8 @@ CMDF( do_mset )
          ++victim->pcdata->clan->members;
          save_clan( victim->pcdata->clan );
       }
+      victim->save(  );
+      ch->print( "Clan set.\r\n" );
       return;
    }
 
@@ -1891,7 +1899,7 @@ CMDF( do_mset )
          return;
       }
 
-      if( !arg3 || arg3[0] == '\0' )
+      if( arg3.empty(  ) )
       {
          if( victim->pcdata->deity )
          {
@@ -1900,7 +1908,7 @@ CMDF( do_mset )
                victim->pcdata->deity->worshippers = 0;
             save_deity( victim->pcdata->deity );
          }
-         STRFREE( victim->pcdata->deity_name );
+         victim->pcdata->deity_name.clear(  );
          victim->pcdata->deity = NULL;
          ch->print( "Deity removed.\r\n" );
          return;
@@ -1919,51 +1927,51 @@ CMDF( do_mset )
             victim->pcdata->deity->worshippers = 0;
          save_deity( victim->pcdata->deity );
       }
-      STRFREE( victim->pcdata->deity_name );
-      victim->pcdata->deity_name = QUICKLINK( deity->name );
+      victim->pcdata->deity_name = deity->name;
       victim->pcdata->deity = deity;
       ++deity->worshippers;
       save_deity( deity );
-      ch->print( "Done.\r\n" );
+      ch->print( "Deity set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "short" ) )
    {
       STRFREE( victim->short_descr );
-      victim->short_descr = STRALLOC( arg3 );
+      victim->short_descr = STRALLOC( arg3.c_str(  ) );
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
          STRFREE( victim->pIndexData->short_descr );
          victim->pIndexData->short_descr = QUICKLINK( victim->short_descr );
       }
-      ch->print( "victim short description set.\r\n" );
+      ch->print( "Short description set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "long" ) )
    {
-      stralloc_printf( &victim->long_descr, "%s\r\n", arg3 );
+      stralloc_printf( &victim->long_descr, "%s\r\n", arg3.c_str(  ) );
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
          STRFREE( victim->pIndexData->long_descr );
          victim->pIndexData->long_descr = QUICKLINK( victim->long_descr );
       }
-      ch->print( "victim long description set.\r\n" );
+      ch->print( "Long description set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "description" ) || !str_cmp( arg2, "desc" ) )
    {
-      if( arg3 && arg3[0] != '\0' )
+      if( !arg3.empty(  ) )
       {
          STRFREE( victim->chardesc );
-         victim->chardesc = STRALLOC( arg3 );
+         victim->chardesc = STRALLOC( arg3.c_str(  ) );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->chardesc );
             victim->pIndexData->chardesc = QUICKLINK( victim->chardesc );
          }
+         ch->print( "Detailed description set.\r\n" );
          return;
       }
       ch->CHECK_SUBRESTRICTED(  );
@@ -1996,7 +2004,8 @@ CMDF( do_mset )
          ch->print( "Not on NPC's.\r\n" );
          return;
       }
-      set_title( victim, arg3 );
+      victim->set_title( arg3 );
+      ch->print( "Title set.\r\n" );
       return;
    }
 
@@ -2010,7 +2019,7 @@ CMDF( do_mset )
          return;
       }
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> flags <flag> [flag]...\r\n" );
          return;
@@ -2019,7 +2028,7 @@ CMDF( do_mset )
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          protoflag = true;
 
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
 
@@ -2028,7 +2037,7 @@ CMDF( do_mset )
             value = get_actflag( arg3 );
 
             if( value < 0 || value >= MAX_ACT_FLAG )
-               ch->printf( "Unknown flag: %s\r\n", arg3 );
+               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
             else if( value == ACT_PROTOTYPE && ch->level < sysdata->level_modify_proto )
                ch->print( "You cannot change the prototype flag.\r\n" );
             else if( value == ACT_IS_NPC )
@@ -2041,14 +2050,14 @@ CMDF( do_mset )
             value = get_pcflag( arg3 );
 
             if( value < 0 || value >= MAX_PCFLAG )
-               ch->printf( "Unknown flag: %s\r\n", arg3 );
+               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
             else
                victim->toggle_pcflag( value );
          }
       }
-      ch->print( "victim flags set.\r\n" );
+      ch->print( "Flags set.\r\n" );
       if( victim->has_actflag( ACT_PROTOTYPE ) || ( value == ACT_PROTOTYPE && protoflag ) )
-         victim->pIndexData->actflags = victim->get_actflags();
+         victim->pIndexData->actflags = victim->get_actflags(  );
       return;
    }
 
@@ -2060,23 +2069,24 @@ CMDF( do_mset )
          return;
       }
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> affected <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             victim->toggle_aflag( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->affected_by = victim->get_aflags();
-      ch->print( "victim affects set.\r\n" );
+         victim->pIndexData->affected_by = victim->get_aflags(  );
+      ch->print( "Affects set.\r\n" );
       return;
    }
 
@@ -2090,7 +2100,7 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s resistant %s", arg1, arg3 );
+      funcf( ch, do_mset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "i" ) )
@@ -2100,7 +2110,7 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s immune %s", arg1, arg3 );
+      funcf( ch, do_mset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "s" ) )
@@ -2110,7 +2120,7 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s susceptible %s", arg1, arg3 );
+      funcf( ch, do_mset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "ri" ) )
@@ -2120,8 +2130,8 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s resistant %s", arg1, arg3 );
-      funcf( ch, do_mset, "%s immune %s", arg1, arg3 );
+      funcf( ch, do_mset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "rs" ) )
@@ -2131,8 +2141,8 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s resistant %s", arg1, arg3 );
-      funcf( ch, do_mset, "%s susceptible %s", arg1, arg3 );
+      funcf( ch, do_mset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "is" ) )
@@ -2142,8 +2152,8 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s immune %s", arg1, arg3 );
-      funcf( ch, do_mset, "%s susceptible %s", arg1, arg3 );
+      funcf( ch, do_mset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "ris" ) )
@@ -2153,9 +2163,9 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s resistant %s", arg1, arg3 );
-      funcf( ch, do_mset, "%s immune %s", arg1, arg3 );
-      funcf( ch, do_mset, "%s susceptible %s", arg1, arg3 );
+      funcf( ch, do_mset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
@@ -2166,23 +2176,25 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's resistancies.\r\n" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> resistant <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             victim->toggle_resist( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->resistant = victim->get_resists();
-      ch->print( "victim resistances set.\r\n" );
+         victim->pIndexData->resistant = victim->get_resists(  );
+      ch->print( "Resistances set.\r\n" );
       return;
    }
 
@@ -2193,23 +2205,25 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's immunities.\r\n" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> immune <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             victim->toggle_immune( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->immune = victim->get_immunes();
-      ch->print( "victim immunities set.\r\n" );
+         victim->pIndexData->immune = victim->get_immunes(  );
+      ch->print( "Immunities set.\r\n" );
       return;
    }
 
@@ -2220,23 +2234,25 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's susceptibilities.\r\n" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> susceptible <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             victim->toggle_suscep( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->susceptible = victim->get_susceps();
-      ch->print( "victim susceptibilities set.\r\n" );
+         victim->pIndexData->susceptible = victim->get_susceps(  );
+      ch->print( "Susceptibilities set.\r\n" );
       return;
    }
 
@@ -2247,23 +2263,25 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's absorbs.\r\n" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> absorb <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             victim->toggle_absorb( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->absorb = victim->get_absorbs();
-      ch->print( "victim absorb set.\r\n" );
+         victim->pIndexData->absorb = victim->get_absorbs(  );
+      ch->print( "Absorbs set.\r\n" );
       return;
    }
 
@@ -2274,23 +2292,25 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's parts.\r\n" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> part <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_partflag( arg3 );
          if( value < 0 || value >= MAX_BPART )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             victim->toggle_bpart( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->body_parts = victim->get_bparts();
-      ch->print( "victim body parts set.\r\n" );
+         victim->pIndexData->body_parts = victim->get_bparts(  );
+      ch->print( "Body parts set.\r\n" );
       return;
    }
 
@@ -2316,6 +2336,7 @@ CMDF( do_mset )
          if( ch != victim )
             ch->print( "That player is now pkill.\r\n" );
       }
+
       if( victim->pcdata->clan && !victim->is_immortal(  ) )
       {
          if( victim->speaking == LANG_CLAN )
@@ -2325,13 +2346,13 @@ CMDF( do_mset )
          if( victim->pcdata->clan->members < 0 )
             victim->pcdata->clan->members = 0;
          if( !str_cmp( victim->name, victim->pcdata->clan->leader ) )
-            STRFREE( victim->pcdata->clan->leader );
+            victim->pcdata->clan->leader.clear(  );
          if( !str_cmp( victim->name, victim->pcdata->clan->number1 ) )
-            STRFREE( victim->pcdata->clan->number1 );
+            victim->pcdata->clan->number1.clear(  );
          if( !str_cmp( victim->name, victim->pcdata->clan->number2 ) )
-            STRFREE( victim->pcdata->clan->number2 );
+            victim->pcdata->clan->number2.clear(  );
          save_clan( victim->pcdata->clan );
-         STRFREE( victim->pcdata->clan_name );
+         victim->pcdata->clan_name.clear(  );
          victim->pcdata->clan = NULL;
       }
       victim->save(  );
@@ -2340,21 +2361,22 @@ CMDF( do_mset )
 
    if( !str_cmp( arg2, "speaks" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> speaks <language> [language] ...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_langnum( arg3 );
          if( value < 0 || value >= LANG_UNKNOWN )
-            ch->printf( "Unknown language: %s\r\n", arg3 );
+            ch->printf( "Unknown language: %s\r\n", arg3.c_str(  ) );
          else if( !victim->isnpc(  ) )
          {
             if( !( value &= VALID_LANGS ) )
-               ch->printf( "Players may not know %s.\r\n", arg3 );
+               ch->printf( "Players may not know %s.\r\n", arg3.c_str(  ) );
             else
                victim->toggle_lang( value );
          }
@@ -2362,14 +2384,14 @@ CMDF( do_mset )
             victim->toggle_lang( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->speaks = victim->get_langs();
-      ch->print( "Done.\r\n" );
+         victim->pIndexData->speaks = victim->get_langs(  );
+      ch->print( "Speaks languages set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "speaking" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> speaking <language>\r\n" );
          return;
@@ -2378,12 +2400,12 @@ CMDF( do_mset )
       argument = one_argument( argument, arg3 );
       value = get_langnum( arg3 );
       if( value < 0 || value >= LANG_UNKNOWN )
-         ch->printf( "Unknown language: %s\r\n", arg3 );
+         ch->printf( "Unknown language: %s\r\n", arg3.c_str(  ) );
       else
          victim->speaking = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->speaking = victim->speaking;
-      ch->print( "Done.\r\n" );
+      ch->print( "Speaking language set.\r\n" );
       return;
    }
 
@@ -2397,13 +2419,13 @@ CMDF( do_mset )
          return;
       }
       victim->style = value;
-      ch->print( "victim style set.\r\n" );
+      ch->print( "Fighting style set.\r\n" );
       return;
    }
 
    if( !victim->isnpc(  ) )
    {
-      ch->printf( "Cannot change %s on PC's.\r\n", arg2 );
+      ch->printf( "Cannot change %s on PC's.\r\n", arg2.c_str(  ) );
       return;
    }
 
@@ -2417,7 +2439,7 @@ CMDF( do_mset )
       victim->level = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->level = value;
-      ch->print( "victim level set.\r\n" );
+      ch->print( "Level set.\r\n" );
       return;
    }
 
@@ -2431,7 +2453,7 @@ CMDF( do_mset )
       victim->numattacks = ( float )( value );
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->numattacks = ( float )( value );
-      ch->print( "victim numattacks set.\r\n" );
+      ch->print( "Numattacks set.\r\n" );
       return;
    }
 
@@ -2443,20 +2465,20 @@ CMDF( do_mset )
       victim->mobthac0 = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->mobthac0 = value;
-      ch->print( "victim thac0 set.\r\n" );
+      ch->print( "Thac0 set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "name" ) )
    {
-      if( !arg3 || arg3[0] == '\0' )
+      if( arg3.empty(  ) )
       {
          ch->print( "Cannot set empty keywords!\r\n" );
          return;
       }
 
       STRFREE( victim->name );
-      victim->name = STRALLOC( arg3 );
+      victim->name = STRALLOC( arg3.c_str(  ) );
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
          STRFREE( victim->pIndexData->player_name );
@@ -2473,12 +2495,12 @@ CMDF( do_mset )
       if( !str_cmp( arg3, "none" ) )
       {
          victim->spec_fun = NULL;
-         victim->spec_funname.clear();
+         victim->spec_funname.clear(  );
          ch->print( "Special function removed.\r\n" );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             victim->pIndexData->spec_fun = NULL;
-            victim->pIndexData->spec_funname.clear();
+            victim->pIndexData->spec_funname.clear(  );
          }
          return;
       }
@@ -2491,7 +2513,7 @@ CMDF( do_mset )
 
       if( !validate_spec_fun( arg3 ) )
       {
-         ch->printf( "%s is not a valid spec_fun for mobiles.\r\n", arg3 );
+         ch->printf( "%s is not a valid spec_fun for mobiles.\r\n", arg3.c_str(  ) );
          return;
       }
 
@@ -2502,51 +2524,53 @@ CMDF( do_mset )
          victim->pIndexData->spec_fun = victim->spec_fun;
          victim->pIndexData->spec_funname = arg3;
       }
-      ch->print( "victim special function set.\r\n" );
+      ch->print( "Special function set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "attack" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> attack <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_attackflag( arg3 );
          if( value < 0 || value >= MAX_ATTACK_TYPE )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             victim->toggle_attack( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->attacks = victim->get_attacks();
-      ch->print( "victim attacks set.\r\n" );
+         victim->pIndexData->attacks = victim->get_attacks(  );
+      ch->print( "Attacks set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "defense" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: mset <victim> defense <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_defenseflag( arg3 );
          if( value < 0 || value >= MAX_DEFENSE_TYPE )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             victim->toggle_defense( value );
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
-         victim->pIndexData->defenses = victim->get_defenses();
-      ch->print( "victim defenses set.\r\n" );
+         victim->pIndexData->defenses = victim->get_defenses(  );
+      ch->print( "Defenses set.\r\n" );
       return;
    }
 
@@ -2562,7 +2586,7 @@ CMDF( do_mset )
       victim->position = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->position = victim->position;
-      ch->print( "victim position set.\r\n" );
+      ch->print( "Position set.\r\n" );
       return;
    }
 
@@ -2578,7 +2602,7 @@ CMDF( do_mset )
       victim->defposition = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->defposition = victim->defposition;
-      ch->print( "victim default position set.\r\n" );
+      ch->print( "Default position set.\r\n" );
       return;
    }
 
@@ -2587,10 +2611,10 @@ CMDF( do_mset )
     */
    if( !str_cmp( arg2, "hitdie" ) )
    {
-      sscanf( arg3, "%d %c %d %c %d", &num, &char1, &size, &char2, &plus );
-      funcf( ch, do_mset, "%s hitnumdie %d", arg1, num );
-      funcf( ch, do_mset, "%s hitsizedie %d", arg1, size );
-      funcf( ch, do_mset, "%s hitplus %d", arg1, plus );
+      sscanf( arg3.c_str(  ), "%d %c %d %c %d", &num, &char1, &size, &char2, &plus );
+      funcf( ch, do_mset, "%s hitnumdie %d", arg1.c_str(  ), num );
+      funcf( ch, do_mset, "%s hitsizedie %d", arg1.c_str(  ), size );
+      funcf( ch, do_mset, "%s hitplus %d", arg1.c_str(  ), plus );
       return;
    }
 
@@ -2599,10 +2623,10 @@ CMDF( do_mset )
     */
    if( !str_cmp( arg2, "damdie" ) )
    {
-      sscanf( arg3, "%d %c %d %c %d", &num, &char1, &size, &char2, &plus );
-      funcf( ch, do_mset, "%s damnumdie %d", arg1, num );
-      funcf( ch, do_mset, "%s damsizedie %d", arg1, size );
-      funcf( ch, do_mset, "%s damplus %d", arg1, plus );
+      sscanf( arg3.c_str(  ), "%d %c %d %c %d", &num, &char1, &size, &char2, &plus );
+      funcf( ch, do_mset, "%s damnumdie %d", arg1.c_str(  ), num );
+      funcf( ch, do_mset, "%s damsizedie %d", arg1.c_str(  ), size );
+      funcf( ch, do_mset, "%s damplus %d", arg1.c_str(  ), plus );
       return;
    }
 
@@ -2615,7 +2639,7 @@ CMDF( do_mset )
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->hitnodice = value;
-      ch->print( "victim hp dice number set.\r\n" );
+      ch->print( "HP dice number set.\r\n" );
       return;
    }
 
@@ -2628,7 +2652,7 @@ CMDF( do_mset )
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->hitsizedice = value;
-      ch->print( "victim hp dice size set.\r\n" );
+      ch->print( "HP dice size set.\r\n" );
       return;
    }
 
@@ -2641,7 +2665,7 @@ CMDF( do_mset )
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->hitplus = value;
-      ch->print( "victim hp bonus set.\r\n" );
+      ch->print( "HP bonus set.\r\n" );
       return;
    }
 
@@ -2654,7 +2678,7 @@ CMDF( do_mset )
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->damnodice = value;
-      ch->print( "victim damage dice number set.\r\n" );
+      ch->print( "Damage dice number set.\r\n" );
       return;
    }
 
@@ -2667,7 +2691,7 @@ CMDF( do_mset )
       }
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->damsizedice = value;
-      ch->print( "victim damage dice size set.\r\n" );
+      ch->print( "Damage dice size set.\r\n" );
       return;
    }
 
@@ -2681,7 +2705,7 @@ CMDF( do_mset )
 
       if( victim->has_actflag( ACT_PROTOTYPE ) )
          victim->pIndexData->damplus = value;
-      ch->print( "victim damage bonus set.\r\n" );
+      ch->print( "Damage bonus set.\r\n" );
       return;
    }
 
@@ -2697,16 +2721,15 @@ CMDF( do_mset )
    }
    else
       do_mset( ch, "" );
-   return;
 }
 
 CMDF( do_oset )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    obj_data *obj, *tmpobj;
    extra_descr_data *ed;
    bool lockobj;
-   char *origarg = argument;
+   string origarg = argument;
 
    int value, tmp;
 
@@ -2743,8 +2766,8 @@ CMDF( do_oset )
           * the object and index-object lists, searching through the
           * extra_descr lists for a matching pointer...
           */
-         ed  = (extra_descr_data *)ch->pcdata->dest_buf;
-         ed->desc = ch->copy_buffer();
+         ed = ( extra_descr_data * ) ch->pcdata->dest_buf;
+         ed->desc = ch->copy_buffer(  );
          tmpobj = ( obj_data * ) ch->pcdata->spare_ptr;
          ch->stop_editing(  );
          ch->pcdata->dest_buf = tmpobj;
@@ -2799,7 +2822,7 @@ CMDF( do_oset )
          ch->print( "Your object was extracted!\r\n" );
          argument = "done";
       }
-      if( argument[0] == '\0' || !str_cmp( argument, " " ) || !str_cmp( argument, "stat" ) )
+      if( argument.empty(  ) || !str_cmp( argument, " " ) || !str_cmp( argument, "stat" ) )
       {
          if( obj )
             funcf( ch, do_ostat, "%d", obj->pIndexData->vnum );
@@ -2818,19 +2841,20 @@ CMDF( do_oset )
          return;
       }
    }
+
    if( obj )
    {
       lockobj = true;
-      mudstrlcpy( arg1, obj->name, MIL );
+      arg1 = obj->name;
       argument = one_argument( argument, arg2 );
-      mudstrlcpy( arg3, argument, MIL );
+      arg3 = argument;
    }
    else
    {
       lockobj = false;
       argument = one_argument( argument, arg1 );
       argument = one_argument( argument, arg2 );
-      mudstrlcpy( arg3, argument, MIL );
+      arg3 = argument;
    }
 
    if( !str_cmp( arg1, "on" ) )
@@ -2839,7 +2863,7 @@ CMDF( do_oset )
       return;
    }
 
-   if( arg1[0] == '\0' || arg2[0] == '\0' || !str_cmp( arg1, "?" ) )
+   if( arg1.empty(  ) || arg2.empty(  ) || !str_cmp( arg1, "?" ) || !str_cmp( arg1, "help" ) )
    {
       if( ch->substate == SUB_REPEATCMD )
       {
@@ -2886,7 +2910,7 @@ CMDF( do_oset )
       ch->pcdata->dest_buf = obj;
 
    obj->separate(  );
-   value = atoi( arg3 );
+   value = atoi( arg3.c_str(  ) );
 
    if( !can_omodify( ch, obj ) )
       return;
@@ -2911,7 +2935,7 @@ CMDF( do_oset )
       }
 
       STRFREE( obj->owner );
-      obj->owner = STRALLOC( arg3 );
+      obj->owner = STRALLOC( arg3.c_str(  ) );
       ch->print( "Object owner set.\r\n" );
       return;
    }
@@ -2920,7 +2944,7 @@ CMDF( do_oset )
    {
       bool proto = false;
 
-      if( !arg3 || arg3[0] == '\0' )
+      if( arg3.empty(  ) )
       {
          ch->print( "Cannot set empty keywords!\r\n" );
          return;
@@ -2929,7 +2953,7 @@ CMDF( do_oset )
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          proto = true;
       STRFREE( obj->name );
-      obj->name = STRALLOC( arg3 );
+      obj->name = STRALLOC( arg3.c_str(  ) );
       if( proto )
       {
          STRFREE( obj->pIndexData->name );
@@ -2941,10 +2965,11 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "short" ) )
    {
+      STRFREE( obj->short_descr );
+      obj->short_descr = STRALLOC( arg3.c_str(  ) );
+
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
-         STRFREE( obj->short_descr );
-         obj->short_descr = STRALLOC( arg3 );
          STRFREE( obj->pIndexData->short_descr );
          obj->pIndexData->short_descr = QUICKLINK( obj->short_descr );
       }
@@ -2955,8 +2980,6 @@ CMDF( do_oset )
           * * if it is not already there.
           */
       {
-         STRFREE( obj->short_descr );
-         obj->short_descr = STRALLOC( arg3 );
          if( str_infix( "rename", obj->name ) )
             stralloc_printf( &obj->name, "%s %s", obj->name, "rename" );
       }
@@ -2966,10 +2989,10 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "long" ) )
    {
-      if( arg3 && arg3[0] != '\0' )
+      if( !arg3.empty(  ) )
       {
          STRFREE( obj->objdesc );
-         obj->objdesc = STRALLOC( arg3 );
+         obj->objdesc = STRALLOC( arg3.c_str(  ) );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->objdesc );
@@ -3175,7 +3198,7 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "type" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: oset <object> type <type>\r\n" );
          return;
@@ -3183,29 +3206,30 @@ CMDF( do_oset )
       value = get_otype( argument );
       if( value < 1 )
       {
-         ch->printf( "Unknown type: %s\r\n", arg3 );
+         ch->printf( "Unknown type: %s\r\n", arg3.c_str(  ) );
          return;
       }
       obj->item_type = ( short )value;
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          obj->pIndexData->item_type = obj->item_type;
-      ch->printf( "Object type set to %s.\r\n", arg3 );
+      ch->printf( "Object type set to %s.\r\n", arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "flags" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: oset <object> flags <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_oflag( arg3 );
          if( value < 0 || value >= MAX_ITEM_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
          {
             if( value == ITEM_PROTOTYPE && ch->get_trust(  ) < sysdata->level_modify_proto )
@@ -3226,17 +3250,18 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "wear" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: oset <object> wear <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_wflag( arg3 );
          if( value < 0 || value >= MAX_WEAR_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             obj->wear_flags.flip( value );
       }
@@ -3328,20 +3353,20 @@ CMDF( do_oset )
    if( !str_cmp( arg2, "prizeowner" ) || !str_cmp( arg2, "owner" ) )
    {
       STRFREE( obj->owner );
-      obj->owner = STRALLOC( arg3 );
+      obj->owner = STRALLOC( arg3.c_str(  ) );
       ch->print( "Object prize ownership changed.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "actiondesc" ) )
    {
-      if( strstr( arg3, "%n" ) || strstr( arg3, "%d" ) || strstr( arg3, "%l" ) )
+      if( strstr( arg3.c_str(  ), "%n" ) || strstr( arg3.c_str(  ), "%d" ) || strstr( arg3.c_str(  ), "%l" ) )
       {
          ch->print( "Illegal characters!\r\n" );
          return;
       }
       STRFREE( obj->action_desc );
-      obj->action_desc = STRALLOC( arg3 );
+      obj->action_desc = STRALLOC( arg3.c_str(  ) );
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
          STRFREE( obj->pIndexData->action_desc );
@@ -3364,7 +3389,7 @@ CMDF( do_oset )
       risabit.reset(  );
 
       argument = one_argument( argument, arg2 );
-      if( !arg2 || arg2[0] == '\0' || !argument || argument[0] == '\0' )
+      if( arg2.empty(  ) || argument.empty(  ) )
       {
          ch->print( "Usage: oset <object> affect <field> <value>\r\n" );
          return;
@@ -3372,7 +3397,7 @@ CMDF( do_oset )
       loc = get_atype( arg2 );
       if( loc < 1 )
       {
-         ch->printf( "Unknown field: %s\r\n", arg2 );
+         ch->printf( "Unknown field: %s\r\n", arg2.c_str(  ) );
          return;
       }
       if( loc == APPLY_AFFECT )
@@ -3383,23 +3408,22 @@ CMDF( do_oset )
             value = get_aflag( arg3 );
 
             if( value < 0 || value >= MAX_AFFECTED_BY )
-               ch->printf( "Unknown affect: %s\r\n", arg3 );
+               ch->printf( "Unknown affect: %s\r\n", arg3.c_str(  ) );
             else
                found = true;
          }
       }
       else if( loc == APPLY_RESISTANT || loc == APPLY_IMMUNE || loc == APPLY_SUSCEPTIBLE || loc == APPLY_ABSORB )
       {
-         char *risa = arg3;
-         char flag[MIL];
+         string flag;
 
-         while( risa[0] != '\0' )
+         while( !arg3.empty(  ) )
          {
-            risa = one_argument( risa, flag );
+            arg3 = one_argument( arg3, flag );
             value = get_risflag( flag );
 
             if( value < 0 || value >= MAX_RIS_FLAG )
-               ch->printf( "Unknown flag: %s\r\n", flag );
+               ch->printf( "Unknown flag: %s\r\n", flag.c_str(  ) );
             else
             {
                risabit.set( value );
@@ -3408,19 +3432,18 @@ CMDF( do_oset )
          }
       }
       else if( loc == APPLY_WEAPONSPELL
-               || loc == APPLY_WEARSPELL
-               || loc == APPLY_REMOVESPELL || loc == APPLY_STRIPSN || loc == APPLY_RECURRINGSPELL || loc == APPLY_EAT_SPELL )
+               || loc == APPLY_WEARSPELL || loc == APPLY_REMOVESPELL || loc == APPLY_STRIPSN || loc == APPLY_RECURRINGSPELL || loc == APPLY_EAT_SPELL )
       {
          value = skill_lookup( arg3 );
 
          if( !IS_VALID_SN( value ) )
-            ch->printf( "Invalid spell: %s", arg3 );
+            ch->printf( "Invalid spell: %s", arg3.c_str(  ) );
          else
             found = true;
       }
       else
       {
-         value = atoi( arg3 );
+         value = atoi( arg3.c_str(  ) );
          found = true;
       }
       if( !found )
@@ -3437,14 +3460,14 @@ CMDF( do_oset )
       {
          if( loc != APPLY_WEARSPELL && loc != APPLY_REMOVESPELL && loc != APPLY_STRIPSN && loc != APPLY_WEAPONSPELL )
          {
-            list<char_data*>::iterator ich;
-            list<obj_data*>::iterator iobj;
+            list < char_data * >::iterator ich;
+            list < obj_data * >::iterator iobj;
 
-            for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+            for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
             {
                char_data *vch = *ich;
 
-               for( iobj = vch->carrying.begin(); iobj != vch->carrying.end(); ++iobj )
+               for( iobj = vch->carrying.begin(  ); iobj != vch->carrying.end(  ); ++iobj )
                {
                   obj_data *eq = *iobj;
 
@@ -3464,15 +3487,15 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "rmaffect" ) )
    {
-      list<affect_data*>::iterator paf;
+      list < affect_data * >::iterator paf;
       short loc, count;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: oset <object> rmaffect <affect#>\r\n" );
          return;
       }
-      loc = atoi( argument );
+      loc = atoi( argument.c_str(  ) );
       if( loc < 1 )
       {
          ch->print( "Invalid number.\r\n" );
@@ -3486,9 +3509,9 @@ CMDF( do_oset )
          obj_index *pObjIndex;
 
          pObjIndex = obj->pIndexData;
-         for( paf = pObjIndex->affects.begin(); paf != pObjIndex->affects.end(); )
+         for( paf = pObjIndex->affects.begin(  ); paf != pObjIndex->affects.end(  ); )
          {
-            affect_data *aff = (*paf);
+            affect_data *aff = *paf;
             ++paf;
 
             if( ++count == loc )
@@ -3503,12 +3526,13 @@ CMDF( do_oset )
          ch->print( "Object affect not found.\r\n" );
          return;
       }
+
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
          obj_index *pObjIndex;
 
          pObjIndex = obj->pIndexData;
-         for( paf = pObjIndex->affects.begin(); paf != pObjIndex->affects.end(); )
+         for( paf = pObjIndex->affects.begin(  ); paf != pObjIndex->affects.end(  ); )
          {
             affect_data *aff = *paf;
             ++paf;
@@ -3517,14 +3541,14 @@ CMDF( do_oset )
             {
                pObjIndex->affects.remove( aff );
 
-               list<char_data*>::iterator ich;
-               list<obj_data*>::iterator iobj;
+               list < char_data * >::iterator ich;
+               list < obj_data * >::iterator iobj;
 
-               for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+               for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
                {
                   char_data *vch = *ich;
 
-                  for( iobj = vch->carrying.begin(); iobj != vch->carrying.end(); ++iobj )
+                  for( iobj = vch->carrying.begin(  ); iobj != vch->carrying.end(  ); ++iobj )
                   {
                      obj_data *eq = *iobj;
 
@@ -3543,9 +3567,9 @@ CMDF( do_oset )
       }
       else
       {
-         for( paf = obj->affects.begin(); paf != obj->affects.end(); )
+         for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); )
          {
-            affect_data *aff = (*paf);
+            affect_data *aff = *paf;
             ++paf;
 
             if( ++count == loc )
@@ -3564,7 +3588,7 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "ed" ) )
    {
-      if( !arg3 || arg3[0] == '\0' )
+      if( arg3.empty(  ) )
       {
          ch->print( "Syntax: oset <object> ed <keywords>\r\n" );
          return;
@@ -3594,15 +3618,14 @@ CMDF( do_oset )
          ch->pcdata->spare_ptr = NULL;
       ch->substate = SUB_OBJ_EXTRA;
       ch->pcdata->dest_buf = ed;
-      ch->editor_desc_printf( "Extra description '%s' on object vnum %d (%s).",
-                              arg3, obj->pIndexData->vnum, obj->short_descr );
+      ch->editor_desc_printf( "Extra description '%s' on object vnum %d (%s).", arg3.c_str(  ), obj->pIndexData->vnum, obj->short_descr );
       ch->start_editing( ed->desc );
       return;
    }
 
    if( !str_cmp( arg2, "rmed" ) )
    {
-      if( !arg3 || arg3[0] == '\0' )
+      if( arg3.empty(  ) )
       {
          ch->print( "Syntax: oset <object> rmed <keywords>\r\n" );
          return;
@@ -3634,47 +3657,47 @@ CMDF( do_oset )
     */
    if( !str_cmp( arg2, "ris" ) )
    {
-      funcf( ch, do_oset, "%s affect resistant %s", arg1, arg3 );
-      funcf( ch, do_oset, "%s affect immune %s", arg1, arg3 );
-      funcf( ch, do_oset, "%s affect susceptible %s", arg1, arg3 );
+      funcf( ch, do_oset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "r" ) )
    {
-      funcf( ch, do_oset, "%s affect resistant %s", arg1, arg3 );
+      funcf( ch, do_oset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "i" ) )
    {
-      funcf( ch, do_oset, "%s affect immune %s", arg1, arg3 );
+      funcf( ch, do_oset, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "s" ) )
    {
-      funcf( ch, do_oset, "%s affect susceptible %s", arg1, arg3 );
+      funcf( ch, do_oset, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "ri" ) )
    {
-      funcf( ch, do_oset, "%s affect resistant %s", arg1, arg3 );
-      funcf( ch, do_oset, "%s affect immune %s", arg1, arg3 );
+      funcf( ch, do_oset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "rs" ) )
    {
-      funcf( ch, do_oset, "%s affect resistant %s", arg1, arg3 );
-      funcf( ch, do_oset, "%s affect susceptible %s", arg1, arg3 );
+      funcf( ch, do_oset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "is" ) )
    {
-      funcf( ch, do_oset, "%s affect immune %s", arg1, arg3 );
-      funcf( ch, do_oset, "%s affect susceptible %s", arg1, arg3 );
+      funcf( ch, do_oset, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
@@ -3692,7 +3715,7 @@ CMDF( do_oset )
          if( !str_cmp( arg2, "missiletype" ) )
          {
             value = -1;
-            for( unsigned int x = 0; x < sizeof( projectiles ) / sizeof( projectiles[0] ); ++x )
+            for( size_t x = 0; x < sizeof( projectiles ) / sizeof( projectiles[0] ); ++x )
                if( !str_cmp( arg3, projectiles[x] ) )
                   value = x;
             if( value < 0 )
@@ -3707,7 +3730,7 @@ CMDF( do_oset )
          if( !str_cmp( arg2, "damtype" ) )
          {
             value = -1;
-            for( unsigned int x = 0; x < sizeof( attack_table ) / sizeof( attack_table[0] ); ++x )
+            for( size_t x = 0; x < sizeof( attack_table ) / sizeof( attack_table[0] ); ++x )
                if( !str_cmp( arg3, attack_table[x] ) )
                   value = x;
             if( value < 0 )
@@ -3724,7 +3747,7 @@ CMDF( do_oset )
          if( !str_cmp( arg2, "weapontype" ) )
          {
             value = -1;
-            for( unsigned int x = 0; x < sizeof( weapon_skills ) / sizeof( weapon_skills[0] ); ++x )
+            for( size_t x = 0; x < sizeof( weapon_skills ) / sizeof( weapon_skills[0] ); ++x )
                if( !str_cmp( arg3, weapon_skills[x] ) )
                   value = x;
             if( value < 0 )
@@ -3739,7 +3762,7 @@ CMDF( do_oset )
          if( !str_cmp( arg2, "damtype" ) )
          {
             value = -1;
-            for( unsigned int x = 0; x < sizeof( attack_table ) / sizeof( attack_table[0] ); ++x )
+            for( size_t x = 0; x < sizeof( attack_table ) / sizeof( attack_table[0] ); ++x )
                if( !str_cmp( arg3, attack_table[x] ) )
                   value = x;
             if( value < 0 )
@@ -3833,12 +3856,12 @@ CMDF( do_oset )
 
             tmp = 0;
             argument = arg3;
-            while( argument && argument[0] != '\0' )
+            while( !argument.empty(  ) )
             {
                argument = one_argument( argument, arg3 );
                value = get_trigflag( arg3 );
                if( value < 0 || value > 31 )
-                  ch->printf( "Invalid tflag %s\r\n", arg3 );
+                  ch->printf( "Invalid tflag %s\r\n", arg3.c_str(  ) );
                else
                   tmpval += ( 1 << value );
             }
@@ -3867,13 +3890,12 @@ CMDF( do_oset )
    }
    else
       do_oset( ch, "" );
-   return;
 }
 
 /*
  * Returns value 0 - 9 based on directional text.
  */
-int get_dir( char *txt )
+int get_dir( const string & txt )
 {
    int edir;
    char c1, c2;
@@ -3931,7 +3953,10 @@ int get_dir( char *txt )
 
       case 'e':
       case '1':
-         edir = DIR_EAST;
+         if( c2 == '0' )
+            edir = DIR_SOMEWHERE;
+         else
+            edir = DIR_EAST;
          break;   /* east  */
 
       case 's':
@@ -3996,12 +4021,12 @@ int get_dir( char *txt )
 
 CMDF( do_redit )
 {
-   char arg[MIL], arg2[MIL], arg3[MIL];
+   string arg, arg2, arg3;
    room_index *location, *tmp;
    extra_descr_data *ed;
    exit_data *xit, *texit;
    int value = 0, edir = 0, ekey, evnum;
-   char *origarg = argument;
+   string origarg = argument;
 
    ch->set_color( AT_PLAIN );
    if( !ch->desc )
@@ -4048,13 +4073,13 @@ CMDF( do_redit )
          return;
 
       case SUB_ROOM_EXTRA:
-         if( !( ed = (extra_descr_data*)ch->pcdata->dest_buf ) )
+         if( !( ed = ( extra_descr_data * ) ch->pcdata->dest_buf ) )
          {
             bug( "%s: sub_room_extra: NULL ch->pcdata->dest_buf", __FUNCTION__ );
             ch->stop_editing(  );
             return;
          }
-         ed->desc = ch->copy_buffer();
+         ed->desc = ch->copy_buffer(  );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          return;
@@ -4072,7 +4097,7 @@ CMDF( do_redit )
 
    if( ch->substate == SUB_REPEATCMD )
    {
-      if( !arg || arg[0] == '\0' )
+      if( arg.empty(  ) )
       {
          do_rstat( ch, "" );
          return;
@@ -4086,7 +4111,7 @@ CMDF( do_redit )
       }
    }
 
-   if( !arg || arg[0] == '\0' || !str_cmp( arg, "?" ) )
+   if( arg.empty(  ) || !str_cmp( arg, "?" ) || !str_cmp( arg, "help" ) )
    {
       if( ch->substate == SUB_REPEATCMD )
          ch->print( "Syntax: <field> value\r\n\r\n" );
@@ -4094,7 +4119,7 @@ CMDF( do_redit )
          ch->print( "Syntax: redit <field> value\r\n\r\n" );
       ch->print( "Field being one of:\r\n" );
       ch->print( "  name desc nitedesc ed rmed\r\n" );
-      ch->print( "  affect indexaffect rmaffect rmindexaffect\r\n" );
+      ch->print( "  affect permaffect rmaffect rmpermaffect\r\n" );
       ch->print( "  exit bexit exdesc exflags exname exkey excoord\r\n" );
       ch->print( "  flags sector teledelay televnum tunnel light\r\n" );
       ch->print( "  rlist pulltype pull push\r\n" );
@@ -4116,14 +4141,14 @@ CMDF( do_redit )
 
    if( !str_cmp( arg, "name" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the room name. A very brief single line room description.\r\n" );
          ch->print( "Usage: redit name <Room summary>\r\n" );
          return;
       }
       STRFREE( location->name );
-      location->name = STRALLOC( argument );
+      location->name = STRALLOC( argument.c_str(  ) );
       ch->print( "Room name set.\r\n" );
       return;
    }
@@ -4161,22 +4186,36 @@ CMDF( do_redit )
       return;
    }
 
+   // Imported from Smaug 1.8
+   if( !str_cmp( arg, "max_weight" ) || !str_cmp( arg, "maxweight" ) )
+   {
+      if( argument.empty(  ) )
+      {
+         ch->print( "Set the maximum weight this room can hold.\r\n" );
+         ch->print( "Usage: redit max_weight <value>\r\n" );
+         return;
+      }
+      location->max_weight = URANGE( 0, atoi( argument.c_str(  ) ), 100000 );
+      ch->print( "Max weight value set.\r\n" );
+      return;
+   }
+
    if( !str_cmp( arg, "tunnel" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the maximum characters allowed in the room at one time. (0 = unlimited).\r\n" );
          ch->print( "Usage: redit tunnel <value>\r\n" );
          return;
       }
-      location->tunnel = URANGE( 0, atoi( argument ), 1000 );
+      location->tunnel = URANGE( 0, atoi( argument.c_str(  ) ), 1000 );
       ch->print( "Tunnel value set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg, "light" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the brightness of light in this room.\r\n" );
          ch->print( "Negative values can indicate magical darkness.\r\n" );
@@ -4185,13 +4224,13 @@ CMDF( do_redit )
          ch->print( "Usage: redit light <value>\r\n" );
          return;
       }
-      location->baselight = URANGE( -32000, atoi( argument ), 32000 );
+      location->baselight = URANGE( -32000, atoi( argument.c_str(  ) ), 32000 );
       ch->print( "Light value set.\r\n" );
       return;
    }
 
    // Offloaded the logic to room->olc_add_affect() in roomindex.cpp
-   if( !str_cmp( arg, "indexaffect" ) )
+   if( !str_cmp( arg, "permaffect" ) )
    {
       location->olc_add_affect( ch, true, argument );
       return;
@@ -4204,7 +4243,7 @@ CMDF( do_redit )
    }
 
    // Offloaded the logic to room->olc_remove_affect() in roomindex.cpp
-   if( !str_cmp( arg, "rmindexaffect" ) )
+   if( !str_cmp( arg, "rmpermaffect" ) )
    {
       location->olc_remove_affect( ch, true, argument );
       return;
@@ -4218,7 +4257,7 @@ CMDF( do_redit )
 
    if( !str_cmp( arg, "ed" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Create an extra description.\r\n" );
          ch->print( "You must supply keyword(s).\r\n" );
@@ -4232,14 +4271,14 @@ CMDF( do_redit )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_ROOM_EXTRA;
       ch->pcdata->dest_buf = ed;
-      ch->editor_desc_printf( "Extra description '%s' on room %d (%s).", argument, location->vnum, location->name );
+      ch->editor_desc_printf( "Extra description '%s' on room %d (%s).", argument.c_str(  ), location->vnum, location->name );
       ch->start_editing( ed->desc );
       return;
    }
 
    if( !str_cmp( arg, "rmed" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Remove an extra description.\r\n" );
          ch->print( "You must supply keyword(s).\r\n" );
@@ -4258,19 +4297,19 @@ CMDF( do_redit )
 
    if( !str_cmp( arg, "rlist" ) )
    {
-      list<reset_data*>::iterator rst;
+      list < reset_data * >::iterator rst;
       char *rbuf;
 
-      if( location->resets.empty() )
+      if( location->resets.empty(  ) )
       {
          ch->print( "This room has no resets to list.\r\n" );
          return;
       }
 
       short num = 0;
-      for( rst = location->resets.begin(); rst != location->resets.end(); ++rst )
+      for( rst = location->resets.begin(  ); rst != location->resets.end(  ); ++rst )
       {
-         reset_data *pReset = (*rst);
+         reset_data *pReset = *rst;
 
          ++num;
          if( !( rbuf = sprint_reset( pReset, num ) ) )
@@ -4282,18 +4321,19 @@ CMDF( do_redit )
 
    if( !str_cmp( arg, "flags" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Toggle the room flags.\r\n" );
          ch->print( "Usage: redit flags <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg2 );
          value = get_rflag( arg2 );
          if( value < 0 || value >= ROOM_MAX )
-            ch->printf( "Unknown flag: %s\r\n", arg2 );
+            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
          else
          {
             if( value == ROOM_PROTOTYPE && ch->level < sysdata->level_modify_proto )
@@ -4308,13 +4348,13 @@ CMDF( do_redit )
 
    if( !str_cmp( arg, "teledelay" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the delay of the teleport. (0 = off).\r\n" );
          ch->print( "Usage: redit teledelay <value>\r\n" );
          return;
       }
-      location->tele_delay = atoi( argument );
+      location->tele_delay = atoi( argument.c_str(  ) );
       ch->print( "Teledelay set.\r\n" );
       return;
    }
@@ -4324,13 +4364,13 @@ CMDF( do_redit )
       room_index *temp = NULL;
       int tvnum;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the vnum of the room to teleport to.\r\n" );
          ch->print( "Usage: redit televnum <vnum>\r\n" );
          return;
       }
-      tvnum = atoi( argument );
+      tvnum = atoi( argument.c_str(  ) );
       if( tvnum < 1 || tvnum > sysdata->maxvnum )
       {
          ch->printf( "Invalid vnum. Allowable range is 1 to %d\r\n", sysdata->maxvnum );
@@ -4351,7 +4391,7 @@ CMDF( do_redit )
     */
    if( !str_cmp( arg, "sector" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the sector type.\r\n" );
          ch->print( "Usage: redit sector <name>\r\n" );
@@ -4367,7 +4407,7 @@ CMDF( do_redit )
       else
       {
          location->sector_type = value;
-         ch->printf( "Sector type set to %s.\r\n", arg2 );
+         ch->printf( "Sector type set to %s.\r\n", arg2.c_str(  ) );
       }
       return;
    }
@@ -4376,14 +4416,14 @@ CMDF( do_redit )
    {
       argument = one_argument( argument, arg2 );
       argument = one_argument( argument, arg3 );
-      if( arg2[0] == '\0' || arg3[0] == '\0' )
+      if( arg2.empty(  ) || arg3.empty(  ) )
       {
          ch->print( "Usage: redit exkey <dir> <key vnum>\r\n" );
          return;
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2 + 1 );
+         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4391,10 +4431,10 @@ CMDF( do_redit )
          edir = get_dir( arg2 );
          xit = location->get_exit( edir );
       }
-      value = atoi( arg3 );
+      value = atoi( arg3.c_str(  ) );
       if( !xit )
       {
-         ch->print( "No exit in that direction.  Use 'redit exit ...' first.\r\n" );
+         ch->print( "No exit in that direction. Use 'redit exit ...' first.\r\n" );
          return;
       }
       xit->key = value;
@@ -4408,14 +4448,14 @@ CMDF( do_redit )
 
       argument = one_argument( argument, arg2 );
       argument = one_argument( argument, arg3 );
-      if( arg2[0] == '\0' || arg3[0] == '\0' || argument[0] == '\0' )
+      if( arg2.empty(  ) || arg3.empty(  ) || argument.empty(  ) )
       {
          ch->print( "Usage: redit excoord <dir> <X> <Y>\r\n" );
          return;
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2 + 1 );
+         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4424,8 +4464,8 @@ CMDF( do_redit )
          xit = location->get_exit( edir );
       }
 
-      x = atoi( arg3 );
-      y = atoi( argument );
+      x = atoi( arg3.c_str(  ) );
+      y = atoi( argument.c_str(  ) );
 
       if( x < 0 || x >= MAX_X )
       {
@@ -4453,7 +4493,7 @@ CMDF( do_redit )
    if( !str_cmp( arg, "exname" ) )
    {
       argument = one_argument( argument, arg2 );
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Change or clear exit keywords.\r\n" );
          ch->print( "Usage: redit exname <dir> [keywords]\r\n" );
@@ -4461,7 +4501,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2 + 1 );
+         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4475,23 +4515,24 @@ CMDF( do_redit )
          return;
       }
       STRFREE( xit->keyword );
-      xit->keyword = STRALLOC( argument );
+      xit->keyword = STRALLOC( argument.c_str(  ) );
       ch->print( "Exit keywords set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg, "exflags" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Toggle or display exit flags.\r\n" );
          ch->print( "Usage: redit exflags <dir> <flag> [flag]...\r\n" );
          return;
       }
+
       argument = one_argument( argument, arg2 );
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2 + 1 );
+         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4504,18 +4545,17 @@ CMDF( do_redit )
          ch->print( "No exit in that direction.  Use 'redit exit ...' first.\r\n" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         ch->printf( "Flags for exit direction: %d  Keywords: %s  Key: %d\r\n[ %s ]",
-                     xit->vdir, xit->keyword, xit->key, bitset_string( xit->flags, ex_flags ) );
+         ch->printf( "Flags for exit direction: %d  Keywords: %s  Key: %d\r\n[ %s ]", xit->vdir, xit->keyword, xit->key, bitset_string( xit->flags, ex_flags ) );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg2 );
          value = get_exflag( arg2 );
          if( value < 0 || value >= MAX_EXFLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg2 );
+            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
          else
             xit->flags.flip( value );
       }
@@ -4529,7 +4569,7 @@ CMDF( do_redit )
 
       argument = one_argument( argument, arg2 );
       argument = one_argument( argument, arg3 );
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Create, change or remove an exit.\r\n" );
          ch->print( "Usage: redit exit <dir> [room] [key] [keyword] [flags]\r\n" );
@@ -4538,26 +4578,26 @@ CMDF( do_redit )
 
       // Pick a direction. Variable edir assumes this value once set.
       addexit = numnotdir = false;
-      switch( arg2[0] )
+      switch ( arg2[0] )
       {
          default:
             edir = get_dir( arg2 );
             break;
          case '+':
-            edir = get_dir( arg2 + 1 );
+            edir = get_dir( arg2.substr( 1, arg2.length(  ) ) );
             addexit = true;
             break;
          case '#':
-            edir = atoi( arg2 + 1 );
+            edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
             numnotdir = true;
             break;
       }
 
       // Pick a target room number for the exit. Set to 0 if not found.
-      if( !arg3 || arg3[0] == '\0' )
+      if( arg3.empty(  ) )
          evnum = 0;
       else
-         evnum = atoi( arg3 );
+         evnum = atoi( arg3.c_str(  ) );
 
       if( numnotdir )
       {
@@ -4621,7 +4661,7 @@ CMDF( do_redit )
          }
          xit = location->make_exit( tmp, edir );
          xit->key = -1;
-         xit->flags.reset();
+         xit->flags.reset(  );
          act( AT_IMMORT, "$n reveals a hidden passage!", ch, NULL, NULL, TO_ROOM );
       }
       else
@@ -4642,30 +4682,30 @@ CMDF( do_redit )
 
       // Set the vnum of the key required to unlock this exit.
       argument = one_argument( argument, arg3 );
-      if( arg3 && arg3[0] != '\0' )
+      if( !arg3.empty(  ) )
       {
-         ekey = atoi( arg3 );
+         ekey = atoi( arg3.c_str(  ) );
          if( ekey != 0 || arg3[0] == '0' )
             xit->key = ekey;
       }
 
       // Set a keyword on this exit. "door", "gate", etc. Only accepts *ONE* keyword.
       argument = one_argument( argument, arg3 );
-      if( arg3 && arg3[0] != '\0' )
+      if( !arg3.empty(  ) )
       {
          STRFREE( xit->keyword );
-         xit->keyword = STRALLOC( arg3 );
+         xit->keyword = STRALLOC( arg3.c_str(  ) );
       }
 
       // And finally set any flags which have been specified.
-      if( argument && argument[0] != '\0' )
+      if( !argument.empty(  ) )
       {
-         while( argument[0] != '\0' )
+         while( !argument.empty(  ) )
          {
             argument = one_argument( argument, arg3 );
             value = get_exflag( arg3 );
             if( value < 0 || value >= MAX_EXFLAG )
-               ch->printf( "Unknown exit flag: %s\r\n", arg3 );
+               ch->printf( "Unknown exit flag: %s\r\n", arg3.c_str(  ) );
             else
                SET_EXIT_FLAG( xit, value );
          }
@@ -4690,7 +4730,7 @@ CMDF( do_redit )
 
       argument = one_argument( argument, arg2 );
       argument = one_argument( argument, arg3 );
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Create, change or remove a two-way exit.\r\n" );
          ch->print( "Usage: redit bexit <dir> [room] [key] [keyword] [flags]\r\n" );
@@ -4705,10 +4745,10 @@ CMDF( do_redit )
             break;
          case '#':
             numnotdir = true;
-            edir = atoi( arg2 + 1 );
+            edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
             break;
          case '+':
-            edir = get_dir( arg2 + 1 );
+            edir = get_dir( arg2.substr( 1, arg2.length(  ) ) );
             break;
       }
 
@@ -4728,7 +4768,7 @@ CMDF( do_redit )
       if( bxit )
       {
          vnum = bxit->vnum;
-         if( arg3 || arg3[0] != '\0' )
+         if( !arg3.empty(  ) )
             snprintf( rvnum, MIL, "%d", tmploc->vnum );
          if( bxit->to_room )
             rxit = bxit->to_room->get_exit( rev_dir[edir] );
@@ -4736,7 +4776,7 @@ CMDF( do_redit )
             rxit = NULL;
       }
 
-      funcf( ch, do_redit, "exit %s %s %s", arg2, arg3, argument );
+      funcf( ch, do_redit, "exit %s %s %s", arg2.c_str(  ), arg3.c_str(  ), argument.c_str(  ) );
       if( numnotdir )
          bxit = tmploc->get_exit_num( exnum );
       else
@@ -4744,7 +4784,7 @@ CMDF( do_redit )
       if( !rxit && bxit )
       {
          vnum = bxit->vnum;
-         if( arg3[0] != '\0' )
+         if( !arg3.empty(  ) )
             snprintf( rvnum, MIL, "%d", tmploc->vnum );
          if( bxit->to_room )
             rxit = bxit->to_room->get_exit( rev_dir[edir] );
@@ -4752,7 +4792,7 @@ CMDF( do_redit )
             rxit = NULL;
       }
       if( vnum )
-         cmdf( ch, "at %d redit exit %d %s %s", vnum, rev_dir[edir], rvnum, argument );
+         cmdf( ch, "at %d redit exit %d %s %s", vnum, rev_dir[edir], rvnum, argument.c_str(  ) );
       return;
    }
 
@@ -4761,15 +4801,15 @@ CMDF( do_redit )
       int pt;
 
       argument = one_argument( argument, arg2 );
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
-         ch->printf( "Set the %s between this room, and the destination room.\r\n", arg );
-         ch->printf( "Usage: redit %s <dir> <type>\r\n", arg );
+         ch->printf( "Set the %s between this room, and the destination room.\r\n", arg.c_str(  ) );
+         ch->printf( "Usage: redit %s <dir> <type>\r\n", arg.c_str(  ) );
          return;
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2 + 1 );
+         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4780,7 +4820,7 @@ CMDF( do_redit )
       if( xit )
       {
          if( ( pt = get_pulltype( argument ) ) == -1 )
-            ch->printf( "Unknown pulltype: %s.  (See help PULLTYPES)\r\n", argument );
+            ch->printf( "Unknown pulltype: %s.  (See help PULLTYPES)\r\n", argument.c_str(  ) );
          else
          {
             xit->pulltype = pt;
@@ -4795,7 +4835,7 @@ CMDF( do_redit )
    if( !str_cmp( arg, "pull" ) )
    {
       argument = one_argument( argument, arg2 );
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Set the 'pull' between this room, and the destination room.\r\n" );
          ch->print( "Usage: redit pull <dir> <force (0 to 100)>\r\n" );
@@ -4803,7 +4843,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2 + 1 );
+         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4813,7 +4853,7 @@ CMDF( do_redit )
       }
       if( xit )
       {
-         xit->pull = URANGE( -100, atoi( argument ), 100 );
+         xit->pull = URANGE( -100, atoi( argument.c_str(  ) ), 100 );
          ch->print( "Done.\r\n" );
          return;
       }
@@ -4824,7 +4864,7 @@ CMDF( do_redit )
    if( !str_cmp( arg, "push" ) )
    {
       argument = one_argument( argument, arg2 );
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Set the 'push' away from the destination room in the opposite direction.\r\n" );
          ch->print( "Usage: redit push <dir> <force (0 to 100)>\r\n" );
@@ -4832,7 +4872,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2 + 1 );
+         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4842,7 +4882,7 @@ CMDF( do_redit )
       }
       if( xit )
       {
-         xit->pull = URANGE( -100, -( atoi( argument ) ), 100 );
+         xit->pull = URANGE( -100, -( atoi( argument.c_str(  ) ) ), 100 );
          ch->print( "Done.\r\n" );
          return;
       }
@@ -4853,7 +4893,7 @@ CMDF( do_redit )
    if( !str_cmp( arg, "exdesc" ) )
    {
       argument = one_argument( argument, arg2 );
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Create or clear a description for an exit.\r\n" );
          ch->print( "Usage: redit exdesc <dir> [description]\r\n" );
@@ -4861,7 +4901,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2 + 1 );
+         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4872,8 +4912,8 @@ CMDF( do_redit )
       if( xit )
       {
          STRFREE( xit->exitdesc );
-         if( argument && argument[0] != '\0' )
-            stralloc_printf( &xit->exitdesc, "%s\r\n", argument );
+         if( !argument.empty(  ) )
+            stralloc_printf( &xit->exitdesc, "%s\r\n", argument.c_str(  ) );
          ch->print( "Exit description set.\r\n" );
          return;
       }
@@ -4893,12 +4933,259 @@ CMDF( do_redit )
    }
    else
       do_redit( ch, "" );
-   return;
+}
+
+/* rdig command by Dracones - From Smaug 1.8 */
+CMDF( do_rdig )
+{
+   room_index *location, *ch_location;
+   area_data *pArea;
+   exit_data *xit;
+   int vnum, edir;
+
+   ch->set_color( AT_PLAIN );
+
+   if( ch->isnpc(  ) )
+      return;
+
+   if( !ch->pcdata->area )
+   {
+      ch->print( "You have no area file with which to work.\r\n" );
+      return;
+   }
+
+   ch_location = ch->in_room;
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "Dig out a new room or dig into an existing room.\r\n" );
+      ch->print( "Usage: rdig <dir>\r\n" );
+      return;
+   }
+
+   edir = get_dir( argument );
+   xit = ch_location->get_exit( edir );
+
+   if( !xit )
+   {
+      pArea = ch->pcdata->area;
+
+      vnum = pArea->low_vnum;
+
+      while( vnum <= pArea->hi_vnum && get_room_index( vnum ) != NULL )
+         ++vnum;
+
+      if( vnum > pArea->hi_vnum )
+      {
+         ch->print( "No empty upper rooms could be found.\r\n" );
+         return;
+      }
+
+      ch->printf( "Digging out room %d to the %s.\r\n", vnum, argument.c_str(  ) );
+
+      location = make_room( vnum, pArea );
+      if( !location )
+      {
+         bug( "%s: make_room failed", __FUNCTION__ );
+         return;
+      }
+      location->area = ch->pcdata->area;
+
+      funcf( ch, do_redit, "bexit %s %d", argument.c_str(  ), vnum );
+   }
+   else
+   {
+      vnum = xit->vnum;
+      location = get_room_index( vnum );
+      ch->printf( "Digging into room %d to the %s.\r\n", vnum, argument.c_str(  ) );
+   }
+
+   stralloc_printf( &location->name, "%s", ch_location->name );
+   strdup_printf( &location->roomdesc, "%s", ch_location->roomdesc );
+   location->sector_type = ch_location->sector_type;
+   location->flags = ch_location->flags;
+
+   /*
+    * Below here you may add anything else you wish to be
+    * copied into the rdug rooms.
+    */
+
+   /*
+    * Move while rdigging -- Dracones 
+    */
+   cmdf( ch, "goto %d", vnum );
+}
+
+/* rgrid command by Dracones - From Smaug 1.8 */
+CMDF( do_rgrid )
+{
+   string arg, arg2;
+   exit_data *xit;
+   room_index *location, *ch_location, *tmp;
+   area_data *pArea;
+   int vnum, maxnum, x, y, z;
+   int room_count;
+   int room_hold[MAX_RGRID_ROOMS];
+
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "NPCs cannot use the rgrid command.\r\n" );
+      return;
+   }
+
+   ch_location = ch->in_room;
+   pArea = ch->pcdata->area;
+
+   argument = one_argument( argument, arg );
+   argument = one_argument( argument, arg2 );
+
+   if( arg.empty(  ) )
+   {
+      ch->print( "Create a block of rooms.\r\n" );
+      ch->print( "Usage: rgrid <x> <y> <z>\r\n" );
+      return;
+   }
+   x = atoi( arg.c_str(  ) );
+   y = atoi( arg2.c_str(  ) );
+   z = atoi( argument.c_str(  ) );
+
+   if( x < 1 || y < 1 )
+   {
+      ch->print( "You must specify an x and y of at least 1.\r\n" );
+      return;
+   }
+   if( z < 1 )
+      z = 1;
+
+   maxnum = x * y * z;
+
+   ch->printf( "Attempting to create a block of %d rooms, %d x %d x %d.\r\n", maxnum, x, y, z );
+
+   if( maxnum > MAX_RGRID_ROOMS )
+   {
+      ch->printf( "The maximum number of rooms this mud can create at once is %d.\r\n", MAX_RGRID_ROOMS );
+      ch->print( "Please try to create a smaller block of rooms.\r\n" );
+      return;
+   }
+
+   room_count = 0;
+   ch->print( "Checking for available rooms...\r\n" );
+
+   if( pArea->low_vnum + maxnum > pArea->hi_vnum )
+   {
+
+      ch->print( "You don't even have that many rooms assigned to you.\r\n" );
+      return;
+   }
+
+   for( vnum = pArea->low_vnum; vnum <= pArea->hi_vnum; ++vnum )
+   {
+      if( get_room_index( vnum ) == NULL )
+         ++room_count;
+
+      if( room_count >= maxnum )
+         break;
+   }
+
+   if( room_count < maxnum )
+   {
+      ch->print( "There aren't enough free rooms in your assigned range!\r\n" );
+      return;
+   }
+
+   ch->print( "Enough free rooms were found, creating the rooms...\r\n" );
+
+   room_count = 0;
+   vnum = pArea->low_vnum;
+
+   while( room_count < maxnum )
+   {
+      if( !get_room_index( vnum ) )
+      {
+         room_hold[room_count++] = vnum;
+
+         location = make_room( vnum, pArea );
+         if( !location )
+         {
+            bug( "%s: make_room failed", __FUNCTION__ );
+            return;
+         }
+
+         location->area = ch->pcdata->area;
+
+         stralloc_printf( &location->name, "%s", ch_location->name );
+         strdup_printf( &location->roomdesc, "%s", ch_location->roomdesc );
+         location->sector_type = ch_location->sector_type;
+         location->flags = ch_location->flags;
+      }
+      ++vnum;
+   }
+
+   ch->print( "Rooms created, linking the exits...\r\n" );
+
+   for( room_count = 1; room_count <= maxnum; ++room_count )
+   {
+      vnum = room_hold[room_count - 1];
+
+      // Check to see if we can make N exits
+      if( room_count % x )
+      {
+         location = get_room_index( vnum );
+         tmp = get_room_index( room_hold[room_count] );
+
+         xit = location->make_exit( tmp, DIR_NORTH );
+      }
+
+      // Check to see if we can make S exits
+      if( ( room_count - 1 ) % x )
+      {
+         location = get_room_index( vnum );
+         tmp = get_room_index( room_hold[room_count - 2] );
+
+         xit = location->make_exit( tmp, DIR_SOUTH );
+      }
+
+      // Check to see if we can make E exits
+      if( ( room_count - 1 ) % ( x * y ) < x * y - x )
+      {
+         location = get_room_index( vnum );
+         tmp = get_room_index( room_hold[room_count + x - 1] );
+
+         xit = location->make_exit( tmp, DIR_EAST );
+      }
+
+      // Check to see if we can make W exits
+      if( ( room_count - 1 ) % ( x * y ) >= x )
+      {
+         location = get_room_index( vnum );
+         tmp = get_room_index( room_hold[room_count - x - 1] );
+
+         xit = location->make_exit( tmp, DIR_WEST );
+      }
+
+      // Check to see if we can make D exits
+      if( room_count > x * y )
+      {
+         location = get_room_index( vnum );
+         tmp = get_room_index( room_hold[room_count - x * y - 1] );
+
+         xit = location->make_exit( tmp, DIR_DOWN );
+      }
+
+      // Check to see if we can make U exits
+      if( room_count <= maxnum - ( x * y ) )
+      {
+         location = get_room_index( vnum );
+         tmp = get_room_index( room_hold[room_count + x * y - 1] );
+
+         xit = location->make_exit( tmp, DIR_UP );
+      }
+   }
 }
 
 CMDF( do_ocreate )
 {
-   char arg[MIL], arg2[MIL];
+   string arg, arg2;
    obj_index *pObjIndex;
    area_data *pArea;
    obj_data *obj;
@@ -4911,9 +5198,9 @@ CMDF( do_ocreate )
    }
    argument = one_argument( argument, arg );
 
-   vnum = is_number( arg ) ? atoi( arg ) : -1;
+   vnum = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
 
-   if( vnum == -1 || !argument || argument[0] == '\0' )
+   if( vnum == -1 || argument.empty(  ) )
    {
       ch->print( "Usage:  ocreate <vnum> [copy vnum] <item name>\r\n" );
       return;
@@ -4926,7 +5213,7 @@ CMDF( do_ocreate )
    }
 
    one_argument( argument, arg2 );
-   cvnum = atoi( arg2 );
+   cvnum = atoi( arg2.c_str(  ) );
    if( cvnum != 0 )
       argument = one_argument( argument, arg2 );
    if( cvnum < 1 )
@@ -4981,7 +5268,7 @@ CMDF( do_ocreate )
 
 CMDF( do_mcreate )
 {
-   char arg[MIL], arg2[MIL];
+   string arg, arg2;
    mob_index *pMobIndex;
    area_data *pArea;
    char_data *mob;
@@ -4995,11 +5282,11 @@ CMDF( do_mcreate )
 
    argument = one_argument( argument, arg );
 
-   vnum = is_number( arg ) ? atoi( arg ) : -1;
+   vnum = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
 
-   if( vnum == -1 || !argument || argument[0] == '\0' )
+   if( vnum == -1 || argument.empty(  ) )
    {
-      ch->print( "Usage:  mcreate <vnum> [cvnum] <mobile name>\r\n" );
+      ch->print( "Usage: mcreate <vnum> [cvnum] <mobile name>\r\n" );
       return;
    }
 
@@ -5010,7 +5297,7 @@ CMDF( do_mcreate )
    }
 
    one_argument( argument, arg2 );
-   cvnum = atoi( arg2 );
+   cvnum = atoi( arg2.c_str(  ) );
    if( cvnum != 0 )
       argument = one_argument( argument, arg2 );
    if( cvnum < 1 )
@@ -5067,15 +5354,15 @@ CMDF( do_mcreate )
 CMDF( do_rlist )
 {
    room_index *room;
-   char arg1[MIL];
+   string arg1;
    int lrange, trange, vnum;
 
    ch->set_pager_color( AT_PLAIN );
 
    argument = one_argument( argument, arg1 );
 
-   lrange = ( is_number( arg1 ) ? atoi( arg1 ) : 1 );
-   trange = ( is_number( argument ) ? atoi( argument ) : 2 );
+   lrange = ( is_number( arg1 ) ? atoi( arg1.c_str(  ) ) : 1 );
+   trange = ( is_number( argument ) ? atoi( argument.c_str(  ) ) : 2 );
 
    for( vnum = lrange; vnum <= trange; ++vnum )
    {
@@ -5083,21 +5370,20 @@ CMDF( do_rlist )
          continue;
       ch->pagerf( "%5d) %s\r\n", vnum, room->name );
    }
-   return;
 }
 
 CMDF( do_olist )
 {
    obj_index *obj;
-   char arg1[MIL];
+   string arg1;
    int lrange, trange, vnum;
 
    ch->set_pager_color( AT_PLAIN );
 
    argument = one_argument( argument, arg1 );
 
-   lrange = ( is_number( arg1 ) ? atoi( arg1 ) : 1 );
-   trange = ( is_number( argument ) ? atoi( argument ) : 2 );
+   lrange = ( is_number( arg1 ) ? atoi( arg1.c_str(  ) ) : 1 );
+   trange = ( is_number( argument ) ? atoi( argument.c_str(  ) ) : 2 );
 
    for( vnum = lrange; vnum <= trange; ++vnum )
    {
@@ -5105,21 +5391,20 @@ CMDF( do_olist )
          continue;
       ch->pagerf( "%5d) %-20s (%s)\r\n", vnum, obj->name, obj->short_descr );
    }
-   return;
 }
 
 CMDF( do_mlist )
 {
    mob_index *mob;
-   char arg1[MIL];
+   string arg1;
    int lrange, trange, vnum;
 
    ch->set_pager_color( AT_PLAIN );
 
    argument = one_argument( argument, arg1 );
 
-   lrange = ( is_number( arg1 ) ? atoi( arg1 ) : 1 );
-   trange = ( is_number( argument ) ? atoi( argument ) : 2 );
+   lrange = ( is_number( arg1 ) ? atoi( arg1.c_str(  ) ) : 1 );
+   trange = ( is_number( argument ) ? atoi( argument.c_str(  ) ) : 2 );
 
    for( vnum = lrange; vnum <= trange; ++vnum )
    {
@@ -5127,20 +5412,19 @@ CMDF( do_mlist )
          continue;
       ch->pagerf( "%5d) %-20s '%s'\r\n", vnum, mob->player_name, mob->short_descr );
    }
-   return;
 }
 
 /* Consolidated list command - Samson 3-21-98 */
 /* Command online renamed to 'show' via cedit - Samson 9-8-98 */
 CMDF( do_vlist )
 {
-   char arg[MIL], arg2[MIL];
+   string arg, arg2;
    area_data *tarea = NULL;
 
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Syntax:\r\n" );
       if( ch->level >= LEVEL_DEMI )
@@ -5162,7 +5446,7 @@ CMDF( do_vlist )
    {
       if( !( tarea = find_area( arg2 ) ) )
       {
-         if( arg2 && arg2[0] != '\0' )
+         if( !arg2.empty(  ) )
          {
             ch->print( "Area not found.\r\n" );
             return;
@@ -5174,14 +5458,14 @@ CMDF( do_vlist )
 
    if( ( !str_cmp( arg, "mob" ) || !str_cmp( arg, "m" ) ) && ch->level >= LEVEL_DEMI )
    {
-      if( arg2 && arg2[0] != '\0' && is_number( arg2 ) )
+      if( !arg2.empty(  ) && is_number( arg2 ) )
       {
-         if( !argument || argument[0] == '\0' )
+         if( argument.empty(  ) )
          {
             do_vlist( ch, "" );
             return;
          }
-         funcf( ch, do_mlist, "%s %s", arg2, argument );
+         funcf( ch, do_mlist, "%s %s", arg2.c_str(  ), argument.c_str(  ) );
          return;
       }
       funcf( ch, do_mlist, "%d %d", tarea->low_vnum, tarea->hi_vnum );
@@ -5190,14 +5474,14 @@ CMDF( do_vlist )
 
    if( ( !str_cmp( arg, "obj" ) || !str_cmp( arg, "o" ) ) && ch->level >= LEVEL_SAVIOR )
    {
-      if( arg2 && arg2[0] != '\0' && is_number( arg2 ) )
+      if( !arg2.empty(  ) && is_number( arg2 ) )
       {
-         if( !argument || argument[0] == '\0' )
+         if( argument.empty(  ) )
          {
             do_vlist( ch, "" );
             return;
          }
-         funcf( ch, do_olist, "%s %s", arg2, argument );
+         funcf( ch, do_olist, "%s %s", arg2.c_str(  ), argument.c_str(  ) );
          return;
       }
       funcf( ch, do_olist, "%d %d", tarea->low_vnum, tarea->hi_vnum );
@@ -5206,14 +5490,14 @@ CMDF( do_vlist )
 
    if( !str_cmp( arg, "room" ) || !str_cmp( arg, "r" ) )
    {
-      if( arg2 && arg2[0] != '\0' && is_number( arg2 ) )
+      if( !arg2.empty(  ) && is_number( arg2 ) )
       {
-         if( !argument || argument[0] == '\0' )
+         if( argument.empty(  ) )
          {
             do_vlist( ch, "" );
             return;
          }
-         funcf( ch, do_rlist, "%s %s", arg2, argument );
+         funcf( ch, do_rlist, "%s %s", arg2.c_str(  ), argument.c_str(  ) );
          return;
       }
       funcf( ch, do_rlist, "%d %d", tarea->low_vnum, tarea->hi_vnum );
@@ -5225,21 +5509,20 @@ CMDF( do_vlist )
    do_vlist( ch, "" );
 }
 
-void mpedit( char_data *ch, mud_prog_data *mprg, int mptype, char *argument )
+void mpedit( char_data * ch, mud_prog_data * mprg, int mptype, const string & argument )
 {
    if( mptype != -1 )
    {
       mprg->type = mptype;
       STRFREE( mprg->arglist );
-      if( argument && argument[0] != '\0' )
-         mprg->arglist = STRALLOC( argument );
+      if( !argument.empty(  ) )
+         mprg->arglist = STRALLOC( argument.c_str(  ) );
    }
    ch->substate = SUB_MPROG_EDIT;
    ch->pcdata->dest_buf = mprg;
 
-   ch->editor_desc_printf( "Program '%s %s'.", mprog_type_to_name( mprg->type ), mprg->arglist );
+   ch->editor_desc_printf( "Program '%s %s'.", mprog_type_to_name( mprg->type ).c_str(  ), mprg->arglist );
    ch->start_editing( mprg->comlist );
-   return;
 }
 
 /*
@@ -5247,10 +5530,10 @@ void mpedit( char_data *ch, mud_prog_data *mprg, int mptype, char *argument )
  */
 CMDF( do_mpedit )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL], arg4[MIL];
+   string arg1, arg2, arg3, arg4;
    char_data *victim;
    mud_prog_data *mprog;
-   list<mud_prog_data*>::iterator mprg;
+   list < mud_prog_data * >::iterator mprg;
    int value, mptype = -1, cnt;
 
    ch->set_color( AT_PLAIN );
@@ -5282,7 +5565,7 @@ CMDF( do_mpedit )
             ch->substate = SUB_NONE;
             return;
          }
-         mprog = ( mud_prog_data *) ch->pcdata->dest_buf;
+         mprog = ( mud_prog_data * ) ch->pcdata->dest_buf;
          STRFREE( mprog->comlist );
          mprog->comlist = ch->copy_buffer( true );
          ch->stop_editing(  );
@@ -5297,8 +5580,8 @@ CMDF( do_mpedit )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
    argument = one_argument( argument, arg3 );
-   value = atoi( arg3 );
-   if( !arg1 || arg1[0] == '\0' || !arg2 || arg2[0] == '\0' )
+   value = atoi( arg3.c_str(  ) );
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Syntax: mpedit <victim> <command> [number] <program> <value>\r\n\r\n" );
       ch->print( "Command being one of:\r\n" );
@@ -5358,7 +5641,7 @@ CMDF( do_mpedit )
       return;
    }
 
-   if( victim->pIndexData->mudprogs.empty() )
+   if( victim->pIndexData->mudprogs.empty(  ) )
    {
       ch->print( "That mobile has no mob programs.\r\n" );
       return;
@@ -5370,22 +5653,21 @@ CMDF( do_mpedit )
 
       if( value < 1 )
       {
-         for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+         for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
          {
-            mprog = (*mprg);
+            mprog = *mprg;
 
-            ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ), mprog->arglist,
-            ( str_cmp( "full", arg3 ) ? mprog->comlist : "" ) );
+            ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, ( str_cmp( "full", arg3 ) ? mprog->comlist : "" ) );
          }
          return;
       }
-      for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( ++cnt == value )
          {
-            ch->printf( "%d>%s %s\r\n%s\r\n", cnt, mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
+            ch->printf( "%d>%s %s\r\n%s\r\n", cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
             return;
          }
       }
@@ -5396,7 +5678,7 @@ CMDF( do_mpedit )
    if( !str_cmp( arg2, "edit" ) )
    {
       argument = one_argument( argument, arg4 );
-      if( arg4 && arg4[0] != '\0' )
+      if( !arg4.empty(  ) )
       {
          mptype = get_mpflag( arg4 );
          if( mptype == -1 )
@@ -5413,17 +5695,17 @@ CMDF( do_mpedit )
          return;
       }
       cnt = 0;
-      for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( ++cnt == value )
          {
             mpedit( ch, mprog, mptype, argument );
             victim->pIndexData->progtypes.reset(  );
-            for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+            for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
             {
-               mprog = (*mprg);
+               mprog = *mprg;
                victim->pIndexData->progtypes.set( mprog->type );
             }
             return;
@@ -5446,9 +5728,9 @@ CMDF( do_mpedit )
       }
       cnt = 0;
       found = false;
-      for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( ++cnt == value )
          {
@@ -5463,19 +5745,19 @@ CMDF( do_mpedit )
          return;
       }
       cnt = num = 0;
-      for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( mprog->type == mptype )
             ++num;
       }
-      for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); )
+      for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
          ++mprg;
 
-         if( ++cnt == ( value -1 ) )
+         if( ++cnt == ( value - 1 ) )
          {
             victim->pIndexData->mudprogs.remove( mprog );
             deleteptr( mprog );
@@ -5512,7 +5794,7 @@ CMDF( do_mpedit )
          return;
       }
       cnt = 1;
-      for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
       {
          if( ++cnt == value )
          {
@@ -5531,10 +5813,10 @@ CMDF( do_mpedit )
 
 CMDF( do_opedit )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL], arg4[MIL];
+   string arg1, arg2, arg3, arg4;
    obj_data *obj;
    mud_prog_data *mprog;
-   list<mud_prog_data*>::iterator mprg;
+   list < mud_prog_data * >::iterator mprg;
    int value, mptype = -1, cnt;
 
    ch->set_color( AT_PLAIN );
@@ -5582,9 +5864,9 @@ CMDF( do_opedit )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
    argument = one_argument( argument, arg3 );
-   value = atoi( arg3 );
+   value = atoi( arg3.c_str(  ) );
 
-   if( arg1[0] == '\0' || arg2[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Syntax: opedit <object> <command> [number] <program> <value>\r\n\r\n" );
       ch->print( "Command being one of:\r\n" );
@@ -5641,7 +5923,7 @@ CMDF( do_opedit )
       return;
    }
 
-   if( obj->pIndexData->mudprogs.empty() )
+   if( obj->pIndexData->mudprogs.empty(  ) )
    {
       ch->print( "That object has no obj programs.\r\n" );
       return;
@@ -5650,11 +5932,11 @@ CMDF( do_opedit )
    if( !str_cmp( arg2, "list" ) )
    {
       cnt = 0;
-      for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
-         ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
+         ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
       }
       return;
    }
@@ -5662,7 +5944,7 @@ CMDF( do_opedit )
    if( !str_cmp( arg2, "edit" ) )
    {
       argument = one_argument( argument, arg4 );
-      if( arg4[0] != '\0' )
+      if( !arg4.empty(  ) )
       {
          mptype = get_mpflag( arg4 );
          if( mptype == -1 )
@@ -5679,16 +5961,16 @@ CMDF( do_opedit )
          return;
       }
       cnt = 0;
-      for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
          if( ++cnt == value )
          {
             mpedit( ch, mprog, mptype, argument );
             obj->pIndexData->progtypes.reset(  );
-            for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); ++mprg )
+            for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
             {
-               mprog = (*mprg);
+               mprog = *mprg;
                obj->pIndexData->progtypes.set( mprog->type );
             }
             return;
@@ -5711,9 +5993,9 @@ CMDF( do_opedit )
       }
       cnt = 0;
       found = false;
-      for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( ++cnt == value )
          {
@@ -5728,19 +6010,19 @@ CMDF( do_opedit )
          return;
       }
       cnt = num = 0;
-      for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( mprog->type == mptype )
             ++num;
       }
-      for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); )
+      for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
          ++mprg;
 
-         if( ++cnt == ( value -1 ) )
+         if( ++cnt == ( value - 1 ) )
          {
             obj->pIndexData->mudprogs.remove( mprog );
             deleteptr( mprog );
@@ -5777,7 +6059,7 @@ CMDF( do_opedit )
          return;
       }
       cnt = 1;
-      for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
       {
          if( ++cnt == value )
          {
@@ -5796,9 +6078,9 @@ CMDF( do_opedit )
 
 CMDF( do_rpedit )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    mud_prog_data *mprog;
-   list<mud_prog_data*>::iterator mprg;
+   list < mud_prog_data * >::iterator mprg;
    int value, mptype = -1, cnt;
 
    ch->set_color( AT_PLAIN );
@@ -5845,12 +6127,12 @@ CMDF( do_rpedit )
    smash_tilde( argument );
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   value = atoi( arg2 );
+   value = atoi( arg2.c_str(  ) );
    /*
     * argument = one_argument( argument, arg3 ); 
     */
 
-   if( arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Syntax: rpedit <command> [number] <program> <value>\r\n\r\n" );
       ch->print( "Command being one of:\r\n" );
@@ -5882,7 +6164,7 @@ CMDF( do_rpedit )
       return;
    }
 
-   if( ch->in_room->mudprogs.empty() )
+   if( ch->in_room->mudprogs.empty(  ) )
    {
       ch->print( "This room has no room programs.\r\n" );
       return;
@@ -5891,11 +6173,11 @@ CMDF( do_rpedit )
    if( !str_cmp( arg1, "list" ) )
    {
       cnt = 0;
-      for( mprg = ch->in_room->mudprogs.begin(); mprg != ch->in_room->mudprogs.end(); ++mprg )
+      for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
-         ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
+         ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
       }
       return;
    }
@@ -5903,7 +6185,7 @@ CMDF( do_rpedit )
    if( !str_cmp( arg1, "edit" ) )
    {
       argument = one_argument( argument, arg3 );
-      if( arg3[0] != '\0' )
+      if( !arg3.empty(  ) )
       {
          mptype = get_mpflag( arg3 );
          if( mptype == -1 )
@@ -5920,17 +6202,17 @@ CMDF( do_rpedit )
          return;
       }
       cnt = 0;
-      for( mprg = ch->in_room->mudprogs.begin(); mprg != ch->in_room->mudprogs.end(); ++mprg )
+      for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( ++cnt == value )
          {
             mpedit( ch, mprog, mptype, argument );
             ch->in_room->progtypes.reset(  );
-            for( mprg = ch->in_room->mudprogs.begin(); mprg != ch->in_room->mudprogs.end(); ++mprg )
+            for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
             {
-               mprog = (*mprg);
+               mprog = *mprg;
 
                ch->in_room->progtypes.set( mprog->type );
             }
@@ -5954,9 +6236,9 @@ CMDF( do_rpedit )
       }
       cnt = 0;
       found = false;
-      for( mprg = ch->in_room->mudprogs.begin(); mprg != ch->in_room->mudprogs.end(); ++mprg )
+      for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
          if( ++cnt == value )
          {
             mptype = mprog->type;
@@ -5970,16 +6252,16 @@ CMDF( do_rpedit )
          return;
       }
       cnt = num = 0;
-      for( mprg = ch->in_room->mudprogs.begin(); mprg != ch->in_room->mudprogs.end(); ++mprg )
+      for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( mprog->type == mptype )
             ++num;
       }
-      for( mprg = ch->in_room->mudprogs.begin(); mprg != ch->in_room->mudprogs.end(); ++mprg )
+      for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
       {
-         mprog = (*mprg);
+         mprog = *mprg;
 
          if( ++cnt == value )
          {
@@ -6017,7 +6299,7 @@ CMDF( do_rpedit )
          return;
       }
       cnt = 1;
-      for( mprg = ch->in_room->mudprogs.begin(); mprg != ch->in_room->mudprogs.end(); ++mprg )
+      for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
       {
          if( ++cnt == value )
          {
@@ -6039,7 +6321,7 @@ CMDF( do_rpedit )
  *  Last modified Feb. 24 1999
  *  Mystaric
  */
-void mpcopy( mud_prog_data *source, mud_prog_data *destination )
+void mpcopy( mud_prog_data * source, mud_prog_data * destination )
 {
    destination->type = source->type;
    destination->triggered = source->triggered;
@@ -6050,7 +6332,7 @@ void mpcopy( mud_prog_data *source, mud_prog_data *destination )
 
 CMDF( do_opcopy )
 {
-   char sobj[MIL], prog[MIL], num[MIL], dobj[MIL];
+   string sobj, prog, num, dobj;
    obj_data *source = NULL, *destination = NULL;
    int value = -1, optype = -1, cnt = 0;
    bool COPY = false;
@@ -6071,7 +6353,7 @@ CMDF( do_opcopy )
    argument = one_argument( argument, sobj );
    argument = one_argument( argument, prog );
 
-   if( sobj[0] == '\0' || prog[0] == '\0' )
+   if( sobj.empty(  ) || prog.empty(  ) )
    {
       ch->print( "Syntax: opcopy <source object> <program> [number] <destination object>\r\n" );
       ch->print( "        opcopy <source object> all <destination object>\r\n" );
@@ -6095,7 +6377,7 @@ CMDF( do_opcopy )
    {
       argument = one_argument( argument, num );
       argument = one_argument( argument, dobj );
-      value = atoi( num );
+      value = atoi( num.c_str(  ) );
    }
 
    if( ch->get_trust(  ) < LEVEL_GOD )
@@ -6147,18 +6429,18 @@ CMDF( do_opcopy )
 
    ch->set_color( AT_GREEN );
 
-   if( source->pIndexData->mudprogs.empty() )
+   if( source->pIndexData->mudprogs.empty(  ) )
    {
       ch->print( "Source object has no programs.\r\n" );
       return;
    }
 
-   list<mud_prog_data*>::iterator sp;
+   list < mud_prog_data * >::iterator sp;
    if( COPY )
    {
-      for( sp = source->pIndexData->mudprogs.begin(); sp != source->pIndexData->mudprogs.end(); ++sp )
+      for( sp = source->pIndexData->mudprogs.begin(  ); sp != source->pIndexData->mudprogs.end(  ); ++sp )
       {
-         mud_prog_data *source_oprg = (*sp);
+         mud_prog_data *source_oprg = *sp;
 
          if( optype == source_oprg->type || optype == -1 )
          {
@@ -6175,7 +6457,7 @@ CMDF( do_opcopy )
          ch->print( "No such program in source object\r\n" );
          return;
       }
-      ch->printf( "%d programs successfully copied from %s to %s.\r\n", cnt, sobj, dobj );
+      ch->printf( "%d programs successfully copied from %s to %s.\r\n", cnt, sobj.c_str(  ), dobj.c_str(  ) );
       return;
    }
 
@@ -6187,9 +6469,9 @@ CMDF( do_opcopy )
 
    optype = get_mpflag( prog );
 
-   for( sp = source->pIndexData->mudprogs.begin(); sp != source->pIndexData->mudprogs.end(); ++sp )
+   for( sp = source->pIndexData->mudprogs.begin(  ); sp != source->pIndexData->mudprogs.end(  ); ++sp )
    {
-      mud_prog_data *source_oprg = (*sp);
+      mud_prog_data *source_oprg = *sp;
 
       if( ++cnt == value && source_oprg->type == optype )
       {
@@ -6198,19 +6480,18 @@ CMDF( do_opcopy )
          mpcopy( source_oprg, dest_oprg );
          destination->pIndexData->mudprogs.push_back( dest_oprg );
          destination->pIndexData->progtypes.set( dest_oprg->type );
-         ch->printf( "%s program %d from %s successfully copied to %s.\r\n", prog, value, sobj, dobj );
+         ch->printf( "%s program %d from %s successfully copied to %s.\r\n", prog.c_str(  ), value, sobj.c_str(  ), dobj.c_str(  ) );
          return;
       }
    }
    ch->print( "No such program in source object.\r\n" );
-   return;
 }
 
 CMDF( do_mpcopy )
 {
-   char smob[MIL], prog[MIL], num[MIL], dmob[MIL];
+   string smob, prog, num, dmob;
    char_data *source = NULL, *destination = NULL;
-   list<mud_prog_data*>::iterator sp;
+   list < mud_prog_data * >::iterator sp;
    int value = -1, mptype = -1, cnt = 0;
    bool COPY = false;
 
@@ -6232,7 +6513,7 @@ CMDF( do_mpcopy )
    argument = one_argument( argument, smob );
    argument = one_argument( argument, prog );
 
-   if( smob[0] == '\0' || prog[0] == '\0' )
+   if( smob.empty(  ) || prog.empty(  ) )
    {
       ch->print( "Syntax: mpcopy <source mobile> <program> [number] <destination mobile>\r\n" );
       ch->print( "        mpcopy <source mobile> all <destination mobile>\r\n" );
@@ -6254,7 +6535,7 @@ CMDF( do_mpcopy )
    {
       argument = one_argument( argument, num );
       argument = one_argument( argument, dmob );
-      value = atoi( num );
+      value = atoi( num.c_str(  ) );
    }
 
    if( ch->get_trust(  ) < LEVEL_GOD )
@@ -6291,8 +6572,7 @@ CMDF( do_mpcopy )
       return;
    }
 
-   if( ch->get_trust(  ) < source->level || !source->isnpc(  ) || ch->get_trust(  ) < destination->level
-       || !destination->isnpc(  ) )
+   if( ch->get_trust(  ) < source->level || !source->isnpc(  ) || ch->get_trust(  ) < destination->level || !destination->isnpc(  ) )
    {
       ch->print( "You can't do that!\r\n" );
       return;
@@ -6312,7 +6592,7 @@ CMDF( do_mpcopy )
 
    ch->set_color( AT_GREEN );
 
-   if( source->pIndexData->mudprogs.empty() )
+   if( source->pIndexData->mudprogs.empty(  ) )
    {
       ch->print( "Source mobile has no programs.\r\n" );
       return;
@@ -6320,9 +6600,9 @@ CMDF( do_mpcopy )
 
    if( COPY )
    {
-      for( sp = source->pIndexData->mudprogs.begin(); sp != source->pIndexData->mudprogs.end(); ++sp )
+      for( sp = source->pIndexData->mudprogs.begin(  ); sp != source->pIndexData->mudprogs.end(  ); ++sp )
       {
-         mud_prog_data *source_mprg = (*sp);
+         mud_prog_data *source_mprg = *sp;
 
          if( mptype == source_mprg->type || mptype == -1 )
          {
@@ -6339,7 +6619,7 @@ CMDF( do_mpcopy )
          ch->printf( "No such program in source mobile\r\n" );
          return;
       }
-      ch->printf( "%d programs successfully copied from %s to %s.\r\n", cnt, smob, dmob );
+      ch->printf( "%d programs successfully copied from %s to %s.\r\n", cnt, smob.c_str(  ), dmob.c_str(  ) );
       return;
    }
 
@@ -6351,9 +6631,9 @@ CMDF( do_mpcopy )
 
    mptype = get_mpflag( prog );
 
-   for( sp = source->pIndexData->mudprogs.begin(); sp != source->pIndexData->mudprogs.end(); ++sp )
+   for( sp = source->pIndexData->mudprogs.begin(  ); sp != source->pIndexData->mudprogs.end(  ); ++sp )
    {
-      mud_prog_data *source_mprg = (*sp);
+      mud_prog_data *source_mprg = *sp;
 
       if( ++cnt == value && source_mprg->type == mptype )
       {
@@ -6362,12 +6642,146 @@ CMDF( do_mpcopy )
          mpcopy( source_mprg, dest_mprg );
          destination->pIndexData->mudprogs.push_back( dest_mprg );
          destination->pIndexData->progtypes.set( dest_mprg->type );
-         ch->printf( "%s program %d from %s successfully copied to %s.\r\n", prog, value, smob, dmob );
+         ch->printf( "%s program %d from %s successfully copied to %s.\r\n", prog.c_str(  ), value, smob.c_str(  ), dmob.c_str(  ) );
          return;
       }
    }
    ch->print( "No such program in source mobile.\r\n" );
-   return;
+}
+
+CMDF( do_rpcopy )
+{
+   string sroom, prog, num, droom;
+   room_index *source = NULL, *destination = NULL;
+   list < mud_prog_data * >::iterator sp;
+   int value = -1, mptype = -1, cnt = 0;
+   bool COPY = false;
+
+   ch->set_color( AT_PLAIN );
+
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "Mob's can't rpcopy.\r\n" );
+      return;
+   }
+
+   if( !ch->desc )
+   {
+      ch->print( "You have no descriptor!\r\n" );
+      return;
+   }
+
+   smash_tilde( argument );
+   argument = one_argument( argument, sroom );
+   argument = one_argument( argument, prog );
+
+   if( !is_number( sroom ) || prog.empty(  ) )
+   {
+      ch->print( "Syntax: rpcopy <source rvnum> <program> [number] <destination rvnum>\r\n" );
+      ch->print( "  rpcopy <source rvnum> all <destination rvnum>\r\n" );
+      ch->print( "  rpcopy <source rvnum> all <destination rvnum> <program>\r\n\r\n" );
+      ch->print( "Program being one of:\r\n" );
+      ch->print( "  act speech rand fight hitprcnt greet allgreet\r\n" );
+      ch->print( "  entry give bribe death time hour script\r\n" );
+      return;
+   }
+
+   if( !str_cmp( prog, "all" ) )
+   {
+      argument = one_argument( argument, droom );
+      argument = one_argument( argument, prog );
+      mptype = get_mpflag( prog );
+      COPY = true;
+   }
+   else
+   {
+      argument = one_argument( argument, num );
+      argument = one_argument( argument, droom );
+      value = atoi( num.c_str(  ) );
+   }
+
+   if( !( source = get_room_index( atoi( sroom.c_str(  ) ) ) ) )
+   {
+      ch->print( "Source room does not exist.\r\n" );
+      return;
+   }
+
+   if( !is_number( droom ) || !( destination = get_room_index( atoi( droom.c_str(  ) ) ) ) )
+   {
+      ch->print( "Destination room does not exist.\r\n" );
+      return;
+   }
+
+   if( source == destination )
+   {
+      ch->print( "Source and destination rooms cannot be the same.\r\n" );
+      return;
+   }
+
+   if( !can_rmodify( ch, destination ) )
+   {
+      ch->print( "You cannot modify destination room.\r\n" );
+      return;
+   }
+
+   ch->set_color( AT_GREEN );
+
+   if( source->mudprogs.empty(  ) )
+   {
+      ch->print( "Source room has no programs.\r\n" );
+      return;
+   }
+
+   if( COPY )
+   {
+      for( sp = source->mudprogs.begin(  ); sp != source->mudprogs.end(  ); ++sp )
+      {
+         mud_prog_data *source_rprg = *sp;
+
+         if( mptype == source_rprg->type || mptype == -1 )
+         {
+            mud_prog_data *dest_rprg = new mud_prog_data;
+
+            destination->mudprogs.push_back( dest_rprg );
+            mpcopy( source_rprg, dest_rprg );
+            destination->progtypes.set( dest_rprg->type );
+            ++cnt;
+         }
+      }
+
+      if( cnt == 0 )
+      {
+         ch->print( "No such program in source room.\r\n" );
+         return;
+      }
+      ch->printf( "%d programs successfully copied from %s to %s.\r\n", cnt, sroom.c_str(  ), droom.c_str(  ) );
+      return;
+   }
+
+   if( value < 1 )
+   {
+      ch->print( "No such program in source room.\r\n" );
+      return;
+   }
+
+   mptype = get_mpflag( prog );
+
+   for( sp = source->mudprogs.begin(  ); sp != source->mudprogs.end(  ); ++sp )
+   {
+      mud_prog_data *source_rprg = *sp;
+
+      if( ++cnt == value && source_rprg->type == mptype )
+      {
+         mud_prog_data *dest_rprg = new mud_prog_data;
+
+         mpcopy( source_rprg, dest_rprg );
+         destination->mudprogs.push_back( dest_rprg );
+         destination->progtypes.set( dest_rprg->type );
+         ch->printf( "%s program %d from %s successfully copied to %s.\r\n", prog.c_str(  ), value, sroom.c_str(  ), droom.c_str(  ) );
+         return;
+      }
+   }
+   ch->print( "No such program in source room.\r\n" );
 }
 
 CMDF( do_makerooms )
@@ -6384,13 +6798,13 @@ CMDF( do_makerooms )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Create a block of rooms.\r\n" );
       ch->print( "Usage: makerooms <# of rooms>\r\n" );
       return;
    }
-   x = atoi( argument );
+   x = atoi( argument.c_str(  ) );
 
    ch->printf( "Attempting to create a block of %d rooms.\r\n", x );
 
@@ -6443,7 +6857,6 @@ CMDF( do_makerooms )
       ++vnum;
    }
    ch->printf( "%d rooms created.\r\n", room_count );
-   return;
 }
 
 /* Consolidated *assign function. 
@@ -6451,7 +6864,7 @@ CMDF( do_makerooms )
  */
 CMDF( do_vassign )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    int lo, hi;
    char_data *victim, *mob;
    room_index *room;
@@ -6474,10 +6887,10 @@ CMDF( do_vassign )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
    argument = one_argument( argument, arg3 );
-   lo = atoi( arg2 );
-   hi = atoi( arg3 );
+   lo = atoi( arg2.c_str(  ) );
+   hi = atoi( arg3.c_str(  ) );
 
-   if( arg1[0] == '\0' || lo < 0 || hi < 0 )
+   if( arg1.empty(  ) || lo < 0 || hi < 0 )
    {
       ch->print( "Syntax: vassign <who> <low> <high>\r\n" );
       return;
@@ -6631,5 +7044,4 @@ CMDF( do_vassign )
    tarea->flags.set( AFLAG_PROTOTYPE );
    ch->set_color( AT_IMMORT );
    ch->printf( "Vnum range set for %s and initialized.\r\n", victim->name );
-   return;
 }

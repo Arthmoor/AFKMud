@@ -148,18 +148,20 @@ short gsn_trollish;
 short gsn_goblin;
 short gsn_halfling;
 
-/* for searching */
-short gsn_first_spell;
-short gsn_first_skill;
-short gsn_first_combat;
-short gsn_first_tongue;
-short gsn_first_ability;
-short gsn_first_lore;
-short gsn_top_sn;
+// The total number of skills.
+// Note that the range [0; num_sorted_skills[ is
+// the only range that can be b-searched.
+//
+// The range [num_sorted_skills; num_skills[ is for
+// skills added during the game; we cannot resort the
+// skills due to there being direct indexing into the
+// skill array. So, we have this additional linear
+// range for the skills added at runtime.
+short num_skills;
+// The number of sorted skills. (see above)
+short num_sorted_skills;
 
 /* For styles?  Trying to rebuild from some kind of accident here - Blod */
-
-
 short gsn_tan;
 short gsn_dragon_ride;
 
@@ -272,13 +274,12 @@ void assign_gsn_data( void )
    ASSIGN_GSN( gsn_trollish, "trollese" );
    ASSIGN_GSN( gsn_goblin, "goblin" );
    ASSIGN_GSN( gsn_halfling, "halfling" );
-   return;
 }
 
 /*
  * Race table.
  */
-char *const npc_race[MAX_NPC_RACE] = { /* starting from 0.... */
+const char *npc_race[MAX_NPC_RACE] = { /* starting from 0.... */
    "human", "high-elf", "dwarf", "halfling", "pixie", "half-ogre", "half-orc",   /* 6  */
    "half-troll", "half-elf", "gith", "minotaur", "duergar", "centaur",  /* 12 */
    "iguanadon", "gnome", "drow", "wild-elf", "insectoid", "sahuagin", "r9",   /* 19 */
@@ -309,7 +310,7 @@ char *const npc_race[MAX_NPC_RACE] = { /* starting from 0.... */
 /*
  * Class table.
  */
-char *const npc_class[MAX_NPC_CLASS] = {
+const char *npc_class[MAX_NPC_CLASS] = {
    "Mage", "Cleric", "Rogue", "Warrior", "Necromancer", "Druid", "Ranger",
    "Monk", "Available", "Available2", "Antipaladin", "Paladin", "Bard", "pc13",
    "pc14", "pc15", "pc16", "pc17", "pc18", "pc19",
@@ -541,24 +542,24 @@ const struct lck_app_type lck_app[26] = {
 
 /* removed "pea" and added chop, spear, smash - Grimm */
 /* Removed duplication in damage types - Samson 1-9-00 */
-char *attack_table[DAM_MAX_TYPE] = {
+const char *attack_table[DAM_MAX_TYPE] = {
    "hit", "slash", "stab", "hack", "crush", "lash", "pierce",
    "thrust"
 };
 
-char *attack_table_plural[DAM_MAX_TYPE] = {
+const char *attack_table_plural[DAM_MAX_TYPE] = {
    "hits", "slashes", "stabs", "hacks", "crushes", "lashes", "pierces",
    "thrusts"
 };
 
-char *s_blade_messages[24] = {
+const char *s_blade_messages[24] = {
    "miss", "barely scratch", "scratch", "nick", "cut", "hit", "tear",
    "rip", "gash", "lacerate", "hack", "maul", "rend", "decimate",
    "_mangle_", "_devastate_", "_cleave_", "_butcher_", "DISEMBOWEL",
    "DISFIGURE", "GUT", "EVISCERATE", "* SLAUGHTER *", "*** ANNIHILATE ***"
 };
 
-char *p_blade_messages[24] = {
+const char *p_blade_messages[24] = {
    "misses", "barely scratches", "scratches", "nicks", "cuts", "hits",
    "tears", "rips", "gashes", "lacerates", "hacks", "mauls", "rends",
    "decimates", "_mangles_", "_devastates_", "_cleaves_", "_butchers_",
@@ -566,14 +567,14 @@ char *p_blade_messages[24] = {
    "*** ANNIHILATES ***"
 };
 
-char *s_blunt_messages[24] = {
+const char *s_blunt_messages[24] = {
    "miss", "barely scuff", "scuff", "pelt", "bruise", "strike", "thrash",
    "batter", "flog", "pummel", "smash", "maul", "bludgeon", "decimate",
    "_shatter_", "_devastate_", "_maim_", "_cripple_", "MUTILATE", "DISFIGURE",
    "MASSACRE", "PULVERIZE", "* OBLITERATE *", "*** ANNIHILATE ***"
 };
 
-char *p_blunt_messages[24] = {
+const char *p_blunt_messages[24] = {
    "misses", "barely scuffs", "scuffs", "pelts", "bruises", "strikes",
    "thrashes", "batters", "flogs", "pummels", "smashes", "mauls",
    "bludgeons", "decimates", "_shatters_", "_devastates_", "_maims_",
@@ -581,7 +582,7 @@ char *p_blunt_messages[24] = {
    "* OBLITERATES *", "*** ANNIHILATES ***"
 };
 
-char *s_generic_messages[24] = {
+const char *s_generic_messages[24] = {
    "miss", "brush", "scratch", "graze", "nick", "jolt", "wound",
    "injure", "hit", "jar", "thrash", "maul", "decimate", "_traumatize_",
    "_devastate_", "_maim_", "_demolish_", "MUTILATE", "MASSACRE",
@@ -589,7 +590,7 @@ char *s_generic_messages[24] = {
    "**** SMITE ****"
 };
 
-char *p_generic_messages[24] = {
+const char *p_generic_messages[24] = {
    "misses", "brushes", "scratches", "grazes", "nicks", "jolts", "wounds",
    "injures", "hits", "jars", "thrashes", "mauls", "decimates", "_traumatizes_",
    "_devastates_", "_maims_", "_demolishes_", "MUTILATES", "MASSACRES",
@@ -597,7 +598,7 @@ char *p_generic_messages[24] = {
    "**** SMITES ****"
 };
 
-char **const s_message_table[DAM_MAX_TYPE] = {
+const char **s_message_table[DAM_MAX_TYPE] = {
    s_generic_messages,  /* hit */
    s_blade_messages, /* slash */
    s_blade_messages, /* stab */
@@ -608,7 +609,7 @@ char **const s_message_table[DAM_MAX_TYPE] = {
    s_blade_messages, /* thrust */
 };
 
-char **const p_message_table[DAM_MAX_TYPE] = {
+const char **p_message_table[DAM_MAX_TYPE] = {
    p_generic_messages,  /* hit */
    p_blade_messages, /* slash */
    p_blade_messages, /* stab */
@@ -620,7 +621,7 @@ char **const p_message_table[DAM_MAX_TYPE] = {
 };
 
 /* Weather constants - FB */
-char *const temp_settings[MAX_CLIMATE] = {
+const char *temp_settings[MAX_CLIMATE] = {
    "cold",
    "cool",
    "normal",
@@ -628,7 +629,7 @@ char *const temp_settings[MAX_CLIMATE] = {
    "hot",
 };
 
-char *const precip_settings[MAX_CLIMATE] = {
+const char *precip_settings[MAX_CLIMATE] = {
    "arid",
    "dry",
    "normal",
@@ -636,7 +637,7 @@ char *const precip_settings[MAX_CLIMATE] = {
    "wet",
 };
 
-char *const wind_settings[MAX_CLIMATE] = {
+const char *wind_settings[MAX_CLIMATE] = {
    "still",
    "calm",
    "normal",
@@ -644,7 +645,7 @@ char *const wind_settings[MAX_CLIMATE] = {
    "windy",
 };
 
-char *const preciptemp_msg[6][6] = {
+const char *preciptemp_msg[6][6] = {
    /*
     * precip = 0 
     */
@@ -707,7 +708,7 @@ char *const preciptemp_msg[6][6] = {
     "A torrent of rain soaks the heated earth"}
 };
 
-char *const windtemp_msg[6][6] = {
+const char *windtemp_msg[6][6] = {
    /*
     * wind = 0 
     */
@@ -770,13 +771,13 @@ char *const windtemp_msg[6][6] = {
     "Monsoon winds tear the feverish air"}
 };
 
-char *const precip_msg[3] = {
+const char *precip_msg[3] = {
    "there is not a cloud in the sky",
    "pristine white clouds are in the sky",
    "thick, grey clouds mask the sun"
 };
 
-char *const wind_msg[6] = {
+const char *wind_msg[6] = {
    "there is not a breath of wind in the air",
    "a slight breeze stirs the air",
    "a breeze wafts through the area",

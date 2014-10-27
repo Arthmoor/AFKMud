@@ -27,21 +27,20 @@
  ****************************************************************************/
 
 #if !defined(WIN32)
- #include <dlfcn.h>
+#include <dlfcn.h>
 #else
- #include <windows.h>
- #define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
- #define dlerror() GetLastError()
+#include <windows.h>
+#define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
+#define dlerror() GetLastError()
 #endif
 #include "mud.h"
 #include "language.h"
 
-void skill_notfound( char_data *, char * );
 SPELLF( spell_notfound );
 
-list<lang_data*> langlist;
+list < lang_data * >langlist;
 
-SPELL_FUN *spell_function( char *name )
+SPELL_FUN *spell_function( const string & name )
 {
    void *funHandle;
 #if !defined(WIN32)
@@ -50,14 +49,14 @@ SPELL_FUN *spell_function( char *name )
    DWORD error;
 #endif
 
-   funHandle = dlsym( sysdata->dlHandle, name );
+   funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
    if( ( error = dlerror(  ) ) )
       return ( SPELL_FUN * ) spell_notfound;
 
    return ( SPELL_FUN * ) funHandle;
 }
 
-DO_FUN *skill_function( char *name )
+DO_FUN *skill_function( const string & name )
 {
    void *funHandle;
 #if !defined(WIN32)
@@ -66,68 +65,64 @@ DO_FUN *skill_function( char *name )
    DWORD error;
 #endif
 
-   funHandle = dlsym( sysdata->dlHandle, name );
+   funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
    if( ( error = dlerror(  ) ) )
       return ( DO_FUN * ) skill_notfound;
 
    return ( DO_FUN * ) funHandle;
 }
 
-lcnv_data::lcnv_data()
+lcnv_data::lcnv_data(  )
 {
-   old = "";
-   lnew = "";
+   old.clear(  );
+   lnew.clear(  );
 }
 
-lang_data::lang_data()
+lang_data::lang_data(  )
 {
-   init_memory( &name, &alphabet, sizeof( alphabet ) );
 }
 
-lang_data::~lang_data()
+lang_data::~lang_data(  )
 {
-   list<lcnv_data*>::iterator lcnv;
+   list < lcnv_data * >::iterator lcnv;
 
-   for( lcnv = prelist.begin(); lcnv != prelist.end(); )
+   for( lcnv = prelist.begin(  ); lcnv != prelist.end(  ); )
    {
-      lcnv_data *lpre = (*lcnv);
+      lcnv_data *lpre = *lcnv;
       ++lcnv;
 
       prelist.remove( lpre );
       deleteptr( lpre );
    }
 
-   for( lcnv = cnvlist.begin(); lcnv != cnvlist.end(); )
+   for( lcnv = cnvlist.begin(  ); lcnv != cnvlist.end(  ); )
    {
-      lcnv_data *lc = (*lcnv);
+      lcnv_data *lc = *lcnv;
       ++lcnv;
 
       cnvlist.remove( lc );
       deleteptr( lc );
    }
-   STRFREE( name );
-   DISPOSE( alphabet );
    langlist.remove( this );
 }
 
 void free_tongues( void )
 {
-   list<lang_data*>::iterator ln;
+   list < lang_data * >::iterator ln;
 
-   for( ln = langlist.begin(); ln != langlist.end(); )
+   for( ln = langlist.begin(  ); ln != langlist.end(  ); )
    {
-      lang_data *lang = (*ln);
+      lang_data *lang = *ln;
       ++ln;
 
       deleteptr( lang );
    }
-   return;
 }
 
 /*
  * Tongues / Languages loading/saving functions - Altrag
  */
-void fread_cnv( FILE * fp, lang_data *lng, bool pre )
+void fread_cnv( FILE * fp, lang_data * lng, bool pre )
 {
    lcnv_data *cnv;
    char letter;
@@ -182,13 +177,12 @@ void load_tongues(  )
          break;
       fread_to_eol( fp );
       lng = new lang_data;
-      lng->name = STRALLOC( word );
+      lng->name = word;
       fread_cnv( fp, lng, true );
-      lng->alphabet = fread_string_nohash( fp );
+      fread_string( lng->alphabet, fp );
       fread_cnv( fp, lng, false );
       fread_to_eol( fp );
       langlist.push_back( lng );
    }
    FCLOSE( fp );
-   return;
 }

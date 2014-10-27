@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                         Battle & death module                            *
+ *                         Battle & Death module                            *
  ****************************************************************************/
 
 #ifndef __FIGHT_H__

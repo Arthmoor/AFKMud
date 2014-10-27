@@ -32,7 +32,7 @@
 #include "pfiles.h"
 #include "roomindex.h"
 
-list<holiday_data*> daylist;
+list < holiday_data * >daylist;
 
 const int MAX_TZONE = 25;
 
@@ -40,10 +40,10 @@ extern time_t board_expire_time_t;
 
 struct tzone_type
 {
-   char *name; /* Name of the time zone */
-   char *zone; /* Cities or Zones in zone crossing */
-   int gmt_offset;   /* Difference in hours from Greenwich Mean Time */
-   int dst_offset;   /* Day Light Savings Time offset, Not used but left it in anyway */
+   const char *name; /* Name of the time zone */
+   const char *zone; /* Cities or Zones in zone crossing */
+   const int gmt_offset;   /* Difference in hours from Greenwich Mean Time */
+   const int dst_offset;   /* Day Light Savings Time offset, Not used but left it in anyway */
 };
 
 struct tzone_type tzone_table[MAX_TZONE] = {
@@ -74,7 +74,7 @@ struct tzone_type tzone_table[MAX_TZONE] = {
    {"GMT+12", "Fiji, Wellington, Auckland", 12, 0},
 };
 
-int tzone_lookup( const char *arg )
+int tzone_lookup( const string & arg )
 {
    int i;
 
@@ -86,7 +86,7 @@ int tzone_lookup( const char *arg )
 
    for( i = 0; i < MAX_TZONE; ++i )
    {
-      if( is_name( arg, tzone_table[i].zone ) )
+      if( hasname( tzone_table[i].zone, arg ) )
          return i;
    }
    return -1;
@@ -99,7 +99,7 @@ CMDF( do_timezone )
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->printf( "%-6s %-30s (%s)\r\n", "Name", "City/Zone Crosses", "Time" );
       ch->print( "-------------------------------------------------------------------------\r\n" );
@@ -128,8 +128,8 @@ CMDF( do_timezone )
  */
 char *c_time( time_t curtime, int tz )
 {
-   static char *day[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-   static char *month[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+   static const char *day[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+   static const char *month[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
    static char strtime[128];
    struct tm *ptime;
    char tzonename[50];
@@ -164,8 +164,7 @@ char *c_time( time_t curtime, int tz )
 
    snprintf( strtime, 128, "%3s %3s %d, %d %d:%02d:%02d %cM %s",
              day[ptime->tm_wday], month[ptime->tm_mon], ptime->tm_mday, ptime->tm_year + 1900,
-             ptime->tm_hour == 0 ? 12 : ptime->tm_hour > 12 ? ptime->tm_hour - 12 : ptime->tm_hour,
-             ptime->tm_min, ptime->tm_sec, ptime->tm_hour < 12 ? 'A' : 'P', tzonename );
+             ptime->tm_hour == 0 ? 12 : ptime->tm_hour > 12 ? ptime->tm_hour - 12 : ptime->tm_hour, ptime->tm_min, ptime->tm_sec, ptime->tm_hour < 12 ? 'A' : 'P', tzonename );
    return strtime;
 }
 
@@ -206,27 +205,26 @@ char *mini_c_time( time_t curtime, int tz )
 
    int year = ptime->tm_year - 100;
    if( year < 0 )
-      year = 100 + year; // Fix negative years for < Y2K
+      year = 100 + year;   // Fix negative years for < Y2K
 
-   snprintf( strtime, 128, "%02d/%02d/%02d %02d:%02d%c", ptime->tm_mon + 1, ptime->tm_mday, ptime->tm_year - 100,
-             ptime->tm_hour == 0 ? 12 : ptime->tm_hour > 12 ? ptime->tm_hour - 12 : ptime->tm_hour, ptime->tm_min,
-             ptime->tm_hour < 12 ? 'A' : 'P' );
+   snprintf( strtime, 128, "%02d/%02d/%02d %02d:%02d%c", ptime->tm_mon + 1, ptime->tm_mday, year,
+             ptime->tm_hour == 0 ? 12 : ptime->tm_hour > 12 ? ptime->tm_hour - 12 : ptime->tm_hour, ptime->tm_min, ptime->tm_hour < 12 ? 'A' : 'P' );
    return strtime;
 }
 
 /* Time values modified to Alsherok calendar - Samson 5-6-99 */
-char *const day_name[] = {
+const char *day_name[] = {
    "Agoras", "Archonis", "Ecclesias", "Talentas", "Pentes",
    "Kilinis", "Piloses", "Koses", "Demes", "Camillies", "Eluthes",
    "Aemiles", "Xenophes"
 };
 
-char *const month_name[] = {
+const char *month_name[] = {
    "Olympias", "Planting", "Agamemnus", "Athenas", "Pentes", "Sextes", "Harvest", "Octes",
    "Nones", "Deces", "Graecias", "Terminus"
 };
 
-char *const season_name[] = {
+const char *season_name[] = {
    "spring", "summer", "fall", "winter"
 };
 
@@ -451,19 +449,18 @@ void save_timedata( void )
       fprintf( fp, "%s", "#END\n" );
    }
    FCLOSE( fp );
-   return;
 }
 
 CMDF( do_time )
 {
    holiday_data *holiday;
    char buf[MSL];
-   char *suf;
+   const char *suf;
    short day;
 
-   if( argument && argument[0] != '\0' && is_number( argument ) )
+   if( !argument.empty(  ) && is_number( argument ) )
    {
-      time_t intime = atol( argument );
+      time_t intime = atol( argument.c_str(  ) );
 
       ch->printf( "&w%ld = &g%s\r\n", intime, mini_c_time( intime, ch->pcdata->timezone ) );
       return;
@@ -488,14 +485,13 @@ CMDF( do_time )
                "The system time      : %s\r\n",
                ( time_info.hour % sysdata->hournoon == 0 ) ? sysdata->hournoon : time_info.hour % sysdata->hournoon,
                time_info.hour >= sysdata->hournoon ? "pm" : "am", day_name[( time_info.day ) % sysdata->daysperweek], day,
-               suf, month_name[time_info.month], season_name[time_info.season], time_info.year, str_boot_time,
-               c_time( current_time, -1 ) );
+               suf, month_name[time_info.month], season_name[time_info.season], time_info.year, str_boot_time, c_time( current_time, -1 ) );
 
    ch->printf( "Your local time      : %s\r\n\r\n", c_time( current_time, ch->pcdata->timezone ) );
    holiday = get_holiday( time_info.month, day - 1 );
 
    if( holiday != NULL )
-      ch->printf( "It's a holiday today: %s\r\n", holiday->get_name().c_str() );
+      ch->printf( "It's a holiday today: %s\r\n", holiday->get_name(  ).c_str(  ) );
 
    if( !ch->isnpc(  ) )
    {
@@ -514,6 +510,7 @@ CMDF( do_time )
       sec_to_hms( ptime - curtime, buf );
       ch->printf( "The next pfile cleanup is in %s.\r\n", buf );
    }
+
    if( ch->is_immortal(  ) )
    {
       long qtime, dtime;
@@ -525,22 +522,88 @@ CMDF( do_time )
       sec_to_hms( qtime - dtime, buf );
       ch->printf( "The next rare item update is in %s.\r\n", buf );
    }
-   return;
 }
 
 void start_winter( void )
 {
-   room_index *room;
+   map < int, room_index * >::iterator iroom;
 
    echo_to_all( "&cThe air takes on a chilling cold as winter sets in.", ECHOTAR_ALL );
    echo_to_all( "&cFreshwater bodies everywhere have frozen over.\r\n", ECHOTAR_ALL );
 
    winter_freeze = true;
 
-   for( int iHash = 0; iHash < MAX_KEY_HASH; ++iHash )
+   for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {
-      for( room = room_index_hash[iHash]; room; room = room->next )
+      room_index *room = iroom->second;
+
+      switch ( room->sector_type )
       {
+         default:
+            break;
+
+         case SECT_WATER_SWIM:
+         case SECT_WATER_NOSWIM:
+            room->winter_sector = room->sector_type;
+            room->sector_type = SECT_ICE;
+            break;
+      }
+   }
+}
+
+void start_spring( void )
+{
+   map < int, room_index * >::iterator iroom;
+
+   echo_to_all( "&cThe chill recedes from the air as spring begins to take hold.", ECHOTAR_ALL );
+   echo_to_all( "&cFreshwater bodies everywhere have thawed out.\r\n", ECHOTAR_ALL );
+
+   winter_freeze = false;
+
+   for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
+   {
+      room_index *room = iroom->second;
+
+      if( room->sector_type == SECT_ICE && room->winter_sector != -1 )
+      {
+         room->sector_type = room->winter_sector;
+         room->winter_sector = -1;
+      }
+   }
+}
+
+void start_summer( void )
+{
+   echo_to_all( "&YThe days grow longer and hotter as summer grips the world.\r\n", ECHOTAR_ALL );
+}
+
+void start_fall( void )
+{
+   echo_to_all( "&OThe leaves begin changing colors signaling the start of fall.\r\n", ECHOTAR_ALL );
+}
+
+void season_update( void )
+{
+   holiday_data *day;
+
+   day = get_holiday( time_info.month, time_info.day );
+
+   if( day != NULL )
+   {
+      if( time_info.day + 1 == day->get_day(  ) && time_info.hour == 0 )
+         echo_all_printf( ECHOTAR_ALL, "&[immortal]%s", day->get_announce(  ).c_str(  ) );
+   }
+
+   if( time_info.season == SEASON_WINTER && winter_freeze == false )
+   {
+      map < int, room_index * >::iterator iroom;
+
+      winter_freeze = true;
+
+      for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
+      {
+         room_index *room = iroom->second;
+
          switch ( room->sector_type )
          {
             default:
@@ -554,81 +617,6 @@ void start_winter( void )
          }
       }
    }
-   return;
-}
-
-void start_spring( void )
-{
-   room_index *room;
-
-   echo_to_all( "&cThe chill recedes from the air as spring begins to take hold.", ECHOTAR_ALL );
-   echo_to_all( "&cFreshwater bodies everywhere have thawed out.\r\n", ECHOTAR_ALL );
-
-   winter_freeze = false;
-
-   for( int iHash = 0; iHash < MAX_KEY_HASH; ++iHash )
-   {
-      for( room = room_index_hash[iHash]; room; room = room->next )
-      {
-         if( room->sector_type == SECT_ICE && room->winter_sector != -1 )
-         {
-            room->sector_type = room->winter_sector;
-            room->winter_sector = -1;
-         }
-      }
-   }
-   return;
-}
-
-void start_summer( void )
-{
-   echo_to_all( "&YThe days grow longer and hotter as summer grips the world.\r\n", ECHOTAR_ALL );
-   return;
-}
-
-void start_fall( void )
-{
-   echo_to_all( "&OThe leaves begin changing colors signaling the start of fall.\r\n", ECHOTAR_ALL );
-   return;
-}
-
-void season_update( void )
-{
-   holiday_data *day;
-
-   day = get_holiday( time_info.month, time_info.day );
-
-   if( day != NULL )
-   {
-      if( time_info.day + 1 == day->get_day() && time_info.hour == 0 )
-         echo_all_printf( ECHOTAR_ALL, "&[immortal]%s", day->get_announce().c_str() );
-   }
-
-   if( time_info.season == SEASON_WINTER && winter_freeze == false )
-   {
-      room_index *room;
-
-      winter_freeze = true;
-
-      for( int iHash = 0; iHash < MAX_KEY_HASH; ++iHash )
-      {
-         for( room = room_index_hash[iHash]; room; room = room->next )
-         {
-            switch ( room->sector_type )
-            {
-               default:
-                  break;
-
-               case SECT_WATER_SWIM:
-               case SECT_WATER_NOSWIM:
-                  room->winter_sector = room->sector_type;
-                  room->sector_type = SECT_ICE;
-                  break;
-            }
-         }
-      }
-   }
-   return;
 }
 
 /* PaB: Which season are we in? 
@@ -671,35 +659,32 @@ void calc_season( void )
       time_info.season = SEASON_SPRING;
 
    season_update(  );   /* Maintain the season in case of reboot, check for holidays */
-
-   return;
 }
 
-holiday_data::holiday_data()
+holiday_data::holiday_data(  )
 {
    init_memory( &month, &day, sizeof( day ) );
 }
 
-holiday_data::~holiday_data()
+holiday_data::~holiday_data(  )
 {
    daylist.remove( this );
 }
 
 void free_holidays( void )
 {
-   list<holiday_data*>::iterator day;
+   list < holiday_data * >::iterator day;
 
-   for( day = daylist.begin(); day != daylist.end(); )
+   for( day = daylist.begin(  ); day != daylist.end(  ); )
    {
-      holiday_data *holiday = (*day);
+      holiday_data *holiday = *day;
       ++day;
 
       deleteptr( holiday );
    }
-   return;
 }
 
-void check_holiday( char_data *ch )
+void check_holiday( char_data * ch )
 {
    holiday_data *day;   /* To inform incoming players of holidays - Samson 6-3-99 */
 
@@ -709,32 +694,32 @@ void check_holiday( char_data *ch )
    day = get_holiday( time_info.month, time_info.day );
 
    if( day != NULL )
-      ch->printf( "&Y%s\r\n", day->get_announce().c_str() );
+      ch->printf( "&Y%s\r\n", day->get_announce(  ).c_str(  ) );
 }
 
 holiday_data *get_holiday( short month, short day )
 {
-   list<holiday_data*>::iterator hld;
+   list < holiday_data * >::iterator hld;
 
-   for( hld = daylist.begin(); hld != daylist.end(); ++hld )
+   for( hld = daylist.begin(  ); hld != daylist.end(  ); ++hld )
    {
-      holiday_data *holiday = (*hld);
+      holiday_data *holiday = *hld;
 
-      if( month + 1 == holiday->get_month() && day + 1 == holiday->get_day() )
+      if( month + 1 == holiday->get_month(  ) && day + 1 == holiday->get_day(  ) )
          return holiday;
    }
    return NULL;
 }
 
-holiday_data *get_holiday( string name )
+holiday_data *get_holiday( const string & name )
 {
-   list<holiday_data*>::iterator hld;
+   list < holiday_data * >::iterator hld;
 
-   for( hld = daylist.begin(); hld != daylist.end(); ++hld )
+   for( hld = daylist.begin(  ); hld != daylist.end(  ); ++hld )
    {
-      holiday_data *holiday = (*hld);
+      holiday_data *holiday = *hld;
 
-      if( scomp( name, holiday->get_name() ) )
+      if( !str_cmp( name, holiday->get_name(  ) ) )
          return holiday;
    }
    return NULL;
@@ -742,34 +727,29 @@ holiday_data *get_holiday( string name )
 
 CMDF( do_holidays )
 {
-   list<holiday_data*>::iterator day;
+   list < holiday_data * >::iterator day;
 
    ch->pager( "&RHoliday                &YMonth          &GDay\r\n" );
    ch->pager( "&g----------------------+----------------+---------------\r\n" );
 
-   for( day = daylist.begin(); day != daylist.end(); ++day )
+   for( day = daylist.begin(  ); day != daylist.end(  ); ++day )
    {
-      holiday_data *holiday = (*day);
+      holiday_data *holiday = *day;
 
-      ch->pagerf( "&G%-21s &g%-11s %-2d\r\n",
-         holiday->get_name().c_str(), month_name[holiday->get_month() - 1], holiday->get_day() );
+      ch->pagerf( "&G%-21s &g%-11s %-2d\r\n", holiday->get_name(  ).c_str(  ), month_name[holiday->get_month(  ) - 1], holiday->get_day(  ) );
    }
-   return;
 }
 
 /* Load the holiday file */
 void load_holidays( void )
 {
-   char filename[256];
    holiday_data *day;
    ifstream stream;
 
-   daylist.clear();
+   daylist.clear(  );
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, HOLIDAY_FILE );
-
-   stream.open( filename );
-   if( !stream.is_open() )
+   stream.open( HOLIDAY_FILE );
+   if( !stream.is_open(  ) )
    {
       log_string( "No holiday file found." );
       return;
@@ -777,164 +757,164 @@ void load_holidays( void )
 
    do
    {
-      string line, key, value;
+      string key, value;
       char buf[MIL];
 
       stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
       strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
 
       if( key == "#HOLIDAY" )
          day = new holiday_data;
-      if( key == "Name" )
-      {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_tilde( value );
-         strip_lspace( value );
+      else if( key == "Name" )
          day->set_name( value );
-      }
-      if( key == "Announce" )
-      {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_tilde( value );
-         strip_lspace( value );
+      else if( key == "Announce" )
          day->set_announce( value );
-      }
-      if( key == "Month" )
-      {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_lspace( value );
-         day->set_month( atoi( value.c_str() ) );
-      }
-      if( key == "Day" )
-      {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_lspace( value );
-         day->set_day( atoi( value.c_str() ) );
-      }
-      if( key == "End" )
+      else if( key == "Month" )
+         day->set_month( atoi( value.c_str(  ) ) );
+      else if( key == "Day" )
+         day->set_day( atoi( value.c_str(  ) ) );
+      else if( key == "End" )
          daylist.push_back( day );
+      else
+         log_printf( "%s: Bad line in holiday file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
    }
-   while( !stream.eof() );
-   stream.close();
-   return;
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 /* Save the holidays to disk - Samson 5-6-99 */
 void save_holidays( void )
 {
    ofstream stream;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, HOLIDAY_FILE );
-   stream.open( filename );
-   if( !stream.is_open() )
+   stream.open( HOLIDAY_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( HOLIDAY_FILE );
    }
    else
    {
-      list<holiday_data*>::iterator hday;
-      for( hday = daylist.begin(); hday != daylist.end(); ++hday )
+      list < holiday_data * >::iterator hday;
+      for( hday = daylist.begin(  ); hday != daylist.end(  ); ++hday )
       {
-         holiday_data *day = (*hday);
+         holiday_data *day = *hday;
 
          stream << "#HOLIDAY" << endl;
-         stream << "Name     " << day->get_name() << endl;
-         stream << "Announce " << day->get_announce() << endl;
-         stream << "Month    " << day->get_month() << endl;
-         stream << "Day      " << day->get_day() << endl;
+         stream << "Name     " << day->get_name(  ) << endl;
+         stream << "Announce " << day->get_announce(  ) << endl;
+         stream << "Month    " << day->get_month(  ) << endl;
+         stream << "Day      " << day->get_day(  ) << endl;
          stream << "End" << endl << endl;
       }
-      stream.close();
+      stream.close(  );
    }
-   return;
 }
 
 /* Holiday OLC command - (c)Andrew Wilkie May-20-2005 */
 CMDF( do_setholiday )
 {
-   vector<string> arg = vector_argument( argument, -1 );
+   string arg, arg2;
    holiday_data *day, *newday;
    int count = 0, x = 0, value = 0;
 
-   if( arg.size() < 2 )
+   argument = one_argument( argument, arg );
+   argument = one_argument( argument, arg2 );
+   if( arg.empty(  ) || arg2.empty(  ) || argument.empty(  ) )
    {
-      ch->print( "Syntax : setholiday <name> <field> <argument>\r\n" );
-      ch->print( "Field can be : day name create announce save delete\r\n" );
+      ch->print( "Syntax: setholiday <name> <field> <argument>\r\n" );
+      ch->print( "Field can be: day name create announce save delete\r\n" );
       return;
    }
 
-   /* Create a new holiday by name arg1 */
-   if( scomp( arg[1], "create" ) )
+   /*
+    * Create a new holiday by name arg1 
+    */
+   if( !str_cmp( arg2, "create" ) )
    {
-      list<holiday_data*>::iterator hld;
-      for( hld = daylist.begin(); hld != daylist.end(); ++hld )
+      list < holiday_data * >::iterator hld;
+      for( hld = daylist.begin(  ); hld != daylist.end(  ); ++hld )
       {
-         day = (*hld);
+         day = *hld;
 
-         if( scomp( arg[0], day->get_name() ) )
+         if( !str_cmp( arg, day->get_name(  ) ) )
          {
             ch->print( "A holiday with that name exists already!\r\n" );
             return;
          }
       }
 
-      if( daylist.size() >= (unsigned int)sysdata->maxholiday )
+      if( daylist.size(  ) >= sysdata->maxholiday )
       {
          ch->print( "There are already too many holidays!\r\n" );
          return;
       }
 
       newday = new holiday_data;
-      newday->set_name( arg[0] );
+      newday->set_name( arg );
       newday->set_day( time_info.day );
       newday->set_month( time_info.month );
       newday->set_announce( "Today is the holiday of when some moron forgot to set the announcement for this one!" );
       daylist.push_back( newday );
-      save_holidays();
+      save_holidays(  );
       ch->print( "Holiday created.\r\n" );
       return;
    }
 
-   /* Now... let's find that holiday */
-   /* Anything match? */
-   if( !( day = get_holiday( arg[0] ) ) )
+   /*
+    * Now... let's find that holiday 
+    */
+   /*
+    * Anything match? 
+    */
+   if( !( day = get_holiday( arg ) ) )
    {
       ch->print( "Which holiday was that?\r\n" );
       return;
    }
 
-   /* Set the day */
-   if( scomp( arg[1], "day" ) )
+   /*
+    * Set the day 
+    */
+   if( !str_cmp( arg2, "day" ) )
    {
-      value = atoi( arg[2].c_str() );
-      if( arg.size() <= 3 || !is_number( arg[2] ) || value > sysdata->dayspermonth || value <= 1 )
+      value = atoi( argument.c_str(  ) );
+      if( argument.empty(  ) || !is_number( argument ) || value > sysdata->dayspermonth || value < 1 )
       {
          ch->printf( "You must specify a numeric value : %d - %d", 1, sysdata->dayspermonth );
          return;
       }
 
-      /* What day is it?... FRIDAY!.. oh... no... it's.. arg[2]? */
+      /*
+       * What day is it?... FRIDAY!.. oh... no... it's.. argument? 
+       */
       day->set_day( value );
-      save_holidays();
+      save_holidays(  );
       ch->print( "Day changed\r\n" );
       return;
    }
 
-   if( scomp( arg[1], "month" ) )
+   if( !str_cmp( arg2, "month" ) )
    {
-      value = atoi( arg[2].c_str() );
-      /* Go through the months and find arg[2] */
-      if( arg.size() <= 3 || !is_number( arg[2] ) || value > sysdata->monthsperyear || value <= 1 )
+      value = atoi( argument.c_str(  ) );
+      /*
+       * Go through the months and find argument
+       */
+      if( argument.empty(  ) || !is_number( argument ) || value > sysdata->monthsperyear || value < 1 )
       {
          ch->print( "You must specify a valid month number:\r\n" );
 
-         /* List all the months with a counter next to them */
+         /*
+          * List all the months with a counter next to them 
+          */
          count = 1;
          while( month_name[x] != '\0' && str_cmp( month_name[x], " " ) && x < sysdata->monthsperyear )
          {
@@ -945,56 +925,61 @@ CMDF( do_setholiday )
          return;
       }
 
-      /* What's the month? */
+      /*
+       * What's the month? 
+       */
       day->set_month( value );
-      save_holidays();
+      save_holidays(  );
       ch->print( "Month changed\r\n" );
       return;
    }
 
-   if( scomp( arg[1], "announce" ) )
+   if( !str_cmp( arg2, "announce" ) )
    {
-      if( arg.size() < 3 )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the annoucement to what?\r\n" );
          return;
       }
 
-      /* Set the announcement */
-      day->set_announce( arg[2] );
-      save_holidays();
+      /*
+       * Set the announcement 
+       */
+      day->set_announce( argument );
+      save_holidays(  );
       ch->print( "Announcement changed\r\n" );
       return;
    }
 
-   /* Change the name */
-   if( scomp( arg[1], "name" ) )
+   /*
+    * Change the name 
+    */
+   if( !str_cmp( arg2, "name" ) )
    {
-      if( arg.size() < 3 )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the name to what?\r\n" );
          return;
       }
 
-      day->set_name( arg[2] );
-      save_holidays();
+      day->set_name( argument );
+      save_holidays(  );
       ch->print( "Name changed\r\n" );
       return;
    }
 
-   if( scomp( arg[1], "delete" ) )
+   if( !str_cmp( arg2, "delete" ) )
    {
-      if( arg.size() >= 3 && !scomp( arg[2], "yes" ) )
+      if( argument.empty(  ) || str_cmp( argument, "yes" ) )
       {
          ch->print( "If you are sure, use 'delete yes'\r\n" );
          return;
       }
 
       deleteptr( day );
-      save_holidays();
+      save_holidays(  );
       ch->print( "&RHoliday deleted\r\n" );
       return;
    }
    do_setholiday( ch, "" );
-   return;
 }

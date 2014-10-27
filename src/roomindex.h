@@ -35,13 +35,13 @@
 class reset_data
 {
  private:
-   reset_data( const reset_data& r );
-   reset_data& operator=( const reset_data& );
+   reset_data( const reset_data & r );
+     reset_data & operator=( const reset_data & );
 
  public:
-   reset_data();
+     reset_data(  );
 
-   list<reset_data*> resets; // Child resets associated with this reset
+     list < reset_data * >resets;   // Child resets associated with this reset
    char command;
    int arg1;
    int arg2;
@@ -63,25 +63,25 @@ class reset_data
 class exit_data
 {
  private:
-   exit_data( const exit_data& e );
-   exit_data& operator=( const exit_data& );
+   exit_data( const exit_data & e );
+     exit_data & operator=( const exit_data & );
 
  public:
-   exit_data();
-   ~exit_data();
+     exit_data(  );
+    ~exit_data(  );
 
-   exit_data *rexit;         // Reverse exit pointer
-   room_index *to_room;      // Pointer to destination room
-   bitset<MAX_EXFLAG> flags; // door states & other flags
-   char *keyword;            // Keywords for exit or door
-   char *exitdesc;           // Description of exit
-   int vnum;                 // Vnum of room exit leads to
-   int rvnum;                // Vnum of room in opposite dir
-   int key;                  // Key vnum
-   short vdir;               // Physical "direction"
-   short pull;               // pull of direction (current)
-   short pulltype;           // type of pull (current, wind)
-   short mx;                 // Coordinates to Overland Map - Samson 7-31-99
+   exit_data *rexit; // Reverse exit pointer
+   room_index *to_room; // Pointer to destination room
+     bitset < MAX_EXFLAG > flags;   // door states & other flags
+   char *keyword; // Keywords for exit or door
+   char *exitdesc;   // Description of exit
+   int vnum;   // Vnum of room exit leads to
+   int rvnum;  // Vnum of room in opposite dir
+   int key; // Key vnum
+   short vdir; // Physical "direction"
+   short pull; // pull of direction (current)
+   short pulltype;   // type of pull (current, wind)
+   short mx;   // Coordinates to Overland Map - Samson 7-31-99
    short my;
 };
 
@@ -91,15 +91,15 @@ class exit_data
 class room_index
 {
  private:
-   room_index( const room_index& r );
-   room_index& operator=( const room_index& );
+   room_index( const room_index & r );
+     room_index & operator=( const room_index & );
 
  public:
-   room_index(  );
-   ~room_index(  );
+     room_index(  );
+    ~room_index(  );
 
-   void olc_add_affect( char_data *ch, bool indexaffect, char *argument );
-   void olc_remove_affect( char_data *ch, bool indexaffect, char *argument );
+   void olc_add_affect( char_data *, bool, string & );
+   void olc_remove_affect( char_data *, bool, const string & );
    void clean_room(  );
    void randomize_exits( short );
    exit_data *make_exit( room_index *, short );
@@ -107,27 +107,27 @@ class room_index
    exit_data *get_exit( short );
    exit_data *get_exit_to( short, int );
    exit_data *get_exit_num( short );
-   void echo( char * );
+   void echo( const string & );
    void rprog_read_programs( FILE * );
    bool is_dark( char_data * );
    bool is_private(  );
    void room_affect( affect_data *, bool );
    reset_data *add_reset( char, int, int, int, short, short, short, short, short, short, short, short );
    void reset(  );
-   void wipe_resets();
-   void clean_resets();
+   void wipe_resets(  );
+   void clean_resets(  );
    void renumber_put_resets(  );
    void load_reset( FILE *, bool );
 
-   list<reset_data*> resets;   /* Things that get loaded in this room */
-   list<char_data*> people;    /* People in the room  */
-   list<obj_data*> objects;    /* Objects on the floor */
-   list<affect_data*> indexaffects; // Permanent affects on the room set via the area file or OLC
-   list<affect_data*> affects; /* Affects on the room */
-   list<exit_data*> exits;     /* Exits from the room */
-   list<extra_descr_data*> extradesc; /* Extra descriptions */
-   list<struct mud_prog_data*> mudprogs; /* Mudprogs */
-   list<struct mprog_act_list*> mpact; /* Mudprogs */
+     list < reset_data * >resets;   /* Things that get loaded in this room */
+     list < char_data * >people; /* People in the room  */
+     list < obj_data * >objects; /* Objects on the floor */
+     list < affect_data * >permaffects;   // Permanent affects on the room set via the area file or OLC
+     list < affect_data * >affects; /* Affects on the room */
+     list < exit_data * >exits;  /* Exits from the room */
+     list < extra_descr_data * >extradesc;   /* Extra descriptions */
+     list < struct mud_prog_data *>mudprogs; /* Mudprogs */
+     list < struct mprog_act_list *>mpact;   /* Mudprogs */
    room_index *next;
    area_data *area;
    reset_data *last_mob_reset;
@@ -139,9 +139,11 @@ class room_index
    char *nitedesc;   /* added NiteDesc -- Dracones */
    int vnum;
    int tele_vnum;
+   int weight; // Current amount of weight present in the room. - Taken from Smaug 1.8
+   int max_weight;   // Limit for how much weight the room can hold.  - Taken from Smaug 1.8
    int mpactnum;  /* mudprogs */
-   short baselight; /* Preset light amount in this room */
-   short light;     /* Modified amount of light in the room */
+   short baselight;  /* Preset light amount in this room */
+   short light;   /* Modified amount of light in the room */
    short sector_type;
    short winter_sector; /* Stores the original sector type for stuff that freezes in winter - Samson 7-19-00 */
    short tele_delay;
@@ -149,10 +151,12 @@ class room_index
    unsigned short mpscriptpos;
 };
 
-extern room_index *room_index_hash[MAX_KEY_HASH];
+extern map < int, room_index * >room_index_table;
 
 room_index *get_room_index( int );
 room_index *make_room( int, area_data * );
+int get_dirnum( const string & );
+const char *rev_exit( short );
 
 #define EXIT( x, door)  ( (x)->in_room->get_exit( door ) )
 #define CAN_GO(x, door) ( EXIT((x),(door)) && (EXIT((x),(door))->to_room != NULL )  \
@@ -167,5 +171,5 @@ struct teleport_data
    short timer;
 };
 
-extern list<teleport_data*> teleportlist;
+extern list < teleport_data * >teleportlist;
 #endif

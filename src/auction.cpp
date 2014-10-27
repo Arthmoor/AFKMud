@@ -28,6 +28,7 @@
 
 #include <cstdarg>
 #include <fstream>
+#include <sstream>
 #include <dirent.h>
 #include "mud.h"
 #include "auction.h"
@@ -39,50 +40,46 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-list<sale_data*> salelist;
+list < sale_data * >salelist;
 
-void bid( char_data *, char_data *, char * );
+void bid( char_data *, char_data *, const string & );
 
 void save_sales( void )
 {
    ofstream stream;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, SALES_FILE );
-   stream.open( filename );
-   if( !stream.is_open() )
+   stream.open( SALES_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( SALES_FILE );
    }
    else
    {
-      list<sale_data*>::iterator sl;
-      for( sl = salelist.begin(); sl != salelist.end(); ++sl )
+      list < sale_data * >::iterator sl;
+      for( sl = salelist.begin(  ); sl != salelist.end(  ); ++sl )
       {
-         sale_data *sale = (*sl);
+         sale_data *sale = *sl;
 
          stream << "#SALE" << endl;
-         stream << "Aucmob    " << sale->get_aucmob() << endl;
-         stream << "Seller    " << sale->get_seller() << endl;
-         stream << "Buyer     " << sale->get_buyer() << endl;
-         stream << "Item      " << sale->get_item() << endl;
-         stream << "Bid       " << sale->get_bid() << endl;
-         stream << "Collected " << sale->get_collected() << endl;
+         stream << "Aucmob    " << sale->get_aucmob(  ) << endl;
+         stream << "Seller    " << sale->get_seller(  ) << endl;
+         stream << "Buyer     " << sale->get_buyer(  ) << endl;
+         stream << "Item      " << sale->get_item(  ) << endl;
+         stream << "Bid       " << sale->get_bid(  ) << endl;
+         stream << "Collected " << sale->get_collected(  ) << endl;
          stream << "End" << endl << endl;
       }
-      stream << "#END" << endl;
-      stream.close();
+      stream.close(  );
    }
-   return;
 }
 
-sale_data::sale_data()
+sale_data::sale_data(  )
 {
    init_memory( &bid, &collected, sizeof( collected ) );
 }
 
-sale_data::~sale_data()
+sale_data::~sale_data(  )
 {
    salelist.remove( this );
 
@@ -90,7 +87,7 @@ sale_data::~sale_data()
       save_sales(  );
 }
 
-void add_sale( string aucmob, string seller, string buyer, string item, int bidamt, bool collected )
+void add_sale( const string & aucmob, const string & seller, const string & buyer, const string & item, int bidamt, bool collected )
 {
    sale_data *sale = new sale_data;
 
@@ -103,36 +100,34 @@ void add_sale( string aucmob, string seller, string buyer, string item, int bida
 
    salelist.push_back( sale );
    save_sales(  );
-   return;
 }
 
 void free_sales( void )
 {
-   list<sale_data*>::iterator sl;
+   list < sale_data * >::iterator sl;
 
-   for( sl = salelist.begin(); sl != salelist.end(); )
+   for( sl = salelist.begin(  ); sl != salelist.end(  ); )
    {
-      sale_data *sale = (*sl);
+      sale_data *sale = *sl;
       ++sl;
 
       deleteptr( sale );
    }
-   return;
 }
 
-sale_data *check_sale( string aucmob, string pcname, string objname )
+sale_data *check_sale( const string & aucmob, const string & pcname, const string & objname )
 {
-   list<sale_data*>::iterator sl;
+   list < sale_data * >::iterator sl;
 
-   for( sl = salelist.begin(); sl != salelist.end(); ++sl )
+   for( sl = salelist.begin(  ); sl != salelist.end(  ); ++sl )
    {
-      sale_data *sale = (*sl);
+      sale_data *sale = *sl;
 
-      if( scomp( aucmob, sale->get_aucmob() ) )
+      if( !str_cmp( aucmob, sale->get_aucmob(  ) ) )
       {
-         if( scomp( pcname, sale->get_seller() ) )
+         if( !str_cmp( pcname, sale->get_seller(  ) ) )
          {
-            if( scomp( objname, sale->get_item() ) )
+            if( !str_cmp( objname, sale->get_item(  ) ) )
                return sale;
          }
       }
@@ -142,14 +137,14 @@ sale_data *check_sale( string aucmob, string pcname, string objname )
 
 void sale_count( char_data * ch )
 {
-   list<sale_data*>::iterator sl;
+   list < sale_data * >::iterator sl;
    short salecount = 0;
 
-   for( sl = salelist.begin(); sl != salelist.end(); ++sl )
+   for( sl = salelist.begin(  ); sl != salelist.end(  ); ++sl )
    {
-      sale_data *sale = (*sl);
+      sale_data *sale = *sl;
 
-      if( !str_cmp( sale->get_seller().c_str(), ch->name ) )
+      if( !str_cmp( sale->get_seller(  ), ch->name ) )
          ++salecount;
    }
 
@@ -158,76 +153,68 @@ void sale_count( char_data * ch )
       ch->printf( "&[auction]While you were gone, auctioneers sold %d items for you.\r\n", salecount );
       ch->print( "Use the 'saleslist' command to see which auctioneer sold what.\r\n" );
    }
-   return;
 }
 
 CMDF( do_saleslist )
 {
-   list<sale_data*>::iterator sl;
+   list < sale_data * >::iterator sl;
    short salecount = 0;
 
-   for( sl = salelist.begin(); sl != salelist.end(); ++sl )
+   for( sl = salelist.begin(  ); sl != salelist.end(  ); ++sl )
    {
-      sale_data *sale = (*sl);
-      const char *seller = sale->get_seller().c_str();
+      sale_data *sale = *sl;
+      const string seller = sale->get_seller(  );
 
       if( !str_cmp( seller, ch->name ) || ch->is_imp(  ) )
       {
          ch->printf( "&[auction]%s sold %s for %s while %s were away.\r\n",
-            sale->get_aucmob().c_str(), sale->get_item().c_str(),
-            ( !str_cmp( seller, ch->name ) ? "you" : seller ),
-            ( !str_cmp( seller, ch->name ) ? "you" : "they" ) );
+                     sale->get_aucmob(  ).c_str(  ), sale->get_item(  ).c_str(  ),
+                     ( !str_cmp( seller, ch->name ) ? "you" : seller.c_str(  ) ), ( !str_cmp( seller, ch->name ) ? "you" : "they" ) );
          ++salecount;
       }
    }
 
    if( salecount == 0 )
       ch->print( "&[auction]You haven't sold any items at auction yet.\r\n" );
-
-   return;
 }
 
 void prune_sales( void )
 {
-   list<sale_data*>::iterator sl;
+   list < sale_data * >::iterator sl;
 
-   for( sl = salelist.begin(); sl != salelist.end(); )
+   for( sl = salelist.begin(  ); sl != salelist.end(  ); )
    {
-      sale_data *sale = (*sl);
+      sale_data *sale = *sl;
       ++sl;
 
-      if( !exists_player( sale->get_buyer() ) && !exists_player( sale->get_seller() ) )
+      if( !exists_player( sale->get_buyer(  ) ) && !exists_player( sale->get_seller(  ) ) )
       {
          deleteptr( sale );
          continue;
       }
-      if( !exists_player( sale->get_seller() ) && sale->get_collected() )
+      if( !exists_player( sale->get_seller(  ) ) && sale->get_collected(  ) )
       {
          deleteptr( sale );
          continue;
       }
-      if( !exists_player( sale->get_buyer() ) && !sale->get_collected() && !scomp( sale->get_buyer(), "The Code" ) )
+      if( !exists_player( sale->get_buyer(  ) ) && !sale->get_collected(  ) && str_cmp( sale->get_buyer(  ), "The Code" ) )
       {
          sale->set_buyer( "The Code" );
          continue;
       }
    }
    save_sales(  );
-   return;
 }
 
 void load_sales( void )
 {
-   char filename[256];
    sale_data *sale;
    ifstream stream;
 
-   salelist.clear();
+   salelist.clear(  );
 
-   snprintf( filename, 256, "%s%s", AUC_DIR, SALES_FILE );
-
-   stream.open( filename );
-   if( !stream.is_open() )
+   stream.open( SALES_FILE );
+   if( !stream.is_open(  ) )
    {
       log_string( "No sales file found." );
       return;
@@ -235,16 +222,19 @@ void load_sales( void )
 
    do
    {
-      string line, key, value;
+      string key, value;
       char buf[MIL];
 
       stream >> key;
-      strip_lspace( key );
-
       stream.getline( buf, MIL );
       value = buf;
+
+      strip_lspace( key );
       strip_lspace( value );
       strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
 
       if( key == "#SALE" )
          sale = new sale_data;
@@ -257,19 +247,20 @@ void load_sales( void )
       else if( key == "Item" )
          sale->set_item( value );
       else if( key == "Bid" )
-         sale->set_bid( atoi( value.c_str() ) );
+         sale->set_bid( atoi( value.c_str(  ) ) );
       else if( key == "Collected" )
-         sale->set_collected( atoi( value.c_str() ) );
+         sale->set_collected( atoi( value.c_str(  ) ) );
       else if( key == "End" )
          salelist.push_back( sale );
+      else
+         log_printf( "%s: Bad line in sales file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
    }
-   while( !stream.eof() );
-   stream.close();
+   while( !stream.eof(  ) );
+   stream.close(  );
    prune_sales(  );
-   return;
 }
 
-void read_aucvault( char *dirname, char *filename )
+void read_aucvault( const char *dirname, const char *filename )
 {
    room_index *aucvault;
    char_data *aucmob;
@@ -330,10 +321,10 @@ void read_aucvault( char *dirname, char *filename )
       }
       FCLOSE( fp );
 
-      list<obj_data*>::iterator iobj;
-      for( iobj = supermob->carrying.begin(); iobj != supermob->carrying.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = supermob->carrying.begin(  ); iobj != supermob->carrying.end(  ); )
       {
-         obj_data *tobj = (*iobj);
+         obj_data *tobj = *iobj;
          ++iobj;
 
          if( tobj->year == 0 )
@@ -349,8 +340,6 @@ void read_aucvault( char *dirname, char *filename )
    }
    else
       log_string( "Cannot open auction vault" );
-
-   return;
 }
 
 void load_aucvaults( void )
@@ -378,10 +367,9 @@ void load_aucvaults( void )
       dentry = readdir( dp );
    }
    closedir( dp );
-   return;
 }
 
-void save_aucvault( char_data * ch, char *aucmob )
+void save_aucvault( char_data * ch, const string & aucmob )
 {
    room_index *aucvault;
    FILE *fp;
@@ -396,7 +384,7 @@ void save_aucvault( char_data * ch, char *aucmob )
 
    aucvault = get_room_index( ch->in_room->vnum + 1 );
 
-   snprintf( filename, 256, "%s%s", AUC_DIR, aucmob );
+   snprintf( filename, 256, "%s%s", AUC_DIR, aucmob.c_str(  ) );
    if( !( fp = fopen( filename, "w" ) ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
@@ -406,23 +394,21 @@ void save_aucvault( char_data * ch, char *aucmob )
    {
       templvl = ch->level;
       ch->level = LEVEL_AVATAR;  /* make sure EQ doesn't get lost */
-      if( !aucvault->objects.empty() )
+      if( !aucvault->objects.empty(  ) )
          fwrite_obj( ch, aucvault->objects, NULL, fp, 0, false );
       fprintf( fp, "%s", "#END\n" );
       ch->level = templvl;
       FCLOSE( fp );
-      return;
    }
-   return;
 }
 
-char_data *find_auctioneer( char_data *ch )
+char_data *find_auctioneer( char_data * ch )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *auc = (*ich);
+      char_data *auc = *ich;
       if( auc->isnpc(  ) && ( auc->has_actflag( ACT_AUCTION ) || auc->has_actflag( ACT_GUILDAUC ) ) )
          return auc;
    }
@@ -467,7 +453,7 @@ char_data *find_auctioneer( char_data *ch )
   once.
 */
 
-int advatoi( char *s )
+int advatoi( const char *s )
 {
    int number = 0;   /* number to be returned */
    int multiplier = 0;  /* multiplier used to get the extra digits right */
@@ -540,7 +526,7 @@ int advatoi( char *s )
   gives 10,000 etc.
 
 */
-int parsebet( const int currentbet, char *s )
+int parsebet( const int currentbet, const char *s )
 {
    /*
     * check to make sure it's not blank 
@@ -572,9 +558,9 @@ int parsebet( const int currentbet, char *s )
  * this function sends raw argument over the AUCTION: channel
  * I am not too sure if this method is right..
  */
-void talk_auction( char *fmt, ... )
+void talk_auction( const char *fmt, ... )
 {
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
    char buf[MSL];
    va_list args;
 
@@ -582,25 +568,25 @@ void talk_auction( char *fmt, ... )
    vsnprintf( buf, MSL, fmt, args );
    va_end( args );
 
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
-      char_data *original = d->original ? d->original : d->character;  /* if switched */
+      descriptor_data *d = *ds;
+      char_data *original = d->original ? d->original : d->character;   /* if switched */
 
-      if( d->connected == CON_PLAYING && hasname( original->pcdata->chan_listen, "auction" )
-          && !original->in_room->flags.test( ROOM_SILENCE ) && original->level > 1 )
+      if( d->connected == CON_PLAYING && hasname( original->pcdata->chan_listen, "auction" ) && !original->in_room->flags.test( ROOM_SILENCE ) && original->level > 1 )
          act_printf( AT_AUCTION, original, NULL, NULL, TO_CHAR, "Auction: %s", buf );
    }
 }
 
 /* put an item on auction, or see the stats on the current item or bet */
-void bid( char_data * ch, char_data * buyer, char *argument )
+void bid( char_data * ch, char_data * buyer, const string & argument )
 {
    obj_data *obj;
-   char arg1[MIL], arg2[MIL];
+   string arg, arg1, arg2;
 
-   argument = one_argument( argument, arg1 );
-   argument = one_argument( argument, arg2 );
+   arg = argument;
+   arg = one_argument( arg, arg1 );
+   arg = one_argument( arg, arg2 );
 
    ch->set_color( AT_AUCTION );
 
@@ -613,7 +599,7 @@ void bid( char_data * ch, char_data * buyer, char *argument )
          return;
    }
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       if( auction->item != NULL )
       {
@@ -628,8 +614,7 @@ void bid( char_data * ch, char_data * buyer, char *argument )
             ch->printf( "\r\nNo bids on this item have been received.\r\n" );
 
          if( ch->is_immortal(  ) )
-            ch->printf( "Seller: %s.  Bidder: %s.  Round: %d.\r\n",
-                        auction->seller->name, auction->buyer->name, ( auction->going + 1 ) );
+            ch->printf( "Seller: %s.  Bidder: %s.  Round: %d.\r\n", auction->seller->name, auction->buyer->name, ( auction->going + 1 ) );
          return;
       }
       else
@@ -688,13 +673,13 @@ void bid( char_data * ch, char_data * buyer, char *argument )
          /*
           * make - perhaps - a bet now 
           */
-         if( !arg2 || arg2[0] == '\0' )
+         if( arg2.empty(  ) )
          {
             ch->print( "Bid how much?\r\n" );
             return;
          }
 
-         newbet = parsebet( auction->bet, arg2 );
+         newbet = parsebet( auction->bet, arg2.c_str(  ) );
 
          if( newbet < auction->starting + 500 )
          {
@@ -706,7 +691,6 @@ void bid( char_data * ch, char_data * buyer, char *argument )
           * to avoid slow auction, use a bigger amount than 100 if the bet
           * is higher up - changed to 10000 for our high economy
           */
-
          if( newbet < ( auction->bet + 500 ) )
          {
             ch->print( "You must at least bid 500 coins over the current bid.\r\n" );
@@ -728,7 +712,7 @@ void bid( char_data * ch, char_data * buyer, char *argument )
          /*
           * Is it the item they really want to bid on? --Shaddai 
           */
-         if( !argument || argument[0] != '\0' || !nifty_is_name( argument, auction->item->name ) )
+         if( arg.empty(  ) || !hasname( auction->item->name, arg ) )
          {
             ch->print( "That item is not being auctioned right now.\r\n" );
             return;
@@ -753,7 +737,7 @@ void bid( char_data * ch, char_data * buyer, char *argument )
    }
 /* finally... */
 
-   if( !ch->isnpc(  ) )   /* Blocks PCs from bypassing the auctioneer - Samson 6-23-99 */
+   if( !ch->isnpc(  ) ) /* Blocks PCs from bypassing the auctioneer - Samson 6-23-99 */
    {
       ch->print( "Only an auctioneer can start the bidding for an item!\r\n" );
       return;
@@ -762,9 +746,7 @@ void bid( char_data * ch, char_data * buyer, char *argument )
    if( ms_find_obj( ch ) )
       return;
 
-   obj = ch->get_obj_carry( arg1 ); /* does char have the item ? */
-
-   if( obj == NULL )
+   if( !( obj = ch->get_obj_carry( arg1 ) ) )   /* does char have the item ? */
    {
       bug( "%s: Auctioneer %s isn't carrying the item!", __FUNCTION__, ch->short_descr );
       return;
@@ -774,7 +756,6 @@ void bid( char_data * ch, char_data * buyer, char *argument )
    {
       switch ( obj->item_type )
       {
-
          default:
             log_printf( "%s: Auctioneer %s tried to auction invalid item type!", __FUNCTION__, ch->short_descr );
             return;
@@ -843,17 +824,16 @@ void bid( char_data * ch, char_data * buyer, char *argument )
       act( AT_TELL, "Try again later - $p is being auctioned right now!", ch, auction->item, NULL, TO_CHAR );
       if( !ch->is_immortal(  ) )
          ch->WAIT_STATE( sysdata->pulseviolence );
-      return;
    }
 }
 
 CMDF( do_bid )
 {
-   char buf[MIL];
+   string buf;
 
    if( ch->is_immortal(  ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          bid( ch, NULL, "" );
          return;
@@ -865,9 +845,8 @@ CMDF( do_bid )
          return;
       }
    }
-   snprintf( buf, MIL, "bid %s", argument );
+   buf = "bid " + argument;
    bid( ch, NULL, buf );
-   return;
 }
 
 CMDF( do_identify )
@@ -908,7 +887,7 @@ CMDF( do_identify )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "What would you like identified?\r\n" );
       return;
@@ -926,13 +905,13 @@ CMDF( do_identify )
 
    if( !obj || ( obj->buyer != NULL && str_cmp( obj->buyer, "" ) ) )
    {
-      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument );
+      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
       return;
    }
 
    if( !str_cmp( obj->seller, "" ) || !obj->seller )
    {
-      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument );
+      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
       bug( "%s: Object with no seller - %s", __FUNCTION__, obj->short_descr );
       return;
    }
@@ -948,11 +927,11 @@ CMDF( do_identify )
    clan_data *clan = NULL;
    if( auc->has_actflag( ACT_GUILDAUC ) )
    {
-      list<clan_data*>::iterator cl;
+      list < clan_data * >::iterator cl;
 
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan = (*cl);
+         clan = *cl;
          if( clan->auction == auc->pIndexData->vnum )
          {
             found = true;
@@ -974,7 +953,6 @@ CMDF( do_identify )
       }
    }
    obj_identify_output( ch, obj );
-   return;
 }
 
 CMDF( do_collect )
@@ -1012,7 +990,7 @@ CMDF( do_collect )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Are you here to collect an item, or some money?\r\n" );
       return;
@@ -1020,32 +998,30 @@ CMDF( do_collect )
 
    if( !str_cmp( argument, "money" ) )
    {
-      list<sale_data*>::iterator sl;
+      list < sale_data * >::iterator sl;
       double totalfee = 0, totalnet = 0, fee, net;
       bool getsome = false;
 
-      for( sl = salelist.begin(); sl != salelist.end(); )
+      for( sl = salelist.begin(  ); sl != salelist.end(  ); )
       {
-         sale_data *sold = (*sl);
+         sale_data *sold = *sl;
          ++sl;
 
-         if( str_cmp( sold->get_seller().c_str(), ch->name ) )
+         if( str_cmp( sold->get_seller(  ), ch->name ) )
             continue;
 
-         if( !sold->get_collected() && !scomp( sold->get_buyer(), "The Code" ) )
+         if( !sold->get_collected(  ) && str_cmp( sold->get_buyer(  ), "The Code" ) )
          {
-            act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "%s has not collected %s yet.",
-               sold->get_buyer().c_str(), sold->get_item().c_str() );
+            act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "%s has not collected %s yet.", sold->get_buyer(  ).c_str(  ), sold->get_item(  ).c_str(  ) );
             continue;
          }
 
          getsome = true;
 
-         fee = ( sold->get_bid() * 0.05 );
-         net = sold->get_bid() - fee;
+         fee = ( sold->get_bid(  ) * 0.05 );
+         net = sold->get_bid(  ) - fee;
 
-         act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n sold %s to %s for %d gold.",
-            sold->get_item().c_str(), sold->get_buyer().c_str(), sold->get_bid() );
+         act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n sold %s to %s for %d gold.", sold->get_item(  ).c_str(  ), sold->get_buyer(  ).c_str(  ), sold->get_bid(  ) );
 
          totalfee += fee;
          totalnet += net;
@@ -1059,8 +1035,7 @@ CMDF( do_collect )
          return;
       }
 
-      act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n collects his fee of %d, and hands you %d gold.",
-         totalfee, totalnet );
+      act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n collects his fee of %d, and hands you %d gold.", totalfee, totalnet );
       act( AT_AUCTION, "$n collects his fees and hands $N some gold.", auc, NULL, ch, TO_NOTVICT );
 
       ch->gold += ( int )totalnet;
@@ -1069,11 +1044,11 @@ CMDF( do_collect )
       clan_data *clan = NULL;
       if( auc->has_actflag( ACT_GUILDAUC ) )
       {
-         list<clan_data*>::iterator cl;
+         list < clan_data * >::iterator cl;
 
-         for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+         for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
          {
-            clan = (*cl);
+            clan = *cl;
             if( clan->auction == auc->pIndexData->vnum )
             {
                found = true;
@@ -1102,7 +1077,7 @@ CMDF( do_collect )
 
    if( !obj )
    {
-      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being sold.'", argument );
+      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being sold.'", argument.c_str(  ) );
       return;
    }
 
@@ -1111,7 +1086,7 @@ CMDF( do_collect )
       double fee = ( obj->cost * .05 );
 
       if( obj->ego >= sysdata->minego )
-         fee = ( obj->ego * .20 ); /* 20% handling charge for rare goods being returned */
+         fee = ( obj->ego * .20 );  /* 20% handling charge for rare goods being returned */
 
       act( AT_AUCTION, "$n returns $p to $N.", auc, obj, ch, TO_NOTVICT );
       act( AT_AUCTION, "$n returns $p to you.", auc, obj, ch, TO_VICT );
@@ -1123,9 +1098,9 @@ CMDF( do_collect )
       clan_data *clan = NULL;
       if( auc->has_actflag( ACT_GUILDAUC ) )
       {
-         list<clan_data*>::iterator cl;
+         list < clan_data * >::iterator cl;
 
-         for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+         for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
          {
             if( clan->auction == auc->pIndexData->vnum )
             {
@@ -1148,14 +1123,12 @@ CMDF( do_collect )
             save_clan( clan );
          }
       }
-
       return;
    }
 
    if( str_cmp( obj->buyer, ch->name ) )
    {
-      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'But you didn't win the bidding on %s!'",
-                  obj->short_descr );
+      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'But you didn't win the bidding on %s!'", obj->short_descr );
       return;
    }
 
@@ -1187,16 +1160,14 @@ CMDF( do_collect )
    STRFREE( obj->seller );
    STRFREE( obj->buyer );
    obj->bid = 0;
-
-   return;
 }
 
-void auction_value( char_data * ch, char_data * auc, char *argument )
+void auction_value( char_data * ch, char_data * auc, const string & argument )
 {
    room_index *aucvault, *original;
    obj_data *obj;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Check bid on what item?\r\n" );
       return;
@@ -1230,27 +1201,26 @@ void auction_value( char_data * ch, char_data * auc, char *argument )
 
    if( !obj || ( obj->buyer != NULL && str_cmp( obj->buyer, "" ) ) )
    {
-      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument );
+      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
       return;
    }
 
    if( !str_cmp( obj->seller, "" ) || obj->seller == NULL )
    {
-      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument );
+      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
       bug( "%s: Object with no seller - %s", __FUNCTION__, obj->short_descr );
       return;
    }
    ch->printf( "&[auction]%s : Offered by %s. Minimum bid: %d\r\n", obj->short_descr, obj->seller, obj->bid );
-   return;
 }
 
-void auction_buy( char_data * ch, char_data * auc, char *argument )
+void auction_buy( char_data * ch, char_data * auc, const string & argument )
 {
    room_index *aucvault, *original;
    obj_data *obj;
-   char buf[MIL];
+   ostringstream buf;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Start bidding on what item?\r\n" );
       return;
@@ -1290,13 +1260,13 @@ void auction_buy( char_data * ch, char_data * auc, char *argument )
 
    if( !obj )
    {
-      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument );
+      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
       return;
    }
 
    if( !str_cmp( obj->seller, "" ) || obj->seller == NULL )
    {
-      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument );
+      act_printf( AT_TELL, auc, NULL, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
       bug( "%s: Object with no seller - %s", __FUNCTION__, obj->short_descr );
       return;
    }
@@ -1327,18 +1297,17 @@ void auction_buy( char_data * ch, char_data * auc, char *argument )
     */
    save_aucvault( auc, auc->short_descr );
 
-   snprintf( buf, MIL, "%s %d", obj->name, obj->bid );
-   bid( auc, ch, buf );
-   return;
+   buf << obj->name << " " << obj->bid;
+   bid( auc, ch, buf.str(  ) );
 }
 
-void auction_sell( char_data * ch, char_data * auc, char *argument )
+void auction_sell( char_data * ch, char_data * auc, string & argument )
 {
-   char arg1[MIL];
+   string arg;
+   room_index *aucvault;
+   obj_data *obj;
 
-   argument = one_argument( argument, arg1 );
-
-   if( !arg1 || arg1[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Offer what for auction?\r\n" );
       return;
@@ -1351,7 +1320,6 @@ void auction_sell( char_data * ch, char_data * auc, char *argument )
       return;
    }
 
-   room_index *aucvault;
    if( !( aucvault = get_room_index( ch->in_room->vnum + 1 ) ) )
    {
       ch->print( "This is not an auction house!\r\n" );
@@ -1359,8 +1327,9 @@ void auction_sell( char_data * ch, char_data * auc, char *argument )
       return;
    }
 
-   obj_data *obj;
-   if( !( obj = ch->get_obj_carry( arg1 ) ) )
+   argument = one_argument( argument, arg );
+
+   if( !( obj = ch->get_obj_carry( arg ) ) )
    {
       act( AT_TELL, "$n tells you 'You don't have that item.'", auc, NULL, ch, TO_VICT );
       return;
@@ -1402,7 +1371,7 @@ void auction_sell( char_data * ch, char_data * auc, char *argument )
       return;
    }
 
-   int minbid = atoi( argument );
+   int minbid = atoi( argument.c_str(  ) );
 
    if( minbid < 1 )
    {
@@ -1410,10 +1379,10 @@ void auction_sell( char_data * ch, char_data * auc, char *argument )
       return;
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = aucvault->objects.begin(); iobj != aucvault->objects.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = aucvault->objects.begin(  ); iobj != aucvault->objects.end(  ); ++iobj )
    {
-      obj_data *sobj = (*iobj);
+      obj_data *sobj = *iobj;
       if( sobj && sobj->pIndexData->vnum == obj->pIndexData->vnum )
       {
          act( AT_TELL, "$n tells you '$p is already being offered. Come back later.'", auc, obj, ch, TO_VICT );
@@ -1422,9 +1391,9 @@ void auction_sell( char_data * ch, char_data * auc, char *argument )
    }
 
    short sellcount = 0;
-   for( iobj = aucvault->objects.begin(); iobj != aucvault->objects.end(); ++iobj )
+   for( iobj = aucvault->objects.begin(  ); iobj != aucvault->objects.end(  ); ++iobj )
    {
-      obj_data *sobj = (*iobj);
+      obj_data *sobj = *iobj;
       if( sobj && !str_cmp( sobj->seller, ch->name ) )
          ++sellcount;
    }
@@ -1454,8 +1423,6 @@ void auction_sell( char_data * ch, char_data * auc, char *argument )
    obj->to_room( aucvault, ch );
    ch->save(  );
    save_aucvault( auc, auc->short_descr );
-
-   return;
 }
 
 void sweep_house( room_index * aucroom )
@@ -1473,13 +1440,12 @@ void sweep_house( room_index * aucroom )
       return;
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = aucvault->objects.begin(); iobj != aucvault->objects.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = aucvault->objects.begin(  ); iobj != aucvault->objects.end(  ); ++iobj )
    {
-      obj_data *aucobj = (*iobj);
+      obj_data *aucobj = *iobj;
 
-      if( ( aucobj->day == time_info.day && aucobj->month == time_info.month && aucobj->year == time_info.year )
-          || ( time_info.year - aucobj->year > 1 ) )
+      if( ( aucobj->day == time_info.day && aucobj->month == time_info.month && aucobj->year == time_info.year ) || ( time_info.year - aucobj->year > 1 ) )
       {
          clan_data *clan = NULL;
 
@@ -1490,11 +1456,11 @@ void sweep_house( room_index * aucroom )
 
          if( aucmob->has_actflag( ACT_GUILDAUC ) )
          {
-            list<clan_data*>::iterator cl;
+            list < clan_data * >::iterator cl;
 
-            for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+            for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
             {
-               clan = (*cl);
+               clan = *cl;
 
                if( clan->auction == aucmob->pIndexData->vnum )
                {
@@ -1516,7 +1482,7 @@ void sweep_house( room_index * aucroom )
             aucmob->from_room(  );
             if( !aucmob->to_room( aucroom ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-            talk_auction( "%s has turned %s over to %s.", aucmob->short_descr, aucobj->short_descr, clan->name );
+            talk_auction( "%s has turned %s over to %s.", aucmob->short_descr, aucobj->short_descr, clan->name.c_str(  ) );
          }
          else
          {
@@ -1532,20 +1498,17 @@ void sweep_house( room_index * aucroom )
 /* Sweep old crap from auction houses on daily basis (game time)- Samson 11-1-99 */
 void clean_auctions( void )
 {
-   room_index *pRoomIndex;
-   int iHash;
+   map < int, room_index * >::iterator iroom;
 
-   for( iHash = 0; iHash < MAX_KEY_HASH; ++iHash )
+   for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {
-      for( pRoomIndex = room_index_hash[iHash]; pRoomIndex; pRoomIndex = pRoomIndex->next )
+      room_index *pRoomIndex = iroom->second;
+
+      if( pRoomIndex && pRoomIndex->flags.test( ROOM_AUCTION ) )
       {
-         if( pRoomIndex && pRoomIndex->flags.test( ROOM_AUCTION ) )
-         {
-            rset_supermob( pRoomIndex );
-            sweep_house( pRoomIndex );
-            release_supermob();
-         }
+         rset_supermob( pRoomIndex );
+         sweep_house( pRoomIndex );
+         release_supermob(  );
       }
    }
-   return;
 }

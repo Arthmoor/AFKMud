@@ -46,16 +46,16 @@ enum channel_flags
 class mud_channel
 {
  private:
-   mud_channel( const mud_channel& m );
-   mud_channel& operator=( const mud_channel& );
+   mud_channel( const mud_channel & m );
+     mud_channel & operator=( const mud_channel & );
 
  public:
-   mud_channel();
-   ~mud_channel();
+     mud_channel(  );
+    ~mud_channel(  );
 
-   bitset<CHAN_MAXFLAG> flags;
-   char *name;
-   char *colorname;
+     bitset < CHAN_MAXFLAG > flags;
+   string name;
+   string colorname;
    char *history[MAX_CHANHISTORY][2];  /* Not saved */
    time_t htime[MAX_CHANHISTORY];   /* Not saved *//* Xorith */
    int hlevel[MAX_CHANHISTORY];  /* Not saved */
@@ -65,4 +65,4 @@ class mud_channel
 };
 #endif
 
-mud_channel *find_channel( string );
+mud_channel *find_channel( const string & );

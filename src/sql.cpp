@@ -33,40 +33,39 @@
 
 MYSQL myconn;
 
-void init_mysql()
+void init_mysql(  )
 {
    if( !mysql_init( &myconn ) )
    {
       mysql_close( &myconn );
       bug( "%s: mysql_init() failed.", __FUNCTION__ );
-      log_printf( "Error: %s.", mysql_error(&myconn) );
+      log_printf( "Error: %s.", mysql_error( &myconn ) );
       return;
    }
 
-   if( !mysql_real_connect( &myconn, sysdata->dbserver, sysdata->dbuser, sysdata->dbpass, sysdata->dbname, 0, NULL, 0 ) )
+   if( !mysql_real_connect( &myconn, sysdata->dbserver.c_str(  ), sysdata->dbuser.c_str(  ), sysdata->dbpass.c_str(  ), sysdata->dbname.c_str(  ), 0, NULL, 0 ) )
    {
       mysql_close( &myconn );
       bug( "%s: mysql_real_connect() failed.", __FUNCTION__ );
-      log_printf( "Error: %s.", mysql_error(&myconn) );
+      log_printf( "Error: %s.", mysql_error( &myconn ) );
       return;
    }
    mysql_options( &myconn, MYSQL_OPT_RECONNECT, "1" );
    log_string( "Connection to mysql database established." );
-   return;
 }
 
 void close_db( void )
 {
    mysql_close( &myconn );
-   return;
 }
 
-int mysql_safe_query( char *fmt, ... )
+int mysql_safe_query( const char *fmt, ... )
 {
    va_list argp;
    int i = 0;
    double j = 0;
-   char *s = 0, *out = 0, *p = 0;
+   char *s = 0, *out = 0;
+   const char *p = 0;
    char safe[MSL], query[MSL];
 
    *query = '\0';
@@ -82,7 +81,7 @@ int mysql_safe_query( char *fmt, ... )
          continue;
       }
 
-      switch( *++p )
+      switch ( *++p )
       {
          case 'c':
             i = va_arg( argp, int );
@@ -96,7 +95,7 @@ int mysql_safe_query( char *fmt, ... )
                out += sprintf( out, " " );
                break;
             }
-            mysql_real_escape_string( &myconn, safe, s, strlen(s) );
+            mysql_real_escape_string( &myconn, safe, s, strlen( s ) );
             out += sprintf( out, "%s", safe );
             *safe = '\0';
             break;
@@ -121,7 +120,7 @@ int mysql_safe_query( char *fmt, ... )
    va_end( argp );
    // log_string( query );
 
-   return( mysql_real_query( &myconn, query, strlen(query) ) );
+   return ( mysql_real_query( &myconn, query, strlen( query ) ) );
 }
 
 #endif

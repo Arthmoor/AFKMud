@@ -46,40 +46,28 @@ By Noplex with help from Senir and Samson
 #include "descriptor.h"
 #include "imm_host.h"
 
-list<immortal_host*> hostlist;
+list < immortal_host * >hostlist;
 
-immortal_host_log::immortal_host_log()
+immortal_host_log::immortal_host_log(  )
 {
-   date = NULL;
-   host = NULL;
 }
 
-immortal_host_log::~immortal_host_log()
+immortal_host_log::~immortal_host_log(  )
 {
-   STRFREE( date );
-   STRFREE( host );
 }
 
-immortal_host::immortal_host()
+immortal_host::immortal_host(  )
 {
-   for( int x = 0; x < MAX_DOMAIN; ++x )
-      domain[x] = NULL;
-   name = NULL;
-   loglist.clear();
+   loglist.clear(  );
 }
 
-immortal_host::~immortal_host()
+immortal_host::~immortal_host(  )
 {
-   list<immortal_host_log*>::iterator hlog;
-   int dnum;
+   list < immortal_host_log * >::iterator hlog;
 
-   STRFREE( name );
-   for( dnum = 0; dnum < MAX_DOMAIN && domain[dnum] && domain[dnum][0] != '\0'; ++dnum )
-      STRFREE( domain[dnum] );
-
-   for( hlog = loglist.begin(); hlog != loglist.end(); )
+   for( hlog = loglist.begin(  ); hlog != loglist.end(  ); )
    {
-      immortal_host_log *ilog = (*hlog);
+      immortal_host_log *ilog = *hlog;
       ++hlog;
 
       loglist.remove( ilog );
@@ -116,14 +104,14 @@ immortal_host_log *fread_imm_host_log( FILE * fp )
          case 'L':
             if( !str_cmp( word, "LEnd" ) )
             {
-               if( hlog->date && hlog->date[0] != '\0' && hlog->host && hlog->host[0] != '\0' )
+               if( !hlog->date.empty(  ) && !hlog->host.empty(  ) )
                   return hlog;
 
                deleteptr( hlog );
                return NULL;
             }
-            KEY( "Log_Date", hlog->date, fread_string( fp ) );
-            KEY( "Log_Host", hlog->host, fread_string( fp ) );
+            STDSKEY( "Log_Date", hlog->date );
+            STDSKEY( "Log_Host", hlog->host );
             break;
       }
    }
@@ -181,13 +169,13 @@ immortal_host *fread_imm_host( FILE * fp )
             break;
 
          case 'N':
-            KEY( "Name", host->name, fread_string( fp ) );
+            STDSKEY( "Name", host->name );
             break;
 
          case 'Z':
             if( !str_cmp( word, "ZEnd" ) )
             {
-               if( !host->name || host->name[0] == '\0' || !host->domain[0] || host->domain[0][0] == '\0' )
+               if( host->name.empty(  ) || host->domain[0].empty(  ) )
                {
                   deleteptr( host );
                   return NULL;
@@ -203,7 +191,7 @@ void load_imm_host( void )
 {
    FILE *fp;
 
-   hostlist.clear();
+   hostlist.clear(  );
 
    if( !( fp = fopen( IMM_HOST_FILE, "r" ) ) )
    {
@@ -251,13 +239,12 @@ void load_imm_host( void )
       }
    }
    FCLOSE( fp );
-   return;
 }
 
 void save_imm_host( void )
 {
    FILE *fp;
-   list<immortal_host*>::iterator ihost;
+   list < immortal_host * >::iterator ihost;
 
    if( !( fp = fopen( IMM_HOST_FILE, "w" ) ) )
    {
@@ -265,43 +252,42 @@ void save_imm_host( void )
       return;
    }
 
-   for( ihost = hostlist.begin(); ihost != hostlist.end(); ++ihost )
+   for( ihost = hostlist.begin(  ); ihost != hostlist.end(  ); ++ihost )
    {
-      immortal_host *host = (*ihost);
+      immortal_host *host = *ihost;
       short dnum = 0;
 
       fprintf( fp, "%s", "\n#IMMORTAL\n" );
-      fprintf( fp, "Name        %s~\n", host->name );
+      fprintf( fp, "Name        %s~\n", host->name.c_str(  ) );
 
-      for( dnum = 0; dnum < MAX_DOMAIN && host->domain[dnum] && host->domain[dnum][0] != '\0'; ++dnum )
-         fprintf( fp, "Domain_Host %s~\n", host->domain[dnum] );
+      for( dnum = 0; dnum < MAX_DOMAIN && !host->domain[dnum].empty(  ); ++dnum )
+         fprintf( fp, "Domain_Host %s~\n", host->domain[dnum].c_str(  ) );
 
-      list<immortal_host_log*>::iterator ilog;
-      for( ilog = host->loglist.begin(); ilog != host->loglist.end(); ++ilog )
+      list < immortal_host_log * >::iterator ilog;
+      for( ilog = host->loglist.begin(  ); ilog != host->loglist.end(  ); ++ilog )
       {
-         immortal_host_log *nlog = (*ilog);
+         immortal_host_log *nlog = *ilog;
 
          fprintf( fp, "%s", "LOG\n" );
-         fprintf( fp, "Log_Host    %s~\n", nlog->host );
-         fprintf( fp, "Log_Date    %s~\n", nlog->date );
+         fprintf( fp, "Log_Host    %s~\n", nlog->host.c_str(  ) );
+         fprintf( fp, "Log_Date    %s~\n", nlog->date.c_str(  ) );
          fprintf( fp, "%s", "LEnd\n" );
       }
       fprintf( fp, "%s", "ZEnd\n" );
    }
    fprintf( fp, "%s", "#END\n" );
    FCLOSE( fp );
-   return;
 }
 
-bool check_immortal_domain( char_data * ch, char *lhost )
+bool check_immortal_domain( char_data * ch, const string & lhost )
 {
-   list<immortal_host*>::iterator ihost;
+   list < immortal_host * >::iterator ihost;
    immortal_host *host = NULL;
    bool found = false;
 
-   for( ihost = hostlist.begin(); ihost != hostlist.end(); ++ihost )
+   for( ihost = hostlist.begin(  ); ihost != hostlist.end(  ); ++ihost )
    {
-      host = (*ihost);
+      host = *ihost;
 
       if( !str_cmp( host->name, ch->name ) )
       {
@@ -313,13 +299,13 @@ bool check_immortal_domain( char_data * ch, char *lhost )
    /*
     * no immortal host or no domains 
     */
-   if( !found || !host->domain[0] || host->domain[0][0] == '\0' )
+   if( !found || host->domain[0].empty(  ) )
       return true;
 
    /*
     * check if the domain is valid 
     */
-   for( short x = 0; x < MAX_DOMAIN && host->domain[x] && host->domain[x][0] != '\0'; ++x )
+   for( short x = 0; x < MAX_DOMAIN && !host->domain[x].empty(  ); ++x )
    {
       bool suffix = false, prefix = false;
       char chost[50];
@@ -343,8 +329,7 @@ bool check_immortal_domain( char_data * ch, char *lhost )
       }
 
       if( ( prefix && suffix && !str_infix( ch->desc->host, chost ) )
-          || ( prefix && !str_suffix( chost, ch->desc->host ) )
-          || ( suffix && !str_prefix( chost, ch->desc->host ) ) || ( !str_cmp( chost, ch->desc->host ) ) )
+          || ( prefix && !str_suffix( chost, ch->desc->host.c_str(  ) ) ) || ( suffix && !str_prefix( chost, ch->desc->host ) ) || ( !str_cmp( chost, ch->desc->host ) ) )
       {
          log_printf( "&C&GImmotal_Host: %s's host authorized.", ch->name );
          return true;
@@ -357,8 +342,8 @@ bool check_immortal_domain( char_data * ch, char *lhost )
    log_printf( "&C&RImmortal_Host: %s's host denied. This hacking attempt has been logged.", ch->name );
 
    immortal_host_log *nlog = new immortal_host_log;
-   nlog->host = STRALLOC( lhost );
-   stralloc_printf( &nlog->date, "%.24s", c_time( current_time, -1 ) );
+   nlog->host = lhost;
+   nlog->date = c_time( current_time, -1 );
    host->loglist.push_back( nlog );
 
    save_imm_host(  );
@@ -371,9 +356,9 @@ bool check_immortal_domain( char_data * ch, char *lhost )
 CMDF( do_immhost )
 {
    immortal_host *host = NULL;
-   list<immortal_host*>::iterator ihost;
-   list<immortal_host_log*>::iterator ilog;
-   char arg[MIL], arg2[MIL];
+   list < immortal_host * >::iterator ihost;
+   list < immortal_host_log * >::iterator ilog;
+   string arg, arg2;
    short x = 0;
 
    if( ch->isnpc(  ) || !ch->is_immortal(  ) )
@@ -384,7 +369,7 @@ CMDF( do_immhost )
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "&C&RSyntax: &Gimmhost list\r\n"
                  "&RSyntax: &Gimmhost add <&rcharacter&G>\r\n"
@@ -392,14 +377,13 @@ CMDF( do_immhost )
                  "&RSyntax: &Gimmhost viewlogs <&rcharacter&G>\r\n"
                  "&RSyntax: &Gimmhost removelog <&rcharacter&G> <&rlog number&G>\r\n"
                  "&RSyntax: &Gimmhost viewdomains <&rcharacter&G>\r\n"
-                 "&RSyntax: &Gimmhost createdomain <&rcharacter&G> <&rhost&G>\r\n"
-                 "&RSyntax: &Gimmhost removedomain <&rcharacter&G> <&rdomain number&G>\r\n" );
+                 "&RSyntax: &Gimmhost createdomain <&rcharacter&G> <&rhost&G>\r\n" "&RSyntax: &Gimmhost removedomain <&rcharacter&G> <&rdomain number&G>\r\n" );
       return;
    }
 
    if( !str_cmp( arg, "list" ) )
    {
-      if( hostlist.empty() )
+      if( hostlist.empty(  ) )
       {
          ch->print( "No immortals are currently protected at this time.\r\n" );
          return;
@@ -407,15 +391,15 @@ CMDF( do_immhost )
 
       ch->pager( "&C&R[&GName&R]     [&GDomains&R]  [&GLogged Attempts&R]\r\n" );
 
-      for( ihost = hostlist.begin(); ihost != hostlist.end(); ++ihost, ++x )
+      for( ihost = hostlist.begin(  ); ihost != hostlist.end(  ); ++ihost, ++x )
       {
-         host = (*ihost);
+         host = *ihost;
          short dnum = 0;
 
-         while( dnum < MAX_DOMAIN && host->domain[dnum] && host->domain[dnum][0] != '\0' )
+         while( dnum < MAX_DOMAIN && !host->domain[dnum].empty(  ) )
             ++dnum;
 
-         ch->pagerf( "&C&G%-10s %-10d %d\r\n", host->name, dnum, host->loglist.size() );
+         ch->pagerf( "&C&G%-10s %-10d %d\r\n", host->name.c_str(  ), dnum, host->loglist.size(  ) );
       }
       ch->pagerf( "&C&R%d immortals are being protected.&g\r\n", x );
       return;
@@ -423,7 +407,7 @@ CMDF( do_immhost )
 
    argument = one_argument( argument, arg2 );
 
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       ch->print( "Which character would you like to use?\r\n" );
       return;
@@ -434,7 +418,7 @@ CMDF( do_immhost )
       host = new immortal_host;
 
       smash_tilde( arg2 );
-      host->name = STRALLOC( capitalize( arg2 ) );
+      host->name = capitalize( arg2 );
       hostlist.push_back( host );
       save_imm_host(  );
       ch->print( "Immortal host added.\r\n" );
@@ -442,9 +426,9 @@ CMDF( do_immhost )
    }
 
    bool found = false;
-   for( ihost = hostlist.begin(); ihost != hostlist.end(); ++ihost )
+   for( ihost = hostlist.begin(  ); ihost != hostlist.end(  ); ++ihost )
    {
-      host = (*ihost);
+      host = *ihost;
       if( !str_cmp( host->name, arg2 ) )
       {
          found = true;
@@ -468,19 +452,19 @@ CMDF( do_immhost )
 
    if( !str_cmp( arg, "viewlogs" ) )
    {
-      if( host->loglist.empty() )
+      if( host->loglist.empty(  ) )
       {
          ch->print( "There are no logs for this immortal host.\r\n" );
          return;
       }
 
-      ch->pagerf( "&C&RImmortal:&W %s\r\n", host->name );
+      ch->pagerf( "&C&RImmortal:&W %s\r\n", host->name.c_str(  ) );
       ch->pager( "&R[&GNum&R]  [&GLogged Host&R]     [&GDate&R]\r\n" );
 
-      for( ilog = host->loglist.begin(); ilog != host->loglist.end(); ++ilog )
+      for( ilog = host->loglist.begin(  ); ilog != host->loglist.end(  ); ++ilog )
       {
-         immortal_host_log *hlog = (*ilog);
-         ch->pagerf( "&C&G%-6d %-17s %s\r\n", ++x, hlog->host, hlog->date );
+         immortal_host_log *hlog = *ilog;
+         ch->pagerf( "&C&G%-6d %-17s %s\r\n", ++x, hlog->host.c_str(  ), hlog->date.c_str(  ) );
       }
       ch->pagerf( "&C&R%d logged hacking attempts.&g\r\n", x );
       return;
@@ -490,17 +474,17 @@ CMDF( do_immhost )
    {
       immortal_host_log *hlog = NULL;
 
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Syntax: immhost removelog <character> <log number>\r\n" );
          return;
       }
 
       found = false;
-      for( ilog = host->loglist.begin(); ilog != host->loglist.end(); ++ilog )
+      for( ilog = host->loglist.begin(  ); ilog != host->loglist.end(  ); ++ilog )
       {
-         hlog = (*ilog);
-         if( ++x == atoi( argument ) )
+         hlog = *ilog;
+         if( ++x == atoi( argument.c_str(  ) ) )
          {
             found = true;
             break;
@@ -523,8 +507,8 @@ CMDF( do_immhost )
    {
       ch->pager( "&C&R[&GNum&R]  [&GHost&R]\r\n" );
 
-      for( x = 0; x < MAX_DOMAIN && host->domain[x] && host->domain[x][0] != '\0'; ++x )
-         ch->pagerf( "&C&G%-5d  %s\r\n", x + 1, host->domain[x] );
+      for( x = 0; x < MAX_DOMAIN && !host->domain[x].empty(  ); ++x )
+         ch->pagerf( "&C&G%-5d  %s\r\n", x + 1, host->domain[x].c_str(  ) );
 
       ch->pagerf( "&C&R%d immortal domains.&g\r\n", x );
       return;
@@ -532,7 +516,7 @@ CMDF( do_immhost )
 
    if( !str_cmp( arg, "createdomain" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Syntax: immhost createdomain <character> <host>\r\n" );
          return;
@@ -540,7 +524,7 @@ CMDF( do_immhost )
 
       smash_tilde( argument );
 
-      for( x = 0; x < MAX_DOMAIN && host->domain[x] && host->domain[x][0] != '\0'; ++x )
+      for( x = 0; x < MAX_DOMAIN && !host->domain[x].empty(  ); ++x )
       {
          if( !str_cmp( argument, host->domain[x] ) )
          {
@@ -555,7 +539,7 @@ CMDF( do_immhost )
          return;
       }
 
-      host->domain[x] = STRALLOC( argument );
+      host->domain[x] = argument;
 
       save_imm_host(  );
       ch->print( "Done.\r\n" );
@@ -564,27 +548,26 @@ CMDF( do_immhost )
 
    if( !str_cmp( arg, "removedomain" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Syntax: immhost removedomain <character> <domain number>\r\n" );
          return;
       }
 
-      x = URANGE( 1, atoi( argument ), MAX_DOMAIN );
+      x = URANGE( 1, atoi( argument.c_str(  ) ), MAX_DOMAIN );
       --x;
 
-      if( !host->domain[x] || host->domain[x][0] == '\0' )
+      if( host->domain[x].empty(  ) )
       {
          ch->print( "That immortal host doesn't have a domain with that number.\r\n" );
          return;
       }
 
-      STRFREE( host->domain[x] );
+      host->domain[x].clear(  );
 
       save_imm_host(  );
       ch->print( "Domain removed.\r\n" );
       return;
    }
    do_immhost( ch, "" );
-   return;
 }

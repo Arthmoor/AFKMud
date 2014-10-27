@@ -33,64 +33,62 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-list<obj_data*> objlist;
+list < obj_data * >objlist;
 
-extern list<rel_data*> relationlist;
+extern list < rel_data * >relationlist;
 extern int top_affect;
 
-void clean_obj_queue( );
-char *mxp_obj_str( char_data *, obj_data *, int, char * );
-char *mxp_obj_str_close( char_data *, obj_data *, int );
+void clean_obj_queue(  );
 void queue_extracted_obj( obj_data * );
 
 /* Deallocates the memory used by a single object after it's been extracted. */
 obj_data::~obj_data(  )
 {
-   list<affect_data*>::iterator paf;
-   list<rel_data*>::iterator RQ;
-   list<extra_descr_data*>::iterator ed;
-   list<mprog_act_list*>::iterator pd;
+   list < affect_data * >::iterator paf;
+   list < rel_data * >::iterator RQ;
+   list < extra_descr_data * >::iterator ed;
+   list < mprog_act_list * >::iterator pd;
 
    /*
     * remove affects 
     */
-   for( paf = affects.begin(); paf != affects.end(); )
+   for( paf = affects.begin(  ); paf != affects.end(  ); )
    {
-      affect_data *aff = (*paf);
+      affect_data *aff = *paf;
       ++paf;
 
       affects.remove( aff );
       deleteptr( aff );
       --top_affect;
    }
-   affects.clear();
+   affects.clear(  );
 
    /*
     * remove extra descriptions 
     */
-   for( ed = extradesc.begin(); ed != extradesc.end(); )
+   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
    {
-      extra_descr_data *desc = (*ed);
+      extra_descr_data *desc = *ed;
       ++ed;
 
       extradesc.remove( desc );
       deleteptr( desc );
       --top_ed;
    }
-   extradesc.clear();
+   extradesc.clear(  );
 
-   for( pd = mpact.begin(); pd != mpact.end(); )
+   for( pd = mpact.begin(  ); pd != mpact.end(  ); )
    {
-      mprog_act_list *actp = (*pd);
+      mprog_act_list *actp = *pd;
       ++pd;
 
       deleteptr( actp );
    }
-   mpact.clear();
+   mpact.clear(  );
 
-   for( RQ = relationlist.begin(); RQ != relationlist.end(); )
+   for( RQ = relationlist.begin(  ); RQ != relationlist.end(  ); )
    {
-      rel_data *RQueue = (*RQ);
+      rel_data *RQueue = *RQ;
       ++RQ;
 
       if( RQueue->Type == relOSET_ON )
@@ -120,18 +118,18 @@ obj_data::obj_data(  )
    init_memory( &in_obj, &mpscriptpos, sizeof( mpscriptpos ) );
 }
 
-void extract_all_objs()
+void extract_all_objs(  )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
    clean_obj_queue(  );
-   for( iobj = objlist.begin(); iobj != objlist.end(); )
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
    {
-      obj_data *object = (*iobj);
+      obj_data *object = *iobj;
       ++iobj;
 
       if( object->in_room )
-         object->from_room();
+         object->from_room(  );
       objlist.remove( object );
       deleteptr( object );
    }
@@ -174,20 +172,20 @@ void obj_data::fall( bool through )
          return;
       }
 
-      if( !in_room->people.empty() )
+      if( !in_room->people.empty(  ) )
       {
-         act( AT_PLAIN, "$p falls far below...", (*in_room->people.begin()), this, NULL, TO_ROOM );
-         act( AT_PLAIN, "$p falls far below...", (*in_room->people.begin()), this, NULL, TO_CHAR );
+         act( AT_PLAIN, "$p falls far below...", ( *in_room->people.begin(  ) ), this, NULL, TO_ROOM );
+         act( AT_PLAIN, "$p falls far below...", ( *in_room->people.begin(  ) ), this, NULL, TO_CHAR );
       }
       from_room(  );
       is_falling = true;
       to_room( to, NULL );
       is_falling = false;
 
-      if( !in_room->people.empty() )
+      if( !in_room->people.empty(  ) )
       {
-         act( AT_PLAIN, "$p falls from above...", (*in_room->people.begin()), this, NULL, TO_ROOM );
-         act( AT_PLAIN, "$p falls from above...", (*in_room->people.begin()), this, NULL, TO_CHAR );
+         act( AT_PLAIN, "$p falls from above...", ( *in_room->people.begin(  ) ), this, NULL, TO_ROOM );
+         act( AT_PLAIN, "$p falls from above...", ( *in_room->people.begin(  ) ), this, NULL, TO_CHAR );
       }
 
       if( !in_room->flags.test( ROOM_NOFLOOR ) && through )
@@ -203,15 +201,15 @@ void obj_data::fall( bool through )
          /*
           * Damage players 
           */
-         if( !in_room->people.empty() && number_percent(  ) > 15 )
+         if( !in_room->people.empty(  ) && number_percent(  ) > 15 )
          {
-            list<char_data*>::iterator ich;
+            list < char_data * >::iterator ich;
             char_data *vch = NULL;
             int chcnt = 0;
 
-            for( ich = in_room->people.begin(); ich != in_room->people.end(); ++ich, ++chcnt )
+            for( ich = in_room->people.begin(  ); ich != in_room->people.end(  ); ++ich, ++chcnt )
                if( number_range( 0, chcnt ) == 0 )
-                  vch = (*ich);
+                  vch = *ich;
 
             if( vch )
             {
@@ -260,17 +258,16 @@ void obj_data::fall( bool through )
          }
          if( destroyobj )
          {
-            if( !in_room->people.empty() )
+            if( !in_room->people.empty(  ) )
             {
-               act( AT_PLAIN, "$p is destroyed by the fall!", (*in_room->people.begin()), this, NULL, TO_ROOM );
-               act( AT_PLAIN, "$p is destroyed by the fall!", (*in_room->people.begin()), this, NULL, TO_CHAR );
+               act( AT_PLAIN, "$p is destroyed by the fall!", ( *in_room->people.begin(  ) ), this, NULL, TO_ROOM );
+               act( AT_PLAIN, "$p is destroyed by the fall!", ( *in_room->people.begin(  ) ), this, NULL, TO_CHAR );
             }
             make_scraps(  );
          }
       }
       fall( true );
    }
-   return;
 }
 
 /*
@@ -322,94 +319,86 @@ short obj_data::get_resistance(  )
    return URANGE( 10, resist, 99 );
 }
 
-char *obj_data::oshort(  )
+const string obj_data::oshort(  )
 {
-   static char buf[MSL];
+   string desc = short_descr;
 
    if( count > 1 )
    {
+      char buf[MSL];
+
       snprintf( buf, MSL, "%s (%d)", short_descr, count );
-      return buf;
+      desc = buf;
    }
-   return short_descr;
+   return desc;
 }
 
-char *obj_data::format_to_char( char_data *ch, bool fShort, int num, int mxpmode, char *mxpstr )
+const string obj_data::format_to_char( char_data * ch, bool fShort, int num )
 {
-   static char buf[MSL];
+   string buf;
    bool glowsee = false;
 
    /*
     * can see glowing invis items in the dark 
     */
-   if( extra_flags.test( ITEM_GLOW ) && extra_flags.test( ITEM_INVIS )
-       && !ch->has_aflag( AFF_TRUESIGHT ) && !ch->has_aflag( AFF_DETECT_INVIS ) )
+   if( extra_flags.test( ITEM_GLOW ) && extra_flags.test( ITEM_INVIS ) && !ch->has_aflag( AFF_TRUESIGHT ) && !ch->has_aflag( AFF_DETECT_INVIS ) )
       glowsee = true;
 
-   buf[0] = '\0';
    if( extra_flags.test( ITEM_INVIS ) )
-      mudstrlcat( buf, "(Invis) ", MSL );
+      buf.append( "(Invis) " );
    if( ( ch->has_aflag( AFF_DETECT_EVIL ) || ch->Class == CLASS_PALADIN ) && extra_flags.test( ITEM_EVIL ) )
-      mudstrlcat( buf, "(Red Aura) ", MSL );
-   if( ch->Class == CLASS_PALADIN
-       && ( extra_flags.test( ITEM_ANTI_EVIL ) && !extra_flags.test( ITEM_ANTI_NEUTRAL )
-            && !extra_flags.test( ITEM_ANTI_GOOD ) ) )
-      mudstrlcat( buf, "(Flaming Red) ", MSL );
-   if( ch->Class == CLASS_PALADIN
-       && ( !extra_flags.test( ITEM_ANTI_EVIL ) && extra_flags.test( ITEM_ANTI_NEUTRAL )
-            && !extra_flags.test( ITEM_ANTI_GOOD ) ) )
-      mudstrlcat( buf, "(Flaming Grey) ", MSL );
-   if( ch->Class == CLASS_PALADIN
-       && ( !extra_flags.test( ITEM_ANTI_EVIL ) && !extra_flags.test( ITEM_ANTI_NEUTRAL )
-            && extra_flags.test( ITEM_ANTI_GOOD ) ) )
-      mudstrlcat( buf, "(Flaming White) ", MSL );
-   if( ch->Class == CLASS_PALADIN
-       && ( extra_flags.test( ITEM_ANTI_EVIL ) && extra_flags.test( ITEM_ANTI_NEUTRAL )
-            && !extra_flags.test( ITEM_ANTI_GOOD ) ) )
-      mudstrlcat( buf, "(Smouldering Red-Grey) ", MSL );
-   if( ch->Class == CLASS_PALADIN
-       && ( extra_flags.test( ITEM_ANTI_EVIL ) && !extra_flags.test( ITEM_ANTI_NEUTRAL )
-            && extra_flags.test( ITEM_ANTI_GOOD ) ) )
-      mudstrlcat( buf, "(Smouldering Red-White) ", MSL );
-   if( ch->Class == CLASS_PALADIN
-       && ( !extra_flags.test( ITEM_ANTI_EVIL ) && extra_flags.test( ITEM_ANTI_NEUTRAL )
-            && extra_flags.test( ITEM_ANTI_GOOD ) ) )
-      mudstrlcat( buf, "(Smouldering Grey-White) ", MSL );
+      buf.append( "(Red Aura) " );
+   if( ch->Class == CLASS_PALADIN && ( extra_flags.test( ITEM_ANTI_EVIL ) && !extra_flags.test( ITEM_ANTI_NEUTRAL ) && !extra_flags.test( ITEM_ANTI_GOOD ) ) )
+      buf.append( "(Flaming Red) " );
+   if( ch->Class == CLASS_PALADIN && ( !extra_flags.test( ITEM_ANTI_EVIL ) && extra_flags.test( ITEM_ANTI_NEUTRAL ) && !extra_flags.test( ITEM_ANTI_GOOD ) ) )
+      buf.append( "(Flaming Grey) " );
+   if( ch->Class == CLASS_PALADIN && ( !extra_flags.test( ITEM_ANTI_EVIL ) && !extra_flags.test( ITEM_ANTI_NEUTRAL ) && extra_flags.test( ITEM_ANTI_GOOD ) ) )
+      buf.append( "(Flaming White) " );
+   if( ch->Class == CLASS_PALADIN && ( extra_flags.test( ITEM_ANTI_EVIL ) && extra_flags.test( ITEM_ANTI_NEUTRAL ) && !extra_flags.test( ITEM_ANTI_GOOD ) ) )
+      buf.append( "(Smouldering Red-Grey) " );
+   if( ch->Class == CLASS_PALADIN && ( extra_flags.test( ITEM_ANTI_EVIL ) && !extra_flags.test( ITEM_ANTI_NEUTRAL ) && extra_flags.test( ITEM_ANTI_GOOD ) ) )
+      buf.append( "(Smouldering Red-White) " );
+   if( ch->Class == CLASS_PALADIN && ( !extra_flags.test( ITEM_ANTI_EVIL ) && extra_flags.test( ITEM_ANTI_NEUTRAL ) && extra_flags.test( ITEM_ANTI_GOOD ) ) )
+      buf.append( "(Smouldering Grey-White) " );
 
    if( ch->has_aflag( AFF_DETECT_MAGIC ) && extra_flags.test( ITEM_MAGIC ) )
-      mudstrlcat( buf, "(Magical) ", MSL );
+      buf.append( "(Magical) " );
    if( !glowsee && extra_flags.test( ITEM_GLOW ) )
-      mudstrlcat( buf, "(Glowing) ", MSL );
+      buf.append( "(Glowing) " );
    if( extra_flags.test( ITEM_HUM ) )
-      mudstrlcat( buf, "(Humming) ", MSL );
+      buf.append( "(Humming) " );
    if( extra_flags.test( ITEM_HIDDEN ) )
-      mudstrlcat( buf, "(Hidden) ", MSL );
+      buf.append( "(Hidden) " );
    if( extra_flags.test( ITEM_BURIED ) )
-      mudstrlcat( buf, "(Buried) ", MSL );
+      buf.append( "(Buried) " );
    if( ch->is_immortal(  ) && extra_flags.test( ITEM_PROTOTYPE ) )
-      mudstrlcat( buf, "(PROTO) ", MSL );
-   if( ch->has_aflag( AFF_DETECTTRAPS ) && is_trapped(  ) )
-      mudstrlcat( buf, "(Trap) ", MSL );
-
-   mudstrlcat( buf, mxp_obj_str( ch, this, mxpmode, mxpstr ), MSL );
+      buf.append( "(PROTO) " );
+   if( ( ch->has_aflag( AFF_DETECTTRAPS ) || ch->has_pcflag( PCFLAG_HOLYLIGHT ) ) && is_trapped(  ) )
+      buf.append( "(Trap) " );
 
    if( fShort )
    {
-      if( glowsee && ( ch->isnpc() || !ch->has_pcflag( PCFLAG_HOLYLIGHT ) ) )
-         mudstrlcat( buf, "the faint glow of something", MSL );
+      if( glowsee && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_HOLYLIGHT ) ) )
+         buf.append( "the faint glow of something" );
       else if( short_descr )
       {
-         mudstrlcat( buf, short_descr, MSL );
+         buf.append( short_descr );
          if( num > 1 )
-            snprintf( buf + strlen(buf), MSL - strlen(buf), " (%d)", num );
-         if( !contents.empty() )
          {
-            list<obj_data*>::iterator iobj;
+            char v[MIL];
+
+            snprintf( v, MIL, " (%d)", num );
+
+            buf.append( v );
+         }
+         if( !contents.empty(  ) )
+         {
+            list < obj_data * >::iterator iobj;
             bool showdot = false;
 
-            for( iobj = contents.begin(); iobj != contents.end(); ++iobj )
+            for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
             {
-               obj_data *obj = (*iobj);
+               obj_data *obj = *iobj;
 
                if( ( obj->item_type == ITEM_TRAP && ch->has_aflag( AFF_DETECTTRAPS ) ) || obj->item_type != ITEM_TRAP )
                {
@@ -418,27 +407,33 @@ char *obj_data::format_to_char( char_data *ch, bool fShort, int num, int mxpmode
                }
             }
             if( showdot )
-               mudstrlcat( buf, " &W*", MSL );
+               buf.append( " &W*" );
          }
       }
    }
    else
    {
-      if( glowsee && ( ch->isnpc() || !ch->has_pcflag( PCFLAG_HOLYLIGHT ) ) )
-         mudstrlcat( buf, "You see the faint glow of something nearby.", MSL );
+      if( glowsee && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_HOLYLIGHT ) ) )
+         buf.append( "You see the faint glow of something nearby." );
       if( objdesc && objdesc[0] != '\0' )
       {
-         mudstrlcat( buf, objdesc, MSL );
+         buf.append( objdesc );
          if( num > 1 )
-            snprintf( buf + strlen(buf), MSL - strlen(buf), " (%d)", num );
-         if( !contents.empty() )
          {
-            list<obj_data*>::iterator iobj;
+            char v[MIL];
+
+            snprintf( v, MIL, " (%d)", num );
+
+            buf.append( v );
+         }
+         if( !contents.empty(  ) )
+         {
+            list < obj_data * >::iterator iobj;
             bool showdot = false;
 
-            for( iobj = contents.begin(); iobj != contents.end(); ++iobj )
+            for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
             {
-               obj_data *obj = (*iobj);
+               obj_data *obj = *iobj;
 
                if( ( obj->item_type == ITEM_TRAP && ch->has_aflag( AFF_DETECTTRAPS ) ) || obj->item_type != ITEM_TRAP )
                {
@@ -447,16 +442,15 @@ char *obj_data::format_to_char( char_data *ch, bool fShort, int num, int mxpmode
                }
             }
             if( showdot )
-               mudstrlcat( buf, " &W*", MSL );
+               buf.append( " &W*" );
          }
       }
    }
-   mudstrlcat( buf, ch->color_str( AT_OBJECT ), MSL );
-   mudstrlcat( buf, mxp_obj_str_close( ch, this, mxpmode ), MSL );
+   buf.append( ch->color_str( AT_OBJECT ) );
    return buf;
 }
 
-bool is_same_obj( obj_data *src, obj_data *dest )
+bool is_same_obj( obj_data * src, obj_data * dest )
 {
    if( !src || !dest )
       return false;
@@ -468,39 +462,35 @@ bool is_same_obj( obj_data *src, obj_data *dest )
       return false;
 
    if( src->pIndexData == dest->pIndexData
-    && !str_cmp( src->name, dest->name )
-    && !str_cmp( src->short_descr, dest->short_descr )
-    && !str_cmp( src->objdesc, dest->objdesc )
-    && !str_cmp( src->socket[0], dest->socket[0] )
-    && !str_cmp( src->socket[1], dest->socket[1] )
-    && !str_cmp( src->socket[2], dest->socket[2] )
-    && src->item_type == dest->item_type
-    && src->extra_flags == dest->extra_flags
-    && src->wear_flags == dest->wear_flags 
-    && src->wear_loc == dest->wear_loc
-    && src->weight == dest->weight
-    && src->cost == dest->cost
-    && src->level == dest->level
-    && src->timer == dest->timer
-    && src->value[0] == dest->value[0]
-    && src->value[1] == dest->value[1]
-    && src->value[2] == dest->value[2]
-    && src->value[3] == dest->value[3]
-    && src->value[4] == dest->value[4]
-    && src->value[5] == dest->value[5]
-    && src->value[6] == dest->value[6]
-    && src->value[7] == dest->value[7]
-    && src->value[8] == dest->value[8]
-    && src->value[9] == dest->value[9]
-    && src->value[10] == dest->value[10]
-    && src->contents == dest->contents
-    && src->count + dest->count > 0
-    && src->map == dest->map
-    && src->mx == dest->mx
-    && src->my == dest->my
-    && !str_cmp( src->seller, dest->seller )
-    && !str_cmp( src->buyer, dest->buyer )
-    && src->bid == dest->bid )
+       && !str_cmp( src->name, dest->name )
+       && !str_cmp( src->short_descr, dest->short_descr )
+       && !str_cmp( src->objdesc, dest->objdesc )
+       && !str_cmp( src->socket[0], dest->socket[0] )
+       && !str_cmp( src->socket[1], dest->socket[1] )
+       && !str_cmp( src->socket[2], dest->socket[2] )
+       && src->item_type == dest->item_type
+       && src->extra_flags == dest->extra_flags
+       && src->wear_flags == dest->wear_flags
+       && src->wear_loc == dest->wear_loc
+       && src->weight == dest->weight
+       && src->cost == dest->cost
+       && src->level == dest->level
+       && src->timer == dest->timer
+       && src->value[0] == dest->value[0]
+       && src->value[1] == dest->value[1]
+       && src->value[2] == dest->value[2]
+       && src->value[3] == dest->value[3]
+       && src->value[4] == dest->value[4]
+       && src->value[5] == dest->value[5]
+       && src->value[6] == dest->value[6]
+       && src->value[7] == dest->value[7]
+       && src->value[8] == dest->value[8]
+       && src->value[9] == dest->value[9]
+       && src->value[10] == dest->value[10]
+       && src->contents == dest->contents
+       && src->count + dest->count > 0
+       && src->map == dest->map
+       && src->mx == dest->mx && src->my == dest->my && !str_cmp( src->seller, dest->seller ) && !str_cmp( src->buyer, dest->buyer ) && src->bid == dest->bid )
       return true;
 
    return false;
@@ -510,7 +500,7 @@ bool is_same_obj( obj_data *src, obj_data *dest )
  * Some increasingly freaky hallucinated objects - Thoric
  * (Hats off to Albert Hoffman's "problem child")
  */
-char *hallucinated_object( int ms, bool fShort )
+const char *hallucinated_object( int ms, bool fShort )
 {
    int sms = URANGE( 1, ( ms + 10 ) / 5, 20 );
 
@@ -607,16 +597,16 @@ char *hallucinated_object( int ms, bool fShort )
    return "Whoa!!!";
 }
 
-void show_list_to_char( char_data *ch, list<obj_data*> source, bool fShort, bool fShowNothing, int mxpmode, char *mxpstr )
+void show_list_to_char( char_data * ch, list < obj_data * >source, bool fShort, bool fShowNothing )
 {
-   map<obj_data*,int> objmap;
+   map < obj_data *, int >objmap;
    int ms;
    bool found = false;
 
    /*
     * if there's no list... then don't do all this crap!  -Thoric
     */
-   if( source.empty() )
+   if( source.empty(  ) )
    {
       if( fShowNothing )
       {
@@ -627,21 +617,20 @@ void show_list_to_char( char_data *ch, list<obj_data*> source, bool fShort, bool
       return;
    }
 
-   ms = ( ch->mental_state ? ch->mental_state : 1 )
-      * ( ch->isnpc(  )? 1 : ( ch->pcdata->condition[COND_DRUNK] ? ( ch->pcdata->condition[COND_DRUNK] / 12 ) : 1 ) );
+   ms = ( ch->mental_state ? ch->mental_state : 1 ) * ( ch->isnpc(  )? 1 : ( ch->pcdata->condition[COND_DRUNK] ? ( ch->pcdata->condition[COND_DRUNK] / 12 ) : 1 ) );
 
-   map<obj_data*,int>::iterator mobj;
-   objmap.clear();
-   list<obj_data*>::iterator iobj;
-   for( iobj = source.begin(); iobj != source.end(); ++iobj )
+   map < obj_data *, int >::iterator mobj;
+   objmap.clear(  );
+   list < obj_data * >::iterator iobj;
+   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( obj->extra_flags.test( ITEM_AUCTION ) )
          continue;
 
       found = false;
-      for( mobj = objmap.begin(); mobj != objmap.end(); ++mobj )
+      for( mobj = objmap.begin(  ); mobj != objmap.end(  ); ++mobj )
       {
          if( is_same_obj( mobj->first, obj ) )
          {
@@ -655,13 +644,12 @@ void show_list_to_char( char_data *ch, list<obj_data*> source, bool fShort, bool
    }
 
    int wcount = 0;
-   mobj = objmap.begin();
-   while( mobj != objmap.end() )
+   mobj = objmap.begin(  );
+   while( mobj != objmap.end(  ) )
    {
-      if( mobj->first->wear_loc == WEAR_NONE && ch->can_see_obj( mobj->first, false )
-       && ( mobj->first->item_type != ITEM_TRAP || ch->has_aflag( AFF_DETECTTRAPS ) ) )
+      if( mobj->first->wear_loc == WEAR_NONE && ch->can_see_obj( mobj->first, false ) && ( mobj->first->item_type != ITEM_TRAP || ch->has_aflag( AFF_DETECTTRAPS ) ) )
       {
-         switch( mobj->first->item_type )
+         switch ( mobj->first->item_type )
          {
             default:
                ch->set_color( AT_OBJECT );
@@ -700,7 +688,7 @@ void show_list_to_char( char_data *ch, list<obj_data*> source, bool fShort, bool
          if( abs( ms ) > 40 && number_bits( 1 ) == 0 )
             ch->print( hallucinated_object( ms, fShort ) );
          else
-            ch->print( mobj->first->format_to_char( ch, fShort, mobj->second, mxpmode, mxpstr ) );
+            ch->print( mobj->first->format_to_char( ch, fShort, mobj->second ) );
          ch->print( "\r\n" );
       }
       ++mobj;
@@ -711,7 +699,6 @@ void show_list_to_char( char_data *ch, list<obj_data*> source, bool fShort, bool
       ch->set_color( AT_OBJECT );
       ch->print( "Nothing.\r\n" );
    }
-   return;
 }
 
 /*
@@ -731,7 +718,7 @@ obj_data *obj_data::to_char( char_data * ch )
 
    if( extra_flags.test( ITEM_PROTOTYPE ) )
    {
-      if( !ch->is_immortal(  ) && ( !ch->isnpc() || !ch->has_actflag( ACT_PROTOTYPE ) ) )
+      if( !ch->is_immortal(  ) && ( !ch->isnpc(  ) || !ch->has_actflag( ACT_PROTOTYPE ) ) )
          return to_room( ch->in_room, ch );
    }
 
@@ -760,11 +747,11 @@ obj_data *obj_data::to_char( char_data * ch )
    if( ch->isnpc(  ) && ch->pIndexData->pShop )
       skipgroup = true;
 
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    if( !skipgroup )
-      for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+      for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
       {
-         otmp = (*iobj);
+         otmp = *iobj;
          if( ( oret = group_obj( otmp, this ) ) == otmp )
          {
             grouped = true;
@@ -794,9 +781,9 @@ obj_data *obj_data::to_char( char_data * ch )
          /*
           * If ch is a shopkeeper, add the obj using an insert sort 
           */
-         for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+         for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
          {
-            otmp = (*iobj);
+            otmp = *iobj;
             if( level > otmp->level )
             {
                ch->carrying.insert( iobj, this );
@@ -860,14 +847,13 @@ void obj_data::from_char(  )
 
    ch->carrying.remove( this );
 
-   if( extra_flags.test( ITEM_COVERING ) && !contents.empty() )
+   if( extra_flags.test( ITEM_COVERING ) && !contents.empty(  ) )
       empty( NULL, NULL );
 
    in_room = NULL;
    carried_by = NULL;
    ch->carry_number -= get_number(  );
    ch->carry_weight -= get_weight(  );
-   return;
 }
 
 /*
@@ -932,17 +918,17 @@ void obj_data::from_room(  )
    my = -1;
    map = -1;
 
-   list<affect_data*>::iterator paf;
-   for( paf = affects.begin(); paf != affects.end(); ++paf )
+   list < affect_data * >::iterator paf;
+   for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       room->room_affect( af, false );
    }
 
-   for( paf = pIndexData->affects.begin(); paf != pIndexData->affects.end(); ++paf )
+   for( paf = pIndexData->affects.begin(  ); paf != pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       room->room_affect( af, false );
    }
@@ -952,7 +938,7 @@ void obj_data::from_room(  )
    /*
     * uncover contents 
     */
-   if( extra_flags.test( ITEM_COVERING ) && !contents.empty() )
+   if( extra_flags.test( ITEM_COVERING ) && !contents.empty(  ) )
       empty( NULL, in_room );
 
    if( item_type == ITEM_FIRE )
@@ -963,7 +949,6 @@ void obj_data::from_room(  )
    in_room = NULL;
    if( pIndexData->vnum == OBJ_VNUM_CORPSE_PC && falling < 1 )
       write_corpse( this, short_descr + 14 );
-   return;
 }
 
 /*
@@ -973,24 +958,24 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
 {
    short ocount = count;
    short oitem_type = item_type;
-   list<affect_data*>::iterator paf;
+   list < affect_data * >::iterator paf;
 
-   for( paf = affects.begin(); paf != affects.end(); ++paf )
+   for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
       pRoomIndex->room_affect( af, true );
    }
 
-   for( paf = pIndexData->affects.begin(); paf != pIndexData->affects.end(); ++paf )
+   for( paf = pIndexData->affects.begin(  ); paf != pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
       pRoomIndex->room_affect( af, true );
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = pRoomIndex->objects.begin(); iobj != pRoomIndex->objects.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = pRoomIndex->objects.begin(  ); iobj != pRoomIndex->objects.end(  ); ++iobj )
    {
-      obj_data *oret, *otmp = (*iobj);
+      obj_data *oret, *otmp = *iobj;
       if( ( oret = group_obj( otmp, this ) ) == otmp )
       {
          if( oitem_type == ITEM_FIRE )
@@ -1039,7 +1024,7 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
 /*
  * Move an object into an object.
  */
-obj_data *obj_data::to_obj( obj_data *obj_to )
+obj_data *obj_data::to_obj( obj_data * obj_to )
 {
    if( this == obj_to )
    {
@@ -1051,10 +1036,10 @@ obj_data *obj_data::to_obj( obj_data *obj_to )
    if( !obj_to->in_magic_container(  ) && ( who = obj_to->who_carrying(  ) ) != NULL )
       who->carry_weight += get_weight(  );
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = obj_to->contents.begin(); iobj != obj_to->contents.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = obj_to->contents.begin(  ); iobj != obj_to->contents.end(  ); ++iobj )
    {
-      obj_data *oret, *otmp = (*iobj);
+      obj_data *oret, *otmp = *iobj;
       if( ( oret = group_obj( otmp, this ) ) == otmp )
          return oret;
    }
@@ -1088,7 +1073,7 @@ void obj_data::from_obj(  )
    /*
     * uncover contents 
     */
-   if( extra_flags.test( ITEM_COVERING ) && !contents.empty() )
+   if( extra_flags.test( ITEM_COVERING ) && !contents.empty(  ) )
       empty( in_obj, NULL );
 
    in_obj = NULL;
@@ -1109,7 +1094,6 @@ void obj_data::from_obj(  )
       for( ; obj_from; obj_from = obj_from->in_obj )
          if( obj_from->carried_by )
             obj_from->carried_by->carry_weight -= get_weight(  );
-   return;
 }
 
 /*
@@ -1135,15 +1119,15 @@ void obj_data::extract(  )
    else if( in_obj )
       from_obj(  );
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = contents.begin(); iobj != contents.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = contents.begin(  ); iobj != contents.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
       obj->extract(  );
    }
-   contents.clear();
+   contents.clear(  );
 
    /*
     * shove onto extraction queue 
@@ -1152,7 +1136,6 @@ void obj_data::extract(  )
    pIndexData->count -= count;
    numobjsloaded -= count;
    --physicalobjects;
-   return;
 }
 
 int obj_data::get_number(  )
@@ -1165,13 +1148,13 @@ int obj_data::get_number(  )
  */
 int obj_data::get_weight(  )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int oweight = count * weight;
 
    if( item_type != ITEM_CONTAINER || !extra_flags.test( ITEM_MAGIC ) )
-      for( iobj = contents.begin(); iobj != contents.end(); ++iobj )
+      for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          oweight += obj->get_weight(  );
       }
    return oweight;
@@ -1182,12 +1165,12 @@ int obj_data::get_weight(  )
  */
 int obj_data::get_real_weight(  )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int oweight = count * weight;
 
-   for( iobj = contents.begin(); iobj != contents.end(); ++iobj )
+   for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       oweight += obj->get_real_weight(  );
    }
    return weight;
@@ -1196,7 +1179,7 @@ int obj_data::get_real_weight(  )
 /*
  * Return ascii name of an item type.
  */
-char *obj_data::item_type_name(  )
+const string obj_data::item_type_name(  )
 {
    if( item_type < 1 || item_type >= MAX_ITEM_TYPE )
    {
@@ -1211,13 +1194,13 @@ char *obj_data::item_type_name(  )
  */
 bool obj_data::is_trapped(  )
 {
-   if( contents.empty() )
+   if( contents.empty(  ) )
       return false;
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = contents.begin(); iobj != contents.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       if( obj->item_type == ITEM_TRAP )
          return true;
    }
@@ -1229,13 +1212,13 @@ bool obj_data::is_trapped(  )
  */
 obj_data *obj_data::get_trap(  )
 {
-   if( contents.empty() )
+   if( contents.empty(  ) )
       return NULL;
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = contents.begin(); iobj != contents.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       if( obj->item_type == ITEM_TRAP )
          return obj;
    }
@@ -1248,11 +1231,11 @@ obj_data *obj_data::get_trap(  )
  */
 obj_data *get_objtype( char_data * ch, short type )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       if( obj->item_type == type )
          return obj;
    }
@@ -1309,7 +1292,7 @@ obj_data *obj_data::clone(  )
  * as this will allow them to be grouped together both in memory, and in
  * the player files.
  */
-obj_data *group_obj( obj_data *obj, obj_data *obj2 )
+obj_data *group_obj( obj_data * obj, obj_data * obj2 )
 {
    if( !obj || !obj2 )
       return NULL;
@@ -1320,46 +1303,10 @@ obj_data *group_obj( obj_data *obj, obj_data *obj2 )
    if( obj->pIndexData->vnum == OBJ_VNUM_TREASURE || obj2->pIndexData->vnum == OBJ_VNUM_TREASURE )
       return obj2;
 
-   if( obj->pIndexData == obj2->pIndexData
-    && !str_cmp( obj->name, obj2->name )
-    && !str_cmp( obj->short_descr, obj2->short_descr )
-    && !str_cmp( obj->objdesc, obj2->objdesc )
-    && ( obj->action_desc && obj2->action_desc && !str_cmp( obj->action_desc, obj2->action_desc ) )
-    && !str_cmp( obj->socket[0], obj2->socket[0] )
-    && !str_cmp( obj->socket[1], obj2->socket[1] )
-    && !str_cmp( obj->socket[2], obj2->socket[2] )
-    && obj->item_type == obj2->item_type
-    && obj->extra_flags == obj2->extra_flags
-    && obj->wear_flags == obj2->wear_flags
-    && obj->wear_loc == obj2->wear_loc
-    && obj->weight == obj2->weight
-    && obj->cost == obj2->cost
-    && obj->level == obj2->level
-    && obj->timer == obj2->timer
-    && obj->value[0] == obj2->value[0]
-    && obj->value[1] == obj2->value[1]
-    && obj->value[2] == obj2->value[2]
-    && obj->value[3] == obj2->value[3]
-    && obj->value[4] == obj2->value[4]
-    && obj->value[5] == obj2->value[5]
-    && obj->value[6] == obj2->value[6]
-    && obj->value[7] == obj2->value[7]
-    && obj->value[8] == obj2->value[8]
-    && obj->value[9] == obj2->value[9]
-    && obj->value[10] == obj2->value[10]
-    && obj->extradesc.empty() && obj2->extradesc.empty()
-    && obj->affects.empty() && obj2->affects.empty()
-    && obj->contents.empty() && obj2->contents.empty()
-    && obj->count + obj2->count > 0
-    && obj->map == obj2->map
-    && obj->mx == obj2->mx
-    && obj->my == obj2->my
-    && !str_cmp( obj->seller, obj2->seller )
-    && !str_cmp( obj->buyer, obj2->buyer )
-    && obj->bid == obj2->bid )  /* prevent count overflow */
+   if( obj->pIndexData == obj2->pIndexData && !str_cmp( obj->name, obj2->name ) && !str_cmp( obj->short_descr, obj2->short_descr ) && !str_cmp( obj->objdesc, obj2->objdesc ) && ( obj->action_desc && obj2->action_desc && !str_cmp( obj->action_desc, obj2->action_desc ) ) && !str_cmp( obj->socket[0], obj2->socket[0] ) && !str_cmp( obj->socket[1], obj2->socket[1] ) && !str_cmp( obj->socket[2], obj2->socket[2] ) && obj->item_type == obj2->item_type && obj->extra_flags == obj2->extra_flags && obj->wear_flags == obj2->wear_flags && obj->wear_loc == obj2->wear_loc && obj->weight == obj2->weight && obj->cost == obj2->cost && obj->level == obj2->level && obj->timer == obj2->timer && obj->value[0] == obj2->value[0] && obj->value[1] == obj2->value[1] && obj->value[2] == obj2->value[2] && obj->value[3] == obj2->value[3] && obj->value[4] == obj2->value[4] && obj->value[5] == obj2->value[5] && obj->value[6] == obj2->value[6] && obj->value[7] == obj2->value[7] && obj->value[8] == obj2->value[8] && obj->value[9] == obj2->value[9] && obj->value[10] == obj2->value[10] && obj->extradesc.empty(  ) && obj2->extradesc.empty(  ) && obj->affects.empty(  ) && obj2->affects.empty(  ) && obj->contents.empty(  ) && obj2->contents.empty(  ) && obj->count + obj2->count > 0 && obj->map == obj2->map && obj->mx == obj2->mx && obj->my == obj2->my && !str_cmp( obj->seller, obj2->seller ) && !str_cmp( obj->buyer, obj2->buyer ) && obj->bid == obj2->bid )   /* prevent count overflow */
    {
       obj->count += obj2->count;
-      obj->pIndexData->count += obj2->count;   /* to be decremented in */
+      obj->pIndexData->count += obj2->count; /* to be decremented in */
       numobjsloaded += obj2->count; /* extract_obj */
       obj2->extract(  );
       return obj;
@@ -1419,7 +1366,7 @@ void obj_data::separate(  )
 bool obj_data::empty( obj_data * destobj, room_index * destroom )
 {
    obj_data *otmp;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    char_data *ch = carried_by;
    bool movedsome = false;
 
@@ -1428,11 +1375,12 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
       bug( "%s: NULL obj", __FUNCTION__ );
       return false;
    }
+
    if( destobj || ( !destroom && !ch && ( destobj = in_obj ) != NULL ) )
    {
-      for( iobj = contents.begin(); iobj != contents.end(); )
+      for( iobj = contents.begin(  ); iobj != contents.end(  ); )
       {
-         otmp = (*iobj);
+         otmp = *iobj;
          ++iobj;
 
          /*
@@ -1443,8 +1391,7 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
          if( destobj->item_type == ITEM_QUIVER && otmp->item_type != ITEM_PROJECTILE )
             continue;
          if( ( destobj->item_type == ITEM_CONTAINER || destobj->item_type == ITEM_KEYRING
-               || destobj->item_type == ITEM_QUIVER )
-             && otmp->get_real_weight(  ) + destobj->get_real_weight(  ) > destobj->value[0] )
+               || destobj->item_type == ITEM_QUIVER ) && otmp->get_real_weight(  ) + destobj->get_real_weight(  ) > destobj->value[0] )
             continue;
          otmp->from_obj(  );
          otmp->to_obj( destobj );
@@ -1452,11 +1399,12 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
       }
       return movedsome;
    }
+
    if( destroom || ( !ch && ( destroom = in_room ) != NULL ) )
    {
-      for( iobj = contents.begin(); iobj != contents.end(); )
+      for( iobj = contents.begin(  ); iobj != contents.end(  ); )
       {
-         otmp = (*iobj);
+         otmp = *iobj;
          ++iobj;
 
          if( ch && HAS_PROG( otmp->pIndexData, DROP_PROG ) && otmp->count > 1 )
@@ -1477,11 +1425,12 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
       }
       return movedsome;
    }
+
    if( ch )
    {
-      for( iobj = contents.begin(); iobj != contents.end(); )
+      for( iobj = contents.begin(  ); iobj != contents.end(  ); )
       {
-         otmp = (*iobj);
+         otmp = *iobj;
          ++iobj;
 
          otmp->from_obj(  );
@@ -1512,10 +1461,10 @@ void obj_data::remove_portal(  )
 
    exit_data *pexit;
    bool found = false;
-   list<exit_data*>::iterator iexit;
-   for( iexit = fromRoom->exits.begin(); iexit != fromRoom->exits.end(); ++iexit )
+   list < exit_data * >::iterator iexit;
+   for( iexit = fromRoom->exits.begin(  ); iexit != fromRoom->exits.end(  ); ++iexit )
    {
-      pexit = (*iexit);
+      pexit = *iexit;
 
       if( IS_EXIT_FLAG( pexit, EX_PORTAL ) )
       {
@@ -1537,7 +1486,6 @@ void obj_data::remove_portal(  )
       bug( "%s: toRoom is NULL", __FUNCTION__ );
 
    fromRoom->extract_exit( pexit );
-   return;
 }
 
 /*
@@ -1610,15 +1558,14 @@ void obj_data::make_scraps(  )
    }
    else if( in_room )
    {
-      if( !in_room->people.empty() )
+      if( !in_room->people.empty(  ) )
       {
-         act( AT_OBJECT, "$p is reduced to little more than scraps.", (*in_room->people.begin()), this, NULL, TO_ROOM );
-         act( AT_OBJECT, "$p is reduced to little more than scraps.", (*in_room->people.begin()), this, NULL, TO_CHAR );
+         act( AT_OBJECT, "$p is reduced to little more than scraps.", ( *in_room->people.begin(  ) ), this, NULL, TO_ROOM );
+         act( AT_OBJECT, "$p is reduced to little more than scraps.", ( *in_room->people.begin(  ) ), this, NULL, TO_CHAR );
       }
       scraps->to_room( in_room, NULL );
    }
-   if( ( item_type == ITEM_CONTAINER || item_type == ITEM_KEYRING
-         || item_type == ITEM_QUIVER || item_type == ITEM_CORPSE_PC ) && !contents.empty() )
+   if( ( item_type == ITEM_CONTAINER || item_type == ITEM_KEYRING || item_type == ITEM_QUIVER || item_type == ITEM_CORPSE_PC ) && !contents.empty(  ) )
    {
       if( ch && ch->in_room )
       {
@@ -1642,19 +1589,19 @@ void obj_data::make_scraps(  )
 int obj_data::hitroll(  )
 {
    int tohit = 0;
-   list<affect_data*>::iterator paf;
+   list < affect_data * >::iterator paf;
 
-   for( paf = pIndexData->affects.begin(); paf != pIndexData->affects.end(); ++paf )
+   for( paf = pIndexData->affects.begin(  ); paf != pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       if( af->location == APPLY_HITROLL || af->location == APPLY_HITNDAM )
          tohit += af->modifier;
    }
 
-   for( paf = affects.begin(); paf != affects.end(); ++paf )
+   for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       if( af->location == APPLY_HITROLL || af->location == APPLY_HITNDAM )
          tohit += af->modifier;
@@ -1670,7 +1617,7 @@ int obj_data::hitroll(  )
  * like "Your long dark blade".  The object name isn't always appropriate
  * since it contains keywords that may not look proper.		-Thoric
  */
-char *obj_data::myobj(  )
+const string obj_data::myobj(  )
 {
    if( !str_prefix( "a ", short_descr ) )
       return short_descr + 2;
@@ -1692,7 +1639,7 @@ void obj_identify_output( char_data * ch, obj_data * obj )
    if( ch->level >= LEVEL_IMMORTAL )
       ch->printf( "Vnum: %d\r\n", obj->pIndexData->vnum );
    ch->printf( "Keywords: %s\r\n", obj->name );
-   ch->printf( "Type: %s\r\n", obj->item_type_name(  ) );
+   ch->printf( "Type: %s\r\n", obj->item_type_name(  ).c_str(  ) );
    ch->printf( "Wear Flags : %s\r\n", bitset_string( obj->wear_flags, w_flags ) );
    ch->printf( "Layers     : %d\r\n", obj->pIndexData->layers );
    ch->printf( "Extra Flags: %s\r\n", bitset_string( obj->extra_flags, o_flags ) );
@@ -1709,8 +1656,7 @@ void obj_identify_output( char_data * ch, obj_data * obj )
                      obj->value[0] < 76 ? "of a small capacity" :
                      obj->value[0] < 150 ? "of a small to medium capacity" :
                      obj->value[0] < 300 ? "of a medium capacity" :
-                     obj->value[0] < 550 ? "of a medium to large capacity" :
-                     obj->value[0] < 751 ? "of a large capacity" : "of a giant capacity" );
+                     obj->value[0] < 550 ? "of a medium to large capacity" : obj->value[0] < 751 ? "of a large capacity" : "of a giant capacity" );
          break;
 
       case ITEM_PILL:
@@ -1753,11 +1699,10 @@ void obj_identify_output( char_data * ch, obj_data * obj )
 
       case ITEM_WEAPON:
          ch->printf( "Damage is %d to %d (average %d)%s\r\n",
-                     obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2,
-                     obj->extra_flags.test( ITEM_POISONED ) ? ", and is poisonous." : "." );
+                     obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2, obj->extra_flags.test( ITEM_POISONED ) ? ", and is poisonous." : "." );
          ch->printf( "Skill needed: %s\r\n", weapon_skills[obj->value[4]] );
          ch->printf( "Damage type:  %s\r\n", attack_table[obj->value[3]] );
-         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ) );
+         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
          if( obj->value[7] > 0 )
             ch->printf( "Available sockets: %d\r\n", obj->value[7] );
          if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
@@ -1769,11 +1714,10 @@ void obj_identify_output( char_data * ch, obj_data * obj )
          break;
 
       case ITEM_MISSILE_WEAPON:
-         ch->printf( "Bonus damage added to projectiles is %d to %d (average %d).\r\n",
-                     obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2 );
+         ch->printf( "Bonus damage added to projectiles is %d to %d (average %d).\r\n", obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2 );
          ch->printf( "Skill needed:      %s\r\n", weapon_skills[obj->value[4]] );
          ch->printf( "Projectiles fired: %s\r\n", projectiles[obj->value[5]] );
-         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ) );
+         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
          if( obj->value[7] > 0 )
             ch->printf( "Available sockets: %d\r\n", obj->value[7] );
          if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
@@ -1786,16 +1730,15 @@ void obj_identify_output( char_data * ch, obj_data * obj )
 
       case ITEM_PROJECTILE:
          ch->printf( "Damage is %d to %d (average %d)%s\r\n",
-                     obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2,
-                     obj->extra_flags.test( ITEM_POISONED ) ? ", and is poisonous." : "." );
+                     obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2, obj->extra_flags.test( ITEM_POISONED ) ? ", and is poisonous." : "." );
          ch->printf( "Damage type: %s\r\n", attack_table[obj->value[3]] );
          ch->printf( "Projectile type: %s\r\n", projectiles[obj->value[4]] );
-         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[5], obj->value[0] ) );
+         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[5], obj->value[0] ).c_str(  ) );
          break;
 
       case ITEM_ARMOR:
          ch->printf( "Current AC value: %d\r\n", obj->value[1] );
-         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[1], obj->value[0] ) );
+         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[1], obj->value[0] ).c_str(  ) );
          if( obj->value[2] > 0 )
             ch->printf( "Available sockets: %d\r\n", obj->value[2] );
          if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
@@ -1807,19 +1750,18 @@ void obj_identify_output( char_data * ch, obj_data * obj )
          break;
    }
 
-   list<affect_data*>::iterator paf;
-   for( paf = obj->affects.begin(); paf != obj->affects.end(); ++paf )
+   list < affect_data * >::iterator paf;
+   for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       ch->showaffect( af );
    }
 
-   for( paf = obj->pIndexData->affects.begin(); paf != obj->pIndexData->affects.end(); ++paf )
+   for( paf = obj->pIndexData->affects.begin(  ); paf != obj->pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       ch->showaffect( af );
    }
-   return;
 }

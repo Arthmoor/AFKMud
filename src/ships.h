@@ -38,16 +38,16 @@ enum ship_flag_settings
 class ship_data
 {
  private:
-   ship_data( const ship_data& s );
-   ship_data& operator=( const ship_data& );
+   ship_data( const ship_data & s );
+     ship_data & operator=( const ship_data & );
 
  public:
-   ship_data();
-   ~ship_data();
+     ship_data(  );
+    ~ship_data(  );
 
+   string name;
+   string owner;
      bitset < MAX_SHIP_FLAG > flags;
-   char *name;
-   char *owner;
    int fuel;
    int max_fuel;
    int hull;
@@ -65,8 +65,7 @@ enum ship_types
    SHIP_NONE, SHIP_SKIFF, SHIP_COASTER, SHIP_CARAVEL, SHIP_GALLEON, SHIP_WARSHIP, SHIP_MAX
 };
 
-extern list<ship_data*> shiplist;
-extern char *const ship_flags[];
+extern list < ship_data * >shiplist;
 
 #define SHIP_FILE SYSTEM_DIR "ships.dat"  /* For ships */
 #endif

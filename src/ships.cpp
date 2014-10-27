@@ -29,6 +29,7 @@
 
 /* This code is still in the development stages and probably has bugs - be warned */
 
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "mud_prog.h"
@@ -38,17 +39,17 @@
 
 void check_sneaks( char_data * );
 
-char *const ship_type[] = {
+const char *ship_type[] = {
    "None", "Skiff", "Coaster", "Caravel", "Galleon", "Warship"
 };
 
-char *const ship_flags[] = {
+const char *ship_flags[] = {
    "anchored", "onmap", "airship"
 };
 
-list<ship_data*> shiplist;
+list < ship_data * >shiplist;
 
-int get_shiptype( char *type )
+int get_shiptype( const string & type )
 {
    for( int x = 0; x < SHIP_MAX; ++x )
       if( !str_cmp( type, ship_type[x] ) )
@@ -56,7 +57,7 @@ int get_shiptype( char *type )
    return -1;
 }
 
-int get_shipflag( char *flag )
+int get_shipflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( ship_flags ) / sizeof( ship_flags[0] ) ); ++x )
       if( !str_cmp( flag, ship_flags[x] ) )
@@ -66,11 +67,11 @@ int get_shipflag( char *flag )
 
 ship_data *ship_lookup_by_vnum( int vnum )
 {
-   list<ship_data*>::iterator iship;
+   list < ship_data * >::iterator iship;
 
-   for( iship = shiplist.begin(); iship != shiplist.end(); ++iship )
+   for( iship = shiplist.begin(  ); iship != shiplist.end(  ); ++iship )
    {
-      ship_data *ship = (*iship);
+      ship_data *ship = *iship;
 
       if( ship->vnum == vnum )
          return ship;
@@ -78,13 +79,13 @@ ship_data *ship_lookup_by_vnum( int vnum )
    return NULL;
 }
 
-ship_data *ship_lookup( char *name )
+ship_data *ship_lookup( const string & name )
 {
-   list<ship_data*>::iterator iship;
+   list < ship_data * >::iterator iship;
 
-   for( iship = shiplist.begin(); iship != shiplist.end(); ++iship )
+   for( iship = shiplist.begin(  ); iship != shiplist.end(  ); ++iship )
    {
-      ship_data *ship = (*iship);
+      ship_data *ship = *iship;
 
       if( !str_cmp( name, ship->name ) )
          return ship;
@@ -94,10 +95,10 @@ ship_data *ship_lookup( char *name )
 
 CMDF( do_shiplist )
 {
-   list<ship_data*>::iterator iship;
+   list < ship_data * >::iterator iship;
    int count = 1;
 
-   if( shiplist.empty() )
+   if( shiplist.empty(  ) )
    {
       ch->print( "&RThere are no ships created yet.\r\n" );
       return;
@@ -105,15 +106,14 @@ CMDF( do_shiplist )
 
    ch->print( "&RNumbr Ship Name          Ship Type        Owner           Hull Status\r\n" );
    ch->print( "&r===== =========          =========        =====           ===========\r\n" );
-   for( iship = shiplist.begin(); iship != shiplist.end(); ++iship )
+   for( iship = shiplist.begin(  ); iship != shiplist.end(  ); ++iship )
    {
-      ship_data *ship = (*iship);
+      ship_data *ship = *iship;
 
       ch->printf( "&Y&W%4d&b&w>&g %-15s&Y    %-15s &G %-15s &Y%d/%d&g\r\n",
-                  count, capitalize( ship->name ), ship_type[ship->type], ship->owner, ship->hull, ship->max_hull );
+                  count, capitalize( ship->name ).c_str(  ), ship_type[ship->type], ship->owner.c_str(  ), ship->hull, ship->max_hull );
       count += 1;
    }
-   return;
 }
 
 CMDF( do_shipstat )
@@ -126,8 +126,8 @@ CMDF( do_shipstat )
       return;
    }
 
-   ch->printf( "Name:  %s\r\n", ship->name );
-   ch->printf( "Owner: %s\r\n", ship->owner );
+   ch->printf( "Name:  %s\r\n", ship->name.c_str(  ) );
+   ch->printf( "Owner: %s\r\n", ship->owner.c_str(  ) );
    ch->printf( "Vnum:  %d\r\n", ship->vnum );
    if( ship->flags.test( SHIP_ONMAP ) )
    {
@@ -140,216 +140,149 @@ CMDF( do_shipstat )
    ch->printf( "Fuel:  %d/%d\r\n", ship->fuel, ship->max_fuel );
    ch->printf( "Type:  %d (%s)\r\n", ship->type, ship_type[ship->type] );
    ch->printf( "Flags: %s\r\n", bitset_string( ship->flags, ship_flags ) );
-   return;
 }
 
-ship_data::ship_data()
+ship_data::ship_data(  )
 {
    init_memory( &flags, &map, sizeof( map ) );
 }
 
-ship_data::~ship_data()
+ship_data::~ship_data(  )
 {
-   DISPOSE( name );
-   STRFREE( owner );
    shiplist.remove( this );
 }
 
 void save_ships( void )
 {
-   FILE *fp;
-   list<ship_data*>::iterator iship;
+   ofstream stream;
+   list < ship_data * >::iterator iship;
 
-   if( !( fp = fopen( SHIP_FILE, "w" ) ) )
+   stream.open( SHIP_FILE );
+   if( !stream.is_open(  ) )
    {
       perror( SHIP_FILE );
       bug( "%s: can't open ship file", __FUNCTION__ );
       return;
    }
-   for( iship = shiplist.begin(); iship != shiplist.end(); ++iship )
+
+   for( iship = shiplist.begin(  ); iship != shiplist.end(  ); ++iship )
    {
-      ship_data *ship = (*iship);
+      ship_data *ship = *iship;
 
-      fprintf( fp, "%s", "#SHIP\n" );
-      fprintf( fp, "Name      %s~\n", ship->name );
-      fprintf( fp, "Owner     %s~\n", ship->owner );
-      fprintf( fp, "Flags     %s~\n", bitset_string( ship->flags, ship_flags ) );
-      fprintf( fp, "Vnum      %d\n", ship->vnum );
-      fprintf( fp, "Room      %d\n", ship->room );
-      fprintf( fp, "Type      %s~\n", ship_type[ship->type] );
-      fprintf( fp, "Hull      %d\n", ship->hull );
-      fprintf( fp, "Max_hull  %d\n", ship->max_hull );
-      fprintf( fp, "Fuel      %d\n", ship->fuel );
-      fprintf( fp, "Max_fuel  %d\n", ship->max_fuel );
-      fprintf( fp, "Coordinates %d %d %d\n", ship->map, ship->mx, ship->my );
-      fprintf( fp, "%s", "End\n\n" );
+      stream << "#SHIP" << endl;
+      stream << "Name      " << ship->name << endl;
+      stream << "Owner     " << ship->owner << endl;
+      stream << "Flags     " << bitset_string( ship->flags, ship_flags ) << endl;
+      stream << "Vnum      " << ship->vnum << endl;
+      stream << "Room      " << ship->room << endl;
+      stream << "Type      " << ship_type[ship->type] << endl;
+      stream << "Hull      " << ship->hull << endl;
+      stream << "Max_hull  " << ship->max_hull << endl;
+      stream << "Fuel      " << ship->fuel << endl;
+      stream << "Max_fuel  " << ship->max_fuel << endl;
+      stream << "Coordinates " << ship->map << " " << ship->mx << " " << ship->my << endl;
+      stream << "End" << endl << endl;
    }
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
-   return;
-}
-
-void fread_ship( ship_data * ship, FILE * fp )
-{
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            if( !str_cmp( word, "Coordinates" ) )
-            {
-               ship->map = fread_short( fp );
-               ship->mx = fread_short( fp );
-               ship->my = fread_short( fp );
-               break;
-            }
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "Flags" ) )
-            {
-               flag_set( fp, ship->flags, ship_flags );
-               break;
-            }
-            KEY( "Fuel", ship->fuel, fread_number( fp ) );
-            break;
-
-         case 'H':
-            KEY( "Hull", ship->hull, fread_number( fp ) );
-            break;
-
-         case 'M':
-            KEY( "Max_fuel", ship->max_fuel, fread_number( fp ) );
-            KEY( "Max_hull", ship->max_hull, fread_number( fp ) );
-            break;
-
-         case 'N':
-            KEY( "Name", ship->name, fread_string_nohash( fp ) );
-            break;
-
-         case 'O':
-            KEY( "Owner", ship->owner, fread_string( fp ) );
-            break;
-
-         case 'R':
-            KEY( "Room", ship->room, fread_number( fp ) );
-            break;
-
-         case 'T':
-            if( !str_cmp( word, "Type" ) )
-            {
-               int type = -1;
-
-               type = get_shiptype( fread_flagstring( fp ) );
-
-               if( type < 0 || type >= SHIP_MAX )
-               {
-                  bug( "%s: %s has invalid ship type - setting to none", __FUNCTION__, ship->name );
-                  type = 0;
-               }
-               ship->type = type;
-               break;
-            }
-            break;
-
-         case 'V':
-            KEY( "Vnum", ship->vnum, fread_number( fp ) );
-            break;
-      }
-   }
+   stream.close(  );
 }
 
 void load_ships( void )
 {
-   FILE *fp;
+   ifstream stream;
    ship_data *ship;
-   bool found = false;
 
-   shiplist.clear();
+   shiplist.clear(  );
 
-   if( ( fp = fopen( SHIP_FILE, "r" ) ) != NULL )
+   stream.open( SHIP_FILE );
+   if( !stream.is_open(  ) )
    {
-      found = true;
-      for( ;; )
-      {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # Not found", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "SHIP" ) )
-         {
-            ship = new ship_data;
-            fread_ship( ship, fp );
-            shiplist.push_back( ship );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section - %s", __FUNCTION__, word );
-            break;
-         }
-      }
-      FCLOSE( fp );
+      bug( "%s: Unable to open ships file.", __FUNCTION__ );
+      return;
    }
+
+   do
+   {
+      string key, value;
+      char buf[MIL];
+
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#SHIP" )
+         ship = new ship_data;
+      else if( key == "Name" )
+         ship->name = value;
+      else if( key == "Owner" )
+         ship->owner = value;
+      else if( key == "Flags" )
+         flag_string_set( value, ship->flags, ship_flags );
+      else if( key == "Vnum" )
+         ship->vnum = atoi( value.c_str(  ) );
+      else if( key == "Room" )
+         ship->room = atoi( value.c_str(  ) );
+      else if( key == "Type" )
+      {
+         ship->type = get_shiptype( value );
+
+         ship->type = URANGE( SHIP_NONE, ship->type, SHIP_WARSHIP );
+      }
+      else if( key == "Hull" )
+         ship->hull = atoi( value.c_str(  ) );
+      else if( key == "Max_hull" )
+         ship->max_hull = atoi( value.c_str(  ) );
+      else if( key == "Fuel" )
+         ship->fuel = atoi( value.c_str(  ) );
+      else if( key == "Max_fuel" )
+         ship->max_fuel = atoi( value.c_str(  ) );
+      else if( key == "Coordinates" )
+      {
+         string coord;
+
+         value = one_argument( value, coord );
+         ship->map = atoi( coord.c_str(  ) );
+
+         value = one_argument( value, coord );
+         ship->mx = atoi( coord.c_str(  ) );
+
+         ship->my = atoi( value.c_str(  ) );
+      }
+      else if( key == "End" )
+         shiplist.push_back( ship );
+      else
+         log_printf( "%s: Bad line in ships file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+   }
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 void free_ships( void )
 {
-   list<ship_data*>::iterator sh;
+   list < ship_data * >::iterator sh;
 
-   for( sh = shiplist.begin(); sh != shiplist.end(); )
+   for( sh = shiplist.begin(  ); sh != shiplist.end(  ); )
    {
-      ship_data *ship = (*sh);
+      ship_data *ship = *sh;
       ++sh;
 
       deleteptr( ship );
    }
-   return;
 }
 
 CMDF( do_shipset )
 {
    ship_data *ship;
-   char arg[MIL], mod[MIL];
+   string arg, mod;
 
-   smash_tilde( argument );
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Syntax: shipset <ship> create\r\n" );
       ch->print( "        shipset <ship> delete\r\n" );
@@ -374,7 +307,7 @@ CMDF( do_shipset )
       ship->map = -1;
       ship->mx = -1;
       ship->my = -1;
-      ship->name = str_dup( arg );
+      ship->name = arg;
       shiplist.push_back( ship );
       save_ships(  );
       ch->print( "Ship created.\r\n" );
@@ -402,8 +335,7 @@ CMDF( do_shipset )
          ch->print( "Another ship has that name.\r\n" );
          return;
       }
-      DISPOSE( ship->name );
-      ship->name = str_dup( argument );
+      ship->name = argument;
       save_ships(  );
       ch->print( "Name changed.\r\n" );
       return;
@@ -411,8 +343,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "owner" ) )
    {
-      STRFREE( ship->owner );
-      ship->owner = STRALLOC( argument );
+      ship->owner = argument;
       save_ships(  );
       ch->print( "Ownership shifted.\r\n" );
       return;
@@ -420,7 +351,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "vnum" ) )
    {
-      ship->vnum = atoi( argument );
+      ship->vnum = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Vnum modified.\r\n" );
       return;
@@ -428,7 +359,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "type" ) )
    {
-      ship->type = atoi( argument );
+      ship->type = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Type modified.\r\n" );
       return;
@@ -436,7 +367,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "hull" ) )
    {
-      ship->hull = atoi( argument );
+      ship->hull = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Hull changed.\r\n" );
       return;
@@ -444,7 +375,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "max_hull" ) )
    {
-      ship->max_hull = atoi( argument );
+      ship->max_hull = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Maximum hull changed.\r\n" );
       return;
@@ -452,7 +383,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "fuel" ) )
    {
-      ship->fuel = atoi( argument );
+      ship->fuel = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Fuel changed.\r\n" );
       return;
@@ -460,7 +391,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "max_fuel" ) )
    {
-      ship->max_fuel = atoi( argument );
+      ship->max_fuel = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Maximum fuel changed.\r\n" );
       return;
@@ -468,7 +399,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "room" ) )
    {
-      ship->room = atoi( argument );
+      ship->room = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Room set.\r\n" );
       return;
@@ -476,18 +407,18 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "coords" ) )
    {
-      char arg3[MIL];
+      string arg3;
 
       argument = one_argument( argument, arg3 );
 
-      if( arg3[0] == '\0' || argument[0] == '\0' )
+      if( arg3.empty(  ) || argument.empty(  ) )
       {
          ch->print( "You must specify both coordinates.\r\n" );
          return;
       }
 
-      ship->mx = atoi( arg3 );
-      ship->my = atoi( argument );
+      ship->mx = atoi( arg3.c_str(  ) );
+      ship->my = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Coordinates changed.\r\n" );
       return;
@@ -495,15 +426,15 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "flags" ) )
    {
-      char arg3[MIL];
+      string arg3;
       int value;
 
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_shipflag( arg3 );
          if( value < 0 || value >= MAX_SHIP_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             ship->flags.flip( value );
       }
@@ -511,7 +442,6 @@ CMDF( do_shipset )
       return;
    }
    do_shipset( ch, "" );
-   return;
 }
 
 bool can_move_ship( char_data * ch, int sector )
@@ -599,19 +529,17 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
             if( ch->mount )
                enter_map( ch->mount, NULL, mexit->therex, mexit->therey, mexit->tomap );
 
-            list<char_data*>::iterator ich;
-            size_t chars = from_room->people.size();
+            list < char_data * >::iterator ich;
+            size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+            for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
             {
-               char_data *fch = (*ich);
+               char_data *fch = *ich;
                ++ich;
                ++count;
 
                if( fch != ch  /* loop room bug fix here by Thoric */
-                   && fch->master == ch
-                   && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED )
-                   && fch->mx == fx && fch->my == fy && fch->map == fmap )
+                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->map == fmap )
                {
                   if( !fch->isnpc(  ) )
                   {
@@ -636,18 +564,18 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
             return rSTOP;
 
          if( !str_cmp( ch->name, ship->owner ) )
-            act_printf( AT_ACTION, ch, NULL, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name );
+            act_printf( AT_ACTION, ch, NULL, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
 
          ch->on_ship->room = toroom->vnum;
 
          leave_map( ch, NULL, toroom );
 
-         list<char_data*>::iterator ich;
-         size_t chars = from_room->people.size();
+         list < char_data * >::iterator ich;
+         size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+         for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
          {
-            char_data *fch = (*ich);
+            char_data *fch = *ich;
             ++ich;
             ++count;
 
@@ -753,7 +681,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
       ship->fuel -= move;
 
    if( !str_cmp( ch->name, ship->owner ) )
-      act_printf( AT_ACTION, ch, NULL, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name );
+      act_printf( AT_ACTION, ch, NULL, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
 
    ch->mx = x;
    ch->my = y;
@@ -762,22 +690,21 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
 
    if( !str_cmp( ch->name, ship->owner ) )
    {
-      char *txt = rev_exit( dir );
-      act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "%s sails in from the %s.", ship->name, txt );
+      const char *txt = rev_exit( dir );
+      act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
    }
 
-   list<char_data*>::iterator ich;
-   size_t chars = from_room->people.size();
+   list < char_data * >::iterator ich;
+   size_t chars = from_room->people.size(  );
    size_t count = 0;
-   for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+   for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
    {
-      char_data *fch = (*ich);
+      char_data *fch = *ich;
       ++ich;
       ++count;
 
       if( fch != ch  /* loop room bug fix here by Thoric */
-          && fch->master == ch
-          && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy )
+          && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy )
       {
          if( !fch->isnpc(  ) )
          {
@@ -885,12 +812,12 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
          if( ch->mount )
             enter_map( ch->mount, pexit, pexit->mx, pexit->my, -1 );
 
-         list<char_data*>::iterator ich;
-         size_t chars = from_room->people.size();
+         list < char_data * >::iterator ich;
+         size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+         for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
          {
-            char_data *fch = (*ich);
+            char_data *fch = *ich;
             ++ich;
             ++count;
 
@@ -915,12 +842,12 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
             if( ch->mount )
                enter_map( ch->mount, pexit, pexit->mx, pexit->my, -1 );
 
-            list<char_data*>::iterator ich;
-            size_t chars = from_room->people.size();
+            list < char_data * >::iterator ich;
+            size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+            for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
             {
-               char_data *fch = (*ich);
+               char_data *fch = *ich;
                ++ich;
                ++count;
 
@@ -962,16 +889,16 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
          switch ( to_room->area->low_hard_range - ch->level )
          {
             case 1:
-               ch->print( "&[tell]A voice in your mind says, 'You are nearly ready to go that way...'" );
+               ch->print( "&[tell]A voice in your mind says, 'You are nearly ready to go that way...'\r\n" );
                break;
             case 2:
-               ch->print( "&[tell]A voice in your mind says, 'Soon you shall be ready to travel down this path... soon.'" );
+               ch->print( "&[tell]A voice in your mind says, 'Soon you shall be ready to travel down this path... soon.'\r\n" );
                break;
             case 3:
-               ch->print( "&[tell]A voice in your mind says, 'You are not ready to go down that path... yet.'.\r\n" );
+               ch->print( "&[tell]A voice in your mind says, 'You are not ready to go down that path... yet.'\r\n" );
                break;
             default:
-               ch->print( "&[tell]A voice in your mind says, 'You are not ready to go down that path.'.\r\n" );
+               ch->print( "&[tell]A voice in your mind says, 'You are not ready to go down that path.'\r\n" );
          }
          check_sneaks( ch );
          return rSTOP;
@@ -990,11 +917,11 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
    if( to_room->tunnel > 0 )
    {
       int count = 0;
-      list<ship_data*>::iterator other;
+      list < ship_data * >::iterator other;
 
-      for( other = shiplist.begin(); other != shiplist.end(); ++other )
+      for( other = shiplist.begin(  ); other != shiplist.end(  ); ++other )
       {
-         ship_data *shp = (*other);
+         ship_data *shp = *other;
 
          if( shp->room == to_room->vnum )
             ++count;
@@ -1024,7 +951,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       return global_retcode;
 
    if( !str_cmp( ch->name, ship->owner ) )
-      act_printf( AT_ACTION, ch, NULL, dir_name[door], TO_ROOM, "%s sails off to the $T.", ship->name );
+      act_printf( AT_ACTION, ch, NULL, dir_name[door], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
 
    ch->from_room(  );
    if( ch->mount )
@@ -1046,16 +973,17 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
 
    if( !str_cmp( ch->name, ship->owner ) )
    {
-      char *txt = rev_exit( door );
-      act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "%s sails in from the %s.", ship->name, txt );
+      const char *txt = rev_exit( door );
+
+      act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
    }
 
-   list<char_data*>::iterator ich;
-   size_t chars = from_room->people.size();
+   list < char_data * >::iterator ich;
+   size_t chars = from_room->people.size(  );
    size_t count = 0;
-   for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+   for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
    {
-      char_data *fch = (*ich);
+      char_data *fch = *ich;
       ++ich;
       ++count;
 

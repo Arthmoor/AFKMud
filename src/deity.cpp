@@ -39,43 +39,39 @@ bool check_pets( char_data *, mob_index * );
 room_index *recall_room( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 
-list<deity_data*> deitylist;
+list < deity_data * >deitylist;
 
-deity_data::deity_data()
+deity_data::deity_data(  )
 {
    init_memory( &race_allowed, &dig_corpse, sizeof( dig_corpse ) );
 }
 
-deity_data::~deity_data()
+deity_data::~deity_data(  )
 {
-   STRFREE( name );
-   DISPOSE( deitydesc );
-   DISPOSE( filename );
    deitylist.remove( this );
 }
 
 void free_deities( void )
 {
-   list<deity_data*>::iterator dt;
+   list < deity_data * >::iterator dt;
 
-   for( dt = deitylist.begin(); dt != deitylist.end(); )
+   for( dt = deitylist.begin(  ); dt != deitylist.end(  ); )
    {
-      deity_data *deity = (*dt);
+      deity_data *deity = *dt;
       ++dt;
 
       deleteptr( deity );
    }
-   return;
 }
 
 /* Get pointer to deity structure from deity name */
-deity_data *get_deity( char *name )
+deity_data *get_deity( const string & name )
 {
-   list<deity_data*>::iterator ideity;
+   list < deity_data * >::iterator ideity;
 
-   for( ideity = deitylist.begin(); ideity != deitylist.end(); ++ideity )
+   for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
    {
-      deity_data *deity = (*ideity);
+      deity_data *deity = *ideity;
 
       if( !str_cmp( name, deity->name ) )
          return deity;
@@ -85,7 +81,7 @@ deity_data *get_deity( char *name )
 
 void write_deity_list( void )
 {
-   list<deity_data*>::iterator ideity;
+   list < deity_data * >::iterator ideity;
    FILE *fpout;
    char filename[256];
 
@@ -95,11 +91,11 @@ void write_deity_list( void )
       bug( "%s: FATAL: cannot open deity.lst for writing!", __FUNCTION__ );
    else
    {
-      for( ideity = deitylist.begin(); ideity != deitylist.end(); ++ideity )
+      for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
       {
-         deity_data *deity = (*ideity);
+         deity_data *deity = *ideity;
 
-         fprintf( fpout, "%s\n", deity->filename );
+         fprintf( fpout, "%s\n", deity->filename.c_str(  ) );
       }
       fprintf( fpout, "%s", "$\n" );
       FCLOSE( fpout );
@@ -122,13 +118,13 @@ void save_deity( deity_data * deity )
       return;
    }
 
-   if( !deity->filename || deity->filename[0] == '\0' )
+   if( deity->filename.empty(  ) )
    {
-      bug( "%s: %s has no filename", __FUNCTION__, deity->name );
+      bug( "%s: %s has no filename", __FUNCTION__, deity->name.c_str(  ) );
       return;
    }
 
-   snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename );
+   snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename.c_str(  ) );
 
    if( !( fp = fopen( filename, "w" ) ) )
    {
@@ -139,9 +135,9 @@ void save_deity( deity_data * deity )
    {
       fprintf( fp, "#VERSION %d\n", DEITY_VERSION );  /* Adjani, 1-31-04 */
       fprintf( fp, "%s", "#DEITY\n" );
-      fprintf( fp, "Filename        %s~\n", deity->filename );
-      fprintf( fp, "Name            %s~\n", deity->name );
-      fprintf( fp, "Description     %s~\n", strip_cr( deity->deitydesc ) );
+      fprintf( fp, "Filename        %s~\n", deity->filename.c_str(  ) );
+      fprintf( fp, "Name            %s~\n", deity->name.c_str(  ) );
+      fprintf( fp, "Description     %s~\n", strip_cr( deity->deitydesc ).c_str(  ) );
       fprintf( fp, "Alignment       %d\n", deity->alignment );
       fprintf( fp, "Worshippers     %d\n", deity->worshippers );
       fprintf( fp, "Flee            %d\n", deity->flee );
@@ -170,16 +166,11 @@ void save_deity( deity_data * deity )
       fprintf( fp, "Sdeityobj2      %d\n", deity->sdeityobj2 );   /* Added by Tarl 02 Mar 02 */
       fprintf( fp, "Srecall         %d\n", deity->srecall );
       fprintf( fp, "Sex             %s~\n", deity->sex < 0 ? "none" : npc_sex[deity->sex] ); /* Adjani, 2-18-04 */
-      fprintf( fp, "Elements        %s %s %s\n",
-         ris_flags[deity->element[0]], ris_flags[deity->element[1]], ris_flags[deity->element[2]] );
-      fprintf( fp, "Affects         %s %s %s\n",
-         aff_flags[deity->affected[0]], aff_flags[deity->affected[1]], aff_flags[deity->affected[2]] );
-      fprintf( fp, "Suscepts        %s %s %s\n",
-         ris_flags[deity->suscept[0]], ris_flags[deity->suscept[1]], ris_flags[deity->suscept[2]] );
-      fprintf( fp, "Classes         %s~\n",
-               deity->class_allowed.none(  )? "all" : bitset_string( deity->class_allowed, npc_class ) );
-      fprintf( fp, "Races           %s~\n",
-               deity->race_allowed.none(  )? "all" : bitset_string( deity->race_allowed, npc_race ) );
+      fprintf( fp, "Elements        %s %s %s\n", ris_flags[deity->element[0]], ris_flags[deity->element[1]], ris_flags[deity->element[2]] );
+      fprintf( fp, "Affects         %s %s %s\n", aff_flags[deity->affected[0]], aff_flags[deity->affected[1]], aff_flags[deity->affected[2]] );
+      fprintf( fp, "Suscepts        %s %s %s\n", ris_flags[deity->suscept[0]], ris_flags[deity->suscept[1]], ris_flags[deity->suscept[2]] );
+      fprintf( fp, "Classes         %s~\n", deity->class_allowed.none(  )? "all" : bitset_string( deity->class_allowed, npc_class ) );
+      fprintf( fp, "Races           %s~\n", deity->race_allowed.none(  )? "all" : bitset_string( deity->race_allowed, npc_race ) );
       fprintf( fp, "Npcrace         %s~\n", deity->npcrace[0] == -1 ? "none" : npc_race[deity->npcrace[0]] );  /* Adjani, 2-18-04 */
       fprintf( fp, "Npcrace2        %s~\n", deity->npcrace[1] == -1 ? "none" : npc_race[deity->npcrace[1]] );
       fprintf( fp, "Npcrace3        %s~\n", deity->npcrace[2] == -1 ? "none" : npc_race[deity->npcrace[2]] );
@@ -202,20 +193,18 @@ void save_deity( deity_data * deity )
       fprintf( fp, "%s", "#END\n" );
       FCLOSE( fp );
    }
-   return;
 }
 
 CMDF( do_savedeities )
 {
-   list<deity_data*>::iterator ideity;
+   list < deity_data * >::iterator ideity;
 
-   for( ideity = deitylist.begin(); ideity != deitylist.end(); ++ideity )
+   for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
    {
-      deity_data *deity = (*ideity);
+      deity_data *deity = *ideity;
 
       save_deity( deity );
    }
-   return;
 }
 
 /* Adjani, versions, with help from the ever-patient Xorith. 1-31-04 */
@@ -245,7 +234,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
          case 'A':
             if( !str_cmp( word, "Affects" ) )
             {
-               char *ln;
+               const char *ln;
                char temp[3][MSL];
                int value;
 
@@ -284,7 +273,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   deity->affected[0] = fread_number( fp );
                else
                {
-                  char *flag = fread_flagstring( fp );
+                  const char *flag = fread_flagstring( fp );
                   int value;
 
                   if( !flag || flag[0] == '\0' )
@@ -305,7 +294,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   deity->affected[1] = fread_number( fp );
                else
                {
-                  char *flag = fread_flagstring( fp );
+                  const char *flag = fread_flagstring( fp );
                   int value;
 
                   if( !flag || flag[0] == '\0' )
@@ -326,7 +315,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   deity->affected[2] = fread_number( fp );
                else
                {
-                  char *flag = fread_flagstring( fp );
+                  const char *flag = fread_flagstring( fp );
                   int value;
 
                   if( !flag || flag[0] == '\0' )
@@ -343,13 +332,13 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
             if( !str_cmp( word, "Affectednums" ) )
             {
                deity->affectednum[0] = fread_number( fp );
-               deity->affectednum[1] = fread_number( fp ); /* Added by Tarl 24 Feb 02 */
-               deity->affectednum[2] = fread_number( fp ); /* Added by Tarl 24 Feb 02 */
+               deity->affectednum[1] = fread_number( fp );  /* Added by Tarl 24 Feb 02 */
+               deity->affectednum[2] = fread_number( fp );  /* Added by Tarl 24 Feb 02 */
                break;
             }
             KEY( "Affectednum", deity->affectednum[0], fread_number( fp ) );
-            KEY( "Affectednum2", deity->affectednum[1], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
-            KEY( "Affectednum3", deity->affectednum[2], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
+            KEY( "Affectednum2", deity->affectednum[1], fread_number( fp ) ); /* Added by Tarl 24 Feb 02 */
+            KEY( "Affectednum3", deity->affectednum[2], fread_number( fp ) ); /* Added by Tarl 24 Feb 02 */
             KEY( "Aid", deity->aid, fread_number( fp ) );
             KEY( "Aid_spell", deity->aid_spell, fread_number( fp ) );
             KEY( "Alignment", deity->alignment, fread_number( fp ) );
@@ -367,20 +356,21 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
              */
             if( !str_cmp( word, "Classes" ) )
             {
+               string Class, flag;
                int value;
-               char flag[MIL];
-               char *Class = fread_flagstring( fp );
+
+               Class = fread_flagstring( fp );
 
                if( !str_cmp( Class, "all" ) )
                   deity->class_allowed.reset(  );
                else
                {
-                  while( Class[0] != '\0' )
+                  while( !Class.empty() )
                   {
                      Class = one_argument( Class, flag );
                      value = get_pc_class( flag );
                      if( value < 0 || value > MAX_CLASS )
-                        bug( "Unknown PC Class: %s", flag );
+                        bug( "Unknown PC Class: %s", flag.c_str() );
                      else
                         deity->class_allowed.set( value );
                   }
@@ -392,7 +382,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
          case 'D':
             KEY( "Deityobj", deity->deityobj, fread_number( fp ) );  /* Restored by Samson */
             KEY( "Deityobj2", deity->deityobj2, fread_number( fp ) );   /* Added by Tarl 02 Mar 02 */
-            KEY( "Description", deity->deitydesc, fread_string_nohash( fp ) );
+            STDSKEY( "Description", deity->deitydesc );
             KEY( "Die", deity->die, fread_number( fp ) );
             if( !str_cmp( word, "Die_npcraces" ) )
             {
@@ -409,10 +399,10 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                break;
             }
             KEY( "Die_npcrace", deity->die_npcrace[0], fread_number( fp ) );
-            KEY( "Die_npcrace2", deity->die_npcrace[1], fread_number( fp ) );   /* Adjani, 1-24-04 */
+            KEY( "Die_npcrace2", deity->die_npcrace[1], fread_number( fp ) ); /* Adjani, 1-24-04 */
             KEY( "Die_npcrace3", deity->die_npcrace[2], fread_number( fp ) );
             KEY( "Die_npcfoe", deity->die_npcfoe[0], fread_number( fp ) );
-            KEY( "Die_npcfoe2", deity->die_npcfoe[1], fread_number( fp ) );  /* Adjani, 1-24-04 */
+            KEY( "Die_npcfoe2", deity->die_npcfoe[1], fread_number( fp ) );   /* Adjani, 1-24-04 */
             KEY( "Die_npcfoe3", deity->die_npcfoe[2], fread_number( fp ) );
             KEY( "Dig_corpse", deity->dig_corpse, fread_number( fp ) );
             break;
@@ -439,13 +429,13 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   deity->npcfoe[1] = 0;
                   deity->npcfoe[2] = 0;
                }
-               log_printf( "Deity: %s loaded", deity->name );
+               log_printf( "Deity: %s loaded", deity->name.c_str(  ) );
                return;
             }
 
             if( !str_cmp( word, "Elements" ) )
             {
-               char *ln;
+               const char *ln;
                char temp[3][MSL];
                int value;
 
@@ -477,7 +467,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Element" ) )
             {
-               char *elem = NULL;
+               const char *elem = NULL;
                int value;
 
                if( filever < 3 )
@@ -509,7 +499,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Element2" ) )  /* Added by Tarl 24 Feb 02 */
             {
-               char *elem = NULL;
+               const char *elem = NULL;
                int value;
 
                if( filever < 3 )
@@ -541,7 +531,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Element3" ) )  /* Added by Tarl 24 Feb 02 */
             {
-               char *elem = NULL;
+               const char *elem = NULL;
                int value;
 
                if( filever < 3 )
@@ -574,17 +564,17 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
             if( !str_cmp( word, "Elementnums" ) )
             {
                deity->elementnum[0] = fread_number( fp );
-               deity->elementnum[1] = fread_number( fp ); /* Added by Tarl 24 Feb 02 */
-               deity->elementnum[2] = fread_number( fp ); /* Added by Tarl 24 Feb 02 */
+               deity->elementnum[1] = fread_number( fp );   /* Added by Tarl 24 Feb 02 */
+               deity->elementnum[2] = fread_number( fp );   /* Added by Tarl 24 Feb 02 */
                break;
             }
             KEY( "Elementnum", deity->elementnum[0], fread_number( fp ) );
-            KEY( "Elementnum2", deity->elementnum[1], fread_number( fp ) );  /* Added by Tarl 24 Feb 02 */
-            KEY( "Elementnum3", deity->elementnum[2], fread_number( fp ) );  /* Added by Tarl 24 Feb 02 */
+            KEY( "Elementnum2", deity->elementnum[1], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
+            KEY( "Elementnum3", deity->elementnum[2], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
             break;
 
          case 'F':
-            KEY( "Filename", deity->filename, fread_string_nohash( fp ) );
+            STDSKEY( "Filename", deity->filename );
             KEY( "Flee", deity->flee, fread_number( fp ) );
             if( !str_cmp( word, "Flee_npcraces" ) )
             {
@@ -601,10 +591,10 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                break;
             }
             KEY( "Flee_npcrace", deity->flee_npcrace[0], fread_number( fp ) );
-            KEY( "Flee_npcrace2", deity->flee_npcrace[1], fread_number( fp ) ); /* Adjani, 1-24-04 */
+            KEY( "Flee_npcrace2", deity->flee_npcrace[1], fread_number( fp ) );  /* Adjani, 1-24-04 */
             KEY( "Flee_npcrace3", deity->flee_npcrace[2], fread_number( fp ) );
             KEY( "Flee_npcfoe", deity->flee_npcfoe[0], fread_number( fp ) );
-            KEY( "Flee_npcfoe2", deity->flee_npcfoe[1], fread_number( fp ) );   /* Adjani, 1-24-04 */
+            KEY( "Flee_npcfoe2", deity->flee_npcfoe[1], fread_number( fp ) ); /* Adjani, 1-24-04 */
             KEY( "Flee_npcfoe3", deity->flee_npcfoe[2], fread_number( fp ) );
             break;
 
@@ -625,10 +615,10 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                break;
             }
             KEY( "Kill_npcrace", deity->kill_npcrace[0], fread_number( fp ) );
-            KEY( "Kill_npcrace2", deity->kill_npcrace[1], fread_number( fp ) ); /* Adjani, 1-24-04 */
+            KEY( "Kill_npcrace2", deity->kill_npcrace[1], fread_number( fp ) );  /* Adjani, 1-24-04 */
             KEY( "Kill_npcrace3", deity->kill_npcrace[2], fread_number( fp ) );
             KEY( "Kill_npcfoe", deity->kill_npcfoe[0], fread_number( fp ) );
-            KEY( "Kill_npcfoe2", deity->kill_npcfoe[1], fread_number( fp ) );   /* Adjani, 1-24-04 */
+            KEY( "Kill_npcfoe2", deity->kill_npcfoe[1], fread_number( fp ) ); /* Adjani, 1-24-04 */
             KEY( "Kill_npcfoe3", deity->kill_npcfoe[2], fread_number( fp ) );
             KEY( "Kill_magic", deity->kill_magic, fread_number( fp ) );
             break;
@@ -639,7 +629,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
             break;
 
          case 'N':
-            KEY( "Name", deity->name, fread_string( fp ) );
+            STDSKEY( "Name", deity->name );
             if( !str_cmp( word, "npcfoe" ) ) /* npcfoe, npcfoe2, npcfoe3, npcrace, npcrace2, npcrace3 - Adjani 1-31-04 */
             {
                int npcfoe;
@@ -651,7 +641,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                if( npcfoe < -1 || npcfoe >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name, word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
                   npcfoe = RACE_HUMAN;
                }
                deity->npcfoe[0] = npcfoe;
@@ -668,7 +658,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   npcfoe2 = get_npc_race( fread_flagstring( fp ) );
                if( npcfoe2 < -1 || npcfoe2 >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name, word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
                   npcfoe2 = RACE_HUMAN;
                }
                deity->npcfoe[1] = npcfoe2;
@@ -685,7 +675,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   npcfoe3 = get_npc_race( fread_flagstring( fp ) );
                if( npcfoe3 < -1 || npcfoe3 >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name, word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
                   npcfoe3 = RACE_HUMAN;
                }
                deity->npcfoe[2] = npcfoe3;
@@ -703,7 +693,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                if( npcrace < -1 || npcrace >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name, word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
                   npcrace = RACE_HUMAN;
                }
                deity->npcrace[0] = npcrace;
@@ -720,7 +710,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   npcrace2 = get_npc_race( fread_flagstring( fp ) );
                if( npcrace2 < -1 || npcrace2 >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name, word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
                   npcrace2 = RACE_HUMAN;
                }
                deity->npcrace[1] = npcrace2;
@@ -737,7 +727,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   npcrace3 = get_npc_race( fread_flagstring( fp ) );
                if( npcrace3 < -1 || npcrace3 >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name, word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
                   npcrace3 = RACE_HUMAN;
                }
                deity->npcrace[2] = npcrace3;
@@ -755,20 +745,21 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
              */
             if( !str_cmp( word, "Races" ) )
             {
+               string race, flag;
                int value;
-               char flag[MIL];
-               char *race = fread_flagstring( fp );
+
+               race = fread_flagstring( fp );
 
                if( !str_cmp( race, "all" ) )
                   deity->race_allowed.reset(  );
                else
                {
-                  while( race[0] != '\0' )
+                  while( !race.empty() )
                   {
                      race = one_argument( race, flag );
                      value = get_pc_race( flag );
                      if( value < 0 || value > MAX_PC_RACE )
-                        bug( "Unknown PC Race: %s", flag );
+                        bug( "Unknown PC Race: %s", flag.c_str() );
                      else
                         deity->race_allowed.set( value );
                   }
@@ -798,7 +789,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   sex = get_npc_sex( fread_flagstring( fp ) );
                   if( sex < -1 || sex >= SEX_MAX )
                   {
-                     bug( "%s: Deity %s has invalid %s! Defaulting to neuter.", __FUNCTION__, deity->name, word );
+                     bug( "%s: Deity %s has invalid %s! Defaulting to neuter.", __FUNCTION__, deity->name.c_str(  ), word );
                      sex = SEX_NEUTRAL;
                   }
                   deity->sex = sex;
@@ -808,9 +799,9 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
             KEY( "Spell_aid", deity->spell_aid, fread_number( fp ) );
             if( !str_cmp( word, "Spells" ) )
             {
-               deity->spell[0] = fread_number( fp ); /* Added by Tarl 24 Mar 02 */
-               deity->spell[1] = fread_number( fp ); /* Added by Tarl 24 Mar 02 */
-               deity->spell[2] = fread_number( fp ); /* Added by Tarl 24 Mar 02 */
+               deity->spell[0] = fread_number( fp );  /* Added by Tarl 24 Mar 02 */
+               deity->spell[1] = fread_number( fp );  /* Added by Tarl 24 Mar 02 */
+               deity->spell[2] = fread_number( fp );  /* Added by Tarl 24 Mar 02 */
                break;
             }
 
@@ -822,16 +813,16 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                break;
             }
 
-            KEY( "Spell1", deity->spell[0], fread_number( fp ) );   /* Added by Tarl 24 Mar 02 */
-            KEY( "Spell2", deity->spell[1], fread_number( fp ) );   /* Added by Tarl 24 Mar 02 */
-            KEY( "Spell3", deity->spell[2], fread_number( fp ) );   /* Added by Tarl 24 Mar 02 */
-            KEY( "Sspell1", deity->sspell[0], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
-            KEY( "Sspell2", deity->sspell[1], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
-            KEY( "Sspell3", deity->sspell[2], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
+            KEY( "Spell1", deity->spell[0], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
+            KEY( "Spell2", deity->spell[1], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
+            KEY( "Spell3", deity->spell[2], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
+            KEY( "Sspell1", deity->sspell[0], fread_number( fp ) );  /* Added by Tarl 24 Mar 02 */
+            KEY( "Sspell2", deity->sspell[1], fread_number( fp ) );  /* Added by Tarl 24 Mar 02 */
+            KEY( "Sspell3", deity->sspell[2], fread_number( fp ) );  /* Added by Tarl 24 Mar 02 */
             KEY( "Steal", deity->steal, fread_number( fp ) );
             if( !str_cmp( word, "Suscepts" ) )
             {
-               char *ln;
+               const char *ln;
                char temp[3][MSL];
                int value;
 
@@ -863,7 +854,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Suscept" ) )
             {
-               char *elem = NULL;
+               const char *elem = NULL;
                int value;
 
                if( filever < 3 )
@@ -895,7 +886,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Suscept2" ) )  /* Added by Tarl 24 Feb 02 */
             {
-               char *elem = NULL;
+               const char *elem = NULL;
                int value;
 
                if( filever < 3 )
@@ -927,7 +918,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Suscept3" ) )  /* Added by Tarl 24 Feb 02 */
             {
-               char *elem = NULL;
+               const char *elem = NULL;
                int value;
 
                if( filever < 3 )
@@ -960,13 +951,13 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
             if( !str_cmp( word, "Susceptnums" ) )
             {
                deity->susceptnum[0] = fread_number( fp );
-               deity->susceptnum[1] = fread_number( fp ); /* Added by Tarl 24 Feb 02 */
-               deity->susceptnum[2] = fread_number( fp ); /* Added by Tarl 24 Feb 02 */
+               deity->susceptnum[1] = fread_number( fp );   /* Added by Tarl 24 Feb 02 */
+               deity->susceptnum[2] = fread_number( fp );   /* Added by Tarl 24 Feb 02 */
                break;
             }
             KEY( "Susceptnum", deity->susceptnum[0], fread_number( fp ) );
-            KEY( "Susceptnum2", deity->susceptnum[1], fread_number( fp ) );  /* Added by Tarl 24 Feb 02 */
-            KEY( "Susceptnum3", deity->susceptnum[2], fread_number( fp ) );  /* Added by Tarl 24 Feb 02 */
+            KEY( "Susceptnum2", deity->susceptnum[1], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
+            KEY( "Susceptnum3", deity->susceptnum[2], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
             break;
 
          case 'W':
@@ -1046,7 +1037,7 @@ void load_deity( void )
    const char *filename;
    char deitylistfile[256];
 
-   deitylist.clear();
+   deitylist.clear(  );
 
    log_string( "Loading deities..." );
 
@@ -1074,12 +1065,11 @@ void load_deity( void )
    }
    FCLOSE( fpList );
    log_string( "Done deities" );
-   return;
 }
 
 CMDF( do_setdeity )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    deity_data *deity;
    int value;
 
@@ -1100,8 +1090,7 @@ CMDF( do_setdeity )
 
       case SUB_DEITYDESC:
          deity = ( deity_data * ) ch->pcdata->dest_buf;
-         DISPOSE( deity->deitydesc );
-         deity->deitydesc = ch->copy_buffer( false );
+         deity->deitydesc = ch->copy_buffer(  );
          ch->stop_editing(  );
          save_deity( deity );
          ch->substate = ch->tempnum;
@@ -1117,7 +1106,7 @@ CMDF( do_setdeity )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Usage: setdeity <deity> <field> <toggle>\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
@@ -1152,12 +1141,37 @@ CMDF( do_setdeity )
    {
       char filename[256];
 
-      snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename );
+      list < char_data * >::iterator ich;
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+      {
+         char_data *vch = *ich;
+
+         if( vch->pcdata->deity == deity )
+         {
+            vch->printf( "&RYour deity, %s, has met its demise!\r\n", vch->pcdata->deity_name.c_str(  ) );
+
+            vch->unset_aflag( ch->pcdata->deity->affected[0] );
+            vch->unset_aflag( ch->pcdata->deity->affected[1] );
+            vch->unset_aflag( ch->pcdata->deity->affected[2] );
+            vch->unset_resist( ch->pcdata->deity->element[0] );
+            vch->unset_resist( ch->pcdata->deity->element[1] );
+            vch->unset_resist( ch->pcdata->deity->element[2] );
+            vch->unset_suscep( ch->pcdata->deity->suscept[0] );
+            vch->unset_suscep( ch->pcdata->deity->suscept[1] );
+            vch->unset_suscep( ch->pcdata->deity->suscept[2] );
+            vch->pcdata->deity = NULL;
+            vch->pcdata->deity_name.clear(  );
+            vch->update_aris(  );
+            vch->save(  );
+         }
+      }
+
+      snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename.c_str(  ) );
       deleteptr( deity );
-      ch->printf( "&YDeity information for %s deleted.\r\n", arg1 );
+      ch->printf( "&YDeity information for %s deleted.\r\n", arg1.c_str(  ) );
 
       if( !remove( filename ) )
-         ch->printf( "&RDeity file for %s destroyed.\r\n", arg1 );
+         ch->printf( "&RDeity file for %s destroyed.\r\n", arg1.c_str(  ) );
 
       write_deity_list(  );
       return;
@@ -1167,7 +1181,7 @@ CMDF( do_setdeity )
    {
       deity_data *udeity;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "You can't set a deity's name to nothing.\r\n" );
          return;
@@ -1177,8 +1191,7 @@ CMDF( do_setdeity )
          ch->print( "There is already another deity with that name.\r\n" );
          return;
       }
-      STRFREE( deity->name );
-      deity->name = STRALLOC( argument );
+      deity->name = argument;
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1186,7 +1199,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "avatar" ) )
    {
-      deity->avatar = atoi( argument );
+      deity->avatar = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1197,7 +1210,7 @@ CMDF( do_setdeity )
     */
    if( !str_cmp( arg2, "mount" ) )
    {
-      deity->mount = atoi( argument );
+      deity->mount = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1208,7 +1221,7 @@ CMDF( do_setdeity )
     */
    if( !str_cmp( arg2, "minion" ) )
    {
-      deity->minion = atoi( argument );
+      deity->minion = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1216,7 +1229,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "object" ) )
    {
-      deity->deityobj = atoi( argument );
+      deity->deityobj = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1224,7 +1237,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "object2" ) )
    {
-      deity->deityobj2 = atoi( argument );
+      deity->deityobj2 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1232,7 +1245,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "recallroom" ) )
    {
-      deity->recallroom = atoi( argument );
+      deity->recallroom = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1245,14 +1258,13 @@ CMDF( do_setdeity )
       if( !is_valid_filename( ch, DEITY_DIR, argument ) )
          return;
 
-      snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename );
+      snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename.c_str(  ) );
       if( !remove( filename ) )
          ch->print( "Old deity file deleted.\r\n" );
-      DISPOSE( deity->filename );
-      deity->filename = str_dup( argument );
+      deity->filename = argument;
       ch->print( "Done.\r\n" );
       save_deity( deity );
-      write_deity_list( );
+      write_deity_list(  );
       return;
    }
 
@@ -1264,16 +1276,14 @@ CMDF( do_setdeity )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_DEITYDESC;
       ch->pcdata->dest_buf = deity;
-      if( !deity->deitydesc || deity->deitydesc[0] == '\0' )
-         deity->deitydesc = str_dup( "" );
-      ch->editor_desc_printf( "Deity description for deity '%s'.", deity->name );
+      ch->editor_desc_printf( "Deity description for deity '%s'.", deity->name.c_str(  ) );
       ch->start_editing( deity->deitydesc );
       return;
    }
 
    if( !str_cmp( arg2, "alignment" ) )
    {
-      deity->alignment = atoi( argument );
+      deity->alignment = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1281,7 +1291,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "flee" ) )
    {
-      deity->flee = atoi( argument );
+      deity->flee = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1289,7 +1299,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "flee_npcrace" ) )
    {
-      deity->flee_npcrace[0] = atoi( argument );
+      deity->flee_npcrace[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1297,7 +1307,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "flee_npcrace2" ) )   /* flee_npcrace2, flee_npcrace3, flee_npcfoe2, flee_npcfoe3 - Adjani, 1-27-04 */
    {
-      deity->flee_npcrace[1] = atoi( argument );
+      deity->flee_npcrace[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1305,7 +1315,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "flee_npcrace3" ) )
    {
-      deity->flee_npcrace[2] = atoi( argument );
+      deity->flee_npcrace[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1313,7 +1323,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "flee_npcfoe" ) )
    {
-      deity->flee_npcfoe[0] = atoi( argument );
+      deity->flee_npcfoe[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1321,7 +1331,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "flee_npcfoe2" ) )
    {
-      deity->flee_npcfoe[1] = atoi( argument );
+      deity->flee_npcfoe[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1329,7 +1339,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "flee_npcfoe3" ) )
    {
-      deity->flee_npcfoe[2] = atoi( argument );
+      deity->flee_npcfoe[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1337,7 +1347,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "kill" ) )
    {
-      deity->kill = atoi( argument );
+      deity->kill = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1345,7 +1355,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "kill_npcrace" ) )
    {
-      deity->kill_npcrace[0] = atoi( argument );
+      deity->kill_npcrace[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1353,14 +1363,14 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "kill_npcrace2" ) )   /* kill_npcrace2, kill_npcrace3, kill_npcfoe2, kill_npcfoe3 - Adjani, 1-24-04 */
    {
-      deity->kill_npcrace[1] = atoi( argument );
+      deity->kill_npcrace[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
    }
    if( !str_cmp( arg2, "kill_npcrace3" ) )
    {
-      deity->kill_npcrace[2]= atoi( argument );
+      deity->kill_npcrace[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1368,7 +1378,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "kill_npcfoe" ) )
    {
-      deity->kill_npcfoe[0] = atoi( argument );
+      deity->kill_npcfoe[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1376,7 +1386,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "kill_npcfoe2" ) )
    {
-      deity->kill_npcfoe[1] = atoi( argument );
+      deity->kill_npcfoe[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1384,7 +1394,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "kill_npcfoe3" ) )
    {
-      deity->kill_npcfoe[2] = atoi( argument );
+      deity->kill_npcfoe[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1392,7 +1402,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "kill_magic" ) )
    {
-      deity->kill_magic = atoi( argument );
+      deity->kill_magic = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1400,7 +1410,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "sac" ) )
    {
-      deity->sac = atoi( argument );
+      deity->sac = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1408,7 +1418,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "bury_corpse" ) )
    {
-      deity->bury_corpse = atoi( argument );
+      deity->bury_corpse = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1416,7 +1426,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "aid_spell" ) )
    {
-      deity->aid_spell = atoi( argument );
+      deity->aid_spell = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1424,7 +1434,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "aid" ) )
    {
-      deity->aid = atoi( argument );
+      deity->aid = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1432,7 +1442,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "steal" ) )
    {
-      deity->steal = atoi( argument );
+      deity->steal = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1440,7 +1450,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "backstab" ) )
    {
-      deity->backstab = atoi( argument );
+      deity->backstab = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1448,7 +1458,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "die" ) )
    {
-      deity->die = atoi( argument );
+      deity->die = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1456,7 +1466,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "die_npcrace" ) )
    {
-      deity->die_npcrace[0] = atoi( argument );
+      deity->die_npcrace[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1464,7 +1474,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "die_npcrace2" ) ) /* die_npcrace2, die_npcrace3, die_npcfoe2, die_npcfoe3 - Adjani, 1-24-04 */
    {
-      deity->die_npcrace[1] = atoi( argument );
+      deity->die_npcrace[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1472,7 +1482,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "die_npcrace3" ) )
    {
-      deity->die_npcrace[2] = atoi( argument );
+      deity->die_npcrace[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1480,7 +1490,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "die_npcfoe" ) )
    {
-      deity->die_npcfoe[0] = atoi( argument );
+      deity->die_npcfoe[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1488,7 +1498,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "die_npcfoe2" ) )
    {
-      deity->die_npcfoe[1] = atoi( argument );
+      deity->die_npcfoe[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1496,7 +1506,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "die_npcfoe3" ) )
    {
-      deity->die_npcfoe[2] = atoi( argument );
+      deity->die_npcfoe[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1504,7 +1514,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "spell_aid" ) )
    {
-      deity->spell_aid = atoi( argument );
+      deity->spell_aid = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1512,7 +1522,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "dig_corpse" ) )
    {
-      deity->dig_corpse = atoi( argument );
+      deity->dig_corpse = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1520,7 +1530,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "scorpse" ) )
    {
-      deity->scorpse = atoi( argument );
+      deity->scorpse = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1528,7 +1538,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "savatar" ) )
    {
-      deity->savatar = atoi( argument );
+      deity->savatar = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1539,7 +1549,7 @@ CMDF( do_setdeity )
     */
    if( !str_cmp( arg2, "smount" ) )
    {
-      deity->smount = atoi( argument );
+      deity->smount = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1550,7 +1560,7 @@ CMDF( do_setdeity )
     */
    if( !str_cmp( arg2, "sminion" ) )
    {
-      deity->sminion = atoi( argument );
+      deity->sminion = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1558,7 +1568,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "sdeityobj" ) )
    {
-      deity->sdeityobj = atoi( argument );
+      deity->sdeityobj = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1569,7 +1579,7 @@ CMDF( do_setdeity )
     */
    if( !str_cmp( arg2, "sdeityobj2" ) )
    {
-      deity->sdeityobj2 = atoi( argument );
+      deity->sdeityobj2 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1577,7 +1587,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "objstat" ) )
    {
-      deity->objstat = atoi( argument );
+      deity->objstat = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1585,7 +1595,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "srecall" ) )
    {
-      deity->srecall = atoi( argument );
+      deity->srecall = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1593,7 +1603,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "worshippers" ) )
    {
-      deity->worshippers = atoi( argument );
+      deity->worshippers = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1638,7 +1648,7 @@ CMDF( do_setdeity )
       {
          value = get_npc_race( arg3 );
          if( value < 0 || value > MAX_NPC_RACE )
-            ch->printf( "Unknown npcrace: %s\r\n", arg3 );
+            ch->printf( "Unknown npcrace: %s\r\n", arg3.c_str(  ) );
          else
          {
             deity->npcrace[0] = value;
@@ -1665,7 +1675,7 @@ CMDF( do_setdeity )
       {
          value = get_npc_race( arg3 );
          if( value < 0 || value > MAX_NPC_RACE )
-            ch->printf( "Unknown npcrace2: %s\r\n", arg3 );
+            ch->printf( "Unknown npcrace2: %s\r\n", arg3.c_str(  ) );
          else
          {
             deity->npcrace[1] = value;
@@ -1692,7 +1702,7 @@ CMDF( do_setdeity )
       {
          value = get_npc_race( arg3 );
          if( value < 0 || value > MAX_NPC_RACE )
-            ch->printf( "Unknown npcrace3: %s\r\n", arg3 );
+            ch->printf( "Unknown npcrace3: %s\r\n", arg3.c_str(  ) );
          else
          {
             deity->npcrace[2] = value;
@@ -1719,7 +1729,7 @@ CMDF( do_setdeity )
       {
          value = get_npc_race( arg3 );
          if( value < 0 || value > MAX_NPC_RACE )
-            ch->printf( "Unknown npcfoe: %s\r\n", arg3 );
+            ch->printf( "Unknown npcfoe: %s\r\n", arg3.c_str(  ) );
          else
          {
             deity->npcfoe[0] = value;
@@ -1746,7 +1756,7 @@ CMDF( do_setdeity )
       {
          value = get_npc_race( arg3 );
          if( value < 0 || value > MAX_NPC_RACE )
-            ch->printf( "Unknown npcfoe2: %s\r\n", arg3 );
+            ch->printf( "Unknown npcfoe2: %s\r\n", arg3.c_str(  ) );
          else
          {
             deity->npcfoe[1] = value;
@@ -1773,7 +1783,7 @@ CMDF( do_setdeity )
       {
          value = get_npc_race( arg3 );
          if( value < 0 || value > MAX_NPC_RACE )
-            ch->printf( "Unknown npcfoe3: %s\r\n", arg3 );
+            ch->printf( "Unknown npcfoe3: %s\r\n", arg3.c_str(  ) );
          else
          {
             deity->npcfoe[2] = value;
@@ -1816,7 +1826,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "susceptnum" ) )
    {
-      deity->susceptnum[0] = atoi( argument );
+      deity->susceptnum[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1824,7 +1834,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "susceptnum2" ) )  /* Added by Tarl 24 Feb 02 */
    {
-      deity->susceptnum[1] = atoi( argument );
+      deity->susceptnum[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1832,14 +1842,14 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "susceptnum3" ) )  /* Added by Tarl 24 Feb 02 */
    {
-      deity->susceptnum[2] = atoi( argument );
+      deity->susceptnum[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
    }
    if( !str_cmp( arg2, "elementnum" ) )
    {
-      deity->elementnum[0] = atoi( argument );
+      deity->elementnum[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1847,7 +1857,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "elementnum2" ) )  /* Added by Tarl 24 Feb 02 */
    {
-      deity->elementnum[1] = atoi( argument );
+      deity->elementnum[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1855,7 +1865,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "elementnum3" ) )  /* Added by Tarl 24 Feb 02 */
    {
-      deity->elementnum[2] = atoi( argument );
+      deity->elementnum[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1863,7 +1873,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "affectednum" ) )
    {
-      deity->affectednum[0] = atoi( argument );
+      deity->affectednum[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1871,7 +1881,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "affectednum2" ) ) /* Added by Tarl 24 Feb 02 */
    {
-      deity->affectednum[1] = atoi( argument );
+      deity->affectednum[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1879,7 +1889,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "affectednum3" ) ) /* Added by Tarl 24 Feb 02 */
    {
-      deity->affectednum[2] = atoi( argument );
+      deity->affectednum[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1926,7 +1936,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "Sspell1" ) )   /* Added by Tarl 24 Mar 02 */
    {
-      deity->sspell[0] = atoi( argument );
+      deity->sspell[0] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1934,7 +1944,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "Sspell2" ) )   /* Added by Tarl 24 Mar 02 */
    {
-      deity->sspell[1] = atoi( argument );
+      deity->sspell[1] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1942,7 +1952,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "Sspell3" ) )   /* Added by Tarl 24 Mar 02 */
    {
-      deity->sspell[2] = atoi( argument );
+      deity->sspell[2] = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_deity( deity );
       return;
@@ -1956,7 +1966,7 @@ CMDF( do_setdeity )
 
       value = get_risflag( arg3 );
       if( value < 0 || value >= MAX_RIS_FLAG )
-         ch->printf( "Unknown flag: %s\r\n", arg3 );
+         ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
       else
       {
          deity->suscept[0] = value;
@@ -1978,7 +1988,7 @@ CMDF( do_setdeity )
 
       value = get_risflag( arg3 );
       if( value < 0 || value >= MAX_RIS_FLAG )
-         ch->printf( "Unknown flag: %s\r\n", arg3 );
+         ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
       else
       {
          deity->suscept[1] = value;
@@ -2000,7 +2010,7 @@ CMDF( do_setdeity )
 
       value = get_risflag( arg3 );
       if( value < 0 || value >= MAX_RIS_FLAG )
-         ch->printf( "Unknown flag: %s\r\n", arg3 );
+         ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
       else
       {
          deity->suscept[2] = value;
@@ -2022,7 +2032,7 @@ CMDF( do_setdeity )
 
       value = get_risflag( arg3 );
       if( value < 0 || value >= MAX_RIS_FLAG )
-         ch->printf( "Unknown flag: %s\r\n", arg3 );
+         ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
       else
       {
          deity->element[0] = value;
@@ -2044,7 +2054,7 @@ CMDF( do_setdeity )
 
       value = get_risflag( arg3 );
       if( value < 0 || value >= MAX_RIS_FLAG )
-         ch->printf( "Unknown flag: %s\r\n", arg3 );
+         ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
       else
       {
          deity->element[1] = value;
@@ -2066,7 +2076,7 @@ CMDF( do_setdeity )
 
       value = get_risflag( arg3 );
       if( value < 0 || value >= MAX_RIS_FLAG )
-         ch->printf( "Unknown flag: %s\r\n", arg3 );
+         ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
       else
       {
          deity->element[2] = value;
@@ -2080,7 +2090,7 @@ CMDF( do_setdeity )
       return;
    }
 
-   if( !str_cmp( arg2, "sex" ) ) /* Adjani, 2-18-04 */
+   if( !str_cmp( arg2, "sex" ) || !str_cmp( arg2, "gender" ) ) /* Adjani, 2-18-04 */
    {
       bool fMatch = false;
 
@@ -2094,7 +2104,7 @@ CMDF( do_setdeity )
       {
          value = get_npc_sex( arg3 );
          if( value < 0 || value > SEX_MAX )
-            ch->printf( "Unknown sex: %s\r\n", arg3 );
+            ch->printf( "Unknown gender: %s\r\n", arg3.c_str(  ) );
          else
          {
             deity->sex = value;
@@ -2111,12 +2121,12 @@ CMDF( do_setdeity )
    {
       value = get_aflag( argument );
       if( value < 0 || value >= MAX_AFFECTED_BY )
-         ch->printf( "Unknown flag: %s\r\n", argument );
+         ch->printf( "Unknown flag: %s\r\n", argument.c_str(  ) );
       else
       {
          deity->affected[0] = value;
          save_deity( deity );
-         ch->printf( "Affected '%s' set.\r\n", argument );
+         ch->printf( "Affected '%s' set.\r\n", argument.c_str(  ) );
       }
       return;
    }
@@ -2125,12 +2135,12 @@ CMDF( do_setdeity )
    {
       value = get_aflag( argument );
       if( value < 0 || value >= MAX_AFFECTED_BY )
-         ch->printf( "Unknown flag: %s\r\n", argument );
+         ch->printf( "Unknown flag: %s\r\n", argument.c_str(  ) );
       else
       {
          deity->affected[1] = value;
          save_deity( deity );
-         ch->printf( "Affected2 '%s' set.\r\n", argument );
+         ch->printf( "Affected2 '%s' set.\r\n", argument.c_str(  ) );
       }
       return;
    }
@@ -2139,12 +2149,12 @@ CMDF( do_setdeity )
    {
       value = get_aflag( argument );
       if( value < 0 || value >= MAX_AFFECTED_BY )
-         ch->printf( "Unknown flag: %s\r\n", argument );
+         ch->printf( "Unknown flag: %s\r\n", argument.c_str(  ) );
       else
       {
          deity->affected[2] = value;
          save_deity( deity );
-         ch->printf( "Affected3 '%s' set.\r\n", argument );
+         ch->printf( "Affected3 '%s' set.\r\n", argument.c_str(  ) );
       }
       return;
    }
@@ -2160,7 +2170,7 @@ CMDF( do_showdeity )
       ch->print( "Huh?\r\n" );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: showdeity <deity>\r\n" );
       return;
@@ -2170,14 +2180,11 @@ CMDF( do_showdeity )
       ch->print( "No such deity.\r\n" );
       return;
    }
-   ch->printf( "\r\nDeity: %-11s Filename: %s \r\n", deity->name, deity->filename );
-   ch->printf( "Description:\r\n %s \r\n", deity->deitydesc );
-   ch->printf( "Alignment:       %-14d  Sex:   %-14s \r\n", deity->alignment,
-               deity->sex == -1 ? "none" : npc_sex[deity->sex] );
-   ch->printf( "Races Allowed:   %s\r\n",
-               deity->race_allowed.none(  )? "All" : bitset_string( deity->race_allowed, npc_race ) );
-   ch->printf( "Classes Allowed: %s\r\n",
-               deity->class_allowed.none(  )? "All" : bitset_string( deity->class_allowed, npc_class ) );
+   ch->printf( "\r\nDeity: %-11s Filename: %s \r\n", deity->name.c_str(  ), deity->filename.c_str(  ) );
+   ch->printf( "Description:\r\n %s \r\n", deity->deitydesc.c_str(  ) );
+   ch->printf( "Alignment:       %-14d  Sex:   %-14s \r\n", deity->alignment, deity->sex == -1 ? "none" : npc_sex[deity->sex] );
+   ch->printf( "Races Allowed:   %s\r\n", deity->race_allowed.none(  )? "All" : bitset_string( deity->race_allowed, npc_race ) );
+   ch->printf( "Classes Allowed: %s\r\n", deity->class_allowed.none(  )? "All" : bitset_string( deity->class_allowed, npc_class ) );
 
    ch->printf( "Npcraces:        %-14s", ( deity->npcrace[0] < 0 || deity->npcrace[0] > MAX_NPC_RACE ) ? "none" : npc_race[deity->npcrace[0]] );
    ch->printf( "  %-14s", ( deity->npcrace[1] < 0 || deity->npcrace[1] > MAX_NPC_RACE ) ? "none" : npc_race[deity->npcrace[1]] );
@@ -2199,8 +2206,7 @@ CMDF( do_showdeity )
    ch->printf( "  %-14s", ris_flags[deity->suscept[1]] );
    ch->printf( "  %-14s\r\n", ris_flags[deity->suscept[2]] );
 
-   ch->printf( "Spells:        %-14s  %-14s  %-14s\r\n\r\n", skill_table[deity->spell[0]]->name,
-               skill_table[deity->spell[1]]->name, skill_table[deity->spell[2]]->name );
+   ch->printf( "Spells:        %-14s  %-14s  %-14s\r\n\r\n", skill_table[deity->spell[0]]->name, skill_table[deity->spell[1]]->name, skill_table[deity->spell[2]]->name );
    ch->printf( "Affectednums:  %-5d %-5d %-7d ", deity->affectednum[0], deity->affectednum[1], deity->affectednum[2] );
    ch->printf( "Elementnums:   %-5d %-5d %-5d\r\n", deity->elementnum[0], deity->elementnum[1], deity->elementnum[2] );
    ch->printf( "Susceptnums:   %-5d %-5d %-7d ", deity->susceptnum[0], deity->susceptnum[1], deity->susceptnum[2] );
@@ -2211,29 +2217,22 @@ CMDF( do_showdeity )
    ch->printf( "Kill_npcfoes:  %-5d %-5d %-5d \r\n", deity->kill_npcfoe[0], deity->kill_npcfoe[1], deity->kill_npcfoe[2] );
    ch->printf( "Die_npcraces:  %-5d %-5d %-7d ", deity->die_npcrace[0], deity->die_npcrace[1], deity->die_npcrace[2] );
    ch->printf( "Die_npcfoes:   %-5d %-5d %-5d \r\n\r\n", deity->die_npcfoe[0], deity->die_npcfoe[1], deity->die_npcfoe[2] );
-   ch->printf( "Kill_magic: %-10d Sac:        %-10d Bury_corpse: %-10d \r\n", deity->kill_magic, deity->sac,
-               deity->bury_corpse );
+   ch->printf( "Kill_magic: %-10d Sac:        %-10d Bury_corpse: %-10d \r\n", deity->kill_magic, deity->sac, deity->bury_corpse );
    ch->printf( "Dig_corpse: %-10d Flee:       %-10d Kill:        %-10d \r\n", deity->flee, deity->kill, deity->dig_corpse );
    ch->printf( "Die:        %-10d Steal:      %-10d Backstab:    %-10d \r\n", deity->die, deity->steal, deity->backstab );
-   ch->printf( "Aid:        %-10d Aid_spell:  %-10d Spell_aid:   %-10d \r\n", deity->aid, deity->aid_spell,
-               deity->spell_aid );
-   ch->printf( "Object:     %-10d Object2:    %-10d Avatar:      %-10d \r\n", deity->deityobj, deity->deityobj2,
-               deity->avatar );
+   ch->printf( "Aid:        %-10d Aid_spell:  %-10d Spell_aid:   %-10d \r\n", deity->aid, deity->aid_spell, deity->spell_aid );
+   ch->printf( "Object:     %-10d Object2:    %-10d Avatar:      %-10d \r\n", deity->deityobj, deity->deityobj2, deity->avatar );
    ch->printf( "Mount:      %-10d Minion:     %-10d Scorpse:     %-10d \r\n", deity->mount, deity->minion, deity->scorpse );
-   ch->printf( "Savatar:    %-10d Smount:     %-10d Sminion:     %-10d \r\n", deity->savatar, deity->smount,
-               deity->sminion );
-   ch->printf( "Sdeityobj:  %-10d Sdeityobj2: %-10d Srecall:     %-10d \r\n", deity->sdeityobj, deity->sdeityobj,
-               deity->srecall );
-   ch->printf( "Recallroom: %-10d Objstat:    %-10d Worshippers: %-10d \r\n", deity->recallroom, deity->objstat,
-               deity->worshippers );
-   return;
+   ch->printf( "Savatar:    %-10d Smount:     %-10d Sminion:     %-10d \r\n", deity->savatar, deity->smount, deity->sminion );
+   ch->printf( "Sdeityobj:  %-10d Sdeityobj2: %-10d Srecall:     %-10d \r\n", deity->sdeityobj, deity->sdeityobj, deity->srecall );
+   ch->printf( "Recallroom: %-10d Objstat:    %-10d Worshippers: %-10d \r\n", deity->recallroom, deity->objstat, deity->worshippers );
 }
 
 CMDF( do_makedeity )
 {
    deity_data *deity;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: makedeity <deity name>\r\n" );
       return;
@@ -2249,12 +2248,12 @@ CMDF( do_makedeity )
 
    deity = new deity_data;
    deitylist.push_back( deity );
-   deity->name = STRALLOC( argument );
-   deity->filename = str_dup( strlower( argument ) );
-   write_deity_list( );
+   deity->name = argument;
+   strlower( argument );
+   deity->filename = argument;
+   write_deity_list(  );
    save_deity( deity );
-   ch->printf( "%s deity has been created\r\n", argument );
-   return;
+   ch->printf( "%s deity has been created\r\n", argument.c_str(  ) );
 }
 
 CMDF( do_devote )
@@ -2267,7 +2266,7 @@ CMDF( do_devote )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Devote yourself to which deity?\r\n" );
       return;
@@ -2307,7 +2306,7 @@ CMDF( do_devote )
       save_deity( ch->pcdata->deity );
       ch->print( "You cease to worship any deity.\r\n" );
       ch->pcdata->deity = NULL;
-      STRFREE( ch->pcdata->deity_name );
+      ch->pcdata->deity_name.clear(  );
       ch->save(  );
       return;
    }
@@ -2332,13 +2331,13 @@ CMDF( do_devote )
     */
    if( deity->class_allowed.any(  ) && !deity->class_allowed.test( ch->Class ) )
    {
-      ch->printf( "%s does not accept worshippers of class %s.\r\n", deity->name, class_table[ch->Class]->who_name );
+      ch->printf( "%s does not accept worshippers of class %s.\r\n", deity->name.c_str(  ), class_table[ch->Class]->who_name );
       return;
    }
 
    if( deity->sex != -1 && deity->sex != ch->sex )
    {
-      ch->printf( "%s does not accept %s worshippers.\r\n", deity->name, npc_sex[ch->sex] );
+      ch->printf( "%s does not accept %s worshippers.\r\n", deity->name.c_str(  ), npc_sex[ch->sex] );
       return;
    }
 
@@ -2350,19 +2349,17 @@ CMDF( do_devote )
     */
    if( deity->race_allowed.any(  ) && !deity->race_allowed.test( ch->race ) )
    {
-      ch->printf( "%s does not accept worshippers of the %s race.\r\n", deity->name, race_table[ch->race]->race_name );
+      ch->printf( "%s does not accept worshippers of the %s race.\r\n", deity->name.c_str(  ), race_table[ch->race]->race_name );
       return;
    }
 
-   STRFREE( ch->pcdata->deity_name );
-   ch->pcdata->deity_name = QUICKLINK( deity->name );
+   ch->pcdata->deity_name = deity->name;
    ch->pcdata->deity = deity;
 
-   act( AT_MAGIC, "Body and soul, you devote yourself to $t!", ch, ch->pcdata->deity_name, NULL, TO_CHAR );
+   act( AT_MAGIC, "Body and soul, you devote yourself to $t!", ch, ch->pcdata->deity_name.c_str(  ), NULL, TO_CHAR );
    ++ch->pcdata->deity->worshippers;
    save_deity( ch->pcdata->deity );
    ch->save(  );
-   return;
 }
 
 CMDF( do_deities )
@@ -2370,17 +2367,17 @@ CMDF( do_deities )
    deity_data *deity;
    int count = 0;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<deity_data*>::iterator dt;
+      list < deity_data * >::iterator dt;
 
       ch->pager( "&gFor detailed information on a deity, try 'deities <deity>' or 'help deities'\r\n" );
       ch->pager( "Deity           Worshippers\r\n" );
-      for( dt = deitylist.begin(); dt != deitylist.end(); ++dt )
+      for( dt = deitylist.begin(  ); dt != deitylist.end(  ); ++dt )
       {
-         deity = (*dt);
+         deity = *dt;
 
-         ch->pagerf( "&G%-14s   &g%19d\r\n", deity->name, deity->worshippers );
+         ch->pagerf( "&G%-14s   &g%19d\r\n", deity->name.c_str(  ), deity->worshippers );
          ++count;
       }
       if( !count )
@@ -2397,9 +2394,8 @@ CMDF( do_deities )
       return;
    }
 
-   ch->pagerf( "&gDeity:        &G%s\r\n", deity->name );
-   ch->pagerf( "&gDescription:\r\n&G%s", deity->deitydesc );
-   return;
+   ch->pagerf( "&gDeity:        &G%s\r\n", deity->name.c_str(  ) );
+   ch->pagerf( "&gDescription:\r\n&G%s", deity->deitydesc.c_str(  ) );
 }
 
 /*
@@ -2421,8 +2417,7 @@ void char_data::adjust_favor( int field, int mod )
 
    oldfavor = pcdata->favor;
 
-   if( ( alignment - pcdata->deity->alignment > 650
-         || alignment - pcdata->deity->alignment < -650 ) && pcdata->deity->alignment != 0 )
+   if( ( alignment - pcdata->deity->alignment > 650 || alignment - pcdata->deity->alignment < -650 ) && pcdata->deity->alignment != 0 )
    {
       pcdata->favor -= 2;
       pcdata->favor = URANGE( -2500, pcdata->favor, 5000 );
@@ -2431,8 +2426,7 @@ void char_data::adjust_favor( int field, int mod )
       {
          if( pcdata->deity->affected[0] > 0 && !affected_by.test( pcdata->deity->affected[0] ) )
          {
-            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n",
-                    pcdata->deity_name, aff_flags[pcdata->deity->affected[0]] );
+            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[0]] );
             affected_by.set( pcdata->deity->affected[0] );
          }
       }
@@ -2440,8 +2434,7 @@ void char_data::adjust_favor( int field, int mod )
       {
          if( pcdata->deity->affected[1] > 0 && !affected_by.test( pcdata->deity->affected[1] ) )
          {
-            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n",
-                    pcdata->deity_name, aff_flags[pcdata->deity->affected[1]] );
+            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[1]] );
             affected_by.set( pcdata->deity->affected[1] );
          }
       }
@@ -2449,8 +2442,7 @@ void char_data::adjust_favor( int field, int mod )
       {
          if( pcdata->deity->affected[2] > 0 && !affected_by.test( pcdata->deity->affected[2] ) )
          {
-            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n",
-                    pcdata->deity_name, aff_flags[pcdata->deity->affected[2]] );
+            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[2]] );
             affected_by.set( pcdata->deity->affected[2] );
          }
       }
@@ -2459,8 +2451,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->element[0] != 0 && !has_resist( pcdata->deity->element[0] ) )
          {
             set_resist( pcdata->deity->element[0] );
-            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n",
-                    pcdata->deity_name, ris_flags[pcdata->deity->element[0]] );
+            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[0]] );
          }
       }
       if( pcdata->favor > pcdata->deity->elementnum[1] )
@@ -2468,8 +2459,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->element[1] != 0 && !has_resist( pcdata->deity->element[1] ) )
          {
             set_resist( pcdata->deity->element[1] );
-            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n",
-                    pcdata->deity_name, ris_flags[pcdata->deity->element[1]] );
+            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[1]] );
          }
       }
       if( pcdata->favor > pcdata->deity->elementnum[2] )
@@ -2477,8 +2467,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->element[2] != 0 && !has_resist( pcdata->deity->element[2] ) )
          {
             set_resist( pcdata->deity->element[2] );
-            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n",
-                    pcdata->deity_name, ris_flags[pcdata->deity->element[2]] );
+            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[2]] );
          }
       }
       if( pcdata->favor < pcdata->deity->susceptnum[0] )
@@ -2486,8 +2475,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->suscept[0] != 0 && !has_suscep( pcdata->deity->suscept[0] ) )
          {
             set_suscep( pcdata->deity->suscept[0] );
-            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n",
-                    pcdata->deity_name, ris_flags[pcdata->deity->suscept[0]] );
+            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[0]] );
          }
       }
       if( pcdata->favor < pcdata->deity->susceptnum[1] )
@@ -2495,8 +2483,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->suscept[1] != 0 && !has_suscep( pcdata->deity->suscept[1] ) )
          {
             set_suscep( pcdata->deity->suscept[1] );
-            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n",
-                    pcdata->deity_name, ris_flags[pcdata->deity->suscept[1]] );
+            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[1]] );
          }
       }
       if( pcdata->favor < pcdata->deity->susceptnum[2] )
@@ -2504,8 +2491,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->suscept[2] != 0 && !has_suscep( pcdata->deity->suscept[2] ) )
          {
             set_suscep( pcdata->deity->suscept[2] );
-            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n",
-                    pcdata->deity_name, ris_flags[pcdata->deity->suscept[2]] );
+            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[2]] );
          }
       }
 
@@ -2527,8 +2513,7 @@ void char_data::adjust_favor( int field, int mod )
        */
       if( ( oldfavor > pcdata->deity->sspell[0] ) && ( pcdata->favor <= pcdata->deity->sspell[0] ) )
       {
-         if( level < skill_table[pcdata->deity->spell[0]]->skill_level[Class]
-             && level < skill_table[pcdata->deity->spell[0]]->race_level[race] )
+         if( level < skill_table[pcdata->deity->spell[0]]->skill_level[Class] && level < skill_table[pcdata->deity->spell[0]]->race_level[race] )
          {
             pcdata->learned[pcdata->deity->spell[0]] = 0;
          }
@@ -2536,8 +2521,7 @@ void char_data::adjust_favor( int field, int mod )
 
       if( ( oldfavor > pcdata->deity->sspell[1] ) && ( pcdata->favor <= pcdata->deity->sspell[1] ) )
       {
-         if( level < skill_table[pcdata->deity->spell[1]]->skill_level[Class]
-             && level < skill_table[pcdata->deity->spell[1]]->race_level[race] )
+         if( level < skill_table[pcdata->deity->spell[1]]->skill_level[Class] && level < skill_table[pcdata->deity->spell[1]]->race_level[race] )
          {
             pcdata->learned[pcdata->deity->spell[1]] = 0;
          }
@@ -2545,8 +2529,7 @@ void char_data::adjust_favor( int field, int mod )
 
       if( ( oldfavor > pcdata->deity->sspell[2] ) && ( pcdata->favor <= pcdata->deity->sspell[2] ) )
       {
-         if( level < skill_table[pcdata->deity->spell[2]]->skill_level[Class]
-             && level < skill_table[pcdata->deity->spell[2]]->race_level[race] )
+         if( level < skill_table[pcdata->deity->spell[2]]->skill_level[Class] && level < skill_table[pcdata->deity->spell[2]]->race_level[race] )
          {
             pcdata->learned[pcdata->deity->spell[2]] = 0;
          }
@@ -2658,8 +2641,7 @@ void char_data::adjust_favor( int field, int mod )
    {
       if( pcdata->deity->affected[0] > 0 && !affected_by.test( pcdata->deity->affected[0] ) )
       {
-         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n",
-                 pcdata->deity_name, aff_flags[pcdata->deity->affected[0]] );
+         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[0]] );
          affected_by.set( pcdata->deity->affected[0] );
       }
    }
@@ -2667,8 +2649,7 @@ void char_data::adjust_favor( int field, int mod )
    {
       if( pcdata->deity->affected[1] > 0 && !affected_by.test( pcdata->deity->affected[1] ) )
       {
-         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n",
-                 pcdata->deity_name, aff_flags[pcdata->deity->affected[1]] );
+         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[1]] );
          affected_by.set( pcdata->deity->affected[1] );
       }
    }
@@ -2676,8 +2657,7 @@ void char_data::adjust_favor( int field, int mod )
    {
       if( pcdata->deity->affected[2] > 0 && !affected_by.test( pcdata->deity->affected[2] ) )
       {
-         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n",
-                 pcdata->deity_name, aff_flags[pcdata->deity->affected[2]] );
+         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[2]] );
          affected_by.set( pcdata->deity->affected[2] );
       }
    }
@@ -2686,8 +2666,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->element[0] != 0 && !has_resist( pcdata->deity->element[0] ) )
       {
          set_resist( pcdata->deity->element[0] );
-         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n",
-                 pcdata->deity_name, ris_flags[pcdata->deity->element[0]] );
+         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[0]] );
       }
    }
    if( pcdata->favor > pcdata->deity->elementnum[1] )
@@ -2695,8 +2674,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->element[1] != 0 && !has_resist( pcdata->deity->element[1] ) )
       {
          set_resist( pcdata->deity->element[1] );
-         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n",
-                 pcdata->deity_name, ris_flags[pcdata->deity->element[1]] );
+         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[1]] );
       }
    }
    if( pcdata->favor > pcdata->deity->elementnum[2] )
@@ -2704,8 +2682,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->element[2] != 0 && !has_resist( pcdata->deity->element[2] ) )
       {
          set_resist( pcdata->deity->element[2] );
-         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n",
-                 pcdata->deity_name, ris_flags[pcdata->deity->element[2]] );
+         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[2]] );
       }
    }
    if( pcdata->favor < pcdata->deity->susceptnum[0] )
@@ -2713,8 +2690,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->suscept[0] != 0 && !has_suscep( pcdata->deity->suscept[0] ) )
       {
          set_suscep( pcdata->deity->suscept[0] );
-         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n",
-                 pcdata->deity_name, ris_flags[pcdata->deity->suscept[0]] );
+         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[0]] );
       }
    }
    if( pcdata->favor < pcdata->deity->susceptnum[1] )
@@ -2722,8 +2698,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->suscept[1] != 0 && !has_suscep( pcdata->deity->suscept[1] ) )
       {
          set_suscep( pcdata->deity->suscept[1] );
-         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n",
-                 pcdata->deity_name, ris_flags[pcdata->deity->suscept[1]] );
+         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[1]] );
       }
    }
    if( pcdata->favor < pcdata->deity->susceptnum[2] )
@@ -2731,8 +2706,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->suscept[2] != 0 && !has_suscep( pcdata->deity->suscept[2] ) )
       {
          set_suscep( pcdata->deity->suscept[2] );
-         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n",
-                 pcdata->deity_name, ris_flags[pcdata->deity->suscept[2]] );
+         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[2]] );
       }
    }
    /*
@@ -2789,8 +2763,7 @@ void char_data::adjust_favor( int field, int mod )
     */
    if( ( oldfavor > pcdata->deity->sspell[0] ) && ( pcdata->favor <= pcdata->deity->sspell[0] ) )
    {
-      if( level < skill_table[pcdata->deity->spell[0]]->skill_level[Class]
-          && level < skill_table[pcdata->deity->spell[0]]->race_level[race] )
+      if( level < skill_table[pcdata->deity->spell[0]]->skill_level[Class] && level < skill_table[pcdata->deity->spell[0]]->race_level[race] )
       {
          pcdata->learned[pcdata->deity->spell[0]] = 0;
       }
@@ -2798,8 +2771,7 @@ void char_data::adjust_favor( int field, int mod )
 
    if( ( oldfavor > pcdata->deity->sspell[1] ) && ( pcdata->favor <= pcdata->deity->sspell[1] ) )
    {
-      if( level < skill_table[pcdata->deity->spell[1]]->skill_level[Class]
-          && level < skill_table[pcdata->deity->spell[1]]->race_level[race] )
+      if( level < skill_table[pcdata->deity->spell[1]]->skill_level[Class] && level < skill_table[pcdata->deity->spell[1]]->race_level[race] )
       {
          pcdata->learned[pcdata->deity->spell[1]] = 0;
       }
@@ -2807,13 +2779,11 @@ void char_data::adjust_favor( int field, int mod )
 
    if( ( oldfavor > pcdata->deity->sspell[2] ) && ( pcdata->favor <= pcdata->deity->sspell[2] ) )
    {
-      if( level < skill_table[pcdata->deity->spell[2]]->skill_level[Class]
-          && level < skill_table[pcdata->deity->spell[2]]->race_level[race] )
+      if( level < skill_table[pcdata->deity->spell[2]]->skill_level[Class] && level < skill_table[pcdata->deity->spell[2]]->race_level[race] )
       {
          pcdata->learned[pcdata->deity->spell[2]] = 0;
       }
    }
-   return;
 }
 
 CMDF( do_supplicate )
@@ -2828,7 +2798,7 @@ CMDF( do_supplicate )
 
    oldfavor = ch->pcdata->favor;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Supplicate for what?\r\n" );
       return;
@@ -2836,7 +2806,8 @@ CMDF( do_supplicate )
 
    if( !str_cmp( argument, "corpse" ) )
    {
-      char buf2[MSL], buf3[MSL];
+      string buf2 = "the corpse of ";
+      buf2.append( ch->name );
 
       if( ch->pcdata->favor < ch->pcdata->deity->scorpse )
       {
@@ -2849,14 +2820,12 @@ CMDF( do_supplicate )
          ch->print( "You cannot supplicate in a storage room.\r\n" );
          return;
       }
-      mudstrlcpy( buf3, " ", MSL );
-      snprintf( buf2, MSL, "the corpse of %s", ch->name );
 
       bool found = false;
-      list<obj_data*>::iterator iobj;
-      for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+      list < obj_data * >::iterator iobj;
+      for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
 
          if( obj->in_room && !str_cmp( buf2, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
          {
@@ -2870,6 +2839,7 @@ CMDF( do_supplicate )
             act( AT_MAGIC, "$n's corpse appears suddenly, surrounded by a divine force...", ch, NULL, NULL, TO_ROOM );
             obj->from_room(  );
             obj = obj->to_room( ch->in_room, ch );
+            obj->extra_flags.reset( ITEM_BURIED );
          }
       }
       if( !found )
@@ -3105,7 +3075,7 @@ CMDF( do_supplicate )
       else
          obj = obj->to_room( ch->in_room, ch );
 
-      stralloc_printf( &obj->name, "sigil %s", ch->pcdata->deity->name );
+      stralloc_printf( &obj->name, "sigil %s", ch->pcdata->deity->name.c_str(  ) );
 
       act( AT_MAGIC, "$n weaves $p from divine matter!", ch, obj, NULL, TO_ROOM );
       act( AT_MAGIC, "You weave $p from divine matter!", ch, obj, NULL, TO_CHAR );
@@ -3176,7 +3146,7 @@ CMDF( do_supplicate )
 
       if( !location )
       {
-         bug( "%s: No room index for recall supplication. Deity: %s", __FUNCTION__, ch->pcdata->deity->name );
+         bug( "%s: No room index for recall supplication. Deity: %s", __FUNCTION__, ch->pcdata->deity->name.c_str(  ) );
          ch->print( "Your deity has forsaken you!\r\n" );
          return;
       }
@@ -3191,5 +3161,4 @@ CMDF( do_supplicate )
       return;
    }
    ch->print( "You cannot supplicate for that.\r\n" );
-   return;
 }

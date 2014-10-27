@@ -45,24 +45,21 @@
 /* Externals */
 extern int top_reset;
 
-int get_trapflag( char *flag );
-
 bool can_rmodify( char_data *, room_index * );
 
-char *sprint_reset( reset_data *pReset, short &num )
+char *sprint_reset( reset_data * pReset, short &num )
 {
-   list<reset_data*>::iterator rst;
+   list < reset_data * >::iterator rst;
    static char buf[MSL];
    char mobname[MSL], roomname[MSL], objname[MSL];
    static room_index *room;
    static obj_index *obj, *obj2;
    static mob_index *mob;
 
-   switch( pReset->command )
+   switch ( pReset->command )
    {
       default:
-         snprintf( buf, MSL, "%2d) *** BAD RESET: %c %d %d %d %d ***\r\n",
-                   num, pReset->command, pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
+         snprintf( buf, MSL, "%2d) *** BAD RESET: %c %d %d %d %d ***\r\n", num, pReset->command, pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
          break;
 
       case 'M':
@@ -80,32 +77,29 @@ char *sprint_reset( reset_data *pReset, short &num )
             snprintf( buf, MSL, "%2d) %s (%d) (%d%%) -> Overland: %s %d %d [%d]\r\n", num, mobname, pReset->arg1,
                       pReset->arg7, map_names[pReset->arg4], pReset->arg5, pReset->arg6, pReset->arg2 );
          else
-            snprintf( buf, MSL, "%2d) %s (%d) (%d%%) -> %s Room: %d [%d]\r\n", num, mobname, pReset->arg1,
-                      pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
+            snprintf( buf, MSL, "%2d) %s (%d) (%d%%) -> %s Room: %d [%d]\r\n", num, mobname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
 
-         for( rst = pReset->resets.begin(); rst != pReset->resets.end(); ++rst )
+         for( rst = pReset->resets.begin(  ); rst != pReset->resets.end(  ); ++rst )
          {
-            reset_data *tReset = (*rst);
+            reset_data *tReset = *rst;
 
             ++num;
-            switch( tReset->command )
+            switch ( tReset->command )
             {
                default:
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "Bad Command: %c", tReset->command );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "Bad Command: %c", tReset->command );
                   break;
 
                case 'X':
                   if( !mob )
                      mudstrlcpy( mobname, "* ERROR: NO MOBILE! *", MSL );
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (equip) <RT> (%d%%) -> %s (%s)\r\n",
-                     num, tReset->arg8, mobname, wear_locs[tReset->arg7] );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (equip) <RT> (%d%%) -> %s (%s)\r\n", num, tReset->arg8, mobname, wear_locs[tReset->arg7] );
                   break;
 
                case 'Y':
                   if( !mob )
                      mudstrlcpy( mobname, "* ERROR: NO MOBILE! *", MSL );
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (carry) <RT> (%d%%) -> %s\r\n",
-                     num, tReset->arg7, mobname );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (carry) <RT> (%d%%) -> %s\r\n", num, tReset->arg7, mobname );
                   break;
 
                case 'E':
@@ -115,8 +109,8 @@ char *sprint_reset( reset_data *pReset, short &num )
                      mudstrlcpy( objname, "Object: *BAD VNUM*", MSL );
                   else
                      mudstrlcpy( objname, obj->name, MSL );
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (equip) %s (%d) (%d%%) -> %s (%s) [%d]\r\n",
-                     num, objname, tReset->arg1, tReset->arg4, mobname, wear_locs[tReset->arg3], tReset->arg2 );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (equip) %s (%d) (%d%%) -> %s (%s) [%d]\r\n",
+                            num, objname, tReset->arg1, tReset->arg4, mobname, wear_locs[tReset->arg3], tReset->arg2 );
                   break;
 
                case 'G':
@@ -126,23 +120,23 @@ char *sprint_reset( reset_data *pReset, short &num )
                      mudstrlcpy( objname, "Object: *BAD VNUM*", MSL );
                   else
                      mudstrlcpy( objname, obj->name, MSL );
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (carry) %s (%d) (%d%%) -> %s [%d]\r\n",
-                     num, objname, tReset->arg1, tReset->arg3, mobname, tReset->arg2 );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (carry) %s (%d) (%d%%) -> %s [%d]\r\n",
+                            num, objname, tReset->arg1, tReset->arg3, mobname, tReset->arg2 );
                   break;
             }
-            if( !tReset->resets.empty() )
+            if( !tReset->resets.empty(  ) )
             {
-               list<reset_data*>::iterator gst;
+               list < reset_data * >::iterator gst;
 
-               for( gst = tReset->resets.begin(); gst != tReset->resets.end(); ++gst )
+               for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); ++gst )
                {
-                  reset_data *gReset = (*gst);
+                  reset_data *gReset = *gst;
 
                   ++num;
-                  switch( gReset->command )
+                  switch ( gReset->command )
                   {
                      default:
-                        snprintf( buf+strlen(buf), MSL-strlen(buf), "Bad Command: %c", tReset->command );
+                        snprintf( buf + strlen( buf ), MSL - strlen( buf ), "Bad Command: %c", tReset->command );
                         break;
 
                      case 'P':
@@ -156,8 +150,8 @@ char *sprint_reset( reset_data *pReset, short &num )
                            mudstrlcpy( roomname, "Object2: *NULL obj*", MSL );
                         else
                            mudstrlcpy( roomname, obj->name, MSL );
-                        snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
-                           num, objname, gReset->arg2, gReset->arg5, roomname, obj ? obj->vnum : gReset->arg4, gReset->arg3 );
+                        snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
+                                  num, objname, gReset->arg2, gReset->arg5, roomname, obj ? obj->vnum : gReset->arg4, gReset->arg3 );
                         break;
                   }
                }
@@ -173,11 +167,9 @@ char *sprint_reset( reset_data *pReset, short &num )
          else
             mudstrlcpy( roomname, room->name, MSL );
          if( pReset->arg8 != -1 && pReset->arg9 != -1 && pReset->arg10 != -1 )
-            snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> Overland: %s %d %d\r\n", num, objname,
-                      pReset->arg11, map_names[pReset->arg8], pReset->arg9, pReset->arg10 );
+            snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> Overland: %s %d %d\r\n", num, objname, pReset->arg11, map_names[pReset->arg8], pReset->arg9, pReset->arg10 );
          else
-            snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> %s Room: %d\r\n",
-                      num, objname, pReset->arg11, roomname, pReset->arg7 );
+            snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> %s Room: %d\r\n", num, objname, pReset->arg11, roomname, pReset->arg7 );
          break;
 
       case 'O':
@@ -194,18 +186,17 @@ char *sprint_reset( reset_data *pReset, short &num )
             snprintf( buf, MSL, "%2d) (object) %s (%d) (%d%%) -> Overland: %s %d %d [%d]\r\n", num, objname, pReset->arg1,
                       pReset->arg7, map_names[pReset->arg4], pReset->arg5, pReset->arg6, pReset->arg2 );
          else
-            snprintf( buf, MSL, "%2d) (object) %s (%d) (%d%%) -> %s Room: %d [%d]\r\n",
-                      num, objname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
+            snprintf( buf, MSL, "%2d) (object) %s (%d) (%d%%) -> %s Room: %d [%d]\r\n", num, objname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
 
-         for( rst = pReset->resets.begin(); rst != pReset->resets.end(); ++rst )
+         for( rst = pReset->resets.begin(  ); rst != pReset->resets.end(  ); ++rst )
          {
-            reset_data *tReset = (*rst);
+            reset_data *tReset = *rst;
 
             ++num;
-            switch( tReset->command )
+            switch ( tReset->command )
             {
                default:
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "Bad Command: %c\r\n", tReset->command );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "Bad Command: %c\r\n", tReset->command );
                   break;
 
                case 'P':
@@ -219,8 +210,8 @@ char *sprint_reset( reset_data *pReset, short &num )
                      mudstrlcpy( roomname, "Object2: *NULL obj*", MSL );
                   else
                      mudstrlcpy( roomname, obj->name, MSL );
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
-                     num, objname, tReset->arg2, tReset->arg5, roomname, obj ? obj->vnum : tReset->arg4, tReset->arg3 );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
+                            num, objname, tReset->arg2, tReset->arg5, roomname, obj ? obj->vnum : tReset->arg4, tReset->arg3 );
                   break;
 
                case 'W':
@@ -231,18 +222,17 @@ char *sprint_reset( reset_data *pReset, short &num )
                      mudstrlcpy( roomname, "Object2: *NULL obj*", MSL );
                   else
                      mudstrlcpy( roomname, obj->name, MSL );
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (RT put) %s (%d%%) -> %s (%d)\r\n",
-                     num, objname, tReset->arg9, roomname, obj ? obj->vnum : tReset->arg8 );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (RT put) %s (%d%%) -> %s (%d)\r\n",
+                            num, objname, tReset->arg9, roomname, obj ? obj->vnum : tReset->arg8 );
                   break;
 
                case 'T':
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (trap) %d %d %d %d (%s) (%d%%) -> %s (%d)\r\n",
-                     num, tReset->arg1, tReset->arg2, tReset->arg3, tReset->arg4,
-                     flag_string( tReset->arg1, trap_flags ), tReset->arg5, objname, obj ? obj->vnum : 0 );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (trap) %d %d %d %d (%s) (%d%%) -> %s (%d)\r\n",
+                            num, tReset->arg1, tReset->arg2, tReset->arg3, tReset->arg4, flag_string( tReset->arg1, trap_flags ), tReset->arg5, objname, obj ? obj->vnum : 0 );
                   break;
 
                case 'H':
-                  snprintf( buf+strlen(buf), MSL-strlen(buf), "%2d) (hide) (%d%%) -> %s\r\n", num, tReset->arg3, objname );
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (hide) (%d%%) -> %s\r\n", num, tReset->arg3, objname );
                   break;
             }
          }
@@ -276,8 +266,7 @@ char *sprint_reset( reset_data *pReset, short &num )
                mudstrlcpy( mobname, "Close and lock", MSL );
                break;
          }
-         snprintf( buf, MSL, "%2d) %s [%d] the %s [%d] door %s (%d) (%d%%)\r\n",
-                   num, mobname, pReset->arg3, objname, pReset->arg2, roomname, pReset->arg1, pReset->arg4 );
+         snprintf( buf, MSL, "%2d) %s [%d] the %s [%d] door %s (%d) (%d%%)\r\n", num, mobname, pReset->arg3, objname, pReset->arg2, roomname, pReset->arg1, pReset->arg4 );
          break;
 
       case 'R':
@@ -294,8 +283,7 @@ char *sprint_reset( reset_data *pReset, short &num )
          else
             mudstrlcpy( roomname, room->name, MSL );
          snprintf( buf, MSL, "%2d) Trap: %d %d %d %d (%s) (%d%%) -> %s (%d)\r\n",
-            num, pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4,
-            flag_string( pReset->arg1, trap_flags ), pReset->arg5, roomname, room ? room->vnum : 0 );
+                   num, pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, flag_string( pReset->arg1, trap_flags ), pReset->arg5, roomname, room ? room->vnum : 0 );
          break;
    }
    return buf;
@@ -325,7 +313,7 @@ reset_data *make_reset( char letter, int arg1, int arg2, int arg3, short arg4, s
    return pReset;
 }
 
-void add_obj_reset( room_index *room, char cm, obj_data *obj, int v2, int v3 )
+void add_obj_reset( room_index * room, char cm, obj_data * obj, int v2, int v3 )
 {
    static int iNest;
 
@@ -346,49 +334,48 @@ void add_obj_reset( room_index *room, char cm, obj_data *obj, int v2, int v3 )
    else
       room->add_reset( cm, obj->pIndexData->vnum, v2, v3, 100, 100, 100, 100, -2, -2, -2, -2 );
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = obj->contents.begin(); iobj != obj->contents.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
    {
-      obj_data *inobj = (*iobj);
+      obj_data *inobj = *iobj;
       if( inobj->pIndexData->vnum == OBJ_VNUM_TRAP )
          add_obj_reset( room, 'O', inobj, 0, 0 );
    }
    if( cm == 'P' )
       ++iNest;
-   for( iobj = obj->contents.begin(); iobj != obj->contents.end(); ++iobj )
+   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
    {
-      obj_data *inobj = (*iobj);
+      obj_data *inobj = *iobj;
+
       add_obj_reset( room, 'P', inobj, inobj->count, obj->pIndexData->vnum );
    }
    if( cm == 'P' )
       --iNest;
-   return;
 }
 
-void delete_reset( reset_data *pReset )
+void delete_reset( reset_data * pReset )
 {
-   list<reset_data*>::iterator rst;
+   list < reset_data * >::iterator rst;
 
-   for( rst = pReset->resets.begin(); rst != pReset->resets.end(); )
+   for( rst = pReset->resets.begin(  ); rst != pReset->resets.end(  ); )
    {
-      reset_data *tReset = (*rst);
+      reset_data *tReset = *rst;
       ++rst;
 
       pReset->resets.remove( tReset );
       delete_reset( tReset );
    }
-   pReset->resets.clear();
+   pReset->resets.clear(  );
    deleteptr( pReset );
-   return;
 }
 
-void instaroom( char_data *ch, room_index *pRoom, bool dodoors )
+void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = pRoom->people.begin(); ich != pRoom->people.end(); ++ich )
+   for( ich = pRoom->people.begin(  ); ich != pRoom->people.end(  ); ++ich )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
 
       if( !rch->isnpc(  ) )
          continue;
@@ -406,10 +393,10 @@ void instaroom( char_data *ch, room_index *pRoom, bool dodoors )
       }
       if( added )
       {
-         list<obj_data*>::iterator iobj;
-         for( iobj = rch->carrying.begin(); iobj != rch->carrying.end(); ++iobj )
+         list < obj_data * >::iterator iobj;
+         for( iobj = rch->carrying.begin(  ); iobj != rch->carrying.end(  ); ++iobj )
          {
-            obj_data *obj = (*iobj);
+            obj_data *obj = *iobj;
 
             if( obj->wear_loc == WEAR_NONE )
                add_obj_reset( pRoom, 'G', obj, 1, 0 );
@@ -419,10 +406,10 @@ void instaroom( char_data *ch, room_index *pRoom, bool dodoors )
       }
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = pRoom->objects.begin(); iobj != pRoom->objects.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = pRoom->objects.begin(  ); iobj != pRoom->objects.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( pRoom->flags.test( ROOM_MAP ) && is_same_obj_map( ch, obj ) )
          add_obj_reset( pRoom, 'O', obj, obj->count, pRoom->vnum );
@@ -432,11 +419,11 @@ void instaroom( char_data *ch, room_index *pRoom, bool dodoors )
 
    if( dodoors )
    {
-      list<exit_data*>::iterator ex;
+      list < exit_data * >::iterator ex;
 
-      for( ex = pRoom->exits.begin(); ex != pRoom->exits.end(); ++ex )
+      for( ex = pRoom->exits.begin(  ); ex != pRoom->exits.end(  ); ++ex )
       {
-         exit_data *pexit = (*ex);
+         exit_data *pexit = *ex;
          int state = 0;
 
          if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) && !IS_EXIT_FLAG( pexit, EX_DIG ) )
@@ -452,7 +439,6 @@ void instaroom( char_data *ch, room_index *pRoom, bool dodoors )
          pRoom->add_reset( 'D', pRoom->vnum, pexit->vdir, state, 100, -2, -2, -2, -2, -2, -2, -2 );
       }
    }
-   return;
 }
 
 CMDF( do_instaroom )
@@ -485,8 +471,8 @@ CMDF( do_instaroom )
       ch->print( "You cannot reset this room.\r\n" );
       return;
    }
-   if( !ch->in_room->resets.empty() )
-      ch->in_room->wipe_resets();
+   if( !ch->in_room->resets.empty(  ) )
+      ch->in_room->wipe_resets(  );
    instaroom( ch, ch->in_room, dodoors );
    ch->print( "Room resets installed.\r\n" );
 }
@@ -514,29 +500,28 @@ CMDF( do_instazone )
       dodoors = true;
 
    area_data *pArea = ch->pcdata->area;
-   pArea->wipe_resets();
+   pArea->wipe_resets(  );
 
-   list<room_index*>::iterator iroom;
-   for( iroom = pArea->rooms.begin(); iroom != pArea->rooms.end(); ++iroom )
+   list < room_index * >::iterator iroom;
+   for( iroom = pArea->rooms.begin(  ); iroom != pArea->rooms.end(  ); ++iroom )
    {
-      room_index *pRoom = (*iroom);
+      room_index *pRoom = *iroom;
 
       instaroom( ch, pRoom, dodoors );
    }
    ch->print( "Area resets installed.\r\n" );
-   return;
 }
 
-reset_data *find_oreset( room_index *room, char *oname )
+reset_data *find_oreset( room_index * room, const string & oname )
 {
-   list<reset_data*>::iterator rst;
+   list < reset_data * >::iterator rst;
    obj_index *pobj;
-   char arg[MIL];
+   string arg;
    int cnt = 0, num = number_argument( oname, arg );
 
-   for( rst = room->resets.begin(); rst != room->resets.end(); ++rst )
+   for( rst = room->resets.begin(  ); rst != room->resets.end(  ); ++rst )
    {
-      reset_data *pReset = (*rst);
+      reset_data *pReset = *rst;
 
       // Only going to allow traps/hides on room reset objects. Unless someone can come up with a better way to do this.
       if( pReset->command != 'O' )
@@ -545,7 +530,7 @@ reset_data *find_oreset( room_index *room, char *oname )
       if( !( pobj = get_obj_index( pReset->arg1 ) ) )
          continue;
 
-      if( is_name( arg, pobj->name ) && ++cnt == num )
+      if( hasname( pobj->name, arg ) && ++cnt == num )
          return pReset;
    }
    return NULL;
@@ -553,9 +538,9 @@ reset_data *find_oreset( room_index *room, char *oname )
 
 CMDF( do_reset )
 {
-   char arg[MIL];
+   string arg;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: reset area\r\n" );
       ch->print( "Usage: reset randomize <direction>\r\n" );
@@ -570,7 +555,7 @@ CMDF( do_reset )
    argument = one_argument( argument, arg );
    if( !str_cmp( arg, "area" ) )
    {
-      ch->in_room->area->reset();
+      ch->in_room->area->reset(  );
       ch->print( "Area has been reset.\r\n" );
       return;
    }
@@ -578,11 +563,11 @@ CMDF( do_reset )
    // Yeah, I know, this function is mucho ugly... but...
    if( !str_cmp( arg, "delete" ) )
    {
-      list<reset_data*>::iterator rst;
+      list < reset_data * >::iterator rst;
       reset_data *pReset;
       int num, nfind = 0;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "You must specify a reset # in this room to delete one.\r\n" );
          return;
@@ -593,13 +578,13 @@ CMDF( do_reset )
          ch->print( "Specified reset must be designated by number. See &Wredit rlist&D.\r\n" );
          return;
       }
-      num = atoi( argument );
+      num = atoi( argument.c_str(  ) );
 
-      for( rst = ch->in_room->resets.begin(); rst != ch->in_room->resets.end(); )
+      for( rst = ch->in_room->resets.begin(  ); rst != ch->in_room->resets.end(  ); )
       {
-         list<reset_data*>::iterator dst;
+         list < reset_data * >::iterator dst;
          reset_data *tReset;
-         pReset = (*rst);
+         pReset = *rst;
          ++rst;
 
          ++nfind;
@@ -611,11 +596,11 @@ CMDF( do_reset )
             return;
          }
 
-         for( dst = pReset->resets.begin(); dst != pReset->resets.end(); )
+         for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); )
          {
-            list<reset_data*>::iterator gst;
+            list < reset_data * >::iterator gst;
             reset_data *gReset;
-            tReset = (*dst);
+            tReset = *dst;
             ++dst;
 
             ++nfind;
@@ -627,9 +612,9 @@ CMDF( do_reset )
                return;
             }
 
-            for( gst = tReset->resets.begin(); gst != tReset->resets.end(); )
+            for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); )
             {
-               gReset = (*gst);
+               gReset = *gst;
                ++gst;
 
                ++nfind;
@@ -650,13 +635,13 @@ CMDF( do_reset )
    // Yeah, I know, this function is mucho ugly... but...
    if( !str_cmp( arg, "percent" ) )
    {
-      list<reset_data*>::iterator rst;
+      list < reset_data * >::iterator rst;
       reset_data *pReset;
       int num, value = 100, nfind = 0;
 
       argument = one_argument( argument, arg );
 
-      if( !arg || arg[0] == '\0' )
+      if( arg.empty(  ) )
       {
          ch->print( "You must specify a reset # in this room.\r\n" );
          return;
@@ -666,9 +651,9 @@ CMDF( do_reset )
          ch->print( "Specified reset must be designated by number. See &Wredit rlist&D.\r\n" );
          return;
       }
-      num = atoi( arg );
+      num = atoi( arg.c_str(  ) );
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "You must specify a percentage value.\r\n" );
          return;
@@ -678,13 +663,13 @@ CMDF( do_reset )
          ch->print( "Specified value must be numeric.\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
 
-      for( rst = ch->in_room->resets.begin(); rst != ch->in_room->resets.end(); )
+      for( rst = ch->in_room->resets.begin(  ); rst != ch->in_room->resets.end(  ); )
       {
-         list<reset_data*>::iterator dst;
+         list < reset_data * >::iterator dst;
          reset_data *tReset;
-         pReset = (*rst);
+         pReset = *rst;
          ++rst;
 
          ++nfind;
@@ -700,11 +685,11 @@ CMDF( do_reset )
             return;
          }
 
-         for( dst = pReset->resets.begin(); dst != pReset->resets.end(); )
+         for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); )
          {
-            list<reset_data*>::iterator gst;
+            list < reset_data * >::iterator gst;
             reset_data *gReset;
-            tReset = (*dst);
+            tReset = *dst;
             ++dst;
 
             ++nfind;
@@ -714,9 +699,9 @@ CMDF( do_reset )
                return;
             }
 
-            for( gst = tReset->resets.begin(); gst != tReset->resets.end(); )
+            for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); )
             {
-               gReset = (*gst);
+               gReset = *gst;
                ++gst;
 
                ++nfind;
@@ -764,7 +749,7 @@ CMDF( do_reset )
    if( !str_cmp( arg, "trap" ) )
    {
       reset_data *pReset = NULL;
-      char oname[MIL], arg2[MIL];
+      string arg2, oname;
       int num, chrg, value, extra = 0, vnum;
 
       argument = one_argument( argument, arg2 );
@@ -775,9 +760,9 @@ CMDF( do_reset )
          extra = TRAP_ROOM;
 
          argument = one_argument( argument, arg );
-         num = is_number( arg ) ? atoi( arg ) : -1;
+         num = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
          argument = one_argument( argument, arg );
-         chrg = is_number( arg ) ? atoi( arg ) : -1;
+         chrg = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
       }
       else if( !str_cmp( arg2, "obj" ) )
       {
@@ -791,9 +776,9 @@ CMDF( do_reset )
          extra = TRAP_OBJ;
 
          argument = one_argument( argument, arg );
-         num = is_number( arg ) ? atoi( arg ) : -1;
+         num = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
          argument = one_argument( argument, arg );
-         chrg = is_number( arg ) ? atoi( arg ) : -1;
+         chrg = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
       }
       else
       {
@@ -813,13 +798,13 @@ CMDF( do_reset )
          return;
       }
 
-      while( *argument )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg );
          value = get_trapflag( arg );
          if( value < 0 || value > 31 )
          {
-            ch->printf( "Bad trap flag: %s\r\n", arg );
+            ch->printf( "Bad trap flag: %s\r\n", arg.c_str(  ) );
             continue;
          }
          SET_BIT( extra, 1 << value );
@@ -851,14 +836,13 @@ CMDF( do_reset )
       return;
    }
    do_reset( ch, "" );
-   return;
 }
 
 // Update the mobile resets to let it know to reset it again
-void update_room_reset( char_data *ch, bool setting )
+void update_room_reset( char_data * ch, bool setting )
 {
    room_index *room;
-   list<reset_data*>::iterator pst;
+   list < reset_data * >::iterator pst;
    int nfind = 0;
 
    if( !ch )
@@ -867,9 +851,9 @@ void update_room_reset( char_data *ch, bool setting )
    if( !( room = get_room_index( ch->resetvnum ) ) )
       return;
 
-   for( pst = room->resets.begin(); pst != room->resets.end(); ++pst )
+   for( pst = room->resets.begin(  ); pst != room->resets.end(  ); ++pst )
    {
-      list<reset_data*>::iterator tst;
+      list < reset_data * >::iterator tst;
       reset_data *pReset = *pst;
 
       if( ++nfind == ch->resetnum )
@@ -878,9 +862,9 @@ void update_room_reset( char_data *ch, bool setting )
          return;
       }
 
-      for( tst = pReset->resets.begin(); tst != pReset->resets.end(); ++tst )
+      for( tst = pReset->resets.begin(  ); tst != pReset->resets.end(  ); ++tst )
       {
-         list<reset_data*>::iterator gst;
+         list < reset_data * >::iterator gst;
          reset_data *tReset = *tst;
 
          if( ++nfind == ch->resetnum )
@@ -889,7 +873,7 @@ void update_room_reset( char_data *ch, bool setting )
             return;
          }
 
-         for( gst = tReset->resets.begin(); gst != tReset->resets.end(); ++gst )
+         for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); ++gst )
          {
             reset_data *gReset = *gst;
 

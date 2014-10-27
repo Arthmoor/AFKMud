@@ -36,20 +36,19 @@
 class mob_index
 {
  private:
-   mob_index( const mob_index& m );
-   mob_index& operator=( const mob_index& );
+   mob_index( const mob_index & m );
+     mob_index & operator=( const mob_index & );
 
  public:
-   mob_index(  );
-   ~mob_index(  );
+     mob_index(  );
+    ~mob_index(  );
 
    void clean_mob(  );
    char_data *create_mobile(  );
    void mprog_read_programs( FILE * fp );
 
    string spec_funname;
-   list<struct mud_prog_data*> mudprogs; /* Mudprogs */
-   mob_index *next;
+     list < struct mud_prog_data *>mudprogs; /* Mudprogs */
    area_data *area;
    SPEC_FUN *spec_fun;
    struct shop_data *pShop;
@@ -111,8 +110,8 @@ class mob_index
    short saving_spell_staff;
 };
 
-extern mob_index *mob_index_hash[MAX_KEY_HASH];
+extern map < int, mob_index * >mob_index_table;
 mob_index *get_mob_index( int );
-mob_index *make_mobile( int, int, char *, area_data * );
+mob_index *make_mobile( int, int, const string &, area_data * );
 int interpolate( int, int, int );
 #endif

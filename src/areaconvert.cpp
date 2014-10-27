@@ -46,9 +46,9 @@ typedef struct extended_bitvector EXT_BV;
 #ifndef INTBITS
 const int INTBITS = 32;
 #endif
-const int XBM = 31; /* extended bitmask   ( INTBITS - 1 )  */
-const int RSV = 5;  /* right-shift value  ( sqrt(XBM+1) )  */
-const int XBI = 4 ; /* integers in an extended bitvector   */
+const int XBM = 31;  /* extended bitmask   ( INTBITS - 1 )  */
+const int RSV = 5;   /* right-shift value  ( sqrt(XBM+1) )  */
+const int XBI = 4;   /* integers in an extended bitvector   */
 const int MAX_BITS = XBI * INTBITS;
 
 #define xIS_SET(var, bit) ((var).bits[(bit) >> RSV] & 1 << ((bit) & XBM))
@@ -76,7 +76,7 @@ extern FILE *fpArea;
 bool area_failed;
 int dotdcheck;
 
-char *const stock_act[] = {
+const char *stock_act[] = {
    "npc", "sentinel", "scavenger", "r1", "r2", "aggressive", "stayarea",
    "wimpy", "pet", "train", "practice", "immortal", "deadly", "polyself",
    "meta_aggr", "guardian", "running", "nowander", "mountable", "mounted",
@@ -84,14 +84,14 @@ char *const stock_act[] = {
    "pacifist", "noattack", "annoying", "statshield", "proto", "r14"
 };
 
-char *const stock_ex_flags[] = {
+const char *stock_ex_flags[] = {
    "isdoor", "closed", "locked", "secret", "swim", "pickproof", "fly", "climb",
    "dig", "eatkey", "nopassdoor", "hidden", "passage", "portal", "r1", "r2",
    "can_climb", "can_enter", "can_leave", "auto", "noflee", "searchable",
    "bashed", "bashproof", "nomob", "window", "can_look", "isbolt", "bolted"
 };
 
-char *const stock_aff[] = {
+const char *stock_aff[] = {
    "blind", "invisible", "detect_evil", "detect_invis", "detect_magic",
    "detect_hidden", "hold", "sanctuary", "faerie_fire", "infrared", "curse",
    "_flaming", "poison", "protect", "_paralysis", "sneak", "hide", "sleep",
@@ -101,7 +101,7 @@ char *const stock_aff[] = {
    "venomshield"
 };
 
-char *const stock_race[] = {
+const char *stock_race[] = {
    "human", "high-elf", "dwarf", "halfling", "pixie", "vampire", "half-ogre",
    "half-orc", "half-troll", "half-elf", "gith", "drow", "sea-elf",
    "iguanadon", "gnome", "r5", "r6", "r7", "r8", "troll",
@@ -118,20 +118,20 @@ char *const stock_race[] = {
    "monster", "god"
 };
 
-char *const stock_class[] = {
+const char *stock_class[] = {
    "mage", "cleric", "rogue", "warrior", "vampire", "druid", "ranger",
    "augurer", "paladin", "nephandi", "savage", "pirate", "pc12", "pc13",
    "pc14", "pc15", "pc16", "pc17", "pc18", "pc19",
    "baker", "butcher", "blacksmith", "mayor", "king", "queen"
 };
 
-char *const stock_pos[] = {
+const char *stock_pos[] = {
    "dead", "mortal", "incapacitated", "stunned", "sleeping", "berserk", "resting",
    "aggressive", "sitting", "fighting", "defensive", "evasive", "standing", "mounted",
    "shove", "drag"
 };
 
-char *const stock_oflags[] = {
+const char *stock_oflags[] = {
    "glow", "hum", "dark", "loyal", "evil", "invis", "magic", "nodrop", "bless",
    "antigood", "antievil", "antineutral", "noremove", "inventory",
    "antimage", "antirogue", "antiwarrior", "anticleric", "organic", "metal",
@@ -140,14 +140,14 @@ char *const stock_oflags[] = {
    "nolocate", "groundrot", "lootable"
 };
 
-char *const stock_wflags[] = {
+const char *stock_wflags[] = {
    "take", "finger", "neck", "body", "head", "legs", "feet", "hands", "arms",
    "shield", "about", "waist", "wrist", "wield", "hold", "dual", "ears", "eyes",
    "missile", "back", "face", "ankle", "r4", "r5", "r6",
    "r7", "r8", "r9", "r10", "r11", "r12", "r13"
 };
 
-char *const stock_rflags[] = {
+const char *stock_rflags[] = {
    "dark", "death", "nomob", "indoors", "lawful", "neutral", "chaotic",
    "nomagic", "tunnel", "private", "safe", "solitary", "petshop", "norecall",
    "donation", "nodropall", "silence", "logspeech", "nodrop", "clanstoreroom",
@@ -155,21 +155,21 @@ char *const stock_rflags[] = {
    "nosupplicate", "arena", "nomissile", "r4", "r5", "proto", "dnd"
 };
 
-char *const stock_area_flags[] = {
+const char *stock_area_flags[] = {
    "nopkill", "freekill", "noteleport", "spelllimit", "r4", "r5", "r6", "r7", "r8",
    "r9", "r10", "r11", "r12", "r13", "r14", "r15", "r16", "r17",
    "r18", "r19", "r20", "r21", "r22", "r23", "r24",
    "r25", "r26", "r27", "r28", "r29", "r30", "r31"
 };
 
-char *const stock_lang_names[] = {
+const char *stock_lang_names[] = {
    "common", "elvish", "dwarven", "pixie", "ogre", "orcish", "trollese", "rodent", "insectoid",
    "mammal", "reptile", "dragon", "spiritual", "magical", "goblin", "god", "ancient",
    "halfling", "clan", "gith", "r20", "r21", "r22", "r23", "r24",
    "r25", "r26", "r27", "r28", "r29", "r30", "r31"
 };
 
-char *const stock_attack_flags[] = {
+const char *stock_attack_flags[] = {
    "bite", "claws", "tail", "sting", "punch", "kick", "trip", "bash", "stun",
    "gouge", "backstab", "feed", "drain", "firebreath", "frostbreath",
    "acidbreath", "lightnbreath", "gasbreath", "poison", "nastypoison", "gaze",
@@ -177,7 +177,7 @@ char *const stock_attack_flags[] = {
    "flamestrike", "harm", "fireball", "colorspray", "weaken", "r1"
 };
 
-char *const stock_defense_flags[] = {
+const char *stock_defense_flags[] = {
    "parry", "dodge", "heal", "curelight", "cureserious", "curecritical",
    "dispelmagic", "dispelevil", "sanctuary", "fireshield", "shockshield",
    "shield", "bless", "stoneskin", "teleport", "monsum1", "monsum2", "monsum3",
@@ -185,7 +185,7 @@ char *const stock_defense_flags[] = {
    "r8", "r9", "r10", "r11", "r12", "acidmist", "venomshield"
 };
 
-char *const stock_o_types[] = {
+const char *stock_o_types[] = {
    "none", "light", "scroll", "wand", "staff", "weapon", "_fireweapon", "_missile",
    "treasure", "armor", "potion", "_worn", "furniture", "trash", "_oldtrap",
    "container", "_note", "drinkcon", "key", "food", "money", "pen", "boat",
@@ -197,7 +197,7 @@ char *const stock_o_types[] = {
    "salve", "cook", "keyring", "odor", "chance"
 };
 
-char *const stock_sect[] = {
+const char *stock_sect[] = {
    "indoors", "city", "field", "forest", "hills", "mountain", "water_swim",
    "water_noswim", "underwater", "air", "desert", "dunno", "oceanfloor",
    "underground", "lava", "swamp", "r1", "r2", "r3", "r4", "r5", "r6", "r7",
@@ -231,7 +231,7 @@ EXT_BV fread_bitvector( FILE * fp )
    return ret;
 }
 
-char *ext_flag_string( EXT_BV * bitvector, char *const flagarray[] )
+char *ext_flag_string( EXT_BV * bitvector, const char *flagarray[] )
 {
    static char buf[MSL];
    int x;
@@ -254,7 +254,7 @@ char *ext_flag_string( EXT_BV * bitvector, char *const flagarray[] )
    return buf;
 }
 
-bool check_area_conflict( area_data *area, int low_range, int hi_range )
+bool check_area_conflict( area_data * area, int low_range, int hi_range )
 {
    if( low_range < area->low_vnum && area->low_vnum < hi_range )
       return true;
@@ -274,11 +274,11 @@ bool check_area_conflict( area_data *area, int low_range, int hi_range )
 // Runs the entire list, easier to call in places that have to check them all
 bool check_area_conflicts( int lo, int hi )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
 
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
       if( check_area_conflict( area, lo, hi ) )
          return true;
@@ -289,7 +289,7 @@ bool check_area_conflicts( int lo, int hi )
 void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 {
    mob_index *pMobIndex;
-   char *ln;
+   const char *ln;
    int x1, x2, x3, x4, x5, x6, x7;
 
    if( !tarea )
@@ -329,10 +329,10 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       tmpBootDb = fBootDb;
       fBootDb = false;
 
-      list<area_data*>::iterator iarea;
-      for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+      list < area_data * >::iterator iarea;
+      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
       {
-         area_data *area = (*iarea);
+         area_data *area = *iarea;
 
          if( !str_cmp( area->filename, tarea->filename ) )
             continue;
@@ -341,10 +341,8 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: %s has vnum conflict with %s!",
-                        tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ),
-                        area->low_vnum, area->hi_vnum );
+            log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
             log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
             if( !manual )
             {
@@ -407,7 +405,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       pMobIndex->short_descr = fread_string( fp );
       pMobIndex->long_descr = fread_string( fp );
 
-      char *desc = fread_flagstring( fp );
+      const char *desc = fread_flagstring( fp );
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
       {
          pMobIndex->chardesc = STRALLOC( desc );
@@ -485,7 +483,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       pMobIndex->exp = -1; /* Convert mob to use autocalc exp */
 
       {
-         char *spos;
+         const char *spos;
          int pos = fread_number( fp );
 
          if( pos < 100 )
@@ -530,7 +528,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       }
 
       {
-         char *sdefpos;
+         const char *sdefpos;
          int defpos = fread_number( fp );
 
          if( defpos < 100 )
@@ -608,7 +606,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             sscanf( ln, "%d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7 );
 
             {
-               char *srace, *sclass;
+               const char *srace, *sclass;
 
                if( x1 >= 0 && x1 < 90 )
                   srace = stock_race[x1];
@@ -672,8 +670,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          }  /* End of standard Smaug zone */
          else  /* A SmaugWiz zone */
          {
-            char *speaking = NULL;
-            char flag[MIL];
+            string speaking, flag;
             int value;
 
             ln = fread_line( fp );
@@ -681,7 +678,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
 
             {
-               char *srace, *sclass;
+               const char *srace, *sclass;
 
                if( x1 >= 0 && x1 < 90 )
                   srace = stock_race[x1];
@@ -717,12 +714,12 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
             speaking = fread_flagstring( fp );
 
-            while( speaking[0] != '\0' )
+            while( !speaking.empty() )
             {
                speaking = one_argument( speaking, flag );
                value = get_langnum( flag );
                if( value == -1 )
-                  bug( "Unknown speaking language: %s", flag );
+                  bug( "Unknown speaking language: %s", flag.c_str() );
                else
                   pMobIndex->speaking = value;
             }
@@ -847,21 +844,18 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
       if( !oldmob )
       {
-         int iHash = vnum % MAX_KEY_HASH;
-         pMobIndex->next = mob_index_hash[iHash];
-         mob_index_hash[iHash] = pMobIndex;
+         mob_index_table.insert( map < int, mob_index * >::value_type( vnum, pMobIndex ) );
          tarea->mobs.push_back( pMobIndex );
          ++top_mob_index;
       }
    }
-   return;
 }
 
 void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 {
    obj_index *pObjIndex;
    char letter;
-   char *ln;
+   const char *ln;
    int x1, x2, x3, x4, x5, x6;
 
    if( !tarea )
@@ -900,10 +894,10 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       tmpBootDb = fBootDb;
       fBootDb = false;
 
-      list<area_data*>::iterator iarea;
-      for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+      list < area_data * >::iterator iarea;
+      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
       {
-         area_data *area = (*iarea);
+         area_data *area = *iarea;
 
          if( !str_cmp( area->filename, tarea->filename ) )
             continue;
@@ -912,10 +906,8 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: %s has vnum conflict with %s!",
-                        tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ),
-                        area->low_vnum, area->hi_vnum );
+            log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
             log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
             if( !manual )
             {
@@ -979,14 +971,15 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       pObjIndex->short_descr = fread_string( fp );
       pObjIndex->objdesc = fread_string( fp );
 
-      char *desc = fread_flagstring( fp );
+      const char *desc = fread_flagstring( fp );
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
          pObjIndex->action_desc = STRALLOC( desc );
 
       if( pObjIndex->objdesc != NULL )
          pObjIndex->objdesc[0] = UPPER( pObjIndex->objdesc[0] );
       {
-         char *sotype, *eflags, *wflags;
+         const char *sotype;
+         char *eflags, *wflags;
          char flag[MIL];
          EXT_BV temp;
          int value;
@@ -1139,13 +1132,9 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
             if( paf->location == APPLY_WEAPONSPELL
                 || paf->location == APPLY_WEARSPELL
-                || paf->location == APPLY_REMOVESPELL
-                || paf->location == APPLY_STRIPSN
-                || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+                || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
                paf->modifier = slot_lookup( fread_number( fp ) );
-            else if( paf->location == APPLY_RESISTANT
-                     || paf->location == APPLY_IMMUNE
-                     || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
+            else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
             {
                value = fread_number( fp );
                risa = flag_string( value, ris_flags );
@@ -1234,20 +1223,17 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
       if( !oldobj )
       {
-         int iHash = vnum % MAX_KEY_HASH;
-         pObjIndex->next = obj_index_hash[iHash];
-         obj_index_hash[iHash] = pObjIndex;
+         obj_index_table.insert( map < int, obj_index * >::value_type( pObjIndex->vnum, pObjIndex ) );
          tarea->objects.push_back( pObjIndex );
          ++top_obj_index;
       }
    }
-   return;
 }
 
-void load_strooms( area_data *tarea, FILE *fp, bool manual )
+void load_strooms( area_data * tarea, FILE * fp, bool manual )
 {
    room_index *pRoomIndex;
-   char *ln;
+   const char *ln;
    int count = 0;
 
    if( !tarea )
@@ -1285,10 +1271,10 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
       tmpBootDb = fBootDb;
       fBootDb = false;
 
-      list<area_data*>::iterator iarea;
-      for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+      list < area_data * >::iterator iarea;
+      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
       {
-         area_data *area = (*iarea);
+         area_data *area = *iarea;
 
          if( !str_cmp( area->filename, tarea->filename ) )
             continue;
@@ -1297,10 +1283,8 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: %s has vnum conflict with %s!",
-                        tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ),
-                        area->low_vnum, area->hi_vnum );
+            log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
             log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
             if( !manual )
             {
@@ -1362,7 +1346,7 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
       }
       pRoomIndex->name = fread_string( fp );
 
-      char *desc = fread_flagstring( fp );
+      const char *desc = fread_flagstring( fp );
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
          pRoomIndex->roomdesc = str_dup( desc );
 
@@ -1374,7 +1358,8 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
       sscanf( ln, "%d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9 );
 
       {
-         char *roomflags, *sect;
+         char *roomflags;
+         const char *sect;
          char flag[MIL];
          int value;
 
@@ -1417,7 +1402,7 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
          if( letter == 'R' && ( tarea->version == 0 || tarea->version == 1 ) )
             pRoomIndex->load_reset( fp, false );
 
-         else if( letter == 'R' && tarea->version == 1000 )  /* SmaugWiz resets */
+         else if( letter == 'R' && tarea->version == 1000 ) /* SmaugWiz resets */
          {
             exit_data *pexit;
             char letter2;
@@ -1447,33 +1432,28 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
 
                case 'M':
                   if( get_mob_index( arg2 ) == NULL && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) 'M': mobile %d doesn't exist.", __FUNCTION__, tarea->filename, count,
-                               arg2 );
+                     boot_log( "%s: SmaugWiz - %s (%d) 'M': mobile %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg2 );
                   break;
 
                case 'O':
                   if( get_obj_index( arg2 ) == NULL && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count,
-                               letter2, arg2 );
+                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter2, arg2 );
                   break;
 
                case 'P':
                   if( get_obj_index( arg2 ) == NULL && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count,
-                               letter2, arg2 );
+                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter2, arg2 );
                   if( arg4 > 0 )
                   {
                      if( get_obj_index( arg4 ) == NULL && fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'P': destination object %d doesn't exist.", __FUNCTION__,
-                                  tarea->filename, count, arg4 );
+                        boot_log( "%s: SmaugWiz - %s (%d) 'P': destination object %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg4 );
                   }
                   break;
 
                case 'G':
                case 'E':
                   if( get_obj_index( arg2 ) == NULL && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count,
-                               letter2, arg2 );
+                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter2, arg2 );
                   break;
 
                case 'T':
@@ -1482,13 +1462,11 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
                case 'H':
                   if( arg1 > 0 )
                      if( get_obj_index( arg2 ) == NULL && fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'H': object %d doesn't exist.", __FUNCTION__, tarea->filename, count,
-                                  arg2 );
+                        boot_log( "%s: SmaugWiz - %s (%d) 'H': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg2 );
                   break;
 
                case 'D':
-                  if( arg3 < 0 || arg3 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg3 ) )
-                      || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
+                  if( arg3 < 0 || arg3 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg3 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
                   {
                      bug( "%s: SmaugWiz - 'D': exit %d not door.", __FUNCTION__, arg3 );
                      log_printf( "Reset: %c %d %d %d %d %d", letter2, extra, arg1, arg2, arg3, arg4 );
@@ -1593,6 +1571,47 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
             pRoomIndex->extradesc.push_back( ed );
             ++top_ed;
          }
+         else if( letter == 'A' )   // This section was added in SmaugFUSS 1.8
+         {
+            affect_data *paf;
+            char *risa = NULL;
+            char flag[MIL];
+            int value;
+
+            paf = new affect_data;
+            paf->type = -1;
+            paf->duration = -1;
+            paf->bit = 0;
+            paf->modifier = 0;
+            paf->rismod.reset(  );
+
+            paf->location = fread_number( fp );
+
+            if( paf->location == APPLY_WEAPONSPELL
+                || paf->location == APPLY_WEARSPELL
+                || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+               paf->modifier = slot_lookup( fread_number( fp ) );
+            else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
+            {
+               value = fread_number( fp );
+               risa = flag_string( value, ris_flags );
+
+               while( risa[0] != '\0' )
+               {
+                  risa = one_argument( risa, flag );
+                  value = get_risflag( flag );
+                  if( value < 0 || value >= MAX_RIS_FLAG )
+                     bug( "%s: Unsupportable value for RISA flag: %s", __FUNCTION__, flag );
+                  else
+                     paf->rismod.set( value );
+               }
+            }
+            else
+               paf->modifier = fread_number( fp );
+            paf->bit = 0;
+            pRoomIndex->permaffects.push_back( paf );
+            ++top_affect;
+         }
          else if( letter == 'M' )   /* maps */
             fread_to_eol( fp );  /* Skip, AFKMud doesn't have these */
          else if( letter == '>' )
@@ -1610,17 +1629,14 @@ void load_strooms( area_data *tarea, FILE *fp, bool manual )
 
       if( !oldroom )
       {
-         int iHash = vnum % MAX_KEY_HASH;
-         pRoomIndex->next = room_index_hash[iHash];
-         room_index_hash[iHash] = pRoomIndex;
+         room_index_table.insert( map < int, room_index * >::value_type( pRoomIndex->vnum, pRoomIndex ) );
          tarea->rooms.push_back( pRoomIndex );
          ++top_room;
       }
    }
-   return;
 }
 
-void load_stresets( area_data *tarea, FILE *fp )
+void load_stresets( area_data * tarea, FILE * fp )
 {
    room_index *pRoomIndex = NULL;
    bool not01 = false;
@@ -1638,13 +1654,13 @@ void load_stresets( area_data *tarea, FILE *fp )
          return;
    }
 
-   if( tarea->rooms.empty() )
+   if( tarea->rooms.empty(  ) )
    {
       bug( "%s: No #ROOMS section found. Cannot load resets.", __FUNCTION__ );
       if( fBootDb )
       {
          shutdown_mud( "No #ROOMS" );
-         exit(1);
+         exit( 1 );
       }
       else
          return;
@@ -1672,12 +1688,12 @@ void load_stresets( area_data *tarea, FILE *fp )
       arg1 = fread_number( fp );
       arg2 = fread_number( fp );
       arg3 = fread_number( fp );
-      arg4 = arg5 = arg6 = arg7 = -1; // Converted resets have no overland coordinates
+      arg4 = arg5 = arg6 = arg7 = -1;  // Converted resets have no overland coordinates
       fread_to_eol( fp );
       ++count;
 
       // Converted resets are assumed to fire off 100% of the time
-      switch( letter )
+      switch ( letter )
       {
          default:
          case 'M':
@@ -1703,7 +1719,7 @@ void load_stresets( area_data *tarea, FILE *fp )
        * Validate parameters.
        * We're calling the index functions for the side effect.
        */
-      switch( letter )
+      switch ( letter )
       {
          default:
             bug( "%s: bad command '%c'.", __FUNCTION__, letter );
@@ -1751,7 +1767,7 @@ void load_stresets( area_data *tarea, FILE *fp )
             else
             {
                if( arg3 == 0 )
-                  arg3 = OBJ_VNUM_DUMMYOBJ; // This may look stupid, but for some reason it works.
+                  arg3 = OBJ_VNUM_DUMMYOBJ;  // This may look stupid, but for some reason it works.
                pRoomIndex->add_reset( letter, extra, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2 );
             }
             break;
@@ -1792,8 +1808,7 @@ void load_stresets( area_data *tarea, FILE *fp )
                break;
             }
 
-            if( arg2 < 0 || arg2 > MAX_DIR + 1
-                || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
+            if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
             {
                bug( "%s: 'D': exit %d not door.", __FUNCTION__, arg2 );
                log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
@@ -1827,18 +1842,79 @@ void load_stresets( area_data *tarea, FILE *fp )
    }
    if( !not01 )
    {
-      list<room_index*>::iterator iroom;
-      for( iroom = tarea->rooms.begin(); iroom != tarea->rooms.end(); ++iroom )
+      list < room_index * >::iterator iroom;
+      for( iroom = tarea->rooms.begin(  ); iroom != tarea->rooms.end(  ); ++iroom )
       {
-         pRoomIndex = (*iroom);
+         pRoomIndex = *iroom;
 
-         pRoomIndex->renumber_put_resets();
+         pRoomIndex->renumber_put_resets(  );
       }
    }
-   return;
 }
 
-void load_stock_area_file( const char *filename, bool manual )
+void load_stshops( FILE * fp )
+{
+   shop_data *pShop;
+
+   for( ;; )
+   {
+      mob_index *pMobIndex;
+      int iTrade;
+
+      pShop = new shop_data;
+      pShop->keeper = fread_number( fp );
+      if( pShop->keeper == 0 )
+      {
+         deleteptr( pShop );
+         break;
+      }
+      for( iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
+         pShop->buy_type[iTrade] = fread_number( fp );
+      pShop->profit_buy = fread_number( fp );
+      pShop->profit_sell = fread_number( fp );
+      pShop->profit_buy = URANGE( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
+      pShop->profit_sell = URANGE( 0, pShop->profit_sell, pShop->profit_buy - 5 );
+      pShop->open_hour = fread_number( fp );
+      pShop->close_hour = fread_number( fp );
+      fread_to_eol( fp );
+      pMobIndex = get_mob_index( pShop->keeper );
+      pMobIndex->pShop = pShop;
+      shoplist.push_back( pShop );
+      ++top_shop;
+   }
+}
+
+void load_strepairs( FILE * fp )
+{
+   repair_data *rShop;
+
+   for( ;; )
+   {
+      mob_index *pMobIndex;
+      int iFix;
+
+      rShop = new repair_data;
+      rShop->keeper = fread_number( fp );
+      if( rShop->keeper == 0 )
+      {
+         deleteptr( rShop );
+         break;
+      }
+      for( iFix = 0; iFix < MAX_FIX; ++iFix )
+         rShop->fix_type[iFix] = fread_number( fp );
+      rShop->profit_fix = fread_number( fp );
+      rShop->shop_type = fread_number( fp );
+      rShop->open_hour = fread_number( fp );
+      rShop->close_hour = fread_number( fp );
+      fread_to_eol( fp );
+      pMobIndex = get_mob_index( rShop->keeper );
+      pMobIndex->rShop = rShop;
+      repairlist.push_back( rShop );
+      ++top_repair;
+   }
+}
+
+void load_stock_area_file( const string & filename, bool manual )
 {
    area_data *tarea = NULL;
    char *word;
@@ -1849,7 +1925,7 @@ void load_stock_area_file( const char *filename, bool manual )
    {
       char fname[256];
 
-      snprintf( fname, 256, "%s%s", AREA_CONVERT_DIR, filename );
+      snprintf( fname, 256, "%s%s", AREA_CONVERT_DIR, filename.c_str(  ) );
       if( !( fpArea = fopen( fname, "r" ) ) )
       {
          perror( fname );
@@ -1859,14 +1935,14 @@ void load_stock_area_file( const char *filename, bool manual )
       if( stat( fname, &fst ) != -1 )
          umod = fst.st_mtime;
    }
-   else if( !( fpArea = fopen( filename, "r" ) ) )
+   else if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
    {
-      perror( filename );
-      bug( "%s: error loading file (can't open) %s", __FUNCTION__, filename );
+      perror( filename.c_str(  ) );
+      bug( "%s: error loading file (can't open) %s", __FUNCTION__, filename.c_str(  ) );
       return;
    }
 
-   if( umod == 0 && stat( filename, &fst ) != -1 )
+   if( umod == 0 && stat( filename.c_str(  ), &fst ) != -1 )
       umod = fst.st_mtime;
 
    if( fread_letter( fpArea ) != '#' )
@@ -1878,7 +1954,7 @@ void load_stock_area_file( const char *filename, bool manual )
       }
       else
       {
-         log_printf( "%s: No # found at start of area file %s", __FUNCTION__, filename );
+         log_printf( "%s: No # found at start of area file %s", __FUNCTION__, filename.c_str(  ) );
          return;
       }
    }
@@ -1910,7 +1986,7 @@ void load_stock_area_file( const char *filename, bool manual )
          {
             area_failed = true;
             FCLOSE( fpArea );
-            log_printf( "%s: Invalid header at start of area file %s", __FUNCTION__, filename );
+            log_printf( "%s: Invalid header at start of area file %s", __FUNCTION__, filename.c_str(  ) );
             return;
          }
       }
@@ -1919,7 +1995,7 @@ void load_stock_area_file( const char *filename, bool manual )
    {
       area_failed = true;
       FCLOSE( fpArea );
-      log_printf( "%s: Invalid header at start of area file %s", __FUNCTION__, filename );
+      log_printf( "%s: Invalid header at start of area file %s", __FUNCTION__, filename.c_str(  ) );
       return;
    }
    dotdcheck = 0;
@@ -1946,7 +2022,7 @@ void load_stock_area_file( const char *filename, bool manual )
       // Skip the helps as we no longer support them imbedded in area files
       else if( !str_cmp( word, "HELPS" ) )
       {
-         char *key, *text;
+         const char *key, *text;
 
          fread_number( fpArea );
          key = fread_flagstring( fpArea );
@@ -1963,7 +2039,7 @@ void load_stock_area_file( const char *filename, bool manual )
       }
       else if( !str_cmp( word, "FLAGS" ) )
       {
-         char *ln;
+         const char *ln;
          char *aflags;
          char flag[MIL];
          int x1, x2, value;
@@ -1988,7 +2064,7 @@ void load_stock_area_file( const char *filename, bool manual )
       else if( !str_cmp( word, "RANGES" ) )
       {
          int x1, x2, x3, x4;
-         char *ln;
+         const char *ln;
 
          for( ;; )
          {
@@ -2028,9 +2104,9 @@ void load_stock_area_file( const char *filename, bool manual )
       else if( !str_cmp( word, "ROOMS" ) )
          load_strooms( tarea, fpArea, manual );
       else if( !str_cmp( word, "SHOPS" ) )
-         load_shops( fpArea );
+         load_stshops( fpArea );
       else if( !str_cmp( word, "REPAIRS" ) )
-         load_repairs( fpArea );
+         load_strepairs( fpArea );
       else if( !str_cmp( word, "SPECIALS" ) )
       {
          bool done = false;
@@ -2067,7 +2143,7 @@ void load_stock_area_file( const char *filename, bool manual )
                   if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                   {
                      bug( "%s: 'M': vnum %d, no spec_fun called %s.", __FUNCTION__, pMobIndex->vnum, temp );
-                     pMobIndex->spec_funname.clear();
+                     pMobIndex->spec_funname.clear(  );
                   }
                   else
                      pMobIndex->spec_funname = temp;
@@ -2080,7 +2156,7 @@ void load_stock_area_file( const char *filename, bool manual )
       }
       else if( !str_cmp( word, "CLIMATE" ) )
       {
-         char *ln;
+         const char *ln;
          int x1, x2, x3, x4;
 
          if( dotdcheck > 0 && dotdcheck < 4 )
@@ -2114,7 +2190,7 @@ void load_stock_area_file( const char *filename, bool manual )
          if( ( area_version < 0 || area_version > 1 ) && area_version != 1000 )
          {
             area_failed = true;
-            bug( "%s: Version %d in %s is non-stock area format. Unable to process.", __FUNCTION__, area_version, filename );
+            bug( "%s: Version %d in %s is non-stock area format. Unable to process.", __FUNCTION__, area_version, filename.c_str(  ) );
             if( !manual )
             {
                shutdown_mud( "Non-standard area format" );
@@ -2193,7 +2269,7 @@ void load_stock_area_file( const char *filename, bool manual )
          tarea->install_date = umod;
    }
    else
-      log_printf( "(%s)", filename );
+      log_printf( "(%s)", filename.c_str(  ) );
 }
 
 /* Use of the forceload argument with this command isn't recommended
@@ -2210,11 +2286,11 @@ CMDF( do_areaconvert )
    area_data *tarea = NULL;
    int tmp;
    bool manual;
-   char arg[MIL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       if( ch )
          ch->print( "Convert what zone?\r\n" );
@@ -2225,7 +2301,7 @@ CMDF( do_areaconvert )
 
    area_failed = false;
 
-   mudstrlcpy( strArea, arg, MIL );
+   mudstrlcpy( strArea, arg.c_str(  ), MIL );
 
    if( ch )
    {
@@ -2235,7 +2311,7 @@ CMDF( do_areaconvert )
    }
    else
       manual = false;
-   if( argument && !str_cmp( argument, "forceload" ) )
+   if( !argument.empty(  ) && !str_cmp( argument, "forceload" ) )
       load_area_file( strArea, false );
    else
       load_stock_area_file( arg, manual );
@@ -2254,7 +2330,7 @@ CMDF( do_areaconvert )
       {
          ch->print( "&YLinking exits...\r\n" );
          tarea->fix_exits(  );
-         if( !tarea->rooms.empty() )
+         if( !tarea->rooms.empty(  ) )
          {
             tmp = tarea->nplayer;
             tarea->nplayer = 0;
@@ -2273,5 +2349,4 @@ CMDF( do_areaconvert )
          write_area_list(  );
       }
    }
-   return;
 }

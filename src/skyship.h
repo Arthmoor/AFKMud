@@ -30,19 +30,19 @@
 #ifndef __SKYSHIP_H__
 #define __SKYSHIP_H__
 
-#define LANDING_SITE_FILE "landing_sites.dat"
+#define LANDING_SITE_FILE MAP_DIR "landing_sites.dat"
 
 class landing_data
 {
  private:
-   landing_data( const landing_data& l );
-   landing_data& operator=( const landing_data& );
+   landing_data( const landing_data & l );
+     landing_data & operator=( const landing_data & );
 
  public:
-   landing_data();
-   ~landing_data();
+     landing_data(  );
+    ~landing_data(  );
 
-   char *area;
+   string area;
    int cost;
    short map;
    short mx;

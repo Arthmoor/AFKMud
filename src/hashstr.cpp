@@ -56,8 +56,8 @@ const int STR_HASH_SIZE = 1024;
 struct hashstr_data
 {
    struct hashstr_data *next; /* next hash element */
-   unsigned short links;  /* number of links to this string */
-   unsigned short length; /* length of string */
+   unsigned short links;   /* number of links to this string */
+   unsigned short length;  /* length of string */
 };
 
 struct hashstr_data *string_hash[STR_HASH_SIZE];
@@ -199,7 +199,7 @@ void hash_dump( int hash )
       fprintf( stderr, "Total strings in hash %d: %d\r\n", hash, c );
 }
 
-char *check_hash( char *str )
+char *check_hash( const char *str )
 {
    static char buf[1024];
    int len, hash, psize, p = 0, c;
@@ -216,8 +216,7 @@ char *check_hash( char *str )
          p = c + 1;
       }
    if( fnd )
-      snprintf( buf, 1024, "Hash info on string: %s\r\nLinks: %d  Position: %d/%d  Hash: %d  Length: %d\r\n",
-                str, fnd->links, p, c, hash, fnd->length );
+      snprintf( buf, 1024, "Hash info on string: %s\r\nLinks: %d  Position: %d/%d  Hash: %d  Length: %d\r\n", str, fnd->links, p, c, hash, fnd->length );
    else
       snprintf( buf, 1024, "%s not found.\r\n", str );
    return buf;
@@ -241,7 +240,7 @@ char *hash_stats( void )
             hilink = ptr->links;
          totlinks += ptr->links;
          bytesused += ( ptr->length + 1 + sizeof( struct hashstr_data ) );
-         wouldhave += ( ( ptr->links * sizeof(struct hashstr_data) ) + ( ptr->links * ( ptr->length + 1 ) ) );
+         wouldhave += ( ( ptr->links * sizeof( struct hashstr_data ) ) + ( ptr->links * ( ptr->length + 1 ) ) );
       }
    }
    snprintf( buf, 1024,
@@ -279,7 +278,7 @@ bool in_hash_table( char *str )
    psize = sizeof( struct hashstr_data );
    hash = len % STR_HASH_SIZE;
    for( ptr = string_hash[hash]; ptr; ptr = ptr->next )
-      if( len == ptr->length && str == ( (char *)ptr + psize ) )
+      if( len == ptr->length && str == ( ( char * )ptr + psize ) )
          return true;
    return false;
 }

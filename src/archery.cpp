@@ -75,7 +75,7 @@ Additional portions by Samson.
 #include "objindex.h"
 #include "roomindex.h"
 
-int weapon_prof_bonus_check( char_data *, obj_data *, int * );
+int weapon_prof_bonus_check( char_data *, obj_data *, int & );
 SPELLF( spell_attack );
 int calc_thac0( char_data *, char_data *, int );
 double ris_damage( char_data *, double, int );
@@ -87,11 +87,11 @@ bool can_use_skill( char_data *, int, int );
 
 obj_data *find_quiver( char_data * ch )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( ch->can_see_obj( obj, false ) )
       {
@@ -104,11 +104,12 @@ obj_data *find_quiver( char_data * ch )
 
 obj_data *find_projectile( char_data * ch, obj_data * quiver )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = quiver->contents.begin(); iobj != quiver->contents.end(); ++iobj )
+   for( iobj = quiver->contents.begin(  ); iobj != quiver->contents.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
+
       if( ch->can_see_obj( obj, false ) )
       {
          if( obj->item_type == ITEM_PROJECTILE )
@@ -186,12 +187,9 @@ CMDF( do_draw )
 
    /*
     * Changed the last arg here because for some whacked reason it won't accept ITEM_HOLD 
-    */
-   /*
     * Just make sure all your projectiles have the 'hold' wearflag on them 
     */
    wear_obj( ch, arrow, true, -1 );
-   return;
 }
 
 /* Bowfire code -- Used to dislodge an arrow already lodged */
@@ -200,7 +198,7 @@ CMDF( do_dislodge )
    obj_data *arrow = NULL;
    double dam = 0;
 
-   if( !argument || argument[0] == '\0' ) /* empty */
+   if( argument.empty(  ) )   /* empty */
    {
       ch->print( "Dislodge what?\r\n" );
       return;
@@ -216,7 +214,6 @@ CMDF( do_dislodge )
       arrow->extra_flags.reset( ITEM_LODGED );
       dam = number_range( ( 3 * arrow->value[1] ), ( 3 * arrow->value[2] ) );
       damage( ch, ch, dam, TYPE_UNDEFINED );
-      return;
    }
    else if( ch->get_eq( WEAR_LODGE_ARM ) != NULL )
    {
@@ -228,7 +225,6 @@ CMDF( do_dislodge )
       arrow->extra_flags.reset( ITEM_LODGED );
       dam = number_range( ( 3 * arrow->value[1] ), ( 2 * arrow->value[2] ) );
       damage( ch, ch, dam, TYPE_UNDEFINED );
-      return;
    }
    else if( ch->get_eq( WEAR_LODGE_LEG ) != NULL )
    {
@@ -240,13 +236,9 @@ CMDF( do_dislodge )
       arrow->extra_flags.reset( ITEM_LODGED );
       dam = number_range( ( 2 * arrow->value[1] ), ( 2 * arrow->value[2] ) );
       damage( ch, ch, dam, TYPE_UNDEFINED );
-      return;
    }
    else
-   {
       ch->print( "You have nothing lodged in your body.\r\n" );
-      return;
-   }
 }
 
 /*
@@ -287,7 +279,7 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
    }
 
    if( wield )
-      prof_bonus = weapon_prof_bonus_check( ch, wield, &prof_gsn );
+      prof_bonus = weapon_prof_bonus_check( ch, wield, prof_gsn );
    else
       prof_bonus = 0;
 
@@ -341,7 +333,6 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
          projectile->to_room( victim->in_room, victim );
       }
       damage( ch, victim, 0, dt );
-      tail_chain(  );
       return rNONE;
    }
 
@@ -395,8 +386,7 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
    else if( victim->position == POS_EVASIVE )
       dam = .8 * dam;
 
-   if( !ch->isnpc(  ) && ch->pcdata->learned[gsn_enhanced_damage] > 0
-       && number_percent(  ) < ch->pcdata->learned[gsn_enhanced_damage] )
+   if( !ch->isnpc(  ) && ch->pcdata->learned[gsn_enhanced_damage] > 0 && number_percent(  ) < ch->pcdata->learned[gsn_enhanced_damage] )
       dam += ( int )( dam * ch->LEARNED( gsn_enhanced_damage ) / 120 );
    else
       ch->learn_from_failure( gsn_enhanced_damage );
@@ -439,7 +429,7 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
       /*
        * find high ris 
        *//*
-       * FIND ME 
+       * FIXME: Absorb handling needs to be included
        */
       for( x = RIS_PLUS1; x <= RIS_PLUS6; ++x )
       {
@@ -472,7 +462,7 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
     */
    if( dam == -1 )
    {
-      if( dt >= 0 && dt < top_sn )
+      if( dt >= 0 && dt < num_skills )
       {
          skill_type *skill = skill_table[dt];
          bool found = false;
@@ -580,11 +570,11 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
     */
    if( wield && !victim->has_immune( RIS_MAGIC ) && !victim->in_room->flags.test( ROOM_NO_MAGIC ) )
    {
-      list<affect_data*>::iterator paf;
+      list < affect_data * >::iterator paf;
 
-      for( paf = wield->pIndexData->affects.begin(); paf != wield->pIndexData->affects.end(); ++paf )
+      for( paf = wield->pIndexData->affects.begin(  ); paf != wield->pIndexData->affects.end(  ); ++paf )
       {
-         affect_data *af = (*paf);
+         affect_data *af = *paf;
 
          if( af->location == APPLY_WEAPONSPELL && IS_VALID_SN( af->modifier ) && skill_table[af->modifier]->spell_fun )
             retcode = ( *skill_table[af->modifier]->spell_fun ) ( af->modifier, 7, ch, victim );
@@ -595,9 +585,9 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
          return retcode;
       }
 
-      for( paf = wield->affects.begin(); paf != wield->affects.end(); ++paf )
+      for( paf = wield->affects.begin(  ); paf != wield->affects.end(  ); ++paf )
       {
-         affect_data *af = (*paf);
+         affect_data *af = *paf;
 
          if( af->location == APPLY_WEAPONSPELL && IS_VALID_SN( af->modifier ) && skill_table[af->modifier]->spell_fun )
             retcode = ( *skill_table[af->modifier]->spell_fun ) ( af->modifier, 7, ch, victim );
@@ -609,15 +599,13 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
       }
    }
    projectile->extract(  );
-   tail_chain(  );
    return retcode;
 }
 
 /*
  * Perform the actual attack on a victim			-Thoric
  */
-ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
-                          obj_data * projectile, short dist, short dt, char *stxt, short color )
+ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon, obj_data * projectile, short dist, short dt, const char *stxt, short color )
 {
    /*
     * added wtype for check to determine skill used for ranged attacks - Grimm 
@@ -631,7 +619,7 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
        */
       if( projectile )
       {
-         ch->printf( "Your %s is blasted from existance by a godly presense.", projectile->myobj(  ) );
+         ch->printf( "Your %s is blasted from existance by a godly presense.", projectile->myobj(  ).c_str(  ) );
          act( color, "A godly presence smites $p!", ch, projectile, NULL, TO_ROOM );
          projectile->extract(  );
       }
@@ -694,7 +682,7 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
     * * range by the code and as such the proper skill will be used. 
     * * Grimm 
     */
-   switch( projectile->value[4] )
+   switch ( projectile->value[4] )
    {
       default:
       case PROJ_BOLT:
@@ -713,7 +701,7 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
 
    if( number_percent(  ) > 50 || ( projectile && weapon && can_use_skill( ch, number_percent(  ), wtype ) ) )
    {
-      if( victim->isnpc(  ) )   /* This way the poor sap can hunt its attacker */
+      if( victim->isnpc(  ) ) /* This way the poor sap can hunt its attacker */
          victim->unset_actflag( ACT_SENTINEL );
       if( projectile )
          global_retcode = projectile_hit( ch, victim, weapon, projectile, dist );
@@ -762,7 +750,7 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
  * Basically the same guts as do_scan() from above (please keep them in
  * sync) used to find the victim we're firing at.	-Thoric
  */
-char_data *scan_for_vic( char_data * ch, exit_data * pexit, char *name )
+char_data *scan_for_vic( char_data * ch, exit_data * pexit, const string & name )
 {
    char_data *victim;
    room_index *was_in_room;
@@ -851,11 +839,11 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, char *name )
 /*
  * Generic use ranged attack function			-Thoric & Tricops
  */
-ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_data * projectile, short dt, short range )
+ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_data * projectile, short dt, short range )
 {
-   char arg[MIL], arg1[MIL], temp[MIL];
+   string arg, arg1, temp;
 
-   if( argument && argument[0] != '\0' && argument[0] == '\'' )
+   if( !argument.empty(  ) && argument[0] == '\'' )
    {
       one_argument( argument, temp );
       argument = temp;
@@ -864,7 +852,7 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg1 );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Where?  At who?\r\n" );
       return rNONE;
@@ -907,7 +895,7 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
       }
       if( ch->in_room->tunnel > 0 )
       {
-         if( (int)ch->in_room->people.size() >= ch->in_room->tunnel )
+         if( ( int )ch->in_room->people.size(  ) >= ch->in_room->tunnel )
          {
             ch->print( "This room is too cramped to perform such an attack.\r\n" );
             return rNONE;
@@ -952,7 +940,7 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
    }
 
    char_data *vch = NULL;
-   if( pexit && arg1[0] != '\0' )
+   if( pexit && !arg1.empty(  ) )
    {
       if( !( vch = scan_for_vic( ch, pexit, arg1 ) ) )
       {
@@ -978,6 +966,7 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
          return rNONE;
       }
    }
+
    if( vch )
    {
       if( !vch->CAN_PKILL(  ) || !ch->CAN_PKILL(  ) )
@@ -990,7 +979,7 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
    }
 
    room_index *was_in_room = ch->in_room;
-   char *stxt = "burst of energy";
+   const char *stxt = "burst of energy";
    if( projectile )
    {
       projectile->separate(  );
@@ -1073,7 +1062,7 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
    /*
     * reverse direction text from move_char 
     */
-   char *dtxt = rev_exit( pexit->vdir );
+   const char *dtxt = rev_exit( pexit->vdir );
    int dist = 0;
 
    while( dist <= range )
@@ -1088,16 +1077,13 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
           * whadoyahknow, the door's closed 
           */
          if( projectile )
-            ch->printf( "&wYou see your %s pierce a door in the distance to the %s.", projectile->myobj(  ), dir_name[dir] );
+            ch->printf( "&wYou see your %s pierce a door in the distance to the %s.", projectile->myobj(  ).c_str(  ), dir_name[dir] );
          else
             ch->printf( "&wYou see your %s hit a door in the distance to the %s.", stxt, dir_name[dir] );
          if( projectile )
-            act_printf( AT_GREY, ch, projectile, NULL, TO_ROOM,
-                        "$p flies in from %s and implants itself solidly in the %sern door.", dtxt, dir_name[dir] );
+            act_printf( AT_GREY, ch, projectile, NULL, TO_ROOM, "$p flies in from %s and implants itself solidly in the %sern door.", dtxt, dir_name[dir] );
          else
-            act_printf( AT_GREY, ch, NULL, NULL, TO_ROOM,
-                        "%s flies in from %s and implants itself solidly in the %sern door.", aoran( stxt ), dtxt,
-                        dir_name[dir] );
+            act_printf( AT_GREY, ch, NULL, NULL, TO_ROOM, "%s flies in from %s and implants itself solidly in the %sern door.", aoran( stxt ), dtxt, dir_name[dir] );
          break;
       }
 
@@ -1106,13 +1092,12 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
        */
       if( !victim )
       {
-         list<char_data*>::iterator ich;
-         for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+         list < char_data * >::iterator ich;
+         for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
          {
-            vch = (*ich);
+            vch = *ich;
 
-            if( ( ( ch->isnpc(  ) && !vch->isnpc(  ) ) || ( !ch->isnpc(  ) && vch->isnpc(  ) ) )
-                && number_bits( 1 ) == 0 )
+            if( ( ( ch->isnpc(  ) && !vch->isnpc(  ) ) || ( !ch->isnpc(  ) && vch->isnpc(  ) ) ) && number_bits( 1 ) == 0 )
             {
                victim = vch;
                break;
@@ -1153,8 +1138,7 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
       {
          if( projectile )
          {
-            act( AT_GREY, "Your $t falls harmlessly to the ground to the $T.",
-                 ch, projectile->myobj(  ), dir_name[dir], TO_CHAR );
+            act( AT_GREY, "Your $t falls harmlessly to the ground to the $T.", ch, projectile->myobj(  ).c_str(  ), dir_name[dir], TO_CHAR );
             act( AT_GREY, "$p flies in from $T and falls harmlessly to the ground here.", ch, projectile, dtxt, TO_ROOM );
             if( projectile->in_obj )
                projectile->from_obj(  );
@@ -1174,10 +1158,8 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
       {
          if( projectile )
          {
-            act( AT_GREY, "Your $t hits a wall and bounces harmlessly to the ground to the $T.",
-                 ch, projectile->myobj(  ), dir_name[dir], TO_CHAR );
-            act( AT_GREY, "$p strikes the $Tsern wall and falls harmlessly to the ground.",
-                 ch, projectile, dir_name[dir], TO_ROOM );
+            act( AT_GREY, "Your $t hits a wall and bounces harmlessly to the ground to the $T.", ch, projectile->myobj(  ).c_str(  ), dir_name[dir], TO_CHAR );
+            act( AT_GREY, "$p strikes the $Tsern wall and falls harmlessly to the ground.", ch, projectile, dir_name[dir], TO_ROOM );
             if( projectile->in_obj )
                projectile->from_obj(  );
             if( projectile->carried_by )
@@ -1187,8 +1169,7 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
          else
          {
             act( AT_MAGIC, "Your $t harmlessly hits a wall to the $T.", ch, stxt, dir_name[dir], TO_CHAR );
-            act( AT_MAGIC, "$t strikes the $Tsern wall and falls harmlessly to the ground.",
-                 ch, aoran( stxt ), dir_name[dir], TO_ROOM );
+            act( AT_MAGIC, "$t strikes the $Tsern wall and falls harmlessly to the ground.", ch, aoran( stxt ), dir_name[dir], TO_ROOM );
          }
          break;
       }
@@ -1204,14 +1185,14 @@ ch_ret ranged_attack( char_data * ch, char *argument, obj_data * weapon, obj_dat
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
 
    if( projectile->carried_by == ch )
-      projectile->extract();
+      projectile->extract(  );
    return rNONE;
 }
 
 /* Bowfire code -- actual firing function */
 CMDF( do_fire )
 {
-   char arg[MIL];
+   string arg;
    char_data *victim = NULL;
    obj_data *arrow, *bow;
    short max_dist;
@@ -1223,7 +1204,7 @@ CMDF( do_fire )
    }
 
    one_argument( argument, arg );
-   if( arg[0] == '\0' && ch->fighting == NULL )
+   if( arg.empty(  ) && ch->fighting == NULL )
    {
       ch->print( "Fire at whom or what?\r\n" );
       return;
@@ -1254,7 +1235,7 @@ CMDF( do_fire )
 
    if( bow->value[5] != arrow->value[4] )
    {
-      char *msg = "You have nothing to fire...\r\n";
+      string msg = "You have nothing to fire...\r\n";
 
       switch ( bow->value[5] )
       {
@@ -1288,14 +1269,13 @@ CMDF( do_fire )
     * handle the ranged attack 
     */
    ranged_attack( ch, argument, bow, arrow, TYPE_HIT + arrow->value[3], max_dist );
-   return;
 }
 
 /*
  * Attempt to fire at a victim.
  * Returns false if no attempt was made
  */
-bool mob_fire( char_data * ch, char *name )
+bool mob_fire( char_data * ch, const string & name )
 {
    obj_data *arrow, *bow;
    short max_dist;

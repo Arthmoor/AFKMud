@@ -40,7 +40,7 @@ if( !str_cmp( word, (literal) ) )     \
    break;                             \
 }
 
-list<morph_data*> morphlist;
+list < morph_data * >morphlist;
 int morph_vnum = 0;
 
 /*
@@ -49,12 +49,12 @@ int morph_vnum = 0;
 void copy_morph( morph_data *, morph_data * );
 CMDF( do_morphstat );
 
-char_morph::char_morph()
+char_morph::char_morph(  )
 {
    init_memory( &morph, &cast_allowed, sizeof( cast_allowed ) );
 }
 
-char_morph::~char_morph()
+char_morph::~char_morph(  )
 {
 }
 
@@ -62,16 +62,16 @@ char_morph::~char_morph()
  * Given the Morph's name, returns the pointer to the morph structure.
  * --Shaddai
  */
-morph_data *get_morph( char *arg )
+morph_data *get_morph( const string & arg )
 {
-   list<morph_data*>::iterator imorph;
+   list < morph_data * >::iterator imorph;
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
       return NULL;
 
-   for( imorph = morphlist.begin(); imorph != morphlist.end(); ++imorph )
+   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
-      morph_data *morph = (*imorph);
+      morph_data *morph = *imorph;
 
       if( !str_cmp( morph->name, arg ) )
          return morph;
@@ -85,14 +85,14 @@ morph_data *get_morph( char *arg )
  */
 morph_data *get_morph_vnum( int vnum )
 {
-   list<morph_data*>::iterator imorph;
+   list < morph_data * >::iterator imorph;
 
    if( vnum < 1 )
       return NULL;
 
-   for( imorph = morphlist.begin(); imorph != morphlist.end(); ++imorph )
+   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
-      morph_data *morph = (*imorph);
+      morph_data *morph = *imorph;
 
       if( morph->vnum == vnum )
          return morph;
@@ -110,7 +110,7 @@ bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
 {
    if( morph == NULL )
       return false;
-   if( ch->is_immortal(  ) || ch->isnpc(  ) )  /* Let immortals morph to anything Also NPC can do any morph  */
+   if( ch->is_immortal(  ) || ch->isnpc(  ) )   /* Let immortals morph to anything Also NPC can do any morph  */
       return true;
    if( morph->no_cast && is_cast )
       return false;
@@ -152,8 +152,7 @@ bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
       if( !found )
          return false;
    }
-   if( morph->dayfrom != -1 && morph->dayto != -1 &&
-       ( morph->dayto < ( time_info.day + 1 ) || morph->dayfrom > ( time_info.day + 1 ) ) )
+   if( morph->dayfrom != -1 && morph->dayto != -1 && ( morph->dayto < ( time_info.day + 1 ) || morph->dayfrom > ( time_info.day + 1 ) ) )
       return false;
    return true;
 }
@@ -161,16 +160,16 @@ bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
 /*
  * Find a morph you can use -- Shaddai
  */
-morph_data *find_morph( char_data * ch, char *target, bool is_cast )
+morph_data *find_morph( char_data * ch, const string & target, bool is_cast )
 {
-   list<morph_data*>::iterator imorph;
+   list < morph_data * >::iterator imorph;
 
-   if( !target || target[0] == '\0' )
+   if( target.empty(  ) )
       return NULL;
 
-   for( imorph = morphlist.begin(); imorph != morphlist.end(); ++imorph )
+   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
-      morph_data *morph = (*imorph);
+      morph_data *morph = *imorph;
 
       if( str_cmp( morph->name, target ) )
          continue;
@@ -188,6 +187,7 @@ void fwrite_morph( FILE * fp, morph_data * morph )
 {
    if( !morph )
       return;
+
    fprintf( fp, "Version         %d\n", MORPHFILEVER );
    fprintf( fp, "Morph           %s\n", morph->name );
    if( morph->obj[0] != 0 || morph->obj[1] != 0 || morph->obj[2] != 0 )
@@ -315,7 +315,6 @@ void fwrite_morph( FILE * fp, morph_data * morph )
    if( morph->cast_allowed )
       fprintf( fp, "CastAllowed     %d\n", morph->cast_allowed );
    fprintf( fp, "%s", "End\n\n" );
-   return;
 }
 
 /*
@@ -324,7 +323,7 @@ void fwrite_morph( FILE * fp, morph_data * morph )
  */
 void save_morphs( void )
 {
-   list<morph_data*>::iterator imorph;
+   list < morph_data * >::iterator imorph;
    FILE *fp;
 
    if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "w" ) ) )
@@ -333,15 +332,14 @@ void save_morphs( void )
       perror( SYSTEM_DIR MORPH_FILE );
       return;
    }
-   for( imorph = morphlist.begin(); imorph != morphlist.end(); ++imorph )
+   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
-      morph_data *morph = (*imorph);
+      morph_data *morph = *imorph;
 
       fwrite_morph( fp, morph );
    }
    fprintf( fp, "%s", "#END\n" );
    FCLOSE( fp );
-   return;
 }
 
 /*
@@ -353,8 +351,9 @@ void save_morphs( void )
  */
 CMDF( do_morphset )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL], buf[MSL];
-   char *origarg = argument;
+   string arg1, arg2, arg3;
+   string origarg = argument;
+   char buf[MSL];
    int value;
    morph_data *morph = NULL;
 
@@ -419,21 +418,25 @@ CMDF( do_morphset )
    if( ch->substate == SUB_REPEATCMD )
    {
       morph = ( morph_data * ) ch->pcdata->dest_buf;
+
       if( !morph )
       {
          ch->print( "Someone deleted your morph!\r\n" );
          argument = "done";
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          do_morphstat( ch, morph->name );
          return;
       }
+
       if( !str_cmp( argument, "stat" ) )
       {
          funcf( ch, do_morphstat, "%s help", morph->name );
          return;
       }
+
       if( !str_cmp( argument, "done" ) || !str_cmp( argument, "off" ) )
       {
          ch->print( "Morphset mode off.\r\n" );
@@ -443,35 +446,38 @@ CMDF( do_morphset )
          return;
       }
    }
+
    if( morph )
    {
-      mudstrlcpy( arg1, morph->name, MIL );
+      arg1 = morph->name;
       argument = one_argument( argument, arg2 );
-      mudstrlcpy( arg3, argument, MIL );
+      arg3 = argument;
    }
    else
    {
       argument = one_argument( argument, arg1 );
       argument = one_argument( argument, arg2 );
-      mudstrlcpy( arg3, argument, MIL );
+      arg3 = argument;
    }
+
    if( !str_cmp( arg1, "on" ) )
    {
       ch->print( "Syntax: morphset <morph> on.\r\n" );
       return;
    }
-   value = is_number( arg3 ) ? atoi( arg3 ) : -1;
+   value = is_number( arg3 ) ? atoi( arg3.c_str(  ) ) : -1;
 
-   if( atoi( arg3 ) < -1 && value == -1 )
-      value = atoi( arg3 );
+   if( atoi( arg3.c_str(  ) ) < -1 && value == -1 )
+      value = atoi( arg3.c_str(  ) );
 
-   if( ch->substate != SUB_REPEATCMD && arg1[0] != '\0' && !str_cmp( arg1, "save" ) )
+   if( ch->substate != SUB_REPEATCMD && !arg1.empty(  ) && !str_cmp( arg1, "save" ) )
    {
       save_morphs(  );
       ch->print( "Morph data saved.\r\n" );
       return;
    }
-   if( arg1[0] == '\0' || ( arg2[0] == '\0' && ch->substate != SUB_REPEATCMD ) || !str_cmp( arg1, "?" ) )
+
+   if( arg1.empty(  ) || ( arg2.empty(  ) && ch->substate != SUB_REPEATCMD ) || !str_cmp( arg1, "?" ) )
    {
       if( ch->substate == SUB_REPEATCMD )
       {
@@ -504,7 +510,7 @@ CMDF( do_morphset )
       if( !is_number( arg1 ) )
          morph = get_morph( arg1 );
       else
-         morph = get_morph_vnum( atoi( arg1 ) );
+         morph = get_morph_vnum( atoi( arg1.c_str(  ) ) );
 
       if( morph == NULL )
       {
@@ -512,6 +518,7 @@ CMDF( do_morphset )
          return;
       }
    }
+
    if( !str_cmp( arg2, "on" ) )
    {
       ch->CHECK_SUBRESTRICTED(  );
@@ -749,21 +756,21 @@ CMDF( do_morphset )
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->hit );
       if( str_cmp( arg3, "0" ) )
-         morph->hit = str_dup( arg3 );
+         morph->hit = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "mana" ) )
    {
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->mana );
       if( str_cmp( arg3, "0" ) )
-         morph->mana = str_dup( arg3 );
+         morph->mana = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "move" ) )
    {
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->move );
       if( str_cmp( arg3, "0" ) )
-         morph->move = str_dup( arg3 );
+         morph->move = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "ac" ) )
    {
@@ -779,14 +786,14 @@ CMDF( do_morphset )
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->hitroll );
       if( str_cmp( arg3, "0" ) )
-         morph->hitroll = str_dup( arg3 );
+         morph->hitroll = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "damroll" ) )
    {
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->damroll );
       if( str_cmp( arg3, "0" ) )
-         morph->damroll = str_dup( arg3 );
+         morph->damroll = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "dodge" ) )
    {
@@ -800,16 +807,15 @@ CMDF( do_morphset )
    else if( !str_prefix( "obj", arg2 ) )
    {
       int oindex;
-      char temp[MSL];
+      string temp;
 
-      if( arg2[3] == '\0' )
+      if( arg2.length(  ) <= 3 )
       {
          ch->print( "Obj 1, 2, or 3.\r\n" );
          return;
       }
-      temp[0] = arg2[3];
-      temp[1] = '\0';
-      oindex = atoi( temp );
+      temp = arg2.substr( 3, arg3.length(  ) );
+      oindex = atoi( temp.c_str(  ) );
       if( oindex > 3 || oindex < 1 )
       {
          ch->print( "Obj 1, 2, or 3.\r\n" );
@@ -852,16 +858,15 @@ CMDF( do_morphset )
    else if( !str_prefix( arg2, "objuse" ) )
    {
       int oindex;
-      char temp[MIL];
+      string temp;
 
-      if( arg2[6] == '\0' )
+      if( arg2.length(  ) <= 6 )
       {
          ch->print( "Objuse 1, 2 or 3?\r\n" );
          return;
       }
-      temp[0] = arg2[6];
-      temp[1] = '\0';
-      oindex = atoi( temp );
+      temp = arg2.substr( 6, arg2.length(  ) );
+      oindex = atoi( temp.c_str(  ) );
       if( oindex > 3 || oindex < 1 )
       {
          ch->print( "Objuse 1, 2, or 3?\r\n" );
@@ -888,153 +893,162 @@ CMDF( do_morphset )
    }
    else if( !str_cmp( arg2, "resistant" ) || !str_cmp( arg2, "r" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> resistant <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->resistant.flip( value );
       }
    }
    else if( !str_cmp( arg2, "susceptible" ) || !str_cmp( arg2, "s" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> susceptible <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->suscept.flip( value );
       }
    }
    else if( !str_cmp( arg2, "immune" ) || !str_cmp( arg2, "i" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> immune <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->immune.flip( value );
       }
    }
    else if( !str_cmp( arg2, "absorb" ) || !str_cmp( arg2, "a" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> absorb <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->absorb.flip( value );
       }
    }
    else if( !str_cmp( arg2, "noresistant" ) || !str_cmp( arg2, "nr" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> noresistant <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->no_resistant.flip( value );
       }
    }
    else if( !str_cmp( arg2, "nosusceptible" ) || !str_cmp( arg2, "ns" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> nosusceptible <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->no_suscept.flip( value );
       }
    }
    else if( !str_cmp( arg2, "noimmune" ) || !str_cmp( arg2, "ni" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> noimmune <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->no_immune.flip( value );
       }
    }
    else if( !str_cmp( arg2, "affected" ) || !str_cmp( arg2, "aff" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> affected <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->affected_by.flip( value );
       }
    }
    else if( !str_cmp( arg2, "noaffected" ) || !str_cmp( arg2, "naff" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: morphset <morph> noaffected <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             morph->no_affected_by.flip( value );
       }
@@ -1042,41 +1056,41 @@ CMDF( do_morphset )
    else if( !str_cmp( arg2, "short" ) )
    {
       DISPOSE( morph->short_desc );
-      morph->short_desc = str_dup( arg3 );
+      morph->short_desc = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "morphother" ) )
    {
       DISPOSE( morph->morph_other );
-      morph->morph_other = str_dup( arg3 );
+      morph->morph_other = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "morphself" ) )
    {
       DISPOSE( morph->morph_self );
-      morph->morph_self = str_dup( arg3 );
+      morph->morph_self = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "unmorphother" ) )
    {
       DISPOSE( morph->unmorph_other );
-      morph->unmorph_other = str_dup( arg3 );
+      morph->unmorph_other = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "unmorphself" ) )
    {
       DISPOSE( morph->unmorph_self );
-      morph->unmorph_self = str_dup( arg3 );
+      morph->unmorph_self = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "keyword" ) )
    {
       DISPOSE( morph->key_words );
-      morph->key_words = str_dup( arg3 );
+      morph->key_words = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "long" ) )
-      strdup_printf( &morph->long_desc, "%s\r\n", arg3 );
+      strdup_printf( &morph->long_desc, "%s\r\n", arg3.c_str(  ) );
    else if( !str_cmp( arg2, "description" ) || !str_cmp( arg2, "desc" ) )
    {
-      if( arg3[0] )
+      if( !arg3.empty(  ) )
       {
          DISPOSE( morph->description );
-         morph->description = str_dup( arg3 );
+         morph->description = str_dup( arg3.c_str(  ) );
       }
       ch->CHECK_SUBRESTRICTED(  );
       if( ch->substate == SUB_REPEATCMD )
@@ -1094,14 +1108,14 @@ CMDF( do_morphset )
    else if( !str_cmp( arg2, "name" ) )
    {
       DISPOSE( morph->name );
-      morph->name = str_dup( arg3 );
+      morph->name = str_dup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "help" ) )
    {
-      if( arg3[0] )
+      if( !arg3.empty(  ) )
       {
          DISPOSE( morph->help );
-         morph->help = str_dup( arg3 );
+         morph->help = str_dup( arg3.c_str(  ) );
       }
       ch->CHECK_SUBRESTRICTED(  );
       if( ch->substate == SUB_REPEATCMD )
@@ -1118,29 +1132,29 @@ CMDF( do_morphset )
    }
    else if( !str_cmp( arg2, "skills" ) )
    {
-      if( arg3[0] == '\0' || !str_cmp( arg3, "none" ) )
+      if( arg3.empty(  ) || !str_cmp( arg3, "none" ) )
       {
          DISPOSE( morph->skills );
          return;
       }
       if( !morph->skills )
-         mudstrlcpy( buf, arg3, MSL );
+         mudstrlcpy( buf, arg3.c_str(  ), MSL );
       else
-         snprintf( buf, MSL, "%s %s", morph->skills, arg3 );
+         snprintf( buf, MSL, "%s %s", morph->skills, arg3.c_str(  ) );
       DISPOSE( morph->skills );
       morph->skills = str_dup( buf );
    }
    else if( !str_cmp( arg2, "noskills" ) )
    {
-      if( arg3[0] == '\0' || !str_cmp( arg3, "none" ) )
+      if( arg3.empty(  ) || !str_cmp( arg3, "none" ) )
       {
          DISPOSE( morph->no_skills );
          return;
       }
       if( !morph->no_skills )
-         mudstrlcpy( buf, arg3, MSL );
+         mudstrlcpy( buf, arg3.c_str(  ), MSL );
       else
-         snprintf( buf, MSL, "%s %s", morph->no_skills, arg3 );
+         snprintf( buf, MSL, "%s %s", morph->no_skills, arg3.c_str(  ) );
       DISPOSE( morph->no_skills );
       morph->no_skills = str_dup( buf );
    }
@@ -1150,7 +1164,7 @@ CMDF( do_morphset )
 
       if( value < 0 || value >= MAX_PC_CLASS )
       {
-         ch->printf( "Unknown PC Class: %s", arg3 );
+         ch->printf( "Unknown PC Class: %s", arg3.c_str(  ) );
          return;
       }
       morph->Class.flip( value );
@@ -1161,7 +1175,7 @@ CMDF( do_morphset )
 
       if( value < 0 || value >= MAX_PC_RACE )
       {
-         ch->printf( "Unknown PC race: %s", arg3 );
+         ch->printf( "Unknown PC race: %s", arg3.c_str(  ) );
          return;
       }
       morph->race.flip( value );
@@ -1179,7 +1193,6 @@ CMDF( do_morphset )
       return;
    }
    ch->print( "Done.\r\n" );
-   return;
 }
 
 /*
@@ -1190,13 +1203,13 @@ CMDF( do_morphset )
 CMDF( do_morphstat )
 {
    morph_data *morph;
-   char arg[MIL];
+   string arg;
    int count = 1;
 
    ch->set_pager_color( AT_CYAN );
 
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Morphstat what?\r\n" );
       return;
@@ -1209,19 +1222,18 @@ CMDF( do_morphstat )
 
    if( !str_cmp( arg, "list" ) )
    {
-      list<morph_data*>::iterator ipoly;
+      list < morph_data * >::iterator ipoly;
 
-      if( morphlist.empty() )
+      if( morphlist.empty(  ) )
       {
          ch->print( "No morph's currently exist.\r\n" );
          return;
       }
-      for( ipoly = morphlist.begin(); ipoly != morphlist.end(); ++ipoly )
+      for( ipoly = morphlist.begin(  ); ipoly != morphlist.end(  ); ++ipoly )
       {
-         morph_data *poly = (*ipoly);
+         morph_data *poly = *ipoly;
 
-         ch->pagerf( "&c[&C%2d&c]   Name:  &C%-13s    &cVnum:  &C%4d  &cUsed:  &C%3d\r\n",
-                     count, poly->name, poly->vnum, poly->used );
+         ch->pagerf( "&c[&C%2d&c]   Name:  &C%-13s    &cVnum:  &C%4d  &cUsed:  &C%3d\r\n", count, poly->name, poly->vnum, poly->used );
          ++count;
       }
       return;
@@ -1229,14 +1241,15 @@ CMDF( do_morphstat )
    if( !is_number( arg ) )
       morph = get_morph( arg );
    else
-      morph = get_morph_vnum( atoi( arg ) );
+      morph = get_morph_vnum( atoi( arg.c_str(  ) ) );
 
    if( morph == NULL )
    {
       ch->print( "No such morph exists.\r\n" );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
       ch->pagerf( "  &cMorph Name: &C%-20s  Vnum: %4d\r\n", morph->name, morph->vnum );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
@@ -1247,16 +1260,13 @@ CMDF( do_morphstat )
       ch->pagerf( "  &cSex:  &C%s   &cPkill:   &C%s   &cTime From:   &C%d   &cTime To:    &C%d\r\n",
                   morph->sex == SEX_MALE ? "male" :
                   morph->sex == SEX_FEMALE ? "female" : "neutral",
-                  morph->pkill == ONLY_PKILL ? "YES" :
-                  morph->pkill == ONLY_PEACEFULL ? "NO" : "n/a", morph->timefrom, morph->timeto );
+                  morph->pkill == ONLY_PKILL ? "YES" : morph->pkill == ONLY_PEACEFULL ? "NO" : "n/a", morph->timefrom, morph->timeto );
       ch->pagerf( "  &cDay From:  &C%d  &cDay To:  &C%d\r\n", morph->dayfrom, morph->dayto );
       ch->pagerf( "  &cLevel:  &C%d       &cMorph Via Spell   : &C%s\r\n", morph->level, ( morph->no_cast ) ? "NO" : "yes" );
       ch->pagerf( " &cCasting Allowed   : &C%s\r\n", ( morph->cast_allowed ? "Yes" : "No" ) );
-      ch->pagerf( "  &cUSAGES:  Mana:  &C%d  &cMove:  &C%d  &cHp:  &C%d  &cFavour:  &C%d\r\n",
-                  morph->manaused, morph->moveused, morph->hpused, morph->favourused );
+      ch->pagerf( "  &cUSAGES:  Mana:  &C%d  &cMove:  &C%d  &cHp:  &C%d  &cFavour:  &C%d\r\n", morph->manaused, morph->moveused, morph->hpused, morph->favourused );
       ch->pagerf( "  &cObj1: &C%d  &cObjuse1: &C%s   &cObj2: &C%d  &cObjuse2: &C%s   &cObj3: &C%d  &cObjuse3: &c%s\r\n",
-                  morph->obj[0], ( morph->objuse[0] ? "YES" : "no" ),
-                  morph->obj[1], ( morph->objuse[1] ? "YES" : "no" ), morph->obj[2], ( morph->objuse[2] ? "YES" : "no" ) );
+                  morph->obj[0], ( morph->objuse[0] ? "YES" : "no" ), morph->obj[1], ( morph->objuse[1] ? "YES" : "no" ), morph->obj[2], ( morph->objuse[2] ? "YES" : "no" ) );
       ch->pagerf( "  &cTimer: &w%d\r\n", morph->timer );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
       ch->pager( "                       &BEnhancements to the Player\r\n" );
@@ -1269,8 +1279,7 @@ CMDF( do_morphstat )
                   morph->saving_poison_death, morph->saving_wand, morph->saving_para_petri, morph->saving_breath,
                   morph->saving_spell_staff, morph->dodge, morph->parry, morph->tumble );
       ch->pagerf( "  &cHps     : &w%s    &cMana   : &w%s    &cMove      : &w%s\r\n", morph->hit, morph->mana, morph->move );
-      ch->pagerf( "  &cDamroll : &w%s    &cHitroll: &w%s    &cAC     : &w%d\r\n",
-                  morph->damroll, morph->hitroll, morph->ac );
+      ch->pagerf( "  &cDamroll : &w%s    &cHitroll: &w%s    &cAC     : &w%d\r\n", morph->damroll, morph->hitroll, morph->ac );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
       ch->pager( "                          &BAffects to the Player\r\n" );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
@@ -1296,10 +1305,8 @@ CMDF( do_morphstat )
       ch->pagerf( "  &cMorph Name  : &C%-20s\r\n", morph->name );
       ch->pagerf( "  &cDefault Pos : &w%d\r\n", morph->defpos );
       ch->pagerf( "  &cKeywords    : &w%s\r\n", morph->key_words );
-      ch->pagerf( "  &cShortdesc   : &w%s\r\n",
-                  ( morph->short_desc && morph->short_desc[0] == '\0' ) ? "(none set)" : morph->short_desc );
-      ch->pagerf( "  &cLongdesc    : &w%s",
-                  ( morph->long_desc && morph->long_desc[0] == '\0' ) ? "(none set)\r\n" : morph->long_desc );
+      ch->pagerf( "  &cShortdesc   : &w%s\r\n", ( morph->short_desc && morph->short_desc[0] == '\0' ) ? "(none set)" : morph->short_desc );
+      ch->pagerf( "  &cLongdesc    : &w%s", ( morph->long_desc && morph->long_desc[0] == '\0' ) ? "(none set)\r\n" : morph->long_desc );
       ch->pagerf( "  &cMorphself   : &w%s\r\n", morph->morph_self );
       ch->pagerf( "  &cMorphother  : &w%s\r\n", morph->morph_other );
       ch->pagerf( "  &cUnMorphself : &w%s\r\n", morph->unmorph_self );
@@ -1315,7 +1322,6 @@ CMDF( do_morphstat )
       ch->print( "Syntax: morphstat <morph>\r\n" );
       ch->print( "Syntax: morphstat <morph> <help/desc>\r\n" );
    }
-   return;
 }
 
 /*
@@ -1336,7 +1342,6 @@ void send_morph_message( char_data * ch, morph_data * morph, bool is_morph )
       act( AT_MORPH, morph->unmorph_other, ch, NULL, NULL, TO_ROOM );
       act( AT_MORPH, morph->unmorph_self, ch, NULL, NULL, TO_CHAR );
    }
-   return;
 }
 
 /*
@@ -1435,18 +1440,17 @@ void do_morph( char_data * ch, morph_data * morph )
       ch_morph->mana = ( 32700 - ch->mana );
    ch->mana += ch_morph->mana;
 
-   ch->get_aflags()  |= morph->affected_by;
-   ch->get_immunes() |= morph->immune;
-   ch->get_resists() |= morph->resistant;
-   ch->get_susceps() |= morph->suscept;
-   ch->get_absorbs() |= morph->absorb;
-   ch->get_aflags() &= ~( morph->no_affected_by );
-   ch->get_immunes() &= ~( morph->no_immune );
-   ch->get_resists() &= ~( morph->no_resistant );
-   ch->get_susceps() &= ~( morph->no_suscept );
+   ch->get_aflags(  ) |= morph->affected_by;
+   ch->get_immunes(  ) |= morph->immune;
+   ch->get_resists(  ) |= morph->resistant;
+   ch->get_susceps(  ) |= morph->suscept;
+   ch->get_absorbs(  ) |= morph->absorb;
+   ch->get_aflags(  ) &= ~( morph->no_affected_by );
+   ch->get_immunes(  ) &= ~( morph->no_immune );
+   ch->get_resists(  ) &= ~( morph->no_resistant );
+   ch->get_susceps(  ) &= ~( morph->no_suscept );
    ch->morph = ch_morph;
    ++morph->used;
-   return;
 }
 
 /*
@@ -1461,6 +1465,7 @@ int do_morph_char( char_data * ch, morph_data * morph )
 
    if( ch->morph )
       canmorph = false;
+
    if( morph->obj[0] )
    {
       if( !( obj = ch->get_obj_vnum( morph->obj[0] ) ) )
@@ -1468,8 +1473,7 @@ int do_morph_char( char_data * ch, morph_data * morph )
       else if( morph->objuse[0] )
       {
          act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, NULL, TO_CHAR );
-         if( obj == obj->carried_by->get_eq( WEAR_WIELD )
-             && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
             tmpobj->wear_loc = WEAR_WIELD;
          obj->separate(  );
          obj->extract(  );
@@ -1482,8 +1486,7 @@ int do_morph_char( char_data * ch, morph_data * morph )
       else if( morph->objuse[1] )
       {
          act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, NULL, TO_CHAR );
-         if( obj == obj->carried_by->get_eq( WEAR_WIELD )
-             && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
             tmpobj->wear_loc = WEAR_WIELD;
          obj->separate(  );
          obj->extract(  );
@@ -1496,8 +1499,7 @@ int do_morph_char( char_data * ch, morph_data * morph )
       else if( morph->objuse[2] )
       {
          act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, NULL, TO_CHAR );
-         if( obj == obj->carried_by->get_eq( WEAR_WIELD )
-             && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
             tmpobj->wear_loc = WEAR_WIELD;
          obj->separate(  );
          obj->extract(  );
@@ -1589,14 +1591,13 @@ void do_unmorph( char_data * ch )
     */
    if( ch->mana > ch->max_mana )
       ch->mana = ch->max_mana;
-   ch->get_aflags() &= ~( morph->affected_by );
-   ch->get_immunes() &= ~( morph->immune );
-   ch->get_resists() &= ~( morph->resistant );
-   ch->get_susceps() &= ~( morph->suscept );
-   ch->get_absorbs() &= ~( morph->absorb );
+   ch->get_aflags(  ) &= ~( morph->affected_by );
+   ch->get_immunes(  ) &= ~( morph->immune );
+   ch->get_resists(  ) &= ~( morph->resistant );
+   ch->get_susceps(  ) &= ~( morph->suscept );
+   ch->get_absorbs(  ) &= ~( morph->absorb );
    deleteptr( ch->morph );
    ch->update_aris(  );
-   return;
 }
 
 void do_unmorph_char( char_data * ch )
@@ -1609,7 +1610,6 @@ void do_unmorph_char( char_data * ch )
    temp = ch->morph->morph;
    do_unmorph( ch );
    send_morph_message( ch, temp, false );
-   return;
 }
 
 /* Morph revert command ( God only knows why the Smaugers left this out ) - Samson 6-14-99 */
@@ -1621,17 +1621,16 @@ CMDF( do_revert )
       return;
    }
    do_unmorph_char( ch );
-   return;
 }
 
 void setup_morph_vnum( void )
 {
-   list<morph_data*>::iterator imorph;
+   list < morph_data * >::iterator imorph;
    int vnum = morph_vnum;
 
-   for( imorph = morphlist.begin(); imorph != morphlist.end(); ++imorph )
+   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
-      morph_data *morph = (*imorph);
+      morph_data *morph = *imorph;
 
       if( morph->vnum > vnum )
          vnum = morph->vnum;
@@ -1641,9 +1640,9 @@ void setup_morph_vnum( void )
    else
       ++vnum;
 
-   for( imorph = morphlist.begin(); imorph != morphlist.end(); ++imorph )
+   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
-      morph_data *morph = (*imorph);
+      morph_data *morph = *imorph;
 
       if( morph->vnum == 0 )
       {
@@ -1651,7 +1650,6 @@ void setup_morph_vnum( void )
       }
    }
    morph_vnum = vnum;
-   return;
 }
 
 /*
@@ -1710,7 +1708,6 @@ void morph_defaults( morph_data * morph )
    morph->cast_allowed = false;
    morph->timer = -1;
    morph->vnum = 0;
-   return;
 }
 
 /*
@@ -1719,8 +1716,7 @@ void morph_defaults( morph_data * morph )
 morph_data *fread_morph( FILE * fp )
 {
    morph_data *morph;
-   char *arg;
-   char temp[MSL];
+   string arg, temp;
    int i, file_ver = 0;
 
    const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
@@ -1788,7 +1784,7 @@ morph_data *fread_morph( FILE * fp )
             if( !str_cmp( word, "Class" ) )
             {
                arg = fread_flagstring( fp );
-               while( arg[0] != '\0' )
+               while( !arg.empty() )
                {
                   arg = one_argument( arg, temp );
                   for( i = 0; i < MAX_PC_CLASS; ++i )
@@ -1836,7 +1832,6 @@ morph_data *fread_morph( FILE * fp )
 
          case 'I':
             KEY( "Intelligence", morph->inte, fread_number( fp ) );
-            KEY( "Immune", morph->immune, fread_number( fp ) );
             if( !str_cmp( word, "Immune" ) )
             {
                if( file_ver < 1 )
@@ -2055,7 +2050,6 @@ void load_morphs( void )
    }
    setup_morph_vnum(  );
    log_string( "Done." );
-   return;
 }
 
 /*
@@ -2129,7 +2123,6 @@ void copy_morph( morph_data * morph, morph_data * temp )
    morph->no_cast = temp->no_cast;
    morph->cast_allowed = temp->cast_allowed;
    morph->timer = temp->timer;
-   return;
 }
 
 /*
@@ -2138,65 +2131,63 @@ void copy_morph( morph_data * morph, morph_data * temp )
 CMDF( do_morphcreate )
 {
    morph_data *morph, *temp = NULL;
-   char arg1[MIL];
+   string arg1;
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Usage: morphcreate <name>\r\n" );
       ch->print( "Usage: morphcreate <name/vnum> copy\r\n" );
       return;
    }
 
-   if( argument && argument[0] != '\0' && !str_cmp( argument, "copy" ) )
+   if( !argument.empty(  ) && !str_cmp( argument, "copy" ) )
    {
       if( is_number( arg1 ) )
       {
-         if( !( temp = get_morph_vnum( atoi( arg1 ) ) ) )
+         if( !( temp = get_morph_vnum( atoi( arg1.c_str(  ) ) ) ) )
          {
-            ch->printf( "No such morph vnum %d exists.\r\n", atoi( arg1 ) );
+            ch->printf( "No such morph vnum %d exists.\r\n", atoi( arg1.c_str(  ) ) );
             return;
          }
       }
       else if( !( temp = get_morph( arg1 ) ) )
       {
-         ch->printf( "No such morph %s exists.\r\n", arg1 );
+         ch->printf( "No such morph %s exists.\r\n", arg1.c_str(  ) );
          return;
       }
    }
    smash_tilde( arg1 );
    morph = new morph_data;
    morph_defaults( morph );
-   if( argument && argument[0] != '\0' && !str_cmp( argument, "copy" ) && temp )
+   if( !argument.empty(  ) && !str_cmp( argument, "copy" ) && temp )
       copy_morph( morph, temp );
    else
-      morph->name = str_dup( arg1 );
+      morph->name = str_dup( arg1.c_str(  ) );
    if( !morph->short_desc || morph->short_desc[0] == '\0' )
-      morph->short_desc = str_dup( arg1 );
+      morph->short_desc = str_dup( arg1.c_str(  ) );
    morph->vnum = morph_vnum;
    ++morph_vnum;
    morphlist.push_back( morph );
    ch->printf( "Morph %s created with vnum %d.\r\n", morph->name, morph->vnum );
-   return;
 }
 
 void unmorph_all( morph_data * morph )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( vch->morph == NULL || vch->morph->morph == NULL || vch->morph->morph != morph )
          continue;
       do_unmorph_char( vch );
    }
-   return;
 }
 
-morph_data::morph_data()
+morph_data::morph_data(  )
 {
    init_memory( &affected_by, &cast_allowed, sizeof( cast_allowed ) );
 }
@@ -2206,7 +2197,7 @@ morph_data::morph_data()
  * to use the memory afterwards as it doesn't exist.
  * --Shaddai 
  */
-morph_data::~morph_data()
+morph_data::~morph_data(  )
 {
    unmorph_all( this );
 
@@ -2232,16 +2223,15 @@ morph_data::~morph_data()
 
 void free_morphs( void )
 {
-   list<morph_data*>::iterator morph;
+   list < morph_data * >::iterator morph;
 
-   for( morph = morphlist.begin(); morph != morphlist.end(); )
+   for( morph = morphlist.begin(  ); morph != morphlist.end(  ); )
    {
-      morph_data *poly = (*morph);
+      morph_data *poly = *morph;
       ++morph;
 
       deleteptr( poly );
    }
-   return;
 }
 
 /*
@@ -2252,24 +2242,23 @@ CMDF( do_morphdestroy )
 {
    morph_data *morph;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Destroy which morph?\r\n" );
       return;
    }
    if( is_number( argument ) )
-      morph = get_morph_vnum( atoi( argument ) );
+      morph = get_morph_vnum( atoi( argument.c_str(  ) ) );
    else
       morph = get_morph( argument );
 
    if( !morph )
    {
-      ch->printf( "Unkown morph %s.\r\n", argument );
+      ch->printf( "Unkown morph %s.\r\n", argument.c_str(  ) );
       return;
    }
    deleteptr( morph );
    ch->print( "Morph deleted.\r\n" );
-   return;
 }
 
 void fwrite_morph_data( char_data * ch, FILE * fp )
@@ -2352,7 +2341,6 @@ void fwrite_morph_data( char_data * ch, FILE * fp )
    if( morph->wis != 0 )
       fprintf( fp, "Wisdom          %d\n", morph->wis );
    fprintf( fp, "%s", "End\n" );
-   return;
 }
 
 void clear_char_morph( char_morph * morph )
@@ -2388,7 +2376,6 @@ void clear_char_morph( char_morph * morph )
    morph->tumble = 0;
    morph->wis = 0;
    morph->morph = NULL;
-   return;
 }
 
 void fread_morph_data( char_data * ch, FILE * fp )
@@ -2553,7 +2540,7 @@ CMDF( do_imm_morph )
 {
    morph_data *morph;
    char_data *victim = NULL;
-   char arg[MIL];
+   string arg;
    int vnum;
 
    if( ch->isnpc(  ) )
@@ -2569,7 +2556,7 @@ CMDF( do_imm_morph )
       ch->print( "Syntax: morph <vnum>\r\n" );
       return;
    }
-   vnum = atoi( arg );
+   vnum = atoi( arg.c_str(  ) );
    morph = get_morph_vnum( vnum );
 
    if( morph == NULL )
@@ -2577,7 +2564,7 @@ CMDF( do_imm_morph )
       ch->printf( "No such morph %d exists.\r\n", vnum );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       do_morph_char( ch, morph );
    else if( !( victim = ch->get_char_world( argument ) ) )
    {
@@ -2592,7 +2579,6 @@ CMDF( do_imm_morph )
    else if( victim != NULL )
       do_morph_char( victim, morph );
    ch->print( "Done.\r\n" );
-   return;
 }
 
 /*
@@ -2602,7 +2588,7 @@ CMDF( do_imm_unmorph )
 {
    char_data *victim = NULL;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       do_unmorph_char( ch );
    else if( !( victim = ch->get_char_world( argument ) ) )
    {
@@ -2617,22 +2603,20 @@ CMDF( do_imm_unmorph )
    else if( victim != NULL )
       do_unmorph_char( victim );
    ch->print( "Done.\r\n" );
-   return;
 }
 
 /* Added by Samson 6-13-99 - lists available polymorph forms */
 CMDF( do_morphlist )
 {
-   list<morph_data*>::iterator imorph;
+   list < morph_data * >::iterator imorph;
 
    ch->pager( "&GVnum |&YPolymorph Name\r\n" );
    ch->pager( "&G-----+----------------------------------\r\n" );
 
-   for( imorph = morphlist.begin(); imorph != morphlist.end(); ++imorph )
+   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
-      morph_data *morph = (*imorph);
+      morph_data *morph = *imorph;
 
       ch->pagerf( "&G%-5d  &Y%s\r\n", morph->vnum, morph->name );
    }
-   return;
 }

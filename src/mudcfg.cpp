@@ -37,10 +37,10 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-double distance( short, short, short, short ); /* For check_room */
+double distance( short, short, short, short );  /* For check_room */
 bool can_use_mprog( char_data * );
 
-const char* SPELL_SILENT_MARKER = "silent";  /* No OK. or Failed. */
+const char *SPELL_SILENT_MARKER = "silent";  /* No OK. or Failed. */
 extern int astral_target;
 
 /* New continent and plane based death relocation - Samson 3-29-98 */

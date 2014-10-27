@@ -41,15 +41,15 @@ enum area_flags
 class neighbor_data
 {
  private:
-   neighbor_data( const neighbor_data& n );
-   neighbor_data& operator=( const neighbor_data& );
+   neighbor_data( const neighbor_data & n );
+     neighbor_data & operator=( const neighbor_data & );
 
  public:
-   neighbor_data();
-   ~neighbor_data();
+     neighbor_data(  );
+    ~neighbor_data(  );
 
    area_data *address;
-   char *name;
+   string name;
 };
 
 /* Define maximum number of climate settings - FB */
@@ -58,15 +58,15 @@ class neighbor_data
 class weather_data
 {
  private:
-   weather_data( const weather_data& w );
-   weather_data& operator=( const weather_data& );
+   weather_data( const weather_data & w );
+     weather_data & operator=( const weather_data & );
 
  public:
-   weather_data();
-   ~weather_data();
+     weather_data(  );
+    ~weather_data(  );
 
-   list<neighbor_data*> neighborlist; /* areas which affect weather sys */
-   char *echo; /* echo string */
+     list < neighbor_data * >neighborlist;   /* areas which affect weather sys */
+   string echo;   /* echo string */
 /*   int mmhg;
    int change;
    int sky;
@@ -89,32 +89,33 @@ class weather_data
 class area_data
 {
  private:
-   area_data( const area_data& a );
-   area_data& operator=( const area_data& );
+   area_data( const area_data & a );
+     area_data & operator=( const area_data & );
 
  public:
-   area_data(  );
-   ~area_data(  );
+     area_data(  );
+    ~area_data(  );
 
    void fix_exits(  );
    void sort_name(  );
    void sort_vnums(  );
    void reset(  );
-   void fold( char *, bool );
-   void wipe_resets();
+   void fold( const char *, bool );
+   void wipe_resets(  );
 
-   list<room_index*> rooms;  // The list of room indexes for this area
-   list<mob_index*> mobs;    // The list of mob indexes for this area
-   list<obj_index*> objects; // The list of object indexes for this area
+     list < room_index * >rooms; // The list of room indexes for this area
+     list < mob_index * >mobs;   // The list of mob indexes for this area
+     list < obj_index * >objects;   // The list of object indexes for this area
    weather_data *weather;  /* FB */
      bitset < AFLAG_MAX > flags;
    char *name;
    char *filename;
    char *author;  /* Scryn */
+   char *credits;
    char *resetmsg;   /* Rennard */
-   time_t creation_date;  // Timestamp for when this area was first created. Samson 1/20/07
-   time_t install_date;   // Timestamp for when this area was "live" installed. Samson 1/20/07
-   time_t last_resettime; // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
+   time_t creation_date;   // Timestamp for when this area was first created. Samson 1/20/07
+   time_t install_date; // Timestamp for when this area was "live" installed. Samson 1/20/07
+   time_t last_resettime;  // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
    int low_vnum;
    int hi_vnum;
    int low_soft_range;
@@ -124,31 +125,29 @@ class area_data
    short age;
    short nplayer;
    short reset_frequency;
-   short continent;           // Added for Overland support - Samson 9-16-00
-   short mx;                  // Coordinates of a zone on the overland, for recall/death purposes - Samson 12-25-00
+   short continent;  // Added for Overland support - Samson 9-16-00
+   short mx;   // Coordinates of a zone on the overland, for recall/death purposes - Samson 12-25-00
    short my;
-   unsigned short version;    // Replaces the file_ver method of tracking - Samson 12-23-02
+   unsigned short version; // Replaces the file_ver method of tracking - Samson 12-23-02
    unsigned short tg_nothing; // TG Values are for area-specific random treasure chances - Samson 11-25-04
    unsigned short tg_gold;
    unsigned short tg_item;
-   unsigned short tg_gem;     // Runes come after gems and go up to 100%
+   unsigned short tg_gem;  // Runes come after gems and go up to 100%
    unsigned short tg_scroll;  // These are for specific chances of a particular item type - Samson 11-25-04
    unsigned short tg_potion;
    unsigned short tg_wand;
    unsigned short tg_armor;   // Weapons come after armors and go up to 100%
 };
 
-area_data *create_area( );
-void write_area_list( );
-area_data *get_area( char * );  /* FB */
-area_data *find_area( char * );
-void load_area_file( char *, bool );
-void load_shops( FILE * );
-void load_repairs( FILE * );
+area_data *create_area(  );
+void write_area_list(  );
+area_data *get_area( const string & ); /* FB */
+area_data *find_area( const string & );
+void load_area_file( const string &, bool );
 
-extern list<area_data*> arealist;
-extern list<area_data*> area_nsort;
-extern list<area_data*> area_vsort;
+extern list < area_data * >arealist;
+extern list < area_data * >area_nsort;
+extern list < area_data * >area_vsort;
 extern int weath_unit;
 extern int rand_factor;
 extern int climate_factor;

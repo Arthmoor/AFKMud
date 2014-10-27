@@ -8,30 +8,30 @@
 
 struct coordinate
 {
-    int x;
-    int y;
-    int z;
+   int x;
+   int y;
+   int z;
 
-    coordinate();
-    coordinate(int p_x, int p_y, int p_z);
+     coordinate(  );
+     coordinate( int, int, int );
 
-    void operator=(int pos[3])
-    {
-        x = pos[0];
-        y = pos[1];
-        z = pos[2];
-    }
+   void operator=( int pos[3] )
+   {
+      x = pos[0];
+      y = pos[1];
+      z = pos[2];
+   }
 };
 
-coordinate operator+(const struct coordinate &coord, dir_types dir);
-coordinate operator+(const struct coordinate &coorda, const struct coordinate &coordb);
-coordinate operator-(const struct coordinate &coorda, const struct coordinate &coordb);
+coordinate operator+( const struct coordinate &, dir_types );
+coordinate operator+( const struct coordinate &, const struct coordinate & );
+coordinate operator-( const struct coordinate &, const struct coordinate & );
 
-bool operator<(const struct coordinate &a, const struct coordinate &b);
-bool operator<=(const struct coordinate &a, const struct coordinate &b);
-bool operator>(const struct coordinate &a, const struct coordinate &b);
-bool operator>=(const struct coordinate &a, const struct coordinate &b);
-bool operator==(const struct coordinate &a, const struct coordinate &b);
+bool operator<( const struct coordinate &, const struct coordinate & );
+bool operator<=( const struct coordinate &, const struct coordinate & );
+bool operator>( const struct coordinate &, const struct coordinate & );
+bool operator>=( const struct coordinate &, const struct coordinate & );
+bool operator==( const struct coordinate &, const struct coordinate & );
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -41,20 +41,20 @@ bool operator==(const struct coordinate &a, const struct coordinate &b);
  */
 class search_frame
 {
-public:
-    room_index *target;
-    coordinate offset;
-    double     value;
-    dir_types  last_dir;
+ public:
+   room_index * target;
+   coordinate offset;
+   double value;
+   dir_types last_dir;
 
-    search_frame(void);
+     search_frame(  );
 
-    // Allow search callbacks to have "special" weights.
-    // Prep for weighted searches...
-    double     udf[5];
+   // Allow search callbacks to have "special" weights.
+   // Prep for weighted searches...
+   double udf[5];
 
-    search_frame *make_exit(exit_data *exit);
-    dir_types     get_dir(void);
+   search_frame *make_exit( exit_data * );
+   dir_types get_dir(  );
 };
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -63,8 +63,12 @@ public:
  */
 class search_callback
 {
-public:
-    virtual bool search(search_frame *frame) = 0;
+ public:
+   virtual ~ search_callback(  )
+   {
+   }
+
+   virtual bool search( search_frame * ) = 0;
 };
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -72,9 +76,9 @@ public:
  */
 class search_BFS
 {
-public:
-    static void search(room_index *start, search_callback *callback, long max_dist, bool e_closed);
-    static void search(room_index *start, search_callback *callback, long max_dist, bool e_closed, bool use_z);
+ public:
+   static void search( room_index *, search_callback *, long, bool );
+   static void search( room_index *, search_callback *, long, bool, bool );
 };
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -82,9 +86,9 @@ public:
  */
 class search_LOS
 {
-public:
-    static void search(room_index *start, search_callback *callback, long max_dist, bool e_closed);
-    static void search(room_index *start, search_callback *callback, long max_dist, bool e_closed, bool use_z);
+ public:
+   static void search( room_index *, search_callback *, long, bool );
+   static void search( room_index *, search_callback *, long, bool, bool );
 };
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -92,29 +96,29 @@ public:
  */
 class search_DIR
 {
-public:
-    static void search(room_index *start, search_callback *callback, enum dir_types dir, long max_dist, bool e_closed);
+ public:
+   static void search( room_index *, search_callback *, enum dir_types, long, bool );
 };
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
  * Search Callbacks
  */
-class srch_scan : public search_callback
+class srch_scan:public search_callback
 {
-public:
-    char_data *actor;
-    int        found;
+ public:
+   char_data * actor;
+   int found;
 
-    srch_scan(char_data *p_actor);
-    virtual bool search(search_frame *frame);
+     srch_scan( char_data * );
+   virtual bool search( search_frame * );
 };
 
-class srch_map : public search_callback
+class srch_map:public search_callback
 {
-public:
-    // 5x5 + terminator
-    char buf[26];
+ public:
+   // 5x5 + terminator
+   char buf[26];
 
-    srch_map(void);
-    virtual bool search(search_frame *frame);
+     srch_map(  );
+   virtual bool search( search_frame * );
 };

@@ -272,7 +272,7 @@ Code        do_balzhur
 Position    dead~
 Level       110
 Log         always~
-Flags       watch ghost~
+Flags       ghost~
 End
 
 #COMMAND
@@ -728,7 +728,7 @@ Code        do_deny
 Position    dead~
 Level       108
 Log         always~
-Flags       watch ghost~
+Flags       ghost~
 End
 
 #COMMAND
@@ -754,6 +754,24 @@ Code        do_destroy
 Position    dead~
 Level       114
 Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        destroyrepair~
+Code        do_destroyrepair
+Position    dead~
+Level       106
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        destroyshop~
+Code        do_destroyshop
+Position    dead~
+Level       106
+Log         build~
 Flags       ghost~
 End
 
@@ -1719,7 +1737,7 @@ Code        do_mpat
 Position    dead~
 Level       0
 Log         normal~
-Flags       possessed watch mudprog~
+Flags       possessed mudprog~
 End
 
 #COMMAND
@@ -1935,7 +1953,7 @@ Code        do_make
 Position    standing~
 Level       100
 Log         always~
-Flags       watch~
+Flags       ~
 End
 
 #COMMAND
@@ -4246,15 +4264,6 @@ End
 #COMMAND
 Name        warn~
 Code        do_warn
-Position    dead~
-Level       108
-Log         normal~
-Flags       ghost~
-End
-
-#COMMAND
-Name        watch~
-Code        do_watch
 Position    dead~
 Level       108
 Log         normal~

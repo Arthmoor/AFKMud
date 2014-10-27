@@ -38,16 +38,15 @@ char *mini_c_time( time_t, int );
 
 void pc_data::free_comments(  )
 {
-   list<note_data*>::iterator note;
+   list < note_data * >::iterator note;
 
-   for( note = comments.begin(); note != comments.end(); )
+   for( note = comments.begin(  ); note != comments.end(  ); )
    {
-      note_data *comment = (*note);
+      note_data *comment = *note;
 
       comments.remove( comment );
       deleteptr( comment );
    }
-   return;
 }
 
 void comment_remove( char_data * ch, note_data * pnote )
@@ -58,7 +57,7 @@ void comment_remove( char_data * ch, note_data * pnote )
       return;
    }
 
-   if( ch->pcdata->comments.empty() )
+   if( ch->pcdata->comments.empty(  ) )
    {
       bug( "%s: %s has an empty comment list already.", __FUNCTION__, ch->name );
       return;
@@ -79,12 +78,11 @@ void comment_remove( char_data * ch, note_data * pnote )
     * ... Good GODS.. -- Xorith
     */
    ch->save(  );
-   return;
 }
 
 CMDF( do_comment )
 {
-   char arg[MIL];
+   string arg;
    note_data *pnote;
    char_data *victim;
    int vnum;
@@ -130,6 +128,7 @@ CMDF( do_comment )
          ch->pcdata->pnote->text = ch->copy_buffer( false );
          ch->stop_editing(  );
          return;
+
       case SUB_EDIT_ABORT:
          ch->print( "Aborting note...\r\n" );
          ch->substate = SUB_NONE;
@@ -163,17 +162,17 @@ CMDF( do_comment )
          return;
       }
 
-      if( victim->pcdata->comments.empty() )
+      if( victim->pcdata->comments.empty(  ) )
       {
          ch->print( "There are no relevant comments.\r\n" );
          return;
       }
 
       vnum = 0;
-      list<note_data*>::iterator inote;
-      for( inote = victim->pcdata->comments.begin(); inote != victim->pcdata->comments.end(); ++inote )
+      list < note_data * >::iterator inote;
+      for( inote = victim->pcdata->comments.begin(  ); inote != victim->pcdata->comments.end(  ); ++inote )
       {
-         note_data *note = (*inote);
+         note_data *note = *inote;
 
          ++vnum;
          ch->printf( "%2d) %-10s [%s] %s\r\n", vnum, note->sender ? note->sender : "--Error--",
@@ -208,7 +207,7 @@ CMDF( do_comment )
          return;
       }
 
-      if( victim->pcdata->comments.empty() )
+      if( victim->pcdata->comments.empty(  ) )
       {
          ch->print( "There are no relevant comments.\r\n" );
          return;
@@ -225,13 +224,13 @@ CMDF( do_comment )
       }
 
       vnum = 0;
-      list<note_data*>::iterator inote;
-      for( inote = victim->pcdata->comments.begin(); inote != victim->pcdata->comments.end(); ++inote )
+      list < note_data * >::iterator inote;
+      for( inote = victim->pcdata->comments.begin(  ); inote != victim->pcdata->comments.end(  ); ++inote )
       {
-         note_data *note = (*inote);
+         note_data *note = *inote;
 
          ++vnum;
-         if( fAll || vnum == atoi( argument ) )
+         if( fAll || vnum == atoi( argument.c_str(  ) ) )
          {
             note_to_char( ch, note, NULL, 0 );
             return;
@@ -259,7 +258,7 @@ CMDF( do_comment )
       if( !ch->pcdata->pnote )
          ch->note_attach(  );
       DISPOSE( ch->pcdata->pnote->subject );
-      ch->pcdata->pnote->subject = str_dup( argument );
+      ch->pcdata->pnote->subject = str_dup( argument.c_str(  ) );
       ch->print( "Ok.\r\n" );
       return;
    }
@@ -354,13 +353,13 @@ CMDF( do_comment )
       }
 
       vnum = 0;
-      list<note_data*>::iterator inote;
-      for( inote = victim->pcdata->comments.begin(); inote != victim->pcdata->comments.end(); ++inote )
+      list < note_data * >::iterator inote;
+      for( inote = victim->pcdata->comments.begin(  ); inote != victim->pcdata->comments.end(  ); ++inote )
       {
-         note_data *note = (*inote);
+         note_data *note = *inote;
 
          ++vnum;
-         if( ( LEVEL_KL <= ch->get_trust(  ) ) && ( vnum == atoi( argument ) ) )
+         if( ( LEVEL_KL <= ch->get_trust(  ) ) && ( vnum == atoi( argument.c_str(  ) ) ) )
          {
             comment_remove( victim, note );
             ch->print( "Comment removed..\r\n" );
@@ -376,24 +375,22 @@ CMDF( do_comment )
    ch->print( "     list <player>, read <player> <#/all>, post <player>\r\n" );
    if( ch->get_trust(  ) >= LEVEL_KL )
       ch->print( "     remove <player> <#>\r\n" );
-   return;
 }
 
 void pc_data::fwrite_comments( FILE * fp )
 {
-   list<note_data*>::iterator inote;
+   list < note_data * >::iterator inote;
 
-   if( comments.empty() )
+   if( comments.empty(  ) )
       return;
 
-   for( inote = comments.begin(); inote != comments.end(); ++inote )
+   for( inote = comments.begin(  ); inote != comments.end(  ); ++inote )
    {
-      note_data *note = (*inote);
+      note_data *note = *inote;
 
       fprintf( fp, "%s", "#COMMENT2\n" ); /* Set to COMMENT2 as to tell from older comments */
       fwrite_note( note, fp );
    }
-   return;
 }
 
 void pc_data::fread_comment( FILE * fp )
@@ -402,7 +399,6 @@ void pc_data::fread_comment( FILE * fp )
 
    pcnote = read_note( fp );
    comments.push_back( pcnote );
-   return;
 }
 
 /* Function kept for backwards compatibility */
@@ -428,7 +424,7 @@ void pc_data::fread_old_comment( FILE * fp )
       ungetc( letter, fp );
 
       pcnote = new note_data;
-      pcnote->rlist.clear();
+      pcnote->rlist.clear(  );
       init_memory( &pcnote->parent, &pcnote->expire, sizeof( pcnote->expire ) );
 
       if( !str_cmp( fread_word( fp ), "sender" ) )

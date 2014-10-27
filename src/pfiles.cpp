@@ -26,6 +26,7 @@
  *                          Pfile Pruning Module                            *
  ****************************************************************************/
 
+#include <fstream>
 #include <dirent.h>
 #include <sys/stat.h>
 #include "mud.h"
@@ -37,11 +38,11 @@
 int num_quotes;   /* for quotes */
 #define QUOTE_FILE "quotes.dat"
 
-void prune_sales( );
-void remove_from_auth( char * );
-void rare_update( );
-void save_timedata( );
-void adjust_pfile( char * );
+void prune_sales(  );
+void remove_from_auth( const string & );
+void rare_update(  );
+void save_timedata(  );
+void adjust_pfile( const string & );
 
 /* Globals */
 time_t new_pfile_time_t;
@@ -53,34 +54,32 @@ short days = 0;
 
 struct quote_data
 {
-   quote_data();
-   ~quote_data();
+   quote_data(  );
+   ~quote_data(  );
 
-   char *quote;
+   string quote;
    int number;
 };
 
-list<quote_data*> quotelist;
+list < quote_data * >quotelist;
 
-quote_data::quote_data()
+quote_data::quote_data(  )
 {
-   quote = NULL;
    number = 0;
 }
 
-quote_data::~quote_data()
+quote_data::~quote_data(  )
 {
-   DISPOSE( quote );
    quotelist.remove( this );
 }
 
 void free_quotes( void )
 {
-   list<quote_data*>::iterator qt;
+   list < quote_data * >::iterator qt;
 
-   for( qt = quotelist.begin(); qt != quotelist.end(); )
+   for( qt = quotelist.begin(  ); qt != quotelist.end(  ); )
    {
-      quote_data *quote = (*qt);
+      quote_data *quote = *qt;
       ++qt;
 
       deleteptr( quote );
@@ -89,11 +88,11 @@ void free_quotes( void )
 
 quote_data *get_quote( int q )
 {
-   list<quote_data*>::iterator iquote;
+   list < quote_data * >::iterator iquote;
 
-   for( iquote = quotelist.begin(); iquote != quotelist.end(); ++iquote )
+   for( iquote = quotelist.begin(  ); iquote != quotelist.end(  ); ++iquote )
    {
-      quote_data *quote = (*iquote);
+      quote_data *quote = *iquote;
 
       if( quote->number == q )
          return quote;
@@ -103,68 +102,29 @@ quote_data *get_quote( int q )
 
 void save_quotes( void )
 {
-   FILE *fp;
+   ofstream stream;
    char filename[256];
    int q = 0;
 
    snprintf( filename, 256, "%s%s", SYSTEM_DIR, QUOTE_FILE );
-   if( !( fp = fopen( filename, "w" ) ) )
+   stream.open( filename );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: Unable to open quote file for writing!", __FUNCTION__ );
       perror( filename );
       return;
    }
 
-   list<quote_data*>::iterator iquote;
-   for( iquote = quotelist.begin(); iquote != quotelist.end(); ++iquote )
+   list < quote_data * >::iterator iquote;
+   for( iquote = quotelist.begin(  ); iquote != quotelist.end(  ); ++iquote )
    {
-      quote_data *quote = (*iquote);
+      quote_data *quote = *iquote;
 
-      ++q;
-      fprintf( fp, "%s", "#QUOTE\n" );
-      fprintf( fp, "Quote: %s~\n", quote->quote );
-      fprintf( fp, "%s", "End\n\n" );
-      quote->number = q;
+      stream << "Quote: " << quote->quote << "¢" << endl;
+      quote->number = ++q;
    }
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
+   stream.close(  );
    num_quotes = q;
-   return;
-}
-
-void fread_quote( quote_data * quote, FILE * fp )
-{
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
-
-         case 'Q':
-            KEY( "Quote:", quote->quote, fread_string_nohash( fp ) );
-            break;
-      }
-   }
 }
 
 /** Function: load_quotes
@@ -181,77 +141,65 @@ void load_quotes( void )
 {
    char filename[256];
    quote_data *quote;
-   FILE *fp;
+   ifstream stream;
 
-   quotelist.clear();
+   quotelist.clear(  );
    num_quotes = 0;
 
    snprintf( filename, 256, "%s%s", SYSTEM_DIR, QUOTE_FILE );
-
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   stream.open( filename );
+   if( !stream.is_open(  ) )
    {
-      log_string( "Loading quotes file..." );
-      for( ;; )
-      {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "QUOTE" ) )
-         {
-            quote = new quote_data;
-            fread_quote( quote, fp );
-            if( !quote->quote || quote->quote[0] == '\0' )
-            {
-               deleteptr( quote );
-               continue;
-            }
-            quote->number = ++num_quotes;
-            quotelist.push_back( quote );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
-            continue;
-         }
-      }
-      FCLOSE( fp );
+      perror( filename );
+      return;
    }
-   return;
+
+   do
+   {
+      string line, key, value;
+      char buf[MIL];
+
+      stream >> key;
+
+      strip_lspace( key );
+      strip_lspace( value );
+
+      if( key == "#QUOTE" )
+      {
+         stream >> key;
+         stream.getline( buf, MIL, '~' );
+         value = buf;
+
+         quote = new quote_data;
+
+         quote->quote = value;
+         quote->number = ++num_quotes;
+         quotelist.push_back( quote );
+      }
+      else if( key == "Quote:" )
+      {
+         stream.getline( buf, MIL, '¢' );
+         value = buf;
+
+         quote = new quote_data;
+
+         quote->quote = value;
+         quote->number = ++num_quotes;
+         quotelist.push_back( quote );
+      }
+   }
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
-char *add_linebreak( const char *str )
+string add_linebreak( const string & str )
 {
-   static char newstr[MSL];
-   int i, j;
+   string newstr = str;
 
-   for( i = j = 0; str[i] != '\0'; ++i )
-   {
-      if( str[i] == '~' )
-      {
-         newstr[j++] = '\r';
-         newstr[j++] = '\n';
-      }
-      else
-         newstr[j++] = str[i];
-   }
-   newstr[j] = '\0';
+   if( newstr.empty(  ) )
+      return "";
+
+   string_replace( newstr, "~", "\r\n" );
    return newstr;
 }
 
@@ -269,10 +217,10 @@ char *add_linebreak( const char *str )
 CMDF( do_quoteset )
 {
    quote_data *quote;
-   char arg[MIL];
+   string arg;
    int q;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: quoteset add <quote>\r\n" );
       ch->print( "Usage: quoteset remove <quote#>\r\n" );
@@ -283,18 +231,18 @@ CMDF( do_quoteset )
 
    if( !str_cmp( argument, "list" ) )
    {
-      list<quote_data*>::iterator qt;
+      list < quote_data * >::iterator qt;
 
       if( num_quotes == 0 )
       {
          ch->print( "There are no quotes to list.\r\n" );
          return;
       }
-      for( qt = quotelist.begin(); qt != quotelist.end(); ++qt )
+      for( qt = quotelist.begin(  ); qt != quotelist.end(  ); ++qt )
       {
-         quote = (*qt);
+         quote = *qt;
 
-         ch->pagerf( "&cQuote #%d:\r\n &W%s&D\r\n\r\n", quote->number, quote->quote );
+         ch->pagerf( "&cQuote #%d:\r\n &W%s&D\r\n\r\n", quote->number, quote->quote.c_str(  ) );
       }
       return;
    }
@@ -303,14 +251,14 @@ CMDF( do_quoteset )
 
    if( !str_cmp( arg, "add" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          do_quoteset( ch, "" );
          return;
       }
       argument = add_linebreak( argument );
       quote = new quote_data;
-      quote->quote = str_dup( argument );
+      quote->quote = argument;
       quotelist.push_back( quote );
       save_quotes(  );
       ch->printf( "Quote #%d has been added to the list.\r\n", quote->number );
@@ -323,7 +271,7 @@ CMDF( do_quoteset )
       return;
    }
 
-   q = atoi( argument );
+   q = atoi( argument.c_str(  ) );
    if( !( quote = get_quote( q ) ) )
    {
       ch->print( "No quote by that number exists!\r\n" );
@@ -332,7 +280,6 @@ CMDF( do_quoteset )
    deleteptr( quote );
    save_quotes(  );
    ch->printf( "Quote #%d has been removed from the list.\r\n", q );
-   return;
 }
 
 void quotes( char_data * ch )
@@ -356,20 +303,19 @@ void quotes( char_data * ch )
       bug( "Missing quote #%d ?!?", q );
       return;
    }
-   ch->printf( "&W\r\n%s&d\r\n", quote->quote );
-   return;
+   ch->printf( "&W\r\n%s&d\r\n", quote->quote.c_str(  ) );
 }
 
 CMDF( do_quotes )
 {
    quotes( ch );
-   return;
 }
 
 CMDF( do_pcrename )
 {
    char_data *victim;
-   char arg1[MIL], newname[256], oldname[256];
+   string arg1;
+   char newname[256], oldname[256];
 
    argument = one_argument( argument, arg1 );
    smash_tilde( argument );
@@ -377,7 +323,7 @@ CMDF( do_pcrename )
    if( ch->isnpc(  ) )
       return;
 
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Syntax: rename <victim> <new name>\r\n" );
       return;
@@ -408,7 +354,7 @@ CMDF( do_pcrename )
       ch->print( "I don't think they would like that!\r\n" );
       return;
    }
-   snprintf( newname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
+   snprintf( newname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
    snprintf( oldname, 256, "%s%c/%s", PLAYER_DIR, tolower( victim->pcdata->filename[0] ), capitalize( victim->pcdata->filename ) );
 
    if( access( newname, F_OK ) == 0 )
@@ -435,10 +381,10 @@ CMDF( do_pcrename )
       char filename[256], newfilename[256];
 
       snprintf( filename, 256, "%s%s.are", BUILD_DIR, victim->name );
-      snprintf( newfilename, 256, "%s%s.are", BUILD_DIR, capitalize( argument ) );
+      snprintf( newfilename, 256, "%s%s.are", BUILD_DIR, capitalize( argument ).c_str(  ) );
       rename( filename, newfilename );
       snprintf( filename, 256, "%s%s.are.bak", BUILD_DIR, victim->name );
-      snprintf( newfilename, 256, "%s%s.are.bak", BUILD_DIR, capitalize( argument ) );
+      snprintf( newfilename, 256, "%s%s.are.bak", BUILD_DIR, capitalize( argument ).c_str(  ) );
       rename( filename, newfilename );
    }
 
@@ -449,9 +395,9 @@ CMDF( do_pcrename )
       remove_roster( victim->pcdata->clan, victim->name );
 
    STRFREE( victim->name );
-   victim->name = STRALLOC( capitalize( argument ) );
+   victim->name = STRALLOC( capitalize( argument ).c_str(  ) );
    STRFREE( victim->pcdata->filename );
-   victim->pcdata->filename = STRALLOC( capitalize( argument ) );
+   victim->pcdata->filename = STRALLOC( capitalize( argument ).c_str(  ) );
    if( remove( oldname ) )
    {
       log_printf( "Error: Couldn't delete file %s in do_rename.", oldname );
@@ -474,10 +420,9 @@ CMDF( do_pcrename )
    if( victim->is_immortal(  ) )
       make_wizlist(  );
    ch->print( "Character was renamed.\r\n" );
-   return;
 }
 
-void search_pfiles( char_data * ch, char *dirname, char *filename, int cvnum )
+void search_pfiles( char_data * ch, const char *dirname, const char *filename, int cvnum )
 {
    FILE *fpChar;
    char fname[256];
@@ -501,7 +446,7 @@ void search_pfiles( char_data * ch, char *dirname, char *filename, int cvnum )
          log_printf( "%s: EOF encountered reading file: %s!", __FUNCTION__, fname );
          break;
       }
-      
+
       if( letter != '#' )
          continue;
 
@@ -528,7 +473,7 @@ void search_pfiles( char_data * ch, char *dirname, char *filename, int cvnum )
                word = "End";
             }
 
-            switch( UPPER( word[0] ) )
+            switch ( UPPER( word[0] ) )
             {
                default:
                   fread_to_eol( fpChar );
@@ -570,7 +515,6 @@ void search_pfiles( char_data * ch, char *dirname, char *filename, int cvnum )
       }
    }
    FCLOSE( fpChar );
-   return;
 }
 
 /* Scans the pfiles to count the number of copies of a vnum being stored - Samson 1-3-99 */
@@ -602,10 +546,9 @@ void check_stored_objects( char_data * ch, int cvnum )
       }
       closedir( dp );
    }
-   return;
 }
 
-void fread_pfile( FILE * fp, time_t tdiff, char *fname, bool count )
+void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
 {
    char *name = NULL;
    char *clan = NULL;
@@ -630,7 +573,7 @@ void fread_pfile( FILE * fp, time_t tdiff, char *fname, bool count )
 
       switch ( UPPER( word[0] ) )
       {
-         default: // Deliberately this way - the bug spam will kill you!
+         default:   // Deliberately this way - the bug spam will kill you!
          case '*':
             fread_to_eol( fp );
             break;
@@ -741,10 +684,9 @@ void fread_pfile( FILE * fp, time_t tdiff, char *fname, bool count )
    STRFREE( clan );
    STRFREE( deity );
    STRFREE( name );
-   return;
 }
 
-void read_pfile( char *dirname, char *filename, bool count )
+void read_pfile( const char *dirname, const char *filename, bool count )
 {
    FILE *fp;
    char fname[256];
@@ -790,7 +732,6 @@ void read_pfile( char *dirname, char *filename, bool count )
          FCLOSE( fp );
       }
    }
-   return;
 }
 
 void pfile_scan( bool count )
@@ -806,22 +747,22 @@ void pfile_scan( bool count )
    /*
     * Reset all clans to 0 members prior to scan - Samson 7-26-00 
     */
-   list<clan_data*>::iterator cl;
+   list < clan_data * >::iterator cl;
    if( !count )
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan_data *clan = (*cl);
+         clan_data *clan = *cl;
          clan->members = 0;
       }
 
    /*
     * Reset all deities to 0 worshippers prior to scan - Samson 7-26-00 
     */
-   list<deity_data*>::iterator ideity;
+   list < deity_data * >::iterator ideity;
    if( !count )
-      for( ideity = deitylist.begin(); ideity != deitylist.end(); ++ideity )
+      for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
       {
-         deity_data *deity = (*ideity);
+         deity_data *deity = *ideity;
          deity->worshippers = 0;
       }
 
@@ -829,9 +770,9 @@ void pfile_scan( bool count )
    for( short alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
    {
       snprintf( directory_name, 100, "%s%c", PLAYER_DIR, 'a' + alpha_loop );
-      
+
       // log_string( directory_name ); 
-      
+
       dp = opendir( directory_name );
       dentry = readdir( dp );
       while( dentry )
@@ -874,20 +815,19 @@ void pfile_scan( bool count )
 
    if( !count )
    {
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan_data *clan = (*cl);
+         clan_data *clan = *cl;
          save_clan( clan );
       }
-      for( ideity = deitylist.begin(); ideity != deitylist.end(); ++ideity )
+      for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
       {
-         deity_data *deity = (*ideity);
+         deity_data *deity = *ideity;
          save_deity( deity );
       }
       verify_clans(  );
       prune_sales(  );
    }
-   return;
 }
 
 CMDF( do_pfiles )
@@ -900,7 +840,7 @@ CMDF( do_pfiles )
       return;
    }
 
-   if( argument[0] == '\0' || !argument )
+   if( argument.empty(  ) )
    {
       /*
        * Makes a backup copy of existing pfiles just in case - Samson 
@@ -934,7 +874,6 @@ CMDF( do_pfiles )
       return;
    }
    ch->print( "Invalid argument.\r\n" );
-   return;
 }
 
 void check_pfiles( time_t reset )
@@ -984,5 +923,4 @@ void check_pfiles( time_t reset )
             rare_update(  );
       }
    }
-   return;
 }

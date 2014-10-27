@@ -29,7 +29,7 @@
 #ifndef __AUCTION_H__
 #define __AUCTION_H__
 
-#define SALES_FILE "sales.dat"
+#define SALES_FILE AUC_DIR "sales.dat"
 
 struct auction_data
 {
@@ -45,31 +45,67 @@ struct auction_data
 class sale_data
 {
  private:
-   sale_data( const sale_data& s );
-   sale_data& operator=( const sale_data& );
+   sale_data( const sale_data & s );
+     sale_data & operator=( const sale_data & );
 
  public:
-   sale_data();
-   ~sale_data();
-   void set_aucmob( string name ) { aucmob = name; }
-   string get_aucmob() { return aucmob; }
+     sale_data(  );
+    ~sale_data(  );
+   void set_aucmob( const string & name )
+   {
+      aucmob = name;
+   }
+   string get_aucmob(  )
+   {
+      return aucmob;
+   }
 
-   void set_seller( string name ) { seller = name; }
-   string get_seller() { return seller; }
+   void set_seller( const string & name )
+   {
+      seller = name;
+   }
+   string get_seller(  )
+   {
+      return seller;
+   }
 
-   void set_buyer( string name ) { buyer = name; }
-   string get_buyer() { return buyer; }
+   void set_buyer( const string & name )
+   {
+      buyer = name;
+   }
+   string get_buyer(  )
+   {
+      return buyer;
+   }
 
-   void set_item( string name ) { item = name; }
-   string get_item() { return item; }
+   void set_item( const string & name )
+   {
+      item = name;
+   }
+   string get_item(  )
+   {
+      return item;
+   }
 
-   void set_bid( int value ) { bid = value; }
-   int get_bid() { return bid; }
+   void set_bid( int value )
+   {
+      bid = value;
+   }
+   int get_bid(  )
+   {
+      return bid;
+   }
 
-   void set_collected( bool value ) { collected = value; }
-   bool get_collected() { return collected; }
+   void set_collected( bool value )
+   {
+      collected = value;
+   }
+   bool get_collected(  )
+   {
+      return collected;
+   }
 
-private:
+ private:
    string aucmob;
    string seller;
    string buyer;

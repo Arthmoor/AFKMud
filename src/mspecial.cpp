@@ -37,11 +37,11 @@
  */
 
 #if !defined(WIN32)
- #include <dlfcn.h>
+#include <dlfcn.h>
 #else
- #include <windows.h>
- #define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
- #define dlerror() GetLastError()
+#include <windows.h>
+#define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
+#define dlerror() GetLastError()
 #endif
 #include "mud.h"
 #include "area.h"
@@ -58,13 +58,14 @@ void start_hunting( char_data *, char_data * );
 void start_hating( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
 int IsUndead( char_data * );
+void wear_obj( char_data *, obj_data *, bool, int );
+void damage_obj( obj_data * );
 
-list<string> speclist;
+list < string > speclist;
 
 void free_specfuns( void )
 {
-   speclist.clear();
-   return;
+   speclist.clear(  );
 }
 
 /* Simple load function - no OLC support for now.
@@ -76,7 +77,7 @@ void load_specfuns( void )
    char filename[256];
    string sfun;
 
-   speclist.clear();
+   speclist.clear(  );
 
    snprintf( filename, 256, "%sspecfuns.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename, "r" ) ) )
@@ -95,7 +96,7 @@ void load_specfuns( void )
             FCLOSE( fp );
             return;
          }
-         sfun.clear();
+         sfun.clear(  );
          fread_string( sfun, fp );
          if( sfun == "$" )
             break;
@@ -103,19 +104,18 @@ void load_specfuns( void )
       }
       FCLOSE( fp );
    }
-   return;
 }
 
 /* Simple validation function to be sure a function can be used on mobs */
-bool validate_spec_fun( char *name )
+bool validate_spec_fun( const string & name )
 {
-   list<string>::iterator spec;
+   list < string >::iterator spec;
 
-   for( spec = speclist.begin(); spec != speclist.end(); ++spec )
+   for( spec = speclist.begin(  ); spec != speclist.end(  ); ++spec )
    {
-      string specfun = (*spec);
+      string specfun = *spec;
 
-      if( scomp( specfun, name ) )
+      if( !str_cmp( specfun, name ) )
          return true;
    }
    return false;
@@ -124,7 +124,7 @@ bool validate_spec_fun( char *name )
 /*
  * Given a name, return the appropriate spec_fun.
  */
-SPEC_FUN *m_spec_lookup( string name )
+SPEC_FUN *m_spec_lookup( const string & name )
 {
    void *funHandle;
 #if !defined(WIN32)
@@ -133,7 +133,7 @@ SPEC_FUN *m_spec_lookup( string name )
    DWORD error;
 #endif
 
-   funHandle = dlsym( sysdata->dlHandle, name.c_str() );
+   funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
    if( ( error = dlerror(  ) ) )
    {
       bug( "%s: %s", __FUNCTION__, error );
@@ -142,17 +142,17 @@ SPEC_FUN *m_spec_lookup( string name )
    return ( SPEC_FUN * ) funHandle;
 }
 
-char_data *spec_find_victim( char_data *ch, bool combat )
+char_data *spec_find_victim( char_data * ch, bool combat )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    char_data *chosen = NULL;
    int count = 0;
 
    if( !combat )
    {
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
       {
-         char_data *victim = (*ich);
+         char_data *victim = *ich;
 
          if( victim != ch && ch->can_see( victim, false ) && number_bits( 1 ) == 0 )
             return victim;
@@ -160,11 +160,11 @@ char_data *spec_find_victim( char_data *ch, bool combat )
       return NULL;
    }
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *victim = (*ich);
+      char_data *victim = *ich;
 
-      if( victim->who_fighting() != ch )
+      if( victim->who_fighting(  ) != ch )
          continue;
 
       if( !number_range( 0, count ) )
@@ -207,10 +207,10 @@ bool summon_if_hating( char_data * ch )
     */
    char_data *victim;
    bool found = false;
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      victim = (*ich);
+      victim = *ich;
 
       if( !str_cmp( ch->hating->name, victim->name ) )
       {
@@ -243,11 +243,9 @@ bool summon_if_hating( char_data * ch )
 /*
  * Core procedure for dragons.
  */
-bool dragon( char_data * ch, char *spellname )
+bool dragon( char_data * ch, const string & spellname )
 {
-   if( ch->position != POS_FIGHTING
-       && ch->position != POS_EVASIVE
-       && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
+   if( ch->position != POS_FIGHTING && ch->position != POS_EVASIVE && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
       return false;
 
    char_data *victim = NULL;
@@ -266,9 +264,7 @@ bool dragon( char_data * ch, char *spellname )
  */
 SPECF( spec_breath_any )
 {
-   if( ch->position != POS_FIGHTING
-       && ch->position != POS_EVASIVE
-       && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
+   if( ch->position != POS_FIGHTING && ch->position != POS_EVASIVE && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
       return false;
 
    switch ( number_bits( 3 ) )
@@ -308,9 +304,7 @@ SPECF( spec_breath_frost )
 
 SPECF( spec_breath_gas )
 {
-   if( ch->position != POS_FIGHTING
-       && ch->position != POS_EVASIVE
-       && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
+   if( ch->position != POS_FIGHTING && ch->position != POS_EVASIVE && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
       return false;
 
    int sn;
@@ -413,7 +407,7 @@ SPECF( spec_cast_adept )
 SPECF( spec_cast_cleric )
 {
    char_data *victim = NULL;
-   char *spell;
+   string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -497,7 +491,7 @@ SPECF( spec_cast_cleric )
 SPECF( spec_cast_mage )
 {
    char_data *victim = NULL;
-   char *spell;
+   string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -596,7 +590,7 @@ SPECF( spec_cast_mage )
 SPECF( spec_cast_undead )
 {
    char_data *victim = NULL;
-   char *spell = NULL;
+   string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -688,10 +682,10 @@ SPECF( spec_guard )
    int max_evil = 300;
    char_data *ech = NULL;
 
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *victim = (*ich);
+      char_data *victim = *ich;
 
       if( victim->fighting && victim->who_fighting(  ) != ch && victim->alignment < max_evil )
       {
@@ -714,10 +708,10 @@ SPECF( spec_janitor )
    if( !ch->IS_AWAKE(  ) )
       return false;
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
    {
-      obj_data *trash = (*iobj);
+      obj_data *trash = *iobj;
       ++iobj;
 
       if( !trash->wear_flags.test( ITEM_TAKE ) || trash->extra_flags.test( ITEM_BURIED ) )
@@ -733,7 +727,7 @@ SPECF( spec_janitor )
       }
 
       if( trash->item_type == ITEM_DRINK_CON || trash->item_type == ITEM_TRASH
-          || trash->cost < 10 || ( trash->pIndexData->vnum == OBJ_VNUM_SHOPPING_BAG && trash->contents.empty() ) )
+          || trash->cost < 10 || ( trash->pIndexData->vnum == OBJ_VNUM_SHOPPING_BAG && trash->contents.empty(  ) ) )
       {
          act( AT_ACTION, "$n picks up some trash.", ch, NULL, NULL, TO_ROOM );
          trash->from_room(  );
@@ -775,10 +769,10 @@ SPECF( spec_thief )
    if( ch->position != POS_STANDING )
       return false;
 
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *victim = (*ich);
+      char_data *victim = *ich;
 
       if( victim->isnpc(  ) || victim->is_immortal(  ) || number_bits( 2 ) != 0 || !ch->can_see( victim, false ) )
          continue;
@@ -874,6 +868,7 @@ void sayhello( char_data * ch, char_data * t )
          case 10:
          {
             char buf2[80];
+
             if( time_info.hour < sysdata->hoursunrise )
                mudstrlcpy( buf2, "evening", 80 );
             else if( time_info.hour < sysdata->hournoon )
@@ -946,6 +941,7 @@ void sayhello( char_data * ch, char_data * t )
          case 10:
          {
             char buf2[80];
+
             if( time_info.hour < sysdata->hoursunrise )
                mudstrlcpy( buf2, "evening", 80 );
             else if( time_info.hour < sysdata->hournoon )
@@ -972,10 +968,10 @@ void greet_people( char_data * ch )
 {
    if( ch->has_actflag( ACT_GREET ) )
    {
-      list<char_data*>::iterator ich;
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+      list < char_data * >::iterator ich;
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
       {
-         char_data *tch = (*ich);
+         char_data *tch = *ich;
 
          if( !tch->isnpc(  ) && ch->can_see( tch, false ) && number_range( 1, 8 ) == 1 )
          {
@@ -992,12 +988,12 @@ void greet_people( char_data * ch )
 
 bool callforhelp( char_data * ch, SPEC_FUN * spec )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    short count = 0;
 
-   for( ich = charlist.begin(); ich != charlist.end() && count <= 2; ++ich )
+   for( ich = charlist.begin(  ); ich != charlist.end(  ) && count <= 2; ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( ch != vch && !vch->hunting && spec == vch->spec_fun )
       {
@@ -1013,11 +1009,11 @@ bool callforhelp( char_data * ch, SPEC_FUN * spec )
 
 char_data *race_align_hatee( char_data * ch )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( ch->can_see( vch, false )
           && ( ( vch->IS_EVIL(  ) && ch->IS_GOOD(  ) ) || ( vch->IS_GOOD(  ) && ch->IS_EVIL(  ) )
@@ -1083,10 +1079,10 @@ SPECF( spec_fido )
    if( !ch->IS_AWAKE(  ) )
       return false;
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
    {
-      obj_data *corpse = (*iobj);
+      obj_data *corpse = *iobj;
       ++iobj;
 
       if( corpse->item_type != ITEM_CORPSE_NPC )
@@ -1099,10 +1095,10 @@ SPECF( spec_fido )
       }
       act( AT_ACTION, "$n savagely devours a corpse.", ch, NULL, NULL, TO_ROOM );
 
-      list<obj_data*>::iterator iobj2;
-      for( iobj2 = corpse->contents.begin(); iobj2 != corpse->contents.end(); )
+      list < obj_data * >::iterator iobj2;
+      for( iobj2 = corpse->contents.begin(  ); iobj2 != corpse->contents.end(  ); )
       {
-         obj_data *obj = (*iobj2);
+         obj_data *obj = *iobj2;
          ++iobj2;
 
          obj->from_obj(  );
@@ -1213,10 +1209,10 @@ SPECF( spec_RustMonster )
    if( !ch->IS_AWAKE(  ) )
       return false;
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
    {
-      obj_data *eat = (*iobj);
+      obj_data *eat = *iobj;
       ++iobj;
 
       if( !eat->wear_flags.test( ITEM_TAKE ) || eat->extra_flags.test( ITEM_BURIED ) || eat->item_type == ITEM_CORPSE_PC )
@@ -1234,10 +1230,10 @@ SPECF( spec_RustMonster )
       {
          act( AT_ACTION, "$n savagely devours a corpse.", ch, NULL, NULL, TO_ROOM );
 
-         list<obj_data*>::iterator iobj2;
-         for( iobj2 = eat->contents.begin(); iobj2 != eat->contents.end(); )
+         list < obj_data * >::iterator iobj2;
+         for( iobj2 = eat->contents.begin(  ); iobj2 != eat->contents.end(  ); )
          {
-            obj_data *obj = (*iobj2);
+            obj_data *obj = *iobj2;
             ++iobj2;
 
             obj->from_obj(  );
@@ -1252,10 +1248,159 @@ SPECF( spec_RustMonster )
    return false;
 }
 
+/*****
+ * A wanderer (nomad) that arm's itself and discards what it doesnt.. Kinda fun
+ * to watch. I wrote this for an area that repops alot of armor on the ground
+ * Adds a little spice to the area. Basically a modified janitor. Started off as
+ * an easy project. Thanks to Mark Zagorski <mwz0615@ksu.edu> for pointing out I 
+ * had a reduntancy if I had two mobs that in rooms that only led to each other
+ * they would throw the piece of armor back and forth. He also suggested 
+ * damaging the armor when thrown. [Imorted from Smaug 1.8]
+ *****/
+SPECF( spec_wanderer )
+{
+   obj_data *trash;
+   room_index *was_in_room;
+   exit_data *pexit = NULL;
+   int door, schance = 50;
+   bool found = false;  /* Valid direction */
+   bool thrown = false; /* Whether to be thrown or not */
+   bool noexit = true;  /* Assume there is no valid exits */
+
+   if( !ch->IS_AWAKE(  ) )
+      return false;
+
+   was_in_room = ch->in_room;
+   if( ch->in_room->exits.size(  ) > 0 )
+   {
+      pexit = ( *ch->in_room->exits.begin(  ) );
+      noexit = false;
+   }
+
+   if( schance > number_percent(  ) )
+   {
+      /****
+       * Look for objects on the ground and pick it up
+       ****/
+      list < obj_data * >::iterator iobj;
+      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
+      {
+         trash = *iobj;
+         ++iobj;
+
+         if( !trash->wear_flags.test( ITEM_TAKE ) || trash->extra_flags.test( ITEM_BURIED ) )
+            continue;
+
+         if( trash->item_type == ITEM_WEAPON || trash->item_type == ITEM_ARMOR || trash->item_type == ITEM_LIGHT )
+         {
+            trash->separate(  ); // So there is no 'sword <6>' gets only one object off ground
+            act( AT_ACTION, "$n leans over and gets $p.", ch, trash, NULL, TO_ROOM );
+            trash->from_room(  );
+            trash->to_char( ch );
+
+            /*****
+             * If object is too high a level throw it away.
+             *****/
+            if( ch->level < trash->level )
+            {
+               act( AT_ACTION, "$n tries to use $p, but is too inexperienced.", ch, trash, NULL, TO_ROOM );
+               thrown = true;
+            }
+
+            /*****
+             * Wear the object if it is not to be thrown. The FALSE is passed
+             * so that the mob wont remove a piece of armor already there
+             * if it is not worn it is assumed that they can't use it or 
+             * they already are wearing something.
+             *****/
+            if( !thrown )
+               wear_obj( ch, trash, false, -1 );
+
+            /*****
+             * Look for an object in the inventory that is not being worn
+             * then throw it away...
+             *****/
+            found = false;
+            if( !thrown )
+            {
+               list < obj_data * >::iterator iobj2;
+               for( iobj2 = ch->carrying.begin(  ); iobj2 != ch->carrying.end(  ); ++iobj2 )
+               {
+                  obj_data *obj2 = *iobj2;
+                  if( obj2->wear_loc == WEAR_NONE )
+                  {
+                     interpret( ch, "say Hmm, I can't use this." );
+                     trash = obj2;
+                     thrown = true;
+                  }
+               }
+            }
+         }
+
+         /*****
+          * Ugly bit of code..
+          * Checks if the object is to be thrown & there is a valid exit, 
+          * randomly pick a direction to throw it, and check to make sure no other
+          * spec_wanderer mobs are in that room.
+          *****/
+         if( thrown && !noexit )
+         {
+            while( !found && !noexit )
+            {
+               door = number_door(  );
+
+               if( ( pexit = ch->in_room->get_exit( door ) ) != NULL && pexit->to_room && !IS_EXIT_FLAG( pexit, EX_CLOSED ) && !pexit->to_room->flags.test( ROOM_NODROP ) )
+               {
+                  list < char_data * >::iterator ich;
+                  for( ich = pexit->to_room->people.begin(  ); ich != pexit->to_room->people.end(  ); ++ich )
+                  {
+                     char_data *vch = *ich;
+                     if( vch->spec_fun == spec_wanderer )
+                     {
+                        noexit = true;
+                        return false;
+                     }
+                  }
+                  found = true;
+               }
+            }
+
+            if( !noexit && thrown )
+            {
+               damage_obj( trash );
+               if( !trash->extracted(  ) )
+               {
+                  trash->separate(  );
+                  act( AT_ACTION, "$n growls and throws $p $T.", ch, trash, dir_name[pexit->vdir], TO_ROOM );
+                  trash->from_char(  );
+                  trash->to_room( pexit->to_room, ch );
+                  ch->from_room(  );
+                  if( !ch->to_room( pexit->to_room ) )
+                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                  act( AT_CYAN, "$p thrown by $n lands in the room.", ch, trash, ch, TO_ROOM );
+                  ch->from_room(  );
+                  if( !ch->to_room( was_in_room ) )
+                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               }
+               else
+               {
+                  interpret( ch, "say This thing is junk!" );
+                  act( AT_ACTION, "$n growls and breaks $p.", ch, trash, NULL, TO_ROOM );
+               }
+               return true;
+            }
+            return true;
+         }
+      }  /* get next obj */
+      return false;  /* No objects :< */
+   }
+   return false;
+}
+
 bool cast_ranger( char_data * ch )
 {
    char_data *victim = NULL;
-   char *spell = NULL;
+   string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -1342,7 +1487,7 @@ SPECF( spec_ranger )
 bool cast_paladin( char_data * ch )
 {
    char_data *victim = NULL;
-   char *spell = NULL;
+   string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -1412,7 +1557,7 @@ SPECF( spec_paladin )
 SPECF( spec_druid )
 {
    char_data *victim = NULL;
-   char *spell = NULL;
+   string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -1482,7 +1627,7 @@ SPECF( spec_druid )
 bool cast_antipaladin( char_data * ch )
 {
    char_data *victim = NULL;
-   char *spell = NULL;
+   string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -1558,7 +1703,7 @@ SPECF( spec_antipaladin )
 SPECF( spec_bard )
 {
    char_data *victim = NULL;
-   char *spell = NULL;
+   string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )

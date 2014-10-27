@@ -1,2 +1,2 @@
 cd ../area
-valgrind -v --tool=memcheck --leak-check=yes --show-reachable=yes --db-attach=yes --num-callers=10 --track-fds=yes --suppressions=../src/vg_suppress.supp ../src/afkmud 9500
+valgrind -v --tool=memcheck --leak-check=yes --show-reachable=yes --db-attach=yes --db-command="gdb -nw %f %p" --num-callers=10 --track-fds=yes --suppressions=../src/vg_suppress.supp ../src/afkmud 9500

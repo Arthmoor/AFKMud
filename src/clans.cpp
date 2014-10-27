@@ -37,42 +37,40 @@
 #include "roomindex.h"
 #include "shops.h"
 
-list<clan_data*> clanlist;
+list < clan_data * >clanlist;
 
 void save_shop( char_data * );
 
-roster_data::roster_data()
+roster_data::roster_data(  )
 {
-   init_memory( &name, &deaths, sizeof( deaths ) );
+   init_memory( &joined, &deaths, sizeof( deaths ) );
 }
 
-roster_data::~roster_data()
+roster_data::~roster_data(  )
 {
-   STRFREE( name );
 }
 
-void add_roster( clan_data *clan, char *name, int Class, int level, int kills, int deaths )
+void add_roster( clan_data * clan, const string & name, int Class, int level, int kills, int deaths )
 {
    roster_data *roster;
 
    roster = new roster_data;
-   roster->name = STRALLOC( name );
+   roster->name = name;
    roster->Class = Class;
    roster->level = level;
    roster->kills = kills;
    roster->deaths = deaths;
    roster->joined = current_time;
    clan->memberlist.push_back( roster );
-   return;
 }
 
-void remove_roster( clan_data *clan, char *name )
+void remove_roster( clan_data * clan, const string & name )
 {
-   list<roster_data*>::iterator mem;
+   list < roster_data * >::iterator mem;
 
-   for( mem = clan->memberlist.begin(); mem != clan->memberlist.end(); ++mem )
+   for( mem = clan->memberlist.begin(  ); mem != clan->memberlist.end(  ); ++mem )
    {
-      roster_data *member = (*mem);
+      roster_data *member = *mem;
 
       if( !str_cmp( name, member->name ) )
       {
@@ -83,13 +81,13 @@ void remove_roster( clan_data *clan, char *name )
    }
 }
 
-void update_roster( char_data *ch )
+void update_roster( char_data * ch )
 {
-   list<roster_data*>::iterator mem;
+   list < roster_data * >::iterator mem;
 
-   for( mem = ch->pcdata->clan->memberlist.begin(); mem != ch->pcdata->clan->memberlist.end(); ++mem )
+   for( mem = ch->pcdata->clan->memberlist.begin(  ); mem != ch->pcdata->clan->memberlist.end(  ); ++mem )
    {
-      roster_data *member = (*mem);
+      roster_data *member = *mem;
 
       if( !str_cmp( ch->name, member->name ) )
       {
@@ -100,20 +98,21 @@ void update_roster( char_data *ch )
          return;
       }
    }
-   /* If we make it here, assume they haven't been added previously */
+   /*
+    * If we make it here, assume they haven't been added previously 
+    */
    add_roster( ch->pcdata->clan, ch->name, ch->Class, ch->level, ch->pcdata->mkills, ch->pcdata->mdeaths );
    save_clan( ch->pcdata->clan );
-   return;
 }
 
 /* For use during clan removal and memory cleanup */
-void remove_all_rosters( clan_data *clan )
+void remove_all_rosters( clan_data * clan )
 {
-   list<roster_data*>::iterator member;
+   list < roster_data * >::iterator member;
 
-   for( member = clan->memberlist.begin(); member != clan->memberlist.end(); )
+   for( member = clan->memberlist.begin(  ); member != clan->memberlist.end(  ); )
    {
-      roster_data *roster = (*member);
+      roster_data *roster = *member;
       ++member;
 
       clan->memberlist.remove( roster );
@@ -121,40 +120,28 @@ void remove_all_rosters( clan_data *clan )
    }
 }
 
-clan_data::clan_data()
+clan_data::clan_data(  )
 {
-   init_memory( &filename, &gettwo, sizeof( gettwo ) );
+   init_memory( &pkills, &gettwo, sizeof( gettwo ) );
 }
 
-clan_data::~clan_data()
+clan_data::~clan_data(  )
 {
    remove_all_rosters( this );
-   memberlist.clear();
-   DISPOSE( filename );
-   STRFREE( name );
-   DISPOSE( motto );
-   DISPOSE( clandesc );
-   STRFREE( deity );
-   STRFREE( leader );
-   STRFREE( number1 );
-   STRFREE( number2 );
-   STRFREE( leadrank );
-   STRFREE( onerank );
-   STRFREE( tworank );
-   STRFREE( badge );
+   memberlist.clear(  );
    clanlist.remove( this );
 }
 
 /*
  * Get pointer to clan structure from clan name.
  */
-clan_data *get_clan( char *name )
+clan_data *get_clan( const string & name )
 {
-   list<clan_data*>::iterator cl;
+   list < clan_data * >::iterator cl;
 
-   for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
-      clan_data *clan = (*cl);
+      clan_data *clan = *cl;
 
       if( !str_cmp( name, clan->name ) )
          return clan;
@@ -183,7 +170,7 @@ void save_clan_storeroom( char_data * ch, clan_data * clan )
       return;
    }
 
-   snprintf( filename, 256, "%s%s.vault", CLAN_DIR, clan->filename );
+   snprintf( filename, 256, "%s%s.vault", CLAN_DIR, clan->filename.c_str(  ) );
    if( !( fp = fopen( filename, "w" ) ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
@@ -193,33 +180,30 @@ void save_clan_storeroom( char_data * ch, clan_data * clan )
    {
       templvl = ch->level;
       ch->level = LEVEL_AVATAR;  /* make sure EQ doesn't get lost */
-      if( !ch->in_room->objects.empty() )
+      if( !ch->in_room->objects.empty(  ) )
          fwrite_obj( ch, ch->in_room->objects, clan, fp, 0, false );
       fprintf( fp, "%s", "#END\n" );
       ch->level = templvl;
       FCLOSE( fp );
-      return;
    }
-   return;
 }
 
 void check_clan_storeroom( char_data * ch )
 {
-   list<clan_data*>::iterator cl;
+   list < clan_data * >::iterator cl;
 
-   for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
-      clan_data *clan = (*cl);
+      clan_data *clan = *cl;
 
       if( clan->storeroom == ch->in_room->vnum )
          save_clan_storeroom( ch, clan );
    }
-   return;
 }
 
 void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
 {
-   list<clan_data*>::iterator cl;
+   list < clan_data * >::iterator cl;
 
    bool cfound = false;
 
@@ -227,7 +211,7 @@ void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
       return;
 
    clan_data *clan = NULL;
-   for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
       if( victim->pIndexData->vnum == clan->shopkeeper )
       {
@@ -248,51 +232,45 @@ void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
 
    ch->printf( "%s puts %s into inventory.\r\n", victim->short_descr, obj->short_descr );
    save_shop( victim );
-   return;
 }
 
 void free_clans( void )
 {
-   list<clan_data*>::iterator cl;
+   list < clan_data * >::iterator cl;
 
-   for( cl = clanlist.begin(); cl != clanlist.end(); )
+   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); )
    {
-      clan_data *clan = (*cl);
+      clan_data *clan = *cl;
       ++cl;
 
       deleteptr( clan );
    }
-   return;
 }
 
 void delete_clan( char_data * ch, clan_data * clan )
 {
-   list<char_data*>::iterator ich;
-   list<descriptor_data*>::iterator ds;
+   list < char_data * >::iterator ich;
    room_index *room = NULL;
    mob_index *mob = NULL;
    char filename[256], storeroom[256], record[256];
-   char clanname[MIL];
+   string clanname = clan->name;
 
-   mudstrlcpy( filename, clan->filename, 256 );
-   mudstrlcpy( clanname, clan->name, 256 );
+   mudstrlcpy( filename, clan->filename.c_str(  ), 256 );
    snprintf( storeroom, 256, "%s.vault", filename );
    snprintf( record, 256, "%s.record", filename );
 
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
-      descriptor_data *d = (*ds);
-      char_data *vch = d->original ? d->original : d->character;
+      char_data *vch = *ich;
 
       if( !vch->pcdata->clan )
          continue;
 
       if( vch->pcdata->clan == clan )
       {
-         STRFREE( vch->pcdata->clan_name );
+         vch->pcdata->clan_name.clear(  );
          vch->pcdata->clan = NULL;
-         vch->printf( "The %s known as &W%s&D has been destroyed by the gods!\r\n",
-                     clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->name );
+         vch->printf( "The %s known as &W%s&D has been destroyed by the gods!\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->name.c_str(  ) );
       }
    }
 
@@ -329,9 +307,9 @@ void delete_clan( char_data * ch, clan_data * clan )
       {
          mob->actflags.reset( ACT_GUILDIDMOB );
 
-         for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+         for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
          {
-            char_data *vch = (*ich);
+            char_data *vch = *ich;
 
             if( vch->isnpc(  ) && vch->pIndexData == mob )
                vch->unset_actflag( ACT_GUILDIDMOB );
@@ -349,9 +327,9 @@ void delete_clan( char_data * ch, clan_data * clan )
 
          mob->actflags.reset( ACT_GUILDAUC );
 
-         for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+         for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
          {
-            char_data *vch = (*ich);
+            char_data *vch = *ich;
 
             if( vch->isnpc(  ) && vch->pIndexData == mob )
             {
@@ -380,9 +358,9 @@ void delete_clan( char_data * ch, clan_data * clan )
 
          mob->actflags.reset( ACT_GUILDVENDOR );
 
-         for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+         for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
          {
-            char_data *vch = (*ich);
+            char_data *vch = *ich;
 
             if( vch->isnpc(  ) && vch->pIndexData == mob )
                vch->unset_actflag( ACT_GUILDVENDOR );
@@ -403,21 +381,20 @@ void delete_clan( char_data * ch, clan_data * clan )
    if( !ch )
    {
       if( !remove( filename ) )
-         log_printf( "Clan data for %s destroyed - no members left.", clanname );
+         log_printf( "Clan data for %s destroyed - no members left.", clanname.c_str(  ) );
       return;
    }
 
    if( !remove( filename ) )
    {
-      ch->printf( "&RClan data for %s has been destroyed.\r\n", clanname );
-      log_printf( "Clan data for %s has been destroyed by %s.", clanname, ch->name );
+      ch->printf( "&RClan data for %s has been destroyed.\r\n", clanname.c_str(  ) );
+      log_printf( "Clan data for %s has been destroyed by %s.", clanname.c_str(  ), ch->name );
    }
-   return;
 }
 
 void write_clan_list( void )
 {
-   list<clan_data*>::iterator cl;
+   list < clan_data * >::iterator cl;
    FILE *fpout;
    char filename[256];
 
@@ -428,37 +405,36 @@ void write_clan_list( void )
       bug( "%s: FATAL: cannot open clan.lst for writing!", __FUNCTION__ );
       return;
    }
-   for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
-      clan_data *clan = (*cl);
+      clan_data *clan = *cl;
 
-      fprintf( fpout, "%s\n", clan->filename );
+      fprintf( fpout, "%s\n", clan->filename.c_str(  ) );
    }
    fprintf( fpout, "%s", "$\n" );
    FCLOSE( fpout );
 }
 
-void fwrite_memberlist( FILE *fp, clan_data *clan )
+void fwrite_memberlist( FILE * fp, clan_data * clan )
 {
-   list<roster_data*>::iterator mem;
+   list < roster_data * >::iterator mem;
 
-   for( mem = clan->memberlist.begin(); mem != clan->memberlist.end(); ++mem )
+   for( mem = clan->memberlist.begin(  ); mem != clan->memberlist.end(  ); ++mem )
    {
-      roster_data *member = (*mem);
+      roster_data *member = *mem;
 
       fprintf( fp, "%s", "#ROSTER\n" );
-      fprintf( fp, "Name      %s~\n", member->name );
-      fprintf( fp, "Joined    %ld\n", (time_t)member->joined );
+      fprintf( fp, "Name      %s~\n", member->name.c_str(  ) );
+      fprintf( fp, "Joined    %ld\n", ( time_t ) member->joined );
       fprintf( fp, "Class     %s~\n", npc_class[member->Class] );
       fprintf( fp, "Level     %d\n", member->level );
       fprintf( fp, "Kills     %d\n", member->kills );
       fprintf( fp, "Deaths    %d\n", member->deaths );
       fprintf( fp, "%s", "End\n\n" );
    }
-   return;
 }
 
-void fread_memberlist( clan_data *clan, FILE *fp )
+void fread_memberlist( clan_data * clan, FILE * fp )
 {
    roster_data *roster;
 
@@ -519,7 +495,7 @@ void fread_memberlist( clan_data *clan, FILE *fp )
             break;
 
          case 'N':
-            KEY( "Name", roster->name, fread_string( fp ) );
+            STDSKEY( "Name", roster->name );
             break;
       }
    }
@@ -540,13 +516,13 @@ void save_clan( clan_data * clan )
       return;
    }
 
-   if( !clan->filename || clan->filename[0] == '\0' )
+   if( clan->filename.empty(  ) )
    {
-      bug( "%s: %s has no filename", __FUNCTION__, clan->name );
+      bug( "%s: %s has no filename", __FUNCTION__, clan->name.c_str(  ) );
       return;
    }
 
-   snprintf( filename, 256, "%s%s", CLAN_DIR, clan->filename );
+   snprintf( filename, 256, "%s%s", CLAN_DIR, clan->filename.c_str(  ) );
 
    if( !( fp = fopen( filename, "w" ) ) )
    {
@@ -557,26 +533,24 @@ void save_clan( clan_data * clan )
    {
       fprintf( fp, "%s", "#CLAN\n" );
       fprintf( fp, "Version      %d\n", CLAN_VERSION );
-      fprintf( fp, "Name         %s~\n", clan->name );
-      fprintf( fp, "Filename     %s~\n", clan->filename );
-      fprintf( fp, "Motto        %s~\n", clan->motto );
-      fprintf( fp, "Description  %s~\n", clan->clandesc );
-      fprintf( fp, "Deity        %s~\n", clan->deity );
-      fprintf( fp, "Leader       %s~\n", clan->leader );
-      fprintf( fp, "NumberOne    %s~\n", clan->number1 );
-      fprintf( fp, "NumberTwo    %s~\n", clan->number2 );
-      fprintf( fp, "Badge        %s~\n", clan->badge );
-      fprintf( fp, "Leadrank     %s~\n", clan->leadrank );
-      fprintf( fp, "Onerank      %s~\n", clan->onerank );
-      fprintf( fp, "Tworank      %s~\n", clan->tworank );
+      fprintf( fp, "Name         %s~\n", clan->name.c_str(  ) );
+      fprintf( fp, "Filename     %s~\n", clan->filename.c_str(  ) );
+      fprintf( fp, "Motto        %s~\n", clan->motto.c_str(  ) );
+      fprintf( fp, "Description  %s~\n", clan->clandesc.c_str(  ) );
+      fprintf( fp, "Deity        %s~\n", clan->deity.c_str(  ) );
+      fprintf( fp, "Leader       %s~\n", clan->leader.c_str(  ) );
+      fprintf( fp, "NumberOne    %s~\n", clan->number1.c_str(  ) );
+      fprintf( fp, "NumberTwo    %s~\n", clan->number2.c_str(  ) );
+      fprintf( fp, "Badge        %s~\n", clan->badge.c_str(  ) );
+      fprintf( fp, "Leadrank     %s~\n", clan->leadrank.c_str(  ) );
+      fprintf( fp, "Onerank      %s~\n", clan->onerank.c_str(  ) );
+      fprintf( fp, "Tworank      %s~\n", clan->tworank.c_str(  ) );
       fprintf( fp, "PKills       %d %d %d %d %d %d %d %d %d %d\n",
                clan->pkills[0], clan->pkills[1], clan->pkills[2],
-               clan->pkills[3], clan->pkills[4], clan->pkills[5],
-               clan->pkills[6], clan->pkills[7], clan->pkills[8], clan->pkills[9] );
+               clan->pkills[3], clan->pkills[4], clan->pkills[5], clan->pkills[6], clan->pkills[7], clan->pkills[8], clan->pkills[9] );
       fprintf( fp, "PDeaths      %d %d %d %d %d %d %d %d %d %d\n",
                clan->pdeaths[0], clan->pdeaths[1], clan->pdeaths[2],
-               clan->pdeaths[3], clan->pdeaths[4], clan->pdeaths[5],
-               clan->pdeaths[6], clan->pdeaths[7], clan->pdeaths[8], clan->pdeaths[9] );
+               clan->pdeaths[3], clan->pdeaths[4], clan->pdeaths[5], clan->pdeaths[6], clan->pdeaths[7], clan->pdeaths[8], clan->pdeaths[9] );
       fprintf( fp, "MKills       %d\n", clan->mkills );
       fprintf( fp, "MDeaths      %d\n", clan->mdeaths );
       fprintf( fp, "IllegalPK    %d\n", clan->illegal_pk );
@@ -610,7 +584,6 @@ void save_clan( clan_data * clan )
       fprintf( fp, "%s", "#END\n" );
    }
    FCLOSE( fp );
-   return;
 }
 
 /*
@@ -652,7 +625,7 @@ void fread_clan( clan_data * clan, FILE * fp )
             break;
 
          case 'B':
-            KEY( "Badge", clan->badge, fread_string( fp ) );
+            STDSKEY( "Badge", clan->badge );
             KEY( "Board", clan->board, fread_number( fp ) );
             KEY( "Balance", clan->balance, fread_number( fp ) );
             KEY( "Bank", clan->bank, fread_number( fp ) );
@@ -668,8 +641,8 @@ void fread_clan( clan_data * clan, FILE * fp )
             break;
 
          case 'D':
-            KEY( "Deity", clan->deity, fread_string( fp ) );
-            KEY( "Description", clan->clandesc, fread_string_nohash( fp ) );
+            STDSKEY( "Deity", clan->deity );
+            STDSKEY( "Description", clan->clandesc );
             break;
 
          case 'E':
@@ -679,7 +652,7 @@ void fread_clan( clan_data * clan, FILE * fp )
 
          case 'F':
             KEY( "Favour", clan->favour, fread_short( fp ) );
-            KEY( "Filename", clan->filename, fread_string_nohash( fp ) );
+            STDSKEY( "Filename", clan->filename );
             KEY( "Forge", clan->forge, fread_number( fp ) );
             break;
 
@@ -695,8 +668,8 @@ void fread_clan( clan_data * clan, FILE * fp )
             break;
 
          case 'L':
-            KEY( "Leader", clan->leader, fread_string( fp ) );
-            KEY( "Leadrank", clan->leadrank, fread_string( fp ) );
+            STDSKEY( "Leader", clan->leader );
+            STDSKEY( "Leadrank", clan->leadrank );
             break;
 
          case 'M':
@@ -704,23 +677,23 @@ void fread_clan( clan_data * clan, FILE * fp )
             KEY( "Members", clan->members, fread_short( fp ) );
             KEY( "MemLimit", clan->mem_limit, fread_short( fp ) );
             KEY( "MKills", clan->mkills, fread_number( fp ) );
-            KEY( "Motto", clan->motto, fread_string_nohash( fp ) );
+            STDSKEY( "Motto", clan->motto );
             break;
 
          case 'N':
-            KEY( "Name", clan->name, fread_string( fp ) );
-            KEY( "NumberOne", clan->number1, fread_string( fp ) );
-            KEY( "NumberTwo", clan->number2, fread_string( fp ) );
+            STDSKEY( "Name", clan->name );
+            STDSKEY( "NumberOne", clan->number1 );
+            STDSKEY( "NumberTwo", clan->number2 );
             break;
 
          case 'O':
-            KEY( "Onerank", clan->onerank, fread_string( fp ) );
+            STDSKEY( "Onerank", clan->onerank );
             break;
 
          case 'P':
             if( !str_cmp( word, "PDeaths" ) )
             {
-               char *ln;
+               const char *ln;
                int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10;
 
                ln = fread_line( fp );
@@ -742,7 +715,7 @@ void fread_clan( clan_data * clan, FILE * fp )
 
             if( !str_cmp( word, "PKills" ) )
             {
-               char *ln;
+               const char *ln;
                int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10;
 
                ln = fread_line( fp );
@@ -775,7 +748,7 @@ void fread_clan( clan_data * clan, FILE * fp )
 
          case 'T':
             KEY( "Tithe", clan->tithe, fread_short( fp ) );
-            KEY( "Tworank", clan->tworank, fread_string( fp ) );
+            STDSKEY( "Tworank", clan->tworank );
             if( !str_cmp( word, "Type" ) )
             {
                short type = fread_short( fp );
@@ -803,7 +776,7 @@ void fread_clan( clan_data * clan, FILE * fp )
 /* Sets up a bunch of default values for new clans or during loadup so we don't get wierd stuff - Samson 7-16-00 */
 void clean_clan( clan_data * clan )
 {
-   clan->memberlist.clear();
+   clan->memberlist.clear(  );
    clan->getleader = false;
    clan->getone = false;
    clan->gettwo = false;
@@ -848,8 +821,6 @@ void clean_clan( clan_data * clan )
    clan->pdeaths[7] = 0;
    clan->pdeaths[8] = 0;
    clan->pdeaths[9] = 0;
-
-   return;
 }
 
 /*
@@ -917,7 +888,7 @@ bool load_clan_file( const char *clanfile )
          log_string( "Storeroom not found" );
          return found;
       }
-      snprintf( filename, 256, "%s%s.vault", CLAN_DIR, clan->filename );
+      snprintf( filename, 256, "%s%s.vault", CLAN_DIR, clan->filename.c_str(  ) );
       if( ( fp = fopen( filename, "r" ) ) != NULL )
       {
          log_string( "Loading clan storage room" );
@@ -937,7 +908,7 @@ bool load_clan_file( const char *clanfile )
 
             if( letter != '#' )
             {
-               bug( "%s: # not found. %s", __FUNCTION__, clan->name );
+               bug( "%s: # not found. %s", __FUNCTION__, clan->name.c_str(  ) );
                break;
             }
 
@@ -951,16 +922,16 @@ bool load_clan_file( const char *clanfile )
                break;
             else
             {
-               bug( "%s: %s bad section.", __FUNCTION__, clan->name );
+               bug( "%s: %s bad section.", __FUNCTION__, clan->name.c_str(  ) );
                break;
             }
          }
          FCLOSE( fp );
 
-         list<obj_data*>::iterator iobj;
-         for( iobj = supermob->carrying.begin(); iobj != supermob->carrying.end(); )
+         list < obj_data * >::iterator iobj;
+         for( iobj = supermob->carrying.begin(  ); iobj != supermob->carrying.end(  ); )
          {
-            obj_data *tobj = (*iobj);
+            obj_data *tobj = *iobj;
             ++iobj;
 
             tobj->from_char(  );
@@ -982,17 +953,17 @@ bool load_clan_file( const char *clanfile )
 
 void verify_clans( void )
 {
-   list<clan_data*>::iterator iclan;
-   list<roster_data*>::iterator member;
+   list < clan_data * >::iterator iclan;
+   list < roster_data * >::iterator member;
    bool change = false;
 
    log_string( "Cleaning up clan data..." );
-   for( iclan = clanlist.begin(); iclan != clanlist.end(); )
+   for( iclan = clanlist.begin(  ); iclan != clanlist.end(  ); )
    {
-      clan_data *clan = (*iclan);
+      clan_data *clan = *iclan;
       ++iclan;
 
-      if( !clan->leader && !clan->number1 && !clan->number2 )
+      if( clan->leader.empty(  ) && clan->number1.empty(  ) && clan->number2.empty(  ) )
       {
          delete_clan( NULL, clan );
          continue;
@@ -1006,18 +977,18 @@ void verify_clans( void )
 
       if( clan->members < 3 )
       {
-         if( clan->members == 2 && clan->number2 )
+         if( clan->members == 2 && !clan->number2.empty(  ) )
          {
             remove_roster( clan, clan->number2 );
-            STRFREE( clan->number2 );
+            clan->number2.clear(  );
             save_clan( clan );
          }
-         if( clan->members == 1 && clan->number1 && clan->number2 )
+         if( clan->members == 1 && !clan->number1.empty(  ) && !clan->number2.empty(  ) )
          {
             remove_roster( clan, clan->number1 );
             remove_roster( clan, clan->number2 );
-            STRFREE( clan->number1 );
-            STRFREE( clan->number2 );
+            clan->number1.clear(  );
+            clan->number2.clear(  );
             save_clan( clan );
          }
       }
@@ -1031,9 +1002,9 @@ void verify_clans( void )
                remove_roster( clan, clan->leader );
                remove_roster( clan, clan->number1 );
                remove_roster( clan, clan->number2 );
-               STRFREE( clan->leader );
-               STRFREE( clan->number1 );
-               STRFREE( clan->number2 );
+               clan->leader.clear(  );
+               clan->number1.clear(  );
+               clan->number2.clear(  );
                clan->getleader = true;
                clan->getone = true;
                clan->gettwo = true;
@@ -1044,27 +1015,27 @@ void verify_clans( void )
       }
 
       change = false;
-      log_printf( "Checking data for %s.....", clan->name );
+      log_printf( "Checking data for %s.....", clan->name.c_str(  ) );
 
       if( !exists_player( clan->leader ) )
       {
          remove_roster( clan, clan->leader );
-         STRFREE( clan->leader );
+         clan->leader.clear(  );
          if( exists_player( clan->number1 ) )
          {
             change = true;
-            clan->leader = QUICKLINK( clan->number1 );
-            STRFREE( clan->number1 );
+            clan->leader = clan->number1;
+            clan->number1.clear(  );
             if( exists_player( clan->number2 ) )
             {
-               clan->number1 = QUICKLINK( clan->number2 );
-               STRFREE( clan->number2 );
+               clan->number1 = clan->number2;
+               clan->number2.clear(  );
                clan->gettwo = true;
             }
             else
             {
                remove_roster( clan, clan->number2 );
-               STRFREE( clan->number2 );
+               clan->number2.clear(  );
                clan->getone = true;
                clan->gettwo = true;
             }
@@ -1073,58 +1044,59 @@ void verify_clans( void )
          {
             remove_roster( clan, clan->number1 );
             change = true;
-            clan->leader = QUICKLINK( clan->number2 );
-            STRFREE( clan->number1 );
-            STRFREE( clan->number2 );
+            clan->leader = clan->number2;
+            clan->number1.clear(  );
+            clan->number2.clear(  );
             clan->getone = true;
             clan->gettwo = true;
          }
          else
             clan->getleader = true;
       }
+
       if( !exists_player( clan->number1 ) )
       {
          remove_roster( clan, clan->number1 );
-         STRFREE( clan->number1 );
+         clan->number1.clear(  );
          if( exists_player( clan->number2 ) )
          {
             change = true;
-            clan->number1 = QUICKLINK( clan->number2 );
-            STRFREE( clan->number2 );
+            clan->number1 = clan->number2;
+            clan->number2.clear(  );
             clan->gettwo = true;
          }
          else
          {
             remove_roster( clan, clan->number2 );
-            STRFREE( clan->number2 );
+            clan->number2.clear(  );
             clan->getone = true;
             clan->gettwo = true;
          }
       }
+
       if( !exists_player( clan->number2 ) )
       {
          remove_roster( clan, clan->number2 );
-         STRFREE( clan->number2 );
+         clan->number2.clear(  );
          clan->gettwo = true;
       }
       if( change == true )
-         log_printf( "Administration data for %s has changed.", clan->name );
+         log_printf( "Administration data for %s has changed.", clan->name.c_str(  ) );
 
-      for( member = clan->memberlist.begin(); member != clan->memberlist.end(); )
+      for( member = clan->memberlist.begin(  ); member != clan->memberlist.end(  ); )
       {
-         roster_data *roster = (*member);
+         roster_data *roster = *member;
          ++member;
 
          if( !exists_player( roster->name ) )
          {
-            log_printf( "%s removed from roster. Player no longer exists.", roster->name );
+            log_printf( "%s removed from roster. Player no longer exists.", roster->name.c_str(  ) );
             remove_roster( clan, roster->name );
          }
       }
       save_clan( clan );
    }
    write_clan_list(  );
-   return;
 }
 
 /*
@@ -1136,7 +1108,7 @@ void load_clans( void )
    const char *filename;
    char clanlistfile[256];
 
-   clanlist.clear();
+   clanlist.clear(  );
 
    log_string( "Loading clans..." );
 
@@ -1161,7 +1133,6 @@ void load_clans( void )
    FCLOSE( fpList );
    verify_clans(  ); /* Check against pfiles to see if clans should still exist */
    log_string( "Done clans" );
-   return;
 }
 
 void check_clan_info( char_data * ch )
@@ -1178,12 +1149,10 @@ void check_clan_info( char_data * ch )
 
    if( clan->getleader == true && str_cmp( ch->name, clan->number1 ) && str_cmp( ch->name, clan->number2 ) )
    {
-      STRFREE( clan->leader );
-      clan->leader = STRALLOC( ch->name );
+      clan->leader = ch->name;
       clan->getleader = false;
       save_clan( clan );
-      ch->printf( "Your %s's leader no longer existed. You have been made the new leader.\r\n",
-                  clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->printf( "Your %s's leader no longer existed. You have been made the new leader.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
       if( clan->getone == true || clan->gettwo == true )
       {
          ch->
@@ -1195,29 +1164,24 @@ void check_clan_info( char_data * ch )
 
    if( clan->getone == true && str_cmp( ch->name, clan->leader ) && str_cmp( ch->name, clan->number2 ) )
    {
-      STRFREE( clan->number1 );
-      clan->number1 = STRALLOC( ch->name );
+      clan->number1 = ch->name;
       clan->getone = false;
       save_clan( clan );
-      ch->printf( "Your %s's first officer no longer existed. You have been made the new first officer.\r\n",
-                  clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->printf( "Your %s's first officer no longer existed. You have been made the new first officer.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
    }
 
    if( clan->gettwo == true && str_cmp( ch->name, clan->leader ) && str_cmp( ch->name, clan->number1 ) )
    {
-      STRFREE( clan->number2 );
-      clan->number2 = STRALLOC( ch->name );
+      clan->number2 = ch->name;
       clan->gettwo = false;
       save_clan( clan );
-      ch->printf( "Your %s's second officer no longer existed. You have been made the new second officer.\r\n",
-                  clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->printf( "Your %s's second officer no longer existed. You have been made the new second officer.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
    }
-   return;
 }
 
 CMDF( do_make )
 {
-   char arg[MIL];
+   string arg;
    obj_index *pObjIndex;
    obj_data *obj;
    clan_data *clan;
@@ -1239,7 +1203,7 @@ CMDF( do_make )
 
    argument = one_argument( argument, arg );
 
-   if( arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Make what?\r\n" );
       return;
@@ -1248,27 +1212,27 @@ CMDF( do_make )
    pObjIndex = get_obj_index( clan->clanobj1 );
    level = 40;
 
-   if( !pObjIndex || !is_name( arg, pObjIndex->name ) )
+   if( !pObjIndex || !hasname( pObjIndex->name, arg ) )
    {
       pObjIndex = get_obj_index( clan->clanobj2 );
       level = 45;
    }
-   if( !pObjIndex || !is_name( arg, pObjIndex->name ) )
+   if( !pObjIndex || !hasname( pObjIndex->name, arg ) )
    {
       pObjIndex = get_obj_index( clan->clanobj3 );
       level = 50;
    }
-   if( !pObjIndex || !is_name( arg, pObjIndex->name ) )
+   if( !pObjIndex || !hasname( pObjIndex->name, arg ) )
    {
       pObjIndex = get_obj_index( clan->clanobj4 );
       level = 35;
    }
-   if( !pObjIndex || !is_name( arg, pObjIndex->name ) )
+   if( !pObjIndex || !hasname( pObjIndex->name, arg ) )
    {
       pObjIndex = get_obj_index( clan->clanobj5 );
       level = 1;
    }
-   if( !pObjIndex || !is_name( arg, pObjIndex->name ) )
+   if( !pObjIndex || !hasname( pObjIndex->name, arg ) )
    {
       ch->print( "You don't know how to make that.\r\n" );
       return;
@@ -1286,7 +1250,6 @@ CMDF( do_make )
       obj = obj->to_room( ch->in_room, ch );
    act( AT_MAGIC, "$n makes $p!", ch, obj, NULL, TO_ROOM );
    act( AT_MAGIC, "You make $p!", ch, obj, NULL, TO_CHAR );
-   return;
 }
 
 CMDF( do_induct )
@@ -1302,7 +1265,7 @@ CMDF( do_induct )
 
    clan = ch->pcdata->clan;
 
-   if( ( ch->pcdata->bestowments && hasname( ch->pcdata->bestowments, "induct" ) )
+   if( ( !ch->pcdata->bestowments.empty(  ) && hasname( ch->pcdata->bestowments, "induct" ) )
        || !str_cmp( ch->name, clan->leader ) || !str_cmp( ch->name, clan->number1 ) || !str_cmp( ch->name, clan->number2 ) )
       ;
    else
@@ -1311,7 +1274,7 @@ CMDF( do_induct )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Induct whom?\r\n" );
       return;
@@ -1376,7 +1339,7 @@ CMDF( do_induct )
    {
       int sn;
 
-      for( sn = 0; sn < top_sn; ++sn )
+      for( sn = 0; sn < num_skills; ++sn )
       {
          if( skill_table[sn]->guild == clan->Class && skill_table[sn]->name != NULL )
          {
@@ -1387,19 +1350,17 @@ CMDF( do_induct )
    }
 
    victim->pcdata->clan = clan;
-   STRFREE( victim->pcdata->clan_name );
-   victim->pcdata->clan_name = QUICKLINK( clan->name );
-   act( AT_MAGIC, "You induct $N into $t", ch, clan->name, victim, TO_CHAR );
-   act( AT_MAGIC, "$n inducts $N into $t", ch, clan->name, victim, TO_NOTVICT );
-   act( AT_MAGIC, "$n inducts you into $t", ch, clan->name, victim, TO_VICT );
+   victim->pcdata->clan_name = clan->name;
+   act( AT_MAGIC, "You induct $N into $t", ch, clan->name.c_str(  ), victim, TO_CHAR );
+   act( AT_MAGIC, "$n inducts $N into $t", ch, clan->name.c_str(  ), victim, TO_NOTVICT );
+   act( AT_MAGIC, "$n inducts you into $t", ch, clan->name.c_str(  ), victim, TO_VICT );
    add_roster( clan, victim->name, victim->Class, victim->level, victim->pcdata->mkills, victim->pcdata->mdeaths );
    victim->save(  );
    save_clan( clan );
-   return;
 }
 
 /* Can the character outcast the victim? */
-bool can_outcast( clan_data *clan, char_data *ch, char_data *victim )
+bool can_outcast( clan_data * clan, char_data * ch, char_data * victim )
 {
    if( !clan || !ch || !victim )
       return false;
@@ -1431,7 +1392,7 @@ CMDF( do_outcast )
 
    clan = ch->pcdata->clan;
 
-   if( ( ch->pcdata && ch->pcdata->bestowments && hasname( ch->pcdata->bestowments, "outcast" ) )
+   if( ( !ch->pcdata->bestowments.empty(  ) && hasname( ch->pcdata->bestowments, "outcast" ) )
        || !str_cmp( ch->name, clan->leader ) || !str_cmp( ch->name, clan->number1 ) || !str_cmp( ch->name, clan->number2 ) )
       ;
    else
@@ -1440,7 +1401,7 @@ CMDF( do_outcast )
       return;
    }
 
-   if( !argument && argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Outcast whom?\r\n" );
       return;
@@ -1496,7 +1457,7 @@ CMDF( do_outcast )
    {
       int sn;
 
-      for( sn = 0; sn < top_sn; ++sn )
+      for( sn = 0; sn < num_skills; ++sn )
          if( skill_table[sn]->guild == victim->pcdata->clan->Class && skill_table[sn]->name != NULL )
          {
             victim->pcdata->learned[sn] = 0;
@@ -1511,30 +1472,29 @@ CMDF( do_outcast )
    if( clan->members < 0 )
       clan->members = 0;
    if( !str_cmp( victim->name, ch->pcdata->clan->number1 ) )
-      STRFREE( ch->pcdata->clan->number1 );
+      ch->pcdata->clan->number1.clear(  );
    if( !str_cmp( victim->name, ch->pcdata->clan->number2 ) )
-      STRFREE( ch->pcdata->clan->number2 );
+      ch->pcdata->clan->number2.clear(  );
    if( !str_cmp( victim->name, ch->pcdata->clan->deity ) )
-      STRFREE( ch->pcdata->clan->deity );
+      ch->pcdata->clan->deity.clear(  );
    victim->pcdata->clan = NULL;
-   STRFREE( victim->pcdata->clan_name );
-   act( AT_MAGIC, "You outcast $N from $t", ch, clan->name, victim, TO_CHAR );
-   act( AT_MAGIC, "$n outcasts $N from $t", ch, clan->name, victim, TO_ROOM );
-   act( AT_MAGIC, "$n outcasts you from $t", ch, clan->name, victim, TO_VICT );
+   victim->pcdata->clan_name.clear(  );
+   act( AT_MAGIC, "You outcast $N from $t", ch, clan->name.c_str(  ), victim, TO_CHAR );
+   act( AT_MAGIC, "$n outcasts $N from $t", ch, clan->name.c_str(  ), victim, TO_ROOM );
+   act( AT_MAGIC, "$n outcasts you from $t", ch, clan->name.c_str(  ), victim, TO_VICT );
 
-   echo_all_printf( ECHOTAR_ALL, "&[guildtalk]%s has been outcast from %s!", victim->name, clan->name );
+   echo_all_printf( ECHOTAR_ALL, "&[guildtalk]%s has been outcast from %s!", victim->name, clan->name.c_str(  ) );
    remove_roster( clan, victim->name );
    victim->save(  ); /* clan gets saved when pfile is saved */
    save_clan( clan );
-   return;
 }
 
 CMDF( do_setclan );
 
 /* Subfunction of setclan for clan leaders and first officers - Samson 12-6-98 */
-void pcsetclan( char_data * ch, char *argument )
+void pcsetclan( char_data * ch, string argument )
 {
-   char arg1[MIL];
+   string arg1;
    clan_data *clan;
 
    argument = one_argument( argument, arg1 );
@@ -1552,7 +1512,7 @@ void pcsetclan( char_data * ch, char *argument )
       return;
    }
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Usage: setclan <field> <player/text>\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
@@ -1573,8 +1533,7 @@ void pcsetclan( char_data * ch, char *argument )
          ch->print( "That person does not exist!\r\n" );
          return;
       }
-      STRFREE( clan->number2 );
-      clan->number2 = STRALLOC( argument );
+      clan->number2 = argument;
       clan->gettwo = false;
       ch->print( "Done.\r\n" );
       save_clan( clan );
@@ -1589,13 +1548,11 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "disband" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "This requires confirmation!!!\r\n" );
          ch->print( "If you're sure you want to disband, type 'setclan disband yes'.\r\n" );
-         ch->
-            print
-            ( "Weigh your decision CAREFULLY.\r\nDisbanding will permanently destroy ALL data related to your clan or guild!\r\n" );
+         ch->print( "Weigh your decision CAREFULLY.\r\nDisbanding will permanently destroy ALL data related to your clan or guild!\r\n" );
          ch->print( "This includes any shops, auction houses, storerooms etc you may own in a guildhall.\r\n" );
          ch->print( "It is STRONGLY adivsed that you recover any goods left in such places BEFORE you disband.\r\n" );
          ch->print( "Reimbursements for lost goods will NOT be made.\r\n" );
@@ -1608,22 +1565,22 @@ void pcsetclan( char_data * ch, char *argument )
          return;
       }
 
-      STRFREE( ch->pcdata->clan_name );
+      ch->pcdata->clan_name.clear(  );
       ch->pcdata->clan = NULL;
 
-      list<char_data*>::iterator ich;
-      for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+      list < char_data * >::iterator ich;
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
       {
-         char_data *vch = (*ich);
+         char_data *vch = *ich;
 
          if( vch->pcdata->clan == clan )
          {
-            STRFREE( vch->pcdata->clan_name );
+            vch->pcdata->clan_name.clear(  );
             vch->pcdata->clan = NULL;
          }
       }
-      echo_all_printf( ECHOTAR_ALL, "&[guildtalk]%s has dissolved %s!", ch->name, clan->name );
-      log_printf( "%s has dissolved %s", ch->name, clan->name );
+      echo_all_printf( ECHOTAR_ALL, "&[guildtalk]%s has dissolved %s!", ch->name, clan->name.c_str(  ) );
+      log_printf( "%s has dissolved %s", ch->name, clan->name.c_str(  ) );
       delete_clan( ch, clan );
       write_clan_list(  );
       return;
@@ -1631,8 +1588,7 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "leadrank" ) )
    {
-      STRFREE( clan->leadrank );
-      clan->leadrank = STRALLOC( argument );
+      clan->leadrank = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1640,8 +1596,7 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "onerank" ) )
    {
-      STRFREE( clan->onerank );
-      clan->onerank = STRALLOC( argument );
+      clan->onerank = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1649,8 +1604,7 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "tworank" ) )
    {
-      STRFREE( clan->tworank );
-      clan->tworank = STRALLOC( argument );
+      clan->tworank = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1658,8 +1612,7 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "deity" ) )
    {
-      STRFREE( clan->deity );
-      clan->deity = STRALLOC( argument );
+      clan->deity = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1672,8 +1625,7 @@ void pcsetclan( char_data * ch, char *argument )
          ch->print( "That person does not exist!\r\n" );
          return;
       }
-      STRFREE( clan->leader );
-      clan->leader = STRALLOC( argument );
+      clan->leader = argument;
       clan->getleader = false;
       ch->print( "Done.\r\n" );
       save_clan( clan );
@@ -1687,8 +1639,7 @@ void pcsetclan( char_data * ch, char *argument )
          ch->print( "That person does not exist!\r\n" );
          return;
       }
-      STRFREE( clan->number1 );
-      clan->number1 = STRALLOC( argument );
+      clan->number1 = argument;
       clan->getone = false;
       ch->print( "Done.\r\n" );
       save_clan( clan );
@@ -1697,8 +1648,7 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "badge" ) )
    {
-      STRFREE( clan->badge );
-      clan->badge = STRALLOC( argument );
+      clan->badge = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1706,8 +1656,7 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "motto" ) )
    {
-      DISPOSE( clan->motto );
-      clan->motto = str_dup( argument );
+      clan->motto = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1715,8 +1664,7 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "desc" ) )
    {
-      DISPOSE( clan->clandesc );
-      clan->clandesc = str_dup( argument );
+      clan->clandesc = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1724,7 +1672,7 @@ void pcsetclan( char_data * ch, char *argument )
 
    if( !str_cmp( arg1, "tithe" ) )
    {
-      int value = atoi( argument );
+      int value = atoi( argument.c_str(  ) );
 
       if( value < 0 || value > 100 )
       {
@@ -1738,13 +1686,11 @@ void pcsetclan( char_data * ch, char *argument )
    }
 
    do_setclan( ch, "" );
-   return;
 }
 
 CMDF( do_setclan )
 {
-   char arg1[MIL];
-   char arg2[MIL];
+   string arg1, arg2;
    clan_data *clan;
 
    ch->set_color( AT_PLAIN );
@@ -1768,19 +1714,18 @@ CMDF( do_setclan )
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( arg1[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Usage: setclan <clan> <field> <deity|leader|number1|number2> <player>\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
       ch->print( " deity leader number1 number2\r\n" );
-      ch->print( " align (not functional)" );
-      ch->print( " leadrank onerank tworank\r\n" );
+      ch->print( " align leadrank onerank tworank\r\n" );
       ch->print( " board recall storage guard1 guard2\r\n" );
       ch->print( " obj1 obj2 obj3 obj4 obj5\r\n" );
       ch->print( " name motto desc\r\n" );
-      ch->print( " favour type Class tithe\r\n" );
+      ch->print( " favour type class tithe\r\n" );
       ch->print( " balance inn idmob shopkeeper bank repair forge\r\n" );
-      ch->print( "filename members memlimit delete\r\n" );
+      ch->print( " filename members memlimit delete\r\n" );
       ch->print( " pkill1-7 pdeath1-7\r\n" );
       return;
    }
@@ -1794,8 +1739,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "deity" ) )
    {
-      STRFREE( clan->deity );
-      clan->deity = STRALLOC( argument );
+      clan->deity = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1803,8 +1747,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "leadrank" ) )
    {
-      STRFREE( clan->leadrank );
-      clan->leadrank = STRALLOC( argument );
+      clan->leadrank = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1812,8 +1755,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "onerank" ) )
    {
-      STRFREE( clan->onerank );
-      clan->onerank = STRALLOC( argument );
+      clan->onerank = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1821,8 +1763,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "tworank" ) )
    {
-      STRFREE( clan->tworank );
-      clan->tworank = STRALLOC( argument );
+      clan->tworank = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1830,8 +1771,8 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "leader" ) )
    {
-      STRFREE( clan->leader );
-      clan->leader = STRALLOC( argument );
+      clan->leader = argument;
+      clan->getleader = false;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1839,8 +1780,8 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "number1" ) )
    {
-      STRFREE( clan->number1 );
-      clan->number1 = STRALLOC( argument );
+      clan->number1 = argument;
+      clan->getone = false;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1848,8 +1789,8 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "number2" ) )
    {
-      STRFREE( clan->number2 );
-      clan->number2 = STRALLOC( argument );
+      clan->number2 = argument;
+      clan->gettwo = false;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1857,8 +1798,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "badge" ) )
    {
-      STRFREE( clan->badge );
-      clan->badge = STRALLOC( argument );
+      clan->badge = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1866,7 +1806,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "board" ) )
    {
-      clan->board = atoi( argument );
+      clan->board = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1874,7 +1814,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj1" ) )
    {
-      clan->clanobj1 = atoi( argument );
+      clan->clanobj1 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1882,7 +1822,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj2" ) )
    {
-      clan->clanobj2 = atoi( argument );
+      clan->clanobj2 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1890,7 +1830,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj3" ) )
    {
-      clan->clanobj3 = atoi( argument );
+      clan->clanobj3 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1898,7 +1838,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj4" ) )
    {
-      clan->clanobj4 = atoi( argument );
+      clan->clanobj4 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1906,7 +1846,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj5" ) )
    {
-      clan->clanobj5 = atoi( argument );
+      clan->clanobj5 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1914,7 +1854,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "guard1" ) )
    {
-      clan->guard1 = atoi( argument );
+      clan->guard1 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1922,7 +1862,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "guard2" ) )
    {
-      clan->guard2 = atoi( argument );
+      clan->guard2 = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1930,7 +1870,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "recall" ) )
    {
-      clan->recall = atoi( argument );
+      clan->recall = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1938,7 +1878,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "storage" ) )
    {
-      clan->storeroom = atoi( argument );
+      clan->storeroom = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1946,7 +1886,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "tithe" ) )
    {
-      int value = atoi( argument );
+      int value = atoi( argument.c_str(  ) );
 
       if( value < 0 || value > 100 )
       {
@@ -1961,7 +1901,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "balance" ) )
    {
-      int value = atoi( argument );
+      int value = atoi( argument.c_str(  ) );
 
       if( value < 0 || value > 2000000000 )
       {
@@ -1979,9 +1919,9 @@ CMDF( do_setclan )
       mob_index *mob = NULL;
       int value = 0;
 
-      if( atoi( argument ) != 0 )
+      if( atoi( argument.c_str(  ) ) != 0 )
       {
-         if( !( mob = get_mob_index( atoi( argument ) ) ) )
+         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -1999,9 +1939,9 @@ CMDF( do_setclan )
       mob_index *mob = NULL;
       int value = 0;
 
-      if( atoi( argument ) != 0 )
+      if( atoi( argument.c_str(  ) ) != 0 )
       {
-         if( !( mob = get_mob_index( atoi( argument ) ) ) )
+         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -2019,9 +1959,9 @@ CMDF( do_setclan )
       mob_index *mob = NULL;
       int value = 0;
 
-      if( atoi( argument ) != 0 )
+      if( atoi( argument.c_str(  ) ) != 0 )
       {
-         if( !( mob = get_mob_index( atoi( argument ) ) ) )
+         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -2039,9 +1979,9 @@ CMDF( do_setclan )
       mob_index *mob = NULL;
       int value = 0;
 
-      if( atoi( argument ) != 0 )
+      if( atoi( argument.c_str(  ) ) != 0 )
       {
-         if( !( mob = get_mob_index( atoi( argument ) ) ) )
+         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -2059,9 +1999,9 @@ CMDF( do_setclan )
       mob_index *mob = NULL;
       int value = 0;
 
-      if( atoi( argument ) != 0 )
+      if( atoi( argument.c_str(  ) ) != 0 )
       {
-         if( !( mob = get_mob_index( atoi( argument ) ) ) )
+         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -2079,9 +2019,9 @@ CMDF( do_setclan )
       room_index *room = NULL;
       int value = 0;
 
-      if( atoi( argument ) != 0 )
+      if( atoi( argument.c_str(  ) ) != 0 )
       {
-         if( !( room = get_room_index( atoi( argument ) ) ) )
+         if( !( room = get_room_index( atoi( argument.c_str(  ) ) ) ) )
          {
             ch->print( "That room does not exist.\r\n" );
             return;
@@ -2096,14 +2036,14 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "align" ) )
    {
-      int value = atoi( argument );
+      int value = atoi( argument.c_str(  ) );
 
-      if( value < -100 || value > 1000 )
+      if( value < -1000 || value > 1000 )
       {
          ch->print( "Invalid alignment - range is from -1000 to 1000.\r\n" );
          return;
       }
-      clan->alignment = atoi( argument );
+      clan->alignment = value;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -2120,9 +2060,9 @@ CMDF( do_setclan )
       return;
    }
 
-   if( !str_cmp( arg2, "Class" ) )
+   if( !str_cmp( arg2, "class" ) )
    {
-      clan->Class = atoi( argument );
+      clan->Class = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -2132,7 +2072,7 @@ CMDF( do_setclan )
    {
       clan_data *uclan = NULL;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "You can't name a clan nothing.\r\n" );
          return;
@@ -2142,8 +2082,7 @@ CMDF( do_setclan )
          ch->print( "There is already another clan with that name.\r\n" );
          return;
       }
-      STRFREE( clan->name );
-      clan->name = STRALLOC( argument );
+      clan->name = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -2151,8 +2090,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "motto" ) )
    {
-      DISPOSE( clan->motto );
-      clan->motto = str_dup( argument );
+      clan->motto = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -2160,8 +2098,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "desc" ) )
    {
-      DISPOSE( clan->clandesc );
-      clan->clandesc = str_dup( argument );
+      clan->clandesc = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -2169,7 +2106,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "memlimit" ) )
    {
-      clan->mem_limit = atoi( argument );
+      clan->mem_limit = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -2177,7 +2114,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "members" ) )
    {
-      clan->members = atoi( argument );
+      clan->members = atoi( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -2190,12 +2127,11 @@ CMDF( do_setclan )
       if( !is_valid_filename( ch, CLAN_DIR, argument ) )
          return;
 
-      snprintf( filename, sizeof( filename ), "%s%s", CLAN_DIR, clan->filename );
+      snprintf( filename, sizeof( filename ), "%s%s", CLAN_DIR, clan->filename.c_str(  ) );
       if( !remove( filename ) )
          ch->print( "Old clan file deleted.\r\n" );
 
-      DISPOSE( clan->filename );
-      clan->filename = str_dup( argument );
+      clan->filename = argument;
       ch->print( "Done.\r\n" );
       save_clan( clan );
       write_clan_list(  );
@@ -2212,6 +2148,7 @@ CMDF( do_setclan )
    if( !str_prefix( "pkill", arg2 ) )
    {
       int temp_value;
+
       if( !str_cmp( arg2, "pkill1" ) )
          temp_value = 0;
       else if( !str_cmp( arg2, "pkill2" ) )
@@ -2231,7 +2168,7 @@ CMDF( do_setclan )
          do_setclan( ch, "" );
          return;
       }
-      clan->pkills[temp_value] = atoi( argument );
+      clan->pkills[temp_value] = atoi( argument.c_str(  ) );
       ch->print( "Ok.\r\n" );
       return;
    }
@@ -2239,6 +2176,7 @@ CMDF( do_setclan )
    if( !str_prefix( "pdeath", arg2 ) )
    {
       int temp_value;
+
       if( !str_cmp( arg2, "pdeath1" ) )
          temp_value = 0;
       else if( !str_cmp( arg2, "pdeath2" ) )
@@ -2258,12 +2196,11 @@ CMDF( do_setclan )
          do_setclan( ch, "" );
          return;
       }
-      clan->pdeaths[temp_value] = atoi( argument );
+      clan->pdeaths[temp_value] = atoi( argument.c_str(  ) );
       ch->print( "Ok.\r\n" );
       return;
    }
    do_setclan( ch, "" );
-   return;
 }
 
 CMDF( do_showclan )
@@ -2277,7 +2214,8 @@ CMDF( do_showclan )
       ch->print( "Huh?\r\n" );
       return;
    }
-   if( argument[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: showclan <clan>\r\n" );
       return;
@@ -2292,42 +2230,36 @@ CMDF( do_showclan )
 
    ch->printf( "\r\n&w%s     : &W%s\t\tBadge: %s\r\n&wFilename : &W%s\r\n&wMotto    : &W%s\r\n",
                clan->clan_type == CLAN_GUILD ? "Guild" : "Clan",
-               clan->name, clan->badge ? clan->badge : "(not set)", clan->filename, clan->motto );
-   ch->printf( "&wDesc     : &W%s\r\n&wDeity    : &W%s\r\n", clan->clandesc, clan->deity );
-   ch->printf( "&wLeader   : &W%-19.19s\t&wRank: &W%s\r\n", clan->leader, clan->leadrank );
-   ch->printf( "&wNumber1  : &W%-19.19s\t&wRank: &W%s\r\n", clan->number1, clan->onerank );
-   ch->printf( "&wNumber2  : &W%-19.19s\t&wRank: &W%s\r\n", clan->number2, clan->tworank );
+               clan->name.c_str(  ), !clan->badge.empty(  )? clan->badge.c_str(  ) : "(not set)", clan->filename.c_str(  ), clan->motto.c_str(  ) );
+   ch->printf( "&wDesc     : &W%s\r\n&wDeity    : &W%s\r\n", clan->clandesc.c_str(  ), clan->deity.c_str(  ) );
+   ch->printf( "&wLeader   : &W%-19.19s\t&wRank: &W%s\r\n", clan->leader.c_str(  ), clan->leadrank.c_str(  ) );
+   ch->printf( "&wNumber1  : &W%-19.19s\t&wRank: &W%s\r\n", clan->number1.c_str(  ), clan->onerank.c_str(  ) );
+   ch->printf( "&wNumber2  : &W%-19.19s\t&wRank: &W%s\r\n", clan->number2.c_str(  ), clan->tworank.c_str(  ) );
    ch->printf( "&wBalance  : &W%d\r\n", clan->balance );
    ch->printf( "&wTithe    : &W%d\r\n", clan->tithe );
    ch->
       printf
       ( "&wPKills   : &w1-9:&W%-3d &w10-14:&W%-3d &w15-19:&W%-3d &w20-29:&W%-3d &w30-39:&W%-3d &w40-49:&W%-3d &w50:&W%-3d\r\n",
-        clan->pkills[0], clan->pkills[1], clan->pkills[2], clan->pkills[3], clan->pkills[4], clan->pkills[5],
-        clan->pkills[6] );
+        clan->pkills[0], clan->pkills[1], clan->pkills[2], clan->pkills[3], clan->pkills[4], clan->pkills[5], clan->pkills[6] );
    ch->
       printf
       ( "&wPDeaths  : &w1-9:&W%-3d &w10-14:&W%-3d &w15-19:&W%-3d &w20-29:&W%-3d &w30-39:&W%-3d &w40-49:&W%-3d &w50:&W%-3d\r\n",
-        clan->pdeaths[0], clan->pdeaths[1], clan->pdeaths[2], clan->pdeaths[3], clan->pdeaths[4], clan->pdeaths[5],
-        clan->pdeaths[6] );
+        clan->pdeaths[0], clan->pdeaths[1], clan->pdeaths[2], clan->pdeaths[3], clan->pdeaths[4], clan->pdeaths[5], clan->pdeaths[6] );
    ch->printf( "&wIllegalPK: &W%-6d\r\n", clan->illegal_pk );
    ch->printf( "&wMKills   : &W%-6d   &wMDeaths: &W%-6d\r\n", clan->mkills, clan->mdeaths );
    ch->printf( "&wFavor    : &W%-6d   &w\r\n", clan->favour );
-   ch->printf( "&wMembers  : &W%-6d   &wMemLimit  : &W%-6d   &wAlign  : &W%-6d\r\n",
-               clan->members, clan->mem_limit, clan->alignment );
-   ch->printf( "&wBoard    : &W%-5d    &wRecall : &W%-5d    &wStorage: &W%-5d\r\n",
-               clan->board, clan->recall, clan->storeroom );
+   ch->printf( "&wMembers  : &W%-6d   &wMemLimit  : &W%-6d   &wAlign  : &W%-6d\r\n", clan->members, clan->mem_limit, clan->alignment );
+   ch->printf( "&wBoard    : &W%-5d    &wRecall : &W%-5d    &wStorage: &W%-5d\r\n", clan->board, clan->recall, clan->storeroom );
    ch->printf( "&wGuard1   : &W%-5d    &wGuard2 : &W%-5d    &wBanker : &W%-5d\r\n", clan->guard1, clan->guard2, clan->bank );
-   ch->printf( "&wInn      : &W%-5d    &wShop   : &W%-5d    &wAuction: &W%-5d\r\n",
-               clan->inn, clan->shopkeeper, clan->auction );
+   ch->printf( "&wInn      : &W%-5d    &wShop   : &W%-5d    &wAuction: &W%-5d\r\n", clan->inn, clan->shopkeeper, clan->auction );
    ch->printf( "&wRepair   : &W%-5d    &wForge  : &W%-5d    &wIdmob  : &W%-5d\r\n", clan->repair, clan->forge, clan->idmob );
    ch->printf( "&wObj1( &W%d &w)  Obj2( &W%d &w)  Obj3( &W%d &w)  Obj4( &W%d &w)  Obj5( &W%d &w)\r\n",
                clan->clanobj1, clan->clanobj2, clan->clanobj3, clan->clanobj4, clan->clanobj5 );
-   return;
 }
 
 CMDF( do_makeclan )
 {
-   char arg[MIL], arg2[MIL];
+   string arg, arg2;
    char filename[256];
    clan_data *clan;
    roster_data *member;
@@ -2339,7 +2271,7 @@ CMDF( do_makeclan )
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) || arg2.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Usage: makeclan <filename> <clan leader> <clan name>\r\n" );
       ch->print( "Filename must be a SINGLE word, no punctuation marks.\r\n" );
@@ -2367,17 +2299,17 @@ CMDF( do_makeclan )
    }
 
    found = false;
-   snprintf( filename, 256, "%s%s", CLAN_DIR, strlower( arg ) );
+   snprintf( filename, 256, "%s%s", CLAN_DIR, strlower( arg.c_str(  ) ) );
 
    clan = new clan_data;
    clean_clan( clan );  /* Setup default values - Samson 7-16-00 */
 
-   clan->name = STRALLOC( argument );
-   clan->filename = str_dup( filename );  /* Bug fix - Samson 5-31-99 */
-   clan->leader = STRALLOC( victim->name );
+   clan->name = argument;
+   clan->filename = filename; /* Bug fix - Samson 5-31-99 */
+   clan->leader = victim->name;
 
    member = new roster_data;
-   member->name = QUICKLINK( victim->name );
+   member->name = victim->name;
    member->joined = current_time;
    member->Class = victim->Class;
    member->kills = victim->pcdata->mkills;
@@ -2389,29 +2321,29 @@ CMDF( do_makeclan )
     * Samson 12-6-98 
     */
    victim->pcdata->clan = clan;
-   victim->pcdata->clan_name = QUICKLINK( clan->name );
+   victim->pcdata->clan_name = clan->name;
 
    victim->save(  );
    save_clan( victim->pcdata->clan );
    write_clan_list(  );
 
-   ch->printf( "Clan %s created with leader %s.\r\n", clan->name, clan->leader );
+   ch->printf( "Clan %s created with leader %s.\r\n", clan->name.c_str(  ), clan->leader.c_str(  ) );
 }
 
 CMDF( do_roster )
 {
    clan_data *clan;
-   list<roster_data*>::iterator mem;
-   char arg[MIL], arg2[MIL];
+   list < roster_data * >::iterator mem;
+   string arg, arg2;
    int total = 0;
 
-   if( ch->isnpc() )
+   if( ch->isnpc(  ) )
    {
       ch->print( "NPCs can't use this command.\r\n" );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: roster <clanname>\r\n" );
       ch->print( "Usage: roster <clanname> remove <name>\r\n" );
@@ -2421,44 +2353,42 @@ CMDF( do_roster )
    argument = one_argument( argument, arg );
    if( !( clan = get_clan( arg ) ) )
    {
-      ch->printf( "No such guild or clan known as %s\r\n", arg );
+      ch->printf( "No such guild or clan known as %s\r\n", arg.c_str(  ) );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      ch->printf( "Membership roster for the %s %s\r\n\r\n", clan->name,
-         clan->clan_type == CLAN_GUILD ? "Guild" : "Clan" );
+      ch->printf( "Membership roster for the %s %s\r\n\r\n", clan->name.c_str(  ), clan->clan_type == CLAN_GUILD ? "Guild" : "Clan" );
       ch->printf( "%-15.15s  %-15.15s %-6.6s %-6.6s %-6.6s %s\r\n", "Name", "Class", "Level", "Kills", "Deaths", "Joined on" );
       ch->print( "-------------------------------------------------------------------------------------\r\n" );
-      for( mem = clan->memberlist.begin(); mem != clan->memberlist.end(); ++mem )
+      for( mem = clan->memberlist.begin(  ); mem != clan->memberlist.end(  ); ++mem )
       {
-         roster_data *member = (*mem);
+         roster_data *member = *mem;
 
          ch->printf( "%-15.15s  %-15.15s %-6d %-6d %-6d %s\r\n",
-            member->name, capitalize( npc_class[member->Class] ), member->level, member->kills, member->deaths,
-            c_time( member->joined, ch->pcdata->timezone ) );
+                     member->name.c_str(  ), capitalize( npc_class[member->Class] ), member->level, member->kills, member->deaths,
+                     c_time( member->joined, ch->pcdata->timezone ) );
          ++total;
       }
-      ch->printf( "\r\nThere are %d member%s in %s\r\n", total, total == 1 ? "" : "s", clan->name );
+      ch->printf( "\r\nThere are %d member%s in %s\r\n", total, total == 1 ? "" : "s", clan->name.c_str(  ) );
       return;
    }
 
    argument = one_argument( argument, arg2 );
    if( !str_cmp( arg2, "remove" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Remove who from the roster?\r\n" );
          return;
       }
       remove_roster( clan, argument );
       save_clan( clan );
-      ch->printf( "%s has been removed from the roster for %s\r\n", argument, clan->name );
+      ch->printf( "%s has been removed from the roster for %s\r\n", argument.c_str(  ), clan->name.c_str(  ) );
       return;
    }
    do_roster( ch, "" );
-   return;
 }
 
 /*
@@ -2467,23 +2397,22 @@ CMDF( do_roster )
 CMDF( do_clans )
 {
    clan_data *pclan;
-   list<clan_data*>::iterator cl;
+   list < clan_data * >::iterator cl;
    int count = 0;
 
-   if( argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->
          print
          ( "\r\n&RClan          Deity         Leader           Pkills:    Avatar      Other\r\n_________________________________________________________________________\r\n\r\n" );
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan_data *clan = (*cl);
+         clan_data *clan = *cl;
 
          if( clan->clan_type == CLAN_GUILD )
             continue;
-         ch->printf( "&w%-13s %-13s %-13s", clan->name, clan->deity, clan->leader );
-         ch->printf( "&[blood]                %5d      %5d\r\n",
-                     clan->pkills[6], ( clan->pkills[2] + clan->pkills[3] + clan->pkills[4] + clan->pkills[5] ) );
+         ch->printf( "&w%-13s %-13s %-13s", clan->name.c_str(  ), clan->deity.c_str(  ), clan->leader.c_str(  ) );
+         ch->printf( "&[blood]                %5d      %5d\r\n", clan->pkills[6], ( clan->pkills[2] + clan->pkills[3] + clan->pkills[4] + clan->pkills[5] ) );
          ++count;
       }
       if( !count )
@@ -2501,50 +2430,42 @@ CMDF( do_clans )
       ch->print( "&RNo such clan.\r\n" );
       return;
    }
-   ch->printf( "\r\n&R%s, '%s'\r\n\r\n", pclan->name, pclan->motto );
+   ch->printf( "\r\n&R%s, '%s'\r\n\r\n", pclan->name.c_str(  ), pclan->motto.c_str(  ) );
    ch->print( "&wVictories:&w\r\n" );
    ch->printf( "    &w15-19...  &r%-4d\r\n    &w20-29...  &r%-4d\r\n    &w30-39...  &r%-4d\r\n    &w40-49...  &r%-4d\r\n",
                pclan->pkills[2], pclan->pkills[3], pclan->pkills[4], pclan->pkills[5] );
    ch->printf( "   &wAvatar...  &r%-4d\r\n", pclan->pkills[6] );
    ch->printf( "&wClan Leader:  %s\r\nNumber One :  %s\r\nNumber Two :  %s\r\nClan Deity :  %s\r\n",
-               pclan->leader, pclan->number1, pclan->number2, pclan->deity );
-   if( !str_cmp( ch->name, pclan->deity ? pclan->deity : "" )
-       || !str_cmp( ch->name, pclan->leader ? pclan->leader : "" )
-       || !str_cmp( ch->name, pclan->number1 ? pclan->number1 : "" )
-       || !str_cmp( ch->name, pclan->number2 ? pclan->number2 : "" ) )
+               pclan->leader.c_str(  ), pclan->number1.c_str(  ), pclan->number2.c_str(  ), pclan->deity.c_str(  ) );
+   if( !str_cmp( ch->name, pclan->deity ) || !str_cmp( ch->name, pclan->leader ) || !str_cmp( ch->name, pclan->number1 ) || !str_cmp( ch->name, pclan->number2 ) )
       ch->printf( "Members    :  %d\r\n", pclan->members );
-   ch->printf( "\r\n&RDescription:  %s\r\n", pclan->clandesc );
-   return;
+   ch->printf( "\r\n&RDescription:  %s\r\n", pclan->clandesc.c_str(  ) );
 }
 
 CMDF( do_guilds )
 {
    clan_data *porder;
-   list<clan_data*>::iterator cl;
+   list < clan_data * >::iterator cl;
    int count = 0;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->
-         print
-         ( "\r\n&gGuild            Deity          Leader           Mkills      Mdeaths\r\n____________________________________________________________________\r\n\r\n" );
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+         print( "\r\n&gGuild            Deity          Leader           Mkills      Mdeaths\r\n____________________________________________________________________\r\n\r\n" );
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan_data *clan = (*cl);
+         clan_data *clan = ( *cl );
 
          if( clan->clan_type == CLAN_GUILD )
          {
-            ch->printf( "&G%-16s %-14s %-14s   %-7d       %5d\r\n",
-                        clan->name, clan->deity, clan->leader, clan->mkills, clan->mdeaths );
+            ch->printf( "&G%-16s %-14s %-14s   %-7d       %5d\r\n", clan->name.c_str(  ), clan->deity.c_str(  ), clan->leader.c_str(  ), clan->mkills, clan->mdeaths );
             ++count;
          }
       }
       if( !count )
          ch->print( "&gThere are no Guilds currently formed.\r\n" );
       else
-         ch->
-            print
-            ( "&g____________________________________________________________________\r\n\r\nUse 'guilds <guild>' for more detailed information.\r\n" );
+         ch->print( "&g____________________________________________________________________\r\n\r\nUse 'guilds <guild>' for more detailed information.\r\n" );
       return;
    }
 
@@ -2555,16 +2476,12 @@ CMDF( do_guilds )
       return;
    }
 
-   ch->printf( "\r\n&gGuild of %s\r\n'%s'\r\n\r\n", porder->name, porder->motto );
+   ch->printf( "\r\n&gGuild of %s\r\n'%s'\r\n\r\n", porder->name.c_str(  ), porder->motto.c_str(  ) );
    ch->printf( "&GDeity      :  %s\r\nLeader     :  %s\r\nNumber One :  %s\r\nNumber Two :  %s\r\n",
-               porder->deity, porder->leader, porder->number1, porder->number2 );
-   if( !str_cmp( ch->name, porder->deity ? porder->deity : "" )
-       || !str_cmp( ch->name, porder->leader ? porder->leader : "" )
-       || !str_cmp( ch->name, porder->number1 ? porder->number1 : "" )
-       || !str_cmp( ch->name, porder->number2 ? porder->number2 : "" ) )
+               porder->deity.c_str(  ), porder->leader.c_str(  ), porder->number1.c_str(  ), porder->number2.c_str(  ) );
+   if( !str_cmp( ch->name, porder->deity ) || !str_cmp( ch->name, porder->leader ) || !str_cmp( ch->name, porder->number1 ) || !str_cmp( ch->name, porder->number2 ) )
       ch->printf( "Members    :  %d\r\n", porder->members );
-   ch->printf( "\r\n&gDescription:\r\n%s\r\n", porder->clandesc );
-   return;
+   ch->printf( "\r\n&gDescription:\r\n%s\r\n", porder->clandesc.c_str(  ) );
 }
 
 CMDF( do_victories )
@@ -2579,7 +2496,7 @@ CMDF( do_victories )
 
    if( ch->pcdata->clan->clan_type != CLAN_GUILD )
    {
-      snprintf( filename, 256, "%s%s.record", CLAN_DIR, ch->pcdata->clan->name );
+      snprintf( filename, 256, "%s%s.record", CLAN_DIR, ch->pcdata->clan->name.c_str(  ) );
       if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
       {
          FILE *fp = fopen( filename, "w" );
@@ -2596,10 +2513,7 @@ CMDF( do_victories )
       }
    }
    else
-   {
       ch->print( "Huh?\r\n" );
-      return;
-   }
 }
 
 CMDF( do_ident )
@@ -2612,10 +2526,10 @@ CMDF( do_ident )
 
    bool idmob = false;
    char_data *mob = NULL;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      mob = (*ich);
+      mob = *ich;
       if( mob->isnpc(  ) && ( mob->has_actflag( ACT_IDMOB ) || mob->has_actflag( ACT_GUILDIDMOB ) ) )
       {
          idmob = true;
@@ -2629,7 +2543,7 @@ CMDF( do_ident )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       act( AT_TELL, "$n tells you 'What would you like identified?'\r\n", mob, NULL, ch, TO_VICT );
       return;
@@ -2646,10 +2560,10 @@ CMDF( do_ident )
    clan_data *clan = NULL;
    if( mob->has_actflag( ACT_GUILDIDMOB ) )
    {
-      list<clan_data*>::iterator cl;
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      list < clan_data * >::iterator cl;
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan = (*cl);
+         clan = ( *cl );
          if( mob->pIndexData->vnum == clan->idmob )
          {
             found = true;
@@ -2680,13 +2594,11 @@ CMDF( do_ident )
 
    act_printf( AT_LBLUE, mob, NULL, ch, TO_VICT, "$n tells you 'Information on a %s:'", obj->short_descr );
    obj_identify_output( ch, obj );
-   return;
 }
 
 CMDF( do_shove )
 {
-   char arg[MIL];
-   char arg2[MIL];
+   string arg, arg2;
    int exit_dir;
    exit_data *pexit;
    char_data *victim;
@@ -2703,7 +2615,7 @@ CMDF( do_shove )
       return;
    }
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Shove whom?\r\n" );
       return;
@@ -2733,7 +2645,7 @@ CMDF( do_shove )
       return;
    }
 
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       ch->print( "Shove them in which direction?\r\n" );
       return;
@@ -2749,14 +2661,11 @@ CMDF( do_shove )
    nogo = false;
    if( !( pexit = ch->in_room->get_exit( exit_dir ) ) )
       nogo = true;
-   else
-      if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) )
-          && !ch->has_pcflag( PCFLAG_PASSDOOR ) )
+   else if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) && !ch->has_pcflag( PCFLAG_PASSDOOR ) )
       nogo = true;
 
    if( ( IS_EXIT_FLAG( pexit, EX_FORTIFIED )
-         || IS_EXIT_FLAG( pexit, EX_HEAVY )
-         || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) )
+         || IS_EXIT_FLAG( pexit, EX_HEAVY ) || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) )
       nogo = true;
 
    if( nogo )
@@ -2833,8 +2742,7 @@ CMDF( do_shove )
 
 CMDF( do_drag )
 {
-   char arg[MIL];
-   char arg2[MIL];
+   string arg, arg2;
    int exit_dir;
    char_data *victim;
    exit_data *pexit;
@@ -2851,7 +2759,7 @@ CMDF( do_drag )
       return;
    }
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Drag whom?\r\n" );
       return;
@@ -2899,7 +2807,7 @@ CMDF( do_drag )
       return;
    }
 
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       ch->print( "Drag them in which direction?\r\n" );
       return;
@@ -2916,14 +2824,11 @@ CMDF( do_drag )
    nogo = false;
    if( !( pexit = ch->in_room->get_exit( exit_dir ) ) )
       nogo = true;
-   else
-      if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) )
-          && !ch->has_pcflag( PCFLAG_PASSDOOR ) )
+   else if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) && !ch->has_pcflag( PCFLAG_PASSDOOR ) )
       nogo = true;
 
    if( ( IS_EXIT_FLAG( pexit, EX_FORTIFIED )
-         || IS_EXIT_FLAG( pexit, EX_HEAVY )
-         || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) )
+         || IS_EXIT_FLAG( pexit, EX_HEAVY ) || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) )
       nogo = true;
 
    if( nogo )
@@ -3005,5 +2910,4 @@ CMDF( do_drag )
       return;
    }
    ch->print( "You cannot do that to someone who is standing.\r\n" );
-   return;
 }

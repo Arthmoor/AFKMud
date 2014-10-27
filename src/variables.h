@@ -23,14 +23,34 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                             Hotboot module                               *
+ *                         MUDprog Quest Variables                          *
  ****************************************************************************/
 
-#ifndef __HOTBOOT_H__
-#define __HOTBOOT_H__
+typedef enum
+{
+   vtNONE, vtINT, vtSTR //, vtXBIT <--- FIXME: Can't very well use this right now. We don't have EXT_BV anymore.
+} variable_types;
 
-#define HOTBOOT_FILE SYSTEM_DIR "copyover.dat"  /* for hotboots */
-#define EXE_FILE "../src/afkmud"
-#define HOTBOOT_DIR "../hotboot/"   /* For storing objects across hotboots */
-#define MOB_FILE	"mobs.dat"  /* For storing mobs across hotboots */
-#endif
+/*
+ * Variable structure used for putting variable tags on players, mobs
+ * or anything else.  Will be persistant (save) for players.
+ */
+struct variable_data
+{
+   variable_data(  );
+   variable_data( int, int, const string & );
+    ~variable_data(  );
+
+   string tag; // Variable name
+   void *data; // Data pointer
+   char type;  // Type of data
+   time_t c_time; // Time created
+   time_t m_time; // Time last modified
+   time_t r_time; // Time last read
+   time_t expires;   // Expiry date
+   // int flags;      // Flags for future use
+   int vnum;   // Vnum of mob that set this
+   int timer;  // Expiry timer
+};
+
+variable_data *get_tag( char_data *, const string &, int );

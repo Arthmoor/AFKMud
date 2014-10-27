@@ -39,7 +39,7 @@
 #include "channels.h"
 #include "roomindex.h"
 
-void send_tochannel( char_data *, mud_channel *, char * );
+void send_tochannel( char_data *, mud_channel *, string & );
 void free_zonedata( char_data * );
 
 /* License:
@@ -152,7 +152,7 @@ int open_queue( void )
    return 1;
 }
 
-void mud_send_message( char *arg )
+void mud_send_message( const char *arg )
 {
    struct mud_msgbuf qbuf;
    int x;
@@ -173,7 +173,7 @@ void mud_send_message( char *arg )
    }
 }
 
-void mud_message( char_data * ch, mud_channel * channel, char *arg )
+void mud_message( char_data * ch, mud_channel * channel, const string & arg )
 {
    char tbuf[MAX_MSGBUF_LENGTH + 1];
    int invis;
@@ -182,17 +182,16 @@ void mud_message( char_data * ch, mud_channel * channel, char *arg )
 
    invis = isnpc ? ch->mobinvis : ch->pcdata->wizinvis;
 
-   snprintf( tbuf, MAX_MSGBUF_LENGTH, "%s %d %d %d %d \"%s@%d\" %s",
-             channel->name, invis, ch->level, isnpc, isinvis, ch->name, mud_port, arg );
+   snprintf( tbuf, MAX_MSGBUF_LENGTH, "%s %d %d %d %d \"%s@%d\" %s", channel->name.c_str(  ), invis, ch->level, isnpc, isinvis, ch->name, mud_port, arg.c_str(  ) );
 
    mud_send_message( tbuf );
 }
 
-void recv_text_handler( char *str )
+void recv_text_handler( string & str )
 {
    mud_channel *channel = NULL;
    char_data *ch = NULL;
-   char arg1[MIL], arg2[MIL], arg3[MIL], arg4[MIL], arg5[MIL], chname[MIL];
+   string arg1, arg2, arg3, arg4, arg5, chname;
    int ilevel = -1, clevel = -1;
    bool isnpc, isinvis;
 
@@ -202,14 +201,14 @@ void recv_text_handler( char *str )
    str = one_argument( str, arg4 );
    str = one_argument( str, arg5 );
    str = one_argument( str, chname );
-   ilevel = atoi( arg2 );
-   clevel = atoi( arg3 );
-   isnpc = atoi( arg4 );
-   isinvis = atoi( arg5 );
+   ilevel = atoi( arg2.c_str(  ) );
+   clevel = atoi( arg3.c_str(  ) );
+   isnpc = atoi( arg4.c_str(  ) );
+   isinvis = atoi( arg5.c_str(  ) );
 
    if( !( channel = find_channel( arg1 ) ) )
    {
-      bug( "%s: channel %s doesn't exist!", __FUNCTION__, arg1 );
+      bug( "%s: channel %s doesn't exist!", __FUNCTION__, arg1.c_str(  ) );
       return;
    }
 
@@ -220,7 +219,7 @@ void recv_text_handler( char *str )
 
    if( !isnpc )
    {
-      ch->name = STRALLOC( capitalize( chname ) );
+      ch->name = STRALLOC( capitalize( chname.c_str(  ) ) );
       ch->pcdata = new pc_data;
       ch->pcdata->wizinvis = ilevel;
       if( isinvis )
@@ -229,7 +228,7 @@ void recv_text_handler( char *str )
    else
    {
       ch->set_actflag( ACT_IS_NPC );
-      ch->short_descr = STRALLOC( capitalize( chname ) );
+      ch->short_descr = STRALLOC( capitalize( chname.c_str(  ) ) );
       ch->mobinvis = ilevel;
    }
    ch->level = clevel;
@@ -238,7 +237,6 @@ void recv_text_handler( char *str )
 
    ch->from_room(  );
    deleteptr( ch );
-   return;
 }
 
 void mud_recv_message( void )
@@ -250,7 +248,10 @@ void mud_recv_message( void )
       return;
 
    while( ( ret = msgrcv( qid, &qbuf, MAX_MSGBUF_LENGTH, mud_port, IPC_NOWAIT ) ) > 0 )
-      recv_text_handler( qbuf.mtext );
+   {
+      string txt = qbuf.mtext;
+      recv_text_handler( txt );
+   }
 
    if( ret == -1 && errno != ENOMSG )
       bug( "%s: errno: %d", __FUNCTION__, errno );

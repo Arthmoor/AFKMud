@@ -23,18 +23,13 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                            Ban module by Shaddai                         *
+ *                           IP Banning module                              *
  ****************************************************************************/
 
 #ifndef __BAN_H__
 #define __BAN_H__
 
-#define BAN_LIST "ban.lst" /* List of bans                 */
-
- /*
-  * Ban Types --- Shaddai
-  */
-const int BAN_WARN = -1;
+#define BAN_LIST "ban.lst" // List of bans
 
 /*
  * Site ban structure.
@@ -42,24 +37,12 @@ const int BAN_WARN = -1;
 struct ban_data
 {
  private:
-   ban_data( const ban_data& b );
-   ban_data& operator=( const ban_data& );
+   ban_data( const ban_data & b );
+     ban_data & operator=( const ban_data & );
 
  public:
-   ban_data();
-   ~ban_data();
-
-   char *name; /* Name of site/class/race banned */
-   char *user; /* Name of user from site */
-   char *note; /* Why it was banned */
-   char *ban_by;  /* Who banned this site */
-   char *ban_time;   /* Time it was banned */
-   int unban_date;   /* When ban expires */
-   short duration;   /* How long it is banned for */
-   short level;   /* Level that is banned */
-   bool warn;  /* Echo on warn channel */
-   bool prefix;   /* Use of *site */
-   bool suffix;   /* Use of site* */
+     ban_data(  );
+    ~ban_data(  );
 };
 
 #endif

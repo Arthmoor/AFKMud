@@ -97,16 +97,16 @@ enum liquid_struct_types
 class liquid_data
 {
  private:
-   liquid_data( const liquid_data& l );
-   liquid_data& operator=( const liquid_data& );
+   liquid_data( const liquid_data & l );
+     liquid_data & operator=( const liquid_data & );
 
  public:
-   liquid_data();
-   ~liquid_data();
+     liquid_data(  );
+    ~liquid_data(  );
 
-   char *name;
-   char *shortdesc;
-   char *color;
+   string name;
+   string shortdesc;
+   string color;
    int mod[MAX_CONDS];
    int vnum;
    int type;
@@ -115,14 +115,14 @@ class liquid_data
 class mixture_data
 {
  private:
-   mixture_data( const mixture_data& m );
-   mixture_data& operator=( const mixture_data& );
+   mixture_data( const mixture_data & m );
+     mixture_data & operator=( const mixture_data & );
 
  public:
-   mixture_data();
-   ~mixture_data();
+     mixture_data(  );
+    ~mixture_data(  );
 
-   char *name;
+   string name;
    int data[3];
    bool object;
 };

@@ -37,16 +37,16 @@
 #include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "skill_index.h"
 #include "smaugaffect.h"
 
-ch_ret ranged_attack( char_data *, char *, obj_data *, obj_data *, short, short );
+ch_ret ranged_attack( char_data *, string, obj_data *, obj_data *, short, short );
 bool check_pos( char_data *, short );
-void skill_notfound( char_data *, char * );
 SPELLF( spell_smaug );
 SPELLF( spell_notfound );
 SPELLF( spell_null );
 int ris_save( char_data *, int, int );
-bool validate_spec_fun( char * );
+bool validate_spec_fun( const string & );
 bool is_safe( char_data *, char_data * );
 bool check_illegal_pk( char_data *, char_data * );
 bool legal_loot( char_data *, char_data * );
@@ -55,7 +55,7 @@ void failed_casting( struct skill_type *, char_data *, char_data *, obj_data * )
 void start_timer( struct timeval * );
 time_t end_timer( struct timeval * );
 void check_mount_objs( char_data *, bool );
-int get_door( char * );
+int get_door( const string & );
 void check_killer( char_data *, char_data * );
 void raw_kill( char_data *, char_data * );
 void death_cry( char_data * );
@@ -65,11 +65,10 @@ ch_ret check_room_for_traps( char_data *, int );
 int IsGiant( char_data * );
 int IsDragon( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
-void save_classes( );
-void save_races( );
+void save_classes(  );
+void save_races(  );
 
 /* global variables */
-int top_sn;
 int top_herb;
 int top_disease;
 skill_type *skill_table[MAX_SKILL];
@@ -77,14 +76,22 @@ skill_type *herb_table[MAX_HERB];
 skill_type *disease_table[MAX_DISEASE];
 extern FILE *fpArea;
 
-char *const old_ris_flags[] = {
+SKILL_INDEX skill_table__index;
+SKILL_INDEX skill_table__spell;
+SKILL_INDEX skill_table__skill;
+SKILL_INDEX skill_table__racial;
+SKILL_INDEX skill_table__combat;
+SKILL_INDEX skill_table__tongue;
+SKILL_INDEX skill_table__lore;
+
+const char *old_ris_flags[] = {
    "fire", "cold", "electricity", "energy", "blunt", "pierce", "slash", "acid",
    "poison", "drain", "sleep", "charm", "hold", "nonmagic", "plus1", "plus2",
    "plus3", "plus4", "plus5", "plus6", "magic", "paralysis", "good", "evil", "hack",
    "lash"
 };
 
-char *const skill_tname[] = { "unknown", "Spell", "Skill", "Combat", "Tongue", "Herb", "Racial", "Disease", "Lore" };
+const char *skill_tname[] = { "unknown", "Spell", "Skill", "Combat", "Tongue", "Herb", "Racial", "Disease", "Lore" };
 
 const char *att_kick_kill_ch[] = {
    "Your kick caves $N's chest in, which kills $M.",
@@ -292,7 +299,7 @@ const char *att_kick_hit_room[] = {
    "."
 };
 
-char *const spell_flag[] = {
+const char *spell_flag[] = {
    "water", "earth", "air", "astral", "area", "distant", "reverse",
    "noself", "nobind", "accumulative", "recastable", "noscribe",
    "nobrew", "group", "object", "character", "secretskill", "pksensitive",
@@ -301,45 +308,44 @@ char *const spell_flag[] = {
 
 const char *spell_saves[] = { "none", "Poison/Death", "Wands", "Paralysis/Petrification", "Breath", "Spells" };
 
-const char *spell_save_effect[] =
-   { "none", "Negation", "1/8 Damage", "1/4 Damage", "Half Damage", "3/4 Damage", "Reflection", "Absorbtion" };
+const char *spell_save_effect[] = { "none", "Negation", "1/8 Damage", "1/4 Damage", "Half Damage", "3/4 Damage", "Reflection", "Absorbtion" };
 
-char *const spell_damage[] = { "none", "fire", "cold", "electricity", "energy", "acid", "poison", "drain" };
+const char *spell_damage[] = { "none", "fire", "cold", "electricity", "energy", "acid", "poison", "drain" };
 
-char *const spell_action[] = { "none", "create", "destroy", "resist", "suscept", "divinate", "obscure", "change" };
+const char *spell_action[] = { "none", "create", "destroy", "resist", "suscept", "divinate", "obscure", "change" };
 
-char *const spell_power[] = { "none", "minor", "greater", "major" };
+const char *spell_power[] = { "none", "minor", "greater", "major" };
 
-char *const spell_class[] = { "none", "lunar", "solar", "travel", "summon", "life", "death", "illusion" };
+const char *spell_class[] = { "none", "lunar", "solar", "travel", "summon", "life", "death", "illusion" };
 
-char *const target_type[] = { "ignore", "offensive", "defensive", "self", "objinv" };
+const char *target_type[] = { "ignore", "offensive", "defensive", "self", "objinv" };
 
-smaug_affect::smaug_affect()
+smaug_affect::smaug_affect(  )
 {
    init_memory( &duration, &location, sizeof( location ) );
 }
 
-smaug_affect::~smaug_affect()
+smaug_affect::~smaug_affect(  )
 {
    DISPOSE( duration );
    DISPOSE( modifier );
 }
 
-skill_type::skill_type()
+skill_type::skill_type(  )
 {
    init_memory( &flags, &participants, sizeof( participants ) );
-   affects.clear();
+   affects.clear(  );
 }
 
-skill_type::~skill_type()
+skill_type::~skill_type(  )
 {
-   list<smaug_affect*>::iterator aff;
+   list < smaug_affect * >::iterator aff;
 
-   if( !affects.empty() )
+   if( !affects.empty(  ) )
    {
-      for( aff = affects.begin(); aff != affects.end(); )
+      for( aff = affects.begin(  ); aff != affects.end(  ); )
       {
-         smaug_affect *af = (*aff);
+         smaug_affect *af = *aff;
          ++aff;
 
          affects.remove( af );
@@ -371,12 +377,302 @@ skill_type::~skill_type()
    DISPOSE( helptext );
 }
 
-int get_skillflag( char *flag )
+int get_skillflag( const string & flag )
 {
-   for( unsigned int x = 0; x < ( sizeof( spell_flag ) / sizeof( spell_flag[0] ) ); ++x )
+   for( size_t x = 0; x < ( sizeof( spell_flag ) / sizeof( spell_flag[0] ) ); ++x )
       if( !str_cmp( flag, spell_flag[x] ) )
          return x;
    return -1;
+}
+
+// String Sort
+// Used to sort strings by string value rather than binary value.
+string_sort::string_sort( void )
+{
+}
+
+bool string_sort::operator(  ) ( const string & left, const string & right )
+{
+   return ( left.compare( right ) < 0 );
+}
+
+// Used to find skills using their prefix
+find__skill_prefix::find__skill_prefix( char_data * p_actor, const string & p_value )
+{
+   actor = p_actor;
+   value = p_value;
+}
+
+bool find__skill_prefix::operator(  ) ( pair < string, int >compare )
+{
+   string key;
+   int sn;
+
+   key = compare.first;
+   sn = compare.second;
+
+   if( actor && !actor->isnpc(  ) && ( ( !skill_table[sn] || actor->pcdata->learned[sn] == 0 ) ) )
+      return false;
+
+   return ( key.find( value ) == 0 );
+}
+
+// Used to find skills using the exact name.
+find__skill_exact::find__skill_exact( char_data * p_actor, const string & p_value )
+{
+   actor = p_actor;
+   value = p_value;
+}
+
+bool find__skill_exact::operator(  ) ( pair < string, int >compare )
+{
+   string key;
+   int sn;
+
+   key = compare.first;
+   sn = compare.second;
+
+   if( actor && !actor->isnpc(  ) && ( ( !skill_table[sn] || actor->pcdata->learned[sn] == 0 ) ) )
+      return false;
+
+   return ( key == value );
+}
+
+// Skill Search Functions
+int search_skill_prefix( SKILL_INDEX index, const string & key )
+{
+   SKILL_INDEX::iterator fnd, it, end;
+
+   it = index.begin(  );
+   end = index.end(  );
+
+   if( ( fnd = find_if( it, end, find__skill_prefix( NULL, key ) ) ) == end )
+      return -1;
+   return fnd->second;
+}
+
+int search_skill_prefix( SKILL_INDEX index, const string & key, char_data * actor )
+{
+   SKILL_INDEX::iterator fnd, it, end;
+
+   // Safety
+   if( actor == NULL || actor->isnpc(  ) )
+      return -1;
+
+   it = index.begin(  );
+   end = index.end(  );
+
+   if( ( fnd = find_if( it, end, find__skill_prefix( actor, key ) ) ) == end )
+      return -1;
+   return fnd->second;
+}
+
+int search_skill_exact( SKILL_INDEX index, const string & key )
+{
+   SKILL_INDEX::iterator fnd, it, end;
+
+   it = index.begin(  );
+   end = index.end(  );
+
+   if( ( fnd = index.find( key ) ) == end )
+      return -1;
+   return fnd->second;
+}
+
+int search_skill_exact( SKILL_INDEX index, const string & key, char_data * actor )
+{
+   SKILL_INDEX::iterator fnd, it, end;
+
+   // Safety
+   if( actor == NULL || actor->isnpc(  ) )
+      return -1;
+
+   it = index.begin(  );
+   end = index.end(  );
+
+   if( ( fnd = find_if( it, end, find__skill_exact( actor, key ) ) ) == end )
+      return -1;
+   return fnd->second;
+}
+
+int search_skill( SKILL_INDEX index, const string & key )
+{
+   int sn;
+
+   if( ( sn = search_skill_exact( index, key ) ) != -1 )
+      return sn;
+   return search_skill_prefix( index, key );
+}
+
+int search_skill( SKILL_INDEX index, const string & key, char_data * actor )
+{
+   int sn;
+
+   if( ( sn = search_skill_exact( index, key, actor ) ) != -1 )
+      return sn;
+   return search_skill_prefix( index, key, actor );
+}
+
+int find_spell( char_data * ch, const string & name, bool know )
+{
+   if( !ch || ch->isnpc(  ) || !know )
+      return search_skill( skill_table__spell, name );
+   else
+      return search_skill( skill_table__spell, name, ch );
+}
+
+int find_skill( char_data * ch, const string & name, bool know )
+{
+   if( !ch || ch->isnpc(  ) || !know )
+      return search_skill( skill_table__skill, name );
+   else
+      return search_skill( skill_table__skill, name, ch );
+}
+
+int find_combat( char_data * ch, const string & name, bool know )
+{
+   if( !ch || ch->isnpc(  ) || !know )
+      return search_skill( skill_table__combat, name );
+   else
+      return search_skill( skill_table__combat, name, ch );
+}
+
+int find_ability( char_data * ch, const string & name, bool know )
+{
+   if( !ch || ch->isnpc(  ) || !know )
+      return search_skill( skill_table__racial, name );
+   else
+      return search_skill( skill_table__racial, name, ch );
+}
+
+int find_tongue( char_data * ch, const string & name, bool know )
+{
+   if( !ch || ch->isnpc(  ) || !know )
+      return search_skill( skill_table__tongue, name );
+   else
+      return search_skill( skill_table__tongue, name, ch );
+}
+
+int find_lore( char_data * ch, const string & name, bool know )
+{
+   if( !ch || ch->isnpc(  ) || !know )
+      return search_skill( skill_table__lore, name );
+   else
+      return search_skill( skill_table__lore, name, ch );
+}
+
+/*
+ * Lookup a skill by name, only stopping at skills the player has.
+ */
+int ch_slookup( char_data * ch, const string & name )
+{
+   int sn;
+
+   sn = skill_lookup( name );
+   // does this skill even exist?
+   if( sn == -1 )
+      return -1;
+
+   // Make sure that:
+   // (a) ch knows this skill
+   // and, (b) ch's level is high enough
+   if( ch->isnpc(  ) )
+      return sn;
+   if( ch->pcdata->learned[sn] > 0 && ( ch->level >= skill_table[sn]->skill_level[ch->Class] || ch->level >= skill_table[sn]->race_level[ch->race] ) )
+   {
+      return sn;
+   }
+   else
+   {
+      // nope... ch doesn't have this skill.
+      return -1;
+   }
+}
+
+/*
+ * Lookup a skill by name.
+ *
+ * First tries to find an exact match. Then looks for a prefix match.
+ * Rehauled by dchaley 2007-06-22.
+ *
+ * Overhauled and uber-simplified by Justice on 8/13/07
+ * This is the main gateway into searching skills and is the only method that should be called
+ * to do so aside from the find_* functions above.
+ * If you want more fine-grained lookups this is the place to put them.
+ */
+int skill_lookup( const string & name )
+{
+   int sn;
+
+   if( ( sn = search_skill_exact( skill_table__index, name ) ) != -1 )
+      return sn;
+   if( ( sn = search_skill_prefix( skill_table__index, name ) ) != -1 )
+      return sn;
+
+   return -1;
+}
+
+/*
+ * Return a skilltype pointer based on sn			-Thoric
+ * Returns NULL if bad, unused or personal sn.
+ */
+skill_type *get_skilltype( int sn )
+{
+   if( sn >= TYPE_PERSONAL )
+      return NULL;
+   if( sn >= TYPE_HERB )
+      return IS_VALID_HERB( sn - TYPE_HERB ) ? herb_table[sn - TYPE_HERB] : NULL;
+   if( sn >= TYPE_HIT )
+      return NULL;
+   return IS_VALID_SN( sn ) ? skill_table[sn] : NULL;
+}
+
+/*
+ * Lookup an herb by name.
+ */
+int herb_lookup( const string & name )
+{
+   for( int sn = 0; sn < top_herb; ++sn )
+   {
+      if( !herb_table[sn] || !herb_table[sn]->name )
+         return -1;
+      if( LOWER( name[0] ) == LOWER( herb_table[sn]->name[0] ) && !str_prefix( name, herb_table[sn]->name ) )
+         return sn;
+   }
+   return -1;
+}
+
+/*
+ * Lookup a skill by slot number.
+ * Used for object loading.
+ */
+int slot_lookup( int slot )
+{
+   int sn;
+
+   if( slot <= 0 )
+      return -1;
+
+   for( sn = 0; sn < num_skills; ++sn )
+      if( slot == skill_table[sn]->slot )
+         return sn;
+
+   if( fBootDb )
+      bug( "%s: bad slot %d.", __FUNCTION__, slot );
+
+   return -1;
+}
+
+CMDF( do_slotlookup )
+{
+   int sn;
+
+   if( ( sn = slot_lookup( atoi( argument.c_str(  ) ) ) ) == -1 )
+   {
+      ch->printf( "%s is not a valid slot number.\r\n", argument.c_str(  ) );
+      return;
+   }
+   ch->printf( "Slot %s belongs to skill/spell '%s'\r\n", argument.c_str(  ), skill_table[sn]->name );
 }
 
 /*
@@ -385,22 +681,20 @@ int get_skillflag( char *flag )
 void remap_slot_numbers( void )
 {
    skill_type *skill;
-   list<smaug_affect*>::iterator aff;
+   list < smaug_affect * >::iterator aff;
 
    log_string( "Remapping slots to sns..." );
 
-   for( int sn = 0; sn < top_sn; ++sn )
+   for( int sn = 0; sn < num_skills; ++sn )
    {
       if( ( skill = skill_table[sn] ) != NULL )
       {
-         for( aff = skill->affects.begin(); aff != skill->affects.end(); ++aff )
+         for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); ++aff )
          {
-            smaug_affect *af = (*aff);
+            smaug_affect *af = *aff;
 
             if( af->location == APPLY_WEAPONSPELL
-                || af->location == APPLY_WEARSPELL
-                || af->location == APPLY_REMOVESPELL
-                || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL )
+                || af->location == APPLY_WEARSPELL || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL )
             {
                strdup_printf( &af->modifier, "%d", slot_lookup( atoi( af->modifier ) ) );
             }
@@ -410,7 +704,7 @@ void remap_slot_numbers( void )
 }
 
 /*
- * Function used by qsort to sort skills
+ * Function used by qsort to sort skills; sorts by name, not case sensitive.
  */
 int skill_comp( skill_type ** sk1, skill_type ** sk2 )
 {
@@ -423,14 +717,60 @@ int skill_comp( skill_type ** sk1, skill_type ** sk2 )
       return -1;
    if( !skill1 && !skill2 )
       return 0;
-   if( skill1->type < skill2->type )
-      return -1;
-   if( skill1->type > skill2->type )
-      return 1;
+   // Sort without regard to case.
    return strcasecmp( skill1->name, skill2->name );
 }
 
-int get_skill( char *skilltype )
+void update_skill_index( skill_type * skill, int sn )
+{
+   string buf = skill->name;
+
+   // to LowerCase
+   strlower( buf );
+
+   skill_table__index[buf] = sn;
+   switch ( skill->type )
+   {
+      case SKILL_SPELL:
+         skill_table__spell[buf] = sn;
+         break;
+      case SKILL_SKILL:
+         skill_table__skill[buf] = sn;
+         break;
+      case SKILL_RACIAL:
+         skill_table__racial[buf] = sn;
+         break;
+      case SKILL_COMBAT:
+         skill_table__combat[buf] = sn;
+         break;
+      case SKILL_TONGUE:
+         skill_table__tongue[buf] = sn;
+         break;
+      case SKILL_LORE:
+         skill_table__lore[buf] = sn;
+         break;
+   }
+}
+
+/*
+ * Sort the skill table with qsort
+ */
+void sort_skill_table(  )
+{
+   log_string( "Sorting skill table..." );
+   // Jury is still out on whether or not we care if this is sorted: qsort( &skill_table[1], num_skills - 1, sizeof( skill_type * ), ( int ( * )( const void *, const void * ) )skill_comp );
+
+   // Populate index
+   skill_type *cur;
+   for( int sn = 1; sn < num_skills; ++sn )
+   {
+      if( !( cur = skill_table[sn] ) || !cur->name )
+         continue;
+      update_skill_index( cur, sn );
+   }
+}
+
+int get_skill( const string & skilltype )
 {
    if( !str_cmp( skilltype, "Racial" ) )
       return SKILL_RACIAL;
@@ -447,15 +787,6 @@ int get_skill( char *skilltype )
    if( !str_cmp( skilltype, "Lore" ) )
       return SKILL_LORE;
    return SKILL_UNKNOWN;
-}
-
-/*
- * Sort the skill table with qsort
- */
-void sort_skill_table( void )
-{
-   log_string( "Sorting skill table..." );
-   qsort( &skill_table[1], top_sn - 1, sizeof( skill_type * ), ( int ( * )( const void *, const void * ) )skill_comp );
 }
 
 /*
@@ -540,10 +871,10 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
       fprintf( fpout, "Teachers     %s~\n", skill->teachers );
 
    int modifier;
-   list<smaug_affect*>::iterator aff;
-   for( aff = skill->affects.begin(); aff != skill->affects.end(); ++aff )
+   list < smaug_affect * >::iterator aff;
+   for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); ++aff )
    {
-      smaug_affect *af = (*aff);
+      smaug_affect *af = *aff;
 
       if( af->location == APPLY_AFFECT )
          af->location = APPLY_EXT_AFFECT;
@@ -551,8 +882,7 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
       modifier = atoi( af->modifier );
       if( ( af->location == APPLY_WEAPONSPELL
             || af->location == APPLY_WEARSPELL
-            || af->location == APPLY_REMOVESPELL
-            || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL ) && IS_VALID_SN( modifier ) )
+            || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL ) && IS_VALID_SN( modifier ) )
          fprintf( fpout, "'%d' ", skill_table[modifier]->slot );
       else
          fprintf( fpout, "'%s' ", af->modifier );
@@ -587,6 +917,7 @@ const int SKILLVERSION = 4;
 /* Updated to 2 for bitset flags - Samson 7-10-04 */
 /* Updated to 3 for AFF_NONE insertion - Samson 7-27-04 */
 /* Updated to 4 for bug corrections - Samson 1-28-06 */
+// Updated to 5 because Samson got stupid. Again. *ugh* - Samson 8/11/07
 void save_skill_table( void )
 {
    int x;
@@ -601,7 +932,7 @@ void save_skill_table( void )
 
    fprintf( fpout, "#VERSION %d\n", SKILLVERSION );
 
-   for( x = 0; x < top_sn; ++x )
+   for( x = 0; x < num_skills; ++x )
    {
       if( !skill_table[x]->name || skill_table[x]->name[0] == '\0' )
          break;
@@ -692,6 +1023,25 @@ skill_type *fread_skill( FILE * fp, int version )
                aff->location = fread_number( fp );
                mudstrlcpy( mod, fread_word( fp ), MIL );
 
+               // Conversion needed because Samson was stupid and didn't think. Again. *sigh*
+               if( version < 5 )
+               {
+                  if( aff->location == APPLY_INT )
+                     aff->location = APPLY_DEX;
+                  else if( aff->location == APPLY_WIS )
+                     aff->location = APPLY_INT;
+                  else if( aff->location == APPLY_DEX )
+                     aff->location = APPLY_WIS;
+                  else if( aff->location == APPLY_CHA )
+                     aff->location = APPLY_SEX;
+                  else if( aff->location == APPLY_LCK )
+                     aff->location = APPLY_CLASS;
+                  else if( aff->location == APPLY_SEX )
+                     aff->location = APPLY_CHA;
+                  else if( aff->location == APPLY_CLASS )
+                     aff->location = APPLY_LCK;
+               }
+
                if( version < 2 )
                {
                   if( version < 1 )
@@ -702,10 +1052,7 @@ skill_type *fread_skill( FILE * fp, int version )
 
                         mudstrlcpy( mod, aff_flags[mvalue], MIL );
                      }
-                     if( aff->location == APPLY_RESISTANT
-                      || aff->location == APPLY_IMMUNE
-                      || aff->location == APPLY_ABSORB
-                      || aff->location == APPLY_SUSCEPTIBLE )
+                     if( aff->location == APPLY_RESISTANT || aff->location == APPLY_IMMUNE || aff->location == APPLY_ABSORB || aff->location == APPLY_SUSCEPTIBLE )
                      {
                         int mvalue = atoi( mod );
 
@@ -715,9 +1062,8 @@ skill_type *fread_skill( FILE * fp, int version )
                   else
                   {
                      if( ( aff->location == APPLY_RESISTANT && is_number( mod ) )
-                       || ( aff->location == APPLY_IMMUNE && is_number( mod ) )
-                       || ( aff->location == APPLY_ABSORB && is_number( mod ) )
-                       || ( aff->location == APPLY_SUSCEPTIBLE && is_number( mod ) ) )
+                         || ( aff->location == APPLY_IMMUNE && is_number( mod ) )
+                         || ( aff->location == APPLY_ABSORB && is_number( mod ) ) || ( aff->location == APPLY_SUSCEPTIBLE && is_number( mod ) ) )
                      {
                         int mvalue = atoi( mod );
 
@@ -958,7 +1304,7 @@ void load_skill_table( void )
    if( ( fp = fopen( SKILL_FILE, "r" ) ) != NULL )
    {
       fpArea = fp;
-      top_sn = 0;
+      num_skills = 0;
       for( ;; )
       {
          char letter;
@@ -985,14 +1331,14 @@ void load_skill_table( void )
          }
          if( !str_cmp( word, "SKILL" ) )
          {
-            if( top_sn >= MAX_SKILL )
+            if( num_skills >= MAX_SKILL )
             {
                bug( "%s: more skills than MAX_SKILL %d", __FUNCTION__, MAX_SKILL );
                FCLOSE( fp );
                fpArea = NULL;
                return;
             }
-            skill_table[top_sn++] = fread_skill( fp, version );
+            skill_table[num_skills++] = fread_skill( fp, version );
             continue;
          }
          else if( !str_cmp( word, "END" ) )
@@ -1080,7 +1426,7 @@ void free_skills( void )
 {
    int hash = 0;
 
-   for( hash = 0; hash < top_sn; ++hash )
+   for( hash = 0; hash < num_skills; ++hash )
       deleteptr( skill_table[hash] );
 
    for( hash = 0; hash < top_herb; ++hash )
@@ -1088,17 +1434,14 @@ void free_skills( void )
 
    for( hash = 0; hash < top_disease; ++hash )
       deleteptr( disease_table[hash] );
-
-   return;
 }
 
 /*
  * Dummy function
  */
-void skill_notfound( char_data * ch, char *argument )
+void skill_notfound( char_data * ch, string argument )
 {
    ch->print( "Huh?\r\n" );
-   return;
 }
 
 /*
@@ -1141,7 +1484,6 @@ void char_data::learn_racials( int sn )
          }
       }
    }
-   return;
 }
 
 void char_data::learn_from_failure( int sn )
@@ -1201,7 +1543,6 @@ void char_data::learn_from_failure( int sn )
          }
       }
    }
-   return;
 }
 
 /* New command to view a player's skills - Samson 4-13-98 */
@@ -1210,7 +1551,7 @@ CMDF( do_viewskills )
    char_data *victim;
    int sn, col;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "&zSyntax: skills <player>.\r\n" );
       return;
@@ -1227,7 +1568,7 @@ CMDF( do_viewskills )
    if( !victim->isnpc(  ) )
    {
       ch->set_color( AT_SKILL );
-      for( sn = 0; sn < top_sn && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
       {
          if( skill_table[sn]->name == NULL )
             break;
@@ -1240,72 +1581,196 @@ CMDF( do_viewskills )
             ch->print( "\r\n" );
       }
    }
-   return;
 }
 
-int get_ssave( char *name )
+int get_ssave( const string & name )
 {
-
-   for( unsigned int x = 0; x < sizeof( spell_saves ) / sizeof( spell_saves[0] ); ++x )
+   for( size_t x = 0; x < sizeof( spell_saves ) / sizeof( spell_saves[0] ); ++x )
       if( !str_cmp( name, spell_saves[x] ) )
          return x;
    return -1;
 }
 
-int get_starget( char *name )
+int get_starget( const string & name )
 {
-   for( unsigned int x = 0; x < sizeof( target_type ) / sizeof( target_type[0] ); ++x )
+   for( size_t x = 0; x < sizeof( target_type ) / sizeof( target_type[0] ); ++x )
       if( !str_cmp( name, target_type[x] ) )
          return x;
    return -1;
 }
 
-int get_sflag( char *name )
+int get_sflag( const string & name )
 {
-   for( unsigned int x = 0; x < sizeof( spell_flag ) / sizeof( spell_flag[0] ); ++x )
+   for( size_t x = 0; x < sizeof( spell_flag ) / sizeof( spell_flag[0] ); ++x )
       if( !str_cmp( name, spell_flag[x] ) )
          return x;
    return -1;
 }
 
-int get_sdamage( char *name )
+int get_sdamage( const string & name )
 {
-   for( unsigned int x = 0; x < sizeof( spell_damage ) / sizeof( spell_damage[0] ); ++x )
+   for( size_t x = 0; x < sizeof( spell_damage ) / sizeof( spell_damage[0] ); ++x )
       if( !str_cmp( name, spell_damage[x] ) )
          return x;
    return -1;
 }
 
-int get_saction( char *name )
+int get_saction( const string & name )
 {
-   for( unsigned int x = 0; x < sizeof( spell_action ) / sizeof( spell_action[0] ); ++x )
+   for( size_t x = 0; x < sizeof( spell_action ) / sizeof( spell_action[0] ); ++x )
       if( !str_cmp( name, spell_action[x] ) )
          return x;
    return -1;
 }
 
-int get_ssave_effect( char *name )
+int get_ssave_effect( const string & name )
 {
-   for( unsigned int x = 0; x < sizeof( spell_save_effect ) / sizeof( spell_save_effect[0] ); ++x )
+   for( size_t x = 0; x < sizeof( spell_save_effect ) / sizeof( spell_save_effect[0] ); ++x )
       if( !str_cmp( name, spell_save_effect[x] ) )
          return x;
    return -1;
 }
 
-int get_spower( char *name )
+int get_spower( const string & name )
 {
-   for( unsigned int x = 0; x < sizeof( spell_power ) / sizeof( spell_power[0] ); ++x )
+   for( size_t x = 0; x < sizeof( spell_power ) / sizeof( spell_power[0] ); ++x )
       if( !str_cmp( name, spell_power[x] ) )
          return x;
    return -1;
 }
 
-int get_sclass( char *name )
+int get_sclass( const string & name )
 {
-   for( unsigned int x = 0; x < sizeof( spell_class ) / sizeof( spell_class[0] ); ++x )
+   for( size_t x = 0; x < sizeof( spell_class ) / sizeof( spell_class[0] ); ++x )
       if( !str_cmp( name, spell_class[x] ) )
          return x;
    return -1;
+}
+
+int skill_number( const string & argument )
+{
+   int sn;
+
+   if( ( sn = skill_lookup( argument ) ) >= 0 )
+      return sn;
+   return -1;
+}
+
+bool get_skill_help( char_data * ch, const string & argument )
+{
+   skill_type *skill = NULL;
+   char buf[MSL], target[MSL];
+   int sn;
+
+   if( ( sn = skill_number( argument ) ) >= 0 )
+      skill = skill_table[sn];
+
+   // Not a skill/spell, drop back to regular help
+   if( sn < 0 || !skill || skill->type == SKILL_HERB )
+      return false;
+
+   target[0] = '\0';
+   switch ( skill->target )
+   {
+      default:
+         break;
+
+      case TAR_CHAR_OFFENSIVE:
+         mudstrlcpy( target, "<victim>", MSL );
+         break;
+
+      case TAR_CHAR_SELF:
+         mudstrlcpy( target, "<self>", MSL );
+         break;
+
+      case TAR_OBJ_INV:
+         mudstrlcpy( target, "<object>", MSL );
+         break;
+   }
+
+   snprintf( buf, MSL, "cast '%s'", skill->name );
+   ch->printf( "Usage        : %s %s\r\n", skill->type == SKILL_SPELL ? buf : skill->name, target );
+
+   if( skill->affects.empty(  ) )
+      ch->print( "Duration     : Instant\r\n" );
+   else
+   {
+      list < smaug_affect * >::iterator paf;
+      bool found = false;
+
+      for( paf = skill->affects.begin(  ); paf != skill->affects.end(  ); ++paf )
+      {
+         smaug_affect *af = *paf;
+
+         // Make sure duration isn't null, and is not 0
+         if( af->duration && af->duration[0] != '\0' && af->duration[0] != '0' )
+         {
+            if( !found )
+            {
+               ch->print( "Duration     :\r\n" );
+               found = true;
+            }
+            ch->printf( "   Affect    : '%s' for '%s' rounds.\r\n", aff_flags[af->bit], af->duration );
+         }
+      }
+   }
+
+   ch->printf( "%-5s Level  : ", skill->type == SKILL_RACIAL ? "Race" : "Class" );
+
+   bool firstpass = true;
+   if( skill->type != SKILL_RACIAL )
+   {
+      for( int iClass = 0; iClass < MAX_PC_CLASS; ++iClass )
+      {
+         if( skill->skill_level[iClass] > LEVEL_AVATAR )
+            continue;
+
+         if( firstpass )
+         {
+            snprintf( buf, MSL, "%s ", class_table[iClass]->who_name );
+            firstpass = false;
+         }
+         else
+            snprintf( buf, MSL, ", %s ", class_table[iClass]->who_name );
+
+         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%d", skill->skill_level[iClass] );
+         ch->print( buf );
+      }
+   }
+   else
+   {
+      for( int iRace = 0; iRace < MAX_PC_RACE; ++iRace )
+      {
+         if( skill->race_level[iRace] > LEVEL_AVATAR )
+            continue;
+
+         if( firstpass )
+         {
+            snprintf( buf, MSL, "%s ", race_table[iRace]->race_name );
+            firstpass = false;
+         }
+         else
+            snprintf( buf, MSL, ", %s ", race_table[iRace]->race_name );
+
+         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%d", skill->race_level[iRace] );
+         ch->print( buf );
+      }
+   }
+   ch->print( "\r\n" );
+
+   if( skill->dice )
+      ch->printf( "Damage       : %s\r\n", skill->dice );
+
+   if( skill->type == SKILL_SPELL )
+   {
+      if( skill->saves > 0 )
+         ch->printf( "Save         : vs %s for %s\r\n", spell_saves[( int )skill->saves], spell_save_effect[SPELL_SAVE( skill )] );
+      ch->printf( "Minimum cost : %d mana\r\n", skill->min_mana );
+   }
+
+   if( skill->helptext )
+      ch->printf( "\r\n%s\r\n", skill->helptext );
+   return true;
 }
 
 bool is_legal_kill( char_data * ch, char_data * vch )
@@ -1323,45 +1788,39 @@ bool is_legal_kill( char_data * ch, char_data * vch )
 bool can_use_skill( char_data * ch, int percent, int gsn )
 {
    bool check = false;
+
    if( ch->isnpc(  ) && percent < 85 )
       check = true;
    else if( !ch->isnpc(  ) && percent < ch->LEARNED( gsn ) )
       check = true;
    else if( ch->morph && ch->morph->morph && ch->morph->morph->skills &&
-            ch->morph->morph->skills[0] != '\0' && is_name( skill_table[gsn]->name, ch->morph->morph->skills )
-            && percent < 85 )
+            ch->morph->morph->skills[0] != '\0' && hasname( ch->morph->morph->skills, skill_table[gsn]->name ) && percent < 85 )
       check = true;
+
    if( ch->morph && ch->morph->morph && ch->morph->morph->no_skills &&
-       ch->morph->morph->no_skills[0] != '\0' && is_name( skill_table[gsn]->name, ch->morph->morph->no_skills ) )
+       ch->morph->morph->no_skills[0] != '\0' && hasname( ch->morph->morph->no_skills, skill_table[gsn]->name ) )
       check = false;
+
    return check;
 }
 
-bool check_ability( char_data * ch, char *command, char *argument )
+bool check_ability( char_data * ch, const string & command, const string & argument )
 {
-   int sn;
-   int first = gsn_first_ability;
-   int top = gsn_top_sn - 1;
-   int mana;
+   int sn, mana;
    struct timeval time_used;
 
    /*
-    * bsearch for the ability 
+    * bsearch for the ability
     */
-   for( ;; )
+   sn = ch_slookup( ch, command );
+
+   if( sn == -1 )
+      return false;
+
+   // some additional checks
+   if( !( skill_table[sn]->skill_fun || skill_table[sn]->spell_fun != spell_null ) || !can_use_skill( ch, 0, sn ) )
    {
-      sn = ( first + top ) >> 1;
-
-      if( LOWER( command[0] ) == LOWER( skill_table[sn]->name[0] ) && !str_prefix( command, skill_table[sn]->name )
-          && ( skill_table[sn]->skill_fun || skill_table[sn]->spell_fun != spell_null ) && ( can_use_skill( ch, 0, sn ) ) )
-         break;
-
-      if( first >= top )
-         return false;
-      if( strcasecmp( command, skill_table[sn]->name ) < 1 )
-         top = sn - 1;
-      else
-         first = sn + 1;
+      return false;
    }
 
    if( !check_pos( ch, skill_table[sn]->minimum_position ) )
@@ -1379,8 +1838,7 @@ bool check_ability( char_data * ch, char *command, char *argument )
     */
    if( skill_table[sn]->min_mana )
    {
-      mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana,
-                                       100 / ( 2 + ch->level - skill_table[sn]->race_level[ch->race] ) );
+      mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->race_level[ch->race] ) );
 
       if( !ch->isnpc(  ) && ch->mana < mana )
       {
@@ -1401,7 +1859,7 @@ bool check_ability( char_data * ch, char *command, char *argument )
       char_data *victim = NULL;
       obj_data *obj = NULL;
 
-      target_name = "";
+      target_name.clear(  );
 
       switch ( skill_table[sn]->target )
       {
@@ -1412,7 +1870,7 @@ bool check_ability( char_data * ch, char *command, char *argument )
 
          case TAR_IGNORE:
             vo = NULL;
-            if( !argument || argument[0] == '\0' )
+            if( argument.empty(  ) )
             {
                if( ( victim = ch->who_fighting(  ) ) != NULL )
                   target_name = victim->name;
@@ -1422,18 +1880,17 @@ bool check_ability( char_data * ch, char *command, char *argument )
             break;
 
          case TAR_CHAR_OFFENSIVE:
-         {
-            if( ( !argument || argument[0] == '\0' ) && !( victim = ch->who_fighting(  ) ) )
+            if( argument.empty(  ) && !( victim = ch->who_fighting(  ) ) )
             {
                ch->printf( "Confusion overcomes you as your '%s' has no target.\r\n", skill_table[sn]->name );
                return true;
             }
-            else if( argument[0] != '\0' && !( victim = ch->get_char_room( argument ) ) )
+            else if( !argument.empty(  ) && !( victim = ch->get_char_room( argument ) ) )
             {
                ch->print( "They aren't here.\r\n" );
                return true;
             }
-         }
+
             if( is_safe( ch, victim ) )
                return true;
 
@@ -1479,15 +1936,13 @@ bool check_ability( char_data * ch, char *command, char *argument )
             break;
 
          case TAR_CHAR_DEFENSIVE:
-         {
-            if( argument[0] != '\0' && !( victim = ch->get_char_room( argument ) ) )
+            if( !argument.empty(  ) && !( victim = ch->get_char_room( argument ) ) )
             {
                ch->print( "They aren't here.\r\n" );
                return true;
             }
             if( !victim )
                victim = ch;
-         }
 
             if( ch == victim && SPELL_FLAG( skill_table[sn], SF_NOSELF ) )
             {
@@ -1503,13 +1958,11 @@ bool check_ability( char_data * ch, char *command, char *argument )
             break;
 
          case TAR_OBJ_INV:
-         {
             if( !( obj = ch->get_obj_carry( argument ) ) )
             {
                ch->print( "You can't find that.\r\n" );
                return true;
             }
-         }
             vo = ( void * )obj;
             break;
       }
@@ -1550,11 +2003,11 @@ bool check_ability( char_data * ch, char *command, char *argument )
 
       if( skill_table[sn]->target == TAR_CHAR_OFFENSIVE && victim != ch && !victim->char_died(  ) )
       {
-         list<char_data*>::iterator ich;
+         list < char_data * >::iterator ich;
 
-         for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+         for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
          {
-            char_data *vch = (*ich);
+            char_data *vch = *ich;
             ++ich;
 
             if( victim == vch && !victim->fighting && victim->master != ch )
@@ -1576,7 +2029,6 @@ bool check_ability( char_data * ch, char *command, char *argument )
    ( *skill_table[sn]->skill_fun ) ( ch, argument );
    end_timer( &time_used );
 
-   tail_chain(  );
    return true;
 }
 
@@ -1585,31 +2037,22 @@ bool check_ability( char_data * ch, char *command, char *argument )
  * Each different section of the skill table is sorted alphabetically
  * Only match skills player knows - Thoric
  */
-bool check_skill( char_data * ch, char *command, char *argument )
+bool check_skill( char_data * ch, const string & command, const string & argument )
 {
    int sn, mana;
-   int first = gsn_first_skill;
-   int top = gsn_first_combat - 1;
    struct timeval time_used;
 
    /*
-    * bsearch for the skill 
+    * bsearch for the skill
     */
-   for( ;; )
-   {
-      sn = ( first + top ) >> 1;
+   sn = ch_slookup( ch, command );
 
-      if( LOWER( command[0] ) == LOWER( skill_table[sn]->name[0] ) && !str_prefix( command, skill_table[sn]->name )
-          && ( skill_table[sn]->skill_fun || skill_table[sn]->spell_fun != spell_null ) && ( can_use_skill( ch, 0, sn ) ) )
-         break;
+   if( sn == -1 )
+      return false;
 
-      if( first >= top )
-         return false;
-      if( strcasecmp( command, skill_table[sn]->name ) < 1 )
-         top = sn - 1;
-      else
-         first = sn + 1;
-   }
+   // some additional checks
+   if( !( skill_table[sn]->skill_fun || skill_table[sn]->spell_fun != spell_null ) || !can_use_skill( ch, 0, sn ) )
+      return false;
 
    if( !check_pos( ch, skill_table[sn]->minimum_position ) )
       return true;
@@ -1626,8 +2069,7 @@ bool check_skill( char_data * ch, char *command, char *argument )
     */
    if( skill_table[sn]->min_mana )
    {
-      mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana,
-                                       100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
+      mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
 
       if( !ch->isnpc(  ) && ch->mana < mana )
       {
@@ -1648,7 +2090,7 @@ bool check_skill( char_data * ch, char *command, char *argument )
       char_data *victim = NULL;
       obj_data *obj = NULL;
 
-      target_name = "";
+      target_name.clear(  );
 
       switch ( skill_table[sn]->target )
       {
@@ -1659,7 +2101,7 @@ bool check_skill( char_data * ch, char *command, char *argument )
 
          case TAR_IGNORE:
             vo = NULL;
-            if( !argument || argument[0] == '\0' )
+            if( argument.empty(  ) )
             {
                if( ( victim = ch->who_fighting(  ) ) != NULL )
                   target_name = victim->name;
@@ -1669,18 +2111,17 @@ bool check_skill( char_data * ch, char *command, char *argument )
             break;
 
          case TAR_CHAR_OFFENSIVE:
-         {
-            if( argument[0] == '\0' && !( victim = ch->who_fighting(  ) ) )
+            if( argument.empty(  ) && !( victim = ch->who_fighting(  ) ) )
             {
                ch->printf( "Confusion overcomes you as your '%s' has no target.\r\n", skill_table[sn]->name );
                return true;
             }
-            else if( argument[0] != '\0' && !( victim = ch->get_char_room( argument ) ) )
+            else if( !argument.empty(  ) && !( victim = ch->get_char_room( argument ) ) )
             {
                ch->print( "They aren't here.\r\n" );
                return true;
             }
-         }
+
             if( is_safe( ch, victim ) )
                return true;
 
@@ -1726,15 +2167,14 @@ bool check_skill( char_data * ch, char *command, char *argument )
             break;
 
          case TAR_CHAR_DEFENSIVE:
-         {
-            if( argument[0] != '\0' && !( victim = ch->get_char_room( argument ) ) )
+            if( !argument.empty(  ) && !( victim = ch->get_char_room( argument ) ) )
             {
                ch->print( "They aren't here.\r\n" );
                return true;
             }
             if( !victim )
                victim = ch;
-         }
+
             if( ch == victim && SPELL_FLAG( skill_table[sn], SF_NOSELF ) )
             {
                ch->print( "You can't target yourself!\r\n" );
@@ -1749,13 +2189,11 @@ bool check_skill( char_data * ch, char *command, char *argument )
             break;
 
          case TAR_OBJ_INV:
-         {
             if( !( obj = ch->get_obj_carry( argument ) ) )
             {
                ch->print( "You can't find that.\r\n" );
                return true;
             }
-         }
             vo = ( void * )obj;
             break;
       }
@@ -1796,11 +2234,11 @@ bool check_skill( char_data * ch, char *command, char *argument )
 
       if( skill_table[sn]->target == TAR_CHAR_OFFENSIVE && victim != ch && !victim->char_died(  ) )
       {
-         list<char_data*>::iterator ich;
+         list < char_data * >::iterator ich;
 
-         for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+         for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
          {
-            char_data *vch = (*ich);
+            char_data *vch = *ich;
             ++ich;
 
             if( victim == vch && !victim->fighting && victim->master != ch )
@@ -1822,7 +2260,6 @@ bool check_skill( char_data * ch, char *command, char *argument )
    ( *skill_table[sn]->skill_fun ) ( ch, argument );
    end_timer( &time_used );
 
-   tail_chain(  );
    return true;
 }
 
@@ -1832,7 +2269,8 @@ bool check_skill( char_data * ch, char *command, char *argument )
 CMDF( do_slist )
 {
    int sn, i, lFound;
-   char skn[MIL], arg1[MIL], arg2[MIL];
+   string arg1, arg2;
+   char skn[MIL];
    int lowlev, hilev;
    short lasttype = SKILL_SPELL;
    int cl = ch->Class;
@@ -1846,20 +2284,20 @@ CMDF( do_slist )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( arg1 && arg1[0] != '\0' && !is_number( arg1 ) )
+   if( !arg1.empty(  ) && !is_number( arg1 ) )
    {
       cl = get_npc_class( arg1 );
       if( cl < 0 || cl > MAX_CLASS )
       {
-         ch->printf( "%s isn't a valid class!\r\n", arg1 );
+         ch->printf( "%s isn't a valid class!\r\n", arg1.c_str(  ) );
          return;
       }
 
-      if( arg2 && arg2[0] != '\0' )
+      if( !arg2.empty(  ) )
       {
          if( is_number( arg2 ) )
          {
-            lowlev = atoi( arg2 );
+            lowlev = atoi( arg2.c_str(  ) );
             if( lowlev < 1 || lowlev > LEVEL_AVATAR )
             {
                ch->printf( "%d is out of range. Only valid between 1 and %d\r\n", lowlev, LEVEL_AVATAR );
@@ -1868,11 +2306,11 @@ CMDF( do_slist )
          }
       }
 
-      if( argument && argument[0] != '\0' )
+      if( !argument.empty(  ) )
       {
          if( is_number( argument ) )
          {
-            hilev = atoi( argument );
+            hilev = atoi( argument.c_str(  ) );
             if( hilev < 1 || hilev > LEVEL_AVATAR )
             {
                ch->printf( "%d is out of range. Only valid between 1 and %d\r\n", hilev, LEVEL_AVATAR );
@@ -1881,18 +2319,18 @@ CMDF( do_slist )
          }
       }
    }
-   else if( arg1 && arg1[0] != '\0' && is_number( arg1 ) )
+   else if( !arg1.empty(  ) && is_number( arg1 ) )
    {
-      lowlev = atoi( arg1 );
+      lowlev = atoi( arg1.c_str(  ) );
       if( lowlev < 1 || lowlev > LEVEL_AVATAR )
       {
          ch->printf( "%d is out of range. Only valid between 1 and %d\r\n", lowlev, LEVEL_AVATAR );
          return;
       }
 
-      if( arg2 && arg2[0] != '\0' && is_number( arg2 ) )
+      if( !arg2.empty(  ) && is_number( arg2 ) )
       {
-         hilev = atoi( arg2 );
+         hilev = atoi( arg2.c_str(  ) );
          if( hilev < 1 || hilev > LEVEL_AVATAR )
          {
             ch->printf( "%d is out of range. Only valid between 1 and %d\r\n", hilev, LEVEL_AVATAR );
@@ -1912,7 +2350,7 @@ CMDF( do_slist )
    {
       lFound = 0;
       mudstrlcpy( skn, "Spell", MIL );
-      for( sn = 0; sn < top_sn; ++sn )
+      for( sn = 0; sn < num_skills; ++sn )
       {
          if( !skill_table[sn]->name )
             break;
@@ -1940,12 +2378,10 @@ CMDF( do_slist )
             }
 
             ch->pagerf( "%7s: %20.20s \t Current: %-3d Max: %-3d  MinPos: %s \r\n",
-                        skn, skill_table[sn]->name, ch->pcdata->learned[sn], skill_table[sn]->skill_adept[cl],
-                        npc_position[skill_table[sn]->minimum_position] );
+                        skn, skill_table[sn]->name, ch->pcdata->learned[sn], skill_table[sn]->skill_adept[cl], npc_position[skill_table[sn]->minimum_position] );
          }
       }
    }
-   return;
 }
 
 /*
@@ -1959,16 +2395,15 @@ CMDF( do_slookup )
    int iClass, iRace;
    skill_type *skill = NULL;
 
-   if( argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      ch->print( "Slookup what?\r\n"
-                 "  slookup all\r\n  slookup null\r\n  slookup smaug\r\n" "  slookup herbs\r\n  slookup tongues\r\n" );
+      ch->print( "Slookup what?\r\n" "  slookup all\r\n  slookup null\r\n  slookup smaug\r\n" "  slookup herbs\r\n  slookup tongues\r\n" );
       return;
    }
 
    if( !str_cmp( argument, "all" ) )
    {
-      for( sn = 0; sn < top_sn && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
          ch->pagerf( "Sn: %4d Slot: %4d Skill/spell: '%-20s' Damtype: %s\r\n",
                      sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
    }
@@ -1976,13 +2411,11 @@ CMDF( do_slookup )
    {
       int num = 0;
 
-      for( sn = 0; sn < top_sn && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
          if( ( skill_table[sn]->skill_fun == skill_notfound || skill_table[sn]->skill_fun == NULL )
-             && ( skill_table[sn]->spell_fun == spell_notfound || skill_table[sn]->spell_fun == spell_null )
-             && skill_table[sn]->type != SKILL_TONGUE )
+             && ( skill_table[sn]->spell_fun == spell_notfound || skill_table[sn]->spell_fun == spell_null ) && skill_table[sn]->type != SKILL_TONGUE )
          {
-            ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s' Damtype: %s\r\n",
-                        sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
+            ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s' Damtype: %s\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
             ++num;
          }
       ch->pagerf( "%d matches found.\r\n", num );
@@ -1991,7 +2424,7 @@ CMDF( do_slookup )
    {
       int num = 0;
 
-      for( sn = 0; sn < top_sn && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
          if( skill_table[sn]->type == SKILL_TONGUE )
          {
             ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s'\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name );
@@ -2003,11 +2436,10 @@ CMDF( do_slookup )
    {
       int num = 0;
 
-      for( sn = 0; sn < top_sn && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
          if( skill_table[sn]->spell_fun == spell_smaug )
          {
-            ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s' Damtype: %s\r\n",
-                        sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
+            ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s' Damtype: %s\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
             ++num;
          }
       ch->pagerf( "%d matches found.\r\n", num );
@@ -2019,9 +2451,9 @@ CMDF( do_slookup )
    }
    else
    {
-      if( argument[0] == 'h' && is_number( argument + 1 ) )
+      if( argument[0] == 'h' && is_number( argument.substr( 1, argument.length(  ) ) ) )
       {
-         sn = atoi( argument + 1 );
+         sn = atoi( argument.substr( 1, argument.length(  ) ).c_str(  ) );
          if( !IS_VALID_HERB( sn ) )
          {
             ch->print( "Invalid herb.\r\n" );
@@ -2031,7 +2463,7 @@ CMDF( do_slookup )
       }
       else if( is_number( argument ) )
       {
-         sn = atoi( argument );
+         sn = atoi( argument.c_str(  ) );
          if( !( skill = get_skilltype( sn ) ) )
          {
             ch->print( "Invalid sn.\r\n" );
@@ -2059,12 +2491,10 @@ CMDF( do_slookup )
          ch->printf( "Author: %s\r\n", skill->author );
       if( skill->info )
          ch->printf( "DamType: %s  ActType: %s   ClassType: %s   PowerType: %s\r\n",
-                     spell_damage[SPELL_DAMAGE( skill )], spell_action[SPELL_ACTION( skill )],
-                     spell_class[SPELL_CLASS( skill )], spell_power[SPELL_POWER( skill )] );
+                     spell_damage[SPELL_DAMAGE( skill )], spell_action[SPELL_ACTION( skill )], spell_class[SPELL_CLASS( skill )], spell_power[SPELL_POWER( skill )] );
       if( skill->flags.any(  ) )
          ch->printf( "Flags: %s\r\n", bitset_string( skill->flags, spell_flag ) );
-      ch->printf( "Saves: %s  SaveEffect: %s\r\n",
-                  spell_saves[( int )skill->saves], spell_save_effect[SPELL_SAVE( skill )] );
+      ch->printf( "Saves: %s  SaveEffect: %s\r\n", spell_saves[( int )skill->saves], spell_save_effect[SPELL_SAVE( skill )] );
 
       if( skill->difficulty != '\0' )
          ch->printf( "Difficulty: %d\r\n", ( int )skill->difficulty );
@@ -2092,12 +2522,12 @@ CMDF( do_slookup )
          ch->printf( "Participants: %d\r\n", ( int )skill->participants );
 
       int cnt = 0;
-      list<smaug_affect*>::iterator aff;
-      for( aff = skill->affects.begin(); aff != skill->affects.end(); )
+      list < smaug_affect * >::iterator aff;
+      for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); )
       {
-         smaug_affect *af = (*aff);
+         smaug_affect *af = ( *aff );
 
-         if( aff == skill->affects.begin() )
+         if( aff == skill->affects.begin(  ) )
             ch->print( "\r\n" );
 
          snprintf( buf, MSL, "Affect %d", ++cnt );
@@ -2127,7 +2557,7 @@ CMDF( do_slookup )
             mudstrlcat( buf, " (affects caster only)", MSL );
          mudstrlcat( buf, "\r\n", MSL );
          ch->print( buf );
-         if( ++aff == skill->affects.end() )
+         if( ++aff == skill->affects.end(  ) )
             ch->print( "\r\n" );
       }
       if( skill->hit_char && skill->hit_char[0] != '\0' )
@@ -2177,8 +2607,7 @@ CMDF( do_slookup )
             for( iClass = 0; iClass < MAX_PC_CLASS; ++iClass )
             {
                mudstrlcpy( buf, class_table[iClass]->who_name, MSL );
-               snprintf( buf + 3, MSL - 3, " ) lvl: %3d max: %2d%%", skill->skill_level[iClass],
-                         skill->skill_adept[iClass] );
+               snprintf( buf + 3, MSL - 3, " ) lvl: %3d max: %2d%%", skill->skill_level[iClass], skill->skill_adept[iClass] );
                if( iClass % 3 == 2 )
                   mudstrlcat( buf, "\r\n", MSL );
                else
@@ -2191,8 +2620,7 @@ CMDF( do_slookup )
             ch->print( "\r\n--------------------------[RACE USE]--------------------------\r\n" );
             for( iRace = 0; iRace < MAX_PC_RACE; ++iRace )
             {
-               snprintf( buf, MSL, "%8.8s ) lvl: %3d max: %2d%%",
-                         race_table[iRace]->race_name, skill->race_level[iRace], skill->race_adept[iRace] );
+               snprintf( buf, MSL, "%8.8s ) lvl: %3d max: %2d%%", race_table[iRace]->race_name, skill->race_level[iRace], skill->race_adept[iRace] );
                if( !str_cmp( race_table[iRace]->race_name, "unused" ) )
                   mudstrlcpy( buf, "                           ", MSL );
                if( ( iRace > 0 ) && ( iRace % 2 == 1 ) )
@@ -2205,7 +2633,6 @@ CMDF( do_slookup )
       }
       ch->print( "\r\n" );
    }
-   return;
 }
 
 /*
@@ -2214,7 +2641,7 @@ CMDF( do_slookup )
  */
 CMDF( do_sset )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    char_data *victim;
    int value, sn, i;
    bool fAll;
@@ -2223,7 +2650,7 @@ CMDF( do_sset )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( arg1[0] == '\0' || arg2[0] == '\0' || argument[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Syntax: sset <victim> <skill> <value>\r\n" );
       ch->print( "or:     sset <victim> all     <value>\r\n" );
@@ -2268,8 +2695,7 @@ CMDF( do_sset )
          return;
       }
    }
-   if( ch->is_imp(  ) && !str_cmp( arg1, "create" )
-       && ( !str_cmp( arg2, "skill" ) || !str_cmp( arg2, "herb" ) || !str_cmp( arg2, "ability" ) ) )
+   if( ch->is_imp(  ) && !str_cmp( arg1, "create" ) && ( !str_cmp( arg2, "skill" ) || !str_cmp( arg2, "herb" ) || !str_cmp( arg2, "ability" ) ) )
    {
       struct skill_type *skill;
       short type = SKILL_UNKNOWN;
@@ -2280,16 +2706,14 @@ CMDF( do_sset )
          if( top_herb >= MAX_HERB )
          {
             ch->printf( "The current top herb is %d, which is the maximum. "
-                        "To add more herbs,\r\nMAX_HERB will have to be raised in mudcfg.h, and the mud recompiled.\r\n",
-                        top_herb );
+                        "To add more herbs,\r\nMAX_HERB will have to be raised in mudcfg.h, and the mud recompiled.\r\n", top_herb );
             return;
          }
       }
-      else if( top_sn >= MAX_SKILL )
+      else if( num_skills >= MAX_SKILL )
       {
          ch->printf( "The current top sn is %d, which is the maximum. "
-                     "To add more skills,\r\nMAX_SKILL will have to be raised in mudcfg.h, and the mud recompiled.\r\n",
-                     top_sn );
+                     "To add more skills,\r\nMAX_SKILL will have to be raised in mudcfg.h, and the mud recompiled.\r\n", num_skills );
          return;
       }
       skill = new skill_type;
@@ -2305,9 +2729,9 @@ CMDF( do_sset )
          skill->slot = max + 1;
       }
       else
-         skill_table[top_sn++] = skill;
+         skill_table[num_skills++] = skill;
       skill->min_mana = 0;
-      skill->name = str_dup( argument );
+      skill->name = str_dup( argument.c_str(  ) );
       skill->spell_fun = spell_smaug;
       skill->guild = -1;
       skill->type = type;
@@ -2333,12 +2757,10 @@ CMDF( do_sset )
    }
 
    if( arg1[0] == 'h' )
-      sn = atoi( arg1 + 1 );
+      sn = atoi( arg1.substr( 1, arg1.length(  ) ).c_str(  ) );
    else
-      sn = atoi( arg1 );
-   if( ch->get_trust(  ) > LEVEL_GREATER
-       && ( ( arg1[0] == 'h' && is_number( arg1 + 1 ) && ( sn = atoi( arg1 + 1 ) ) >= 0 )
-            || ( is_number( arg1 ) && ( sn = atoi( arg1 ) ) >= 0 ) ) )
+      sn = atoi( arg1.c_str(  ) );
+   if( ch->get_trust(  ) > LEVEL_GREATER && sn >= 0 )
    {
       skill_type *skill;
 
@@ -2363,19 +2785,19 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "difficulty" ) )
       {
-         skill->difficulty = atoi( argument );
+         skill->difficulty = atoi( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "ego" ) )
       {
-         skill->ego = atoi( argument );
+         skill->ego = atoi( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "participants" ) )
       {
-         skill->participants = atoi( argument );
+         skill->participants = atoi( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2446,15 +2868,15 @@ CMDF( do_sset )
       }
       if( !str_cmp( arg2, "flags" ) )
       {
-         char arg3[MIL];
+         string arg3;
          int x;
 
-         while( argument[0] != '\0' )
+         while( !argument.empty(  ) )
          {
             argument = one_argument( argument, arg3 );
             x = get_sflag( arg3 );
             if( x < 0 || x >= MAX_SF_FLAG )
-               ch->printf( "Unknown flag: %s\r\n", arg3 );
+               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
             else
                skill->flags.flip( x );
          }
@@ -2490,14 +2912,14 @@ CMDF( do_sset )
             skill->skill_fun = skillfun;
             skill->spell_fun = NULL;
             DISPOSE( skill->skill_fun_name );
-            skill->skill_fun_name = str_dup( argument );
+            skill->skill_fun_name = str_dup( argument.c_str(  ) );
          }
          else if( ( spellfun = spell_function( argument ) ) != spell_notfound )
          {
             skill->spell_fun = spellfun;
             skill->skill_fun = NULL;
             DISPOSE( skill->skill_fun_name );
-            skill->spell_fun_name = str_dup( argument );
+            skill->spell_fun_name = str_dup( argument.c_str(  ) );
          }
          else
          {
@@ -2539,43 +2961,43 @@ CMDF( do_sset )
       }
       if( !str_cmp( arg2, "minlevel" ) )
       {
-         skill->min_level = URANGE( 1, atoi( argument ), MAX_LEVEL );
+         skill->min_level = URANGE( 1, atoi( argument.c_str(  ) ), MAX_LEVEL );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "slot" ) )
       {
-         skill->slot = URANGE( 0, atoi( argument ), 30000 );
+         skill->slot = URANGE( 0, atoi( argument.c_str(  ) ), 30000 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "mana" ) )
       {
-         skill->min_mana = URANGE( 0, atoi( argument ), 2000 );
+         skill->min_mana = URANGE( 0, atoi( argument.c_str(  ) ), 2000 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "beats" ) )
       {
-         skill->beats = URANGE( 0, atoi( argument ), 120 );
+         skill->beats = URANGE( 0, atoi( argument.c_str(  ) ), 120 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "range" ) )
       {
-         skill->range = URANGE( 0, atoi( argument ), 20 );
+         skill->range = URANGE( 0, atoi( argument.c_str(  ) ), 20 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "guild" ) )
       {
-         skill->guild = atoi( argument );
+         skill->guild = atoi( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "value" ) )
       {
-         skill->value = atoi( argument );
+         skill->value = atoi( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2587,18 +3009,18 @@ CMDF( do_sset )
       }
       if( !str_cmp( arg2, "rmaffect" ) )
       {
-         list<smaug_affect*>::iterator aff;
-         int num = atoi( argument );
+         list < smaug_affect * >::iterator aff;
+         int num = atoi( argument.c_str(  ) );
          int cnt = 0;
 
-         if( skill->affects.empty() )
+         if( skill->affects.empty(  ) )
          {
             ch->print( "This spell has no special affects to remove.\r\n" );
             return;
          }
-         for( aff = skill->affects.begin(); aff != skill->affects.end(); ++aff )
+         for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); ++aff )
          {
-            smaug_affect *af = (*aff);
+            smaug_affect *af = *aff;
 
             if( ++cnt == num )
             {
@@ -2616,9 +3038,7 @@ CMDF( do_sset )
        */
       if( !str_cmp( arg2, "affect" ) )
       {
-         char location[MIL];
-         char modifier[MIL];
-         char duration[MIL];
+         string location, modifier, duration;
          int loc, bit, tmpbit;
          smaug_affect *aff;
 
@@ -2627,7 +3047,7 @@ CMDF( do_sset )
          argument = one_argument( argument, duration );
 
          if( location[0] == '!' )
-            loc = get_atype( location + 1 ) + REVERSE_APPLY;
+            loc = get_atype( location.substr( 1, location.length(  ) ) ) + REVERSE_APPLY;
          else
             loc = get_atype( location );
          if( ( loc % REVERSE_APPLY ) < 0 || ( loc % REVERSE_APPLY ) >= MAX_APPLY_TYPE )
@@ -2636,42 +3056,48 @@ CMDF( do_sset )
             return;
          }
          bit = -1;
-         if( argument[0] != '\0' )
+         if( !argument.empty(  ) )
          {
             if( ( tmpbit = get_aflag( argument ) ) == -1 )
-               ch->printf( "Unknown bitvector: %s.  See AFFECTED_BY\r\n", argument );
+               ch->printf( "Unknown bitvector: %s.  See AFFECTED_BY\r\n", argument.c_str(  ) );
             else
                bit = tmpbit;
          }
          aff = new smaug_affect;
          if( !str_cmp( duration, "0" ) )
-            duration[0] = '\0';
+            duration.clear(  );
          if( !str_cmp( modifier, "0" ) )
-            modifier[0] = '\0';
-         aff->duration = str_dup( duration );
+            modifier.clear(  );
+         aff->duration = str_dup( duration.c_str(  ) );
          aff->location = loc;
          if( loc == APPLY_AFFECT || loc == APPLY_EXT_AFFECT )
          {
             int modval = get_aflag( modifier );
 
-            /* Sanitize the flag input for the modifier if needed -- Samson */
+            /*
+             * Sanitize the flag input for the modifier if needed -- Samson 
+             */
             if( modval < 0 )
                modval = 0;
-            /* Spells/skills affect people, yes? People can only have EXT_BV affects, yes? */
+            /*
+             * Spells/skills affect people, yes? People can only have EXT_BV affects, yes? 
+             */
             if( loc == APPLY_AFFECT )
                aff->location = APPLY_EXT_AFFECT;
-            mudstrlcpy( modifier, aff_flags[modval], MIL );
+            modifier = aff_flags[modval];
          }
          if( loc == APPLY_RESISTANT || loc == APPLY_IMMUNE || loc == APPLY_ABSORB || loc == APPLY_SUSCEPTIBLE )
          {
             int modval = get_risflag( modifier );
 
-            /* Sanitize the flag input for the modifier if needed -- Samson */
+            /*
+             * Sanitize the flag input for the modifier if needed -- Samson 
+             */
             if( modval < 0 )
                modval = 0;
-            mudstrlcpy( modifier, ris_flags[modval], MIL );
+            modifier = ris_flags[modval];
          }
-         aff->modifier = str_dup( modifier );
+         aff->modifier = str_dup( modifier.c_str(  ) );
          aff->bit = bit;
          skill->affects.push_back( aff );
          ch->print( "Ok.\r\n" );
@@ -2680,68 +3106,68 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "level" ) )
       {
-         char arg3[MIL];
+         string arg3;
          int Class;
 
          argument = one_argument( argument, arg3 );
          Class = get_pc_class( arg3 );
 
          if( Class >= MAX_PC_CLASS || Class < 0 )
-            ch->printf( "%s is not a valid Class.\r\n", arg3 );
+            ch->printf( "%s is not a valid Class.\r\n", arg3.c_str(  ) );
          else
-            skill->skill_level[Class] = URANGE( 0, atoi( argument ), MAX_LEVEL );
+            skill->skill_level[Class] = URANGE( 0, atoi( argument.c_str(  ) ), MAX_LEVEL );
          return;
       }
 
       if( !str_cmp( arg2, "racelevel" ) )
       {
-         char arg3[MIL];
+         string arg3;
          int race;
 
          argument = one_argument( argument, arg3 );
          race = get_pc_race( arg3 );
 
          if( race >= MAX_PC_RACE || race < 0 )
-            ch->printf( "%s is not a valid race.\r\n", arg3 );
+            ch->printf( "%s is not a valid race.\r\n", arg3.c_str(  ) );
          else
-            skill->race_level[race] = URANGE( 0, atoi( argument ), MAX_LEVEL );
+            skill->race_level[race] = URANGE( 0, atoi( argument.c_str(  ) ), MAX_LEVEL );
          return;
       }
 
       if( !str_cmp( arg2, "adept" ) )
       {
-         char arg3[MIL];
+         string arg3;
          int Class;
 
          argument = one_argument( argument, arg3 );
          Class = get_pc_class( arg3 );
 
          if( Class >= MAX_PC_CLASS || Class < 0 )
-            ch->printf( "%s is not a valid Class.\r\n", arg3 );
+            ch->printf( "%s is not a valid Class.\r\n", arg3.c_str(  ) );
          else
-            skill->skill_adept[Class] = URANGE( 0, atoi( argument ), 100 );
+            skill->skill_adept[Class] = URANGE( 0, atoi( argument.c_str(  ) ), 100 );
          return;
       }
 
       if( !str_cmp( arg2, "raceadept" ) )
       {
-         char arg3[MIL];
+         string arg3;
          int race;
 
          argument = one_argument( argument, arg3 );
          race = get_pc_race( arg3 );
 
          if( race >= MAX_PC_RACE || race < 0 )
-            ch->printf( "%s is not a valid race.\r\n", arg3 );
+            ch->printf( "%s is not a valid race.\r\n", arg3.c_str(  ) );
          else
-            skill->race_adept[race] = URANGE( 0, atoi( argument ), 100 );
+            skill->race_adept[race] = URANGE( 0, atoi( argument.c_str(  ) ), 100 );
          return;
       }
 
       if( !str_cmp( arg2, "name" ) )
       {
          DISPOSE( skill->name );
-         skill->name = str_dup( argument );
+         skill->name = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2753,7 +3179,7 @@ CMDF( do_sset )
             return;
          }
          STRFREE( skill->author );
-         skill->author = STRALLOC( argument );
+         skill->author = STRALLOC( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2761,7 +3187,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->noun_damage );
          if( str_cmp( argument, "clear" ) )
-            skill->noun_damage = str_dup( argument );
+            skill->noun_damage = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2769,7 +3195,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->msg_off );
          if( str_cmp( argument, "clear" ) )
-            skill->msg_off = str_dup( argument );
+            skill->msg_off = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2777,7 +3203,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->hit_char );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_char = str_dup( argument );
+            skill->hit_char = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2785,7 +3211,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->hit_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_vict = str_dup( argument );
+            skill->hit_vict = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2793,7 +3219,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->hit_room );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_room = str_dup( argument );
+            skill->hit_room = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2801,7 +3227,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->hit_dest );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_dest = str_dup( argument );
+            skill->hit_dest = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2809,7 +3235,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->miss_char );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_char = str_dup( argument );
+            skill->miss_char = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2817,7 +3243,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->miss_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_vict = str_dup( argument );
+            skill->miss_vict = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2825,7 +3251,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->miss_room );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_room = str_dup( argument );
+            skill->miss_room = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2833,7 +3259,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->die_char );
          if( str_cmp( argument, "clear" ) )
-            skill->die_char = str_dup( argument );
+            skill->die_char = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2841,7 +3267,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->die_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->die_vict = str_dup( argument );
+            skill->die_vict = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2849,7 +3275,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->die_room );
          if( str_cmp( argument, "clear" ) )
-            skill->die_room = str_dup( argument );
+            skill->die_room = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2857,7 +3283,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->imm_char );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_char = str_dup( argument );
+            skill->imm_char = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2865,7 +3291,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->imm_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_vict = str_dup( argument );
+            skill->imm_vict = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2873,7 +3299,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->imm_room );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_room = str_dup( argument );
+            skill->imm_room = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2881,7 +3307,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->dice );
          if( str_cmp( argument, "clear" ) )
-            skill->dice = str_dup( argument );
+            skill->dice = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2889,7 +3315,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->components );
          if( str_cmp( argument, "clear" ) )
-            skill->components = str_dup( argument );
+            skill->components = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2897,7 +3323,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->teachers );
          if( str_cmp( argument, "clear" ) )
-            skill->teachers = str_dup( argument );
+            skill->teachers = str_dup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2908,7 +3334,7 @@ CMDF( do_sset )
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
       if( ( sn = skill_lookup( arg1 ) ) >= 0 )
-         funcf( ch, do_sset, "%d %s %s", sn, arg2, argument );
+         funcf( ch, do_sset, "%d %s %s", sn, arg2.c_str(  ), argument.c_str(  ) );
       else
          ch->print( "They aren't here.\r\n" );
       return;
@@ -2937,7 +3363,7 @@ CMDF( do_sset )
       return;
    }
 
-   value = atoi( argument );
+   value = atoi( argument.c_str(  ) );
    if( value < 0 || value > 100 )
    {
       ch->print( "Value range is 0 to 100.\r\n" );
@@ -2946,7 +3372,7 @@ CMDF( do_sset )
 
    if( fAll )
    {
-      for( sn = 0; sn < top_sn; ++sn )
+      for( sn = 0; sn < num_skills; ++sn )
       {
          /*
           * Fix by Narn to prevent ssetting skills the player shouldn't have. 
@@ -2962,8 +3388,6 @@ CMDF( do_sset )
    }
    else
       victim->pcdata->learned[sn] = value;
-
-   return;
 }
 
 CMDF( do_gouge )
@@ -3043,14 +3467,13 @@ CMDF( do_gouge )
       global_retcode = damage( ch, victim, 0, gsn_gouge );
       ch->learn_from_failure( gsn_gouge );
    }
-   return;
 }
 
 CMDF( do_detrap )
 {
-   char arg[MIL];
+   string arg;
    obj_data *trap, *obj = NULL;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int percent;
    bool found = false;
 
@@ -3068,7 +3491,7 @@ CMDF( do_detrap )
             ch->print( "You do not yet know of this skill.\r\n" );
             return;
          }
-         if( !arg || arg[0] == '\0' )
+         if( arg.empty(  ) )
          {
             ch->print( "Detrap what?\r\n" );
             return;
@@ -3081,15 +3504,16 @@ CMDF( do_detrap )
             ch->print( "You can't do that while mounted.\r\n" );
             return;
          }
-         if( ch->in_room->objects.empty() )
+         if( ch->in_room->objects.empty(  ) )
          {
             ch->print( "You can't find that here.\r\n" );
             return;
          }
-         for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+         for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
          {
-            obj = (*iobj);
-            if( ch->can_see_obj( obj, false ) && nifty_is_name( arg, obj->name ) )
+            obj = *iobj;
+
+            if( ch->can_see_obj( obj, false ) && hasname( obj->name, arg ) )
             {
                found = true;
                break;
@@ -3114,9 +3538,8 @@ CMDF( do_detrap )
             bug( "%s: ch->alloc_ptr NULL!", __FUNCTION__ );
             return;
          }
-         mudstrlcpy( arg, ch->alloc_ptr, MIL );
+         arg = ch->alloc_ptr;
          DISPOSE( ch->alloc_ptr );
-         ch->alloc_ptr = NULL;
          ch->substate = SUB_NONE;
          break;
 
@@ -3127,15 +3550,16 @@ CMDF( do_detrap )
          return;
    }
 
-   if( ch->in_room->objects.empty() )
+   if( ch->in_room->objects.empty(  ) )
    {
       ch->print( "You can't find that here.\r\n" );
       return;
    }
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      obj = (*iobj);
-      if( ch->can_see_obj( obj, false ) && nifty_is_name( arg, obj->name ) )
+      obj = *iobj;
+
+      if( ch->can_see_obj( obj, false ) && hasname( obj->name, arg ) )
       {
          found = true;
          break;
@@ -3164,12 +3588,11 @@ CMDF( do_detrap )
    }
    trap->extract(  );
    ch->print( "You successfully remove a trap.\r\n" );
-   return;
 }
 
 CMDF( do_dig )
 {
-   char arg[MIL];
+   string arg;
    exit_data *pexit;
 
    switch ( ch->substate )
@@ -3186,7 +3609,7 @@ CMDF( do_dig )
             return;
          }
          one_argument( argument, arg );
-         if( arg[0] != '\0' )
+         if( !arg.empty(  ) )
          {
             if( ( pexit = find_door( ch, arg, true ) ) == NULL && get_dir( arg ) == -1 )
             {
@@ -3239,7 +3662,7 @@ CMDF( do_dig )
             }
          }
          ch->add_timer( TIMER_DO_FUN, UMIN( skill_table[gsn_dig]->beats / 10, 3 ), do_dig, 1 );
-         ch->alloc_ptr = str_dup( arg );
+         ch->alloc_ptr = str_dup( arg.c_str(  ) );
          ch->print( "You begin digging...\r\n" );
          act( AT_PLAIN, "$n begins digging...", ch, NULL, NULL, TO_ROOM );
          return;
@@ -3252,7 +3675,7 @@ CMDF( do_dig )
             bug( "%s: alloc_ptr NULL", __FUNCTION__ );
             return;
          }
-         mudstrlcpy( arg, ch->alloc_ptr, MIL );
+         arg = ch->alloc_ptr;
          DISPOSE( ch->alloc_ptr );
          break;
 
@@ -3270,10 +3693,10 @@ CMDF( do_dig )
     * not having a shovel makes it harder to succeed 
     */
    bool shovel = false;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       if( obj->item_type == ITEM_SHOVEL )
       {
          shovel = true;
@@ -3284,10 +3707,9 @@ CMDF( do_dig )
    /*
     * dig out an EX_DIG exit... 
     */
-   if( arg[0] != '\0' )
+   if( !arg.empty(  ) )
    {
-      if( ( pexit = find_door( ch, arg, true ) ) != NULL
-          && IS_EXIT_FLAG( pexit, EX_DIG ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) )
+      if( ( pexit = find_door( ch, arg, true ) ) != NULL && IS_EXIT_FLAG( pexit, EX_DIG ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
          /*
           * 4 times harder to dig open a passage without a shovel 
@@ -3308,14 +3730,13 @@ CMDF( do_dig )
 
    bool found = false;
    obj_data *obj = NULL;
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      obj = (*iobj);
+      obj = *iobj;
       /*
        * twice as hard to find something without a shovel 
        */
-      if( obj->extra_flags.test( ITEM_BURIED )
-          && ( can_use_skill( ch, ( number_percent(  ) * ( shovel ? 1 : 2 ) ), gsn_dig ) ) )
+      if( obj->extra_flags.test( ITEM_BURIED ) && ( can_use_skill( ch, ( number_percent(  ) * ( shovel ? 1 : 2 ) ), gsn_dig ) ) )
       {
          found = true;
          break;
@@ -3336,13 +3757,11 @@ CMDF( do_dig )
    act( AT_SKILL, "$n's dig uncovered $p!", ch, obj, NULL, TO_ROOM );
    if( obj->item_type == ITEM_CORPSE_PC || obj->item_type == ITEM_CORPSE_NPC )
       ch->adjust_favor( 14, 1 );
-
-   return;
 }
 
 CMDF( do_search )
 {
-   char arg[MIL];
+   string arg;
    obj_data *container;
 
    int door = -1;
@@ -3360,7 +3779,7 @@ CMDF( do_search )
             return;
          }
          argument = one_argument( argument, arg );
-         if( arg[0] != '\0' && ( door = get_door( arg ) ) == -1 )
+         if( !arg.empty(  ) && ( door = get_door( arg ) ) == -1 )
          {
             if( !( container = ch->get_obj_here( arg ) ) )
             {
@@ -3381,7 +3800,7 @@ CMDF( do_search )
          ch->add_timer( TIMER_DO_FUN, UMIN( skill_table[gsn_search]->beats / 10, 3 ), do_search, 1 );
          ch->print( "You begin your search...\r\n" );
          act( AT_MAGIC, "$n begins searching the room.....", ch, NULL, NULL, TO_ROOM );
-         ch->alloc_ptr = str_dup( arg );
+         ch->alloc_ptr = str_dup( arg.c_str(  ) );
          return;
 
       case 1:
@@ -3391,7 +3810,7 @@ CMDF( do_search )
             bug( "%s: alloc_ptr NULL", __FUNCTION__ );
             return;
          }
-         mudstrlcpy( arg, ch->alloc_ptr, MIL );
+         arg = ch->alloc_ptr;
          DISPOSE( ch->alloc_ptr );
          break;
 
@@ -3404,8 +3823,8 @@ CMDF( do_search )
 
    bool found = false;
    ch->substate = SUB_NONE;
-   list<obj_data*> startlist;
-   if( !arg || arg[0] == '\0' )
+   list < obj_data * >startlist;
+   if( arg.empty(  ) )
    {
       startlist = ch->in_room->objects;
       found = true;
@@ -3451,10 +3870,10 @@ CMDF( do_search )
    }
    else
    {
-      list<obj_data*>::iterator iobj;
-      for( iobj = startlist.begin(); iobj != startlist.end(); ++iobj )
+      list < obj_data * >::iterator iobj;
+      for( iobj = startlist.begin(  ); iobj != startlist.end(  ); ++iobj )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          if( obj->extra_flags.test( ITEM_HIDDEN ) && can_use_skill( ch, percent, gsn_search ) )
          {
             obj->separate(  );
@@ -3468,12 +3887,11 @@ CMDF( do_search )
    ch->print( "You find nothing.\r\n" );
    act( AT_MAGIC, "$n found nothing in $s search.", ch, NULL, NULL, TO_ROOM );
    ch->learn_from_failure( gsn_search );
-   return;
 }
 
 CMDF( do_steal )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    char_data *victim, *mst;
    obj_data *obj;
    int percent;
@@ -3487,7 +3905,7 @@ CMDF( do_steal )
       return;
    }
 
-   if( arg1[0] == '\0' || arg2[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Steal what from whom?\r\n" );
       return;
@@ -3530,8 +3948,7 @@ CMDF( do_steal )
    }
 
    ch->WAIT_STATE( skill_table[gsn_steal]->beats );
-   percent = number_percent(  ) + ( victim->IS_AWAKE(  )? 10 : -50 )
-      - ( ch->get_curr_lck(  ) - 15 ) + ( victim->get_curr_lck(  ) - 13 );
+   percent = number_percent(  ) + ( victim->IS_AWAKE(  )? 10 : -50 ) - ( ch->get_curr_lck(  ) - 15 ) + ( victim->get_curr_lck(  ) - 13 );
 
    /*
     * Changed the level check, made it 10 levels instead of five and made the 
@@ -3607,8 +4024,7 @@ CMDF( do_steal )
       return;
    }
 
-   if( !ch->can_drop_obj( obj ) || obj->extra_flags.test( ITEM_INVENTORY )
-       || obj->extra_flags.test( ITEM_PROTOTYPE ) || obj->ego > ch->char_ego(  ) )
+   if( !ch->can_drop_obj( obj ) || obj->extra_flags.test( ITEM_INVENTORY ) || obj->extra_flags.test( ITEM_PROTOTYPE ) || obj->ego > ch->char_ego(  ) )
    {
       ch->print( "You can't manage to pry it away.\r\n" );
       ch->learn_from_failure( gsn_steal );
@@ -3634,13 +4050,12 @@ CMDF( do_steal )
    obj->to_char( ch );
    ch->print( "Ok.\r\n" );
    ch->adjust_favor( 9, 1 );
-   return;
 }
 
 /* Heavily modified with Shard stuff, including the critical pierce - Samson 5-22-99 */
 CMDF( do_backstab )
 {
-   char arg[MIL];
+   string arg;
    char_data *victim;
    obj_data *obj;
    affect_data af;
@@ -3671,7 +4086,7 @@ CMDF( do_backstab )
       return;
    }
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Backstab whom?\r\n" );
       return;
@@ -3827,7 +4242,6 @@ CMDF( do_backstab )
          ch->adjust_favor( 10, 1 );
       }
    }
-   return;
 }
 
 CMDF( do_rescue )
@@ -3847,7 +4261,7 @@ CMDF( do_rescue )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Rescue whom?\r\n" );
       return;
@@ -3925,7 +4339,6 @@ CMDF( do_rescue )
 
    set_fighting( ch, fch );
    set_fighting( fch, ch );
-   return;
 }
 
 void kick_messages( char_data * ch, char_data * victim, int dam, ch_ret rcode )
@@ -4068,8 +4481,7 @@ CMDF( do_kick )
       return;
    }
 
-   if( !ch->isnpc(  ) && ch->level < skill_table[gsn_kick]->skill_level[ch->Class]
-       && ch->level < skill_table[gsn_kick]->race_level[ch->race] )
+   if( !ch->isnpc(  ) && ch->level < skill_table[gsn_kick]->skill_level[ch->Class] && ch->level < skill_table[gsn_kick]->race_level[ch->race] )
    {
       ch->print( "You better leave the martial arts to fighters.\r\n" );
       return;
@@ -4100,7 +4512,6 @@ CMDF( do_kick )
       global_retcode = damage( ch, victim, 0, gsn_kick );
       kick_messages( ch, victim, 0, global_retcode );
    }
-   return;
 }
 
 CMDF( do_bite )
@@ -4133,7 +4544,6 @@ CMDF( do_bite )
       ch->learn_from_failure( gsn_bite );
       global_retcode = damage( ch, victim, 0, gsn_bite );
    }
-   return;
 }
 
 CMDF( do_claw )
@@ -4160,7 +4570,6 @@ CMDF( do_claw )
       ch->learn_from_failure( gsn_claw );
       global_retcode = damage( ch, victim, 0, gsn_claw );
    }
-   return;
 }
 
 CMDF( do_sting )
@@ -4193,7 +4602,6 @@ CMDF( do_sting )
       ch->learn_from_failure( gsn_sting );
       global_retcode = damage( ch, victim, 0, gsn_sting );
    }
-   return;
 }
 
 CMDF( do_tail )
@@ -4226,7 +4634,6 @@ CMDF( do_tail )
       ch->learn_from_failure( gsn_tail );
       global_retcode = damage( ch, victim, 0, gsn_tail );
    }
-   return;
 }
 
 CMDF( do_bash )
@@ -4261,8 +4668,7 @@ CMDF( do_bash )
          return;
       }
 
-   schance = ( ( victim->get_curr_dex(  ) + victim->get_curr_str(  ) + victim->level )
-               - ( ch->get_curr_dex(  ) + ch->get_curr_str(  ) + ch->level ) );
+   schance = ( ( victim->get_curr_dex(  ) + victim->get_curr_str(  ) + victim->level ) - ( ch->get_curr_dex(  ) + ch->get_curr_str(  ) + ch->level ) );
    if( victim->fighting && victim->fighting->who != ch )
       schance += 25;
    ch->WAIT_STATE( skill_table[gsn_bash]->beats );
@@ -4297,7 +4703,6 @@ CMDF( do_bash )
       act( AT_SKILL, "$n smashes into $N, and bounces off $M to the ground!", ch, NULL, victim, TO_NOTVICT );
       global_retcode = damage( ch, victim, 0, gsn_bash );
    }
-   return;
 }
 
 CMDF( do_stun )
@@ -4339,8 +4744,7 @@ CMDF( do_stun )
    else
       fail = saves_para_petri( schance, victim );
 
-   schance =
-      ( ( ( victim->get_curr_dex(  ) + victim->get_curr_str(  ) ) - ( ch->get_curr_dex(  ) + ch->get_curr_str(  ) ) ) * 10 ) + 10;
+   schance = ( ( ( victim->get_curr_dex(  ) + victim->get_curr_str(  ) ) - ( ch->get_curr_dex(  ) + ch->get_curr_str(  ) ) ) * 10 ) + 10;
    /*
     * harder for player to stun another player 
     */
@@ -4381,7 +4785,6 @@ CMDF( do_stun )
       act( AT_SKILL, "You try to stun $N, but $E dodges out of the way.", ch, NULL, victim, TO_CHAR );
       act( AT_SKILL, "$n charges screaming at $N, but keeps going right on past.", ch, NULL, victim, TO_NOTVICT );
    }
-   return;
 }
 
 bool check_grip( char_data * ch, char_data * victim )
@@ -4459,8 +4862,6 @@ void disarm( char_data * ch, char_data * victim )
       obj->to_char( victim );
    else
       obj->to_room( victim->in_room, victim );
-
-   return;
 }
 
 CMDF( do_disarm )
@@ -4510,7 +4911,6 @@ CMDF( do_disarm )
       ch->print( "You failed.\r\n" );
       ch->learn_from_failure( gsn_disarm );
    }
-   return;
 }
 
 /*
@@ -4546,12 +4946,11 @@ void trip( char_data * ch, char_data * victim )
       victim->WAIT_STATE( 2 * sysdata->pulseviolence );
       victim->position = POS_RESTING;
    }
-   return;
 }
 
 CMDF( do_pick )
 {
-   char arg[MIL];
+   string arg;
 
    if( ch->isnpc(  ) && ch->has_aflag( AFF_CHARM ) )
    {
@@ -4561,7 +4960,7 @@ CMDF( do_pick )
 
    one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Pick what?\r\n" );
       return;
@@ -4581,10 +4980,10 @@ CMDF( do_pick )
    /*
     * look for guards 
     */
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *gch = (*ich);
+      char_data *gch = *ich;
 
       if( gch->isnpc(  ) && gch->IS_AWAKE(  ) && ch->level + 5 < gch->level )
       {
@@ -4687,8 +5086,7 @@ CMDF( do_pick )
       check_for_trap( ch, obj, TRAP_PICK );
       return;
    }
-   ch->printf( "You see no %s here.\r\n", arg );
-   return;
+   ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
 }
 
 /*
@@ -4713,7 +5111,6 @@ CMDF( do_visible )
       ch->print( "&[immortal]You slowly fade back into existence.\r\n" );
    }
    ch->print( "Ok.\r\n" );
-   return;
 }
 
 CMDF( do_aid )
@@ -4727,7 +5124,7 @@ CMDF( do_aid )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Aid whom?\r\n" );
       return;
@@ -4780,7 +5177,6 @@ CMDF( do_aid )
 
    victim->update_pos(  );
    act( AT_SKILL, "$n aids you!", ch, NULL, victim, TO_VICT );
-   return;
 }
 
 int mount_ego_check( char_data * ch, char_data * horse )
@@ -4816,7 +5212,6 @@ int mount_ego_check( char_data * ch, char_data * horse )
          ride_ego = 0;
 
       check = drag_ego + number_range( 1, 10 ) - ( ride_ego + number_range( 1, 10 ) );
-      return ( check );
    }
    else
    {
@@ -4830,10 +5225,10 @@ int mount_ego_check( char_data * ch, char_data * horse )
       if( ch->is_affected( gsn_dragon_ride ) )
          ride_ego += ( ch->get_curr_int(  ) + ch->get_curr_wis(  ) );
       check = drag_ego + number_range( 1, 5 ) - ( ride_ego + number_range( 1, 10 ) );
-      if( horse->is_pet() && horse->master == ch )
+      if( horse->is_pet(  ) && horse->master == ch )
          check = -1;
-      return ( check );
    }
+   return check;
 }
 
 CMDF( do_mount )
@@ -4932,7 +5327,6 @@ CMDF( do_mount )
       act( AT_SKILL, "$n tries to mount you.", ch, NULL, victim, TO_VICT );
       ch->learn_from_failure( gsn_mount );
    }
-   return;
 }
 
 CMDF( do_dismount )
@@ -4969,7 +5363,6 @@ CMDF( do_dismount )
       global_retcode = damage( ch, ch, 1, TYPE_UNDEFINED );
    }
    check_mount_objs( ch, fell ); /* Check for ITEM_MUSTMOUNT stuff */
-   return;
 }
 
 /*
@@ -5106,7 +5499,7 @@ CMDF( do_poison_weapon )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "What are you trying to poison?\r\n" );
       return;
@@ -5145,11 +5538,11 @@ CMDF( do_poison_weapon )
     * Now we have a valid weapon...check to see if we have the powder. 
     */
    obj_data *pobj = NULL, *wobj = NULL;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    bool pfound = false;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      pobj = (*iobj);
+      pobj = *iobj;
       if( pobj->pIndexData->vnum == OBJ_VNUM_BLACK_POWDER )
       {
          pfound = true;
@@ -5166,9 +5559,9 @@ CMDF( do_poison_weapon )
     * Okay, we have the powder...do we have water? 
     */
    bool wfound = false;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      wobj = (*iobj);
+      wobj = *iobj;
       if( wobj->item_type == ITEM_DRINK_CON && wobj->value[1] > 0 && wobj->value[2] == 0 )
       {
          wfound = true;
@@ -5247,7 +5640,6 @@ CMDF( do_poison_weapon )
    act( AT_BLUE, "The remainder of the poison eats through $p.", ch, wobj, NULL, TO_ROOM );
    pobj->extract(  );
    wobj->extract(  );
-   return;
 }
 
 CMDF( do_scribe )
@@ -5264,7 +5656,7 @@ CMDF( do_scribe )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Scribe what?\r\n" );
       return;
@@ -5294,8 +5686,7 @@ CMDF( do_scribe )
       return;
    }
 
-   mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana,
-                                    100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
+   mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
 
    mana *= 5;
 
@@ -5361,7 +5752,7 @@ CMDF( do_brew )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Brew what?\r\n" );
       return;
@@ -5393,7 +5784,7 @@ CMDF( do_brew )
    }
 
    int mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana,
-                                    100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
+                                       100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
 
    mana *= 4;
 
@@ -5404,10 +5795,10 @@ CMDF( do_brew )
    }
 
    bool found = false;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      obj_data *fire = (*iobj);
+      obj_data *fire = *iobj;
       if( fire->item_type == ITEM_FIRE )
       {
          found = true;
@@ -5486,7 +5877,7 @@ CMDF( do_circle )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Circle around whom?\r\n" );
       return;
@@ -5567,7 +5958,6 @@ CMDF( do_circle )
       act( AT_SKILL, "You nearly slice off your finger trying to backstab $N!", ch, NULL, victim, TO_CHAR );
       global_retcode = damage( ch, victim, 0, gsn_circle );
    }
-   return;
 }
 
 /* Berserk and HitAll. -- Altrag */
@@ -5612,7 +6002,6 @@ CMDF( do_berserk )
    af.bit = AFF_BERSERK;
    ch->affect_to_char( &af );
    ch->print( "You start to lose control..\r\n" );
-   return;
 }
 
 CMDF( do_hitall )
@@ -5625,17 +6014,17 @@ CMDF( do_hitall )
       return;
    }
 
-   if( ch->in_room->people.empty() )
+   if( ch->in_room->people.empty(  ) )
    {
       ch->print( "There's no one else here!\r\n" );
       return;
    }
 
    percent = ch->LEARNED( gsn_hitall );
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
       ++ich;
 
       if( is_same_group( ch, vch ) || !is_legal_kill( ch, vch ) || !ch->can_see( vch, false ) || is_safe( ch, vch ) )
@@ -5663,10 +6052,9 @@ CMDF( do_hitall )
    ch->move = UMAX( 0, ch->move - nvict * 3 + nhit );
    if( !nhit )
       ch->learn_from_failure( gsn_hitall );
-   return;
 }
 
-static char *dir_desc[] = {
+static const char *dir_desc[] = {
    "to the north",
    "to the east",
    "to the south",
@@ -5680,7 +6068,7 @@ static char *dir_desc[] = {
    "through the portal"
 };
 
-static char *rng_desc[] = {
+static const char *rng_desc[] = {
    "right here",
    "immediately",
    "nearby",
@@ -5695,21 +6083,20 @@ static char *rng_desc[] = {
 
 static void scanroom( char_data * ch, room_index * room, int dir, int maxdist, int dist )
 {
-   list<char_data*>::iterator ich;
-   for( ich = room->people.begin(); ich != room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
    {
-      char_data *tch = (*ich);
+      char_data *tch = *ich;
 
       if( ch->can_see( tch, false ) && !is_ignoring( tch, ch ) )
-         ch->printf( "%-30s : %s %s\r\n", tch->isnpc(  )? tch->short_descr : tch->name,
-                     rng_desc[dist], dist == 0 ? "" : dir_desc[dir] );
+         ch->printf( "%-30s : %s %s\r\n", tch->isnpc(  )? tch->short_descr : tch->name, rng_desc[dist], dist == 0 ? "" : dir_desc[dir] );
    }
 
-   list<exit_data*>::iterator ex;
+   list < exit_data * >::iterator ex;
    exit_data *pexit = NULL;
-   for( ex = room->exits.begin(); ex != room->exits.end(); ++ex )
+   for( ex = room->exits.begin(  ); ex != room->exits.end(  ); ++ex )
    {
-      exit_data *iexit = (*ex);
+      exit_data *iexit = *ex;
 
       if( iexit->vdir == dir )
       {
@@ -5743,15 +6130,14 @@ CMDF( do_scan )
 
    scanroom( ch, ch->in_room, -1, 1, 0 );
 
-   list<exit_data*>::iterator iexit;
-   for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+   list < exit_data * >::iterator iexit;
+   for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
 
       if( IS_EXIT_FLAG( pexit, EX_DIG ) || IS_EXIT_FLAG( pexit, EX_CLOSED )
           || IS_EXIT_FLAG( pexit, EX_FORTIFIED ) || IS_EXIT_FLAG( pexit, EX_HEAVY )
-          || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT )
-          || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) || IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
+          || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) || IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
          continue;
 
       if( pexit->vdir == DIR_SOMEWHERE && !ch->is_immortal(  ) )
@@ -5774,15 +6160,13 @@ CMDF( do_slice )
       return;
    }
 
-   if( argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "From what do you wish to slice meat?\r\n" );
       return;
    }
 
-   if( !( obj = ch->get_eq( WEAR_WIELD ) )
-       || ( obj->value[3] != DAM_SLASH && obj->value[3] != DAM_HACK && obj->value[3] != DAM_PIERCE
-            && obj->value[3] != DAM_STAB ) )
+   if( !( obj = ch->get_eq( WEAR_WIELD ) ) || ( obj->value[3] != DAM_SLASH && obj->value[3] != DAM_HACK && obj->value[3] != DAM_PIERCE && obj->value[3] != DAM_STAB ) )
    {
       ch->print( "You need to wield a sharp weapon.\r\n" );
       return;
@@ -5835,7 +6219,6 @@ CMDF( do_slice )
 
    slice->to_char( ch );
    corpse->value[3] -= 25;
-   return;
 }
 
 /*
@@ -5843,22 +6226,18 @@ CMDF( do_slice )
  */
 CMDF( do_style )
 {
-   char arg[MIL];
-
    if( ch->isnpc(  ) )
       return;
 
-   one_argument( argument, arg );
-   if( arg[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->printf( "&wAdopt which fighting style?  (current:  %s&w)\r\n",
                   ch->style == STYLE_BERSERK ? "&Rberserk" :
-                  ch->style == STYLE_AGGRESSIVE ? "&Raggressive" :
-                  ch->style == STYLE_DEFENSIVE ? "&Ydefensive" : ch->style == STYLE_EVASIVE ? "&Yevasive" : "standard" );
+                  ch->style == STYLE_AGGRESSIVE ? "&Raggressive" : ch->style == STYLE_DEFENSIVE ? "&Ydefensive" : ch->style == STYLE_EVASIVE ? "&Yevasive" : "standard" );
       return;
    }
 
-   if( !str_prefix( arg, "evasive" ) )
+   if( !str_prefix( argument, "evasive" ) )
    {
       if( ch->level < skill_table[gsn_style_evasive]->skill_level[ch->Class] )
       {
@@ -5869,7 +6248,7 @@ CMDF( do_style )
       ch->print( "You adopt an evasive fighting style.\r\n" );
       return;
    }
-   else if( !str_prefix( arg, "defensive" ) )
+   else if( !str_prefix( argument, "defensive" ) )
    {
       if( ch->level < skill_table[gsn_style_defensive]->skill_level[ch->Class] )
       {
@@ -5902,7 +6281,7 @@ CMDF( do_style )
          return;
       }
    }
-   else if( !str_prefix( arg, "standard" ) )
+   else if( !str_prefix( argument, "standard" ) )
    {
       if( ch->level < skill_table[gsn_style_standard]->skill_level[ch->Class] )
       {
@@ -5935,7 +6314,7 @@ CMDF( do_style )
          return;
       }
    }
-   else if( !str_prefix( arg, "aggressive" ) )
+   else if( !str_prefix( argument, "aggressive" ) )
    {
       if( ch->level < skill_table[gsn_style_aggressive]->skill_level[ch->Class] )
       {
@@ -5968,7 +6347,7 @@ CMDF( do_style )
          return;
       }
    }
-   else if( !str_prefix( arg, "berserk" ) )
+   else if( !str_prefix( argument, "berserk" ) )
    {
       if( ch->level < skill_table[gsn_style_berserk]->skill_level[ch->Class] )
       {
@@ -6002,7 +6381,6 @@ CMDF( do_style )
       }
    }
    ch->print( "Adopt which fighting style?\r\n" );
-   return;
 }
 
 /*
@@ -6010,15 +6388,13 @@ CMDF( do_style )
  */
 CMDF( do_cook )
 {
-   char arg[MIL];
-
-   one_argument( argument, arg );
    if( ch->isnpc(  ) || ch->level < skill_table[gsn_cook]->skill_level[ch->Class] )
    {
       ch->print( "That skill is beyond your understanding.\r\n" );
       return;
    }
-   if( !arg || arg[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
       ch->print( "Cook what?\r\n" );
       return;
@@ -6028,7 +6404,7 @@ CMDF( do_cook )
       return;
 
    obj_data *food;
-   if( !( food = ch->get_obj_carry( arg ) ) )
+   if( !( food = ch->get_obj_carry( argument ) ) )
    {
       ch->print( "You do not have that item.\r\n" );
       return;
@@ -6045,10 +6421,10 @@ CMDF( do_cook )
    }
 
    bool found = false;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      obj_data *fire = (*iobj);
+      obj_data *fire = *iobj;
       if( fire->item_type == ITEM_FIRE )
       {
          found = true;
@@ -6095,10 +6471,9 @@ CMDF( do_cook )
       stralloc_printf( &food->objdesc, "A roasted %s.", food->pIndexData->name );
       ++food->value[2];
    }
-   return;
 }
 
-/* Everything from here down has been added by Alsherok */
+/* Everything from here down has been added by The AFKMud Team */
 
 /* Centaur backheel skill, clone of kick, but needs to be separate for GSN reasons */
 CMDF( do_backheel )
@@ -6144,7 +6519,6 @@ CMDF( do_backheel )
       global_retcode = damage( ch, victim, 0, gsn_backheel );
       kick_messages( ch, victim, 0, global_retcode );
    }
-   return;
 }
 
 CMDF( do_tinker )
@@ -6157,7 +6531,7 @@ CMDF( do_tinker )
 
    ch->set_color( AT_SKILL );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "What do you wish to construct?\r\n" );
       return;
@@ -6186,7 +6560,7 @@ CMDF( do_tinker )
 
    if( !pobj && !pmob )
    {
-      ch->printf( "You cannot construct a %s.\r\n", argument );
+      ch->printf( "You cannot construct a %s.\r\n", argument.c_str(  ) );
       return;
    }
 
@@ -6230,7 +6604,6 @@ CMDF( do_tinker )
    ch->print( "Oops. Something mighty odd just happened. The imms have been informed.\r\n" );
    ch->print( "Reimbursing the gold you lost...\r\n" );
    ch->gold += cost;
-   return;
 }
 
 CMDF( do_deathsong )
@@ -6280,7 +6653,6 @@ CMDF( do_deathsong )
          ch->learn_from_failure( gsn_deathsong );
       }
    }
-   return;
 }
 
 CMDF( do_tenacity )
@@ -6316,7 +6688,6 @@ CMDF( do_tenacity )
          ch->learn_from_failure( gsn_tenacity );
       }
    }
-   return;
 }
 
 CMDF( do_reverie )
@@ -6364,7 +6735,6 @@ CMDF( do_reverie )
          ch->learn_from_failure( gsn_reverie );
       }
    }
-   return;
 }
 
 CMDF( do_bladesong )
@@ -6419,7 +6789,6 @@ CMDF( do_bladesong )
          ch->learn_from_failure( gsn_bladesong );
       }
    }
-   return;
 }
 
 CMDF( do_elvensong )
@@ -6461,13 +6830,11 @@ CMDF( do_elvensong )
          ch->learn_from_failure( gsn_elvensong );
       }
    }
-   return;
 }
 
 /* Assassinate skill, added by Samson on unknown date. Code courtesy of unknown author from Smaug mailing list. */
 CMDF( do_assassinate )
 {
-   char arg1[MIL];
    char_data *victim;
    obj_data *obj;
    short percent;
@@ -6487,14 +6854,13 @@ CMDF( do_assassinate )
       return;
    }
 
-   argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Who do you want to assassinate?\r\n" );
       return;
    }
 
-   if( !( victim = ch->get_char_room( arg1 ) ) )
+   if( !( victim = ch->get_char_room( argument ) ) )
    {
       ch->print( "They aren't here.\r\n" );
       return;
@@ -6579,7 +6945,6 @@ CMDF( do_assassinate )
       ch->learn_from_failure( gsn_assassinate );
       global_retcode = one_hit( ch, victim, TYPE_UNDEFINED );
    }
-   return;
 }
 
 /* Adapted from Dalemud by Sten */
@@ -6631,7 +6996,6 @@ CMDF( do_feign )
       ch->WAIT_STATE( 3 * sysdata->pulseviolence );
       ch->learn_from_failure( gsn_feign );
    }
-   return;
 }
 
 CMDF( do_forage )
@@ -6724,7 +7088,6 @@ CMDF( do_forage )
       ch->print( "Your search of the area reveals nothing useful.\r\n" );
       ch->learn_from_failure( gsn_forage );
    }
-   return;
 }
 
 /* The mob vnum definition here should always be the first in the series.
@@ -6826,7 +7189,6 @@ CMDF( do_woodcall )
       ch->print( "Your calls fall on deaf ears, nothing comes forth.\r\n" );
       ch->learn_from_failure( gsn_woodcall );
    }
-   return;
 }
 
 CMDF( do_mining )
@@ -6842,8 +7204,7 @@ CMDF( do_mining )
       return;
    }
 
-   if( !ch->has_pcflag( PCFLAG_ONMAP ) && ch->in_room->sector_type != SECT_MOUNTAIN
-       && ch->in_room->sector_type != SECT_UNDERGROUND )
+   if( !ch->has_pcflag( PCFLAG_ONMAP ) && ch->in_room->sector_type != SECT_MOUNTAIN && ch->in_room->sector_type != SECT_UNDERGROUND )
    {
       ch->print( "You must be in the mountains, or underground to do mining.\r\n" );
       return;
@@ -6900,14 +7261,12 @@ CMDF( do_mining )
       ch->print( "Your search of the area reveals nothing useful.\r\n" );
       ch->learn_from_failure( gsn_mining );
    }
-   return;
 }
 
 CMDF( do_quiv )
 {
    char_data *victim;
    affect_data af;
-   char arg[MIL];
 
    if( ch->isnpc(  ) )
    {
@@ -6939,9 +7298,7 @@ CMDF( do_quiv )
       return;
    }
 
-   one_argument( argument, arg );
-
-   if( !( victim = ch->get_char_room( arg ) ) )
+   if( !( victim = ch->get_char_room( argument ) ) )
    {
       ch->print( "Who do you wish to use the fabled quivering palm on?\r\n" );
       return;
@@ -6990,7 +7347,6 @@ CMDF( do_quiv )
       ch->print( "Your vibrations fade ineffectively.\r\n" );
       ch->learn_from_failure( gsn_quiv );
    }
-   return;
 }
 
 /* Charge code written by Sadiq - April 28, 1998    *
@@ -7009,7 +7365,7 @@ CMDF( do_charge )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Bind what?\r\n" );
       return;
@@ -7104,14 +7460,12 @@ CMDF( do_charge )
    act( AT_MAGIC, "You magically charge $p.", ch, wand, NULL, TO_CHAR );
 
    ch->mana -= mana;
-
-   return;
 }
 
 CMDF( do_tan )
 {
    obj_data *corpse = NULL, *hide = NULL;
-   char itemname[MIL], itemtype[MIL], hidetype[MIL];
+   string itemname, itemtype, hidetype;
    int percent = 0, acapply = 0, acbonus = 0, lev = 0;
 
    if( ch->isnpc(  ) && !ch->has_actflag( ACT_POLYSELF ) )
@@ -7132,16 +7486,14 @@ CMDF( do_tan )
    argument = one_argument( argument, itemname );
    argument = one_argument( argument, itemtype );
 
-   if( itemname[0] == '\0' )
+   if( itemname.empty(  ) )
    {
       ch->print( "You may make the following items out of a corpse:\r\n" );
-      ch->
-         print
-         ( "Jacket, shield, boots, gloves, leggings, sleeves, helmet, bag, belt, cloak, whip,\r\nquiver, waterskin, and collar\r\n" );
+      ch->print( "Jacket, shield, boots, gloves, leggings, sleeves, helmet, bag, belt, cloak, whip,\r\nquiver, waterskin, and collar\r\n" );
       return;
    }
 
-   if( itemtype[0] == '\0' )
+   if( itemtype.empty(  ) )
    {
       ch->print( "I see that, but what do you wanna make?\r\n" );
       return;
@@ -7207,7 +7559,7 @@ CMDF( do_tan )
       }
       ++acapply;
       ++acbonus;
-      mudstrlcpy( hidetype, "A shield", MIL );
+      hidetype = "A shield";
    }
    else if( !str_cmp( itemtype, "jacket" ) )
    {
@@ -7219,7 +7571,7 @@ CMDF( do_tan )
       }
       acapply += 5;
       acbonus += 2;
-      mudstrlcpy( hidetype, "A jacket", MIL );
+      hidetype = "A jacket";
    }
    else if( !str_cmp( itemtype, "boots" ) )
    {
@@ -7235,7 +7587,7 @@ CMDF( do_tan )
       --acbonus;
       if( acbonus < 0 )
          acbonus = 0;
-      mudstrlcpy( hidetype, "Boots", MIL );
+      hidetype = "Boots";
    }
    else if( !str_cmp( itemtype, "gloves" ) )
    {
@@ -7251,7 +7603,7 @@ CMDF( do_tan )
       --acbonus;
       if( acbonus < 0 )
          acbonus = 0;
-      mudstrlcpy( hidetype, "Gloves", MIL );
+      hidetype = "Gloves";
    }
    else if( !str_cmp( itemtype, "leggings" ) )
    {
@@ -7263,7 +7615,7 @@ CMDF( do_tan )
       }
       ++acapply;
       ++acbonus;
-      mudstrlcpy( hidetype, "Leggings", MIL );
+      hidetype = "Leggings";
    }
    else if( !str_cmp( itemtype, "sleeves" ) )
    {
@@ -7275,7 +7627,7 @@ CMDF( do_tan )
       }
       ++acapply;
       ++acbonus;
-      mudstrlcpy( hidetype, "Sleeves", MIL );
+      hidetype = "Sleeves";
    }
    else if( !str_cmp( itemtype, "helmet" ) )
    {
@@ -7291,7 +7643,7 @@ CMDF( do_tan )
       --acbonus;
       if( acbonus < 0 )
          acbonus = 0;
-      mudstrlcpy( hidetype, "A helmet", MIL );
+      hidetype = "A helmet";
    }
    else if( !str_cmp( itemtype, "bag" ) )
    {
@@ -7301,7 +7653,7 @@ CMDF( do_tan )
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          return;
       }
-      mudstrlcpy( hidetype, "A bag", MIL );
+      hidetype = "A bag";
    }
    else if( !str_cmp( itemtype, "belt" ) )
    {
@@ -7317,7 +7669,7 @@ CMDF( do_tan )
       --acbonus;
       if( acbonus < 0 )
          acbonus = 0;
-      mudstrlcpy( hidetype, "A belt", MIL );
+      hidetype = "A belt";
    }
    else if( !str_cmp( itemtype, "cloak" ) )
    {
@@ -7333,7 +7685,7 @@ CMDF( do_tan )
       --acbonus;
       if( acbonus < 0 )
          acbonus = 0;
-      mudstrlcpy( hidetype, "A cloak", MIL );
+      hidetype = "A cloak";
    }
    else if( !str_cmp( itemtype, "quiver" ) )
    {
@@ -7343,7 +7695,7 @@ CMDF( do_tan )
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          return;
       }
-      mudstrlcpy( hidetype, "A quiver", MIL );
+      hidetype = "A quiver";
    }
    else if( !str_cmp( itemtype, "waterskin" ) )
    {
@@ -7353,7 +7705,7 @@ CMDF( do_tan )
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          return;
       }
-      mudstrlcpy( hidetype, "A waterskin", MIL );
+      hidetype = "A waterskin";
    }
    else if( !str_cmp( itemtype, "collar" ) )
    {
@@ -7369,7 +7721,7 @@ CMDF( do_tan )
       --acbonus;
       if( acbonus < 0 )
          acbonus = 0;
-      mudstrlcpy( hidetype, "A collar", MIL );
+      hidetype = "A collar";
    }
    else if( !str_cmp( itemtype, "whip" ) )
    {
@@ -7380,13 +7732,14 @@ CMDF( do_tan )
          return;
       }
       ++acapply;
-      mudstrlcpy( hidetype, "A whip", MIL );
+      hidetype = "A whip";
    }
    else
    {
       ch->print( "Illegal type of equipment!\r\n" );
       return;
    }
+
    if( !hide )
    {
       bug( "%s: Tan objects missing.", __FUNCTION__ );
@@ -7395,9 +7748,9 @@ CMDF( do_tan )
    }
    hide->to_char( ch );
 
-   stralloc_printf( &hide->name, "%s", hidetype );
-   stralloc_printf( &hide->short_descr, "%s made from the hide of %s", hidetype, corpse->short_descr + 14 );
-   stralloc_printf( &hide->objdesc, "%s made from the hide of %s lies here.", hidetype, corpse->short_descr + 14 );
+   stralloc_printf( &hide->name, "%s", hidetype.c_str(  ) );
+   stralloc_printf( &hide->short_descr, "%s made from the hide of %s", hidetype.c_str(  ), corpse->short_descr + 14 );
+   stralloc_printf( &hide->objdesc, "%s made from the hide of %s lies here.", hidetype.c_str(  ), corpse->short_descr + 14 );
 
    if( hide->item_type == ITEM_ARMOR )
    {
@@ -7427,12 +7780,11 @@ CMDF( do_tan )
       corpse->empty( NULL, corpse->in_room );
 
    corpse->extract(  );
-   return;
 }
 
 CMDF( do_throw )
 {
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Throw at whom or what?\r\n" );
       return;
@@ -7456,15 +7808,14 @@ CMDF( do_throw )
    /*
     * handle the ranged attack
     */
-   char name[MSL];
-   mudstrlcpy( name, obj->name, MSL );
-   ranged_attack( ch, argument, NULL, obj, TYPE_HIT + obj->value[3], (short)(( ch->perm_str / 4 ) * .5 ));
+   string name = obj->name;
+   ranged_attack( ch, argument, NULL, obj, TYPE_HIT + obj->value[3], ( short )( ( ch->perm_str / 4 ) * .5 ) );
 
    obj_data *item = NULL;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj = (*iobj);
+      obj = *iobj;
 
       if( ( obj->item_type == ITEM_SCABBARD ) && ch->can_see_obj( obj, true ) )
       {
@@ -7486,11 +7837,10 @@ CMDF( do_throw )
       ch->printf( "You draw %s\r\n", item->short_descr );
       if( item->in_obj )
       {
-         item->from_obj();
+         item->from_obj(  );
          item->to_char( ch );
       }
       if( ch->get_eq( WEAR_HOLD ) != item )
          ch->equip( item, WEAR_HOLD );
    }
-   return;
 }

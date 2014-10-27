@@ -35,7 +35,7 @@
 #ifndef __MSPECIALS_H__
 #define __MSPECIALS_H__
 
-extern list<string> speclist;
+extern list < string > speclist;
 
 /* Any spec_fun added here needs to be added to specfuns.dat as well.
  * If you don't know what that means, ask Samson to take care of it.
@@ -48,6 +48,7 @@ SPECF( spec_poison );   /* For area conversion compatibility - DON'T REMOVE THIS
 SPECF( spec_fido );  /* Eats corpses */
 SPECF( spec_cast_adept );  /* For healer mobs */
 SPECF( spec_RustMonster ); /* Eats anything on the ground */
+SPECF( spec_wanderer );
 
 /* Generic Cityguards */
 SPECF( spec_GenericCityguard );

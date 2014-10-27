@@ -43,57 +43,56 @@
 #include "roomindex.h"
 
 /* Begin wizinfo stuff - Samson 6-6-99 */
-char *const realm_string[] = {
-   "Immortal", "Builder", "C0DE", "Head Coder", "Head Builder", "Implementor"
-};
 
-list<wizinfo_data*> wizinfolist;
+list < wizinfo_data * >wizinfolist;
 
-wizinfo_data::wizinfo_data()
+wizinfo_data::wizinfo_data(  )
 {
    init_memory( &icq, &level, sizeof( level ) );
 }
 
-wizinfo_data::~wizinfo_data()
+wizinfo_data::~wizinfo_data(  )
 {
    wizinfolist.remove( this );
 }
 
 /* Construct wizinfo list from god dir info - Samson 6-6-99 */
-void add_to_wizinfo( string name, wizinfo_data * wiz )
+void add_to_wizinfo( const string & name, wizinfo_data * wiz )
 {
-   list<wizinfo_data*>::iterator wizinfo;
+   list < wizinfo_data * >::iterator wizinfo;
 
    wiz->set_name( name );
-   if( wiz->get_email().empty() )
+   if( wiz->get_email(  ).empty(  ) )
       wiz->set_email( "Not Set" );
 
-   for( wizinfo = wizinfolist.begin(); wizinfo != wizinfolist.end(); ++wizinfo )
-      if( (*wizinfo)->get_name() >= name )
+   for( wizinfo = wizinfolist.begin(  ); wizinfo != wizinfolist.end(  ); ++wizinfo )
+   {
+      wizinfo_data *w = *wizinfo;
+
+      if( w->get_name(  ) >= name )
       {
          wizinfolist.insert( wizinfo, wiz );
          return;
       }
+   }
    wizinfolist.push_back( wiz );
-   return;
 }
 
 void clear_wizinfo( void )
 {
-   list<wizinfo_data*>::iterator wiz;
+   list < wizinfo_data * >::iterator wiz;
 
    if( !fBootDb )
    {
-      for( wiz = wizinfolist.begin(); wiz != wizinfolist.end(); )
+      for( wiz = wizinfolist.begin(  ); wiz != wizinfolist.end(  ); )
       {
-         wizinfo_data *winfo = (*wiz);
+         wizinfo_data *winfo = *wiz;
          ++wiz;
 
          deleteptr( winfo );
       }
    }
-   wizinfolist.clear();
-   return;
+   wizinfolist.clear(  );
 }
 
 void build_wizinfo( void )
@@ -120,11 +119,12 @@ void build_wizinfo( void )
          dentry = readdir( dp );
          continue;
       }
+
       if( dentry->d_name[0] != '.' )
       {
          snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
          stream.open( buf );
-         if( stream.is_open() )
+         if( stream.is_open(  ) )
          {
             wiz = new wizinfo_data;
             do
@@ -133,47 +133,28 @@ void build_wizinfo( void )
                char buf2[MIL];
 
                stream >> key;
+               stream.getline( buf2, MIL );
+               value = buf2;
+
                strip_lspace( key );
+               strip_tilde( value );
+               strip_lspace( value );
 
                if( key == "Level" )
-               {
-                  stream.getline( buf2, MIL );
-                  value = buf2;
-                  strip_lspace( value );
-                  wiz->set_level( atoi( value.c_str() ) );
-               }
-               if( key == "Realm" )
-               {
-                  stream.getline( buf2, MIL );
-                  value = buf2;
-                  strip_lspace( value );
-                  wiz->set_realm( atoi( value.c_str() ) );
-               }
-               if( key == "ICQ" )
-               {
-                  stream.getline( buf2, MIL );
-                  value = buf2;
-                  strip_lspace( value );
-                  wiz->set_icq( atoi( value.c_str() ) );
-               }
-               if( key == "Email" )
-               {
-                  stream.getline( buf2, MIL );
-                  value = buf2;
-                  strip_tilde( value );
-                  strip_lspace( value );
+                  wiz->set_level( atoi( value.c_str(  ) ) );
+               else if( key == "ICQ" )
+                  wiz->set_icq( atoi( value.c_str(  ) ) );
+               else if( key == "Email" )
                   wiz->set_email( value );
-               }
             }
-            while( !stream.eof() );
+            while( !stream.eof(  ) );
             add_to_wizinfo( dentry->d_name, wiz );
-            stream.close();
+            stream.close(  );
          }
       }
       dentry = readdir( dp );
    }
    closedir( dp );
-   return;
 }
 
 /* 
@@ -182,26 +163,18 @@ void build_wizinfo( void )
  */
 CMDF( do_wizinfo )
 {
-   list<wizinfo_data*>::iterator wiz;
+   list < wizinfo_data * >::iterator wiz;
 
    ch->pager( "&cContact Information for the Immortals:\r\n\r\n" );
-   ch->pager( "&cName         Email Address                     ICQ#       Realm\r\n" );
-   ch->pager( "&c------------+---------------------------------+----------+----------------\r\n" );
+   ch->pager( "&cName         Email Address                     ICQ#\r\n" );
+   ch->pager( "&c------------+---------------------------------+----------\r\n" );
 
-   for( wiz = wizinfolist.begin(); wiz != wizinfolist.end(); ++wiz )
+   for( wiz = wizinfolist.begin(  ); wiz != wizinfolist.end(  ); ++wiz )
    {
-      wizinfo_data *wi = (*wiz);
+      wizinfo_data *wi = *wiz;
 
-      // Allows an argument to show only a certain realm
-      // --Cynshard
-      if( argument && argument[0] != '\0' )
-         if( str_cmp( realm_string[wi->get_realm()], argument ) )
-            continue;
-
-      ch->printf( "&R%-12s &g%-33s &B%10d &P%s&D\r\n",
-         wi->get_name().c_str(), wi->get_email().c_str(), wi->get_icq(), realm_string[wi->get_realm()] );
+      ch->printf( "&R%-12s &g%-33s &B%10d\r\n", wi->get_name(  ).c_str(  ), wi->get_email(  ).c_str(  ), wi->get_icq(  ) );
    }
-   return;
 }
 
 /* End wizinfo stuff - Samson 6-6-99 */
@@ -217,7 +190,7 @@ CMDF( do_finger )
    room_index *temproom, *original = NULL;
    int level = LEVEL_IMMORTAL;
    char buf[MIL], fingload[256];
-   char *suf, *laston = NULL;
+   const char *suf, *laston = NULL;
    struct stat fst;
    short day = 0;
    bool loaded = false, skip = false;
@@ -228,13 +201,13 @@ CMDF( do_finger )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Finger whom?\r\n" );
       return;
    }
 
-   snprintf( buf, MIL, "0.%s", argument );
+   snprintf( buf, MIL, "0.%s", argument.c_str(  ) );
 
    /*
     * If player is online, check for fingerability (yeah, I coined that one)  -Edge 
@@ -261,13 +234,13 @@ CMDF( do_finger )
    {
       descriptor_data *d;
 
-      snprintf( fingload, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
+      snprintf( fingload, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
       /*
        * Bug fix here provided by Senir to stop /dev/null crash 
        */
       if( stat( fingload, &fst ) == -1 || !check_parse_name( capitalize( argument ), false ) )
       {
-         ch->printf( "&YNo such player named '%s'.\r\n", argument );
+         ch->printf( "&YNo such player named '%s'.\r\n", argument.c_str(  ) );
          return;
       }
 
@@ -336,9 +309,8 @@ CMDF( do_finger )
       ch->printf( "&wLevel   : &G%-20d &w  Class: &G%s\r\n", victim->level, capitalize( victim->get_class(  ) ) );
       ch->printf( "&wSex     : &G%-20s &w  Race : &G%s\r\n", npc_sex[victim->sex], capitalize( victim->get_race(  ) ) );
       ch->printf( "&wTitle   :&G%s\r\n", victim->pcdata->title );
-      ch->printf( "&wHomepage: &G%s\r\n",
-                  victim->pcdata->homepage != NULL ? show_tilde( victim->pcdata->homepage ) : "Not specified" );
-      ch->printf( "&wEmail   : &G%s\r\n", victim->pcdata->email != NULL ? victim->pcdata->email : "Not specified" );
+      ch->printf( "&wHomepage: &G%s\r\n", !victim->pcdata->homepage.empty(  )? show_tilde( victim->pcdata->homepage ).c_str(  ) : "Not specified" );
+      ch->printf( "&wEmail   : &G%s\r\n", !victim->pcdata->email.empty(  )? victim->pcdata->email.c_str(  ) : "Not specified" );
       ch->printf( "&wICQ#    : &G%d\r\n", victim->pcdata->icq );
       if( !loaded )
          ch->printf( "&wLast on : &G%s\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone ) );
@@ -348,11 +320,10 @@ CMDF( do_finger )
       {
          ch->print( "&wImmortal Information\r\n" );
          ch->print( "--------------------\r\n" );
-         ch->printf( "&wIP Info       : &G%s\r\n", victim->pcdata->lasthost );
+         ch->printf( "&wIP Info       : &G%s\r\n", victim->pcdata->lasthost.c_str(  ) );
          ch->printf( "&wTime played   : &G%ld hours\r\n", ( long int )GET_TIME_PLAYED( victim ) );
          ch->printf( "&wAuthorized by : &G%s\r\n",
-                     victim->pcdata->authed_by ? victim->pcdata->authed_by : ( sysdata->
-                                                                         WAIT_FOR_AUTH ? "Not Authed" : "The Code" ) );
+                     !victim->pcdata->authed_by.empty(  )? victim->pcdata->authed_by.c_str(  ) : ( sysdata->WAIT_FOR_AUTH ? "Not Authed" : "The Code" ) );
          ch->printf( "&wPrivacy Status: &G%s\r\n", victim->has_pcflag( PCFLAG_PRIVACY ) ? "Enabled" : "Disabled" );
          if( victim->level < ch->level )
          {
@@ -376,11 +347,11 @@ CMDF( do_finger )
 
       if( sysdata->save_pets )
       {
-         list<char_data*>::iterator pet;
+         list < char_data * >::iterator pet;
 
-         for( pet = victim->pets.begin(); pet != victim->pets.end(); )
+         for( pet = victim->pets.begin(  ); pet != victim->pets.end(  ); )
          {
-            char_data *cpet = (*pet);
+            char_data *cpet = *pet;
             ++pet;
 
             cpet->extract( true );
@@ -396,21 +367,18 @@ CMDF( do_finger )
          for( y = 0; y < MAX_LAYERS; ++y )
             save_equipment[x][y] = NULL;
    }
-   return;
 }
 
 /* Added a clone of homepage to let players input their email addy - Samson 4-18-98 */
 CMDF( do_email )
 {
-   char buf[75];
-
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      if( ch->pcdata->email && ch->pcdata->email[0] != '\0' )
-         ch->printf( "Your email address is: %s\r\n", show_tilde( ch->pcdata->email ) );
+      if( !ch->pcdata->email.empty(  ) )
+         ch->printf( "Your email address is: %s\r\n", ch->pcdata->email.c_str(  ) );
       else
          ch->print( "You have no email address set yet.\r\n" );
       return;
@@ -418,27 +386,23 @@ CMDF( do_email )
 
    if( !str_cmp( argument, "clear" ) )
    {
-      DISPOSE( ch->pcdata->email );
+      ch->pcdata->email.clear(  );
 
+      ch->save(  );
       if( ch->is_immortal(  ) );
-      {
-         ch->save(  );
-         build_wizinfo(  );
-      }
+      build_wizinfo(  );
+
       ch->print( "Email address cleared.\r\n" );
       return;
    }
 
-   mudstrlcpy( buf, argument, 75 );
+   smash_tilde( argument );
+   ch->pcdata->email = argument.substr( 0, 75 );
 
-   smash_tilde( buf );
-   DISPOSE( ch->pcdata->email );
-   ch->pcdata->email = str_dup( buf );
-   if( ch->is_immortal(  ) );
-   {
-      ch->save(  );
+   ch->save(  );
+   if( ch->is_immortal(  ) )
       build_wizinfo(  );
-   }
+
    ch->print( "Email address set.\r\n" );
 }
 
@@ -449,7 +413,7 @@ CMDF( do_icq_number )
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->printf( "Your ICQ# is: %d\r\n", ch->pcdata->icq );
       return;
@@ -459,11 +423,9 @@ CMDF( do_icq_number )
    {
       ch->pcdata->icq = 0;
 
-      if( ch->is_immortal(  ) );
-      {
-         ch->save(  );
+      ch->save(  );
+      if( ch->is_immortal(  ) )
          build_wizinfo(  );
-      }
       ch->print( "ICQ# cleared.\r\n" );
       return;
    }
@@ -474,7 +436,7 @@ CMDF( do_icq_number )
       return;
    }
 
-   icq = atoi( argument );
+   icq = atoi( argument.c_str(  ) );
 
    if( icq < 1 )
    {
@@ -484,26 +446,23 @@ CMDF( do_icq_number )
 
    ch->pcdata->icq = icq;
 
-   if( ch->is_immortal(  ) );
-   {
-      ch->save(  );
+   ch->save(  );
+   if( ch->is_immortal(  ) )
       build_wizinfo(  );
-   }
    ch->print( "ICQ# set.\r\n" );
-   return;
 }
 
 CMDF( do_homepage )
 {
-   char buf[75];
+   string buf;
 
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      if( ch->pcdata->homepage && ch->pcdata->homepage != '\0' )
-         ch->printf( "Your homepage is: %s\r\n", show_tilde( ch->pcdata->homepage ) );
+      if( !ch->pcdata->homepage.empty(  ) )
+         ch->printf( "Your homepage is: %s\r\n", show_tilde( ch->pcdata->homepage ).c_str(  ) );
       else
          ch->print( "You have no homepage set yet.\r\n" );
       return;
@@ -511,19 +470,19 @@ CMDF( do_homepage )
 
    if( !str_cmp( argument, "clear" ) )
    {
-      DISPOSE( ch->pcdata->homepage );
+      ch->pcdata->homepage.clear(  );
       ch->print( "Homepage cleared.\r\n" );
       return;
    }
 
-   if( strstr( argument, "://" ) )
-      mudstrlcpy( buf, argument, 75 );
+   if( strstr( argument.c_str(  ), "://" ) )
+      buf = argument;
    else
-      snprintf( buf, 75, "http://%s", argument );
+      buf = "http://" + argument;
+   buf = buf.substr( 0, 75 );
 
    hide_tilde( buf );
-   DISPOSE( ch->pcdata->homepage );
-   ch->pcdata->homepage = str_dup( buf );
+   ch->pcdata->homepage = buf;
    ch->print( "Homepage set.\r\n" );
 }
 

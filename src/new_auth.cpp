@@ -38,6 +38,7 @@
  *  you must give credit to the original author(s).
  */
 
+#include <fstream>
 #include <sys/stat.h>
 #include <sys/time.h>
 #if defined(WIN32)
@@ -47,27 +48,21 @@ void gettimeofday( struct timeval *, struct timezone * );
 #include "mud.h"
 #include "descriptor.h"
 #include "new_auth.h"
-#include "mud_prog.h"
 
-char_data *get_waiting_desc( char_data *, char * );
+char_data *get_waiting_desc( char_data *, const string & );
 CMDF( do_reserve );
 CMDF( do_destroy );
 bool can_use_mprog( char_data * );
 
-list<auth_data*> authlist;
+list < auth_data * >authlist;
 
-void name_generator( char *argument )
+void name_generator( string & argument )
 {
-   int start_counter = 0;
-   int middle_counter = 0;
-   int end_counter = 0;
-   char start_string[100][10];
-   char middle_string[100][10];
-   char end_string[100][10];
-   char tempstring[151];
+   int start_counter = 0, middle_counter = 0, end_counter = 0;
+   char start_string[100][10], middle_string[100][10], end_string[100][10];
+   char tempstring[151], name[300];
    struct timeval starttime;
    time_t t;
-   char name[300];
    FILE *infile;
 
    tempstring[0] = '\0';
@@ -117,32 +112,27 @@ void name_generator( char *argument )
    mudstrlcpy( name, start_string[rand(  ) % start_counter], 300 );  /* get a start */
    mudstrlcat( name, middle_string[rand(  ) % middle_counter], 300 );   /* get a middle */
    mudstrlcat( name, end_string[rand(  ) % end_counter], 300 );   /* get an ending */
-   mudstrlcat( argument, name, 300 );
-   return;
+   argument.append( name );
 }
 
 CMDF( do_name_generator )
 {
-   char name[300];
-
-   name[0] = '\0';
+   string name;
 
    name_generator( name );
-   ch->print( name );
-   return;
+   ch->printf( "%s\r\n", name.c_str(  ) );
 }
 
 /* Added by Tarl 5 Dec 02 to allow picking names from a file. Used for the namegen
    code in reset.c */
-void pick_name( char *argument, char *filename )
+void pick_name( string & argument, const char *filename )
 {
-   struct timeval starttime;
-   time_t t;
-   char name[200];
-   char tempstring[151];
-   int counter = 0;
    FILE *infile;
+   struct timeval starttime;
    char names[200][20];
+   char name[200], tempstring[151];
+   int counter = 0;
+   time_t t;
 
    tempstring[0] = '\0';
 
@@ -173,90 +163,39 @@ void pick_name( char *argument, char *filename )
    --counter;
 
    mudstrlcpy( name, names[rand(  ) % counter], 200 );
-   mudstrlcat( argument, name, 200 );
-   return;
+   argument.append( name );
 }
 
-bool exists_player( char *name )
+auth_data::auth_data(  )
 {
-   struct stat fst;
-   char buf[256];
-   char_data *victim = NULL;
-
-   /*
-    * Stands to reason that if there ain't a name to look at, they damn well don't exist! 
-    */
-   if( !name || name[0] == '\0' || !str_cmp( name, "" ) )
-      return false;
-
-   snprintf( buf, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
-
-   if( stat( buf, &fst ) != -1 )
-      return true;
-
-   else if( ( victim = supermob->get_char_world( name ) ) != NULL )
-      return true;
-
-   return false;
+   state = 0;
 }
 
-bool exists_player( string name )
+auth_data::~auth_data(  )
 {
-   struct stat fst;
-   char buf[256];
-   char_data *victim = NULL;
-
-   /*
-    * Stands to reason that if there ain't a name to look at, they damn well don't exist! 
-    */
-   if( name.empty() )
-      return false;
-
-   snprintf( buf, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ).c_str() );
-
-   if( stat( buf, &fst ) != -1 )
-      return true;
-
-   else if( ( victim = supermob->get_char_world( name ) ) != NULL )
-      return true;
-
-   return false;
-}
-
-auth_data::auth_data()
-{
-   init_memory( &name, &state, sizeof( state ) );
-}
-
-auth_data::~auth_data()
-{
-   STRFREE( authed_by );
-   STRFREE( change_by );
-   STRFREE( name );
    authlist.remove( this );
 }
 
 void free_all_auths( void )
 {
-   list<auth_data*>::iterator au;
+   list < auth_data * >::iterator au;
 
-   for( au = authlist.begin(); au != authlist.end(); )
+   for( au = authlist.begin(  ); au != authlist.end(  ); )
    {
-      auth_data *auth = (*au);
+      auth_data *auth = *au;
       ++au;
 
       deleteptr( auth );
    }
-   return;
 }
 
 void clean_auth_list( void )
 {
-   list<auth_data*>::iterator auth;
+   list < auth_data * >::iterator auth;
 
-   for( auth = authlist.begin(); auth != authlist.end(); )
+   for( auth = authlist.begin(  ); auth != authlist.end(  ); )
    {
-      auth_data *nauth = (*auth);
+      auth_data *nauth = *auth;
       ++auth;
 
       if( !exists_player( nauth->name ) )
@@ -266,11 +205,10 @@ void clean_auth_list( void )
          time_t tdiff = 0;
          time_t curr_time = time( 0 );
          struct stat fst;
-         char file[256], name[MSL];
+         char file[256];
          int MAX_AUTH_WAIT = 7;
 
-         mudstrlcpy( name, nauth->name, MSL );
-         snprintf( file, 256, "%s%c/%s", PLAYER_DIR, LOWER( nauth->name[0] ), capitalize( nauth->name ) );
+         snprintf( file, 256, "%s%c/%s", PLAYER_DIR, LOWER( nauth->name[0] ), capitalize( nauth->name ).c_str(  ) );
 
          if( stat( file, &fst ) != -1 )
             tdiff = ( curr_time - fst.st_mtime ) / 86400;
@@ -288,109 +226,42 @@ void clean_auth_list( void )
    }
 }
 
-void write_auth_file( FILE * fpout, auth_data *alist )
-{
-   fprintf( fpout, "Name     %s~\n", alist->name );
-   fprintf( fpout, "State    %d\n", alist->state );
-   if( alist->authed_by )
-      fprintf( fpout, "AuthedBy %s~\n", alist->authed_by );
-   if( alist->change_by )
-      fprintf( fpout, "Change   %s~\n", alist->change_by );
-   fprintf( fpout, "%s", "End\n\n" );
-}
-
-void fread_auth( FILE * fp )
-{
-   auth_data *new_auth = new auth_data;
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'A':
-            KEY( "AuthedBy", new_auth->authed_by, fread_string( fp ) );
-            break;
-
-         case 'C':
-            KEY( "Change", new_auth->change_by, fread_string( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               authlist.push_back( new_auth );
-               return;
-            }
-            break;
-
-         case 'N':
-            KEY( "Name", new_auth->name, fread_string( fp ) );
-            break;
-
-         case 'S':
-            if( !str_cmp( word, "State" ) )
-            {
-               new_auth->state = fread_number( fp );
-               if( new_auth->state == AUTH_ONLINE || new_auth->state == AUTH_LINK_DEAD )
-               /*
-                * Crash proofing. Can't be online when  booting up. Would suck for do_auth 
-                */
-               new_auth->state = AUTH_OFFLINE;
-               break;
-            }
-            break;
-      }
-   }
-}
-
 void save_auth_list( void )
 {
-   FILE *fpout;
-   list<auth_data*>::iterator alist;
+   ofstream stream;
+   list < auth_data * >::iterator alist;
 
-   if( !( fpout = fopen( AUTH_FILE, "w" ) ) )
+   stream.open( AUTH_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open auth.dat for writing.", __FUNCTION__ );
       perror( AUTH_FILE );
       return;
    }
 
-   for( alist = authlist.begin(); alist != authlist.end(); ++alist )
+   for( alist = authlist.begin(  ); alist != authlist.end(  ); ++alist )
    {
-      auth_data *auth = (*alist);
+      auth_data *auth = *alist;
 
-      fprintf( fpout, "%s", "#AUTH\n" );
-      write_auth_file( fpout, auth );
+      stream << "#AUTH" << endl;
+      stream << "Name     " << auth->name << endl;
+      stream << "State    " << auth->state << endl;
+      if( !auth->authed_by.empty(  ) )
+         stream << "AuthedBy " << auth->authed_by << endl;
+      if( !auth->change_by.empty(  ) )
+         stream << "Change   " << auth->change_by << endl;
+      stream << "End" << endl << endl;
    }
-
-   fprintf( fpout, "%s", "#END\n" );
-   FCLOSE( fpout );
+   stream.close(  );
 }
 
 void clear_auth_list( void )
 {
-   list<auth_data*>::iterator auth;
+   list < auth_data * >::iterator auth;
 
-   for( auth = authlist.begin(); auth != authlist.end(); )
+   for( auth = authlist.begin(  ); auth != authlist.end(  ); )
    {
-      auth_data *nauth = (*auth);
+      auth_data *nauth = *auth;
       ++auth;
 
       if( !exists_player( nauth->name ) )
@@ -401,66 +272,73 @@ void clear_auth_list( void )
 
 void load_auth_list( void )
 {
-   FILE *fp;
-   int x;
+   ifstream stream;
+   auth_data *auth;
 
-   authlist.clear();
+   authlist.clear(  );
 
-   if( ( fp = fopen( AUTH_FILE, "r" ) ) != NULL )
-   {
-      x = 0;
-      for( ;; )
-      {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "AUTH" ) )
-         {
-            fread_auth( fp );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
-            continue;
-         }
-      }
-      FCLOSE( fp );
-   }
-   else
+   stream.open( AUTH_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open auth.dat", __FUNCTION__ );
       return;
    }
+
+   do
+   {
+      string key, value;
+      char buf[MIL];
+
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#AUTH" )
+         auth = new auth_data;
+      else if( key == "Name" )
+         auth->name = value;
+      else if( key == "State" )
+      {
+         auth->state = atoi( value.c_str(  ) );
+
+         if( auth->state == AUTH_ONLINE || auth->state == AUTH_LINK_DEAD )
+            /*
+             * Crash proofing. Can't be online when  booting up. Would suck for do_auth 
+             */
+            auth->state = AUTH_OFFLINE;
+      }
+      else if( key == "AuthedBy" )
+         auth->authed_by = value;
+      else if( key == "Change" )
+         auth->change_by = value;
+      else if( key == "End" )
+         authlist.push_back( auth );
+      else
+         log_printf( "%s: Bad line in auth.dat file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+   }
+   while( !stream.eof(  ) );
+   stream.close(  );
+
    clear_auth_list(  );
 }
 
 int get_auth_state( char_data * ch )
 {
-   list<auth_data*>::iterator namestate;
+   list < auth_data * >::iterator namestate;
    int state;
 
    state = AUTH_AUTHED;
 
-   for( namestate = authlist.begin(); namestate != authlist.end(); ++namestate )
+   for( namestate = authlist.begin(  ); namestate != authlist.end(  ); ++namestate )
    {
-      auth_data *auth = (*namestate);
+      auth_data *auth = *namestate;
 
       if( !str_cmp( auth->name, ch->name ) )
          return auth->state;
@@ -468,15 +346,15 @@ int get_auth_state( char_data * ch )
    return state;
 }
 
-auth_data *get_auth_name( char *name )
+auth_data *get_auth_name( const string & name )
 {
-   list<auth_data*>::iterator mname;
+   list < auth_data * >::iterator mname;
 
-   for( mname = authlist.begin(); mname != authlist.end(); ++mname )
+   for( mname = authlist.begin(  ); mname != authlist.end(  ); ++mname )
    {
-      auth_data *auth = (*mname);
+      auth_data *auth = *mname;
 
-      if( !str_cmp( auth->name, name ) ) /* If the name is already in the list, break */
+      if( !str_cmp( auth->name, name ) )  /* If the name is already in the list, break */
          return auth;
    }
    return NULL;
@@ -491,18 +369,18 @@ void add_to_auth( char_data * ch )
    else
    {
       new_name = new auth_data;
-      new_name->name = QUICKLINK( ch->name );
+      new_name->name = ch->name;
       new_name->state = AUTH_ONLINE;   /* Just entered the game */
       authlist.push_back( new_name );
       save_auth_list(  );
    }
 }
 
-void remove_from_auth( char *name )
+void remove_from_auth( const string & name )
 {
    auth_data *old_name;
 
-   if( !( old_name = get_auth_name( name ) ) ) /* Its not old */
+   if( !( old_name = get_auth_name( name ) ) )  /* Its not old */
       return;
    else
    {
@@ -533,48 +411,44 @@ void check_auth_state( char_data * ch )
       ch->printf( "&R\r\nThe MUD Administrators have found the name %s\r\n"
                   "to be unacceptable. You must choose a new one.\r\n"
                   "The name you choose must be medieval and original.\r\n"
-                  "No titles, descriptive words, or names close to any existing\r\n"
-                  "Immortal's name. See 'help name'.\r\n", ch->name );
+                  "No titles, descriptive words, or names close to any existing\r\n" "Immortal's name. See 'help name'.\r\n", ch->name );
    }
    else if( old_auth->state == AUTH_AUTHED )
    {
-      STRFREE( ch->pcdata->authed_by );
-      if( old_auth->authed_by )
+      ch->pcdata->authed_by.clear(  );
+      if( !old_auth->authed_by.empty(  ) )
       {
-         ch->pcdata->authed_by = QUICKLINK( old_auth->authed_by );
-         STRFREE( old_auth->authed_by );
+         ch->pcdata->authed_by = old_auth->authed_by;
+         old_auth->authed_by.clear(  );
       }
       else
-         ch->pcdata->authed_by = STRALLOC( "The Code" );
+         ch->pcdata->authed_by = "The Code";
 
-      ch->printf( "\r\n&GThe MUD Administrators have accepted the name %s.\r\nYou are now free to roam %s.\r\n",
-                  ch->name, sysdata->mud_name );
+      ch->printf( "\r\n&GThe MUD Administrators have accepted the name %s.\r\nYou are now free to roam %s.\r\n", ch->name, sysdata->mud_name.c_str(  ) );
       ch->unset_pcflag( PCFLAG_UNAUTHED );
       remove_from_auth( ch->name );
-      return;
    }
-   return;
 }
 
 /* 
  * Check if the name prefix uniquely identifies a char descriptor
  */
-char_data *get_waiting_desc( char_data * ch, char *name )
+char_data *get_waiting_desc( char_data * ch, const string & name )
 {
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
    char_data *ret_char = NULL;
-   static unsigned int number_of_hits;
+   static size_t number_of_hits;
 
    number_of_hits = 0;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
 
       if( d->character && ( !str_prefix( name, d->character->name ) ) && IS_WAITING_FOR_AUTH( d->character ) )
       {
          if( ++number_of_hits > 1 )
          {
-            ch->printf( "%s does not uniquely identify a char.\r\n", name );
+            ch->printf( "%s does not uniquely identify a char.\r\n", name.c_str(  ) );
             return NULL;
          }
          ret_char = d->character;   /* return current char on exit */
@@ -592,9 +466,9 @@ char_data *get_waiting_desc( char_data * ch, char *name )
 /* new auth */
 CMDF( do_authorize )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim = NULL;
-   list<auth_data*>::iterator auth;
+   list < auth_data * >::iterator auth;
    auth_data *nauth = NULL;
    int level;
    bool offline, authed, changename, pending;
@@ -610,8 +484,10 @@ CMDF( do_authorize )
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
+      auth_data *au;
+
       ch->print( "To approve a waiting character: auth <name>\r\n" );
       ch->print( "To deny a waiting character:    auth <name> reject\r\n" );
       ch->print( "To ask a waiting character to change names: auth <name> change\r\n" );
@@ -620,40 +496,39 @@ CMDF( do_authorize )
 
       ch->print( "\r\n&[divider]--- Characters awaiting approval ---\r\n" );
 
-      auth_data *au;
-      for( auth = authlist.begin(); auth != authlist.end(); ++auth )
+      for( auth = authlist.begin(  ); auth != authlist.end(  ); ++auth )
       {
-         au = (*auth);
+         au = *auth;
 
          if( au->state == AUTH_CHANGE_NAME )
             changename = true;
          else if( au->state == AUTH_AUTHED )
             authed = true;
 
-         if( au->name != NULL && au->state < AUTH_CHANGE_NAME )
+         if( !au->name.empty(  ) && au->state < AUTH_CHANGE_NAME )
             pending = true;
       }
       if( pending )
       {
-         for( auth = authlist.begin(); auth != authlist.end(); ++auth )
+         for( auth = authlist.begin(  ); auth != authlist.end(  ); ++auth )
          {
-            au = (*auth);
+            au = *auth;
 
             if( au->state < AUTH_CHANGE_NAME )
             {
                switch ( au->state )
                {
                   default:
-                     ch->printf( "\t%s\t\tUnknown?\r\n", au->name );
+                     ch->printf( "\t%s\t\tUnknown?\r\n", au->name.c_str(  ) );
                      break;
                   case AUTH_LINK_DEAD:
-                     ch->printf( "\t%s\t\tLink Dead\r\n", au->name );
+                     ch->printf( "\t%s\t\tLink Dead\r\n", au->name.c_str(  ) );
                      break;
                   case AUTH_ONLINE:
-                     ch->printf( "\t%s\t\tOnline\r\n", au->name );
+                     ch->printf( "\t%s\t\tOnline\r\n", au->name.c_str(  ) );
                      break;
                   case AUTH_OFFLINE:
-                     ch->printf( "\t%s\t\tOffline\r\n", au->name );
+                     ch->printf( "\t%s\t\tOffline\r\n", au->name.c_str(  ) );
                      break;
                }
             }
@@ -666,24 +541,24 @@ CMDF( do_authorize )
       {
          ch->print( "\r\n&[divider]Authorized Characters:\r\n" );
          ch->print( "---------------------------------------------\r\n" );
-         for( auth = authlist.begin(); auth != authlist.end(); ++auth )
+         for( auth = authlist.begin(  ); auth != authlist.end(  ); ++auth )
          {
-            au = (*auth);
+            au = *auth;
 
             if( au->state == AUTH_AUTHED )
-               ch->printf( "Name: %s\t Approved by: %s\r\n", au->name, au->authed_by );
+               ch->printf( "Name: %s\t Approved by: %s\r\n", au->name.c_str(  ), au->authed_by.c_str(  ) );
          }
       }
       if( changename )
       {
          ch->print( "\r\n&[divider]Change Name:\r\n" );
          ch->print( "---------------------------------------------\r\n" );
-         for( auth = authlist.begin(); auth != authlist.end(); ++auth )
+         for( auth = authlist.begin(  ); auth != authlist.end(  ); ++auth )
          {
-            au = (*auth);
+            au = *auth;
 
             if( au->state == AUTH_CHANGE_NAME )
-               ch->printf( "Name: %s\t Change requested by: %s\r\n", au->name, au->change_by );
+               ch->printf( "Name: %s\t Change requested by: %s\r\n", au->name.c_str(  ), au->change_by.c_str(  ) );
          }
       }
       return;
@@ -712,37 +587,37 @@ CMDF( do_authorize )
       if( nauth->state == AUTH_OFFLINE || nauth->state == AUTH_LINK_DEAD )
       {
          offline = true;
-         if( !argument || argument[0] == '\0' || !str_cmp( argument, "accept" ) || !str_cmp( argument, "yes" ) )
+         if( argument.empty(  ) || !str_cmp( argument, "accept" ) || !str_cmp( argument, "yes" ) )
          {
             nauth->state = AUTH_AUTHED;
-            nauth->authed_by = QUICKLINK( ch->name );
+            nauth->authed_by = ch->name;
             save_auth_list(  );
-            log_printf_plus( LOG_AUTH, level, "%s: authorized", nauth->name );
-            ch->printf( "You have authorized %s.\r\n", nauth->name );
+            log_printf_plus( LOG_AUTH, level, "%s: authorized", nauth->name.c_str(  ) );
+            ch->printf( "You have authorized %s.\r\n", nauth->name.c_str(  ) );
             return;
          }
          else if( !str_cmp( argument, "reject" ) )
          {
-            log_printf_plus( LOG_AUTH, level, "%s: denied authorization", nauth->name );
-            ch->printf( "You have denied %s.\r\n", nauth->name );
+            log_printf_plus( LOG_AUTH, level, "%s: denied authorization", nauth->name.c_str(  ) );
+            ch->printf( "You have denied %s.\r\n", nauth->name.c_str(  ) );
             /*
              * Addition so that denied names get added to reserved list - Samson 10-18-98 
              */
-            funcf( ch, do_reserve, "%s add", nauth->name );
+            funcf( ch, do_reserve, "%s add", nauth->name.c_str(  ) );
             do_destroy( ch, nauth->name );
             return;
          }
          else if( !str_cmp( argument, "change" ) )
          {
             nauth->state = AUTH_CHANGE_NAME;
-            nauth->change_by = QUICKLINK( ch->name );
+            nauth->change_by = ch->name;
             save_auth_list(  );
-            log_printf_plus( LOG_AUTH, level, "%s: name denied", nauth->name );
-            ch->printf( "You requested %s change names.\r\n", nauth->name );
+            log_printf_plus( LOG_AUTH, level, "%s: name denied", nauth->name.c_str(  ) );
+            ch->printf( "You requested %s change names.\r\n", nauth->name.c_str(  ) );
             /*
              * Addition so that requested name changes get added to reserved list - Samson 10-18-98 
              */
-            funcf( ch, do_reserve, "%s add", nauth->name );
+            funcf( ch, do_reserve, "%s add", nauth->name.c_str(  ) );
             return;
          }
          else
@@ -757,16 +632,14 @@ CMDF( do_authorize )
             return;
 
          victim->set_color( AT_IMMORT );
-         if( !argument || argument[0] == '\0' || !str_cmp( argument, "accept" ) || !str_cmp( argument, "yes" ) )
+         if( argument.empty(  ) || !str_cmp( argument, "accept" ) || !str_cmp( argument, "yes" ) )
          {
-            STRFREE( victim->pcdata->authed_by );
-            victim->pcdata->authed_by = QUICKLINK( ch->name );
+            victim->pcdata->authed_by = ch->name;
             log_printf_plus( LOG_AUTH, level, "%s: authorized", victim->name );
 
             ch->printf( "You have authorized %s.\r\n", victim->name );
 
-            victim->printf( "\r\n&GThe MUD Administrators have accepted the name %s.\r\n"
-                         "You are now free to roam the %s.\r\n", victim->name, sysdata->mud_name );
+            victim->printf( "\r\n&GThe MUD Administrators have accepted the name %s.\r\n" "You are now free to roam the %s.\r\n", victim->name, sysdata->mud_name.c_str(  ) );
             victim->unset_pcflag( PCFLAG_UNAUTHED );
             remove_from_auth( victim->name );
             return;
@@ -787,14 +660,13 @@ CMDF( do_authorize )
          else if( !str_cmp( argument, "change" ) )
          {
             nauth->state = AUTH_CHANGE_NAME;
-            nauth->change_by = QUICKLINK( ch->name );
+            nauth->change_by = ch->name;
             save_auth_list(  );
             log_printf_plus( LOG_AUTH, level, "%s: name denied", victim->name );
             victim->printf( "&R\r\nThe MUD Administrators have found the name %s to be unacceptable.\r\n"
-                         "You may choose a new name when you reach the end of this area.\r\n"
-                         "The name you choose must be medieval and original.\r\n"
-                         "No titles, descriptive words, or names close to any existing\r\n"
-                         "Immortal's name. See 'help name'.\r\n", victim->name );
+                            "You may choose a new name when you reach the end of this area.\r\n"
+                            "The name you choose must be medieval and original.\r\n"
+                            "No titles, descriptive words, or names close to any existing\r\n" "Immortal's name. See 'help name'.\r\n", victim->name );
             ch->printf( "You requested %s change names.\r\n", victim->name );
             /*
              * Addition to put denied name on reserved list - Samson 10-18-98 
@@ -810,10 +682,7 @@ CMDF( do_authorize )
       }
    }
    else
-   {
       ch->print( "No such player pending authorization.\r\n" );
-      return;
-   }
 }
 
 /* new auth */
@@ -827,6 +696,7 @@ CMDF( do_name )
       return;
    }
 
+   strlower( argument );
    argument[0] = UPPER( argument[0] );
 
    if( !check_parse_name( argument, true ) )
@@ -841,10 +711,10 @@ CMDF( do_name )
       return;
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *tmp = (*ich);
+      char_data *tmp = *ich;
 
       if( !str_cmp( argument, tmp->name ) )
       {
@@ -855,7 +725,7 @@ CMDF( do_name )
 
    char fname[256];
    struct stat fst;
-   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
+   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
    if( stat( fname, &fst ) != -1 )
    {
       ch->print( "That name is already taken. Please choose another.\r\n" );
@@ -865,16 +735,14 @@ CMDF( do_name )
    unlink( fname );  /* cronel, for auth */
 
    STRFREE( ch->name );
-   ch->name = STRALLOC( argument );
+   ch->name = STRALLOC( argument.c_str(  ) );
    STRFREE( ch->pcdata->filename );
-   ch->pcdata->filename = STRALLOC( argument );
+   ch->pcdata->filename = STRALLOC( argument.c_str(  ) );
    ch->print( "Your name has been changed and is being submitted for approval.\r\n" );
-   STRFREE( auth_name->name );
-   auth_name->name = STRALLOC( argument );
+   auth_name->name = argument;
    auth_name->state = AUTH_ONLINE;
-   STRFREE( auth_name->change_by );
+   auth_name->change_by.clear(  );
    save_auth_list(  );
-   return;
 }
 
 /* changed for new auth */
@@ -893,7 +761,7 @@ CMDF( do_mpapplyb )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpapplyb - bad syntax" );
       return;
@@ -901,7 +769,7 @@ CMDF( do_mpapplyb )
 
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "Mpapplyb - no such player %s in room.", argument );
+      progbugf( ch, "Mpapplyb - no such player %s in room.", argument.c_str(  ) );
       return;
    }
 
@@ -916,19 +784,18 @@ CMDF( do_mpapplyb )
 
    if( NOT_AUTHED( victim ) )
    {
-      log_printf_plus( LOG_AUTH, level, "%s [%s] New player entering the game.\r\n", victim->name, victim->desc->host );
-      victim->printf( "\r\nYou are now entering the game...\r\n"
-                   "However, your character has not been authorized yet and can not\r\n"
-                   "advance past level 5 until then. Your character will be saved,\r\n"
-                   "but not allowed to fully indulge in %s.\r\n", sysdata->mud_name );
+      log_printf_plus( LOG_AUTH, level, "%s [%s] New player entering the game.\r\n", victim->name, victim->desc->host.c_str(  ) );
+      victim->
+         printf( "\r\nYou are now entering the game...\r\n"
+                 "However, your character has not been authorized yet and can not\r\n"
+                 "advance past level 5 until then. Your character will be saved,\r\n" "but not allowed to fully indulge in %s.\r\n", sysdata->mud_name.c_str(  ) );
    }
-   return;
 }
 
 /* changed for new auth */
 void auth_update( void )
 {
-   list<auth_data*>::iterator auth;
+   list < auth_data * >::iterator auth;
    char buf[MIL], lbuf[MSL];
    int level;
    bool found_imm = false; /* Is at least 1 immortal on? */
@@ -938,26 +805,25 @@ void auth_update( void )
       level = LEVEL_IMMORTAL;
 
    mudstrlcpy( lbuf, "--- Characters awaiting approval ---\r\n", MSL );
-   for( auth = authlist.begin(); auth != authlist.end(); ++auth )
+   for( auth = authlist.begin(  ); auth != authlist.end(  ); ++auth )
    {
-      auth_data *au = (*auth);
+      auth_data *au = *auth;
 
       if( au->state < AUTH_CHANGE_NAME )
       {
          found_hit = true;
-         snprintf( buf, MIL, "Name: %s      Status: %s\r\n", au->name,
-                   ( au->state == AUTH_ONLINE ) ? "Online" : "Offline" );
+         snprintf( buf, MIL, "Name: %s      Status: %s\r\n", au->name.c_str(  ), ( au->state == AUTH_ONLINE ) ? "Online" : "Offline" );
          mudstrlcat( lbuf, buf, MSL );
       }
    }
 
    if( found_hit )
    {
-      list<descriptor_data*>::iterator ds;
+      list < descriptor_data * >::iterator ds;
 
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
 
          if( d->connected == CON_PLAYING && d->character && d->character->is_immortal(  ) && d->character->level >= level )
             found_imm = true;
@@ -971,11 +837,11 @@ void auth_update( void )
 /* Gutted to append to an external file now rather than load the pile into memory at boot - Samson 11-21-03 */
 CMDF( do_reserve )
 {
-   char arg[MIL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "To add a name: reserve <name> add\r\n" );
       ch->print( "To remove a name: Someone with shell access has to do this now.\r\n" );
@@ -991,7 +857,7 @@ CMDF( do_reserve )
        * * Reserved names list was getting much too large to load into memory.
        * * Placed last so as to avoid problems from any of the previous conditions causing a problem in shell.
        */
-      snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", arg );
+      snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", arg.c_str(  ) );
 
       if( system( buf ) == 0 )
       {
@@ -999,7 +865,7 @@ CMDF( do_reserve )
          return;
       }
 
-      append_to_file( RESERVED_LIST, "%s", arg );
+      append_to_file( RESERVED_LIST, "%s", arg.c_str(  ) );
       ch->print( "Name reserved.\r\n" );
       return;
    }

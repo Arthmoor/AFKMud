@@ -47,7 +47,7 @@ extern FILE *fpArea;
  * Externals
  */
 void reset_colors( char_data * );
-board_data *get_board( char_data *, const char * );
+board_data *get_board( char_data *, const string & );
 #ifdef IMC
 void imc_initchar( char_data * );
 bool imc_loadchar( char_data *, FILE *, const char * );
@@ -55,6 +55,8 @@ void imc_savechar( char_data *, FILE * );
 #endif
 void fwrite_morph_data( char_data *, FILE * );
 void fread_morph_data( char_data *, FILE * );
+void fread_variable( char_data *, FILE * );
+void fwrite_variables( char_data *, FILE * );
 char *default_fprompt( char_data * );
 char *default_prompt( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
@@ -116,10 +118,11 @@ void char_data::de_equip(  )
       }
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = carrying.begin(); iobj != carrying.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = carrying.begin(  ); iobj != carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
+
       if( obj->wear_loc > -1 && obj->wear_loc < MAX_WEAR )
       {
          if( char_ego(  ) >= obj->ego )
@@ -128,8 +131,7 @@ void char_data::de_equip(  )
             {
                if( x == MAX_LAYERS )
                {
-                  bug( "%s: %s had on more than %d layers of clothing in one location (%d): %s", __FUNCTION__,
-                     name, MAX_LAYERS, obj->wear_loc, obj->name );
+                  bug( "%s: %s had on more than %d layers of clothing in one location (%d): %s", __FUNCTION__, name, MAX_LAYERS, obj->wear_loc, obj->name );
                   break;
                }
 
@@ -162,7 +164,9 @@ void char_data::de_equip(  )
 void char_data::re_equip(  )
 {
    for( int x = 0; x < MAX_WEAR; ++x )
+   {
       for( int y = 0; y < MAX_LAYERS; ++y )
+      {
          if( isnpc(  ) )
          {
             if( mob_save_equipment[x][y] != NULL )
@@ -185,6 +189,8 @@ void char_data::re_equip(  )
             else
                break;
          }
+      }
+   }
 }
 
 /*
@@ -213,43 +219,41 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, "Title        %s~\n", ch->pcdata->title );
    if( ch->pcdata->rank && ch->pcdata->rank[0] != '\0' )
       fprintf( fp, "Rank         %s~\n", ch->pcdata->rank );
-   if( ch->pcdata->bestowments && ch->pcdata->bestowments[0] != '\0' )
-      fprintf( fp, "Bestowments  %s~\n", ch->pcdata->bestowments );
-   if( ch->pcdata->homepage && ch->pcdata->homepage[0] != '\0' )
-      fprintf( fp, "Homepage     %s~\n", ch->pcdata->homepage );
-   if( ch->pcdata->email && ch->pcdata->email[0] != '\0' )  /* Samson 4-19-98 */
-      fprintf( fp, "Email        %s~\n", ch->pcdata->email );
-   fprintf( fp, "Site         %s\n", ch->pcdata->lasthost );
+   if( !ch->pcdata->bestowments.empty(  ) )
+      fprintf( fp, "Bestowments  %s~\n", ch->pcdata->bestowments.c_str(  ) );
+   if( !ch->pcdata->homepage.empty(  ) )
+      fprintf( fp, "Homepage     %s~\n", ch->pcdata->homepage.c_str(  ) );
+   if( !ch->pcdata->email.empty(  ) )  /* Samson 4-19-98 */
+      fprintf( fp, "Email        %s~\n", ch->pcdata->email.c_str(  ) );
+   fprintf( fp, "Site         %s\n", ch->pcdata->lasthost.c_str(  ) );
    if( ch->pcdata->icq > 0 )  /* Samson 1-4-99 */
       fprintf( fp, "ICQ          %d\n", ch->pcdata->icq );
    if( ch->pcdata->bio && ch->pcdata->bio[0] != '\0' )
       fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ) );
-   if( ch->pcdata->authed_by && ch->pcdata->authed_by[0] != '\0' )
-      fprintf( fp, "AuthedBy     %s~\n", ch->pcdata->authed_by );
+   if( !ch->pcdata->authed_by.empty(  ) )
+      fprintf( fp, "AuthedBy     %s~\n", ch->pcdata->authed_by.c_str(  ) );
    if( ch->pcdata->prompt && ch->pcdata->prompt[0] != '\0' )
       fprintf( fp, "Prompt       %s~\n", ch->pcdata->prompt );
    if( ch->pcdata->fprompt && ch->pcdata->fprompt[0] != '\0' )
       fprintf( fp, "FPrompt      %s~\n", ch->pcdata->fprompt );
-   if( ch->pcdata->deity_name && ch->pcdata->deity_name[0] != '\0' )
-      fprintf( fp, "Deity        %s~\n", ch->pcdata->deity_name );
-   if( ch->pcdata->clan_name && ch->pcdata->clan_name[0] != '\0' )
-      fprintf( fp, "Clan         %s~\n", ch->pcdata->clan_name );
+   if( !ch->pcdata->deity_name.empty(  ) )
+      fprintf( fp, "Deity        %s~\n", ch->pcdata->deity_name.c_str(  ) );
+   if( !ch->pcdata->clan_name.empty(  ) )
+      fprintf( fp, "Clan         %s~\n", ch->pcdata->clan_name.c_str(  ) );
    if( ch->has_pcflags(  ) )
-      fprintf( fp, "PCFlags      %s~\n", bitset_string( ch->get_pcflags(), pc_flags ) );
-   if( ch->pcdata->chan_listen && ch->pcdata->chan_listen[0] != '\0' )
-      fprintf( fp, "Channels     %s~\n", ch->pcdata->chan_listen );
-   if( ch->has_langs() )
-      fprintf( fp, "Speaks       %s~\n", bitset_string( ch->get_langs(), lang_names ) );
+      fprintf( fp, "PCFlags      %s~\n", bitset_string( ch->get_pcflags(  ), pc_flags ) );
+   if( !ch->pcdata->chan_listen.empty(  ) )
+      fprintf( fp, "Channels     %s~\n", ch->pcdata->chan_listen.c_str(  ) );
+   if( ch->has_langs(  ) )
+      fprintf( fp, "Speaks       %s~\n", bitset_string( ch->get_langs(  ), lang_names ) );
    if( ch->speaking )
       fprintf( fp, "Speaking     %s~\n", lang_names[ch->speaking] );
    if( ch->pcdata->release_date )
       fprintf( fp, "Helled       %ld %s~\n", ch->pcdata->release_date, ch->pcdata->helled_by );
-   fprintf( fp, "Status       %d %d %d %d %d %d %d\n",
-      ch->level, ch->gold, ch->exp, ch->height, ch->weight, ch->spellfail, ch->mental_state );
-   fprintf( fp, "Status2      %d %d %d %d %d %d %d %d\n",
-      ch->style, ch->pcdata->practice, ch->alignment, ch->pcdata->favor, ch->hitroll, ch->damroll, ch->armor, ch->wimpy );
+   fprintf( fp, "Status       %d %d %d %d %d %d %d\n", ch->level, ch->gold, ch->exp, ch->height, ch->weight, ch->spellfail, ch->mental_state );
+   fprintf( fp, "Status2      %d %d %d %d %d %d %d %d\n", ch->style, ch->pcdata->practice, ch->alignment, ch->pcdata->favor, ch->hitroll, ch->damroll, ch->armor, ch->wimpy );
    fprintf( fp, "Configs      %d %d %d %d %d %d 0 %d\n", ch->pcdata->pagerlen, -1, -1, -1, ch->pcdata->timezone, ch->wait,
-      ( ch->in_room == get_room_index( ROOM_VNUM_LIMBO ) && ch->was_in_room ) ? ch->was_in_room->vnum : ch->in_room->vnum );
+            ( ch->in_room == get_room_index( ROOM_VNUM_LIMBO ) && ch->was_in_room ) ? ch->was_in_room->vnum : ch->in_room->vnum );
 
    /*
     * MOTD times - Samson 12-31-00 
@@ -257,8 +261,7 @@ void fwrite_char( char_data * ch, FILE * fp )
    fprintf( fp, "Motd         %ld %ld\n", ( long int )ch->pcdata->motd, ( long int )ch->pcdata->imotd );
 
    fprintf( fp, "Age          %d %d %d %d %ld\n",
-            ch->pcdata->age_bonus, ch->pcdata->day, ch->pcdata->month, ch->pcdata->year,
-            ch->pcdata->played + ( current_time - ch->pcdata->logon ) );
+            ch->pcdata->age_bonus, ch->pcdata->day, ch->pcdata->month, ch->pcdata->year, ch->pcdata->played + ( current_time - ch->pcdata->logon ) );
 
    fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", ch->hit, ch->max_hit, ch->mana, ch->max_mana, ch->move, ch->max_move );
    fprintf( fp, "Regens       %d %d %d\n", ch->hit_regen, ch->mana_regen, ch->move_regen );
@@ -271,47 +274,42 @@ void fwrite_char( char_data * ch, FILE * fp )
     * Overland Map - Samson 7-31-99 
     */
    fprintf( fp, "Coordinates  %d %d %d\n", ch->mx, ch->my, ch->map );
-   fprintf( fp, "SavingThrows %d %d %d %d %d\n",
-            ch->saving_poison_death, ch->saving_wand, ch->saving_para_petri, ch->saving_breath, ch->saving_spell_staff );
+   fprintf( fp, "SavingThrows %d %d %d %d %d\n", ch->saving_poison_death, ch->saving_wand, ch->saving_para_petri, ch->saving_breath, ch->saving_spell_staff );
    fprintf( fp, "RentData     %d %d 0 0 %d\n", ch->pcdata->balance, ch->pcdata->daysidle, ch->pcdata->camp );
    /*
     * Recall code update to recall to last inn rented at - Samson 12-20-00 
     */
    fprintf( fp, "RentRooms    %d\n", ch->pcdata->one );
 
-   if( ch->has_aflags() )
-      fprintf( fp, "AffectFlags  %s~\n", bitset_string( ch->get_aflags(), aff_flags ) );
-   if( ch->has_noaflags() )
-      fprintf( fp, "NoAffectedBy %s~\n", bitset_string( ch->get_noaflags(), aff_flags ) );
-   if( ch->has_resists() )
-      fprintf( fp, "Resistant    %s~\n", bitset_string( ch->get_resists(), ris_flags ) );
-   if( ch->has_noresists() )
-      fprintf( fp, "Nores        %s~\n", bitset_string( ch->get_noresists(), ris_flags ) );
-   if( ch->has_susceps() )
-      fprintf( fp, "Susceptible  %s~\n", bitset_string( ch->get_susceps(), ris_flags ) );
-   if( ch->has_nosusceps() )
-      fprintf( fp, "Nosusc       %s~\n", bitset_string( ch->get_nosusceps(), ris_flags ) );
-   if( ch->has_immunes() )
-      fprintf( fp, "Immune       %s~\n", bitset_string( ch->get_immunes(), ris_flags ) );
-   if( ch->has_noimmunes() )
-      fprintf( fp, "Noimm        %s~\n", bitset_string( ch->get_noimmunes(), ris_flags ) );
-   if( ch->has_absorbs() )
-      fprintf( fp, "Absorb       %s~\n", bitset_string( ch->get_absorbs(), ris_flags ) );
+   if( ch->has_aflags(  ) )
+      fprintf( fp, "AffectFlags  %s~\n", bitset_string( ch->get_aflags(  ), aff_flags ) );
+   if( ch->has_noaflags(  ) )
+      fprintf( fp, "NoAffectedBy %s~\n", bitset_string( ch->get_noaflags(  ), aff_flags ) );
+   if( ch->has_resists(  ) )
+      fprintf( fp, "Resistant    %s~\n", bitset_string( ch->get_resists(  ), ris_flags ) );
+   if( ch->has_noresists(  ) )
+      fprintf( fp, "Nores        %s~\n", bitset_string( ch->get_noresists(  ), ris_flags ) );
+   if( ch->has_susceps(  ) )
+      fprintf( fp, "Susceptible  %s~\n", bitset_string( ch->get_susceps(  ), ris_flags ) );
+   if( ch->has_nosusceps(  ) )
+      fprintf( fp, "Nosusc       %s~\n", bitset_string( ch->get_nosusceps(  ), ris_flags ) );
+   if( ch->has_immunes(  ) )
+      fprintf( fp, "Immune       %s~\n", bitset_string( ch->get_immunes(  ), ris_flags ) );
+   if( ch->has_noimmunes(  ) )
+      fprintf( fp, "Noimm        %s~\n", bitset_string( ch->get_noimmunes(  ), ris_flags ) );
+   if( ch->has_absorbs(  ) )
+      fprintf( fp, "Absorb       %s~\n", bitset_string( ch->get_absorbs(  ), ris_flags ) );
 
-   fprintf( fp, "KillInfo     %d %d %d %d %d\n",
-            ch->pcdata->pkills, ch->pcdata->pdeaths, ch->pcdata->mkills, ch->pcdata->mdeaths, ch->pcdata->illegal_pk );
+   fprintf( fp, "KillInfo     %d %d %d %d %d\n", ch->pcdata->pkills, ch->pcdata->pdeaths, ch->pcdata->mkills, ch->pcdata->mdeaths, ch->pcdata->illegal_pk );
 
    if( ch->get_timer( TIMER_PKILLED ) && ( ch->get_timer( TIMER_PKILLED ) > 0 ) )
       fprintf( fp, "PTimer       %d\n", ch->get_timer( TIMER_PKILLED ) );
 
-   fprintf( fp, "AttrPerm     %d %d %d %d %d %d %d\n",
-            ch->perm_str, ch->perm_int, ch->perm_wis, ch->perm_dex, ch->perm_con, ch->perm_cha, ch->perm_lck );
+   fprintf( fp, "AttrPerm     %d %d %d %d %d %d %d\n", ch->perm_str, ch->perm_int, ch->perm_wis, ch->perm_dex, ch->perm_con, ch->perm_cha, ch->perm_lck );
 
-   fprintf( fp, "AttrMod      %d %d %d %d %d %d %d\n",
-            ch->mod_str, ch->mod_int, ch->mod_wis, ch->mod_dex, ch->mod_con, ch->mod_cha, ch->mod_lck );
+   fprintf( fp, "AttrMod      %d %d %d %d %d %d %d\n", ch->mod_str, ch->mod_int, ch->mod_wis, ch->mod_dex, ch->mod_con, ch->mod_cha, ch->mod_lck );
 
-   fprintf( fp, "Condition    %d %d %d %d\n",
-            ch->pcdata->condition[0], ch->pcdata->condition[1], ch->pcdata->condition[2], ch->pcdata->condition[3] );
+   fprintf( fp, "Condition    %d %d %d %d\n", ch->pcdata->condition[0], ch->pcdata->condition[1], ch->pcdata->condition[2], ch->pcdata->condition[3] );
 
    if( ch->is_immortal(  ) )
    {
@@ -320,11 +318,10 @@ void fwrite_char( char_data * ch, FILE * fp )
       if( ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
          fprintf( fp, "Bamfout      %s~\n", ch->pcdata->bamfout );
       fprintf( fp, "ImmData      %d %ld %d %d %d %d\n",
-               ch->trust, ch->pcdata->restore_time, ch->pcdata->wizinvis,
-               ch->pcdata->low_vnum, ch->pcdata->hi_vnum, ch->pcdata->realm );
+               ch->trust, ch->pcdata->restore_time, ch->pcdata->wizinvis, ch->pcdata->low_vnum, ch->pcdata->hi_vnum, ch->pcdata->realm );
    }
 
-   for( int sn = 1; sn < top_sn; ++sn )
+   for( int sn = 1; sn < num_skills; ++sn )
    {
       if( skill_table[sn]->name && ch->pcdata->learned[sn] > 0 )
       {
@@ -356,38 +353,30 @@ void fwrite_char( char_data * ch, FILE * fp )
       }
    }
 
-   list<affect_data*>::iterator paf;
-   for( paf = ch->affects.begin(); paf != ch->affects.end(); ++paf )
+   list < affect_data * >::iterator paf;
+   for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
       skill_type *skill = NULL;
 
       if( af->type >= 0 && !( skill = get_skilltype( af->type ) ) )
          continue;
 
       if( af->type >= 0 && af->type < TYPE_PERSONAL )
-         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n",
-                  skill->name, af->duration, af->modifier, af->location, af->bit );
+         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name, af->duration, af->modifier, af->location, af->bit );
       else
       {
          if( af->location == APPLY_AFFECT )
-            fprintf( fp, "Affect %s '%s' %d %d %d\n",
-                     a_types[af->location], aff_flags[af->modifier], af->type, af->duration, af->bit );
+            fprintf( fp, "Affect %s '%s' %d %d %d\n", a_types[af->location], aff_flags[af->modifier], af->type, af->duration, af->bit );
          else if( af->location == APPLY_WEAPONSPELL
                   || af->location == APPLY_WEARSPELL
-                  || af->location == APPLY_REMOVESPELL
-                  || af->location == APPLY_STRIPSN
-                  || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
+                  || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
             fprintf( fp, "Affect %s '%s' %d %d %d\n", a_types[af->location],
-                     IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN",
-                     af->type, af->duration, af->bit );
-         else if( af->location == APPLY_RESISTANT
-                  || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
-            fprintf( fp, "Affect %s %s~ %d %d %d\n",
-                     a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
+                     IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN", af->type, af->duration, af->bit );
+         else if( af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
+            fprintf( fp, "Affect %s %s~ %d %d %d\n", a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
          else
-            fprintf( fp, "Affect %s %d %d %d %d\n",
-                     a_types[af->location], af->modifier, af->type, af->duration, af->bit );
+            fprintf( fp, "Affect %s %d %d %d %d\n", a_types[af->location], af->modifier, af->type, af->duration, af->bit );
       }
    }
 
@@ -409,59 +398,57 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, " %d", ch->pcdata->beacon[x] );
    fprintf( fp, "%s", "\n" );
 
-   map<string,string>::iterator pal;
-   for( pal = ch->pcdata->alias_map.begin(); pal != ch->pcdata->alias_map.end(); ++pal )
+   map < string, string >::iterator pal;
+   for( pal = ch->pcdata->alias_map.begin(  ); pal != ch->pcdata->alias_map.end(  ); ++pal )
    {
-      if( pal->second.empty() )
+      if( pal->second.empty(  ) )
          continue;
-      fprintf( fp, "Alias        %s~ %s~\n", pal->first.c_str(), pal->second.c_str() );
+      fprintf( fp, "Alias        %s~ %s~\n", pal->first.c_str(  ), pal->second.c_str(  ) );
    }
 
-   if( !ch->pcdata->boarddata.empty() )
+   if( !ch->pcdata->boarddata.empty(  ) )
    {
-      list<board_chardata*>::iterator bd;
+      list < board_chardata * >::iterator bd;
 
-      for( bd = ch->pcdata->boarddata.begin(); bd != ch->pcdata->boarddata.end(); )
+      for( bd = ch->pcdata->boarddata.begin(  ); bd != ch->pcdata->boarddata.end(  ); )
       {
-         board_chardata *chbd = (*bd);
+         board_chardata *chbd = *bd;
          ++bd;
 
          /*
           * Ugh.. is it worth saving that extra board_chardata field on pcdata? 
           * No, Xorith, it wasn't. So I changed it - Samson 10-15-03 
           */
-         if( !chbd->board_name )
+         if( chbd->board_name.empty(  ) )
          {
-            STRFREE( chbd->board_name );
             ch->pcdata->boarddata.remove( chbd );
             deleteptr( chbd );
             continue;
          }
-         fprintf( fp, "Board_Data   %s~ %ld %d\n", chbd->board_name, ( long int )chbd->last_read, chbd->alert );
+         fprintf( fp, "Board_Data   %s~ %ld %d\n", chbd->board_name.c_str(  ), ( long int )chbd->last_read, chbd->alert );
       }
    }
 
    ch->pcdata->save_zonedata( fp );
    ch->pcdata->save_ignores( fp );
 
-   if( !ch->pcdata->qbits.empty() )
+   if( !ch->pcdata->qbits.empty(  ) )
    {
-      map<int,string>::iterator bit;
+      map < int, string >::iterator bit;
 
-      for( bit = ch->pcdata->qbits.begin(); bit != ch->pcdata->qbits.end(); ++bit )
-         fprintf( fp, "Qbit         %d %s~\n", bit->first, bit->second.c_str() );
+      for( bit = ch->pcdata->qbits.begin(  ); bit != ch->pcdata->qbits.end(  ); ++bit )
+         fprintf( fp, "Qbit         %d %s~\n", bit->first, bit->second.c_str(  ) );
    }
 #ifdef IMC
    imc_savechar( ch, fp );
 #endif
    fprintf( fp, "%s", "End\n\n" );
-   return;
 }
 
 /*
  * Write an object list, with contents.
  */
-void fwrite_obj( char_data *ch, list<obj_data*> source, clan_data *clan, FILE *fp, int iNest, bool hotboot )
+void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FILE * fp, int iNest, bool hotboot )
 {
    if( iNest >= MAX_NEST )
    {
@@ -469,8 +456,8 @@ void fwrite_obj( char_data *ch, list<obj_data*> source, clan_data *clan, FILE *f
       return;
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = source.begin(); iobj != source.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
       obj_data *obj = *iobj;
 
@@ -488,8 +475,7 @@ void fwrite_obj( char_data *ch, list<obj_data*> source, clan_data *clan, FILE *f
        */
       if( !hotboot )
       {
-         if( ( obj->item_type == ITEM_KEY && !obj->extra_flags.test( ITEM_CLANOBJECT ) )
-             || obj->extracted(  ) || obj->extra_flags.test( ITEM_PROTOTYPE ) || obj->ego == -1 )
+         if( ( obj->item_type == ITEM_KEY && !obj->extra_flags.test( ITEM_CLANOBJECT ) ) || obj->extracted(  ) || obj->extra_flags.test( ITEM_PROTOTYPE ) || obj->ego == -1 )
             return;
       }
 
@@ -517,7 +503,9 @@ void fwrite_obj( char_data *ch, list<obj_data*> source, clan_data *clan, FILE *f
       if( hotboot && obj->item_type == ITEM_CORPSE_PC )
          return;
 
-      /* No longer using OS_CORPSE during object writes - Samson */
+      /*
+       * No longer using OS_CORPSE during object writes - Samson 
+       */
       fprintf( fp, "%s", "#OBJECT\n" );
       fprintf( fp, "Version      %d\n", SAVEVERSION );
       if( iNest )
@@ -598,9 +586,7 @@ void fwrite_obj( char_data *ch, list<obj_data*> source, clan_data *clan, FILE *f
       for( x = 0; x < MAX_OBJ_VALUE; ++x )
          fprintf( fp, " %d", obj->value[x] );
       fprintf( fp, "%s", "\n" );
-      fprintf( fp, "Sockets      %s %s %s\n",
-               obj->socket[0] ? obj->socket[0] : "None",
-               obj->socket[1] ? obj->socket[1] : "None", obj->socket[2] ? obj->socket[2] : "None" );
+      fprintf( fp, "Sockets      %s %s %s\n", obj->socket[0] ? obj->socket[0] : "None", obj->socket[1] ? obj->socket[1] : "None", obj->socket[2] ? obj->socket[2] : "None" );
 
       switch ( obj->item_type )
       {
@@ -632,15 +618,15 @@ void fwrite_obj( char_data *ch, list<obj_data*> source, clan_data *clan, FILE *f
             break;
       }
 
-      list<affect_data*>::iterator paf;
-      for( paf = obj->affects.begin(); paf != obj->affects.end(); ++paf )
+      list < affect_data * >::iterator paf;
+      for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
       {
-         affect_data *af = (*paf);
+         affect_data *af = *paf;
 
          /*
           * Save extra object affects - Thoric
           */
-         if( af->type < 0 || af->type >= top_sn )
+         if( af->type < 0 || af->type >= num_skills )
          {
             fprintf( fp, "Affect       %d %d %d %d %d\n",
                      af->type, af->duration,
@@ -648,9 +634,7 @@ void fwrite_obj( char_data *ch, list<obj_data*> source, clan_data *clan, FILE *f
                          || af->location == APPLY_WEARSPELL
                          || af->location == APPLY_REMOVESPELL
                          || af->location == APPLY_STRIPSN
-                         || af->location == APPLY_RECURRINGSPELL )
-                       && IS_VALID_SN( af->modifier ) )
-                     ? skill_table[af->modifier]->slot : af->modifier, af->location, af->bit );
+                         || af->location == APPLY_RECURRINGSPELL ) && IS_VALID_SN( af->modifier ) ) ? skill_table[af->modifier]->slot : af->modifier, af->location, af->bit );
          }
          else
             fprintf( fp, "AffectData   '%s' %d %d %d %d\n",
@@ -659,28 +643,25 @@ void fwrite_obj( char_data *ch, list<obj_data*> source, clan_data *clan, FILE *f
                          || af->location == APPLY_WEARSPELL
                          || af->location == APPLY_REMOVESPELL
                          || af->location == APPLY_STRIPSN
-                         || af->location == APPLY_RECURRINGSPELL )
-                       && IS_VALID_SN( af->modifier ) )
-                     ? skill_table[af->modifier]->slot : af->modifier, af->location, af->bit );
+                         || af->location == APPLY_RECURRINGSPELL ) && IS_VALID_SN( af->modifier ) ) ? skill_table[af->modifier]->slot : af->modifier, af->location, af->bit );
       }
 
-      list<extra_descr_data*>::iterator ed;
-      for( ed = obj->extradesc.begin(); ed != obj->extradesc.end(); ++ed )
+      list < extra_descr_data * >::iterator ed;
+      for( ed = obj->extradesc.begin(  ); ed != obj->extradesc.end(  ); ++ed )
       {
-         extra_descr_data *desc = (*ed);
+         extra_descr_data *desc = *ed;
 
-         if( !desc->desc.empty() )
-            fprintf( fp, "ExtraDescr   %s~ %s~\n", desc->keyword.c_str(), desc->desc.c_str() );
+         if( !desc->desc.empty(  ) )
+            fprintf( fp, "ExtraDescr   %s~ %s~\n", desc->keyword.c_str(  ), desc->desc.c_str(  ) );
          else
-            fprintf( fp, "ExtraDescr   %s~ ~\n", desc->keyword.c_str() );
+            fprintf( fp, "ExtraDescr   %s~ ~\n", desc->keyword.c_str(  ) );
       }
 
       fprintf( fp, "%s", "End\n\n" );
 
-      if( !obj->contents.empty() )
+      if( !obj->contents.empty(  ) )
          fwrite_obj( ch, obj->contents, clan, fp, iNest + 1, hotboot );
    }
-   return;
 }
 
 /*
@@ -712,37 +693,34 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
    fprintf( fp, "Position        %d\n", mob->position );
    if( mob->has_actflag( ACT_MOUNTED ) )
       mob->unset_actflag( ACT_MOUNTED );
-   if( mob->has_actflags() )
-      fprintf( fp, "ActFlags     %s~\n", bitset_string( mob->get_actflags(), act_flags ) );
-   if( mob->has_aflags() )
-      fprintf( fp, "AffectedBy   %s~\n", bitset_string( mob->get_aflags(), aff_flags ) );
+   if( mob->has_actflags(  ) )
+      fprintf( fp, "ActFlags     %s~\n", bitset_string( mob->get_actflags(  ), act_flags ) );
+   if( mob->has_aflags(  ) )
+      fprintf( fp, "AffectedBy   %s~\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
 
-   list<affect_data*>::iterator paf;
-   for( paf = mob->affects.begin(); paf != mob->affects.end(); ++paf )
+   list < affect_data * >::iterator paf;
+   for( paf = mob->affects.begin(  ); paf != mob->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
       skill_type *skill = NULL;
 
       if( af->type >= 0 && !( skill = get_skilltype( af->type ) ) )
          continue;
 
       if( af->type >= 0 && af->type < TYPE_PERSONAL )
-         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n",
-                  skill->name, af->duration, af->modifier, af->location, af->bit );
+         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name, af->duration, af->modifier, af->location, af->bit );
       else
-         fprintf( fp, "Affect       %3d %3d %3d %3d %d\n",
-                  af->type, af->duration, af->modifier, af->location, af->bit );
+         fprintf( fp, "Affect       %3d %3d %3d %3d %d\n", af->type, af->duration, af->modifier, af->location, af->bit );
    }
-   fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move,
-            mob->max_move );
+   fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move, mob->max_move );
    fprintf( fp, "Exp          %d\n", mob->exp );
-   if( !mob->carrying.empty() )
+   if( !mob->carrying.empty(  ) )
    {
-      list<obj_data*>::iterator iobj;
+      list < obj_data * >::iterator iobj;
 
-      for( iobj = mob->carrying.begin(); iobj != mob->carrying.end(); )
+      for( iobj = mob->carrying.begin(  ); iobj != mob->carrying.end(  ); )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          ++iobj;
 
          if( obj->ego >= sysdata->minego )
@@ -754,13 +732,12 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
       fprintf( fp, "%s", "EndMobile\n\n" );
 
    mob->de_equip(  );
-   if( !mob->carrying.empty() )
+   if( !mob->carrying.empty(  ) )
       fwrite_obj( mob, mob->carrying, NULL, fp, 0, ( shopmob ? false : mob->master->pcdata->hotboot ) );
    mob->re_equip(  );
 
    if( !shopmob )
       fprintf( fp, "%s", "EndMobile\n\n" );
-   return;
 }
 
 /*
@@ -808,13 +785,13 @@ void char_data::save(  )
       {
          fprintf( fp, "Level        %d\n", level );
          fprintf( fp, "Pcflags      %s~\n", bitset_string( pcdata->flags, pc_flags ) );
-         if( pcdata->homepage && pcdata->homepage[0] != '\0' )
-            fprintf( fp, "Homepage     %s~\n", pcdata->homepage );
+         if( !pcdata->homepage.empty(  ) )
+            fprintf( fp, "Homepage     %s~\n", pcdata->homepage.c_str(  ) );
          fprintf( fp, "Realm        %d\n", pcdata->realm );
          if( pcdata->low_vnum && pcdata->hi_vnum )
             fprintf( fp, "VnumRange    %d %d\n", pcdata->low_vnum, pcdata->hi_vnum );
-         if( pcdata->email && pcdata->email[0] != '\0' )
-            fprintf( fp, "Email        %s~\n", pcdata->email );
+         if( !pcdata->email.empty(  ) )
+            fprintf( fp, "Email        %s~\n", pcdata->email.c_str(  ) );
          if( pcdata->icq > 0 )
             fprintf( fp, "ICQ          %d\n", pcdata->icq );
          fprintf( fp, "%s", "End\n" );
@@ -832,20 +809,21 @@ void char_data::save(  )
       fwrite_char( this, fp );
       if( morph )
          fwrite_morph_data( this, fp );
-      if( !carrying.empty() )
+      if( !carrying.empty(  ) )
          fwrite_obj( this, carrying, NULL, fp, 0, pcdata->hotboot );
 
-      if( sysdata->save_pets && !pets.empty() )
+      if( sysdata->save_pets && !pets.empty(  ) )
       {
-         list<char_data*>::iterator ipet;
+         list < char_data * >::iterator ipet;
 
-         for( ipet = pets.begin(); ipet != pets.end(); ++ipet )
+         for( ipet = pets.begin(  ); ipet != pets.end(  ); ++ipet )
          {
-            char_data *pet = (*ipet);
+            char_data *pet = *ipet;
 
             fwrite_mobile( pet, fp, false );
          }
       }
+      fwrite_variables( this, fp );
       pcdata->fwrite_comments( fp );
       fprintf( fp, "%s", "#END\n" );
       FCLOSE( fp );
@@ -857,7 +835,6 @@ void char_data::save(  )
 
    quitting_char = NULL;
    saving_char = NULL;
-   return;
 }
 
 short find_old_age( char_data * ch )
@@ -885,7 +862,7 @@ short find_old_age( char_data * ch )
  */
 void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 {
-   char *line;
+   const char *line;
    int x1, x2, x3, x4, x5, x6, x7, x8;
    short killcnt;
    int max_colors = 0;  /* Color code */
@@ -918,12 +895,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'A':
             if( !str_cmp( word, "Ability" ) )
             {
-               char *ability;
-               int sn, value;
+               int value = fread_number( fp );
+               char *ability = fread_word( fp );
+               int sn = find_ability( NULL, ability, false );
 
-               value = fread_number( fp );
-               ability = fread_word( fp );
-               sn = bsearch_skill_exact( ability, gsn_first_ability, gsn_first_lore - 1 );
                if( sn < 0 )
                   log_printf( "%s: unknown ability: %s", __FUNCTION__, ability );
                else
@@ -988,7 +963,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
                      if( ( sn = herb_lookup( sname ) ) < 0 )
-                        log_printf( "%s", "load_mobile: unknown skill." );
+                        log_printf( "%s: unknown skill.", __FUNCTION__ );
                      else
                         sn += TYPE_HERB;
                   }
@@ -997,9 +972,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   paf->modifier = fread_number( fp );
                   paf->location = fread_number( fp );
                   if( paf->location == APPLY_WEAPONSPELL
-                      || paf->location == APPLY_WEARSPELL
-                      || paf->location == APPLY_REMOVESPELL
-                      || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL )
+                      || paf->location == APPLY_WEARSPELL || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL )
                      paf->modifier = slot_lookup( paf->modifier );
                   paf->bit = fread_number( fp );
                   if( paf->bit >= MAX_AFFECTED_BY )
@@ -1055,7 +1028,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   ch->perm_lck = 13;
                break;
             }
-            KEY( "AuthedBy", ch->pcdata->authed_by, fread_string( fp ) );
+            STDSKEY( "AuthedBy", ch->pcdata->authed_by );
             break;
 
          case 'B':
@@ -1071,7 +1044,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   ch->pcdata->beacon[x] = fread_number( fp );
                break;
             }
-            KEY( "Bestowments", ch->pcdata->bestowments, fread_string_nohash( fp ) );
+            STDSKEY( "Bestowments", ch->pcdata->bestowments );
             KEY( "Bio", ch->pcdata->bio, fread_string_nohash( fp ) );
             if( !str_cmp( word, "Board_Data" ) )
             {
@@ -1087,7 +1060,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   break;
                }
                pboard = new board_chardata;
-               pboard->board_name = QUICKLINK( board->name );
+               pboard->board_name = board->name;
                pboard->last_read = fread_long( fp );
                pboard->alert = fread_number( fp );
                ch->pcdata->boarddata.push_back( pboard );
@@ -1096,22 +1069,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             break;
 
          case 'C':
-            KEY( "Channels", ch->pcdata->chan_listen, fread_string( fp ) );
-            if( !str_cmp( word, "Clan" ) )
-            {
-               ch->pcdata->clan_name = fread_string( fp );
-
-               if( !preload && ch->pcdata->clan_name[0] != '\0'
-                   && !( ch->pcdata->clan = get_clan( ch->pcdata->clan_name ) ) )
-               {
-                  ch->
-                     printf
-                     ( "Warning: the organization %s no longer exists, and therefore you no longer\r\nbelong to that organization.\r\n",
-                       ch->pcdata->clan_name );
-                  STRFREE( ch->pcdata->clan_name );
-               }
-               break;
-            }
+            STDSKEY( "Channels", ch->pcdata->chan_listen );
+            STDSKEY( "Clan", ch->pcdata->clan_name );
 
             if( !str_cmp( word, "Class" ) )
             {
@@ -1128,12 +1087,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "Combat" ) )
             {
-               char *combat;
-               int sn, value;
+               int value = fread_number( fp );
+               char *combat = fread_word( fp );
+               int sn = find_combat( NULL, combat, false );
 
-               value = fread_number( fp );
-               combat = fread_word( fp );
-               sn = bsearch_skill_exact( combat, gsn_first_combat, gsn_first_tongue - 1 );
                if( sn < 0 )
                   log_printf( "%s: unknown combat skill: %s", __FUNCTION__, combat );
                else
@@ -1224,19 +1181,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             break;
 
          case 'D':
-            if( !str_cmp( word, "Deity" ) )
-            {
-               ch->pcdata->deity_name = fread_string( fp );
-
-               if( !preload && ch->pcdata->deity_name[0] != '\0'
-                   && !( ch->pcdata->deity = get_deity( ch->pcdata->deity_name ) ) )
-               {
-                  ch->printf( "Warning: the deity %s no longer exists.\r\n", ch->pcdata->deity_name );
-                  STRFREE( ch->pcdata->deity_name );
-                  ch->pcdata->favor = 0;
-               }
-               break;
-            }
+            STDSKEY( "Deity", ch->pcdata->deity_name );
             KEY( "Description", ch->chardesc, fread_string( fp ) );
             break;
 
@@ -1259,7 +1204,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                ch->pcdata->helled_by = fread_string( fp );
                break;
             }
-            KEY( "Homepage", ch->pcdata->homepage, fread_string_nohash( fp ) );
+            STDSKEY( "Homepage", ch->pcdata->homepage );
 
             if( !str_cmp( word, "HpManaMove" ) )
             {
@@ -1327,12 +1272,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'L':
             if( !str_cmp( word, "Lore" ) )
             {
-               char *lore;
-               int sn, value;
+               int value = fread_number( fp );
+               char *lore = fread_word( fp );
+               int sn = find_lore( NULL, lore, false );
 
-               value = fread_number( fp );
-               lore = fread_word( fp );
-               sn = bsearch_skill_exact( lore, gsn_first_lore, gsn_top_sn - 1 );
                if( sn < 0 )
                   log_printf( "%s: unknown lore: %s", __FUNCTION__, lore );
                else
@@ -1433,14 +1376,14 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'Q':
             if( !str_cmp( word, "Qbit" ) )
             {
-               map<int,string>::iterator bit;
+               map < int, string >::iterator bit;
                string desc;
 
                int number = fread_number( fp );
                fread_string( desc, fp );
-               if( ( bit = qbits.find( number ) ) != qbits.end() )
+               if( ( bit = qbits.find( number ) ) != qbits.end(  ) )
                {
-                  if( bit->second.empty() )
+                  if( bit->second.empty(  ) )
                      ch->pcdata->qbits[number] = desc;
                   else
                      ch->pcdata->qbits[number] = qbits[number];
@@ -1546,12 +1489,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "Skill" ) )
             {
-               char *skill;
-               int sn, value;
+               int value = fread_number( fp );
+               char *skill = fread_word( fp );
+               int sn = find_skill( NULL, skill, false );
 
-               value = fread_number( fp );
-               skill = fread_word( fp );
-               sn = bsearch_skill_exact( skill, gsn_first_skill, gsn_first_combat - 1 );
                if( sn < 0 )
                   log_printf( "%s: unknown skill: %s", __FUNCTION__, skill );
                else
@@ -1582,10 +1523,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "Speaking" ) )
             {
-               char *speaking = NULL;
+               const char *speaking = fread_flagstring( fp );
                int value;
-
-               speaking = fread_flagstring( fp );
 
                value = get_langnum( speaking );
                if( value < 0 || value >= LANG_UNKNOWN )
@@ -1597,12 +1536,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "Spell" ) )
             {
-               char *spell;
-               int sn, value;
+               int value = fread_number( fp );
+               char *spell = fread_word( fp );
+               int sn = find_spell( NULL, spell, false );
 
-               value = fread_number( fp );
-               spell = fread_word( fp );
-               sn = bsearch_skill_exact( spell, gsn_first_spell, gsn_first_skill - 1 );
                if( sn < 0 )
                   log_printf( "%s: unknown spell: %s", __FUNCTION__, spell );
                else
@@ -1675,25 +1612,25 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( ch->pcdata->played < 0 )
                   ch->pcdata->played = 0;
 
-               if( ch->pcdata->chan_listen != NULL )
+               if( !ch->pcdata->chan_listen.empty(  ) )
                {
                   mud_channel *channel = NULL;
-                  char *channels = ch->pcdata->chan_listen;
-                  char arg[MIL];
+                  string channels = ch->pcdata->chan_listen;
+                  string arg;
 
-                  while( channels[0] != '\0' )
+                  while( !channels.empty(  ) )
                   {
                      channels = one_argument( channels, arg );
 
                      if( !( channel = find_channel( arg ) ) )
-                        removename( &ch->pcdata->chan_listen, arg );
+                        removename( ch->pcdata->chan_listen, arg );
                   }
                }
                /*
                 * Provide at least the one channel 
                 */
                else
-                  ch->pcdata->chan_listen = STRALLOC( "chat" );
+                  ch->pcdata->chan_listen = "chat";
 
                ch->pcdata->editor = NULL;
 
@@ -1705,19 +1642,14 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( ch->is_immortal(  ) )
                   ch->set_lang( -1 );
 
-               /*
-                * this disallows chars from being 6', 180lbs, but easier than a flag 
-                */
-               if( ch->height == 72 || ch->height == 0 )
-                  ch->height =
-                     number_range( ( int )( race_table[ch->race]->height * 0.75 ),
-                                   ( int )( race_table[ch->race]->height * 1.25 ) );
-               if( ch->weight == 180 || ch->weight == 0 )
-                  ch->weight =
-                     number_range( ( int )( race_table[ch->race]->weight * 0.75 ),
-                                   ( int )( race_table[ch->race]->weight * 1.25 ) );
+               // No height or weight? BAD!
+               if( ch->height == 0 )
+                  ch->height = ch->calculate_race_height(  );
 
-               ch->unset_pcflag( PCFLAG_MAPEDIT );   /* In case they saved while editing */
+               if( ch->weight == 0 )
+                  ch->weight = ch->calculate_race_weight(  );
+
+               ch->unset_pcflag( PCFLAG_MAPEDIT ); /* In case they saved while editing */
 
                if( ch->pcdata->year == 0 )
                   ch->pcdata->age = find_old_age( ch );
@@ -1730,25 +1662,37 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( ch->pcdata->day > sysdata->dayspermonth - 1 )
                   ch->pcdata->day = sysdata->dayspermonth - 1; /* Cathes the bad day values */
 
-               if( !ch->pcdata->deity_name || ch->pcdata->deity_name[0] == '\0' )
+               if( !ch->pcdata->deity_name.empty(  ) && !( ch->pcdata->deity = get_deity( ch->pcdata->deity_name ) ) )
+               {
+                  ch->printf( "Warning: the deity %s no longer exists.\r\n", ch->pcdata->deity_name.c_str(  ) );
+                  ch->pcdata->deity_name.clear(  );
                   ch->pcdata->favor = 0;
+               }
+
+               if( ch->pcdata->deity_name.empty(  ) )
+                  ch->pcdata->favor = 0;
+
+               if( !ch->pcdata->clan_name.empty(  ) && !( ch->pcdata->clan = get_clan( ch->pcdata->clan_name ) ) )
+               {
+                  ch->printf( "Warning: the organization %s no longer exists, and therefore you no longer\r\nbelong to that organization.\r\n",
+                              ch->pcdata->clan_name.c_str(  ) );
+                  ch->pcdata->clan_name.clear(  );
+               }
 
                if( ch->pcdata->clan )
                   update_roster( ch );
                return;
             }
-            KEY( "Email", ch->pcdata->email, fread_string_nohash( fp ) );
+            STDSKEY( "Email", ch->pcdata->email );
             break;
 
          case 'T':
             if( !str_cmp( word, "Tongue" ) )
             {
-               char *tongue;
-               int sn, value;
+               int value = fread_number( fp );
+               char *tongue = fread_word( fp );
+               int sn = find_tongue( NULL, tongue, false );
 
-               value = fread_number( fp );
-               tongue = fread_word( fp );
-               sn = bsearch_skill_exact( tongue, gsn_first_tongue, gsn_first_ability - 1 );
                if( sn < 0 )
                   log_printf( "%s: unknown tongue: %s", __FUNCTION__, tongue );
                else
@@ -1824,7 +1768,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
    obj->my = -1;
 
    fNest = true;  /* Requiring a Nest 0 is a waste */
-   fVnum = true;
+   fVnum = false; // We can't assume this - what if Vnum isn't written to the file? Crashy crashy is what. - Pulled from Smaug 1.8
    iNest = 0;
 
    for( ;; )
@@ -1874,9 +1818,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                paf->location = fread_number( fp );
                paf->bit = fread_number( fp );
                if( paf->location == APPLY_WEAPONSPELL
-                   || paf->location == APPLY_WEARSPELL
-                   || paf->location == APPLY_STRIPSN
-                   || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_RECURRINGSPELL )
+                   || paf->location == APPLY_WEARSPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_RECURRINGSPELL )
                   paf->modifier = slot_lookup( pafmod );
                else
                   paf->modifier = pafmod;
@@ -1907,7 +1849,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             break;
 
          case 'E':
-            KEY( "Ego", obj->ego, fread_number( fp ) );   /* Samson 5-8-99 */
+            KEY( "Ego", obj->ego, fread_number( fp ) );  /* Samson 5-8-99 */
             if( !str_cmp( word, "ExtraFlags" ) )
             {
                flag_set( fp, obj->extra_flags, o_flags );
@@ -1950,7 +1892,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                   if( obj->extra_flags.test( ITEM_PERSONAL ) && !obj->owner && ch )
                      obj->owner = QUICKLINK( ch->name );
                   if( obj->ego > 90 )
-                     obj->ego = obj->pIndexData->set_ego();
+                     obj->ego = obj->pIndexData->set_ego(  );
                   objlist.push_back( obj );
 
                   /*
@@ -2101,7 +2043,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             break;
 
          case 'R':
-            KEY( "Rent", obj->ego, fread_number( fp ) );   /* Samson 5-8-99 - OLD FIELD */
+            KEY( "Rent", obj->ego, fread_number( fp ) ); /* Samson 5-8-99 - OLD FIELD */
             KEY( "Room", room, get_room_index( fread_number( fp ) ) );
             KEY( "Rvnum", obj->room_vnum, fread_number( fp ) );   /* hotboot tracker */
             break;
@@ -2149,7 +2091,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             if( !str_cmp( word, "Values" ) )
             {
                int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
-               char *ln = fread_line( fp );
+               const char *ln = fread_line( fp );
 
                x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = 0;
                sscanf( ln, "%d %d %d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9, &x10, &x11 );
@@ -2175,20 +2117,21 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                /*
                 * Ugh, the price one pays for forgetting - had to keep corpses from doing this 
                 */
-               /* OK. So. Samson is left to wonder what this thing's purpose is? Disabling. Re-enable if problems erupt.
-               if( file_ver < 10 && fVnum == true && os_type != OS_CORPSE )
-               {
-                  obj->value[0] = obj->pIndexData->value[0];
-                  obj->value[1] = obj->pIndexData->value[1];
-                  obj->value[2] = obj->pIndexData->value[2];
-                  obj->value[3] = obj->pIndexData->value[3];
-                  obj->value[4] = obj->pIndexData->value[4];
-                  obj->value[5] = obj->pIndexData->value[5];
-
-                  if( obj->item_type == ITEM_WEAPON )
-                     obj->value[2] = obj->pIndexData->value[1] * obj->pIndexData->value[2];
-               }
-               */
+               /*
+                * OK. So. Samson is left to wonder what this thing's purpose is? Disabling. Re-enable if problems erupt.
+                * if( file_ver < 10 && fVnum == true && os_type != OS_CORPSE )
+                * {
+                * obj->value[0] = obj->pIndexData->value[0];
+                * obj->value[1] = obj->pIndexData->value[1];
+                * obj->value[2] = obj->pIndexData->value[2];
+                * obj->value[3] = obj->pIndexData->value[3];
+                * obj->value[4] = obj->pIndexData->value[4];
+                * obj->value[5] = obj->pIndexData->value[5];
+                * 
+                * if( obj->item_type == ITEM_WEAPON )
+                * obj->value[2] = obj->pIndexData->value[1] * obj->pIndexData->value[2];
+                * }
+                */
                break;
             }
 
@@ -2203,7 +2146,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                {
                   fVnum = true;
                   obj->cost = obj->pIndexData->cost;
-                  obj->ego = obj->pIndexData->ego;  /* Samson 5-8-99 */
+                  obj->ego = obj->pIndexData->ego; /* Samson 5-8-99 */
                   obj->weight = obj->pIndexData->weight;
                   obj->item_type = obj->pIndexData->item_type;
                   obj->wear_flags = obj->pIndexData->wear_flags;
@@ -2336,9 +2279,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                paf->modifier = fread_number( fp );
                paf->location = fread_number( fp );
                if( paf->location == APPLY_WEAPONSPELL
-                   || paf->location == APPLY_WEARSPELL
-                   || paf->location == APPLY_REMOVESPELL
-                   || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL )
+                   || paf->location == APPLY_WEARSPELL || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL )
                   paf->modifier = slot_lookup( paf->modifier );
                paf->bit = fread_number( fp );
                mob->affects.push_back( paf );
@@ -2462,13 +2403,13 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
 /*
  * Load a char and inventory into a new ch structure.
  */
-bool load_char_obj( descriptor_data * d, char *name, bool preload, bool copyover )
+bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool copyover )
 {
    char strsave[256];
    FILE *fp;
    bool found = false;
    struct stat fst;
-   int i,x;
+   int i, x;
 
    char_data *ch = new char_data;
 
@@ -2484,7 +2425,7 @@ bool load_char_obj( descriptor_data * d, char *name, bool preload, bool copyover
 
    d->character = ch;
    ch->desc = d;
-   ch->pcdata->filename = STRALLOC( name );
+   ch->pcdata->filename = STRALLOC( name.c_str(  ) );
    ch->style = STYLE_FIGHTING;
    ch->mental_state = -10;
    ch->pcdata->prompt = STRALLOC( default_prompt( ch ) );
@@ -2493,8 +2434,8 @@ bool load_char_obj( descriptor_data * d, char *name, bool preload, bool copyover
    ch->set_langs( 0 );
    ch->set_lang( LANG_COMMON );
    ch->speaking = LANG_COMMON;
-   ch->abits.clear();
-   ch->pcdata->qbits.clear();
+   ch->abits.clear(  );
+   ch->pcdata->qbits.clear(  );
 #ifdef IMC
    imc_initchar( ch );
 #endif
@@ -2504,14 +2445,13 @@ bool load_char_obj( descriptor_data * d, char *name, bool preload, bool copyover
     */
    reset_colors( ch );
 
-   snprintf( strsave, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
+   snprintf( strsave, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ).c_str(  ) );
    if( stat( strsave, &fst ) != -1 && d->connected != CON_PLOADED )
    {
       if( preload )
          log_printf_plus( LOG_COMM, LEVEL_KL, "Preloading player data for: %s", ch->pcdata->filename );
       else
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%dK)", ch->pcdata->filename,
-                          ( int )fst.st_size / 1024 );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%dK)", ch->pcdata->filename, ( int )fst.st_size / 1024 );
    }
    /*
     * else no player file 
@@ -2542,7 +2482,7 @@ bool load_char_obj( descriptor_data * d, char *name, bool preload, bool copyover
 
          if( letter != '#' )
          {
-            bug( "%s: # not found. %s", __FUNCTION__, name );
+            bug( "%s: # not found. %s", __FUNCTION__, name.c_str(  ) );
             break;
          }
 
@@ -2576,11 +2516,13 @@ bool load_char_obj( descriptor_data * d, char *name, bool preload, bool copyover
                }
             }
          }
+         else if( !str_cmp( word, "VARIABLE" ) )   // Quest Flags
+            fread_variable( ch, fp );
          else if( !str_cmp( word, "END" ) )  /* Done */
             break;
          else
          {
-            bug( "%s: bad section: %s", __FUNCTION__, name );
+            bug( "%s: bad section: %s", __FUNCTION__, word );
             break;
          }
       }
@@ -2593,18 +2535,15 @@ bool load_char_obj( descriptor_data * d, char *name, bool preload, bool copyover
    {
       if( d )
       {
-         if( d->mxp_detected )
-            ch->set_pcflag( PCFLAG_MXP );
-
          if( d->msp_detected )
             ch->set_pcflag( PCFLAG_MSP );
       }
-      ch->name = STRALLOC( name );
+      ch->name = STRALLOC( name.c_str(  ) );
    }
    else
    {
       if( !ch->name )
-         ch->name = STRALLOC( name );
+         ch->name = STRALLOC( name.c_str(  ) );
 
       if( ch->has_pcflag( PCFLAG_FLEE ) )
          ch->unset_pcflag( PCFLAG_FLEE );
@@ -2639,12 +2578,12 @@ bool load_char_obj( descriptor_data * d, char *name, bool preload, bool copyover
 }
 
 /* Rewritten corpse saver - Samson */
-void write_corpse( obj_data *corpse, const char *name )
+void write_corpse( obj_data * corpse, const string & name )
 {
    FILE *fp;
    char filename[256];
 
-   snprintf( filename, 256, "%s%s", CORPSE_DIR, capitalize( name ) );
+   snprintf( filename, 256, "%s%s", CORPSE_DIR, capitalize( name ).c_str(  ) );
 
    // No no no no no! Timer of 0 means it should be GONE GONE GONE!
    if( corpse->timer < 1 )
@@ -2690,12 +2629,11 @@ void write_corpse( obj_data *corpse, const char *name )
    fprintf( fp, "%s", "\n" );
    fprintf( fp, "%s", "End\n\n" );
 
-   if( !corpse->contents.empty() )
+   if( !corpse->contents.empty(  ) )
       fwrite_obj( NULL, corpse->contents, NULL, fp, 1, false );
 
    fprintf( fp, "%s", "#END\n\n" );
    FCLOSE( fp );
-   return;
 }
 
 void load_corpses( void )
@@ -2759,7 +2697,6 @@ void load_corpses( void )
    mudstrlcpy( strArea, "$", MIL );
    closedir( dp );
    falling = 0;
-   return;
 }
 
 CMDF( do_save )
@@ -2772,5 +2709,4 @@ CMDF( do_save )
    ch->save(  );
    saving_char = NULL;
    ch->print( "Saved...\r\n" );
-   return;
 }

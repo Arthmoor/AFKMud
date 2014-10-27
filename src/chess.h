@@ -23,90 +23,61 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                      Calendar Handler/Seasonal Updates                   *
+ *                      Chess Module with IMC2 Support                      *
  ****************************************************************************/
 
-#ifndef __CALENDAR_H__
-#define __CALENDAR_H__
+#ifndef __CHESS_H__
+#define __CHESS_H__
 
-/* Well, ok, so it didn't turn out the way I wanted, but that's life - Samson */
-/* Ever write a comment like the one above this one and completely forget what it means? */
-/* Portions of this data courtesy of Yrth mud */
-
-/* PaB: Seasons */
-/* Notes: Each season will be arbitrarily set at 1/4 of the year.
- */
-enum seasons
+struct game_board_data
 {
-   SEASON_SPRING, SEASON_SUMMER, SEASON_FALL, SEASON_WINTER, SEASON_MAX
+   ~game_board_data(  );
+   game_board_data(  );
+
+#ifdef IMC
+   char_data *imc_player;
+#endif
+   string player1;
+   string player2;
+   int board[8][8];
+   int turn;
+   int type;
 };
 
-/* Hunger/Thirst modifiers */
-const int WINTER_HUNGER = 1;
-const int SUMMER_THIRST = 1;
-const int SUMMER_THIRST_DESERT = 2;
+void free_game( game_board_data * );
 
-/* Holiday chart */
-#define HOLIDAY_FILE SYSTEM_DIR "holidays.dat"
+#define NO_PIECE	0
 
-extern const char *day_name[];
-extern const char *month_name[];
-extern const char *season_name[];
-extern bool winter_freeze;
+#define WHITE_PAWN	1
+#define WHITE_ROOK	2
+#define WHITE_KNIGHT	3
+#define WHITE_BISHOP	4
+#define WHITE_QUEEN	5
+#define WHITE_KING	6
 
-class holiday_data
-{
- private:
-   holiday_data( const holiday_data & n );
-     holiday_data & operator=( const holiday_data & );
+#define BLACK_PAWN	7
+#define BLACK_ROOK	8
+#define BLACK_KNIGHT	9
+#define BLACK_BISHOP	10
+#define BLACK_QUEEN	11
+#define BLACK_KING	12
 
- public:
-     holiday_data(  );
-    ~holiday_data(  );
+#define MAX_PIECES	13
 
-   void set_name( const string & newname )
-   {
-      name = newname;
-   }
-   string get_name(  )
-   {
-      return name;
-   }
+#define IS_WHITE(x) ((x) >= WHITE_PAWN && (x) <= WHITE_KING)
+#define IS_BLACK(x) ((x) >= BLACK_PAWN && (x) <= BLACK_KING)
 
-   void set_announce( const string & text )
-   {
-      announce = text;
-   }
-   string get_announce(  )
-   {
-      return announce;
-   }
+#define MOVE_OK		0
+#define MOVE_INVALID	1
+#define MOVE_BLOCKED	2
+#define MOVE_TAKEN	3
+#define MOVE_CHECKMATE	4
+#define MOVE_OFFBOARD	5
+#define MOVE_SAMECOLOR	6
+#define MOVE_CHECK	8
+#define MOVE_WRONGCOLOR	9
+#define MOVE_INCHECK	10
 
-   void set_month( short mn )
-   {
-      month = mn;
-   }
-   short get_month(  )
-   {
-      return month;
-   }
-
-   void set_day( short dy )
-   {
-      day = dy;
-   }
-   short get_day(  )
-   {
-      return day;
-   }
-
- private:
-   string name;   /* Name of the holiday */
-   string announce;  /* Message to announce the holiday with */
-   short month;   /* Month the holiday falls in */
-   short day;  /* Day the holiday falls on */
-};
-
-void check_holiday( char_data * );
-holiday_data *get_holiday( short, short );
+#define TYPE_LOCAL	1
+#define TYPE_IMC	2
 #endif

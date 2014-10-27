@@ -26,6 +26,7 @@
  *                       Descriptor Support Functions                       *
  ****************************************************************************/
 
+#include <fstream>
 #include <fcntl.h>
 #if defined(WIN32)
 #include <unistd.h>
@@ -48,7 +49,6 @@
 #endif
 #if defined(__FreeBSD__)
 #include <sys/types.h>
-#include <netinet/in.h>
 #include <csignal>
 #endif
 #include <cstdarg>
@@ -73,9 +73,9 @@
 #endif
 
 int maxdesc, newdesc;
-list<descriptor_data*> dlist;
+list < descriptor_data * >dlist;
 
-extern char *alarm_section;
+extern const char *alarm_section;
 extern fd_set in_set;
 extern fd_set out_set;
 extern fd_set exc_set;
@@ -87,27 +87,26 @@ extern bool compilelock;
 #endif
 
 void set_alarm( long );
-auth_data *get_auth_name( char * );
-void save_sysdata( );
-void save_auth_list( );
+auth_data *get_auth_name( const string & );
+void save_sysdata(  );
+void save_auth_list(  );
 void check_holiday( char_data * );
-void update_connhistory( descriptor_data *, int );   /* connhist.c */
+void update_connhistory( descriptor_data *, int ); /* connhist.c */
 void check_auth_state( char_data * );
-void oedit_parse( descriptor_data *, char * );
-void medit_parse( descriptor_data *, char * );
-void redit_parse( descriptor_data *, char * );
-void board_parse( descriptor_data *, char * );
-bool check_immortal_domain( char_data *, char * );
+void oedit_parse( descriptor_data *, string & );
+void medit_parse( descriptor_data *, string & );
+void redit_parse( descriptor_data *, string & );
+void board_parse( descriptor_data *, const string & );
+bool check_immortal_domain( char_data *, const string & );
 void scan_rares( char_data * );
 void break_camp( char_data * );
 void setup_newbie( char_data *, bool );
 void sale_count( char_data * );  /* For new auction system - Samson 6-24-99 */
 void check_clan_info( char_data * );
 void name_stamp_stats( char_data * );
-char *attribtext( int );
 void quotes( char_data * );
 void reset_colors( char_data * );
-bool check_bans( char_data * );
+// bool check_bans( char_data * );
 CMDF( do_help );
 CMDF( do_destroy );
 
@@ -116,37 +115,21 @@ CMDF( do_destroy );
 #define  TERMINAL_TYPE      '\x18'
 #define  SEND	          '\x01'
 
-const char term_call_back_str[] = { IAC, SB, TERMINAL_TYPE, IS };
-const char req_termtype_str[] = { IAC, SB, TERMINAL_TYPE, SEND, IAC, SE, '\0' };
-const char do_term_type[] = { IAC, DO, TERMINAL_TYPE, '\0' };
+const char term_call_back_str[] = { ( char )IAC, SB, TERMINAL_TYPE, IS };
+const char req_termtype_str[] = { ( char )IAC, SB, TERMINAL_TYPE, SEND, ( char )IAC, SE, '\0' };
+const char do_term_type[] = { ( char )IAC, DO, TERMINAL_TYPE, '\0' };
 
 /* Terminal detection stuff end */
 
-const char echo_off_str[] = { IAC, WILL, TELOPT_ECHO, '\0' };
-const char echo_on_str[] = { IAC, WONT, TELOPT_ECHO, '\0' };
-const char go_ahead_str[] = { IAC, GA, '\0' };
+const char echo_off_str[] = { ( char )IAC, ( char )WILL, TELOPT_ECHO, '\0' };
+const char echo_on_str[] = { ( char )IAC, ( char )WONT, TELOPT_ECHO, '\0' };
+const char go_ahead_str[] = { ( char )IAC, ( char )GA, '\0' };
 
 extern char will_msp_str[];
-extern char will_mxp_str[];
 
-struct transfer_data
-{
-   transfer_data();
-
-   short giga;  /* GB - Don't think it will be needed but just incase */
-   short mega;  /* MB */
-   short kilo;  /* KB */
-   short byte;  /* B */
-};
-
-transfer_data::transfer_data()
-{
-   init_memory( &giga, &byte, sizeof( byte ) );
-}
-
-transfer_data *tr_saved;
-transfer_data *tr_in;
-transfer_data *tr_out;
+long tr_saved;
+long tr_in;
+long tr_out;
 
 /* Update the info in transfer input and output */
 /* I think its a good idea to know the bandwidth and
@@ -159,173 +142,70 @@ transfer_data *tr_out;
  */
 void update_trdata( int type, int size )
 {
-   /* If size is 0 whats the point */
+   /*
+    * If size is 0 what's the point?
+    */
    if( size == 0 )
       return;
 
-   /* If not a valid type return */
+   /*
+    * If not a valid type return 
+    */
    if( type < 1 || type > 3 )
       return;
 
    if( type == 1 )
-   {
-      if( tr_in )
-      {
-         tr_in->byte += size;
-         while( tr_in->byte > 1024 )
-         {
-            tr_in->kilo += 1;
-            tr_in->byte -= 1024;
-         }
-         while( tr_in->kilo > 1024 )
-         {
-            tr_in->mega += 1;
-            tr_in->kilo -= 1024;
-         }
-         while( tr_in->mega > 1024 )
-         {
-            tr_in->giga += 1;
-            tr_in->mega -= 1024;
-         }
-      }
-   }
+      tr_in += size;
    else if( type == 2 )
-   {
-      if( tr_out )
-      {
-         tr_out->byte += size;
-         while( tr_out->byte > 1024 )
-         {
-            tr_out->kilo += 1;
-            tr_out->byte -= 1024;
-         }
-         while( tr_out->kilo > 1024 )
-         {
-            tr_out->mega += 1;
-            tr_out->kilo -= 1024;
-         }
-         while( tr_out->mega > 1024 )
-         {
-            tr_out->giga += 1;
-            tr_out->mega -= 1024;
-         }
-      }
-   }
+      tr_out += size;
    else if( type == 3 )
-   {
-      if( tr_saved )
-      {
-         tr_saved->byte += size;
-         while( tr_saved->byte > 1024 )
-         {
-            tr_saved->kilo += 1;
-            tr_saved->byte -= 1024;
-         }
-         while( tr_saved->kilo > 1024 )
-         {
-            tr_saved->mega += 1;
-            tr_saved->kilo -= 1024;
-         }
-         while( tr_saved->mega > 1024 )
-         {
-            tr_saved->giga += 1;
-            tr_saved->mega -= 1024;
-         }
-      }
-   }
+      tr_saved += size;
 }
 
 /* Clear both transfers */
 void clear_trdata( void )
 {
-   if( tr_in )
-   {
-      tr_in->giga = 0;
-      tr_in->mega = 0;
-      tr_in->kilo = 0;
-      tr_in->byte = 0;
-   }
-
-   if( tr_out )
-   {
-      tr_out->giga = 0;
-      tr_out->mega = 0;
-      tr_out->kilo = 0;
-      tr_out->byte = 0;
-   }
-
-   if( tr_saved )
-   {
-      tr_saved->giga = 0;
-      tr_saved->mega = 0;
-      tr_saved->kilo = 0;
-      tr_saved->byte = 0;
-   }
-}
-
-/* Create the transfer data */
-void create_trdata( void )
-{
-   if( !tr_in )
-      tr_in = new transfer_data;
-   if( !tr_out )
-      tr_out = new transfer_data;
-   if( !tr_saved )
-      tr_saved = new transfer_data;
-   return;
-}
-
-/* Free the transfer data */
-void free_trdata( void )
-{
-   deleteptr( tr_in );
-   deleteptr( tr_out );
-   deleteptr( tr_saved );
+   tr_in = 0;
+   tr_out = 0;
+   tr_saved = 0;
 }
 
 CMDF( do_trdata )
 {
-   /* Display the transfer data */
-   if( !argument || argument[0] == '\0' )
+   /*
+    * Display the transfer data 
+    */
+   if( argument.empty(  ) )
    {
       ch->print( "Type &Ytrdata clear&d to reset this data.\r\n\r\n" );
 
-      ch->printf( "Bytes received     : %d GB, %d MB, %d KB, %d B\r\n",
-         tr_in->giga, tr_in->mega, tr_in->kilo, tr_in->byte );
-
-      ch->printf( "Bytes sent         : %d GB, %d MB, %d KB, %d B\r\n",
-         tr_out->giga, tr_out->mega, tr_out->kilo, tr_out->byte );
-
-      ch->printf( "Bytes saved by MCCP: %d GB, %d MB, %d KB, %d B\r\n",
-         tr_saved->giga, tr_saved->mega, tr_saved->kilo, tr_saved->byte );
+      ch->printf( "Bytes received     : %d\r\n", tr_in );
+      ch->printf( "Bytes sent         : %d\r\n", tr_out );
+      ch->printf( "Bytes saved by MCCP: %d\r\n", tr_saved );
    }
-   /* Just so we can start it over */
+   /*
+    * Just so we can start it over 
+    */
    if( !str_cmp( argument, "clear" ) )
-      clear_trdata( );
-   return;
+      clear_trdata(  );
 }
 
 #define DNS_FILE SYSTEM_DIR "dns.dat"
 
 struct dns_data
 {
-   dns_data();
-   ~dns_data();
+   dns_data(  );
+   ~dns_data(  );
 
-   char *ip;
-   char *name;
+   string ip;
+   string name;
    time_t time;
 };
 
-list<dns_data*> dnslist;
+list < dns_data * >dnslist;
 
 descriptor_data::~descriptor_data(  )
 {
-   DISPOSE( host );
-   delete[]outbuf;
-   DISPOSE( pagebuf );
-   STRFREE( client );
-
    if( can_compress && is_compressing )
    {
       if( !compressEnd(  ) )
@@ -342,26 +222,31 @@ descriptor_data::~descriptor_data(  )
 descriptor_data::descriptor_data(  )
 {
    init_memory( &snoop_by, &is_compressing, sizeof( is_compressing ) );
+   host.clear(  );
+   outbuf.clear(  );
+   pagebuf.clear(  );
+   incomm.clear(  );
+   inlast.clear(  );
+   client.clear(  );
 }
 
-mccp_data::mccp_data()
+mccp_data::mccp_data(  )
 {
    init_memory( &out_compress, &out_compress_buf, sizeof( out_compress_buf ) );
 }
 
 void free_all_descs( void )
 {
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
 
-   for( ds = dlist.begin(); ds != dlist.end(); )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
       ++ds;
 
       dlist.remove( d );
       deleteptr( d );
    }
-   return;
 }
 
 void descriptor_data::init(  )
@@ -375,16 +260,13 @@ void descriptor_data::init(  )
    ifd = -1;   /* Descriptor pipes, used for DNS resolution and such */
    ipid = -1;
 #endif
-   client = STRALLOC( "Unidentified" );   /* Terminal detect */
+   client = "Unidentified";   // Terminal detect
    msp_detected = false;
-   mxp_detected = false;
    can_compress = false;
    is_compressing = false;
-   outsize = 2000;
-   outbuf = new char[outsize];
-   outtop = 0;
-   pagesize = 2000;
-   pagebuf = NULL;
+   outbuf.clear(  );
+   pagebuf.clear(  );
+   pageindex = 0;
    mccp = new mccp_data;
 }
 
@@ -433,16 +315,15 @@ bool check_bad_desc( int desc )
 * Updated to run with the block checks by Orion... if it doesn't work, blame
 * him.;P -Orion
 */
-bool descriptor_data::write( char *txt, size_t length )
+bool descriptor_data::write( const char *txt )
 {
    int nWrite = 0, nBlock, iErr;
-   size_t iStart = 0, len, mccpsaved;
-
-   if( length <= 0 )
-      length = strlen( txt );
+   size_t iStart = 0, len, mccpsaved, length = strlen( txt );
 
    mccpsaved = length;
-   /* Won't send more then it has to so make sure we check if its under length */
+   /*
+    * Won't send more then it has to so make sure we check if its under length 
+    */
    if( mccpsaved > strlen( txt ) )
       mccpsaved = strlen( txt );
 
@@ -470,7 +351,7 @@ bool descriptor_data::write( char *txt, size_t length )
             {
                nBlock = UMIN( len - iStart, 4096 );
 #if defined(WIN32)
-               nWrite = send( descriptor, (const char *)(mccp->out_compress_buf + iStart), nBlock, 0 );
+               nWrite = send( descriptor, ( const char * )( mccp->out_compress_buf + iStart ), nBlock, 0 );
 #else
                nWrite = send( descriptor, mccp->out_compress_buf + iStart, nBlock, 0 );
 #endif
@@ -541,13 +422,10 @@ bool descriptor_data::write( char *txt, size_t length )
  * Added block checking to prevent random booting of the descriptor. Thanks go
  * out to Rustry for his suggestions. -Orion
  */
-bool write_to_descriptor_old( int desc, char *txt, size_t length )
+bool write_to_descriptor_old( int desc, const char *txt )
 {
-   size_t iStart = 0;
+   size_t iStart = 0, length = strlen( txt );
    int nWrite = 0, nBlock = 0, iErr = 0;
-
-   if( length <= 0 )
-      length = strlen( txt );
 
    for( iStart = 0; iStart < length; iStart += nWrite )
    {
@@ -577,22 +455,22 @@ bool write_to_descriptor_old( int desc, char *txt, size_t length )
 
 bool descriptor_data::read(  )
 {
-   unsigned int iStart, iErr;
+   size_t iStart, iErr;
 
    /*
     * Hold horses if pending command already. 
     */
-   if( incomm[0] != '\0' )
+   if( !this->incomm.empty(  ) )
       return true;
 
    /*
     * Check for overflow. 
     */
-   iStart = strlen( inbuf );
-   if( iStart >= sizeof( inbuf ) - 10 )
+   iStart = strlen( this->inbuf );
+   if( iStart >= sizeof( this->inbuf ) - 10 )
    {
-      log_printf( "%s input overflow!", host );
-      this->write( "\r\n*** PUT A LID ON IT!!! ***\r\n", 0 );
+      log_printf( "%s input overflow!", this->host.c_str(  ) );
+      this->write( "\r\n*** PUT A LID ON IT!!! ***\r\n" );
       return false;
    }
 
@@ -600,17 +478,17 @@ bool descriptor_data::read(  )
    {
       int nRead;
 
-      nRead = recv( descriptor, inbuf + iStart, sizeof( inbuf ) - 10 - iStart, 0 );
+      nRead = recv( this->descriptor, this->inbuf + iStart, sizeof( this->inbuf ) - 10 - iStart, 0 );
       iErr = errno;
       if( nRead > 0 )
       {
          iStart += nRead;
 
          update_trdata( 1, nRead );
-         if( inbuf[iStart - 1] == '\n' || inbuf[iStart - 1] == '\r' )
+         if( this->inbuf[iStart - 1] == '\n' || this->inbuf[iStart - 1] == '\r' )
             break;
       }
-      else if( nRead == 0 && connected >= CON_PLAYING )
+      else if( nRead == 0 && this->connected >= CON_PLAYING )
       {
          log_string_plus( LOG_COMM, LEVEL_IMMORTAL, "EOF encountered on read." );
          return false;
@@ -619,13 +497,13 @@ bool descriptor_data::read(  )
          break;
       else
       {
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __FUNCTION__, descriptor );
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( character && character->name ) ? character->name : host );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __FUNCTION__, this->descriptor );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( this->character && this->character->name ) ? this->character->name : this->host.c_str(  ) );
          perror( __FUNCTION__ );
          return false;
       }
    }
-   inbuf[iStart] = '\0';
+   this->inbuf[iStart] = '\0';
    return true;
 }
 
@@ -639,13 +517,12 @@ bool descriptor_data::flush_buffer( bool fPrompt )
     *
     * Samson says: Lets do 4K chunks!
     */
-   if( !mud_down && outtop > 4096 )
+   if( !mud_down && this->outbuf.length(  ) > 4096 )
    {
       char buf[4096];
 
-      memcpy( buf, outbuf, 4096 );
-      outtop -= 4096;
-      memmove( outbuf, outbuf + 4096, outtop );
+      memcpy( buf, this->outbuf.c_str(  ), 4096 );
+      this->outbuf = this->outbuf.substr( 4097, this->outbuf.length(  ) - 4097 );
       if( snoop_by )
       {
          buf[4096] = '\0';
@@ -654,16 +531,13 @@ bool descriptor_data::flush_buffer( bool fPrompt )
             if( original && original->name )
                snoop_by->buffer_printf( "%s (%s)", character->name, original->name );
             else
-               snoop_by->write_to_buffer( character->name, 0 );
+               snoop_by->write_to_buffer( character->name );
          }
-         snoop_by->write_to_buffer( "% ", 2 );
-         snoop_by->write_to_buffer( buf, 0 );
+         snoop_by->write_to_buffer( "% " );
+         snoop_by->write_to_buffer( buf );
       }
-      if( !this->write( buf, 4096 ) )
-      {
-         outtop = 0;
+      if( !this->write( buf ) )
          return false;
-      }
       return true;
    }
 
@@ -676,21 +550,21 @@ bool descriptor_data::flush_buffer( bool fPrompt )
 
       ch = original ? original : character;
       if( ch->has_pcflag( PCFLAG_BLANK ) )
-         write_to_buffer( "\r\n", 2 );
+         write_to_buffer( "\r\n" );
 
-      if( !ch->isnpc() )
+      if( !ch->isnpc(  ) )
          prompt(  );
       else
-         write_to_buffer( ANSI_RESET, 0 );
+         write_to_buffer( ANSI_RESET );
 
       if( ch->has_pcflag( PCFLAG_TELNET_GA ) )
-         write_to_buffer( go_ahead_str, 0 );
+         write_to_buffer( go_ahead_str );
    }
 
    /*
     * Short-circuit if nothing to write.
     */
-   if( outtop == 0 )
+   if( this->outbuf.empty(  ) )
       return true;
 
    /*
@@ -709,25 +583,22 @@ bool descriptor_data::flush_buffer( bool fPrompt )
          if( original && original->name )
             snoop_by->buffer_printf( "%s (%s)", character->name, original->name );
          else
-            snoop_by->write_to_buffer( character->name, 0 );
+            snoop_by->write_to_buffer( character->name );
       }
-      snoop_by->write_to_buffer( "% ", 2 );
-      snoop_by->write_to_buffer( outbuf, outtop );
+      snoop_by->write_to_buffer( "% " );
+      snoop_by->write_to_buffer( outbuf );
    }
 
    /*
     * OS-dependent output.
     */
-   if( !this->write( outbuf, outtop ) )
+   if( !this->write( this->outbuf.c_str(  ) ) )
    {
-      outtop = 0;
+      this->outbuf.erase(  );
       return false;
    }
-   else
-   {
-      outtop = 0;
-      return true;
-   }
+   this->outbuf.erase(  );
+   return true;
 }
 
 /*
@@ -742,11 +613,11 @@ void descriptor_data::read_from_buffer(  )
    /*
     * Hold horses if pending command already.
     */
-   if( incomm[0] != '\0' )
+   if( !this->incomm.empty(  ) )
       return;
 
    /*
-    * Thanks Nick! 
+    * Thanks Nick!
     */
    for( p = ( unsigned char * )inbuf; *p; ++p )
    {
@@ -757,7 +628,7 @@ void descriptor_data::read_from_buffer(  )
             int pos = ( char * )p - inbuf;   /* where we are in buffer */
             int len = sizeof( inbuf ) - pos - sizeof( term_call_back_str );   /* how much to go */
             char tmp[100];
-            unsigned int x = 0;
+            size_t x = 0;
             unsigned char *oldp = p;
 
             p += sizeof( term_call_back_str );  /* skip TERMINAL_TYPE / IS characters */
@@ -768,8 +639,9 @@ void descriptor_data::read_from_buffer(  )
                tmp[x] = *p;
 
             tmp[x] = '\0';
-            STRFREE( client );
-            client = STRALLOC( tmp );
+            if( tmp[0] != '\0' )
+               this->client = tmp;
+
             p += 2;  /* skip IAC and SE */
             len -= strlen( tmp ) + 2;
             if( len < 0 )
@@ -786,100 +658,94 @@ void descriptor_data::read_from_buffer(  )
    /*
     * Look for at least one new line.
     */
-   for( i = 0; inbuf[i] != '\n' && inbuf[i] != '\r' && i < MAX_INBUF_SIZE; ++i )
+   for( i = 0; this->inbuf[i] != '\n' && this->inbuf[i] != '\r' && i < MAX_INBUF_SIZE; ++i )
    {
-      if( inbuf[i] == '\0' )
+      if( this->inbuf[i] == '\0' )
          return;
    }
 
    /*
     * Canonical input processing.
     */
-   for( i = 0, k = 0; inbuf[i] != '\n' && inbuf[i] != '\r'; ++i )
+   for( i = 0, k = 0; this->inbuf[i] != '\n' && this->inbuf[i] != '\r'; ++i )
    {
       if( k >= MIL / 2 )   /* Reasonable enough to allow unless someone floods it with color tags */
       {
-         this->write( "Line too long.\r\n", 0 );
-         inbuf[i] = '\n';
-         inbuf[i + 1] = '\0';
+         this->write( "Line too long.\r\n" );
+         this->inbuf[i] = '\n';
+         this->inbuf[i + 1] = '\0';
          break;
       }
 
-      if( can_compress && !is_compressing )
-         compressStart(  );
+      if( this->can_compress && !this->is_compressing )
+         this->compressStart(  );
 
-      if( inbuf[i] == ( signed char )IAC )
+      if( this->inbuf[i] == ( signed char )IAC )
          iac = 1;
-      else if( iac == 1
-               && ( inbuf[i] == ( signed char )DO || inbuf[i] == ( signed char )DONT || inbuf[i] == ( signed char )WILL ) )
+      else if( iac == 1 && ( this->inbuf[i] == ( signed char )DO || this->inbuf[i] == ( signed char )DONT || this->inbuf[i] == ( signed char )WILL ) )
          iac = 2;
       else if( iac == 2 )
       {
          iac = 0;
-         if( inbuf[i] == ( signed char )TELOPT_COMPRESS2 )
+         if( this->inbuf[i] == ( signed char )TELOPT_COMPRESS2 )
          {
-            if( inbuf[i - 1] == ( signed char )DO )
+            if( this->inbuf[i - 1] == ( signed char )DO )
             {
-               if( compressStart(  ) )
-                  can_compress = true;
+               if( this->compressStart(  ) )
+                  this->can_compress = true;
             }
-            else if( inbuf[i - 1] == ( signed char )DONT )
+            else if( this->inbuf[i - 1] == ( signed char )DONT )
             {
-               if( compressEnd(  ) )
-                  can_compress = false;
+               if( this->compressEnd(  ) )
+                  this->can_compress = false;
             }
          }
-         else if( inbuf[i] == ( signed char )TELOPT_MXP )
+         else if( this->inbuf[i] == ( signed char )TELOPT_MSP )
          {
-            if( inbuf[i - 1] == ( signed char )DO )
+            if( this->inbuf[i - 1] == ( signed char )DO )
             {
-               mxp_detected = true;
-               send_mxp_stylesheet(  );
+               this->msp_detected = true;
+               this->send_msp_startup(  );
             }
-            else if( inbuf[i - 1] == ( signed char )DONT )
-               mxp_detected = false;
+            else if( this->inbuf[i - 1] == ( signed char )DONT )
+               this->msp_detected = false;
          }
-         else if( inbuf[i] == ( signed char )TELOPT_MSP )
+         else if( this->inbuf[i] == ( signed char )TERMINAL_TYPE )
          {
-            if( inbuf[i - 1] == ( signed char )DO )
-            {
-               msp_detected = true;
-               send_msp_startup(  );
-            }
-            else if( inbuf[i - 1] == ( signed char )DONT )
-               msp_detected = false;
-         }
-         else if( inbuf[i] == ( signed char )TERMINAL_TYPE )
-         {
-            if( inbuf[i - 1] == ( signed char )WILL )
-               write_to_buffer( req_termtype_str, 0 );
+            if( this->inbuf[i - 1] == ( signed char )WILL )
+               this->write_to_buffer( req_termtype_str );
          }
       }
-      else if( inbuf[i] == '\b' && k > 0 )
+      else if( this->inbuf[i] == '\b' && k > 0 )
          --k;
       /*
        * Note to the future curious: Leave this alone. Extended ascii isn't standardized yet.
        * * You'd think being the 21st century and all that this wouldn't be the case, but you can
        * * thank the bastards in Redmond for this.
        */
-      else if( isascii( inbuf[i] ) && isprint( inbuf[i] ) )
-         incomm[k++] = inbuf[i];
+      else if( isascii( this->inbuf[i] ) && isprint( this->inbuf[i] ) )
+      {
+         this->incomm.append( 1, this->inbuf[i] );
+         ++k;
+      }
    }
 
    /*
     * Finish off the line.
     */
    if( k == 0 )
-      incomm[k++] = ' ';
-   incomm[k] = '\0';
+   {
+      this->incomm.append( 1, ' ' );
+      ++k;
+   }
 
    /*
     * Deal with bozos with #repeat 1000 ...
     */
-   if( k > 1 || incomm[0] == '!' )
+   if( k > 1 || this->incomm[0] == '!' )
    {
-      if( incomm[0] != '!' && str_cmp( incomm, inlast ) )
-         repeat = 0;
+      if( this->incomm[0] != '!' && str_cmp( this->incomm, this->inlast ) )
+         this->repeat = 0;
       else
       {
          /*
@@ -889,66 +755,65 @@ void descriptor_data::read_from_buffer(  )
           */
          cmd_type *cmd = NULL;
          mud_channel *channel = NULL;
-         map<string,string>::iterator al;
-         vector<string> v = vector_argument( incomm, 1 );
+         map < string, string >::iterator al;
+         string c = this->incomm, arg;
 
-         cmd = find_command( v[0] );
-         if( character )
-            al = character->pcdata->alias_map.find( v[0] );
+         c = one_argument( c, arg );
+         cmd = find_command( arg );
+         if( this->character )
+            al = character->pcdata->alias_map.find( arg );
 
-         if( !cmd && character && al != character->pcdata->alias_map.end() )
+         if( !cmd && this->character && al != this->character->pcdata->alias_map.end(  ) )
          {
-            if( !al->second.empty() )
+            if( !al->second.empty(  ) )
             {
-               vector<string> v2 = vector_argument( al->second, 1 );
-               cmd = find_command( v2[0] );
+               string d = al->second, arg2;
+
+               d = one_argument( d, arg2 );
+               cmd = find_command( arg2 );
             }
          }
 
          if( !cmd )
          {
-            if( ( channel = find_channel( v[0] ) ) != NULL && !str_cmp( incomm, inlast ) )
-               ++repeat;
+            if( ( channel = find_channel( arg ) ) != NULL && !str_cmp( this->incomm, this->inlast ) )
+               ++this->repeat;
          }
-         else if( cmd->flags.test( CMD_NOSPAM ) && !str_cmp( incomm, inlast ) )
-            ++repeat;
+         else if( cmd->flags.test( CMD_NOSPAM ) && !str_cmp( this->incomm, this->inlast ) )
+            ++this->repeat;
 #ifdef IMC
          {
             imc_channel *imcchan;
 
-            if( ( imcchan = imc_findchannel( v[0] ) ) != NULL && !str_cmp( incomm, inlast ) )
-               ++repeat;
+            if( ( imcchan = imc_findchannel( arg ) ) != NULL && !str_cmp( this->incomm, this->inlast ) )
+               ++this->repeat;
          }
 #endif
-         if( repeat == 3 && character && character->level < LEVEL_IMMORTAL )
-            character->
-               print
-               ( "}R\r\nYou have repeated the same command 3 times now.\r\nRepeating it 7 more will result in an autofreeze by the spamguard code.&D\r\n" );
+         if( this->repeat == 3 && this->character && this->character->level < LEVEL_IMMORTAL )
+            this->character->print( "}R\r\nYou have repeated the same command 3 times now.\r\nRepeating it 7 more will result in an autofreeze by the spamguard code.&D\r\n" );
 
-         if( repeat == 6 && character && character->level < LEVEL_IMMORTAL )
-            character->
-               print
-               ( "}R\r\nYou have repeated the same command 6 times now.\r\nRepeating it 4 more will result in an autofreeze by the spamguard code.&D\r\n" );
+         if( this->repeat == 6 && this->character && this->character->level < LEVEL_IMMORTAL )
+            this->character->print( "}R\r\nYou have repeated the same command 6 times now.\r\nRepeating it 4 more will result in an autofreeze by the spamguard code.&D\r\n" );
 
-         if( repeat >= 10 && character && character->level < LEVEL_IMMORTAL )
+         if( this->repeat >= 10 && this->character && this->character->level < LEVEL_IMMORTAL )
          {
-            ++character->pcdata->spam;
-            log_printf( "%s was autofrozen by the spamguard - spamming: %s", character->name, incomm );
-            log_printf( "%s has spammed %d times this login.", character->name, character->pcdata->spam );
+            ++this->character->pcdata->spam;
+            log_printf( "%s was autofrozen by the spamguard - spamming: %s", this->character->name, this->incomm.c_str(  ) );
+            log_printf( "%s has spammed %d times this login.", this->character->name, this->character->pcdata->spam );
 
-            this->write( "\r\n*** PUT A LID ON IT!!! ***\r\nYou cannot enter the same command more than 10 consecutive times!\r\n", 0 );
-            this->write( "The Spamguard has spoken!\r\n", 0 );
-            this->write( "It suddenly becomes very cold, and very QUIET!\r\n", 0 );
-            mudstrlcpy( incomm, "spam", MIL );
+            this->write( "\r\n*** PUT A LID ON IT!!! ***\r\nYou cannot enter the same command more than 10 consecutive times!\r\n" );
+            this->write( "The Spamguard has spoken!\r\n" );
+            this->write( "It suddenly becomes very cold, and very QUIET!\r\n" );
+            this->incomm = "spam";
 
             af.type = skill_lookup( "spamguard" );
-            af.duration = 115 * character->pcdata->spam; /* One game hour per offense, this can get ugly FAST */
+            af.duration = 115 * this->character->pcdata->spam; /* One game hour per offense, this can get ugly FAST */
             af.modifier = 0;
             af.location = APPLY_NONE;
             af.bit = AFF_SPAMGUARD;
-            character->affect_to_char( &af );
-            character->set_pcflag( PCFLAG_IDLING );
-            repeat = 0; /* Just so it doesn't get haywire */
+            this->character->affect_to_char( &af );
+            this->character->set_pcflag( PCFLAG_IDLING );
+            this->repeat = 0; /* Just so it doesn't get haywire */
          }
       }
    }
@@ -956,168 +821,24 @@ void descriptor_data::read_from_buffer(  )
    /*
     * Do '!' substitution.
     */
-   if( incomm[0] == '!' )
-      mudstrlcpy( incomm, inlast, MIL );
+   if( this->incomm[0] == '!' )
+      this->incomm = this->inlast;
    else
-      mudstrlcpy( inlast, incomm, MIL );
+      this->inlast = this->incomm;
 
    /*
     * Shift the input buffer.
     */
-   while( inbuf[i] == '\n' || inbuf[i] == '\r' )
+   while( this->inbuf[i] == '\n' || this->inbuf[i] == '\r' )
       ++i;
-   for( j = 0; ( inbuf[j] = inbuf[i + j] ) != '\0'; ++j )
+   for( j = 0; ( this->inbuf[j] = this->inbuf[i + j] ) != '\0'; ++j )
       ;
-   return;
-}
-
-
-/*
- Count number of mxp tags need converting.
- ALT-155 is used as the MXP BEGIN tag: <
- ALT-156 is used as the MXP END tag: >
- ALT-157 is used for entity tags: &
-*/
-int count_mxp_tags( const char *txt, int length )
-{
-   char c;
-   const char * p;
-   int count;
-   int bInTag = false;
-   int bInEntity = false;
-
-   for( p = txt, count = 0; length > 0; ++p, --length )
-   {
-      c = *p;
-
-      if( bInTag ) // in a tag, eg. <send>
-      {
-         if( c == '£' )
-            bInTag = false;
-      }
-      else if( bInEntity ) // in a tag, eg. <send>
-      {
-         if( c == ';' )
-            bInEntity = false;
-      }
-      else switch (c)
-      {
-         case '¢':
-            bInTag = true;
-            break;
-
-         case '£':   /* shouldn't get this case */
-            break;
-
-         case '¥':
-            bInEntity = true;
-            break;
-
-         default:
-            switch (c)
-            {
-               case '<':  // < becomes &lt;
-               case '>':  // > becomes &gt;
-                  count += 3;
-                  break;
-
-               case '&':
-                  count += 4; // & becomes &amp;
-                  break;
-
-               case '"':  // " becomes &quot;
-                  count += 5;
-                  break;
-            }
-            break;
-      }
-   }
-   return count;
-}
-
-/* ALT-155 is used as the MXP BEGIN tag: <
-   ALT-156 is used as the MXP END tag: >
-   ALT-157 is used for entity tags: &
-*/
-void convert_mxp_tags( char *dest, const char *src, size_t length )
-{
-   char c;
-   const char *ps;
-   char *pd;
-   bool bInTag = false;
-   bool bInEntity = false;
-
-   for( ps = src, pd = dest; length > 0; ++ps, --length )
-   {
-      c = *ps;
-      if( bInTag ) // in a tag, eg. <send>
-      {
-         if( c == '£' )
-         {
-            bInTag = false;
-            *pd++ = '>';
-         }
-         else
-            *pd++ = c; // copy tag only in MXP mode
-      }
-      else if( bInEntity ) // in a tag, eg. <send>
-      {
-         *pd++ = c; // copy tag only in MXP mode
-         if( c == ';' )
-            bInEntity = false;
-      }
-      else switch( c )
-      {
-         case '¢':
-            bInTag = true;
-            *pd++ = '<';
-            break;
-
-         case '£': // shouldn't get this case
-            *pd++ = '>';
-            break;
-
-         case '¥':
-            bInEntity = true;
-            *pd++ = '&';
-            break;
-
-         default:
-            switch( c )
-            {
-               case '<':
-                  memcpy( pd, "&lt;", 4 );
-                  pd += 4;
-                  break;
-
-               case '>':
-                  memcpy( pd, "&gt;", 4 );
-                  pd += 4;
-                  break;
-
-               case '&':
-                  memcpy( pd, "&amp;", 5 );
-                  pd += 5;
-                  break;
-
-               case '"':
-                  memcpy( pd, "&quot;", 6 );
-                  pd += 6;
-                  break;
-
-               default:
-                  *pd++ = c;
-                  break;
-            }
-            break;  
-      }
-   }
 }
 
 /*
  * Append onto an output buffer.
  */
-void descriptor_data::write_to_buffer( const char *txt, size_t length )
+void descriptor_data::write_to_buffer( const string & txt )
 {
    if( !this )
    {
@@ -1128,64 +849,10 @@ void descriptor_data::write_to_buffer( const char *txt, size_t length )
    /*
     * Normally a bug... but can happen if loadup is used.
     */
-   if( !outbuf )
-      return;
+   if( this->outbuf.empty(  ) && !this->fcommand )
+      this->outbuf = "\r\n";
 
-   /*
-    * Find length in case caller didn't.
-    */
-   if( length <= 0 )
-      length = strlen( txt );
-
-   size_t origlength = length;
-   /* work out how much we need to expand/contract it */
-   if( mxp_detected )
-      length += count_mxp_tags( txt, length );
-
-   /*
-    * Initial \r\n if needed.
-    */
-   if( outtop == 0 && !fcommand )
-   {
-      outbuf[0] = '\r';
-      outbuf[1] = '\n';
-      outtop = 2;
-   }
-
-   /*
-    * Expand the buffer as needed.
-    */
-   while( outtop + length >= outsize )
-   {
-      char *newout;
-
-      if( outsize > 32000 )
-      {
-         /*
-          * empty buffer 
-          */
-         outtop = 0;
-         bug( "%s: Buffer overflow: %ld. Closing (%s).", __FUNCTION__, outsize, character ? character->name : "???" );
-         close_socket( this, true );
-         return;
-      }
-      outsize *= 2;
-      newout = new char[outsize];
-      strncpy( newout, outbuf, outsize );
-      delete[]outbuf;
-      outbuf = newout;
-   }
-
-   /*
-    * Copy.
-    */
-   if( mxp_detected )
-      convert_mxp_tags( outbuf + outtop, txt, origlength );
-   else
-      strncpy( outbuf + outtop, txt, length );  /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
-   outtop += length;
-   outbuf[outtop] = '\0';
-   return;
+   this->outbuf.append( txt );
 }
 
 void descriptor_data::buffer_printf( const char *fmt, ... )
@@ -1197,11 +864,11 @@ void descriptor_data::buffer_printf( const char *fmt, ... )
    vsnprintf( buf, MSL * 4, fmt, args );
    va_end( args );
 
-   write_to_buffer( buf, 0 );
+   this->write_to_buffer( buf );
 }
 
 /* Writes to a descriptor, usually best used when there's no character to send to ( like logins ) */
-void descriptor_data::send_color( const char *txt )
+void descriptor_data::send_color( const string & txt )
 {
    if( !this )
    {
@@ -1209,84 +876,47 @@ void descriptor_data::send_color( const char *txt )
       return;
    }
 
-   if( !txt || !descriptor )
+   if( txt.empty(  ) || !this->descriptor )
       return;
 
-   write_to_buffer( colorize( txt, this ), 0 );
-   return;
+   this->write_to_buffer( colorize( txt, this ) );
 }
 
-void descriptor_data::pager( const char *txt, size_t length )
+void descriptor_data::pager( const string & txt )
 {
-   int pageroffset;  /* Pager fix by thoric */
-
-   if( length <= 0 )
-      length = strlen( txt );
-
-   if( length == 0 )
+   if( !this )
+   {
+      bug( "%s: NULL *d", __FUNCTION__ );
       return;
+   }
 
-   if( !pagebuf )
-   {
-      pagesize = MSL;
-      CREATE( pagebuf, char, pagesize );
-   }
-   if( !pagepoint )
-   {
-      pagepoint = pagebuf;
-      pagetop = 0;
-      pagecmd = '\0';
-   }
-   if( pagetop == 0 && !fcommand )
-   {
-      pagebuf[0] = '\r';
-      pagebuf[1] = '\n';
-      pagetop = 2;
-   }
-   pageroffset = pagepoint - pagebuf;  /* pager fix (goofup fixed 08/21/97) */
-   while( pagetop + length >= pagesize )
-   {
-      if( pagesize > MSL * 16 )
-      {
-         bug( "%s: Pager overflow. Ignoring.", __FUNCTION__ );
-         pagetop = 0;
-         pagepoint = NULL;
-         free( pagebuf );
-         pagebuf = NULL;
-         pagesize = MSL;
-         return;
-      }
-      pagesize *= 2;
-      RECREATE( pagebuf, char, pagesize );
-   }
-   pagepoint = pagebuf + pageroffset;  /* pager fix (goofup fixed 08/21/97) */
-   strncpy( pagebuf + pagetop, txt, length );   /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
-   pagetop += length;
-   pagebuf[pagetop] = '\0';
-   return;
+   if( this->pagebuf.empty(  ) && !this->fcommand )
+      this->pagebuf = "\r\n";
+
+   this->pagebuf.append( txt );
 }
 
-void descriptor_data::set_pager_input( char *argument )
+void descriptor_data::set_pager_input( const string & argument )
 {
-   while( isspace( *argument ) )
-      ++argument;
-   pagecmd = *argument;
-   return;
+   string arg = argument;
+
+   strip_lspace( arg );
+   this->pagecmd = arg[0];
 }
 
 bool descriptor_data::pager_output(  )
 {
-   register char *last;
    char_data *ch;
-   int pclines;
+   int pclines, start, end;
    register int lines;
    bool ret;
 
-   if( !this || !pagepoint || pagecmd == -1 )
+   if( !this || this->pagebuf.empty(  ) || this->pagecmd == -1 )
       return true;
-   ch = original ? original : character;
+   ch = this->original ? this->original : this->character;
    pclines = UMAX( ch->pcdata->pagerlen, 5 ) - 1;
-   switch ( LOWER( pagecmd ) )
+
+   switch ( LOWER( this->pagecmd ) )
    {
       default:
          lines = 0;
@@ -1302,65 +932,56 @@ bool descriptor_data::pager_output(  )
          pclines = 0x7FFFFFFF;   /* As many lines as possible */
          break;
       case 'q':
-         pagetop = 0;
-         pagepoint = NULL;
-         flush_buffer( true );
-         free( pagebuf );
-         pagebuf = NULL;
-         pagesize = MSL;
+         this->flush_buffer( true );
+         this->pagebuf.clear(  );
+         this->pageindex = 0;
          return true;
    }
-   while( lines < 0 && pagepoint >= pagebuf )
-      if( *( --pagepoint ) == '\n' )
-         ++lines;
-   if( *pagepoint == '\r' && *( ++pagepoint ) == '\n' )
-      ++pagepoint;
-   if( pagepoint < pagebuf )
-      pagepoint = pagebuf;
-   for( lines = 0, last = pagepoint; lines < pclines; ++last )
+
+   // This is going to get seriously messed up if people use the wrong line termination.
+   vector < string > pagelines = string_explode( this->pagebuf, '\n' );
+
+   if( lines < 0 )
+      start = this->pageindex + lines;
+   else
+      start = this->pageindex;
+   end = start + pclines;
+   for( int x = start; x < end; ++x )
    {
-      if( !*last )
-         break;
-      else if( *last == '\n' )
-         ++lines;
+      if( x < 0 )
+         continue;
+
+      if( ( size_t ) x >= pagelines.size(  ) )
+      {
+         this->flush_buffer( true );
+         this->pagebuf.clear(  );
+         this->pageindex = 0;
+         return true;
+      }
+
+      this->write( pagelines[x].c_str(  ) );
+      this->pageindex = x;
    }
-   if( *last == '\r' )
-      ++last;
-   if( last != pagepoint )
-   {
-      if( !this->write( pagepoint, ( last - pagepoint ) ) )
-         return false;
-      pagepoint = last;
-   }
-   while( isspace( *last ) )
-      ++last;
-   if( !*last )
-   {
-      pagetop = 0;
-      pagepoint = NULL;
-      flush_buffer( true );
-      free( pagebuf );
-      pagebuf = NULL;
-      pagesize = MSL;
-      return true;
-   }
-   pagecmd = -1;
+
+   this->pagecmd = -1;
    if( ch->has_pcflag( PCFLAG_ANSI ) )
-      if( !this->write( ANSI_LBLUE, 0 ) )
+      if( !this->write( ANSI_LBLUE ) )
          return false;
-   if( ( ret = this->write( "(C)ontinue, (N)on-stop, (R)efresh, (B)ack, (Q)uit: [C] ", 0 ) ) == false )
+
+   if( ( ret = this->write( "(C)ontinue, (N)on-stop, (R)efresh, (B)ack, (Q)uit: [C] " ) ) == false )
       return false;
+
    /*
     * Telnet GA bit here suggested by Garil 
     */
    if( ch->has_pcflag( PCFLAG_TELNET_GA ) )
-      write_to_buffer( go_ahead_str, 0 );
+      this->write_to_buffer( go_ahead_str );
    if( ch->has_pcflag( PCFLAG_ANSI ) )
    {
       char buf[32];
 
-      snprintf( buf, 32, "%s", ch->color_str( pagecolor ) );
-      ret = this->write( buf, 0 );
+      snprintf( buf, 32, "%s", ch->color_str( this->pagecolor ) );
+      ret = this->write( buf );
    }
    return ret;
 }
@@ -1391,7 +1012,7 @@ void descriptor_data::show_title(  )
    if( !ch->has_pcflag( PCFLAG_NOINTRO ) )
       show_file( ch, ANSITITLE_FILE );
    else
-      write_to_buffer( "Press enter...\r\n", 0 );
+      write_to_buffer( "Press enter...\r\n" );
    connected = CON_PRESS_ENTER;
 }
 
@@ -1406,220 +1027,154 @@ void descriptor_data::show_stats( char_data * ch )
    buffer_printf( "6. Cha: %d\r\n", ch->perm_cha );
    buffer_printf( "7. Lck: %d\r\n\r\n", ch->perm_lck );
    ch->set_color( AT_ACTION );
-   write_to_buffer( "Choose an attribute to raise by +1\r\n", 0 );
-   return;
+   write_to_buffer( "Choose an attribute to raise by +1\r\n" );
 }
 
-dns_data::dns_data()
+dns_data::dns_data(  )
 {
-   init_memory( &ip, &time, sizeof( time ) );
+   time = 0;
 }
 
-dns_data::~dns_data()
+dns_data::~dns_data(  )
 {
-   DISPOSE( ip );
-   DISPOSE( name );
    dnslist.remove( this );
 }
 
 void free_dns_list( void )
 {
-   list<dns_data*>::iterator dns;
+   list < dns_data * >::iterator dns;
 
-   for( dns = dnslist.begin(); dns != dnslist.end(); )
+   for( dns = dnslist.begin(  ); dns != dnslist.end(  ); )
    {
-      dns_data *ip = (*dns);
+      dns_data *ip = *dns;
       ++dns;
 
       deleteptr( ip );
    }
-   return;
 }
 
 void save_dns( void )
 {
-   list<dns_data*>::iterator dns;
-   FILE *fp;
-   char filename[256];
+   list < dns_data * >::iterator dns;
+   ofstream stream;
 
-   snprintf( filename, 256, "%s", DNS_FILE );
-
-   if( !( fp = fopen( filename, "w" ) ) )
+   stream.open( DNS_FILE );
+   if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      bug( "%s: stream.open()", __FUNCTION__ );
+      perror( DNS_FILE );
    }
    else
    {
-      for( dns = dnslist.begin(); dns != dnslist.end(); ++dns )
+      for( dns = dnslist.begin(  ); dns != dnslist.end(  ); ++dns )
       {
-         dns_data *ip = (*dns);
+         dns_data *ip = *dns;
 
-         fprintf( fp, "%s", "#CACHE\n" );
-         fprintf( fp, "IP   %s~\n", ip->ip );
-         fprintf( fp, "Name %s~\n", ip->name );
-         fprintf( fp, "Time %ld\n", ( time_t )ip->time );
-         fprintf( fp, "%s", "End\n\n" );
+         stream << "#CACHE" << endl;
+         stream << "IP   " << ip->ip << endl;
+         stream << "Name " << ip->name << endl;
+         stream << "Time " << ip->time << endl;
+         stream << "End" << endl << endl;
       }
-      fprintf( fp, "%s", "#END\n" );
-      FCLOSE( fp );
+      stream.close(  );
    }
-   return;
 }
 
 void prune_dns( void )
 {
-   list<dns_data*>::iterator dns;
+   list < dns_data * >::iterator dns;
 
-   for( dns = dnslist.begin(); dns != dnslist.end(); )
+   for( dns = dnslist.begin(  ); dns != dnslist.end(  ); )
    {
-      dns_data *cache = (*dns);
+      dns_data *cache = *dns;
       ++dns;
 
       /*
        * Stay in cache for 14 days 
        */
-      if( current_time - cache->time >= 1209600 || !str_cmp( cache->ip, "Unknown??" )
-          || !str_cmp( cache->name, "Unknown??" ) )
+      if( current_time - cache->time >= 1209600 || !str_cmp( cache->ip, "Unknown??" ) || !str_cmp( cache->name, "Unknown??" ) )
          deleteptr( cache );
    }
    save_dns(  );
-   return;
 }
 
-void add_dns( char *dhost, char *address )
+void add_dns( const string & dhost, const string & address )
 {
    dns_data *cache;
 
    cache = new dns_data;
-   cache->ip = str_dup( dhost );
-   cache->name = str_dup( address );
+   cache->ip = dhost;
+   cache->name = address;
    cache->time = current_time;
    dnslist.push_back( cache );
 
    save_dns(  );
-   return;
 }
 
-char *in_dns_cache( char *ip )
+string in_dns_cache( const string & ip )
 {
-   list<dns_data*>::iterator idns;
-   static char dnsbuf[MSL];
+   list < dns_data * >::iterator idns;
 
-   dnsbuf[0] = '\0';
-
-   for( idns = dnslist.begin(); idns != dnslist.end(); ++idns )
+   for( idns = dnslist.begin(  ); idns != dnslist.end(  ); ++idns )
    {
-      dns_data *dns = (*idns);
+      dns_data *dns = *idns;
 
       if( !str_cmp( ip, dns->ip ) )
-      {
-         mudstrlcpy( dnsbuf, dns->name, MSL );
-         break;
-      }
+         return dns->name;
    }
-   return dnsbuf;
-}
-
-void fread_dns( dns_data * cache, FILE * fp )
-{
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( !cache->ip )
-                  cache->ip = str_dup( "Unknown??" );
-               if( !cache->name )
-                  cache->name = str_dup( "Unknown??" );
-               return;
-            }
-            break;
-
-         case 'I':
-            KEY( "IP", cache->ip, fread_string_nohash( fp ) );
-            break;
-
-         case 'N':
-            KEY( "Name", cache->name, fread_string_nohash( fp ) );
-            break;
-
-         case 'T':
-            KEY( "Time", cache->time, fread_number( fp ) );
-            break;
-      }
-   }
+   return "";
 }
 
 void load_dns( void )
 {
-   char filename[256];
-   dns_data *cache;
-   FILE *fp;
+   dns_data *cache = NULL;
+   ifstream stream;
 
-   dnslist.clear();
+   dnslist.clear(  );
 
-   snprintf( filename, 256, "%s", DNS_FILE );
-
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   stream.open( DNS_FILE );
+   if( stream.is_open(  ) )
    {
-      for( ;; )
+      do
       {
-         char letter;
-         char *word;
+         string key, value;
+         char buf[MIL];
 
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
+         stream >> key;
+         stream.getline( buf, MIL );
+         value = buf;
+
+         strip_lspace( key );
+         strip_lspace( value );
+         strip_tilde( value );
+
+         if( key.empty(  ) )
             continue;
-         }
 
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "CACHE" ) )
-         {
+         if( key == "#CACHE" )
             cache = new dns_data;
-            fread_dns( cache, fp );
-            dnslist.push_back( cache );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
+         else if( key == "IP" )
+            cache->ip = value;
+         else if( key == "Name" )
+            cache->name = value;
+         else if( key == "Time" )
+            cache->time = atoi( value.c_str(  ) );
+         else if( key == "End" )
          {
-            bug( "%s: bad section: %s.", __FUNCTION__, word );
-            continue;
+            if( cache->ip.empty(  ) )
+               cache->ip = "Unknown??";
+            if( cache->name.empty(  ) )
+               cache->name = "Unknown??";
+
+            dnslist.push_back( cache );
          }
+         else
+            log_printf( "%s: Bad line in DNS cache file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
       }
-      FCLOSE( fp );
+      while( !stream.eof(  ) );
+      stream.close(  );
    }
    prune_dns(  ); /* Clean out entries beyond 14 days */
-   return;
 }
 
 /* DNS Resolver code by Trax of Forever's End */
@@ -1629,7 +1184,7 @@ void load_dns( void )
 bool read_from_dns( int fd, char *buffer )
 {
    static char inbuf[MSL * 2];
-   unsigned int iStart, i, j, k;
+   size_t iStart, i, j, k;
 
    /*
     * Check for overflow. 
@@ -1724,13 +1279,9 @@ void descriptor_data::process_dns(  )
    if( address[0] != '\0' )
    {
       add_dns( host, address );  /* Add entry to DNS cache */
-      DISPOSE( host );
-      host = str_dup( address );
+      host = address;
       if( character && character->pcdata )
-      {
-         DISPOSE( character->pcdata->lasthost );
-         character->pcdata->lasthost = str_dup( address );
-      }
+         character->pcdata->lasthost = address;
    }
 
    /*
@@ -1755,7 +1306,6 @@ void descriptor_data::process_dns(  )
       waitpid( ipid, &status, 0 );
       ipid = -1;
    }
-   return;
 }
 
 /* DNS Resolver hook. Code written by Trax of Forever's End */
@@ -1830,7 +1380,6 @@ void descriptor_data::resolve_dns( long ip )
 
 void new_descriptor( int new_desc )
 {
-   char buf[MSL];
    descriptor_data *dnew;
    struct sockaddr_in sock;
    int desc;
@@ -1898,32 +1447,31 @@ void new_descriptor( int new_desc )
    dnew->descriptor = desc;
    dnew->client_port = ntohs( sock.sin_port );
 
-   strdup_printf( &dnew->host, "%s", inet_ntoa( sock.sin_addr ) );
+   dnew->host = inet_ntoa( sock.sin_addr );
 
 #if !defined(WIN32)
    if( !sysdata->NO_NAME_RESOLVING )
    {
-      mudstrlcpy( buf, in_dns_cache( dnew->host ), MSL );
+      string buf = in_dns_cache( dnew->host );
 
-      if( buf[0] == '\0' )
+      if( buf.empty(  ) )
          dnew->resolve_dns( sock.sin_addr.s_addr );
       else
-      {
-         DISPOSE( dnew->host );
-         dnew->host = str_dup( buf );
-      }
+         dnew->host = buf;
    }
 #endif
 
+/* FIXME: Write a new ban module so this code has meaning again.
    if( dnew->check_total_bans(  ) )
    {
-      dnew->write( "Your site has been banned from this Mud.\r\n", 0 );
+      dnew->write( "Your site has been banned from this Mud.\r\n" );
       deleteptr( dnew );
       set_alarm( 0 );
       return;
    }
+*/
 
-   if( dlist.size() < 1 )
+   if( dlist.size(  ) < 1 )
       log_string( "Waking up autonomous update handlers." );
 
    dlist.push_back( dnew );
@@ -1931,41 +1479,35 @@ void new_descriptor( int new_desc )
    /*
     * Terminal detect 
     */
-   dnew->write_to_buffer( do_term_type, 0 );
+   dnew->write_to_buffer( do_term_type );
 
    /*
     * MCCP Compression 
     */
-   dnew->write_to_buffer( will_compress2_str, 0 );
-
-   /*
-    * Mud eXtention Protocol 
-    */
-   dnew->write_to_buffer( will_mxp_str, 0 );
+   dnew->write_to_buffer( will_compress2_str );
 
    /*
     * Mud Sound Protocol 
     */
-   dnew->write_to_buffer( will_msp_str, 0 );
+   dnew->write_to_buffer( will_msp_str );
 
    /*
     * Send the greeting. No longer handled kludgely by a global variable.
     */
    dnew->send_greeting(  );
 
-   dnew->write_to_buffer( "Enter your character's name, or type new: ", 0 );
+   dnew->write_to_buffer( "Enter your character's name, or type new: " );
 
    if( ++num_descriptors > sysdata->maxplayers )
       sysdata->maxplayers = num_descriptors;
    if( sysdata->maxplayers > sysdata->alltimemax )
    {
-      strdup_printf( &sysdata->time_of_max, "%s", c_time( current_time, -1 ) );
+      sysdata->time_of_max = c_time( current_time, -1 );
       sysdata->alltimemax = sysdata->maxplayers;
       log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "Broke all-time maximum player record: %d", sysdata->alltimemax );
       save_sysdata(  );
    }
    set_alarm( 0 );
-   return;
 }
 
 void accept_new( int ctrl )
@@ -1983,17 +1525,17 @@ void accept_new( int ctrl )
    maxdesc = ctrl;
    newdesc = 0;
 
-   list<descriptor_data*>::iterator ds;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   list < descriptor_data * >::iterator ds;
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
 
       maxdesc = UMAX( maxdesc, d->descriptor );
       FD_SET( d->descriptor, &in_set );
       FD_SET( d->descriptor, &out_set );
       FD_SET( d->descriptor, &exc_set );
 #if !defined(WIN32)
-      if( d->ifd != -1 && (*ds)->ipid != -1 )
+      if( d->ifd != -1 && ( *ds )->ipid != -1 )
       {
          maxdesc = UMAX( maxdesc, d->ifd );
          FD_SET( d->ifd, &in_set );
@@ -2030,7 +1572,7 @@ void descriptor_data::prompt(  )
    const char *helpstart = "&w[Type HELP START]";
    char buf[MSL];
    char *pbuf = buf;
-   unsigned int pstat;
+   size_t pstat;
    int percent;
 
    if( !ch )
@@ -2189,31 +1731,19 @@ void descriptor_data::prompt(  )
                   break;
 
                case 'h':
-                  if( ch->MXP_ON(  ) )
-                     snprintf( pbuf, MSL - ( pbuf - buf ), MXP_TAG_HP "%d" MXP_TAG_HP_CLOSE, ch->hit );
-                  else
-                     pstat = ch->hit;
+                  pstat = ch->hit;
                   break;
 
                case 'H':
-                  if( ch->MXP_ON(  ) )
-                     snprintf( pbuf, MSL - ( pbuf - buf ), MXP_TAG_MAXHP "%d" MXP_TAG_MAXHP_CLOSE, ch->max_hit );
-                  else
-                     pstat = ch->max_hit;
+                  pstat = ch->max_hit;
                   break;
 
                case 'm':
-                  if( ch->MXP_ON(  ) )
-                     snprintf( pbuf, MSL - ( pbuf - buf ), MXP_TAG_MANA "%d" MXP_TAG_MANA_CLOSE, ch->mana );
-                  else
-                     pstat = ch->mana;
+                  pstat = ch->mana;
                   break;
 
                case 'M':
-                  if( ch->MXP_ON(  ) )
-                     snprintf( pbuf, MSL - ( pbuf - buf ), MXP_TAG_MAXMANA "%d" MXP_TAG_MAXMANA_CLOSE, ch->max_mana );
-                  else
-                     pstat = ch->max_mana;
+                  pstat = ch->max_mana;
                   break;
 
                case 'N':  /* Tank */
@@ -2324,8 +1854,7 @@ void descriptor_data::prompt(  )
 
                case 'i':
                   if( ch->has_pcflag( PCFLAG_WIZINVIS ) || ch->has_actflag( ACT_MOBINVIS ) )
-                     snprintf( pbuf, MSL - ( pbuf - buf ), "(Invis %d) ",
-                               ( ch->isnpc(  )? ch->mobinvis : ch->pcdata->wizinvis ) );
+                     snprintf( pbuf, MSL - ( pbuf - buf ), "(Invis %d) ", ( ch->isnpc(  )? ch->mobinvis : ch->pcdata->wizinvis ) );
                   else if( ch->has_aflag( AFF_INVISIBLE ) )
                      mudstrlcpy( pbuf, "(Invis) ", MSL - ( pbuf - buf ) );
                   break;
@@ -2351,43 +1880,22 @@ void descriptor_data::prompt(  )
                   break;
             }
             if( pstat != 0x80000000 )
-               snprintf( pbuf, MSL - ( pbuf - buf ), "%d", pstat );
+               snprintf( pbuf, MSL - ( pbuf - buf ), "%zd", pstat );
             pbuf += strlen( pbuf );
             break;
       }
    }
    *pbuf = '\0';
 
-   /*
-    * An attempt to provide a short common MXP command menu above the prompt line 
-    */
-   if( ch->MXP_ON(  ) && ch->has_pcflag( PCFLAG_MXPPROMPT ) )
-   {
-      ch->print( ch->color_str( AT_MXPPROMPT ) );
-      ch->print( MXP_TAG_SECURE "¢look£look¢/look£ "
-                 "¢inventory£inv¢/inventory£ "
-                 "¢equipment£eq¢/equipment£ " "¢score£sc¢/score£ " "¢who£who¢/who£" MXP_TAG_LOCKED "\r\n" );
-
-      ch->print( MXP_TAG_SECURE "¢attrib£att¢/attrib£ "
-                 "¢level£lev¢/level£ " "¢practice£prac¢/practice£ " "¢slist£slist¢/slist£" MXP_TAG_LOCKED "\r\n" );
-   }
-
-   if( ch->MXP_ON(  ) )
-      ch->print( MXP_TAG_PROMPT );
-
    ch->print( buf );
-
-   if( ch->MXP_ON(  ) )
-      ch->print( MXP_TAG_PROMPT_CLOSE );
 
    /*
     * The miracle cure for color bleeding? 
     */
    ch->print( ANSI_RESET );
-   return;
 }
 
-void close_socket( descriptor_data *d, bool force )
+void close_socket( descriptor_data * d, bool force )
 {
    char_data *ch;
    auth_data *old_auth;
@@ -2407,22 +1915,22 @@ void close_socket( descriptor_data *d, bool force )
    /*
     * flush outbuf 
     */
-   if( !force && d->outtop > 0 )
+   if( !force && !d->outbuf.empty(  ) )
       d->flush_buffer( false );
 
    /*
     * say bye to whoever's snooping this descriptor 
     */
    if( d->snoop_by )
-      d->snoop_by->write_to_buffer( "Your victim has left the game.\r\n", 0 );
+      d->snoop_by->write_to_buffer( "Your victim has left the game.\r\n" );
 
    /*
     * stop snooping everyone else 
     */
-   list<descriptor_data*>::iterator ds;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   list < descriptor_data * >::iterator ds;
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *s = (*ds);
+      descriptor_data *s = *ds;
 
       if( s->snoop_by == d )
          s->snoop_by = NULL;
@@ -2461,6 +1969,15 @@ void close_socket( descriptor_data *d, bool force )
          save_auth_list(  );
       }
 
+      if( d->connected == CON_EDITING )
+      {
+         if( ch->last_cmd )
+            ch->last_cmd( ch, "" );
+         else
+            ch->stop_editing(  );
+         d->connected = CON_PLAYING;
+      }
+
       if( d->connected == CON_PLAYING
           || d->connected == CON_EDITING
           || d->connected == CON_DELETE
@@ -2469,11 +1986,7 @@ void close_socket( descriptor_data *d, bool force )
           || d->connected == CON_PRIZENAME
           || d->connected == CON_CONFIRMPRIZENAME
           || d->connected == CON_PRIZEKEY
-          || d->connected == CON_CONFIRMPRIZEKEY
-          || d->connected == CON_OEDIT
-          || d->connected == CON_REDIT
-          || d->connected == CON_MEDIT
-          || d->connected == CON_BOARD )
+          || d->connected == CON_CONFIRMPRIZEKEY || d->connected == CON_OEDIT || d->connected == CON_REDIT || d->connected == CON_MEDIT || d->connected == CON_BOARD )
       {
          if( ch->in_room )
             act( AT_ACTION, "$n has lost $s link.", ch, NULL, NULL, TO_CANSEE );
@@ -2494,7 +2007,7 @@ void close_socket( descriptor_data *d, bool force )
    --num_descriptors;
    deleteptr( d );
 
-   if( dlist.size() < 1 )
+   if( dlist.size(  ) < 1 )
       log_string( "No more people online. Autonomous actions suspended." );
 }
 
@@ -2522,9 +2035,7 @@ void show_stateflags( char_data * ch )
       ch->print( "\r\n&YNOTE: The game is wizlocked. No mortals can log on.\r\n" );
 
    if( crash_count > 0 && ch->is_imp(  ) )
-      ch->printf( "\r\n}RThere ha%s been %d intercepted SIGSEGV since reboot. Check the logs.\r\n",
-                  crash_count == 1 ? "s" : "ve", crash_count );
-   return;
+      ch->printf( "\r\n}RThere ha%s been %d intercepted SIGSEGV since reboot. Check the logs.\r\n", crash_count == 1 ? "s" : "ve", crash_count );
 }
 
 void show_status( char_data * ch )
@@ -2556,34 +2067,31 @@ void show_status( char_data * ch )
       interpret( ch, "checkboards" );
 
    if( str_cmp( ch->desc->client, "Unidentified" ) )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ), ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name );
    if( ch->desc->can_compress )
       log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name );
-   if( ch->desc->mxp_detected )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MXP support detected for %s.", ch->name );
    if( ch->desc->msp_detected )
       log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name );
    quotes( ch );
    show_stateflags( ch );
-   return;
 }
 
 /*
  * Look for link-dead player to reconnect.
  */
-short descriptor_data::check_reconnect( char *name, bool fConn )
+short descriptor_data::check_reconnect( const string & name, bool fConn )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
-      char_data *ch = (*ich);
+      char_data *ch = *ich;
 
       if( ( !fConn || !ch->desc ) && ch->pcdata->filename && !str_cmp( name, ch->pcdata->filename ) )
       {
          if( fConn && ch->switched )
          {
-            write_to_buffer( "Already playing.\r\nName: ", 0 );
+            write_to_buffer( "Already playing.\r\nName: " );
             connected = CON_GET_NAME;
             if( character )
             {
@@ -2614,7 +2122,7 @@ short descriptor_data::check_reconnect( char *name, bool fConn )
             update_connhistory( ch->desc, CONNTYPE_RECONN );
 
             act( AT_ACTION, "$n has reconnected.", ch, NULL, NULL, TO_CANSEE );
-            log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name, host );
+            log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name, host.c_str(  ) );
             connected = CON_PLAYING;
             check_auth_state( ch ); /* Link dead support -- Rantic */
             show_status( ch );
@@ -2628,19 +2136,17 @@ short descriptor_data::check_reconnect( char *name, bool fConn )
 /*
  * Check if already playing.
  */
-short descriptor_data::check_playing( char *name, bool kick )
+short descriptor_data::check_playing( const string & name, bool kick )
 {
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
    char_data *ch;
    int cstate;
 
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
 
-      if( d != this && ( d->character || d->original ) && !str_cmp( name, d->original
-                                                                             ? d->original->pcdata->filename : d->
-                                                                             character->pcdata->filename ) )
+      if( d != this && ( d->character || d->original ) && !str_cmp( name, d->original ? d->original->pcdata->filename : d->character->pcdata->filename ) )
       {
          cstate = d->connected;
          ch = d->original ? d->original : d->character;
@@ -2649,14 +2155,14 @@ short descriptor_data::check_playing( char *name, bool kick )
                   && cstate != CON_ROLL_STATS && cstate != CON_PRIZENAME && cstate != CON_CONFIRMPRIZENAME
                   && cstate != CON_PRIZEKEY && cstate != CON_CONFIRMPRIZEKEY && cstate != CON_RAISE_STAT ) )
          {
-            write_to_buffer( "Already connected - try again.\r\n", 0 );
+            write_to_buffer( "Already connected - try again.\r\n" );
             log_printf_plus( LOG_COMM, ch->level, "%s already connected.", ch->pcdata->filename );
             return BERR;
          }
          if( !kick )
             return true;
-         write_to_buffer( "Already playing... Kicking off old connection.\r\n", 0 );
-         d->write_to_buffer( "Kicking off old connection... bye!\r\n", 0 );
+         write_to_buffer( "Already playing... Kicking off old connection.\r\n" );
+         d->write_to_buffer( "Kicking off old connection... bye!\r\n" );
          close_socket( d, false );
          /*
           * clear descriptor pointer to get rid of bug message in log 
@@ -2672,7 +2178,7 @@ short descriptor_data::check_playing( char *name, bool kick )
          ch->print( "Reconnecting.\r\n\r\n" );
 
          act( AT_ACTION, "$n has reconnected, kicking off old link.", ch, NULL, NULL, TO_CANSEE );
-         log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name, host );
+         log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name, host.c_str(  ) );
          connected = cstate;
          check_auth_state( ch ); /* Link dead support -- Rantic */
          show_status( ch );
@@ -2685,11 +2191,9 @@ short descriptor_data::check_playing( char *name, bool kick )
 void char_to_game( char_data * ch )
 {
    if( str_cmp( ch->desc->client, "Unidentified" ) )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ), ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name );
    if( ch->desc->can_compress )
       log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name );
-   if( ch->desc->mxp_detected )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MXP support detected for %s.", ch->name );
    if( ch->desc->msp_detected )
       log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name );
 
@@ -2763,15 +2267,8 @@ void char_to_game( char_data * ch )
       scan_rares( ch );
    ch->pcdata->daysidle = 0;
 
-   DISPOSE( ch->pcdata->lasthost );
-   ch->pcdata->lasthost = str_dup( ch->desc->host );
+   ch->pcdata->lasthost = ch->desc->host;
 
-   /*
-    * Auction house system disabled as of 8-24-99 due to abuse by the players - Samson 
-    */
-   /*
-    * Reinstated 11-1-99 - Samson 
-    */
    sale_count( ch ); /* New auction system - Samson 6-24-99 */
 
    check_auth_state( ch ); /* new auth */
@@ -2796,7 +2293,6 @@ void char_to_game( char_data * ch )
 
    if( ch->level < LEVEL_IMMORTAL )
       ++sysdata->playersonline;
-   return;
 }
 
 void display_motd( char_data * ch )
@@ -2849,9 +2345,8 @@ void display_motd( char_data * ch )
 
       show_file( ch, SPEC_MOTD );
    }
-   ch->desc->buffer_printf( "\r\nWelcome to %s...\r\n", sysdata->mud_name );
+   ch->desc->buffer_printf( "\r\nWelcome to %s...\r\n", sysdata->mud_name.c_str(  ) );
    char_to_game( ch );
-   return;
 }
 
 char *md5_crypt( const char *pwd )
@@ -2894,26 +2389,25 @@ char *md5_crypt( const char *pwd )
 
 CMDF( do_shatest )
 {
-   ch->printf( "%s\r\n", argument );
-   ch->printf( "%s\r\n", sha256_crypt( argument ) );
-   ch->printf( "%s\r\n", md5_crypt( argument ) );
+   ch->printf( "%s\r\n", argument.c_str(  ) );
+   ch->printf( "%s\r\n", sha256_crypt( argument.c_str(  ) ) );
+   ch->printf( "%s\r\n", md5_crypt( argument.c_str(  ) ) );
 }
 
 /*
  * Deal with sockets that haven't logged in yet.
  */
 /* Function modified from original form on varying dates - Samson */
-/* Password encryption sections upgraded to use MD5 Encryption - Samson 7-10-00 */
-void descriptor_data::nanny( char *argument )
+/* Password encryption sections upgraded to use SHA-256 Encryption - Samson 7-10-00 */
+void descriptor_data::nanny( string & argument )
 {
    char buf[MSL];
    char_data *ch;
-   char *pwdnew;
+   const char *pwdnew;
    bool fOld;
    short chk;
 
-   while( isspace( *argument ) )
-      ++argument;
+   strip_lspace( argument );
 
    ch = character;
 
@@ -2941,7 +2435,7 @@ void descriptor_data::nanny( char *argument )
          break;
 
       case CON_GET_NAME:
-         if( !argument || argument[0] == '\0' )
+         if( argument.empty(  ) )
          {
             close_socket( this, false );
             return;
@@ -2950,24 +2444,24 @@ void descriptor_data::nanny( char *argument )
          /*
           * Old players can keep their characters. -- Alty 
           */
-         argument = strlower( argument ); /* Modification to force proper name display */
+         strlower( argument );   // Modification to force proper name display
          argument[0] = UPPER( argument[0] ); /* Samson 5-22-98 */
          if( !check_parse_name( argument, ( newstate != 0 ) ) )
          {
-            write_to_buffer( "You have chosen a name which is unnacceptable.\r\n", 0 );
-            write_to_buffer( "Acceptable names cannot be:\r\n\r\n", 0 );
-            write_to_buffer( "- Nonsensical, unpronounceable or ridiculous.\r\n", 0 );
-            write_to_buffer( "- Profane or derogatory as interpreted in any language.\r\n", 0 );
-            write_to_buffer( "- Modern, futuristic, or common, such as 'Jill' or 'Laser'.\r\n", 0 );
-            write_to_buffer( "- Similar to that of any Immortal, monster, or object.\r\n", 0 );
-            write_to_buffer( "- Comprised of non-alphanumeric characters.\r\n", 0 );
-            write_to_buffer( "- Comprised of various capital letters, such as 'BrACkkA' or 'CORTO'.\r\n", 0 );
-            write_to_buffer( "- Comprised of ranks or titles, such as 'Lord' or 'Master'.\r\n", 0 );
-            write_to_buffer( "- Composed of singular descriptive nouns, adverbs or adjectives,\r\n", 0 );
-            write_to_buffer( "  as in 'Heart', 'Big', 'Flying', 'Broken', 'Slick' or 'Tricky'.\r\n", 0 );
-            write_to_buffer( "- Any of the above in reverse, i.e., writing Joe as 'Eoj'.\r\n", 0 );
-            write_to_buffer( "- Anything else the Immortal staff deems inappropriate.\r\n\r\n", 0 );
-            write_to_buffer( "Please choose a new name: ", 0 );
+            write_to_buffer( "You have chosen a name which is unnacceptable.\r\n" );
+            write_to_buffer( "Acceptable names cannot be:\r\n\r\n" );
+            write_to_buffer( "- Nonsensical, unpronounceable or ridiculous.\r\n" );
+            write_to_buffer( "- Profane or derogatory as interpreted in any language.\r\n" );
+            write_to_buffer( "- Modern, futuristic, or common, such as 'Jill' or 'Laser'.\r\n" );
+            write_to_buffer( "- Similar to that of any Immortal, monster, or object.\r\n" );
+            write_to_buffer( "- Comprised of non-alphanumeric characters.\r\n" );
+            write_to_buffer( "- Comprised of various capital letters, such as 'BrACkkA' or 'CORTO'.\r\n" );
+            write_to_buffer( "- Comprised of ranks or titles, such as 'Lord' or 'Master'.\r\n" );
+            write_to_buffer( "- Composed of singular descriptive nouns, adverbs or adjectives,\r\n" );
+            write_to_buffer( "  as in 'Heart', 'Big', 'Flying', 'Broken', 'Slick' or 'Tricky'.\r\n" );
+            write_to_buffer( "- Any of the above in reverse, i.e., writing Joe as 'Eoj'.\r\n" );
+            write_to_buffer( "- Anything else the Immortal staff deems inappropriate.\r\n\r\n" );
+            write_to_buffer( "Please choose a new name: " );
             return;
          }
 
@@ -2981,77 +2475,78 @@ void descriptor_data::nanny( char *argument )
                 */
                if( sysdata->DENY_NEW_PLAYERS == true )
                {
-                  write_to_buffer( "The mud is currently preparing for a reboot.\r\n", 0 );
-                  write_to_buffer( "New players are not accepted during this time.\r\n", 0 );
-                  write_to_buffer( "Please try again in a few minutes.\r\n", 0 );
+                  write_to_buffer( "The mud is currently preparing for a reboot.\r\n" );
+                  write_to_buffer( "New players are not accepted during this time.\r\n" );
+                  write_to_buffer( "Please try again in a few minutes.\r\n" );
                   close_socket( this, false );
                }
                write_to_buffer( "\r\nChoosing a name is one of the most important parts of this game...\r\n"
                                 "Make sure to pick a name appropriate to the character you are going\r\n"
                                 "to role play, and be sure that it suits a medieval theme.\r\n"
-                                "If the name you select is not acceptable, you will be asked to choose\r\n"
-                                "another one.\r\n\r\nPlease choose a name for your character: ", 0 );
+                                "If the name you select is not acceptable, you will be asked to choose\r\n" "another one.\r\n\r\nPlease choose a name for your character: " );
                ++newstate;
                connected = CON_GET_NAME;
                return;
             }
             else
             {
-               write_to_buffer( "You have chosen a name which is unnacceptable.\r\n", 0 );
-               write_to_buffer( "Acceptable names cannot be:\r\n\r\n", 0 );
-               write_to_buffer( "- Nonsensical, unpronounceable or ridiculous.\r\n", 0 );
-               write_to_buffer( "- Profane or derogatory as interpreted in any language.\r\n", 0 );
-               write_to_buffer( "- Modern, futuristic, or common, such as 'Jill' or 'Laser'.\r\n", 0 );
-               write_to_buffer( "- Similar to that of any Immortal, monster, or object.\r\n", 0 );
-               write_to_buffer( "- Comprised of non-alphanumeric characters.\r\n", 0 );
-               write_to_buffer( "- Comprised of various capital letters, such as 'BrACkkA' or 'CORTO'.\r\n", 0 );
-               write_to_buffer( "- Comprised of ranks or titles, such as 'Lord' or 'Master'.\r\n", 0 );
-               write_to_buffer( "- Composed of singular descriptive nouns, adverbs or adjectives,\r\n", 0 );
-               write_to_buffer( "  as in 'Heart', 'Big', 'Flying', 'Broken', 'Slick' or 'Tricky'.\r\n", 0 );
-               write_to_buffer( "- Any of the above in reverse, i.e., writing Joe as 'Eoj'.\r\n", 0 );
-               write_to_buffer( "- Anything else the Immortal staff deems inappropriate.\r\n\r\n", 0 );
-               write_to_buffer( "Please choose a new name: ", 0 );
+               write_to_buffer( "You have chosen a name which is unnacceptable.\r\n" );
+               write_to_buffer( "Acceptable names cannot be:\r\n\r\n" );
+               write_to_buffer( "- Nonsensical, unpronounceable or ridiculous.\r\n" );
+               write_to_buffer( "- Profane or derogatory as interpreted in any language.\r\n" );
+               write_to_buffer( "- Modern, futuristic, or common, such as 'Jill' or 'Laser'.\r\n" );
+               write_to_buffer( "- Similar to that of any Immortal, monster, or object.\r\n" );
+               write_to_buffer( "- Comprised of non-alphanumeric characters.\r\n" );
+               write_to_buffer( "- Comprised of various capital letters, such as 'BrACkkA' or 'CORTO'.\r\n" );
+               write_to_buffer( "- Comprised of ranks or titles, such as 'Lord' or 'Master'.\r\n" );
+               write_to_buffer( "- Composed of singular descriptive nouns, adverbs or adjectives,\r\n" );
+               write_to_buffer( "  as in 'Heart', 'Big', 'Flying', 'Broken', 'Slick' or 'Tricky'.\r\n" );
+               write_to_buffer( "- Any of the above in reverse, i.e., writing Joe as 'Eoj'.\r\n" );
+               write_to_buffer( "- Anything else the Immortal staff deems inappropriate.\r\n\r\n" );
+               write_to_buffer( "Please choose a new name: " );
                return;
             }
          }
 
          if( check_playing( argument, false ) == BERR )
          {
-            write_to_buffer( "Name: ", 0 );
+            write_to_buffer( "Name: " );
             return;
          }
 
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Incoming connection: %s, port %d.", host, client_port );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Incoming connection: %s, port %d.", host.c_str(  ), client_port );
 
          fOld = load_char_obj( this, argument, true, false );
-
          if( !character )
          {
-            log_printf( "Bad player file %s@%s.", argument, host );
-            buffer_printf( "Your playerfile is corrupt...Please notify %s\r\n", sysdata->admin_email );
+            log_printf( "Bad player file %s@%s.", argument.c_str(  ), host.c_str(  ) );
+            buffer_printf( "Your playerfile is corrupt...Please notify %s\r\n", sysdata->admin_email.c_str(  ) );
             close_socket( this, false );
             return;
          }
          ch = character;
+
+/* FIXME: Write new ban code so this has meaning again.
          if( check_bans( ch ) )
          {
-            write_to_buffer( "Your site has been banned from this Mud.\r\n", 0 );
+            write_to_buffer( "Your site has been banned from this Mud.\r\n" );
             close_socket( this, false );
             return;
          }
+*/
 
          if( ch->has_pcflag( PCFLAG_DENY ) )
          {
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Denying access to %s@%s.", argument, host );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Denying access to %s@%s.", argument.c_str(  ), host.c_str(  ) );
             if( newstate != 0 )
             {
-               write_to_buffer( "That name is already taken.  Please choose another: ", 0 );
+               write_to_buffer( "That name is already taken.  Please choose another: " );
                connected = CON_GET_NAME;
                character->desc = NULL;
                deleteptr( character ); /* Big Memory Leak before --Shaddai */
                return;
             }
-            write_to_buffer( "You are denied access.\r\n", 0 );
+            write_to_buffer( "You are denied access.\r\n" );
             close_socket( this, false );
             return;
          }
@@ -3061,7 +2556,7 @@ void descriptor_data::nanny( char *argument )
           */
          if( ch->is_immortal(  ) && sysdata->check_imm_host && !check_immortal_domain( ch, host ) )
          {
-            write_to_buffer( "Invalid host profile. This event has been logged for inspection.\r\n", 0 );
+            write_to_buffer( "Invalid host profile. This event has been logged for inspection.\r\n" );
             close_socket( this, false );
             return;
          }
@@ -3075,8 +2570,8 @@ void descriptor_data::nanny( char *argument )
 
          if( ( sysdata->WIZLOCK || sysdata->IMPLOCK || sysdata->LOCKDOWN ) && !ch->is_immortal(  ) )
          {
-            write_to_buffer( "The game is wizlocked. Only immortals can connect now.\r\n", 0 );
-            write_to_buffer( "Please try back later.\r\n", 0 );
+            write_to_buffer( "The game is wizlocked. Only immortals can connect now.\r\n" );
+            write_to_buffer( "Please try back later.\r\n" );
             log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: %s disconnected due to %s.", ch->name,
                              sysdata->WIZLOCK ? "wizlock" : sysdata->IMPLOCK ? "implock" : "lockdown" );
             close_socket( this, false );
@@ -3084,23 +2579,23 @@ void descriptor_data::nanny( char *argument )
          }
          else if( sysdata->LOCKDOWN && ch->level < LEVEL_SUPREME )
          {
-            write_to_buffer( "The game is locked down. Only the head implementor can connect now.\r\n", 0 );
-            write_to_buffer( "Please try back later.\r\n", 0 );
+            write_to_buffer( "The game is locked down. Only the head implementor can connect now.\r\n" );
+            write_to_buffer( "Please try back later.\r\n" );
             log_printf_plus( LOG_COMM, LEVEL_SUPREME, "Immortal: %s disconnected due to lockdown.", ch->name );
             close_socket( this, false );
             return;
          }
          else if( sysdata->IMPLOCK && !ch->is_imp(  ) )
          {
-            write_to_buffer( "The game is implocked. Only implementors can connect now.\r\n", 0 );
-            write_to_buffer( "Please try back later.\r\n", 0 );
+            write_to_buffer( "The game is implocked. Only implementors can connect now.\r\n" );
+            write_to_buffer( "Please try back later.\r\n" );
             log_printf_plus( LOG_COMM, LEVEL_KL, "Immortal: %s disconnected due to implock.", ch->name );
             close_socket( this, false );
             return;
          }
          else if( bootlock && !ch->is_immortal(  ) )
          {
-            write_to_buffer( "The game is preparing to reboot. Please try back in about 5 minutes.\r\n", 0 );
+            write_to_buffer( "The game is preparing to reboot. Please try back in about 5 minutes.\r\n" );
             log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: %s disconnected due to bootlock.", ch->name );
             close_socket( this, false );
             return;
@@ -3110,7 +2605,7 @@ void descriptor_data::nanny( char *argument )
          {
             if( newstate != 0 )
             {
-               write_to_buffer( "That name is already taken.  Please choose another: ", 0 );
+               write_to_buffer( "That name is already taken.  Please choose another: " );
                connected = CON_GET_NAME;
                character->desc = NULL;
                deleteptr( character ); /* Big Memory Leak before --Shaddai */
@@ -3119,8 +2614,8 @@ void descriptor_data::nanny( char *argument )
             /*
              * Old player 
              */
-            write_to_buffer( "\r\nEnter your password: ", 0 );
-            write_to_buffer( echo_off_str, 0 );
+            write_to_buffer( "\r\nEnter your password: " );
+            write_to_buffer( echo_off_str );
             connected = CON_GET_OLD_PASSWORD;
             return;
          }
@@ -3131,31 +2626,29 @@ void descriptor_data::nanny( char *argument )
                /*
                 * No such player 
                 */
-               write_to_buffer
-                  ( "\r\nNo such player exists.\r\nPlease check your spelling, or type new to start a new player.\r\n\r\nName: ",
-                    0 );
+               write_to_buffer( "\r\nNo such player exists.\r\nPlease check your spelling, or type new to start a new player.\r\n\r\nName: " );
                connected = CON_GET_NAME;
                character->desc = NULL;
                deleteptr( character ); /* Big Memory Leak before --Shaddai */
                return;
             }
-            argument = strlower( argument ); /* Added to force names to display properly */
+            strlower( argument );   /* Added to force names to display properly */
             argument = capitalize( argument );  /* Samson 5-22-98 */
             STRFREE( ch->name );
-            ch->name = STRALLOC( argument );
-            buffer_printf( "Did I get that right, %s (Y/N)? ", argument );
+            ch->name = STRALLOC( argument.c_str(  ) );
+            buffer_printf( "Did I get that right, %s (Y/N)? ", argument.c_str(  ) );
             connected = CON_CONFIRM_NEW_NAME;
             return;
          }
 
       case CON_GET_OLD_PASSWORD:
-         write_to_buffer( "\r\n", 2 );
+         write_to_buffer( "\r\n" );
 
          if( ch->pcdata->version < 22 )
          {
-            if( str_cmp( md5_crypt( argument ), ch->pcdata->pwd ) )
+            if( str_cmp( md5_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
             {
-               write_to_buffer( "Wrong password, disconnecting.\r\n", 0 );
+               write_to_buffer( "Wrong password, disconnecting.\r\n" );
                /*
                 * clear descriptor pointer to get rid of bug message in log 
                 */
@@ -3164,9 +2657,9 @@ void descriptor_data::nanny( char *argument )
                return;
             }
          }
-         else if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
+         else if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
          {
-            write_to_buffer( "Wrong password, disconnecting.\r\n", 0 );
+            write_to_buffer( "Wrong password, disconnecting.\r\n" );
             /*
              * clear descriptor pointer to get rid of bug message in log 
              */
@@ -3175,7 +2668,7 @@ void descriptor_data::nanny( char *argument )
             return;
          }
 
-         write_to_buffer( echo_on_str, 0 );
+         write_to_buffer( echo_on_str );
 
          if( check_playing( ch->pcdata->filename, true ) )
             return;
@@ -3195,32 +2688,39 @@ void descriptor_data::nanny( char *argument )
          character->desc = NULL;
          deleteptr( character );
          fOld = load_char_obj( this, buf, false, false );
+         if( !character )
+         {
+            log_printf( "Bad player file %s@%s.", argument.c_str(  ), host.c_str(  ) );
+            buffer_printf( "Your playerfile is corrupt...Please notify %s\r\n", sysdata->admin_email.c_str(  ) );
+            close_socket( this, false );
+            return;
+         }
          ch = character;
+
          if( ch->position > POS_SITTING && ch->position < POS_STANDING )
             ch->position = POS_STANDING;
 
          if( ch->pcdata->version < 22 )
          {
             DISPOSE( ch->pcdata->pwd );
-            ch->pcdata->pwd = str_dup( sha256_crypt( argument ) );
+            ch->pcdata->pwd = str_dup( sha256_crypt( argument.c_str(  ) ) );
          }
-         log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, host );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, host.c_str(  ) );
          show_title(  );
          break;
 
       case CON_CONFIRM_NEW_NAME:
-         switch ( *argument )
+         switch ( argument[0] )
          {
             case 'y':
             case 'Y':
-               buffer_printf( "\r\nMake sure to use a password that won't be easily guessed by someone else."
-                              "\r\nPick a good password for %s: %s", ch->name, echo_off_str );
+               buffer_printf( "\r\nMake sure to use a password that won't be easily guessed by someone else." "\r\nPick a good password for %s: %s", ch->name, echo_off_str );
                connected = CON_GET_NEW_PASSWORD;
                break;
 
             case 'n':
             case 'N':
-               write_to_buffer( "Ok, what IS it, then? ", 0 );
+               write_to_buffer( "Ok, what IS it, then? " );
                /*
                 * clear descriptor pointer to get rid of bug message in log 
                 */
@@ -3230,39 +2730,39 @@ void descriptor_data::nanny( char *argument )
                break;
 
             default:
-               write_to_buffer( "Please type Yes or No. ", 0 );
+               write_to_buffer( "Please type Yes or No. " );
                break;
          }
          break;
 
       case CON_GET_NEW_PASSWORD:
-         write_to_buffer( "\r\n", 2 );
+         write_to_buffer( "\r\n" );
 
-         if( strlen( argument ) < 5 )
+         if( argument.length(  ) < 5 )
          {
-            write_to_buffer( "Password must be at least five characters long.\r\nPassword: ", 0 );
+            write_to_buffer( "Password must be at least five characters long.\r\nPassword: " );
             return;
          }
 
          if( argument[0] == '!' )
          {
-            write_to_buffer( "Password cannot begin with the '!' character.\r\nPassword: ", 0 );
+            write_to_buffer( "Password cannot begin with the '!' character.\r\nPassword: " );
             return;
          }
 
-         pwdnew = sha256_crypt( argument );  /* SHA-256 Encryption */
+         pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
          DISPOSE( ch->pcdata->pwd );
          ch->pcdata->pwd = str_dup( pwdnew );
-         write_to_buffer( "\r\nPlease retype the password to confirm: ", 0 );
+         write_to_buffer( "\r\nPlease retype the password to confirm: " );
          connected = CON_CONFIRM_NEW_PASSWORD;
          break;
 
       case CON_CONFIRM_NEW_PASSWORD:
-         write_to_buffer( "\r\n", 2 );
+         write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
+         if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
          {
-            write_to_buffer( "Passwords don't match.\r\nRetype password: ", 0 );
+            write_to_buffer( "Passwords don't match.\r\nRetype password: " );
             connected = CON_GET_NEW_PASSWORD;
             return;
          }
@@ -3270,28 +2770,28 @@ void descriptor_data::nanny( char *argument )
 #ifdef MULTIPORT
          if( mud_port != MAINPORT )
          {
-            write_to_buffer( "This is a restricted access port. Only immortals and their test players are allowed.\r\n", 0 );
-            write_to_buffer( "Enter access code: ", 0 );
-            write_to_buffer( echo_off_str, 0 );
+            write_to_buffer( "This is a restricted access port. Only immortals and their test players are allowed.\r\n" );
+            write_to_buffer( "Enter access code: " );
+            write_to_buffer( echo_off_str );
             connected = CON_GET_PORT_PASSWORD;
             return;
          }
 #endif
 
-         write_to_buffer( echo_on_str, 0 );
+         write_to_buffer( echo_on_str );
 
-         write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game.", 0 );
-         write_to_buffer( "\r\nWhat is your sex? ", 0 );
-         write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodyte ?", 0 );
+         write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game." );
+         write_to_buffer( "\r\nWhat is your sex? " );
+         write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodyte ?" );
          connected = CON_GET_NEW_SEX;
          break;
 
       case CON_GET_PORT_PASSWORD:
-         write_to_buffer( "\r\n", 2 );
+         write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument ), sysdata->password ) )
+         if( str_cmp( sha256_crypt( argument.c_str(  ) ), sysdata->password ) )
          {
-            write_to_buffer( "Invalid access code.\r\n", 0 );
+            write_to_buffer( "Invalid access code.\r\n" );
             /*
              * clear descriptor pointer to get rid of bug message in log 
              */
@@ -3299,10 +2799,10 @@ void descriptor_data::nanny( char *argument )
             close_socket( this, false );
             return;
          }
-         write_to_buffer( echo_on_str, 0 );
-         write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game.", 0 );
-         write_to_buffer( "\r\nWhat is your sex? ", 0 );
-         write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodyte ?", 0 );
+         write_to_buffer( echo_on_str );
+         write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game." );
+         write_to_buffer( "\r\nWhat is your sex? " );
+         write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodyte ?" );
          connected = CON_GET_NEW_SEX;
          break;
 
@@ -3326,7 +2826,7 @@ void descriptor_data::nanny( char *argument )
                ch->sex = SEX_HERMAPHRODYTE;
                break;
             default:
-               write_to_buffer( "That's not a sex.\r\nWhat IS your sex? ", 0 );
+               write_to_buffer( "That's not a gender.\r\nWhat IS your gender? " );
                return;
          }
 
@@ -3339,15 +2839,12 @@ void descriptor_data::nanny( char *argument )
          ch->set_pcflag( PCFLAG_AUTOMAP );
 
          /*
-          * MXP and MSP terminal support. Activate once at creation - Samson 8-21-01 
+          * MSP terminal support. Activate once at creation - Samson 8-21-01 
           */
          if( ch->desc->msp_detected )
             ch->set_pcflag( PCFLAG_MSP );
 
-         if( ch->desc->mxp_detected )
-            ch->set_pcflag( PCFLAG_MXP );
-
-         write_to_buffer( "Press [ENTER] ", 0 );
+         write_to_buffer( "Press [ENTER] " );
          show_title(  );
          ch->level = 0;
          ch->position = POS_STANDING;
@@ -3371,12 +2868,12 @@ void descriptor_data::nanny( char *argument )
           * Code courtesy of Waldemar Thiel (Swiv) 
           */
       case CON_DELETE:
-         write_to_buffer( "\r\n", 2 );
+         write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
+         if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
          {
-            write_to_buffer( "Wrong password entered, deletion cancelled.\r\n", 0 );
-            write_to_buffer( echo_on_str, 0 );
+            write_to_buffer( "Wrong password entered, deletion cancelled.\r\n" );
+            write_to_buffer( echo_on_str );
             connected = CON_PLAYING;
             return;
          }
@@ -3384,25 +2881,25 @@ void descriptor_data::nanny( char *argument )
          {
             room_index *donate = get_room_index( ROOM_VNUM_DONATION );
 
-            write_to_buffer( "\r\nYou've deleted your character!!!\r\n", 0 );
+            write_to_buffer( "\r\nYou've deleted your character!!!\r\n" );
             log_printf( "Player: %s has deleted.", capitalize( ch->name ) );
 
             if( donate != NULL && ch->level > 1 )  /* No more deleting to remove goodies from play */
             {
-               list<obj_data*>::iterator iobj;
+               list < obj_data * >::iterator iobj;
 
-               for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); )
+               for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
                {
-                  obj_data *obj = (*iobj);
+                  obj_data *obj = ( *iobj );
                   ++iobj;
 
                   if( obj->wear_loc != WEAR_NONE )
                      ch->unequip( obj );
                }
 
-               for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); )
+               for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
                {
-                  obj_data *obj = (*iobj);
+                  obj_data *obj = ( *iobj );
                   ++iobj;
 
                   obj->separate(  );
@@ -3431,7 +2928,7 @@ void descriptor_data::nanny( char *argument )
          if( !prize )
          {
             bug( "%s: Prize object turned NULL somehow!", __FUNCTION__ );
-            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n", 0 );
+            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
@@ -3439,11 +2936,11 @@ void descriptor_data::nanny( char *argument )
             break;
          }
 
-         if( !argument || argument[0] == '\0' )
+         if( argument.empty(  ) )
          {
-            write_to_buffer( "You must specify a name for your prize.\r\n\r\n", 0 );
+            write_to_buffer( "You must specify a name for your prize.\r\n\r\n" );
             ch->printf( "You are editing %s.\r\n", prize->short_descr );
-            write_to_buffer( "[SINDHAE] Prizename: ", 0 );
+            write_to_buffer( "[SINDHAE] Prizename: " );
             return;
          }
 
@@ -3451,7 +2948,7 @@ void descriptor_data::nanny( char *argument )
          {
             do_help( ch, "prizenaming" );
             ch->printf( "\r\n&RYou are editing %s&R.\r\n", prize->short_descr );
-            write_to_buffer( "[SINDHAE] Prizename: ", 0 );
+            write_to_buffer( "[SINDHAE] Prizename: " );
             return;
          }
 
@@ -3459,7 +2956,7 @@ void descriptor_data::nanny( char *argument )
          {
             do_help( ch, "pcolors" );
             ch->printf( "\r\n&RYou are editing %s&R.\r\n", prize->short_descr );
-            write_to_buffer( "[SINDHAE] Prizename: ", 0 );
+            write_to_buffer( "[SINDHAE] Prizename: " );
             return;
          }
 
@@ -3467,12 +2964,12 @@ void descriptor_data::nanny( char *argument )
           * God, I hope this works 
           */
          STRFREE( prize->short_descr );
-         prize->short_descr = STRALLOC( argument );
+         prize->short_descr = STRALLOC( argument.c_str(  ) );
 
          ch->print( "\r\nYour prize will look like this when worn:\r\n" );
-         ch->print( prize->format_to_char( ch, true, 1, MXP_NONE, "" ) );
+         ch->print( prize->format_to_char( ch, true, 1 ) );
          ch->set_color( AT_RED );
-         write_to_buffer( "\r\nIs this correct? (Y/N)", 0 );
+         write_to_buffer( "\r\nIs this correct? (Y/N)" );
          ch->pcdata->spare_ptr = prize;
          connected = CON_CONFIRMPRIZENAME;
       }
@@ -3486,7 +2983,7 @@ void descriptor_data::nanny( char *argument )
          if( !prize )
          {
             bug( "%s: Prize object turned NULL somehow!", __FUNCTION__ );
-            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n", 0 );
+            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
@@ -3498,28 +2995,28 @@ void descriptor_data::nanny( char *argument )
          {
             case 'y':
             case 'Y':
-               write_to_buffer( "\r\nPrize name is confirmed.\r\n\r\n", 0 );
+               write_to_buffer( "\r\nPrize name is confirmed.\r\n\r\n" );
                ch->set_color( AT_YELLOW );
-               write_to_buffer( "You will now select at least one keyword for your prize.\r\n", 0 );
-               write_to_buffer( "A keyword is a word you use to manipulate the object.\r\n", 0 );
-               write_to_buffer( "Your keywords many NOT contain any color tags.\r\n\r\n", 0 );
+               write_to_buffer( "You will now select at least one keyword for your prize.\r\n" );
+               write_to_buffer( "A keyword is a word you use to manipulate the object.\r\n" );
+               write_to_buffer( "Your keywords many NOT contain any color tags.\r\n\r\n" );
                ch->printf( "&RYou are editing %s&R.\r\n", prize->short_descr );
-               write_to_buffer( "[SINDHAE] Prizekey: ", 0 );
+               write_to_buffer( "[SINDHAE] Prizekey: " );
                ch->pcdata->spare_ptr = prize;
                connected = CON_PRIZEKEY;
                break;
 
             case 'n':
             case 'N':
-               write_to_buffer( "\r\nOk, then please enter the correct name.\r\n", 0 );
+               write_to_buffer( "\r\nOk, then please enter the correct name.\r\n" );
                ch->printf( "\r\n&RYou are editing %s&R.\r\n", prize->short_descr );
-               write_to_buffer( "[SINDHAE] Prizename: ", 0 );
+               write_to_buffer( "[SINDHAE] Prizename: " );
                ch->pcdata->spare_ptr = prize;
                connected = CON_PRIZENAME;
                return;
 
             default:
-               write_to_buffer( "Yes or No? ", 0 );
+               write_to_buffer( "Yes or No? " );
                return;
          }
       }
@@ -3533,7 +3030,7 @@ void descriptor_data::nanny( char *argument )
          if( !prize )
          {
             bug( "%s: Prize object turned NULL somehow!", __FUNCTION__ );
-            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n", 0 );
+            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
@@ -3541,11 +3038,11 @@ void descriptor_data::nanny( char *argument )
             break;
          }
 
-         if( !argument || argument[0] == '\0' )
+         if( argument.empty(  ) )
          {
-            write_to_buffer( "You must specify keywords for your prize.\r\n\r\n", 0 );
+            write_to_buffer( "You must specify keywords for your prize.\r\n\r\n" );
             ch->printf( "&RYou are editing %s&R.\r\n", prize->short_descr );
-            write_to_buffer( "[SINDHAE] Prizekey: ", 0 );
+            write_to_buffer( "[SINDHAE] Prizekey: " );
             return;
          }
 
@@ -3553,12 +3050,12 @@ void descriptor_data::nanny( char *argument )
          {
             do_help( ch, "prizekey" );
             ch->printf( "\r\n&RYou are editing %s&R.", prize->short_descr );
-            write_to_buffer( "\r\n[SINDHAE] Prizekey: ", 0 );
+            write_to_buffer( "\r\n[SINDHAE] Prizekey: " );
             return;
          }
-         stralloc_printf( &prize->name, "%s %s", ch->name, argument );
+         stralloc_printf( &prize->name, "%s %s", ch->name, argument.c_str(  ) );
          ch->printf( "\r\nYou chose these keywords: %s\r\n", prize->name );
-         write_to_buffer( "Is this correct? (Y/N)", 0 );
+         write_to_buffer( "Is this correct? (Y/N)" );
          ch->pcdata->spare_ptr = prize;
          connected = CON_CONFIRMPRIZEKEY;
       }
@@ -3572,7 +3069,7 @@ void descriptor_data::nanny( char *argument )
          if( !prize )
          {
             bug( "%s: Prize object turned NULL somehow!", __FUNCTION__ );
-            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n", 0 );
+            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
@@ -3584,7 +3081,7 @@ void descriptor_data::nanny( char *argument )
          {
             case 'y':
             case 'Y':
-               write_to_buffer( "\r\nPrize keywords confirmed.\r\n\r\n", 0 );
+               write_to_buffer( "\r\nPrize keywords confirmed.\r\n\r\n" );
                ch->pcdata->spare_ptr = NULL;
                ch->from_room(  );
                if( !ch->to_room( get_room_index( ROOM_VNUM_ENDREDEEM ) ) )
@@ -3594,22 +3091,22 @@ void descriptor_data::nanny( char *argument )
                if( ch->Class == CLASS_BARD && prize->item_type == ITEM_INSTRUMENT )
                   stralloc_printf( &prize->name, "minstru %s", prize->name );
 
-               write_to_buffer( "Congratulations! You've completed the redemption.\r\n", 0 );
-               write_to_buffer( "Your prize should be in your inventory.\r\n", 0 );
-               write_to_buffer( "If anything appears wrong, seek immortal assistance.\r\n\r\n", 0 );
+               write_to_buffer( "Congratulations! You've completed the redemption.\r\n" );
+               write_to_buffer( "Your prize should be in your inventory.\r\n" );
+               write_to_buffer( "If anything appears wrong, seek immortal assistance.\r\n\r\n" );
                connected = CON_PLAYING;
                break;
 
             case 'n':
             case 'N':
-               write_to_buffer( "\r\nOk, then please enter the correct keywords.\r\n", 0 );
+               write_to_buffer( "\r\nOk, then please enter the correct keywords.\r\n" );
                ch->printf( "\r\n&RYou are editing %s&R.", prize->short_descr );
-               write_to_buffer( "[SINDHAE] Prizekey: ", 0 );
+               write_to_buffer( "[SINDHAE] Prizekey: " );
                connected = CON_PRIZEKEY;
                return;
 
             default:
-               write_to_buffer( "Yes or No? ", 0 );
+               write_to_buffer( "Yes or No? " );
                return;
          }
       }
@@ -3635,7 +3132,7 @@ void descriptor_data::nanny( char *argument )
              && ch->perm_cha >= 18 + race_table[ch->race]->cha_plus && ch->perm_lck >= 18 + race_table[ch->race]->lck_plus )
          {
             bug( "%s: CON_RAISE_STAT: %s is unable to raise anything.", __FUNCTION__, ch->name );
-            write_to_buffer( "All of your stats are already at their maximum values!\r\n", 0 );
+            write_to_buffer( "All of your stats are already at their maximum values!\r\n" );
             connected = CON_PLAYING;
             return;
          }
@@ -3760,25 +3257,25 @@ void descriptor_data::nanny( char *argument )
          {
             case 'y':
             case 'Y':
-               write_to_buffer( "\r\nYour stats have been set.", 0 );
+               write_to_buffer( "\r\nYour stats have been set." );
                connected = CON_PLAYING;
                break;
 
             case 'n':
             case 'N':
                name_stamp_stats( ch );
-               buffer_printf( "\r\nStr: %s\r\n", attribtext( ch->perm_str ) );
-               buffer_printf( "Int: %s\r\n", attribtext( ch->perm_int ) );
-               buffer_printf( "Wis: %s\r\n", attribtext( ch->perm_wis ) );
-               buffer_printf( "Dex: %s\r\n", attribtext( ch->perm_dex ) );
-               buffer_printf( "Con: %s\r\n", attribtext( ch->perm_con ) );
-               buffer_printf( "Cha: %s\r\n", attribtext( ch->perm_cha ) );
-               buffer_printf( "Lck: %s\r\n", attribtext( ch->perm_lck ) );
-               write_to_buffer( "\r\nKeep these stats? (Y/N)", 0 );
+               buffer_printf( "\r\nStr: %s\r\n", attribtext( ch->perm_str ).c_str(  ) );
+               buffer_printf( "Int: %s\r\n", attribtext( ch->perm_int ).c_str(  ) );
+               buffer_printf( "Wis: %s\r\n", attribtext( ch->perm_wis ).c_str(  ) );
+               buffer_printf( "Dex: %s\r\n", attribtext( ch->perm_dex ).c_str(  ) );
+               buffer_printf( "Con: %s\r\n", attribtext( ch->perm_con ).c_str(  ) );
+               buffer_printf( "Cha: %s\r\n", attribtext( ch->perm_cha ).c_str(  ) );
+               buffer_printf( "Lck: %s\r\n", attribtext( ch->perm_lck ).c_str(  ) );
+               write_to_buffer( "\r\nKeep these stats? (Y/N)" );
                return;
 
             default:
-               write_to_buffer( "Yes or No? ", 0 );
+               write_to_buffer( "Yes or No? " );
                return;
          }
          break;
@@ -3795,26 +3292,24 @@ void descriptor_data::nanny( char *argument )
 
             show_file( ch, SPEC_MOTD );
          }
-         buffer_printf( "\r\nWelcome to %s...\r\n", sysdata->mud_name );
+         buffer_printf( "\r\nWelcome to %s...\r\n", sysdata->mud_name.c_str(  ) );
          char_to_game( ch );
       }
          break;
    }  /* End Nanny switch */
-   return;
 }
 
 CMDF( do_cache )
 {
-   list<dns_data*>::iterator idns;
+   list < dns_data * >::iterator idns;
 
    ch->pager( "&YCached DNS Information\r\n" );
    ch->pager( "IP               | Address\r\n" );
    ch->pager( "------------------------------------------------------------------------------\r\n" );
-   for( idns = dnslist.begin(); idns != dnslist.end(); ++idns )
+   for( idns = dnslist.begin(  ); idns != dnslist.end(  ); ++idns )
    {
-      dns_data *dns = (*idns);
-      ch->pagerf( "&w%16.16s  &g%s\r\n", dns->ip, dns->name );
+      dns_data *dns = *idns;
+      ch->pagerf( "&w%16.16s  &g%s\r\n", dns->ip.c_str(  ), dns->name.c_str(  ) );
    }
-   ch->pagerf( "\r\n&W%d IPs in the cache.\r\n", dnslist.size() );
-   return;
+   ch->pagerf( "\r\n&W%d IPs in the cache.\r\n", dnslist.size(  ) );
 }

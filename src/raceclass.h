@@ -36,22 +36,22 @@ const int RACEFILEVER = 1;
 class race_type
 {
  private:
-   race_type( const race_type& r );
-   race_type& operator=( const race_type& );
+   race_type( const race_type & r );
+     race_type & operator=( const race_type & );
 
  public:
-   race_type();
-   ~race_type();
+     race_type(  );
+    ~race_type(  );
 
-   bitset < MAX_AFFECTED_BY > affected;   /* Default affect bitvectors  */
-   bitset < MAX_ATTACK_TYPE > attacks;
-   bitset < MAX_DEFENSE_TYPE > defenses;
-   bitset < MAX_BPART > body_parts; /* Bodyparts this race has */
-   bitset < LANG_UNKNOWN > language;   /* Default racial language - can have multiples */
-   bitset < MAX_RIS_FLAG > resist;  /* Bugfix: Samson 5-7-99 */
-   bitset < MAX_RIS_FLAG > suscept; /* Bugfix: Samson 5-7-99 */
-   bitset < MAX_CLASS > class_restriction;   /* Flags for illegal classes */
-   char *race_name; /* Race name */
+     bitset < MAX_AFFECTED_BY > affected; /* Default affect bitvectors  */
+     bitset < MAX_ATTACK_TYPE > attacks;
+     bitset < MAX_DEFENSE_TYPE > defenses;
+     bitset < MAX_BPART > body_parts;  /* Bodyparts this race has */
+     bitset < LANG_UNKNOWN > language; /* Default racial language - can have multiples */
+     bitset < MAX_RIS_FLAG > resist;   /* Bugfix: Samson 5-7-99 */
+     bitset < MAX_RIS_FLAG > suscept;  /* Bugfix: Samson 5-7-99 */
+     bitset < MAX_CLASS > class_restriction; /* Flags for illegal classes */
+   char *race_name;  /* Race name */
    char *where_name[MAX_WHERE_NAME];
    short str_plus;   /* Str bonus/penalty    */
    short dex_plus;   /* Dex      "        */
@@ -86,16 +86,16 @@ class race_type
 class class_type
 {
  private:
-   class_type( const class_type& c );
-   class_type& operator=( const class_type& );
+   class_type( const class_type & c );
+     class_type & operator=( const class_type & );
 
  public:
-   class_type();
-   ~class_type();
+     class_type(  );
+    ~class_type(  );
 
-   bitset < MAX_AFFECTED_BY > affected;
-   bitset < MAX_RIS_FLAG > resist;
-   bitset < MAX_RIS_FLAG > suscept;
+     bitset < MAX_AFFECTED_BY > affected;
+     bitset < MAX_RIS_FLAG > resist;
+     bitset < MAX_RIS_FLAG > suscept;
    char *who_name;   /* Name for 'who' */
    float thac0_gain; /* Thac0 amount gained per level - Dwip 5-11-01 */
    int weapon; /* Vnum of Weapon given at creation */

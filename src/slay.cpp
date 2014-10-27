@@ -51,21 +51,19 @@ to the above email address.
 
 void raw_kill( char_data *, char_data * );
 
-list<slay_data*> slaylist;
+list < slay_data * >slaylist;
 
 /* Load the slay file */
 void load_slays( void )
 {
-   char filename[256];
    slay_data *slay;
    ifstream stream;
    int file_ver = 0;
 
-   slaylist.clear();
+   slaylist.clear(  );
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, SLAY_FILE );
-   stream.open( filename );
-   if( !stream.is_open() )
+   stream.open( SLAY_FILE );
+   if( !stream.is_open(  ) )
    {
       log_string( "No slay file found." );
       return;
@@ -73,18 +71,21 @@ void load_slays( void )
 
    do
    {
-      string line, key, value;
+      string key, value;
       char buf[MIL];
 
       stream >> key;
       strip_lspace( key );
+
+      if( key.empty(  ) )
+         continue;
 
       if( key == "#VERSION" )
       {
          stream.getline( buf, MIL );
          value = buf;
          strip_lspace( value );
-         file_ver = atoi( value.c_str() );
+         file_ver = atoi( value.c_str(  ) );
       }
       else if( key == "#SLAY" )
          slay = new slay_data;
@@ -111,7 +112,7 @@ void load_slays( void )
          stream.getline( buf, MIL );
          value = buf;
          strip_lspace( value );
-         slay->set_color( atoi( value.c_str() ) );
+         slay->set_color( atoi( value.c_str(  ) ) );
       }
       else if( key == "Cmessage" )
       {
@@ -145,46 +146,44 @@ void load_slays( void )
       }
       else if( key == "End" )
          slaylist.push_back( slay );
+      else
+         log_printf( "%s: Bad line in slay file: %s", __FUNCTION__, key.c_str(  ) );
    }
-   while( !stream.eof() );
-   stream.close();
-   return;
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 /* Online slay editing, save the slay table to disk - Samson 8-3-98 */
 void save_slays( void )
 {
    ofstream stream;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, SLAY_FILE );
-   stream.open( filename );
-   if( !stream.is_open() )
+   stream.open( SLAY_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( SLAY_FILE );
    }
    else
    {
-      list<slay_data*>::iterator sl;
+      list < slay_data * >::iterator sl;
 
       stream << "#VERSION 1" << endl;
-      for( sl = slaylist.begin(); sl != slaylist.end(); ++sl )
+      for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
       {
-         slay_data *slay = (*sl);
+         slay_data *slay = *sl;
 
          stream << "#SLAY" << endl;
-         stream << "Type      " << slay->get_type() << endl;
-         stream << "Owner     " << slay->get_owner() << endl;
-         stream << "Color     " << slay->get_color() << endl;
-         stream << "Cmessage  " << slay->get_cmsg() << "¢" << endl;
-         stream << "Vmessage  " << slay->get_vmsg() << "¢" << endl;
-         stream << "Rmessage  " << slay->get_rmsg() << "¢" << endl;
+         stream << "Type      " << slay->get_type(  ) << endl;
+         stream << "Owner     " << slay->get_owner(  ) << endl;
+         stream << "Color     " << slay->get_color(  ) << endl;
+         stream << "Cmessage  " << slay->get_cmsg(  ) << "¢" << endl;
+         stream << "Vmessage  " << slay->get_vmsg(  ) << "¢" << endl;
+         stream << "Rmessage  " << slay->get_rmsg(  ) << "¢" << endl;
          stream << "End" << endl << endl;
       }
-      stream.close();
+      stream.close(  );
    }
-   return;
 }
 
 /** Function: do_slay
@@ -201,7 +200,7 @@ void save_slays( void )
 CMDF( do_slay )
 {
    char_data *victim;
-   char who[MIL];
+   string who;
    bool found = false;
 
    if( ch->isnpc(  ) )
@@ -212,18 +211,18 @@ CMDF( do_slay )
 
    argument = one_argument( argument, who );
 
-   if( !who || who[0] == '\0' || !str_prefix( who, "list" ) )
+   if( who.empty(  ) || !str_prefix( who, "list" ) )
    {
       ch->pager( "&gSyntax: slay <victim> [type]\r\n" );
       ch->pager( "Where type is one of the following...\r\n\r\n" );
       ch->pager( "&YSlay                 &ROwner\r\n" );
       ch->pager( "&g-------------------------+---------------\r\n" );
 
-      list<slay_data*>::iterator sl;
-      for( sl = slaylist.begin(); sl != slaylist.end(); ++sl )
+      list < slay_data * >::iterator sl;
+      for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
       {
-         slay_data *slay = (*sl);
-         ch->pagerf( "&G%-14s &g%13s\r\n", slay->get_type().c_str(), slay->get_owner().c_str() );
+         slay_data *slay = *sl;
+         ch->pagerf( "&G%-14s &g%13s\r\n", slay->get_type(  ).c_str(  ), slay->get_owner(  ).c_str(  ) );
       }
       ch->print( "\r\n&gTyping just 'slay <player>' will work too...\r\n" );
       return;
@@ -247,7 +246,7 @@ CMDF( do_slay )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       act( AT_IMMORT, "You brutally slay $N!", ch, NULL, victim, TO_CHAR );
       act( AT_IMMORT, "$n chops you up into little pieces!", ch, NULL, victim, TO_VICT );
@@ -257,18 +256,18 @@ CMDF( do_slay )
    }
    else
    {
-      list<slay_data*>::iterator sl;
-      for( sl = slaylist.begin(); sl != slaylist.end(); ++sl )
+      list < slay_data * >::iterator sl;
+      for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
       {
-         slay_data *slay = (*sl);
+         slay_data *slay = *sl;
 
-         if( ( scomp( argument, slay->get_type() ) && scomp( "Any", slay->get_owner() ) )
-             || ( scomp( slay->get_owner(), ch->name ) && scomp( argument, slay->get_type() ) ) )
+         if( ( !str_cmp( argument, slay->get_type(  ) ) && !str_cmp( "Any", slay->get_owner(  ) ) )
+             || ( !str_cmp( slay->get_owner(  ), ch->name ) && !str_cmp( argument, slay->get_type(  ) ) ) )
          {
             found = true;
-            act( slay->get_color(), slay->get_cmsg().c_str(), ch, NULL, victim, TO_CHAR );
-            act( slay->get_color(), slay->get_vmsg().c_str(), ch, NULL, victim, TO_VICT );
-            act( slay->get_color(), slay->get_rmsg().c_str(), ch, NULL, victim, TO_NOTVICT );
+            act( slay->get_color(  ), slay->get_cmsg(  ).c_str(  ), ch, NULL, victim, TO_CHAR );
+            act( slay->get_color(  ), slay->get_vmsg(  ).c_str(  ), ch, NULL, victim, TO_VICT );
+            act( slay->get_color(  ), slay->get_rmsg(  ).c_str(  ), ch, NULL, victim, TO_NOTVICT );
             raw_kill( ch, victim );
             return;
          }
@@ -280,18 +279,17 @@ CMDF( do_slay )
       ch->print( "&RSlay type not defined, or not owned by you.\r\n" );
       ch->print( "Type \"slay list\" for a complete listing of types available to you.\r\n" );
    }
-   return;
 }
 
-slay_data *get_slay( string name )
+slay_data *get_slay( const string & name )
 {
-   list<slay_data*>::iterator sl;
+   list < slay_data * >::iterator sl;
 
-   for( sl = slaylist.begin(); sl != slaylist.end(); ++sl )
+   for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
    {
-      slay_data *slay = (*sl);
+      slay_data *slay = *sl;
 
-      if( scomp( name, slay->get_type() ) )
+      if( !str_cmp( name, slay->get_type(  ) ) )
          return slay;
    }
    return NULL;
@@ -308,7 +306,7 @@ CMDF( do_makeslay )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: makeslay <slaytype>\r\n" );
       return;
@@ -331,15 +329,14 @@ CMDF( do_makeslay )
    slay->set_vmsg( "$n chops you up into little pieces!" );
    slay->set_rmsg( "$n brutally slays $N!" );
    slaylist.push_back( slay );
-   ch->printf( "New slaytype %s added. Set to default values.\r\n", argument );
+   ch->printf( "New slaytype %s added. Set to default values.\r\n", argument.c_str(  ) );
    save_slays(  );
-   return;
 }
 
 /* Set slay values online - Samson 8-3-98 */
 CMDF( do_setslay )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    slay_data *slay;
 
    if( ch->isnpc(  ) )
@@ -359,7 +356,7 @@ CMDF( do_setslay )
 
       case SUB_SLAYCMSG:
          slay = ( slay_data * ) ch->pcdata->dest_buf;
-         slay->set_cmsg( ch->copy_buffer() );
+         slay->set_cmsg( ch->copy_buffer(  ) );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          save_slays(  );
@@ -367,7 +364,7 @@ CMDF( do_setslay )
 
       case SUB_SLAYVMSG:
          slay = ( slay_data * ) ch->pcdata->dest_buf;
-         slay->set_vmsg( ch->copy_buffer() );
+         slay->set_vmsg( ch->copy_buffer(  ) );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          save_slays(  );
@@ -375,7 +372,7 @@ CMDF( do_setslay )
 
       case SUB_SLAYRMSG:
          slay = ( slay_data * ) ch->pcdata->dest_buf;
-         slay->set_rmsg( ch->copy_buffer() );
+         slay->set_rmsg( ch->copy_buffer(  ) );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          save_slays(  );
@@ -390,7 +387,7 @@ CMDF( do_setslay )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Usage: setslay <slaytype> <field> <value>\r\n" );
       ch->print( "Usage: setslay save\r\n" );
@@ -430,7 +427,7 @@ CMDF( do_setslay )
       ch->pcdata->dest_buf = slay;
       slay->set_cmsg( "" );
       ch->set_editor_desc( "A custom slay message." );
-      ch->start_editing( slay->get_cmsg() );
+      ch->start_editing( slay->get_cmsg(  ) );
       return;
    }
 
@@ -444,7 +441,7 @@ CMDF( do_setslay )
       ch->pcdata->dest_buf = slay;
       slay->set_vmsg( "" );
       ch->set_editor_desc( "A custom slay message." );
-      ch->start_editing( slay->get_vmsg() );
+      ch->start_editing( slay->get_vmsg(  ) );
       return;
    }
 
@@ -458,19 +455,18 @@ CMDF( do_setslay )
       ch->pcdata->dest_buf = slay;
       slay->set_rmsg( "" );
       ch->set_editor_desc( "A custom slay message." );
-      ch->start_editing( slay->get_rmsg() );
+      ch->start_editing( slay->get_rmsg(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "color" ) )
    {
-      slay->set_color( atoi( argument ) );
+      slay->set_color( atoi( argument.c_str(  ) ) );
       ch->print( "Slay color set.\r\n" );
       save_slays(  );
       return;
    }
    do_setslay( ch, "" );
-   return;
 }
 
 /* Online slay editor, show details of a slaytype - Samson 8-3-98 */
@@ -484,7 +480,7 @@ CMDF( do_showslay )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: showslay <slaytype>\r\n" );
       return;
@@ -496,37 +492,35 @@ CMDF( do_showslay )
       return;
    }
 
-   ch->printf( "\r\nSlaytype: %s\r\n", slay->get_type().c_str() );
-   ch->printf( "Owner:    %s\r\n", slay->get_owner().c_str() );
-   ch->printf( "Color:    %d\r\n", slay->get_color() );
-   ch->printf( "&RCmessage: \r\n%s", slay->get_cmsg().c_str() );
-   ch->printf( "\r\n&YVmessage: \r\n%s", slay->get_vmsg().c_str() );
-   ch->printf( "\r\n&GRmessage: \r\n%s", slay->get_rmsg().c_str() );
-   return;
+   ch->printf( "\r\nSlaytype: %s\r\n", slay->get_type(  ).c_str(  ) );
+   ch->printf( "Owner:    %s\r\n", slay->get_owner(  ).c_str(  ) );
+   ch->printf( "Color:    %d\r\n", slay->get_color(  ) );
+   ch->printf( "&RCmessage: \r\n%s", slay->get_cmsg(  ).c_str(  ) );
+   ch->printf( "\r\n&YVmessage: \r\n%s", slay->get_vmsg(  ).c_str(  ) );
+   ch->printf( "\r\n&GRmessage: \r\n%s", slay->get_rmsg(  ).c_str(  ) );
 }
 
-slay_data::slay_data()
+slay_data::slay_data(  )
 {
    set_color( AT_IMMORT );
 }
 
-slay_data::~slay_data()
+slay_data::~slay_data(  )
 {
    slaylist.remove( this );
 }
 
 void free_slays( void )
 {
-   list<slay_data*>::iterator dslay;
+   list < slay_data * >::iterator dslay;
 
-   for( dslay = slaylist.begin(); dslay != slaylist.end(); )
+   for( dslay = slaylist.begin(  ); dslay != slaylist.end(  ); )
    {
-      slay_data *slay = (*dslay);
+      slay_data *slay = *dslay;
       ++dslay;
 
       deleteptr( slay );
    }
-   return;
 }
 
 /* Of course, to create means you need to be able to destroy as well :P - Samson 8-3-98 */
@@ -540,7 +534,7 @@ CMDF( do_destroyslay )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Destroy which slaytype?\r\n" );
       return;
@@ -553,7 +547,6 @@ CMDF( do_destroyslay )
    }
 
    deleteptr( pslay );
-   ch->printf( "Slaytype \"%s\" has beed deleted.\r\n", argument );
+   ch->printf( "Slaytype \"%s\" has beed deleted.\r\n", argument.c_str(  ) );
    save_slays(  );
-   return;
 }

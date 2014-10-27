@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <cstdio>
+#include <sstream>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -38,7 +39,7 @@
 char *rankbuffer( char_data * );
 extern int num_logins;
 
-int web_colour( char type, char *string, bool &firsttag )
+int web_colour( char type, char *string, bool & firsttag )
 {
    char code[50];
    char *p = '\0';
@@ -185,15 +186,15 @@ void web_colourconv( char *buffer, const char *txt )
       *buffer = '\0';
    }
    if( !firsttag )
-      mudstrlcat( buffer, "</span>", MSL );
-   return;
+      mudstrlcat( buffer, "</span>", 64000 );
 }
 
-void web_who()
+void web_who(  )
 {
    FILE *webwho = NULL;
-   list<descriptor_data*>::iterator ds;
-   char rank[200], clan_name[MIL], buf[MSL], outbuf[MSL], webbuf[64000], stats[MIL], invis_str[50];
+   list < descriptor_data * >::iterator ds;
+   ostringstream webbuf, buf;
+   string rank, outbuf, stats, clan_name;
    int pcount = 0, amount, xx = 0, yy = 0;
 
    if( !( webwho = fopen( WEBWHO_FILE, "w" ) ) )
@@ -202,13 +203,12 @@ void web_who()
       return;
    }
 
-   snprintf( buf, MSL, "&R-=[ &WPlayers on %s &R]=-&d", sysdata->mud_name );
-   mudstrlcpy( webbuf, color_align( buf, 80, ALIGN_CENTER ), 64000 );
+   buf << "&R-=[ &WPlayers on " << sysdata->mud_name << "&R]=-&d";
+   webbuf << color_align( buf.str(  ).c_str(  ), 80, ALIGN_CENTER ) << "\n";
 
-   mudstrlcat( webbuf, "\n", 64000 );
-
-   snprintf( buf, MSL, "&Y-=[&d &Wtelnet://%s:%d&d &Y]=-&d", sysdata->telnet, mud_port );
-   amount = 78 - color_strlen( buf );  /* Determine amount to put in front of line */
+   buf.clear(  );
+   buf << "&Y-=[&d &Wtelnet://" << sysdata->telnet << ":" << mud_port << "&d &Y]=-&d";
+   amount = 78 - color_strlen( buf.str(  ).c_str(  ) );  /* Determine amount to put in front of line */
 
    if( amount < 1 )
       amount = 1;
@@ -216,16 +216,14 @@ void web_who()
    amount = amount / 2;
 
    for( xx = 0; xx < amount; ++xx )
-      mudstrlcat( webbuf, " ", 64000 );
+      webbuf << " ";
 
-   mudstrlcat( webbuf, buf, 64000 );
-   mudstrlcat( webbuf, "\n", 64000 );
+   webbuf << buf << "\n";
 
-   outbuf[0] = '\0';
    xx = 0;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
       char_data *person = d->original ? d->original : d->character;
 
       if( person && d->connected >= CON_PLAYING )
@@ -234,52 +232,43 @@ void web_who()
             continue;
 
          if( xx == 0 )
-            mudstrlcat( webbuf,
-               "\n&B--------------------------------=[&d &WPlayers&d &B]=---------------------------------&d\n\n", 64000 );
+            webbuf << "\n&B--------------------------------=[&d &WPlayers&d &B]=---------------------------------&d\n\n";
 
          ++pcount;
 
-         snprintf( rank, 200, "%s", rankbuffer( person ) );
-         snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
+         rank = rankbuffer( person );
+         outbuf = color_align( rank.c_str(  ), 20, ALIGN_CENTER );
 
-         mudstrlcat( webbuf, outbuf, 64000 );
+         webbuf << outbuf;
 
-         mudstrlcpy( stats, "&z[", MIL );
+         stats = "&z[";
          if( person->has_pcflag( PCFLAG_AFK ) )
-            mudstrlcat( stats, "AFK", MIL );
+            stats += "AFK";
          else
-            mudstrlcat( stats, "---", MIL );
+            stats += "---";
          if( person->CAN_PKILL(  ) )
-            mudstrlcat( stats, "PK]&d", MIL );
+            stats += "PK]&d";
          else
-            mudstrlcat( stats, "--]&d", MIL );
-         mudstrlcat( stats, "&G", MIL );
+            stats += "--]&d";
+         stats += "&G";
 
          if( person->pcdata->clan )
-         {
-            mudstrlcpy( clan_name, " &c[", MIL );
-            mudstrlcat( clan_name, person->pcdata->clan->name, MIL );
-            mudstrlcat( clan_name, "&c", MIL );
-            mudstrlcat( clan_name, "]&d", MIL );
-         }
+            clan_name = " &c[" + person->pcdata->clan->name + "&c]&d";
          else
-            clan_name[0] = '\0';
+            clan_name.clear(  );
 
-         if( person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
-            snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-               "%s <a href=\"%s\" target=\"_blank\">%s</a>%s%s&d\n", stats, person->pcdata->homepage,
-               person->name, person->pcdata->title, clan_name );
+         if( !person->pcdata->homepage.empty(  ) )
+            webbuf << stats << " <a href=\"" << person->pcdata->homepage << "\" target=\"_blank\">" << person->name << "</a>" << person->pcdata->title << clan_name << "&d\n";
          else
-            snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-               "%s &G%s%s%s&d\n", stats, person->name, person->pcdata->title, clan_name );
+            webbuf << stats << " &G" << person->name << person->pcdata->title << clan_name << "&d\n";
          ++xx;
       }
    }
 
    yy = 0;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
       char_data *person = d->original ? d->original : d->character;
 
       if( person && d->connected >= CON_PLAYING )
@@ -291,68 +280,56 @@ void web_who()
             continue;
 
          if( yy == 0 )
-            mudstrlcat( webbuf,
-               "\n&R-------------------------------=[&d &WImmortals&d &R]=--------------------------------&d\n\n", 64000 );
+            webbuf << "\n&R-------------------------------=[&d &WImmortals&d &R]=--------------------------------&d\n\n";
 
          ++pcount;
 
-         snprintf( rank, 200, "%s", rankbuffer( person ) );
-         snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
+         rank = rankbuffer( person );
+         outbuf = color_align( rank.c_str(  ), 20, ALIGN_CENTER );
 
-         mudstrlcat( webbuf, outbuf, 64000 );
+         webbuf << outbuf;
 
-         mudstrlcpy( stats, "&z[", MIL );
+         stats = "&z[";
          if( person->has_pcflag( PCFLAG_AFK ) )
-            mudstrlcat( stats, "AFK", MIL );
+            stats += "AFK";
          else
-            mudstrlcat( stats, "---", MIL );
+            stats += "---";
 
          if( person->CAN_PKILL(  ) )
-            mudstrlcat( stats, "PK]&d", MIL );
+            stats += "PK]&d";
          else
-            mudstrlcat( stats, "--]&d", MIL );
-         mudstrlcat( stats, "&G", MIL );
+            stats = "--]&d";
+         stats += "&G";
 
          if( person->pcdata->clan )
-         {
-            mudstrlcpy( clan_name, " &c[", MIL );
-            mudstrlcat( clan_name, person->pcdata->clan->name, MIL );
-            mudstrlcat( clan_name, "&c", MIL );
-            mudstrlcat( clan_name, "]&d", MIL );
-         }
+            clan_name = " &c[" + person->pcdata->clan->name + "&c]&d";
          else
-            clan_name[0] = '\0';
+            clan_name.clear(  );
 
-         if( person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
-            snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-               "%s <a href=\"%s\" target=\"_blank\">%s</a>%s%s&d\n", stats, person->pcdata->homepage,
-               person->name, person->pcdata->title, clan_name );
+         if( !person->pcdata->homepage.empty(  ) )
+            webbuf << stats << " <a href=\"" << person->pcdata->homepage << "\" target=\"_blank\">" << person->name << "</a>" << person->pcdata->title << clan_name << "&d\n";
          else
-            snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-               "%s &G%s%s%s&d\n", stats, person->name, person->pcdata->title, clan_name );
+            webbuf << stats << " &G" << person->name << person->pcdata->title << clan_name << "&d\n";
          ++yy;
       }
    }
 
    char col_buf[64000];
 
-   snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-      "\n&Y[&d&W%d Player%s&d&Y] ", pcount, pcount == 1 ? "" : "s" );
-   snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-      "[&d&WHomepage: <a href=\"%s\" target=\"_blank\">%s</a>&d&Y] [&d&W%d Max Since Reboot&d&Y]&d\n",
-      sysdata->http, sysdata->http, sysdata->maxplayers );
-   snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
-      "&Y[&d&W%d login%s since last reboot on %s&d&Y]&d\n", num_logins, num_logins == 1 ? "" : "s", str_boot_time );
-   web_colourconv( col_buf, webbuf );
+   webbuf << "\n&Y[&d&W" << pcount << " Player" << ( pcount == 1 ? "" : "s" ) << "&d&Y] ";
+   webbuf << "[&d&WHomepage: <a href=\"" << sysdata->http << "\" target=\"_blank\">" << sysdata->
+      http << "</a>&d&Y] [&d&W" << sysdata->maxplayers << " Max Since Reboot&d&Y]&d\n";
+   webbuf << "&Y[&d&W" << num_logins << " login" << ( num_logins == 1 ? "" : "s" ) << " since last reboot on " << str_boot_time << "&d&Y]&d\n";
+   web_colourconv( col_buf, webbuf.str(  ).c_str(  ) );
    fprintf( webwho, "%s", col_buf );
    FCLOSE( webwho );
 }
 
-void web_arealist()
+void web_arealist(  )
 {
-   char *print_string =
+   const char *print_string =
       "<tr><td><font color=\"red\">%s   </font></td><td><font color=\"yellow\">%s</font></td><td><font color=\"green\">%d - %d   </font></td><td><font color=\"blue\">%d - %d</font></td></tr>\n";
-   list<area_data*>::iterator pArea;
+   list < area_data * >::iterator pArea;
    FILE *fp;
 
    if( !( fp = fopen( AREALIST_FILE, "w" ) ) )
@@ -361,16 +338,15 @@ void web_arealist()
       return;
    }
 
-   fprintf( fp, 
-      "<table><tr><td><font color=\"red\">Author   </font></td><td><font color=\"yellow\">Area</font></td><td><font color=\"green\">Recommened   </font></td><td><font color=\"blue\">Enforced</font></td></tr>\n" );
+   fprintf( fp,
+            "<table><tr><td><font color=\"red\">Author   </font></td><td><font color=\"yellow\">Area</font></td><td><font color=\"green\">Recommened   </font></td><td><font color=\"blue\">Enforced</font></td></tr>\n" );
 
-   for( pArea = area_nsort.begin(); pArea != area_nsort.end(); ++pArea )
+   for( pArea = area_nsort.begin(  ); pArea != area_nsort.end(  ); ++pArea )
    {
-      area_data *area = (*pArea);
+      area_data *area = *pArea;
 
       if( !area->flags.test( AFLAG_PROTOTYPE ) )
-         fprintf( fp, print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range,
-            area->low_hard_range, area->hi_hard_range );
+         fprintf( fp, print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    }
    fprintf( fp, "%s", "</table>\n" );
    FCLOSE( fp );
@@ -399,10 +375,10 @@ void room_to_html( room_index * room, bool complete )
       fprintf( fp, "<font color=\"#FF0000\">%s</font><br />\n", room->name );
       fprintf( fp, "%s", "<font color=\"#33FF33\">[Exits:" );
 
-      list<exit_data*>::iterator iexit;
-      for( iexit = room->exits.begin(); iexit != room->exits.end(); ++iexit )
+      list < exit_data * >::iterator iexit;
+      for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
       {
-         exit_data *pexit = (*iexit);
+         exit_data *pexit = *iexit;
 
          if( pexit->to_room ) /* Set any controls you want here, ie: not closed doors, etc */
          {
@@ -419,10 +395,10 @@ void room_to_html( room_index * room, bool complete )
 
       if( complete )
       {
-         list<obj_data*>::iterator iobj;
-         for( iobj = room->objects.begin(); iobj != room->objects.end(); ++iobj )
+         list < obj_data * >::iterator iobj;
+         for( iobj = room->objects.begin(  ); iobj != room->objects.end(  ); ++iobj )
          {
-            obj_data *obj = (*iobj);
+            obj_data *obj = *iobj;
             if( obj->extra_flags.test( ITEM_AUCTION ) )
                continue;
 
@@ -430,10 +406,10 @@ void room_to_html( room_index * room, bool complete )
                fprintf( fp, "<font color=\"#0000EE\">%s</font><br />\n", obj->objdesc );
          }
 
-         list<char_data*>::iterator ich;
-         for( ich = room->people.begin(); ich != room->people.end(); ++ich )
+         list < char_data * >::iterator ich;
+         for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
          {
-            char_data *rch = (*ich);
+            char_data *rch = *ich;
             if( rch->isnpc(  ) )
                fprintf( fp, "<font color=\"#FF00FF\">%s</font><br />\n", rch->long_descr );
             else
@@ -450,13 +426,11 @@ void room_to_html( room_index * room, bool complete )
    }
    else
       bug( "%s: Error Opening room to html index stream!", __FUNCTION__ );
-
-   return;
 }
 
 CMDF( do_webroom )
 {
-   list<room_index*>::iterator rindex;
+   list < room_index * >::iterator rindex;
    room_index *room;
    area_data *area;
    bool complete = false;
@@ -470,7 +444,7 @@ CMDF( do_webroom )
    if( !( area = find_area( "bywater.are" ) ) )
       return;
 
-   for( rindex = area->rooms.begin(); rindex != area->rooms.end(); ++rindex )
+   for( rindex = area->rooms.begin(  ); rindex != area->rooms.end(  ); ++rindex )
    {
       room = *rindex;
 
@@ -480,5 +454,4 @@ CMDF( do_webroom )
       room_to_html( room, complete );
    }
    ch->print( "Bywater rooms dumped to web.\r\n" );
-   return;
 }

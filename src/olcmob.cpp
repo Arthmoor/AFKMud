@@ -85,7 +85,7 @@ CMDF( do_omedit )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "OEdit what?\r\n" );
       return;
@@ -112,11 +112,11 @@ CMDF( do_omedit )
    /*
     * Make sure the mob isnt already being edited 
     */
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
    descriptor_data *d;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      d = (*ds);
+      d = *ds;
 
       if( d->connected == CON_MEDIT )
          if( d->olc && OLC_VNUM( d ) == victim->pIndexData->vnum )
@@ -140,18 +140,17 @@ CMDF( do_omedit )
    medit_disp_menu( d );
 
    act( AT_ACTION, "$n starts using OLC.", ch, NULL, NULL, TO_ROOM );
-   return;
 }
 
 CMDF( do_mcopy )
 {
    area_data *pArea;
-   char arg1[MIL];
+   string arg1;
    int ovnum, cvnum;
    mob_index *orig;
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Usage: mcopy <original> <new>\r\n" );
       return;
@@ -163,8 +162,8 @@ CMDF( do_mcopy )
       return;
    }
 
-   ovnum = atoi( arg1 );
-   cvnum = atoi( argument );
+   ovnum = atoi( arg1.c_str(  ) );
+   cvnum = atoi( argument.c_str(  ) );
 
    if( ch->get_trust(  ) < LEVEL_GREATER )
    {
@@ -198,7 +197,6 @@ CMDF( do_mcopy )
    }
    make_mobile( cvnum, ovnum, orig->player_name, pArea );
    ch->print( "Mobile copied.\r\n" );
-   return;
 }
 
 /**************************************************************************
@@ -210,7 +208,7 @@ CMDF( do_mcopy )
  */
 void medit_disp_positions( descriptor_data * d )
 {
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < POS_MAX; ++i )
       d->character->printf( "&g%2d&w) %s\r\n", i, capitalize( npc_position[i] ) );
    d->character->print( "Enter position number : " );
@@ -221,7 +219,7 @@ void medit_disp_positions( descriptor_data * d )
  */
 void medit_disp_sex( descriptor_data * d )
 {
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < SEX_MAX; ++i )
       d->character->printf( "&g%2d&w) %s\r\n", i, capitalize( npc_sex[i] ) );
    d->character->print( "\r\nEnter gender number : " );
@@ -229,14 +227,14 @@ void medit_disp_sex( descriptor_data * d )
 
 void spec_menu( void )
 {
-   list<string>::iterator specfun;
+   list < string >::iterator specfun;
    int j = 0;
 
    specmenu[0] = "None";
 
-   for( specfun = speclist.begin(); specfun != speclist.end(); ++specfun )
+   for( specfun = speclist.begin(  ); specfun != speclist.end(  ); ++specfun )
    {
-      string spec = (*specfun);
+      string spec = *specfun;
 
       ++j;
       specmenu[j] = spec;
@@ -254,10 +252,10 @@ void medit_disp_spec( descriptor_data * d )
     */
    spec_menu(  );
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < SPEC_MAX; ++counter )
    {
-      ch->printf( "&g%2d&w) %-30.30s ", counter, specmenu[counter].c_str() );
+      ch->printf( "&g%2d&w) %-30.30s ", counter, specmenu[counter].c_str(  ) );
       if( ++col % 2 == 0 )
          ch->print( "\r\n" );
    }
@@ -271,7 +269,7 @@ void medit_disp_ris( descriptor_data * d )
 {
    char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
 
    for( int counter = 0; counter <= MAX_RIS_FLAG; ++counter )
       d->character->printf( "&g%2d&w) %-20.20s\r\n", counter + 1, ris_flags[counter] );
@@ -295,18 +293,18 @@ void medit_disp_ris( descriptor_data * d )
          default:
             break;
          case MEDIT_RESISTANT:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_resists(), ris_flags ) );
+            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_resists(  ), ris_flags ) );
             break;
          case MEDIT_IMMUNE:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_immunes(), ris_flags ) );
+            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_immunes(  ), ris_flags ) );
             break;
          case MEDIT_SUSCEPTIBLE:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_susceps(), ris_flags ) );
+            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_susceps(  ), ris_flags ) );
             break;
             // FIX: Editing Absorb flags did not show current flags 
             // Zarius 5/19/2003 
          case MEDIT_ABSORB:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_absorbs(), ris_flags ) );
+            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_absorbs(  ), ris_flags ) );
             break;
       }
    }
@@ -320,12 +318,11 @@ void medit_disp_attack_menu( descriptor_data * d )
 {
    char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_ATTACK_TYPE; ++i )
       d->character->printf( "&g%2d&w) %-20.20s\r\n", i + 1, attack_flags[i] );
 
-   d->character->printf( "Current flags: &c%s&w\r\nEnter attack flag (0 to exit): ",
-                         bitset_string( victim->get_attacks(), attack_flags ) );
+   d->character->printf( "Current flags: &c%s&w\r\nEnter attack flag (0 to exit): ", bitset_string( victim->get_attacks(  ), attack_flags ) );
 }
 
 /*
@@ -335,12 +332,11 @@ void medit_disp_defense_menu( descriptor_data * d )
 {
    char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_DEFENSE_TYPE; ++i )
       d->character->printf( "&g%2d&w) %-20.20s\r\n", i + 1, defense_flags[i] );
 
-   d->character->printf( "Current flags: &c%s&w\r\nEnter defense flag (0 to exit): ",
-                         bitset_string( victim->get_defenses(), defense_flags ) );
+   d->character->printf( "Current flags: &c%s&w\r\nEnter defense flag (0 to exit): ", bitset_string( victim->get_defenses(  ), defense_flags ) );
 }
 
 /*-------------------------------------------------------------------*/
@@ -351,15 +347,14 @@ void medit_disp_mob_flags( descriptor_data * d )
    char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
    int columns = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_ACT_FLAG; ++i )
    {
       d->character->printf( "&g%2d&w) %-20.20s  ", i + 1, act_flags[i] );
       if( !( ++columns % 2 ) )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nCurrent flags : &c%s&w\r\nEnter mob flags (0 to quit) : ",
-                         bitset_string( victim->get_actflags(), act_flags ) );
+   d->character->printf( "\r\nCurrent flags : &c%s&w\r\nEnter mob flags (0 to quit) : ", bitset_string( victim->get_actflags(  ), act_flags ) );
 }
 
 /*-------------------------------------------------------------------*/
@@ -370,7 +365,7 @@ void medit_disp_aff_flags( descriptor_data * d )
    char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
    int i, columns = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( i = 0; i < MAX_AFFECTED_BY; ++i )
    {
       d->character->printf( "&g%2d&w) %-20.20s  ", i + 1, aff_flags[i] );
@@ -393,7 +388,7 @@ void medit_disp_aff_flags( descriptor_data * d )
       d->character->printf( "\r\nCurrent flags   : &c%s&w\r\n", buf );
    }
    else
-      d->character->printf( "\r\nCurrent flags   : &c%s&w\r\n", bitset_string( victim->get_aflags(), aff_flags ) );
+      d->character->printf( "\r\nCurrent flags   : &c%s&w\r\n", bitset_string( victim->get_aflags(  ), aff_flags ) );
    d->character->print( "Enter affected flags (0 to quit) : " );
 }
 
@@ -402,7 +397,7 @@ void medit_disp_parts( descriptor_data * d )
    char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
    int columns = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int count = 0; count < MAX_BPART; ++count )
    {
       d->character->printf( "&g%2d&w) %-20.20s    ", count + 1, part_flags[count] );
@@ -410,14 +405,14 @@ void medit_disp_parts( descriptor_data * d )
       if( ++columns % 2 == 0 )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nCurrent flags: %s\r\nEnter flag or 0 to exit: ", bitset_string( victim->get_bparts(), part_flags ) );
+   d->character->printf( "\r\nCurrent flags: %s\r\nEnter flag or 0 to exit: ", bitset_string( victim->get_bparts(  ), part_flags ) );
 }
 
 void medit_disp_classes( descriptor_data * d )
 {
    int columns = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int iClass = 0; iClass < MAX_NPC_CLASS; ++iClass )
    {
       d->character->printf( "&g%2d&w) %-20.20s     ", iClass, npc_class[iClass] );
@@ -431,7 +426,7 @@ void medit_disp_races( descriptor_data * d )
 {
    int columns = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int iRace = 0; iRace < MAX_NPC_RACE; ++iRace )
    {
       d->character->printf( "&g%2d&w) %-20.20s  ", iRace, npc_race[iRace] );
@@ -449,14 +444,13 @@ void medit_disp_menu( descriptor_data * d )
    char_data *ch = d->character;
    char_data *mob = ( char_data * ) d->character->pcdata->dest_buf;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    ch->printf( "&w-- Mob Number:  [&c%d&w]\r\n", mob->pIndexData->vnum );
    ch->printf( "&g1&w) Sex: &O%s          &g2&w) Name: &O%s\r\n", npc_sex[mob->sex], mob->name );
    ch->printf( "&g3&w) Shortdesc: &O%s\r\n", mob->short_descr[0] == '\0' ? "(none set)" : mob->short_descr );
    ch->printf( "&g4&w) Longdesc:\r\n&O%s\r\n", mob->long_descr[0] == '\0' ? "(none set)" : mob->long_descr );
    ch->printf( "&g5&w) Description:\r\n&O%-74.74s\r\n\r\n", mob->chardesc ? mob->chardesc : "(none set)" );
-   ch->printf( "&g6&w) Class: [&c%-11.11s&w], &g7&w) Race:   [&c%-11.11s&w]\r\n",
-               npc_class[mob->Class], npc_race[mob->race] );
+   ch->printf( "&g6&w) Class: [&c%-11.11s&w], &g7&w) Race:   [&c%-11.11s&w]\r\n", npc_class[mob->Class], npc_race[mob->race] );
    ch->printf( "&g8&w) Level:       [&c%5d&w], &g9&w) Alignment:    [&c%5d&w]\r\n\r\n", mob->level, mob->alignment );
 
    ch->printf( " &w) Calc Thac0:      [&c%5d&w]\r\n", calc_thac0( mob, NULL, 0 ) );
@@ -466,21 +460,19 @@ void medit_disp_menu( descriptor_data * d )
    ch->printf( "&gB&w) Real Experience: [&c%10d&w]\r\n\r\n", mob->pIndexData->exp );
    ch->printf( "&gC&w) DamNumDice:  [&c%5d&w], &gD&w) DamSizeDice:  [&c%5d&w], &gE&w) DamPlus:  [&c%5d&w]\r\n",
                mob->pIndexData->damnodice, mob->pIndexData->damsizedice, mob->pIndexData->damplus );
-   ch->printf( "&gF&w) HitDice:  [&c%dd%d+%d&w]\r\n",
-               mob->pIndexData->hitnodice, mob->pIndexData->hitsizedice, mob->pIndexData->hitplus );
-   ch->printf( "&gG&w) Gold:     [&c%8d&w], &gH&w) Spec: &O%-22.22s\r\n",
-               mob->gold, !mob->spec_funname.empty() ? mob->spec_funname.c_str() : "None" );
-   ch->printf( "&gI&w) Resistant   : &O%s\r\n", bitset_string( mob->get_resists(), ris_flags ) );
-   ch->printf( "&gJ&w) Immune      : &O%s\r\n", bitset_string( mob->get_immunes(), ris_flags ) );
-   ch->printf( "&gK&w) Susceptible : &O%s\r\n", bitset_string( mob->get_susceps(), ris_flags ) );
-   ch->printf( "&gL&w) Absorb      : &O%s\r\n", bitset_string( mob->get_absorbs(), ris_flags ) );
+   ch->printf( "&gF&w) HitDice:  [&c%dd%d+%d&w]\r\n", mob->pIndexData->hitnodice, mob->pIndexData->hitsizedice, mob->pIndexData->hitplus );
+   ch->printf( "&gG&w) Gold:     [&c%8d&w], &gH&w) Spec: &O%-22.22s\r\n", mob->gold, !mob->spec_funname.empty(  )? mob->spec_funname.c_str(  ) : "None" );
+   ch->printf( "&gI&w) Resistant   : &O%s\r\n", bitset_string( mob->get_resists(  ), ris_flags ) );
+   ch->printf( "&gJ&w) Immune      : &O%s\r\n", bitset_string( mob->get_immunes(  ), ris_flags ) );
+   ch->printf( "&gK&w) Susceptible : &O%s\r\n", bitset_string( mob->get_susceps(  ), ris_flags ) );
+   ch->printf( "&gL&w) Absorb      : &O%s\r\n", bitset_string( mob->get_absorbs(  ), ris_flags ) );
    ch->printf( "&gM&w) Position    : &O%s\r\n", npc_position[mob->position] );
    ch->printf( "&gN&w) Default Pos : &O%s\r\n", npc_position[mob->defposition] );
-   ch->printf( "&gO&w) Attacks     : &c%s\r\n", bitset_string( mob->get_attacks(), attack_flags ) );
-   ch->printf( "&gP&w) Defenses    : &c%s\r\n", bitset_string( mob->get_defenses(), defense_flags ) );
-   ch->printf( "&gR&w) Body Parts  : &c%s\r\n", bitset_string( mob->get_bparts(), part_flags ) );
-   ch->printf( "&gS&w) Act Flags   : &c%s\r\n", bitset_string( mob->get_actflags(), act_flags ) );
-   ch->printf( "&gT&w) Affected    : &c%s\r\n", bitset_string( mob->get_aflags(), aff_flags ) );
+   ch->printf( "&gO&w) Attacks     : &c%s\r\n", bitset_string( mob->get_attacks(  ), attack_flags ) );
+   ch->printf( "&gP&w) Defenses    : &c%s\r\n", bitset_string( mob->get_defenses(  ), defense_flags ) );
+   ch->printf( "&gR&w) Body Parts  : &c%s\r\n", bitset_string( mob->get_bparts(  ), part_flags ) );
+   ch->printf( "&gS&w) Act Flags   : &c%s\r\n", bitset_string( mob->get_actflags(  ), act_flags ) );
+   ch->printf( "&gT&w) Affected    : &c%s\r\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
    ch->printf( "&gQ&w) Quit\r\n" );
    ch->print( "Enter choice : " );
 
@@ -528,11 +520,11 @@ CMDF( do_medit_reset )
   The GARGANTAUN event handler
  **************************************************************************/
 
-void medit_parse( descriptor_data * d, char *arg )
+void medit_parse( descriptor_data * d, string & arg )
 {
    char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
    int number = 0, minattr, maxattr;
-   char arg1[MIL];
+   string arg1;
 
    minattr = 1;
    maxattr = 25;
@@ -540,7 +532,7 @@ void medit_parse( descriptor_data * d, char *arg )
    switch ( OLC_MODE( d ) )
    {
       case MEDIT_NPC_MAIN_MENU:
-         switch ( UPPER( *arg ) )
+         switch ( UPPER( arg[0] ) )
          {
             case 'Q':
                cleanup_olc( d );
@@ -672,34 +664,34 @@ void medit_parse( descriptor_data * d, char *arg )
 
       case MEDIT_NAME:
          STRFREE( victim->name );
-         victim->name = STRALLOC( arg );
+         victim->name = STRALLOC( arg.c_str(  ) );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->player_name );
             victim->pIndexData->player_name = QUICKLINK( victim->name );
          }
-         olc_log( d, "Changed name to %s", arg );
+         olc_log( d, "Changed name to %s", arg.c_str(  ) );
          break;
 
       case MEDIT_S_DESC:
          STRFREE( victim->short_descr );
-         victim->short_descr = STRALLOC( arg );
+         victim->short_descr = STRALLOC( arg.c_str(  ) );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->short_descr );
             victim->pIndexData->short_descr = QUICKLINK( victim->short_descr );
          }
-         olc_log( d, "Changed short desc to %s", arg );
+         olc_log( d, "Changed short desc to %s", arg.c_str(  ) );
          break;
 
       case MEDIT_L_DESC:
-         stralloc_printf( &victim->long_descr, "%s\r\n", arg );
+         stralloc_printf( &victim->long_descr, "%s\r\n", arg.c_str(  ) );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->long_descr );
             victim->pIndexData->long_descr = QUICKLINK( victim->long_descr );
          }
-         olc_log( d, "Changed long desc to %s", arg );
+         olc_log( d, "Changed long desc to %s", arg.c_str(  ) );
          break;
 
       case MEDIT_D_DESC:
@@ -715,16 +707,16 @@ void medit_parse( descriptor_data * d, char *arg )
           * REDONE, again, then again 
           */
          if( is_number( arg ) )
-            if( atoi( arg ) == 0 )
+            if( atoi( arg.c_str(  ) ) == 0 )
                break;
 
-         while( arg[0] != '\0' )
+         while( !arg.empty(  ) )
          {
             arg = one_argument( arg, arg1 );
 
             if( is_number( arg1 ) )
             {
-               number = atoi( arg1 );
+               number = atoi( arg1.c_str(  ) );
                number -= 1;
 
                if( number < 0 || number >= MAX_ACT_FLAG )
@@ -742,17 +734,14 @@ void medit_parse( descriptor_data * d, char *arg )
                   return;
                }
             }
-            if( victim->isnpc(  )
-                && number == ACT_PROTOTYPE
-                && d->character->get_trust(  ) < LEVEL_GREATER
-                && !hasname( d->character->pcdata->bestowments, "protoflag" ) )
+            if( victim->isnpc(  ) && number == ACT_PROTOTYPE && d->character->get_trust(  ) < LEVEL_GREATER && !hasname( d->character->pcdata->bestowments, "protoflag" ) )
                d->character->print( "You don't have permission to change the prototype flag.\r\n" );
             else if( victim->isnpc(  ) && number == ACT_IS_NPC )
                d->character->print( "It isn't possible to change that flag.\r\n" );
             else
                victim->unset_actflag( number );
             if( victim->has_actflag( ACT_PROTOTYPE ) )
-               victim->pIndexData->actflags = victim->get_actflags();
+               victim->pIndexData->actflags = victim->get_actflags(  );
          }
          medit_disp_mob_flags( d );
          return;
@@ -760,7 +749,7 @@ void medit_parse( descriptor_data * d, char *arg )
       case MEDIT_AFF_FLAGS:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
             if( number > 0 || number < MAX_AFFECTED_BY )
@@ -772,7 +761,7 @@ void medit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_actflag( arg1 );
@@ -784,47 +773,47 @@ void medit_parse( descriptor_data * d, char *arg )
             }
          }
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->affected_by = victim->get_aflags();
+            victim->pIndexData->affected_by = victim->get_aflags(  );
          medit_disp_aff_flags( d );
          return;
 
 /*-------------------------------------------------------------------*/
 /*. Numerical responses .*/
       case MEDIT_HITPOINT:
-         victim->max_hit = URANGE( 1, atoi( arg ), 32700 );
+         victim->max_hit = URANGE( 1, atoi( arg.c_str(  ) ), 32700 );
          olc_log( d, "Changed hitpoints to %d", victim->max_hit );
          break;
 
       case MEDIT_MANA:
-         victim->max_mana = URANGE( 1, atoi( arg ), 30000 );
+         victim->max_mana = URANGE( 1, atoi( arg.c_str(  ) ), 30000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->max_mana = victim->max_mana;
          olc_log( d, "Changed mana to %d", victim->max_mana );
          break;
 
       case MEDIT_MOVE:
-         victim->max_move = URANGE( 1, atoi( arg ), 30000 );
+         victim->max_move = URANGE( 1, atoi( arg.c_str(  ) ), 30000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->max_move = victim->max_move;
          olc_log( d, "Changed moves to %d", victim->max_move );
          break;
 
       case MEDIT_SEX:
-         victim->sex = URANGE( 0, atoi( arg ), 2 );
+         victim->sex = URANGE( 0, atoi( arg.c_str(  ) ), SEX_MAX - 1 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->sex = victim->sex;
-         olc_log( d, "Changed sex to %s", victim->sex == 1 ? "Male" : victim->sex == 2 ? "Female" : "Neutral" );
+         olc_log( d, "Changed sex to %s", victim->sex == SEX_MALE ? "Male" : victim->sex == SEX_FEMALE ? "Female" : victim->sex == SEX_NEUTRAL ? "Neutral" : "Hermaphrodyte" );
          break;
 
       case MEDIT_HITROLL:
-         victim->hitroll = URANGE( 0, atoi( arg ), 85 );
+         victim->hitroll = URANGE( 0, atoi( arg.c_str(  ) ), 85 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->hitroll = victim->hitroll;
          olc_log( d, "Changed hitroll to %d", victim->hitroll );
          break;
 
       case MEDIT_DAMROLL:
-         victim->damroll = URANGE( 0, atoi( arg ), 65 );
+         victim->damroll = URANGE( 0, atoi( arg.c_str(  ) ), 65 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->damroll = victim->damroll;
          olc_log( d, "Changed damroll to %d", victim->damroll );
@@ -832,63 +821,63 @@ void medit_parse( descriptor_data * d, char *arg )
 
       case MEDIT_DAMNUMDIE:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->damnodice = URANGE( 0, atoi( arg ), 100 );
+            victim->pIndexData->damnodice = URANGE( 0, atoi( arg.c_str(  ) ), 100 );
          olc_log( d, "Changed damnumdie to %d", victim->pIndexData->damnodice );
          break;
 
       case MEDIT_DAMSIZEDIE:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->damsizedice = URANGE( 0, atoi( arg ), 100 );
+            victim->pIndexData->damsizedice = URANGE( 0, atoi( arg.c_str(  ) ), 100 );
          olc_log( d, "Changed damsizedie to %d", victim->pIndexData->damsizedice );
          break;
 
       case MEDIT_DAMPLUS:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->damplus = URANGE( 0, atoi( arg ), 1000 );
+            victim->pIndexData->damplus = URANGE( 0, atoi( arg.c_str(  ) ), 1000 );
          olc_log( d, "Changed damplus to %d", victim->pIndexData->damplus );
          break;
 
       case MEDIT_HITPLUS:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->hitplus = URANGE( 0, atoi( arg ), 32767 );
+            victim->pIndexData->hitplus = URANGE( 0, atoi( arg.c_str(  ) ), 32767 );
          olc_log( d, "Changed hitplus to %d", victim->pIndexData->hitplus );
          break;
 
       case MEDIT_AC:
-         victim->armor = URANGE( -300, atoi( arg ), 300 );
+         victim->armor = URANGE( -300, atoi( arg.c_str(  ) ), 300 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->ac = victim->armor;
          olc_log( d, "Changed armor to %d", victim->armor );
          break;
 
       case MEDIT_GOLD:
-         victim->gold = URANGE( -1, atoi( arg ), 2000000000 );
+         victim->gold = URANGE( -1, atoi( arg.c_str(  ) ), 2000000000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->gold = victim->gold;
          olc_log( d, "Changed gold to %d", victim->gold );
          break;
 
       case MEDIT_POS:
-         victim->position = URANGE( 0, atoi( arg ), POS_STANDING );
+         victim->position = URANGE( 0, atoi( arg.c_str(  ) ), POS_STANDING );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->position = victim->position;
          olc_log( d, "Changed position to %d", victim->position );
          break;
 
       case MEDIT_DEFPOS:
-         victim->defposition = URANGE( 0, atoi( arg ), POS_STANDING );
+         victim->defposition = URANGE( 0, atoi( arg.c_str(  ) ), POS_STANDING );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->defposition = victim->defposition;
          olc_log( d, "Changed default position to %d", victim->defposition );
          break;
 
       case MEDIT_MENTALSTATE:
-         victim->mental_state = URANGE( -100, atoi( arg ), 100 );
+         victim->mental_state = URANGE( -100, atoi( arg.c_str(  ) ), 100 );
          olc_log( d, "Changed mental state to %d", victim->mental_state );
          break;
 
       case MEDIT_CLASS:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( victim->isnpc(  ) )
          {
             victim->Class = URANGE( 0, number, MAX_NPC_CLASS - 1 );
@@ -901,7 +890,7 @@ void medit_parse( descriptor_data * d, char *arg )
          break;
 
       case MEDIT_RACE:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( victim->isnpc(  ) )
          {
             victim->race = URANGE( 0, number, MAX_NPC_RACE - 1 );
@@ -914,7 +903,7 @@ void medit_parse( descriptor_data * d, char *arg )
          break;
 
       case MEDIT_PARTS:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( number < 0 || number >= MAX_BPART )
          {
             d->character->print( "Invalid part, try again: " );
@@ -930,7 +919,7 @@ void medit_parse( descriptor_data * d, char *arg )
                victim->toggle_bpart( number );
             }
             if( victim->has_actflag( ACT_PROTOTYPE ) )
-               victim->pIndexData->body_parts = victim->get_bparts();
+               victim->pIndexData->body_parts = victim->get_bparts(  );
          }
          olc_log( d, "%s the body part %s", victim->has_bpart( number ) ? "Added" : "Removed", part_flags[number] );
          medit_disp_parts( d );
@@ -939,7 +928,7 @@ void medit_parse( descriptor_data * d, char *arg )
       case MEDIT_ATTACK:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
 
@@ -954,7 +943,7 @@ void medit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_attackflag( arg1 );
@@ -967,7 +956,7 @@ void medit_parse( descriptor_data * d, char *arg )
             }
          }
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->attacks = victim->get_attacks();
+            victim->pIndexData->attacks = victim->get_attacks(  );
          medit_disp_attack_menu( d );
          olc_log( d, "%s the attack %s", victim->has_attack( number ) ? "Added" : "Removed", attack_flags[number] );
          return;
@@ -975,7 +964,7 @@ void medit_parse( descriptor_data * d, char *arg )
       case MEDIT_DEFENSE:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
 
@@ -990,7 +979,7 @@ void medit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_defenseflag( arg1 );
@@ -1003,27 +992,27 @@ void medit_parse( descriptor_data * d, char *arg )
             }
          }
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->defenses = victim->get_defenses();
+            victim->pIndexData->defenses = victim->get_defenses(  );
          medit_disp_defense_menu( d );
          olc_log( d, "%s the attack %s", victim->has_defense( number ) ? "Added" : "Removed", defense_flags[number] );
          return;
 
       case MEDIT_LEVEL:
-         victim->level = URANGE( 1, atoi( arg ), LEVEL_IMMORTAL + 5 );
+         victim->level = URANGE( 1, atoi( arg.c_str(  ) ), LEVEL_IMMORTAL + 5 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->level = victim->level;
          olc_log( d, "Changed level to %d", victim->level );
          break;
 
       case MEDIT_ALIGNMENT:
-         victim->alignment = URANGE( -1000, atoi( arg ), 1000 );
+         victim->alignment = URANGE( -1000, atoi( arg.c_str(  ) ), 1000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->alignment = victim->alignment;
          olc_log( d, "Changed alignment to %d", victim->alignment );
          break;
 
       case MEDIT_EXP:
-         victim->exp = atoi( arg );
+         victim->exp = atoi( arg.c_str(  ) );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->exp = victim->exp;
          if( victim->exp == -1 )
@@ -1032,7 +1021,7 @@ void medit_parse( descriptor_data * d, char *arg )
          break;
 
       case MEDIT_THACO:
-         victim->mobthac0 = atoi( arg );
+         victim->mobthac0 = atoi( arg.c_str(  ) );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->mobthac0 = victim->mobthac0;
          olc_log( d, "Changed thac0 to %d", victim->mobthac0 );
@@ -1041,7 +1030,7 @@ void medit_parse( descriptor_data * d, char *arg )
       case MEDIT_RESISTANT:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
 
@@ -1055,7 +1044,7 @@ void medit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_risflag( arg1 );
@@ -1068,7 +1057,7 @@ void medit_parse( descriptor_data * d, char *arg )
             }
          }
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->resistant = victim->get_resists();
+            victim->pIndexData->resistant = victim->get_resists(  );
          medit_disp_ris( d );
          olc_log( d, "%s the resistant %s", victim->has_resist( number ) ? "Added" : "Removed", ris_flags[number] );
          return;
@@ -1076,7 +1065,7 @@ void medit_parse( descriptor_data * d, char *arg )
       case MEDIT_IMMUNE:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
 
@@ -1090,7 +1079,7 @@ void medit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_risflag( arg1 );
@@ -1103,7 +1092,7 @@ void medit_parse( descriptor_data * d, char *arg )
             }
          }
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->immune = victim->get_immunes();
+            victim->pIndexData->immune = victim->get_immunes(  );
 
          medit_disp_ris( d );
          olc_log( d, "%s the immune %s", victim->has_immune( number ) ? "Added" : "Removed", ris_flags[number] );
@@ -1112,7 +1101,7 @@ void medit_parse( descriptor_data * d, char *arg )
       case MEDIT_SUSCEPTIBLE:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
 
@@ -1126,7 +1115,7 @@ void medit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_risflag( arg1 );
@@ -1139,7 +1128,7 @@ void medit_parse( descriptor_data * d, char *arg )
             }
          }
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->susceptible = victim->get_susceps();
+            victim->pIndexData->susceptible = victim->get_susceps(  );
          medit_disp_ris( d );
          olc_log( d, "%s the suscept %s", victim->has_suscep( number ) ? "Added" : "Removed", ris_flags[number] );
          return;
@@ -1147,7 +1136,7 @@ void medit_parse( descriptor_data * d, char *arg )
       case MEDIT_ABSORB:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
 
@@ -1161,7 +1150,7 @@ void medit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_risflag( arg1 );
@@ -1174,13 +1163,13 @@ void medit_parse( descriptor_data * d, char *arg )
             }
          }
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->absorb = victim->get_absorbs();
+            victim->pIndexData->absorb = victim->get_absorbs(  );
          medit_disp_ris( d );
          olc_log( d, "%s the absorb %s", victim->has_absorb( number ) ? "Added" : "Removed", ris_flags[number] );
          return;
 
       case MEDIT_SPEC:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          /*
           * FIX: Selecting 0 crashed the mud when editing spec procs --Zarius 5/19/2003 
           */
@@ -1189,7 +1178,7 @@ void medit_parse( descriptor_data * d, char *arg )
          if( number < 1 || number >= SPEC_MAX )
          {
             victim->spec_fun = NULL;
-            victim->spec_funname.clear();
+            victim->spec_funname.clear(  );
          }
          else
          {
@@ -1202,7 +1191,7 @@ void medit_parse( descriptor_data * d, char *arg )
             victim->pIndexData->spec_fun = victim->spec_fun;
             victim->pIndexData->spec_funname = victim->spec_funname;
          }
-         olc_log( d, "Changes spec_func to %s", !victim->spec_funname.empty() ? victim->spec_funname.c_str() : "None" );
+         olc_log( d, "Changes spec_func to %s", !victim->spec_funname.empty(  )? victim->spec_funname.c_str(  ) : "None" );
          break;
 
       default:
@@ -1211,7 +1200,7 @@ void medit_parse( descriptor_data * d, char *arg )
           */
          bug( "%s: OLC: medit_parse(): Reached default case!", __FUNCTION__ );
          cleanup_olc( d );
-         return;;
+         return;
    }
 
 /*. END OF CASE 

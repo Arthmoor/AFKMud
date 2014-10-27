@@ -35,8 +35,8 @@
 #include "overland.h"
 #include "roomindex.h"
 
-room_index *room_index_hash[MAX_KEY_HASH];
-list<teleport_data*> teleportlist;
+map < int, room_index * >room_index_table;
+list < teleport_data * >teleportlist;
 
 extern int top_exit;
 extern int top_reset;
@@ -45,19 +45,19 @@ extern int top_affect;
 reset_data *make_reset( char, int, int, int, short, short, short, short, short, short, short, short );
 void update_room_reset( char_data *, bool );
 void delete_reset( reset_data * );
-void name_generator( char * );
-void pick_name( char *name, char * );
+void name_generator( string & );
+void pick_name( string & name, const char * );
 void boot_log( const char *, ... );
-void fix_exits( );
+void fix_exits(  );
 
 obj_data *generate_random( reset_data *, char_data * );
 
-char *const dir_name[] = {
+const char *dir_name[] = {
    "north", "east", "south", "west", "up", "down",
    "northeast", "northwest", "southeast", "southwest", "somewhere"
 };
 
-char *const short_dirname[] = {
+const char *short_dirname[] = {
    "n", "e", "s", "w", "u", "d", "ne", "nw", "se", "sw", "?"
 };
 
@@ -72,11 +72,11 @@ const short rev_dir[] = {
 
 void free_teleports( void )
 {
-   list<teleport_data*>::iterator tele;
+   list < teleport_data * >::iterator tele;
 
-   for( tele = teleportlist.begin(); tele != teleportlist.end(); )
+   for( tele = teleportlist.begin(  ); tele != teleportlist.end(  ); )
    {
-      teleport_data *teleport = (*tele);
+      teleport_data *teleport = *tele;
       ++tele;
 
       teleportlist.remove( teleport );
@@ -84,18 +84,18 @@ void free_teleports( void )
    }
 }
 
-reset_data::reset_data()
+reset_data::reset_data(  )
 {
    init_memory( &command, &arg6, sizeof( arg6 ) );
-   resets.clear();
+   resets.clear(  );
 }
 
 room_index::~room_index(  )
 {
    area->rooms.remove( this );
 
-   list<char_data*>::iterator ich;
-   for( ich = people.begin(); ich != people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = people.begin(  ); ich != people.end(  ); )
    {
       char_data *ch = *ich;
       ++ich;
@@ -111,9 +111,9 @@ room_index::~room_index(  )
       else
          ch->extract( true );
    }
-   people.clear();
+   people.clear(  );
 
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
       char_data *ch = *ich;
 
@@ -122,22 +122,22 @@ room_index::~room_index(  )
       if( ch->substate == SUB_ROOM_DESC && ch->pcdata->dest_buf == this )
       {
          ch->print( "The room is no more.\r\n" );
-         ch->stop_editing( );
+         ch->stop_editing(  );
          ch->substate = SUB_NONE;
          ch->pcdata->dest_buf = NULL;
       }
       else if( ch->substate == SUB_ROOM_EXTRA && ch->pcdata->dest_buf )
       {
-         list<extra_descr_data*>::iterator ex;
+         list < extra_descr_data * >::iterator ex;
 
-         for( ex = extradesc.begin(); ex != extradesc.end(); ++ex )
+         for( ex = extradesc.begin(  ); ex != extradesc.end(  ); ++ex )
          {
             extra_descr_data *ed = *ex;
 
             if( ed == ch->pcdata->dest_buf )
             {
                ch->print( "The room is no more.\r\n" );
-               ch->stop_editing( );
+               ch->stop_editing(  );
                ch->substate = SUB_NONE;
                ch->pcdata->dest_buf = NULL;
                break;
@@ -146,20 +146,20 @@ room_index::~room_index(  )
       }
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = objects.begin(); iobj != objects.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = objects.begin(  ); iobj != objects.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
-      obj->extract();
+      obj->extract(  );
    }
-   objects.clear();
+   objects.clear(  );
 
-   wipe_resets();
+   wipe_resets(  );
 
-   list<extra_descr_data*>::iterator ed;
-   for( ed = extradesc.begin(); ed != extradesc.end(); )
+   list < extra_descr_data * >::iterator ed;
+   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
    {
       extra_descr_data *desc = *ed;
       ++ed;
@@ -168,14 +168,14 @@ room_index::~room_index(  )
       deleteptr( desc );
       --top_ed;
    }
-   extradesc.clear();
+   extradesc.clear(  );
 
-   list<exit_data*>::iterator ex;
+   list < exit_data * >::iterator ex;
    if( !mud_down )
    {
-      for( ex = exits.begin(); ex != exits.end(); ++ex )
+      for( ex = exits.begin(  ); ex != exits.end(  ); ++ex )
       {
-         exit_data *pexit = (*ex);
+         exit_data *pexit = *ex;
          exit_data *aexit;
          area_data *pArea = pexit->to_room->area;
 
@@ -197,8 +197,8 @@ room_index::~room_index(  )
       }
    }
 
-   list<affect_data*>::iterator paf;
-   for( paf = affects.begin(); paf != affects.end(); )
+   list < affect_data * >::iterator paf;
+   for( paf = affects.begin(  ); paf != affects.end(  ); )
    {
       affect_data *af = *paf;
       ++paf;
@@ -206,76 +206,64 @@ room_index::~room_index(  )
       affects.remove( af );
       deleteptr( af );
    }
-   affects.clear();
+   affects.clear(  );
 
-   for( paf = indexaffects.begin(); paf != indexaffects.end(); )
+   for( paf = permaffects.begin(  ); paf != permaffects.end(  ); )
    {
       affect_data *af = *paf;
       ++paf;
 
-      indexaffects.remove( af );
+      permaffects.remove( af );
       deleteptr( af );
    }
-   indexaffects.clear();
+   permaffects.clear(  );
 
-   for( ex = exits.begin(); ex != exits.end(); )
+   for( ex = exits.begin(  ); ex != exits.end(  ); )
    {
       exit_data *pexit = *ex;
       ++ex;
 
       extract_exit( pexit );
    }
-   exits.clear();
+   exits.clear(  );
 
-   list<mprog_act_list*>::iterator pd;
-   for( pd = mpact.begin(); pd != mpact.end(); )
+   list < mprog_act_list * >::iterator pd;
+   for( pd = mpact.begin(  ); pd != mpact.end(  ); )
    {
-      mprog_act_list *rpact = (*pd);
+      mprog_act_list *rpact = *pd;
       ++pd;
 
       mpact.remove( rpact );
       deleteptr( rpact );
    }
-   mpact.clear();
+   mpact.clear(  );
 
-   list<mud_prog_data*>::iterator mpg;
-   for( mpg = mudprogs.begin(); mpg != mudprogs.end(); )
+   list < mud_prog_data * >::iterator mpg;
+   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
    {
-      mud_prog_data *mprog = (*mpg);
+      mud_prog_data *mprog = *mpg;
       ++mpg;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
    }
-   mudprogs.clear();
+   mudprogs.clear(  );
 
    STRFREE( name );
    DISPOSE( roomdesc );
    DISPOSE( nitedesc );
 
-   int hash = vnum % MAX_KEY_HASH;
-   if( this == room_index_hash[hash] )
-      room_index_hash[hash] = next;
-   else
-   {
-      room_index *prev;
-
-      for( prev = room_index_hash[hash]; prev; prev = prev->next )
-         if( prev->next == this )
-            break;
-      if( prev )
-         prev->next = next;
-      else
-         bug( "%s: room %d not in hash bucket %d.", __FUNCTION__, vnum, hash );
-   }
+   map < int, room_index * >::iterator mroom;
+   if( ( mroom = room_index_table.find( vnum ) ) != room_index_table.end(  ) )
+      room_index_table.erase( mroom );
    --top_room;
 }
 
 room_index::room_index(  )
 {
    init_memory( &next, &mpscriptpos, sizeof( mpscriptpos ) );
-   people.clear();
-   objects.clear();
+   people.clear(  );
+   objects.clear(  );
 }
 
 /*
@@ -284,47 +272,70 @@ room_index::room_index(  )
 void room_index::clean_room(  )
 {
    mud_prog_data *mprog;
-   list<mud_prog_data*>::iterator mpg;
-   list<extra_descr_data*>::iterator ed;
-   list<exit_data*>::iterator iexit;
+   list < mud_prog_data * >::iterator mpg;
+   list < extra_descr_data * >::iterator ed;
+   list < exit_data * >::iterator iexit;
 
    DISPOSE( roomdesc );
    DISPOSE( nitedesc );
    STRFREE( name );
-   for( ed = extradesc.begin(); ed != extradesc.end(); )
+   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
    {
-      extra_descr_data *desc = (*ed);
+      extra_descr_data *desc = *ed;
       ++ed;
 
       extradesc.remove( desc );
       deleteptr( desc );
       --top_ed;
    }
-   extradesc.clear();
+   extradesc.clear(  );
 
-   for( mpg = mudprogs.begin(); mpg != mudprogs.end(); )
+   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
    {
-      mprog = (*mpg);
+      mprog = *mpg;
       ++mpg;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
    }
-   mudprogs.clear();
+   mudprogs.clear(  );
 
-   for( iexit = exits.begin(); iexit != exits.end(); )
+   for( iexit = exits.begin(  ); iexit != exits.end(  ); )
    {
       exit_data *pexit = *iexit;
 
       extract_exit( pexit );
       --top_exit;
    }
-   exits.clear();
+   exits.clear(  );
 
-   wipe_resets();
+   list < affect_data * >::iterator paf;
+   for( paf = affects.begin(  ); paf != affects.end(  ); )
+   {
+      affect_data *af = *paf;
+      ++paf;
+
+      affects.remove( af );
+      deleteptr( af );
+   }
+   affects.clear(  );
+
+   for( paf = permaffects.begin(  ); paf != permaffects.end(  ); )
+   {
+      affect_data *af = *paf;
+      ++paf;
+
+      permaffects.remove( af );
+      deleteptr( af );
+   }
+   permaffects.clear(  );
+
+   wipe_resets(  );
    flags.reset(  );
    sector_type = 0;
    light = 0;
+   weight = 0;
+   max_weight = 10000;
 }
 
 /*
@@ -347,14 +358,14 @@ int exit_comp( exit_data ** xit1, exit_data ** xit2 )
 
 void room_index::randomize_exits( short maxdir )
 {
-   list<exit_data*>::iterator iexit;
-   int nexits, /* maxd, */ d1, count, door; /* Maxd unused */
+   list < exit_data * >::iterator iexit;
+   int nexits, /* maxd, */ d1, count, door;  /* Maxd unused */
    int vdirs[MAX_REXITS];
 
    nexits = 0;
-   for( iexit = exits.begin(); iexit != exits.end(); ++iexit )
+   for( iexit = exits.begin(  ); iexit != exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
 
       vdirs[nexits++] = pexit->vdir;
    }
@@ -372,19 +383,20 @@ void room_index::randomize_exits( short maxdir )
       vdirs[d1] = door;
    }
    count = 0;
-   for( iexit = exits.begin(); iexit != exits.end(); ++iexit )
+   for( iexit = exits.begin(  ); iexit != exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
+
       pexit->vdir = vdirs[count++];
    }
 }
 
-exit_data::exit_data()
+exit_data::exit_data(  )
 {
    init_memory( &rexit, &my, sizeof( my ) );
 }
 
-exit_data::~exit_data()
+exit_data::~exit_data(  )
 {
    if( rexit )
       rexit->rexit = NULL;
@@ -399,11 +411,12 @@ exit_data::~exit_data()
 exit_data *room_index::make_exit( room_index * to_room, short door )
 {
    exit_data *pexit = new exit_data;
-   
+
    pexit->vdir = door;
    pexit->rvnum = vnum;
    pexit->to_room = to_room;
    pexit->flags.reset(  );
+   pexit->key = -1;
    pexit->mx = 0;
    pexit->my = 0;
 
@@ -418,10 +431,10 @@ exit_data *room_index::make_exit( room_index * to_room, short door )
       }
    }
 
-   list<exit_data*>::iterator iexit;
-   for( iexit = exits.begin(); iexit != exits.end(); ++iexit )
+   list < exit_data * >::iterator iexit;
+   for( iexit = exits.begin(  ); iexit != exits.end(  ); ++iexit )
    {
-      exit_data *texit = (*iexit);
+      exit_data *texit = *iexit;
 
       if( door < texit->vdir )
       {
@@ -441,11 +454,11 @@ exit_data *room_index::make_exit( room_index * to_room, short door )
  */
 exit_data *room_index::get_exit( short dir )
 {
-   list<exit_data*>::iterator xit;
+   list < exit_data * >::iterator xit;
 
-   for( xit = exits.begin(); xit != exits.end(); ++xit )
+   for( xit = exits.begin(  ); xit != exits.end(  ); ++xit )
    {
-      exit_data *pexit = (*xit);
+      exit_data *pexit = *xit;
 
       if( pexit->vdir == dir )
          return pexit;
@@ -458,12 +471,12 @@ exit_data *room_index::get_exit( short dir )
  */
 exit_data *room_index::get_exit_num( short count )
 {
-   list<exit_data*>::iterator xit;
+   list < exit_data * >::iterator xit;
    int cnt;
 
-   for( cnt = 0, xit = exits.begin(); xit != exits.end(); ++xit )
+   for( cnt = 0, xit = exits.begin(  ); xit != exits.end(  ); ++xit )
    {
-      exit_data *pexit = (*xit);
+      exit_data *pexit = *xit;
 
       if( ++cnt == count )
          return pexit;
@@ -476,11 +489,11 @@ exit_data *room_index::get_exit_num( short count )
  */
 exit_data *room_index::get_exit_to( short dir, int evnum )
 {
-   list<exit_data*>::iterator xit;
+   list < exit_data * >::iterator xit;
 
-   for( xit = exits.begin(); xit != exits.end(); ++xit )
+   for( xit = exits.begin(  ); xit != exits.end(  ); ++xit )
    {
-      exit_data *pexit = (*xit);
+      exit_data *pexit = *xit;
 
       if( pexit->vdir == dir && pexit->vnum == evnum )
          return pexit;
@@ -491,54 +504,54 @@ exit_data *room_index::get_exit_to( short dir, int evnum )
 /*
  * Remove an exit from a room - Thoric
  */
-void room_index::extract_exit( exit_data *pexit )
+void room_index::extract_exit( exit_data * pexit )
 {
    exits.remove( pexit );
    deleteptr( pexit );
 }
 
-void room_index::wipe_resets( )
+void room_index::wipe_resets(  )
 {
    reset_data *pReset;
-   list<reset_data*>::iterator rst;
+   list < reset_data * >::iterator rst;
 
-   for( rst = resets.begin(); rst != resets.end(); )
+   for( rst = resets.begin(  ); rst != resets.end(  ); )
    {
-      pReset = (*rst);
+      pReset = *rst;
       ++rst;
 
       resets.remove( pReset );
       delete_reset( pReset );
    }
-   resets.clear();
-   return;
+   resets.clear(  );
 }
 
 /*
  * Creat a new room (for online building) - Thoric
  */
-room_index *make_room( int vnum, area_data *area )
+room_index *make_room( int vnum, area_data * area )
 {
    room_index *pRoomIndex;
-   int iHash;
 
    pRoomIndex = new room_index;
-   pRoomIndex->exits.clear();
-   pRoomIndex->extradesc.clear();
-   pRoomIndex->resets.clear();
+   pRoomIndex->exits.clear(  );
+   pRoomIndex->extradesc.clear(  );
+   pRoomIndex->resets.clear(  );
+   pRoomIndex->affects.clear(  );
+   pRoomIndex->permaffects.clear(  );
    pRoomIndex->area = area;
    pRoomIndex->vnum = vnum;
    pRoomIndex->winter_sector = -1;
-   pRoomIndex->name = STRALLOC( "Engulfed in a Swirling Mass of Void Space" );
+   pRoomIndex->name = STRALLOC( "Suspended in the great inky blackness" );
    pRoomIndex->flags.reset(  );
    pRoomIndex->flags.set( ROOM_PROTOTYPE );
    pRoomIndex->sector_type = 0;
    pRoomIndex->baselight = 0;
    pRoomIndex->light = 0;
+   pRoomIndex->weight = 0;
+   pRoomIndex->max_weight = 100000;
 
-   iHash = vnum % MAX_KEY_HASH;
-   pRoomIndex->next = room_index_hash[iHash];
-   room_index_hash[iHash] = pRoomIndex;
+   room_index_table.insert( map < int, room_index * >::value_type( vnum, pRoomIndex ) );
    area->rooms.push_back( pRoomIndex );
    ++top_room;
 
@@ -553,7 +566,7 @@ void room_index::rprog_read_programs( FILE * fp )
    char letter;
    const char *word;
 
-   for( ; ; )
+   for( ;; )
    {
       letter = fread_letter( fp );
 
@@ -571,7 +584,7 @@ void room_index::rprog_read_programs( FILE * fp )
       word = fread_word( fp );
       mprg->type = mprog_name_to_type( word );
 
-      switch( mprg->type )
+      switch ( mprg->type )
       {
          case ERROR_PROG:
             bug( "%s: vnum %d MUDPROG type.", __FUNCTION__, vnum );
@@ -591,13 +604,12 @@ void room_index::rprog_read_programs( FILE * fp )
             break;
       }
    }
-   return;
 }
 
 /*
  * True if room is dark.
  */
-bool room_index::is_dark( char_data *ch )
+bool room_index::is_dark( char_data * ch )
 {
    if( !this )
    {
@@ -642,7 +654,7 @@ bool room_index::is_private(  )
       return false;
    }
 
-   int count = people.size();
+   int count = people.size(  );
 
    if( flags.test( ROOM_PRIVATE ) && count >= 2 )
       return true;
@@ -653,12 +665,12 @@ bool room_index::is_private(  )
    return false;
 }
 
-void room_index::olc_remove_affect( char_data *ch, bool indexaffect, char *argument )
+void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const string & argument )
 {
-   list<affect_data*>::iterator paf;
-   short loc = atoi( argument );
+   list < affect_data * >::iterator paf;
+   short loc;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       if( !indexaffect )
          ch->print( "Usage: redit rmaffect <affect#>\r\n" );
@@ -667,6 +679,7 @@ void room_index::olc_remove_affect( char_data *ch, bool indexaffect, char *argum
       return;
    }
 
+   loc = atoi( argument.c_str(  ) );
    if( loc < 1 )
    {
       ch->print( "Invalid number.\r\n" );
@@ -676,7 +689,7 @@ void room_index::olc_remove_affect( char_data *ch, bool indexaffect, char *argum
    short count = 0;
    if( !indexaffect )
    {
-      for( paf = affects.begin(); paf != affects.end(); )
+      for( paf = affects.begin(  ); paf != affects.end(  ); )
       {
          affect_data *aff = *paf;
          ++paf;
@@ -693,14 +706,14 @@ void room_index::olc_remove_affect( char_data *ch, bool indexaffect, char *argum
    }
    else
    {
-      for( paf = indexaffects.begin(); paf != indexaffects.end(); )
+      for( paf = permaffects.begin(  ); paf != permaffects.end(  ); )
       {
          affect_data *aff = *paf;
          ++paf;
 
          if( ++count == loc )
          {
-            indexaffects.remove( aff );
+            permaffects.remove( aff );
             deleteptr( aff );
             ch->print( "Room index affect removed.\r\n" );
             --top_affect;
@@ -709,25 +722,24 @@ void room_index::olc_remove_affect( char_data *ch, bool indexaffect, char *argum
       }
    }
    ch->print( "Room affect not found.\r\n" );
-   return;
 }
 
 /*
  * Crash fix and name support by Shaddai 
  */
-void room_index::olc_add_affect( char_data *ch, bool indexaffect, char *argument )
+void room_index::olc_add_affect( char_data * ch, bool indexaffect, string & argument )
 {
    affect_data *paf;
-   char arg2[MIL];
+   string arg2;
    bitset < MAX_RIS_FLAG > risabit;
-   int value = 0;
+   int value = -1;
    short loc;
    bool found = false;
 
    risabit.reset(  );
 
    argument = one_argument( argument, arg2 );
-   if( !arg2 || arg2[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg2.empty(  ) || argument.empty(  ) )
    {
       if( !indexaffect )
          ch->print( "Usage: redit affect <field> <value>\r\n" );
@@ -739,13 +751,13 @@ void room_index::olc_add_affect( char_data *ch, bool indexaffect, char *argument
    loc = get_atype( arg2 );
    if( loc < 1 )
    {
-      ch->printf( "Unknown field: %s\r\n", arg2 );
+      ch->printf( "Unknown field: %s\r\n", arg2.c_str(  ) );
       return;
    }
 
    if( loc == APPLY_AFFECT )
    {
-      char arg3[MIL];
+      string arg3;
 
       argument = one_argument( argument, arg3 );
       if( loc == APPLY_AFFECT )
@@ -753,23 +765,22 @@ void room_index::olc_add_affect( char_data *ch, bool indexaffect, char *argument
          value = get_aflag( arg3 );
 
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown affect: %s\r\n", arg3 );
+            ch->printf( "Unknown affect: %s\r\n", arg3.c_str(  ) );
          else
             found = true;
       }
    }
    else if( loc == APPLY_RESISTANT || loc == APPLY_IMMUNE || loc == APPLY_SUSCEPTIBLE || loc == APPLY_ABSORB )
    {
-      char *risa = argument;
-      char flag[MIL];
+      string flag;
 
-      while( risa[0] != '\0' )
+      while( !argument.empty(  ) )
       {
-         risa = one_argument( risa, flag );
+         argument = one_argument( argument, flag );
          value = get_risflag( flag );
 
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", flag );
+            ch->printf( "Unknown flag: %s\r\n", flag.c_str(  ) );
          else
          {
             risabit.set( value );
@@ -777,20 +788,18 @@ void room_index::olc_add_affect( char_data *ch, bool indexaffect, char *argument
          }
       }
    }
-   else if( loc == APPLY_WEAPONSPELL
-            || loc == APPLY_WEARSPELL
-            || loc == APPLY_REMOVESPELL || loc == APPLY_STRIPSN || loc == APPLY_RECURRINGSPELL || loc == APPLY_EAT_SPELL )
+   else if( loc == APPLY_WEAPONSPELL || loc == APPLY_WEARSPELL || loc == APPLY_REMOVESPELL || loc == APPLY_STRIPSN || loc == APPLY_RECURRINGSPELL || loc == APPLY_EAT_SPELL )
    {
       value = skill_lookup( argument );
 
       if( !IS_VALID_SN( value ) )
-         ch->printf( "Invalid spell: %s", argument );
+         ch->printf( "Invalid spell: %s", argument.c_str(  ) );
       else
          found = true;
    }
    else
    {
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       found = true;
    }
    if( !found )
@@ -807,10 +816,9 @@ void room_index::olc_add_affect( char_data *ch, bool indexaffect, char *argument
    if( !indexaffect )
       affects.push_back( paf );
    else
-      indexaffects.push_back( paf );
+      permaffects.push_back( paf );
    ++top_affect;
    ch->print( "Room affect added.\r\n" );
-   return;
 }
 
 void room_index::room_affect( affect_data * paf, bool fAdd )
@@ -855,14 +863,13 @@ void room_index::room_affect( affect_data * paf, bool fAdd )
  */
 room_index *get_room_index( int vnum )
 {
-   room_index *pRoomIndex;
+   map < int, room_index * >::iterator iroom;
 
    if( vnum < 0 )
       vnum = 0;
 
-   for( pRoomIndex = room_index_hash[vnum % MAX_KEY_HASH]; pRoomIndex; pRoomIndex = pRoomIndex->next )
-      if( pRoomIndex->vnum == vnum )
-         return pRoomIndex;
+   if( ( iroom = room_index_table.find( vnum ) ) != room_index_table.end(  ) )
+      return iroom->second;
 
    if( fBootDb )
       bug( "%s: bad vnum %d.", __FUNCTION__, vnum );
@@ -870,17 +877,15 @@ room_index *get_room_index( int vnum )
    return NULL;
 }
 
-void room_index::echo( char *argument )
+void room_index::echo( const string & argument )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = people.begin(); ich != people.end(); ++ich )
+   for( ich = people.begin(  ); ich != people.end(  ); ++ich )
    {
-      char_data *victim = (*ich);
+      char_data *victim = *ich;
 
-      if( victim->MXP_ON(  ) )
-         victim->print( MXP_TAG_SECURE );
-      victim->printf( "%s\r\n", argument );
+      victim->printf( "%s\r\n", argument.c_str(  ) );
    }
 }
 
@@ -890,20 +895,20 @@ void room_index::echo( char *argument )
 void room_index::clean_resets(  )
 {
    reset_data *pReset;
-   list<reset_data*>::iterator rst;
+   list < reset_data * >::iterator rst;
 
-   for( rst = resets.begin(); rst != resets.end(); )
+   for( rst = resets.begin(  ); rst != resets.end(  ); )
    {
-      pReset = (*rst);
+      pReset = *rst;
       ++rst;
 
       delete_reset( pReset );
       --top_reset;
    }
-   resets.clear();
+   resets.clear(  );
 }
 
-int generate_itemlevel( area_data *pArea, obj_index *pObjIndex )
+int generate_itemlevel( area_data * pArea, obj_index * pObjIndex )
 {
    int olevel;
    int min = UMAX( pArea->low_soft_range, 1 );
@@ -945,14 +950,14 @@ int generate_itemlevel( area_data *pArea, obj_index *pObjIndex )
 /*
  * Count occurrences of an obj in a list.
  */
-int count_obj_list( reset_data *pReset, obj_index *pObjIndex, list<obj_data*> source )
+int count_obj_list( reset_data * pReset, obj_index * pObjIndex, list < obj_data * >source )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int nMatch = 0;
 
-   for( iobj = source.begin(); iobj != source.end(); ++iobj )
+   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       if( obj->pIndexData == pObjIndex )
       {
          if( pReset->command == 'M' || pReset->command == 'O' )
@@ -983,11 +988,11 @@ int count_obj_list( reset_data *pReset, obj_index *pObjIndex, list<obj_data*> so
  */
 obj_data *get_obj_type( obj_index * pObjIndex )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( obj->pIndexData == pObjIndex )
          return obj;
@@ -996,13 +1001,13 @@ obj_data *get_obj_type( obj_index * pObjIndex )
 }
 
 /* Find an object in a room so we can check it's dependents. Used by 'O' resets. */
-obj_data *get_obj_room( obj_index *pObjIndex, room_index *pRoomIndex )
+obj_data *get_obj_room( obj_index * pObjIndex, room_index * pRoomIndex )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = pRoomIndex->objects.begin(); iobj != pRoomIndex->objects.end(); ++iobj )
+   for( iobj = pRoomIndex->objects.begin(  ); iobj != pRoomIndex->objects.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( obj->pIndexData == pObjIndex )
          return obj;
@@ -1033,7 +1038,8 @@ obj_data *make_trap( int v0, int v1, int v2, int v3 )
 /*
  * Add a reset to a room
  */
-reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, short arg4, short arg5, short arg6, short arg7, short arg8, short arg9, short arg10, short arg11 )
+reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, short arg4, short arg5, short arg6, short arg7, short arg8, short arg9, short arg10,
+                                   short arg11 )
 {
    reset_data *pReset;
 
@@ -1045,6 +1051,8 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, sh
 
    letter = UPPER( letter );
    pReset = make_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11 );
+   pReset->sreset = true;
+
    switch ( letter )
    {
       default:
@@ -1103,24 +1111,24 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, sh
 void room_index::renumber_put_resets(  )
 {
    reset_data *lastobj = NULL;
-   list<reset_data*>::iterator rst, dst;
+   list < reset_data * >::iterator rst, dst;
 
-   for( rst = resets.begin(); rst != resets.end(); ++rst )
+   for( rst = resets.begin(  ); rst != resets.end(  ); ++rst )
    {
-      reset_data *pReset = (*rst);
+      reset_data *pReset = *rst;
 
-      switch( pReset->command )
+      switch ( pReset->command )
       {
          default:
             break;
 
          case 'O':
             lastobj = pReset;
-            for( dst = pReset->resets.begin(); dst != pReset->resets.end(); ++dst )
+            for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); ++dst )
             {
-               reset_data *tReset = (*dst);
+               reset_data *tReset = *dst;
 
-               switch( tReset->command )
+               switch ( tReset->command )
                {
                   default:
                      break;
@@ -1142,7 +1150,6 @@ void room_index::renumber_put_resets(  )
             break;
       }
    }
-   return;
 }
 
 /*
@@ -1150,7 +1157,7 @@ void room_index::renumber_put_resets(  )
  */
 void room_index::reset(  )
 {
-   map<int,obj_data*> nestmap;
+   map < int, obj_data * >nestmap;
    char_data *mob;
    obj_data *obj, *lastobj, *to_obj;
    room_index *pRoomIndex = NULL;
@@ -1163,17 +1170,17 @@ void room_index::reset(  )
    mob = NULL;
    obj = NULL;
    lastobj = NULL;
-   if( resets.empty() )
+   if( resets.empty(  ) )
       return;
    level = 0;
 
-   list<reset_data*>::iterator rst;
-   for( rst = resets.begin(); rst != resets.end(); ++rst )
+   list < reset_data * >::iterator rst;
+   for( rst = resets.begin(  ); rst != resets.end(  ); ++rst )
    {
-      reset_data *pReset = (*rst);
+      reset_data *pReset = *rst;
 
       ++onreset;
-      switch( pReset->command )
+      switch ( pReset->command )
       {
          default:
             bug( "%s: %s: bad command %c.", __FUNCTION__, filename, pReset->command );
@@ -1182,7 +1189,7 @@ void room_index::reset(  )
          case 'M':
          {
             // Failed percentage check, don't bother processing. Move along.
-            if( number_percent() > pReset->arg7 )
+            if( number_percent(  ) > pReset->arg7 )
                break;
 
             if( !( pMobIndex = get_mob_index( pReset->arg1 ) ) )
@@ -1244,7 +1251,8 @@ void room_index::reset(  )
             if( namegenCheckString.find( "namegen" ) != string::npos )
             {
                string genstring = "namegen";
-               char nameg[MSL], mob_keywords[MSL];
+               string nameg;
+               char mob_keywords[MSL];
                char file[256];
                bool namePicked = false;
 
@@ -1276,7 +1284,6 @@ void room_index::reset(  )
                      snprintf( file, 256, "%s%s", SYSTEM_DIR, "namegen_orc_other.txt" );
                }
 
-               nameg[0] = '\0';
                if( !namePicked )
                   name_generator( nameg );
                else
@@ -1284,40 +1291,35 @@ void room_index::reset(  )
 
                STRFREE( mob->name );
                STRFREE( mob->short_descr );
-               mudstrlcpy( mob_keywords, namegenCheckString.c_str(), MSL );
+               mudstrlcpy( mob_keywords, namegenCheckString.c_str(  ), MSL );
                mudstrlcat( mob_keywords, " ", MSL );
-               mudstrlcat( mob_keywords, nameg, MSL );
+               mudstrlcat( mob_keywords, nameg.c_str(  ), MSL );
                mob->name = STRALLOC( mob_keywords );
-               mob->short_descr = STRALLOC( nameg );
+               mob->short_descr = STRALLOC( nameg.c_str(  ) );
 
                string long_desc = mob->long_descr;
-               string::size_type token = 0;
-
-               while( ( token = long_desc.find( genstring ) ) != string::npos )
-                  long_desc = long_desc.replace( token, genstring.size(), nameg );
+               string_replace( long_desc, genstring, nameg );
                STRFREE( mob->long_descr );
-               mob->long_descr = STRALLOC( long_desc.c_str() );
+               mob->long_descr = STRALLOC( long_desc.c_str(  ) );
 
                if( mob->chardesc )
                {
-                  token = 0;
                   string char_desc = mob->chardesc;
-                  while( ( token = char_desc.find( genstring ) ) != string::npos )
-                     char_desc = char_desc.replace( token, genstring.size(), nameg );
+                  string_replace( char_desc, genstring, nameg );
                   STRFREE( mob->chardesc );
-                  mob->chardesc = STRALLOC( char_desc.c_str() );
+                  mob->chardesc = STRALLOC( char_desc.c_str(  ) );
                }
             }
 
-            if( !pReset->resets.empty() )
+            if( !pReset->resets.empty(  ) )
             {
-               list<reset_data*>::iterator dst;
-               for( dst = pReset->resets.begin(); dst != pReset->resets.end(); ++dst )
+               list < reset_data * >::iterator dst;
+               for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); ++dst )
                {
-                  reset_data *tReset = (*dst);
+                  reset_data *tReset = *dst;
 
                   ++onreset;
-                  switch( tReset->command )
+                  switch ( tReset->command )
                   {
                      default:
                         break;
@@ -1325,9 +1327,9 @@ void room_index::reset(  )
                      case 'X':
                      case 'Y':
                      {
-                        if( tReset->command == 'X' && number_percent() > tReset->arg8 )
+                        if( tReset->command == 'X' && number_percent(  ) > tReset->arg8 )
                            break;
-                        if( tReset->command == 'Y' && number_percent() > tReset->arg7 )
+                        if( tReset->command == 'Y' && number_percent(  ) > tReset->arg7 )
                            break;
 
                         obj_data *objnew = generate_random( tReset, mob );
@@ -1349,9 +1351,9 @@ void room_index::reset(  )
 
                      case 'G':
                      case 'E':
-                        if( tReset->command == 'G' && number_percent() > tReset->arg3 )
+                        if( tReset->command == 'G' && number_percent(  ) > tReset->arg3 )
                            break;
-                        if( tReset->command == 'E' && number_percent() > tReset->arg4 )
+                        if( tReset->command == 'E' && number_percent(  ) > tReset->arg4 )
                            break;
                         if( !( pObjIndex = get_obj_index( tReset->arg1 ) ) )
                         {
@@ -1390,29 +1392,29 @@ void room_index::reset(  )
                            }
                            mob->equip( obj, tReset->arg3 );
                         }
-                        nestmap.clear();
+                        nestmap.clear(  );
                         nestmap[0] = obj;
                         lastobj = nestmap[0];
                         lastnest = 0;
 
-                        if( !tReset->resets.empty() )
+                        if( !tReset->resets.empty(  ) )
                         {
-                           list<reset_data*>::iterator gst;
-                           for( gst = tReset->resets.begin(); gst != tReset->resets.end(); ++gst )
+                           list < reset_data * >::iterator gst;
+                           for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); ++gst )
                            {
-                              reset_data *gReset = (*gst);
+                              reset_data *gReset = *gst;
                               int iNest;
                               to_obj = lastobj;
-
                               ++onreset;
-                              switch( gReset->command )
+
+                              switch ( gReset->command )
                               {
                                  default:
                                     break;
 
                                  case 'H':
                                     // Failed percentage check, don't bother processing. Move along.
-                                    if( number_percent() > gReset->arg1 )
+                                    if( number_percent(  ) > gReset->arg1 )
                                        break;
                                     if( !lastobj )
                                        break;
@@ -1421,7 +1423,7 @@ void room_index::reset(  )
 
                                  case 'P':
                                     // Failed percentage check, don't bother processing. Move along.
-                                    if( number_percent() > gReset->arg5 )
+                                    if( number_percent(  ) > gReset->arg5 )
                                        break;
                                     if( !( pObjIndex = get_obj_index( gReset->arg2 ) ) )
                                     {
@@ -1434,8 +1436,7 @@ void room_index::reset(  )
                                        bug( "%s: %s: 'P': bad objto vnum %d.", __FUNCTION__, filename, gReset->arg4 );
                                        break;
                                     }
-                                    if( pObjIndex->count >= pObjIndex->limit
-                                      || count_obj_list( gReset, pObjIndex, to_obj->contents ) > 0 )
+                                    if( pObjIndex->count >= pObjIndex->limit || count_obj_list( gReset, pObjIndex, to_obj->contents ) > 0 )
                                     {
                                        obj = NULL;
                                        break;
@@ -1491,7 +1492,7 @@ void room_index::reset(  )
          case 'Z':
          {
             // Failed percentage check, don't bother processing. Move along.
-            if( number_percent() > pReset->arg11 )
+            if( number_percent(  ) > pReset->arg11 )
                break;
 
             if( !( pRoomIndex = get_room_index( pReset->arg7 ) ) )
@@ -1502,18 +1503,18 @@ void room_index::reset(  )
 
             obj = generate_random( pReset, NULL );
 
-            nestmap.clear();
+            nestmap.clear(  );
             nestmap[0] = obj;
             lastobj = nestmap[0];
             lastnest = 0;
             obj->to_room( pRoomIndex, NULL );
          }
-         break;
+            break;
 
          case 'O':
          {
             // Failed percentage check, don't bother processing. Move along.
-            if( number_percent() > pReset->arg7 )
+            if( number_percent(  ) > pReset->arg7 )
                break;
 
             if( !( pObjIndex = get_obj_index( pReset->arg1 ) ) )
@@ -1586,37 +1587,37 @@ void room_index::reset(  )
                for( int x = 0; x < 11; ++x )
                   obj->value[x] = pObjIndex->value[x];
             }
-            nestmap.clear();
+            nestmap.clear(  );
             nestmap[0] = obj;
             lastobj = nestmap[0];
             lastnest = 0;
 
-            if( !pReset->resets.empty() )
+            if( !pReset->resets.empty(  ) )
             {
-               list<reset_data*>::iterator dst;
-               for( dst = pReset->resets.begin(); dst != pReset->resets.end(); ++dst )
+               list < reset_data * >::iterator dst;
+               for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); ++dst )
                {
                   int iNest;
 
-                  reset_data *tReset = (*dst);
+                  reset_data *tReset = *dst;
                   to_obj = lastobj;
                   ++onreset;
 
-                  switch( tReset->command )
+                  switch ( tReset->command )
                   {
                      default:
                         break;
 
                      case 'H':
                         // Failed percentage check, don't bother processing. Move along.
-                        if( number_percent() > tReset->arg1 || !lastobj )
+                        if( number_percent(  ) > tReset->arg1 || !lastobj )
                            break;
                         lastobj->extra_flags.set( ITEM_HIDDEN );
                         break;
 
                      case 'T':
                         // Failed percentage check, don't bother processing. Move along.
-                        if( number_percent() > tReset->arg5 )
+                        if( number_percent(  ) > tReset->arg5 )
                            break;
                         if( !IS_SET( tReset->arg1, TRAP_OBJ ) )
                         {
@@ -1638,7 +1639,7 @@ void room_index::reset(  )
                                  continue;
                               }
                               if( area->nplayer > 0 || !( to_obj = get_obj_type( pObjToIndex ) ) ||
-                                ( to_obj->carried_by && !to_obj->carried_by->isnpc(  ) ) || to_obj->is_trapped(  ) )
+                                  ( to_obj->carried_by && !to_obj->carried_by->isnpc(  ) ) || to_obj->is_trapped(  ) )
                                  break;
                            }
                            else
@@ -1654,7 +1655,7 @@ void room_index::reset(  )
 
                      case 'W':
                      {
-                        if( number_percent() > tReset->arg9 )
+                        if( number_percent(  ) > tReset->arg9 )
                            break;
 
                         obj_data *newobj = generate_random( tReset, NULL );
@@ -1679,7 +1680,7 @@ void room_index::reset(  )
 
                      case 'P':
                         // Failed percentage check, don't bother processing. Move along.
-                        if( number_percent() > tReset->arg5 )
+                        if( number_percent(  ) > tReset->arg5 )
                            break;
 
                         if( !( pObjIndex = get_obj_index( tReset->arg2 ) ) )
@@ -1694,8 +1695,7 @@ void room_index::reset(  )
                            break;
                         }
 
-                        if( pObjIndex->count >= pObjIndex->limit
-                            || count_obj_list( tReset, pObjIndex, to_obj->contents ) > 0 )
+                        if( pObjIndex->count >= pObjIndex->limit || count_obj_list( tReset, pObjIndex, to_obj->contents ) > 0 )
                         {
                            obj = NULL;
                            break;
@@ -1746,7 +1746,7 @@ void room_index::reset(  )
 
          case 'T':
             // Failed percentage check, don't bother processing. Move along.
-            if( number_percent() > pReset->arg5 )
+            if( number_percent(  ) > pReset->arg5 )
                break;
             if( IS_SET( pReset->arg1, TRAP_OBJ ) )
             {
@@ -1769,7 +1769,7 @@ void room_index::reset(  )
 
          case 'D':
             // Failed percentage check, don't bother processing. Move along.
-            if( number_percent() > pReset->arg4 )
+            if( number_percent(  ) > pReset->arg4 )
                break;
             if( !( pRoomIndex = get_room_index( pReset->arg1 ) ) )
             {
@@ -1804,7 +1804,7 @@ void room_index::reset(  )
 
          case 'R':
             // Failed percentage check, don't bother processing. Move along.
-            if( number_percent() > pReset->arg3 )
+            if( number_percent(  ) > pReset->arg3 )
                break;
             if( !( pRoomIndex = get_room_index( pReset->arg1 ) ) )
             {
@@ -1815,14 +1815,13 @@ void room_index::reset(  )
             break;
       }
    }
-   return;
 }
 
-void room_index::load_reset( FILE *fp, bool newformat )
+void room_index::load_reset( FILE * fp, bool newformat )
 {
    exit_data *pexit;
    char letter;
-   char *line;
+   const char *line;
    int extra, arg1, arg2, arg3;
    short arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11;
    bool not01 = false;
@@ -1834,7 +1833,7 @@ void room_index::load_reset( FILE *fp, bool newformat )
    // Useful to ferret out bad stuff
    extra = arg1 = arg2 = arg3 = arg4 = arg5 = arg6 = arg7 = arg8 = arg9 = arg10 = arg11 = -2;
 
-   switch( letter )
+   switch ( letter )
    {
       default:
       case 'M':
@@ -1877,25 +1876,24 @@ void room_index::load_reset( FILE *fp, bool newformat )
          arg7 = 100;
          break;
    }
-   if( !newformat && area->version < 21 )
+
+   // Means this is being loaded from a Smaug or SmaugWiz area.
+   if( !newformat )
    {
       if( letter == 'P' || letter == 'T' || letter == 'W' )
-         sscanf( line, "%d %d %d %hd %hd %hd %hd %hd %hd %hd %hd",
-            &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+         sscanf( line, "%d %d %d %hd %hd %hd %hd %hd %hd %hd %hd", &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
       else
-         sscanf( line, "%d %d %d %d %hd %hd %hd %hd %hd %hd %hd %hd",
-            &extra, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+         sscanf( line, "%d %d %d %d %hd %hd %hd %hd %hd %hd %hd %hd", &extra, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
    }
-   else
-      sscanf( line, "%d %d %d %hd %hd %hd %hd %hd %hd %hd %hd",
-         &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+   else  // Means this is an AFKMud 2.0 native area.
+      sscanf( line, "%d %d %d %hd %hd %hd %hd %hd %hd %hd %hd", &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
    ++count;
 
    /*
     * Validate parameters.
     * We're calling the index functions for the side effect.
     */
-   switch( letter )
+   switch ( letter )
    {
       default:
          bug( "%s: bad command '%c'.", __FUNCTION__, letter );
@@ -1987,7 +1985,7 @@ void room_index::load_reset( FILE *fp, bool newformat )
             boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, area->filename, count, letter, arg2 );
 
          if( arg4 <= 0 )
-            arg4 = OBJ_VNUM_DUMMYOBJ; // This may look stupid, but for some reason it works.
+            arg4 = OBJ_VNUM_DUMMYOBJ;  // This may look stupid, but for some reason it works.
          if( get_obj_index( arg4 ) == NULL && fBootDb )
             boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __FUNCTION__, area->filename, count, arg4 );
          if( !newformat && area->version < 21 )
@@ -2062,8 +2060,7 @@ void room_index::load_reset( FILE *fp, bool newformat )
          if( arg4 > 100 )
             arg4 = 100;
 
-         if( arg2 < 0 || arg2 > MAX_DIR + 1
-             || !( pexit = get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
+         if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
          {
             bug( "%s: 'D': exit %d not door.", __FUNCTION__, arg2 );
             log_printf( "Reset: %c %d %d %d %d %d", letter, extra, arg1, arg2, arg3, arg4 );
@@ -2097,11 +2094,10 @@ void room_index::load_reset( FILE *fp, bool newformat )
    add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11 );
 
    if( !not01 )
-      renumber_put_resets();
-   return;
+      renumber_put_resets(  );
 }
 
-int get_dirnum( char *flag )
+int get_dirnum( const string & flag )
 {
    size_t x;
 
@@ -2116,31 +2112,31 @@ int get_dirnum( char *flag )
    return -1;
 }
 
-char *rev_exit( short vdir )
+const char *rev_exit( short vdir )
 {
    switch ( vdir )
    {
       default:
          return "somewhere";
-      case 0:
+      case DIR_NORTH:
          return "the south";
-      case 1:
+      case DIR_EAST:
          return "the west";
-      case 2:
+      case DIR_SOUTH:
          return "the north";
-      case 3:
+      case DIR_WEST:
          return "the east";
-      case 4:
+      case DIR_UP:
          return "below";
-      case 5:
+      case DIR_DOWN:
          return "above";
-      case 6:
+      case DIR_NORTHEAST:
          return "the southwest";
-      case 7:
+      case DIR_NORTHWEST:
          return "the southeast";
-      case 8:
+      case DIR_SOUTHEAST:
          return "the northwest";
-      case 9:
+      case DIR_SOUTHWEST:
          return "the northeast";
    }
 }
@@ -2154,7 +2150,7 @@ CMDF( do_recho )
       ch->print( "You can't do that right now.\r\n" );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Recho what?\r\n" );
       return;
@@ -2172,7 +2168,7 @@ CMDF( do_rdelete )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Delete which room?\r\n" );
       return;
@@ -2190,14 +2186,12 @@ CMDF( do_rdelete )
    /*
     * Does the player have the right to delete this room? 
     */
-   if( ch->get_trust(  ) < sysdata->level_modify_proto
-       && ( location->vnum < ch->pcdata->low_vnum || location->vnum > ch->pcdata->hi_vnum ) )
+   if( ch->get_trust(  ) < sysdata->level_modify_proto && ( location->vnum < ch->pcdata->low_vnum || location->vnum > ch->pcdata->hi_vnum ) )
    {
       ch->print( "That room is not in your assigned range.\r\n" );
       return;
    }
    deleteptr( location );
-   fix_exits(); /* Need to call this to solve a crash */
-   ch->printf( "Room %s has been deleted.\r\n", argument );
-   return;
+   fix_exits(  ); /* Need to call this to solve a crash */
+   ch->printf( "Room %s has been deleted.\r\n", argument.c_str(  ) );
 }

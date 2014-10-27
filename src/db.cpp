@@ -30,13 +30,13 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #if !defined(WIN32)
- #include <dlfcn.h>   /* Required for libdl - Trax */
+#include <dlfcn.h>   /* Required for libdl - Trax */
 #else
- #include <windows.h>
- #define dlopen( libname, flags ) LoadLibrary( (libname) )
+#include <windows.h>
+#define dlopen( libname, flags ) LoadLibrary( (libname) )
 #endif
 #if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
- #include <execinfo.h>
+#include <execinfo.h>
 #endif
 #include <cstdarg>
 #include <cmath>
@@ -54,7 +54,7 @@
 #include "roomindex.h"
 #include "shops.h"
 #if !defined(__CYGWIN__) && defined(SQL)
- #include "sql.h"
+#include "sql.h"
 #endif
 
 #if defined(WIN32)
@@ -74,27 +74,23 @@ system_data *sysdata;
  */
 struct wizent
 {
-   wizent();
-   ~wizent();
+   wizent(  );
+   ~wizent(  );
 
-   char *name;
-   char *http;
+   string name;
+   string http;
    short level;
 };
 
-list<wizent*> wizlist;
+list < wizent * >wizlist;
 
-wizent::wizent()
+wizent::wizent(  )
 {
-   name = NULL;
-   http = NULL;
    level = 0;
 }
 
-wizent::~wizent()
+wizent::~wizent(  )
 {
-   DISPOSE( name );
-   DISPOSE( http );
    wizlist.remove( this );
 }
 
@@ -104,7 +100,7 @@ void init_supermob( void );
  * Globals.
  */
 time_info_data time_info;
-extern char *alarm_section;
+extern const char *alarm_section;
 extern obj_data *extracted_obj_queue;
 extern struct extracted_char_data *extracted_char_queue;
 
@@ -149,138 +145,130 @@ extern int astral_target;
  */
 void set_alarm( long );
 #ifdef MULTIPORT
-void load_shellcommands( );
+void load_shellcommands(  );
 #endif
-void load_modules();
-void web_arealist();
-bool load_timedata( );
-void load_shopkeepers( );
-void load_auth_list( );  /* New Auth Code */
-void save_auth_list( );
-void build_wizinfo( );
-void load_maps( ); /* Load in Overland Maps - Samson 8-1-99 */
-void load_ships( );   /* Load ships - Samson 1-6-01 */
-void load_world( );
-void load_morphs( );
-void load_skill_table( );
-void remap_slot_numbers( );
-void load_mxpobj_cmds( );
-void load_quotes( );
-void load_sales( );   /* Samson 6-24-99 for new auction system */
-void load_aucvaults( );  /* Samson 6-20-99 for new auction system */
-void load_corpses( );
-void load_banlist( );
-void update_timers( );
-void update_calendar( );
-void load_specfuns( );
+void load_modules(  );
+void web_arealist(  );
+bool load_timedata(  );
+void load_shopkeepers(  );
+void load_auth_list(  );   /* New Auth Code */
+void save_auth_list(  );
+void build_wizinfo(  );
+void load_maps(  );  /* Load in Overland Maps - Samson 8-1-99 */
+void load_ships(  ); /* Load ships - Samson 1-6-01 */
+void load_world(  );
+void load_morphs(  );
+void load_skill_table(  );
+void remap_slot_numbers(  );
+void load_quotes(  );
+void load_sales(  ); /* Samson 6-24-99 for new auction system */
+void load_aucvaults(  );   /* Samson 6-20-99 for new auction system */
+void load_corpses(  );
+void load_banlist(  );
+void update_timers(  );
+void update_calendar(  );
+void load_specfuns(  );
 void load_equipment_totals( bool );
-void load_slays( );
-void load_holidays( );
-void load_bits( );
-void load_liquids( );
-void load_mixtures( );
-void load_imm_host( );
-void load_dns( );
-void load_mudchannels( );
-void to_channel( const char *, char *, int );
-void load_runes( );
-void load_clans( );
-void load_socials( );
-void load_commands( );
-void load_deity( );
-void load_boards( );
-void load_projects( );
-void assign_gsn_data( );
+void load_slays(  );
+void load_holidays(  );
+void load_bits(  );
+void load_liquids(  );
+void load_mixtures(  );
+void load_imm_host(  );
+void load_dns(  );
+void load_mudchannels(  );
+void to_channel( const string &, const string &, int );
+void load_runes(  );
+void load_clans(  );
+void load_socials(  );
+void load_commands(  );
+void load_deity(  );
+void load_boards(  );
+void load_projects(  );
+void assign_gsn_data(  );
 int mob_xp( char_data * );
-void load_connhistory( );
-void init_area_weather( );
-void load_weatherdata( );
-void sort_skill_table( );
-void load_classes( );
-void load_races( );
-void load_herb_table( );
-void load_tongues( );
-void load_helps();
+void load_connhistory(  );
+void init_area_weather(  );
+void load_weatherdata(  );
+void sort_skill_table(  );
+void load_classes(  );
+void load_races(  );
+void load_herb_table(  );
+void load_tongues(  );
+void load_helps(  );
+void init_chess(  );
 
-affect_data::affect_data()
+affect_data::affect_data(  )
 {
    init_memory( &rismod, &type, sizeof( type ) );
 }
 
-void shutdown_mud( char *reason )
+void shutdown_mud( const string & reason )
 {
    FILE *fp;
 
    if( ( fp = fopen( SHUTDOWN_FILE, "a" ) ) != NULL )
    {
-      fprintf( fp, "%s\n", reason );
+      fprintf( fp, "%s\n", reason.c_str(  ) );
       FCLOSE( fp );
    }
 }
 
-bool exists_file( string name )
+bool exists_file( const string & name )
 {
    struct stat fst;
 
    /*
     * Stands to reason that if there ain't a name to look at, it damn well don't exist! 
     */
-   if( name.empty() )
+   if( name.empty(  ) )
       return false;
 
-   if( stat( name.c_str(), &fst ) != -1 )
+   if( stat( name.c_str(  ), &fst ) != -1 )
       return true;
    else
       return false;
 }
 
-bool exists_file( const char *name )
-{
-   struct stat fst;
-
-   /*
-    * Stands to reason that if there ain't a name to look at, it damn well don't exist! 
-    */
-   if( !name || name[0] == '\0' || !str_cmp( name, "" ) )
-      return false;
-
-   if( stat( name, &fst ) != -1 )
-      return true;
-   else
-      return false;
-}
-
-bool is_valid_filename( char_data *ch, const char *direct, const char *filename )
+bool is_valid_filename( char_data * ch, const string & direct, const string & filename )
 {
    char newfilename[256];
    struct stat fst;
 
-   /* Length restrictions */
-   if( !filename || filename[0] == '\0' || strlen( filename ) < 3 )
+   /*
+    * Length restrictions 
+    */
+   if( filename.empty(  ) || filename.length(  ) < 3 )
    {
-      if( !filename || !str_cmp( filename, "" ) )
+      if( filename.empty(  ) )
          ch->print( "Empty filename is not valid.\r\n" );
       else
-         ch->printf( "%s: Filename is too short.\r\n", filename );
+         ch->printf( "%s: Filename is too short.\r\n", filename.c_str(  ) );
       return false;
    }
 
-   /* Illegal characters */
-   if( strstr( filename, ".." ) || strstr( filename, "/" ) || strstr( filename, "\\" ) )
+   /*
+    * Illegal characters 
+    */
+   if( strstr( filename.c_str(  ), ".." ) || strstr( filename.c_str(  ), "/" ) || strstr( filename.c_str(  ), "\\" ) )
    {
       ch->print( "A filename may not contain a '..', '/', or '\\' in it.\r\n" );
       return false;
    }
 
-   /* If that filename is already being used lets not allow it now to be on the safe side */
-   snprintf( newfilename, sizeof( newfilename ), "%s%s", direct, filename );
+   /*
+    * If that filename is already being used lets not allow it now to be on the safe side 
+    */
+   snprintf( newfilename, sizeof( newfilename ), "%s%s", direct.c_str(  ), filename.c_str(  ) );
    if( stat( newfilename, &fst ) != -1 )
    {
       ch->printf( "%s is already an existing filename.\r\n", newfilename );
       return false;
    }
 
-   /* If we got here assume its valid */
+   /*
+    * If we got here assume its valid 
+    */
    return true;
 }
 
@@ -323,7 +311,7 @@ char fread_letter( FILE * fp )
 /*
  * Read a float number from a file. Turn the result into a float value.
  */
-float fread_float( FILE *fp )
+float fread_float( FILE * fp )
 {
    float number;
    bool sign, decimal;
@@ -615,7 +603,7 @@ int fread_number( FILE * fp )
 /*
  * Read a string of text based flags from file fp. Ending in ~
  */
-char *fread_flagstring( FILE * fp )
+const char *fread_flagstring( FILE * fp )
 {
    static char buf[MSL];
    char *plast;
@@ -655,7 +643,7 @@ char *fread_flagstring( FILE * fp )
       {
          bug( "%s: string too long", __FUNCTION__ );
          *plast = '\0';
-         return ( buf );
+         return buf;
       }
       switch ( *plast = getc( fp ) )
       {
@@ -669,7 +657,7 @@ char *fread_flagstring( FILE * fp )
             if( fBootDb )
                exit( 1 );
             *plast = '\0';
-            return ( buf );
+            return buf;
 
          case '\n':
             ++plast;
@@ -683,7 +671,7 @@ char *fread_flagstring( FILE * fp )
 
          case '~':
             *plast = '\0';
-            return ( buf );
+            return buf;
       }
    }
 }
@@ -701,7 +689,7 @@ char *fread_string( FILE * fp )
 }
 
 /* Read a string from a file and assign it to a std::string */
-void fread_string( string &newstring, FILE *fp )
+void fread_string( string & newstring, FILE * fp )
 {
    char buf[MSL];
 
@@ -750,13 +738,12 @@ void fread_to_eol( FILE * fp )
    while( c == '\n' || c == '\r' );
 
    ungetc( c, fp );
-   return;
 }
 
 /*
  * Read to end of line into static buffer - Thoric
  */
-char *fread_line( FILE * fp )
+const char *fread_line( FILE * fp )
 {
    static char line[MSL];
    char *pline;
@@ -820,13 +807,13 @@ char *fread_line( FILE * fp )
    return line;
 }
 
-void fread_line( string &newstring, FILE *fp )
+void fread_line( string & newstring, FILE * fp )
 {
    char buf[MSL];
 
    mudstrlcpy( buf, fread_line( fp ), MSL );
-   if( buf[strlen(buf)-1] == '\n' || buf[strlen(buf)-1] == '\r' )
-      buf[strlen(buf)-1] = '\0';
+   if( buf[strlen( buf ) - 1] == '\n' || buf[strlen( buf ) - 1] == '\r' )
+      buf[strlen( buf ) - 1] = '\0';
    newstring = buf;
 }
 
@@ -909,7 +896,6 @@ void boot_log( const char *str, ... )
       fprintf( fp, "%s\n", buf );
       FCLOSE( fp );
    }
-   return;
 }
 
 /* Build list of in_progress areas. Do not load areas.
@@ -973,14 +959,14 @@ void save_sysdata( void )
    {
       fprintf( fp, "%s", "#SYSTEM\n" );
       fprintf( fp, "Version        %d\n", SYSFILEVER );
-      fprintf( fp, "MudName        %s~\n", sysdata->mud_name );
-      fprintf( fp, "Password       %s~\n", sysdata->password );
-      fprintf( fp, "Dbserver       %s~\n", sysdata->dbserver );
-      fprintf( fp, "Dbname         %s~\n", sysdata->dbname );
-      fprintf( fp, "Dbuser         %s~\n", sysdata->dbuser );
-      fprintf( fp, "Dbpass         %s~\n", sysdata->dbpass );
+      fprintf( fp, "MudName        %s~\n", sysdata->mud_name.c_str(  ) );
+      fprintf( fp, "Password       %s~\n", sysdata->password.c_str(  ) );
+      fprintf( fp, "Dbserver       %s~\n", sysdata->dbserver.c_str(  ) );
+      fprintf( fp, "Dbname         %s~\n", sysdata->dbname.c_str(  ) );
+      fprintf( fp, "Dbuser         %s~\n", sysdata->dbuser.c_str(  ) );
+      fprintf( fp, "Dbpass         %s~\n", sysdata->dbpass.c_str(  ) );
       fprintf( fp, "Highplayers    %d\n", sysdata->alltimemax );
-      fprintf( fp, "Highplayertime %s~\n", sysdata->time_of_max );
+      fprintf( fp, "Highplayertime %s~\n", sysdata->time_of_max.c_str(  ) );
       fprintf( fp, "CheckImmHost   %d\n", sysdata->check_imm_host );
       fprintf( fp, "Nameresolving  %d\n", sysdata->NO_NAME_RESOLVING );
       fprintf( fp, "Waitforauth    %d\n", sysdata->WAIT_FOR_AUTH );
@@ -1014,22 +1000,22 @@ void save_sysdata( void )
       fprintf( fp, "Wizlock        %d\n", sysdata->WIZLOCK );
       fprintf( fp, "Implock        %d\n", sysdata->IMPLOCK );
       fprintf( fp, "Lockdown       %d\n", sysdata->LOCKDOWN );
-      fprintf( fp, "Admin_Email    %s~\n", sysdata->admin_email );
+      fprintf( fp, "Admin_Email    %s~\n", sysdata->admin_email.c_str(  ) );
       fprintf( fp, "Newbie_purge   %d\n", sysdata->newbie_purge );
       fprintf( fp, "Regular_purge  %d\n", sysdata->regular_purge );
       fprintf( fp, "Autopurge      %d\n", sysdata->CLEANPFILES );
       fprintf( fp, "Testmode       %d\n", sysdata->TESTINGMODE );
       fprintf( fp, "Mapsize        %d\n", sysdata->mapsize );
-      fprintf( fp, "Motd           %ld\n", ( time_t )sysdata->motd );
-      fprintf( fp, "Imotd          %ld\n", ( time_t )sysdata->imotd );
-      fprintf( fp, "Telnet         %s~\n", sysdata->telnet );
-      fprintf( fp, "HTTP           %s~\n", sysdata->http );
+      fprintf( fp, "Motd           %ld\n", ( time_t ) sysdata->motd );
+      fprintf( fp, "Imotd          %ld\n", ( time_t ) sysdata->imotd );
+      fprintf( fp, "Telnet         %s~\n", sysdata->telnet.c_str(  ) );
+      fprintf( fp, "HTTP           %s~\n", sysdata->http.c_str(  ) );
       fprintf( fp, "Maxvnum        %d\n", sysdata->maxvnum );
       fprintf( fp, "Minguild       %d\n", sysdata->minguildlevel );
       fprintf( fp, "Maxcond        %d\n", sysdata->maxcondval );
-      fprintf( fp, "Maxignore      %d\n", sysdata->maxign );
+      fprintf( fp, "Maxignore      %zd\n", sysdata->maxign );
       fprintf( fp, "Maximpact      %d\n", sysdata->maximpact );
-      fprintf( fp, "Maxholiday     %d\n", sysdata->maxholiday );
+      fprintf( fp, "Maxholiday     %zd\n", sysdata->maxholiday );
       fprintf( fp, "Initcond       %d\n", sysdata->initcond );
       fprintf( fp, "Secpertick     %d\n", sysdata->secpertick );
       fprintf( fp, "Pulsepersec    %d\n", sysdata->pulsepersec );
@@ -1047,7 +1033,6 @@ void save_sysdata( void )
       fprintf( fp, "%s", "#END\n" );
    }
    FCLOSE( fp );
-   return;
 }
 
 void fread_sysdata( FILE * fp )
@@ -1070,7 +1055,7 @@ void fread_sysdata( FILE * fp )
             break;
 
          case 'A':
-            KEY( "Admin_Email", sysdata->admin_email, fread_string_nohash( fp ) );
+            STDSKEY( "Admin_Email", sysdata->admin_email );
             KEY( "Auctionseconds", sysdata->auctionseconds, fread_number( fp ) );
             KEY( "Autopurge", sysdata->CLEANPFILES, fread_number( fp ) );
             break;
@@ -1095,43 +1080,23 @@ void fread_sysdata( FILE * fp )
             KEY( "Dodgemod", sysdata->dodge_mod, fread_number( fp ) );
             KEY( "Daysperweek", sysdata->daysperweek, fread_number( fp ) );
             KEY( "Dayspermonth", sysdata->dayspermonth, fread_number( fp ) );
-            if( !str_cmp( word, "Dbserver" ) )
-            {
-               DISPOSE( sysdata->dbserver );
-               sysdata->dbserver = fread_string_nohash( fp );
-               break;
-            }
-            if( !str_cmp( word, "Dbname" ) )
-            {
-               DISPOSE( sysdata->dbname );
-               sysdata->dbname = fread_string_nohash( fp );
-               break;
-            }
-            if( !str_cmp( word, "Dbuser" ) )
-            {
-               DISPOSE( sysdata->dbuser );
-               sysdata->dbuser = fread_string_nohash( fp );
-               break;
-            }
-            if( !str_cmp( word, "Dbpass" ) )
-            {
-               DISPOSE( sysdata->dbpass );
-               sysdata->dbpass = fread_string_nohash( fp );
-               break;
-            }
+            STDSKEY( "Dbserver", sysdata->dbserver );
+            STDSKEY( "Dbname", sysdata->dbname );
+            STDSKEY( "Dbuser", sysdata->dbuser );
+            STDSKEY( "Dbpass", sysdata->dbpass );
             break;
 
          case 'E':
             if( !str_cmp( word, "End" ) )
             {
-               if( !sysdata->time_of_max )
-                  sysdata->time_of_max = str_dup( "(not recorded)" );
-               if( !sysdata->mud_name )
-                  sysdata->mud_name = str_dup( "(Name Not Set)" );
-               if( !sysdata->http )
-                  sysdata->http = str_dup( "No page set" );
-               if( !sysdata->telnet )
-                  sysdata->telnet = str_dup( "Not set" );
+               if( sysdata->time_of_max.empty(  ) )
+                  sysdata->time_of_max = "(not recorded)";
+               if( sysdata->mud_name.empty(  ) )
+                  sysdata->mud_name = "(Name Not Set)";
+               if( sysdata->http.empty(  ) )
+                  sysdata->http = "No page set";
+               if( sysdata->telnet.empty(  ) )
+                  sysdata->telnet = "Not set";
                return;
             }
             break;
@@ -1149,8 +1114,8 @@ void fread_sysdata( FILE * fp )
 
          case 'H':
             KEY( "Highplayers", sysdata->alltimemax, fread_number( fp ) );
-            KEY( "Highplayertime", sysdata->time_of_max, fread_string_nohash( fp ) );
-            KEY( "HTTP", sysdata->http, fread_string_nohash( fp ) );
+            STDSKEY( "Highplayertime", sysdata->time_of_max );
+            STDSKEY( "HTTP", sysdata->http );
             KEY( "Hoursperday", sysdata->hoursperday, fread_number( fp ) );
             break;
 
@@ -1190,7 +1155,7 @@ void fread_sysdata( FILE * fp )
 
          case 'P':
             KEY( "Parrymod", sysdata->parry_mod, fread_number( fp ) );
-            KEY( "Password", sysdata->password, fread_string_nohash( fp ) );  /* Samson 2-8-01 */
+            STDSKEY( "Password", sysdata->password ); /* Samson 2-8-01 */
             KEY( "PetSave", sysdata->save_pets, fread_number( fp ) );
             KEY( "Protoflag", sysdata->level_modify_proto, fread_number( fp ) );
             KEY( "Pulsepersec", sysdata->pulsepersec, fread_number( fp ) );
@@ -1300,28 +1265,26 @@ bool load_systemdata( void )
  */
 void fix_exits( void )
 {
-   room_index *pRoomIndex;
+   map < int, room_index * >::iterator iroom;
 
-   for( int iHash = 0; iHash < MAX_KEY_HASH; ++iHash )
+   for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {
-      for( pRoomIndex = room_index_hash[iHash]; pRoomIndex; pRoomIndex = pRoomIndex->next )
+      room_index *pRoomIndex = iroom->second;
+
+      list < exit_data * >::iterator iexit;
+      for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); )
       {
-         list<exit_data*>::iterator iexit;
-         for( iexit = pRoomIndex->exits.begin(); iexit != pRoomIndex->exits.end(); )
+         exit_data *pexit = *iexit;
+         ++iexit;
+
+         pexit->rvnum = pRoomIndex->vnum;
+         if( pexit->vnum <= 0 || !( pexit->to_room = get_room_index( pexit->vnum ) ) )
          {
-            exit_data *pexit = (*iexit);
-            ++iexit;
+            if( fBootDb )
+               boot_log( "Fix_exits: room %d, exit %s leads to bad vnum (%d)", pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
 
-            pexit->rvnum = pRoomIndex->vnum;
-            if( pexit->vnum <= 0 || !( pexit->to_room = get_room_index( pexit->vnum ) ) )
-            {
-               if( fBootDb )
-                  boot_log( "Fix_exits: room %d, exit %s leads to bad vnum (%d)",
-                            pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
-
-               bug( "%s: Deleting %s exit in room %d", __FUNCTION__, dir_name[pexit->vdir], pRoomIndex->vnum );
-               pRoomIndex->extract_exit( pexit );
-            }
+            bug( "%s: Deleting %s exit in room %d", __FUNCTION__, dir_name[pexit->vdir], pRoomIndex->vnum );
+            pRoomIndex->extract_exit( pexit );
          }
       }
    }
@@ -1329,28 +1292,26 @@ void fix_exits( void )
    /*
     * Set all the rexit pointers - Thoric 
     */
-   for( int iHash = 0; iHash < MAX_KEY_HASH; ++iHash )
+   for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {
-      for( pRoomIndex = room_index_hash[iHash]; pRoomIndex; pRoomIndex = pRoomIndex->next )
-      {
-         list<exit_data*>::iterator iexit;
-         for( iexit = pRoomIndex->exits.begin(); iexit != pRoomIndex->exits.end(); ++iexit )
-         {
-            exit_data *pexit = (*iexit);
+      room_index *pRoomIndex = iroom->second;
 
-            if( pexit->to_room && !pexit->rexit )
+      list < exit_data * >::iterator iexit;
+      for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); ++iexit )
+      {
+         exit_data *pexit = *iexit;
+
+         if( pexit->to_room && !pexit->rexit )
+         {
+            exit_data *rv_exit = pexit->to_room->get_exit_to( rev_dir[pexit->vdir], pRoomIndex->vnum );
+            if( rv_exit )
             {
-               exit_data *rv_exit = pexit->to_room->get_exit_to( rev_dir[pexit->vdir], pRoomIndex->vnum );
-               if( rv_exit )
-               {
-                  pexit->rexit = rv_exit;
-                  rv_exit->rexit = pexit;
-               }
+               pexit->rexit = rv_exit;
+               rv_exit->rexit = pexit;
             }
          }
       }
    }
-   return;
 }
 
 /*
@@ -1401,15 +1362,16 @@ void towebwiz( const char *line )
    }
 }
 
-void add_to_wizlist( char *name, char *http, int level )
+void add_to_wizlist( const string & name, const string & http, int level )
 {
    wizent *wiz = new wizent;
-   wiz->name = str_dup( name );
-   if( http != NULL )
-      wiz->http = str_dup( http );
+
+   wiz->name = name;
+   if( !http.empty(  ) )
+      wiz->http = http;
    wiz->level = level;
 
-   if( wizlist.empty() )
+   if( wizlist.empty(  ) )
    {
       wizlist.push_back( wiz );
       return;
@@ -1418,10 +1380,10 @@ void add_to_wizlist( char *name, char *http, int level )
    /*
     * insert sort, of sorts 
     */
-   list<wizent*>::iterator tmp;
-   for( tmp = wizlist.begin(); tmp != wizlist.end(); ++tmp )
+   list < wizent * >::iterator tmp;
+   for( tmp = wizlist.begin(  ); tmp != wizlist.end(  ); ++tmp )
    {
-      wizent *wt = (*tmp);
+      wizent *wt = *tmp;
 
       if( level > wt->level )
       {
@@ -1430,7 +1392,6 @@ void add_to_wizlist( char *name, char *http, int level )
       }
    }
    wizlist.push_back( wiz );
-   return;
 }
 
 /*
@@ -1444,7 +1405,7 @@ void make_wizlist(  )
    const char *word;
    char buf[256];
 
-   wizlist.clear();
+   wizlist.clear(  );
 
    dp = opendir( GOD_DIR );
 
@@ -1463,7 +1424,7 @@ void make_wizlist(  )
             gfp = fopen( buf, "r" );
             if( gfp )
             {
-               bitset<MAX_PCFLAG> iflags;
+               bitset < MAX_PCFLAG > iflags;
                iflags.reset(  );
 
                word = feof( gfp ) ? "End" : fread_word( gfp );
@@ -1477,7 +1438,7 @@ void make_wizlist(  )
                   ilevel = MAX_LEVEL - 15;
                if( iflags.test( PCFLAG_GUEST ) )
                   ilevel = MAX_LEVEL - 16;
-               add_to_wizlist( dentry->d_name, NULL, ilevel );
+               add_to_wizlist( dentry->d_name, "", ilevel );
             }
          }
       }
@@ -1486,15 +1447,15 @@ void make_wizlist(  )
    closedir( dp );
 
    unlink( WIZLIST_FILE );
-   snprintf( buf, 256, "The Immortal Masters of %s", sysdata->mud_name );
+   snprintf( buf, 256, "The Immortal Masters of %s", sysdata->mud_name.c_str(  ) );
    towizfile( buf );
 
    buf[0] = '\0';
    ilevel = 65535;
-   list<wizent*>::iterator went;
-   for( went = wizlist.begin(); went != wizlist.end(); ++went )
+   list < wizent * >::iterator went;
+   for( went = wizlist.begin(  ); went != wizlist.end(  ); ++went )
    {
-      wizent *wiz = (*went);
+      wizent *wiz = *went;
 
       if( wiz->level < ilevel )
       {
@@ -1563,13 +1524,13 @@ void make_wizlist(  )
                break;
          }
       }
-      if( strlen( buf ) + strlen( wiz->name ) > 76 )
+      if( strlen( buf ) + wiz->name.length(  ) > 76 )
       {
          towizfile( buf );
          buf[0] = '\0';
       }
       mudstrlcat( buf, " ", 256 );
-      mudstrlcat( buf, wiz->name, 256 );
+      mudstrlcat( buf, wiz->name.c_str(  ), 256 );
       if( strlen( buf ) > 70 )
       {
          towizfile( buf );
@@ -1579,14 +1540,14 @@ void make_wizlist(  )
    if( buf[0] )
       towizfile( buf );
 
-   for( went = wizlist.begin(); went != wizlist.end(); )
+   for( went = wizlist.begin(  ); went != wizlist.end(  ); )
    {
-      wizent *wiz = (*went);
+      wizent *wiz = *went;
       ++went;
 
       deleteptr( wiz );
    }
-   wizlist.clear();
+   wizlist.clear(  );
 }
 
 /*
@@ -1598,9 +1559,10 @@ void make_webwiz( void )
    struct dirent *dentry;
    FILE *gfp;
    const char *word;
-   char buf[MSL], http[MIL];
+   char buf[256];
+   string http;
 
-   wizlist.clear();
+   wizlist.clear(  );
 
    dp = opendir( GOD_DIR );
 
@@ -1628,7 +1590,7 @@ void make_webwiz( void )
          gfp = fopen( buf, "r" );
          if( gfp )
          {
-            bitset<MAX_PCFLAG> iflags;
+            bitset < MAX_PCFLAG > iflags;
             iflags.reset(  );
 
             word = feof( gfp ) ? "End" : fread_word( gfp );
@@ -1639,9 +1601,7 @@ void make_webwiz( void )
                flag_set( gfp, iflags, pc_flags );
             word = feof( gfp ) ? "End" : fread_word( gfp );
             if( !str_cmp( word, "Homepage" ) )
-               mudstrlcpy( http, fread_flagstring( gfp ), MIL );
-            else
-               http[0] = '\0';
+               fread_string( http, gfp );
             FCLOSE( gfp );
             if( iflags.test( PCFLAG_RETIRED ) )
                ilevel = MAX_LEVEL - 15;
@@ -1659,10 +1619,10 @@ void make_webwiz( void )
    buf[0] = '\0';
    ilevel = 65535;
 
-   list<wizent*>::iterator went;
-   for( went = wizlist.begin(); went != wizlist.end(); ++went )
+   list < wizent * >::iterator went;
+   for( went = wizlist.begin(  ); went != wizlist.end(  ); ++went )
    {
-      wizent *wiz = (*went);
+      wizent *wiz = *went;
 
       if( wiz->level < ilevel )
       {
@@ -1677,121 +1637,100 @@ void make_webwiz( void )
          switch ( ilevel )
          {
             case MAX_LEVEL - 0:
-               towebwiz
-                  ( "<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Supreme Entity and Implementor</font></p>\n<p align=\"center\">" );
+               towebwiz( "<div style=\"text-align:center; font-weight:bold\">The Supreme Entity and Implementor</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 1:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Realm Lords</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Realm Lords</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 2:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Eternals</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Eternals</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 3:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Ancients</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Ancients</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 4:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Astral Gods</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Astral Gods</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 5:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Elemental Gods</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Elemental Gods</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 6:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Dream Gods</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Dream Gods</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 7:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Greater Gods</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Greater Gods</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 8:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Gods</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Gods</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 9:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Demi Gods</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Demi Gods</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 10:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Deities</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Deities</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 11:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Saviors</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Saviors</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 12:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Creators</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Creators</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 13:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Acolytes</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Acolytes</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 14:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">The Angels</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Angels</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 15:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">Retired</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">Retired</div>\n<br /><div style=\"text-align:center\">" );
                break;
             case MAX_LEVEL - 16:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">Guests</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">Guests</div>\n<br /><div style=\"text-align:center\">" );
                break;
             default:
-               towebwiz
-                  ( "</p>\n<p align=\"center\"><font size=\"+1\" color=\"#999999\" face=\"Comic Sans MS\">Servants</font></p>\n<p align=\"center\">" );
+               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">Servants</div>\n<br /><div style=\"text-align:center\">" );
                break;
          }
       }
 
-      mudstrlcat( buf, "<font size=\"+1\" color=\"#FF0000\">", MSL );
-
-      if( strlen( buf ) + strlen( wiz->name ) > 999 )
+      if( strlen( buf ) + wiz->name.length(  ) > 999 )
       {
          towebwiz( buf );
          buf[0] = '\0';
       }
 
       mudstrlcat( buf, " ", MSL );
-      if( wiz->http && wiz->http[0] != '\0' )
+      if( !wiz->http.empty(  ) )
       {
          char lbuf[MSL];
 
-         snprintf( lbuf, MSL, "<a href=\"%s\" target=\"_blank\">%s</a>", wiz->http, wiz->name );
+         snprintf( lbuf, MSL, "<a href=\"%s\" target=\"_blank\">%s</a>", wiz->http.c_str(  ), wiz->name.c_str(  ) );
          mudstrlcat( buf, lbuf, MSL );
       }
       else
-         mudstrlcat( buf, wiz->name, MSL );
+         mudstrlcat( buf, wiz->name.c_str(  ), MSL );
 
       if( strlen( buf ) > 999 )
       {
          towebwiz( buf );
          buf[0] = '\0';
       }
-      mudstrlcat( buf, "</font>\n", MSL );
    }
 
    if( buf[0] )
    {
-      mudstrlcat( buf, "</p>\n", MSL );
+      mudstrlcat( buf, "</div>\n", MSL );
       towebwiz( buf );
    }
 
-   for( went = wizlist.begin(); went != wizlist.end(); )
+   for( went = wizlist.begin(  ); went != wizlist.end(  ); )
    {
-      wizent *wiz = (*went);
+      wizent *wiz = *went;
       ++went;
 
       deleteptr( wiz );
    }
-   wizlist.clear();
+   wizlist.clear(  );
 }
 
 CMDF( do_makewizlist )
@@ -1801,23 +1740,13 @@ CMDF( do_makewizlist )
    build_wizinfo(  );
 }
 
-system_data::system_data()
+system_data::system_data(  )
 {
-   init_memory( &dlHandle, &crashhandler, sizeof( crashhandler ) );
+   init_memory( &this->maxign, &this->crashhandler, sizeof( this->crashhandler ) );
 }
 
-system_data::~system_data()
+system_data::~system_data(  )
 {
-   DISPOSE( time_of_max );
-   DISPOSE( mud_name );
-   DISPOSE( admin_email );
-   DISPOSE( password );
-   DISPOSE( telnet );
-   DISPOSE( http );
-   DISPOSE( dbserver );
-   DISPOSE( dbname );
-   DISPOSE( dbuser );
-   DISPOSE( dbpass );
 }
 
 /*
@@ -1841,7 +1770,7 @@ void boot_db( bool fCopyOver )
    /*
     * default values
     */
-   sysdata->playersonline = 0; // This one does not save
+   sysdata->playersonline = 0;   // This one does not save
    sysdata->NO_NAME_RESOLVING = true;
    sysdata->WAIT_FOR_AUTH = true;
    sysdata->read_all_mail = LEVEL_DEMI;
@@ -1866,8 +1795,8 @@ void boot_db( bool fCopyOver )
    sysdata->bestow_dif = 5;
    sysdata->check_imm_host = 1;
    sysdata->save_pets = 1;
-   sysdata->save_flags.reset();
-   sysdata->save_flags.set();  /* This defaults to turning on every save_flag */
+   sysdata->save_flags.reset(  );
+   sysdata->save_flags.set(  );  /* This defaults to turning on every save_flag */
    sysdata->motd = current_time;
    sysdata->imotd = current_time;
    sysdata->mapsize = 7;
@@ -1889,16 +1818,16 @@ void boot_db( bool fCopyOver )
    sysdata->auctionseconds = 15;
    sysdata->gameloopalarm = 30;
    sysdata->webwho = 0;
-   sysdata->dbserver = str_dup( "localhost" );
-   sysdata->dbname = str_dup( "afkdb" );
-   sysdata->dbuser = str_dup( "dbuser" );
-   sysdata->dbpass = str_dup( "dbpass" );
+   sysdata->dbserver = "localhost";
+   sysdata->dbname = "afkdb";
+   sysdata->dbuser = "dbuser";
+   sysdata->dbpass = "dbpass";
 
    if( !load_systemdata(  ) )
    {
       log_string( "Not found. Creating new configuration." );
       sysdata->alltimemax = 0;
-      sysdata->mud_name = str_dup( "(Name not set)" );
+      sysdata->mud_name = "(Name not set)";
       update_timers(  );
       update_calendar(  );
       save_sysdata(  );
@@ -1918,11 +1847,11 @@ void boot_db( bool fCopyOver )
    }
 
    // Call up the module loader
-   load_modules();
+   load_modules(  );
 
 #if !defined(__CYGWIN__) && defined(SQL)
    log_string( "Initializing MySQL support..." );
-   init_mysql();
+   init_mysql(  );
    add_event( 1800, ev_mysql_ping, NULL );
 #endif
 
@@ -1950,7 +1879,7 @@ void boot_db( bool fCopyOver )
    load_specfuns(  );
 
    log_string( "Loading helps..." );
-   load_helps();
+   load_helps(  );
 
    load_mudchannels(  );
 
@@ -1964,30 +1893,7 @@ void boot_db( bool fCopyOver )
    load_skill_table(  );
    sort_skill_table(  );
    remap_slot_numbers(  ); /* must be after the sort */
-
-   gsn_first_spell = 0;
-   gsn_first_skill = 0;
-   gsn_first_combat = 0;
-   gsn_first_tongue = 0;
-   gsn_first_ability = 0;
-   gsn_first_lore = 0;
-   gsn_top_sn = top_sn;
-
-   for( x = 0; x < top_sn; ++x )
-   {
-      if( !gsn_first_spell && skill_table[x]->type == SKILL_SPELL )
-         gsn_first_spell = x;
-      else if( !gsn_first_skill && skill_table[x]->type == SKILL_SKILL )
-         gsn_first_skill = x;
-      else if( !gsn_first_combat && skill_table[x]->type == SKILL_COMBAT )
-         gsn_first_combat = x;
-      else if( !gsn_first_tongue && skill_table[x]->type == SKILL_TONGUE )
-         gsn_first_tongue = x;
-      else if( !gsn_first_ability && skill_table[x]->type == SKILL_RACIAL )
-         gsn_first_ability = x;
-      else if( !gsn_first_lore && skill_table[x]->type == SKILL_LORE )
-         gsn_first_lore = x;
-   }
+   num_sorted_skills = num_skills;
 
    log_string( "Loading classes" );
    load_classes(  );
@@ -2022,14 +1928,14 @@ void boot_db( bool fCopyOver )
    nummobsloaded = 0;
    numobjsloaded = 0;
    physicalobjects = 0;
-   objlist.clear();
-   charlist.clear();
-   shoplist.clear();
-   repairlist.clear();
-   teleportlist.clear();
-   room_act_list.clear();
-   obj_act_list.clear();
-   mob_act_list.clear();
+   objlist.clear(  );
+   charlist.clear(  );
+   shoplist.clear(  );
+   repairlist.clear(  );
+   teleportlist.clear(  );
+   room_act_list.clear(  );
+   obj_act_list.clear(  );
+   mob_act_list.clear(  );
    cur_qobjs = 0;
    cur_qchars = 0;
    extracted_obj_queue = NULL;
@@ -2114,9 +2020,9 @@ void boot_db( bool fCopyOver )
    {
       FILE *fpList;
 
-      arealist.clear();
-      area_nsort.clear();
-      area_vsort.clear();
+      arealist.clear(  );
+      area_nsort.clear(  );
+      area_vsort.clear(  );
       log_string( "Reading in area files..." );
       if( !( fpList = fopen( AREA_LIST, "r" ) ) )
       {
@@ -2176,7 +2082,7 @@ void boot_db( bool fCopyOver )
    if( fCopyOver == true )
    {
       log_string( "Loading world state..." );
-      load_world( );
+      load_world(  );
    }
 
    fBootDb = false;
@@ -2190,14 +2096,14 @@ void boot_db( bool fCopyOver )
 
    log_string( "Initializing area reset events..." );
    {
-      list<area_data*>::iterator iarea;
+      list < area_data * >::iterator iarea;
 
       /*
        * Putting some random fuzz on this to scatter the times around more 
        */
-      for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
       {
-         area_data *area = (*iarea);
+         area_data *area = *iarea;
 
          area->reset(  );
          area->last_resettime = current_time;
@@ -2238,9 +2144,6 @@ void boot_db( bool fCopyOver )
    log_string( "Loading Projects..." );
    load_projects(  );
 
-   log_string( "Loading MXP object commands..." );
-   load_mxpobj_cmds(  );
-
    load_quotes(  );
 
    /*
@@ -2256,11 +2159,18 @@ void boot_db( bool fCopyOver )
    load_weatherdata(  );
    init_area_weather(  );
 
+   /*
+    * Initialize chess board stuff 
+    */
+   init_chess(  );
+
    if( sysdata->webwho > 0 )
       add_event( sysdata->webwho, ev_webwho_refresh, NULL );
-   web_arealist();
+   web_arealist(  );
 
-   /* Initialize pruning events */
+   /*
+    * Initialize pruning events 
+    */
    time_t ptime = new_pfile_time_t - current_time;
    if( ptime < 1 )
       ptime = 1;
@@ -2271,7 +2181,6 @@ void boot_db( bool fCopyOver )
    add_event( 1, ev_dns_check, NULL );
 
    log_string( "Database bootup completed." );
-   return;
 }
 
 /* Removal of this function constitutes a license violation */
@@ -2288,7 +2197,7 @@ CMDF( do_basereport )
 
 CMDF( do_memory )
 {
-   char arg[MIL];
+   string arg;
    int hash;
 
    argument = one_argument( argument, arg );
@@ -2303,21 +2212,24 @@ CMDF( do_memory )
    ch->printf( "&wCurOq's: &W%5d\t\t\t&wCurCq's: &W%5d\r\n", cur_qobjs, cur_qchars );
    ch->printf( "&wPeople : &W%5d\t\t\t&wMaxplrs: &W%5d\r\n", num_descriptors, sysdata->maxplayers );
    ch->printf( "&wPlayers: &W%5d\r\n", sysdata->playersonline );
-   ch->printf( "&wMaxEver: &W%5d\t\t\t&wTopsn:   &W%5d(%5d)\r\n", sysdata->alltimemax, top_sn, MAX_SKILL );
-   ch->printf( "&wMaxEver was recorded on:  &W%s\r\n\r\n", sysdata->time_of_max );
+   ch->printf( "&wMaxEver: &W%5d\t\t\t&wTopsn:   &W%5d(%5d)\r\n", sysdata->alltimemax, num_skills, MAX_SKILL );
+   ch->printf( "&wMaxEver was recorded on:  &W%s\r\n\r\n", sysdata->time_of_max.c_str(  ) );
+#if !defined(__CYGWIN__) && defined(SQL)
+   ch->printf( "&wMySQL Connection Active:  &W%s\r\n\r\n", mysql_ping( &myconn ) == 0 ? "YES" : mysql_error( &myconn ) );
+#endif
 
    if( !str_cmp( arg, "check" ) )
    {
-      ch->print( check_hash( argument ) );
+      ch->print( check_hash( argument.c_str(  ) ) );
       return;
    }
    if( !str_cmp( arg, "showhigh" ) )
    {
-      show_high_hash( atoi( argument ) );
+      show_high_hash( atoi( argument.c_str(  ) ) );
       return;
    }
-   if( argument[0] != '\0' )
-      hash = atoi( argument );
+   if( !argument.empty(  ) )
+      hash = atoi( argument.c_str(  ) );
    else
       hash = -1;
    if( !str_cmp( arg, "hash" ) )
@@ -2326,7 +2238,6 @@ CMDF( do_memory )
       if( hash != -1 )
          hash_dump( hash );
    }
-   return;
 }
 
 /* Dummy code added to block number_fuzzy from messing things up - Samson 3-28-98 */
@@ -2394,25 +2305,24 @@ int dice( int number, int size )
 
 CMDF( do_randtest )
 {
-   ch->printf( "Uterly random number    : %d\r\n", rand() );
+   ch->printf( "Uterly random number    : %d\r\n", rand(  ) );
    ch->printf( "number_range 4350 - 4449: %d\r\n", number_range( 4350, 4449 ) );
-   ch->printf( "number_percent          : %d\r\n", number_percent() );
-   ch->printf( "number_door             : %d\r\n", number_door() );
-   ch->printf( "number_bits 5           : %d\r\n", number_bits(5) );
+   ch->printf( "number_percent          : %d\r\n", number_percent(  ) );
+   ch->printf( "number_door             : %d\r\n", number_door(  ) );
+   ch->printf( "number_bits 5           : %d\r\n", number_bits( 5 ) );
    ch->printf( "3d35 ( 3 35 sided dice ): %d\r\n", dice( 3, 35 ) );
-   return;
 }
 
 /*
  * Dump a text file to a player, a line at a time		-Thoric
  */
-void show_file( char_data * ch, const char *filename )
+void show_file( char_data * ch, const string & filename )
 {
    FILE *fp;
    char buf[MSL];
    int c, num = 0;
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( filename.c_str(  ), "r" ) ) != NULL )
    {
       ch->pager( "\r\n" );
       while( !feof( fp ) )
@@ -2424,8 +2334,8 @@ void show_file( char_data * ch, const char *filename )
          if( ( c != '\n' && c != '\r' ) || c == buf[num] )
             ungetc( c, fp );
 
-         buf[num++] = '\n';
          buf[num++] = '\r';
+         buf[num++] = '\n';
          buf[num] = '\0';
          ch->pager( buf );
          num = 0;
@@ -2440,7 +2350,7 @@ void show_file( char_data * ch, const char *filename )
 /*
  * Append a string to a file.
  */
-void append_file( char_data * ch, char *file, char *fmt, ... )
+void append_file( char_data * ch, const string & file, const char *fmt, ... )
 {
    FILE *fp;
    va_list arg;
@@ -2456,9 +2366,9 @@ void append_file( char_data * ch, char *file, char *fmt, ... )
    if( strlen( str ) < 1 || str[strlen( str ) - 1] != '\n' )
       mudstrlcat( str, "\n", MSL );
 
-   if( !( fp = fopen( file, "a" ) ) )
+   if( !( fp = fopen( file.c_str(  ), "a" ) ) )
    {
-      perror( file );
+      perror( file.c_str(  ) );
       ch->print( "Could not open the file!\r\n" );
    }
    else
@@ -2466,13 +2376,12 @@ void append_file( char_data * ch, char *file, char *fmt, ... )
       fprintf( fp, "[%5d] %s: %s\n", ch->in_room ? ch->in_room->vnum : 0, ch->name, str );
       FCLOSE( fp );
    }
-   return;
 }
 
 /*
  * Append a string to a file.
  */
-void append_to_file( char *file, char *fmt, ... )
+void append_to_file( const string & file, const char *fmt, ... )
 {
    FILE *fp;
    va_list arg;
@@ -2488,14 +2397,13 @@ void append_to_file( char *file, char *fmt, ... )
    if( strlen( str ) < 1 || str[strlen( str ) - 1] != '\n' )
       mudstrlcat( str, "\n", MSL );
 
-   if( !( fp = fopen( file, "a" ) ) )
-      perror( file );
+   if( !( fp = fopen( file.c_str(  ), "a" ) ) )
+      perror( file.c_str(  ) );
    else
    {
       fprintf( fp, "%s\n", str );
       FCLOSE( fp );
    }
-   return;
 }
 
 /* Reports a bug. */
@@ -2508,6 +2416,16 @@ void bug( const char *str, ... )
    size_t size, i;
    char **strings;
 #endif
+
+   mudstrlcpy( buf, "[*****] BUG: ", MSL );
+   {
+      va_list param;
+
+      va_start( param, str );
+      vsnprintf( buf + strlen( buf ), MSL, str, param );
+      va_end( param );
+   }
+   log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, buf );
 
    if( fpArea != NULL )
    {
@@ -2530,23 +2448,13 @@ void bug( const char *str, ... )
       log_printf( "[*****] FILE: %s LINE: %d", strArea, iLine );
    }
 
-   mudstrlcpy( buf, "[*****] BUG: ", MSL );
-   {
-      va_list param;
-
-      va_start( param, str );
-      vsnprintf( buf + strlen( buf ), MSL, str, param );
-      va_end( param );
-   }
-   log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, buf );
-
 #if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
    if( !fBootDb )
    {
       size = backtrace( array, 20 );
       strings = backtrace_symbols( array, size );
 
-      log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %d stack frames.", size );
+      log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %zd stack frames.", size );
 
       for( i = 0; i < size; ++i )
          log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, strings[i] );
@@ -2554,56 +2462,52 @@ void bug( const char *str, ... )
       free( strings );
    }
 #endif
-
-   return;
 }
 
 /*
  * Writes a string to the log, extended version - Thoric
  */
-void log_string_plus( short log_type, short level, const char *str )
+void log_string_plus( short log_type, short level, const string & str )
 {
    struct timeval last_time;
    time_t curtime;
    char *strtime;
-   int offset;
+   string newstr = str;
 
    gettimeofday( &last_time, NULL );
    curtime = ( time_t ) last_time.tv_sec;
 
    strtime = c_time( curtime, -1 );
-   fprintf( stderr, "%s :: %s\n", strtime, str );
-   if( strncmp( str, "Log ", 4 ) == 0 )
-      offset = 4;
-   else
-      offset = 0;
+   fprintf( stderr, "%s :: %s\n", strtime, newstr.c_str(  ) );
+
+   if( !str_prefix( "Log ", newstr ) )
+      newstr = newstr.substr( 4, newstr.length(  ) );
    switch ( log_type )
    {
       default:
-         to_channel( str + offset, "Log", level );
+         to_channel( newstr, "Log", level );
          break;
       case LOG_BUILD:
-         to_channel( str + offset, "Build", level );
+         to_channel( newstr, "Build", level );
          break;
       case LOG_COMM:
-         to_channel( str + offset, "Comm", level );
+         to_channel( newstr, "Comm", level );
          break;
       case LOG_WARN:
-         to_channel( str + offset, "Warn", level );
+         to_channel( newstr, "Warn", level );
          break;
       case LOG_INFO:
-         to_channel( str + offset, "Info", level );
+         to_channel( newstr, "Info", level );
          break;
       case LOG_AUTH:
-         to_channel( str + offset, "Auth", level );
+         to_channel( newstr, "Auth", level );
          break;
       case LOG_DEBUG:
-         to_channel( str + offset, "Bugs", level );
+         to_channel( newstr, "Bugs", level );
          break;
       case LOG_ALL:
          break;
    }
-   return;
 }
 
 void log_printf_plus( short log_type, short level, const char *fmt, ... )
@@ -2656,6 +2560,7 @@ CMDF( do_dump )
       for( int counter = 0; counter < sysdata->maxvnum; ++counter )
       {
          mob_index *mob;
+
          if( ( mob = get_mob_index( counter ) ) != NULL )
          {
             fprintf( fp, "VNUM:  %d\n", mob->vnum );
@@ -2688,6 +2593,7 @@ CMDF( do_dump )
       for( int counter = 0; counter < sysdata->maxvnum; ++counter )
       {
          room_index *room;
+
          if( ( room = get_room_index( counter ) ) != NULL )
          {
             fprintf( fp, "VNUM:  %d\n", room->vnum );
@@ -2709,6 +2615,7 @@ CMDF( do_dump )
       for( int counter = 0; counter < sysdata->maxvnum; ++counter )
       {
          obj_index *obj;
+
          if( ( obj = get_obj_index( counter ) ) != NULL )
          {
             fprintf( fp, "VNUM: %d\n", obj->vnum );
@@ -2723,23 +2630,18 @@ CMDF( do_dump )
             fprintf( fp, "ZONE: %s\n", obj->area->name );
             fprintf( fp, "%s", "AFFECTS:\n" );
 
-            list<affect_data*>::iterator paf;
-            for( paf = obj->affects.begin(); paf != obj->affects.end(); ++paf )
+            list < affect_data * >::iterator paf;
+            for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
             {
-               affect_data *af = (*paf);
+               affect_data *af = ( *paf );
 
                if( af->location == APPLY_AFFECT )
                   fprintf( fp, "%s by %s\n", a_types[af->location], aff_flags[af->modifier] );
                else if( af->location == APPLY_WEAPONSPELL
                         || af->location == APPLY_WEARSPELL
-                        || af->location == APPLY_REMOVESPELL
-                        || af->location == APPLY_STRIPSN
-                        || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
-                  fprintf( fp, "%s '%s'\n", a_types[af->location],
-                           IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN" );
-               else if( af->location == APPLY_RESISTANT
-                        || af->location == APPLY_IMMUNE
-                        || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
+                        || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
+                  fprintf( fp, "%s '%s'\n", a_types[af->location], IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN" );
+               else if( af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
                   fprintf( fp, "%s %s\n", a_types[af->location], bitset_string( af->rismod, ris_flags ) );
                else
                   fprintf( fp, "%s %d\n", a_types[af->location], af->modifier );
@@ -2757,24 +2659,4 @@ CMDF( do_dump )
       return;
    }
    ch->print( "Syntax: dump <mobs/objects>\r\n" );
-   return;
-}
-
-/*
- * This function is here to aid in debugging.
- * If the last expression in a function is another function call,
- *   gcc likes to generate a JMP instead of a CALL.
- * This is called "tail chaining."
- * It hoses the debugger call stack for that call.
- * So I make this the last call in certain critical functions,
- *   where I really need the call stack to be right for debugging!
- *
- * If you don't understand this, then LEAVE IT ALONE.
- * Don't remove any calls to tail_chain anywhere.
- *
- * -- Furey
- */
-void tail_chain( void )
-{
-   return;
 }

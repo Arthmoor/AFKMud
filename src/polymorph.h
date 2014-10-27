@@ -30,7 +30,7 @@
 #define __POLYMORPH_H__
 
 const int MORPHFILEVER = 1;
-#define MORPH_FILE "morph.dat" /* For morph data */
+#define MORPH_FILE "morph.dat"   /* For morph data */
 
 /*
  * Structure for a morph -- Shaddai
@@ -45,12 +45,12 @@ const int ONLY_PEACEFULL = 2;
 class morph_data
 {
  private:
-   morph_data( const morph_data& m );
-   morph_data& operator=( const morph_data& );
+   morph_data( const morph_data & m );
+     morph_data & operator=( const morph_data & );
 
  public:
-   morph_data();
-   ~morph_data();
+     morph_data(  );
+    ~morph_data(  );
 
      bitset < MAX_AFFECTED_BY > affected_by; /* New affected_by added */
      bitset < MAX_AFFECTED_BY > no_affected_by; /* Prevents affects from being added */
@@ -113,15 +113,15 @@ class morph_data
    short timeto;  /* Hour ending that you can morph */
    short tumble;  /* Percent of tumble added IE 1 = 1% */
    short wis;  /* Amount of Wis gained/lost */
-   bool objuse[3];   /* Objects needed to morph */ 
+   bool objuse[3];   /* Objects needed to morph */
    bool no_cast;  /* Can you cast a spell to morph into it */
    bool cast_allowed;   /* Can you cast spells whilst morphed into this */
 };
 
 struct char_morph
 {
-   char_morph();
-   ~char_morph();
+   char_morph(  );
+   ~char_morph(  );
 
    morph_data *morph;
      bitset < MAX_AFFECTED_BY > affected_by; /* New affected_by added */

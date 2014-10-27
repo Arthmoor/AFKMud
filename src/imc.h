@@ -28,11 +28,11 @@
 
 /* IMC2 Freedom Client - Developed by Mud Domain.
  *
- * Copyright (C)2004 by Roger Libiez ( Samson )
- * Contributions by Johnathan Walker ( Xorith ), Copyright (C)2004
- * Additional contributions by Jesse Defer ( Garil ), Copyright (C)2004
- * Additional contributions by Rogel, Copyright (c) 2004
- * Comments and suggestions welcome: imc@intermud.us
+ * Copyright ©2004 by Roger Libiez ( Samson )
+ * Contributions by Johnathan Walker ( Xorith ), Copyright ©2004
+ * Additional contributions by Jesse Defer ( Garil ), Copyright ©2004
+ * Additional contributions by Rogel, Copyright ©2004
+ * Comments and suggestions welcome: http://www.mudbytes.net/imc2-support-forum
  * License terms are available in the imc2freedom.license file.
  */
 
@@ -193,7 +193,7 @@ class imc_packet
 {
  public:
    imc_packet(  );
-   imc_packet( string from, string type, string to );
+   imc_packet( const string &, const string &, const string & );
    void send(  );
 
    ostringstream data;
@@ -206,38 +206,40 @@ class imc_packet
 /* The mud's connection data for the server */
 struct imc_siteinfo
 {
-   string servername;   /* name of server */
-   string rhost;  /* DNS/IP of server */
-   string network;   /* Network name of the server, set at keepalive - Samson */
-   string serverpw;  /* server password */
-   string clientpw;  /* client password */
-   string localname; /* One word localname */
-   string fullname;  /* FULL name of mud */
-   string ihost;  /* host address of mud */
-   string email;  /* contact address (email) */
-   string www; /* homepage */
-   string details;   /* BRIEF description of mud */
-   string versionid; /* Transient version id for the imclist */
-   int iport;  /* The port the mud itself is on */
-   int minlevel;  /* Minimum player level */
-   int immlevel;  /* Immortal level */
-   int adminlevel;   /* Admin level */
-   int implevel;  /* Implementor level */
-   unsigned short rport;   /* remote port of server */
-   bool sha256;   /* Client will support SHA256 authentication */
-   bool sha256pass;  /* Client is using SHA256 authentication */
-   bool autoconnect; /* Do we autoconnect on bootup or not? - Samson */
+   imc_siteinfo(  );
+
+   string servername;   // The name of the IMC server this MUD connects to. Set during startup.
+   string rhost;  // DNS/IP of the IMC server this MUD will connect to
+   string network;   // Network name of the server, set at keepalive - Samson
+   string serverpw;  // Server password
+   string clientpw;  // Client password
+   string localname; // One word localname used on the network
+   string fullname;  // FULL name of the MUD
+   string ihost;  // DNS/IP address for the MUD
+   string email;  // Contact email address for the MUD's administrator
+   string www; // This MUD's homepage
+   string details;   // BRIEF description of the MUD
+   string versionid; // Transient version id for the imclist
+   int iport;  // The port number used to log on to the MUD
+   int minlevel;  // Minimum player level allowed to access IMC
+   int immlevel;  // First level at which users become Immortals
+   int adminlevel;   // Admin level: Level at which users become higher administrators
+   int implevel;  // Implementor level. Duh. The big cheese. The top banana. God king of all mankind, etc.
+   unsigned short rport;   // Remote port number of the server this MUD connects to.
+   bool sha256;   // Client will support SHA256 authentication
+   bool sha256pass;  // Client is using SHA256 authentication
+   bool autoconnect; // Do we autoconnect on bootup or not? - Samson
 
    /*
     * Conection parameters - These don't save in the config file 
     */
-   char inbuf[IMC_BUFF_SIZE]; /* input buffer */
-   char incomm[IMC_BUFF_SIZE];
-   char *outbuf;  /* output buffer */
-   unsigned long outsize;
-   int outtop;
-   int desc;   /* descriptor */
-   unsigned short state;   /* connection state */
+   char inbuf[IMC_BUFF_SIZE]; // The input buffer for the IMC connection
+   string incomm; // Um....
+   char *outbuf;  // The output buffer for the IMC connection
+   unsigned long outsize;  // The size of the current output buffer
+   int outtop; // Uh....
+   int desc;   // Descriptor number assigned to the IMC socket
+   unsigned short state;   // The state of the connection to the IMC server
 };
 
 struct imc_remoteinfo
@@ -265,17 +267,26 @@ struct who_template
 
 extern imc_siteinfo *this_imcmud;
 
-bool imc_command_hook( char_data *, char *, char * );
-void imc_hotboot( );
+bool imc_command_hook( char_data *, string &, string & );
+void imc_hotboot(  );
 void imc_startup( bool, int, bool );
 void imc_shutdown( bool );
 void imc_initchar( char_data * );
 void imc_loadchar( char_data *, FILE *, const char * );
 void imc_savechar( char_data *, FILE * );
 void imc_freechardata( char_data * );
-void imc_loop( );
-imc_channel *imc_findchannel( string ); /* Externalized for comm.c spamguard checks */
-void imc_register_packet_handler( string, PACKET_FUN * );
+void imc_loop(  );
+imc_channel *imc_findchannel( const string & ); /* Externalized for comm.c spamguard checks */
+void imc_register_packet_handler( const string &, PACKET_FUN * );
 void ev_imcweb_refresh( void * );
-
+string escape_string( const string & );
+map < string, string > imc_getData( string & );
+char_data *imc_find_user( const string & );
+string imc_nameof( string );
+string imc_mudof( string );
+void imc_send_tell( string, string, const string &, int );
+void imc_to_char( string, char_data * );
+void imc_to_pager( string, char_data * );
+void imc_printf( char_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
+char_data *imc_make_skeleton( const string & );
 #endif

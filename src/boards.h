@@ -27,6 +27,7 @@
  ****************************************************************************
  * Revised by:   Xorith                                                     *
  * Last Updated: 10/2/03                                                    *
+ * New Functionality added: 9/23/07 - Xorith                                *
  ****************************************************************************/
 
 #ifndef __BOARDS_H__
@@ -41,6 +42,9 @@
 #define IS_BOARD_FLAG( board, flag )     (board)->flags.test((flag))
 #define TOGGLE_BOARD_FLAG( board, flag ) (board)->flags.flip((flag))
 
+#define IS_NOTE_FLAG( note, flag )     (note)->flags.test((flag))
+#define TOGGLE_NOTE_FLAG( note, flag ) (note)->flags.flip((flag))
+
 const int BD_IGNORE = 2;
 const int BD_ANNOUNCE = 1;
 
@@ -52,18 +56,24 @@ enum bflags
    BOARD_R1, BOARD_BU_PRUNED, BOARD_PRIVATE, BOARD_ANNOUNCE, MAX_BOARD_FLAGS
 };
 
+enum note_flags
+{
+   NOTE_R1, NOTE_STICKY, NOTE_CLOSED, NOTE_HIDDEN, MAX_NOTE_FLAGS
+};
+
 /* Note Data */
 class note_data
 {
  private:
-   note_data( const note_data& n );
-   note_data& operator=( const note_data& );
+   note_data( const note_data & n );
+     note_data & operator=( const note_data & );
 
  public:
-   note_data();
-   ~note_data();
+     note_data(  );
+    ~note_data(  );
 
-   list<note_data*> rlist;
+     list < note_data * >rlist;
+     bitset < MAX_NOTE_FLAGS > flags;  /* Note Flags */
    note_data *parent;
    char *sender;
    char *to_list;
@@ -77,15 +87,15 @@ class note_data
 class board_data
 {
  private:
-   board_data( const board_data& b );
-   board_data& operator=( const board_data& );
+   board_data( const board_data & b );
+     board_data & operator=( const board_data & );
 
  public:
-   board_data();
-   ~board_data();
+     board_data(  );
+    ~board_data(  );
 
-   list<note_data*> nlist; /* List of notes on the board */
-   bitset<MAX_BOARD_FLAGS> flags; /* Board Flags */
+     list < note_data * >nlist;  /* List of notes on the board */
+     bitset < MAX_BOARD_FLAGS > flags; /* Board Flags */
    char *name; /* Name of Board */
    char *filename;   /* Filename for the board */
    char *desc; /* Short description of the board */
@@ -105,14 +115,14 @@ class board_data
 class project_data
 {
  private:
-   project_data( const project_data& p );
-   project_data& operator=( const project_data& );
+   project_data( const project_data & p );
+     project_data & operator=( const project_data & );
 
  public:
-   project_data();
-   ~project_data();
+     project_data(  );
+    ~project_data(  );
 
-   list<note_data*> nlist; /* List of note logs for the project */
+     list < note_data * >nlist;  /* List of note logs for the project */
    char *name;
    char *owner;
    char *coder;
@@ -126,14 +136,14 @@ class project_data
 class board_chardata
 {
  private:
-   board_chardata( const board_chardata& b );
-   board_chardata& operator=( const board_chardata& );
+   board_chardata( const board_chardata & b );
+     board_chardata & operator=( const board_chardata & );
 
  public:
-   board_chardata();
-   ~board_chardata();
+     board_chardata(  );
+    ~board_chardata(  );
 
-   char *board_name;
+   string board_name;
    time_t last_read;
    short alert;
 };

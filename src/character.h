@@ -49,14 +49,14 @@ struct timer_data
 class pc_data
 {
  private:
-   pc_data( const pc_data& p );
-   pc_data& operator=( const pc_data& );
+   pc_data( const pc_data & p );
+     pc_data & operator=( const pc_data & );
 
  public:
-   friend class char_data;
+     friend class char_data;
 
-   pc_data(  );
-   ~pc_data(  );
+     pc_data(  );
+    ~pc_data(  );
 
    /*
     * External references 
@@ -71,18 +71,27 @@ class pc_data
    void fread_comment( FILE * );
    void fread_old_comment( FILE * );
 
-   map<string,string> alias_map; /* Command aliases */
-   map<int,string> qbits; /* abit/qbit code */
-   list<struct board_chardata*> boarddata;
-   list<struct note_data*> comments;
-   list<string> zone; /* List of zones this PC has visited - Samson 7-11-00 */
-   list<string> ignore; /* List of players to ignore */
+     map < string, string > alias_map; /* Command aliases */
+     map < int, string > qbits;  /* abit/qbit code */
+     list < struct board_chardata *>boarddata;
+     list < struct note_data *>comments;
+     list < string > zone; /* List of zones this PC has visited - Samson 7-11-00 */
+     list < string > ignore;  /* List of players to ignore */
+   string bestowments;  // Special bestowed commands
+   string chan_listen;  // For dynamic channels - Samson 3-2-02
+   string clan_name; // Name of the clan/guild this person belongs to if any.
+   string deity_name;   // Name of the deity this person worships.
+   string lasthost;  // Stores host info so it doesn't have to depend on a descriptor, for things like finger.
+   string homepage;  // The person's homepage in the big bad world out there.
+   string email;  // The person's email address.
+   string authed_by; // The immortal who authorized this player's name.
    area_data *area;  /* For the area a PC has been assigned to build */
    struct clan_data *clan;
    struct deity_data *deity;
    struct editor_data *editor;
    struct note_data *pnote;
    struct board_data *board;
+   struct game_board_data *game_board;
 #ifdef IMC
    struct imc_chardata *imcchardata;
 #endif
@@ -91,35 +100,27 @@ class pc_data
  public:
    void *spare_ptr;
    void *dest_buf;   /* This one is to assign to different things */
-   char *homepage;
-   char *clan_name;
-   char *deity_name;
    char *pwd;
    char *bamfin;
    char *bamfout;
    char *filename;   /* For the safe mset name -Shaddai */
    char *rank;
    char *title;
-   char *bestowments;   /* Special bestowed commands     */
    char *helled_by;
    char *bio;  /* Personal Bio */
-   char *authed_by;  /* what crazy imm authed this name ;) */
    char *prompt;  /* User config prompts */
    char *fprompt; /* Fight prompts */
    char *subprompt;  /* Substate prompt */
-   char *email;   /* Email address - Samson */
    char *afkbuf;  /* afk reason buffer - Samson 8-31-98 */
    char *motd_buf;   /* A temp buffer for editing MOTDs - 12-31-00 */
    char *say_history[MAX_SAYHISTORY];  /* Say history -- Kratas */
    char *tell_history[MAX_TELLHISTORY];
-   char *lasthost;   /* Stores host info so it doesn't have to depend on descriptor, for things like finger */
-   char *chan_listen;   /* For dynamic channels - Samson 3-2-02 */
    time_t release_date; /* Auto-helling.. Altrag */
    time_t motd;   /* Last time they read an MOTD - Samson 12-31-00 */
    time_t imotd;  /* Last time they read an IMOTD for immortals - 12-31-00 */
    time_t logon;
    time_t save_time;
-   long restore_time;  /* The last time the char did a restore all */
+   long restore_time;   /* The last time the char did a restore all */
    int icq; /* ICQ number for player - Samson 1-4-99 */
    int pkills; /* Number of pkills on behalf of clan */
    int pdeaths;   /* Number of times pkilled (legally)  */
@@ -132,7 +133,7 @@ class pc_data
    int home;
    int balance;   /* Bank balance - Samson */
    int exgold; /* Extragold affect - Samson */
-   int one;    /* Last room they rented in on primary continent - Samson 12-20-00 */
+   int one; /* Last room they rented in on primary continent - Samson 12-20-00 */
    int spam;   /* How many times have they triggered the spamguard? - 3-18-01 */
    int played;
    int timezone;
@@ -164,24 +165,26 @@ class pc_data
 class char_data
 {
  private:
-   char_data( const char_data& c );
-   char_data& operator=( const char_data& );
+   char_data( const char_data & c );
+     char_data & operator=( const char_data & );
 
  public:
-   char_data(  );
-   ~char_data(  );
+     char_data(  );
+    ~char_data(  );
 
    /*
     * Internal to character.c 
     */
-   void print( const char * );
-   void print( string );
+   void print( const string & );
    void printf( const char *, ... );
-   void pager( const char * );
+   void pager( const string & );
    void pagerf( const char *, ... );
-   void print_room( const char * );
+   void print_room( const string & );
    void set_color( short );
    void set_pager_color( short );
+   void set_title( const string & );
+   int calculate_race_height(  );
+   int calculate_race_weight(  );
    short get_trust(  );
    short get_age(  );
    short calculate_age(  );
@@ -194,16 +197,16 @@ class char_data
    short get_curr_lck(  );
    bool can_take_proto(  );
    bool can_see( char_data *, bool );
-   char_data *get_char_room( string );
-   char_data *get_char_world( string );
-   room_index *find_location( char * );
+   char_data *get_char_room( const string & );
+   char_data *get_char_world( const string & );
+   room_index *find_location( const string & );
    bool can_see_obj( obj_data *, bool );
    bool can_drop_obj( obj_data * );
    obj_data *get_obj_vnum( int );
-   obj_data *get_obj_carry( string );
-   obj_data *get_obj_wear( string );
-   obj_data *get_obj_here( string );
-   obj_data *get_obj_world( string );
+   obj_data *get_obj_carry( const string & );
+   obj_data *get_obj_wear( const string & );
+   obj_data *get_obj_here( const string & );
+   obj_data *get_obj_world( const string & );
    obj_data *get_eq( int );
    int can_carry_n(  );
    int can_carry_w(  );
@@ -235,42 +238,41 @@ class char_data
    void ClassSpecificStuff(  );
    void extract( bool );
    void gain_exp( double );
-   void set_specfun( );
-   char *get_class( );
-   char *get_race( );
-   void stop_idling();
-   bool IS_OUTSIDE( );
+   void set_specfun(  );
+   const char *get_class(  );
+   const char *get_race(  );
+   void stop_idling(  );
+   bool IS_OUTSIDE(  );
    int GET_AC(  );
    int GET_HITROLL(  );
    int GET_DAMROLL(  );
    int GET_ADEPT( int );
    bool IS_DRUNK( int );
-   bool MXP_ON(  );
    bool MSP_ON(  );
 
    /*
     * External references in other files 
     */
    bool char_died(  );
-   void music( const char *, int, bool );
-   void sound( const char *, int, bool );
+   void music( const string &, int, bool );
+   void sound( const string &, int, bool );
    void reset_sound(  );
    void reset_music(  );
-   char *color_str( short );
+   const char *color_str( short );
    void save(  );
    void de_equip(  );
    void re_equip(  );
    void update_pos(  );
    char_data *who_fighting(  );
    void stop_fighting( bool );
-   void editor_desc_printf( char *, ... );
+   void editor_desc_printf( const char *, ... );
    void start_editing( char * );
    void start_editing( string );
    void stop_editing(  );
    char *copy_buffer( bool );
-   string copy_buffer( );
-   void set_editor_desc( char * );
-   void edit_buffer( char * );
+   string copy_buffer(  );
+   void set_editor_desc( const string & );
+   void edit_buffer( string & );
    void note_attach(  );
    bool can_charm(  );
    void learn_from_failure( int );
@@ -284,146 +286,188 @@ class char_data
    void unset_actflag( int );
    bool has_actflag( int );
    void toggle_actflag( int );
-   bool has_actflags();
-   bitset<MAX_ACT_FLAG> get_actflags();
-   void set_actflags( bitset<MAX_ACT_FLAG> );
+   bool has_actflags(  );
+     bitset < MAX_ACT_FLAG > get_actflags(  );
+   void set_actflags( bitset < MAX_ACT_FLAG > );
    void set_file_actflags( FILE * );
 
    bool has_immune( int );
    void set_immune( int );
    void unset_immune( int );
    void toggle_immune( int );
-   bool has_immunes();
-   bitset<MAX_RIS_FLAG> get_immunes();
-   void set_immunes( bitset<MAX_RIS_FLAG> );
+   bool has_immunes(  );
+     bitset < MAX_RIS_FLAG > get_immunes(  );
+   void set_immunes( bitset < MAX_RIS_FLAG > );
    void set_file_immunes( FILE * );
 
    bool has_noimmune( int );
    void set_noimmune( int );
-   bool has_noimmunes();
-   bitset<MAX_RIS_FLAG> get_noimmunes();
-   void set_noimmunes( bitset<MAX_RIS_FLAG> );
+   bool has_noimmunes(  );
+     bitset < MAX_RIS_FLAG > get_noimmunes(  );
+   void set_noimmunes( bitset < MAX_RIS_FLAG > );
    void set_file_noimmunes( FILE * );
 
    bool has_resist( int );
    void set_resist( int );
    void unset_resist( int );
    void toggle_resist( int );
-   bool has_resists();
-   bitset<MAX_RIS_FLAG> get_resists();
-   void set_resists( bitset<MAX_RIS_FLAG> );
+   bool has_resists(  );
+     bitset < MAX_RIS_FLAG > get_resists(  );
+   void set_resists( bitset < MAX_RIS_FLAG > );
    void set_file_resists( FILE * );
 
    bool has_noresist( int );
    void set_noresist( int );
-   bool has_noresists();
-   bitset<MAX_RIS_FLAG> get_noresists();
-   void set_noresists( bitset<MAX_RIS_FLAG> );
+   bool has_noresists(  );
+     bitset < MAX_RIS_FLAG > get_noresists(  );
+   void set_noresists( bitset < MAX_RIS_FLAG > );
    void set_file_noresists( FILE * );
 
    bool has_suscep( int );
    void set_suscep( int );
    void unset_suscep( int );
    void toggle_suscep( int );
-   bool has_susceps();
-   bitset<MAX_RIS_FLAG> get_susceps();
-   void set_susceps( bitset<MAX_RIS_FLAG> );
+   bool has_susceps(  );
+     bitset < MAX_RIS_FLAG > get_susceps(  );
+   void set_susceps( bitset < MAX_RIS_FLAG > );
    void set_file_susceps( FILE * );
 
    bool has_nosuscep( int );
    void set_nosuscep( int );
-   bool has_nosusceps();
-   bitset<MAX_RIS_FLAG> get_nosusceps();
-   void set_nosusceps( bitset<MAX_RIS_FLAG> );
+   bool has_nosusceps(  );
+     bitset < MAX_RIS_FLAG > get_nosusceps(  );
+   void set_nosusceps( bitset < MAX_RIS_FLAG > );
    void set_file_nosusceps( FILE * );
 
    bool has_absorb( int );
    void set_absorb( int );
    void unset_absorb( int );
    void toggle_absorb( int );
-   bool has_absorbs();
-   bitset<MAX_RIS_FLAG> get_absorbs();
-   void set_absorbs( bitset<MAX_RIS_FLAG> );
+   bool has_absorbs(  );
+     bitset < MAX_RIS_FLAG > get_absorbs(  );
+   void set_absorbs( bitset < MAX_RIS_FLAG > );
    void set_file_absorbs( FILE * );
 
    bool has_attack( int );
    void set_attack( int );
    void unset_attack( int );
    void toggle_attack( int );
-   bool has_attacks();
-   bitset<MAX_ATTACK_TYPE> get_attacks();
-   void set_attacks( bitset<MAX_ATTACK_TYPE> );
+   bool has_attacks(  );
+     bitset < MAX_ATTACK_TYPE > get_attacks(  );
+   void set_attacks( bitset < MAX_ATTACK_TYPE > );
    void set_file_attacks( FILE * );
 
    bool has_defense( int );
    void set_defense( int );
    void unset_defense( int );
    void toggle_defense( int );
-   bool has_defenses();
-   bitset<MAX_DEFENSE_TYPE> get_defenses();
-   void set_defenses( bitset<MAX_DEFENSE_TYPE> );
+   bool has_defenses(  );
+     bitset < MAX_DEFENSE_TYPE > get_defenses(  );
+   void set_defenses( bitset < MAX_DEFENSE_TYPE > );
    void set_file_defenses( FILE * );
 
    bool has_aflag( int );
    void set_aflag( int );
    void unset_aflag( int );
    void toggle_aflag( int );
-   bool has_aflags();
-   bitset<MAX_AFFECTED_BY> get_aflags();
-   void set_aflags( bitset<MAX_AFFECTED_BY> );
+   bool has_aflags(  );
+     bitset < MAX_AFFECTED_BY > get_aflags(  );
+   void set_aflags( bitset < MAX_AFFECTED_BY > );
    void set_file_aflags( FILE * );
 
    bool has_noaflag( int );
    void set_noaflag( int );
    void unset_noaflag( int );
    void toggle_noaflag( int );
-   bool has_noaflags();
-   bitset<MAX_AFFECTED_BY> get_noaflags();
-   void set_noaflags( bitset<MAX_AFFECTED_BY> );
+   bool has_noaflags(  );
+     bitset < MAX_AFFECTED_BY > get_noaflags(  );
+   void set_noaflags( bitset < MAX_AFFECTED_BY > );
    void set_file_noaflags( FILE * );
 
    bool has_bpart( int );
    void set_bpart( int );
    void unset_bpart( int );
    void toggle_bpart( int );
-   bool has_bparts();
-   bitset<MAX_BPART> get_bparts();
-   void set_bparts( bitset<MAX_BPART> );
+   bool has_bparts(  );
+     bitset < MAX_BPART > get_bparts(  );
+   void set_bparts( bitset < MAX_BPART > );
    void set_file_bparts( FILE * );
 
    bool has_pcflag( int );
    void set_pcflag( int );
    void unset_pcflag( int );
    void toggle_pcflag( int );
-   bool has_pcflags();
-   bitset<MAX_PCFLAG> get_pcflags();
+   bool has_pcflags(  );
+     bitset < MAX_PCFLAG > get_pcflags(  );
    void set_file_pcflags( FILE * );
 
    bool has_lang( int );
    void set_lang( int );
    void unset_lang( int );
    void toggle_lang( int );
-   bool has_langs();
-   bitset<LANG_UNKNOWN> get_langs();
-   void set_langs( bitset<LANG_UNKNOWN> );
+   bool has_langs(  );
+     bitset < LANG_UNKNOWN > get_langs(  );
+   void set_langs( bitset < LANG_UNKNOWN > );
    void set_file_langs( FILE * );
 
-   bool isnpc(  ) { return( actflags.test( ACT_IS_NPC ) ); }
-   bool is_immortal(  ) { return( !isnpc() && level >= LEVEL_IMMORTAL ); }
-   bool is_imp(  ) { return( !isnpc() && level >= LEVEL_KL ); }
-   bool is_pet();
+   bool isnpc(  )
+   {
+      return ( actflags.test( ACT_IS_NPC ) );
+   }
+   bool is_immortal(  )
+   {
+      return ( !isnpc(  ) && level >= LEVEL_IMMORTAL );
+   }
+   bool is_imp(  )
+   {
+      return ( !isnpc(  ) && level >= LEVEL_KL );
+   }
+   bool is_pet(  );
 
-   bool IS_PKILL(  ) { return( has_pcflag( PCFLAG_DEADLY ) ); }
-   bool CAN_PKILL(  ){ return( IS_PKILL(  ) ); }
-   bool IS_MOUNTED( ){ return( position == POS_MOUNTED && mount != NULL ); }
-   bool CAN_CAST(  ) { return( ( Class != CLASS_WARRIOR && Class != CLASS_ROGUE && Class != CLASS_MONK ) || is_immortal(  ) ); }
-   bool IS_GOOD(  )  { return( alignment >= 350 ); }
-   bool IS_EVIL(  )  { return( alignment <= -350 ); }
-   bool IS_NEUTRAL( ){ return( !IS_GOOD(  ) && !IS_EVIL(  ) ); }
-   bool IS_AWAKE(  ) { return( position > POS_SLEEPING ); }
-   void WAIT_STATE( int npulse ) { ( wait = UMAX( wait, ( is_immortal(  )? 0 : npulse ) ) ); }
-   bool IS_FLOATING(  ) { return( has_aflag( AFF_FLYING ) || has_aflag( AFF_FLOATING ) ); }
-   int LEARNED( int sn ) { return( isnpc(  )? 80 : URANGE( 0, pcdata->learned[sn], 101 ) ); }
+   bool IS_PKILL(  )
+   {
+      return ( has_pcflag( PCFLAG_DEADLY ) );
+   }
+   bool CAN_PKILL(  )
+   {
+      return ( IS_PKILL(  ) );
+   }
+   bool IS_MOUNTED(  )
+   {
+      return ( position == POS_MOUNTED && mount != NULL );
+   }
+   bool CAN_CAST(  )
+   {
+      return ( ( Class != CLASS_WARRIOR && Class != CLASS_ROGUE && Class != CLASS_MONK ) || is_immortal(  ) );
+   }
+   bool IS_GOOD(  )
+   {
+      return ( alignment >= 350 );
+   }
+   bool IS_EVIL(  )
+   {
+      return ( alignment <= -350 );
+   }
+   bool IS_NEUTRAL(  )
+   {
+      return ( !IS_GOOD(  ) && !IS_EVIL(  ) );
+   }
+   bool IS_AWAKE(  )
+   {
+      return ( position > POS_SLEEPING );
+   }
+   void WAIT_STATE( int npulse )
+   {
+      ( wait = UMAX( wait, ( is_immortal(  )? 0 : npulse ) ) );
+   }
+   bool IS_FLOATING(  )
+   {
+      return ( has_aflag( AFF_FLYING ) || has_aflag( AFF_FLOATING ) );
+   }
+   int LEARNED( int sn )
+   {
+      return ( isnpc(  )? 80 : URANGE( 0, pcdata->learned[sn], 101 ) );
+   }
 
    void CHECK_SUBRESTRICTED(  )
    {
@@ -434,12 +478,13 @@ class char_data
       }
    }
 
-   map<int,string> abits; /* abit/qbit code */
-   list<char_data*> pets;
-   list<obj_data*> carrying;
-   list<affect_data*> affects;
-   list<timer_data*> timers;
-   list<struct mprog_act_list*> mpact; /* Mudprogs */
+   map < int, string > abits; /* abit/qbit code */
+   list < char_data * >pets;
+   list < obj_data * >carrying;
+   list < affect_data * >affects;
+   list < timer_data * >timers;
+   list < struct mprog_act_list *>mpact;  /* Mudprogs */
+   list < struct variable_data *>variables;  // Quest flags
    string spec_funname;
    char_data *master;
    char_data *leader;
@@ -464,22 +509,22 @@ class char_data
    DO_FUN *last_cmd;
    DO_FUN *prev_cmd; /* mapping */
    SPEC_FUN *spec_fun;
-private:
-     bitset < MAX_ACT_FLAG > actflags;
-     bitset < MAX_AFFECTED_BY > affected_by;
-     bitset < MAX_AFFECTED_BY > no_affected_by;
-     bitset < MAX_ATTACK_TYPE > attacks;
-     bitset < MAX_DEFENSE_TYPE > defenses;
-     bitset < MAX_BPART > body_parts;
-     bitset < MAX_RIS_FLAG > resistant;
-     bitset < MAX_RIS_FLAG > no_resistant;
-     bitset < MAX_RIS_FLAG > immune;
-     bitset < MAX_RIS_FLAG > no_immune;
-     bitset < MAX_RIS_FLAG > susceptible;
-     bitset < MAX_RIS_FLAG > no_susceptible;
-     bitset < MAX_RIS_FLAG > absorb;   /* Absorbtion flag for RIS data - Samson 3-16-00 */
-     bitset < LANG_UNKNOWN > speaks;
-public:
+ private:
+   bitset < MAX_ACT_FLAG > actflags;
+   bitset < MAX_AFFECTED_BY > affected_by;
+   bitset < MAX_AFFECTED_BY > no_affected_by;
+   bitset < MAX_ATTACK_TYPE > attacks;
+   bitset < MAX_DEFENSE_TYPE > defenses;
+   bitset < MAX_BPART > body_parts;
+   bitset < MAX_RIS_FLAG > resistant;
+   bitset < MAX_RIS_FLAG > no_resistant;
+   bitset < MAX_RIS_FLAG > immune;
+   bitset < MAX_RIS_FLAG > no_immune;
+   bitset < MAX_RIS_FLAG > susceptible;
+   bitset < MAX_RIS_FLAG > no_susceptible;
+   bitset < MAX_RIS_FLAG > absorb;  /* Absorbtion flag for RIS data - Samson 3-16-00 */
+   bitset < LANG_UNKNOWN > speaks;
+ public:
    char *name;
    char *short_descr;
    char *long_descr;
@@ -570,8 +615,8 @@ public:
 
 #define GET_TIME_PLAYED(ch)  (((ch)->pcdata->played + (current_time - (ch)->pcdata->logon)) / 3600)
 
-extern list<char_data*> charlist;
-extern list<char_data*> pclist;
+extern list < char_data * >charlist;
+extern list < char_data * >pclist;
 extern char_data *quitting_char;
 extern char_data *loading_char;
 extern char_data *saving_char;

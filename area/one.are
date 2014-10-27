@@ -1,10 +1,10 @@
 #AFKAREA
 #AREADATA
 Version         1
-Name            The Continent of Alsherok~
+Name            The Continent~
 Author          Samson~
 Vnums           50000 50499
-Continent       alsherok~
+Continent       one~
 Coordinates     0 0
 Dates           976000000 976000000
 Ranges          0 115 0 115
@@ -37,14 +37,14 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 
 #MOBILE
 Vnum      50499
-Keywords  alsherok portal guardian~
+Keywords  continent portal guardian~
 Race      human~
 Class     Warrior~
 Gender    male~
 Position  standing~
 DefPos    standing~
 Short     The guardian~
-Long      The guardian of the Alsherok portal stands watch over the continent below.
+Long      The guardian of the portal stands watch over the continent below.
 ~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
@@ -79,7 +79,7 @@ Stats     1 0 0 9999 0 None None None
 
 #ROOM
 Vnum      50000
-Name      Somewhere on the Continent of Alsherok~
+Name      Somewhere on the Continent~
 Sector    indoors~
 Flags     indoors map~
 Stats     0 0 0 0
@@ -131,37 +131,13 @@ ToRoom    50000
 #ENDROOM
 
 #ROOM
-Vnum      50001
-Name      Engulfed in a Swirling Mass of Void Space~
-Sector    indoors~
-Flags     proto~
-Stats     0 0 0 0
-#ENDROOM
-
-#ROOM
-Vnum      50002
-Name      Engulfed in a Swirling Mass of Void Space~
-Sector    indoors~
-Flags     proto~
-Stats     0 0 0 0
-#ENDROOM
-
-#ROOM
-Vnum      50003
-Name      Engulfed in a Swirling Mass of Void Space~
-Sector    indoors~
-Flags     proto~
-Stats     0 0 0 0
-#ENDROOM
-
-#ROOM
 Vnum      50499
-Name      The Alsherok Portal~
+Name      The Continental Portal~
 Sector    indoors~
 Flags     indoors nocamp nosummon norecall noportal noastral noteleport noscry~
 Stats     0 0 0 0
 Desc      The shimmering green light of the portal is almost blinding, yet below
-you the view of Alsherok is completely unobstructed and breathtaking to
+you the view of the continent is completely unobstructed and breathtaking to
 behold.
 ~
 Reset M 50499 1 50499 -1 -1 -1 100

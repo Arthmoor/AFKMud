@@ -35,7 +35,8 @@
 #ifdef USEGLOB /* Samson 4-16-98 - For new command pipe */
 #include <glob.h>
 #endif
-
+#include <fstream>
+#include <sstream>
 #include "mud.h"
 #include "clans.h"
 #include "commands.h"
@@ -43,12 +44,10 @@
 #include "shell.h"
 
 void unlink_command( cmd_type * );
-void skill_notfound( char_data *, char * );
-int get_logflag( char * );
 
 /* Global variables - Samson */
 bool compilelock = false;  /* Reboot/shutdown commands locked during compiles */
-list<shell_cmd*> shellcmdlist;
+list < shell_cmd * >shellcmdlist;
 
 extern char lastplayercmd[MIL * 2];
 extern bool bootlock;
@@ -78,7 +77,7 @@ char *fgetf( char *s, int n, register FILE * iop )
 }
 
 /* NOT recommended to be used as a conventional command! */
-void command_pipe( char_data * ch, char *argument )
+void command_pipe( char_data * ch, const char *argument )
 {
    char buf[MSL];
    FILE *fp;
@@ -89,7 +88,6 @@ void command_pipe( char_data * ch, char *argument )
    fgetf( buf, MSL, fp );
    pclose( fp );
    ch->pagerf( "&R%s\r\n", buf );
-   return;
 }
 
 /* End OLD shell command code */
@@ -98,8 +96,8 @@ void command_pipe( char_data * ch, char *argument )
 /* New command shell code by Thoric - Installed by Samson 4-16-98 */
 CMDF( do_mudexec )
 {
-   int desc;
-   int flags;
+   char term[15], col[15], lines[15];  // Thanks. Thanks a whole fucking lot GNU!
+   int desc, flags;
    pid_t pid;
 
    if( !ch->desc )
@@ -114,7 +112,12 @@ CMDF( do_mudexec )
 
    if( ( pid = fork(  ) ) == 0 )
    {
-      char *p = argument;
+      // This is evil. Don't ever let me see you do this again without a VERY GOOD REASON.
+      char pl[MIL];
+      char *p;
+      char *arg = pl;
+
+      mudstrlcpy( arg, argument.c_str(  ), MIL );
 #ifdef USEGLOB
       glob_t g;
 #else
@@ -130,13 +133,18 @@ CMDF( do_mudexec )
       dup2( desc, STDIN_FILENO );
       dup2( desc, STDOUT_FILENO );
       dup2( desc, STDERR_FILENO );
-      putenv( "TERM=vt100" );
-      putenv( "COLUMNS=80" );
-      putenv( "LINES=24" );
+      mudstrlcpy( term, "TERM=vt100", 15 );
+      putenv( term );
+
+      mudstrlcpy( col, "COLUMNS=80", 15 );
+      putenv( col );
+
+      mudstrlcpy( lines, "LINES=24", 15 );
+      putenv( lines );
 
 #ifdef USEGLOB
       g.gl_offs = 1;
-      strtok( argument, " " );
+      strtok( arg, " " );
 
       if( ( p = strtok( NULL, " " ) ) != NULL )
          glob( p, GLOB_DOOFFS | GLOB_NOCHECK, NULL, &g );
@@ -150,7 +158,7 @@ CMDF( do_mudexec )
          if( !g.gl_pathv[g.gl_pathc - 1] )
             g.gl_pathv[g.gl_pathc - 1] = p;
       }
-      g.gl_pathv[0] = argument;
+      g.gl_pathv[0] = arg;
 
 #ifdef DEBUGGLOB
       for( argc = 0; argc < g.gl_pathc; ++argc )
@@ -170,17 +178,17 @@ CMDF( do_mudexec )
          while( !isspace( *p ) && *p )
             ++p;
       }
-      p = argument;
+      p = argument.c_str(  );
       argv = calloc( argc + 1, sizeof( char * ) );
 
       argc = 0;
-      argv[argc] = strtok( argument, " " );
+      argv[argc] = strtok( argument.c_str(  ), " " );
       while( ( argv[++argc] = strtok( NULL, " " ) ) != NULL );
 
       execvp( argv[0], argv );
 #endif
 
-      fprintf( stderr, "Shell process: %s failed!\n", argument );
+      fprintf( stderr, "Shell process: %s failed!\n", argument.c_str(  ) );
       perror( "mudexec" );
       exit( 0 );
    }
@@ -200,7 +208,7 @@ CMDF( do_mudexec )
 /* End NEW shell command code */
 
 /* This function verifies filenames during copy operations - Samson 4-7-98 */
-bool copy_file( char_data * ch, char *filename )
+bool copy_file( char_data * ch, const char *filename )
 {
    FILE *fp;
 
@@ -214,7 +222,7 @@ bool copy_file( char_data * ch, char *filename )
 }
 
 /* The guts of the compiler code, make any changes to the compiler options here - Samson 4-8-98 */
-void compile_code( char_data * ch, char *argument )
+void compile_code( char_data * ch, const string & argument )
 {
    if( !str_cmp( argument, "clean" ) )
    {
@@ -228,7 +236,6 @@ void compile_code( char_data * ch, char *argument )
       return;
    }
    funcf( ch, do_mudexec, "%s", "make -C ../src" );
-   return;
 }
 
 /* This command compiles the code on the mud, works only on code port - Samson 4-8-98 */
@@ -253,24 +260,21 @@ CMDF( do_compile )
    }
 
    compilelock = true;
-   echo_all_printf( ECHOTAR_IMM, "&RCompiler operation initiated by %s. Reboot and shutdown commands are locked.",
-                    ch->name );
+   echo_all_printf( ECHOTAR_IMM, "&RCompiler operation initiated by %s. Reboot and shutdown commands are locked.", ch->name );
    compile_code( ch, argument );
-   return;
 }
 
 /* This command catches the shortcut "copy" - Samson 4-8-98 */
 CMDF( do_copy )
 {
    ch->print( "&YTo use a copy command, you have to spell it out!\r\n" );
-   return;
 }
 
 /* This command copies Class files from build port to the others - Samson 9-17-98 */
 CMDF( do_copyclass )
 {
    char buf[MSL];
-   char *fname, *fname2 = NULL;
+   string fname, fname2;
 
    if( ch->isnpc(  ) )
    {
@@ -284,7 +288,7 @@ CMDF( do_copyclass )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You must specify a file to copy.\r\n" );
       return;
@@ -300,7 +304,7 @@ CMDF( do_copyclass )
    else
    {
       fname = argument;
-      snprintf( buf, MSL, "%s%s", BUILDCLASSDIR, fname );
+      snprintf( buf, MSL, "%s%s", BUILDCLASSDIR, fname.c_str(  ) );
       if( !copy_file( ch, buf ) )
          return;
    }
@@ -311,20 +315,20 @@ CMDF( do_copyclass )
       {
          ch->print( "&RClass and skill files updated to main port.\r\n" );
 #ifdef USEGLOB
-         funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR, fname, MAINCLASSDIR );
+         funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR, fname.c_str(  ), MAINCLASSDIR );
 #else
-         funcf( ch, command_pipe, "cp %s%s %s", BUILDCLASSDIR, fname, MAINCLASSDIR );
+         funcf( ch, command_pipe, "cp %s%s %s", BUILDCLASSDIR, fname.c_str(  ), MAINCLASSDIR );
 #endif
-         funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR, fname2, MAINSYSTEMDIR );
+         funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR, fname2.c_str(  ), MAINSYSTEMDIR );
       }
       ch->print( "&GClass and skill files updated to code port.\r\n" );
 
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR, fname, CODECLASSDIR );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR, fname.c_str(  ), CODECLASSDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDCLASSDIR, fname, CODECLASSDIR );
+      funcf( ch, command_pipe, "cp %s%s %s", BUILDCLASSDIR, fname.c_str(  ), CODECLASSDIR );
 #endif
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR, fname2, CODESYSTEMDIR );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR, fname2.c_str(  ), CODESYSTEMDIR );
       return;
    }
 
@@ -333,27 +337,26 @@ CMDF( do_copyclass )
       if( !sysdata->TESTINGMODE )
       {
          ch->print( "&RSkill file updated to main port.\r\n" );
-         funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR, fname, MAINSYSTEMDIR );
+         funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR, fname.c_str(  ), MAINSYSTEMDIR );
       }
       ch->print( "&GSkill file updated to code port.\r\n" );
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR, fname, CODESYSTEMDIR );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR, fname.c_str(  ), CODESYSTEMDIR );
       return;
    }
 
    if( !sysdata->TESTINGMODE )
    {
-      ch->printf( "&R%s: file updated to main port.\r\n", argument );
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR, fname, MAINCLASSDIR );
+      ch->printf( "&R%s: file updated to main port.\r\n", argument.c_str(  ) );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR, fname.c_str(  ), MAINCLASSDIR );
    }
-   ch->printf( "&G%s: file updated to code port.\r\n", argument );
-   funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR, fname, CODECLASSDIR );
-   return;
+   ch->printf( "&G%s: file updated to code port.\r\n", argument.c_str(  ) );
+   funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR, fname.c_str(  ), CODECLASSDIR );
 }
 
 /* This command copies zones from build port to the others - Samson 4-7-98 */
 CMDF( do_copyzone )
 {
-   char *fname, *fname2 = NULL;
+   string fname, fname2;
 
    if( ch->isnpc(  ) )
    {
@@ -367,7 +370,7 @@ CMDF( do_copyzone )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You must specify a file to copy.\r\n" );
       return;
@@ -379,58 +382,43 @@ CMDF( do_copyzone )
    {
       fname = argument;
 
-      if( !copy_file( ch, argument ) )
+      if( !copy_file( ch, argument.c_str(  ) ) )
          return;
 
-      if( !str_cmp( argument, "gods.are" ) )
-         fname2 = "gods.are";
-      if( !str_cmp( argument, "bywater.are" ) )
-         fname2 = "bywater.are";
       if( !str_cmp( argument, "entry.are" ) )
          fname2 = "entry.are";
       if( !str_cmp( argument, "astral.are" ) )
          fname2 = "astral.are";
       if( !str_cmp( argument, "void.are" ) )
          fname2 = "void.are";
-      if( !str_cmp( argument, "alsherok.are" ) )
-         fname2 = "alsherok.are";
-      if( !str_cmp( argument, "alatia.are" ) )
-         fname2 = "alatia.are";
-      if( !str_cmp( argument, "eletar.are" ) )
-         fname2 = "eletar.are";
-      if( !str_cmp( argument, "varsis.are" ) )
-         fname2 = "varsis.are";
-      if( !str_cmp( argument, "gwyn.are" ) )
-         fname2 = "gwyn.are";
-      if( !str_cmp( argument, "sindhae.are" ) )
-         fname2 = "sindhae.are";
+      if( !str_cmp( argument, "immtrain.are" ) )
+         fname2 = "immtrain.are";
+      if( !str_cmp( argument, "one.are" ) )
+         fname2 = "one.are";
    }
 
    if( !sysdata->TESTINGMODE )
    {
       ch->print( "&RArea file(s) updated to main port.\r\n" );
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDZONEDIR, fname, MAINZONEDIR );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDZONEDIR, fname.c_str(  ), MAINZONEDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDZONEDIR, fname, MAINZONEDIR );
+      funcf( ch, command_pipe, "cp %s%s %s", BUILDZONEDIR, fname.c_str(  ), MAINZONEDIR );
 #endif
    }
 
-   if( fname2 == "gods.are" || fname2 == "void.are" || fname2 == "astral.are"
-       || fname2 == "bywater.are" || fname2 == "entry.are" || fname2 == "alsherok.are" || fname2 == "alatia.are"
-       || fname2 == "eletar.are" || fname2 == "varsis.are" || fname2 == "gwyn.are" || fname2 == "sindhae.are" )
+   if( fname2 == "entry.are" || fname2 == "void.are" || fname2 == "astral.are" || fname2 == "one.are" || fname2 == "immtrain.are" )
    {
       ch->print( "&GArea file(s) updated to code port.\r\n" );
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDZONEDIR, fname2, CODEZONEDIR );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDZONEDIR, fname2.c_str(  ), CODEZONEDIR );
    }
-   return;
 }
 
 /* This command copies maps from build port to the others - Samson 8-2-99 */
 CMDF( do_copymap )
 {
    char buf[MSL];
-   char *fname;
+   string fname;
 
    if( ch->isnpc(  ) )
    {
@@ -444,7 +432,7 @@ CMDF( do_copymap )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You must specify a file to copy.\r\n" );
       return;
@@ -455,7 +443,7 @@ CMDF( do_copymap )
    else
    {
       fname = argument;
-      snprintf( buf, MSL, "%s%s", BUILDMAPDIR, fname );
+      snprintf( buf, MSL, "%s%s", BUILDMAPDIR, fname.c_str(  ) );
       if( !copy_file( ch, buf ) )
          return;
    }
@@ -464,9 +452,9 @@ CMDF( do_copymap )
    {
       ch->print( "&RMap file(s) updated to main port.\r\n" );
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDMAPDIR, fname, MAINMAPDIR );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDMAPDIR, fname.c_str(  ), MAINMAPDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDMAPDIR, fname, MAINMAPDIR );
+      funcf( ch, command_pipe, "cp %s%s %s", BUILDMAPDIR, fname.c_str(  ), MAINMAPDIR );
 #endif
 
 #ifdef USEGLOB
@@ -478,9 +466,9 @@ CMDF( do_copymap )
 
    ch->print( "&GMap file(s) updated to code port.\r\n" );
 #ifdef USEGLOB
-   funcf( ch, do_mudexec, "cp %s%s %s", BUILDMAPDIR, fname, CODEMAPDIR );
+   funcf( ch, do_mudexec, "cp %s%s %s", BUILDMAPDIR, fname.c_str(  ), CODEMAPDIR );
 #else
-   funcf( ch, command_pipe, "cp %s%s %s", BUILDMAPDIR, fname, CODEMAPDIR );
+   funcf( ch, command_pipe, "cp %s%s %s", BUILDMAPDIR, fname.c_str(  ), CODEMAPDIR );
 #endif
 
 #ifdef USEGLOB
@@ -488,8 +476,6 @@ CMDF( do_copymap )
 #else
    funcf( ch, command_pipe, "cp %s*.dat %s", BUILDMAPDIR, CODEMAPDIR );
 #endif
-
-   return;
 }
 
 CMDF( do_copyhelp )
@@ -513,7 +499,6 @@ CMDF( do_copyhelp )
    }
    ch->print( "&Help file updated to code port.\r\n" );
    funcf( ch, do_mudexec, "cp %shelps.dat %s", BUILDSYSTEMDIR, CODESYSTEMDIR );
-   return;
 }
 
 CMDF( do_copybits )
@@ -539,7 +524,6 @@ CMDF( do_copybits )
    ch->print( "&GAbit/Qbit files updated to code port.\r\n" );
    funcf( ch, do_mudexec, "cp %sabit.lst %s", BUILDSYSTEMDIR, CODESYSTEMDIR );
    funcf( ch, do_mudexec, "cp %sqbit.lst %s", BUILDSYSTEMDIR, CODESYSTEMDIR );
-   return;
 }
 
 /* This command copies the social file from build port to the other ports - Samson 5-2-98 */
@@ -571,7 +555,6 @@ CMDF( do_copysocial )
     */
    ch->print( "&GSocial file updated to code port.\r\n" );
    funcf( ch, do_mudexec, "cp %ssocials.dat %s", BUILDSYSTEMDIR, CODESYSTEMDIR );
-   return;
 }
 
 /* This command copies the rune file from build port to the other ports - Samson 5-2-98 */
@@ -603,7 +586,6 @@ CMDF( do_copyrunes )
     */
    ch->print( "&GRune file updated to code port.\r\n" );
    funcf( ch, do_mudexec, "cp %srunes.dat %s", BUILDSYSTEMDIR, CODESYSTEMDIR );
-   return;
 }
 
 CMDF( do_copyslay )
@@ -634,7 +616,6 @@ CMDF( do_copyslay )
     */
    ch->print( "&GSlay file updated to code port.\r\n" );
    funcf( ch, do_mudexec, "cp %sslay.dat %s", BUILDSYSTEMDIR, CODESYSTEMDIR );
-   return;
 }
 
 /* This command copies the morphs file from build port to the other ports - Samson 5-2-98 */
@@ -666,7 +647,6 @@ CMDF( do_copymorph )
     */
    ch->print( "&GPolymorph file updated to code port.\r\n" );
    funcf( ch, do_mudexec, "cp %smorph.dat %s", BUILDSYSTEMDIR, CODESYSTEMDIR );
-   return;
 }
 
 /* This command copies the mud binary file from code port to main port and build port - Samson 4-7-98 */
@@ -718,14 +698,13 @@ CMDF( do_copycode )
       ch->print( "&RShared Object files updated to main port.\r\n" );
       funcf( ch, do_mudexec, "cp -f %smodules/so/*.so %smodules/so", TESTCODEDIR, MAINCODEDIR );
    }
-   return;
 }
 
 /* This command copies race files from build port to main port and code port - Samson 10-13-98 */
 CMDF( do_copyrace )
 {
    char buf[MSL];
-   char *fname;
+   string fname;
 
    if( ch->isnpc(  ) )
    {
@@ -739,7 +718,7 @@ CMDF( do_copyrace )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You must specify a file to copy.\r\n" );
       return;
@@ -750,7 +729,7 @@ CMDF( do_copyrace )
    else
    {
       fname = argument;
-      snprintf( buf, MSL, "%s%s", BUILDRACEDIR, fname );
+      snprintf( buf, MSL, "%s%s", BUILDRACEDIR, fname.c_str(  ) );
       if( !copy_file( ch, buf ) )
          return;
    }
@@ -760,9 +739,9 @@ CMDF( do_copyrace )
     */
    ch->print( "&GRace file(s) updated to code port.\r\n" );
 #ifdef USEGLOB
-   funcf( ch, do_mudexec, "cp %s%s %s", BUILDRACEDIR, fname, CODERACEDIR );
+   funcf( ch, do_mudexec, "cp %s%s %s", BUILDRACEDIR, fname.c_str(  ), CODERACEDIR );
 #else
-   funcf( ch, command_pipe, "cp %s%s %s", BUILDRACEDIR, fname, CODERACEDIR );
+   funcf( ch, command_pipe, "cp %s%s %s", BUILDRACEDIR, fname.c_str(  ), CODERACEDIR );
 #endif
 
    if( !sysdata->TESTINGMODE )
@@ -772,19 +751,18 @@ CMDF( do_copyrace )
        */
       ch->print( "&RRace file(s) updated to main port.\r\n" );
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDRACEDIR, fname, MAINRACEDIR );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDRACEDIR, fname.c_str(  ), MAINRACEDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDRACEDIR, fname, MAINRACEDIR );
+      funcf( ch, command_pipe, "cp %s%s %s", BUILDRACEDIR, fname.c_str(  ), MAINRACEDIR );
 #endif
    }
-   return;
 }
 
 /* This command copies deity files from build port to main port and code port - Samson 10-13-98 */
 CMDF( do_copydeity )
 {
    char buf[MSL];
-   char *fname;
+   string fname;
 
    if( ch->isnpc(  ) )
    {
@@ -798,7 +776,7 @@ CMDF( do_copydeity )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You must specify a file to copy.\r\n" );
       return;
@@ -809,7 +787,7 @@ CMDF( do_copydeity )
    else
    {
       fname = argument;
-      snprintf( buf, MSL, "%s%s", BUILDDEITYDIR, fname );
+      snprintf( buf, MSL, "%s%s", BUILDDEITYDIR, fname.c_str(  ) );
       if( !copy_file( ch, buf ) )
          return;
    }
@@ -819,9 +797,9 @@ CMDF( do_copydeity )
     */
    ch->print( "&GDeity file(s) updated to code port.\r\n" );
 #ifdef USEGLOB
-   funcf( ch, do_mudexec, "cp %s%s %s", BUILDDEITYDIR, fname, CODEDEITYDIR );
+   funcf( ch, do_mudexec, "cp %s%s %s", BUILDDEITYDIR, fname.c_str(  ), CODEDEITYDIR );
 #else
-   funcf( ch, command_pipe, "cp %s%s %s", BUILDDEITYDIR, fname, CODEDEITYDIR );
+   funcf( ch, command_pipe, "cp %s%s %s", BUILDDEITYDIR, fname.c_str(  ), CODEDEITYDIR );
 #endif
 
    if( !sysdata->TESTINGMODE )
@@ -831,12 +809,11 @@ CMDF( do_copydeity )
        */
       ch->print( "&RDeity file(s) updated to main port.\r\n" );
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDDEITYDIR, fname, MAINDEITYDIR );
+      funcf( ch, do_mudexec, "cp %s%s %s", BUILDDEITYDIR, fname.c_str(  ), MAINDEITYDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDDEITYDIR, fname, MAINDEITYDIR );
+      funcf( ch, command_pipe, "cp %s%s %s", BUILDDEITYDIR, fname.c_str(  ), MAINDEITYDIR );
 #endif
    }
-   return;
 }
 
 /*
@@ -851,89 +828,90 @@ CMDF( do_grep )
 
    ch->set_color( AT_PLAIN );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       mudstrlcpy( buf, "grep --help", MSL ); /* Will cause it to forward grep's help options to you */
    else
-      snprintf( buf, MSL, "grep -n %s", argument );   /* Line numbers are somewhat important */
+      snprintf( buf, MSL, "grep -n %s", argument.c_str(  ) );  /* Line numbers are somewhat important */
 
 #ifdef USEGLOB
    do_mudexec( ch, buf );
 #else
    command_pipe( ch, buf );
 #endif
-   return;
 }
 
 /* IP/DNS resolver - passes to the shell code now - Samson 4-23-00 */
 CMDF( do_resolve )
 {
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Resolve what?\r\n" );
       return;
    }
-   funcf( ch, do_mudexec, "host %s", argument );
+   funcf( ch, do_mudexec, "host %s", argument.c_str(  ) );
 }
 
-shell_cmd::shell_cmd( )
+shell_cmd::shell_cmd(  )
 {
-   init_memory( &do_fun, &log, sizeof( log ) );
+   init_memory( &_do_fun, &_log, sizeof( _log ) );
+   flags = 0;
 }
 
-shell_cmd::~shell_cmd( )
+shell_cmd::~shell_cmd(  )
 {
-   DISPOSE( name );
-   DISPOSE( fun_name );
 }
 
 void free_shellcommands( void )
 {
-   list<shell_cmd*>::iterator scmd;
+   list < shell_cmd * >::iterator scmd;
 
-   for( scmd = shellcmdlist.begin(); scmd != shellcmdlist.end(); )
+   for( scmd = shellcmdlist.begin(  ); scmd != shellcmdlist.end(  ); )
    {
-      shell_cmd *scommand = (*scmd);
+      shell_cmd *scommand = *scmd;
       ++scmd;
 
       shellcmdlist.remove( scommand );
       deleteptr( scommand );
    }
-   shellcmdlist.clear();
+   shellcmdlist.clear(  );
 }
 
 void add_shellcommand( shell_cmd * command )
 {
+   string buf;
+
    if( !command )
    {
       bug( "%s: NULL command", __FUNCTION__ );
       return;
    }
 
-   if( !command->name )
+   if( command->get_name(  ).empty(  ) )
    {
-      bug( "%s: NULL command->name", __FUNCTION__ );
+      bug( "%s: Empty command->name", __FUNCTION__ );
       return;
    }
 
-   if( !command->do_fun )
+   if( !command->get_func(  ) )
    {
-      bug( "%s: NULL command->do_fun for command %s", __FUNCTION__, command->name );
+      bug( "%s: NULL command->do_fun for command %s", __FUNCTION__, command->get_name(  ).c_str(  ) );
       return;
    }
 
    /*
     * make sure the name is all lowercase 
     */
-   for( int x = 0; command->name[x] != '\0'; ++x )
-      command->name[x] = LOWER( command->name[x] );
+   buf = command->get_name(  );
+   strlower( buf );
+   command->set_name( buf );
 
    bool inserted = false;
-   list<shell_cmd*>::iterator scmd;
-   for( scmd = shellcmdlist.begin(); scmd != shellcmdlist.end(); ++scmd )
+   list < shell_cmd * >::iterator scmd;
+   for( scmd = shellcmdlist.begin(  ); scmd != shellcmdlist.end(  ); ++scmd )
    {
-      shell_cmd *shellcmd = (*scmd);
+      shell_cmd *shellcmd = *scmd;
 
-      if( strcasecmp( shellcmd->name, command->name ) >= 0 )
+      if( shellcmd->get_name(  ).compare( command->get_name(  ) ) > 0 )
       {
          shellcmdlist.insert( scmd, command );
          inserted = true;
@@ -947,219 +925,111 @@ void add_shellcommand( shell_cmd * command )
     * Kick it out of the main command table if it's there 
     */
    cmd_type *cmd;
-   if( ( cmd = find_command( command->name ) ) != NULL )
+   if( ( cmd = find_command( command->get_name(  ) ) ) != NULL )
    {
-      log_printf( "Removing command: %s and replacing in shell command table.", cmd->name );
+      log_printf( "Removing command: %s and replacing in shell command table.", cmd->name.c_str(  ) );
       unlink_command( cmd );
       deleteptr( cmd );
    }
 }
 
-shell_cmd *find_shellcommand( char *command )
+shell_cmd *find_shellcommand( const string & command )
 {
-   list<shell_cmd*>::iterator cmd;
+   list < shell_cmd * >::iterator cmd;
 
-   for( cmd = shellcmdlist.begin(); cmd != shellcmdlist.end(); ++cmd )
+   for( cmd = shellcmdlist.begin(  ); cmd != shellcmdlist.end(  ); ++cmd )
    {
-      shell_cmd *scmd = (*cmd);
+      shell_cmd *scmd = *cmd;
 
-      if( !str_prefix( command, scmd->name ) )
+      if( !str_prefix( command, scmd->get_name(  ) ) )
          return scmd;
    }
    return NULL;
 }
 
-void fread_shellcommand( FILE * fp, int version )
-{
-   shell_cmd *command;
-
-   command = new shell_cmd;
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            KEY( "Code", command->fun_name, str_dup( fread_word( fp ) ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( !command->name )
-               {
-                  bug( "%s: Name not found", __FUNCTION__ );
-                  deleteptr( command );
-                  return;
-               }
-               if( !command->fun_name )
-               {
-                  bug( "%s: No function name supplied for %s", __FUNCTION__, command->name );
-                  deleteptr( command );
-                  return;
-               }
-               /*
-                * Mods by Trax
-                * Fread in code into char* and try linkage here then
-                * deal in the "usual" way I suppose..
-                */
-               command->do_fun = skill_function( command->fun_name );
-               if( command->do_fun == skill_notfound )
-               {
-                  bug( "%s: Function %s not found for %s", __FUNCTION__, command->fun_name, command->name );
-                  deleteptr( command );
-                  return;
-               }
-               add_shellcommand( command );
-               /*
-                * Automatically approve all immortal commands for use as a ghost 
-                */
-               if( command->level >= LEVEL_IMMORTAL )
-                  command->flags.set( CMD_GHOST );
-               return;
-            }
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "flags" ) )
-            {
-               if( version < 3 )
-               {
-                  command->flags = fread_number( fp );
-                  break;
-               }
-               else
-               {
-                  flag_set( fp, command->flags, cmd_flags );
-                  break;
-               }
-            }
-            break;
-
-         case 'L':
-            KEY( "Level", command->level, fread_number( fp ) );
-            if( !str_cmp( word, "Log" ) )
-            {
-               if( version < 2 )
-               {
-                  command->log = fread_number( fp );
-                  break;
-               }
-               else
-               {
-                  char *lflag = NULL;
-                  int lognum;
-
-                  lflag = fread_flagstring( fp );
-                  lognum = get_logflag( lflag );
-
-                  if( lognum < 0 || lognum > LOG_ALL )
-                  {
-                     bug( "%s: Command %s has invalid log flag! Defaulting to normal.", __FUNCTION__, command->name );
-                     lognum = LOG_NORMAL;
-                  }
-                  command->log = lognum;
-                  break;
-               }
-            }
-            break;
-
-         case 'N':
-            KEY( "Name", command->name, fread_string_nohash( fp ) );
-            break;
-
-         case 'P':
-            if( !str_cmp( word, "Position" ) )
-            {
-               char *tpos = NULL;
-               int position;
-
-               tpos = fread_flagstring( fp );
-               position = get_npc_position( tpos );
-
-               if( position < 0 || position >= POS_MAX )
-               {
-                  bug( "%s: Command %s has invalid position! Defaulting to standing.", __FUNCTION__, command->name );
-                  position = POS_STANDING;
-               }
-               command->position = position;
-               break;
-            }
-            break;
-      }
-   }
-}
-
 void load_shellcommands( void )
 {
-   FILE *fp;
+   shell_cmd *scmd = NULL;
+   ifstream stream;
    int version = 0;
 
-   shellcmdlist.clear();
+   shellcmdlist.clear(  );
 
-   if( ( fp = fopen( SHELL_COMMAND_FILE, "r" ) ) != NULL )
-   {
-      for( ;; )
-      {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "VERSION" ) )
-         {
-            version = fread_number( fp );
-            continue;
-         }
-         if( !str_cmp( word, "COMMAND" ) )
-         {
-            fread_shellcommand( fp, version );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
-            continue;
-         }
-      }
-      FCLOSE( fp );
-   }
-   else
+   stream.open( SHELL_COMMAND_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open %s", __FUNCTION__, SHELL_COMMAND_FILE );
       exit( 1 );
    }
+
+   do
+   {
+      string key, value;
+      char buf[MIL];
+
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#COMMAND" )
+         scmd = new shell_cmd;
+      else if( key == "#VERSION" )
+         version = atoi( value.c_str(  ) );
+      else if( key == "Name" )
+         scmd->set_name( value );
+      else if( key == "Code" )
+      {
+         scmd->set_func( skill_function( value ) );
+         scmd->set_func_name( value );
+      }
+      else if( key == "Position" )
+         scmd->set_position( value );
+      else if( key == "Level" )
+         scmd->set_level( atoi( value.c_str(  ) ) );
+      else if( key == "Log" )
+         scmd->set_log( value );
+      else if( key == "Flags" )
+      {
+         if( version < 3 )
+            scmd->flags = atoi( value.c_str(  ) );
+         else
+            flag_string_set( value, scmd->flags, cmd_flags );
+      }
+      else if( key == "End" )
+      {
+         if( scmd->get_name(  ).empty(  ) )
+         {
+            bug( "%s: Command name not found", __FUNCTION__ );
+            deleteptr( scmd );
+            continue;
+         }
+
+         if( scmd->get_func_name(  ).empty(  ) )
+         {
+            bug( "%s: Command name not found", __FUNCTION__ );
+            deleteptr( scmd );
+            continue;
+         }
+
+         add_shellcommand( scmd );
+         /*
+          * Automatically approve all immortal commands for use as a ghost 
+          */
+         if( scmd->get_level(  ) >= LEVEL_IMMORTAL )
+            scmd->flags.set( CMD_GHOST );
+      }
+      else
+         bug( "%s: Bad line in shell commands file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+   }
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 const int SHELLCMDVERSION = 3;
@@ -1168,78 +1038,74 @@ const int SHELLCMDVERSION = 3;
 /* Updated to 3 for command flags - Samson 7-9-00 */
 void save_shellcommands( void )
 {
-   FILE *fpout;
+   ofstream stream;
 
-   if( !( fpout = fopen( SHELL_COMMAND_FILE, "w" ) ) )
+   stream.open( SHELL_COMMAND_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "Cannot open %s for writing", SHELL_COMMAND_FILE );
       perror( SHELL_COMMAND_FILE );
       return;
    }
 
-   fprintf( fpout, "#VERSION %d\n", SHELLCMDVERSION );
+   stream << "#VERSION " << SHELLCMDVERSION << endl;
 
-   list<shell_cmd*>::iterator icommand;
-   for( icommand = shellcmdlist.begin(); icommand != shellcmdlist.end(); ++icommand )
+   list < shell_cmd * >::iterator icommand;
+   for( icommand = shellcmdlist.begin(  ); icommand != shellcmdlist.end(  ); ++icommand )
    {
-      shell_cmd *command = (*icommand);
+      shell_cmd *command = *icommand;
 
-      if( !command->name || command->name[0] == '\0' )
+      if( command->get_name(  ).empty(  ) )
       {
          bug( "%s: blank command in list", __FUNCTION__ );
          continue;
       }
-      fprintf( fpout, "%s", "#COMMAND\n" );
-      fprintf( fpout, "Name        %s~\n", command->name );
-      /*
-       * Modded to use new field - Trax 
-       */
-      fprintf( fpout, "Code        %s\n", command->fun_name ? command->fun_name : "" );
-      fprintf( fpout, "Position    %s~\n", npc_position[command->position] );
-      fprintf( fpout, "Level       %d\n", command->level );
-      fprintf( fpout, "Log         %s~\n", log_flag[command->log] );
+      stream << "#COMMAND" << endl;
+      stream << "Name        " << command->get_name(  ) << endl;
+      // Modded to use new field - Trax
+      stream << "Code        " << command->get_func_name(  ) << endl;
+      stream << "Position    " << npc_position[command->get_position(  )] << endl;
+      stream << "Level       " << command->get_level(  ) << endl;
+      stream << "Log         " << log_flag[command->get_log(  )] << endl;
       if( command->flags.any(  ) )
-         fprintf( fpout, "Flags       %s~\n", bitset_string( command->flags, cmd_flags ) );
-      fprintf( fpout, "%s", "End\n\n" );
+         stream << "Flags       " << bitset_string( command->flags, cmd_flags ) << endl;
+      stream << "End" << endl << endl;
    }
-   fprintf( fpout, "%s", "#END\n" );
-   FCLOSE( fpout );
+   stream.close(  );
 }
 
-void shellcommands( char_data * ch, int curr_lvl )
+void shellcommands( char_data * ch, short curr_lvl )
 {
-   list<shell_cmd*>::iterator icmd;
+   list < shell_cmd * >::iterator icmd;
    int col = 1;
 
    ch->pager( "\r\n" );
-   for( icmd = shellcmdlist.begin(); icmd != shellcmdlist.end(); ++icmd )
+   for( icmd = shellcmdlist.begin(  ); icmd != shellcmdlist.end(  ); ++icmd )
    {
-      shell_cmd *cmd = (*icmd);
+      shell_cmd *cmd = *icmd;
 
-      if( cmd->level == curr_lvl )
+      if( cmd->get_level(  ) == curr_lvl )
       {
-         ch->pagerf( "%-12s", cmd->name );
+         ch->pagerf( "%-12s", cmd->get_cname(  ) );
          if( ++col % 6 == 0 )
             ch->pager( "\r\n" );
       }
    }
    if( col % 6 != 0 )
       ch->pager( "\r\n" );
-   return;
 }
 
 /* Clone of do_cedit modified because shell commands don't use a hash table */
 CMDF( do_shelledit )
 {
    shell_cmd *command;
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
 
    ch->set_color( AT_IMMORT );
 
-   smash_tilde( argument );
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Syntax: shelledit save\r\n" );
       ch->print( "Syntax: shelledit <command> create [code]\r\n" );
@@ -1267,18 +1133,18 @@ CMDF( do_shelledit )
          return;
       }
       command = new shell_cmd;
-      command->name = str_dup( arg1 );
-      command->level = ch->get_trust(  );
-      if( *argument )
+      command->set_name( arg1 );
+      command->set_level( ch->get_trust(  ) );
+      if( !argument.empty(  ) )
          one_argument( argument, arg2 );
       else
-         snprintf( arg2, MIL, "do_%s", arg1 );
-      command->do_fun = skill_function( arg2 );
-      command->fun_name = str_dup( arg2 );
+         arg2 = "do_" + arg1;
+      command->set_func( skill_function( arg2 ) );
+      command->set_func_name( arg2 );
       add_shellcommand( command );
       ch->print( "Shell command added.\r\n" );
-      if( command->do_fun == skill_notfound )
-         ch->printf( "Code %s not found. Set to no code.\r\n", arg2 );
+      if( command->get_func(  ) == skill_notfound )
+         ch->printf( "Code %s not found. Set to no code.\r\n", arg2.c_str(  ) );
       return;
    }
 
@@ -1287,17 +1153,17 @@ CMDF( do_shelledit )
       ch->print( "Shell command not found.\r\n" );
       return;
    }
-   else if( command->level > ch->get_trust(  ) )
+   else if( command->get_level(  ) > ch->get_trust(  ) )
    {
       ch->print( "You cannot touch this command.\r\n" );
       return;
    }
 
-   if( arg2[0] == '\0' || !str_cmp( arg2, "show" ) )
+   if( arg2.empty(  ) || !str_cmp( arg2, "show" ) )
    {
       ch->printf( "Command:   %s\r\nLevel:     %d\r\nPosition:  %s\r\nLog:       %s\r\nFunc Name: %s\r\nFlags:     %s\r\n",
-                  command->name, command->level, npc_position[command->position], log_flag[command->log],
-                  command->fun_name, bitset_string( command->flags, cmd_flags ) );
+                  command->get_cname(  ), command->get_level(  ), npc_position[command->get_position(  )], log_flag[command->get_log(  )],
+                  command->get_func_cname(  ), bitset_string( command->flags, cmd_flags ) );
       return;
    }
 
@@ -1317,53 +1183,31 @@ CMDF( do_shelledit )
          ch->print( "Code not found.\r\n" );
          return;
       }
-      command->do_fun = fun;
-      DISPOSE( command->fun_name );
-      command->fun_name = str_dup( argument );
+      command->set_func( fun );
+      command->set_func_name( argument );
       ch->print( "Shell command code updated.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "level" ) )
    {
-      int level = atoi( argument );
+      short level = atoi( argument.c_str(  ) );
 
-      if( level < 0 || level > ch->get_trust(  ) )
-      {
-         ch->print( "Level out of range.\r\n" );
-         return;
-      }
-      command->level = level;
+      command->set_level( level );
       ch->print( "Command level updated.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "log" ) )
    {
-      int clog = get_logflag( argument );
-
-      if( clog < 0 || clog > LOG_ALL )
-      {
-         ch->print( "Log out of range.\r\n" );
-         return;
-      }
-      command->log = clog;
+      command->set_log( argument );
       ch->print( "Command log setting updated.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "position" ) )
    {
-      int pos;
-
-      pos = get_npc_position( argument );
-
-      if( pos < 0 || pos >= POS_MAX )
-      {
-         ch->print( "Invalid position.\r\n" );
-         return;
-      }
-      command->position = pos;
+      command->set_position( argument );
       ch->print( "Command position updated.\r\n" );
       return;
    }
@@ -1375,7 +1219,7 @@ CMDF( do_shelledit )
       flag = get_cmdflag( argument );
       if( flag < 0 || flag >= MAX_CMD_FLAG )
       {
-         ch->printf( "Unknown flag %s.\r\n", argument );
+         ch->printf( "Unknown flag %s.\r\n", argument.c_str(  ) );
          return;
       }
       command->flags.flip( flag );
@@ -1387,41 +1231,38 @@ CMDF( do_shelledit )
    {
       one_argument( argument, arg1 );
 
-      if( !arg1 || arg1[0] == '\0' )
+      if( arg1.empty(  ) )
       {
          ch->print( "Cannot clear name field!\r\n" );
          return;
       }
-      DISPOSE( command->name );
-      command->name = str_dup( arg1 );
+      command->set_name( arg1 );
       ch->print( "Done.\r\n" );
       return;
    }
    /*
     * display usage message 
     */
-   do_shelledit( ch, "" );
+   do_shelledit( ch, NULL );
 }
 
-bool shell_hook( char_data * ch, char *command, char *argument )
+bool shell_hook( char_data * ch, const string & command, string & argument )
 {
-   list<shell_cmd*>::iterator icmd;
+   list < shell_cmd * >::iterator icmd;
    shell_cmd *cmd = NULL;
    char logline[MIL];
    bool found = false;
 
    int trust = ch->get_trust(  );
 
-   for( icmd = shellcmdlist.begin(); icmd != shellcmdlist.end(); ++icmd )
+   for( icmd = shellcmdlist.begin(  ); icmd != shellcmdlist.end(  ); ++icmd )
    {
-      cmd = (*icmd);
+      cmd = ( *icmd );
 
-      if( !str_prefix( command, cmd->name )
-          && ( cmd->level <= trust
-               || ( !ch->isnpc(  ) && ch->pcdata->bestowments
-                                                                && ch->pcdata->bestowments[0] != '\0'
-                                                                && hasname( ch->pcdata->bestowments, cmd->name )
-                                                                && cmd->level <= ( trust + sysdata->bestow_dif ) ) ) )
+      if( !str_prefix( command, cmd->get_name(  ) )
+          && ( cmd->get_level(  ) <= trust
+               || ( !ch->isnpc(  ) && !ch->pcdata->bestowments.empty(  )
+                    && hasname( ch->pcdata->bestowments, cmd->get_name(  ) ) && cmd->get_level(  ) <= ( trust + sysdata->bestow_dif ) ) ) )
       {
          found = true;
          break;
@@ -1431,17 +1272,17 @@ bool shell_hook( char_data * ch, char *command, char *argument )
    if( !found )
       return false;
 
-   snprintf( logline, MIL, "%s %s", command, argument );
+   snprintf( logline, MIL, "%s %s", command.c_str(  ), argument.c_str(  ) );
 
    /*
     * Log and snoop.
     */
    snprintf( lastplayercmd, MIL * 2, "%s used command: %s", ch->name, logline );
 
-   if( cmd->log == LOG_NEVER )
+   if( cmd->get_log(  ) == LOG_NEVER )
       mudstrlcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX", MIL );
 
-   int loglvl = cmd->log;
+   int loglvl = cmd->get_log(  );
 
    if( !ch->isnpc(  ) && cmd->flags.test( CMD_MUDPROG ) )
    {
@@ -1470,12 +1311,12 @@ bool shell_hook( char_data * ch, char *command, char *argument )
 
    if( ch->desc && ch->desc->snoop_by )
    {
-      ch->desc->snoop_by->write_to_buffer( ch->name, 0 );
-      ch->desc->snoop_by->write_to_buffer( "% ", 2 );
-      ch->desc->snoop_by->write_to_buffer( logline, 0 );
-      ch->desc->snoop_by->write_to_buffer( "\r\n", 2 );
+      ch->desc->snoop_by->write_to_buffer( ch->name );
+      ch->desc->snoop_by->write_to_buffer( "% " );
+      ch->desc->snoop_by->write_to_buffer( logline );
+      ch->desc->snoop_by->write_to_buffer( "\r\n" );
    }
 
-   ( *cmd->do_fun ) ( ch, argument );
+   ( *cmd->get_func(  ) )( ch, argument );
    return true;
 }

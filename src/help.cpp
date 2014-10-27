@@ -35,38 +35,35 @@
 
 #define NOHELP_FILE SYSTEM_DIR "nohelp.txt"  /* For tracking missing help entries */
 
-extern char *const spell_saves[];
-extern char *const spell_save_effect[];
+bool get_skill_help( char_data *, const string & );
+int skill_number( const string & );
 
-list<help_data*> helplist;
+list < help_data * >helplist;
 
 int top_help;
 
-help_data::help_data()
+help_data::help_data(  )
 {
-   init_memory( &keyword, &level, sizeof( level ) );
+   level = 0;
 }
 
-help_data::~help_data()
+help_data::~help_data(  )
 {
-   DISPOSE( text );
-   DISPOSE( keyword );
    if( !fBootDb )
       helplist.remove( this );
 }
 
 void free_helps( void )
 {
-   list<help_data*>::iterator pHelp;
+   list < help_data * >::iterator pHelp;
 
-   for( pHelp = helplist.begin(); pHelp != helplist.end(); )
+   for( pHelp = helplist.begin(  ); pHelp != helplist.end(  ); )
    {
       help_data *help = *pHelp;
       ++pHelp;
 
       deleteptr( help );
    }
-   return;
 }
 
 /*
@@ -76,25 +73,32 @@ void free_helps( void )
  */
 void add_help( help_data * pHelp )
 {
-   list<help_data*>::iterator tHelp;
-   int match;
+   list < help_data * >::iterator tHelp;
    bool added = false;
 
-   for( tHelp = helplist.begin(); tHelp != helplist.end(); ++tHelp )
+   for( tHelp = helplist.begin(  ); tHelp != helplist.end(  ); ++tHelp )
    {
-      if( pHelp->level == (*tHelp)->level && !str_cmp( pHelp->keyword, (*tHelp)->keyword ) )
+      help_data *help = *tHelp;
+
+      if( pHelp->level == help->level && !str_cmp( pHelp->keyword, help->keyword ) )
       {
-         bug( "%s: duplicate: %s. Deleting.", __FUNCTION__, pHelp->keyword );
+         bug( "%s: duplicate: %s. Deleting.", __FUNCTION__, pHelp->keyword.c_str(  ) );
          deleteptr( pHelp );
          return;
       }
-      else if( ( match = strcmp( pHelp->keyword[0] == '\'' ? pHelp->keyword + 1 : pHelp->keyword,
-                                 (*tHelp)->keyword[0] == '\'' ? (*tHelp)->keyword + 1 : (*tHelp)->keyword ) ) < 0
-               || ( match == 0 && pHelp->level > (*tHelp)->level ) )
+      else  // Yipee! Another crappy ass hack to get past the compiler with!
       {
-         helplist.push_back( pHelp );
-         added = true;
-         break;
+         string pH, H;
+
+         one_argument( pHelp->keyword, pH );
+         one_argument( help->keyword, H );
+
+         if( pH.compare( H ) >= 0 )
+         {
+            helplist.insert( tHelp, pHelp );
+            added = true;
+            break;
+         }
       }
    }
 
@@ -116,7 +120,7 @@ void save_helps( void )
       return;
    }
 
-   list<help_data*>::iterator ihlp;
+   list < help_data * >::iterator ihlp;
    for( ihlp = helplist.begin(  ); ihlp != helplist.end(  ); ++ihlp )
    {
       help_data *hlp = *ihlp;
@@ -128,7 +132,6 @@ void save_helps( void )
       stream << "End" << endl << endl;
    }
    stream.close(  );
-   return;
 }
 
 void load_helps( void )
@@ -161,7 +164,7 @@ void load_helps( void )
          stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
-         help->keyword = str_dup( value.c_str() );
+         help->keyword = str_dup( value.c_str(  ) );
       }
 
       else if( key == "Level" )
@@ -170,7 +173,7 @@ void load_helps( void )
          value = buf;
          strip_lspace( value );
 
-         help->level = atoi( value.c_str() );
+         help->level = atoi( value.c_str(  ) );
       }
 
       else if( key == "Text" )
@@ -178,7 +181,7 @@ void load_helps( void )
          stream.getline( buf, MSL, '¢' );
          value = buf;
          strip_lspace( value );
-         help->text = str_dup( value.c_str() );
+         help->text = str_dup( value.c_str(  ) );
       }
 
       else if( key == "End" )
@@ -189,153 +192,25 @@ void load_helps( void )
          stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
-         log_printf( "Bad line in help file: %s %s", key.c_str(), value.c_str() );
+         log_printf( "Bad line in help file: %s %s", key.c_str(  ), value.c_str(  ) );
       }
    }
    while( !stream.eof(  ) );
    stream.close(  );
-   return;
-}
-
-int skill_number( char *argument )
-{
-   int sn;
-
-   if( ( sn = skill_lookup( argument ) ) >= 0 )
-      return sn;
-   return -1;
-}
-
-bool get_skill_help( char_data *ch, char *argument )
-{
-   skill_type *skill = NULL;
-   char buf[MSL], target[MSL];
-   int sn;
-
-   if( ( sn = skill_number( argument ) ) >= 0 )
-      skill = skill_table[sn];
-
-   // Not a skill/spell, drop back to regular help
-   if( sn < 0 || !skill || skill->type == SKILL_HERB )
-      return false;
-
-   target[0] = '\0';
-   switch( skill->target )
-   {
-      default:
-         break;
-
-      case TAR_CHAR_OFFENSIVE:
-         mudstrlcpy( target, "<victim>", MSL );
-         break;
-
-      case TAR_CHAR_SELF:
-         mudstrlcpy( target, "<self>", MSL );
-         break;
-
-      case TAR_OBJ_INV:
-         mudstrlcpy( target, "<object>", MSL );
-         break;
-   }
-
-   snprintf( buf, MSL, "cast '%s'", skill->name );
-   ch->printf( "Usage        : %s %s\r\n", skill->type == SKILL_SPELL ? buf : skill->name, target );
-
-   if( skill->affects.empty() )
-      ch->print( "Duration     : Instant\r\n" );
-   else
-   {
-      list<smaug_affect*>::iterator paf;
-      bool found = false;
-
-      for( paf = skill->affects.begin(); paf != skill->affects.end(); ++paf )
-      {
-         smaug_affect *af = *paf;
-
-         // Make sure duration isn't null, and is not 0
-         if( af->duration && af->duration[0] != '\0' && af->duration[0] != '0' )
-         {
-            if( !found )
-            {
-               ch->print( "Duration     :\r\n" );
-               found = true;
-            }
-            ch->printf( "   Affect    : '%s' for '%s' rounds.\r\n", aff_flags[af->bit], af->duration );
-         }
-      }
-   }
-
-   ch->printf( "%-5s Level  : ", skill->type == SKILL_RACIAL ? "Race" : "Class" );
-
-   bool firstpass = true;
-   if( skill->type != SKILL_RACIAL )
-   {
-      for( int iClass = 0; iClass < MAX_PC_CLASS; ++iClass )
-      {
-         if( skill->skill_level[iClass] > LEVEL_AVATAR )
-            continue;
-
-         if( firstpass )
-         {
-            snprintf( buf, MSL, "%s ", class_table[iClass]->who_name );
-            firstpass = false;
-         }
-         else
-            snprintf( buf, MSL, ", %s ", class_table[iClass]->who_name );
-
-         snprintf( buf + strlen(buf), MSL - strlen(buf), "%d", skill->skill_level[iClass] );
-         ch->print( buf );
-      }
-   }
-   else
-   {
-      for( int iRace = 0; iRace < MAX_PC_RACE; ++iRace )
-      {
-         if( skill->race_level[iRace] > LEVEL_AVATAR )
-            continue;
-
-         if( firstpass )
-         {
-            snprintf( buf, MSL, "%s ", race_table[iRace]->race_name );
-            firstpass = false;
-         }
-         else
-            snprintf( buf, MSL, ", %s ", race_table[iRace]->race_name );
-
-         snprintf( buf + strlen(buf), MSL - strlen(buf), "%d", skill->race_level[iRace] );
-         ch->print( buf );
-      }
-   }
-   ch->print( "\r\n" );
-
-   if( skill->dice )
-      ch->printf( "Damage       : %s\r\n", skill->dice );
-
-   if( skill->type == SKILL_SPELL )
-   {
-      if( skill->saves > 0 )
-         ch->printf( "Save         : vs %s for %s\r\n",
-            spell_saves[( int )skill->saves], spell_save_effect[SPELL_SAVE( skill )] );
-      ch->printf( "Minimum cost : %d mana\r\n", skill->min_mana );
-   }
-
-   if( skill->helptext )
-      ch->printf( "\r\n%s\r\n", skill->helptext );
-   return true;
 }
 
 /*
  * Moved into a separate function so it can be used for other things
  * ie: online help editing - Thoric
  */
-help_data *get_help( char_data * ch, char *argument )
+help_data *get_help( char_data * ch, string argument )
 {
-   char argall[MIL], argone[MIL], argnew[MIL];
-   list<help_data*>::iterator hlp;
+   string argall, argone, argnew;
+   list < help_data * >::iterator hlp;
    help_data *pHelp;
    int lev;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       argument = "summary";
 
    if( isdigit( argument[0] ) )
@@ -345,28 +220,29 @@ help_data *get_help( char_data * ch, char *argument )
    }
    else
       lev = -2;
+
    /*
     * Tricky argument handling so 'help a b' doesn't match a.
     */
-   argall[0] = '\0';
-   while( argument[0] != '\0' )
+   argall = "";
+   while( !argument.empty(  ) )
    {
       argument = one_argument( argument, argone );
-      if( argall[0] != '\0' )
-         mudstrlcat( argall, " ", MIL );
-      mudstrlcat( argall, argone, MIL );
+      if( !argall.empty(  ) )
+         argall.append( 1, ' ' );
+      argall.append( argone );
    }
 
-   for( hlp = helplist.begin(); hlp != helplist.end(); ++hlp )
+   for( hlp = helplist.begin(  ); hlp != helplist.end(  ); ++hlp )
    {
-      pHelp = (*hlp);
+      pHelp = *hlp;
 
       if( pHelp->level > ch->get_trust(  ) )
          continue;
       if( lev != -2 && pHelp->level != lev )
          continue;
 
-      if( is_name( argall, pHelp->keyword ) )
+      if( hasname( pHelp->keyword, argall ) )
          return pHelp;
    }
    return NULL;
@@ -379,14 +255,13 @@ help_data *get_help( char_data * ch, char *argument )
 CMDF( do_help )
 {
    help_data *pHelp;
-   list<help_data*>::iterator tHelp;
-   char *keyword;
-   char oneword[MSL], lastmatch[MSL];
+   list < help_data * >::iterator tHelp;
+   string keyword, oneword, lastmatch;
    short matched = 0, checked = 0, totalmatched = 0, found = 0;
 
    ch->set_pager_color( AT_HELP );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       argument = "summary";
 
    if( !( pHelp = get_help( ch, argument ) ) )
@@ -395,16 +270,20 @@ CMDF( do_help )
       if( get_skill_help( ch, argument ) )
          return;
 
-      ch->pagerf( "&wNo help on '%s' found.&D\r\n", argument );
+      ch->pagerf( "&wNo help on '%s' found.&D\r\n", argument.c_str(  ) );
       ch->pager( "&BSuggested Help Files:&D\r\n" );
-      mudstrlcpy( lastmatch, " ", MSL );
-      for( tHelp = helplist.begin(); tHelp != helplist.end(); ++tHelp )
+      lastmatch = " ";
+
+      for( tHelp = helplist.begin(  ); tHelp != helplist.end(  ); ++tHelp )
       {
+         help_data *help = *tHelp;
+
          matched = 0;
-         if( !(*tHelp)->keyword || (*tHelp)->keyword[0] == '\0' || (*tHelp)->level > ch->get_trust(  ) )
+         if( help->keyword.empty(  ) || help->level > ch->get_trust(  ) )
             continue;
-         keyword = (*tHelp)->keyword;
-         while( keyword && keyword[0] != '\0' )
+         keyword = help->keyword;
+
+         while( !keyword.empty(  ) )
          {
             matched = 0;   /* Set to 0 for each time we check lol */
             keyword = one_argument( keyword, oneword );
@@ -420,13 +299,13 @@ CMDF( do_help )
             }
             if( ( matched > 1 && matched > ( checked / 2 ) ) || ( matched > 0 && checked < 2 ) )
             {
-               ch->pagerf( "&G %-20s &D", oneword );
+               ch->pagerf( "&G %-20s &D", oneword.c_str(  ) );
                if( ++found % 4 == 0 )
                {
                   found = 0;
                   ch->pager( "\r\n" );
                }
-               mudstrlcpy( lastmatch, oneword, MSL );
+               lastmatch = oneword;
                ++totalmatched;
                break;
             }
@@ -437,7 +316,7 @@ CMDF( do_help )
          ch->pager( "&C&GNo suggested help files.\r\n" );
          return;
       }
-      if( totalmatched == 1 && lastmatch != NULL && lastmatch[0] != '\0' )
+      if( totalmatched == 1 && !lastmatch.empty(  ) )
       {
          ch->pager( "&COpening only suggested helpfile.&D\r\n" );
          do_help( ch, lastmatch );
@@ -463,10 +342,9 @@ CMDF( do_help )
     * Strip leading '.' to allow initial blanks.
     */
    if( pHelp->text[0] == '.' )
-      ch->pager( pHelp->text + 1 );
+      ch->pager( pHelp->text.substr( 1, pHelp->text.length(  ) ) );
    else
       ch->pager( pHelp->text );
-   return;
 }
 
 /*
@@ -494,8 +372,7 @@ CMDF( do_hedit )
             ch->stop_editing(  );
             return;
          }
-         DISPOSE( pHelp->text );
-         pHelp->text = ch->copy_buffer( false );
+         pHelp->text = ch->copy_buffer(  );
          ch->stop_editing(  );
          return;
 
@@ -507,12 +384,12 @@ CMDF( do_hedit )
 
    if( !( pHelp = get_help( ch, argument ) ) )  /* new help */
    {
-      list<help_data*>::iterator iHelp;
+      list < help_data * >::iterator iHelp;
       string argnew, narg = argument;
       int lev;
       bool new_help = true;
 
-      for( iHelp = helplist.begin(); iHelp != helplist.end(); ++iHelp )
+      for( iHelp = helplist.begin(  ); iHelp != helplist.end(  ); ++iHelp )
       {
          help_data *help = *iHelp;
 
@@ -534,42 +411,43 @@ CMDF( do_hedit )
          else
             lev = 0;
          pHelp = new help_data;
-         pHelp->keyword = str_dup( strupper( narg.c_str() ) );
+         pHelp->keyword = narg;
+         strupper( pHelp->keyword );
          pHelp->level = lev;
          add_help( pHelp );
       }
    }
    ch->substate = SUB_HELP_EDIT;
    ch->pcdata->dest_buf = pHelp;
-   if( !pHelp->text || pHelp->text[0] == '\0' )
-      pHelp->text = str_dup( "" );
-   ch->editor_desc_printf( "Help topic, keyword '%s', level %d.", pHelp->keyword, pHelp->level );
+   if( pHelp->text.empty(  ) )
+      pHelp->text = "";
+   ch->editor_desc_printf( "Help topic, keyword '%s', level %d.", pHelp->keyword.c_str(  ), pHelp->level );
    ch->start_editing( pHelp->text );
 }
 
 /*
  * Stupid leading space muncher fix - Thoric
  */
-char *help_fix( char *text )
+const char *help_fix( char *text )
 {
-   char *fixed;
+   string fixed;
 
    if( !text )
       return "";
    fixed = strip_cr( text );
    if( fixed[0] == ' ' )
       fixed[0] = '.';
-   return fixed;
+   return fixed.c_str(  );
 }
 
 CMDF( do_hset )
 {
    help_data *pHelp;
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
 
    smash_tilde( argument );
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Syntax: hset <field> [value] [help page]\r\r\n\n" );
       ch->print( "Field being one of:\r\n" );
@@ -582,14 +460,14 @@ CMDF( do_hset )
       log_string( "Unloading existing help files." );
       free_helps(  );
       log_string( "Reloading help files." );
-      load_helps();
+      load_helps(  );
       ch->print( "Help files reloaded.\r\n" );
       return;
    }
 
    if( !str_cmp( arg1, "save" ) )
    {
-      save_helps();
+      save_helps(  );
       ch->print( "Saved.\r\n" );
       return;
    }
@@ -612,15 +490,15 @@ CMDF( do_hset )
 
    if( !str_cmp( arg1, "level" ) )
    {
-      pHelp->level = atoi( arg2 );
+      pHelp->level = atoi( arg2.c_str(  ) );
       ch->print( "Done.\r\n" );
       return;
    }
 
    if( !str_cmp( arg1, "keyword" ) )
    {
-      DISPOSE( pHelp->keyword );
-      pHelp->keyword = str_dup( strupper( arg2 ) );
+      pHelp->keyword = arg2;
+      strupper( pHelp->keyword );
       ch->print( "Done.\r\n" );
       return;
    }
@@ -635,10 +513,10 @@ CMDF( do_hset )
 CMDF( do_hlist )
 {
    int min, max, minlimit, maxlimit, cnt;
-   char arg[MIL];
-   list<help_data*>::iterator ihelp;
+   string arg;
+   list < help_data * >::iterator ihelp;
    bool minfound, maxfound;
-   char *idx;
+   char *idx = NULL;
 
    maxlimit = ch->get_trust(  );
    minlimit = maxlimit >= LEVEL_GREATER ? -1 : 0;
@@ -646,11 +524,10 @@ CMDF( do_hlist )
    min = minlimit;
    max = maxlimit;
 
-   idx = NULL;
    minfound = false;
    maxfound = false;
 
-   for( argument = one_argument( argument, arg ); arg[0] != '\0'; argument = one_argument( argument, arg ) )
+   for( argument = one_argument( argument, arg ); !arg.empty(  ); argument = one_argument( argument, arg ) )
    {
       if( !isdigit( arg[0] ) )
       {
@@ -659,18 +536,18 @@ CMDF( do_hlist )
             ch->print( "You may only use a single keyword to index the list.\r\n" );
             return;
          }
-         idx = STRALLOC( arg );
+         idx = STRALLOC( arg.c_str(  ) );
       }
       else
       {
          if( !minfound )
          {
-            min = URANGE( minlimit, atoi( arg ), maxlimit );
+            min = URANGE( minlimit, atoi( arg.c_str(  ) ), maxlimit );
             minfound = true;
          }
          else if( !maxfound )
          {
-            max = URANGE( minlimit, atoi( arg ), maxlimit );
+            max = URANGE( minlimit, atoi( arg.c_str(  ) ), maxlimit );
             maxfound = true;
          }
          else
@@ -691,13 +568,13 @@ CMDF( do_hlist )
 
    ch->set_pager_color( AT_HELP );
    ch->pagerf( "Help Topics in level range %d to %d:\r\r\n\n", min, max );
-   for( cnt = 0, ihelp = helplist.begin(); ihelp != helplist.end(); ++ihelp )
+   for( cnt = 0, ihelp = helplist.begin(  ); ihelp != helplist.end(  ); ++ihelp )
    {
       help_data *help = *ihelp;
 
-      if( help->level >= min && help->level <= max && ( !idx || nifty_is_name_prefix( idx, help->keyword ) ) )
+      if( help->level >= min && help->level <= max && ( !idx || hasname( help->keyword, idx ) ) )
       {
-         ch->pagerf( "  %3d %s\r\n", help->level, help->keyword );
+         ch->pagerf( "  %3d %s\r\n", help->level, help->keyword.c_str(  ) );
          ++cnt;
       }
    }
@@ -707,7 +584,6 @@ CMDF( do_hlist )
       ch->print( "None found.\r\n" );
 
    STRFREE( idx );
-   return;
 }
 
 /* 
@@ -721,12 +597,11 @@ CMDF( do_hlist )
 */
 CMDF( do_helpcheck )
 {
-   cmd_type *command;
    help_data *help;
-   int hash, sn, total = 0;
+   int sn, total = 0;
    bool fSkills = false, fCmds = false;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax: helpcheck [ skills | commands | all ]\r\n" );
       return;
@@ -748,26 +623,34 @@ CMDF( do_helpcheck )
    if( fCmds ) /* run through command table */
    {
       ch->pager( "&CMissing Commands Helps\r\n\r\n" );
-      for( hash = 0; hash < 126; ++hash )
-         for( command = command_hash[hash]; command; command = command->next )
+
+      for( char x = 0; x < 126; ++x )
+      {
+         const vector < cmd_type * >&cmd_list = command_table[x];
+         vector < cmd_type * >::const_iterator icmd;
+
+         for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
          {
+            cmd_type *command = *icmd;
+
             /*
              * No entry, or command is above person's level 
              */
             if( !( help = get_help( ch, command->name ) ) && command->level <= ch->level )
             {
-               ch->pagerf( "&cNot found: &C%s&w\r\n", command->name );
+               ch->pagerf( "&cNot found: &C%s&w\r\n", command->name.c_str(  ) );
                ++total;
             }
             else
                continue;
          }
+      }
    }
 
    if( fSkills )  /* run through skill table */
    {
       ch->pager( "\r\n&CMissing Skill/Spell Helps\r\n\r\n" );
-      for( sn = 0; sn < top_sn; ++sn )
+      for( sn = 0; sn < num_skills; ++sn )
       {
          if( !( help = get_help( ch, skill_table[sn]->name ) ) )  /* no help entry */
          {
@@ -782,5 +665,4 @@ CMDF( do_helpcheck )
     * tally up the total number of missing entries and finish up 
     */
    ch->pagerf( "\r\n&Y%d missing entries found.&w\r\n", total );
-   return;
 }

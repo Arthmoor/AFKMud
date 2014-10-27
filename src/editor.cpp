@@ -30,30 +30,6 @@
 #include "mud.h"
 #include "descriptor.h"
 
-const int max_buf_lines = 60;
-
-struct editor_data
-{
-   editor_data();
-   ~editor_data();
-
-   char *desc;
-   char line[max_buf_lines][81];
-   short numlines;
-   short on_line;
-   short size;
-};
-
-editor_data::editor_data()
-{
-   init_memory( &desc, &size, sizeof( size ) );
-}
-
-editor_data::~editor_data()
-{
-   STRFREE( desc );
-}
-
 /*
  * Copy src to string dst of size siz.  At most siz-1 characters
  * will be copied.  Always NUL terminates (unless siz == 0).
@@ -134,7 +110,7 @@ size_t mudstrlcat( char *dst, const char *src, size_t siz )
    return ( dlen + ( s - src ) );   /* count does not include NUL */
 }
 
-void stralloc_printf( char **pointer, char *fmt, ... )
+void stralloc_printf( char **pointer, const char *fmt, ... )
 {
    char buf[MSL * 4];
    va_list args;
@@ -145,10 +121,9 @@ void stralloc_printf( char **pointer, char *fmt, ... )
 
    STRFREE( *pointer );
    *pointer = STRALLOC( buf );
-   return;
 }
 
-void strdup_printf( char **pointer, char *fmt, ... )
+void strdup_printf( char **pointer, const char *fmt, ... )
 {
    char buf[MSL * 4];
    va_list args;
@@ -159,7 +134,6 @@ void strdup_printf( char **pointer, char *fmt, ... )
 
    DISPOSE( *pointer );
    *pointer = str_dup( buf );
-   return;
 }
 
 #if defined(__FreeBSD__)
@@ -177,7 +151,7 @@ char *str_dup( const char *str )
    len = strlen( str ) + 1;
 
    /*
-    * Is this RIGHT?!? Or am I reading this WAY wrong? 
+    * Is this RIGHT?!? Or am I reading this WAY wrong?
     * ret = (char *)calloc( len, sizeof(char) ); 
     */
    CREATE( ret, char, len );
@@ -186,69 +160,130 @@ char *str_dup( const char *str )
 }
 #else
 // A more streamlined C++ish approach to str_dup. FreeBSD doesn't like it's counterpart DISPOSE macro in mud.h though.
-char *str_dup( const char *str ) 
+char *str_dup( const char *str )
 {
    static char *ret;
 
    if( !str )
       return NULL;
 
-   ret = new char[strlen(str) +1];
-   mudstrlcpy( ret, str, strlen(str) + 1 );
+   ret = new char[strlen( str ) + 1];
+   mudstrlcpy( ret, str, strlen( str ) + 1 );
    return ret;
-}  
+}
 #endif
 
-vector < string > vector_argument( string arg, int chop )
+/* Does the list have the member in it? */
+bool hasname( const string & list, const string & member )
 {
-   vector < string > v;
-   char cEnd;
-   int passes = 0;
+   string::size_type x;
 
-   if( arg.find( '\'' ) < arg.find( '"' ) )
-      cEnd = '\'';
+   if( list.empty(  ) )
+      return false;
+
+   if( ( x = list.find( member ) ) != string::npos )
+      return true;
+
+   return false;
+}
+
+/* Add a new member to the list, provided it's not already there */
+void addname( string & list, const string & member )
+{
+   if( hasname( list, member ) )
+      return;
+
+   if( list.empty(  ) )
+      list = member;
    else
-      cEnd = '"';
+      list.append( " " + member );
+   strip_lspace( list );
+}
 
-   while( !arg.empty(  ) )
+/* Remove a member from a list, provided it's there. */
+void removename( string & list, const string & member )
+{
+   if( !hasname( list, member ) )
+      return;
+
+   // Implies the list has more than just this name.
+   if( list.length(  ) > member.length(  ) )
    {
-      string::size_type space = arg.find( ' ' );
+      string die = " " + member;
+      string::size_type pos = list.find( die );
 
-      if( space == string::npos )
-         space = arg.length(  );
-
-      string::size_type quote = arg.find( cEnd );
-
-      if( quote != string::npos && quote < space )
-      {
-         arg = arg.substr( quote + 1, arg.length(  ) );
-         if( ( quote = arg.find( cEnd ) ) != string::npos )
-            space = quote;
-         else
-            space = arg.length(  );
-      }
-
-      string piece = arg.substr( 0, space );
-      strip_lspace( piece );
-      if( !piece.empty(  ) )
-         v.push_back( piece );
-
-      if( space < arg.length(  ) - 1 )
-         arg = arg.substr( space + 1, arg.length(  ) );
-      else
-         break;
-
-      /*
-       * A -1 indicates you want to proceed until arg is exhausted
-       */
-      if( ++passes == chop && chop != -1 )
-      {
-         strip_lspace( piece );
-         v.push_back( arg );
-         break;
-      }
+      list.erase( pos, die.length(  ) );
    }
-   return v;
+   else
+      list.clear(  );
+   strip_lspace( list );
+}
+
+// Pick off one argument from a string and return the rest.
+string one_argument( const string & argument, string & first )
+{
+   string::size_type start, stop, stop2;
+   char find;
+
+   // Init
+   start = 0;
+
+   // Make sure first is clean
+   first.clear(  );
+
+   // Empty?
+   if( argument.empty(  ) )
+      return "";
+
+   // Strip leading spaces
+   if( argument[0] == ' ' )
+   {
+      start = argument.find_first_not_of( ' ' );
+
+      // Empty?
+      if( start == argument.npos )
+         return "";
+   }
+
+   // Quotes or space?
+   switch ( argument[start] )
+   {
+      case '\'':
+         find = '\'';
+         ++start;
+         break;
+
+      case '\"':
+         find = '\"';
+         ++start;
+         break;
+
+      default:
+         find = ' ';
+   }
+
+   // Find end of argument.
+   stop = argument.find_first_of( find, start );
+
+   // Empty leftovers?
+   if( stop == argument.npos )
+   {
+      first = argument.substr( start );
+      return "";
+   }
+
+   // Update first
+   first = argument.substr( start, ( stop - start ) );
+
+   // Strip leading spaces from leftovers
+   stop2 = argument.find_first_not_of( ' ', stop + 1 );
+
+   // Empty leftovers?
+   if( stop2 == argument.npos )
+      return "";
+
+   // Return leftovers.
+   return argument.substr( stop2 );
 }
 
 /*
@@ -291,7 +326,7 @@ char *one_argument( char *argument, char *arg_first )
 /*
  * Given a string like 14.foo, return 14 and 'foo'
  */
-int number_argument( string argument, string &arg )
+int number_argument( const string & argument, string & arg )
 {
    int number;
    string pdot;
@@ -304,8 +339,8 @@ int number_argument( string argument, string &arg )
    }
 
    pdot = argument.substr( 0, x );
-   number = atoi( pdot.c_str() );
-   arg = argument.substr( x+1, argument.length() );
+   number = atoi( pdot.c_str(  ) );
+   arg = argument.substr( x + 1, argument.length(  ) );
    return number;
 }
 
@@ -332,37 +367,30 @@ int number_argument( char *argument, char *arg )
    return 1;
 }
 
-/* Bruce Eckel's Thinking in C++, 2nd Ed
- * Case insensitive compare function:
- *
- * Modifed a bit by Samson cause all I want to know is if it's the same string or not.
- * Returns true if it's the same, false if it's not.
- */
-bool scomp( const string & s1, const string & s2 )
+// Compare: astr ><= bstr.
+// <0 = astr < bstr
+//  0 = astr == bstr
+// >0 = astr > bstr
+// Case insensitive.
+// -- Justice
+int str_cmp( const string & astr, const string & bstr )
 {
-   // Select the first element of each string:
-   string::const_iterator p1 = s1.begin(  ), p2 = s2.begin(  );
+   string::const_iterator a1, a2, b1, b2;
 
-   // First check - are they even the same length? No? Then get out. Samson 10-24-04
-   if( s1.size(  ) != s2.size(  ) )
-      return false;
+   a1 = astr.begin(  );
+   a2 = astr.end(  );
 
-   // Don't run past the end:
-   while( p1 != s1.end(  ) && p2 != s2.end(  ) )
+   b1 = bstr.begin(  );
+   b2 = bstr.end(  );
+
+   while( a1 != a2 && b1 != b2 )
    {
-      // Compare upper-cased chars:
-      if( toupper( *p1 ) != toupper( *p2 ) )
-         // Report which was lexically  greater:
-         // Modified here to return false - they don't match now. Samson 10-24-04
-         return false;
-      ++p1;
-      ++p2;
+      if( std::toupper( *a1 ) != std::toupper( *b1 ) )
+         return ( std::toupper( *a1 ) < std::toupper( *b1 ) ? -1 : 1 );
+      ++a1;
+      ++b1;
    }
-
-   // If they match up to the detected eos, say 
-   // which was longer. Return 0 if the same.
-   // Modified here to return true - they match at this stage. Samson 10-24-04
-   return true;
+   return ( bstr.size(  ) == astr.size(  )? 0 : ( astr.size(  ) < bstr.size(  )? -1 : 1 ) );
 }
 
 /*
@@ -380,7 +408,7 @@ bool str_cmp( const char *astr, const char *bstr )
    {
       bug( "%s: null astr.", __FUNCTION__ );
       if( bstr )
-         log_printf_plus( LOG_DEBUG, LEVEL_ADMIN, "astr: (null)  bstr: %s\n", bstr );
+         log_printf_plus( LOG_DEBUG, LEVEL_ADMIN, "astr: (null)  bstr: %s", bstr );
       return true;
    }
 
@@ -388,7 +416,7 @@ bool str_cmp( const char *astr, const char *bstr )
    {
       bug( "%s: null bstr.", __FUNCTION__ );
       if( astr )
-         log_printf_plus( LOG_DEBUG, LEVEL_ADMIN, "astr: %s  bstr: (null)\n", astr );
+         log_printf_plus( LOG_DEBUG, LEVEL_ADMIN, "astr: %s  bstr: (null)", astr );
       return true;
    }
 
@@ -400,31 +428,31 @@ bool str_cmp( const char *astr, const char *bstr )
    return false;
 }
 
-/*
- * Compare strings, case insensitive, for prefix matching.
- * Return true if needle not a prefix of haystack
- *   (compatibility with historical functions).
- */
-bool str_prefix( const string needle, const string haystack )
+// Checks to see if astr is a prefix ( beginning part of ) bstr.
+// If astr is larger, obviously not. Same if bstr is empty.
+// Returns true if astr isn't a prefix of bstr.
+// Returns false if it is.
+// If that's confusing, that's how this function's traditional usage has always been.
+// Thanks to Justice for providing this. http://www.mudbytes.net/index.php?a=topic&t=480&p=5314#p5314
+bool str_prefix( const string & astr, const string & bstr )
 {
-   unsigned int x;
+   string::const_iterator a1, a2, b1, b2;
 
-   if( needle.empty() )
-   {
-      bug( "%s: null needle.", __FUNCTION__ );
+   if( astr.size(  ) > bstr.size(  ) || bstr.empty(  ) )
       return true;
-   }
 
-   if( haystack.empty() )
-   {
-      bug( "%s: null haystack.", __FUNCTION__ );
-      return true;
-   }
+   a1 = astr.begin(  );
+   a2 = astr.end(  );
 
-   for( x = 0; x < needle.length(); ++x )
+   b1 = bstr.begin(  );
+   b2 = bstr.end(  );
+
+   while( a1 != a2 && b1 != b2 )
    {
-      if( LOWER( needle[x] ) != LOWER( haystack[x] ) )
+      if( std::toupper( *a1 ) != std::toupper( *b1 ) )
          return true;
+      ++a1;
+      ++b1;
    }
    return false;
 }
@@ -433,22 +461,31 @@ bool str_prefix( const char *needle, const char *haystack )
 {
    if( !needle )
    {
-	bug( "%s: null needle.", __FUNCTION__ );
-	return true;
+      bug( "%s: null needle.", __FUNCTION__ );
+      return true;
    }
 
    if( !haystack )
    {
-	bug( "%s: null haystack.", __FUNCTION__ );
-	return true;
+      bug( "%s: null haystack.", __FUNCTION__ );
+      return true;
    }
 
    for( ; *needle; ++needle, ++haystack )
    {
-	if( LOWER(*needle) != LOWER(*haystack) )
-	   return true;
+      if( LOWER( *needle ) != LOWER( *haystack ) )
+         return true;
    }
    return false;
+}
+
+// Is astr a part of any portion of bstr?
+// Return value compatible with historical functions.
+bool str_infix( const string & astr, const string & bstr )
+{
+   if( bstr.find( astr ) != string::npos )
+      return false;
+   return true;
 }
 
 /*
@@ -474,7 +511,7 @@ bool str_infix( const char *astr, const char *bstr )
    return true;
 }
 
-/*
+/* FIXME: This sucks. Mind drawing a blank on how to make a std::string version.
  * Compare strings, case insensitive, for suffix matching.
  * Return true if astr not a suffix of bstr
  *   (compatibility with historical functions).
@@ -491,34 +528,10 @@ bool str_suffix( const char *astr, const char *bstr )
       return true;
 }
 
-/* Scan a whole argument for a single word - return true if found - Samson 7-24-00 */
-/* Code by Orion Elder */
-bool arg_cmp( char *haystack, char *needle )
-{
-   char argument[MSL];
-
-   for( ;; )
-   {
-      haystack = one_argument( haystack, argument );
-
-      if( !argument || argument[0] == '\0' )
-         return false;
-      else if( !str_cmp( argument, needle ) )
-         return true;
-      else
-         continue;
-   }
-   return false;
-}
-
 // Strips off trailing tildes on lines from files which will no longer need them - Samson 3-1-05
 void strip_tilde( string & line )
 {
-   string::size_type tilde;
-
-   tilde = line.find_last_not_of( '~' );
-   if( tilde != string::npos )
-      line = line.substr( 0, tilde + 1 );
+   string_erase( line, '~' );
 }
 
 /* Strips off leading spaces and tabs in strings.
@@ -541,7 +554,7 @@ void strip_lspace( string & line )
 }
 
 /* Strips off trailing spaces in strings. */
-void strip_tspace( string &line )
+void strip_tspace( string & line )
 {
    string::size_type space;
 
@@ -557,7 +570,7 @@ void strip_spaces( string & line )
    strip_tspace( line );
 }
 
-string strip_cr( string str )
+string strip_cr( const string & str )
 {
    string newstr = str;
    string::size_type x;
@@ -570,7 +583,7 @@ string strip_cr( string str )
 /*
  * Remove carriage returns from a line
  */
-char *strip_cr( char *str )
+const char *strip_cr( const char *str )
 {
    static char newstr[MSL];
    int i, j = 0;
@@ -599,7 +612,7 @@ string strip_crlf( string str )
    return newstr;
 }
 
-char *strip_crlf( char *str )
+const char *strip_crlf( const char *str )
 {
    static char newstr[MSL];
    int i, j = 0;
@@ -618,36 +631,30 @@ char *strip_crlf( char *str )
  * Author: Xorith
  * Date: 6-18-05
  */
-void invert_string( const char *orig, char *inv )
+string invert_string( const string & orig )
 {
-   const char *o_ptr = orig;
-   char *i_ptr = inv;
+   string result = "";
+   size_t j = 0;
 
-   if( orig == inv || orig == NULL || inv == NULL )
-      return;
+   if( orig.empty(  ) )
+      return orig;
 
-   for( o_ptr += strlen( orig ) - 1; o_ptr != orig - 1; --o_ptr, ++i_ptr )
-      (*i_ptr) = (*o_ptr);
-   (*i_ptr) = '\0';
-   return;
+   for( size_t i = orig.length(  ) - 1; j < orig.length(  ); --i, ++j )
+      result += orig[i];
+
+   return result;
 }
 
 /* Provided by Remcon to stop crashes with channel history */
-char *add_percent( char *str )
+const string add_percent( const string & str )
 {
-   static char newstr[MSL];
-   int i, j;
+   string newstr = str;
 
-   if( !str || str[0] == '\0' )
+   if( newstr.empty(  ) )
       return "";
 
-   for( i = j = 0; str[i] != '\0'; ++i )
-   {
-      if( str[i] == '%' )
-         newstr[j++] = '%';
-      newstr[j++] = str[i];
-   }
-   newstr[j] = '\0';
+   string_replace( newstr, "%", "%%" );
+
    return newstr;
 }
 
@@ -659,11 +666,12 @@ char *capitalize( const char *str )
 {
    static char buf[MSL];
    char *dest = buf;
-   enum { Normal, Color } state = Normal;
+   enum
+   { Normal, Color } state = Normal;
    bool bFirst = true;
    char c;
 
-   while( (c = *str++) )
+   while( ( c = *str++ ) )
    {
       if( state == Normal )
       {
@@ -671,9 +679,9 @@ char *capitalize( const char *str )
          {
             state = Color;
          }
-         else if( isalpha(c) )
+         else if( isalpha( c ) )
          {
-            c = bFirst ? toupper(c) : tolower(c);
+            c = bFirst ? toupper( c ) : tolower( c );
             bFirst = false;
          }
       }
@@ -692,17 +700,18 @@ char *capitalize( const char *str )
  * Returns an initial-capped string.
  * Rewritten by FearItself@AvP
  */
-string capitalize( const string str )
+string capitalize( const string & str )
 {
    string strcap;
-   const char *src = str.c_str();
+   const char *src = str.c_str(  );
    char buf[MSL];
    char *dest = buf;
-   enum { Normal, Color } state = Normal;
+   enum
+   { Normal, Color } state = Normal;
    bool bFirst = true;
    char c;
 
-   while( (c = *src++) )
+   while( ( c = *src++ ) )
    {
       if( state == Normal )
       {
@@ -710,9 +719,9 @@ string capitalize( const string str )
          {
             state = Color;
          }
-         else if( isalpha(c) )
+         else if( isalpha( c ) )
          {
-            c = bFirst ? toupper(c) : tolower(c);
+            c = bFirst ? toupper( c ) : tolower( c );
             bFirst = false;
          }
       }
@@ -742,6 +751,11 @@ char *strlower( const char *str )
    return strlow;
 }
 
+void strlower( string & str )
+{
+   transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::tolower );
+}
+
 /*
  * Returns an uppercase string.
  */
@@ -754,6 +768,11 @@ char *strupper( const char *str )
       strup[i] = UPPER( str[i] );
    strup[i] = '\0';
    return strup;
+}
+
+void strupper( string & str )
+{
+   transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::toupper );
 }
 
 /*
@@ -773,21 +792,21 @@ bool isavowel( char letter )
 /*
  * Shove either "a " or "an " onto the beginning of a string - Thoric
  */
-char *aoran( const char *str )
+const char *aoran( const string & str )
 {
    static char temp[MSL];
 
-   if( !str )
+   if( str.empty(  ) )
    {
       bug( "%s: NULL str", __FUNCTION__ );
       return "";
    }
 
-   if( isavowel( str[0] ) || ( strlen( str ) > 1 && LOWER( str[0] ) == 'y' && !isavowel( str[1] ) ) )
+   if( isavowel( str[0] ) || ( str.length(  ) > 1 && LOWER( str[0] ) == 'y' && !isavowel( str[1] ) ) )
       mudstrlcpy( temp, "an ", MSL );
    else
       mudstrlcpy( temp, "a ", MSL );
-   mudstrlcat( temp, str, MSL );
+   mudstrlcat( temp, str.c_str(  ), MSL );
    return temp;
 }
 
@@ -800,123 +819,142 @@ void smash_tilde( char *str )
    for( ; *str != '\0'; ++str )
       if( *str == '~' )
          *str = '-';
-
-   return;
 }
 
-void smash_tilde( string& str )
+void smash_tilde( string & str )
 {
-   string::size_type x;
-
-   while( ( x = str.find( '~' ) ) != string::npos )
-      str = str.erase( x, 1 );
+   string_replace( str, "~", "-" );
 }
 
 /*
  * Encodes the tildes in a string. - Thoric
  * Used for player-entered strings that go into disk files.
  */
-void hide_tilde( char *str )
+void hide_tilde( string & str )
 {
-   for( ; *str != '\0'; ++str )
-      if( *str == '~' )
-         *str = HIDDEN_TILDE;
+   if( str.find( '~' ) == string::npos )
+      return;
 
-   return;
+   string_replace( str, "~", ( char * )HIDDEN_TILDE );
 }
 
-char *show_tilde( const char *str )
+const string show_tilde( const string & str )
+{
+   string newstr = str;
+
+   if( str.find( HIDDEN_TILDE ) == string::npos )
+      return newstr;
+
+   string_replace( newstr, ( char * )HIDDEN_TILDE, "~" );   // <-- Stupid C++ making me use ugly casting.
+   return newstr;
+}
+
+const char *show_tilde( const char *str )
 {
    static char buf[MSL];
-   char *bufptr;
+   string src = str, newstr;
 
-   bufptr = buf;
-   for( ; *str != '\0'; ++str, ++bufptr )
-   {
-      if( *str == HIDDEN_TILDE )
-         *bufptr = '~';
-      else
-         *bufptr = *str;
-   }
-   *bufptr = '\0';
+   newstr = show_tilde( src );
+   mudstrlcpy( buf, newstr.c_str(  ), MSL );
+
    return buf;
 }
 
-/*
-   Original Code from SW:FotE 1.1
-   Reworked strrep function. 
-   Fixed a few glaring errors. It also will not overrun the bounds of a string.
-   -- Xorith
-*/
-char *strrep( const char *src, const char *sch, const char *rep )
+// The purpose of this is to emulate PHP's explode() function. Take a string, and split it up into a vector using the delimiter value as a marker.
+// Thanks to David Haley and Davion@MudBytes for assisting in getting this working.
+vector < string > string_explode( const string & src, char delimiter )
 {
-   int lensrc = strlen( src ), lensch = strlen( sch ), lenrep = strlen( rep ), x, y, in_p;
-   static char newsrc[MSL];
-   bool searching = false;
+   vector < string > exploded;
 
-   newsrc[0] = '\0';
-   for( x = 0, in_p = 0; x < lensrc; ++x, ++in_p )
+   string::size_type curPos = 0;
+   string::size_type delimPos;
+
+   while( ( delimPos = src.find( delimiter, curPos ) ) != string::npos )
    {
-      if( src[x] == sch[0] )
-      {
-         searching = true;
-         for( y = 0; y < lensch; ++y )
-            if( src[x + y] != sch[y] )
-               searching = false;
+      string substr = src.substr( curPos, ( delimPos - curPos ) + 1 );
 
-         if( searching )
-         {
-            for( y = 0; y < lenrep; ++y, ++in_p )
-            {
-               if( in_p == ( MSL - 1 ) )
-               {
-                  newsrc[in_p] = '\0';
-                  return newsrc;
-               }
-               newsrc[in_p] = rep[y];
-            }
-            x += lensch - 1;
-            --in_p;
-            searching = false;
-            continue;
-         }
-      }
-      if( in_p == ( MSL - 1 ) )
-      {
-         newsrc[in_p] = '\0';
-         return newsrc;
-      }
-      newsrc[in_p] = src[x];
+      exploded.push_back( substr );
+      curPos = delimPos + 1;
    }
-   newsrc[in_p] = '\0';
-   return newsrc;
+
+   // Grab remainder
+   if( curPos < src.size(  ) )
+      exploded.push_back( src.substr( curPos, src.size(  ) - curPos ) );
+   return exploded;
 }
 
-/* A rather dangerous function if passed with funky data - so just don't, ok? - Samson */
-char *strrepa( const char *src, const char *sch[], const char *rep[] )
+// Since C++ wants to screw with me on this, I'll overload it instead. HA!
+void string_erase( string & src, char find )
 {
-   static char newsrc[MSL];
-   int x;
+   string::size_type pos = 0;
 
-   mudstrlcpy( newsrc, src, MSL );
-   for( x = 0; sch[x]; ++x )
-      mudstrlcpy( newsrc, strrep( newsrc, sch[x], rep[x] ), MSL );
+   if( !find )
+   {
+      bug( "%s: Cannot search for an empty character!", __FUNCTION__ );
+      return;
+   }
 
-   return newsrc;
+   // If it's not here, bail.
+   if( src.find( find ) == string::npos )
+      return;
+
+   while( ( pos = src.find( find, pos ) ) != string::npos )
+      src.erase( pos, 1 );
+}
+
+void string_erase( string & src, const string & find )
+{
+   string::size_type pos = 0;
+
+   if( find.empty(  ) )
+   {
+      bug( "%s: Cannot search for an empty string!", __FUNCTION__ );
+      return;
+   }
+
+   while( ( pos = src.find( find, pos ) ) != string::npos )
+      src.erase( pos, find.size(  ) );
+}
+
+void string_replace( string & src, const string & find, const string & replace )
+{
+   string::size_type pos = 0;
+
+   if( find.empty(  ) )
+   {
+      bug( "%s: Cannot search for an empty string!", __FUNCTION__ );
+      return;
+   }
+
+   // Bail out if the search string isn't present.
+   if( src.find( find ) == string::npos )
+      return;
+
+   // If the replacement string is emtpy, they really wanted an erase. Call string_erase.
+   if( replace.empty(  ) )
+      string_erase( src, find );
+   else
+   {
+      while( ( pos = src.find( find, pos ) ) != string::npos )
+      {
+         src.replace( pos, find.size(  ), replace );
+         pos += replace.size(  );
+      }
+   }
 }
 
 /*
  * Return true if an argument is completely numeric.
  */
-bool is_number( string arg )
+bool is_number( const string & arg )
 {
-   unsigned int x;
+   size_t x;
    bool first = true;
 
-   if( arg.empty() )
+   if( arg.empty(  ) )
       return false;
 
-   for( x = 0; x < arg.length(); ++x )
+   for( x = 0; x < arg.length(  ); ++x )
    {
       if( first && arg[x] == '-' )
       {
@@ -956,24 +994,45 @@ bool is_number( const char *arg )
    return true;
 }
 
-void editor_print_info( char_data * ch, editor_data * edd, short max_size, char *argument )
+const int max_buf_lines = 60;
+
+struct editor_data
+{
+   editor_data(  );
+   ~editor_data(  );
+
+   string desc;
+   char line[max_buf_lines][81];
+   short numlines;
+   short on_line;
+   short size;
+};
+
+editor_data::editor_data(  )
+{
+   init_memory( &line, &size, sizeof( size ) );
+}
+
+editor_data::~editor_data(  )
+{
+}
+
+void editor_print_info( char_data * ch, editor_data * edd, short max_size )
 {
    ch->printf( "Currently editing: %s\r\n"
                "Total lines: %4d   On line:  %4d\r\n"
-               "Buffer size: %4d   Max size: %4d\r\n",
-               edd->desc ? edd->desc : "(Null description)", edd->numlines, edd->on_line, edd->size, max_size );
+               "Buffer size: %4d   Max size: %4d\r\n", !edd->desc.empty(  )? edd->desc.c_str(  ) : "(Null description)", edd->numlines, edd->on_line, edd->size, max_size );
 }
 
-void char_data::set_editor_desc( char *new_desc )
+void char_data::set_editor_desc( const string & new_desc )
 {
    if( !pcdata->editor )
       return;
 
-   STRFREE( pcdata->editor->desc );
-   pcdata->editor->desc = STRALLOC( new_desc );
+   pcdata->editor->desc = new_desc;
 }
 
-void char_data::editor_desc_printf( char *desc_fmt, ... )
+void char_data::editor_desc_printf( const char *desc_fmt, ... )
 {
    char buf[MSL * 2];   /* umpf.. */
    va_list args;
@@ -991,6 +1050,7 @@ void char_data::stop_editing(  )
    pcdata->dest_buf = NULL;
    pcdata->spare_ptr = NULL;
    substate = SUB_NONE;
+
    if( !desc )
    {
       bug( "Fatal: %s: no desc", __FUNCTION__ );
@@ -1026,7 +1086,7 @@ void char_data::start_editing( string data )
    size = 0;
    lpos = 0;
    lines = 0;
-   if( !data.empty() )
+   if( !data.empty(  ) )
    {
       for( ;; )
       {
@@ -1135,7 +1195,7 @@ void char_data::start_editing( char *data )
    desc->connected = CON_EDITING;
 }
 
-string char_data::copy_buffer()
+string char_data::copy_buffer(  )
 {
    char buf[MSL], tmp[100];
    short i, len;
@@ -1199,11 +1259,12 @@ char *char_data::copy_buffer( bool hash )
 /*
  * Simple but nice and handy line editor. - Thoric
  */
-void char_data::edit_buffer( char *argument )
+void char_data::edit_buffer( string & argument )
 {
    descriptor_data *d;
    editor_data *edit;
-   char cmd[MIL], buf[MIL];
+   string cmd;
+   char buf[MIL];
    short x, line;
    bool esave = false;
 
@@ -1241,7 +1302,8 @@ void char_data::edit_buffer( char *argument )
    if( argument[0] == '/' || argument[0] == '\\' )
    {
       one_argument( argument, cmd );
-      if( !str_cmp( cmd + 1, "?" ) )
+      cmd = cmd.substr( 1, cmd.length(  ) );
+      if( !str_cmp( cmd, "?" ) )
       {
          print( "Editing commands\r\n---------------------------------\r\n" );
          print( "/l              list buffer\r\n" );
@@ -1259,7 +1321,7 @@ void char_data::edit_buffer( char *argument )
          print( "/s              save buffer\r\n\r\n> " );
          return;
       }
-      if( !str_cmp( cmd + 1, "c" ) )
+      if( !str_cmp( cmd, "c" ) )
       {
          memset( edit, '\0', sizeof( editor_data ) );
          edit->numlines = 0;
@@ -1267,44 +1329,42 @@ void char_data::edit_buffer( char *argument )
          print( "Buffer cleared.\r\n> " );
          return;
       }
-      if( !str_cmp( cmd + 1, "r" ) )
+      if( !str_cmp( cmd, "r" ) )
       {
-         char word1[MIL], word2[MIL];
-         char *sptr, *wptr, *lwptr;
-         int count, wordln, word2ln, lineln;
+         string word1, word2, sptr, lwptr;
+         int lineln;
 
          sptr = one_argument( argument, word1 );
          sptr = one_argument( sptr, word1 );
          sptr = one_argument( sptr, word2 );
-         if( word1[0] == '\0' || word2[0] == '\0' )
+         if( word1.empty(  ) || word2.empty(  ) )
          {
             print( "Need word to replace, and replacement.\r\n> " );
             return;
          }
-         /* Changed to a case-sensitive version of string compare --Cynshard */
-         if( !strcmp( word1, word2 ) )
+
+         /*
+          * Changed to a case-sensitive version of string compare --Cynshard 
+          */
+         if( !strcmp( word1.c_str(  ), word2.c_str(  ) ) )
          {
             print( "Done.\r\n> " );
             return;
          }
-         count = 0;
-         wordln = strlen( word1 );
-         word2ln = strlen( word2 );
-         printf( "Replacing all occurrences of %s with %s...\r\n", word1, word2 );
+
+         printf( "Replacing all occurrences of %s with %s...\r\n", word1.c_str(  ), word2.c_str(  ) );
          for( x = 0; x < edit->numlines; ++x )
          {
             lwptr = edit->line[x];
-            while( ( wptr = strstr( lwptr, word1 ) ) != NULL )
-            {
-               ++count;
-               lineln = snprintf( buf, MIL, "%s%s", word2, wptr + wordln );
-               if( lineln + wptr - edit->line[x] > 79 )
-                  buf[lineln] = '\0';
-               mudstrlcpy( wptr, buf, 81 - ( wptr - lwptr ) );
-               lwptr = wptr + word2ln;
-            }
+            string_replace( lwptr, word1, word2 );
+
+            lineln = mudstrlcpy( buf, lwptr.c_str(  ), MIL );
+            if( lineln > 79 )
+               buf[80] = '\0';
+
+            mudstrlcpy( edit->line[x], buf, 81 );
          }
-         printf( "Found and replaced %d occurrence(s).\r\n> ", count );
+         printf( "Found and replaced \"%s\" with \"%s\".\r\n> ", word1.c_str(  ), word2.c_str(  ) );
          return;
       }
 
@@ -1316,7 +1376,7 @@ void char_data::edit_buffer( char *argument )
        * start at beginning of buffer, not whatever line you happened
        * to be on, at the time.   
        */
-      if( !str_cmp( cmd + 1, "f" ) )
+      if( !str_cmp( cmd, "f" ) )
       {
          char temp_buf[MSL + max_buf_lines];
          int ep, old_p, end_mark, p = 0;
@@ -1367,20 +1427,20 @@ void char_data::edit_buffer( char *argument )
          return;
       }
 
-      if( !str_cmp( cmd + 1, "p" ) )
+      if( !str_cmp( cmd, "p" ) )
       {
-         editor_print_info( this, edit, max_buf_lines, argument );
+         editor_print_info( this, edit, max_buf_lines );
          return;
       }
 
-      if( !str_cmp( cmd + 1, "i" ) )
+      if( !str_cmp( cmd, "i" ) )
       {
          if( edit->numlines >= max_buf_lines )
             print( "Buffer is full.\r\n> " );
          else
          {
             if( argument[2] == ' ' )
-               line = atoi( argument + 2 ) - 1;
+               line = atoi( argument.c_str(  ) + 2 ) - 1;
             else
                line = edit->on_line;
             if( line < 0 )
@@ -1398,14 +1458,14 @@ void char_data::edit_buffer( char *argument )
          return;
       }
 
-      if( !str_cmp( cmd + 1, "d" ) )
+      if( !str_cmp( cmd, "d" ) )
       {
          if( edit->numlines == 0 )
             print( "Buffer is empty.\r\n> " );
          else
          {
             if( argument[2] == ' ' )
-               line = atoi( argument + 2 ) - 1;
+               line = atoi( argument.c_str(  ) + 2 ) - 1;
             else
                line = edit->on_line;
             if( line < 0 )
@@ -1433,14 +1493,14 @@ void char_data::edit_buffer( char *argument )
          return;
       }
 
-      if( !str_cmp( cmd + 1, "g" ) )
+      if( !str_cmp( cmd, "g" ) )
       {
          if( edit->numlines == 0 )
             print( "Buffer is empty.\r\n> " );
          else
          {
             if( argument[2] == ' ' )
-               line = atoi( argument + 2 ) - 1;
+               line = atoi( argument.c_str(  ) + 2 ) - 1;
             else
             {
                print( "Goto what line?\r\n> " );
@@ -1459,7 +1519,7 @@ void char_data::edit_buffer( char *argument )
          return;
       }
 
-      if( !str_cmp( cmd + 1, "l" ) )
+      if( !str_cmp( cmd, "l" ) )
       {
          if( edit->numlines == 0 )
             print( "Buffer is empty.\r\n> " );
@@ -1475,14 +1535,14 @@ void char_data::edit_buffer( char *argument )
                char tmpline[MSL];
 
                snprintf( tmpline, MSL, "%2d> %s\r\n", x + 1, edit->line[x] );
-               desc->write_to_buffer( tmpline, 0 );
+               desc->write_to_buffer( tmpline );
             }
             print( "------------------\r\n> " );
          }
          return;
       }
 
-      if( !str_cmp( cmd + 1, "a" ) )
+      if( !str_cmp( cmd, "a" ) )
       {
          if( !last_cmd )
          {
@@ -1499,14 +1559,14 @@ void char_data::edit_buffer( char *argument )
          return;
       }
 
-      if( get_trust(  ) > LEVEL_IMMORTAL && !str_cmp( cmd + 1, "!" ) )
+      if( get_trust(  ) > LEVEL_IMMORTAL && !str_cmp( cmd, "!" ) )
       {
          DO_FUN *lastcmd;
          int Csubstate = substate;
 
          lastcmd = last_cmd;
          substate = SUB_RESTRICTED;
-         interpret( this, argument + 3 );
+         interpret( this, argument.substr( 3, argument.length(  ) ) );
          substate = Csubstate;
          last_cmd = lastcmd;
          set_color( AT_GREEN );
@@ -1514,7 +1574,7 @@ void char_data::edit_buffer( char *argument )
          return;
       }
 
-      if( !str_cmp( cmd + 1, "s" ) )
+      if( !str_cmp( cmd, "s" ) )
       {
          d->connected = CON_PLAYING;
 
@@ -1526,17 +1586,17 @@ void char_data::edit_buffer( char *argument )
       }
    }
 
-   if( edit->size + strlen( argument ) + 1 >= MSL - 2 )
+   if( edit->size + argument.length(  ) + 1 >= MSL - 2 )
       print( "You buffer is full.\r\n" );
    else
    {
-      if( strlen( argument ) > 80 )
+      if( argument.length(  ) > 80 )
       {
-         mudstrlcpy( buf, argument, 80 );
+         mudstrlcpy( buf, argument.c_str(  ), 80 );
          print( "(Long line trimmed)\r\n> " );
       }
       else
-         mudstrlcpy( buf, argument, MIL );
+         mudstrlcpy( buf, argument.c_str(  ), MIL );
       mudstrlcpy( edit->line[edit->on_line++], buf, 81 );
       if( edit->on_line > edit->numlines )
          ++edit->numlines;

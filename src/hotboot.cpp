@@ -28,12 +28,12 @@
 
 #include <dirent.h>
 #if !defined(WIN32)
- #include <dlfcn.h>   /* Required for libdl - Trax */
+#include <dlfcn.h>   /* Required for libdl - Trax */
 #else
- #include <unistd.h>
- #include <windows.h>
- #define dlopen( libname, flags ) LoadLibrary( (libname) )
- #define dlclose( libname ) FreeLibrary( (HINSTANCE) (libname) )
+#include <unistd.h>
+#include <windows.h>
+#define dlopen( libname, flags ) LoadLibrary( (libname) )
+#define dlclose( libname ) FreeLibrary( (HINSTANCE) (libname) )
 #endif
 #include "mud.h"
 #include "descriptor.h"
@@ -53,18 +53,18 @@ extern int num_logins;
 
 void quotes( char_data * );
 void set_alarm( long );
-bool write_to_descriptor_old( int, char *, size_t );
+bool write_to_descriptor_old( int, const char * );
 void update_room_reset( char_data *, bool );
-void music_to_char( const char *, int, char_data *, bool );
+void music_to_char( const string &, int, char_data *, bool );
 void reset_sound( char_data * );
 void reset_music( char_data * );
-void save_timedata( );
+void save_timedata(  );
 void check_auth_state( char_data * );
 affect_data *fread_afk_affect( FILE * );
 void fwrite_afk_affect( FILE *, affect_data * );
 #if !defined(__CYGWIN__) && defined(SQL)
- void close_db();
- void init_mysql();
+void close_db(  );
+void init_mysql(  );
 #endif
 
 /*
@@ -76,8 +76,6 @@ void save_mobile( FILE * fp, char_data * mob )
 
    if( !mob->isnpc(  ) || !fp )
       return;
-
-   mob->de_equip(  );
 
    fprintf( fp, "%s", "#MOBILE\n" );
    fprintf( fp, "Vnum	%d\n", mob->pIndexData->vnum );
@@ -111,68 +109,66 @@ void save_mobile( FILE * fp, char_data * mob )
       fprintf( fp, "Long	%s~\n", mob->long_descr );
    if( mob->chardesc && mob->pIndexData->chardesc && str_cmp( mob->chardesc, mob->pIndexData->chardesc ) )
       fprintf( fp, "Description %s~\n", mob->chardesc );
-   fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n",
-            mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move, mob->max_move );
+   fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move, mob->max_move );
    fprintf( fp, "Position %d\n", mob->position );
-   if( mob->has_actflags() )
-      fprintf( fp, "Flags %s~\n", bitset_string( mob->get_actflags(), act_flags ) );
-   if( mob->has_aflags() )
-      fprintf( fp, "AffectedBy   %s~\n", bitset_string( mob->get_aflags(), aff_flags ) );
+   if( mob->has_actflags(  ) )
+      fprintf( fp, "Flags %s~\n", bitset_string( mob->get_actflags(  ), act_flags ) );
+   if( mob->has_aflags(  ) )
+      fprintf( fp, "AffectedBy   %s~\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
 
-   list<affect_data*>::iterator paf;
-   for( paf = mob->affects.begin(); paf != mob->affects.end(); ++paf )
+   list < affect_data * >::iterator paf;
+   for( paf = mob->affects.begin(  ); paf != mob->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       if( af->type >= 0 && !( skill = get_skilltype( af->type ) ) )
          continue;
 
       if( af->type >= 0 && af->type < TYPE_PERSONAL )
-         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n",
-                  skill->name, af->duration, af->modifier, af->location, af->bit );
+         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name, af->duration, af->modifier, af->location, af->bit );
       else
          fwrite_afk_affect( fp, af );
    }
+   mob->de_equip(  );
 
-   if( !mob->carrying.empty() )
+   if( !mob->carrying.empty(  ) )
       fwrite_obj( mob, mob->carrying, NULL, fp, 0, true );
 
-   fprintf( fp, "%s", "EndMobile\n\n" );
    mob->re_equip(  );
-   return;
+
+   fprintf( fp, "%s", "EndMobile\n\n" );
 }
 
 void save_world( void )
 {
+   map < int, room_index * >::iterator iroom;
+
    log_string( "Preserving world state...." );
 
-   for( int iHash = 0; iHash < MAX_KEY_HASH; ++iHash )
+   for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {
-      room_index *pRoomIndex;
+      room_index *pRoomIndex = iroom->second;
 
-      for( pRoomIndex = room_index_hash[iHash]; pRoomIndex; pRoomIndex = pRoomIndex->next )
+      if( pRoomIndex )
       {
-         if( pRoomIndex )
-         {
-            if( pRoomIndex->objects.empty()   /* Skip room if nothing in it */
-                || pRoomIndex->flags.test( ROOM_CLANSTOREROOM )   /* These rooms save on their own */
-                || pRoomIndex->flags.test( ROOM_AUCTION )   /* These also save on their own */
-                )
-               continue;
+         if( pRoomIndex->objects.empty(  )   /* Skip room if nothing in it */
+             || pRoomIndex->flags.test( ROOM_CLANSTOREROOM )   /* These rooms save on their own */
+             || pRoomIndex->flags.test( ROOM_AUCTION )   /* These also save on their own */
+             )
+            continue;
 
-            FILE *objfp;
-            char filename[256];
-            snprintf( filename, 256, "%s%d", HOTBOOT_DIR, pRoomIndex->vnum );
-            if( !( objfp = fopen( filename, "w" ) ) )
-            {
-               bug( "%s: fopen %d", __FUNCTION__, pRoomIndex->vnum );
-               perror( filename );
-               continue;
-            }
-            fwrite_obj( NULL, pRoomIndex->objects, NULL, objfp, 0, true );
-            fprintf( objfp, "%s", "#END\n" );
-            FCLOSE( objfp );
+         FILE *objfp;
+         char filename[256];
+         snprintf( filename, 256, "%s%d", HOTBOOT_DIR, pRoomIndex->vnum );
+         if( !( objfp = fopen( filename, "w" ) ) )
+         {
+            bug( "%s: fopen %d", __FUNCTION__, pRoomIndex->vnum );
+            perror( filename );
+            continue;
          }
+         fwrite_obj( NULL, pRoomIndex->objects, NULL, objfp, 0, true );
+         fprintf( objfp, "%s", "#END\n" );
+         FCLOSE( objfp );
       }
    }
 
@@ -186,10 +182,10 @@ void save_world( void )
    }
    else
    {
-      list<char_data*>::iterator ich;
-      for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+      list < char_data * >::iterator ich;
+      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
       {
-         char_data *rch = (*ich);
+         char_data *rch = *ich;
 
          if( !rch->isnpc(  ) || rch == supermob || rch->has_actflag( ACT_PROTOTYPE ) || rch->has_actflag( ACT_PET ) )
             continue;
@@ -199,7 +195,6 @@ void save_world( void )
       fprintf( mobfp, "%s", "#END\n" );
       FCLOSE( mobfp );
    }
-   return;
 }
 
 char_data *load_mobile( FILE * fp )
@@ -333,9 +328,7 @@ char_data *load_mobile( FILE * fp )
                   paf->modifier = fread_number( fp );
                   paf->location = fread_number( fp );
                   if( paf->location == APPLY_WEAPONSPELL
-                      || paf->location == APPLY_WEARSPELL
-                      || paf->location == APPLY_REMOVESPELL
-                      || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL )
+                      || paf->location == APPLY_WEARSPELL || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL )
                      paf->modifier = slot_lookup( paf->modifier );
                   paf->bit = fread_number( fp );
                }
@@ -384,7 +377,7 @@ char_data *load_mobile( FILE * fp )
                return mob;
             }
             if( !str_cmp( word, "End" ) ) /* End of object, need to ignore this. sometimes they creep in there somehow -- Scion */
-               ; /* Trick the system into thinking it matched something */
+               ;  /* Trick the system into thinking it matched something */
             break;
 
          case 'F':
@@ -457,7 +450,7 @@ char_data *load_mobile( FILE * fp )
    }
 }
 
-void read_obj_file( char *dirname, char *filename )
+void read_obj_file( const char *dirname, const char *filename )
 {
    FILE *fp;
    char fname[256];
@@ -512,10 +505,10 @@ void read_obj_file( char *dirname, char *filename )
       FCLOSE( fp );
       unlink( fname );
 
-      list<obj_data*>::iterator iobj;
-      for( iobj = supermob->carrying.begin(); iobj != supermob->carrying.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = supermob->carrying.begin(  ); iobj != supermob->carrying.end(  ); )
       {
-         obj_data *tobj = (*iobj);
+         obj_data *tobj = *iobj;
          ++iobj;
 
          if( tobj->extra_flags.test( ITEM_ONMAP ) )
@@ -536,8 +529,6 @@ void read_obj_file( char *dirname, char *filename )
    }
    else
       log_string( "Cannot open obj file" );
-
-   return;
 }
 
 void load_obj_files( void )
@@ -567,7 +558,6 @@ void load_obj_files( void )
    }
    closedir( dp );
    set_alarm( 0 );
-   return;
 }
 
 void load_world( void )
@@ -614,13 +604,12 @@ void load_world( void )
     * Once loaded, the data needs to be purged in the event it causes a crash so that it won't try to reload 
     */
    unlink( file1 );
-   return;
 }
 
 /* Warm reboot stuff, gotta make sure to thank Erwin for this :) */
 CMDF( do_hotboot )
 {
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
 
 #ifdef MULTIPORT
    if( compilelock )
@@ -636,13 +625,12 @@ CMDF( do_hotboot )
       return;
    }
 
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
       char_data *victim;
 
-      if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
-          && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room )
+      if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING ) && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room )
       {
          if( victim->fighting && victim->level >= 1 && victim->level <= MAX_LEVEL )
          {
@@ -679,32 +667,32 @@ CMDF( do_hotboot )
     * And this one here will save the status of all objects and mobs in the game.
     * * This really should ONLY ever be used here. The less we do stuff like this the better.
     */
-   save_world( );
+   save_world(  );
 
    log_string( "Saving player files and connection states...." );
    if( ch && ch->desc )
-      ch->desc->write( ANSI_RESET, 0 );
+      ch->desc->write( ANSI_RESET );
 
    /*
     * For each playing descriptor, save its state 
     */
-   for( ds = dlist.begin(); ds != dlist.end(); )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
       ++ds;
 
       char_data *och = d->original ? d->original : d->character;
 
       if( !d->character || d->connected < CON_PLAYING )  /* drop those logging on */
       {
-         d->write( "\r\nSorry, we are rebooting. Come back in a few minutes.\r\n", 0 );
+         d->write( "\r\nSorry, we are rebooting. Come back in a few minutes.\r\n" );
          close_socket( d, false );  /* throw'em out */
       }
       else
       {
-         fprintf( fp, "%d %d %d %d %d %d %d %d %s %s %s\n",
-                  d->descriptor, d->can_compress, d->is_compressing, d->msp_detected, d->mxp_detected,
-                  och->in_room->vnum, d->client_port, d->idle, d->client, och->name, d->host );
+         fprintf( fp, "%d %d %d %d %d %d %d %s %s %s\n",
+                  d->descriptor, d->can_compress, d->is_compressing, d->msp_detected,
+                  och->in_room->vnum, d->client_port, d->idle, d->client.c_str(  ), och->name, d->host.c_str(  ) );
 
          /*
           * One of two places this gets changed 
@@ -714,16 +702,16 @@ CMDF( do_hotboot )
          och->reset_sound(  );
          och->reset_music(  );
          och->save(  );
-         if( argument && str_cmp( argument, "debug" ) )
+         if( !argument.empty(  ) && str_cmp( argument, "debug" ) )
          {
-            d->write( "\r\nThe flow of time is halted momentarily as the world is reshaped!\r\n", 0 );
+            d->write( "\r\nThe flow of time is halted momentarily as the world is reshaped!\r\n" );
             if( d->is_compressing )
                d->compressEnd(  );
          }
       }
    }
 
-   fprintf( fp, "0 0 0 0 0 0 0 %d maxp maxp maxp\n", sysdata->maxplayers );
+   fprintf( fp, "0 0 0 0 0 0 %d maxp maxp maxp\n", sysdata->maxplayers );
    fprintf( fp, "%s", "-1\n" );
    FCLOSE( fp );
 
@@ -734,7 +722,7 @@ CMDF( do_hotboot )
    imc_hotboot(  );
 #endif
 
-   if( argument && !str_cmp( argument, "debug" ) )
+   if( !argument.empty(  ) && !str_cmp( argument, "debug" ) )
    {
       log_string( "Hotboot debug - Aborting before execl" );
       return;
@@ -760,7 +748,7 @@ CMDF( do_hotboot )
 
    set_alarm( 0 );
 #if !defined(__CYGWIN__) && defined(SQL)
-   close_db();
+   close_db(  );
 #endif
    dlclose( sysdata->dlHandle );
    execl( EXE_FILE, "afkmud", buf, "hotboot", buf2, buf3, ( char * )NULL );
@@ -777,7 +765,7 @@ CMDF( do_hotboot )
       exit( 1 );
    }
 #if !defined(__CYGWIN__) && defined(SQL)
-   init_mysql();
+   init_mysql(  );
 #endif
    bug( "%s: Hotboot execution failed!!", __FUNCTION__ );
    ch->print( "Hotboot FAILED!\r\n" );
@@ -788,7 +776,7 @@ void hotboot_recover( void )
 {
    FILE *fp;
    char name[100], host[MSL], client[MSL];
-   int desc, dcompress, discompressing, room, dport, idle, dmxp, dmsp, maxp = 0;
+   int desc, dcompress, discompressing, room, dport, idle, dmsp, maxp = 0;
    bool fOld;
 
    if( !( fp = fopen( HOTBOOT_FILE, "r" ) ) )   /* there are some descriptors open which will hang forever then ? */
@@ -801,8 +789,7 @@ void hotboot_recover( void )
    unlink( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
    for( ;; )
    {
-      fscanf( fp, "%d %d %d %d %d %d %d %d %s %s %s\n",
-              &desc, &dcompress, &discompressing, &dmsp, &dmxp, &room, &dport, &idle, client, name, host );
+      fscanf( fp, "%d %d %d %d %d %d %d %s %s %s\n", &desc, &dcompress, &discompressing, &dmsp, &room, &dport, &idle, client, name, host );
 
       if( desc == -1 || feof( fp ) )
          break;
@@ -819,7 +806,7 @@ void hotboot_recover( void )
       /*
        * Write something, and check if it goes error-free 
        */
-      if( !dcompress && !write_to_descriptor_old( desc, "\r\nThe ether swirls in chaos.\r\n", 0 ) )
+      if( !dcompress && !write_to_descriptor_old( desc, "\r\nThe ether swirls in chaos.\r\n" ) )
       {
          close( desc ); /* nope */
          continue;
@@ -836,13 +823,12 @@ void hotboot_recover( void )
       d->connected = CON_PLOADED;
       d->descriptor = desc;
 
-      d->host = str_dup( host );
-      stralloc_printf( &d->client, "%s", client );
+      d->host = host;
+      d->client = client;
       d->client_port = dport;
       d->idle = idle;
       d->can_compress = dcompress;
       d->is_compressing = false;
-      d->mxp_detected = dmxp;
       d->msp_detected = dmsp;
 
       dlist.push_back( d );
@@ -855,12 +841,12 @@ void hotboot_recover( void )
 
       if( !fOld ) /* Player file not found?! */
       {
-         d->write( "\r\nSomehow, your character was lost during hotboot. Contact the immortals ASAP.\r\n", 0 );
+         d->write( "\r\nSomehow, your character was lost during hotboot. Contact the immortals ASAP.\r\n" );
          close_socket( d, false );
       }
       else  /* ok! */
       {
-         d->write( "\r\nTime resumes its normal flow.\r\n", 0 );
+         d->write( "\r\nTime resumes its normal flow.\r\n" );
          d->character->in_room = get_room_index( room );
          if( !d->character->in_room )
             d->character->in_room = get_room_index( ROOM_VNUM_TEMPLE );
@@ -877,8 +863,7 @@ void hotboot_recover( void )
          act( AT_MAGIC, "$n appears in a puff of ethereal smoke!", d->character, NULL, NULL, TO_ROOM );
          d->connected = CON_PLAYING;
 
-         DISPOSE( d->character->pcdata->lasthost );
-         d->character->pcdata->lasthost = str_dup( d->host );
+         d->character->pcdata->lasthost = d->host;
 
          if( d->can_compress )
          {
@@ -895,12 +880,6 @@ void hotboot_recover( void )
           */
          if( d->msp_detected )
             d->send_msp_startup(  );
-
-         /*
-          * Mud eXtention Protocol 
-          */
-         if( d->mxp_detected )
-            d->send_mxp_stylesheet(  );
 
          /*
           * @shrug, why not? :P 
@@ -922,5 +901,4 @@ void hotboot_recover( void )
       sysdata->maxplayers = maxp;
    num_logins = maxp;
    log_string( "Hotboot recovery complete." );
-   return;
 }

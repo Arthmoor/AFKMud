@@ -35,7 +35,7 @@
 int race_bodyparts( char_data * );
 int mob_xp( char_data * );
 
-mob_index *mob_index_hash[MAX_KEY_HASH];
+map < int, mob_index * >mob_index_table;
 
 extern int top_shop;
 extern int top_repair;
@@ -44,8 +44,8 @@ mob_index::~mob_index(  )
 {
    area->mobs.remove( this );
 
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
    {
       char_data *ch = *ich;
       ++ich;
@@ -54,7 +54,7 @@ mob_index::~mob_index(  )
          ch->extract( true );
    }
 
-   for( ich = charlist.begin(); ich != charlist.end(); )
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
    {
       char_data *ch = *ich;
       ++ich;
@@ -63,16 +63,16 @@ mob_index::~mob_index(  )
          ch->extract( true );
       else if( ch->substate == SUB_MPROG_EDIT && ch->pcdata->dest_buf )
       {
-         list<mud_prog_data*>::iterator mpg;
+         list < mud_prog_data * >::iterator mpg;
 
-         for( mpg = mudprogs.begin(); mpg != mudprogs.end(); )
+         for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
          {
             mud_prog_data *mp = *mpg;
 
             if( mp == ch->pcdata->dest_buf )
             {
                ch->print( "Your victim has departed.\r\n" );
-               ch->stop_editing( );
+               ch->stop_editing(  );
                ch->pcdata->dest_buf = NULL;
                ch->substate = SUB_NONE;
                break;
@@ -81,16 +81,16 @@ mob_index::~mob_index(  )
       }
    }
 
-   list<mud_prog_data*>::iterator mpg;
-   for( mpg = mudprogs.begin(); mpg != mudprogs.end(); )
+   list < mud_prog_data * >::iterator mpg;
+   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
    {
-      mud_prog_data *mprog = (*mpg);
+      mud_prog_data *mprog = *mpg;
       ++mpg;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
    }
-   mudprogs.clear();
+   mudprogs.clear(  );
 
    if( pShop )
    {
@@ -111,27 +111,15 @@ mob_index::~mob_index(  )
    STRFREE( long_descr );
    STRFREE( chardesc );
 
-   int hash = vnum % MAX_KEY_HASH;
-   if( this == mob_index_hash[hash] )
-      mob_index_hash[hash] = next;
-   else
-   {
-      mob_index *prev;
-
-      for( prev = mob_index_hash[hash]; prev; prev = prev->next )
-         if( prev->next == this )
-            break;
-      if( prev )
-         prev->next = next;
-      else
-         bug( "%s: mobile %d not in hash bucket %d.", __FUNCTION__, vnum, hash );
-   }
+   map < int, mob_index * >::iterator imob;
+   if( ( imob = mob_index_table.find( vnum ) ) != mob_index_table.end(  ) )
+      mob_index_table.erase( imob );
    --top_mob_index;
 }
 
 mob_index::mob_index(  )
 {
-   init_memory( &next, &saving_spell_staff, sizeof( saving_spell_staff ) );
+   init_memory( &area, &saving_spell_staff, sizeof( saving_spell_staff ) );
 }
 
 /*
@@ -143,22 +131,22 @@ void mob_index::clean_mob(  )
    STRFREE( short_descr );
    STRFREE( long_descr );
    STRFREE( chardesc );
-   spec_funname.clear();
+   spec_funname.clear(  );
    spec_fun = NULL;
    pShop = NULL;
    rShop = NULL;
    progtypes.reset(  );
 
-   list<mud_prog_data*>::iterator mpg;
-   for( mpg = mudprogs.begin(); mpg != mudprogs.end(); )
+   list < mud_prog_data * >::iterator mpg;
+   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
    {
-      mud_prog_data *mprog = (*mpg);
+      mud_prog_data *mprog = *mpg;
       ++mpg;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
    }
-   mudprogs.clear();
+   mudprogs.clear(  );
 
    count = 0;
    killed = 0;
@@ -197,14 +185,13 @@ void mob_index::clean_mob(  )
  */
 mob_index *get_mob_index( int vnum )
 {
-   mob_index *pMobIndex;
+   map < int, mob_index * >::iterator imob;
 
    if( vnum < 0 )
       vnum = 0;
 
-   for( pMobIndex = mob_index_hash[vnum % MAX_KEY_HASH]; pMobIndex; pMobIndex = pMobIndex->next )
-      if( pMobIndex->vnum == vnum )
-         return pMobIndex;
+   if( ( imob = mob_index_table.find( vnum ) ) != mob_index_table.end(  ) )
+      return imob->second;
 
    if( fBootDb )
       bug( "%s: bad vnum %d.", __FUNCTION__, vnum );
@@ -315,8 +302,15 @@ char_data *mob_index::create_mobile(  )
    mob->saving_breath = UMAX( 20 - mob->level, 2 );
    mob->saving_spell_staff = UMAX( 20 - mob->level, 2 );
 
-   mob->height = height;
-   mob->weight = weight;
+   if( height == 0 )
+      mob->height = mob->calculate_race_height(  );
+   else
+      mob->height = height;
+
+   if( weight == 0 )
+      mob->weight = mob->calculate_race_weight(  );
+   else
+      mob->weight = weight;
    mob->set_resists( resistant );
    mob->set_immunes( immune );
    mob->set_susceps( susceptible );
@@ -337,7 +331,7 @@ char_data *mob_index::create_mobile(  )
 
    if( body_parts.none(  ) )
       race_bodyparts( mob );
-   body_parts = mob->get_bparts();
+   body_parts = mob->get_bparts(  );
 
    if( mob->numattacks > 10 )
       log_printf_plus( LOG_BUILD, sysdata->build_level, "Mob vnum %d has too many attacks: %f", vnum, mob->numattacks );
@@ -376,7 +370,7 @@ char_data *mob_index::create_mobile(  )
  * Create a new INDEX mobile (for online building) - Thoric
  * Option to clone an existing index mobile.
  */
-mob_index *make_mobile( int vnum, int cvnum, char *name, area_data *area )
+mob_index *make_mobile( int vnum, int cvnum, const string & name, area_data * area )
 {
    mob_index *cMobIndex = NULL;
 
@@ -388,13 +382,13 @@ mob_index *make_mobile( int vnum, int cvnum, char *name, area_data *area )
    pMobIndex->vnum = vnum;
    pMobIndex->count = 0;
    pMobIndex->killed = 0;
-   pMobIndex->player_name = STRALLOC( name );
+   pMobIndex->player_name = STRALLOC( name.c_str(  ) );
    pMobIndex->area = area;
 
    if( !cMobIndex )
    {
-      stralloc_printf( &pMobIndex->short_descr, "A newly created %s", name );
-      stralloc_printf( &pMobIndex->long_descr, "Some god abandoned a newly created %s here.\r\n", name );
+      stralloc_printf( &pMobIndex->short_descr, "A newly created %s", name.c_str(  ) );
+      stralloc_printf( &pMobIndex->long_descr, "Some god abandoned a newly created %s here.\r\n", name.c_str(  ) );
       pMobIndex->short_descr[0] = LOWER( pMobIndex->short_descr[0] );
       pMobIndex->long_descr[0] = UPPER( pMobIndex->long_descr[0] );
       pMobIndex->actflags.reset(  );
@@ -404,7 +398,7 @@ mob_index *make_mobile( int vnum, int cvnum, char *name, area_data *area )
       pMobIndex->pShop = NULL;
       pMobIndex->rShop = NULL;
       pMobIndex->spec_fun = NULL;
-      pMobIndex->mudprogs.clear();
+      pMobIndex->mudprogs.clear(  );
       pMobIndex->progtypes.reset(  );
       pMobIndex->alignment = 0;
       pMobIndex->level = 1;
@@ -459,7 +453,7 @@ mob_index *make_mobile( int vnum, int cvnum, char *name, area_data *area )
       pMobIndex->pShop = NULL;
       pMobIndex->rShop = NULL;
       pMobIndex->spec_fun = cMobIndex->spec_fun;
-      pMobIndex->mudprogs.clear();
+      pMobIndex->mudprogs.clear(  );
       pMobIndex->progtypes.reset(  );
       pMobIndex->alignment = cMobIndex->alignment;
       pMobIndex->level = cMobIndex->level;
@@ -501,9 +495,7 @@ mob_index *make_mobile( int vnum, int cvnum, char *name, area_data *area )
       pMobIndex->speaking = cMobIndex->speaking;
    }
 
-   int iHash = vnum % MAX_KEY_HASH;
-   pMobIndex->next = mob_index_hash[iHash];
-   mob_index_hash[iHash] = pMobIndex;
+   mob_index_table.insert( map < int, mob_index * >::value_type( vnum, pMobIndex ) );
    area->mobs.push_back( pMobIndex );
    ++top_mob_index;
 
@@ -517,7 +509,7 @@ void mob_index::mprog_read_programs( FILE * fp )
    char letter;
    const char *word;
 
-   for( ; ; )
+   for( ;; )
    {
       letter = fread_letter( fp );
 
@@ -535,7 +527,7 @@ void mob_index::mprog_read_programs( FILE * fp )
       word = fread_word( fp );
       mprg->type = mprog_name_to_type( word );
 
-      switch( mprg->type )
+      switch ( mprg->type )
       {
          case ERROR_PROG:
             bug( "%s: vnum %d MUDPROG type.", __FUNCTION__, vnum );
@@ -560,13 +552,13 @@ void mob_index::mprog_read_programs( FILE * fp )
 
 CMDF( do_mfind )
 {
-   mob_index *pMobIndex;
-   int hash, nMatch;
+   map < int, mob_index * >::iterator imob = mob_index_table.begin(  );
+   int nMatch;
    bool fAll;
 
    ch->set_pager_color( AT_PLAIN );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Find whom?\r\n" );
       return;
@@ -575,19 +567,22 @@ CMDF( do_mfind )
    fAll = !str_cmp( argument, "all" );
    nMatch = 0;
 
-   for( hash = 0; hash < MAX_KEY_HASH; ++hash )
-      for( pMobIndex = mob_index_hash[hash]; pMobIndex; pMobIndex = pMobIndex->next )
-         if( fAll || nifty_is_name( argument, pMobIndex->player_name ) )
-         {
-            ++nMatch;
-            ch->pagerf( "[%5d] %s\r\n", pMobIndex->vnum, capitalize( pMobIndex->short_descr ) );
-         }
+   while( imob != mob_index_table.end(  ) )
+   {
+      mob_index *pMobIndex = imob->second;
+
+      if( fAll || hasname( pMobIndex->player_name, argument ) )
+      {
+         ++nMatch;
+         ch->pagerf( "[%5d] %s\r\n", pMobIndex->vnum, capitalize( pMobIndex->short_descr ) );
+      }
+      ++imob;
+   }
 
    if( nMatch )
       ch->pagerf( "Number of matches: %d\n", nMatch );
    else
-      ch->print( "Nothing like that in hell, earth, or heaven.\r\n" );
-   return;
+      ch->print( "Nothing like that exists.\r\n" );
 }
 
 CMDF( do_mdelete )
@@ -601,7 +596,7 @@ CMDF( do_mdelete )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Delete which mob?\r\n" );
       return;
@@ -613,7 +608,7 @@ CMDF( do_mdelete )
       return;
    }
 
-   vnum = atoi( argument );
+   vnum = atoi( argument.c_str(  ) );
 
    /*
     * Find the mob. 
@@ -627,13 +622,11 @@ CMDF( do_mdelete )
    /*
     * Does the player have the right to delete this mob? 
     */
-   if( ch->get_trust(  ) < sysdata->level_modify_proto
-       && ( mob->vnum < ch->pcdata->low_vnum || mob->vnum > ch->pcdata->hi_vnum ) )
+   if( ch->get_trust(  ) < sysdata->level_modify_proto && ( mob->vnum < ch->pcdata->low_vnum || mob->vnum > ch->pcdata->hi_vnum ) )
    {
       ch->print( "That mob is not in your assigned range.\r\n" );
       return;
    }
    deleteptr( mob );
    ch->printf( "Mob %d has been deleted.\r\n", vnum );
-   return;
 }

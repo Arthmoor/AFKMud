@@ -5,7 +5,7 @@ Type         Spell
 Info         0
 Author	      Smaug~
 Minpos       standing~
-Slot         95
+Slot         0
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8131,7 +8131,7 @@ skill gets better through use, and is built in to the 'flee' command.~
 End
 
 #SKILL
-Name         rougish blessing~
+Name         roguish blessing~
 Type         Skill
 Info         512
 Author	      Smaug~

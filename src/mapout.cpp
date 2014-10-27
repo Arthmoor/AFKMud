@@ -61,7 +61,7 @@ int num_rooms_avail( char_data * );
 int number_to_room_num( int );
 int exit_lookup( int, int );
 void draw_map( char_data *, room_index *, int, int );
-char *you_are_here( int, int, char * );
+char *you_are_here( int, int, const string & );
 
 /* Local Variables & Structs */
 char text_rmap[MSL];
@@ -207,14 +207,13 @@ void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
    *cols = ( rightmost - leftmost );
    *rows = row;   /* [sic.] */
    *rooms = n;
-   return;
 }
 
 CMDF( do_mapout )
 {
-   char arg[MIL];
+   string arg;
    obj_data *map_obj;   /* an obj made with map as an ed */
-   obj_index *map_obj_index;   /*    obj_index for previous     */
+   obj_index *map_obj_index;  /*    obj_index for previous     */
    extra_descr_data *ed;   /*    the ed for it to go in     */
    int rooms, rows, cols, avail_rooms;
 
@@ -223,7 +222,7 @@ CMDF( do_mapout )
       bug( "%s: null ch", __FUNCTION__ );
       return;
    }
-   if( ch->isnpc() )
+   if( ch->isnpc(  ) )
    {
       ch->print( "Not in mobs.\r\n" );
       return;
@@ -242,7 +241,7 @@ CMDF( do_mapout )
             bug( "%s: sub_writing_map: ch->pcdata->dest_buf != ch->pcdata->pnote", __FUNCTION__ );
          STRFREE( ch->pcdata->pnote->text );
          ch->pcdata->pnote->text = ch->copy_buffer( true );
-         ch->stop_editing( );
+         ch->stop_editing(  );
          return;
    }
 
@@ -265,15 +264,15 @@ CMDF( do_mapout )
       return;
    }
 
-
    if( !str_cmp( arg, "write" ) )
    {
-      ch->note_attach( );
+      ch->note_attach(  );
       ch->substate = SUB_WRITING_NOTE;
       ch->pcdata->dest_buf = ch->pcdata->pnote;
       ch->start_editing( ch->pcdata->pnote->text );
       return;
    }
+
    if( !str_cmp( arg, "clear" ) )
    {
       if( !ch->pcdata->pnote )
@@ -285,11 +284,12 @@ CMDF( do_mapout )
       STRFREE( ch->pcdata->pnote->subject );
       STRFREE( ch->pcdata->pnote->to_list );
       STRFREE( ch->pcdata->pnote->sender );
-      DISPOSE( ch->pcdata->pnote );
+      deleteptr( ch->pcdata->pnote );
       ch->pcdata->pnote = NULL;
       ch->print( "Map cleared.\r\n" );
       return;
    }
+
    if( !str_cmp( arg, "show" ) )
    {
       if( !ch->pcdata->pnote )
@@ -301,6 +301,7 @@ CMDF( do_mapout )
       do_mapout( ch, "stat" );
       return;
    }
+
    if( !str_cmp( arg, "create" ) )
    {
       if( !ch->pcdata->pnote )
@@ -347,7 +348,6 @@ CMDF( do_mapout )
    ch->print( "mapout clear: clear a written, but not yet created map.\r\n" );
    ch->print( "mapout show: show a written, but not yet created map.\r\n" );
    ch->print( "mapout create: turn a written map into rooms in your assigned room vnum range.\r\n" );
-   return;
 }
 
 int add_new_room_to_map( char_data * ch, char code )
@@ -373,7 +373,7 @@ int add_new_room_to_map( char_data * ch, char code )
          location->area = ch->pcdata->area;
          location->name = STRALLOC( "Newly Created Room" );
          location->roomdesc = STRALLOC( "Newly Created Room\r\n" );
-         location->flags.reset();
+         location->flags.reset(  );
          location->flags.set( ROOM_PROTOTYPE );
          location->light = 0;
          if( code == 'I' )
@@ -447,7 +447,7 @@ int num_rooms_avail( char_data * ch )
  */
 void map_to_rooms( char_data * ch, map_index * m_index )
 {
-   struct map_stuff rmap[49][78]; /* size of edit buffer */
+   struct map_stuff rmap[49][78];   /* size of edit buffer */
    char *newmap;
    int row, col, i, n, x, y, tvnum, proto_vnum = 0, leftmost, rightmost;
    int newx, newy;
@@ -532,8 +532,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             ++row;
             break;
       }
-      if( c != ' ' && c != '-' && c != '|' && c != '=' && c != '\\' && c != '/' && c != '^'
-          && c != ':' && c != '[' && c != ']' && c != '^' && !getroomnext )
+      if( c != ' ' && c != '-' && c != '|' && c != '=' && c != '\\' && c != '/' && c != '^' && c != ':' && c != '[' && c != ']' && c != '^' && !getroomnext )
       {
          ++l;
          continue;
@@ -603,7 +602,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                xit->keyword = NULL;
                xit->exitdesc = NULL;
                xit->key = -1;
-               xit->flags.reset();
+               xit->flags.reset(  );
             }
          }
 
@@ -628,7 +627,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                xit->keyword = NULL;
                xit->exitdesc = NULL;
                xit->key = -1;
-               xit->flags.reset();
+               xit->flags.reset(  );
             }
          }
 
@@ -659,7 +658,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                   SET_EXIT_FLAG( xit, EX_CLOSED );
                }
                else
-                  xit->flags.reset();
+                  xit->flags.reset(  );
             }
          }
 
@@ -690,7 +689,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                   SET_EXIT_FLAG( xit, EX_CLOSED );
                }
                else
-                  xit->flags.reset();
+                  xit->flags.reset(  );
             }
          }
 
@@ -722,7 +721,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                   SET_EXIT_FLAG( xit, EX_CLOSED );
                }
                else
-                  xit->flags.reset();
+                  xit->flags.reset(  );
             }
          }
 
@@ -755,7 +754,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                   SET_EXIT_FLAG( xit, EX_CLOSED );
                }
                else
-                  xit->flags.reset();
+                  xit->flags.reset(  );
             }
          }
 
@@ -768,8 +767,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             newy = y;
             newx += 2;
             ++newy;
-            while( newx <= 79 && newy <= 48 && ( rmap[newy][newx].code == '\\' || rmap[newy][newx].code == ':'
-                                                 || rmap[newy][newx].code == '=' ) )
+            while( newx <= 79 && newy <= 48 && ( rmap[newy][newx].code == '\\' || rmap[newy][newx].code == ':' || rmap[newy][newx].code == '=' ) )
             {
                ++newx;
                ++newy;
@@ -787,7 +785,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                xit->keyword = NULL;
                xit->exitdesc = NULL;
                xit->key = -1;
-               xit->flags.reset();
+               xit->flags.reset(  );
             }
          }
 
@@ -800,8 +798,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             newy = y;
             newx += 2;
             --newy;
-            while( newx >= 0 && newy <= 48 && ( rmap[newy][newx].code == '/' || rmap[newy][newx].code == ':'
-                                                || rmap[newy][newx].code == '=' ) )
+            while( newx >= 0 && newy <= 48 && ( rmap[newy][newx].code == '/' || rmap[newy][newx].code == ':' || rmap[newy][newx].code == '=' ) )
             {
                ++newx;
                --newy;
@@ -820,7 +817,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                xit->keyword = NULL;
                xit->exitdesc = NULL;
                xit->key = -1;
-               xit->flags.reset();
+               xit->flags.reset(  );
             }
          }
 
@@ -833,8 +830,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             newy = y;
             newx -= 2;
             --newy;
-            while( newx >= 0 && newy >= 0 && ( rmap[newy][newx].code == '\\' || rmap[newy][newx].code == ':'
-                                               || rmap[newy][newx].code == '=' ) )
+            while( newx >= 0 && newy >= 0 && ( rmap[newy][newx].code == '\\' || rmap[newy][newx].code == ':' || rmap[newy][newx].code == '=' ) )
             {
                --newx;
                --newy;
@@ -853,7 +849,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                xit->keyword = NULL;
                xit->exitdesc = NULL;
                xit->key = -1;
-               xit->flags.reset();
+               xit->flags.reset(  );
             }
          }
 
@@ -866,8 +862,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             newy = y;
             newx -= 2;
             ++newy;
-            while( newx >= 0 && newy <= 48 && ( rmap[newy][newx].code == '/' || rmap[newy][newx].code == ':'
-                                                || rmap[newy][newx].code == '=' ) )
+            while( newx >= 0 && newy <= 48 && ( rmap[newy][newx].code == '/' || rmap[newy][newx].code == ':' || rmap[newy][newx].code == '=' ) )
             {
                --newx;
                ++newy;
@@ -886,7 +881,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
                xit->keyword = NULL;
                xit->exitdesc = NULL;
                xit->key = -1;
-               xit->flags.reset();
+               xit->flags.reset(  );
             }
          }
       }

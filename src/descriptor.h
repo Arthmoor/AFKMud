@@ -39,8 +39,10 @@ extern char start_compress2_str[];
 
 struct mccp_data
 {
-   mccp_data();
-   /* No destructor needed */
+   mccp_data(  );
+   /*
+    * No destructor needed 
+    */
 
    z_stream *out_compress;
    unsigned char *out_compress_buf;
@@ -49,82 +51,39 @@ struct mccp_data
 const int TELOPT_MSP = 90; /* Mud Sound Protocol */
 const int MSP_DEFAULT = -99;
 
-/* Mud eXtension Protocol 01/06/2001 Garil@DOTDII aka Jesse DeFer dotd@dotd.com */
-
-#define MXP_VERSION "0.3"
-
-const int TELOPT_MXP = 91;
-
-enum mxp_objmenus
-{
-   MXP_NONE = -1, MXP_GROUND = 0, MXP_INV, MXP_EQ, MXP_SHOP, MXP_STEAL, MXP_CONT, MAX_MXPOBJ
-};
-
-extern char *mxp_obj_cmd[MAX_ITEM_TYPE][MAX_MXPOBJ];
-
-#define MXP_TAG_OPEN	"\033[0z"
-#define MXP_TAG_SECURE	"\033[1z"
-#define MXP_TAG_LOCKED	"\033[2z"
-
-/* ALT-155 is used as the MXP BEGIN tag: <
-   ALT-156 is used as the MXP END tag: >
-   ALT-157 is used for entity tags: &
-*/
-#define MXP_TAG_ROOMEXIT              MXP_TAG_SECURE"¢RExits£"
-#define MXP_TAG_ROOMEXIT_CLOSE        "¢/RExits£"MXP_TAG_LOCKED
-
-#define MXP_TAG_ROOMNAME              MXP_TAG_SECURE"¢RName£"
-#define MXP_TAG_ROOMNAME_CLOSE        "¢/RName£"MXP_TAG_LOCKED
-
-#define MXP_TAG_ROOMDESC              MXP_TAG_SECURE"¢RDesc£"
-#define MXP_TAG_ROOMDESC_CLOSE        MXP_TAG_SECURE"¢/RDesc£"MXP_TAG_LOCKED
-
-#define MXP_TAG_PROMPT                MXP_TAG_SECURE"¢Prompt£"
-#define MXP_TAG_PROMPT_CLOSE          "¢/Prompt£"MXP_TAG_LOCKED
-#define MXP_TAG_HP                    "¢Hp£"
-#define MXP_TAG_HP_CLOSE              "¢/Hp£"
-#define MXP_TAG_MAXHP                 "¢MaxHp£"
-#define MXP_TAG_MAXHP_CLOSE           "¢/MaxHp£"
-#define MXP_TAG_MANA                  "¢Mana£"
-#define MXP_TAG_MANA_CLOSE            "¢/Mana£"
-#define MXP_TAG_MAXMANA               "¢MaxMana£"
-#define MXP_TAG_MAXMANA_CLOSE         "¢/MaxMana£"
-
-#define MXP_SS_FILE     "../system/mxp.style"
-
 class descriptor_data
 {
  private:
-   descriptor_data( const descriptor_data& d );
-   descriptor_data& operator=( const descriptor_data& );
+   descriptor_data( const descriptor_data & d );
+     descriptor_data & operator=( const descriptor_data & );
 
  public:
-   descriptor_data(  );
-   ~descriptor_data(  );
+     descriptor_data(  );
+    ~descriptor_data(  );
 
    /*
     * Internal to descriptor.cpp 
     */
    void init(  );
-   bool write( char *, size_t );
+   bool write( const char * );
    bool read(  );
    bool flush_buffer( bool );
    void read_from_buffer(  );
-   void write_to_buffer( const char *, size_t );
+   void write_to_buffer( const string & );
    void buffer_printf( const char *, ... );
-   void send_color( const char * );
-   void pager( const char *, size_t );
+   void send_color( const string & );
+   void pager( const string & );
    void show_stats( char_data * );
    void send_greeting(  );
    void show_title(  );
    void process_dns(  );
    void resolve_dns( long );
    void prompt(  );
-   void set_pager_input( char * );
+   void set_pager_input( const string & );
    bool pager_output(  );
-   short check_reconnect( char *, bool );
-   short check_playing( char *, bool );
-   void nanny( char * );
+   short check_reconnect( const string &, bool );
+   short check_playing( const string &, bool );
+   void nanny( string & );
 
    /*
     * Functions located in other files 
@@ -132,31 +91,26 @@ class descriptor_data
    bool process_compressed(  );
    bool compressStart(  );
    bool compressEnd(  );
-   bool check_total_bans(  );
+   // bool check_total_bans(  );
    void send_msp_startup(  );
-   void send_mxp_stylesheet(  );
 
+   string host;
+   string outbuf;
+   string pagebuf;
+   string incomm;
+   string inlast;
+   string client; /* Client detection */
    descriptor_data *snoop_by;
    char_data *character;
    char_data *original;
    olc_data *olc; /* Tagith - Oasis OLC */
    struct mccp_data *mccp; /* Mud Client Compression Protocol */
-   char *host;
-   char *outbuf;
-   char *pagebuf;
-   char *pagepoint;
-   char *client;  /* Client detection */
    char inbuf[MAX_INBUF_SIZE];
-   char incomm[MIL];
-   char inlast[MIL];
-   unsigned long outsize;
-   unsigned long pagesize;
+   int pageindex; // Location of index value for pager vector<>
    int client_port;
    int descriptor;
    int newstate;
    int repeat;
-   int outtop;
-   int pagetop;
 #if !defined(WIN32)
    int ifd;
    pid_t ipid;
@@ -169,14 +123,12 @@ class descriptor_data
    unsigned char prevcolor;
    bool fcommand;
    bool msp_detected;
-   bool mxp_detected;
    bool can_compress;
    bool is_compressing;
 };
 
-extern list<descriptor_data*> dlist;
-void free_all_descs( );
-bool load_char_obj( descriptor_data *, char *, bool, bool );
+extern list < descriptor_data * >dlist;
+void free_all_descs(  );
+bool load_char_obj( descriptor_data *, const string &, bool, bool );
 void close_socket( descriptor_data *, bool );
-void convert_mxp_tags( char *, const char * );
 #endif

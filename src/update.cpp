@@ -50,27 +50,27 @@ extern bool bootlock;
 
 int IsRideable( char_data * );
 void unbind_follower( char_data *, char_data * );
-void save_timedata( );
-void calc_season( );  /* Samson - See calendar.c */
-void room_act_update( );
-void obj_act_update( );
-void mpsleep_update( );
+void save_timedata(  );
+void calc_season(  );   /* Samson - See calendar.c */
+void room_act_update(  );
+void obj_act_update(  );
+void mpsleep_update(  );
 bool is_fearing( char_data *, char_data * );
 void raw_kill( char_data *, char_data * );
 bool is_hating( char_data *, char_data * );
 void check_attacker( char_data *, char_data * );
 int get_terrain( short, short, short );
 bool map_wander( char_data *, short, short, short, short );
-void clean_auctions( );
+void clean_auctions(  );
 void set_supermob( obj_data * );
-bool check_social( char_data *, char *, char * );
-void auth_update( );
-void environment_update( );
+bool check_social( char_data *, const string &, const string & );
+void auth_update(  );
+void environment_update(  );
 bool will_fall( char_data *, int );
 void make_corpse( char_data *, char_data * );
 void hunt_vic( char_data * );
-void clean_char_queue( );
-void clean_obj_queue( );
+void clean_char_queue(  );
+void clean_obj_queue(  );
 ch_ret pullcheck( char_data *, int );
 void teleport( char_data *, int, int );
 void found_prey( char_data *, char_data * );
@@ -78,7 +78,7 @@ void found_prey( char_data *, char_data * );
 void gettimeofday( struct timeval *, struct timezone * );
 #endif
 
-char *corpse_descs[] = {
+const char *corpse_descs[] = {
    "A skeleton of %s lies here in a pile.",
    "The corpse of %s is in the last stages of decay.",
    "The corpse of %s is crawling with vermin.",
@@ -99,7 +99,7 @@ char *corpse_descs[] = {
 int graf( int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6 )
 {
    if( age < 15 )
-      return ( p0 ); /* < 15   */
+      return p0;  /* < 15   */
    else if( age <= 29 )
       return ( int )( p1 + ( ( ( age - 15 ) * ( p2 - p1 ) ) / 15 ) );   /* 15..29 */
    else if( age <= 44 )
@@ -109,7 +109,7 @@ int graf( int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6 )
    else if( age <= 79 )
       return ( int )( p4 + ( ( ( age - 60 ) * ( p5 - p4 ) ) / 20 ) );   /* 60..79 */
    else
-      return ( p6 ); /* >= 80 */
+      return p6;  /* >= 80 */
 }
 
 /* manapoint gain pr. game hour */
@@ -215,8 +215,7 @@ int hit_gain( char_data * ch )
          gain += ( gain / 4 );
    }
 
-   if( ch->Class != CLASS_WARRIOR || ch->Class != CLASS_PALADIN || ch->Class != CLASS_ANTIPALADIN
-       || ch->Class != CLASS_RANGER )
+   if( ch->Class != CLASS_WARRIOR || ch->Class != CLASS_PALADIN || ch->Class != CLASS_ANTIPALADIN || ch->Class != CLASS_RANGER )
    {
       gain -= 2;
       if( gain < 0 && !ch->fighting )
@@ -396,7 +395,6 @@ void gain_condition( char_data * ch, int iCond, int value )
             break;
       }
    }
-   return;
 }
 
 /*
@@ -427,19 +425,18 @@ void drunk_randoms( char_data * ch )
       check_social( ch, "fart", "" );
    else if( drunk > ( 10 + ( ch->get_curr_con(  ) / 5 ) ) && number_percent(  ) < ( 2 * drunk / 18 ) )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
       char_data *rvch = NULL;
 
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
          if( number_percent(  ) < 10 )
-            rvch = (*ich);
+            rvch = *ich;
       if( rvch )
          cmdf( ch, "puke %s", rvch->name );
       else
          interpret( ch, "puke" );
    }
    ch->position = position;
-   return;
 }
 
 /*
@@ -450,7 +447,7 @@ void hallucinations( char_data * ch )
 {
    if( ch->mental_state >= 30 && number_bits( 5 - ( ch->mental_state >= 50 ) - ( ch->mental_state >= 75 ) ) == 0 )
    {
-      char *t;
+      const char *t;
 
       switch ( number_range( 1, UMIN( 21, ( ch->mental_state + 5 ) / 5 ) ) )
       {
@@ -521,17 +518,16 @@ void hallucinations( char_data * ch )
       }
       ch->print( t );
    }
-   return;
 }
 
 void affect_update( char_data * ch )
 {
-   list<affect_data*>::iterator paf;
+   list < affect_data * >::iterator paf;
    skill_type *skill;
 
-   for( paf = ch->affects.begin(); paf != ch->affects.end(); )
+   for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); )
    {
-      affect_data *aff = (*paf);
+      affect_data *aff = *paf;
       ++paf;
 
       if( aff->duration > 0 )
@@ -562,13 +558,13 @@ void mobile_update( void )
    /*
     * Examine all mobs.
     */
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
    {
-      char_data *ch = (*ich);
+      char_data *ch = *ich;
       ++ich;
 
-      if( ch->char_died() )
+      if( ch->char_died(  ) )
          continue;
 
       if( !ch->in_room )
@@ -631,9 +627,9 @@ void mobile_update( void )
          case MOB_VNUM_ANIMATED_DRACOLICH:
             if( !ch->has_aflag( AFF_CHARM ) )
             {
-               if( !ch->in_room->people.empty() )
+               if( !ch->in_room->people.empty(  ) )
                   act( AT_MAGIC, "$n returns to the dust from whence $e came.", ch, NULL, NULL, TO_ROOM );
-               if( ch->isnpc(  ) ) /* Guard against purging switched? */
+               if( ch->isnpc(  ) )  /* Guard against purging switched? */
                   ch->extract( true );
                continue;
             }
@@ -646,7 +642,7 @@ void mobile_update( void )
          case MOB_VNUM_WOODCALL6:
             if( !ch->has_aflag( AFF_CHARM ) )
             {
-               if( !ch->in_room->people.empty() )
+               if( !ch->in_room->people.empty(  ) )
                   act( AT_MAGIC, "$n dashes back into the brush.", ch, NULL, NULL, TO_ROOM );
                if( ch->isnpc(  ) )
                   ch->extract( true );
@@ -666,7 +662,7 @@ void mobile_update( void )
                }
                else
                {
-                  if( !ch->in_room->people.empty() )
+                  if( !ch->in_room->people.empty(  ) )
                      act( AT_MAGIC, "$n suddenly bolts and gallops away.", ch, NULL, NULL, TO_ROOM );
                }
                if( ch->isnpc(  ) )
@@ -676,7 +672,7 @@ void mobile_update( void )
          case MOB_VNUM_GATE:
             if( !ch->has_aflag( AFF_CHARM ) )
             {
-               if( !ch->in_room->people.empty() )
+               if( !ch->in_room->people.empty(  ) )
                   act( AT_MAGIC, "The magic binding $n to this plane dissipates and $e vanishes.", ch, NULL, NULL, TO_ROOM );
                if( ch->isnpc(  ) )
                   ch->extract( true );
@@ -785,17 +781,17 @@ void mobile_update( void )
       /*
        * Scavenge 
        */
-      if( ch->has_actflag( ACT_SCAVENGER ) && !ch->in_room->objects.empty() && number_bits( 2 ) == 0 )
+      if( ch->has_actflag( ACT_SCAVENGER ) && !ch->in_room->objects.empty(  ) && number_bits( 2 ) == 0 )
       {
          obj_data *obj_best = NULL;
          int max = 1;
 
-         list<obj_data*>::iterator iobj;
-         for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+         list < obj_data * >::iterator iobj;
+         for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
          {
-            obj_data *obj = (*iobj);
+            obj_data *obj = *iobj;
 
-            if ( obj->extra_flags.test( ITEM_PROTOTYPE ) && !ch->has_actflag( ACT_PROTOTYPE ) )
+            if( obj->extra_flags.test( ITEM_PROTOTYPE ) && !ch->has_actflag( ACT_PROTOTYPE ) )
                continue;
             if( obj->wear_flags.test( ITEM_TAKE ) && obj->cost > max && !obj->extra_flags.test( ITEM_BURIED ) )
             {
@@ -872,13 +868,11 @@ void mobile_update( void )
        * Update hunt_vic also if any changes are made here 
        */
       if( !ch->has_actflag( ACT_SENTINEL )
-          && !ch->has_actflag( ACT_PROTOTYPE )
-          && ( door = number_bits( 5 ) ) <= 9 && ( pexit = ch->in_room->get_exit( door ) ) != NULL && pexit->to_room
+          && !ch->has_actflag( ACT_PROTOTYPE ) && ( door = number_bits( 5 ) ) <= 9 && ( pexit = ch->in_room->get_exit( door ) ) != NULL && pexit->to_room
           /*
            * && !IS_EXIT_FLAG( pexit, EX_CLOSED ) - Test to see if mobs will open doors like this. 
            */
-          && !IS_EXIT_FLAG( pexit, EX_WINDOW )
-          && !IS_EXIT_FLAG( pexit, EX_NOMOB )
+          && !IS_EXIT_FLAG( pexit, EX_WINDOW ) && !IS_EXIT_FLAG( pexit, EX_NOMOB )
           /*
            * Keep em from wandering through my walls, Marcus 
            */
@@ -888,8 +882,7 @@ void mobile_update( void )
           && !IS_EXIT_FLAG( pexit, EX_LIGHT )
           && !IS_EXIT_FLAG( pexit, EX_CRUMBLING )
           && !pexit->to_room->flags.test( ROOM_NO_MOB )
-          && !pexit->to_room->flags.test( ROOM_DEATH )
-          && ( !ch->has_actflag( ACT_STAY_AREA ) || pexit->to_room->area == ch->in_room->area ) )
+          && !pexit->to_room->flags.test( ROOM_DEATH ) && ( !ch->has_actflag( ACT_STAY_AREA ) || pexit->to_room->area == ch->in_room->area ) )
       {
          if( pexit->to_room->sector_type == SECT_WATER_NOSWIM && !ch->has_aflag( AFF_AQUA_BREATH ) )
             continue;
@@ -917,8 +910,7 @@ void mobile_update( void )
       if( ch->hit < ch->max_hit / 2
           && ( door = number_bits( 4 ) ) <= 9
           && ( pexit = ch->in_room->get_exit( door ) ) != NULL
-          && pexit->to_room && !IS_EXIT_FLAG( pexit, EX_CLOSED ) && !IS_EXIT_FLAG( pexit, EX_NOMOB )
-          && !IS_EXIT_FLAG( pexit, EX_WINDOW )
+          && pexit->to_room && !IS_EXIT_FLAG( pexit, EX_CLOSED ) && !IS_EXIT_FLAG( pexit, EX_NOMOB ) && !IS_EXIT_FLAG( pexit, EX_WINDOW )
           /*
            * Keep em from wandering through my walls, Marcus 
            */
@@ -926,8 +918,7 @@ void mobile_update( void )
           && !IS_EXIT_FLAG( pexit, EX_HEAVY )
           && !IS_EXIT_FLAG( pexit, EX_MEDIUM )
           && !IS_EXIT_FLAG( pexit, EX_LIGHT )
-          && !IS_EXIT_FLAG( pexit, EX_CRUMBLING ) && !pexit->to_room->flags.test( ROOM_NO_MOB )
-          && !pexit->to_room->flags.test( ROOM_DEATH ) )
+          && !IS_EXIT_FLAG( pexit, EX_CRUMBLING ) && !pexit->to_room->flags.test( ROOM_NO_MOB ) && !pexit->to_room->flags.test( ROOM_DEATH ) )
       {
          if( pexit->to_room->sector_type == SECT_WATER_NOSWIM && !ch->has_aflag( AFF_AQUA_BREATH ) )
             continue;
@@ -936,10 +927,10 @@ void mobile_update( void )
             continue;
 
          bool found = false;
-         list<char_data*>::iterator ich2;
-         for( ich2 = ch->in_room->people.begin(); ich2 != ch->in_room->people.end(); ++ich2 )
+         list < char_data * >::iterator ich2;
+         for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
          {
-            char_data *rch = (*ich2);
+            char_data *rch = *ich2;
 
             if( is_fearing( ch, rch ) )
             {
@@ -967,20 +958,19 @@ void mobile_update( void )
             retcode = move_char( ch, pexit, 0, pexit->vdir, false );
       }
    }
-   return;
 }
 
 /* Anything that should be updating based on time should go here - like hunger/thirst for one */
 void char_calendar_update( void )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = pclist.begin(); ich != pclist.end(); )
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); )
    {
-      char_data *ch = (*ich);
+      char_data *ch = *ich;
       ++ich;
 
-      if( ch->char_died() )
+      if( ch->char_died(  ) )
          continue;
 
       if( !ch->is_immortal(  ) )
@@ -1022,7 +1012,6 @@ void char_calendar_update( void )
          }
       }
    }
-   return;
 }
 
 /*
@@ -1031,16 +1020,16 @@ void char_calendar_update( void )
  */
 void char_update( void )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    char_data *ch_save = NULL;
    short save_count = 0;
 
-   for( ich = charlist.begin(); ich != charlist.end(); )
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
    {
-      char_data *ch = (*ich);
+      char_data *ch = *ich;
       ++ich;
 
-      if( ch->char_died() )
+      if( ch->char_died(  ) )
          continue;
 
       /*
@@ -1074,8 +1063,7 @@ void char_update( void )
       /*
        * See if player should be auto-saved.
        */
-      if( !ch->isnpc(  ) && ( !ch->desc || ch->desc->connected == CON_PLAYING )
-          && current_time - ch->pcdata->save_time > ( sysdata->save_frequency * 60 ) )
+      if( !ch->isnpc(  ) && ( !ch->desc || ch->desc->connected == CON_PLAYING ) && current_time - ch->pcdata->save_time > ( sysdata->save_frequency * 60 ) )
          ch_save = ch;
       else
          ch_save = NULL;
@@ -1229,8 +1217,7 @@ void char_update( void )
             }
          }
       }
-      if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->pcdata->release_date > 0
-          && ch->pcdata->release_date <= current_time )
+      if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->pcdata->release_date > 0 && ch->pcdata->release_date <= current_time )
       {
          room_index *location;
 
@@ -1321,20 +1308,19 @@ void char_update( void )
           */
          if( ch->has_aflag( AFF_RECURRINGSPELL ) )
          {
-            list<affect_data*>::iterator paf;
+            list < affect_data * >::iterator paf;
             skill_type *skill;
             bool found = false, died = false;
 
-            for( paf = ch->affects.begin(); paf != ch->affects.end(); )
+            for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); )
             {
-               affect_data *aff = (*paf);
+               affect_data *aff = *paf;
                ++paf;
 
                if( aff->location == APPLY_RECURRINGSPELL )
                {
                   found = true;
-                  if( IS_VALID_SN( aff->modifier ) && ( skill = skill_table[aff->modifier] ) != NULL
-                      && skill->type == SKILL_SPELL )
+                  if( IS_VALID_SN( aff->modifier ) && ( skill = skill_table[aff->modifier] ) != NULL && skill->type == SKILL_SPELL )
                   {
                      if( ( *skill->spell_fun ) ( aff->modifier, ch->level, ch, ch ) == rCHAR_DIED || ch->char_died(  ) )
                      {
@@ -1380,8 +1366,7 @@ void char_update( void )
                   break;
                case 9:
                   ch->print( "You are ONE with the universe.\r\n" );
-                  act( AT_ACTION, "$n is ranting on about 'the answer', 'ONE' and other mumbo-jumbo...", ch, NULL, NULL,
-                       TO_ROOM );
+                  act( AT_ACTION, "$n is ranting on about 'the answer', 'ONE' and other mumbo-jumbo...", ch, NULL, NULL, TO_ROOM );
                   break;
                case 10:
                   ch->print( "You feel the end is near.\r\n" );
@@ -1394,8 +1379,7 @@ void char_update( void )
                case 10:
                   if( ch->position > POS_SLEEPING )
                   {
-                     if( ( ch->position == POS_STANDING || ch->position < POS_BERSERK )
-                         && number_percent(  ) + 10 < abs( ch->mental_state ) )
+                     if( ( ch->position == POS_STANDING || ch->position < POS_BERSERK ) && number_percent(  ) + 10 < abs( ch->mental_state ) )
                         interpret( ch, "sleep" );
                      else
                         ch->print( "You're barely conscious.\r\n" );
@@ -1404,8 +1388,7 @@ void char_update( void )
                case 9:
                   if( ch->position > POS_SLEEPING )
                   {
-                     if( ( ch->position == POS_STANDING || ch->position < POS_BERSERK )
-                         && ( number_percent(  ) + 20 ) < abs( ch->mental_state ) )
+                     if( ( ch->position == POS_STANDING || ch->position < POS_BERSERK ) && ( number_percent(  ) + 20 ) < abs( ch->mental_state ) )
                         interpret( ch, "sleep" );
                      else
                         ch->print( "You can barely keep your eyes open.\r\n" );
@@ -1448,7 +1431,6 @@ void char_update( void )
             ch->save(  );
       }
    }
-   return;
 }
 
 /*
@@ -1457,18 +1439,18 @@ void char_update( void )
  */
 void obj_update( void )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = objlist.begin(); iobj != objlist.end(); )
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
       // Due to nature of std::list, DO NOT remove this check - objects are not deallocated until this loop is done!
-      if( obj->extracted() )
+      if( obj->extracted(  ) )
          continue;
 
-      char *message = "RESET FOR NEW OBJECT";
+      const char *message = "RESET FOR NEW OBJECT";
       short AT_TEMP = -1;
 
       if( obj->carried_by )
@@ -1653,10 +1635,10 @@ void obj_update( void )
       if( obj->carried_by )
          act( AT_TEMP, message, obj->carried_by, obj, NULL, TO_CHAR );
 
-      else if( obj->in_room && !obj->in_room->people.empty() && !obj->extra_flags.test( ITEM_BURIED ) )
+      else if( obj->in_room && !obj->in_room->people.empty(  ) && !obj->extra_flags.test( ITEM_BURIED ) )
       {
-         act( AT_TEMP, message, (*obj->in_room->people.begin()), obj, NULL, TO_ROOM );
-         act( AT_TEMP, message, (*obj->in_room->people.begin()), obj, NULL, TO_CHAR );
+         act( AT_TEMP, message, ( *obj->in_room->people.begin(  ) ), obj, NULL, TO_ROOM );
+         act( AT_TEMP, message, ( *obj->in_room->people.begin(  ) ), obj, NULL, TO_CHAR );
       }
 
       /*
@@ -1714,12 +1696,11 @@ void obj_update( void )
       if( obj->timer < 1 )
       {
          // Dump contents from PC carried containers onto ground before extraction - Samson 2/4/05
-         if( obj->carried_by && obj->carried_by->in_room && !obj->carried_by->isnpc() )
+         if( obj->carried_by && obj->carried_by->in_room && !obj->carried_by->isnpc(  ) )
             obj->empty( NULL, obj->carried_by->in_room );
          obj->extract(  );
       }
    }
-   return;
 }
 
 /*
@@ -1729,23 +1710,23 @@ void obj_update( void )
  */
 void char_check( void )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    static int pulse = 0;
 
    pulse = ( pulse + 1 ) % 100;
 
-   for( ich = pclist.begin(); ich != pclist.end(); )
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); )
    {
-      char_data *ch = (*ich);
+      char_data *ch = *ich;
       ++ich;
 
-      if( ch->char_died() )
+      if( ch->char_died(  ) )
          continue;
 
-      list<timer_data*>::iterator chtimer;
-      for( chtimer = ch->timers.begin(); chtimer != ch->timers.end(); )
+      list < timer_data * >::iterator chtimer;
+      for( chtimer = ch->timers.begin(  ); chtimer != ch->timers.end(  ); )
       {
-         timer_data *timer = (*chtimer);
+         timer_data *timer = *chtimer;
          ++chtimer;
 
          if( --timer->count <= 0 )
@@ -1774,7 +1755,7 @@ void char_check( void )
          }
       }
 
-      if( ch->char_died() )
+      if( ch->char_died(  ) )
          continue;
 
       /*
@@ -1792,8 +1773,7 @@ void char_check( void )
          ch->print( "No longer upon your mount, you fall to the ground...\r\nOUCH!\r\n" );
       }
 
-      if( ( ch->in_room && ch->in_room->sector_type == SECT_UNDERWATER )
-          || ( ch->in_room && ch->in_room->sector_type == SECT_OCEANFLOOR ) )
+      if( ( ch->in_room && ch->in_room->sector_type == SECT_UNDERWATER ) || ( ch->in_room && ch->in_room->sector_type == SECT_OCEANFLOOR ) )
       {
          /*
           * Immortal timer test message added by Samson, works only in room 1450 
@@ -1838,10 +1818,10 @@ void char_check( void )
          if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->has_aflag( AFF_FLOATING ) )
          {
             bool boat = false;
-            list<obj_data*>::iterator iobj;
-            for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+            list < obj_data * >::iterator iobj;
+            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
             {
-               obj_data *obj = (*iobj);
+               obj_data *obj = *iobj;
                if( obj->item_type == ITEM_BOAT )
                {
                   boat = true;
@@ -1896,15 +1876,14 @@ void char_check( void )
          if( ch->is_immortal(  ) && ch->in_room->vnum == 1450 )
             ch->print( "You're in shallow water.\r\n" );
 
-         if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_FLOATING )
-             && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->mount )
+         if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_FLOATING ) && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->mount )
          {
             bool boat = false;
-            list<obj_data*>::iterator iobj;
+            list < obj_data * >::iterator iobj;
 
-            for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
             {
-               obj_data *obj = (*iobj);
+               obj_data *obj = *iobj;
 
                if( obj->item_type == ITEM_BOAT )
                {
@@ -1974,14 +1953,13 @@ void char_check( void )
          if( ch->is_immortal(  ) && ch->in_room->vnum == 1450 )
             ch->print( "You're in deep water.\r\n" );
 
-         if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_FLOATING )
-             && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->mount )
+         if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_FLOATING ) && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->mount )
          {
             bool boat = false;
-            list<obj_data*>::iterator iobj;
-            for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+            list < obj_data * >::iterator iobj;
+            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
             {
-               obj_data *obj = (*iobj);
+               obj_data *obj = *iobj;
 
                if( obj->item_type == ITEM_BOAT )
                {
@@ -2046,34 +2024,33 @@ void char_check( void )
  */
 void aggr_update( void )
 {
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
 
    /*
     * Just check descriptors here for vics to aggressive mobs
     * We can check for linkdead vics in char_check -Thoric
     */
-   for( ds = dlist.begin(); ds != dlist.end(); )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
    {
       char_data *wch = NULL;
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
       ++ds;
 
       if( ( d->connected != CON_PLAYING && d->connected != CON_EDITING ) || !( wch = d->character ) )
          continue;
 
-      if( wch->char_died(  ) || wch->isnpc(  ) || wch->level >= LEVEL_IMMORTAL || !wch->in_room
-          || wch->has_pcflag( PCFLAG_IDLING ) )
+      if( wch->char_died(  ) || wch->isnpc(  ) || wch->level >= LEVEL_IMMORTAL || !wch->in_room || wch->has_pcflag( PCFLAG_IDLING ) )
          /*
           * Protect Idle/Linkdead players - Samson 5-8-99 
           */
          continue;
 
-      list<char_data*>::iterator ich;
-      for( ich = wch->in_room->people.begin(); ich != wch->in_room->people.end(); )
+      list < char_data * >::iterator ich;
+      for( ich = wch->in_room->people.begin(  ); ich != wch->in_room->people.end(  ); )
       {
          char_data *victim = NULL;
          int count = 0;
-         char_data *ch = (*ich);
+         char_data *ch = *ich;
          ++ich;
 
          if( !ch->isnpc(  ) || ch->fighting || ch->has_aflag( AFF_CHARM ) || !ch->IS_AWAKE(  )
@@ -2086,8 +2063,7 @@ void aggr_update( void )
             continue;
          }
 
-         if( ( !ch->has_actflag( ACT_AGGRESSIVE ) && !ch->has_actflag( ACT_META_AGGR ) )
-             || ch->has_actflag( ACT_MOUNTED ) || ch->in_room->flags.test( ROOM_SAFE ) )
+         if( ( !ch->has_actflag( ACT_AGGRESSIVE ) && !ch->has_actflag( ACT_META_AGGR ) ) || ch->has_actflag( ACT_MOUNTED ) || ch->in_room->flags.test( ROOM_SAFE ) )
             continue;
 
          /*
@@ -2097,15 +2073,14 @@ void aggr_update( void )
           *
           * Depending on flags set, the mob may attack another mob
           */
-         list<char_data*>::iterator ich2;
-         for( ich2 = wch->in_room->people.begin(); ich2 != wch->in_room->people.end(); )
+         list < char_data * >::iterator ich2;
+         for( ich2 = wch->in_room->people.begin(  ); ich2 != wch->in_room->people.end(  ); )
          {
-            char_data *vch = (*ich2);
+            char_data *vch = *ich2;
             ++ich2;
 
             if( ( !vch->isnpc(  ) || ch->has_actflag( ACT_META_AGGR ) || vch->has_actflag( ACT_ANNOYING ) )
-                && vch->level < LEVEL_IMMORTAL && ( !ch->has_actflag( ACT_WIMPY ) || !vch->IS_AWAKE(  ) )
-                && ch->can_see( vch, false ) )
+                && vch->level < LEVEL_IMMORTAL && ( !ch->has_actflag( ACT_WIMPY ) || !vch->IS_AWAKE(  ) ) && ch->can_see( vch, false ) )
             {
                if( number_range( 0, count ) == 0 )
                   victim = vch;
@@ -2136,8 +2111,7 @@ void aggr_update( void )
          {
             obj_data *obj;
 
-            if( !ch->mount && ( obj = ch->get_eq( WEAR_WIELD ) ) != NULL && ( obj->value[4] == WEP_DAGGER )
-                && !victim->fighting && victim->hit >= victim->max_hit )
+            if( !ch->mount && ( obj = ch->get_eq( WEAR_WIELD ) ) != NULL && ( obj->value[4] == WEP_DAGGER ) && !victim->fighting && victim->hit >= victim->max_hit )
             {
                check_attacker( ch, victim );
                ch->WAIT_STATE( skill_table[gsn_backstab]->beats );
@@ -2156,33 +2130,32 @@ void aggr_update( void )
          global_retcode = multi_hit( ch, victim, TYPE_UNDEFINED );
       }
    }
-   return;
 }
 
-void mob_act_update()
+void mob_act_update(  )
 {
-   list<char_data*>::iterator ach;
+   list < char_data * >::iterator ach;
 
    /*
     * check mobprog act queue
     */
-   for( ach = mob_act_list.begin(); ach != mob_act_list.end(); )
+   for( ach = mob_act_list.begin(  ); ach != mob_act_list.end(  ); )
    {
-      char_data *pch = (*ach);
+      char_data *pch = *ach;
       ++ach;
 
       if( !pch->char_died(  ) && pch->mpactnum > 0 )
       {
-         list<mprog_act_list*>::iterator mal;
-         for( mal = pch->mpact.begin(); mal != pch->mpact.end(); )
+         list < mprog_act_list * >::iterator mal;
+         for( mal = pch->mpact.begin(  ); mal != pch->mpact.end(  ); )
          {
-            mprog_act_list *tmp_act = (*mal);
+            mprog_act_list *tmp_act = *mal;
             ++mal;
 
             if( tmp_act->obj && tmp_act->obj->extracted(  ) )
                tmp_act->obj = NULL;
             if( tmp_act->ch && !tmp_act->ch->char_died(  ) )
-               mprog_wordlist_check( tmp_act->buf, pch, tmp_act->ch, tmp_act->obj, tmp_act->vo, ACT_PROG );
+               mprog_wordlist_check( tmp_act->buf, pch, tmp_act->ch, tmp_act->obj, tmp_act->victim, tmp_act->target, ACT_PROG );
             pch->mpact.remove( tmp_act );
             deleteptr( tmp_act );
          }
@@ -2194,24 +2167,24 @@ void mob_act_update()
 
 void tele_update( void )
 {
-   list<teleport_data*>::iterator tele;
+   list < teleport_data * >::iterator tele;
 
-   if( teleportlist.empty() )
+   if( teleportlist.empty(  ) )
       return;
 
-   for( tele = teleportlist.begin(); tele != teleportlist.end(); )
+   for( tele = teleportlist.begin(  ); tele != teleportlist.end(  ); )
    {
-      teleport_data *tport = (*tele);
+      teleport_data *tport = *tele;
       ++tele;
 
       if( --tport->timer <= 0 )
       {
-         if( !tport->room->people.empty() )
+         if( !tport->room->people.empty(  ) )
          {
             if( tport->room->flags.test( ROOM_TELESHOWDESC ) )
-               teleport( (*tport->room->people.begin()), tport->room->tele_vnum, TELE_SHOWDESC | TELE_TRANSALL );
+               teleport( ( *tport->room->people.begin(  ) ), tport->room->tele_vnum, TELE_SHOWDESC | TELE_TRANSALL );
             else
-               teleport( (*tport->room->people.begin()), tport->room->tele_vnum, TELE_TRANSALL );
+               teleport( ( *tport->room->people.begin(  ) ), tport->room->tele_vnum, TELE_TRANSALL );
          }
          teleportlist.remove( tport );
          deleteptr( tport );
@@ -2227,7 +2200,7 @@ void tele_update( void )
  */
 void adjust_vectors( weather_data * weather )
 {
-   list<neighbor_data*>:: iterator lneigh;
+   list < neighbor_data * >::iterator lneigh;
    double dT = 0, dP = 0, dW = 0;
 
    if( !weather )
@@ -2253,9 +2226,9 @@ void adjust_vectors( weather_data * weather )
    /*
     * Add in effects from neighboring areas 
     */
-   for( lneigh = weather->neighborlist.begin(); lneigh != weather->neighborlist.end(); )
+   for( lneigh = weather->neighborlist.begin(  ); lneigh != weather->neighborlist.end(  ); )
    {
-      neighbor_data *neigh = (*lneigh);
+      neighbor_data *neigh = *lneigh;
       ++lneigh;
 
       /*
@@ -2296,8 +2269,6 @@ void adjust_vectors( weather_data * weather )
    weather->temp_vector = URANGE( -max_vector, weather->temp_vector, max_vector );
    weather->precip_vector = URANGE( -max_vector, weather->precip_vector, max_vector );
    weather->wind_vector = URANGE( -max_vector, weather->wind_vector, max_vector );
-
-   return;
 }
 
 /*
@@ -2312,7 +2283,7 @@ void get_weather_echo( weather_data * weath )
    /*
     * set echo to be nothing 
     */
-   weath->echo = NULL;
+   weath->echo.clear(  );
    weath->echo_color = AT_GREY;
 
    /*
@@ -2343,7 +2314,7 @@ void get_weather_echo( weather_data * weath )
       case 0:
          if( precip - dP > -2 * weath_unit )
          {
-            char *echo_strings[4] = {
+            const char *echo_strings[4] = {
                "The clouds disappear.\r\n",
                "The clouds disappear.\r\n",
                "The sky begins to break through the clouds.\r\n",
@@ -2358,7 +2329,7 @@ void get_weather_echo( weather_data * weath )
       case 1:
          if( precip - dP <= -2 * weath_unit )
          {
-            char *echo_strings[4] = {
+            const char *echo_strings[4] = {
                "The sky is getting cloudy.\r\n",
                "The sky is getting cloudy.\r\n",
                "Light clouds cast a haze over the sky.\r\n",
@@ -2374,7 +2345,7 @@ void get_weather_echo( weather_data * weath )
          {
             if( tindex > 1 )
             {
-               char *echo_strings[4] = {
+               const char *echo_strings[4] = {
                   "The rain stops.\r\n",
                   "The rain stops.\r\n",
                   "The rainstorm tapers off.\r\n",
@@ -2385,7 +2356,7 @@ void get_weather_echo( weather_data * weath )
             }
             else
             {
-               char *echo_strings[4] = {
+               const char *echo_strings[4] = {
                   "The snow stops.\r\n",
                   "The snow stops.\r\n",
                   "The snow showers taper off.\r\n",
@@ -2402,7 +2373,7 @@ void get_weather_echo( weather_data * weath )
          {
             if( tindex > 1 )
             {
-               char *echo_strings[4] = {
+               const char *echo_strings[4] = {
                   "It starts to rain.\r\n",
                   "It starts to rain.\r\n",
                   "A droplet of rain falls upon you.\r\n",
@@ -2413,7 +2384,7 @@ void get_weather_echo( weather_data * weath )
             }
             else
             {
-               char *echo_strings[4] = {
+               const char *echo_strings[4] = {
                   "It starts to snow.\r\n",
                   "It starts to snow.\r\n",
                   "Crystal flakes begin to fall from the sky.\r\n",
@@ -2425,7 +2396,7 @@ void get_weather_echo( weather_data * weath )
          }
          else if( tindex < 2 && temp - dT > -weath_unit )
          {
-            char *echo_strings[4] = {
+            const char *echo_strings[4] = {
                "The temperature drops and the rain becomes a light snow.\r\n",
                "The temperature drops and the rain becomes a light snow.\r\n",
                "Flurries form as the rain freezes.\r\n",
@@ -2436,7 +2407,7 @@ void get_weather_echo( weather_data * weath )
          }
          else if( tindex > 1 && temp - dT <= -weath_unit )
          {
-            char *echo_strings[4] = {
+            const char *echo_strings[4] = {
                "The snow flurries are gradually replaced by pockets of rain.\r\n",
                "The snow flurries are gradually replaced by pockets of rain.\r\n",
                "The falling snow turns to a cold drizzle.\r\n",
@@ -2452,7 +2423,7 @@ void get_weather_echo( weather_data * weath )
          {
             if( tindex > 1 )
             {
-               char *echo_strings[4] = {
+               const char *echo_strings[4] = {
                   "The lightning has stopped.\r\n",
                   "The lightning has stopped.\r\n",
                   "The sky settles, and the thunder surrenders.\r\n",
@@ -2464,7 +2435,7 @@ void get_weather_echo( weather_data * weath )
          }
          else if( tindex < 2 && temp - dT > -weath_unit )
          {
-            char *echo_strings[4] = {
+            const char *echo_strings[4] = {
                "The cold rain turns to snow.\r\n",
                "The cold rain turns to snow.\r\n",
                "Snow flakes begin to fall amidst the rain.\r\n",
@@ -2475,7 +2446,7 @@ void get_weather_echo( weather_data * weath )
          }
          else if( tindex > 1 && temp - dT <= -weath_unit )
          {
-            char *echo_strings[4] = {
+            const char *echo_strings[4] = {
                "The snow becomes a freezing rain.\r\n",
                "The snow becomes a freezing rain.\r\n",
                "A cold rain beats down on you as the snow begins to melt.\r\n",
@@ -2491,7 +2462,7 @@ void get_weather_echo( weather_data * weath )
          {
             if( tindex > 1 )
             {
-               char *echo_strings[4] = {
+               const char *echo_strings[4] = {
                   "Lightning flashes in the sky.\r\n",
                   "Lightning flashes in the sky.\r\n",
                   "A flash of lightning splits the sky.\r\n",
@@ -2503,7 +2474,7 @@ void get_weather_echo( weather_data * weath )
          }
          else if( tindex > 1 && temp - dT <= -weath_unit )
          {
-            char *echo_strings[4] = {
+            const char *echo_strings[4] = {
                "The sky rumbles with thunder as the snow changes to rain.\r\n",
                "The sky rumbles with thunder as the snow changes to rain.\r\n",
                "The falling turns to freezing rain amidst flashes of lightning.\r\n",
@@ -2514,7 +2485,7 @@ void get_weather_echo( weather_data * weath )
          }
          else if( tindex < 2 && temp - dT > -weath_unit )
          {
-            char *echo_strings[4] = {
+            const char *echo_strings[4] = {
                "The lightning stops as the rainstorm becomes a blinding blizzard.\r\n",
                "The lightning stops as the rainstorm becomes a blinding blizzard.\r\n",
                "The thunder dies off as the pounding rain turns to heavy snow.\r\n",
@@ -2530,8 +2501,6 @@ void get_weather_echo( weather_data * weath )
          weath->precip = 0;
          break;
    }
-
-   return;
 }
 
 /*
@@ -2545,12 +2514,12 @@ void get_time_echo( weather_data * weath )
 {
    int n = number_bits( 2 );
    int pindex = ( weath->precip + 3 * weath_unit - 1 ) / weath_unit;
-   weath->echo = NULL;
+   weath->echo.clear(  );
    weath->echo_color = AT_GREY;
 
    if( time_info.hour == sysdata->hourdaybegin )
    {
-      char *echo_strings[4] = {
+      const char *echo_strings[4] = {
          "The day has begun.\r\n",
          "The day has begun.\r\n",
          "The sky slowly begins to glow.\r\n",
@@ -2560,9 +2529,10 @@ void get_time_echo( weather_data * weath )
       weath->echo = echo_strings[n];
       weath->echo_color = AT_YELLOW;
    }
+
    if( time_info.hour == sysdata->hoursunrise )
    {
-      char *echo_strings[4] = {
+      const char *echo_strings[4] = {
          "The sun rises in the east.\r\n",
          "The sun rises in the east.\r\n",
          "The hazy sun rises over the horizon.\r\n",
@@ -2572,6 +2542,7 @@ void get_time_echo( weather_data * weath )
       weath->echo = echo_strings[n];
       weath->echo_color = AT_ORANGE;
    }
+
    if( time_info.hour == sysdata->hournoon )
    {
       if( pindex > 0 )
@@ -2580,7 +2551,7 @@ void get_time_echo( weather_data * weath )
       }
       else
       {
-         char *echo_strings[2] = {
+         const char *echo_strings[2] = {
             "The intensity of the sun heralds the noon hour.\r\n",
             "The sun's bright rays beat down upon your shoulders.\r\n"
          };
@@ -2589,9 +2560,10 @@ void get_time_echo( weather_data * weath )
       time_info.sunlight = SUN_LIGHT;
       weath->echo_color = AT_WHITE;
    }
+
    if( time_info.hour == sysdata->hoursunset )
    {
-      char *echo_strings[4] = {
+      const char *echo_strings[4] = {
          "The sun slowly disappears in the west.\r\n",
          "The reddish sun sets past the horizon.\r\n",
          "The sky turns a reddish orange as the sun ends its journey.\r\n",
@@ -2601,11 +2573,12 @@ void get_time_echo( weather_data * weath )
       weath->echo = echo_strings[n];
       weath->echo_color = AT_RED;
    }
+
    if( time_info.hour == sysdata->hournightbegin )
    {
       if( pindex > 0 )
       {
-         char *echo_strings[2] = {
+         const char *echo_strings[2] = {
             "The night begins.\r\n",
             "Twilight descends around you.\r\n"
          };
@@ -2613,7 +2586,7 @@ void get_time_echo( weather_data * weath )
       }
       else
       {
-         char *echo_strings[2] = {
+         const char *echo_strings[2] = {
             "The moon's gentle glow diffuses through the night sky.\r\n",
             "The night sky gleams with glittering starlight.\r\n"
          };
@@ -2622,7 +2595,6 @@ void get_time_echo( weather_data * weath )
       time_info.sunlight = SUN_DARK;
       weath->echo_color = AT_DBLUE;
    }
-   return;
 }
 
 /*
@@ -2632,12 +2604,12 @@ void get_time_echo( weather_data * weath )
  */
 void weather_update(  )
 {
-   list<area_data*>::iterator ar;
+   list < area_data * >::iterator ar;
    int limit = 3 * weath_unit;
 
-   for( ar = arealist.begin(); ar != arealist.end(); ++ar )
+   for( ar = arealist.begin(  ); ar != arealist.end(  ); ++ar )
    {
-      area_data *area = (*ar);
+      area_data *area = *ar;
 
       /*
        * Apply vectors to fields 
@@ -2659,9 +2631,9 @@ void weather_update(  )
       get_weather_echo( area->weather );
    }
 
-   for( ar = arealist.begin(); ar != arealist.end(); ++ar )
+   for( ar = arealist.begin(  ); ar != arealist.end(  ); ++ar )
    {
-      area_data *area = (*ar);
+      area_data *area = *ar;
 
       adjust_vectors( area->weather );
    }
@@ -2669,26 +2641,24 @@ void weather_update(  )
    /*
     * display the echo strings to the appropriate players 
     */
-   list<descriptor_data*>::iterator ds;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   list < descriptor_data * >::iterator ds;
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
 
-      if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) &&
-          !INDOOR_SECTOR( d->character->in_room->sector_type ) && d->character->IS_AWAKE(  ) )
+      if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && !INDOOR_SECTOR( d->character->in_room->sector_type ) && d->character->IS_AWAKE(  ) )
          /*
           * Changed to use INDOOR_SECTOR macro - Samson 9-27-98 
           */
       {
          weather_data *weath = d->character->in_room->area->weather;
 
-         if( !weath->echo )
+         if( weath->echo.empty(  ) )
             continue;
          d->character->set_color( weath->echo_color );
          d->character->print( weath->echo );
       }
    }
-   return;
 }
 
 /*
@@ -2702,34 +2672,34 @@ void time_update( void )
       update_month_trigger = false;
 
    if( time_info.hour == sysdata->hourdaybegin || time_info.hour == sysdata->hoursunrise
-       || time_info.hour == sysdata->hournoon || time_info.hour == sysdata->hoursunset
-       || time_info.hour == sysdata->hournightbegin )
+       || time_info.hour == sysdata->hournoon || time_info.hour == sysdata->hoursunset || time_info.hour == sysdata->hournightbegin )
    {
-      list<area_data*>::iterator ar;
+      list < area_data * >::iterator ar;
 
-      for( ar = arealist.begin(); ar != arealist.end(); ++ar )
+      for( ar = arealist.begin(  ); ar != arealist.end(  ); ++ar )
       {
-         area_data *area = (*ar);
+         area_data *area = *ar;
 
          get_time_echo( area->weather );
       }
 
-      list<descriptor_data*>::iterator ds;
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      list < descriptor_data * >::iterator ds;
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
 
          if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && d->character->IS_AWAKE(  ) )
          {
             weather_data *weath = d->character->in_room->area->weather;
 
-            if( !weath->echo )
+            if( weath->echo.empty(  ) )
                continue;
             d->character->set_color( weath->echo_color );
             d->character->print( weath->echo );
          }
       }
    }
+
    if( time_info.hour == sysdata->hourmidnight )
    {
       time_info.hour = 0;
@@ -2757,7 +2727,6 @@ void time_update( void )
     * Save game world time - Samson 1-21-99 
     */
    save_timedata(  );
-   return;
 }
 
 void subtract_times( struct timeval *endtime, struct timeval *starttime )
@@ -2769,7 +2738,6 @@ void subtract_times( struct timeval *endtime, struct timeval *starttime )
       endtime->tv_usec += 1000000;
       --endtime->tv_sec;
    }
-   return;
 }
 
 /*
@@ -2864,6 +2832,4 @@ void update_handler( void )
       timechar->printf( "Timing took %ld.%ld seconds.\r\n", entime.tv_sec, entime.tv_usec );
       timechar = NULL;
    }
-   tail_chain(  );
-   return;
 }

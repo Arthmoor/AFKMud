@@ -9,7 +9,7 @@ CC      = g++
 #Type of machine to compile for. Athlon works just as well on Duron too.
 #The march option needs to match the general family of CPU.
 #If you don't know what to set for these options, and your system administrator doesn't either, comment this line out
-#MACHINE = -march=athlon-xp
+#MACHINE = -mtune=athlon64 -march=athlon64
 
 #Uncomment if compiling in Windows under Cygwin
 #CYGWIN = 1
@@ -44,11 +44,11 @@ OPT_FLAG = -pipe -Os
 DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
-W_FLAGS = -Wall -Wformat=2 -Wshadow -Wpointer-arith -Wcast-align -Wcast-qual -Wredundant-decls -Wconversion
+W_FLAGS = -Wall -Wformat-security -Wshadow -Wpointer-arith -Wcast-align -Wcast-qual -Wredundant-decls -Wconversion
 
 ifndef CYGWIN
-   W_FLAGS := -Werror
-   OPT_FLAG := -rdynamic
+   W_FLAGS := -Werror $(W_FLAGS)
+   OPT_FLAG := -rdynamic $(OPT_FLAG)
 endif
 
 C_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
@@ -58,7 +58,7 @@ D_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(SOLARIS
 
 C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           archery.cpp area.cpp areaconvert.cpp auction.cpp ban.cpp bits.cpp boards.cpp \
-          build.cpp calendar.cpp channels.cpp character.cpp clans.cpp color.cpp \
+          build.cpp calendar.cpp channels.cpp character.cpp chess.cpp clans.cpp color.cpp \
           comm.cpp commands.cpp comments.cpp connhist.cpp const.cpp db.cpp \
           deity.cpp descriptor.cpp editor.cpp environment.cpp event.cpp \
           event_handler.cpp features.cpp fight.cpp finger.cpp handler.cpp \
@@ -69,7 +69,7 @@ C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           pfiles.cpp player.cpp polymorph.cpp rare.cpp renumber.cpp reset.cpp \
           roomindex.cpp save.cpp search.cpp sha256.cpp ships.cpp shops.cpp \
           skills.cpp skyship.cpp slay.cpp tables.cpp track.cpp treasure.cpp \
-          update.cpp web.cpp
+          update.cpp variables.cpp web.cpp
 
 ifdef LIB_MYSQL
    C_FILES := sql.cpp $(C_FILES)
@@ -131,8 +131,8 @@ endif
 	@chmod g+w $(O_FILES)
 
 indent:
-	@indent -ts3 -nut -nsaf -nsai -nsaw -npcs -npsl -ncs -nbc -bls -prs -bap -cbi0 -cli3 -bli0 -l125 -lp -i3 -cdb -c1 -cd1 -sc -pmt $(C_FILES) resolver.cpp
-	@indent -ts3 -nut -nsaf -nsai -nsaw -npcs -npsl -ncs -nbc -bls -prs -bap -cbi0 -cli3 -bli0 -l125 -lp -i3 -cdb -c1 -cd1 -sc -pmt $(H_FILES)
+	@indent -ts3 -nut -nsaf -nsai -nsaw -npcs -npsl -ncs -nbc -bls -prs -bap -cbi0 -cli3 -bli0 -l175 -lp -i3 -cdb -c1 -cd1 -sc -pmt $(C_FILES) resolver.cpp
+	@indent -ts3 -nut -nsaf -nsai -nsaw -npcs -npsl -ncs -nbc -bls -prs -bap -cbi0 -cli3 -bli0 -l175 -lp -i3 -cdb -c1 -cd1 -sc -pmt $(H_FILES)
 
 indentclean:
 	@rm *.cpp~ *.h~
@@ -160,6 +160,10 @@ modules:
 
 modspurge:
 	$(MAKE) -C modules purge
+
+allclean:
+	$(MAKE) modsclean
+	$(MAKE) clean
 
 o/%.o: %.cpp
 	@echo "  Compiling $@....";

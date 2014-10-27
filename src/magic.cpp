@@ -42,7 +42,7 @@
 
 int astral_target;   /* Added for Astral Walk spell - Samson */
 
-ch_ret ranged_attack( char_data *, char *, obj_data *, obj_data *, short, short );
+ch_ret ranged_attack( char_data *, string, obj_data *, obj_data *, short, short );
 SPELLF( spell_null );
 liquid_data *get_liq_vnum( int );
 bool is_safe( char_data *, char_data * );
@@ -56,7 +56,7 @@ int recall( char_data *, int );
 bool circle_follow( char_data *, char_data * );
 void add_follower( char_data *, char_data * );
 void stop_follower( char_data * );
-morph_data *find_morph( char_data *, char *, bool );
+morph_data *find_morph( char_data *, const string &, bool );
 void raw_kill( char_data *, char_data * );
 ch_ret check_room_for_traps( char_data *, int );
 room_index *recall_room( char_data * );
@@ -67,11 +67,12 @@ int IsDragon( char_data * );
 
 bool EqWBits( char_data * ch, int bit )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
+
       if( obj->wear_loc != WEAR_NONE && obj->extra_flags.test( bit ) )
          return true;
    }
@@ -81,242 +82,26 @@ bool EqWBits( char_data * ch, int bit )
 /*
  * Is immune to a damage type
  */
-bool is_immune( char_data *ch, short damtype )
+bool is_immune( char_data * ch, short damtype )
 {
-   switch( damtype )
+   switch ( damtype )
    {
-      case SD_FIRE:           return( ch->has_immune( RIS_FIRE ) );
-      case SD_COLD:           return( ch->has_immune( RIS_COLD ) );
-      case SD_ELECTRICITY:    return( ch->has_immune( RIS_ELECTRICITY ) );
-      case SD_ENERGY:         return( ch->has_immune( RIS_ENERGY ) );
-      case SD_ACID:           return( ch->has_immune( RIS_ACID ) );
-      case SD_POISON:         return( ch->has_immune( RIS_POISON ) );
-      case SD_DRAIN:          return( ch->has_immune( RIS_DRAIN ) );
+      case SD_FIRE:
+         return ( ch->has_immune( RIS_FIRE ) );
+      case SD_COLD:
+         return ( ch->has_immune( RIS_COLD ) );
+      case SD_ELECTRICITY:
+         return ( ch->has_immune( RIS_ELECTRICITY ) );
+      case SD_ENERGY:
+         return ( ch->has_immune( RIS_ENERGY ) );
+      case SD_ACID:
+         return ( ch->has_immune( RIS_ACID ) );
+      case SD_POISON:
+         return ( ch->has_immune( RIS_POISON ) );
+      case SD_DRAIN:
+         return ( ch->has_immune( RIS_DRAIN ) );
    }
    return false;
-}
-
-/*
- * Lookup an herb by name.
- */
-int herb_lookup( const char *name )
-{
-   for( int sn = 0; sn < top_herb; ++sn )
-   {
-      if( !herb_table[sn] || !herb_table[sn]->name )
-         return -1;
-      if( LOWER( name[0] ) == LOWER( herb_table[sn]->name[0] ) && !str_prefix( name, herb_table[sn]->name ) )
-         return sn;
-   }
-   return -1;
-}
-
-/*
- * Perform a binary search on a section of the skill table	-Thoric
- * Each different section of the skill table is sorted alphabetically
- *
- * Check for prefix matches
- */
-int bsearch_skill_prefix( const char *name, int first, int top )
-{
-   int sn;
-
-   for( ;; )
-   {
-      sn = ( first + top ) >> 1;
-      if( !IS_VALID_SN( sn ) )
-         return -1;
-      if( LOWER( name[0] ) == LOWER( skill_table[sn]->name[0] ) && !str_prefix( name, skill_table[sn]->name ) )
-         return sn;
-      if( first >= top )
-         return -1;
-      if( strcasecmp( name, skill_table[sn]->name ) < 1 )
-         top = sn - 1;
-      else
-         first = sn + 1;
-   }
-}
-
-/*
- * Perform a binary search on a section of the skill table	-Thoric
- * Each different section of the skill table is sorted alphabetically
- *
- * Check for exact matches only
- */
-int bsearch_skill_exact( const char *name, int first, int top )
-{
-   int sn;
-
-   for( ;; )
-   {
-      sn = ( first + top ) >> 1;
-      if( !IS_VALID_SN( sn ) )
-         return -1;
-      if( !strcasecmp( name, skill_table[sn]->name ) )
-         return sn;
-      if( first >= top )
-         return -1;
-      if( strcasecmp( name, skill_table[sn]->name ) < 1 )
-         top = sn - 1;
-      else
-         first = sn + 1;
-   }
-}
-
-/*
- * Perform a binary search on a section of the skill table	-Thoric
- * Each different section of the skill table is sorted alphabetically
- *
- * Check exact match first, then a prefix match
- */
-int bsearch_skill( const char *name, int first, int top )
-{
-   int sn = bsearch_skill_exact( name, first, top );
-
-   return ( sn == -1 ) ? bsearch_skill_prefix( name, first, top ) : sn;
-}
-
-/*
- * Lookup a skill by name.
- */
-int skill_lookup( const char *name )
-{
-   int sn;
-
-   if( ( sn = bsearch_skill_exact( name, gsn_first_spell, gsn_first_skill - 1 ) ) == -1 )
-      if( ( sn = bsearch_skill_exact( name, gsn_first_skill, gsn_first_combat - 1 ) ) == -1 )
-         if( ( sn = bsearch_skill_exact( name, gsn_first_combat, gsn_first_tongue - 1 ) ) == -1 )
-            if( ( sn = bsearch_skill_exact( name, gsn_first_tongue, gsn_first_ability - 1 ) ) == -1 )
-               if( ( sn = bsearch_skill_exact( name, gsn_first_ability, gsn_first_lore - 1 ) ) == -1 )
-                  if( ( sn = bsearch_skill_exact( name, gsn_first_lore, gsn_top_sn - 1 ) ) == -1 )
-                     if( ( sn = bsearch_skill_prefix( name, gsn_first_spell, gsn_first_skill - 1 ) ) == -1 )
-                        if( ( sn = bsearch_skill_prefix( name, gsn_first_skill, gsn_first_combat - 1 ) ) == -1 )
-                           if( ( sn = bsearch_skill_prefix( name, gsn_first_combat, gsn_first_tongue - 1 ) ) == -1 )
-                              if( ( sn = bsearch_skill_prefix( name, gsn_first_tongue, gsn_first_ability - 1 ) ) == -1 )
-                                 if( ( sn = bsearch_skill_prefix( name, gsn_first_ability, gsn_first_lore - 1 ) ) == -1 )
-                                    if( ( sn = bsearch_skill_prefix( name, gsn_first_lore, gsn_top_sn - 1 ) ) == -1
-                                        && gsn_top_sn < top_sn )
-                                    {
-                                       for( sn = gsn_top_sn; sn < top_sn; ++sn )
-                                       {
-                                          if( !skill_table[sn] || !skill_table[sn]->name )
-                                             return -1;
-                                          if( LOWER( name[0] ) == LOWER( skill_table[sn]->name[0] )
-                                              && !str_prefix( name, skill_table[sn]->name ) )
-                                             return sn;
-                                       }
-                                       return -1;
-                                    }
-   return sn;
-}
-
-/*
- * Return a skilltype pointer based on sn			-Thoric
- * Returns NULL if bad, unused or personal sn.
- */
-skill_type *get_skilltype( int sn )
-{
-   if( sn >= TYPE_PERSONAL )
-      return NULL;
-   if( sn >= TYPE_HERB )
-      return IS_VALID_HERB( sn - TYPE_HERB ) ? herb_table[sn - TYPE_HERB] : NULL;
-   if( sn >= TYPE_HIT )
-      return NULL;
-   return IS_VALID_SN( sn ) ? skill_table[sn] : NULL;
-}
-
-/*
- * Perform a binary search on a section of the skill table
- * Each different section of the skill table is sorted alphabetically
- * Only match skills player knows				-Thoric
- */
-int ch_bsearch_skill_prefix( char_data * ch, const char *name, int first, int top )
-{
-   int sn;
-
-   for( ;; )
-   {
-      sn = ( first + top ) >> 1;
-
-      if( LOWER( name[0] ) == LOWER( skill_table[sn]->name[0] ) && !str_prefix( name, skill_table[sn]->name )
-          && ch->pcdata->learned[sn] > 0 && ch->level >= skill_table[sn]->skill_level[ch->Class] )
-         return sn;
-      if( first >= top )
-         return -1;
-      if( strcmp( name, skill_table[sn]->name ) < 1 )
-         top = sn - 1;
-      else
-         first = sn + 1;
-   }
-}
-
-int ch_bsearch_skill_exact( char_data * ch, const char *name, int first, int top )
-{
-   int sn;
-
-   for( ;; )
-   {
-      sn = ( first + top ) >> 1;
-
-      if( !str_cmp( name, skill_table[sn]->name )
-          && ch->pcdata->learned[sn] > 0 && ch->level >= skill_table[sn]->skill_level[ch->Class] )
-         return sn;
-      if( first >= top )
-         return -1;
-      if( strcmp( name, skill_table[sn]->name ) < 1 )
-         top = sn - 1;
-      else
-         first = sn + 1;
-   }
-}
-
-int ch_bsearch_skill( char_data * ch, const char *name, int first, int top )
-{
-   int sn = ch_bsearch_skill_exact( ch, name, first, top );
-
-   return ( sn == -1 ) ? ch_bsearch_skill_prefix( ch, name, first, top ) : sn;
-}
-
-int find_spell( char_data * ch, const char *name, bool know )
-{
-   if( ch->isnpc(  ) || !know )
-      return bsearch_skill( name, gsn_first_spell, gsn_first_skill - 1 );
-   else
-      return ch_bsearch_skill( ch, name, gsn_first_spell, gsn_first_skill - 1 );
-}
-
-/*
- * Lookup a skill by slot number.
- * Used for object loading.
- */
-int slot_lookup( int slot )
-{
-   int sn;
-
-   if( slot <= 0 )
-      return -1;
-
-   for( sn = 0; sn < top_sn; ++sn )
-      if( slot == skill_table[sn]->slot )
-         return sn;
-
-   if( fBootDb )
-      bug( "%s: bad slot %d.", __FUNCTION__, slot );
-
-   return -1;
-}
-
-CMDF( do_slotlookup )
-{
-   int sn;
-
-   if( ( sn = slot_lookup( atoi( argument ) ) ) == -1 )
-   {
-      ch->printf( "%s is not a valid slot number.\r\n", argument );
-      return;
-   }
-   ch->printf( "Slot %s belongs to skill/spell '%s'\r\n", argument, skill_table[sn]->name );
-   return;
 }
 
 /*
@@ -467,8 +252,8 @@ void say_spell( char_data * ch, int sn )
 
    struct syl_type
    {
-      char *old;
-      char *snew;
+      const char *old;
+      const char *snew;
    };
 
    static const struct syl_type syl_table[] = {
@@ -532,10 +317,10 @@ void say_spell( char_data * ch, int sn )
       snprintf( buf, MSL, "$n utters the words, '%s'.", skill->name );
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
 
       if( rch != ch )
       {
@@ -543,7 +328,6 @@ void say_spell( char_data * ch, int sn )
             act( AT_MAGIC, ch->Class == rch->Class ? buf : buf2, ch, NULL, rch, TO_VICT );
       }
    }
-   return;
 }
 
 /*
@@ -584,7 +368,7 @@ int ris_save( char_data * ch, int rchance, int ris )
 int rd_parse( char_data * ch, int level, char *pexp )
 {
    int lop = 0, gop = 0, eop = 0;
-   unsigned int x, len = 0;
+   size_t x, len = 0;
    char operation;
    char *sexp[2];
    int total = 0;
@@ -763,11 +547,11 @@ int rd_parse( char_data * ch, int level, char *pexp )
 }
 
 /* wrapper function so as not to destroy exp */
-int dice_parse( char_data *ch, int level, char *xexp )
+int dice_parse( char_data * ch, int level, const string & xexp )
 {
    char buf[MIL];
 
-   mudstrlcpy( buf, xexp, MIL );
+   mudstrlcpy( buf, xexp.c_str(  ), MIL );
    return rd_parse( ch, level, buf );
 }
 
@@ -856,7 +640,7 @@ bool process_spell_components( char_data * ch, int sn )
    bool consume, fail, found;
    int val, value;
    obj_data *obj;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
    /*
     * if no components necessary, then everything is cool 
@@ -919,9 +703,10 @@ bool process_spell_components( char_data * ch, int sn )
             break;
 
          case 'T':
-            for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
             {
-               obj = (*iobj);
+               obj = *iobj;
+
                if( obj->item_type == value )
                {
                   if( fail )
@@ -936,9 +721,10 @@ bool process_spell_components( char_data * ch, int sn )
             break;
 
          case 'V':
-            for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
             {
-               obj = (*iobj);
+               obj = *iobj;
+
                if( obj->pIndexData->vnum == value )
                {
                   if( fail )
@@ -953,10 +739,11 @@ bool process_spell_components( char_data * ch, int sn )
             break;
 
          case 'K':
-            for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
             {
-               obj = (*iobj);
-               if( nifty_is_name( check, obj->name ) )
+               obj = *iobj;
+
+               if( hasname( obj->name, check ) )
                {
                   if( fail )
                   {
@@ -1070,7 +857,7 @@ int pAbort;
 /* Turn off annoying message and just abort if needed */
 bool silence_locate_targets;
 
-void *locate_targets( char_data * ch, char *arg, int sn )
+void *locate_targets( char_data * ch, const string & arg, int sn )
 {
    char_data *victim = NULL;
    obj_data *obj = NULL;
@@ -1087,7 +874,7 @@ void *locate_targets( char_data * ch, char *arg, int sn )
          break;
 
       case TAR_CHAR_OFFENSIVE:
-         if( !arg || arg[0] == '\0' )
+         if( arg.empty(  ) )
          {
             if( !( victim = ch->who_fighting(  ) ) )
             {
@@ -1106,8 +893,7 @@ void *locate_targets( char_data * ch, char *arg, int sn )
          if( is_safe( ch, victim ) )
             return &pAbort;
 
-         if( !ch->isnpc(  ) && !victim->isnpc(  ) && victim->CAN_PKILL(  ) && !ch->CAN_PKILL(  )
-             && !in_arena( ch ) && !in_arena( victim ) )
+         if( !ch->isnpc(  ) && !victim->isnpc(  ) && victim->CAN_PKILL(  ) && !ch->CAN_PKILL(  ) && !in_arena( ch ) && !in_arena( victim ) )
          {
             ch->print( "&[magic]The gods will not permit you to cast spells on that character.\r\n" );
             return &pAbort;
@@ -1179,7 +965,7 @@ void *locate_targets( char_data * ch, char *arg, int sn )
          break;
 
       case TAR_CHAR_DEFENSIVE:
-         if( !arg || arg[0] == '\0' )
+         if( arg.empty(  ) )
             victim = ch;
          else if( !( victim = ch->get_char_room( arg ) ) )
          {
@@ -1198,7 +984,7 @@ void *locate_targets( char_data * ch, char *arg, int sn )
          break;
 
       case TAR_CHAR_SELF:
-         if( arg[0] != '\0' && !nifty_is_name( arg, ch->name ) )
+         if( !arg.empty(  ) && !hasname( ch->name, arg ) )
          {
             if( !silence_locate_targets )
                ch->print( "You cannot cast this spell on another.\r\n" );
@@ -1208,7 +994,7 @@ void *locate_targets( char_data * ch, char *arg, int sn )
          break;
 
       case TAR_OBJ_INV:
-         if( !arg || arg[0] == '\0' )
+         if( arg.empty(  ) )
          {
             if( !silence_locate_targets )
                ch->print( "What should the spell be cast upon?\r\n" );
@@ -1230,16 +1016,16 @@ void *locate_targets( char_data * ch, char *arg, int sn )
 /*
  * The kludgy global is for spells who want more stuff from command line.
  */
-char *target_name;
-char *ranged_target_name = NULL;
+string target_name;
+string ranged_target_name;
 
 /*
  * Cast a spell.  Multi-caster and component support by Thoric
  */
 CMDF( do_cast )
 {
-   char arg1[MIL], arg2[MIL];
-   static char staticbuf[MIL];
+   string arg1, arg2;
+   static string staticbuf;
    char_data *victim;
    void *vo = NULL;
    int mana, max = 0, sn;
@@ -1276,8 +1062,7 @@ CMDF( do_cast )
 
          target_name = one_argument( argument, arg1 );
          one_argument( target_name, arg2 );
-         DISPOSE( ranged_target_name );
-         ranged_target_name = str_dup( target_name );
+         ranged_target_name = target_name;
          if( ch->morph != NULL )
          {
             if( !( ch->morph->cast_allowed ) )
@@ -1286,14 +1071,15 @@ CMDF( do_cast )
                return;
             }
          }
-         if( ch->Class == CLASS_BARD && arg1[0] == '\0' )
-         {
-            ch->print( "What do you wish to play?\r\n" );
-            return;
-         }
 
-         else if( !arg1 || arg1[0] == '\0' )
+         if( arg1.empty(  ) )
          {
+            if( ch->Class == CLASS_BARD )
+            {
+               ch->print( "What do you wish to play?\r\n" );
+               return;
+            }
+
             ch->print( "Cast which what where?\r\n" );
             return;
          }
@@ -1303,8 +1089,7 @@ CMDF( do_cast )
           */
          if( ch->get_trust(  ) < LEVEL_GOD )
          {
-            if( ( sn = find_spell( ch, arg1, true ) ) < 0
-                || ( !ch->isnpc(  ) && ch->level < skill_table[sn]->skill_level[ch->Class] ) )
+            if( ( sn = find_spell( ch, arg1, true ) ) < 0 || ( !ch->isnpc(  ) && ch->level < skill_table[sn]->skill_level[ch->Class] ) )
             {
                ch->print( "You can't cast that!\r\n" );
                return;
@@ -1314,22 +1099,22 @@ CMDF( do_cast )
                ch->print( "You can't do that right now...\r\n" );
                return;
             }
-            if( ch->has_aflag( AFF_SILENCE ) )   /* Silence spell prevents casting */
+            if( ch->has_aflag( AFF_SILENCE ) )  /* Silence spell prevents casting */
             {
                ch->print( "&[magic]You are magically silenced, you cannot utter a sound!\r\n" );
                return;
             }
-            if( ch->has_aflag( AFF_BASH ) )   /* Being bashed prevents casting too */
+            if( ch->has_aflag( AFF_BASH ) )  /* Being bashed prevents casting too */
             {
                ch->print( "&[magic]You've been stunned by a blow to the head. Wait for it to wear off.\r\n" );
                return;
             }
          }
          else
+         {
             /*
              * Godly "spell builder" spell casting with debugging messages
              */
-         {
             if( ( sn = skill_lookup( arg1 ) ) < 0 )
             {
                ch->print( "We didn't create that yet...\r\n" );
@@ -1433,8 +1218,7 @@ CMDF( do_cast )
             return;
          }
 
-         if( !ch->isnpc(  ) && !ch->is_immortal(  ) && skill->guild != CLASS_NONE
-             && ( !ch->pcdata->clan || skill->guild != ch->pcdata->clan->Class ) )
+         if( !ch->isnpc(  ) && !ch->is_immortal(  ) && skill->guild != CLASS_NONE && ( !ch->pcdata->clan || skill->guild != ch->pcdata->clan->Class ) )
          {
             ch->print( "That is only available to members of a certain guild.\r\n" );
             return;
@@ -1473,7 +1257,7 @@ CMDF( do_cast )
          ch->add_timer( TIMER_DO_FUN, UMIN( skill->beats / 10, 3 ), do_cast, 1 );
          act( AT_MAGIC, "You begin to chant...", ch, NULL, NULL, TO_CHAR );
          act( AT_MAGIC, "$n begins to chant...", ch, NULL, NULL, TO_ROOM );
-         strdup_printf( &ch->alloc_ptr, "%s %s", arg2, target_name );
+         strdup_printf( &ch->alloc_ptr, "%s %s", arg2.c_str(  ), target_name.c_str(  ) );
          ch->tempnum = sn;
          return;
 
@@ -1513,7 +1297,7 @@ CMDF( do_cast )
             return;
          }
          mana = ch->isnpc(  )? 0 : UMAX( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
-         mudstrlcpy( staticbuf, ch->alloc_ptr, MIL );
+         staticbuf = ch->alloc_ptr;
          target_name = one_argument( staticbuf, arg2 );
          DISPOSE( ch->alloc_ptr );
          ch->substate = SUB_NONE;
@@ -1521,27 +1305,25 @@ CMDF( do_cast )
          {
             int cnt = 1;
             char_data *tmp;
-            list<char_data*>::iterator ich;
+            list < char_data * >::iterator ich;
             timer_data *t;
 
-            for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+            for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
             {
-               tmp = (*ich);
+               tmp = *ich;
 
                if( tmp != ch && ( t = tmp->get_timerptr( TIMER_DO_FUN ) ) != NULL
-                   && t->count >= 1 && t->do_fun == do_cast && tmp->tempnum == sn && tmp->alloc_ptr
-                   && !str_cmp( tmp->alloc_ptr, staticbuf ) )
+                   && t->count >= 1 && t->do_fun == do_cast && tmp->tempnum == sn && tmp->alloc_ptr && !str_cmp( tmp->alloc_ptr, staticbuf ) )
                   ++cnt;
             }
             if( cnt >= skill->participants )
             {
-               for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+               for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
                {
-                  tmp = (*ich);
+                  tmp = *ich;
 
                   if( tmp != ch && ( t = tmp->get_timerptr( TIMER_DO_FUN ) ) != NULL
-                      && t->count >= 1 && t->do_fun == do_cast && tmp->tempnum == sn && tmp->alloc_ptr
-                      && !str_cmp( tmp->alloc_ptr, staticbuf ) )
+                      && t->count >= 1 && t->do_fun == do_cast && tmp->tempnum == sn && tmp->alloc_ptr && !str_cmp( tmp->alloc_ptr, staticbuf ) )
                   {
                      tmp->extract_timer( t );
                      act( AT_MAGIC, "Channeling your energy into $n, you help cast the spell!", ch, NULL, tmp, TO_VICT );
@@ -1712,8 +1494,7 @@ CMDF( do_cast )
        * and it is a TAR_CHAR_DEFENSIVE/SELF spell
        * otherwise spells will have to check themselves
        */
-      if( ( ( skill->target == TAR_CHAR_DEFENSIVE || skill->target == TAR_CHAR_SELF )
-            && victim && victim->has_immune( RIS_MAGIC ) ) )
+      if( ( ( skill->target == TAR_CHAR_DEFENSIVE || skill->target == TAR_CHAR_SELF ) && victim && victim->has_immune( RIS_MAGIC ) ) )
       {
          immune_casting( skill, ch, victim, NULL );
          retcode = rSPELL_FAILED;
@@ -1752,11 +1533,11 @@ CMDF( do_cast )
     */
    if( skill->target == TAR_CHAR_OFFENSIVE && victim && !victim->char_died(  ) && victim != ch )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
 
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
-         char_data *vch = (*ich);
+         char_data *vch = *ich;
          ++ich;
 
          if( vch == victim )
@@ -1767,7 +1548,6 @@ CMDF( do_cast )
          }
       }
    }
-   return;
 }
 
 /* Wrapper function for Bards - Samson 10-26-98 */
@@ -1780,10 +1560,10 @@ CMDF( do_play )
    }
 
    bool found = false;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( obj->item_type == ITEM_INSTRUMENT && obj->wear_loc == WEAR_HOLD )
       {
@@ -1799,7 +1579,6 @@ CMDF( do_play )
    }
 
    do_cast( ch, argument );
-   return;
 }
 
 /*
@@ -1866,7 +1645,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
       return rNONE;
    }
 
-   target_name = "";
+   target_name.clear(  );
    switch ( skill->target )
    {
       default:
@@ -1941,11 +1720,11 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
 
    if( skill->target == TAR_CHAR_OFFENSIVE && victim != ch && !victim->char_died(  ) )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
 
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
-         char_data *vch = (*ich);
+         char_data *vch = *ich;
          ++ich;
 
          if( victim == vch && !vch->fighting && vch->master != ch )
@@ -2078,8 +1857,7 @@ SPELLF( spell_cure_blindness )
 /* Must keep */
 SPELLF( spell_call_lightning )
 {
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) )
-       && !ch->has_pcflag( PCFLAG_ONMAP ) && !ch->has_actflag( ACT_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) && !ch->has_actflag( ACT_ONMAP ) )
    {
       ch->print( "You must be outdoors to cast this spell.\r\n" );
       return rSPELL_FAILED;
@@ -2098,11 +1876,11 @@ SPELLF( spell_call_lightning )
    act( AT_MAGIC, "$n calls God's lightning to strike $s foes!", ch, NULL, NULL, TO_ROOM );
 
    bool ch_died = false;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
       ch_ret retcode = rNONE;
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
       ++ich;
 
       if( vch->has_pcflag( PCFLAG_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
@@ -2297,7 +2075,7 @@ SPELLF( spell_create_water )
       if( obj->value[1] > obj->value[0] )
          obj->value[1] = obj->value[0];
 
-      if( !is_name( "water", obj->name ) )
+      if( !hasname( obj->name, "water" ) )
          stralloc_printf( &obj->name, "%s water", obj->name );
 
       act( AT_MAGIC, "$p is filled.", ch, obj, NULL, TO_CHAR );
@@ -2384,10 +2162,10 @@ SPELLF( spell_dispel_magic )
    /*
     * Remove ALL affects generated by spells, and kill the AFF_X bit for it as well 
     */
-   list<affect_data*>::iterator paf;
-   for( paf = victim->affects.begin(); paf != victim->affects.end(); )
+   list < affect_data * >::iterator paf;
+   for( paf = victim->affects.begin(  ); paf != victim->affects.end(  ); )
    {
-      affect_data *aff = (*paf);
+      affect_data *aff = ( *paf );
       ++paf;
 
       if( ( skill = get_skilltype( aff->type ) ) != NULL )
@@ -2454,8 +2232,7 @@ SPELLF( spell_dispel_magic )
       victim->unset_aflag( AFF_SLOW );
 
    ch->set_color( AT_MAGIC );
-   ch->printf( "You weave arcane gestures, and %s's spells are negated!\r\n",
-               victim->isnpc(  )? victim->short_descr : victim->name );
+   ch->printf( "You weave arcane gestures, and %s's spells are negated!\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
 
    /*
     * Have to reset victim's racial and eq affects etc 
@@ -2517,7 +2294,7 @@ SPELLF( spell_enchant_weapon )
    obj_data *obj = ( obj_data * ) vo;
    affect_data *paf;
 
-   if( obj->item_type != ITEM_WEAPON || obj->extra_flags.test( ITEM_MAGIC ) || !obj->affects.empty() )
+   if( obj->item_type != ITEM_WEAPON || obj->extra_flags.test( ITEM_MAGIC ) || !obj->affects.empty(  ) )
    {
       act( AT_MAGIC, "Your magic twists and winds around $p but cannot take hold.", ch, obj, NULL, TO_CHAR );
       act( AT_MAGIC, "$n's magic twists and winds around $p but cannot take hold.", ch, obj, NULL, TO_NOTVICT );
@@ -2612,10 +2389,10 @@ SPELLF( spell_faerie_fog )
    act( AT_MAGIC, "$n conjures a cloud of purple smoke.", ch, NULL, NULL, TO_ROOM );
    act( AT_MAGIC, "You conjure a cloud of purple smoke.", ch, NULL, NULL, TO_CHAR );
 
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( vch->has_pcflag( PCFLAG_WIZINVIS ) )
          continue;
@@ -2677,7 +2454,7 @@ SPELLF( spell_identify )
    skill_type *skill = get_skilltype( sn );
    char *name;
 
-   if( target_name[0] == '\0' )
+   if( target_name.empty(  ) )
    {
       ch->print( "What should the spell be cast upon?\r\n" );
       return rSPELL_FAILED;
@@ -2709,33 +2486,31 @@ SPELLF( spell_identify )
       else
          name = victim->name;
 
-      ch->printf( "%s appears to be between level %d and %d.\r\n", name, victim->level - ( victim->level % 5 ),
-                  victim->level - ( victim->level % 5 ) + 5 );
+      ch->printf( "%s appears to be between level %d and %d.\r\n", name, victim->level - ( victim->level % 5 ), victim->level - ( victim->level % 5 ) + 5 );
 
       if( victim->isnpc(  ) && victim->morph )
          ch->printf( "%s appears to truly be %s.\r\n", name, ( ch->level > victim->level + 10 ) ? victim->name : "someone else" );
 
-      ch->printf( "%s looks like %s, and follows the ways of the %s.\r\n", name, aoran( victim->get_race(  ) ),
-                  victim->get_class(  ) );
+      ch->printf( "%s looks like %s, and follows the ways of the %s.\r\n", name, aoran( victim->get_race(  ) ), victim->get_class(  ) );
 
       if( ( ch->chance( 50 ) && ch->level >= victim->level + 10 ) || ch->is_immortal(  ) )
       {
          ch->printf( "%s appears to be affected by: ", name );
 
-         if( victim->affects.empty() )
+         if( victim->affects.empty(  ) )
          {
             ch->print( "nothing.\r\n" );
             return rNONE;
          }
 
-         list<affect_data*>::iterator affidx = victim->affects.end();
+         list < affect_data * >::iterator affidx = victim->affects.end(  );
          --affidx;
-         list<affect_data*>::iterator paf;
-         for( paf = victim->affects.begin(); paf != victim->affects.end(); ++paf )
+         list < affect_data * >::iterator paf;
+         for( paf = victim->affects.begin(  ); paf != victim->affects.end(  ); ++paf )
          {
-            affect_data *af = (*paf);
+            affect_data *af = *paf;
 
-            if( victim->affects.begin() != affidx )
+            if( victim->affects.begin(  ) != affidx )
             {
                if( paf != affidx && ( sktmp = get_skilltype( af->type ) ) != NULL )
                   ch->printf( "%s, ", sktmp->name );
@@ -2759,7 +2534,7 @@ SPELLF( spell_identify )
    }
    else
    {
-      ch->printf( "You can't find %s!\r\n", target_name );
+      ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
       return rSPELL_FAILED;
    }
    return rNONE;
@@ -2773,7 +2548,7 @@ SPELLF( spell_invis )
    /*
     * Modifications on 1/2/96 to work on player/object - Scryn 
     */
-   if( target_name[0] == '\0' )
+   if( target_name.empty(  ) )
       victim = ch;
    else
       victim = ch->get_char_room( target_name );
@@ -2823,14 +2598,14 @@ SPELLF( spell_invis )
          return rNONE;
       }
    }
-   ch->printf( "You can't find %s!\r\n", target_name );
+   ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
    return rSPELL_FAILED;
 }
 
 SPELLF( spell_know_alignment )
 {
    char_data *victim = ( char_data * ) vo;
-   char *msg;
+   const char *msg;
    int ap;
    skill_type *skill = get_skilltype( sn );
 
@@ -2870,14 +2645,14 @@ SPELLF( spell_know_alignment )
 SPELLF( spell_locate_object )
 {
    obj_data *in_obj;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int cnt, found = 0;
 
-   for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
-      if( !ch->can_see_obj( obj, true ) || !nifty_is_name( target_name, obj->name ) )
+      if( !ch->can_see_obj( obj, true ) || !hasname( obj->name, target_name ) )
          continue;
       if( ( obj->extra_flags.test( ITEM_PROTOTYPE ) || obj->extra_flags.test( ITEM_NOLOCATE ) ) && !ch->is_immortal(  ) )
          continue;
@@ -2888,8 +2663,7 @@ SPELLF( spell_locate_object )
          ;
       if( cnt >= MAX_NEST )
       {
-         bug( "%s: object [%d] %s is nested more than %d times!", __FUNCTION__, 
-              obj->pIndexData->vnum, obj->short_descr, MAX_NEST );
+         bug( "%s: object [%d] %s is nested more than %d times!", __FUNCTION__, obj->pIndexData->vnum, obj->short_descr, MAX_NEST );
          continue;
       }
 
@@ -2902,10 +2676,10 @@ SPELLF( spell_locate_object )
             found--;
             continue;
          }
-         ch->pagerf( "%s carried by %s.\r\n", obj->oshort(  ), PERS( in_obj->carried_by, ch, false ) );
+         ch->pagerf( "%s carried by %s.\r\n", obj->oshort(  ).c_str(  ), PERS( in_obj->carried_by, ch, false ) );
       }
       else
-         ch->pagerf( "%s in %s.\r\n", obj->oshort(  ), in_obj->in_room == NULL ? "somewhere" : in_obj->in_room->name );
+         ch->pagerf( "%s in %s.\r\n", obj->oshort(  ).c_str(  ), in_obj->in_room == NULL ? "somewhere" : in_obj->in_room->name );
    }
 
    if( !found )
@@ -2919,26 +2693,27 @@ SPELLF( spell_locate_object )
 SPELLF( spell_remove_trap )
 {
    obj_data *trap, *obj = NULL;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    skill_type *skill = get_skilltype( sn );
 
-   if( !target_name || target_name[0] == '\0' )
+   if( target_name.empty(  ) )
    {
       ch->print( "Remove trap on what?\r\n" );
       return rSPELL_FAILED;
    }
 
-   if( ch->in_room->objects.empty() )
+   if( ch->in_room->objects.empty(  ) )
    {
       ch->print( "You can't find that here.\r\n" );
       return rNONE;
    }
 
    bool found = false;
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      obj = (*iobj);
-      if( ch->can_see_obj( obj, false ) && nifty_is_name( target_name, obj->name ) )
+      obj = *iobj;
+
+      if( ch->can_see_obj( obj, false ) && hasname( obj->name, target_name ) )
       {
          found = true;
          break;
@@ -3120,8 +2895,7 @@ SPELLF( spell_astral_walk )
 {
    room_index *location;
 
-   if( !( location = get_room_index( astral_target ) )
-       || ch->in_room->flags.test( ROOM_NO_ASTRAL ) || ch->in_room->area->flags.test( AFLAG_NOASTRAL ) )
+   if( !( location = get_room_index( astral_target ) ) || ch->in_room->flags.test( ROOM_NO_ASTRAL ) || ch->in_room->area->flags.test( AFLAG_NOASTRAL ) )
    {
       ch->print( "&[magic]A mysterious force prevents you from opening a gateway.\r\n" );
       return rSPELL_FAILED;
@@ -3135,10 +2909,10 @@ SPELLF( spell_astral_walk )
    act( AT_MAGIC, "You open a gateway onto another plane!", ch, NULL, NULL, TO_CHAR );
    act( AT_MAGIC, "$n appears from a gateway in thin air!", ch, NULL, NULL, TO_ROOM );
 
-   list<char_data*>::iterator ich;
-   for( ich = original->people.begin(); ich != original->people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = original->people.begin(  ); ich != original->people.end(  ); )
    {
-      char_data *vch = (*ich);
+      char_data *vch = ( *ich );
       ++ich;
 
       if( !is_same_group( vch, ch ) )
@@ -3170,8 +2944,7 @@ SPELLF( spell_teleport )
       return rSPELL_FAILED;
    }
 
-   if( ( !ch->isnpc(  ) && victim->fighting )
-       || ( victim != ch && ( saves_spell_staff( level, victim ) || saves_wands( level, victim ) ) ) )
+   if( ( !ch->isnpc(  ) && victim->fighting ) || ( victim != ch && ( saves_spell_staff( level, victim ) || saves_wands( level, victim ) ) ) )
    {
       failed_casting( skill, ch, victim, NULL );
       return rSPELL_FAILED;
@@ -3218,8 +2991,7 @@ SPELLF( spell_teleport )
          pRoomIndex = get_room_index( number_range( 0, sysdata->maxvnum ) );
          if( pRoomIndex )
             if( !pRoomIndex->flags.test( ROOM_NOTELEPORT )
-                && !pRoomIndex->area->flags.test( AFLAG_NOTELEPORT )
-                && !pRoomIndex->flags.test( ROOM_PROTOTYPE ) && victim->in_hard_range( pRoomIndex->area ) )
+                && !pRoomIndex->area->flags.test( AFLAG_NOTELEPORT ) && !pRoomIndex->flags.test( ROOM_PROTOTYPE ) && victim->in_hard_range( pRoomIndex->area ) )
                break;
       }
       act( AT_MAGIC, "$n slowly fades out of view.", victim, NULL, NULL, TO_ROOM );
@@ -3232,20 +3004,21 @@ SPELLF( spell_teleport )
 
 SPELLF( spell_ventriloquate )
 {
-   char buf1[MSL], buf2[MSL], speaker[MIL];
+   char buf1[MSL], buf2[MSL];
+   string speaker;
 
    target_name = one_argument( target_name, speaker );
 
-   snprintf( buf1, MSL, "%s says '%s'.\r\n", speaker, target_name );
-   snprintf( buf2, MSL, "Someone makes %s say '%s'.\r\n", speaker, target_name );
+   snprintf( buf1, MSL, "%s says '%s'.\r\n", speaker.c_str(  ), target_name.c_str(  ) );
+   snprintf( buf2, MSL, "Someone makes %s say '%s'.\r\n", speaker.c_str(  ), target_name.c_str(  ) );
    buf1[0] = UPPER( buf1[0] );
 
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
-      if( !is_name( speaker, vch->name ) && is_same_char_map( ch, vch ) )
+      if( !hasname( vch->name, speaker ) && is_same_char_map( ch, vch ) )
          vch->printf( "&[say]%s\r\n", saves_spell_staff( level, vch ) ? buf2 : buf1 );
    }
    return rNONE;
@@ -3298,18 +3071,18 @@ SPELLF( spell_weaken )
  */
 SPELLF( spell_word_of_recall )
 {
-   char arg3[MIL];
+   string arg3;
    int call = -1;
    int target = -1;
 
    target_name = one_argument( target_name, arg3 );
 
-   if( arg3[0] == '\0' )
+   if( arg3.empty(  ) )
       call = recall( ch, -1 );
 
    else
    {
-      target = atoi( arg3 );
+      target = atoi( arg3.c_str(  ) );
 
       if( target < 0 || target >= MAX_BEACONS )
       {
@@ -3332,14 +3105,14 @@ SPELLF( spell_acid_breath )
 {
    char_data *victim = ( char_data * ) vo;
    obj_data *obj_lose;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int dam, hpch;
 
    if( ch->chance( 2 * level ) && !saves_breath( level, victim ) )
    {
-      for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+      for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
       {
-         obj_lose = (*iobj);
+         obj_lose = *iobj;
          ++iobj;
 
          int iWear;
@@ -3388,16 +3161,16 @@ SPELLF( spell_fire_breath )
 {
    char_data *victim = ( char_data * ) vo;
    obj_data *obj_lose;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int dam, hpch;
 
    if( ch->chance( 2 * level ) && !saves_breath( level, victim ) )
    {
-      for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+      for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
       {
-         obj_lose = (*iobj);
+         obj_lose = *iobj;
          ++iobj;
-         char *msg;
+         const char *msg;
 
          if( number_bits( 2 ) != 0 )
             continue;
@@ -3453,16 +3226,16 @@ SPELLF( spell_frost_breath )
 {
    char_data *victim = ( char_data * ) vo;
    obj_data *obj_lose;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int dam, hpch;
 
    if( ch->chance( 2 * level ) && !saves_breath( level, victim ) )
    {
-      for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+      for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
       {
-         obj_lose = (*iobj);
+         obj_lose = *iobj;
          ++iobj;
-         char *msg;
+         const char *msg;
 
          if( number_bits( 2 ) != 0 )
             continue;
@@ -3506,10 +3279,10 @@ SPELLF( spell_gas_breath )
    }
 
    bool ch_died = false;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
       ++ich;
 
       if( vch->has_pcflag( PCFLAG_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
@@ -3578,7 +3351,7 @@ SPELLF( spell_notfound )
 SPELLF( spell_transport )
 {
    char_data *victim;
-   char arg3[MSL];
+   string arg3;
    obj_data *obj;
    skill_type *skill = get_skilltype( sn );
 
@@ -3592,8 +3365,7 @@ SPELLF( spell_transport )
        || victim->in_room->area->flags.test( AFLAG_NOTELEPORT )
        || ch->in_room->flags.test( ROOM_NOTELEPORT )
        || ch->in_room->area->flags.test( AFLAG_NOTELEPORT )
-       || victim->in_room->flags.test( ROOM_PROTOTYPE )
-       || victim->has_actflag( ACT_PROTOTYPE ) || ( victim->isnpc(  ) && saves_spell_staff( level, victim ) ) )
+       || victim->in_room->flags.test( ROOM_PROTOTYPE ) || victim->has_actflag( ACT_PROTOTYPE ) || ( victim->isnpc(  ) && saves_spell_staff( level, victim ) ) )
    {
       failed_casting( skill, ch, victim, NULL );
       return rSPELL_FAILED;
@@ -3605,8 +3377,7 @@ SPELLF( spell_transport )
       return rSPELL_FAILED;
    }
 
-   if( !( obj = ch->get_obj_carry( arg3 ) )
-       || ( victim->carry_weight + obj->get_weight(  ) ) > victim->can_carry_w(  ) || victim->has_actflag( ACT_PROTOTYPE ) )
+   if( !( obj = ch->get_obj_carry( arg3 ) ) || ( victim->carry_weight + obj->get_weight(  ) ) > victim->can_carry_w(  ) || victim->has_actflag( ACT_PROTOTYPE ) )
    {
       failed_casting( skill, ch, victim, NULL );
       return rSPELL_FAILED;
@@ -3653,8 +3424,7 @@ SPELLF( spell_portal )
     * No go if all kinds of things aren't just right, including the caster
     * and victim are not both pkill or both peaceful. -- Narn
     */
-   if( !( victim = ch->get_char_world( target_name ) )
-       || !victim->in_room || victim->in_room->flags.test( ROOM_PROTOTYPE ) || victim->has_actflag( ACT_PROTOTYPE ) )
+   if( !( victim = ch->get_char_world( target_name ) ) || !victim->in_room || victim->in_room->flags.test( ROOM_PROTOTYPE ) || victim->has_actflag( ACT_PROTOTYPE ) )
    {
       ch->print( "Nobody matching that target name is around.\r\n" );
       return rSPELL_FAILED;
@@ -3666,8 +3436,7 @@ SPELLF( spell_portal )
       return rSPELL_FAILED;
    }
 
-   if( ch->has_pcflag( PCFLAG_ONMAP ) || victim->has_pcflag( PCFLAG_ONMAP )
-       || ch->has_actflag( ACT_ONMAP ) || victim->has_actflag( ACT_ONMAP ) )
+   if( ch->has_pcflag( PCFLAG_ONMAP ) || victim->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) || victim->has_actflag( ACT_ONMAP ) )
    {
       ch->print( "Portals cannot be created to or from overland maps.\r\n" );
       return rSPELL_FAILED;
@@ -3704,16 +3473,16 @@ SPELLF( spell_portal )
 
    int targetRoomVnum = victim->in_room->vnum;
    room_index *fromRoom = ch->in_room;
-   room_index* targetRoom = victim->in_room;
+   room_index *targetRoom = victim->in_room;
    exit_data *pexit;
 
    /*
     * Check if there already is a portal in either room. 
     */
-   list<exit_data*>::iterator iexit;
-   for( iexit = fromRoom->exits.begin(); iexit != fromRoom->exits.end(); ++iexit )
+   list < exit_data * >::iterator iexit;
+   for( iexit = fromRoom->exits.begin(  ); iexit != fromRoom->exits.end(  ); ++iexit )
    {
-      pexit = (*iexit);
+      pexit = *iexit;
       if( IS_EXIT_FLAG( pexit, EX_PORTAL ) )
       {
          ch->print( "There is already a portal in this room.\r\n" );
@@ -3727,9 +3496,9 @@ SPELLF( spell_portal )
       }
    }
 
-   for( iexit = targetRoom->exits.begin(); iexit != targetRoom->exits.end(); ++iexit )
+   for( iexit = targetRoom->exits.begin(  ); iexit != targetRoom->exits.end(  ); ++iexit )
    {
-      pexit = (*iexit);
+      pexit = *iexit;
       if( pexit->vdir == DIR_PORTAL )
       {
          failed_casting( skill, ch, victim, NULL );
@@ -3968,8 +3737,7 @@ SPELLF( spell_plant_pass )
        || ( victim->CAN_PKILL(  ) && !ch->isnpc(  ) && !ch->IS_PKILL(  ) )
        || victim->has_actflag( ACT_PROTOTYPE )
        || ( victim->isnpc(  ) && saves_spell_staff( level, victim ) )
-       || !ch->in_hard_range( victim->in_room->area )
-       || ( victim->in_room->area->flags.test( AFLAG_NOPKILL ) && ch->IS_PKILL(  ) ) )
+       || !ch->in_hard_range( victim->in_room->area ) || ( victim->in_room->area->flags.test( AFLAG_NOPKILL ) && ch->IS_PKILL(  ) ) )
    {
       failed_casting( skill, ch, victim, NULL );
       return rSPELL_FAILED;
@@ -4005,7 +3773,7 @@ SPELLF( spell_remove_invis )
    obj_data *obj;
    skill_type *skill = get_skilltype( sn );
 
-   if( target_name[0] == '\0' )
+   if( target_name.empty(  ) )
    {
       ch->print( "What should the spell be cast upon?\r\n" );
       return rSPELL_FAILED;
@@ -4036,7 +3804,7 @@ SPELLF( spell_remove_invis )
       {
          if( !ch->can_see( victim, false ) )
          {
-            ch->printf( "You don't see %s!\r\n", target_name );
+            ch->printf( "You don't see %s!\r\n", target_name.c_str(  ) );
             return rSPELL_FAILED;
          }
 
@@ -4088,7 +3856,7 @@ SPELLF( spell_remove_invis )
          successful_casting( skill, ch, victim, NULL );
          return rNONE;
       }
-      ch->printf( "You can't find %s!\r\n", target_name );
+      ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
       return rSPELL_FAILED;
    }
 }
@@ -4100,21 +3868,21 @@ SPELLF( spell_animate_dead )
 {
    char_data *mob;
    obj_data *corpse, *obj;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    bool found;
    mob_index *pMobIndex;
-   char arg[MIL];
-   skill_type *skill = get_skilltype( sn );   /* 4370 */
-   char *corpse_name = NULL;
+   string arg;
+   skill_type *skill = get_skilltype( sn );  /* 4370 */
+   const char *corpse_name = NULL;
    int sindex = -1;
 
    found = false;
 
    target_name = one_argument( target_name, arg );
 
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      corpse = (*iobj);
+      corpse = *iobj;
 
       if( corpse->item_type == ITEM_CORPSE_NPC && corpse->cost != -5 && is_same_obj_map( ch, corpse ) )
       {
@@ -4202,7 +3970,7 @@ SPELLF( spell_animate_dead )
       /*
        * Bugfix by Tarl so only dragons become dracoliches. 29 July 2002 
        */
-      if( corpse_name == "dracolich" )
+      if( !str_cmp( corpse_name, "dracolich" ) )
       {
          if( !IsDragon( mob ) )
          {
@@ -4223,7 +3991,7 @@ SPELLF( spell_animate_dead )
 
       if( ch->level < mob->level )
       {
-         ch->printf( "You are not powerful enough to animate a %s yet.\r\n", arg );
+         ch->printf( "You are not powerful enough to animate a %s yet.\r\n", corpse_name );
          if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
             log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          return rSPELL_FAILED;
@@ -4240,10 +4008,10 @@ SPELLF( spell_animate_dead )
       stralloc_printf( &mob->long_descr, "A %s struggles with the horror of its undeath.\r\n", corpse_name );
       bind_follower( mob, ch, sn, ( int )( number_fuzzy( ( int )( ( level + 1 ) / 4 ) + 1 ) * DUR_CONV ) );
 
-      if( !corpse->contents.empty() )
-         for( iobj = corpse->contents.begin(); iobj != corpse->contents.end(); )
+      if( !corpse->contents.empty(  ) )
+         for( iobj = corpse->contents.begin(  ); iobj != corpse->contents.end(  ); )
          {
-            obj = (*iobj);
+            obj = ( *iobj );
             ++iobj;
 
             obj->from_obj(  );
@@ -4347,7 +4115,7 @@ SPELLF( spell_knock )
 SPELLF( spell_dream )
 {
    char_data *victim;
-   char arg[MIL];
+   string arg;
 
    target_name = one_argument( target_name, arg );
    ch->set_color( AT_MAGIC );
@@ -4364,12 +4132,12 @@ SPELLF( spell_dream )
       return rSPELL_FAILED;
    }
 
-   if( !target_name )
+   if( target_name.empty(  ) )
    {
       ch->print( "What do you want them to dream about?\r\n" );
       return rSPELL_FAILED;
    }
-   victim->printf( "&[tell]You have dreams about %s telling you '%s'.\r\n", PERS( ch, victim, false ), target_name );
+   victim->printf( "&[tell]You have dreams about %s telling you '%s'.\r\n", PERS( ch, victim, false ), target_name.c_str(  ) );
    successful_casting( get_skilltype( sn ), ch, victim, NULL );
    return rNONE;
 }
@@ -4456,7 +4224,7 @@ SPELLF( spell_affectchar )
 {
    affect_data af;
    smaug_affect *saf;
-   list<smaug_affect*>::iterator saff;
+   list < smaug_affect * >::iterator saff;
    skill_type *skill = get_skilltype( sn );
    char_data *victim = ( char_data * ) vo;
    int schance;
@@ -4465,9 +4233,9 @@ SPELLF( spell_affectchar )
 
    if( SPELL_FLAG( skill, SF_RECASTABLE ) )
       victim->affect_strip( sn );
-   for( saff = skill->affects.begin(); saff != skill->affects.end(); ++saff )
+   for( saff = skill->affects.begin(  ); saff != skill->affects.end(  ); ++saff )
    {
-      saf = (*saff);
+      saf = *saff;
 
       if( saf->location >= REVERSE_APPLY )
       {
@@ -4572,15 +4340,11 @@ SPELLF( spell_affectchar )
          int tmp = dice_parse( ch, level, saf->duration );
          af.duration = UMIN( tmp, 32700 );
       }
-      if( saf->location == APPLY_AFFECT
-       || saf->location == APPLY_EXT_AFFECT )
+      if( saf->location == APPLY_AFFECT || saf->location == APPLY_EXT_AFFECT )
       {
          af.modifier = saf->bit;
       }
-      else if( saf->location == APPLY_RESISTANT
-       || saf->location == APPLY_IMMUNE
-       || saf->location == APPLY_ABSORB
-       || saf->location == APPLY_SUSCEPTIBLE )
+      else if( saf->location == APPLY_RESISTANT || saf->location == APPLY_IMMUNE || saf->location == APPLY_ABSORB || saf->location == APPLY_SUSCEPTIBLE )
       {
          af.modifier = get_risflag( saf->modifier );
       }
@@ -4664,7 +4428,7 @@ SPELLF( spell_attack )
             act( AT_MAGIC, "$N absorbs $n's $t!", ch, skill->noun_damage, victim, TO_NOTVICT );
             victim->hit = URANGE( 0, victim->hit + dam, victim->max_hit );
             victim->update_pos(  );
-            if( !skill->affects.empty() )
+            if( !skill->affects.empty(  ) )
                retcode = spell_affectchar( sn, level, ch, victim );
             return retcode;
 
@@ -4673,7 +4437,7 @@ SPELLF( spell_attack )
       }
    }
    retcode = damage( ch, victim, dam, sn );
-   if( retcode == rNONE && !skill->affects.empty() && !ch->char_died(  ) && !victim->char_died(  )
+   if( retcode == rNONE && !skill->affects.empty(  ) && !ch->char_died(  ) && !victim->char_died(  )
        && ( !victim->is_affected( sn ) || SPELL_FLAG( skill, SF_ACCUMULATIVE ) || SPELL_FLAG( skill, SF_RECASTABLE ) ) )
       retcode = spell_affectchar( sn, level, ch, victim );
    return retcode;
@@ -4692,7 +4456,7 @@ SPELLF( spell_area_attack )
       return rSPELL_FAILED;
    }
 
-   bool affects = ( !skill->affects.empty() ? true : false );
+   bool affects = ( !skill->affects.empty(  )? true : false );
    if( skill->hit_char && skill->hit_char[0] != '\0' )
       act( AT_MAGIC, skill->hit_char, ch, NULL, NULL, TO_CHAR );
    if( skill->hit_room && skill->hit_room[0] != '\0' )
@@ -4700,10 +4464,10 @@ SPELLF( spell_area_attack )
 
    bool ch_died = false;
    ch_ret retcode = rNONE;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
       ++ich;
 
       if( vch->has_pcflag( PCFLAG_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
@@ -4795,7 +4559,7 @@ SPELLF( spell_affect )
    bool groupsp, areasp, hitchar = false, hitroom = false, hitvict = false;
    ch_ret retcode;
 
-   if( skill->affects.empty() )
+   if( skill->affects.empty(  ) )
    {
       bug( "%s: spell_affect has no affects sn %d", __FUNCTION__, sn );
       return rNONE;
@@ -4836,9 +4600,9 @@ SPELLF( spell_affect )
          return rSPELL_FAILED;
       }
 
-      if( skill->affects.size() == 1 )
+      if( skill->affects.size(  ) == 1 )
       {
-         smaug_affect *saf = (*skill->affects.begin());
+         smaug_affect *saf = ( *skill->affects.begin(  ) );
 
          if( saf->location == APPLY_STRIPSN && !victim->is_affected( dice_parse( ch, level, saf->modifier ) ) )
          {
@@ -4872,9 +4636,9 @@ SPELLF( spell_affect )
       if( skill->hit_vict && skill->hit_vict[0] != '\0' )
          hitvict = true;
       if( victim )
-         victim = (*victim->in_room->people.begin());
+         victim = ( *victim->in_room->people.begin(  ) );
       else
-         victim = (*ch->in_room->people.begin());
+         victim = ( *ch->in_room->people.begin(  ) );
    }
    if( !victim )
    {
@@ -4893,16 +4657,15 @@ SPELLF( spell_affect )
       return rNONE;
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = victim->in_room->people.begin(); ich != victim->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = victim->in_room->people.begin(  ); ich != victim->in_room->people.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( groupsp || areasp )
       {
          if( ( groupsp && !is_same_group( vch, ch ) ) || vch->has_immune( RIS_MAGIC )
-             || is_immune( vch, SPELL_DAMAGE( skill ) ) || check_save( sn, level, ch, vch )
-             || ( !SPELL_FLAG( skill, SF_RECASTABLE ) && vch->is_affected( sn ) ) )
+             || is_immune( vch, SPELL_DAMAGE( skill ) ) || check_save( sn, level, ch, vch ) || ( !SPELL_FLAG( skill, SF_RECASTABLE ) && vch->is_affected( sn ) ) )
             continue;
 
          if( hitvict && ch != vch )
@@ -4977,8 +4740,7 @@ SPELLF( spell_obj_inv )
                return rSPELL_FAILED;
             }
 
-            water = UMIN( ( skill->dice ? dice_parse( ch, level, skill->dice ) : level )
-                          * ( weath->precip >= 0 ? 2 : 1 ), obj->value[0] - obj->value[1] );
+            water = UMIN( ( skill->dice ? dice_parse( ch, level, skill->dice ) : level ) * ( weath->precip >= 0 ? 2 : 1 ), obj->value[0] - obj->value[1] );
 
             if( water > 0 )
             {
@@ -4992,7 +4754,7 @@ SPELLF( spell_obj_inv )
                if( obj->value[1] > obj->value[0] )
                   obj->value[1] = obj->value[0];
 
-               if( !is_name( "water", obj->name ) )
+               if( !hasname( obj->name, "water" ) )
                   stralloc_printf( &obj->name, "%s water", obj->name );
             }
             successful_casting( skill, ch, NULL, obj );
@@ -5257,8 +5019,7 @@ SPELLF( spell_smaug )
           * offensive area spell 
           */
          if( SPELL_FLAG( skill, SF_AREA )
-             && ( ( SPELL_ACTION( skill ) == SA_DESTROY && SPELL_CLASS( skill ) == SC_LIFE )
-                  || ( SPELL_ACTION( skill ) == SA_CREATE && SPELL_CLASS( skill ) == SC_DEATH ) ) )
+             && ( ( SPELL_ACTION( skill ) == SA_DESTROY && SPELL_CLASS( skill ) == SC_LIFE ) || ( SPELL_ACTION( skill ) == SA_CREATE && SPELL_CLASS( skill ) == SC_DEATH ) ) )
             return spell_area_attack( sn, level, ch, vo );
 
          if( SPELL_ACTION( skill ) == SA_CREATE )
@@ -5300,8 +5061,7 @@ SPELLF( spell_smaug )
          /*
           * a regular damage inflicting spell attack 
           */
-         if( ( SPELL_ACTION( skill ) == SA_DESTROY && SPELL_CLASS( skill ) == SC_LIFE )
-             || ( SPELL_ACTION( skill ) == SA_CREATE && SPELL_CLASS( skill ) == SC_DEATH ) )
+         if( ( SPELL_ACTION( skill ) == SA_DESTROY && SPELL_CLASS( skill ) == SC_LIFE ) || ( SPELL_ACTION( skill ) == SA_CREATE && SPELL_CLASS( skill ) == SC_DEATH ) )
             return spell_attack( sn, level, ch, vo );
 
          /*
@@ -5390,12 +5150,12 @@ SPELLF( spell_tree_transport )
 {
    room_index *target;
    obj_data *obj, *tree = NULL;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    bool found = false;
 
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      tree = (*iobj);
+      tree = *iobj;
       if( tree->item_type == ITEM_TREE )
       {
          if( is_same_obj_map( ch, tree ) )
@@ -5456,7 +5216,7 @@ SPELLF( spell_tree_transport )
 
 SPELLF( spell_group_towngate )
 {
-   if( target_name[0] == '\0' )
+   if( target_name.empty(  ) )
    {
       ch->print( "Where do you wish to go??\r\n" );
       ch->print( "bywater, maldoth, palainth, greyhaven, dragongate, venetorium or graecia ?\r\n" );
@@ -5501,18 +5261,18 @@ SPELLF( spell_group_towngate )
    }
 
    int groupcount = 0, groupvisit = 0;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
 
       if( is_same_group( rch, ch ) && !rch->isnpc(  ) )
          ++groupcount;
    }
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
 
       if( is_same_group( rch, ch ) && rch->has_visited( room->area ) && !rch->isnpc(  ) )
          ++groupvisit;
@@ -5524,9 +5284,9 @@ SPELLF( spell_group_towngate )
    {
       leave_map( ch, NULL, room );  /* This will work, regardless. Trust me. */
 
-      for( ich = original->people.begin(); ich != original->people.end(); )
+      for( ich = original->people.begin(  ); ich != original->people.end(  ); )
       {
-         char_data *rch = (*ich);
+         char_data *rch = *ich;
          ++ich;
 
          if( is_same_group( rch, ch ) )
@@ -5546,7 +5306,7 @@ SPELLF( spell_towngate )
 {
    room_index *room = NULL;
 
-   if( target_name[0] == '\0' )
+   if( target_name.empty(  ) )
    {
       ch->print( "Where do you wish to go??\r\n" );
       ch->print( "bywater, maldoth, palainth, greyhaven, dragongate, venetorium or graecia ?\r\n" );
@@ -5643,7 +5403,7 @@ SPELLF( spell_rejuv )
 {
    char_data *victim;
 
-   if( target_name[0] == '\0' )
+   if( target_name.empty(  ) )
       victim = ch;
    else
       victim = ch->get_char_room( target_name );
@@ -5682,7 +5442,7 @@ SPELLF( spell_rejuv )
             ch->alignment = 1000;
       }
       else
-         act( AT_MAGIC, "You don't feel any younger.\r\n", ch, NULL, victim, TO_CHAR );
+         act( AT_MAGIC, "You don't feel any younger.", ch, NULL, victim, TO_CHAR );
    }
    else
       switch ( number_range( 1, 6 ) )
@@ -5729,7 +5489,7 @@ SPELLF( spell_slow )
    char_data *victim;
    skill_type *skill = get_skilltype( sn );
 
-   if( target_name[0] == '\0' )
+   if( target_name.empty(  ) )
       victim = ch;
    else
       victim = ch->get_char_room( target_name );
@@ -5760,7 +5520,7 @@ SPELLF( spell_slow )
       act( AT_MAGIC, "You have been slowed to a crawl!", victim, NULL, NULL, TO_CHAR );
       return rNONE;
    }
-   ch->printf( "You can't find %s!\r\n", target_name );
+   ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
    return rSPELL_FAILED;
 }
 
@@ -5769,7 +5529,7 @@ SPELLF( spell_haste )
    char_data *victim;
    skill_type *skill = get_skilltype( sn );
 
-   if( target_name[0] == '\0' )
+   if( target_name.empty(  ) )
       victim = ch;
    else
       victim = ch->get_char_room( target_name );
@@ -5802,7 +5562,7 @@ SPELLF( spell_haste )
          victim->pcdata->age_bonus += 1;
       return rNONE;
    }
-   ch->printf( "You can't find %s!\r\n", target_name );
+   ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
    return rSPELL_FAILED;
 }
 
@@ -5919,15 +5679,15 @@ SPELLF( spell_fireseed )
 
 SPELLF( spell_despair )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    bool despair = false;
 
    /*
     * Add check for proper bard instrument in future 
     */
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
       ++ich;
 
       if( !vch->isnpc(  ) )
@@ -5955,16 +5715,16 @@ SPELLF( spell_despair )
 
 SPELLF( spell_enrage )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    bool anger = false;
 
    /*
     * Add check for proper bard instrument in future 
     */
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( !vch->isnpc(  ) )
          continue;
@@ -5989,16 +5749,16 @@ SPELLF( spell_enrage )
 
 SPELLF( spell_calm )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    bool soothe = false;
 
    /*
     * Add check for proper bard instrument in future 
     */
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( !vch->isnpc(  ) )
          continue;
@@ -6035,10 +5795,10 @@ SPELLF( spell_gust_of_wind )
    }
 
    bool ch_died = false;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( !vch->isnpc(  ) )
          continue;
@@ -6079,10 +5839,10 @@ SPELLF( spell_sunray )
 
    int mobcount = 0;
    bool ch_died = false;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( !vch->isnpc(  ) )
          continue;
@@ -6151,12 +5911,12 @@ SPELLF( spell_creeping_doom )
 
 SPELLF( spell_heroes_feast )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    int heal = dice( 1, 4 ) + 4;
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *gch = (*ich);
+      char_data *gch = *ich;
 
       if( is_same_group( gch, ch ) )
       {
@@ -6237,7 +5997,7 @@ SPELLF( spell_enchant_armor )
    obj_data *obj = ( obj_data * ) vo;
    affect_data *paf;
 
-   if( obj->item_type != ITEM_ARMOR || obj->extra_flags.test( ITEM_MAGIC ) || !obj->affects.empty() )
+   if( obj->item_type != ITEM_ARMOR || obj->extra_flags.test( ITEM_MAGIC ) || !obj->affects.empty(  ) )
    {
       act( AT_MAGIC, "Your magic twists and winds around $p but cannot take hold.", ch, obj, NULL, TO_CHAR );
       act( AT_MAGIC, "$n's magic twists and winds around $p but cannot take hold.", ch, obj, NULL, TO_NOTVICT );
@@ -6316,7 +6076,7 @@ SPELLF( spell_enchant_armor )
 SPELLF( spell_remove_curse )
 {
    obj_data *obj;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    char_data *victim = ( char_data * ) vo;
    skill_type *skill = get_skilltype( sn );
 
@@ -6336,11 +6096,11 @@ SPELLF( spell_remove_curse )
          act( AT_MAGIC, "$n's dispels the curses afflicting $N.", ch, NULL, victim, TO_NOTVICT );
       }
    }
-   else if( !victim->carrying.empty() )
+   else if( !victim->carrying.empty(  ) )
    {
-      for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); ++iobj )
+      for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); ++iobj )
       {
-         obj = (*iobj);
+         obj = *iobj;
          if( !obj->in_obj && ( obj->extra_flags.test( ITEM_NOREMOVE ) || obj->extra_flags.test( ITEM_NODROP ) ) )
          {
             if( obj->extra_flags.test( ITEM_SINDHAE ) )
@@ -6412,7 +6172,7 @@ SPELLF( spell_beacon )
 /* Lists beacons set by the beacon spell - Samson 2-7-99 */
 CMDF( do_beacon )
 {
-   char arg[MIL];
+   string arg;
    room_index *pRoomIndex = NULL;
    int a;
 
@@ -6423,7 +6183,7 @@ CMDF( do_beacon )
    /*
     * Edited by Tarl to include Area name. 24 Mar 02 
     */
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "To clear a set beacon: beacon clear #\r\n\r\n" );
       ch->print( " ## | Location name                           | Area\r\n" );
@@ -6443,7 +6203,7 @@ CMDF( do_beacon )
 
    if( !str_cmp( arg, "clear" ) )
    {
-      a = atoi( argument );
+      a = atoi( argument.c_str(  ) );
 
       if( a < 0 || a >= MAX_BEACONS )
       {
@@ -6465,7 +6225,6 @@ CMDF( do_beacon )
       return;
    }
    do_beacon( ch, "" );
-   return;
 }
 
 /* New continent and plane based recall, moved from skills.c - Samson 3-28-98 */
@@ -6555,7 +6314,7 @@ SPELLF( spell_recall )
 
 SPELLF( spell_chain_lightning )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    char_data *victim = ( char_data * ) vo;
    bool ch_died = false;
    ch_ret retcode = rNONE;
@@ -6563,9 +6322,9 @@ SPELLF( spell_chain_lightning )
    if( victim )
       damage( ch, victim, dice( level, 6 ), sn );
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
       ++ich;
 
       if( victim == vch )

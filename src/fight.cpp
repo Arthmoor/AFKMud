@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                         Battle & death module                            *
+ *                         Battle & Death module                            *
  ****************************************************************************/
 
 #include "mud.h"
@@ -122,7 +122,7 @@ void make_blood( char_data * ch )
  */
 void make_corpse( char_data * ch, char_data * killer )
 {
-   char *name;
+   const char *name;
    obj_data *corpse;
 
    if( ch->isnpc(  ) )
@@ -209,10 +209,10 @@ void make_corpse( char_data * ch, char_data * killer )
    corpse->value[6] = ch->race;
 
    obj_data *obj;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
    {
-      obj = (*iobj);
+      obj = ( *iobj );
       ++iobj;
 
       obj->from_char(  );
@@ -222,7 +222,6 @@ void make_corpse( char_data * ch, char_data * killer )
          obj->to_obj( corpse );
    }
    corpse->to_room( ch->in_room, ch );
-   return;
 }
 
 /* 
@@ -312,8 +311,6 @@ void class_monitor( char_data * ch )
 
    if( ch->Class == CLASS_DRUID && ( ch->alignment < -249 || ch->alignment > 249 ) )
       ch->printf( "You are straying from the balanced path %s!", ch->name );
-
-   return;
 }
 
 char_data *char_data::who_fighting(  )
@@ -357,13 +354,11 @@ CMDF( do_ageattack )
 
    victim->printf( "%s touches you, and you feel yourself aging!\r\n", ch->short_descr );
    victim->pcdata->age_bonus += 1;
-
-   return;
 }
 
 /*
  * Check to see if player's attacks are (still?) suppressed
- * #ifdef TRI
+ *
  */
 bool is_attack_supressed( char_data * ch )
 {
@@ -411,22 +406,22 @@ bool is_wielding_poisoned( char_data * ch )
 CMDF( do_gfighting )
 {
    char_data *victim;
-   list<char_data*>::iterator ich;
-   char arg1[MIL], arg2[MIL];
+   list < char_data * >::iterator ich;
+   string arg1, arg2;
    bool found = false, pmobs = false, phating = false, phunting = false;
    int low = 1, high = MAX_LEVEL, count = 0;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( arg1 && arg1[0] != '\0' )
+   if( !arg1.empty(  ) )
    {
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->pager( "\r\n&wSyntax:  gfighting | gfighting <low> <high> | gfighting <low> <high> mobs\r\n" );
          return;
       }
-      low = atoi( arg1 );
-      high = atoi( arg2 );
+      low = atoi( arg1.c_str(  ) );
+      high = atoi( arg2.c_str(  ) );
    }
    if( low < 1 || high < low || low > high || high > MAX_LEVEL )
    {
@@ -443,11 +438,11 @@ CMDF( do_gfighting )
    ch->pagerf( "\r\n&cGlobal %s conflict:\r\n", pmobs ? "mob" : "character" );
    if( !pmobs && !phating && !phunting )
    {
-      list<descriptor_data*>::iterator ds;
+      list < descriptor_data * >::iterator ds;
 
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
 
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
              && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room
@@ -465,12 +460,11 @@ CMDF( do_gfighting )
    }
    else if( !phating && !phunting )
    {
-      for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
       {
-         victim = (*ich);
+         victim = *ich;
 
-         if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false )
-             && victim->fighting && victim->level >= low && victim->level <= high )
+         if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->fighting && victim->level >= low && victim->level <= high )
          {
             found = true;
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
@@ -484,31 +478,28 @@ CMDF( do_gfighting )
    }
    else if( !phunting && phating )
    {
-      for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
       {
-         victim = (*ich);
+         victim = *ich;
 
-         if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false )
-             && victim->hating && victim->level >= low && victim->level <= high )
+         if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->hating && victim->level >= low && victim->level <= high )
          {
             found = true;
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
                         victim->name, victim->level, victim->hating->who->level, victim->hating->who->isnpc(  )?
                         victim->hating->who->short_descr : victim->hating->who->name, victim->hating->who->isnpc(  )?
-                        victim->hating->who->pIndexData->vnum : 0, victim->in_room->area->name, victim->in_room == NULL ? 0 :
-                        victim->in_room->vnum );
+                        victim->hating->who->pIndexData->vnum : 0, victim->in_room->area->name, victim->in_room == NULL ? 0 : victim->in_room->vnum );
             ++count;
          }
       }
    }
    else if( phunting )
    {
-      for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
       {
-         victim = (*ich);
+         victim = *ich;
 
-         if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false )
-             && victim->hunting && victim->level >= low && victim->level <= high )
+         if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->hunting && victim->level >= low && victim->level <= high )
          {
             found = true;
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
@@ -521,18 +512,16 @@ CMDF( do_gfighting )
       }
    }
    ch->pagerf( "&c%d %s conflicts located.\r\n", count, pmobs ? "mob" : "character" );
-   return;
 }
 
 /*
  * Weapon types, haus
  */
-int weapon_prof_bonus_check( char_data * ch, obj_data * wield, int *gsn_ptr )
+int weapon_prof_bonus_check( char_data * ch, obj_data * wield, int &gsn_ptr )
 {
-   int bonus;
+   int bonus = 0;
 
-   bonus = 0;
-   *gsn_ptr = gsn_pugilism;   /* Change back to -1 if this fails horribly */
+   gsn_ptr = gsn_pugilism; /* Change back to -1 if this fails horribly */
 
    if( !ch->isnpc(  ) && wield )
    {
@@ -542,47 +531,47 @@ int weapon_prof_bonus_check( char_data * ch, obj_data * wield, int *gsn_ptr )
              * Restructured weapon system - Samson 11-20-99 
              */
          default:
-            *gsn_ptr = -1;
+            gsn_ptr = -1;
             break;
          case WEP_BAREHAND:
-            *gsn_ptr = gsn_pugilism;
+            gsn_ptr = gsn_pugilism;
             break;
          case WEP_SWORD:
-            *gsn_ptr = gsn_swords;
+            gsn_ptr = gsn_swords;
             break;
          case WEP_DAGGER:
-            *gsn_ptr = gsn_daggers;
+            gsn_ptr = gsn_daggers;
             break;
          case WEP_WHIP:
-            *gsn_ptr = gsn_whips;
+            gsn_ptr = gsn_whips;
             break;
          case WEP_TALON:
-            *gsn_ptr = gsn_talonous_arms;
+            gsn_ptr = gsn_talonous_arms;
             break;
          case WEP_MACE:
-            *gsn_ptr = gsn_maces_hammers;
+            gsn_ptr = gsn_maces_hammers;
             break;
          case WEP_ARCHERY:
-            *gsn_ptr = gsn_archery;
+            gsn_ptr = gsn_archery;
             break;
          case WEP_BLOWGUN:
-            *gsn_ptr = gsn_blowguns;
+            gsn_ptr = gsn_blowguns;
             break;
          case WEP_SLING:
-            *gsn_ptr = gsn_slings;
+            gsn_ptr = gsn_slings;
             break;
          case WEP_AXE:
-            *gsn_ptr = gsn_axes;
+            gsn_ptr = gsn_axes;
             break;
          case WEP_SPEAR:
-            *gsn_ptr = gsn_spears;
+            gsn_ptr = gsn_spears;
             break;
          case WEP_STAFF:
-            *gsn_ptr = gsn_staves;
+            gsn_ptr = gsn_staves;
             break;
       }
-      if( *gsn_ptr != -1 )
-         bonus = ( int )( ( ch->LEARNED( *gsn_ptr ) - 50 ) / 10 );
+      if( gsn_ptr != -1 )
+         bonus = ( int )( ( ch->LEARNED( gsn_ptr ) - 50 ) / 10 );
    }
    return bonus;
 }
@@ -658,8 +647,7 @@ bool check_illegal_pk( char_data * ch, char_data * victim )
           && !in_arena( ch ) && ch != victim && !( ch->is_immortal(  ) && victim->is_immortal(  ) ) )
       {
          log_printf( "&p%s on %s%s in &W***&rILLEGAL PKILL&W*** &pattempt at %d",
-                     ( lastplayercmd ), ( victim->isnpc(  )? victim->short_descr : victim->name ),
-                     ( victim->isnpc(  )? victim->name : "" ), victim->in_room->vnum );
+                     ( lastplayercmd ), ( victim->isnpc(  )? victim->short_descr : victim->name ), ( victim->isnpc(  )? victim->name : "" ), victim->in_room->vnum );
          last_pkroom = victim->in_room->vnum;
          return true;
       }
@@ -729,7 +717,7 @@ bool is_safe( char_data * ch, char_data * victim )
       return true;
    }
 
-   if( victim->is_pet() )
+   if( victim->is_pet(  ) )
    {
       if( check_illegal_pk( ch, victim->master ) )
       {
@@ -749,7 +737,7 @@ bool is_safe( char_data * ch, char_data * victim )
    }
 
    // Prevent one person's pets from attacking another person's pets.
-   if( ch->is_pet() && victim->is_pet() )
+   if( ch->is_pet(  ) && victim->is_pet(  ) )
    {
       if( check_illegal_pk( ch->master, victim->master ) )
       {
@@ -783,19 +771,18 @@ bool is_safe( char_data * ch, char_data * victim )
 
 void align_zap( char_data * ch )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
       if( obj->wear_loc == WEAR_NONE )
          continue;
 
       if( ( obj->extra_flags.test( ITEM_ANTI_EVIL ) && ch->IS_EVIL(  ) )
-          || ( obj->extra_flags.test( ITEM_ANTI_GOOD ) && ch->IS_GOOD(  ) )
-          || ( obj->extra_flags.test( ITEM_ANTI_NEUTRAL ) && ch->IS_NEUTRAL(  ) ) )
+          || ( obj->extra_flags.test( ITEM_ANTI_GOOD ) && ch->IS_GOOD(  ) ) || ( obj->extra_flags.test( ITEM_ANTI_NEUTRAL ) && ch->IS_NEUTRAL(  ) ) )
       {
          act( AT_MAGIC, "You are zapped by $p.", ch, obj, NULL, TO_CHAR );
          act( AT_MAGIC, "$n is zapped by $p.", ch, obj, NULL, TO_ROOM );
@@ -852,22 +839,22 @@ int xp_compute( char_data * gch, char_data * victim )
     * based on time played vs. level
     *
     * We're shutting this off for now to see what affect it has on things - Samson 2-27-06
-   if( !gch->isnpc() && gchlev > 5 )
-   {
-      xp_ratio = ( int )gch->pcdata->played / gchlev;
-      if( xp_ratio > 20000 )  // 5/4
-         xp = ( xp * 5 ) >> 2;
-      else if( xp_ratio > 16000 )   // 3/4
-         xp = ( xp * 3 ) >> 2;
-      else if( xp_ratio > 10000 )   // 1/2
-         xp >>= 1;
-      else if( xp_ratio > 5000 ) // 1/4
-         xp >>= 2;
-      else if( xp_ratio > 3500 ) // 1/8
-         xp >>= 3;
-      else if( xp_ratio > 2000 ) // 1/16
-         xp >>= 4;
-   } */
+    if( !gch->isnpc() && gchlev > 5 )
+    {
+    xp_ratio = ( int )gch->pcdata->played / gchlev;
+    if( xp_ratio > 20000 )  // 5/4
+    xp = ( xp * 5 ) >> 2;
+    else if( xp_ratio > 16000 )   // 3/4
+    xp = ( xp * 3 ) >> 2;
+    else if( xp_ratio > 10000 )   // 1/2
+    xp >>= 1;
+    else if( xp_ratio > 5000 ) // 1/4
+    xp >>= 2;
+    else if( xp_ratio > 3500 ) // 1/8
+    xp >>= 3;
+    else if( xp_ratio > 2000 ) // 1/16
+    xp >>= 4;
+    } */
 
    /*
     * New EXP cap for PK kills 
@@ -1290,16 +1277,13 @@ int mob_xp( char_data * mob )
    if( mob->has_aflag( AFF_BLADEBARRIER ) )
       flags += 2;
 
-   if( mob->has_resist( RIS_FIRE ) || mob->has_resist( RIS_COLD ) || mob->has_resist( RIS_ELECTRICITY )
-       || mob->has_resist( RIS_ENERGY ) || mob->has_resist( RIS_ACID ) )
+   if( mob->has_resist( RIS_FIRE ) || mob->has_resist( RIS_COLD ) || mob->has_resist( RIS_ELECTRICITY ) || mob->has_resist( RIS_ENERGY ) || mob->has_resist( RIS_ACID ) )
       ++flags;
 
-   if( mob->has_resist( RIS_BLUNT ) || mob->has_resist( RIS_SLASH ) || mob->has_resist( RIS_PIERCE )
-       || mob->has_resist( RIS_HACK ) || mob->has_resist( RIS_LASH ) )
+   if( mob->has_resist( RIS_BLUNT ) || mob->has_resist( RIS_SLASH ) || mob->has_resist( RIS_PIERCE ) || mob->has_resist( RIS_HACK ) || mob->has_resist( RIS_LASH ) )
       ++flags;
 
-   if( mob->has_resist( RIS_SLEEP ) || mob->has_resist( RIS_CHARM ) || mob->has_resist( RIS_HOLD )
-       || mob->has_resist( RIS_POISON ) || mob->has_resist( RIS_PARALYSIS ) )
+   if( mob->has_resist( RIS_SLEEP ) || mob->has_resist( RIS_CHARM ) || mob->has_resist( RIS_HOLD ) || mob->has_resist( RIS_POISON ) || mob->has_resist( RIS_PARALYSIS ) )
       ++flags;
 
    if( mob->has_resist( RIS_PLUS1 ) || mob->has_resist( RIS_PLUS2 ) || mob->has_resist( RIS_PLUS3 )
@@ -1312,16 +1296,13 @@ int mob_xp( char_data * mob )
    if( mob->has_resist( RIS_NONMAGIC ) )
       ++flags;
 
-   if( mob->has_immune( RIS_FIRE ) || mob->has_immune( RIS_COLD ) || mob->has_immune( RIS_ELECTRICITY )
-       || mob->has_immune( RIS_ENERGY ) || mob->has_immune( RIS_ACID ) )
+   if( mob->has_immune( RIS_FIRE ) || mob->has_immune( RIS_COLD ) || mob->has_immune( RIS_ELECTRICITY ) || mob->has_immune( RIS_ENERGY ) || mob->has_immune( RIS_ACID ) )
       flags += 2;
 
-   if( mob->has_immune( RIS_BLUNT ) || mob->has_immune( RIS_SLASH ) || mob->has_immune( RIS_PIERCE )
-       || mob->has_immune( RIS_HACK ) || mob->has_immune( RIS_LASH ) )
+   if( mob->has_immune( RIS_BLUNT ) || mob->has_immune( RIS_SLASH ) || mob->has_immune( RIS_PIERCE ) || mob->has_immune( RIS_HACK ) || mob->has_immune( RIS_LASH ) )
       flags += 2;
 
-   if( mob->has_immune( RIS_SLEEP ) || mob->has_immune( RIS_CHARM ) || mob->has_immune( RIS_HOLD )
-       || mob->has_immune( RIS_POISON ) || mob->has_immune( RIS_PARALYSIS ) )
+   if( mob->has_immune( RIS_SLEEP ) || mob->has_immune( RIS_CHARM ) || mob->has_immune( RIS_HOLD ) || mob->has_immune( RIS_POISON ) || mob->has_immune( RIS_PARALYSIS ) )
       flags += 2;
 
    if( mob->has_immune( RIS_PLUS1 ) || mob->has_immune( RIS_PLUS2 ) || mob->has_immune( RIS_PLUS3 )
@@ -1334,16 +1315,13 @@ int mob_xp( char_data * mob )
    if( mob->has_immune( RIS_NONMAGIC ) )
       ++flags;
 
-   if( mob->has_suscep( RIS_FIRE ) || mob->has_suscep( RIS_COLD ) || mob->has_suscep( RIS_ELECTRICITY )
-       || mob->has_suscep( RIS_ENERGY ) || mob->has_suscep( RIS_ACID ) )
+   if( mob->has_suscep( RIS_FIRE ) || mob->has_suscep( RIS_COLD ) || mob->has_suscep( RIS_ELECTRICITY ) || mob->has_suscep( RIS_ENERGY ) || mob->has_suscep( RIS_ACID ) )
       flags -= 2;
 
-   if( mob->has_suscep( RIS_BLUNT ) || mob->has_suscep( RIS_SLASH ) || mob->has_suscep( RIS_PIERCE )
-       || mob->has_suscep( RIS_HACK ) || mob->has_suscep( RIS_LASH ) )
+   if( mob->has_suscep( RIS_BLUNT ) || mob->has_suscep( RIS_SLASH ) || mob->has_suscep( RIS_PIERCE ) || mob->has_suscep( RIS_HACK ) || mob->has_suscep( RIS_LASH ) )
       flags -= 3;
 
-   if( mob->has_suscep( RIS_SLEEP ) || mob->has_suscep( RIS_CHARM ) || mob->has_suscep( RIS_HOLD )
-       || mob->has_suscep( RIS_POISON ) || mob->has_suscep( RIS_PARALYSIS ) )
+   if( mob->has_suscep( RIS_SLEEP ) || mob->has_suscep( RIS_CHARM ) || mob->has_suscep( RIS_HOLD ) || mob->has_suscep( RIS_POISON ) || mob->has_suscep( RIS_PARALYSIS ) )
       flags -= 3;
 
    if( mob->has_suscep( RIS_PLUS1 ) || mob->has_suscep( RIS_PLUS2 ) || mob->has_suscep( RIS_PLUS3 )
@@ -1356,12 +1334,10 @@ int mob_xp( char_data * mob )
    if( mob->has_suscep( RIS_NONMAGIC ) )
       flags -= 2;
 
-   if( mob->has_absorb( RIS_FIRE ) || mob->has_absorb( RIS_COLD ) || mob->has_absorb( RIS_ELECTRICITY )
-       || mob->has_absorb( RIS_ENERGY ) || mob->has_absorb( RIS_ACID ) )
+   if( mob->has_absorb( RIS_FIRE ) || mob->has_absorb( RIS_COLD ) || mob->has_absorb( RIS_ELECTRICITY ) || mob->has_absorb( RIS_ENERGY ) || mob->has_absorb( RIS_ACID ) )
       flags += 3;
 
-   if( mob->has_absorb( RIS_BLUNT ) || mob->has_absorb( RIS_SLASH ) || mob->has_absorb( RIS_PIERCE )
-       || mob->has_absorb( RIS_HACK ) || mob->has_absorb( RIS_LASH ) )
+   if( mob->has_absorb( RIS_BLUNT ) || mob->has_absorb( RIS_SLASH ) || mob->has_absorb( RIS_PIERCE ) || mob->has_absorb( RIS_HACK ) || mob->has_absorb( RIS_LASH ) )
       flags += 3;
 
 /*
@@ -1407,8 +1383,7 @@ int mob_xp( char_data * mob )
        || mob->has_attack( ATCK_TRIP ) || mob->has_attack( ATCK_GOUGE ) || mob->has_attack( ATCK_DRAIN )
        || mob->has_attack( ATCK_POISON ) || mob->has_attack( ATCK_NASTYPOISON ) || mob->has_attack( ATCK_GAZE )
        || mob->has_attack( ATCK_BLINDNESS ) || mob->has_attack( ATCK_CAUSESERIOUS ) || mob->has_attack( ATCK_CAUSECRITICAL )
-       || mob->has_attack( ATCK_CURSE ) || mob->has_attack( ATCK_FLAMESTRIKE ) || mob->has_attack( ATCK_HARM )
-       || mob->has_attack( ATCK_WEAKEN ) )
+       || mob->has_attack( ATCK_CURSE ) || mob->has_attack( ATCK_FLAMESTRIKE ) || mob->has_attack( ATCK_HARM ) || mob->has_attack( ATCK_WEAKEN ) )
       ++flags;
 
    if( mob->has_defense( DFND_PARRY ) )
@@ -1431,8 +1406,7 @@ int mob_xp( char_data * mob )
 
    if( mob->has_defense( DFND_HEAL ) || mob->has_defense( DFND_CURELIGHT ) || mob->has_defense( DFND_CURESERIOUS )
        || mob->has_defense( DFND_CURECRITICAL ) || mob->has_defense( DFND_SHIELD ) || mob->has_defense( DFND_BLESS )
-       || mob->has_defense( DFND_STONESKIN ) || mob->has_defense( DFND_TELEPORT ) || mob->has_defense( DFND_GRIP )
-       || mob->has_defense( DFND_TRUESIGHT ) )
+       || mob->has_defense( DFND_STONESKIN ) || mob->has_defense( DFND_TELEPORT ) || mob->has_defense( DFND_GRIP ) || mob->has_defense( DFND_TRUESIGHT ) )
       ++flags;
 
    /*
@@ -1466,8 +1440,7 @@ void group_gain( char_data * ch, char_data * victim )
    {
       if( ch->leader )
       {
-         if( !ch->leader->isnpc(  ) && ch->leader == ch->master && ch->has_aflag( AFF_CHARM )
-             && ch->in_room == ch->leader->in_room )
+         if( !ch->leader->isnpc(  ) && ch->leader == ch->master && ch->has_aflag( AFF_CHARM ) && ch->in_room == ch->leader->in_room )
             ch = ch->master;
       }
    }
@@ -1479,10 +1452,10 @@ void group_gain( char_data * ch, char_data * victim )
       return;
 
    int members = 0, max_level = 0;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *gch = (*ich);
+      char_data *gch = ( *ich );
 
       if( !is_same_group( gch, ch ) )
          continue;
@@ -1512,9 +1485,9 @@ void group_gain( char_data * ch, char_data * victim )
    }
 
    char_data *lch = ch->leader ? ch->leader : ch;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
-      char_data *gch = (*ich);
+      char_data *gch = ( *ich );
       ++ich;
       int xpmod = 1;
 
@@ -1584,7 +1557,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
    /*
     * Get the weapon index 
     */
-   if( dt > 0 && dt < ( unsigned int )top_sn )
+   if( dt > 0 && dt < ( unsigned int )num_skills )
       w_index = 0;
    else if( dt >= ( unsigned int )TYPE_HIT && dt < ( unsigned int )TYPE_HIT + sizeof( attack_table ) / sizeof( attack_table[0] ) )
       w_index = dt - TYPE_HIT;
@@ -1625,7 +1598,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
    if( dam == 0 && ( victim->has_pcflag( PCFLAG_GAG ) ) )
       gvflag = true;
 
-   if( dt >= 0 && dt < ( unsigned int )top_sn )
+   if( dt >= 0 && dt < ( unsigned int )num_skills )
       skill = skill_table[dt];
    if( dt == ( unsigned int )TYPE_HIT )
    {
@@ -2170,10 +2143,10 @@ void char_data::stop_fighting( bool fBoth )
    if( !fBoth )   /* major short cut here by Thoric */
       return;
 
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *fch = (*ich);
+      char_data *fch = ( *ich );
 
       if( fch->who_fighting(  ) == this )
       {
@@ -2186,7 +2159,7 @@ void char_data::stop_fighting( bool fBoth )
 }
 
 /* Vnums for the various bodyparts */
-int part_vnums[] = { OBJ_VNUM_SEVERED_HEAD,  /* Head */
+const int part_vnums[] = { OBJ_VNUM_SEVERED_HEAD,  /* Head */
    OBJ_VNUM_SLICED_ARM, /* arms */
    OBJ_VNUM_SLICED_LEG, /* legs */
    OBJ_VNUM_TORN_HEART, /* heart */
@@ -2221,7 +2194,7 @@ int part_vnums[] = { OBJ_VNUM_SEVERED_HEAD,  /* Head */
 };
 
 /* Messages for flinging off the various bodyparts */
-char *part_messages[] = {
+const char *part_messages[] = {
    "$n's severed head plops from its neck.",
    "$n's arm is sliced from $s dead body.",
    "$n's leg is sliced from $s dead body.",
@@ -2263,7 +2236,7 @@ char *part_messages[] = {
  */
 void death_cry( char_data * ch )
 {
-   char *msg;
+   const char *msg;
    int vnum, i;
 
    if( !ch )
@@ -2297,7 +2270,7 @@ void death_cry( char_data * ch )
          break;
       case 5:
 
-         for( i = 0; i < MAX_BPART && ch->has_bparts(); ++i )
+         for( i = 0; i < MAX_BPART && ch->has_bparts(  ); ++i )
          {
             if( ch->has_bpart( i ) )
             {
@@ -2338,7 +2311,6 @@ void death_cry( char_data * ch )
       stralloc_printf( &obj->objdesc, obj->objdesc, name );
       obj->to_room( ch->in_room, ch );
    }
-   return;
 }
 
 void raw_kill( char_data * ch, char_data * victim )
@@ -2419,8 +2391,7 @@ void raw_kill( char_data * ch, char_data * victim )
    make_corpse( victim, ch );
    if( victim->in_room->sector_type == SECT_OCEANFLOOR
        || victim->in_room->sector_type == SECT_UNDERWATER
-       || victim->in_room->sector_type == SECT_WATER_SWIM
-       || victim->in_room->sector_type == SECT_WATER_NOSWIM || victim->in_room->sector_type == SECT_RIVER )
+       || victim->in_room->sector_type == SECT_WATER_SWIM || victim->in_room->sector_type == SECT_WATER_NOSWIM || victim->in_room->sector_type == SECT_RIVER )
       act( AT_BLOOD, "$n's blood slowly clouds the surrounding water.", victim, NULL, NULL, TO_ROOM );
    else if( victim->in_room->sector_type == SECT_AIR )
       act( AT_BLOOD, "$n's blood sprays wildly through the air.", victim, NULL, NULL, TO_ROOM );
@@ -2448,10 +2419,10 @@ void raw_kill( char_data * ch, char_data * victim )
       return;
    }
 
-   list<affect_data*>::iterator paf;
-   for( paf = victim->affects.begin(); paf != victim->affects.end(); )
+   list < affect_data * >::iterator paf;
+   for( paf = victim->affects.begin(  ); paf != victim->affects.end(  ); )
    {
-      affect_data *aff = (*paf);
+      affect_data *aff = ( *paf );
       ++paf;
 
       victim->affect_remove( aff );
@@ -2493,7 +2464,6 @@ void raw_kill( char_data * ch, char_data * victim )
 
    if( IS_SAVE_FLAG( SV_DEATH ) )
       victim->save(  );
-   return;
 }
 
 /*
@@ -2511,7 +2481,7 @@ void damage_obj( obj_data * obj )
    obj->separate(  );
    if( !ch->IS_PKILL(  ) || ( ch->IS_PKILL(  ) && !ch->has_pcflag( PCFLAG_GAG ) ) )
       act( AT_OBJECT, "($p gets damaged)", ch, obj, NULL, TO_CHAR );
-   else if( obj->in_room && ( ch = (*obj->in_room->people.begin()) ) != NULL )
+   else if( obj->in_room && ( ch = ( *obj->in_room->people.begin(  ) ) ) != NULL )
    {
       act( AT_OBJECT, "($p gets damaged)", ch, obj, NULL, TO_ROOM );
       act( AT_OBJECT, "($p gets damaged)", ch, obj, NULL, TO_CHAR );
@@ -2589,8 +2559,6 @@ void damage_obj( obj_data * obj )
    }
    if( ch != NULL )
       ch->save(  );  /* Stop scrap duping - Samson 1-2-00 */
-
-   return;
 }
 
 /* Added checks for the 3 new dam types, and removed DAM_PEA - Grimm
@@ -2674,7 +2642,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
       if( dam == -1 )
       {
-         if( dt >= 0 && dt < top_sn )
+         if( dt >= 0 && dt < num_skills )
          {
             bool found = false;
             skill_type *skill = skill_table[dt];
@@ -2802,8 +2770,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          /*
           * If victim is charmed, ch might attack victim's master.
           */
-         if( ch->isnpc(  ) && npcvict && victim->has_aflag( AFF_CHARM ) && victim->master
-             && victim->master->in_room == ch->in_room && number_bits( 3 ) == 0 )
+         if( ch->isnpc(  ) && npcvict && victim->has_aflag( AFF_CHARM ) && victim->master && victim->master->in_room == ch->in_room && number_bits( 3 ) == 0 )
          {
             ch->stop_fighting( false );
             retcode = multi_hit( ch, victim->master, TYPE_UNDEFINED );
@@ -2977,7 +2944,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          break;
 
       case POS_DEAD:
-         if( dt >= 0 && dt < top_sn )
+         if( dt >= 0 && dt < num_skills )
          {
             skill_type *skill = skill_table[dt];
 
@@ -3022,8 +2989,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s (%d) killed by %s at %d",
                           victim->name, victim->level, ( ch->isnpc(  )? ch->short_descr : ch->name ), victim->in_room->vnum );
 
-         if( !ch->isnpc(  ) && !ch->is_immortal(  )
-             && ch->pcdata->clan && ch->pcdata->clan->clan_type != CLAN_GUILD && victim != ch )
+         if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->pcdata->clan && ch->pcdata->clan->clan_type != CLAN_GUILD && victim != ch )
          {
             if( victim->pcdata->clan && victim->pcdata->clan->name == ch->pcdata->clan->name )
                ;
@@ -3031,11 +2997,10 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             {
                char filename[256];
 
-               snprintf( filename, 256, "%s%s.record", CLAN_DIR, ch->pcdata->clan->name );
+               snprintf( filename, 256, "%s%s.record", CLAN_DIR, ch->pcdata->clan->name.c_str(  ) );
                append_to_file( filename, "&P(%2d) %-12s &wvs &P(%2d) %s &P%s ... &w%s",
                                ch->level, ch->name, victim->level, !victim->CAN_PKILL(  )? "&W<Peaceful>" :
-                               victim->pcdata->clan ? victim->pcdata->clan->badge : "&P(&WUnclanned&P)",
-                               victim->name, ch->in_room->area->name );
+                               victim->pcdata->clan ? victim->pcdata->clan->badge.c_str(  ) : "&P(&WUnclanned&P)", victim->name, ch->in_room->area->name );
             }
          }
 
@@ -3089,8 +3054,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
                   ch->pcdata->clan->balance += split;
                   save_clan( ch->pcdata->clan );
-                  ch->printf( "The Wedgy comes to collect %d gold on behalf of your %s.\r\n", split,
-                              ch->pcdata->clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+                  ch->printf( "The Wedgy comes to collect %d gold on behalf of your %s.\r\n", split, ch->pcdata->clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
                   gold_diff -= split;
                   ch->gold -= split;
                }
@@ -3098,7 +3062,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             if( gold_diff > 0 && ch->has_pcflag( PCFLAG_GROUPSPLIT ) )
                cmdf( ch, "split %d", gold_diff );
          }
-         if( ch->has_pcflag( PCFLAG_AUTOLOOT ) && victim != ch )   /* prevent nasty obj problems -- Blodkai */
+         if( ch->has_pcflag( PCFLAG_AUTOLOOT ) && victim != ch )  /* prevent nasty obj problems -- Blodkai */
             interpret( ch, "get all corpse" );
 
          if( ch->has_pcflag( PCFLAG_SMARTSAC ) )
@@ -3107,7 +3071,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
             if( ( corpse = ch->get_obj_here( "corpse" ) ) != NULL )
             {
-               if( corpse->contents.empty() )
+               if( corpse->contents.empty(  ) )
                   interpret( ch, "sacrifice corpse" );
                else
                   interpret( ch, "look in corpse" );
@@ -3156,7 +3120,6 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
    else if( !npcvict && victim->has_pcflag( PCFLAG_FLEE ) )
       interpret( victim, "flee" );
 
-   tail_chain(  );
    return rNONE;
 }
 
@@ -3197,7 +3160,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    used_weapon = wield;
 
    if( wield )
-      prof_bonus = weapon_prof_bonus_check( ch, wield, &prof_gsn );
+      prof_bonus = weapon_prof_bonus_check( ch, wield, prof_gsn );
    else
       prof_bonus = 0;
 
@@ -3205,14 +3168,14 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
     * Lets hope this works, the called function here defaults out to gsn_pugilism, and since
     * every Class can learn it, this should theoretically make it advance with use now 
     */
-   prof_bonus = weapon_prof_bonus_check( ch, wield, &prof_gsn );
+   prof_bonus = weapon_prof_bonus_check( ch, wield, prof_gsn );
 
    if( prof_bonus < 0 && ch->level <= 5 ) // Give the lowbies a break!
       prof_bonus = 0;
 
    if( !( alreadyUsedSkill ) )
    {
-      if( ch->fighting && dt == TYPE_UNDEFINED && ch->isnpc(  ) && ch->has_attacks() )
+      if( ch->fighting && dt == TYPE_UNDEFINED && ch->isnpc(  ) && ch->has_attacks(  ) )
       {
          cnt = 0;
          for( ;; )
@@ -3352,9 +3315,8 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
       damage( ch, victim, 0, dt );
 
       // Evasive style should try to advance if the victim avoids damage, and is using the evasive style.
-      if( !victim->isnpc() && victim->style == STYLE_EVASIVE )
+      if( !victim->isnpc(  ) && victim->style == STYLE_EVASIVE )
          victim->learn_from_failure( gsn_style_evasive );
-      tail_chain(  );
       return rNONE;
    }
 
@@ -3403,8 +3365,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    else if( ch->position == POS_EVASIVE )
       dam = .8 * dam;
 
-   if( !ch->isnpc(  ) && ch->pcdata->learned[gsn_enhanced_damage] > 0
-       && number_percent(  ) < ch->pcdata->learned[gsn_enhanced_damage] )
+   if( !ch->isnpc(  ) && ch->pcdata->learned[gsn_enhanced_damage] > 0 && number_percent(  ) < ch->pcdata->learned[gsn_enhanced_damage] )
    {
       dam += ( int )( dam * ch->LEARNED( gsn_enhanced_damage ) / 120 );
    }
@@ -3418,7 +3379,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    if( dt == gsn_circle )
       dam *= ( 1 + ( ch->level / 8 ) );
 
-   dam = UMAX( dam, 1 );
+   dam = UMAX( ( int )dam, 1 );
 
    plusris = 0;
 
@@ -3470,9 +3431,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
       sus = 1;
 
       /*
-       * find high ris 
-       *//*
-       * FIND ME 
+       * find high ris // FIXME: The absorbs need to get thrown in here at some point.
        */
       for( x = RIS_PLUS1; x <= RIS_PLUS6; ++x )
       {
@@ -3505,7 +3464,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
     */
    if( dam == -1 )
    {
-      if( dt >= 0 && dt < top_sn )
+      if( dt >= 0 && dt < num_skills )
       {
          skill_type *skill = skill_table[dt];
          bool found = false;
@@ -3532,18 +3491,17 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    }
    if( wield )
    {
-      list<affect_data*>::iterator paf;
+      list < affect_data * >::iterator paf;
 
-      for( paf = wield->affects.begin(); paf != wield->affects.end(); ++paf )
+      for( paf = wield->affects.begin(  ); paf != wield->affects.end(  ); ++paf )
       {
-         affect_data *af = (*paf);
+         affect_data *af = *paf;
 
          if( af->location == APPLY_RACE_SLAYER )
          {
             if( ( af->modifier == victim->race )
                 || ( ( af->modifier == RACE_UNDEAD ) && IsUndead( victim ) )
-                || ( ( af->modifier == RACE_DRAGON ) && IsDragon( victim ) )
-                || ( ( af->modifier == RACE_GIANT ) && IsGiantish( victim ) ) )
+                || ( ( af->modifier == RACE_DRAGON ) && IsDragon( victim ) ) || ( ( af->modifier == RACE_GIANT ) && IsGiantish( victim ) ) )
                dam *= 2;
          }
          if( af->location == APPLY_ALIGN_SLAYER )
@@ -3584,11 +3542,11 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
     */
    if( wield && !victim->has_immune( RIS_MAGIC ) && !victim->in_room->flags.test( ROOM_NO_MAGIC ) )
    {
-      list<affect_data*>::iterator paf;
+      list < affect_data * >::iterator paf;
 
-      for( paf = wield->pIndexData->affects.begin(); paf != wield->pIndexData->affects.end(); ++paf )
+      for( paf = wield->pIndexData->affects.begin(  ); paf != wield->pIndexData->affects.end(  ); ++paf )
       {
-         affect_data *af = (*paf);
+         affect_data *af = *paf;
 
          if( af->location == APPLY_WEAPONSPELL && IS_VALID_SN( af->modifier ) && skill_table[af->modifier]->spell_fun )
             retcode = ( *skill_table[af->modifier]->spell_fun ) ( af->modifier, 7, ch, victim );
@@ -3596,9 +3554,9 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
       if( retcode != rNONE || ch->char_died(  ) || victim->char_died(  ) )
          return retcode;
 
-      for( paf = wield->affects.begin(); paf != wield->affects.end(); ++paf )
+      for( paf = wield->affects.begin(  ); paf != wield->affects.end(  ); ++paf )
       {
-         affect_data *af = (*paf);
+         affect_data *af = *paf;
 
          if( af->location == APPLY_WEAPONSPELL && IS_VALID_SN( af->modifier ) && skill_table[af->modifier]->spell_fun )
             retcode = ( *skill_table[af->modifier]->spell_fun ) ( af->modifier, 7, ch, victim );
@@ -3642,7 +3600,6 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    if( retcode != rNONE || ch->char_died(  ) || victim->char_died(  ) )
       return retcode;
 
-   tail_chain(  );
    return retcode;
 }
 
@@ -3753,7 +3710,7 @@ CMDF( do_assist )
 {
    char_data *victim, *bob;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Assist whom?\r\n" );
       return;
@@ -3809,14 +3766,13 @@ CMDF( do_assist )
    ch->WAIT_STATE( 1 * sysdata->pulseviolence );
    check_attacker( ch, victim );
    multi_hit( ch, victim, TYPE_UNDEFINED );
-   return;
 }
 
 CMDF( do_kill )
 {
    char_data *victim;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Kill whom?\r\n" );
       return;
@@ -3871,7 +3827,6 @@ CMDF( do_kill )
    ch->WAIT_STATE( 2 * sysdata->pulseviolence );
    check_attacker( ch, victim );
    multi_hit( ch, victim, TYPE_UNDEFINED );
-   return;
 }
 
 CMDF( do_flee )
@@ -3920,8 +3875,7 @@ CMDF( do_flee )
       door = number_door(  );
       if( !( pexit = was_in->get_exit( door ) )
           || !pexit->to_room || IS_EXIT_FLAG( pexit, EX_NOFLEE )
-          || ( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !ch->has_aflag( AFF_PASS_DOOR ) )
-          || ( ch->isnpc(  ) && pexit->to_room->flags.test( ROOM_NO_MOB ) ) )
+          || ( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !ch->has_aflag( AFF_PASS_DOOR ) ) || ( ch->isnpc(  ) && pexit->to_room->flags.test( ROOM_NO_MOB ) ) )
          continue;
 
       if( ( IS_EXIT_FLAG( pexit, EX_FORTIFIED ) || IS_EXIT_FLAG( pexit, EX_HEAVY )
@@ -3955,8 +3909,7 @@ CMDF( do_flee )
          los = ( exp_level( ch->level + 1 ) - exp_level( ch->level ) ) * 0.03;
 
          if( wf )
-            fchance = ( ( wf->get_curr_dex(  ) + wf->get_curr_str(  ) + wf->level )
-                        - ( ch->get_curr_dex(  ) + ch->get_curr_str(  ) + ch->level ) );
+            fchance = ( ( wf->get_curr_dex(  ) + wf->get_curr_str(  ) + wf->level ) - ( ch->get_curr_dex(  ) + ch->get_curr_str(  ) + ch->level ) );
 
          if( ( number_percent(  ) + fchance ) < ch->pcdata->learned[gsn_retreat] )
          {
@@ -3968,8 +3921,7 @@ CMDF( do_flee )
          else
          {
             if( ch->level < LEVEL_AVATAR )
-               act_printf( AT_FLEE, ch, NULL, NULL, TO_CHAR,
-                           "You flee head over heels from combat, losing %d experience.", los );
+               act_printf( AT_FLEE, ch, NULL, NULL, TO_CHAR, "You flee head over heels from combat, losing %d experience.", los );
             else
                act( AT_FLEE, "You flee head over heels from combat!", ch, NULL, NULL, TO_CHAR );
             ch->gain_exp( 0 - los );
@@ -4009,5 +3961,4 @@ CMDF( do_flee )
    ch->gain_exp( 0 - los );
    if( ch->level >= skill_table[gsn_retreat]->skill_level[ch->Class] )
       ch->learn_from_failure( gsn_retreat );
-   return;
 }

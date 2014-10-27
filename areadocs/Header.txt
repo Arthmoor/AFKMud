@@ -1,6 +1,6 @@
 === The #AREADATA section (also referred to as the header)
 
-Last Modified by Samson, Dec. 14, 2006
+Last Modified by Samson, Jul. 22, 2007
 
 If a <value> or string literal field is followed by a ~, then that ~ marker is required there.
 Tags with a # in front are required, and must appear in the order in which they are specified.
@@ -28,6 +28,10 @@ String containing the name of the area.
 Author      <string>~
 ---------------------
 String containing the name of the person who wrote the area.
+
+Credits     <string>~
+---------------------
+String containing additional credits data as desired.
 
 Vnums       <int> <int>
 -----------------------
@@ -73,7 +77,7 @@ norecall      | Players may not recall from this zone.
 nosummon      | Players may not summon to or from this zone.
 noscry        | Players may not use the farsight spell in this zone.
 noteleport    | Players may not teleport to or from this zone.
-freekill      | Treats the entire zone as an arena. Get approval first.
+freekill      | Treats the entire zone as an arena.
 nobeacon      | Players may not set recall beacons in this zone.
 noquit        | Players may not quit while in this area.
 

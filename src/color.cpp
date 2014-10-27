@@ -66,42 +66,40 @@
 #include "mud.h"
 #include "descriptor.h"
 
-char *const pc_displays[MAX_COLORS] =
-{
-   "black",    "dred",      "dgreen",    "orange",
-   "dblue",    "purple",    "cyan",      "grey",
-   "dgrey",    "red",       "green",     "yellow",
-   "blue",     "pink",      "lblue",     "white",
-   "blink",    "bdred",     "bdgreen",   "bdorange",
-   "bdblue",   "bpurple",   "bcyan",     "bgrey",
-   "bdgrey",   "bred",      "bgreen",    "byellow",
-   "bblue",    "bpink",     "blblue",    "bwhite",
-   "plain",    "action",    "say",       "chat",
-   "yells",    "tell",      "hit",       "hitme",
-   "immortal", "hurt",      "falling",   "danger",
-   "magic",    "consider",  "report",    "poison",
-   "social",   "dying",     "dead",      "skill",
-   "carnage",  "damage",    "fleeing",   "rmname",
-   "rmdesc",   "objects",   "people",    "list",
-   "bye",      "gold",      "gtells",    "note",
-   "hungry",   "thirsty",   "fire",      "sober",
-   "wearoff",  "exits",     "score",     "reset",
-   "log",      "die_msg",   "wartalk",   "arena",
-   "muse",     "think",     "aflags",    "who",
-   "racetalk", "ignore",    "whisper",   "divider",
-   "morph",    "shout",     "rflags",    "stype",
-   "aname",    "auction",   "score2",    "score3",
-   "score4",   "who2",      "who3",      "who4",
-   "intermud", "helpfiles", "who5",      "score5",
-   "who6",     "who7",      "prac",      "prac2",
-   "prac3",    "prac4",     "mxpprompt", "guildtalk",
-   "board",    "board2",    "board3"
+const char *pc_displays[MAX_COLORS] = {
+   "black", "dred", "dgreen", "orange",
+   "dblue", "purple", "cyan", "grey",
+   "dgrey", "red", "green", "yellow",
+   "blue", "pink", "lblue", "white",
+   "blink", "bdred", "bdgreen", "bdorange",
+   "bdblue", "bpurple", "bcyan", "bgrey",
+   "bdgrey", "bred", "bgreen", "byellow",
+   "bblue", "bpink", "blblue", "bwhite",
+   "plain", "action", "say", "chat",
+   "yells", "tell", "hit", "hitme",
+   "immortal", "hurt", "falling", "danger",
+   "magic", "consider", "report", "poison",
+   "social", "dying", "dead", "skill",
+   "carnage", "damage", "fleeing", "rmname",
+   "rmdesc", "objects", "people", "list",
+   "bye", "gold", "gtells", "note",
+   "hungry", "thirsty", "fire", "sober",
+   "wearoff", "exits", "score", "reset",
+   "log", "die_msg", "wartalk", "arena",
+   "muse", "think", "aflags", "who",
+   "racetalk", "ignore", "whisper", "divider",
+   "morph", "shout", "rflags", "stype",
+   "aname", "auction", "score2", "score3",
+   "score4", "who2", "who3", "who4",
+   "intermud", "helpfiles", "who5", "score5",
+   "who6", "who7", "prac", "prac2",
+   "prac3", "prac4", "UNUSED", "guildtalk",
+   "board", "board2", "board3"
 };
 
 /* All defaults are set to Alsherok default scheme, if you don't 
 like it, change it around to suite your own needs - Samson */
-const short default_set[MAX_COLORS] =
-{
+const short default_set[MAX_COLORS] = {
    AT_BLACK, AT_BLOOD, AT_DGREEN, AT_ORANGE, /*  3 */
    AT_DBLUE, AT_PURPLE, AT_CYAN, AT_GREY, /*  7 */
    AT_DGREY, AT_RED, AT_GREEN, AT_YELLOW, /* 11 */
@@ -109,8 +107,8 @@ const short default_set[MAX_COLORS] =
    AT_BLACK_BLINK, AT_BLOOD_BLINK, AT_DGREEN_BLINK, AT_ORANGE_BLINK, /* 19 */
    AT_DBLUE_BLINK, AT_PURPLE_BLINK, AT_CYAN_BLINK, AT_GREY_BLINK, /* 23 */
    AT_DGREY_BLINK, AT_RED_BLINK, AT_GREEN_BLINK, AT_YELLOW_BLINK, /* 27 */
-   AT_BLUE_BLINK, AT_PINK_BLINK, AT_LBLUE_BLINK, AT_WHITE_BLINK, /* 31 */
-   AT_GREY, AT_GREY, AT_BLUE,   /* 34 */
+   AT_BLUE_BLINK, AT_PINK_BLINK, AT_LBLUE_BLINK, AT_WHITE_BLINK,  /* 31 */
+   AT_GREY, AT_GREY, AT_BLUE, /* 34 */
    AT_GREEN, AT_LBLUE, AT_WHITE, AT_GREY, /* 38 */
    AT_GREY, AT_YELLOW, AT_GREY, AT_GREY,  /* 42 */
    AT_GREY, AT_BLUE, AT_GREY, AT_GREY, /* 46 */
@@ -132,7 +130,7 @@ const short default_set[MAX_COLORS] =
    AT_GREEN, AT_GREY, AT_GREEN, AT_WHITE  /* 110 */
 };
 
-char *const valid_color[] = {
+const char *valid_color[] = {
    "black", "dred", "dgreen", "orange", "dblue", "purple", "cyan", "grey",
    "dgrey", "red", "green", "yellow", "blue", "pink", "lblue", "white", "\0"
 };
@@ -173,7 +171,6 @@ void show_colorthemes( char_data * ch )
 
    if( col % 6 != 0 )
       ch->pager( "\r\n" );
-   return;
 }
 
 void show_colors( char_data * ch )
@@ -214,7 +211,6 @@ void show_colors( char_data * ch )
    }
    ch->pager( "\r\n\r\n" );
    show_colorthemes( ch );
-   return;
 }
 
 void reset_colors( char_data * ch )
@@ -269,7 +265,7 @@ CMDF( do_color )
 {
    bool dMatch, cMatch;
    short count = 0, y = 0;
-   char arg[MIL], arg2[MIL];
+   string arg, arg2;
 
    dMatch = false;
    cMatch = false;
@@ -280,7 +276,7 @@ CMDF( do_color )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       show_colors( ch );
       return;
@@ -288,38 +284,38 @@ CMDF( do_color )
 
    argument = one_argument( argument, arg );
 
-   if( !str_cmp( arg, "savetheme" ) && ch->is_imp() )
+   if( !str_cmp( arg, "savetheme" ) && ch->is_imp(  ) )
    {
       FILE *fp;
       char filename[256];
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "You must specify a name for this theme to save it.\n\r" );
          return;
       }
 
-      if( strstr( argument, ".." ) || strstr( argument, "/" ) || strstr( argument, "\\" ) )
+      if( strstr( argument.c_str(  ), ".." ) || strstr( argument.c_str(  ), "/" ) || strstr( argument.c_str(  ), "\\" ) )
       {
          ch->print( "Invalid theme name.\r\n" );
          return;
       }
 
-      snprintf( filename, 256, "%s%s", COLOR_DIR, argument );
+      snprintf( filename, 256, "%s%s", COLOR_DIR, argument.c_str(  ) );
       if( !( fp = fopen( filename, "w" ) ) )
       {
          ch->printf( "Unable to write to color file %s\n\r", filename );
          return;
       }
       fprintf( fp, "%s", "#COLORTHEME\n" );
-      fprintf( fp, "Name         %s~\n", argument );
+      fprintf( fp, "Name         %s~\n", argument.c_str(  ) );
       fprintf( fp, "MaxColors    %d\n", MAX_COLORS );
       fprintf( fp, "%s", "Colors      " );
       for( int x = 0; x < MAX_COLORS; ++x )
          fprintf( fp, " %d", ch->pcdata->colors[x] );
       fprintf( fp, "%s", "\nEnd\n" );
       FCLOSE( fp );
-      ch->printf( "Color theme %s saved.\r\n", argument );
+      ch->printf( "Color theme %s saved.\r\n", argument.c_str(  ) );
       return;
    }
 
@@ -329,22 +325,22 @@ CMDF( do_color )
       char filename[256];
       int max_colors = 0;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          show_colorthemes( ch );
          return;
       }
 
-      if( strstr( argument, ".." ) || strstr( argument, "/" ) || strstr( argument, "\\" ) )
+      if( strstr( argument.c_str(  ), ".." ) || strstr( argument.c_str(  ), "/" ) || strstr( argument.c_str(  ), "\\" ) )
       {
          ch->print( "Invalid theme.\r\n" );
          return;
       }
 
-      snprintf( filename, 256, "%s%s", COLOR_DIR, argument );
+      snprintf( filename, 256, "%s%s", COLOR_DIR, argument.c_str(  ) );
       if( !( fp = fopen( filename, "r" ) ) )
       {
-         ch->printf( "There is no theme called %s.\r\n", argument );
+         ch->printf( "There is no theme called %s.\r\n", argument.c_str(  ) );
          return;
       }
 
@@ -365,13 +361,13 @@ CMDF( do_color )
          if( !str_cmp( word, "End" ) )
          {
             FCLOSE( fp );
-            ch->printf( "Color theme has been changed to %s.\r\n", argument );
-            ch->save();
+            ch->printf( "Color theme has been changed to %s.\r\n", argument.c_str(  ) );
+            ch->save(  );
             return;
          }
       }
       FCLOSE( fp );
-      ch->printf( "An error occured while trying to set color theme %s.\r\n", argument );
+      ch->printf( "An error occured while trying to set color theme %s.\r\n", argument.c_str(  ) );
       return;
    }
 
@@ -409,7 +405,7 @@ CMDF( do_color )
       ch->desc->buffer_printf( "%sBlinking Pink\r\n", BLINK_PINK );
       ch->desc->buffer_printf( "%sBlinking Light Blue\r\n", BLINK_LBLUE );
       ch->desc->buffer_printf( "%sBlinking White\r\n", BLINK_WHITE );
-      ch->desc->write_to_buffer( ANSI_RESET, 0 );
+      ch->desc->write_to_buffer( ANSI_RESET );
 
       ch->desc->buffer_printf( "%s%sBlack Background\r\n", ANSI_WHITE, BACK_BLACK );
       ch->desc->buffer_printf( "%s%sDark Red Background\r\n", ANSI_BLACK, BACK_DRED );
@@ -422,7 +418,7 @@ CMDF( do_color )
       ch->desc->buffer_printf( "%s%sItalics%s\r\n", ANSI_GREY, ANSI_ITALIC, ANSI_RESET );
       ch->desc->buffer_printf( "%sStrikeout%s\r\n", ANSI_STRIKEOUT, ANSI_RESET );
       ch->desc->buffer_printf( "%sUnderline\r\n", ANSI_UNDERLINE );
-      ch->desc->write_to_buffer( ANSI_RESET, 0 );
+      ch->desc->write_to_buffer( ANSI_RESET );
       return;
    }
 
@@ -435,7 +431,7 @@ CMDF( do_color )
 
    argument = one_argument( argument, arg2 );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Change which color type?\r\n" );
       return;
@@ -458,7 +454,7 @@ CMDF( do_color )
          }
       }
    }
-   else if( !arg || arg2[0] == '\0' )
+   else if( arg.empty(  ) || arg2.empty(  ) )
       cMatch = false;
    else
    {
@@ -476,7 +472,7 @@ CMDF( do_color )
 
       if( !dMatch )
       {
-         ch->printf( "%s is an invalid color type.\r\n", arg );
+         ch->printf( "%s is an invalid color type.\r\n", arg.c_str(  ) );
          ch->print( "Type color with no arguments to see available options.\r\n" );
          return;
       }
@@ -503,8 +499,8 @@ CMDF( do_color )
 
    if( !cMatch )
    {
-      if( arg[0] )
-         ch->pagerf( "Invalid color for type %s.\r\n", arg );
+      if( !arg.empty(  ) )
+         ch->pagerf( "Invalid color for type %s.\r\n", arg.c_str(  ) );
       else
          ch->pager( "Invalid color.\r\n" );
 
@@ -535,8 +531,7 @@ CMDF( do_color )
 
       ch->set_pager_color( y );
 
-      ch->pagerf( "All color types set to color %s%s.%s\r\n",
-                  valid_color[y > AT_BLINK ? y - AT_BLINK : y], y > AT_BLINK ? " [BLINKING]" : "", ANSI_RESET );
+      ch->pagerf( "All color types set to color %s%s.%s\r\n", valid_color[y > AT_BLINK ? y - AT_BLINK : y], y > AT_BLINK ? " [BLINKING]" : "", ANSI_RESET );
    }
    else
    {
@@ -545,15 +540,13 @@ CMDF( do_color )
       ch->set_color( count );
 
       if( !str_cmp( argument, "blink" ) )
-         ch->printf( "Display %s set to color %s [BLINKING]%s\r\n",
-                     pc_displays[count], valid_color[y - AT_BLINK], ANSI_RESET );
+         ch->printf( "Display %s set to color %s [BLINKING]%s\r\n", pc_displays[count], valid_color[y - AT_BLINK], ANSI_RESET );
       else
          ch->printf( "Display %s set to color %s.\r\n", pc_displays[count], valid_color[y] );
    }
-   return;
 }
 
-char *char_data::color_str( short AType )
+const char *char_data::color_str( short AType )
 {
    if( !this )
    {
@@ -641,7 +634,7 @@ char *char_data::color_str( short AType )
 }
 
 /* Random Ansi Color Code -- Xorith */
-char *random_ansi( short type )
+const char *random_ansi( short type )
 {
    switch ( type )
    {
@@ -1212,8 +1205,7 @@ char *color_align( const char *argument, int size, int align )
    if( align == ALIGN_RIGHT || len >= size )
       snprintf( buf, MSL, "%*.*s", len, len, argument );
    else if( align == ALIGN_CENTER )
-      snprintf( buf, MSL, "%*s%s%*s", ( space / 2 ), "", argument,
-                ( ( space / 2 ) * 2 ) == space ? ( space / 2 ) : ( ( space / 2 ) + 1 ), "" );
+      snprintf( buf, MSL, "%*s%s%*s", ( space / 2 ), "", argument, ( ( space / 2 ) * 2 ) == space ? ( space / 2 ) : ( ( space / 2 ) + 1 ), "" );
    else if( align == ALIGN_LEFT )
       snprintf( buf, MSL, "%s%*s", argument, space, "" );
 
@@ -1225,16 +1217,16 @@ char *color_align( const char *argument, int size, int align )
  * in it to the desired output tokens, using the provided character's
  * preferences.
  */
-char *colorize( const char *txt, descriptor_data * d )
+const char *colorize( const string & txt, descriptor_data * d )
 {
    static char result[MSL];
 
    *result = '\0';
 
-   if( txt && *txt && d )
+   if( !txt.empty(  ) && d )
    {
       char *colstr;
-      const char *prevstr = txt;
+      const char *prevstr = txt.c_str(  );
       char colbuf[20];
       int ln;
 

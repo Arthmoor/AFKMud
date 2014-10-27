@@ -1,7 +1,7 @@
 Original document written by Thoric of Realms of Despair.
 Updated at various intervals by Samson.
 
-Last Modified by Samson, 11/25/04
+Last Modified by Samson, Jul. 22, 2007
 
 === Purpose of this file
 
@@ -13,11 +13,10 @@ converting your areas to our format.
 === Overview of Areas
 
 An area is one piece of the world. Each area is defined in a separate 
-file. All of our area files have the extension '.are', but you can call 
-your area files anything you want.
+file. All area files require the '.are' extension for the code to load them.
 
 Because each area is defined in one file, it is easy to incorporate 
-new areas into SMAUG, or to send SMAUG areas to others for use.
+new areas into AFKMud, or to send AFKMud areas to others for use.
 
 === Sections of an Area
 
@@ -28,7 +27,7 @@ An area file contains the following sections:
     #OBJECT
     #ROOM
 
-A complete area file will have a complete #AREAHEADER section and several #MOBILE,
+A complete area file will have a complete #AREADATA section and several #MOBILE,
 #OBJECT, and #ROOM sections. Each of these primary sections can contain other
 subsections which are covered in the respective files.
 
@@ -37,7 +36,7 @@ The range of vnum's is 1 to somewhere around 2 billion. Vnum's must be
 unique (for that particular kind of vnum). Vnums do not have to be in 
 increasing order.
 
-An area uses the same range of vnum's for mobile vnum's, object vnum's,
+An area uses the same range of vnum's for mobile vnums, object vnums,
 and room vnum's, starting with a multiple of 100. This facilitates 
 adding the area into an existing set of areas.
 

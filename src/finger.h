@@ -29,38 +29,56 @@
 #ifndef __FINGER_H__
 #define __FINGER_H__
 
-extern char *const realm_string[];  /* Wizinfo stuff */
-
 class wizinfo_data
 {
  private:
-   wizinfo_data( const wizinfo_data& w );
-   wizinfo_data& operator=( const wizinfo_data& );
+   wizinfo_data( const wizinfo_data & w );
+     wizinfo_data & operator=( const wizinfo_data & );
 
  public:
-   wizinfo_data();
-   ~wizinfo_data();
+     wizinfo_data(  );
+    ~wizinfo_data(  );
 
-   void set_name( string newname ) { name = newname; }
-   string get_name() { return name; }
+   void set_name( const string & newname )
+   {
+      name = newname;
+   }
+   string get_name(  )
+   {
+      return name;
+   }
 
-   void set_email( string newmail ) { email = newmail; }
-   string get_email() { return email; }
+   void set_email( const string & newmail )
+   {
+      email = newmail;
+   }
+   const string get_email(  )
+   {
+      return email;
+   }
 
-   void set_icq( int num ) { icq = num; }
-   int get_icq() { return icq; }
+   void set_icq( int num )
+   {
+      icq = num;
+   }
+   int get_icq(  )
+   {
+      return icq;
+   }
 
-   void set_realm( short num ) { realm = num; }
-   short get_realm() { return realm; }
+   void set_level( short num )
+   {
+      level = num;
+   }
+   short get_level(  )
+   {
+      return level;
+   }
 
-   void set_level( short num ) { level = num; }
-   short get_level() { return level; }
-
-private:
+ private:
    string name;
    string email;
    int icq;
-   short realm;
    short level;
 };
 #endif

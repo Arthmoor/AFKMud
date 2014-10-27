@@ -35,8 +35,10 @@
 
 struct environment_data
 {
-   environment_data();
-   /* No destructor needed */
+   environment_data(  );
+   /*
+    * No destructor needed 
+    */
 
    short direction;
    short mx;
@@ -49,18 +51,18 @@ struct environment_data
    short intensity;
 };
 
-list<environment_data*> envlist;
+list < environment_data * >envlist;
 
 enum env_types
 {
    ENV_QUAKE, ENV_FIRE, ENV_RAIN, ENV_THUNDER, ENV_TORNADO, ENV_MAX
 };
 
-char *const env_name[] = {
+const char *env_name[] = {
    "quake", "fire", "rainstorm", "thunderstorm", "tornado"
 };
 
-char *env_distances[] = {
+const char *env_distances[] = {
    "hundreds of miles away in the distance",
    "far off in the skyline",
    "many miles away at great distance",
@@ -74,7 +76,7 @@ char *env_distances[] = {
    "in the immediate area"
 };
 
-environment_data::environment_data()
+environment_data::environment_data(  )
 {
    init_memory( &direction, &intensity, sizeof( intensity ) );
 }
@@ -87,23 +89,20 @@ void free_env( environment_data * env )
 
 void free_envs( void )
 {
-   list<environment_data*>::iterator en;
+   list < environment_data * >::iterator en;
 
-   for( en = envlist.begin(); en != envlist.end(); )
+   for( en = envlist.begin(  ); en != envlist.end(  ); )
    {
-      environment_data *env = (*en);
+      environment_data *env = *en;
       ++en;
 
       free_env( env );
    }
-   return;
 }
 
-int get_env_type( char *type )
+int get_env_type( const string & type )
 {
-   int x;
-
-   for( x = 0; x < ENV_MAX; ++x )
+   for( int x = 0; x < ENV_MAX; ++x )
       if( !str_cmp( type, env_name[x] ) )
          return x;
    return -1;
@@ -111,11 +110,11 @@ int get_env_type( char *type )
 
 void environment_pulse_update( void )
 {
-   list<environment_data*>::iterator en;
+   list < environment_data * >::iterator en;
 
-   for( en = envlist.begin(); en != envlist.end(); )
+   for( en = envlist.begin(  ); en != envlist.end(  ); )
    {
-      environment_data *env = (*en);
+      environment_data *env = *en;
       ++en;
 
       switch ( env->type )
@@ -174,12 +173,12 @@ void environment_pulse_update( void )
 
 void environment_actual_update( void )
 {
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
 
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      list<environment_data*>::iterator ev;
-      descriptor_data *d = (*ds);
+      list < environment_data * >::iterator ev;
+      descriptor_data *d = *ds;
       int atx, aty, atmap;
 
       if( d->connected != CON_PLAYING )
@@ -197,9 +196,9 @@ void environment_actual_update( void )
       aty = ch->my;
       atmap = ch->map;
 
-      for( ev = envlist.begin(); ev != envlist.end(); ++ev )
+      for( ev = envlist.begin(  ); ev != envlist.end(  ); ++ev )
       {
-         environment_data *en = (*ev);
+         environment_data *en = *ev;
 
          if( distance( atx, aty, en->mx, en->my ) > en->radius )
             continue;
@@ -212,13 +211,13 @@ void environment_actual_update( void )
             case ENV_FIRE:
                if( number_range( 0, 3 ) == 2 )
                {
-                  list<obj_data*>::iterator iobj;
+                  list < obj_data * >::iterator iobj;
                   obj_data *obj;
                   bool firefound = false;
 
-                  for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+                  for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
                   {
-                     obj_data *fire = (*iobj);
+                     obj_data *fire = *iobj;
 
                      if( fire->pIndexData->vnum != OBJ_VNUM_OVFIRE )
                         continue;
@@ -279,7 +278,6 @@ void environment_actual_update( void )
          }
       }
    }
-   return;
 }
 
 void generate_random_environment( int type )
@@ -295,6 +293,7 @@ void generate_random_environment( int type )
    q->mx = number_range( 0, MAX_X );
    q->my = number_range( 0, MAX_Y );
    q->map = number_range( MAP_ONE, MAP_MAX - 1 );
+
    switch ( type )
    {
       default:
@@ -327,31 +326,17 @@ void generate_random_environment( int type )
       q->direction = 10;
       return;
    }
+
    if( schance < 15 )
-   {
       q->direction = DIR_NORTH;
-      return;
-   }
    else if( schance < 30 )
-   {
       q->direction = DIR_SOUTHEAST;
-      return;
-   }
    else if( schance < 50 )
-   {
       q->direction = DIR_EAST;
-      return;
-   }
    else if( schance < 75 )
-   {
       q->direction = DIR_SOUTHWEST;
-      return;
-   }
    else
-   {
       q->direction = 15;
-      return;
-   }
 }
 
 void environment_update( void )
@@ -376,12 +361,11 @@ void environment_update( void )
    }
    environment_actual_update(  );
    environment_pulse_update(  );
-   return;
 }
 
 CMDF( do_makeenv )
 {
-   char etype[MIL], arg2[MIL], arg[MIL];
+   string etype, arg2, arg;
    int chosenradius;
    int door, atype, intensity = 0;
    int atx = -1, aty = -1, atmap = -1;
@@ -403,7 +387,7 @@ CMDF( do_makeenv )
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
 
-   if( !etype || etype[0] == '\0' )
+   if( etype.empty(  ) )
    {
       ch->print( "What type of affect are you trying to create?\r\n" );
       ch->print( "Possible affects are:\r\n\r\n" );
@@ -422,7 +406,7 @@ CMDF( do_makeenv )
    aty = ch->my;
    atmap = ch->map;
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Usage: makeenv <type> <radius> <direction> <intensity>\r\n" );
       ch->print( "Intensity is used only for earthquakes and is ignored otherwise.\r\n" );
@@ -441,27 +425,27 @@ CMDF( do_makeenv )
       return;
    }
 
-   intensity = atoi( argument );
+   intensity = atoi( argument.c_str(  ) );
    if( intensity < 1 && atype == ENV_QUAKE )
    {
       ch->print( "Intensity must be greater than zero.\r\n" );
       return;
    }
 
-   chosenradius = atoi( arg );
+   chosenradius = atoi( arg.c_str(  ) );
 
    door = get_dirnum( arg2 );
    if( door < 0 || door > MAX_DIR )
       door = DIR_SOMEWHERE;
 
    if( door != DIR_SOMEWHERE && atype != ENV_QUAKE )
-      ch->printf( "You create a %s to the %s!\r\n", etype, dir_name[door] );
+      ch->printf( "You create a %s to the %s!\r\n", etype.c_str(  ), dir_name[door] );
    else
    {
       if( atype == ENV_QUAKE )
          ch->print( "You create an earthquake!\r\n" );
       else
-         ch->printf( "You create a non-moving %s!\r\n", etype );
+         ch->printf( "You create a non-moving %s!\r\n", etype.c_str(  ) );
    }
    t = new environment_data;
    t->mx = atx;
@@ -479,24 +463,21 @@ CMDF( do_makeenv )
 CMDF( do_env )
 {
    int count = 0;
-   list<environment_data*>::iterator env;
+   list < environment_data * >::iterator env;
 
-   for( env = envlist.begin(); env != envlist.end(); ++env )
+   for( env = envlist.begin(  ); env != envlist.end(  ); ++env )
    {
-      environment_data *en = (*env);
+      environment_data *en = *env;
 
       ++count;
       if( en->type == ENV_QUAKE )
       {
-         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n",
-                     en->radius, en->radius, en->intensity, en->mx, en->my, map_names[en->map] );
+         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n", en->radius, en->radius, en->intensity, en->mx, en->my, map_names[en->map] );
       }
       else
       {
          ch->printf( "&GA %d by %d %s bound %s at coordinates %d,%d on %s.\r\n",
-                     en->radius, en->radius,
-                     ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere",
-                     env_name[en->type], en->mx, en->my, map_names[en->map] );
+                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->mx, en->my, map_names[en->map] );
       }
    }
 
@@ -506,12 +487,11 @@ CMDF( do_env )
       return;
    }
    ch->printf( "&G%d total environmental effects found.\r\n", count );
-   return;
 }
 
 bool survey_environment( char_data * ch )
 {
-   list<environment_data*>::iterator env;
+   list < environment_data * >::iterator env;
    double dist, angle, eta;
    int dir = -1, iMes;
    bool found = false;
@@ -521,9 +501,9 @@ bool survey_environment( char_data * ch )
 
    ch->print( "&WAn imp appears with an ear-splitting BANG!\r\n" );
 
-   for( env = envlist.begin(); env != envlist.end(); ++env )
+   for( env = envlist.begin(  ); env != envlist.end(  ); ++env )
    {
-      environment_data *en = (*env);
+      environment_data *en = *env;
 
       if( ch->map != en->map )
          continue;
@@ -583,11 +563,9 @@ bool survey_environment( char_data * ch )
 
       eta = dist * 10;
       if( dir == -1 )
-         ch->printf( "&GAn %s bound &R%s&G within the immediate vicinity.\r\n",
-                     dir_name[en->direction], env_name[en->type] );
+         ch->printf( "&GAn %s bound &R%s&G within the immediate vicinity.\r\n", dir_name[en->direction], env_name[en->type] );
       else
-         ch->printf( "&GA &R%s&G %s in the general %sern direction.\r\n",
-                     env_name[en->type], env_distances[iMes], dir_name[dir] );
+         ch->printf( "&GA &R%s&G %s in the general %sern direction.\r\n", env_name[en->type], env_distances[iMes], dir_name[dir] );
       if( eta / 60 > 0 )
          ch->printf( "&GThis %s is about %d minutes away from you.\r\n", env_name[en->type], ( int )( eta / 60 ) );
       else

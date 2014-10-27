@@ -37,26 +37,26 @@ const int MAX_OBJ_VALUE = 11; // This should always be one more than you actuall
 class obj_index
 {
  private:
-   obj_index( const obj_index& o );
-   obj_index& operator=( const obj_index& );
+   obj_index( const obj_index & o );
+     obj_index & operator=( const obj_index & );
 
  public:
-   obj_index( );
-   ~obj_index( );
+     obj_index(  );
+    ~obj_index(  );
 
-   void clean_obj( );
+   void clean_obj(  );
    obj_data *create_object( int );
-   int set_ego( );
+   int set_ego(  );
    void oprog_read_programs( FILE * );
 
-   list<affect_data*> affects;
-   list<extra_descr_data*> extradesc;
-   list<struct mud_prog_data*> mudprogs; /* Mudprogs */
+     list < affect_data * >affects;
+     list < extra_descr_data * >extradesc;
+     list < struct mud_prog_data *>mudprogs; /* Mudprogs */
    obj_index *next;
    area_data *area;
-   bitset<MAX_PROG> progtypes; /* objprogs */
-   bitset<MAX_ITEM_FLAG> extra_flags;
-   bitset<MAX_WEAR_FLAG> wear_flags;
+     bitset < MAX_PROG > progtypes; /* objprogs */
+     bitset < MAX_ITEM_FLAG > extra_flags;
+     bitset < MAX_WEAR_FLAG > wear_flags;
    char *name;
    char *short_descr;
    char *objdesc;
@@ -74,7 +74,7 @@ class obj_index
    short layers;
 };
 
-extern obj_index *obj_index_hash[MAX_KEY_HASH];
+extern map < int, obj_index * >obj_index_table;
 obj_index *get_obj_index( int );
-obj_index *make_object( int, int, char *, area_data * );
+obj_index *make_object( int, int, const string &, area_data * );
 #endif

@@ -71,7 +71,7 @@ void redit_disp_exit_flag_menu( descriptor_data * );
 void redit_disp_flag_menu( descriptor_data * );
 void redit_disp_sector_menu( descriptor_data * );
 void redit_disp_menu( descriptor_data * );
-void redit_parse( descriptor_data *, char * );
+void redit_parse( descriptor_data *, string & );
 void cleanup_olc( descriptor_data * );
 bool can_rmodify( char_data *, room_index * );
 void oedit_disp_extra_choice( descriptor_data * );
@@ -86,12 +86,12 @@ CMDF( do_oredit )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       room = ch->in_room;
    else
    {
       if( is_number( argument ) )
-         room = get_room_index( atoi( argument ) );
+         room = get_room_index( atoi( argument.c_str(  ) ) );
       else
       {
          ch->print( "Vnum must be specified in numbers!\r\n" );
@@ -108,11 +108,11 @@ CMDF( do_oredit )
    /*
     * Make sure the room isnt already being edited 
     */
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
    descriptor_data *d;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      d = (*ds);
+      d = *ds;
 
       if( d->connected == CON_REDIT )
          if( d->olc && OLC_VNUM( d ) == room->vnum )
@@ -133,15 +133,14 @@ CMDF( do_oredit )
    redit_disp_menu( d );
 
    act( AT_ACTION, "$n starts using OLC.", ch, NULL, NULL, TO_ROOM );
-   return;
 }
 
 CMDF( do_rcopy )
 {
-   char arg1[MIL];
+   string arg1;
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Usage: rcopy <original> <new>\r\n" );
       return;
@@ -153,8 +152,8 @@ CMDF( do_rcopy )
       return;
    }
 
-   int rvnum = atoi( arg1 );
-   int cvnum = atoi( argument );
+   int rvnum = atoi( arg1.c_str(  ) );
+   int cvnum = atoi( argument.c_str(  ) );
 
    if( ch->get_trust(  ) < LEVEL_GREATER )
    {
@@ -186,8 +185,8 @@ CMDF( do_rcopy )
    }
 
    room_index *copy = new room_index;
-   copy->exits.clear();
-   copy->extradesc.clear();
+   copy->exits.clear(  );
+   copy->extradesc.clear(  );
    copy->area = ( ch->pcdata->area ) ? ch->pcdata->area : orig->area;
    copy->vnum = cvnum;
    copy->name = QUICKLINK( orig->name );
@@ -201,23 +200,23 @@ CMDF( do_rcopy )
    copy->tele_delay = orig->tele_delay;
    copy->tunnel = orig->tunnel;
 
-   list<extra_descr_data*>::iterator ced;
-   for( ced = orig->extradesc.begin(); ced != orig->extradesc.end(); ++ced )
+   list < extra_descr_data * >::iterator ced;
+   for( ced = orig->extradesc.begin(  ); ced != orig->extradesc.end(  ); ++ced )
    {
-      extra_descr_data *edesc = (*ced);
+      extra_descr_data *edesc = *ced;
 
       extra_descr_data *ed = new extra_descr_data;
       ed->keyword = edesc->keyword;
-      if( !edesc->desc.empty() )
+      if( !edesc->desc.empty(  ) )
          ed->desc = edesc->desc;
       copy->extradesc.push_back( ed );
       ++top_ed;
    }
 
-   list<exit_data*>::iterator cxit;
-   for( cxit = orig->exits.begin(); cxit != orig->exits.end(); ++cxit )
+   list < exit_data * >::iterator cxit;
+   for( cxit = orig->exits.begin(  ); cxit != orig->exits.end(  ); ++cxit )
    {
-      exit_data *pexit = (*cxit);
+      exit_data *pexit = *cxit;
 
       exit_data *xit = copy->make_exit( get_room_index( pexit->rvnum ), pexit->vdir );
       xit->keyword = QUICKLINK( pexit->keyword );
@@ -227,13 +226,10 @@ CMDF( do_rcopy )
       xit->flags = pexit->flags;
    }
 
-   int iHash = cvnum % MAX_KEY_HASH;
-   copy->next = room_index_hash[iHash];
-   room_index_hash[iHash] = copy;
+   room_index_table.insert( map < int, room_index * >::value_type( cvnum, copy ) );
    copy->area->rooms.push_back( copy );
    ++top_room;
    ch->print( "Room copied.\r\n" );
-   return;
 }
 
 bool is_inolc( descriptor_data * d )
@@ -305,11 +301,7 @@ void olc_log( descriptor_data * d, const char *format, ... )
          log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s PLR(%s): ", d->character->name, victim->name );
    }
    else
-   {
       bug( "%s: called with a bad connected state", __FUNCTION__ );
-      return;
-   }
-   return;
 }
 
 /**************************************************************************
@@ -321,15 +313,15 @@ void olc_log( descriptor_data * d, const char *format, ... )
  */
 void redit_disp_extradesc_prompt_menu( descriptor_data * d )
 {
-   list<extra_descr_data*>::iterator ed;
+   list < extra_descr_data * >::iterator ed;
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
    int counter = 0;
 
-   for( ed = room->extradesc.begin(); ed != room->extradesc.end(); ++ed )
+   for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
    {
-      extra_descr_data *edesc = (*ed);
+      extra_descr_data *edesc = *ed;
 
-      d->character->printf( "&g%2d&w) %-40.40s\r\n", ++counter, edesc->keyword.c_str() );
+      d->character->printf( "&g%2d&w) %-40.40s\r\n", ++counter, edesc->keyword.c_str(  ) );
    }
    d->character->print( "\r\nWhich extra description do you want to edit? " );
 }
@@ -339,16 +331,16 @@ void redit_disp_extradesc_menu( descriptor_data * d )
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
    int count = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
-   if( !room->extradesc.empty() )
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
+   if( !room->extradesc.empty(  ) )
    {
-      list<extra_descr_data*>::iterator ed;
+      list < extra_descr_data * >::iterator ed;
 
-      for( ed = room->extradesc.begin(); ed != room->extradesc.end(); ++ed )
+      for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
       {
-         extra_descr_data *edesc = (*ed);
+         extra_descr_data *edesc = *ed;
 
-         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str() );
+         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str(  ) );
       }
       d->character->print( "\r\n" );
    }
@@ -365,29 +357,27 @@ void redit_disp_extradesc_menu( descriptor_data * d )
 void redit_disp_exit_menu( descriptor_data * d )
 {
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
-   list<exit_data*>::iterator iexit;
+   list < exit_data * >::iterator iexit;
    int cnt = 0;
 
    OLC_MODE( d ) = REDIT_EXIT_MENU;
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
-   for( iexit = room->exits.begin(); iexit != room->exits.end(); ++iexit )
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
+   for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
 
       d->character->printf( "&g%2d&w) %-10.10s to %-5d. Key: %d Keywords: %s Flags: %s\r\n",
                             ++cnt, dir_name[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
-                            pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)",
-                            bitset_string( pexit->flags, ex_flags ) );
+                            pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
    }
 
-   if( !room->exits.empty() )
+   if( !room->exits.empty(  ) )
       d->character->print( "\r\n" );
    d->character->print( "&gA&w) Add a new exit\r\n" );
    d->character->print( "&gR&w) Remove an exit\r\n" );
    d->character->print( "&gQ&w) Quit\r\n" );
 
    d->character->print( "\r\nEnter choice: " );
-   return;
 }
 
 void redit_disp_exit_edit( descriptor_data * d )
@@ -406,28 +396,24 @@ void redit_disp_exit_edit( descriptor_data * d )
    }
 
    OLC_MODE( d ) = REDIT_EXIT_EDIT;
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    d->character->printf( "&g1&w) Direction  : &c%s\r\n", dir_name[pexit->vdir] );
    d->character->printf( "&g2&w) To Vnum    : &c%d\r\n", pexit->to_room ? pexit->to_room->vnum : -1 );
    d->character->printf( "&g3&w) Key        : &c%d\r\n", pexit->key );
-   d->character->printf( "&g4&w) Keyword    : &c%s\r\n",
-                         ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)" );
+   d->character->printf( "&g4&w) Keyword    : &c%s\r\n", ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)" );
    d->character->printf( "&g5&w) Flags      : &c%s\r\n", flags[0] != '\0' ? flags : "(none)" );
-   d->character->printf( "&g6&w) Description: &c%s\r\n",
-                         ( pexit->exitdesc && pexit->exitdesc[0] != '\0' ) ? pexit->exitdesc : "(none)" );
+   d->character->printf( "&g6&w) Description: &c%s\r\n", ( pexit->exitdesc && pexit->exitdesc[0] != '\0' ) ? pexit->exitdesc : "(none)" );
    d->character->print( "&gQ&w) Quit\r\n" );
    d->character->print( "\r\nEnter choice: " );
-   return;
 }
 
 void redit_disp_exit_dirs( descriptor_data * d )
 {
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i <= DIR_SOMEWHERE; ++i )
       d->character->printf( "&g%2d&w) %s\r\n", i, dir_name[i] );
 
    d->character->print( "\r\nChoose a direction: " );
-   return;
 }
 
 /* For exit flags */
@@ -437,7 +423,7 @@ void redit_disp_exit_flag_menu( descriptor_data * d )
    char buf1[MSL];
    int i;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( i = 0; i < MAX_EXFLAG; ++i )
    {
       if( i == EX_PORTAL )
@@ -462,7 +448,7 @@ void redit_disp_flag_menu( descriptor_data * d )
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
    int columns = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < ROOM_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter + 1, r_flags[counter] );
@@ -470,8 +456,7 @@ void redit_disp_flag_menu( descriptor_data * d )
       if( !( ++columns % 2 ) )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nRoom flags: &c%s&w\r\nEnter room flags, 0 to quit : ",
-                         bitset_string( room->flags, r_flags ) );
+   d->character->printf( "\r\nRoom flags: &c%s&w\r\nEnter room flags, 0 to quit : ", bitset_string( room->flags, r_flags ) );
    OLC_MODE( d ) = REDIT_FLAGS;
 }
 
@@ -480,7 +465,7 @@ void redit_disp_sector_menu( descriptor_data * d )
 {
    int columns = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < SECT_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, sect_types[counter] );
@@ -497,7 +482,7 @@ void redit_disp_menu( descriptor_data * d )
 {
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    d->character->printf( "&w-- Room number : [&c%d&w]      Room area: [&c%-30.30s&w]\r\n"
                          "&g1&w) Room Name   : &O%s\r\n"
                          "&g2&w) Description :\r\n&O%s"
@@ -523,11 +508,11 @@ void redit_disp_menu( descriptor_data * d )
 extra_descr_data *redit_find_extradesc( room_index * room, int number )
 {
    int count = 0;
-   list<extra_descr_data*>::iterator ed;
+   list < extra_descr_data * >::iterator ed;
 
-   for( ed = room->extradesc.begin(); ed != room->extradesc.end(); ++ed )
+   for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
    {
-      extra_descr_data *edesc = (*ed);
+      extra_descr_data *edesc = *ed;
 
       if( ++count == number )
          return edesc;
@@ -593,7 +578,7 @@ CMDF( do_redit_reset )
          return;
 
       case SUB_ROOM_EXTRA:
-         ed->desc = ch->copy_buffer();
+         ed->desc = ch->copy_buffer(  );
          ch->stop_editing(  );
          ch->pcdata->dest_buf = room;
          ch->pcdata->spare_ptr = ed;
@@ -601,7 +586,7 @@ CMDF( do_redit_reset )
          ch->desc->connected = CON_REDIT;
          oedit_disp_extra_choice( ch->desc );
          OLC_MODE( ch->desc ) = REDIT_EXTRADESC_CHOICE;
-         olc_log( ch->desc, "Edit description for exdesc %s", ed->keyword.c_str() );
+         olc_log( ch->desc, "Edit description for exdesc %s", ed->keyword.c_str(  ) );
          return;
    }
 }
@@ -610,19 +595,19 @@ CMDF( do_redit_reset )
   The main loop
  **************************************************************************/
 
-void redit_parse( descriptor_data * d, char *arg )
+void redit_parse( descriptor_data * d, string & arg )
 {
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
    room_index *tmp;
    exit_data *pexit = ( exit_data * ) d->character->pcdata->spare_ptr;
    extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
-   char arg1[MIL];
+   string arg1;
    int number = 0;
 
    switch ( OLC_MODE( d ) )
    {
       case REDIT_MAIN_MENU:
-         switch ( *arg )
+         switch ( arg[0] )
          {
             case 'q':
             case 'Q':
@@ -704,7 +689,7 @@ void redit_parse( descriptor_data * d, char *arg )
 
       case REDIT_NAME:
          STRFREE( room->name );
-         room->name = STRALLOC( arg );
+         room->name = STRALLOC( arg.c_str(  ) );
          olc_log( d, "Changed name to %s", room->name );
          break;
 
@@ -725,7 +710,7 @@ void redit_parse( descriptor_data * d, char *arg )
       case REDIT_FLAGS:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
             else if( number < 0 || number >= ROOM_MAX )
@@ -742,7 +727,7 @@ void redit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_rflag( arg1 );
@@ -757,7 +742,7 @@ void redit_parse( descriptor_data * d, char *arg )
          return;
 
       case REDIT_SECTOR:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( number < 0 || number >= SECT_MAX )
          {
             d->character->print( "Invalid choice!" );
@@ -770,25 +755,25 @@ void redit_parse( descriptor_data * d, char *arg )
          break;
 
       case REDIT_TUNNEL:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          room->tunnel = URANGE( 0, number, 1000 );
          olc_log( d, "Changed tunnel amount to %d", room->tunnel );
          break;
 
       case REDIT_TELEDELAY:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          room->tele_delay = number;
          olc_log( d, "Changed teleportation delay to %d", room->tele_delay );
          break;
 
       case REDIT_TELEVNUM:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          room->tele_vnum = URANGE( 1, number, sysdata->maxvnum );
          olc_log( d, "Changed teleportation vnum to %d", room->tele_vnum );
          break;
 
       case REDIT_LIGHT:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          room->baselight = URANGE( -32000, number, 32000 );
          olc_log( d, "Changed base lighting factor %d", room->baselight );
          break;
@@ -799,7 +784,7 @@ void redit_parse( descriptor_data * d, char *arg )
             default:
                if( is_number( arg ) )
                {
-                  number = atoi( arg );
+                  number = atoi( arg.c_str(  ) );
                   pexit = room->get_exit_num( number );
                   if( pexit )
                   {
@@ -861,17 +846,17 @@ void redit_parse( descriptor_data * d, char *arg )
          return;
 
       case REDIT_EXIT_DESC:
-         if( arg && arg[0] != '\0' )
-            stralloc_printf( &pexit->exitdesc, "%s\r\n", arg );
+         if( !arg.empty(  ) )
+            stralloc_printf( &pexit->exitdesc, "%s\r\n", arg.c_str(  ) );
 
-         olc_log( d, "Changed %s description to %s", dir_name[pexit->vdir], arg ? arg : "none" );
+         olc_log( d, "Changed %s description to %s", dir_name[pexit->vdir], !arg.empty(  )? arg.c_str(  ) : "none" );
          redit_disp_exit_edit( d );
          return;
 
       case REDIT_EXIT_ADD:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number < DIR_NORTH || number > DIR_SOMEWHERE )
             {
                d->character->print( "Invalid direction, try again: " );
@@ -905,7 +890,7 @@ void redit_parse( descriptor_data * d, char *arg )
          {
             exit_data *xit;
 
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number < DIR_NORTH || number > DIR_SOMEWHERE )
             {
                d->character->print( "Invalid direction, try again: " );
@@ -942,7 +927,7 @@ void redit_parse( descriptor_data * d, char *arg )
          return;
 
       case REDIT_EXIT_ADD_VNUM:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( !( tmp = get_room_index( number ) ) )
          {
             d->character->print( "Non-existant room, try again: " );
@@ -966,7 +951,7 @@ void redit_parse( descriptor_data * d, char *arg )
             d->character->print( "Exit must be specified in a number.\r\n" );
             redit_disp_exit_menu( d );
          }
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          pexit = room->get_exit_num( number );
          if( !pexit )
          {
@@ -979,7 +964,7 @@ void redit_parse( descriptor_data * d, char *arg )
          return;
 
       case REDIT_EXIT_VNUM:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( number < 0 || number > sysdata->maxvnum )
          {
             d->character->print( "Invalid room number, try again : " );
@@ -1001,13 +986,13 @@ void redit_parse( descriptor_data * d, char *arg )
 
       case REDIT_EXIT_KEYWORD:
          STRFREE( pexit->keyword );
-         pexit->keyword = STRALLOC( arg );
+         pexit->keyword = STRALLOC( arg.c_str(  ) );
          olc_log( d, "Changed %s keyword to %s", dir_name[pexit->vdir], pexit->keyword );
          redit_disp_exit_edit( d );
          return;
 
       case REDIT_EXIT_KEY:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( number < -1 || number > sysdata->maxvnum )
             d->character->print( "Invalid vnum, try again: " );
          else
@@ -1019,7 +1004,7 @@ void redit_parse( descriptor_data * d, char *arg )
          return;
 
       case REDIT_EXIT_FLAGS:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( number == 0 )
          {
             redit_disp_exit_edit( d );
@@ -1033,18 +1018,17 @@ void redit_parse( descriptor_data * d, char *arg )
          }
          number -= 1;
          pexit->flags.flip( number );
-         olc_log( d, "%s %s to %s exit",
-                  IS_EXIT_FLAG( pexit, number ) ? "Added" : "Removed", ex_flags[number], dir_name[pexit->vdir] );
+         olc_log( d, "%s %s to %s exit", IS_EXIT_FLAG( pexit, number ) ? "Added" : "Removed", ex_flags[number], dir_name[pexit->vdir] );
          redit_disp_exit_flag_menu( d );
          return;
 
       case REDIT_EXTRADESC_DELETE:
-         if( !( ed = redit_find_extradesc( room, atoi( arg ) ) ) )
+         if( !( ed = redit_find_extradesc( room, atoi( arg.c_str(  ) ) ) ) )
          {
             d->character->print( "Not found, try again: " );
             return;
          }
-         olc_log( d, "Deleted exdesc %s", ed->keyword.c_str() );
+         olc_log( d, "Deleted exdesc %s", ed->keyword.c_str(  ) );
          room->extradesc.remove( ed );
          deleteptr( ed );
          --top_ed;
@@ -1056,7 +1040,7 @@ void redit_parse( descriptor_data * d, char *arg )
          {
             default:
             case 'Q':
-               if( ed->keyword.empty() || ed->desc.empty() )
+               if( ed->keyword.empty(  ) || ed->desc.empty(  ) )
                {
                   d->character->print( "No keyword and/or description, junking..." );
                   room->extradesc.remove( ed );
@@ -1088,12 +1072,12 @@ void redit_parse( descriptor_data * d, char *arg )
          /*
           * if ( SetRExtra( room, arg ) )
           * {
-          * d->character->print( "A extradesc with that keyword already exists.\r\n" );
+          * d->character->print( "An extradesc with that keyword already exists.\r\n" );
           * redit_disp_extradesc_menu(d);
           * return;
           * } 
           */
-         olc_log( d, "Changed exkey %s to %s", ed->keyword.c_str(), arg );
+         olc_log( d, "Changed exkey %s to %s", ed->keyword.c_str(  ), arg.c_str(  ) );
          ed->keyword = arg;
          oedit_disp_extra_choice( d );
          OLC_MODE( d ) = REDIT_EXTRADESC_CHOICE;
@@ -1124,7 +1108,7 @@ void redit_parse( descriptor_data * d, char *arg )
             default:
                if( is_number( arg ) )
                {
-                  if( !( ed = redit_find_extradesc( room, atoi( arg ) ) ) )
+                  if( !( ed = redit_find_extradesc( room, atoi( arg.c_str(  ) ) ) ) )
                   {
                      d->character->print( "Not found, try again: " );
                      return;

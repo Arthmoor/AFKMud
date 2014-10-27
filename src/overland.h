@@ -36,8 +36,8 @@ const int MAX_X = 1000;
 const int MAX_Y = 1000;
 
 /* Change these filenames to match yours */
-#define ENTRANCE_FILE "entrances.dat"
-#define LANDMARK_FILE "landmarks.dat"
+#define ENTRANCE_FILE MAP_DIR "entrances.dat"
+#define LANDMARK_FILE MAP_DIR "landmarks.dat"
 
 enum map_types
 {
@@ -46,65 +46,65 @@ enum map_types
 
 // Single continent, starts at 0,0 in the NW corner. 1000x1000 default size.
 extern unsigned char map_sector[MAP_MAX][MAX_X][MAX_Y];
-extern char *const map_names[];
-extern char *const map_name[];
-extern char *const continents[];
-extern char *const sect_types[];
+extern const char *map_names[];
+extern const char *map_name[];
+extern const char *continents[];
+extern const char *sect_types[];
 extern const struct sect_color_type sect_show[];
 
 class landmark_data
 {
  private:
-   landmark_data( const landmark_data& l );
-   landmark_data& operator=( const landmark_data& );
+   landmark_data( const landmark_data & l );
+     landmark_data & operator=( const landmark_data & );
 
  public:
-   landmark_data();
-   ~landmark_data();
+     landmark_data(  );
+    ~landmark_data(  );
 
-   char *description;   /* Description of the landmark */
-   int distance;  /* Distance the landmark is visible from */
-   short map;  /* Map the landmark is on */
-   short mx;   /* X coordinate of landmark */
-   short my;   /* Y coordinate of landmark */
-   bool Isdesc;   /* If true is room desc. If not is landmark */
+   string description;  // Description of the landmark
+   int distance;  // Distance the landmark is visible from
+   short map;  // Map the landmark is on
+   short mx;   // X coordinate of landmark
+   short my;   // Y coordinate of landmark
+   bool Isdesc;   // If true is room desc. If not is landmark
 };
 
 class mapexit_data
 {
  private:
-   mapexit_data( const mapexit_data& m );
-   mapexit_data& operator=( const mapexit_data& );
+   mapexit_data( const mapexit_data & m );
+     mapexit_data & operator=( const mapexit_data & );
 
  public:
-   mapexit_data();
-   ~mapexit_data();
+     mapexit_data(  );
+    ~mapexit_data(  );
 
-   char *area; /* Area name */
-   int vnum;   /* Target vnum if it goes to a regular zone */
-   short herex;   /* Coordinates the entrance is at */
+   string area;   // Area name
+   int vnum;   // Target vnum if it goes to a regular zone
+   short herex;   // Coordinates the entrance is at
    short herey;
-   short therex;  /* Coordinates the entrance goes to, if any */
+   short therex;  // Coordinates the entrance goes to, if any
    short therey;
-   short tomap;   /* Map it goes to, if any */
-   short onmap;   /* Which map it's on */
-   short prevsector; /* Previous sector type to restore with when an exit is deleted */
+   short tomap;   // Map it goes to, if any
+   short onmap;   // Which map it's on
+   short prevsector; // Previous sector type to restore with when an exit is deleted
 };
 
 struct sect_color_type
 {
-   short sector;  /* Terrain sector */
-   char *color;   /* Color to display as */
-   char *symbol;  /* Symbol you see for the sector */
-   char *desc;    /* Description of sector type */
-   bool canpass;  /* Impassable terrain */
-   int move;      /* Movement loss */
-   short graph1;  /* Color numbers for graphic conversion */
+   short sector;  // Terrain sector
+   const char *color;   // Color to display as
+   const char *symbol;  // Symbol you see for the sector
+   const char *desc; // Description of sector type
+   bool canpass;  // Impassable terrain
+   int move;   // Movement loss
+   short graph1;  // Color numbers for graphic conversion
    short graph2;
    short graph3;
 };
 
-extern list<mapexit_data*> mapexitlist;
+extern list < mapexit_data * >mapexitlist;
 
 short get_terrain( short, short, short );
 mapexit_data *check_mapexit( short, short, short );

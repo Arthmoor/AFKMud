@@ -28,36 +28,36 @@
 
 #include <dirent.h>
 #if !defined(WIN32)
- #include <dlfcn.h>   /* Required for libdl - Trax */
+#include <dlfcn.h>   /* Required for libdl - Trax */
 #else
- #include <windows.h>
- #define dlopen( libname, flags ) LoadLibrary( (libname) )
+#include <windows.h>
+#define dlopen( libname, flags ) LoadLibrary( (libname) )
 #endif
 #include "mud.h"
 
-map<string,void*> module;
+map < string, void *>module;
 
-bool registered_func( char *func )
+bool registered_func( const char *func )
 {
    return false;
 }
 
-void register_function( char *name )
+void register_function( const char *name )
 {
 }
 
 // Call up each module in the map and execute its initializer.
-void init_modules()
+void init_modules(  )
 {
-   map<string,void*>::iterator mod;
+   map < string, void *>::iterator mod;
    const char *error;
 
-   while( mod != module.end() )
+   while( mod != module.end(  ) )
    {
-      typedef void INIT();
+      typedef void INIT(  );
       INIT *mod_init;
 
-      mod_init = (INIT*)dlsym( mod->second, "module_init" );
+      mod_init = ( INIT * ) dlsym( mod->second, "module_init" );
       if( ( error = dlerror(  ) ) )
       {
          log_printf( "Module entry failure: %s", error );
@@ -65,17 +65,17 @@ void init_modules()
       }
 
       // If this works, it should have fired off something.
-      mod_init();
+      mod_init(  );
    }
 }
 
-void load_modules()
+void load_modules(  )
 {
    DIR *dp;
    struct dirent *dentry;
    char directory_name[100];
 
-return; // castrated for now.
+   return;  // castrated for now.
 
    mudstrlcpy( directory_name, "../src/modules/so", 100 );
    dp = opendir( directory_name );
@@ -102,11 +102,11 @@ return; // castrated for now.
          else
             name = filename.substr( 0, ps );
 
-         snprintf( path, 100, "%s/%s", directory_name, name.c_str() );
+         snprintf( path, 100, "%s/%s", directory_name, name.c_str(  ) );
          module[name] = dlopen( path, RTLD_NOW );
          if( !module[name] )
          {
-            log_string( dlerror() );
+            log_string( dlerror(  ) );
             continue;
          }
       }
@@ -114,5 +114,5 @@ return; // castrated for now.
    }
    closedir( dp );
 
-   init_modules();
+   init_modules(  );
 }

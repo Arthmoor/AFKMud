@@ -23,90 +23,44 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                      Calendar Handler/Seasonal Updates                   *
+ *                     Skill Search Index Definitions                       *
  ****************************************************************************/
 
-#ifndef __CALENDAR_H__
-#define __CALENDAR_H__
-
-/* Well, ok, so it didn't turn out the way I wanted, but that's life - Samson */
-/* Ever write a comment like the one above this one and completely forget what it means? */
-/* Portions of this data courtesy of Yrth mud */
-
-/* PaB: Seasons */
-/* Notes: Each season will be arbitrarily set at 1/4 of the year.
- */
-enum seasons
+// This probably isn't necessary, but prefer to sort by the contents of the
+// string rather than the binary value that std::less uses.
+class string_sort
 {
-   SEASON_SPRING, SEASON_SUMMER, SEASON_FALL, SEASON_WINTER, SEASON_MAX
-};
-
-/* Hunger/Thirst modifiers */
-const int WINTER_HUNGER = 1;
-const int SUMMER_THIRST = 1;
-const int SUMMER_THIRST_DESERT = 2;
-
-/* Holiday chart */
-#define HOLIDAY_FILE SYSTEM_DIR "holidays.dat"
-
-extern const char *day_name[];
-extern const char *month_name[];
-extern const char *season_name[];
-extern bool winter_freeze;
-
-class holiday_data
-{
- private:
-   holiday_data( const holiday_data & n );
-     holiday_data & operator=( const holiday_data & );
-
  public:
-     holiday_data(  );
-    ~holiday_data(  );
-
-   void set_name( const string & newname )
-   {
-      name = newname;
-   }
-   string get_name(  )
-   {
-      return name;
-   }
-
-   void set_announce( const string & text )
-   {
-      announce = text;
-   }
-   string get_announce(  )
-   {
-      return announce;
-   }
-
-   void set_month( short mn )
-   {
-      month = mn;
-   }
-   short get_month(  )
-   {
-      return month;
-   }
-
-   void set_day( short dy )
-   {
-      day = dy;
-   }
-   short get_day(  )
-   {
-      return day;
-   }
-
- private:
-   string name;   /* Name of the holiday */
-   string announce;  /* Message to announce the holiday with */
-   short month;   /* Month the holiday falls in */
-   short day;  /* Day the holiday falls on */
+   string_sort(  );
+   bool operator(  ) ( const string &, const string & );
 };
 
-void check_holiday( char_data * );
-holiday_data *get_holiday( short, short );
-#endif
+typedef map < string, int, string_sort > SKILL_INDEX;
+
+extern SKILL_INDEX skill_table__index;
+extern SKILL_INDEX skill_table__spell;
+extern SKILL_INDEX skill_table__skill;
+extern SKILL_INDEX skill_table__racial;
+extern SKILL_INDEX skill_table__combat;
+extern SKILL_INDEX skill_table__tongue;
+extern SKILL_INDEX skill_table__lore;
+
+class find__skill_prefix
+{
+ public:
+   string value;
+   char_data *actor;
+
+     find__skill_prefix( char_data *, const string & );
+   bool operator(  ) ( pair < string, int >compare );
+};
+
+class find__skill_exact
+{
+ public:
+   string value;
+   char_data *actor;
+
+     find__skill_exact( char_data *, const string & );
+   bool operator(  ) ( pair < string, int >compare );
+};

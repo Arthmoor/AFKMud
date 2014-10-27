@@ -6881,8 +6881,9 @@ End
 #HELP
 Level 104
 Keywords LIQUIDTYPES
-Text Liquid Type
+Liquid Type
 ------------------------------
+#LIQUID
 water
 beer
 wine
@@ -8687,6 +8688,22 @@ assorted maledictions involving controlled bursts of negative energy. The
 most important attribute for Necromancers is a high intelligence as they 
 need it for their spellcasting. Only the Humans, Drow, Half-Elves and 
 Gith can follow the ways of the Necromancer. 
+¢
+End
+
+#HELP
+Level 113
+Keywords REALMS
+Text This is the list of realm values for the wizinfo chart:
+ 
+0  = None. Default value, usually only found on fresh immortals.
+1 = Builder. Signifies an immortal on the building staff.
+2 = Code. Signifies an immortal on the coding staff.
+3 = Head Coder. Signifies the person in charge of all coders.
+4 = Head Builder. Signifies the person in charge of all builders.
+5 = Implementor. Signifies the person in charge of everything.
+
+To set a realm: mset <person> realm #
 ¢
 End
 
@@ -11691,6 +11708,7 @@ Text Syntax: shopset <mobile vnum> <field> <value>
 | open   | Hour shop opens                    |
 | close  | Hour shop closes                   |
 | keeper | Vnum of shop keeper                |
+| remvoe | Deletes the shop data from the mob |
 -----------------------------------------------
 
 Lets you set certain stats on a shop.

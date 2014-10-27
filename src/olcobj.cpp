@@ -66,14 +66,13 @@
 
 /* External functions */
 extern int top_affect;
-extern char *const liquid_types[];
+extern const char *liquid_types[];
 
 liquid_data *get_liq_vnum( int );
 void medit_disp_aff_flags( descriptor_data * );
 void medit_disp_ris( descriptor_data * );
 void olc_log( descriptor_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
-int get_trapflag( char * );
-int get_traptype( char * );
+int get_traptype( const string & );
 bool can_omodify( char_data *, obj_data * );
 
 /* Internal functions */
@@ -154,44 +153,35 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%sValue[2] - Max Damage: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          ch->printf( "&RAverage Hit: %d\r\n", ( obj->value[1] + obj->value[2] ) / 2 );
          if( obj->item_type != ITEM_MISSILE_WEAPON )
-            ch->printf( "%sValue[3] - Damage Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3],
-                        attack_table[obj->value[3]] );
-         ch->printf( "%sValue[4] - Skill Required (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4],
-                     weapon_skills[obj->value[4]] );
+            ch->printf( "%sValue[3] - Damage Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], attack_table[obj->value[3]] );
+         ch->printf( "%sValue[4] - Skill Required (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4], weapon_skills[obj->value[4]] );
          if( obj->item_type == ITEM_MISSILE_WEAPON )
          {
-            ch->printf( "%sValue[5] - Projectile Fired (%d): &c%s\r\n", olc ? "&gJ&w) " : "&w", obj->value[5],
-                        projectiles[obj->value[5]] );
+            ch->printf( "%sValue[5] - Projectile Fired (%d): &c%s\r\n", olc ? "&gJ&w) " : "&w", obj->value[5], projectiles[obj->value[5]] );
             ch->print( "Projectile fired must match on the projectiles this weapon fires.\r\n" );
          }
          ch->printf( "%sValue[6] - Current Condition: &c%d\r\n", olc ? "&gK&w) " : "&w", obj->value[6] );
-         ch->printf( "Condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ) );
+         ch->printf( "Condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
          ch->printf( "%sValue[7] - Available sockets: &c%d\r\n", olc ? "&gL&w) " : "&w", obj->value[7] );
          ch->printf( "Socket 1: %s\r\n", obj->socket[0] );
          ch->printf( "Socket 2: %s\r\n", obj->socket[1] );
          ch->printf( "Socket 3: %s\r\n", obj->socket[2] );
          ch->print( "&WThe following 3 settings only apply to automatically generated weapons.\r\n" );
-         ch->printf( "%sValue[8] - Weapon Type (%d): &c%s\r\n", olc ? "&gM&w) " : "&w",
-                     obj->value[8], weapon_type[obj->value[8]].name );
-         ch->printf( "%sValue[9] - Weapon Material (%d): &c%s\r\n", olc ? "&gN&w) " : "&w",
-                     obj->value[9], materials[obj->value[9]].name );
-         ch->printf( "%sValue[10] - Weapon Quality (%d): &c%s\r\n", olc ? "&gO&w) " : "&w",
-                     obj->value[10], weapon_quality[obj->value[10]] );
+         ch->printf( "%sValue[8] - Weapon Type (%d): &c%s\r\n", olc ? "&gM&w) " : "&w", obj->value[8], weapon_type[obj->value[8]].name );
+         ch->printf( "%sValue[9] - Weapon Material (%d): &c%s\r\n", olc ? "&gN&w) " : "&w", obj->value[9], materials[obj->value[9]].name );
+         ch->printf( "%sValue[10] - Weapon Quality (%d): &c%s\r\n", olc ? "&gO&w) " : "&w", obj->value[10], weapon_quality[obj->value[10]] );
          break;
       case ITEM_ARMOR:
          ch->printf( "%sValue[0] - Current AC: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[1] - Base AC: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-         ch->printf( "Condition: %s\r\n", condtxt( obj->value[0], obj->value[1] ) );
-         ch->printf( "%sValue[2] - Available sockets( applies only to body armor ): &c%d\r\n", olc ? "&gG&w) " : "&w",
-                     obj->value[2] );
+         ch->printf( "Condition: %s\r\n", condtxt( obj->value[0], obj->value[1] ).c_str(  ) );
+         ch->printf( "%sValue[2] - Available sockets( applies only to body armor ): &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          ch->printf( "Socket 1: %s\r\n", obj->socket[0] );
          ch->printf( "Socket 2: %s\r\n", obj->socket[1] );
          ch->printf( "Socket 3: %s\r\n", obj->socket[2] );
          ch->print( "&WThe following 2 settings only apply to automatically generated armors.\r\n" );
-         ch->printf( "%sValue[3] - Armor Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w",
-                     obj->value[3], armor_type[obj->value[3]].name );
-         ch->printf( "%sValue[4] - Armor Material (%d): &c%s\r\n", olc ? "&gI&w) " : "&w",
-                     obj->value[4], materials[obj->value[4]].name );
+         ch->printf( "%sValue[3] - Armor Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], armor_type[obj->value[3]].name );
+         ch->printf( "%sValue[4] - Armor Material (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4], materials[obj->value[4]].name );
          break;
          /*
           * Bug Fix 7/9/00 -Druid
@@ -253,8 +243,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             dam = ( obj->timer * 10 ) / obj->value[1];
          else
             dam = 10;
-         if( obj->value[3] <= 0 && ( ( dam < 4 && number_range( 0, dam + 1 ) == 0 )
-                                     || ( obj->item_type == ITEM_COOK && obj->value[2] == 0 ) ) )
+         if( obj->value[3] <= 0 && ( ( dam < 4 && number_range( 0, dam + 1 ) == 0 ) || ( obj->item_type == ITEM_COOK && obj->value[2] == 0 ) ) )
          {
             ch->print( "Poison: Yes\r\n" );
             x = 2 * obj->value[0] * ( obj->value[3] > 0 ? obj->value[3] : 1 );
@@ -285,9 +274,9 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             ch->print( "Almost Empty\r\n" );
          else
             ch->print( "Empty\r\n" );
-         ch->printf( "%sValue[2] - Liquid (%d): &c%s\r\n", olc ? "&gG&w) " : "&w", obj->value[2], liq->name );
+         ch->printf( "%sValue[2] - Liquid (%d): &c%s\r\n", olc ? "&gG&w) " : "&w", obj->value[2], liq->name.c_str(  ) );
          ch->printf( "Liquid type : %s\r\n", liquid_types[liq->type] );
-         ch->printf( "Liquid color: %s\r\n", liq->color );
+         ch->printf( "Liquid color: %s\r\n", liq->color.c_str(  ) );
          if( liq->mod[COND_DRUNK] != 0 )
             ch->printf( "Affects Drunkeness by: %d\r\n", liq->mod[COND_DRUNK] );
          if( liq->mod[COND_FULL] != 0 )
@@ -305,9 +294,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%s\r\n",
                      obj->value[0] < 76 ? "Small capacity" :
                      obj->value[0] < 150 ? "Small to medium capacity" :
-                     obj->value[0] < 300 ? "Medium capacity" :
-                     obj->value[0] < 550 ? "Medium to large capacity" :
-                     obj->value[0] < 751 ? "Large capacity" : "Giant capacity" );
+                     obj->value[0] < 300 ? "Medium capacity" : obj->value[0] < 550 ? "Medium to large capacity" : obj->value[0] < 751 ? "Large capacity" : "Giant capacity" );
          ch->printf( "%sValue[1] - Flags (%d): &c", olc ? "&gF&w) " : "&w", obj->value[1] );
          if( obj->value[1] <= 0 )
             ch->print( " None\r\n" );
@@ -333,20 +320,17 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%sValue[0] - Condition: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[1] - Min. Damage: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
          ch->printf( "%sValue[2] - Max Damage: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
-         ch->printf( "%sValue[3] - Damage Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3],
-                     attack_table[obj->value[3]] );
-         ch->printf( "%sValue[4] - Projectile Type (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4],
-                     projectiles[obj->value[4]] );
+         ch->printf( "%sValue[3] - Damage Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], attack_table[obj->value[3]] );
+         ch->printf( "%sValue[4] - Projectile Type (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4], projectiles[obj->value[4]] );
          ch->print( "Projectile type must match on the missileweapon which fires it.\r\n" );
          ch->printf( "%sValue[5] - Current Condition: &c%d\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
-         ch->printf( "Condition: %s", condtxt( obj->value[5], obj->value[0] ) );
+         ch->printf( "Condition: %s", condtxt( obj->value[5], obj->value[0] ).c_str(  ) );
          break;
       case ITEM_MONEY:
          ch->printf( "%sValue[0] - # of Coins: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          break;
       case ITEM_FURNITURE:
-         ch->printf( "%sValue[2] - Furniture Flags: &c%s\r\n", olc ? "&gG&w) " : "&w",
-                     flag_string( obj->value[2], furniture_flags ) );
+         ch->printf( "%sValue[2] - Furniture Flags: &c%s\r\n", olc ? "&gG&w) " : "&w", flag_string( obj->value[2], furniture_flags ) );
          break;
       case ITEM_TRAP:
          ch->printf( "%sValue[0] - Charges Remaining: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
@@ -429,8 +413,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
       case ITEM_LEVER:
       case ITEM_PULLCHAIN:
       case ITEM_BUTTON:
-         ch->printf( "%sValue[0] - Flags (%d): &c%s\r\n", olc ? "&gE&w) " : "&w", obj->value[0],
-                     flag_string( obj->value[0], trig_flags ) );
+         ch->printf( "%sValue[0] - Flags (%d): &c%s\r\n", olc ? "&gE&w) " : "&w", obj->value[0], flag_string( obj->value[0], trig_flags ) );
          ch->print( "Trigger Position: " );
          if( obj->item_type != ITEM_BUTTON )
          {
@@ -455,16 +438,13 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             ch->print( "Pull Program\r\n" );
          else if( HAS_PROG( obj->pIndexData, PUSH_PROG ) )
             ch->print( "Push Program\r\n" );
-         if( IS_SET( obj->value[0], TRIG_TELEPORT )
-             || IS_SET( obj->value[0], TRIG_TELEPORTALL ) || IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) )
+         if( IS_SET( obj->value[0], TRIG_TELEPORT ) || IS_SET( obj->value[0], TRIG_TELEPORTALL ) || IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) )
          {
             ch->printf( "Triggers: Teleport %s\r\n",
                         IS_SET( obj->value[0], TRIG_TELEPORT ) ? "Character <actor>" :
-                        IS_SET( obj->value[0], TRIG_TELEPORTALL ) ? "All Characters in room" :
-                        "All Characters and Objects in room" );
+                        IS_SET( obj->value[0], TRIG_TELEPORTALL ) ? "All Characters in room" : "All Characters and Objects in room" );
             ch->printf( "%sValue[1] - Teleport to Room: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-            ch->printf( "Show Room Description on Teleport? %s\r\n",
-                        IS_SET( obj->value[0], TRIG_SHOWROOMDESC ) ? "Yes" : "No" );
+            ch->printf( "Show Room Description on Teleport? %s\r\n", IS_SET( obj->value[0], TRIG_SHOWROOMDESC ) ? "Yes" : "No" );
          }
          if( IS_SET( obj->value[0], TRIG_RAND4 ) || IS_SET( obj->value[0], TRIG_RAND6 ) )
             ch->printf( "Triggers: Randomize Exits (%s)\r\n", IS_SET( obj->value[0], TRIG_RAND4 ) ? "3" : "5" );
@@ -487,8 +467,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
                         IS_SET( obj->value[0], TRIG_D_SOUTH ) ? "South" :
                         IS_SET( obj->value[0], TRIG_D_EAST ) ? "East" :
                         IS_SET( obj->value[0], TRIG_D_WEST ) ? "West" :
-                        IS_SET( obj->value[0], TRIG_D_UP ) ? "UP" :
-                        IS_SET( obj->value[0], TRIG_D_DOWN ) ? "Down" : "Unknown" );
+                        IS_SET( obj->value[0], TRIG_D_UP ) ? "UP" : IS_SET( obj->value[0], TRIG_D_DOWN ) ? "Down" : "Unknown" );
             if( IS_SET( obj->value[0], TRIG_PASSAGE ) )
                ch->printf( "%sValue[2] - To Room: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          }
@@ -530,7 +509,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
    }
 }
 
-olc_data::olc_data()
+olc_data::olc_data(  )
 {
    init_memory( &mob, &changed, sizeof( changed ) );
 }
@@ -547,7 +526,6 @@ void cleanup_olc( descriptor_data * d )
       d->connected = CON_PLAYING;
       deleteptr( d->olc );
    }
-   return;
 }
 
 /*
@@ -556,6 +534,7 @@ void cleanup_olc( descriptor_data * d )
 CMDF( do_ooedit )
 {
    obj_data *obj;
+   descriptor_data *d;
 
    if( ch->isnpc(  ) )
    {
@@ -563,11 +542,12 @@ CMDF( do_ooedit )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "OEdit what?\r\n" );
       return;
    }
+
    if( !( obj = ch->get_obj_world( argument ) ) )
    {
       ch->print( "Nothing like that in hell, earth, or heaven.\r\n" );
@@ -577,11 +557,10 @@ CMDF( do_ooedit )
    /*
     * Make sure the object isnt already being edited 
     */
-   list<descriptor_data*>::iterator ds;
-   descriptor_data *d;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   list < descriptor_data * >::iterator ds;
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      d = (*ds);
+      d = *ds;
 
       if( d->connected == CON_OEDIT )
          if( d->olc && OLC_VNUM( d ) == obj->pIndexData->vnum )
@@ -603,24 +582,23 @@ CMDF( do_ooedit )
    oedit_disp_menu( d );
 
    act( AT_ACTION, "$n starts using OLC.", ch, NULL, NULL, TO_CANSEE );
-   return;
 }
 
 CMDF( do_ocopy )
 {
    area_data *pArea;
-   char arg1[MIL];
+   string arg1;
    int ovnum, cvnum;
    obj_index *orig;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: ocopy <original> <new>\r\n" );
       return;
    }
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Usage: ocopy <original> <new>\r\n" );
       return;
@@ -632,8 +610,8 @@ CMDF( do_ocopy )
       return;
    }
 
-   ovnum = atoi( arg1 );
-   cvnum = atoi( argument );
+   ovnum = atoi( arg1.c_str(  ) );
+   cvnum = atoi( argument.c_str(  ) );
 
    if( ch->get_trust(  ) < LEVEL_GREATER )
    {
@@ -667,7 +645,6 @@ CMDF( do_ocopy )
    }
    make_object( cvnum, ovnum, orig->name, pArea );
    ch->print( "Object copied.\r\n" );
-   return;
 }
 
 /**************************************************************************
@@ -679,7 +656,7 @@ void oedit_disp_container_flags_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_CONT_FLAG; ++i )
       d->character->printf( "&g%d&w) %s\r\n", i + 1, container_flags[i] );
    d->character->printf( "Container flags: &c%s&w\r\n", flag_string( obj->value[1], container_flags ) );
@@ -692,7 +669,7 @@ void oedit_disp_furniture_flags_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_FURNFLAG; ++i )
       d->character->printf( "&g%d&w) %s\r\n", i + 1, furniture_flags[i] );
    d->character->printf( "Furniture flags: &c%s&w\r\n", flag_string( obj->value[2], furniture_flags ) );
@@ -707,11 +684,10 @@ void oedit_disp_lever_flags_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_TRIGFLAG; ++counter )
       d->character->printf( "&g%2d&w) %s\r\n", counter + 1, trig_flags[counter] );
    d->character->printf( "Lever flags: &c%s&w\r\nEnter flag, 0 to quit: ", flag_string( obj->value[0], trig_flags ) );
-   return;
 }
 
 /*
@@ -722,7 +698,7 @@ void oedit_disp_layer_menu( descriptor_data * d )
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
 
    OLC_MODE( d ) = OEDIT_LAYERS;
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    d->character->print( "Choose which layer, or combination of layers fits best: \r\n\r\n" );
    d->character->printf( "[&c%s&w] &g1&w) Nothing Layers\r\n", ( obj->pIndexData->layers == 0 ) ? "X" : " " );
    d->character->printf( "[&c%s&w] &g2&w) Silk Shirt\r\n", IS_SET( obj->pIndexData->layers, 1 ) ? "X" : " " );
@@ -740,29 +716,30 @@ void oedit_disp_layer_menu( descriptor_data * d )
 void oedit_disp_extradesc_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   list<extra_descr_data*>::iterator ed;
+   list < extra_descr_data * >::iterator ed;
    extra_descr_data *edesc;
    int count = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
-   if( !obj->pIndexData->extradesc.empty() )
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
+   if( !obj->pIndexData->extradesc.empty(  ) )
    {
-      for( ed = obj->pIndexData->extradesc.begin(); ed != obj->pIndexData->extradesc.end(); ++ed )
+      for( ed = obj->pIndexData->extradesc.begin(  ); ed != obj->pIndexData->extradesc.end(  ); ++ed )
       {
-         edesc = (*ed);
-         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str() );
-      }
-   }
-   if( !obj->extradesc.empty() )
-   {
-      for( ed = obj->extradesc.begin(); ed != obj->extradesc.end(); ++ed )
-      {
-         edesc = (*ed);
-         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str() );
+         edesc = *ed;
+         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str(  ) );
       }
    }
 
-   if( !obj->pIndexData->extradesc.empty() || !obj->extradesc.empty() )
+   if( !obj->extradesc.empty(  ) )
+   {
+      for( ed = obj->extradesc.begin(  ); ed != obj->extradesc.end(  ); ++ed )
+      {
+         edesc = *ed;
+         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str(  ) );
+      }
+   }
+
+   if( !obj->pIndexData->extradesc.empty(  ) || !obj->extradesc.empty(  ) )
       d->character->print( "\r\n" );
 
    d->character->print( "&gA&w) Add a new description\r\n" );
@@ -777,10 +754,9 @@ void oedit_disp_extra_choice( descriptor_data * d )
 {
    extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
-   d->character->printf( "&g1&w) Keyword: &O%s\r\n", ed->keyword.c_str() );
-   d->character->printf( "&g2&w) Description: \r\n&O%s&w\r\n",
-                         ( !ed->desc.empty() ) ? ed->desc.c_str() : "(none)" );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
+   d->character->printf( "&g1&w) Keyword: &O%s\r\n", ed->keyword.c_str(  ) );
+   d->character->printf( "&g2&w) Description: \r\n&O%s&w\r\n", ( !ed->desc.empty(  ) )? ed->desc.c_str(  ) : "(none)" );
    d->character->print( "&gQ&w) Quit\r\n" );
    d->character->print( "\r\nChange which option? " );
 
@@ -791,21 +767,21 @@ void oedit_disp_extra_choice( descriptor_data * d )
 void oedit_disp_prompt_apply_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   list<affect_data*>::iterator paf;
+   list < affect_data * >::iterator paf;
    int counter = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
-   for( paf = obj->pIndexData->affects.begin(); paf != obj->pIndexData->affects.end(); ++paf )
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
+   for( paf = obj->pIndexData->affects.begin(  ); paf != obj->pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       d->character->printf( " &g%2d&w) ", ++counter );
       d->character->showaffect( af );
    }
 
-   for( paf = obj->affects.begin(); paf != obj->affects.end(); ++paf )
+   for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       d->character->printf( " &g%2d&w) ", ++counter );
       d->character->showaffect( af );
@@ -816,8 +792,6 @@ void oedit_disp_prompt_apply_menu( descriptor_data * d )
 
    d->character->print( "\r\nEnter option or affect#: " );
    OLC_MODE( d ) = OEDIT_AFFECT_MENU;
-
-   return;
 }
 
 /*. Ask for liquid type .*/
@@ -825,23 +799,22 @@ void oedit_liquid_type( descriptor_data * d )
 {
    int counter, i, col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
 
    counter = 0;
    for( i = 0; i < MAX_CONDS; ++i )
+   {
       if( liquid_table[i] )
       {
-         d->character->printf( " &w%2d&g ) &c%-20.20s ", counter, liquid_table[i]->name );
+         d->character->printf( " &w%2d&g ) &c%-20.20s ", counter, liquid_table[i]->name.c_str(  ) );
 
          if( ++col % 3 == 0 )
             d->character->print( "\r\n" );
          ++counter;
       }
-
+   }
    d->character->print( "\r\n&wEnter drink type: " );
    OLC_MODE( d ) = OEDIT_VALUE_2;
-
-   return;
 }
 
 /*
@@ -851,7 +824,7 @@ void oedit_disp_affect_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_APPLY_TYPE; ++counter )
    {
       /*
@@ -866,8 +839,6 @@ void oedit_disp_affect_menu( descriptor_data * d )
    }
    d->character->print( "\r\nEnter apply type (0 to quit): " );
    OLC_MODE( d ) = OEDIT_AFFECT_LOCATION;
-
-   return;
 }
 
 /*
@@ -877,7 +848,7 @@ void oedit_disp_proj_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < PROJ_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, projectiles[counter] );
@@ -885,7 +856,6 @@ void oedit_disp_proj_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter projectile type: " );
-   return;
 }
 
 /*
@@ -895,7 +865,7 @@ void oedit_disp_wgen_type_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < TWTP_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, weapon_type[counter].name );
@@ -903,7 +873,6 @@ void oedit_disp_wgen_type_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter weapon type: " );
-   return;
 }
 
 /*
@@ -913,7 +882,7 @@ void oedit_disp_agen_type_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < TATP_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, armor_type[counter].name );
@@ -921,7 +890,6 @@ void oedit_disp_agen_type_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter armor type: " );
-   return;
 }
 
 /*
@@ -931,7 +899,7 @@ void oedit_disp_gen_material_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < TMAT_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, materials[counter].name );
@@ -939,7 +907,6 @@ void oedit_disp_gen_material_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter material type: " );
-   return;
 }
 
 /*
@@ -949,7 +916,7 @@ void oedit_disp_wgen_qual_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < TQUAL_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, weapon_quality[counter] );
@@ -957,7 +924,6 @@ void oedit_disp_wgen_qual_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter quality: " );
-   return;
 }
 
 /*
@@ -967,7 +933,7 @@ void oedit_disp_damage_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < DAM_MAX_TYPE; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, attack_table[counter] );
@@ -975,7 +941,6 @@ void oedit_disp_damage_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter damage type: " );
-   return;
 }
 
 /*
@@ -985,7 +950,7 @@ void oedit_disp_traptype_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter <= TRAP_TYPE_SEX_CHANGE; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, trap_types[counter] );
@@ -993,7 +958,6 @@ void oedit_disp_traptype_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter trap type: " );
-   return;
 }
 
 /*
@@ -1004,16 +968,14 @@ void oedit_disp_trapflags( descriptor_data * d )
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter <= TRAPFLAG_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter + 1, capitalize( trap_flags[counter] ) );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nTrap flags: &c%s&w\r\nEnter trap flag, 0 to quit:  ",
-                         flag_string( obj->value[3], trap_flags ) );
-   return;
+   d->character->printf( "\r\nTrap flags: &c%s&w\r\nEnter trap flag, 0 to quit:  ", flag_string( obj->value[3], trap_flags ) );
 }
 
 /*
@@ -1023,7 +985,7 @@ void oedit_disp_weapon_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < WEP_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, weapon_skills[counter] );
@@ -1031,7 +993,6 @@ void oedit_disp_weapon_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter weapon type: " );
-   return;
 }
 
 /*
@@ -1041,7 +1002,7 @@ void oedit_disp_gear_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < GEAR_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, campgear[counter] );
@@ -1049,7 +1010,6 @@ void oedit_disp_gear_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter gear type: " );
-   return;
 }
 
 /*
@@ -1059,7 +1019,7 @@ void oedit_disp_ore_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < ORE_MAX; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, ores[counter] );
@@ -1067,7 +1027,6 @@ void oedit_disp_ore_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter ore type: " );
-   return;
 }
 
 /* spell type */
@@ -1465,7 +1424,7 @@ void oedit_disp_type_menu( descriptor_data * d )
 {
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_ITEM_TYPE; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter, o_types[counter] );
@@ -1473,7 +1432,6 @@ void oedit_disp_type_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter object type: " );
-   return;
 }
 
 /* object extra flags */
@@ -1482,16 +1440,14 @@ void oedit_disp_extra_menu( descriptor_data * d )
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_ITEM_FLAG; ++counter )
    {
       d->character->printf( "&g%2d&w) %-20.20s ", counter + 1, capitalize( o_flags[counter] ) );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nObject flags: &c%s&w\r\nEnter object extra flag (0 to quit): ",
-                         bitset_string( obj->extra_flags, o_flags ) );
-   return;
+   d->character->printf( "\r\nObject flags: &c%s&w\r\nEnter object extra flag (0 to quit): ", bitset_string( obj->extra_flags, o_flags ) );
 }
 
 /*
@@ -1502,7 +1458,7 @@ void oedit_disp_wear_menu( descriptor_data * d )
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
    int col = 0;
 
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_WEAR_FLAG; ++counter )
    {
       if( counter == ITEM_DUAL_WIELD )
@@ -1512,9 +1468,7 @@ void oedit_disp_wear_menu( descriptor_data * d )
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nWear flags: &c%s&w\r\nEnter wear flag, 0 to quit:  ",
-                         bitset_string( obj->wear_flags, w_flags ) );
-   return;
+   d->character->printf( "\r\nWear flags: &c%s&w\r\nEnter wear flag, 0 to quit:  ", bitset_string( obj->wear_flags, w_flags ) );
 }
 
 /* display main menu */
@@ -1525,7 +1479,7 @@ void oedit_disp_menu( descriptor_data * d )
    /*
     * Ominous looking ANSI code of some sort - perhaps there's some way to use this elsewhere ? 
     */
-   d->write_to_buffer( "50\x1B[;H\x1B[2J", 0 );
+   d->write_to_buffer( "50\x1B[;H\x1B[2J" );
 
    /*
     * . Build first half of menu .
@@ -1538,24 +1492,20 @@ void oedit_disp_menu( descriptor_data * d )
                          "&g5&w) Type        : &c%s\r\n"
                          "&g6&w) Extra flags : &c%s\r\n",
                          obj->pIndexData->vnum, obj->name, obj->short_descr, obj->objdesc,
-                         obj->action_desc ? obj->action_desc : "<not set>\r\n",
-                         capitalize( obj->item_type_name(  ) ), bitset_string( obj->extra_flags, o_flags ) );
+                         obj->action_desc ? obj->action_desc : "<not set>\r\n", capitalize( obj->item_type_name(  ) ).c_str(  ), bitset_string( obj->extra_flags, o_flags ) );
 
    /*
     * Build second half of the menu 
     */
    d->character->printf( "&g7&w) Wear flags  : &c%s\r\n" "&g8&w) Weight      : &c%d\r\n" "&g9&w) Cost        : &c%d\r\n" "&gA&w) Ego         : &c%d\r\n" "&gB&w) Timer       : &c%d\r\n" "&gC&w) Level       : &c%d\r\n"   /* -- Object level . */
                          "&gD&w) Layers      : &c%d\r\n",
-                         bitset_string( obj->wear_flags, w_flags ),
-                         obj->weight, obj->cost, obj->ego, obj->timer, obj->level, obj->pIndexData->layers );
+                         bitset_string( obj->wear_flags, w_flags ), obj->weight, obj->cost, obj->ego, obj->timer, obj->level, obj->pIndexData->layers );
 
    ostat_plus( d->character, obj, true );
 
    d->character->print( "&gP&w) Affect menu\r\n" "&gR&w) Extra descriptions menu\r\n" "&gQ&w) Quit\r\n" "Enter choice : " );
 
    OLC_MODE( d ) = OEDIT_MAIN_MENU;
-
-   return;
 }
 
 /***************************************************************************
@@ -1565,11 +1515,11 @@ void edit_object_affect( descriptor_data * d, int number )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
    int count = 0;
-   list<affect_data*>::iterator paf;
+   list < affect_data * >::iterator paf;
 
-   for( paf = obj->pIndexData->affects.begin(); paf != obj->pIndexData->affects.end(); ++paf )
+   for( paf = obj->pIndexData->affects.begin(  ); paf != obj->pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       if( count == number )
       {
@@ -1580,9 +1530,10 @@ void edit_object_affect( descriptor_data * d, int number )
       }
       ++count;
    }
-   for( paf = obj->affects.begin(); paf != obj->affects.end(); ++paf )
+
+   for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       if( count == number )
       {
@@ -1594,19 +1545,18 @@ void edit_object_affect( descriptor_data * d, int number )
       ++count;
    }
    d->character->print( "Affect not found.\r\n" );
-   return;
 }
 
 void remove_affect_from_obj( obj_data * obj, int number )
 {
    int count = 0;
-   list<affect_data*>::iterator paf;
+   list < affect_data * >::iterator paf;
 
-   if( !obj->pIndexData->affects.empty() )
+   if( !obj->pIndexData->affects.empty(  ) )
    {
-      for( paf = obj->pIndexData->affects.begin(); paf != obj->pIndexData->affects.end(); )
+      for( paf = obj->pIndexData->affects.begin(  ); paf != obj->pIndexData->affects.end(  ); )
       {
-         affect_data *aff = (*paf);
+         affect_data *aff = *paf;
          ++paf;
 
          if( count == number )
@@ -1620,11 +1570,11 @@ void remove_affect_from_obj( obj_data * obj, int number )
       }
    }
 
-   if( !obj->affects.empty() )
+   if( !obj->affects.empty(  ) )
    {
-      for( paf = obj->affects.begin(); paf != obj->affects.end(); )
+      for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); )
       {
-         affect_data *aff = (*paf);
+         affect_data *aff = *paf;
          ++paf;
 
          if( count == number )
@@ -1637,26 +1587,25 @@ void remove_affect_from_obj( obj_data * obj, int number )
          ++count;
       }
    }
-   return;
 }
 
 extra_descr_data *oedit_find_extradesc( obj_data * obj, int number )
 {
    int count = 0;
-   list<extra_descr_data*>::iterator ed;
+   list < extra_descr_data * >::iterator ed;
    extra_descr_data *edesc;
 
-   for( ed = obj->pIndexData->extradesc.begin(); ed != obj->pIndexData->extradesc.end(); ++ed )
+   for( ed = obj->pIndexData->extradesc.begin(  ); ed != obj->pIndexData->extradesc.end(  ); ++ed )
    {
-      edesc = (*ed);
+      edesc = *ed;
 
       if( ++count == number )
          return edesc;
    }
 
-   for( ed = obj->extradesc.begin(); ed != obj->extradesc.end(); ++ed )
+   for( ed = obj->extradesc.begin(  ); ed != obj->extradesc.end(  ); ++ed )
    {
-      edesc = (*ed);
+      edesc = *ed;
 
       if( ++count == number )
          return edesc;
@@ -1685,7 +1634,7 @@ CMDF( do_oedit_reset )
             ch->substate = SUB_NONE;
             return;
          }
-         ed->desc = ch->copy_buffer();
+         ed->desc = ch->copy_buffer(  );
          ch->stop_editing(  );
          ch->pcdata->dest_buf = obj;
          ch->pcdata->spare_ptr = ed;
@@ -1724,13 +1673,13 @@ CMDF( do_oedit_reset )
  * This function interprets the arguments that the character passed
  * to it based on which OLC mode you are in at the time
  */
-void oedit_parse( descriptor_data * d, char *arg )
+void oedit_parse( descriptor_data * d, string & arg )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
    affect_data *paf = ( affect_data * ) d->character->pcdata->spare_ptr;
    affect_data *npaf;
    extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
-   char arg1[MIL];
+   string arg1;
    int number = 0, max_val, min_val, value;
    /*
     * bool found; 
@@ -1800,8 +1749,7 @@ void oedit_parse( descriptor_data * d, char *arg )
                    || obj->wear_flags.test( ITEM_WEAR_ABOUT )
                    || obj->wear_flags.test( ITEM_WEAR_ARMS )
                    || obj->wear_flags.test( ITEM_WEAR_FEET )
-                   || obj->wear_flags.test( ITEM_WEAR_HANDS )
-                   || obj->wear_flags.test( ITEM_WEAR_LEGS ) || obj->wear_flags.test( ITEM_WEAR_WAIST ) )
+                   || obj->wear_flags.test( ITEM_WEAR_HANDS ) || obj->wear_flags.test( ITEM_WEAR_LEGS ) || obj->wear_flags.test( ITEM_WEAR_WAIST ) )
                {
                   oedit_disp_layer_menu( d );
                   OLC_MODE( d ) = OEDIT_LAYERS;
@@ -1856,7 +1804,7 @@ void oedit_parse( descriptor_data * d, char *arg )
 
       case OEDIT_EDIT_NAMELIST:
          STRFREE( obj->name );
-         obj->name = STRALLOC( arg );
+         obj->name = STRALLOC( arg.c_str(  ) );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->name );
@@ -1867,7 +1815,7 @@ void oedit_parse( descriptor_data * d, char *arg )
 
       case OEDIT_SHORTDESC:
          STRFREE( obj->short_descr );
-         obj->short_descr = STRALLOC( arg );
+         obj->short_descr = STRALLOC( arg.c_str(  ) );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->short_descr );
@@ -1878,7 +1826,7 @@ void oedit_parse( descriptor_data * d, char *arg )
 
       case OEDIT_LONGDESC:
          STRFREE( obj->objdesc );
-         obj->objdesc = STRALLOC( arg );
+         obj->objdesc = STRALLOC( arg.c_str(  ) );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->objdesc );
@@ -1889,7 +1837,7 @@ void oedit_parse( descriptor_data * d, char *arg )
 
       case OEDIT_ACTDESC:
          STRFREE( obj->action_desc );
-         obj->action_desc = STRALLOC( arg );
+         obj->action_desc = STRALLOC( arg.c_str(  ) );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->action_desc );
@@ -1900,7 +1848,7 @@ void oedit_parse( descriptor_data * d, char *arg )
 
       case OEDIT_TYPE:
          if( is_number( arg ) )
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
          else
             number = get_otype( arg );
 
@@ -1919,12 +1867,12 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_EXTRAS:
-         while( arg[0] != '\0' )
+         while( !arg.empty(  ) )
          {
             arg = one_argument( arg, arg1 );
             if( is_number( arg1 ) )
             {
-               number = atoi( arg1 );
+               number = atoi( arg1.c_str(  ) );
 
                if( number == 0 )
                {
@@ -1932,7 +1880,7 @@ void oedit_parse( descriptor_data * d, char *arg )
                   return;
                }
                number -= 1;   /* Offset for 0 */
-               if( number < 0 || number > MAX_ITEM_FLAG )
+               if( number < 0 || number >= MAX_ITEM_FLAG )
                {
                   oedit_disp_extra_menu( d );
                   return;
@@ -1948,8 +1896,7 @@ void oedit_parse( descriptor_data * d, char *arg )
                }
             }
 
-            if( number == ITEM_PROTOTYPE && d->character->get_trust(  ) < LEVEL_GREATER
-                && !hasname( d->character->pcdata->bestowments, "protoflag" ) )
+            if( number == ITEM_PROTOTYPE && d->character->get_trust(  ) < LEVEL_GREATER && !hasname( d->character->pcdata->bestowments, "protoflag" ) )
                d->character->print( "You cannot change the prototype flag.\r\n" );
             else
             {
@@ -1971,7 +1918,7 @@ void oedit_parse( descriptor_data * d, char *arg )
       case OEDIT_WEAR:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
             else if( number < 0 || number >= MAX_WEAR_FLAG )
@@ -1988,7 +1935,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_wflag( arg1 );
@@ -2005,7 +1952,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          return;
 
       case OEDIT_WEIGHT:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          obj->weight = number;
          olc_log( d, "Changed weight to %d", obj->weight );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
@@ -2013,7 +1960,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_COST:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          obj->cost = number;
          olc_log( d, "Changed cost to %d", obj->cost );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
@@ -2021,7 +1968,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_COSTPERDAY:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             obj->pIndexData->ego = number;
@@ -2044,25 +1991,23 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_TIMER:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          obj->timer = number;
          olc_log( d, "Changed timer to %d", obj->timer );
          break;
 
       case OEDIT_LEVEL:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          obj->level = URANGE( 0, number, MAX_LEVEL );
          olc_log( d, "Changed object level to %d", obj->level );
          break;
 
-      case OEDIT_LAYERS:
+      case OEDIT_LAYERS:  // FIXME: Jesus Christ, for the love of God, etc. This is *NOT* right!
          /*
           * Like they say, easy on the user, hard on the programmer :) 
-          */
-         /*
           * Or did I just make that up.... 
           */
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( number )
          {
             case 0:
@@ -2106,7 +2051,7 @@ void oedit_parse( descriptor_data * d, char *arg )
       case OEDIT_TRAPFLAGS:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
             else if( number < 0 || number > TRAPFLAG_MAX + 1 )
@@ -2118,21 +2063,19 @@ void oedit_parse( descriptor_data * d, char *arg )
             {
                number -= 1;   /* Offset to accomodate 0 */
                TOGGLE_BIT( obj->value[3], 1 << number );
-               olc_log( d, "%s the trapflag %s",
-                        IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
+               olc_log( d, "%s the trapflag %s", IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
             }
          }
          else
          {
-            while( arg[0] != '\0' )
+            while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );
                number = get_trapflag( arg1 );
                if( number != -1 )
                {
                   TOGGLE_BIT( obj->value[3], 1 << number );
-                  olc_log( d, "%s the trapflag %s",
-                           IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
+                  olc_log( d, "%s the trapflag %s", IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
                }
             }
          }
@@ -2142,7 +2085,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          return;
 
       case OEDIT_VALUE_0:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_LEVER:
@@ -2169,7 +2112,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_1:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_PILL:
@@ -2192,7 +2135,7 @@ void oedit_parse( descriptor_data * d, char *arg )
                break;
 
             case ITEM_CONTAINER:
-               number = atoi( arg );
+               number = atoi( arg.c_str(  ) );
                if( number < 0 || number > 31 )
                   oedit_disp_container_flags_menu( d );
                else
@@ -2220,7 +2163,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_2:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          /*
           * Some error checking done here 
           */
@@ -2230,7 +2173,7 @@ void oedit_parse( descriptor_data * d, char *arg )
             case ITEM_POTION:
             case ITEM_PILL:
                min_val = -1;
-               max_val = top_sn - 1;
+               max_val = num_skills - 1;
                if( !is_number( arg ) )
                   number = skill_lookup( arg );
                break;
@@ -2254,7 +2197,7 @@ void oedit_parse( descriptor_data * d, char *arg )
             case ITEM_FURNITURE:
                min_val = 0;
                max_val = 2147483647;
-               number = atoi( arg );
+               number = atoi( arg.c_str(  ) );
                if( number < 0 || number > 31 )
                   oedit_disp_furniture_flags_menu( d );
                else
@@ -2287,7 +2230,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_3:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_PILL:
@@ -2296,7 +2239,7 @@ void oedit_parse( descriptor_data * d, char *arg )
             case ITEM_WAND:
             case ITEM_STAFF:
                min_val = -1;
-               max_val = top_sn - 1;
+               max_val = num_skills - 1;
                if( !is_number( arg ) )
                   number = skill_lookup( arg );
                break;
@@ -2335,14 +2278,14 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_4:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_SALVE:
                if( !is_number( arg ) )
                   number = skill_lookup( arg );
                min_val = -1;
-               max_val = top_sn - 1;
+               max_val = num_skills - 1;
                break;
 
             case ITEM_FOOD:
@@ -2385,14 +2328,14 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_5:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_SALVE:
                if( !is_number( arg ) )
                   number = skill_lookup( arg );
                min_val = -1;
-               max_val = top_sn - 1;
+               max_val = num_skills - 1;
                break;
 
             case ITEM_MISSILE_WEAPON:
@@ -2422,7 +2365,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_6:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2445,7 +2388,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_7:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2467,7 +2410,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_8:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2495,7 +2438,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_9:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2523,7 +2466,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_VALUE_10:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2551,7 +2494,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_AFFECT_MENU:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
 
          switch ( arg[0] )
          {
@@ -2568,9 +2511,9 @@ void oedit_parse( descriptor_data * d, char *arg )
                 * Chop off the 'R', if theres a number following use it, otherwise prompt for input 
                 */
                arg = one_argument( arg, arg1 );
-               if( arg && arg[0] != '\0' )
+               if( !arg.empty(  ) )
                {
-                  number = atoi( arg );
+                  number = atoi( arg.c_str(  ) );
                   remove_affect_from_obj( obj, number );
                   oedit_disp_prompt_apply_menu( d );
                }
@@ -2598,7 +2541,7 @@ void oedit_parse( descriptor_data * d, char *arg )
       case OEDIT_AFFECT_LOCATION:
          if( is_number( arg ) )
          {
-            number = atoi( arg );
+            number = atoi( arg.c_str(  ) );
             if( number == 0 )
             {
                /*
@@ -2650,7 +2593,7 @@ void oedit_parse( descriptor_data * d, char *arg )
             case APPLY_SUSCEPTIBLE:
                if( is_number( arg ) )
                {
-                  number = atoi( arg );
+                  number = atoi( arg.c_str(  ) );
                   if( number == 0 )
                   {
                      value = d->character->tempnum;
@@ -2660,7 +2603,7 @@ void oedit_parse( descriptor_data * d, char *arg )
                }
                else
                {
-                  while( arg[0] != '\0' )
+                  while( !arg.empty(  ) )
                   {
                      arg = one_argument( arg, arg1 );
                      if( paf->location == APPLY_AFFECT )
@@ -2668,7 +2611,7 @@ void oedit_parse( descriptor_data * d, char *arg )
                      else
                         number = get_risflag( arg1 );
                      if( number < 0 )
-                        d->character->printf( "Invalid flag: %s\r\n", arg1 );
+                        d->character->printf( "Invalid flag: %s\r\n", arg1.c_str(  ) );
                      else
                         TOGGLE_BIT( d->character->tempnum, 1 << number );
                   }
@@ -2684,7 +2627,7 @@ void oedit_parse( descriptor_data * d, char *arg )
             case APPLY_REMOVESPELL:
                if( is_number( arg ) )
                {
-                  number = atoi( arg );
+                  number = atoi( arg.c_str(  ) );
                   if( IS_VALID_SN( number ) )
                      value = number;
                   else
@@ -2695,17 +2638,17 @@ void oedit_parse( descriptor_data * d, char *arg )
                }
                else
                {
-                  value = bsearch_skill_exact( arg, gsn_first_spell, gsn_first_skill - 1 );
+                  value = find_spell( NULL, arg, false );
                   if( value < 0 )
                   {
-                     d->character->printf( "Invalid spell %s, try again: ", arg );
+                     d->character->printf( "Invalid spell %s, try again: ", arg.c_str(  ) );
                      return;
                   }
                }
                break;
 
             default:
-               value = atoi( arg );
+               value = atoi( arg.c_str(  ) );
                break;
          }
          /*
@@ -2742,7 +2685,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          /*
           * Unnecessary atm 
           */
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          if( number < 0 || number > 31 )
          {
             d->character->print( "Unknown flag, try again: " );
@@ -2751,7 +2694,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          return;
 
       case OEDIT_AFFECT_REMOVE:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          remove_affect_from_obj( obj, number );
          olc_log( d, "Removed affect #%d", number );
          oedit_disp_prompt_apply_menu( d );
@@ -2766,7 +2709,7 @@ void oedit_parse( descriptor_data * d, char *arg )
           * return;
           * } 
           */
-         olc_log( d, "Changed exdesc %s to %s", ed->keyword.c_str(), arg );
+         olc_log( d, "Changed exdesc %s to %s", ed->keyword.c_str(  ), arg.c_str(  ) );
          ed->keyword = arg;
          oedit_disp_extra_choice( d );
          return;
@@ -2779,7 +2722,7 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_EXTRADESC_CHOICE:
-         number = atoi( arg );
+         number = atoi( arg.c_str(  ) );
          switch ( number )
          {
             default:
@@ -2806,12 +2749,12 @@ void oedit_parse( descriptor_data * d, char *arg )
          break;
 
       case OEDIT_EXTRADESC_DELETE:
-         if( !( ed = oedit_find_extradesc( obj, atoi( arg ) ) ) )
+         if( !( ed = oedit_find_extradesc( obj, atoi( arg.c_str(  ) ) ) ) )
          {
             d->character->print( "Extra description not found, try again: " );
             return;
          }
-         olc_log( d, "Deleted exdesc %s", ed->keyword.c_str() );
+         olc_log( d, "Deleted exdesc %s", ed->keyword.c_str(  ) );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->extradesc.remove( ed );
          else
@@ -2847,7 +2790,7 @@ void oedit_parse( descriptor_data * d, char *arg )
             default:
                if( is_number( arg ) )
                {
-                  if( !( ed = oedit_find_extradesc( obj, atoi( arg ) ) ) )
+                  if( !( ed = oedit_find_extradesc( obj, atoi( arg.c_str(  ) ) ) ) )
                   {
                      d->character->print( "Not found, try again: " );
                      return;

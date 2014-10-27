@@ -4,7 +4,6 @@ OnMap	0
 Here	500 500
 There	-1 -1
 Vnum	50499
-Area	~
 End
 
 #ENTRANCE
@@ -13,7 +12,6 @@ OnMap	1
 Here	500 500
 There	-1 -1
 Vnum	51499
-Area	~
 End
 
 #ENTRANCE
@@ -22,7 +20,6 @@ OnMap	2
 Here    500 500
 There	-1 -1
 Vnum	50999
-Area	~
 End
 
 #END

@@ -40,7 +40,7 @@
 
 /* Max number of connections to keep in the history.
  * Don't set this too high... */
-const int MAX_CONNHISTORY = 30;
+const size_t MAX_CONNHISTORY = 30;
 
 /* Change this for your codebase! Currently set for AFKMud */
 const int CH_LVL_ADMIN = LEVEL_ADMIN;
@@ -65,16 +65,16 @@ enum conn_hist_errors
 class conn_data
 {
  private:
-   conn_data( const conn_data& c );
-   conn_data& operator=( const conn_data& );
+   conn_data( const conn_data & c );
+     conn_data & operator=( const conn_data & );
 
  public:
-   conn_data();
-   ~conn_data();
+     conn_data(  );
+    ~conn_data(  );
 
-   char *user;
-   char *when;
-   char *host;
+   string user;
+   string host;
+   string when;
    int type;
    int level;
    int invis_lvl;

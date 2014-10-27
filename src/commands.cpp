@@ -26,14 +26,15 @@
  *                              Command Code                                *
  ****************************************************************************/
 
+#include <fstream>
 #include <sys/time.h>
 #include <cstdarg>
 #if !defined(WIN32)
- #include <dlfcn.h>
+#include <dlfcn.h>
 #else
- #include <windows.h>
- #define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
- #define dlerror() GetLastError()
+#include <windows.h>
+#define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
+#define dlerror() GetLastError()
 #endif
 #include "mud.h"
 #include "clans.h"
@@ -43,8 +44,7 @@
 #include "mud_prog.h"
 #include "roomindex.h"
 
-cmd_type *command_hash[126];   /* hash table for cmd_table */
-social_type *social_index[27]; /* hash table for socials   */
+vector < vector < cmd_type * > >command_table;
 extern char lastplayercmd[MIL * 2];
 #if defined(WIN32)
 void gettimeofday( struct timeval *, struct timezone * );
@@ -59,32 +59,43 @@ bool fLogAll = false;
  * Externals
  */
 void subtract_times( struct timeval *, struct timeval * );
-bool check_ability( char_data *, char *, char * );
-bool check_skill( char_data *, char *, char * );
+bool check_ability( char_data *, const string &, const string & );
+bool check_skill( char_data *, const string &, const string & );
 #ifdef MULTIPORT
-bool shell_hook( char_data *, char *, char * );
-void shellcommands( char_data *, int );
+bool shell_hook( char_data *, const string &, string & );
+void shellcommands( char_data *, short );
 #endif
 #ifdef IMC
-bool imc_command_hook( char_data *, char *, char * );
+bool imc_command_hook( char_data *, string &, string & );
 #endif
-bool local_channel_hook( char_data *, char *, char * );
-int get_logflag( char * );
-void skill_notfound( char_data *, char * );
-char_data *get_wizvictim( char_data *, char *, bool );
+bool local_channel_hook( char_data *, const string &, string & );
+char_data *get_wizvictim( char_data *, const string &, bool );
 char *extract_area_names( char_data * );
 bool can_use_mprog( char_data * );
+bool mprog_command_trigger( char_data *, const string & );
+bool oprog_command_trigger( char_data *, const string & );
+bool rprog_command_trigger( char_data *, const string & );
 
-char *const cmd_flags[] = {
-   "possessed", "polymorphed", "action", "nospam", "ghost", "mudprog",
-   "noforce", "loaded"
+const char *cmd_flags[] = {
+   "possessed", "polymorphed", "action", "nospam", "ghost", "mudprog", "noforce", "loaded"
 };
 
-void check_switches( )
+/*
+ * For use with cedit --Shaddai
+ */
+int get_cmdflag( const string & flag )
 {
-   list<char_data*>::iterator ich;
+   for( size_t x = 0; x < ( sizeof( cmd_flags ) / sizeof( cmd_flags[0] ) ); ++x )
+      if( !str_cmp( flag.c_str(  ), cmd_flags[x] ) )
+         return x;
+   return -1;
+}
 
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+void check_switches(  )
+{
+   list < char_data * >::iterator ich;
+
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
       char_data *ch = *ich;
 
@@ -93,25 +104,26 @@ void check_switches( )
 }
 
 CMDF( do_switch );
-void check_switch( char_data *ch )
+void check_switch( char_data * ch )
 {
-   cmd_type *cmd;
-   int hash, trust = ch->get_trust();
-
    if( !ch->switched )
       return;
 
-   for( hash = 0; hash < 126; hash++ )
+   for( char x = 0; x < 126; ++x )
    {
-      for( cmd = command_hash[hash]; cmd; cmd = cmd->next )
+      const vector < cmd_type * >&cmd_list = command_table[x];
+      vector < cmd_type * >::const_iterator icmd;
+
+      for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
+         cmd_type *cmd = *icmd;
+
          if( cmd->do_fun != do_switch )
             continue;
-         if( cmd->level <= trust )
+         if( cmd->level <= ch->get_trust(  ) )
             return;
 
-         if( !ch->isnpc() && ch->pcdata->bestowments && is_name( cmd->name, ch->pcdata->bestowments )
-          && cmd->level <= trust + sysdata->bestow_dif )
+         if( !ch->isnpc(  ) && !ch->pcdata->bestowments.empty(  ) && hasname( ch->pcdata->bestowments, cmd->name ) && cmd->level <= ch->get_trust(  ) + sysdata->bestow_dif )
             return;
       }
    }
@@ -121,7 +133,7 @@ void check_switch( char_data *ch )
    interpret( ch->switched, "return" );
 }
 
-int check_command_level( const char *arg, int check )
+int check_command_level( const string & arg, int check )
 {
    cmd_type *cmd = find_command( arg );
 
@@ -149,9 +161,9 @@ char cmd_flag_buf[MSL];
 char *check_cmd_flags( char_data * ch, cmd_type * cmd )
 {
    if( ch->has_aflag( AFF_POSSESS ) && cmd->flags.test( CMD_POSSESS ) )
-      snprintf( cmd_flag_buf, MSL, "You can't %s while you are possessing someone!\r\n", cmd->name );
+      snprintf( cmd_flag_buf, MSL, "You can't %s while you are possessing someone!\r\n", cmd->name.c_str(  ) );
    else if( ch->morph != NULL && cmd->flags.test( CMD_POLYMORPHED ) )
-      snprintf( cmd_flag_buf, MSL, "You can't %s while you are polymorphed!\r\n", cmd->name );
+      snprintf( cmd_flag_buf, MSL, "You can't %s while you are polymorphed!\r\n", cmd->name.c_str(  ) );
    else
       cmd_flag_buf[0] = '\0';
    return cmd_flag_buf;
@@ -189,9 +201,9 @@ time_t end_timer( struct timeval * starttime )
    return ( etime.tv_sec * 1000000 ) + etime.tv_usec;
 }
 
-bool check_social( char_data * ch, char *command, char *argument )
+bool check_social( char_data * ch, const string & command, const string & argument )
 {
-   char arg[MIL];
+   string arg;
    social_type *social;
    char_data *victim = NULL;
 
@@ -234,7 +246,7 @@ bool check_social( char_data * ch, char *command, char *argument )
    }
 
    one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       act( AT_SOCIAL, social->char_no_arg, ch, NULL, victim, TO_CHAR );
       act( AT_SOCIAL, social->others_no_arg, ch, NULL, victim, TO_ROOM );
@@ -244,10 +256,9 @@ bool check_social( char_data * ch, char *command, char *argument )
    if( !( victim = ch->get_char_room( arg ) ) )
    {
       obj_data *obj; /* Object socials */
-      if( ( ( obj = get_obj_list( ch, arg, ch->in_room->objects ) )
-            || ( obj = get_obj_list( ch, arg, ch->carrying ) ) ) && !victim )
+      if( ( ( obj = get_obj_list( ch, arg, ch->in_room->objects ) ) || ( obj = get_obj_list( ch, arg, ch->carrying ) ) ) && !victim )
       {
-         if( social->obj_self && social->obj_others )
+         if( !social->obj_self.empty(  ) && !social->obj_others.empty(  ) )
          {
             act( AT_SOCIAL, social->obj_self, ch, NULL, obj, TO_CHAR );
             act( AT_SOCIAL, social->obj_others, ch, NULL, obj, TO_ROOM );
@@ -272,8 +283,7 @@ bool check_social( char_data * ch, char *command, char *argument )
    act( AT_SOCIAL, social->char_found, ch, NULL, victim, TO_CHAR );
    act( AT_SOCIAL, social->vict_found, ch, NULL, victim, TO_VICT );
 
-   if( !ch->isnpc(  ) && victim->isnpc(  ) && !victim->has_aflag( AFF_CHARM )
-       && victim->IS_AWAKE(  ) && !HAS_PROG( victim->pIndexData, ACT_PROG ) )
+   if( !ch->isnpc(  ) && victim->isnpc(  ) && !victim->has_aflag( AFF_CHARM ) && victim->IS_AWAKE(  ) && !HAS_PROG( victim->pIndexData, ACT_PROG ) )
    {
       switch ( number_bits( 4 ) )
       {
@@ -397,20 +407,20 @@ bool check_pos( char_data * ch, short position )
    return true;
 }
 
-bool check_alias( char_data *ch, char *command, char *argument )
+bool check_alias( char_data * ch, const string & command, const string & argument )
 {
-   map<string,string>::iterator al;
-   char arg[MIL];
+   map < string, string >::iterator al;
+   string arg;
 
    if( ch->isnpc(  ) )
       return false;
 
    al = ch->pcdata->alias_map.find( command );
 
-   if( al == ch->pcdata->alias_map.end() )
+   if( al == ch->pcdata->alias_map.end(  ) )
       return false;
 
-   mudstrlcpy( arg, ch->pcdata->alias_map[command].c_str(), MIL );
+   arg = ch->pcdata->alias_map[command];
 
    if( ch->pcdata->cmd_recurse == -1 || ++ch->pcdata->cmd_recurse > 50 )
    {
@@ -422,11 +432,8 @@ bool check_alias( char_data *ch, char *command, char *argument )
       return false;
    }
 
-   if( argument && argument[0] != '\0' )
-   {
-      mudstrlcat( arg, " ", MIL );
-      mudstrlcat( arg, argument, MIL );
-   }
+   if( !argument.empty(  ) )
+      arg.append( " " + argument );
    interpret( ch, arg );
    return true;
 }
@@ -435,9 +442,11 @@ bool check_alias( char_data *ch, char *command, char *argument )
  * The main entry point for executing commands.
  * Can be recursively called from 'at', 'order', 'force'.
  */
-void interpret( char_data * ch, char *argument )
+void interpret( char_data * ch, string argument )
 {
-   char command[MIL], logline[MIL];
+   string command;
+   string origarg = argument;
+   char logline[MIL];
    char *buf;
    timer_data *chtimer = NULL;
    cmd_type *cmd = NULL;
@@ -471,30 +480,33 @@ void interpret( char_data * ch, char *argument )
       }
       else
       {
-         int x;
-
          /*
           * yes... we lose out on the hashing speediness here...
           * but the only REPEATCMDS are wizcommands (currently)
           */
-         for( x = 0; x < 126; ++x )
+         for( char x = 0; x < 126; ++x )
          {
-            for( cmd = command_hash[x]; cmd; cmd = cmd->next )
-               if( cmd->do_fun == fun )
-               {
-                  found = true;
-                  break;
-               }
-            if( found )
+            const vector < cmd_type * >&cmd_list = command_table[x];
+            vector < cmd_type * >::const_iterator icmd;
+
+            for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
+            {
+               cmd = *icmd;
+
+               if( cmd->do_fun != fun )
+                  continue;
+               found = true;
                break;
+            }
          }
+
          if( !found )
          {
             cmd = NULL;
             bug( "%s: SUB_REPEATCMD: last_cmd invalid", __FUNCTION__ );
             return;
          }
-         snprintf( logline, MIL, "(%s) %s", cmd->name, argument );
+         snprintf( logline, MIL, "(%s) %s", cmd->name.c_str(  ), argument.c_str(  ) );
       }
    }
 
@@ -503,18 +515,14 @@ void interpret( char_data * ch, char *argument )
       /*
        * Changed the order of these ifchecks to prevent crashing. 
        */
-      if( !argument || argument[0] == '\0' || !str_cmp( argument, "" ) )
+      if( argument.empty(  ) || !str_cmp( argument, "" ) )
       {
          bug( "%s: null argument!", __FUNCTION__ );
          return;
       }
 
-      /*
-       * Strip leading spaces.
-       */
-      while( isspace( *argument ) )
-         ++argument;
-      if( argument[0] == '\0' )
+      strip_lspace( argument );
+      if( argument.empty(  ) )
          return;
 
       /*
@@ -556,14 +564,12 @@ void interpret( char_data * ch, char *argument )
        * Grab the command word.
        * Special parsing so ' can be a command, also no spaces needed after punctuation.
        */
-      mudstrlcpy( logline, argument, MIL );
+      mudstrlcpy( logline, argument.c_str(  ), MIL );
       if( !isalpha( argument[0] ) && !isdigit( argument[0] ) )
       {
-         command[0] = argument[0];
-         command[1] = '\0';
-         ++argument;
-         while( isspace( *argument ) )
-            ++argument;
+         command = argument[0];
+         argument = argument.substr( 1, argument.length(  ) );
+         strip_lspace( argument );
       }
       else
          argument = one_argument( argument, command );
@@ -573,16 +579,22 @@ void interpret( char_data * ch, char *argument )
        * Check for bestowments
        */
       trust = ch->get_trust(  );
-      for( cmd = command_hash[LOWER( command[0] ) % 126]; cmd; cmd = cmd->next )
+
+      const vector < cmd_type * >&cmd_list = command_table[LOWER( command[0] ) % 126];
+      vector < cmd_type * >::const_iterator icmd;
+
+      for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
+      {
+         cmd = *icmd;
+
          if( !str_prefix( command, cmd->name )
-             && ( cmd->level <= trust || ( !ch->isnpc(  ) && ch->pcdata->bestowments
-                                                                && ch->pcdata->bestowments[0] != '\0'
-                                                                && hasname( ch->pcdata->bestowments, cmd->name )
-                                                                && cmd->level <= ( trust + sysdata->bestow_dif ) ) ) )
+             && ( cmd->level <= trust || ( !ch->isnpc(  ) && !ch->pcdata->bestowments.empty(  ) && hasname( ch->pcdata->bestowments, cmd->name )
+                                           && cmd->level <= ( trust + sysdata->bestow_dif ) ) ) )
          {
             found = true;
             break;
          }
+      }
 
       if( found && !cmd->do_fun )
       {
@@ -593,11 +605,11 @@ void interpret( char_data * ch, char *argument )
          DWORD error;
 #endif
 
-         snprintf( filename, 256, "../src/cmd/so/do_%s.so", cmd->name );
+         snprintf( filename, 256, "../src/cmd/so/do_%s.so", cmd->name.c_str(  ) );
          cmd->fileHandle = dlopen( filename, RTLD_NOW );
-         if( ( error = dlerror() ) == NULL )
+         if( ( error = dlerror(  ) ) == NULL )
          {
-            cmd->do_fun = ( DO_FUN * )( dlsym( cmd->fileHandle, cmd->fun_name ) );
+            cmd->do_fun = ( DO_FUN * ) ( dlsym( cmd->fileHandle, cmd->fun_name.c_str(  ) ) );
             cmd->flags.set( CMD_LOADED );
          }
          else
@@ -676,10 +688,10 @@ void interpret( char_data * ch, char *argument )
 
    if( ch->desc && ch->desc->snoop_by )
    {
-      ch->desc->snoop_by->write_to_buffer( ch->name, 0 );
-      ch->desc->snoop_by->write_to_buffer( "% ", 2 );
-      ch->desc->snoop_by->write_to_buffer( logline, 0 );
-      ch->desc->snoop_by->write_to_buffer( "\r\n", 2 );
+      ch->desc->snoop_by->write_to_buffer( ch->name );
+      ch->desc->snoop_by->write_to_buffer( "% " );
+      ch->desc->snoop_by->write_to_buffer( logline );
+      ch->desc->snoop_by->write_to_buffer( "\r\n" );
    }
 
    /*
@@ -718,8 +730,8 @@ void interpret( char_data * ch, char *argument )
 #endif
           && !check_skill( ch, command, argument )
           && !check_ability( ch, command, argument )
-          && !check_alias( ch, command, argument )
-          && !check_social( ch, command, argument )
+          && !rprog_command_trigger( ch, origarg )
+          && !mprog_command_trigger( ch, origarg ) && !oprog_command_trigger( ch, origarg ) && !check_alias( ch, command, argument ) && !check_social( ch, command, argument )
 #ifdef IMC
           && !imc_command_hook( ch, command, argument )
 #endif
@@ -732,8 +744,7 @@ void interpret( char_data * ch, char *argument )
           */
          if( ( pexit = find_door( ch, command, true ) ) != NULL && IS_EXIT_FLAG( pexit, EX_xAUTO ) )
          {
-            if( IS_EXIT_FLAG( pexit, EX_CLOSED )
-                && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) )
+            if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) )
             {
                if( !IS_EXIT_FLAG( pexit, EX_SECRET ) )
                   act( AT_PLAIN, "The $d is closed.", ch, NULL, pexit->keyword, TO_CHAR );
@@ -742,8 +753,7 @@ void interpret( char_data * ch, char *argument )
                return;
             }
             if( ( IS_EXIT_FLAG( pexit, EX_FORTIFIED ) || IS_EXIT_FLAG( pexit, EX_HEAVY )
-                  || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT )
-                  || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) )
+                  || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) )
             {
                ch->print( "You cannot do that here.\r\n" );
                return;
@@ -784,8 +794,8 @@ void interpret( char_data * ch, char *argument )
    ch->last_cmd = cmd->do_fun;   /* Usurped in hopes of using it for the spamguard instead */
    if( !str_cmp( cmd->name, "slay" ) )
    {
-      char *tmpargument = argument;
-      char tmparg[MIL];
+      string tmpargument = argument;
+      string tmparg;
 
       tmpargument = one_argument( tmpargument, tmparg );
 
@@ -802,13 +812,13 @@ void interpret( char_data * ch, char *argument )
       ( *cmd->do_fun ) ( ch, argument );
       end_timer( &time_used );
    }
-   catch( exception &e )
+   catch( exception & e )
    {
-      bug( "&YCommand exception: '%s' on command: %s %s&D", e.what(), cmd->name, argument );
+      bug( "&YCommand exception: '%s' on command: %s %s&D", e.what(  ), cmd->name.c_str(  ), argument.c_str(  ) );
    }
    catch( ... )
    {
-      bug( "&YUnknown command exception on command: %s %s&D", cmd->name, argument );
+      bug( "&YUnknown command exception on command: %s %s&D", cmd->name.c_str(  ), argument.c_str(  ) );
    }
 
    tmptime = UMIN( time_used.tv_sec, 19 ) * 1000000 + time_used.tv_usec;
@@ -819,14 +829,12 @@ void interpret( char_data * ch, char *argument )
    if( tmptime > 3000000 )
    {
       log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: %s: %s %s (R:%d S:%ld.%06ld)", ch->name,
-                       cmd->name, ( cmd->log == LOG_NEVER ? "XXX" : argument ),
-                       ch->in_room ? ch->in_room->vnum : 0, time_used.tv_sec, time_used.tv_usec );
+                       cmd->name.c_str(  ), ( cmd->log == LOG_NEVER ? "XXX" : argument.c_str(  ) ), ch->in_room ? ch->in_room->vnum : 0, time_used.tv_sec, time_used.tv_usec );
    }
    mudstrlcpy( lastplayercmd, "No commands pending", MIL * 2 );
-   tail_chain(  );
 }
 
-void cmdf( char_data * ch, char *fmt, ... )
+void cmdf( char_data * ch, const char *fmt, ... )
 {
    char buf[MSL * 2];
    va_list args;
@@ -839,7 +847,7 @@ void cmdf( char_data * ch, char *fmt, ... )
 }
 
 /* Be damn sure the function you pass here is valid, or Bad Things(tm) will happen. */
-void funcf( char_data * ch, DO_FUN * cmd, char *fmt, ... )
+void funcf( char_data * ch, DO_FUN * cmd, const char *fmt, ... )
 {
    char buf[MSL * 2];
    va_list args;
@@ -857,67 +865,59 @@ void funcf( char_data * ch, DO_FUN * cmd, char *fmt, ... )
    ( cmd ) ( ch, buf );
 }
 
-cmd_type::cmd_type()
+cmd_type::cmd_type(  )
 {
-   init_memory( &next, &log, sizeof( log ) );
+   init_memory( &fileHandle, &log, sizeof( log ) );
 }
 
 /*
  * Free a command structure - Thoric
  */
-cmd_type::~cmd_type()
+cmd_type::~cmd_type(  )
 {
-   next = NULL;
    do_fun = NULL;
-   DISPOSE( name );
-   DISPOSE( fun_name );
 }
 
 void free_commands( void )
 {
-   cmd_type *command, *cmd_next;
-   int hash;
-
-   for( hash = 0; hash < 126; ++hash )
+   for( char x = 0; x < 126; ++x )
    {
-      for( command = command_hash[hash]; command; command = cmd_next )
-      {
-         cmd_next = command->next;
+      vector < cmd_type * >&cmd_list = command_table[x];
+      vector < cmd_type * >::iterator icmd;
 
-         deleteptr( command );
+      for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
+      {
+         cmd_type *cmd = *icmd;
+
+         deleteptr( cmd );
       }
+      cmd_list.clear(  );
    }
-   return;
+   command_table.clear(  );
 }
 
 /*
  * Remove a command from it's hash index - Thoric
  */
-void unlink_command( cmd_type *command )
+void unlink_command( cmd_type * command )
 {
-   cmd_type *tmp, *tmp_next;
-   int hash;
-
    if( !command )
    {
       bug( "%s: NULL command", __FUNCTION__ );
       return;
    }
 
-   hash = command->name[0] % 126;
+   vector < cmd_type * >&cmd_list = command_table[command->name[0] % 126];
+   vector < cmd_type * >::iterator icmd;
 
-   if( command == ( tmp = command_hash[hash] ) )
+   for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); )
    {
-      command_hash[hash] = tmp->next;
-      return;
-   }
-   for( ; tmp; tmp = tmp_next )
-   {
-      tmp_next = tmp->next;
-      if( command == tmp_next )
+      cmd_type *cmd = *icmd;
+
+      if( !str_cmp( cmd->name, command->name ) )
       {
-         tmp->next = tmp_next->next;
-         return;
+         cmd_list.erase( icmd );
+         break;
       }
    }
 }
@@ -925,67 +925,39 @@ void unlink_command( cmd_type *command )
 /*
  * Add a command to the command hash table - Thoric
  */
-void add_command( cmd_type *command )
+void add_command( cmd_type * command )
 {
-   int hash, x;
-   cmd_type *tmp, *prev;
-
    if( !command )
    {
       bug( "%s: NULL command", __FUNCTION__ );
       return;
    }
 
-   if( !command->name )
+   if( command->name.empty(  ) )
    {
-      bug( "%s: NULL command->name", __FUNCTION__ );
+      bug( "%s: Empty command->name", __FUNCTION__ );
       return;
    }
 
-/*   if( !command->do_fun )
-   {
-      bug( "%s: NULL command->do_fun for command %s", __FUNCTION__, command->name );
-      return;
-   } */
+   // Force all commands to be lowercase names
+   strlower( command->name );
 
-   /*
-    * make sure the name is all lowercase 
-    */
-   for( x = 0; command->name[x] != '\0'; ++x )
-      command->name[x] = LOWER( command->name[x] );
-
-   hash = command->name[0] % 126;
-
-   if( !( prev = tmp = command_hash[hash] ) )
-   {
-      command->next = command_hash[hash];
-      command_hash[hash] = command;
-      return;
-   }
-
-   /*
-    * add to the END of the list 
-    */
-   for( ; tmp; tmp = tmp->next )
-      if( !tmp->next )
-      {
-         tmp->next = command;
-         command->next = NULL;
-      }
-   return;
+   vector < cmd_type * >&cmd_list = command_table[command->name[0] % 126];
+   cmd_list.push_back( command );
 }
 
-cmd_type *find_command( string command )
+cmd_type *find_command( const string & command )
 {
-   cmd_type *cmd;
-   int hash;
+   vector < cmd_type * >::const_iterator icmd;
+   const vector < cmd_type * >&cmd_list = command_table[command[0] % 126];
 
-   hash = LOWER( command[0] ) % 126;
+   for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
+   {
+      cmd_type *cmd = *icmd;
 
-   for( cmd = command_hash[hash]; cmd; cmd = cmd->next )
-      if( !str_prefix( command.c_str(), cmd->name ) )
+      if( !str_prefix( command, cmd->name ) )
          return cmd;
-
+   }
    return NULL;
 }
 
@@ -999,252 +971,132 @@ const int CMDVERSION = 3;
 /* Updated to 3 for command flags - Samson 7-9-00 */
 void save_commands( void )
 {
-   FILE *fpout;
-   cmd_type *command;
-   int x;
+   ofstream stream;
 
-   if( !( fpout = fopen( COMMAND_FILE, "w" ) ) )
+   stream.open( COMMAND_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open commands.dat for writing", __FUNCTION__ );
       perror( COMMAND_FILE );
       return;
    }
 
-   fprintf( fpout, "#VERSION	%d\n", CMDVERSION );
+   stream << "#VERSION " << CMDVERSION << endl;
 
-   for( x = 0; x < 126; ++x )
+   for( char x = 0; x < 126; ++x )
    {
-      for( command = command_hash[x]; command; command = command->next )
+      const vector < cmd_type * >&cmd_list = command_table[x];
+      vector < cmd_type * >::const_iterator icmd;
+
+      for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
-         if( !command->name || command->name[0] == '\0' )
+         cmd_type *command = *icmd;
+
+         if( command->name.empty(  ) )
          {
-            bug( "%s: blank command in hash bucket %d", __FUNCTION__, x );
+            bug( "%s: blank command in command table", __FUNCTION__ );
             continue;
          }
-         fprintf( fpout, "%s", "#COMMAND\n" );
-         fprintf( fpout, "Name        %s~\n", command->name );
+         stream << "#COMMAND" << endl;
+         stream << "Name        " << command->name << endl;
          /*
           * Modded to use new field - Trax 
           */
-         fprintf( fpout, "Code        %s\n", command->fun_name ? command->fun_name : "" );
-         fprintf( fpout, "Position    %s~\n", npc_position[command->position] );
-         fprintf( fpout, "Level       %d\n", command->level );
-         fprintf( fpout, "Log         %s~\n", log_flag[command->log] );
+         if( !command->fun_name.empty(  ) )
+            stream << "Code        " << command->fun_name << endl;
+         stream << "Position    " << npc_position[command->position] << endl;
+         stream << "Level       " << command->level << endl;
+         stream << "Log         " << log_flag[command->log] << endl;
          if( command->flags.any(  ) )
-            fprintf( fpout, "Flags       %s~\n", bitset_string( command->flags, cmd_flags ) );
-         fprintf( fpout, "%s", "End\n\n" );
+            stream << "Flags       " << bitset_string( command->flags, cmd_flags ) << endl;
+         stream << "End" << endl << endl;
       }
    }
-   fprintf( fpout, "%s", "#END\n" );
-   FCLOSE( fpout );
-}
-
-/*
- *  Added the flags Aug 25, 1997 --Shaddai
- */
-void fread_command( FILE * fp, int version )
-{
-   cmd_type *command = new cmd_type;
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            KEY( "Code", command->fun_name, str_dup( fread_word( fp ) ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( !command->name )
-               {
-                  bug( "%s: Name not found", __FUNCTION__ );
-                  deleteptr( command );
-                  return;
-               }
-
-               if( !command->fun_name )
-               {
-                  bug( "%s: No function name supplied for %s", __FUNCTION__, command->name );
-                  deleteptr( command );
-                  return;
-               }
-
-               /*
-                * Mods by Trax
-                * Fread in code into char* and try linkage here then
-                * deal in the "usual" way I suppose..
-                *
-                * Updated by Samson 6/11/2006.
-                * Commands that aren't in the core are probably defined in the modules area.
-                * These commands will be on a separate modules list at some point.
-                * For now, the ones being tested can be loaded by the cedit command.
-                */
-               command->do_fun = skill_function( command->fun_name );
-               if( command->do_fun == skill_notfound )
-                  command->do_fun = NULL;
-
-               add_command( command );
-
-               /*
-                * Automatically approve all immortal commands for use as a ghost 
-                */
-               if( command->level >= LEVEL_IMMORTAL )
-                  command->flags.set( CMD_GHOST );
-
-               // Command should never load at startup with CMD_LOADED. This bypasses the flag being saved during editing.
-               command->flags.reset( CMD_LOADED );
-               return;
-            }
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "flags" ) )
-            {
-               if( version < 3 )
-                  command->flags = fread_number( fp );
-               else
-                  flag_set( fp, command->flags, cmd_flags );
-               break;
-            }
-            break;
-
-         case 'L':
-            KEY( "Level", command->level, fread_number( fp ) );
-            if( !str_cmp( word, "Log" ) )
-            {
-               if( version < 2 )
-               {
-                  command->log = fread_number( fp );
-                  break;
-               }
-               else
-               {
-                  char *lflag = NULL;
-                  int lognum;
-
-                  lflag = fread_flagstring( fp );
-                  lognum = get_logflag( lflag );
-
-                  if( lognum < 0 || lognum > LOG_ALL )
-                  {
-                     bug( "%s: Command %s has invalid log flag! Defaulting to normal.", __FUNCTION__, command->name );
-                     lognum = LOG_NORMAL;
-                  }
-                  command->log = lognum;
-                  break;
-               }
-            }
-            break;
-
-         case 'N':
-            KEY( "Name", command->name, fread_string_nohash( fp ) );
-            break;
-
-         case 'P':
-            if( !str_cmp( word, "Position" ) )
-            {
-               char *tpos = NULL;
-               int position;
-
-               tpos = fread_flagstring( fp );
-               position = get_npc_position( tpos );
-
-               if( position < 0 || position >= POS_MAX )
-               {
-                  bug( "%s: Command %s has invalid position! Defaulting to standing.", __FUNCTION__, command->name );
-                  position = POS_STANDING;
-               }
-               command->position = position;
-               break;
-            }
-            break;
-      }
-   }
+   stream.close(  );
 }
 
 void load_commands( void )
 {
-   FILE *fp;
+   ifstream stream;
+   cmd_type *cmd = NULL;
    int version = 0;
 
-   if( ( fp = fopen( COMMAND_FILE, "r" ) ) != NULL )
+   command_table.clear(  );
+   command_table.resize( 126 );
+
+   stream.open( COMMAND_FILE );
+   if( !stream.is_open(  ) )
    {
-      for( ;; )
-      {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "VERSION" ) )
-         {
-            version = fread_number( fp );
-            continue;
-         }
-         if( !str_cmp( word, "COMMAND" ) )
-         {
-            fread_command( fp, version );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
-            continue;
-         }
-      }
-      FCLOSE( fp );
-   }
-   else
-   {
-      bug( "%s: Cannot open commands.dat", __FUNCTION__ );
+      bug( "%s: No command file found.", __FUNCTION__ );
       exit( 1 );
    }
-}
 
-/*
- * For use with cedit --Shaddai
- */
-int get_cmdflag( char *flag )
-{
-   unsigned int x;
+   do
+   {
+      string key, value;
+      char buf[MIL];
 
-   for( x = 0; x < ( sizeof( cmd_flags ) / sizeof( cmd_flags[0] ) ); ++x )
-      if( !str_cmp( flag, cmd_flags[x] ) )
-         return x;
-   return -1;
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#VERSION" )
+         version = atoi( value.c_str(  ) );
+      else if( key == "#COMMAND" )
+         cmd = new cmd_type;
+      else if( key == "Name" )
+         cmd->name = value;
+      else if( key == "Code" )
+      {
+         cmd->fun_name = value;
+         cmd->do_fun = skill_function( value );
+         if( cmd->do_fun == skill_notfound )
+            cmd->do_fun = NULL;
+      }
+      else if( key == "Position" )
+      {
+         int pos = get_npc_position( value );
+         if( pos < 0 || pos >= POS_MAX )
+         {
+            bug( "%s: Command %s has invalid position! Defaulting to standing.", __FUNCTION__, cmd->name.c_str(  ) );
+            pos = POS_STANDING;
+         }
+         cmd->position = pos;
+      }
+      else if( key == "Level" )
+         cmd->level = URANGE( 0, atoi( value.c_str(  ) ), MAX_LEVEL );
+      else if( key == "Log" )
+      {
+         if( version < 2 )
+            cmd->log = atoi( value.c_str(  ) );
+         else
+         {
+            int lognum = get_logflag( value );
+
+            if( lognum < 0 || lognum > LOG_ALL )
+            {
+               bug( "%s: Command %s has invalid log flag! Defaulting to normal.", __FUNCTION__, cmd->name.c_str(  ) );
+               lognum = LOG_NORMAL;
+            }
+            cmd->log = lognum;
+         }
+      }
+      else if( key == "Flags" )
+         flag_string_set( value, cmd->flags, cmd_flags );
+      else if( key == "End" )
+         add_command( cmd );
+      else
+         log_printf( "%s: Bad line in command file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+   }
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 /*
@@ -1254,14 +1106,13 @@ int get_cmdflag( char *flag )
 CMDF( do_cedit )
 {
    cmd_type *command;
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
 
    ch->set_color( AT_IMMORT );
 
-   smash_tilde( argument );
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Syntax: cedit save cmdtable\r\n" );
       if( ch->get_trust(  ) > LEVEL_SUB_IMPLEM )
@@ -1270,9 +1121,9 @@ CMDF( do_cedit )
          ch->print( "Syntax: cedit <command> create [code]\r\n" );
          ch->print( "Syntax: cedit <command> delete\r\n" );
          ch->print( "Syntax: cedit <command> show\r\n" );
-         ch->print( "Syntax: cedit <command> raise\r\n" );
-         ch->print( "Syntax: cedit <command> lower\r\n" );
-         ch->print( "Syntax: cedit <command> list\r\n" );
+//         ch->print( "Syntax: cedit <command> raise\r\n" );
+//         ch->print( "Syntax: cedit <command> lower\r\n" );
+//         ch->print( "Syntax: cedit <command> list\r\n" );
          ch->print( "Syntax: cedit <command> [field]\r\n" );
          ch->print( "\r\nField being one of:\r\n" );
          ch->print( "  level position log code flags\r\n" );
@@ -1296,18 +1147,18 @@ CMDF( do_cedit )
          return;
       }
       command = new cmd_type;
-      command->name = str_dup( arg1 );
+      command->name = arg1;
       command->level = ch->get_trust(  );
-      if( *argument )
+      if( !argument.empty(  ) )
          one_argument( argument, arg2 );
       else
-         snprintf( arg2, MIL, "do_%s", arg1 );
+         arg2 = "do_" + arg1;
       command->do_fun = skill_function( arg2 );
-      command->fun_name = str_dup( arg2 );
+      command->fun_name = arg2;
       add_command( command );
       ch->print( "Command added.\r\n" );
       if( command->do_fun == skill_notfound )
-         ch->printf( "Code %s not found.  Set to no code.\r\n", arg2 );
+         ch->printf( "Code %s not found. Set to no code.\r\n", arg2.c_str(  ) );
       return;
    }
 
@@ -1322,11 +1173,11 @@ CMDF( do_cedit )
       return;
    }
 
-   if( !arg2 || arg2[0] == '\0' || !str_cmp( arg2, "show" ) )
+   if( arg2.empty(  ) || !str_cmp( arg2, "show" ) )
    {
       ch->printf( "Command:   %s\r\nLevel:     %d\r\nPosition:  %s\r\nLog:       %s\r\nFunc Name: %s\r\nFlags:     %s\r\n",
-                  command->name, command->level, npc_position[command->position], log_flag[command->log],
-                  command->fun_name, bitset_string( command->flags, cmd_flags ) );
+                  command->name.c_str(  ), command->level, npc_position[command->position], log_flag[command->log],
+                  command->fun_name.c_str(  ), bitset_string( command->flags, cmd_flags ) );
       return;
    }
 
@@ -1347,23 +1198,23 @@ CMDF( do_cedit )
 
       if( command->flags.test( CMD_LOADED ) )
       {
-         ch->printf( "The %s command function is already loaded.\r\n", command->name );
+         ch->printf( "The %s command function is already loaded.\r\n", command->name.c_str(  ) );
          return;
       }
 
-      if( !command->fun_name || command->fun_name[0] == '\0' )
+      if( command->fun_name.empty(  ) )
       {
          ch->printf( "The %s command has a NULL function name!\r\n" );
          return;
       }
 
-      snprintf( filename, 256, "../src/cmd/so/do_%s.so", command->name );
+      snprintf( filename, 256, "../src/cmd/so/do_%s.so", command->name.c_str(  ) );
       command->fileHandle = dlopen( filename, RTLD_NOW );
-      if( ( error = dlerror() ) == NULL )
+      if( ( error = dlerror(  ) ) == NULL )
       {
-         command->do_fun = ( DO_FUN * )( dlsym( command->fileHandle, command->fun_name ) );
+         command->do_fun = ( DO_FUN * ) ( dlsym( command->fileHandle, command->fun_name.c_str(  ) ) );
          command->flags.set( CMD_LOADED );
-         ch->printf( "Command %s loaded and available.\r\n", command->name );
+         ch->printf( "Command %s loaded and available.\r\n", command->name.c_str(  ) );
          return;
       }
 
@@ -1375,14 +1226,14 @@ CMDF( do_cedit )
    {
       if( !command->flags.test( CMD_LOADED ) )
       {
-         ch->printf( "The %s command function is not loaded.\r\n", command->name );
+         ch->printf( "The %s command function is not loaded.\r\n", command->name.c_str(  ) );
          return;
       }
 
       dlclose( command->fileHandle );
       command->flags.reset( CMD_LOADED );
       command->do_fun = NULL;
-      ch->printf( "The %s command has been unloaded.\r\n", command->name );
+      ch->printf( "The %s command has been unloaded.\r\n", command->name.c_str(  ) );
       return;
    }
 
@@ -1390,106 +1241,16 @@ CMDF( do_cedit )
    {
       if( !command->flags.test( CMD_LOADED ) )
       {
-         ch->printf( "The %s command function is not loaded.\r\n", command->name );
+         ch->printf( "The %s command function is not loaded.\r\n", command->name.c_str(  ) );
          return;
       }
 
       dlclose( command->fileHandle );
       command->flags.reset( CMD_LOADED );
       command->do_fun = NULL;
-      ch->printf( "The %s command has been unloaded.\r\n", command->name );
+      ch->printf( "The %s command has been unloaded.\r\n", command->name.c_str(  ) );
 
-      funcf( ch, do_cedit, "%s load", command->name );
-      return;
-   }
-
-   if( !str_cmp( arg2, "raise" ) )
-   {
-      cmd_type *tmp, *tmp_next;
-      int hash = command->name[0] % 126;
-
-      if( ( tmp = command_hash[hash] ) == command )
-      {
-         ch->print( "That command is already at the top.\r\n" );
-         return;
-      }
-      if( tmp->next == command )
-      {
-         command_hash[hash] = command;
-         tmp_next = tmp->next;
-         tmp->next = command->next;
-         command->next = tmp;
-         ch->printf( "Moved %s above %s.\r\n", command->name, command->next->name );
-         return;
-      }
-      for( ; tmp; tmp = tmp->next )
-      {
-         tmp_next = tmp->next;
-         if( tmp_next->next == command )
-         {
-            tmp->next = command;
-            tmp_next->next = command->next;
-            command->next = tmp_next;
-            ch->printf( "Moved %s above %s.\r\n", command->name, command->next->name );
-            return;
-         }
-      }
-      ch->print( "ERROR -- Not Found!\r\n" );
-      return;
-   }
-
-   if( !str_cmp( arg2, "lower" ) )
-   {
-      cmd_type *tmp, *tmp_next;
-      int hash = command->name[0] % 126;
-
-      if( command->next == NULL )
-      {
-         ch->print( "That command is already at the bottom.\r\n" );
-         return;
-      }
-      tmp = command_hash[hash];
-      if( tmp == command )
-      {
-         tmp_next = tmp->next;
-         command_hash[hash] = command->next;
-         command->next = tmp_next->next;
-         tmp_next->next = command;
-
-         ch->printf( "Moved %s below %s.\r\n", command->name, tmp_next->name );
-         return;
-      }
-      for( ; tmp; tmp = tmp->next )
-      {
-         if( tmp->next == command )
-         {
-            tmp_next = command->next;
-            tmp->next = tmp_next;
-            command->next = tmp_next->next;
-            tmp_next->next = command;
-
-            ch->printf( "Moved %s below %s.\r\n", command->name, tmp_next->name );
-            return;
-         }
-      }
-      ch->print( "ERROR -- Not Found!\r\n" );
-      return;
-   }
-
-   if( !str_cmp( arg2, "list" ) )
-   {
-      cmd_type *tmp;
-      int hash = command->name[0] % 126;
-
-      ch->pagerf( "Priority placement for [%s]:\r\n", command->name );
-      for( tmp = command_hash[hash]; tmp; tmp = tmp->next )
-      {
-         if( tmp == command )
-            ch->set_pager_color( AT_GREEN );
-         else
-            ch->set_pager_color( AT_PLAIN );
-         ch->pagerf( "  %s\r\n", tmp->name );
-      }
+      funcf( ch, do_cedit, "%s load", command->name.c_str(  ) );
       return;
    }
 
@@ -1511,15 +1272,14 @@ CMDF( do_cedit )
          return;
       }
       command->do_fun = fun;
-      DISPOSE( command->fun_name );
-      command->fun_name = str_dup( argument );
+      command->fun_name = argument;
       ch->print( "Command code updated.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "level" ) )
    {
-      int level = atoi( argument );
+      int level = atoi( argument.c_str(  ) );
 
       if( level < 0 || level > ch->get_trust(  ) )
       {
@@ -1529,7 +1289,7 @@ CMDF( do_cedit )
       if( level > command->level && command->do_fun == do_switch )
       {
          command->level = level;
-         check_switches( );
+         check_switches(  );
       }
       else
          command->level = level;
@@ -1574,7 +1334,7 @@ CMDF( do_cedit )
       flag = get_cmdflag( argument );
       if( flag < 0 || flag >= MAX_CMD_FLAG )
       {
-         ch->printf( "Unknown flag %s.\r\n", argument );
+         ch->printf( "Unknown flag %s.\r\n", argument.c_str(  ) );
          return;
       }
       command->flags.flip( flag );
@@ -1584,31 +1344,22 @@ CMDF( do_cedit )
 
    if( !str_cmp( arg2, "name" ) )
    {
-      bool relocate;
       cmd_type *checkcmd;
 
       one_argument( argument, arg1 );
-      if( !arg1 || arg1[0] == '\0' )
+      if( arg1.empty(  ) )
       {
          ch->print( "Cannot clear name field!\r\n" );
          return;
       }
       if( ( checkcmd = find_command( arg1 ) ) != NULL )
       {
-         ch->printf( "There is already a command named %s.\r\n", arg1 );
+         ch->printf( "There is already a command named %s.\r\n", arg1.c_str(  ) );
          return;
       }
-      if( arg1[0] != command->name[0] )
-      {
-         unlink_command( command );
-         relocate = true;
-      }
-      else
-         relocate = false;
-      DISPOSE( command->name );
-      command->name = str_dup( arg1 );
-      if( relocate )
-         add_command( command );
+      unlink_command( command );
+      command->name = arg1;
+      add_command( command );
       ch->print( "Done.\r\n" );
       return;
    }
@@ -1621,7 +1372,7 @@ CMDF( do_cedit )
 
 CMDF( do_restrict )
 {
-   char arg[MIL];
+   string arg;
    short level;
    cmd_type *cmd;
    bool found;
@@ -1630,13 +1381,13 @@ CMDF( do_restrict )
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Restrict which command?\r\n" );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       level = ch->get_trust(  );
    else
    {
@@ -1645,7 +1396,7 @@ CMDF( do_restrict )
          ch->print( "Level must be numeric.\r\n" );
          return;
       }
-      level = atoi( argument );
+      level = atoi( argument.c_str(  ) );
    }
    level = UMAX( UMIN( ch->get_trust(  ), level ), 0 );
 
@@ -1663,68 +1414,59 @@ CMDF( do_restrict )
 
    if( !str_prefix( argument, "show" ) )
    {
-      cmdf( ch, "%s show", cmd->name );
+      cmdf( ch, "%s show", cmd->name.c_str(  ) );
       return;
    }
    cmd->level = level;
-   ch->printf( "You restrict %s to level %d\r\n", cmd->name, level );
-   log_printf( "%s restricting %s to level %d", ch->name, cmd->name, level );
-   return;
+   ch->printf( "You restrict %s to level %d\r\n", cmd->name.c_str(  ), level );
+   log_printf( "%s restricting %s to level %d", ch->name, cmd->name.c_str(  ), level );
 }
 
-char *extract_command_names( char_data * ch )
+string extract_command_names( char_data * ch )
 {
-   char tcomm[MSL];
-   char *tbuf = NULL;
-   static char comm_names[MSL];
+   string tbuf, tcomm, comm_names;
 
    if( !ch || ch->isnpc(  ) )
-      return NULL;
+      return "";
 
-   if( !ch->pcdata->bestowments || ch->pcdata->bestowments[0] == '\0' )
-      return NULL;
-
-   tcomm[0] = '\0';
-   comm_names[0] = '\0';
+   if( ch->pcdata->bestowments.empty(  ) )
+      return "";
 
    tbuf = ch->pcdata->bestowments;
    tbuf = one_argument( tbuf, tcomm );
-   if( !tcomm || tcomm[0] == '\0' )
-      return NULL;
-   while( 1 )
-   {
-      if( !strstr( tcomm, ".are" ) )
-      {
-         if( !comm_names || comm_names[0] == '\0' )
-            mudstrlcpy( comm_names, tcomm, MSL );
-         else
-            snprintf( comm_names + strlen( comm_names ), MSL, " %s", tcomm );
-      }
-      if( !tbuf || tbuf[0] == '\0' )
-         break;
-      tbuf = one_argument( tbuf, tcomm );
 
+   if( tcomm.empty(  ) )
+      return "";
+
+   while( !tbuf.empty(  ) )
+   {
+      if( !strstr( tcomm.c_str(  ), ".are" ) )
+      {
+         if( comm_names.empty(  ) )
+            comm_names = tcomm;
+         else
+            comm_names.append( " " + tcomm );
+      }
+      tbuf = one_argument( tbuf, tcomm );
    }
    return comm_names;
 }
 
 CMDF( do_bestow )
 {
-   char arg[MIL];
-   char *buf = NULL;
+   string arg, buf;
    char_data *victim;
    cmd_type *cmd;
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax:\r\n"
                  "bestow <victim> <command>           adds a command to the list\r\n"
                  "bestow <victim> none                removes bestowed areas\r\n"
                  "bestow <victim> remove <command>    removes a specific area\r\n"
-                 "bestow <victim> list                lists bestowed areas\r\n"
-                 "bestow <victim>                     lists bestowed areas\r\n" );
+                 "bestow <victim> list                lists bestowed areas\r\n" "bestow <victim>                     lists bestowed areas\r\n" );
       return;
    }
 
@@ -1733,60 +1475,55 @@ CMDF( do_bestow )
    if( !( victim = get_wizvictim( ch, arg, true ) ) )
       return;
 
-   if( !argument || argument[0] == '\0' || !str_cmp( argument, "list" ) )
+   if( argument.empty(  ) || !str_cmp( argument, "list" ) )
    {
-      if( !victim->pcdata->bestowments || victim->pcdata->bestowments[0] == '\0' )
+      if( victim->pcdata->bestowments.empty(  ) )
       {
          ch->printf( "%s has no bestowed commands.\r\n", victim->name );
          return;
       }
 
-      if( !( buf = extract_command_names( victim ) ) || buf[0] == '\0' )
+      buf = extract_command_names( victim );
+      if( buf.empty(  ) )
       {
          ch->printf( "%s has no bestowed commands.\r\n", victim->name );
          return;
       }
-      ch->printf( "Current bestowed commands on %s: %s.\r\n", victim->name, buf );
+      ch->printf( "Current bestowed commands on %s: %s.\r\n", victim->name, buf.c_str(  ) );
       return;
    }
 
    argument = one_argument( argument, arg );
 
-   if( argument && argument[0] != '\0' && !str_cmp( arg, "remove" ) )
+   if( !argument.empty(  ) && !str_cmp( arg, "remove" ) )
    {
-      while( 1 )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg );
          if( !hasname( victim->pcdata->bestowments, arg ) )
          {
-            ch->printf( "%s does not have a command named %s bestowed.\r\n", victim->name, arg );
+            ch->printf( "%s does not have a command named %s bestowed.\r\n", victim->name, arg.c_str(  ) );
             return;
          }
-         removename( &victim->pcdata->bestowments, arg );
-         ch->printf( "Removed command %s from %s.\r\n", arg, victim->name );
-         victim->save(  );
-         if( !argument || argument[0] == '\0' )
-            break;
+         removename( victim->pcdata->bestowments, arg );
+         ch->printf( "Removed command %s from %s.\r\n", arg.c_str(  ), victim->name );
       }
+      victim->save(  );
       return;
    }
 
    if( !str_cmp( arg, "none" ) )
    {
-      if( !victim->pcdata->bestowments || victim->pcdata->bestowments[0] == '\0' ||
-          !( buf = extract_command_names( victim ) ) || buf[0] == '\0' )
+      buf = extract_command_names( victim );
+      if( victim->pcdata->bestowments.empty(  ) )
       {
          ch->printf( "%s has no commands bestowed!\r\n", victim->name );
          return;
       }
-      buf = NULL;
-      if( strstr( victim->pcdata->bestowments, ".are" ) )
-         buf = extract_area_names( victim );
-      STRFREE( victim->pcdata->bestowments );
-      if( buf && buf[0] != '\0' )
-         victim->pcdata->bestowments = STRALLOC( buf );
-      else
-         victim->pcdata->bestowments = STRALLOC( "" );
+
+      buf = extract_area_names( victim );
+      victim->pcdata->bestowments = buf;
+
       ch->printf( "Command bestowments removed from %s.\r\n", victim->name );
       victim->printf( "%s has removed your bestowed commands.\r\n", ch->name );
       check_switch( victim );
@@ -1794,44 +1531,41 @@ CMDF( do_bestow )
       return;
    }
 
-   while( 1 )
+   while( !argument.empty(  ) )
    {
-      if( strstr( arg, ".are" ) )
+      if( strstr( arg.c_str(  ), ".are" ) )
       {
-         ch->printf( "'%s' is not a valid command to bestow.\r\n", arg );
+         ch->printf( "'%s' is not a valid command to bestow.\r\n", arg.c_str(  ) );
          ch->print( "You cannot bestow an area with 'bestow'. Use 'bestowarea'.\r\n" );
          return;
       }
 
       if( hasname( victim->pcdata->bestowments, arg ) )
       {
-         ch->printf( "%s already has '%s' bestowed.\r\n", victim->name, arg );
+         ch->printf( "%s already has '%s' bestowed.\r\n", victim->name, arg.c_str(  ) );
          return;
       }
 
       if( !( cmd = find_command( arg ) ) )
       {
-         ch->printf( "'%s' is not a valid command.\r\n", arg );
+         ch->printf( "'%s' is not a valid command.\r\n", arg.c_str(  ) );
          return;
       }
 
       if( cmd->level > ch->get_trust(  ) )
       {
-         ch->printf( "The command '%s' is beyond you, thus you cannot bestow it.\r\n", arg );
+         ch->printf( "The command '%s' is beyond you, thus you cannot bestow it.\r\n", arg.c_str(  ) );
          return;
       }
 
       smash_tilde( arg );
-      addname( &victim->pcdata->bestowments, arg );
-      victim->printf( "%s has bestowed on you the command: %s\r\n", ch->name, arg );
-      ch->printf( "%s has been bestowed: %s\r\n", victim->name, arg );
-      victim->save(  );
-      if( !argument || argument[0] == '\0' )
-         break;
-      else
-         argument = one_argument( argument, arg );
+      addname( victim->pcdata->bestowments, arg );
+      victim->printf( "%s has bestowed on you the command: %s\r\n", ch->name, arg.c_str(  ) );
+      ch->printf( "%s has been bestowed: %s\r\n", victim->name, arg.c_str(  ) );
+
+      argument = one_argument( argument, arg );
    }
-   return;
+   victim->save(  );
 }
 
 /*
@@ -1841,13 +1575,13 @@ CMDF( do_bestow )
 CMDF( do_force )
 {
    cmd_type *cmd = NULL;
-   char arg[MIL], arg2[MIL], command[MSL];
+   string arg, arg2, command;
 
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
-   if( !arg || arg[0] == '\0' || !arg2 || arg2[0] == '\0' )
+   if( arg.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Force whom to do what?\r\n" );
       return;
@@ -1855,7 +1589,7 @@ CMDF( do_force )
 
    bool mobsonly = ch->level < sysdata->level_forcepc;
    cmd = find_command( arg2 );
-   snprintf( command, MSL, "%s %s", arg2, argument );
+   command = arg2 + " " + argument;
 
    if( !str_cmp( arg, "all" ) )
    {
@@ -1867,20 +1601,20 @@ CMDF( do_force )
 
       if( cmd && cmd->flags.test( CMD_NOFORCE ) )
       {
-         ch->printf( "You cannot force anyone to %s\r\n", cmd->name );
-         log_printf( "%s attempted to force all to %s - command is flagged noforce", ch->name, cmd->name );
+         ch->printf( "You cannot force anyone to %s\r\n", cmd->name.c_str(  ) );
+         log_printf( "%s attempted to force all to %s - command is flagged noforce", ch->name, cmd->name.c_str(  ) );
          return;
       }
 
-      list<char_data*>::iterator ich;
-      for( ich = pclist.begin(); ich != pclist.end(); )
+      list < char_data * >::iterator ich;
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); )
       {
-         char_data *vch = (*ich);
+         char_data *vch = *ich;
          ++ich;
 
          if( vch->get_trust(  ) < ch->get_trust(  ) )
          {
-            act( AT_IMMORT, "$n forces you to '$t'.", ch, command, vch, TO_VICT );
+            act( AT_IMMORT, "$n forces you to '$t'.", ch, command.c_str(  ), vch, TO_VICT );
             interpret( vch, command );
          }
       }
@@ -1909,8 +1643,8 @@ CMDF( do_force )
 
       if( cmd && cmd->flags.test( CMD_NOFORCE ) )
       {
-         ch->printf( "You cannot force anyone to %s\r\n", cmd->name );
-         log_printf( "%s attempted to force %s to %s - command is flagged noforce", ch->name, victim->name, cmd->name );
+         ch->printf( "You cannot force anyone to %s\r\n", cmd->name.c_str(  ) );
+         log_printf( "%s attempted to force %s to %s - command is flagged noforce", ch->name, victim->name, cmd->name.c_str(  ) );
          return;
       }
 
@@ -1919,11 +1653,10 @@ CMDF( do_force )
          ch->print( "You can't force a mob to do that!\r\n" );
          return;
       }
-      act( AT_IMMORT, "$n forces you to '$t'.", ch, command, victim, TO_VICT );
+      act( AT_IMMORT, "$n forces you to '$t'.", ch, command.c_str(  ), victim, TO_VICT );
       interpret( victim, command );
    }
    ch->print( "Ok.\r\n" );
-   return;
 }
 
 /* lets the mobile force someone to do something.  must be mortal level
@@ -1931,7 +1664,7 @@ CMDF( do_force )
 CMDF( do_mpforce )
 {
    cmd_type *cmd = NULL;
-   char arg[MIL], arg2[MIL];
+   string arg, arg2;
 
    if( !can_use_mprog( ch ) )
       return;
@@ -1939,7 +1672,7 @@ CMDF( do_mpforce )
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
 
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       progbugf( ch, "%s", "Mpforce - Bad syntax: Missing command" );
       return;
@@ -1949,18 +1682,18 @@ CMDF( do_mpforce )
 
    if( !str_cmp( arg, "all" ) )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
 
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
-         char_data *vch = (*ich);
+         char_data *vch = *ich;
          ++ich;
 
          if( vch->get_trust(  ) < ch->get_trust(  ) && ch->can_see( vch, false ) )
          {
             if( cmd && cmd->flags.test( CMD_NOFORCE ) )
             {
-               progbugf( ch, "Mpforce: Attempted to force all to %s - command is flagged noforce", arg2 );
+               progbugf( ch, "Mpforce: Attempted to force all to %s - command is flagged noforce", arg2.c_str(  ) );
                return;
             }
             interpret( vch, argument );
@@ -1973,7 +1706,7 @@ CMDF( do_mpforce )
 
       if( !( victim = ch->get_char_room( arg ) ) )
       {
-         progbugf( ch, "Mpforce - No such victim %s", arg );
+         progbugf( ch, "Mpforce - No such victim %s", arg.c_str(  ) );
          return;
       }
 
@@ -1994,17 +1727,13 @@ CMDF( do_mpforce )
        */
       if( cmd && cmd->flags.test( CMD_NOFORCE ) )
       {
-         progbugf( ch, "Mpforce: Attempted to force %s to %s - command is flagged noforce", victim->name, cmd->name );
+         progbugf( ch, "Mpforce: Attempted to force %s to %s - command is flagged noforce", victim->name, cmd->name.c_str(  ) );
          return;
       }
 
-      char lbuf[MSL];
-      snprintf( lbuf, MSL, "%s ", arg2 );
-      if( argument && argument[0] != '\0' )
-         mudstrlcat( lbuf, argument, MSL );
+      string lbuf = arg2 + " " + argument;
       interpret( victim, lbuf );
    }
-   return;
 }
 
 /* Nearly rewritten by Xorith to be more smooth and nice and all that jazz. *grin* */
@@ -2014,21 +1743,21 @@ CMDF( do_mpforce )
    for no level requirement on commands, just for visual appeal. -- Xorith */
 CMDF( do_commands )
 {
-   int col = 0, hash = 0, count = 0, chTrust = 0;
+   int col = 0, count = 0, chTrust = 0;
    char letter = ' ';
    cmd_type *command;
    bool sorted = false, all = false;
 
    // Set up common variables used in the loop - better performance than calling the functions.
-   if( argument[0] != '\0' && !str_cmp( argument, "sorted" ) )
+   if( !argument.empty(  ) && !str_cmp( argument, "sorted" ) )
       sorted = true;
-   if( argument[0] != '\0' && !str_cmp( argument, "all" ) )
+   if( !argument.empty(  ) && !str_cmp( argument, "all" ) )
       all = true;
-   chTrust = ch->get_trust();
+   chTrust = ch->get_trust(  );
 
-   if( argument[0] != '\0' && !( sorted || all ) )
-      ch->pagerf( "&[plain]Commands beginning with '%s':\r\n", argument );
-   else if( argument[0] != '\0' && sorted )
+   if( !argument.empty(  ) && !( sorted || all ) )
+      ch->pagerf( "&[plain]Commands beginning with '%s':\r\n", argument.c_str(  ) );
+   else if( !argument.empty(  ) && sorted )
       ch->pager( "&[plain]Commands -- Tabbed by Letter\r\n" );
    else
       ch->pager( "&[plain]Commands -- All\r\n" );
@@ -2036,21 +1765,26 @@ CMDF( do_commands )
    // Doesn't fit well in a sorted view... -- X
    if( !sorted )
    {
-      ch->pagerf( "&[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl\r\n",
-               "Command", "Command", "Command", "Command", "Command" );
+      ch->pagerf( "&[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl\r\n", "Command", "Command", "Command", "Command", "Command" );
       ch->pager( "-------------------------------------------------------------------------------\r\n" );
    }
 
-   for( hash = 0; hash < 126; ++hash )
-      for( command = command_hash[hash]; command; command = command->next )
+   for( char x = 0; x < 126; ++x )
+   {
+      const vector < cmd_type * >&cmd_list = command_table[x];
+      vector < cmd_type * >::const_iterator icmd;
+
+      for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
+         command = *icmd;
+
          if( command->level > LEVEL_AVATAR || command->level > chTrust || command->flags.test( CMD_MUDPROG ) )
             continue;
 
-         if( ( argument[0] != '\0' && !( sorted || all ) ) && str_prefix( argument, command->name ) )
+         if( ( !argument.empty(  ) && !( sorted || all ) ) && str_prefix( argument, command->name ) )
             continue;
 
-         if( argument[0] != '\0' && sorted && letter != command->name[0] )
+         if( !argument.empty(  ) && sorted && letter != command->name[0] )
          {
             if( command->name[0] < 97 || command->name[0] > 122 )
             {
@@ -2068,14 +1802,15 @@ CMDF( do_commands )
          }
 
          if( command->level == 0 )
-            ch->pagerf( "&[plain]%-11s   - ", command->name );
+            ch->pagerf( "&[plain]%-11s   - ", command->name.c_str(  ) );
          else
-            ch->pagerf( "&[plain]%-11s %3d ", command->name, command->level );
+            ch->pagerf( "&[plain]%-11s %3d ", command->name.c_str(  ), command->level );
 
          ++count;
          if( ++col % 5 == 0 )
             ch->pager( "\r\n" );
       }
+   }
 
    if( col % 5 != 0 )
       ch->pager( "\r\n" );
@@ -2084,8 +1819,6 @@ CMDF( do_commands )
       ch->pagerf( "&[plain]  %d commands found.\r\n", count );
    else
       ch->pager( "&[plain]  No commands found.\r\n" );
-
-   return;
 }
 
 /* Updated to Sadiq's wizhelp snippet - Thanks Sadiq! */
@@ -2093,25 +1826,35 @@ CMDF( do_commands )
 CMDF( do_wizhelp )
 {
    cmd_type *cmd;
-   int col = 0, hash, curr_lvl;
+   int col = 0, curr_lvl;
 
    ch->set_pager_color( AT_PLAIN );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       for( curr_lvl = LEVEL_IMMORTAL; curr_lvl <= ch->level; ++curr_lvl )
       {
          ch->pager( "\r\n\r\n" );
          col = 1;
          ch->pagerf( "[LEVEL %-2d]\r\n", curr_lvl );
-         for( hash = 0; hash < 126; ++hash )
-            for( cmd = command_hash[hash]; cmd; cmd = cmd->next )
+
+         for( char x = 0; x < 126; ++x )
+         {
+            const vector < cmd_type * >&cmd_list = command_table[x];
+            vector < cmd_type * >::const_iterator icmd;
+
+            for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
+            {
+               cmd = *icmd;
+
                if( ( cmd->level == curr_lvl ) && cmd->level <= ch->level )
                {
-                  ch->pagerf( "%-12s", cmd->name );
+                  ch->pagerf( "%-12s", cmd->name.c_str(  ) );
                   if( ++col % 6 == 0 )
                      ch->pager( "\r\n" );
                }
+            }
+         }
 #ifdef MULTIPORT
          shellcommands( ch, curr_lvl );
 #endif
@@ -2127,7 +1870,7 @@ CMDF( do_wizhelp )
       return;
    }
 
-   curr_lvl = atoi( argument );
+   curr_lvl = atoi( argument.c_str(  ) );
 
    if( curr_lvl < LEVEL_IMMORTAL || curr_lvl > MAX_LEVEL )
    {
@@ -2138,20 +1881,29 @@ CMDF( do_wizhelp )
    ch->pager( "\r\n\r\n" );
    col = 1;
    ch->pagerf( "[LEVEL %-2d]\r\n", curr_lvl );
-   for( hash = 0; hash < 126; ++hash )
-      for( cmd = command_hash[hash]; cmd; cmd = cmd->next )
+
+   for( char x = 0; x < 126; ++x )
+   {
+      const vector < cmd_type * >&cmd_list = command_table[x];
+      vector < cmd_type * >::const_iterator icmd;
+
+      for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
+      {
+         cmd = *icmd;
+
          if( cmd->level == curr_lvl )
          {
-            ch->pagerf( "%-12s", cmd->name );
+            ch->pagerf( "%-12s", cmd->name.c_str(  ) );
             if( ++col % 6 == 0 )
                ch->pager( "\r\n" );
          }
+      }
+   }
    if( col % 6 != 0 )
       ch->pager( "\r\n" );
 #ifdef MULTIPORT
    shellcommands( ch, curr_lvl );
 #endif
-   return;
 }
 
 CMDF( do_timecmd )
@@ -2159,14 +1911,14 @@ CMDF( do_timecmd )
    struct timeval starttime;
    struct timeval endtime;
    static bool timing;
-   char arg[MIL];
+   string arg;
 
    ch->print( "Timing\r\n" );
    if( timing )
       return;
 
    one_argument( argument, arg );
-   if( !*arg )
+   if( arg.empty(  ) )
    {
       ch->print( "No command to time.\r\n" );
       return;
@@ -2191,7 +1943,6 @@ CMDF( do_timecmd )
    ch->print( "&[plain]Timing complete.\r\n" );
    subtract_times( &endtime, &starttime );
    ch->printf( "Timing took %ld.%06ld seconds.\r\n", endtime.tv_sec, endtime.tv_usec );
-   return;
 }
 
 /******************************************************
@@ -2202,40 +1953,36 @@ CMDF( do_timecmd )
 
 CMDF( do_alias )
 {
-   map<string,string>::iterator al;
-   char arg[MIL];
-   char *p;
+   map < string, string >::iterator al;
+   string arg;
 
    if( ch->isnpc(  ) )
       return;
 
-   for( p = argument; *p != '\0'; ++p )
+   if( argument.find( '~' ) != string::npos )
    {
-      if( *p == '~' )
-      {
-         ch->print( "Command not acceptable, cannot use the ~ character.\r\n" );
-         return;
-      }
+      ch->print( "Command not acceptable, cannot use the ~ character.\r\n" );
+      return;
    }
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
-      if( ch->pcdata->alias_map.empty() )
+      if( ch->pcdata->alias_map.empty(  ) )
       {
          ch->print( "You have no aliases defined!\r\n" );
          return;
       }
       ch->pagerf( "%-20s What it does\r\n", "Alias" );
-      for( al = ch->pcdata->alias_map.begin(); al != ch->pcdata->alias_map.end(); ++al )
-         ch->pagerf( "%-20s %s\r\n", al->first.c_str(), al->second.c_str() );
+      for( al = ch->pcdata->alias_map.begin(  ); al != ch->pcdata->alias_map.end(  ); ++al )
+         ch->pagerf( "%-20s %s\r\n", al->first.c_str(  ), al->second.c_str(  ) );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      if( ( al = ch->pcdata->alias_map.find( arg ) ) != ch->pcdata->alias_map.end() )
+      if( ( al = ch->pcdata->alias_map.find( arg ) ) != ch->pcdata->alias_map.end(  ) )
       {
          ch->pcdata->alias_map.erase( al );
          ch->print( "Deleted Alias.\r\n" );
@@ -2245,73 +1992,47 @@ CMDF( do_alias )
       return;
    }
 
-   if( ( al = ch->pcdata->alias_map.find( arg ) ) == ch->pcdata->alias_map.end() )
-   {
-      ch->pcdata->alias_map[arg] = argument;
+   if( ( al = ch->pcdata->alias_map.find( arg ) ) == ch->pcdata->alias_map.end(  ) )
       ch->print( "Created Alias.\r\n" );
-   }
    else
-   {
-      ch->pcdata->alias_map[arg] = argument;
       ch->print( "Modified Alias.\r\n" );
-   }
+
+   ch->pcdata->alias_map[arg] = argument;
 }
 
-social_type *find_social( string command )
+social_type *find_social( const string & command )
 {
-   social_type *social;
-   int hash;
+   map < string, social_type * >::iterator isoc;
 
-   command[0] = LOWER(command[0]);
-
-   if( command[0] < 'a' || command[0] > 'z' )
-      hash = 0;
-   else
-      hash = ( command[0] - 'a' ) + 1;
-
-   for( social = social_index[hash]; social; social = social->next )
-      if( !str_prefix( command.c_str(), social->name ) )
-         return social;
+   if( ( isoc = social_table.find( command ) ) != social_table.end(  ) )
+      return isoc->second;
 
    return NULL;
 }
 
-social_type::social_type()
+map < string, social_type * >social_table;
+social_type::social_type(  )
 {
-   init_memory( &next, &obj_others, sizeof( obj_others ) );
 }
 
 /*
  * Free a social structure - Thoric
  */
-social_type::~social_type()
+social_type::~social_type(  )
 {
-   DISPOSE( name );
-   DISPOSE( char_no_arg );
-   DISPOSE( others_no_arg );
-   DISPOSE( char_found );
-   DISPOSE( others_found );
-   DISPOSE( vict_found );
-   DISPOSE( char_auto );
-   DISPOSE( others_auto );
-   DISPOSE( obj_self );
-   DISPOSE( obj_others );
 }
 
 void free_socials( void )
 {
-   social_type *social, *social_next;
-   int hash;
+   map < string, social_type * >::iterator isoc;
 
-   for( hash = 0; hash < 27; ++hash )
+   for( isoc = social_table.begin(  ); isoc != social_table.end(  ); ++isoc )
    {
-      for( social = social_index[hash]; social; social = social_next )
-      {
-         social_next = social->next;
-         deleteptr( social );
-      }
+      social_type *soc = isoc->second;
+
+      deleteptr( soc );
    }
-   return;
+   social_table.clear(  );
 }
 
 /*
@@ -2319,34 +2040,13 @@ void free_socials( void )
  */
 void unlink_social( social_type * social )
 {
-   social_type *tmp, *tmp_next;
-   int hash;
-
    if( !social )
    {
       bug( "%s: NULL social", __FUNCTION__ );
       return;
    }
 
-   if( social->name[0] < 'a' || social->name[0] > 'z' )
-      hash = 0;
-   else
-      hash = ( social->name[0] - 'a' ) + 1;
-
-   if( social == ( tmp = social_index[hash] ) )
-   {
-      social_index[hash] = tmp->next;
-      return;
-   }
-   for( ; tmp; tmp = tmp_next )
-   {
-      tmp_next = tmp->next;
-      if( social == tmp_next )
-      {
-         tmp->next = tmp_next->next;
-         return;
-      }
-   }
+   social_table.erase( social->name );
 }
 
 /*
@@ -2355,74 +2055,28 @@ void unlink_social( social_type * social )
  */
 void add_social( social_type * social )
 {
-   int hash, x;
-   social_type *tmp, *prev;
-
    if( !social )
    {
       bug( "%s: NULL social", __FUNCTION__ );
       return;
    }
 
-   if( !social->name )
+   if( social->name.empty(  ) )
    {
       bug( "%s: NULL social->name", __FUNCTION__ );
       return;
    }
 
-   if( !social->char_no_arg )
+   if( social->char_no_arg.empty(  ) )
    {
-      bug( "%s: NULL social->char_no_arg on social %s", __FUNCTION__, social->name );
+      bug( "%s: NULL social->char_no_arg on social %s", __FUNCTION__, social->name.c_str(  ) );
       return;
    }
 
-   /*
-    * make sure the name is all lowercase 
-    */
-   for( x = 0; social->name[x] != '\0'; ++x )
-      social->name[x] = LOWER( social->name[x] );
+   // Force all socials to be lowercase names
+   strlower( social->name );
 
-   if( social->name[0] < 'a' || social->name[0] > 'z' )
-      hash = 0;
-   else
-      hash = ( social->name[0] - 'a' ) + 1;
-
-   if( ( prev = tmp = social_index[hash] ) == NULL )
-   {
-      social->next = social_index[hash];
-      social_index[hash] = social;
-      return;
-   }
-
-   for( ; tmp; tmp = tmp->next )
-   {
-      if( !str_cmp( social->name, tmp->name ) )
-      {
-         bug( "%s: trying to add duplicate name to bucket %d", __FUNCTION__, hash );
-         deleteptr( social );
-         return;
-      }
-      else if( x < 0 )
-      {
-         if( tmp == social_index[hash] )
-         {
-            social->next = social_index[hash];
-            social_index[hash] = social;
-            return;
-         }
-         prev->next = social;
-         social->next = tmp;
-         return;
-      }
-      prev = tmp;
-   }
-
-   /*
-    * add to end 
-    */
-   prev->next = social;
-   social->next = NULL;
-   return;
+   social_table[social->name] = social;
 }
 
 /*
@@ -2430,170 +2084,113 @@ void add_social( social_type * social )
  */
 void save_socials( void )
 {
-   FILE *fpout;
-   social_type *social;
-   int x;
+   ofstream stream;
 
-   if( !( fpout = fopen( SOCIAL_FILE, "w" ) ) )
+   stream.open( SOCIAL_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s", "Cannot open socials.dat for writting" );
       perror( SOCIAL_FILE );
       return;
    }
 
-   for( x = 0; x < 27; ++x )
+   map < string, social_type * >::iterator isoc;
+   for( isoc = social_table.begin(  ); isoc != social_table.end(  ); ++isoc )
    {
-      for( social = social_index[x]; social; social = social->next )
+      social_type *social = isoc->second;
+
+      if( social->name.empty(  ) )
       {
-         if( !social->name || social->name[0] == '\0' )
-         {
-            bug( "%s: blank social in hash bucket %d", __FUNCTION__, x );
-            continue;
-         }
-         fprintf( fpout, "%s", "#SOCIAL\n" );
-         fprintf( fpout, "Name        %s~\n", social->name );
-         if( social->char_no_arg )
-            fprintf( fpout, "CharNoArg   %s~\n", social->char_no_arg );
-         else
-            bug( "%s: NULL char_no_arg in hash bucket %d", __FUNCTION__, x );
-         if( social->others_no_arg )
-            fprintf( fpout, "OthersNoArg %s~\n", social->others_no_arg );
-         if( social->char_found )
-            fprintf( fpout, "CharFound   %s~\n", social->char_found );
-         if( social->others_found )
-            fprintf( fpout, "OthersFound %s~\n", social->others_found );
-         if( social->vict_found )
-            fprintf( fpout, "VictFound   %s~\n", social->vict_found );
-         if( social->char_auto )
-            fprintf( fpout, "CharAuto    %s~\n", social->char_auto );
-         if( social->others_auto )
-            fprintf( fpout, "OthersAuto  %s~\n", social->others_auto );
-         if( social->obj_self )
-            fprintf( fpout, "ObjSelf     %s~\n", social->obj_self );
-         if( social->obj_others )
-            fprintf( fpout, "ObjOthers   %s~\n", social->obj_others );
-         fprintf( fpout, "%s", "End\n\n" );
+         bug( "%s: blank social in social table", __FUNCTION__ );
+         continue;
       }
+
+      stream << "#SOCIAL" << endl;
+      stream << "Name        " << social->name << endl;
+      if( !social->char_no_arg.empty(  ) )
+         stream << "CharNoArg   " << social->char_no_arg << endl;
+      else
+         bug( "%s: NULL char_no_arg in social_table for %s", __FUNCTION__, social->name.c_str(  ) );
+      if( !social->others_no_arg.empty(  ) )
+         stream << "OthersNoArg " << social->others_no_arg << endl;
+      if( !social->char_found.empty(  ) )
+         stream << "CharFound   " << social->char_found << endl;
+      if( !social->others_found.empty(  ) )
+         stream << "OthersFound " << social->others_found << endl;
+      if( !social->vict_found.empty(  ) )
+         stream << "VictFound   " << social->vict_found << endl;
+      if( !social->char_auto.empty(  ) )
+         stream << "CharAuto    " << social->char_auto << endl;
+      if( !social->others_auto.empty(  ) )
+         stream << "OthersAuto  " << social->others_auto << endl;
+      if( !social->obj_self.empty(  ) )
+         stream << "ObjSelf     " << social->obj_self << endl;
+      if( !social->obj_others.empty(  ) )
+         stream << "ObjOthers   " << social->obj_others << endl;
+      stream << "End" << endl << endl;
    }
-   fprintf( fpout, "%s", "#END\n" );
-   FCLOSE( fpout );
-}
-
-void fread_social( FILE * fp )
-{
-   social_type *social = new social_type;
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            KEY( "CharNoArg", social->char_no_arg, fread_string_nohash( fp ) );
-            KEY( "CharFound", social->char_found, fread_string_nohash( fp ) );
-            KEY( "CharAuto", social->char_auto, fread_string_nohash( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( !social->name )
-               {
-                  bug( "%s: Name not found", __FUNCTION__ );
-                  deleteptr( social );
-                  return;
-               }
-               if( !social->char_no_arg )
-               {
-                  bug( "%s: CharNoArg not found", __FUNCTION__ );
-                  deleteptr( social );
-                  return;
-               }
-               add_social( social );
-               return;
-            }
-            break;
-
-         case 'N':
-            KEY( "Name", social->name, fread_string_nohash( fp ) );
-            break;
-
-         case 'O':
-            KEY( "ObjOthers", social->obj_others, fread_string_nohash( fp ) );
-            KEY( "ObjSelf", social->obj_self, fread_string_nohash( fp ) );
-            KEY( "OthersNoArg", social->others_no_arg, fread_string_nohash( fp ) );
-            KEY( "OthersFound", social->others_found, fread_string_nohash( fp ) );
-            KEY( "OthersAuto", social->others_auto, fread_string_nohash( fp ) );
-            break;
-
-         case 'V':
-            KEY( "VictFound", social->vict_found, fread_string_nohash( fp ) );
-            break;
-      }
-   }
+   stream.close(  );
 }
 
 void load_socials( void )
 {
-   FILE *fp;
+   ifstream stream;
+   social_type *social = NULL;
 
-   if( ( fp = fopen( SOCIAL_FILE, "r" ) ) != NULL )
-   {
-      for( ;; )
-      {
-         char letter;
-         char *word;
+   social_table.clear(  );
 
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "SOCIAL" ) )
-         {
-            fread_social( fp );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
-            continue;
-         }
-      }
-      FCLOSE( fp );
-   }
-   else
+   stream.open( SOCIAL_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open socials.dat", __FUNCTION__ );
       exit( 1 );
    }
+
+   do
+   {
+      string line, key, value;
+      char buf[MIL];
+
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_tilde( value );
+      strip_lspace( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#SOCIAL" )
+         social = new social_type;
+      else if( key == "Name" )
+         social->name = value;
+      else if( key == "CharNoArg" )
+         social->char_no_arg = value;
+      else if( key == "OthersNoArg" )
+         social->others_no_arg = value;
+      else if( key == "CharFound" )
+         social->char_found = value;
+      else if( key == "OthersFound" )
+         social->others_found = value;
+      else if( key == "VictFound" )
+         social->vict_found = value;
+      else if( key == "CharAuto" )
+         social->char_auto = value;
+      else if( key == "OthersAuto" )
+         social->others_auto = value;
+      else if( key == "ObjSelf" )
+         social->obj_self = value;
+      else if( key == "ObjOthers" )
+         social->obj_others = value;
+      else if( key == "End" )
+         social_table[social->name] = social;
+      else
+         log_printf( "Bad line in socials file: %s %s", key.c_str(  ), value.c_str(  ) );
+   }
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 /*
@@ -2602,14 +2199,13 @@ void load_socials( void )
 CMDF( do_sedit )
 {
    social_type *social;
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
 
    ch->set_color( AT_SOCIAL );
 
-   smash_tilde( argument );
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Syntax: sedit <social> [field] [data]\r\n" );
       ch->print( "Syntax: sedit <social> create\r\n" );
@@ -2639,8 +2235,8 @@ CMDF( do_sedit )
          return;
       }
       social = new social_type;
-      social->name = str_dup( arg1 );
-      strdup_printf( &social->char_no_arg, "You %s.", arg1 );
+      social->name = arg1;
+      social->char_no_arg = "You " + arg1 + ".";
       add_social( social );
       ch->print( "Social added.\r\n" );
       return;
@@ -2652,21 +2248,20 @@ CMDF( do_sedit )
       return;
    }
 
-   if( !arg2 || arg2[0] == '\0' || !str_cmp( arg2, "show" ) )
+   if( arg2.empty(  ) || !str_cmp( arg2, "show" ) )
    {
-      ch->printf( "Social   : %s\r\n\r\nCNoArg   : %s\r\n", social->name, social->char_no_arg );
+      ch->printf( "Social   : %s\r\n\r\nCNoArg   : %s\r\n", social->name.c_str(  ), social->char_no_arg.c_str(  ) );
       ch->printf( "ONoArg   : %s\r\nCFound   : %s\r\nOFound   : %s\r\n",
-                  social->others_no_arg ? social->others_no_arg : "(not set)",
-                  social->char_found ? social->char_found : "(not set)",
-                  social->others_found ? social->others_found : "(not set)" );
+                  !social->others_no_arg.empty(  )? social->others_no_arg.c_str(  ) : "(not set)",
+                  !social->char_found.empty(  )? social->char_found.c_str(  ) : "(not set)", !social->others_found.empty(  )? social->others_found.c_str(  ) : "(not set)" );
       ch->printf( "VFound   : %s\r\nCAuto    : %s\r\nOAuto    : %s\r\n",
-                  social->vict_found ? social->vict_found : "(not set)",
-                  social->char_auto ? social->char_auto : "(not set)",
-                  social->others_auto ? social->others_auto : "(not set)" );
+                  !social->vict_found.empty(  )? social->vict_found.c_str(  ) : "(not set)",
+                  !social->char_auto.empty(  )? social->char_auto.c_str(  ) : "(not set)", !social->others_auto.empty(  )? social->others_auto.c_str(  ) : "(not set)" );
       ch->printf( "ObjSelf  : %s\r\nObjOthers: %s\r\n",
-                  social->obj_self ? social->obj_self : "(not set)", social->obj_others ? social->obj_others : "(not set)" );
+                  !social->obj_self.empty(  )? social->obj_self.c_str(  ) : "(not set)", !social->obj_others.empty(  )? social->obj_others.c_str(  ) : "(not set)" );
       return;
    }
+
    if( ch->level > LEVEL_GOD && !str_cmp( arg2, "delete" ) )
    {
       unlink_social( social );
@@ -2674,109 +2269,111 @@ CMDF( do_sedit )
       ch->print( "Deleted.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "cnoarg" ) )
    {
-      if( !argument || argument[0] == '\0' || !str_cmp( argument, "clear" ) )
+      if( argument.empty(  ) || !str_cmp( argument, "clear" ) )
       {
          ch->print( "You cannot clear this field. It must have a message.\r\n" );
          return;
       }
-      DISPOSE( social->char_no_arg );
-      social->char_no_arg = str_dup( argument );
+      social->char_no_arg = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "onoarg" ) )
    {
-      DISPOSE( social->others_no_arg );
-      if( argument[0] != '\0' && str_cmp( argument, "clear" ) )
-         social->others_no_arg = str_dup( argument );
+      social->others_no_arg.clear(  );
+      if( !argument.empty(  ) && str_cmp( argument, "clear" ) )
+         social->others_no_arg = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "cfound" ) )
    {
-      DISPOSE( social->char_found );
-      if( argument[0] != '\0' && str_cmp( argument, "clear" ) )
-         social->char_found = str_dup( argument );
+      social->char_found.clear(  );
+      if( !argument.empty(  ) && str_cmp( argument, "clear" ) )
+         social->char_found = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "ofound" ) )
    {
-      DISPOSE( social->others_found );
-      if( argument[0] != '\0' && str_cmp( argument, "clear" ) )
-         social->others_found = str_dup( argument );
+      social->others_found.clear(  );
+      if( !argument.empty(  ) && str_cmp( argument, "clear" ) )
+         social->others_found = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "vfound" ) )
    {
-      DISPOSE( social->vict_found );
-      if( argument[0] != '\0' && str_cmp( argument, "clear" ) )
-         social->vict_found = str_dup( argument );
+      social->vict_found.clear(  );
+      if( !argument.empty(  ) && str_cmp( argument, "clear" ) )
+         social->vict_found = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "cauto" ) )
    {
-      DISPOSE( social->char_auto );
-      if( argument[0] != '\0' && str_cmp( argument, "clear" ) )
-         social->char_auto = str_dup( argument );
+      social->char_auto.clear(  );
+      if( !argument.empty(  ) && str_cmp( argument, "clear" ) )
+         social->char_auto = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "oauto" ) )
    {
-      DISPOSE( social->others_auto );
-      if( argument[0] != '\0' && str_cmp( argument, "clear" ) )
-         social->others_auto = str_dup( argument );
+      social->others_auto.clear(  );
+      if( !argument.empty(  ) && str_cmp( argument, "clear" ) )
+         social->others_auto = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "objself" ) )
    {
-      DISPOSE( social->obj_self );
-      if( argument[0] != '\0' && str_cmp( argument, "clear" ) )
-         social->obj_self = str_dup( argument );
+      social->obj_self.clear(  );
+      if( !argument.empty(  ) && str_cmp( argument, "clear" ) )
+         social->obj_self = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( !str_cmp( arg2, "objothers" ) )
    {
-      DISPOSE( social->obj_others );
-      if( argument[0] != '\0' && str_cmp( argument, "clear" ) )
-         social->obj_others = str_dup( argument );
+      social->obj_others.clear(  );
+      if( !argument.empty(  ) && str_cmp( argument, "clear" ) )
+         social->obj_others = argument;
       ch->print( "Done.\r\n" );
       return;
    }
+
    if( ch->level > LEVEL_GREATER && !str_cmp( arg2, "name" ) )
    {
-      bool relocate;
       social_type *checksocial;
 
       one_argument( argument, arg1 );
-      if( !arg1 || arg1[0] == '\0' )
+      if( arg1.empty(  ) )
       {
          ch->print( "Cannot clear name field!\r\n" );
          return;
       }
+
       if( ( checksocial = find_social( arg1 ) ) != NULL )
       {
-         ch->printf( "There is already a social named %s.\r\n", arg1 );
+         ch->printf( "There is already a social named %s.\r\n", arg1.c_str(  ) );
          return;
       }
-      if( arg1[0] != social->name[0] )
-      {
-         unlink_social( social );
-         relocate = true;
-      }
-      else
-         relocate = false;
-      DISPOSE( social->name );
-      social->name = str_dup( arg1 );
-      if( relocate )
-         add_social( social );
+
+      unlink_social( social );
+      social->name = arg1;
+      add_social( social );
       ch->print( "Done.\r\n" );
       return;
    }
@@ -2791,42 +2388,44 @@ CMDF( do_sedit )
    that calling str_cmp three times within the loop is probably costing us a bit in performance. -- Xorith */
 CMDF( do_socials )
 {
-   int col = 0, iHash = 0, count = 0;
+   int col = 0, count = 0;
    char letter = ' ';
    social_type *social;
    bool sorted = false, all = false;
 
-   if( argument[0] != '\0' && !str_cmp( argument, "sorted" ) )
+   if( !argument.empty(  ) && !str_cmp( argument, "sorted" ) )
       sorted = true;
-   if( argument[0] != '\0' && !str_cmp( argument, "all" ) )
+   if( !argument.empty(  ) && !str_cmp( argument, "all" ) )
       all = true;
 
-   if( argument[0] != '\0' && !( sorted || all ) )
-      ch->pagerf( "&[plain]Socials beginning with '%s':\r\n", argument );
-   else if( argument[0] != '\0' && sorted )
+   if( !argument.empty(  ) && !( sorted || all ) )
+      ch->pagerf( "&[plain]Socials beginning with '%s':\r\n", argument.c_str(  ) );
+   else if( !argument.empty(  ) && sorted )
       ch->pager( "&[plain]Socials -- Tabbed by Letter\r\n" );
    else
       ch->pager( "&[plain]Socials -- All\r\n" );
 
-   for( iHash = 0; iHash < 27; ++iHash )
-      for( social = social_index[iHash]; social; social = social->next )
-      {
-         if( ( argument[0] != '\0' && !( sorted || all ) ) && str_prefix( argument, social->name ) )
-            continue;
+   map < string, social_type * >::iterator isoc;
+   for( isoc = social_table.begin(  ); isoc != social_table.end(  ); ++isoc )
+   {
+      social = isoc->second;
 
-         if( argument[0] != '\0' && sorted && letter != social->name[0] )
-         {
-            letter = social->name[0];
-            if( col % 5 != 0 )
-               ch->pager( "\r\n" );
-            ch->pagerf( "&c[ &[plain]%c &c]\r\n", toupper( letter ) );
-            col = 0;
-         }
-         ch->pagerf( "&[plain]%-15s ", social->name );
-         ++count;
-         if( ++col % 5 == 0 )
+      if( ( !argument.empty(  ) && !( sorted || all ) ) && str_prefix( argument, social->name ) )
+         continue;
+
+      if( !argument.empty(  ) && sorted && letter != social->name[0] )
+      {
+         letter = social->name[0];
+         if( col % 5 != 0 )
             ch->pager( "\r\n" );
+         ch->pagerf( "&c[ &[plain]%c &c]\r\n", toupper( letter ) );
+         col = 0;
       }
+      ch->pagerf( "&[plain]%-15s ", social->name.c_str(  ) );
+      ++count;
+      if( ++col % 5 == 0 )
+         ch->pager( "\r\n" );
+   }
 
    if( col % 5 != 0 )
       ch->pager( "\r\n" );
@@ -2835,6 +2434,4 @@ CMDF( do_socials )
       ch->pagerf( "&[plain]   %d socials found.\r\n", count );
    else
       ch->pager( "&[plain]   No socials found.\r\n" );
-
-   return;
 }

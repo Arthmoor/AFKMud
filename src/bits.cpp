@@ -47,8 +47,8 @@
 #include "bits.h"
 
 /* These are the ends of the linked lists that store the mud's library of valid bits. */
-map<int,string> abits;
-map<int,string> qbits;
+map < int, string > abits;
+map < int, string > qbits;
 
 /* QBITS save, ABITS do not save. There are enough of each to give a range
    of them to builders the same as their vnums. They are identifiable by mobs
@@ -58,16 +58,15 @@ map<int,string> qbits;
 */
 void free_questbits( void )
 {
-   qbits.clear();
-   abits.clear();
-   return;
+   qbits.clear(  );
+   abits.clear(  );
 }
 
 /* Write out the abit and qbit files */
 void save_bits( void )
 {
-   map<int,string> start_bit;
-   map<int,string>::iterator bit;
+   map < int, string > start_bit;
+   map < int, string >::iterator bit;
    ofstream stream;
    char filename[256];
 
@@ -88,15 +87,15 @@ void save_bits( void )
       }
 
       stream.open( filename );
-      if( !stream.is_open() )
+      if( !stream.is_open(  ) )
       {
          bug( "%s: Cannot open bit list %d for writing", __FUNCTION__, mode );
          return;
       }
 
-      for( bit = start_bit.begin(); bit != start_bit.end(); ++bit )
+      for( bit = start_bit.begin(  ); bit != start_bit.end(  ); ++bit )
          stream << bit->first << " " << bit->second << endl;
-      stream.close();
+      stream.close(  );
    }
 }
 
@@ -108,8 +107,8 @@ void load_oldbits( void )
    string desc;
    FILE *fp;
 
-   abits.clear();
-   qbits.clear();
+   abits.clear(  );
+   qbits.clear(  );
 
    snprintf( buf, 256, "%sabit.lst", SYSTEM_DIR );
    if( !( fp = fopen( buf, "r" ) ) )
@@ -191,9 +190,9 @@ void load_abits( void )
 
    snprintf( filename, 256, "%sabits.lst", SYSTEM_DIR );
    stream.open( filename );
-   if( !stream.is_open() )
+   if( !stream.is_open(  ) )
    {
-      log_printf( "%s: Cannot open abit file.", __FUNCTION__ );
+      bug( "%s: Cannot open abit file.", __FUNCTION__ );
       return;
    }
 
@@ -208,8 +207,8 @@ void load_abits( void )
       desc = line;
       abits[number] = desc;
    }
-   while( !stream.eof() );
-   stream.close();
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 void load_qbits( void )
@@ -219,9 +218,9 @@ void load_qbits( void )
 
    snprintf( filename, 256, "%sqbits.lst", SYSTEM_DIR );
    stream.open( filename );
-   if( !stream.is_open() )
+   if( !stream.is_open(  ) )
    {
-      log_printf( "%s: Cannot open qbit file.", __FUNCTION__ );
+      bug( "%s: Cannot open qbit file.", __FUNCTION__ );
       return;
    }
 
@@ -236,81 +235,80 @@ void load_qbits( void )
       desc = line;
       qbits[number] = desc;
    }
-   while( !stream.eof() );
-   stream.close();
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 void load_bits( void )
 {
    char filename[256];
 
-   abits.clear();
-   qbits.clear();
+   abits.clear(  );
+   qbits.clear(  );
 
    snprintf( filename, 256, "%sabit.lst", SYSTEM_DIR );
    if( exists_file( filename ) )
    {
-      load_oldbits();
-      save_bits();
+      load_oldbits(  );
+      save_bits(  );
       return;
    }
 
-   load_abits();
-   load_qbits();
-   return;
+   load_abits(  );
+   load_qbits(  );
 }
 
 /* Add an abit to a character */
-void set_abit( char_data *ch, int number )
+void set_abit( char_data * ch, int number )
 {
-   map<int,string>::iterator bit;
-   map<int,string>::iterator abit;
+   map < int, string >::iterator bit;
+   map < int, string >::iterator abit;
 
    if( number < 0 || number > MAX_xBITS )
       return;
 
-   if( ( bit = abits.find( number ) ) == abits.end() )
+   if( ( bit = abits.find( number ) ) == abits.end(  ) )
       return;
 
-   if( ( abit = ch->abits.find( number ) ) != ch->abits.end() )
+   if( ( abit = ch->abits.find( number ) ) != ch->abits.end(  ) )
       ch->abits[number] = abits[number];
 }
 
 /* Add a qbit to a character */
 void set_qbit( char_data * ch, int number )
 {
-   map<int,string>::iterator bit;
-   map<int,string>::iterator qbit;
+   map < int, string >::iterator bit;
+   map < int, string >::iterator qbit;
 
    if( number < 0 || number > MAX_xBITS )
       return;
 
-   if( ( bit = qbits.find( number ) ) == qbits.end() )
+   if( ( bit = qbits.find( number ) ) == qbits.end(  ) )
       return;
 
-   if( ( qbit = ch->pcdata->qbits.find( number ) ) == ch->pcdata->qbits.end() )
+   if( ( qbit = ch->pcdata->qbits.find( number ) ) == ch->pcdata->qbits.end(  ) )
       ch->pcdata->qbits[number] = qbits[number];
 }
 
 /* Take an abit off a character */
-void remove_abit( char_data *ch, int number )
+void remove_abit( char_data * ch, int number )
 {
-   map<int,string>::iterator bit;
+   map < int, string >::iterator bit;
 
    if( number < 0 || number > MAX_xBITS )
       return;
 
-   if( ch->abits.empty() )
+   if( ch->abits.empty(  ) )
       return;
 
-   if( ( bit = ch->abits.find( number ) ) != ch->abits.end() )
+   if( ( bit = ch->abits.find( number ) ) != ch->abits.end(  ) )
       ch->abits.erase( bit );
 }
 
 /* Take a qbit off a character */
 void remove_qbit( char_data * ch, int number )
 {
-   map<int,string>::iterator bit;
+   map < int, string >::iterator bit;
 
    if( ch->isnpc(  ) )
       return;
@@ -318,10 +316,10 @@ void remove_qbit( char_data * ch, int number )
    if( number < 0 || number > MAX_xBITS )
       return;
 
-   if( ch->pcdata->qbits.empty() )
+   if( ch->pcdata->qbits.empty(  ) )
       return;
 
-   if( ( bit = ch->pcdata->qbits.find( number ) ) != ch->pcdata->qbits.end() )
+   if( ( bit = ch->pcdata->qbits.find( number ) ) != ch->pcdata->qbits.end(  ) )
       ch->pcdata->qbits.erase( bit );
 }
 
@@ -329,9 +327,9 @@ void remove_qbit( char_data * ch, int number )
 CMDF( do_showabit )
 {
    int number;
-   map<int,string>::iterator bit;
+   map < int, string >::iterator bit;
 
-   if( abits.empty() )
+   if( abits.empty(  ) )
    {
       ch->print( "There are no Abits defined.\r\n" );
       return;
@@ -339,33 +337,32 @@ CMDF( do_showabit )
 
    if( !str_cmp( argument, "all" ) )
    {
-      for( bit = abits.begin(); bit != abits.end(); ++bit )
-         ch->printf( "&RABIT: &Y%d &G%s\r\n", bit->first, bit->second.c_str() );
+      for( bit = abits.begin(  ); bit != abits.end(  ); ++bit )
+         ch->printf( "&RABIT: &Y%d &G%s\r\n", bit->first, bit->second.c_str(  ) );
       return;
    }
 
-   number = atoi( argument );
+   number = atoi( argument.c_str(  ) );
 
    if( number < 0 || number > MAX_xBITS )
       return;
 
-   if( ( bit = abits.find( number ) ) != abits.end() )
+   if( ( bit = abits.find( number ) ) != abits.end(  ) )
    {
       ch->printf( "&RABIT: &Y%d\r\n", bit->first );
-      ch->printf( "&G%s\r\n", bit->second.c_str() );
+      ch->printf( "&G%s\r\n", bit->second.c_str(  ) );
       return;
    }
    ch->print( "That abit does not exist.\r\n" );
-   return;
 }
 
 /* Show a qbit from the mud's linked list or all of them if 'all' is the argument */
 CMDF( do_showqbit )
 {
    int number;
-   map<int,string>::iterator bit;
+   map < int, string >::iterator bit;
 
-   if( qbits.empty() )
+   if( qbits.empty(  ) )
    {
       ch->print( "There are no Qbits defined.\r\n" );
       return;
@@ -373,37 +370,36 @@ CMDF( do_showqbit )
 
    if( !str_cmp( argument, "all" ) )
    {
-      for( bit = qbits.begin(); bit != qbits.end(); ++bit )
-         ch->printf( "&RQBIT: &Y%d &G%s\r\n", bit->first, bit->second.c_str() );
+      for( bit = qbits.begin(  ); bit != qbits.end(  ); ++bit )
+         ch->printf( "&RQBIT: &Y%d &G%s\r\n", bit->first, bit->second.c_str(  ) );
       return;
    }
 
-   number = atoi( argument );
+   number = atoi( argument.c_str(  ) );
 
    if( number < 0 || number > MAX_xBITS )
       return;
 
-   if( ( bit = qbits.find( number ) ) != qbits.end() )
+   if( ( bit = qbits.find( number ) ) != qbits.end(  ) )
    {
       ch->printf( "&RQBIT: &Y%d\r\n", bit->first );
-      ch->printf( "&G %s\r\n", bit->second.c_str() );
+      ch->printf( "&G %s\r\n", bit->second.c_str(  ) );
       return;
    }
    ch->print( "That qbit does not exist.\r\n" );
-   return;
 }
 
 /* setabit <number> <desc> */
 /* Set the description for a particular abit */
 CMDF( do_setabit )
 {
-   map<int,string>::iterator bit;
+   map < int, string >::iterator bit;
    int number;
-   char arg[MIL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "You must supply a bit number!\r\n" );
       return;
@@ -414,15 +410,15 @@ CMDF( do_setabit )
       ch->print( "You must specify a numerical bit value.\r\n" );
       return;
    }
-   number = atoi( arg );
+   number = atoi( arg.c_str(  ) );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You must supply a description, or \"delete\" if you wish to delete.\r\n" );
       return;
    }
 
-   mudstrlcpy( arg, argument, MIL );
+   arg = argument;
 
    if( number < 0 || number > MAX_xBITS )
    {
@@ -430,14 +426,14 @@ CMDF( do_setabit )
       return;
    }
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Syntax: setabit <number> <description>\r\n" );
       ch->print( "Syntax: setabit <number> delete\r\n" );
       return;
    }
 
-   if( ( bit = abits.find( number ) ) != abits.end() )
+   if( ( bit = abits.find( number ) ) != abits.end(  ) )
    {
       if( !str_cmp( arg, "delete" ) )
       {
@@ -446,12 +442,12 @@ CMDF( do_setabit )
          return;
       }
       abits[number] = arg;
-      ch->printf( "Description for abit %d set to '%s'.\r\n", number, arg );
+      ch->printf( "Description for abit %d set to '%s'.\r\n", number, arg.c_str(  ) );
       return;
    }
    abits[number] = arg;
    ch->printf( "Abit %d created.\r\n", number );
-   ch->printf( "Description for abit %d set to '%s'.\r\n", number, arg );
+   ch->printf( "Description for abit %d set to '%s'.\r\n", number, arg.c_str(  ) );
    save_bits(  );
 }
 
@@ -459,13 +455,13 @@ CMDF( do_setabit )
 /* Set the description for a particular qbit */
 CMDF( do_setqbit )
 {
-   map<int,string>::iterator bit;
+   map < int, string >::iterator bit;
    int number;
-   char arg[MIL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "You must supply a bit number!\r\n" );
       return;
@@ -476,15 +472,15 @@ CMDF( do_setqbit )
       ch->print( "You must specify a numerical bit value.\r\n" );
       return;
    }
-   number = atoi( arg );
+   number = atoi( arg.c_str(  ) );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You must supply a description, or \"delete\" if you wish to delete.\r\n" );
       return;
    }
 
-   mudstrlcpy( arg, argument, MIL );
+   arg = argument;
 
    if( number < 0 || number > MAX_xBITS )
    {
@@ -492,14 +488,14 @@ CMDF( do_setqbit )
       return;
    }
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Syntax: setqbit <number> <description>\r\n" );
       ch->print( "Syntax: setqbit <number> delete\r\n" );
       return;
    }
 
-   if( ( bit = qbits.find( number ) ) != qbits.end() )
+   if( ( bit = qbits.find( number ) ) != qbits.end(  ) )
    {
       if( !str_cmp( arg, "delete" ) )
       {
@@ -508,24 +504,24 @@ CMDF( do_setqbit )
          return;
       }
       qbits[number] = arg;
-      ch->printf( "Description for qbit %d set to '%s'.\r\n", number, arg );
+      ch->printf( "Description for qbit %d set to '%s'.\r\n", number, arg.c_str(  ) );
       return;
    }
    qbits[number] = arg;
    ch->printf( "Qbit %d created.\r\n", number );
-   ch->printf( "Description for qbit %d set to '%s'.\r\n", number, arg );
+   ch->printf( "Description for qbit %d set to '%s'.\r\n", number, arg.c_str(  ) );
    save_bits(  );
 }
 
 /* Imm command to toggle an abit on a character or to list the abits already on a character */
 CMDF( do_abit )
 {
-   char buf[MIL];
+   string buf;
    char_data *victim;
 
    argument = one_argument( argument, buf );
 
-   if( !buf || buf[0] == '\0' )
+   if( buf.empty(  ) )
    {
       ch->print( "Whose bits do you want to examine?\r\n" );
       return;
@@ -539,11 +535,11 @@ CMDF( do_abit )
 
    argument = one_argument( argument, buf );
 
-   if( !buf || buf[0] == '\0' )
+   if( buf.empty(  ) )
    {
-      map<int,string>::iterator bit;
+      map < int, string >::iterator bit;
 
-      if( victim->abits.empty() )
+      if( victim->abits.empty(  ) )
       {
          ch->print( "They have no abits set on them.\r\n" );
          return;
@@ -551,14 +547,14 @@ CMDF( do_abit )
 
       ch->printf( "&RABITS for %s:\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
 
-      for( bit = victim->abits.begin(); bit != victim->abits.end(); ++bit )
-         ch->printf( "&Y%4.4d: &G%s\r\n", bit->first, bit->second.c_str() );
+      for( bit = victim->abits.begin(  ); bit != victim->abits.end(  ); ++bit )
+         ch->printf( "&Y%4.4d: &G%s\r\n", bit->first, bit->second.c_str(  ) );
    }
    else
    {
       int abit;
 
-      abit = atoi( buf );
+      abit = atoi( buf.c_str(  ) );
 
       if( abit < 0 || abit > MAX_xBITS )
       {
@@ -566,14 +562,14 @@ CMDF( do_abit )
          return;
       }
 
-      if( victim->abits.find( abit ) != victim->abits.end() )
+      if( victim->abits.find( abit ) != victim->abits.end(  ) )
       {
          remove_abit( victim, abit );
          ch->printf( "Removed abit %d from %s.\r\n", abit, victim->isnpc(  )? victim->short_descr : victim->name );
       }
       else
       {
-         if( abits.find( abit ) == abits.end() )
+         if( abits.find( abit ) == abits.end(  ) )
          {
             ch->printf( "Abit %d is not a valid number.\r\n", abit );
             return;
@@ -588,11 +584,11 @@ CMDF( do_abit )
 CMDF( do_qbit )
 {
    char_data *victim;
-   char buf[MIL];
+   string buf;
 
    argument = one_argument( argument, buf );
 
-   if( !buf || buf[0] == '\0' )
+   if( buf.empty(  ) )
    {
       ch->print( "Whose bits do you want to examine?\r\n" );
       return;
@@ -612,11 +608,11 @@ CMDF( do_qbit )
 
    argument = one_argument( argument, buf );
 
-   if( !buf || buf[0] == '\0' )
+   if( buf.empty(  ) )
    {
-      map<int,string>::iterator bit;
+      map < int, string >::iterator bit;
 
-      if( victim->pcdata->qbits.empty() )
+      if( victim->pcdata->qbits.empty(  ) )
       {
          ch->print( "They do not have any qbits.\r\n" );
          return;
@@ -624,14 +620,14 @@ CMDF( do_qbit )
 
       ch->printf( "&RQBITS for %s:\r\n", victim->name );
 
-      for( bit = victim->pcdata->qbits.begin(); bit != victim->pcdata->qbits.end(); ++bit )
-         ch->printf( "&Y%4.4d: &G%s\r\n", bit->first, bit->second.c_str() );
+      for( bit = victim->pcdata->qbits.begin(  ); bit != victim->pcdata->qbits.end(  ); ++bit )
+         ch->printf( "&Y%4.4d: &G%s\r\n", bit->first, bit->second.c_str(  ) );
    }
    else
    {
       int qbit;
 
-      qbit = atoi( buf );
+      qbit = atoi( buf.c_str(  ) );
 
       if( qbit < 0 || qbit > MAX_xBITS )
       {
@@ -639,14 +635,14 @@ CMDF( do_qbit )
          return;
       }
 
-      if( victim->pcdata->qbits.find( qbit ) != victim->pcdata->qbits.end() )
+      if( victim->pcdata->qbits.find( qbit ) != victim->pcdata->qbits.end(  ) )
       {
          remove_qbit( victim, qbit );
          ch->printf( "Removed qbit %d from %s.\r\n", qbit, victim->name );
       }
       else
       {
-         if( qbits.find( qbit ) == qbits.end() )
+         if( qbits.find( qbit ) == qbits.end(  ) )
          {
             ch->printf( "Qbit %d is not a valid number.\r\n", qbit );
             return;
@@ -665,7 +661,7 @@ CMDF( do_qbit )
  */
 CMDF( do_mpaset )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    char_data *victim;
    int number;
 
@@ -678,13 +674,13 @@ CMDF( do_mpaset )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mpaset: missing victim" );
       return;
    }
 
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       progbugf( ch, "%s", "Mpaset: missing bit" );
       return;
@@ -692,16 +688,16 @@ CMDF( do_mpaset )
 
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "Mpaset: victim %s not in room", arg1 );
+      progbugf( ch, "Mpaset: victim %s not in room", arg1.c_str(  ) );
       return;
    }
 
-   number = atoi( arg2 );
-   if( victim->abits.find( number ) != victim->abits.end() )
+   number = atoi( arg2.c_str(  ) );
+   if( victim->abits.find( number ) != victim->abits.end(  ) )
       remove_abit( victim, number );
    else
    {
-      if( abits.find( number ) == abits.end() )
+      if( abits.find( number ) == abits.end(  ) )
          return;
       set_abit( victim, number );
    }
@@ -714,7 +710,7 @@ CMDF( do_mpaset )
  */
 CMDF( do_mpqset )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    char_data *victim;
    int number;
 
@@ -727,13 +723,13 @@ CMDF( do_mpqset )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mpqset: missing victim" );
       return;
    }
 
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       progbugf( ch, "%s", "Mpqset: missing bit" );
       return;
@@ -741,7 +737,7 @@ CMDF( do_mpqset )
 
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mpqset: victim %s not in game", arg1 );
+      progbugf( ch, "Mpqset: victim %s not in game", arg1.c_str(  ) );
       return;
    }
 
@@ -751,12 +747,12 @@ CMDF( do_mpqset )
       return;
    }
 
-   number = atoi( arg2 );
-   if( victim->pcdata->qbits.find( number ) != victim->pcdata->qbits.end() )
+   number = atoi( arg2.c_str(  ) );
+   if( victim->pcdata->qbits.find( number ) != victim->pcdata->qbits.end(  ) )
       remove_qbit( victim, number );
    else
    {
-      if( qbits.find( number ) == qbits.end() )
+      if( qbits.find( number ) == qbits.end(  ) )
          return;
       set_qbit( victim, number );
    }

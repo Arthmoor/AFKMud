@@ -49,16 +49,16 @@ extern obj_data *supermob_obj;
 #define HAS_PROG( what, prog ) (what)->progtypes.test((prog))
 
 /* Ifstate defines, used to create and access ifstate array in mprog_driver. */
-const int MAX_IFS = 20;  /* should always be generous */
-const int IN_IF   = 0;
+const int MAX_IFS = 20; /* should always be generous */
+const int IN_IF = 0;
 const int IN_ELSE = 1;
-const int DO_IF   = 2;
+const int DO_IF = 2;
 const int DO_ELSE = 3;
 
 const int MAX_PROG_NEST = 20;
 
 void oprog_greet_trigger( char_data * );
-void oprog_speech_trigger( char *, char_data * );
+void oprog_speech_trigger( const string &, char_data * );
 void oprog_random_trigger( obj_data * );
 void oprog_month_trigger( obj_data * );
 void oprog_remove_trigger( char_data *, obj_data * );
@@ -71,47 +71,52 @@ void oprog_examine_trigger( char_data *, obj_data * );
 void oprog_zap_trigger( char_data *, obj_data * );
 void oprog_pull_trigger( char_data *, obj_data * );
 void oprog_push_trigger( char_data *, obj_data * );
-void oprog_and_speech_trigger( char *, char_data * );
+void oprog_and_speech_trigger( const string &, char_data * );
 void oprog_wear_trigger( char_data *, obj_data * );
-bool oprog_use_trigger( char_data *, obj_data *,  char_data *, obj_data * );
-void oprog_act_trigger( char *, obj_data *, char_data *, obj_data *, void * );
-void rprog_act_trigger( char *, room_index *, char_data *, obj_data *, void * );
+bool oprog_use_trigger( char_data *, obj_data *, char_data *, obj_data * );
+void oprog_act_trigger( const string &, obj_data *, char_data *, obj_data *, char_data *, obj_data * );
+void rprog_act_trigger( const string &, room_index *, char_data *, obj_data *, char_data *, obj_data * );
 void rprog_leave_trigger( char_data * );
 void rprog_enter_trigger( char_data * );
 void rprog_sleep_trigger( char_data * );
 void rprog_rest_trigger( char_data * );
 void rprog_rfight_trigger( char_data * );
 void rprog_death_trigger( char_data * );
-void rprog_speech_trigger( char *, char_data * );
+void rprog_speech_trigger( const string &, char_data * );
 void rprog_random_trigger( char_data * );
 void rprog_time_trigger( char_data * );
 void rprog_month_trigger( char_data * );
 void rprog_hour_trigger( char_data * );
-void rprog_and_speech_trigger( char *, char_data * );
+void rprog_and_speech_trigger( const string &, char_data * );
 void mprog_hitprcnt_trigger( char_data *, char_data * );
 void mprog_fight_trigger( char_data *, char_data * );
 void mprog_death_trigger( char_data *, char_data * );
-bool mprog_keyword_trigger( char *, char_data * );
+bool mprog_keyword_trigger( const string &, char_data * );
 void mprog_bribe_trigger( char_data *, char_data *, int );
 void mprog_give_trigger( char_data *, char_data *, obj_data * );
-void mprog_wordlist_check( char *, char_data *, char_data *, obj_data *, void *, int );
-void mprog_act_trigger( char *, char_data *, char_data *, obj_data *, void * );
+bool mprog_wordlist_check( const string &, char_data *, char_data *, obj_data *, char_data *, obj_data *, int );
+void mprog_act_trigger( const string &, char_data *, char_data *, obj_data *, char_data *, obj_data * );
 void mprog_random_trigger( char_data * );
 void mprog_script_trigger( char_data * );
 void mprog_hour_trigger( char_data * );
 void mprog_time_trigger( char_data * );
 void mprog_month_trigger( char_data * );
-int mprog_name_to_type( const char * );
+void mprog_targetted_speech_trigger( const string &, char_data *, char_data * );
+void mprog_speech_trigger( const string &, char_data * );
+void mprog_and_speech_trigger( const string &, char_data * );
+void mprog_tell_trigger( const string &, char_data * );
+void mprog_and_tell_trigger( const string &, char_data * );
+int mprog_name_to_type( const string & );
 
 /* mud prog defines */
-const int ERROR_PROG   = -1;
+const int ERROR_PROG = -1;
 const int IN_FILE_PROG = -2;
 
 /*
  * For backwards compatability
  */
 const int RDEATH_PROG = DEATH_PROG;
-const int ENTER_PROG  = ENTRY_PROG;
+const int ENTER_PROG = ENTRY_PROG;
 const int RFIGHT_PROG = FIGHT_PROG;
 const int RGREET_PROG = GREET_PROG;
 const int OGREET_PROG = GREET_PROG;
@@ -120,28 +125,29 @@ const int OGREET_PROG = GREET_PROG;
 class mprog_act_list
 {
  private:
-   mprog_act_list( const mprog_act_list& m );
-   mprog_act_list& operator=( const mprog_act_list& );
+   mprog_act_list( const mprog_act_list & m );
+     mprog_act_list & operator=( const mprog_act_list & );
 
  public:
-   mprog_act_list();
-   ~mprog_act_list();
+     mprog_act_list(  );
+    ~mprog_act_list(  );
 
+   string buf;
    char_data *ch;
    obj_data *obj;
-   void *vo;
-   char *buf;
+   char_data *victim;
+   obj_data *target;
 };
 
 struct mud_prog_data
 {
  private:
-   mud_prog_data( const mud_prog_data& m );
-   mud_prog_data& operator=( const mud_prog_data& );
+   mud_prog_data( const mud_prog_data & m );
+     mud_prog_data & operator=( const mud_prog_data & );
 
  public:
-   mud_prog_data();
-   ~mud_prog_data();
+     mud_prog_data(  );
+    ~mud_prog_data(  );
 
    char *arglist;
    char *comlist;
@@ -151,7 +157,7 @@ struct mud_prog_data
    bool fileprog;
 };
 
-template< class N > void fread_afk_mudprog( FILE *fp, mud_prog_data *mprg, N *prog_target )
+template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N * prog_target )
 {
    for( ;; )
    {
@@ -166,7 +172,7 @@ template< class N > void fread_afk_mudprog( FILE *fp, mud_prog_data *mprg, N *pr
       if( !str_cmp( word, "#ENDPROG" ) )
          return;
 
-      switch( word[0] )
+      switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
@@ -179,7 +185,7 @@ template< class N > void fread_afk_mudprog( FILE *fp, mud_prog_data *mprg, N *pr
                mprg->arglist = fread_string( fp );
                mprg->fileprog = false;
 
-               switch( mprg->type )
+               switch ( mprg->type )
                {
                   case IN_FILE_PROG:
                      mprog_file_read( prog_target, mprg->arglist );
@@ -207,7 +213,7 @@ template< class N > void fread_afk_mudprog( FILE *fp, mud_prog_data *mprg, N *pr
    }
 }
 
-template< class N > void mprog_file_read( N *prog_target, char *f )
+template < class N > void mprog_file_read( N * prog_target, const char *f )
 {
    mud_prog_data *mprg = NULL;
    char MUDProgfile[256];
@@ -264,7 +270,7 @@ template< class N > void mprog_file_read( N *prog_target, char *f )
                break;
             }
 
-            switch( word[0] )
+            switch ( word[0] )
             {
                default:
                   log_printf( "%s: no match: %s", __FUNCTION__, word );
@@ -277,7 +283,7 @@ template< class N > void mprog_file_read( N *prog_target, char *f )
                      mprg->arglist = fread_string( progfile );
                      mprg->fileprog = false;
 
-                     switch( mprg->type )
+                     switch ( mprg->type )
                      {
                         case IN_FILE_PROG:
                            bug( "%s: Nested file programs are not allowed.", __FUNCTION__ );
@@ -307,10 +313,9 @@ template< class N > void mprog_file_read( N *prog_target, char *f )
       }
    }
    FCLOSE( progfile );
-   return;
 }
 
-extern list<room_index*> room_act_list;
-extern list<obj_data*> obj_act_list;
-extern list<char_data*> mob_act_list;
+extern list < room_index * >room_act_list;
+extern list < obj_data * >obj_act_list;
+extern list < char_data * >mob_act_list;
 #endif

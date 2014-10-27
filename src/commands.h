@@ -44,19 +44,18 @@ enum command_flags
 class cmd_type
 {
  private:
-   cmd_type( const cmd_type& c );
-   cmd_type& operator=( const cmd_type& );
+   cmd_type( const cmd_type & c );
+     cmd_type & operator=( const cmd_type & );
 
  public:
-   cmd_type();
-   ~cmd_type();
+     cmd_type(  );
+    ~cmd_type(  );
 
-   cmd_type *next;
+   string name;
+   string fun_name;  /* Added to hold the func name and dump some functions totally - Trax */
    void *fileHandle;
    DO_FUN *do_fun;
      bitset < MAX_CMD_FLAG > flags; /* Added for Checking interpret stuff -Shaddai */
-   char *name;
-   char *fun_name;   /* Added to hold the func name and dump some functions totally - Trax */
    short position;
    short level;
    short log;
@@ -68,37 +67,34 @@ class cmd_type
 class social_type
 {
  private:
-   social_type( const social_type& s );
-   social_type& operator=( const social_type& );
+   social_type( const social_type & s );
+     social_type & operator=( const social_type & );
 
  public:
-   social_type();
-   ~social_type();
+     social_type(  );
+    ~social_type(  );
 
-   social_type *next;
-   char *name;
-   char *char_no_arg;
-   char *others_no_arg;
-   char *char_found;
-   char *others_found;
-   char *vict_found;
-   char *char_auto;
-   char *others_auto;
-   char *obj_self;
-   char *obj_others;
+   string name;
+   string char_no_arg;
+   string others_no_arg;
+   string char_found;
+   string others_found;
+   string vict_found;
+   string char_auto;
+   string others_auto;
+   string obj_self;
+   string obj_others;
 };
 
 /*
  * Cmd flag names --Shaddai
  */
-extern char *const cmd_flags[];
-extern cmd_type *command_hash[126];
-extern social_type *social_index[27];
+extern const char *cmd_flags[];
+extern vector < vector <cmd_type *> >command_table;
+extern map < string, social_type * >social_table;
 
-extern char *const cmd_flags[];
-
-cmd_type *find_command( string );
-social_type *find_social( string );
-int get_cmdflag( char * );
+cmd_type *find_command( const string & );
+social_type *find_social( const string & );
+int get_cmdflag( const string & );
 
 #endif

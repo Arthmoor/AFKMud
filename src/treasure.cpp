@@ -41,9 +41,9 @@
 int ncommon, nrare, nurare;
 extern int top_affect;
 
-list<rune_data*> runelist;
-list<runeword_data*> rwordlist;
-vector<weapontable*> w_table;
+list < rune_data * >runelist;
+list < runeword_data * >rwordlist;
+vector < weapontable * >w_table;
 
 /* AGH! *BONK BONK BONK* Why didn't any of us think of THIS before!? So much NICER!
  * This table is also used in generating weapons.
@@ -51,11 +51,11 @@ vector<weapontable*> w_table;
  */
 const struct armorgenM materials[] = {
 
-    // Material   Material Name   Weight Mod   AC Mod   WD Mod   Cost Mod   Minlevel   Maxlevel
+   // Material   Material Name   Weight Mod   AC Mod   WD Mod   Cost Mod   Minlevel   Maxlevel
 
    {0, "Not Defined", 0, 0, 0, 0, 0, 0},
    {1, "Iron ", 1.25, 0, 0, 0.9, 1, 20},
-   {2, "Steel ", 1, 0, 0, 1, 5, 50}, /* Steel is the baseline value */
+   {2, "Steel ", 1, 0, 0, 1, 5, 50},   /* Steel is the baseline value */
    {3, "Bronze ", 1, -1, -1, 1.1, 1, 25},
    {4, "Dwarven Steel ", 1, 0, 1, 1.4, 10, 50},
    {5, "Silver ", 1, -2, -2, 2, 15, 80},
@@ -66,7 +66,7 @@ const struct armorgenM materials[] = {
    {10, "Adamantine ", 0.5, 4, 2, 7, 40, 100},
    {11, "Blackmite ", 1.2, 5, 3, 7, 60, 100},
    {12, "Stone ", 3, 3, -1, 2, 1, 20},
-   {13, "", 1, 0, 0, 1, 1, 100} // Generic non-descript material, should always be the last one in the table
+   {13, "", 1, 0, 0, 1, 1, 100}  // Generic non-descript material, should always be the last one in the table
 };
 
 /* If you edit this table, adjust TATP_MAX in treasure.h by the number of entries you add/remove. */
@@ -96,7 +96,7 @@ const struct armorgenT armor_type[] = {
 /* If you edit this table, adjust TWTP_MAX in treasure.h by the number of entries you add/remove. */
 const struct weaponT weapon_type[] = {
 
-    // Type   Name   Base damage   Weight   Cost   Skill   Damage Type   Flags
+   // Type   Name   Base damage   Weight   Cost   Skill   Damage Type   Flags
 
    {0, "Not Defined", 0, 0, 0, 0, 0, "brittle"},
    {1, "Dagger", 4, 4, 200, WEP_DAGGER, DAM_PIERCE, "anticleric antimonk metal"},
@@ -117,55 +117,55 @@ const struct weaponT weapon_type[] = {
 };
 
 /* Adjust TQUAL_MAX in treasure.h when editing this table */
-char *const weapon_quality[] = {
+const char *weapon_quality[] = {
    "Not Defined", "Average", "Good", "Superb", "Legendary"
 };
 
-char *const rarity[] = {
+const char *rarity[] = {
    "Common", "Rare", "Ultrarare"
 };
 
-char *const gems1[12] = {
+const char *gems1[12] = {
    "Banded Agate", "Eye Agate", "Moss Agate", "Azurite", "Blue Quartz", "Hematite",
    "Lapus Lazuli", "Malachite", "Obsidian", "Rhodochrosite", "Tiger Eye", "Freshwater Pearl"
 };
 
-char *const gems2[16] = {
+const char *gems2[16] = {
    "Bloodstone", "Carnelian", "Chalcedony", "Chrysoprase", "Citrine", "Iolite", "Jasper",
    "Moonstone", "Peridot", "Quartz", "Sadonyx", "Rose Quartz", "Smokey Quartz", "Star Rose Quartz",
    "Zircon", "Black Zircon"
 };
 
-char *const gems3[16] = {
+const char *gems3[16] = {
    "Amber", "Amethyst", "Chrysoberyl", "Coral", "Red Garnet", "Brown-Green Garnet", "Jade", "Jet",
    "White Pearl", "Golden Pearl", "Pink Pearl", "Silver Pearl", "Red Spinel", "Red-Brown Spinel",
    "Deep Green Spinel", "Tourmaline"
 };
 
-char *const gems4[6] = {
+const char *gems4[6] = {
    "Alexandrite", "Aquamarine", "Violet Garnet", "Black Pearl", "Deep Blue Spinel", "Golden Yellow Topaz"
 };
 
-char *const gems5[7] = {
+const char *gems5[7] = {
    "Emerald", "White Opal", "Black Opal", "Fire Opal", "Blue Sapphire", "Tomb Jade", "Water Opal"
 };
 
-char *const gems6[11] = {
+const char *gems6[11] = {
    "Bright Green Emerald", "Blue-White Diamond", "Pink Diamond", "Brown Diamond", "Blue Diamond",
    "Jacinth", "Black Sapphire", "Ruby", "Star Ruby", "Blue Star Sapphire", "Black Star Sapphire"
 };
 
-weapontable::weapontable()
+weapontable::weapontable(  )
 {
-   init_memory( &flags, &damage, sizeof( damage ) );
+   init_memory( &name, &damtype, sizeof( damtype ) );
 }
 
-void save_weapontable()
+void save_weapontable(  )
 {
    ofstream stream;
 
    stream.open( WTYPE_FILE );
-   if( !stream.is_open() )
+   if( !stream.is_open(  ) )
    {
       log_string( "Couldn't write to weapontypes file." );
       return;
@@ -173,21 +173,29 @@ void save_weapontable()
 
    for( int x = 0; x < TWTP_MAX; ++x )
    {
-      stream << weapon_type[x].type << " " << weapon_type[x].name << " " << weapon_type[x].wd << " " << weapon_type[x].weight << " "
-         << weapon_type[x].cost << " " << weapon_type[x].skill << " " << weapon_type[x].damage << " " << weapon_type[x].flags << endl;
+      stream << "#WTYPE" << endl;
+      stream << "Type    " << weapon_type[x].type << endl;
+      stream << "Name    " << weapon_type[x].name << endl;
+      stream << "BaseDam " << weapon_type[x].wd << endl;
+      stream << "Weight  " << weapon_type[x].weight << endl;
+      stream << "Cost    " << weapon_type[x].cost << endl;
+      stream << "Skill   " << weapon_type[x].skill << endl;
+      stream << "DamType " << weapon_type[x].damage << endl;
+      stream << "Flags   " << weapon_type[x].flags << endl;
+      stream << "End" << endl << endl;
    }
-   stream.close();
+   stream.close(  );
 }
 
-void load_weapontable()
+void load_weapontable(  )
 {
    ifstream stream;
    weapontable *wt;
 
-   w_table.clear();
+   w_table.clear(  );
 
    stream.open( WTYPE_FILE );
-   if( !stream.is_open() )
+   if( !stream.is_open(  ) )
    {
       log_string( "Couldn't read from weapontypes file." );
       return;
@@ -196,101 +204,106 @@ void load_weapontable()
    do
    {
       string key, value;
-      char buf[MSL];
+      char buf[MIL];
 
       stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( value );
       strip_lspace( key );
 
-      stream.getline( buf, MSL );
-      value = buf;
-      strip_lspace( value );
+      if( key.empty(  ) )
+         continue;
 
       if( key == "#WTYPE" )
          wt = new weapontable;
       else if( key == "Type" )
-         wt->type = atoi( value.c_str() );
+         wt->type = atoi( value.c_str(  ) );
       else if( key == "Name" )
-         wt->name = STRALLOC( value.c_str() );
-      else if( key == "WD" )
-         wt->wd = atoi( value.c_str() );
+         wt->name = STRALLOC( value.c_str(  ) );
+      else if( key == "BaseDam" )
+         wt->basedam = atoi( value.c_str(  ) );
       else if( key == "Weight" )
-         wt->weight = atoi( value.c_str() );
+         wt->weight = atoi( value.c_str(  ) );
       else if( key == "Cost" )
-         wt->cost = atoi( value.c_str() );
+         wt->cost = atoi( value.c_str(  ) );
       else if( key == "Skill" )
-         wt->skill = atoi( value.c_str() );
-      else if( key == "Damage" )
-         wt->damage = atoi( value.c_str() );
+         wt->skill = atoi( value.c_str(  ) );
+      else if( key == "DamType" )
+         wt->damtype = atoi( value.c_str(  ) );
       else if( key == "Flags" )
-         wt->flags = STRALLOC( value.c_str() );
+         wt->flags = STRALLOC( value.c_str(  ) );
       else if( key == "End" )
          w_table.push_back( wt );
+      else
+         log_printf( "%s: Bad line in weapon types file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
    }
-   while( !stream.eof() );
-   stream.close();
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 CMDF( do_wtsave )
 {
-   save_weapontable();
+   save_weapontable(  );
    ch->print( "Done.\r\n" );
 }
 
 CMDF( do_wtload )
 {
-   load_weapontable();
-   for( size_t x = 0; x < w_table.size(); ++x )
+   load_weapontable(  );
+
+   for( size_t x = 0; x < w_table.size(  ); ++x )
    {
       weapontable *w = w_table[x];
 
-      ch->printf( "Type %d, Name %s, WD %d, Weight %f, Cost %f, Skill %d, Damage %d, Flags %s\r\n",
-         w->type, w->name, w->wd, w->weight, w->cost, w->skill, w->damage, w->flags );
+      ch->printf( "Type %d, Name %s, BaseDam %d, Weight %f, Cost %f, Skill %d, DamType %d, Flags %s\r\n",
+                  w->type, w->name, w->basedam, w->weight, w->cost, w->skill, w->damtype, w->flags );
    }
 }
 
-rune_data::rune_data()
+rune_data::rune_data(  )
 {
    init_memory( &stat1, &stat2, sizeof( stat2 ) );
 }
 
-rune_data::~rune_data()
+rune_data::~rune_data(  )
 {
    runelist.remove( this );
 }
 
-runeword_data::runeword_data()
+runeword_data::runeword_data(  )
 {
    init_memory( &_type, &stat4, sizeof( stat4 ) );
 }
 
-runeword_data::~runeword_data()
+runeword_data::~runeword_data(  )
 {
    rwordlist.remove( this );
 }
 
 void free_runedata( void )
 {
-   list<rune_data*>::iterator rn;
-   for( rn = runelist.begin(); rn != runelist.end(); )
+   list < rune_data * >::iterator rn;
+   for( rn = runelist.begin(  ); rn != runelist.end(  ); )
    {
-      rune_data *rune = (*rn);
+      rune_data *rune = *rn;
       ++rn;
 
       deleteptr( rune );
    }
 
-   list<runeword_data*>::iterator rw;
-   for( rw = rwordlist.begin(); rw != rwordlist.end(); )
+   list < runeword_data * >::iterator rw;
+   for( rw = rwordlist.begin(  ); rw != rwordlist.end(  ); )
    {
-      runeword_data *rword = (*rw);
+      runeword_data *rword = *rw;
       ++rw;
 
       deleteptr( rword );
    }
-   return;
 }
 
-short get_rarity( const char *name )
+short get_rarity( const string & name )
 {
    for( unsigned int x = 0; x < sizeof( rarity ) / sizeof( rarity[0] ); ++x )
       if( !str_cmp( name, rarity[x] ) )
@@ -298,15 +311,15 @@ short get_rarity( const char *name )
    return -1;
 }
 
-runeword_data *pick_runeword( )
+runeword_data *pick_runeword(  )
 {
-   list<runeword_data*>::iterator irword;
-   int wordpick = number_range( 1, rwordlist.size() );
+   list < runeword_data * >::iterator irword;
+   int wordpick = number_range( 1, rwordlist.size(  ) );
    int counter = 1;
 
-   for( irword = rwordlist.begin(); irword != rwordlist.end(); ++irword, ++counter )
+   for( irword = rwordlist.begin(  ); irword != rwordlist.end(  ); ++irword, ++counter )
    {
-      runeword_data *rword = (*irword);
+      runeword_data *rword = *irword;
 
       if( counter == wordpick )
          return rword;
@@ -319,12 +332,12 @@ void load_runewords( void )
    ifstream stream;
    runeword_data *rword;
 
-   rwordlist.clear();
+   rwordlist.clear(  );
 
    log_string( "Loading runewords..." );
 
    stream.open( RUNEWORD_FILE );
-   if( !stream.is_open() )
+   if( !stream.is_open(  ) )
    {
       log_string( "No runeword file found." );
       return;
@@ -336,91 +349,73 @@ void load_runewords( void )
       char buf[MIL];
 
       stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
       strip_lspace( key );
+      strip_lspace( value );
+
+      if( key.empty(  ) )
+         continue;
 
       if( key == "#RWORD" )
          rword = new runeword_data;
       else if( key == "Name" )
-      {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_lspace( value );
          rword->set_name( value );
-      }
       else if( key == "Type" )
-      {
-         stream >> value;
-         strip_lspace( value );
-         rword->set_type( atoi( value.c_str() ) );
-      }
+         rword->set_type( atoi( value.c_str(  ) ) );
       else if( key == "Rune1" )
-      {
-         stream >> value;
-         strip_lspace( value );
          rword->set_rune1( value );
-      }
       else if( key == "Rune2" )
-      {
-         stream >> value;
-         strip_lspace( value );
          rword->set_rune2( value );
-      }
       else if( key == "Rune3" )
-      {
-         stream >> value;
-         strip_lspace( value );
          rword->set_rune3( value );
-      }
       else if( key == "Stat1" )
       {
-         stream >> value;
-         strip_lspace( value );
-         rword->stat1[0] = atoi( value.c_str() );
+         string rstat;
 
-         stream >> value;
-         strip_lspace( value );
-         rword->stat1[1] = atoi( value.c_str() );
+         value = one_argument( value, rstat );
+         rword->stat1[0] = atoi( rstat.c_str(  ) );
+
+         rword->stat1[1] = atoi( value.c_str(  ) );
       }
       else if( key == "Stat2" )
       {
-         stream >> value;
-         strip_lspace( value );
-         rword->stat2[0] = atoi( value.c_str() );
+         string rstat;
 
-         stream >> value;
-         strip_lspace( value );
-         rword->stat2[1] = atoi( value.c_str() );
+         value = one_argument( value, rstat );
+         rword->stat2[0] = atoi( rstat.c_str(  ) );
+
+         rword->stat2[1] = atoi( value.c_str(  ) );
       }
       else if( key == "Stat3" )
       {
-         stream >> value;
-         strip_lspace( value );
-         rword->stat3[0] = atoi( value.c_str() );
+         string rstat;
 
-         stream >> value;
-         strip_lspace( value );
-         rword->stat3[1] = atoi( value.c_str() );
+         value = one_argument( value, rstat );
+         rword->stat3[0] = atoi( rstat.c_str(  ) );
+
+         rword->stat3[1] = atoi( value.c_str(  ) );
       }
       else if( key == "Stat4" )
       {
-         stream >> value;
-         strip_lspace( value );
-         rword->stat4[0] = atoi( value.c_str() );
+         string rstat;
 
-         stream >> value;
-         strip_lspace( value );
-         rword->stat4[1] = atoi( value.c_str() );
+         value = one_argument( value, rstat );
+         rword->stat4[0] = atoi( rstat.c_str(  ) );
+
+         rword->stat4[1] = atoi( value.c_str(  ) );
       }
       else if( key == "End" )
       {
          bool found = false;
-         list<runeword_data*>::iterator rw;
+         list < runeword_data * >::iterator rw;
 
-         for( rw = rwordlist.begin(); rw != rwordlist.end(); ++rw )
+         for( rw = rwordlist.begin(  ); rw != rwordlist.end(  ); ++rw )
          {
-            runeword_data *rwd = (*rw);
+            runeword_data *rwd = *rw;
 
-            if( rwd->get_name() >= rword->get_name() )
+            if( rwd->get_name(  ) >= rword->get_name(  ) )
             {
                found = true;
                rwordlist.insert( rw, rword );
@@ -430,10 +425,11 @@ void load_runewords( void )
          if( !found )
             rwordlist.push_back( rword );
       }
+      else
+         log_printf( "%s: Bad line in runewords file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
-   return;
 }
 
 void load_runes( void )
@@ -441,12 +437,12 @@ void load_runes( void )
    ifstream stream;
    rune_data *rune;
 
-   runelist.clear();
+   runelist.clear(  );
 
    log_string( "Loading runes..." );
 
    stream.open( RUNE_FILE );
-   if( !stream.is_open() )
+   if( !stream.is_open(  ) )
    {
       log_string( "No rune file found." );
       return;
@@ -455,54 +451,53 @@ void load_runes( void )
    do
    {
       string key, value;
+      char buf[MIL];
 
       stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
       strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
 
       if( key == "#RUNE" )
          rune = new rune_data;
       else if( key == "Name" )
-      {
-         stream >> value;
-         strip_lspace( value );
-         strip_tilde( value );
          rune->set_name( value );
-      }
       else if( key == "Rarity" )
-      {
-         stream >> value;
-         strip_lspace( value );
-         rune->set_rarity( atoi( value.c_str() ) );
-      }
+         rune->set_rarity( atoi( value.c_str(  ) ) );
       else if( key == "Stat1" )
       {
-         stream >> value;
-         strip_lspace( value );
-         rune->stat1[0] = atoi( value.c_str() );
+         string rstat;
 
-         stream >> value;
-         strip_lspace( value );
-         rune->stat1[1] = atoi( value.c_str() );
+         value = one_argument( value, rstat );
+         rune->stat1[0] = atoi( rstat.c_str(  ) );
+
+         rune->stat1[1] = atoi( value.c_str(  ) );
       }
       else if( key == "Stat2" )
       {
-         stream >> value;
-         strip_lspace( value );
-         rune->stat2[0] = atoi( value.c_str() );
+         string rstat;
 
-         stream >> value;
-         strip_lspace( value );
-         rune->stat2[1] = atoi( value.c_str() );
+         value = one_argument( value, rstat );
+         rune->stat2[0] = atoi( rstat.c_str(  ) );
+
+         rune->stat2[1] = atoi( value.c_str(  ) );
       }
       else if( key == "End" )
       {
          bool found = false;
-         list<rune_data*>::iterator rn;
+         list < rune_data * >::iterator rn;
 
-         for( rn = runelist.begin(); rn != runelist.end(); ++rn )
+         for( rn = runelist.begin(  ); rn != runelist.end(  ); ++rn )
          {
-            rune_data *r = (*rn);
-            if( r->get_name() >= rune->get_name() )
+            rune_data *r = *rn;
+
+            if( r->get_name(  ) >= rune->get_name(  ) )
             {
                found = true;
                runelist.insert( rn, rune );
@@ -513,7 +508,7 @@ void load_runes( void )
          if( !found )
             runelist.push_back( rune );
 
-         switch ( rune->get_rarity() )
+         switch ( rune->get_rarity(  ) )
          {
             case RUNE_COMMON:
                ncommon += 1;
@@ -528,6 +523,8 @@ void load_runes( void )
                break;
          }
       }
+      else
+         log_printf( "%s: Bad line in runes file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -539,36 +536,36 @@ void save_runes( void )
    ofstream stream;
 
    stream.open( RUNE_FILE );
-   if( !stream.is_open() )
+   if( !stream.is_open(  ) )
    {
       log_string( "Couldn't write to rune file." );
       return;
    }
 
-   list<rune_data*>::iterator irune;
-   for( irune = runelist.begin(); irune != runelist.end(); ++irune )
+   list < rune_data * >::iterator irune;
+   for( irune = runelist.begin(  ); irune != runelist.end(  ); ++irune )
    {
-      rune_data *rune = (*irune);
+      rune_data *rune = *irune;
 
       stream << "#RUNE" << endl;
-      stream << "Name     " << rune->get_name() << endl;
-      stream << "Rarity   " << rune->get_rarity() << endl;
+      stream << "Name     " << rune->get_name(  ) << endl;
+      stream << "Rarity   " << rune->get_rarity(  ) << endl;
       stream << "Stat1    " << rune->stat1[0] << " " << rune->stat1[1] << endl;
       stream << "Stat2    " << rune->stat2[0] << " " << rune->stat2[1] << endl;
       stream << "End" << endl << endl;
    }
-   stream.close();
+   stream.close(  );
 }
 
-rune_data *check_rune( string name )
+rune_data *check_rune( const string & name )
 {
-   list<rune_data*>::iterator irune;
+   list < rune_data * >::iterator irune;
 
-   for( irune = runelist.begin(); irune != runelist.end(); ++irune )
+   for( irune = runelist.begin(  ); irune != runelist.end(  ); ++irune )
    {
-      rune_data *rune = (*irune);
+      rune_data *rune = *irune;
 
-      if( scomp( rune->get_name(), name ) )
+      if( !str_cmp( rune->get_name(  ), name ) )
          return rune;
    }
    return NULL;
@@ -576,7 +573,6 @@ rune_data *check_rune( string name )
 
 CMDF( do_makerune )
 {
-   vector<string> arg = vector_argument( argument, 1 );
    rune_data *rune = NULL;
 
    if( ch->isnpc(  ) )
@@ -585,29 +581,29 @@ CMDF( do_makerune )
       return;
    }
 
-   if( arg.size() < 1 )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax: makerune <name>\r\n" );
       return;
    }
 
-   if( ( rune = check_rune( arg[0] ) ) != NULL )
+   if( ( rune = check_rune( argument ) ) != NULL )
    {
-      ch->printf( "A rune called %s already exists. Choose another name.\r\n", arg[0].c_str() );
+      ch->printf( "A rune called %s already exists. Choose another name.\r\n", argument.c_str(  ) );
       return;
    }
 
    rune = new rune_data;
-   rune->set_name( arg[0] );
+   rune->set_name( argument );
    rune->set_rarity( RUNE_COMMON );
 
    bool found = false;
-   list<rune_data*>::iterator rn;
-   for( rn = runelist.begin(); rn != runelist.end(); ++rn )
+   list < rune_data * >::iterator rn;
+   for( rn = runelist.begin(  ); rn != runelist.end(  ); ++rn )
    {
-      rune_data *r = (*rn);
+      rune_data *r = *rn;
 
-      if( r->get_name() >= rune->get_name() )
+      if( r->get_name(  ) >= rune->get_name(  ) )
       {
          found = true;
          runelist.insert( rn, rune );
@@ -617,14 +613,12 @@ CMDF( do_makerune )
    if( !found )
       runelist.push_back( rune );
 
-   ch->printf( "New rune %s has been created.\r\n", arg[0].c_str() );
+   ch->printf( "New rune %s has been created.\r\n", argument.c_str(  ) );
    save_runes(  );
-   return;
 }
 
 CMDF( do_destroyrune )
 {
-   vector<string> arg = vector_argument( argument, 1 );
    rune_data *rune = NULL;
 
    if( ch->isnpc(  ) )
@@ -633,28 +627,27 @@ CMDF( do_destroyrune )
       return;
    }
 
-   if( arg.size() < 1 )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax: destroyrune <name>\r\n" );
       return;
    }
 
-   if( !( rune = check_rune( arg[0] ) ) )
+   if( !( rune = check_rune( argument ) ) )
    {
-      ch->printf( "No rune called %s exists.\r\n", arg[0].c_str() );
+      ch->printf( "No rune called %s exists.\r\n", argument.c_str(  ) );
       return;
    }
 
    deleteptr( rune );
    save_runes(  );
 
-   ch->printf( "Rune %s has been destroyed.\r\n", arg[0].c_str() );
-   return;
+   ch->printf( "Rune %s has been destroyed.\r\n", argument.c_str(  ) );
 }
 
 CMDF( do_setrune )
 {
-   vector<string> arg = vector_argument( argument, -1 );
+   string arg, arg2, arg3;
    rune_data *rune;
 
    if( ch->isnpc(  ) )
@@ -663,7 +656,10 @@ CMDF( do_setrune )
       return;
    }
 
-   if( arg.size() < 3 )
+   argument = one_argument( argument, arg );
+   argument = one_argument( argument, arg2 );
+   argument = one_argument( argument, arg3 );
+   if( arg.empty(  ) || arg2.empty(  ) || arg3.empty(  ) )
    {
       ch->print( "Syntax: setrune <rune_name> <field> <value> [second value]\r\n" );
       ch->print( "Field can be one of the following:\r\n" );
@@ -671,53 +667,53 @@ CMDF( do_setrune )
       return;
    }
 
-   if( !( rune = check_rune( arg[0] ) ) )
+   if( !( rune = check_rune( arg ) ) )
    {
-      ch->printf( "No rune named %s exists.\r\n", arg[0].c_str() );
+      ch->printf( "No rune named %s exists.\r\n", arg.c_str(  ) );
       return;
    }
 
-   if( scomp( arg[1], "name" ) )
+   if( !str_cmp( arg2, "name" ) )
    {
       rune_data *newrune;
 
-      if( ( newrune = check_rune( arg[2] ) ) != NULL )
+      if( ( newrune = check_rune( arg3 ) ) != NULL )
       {
-         ch->printf( "A rune named %s already exists. Choose a new name.\r\n", arg[2].c_str() );
+         ch->printf( "A rune named %s already exists. Choose a new name.\r\n", arg3.c_str(  ) );
          return;
       }
-      rune->set_name( arg[2] );
+      rune->set_name( arg3 );
       save_runes(  );
-      ch->printf( "Rune %s has been renamed as %s\r\n", arg[0].c_str(), arg[2].c_str() );
+      ch->printf( "Rune %s has been renamed as %s\r\n", arg.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
-   if( scomp( arg[1], "rarity" ) )
+   if( !str_cmp( arg2, "rarity" ) )
    {
-      short value = get_rarity( arg[2].c_str() );
+      short value = get_rarity( arg3 );
 
       if( value < 0 || value > RUNE_ULTRARARE )
       {
-         ch->printf( "%s is an invalid rarity.\r\n", arg[2].c_str() );
+         ch->printf( "%s is an invalid rarity.\r\n", arg3.c_str(  ) );
          return;
       }
       rune->set_rarity( value );
       save_runes(  );
-      ch->printf( "%s rune is now %s rarity.\r\n", rune->get_cname(), rarity[value] );
+      ch->printf( "%s rune is now %s rarity.\r\n", rune->get_cname(  ), rarity[value] );
       return;
    }
 
-   if( scomp( arg[1], "stat1" ) )
+   if( !str_cmp( arg2, "stat1" ) )
    {
-      int value = get_atype( arg[2].c_str() );
+      int value = get_atype( arg3 );
 
       if( value < 0 )
       {
-         ch->printf( "%s is an invalid stat to apply.\r\n", arg[2].c_str() );
+         ch->printf( "%s is an invalid stat to apply.\r\n", arg3.c_str(  ) );
          return;
       }
 
-      if( arg.size() < 4 )
+      if( argument.empty(  ) )
       {
          do_setrune( ch, "" );
          return;
@@ -725,75 +721,75 @@ CMDF( do_setrune )
 
       if( value == APPLY_AFFECT )
       {
-         int val2 = get_aflag( arg[3].c_str() );
+         int val2 = get_aflag( argument );
 
          if( val2 < 0 || val2 >= MAX_AFFECTED_BY )
          {
-            ch->printf( "%s is an invalid affect.\r\n", argument );
+            ch->printf( "%s is an invalid affect.\r\n", argument.c_str(  ) );
             return;
          }
          rune->stat1[0] = value;
          rune->stat1[1] = val2;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(), arg[2].c_str(), arg[3].c_str() );
+         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
          return;
       }
 
       if( value == APPLY_RESISTANT || value == APPLY_IMMUNE || value == APPLY_SUSCEPTIBLE || value == APPLY_ABSORB )
       {
-         int val2 = get_risflag( arg[3].c_str() );
+         int val2 = get_risflag( argument );
 
          if( val2 < 0 || val2 >= MAX_RIS_FLAG )
          {
-            ch->printf( "%s is an invalid RISA flag.\r\n", arg[3].c_str() );
+            ch->printf( "%s is an invalid RISA flag.\r\n", argument.c_str(  ) );
             return;
          }
          rune->stat1[0] = value;
          rune->stat1[1] = val2;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(), arg[2].c_str(), arg[3].c_str() );
+         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
          return;
       }
 
       if( value == APPLY_WEAPONSPELL || value == APPLY_REMOVESPELL || value == APPLY_WEARSPELL )
       {
-         int val2 = skill_lookup( arg[3].c_str() );
+         int val2 = skill_lookup( argument );
 
          if( !IS_VALID_SN( val2 ) )
          {
-            ch->printf( "Invalid skill/spell: %s", arg[2].c_str() );
+            ch->printf( "Invalid skill/spell: %s", argument.c_str(  ) );
             return;
          }
          rune->stat1[0] = value;
          rune->stat1[1] = skill_table[val2]->slot;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(), arg[2].c_str(), arg[3].c_str() );
+         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
          return;
       }
 
-      if( !is_number( arg[3].c_str() ) )
+      if( !is_number( argument ) )
       {
          ch->print( "Apply modifier must be numerical.\r\n" );
          return;
       }
       rune->stat1[0] = value;
-      rune->stat1[1] = atoi( arg[3].c_str() );
+      rune->stat1[1] = atoi( argument.c_str(  ) );
       save_runes(  );
-      ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(), arg[2].c_str(), arg[3].c_str() );
+      ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
       return;
    }
 
-   if( scomp( arg[1], "stat2" ) )
+   if( !str_cmp( arg2, "stat2" ) )
    {
-      int value = get_atype( arg[2].c_str() );
+      int value = get_atype( arg3.c_str(  ) );
 
       if( value < 0 )
       {
-         ch->printf( "%s is an invalid stat to apply.\r\n", arg[2].c_str() );
+         ch->printf( "%s is an invalid stat to apply.\r\n", arg3.c_str(  ) );
          return;
       }
 
-      if( arg.size() < 4 )
+      if( argument.empty(  ) )
       {
          do_setrune( ch, "" );
          return;
@@ -801,64 +797,63 @@ CMDF( do_setrune )
 
       if( value == APPLY_AFFECT )
       {
-         int val2 = get_aflag( arg[3].c_str() );
+         int val2 = get_aflag( argument.c_str(  ) );
 
          if( val2 < 0 || val2 >= MAX_AFFECTED_BY )
          {
-            ch->printf( "%s is an invalid affect.\r\n", argument );
+            ch->printf( "%s is an invalid affect.\r\n", argument.c_str(  ) );
             return;
          }
          rune->stat2[0] = value;
          rune->stat2[1] = val2;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(), arg[2].c_str(), arg[3].c_str() );
+         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
          return;
       }
 
       if( value == APPLY_RESISTANT || value == APPLY_IMMUNE || value == APPLY_SUSCEPTIBLE || value == APPLY_ABSORB )
       {
-         int val2 = get_risflag( arg[3].c_str() );
+         int val2 = get_risflag( argument.c_str(  ) );
 
          if( val2 < 0 || val2 >= MAX_RIS_FLAG )
          {
-            ch->printf( "%s is an invalid RISA flag.\r\n", arg[3].c_str() );
+            ch->printf( "%s is an invalid RISA flag.\r\n", argument.c_str(  ) );
             return;
          }
          rune->stat2[0] = value;
          rune->stat2[1] = val2;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(), arg[2].c_str(), arg[3].c_str() );
+         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
          return;
       }
 
       if( value == APPLY_WEAPONSPELL || value == APPLY_REMOVESPELL || value == APPLY_WEARSPELL )
       {
-         int val2 = skill_lookup( arg[3].c_str() );
+         int val2 = skill_lookup( argument.c_str(  ) );
 
          if( !IS_VALID_SN( val2 ) )
          {
-            ch->printf( "Invalid skill/spell: %s", arg[2].c_str() );
+            ch->printf( "Invalid skill/spell: %s", argument.c_str(  ) );
             return;
          }
          rune->stat2[0] = value;
          rune->stat2[1] = skill_table[val2]->slot;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(), arg[2].c_str(), arg[3].c_str() );
+         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
          return;
       }
 
-      if( !is_number( arg[3].c_str() ) )
+      if( !is_number( argument ) )
       {
          ch->print( "Apply modifier must be numerical.\r\n" );
          return;
       }
       rune->stat2[0] = value;
-      rune->stat2[1] = atoi( arg[3].c_str() );
+      rune->stat2[1] = atoi( argument.c_str(  ) );
       save_runes(  );
-      ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(), arg[2].c_str(), arg[3].c_str() );
+      ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
       return;
    }
-   return;
 }
 
 /* Ok Tarl, you've convinced me this is needed :) */
@@ -867,7 +862,7 @@ CMDF( do_loadrune )
    rune_data *rune;
    obj_data *obj;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Load which rune? Use showrunes to display the list.\r\n" );
       return;
@@ -875,7 +870,7 @@ CMDF( do_loadrune )
 
    if( !( rune = check_rune( argument ) ) )
    {
-      ch->printf( "%s does not exist.\r\n", argument );
+      ch->printf( "%s does not exist.\r\n", argument.c_str(  ) );
       return;
    }
 
@@ -885,16 +880,15 @@ CMDF( do_loadrune )
       ch->print( "&RGeneric rune item is MISSING! Report to Samson.\r\n" );
       return;
    }
-   stralloc_printf( &obj->name, "%s rune", rune->get_cname() );
-   stralloc_printf( &obj->short_descr, "%s Rune", rune->get_cname() );
-   stralloc_printf( &obj->objdesc, "A magical %s Rune lies here pulsating.", rune->get_cname() );
+   stralloc_printf( &obj->name, "%s rune", rune->get_cname(  ) );
+   stralloc_printf( &obj->short_descr, "%s Rune", rune->get_cname(  ) );
+   stralloc_printf( &obj->objdesc, "A magical %s Rune lies here pulsating.", rune->get_cname(  ) );
    obj->value[0] = rune->stat1[0];
    obj->value[1] = rune->stat1[1];
    obj->value[2] = rune->stat2[0];
    obj->value[3] = rune->stat2[1];
    obj->to_char( ch );
-   ch->printf( "You now have a %s Rune.\r\n", rune->get_cname() );
-   return;
+   ch->printf( "You now have a %s Rune.\r\n", rune->get_cname(  ) );
 }
 
 /* Edited by Tarl 2 April 02 for alphabetical display */
@@ -903,7 +897,7 @@ CMDF( do_showrunes )
 {
    int total = 0;
 
-   if( runelist.empty() )
+   if( runelist.empty(  ) )
    {
       ch->print( "There are no runes created yet.\r\n" );
       return;
@@ -912,14 +906,14 @@ CMDF( do_showrunes )
    ch->pager( "Currently created runes:\r\n\r\n" );
    ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6.6s %-15.15s %-6.6s\r\n", "Rune", "Rarity", "Stat1", "Mod1", "Stat2", "Mod2" );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<rune_data*>::iterator irune;
-      for( irune = runelist.begin(); irune != runelist.end(); ++irune )
+      list < rune_data * >::iterator irune;
+      for( irune = runelist.begin(  ); irune != runelist.end(  ); ++irune )
       {
-         rune_data *rune = (*irune);
+         rune_data *rune = *irune;
 
-         ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %-6d\r\n", rune->get_cname(), rarity[rune->get_rarity()],
+         ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %-6d\r\n", rune->get_cname(  ), rarity[rune->get_rarity(  )],
                      a_types[rune->stat1[0]], rune->stat1[1], a_types[rune->stat2[0]], rune->stat2[1] );
          ++total;
       }
@@ -927,26 +921,27 @@ CMDF( do_showrunes )
    }
    else
    {
-      list<rune_data*>::iterator irune;
-      for( irune = runelist.begin(); irune != runelist.end(); ++irune )
+      list < rune_data * >::iterator irune;
+      for( irune = runelist.begin(  ); irune != runelist.end(  ); ++irune )
       {
-         rune_data *rune = (*irune);
+         rune_data *rune = *irune;
 
-         if( !str_prefix( argument, rune->get_cname() ) )
+         if( !str_prefix( argument, rune->get_name(  ) ) )
          {
-            ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %-6d\r\n", rune->get_cname(), rarity[rune->get_rarity()],
+            ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %-6d\r\n", rune->get_cname(  ), rarity[rune->get_rarity(  )],
                         a_types[rune->stat1[0]], rune->stat1[1], a_types[rune->stat2[0]], rune->stat2[1] );
             ++total;
          }
       }
       ch->pagerf( "%d total runes displayed.\r\n", total );
    }
-   return;
 }
 
 CMDF( do_runewords )
 {
-   if( rwordlist.empty() )
+   int total = 0;
+
+   if( rwordlist.empty(  ) )
    {
       ch->print( "There are no runewords created yet.\r\n" );
       return;
@@ -956,16 +951,15 @@ CMDF( do_runewords )
    ch->pagerf( "%-13.13s %-6.6s %-12.12s %-6.6s %-12.12s %-6.6s %-12.12s %-6.6s %-12.12s %-6.6s\r\n",
                "Word", "Type", "Stat1", "Mod1", "Stat2", "Mod2", "Stat3", "Mod3", "Stat4", "Mod4" );
 
-   int total = 0;
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<runeword_data*>::iterator irword;
-      for( irword = rwordlist.begin(); irword != rwordlist.end(); ++irword )
+      list < runeword_data * >::iterator irword;
+      for( irword = rwordlist.begin(  ); irword != rwordlist.end(  ); ++irword )
       {
-         runeword_data *rword = (*irword);
+         runeword_data *rword = *irword;
 
          ch->pagerf( "%-17.17s %-6.6s %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d\r\n",
-                     rword->get_cname(), rword->get_type() == 0 ? "Armor" : "Weapon",
+                     rword->get_cname(  ), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
                      a_types[rword->stat1[0]], rword->stat1[1], a_types[rword->stat2[0]], rword->stat2[1],
                      a_types[rword->stat3[0]], rword->stat3[1], a_types[rword->stat4[0]], rword->stat4[1] );
          ++total;
@@ -974,16 +968,16 @@ CMDF( do_runewords )
    }
    else
    {
-      list<runeword_data*>::iterator irword;
+      list < runeword_data * >::iterator irword;
 
-      for( irword = rwordlist.begin(); irword != rwordlist.end(); ++irword )
+      for( irword = rwordlist.begin(  ); irword != rwordlist.end(  ); ++irword )
       {
-         runeword_data *rword = (*irword);
+         runeword_data *rword = *irword;
 
-         if( !str_prefix( argument, rword->get_cname() ) )
+         if( !str_prefix( argument, rword->get_name(  ) ) )
          {
             ch->pagerf( "%-10.10s %-6.6s %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d\r\n",
-                        rword->get_cname(), rword->get_type() == 0 ? "Armor" : "Weapon",
+                        rword->get_cname(  ), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
                         a_types[rword->stat1[0]], rword->stat1[1], a_types[rword->stat2[0]], rword->stat2[1],
                         a_types[rword->stat3[0]], rword->stat3[1], a_types[rword->stat4[0]], rword->stat4[1] );
             ++total;
@@ -991,7 +985,6 @@ CMDF( do_runewords )
       }
       ch->pagerf( "%d total runewords displayed.\r\n", total );
    }
-   return;
 }
 
 obj_data *generate_rune( short level )
@@ -1032,28 +1025,28 @@ obj_data *generate_rune( short level )
 
    bool found = false;
    rune_data *rune = NULL;
-   list<rune_data*>::iterator rn;
-   for( rn = runelist.begin(); rn != runelist.end(); ++rn )
+   list < rune_data * >::iterator rn;
+   for( rn = runelist.begin(  ); rn != runelist.end(  ); ++rn )
    {
-      rune = (*rn);
+      rune = *rn;
 
-      switch ( rune->get_rarity() )
+      switch ( rune->get_rarity(  ) )
       {
          default:
             break;
          case RUNE_COMMON:
             ccount += 1;
-            if( ccount == pick && rare == rune->get_rarity() )
+            if( ccount == pick && rare == rune->get_rarity(  ) )
                found = true;
             break;
          case RUNE_RARE:
             rcount += 1;
-            if( rcount == pick && rare == rune->get_rarity() )
+            if( rcount == pick && rare == rune->get_rarity(  ) )
                found = true;
             break;
          case RUNE_ULTRARARE:
             ucount += 1;
-            if( ucount == pick && rare == rune->get_rarity() )
+            if( ucount == pick && rare == rune->get_rarity(  ) )
                found = true;
             break;
       }
@@ -1074,9 +1067,9 @@ obj_data *generate_rune( short level )
       return NULL;
    }
 
-   stralloc_printf( &newrune->name, "%s rune", rune->get_cname() );
-   stralloc_printf( &newrune->short_descr, "%s Rune", rune->get_cname() );
-   stralloc_printf( &newrune->objdesc, "A magical %s Rune lies here pulsating.", rune->get_cname() );
+   stralloc_printf( &newrune->name, "%s rune", rune->get_cname(  ) );
+   stralloc_printf( &newrune->short_descr, "%s Rune", rune->get_cname(  ) );
+   stralloc_printf( &newrune->objdesc, "A magical %s Rune lies here pulsating.", rune->get_cname(  ) );
    newrune->value[0] = rune->stat1[0];
    newrune->value[1] = rune->stat1[1];
    newrune->value[2] = rune->stat2[0];
@@ -1088,7 +1081,7 @@ obj_data *generate_rune( short level )
 obj_data *generate_gem( short level )
 {
    obj_data *gem;
-   char *gname;
+   const char *gname;
    int cost;
    short gemname, gemtable = number_range( 1, 100 );
 
@@ -1145,9 +1138,8 @@ obj_data *generate_gem( short level )
 void obj_data::weapongen(  )
 {
    affect_data *paf;
-   list<affect_data*>::iterator paff;
-   char *eflags = NULL;
-   char flag[MIL];
+   list < affect_data * >::iterator paff;
+   string eflags, flag;
    int v8, v9, v10, ovalue;
    bool protoflag = false;
 
@@ -1195,19 +1187,19 @@ void obj_data::weapongen(  )
 
    eflags = weapon_type[v8].flags;
 
-   while( eflags[0] != '\0' )
+   while( !eflags.empty(  ) )
    {
       eflags = one_argument( eflags, flag );
       ovalue = get_oflag( flag );
       if( ovalue < 0 || ovalue >= MAX_ITEM_FLAG )
-         bug( "%s: Unknown object extraflag: %s", __FUNCTION__, flag );
+         bug( "%s: Unknown object extraflag: %s", __FUNCTION__, flag.c_str(  ) );
       else
          extra_flags.set( ovalue );
    }
 
-   for( paff = affects.begin(); paff != affects.end(); )
+   for( paff = affects.begin(  ); paff != affects.end(  ); )
    {
-      affect_data *aff = (*paff);
+      affect_data *aff = *paff;
       ++paff;
 
       affects.remove( aff );
@@ -1218,9 +1210,9 @@ void obj_data::weapongen(  )
 
    if( protoflag )
    {
-      for( paff = pIndexData->affects.begin(); paff != pIndexData->affects.end(); )
+      for( paff = pIndexData->affects.begin(  ); paff != pIndexData->affects.end(  ); )
       {
-         affect_data *aff = (*paff);
+         affect_data *aff = *paff;
          ++paff;
 
          pIndexData->affects.remove( aff );
@@ -1278,8 +1270,7 @@ void obj_data::weapongen(  )
       extra_flags.set( ITEM_MAGIC );
       stralloc_printf( &name, "socketed %s%s", materials[v9].name, weapon_type[v8].name );
       stralloc_printf( &short_descr, "Socketed %s%s", materials[v9].name, weapon_type[v8].name );
-      stralloc_printf( &objdesc, "A socketed %s%s lies here on the ground.",
-         materials[v9].name, weapon_type[v8].name );
+      stralloc_printf( &objdesc, "A socketed %s%s lies here on the ground.", materials[v9].name, weapon_type[v8].name );
    }
    else
    {
@@ -1292,9 +1283,8 @@ void obj_data::weapongen(  )
 void obj_data::armorgen(  )
 {
    affect_data *paf;
-   list<affect_data*>::iterator paff;
-   char *eflags = NULL;
-   char flag[MIL];
+   list < affect_data * >::iterator paff;
+   string eflags, flag;
    int v3, v4, ovalue;
    bool protoflag = false;
 
@@ -1349,19 +1339,19 @@ void obj_data::armorgen(  )
 
    eflags = armor_type[v3].flags;
 
-   while( eflags[0] != '\0' )
+   while( !eflags.empty(  ) )
    {
       eflags = one_argument( eflags, flag );
       ovalue = get_oflag( flag );
       if( ovalue < 0 || ovalue >= MAX_ITEM_FLAG )
-         bug( "%s: Unknown object extraflag: %s", __FUNCTION__, flag );
+         bug( "%s: Unknown object extraflag: %s", __FUNCTION__, flag.c_str(  ) );
       else
          extra_flags.set( ovalue );
    }
 
-   for( paff = affects.begin(); paff != affects.end(); )
+   for( paff = affects.begin(  ); paff != affects.end(  ); )
    {
-      affect_data *aff = (*paff);
+      affect_data *aff = *paff;
       ++paff;
 
       affects.remove( aff );
@@ -1372,9 +1362,9 @@ void obj_data::armorgen(  )
 
    if( protoflag )
    {
-      for( paff = pIndexData->affects.begin(); paff != pIndexData->affects.end(); )
+      for( paff = pIndexData->affects.begin(  ); paff != pIndexData->affects.end(  ); )
       {
-         affect_data *aff = (*paff);
+         affect_data *aff = *paff;
          ++paff;
 
          pIndexData->affects.remove( aff );
@@ -1428,14 +1418,12 @@ void obj_data::armorgen(  )
       if( v3 > 12 )
       {
          stralloc_printf( &short_descr, "Socketed %s%s", materials[v4].name, armor_type[v3].name );
-         stralloc_printf( &objdesc, "A socketed %s%s lies here in a heap.",
-            materials[v4].name, armor_type[v3].name );
+         stralloc_printf( &objdesc, "A socketed %s%s lies here in a heap.", materials[v4].name, armor_type[v3].name );
       }
       else
       {
          stralloc_printf( &short_descr, "Socketed %s%s Chestpiece", materials[v4].name, armor_type[v3].name );
-         stralloc_printf( &objdesc, "A socketed %s%s chestpiece lies here in a heap.",
-            materials[v4].name, armor_type[v3].name );
+         stralloc_printf( &objdesc, "A socketed %s%s chestpiece lies here in a heap.", materials[v4].name, armor_type[v3].name );
       }
    }
    else
@@ -1452,7 +1440,6 @@ void obj_data::armorgen(  )
          stralloc_printf( &objdesc, "A %s%s chestpiece lies here in a heap.", materials[v4].name, armor_type[v3].name );
       }
    }
-   return;
 }
 
 // This determines the number of sockets to put on a weapon or a body armor
@@ -1489,7 +1476,7 @@ short choose_material( short level )
          return mval;
    }
    log_printf( "Notice: %s failed to choose. Setting generic.", __FUNCTION__ );
-   return( TMAT_MAX - 1 );
+   return ( TMAT_MAX - 1 );
 }
 
 // This determines what type of armor is generated
@@ -1507,7 +1494,7 @@ short choose_armor( short level )
          return mval;
    }
    log_printf( "Notice: %s failed to choose. Setting hide armor.", __FUNCTION__ );
-   return( 3 );
+   return ( 3 );
 }
 
 // This determines the quality of an item being generated
@@ -1531,10 +1518,10 @@ short choose_quality( short level )
    return value;
 }
 
-void make_scroll( obj_data *newitem )
+void make_scroll( obj_data * newitem )
 {
    runeword_data *runeword = NULL;
-   char *name = "Empty", *desc = "Empty";
+   const char *name = "Empty", *desc = "Empty";
    short value = 0, pick2 = 0;
 
    // Curse you Rabbit! Look what you've done!
@@ -1631,7 +1618,7 @@ void make_scroll( obj_data *newitem )
             value = -1;
             name = "parchment scroll";
             desc = "Tattered parchment";
-            runeword = pick_runeword();
+            runeword = pick_runeword(  );
             break;
          case 8:
             value = skill_lookup( "stoneskin" );
@@ -1690,7 +1677,7 @@ void make_scroll( obj_data *newitem )
             value = -1;
             name = "parchment scroll";
             desc = "Tattered parchment";
-            runeword = pick_runeword();
+            runeword = pick_runeword(  );
             break;
          default:
             value = -1;
@@ -1716,16 +1703,16 @@ void make_scroll( obj_data *newitem )
       string typedesc;
 
       ed->keyword = "parchment scroll";
-      if( runeword->get_type() == 0 )
+      if( runeword->get_type(  ) == 0 )
          typedesc = "\"Weapon\".\n";
       else
          typedesc = "\"Armor\".\n";
 
       ed->desc = "The scrawlings on this parchment are almost indecipherable. All you can make out are \"";
-      ed->desc += runeword->get_rune1();
-      ed->desc += runeword->get_rune2();
-      if( !runeword->get_rune3().empty() )
-         ed->desc += runeword->get_rune3();
+      ed->desc += runeword->get_rune1(  );
+      ed->desc += runeword->get_rune2(  );
+      if( !runeword->get_rune3(  ).empty(  ) )
+         ed->desc += runeword->get_rune3(  );
       ed->desc += "\" and ";
       ed->desc += typedesc;
 
@@ -1733,9 +1720,9 @@ void make_scroll( obj_data *newitem )
    }
 }
 
-void make_potion( obj_data *newitem )
+void make_potion( obj_data * newitem )
 {
-   char *name = "Empty", *desc = "Empty";
+   const char *name = "Empty", *desc = "Empty";
    short value = 0, pick2 = 0;
 
    // Curse you Rabbit! Look what you've done!
@@ -1901,9 +1888,9 @@ void make_potion( obj_data *newitem )
    stralloc_printf( &newitem->objdesc, "%s", "A glass potion flask lies here on the ground." );
 }
 
-void make_wand( obj_data *newitem )
+void make_wand( obj_data * newitem )
 {
-   char *name = "Empty", *desc = "Empty";
+   const char *name = "Empty", *desc = "Empty";
    short value = 0, pick2 = 0;
 
    // Curse you Rabbit! Look what you've done!
@@ -2019,19 +2006,19 @@ void make_wand( obj_data *newitem )
    stralloc_printf( &newitem->objdesc, "%s", "A glowing wand lies here on the ground." );
 }
 
-void make_armor( obj_data *newitem )
+void make_armor( obj_data * newitem )
 {
    newitem->item_type = ITEM_ARMOR;
 
    if( newitem->value[2] < 0 )
-      newitem->value[2] = num_sockets( newitem->level );     // Determine the number of sockets to put on the armor.
+      newitem->value[2] = num_sockets( newitem->level ); // Determine the number of sockets to put on the armor.
    if( newitem->value[3] < 0 )
-      newitem->value[3] = choose_armor( newitem->level );    // Pick out an armor type.
+      newitem->value[3] = choose_armor( newitem->level );   // Pick out an armor type.
    if( newitem->value[4] < 0 )
-      newitem->value[4] = choose_material( newitem->level ); // Pick out a material for this armor.
+      newitem->value[4] = choose_material( newitem->level );   // Pick out a material for this armor.
 
    if( newitem->value[3] < 5 )
-      newitem->value[4] = TMAT_MAX - 1; // Sets the generic material value if an organic armor is created.
+      newitem->value[4] = TMAT_MAX - 1;   // Sets the generic material value if an organic armor is created.
 
    if( newitem->value[3] > 12 )
       newitem->wear_flags.set( ITEM_WEAR_SHIELD );
@@ -2041,18 +2028,18 @@ void make_armor( obj_data *newitem )
    newitem->armorgen(  );
 }
 
-void make_weapon( obj_data *newitem )
+void make_weapon( obj_data * newitem )
 {
    newitem->item_type = ITEM_WEAPON;
 
    if( newitem->value[7] < 0 )
       newitem->value[7] = num_sockets( newitem->level ); // Determine the number of sockets to put on the weapon.
    if( newitem->value[8] < 0 )
-      newitem->value[8] = number_range( 1, TWTP_MAX - 1 ); // Pick out a weapon type.
+      newitem->value[8] = number_range( 1, TWTP_MAX - 1 );  // Pick out a weapon type.
    if( newitem->value[9] < 0 )
-      newitem->value[9] = choose_material( newitem->level ); // Pick out a material for this weapon.
+      newitem->value[9] = choose_material( newitem->level );   // Pick out a material for this weapon.
    if( newitem->value[10] < 0 )
-      newitem->value[10] = choose_quality( newitem->level ); // Set the quality of this weapon.
+      newitem->value[10] = choose_quality( newitem->level );   // Set the quality of this weapon.
 
    newitem->weapongen(  );
 }
@@ -2135,7 +2122,7 @@ obj_data *create_money( int amount )
    return obj;
 }
 
-int make_gold( short level, char_data *ch )
+int make_gold( short level, char_data * ch )
 {
    int x, gold, luck = 13;
 
@@ -2168,7 +2155,7 @@ int make_gold( short level, char_data *ch )
 }
 
 // A slightly butchered way for resets to pick out random junk too
-obj_data *generate_random( reset_data *pReset, char_data *mob )
+obj_data *generate_random( reset_data * pReset, char_data * mob )
 {
    obj_data *newobj = NULL;
    short picker = pReset->arg1;
@@ -2183,68 +2170,68 @@ obj_data *generate_random( reset_data *pReset, char_data *mob )
    if( picker == 0 )
       picker = number_range( 1, 8 );
 
-   switch( picker )
+   switch ( picker )
    {
       default:
-         case 1: // Random gold
+      case 1: // Random gold
+      {
+         int gold = make_gold( level, mob );
+         newobj = create_money( gold );
+         break;
+      }
+      case 2: // Random number of gems
+         for( int x = 0; x < ( ( level / 25 ) + 1 ); ++x )
+            newobj = generate_gem( level );
+         break;
+      case 3: // Random scroll
+         newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
+         make_scroll( newobj );
+         break;
+      case 4: // Random potion
+         newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
+         make_potion( newobj );
+         break;
+      case 5: // Random wand
+         newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
+         make_wand( newobj );
+         break;
+      case 6: // Random armor
+         newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
+         if( pReset->command == 'W' )
          {
-            int gold = make_gold( level, mob );
-            newobj = create_money( gold );
-            break;
+            newobj->value[2] = pReset->arg7;
+            newobj->value[3] = pReset->arg4;
+            newobj->value[4] = pReset->arg5;
          }
-         case 2: // Random number of gems
-            for( int x = 0; x < ( ( level / 25 ) + 1 ); ++x )
-               newobj = generate_gem( level );
-            break;
-         case 3: // Random scroll
-            newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
-            make_scroll( newobj );
-            break;
-         case 4: // Random potion
-            newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
-            make_potion( newobj );
-            break;
-         case 5: // Random wand
-            newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
-            make_wand( newobj );
-            break;
-         case 6: // Random armor
-            newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
-            if( pReset->command == 'W' )
-            {
-               newobj->value[2] = pReset->arg7;
-               newobj->value[3] = pReset->arg4;
-               newobj->value[4] = pReset->arg5;
-            }
-            else
-            {
-               newobj->value[2] = pReset->arg6;
-               newobj->value[3] = pReset->arg3;
-               newobj->value[4] = pReset->arg4;
-            }
-            make_armor( newobj );
-            break;
-         case 7: // Random weapon
-            newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
-            if( pReset->command == 'W' )
-            {
-               newobj->value[7] = pReset->arg7;
-               newobj->value[8] = pReset->arg4;
-               newobj->value[9] = pReset->arg5;
-               newobj->value[10] = pReset->arg6;
-            }
-            else
-            {
-               newobj->value[7] = pReset->arg6;
-               newobj->value[8] = pReset->arg3;
-               newobj->value[9] = pReset->arg4;
-               newobj->value[10] = pReset->arg5;
-            }
-            make_weapon( newobj );
-            break;
-         case 8: // Random rune
-            newobj = generate_rune( level );
-            break;
+         else
+         {
+            newobj->value[2] = pReset->arg6;
+            newobj->value[3] = pReset->arg3;
+            newobj->value[4] = pReset->arg4;
+         }
+         make_armor( newobj );
+         break;
+      case 7: // Random weapon
+         newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
+         if( pReset->command == 'W' )
+         {
+            newobj->value[7] = pReset->arg7;
+            newobj->value[8] = pReset->arg4;
+            newobj->value[9] = pReset->arg5;
+            newobj->value[10] = pReset->arg6;
+         }
+         else
+         {
+            newobj->value[7] = pReset->arg6;
+            newobj->value[8] = pReset->arg3;
+            newobj->value[9] = pReset->arg4;
+            newobj->value[10] = pReset->arg5;
+         }
+         make_weapon( newobj );
+         break;
+      case 8: // Random rune
+         newobj = generate_rune( level );
+         break;
    }
    return newobj;
 }
@@ -2331,7 +2318,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
 CMDF( do_rttest )
 {
    obj_data *corpse;
-   char arg[MIL];
+   string arg;
    int mlvl, times, x;
 
    if( !ch->is_imp(  ) )
@@ -2341,7 +2328,7 @@ CMDF( do_rttest )
    }
 
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Usage: rttest <mob level> <times>\r\n" );
       return;
@@ -2352,8 +2339,8 @@ CMDF( do_rttest )
       return;
    }
 
-   mlvl = atoi( arg );
-   times = atoi( argument );
+   mlvl = atoi( arg.c_str(  ) );
+   times = atoi( argument.c_str(  ) );
 
    if( times < 1 )
    {
@@ -2376,11 +2363,10 @@ CMDF( do_rttest )
 
 void rword_descrips( char_data * ch, obj_data * item, runeword_data * rword )
 {
-   ch->printf( "&YAs you attach the rune, your %s glows radiantly and becomes %s!\r\n", item->short_descr, rword->get_cname() );
-   stralloc_printf( &item->name, "%s %s", item->name, rword->get_cname() );
-   stralloc_printf( &item->short_descr, "%s", rword->get_cname() );
-   stralloc_printf( &item->objdesc, "%s lies here on the ground.", rword->get_cname() );
-   return;
+   ch->printf( "&YAs you attach the rune, your %s glows radiantly and becomes %s!\r\n", item->short_descr, rword->get_cname(  ) );
+   stralloc_printf( &item->name, "%s %s", item->name, rword->get_cname(  ) );
+   stralloc_printf( &item->short_descr, "%s", rword->get_cname(  ) );
+   stralloc_printf( &item->objdesc, "%s lies here on the ground.", rword->get_cname(  ) );
 }
 
 void add_rword_affect( obj_data * item, int v1, int v2 )
@@ -2396,19 +2382,17 @@ void add_rword_affect( obj_data * item, int v1, int v2 )
    paf->location = v1;
    paf->bit = 0;
    if( paf->location == APPLY_WEAPONSPELL || paf->location == APPLY_WEARSPELL
-       || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN
-       || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+       || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
       paf->modifier = slot_lookup( v2 );
    else
       paf->modifier = v2;
    item->affects.push_back( paf );
    ++top_affect;
-   return;
 }
 
 void check_runewords( char_data * ch, obj_data * item )
 {
-   list<runeword_data*>::iterator irword;
+   list < runeword_data * >::iterator irword;
 
    // Runewords must contain at least 2 runes, so if these first 2 checks fail, bail out. 
    if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
@@ -2420,16 +2404,16 @@ void check_runewords( char_data * ch, obj_data * item )
    // Only body armors get runewords
    if( item->item_type == ITEM_ARMOR && item->wear_flags.test( ITEM_WEAR_BODY ) )
    {
-      for( irword = rwordlist.begin(); irword != rwordlist.end(); ++irword )
+      for( irword = rwordlist.begin(  ); irword != rwordlist.end(  ); ++irword )
       {
-         runeword_data *rword = (*irword);
+         runeword_data *rword = *irword;
 
-         if( rword->get_type() == 1 )
+         if( rword->get_type(  ) == 1 )
             continue;
 
-         if( rword->get_rune3().empty() )
+         if( rword->get_rune3(  ).empty(  ) )
          {
-            if( scomp( rword->get_rune1(), item->socket[0] ) && scomp( rword->get_rune2(), item->socket[1] ) )
+            if( !str_cmp( rword->get_rune1(  ), item->socket[0] ) && !str_cmp( rword->get_rune2(  ), item->socket[1] ) )
             {
                add_rword_affect( item, rword->stat1[0], rword->stat1[1] );
                add_rword_affect( item, rword->stat2[0], rword->stat2[1] );
@@ -2445,8 +2429,7 @@ void check_runewords( char_data * ch, obj_data * item )
          if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
             continue;
 
-         if( scomp( rword->get_rune1(), item->socket[0] ) && scomp( rword->get_rune2(), item->socket[1] )
-             && scomp( rword->get_rune3(), item->socket[2] ) )
+         if( !str_cmp( rword->get_rune1(  ), item->socket[0] ) && !str_cmp( rword->get_rune2(  ), item->socket[1] ) && !str_cmp( rword->get_rune3(  ), item->socket[2] ) )
          {
             add_rword_affect( item, rword->stat1[0], rword->stat1[1] );
             add_rword_affect( item, rword->stat2[0], rword->stat2[1] );
@@ -2460,16 +2443,16 @@ void check_runewords( char_data * ch, obj_data * item )
    }
 
    // If we fall through to here, it's assumed to be a weapon
-   for( irword = rwordlist.begin(); irword != rwordlist.end(); ++irword )
+   for( irword = rwordlist.begin(  ); irword != rwordlist.end(  ); ++irword )
    {
-      runeword_data *rword = (*irword);
+      runeword_data *rword = *irword;
 
-      if( rword->get_type() == 0 )
+      if( rword->get_type(  ) == 0 )
          continue;
 
-      if( rword->get_rune3().empty() )
+      if( rword->get_rune3(  ).empty(  ) )
       {
-         if( scomp( rword->get_rune1(), item->socket[0] ) && scomp( rword->get_rune2(), item->socket[1] ) )
+         if( !str_cmp( rword->get_rune1(  ), item->socket[0] ) && !str_cmp( rword->get_rune2(  ), item->socket[1] ) )
          {
             add_rword_affect( item, rword->stat1[0], rword->stat1[1] );
             add_rword_affect( item, rword->stat2[0], rword->stat2[1] );
@@ -2485,8 +2468,7 @@ void check_runewords( char_data * ch, obj_data * item )
       if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
          continue;
 
-      if( scomp( rword->get_rune1(), item->socket[0] ) && scomp( rword->get_rune2(), item->socket[1] )
-          && scomp( rword->get_rune3(), item->socket[2] ) )
+      if( !str_cmp( rword->get_rune1(  ), item->socket[0] ) && !str_cmp( rword->get_rune2(  ), item->socket[1] ) && !str_cmp( rword->get_rune3(  ), item->socket[2] ) )
       {
          add_rword_affect( item, rword->stat1[0], rword->stat1[1] );
          add_rword_affect( item, rword->stat2[0], rword->stat2[1] );
@@ -2497,7 +2479,6 @@ void check_runewords( char_data * ch, obj_data * item )
          return;
       }
    }
-   return;
 }
 
 void add_rune_affect( char_data * ch, obj_data * item, obj_data * rune )
@@ -2513,8 +2494,7 @@ void add_rune_affect( char_data * ch, obj_data * item, obj_data * rune )
    else
       paf->location = rune->value[2];
    if( paf->location == APPLY_WEAPONSPELL || paf->location == APPLY_WEARSPELL
-       || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN
-       || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+       || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
    {
       if( item->item_type == ITEM_WEAPON || item->item_type == ITEM_MISSILE_WEAPON )
          paf->modifier = slot_lookup( rune->value[1] );
@@ -2534,18 +2514,18 @@ void add_rune_affect( char_data * ch, obj_data * item, obj_data * rune )
    rune->extract(  );
    ++top_affect;
    check_runewords( ch, item );
-   return;
 }
 
 CMDF( do_socket )
 {
-   char arg[MIL];
+   string arg;
    obj_data *rune, *item;
 
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   argument = one_argument( argument, arg );
+   if( arg.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Usage: socket <rune> <item>\r\n\r\n" );
       ch->print( "Where <rune> is the name of the rune you wish to use.\r\n" );
@@ -2553,29 +2533,15 @@ CMDF( do_socket )
       return;
    }
 
-   argument = one_argument( argument, arg );
-
-   if( !arg || arg[0] == '\0' )
-   {
-      do_socket( ch, "" );
-      return;
-   }
-
-   if( !argument || argument[0] == '\0' )
-   {
-      do_socket( ch, "" );
-      return;
-   }
-
    if( !( rune = ch->get_obj_carry( arg ) ) )
    {
-      ch->printf( "You do not have a %s rune in your inventory!\r\n", arg );
+      ch->printf( "You do not have a %s rune in your inventory!\r\n", arg.c_str(  ) );
       return;
    }
 
    if( !( item = ch->get_obj_carry( argument ) ) )
    {
-      ch->printf( "You do not have a %s in your inventory!\r\n", argument );
+      ch->printf( "You do not have a %s in your inventory!\r\n", argument.c_str(  ) );
       return;
    }
 
@@ -2597,30 +2563,27 @@ CMDF( do_socket )
 
       if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
       {
-         stralloc_printf( &item->socket[0], "%s", capitalize( arg ) );
+         stralloc_printf( &item->socket[0], "%s", capitalize( arg ).c_str(  ) );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n",
-                     item->short_descr, capitalize( arg ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
          add_rune_affect( ch, item, rune );
          return;
       }
 
       if( !item->socket[1] || !str_cmp( item->socket[1], "None" ) )
       {
-         stralloc_printf( &item->socket[1], "%s", capitalize( arg ) );
+         stralloc_printf( &item->socket[1], "%s", capitalize( arg ).c_str(  ) );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n",
-                     item->short_descr, capitalize( arg ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
          add_rune_affect( ch, item, rune );
          return;
       }
 
       if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
       {
-         stralloc_printf( &item->socket[2], "%s", capitalize( arg ) );
+         stralloc_printf( &item->socket[2], "%s", capitalize( arg ).c_str(  ) );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n",
-                     item->short_descr, capitalize( arg ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
          add_rune_affect( ch, item, rune );
          return;
       }
@@ -2639,30 +2602,27 @@ CMDF( do_socket )
 
       if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
       {
-         stralloc_printf( &item->socket[0], "%s", capitalize( arg ) );
+         stralloc_printf( &item->socket[0], "%s", capitalize( arg ).c_str(  ) );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n",
-                     item->short_descr, capitalize( arg ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
          add_rune_affect( ch, item, rune );
          return;
       }
 
       if( !item->socket[1] || !str_cmp( item->socket[1], "None" ) )
       {
-         stralloc_printf( &item->socket[1], "%s", capitalize( arg ) );
+         stralloc_printf( &item->socket[1], "%s", capitalize( arg ).c_str(  ) );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n",
-                     item->short_descr, capitalize( arg ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
          add_rune_affect( ch, item, rune );
          return;
       }
 
       if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
       {
-         stralloc_printf( &item->socket[2], "%s", capitalize( arg ) );
+         stralloc_printf( &item->socket[2], "%s", capitalize( arg ).c_str(  ) );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n",
-                     item->short_descr, capitalize( arg ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
          add_rune_affect( ch, item, rune );
          return;
       }
@@ -2671,10 +2631,9 @@ CMDF( do_socket )
       return;
    }
    ch->printf( "%s cannot be socketed. Only weapons, body armors, and shields are valid.\r\n", item->short_descr );
-   return;
 }
 
-int get_ore( char *ore )
+int get_ore( const string & ore )
 {
    if( !str_cmp( ore, "iron" ) )
       return ORE_IRON;
@@ -2724,12 +2683,12 @@ CMDF( do_forge )
    /*
     * Check to see what sort of flunky the smith is 
     */
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    char_data *smith = NULL;
    bool msmith = false, gsmith = false;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      smith = (*ich);
+      smith = *ich;
 
       if( smith->has_actflag( ACT_SMITH ) )
       {
@@ -2788,7 +2747,7 @@ CMDF( do_forge )
    /*
     * Finally, the argument funness. 
     */
-   char arg[MIL], item_type[MIL], arg3[MIL];
+   string arg, item_type, arg3;
    argument = one_argument( argument, arg );
    argument = one_argument( argument, item_type );
    argument = one_argument( argument, arg3 );
@@ -2796,7 +2755,7 @@ CMDF( do_forge )
    /*
     * Make sure we got all the args in there 
     */
-   if( arg[0] == '\0' || item_type[0] == '\0' || arg3[0] == '\0' )
+   if( arg.empty(  ) || item_type.empty(  ) || arg3.empty(  ) )
    {
       ch->print( "Usage: forge <ore type> <item type> <item>\r\n\r\n" );
       ch->print( "Ore type may be one of the following:\r\n" );
@@ -2817,7 +2776,7 @@ CMDF( do_forge )
    ore_type = get_ore( arg );
    if( ore_type == -1 )
    {
-      ch->printf( "%s isn't a valid ore type.\r\n", arg );
+      ch->printf( "%s isn't a valid ore type.\r\n", arg.c_str(  ) );
       return;
    }
 
@@ -2915,17 +2874,18 @@ CMDF( do_forge )
     * See how much of the specified ore the PC has 
     */
    int orecount = 0, consume = 0;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *oreobj = (*iobj);
+      obj_data *oreobj = *iobj;
+
       if( oreobj->pIndexData->vnum == ore_vnum )
          orecount += oreobj->count;
    }
 
    if( orecount < 1 )
    {
-      ch->printf( "You have no %s ore to forge an item with!\r\n", arg );
+      ch->printf( "You have no %s ore to forge an item with!\r\n", arg.c_str(  ) );
       return;
    }
 
@@ -3023,7 +2983,7 @@ CMDF( do_forge )
 
    if( consume == 0 )
    {
-      ch->printf( "%s is not a valid item type to forge.\r\n", item_type );
+      ch->printf( "%s is not a valid item type to forge.\r\n", item_type.c_str(  ) );
       return;
    }
 
@@ -3298,7 +3258,7 @@ CMDF( do_forge )
 
    if( armor == 0 && weapon == 0 )
    {
-      ch->printf( "%s is not a valid item type to forge.\r\n", arg3 );
+      ch->printf( "%s is not a valid item type to forge.\r\n", arg3.c_str(  ) );
       return;
    }
 
@@ -3315,8 +3275,7 @@ CMDF( do_forge )
 
       if( ch->gold < cost )
       {
-         act_printf( AT_TELL, smith, NULL, ch, TO_VICT,
-                     "$n tells you 'It will cost %d gold to forge this, but you cannot afford it!", cost );
+         act_printf( AT_TELL, smith, NULL, ch, TO_VICT, "$n tells you 'It will cost %d gold to forge this, but you cannot afford it!", cost );
          return;
       }
       else
@@ -3329,10 +3288,10 @@ CMDF( do_forge )
           */
          if( !ch->pcdata->clan )
          {
-            list<clan_data*>::iterator cl;
-            for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+            list < clan_data * >::iterator cl;
+            for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
             {
-               clan_data *clan = (*cl);
+               clan_data *clan = *cl;
 
                if( clan->forge == smith->pIndexData->vnum )
                {
@@ -3352,9 +3311,9 @@ CMDF( do_forge )
    /*
     * Had to be modified and such. Wasn't doing anything as a while statement - Samson 
     */
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
    {
-      obj_data *item = (*iobj);
+      obj_data *item = *iobj;
       ++iobj;
 
       if( item->pIndexData->vnum == ore_vnum && consume > 0 )
@@ -3464,5 +3423,4 @@ CMDF( do_forge )
       ch->printf( "%s forges you %s, at a cost of %d gold.\r\n", smith->short_descr, item->short_descr, cost );
    else
       ch->printf( "You've forged yourself %s!\r\n", aoran( item->short_descr ) );
-   return;
 }

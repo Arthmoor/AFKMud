@@ -36,26 +36,26 @@
 class deity_data
 {
  private:
-   deity_data( const deity_data& d );
-   deity_data& operator=( const deity_data& );
+   deity_data( const deity_data & d );
+     deity_data & operator=( const deity_data & );
 
  public:
-   deity_data();
-   ~deity_data();
+     deity_data(  );
+    ~deity_data(  );
 
-   bitset<MAX_RACE> race_allowed; /* Samson 5-17-04 */
-   bitset<MAX_CLASS> class_allowed;  /* Samson 5-17-04 */
-   char *filename;
-   char *name;
-   char *deitydesc;
-   int element[3];  /* Elements 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
-   int suscept[3];  /* Suscept 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
-   int affected[3]; /* Affects 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
-   int npcrace[3];  /* Consolidated by Samson 12/19/04 */
-   int npcfoe[3];   /* Consolidated by Samson 12/19/04 */
-   int susceptnum[3]; /* Susceptnum 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
-   int elementnum[3]; /* Elementnum 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
-   int affectednum[3]; /* Affectednum 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
+   string filename;
+   string name;
+   string deitydesc;
+     bitset < MAX_RACE > race_allowed; /* Samson 5-17-04 */
+     bitset < MAX_CLASS > class_allowed;  /* Samson 5-17-04 */
+   int element[3];   /* Elements 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
+   int suscept[3];   /* Suscept 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
+   int affected[3];  /* Affects 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
+   int npcrace[3];   /* Consolidated by Samson 12/19/04 */
+   int npcfoe[3]; /* Consolidated by Samson 12/19/04 */
+   int susceptnum[3];   /* Susceptnum 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
+   int elementnum[3];   /* Elementnum 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
+   int affectednum[3];  /* Affectednum 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
    int sex;
    int objstat;
    int recallroom;   /* Samson 4-13-98 */
@@ -73,18 +73,18 @@ class deity_data
    short srecall;
    short smount;  /* Added by Tarl 24 Feb 02 */
    short sminion; /* Added by Tarl 24 Feb 02 */
-   short spell[3];  /* Added by Tarl 24 Mar 02 - Consolidated by Samson 12/19/04 */
-   short sspell[3]; /* Added by Tarl 24 Mar 02 - Consolidated by Samson 12/19/04 */
+   short spell[3];   /* Added by Tarl 24 Mar 02 - Consolidated by Samson 12/19/04 */
+   short sspell[3];  /* Added by Tarl 24 Mar 02 - Consolidated by Samson 12/19/04 */
    short flee;
-   short flee_npcrace[3]; /* Consolidated by Samson 12/19/04 */
-   short flee_npcfoe[3];  /* Consolidated by Samson 12/19/04 */
+   short flee_npcrace[3];  /* Consolidated by Samson 12/19/04 */
+   short flee_npcfoe[3];   /* Consolidated by Samson 12/19/04 */
    short kill;
    short kill_magic;
-   short kill_npcrace[3]; /* Consolidated by Samson 12/19/04 */
-   short kill_npcfoe[3];  /* Consolidated by Samson 12/19/04 */
+   short kill_npcrace[3];  /* Consolidated by Samson 12/19/04 */
+   short kill_npcfoe[3];   /* Consolidated by Samson 12/19/04 */
    short die;
-   short die_npcrace[3]; /* Consolidated by Samson 12/19/04 */
-   short die_npcfoe[3];  /* Consolidated by Samson 12/19/04 */
+   short die_npcrace[3];   /* Consolidated by Samson 12/19/04 */
+   short die_npcfoe[3]; /* Consolidated by Samson 12/19/04 */
    short sac;
    short bury_corpse;
    short aid_spell;
@@ -95,7 +95,7 @@ class deity_data
    short dig_corpse;
 };
 
-extern list<deity_data*> deitylist;
+extern list < deity_data * >deitylist;
 void save_deity( deity_data * );
-deity_data *get_deity( char * );
+deity_data *get_deity( const string & );
 #endif

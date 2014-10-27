@@ -86,19 +86,15 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-#ifndef NULLSTR
-#define NULLSTR(str) (!str || str[0] == '\0')
-#endif
-
 /* globals */
 liquid_data *liquid_table[MAX_LIQUIDS];
-list<mixture_data*> mixlist;
+list < mixture_data * >mixlist;
 
 const char *liquid_types[LIQTYPE_TOP] = {
    "Beverage", "Alcohol", "Poison", "Unused"
 };
 
-char *const mod_types[MAX_CONDS] = {
+const char *mod_types[MAX_CONDS] = {
    "Drunk", "Full", "Thirst"
 };
 
@@ -106,20 +102,15 @@ char *const mod_types[MAX_CONDS] = {
 int top_liquid;
 int liq_count;
 int file_version;
-bool file_old;
 
 /* liquid i/o functions */
-liquid_data::liquid_data()
+liquid_data::liquid_data(  )
 {
-   init_memory( &name, &type, sizeof( type ) );
+   init_memory( &mod, &type, sizeof( type ) );
 }
 
-liquid_data::~liquid_data()
+liquid_data::~liquid_data(  )
 {
-   STRFREE( name );
-   STRFREE( color );
-   STRFREE( shortdesc );
-
    if( vnum >= top_liquid )
    {
       int j;
@@ -132,14 +123,13 @@ liquid_data::~liquid_data()
    --liq_count;
 }
 
-mixture_data::mixture_data()
+mixture_data::mixture_data(  )
 {
-   init_memory( &name, &object, sizeof( object ) );
+   init_memory( &data, &object, sizeof( object ) );
 }
 
-mixture_data::~mixture_data()
+mixture_data::~mixture_data(  )
 {
-   STRFREE( name );
    mixlist.remove( this );
 }
 
@@ -167,9 +157,9 @@ void save_liquids( void )
       liq = liquid_table[i];
 
       fprintf( fp, "%s", "#LIQUID\n" );
-      fprintf( fp, "Name      %s~\n", liq->name );
-      fprintf( fp, "Shortdesc %s~\n", liq->shortdesc );
-      fprintf( fp, "Color     %s~\n", liq->color );
+      fprintf( fp, "Name      %s~\n", liq->name.c_str(  ) );
+      fprintf( fp, "Shortdesc %s~\n", liq->shortdesc.c_str(  ) );
+      fprintf( fp, "Color     %s~\n", liq->color.c_str(  ) );
       fprintf( fp, "Type      %d\n", liq->type );
       fprintf( fp, "Vnum      %d\n", liq->vnum );
       fprintf( fp, "Mod       %d %d %d\n", liq->mod[COND_DRUNK], liq->mod[COND_FULL], liq->mod[COND_THIRST] );
@@ -177,7 +167,6 @@ void save_liquids( void )
    }
    fprintf( fp, "%s", "#END\n" );
    FCLOSE( fp );
-   return;
 }
 
 /* read the liquids from a file descriptor and then distribute them accordingly to the struct -Nopey */
@@ -212,7 +201,7 @@ liquid_data *fread_liquid( FILE * fp )
             break;
 
          case 'C':
-            KEY( "Color", liq->color, fread_string( fp ) );
+            STDSKEY( "Color", liq->color );
             break;
 
          case 'E':
@@ -225,7 +214,7 @@ liquid_data *fread_liquid( FILE * fp )
             break;
 
          case 'N':
-            KEY( "Name", liq->name, fread_string( fp ) );
+            STDSKEY( "Name", liq->name );
             break;
 
          case 'M':
@@ -240,7 +229,7 @@ liquid_data *fread_liquid( FILE * fp )
             break;
 
          case 'S':
-            KEY( "Shortdesc", liq->shortdesc, fread_string( fp ) );
+            STDSKEY( "Shortdesc", liq->shortdesc );
             break;
 
          case 'T':
@@ -270,7 +259,7 @@ void load_liquids( void )
    }
 
    top_liquid = -1;
-   liq_count = -1;
+   liq_count = 0;
 
    for( x = 0; x < MAX_LIQUIDS; ++x )
       liquid_table[x] = NULL;
@@ -322,13 +311,12 @@ void load_liquids( void )
       }
    }
    FCLOSE( fp );
-   return;
 }
 
 /* save the mixtures to the mixture table -Nopey */
 void save_mixtures( void )
 {
-   list<mixture_data*>::iterator imix;
+   list < mixture_data * >::iterator imix;
    FILE *fp = NULL;
    char filename[256];
 
@@ -340,19 +328,18 @@ void save_mixtures( void )
    }
 
    fprintf( fp, "%s", "#VERSION 3\n" );
-   for( imix = mixlist.begin(); imix != mixlist.end(); ++imix )
+   for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
    {
-      mixture_data *mix = (*imix);
+      mixture_data *mix = *imix;
 
       fprintf( fp, "%s", "#MIXTURE\n" );
-      fprintf( fp, "Name   %s~\n", mix->name );
+      fprintf( fp, "Name   %s~\n", mix->name.c_str(  ) );
       fprintf( fp, "Data   %d %d %d\n", mix->data[0], mix->data[1], mix->data[2] );
       fprintf( fp, "Object %d\n", mix->object );
       fprintf( fp, "%s", "End\n" );
    }
    fprintf( fp, "%s", "#END\n" );
    FCLOSE( fp );
-   return;
 }
 
 /* read the mixtures into the structure -Nopey */
@@ -407,7 +394,7 @@ mixture_data *fread_mixture( FILE * fp )
             break;
 
          case 'N':
-            KEY( "Name", mix->name, fread_string( fp ) );
+            STDSKEY( "Name", mix->name );
             break;
 
          case 'O':
@@ -431,7 +418,7 @@ void load_mixtures( void )
    FILE *fp = NULL;
    char filename[256];
 
-   mixlist.clear();
+   mixlist.clear(  );
    file_version = 0;
 
    snprintf( filename, 256, "%smixtures.dat", SYSTEM_DIR );
@@ -483,7 +470,6 @@ void load_mixtures( void )
       }
    }
    FCLOSE( fp );
-   return;
 }
 
 /* figure out a vnum for the next liquid  -Nopey */
@@ -506,13 +492,13 @@ static int figure_liq_vnum( void )
 }
 
 /* lookup func for liquids      -Nopey */
-liquid_data *get_liq( char *str )
+liquid_data *get_liq( const string & str )
 {
    int i;
 
    if( is_number( str ) )
    {
-      i = atoi( str );
+      i = atoi( str.c_str(  ) );
 
       return liquid_table[i];
    }
@@ -531,13 +517,13 @@ liquid_data *get_liq_vnum( int vnum )
 }
 
 /* lookup func for mixtures - Nopey */
-mixture_data *get_mix( char *str )
+mixture_data *get_mix( const string & str )
 {
-   list<mixture_data*>::iterator imix;
+   list < mixture_data * >::iterator imix;
 
-   for( imix = mixlist.begin(); imix != mixlist.end(); ++imix )
+   for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
    {
-      mixture_data *mix = (*imix);
+      mixture_data *mix = *imix;
 
       if( !str_cmp( mix->name, str ) )
          return mix;
@@ -565,14 +551,14 @@ CMDF( do_showliquid )
       return;
    }
 
-   if( !NULLSTR( argument ) && ( ( liq = get_liq( argument ) ) != NULL ) )
+   if( !argument.empty(  ) && ( ( liq = get_liq( argument ) ) != NULL ) )
    {
-      if( !NULLSTR( liq->name ) )
-         ch->pagerf( "&GLiquid information for:&g %s\r\n", liq->name );
-      if( !NULLSTR( liq->shortdesc ) )
-         ch->pagerf( "&GLiquid shortdesc:&g\t %s\r\n", liq->shortdesc );
-      if( !NULLSTR( liq->color ) )
-         ch->pagerf( "&GLiquid color:&g\t %s\r\n", liq->color );
+      if( !liq->name.empty(  ) )
+         ch->pagerf( "&GLiquid information for:&g %s\r\n", liq->name.c_str(  ) );
+      if( !liq->shortdesc.empty(  ) )
+         ch->pagerf( "&GLiquid shortdesc:&g\t %s\r\n", liq->shortdesc.c_str(  ) );
+      if( !liq->color.empty(  ) )
+         ch->pagerf( "&GLiquid color:&g\t %s\r\n", liq->color.c_str(  ) );
       ch->pagerf( "&GLiquid vnum:&g\t %d\r\n", liq->vnum );
       ch->pagerf( "&GLiquid type:&g\t %s\r\n", liquid_types[liq->type] );
       ch->pagerf( "&GLiquid Modifiers\r\n" );
@@ -581,7 +567,7 @@ CMDF( do_showliquid )
             ch->pagerf( "&G%s:&g\t %d\r\n", mod_types[i], liq->mod[i] );
       return;
    }
-   else if( !NULLSTR( argument ) && !( liq = get_liq( argument ) ) )
+   else if( !argument.empty(  ) && !( liq = get_liq( argument ) ) )
    {
       ch->print( "Invaild liquid-vnum.\r\nUse 'showliquid' to gain a vaild liquidvnum.\r\n" );
       return;
@@ -592,17 +578,16 @@ CMDF( do_showliquid )
    {
       if( !liquid_table[i] )
          continue;
-      ch->pagerf( "  %-7d %s\r\n", liquid_table[i]->vnum, liquid_table[i]->name );
+      ch->pagerf( "  %-7d %s\r\n", liquid_table[i]->vnum, liquid_table[i]->name.c_str(  ) );
    }
    ch->pager( "\r\nUse 'showliquid [vnum]' to view individual liquids.\r\n" );
    ch->pager( "Use 'showmixture' to view the mixturetable.\r\n" );
-   return;
 }
 
 /* olc function for liquids   -Nopey */
 CMDF( do_setliquid )
 {
-   char arg[MIL];
+   string arg;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
    {
@@ -613,10 +598,9 @@ CMDF( do_setliquid )
    smash_tilde( argument );
    argument = one_argument( argument, arg );
 
-   if( NULLSTR( arg ) )
+   if( arg.empty(  ) )
    {
-      ch->print( "Syntax: setliquid <vnum> <field> <value>\r\n"
-                 "        setliquid create <name>\r\n" "        setliquid delete <vnum>\r\n" );
+      ch->print( "Syntax: setliquid <vnum> <field> <value>\r\n" "        setliquid create <name>\r\n" "        setliquid delete <vnum>\r\n" );
       ch->print( " Fields being one of the following:\r\n" " name color type shortdesc drunk thrist blood full\r\n" );
       return;
    }
@@ -628,20 +612,19 @@ CMDF( do_setliquid )
 
       if( liq_count >= MAX_LIQUIDS )
       {
-         ch->print( "Liquid count is at the hard-coded max. Remove some liquids or raise\r\n"
-                    "the hard-coded max number of liquids.\r\n" );
+         ch->print( "Liquid count is at the hard-coded max. Remove some liquids or raise\r\n" "the hard-coded max number of liquids.\r\n" );
          return;
       }
 
-      if( NULLSTR( argument ) )
+      if( argument.empty(  ) )
       {
          ch->print( "Syntax: setliquid create <name>\r\n" );
          return;
       }
 
       liq = new liquid_data;
-      liq->name = STRALLOC( argument );
-      liq->shortdesc = STRALLOC( argument );
+      liq->name = argument;
+      liq->shortdesc = argument;
       liq->vnum = figure_liq_vnum(  );
       liq->type = -1;
       for( i = 0; i < MAX_CONDS; ++i )
@@ -656,7 +639,7 @@ CMDF( do_setliquid )
    {
       liquid_data *liq = NULL;
 
-      if( NULLSTR( argument ) )
+      if( argument.empty(  ) )
       {
          ch->print( "Syntax: setliquid delete <vnum>\r\n" );
          return;
@@ -672,7 +655,7 @@ CMDF( do_setliquid )
       }
       else
       {
-         int i = atoi( argument );
+         int i = atoi( argument.c_str(  ) );
 
          if( !( liq = get_liq_vnum( i ) ) )
          {
@@ -687,11 +670,11 @@ CMDF( do_setliquid )
    }
    else
    {
-      char arg2[MIL];
+      string arg2;
       liquid_data *liq = NULL;
 
       argument = one_argument( argument, arg2 );
-      if( NULLSTR( arg2 ) )
+      if( arg2.empty(  ) )
       {
          ch->print( "Syntax: setliquid <vnum> <field> <value>\r\n" );
          ch->print( " Fields being one of the following:\r\n" " name color shortdesc drunk thrist blood full\r\n" );
@@ -706,37 +689,34 @@ CMDF( do_setliquid )
 
       if( !str_cmp( arg2, "name" ) )
       {
-         if( NULLSTR( argument ) )
+         if( argument.empty(  ) )
          {
             ch->print( "Syntax: setliquid <vnum> name <name>\r\n" );
             return;
          }
-         STRFREE( liq->name );
-         liq->name = STRALLOC( argument );
+         liq->name = argument;
       }
       else if( !str_cmp( arg2, "color" ) )
       {
-         if( NULLSTR( argument ) )
+         if( argument.empty(  ) )
          {
             ch->print( "Syntax: setliquid <vnum> color <color>\r\n" );
             return;
          }
-         STRFREE( liq->color );
-         liq->color = STRALLOC( argument );
+         liq->color = argument;
       }
       else if( !str_cmp( arg2, "shortdesc" ) )
       {
-         if( NULLSTR( argument ) )
+         if( argument.empty(  ) )
          {
             ch->print( "Syntax: setliquid <vnum> shortdesc <shortdesc>\r\n" );
             return;
          }
-         STRFREE( liq->shortdesc );
-         liq->shortdesc = STRALLOC( argument );
+         liq->shortdesc = argument;
       }
       else if( !str_cmp( arg2, "type" ) )
       {
-         char arg3[MIL];
+         string arg3;
          int i;
          bool found = false;
 
@@ -761,9 +741,9 @@ CMDF( do_setliquid )
       {
          int i;
          bool found = false;
-         static char *const arg_names[MAX_CONDS] = { "drunk", "full", "thirst" };
+         static const char *arg_names[MAX_CONDS] = { "drunk", "full", "thirst" };
 
-         if( NULLSTR( argument ) )
+         if( argument.empty(  ) )
          {
             ch->print( "Syntax: setliquid <vnum> <field> <value>\r\n" );
             ch->print( " Fields being one of the following:\r\n" " name color shortdesc drunk thrist blood full\r\n" );
@@ -774,7 +754,7 @@ CMDF( do_setliquid )
             if( !str_cmp( arg2, arg_names[i] ) )
             {
                found = true;
-               liq->mod[i] = atoi( argument );
+               liq->mod[i] = atoi( argument.c_str(  ) );
             }
          if( !found )
          {
@@ -788,7 +768,7 @@ CMDF( do_setliquid )
    }
 }
 
-void displaymixture( char_data *ch, mixture_data *mix )
+void displaymixture( char_data * ch, mixture_data * mix )
 {
    ch->pager( " .-.                ,\r\n" );
    ch->pager( "`._ ,\r\n" );
@@ -802,9 +782,9 @@ void displaymixture( char_data *ch, mixture_data *mix )
    ch->pager( "    `-.     .-'          |\r\n" );
    ch->pager( "-----{. _ _ .}-------------------\r\n" );
 
-   ch->pagerf( "&gRecipe for Mixture &G%s&g:\r\n", mix->name );
+   ch->pagerf( "&gRecipe for Mixture &G%s&g:\r\n", mix->name.c_str(  ) );
    ch->pager( "---------------------------------\r\n" );
-   if( !mix->object ) //this is an object
+   if( !mix->object )   //this is an object
    {
       liquid_data *ingred1 = get_liq_vnum( mix->data[0] );
       liquid_data *ingred2 = get_liq_vnum( mix->data[1] );
@@ -813,19 +793,19 @@ void displaymixture( char_data *ch, mixture_data *mix )
       if( !ingred1 )
          ch->pagerf( "Vnum1 (%d) is invalid, tell an Admin\r\n", mix->data[0] );
       else
-         ch->pagerf( "&wOne part &G%s&w (%d)\r\n", ingred1->name, mix->data[0] );
+         ch->pagerf( "&wOne part &G%s&w (%d)\r\n", ingred1->name.c_str(  ), mix->data[0] );
 
       if( !ingred2 )
          ch->pagerf( "Vnum2 (%d) is invalid, tell an Admin\r\n", mix->data[1] );
       else
-         ch->pagerf( "&wAnd part &G%s&w (%d)&D\r\n", ingred2->name, mix->data[1] );
+         ch->pagerf( "&wAnd part &G%s&w (%d)&D\r\n", ingred2->name.c_str(  ), mix->data[1] );
    }
    else
    {
       obj_index *obj = get_obj_index( mix->data[0] );
       if( !obj )
       {
-         ch->pagerf( "%s has a bad object vnum %d, inform an Admin\r\n", mix->name, mix->data[0] );
+         ch->pagerf( "%s has a bad object vnum %d, inform an Admin\r\n", mix->name.c_str(  ), mix->data[0] );
          return;
       }
       else
@@ -834,17 +814,16 @@ void displaymixture( char_data *ch, mixture_data *mix )
 
          ch->pager( "Combine an object and a liquid in this mixture\r\n" );
          ch->pagerf( "&wMix &G%s&w (%d)\r\n", obj->name, mix->data[0] );
-         ch->pagerf( "&winto one part &G%s&w (%d)&D\r\n", ingred1->name, mix->data[1] );
+         ch->pagerf( "&winto one part &G%s&w (%d)&D\r\n", ingred1->name.c_str(  ), mix->data[1] );
       }
    }
-   return;
 }
 
 /* Function for showmixture - Tarl 9 Jan 03 */
 CMDF( do_showmixture )
 {
    mixture_data *mix = NULL;
-   list<mixture_data*>::iterator imx;
+   list < mixture_data * >::iterator imx;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
    {
@@ -852,18 +831,18 @@ CMDF( do_showmixture )
       return;
    }
 
-   if( !NULLSTR( argument ) && ( ( mix = get_mix( argument ) ) != NULL ) )
+   if( !argument.empty(  ) && ( ( mix = get_mix( argument ) ) != NULL ) )
    {
       displaymixture( ch, mix );
       return;
    }
-   else if( !NULLSTR( argument ) && !( mix = get_mix( argument ) ) )
+   else if( !argument.empty(  ) && !( mix = get_mix( argument ) ) )
    {
       ch->print( "Invaild mixture-name.\r\nUse 'setmixture list' to gain a vaild name.\r\n" );
       return;
    }
 
-   if( mixlist.empty() )
+   if( mixlist.empty(  ) )
    {
       ch->print( "There are currently no mixtures loaded.\r\n" );
       return;
@@ -871,21 +850,20 @@ CMDF( do_showmixture )
 
    ch->pager( "&G[&gType&G] &G[&gName&G]\r\n" );
    ch->pager( "-----------------------\r\n" );
-   for( imx = mixlist.begin(); imx != mixlist.end(); ++imx )
+   for( imx = mixlist.begin(  ); imx != mixlist.end(  ); ++imx )
    {
-      mixture_data *mx = (*imx);
+      mixture_data *mx = *imx;
 
-      ch->pagerf( "  %-12s %s\r\n", mx->object ? "&[objects]Object&D" : "&BLiquids&D", mx->name );
+      ch->pagerf( "  %-12s %s\r\n", mx->object ? "&[objects]Object&D" : "&BLiquids&D", mx->name.c_str(  ) );
    }
    ch->pager( "\r\n&gUse 'showmixture [name]' to view individual mixtures.\r\n" );
    ch->pager( "&gUse 'showliquid' to view the liquidtable.\r\n&D" );
-   return;
 }
 
 /* olc funciton for mixtures  -Nopey */
 CMDF( do_setmixture )
 {
-   char arg[MIL];
+   string arg;
    liquid_data *liq = NULL;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
@@ -897,13 +875,11 @@ CMDF( do_setmixture )
    smash_tilde( argument );
    argument = one_argument( argument, arg );
 
-   if( NULLSTR( arg ) )
+   if( arg.empty(  ) )
    {
       ch->print( "Syntax: setmixture create <name>\r\n"
                  "        setmixture delete <name>\r\n"
-                 "        setmixture list [name]\r\n"
-                 "        setmixture save - (saves table)\r\n"
-                 "        setmixture <name> <field> <value>\r\n" );
+                 "        setmixture list [name]\r\n" "        setmixture save - (saves table)\r\n" "        setmixture <name> <field> <value>\r\n" );
       ch->print( " Fields being one of the following:\r\n" " name vnum1 vnum2 into object\r\n" );
       return;
    }
@@ -911,20 +887,20 @@ CMDF( do_setmixture )
    if( !str_cmp( arg, "list" ) )
    {
       mixture_data *mix = NULL;
-      list<mixture_data*>::iterator imx;
+      list < mixture_data * >::iterator imx;
 
-      if( !NULLSTR( argument ) && ( ( mix = get_mix( argument ) ) != NULL ) )
+      if( !argument.empty(  ) && ( ( mix = get_mix( argument ) ) != NULL ) )
       {
          displaymixture( ch, mix );
          return;
       }
-      else if( !NULLSTR( argument ) && !( mix = get_mix( argument ) ) )
+      else if( !argument.empty(  ) && !( mix = get_mix( argument ) ) )
       {
          ch->print( "Invaild mixture-name.\r\nUse 'setmixture list' to gain a vaild name.\r\n" );
          return;
       }
 
-      if( mixlist.empty() )
+      if( mixlist.empty(  ) )
       {
          ch->print( "There are currently no mixtures loaded.\r\n" );
          return;
@@ -932,11 +908,11 @@ CMDF( do_setmixture )
 
       ch->pager( "&G[&gType&G] &G[&gName&G]\r\n" );
       ch->pager( "-----------------------\r\n" );
-      for( imx = mixlist.begin(); imx != mixlist.end(); ++imx )
+      for( imx = mixlist.begin(  ); imx != mixlist.end(  ); ++imx )
       {
-         mixture_data *mx = (*imx);
+         mixture_data *mx = *imx;
 
-         ch->pagerf( "  %-8s %s\r\n", mx->object ? "Object" : "Liquids", mx->name );
+         ch->pagerf( "  %-8s %s\r\n", mx->object ? "Object" : "Liquids", mx->name.c_str(  ) );
       }
 
       ch->pagerf( "\r\n&gUse 'showmixture [name]' to view individual mixtures.\r\n" );
@@ -947,14 +923,14 @@ CMDF( do_setmixture )
    {
       mixture_data *mix = NULL;
 
-      if( NULLSTR( argument ) )
+      if( argument.empty(  ) )
       {
          ch->print( "Syntax: setmixture create <name>\r\n" );
          return;
       }
 
       mix = new mixture_data;
-      mix->name = STRALLOC( argument );
+      mix->name = argument;
       mix->data[0] = -1;
       mix->data[1] = -1;
       mix->data[2] = -1;
@@ -966,7 +942,7 @@ CMDF( do_setmixture )
    }
    else if( !str_cmp( arg, "save" ) )
    {
-      save_mixtures();
+      save_mixtures(  );
       ch->print( "Mixture table saved.\r\n" );
       return;
    }
@@ -974,7 +950,7 @@ CMDF( do_setmixture )
    {
       mixture_data *mix = NULL;
 
-      if( NULLSTR( argument ) )
+      if( argument.empty(  ) )
       {
          ch->print( "Syntax: setmixture delete <name>\r\n" );
          return;
@@ -992,10 +968,10 @@ CMDF( do_setmixture )
    }
    else
    {
-      char arg2[MIL];
+      string arg2;
       mixture_data *mix = NULL;
 
-      if( NULLSTR( arg ) || !( mix = get_mix( arg ) ) )
+      if( arg.empty(  ) || !( mix = get_mix( arg ) ) )
       {
          ch->print( "Syntax: setmixture <mixname> <field> <value>\r\n" );
          ch->print( " Fields being one of the following:\r\n" " name vnum1 vnum2 into object\r\n" );
@@ -1006,21 +982,20 @@ CMDF( do_setmixture )
 
       if( !str_cmp( arg2, "name" ) )
       {
-         if( NULLSTR( argument ) )
+         if( argument.empty(  ) )
          {
             ch->print( "Syntax: setmixture <mixname> name <name>\r\n" );
             return;
          }
-         STRFREE( mix->name );
-         mix->name = STRALLOC( argument );
+         mix->name = argument;
       }
       else if( !str_cmp( arg2, "vnum1" ) )
       {
          int i = 0;
-		
+
          if( is_number( argument ) )
-            i = atoi( argument );
-         else 
+            i = atoi( argument.c_str(  ) );
+         else
          {
             ch->print( "Invalid liquid vnum.\r\n" );
             ch->print( "Syntax: setmixture <mixname> vnum1 <liqvnum or objvnum>\r\n" );
@@ -1052,16 +1027,16 @@ CMDF( do_setmixture )
             else
             {
                mix->data[0] = i;
-               ch->printf( "Mixture Vnum1 set to %s \r\n", liq->name );
+               ch->printf( "Mixture Vnum1 set to %s \r\n", liq->name.c_str(  ) );
             }
          }
       }
       else if( !str_cmp( arg2, "vnum2" ) )
-	{
+      {
          int i = 0;
 
          if( is_number( argument ) )
-            i = atoi( argument );
+            i = atoi( argument.c_str(  ) );
          else
          {
             ch->print( "Invalid liquid vnum.\r\n" );
@@ -1079,7 +1054,7 @@ CMDF( do_setmixture )
          else
          {
             mix->data[1] = i;
-            ch->printf( "Mixture Vnum2 set to %s \r\n", liq->name );
+            ch->printf( "Mixture Vnum2 set to %s \r\n", liq->name.c_str(  ) );
          }
       }
       else if( !str_cmp( arg2, "object" ) )
@@ -1095,7 +1070,7 @@ CMDF( do_setmixture )
          int i;
 
          if( is_number( argument ) )
-            i = atoi( argument );
+            i = atoi( argument.c_str(  ) );
          else
          {
             ch->print( "Invalid liquid vnum.\r\n" );
@@ -1112,7 +1087,7 @@ CMDF( do_setmixture )
          else
          {
             mix->data[2] = i;
-            ch->printf( "Mixture will now turn into %s \r\n", liq->name );
+            ch->printf( "Mixture will now turn into %s \r\n", liq->name.c_str(  ) );
          }
       }
       ch->print( "Changes done. Saving table.\r\n" );
@@ -1124,13 +1099,13 @@ CMDF( do_setmixture )
 /* mix a liquid with a liquid; return the final product - Nopey */
 liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
 {
-   list<mixture_data*>::iterator imix;
+   list < mixture_data * >::iterator imix;
    mixture_data *mix = NULL;
    bool mix_found = false;
 
-   for( imix = mixlist.begin(); imix != mixlist.end(); ++imix )
+   for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
    {
-      mix = (*imix);
+      mix = *imix;
 
       if( mix->data[0] == iObj->value[2] || mix->data[1] == iObj->value[2] )
       {
@@ -1162,13 +1137,13 @@ liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
 /* used to mix an object with a liquid to form another liquid; returns the result  -Nopey */
 liquid_data *liqobj_can_mix( obj_data * iObj, obj_data * oLiq )
 {
-   list<mixture_data*>::iterator imix;
+   list < mixture_data * >::iterator imix;
    mixture_data *mix = NULL;
    bool mix_found = false;
 
-   for( imix = mixlist.begin(); imix != mixlist.end(); ++imix )
+   for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
    {
-      mix = (*imix);
+      mix = *imix;
 
       if( mix->object && ( mix->data[0] == iObj->value[2] || mix->data[1] == iObj->value[2] ) )
          if( mix->data[0] == oLiq->value[2] || mix->data[1] == oLiq->value[2] )
@@ -1202,14 +1177,14 @@ liquid_data *liqobj_can_mix( obj_data * iObj, obj_data * oLiq )
 /* the actual -mix- funciton  -Nopey */
 CMDF( do_mix )
 {
-   char arg[MIL];
+   string arg;
    obj_data *iObj, *tObj = NULL;
 
    argument = one_argument( argument, arg );
    /*
     * null arguments 
     */
-   if( NULLSTR( arg ) || NULLSTR( argument ) )
+   if( arg.empty(  ) || argument.empty(  ) )
    {
       ch->print( "What would you like to mix together?\r\n" );
       return;
@@ -1227,8 +1202,7 @@ CMDF( do_mix )
    /*
     * check itemtypes 
     */
-   if( ( iObj->item_type != ITEM_DRINK_CON && iObj->item_type != ITEM_DRINK_MIX )
-       || ( tObj->item_type != ITEM_DRINK_CON && tObj->item_type != ITEM_DRINK_MIX ) )
+   if( ( iObj->item_type != ITEM_DRINK_CON && iObj->item_type != ITEM_DRINK_MIX ) || ( tObj->item_type != ITEM_DRINK_CON && tObj->item_type != ITEM_DRINK_MIX ) )
    {
       ch->print( "You can't mix that!\r\n" );
       return;
@@ -1279,35 +1253,34 @@ CMDF( do_mix )
       return;
    }
    ch->print( "&cYou mix them together.&g\r\n" );
-   return;
 }
 
 CMDF( do_drink )
 {
-   char arg[MIL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
    /*
     * munch optional words 
     */
-   if( !str_cmp( arg, "from" ) && argument[0] != '\0' )
+   if( !str_cmp( arg, "from" ) && !argument.empty(  ) )
       argument = one_argument( argument, arg );
 
    obj_data *obj = NULL;
-   if( arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
-      list<obj_data*>::iterator iobj;
+      list < obj_data * >::iterator iobj;
 
-      for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
       {
-         obj = (*iobj);
+         obj = *iobj;
 
          if( obj->item_type == ITEM_FOUNTAIN )
             break;
       }
 
-      if( iobj == ch->in_room->objects.end() )
+      if( iobj == ch->in_room->objects.end(  ) )
       {
          ch->print( "Drink what?\r\n" );
          return;
@@ -1410,8 +1383,7 @@ CMDF( do_drink )
          /*
           * allow water to be drank; but nothing else on a full stomach -Nopey 
           */
-         if( !ch->isnpc(  ) && ( ch->pcdata->condition[COND_THIRST] == sysdata->maxcondval
-                                  || ch->pcdata->condition[COND_FULL] == sysdata->maxcondval ) )
+         if( !ch->isnpc(  ) && ( ch->pcdata->condition[COND_THIRST] == sysdata->maxcondval || ch->pcdata->condition[COND_FULL] == sysdata->maxcondval ) )
          {
             ch->print( "Your stomach is too full to drink anymore!\r\n" );
             return;
@@ -1425,12 +1397,12 @@ CMDF( do_drink )
 
          if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
          {
-            act( AT_ACTION, "$n drinks $T from $p.", ch, obj, liq->shortdesc, TO_ROOM );
-            act( AT_ACTION, "You drink $T from $p.", ch, obj, liq->shortdesc, TO_CHAR );
+            act( AT_ACTION, "$n drinks $T from $p.", ch, obj, liq->shortdesc.c_str(  ), TO_ROOM );
+            act( AT_ACTION, "You drink $T from $p.", ch, obj, liq->shortdesc.c_str(  ), TO_CHAR );
             ch->sound( "drink.wav", 100, false );
          }
 
-         int amount = 1; /* UMIN(amount, obj->value[1]); */
+         int amount = 1;   /* UMIN(amount, obj->value[1]); */
 
          /*
           * gain conditions accordingly              -Nopey 
@@ -1456,32 +1428,24 @@ CMDF( do_drink )
 
          if( !ch->isnpc(  ) )
          {
-            if( ch->pcdata->condition[COND_DRUNK] > ( sysdata->maxcondval / 2 )
-                && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .4 ) )
+            if( ch->pcdata->condition[COND_DRUNK] > ( sysdata->maxcondval / 2 ) && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .4 ) )
                ch->print( "You feel quite sloshed.\r\n" );
-            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .4 )
-                     && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .6 ) )
+            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .4 ) && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .6 ) )
                ch->print( "You start to feel a little drunk.\r\n" );
-            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .6 )
-                     && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .9 ) )
+            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .6 ) && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .9 ) )
                ch->print( "Your vision starts to get blurry.\r\n" );
-            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .9 )
-                     && ch->pcdata->condition[COND_DRUNK] < sysdata->maxcondval )
+            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .9 ) && ch->pcdata->condition[COND_DRUNK] < sysdata->maxcondval )
                ch->print( "You feel very drunk.\r\n" );
             else if( ch->pcdata->condition[COND_DRUNK] == sysdata->maxcondval )
                ch->print( "You feel like your going to pass out.\r\n" );
 
-            if( ch->pcdata->condition[COND_THIRST] > ( sysdata->maxcondval / 2 )
-                && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .4 ) )
+            if( ch->pcdata->condition[COND_THIRST] > ( sysdata->maxcondval / 2 ) && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .4 ) )
                ch->print( "Your stomach begins to slosh around.\r\n" );
-            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .4 )
-                     && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .6 ) )
+            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .4 ) && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .6 ) )
                ch->print( "You start to feel bloated.\r\n" );
-            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .6 )
-                     && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .9 ) )
+            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .6 ) && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .9 ) )
                ch->print( "You feel bloated.\r\n" );
-            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .9 )
-                     && ch->pcdata->condition[COND_THIRST] < sysdata->maxcondval )
+            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .9 ) && ch->pcdata->condition[COND_THIRST] < sysdata->maxcondval )
                ch->print( "You stomach is almost filled to it's brim!\r\n" );
             else if( ch->pcdata->condition[COND_THIRST] == sysdata->maxcondval )
                ch->print( "Your stomach is full, you can't manage to get anymore down.\r\n" );
@@ -1509,13 +1473,12 @@ CMDF( do_drink )
       ch->WAIT_STATE( sysdata->pulsepersec / 3 );
    else
       ch->WAIT_STATE( sysdata->pulsepersec );
-   return;
 }
 
 /* standard liquid functions - Nopey */
 CMDF( do_fill )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    obj_data *obj, *source;
    short dest_item, src_item1, src_item2, src_item3;
    int diff = 0;
@@ -1527,10 +1490,10 @@ CMDF( do_fill )
    /*
     * munch optional words 
     */
-   if( ( !str_cmp( arg2, "from" ) || !str_cmp( arg2, "with" ) ) && argument[0] != '\0' )
+   if( ( !str_cmp( arg2, "from" ) || !str_cmp( arg2, "with" ) ) && !argument.empty(  ) )
       argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Fill what?\r\n" );
       return;
@@ -1605,7 +1568,7 @@ CMDF( do_fill )
       return;
    }
 
-   if( arg2[0] != '\0' )
+   if( !arg2.empty(  ) )
    {
       if( dest_item == ITEM_CONTAINER && ( !str_cmp( arg2, "all" ) || !str_prefix( "all.", arg2 ) ) )
       {
@@ -1655,21 +1618,20 @@ CMDF( do_fill )
       obj->separate(  );
 
       bool found = false;
-      list<obj_data*>::iterator iobj;
-      for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
       {
-         source = (*iobj);
+         source = *iobj;
          ++iobj;
 
          if( dest_item == ITEM_CONTAINER )
          {
             if( !source->wear_flags.test( ITEM_TAKE ) || source->extra_flags.test( ITEM_BURIED )
                 || ( source->extra_flags.test( ITEM_PROTOTYPE ) && !ch->can_take_proto(  ) )
-                || ch->carry_weight + source->get_weight(  ) > ch->can_carry_w(  )
-                || ( source->get_real_weight(  ) + obj->get_real_weight(  ) / obj->count ) > obj->value[0] )
+                || ch->carry_weight + source->get_weight(  ) > ch->can_carry_w(  ) || ( source->get_real_weight(  ) + obj->get_real_weight(  ) / obj->count ) > obj->value[0] )
                continue;
 
-            if( all && arg2[3] == '.' && !nifty_is_name( &arg2[4], source->name ) )
+            if( all && arg2[3] == '.' && !hasname( source->name, arg2.substr( 4, arg2.length(  ) ) ) )
                continue;
 
             source->from_room(  );
@@ -1731,8 +1693,7 @@ CMDF( do_fill )
             if( !source->in_room /* disallow inventory items */
                 || !source->wear_flags.test( ITEM_TAKE ) || ( source->extra_flags.test( ITEM_PROTOTYPE )
                                                               && !ch->can_take_proto(  ) )
-                || ch->carry_weight + source->get_weight(  ) > ch->can_carry_w(  )
-                || ( source->get_real_weight(  ) + obj->get_real_weight(  ) / obj->count ) > obj->value[0] )
+                || ch->carry_weight + source->get_weight(  ) > ch->can_carry_w(  ) || ( source->get_real_weight(  ) + obj->get_real_weight(  ) / obj->count ) > obj->value[0] )
             {
                ch->print( "You can't do that.\r\n" );
                return;
@@ -1771,11 +1732,11 @@ CMDF( do_fill )
 
                if( str_cmp( name, ch->name ) && !ch->is_immortal(  ) )
                {
-                  list<char_data*>::iterator ich;
+                  list < char_data * >::iterator ich;
 
-                  for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+                  for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
                   {
-                     char_data *gch = (*ich);
+                     char_data *gch = *ich;
 
                      if( is_same_group( ch, gch ) && !str_cmp( name, gch->name ) )
                      {
@@ -1794,7 +1755,7 @@ CMDF( do_fill )
             }
 
          case ITEM_CORPSE_NPC:
-            if( source->contents.empty() )
+            if( source->contents.empty(  ) )
             {
                ch->print( "It's empty.\r\n" );
                return;
@@ -1802,10 +1763,10 @@ CMDF( do_fill )
             obj->separate(  );
 
             bool found = false;
-            list<obj_data*>::iterator iobj;
-            for( iobj = source->contents.begin(); iobj != source->contents.end(); )
+            list < obj_data * >::iterator iobj;
+            for( iobj = source->contents.begin(  ); iobj != source->contents.end(  ); )
             {
-               obj_data *otmp = (*iobj);
+               obj_data *otmp = ( *iobj );
                ++iobj;
 
                if( !otmp->wear_flags.test( ITEM_TAKE )
@@ -1926,14 +1887,14 @@ CMDF( do_fill )
 CMDF( do_empty )
 {
    obj_data *obj;
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !str_cmp( arg2, "into" ) && argument[0] != '\0' )
+   if( !str_cmp( arg2, "into" ) && !argument.empty(  ) )
       argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Empty what?\r\n" );
       return;
@@ -1984,12 +1945,12 @@ CMDF( do_empty )
          }
 
       case ITEM_KEYRING:
-         if( obj->contents.empty() )
+         if( obj->contents.empty(  ) )
          {
             ch->print( "It's already empty.\r\n" );
             return;
          }
-         if( !arg2 || arg2[0] == '\0' )
+         if( arg2.empty(  ) )
          {
             if( ch->in_room->flags.test( ROOM_NODROP ) || ch->has_pcflag( PCFLAG_LITTERBUG ) )
             {
@@ -2053,13 +2014,13 @@ CMDF( do_empty )
 
 void free_liquiddata( void )
 {
-   list<mixture_data*>::iterator mx;
+   list < mixture_data * >::iterator mx;
    liquid_data *liq;
    int loopa;
 
-   for( mx = mixlist.begin(); mx != mixlist.end(); )
+   for( mx = mixlist.begin(  ); mx != mixlist.end(  ); )
    {
-      mixture_data *mix = (*mx);
+      mixture_data *mix = *mx;
       ++mx;
 
       deleteptr( mix );
@@ -2070,5 +2031,4 @@ void free_liquiddata( void )
 
       deleteptr( liq );
    }
-   return;
 }

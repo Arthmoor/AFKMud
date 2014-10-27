@@ -31,7 +31,7 @@
 #include "objindex.h"
 #include "mud_prog.h"
 
-obj_index *obj_index_hash[MAX_KEY_HASH];
+map < int, obj_index * >obj_index_table;
 
 extern int top_affect;
 
@@ -42,33 +42,33 @@ obj_index::~obj_index(  )
    /*
     * Remove references to object index 
     */
-   list<obj_data*>::iterator iobj;
-   for( iobj = objlist.begin(); iobj != objlist.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
    {
-      obj_data *o = (*iobj);
+      obj_data *o = *iobj;
       ++iobj;
 
       if( o->pIndexData == this )
          o->extract(  );
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
       char_data *ch = *ich;
 
       if( ch->substate == SUB_OBJ_EXTRA && ch->pcdata->dest_buf )
       {
-         list<extra_descr_data*>::iterator ex;
+         list < extra_descr_data * >::iterator ex;
 
-         for( ex = extradesc.begin(); ex != extradesc.end(); ++ex )
+         for( ex = extradesc.begin(  ); ex != extradesc.end(  ); ++ex )
          {
             extra_descr_data *ed = *ex;
 
             if( ed == ch->pcdata->dest_buf )
             {
                ch->print( "You suddenly forget which object you were editing!\r\n" );
-               ch->stop_editing( );
+               ch->stop_editing(  );
                ch->substate = SUB_NONE;
                break;
             }
@@ -76,16 +76,16 @@ obj_index::~obj_index(  )
       }
       else if( ch->substate == SUB_MPROG_EDIT && ch->pcdata->dest_buf )
       {
-         list<mud_prog_data*>::iterator mpg;
+         list < mud_prog_data * >::iterator mpg;
 
-         for( mpg = mudprogs.begin(); mpg != mudprogs.end(); )
+         for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
          {
             mud_prog_data *mp = *mpg;
 
             if( mp == ch->pcdata->dest_buf )
             {
                ch->print( "You suddenly forget which object you were working on.\r\n" );
-               ch->stop_editing( );
+               ch->stop_editing(  );
                ch->pcdata->dest_buf = NULL;
                ch->substate = SUB_NONE;
                break;
@@ -94,40 +94,40 @@ obj_index::~obj_index(  )
       }
    }
 
-   list<extra_descr_data*>::iterator ed;
-   for( ed = extradesc.begin(); ed != extradesc.end(); )
+   list < extra_descr_data * >::iterator ed;
+   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
    {
-      extra_descr_data *desc = (*ed);
+      extra_descr_data *desc = *ed;
       ++ed;
 
       extradesc.remove( desc );
       deleteptr( desc );
       --top_ed;
    }
-   extradesc.clear();
+   extradesc.clear(  );
 
-   list<affect_data*>::iterator paf;
-   for( paf = affects.begin(); paf != affects.end(); )
+   list < affect_data * >::iterator paf;
+   for( paf = affects.begin(  ); paf != affects.end(  ); )
    {
-      affect_data *aff = (*paf);
+      affect_data *aff = *paf;
       ++paf;
 
       affects.remove( aff );
       deleteptr( aff );
       --top_affect;
    }
-   affects.clear();
+   affects.clear(  );
 
-   list<mud_prog_data*>::iterator mpg;
-   for( mpg = mudprogs.begin(); mpg != mudprogs.end(); )
+   list < mud_prog_data * >::iterator mpg;
+   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
    {
-      mud_prog_data *mprog = (*mpg);
+      mud_prog_data *mprog = *mpg;
       ++mpg;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
    }
-   mudprogs.clear();
+   mudprogs.clear(  );
 
    STRFREE( name );
    STRFREE( short_descr );
@@ -137,20 +137,9 @@ obj_index::~obj_index(  )
    STRFREE( socket[1] );
    STRFREE( socket[2] );
 
-   obj_index *prev;
-   int hash = vnum % MAX_KEY_HASH;
-   if( this == obj_index_hash[hash] )
-      obj_index_hash[hash] = next;
-   else
-   {
-      for( prev = obj_index_hash[hash]; prev; prev = prev->next )
-         if( prev->next == this )
-            break;
-      if( prev )
-         prev->next = next;
-      else
-         bug( "%s: object %d not in hash bucket %d.", __FUNCTION__, vnum, hash );
-   }
+   map < int, obj_index * >::iterator mobj;
+   if( ( mobj = obj_index_table.find( vnum ) ) != obj_index_table.end(  ) )
+      obj_index_table.erase( mobj );
    --top_obj_index;
 }
 
@@ -181,43 +170,43 @@ void obj_index::clean_obj(  )
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
       value[x] = 0;
 
-   list<affect_data*>::iterator paf;
-   for( paf = affects.begin(); paf != affects.end(); )
+   list < affect_data * >::iterator paf;
+   for( paf = affects.begin(  ); paf != affects.end(  ); )
    {
-      affect_data *aff = (*paf);
+      affect_data *aff = *paf;
       ++paf;
 
       affects.remove( aff );
       deleteptr( aff );
       --top_affect;
    }
-   affects.clear();
+   affects.clear(  );
 
    /*
     * remove extra descriptions 
     */
-   list<extra_descr_data*>::iterator ed;
-   for( ed = extradesc.begin(); ed != extradesc.end(); )
+   list < extra_descr_data * >::iterator ed;
+   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
    {
-      extra_descr_data *desc = (*ed);
+      extra_descr_data *desc = *ed;
       ++ed;
 
       extradesc.remove( desc );
       deleteptr( desc );
       --top_ed;
    }
-   extradesc.clear();
+   extradesc.clear(  );
 
-   list<mud_prog_data*>::iterator mpg;
-   for( mpg = mudprogs.begin(); mpg != mudprogs.end(); )
+   list < mud_prog_data * >::iterator mpg;
+   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
    {
-      mud_prog_data *mprog = (*mpg);
+      mud_prog_data *mprog = *mpg;
       ++mpg;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
    }
-   mudprogs.clear();
+   mudprogs.clear(  );
 }
 
 /*
@@ -226,14 +215,13 @@ void obj_index::clean_obj(  )
  */
 obj_index *get_obj_index( int vnum )
 {
-   obj_index *pObjIndex;
+   map < int, obj_index * >::iterator iobj;
 
    if( vnum < 0 )
       vnum = 0;
 
-   for( pObjIndex = obj_index_hash[vnum % MAX_KEY_HASH]; pObjIndex; pObjIndex = pObjIndex->next )
-      if( pObjIndex->vnum == vnum )
-         return pObjIndex;
+   if( ( iobj = obj_index_table.find( vnum ) ) != obj_index_table.end(  ) )
+      return iobj->second;
 
    if( fBootDb )
       bug( "%s: bad vnum %d.", __FUNCTION__, vnum );
@@ -260,8 +248,8 @@ obj_data *obj_index::create_object( int olevel )
    obj->in_room = NULL;
    obj->in_obj = NULL;
    obj->carried_by = NULL;
-   obj->extradesc.clear();
-   obj->affects.clear();
+   obj->extradesc.clear(  );
+   obj->affects.clear(  );
    obj->level = olevel;
    obj->wear_loc = -1;
    obj->count = 1;
@@ -287,7 +275,7 @@ obj_data *obj_index::create_object( int olevel )
    obj->weight = weight;
    obj->cost = cost;
    obj->timer = 0;
-   if( ego == -2 )  /* Calculate */
+   if( ego == -2 )   /* Calculate */
       obj->ego = set_ego(  );
    else
       obj->ego = ego;
@@ -679,15 +667,15 @@ int calc_aff_ego( int location, int mod )
 
 int obj_index::set_ego(  )
 {
-   list<affect_data*>::iterator paf;
+   list < affect_data * >::iterator paf;
    int oego = 0, calc = 0, minego = ( sysdata->minego * 1000 );
 
    if( extra_flags.test( ITEM_DEATHROT ) )
       return 0;
 
-   for( paf = affects.begin(); paf != affects.end(); ++paf )
+   for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       calc = calc_aff_ego( af->location, af->modifier );
       if( calc == -2 )
@@ -703,7 +691,7 @@ int obj_index::set_ego(  )
             case APPLY_REMOVESPELL:
             case APPLY_EAT_SPELL:
                log_printf( "%s: Item spell %s exceeds allowable item ego specs. Object %d", __FUNCTION__,
-                  IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "unknown", vnum );
+                           IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "unknown", vnum );
                break;
 
             case APPLY_RESISTANT:
@@ -738,8 +726,7 @@ int obj_index::set_ego(  )
    if( oego < minego - 5000 )
       return 0;
 
-   if( nifty_is_name( "scroll", name ) || nifty_is_name( "potion", name )
-       || nifty_is_name( "bag", name ) || nifty_is_name( "key", name ) )
+   if( hasname( name, "scroll" ) || hasname( name, "potion" ) || hasname( name, "bag" ) || hasname( name, "key" ) )
    {
       return 0;
    }
@@ -756,7 +743,7 @@ int obj_index::set_ego(  )
  * Create a new INDEX object (for online building)		-Thoric
  * Option to clone an existing index object.
  */
-obj_index *make_object( int vnum, int cvnum, char *name, area_data *area )
+obj_index *make_object( int vnum, int cvnum, const string & name, area_data * area )
 {
    obj_index *cObjIndex = NULL;
 
@@ -766,15 +753,16 @@ obj_index *make_object( int vnum, int cvnum, char *name, area_data *area )
    obj_index *pObjIndex = new obj_index;
 
    pObjIndex->vnum = vnum;
-   pObjIndex->name = STRALLOC( name );
-   pObjIndex->affects.clear();
-   pObjIndex->extradesc.clear();
+   pObjIndex->name = STRALLOC( name.c_str(  ) );
+   pObjIndex->affects.clear(  );
+   pObjIndex->extradesc.clear(  );
    pObjIndex->area = area;
+   pObjIndex->count = 0;
 
    if( !cObjIndex )
    {
-      stralloc_printf( &pObjIndex->short_descr, "A newly created %s", name );
-      stralloc_printf( &pObjIndex->objdesc, "Some god dropped a newly created %s here.", name );
+      stralloc_printf( &pObjIndex->short_descr, "A newly created %s", name.c_str(  ) );
+      stralloc_printf( &pObjIndex->objdesc, "Some god dropped a newly created %s here.", name.c_str(  ) );
       pObjIndex->socket[0] = STRALLOC( "None" );
       pObjIndex->socket[1] = STRALLOC( "None" );
       pObjIndex->socket[2] = STRALLOC( "None" );
@@ -813,10 +801,10 @@ obj_index *make_object( int vnum, int cvnum, char *name, area_data *area )
       pObjIndex->limit = cObjIndex->limit;
       pObjIndex->extradesc = cObjIndex->extradesc;
 
-      list<extra_descr_data*>::iterator ced;
-      for( ced = cObjIndex->extradesc.begin(); ced != cObjIndex->extradesc.end(); ++ced )
+      list < extra_descr_data * >::iterator ced;
+      for( ced = cObjIndex->extradesc.begin(  ); ced != cObjIndex->extradesc.end(  ); ++ced )
       {
-         extra_descr_data *ed = (*ced);
+         extra_descr_data *ed = *ced;
          extra_descr_data *ned = new extra_descr_data;
 
          ned->keyword = ed->keyword;
@@ -825,10 +813,10 @@ obj_index *make_object( int vnum, int cvnum, char *name, area_data *area )
          ++top_ed;
       }
 
-      list<affect_data*>::iterator cpaf;
-      for( cpaf = cObjIndex->affects.begin(); cpaf != cObjIndex->affects.end(); ++cpaf )
+      list < affect_data * >::iterator cpaf;
+      for( cpaf = cObjIndex->affects.begin(  ); cpaf != cObjIndex->affects.end(  ); ++cpaf )
       {
-         affect_data *af = (*cpaf);
+         affect_data *af = *cpaf;
          affect_data *paf = new affect_data;
 
          paf->type = af->type;
@@ -841,10 +829,8 @@ obj_index *make_object( int vnum, int cvnum, char *name, area_data *area )
          ++top_affect;
       }
    }
-   pObjIndex->count = 0;
-   int iHash = vnum % MAX_KEY_HASH;
-   pObjIndex->next = obj_index_hash[iHash];
-   obj_index_hash[iHash] = pObjIndex;
+
+   obj_index_table.insert( map < int, obj_index * >::value_type( vnum, pObjIndex ) );
    area->objects.push_back( pObjIndex );
    ++top_obj_index;
 
@@ -859,7 +845,7 @@ void obj_index::oprog_read_programs( FILE * fp )
    char letter;
    const char *word;
 
-   for( ; ; )
+   for( ;; )
    {
       letter = fread_letter( fp );
 
@@ -877,7 +863,7 @@ void obj_index::oprog_read_programs( FILE * fp )
       word = fread_word( fp );
       mprg->type = mprog_name_to_type( word );
 
-      switch( mprg->type )
+      switch ( mprg->type )
       {
          case ERROR_PROG:
             bug( "%s: vnum %d MUDPROG type.", __FUNCTION__, vnum );
@@ -897,37 +883,38 @@ void obj_index::oprog_read_programs( FILE * fp )
             break;
       }
    }
-   return;
 }
 
 CMDF( do_ofind )
 {
-   obj_index *pObjIndex;
+   map < int, obj_index * >::iterator iobj = obj_index_table.begin(  );
+   bool fAll = !str_cmp( argument, "all" );
+   int nMatch = 0;
 
    ch->set_pager_color( AT_PLAIN );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Find what?\r\n" );
       return;
    }
 
-   bool fAll = !str_cmp( argument, "all" );
-   int nMatch = 0;
+   while( iobj != obj_index_table.end(  ) )
+   {
+      obj_index *pObjIndex = iobj->second;
 
-   for( int hash = 0; hash < MAX_KEY_HASH; ++hash )
-      for( pObjIndex = obj_index_hash[hash]; pObjIndex; pObjIndex = pObjIndex->next )
-         if( fAll || nifty_is_name( argument, pObjIndex->name ) )
-         {
-            ++nMatch;
-            ch->pagerf( "[%5d] %s\r\n", pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
-         }
+      if( fAll || hasname( pObjIndex->name, argument ) )
+      {
+         ++nMatch;
+         ch->pagerf( "[%5d] %s\r\n", pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
+      }
+      ++iobj;
+   }
 
    if( nMatch )
       ch->pagerf( "Number of matches: %d\n", nMatch );
    else
       ch->print( "Nothing like that in hell, earth, or heaven.\r\n" );
-   return;
 }
 
 CMDF( do_odelete )
@@ -941,7 +928,7 @@ CMDF( do_odelete )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Delete which object?\r\n" );
       return;
@@ -953,7 +940,7 @@ CMDF( do_odelete )
       return;
    }
 
-   vnum = atoi( argument );
+   vnum = atoi( argument.c_str(  ) );
 
    /*
     * Find the obj. 
@@ -967,13 +954,11 @@ CMDF( do_odelete )
    /*
     * Does the player have the right to delete this object? 
     */
-   if( ch->get_trust(  ) < sysdata->level_modify_proto
-       && ( obj->vnum < ch->pcdata->low_vnum || obj->vnum > ch->pcdata->hi_vnum ) )
+   if( ch->get_trust(  ) < sysdata->level_modify_proto && ( obj->vnum < ch->pcdata->low_vnum || obj->vnum > ch->pcdata->hi_vnum ) )
    {
       ch->print( "That object is not in your assigned range.\r\n" );
       return;
    }
    deleteptr( obj );
    ch->printf( "Object %d has been deleted.\r\n", vnum );
-   return;
 }

@@ -44,7 +44,7 @@ extern bool compilelock;
 #endif
 extern bool bootlock;
 
-auth_data *get_auth_name( char * );
+auth_data *get_auth_name( const string & );
 void check_pfiles( time_t );
 void update_connhistory( descriptor_data *, int );
 void show_stateflags( char_data * );
@@ -53,14 +53,14 @@ void quotes( char_data * );
 /* Removes rare items the player cannot maintain. */
 void rare_purge( char_data * ch, obj_data * obj )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
    if( obj->ego >= sysdata->minego )
       obj->extract(  );
 
-   for( iobj = obj->contents.begin(); iobj != obj->contents.end(); )
+   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); )
    {
-      obj_data *tobj = (*iobj);
+      obj_data *tobj = *iobj;
       ++iobj;
 
       rare_purge( ch, tobj );
@@ -68,7 +68,7 @@ void rare_purge( char_data * ch, obj_data * obj )
 }
 
 // Looks for any -1 rent items. These cannot be kept past rent/quit/camp.
-void inventory_scan( char_data *ch, obj_data *obj )
+void inventory_scan( char_data * ch, obj_data * obj )
 {
    if( obj->ego == -1 )
    {
@@ -79,26 +79,26 @@ void inventory_scan( char_data *ch, obj_data *obj )
       obj->extract(  );
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = obj->contents.begin(); iobj != obj->contents.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); )
    {
-      obj_data *tobj = (*iobj);
+      obj_data *tobj = *iobj;
       ++iobj;
 
       inventory_scan( ch, tobj );
    }
 }
 
-void expire_items( char_data *ch )
+void expire_items( char_data * ch )
 {
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
       // If the player is less powerful than the object, it has a chance of simply disappearing without notice.
-      if( ch->char_ego() < obj->ego && number_bits(3) > 4 )
+      if( ch->char_ego(  ) < obj->ego && number_bits( 3 ) > 4 )
       {
          log_printf( "obj %d, %s, removed from %s. Random ego check.", obj->pIndexData->vnum, obj->short_descr, ch->name );
          rare_purge( ch, obj );
@@ -158,10 +158,10 @@ void char_leaving( char_data * ch, int howleft )
          update_connhistory( ch->desc, CONNTYPE_QUIT );
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
       inventory_scan( ch, obj );
@@ -172,11 +172,11 @@ void char_leaving( char_data * ch, int howleft )
 
    if( sysdata->save_pets )
    {
-      list<char_data*>::iterator pet;
+      list < char_data * >::iterator pet;
 
-      for( pet = ch->pets.begin(); pet != ch->pets.end(); )
+      for( pet = ch->pets.begin(  ); pet != ch->pets.end(  ); )
       {
-         char_data *cpet = (*pet);
+         char_data *cpet = *pet;
          ++pet;
 
          cpet->extract( true );
@@ -195,7 +195,6 @@ void char_leaving( char_data * ch, int howleft )
    for( int x = 0; x < MAX_WEAR; ++x )
       for( int y = 0; y < MAX_LAYERS; ++y )
          save_equipment[x][y] = NULL;
-   return;
 }
 
 CMDF( do_quit )
@@ -267,18 +266,17 @@ CMDF( do_quit )
 
    log_printf_plus( LOG_COMM, ch->level, "%s has quit.", ch->name );
    char_leaving( ch, 3 );
-   return;
 }
 
 /* Checks room to see if an Innkeeper mob is present
    Code courtesy of the Smaug mailing list - Installed by Samson */
 char_data *find_innkeeper( char_data * ch )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *innkeeper = (*ich);
+      char_data *innkeeper = *ich;
 
       if( innkeeper->has_actflag( ACT_INNKEEPER ) )
          return innkeeper;
@@ -290,7 +288,7 @@ void scan_rares( char_data * ch )
 {
    expire_items( ch );
 
-   if( !ch->is_immortal() )
+   if( !ch->is_immortal(  ) )
    {
       switch ( ch->pcdata->camp )
       {
@@ -312,13 +310,11 @@ void scan_rares( char_data * ch )
       log_printf_plus( LOG_COMM, ch->level, "%s returns from beyond the void.", ch->name );
       show_stateflags( ch );
    }
-   return;
 }
 
 CMDF( do_rent )
 {
-   char_data *innkeeper;
-   char_data *victim;
+   char_data *innkeeper, *victim;
    int level = ch->get_trust(  );
 
    if( !( innkeeper = find_innkeeper( ch ) ) )
@@ -349,7 +345,6 @@ CMDF( do_rent )
    log_printf_plus( LOG_COMM, level, "%s rented in: %s, %s", ch->name, ch->in_room->name, ch->in_room->area->name );
 
    char_leaving( ch, 0 );
-   return;
 }
 
 /*
@@ -366,7 +361,6 @@ void make_campfire( room_index * in_room, char_data * ch, short timer )
    }
    fire->timer = number_fuzzy( timer );
    fire->to_room( in_room, ch );
-   return;
 }
 
 CMDF( do_camp )
@@ -391,8 +385,7 @@ CMDF( do_camp )
          return;
       }
 
-      if( ch->in_room->flags.test( ROOM_INDOORS )
-          || ch->in_room->flags.test( ROOM_CAVE ) || ch->in_room->flags.test( ROOM_CAVERN ) )
+      if( ch->in_room->flags.test( ROOM_INDOORS ) || ch->in_room->flags.test( ROOM_CAVE ) || ch->in_room->flags.test( ROOM_CAVERN ) )
       {
          ch->print( "You must be outdoors to make camp.\r\n" );
          return;
@@ -473,11 +466,11 @@ CMDF( do_camp )
       return;
    }
 
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    bool fbed = false, fgear = false, flint = false;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       if( obj->item_type == ITEM_CAMPGEAR )
       {
          if( obj->value[0] == 1 )
@@ -497,9 +490,9 @@ CMDF( do_camp )
 
    bool fire = false;
 
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      obj_data *campfire = (*iobj);
+      obj_data *campfire = *iobj;
       if( campfire->item_type == ITEM_FIRE )
       {
          if( ch->has_pcflag( PCFLAG_ONMAP ) )
@@ -526,7 +519,6 @@ CMDF( do_camp )
 
    log_printf( "%s has made camp for the night in %s.", ch->name, ch->in_room->area->name );
    char_leaving( ch, 1 );
-   return;
 }
 
 /* Take one rare item away once found - Samson 9-19-98 */
@@ -542,10 +534,10 @@ int thief_raid( char_data * ch, obj_data * obj, int robbed )
          obj->extract(  );
          robbed = 1;
       }
-      list<obj_data*>::iterator iobj;
-      for( iobj = obj->contents.begin(); iobj != obj->contents.end(); ++iobj )
+      list < obj_data * >::iterator iobj;
+      for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
       {
-         obj_data *tobj = (*iobj);
+         obj_data *tobj = *iobj;
          thief_raid( ch, tobj, robbed );
       }
    }
@@ -562,10 +554,10 @@ int bandit_raid( char_data * ch, obj_data * obj, int robbed )
       obj->extract(  );
       robbed = 1;
    }
-   list<obj_data*>::iterator iobj;
-   for( iobj = obj->contents.begin(); iobj != obj->contents.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
    {
-      obj_data *tobj = (*iobj);
+      obj_data *tobj = *iobj;
       bandit_raid( ch, tobj, robbed );
    }
    return robbed;
@@ -579,16 +571,16 @@ void break_camp( char_data * ch )
 
    if( robchance > 85 )
    {
-      list<obj_data*>::iterator iobj;
+      list < obj_data * >::iterator iobj;
       if( robchance < 98 )
       {
          log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves raided %s's camp!", ch->name );
          ch->print( "&RYour camp was visited by thieves while you were away!\r\n" );
          ch->print( "&RYour belongings have been rummaged through....\r\n" );
 
-         for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+         for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
          {
-            obj_data *obj = (*iobj);
+            obj_data *obj = *iobj;
             robbed = thief_raid( ch, obj, robbed );
          }
       }
@@ -598,45 +590,42 @@ void break_camp( char_data * ch )
          ch->print( "&RYour camp was visited by bandits while you were away!\r\n" );
          ch->print( "&RYour belongings have been rummaged through....\r\n" );
 
-         for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+         for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
          {
-            obj_data *obj = (*iobj);
+            obj_data *obj = *iobj;
             robbed = bandit_raid( ch, obj, robbed );
          }
       }
    }
    log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s breaks camp and enters the game.", ch->name );
    ch->pcdata->camp = 0;
-   return;
 }
 
 /*
  * Bring up the pfile for rare item adjustments
  */
-void adjust_pfile( char *argument )
+void adjust_pfile( const string & name )
 {
    char_data *ch;
-   char fname[256], name[MIL];
+   char fname[256];
    struct stat fst;
 
-   one_argument( argument, name );
-
-   list<char_data*>::iterator ich;
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
-      char_data *temp = (*ich);
+      char_data *temp = *ich;
 
       if( !str_cmp( name, temp->name ) )
       {
          log_printf( "Skipping rare item adjustments for %s, player is online.", temp->name );
          if( temp->is_immortal(  ) )   /* Get the rare items off the immortals */
          {
-            list<obj_data*>::iterator iobj;
+            list < obj_data * >::iterator iobj;
 
             log_printf( "Immortal: Removing rare items from %s.", temp->name );
-            for( iobj = temp->carrying.begin(); iobj != temp->carrying.end(); )
+            for( iobj = temp->carrying.begin(  ); iobj != temp->carrying.end(  ); )
             {
-               obj_data *tobj = (*iobj);
+               obj_data *tobj = *iobj;
                ++iobj;
 
                rare_purge( temp, tobj );
@@ -653,8 +642,7 @@ void adjust_pfile( char *argument )
       return;
    }
 
-   name[0] = UPPER( name[0] );
-   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
+   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ).c_str(  ) );
 
    if( stat( fname, &fst ) != -1 )
    {
@@ -687,11 +675,11 @@ void adjust_pfile( char *argument )
 
       if( sysdata->save_pets )
       {
-         list<char_data*>::iterator pet;
+         list < char_data * >::iterator pet;
 
-         for( pet = ch->pets.begin(); pet != ch->pets.end(); )
+         for( pet = ch->pets.begin(  ); pet != ch->pets.end(  ); )
          {
-            char_data *cpet = (*pet);
+            char_data *cpet = *pet;
             ++pet;
 
             cpet->extract( true );
@@ -714,16 +702,14 @@ void adjust_pfile( char *argument )
          for( int y = 0; y < MAX_LAYERS; ++y )
             save_equipment[x][y] = NULL;
 
-      log_printf( "Rare items for %s updated sucessfully.", name );
-      return;
+      log_printf( "Rare items for %s updated sucessfully.", name.c_str(  ) );
    }
-   return;
 }
 
 /* Rare item counting function taken from the Tartarus codebase, a
  * ROM 2.4b derivitive by Ceran. Modified for Smaug compatibility by Samson
  */
-int scan_pfiles( char *dirname, char *filename, bool updating )
+int scan_pfiles( const char *dirname, const char *filename, bool updating )
 {
    FILE *fpChar;
    char fname[256];
@@ -744,7 +730,7 @@ int scan_pfiles( char *dirname, char *filename, bool updating )
       int vnum = 0, temp = 0, counter = 1;
       char letter;
       const char *word;
-      char *tempstring;
+      string tempstring;
       obj_index *pObjIndex = NULL;
 
       letter = fread_letter( fpChar );
@@ -842,10 +828,10 @@ int scan_pfiles( char *dirname, char *filename, bool updating )
       }
    }
    FCLOSE( fpChar );
-   return ( adjust );
+   return adjust;
 }
 
-void corpse_scan( char *dirname, char *filename )
+void corpse_scan( const char *dirname, const char *filename )
 {
    FILE *fpChar;
    char fname[256];
@@ -927,7 +913,6 @@ void corpse_scan( char *dirname, char *filename )
       }
    }
    FCLOSE( fpChar );
-   return;
 }
 
 void mobfile_scan( void )
@@ -1012,10 +997,9 @@ void mobfile_scan( void )
       }
    }
    FCLOSE( fpChar );
-   return;
 }
 
-void objfile_scan( char *dirname, char *filename )
+void objfile_scan( const char *dirname, const char *filename )
 {
    FILE *fpChar;
    char fname[256];
@@ -1097,7 +1081,6 @@ void objfile_scan( char *dirname, char *filename )
       }
    }
    FCLOSE( fpChar );
-   return;
 }
 
 void load_equipment_totals( bool fCopyOver )
@@ -1189,7 +1172,6 @@ void load_equipment_totals( bool fCopyOver )
       }
       closedir( dp );
    }
-   return;
 }
 
 void rare_update( void )
@@ -1231,5 +1213,4 @@ void rare_update( void )
       closedir( dp );
    }
    log_string( "Daily rare item updates completed." );
-   return;
 }

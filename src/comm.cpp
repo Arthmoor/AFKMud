@@ -41,7 +41,7 @@ void bailout( int );
 #include <sys/socket.h>
 #endif
 #if defined(__CYGWIN__)
-const int WAIT_ANY = -1;  /* This is not guaranteed to work! */
+const int WAIT_ANY = -1;   /* This is not guaranteed to work! */
 #include <sys/socket.h>
 #endif
 #include <sys/time.h>
@@ -74,7 +74,7 @@ int control;   /* Controlling descriptor  */
 fd_set in_set; /* Set of desc's for reading  */
 fd_set out_set;   /* Set of desc's for writing  */
 fd_set exc_set;   /* Set of desc's with errors  */
-char *alarm_section = "(unknown)";
+const char *alarm_section = "(unknown)";
 bool winter_freeze = false;
 int mud_port;
 bool DONTSAVE = false;  /* For reboots, shutdowns, etc. */
@@ -91,85 +91,81 @@ extern time_t board_expire_time_t;
 
 #ifdef IMC
 void free_imcdata( bool );
-void imc_delete_info( );
+void imc_delete_info(  );
 #endif
 
-void game_loop( );
-void cleanup_memory( );
-void create_trdata( );
+void game_loop(  );
+void cleanup_memory(  );
+void clear_trdata(  );
 void run_events( time_t );
 
 /*
  * External functions
  */
 void boot_db( bool );
-
 void accept_new( int );
-void bid( char_data *, char_data *, char * );
+void bid( char_data *, char_data *, const string & );
 void check_auth_state( char_data * );
 
 #ifdef MULTIPORT
 #if !defined(__CYGWIN__)
-void mud_recv_message( );
+void mud_recv_message(  );
 #endif
 #endif
-void save_ships( );
-void save_timedata( );
-bool arg_cmp( char *, char * );
-void save_morphs( );
-void hotboot_recover( );
-void update_connhistory( descriptor_data *, int );   /* connhist.c */
-void free_connhistory( int );   /* connhist.c */
+void save_ships(  );
+void save_timedata(  );
+void save_morphs(  );
+void hotboot_recover(  );
+void update_connhistory( descriptor_data *, int ); /* connhist.c */
+void free_connhistory( int ); /* connhist.c */
 
 /* Used during memory cleanup */
-void free_trdata( );
-void free_morphs( );
-void free_quotes( );
-void free_envs( );
-void free_sales( );
-void free_mxpobj_cmds( );
-void free_bans( );
-void free_all_auths( );
-void free_runedata( );
-void free_slays( );
-void free_holidays( );
-void free_landings( );
-void free_ships( );
-void free_mapexits( );
-void free_landmarks( );
-void free_liquiddata( );
-void free_mudchannels( );
-void free_commands( );
-void free_deities( );
-void free_clans( );
-void free_socials( );
-void free_boards( );
-void free_teleports( );
-void close_all_areas( );
-void free_prog_actlists( );
-void free_questbits( );
-void free_projects( );
-void free_specfuns( );
-void clear_wizinfo( );
-void free_tongues( );
-void free_skills( );
-void free_all_events( );
+void free_morphs(  );
+void free_quotes(  );
+void free_envs(  );
+void free_sales(  );
+void free_bans(  );
+void free_all_auths(  );
+void free_runedata(  );
+void free_slays(  );
+void free_holidays(  );
+void free_landings(  );
+void free_ships(  );
+void free_mapexits(  );
+void free_landmarks(  );
+void free_liquiddata(  );
+void free_mudchannels(  );
+void free_commands(  );
+void free_deities(  );
+void free_clans(  );
+void free_socials(  );
+void free_boards(  );
+void free_teleports(  );
+void close_all_areas(  );
+void free_prog_actlists(  );
+void free_questbits(  );
+void free_projects(  );
+void free_specfuns(  );
+void clear_wizinfo(  );
+void free_tongues(  );
+void free_skills(  );
+void free_all_events(  );
 #ifdef MULTIPORT
-void free_shellcommands( );
+void free_shellcommands(  );
 #endif
-void free_dns_list( );
-void extract_all_chars( );
-void extract_all_objs( );
-void free_all_classes( );
-void free_all_races( );
-void free_all_titles( );
-void free_helps();
+void free_dns_list(  );
+void extract_all_chars(  );
+void extract_all_objs(  );
+void free_all_classes(  );
+void free_all_races(  );
+void free_all_titles(  );
+void free_all_chess_games(  );
+void free_helps(  );
 #if !defined(__CYGWIN__) && defined(SQL)
- void close_db();
+void close_db(  );
 #endif
 
-char *const directory_table[] =
-{
+const char *directory_table[] = {
    AREA_CONVERT_DIR, PLAYER_DIR, GOD_DIR, BUILD_DIR, SYSTEM_DIR,
    PROG_DIR, CORPSE_DIR, CLASS_DIR, RACE_DIR, MOTD_DIR, HOTBOOT_DIR, AUC_DIR,
    BOARD_DIR, COLOR_DIR, MAP_DIR
@@ -195,7 +191,7 @@ void directory_check( void )
       if( system( buf ) )
       {
          fprintf( stderr, "FATAL ERROR :: Unable to create required directrory: ../log\n" );
-         exit(1);
+         exit( 1 );
       }
    }
 
@@ -206,10 +202,10 @@ void directory_check( void )
          snprintf( buf, 256, "mkdir %s", directory_table[x] );
          log_printf( "Creating required directory: %s", directory_table[x] );
 
-         if( system(buf) )
+         if( system( buf ) )
          {
             log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", directory_table[x] );
-            exit(1);
+            exit( 1 );
          }
       }
 
@@ -226,10 +222,10 @@ void directory_check( void )
                log_printf( "Creating required directory: %s", dirname );
                snprintf( buf, 256, "mkdir %s", dirname );
 
-               if( system(buf) )
+               if( system( buf ) )
                {
                   log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", dirname );
-                  exit(1);
+                  exit( 1 );
                }
             }
             else
@@ -384,7 +380,7 @@ int init_socket( int mudport )
 void init_mud( bool fCopyOver, int gameport, int wsocket, int imcsocket )
 {
    // Scan for and create necessary dirs if they don't exit.
-   directory_check();
+   directory_check(  );
 
    /*
     * If this all goes well, we should be able to open a new log file during hotboot 
@@ -405,26 +401,26 @@ void init_mud( bool fCopyOver, int gameport, int wsocket, int imcsocket )
       log_string( "Main socket initialized" );
    }
 
-   create_trdata(); // Begin the transfer data tracking
+   clear_trdata(  ); // Begin the transfer data tracking
 
 #ifdef MULTIPORT
-   switch( gameport )
+   switch ( gameport )
    {
       case MAINPORT:
-         log_printf( "%s game server ready on port %d.", sysdata->mud_name, gameport );
+         log_printf( "%s game server ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
          break;
       case BUILDPORT:
-         log_printf( "%s builders' server ready on port %d.", sysdata->mud_name, gameport );
+         log_printf( "%s builders' server ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
          break;
       case CODEPORT:
-         log_printf( "%s coding server ready on port %d.", sysdata->mud_name, gameport );
+         log_printf( "%s coding server ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
          break;
       default:
-         log_printf( "%s - running on unsupported port %d!!", sysdata->mud_name, gameport );
+         log_printf( "%s - running on unsupported port %d!!", sysdata->mud_name.c_str(  ), gameport );
          break;
    }
 #else
-   log_printf( "%s ready on port %d.", sysdata->mud_name, gameport );
+   log_printf( "%s ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
 #endif
 
 #ifdef IMC
@@ -436,7 +432,6 @@ void init_mud( bool fCopyOver, int gameport, int wsocket, int imcsocket )
       log_string( "Initiating hotboot recovery." );
       hotboot_recover(  );
    }
-   return;
 }
 
 /* This function is called from 'main' or 'SigTerm'. Its purpose is to clean up
@@ -450,12 +445,12 @@ void close_mud( void )
 
    if( !DONTSAVE )
    {
-      list<descriptor_data*>::iterator ds;
+      list < descriptor_data * >::iterator ds;
 
       log_string( "Saving players...." );
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
          char_data *vch = ( d->character ? d->character : d->original );
 
          if( !vch )
@@ -465,7 +460,7 @@ void close_mud( void )
          {
             vch->save(  );
             log_printf( "%s saved.", vch->name );
-            d->write( "You have been saved to disk.\033[0m\r\n", 0 );
+            d->write( "You have been saved to disk.\033[0m\r\n" );
          }
       }
    }
@@ -493,8 +488,6 @@ void close_mud( void )
    WSACleanup(  );   /* clean up */
    kill_timer(  );   /* stop timer thread */
 #endif
-
-   return;
 }
 
 static void SegVio( int signum )
@@ -502,12 +495,12 @@ static void SegVio( int signum )
    bug( "%s", "}RSEGMENTATION FAULT: Invalid Memory Access&D" );
    log_string( lastplayercmd );
 
-   if( !pclist.empty() )
+   if( !pclist.empty(  ) )
    {
-      list<char_data*>::iterator ich;
-      for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+      list < char_data * >::iterator ich;
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
       {
-         char_data *ch = (*ich);
+         char_data *ch = *ich;
 
          if( ch && ch->name && ch->in_room )
             log_printf( "%-20s in room: %d", ch->name, ch->in_room->vnum );
@@ -537,20 +530,18 @@ static void SegVio( int signum )
 static void SigUser1( int signum )
 {
    log_string( "Received User1 signal from server." );
-   return;
 }
 
 static void SigUser2( int signum )
 {
    log_string( "Received User2 signal from server." );
-   return;
 }
 
 #ifdef MULTIPORT
 static void SigChld( int signum )
 {
    int pid, status;
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
 
    while( 1 )
    {
@@ -561,9 +552,9 @@ static void SigChld( int signum )
       if( pid == 0 )
          break;
 
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
 
          if( d->connected == CON_FORKED && d->process == pid )
          {
@@ -585,16 +576,16 @@ static void SigChld( int signum )
 
 static void SigTerm( int signum )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
    echo_to_all( "&RATTENTION!! Message from game server: &YEmergency shutdown called.\a", ECHOTAR_ALL );
    echo_to_all( "&YExecuting emergency shutdown proceedure.", ECHOTAR_ALL );
    log_string( "Message from server: Executing emergency shutdown proceedure." );
    shutdown_mud( "Emergency Shutdown" );
 
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       /*
        * One of two places this gets changed 
@@ -657,7 +648,7 @@ static void caught_alarm( int signum )
 /*
  * Parse a name for acceptability.
  */
-bool check_parse_name( char *name, bool newchar )
+bool check_parse_name( const string & name, bool newchar )
 {
    /*
     * Names checking should really only be done on new characters, otherwise
@@ -671,44 +662,50 @@ bool check_parse_name( char *name, bool newchar )
    /*
     * Length restrictions.
     */
-   if( strlen( name ) < 3 )
-      return false;
-
-   if( strlen( name ) > 12 )
+   if( name.length(  ) < 3 || name.length(  ) > 12 )
       return false;
 
    /*
     * Alphanumerics only.
     * Lock out IllIll twits.
-    */
+    *
+    {
+    char *pc;
+    bool fIll;
+    
+    fIll = true;
+    for( pc = name; *pc != '\0'; ++pc )
+    {
+    if( !isalpha( *pc ) )
+    return false;
+    if( LOWER( *pc ) != 'i' && LOWER( *pc ) != 'l' )
+    fIll = false;
+    }
+    
+    if( fIll )
+    return false;
+    } */
+
+   // Alphanumeric checks
+   string::const_iterator ptr = name.begin(  );
+   while( ptr != name.end(  ) )
    {
-      char *pc;
-      bool fIll;
-
-      fIll = true;
-      for( pc = name; *pc != '\0'; ++pc )
-      {
-         if( !isalpha( *pc ) )
-            return false;
-         if( LOWER( *pc ) != 'i' && LOWER( *pc ) != 'l' )
-            fIll = false;
-      }
-
-      if( fIll )
+      if( !isalpha( *ptr ) )
          return false;
+      ++ptr;
    }
 
    /*
     * Mob names illegal for newbies now - Samson 7-24-00 
     */
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
 
       if( vch->isnpc(  ) )
       {
-         if( arg_cmp( vch->name, name ) && newchar )
+         if( hasname( vch->name, name ) && newchar )
             return false;
       }
    }
@@ -718,8 +715,8 @@ bool check_parse_name( char *name, bool newchar )
     * * Reserved names list was getting much too large to load into memory.
     * * Placed last so as to avoid problems from any of the previous conditions causing a problem in shell.
     */
-   char buf[MSL], invname[MSL];
-   snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", name );
+   char buf[MSL];
+   snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", name.c_str(  ) );
 
    if( system( buf ) == 0 && newchar )
    {
@@ -730,8 +727,8 @@ bool check_parse_name( char *name, bool newchar )
    /*
     * Check for inverse naming as well 
     */
-   invert_string( name, invname );
-   snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", invname );
+   string invname = invert_string( name );
+   snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", invname.c_str(  ) );
 
    if( system( buf ) == 0 && newchar )
    {
@@ -743,16 +740,16 @@ bool check_parse_name( char *name, bool newchar )
 
 void process_input( void )
 {
-   char cmdline[MIL];
-   list<descriptor_data*>::iterator ds;
+   string cmdline;
+   list < descriptor_data * >::iterator ds;
 
    /*
     * Kick out descriptors with raised exceptions
     * or have been idle, then check for input.
     */
-   for( ds = dlist.begin(); ds != dlist.end(); )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
       ++ds;
 
 #ifdef MULTIPORT
@@ -789,7 +786,7 @@ void process_input( void )
          FD_CLR( d->descriptor, &out_set );
          if( d->character && d->connected >= CON_PLAYING )
             d->character->save(  );
-         d->outtop = 0;
+         d->outbuf.clear(  );
          close_socket( d, true );
          continue;
       }
@@ -797,12 +794,17 @@ void process_input( void )
                || ( d->connected != CON_PLAYING && d->idle > 2400 )  /* 10 mins */
                || ( ( d->idle > 14400 ) && ( d->character->level < LEVEL_IMMORTAL ) )  /* 1hr */
                || ( ( d->idle > 32000 ) && ( d->character->level >= LEVEL_IMMORTAL ) ) )
-      // imms idle off after 32000 to prevent rollover crashes 
+         // imms idle off after 32000 to prevent rollover crashes 
       {
-         d->write( "Idle timeout... disconnecting.\r\n", 0 );
-         update_connhistory( d, CONNTYPE_IDLE );
-         d->outtop = 0;
-         close_socket( d, true );
+         if( d->character && d->character->level >= LEVEL_IMMORTAL )
+            d->idle = 0;
+         else
+         {
+            d->write( "Idle timeout... disconnecting.\r\n" );
+            update_connhistory( d, CONNTYPE_IDLE );
+            d->outbuf.clear(  );
+            close_socket( d, true );
+         }
          continue;
       }
       else
@@ -819,7 +821,7 @@ void process_input( void )
                FD_CLR( d->descriptor, &out_set );
                if( d->character && d->connected >= CON_PLAYING )
                   d->character->save(  );
-               d->outtop = 0;
+               d->outbuf.clear(  );
                update_connhistory( d, CONNTYPE_LINKDEAD );
                close_socket( d, false );
                continue;
@@ -840,16 +842,16 @@ void process_input( void )
 
          d->read_from_buffer(  );
 
-         if( d->incomm[0] != '\0' )
+         if( !d->incomm.empty(  ) )
          {
             d->fcommand = true;
             if( d->character && !d->character->has_aflag( AFF_SPAMGUARD ) )
-               d->character->stop_idling();
+               d->character->stop_idling(  );
 
-            mudstrlcpy( cmdline, d->incomm, MIL );
-            d->incomm[0] = '\0';
+            cmdline = d->incomm;
+            d->incomm.clear(  );
 
-            if( d->pagepoint )
+            if( !d->pagebuf.empty(  ) )
                d->set_pager_input( cmdline );
             else
                switch ( d->connected )
@@ -877,25 +879,25 @@ void process_input( void )
 
 void process_output( void )
 {
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
 
    /*
     * Output.
     */
-   for( ds = dlist.begin(); ds != dlist.end(); )
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
       ++ds;
 
-      if( ( d->fcommand || d->outtop > 0 || d->pagetop > 0 ) && FD_ISSET( d->descriptor, &out_set ) )
+      if( ( d->fcommand || d->outbuf.length(  ) > 0 || d->pagebuf.length(  ) > 0 ) && FD_ISSET( d->descriptor, &out_set ) )
       {
-         if( d->pagepoint )
+         if( !d->pagebuf.empty(  ) )
          {
             if( !d->pager_output(  ) )
             {
                if( d->character && d->connected >= CON_PLAYING )
                   d->character->save(  );
-               d->outtop = 0;
+               d->outbuf.clear(  );
                close_socket( d, false );
             }
          }
@@ -903,7 +905,7 @@ void process_output( void )
          {
             if( d->character && d->connected >= CON_PLAYING )
                d->character->save(  );
-            d->outtop = 0;
+            d->outbuf.clear(  );
             close_socket( d, false );
          }
       }
@@ -927,8 +929,8 @@ void game_loop( void )
       alarm_section = "game_loop";
 
       // If no descriptors are present, why bother processing input for them?
-      if( dlist.size() > 0 )
-         process_input();
+      if( dlist.size(  ) > 0 )
+         process_input(  );
 
 #if !defined(__CYGWIN__)
 #ifdef MULTIPORT
@@ -940,15 +942,15 @@ void game_loop( void )
 #endif
 
       // Autonomous game motion. Stops processing when there are no people at all online.
-      if( dlist.size() > 0 )
+      if( dlist.size(  ) > 0 )
          update_handler(  );
 
       // Event handling. Will continue to process even with nobody around. Keeps areas fresh this way.
       run_events( current_time );
 
       // If no descriptors are present, why bother processing output for them?
-      if( dlist.size() > 0 )
-         process_output();
+      if( dlist.size(  ) > 0 )
+         process_output(  );
 
       /*
        * Synchronize to a clock. ( Would have moved this to its own function, but the code REALLY hated that plan.... )
@@ -961,18 +963,18 @@ void game_loop( void )
          long usecDelta;
 
          gettimeofday( &now_time, NULL );
-         usecDelta = ((int) last_time.tv_usec) - ((int) now_time.tv_usec) + 1000000 / sysdata->pulsepersec;
-         secDelta  = ((int) last_time.tv_sec ) - ((int) now_time.tv_sec );
+         usecDelta = ( last_time.tv_usec ) - ( now_time.tv_usec ) + 1000000 / sysdata->pulsepersec;
+         secDelta = ( last_time.tv_sec ) - ( now_time.tv_sec );
          while( usecDelta < 0 )
          {
             usecDelta += 1000000;
-            secDelta  -= 1;
+            secDelta -= 1;
          }
 
          while( usecDelta >= 1000000 )
          {
             usecDelta -= 1000000;
-            secDelta  += 1;
+            secDelta += 1;
          }
 
          if( secDelta > 0 || ( secDelta == 0 && usecDelta > 0 ) )
@@ -980,7 +982,7 @@ void game_loop( void )
             struct timeval stall_time;
 
             stall_time.tv_usec = usecDelta;
-            stall_time.tv_sec  = secDelta;
+            stall_time.tv_sec = secDelta;
             if( select( 0, NULL, NULL, NULL, &stall_time ) < 0 && errno != EINTR )
             {
                perror( "game_loop: select: stall" );
@@ -1001,7 +1003,7 @@ void game_loop( void )
       sigsegv = false;
    }
    // End of main game loop 
-   return;  // Returns back to 'main', and will result in mud shutdown
+   // Returns back to 'main', and will result in mud shutdown
 }
 
 /*
@@ -1012,9 +1014,6 @@ void game_loop( void )
 void cleanup_memory( void )
 {
    int hash;
-
-   fprintf( stdout, "%s", "Transfer data.\n" );
-   free_trdata();
 
 #ifdef IMC
    fprintf( stdout, "%s", "IMC2 Data.\n" );
@@ -1027,9 +1026,6 @@ void cleanup_memory( void )
 
    fprintf( stdout, "%s", "Random Environment Data.\n" );
    free_envs(  );
-
-   fprintf( stdout, "%s", "MXP Object Commands.\n" );
-   free_mxpobj_cmds(  );
 
    fprintf( stdout, "%s", "Auction Sale Data.\n" );
    free_sales(  );
@@ -1080,14 +1076,14 @@ void cleanup_memory( void )
    free_liquiddata(  );
 
    fprintf( stdout, "%s", "DNS Cache data.\n" );
-   free_dns_list();
+   free_dns_list(  );
 
    fprintf( stdout, "%s", "Local Channels.\n" );
    free_mudchannels(  );
 
    // Helps
    fprintf( stdout, "%s", "Helps.\n" );
-   free_helps();
+   free_helps(  );
 
    // Commands 
    fprintf( stdout, "%s", "Commands.\n" );
@@ -1098,14 +1094,6 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Shell Commands.\n" );
    free_shellcommands(  );
 #endif
-
-   // Deities 
-   fprintf( stdout, "%s", "Deities.\n" );
-   free_deities(  );
-
-   // Clans 
-   fprintf( stdout, "%s", "Clans.\n" );
-   free_clans(  );
 
    // Socials 
    fprintf( stdout, "%s", "Socials.\n" );
@@ -1123,6 +1111,10 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Events.\n" );
    free_all_events(  );
 
+   // Find and eliminate all running chess games
+   fprintf( stdout, "%s", "Ending chess games.\n" );
+   free_all_chess_games(  );
+
    // Whack supermob 
    fprintf( stdout, "%s", "Whacking supermob.\n" );
    if( supermob )
@@ -1134,23 +1126,31 @@ void cleanup_memory( void )
 
    // Free Characters 
    fprintf( stdout, "%s", "Characters.\n" );
-   extract_all_chars();
+   extract_all_chars(  );
 
    // Free Objects 
    fprintf( stdout, "%s", "Objects.\n" );
-   extract_all_objs();
+   extract_all_objs(  );
 
    // Descriptors 
    fprintf( stdout, "%s", "Descriptors.\n" );
-   free_all_descs();
+   free_all_descs(  );
+
+   // Deities 
+   fprintf( stdout, "%s", "Deities.\n" );
+   free_deities(  );
+
+   // Clans 
+   fprintf( stdout, "%s", "Clans.\n" );
+   free_clans(  );
 
    // Races 
    fprintf( stdout, "%s", "Races.\n" );
-   free_all_races();
+   free_all_races(  );
 
    // Classes 
    fprintf( stdout, "%s", "Classes.\n" );
-   free_all_classes();
+   free_all_classes(  );
 
    // Teleport lists 
    fprintf( stdout, "%s", "Teleport Data.\n" );
@@ -1166,7 +1166,7 @@ void cleanup_memory( void )
 
    // Title table 
    fprintf( stdout, "%s", "Title table.\n" );
-   free_all_titles();
+   free_all_titles(  );
 
    // Skills 
    fprintf( stdout, "%s", "Skills and Herbs.\n" );
@@ -1180,10 +1180,6 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Abit/Qbit Data.\n" );
    free_questbits(  );
 
-   // Some freaking globals 
-   fprintf( stdout, "%s", "Globals.\n" );
-   DISPOSE( ranged_target_name );
-
    fprintf( stdout, "%s", "Checking string hash for leftovers.\n" );
    {
       for( hash = 0; hash < 1024; ++hash )
@@ -1191,7 +1187,8 @@ void cleanup_memory( void )
    }
 
 #if !defined(__CYGWIN__) && defined(SQL)
-   close_db();
+   fprintf( stdout, "%s", "Closing database connection.\n" );
+   close_db(  );
 #endif
 
    // Last but not least, close the libdl and dispose of sysdata - Samson 
@@ -1199,7 +1196,6 @@ void cleanup_memory( void )
    dlclose( sysdata->dlHandle );
    deleteptr( sysdata );
    fprintf( stdout, "%s", "Memory cleanup complete, exiting.\n" );
-   return;
 }
 
 // Heh, nice one Darien :)
@@ -1208,10 +1204,10 @@ void moron_check( void )
 {
    uid_t uid;
 
-   if( ( uid = getuid()) == 0 )
+   if( ( uid = getuid(  ) ) == 0 )
    {
       log_string( "Warning, you are a moron. Do not run as root." );
-      exit(1);
+      exit( 1 );
    }
 }
 #endif
@@ -1237,13 +1233,13 @@ int main( int argc, char **argv )
    bool fCopyOver = false;
 
 #if !defined(WIN32)
-   moron_check(); // Debatable weather or not this is true in WIN32 anyway :)
+   moron_check(  );  // Debatable weather or not this is true in WIN32 anyway :)
 #endif
 
    DONT_UPPER = false;
    num_descriptors = 0;
    num_logins = 0;
-   dlist.clear();
+   dlist.clear(  );
    mudstrlcpy( lastplayercmd, "No commands issued yet", MIL * 2 );
 
    // Init time.
@@ -1333,7 +1329,7 @@ int main( int argc, char **argv )
     * then the flag is unset and SIGSEGV will continue to be intercepted. Samson 3-11-04
     */
    if( sysdata->crashhandler == true )
-      set_chandler();
+      set_chandler(  );
 
    log_string( "No people online yet. Suspending autonomous update handlers." );
 

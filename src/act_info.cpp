@@ -41,6 +41,7 @@
 #include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "sha256.h"
 
 #define HISTORY_FILE SYSTEM_DIR "history.txt"   /* Used in do_history - Samson 2-12-98 */
 
@@ -51,14 +52,16 @@
  */
 bool EXA_prog_trigger = true;
 liquid_data *get_liq_vnum( int );
-char *spacetodash( char * );
 CMDF( do_track );
-void save_sysdata( );
+CMDF( do_cast );
+CMDF( do_dig );
+CMDF( do_search );
+CMDF( do_detrap );
+void save_sysdata(  );
 void display_map( char_data * );
-char *sha256_crypt( const char * );
 void draw_map( char_data *, const char * );
 
-char *const where_names[] = {
+const char *where_names[] = {
    "<used as light>     ",
    "<worn on finger>    ",
    "<worn on finger>    ",
@@ -159,8 +162,7 @@ void look_sky( char_data * ch )
 
    for( linenum = 0; linenum < MAP_HEIGHT; ++linenum )
    {
-      if( ( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset )
-          && ( linenum < 3 || linenum >= 6 ) )
+      if( ( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset ) && ( linenum < 3 || linenum >= 6 ) )
          continue;
 
       mudstrlcpy( buf, " ", MSL );
@@ -382,7 +384,6 @@ void show_condition( char_data * ch, char_data * victim )
 
    buf[0] = UPPER( buf[0] );
    ch->print( buf );
-   return;
 }
 
 /* Gave a reason buffer to PCFLAG_AFK -Whir - 8/31/98 */
@@ -421,8 +422,8 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
          snprintf( buf + strlen( buf ), MSL - strlen( buf ), "(Mobinvis %d) ", victim->mobinvis );
    }
 
-   if( !victim->isnpc(  ) && victim->pcdata->clan && victim->pcdata->clan->badge && ( victim->pcdata->clan->clan_type != CLAN_GUILD ) )
-      ch->printf( "%s ", victim->pcdata->clan->badge );
+   if( !victim->isnpc(  ) && victim->pcdata->clan && !victim->pcdata->clan->badge.empty(  ) && ( victim->pcdata->clan->clan_type != CLAN_GUILD ) )
+      ch->printf( "%s ", victim->pcdata->clan->badge.c_str(  ) );
    else
       ch->set_color( AT_PERSON );
 
@@ -495,152 +496,168 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
 
    mudstrlcat( buf, ch->color_str( AT_PERSON ), MSL );
 
-/* Furniture ideas taken from ROT. Furniture 1.01 is provided by Xerves.
-   Info rewrite for sleeping/resting/standing/sitting on Objects -- Xerves
- */
-   switch ( victim->position )
+   timer_data *timer;
+   if( ( timer = victim->get_timerptr( TIMER_DO_FUN ) ) != NULL )
    {
-      default:
-         mudstrlcat( buf, " is... wait... WTF?", MSL );
-         break;
-      case POS_DEAD:
-         mudstrlcat( buf, " is DEAD!!", MSL );
-         break;
-      case POS_MORTAL:
-         mudstrlcat( buf, " is mortally wounded.", MSL );
-         break;
-      case POS_INCAP:
-         mudstrlcat( buf, " is incapacitated.", MSL );
-         break;
-      case POS_STUNNED:
-         mudstrlcat( buf, " is lying here stunned.", MSL );
-         break;
-      case POS_SLEEPING:
-         if( victim->on != NULL )
-         {
-            if( IS_SET( victim->on->value[2], SLEEP_AT ) )
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping at %s.", victim->on->short_descr );
-            else if( IS_SET( victim->on->value[2], SLEEP_ON ) )
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping on %s.", victim->on->short_descr );
+      if( timer->do_fun == do_cast )
+         mudstrlcat( buf, " is here chanting.", MSL );
+      else if( timer->do_fun == do_dig )
+         mudstrlcat( buf, " is here digging.", MSL );
+      else if( timer->do_fun == do_search )
+         mudstrlcat( buf, " is searching the area for something.", MSL );
+      else if( timer->do_fun == do_detrap )
+         mudstrlcat( buf, " is working with the trap here.", MSL );
+      else
+         mudstrlcat( buf, " is looking rather lost.", MSL );
+   }
+   else
+   {
+      /*
+       * Furniture ideas taken from ROT. Furniture 1.01 is provided by Xerves.
+       * * Info rewrite for sleeping/resting/standing/sitting on Objects -- Xerves
+       */
+      switch ( victim->position )
+      {
+         default:
+            mudstrlcat( buf, " is... wait... WTF?", MSL );
+            break;
+         case POS_DEAD:
+            mudstrlcat( buf, " is DEAD!!", MSL );
+            break;
+         case POS_MORTAL:
+            mudstrlcat( buf, " is mortally wounded.", MSL );
+            break;
+         case POS_INCAP:
+            mudstrlcat( buf, " is incapacitated.", MSL );
+            break;
+         case POS_STUNNED:
+            mudstrlcat( buf, " is lying here stunned.", MSL );
+            break;
+         case POS_SLEEPING:
+            if( victim->on != NULL )
+            {
+               if( IS_SET( victim->on->value[2], SLEEP_AT ) )
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping at %s.", victim->on->short_descr );
+               else if( IS_SET( victim->on->value[2], SLEEP_ON ) )
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping on %s.", victim->on->short_descr );
+               else
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping in %s.", victim->on->short_descr );
+            }
             else
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping in %s.", victim->on->short_descr );
-         }
-         else
-         {
-            if( ch->position == POS_SITTING || ch->position == POS_RESTING )
-               mudstrlcat( buf, " is sleeping nearby.", MSL );
+            {
+               if( ch->position == POS_SITTING || ch->position == POS_RESTING )
+                  mudstrlcat( buf, " is sleeping nearby.", MSL );
+               else
+                  mudstrlcat( buf, " is deep in slumber here.", MSL );
+            }
+            break;
+         case POS_RESTING:
+            if( victim->on != NULL )
+            {
+               if( IS_SET( victim->on->value[2], REST_AT ) )
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting at %s.", victim->on->short_descr );
+               else if( IS_SET( victim->on->value[2], REST_ON ) )
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting on %s.", victim->on->short_descr );
+               else
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting in %s.", victim->on->short_descr );
+            }
             else
-               mudstrlcat( buf, " is deep in slumber here.", MSL );
-         }
-         break;
-      case POS_RESTING:
-         if( victim->on != NULL )
-         {
-            if( IS_SET( victim->on->value[2], REST_AT ) )
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting at %s.", victim->on->short_descr );
-            else if( IS_SET( victim->on->value[2], REST_ON ) )
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting on %s.", victim->on->short_descr );
+            {
+               if( ch->position == POS_RESTING )
+                  mudstrlcat( buf, " is sprawled out alongside you.", MSL );
+               else if( ch->position == POS_MOUNTED )
+                  mudstrlcat( buf, " is sprawled out at the foot of your mount.", MSL );
+               else
+                  mudstrlcat( buf, " is sprawled out here.", MSL );
+            }
+            break;
+         case POS_SITTING:
+            if( victim->on != NULL )
+            {
+               if( IS_SET( victim->on->value[2], SIT_AT ) )
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting at %s.", victim->on->short_descr );
+               else if( IS_SET( victim->on->value[2], SIT_ON ) )
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting on %s.", victim->on->short_descr );
+               else
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting in %s.", victim->on->short_descr );
+            }
             else
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting in %s.", victim->on->short_descr );
-         }
-         else
-         {
-            if( ch->position == POS_RESTING )
-               mudstrlcat( buf, " is sprawled out alongside you.", MSL );
-            else if( ch->position == POS_MOUNTED )
-               mudstrlcat( buf, " is sprawled out at the foot of your mount.", MSL );
+               mudstrlcat( buf, " is sitting here.", MSL );
+            break;
+         case POS_STANDING:
+            if( victim->on != NULL )
+            {
+               if( IS_SET( victim->on->value[2], STAND_AT ) )
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing at %s.", victim->on->short_descr );
+               else if( IS_SET( victim->on->value[2], STAND_ON ) )
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing on %s.", victim->on->short_descr );
+               else
+                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing in %s.", victim->on->short_descr );
+            }
+            else if( victim->is_immortal(  ) )
+               mudstrlcat( buf, " is here before you.", MSL );
+            else if( ( victim->in_room->sector_type == SECT_UNDERWATER ) && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
+               mudstrlcat( buf, " is drowning here.", MSL );
+            else if( victim->in_room->sector_type == SECT_UNDERWATER )
+               mudstrlcat( buf, " is here in the water.", MSL );
+            else if( ( victim->in_room->sector_type == SECT_OCEANFLOOR ) && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
+               mudstrlcat( buf, " is drowning here.", MSL );
+            else if( victim->in_room->sector_type == SECT_OCEANFLOOR )
+               mudstrlcat( buf, " is standing here in the water.", MSL );
+            else if( victim->has_aflag( AFF_FLOATING ) || victim->has_aflag( AFF_FLYING ) )
+               mudstrlcat( buf, " is hovering here.", MSL );
             else
-               mudstrlcat( buf, " is sprawled out here.", MSL );
-         }
-         break;
-      case POS_SITTING:
-         if( victim->on != NULL )
-         {
-            if( IS_SET( victim->on->value[2], SIT_AT ) )
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting at %s.", victim->on->short_descr );
-            else if( IS_SET( victim->on->value[2], SIT_ON ) )
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting on %s.", victim->on->short_descr );
-            else
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting in %s.", victim->on->short_descr );
-         }
-         else
-            mudstrlcat( buf, " is sitting here.", MSL );
-         break;
-      case POS_STANDING:
-         if( victim->on != NULL )
-         {
-            if( IS_SET( victim->on->value[2], STAND_AT ) )
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing at %s.", victim->on->short_descr );
-            else if( IS_SET( victim->on->value[2], STAND_ON ) )
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing on %s.", victim->on->short_descr );
-            else
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing in %s.", victim->on->short_descr );
-         }
-         else if( victim->is_immortal(  ) )
-            mudstrlcat( buf, " is here before you.", MSL );
-         else if( ( victim->in_room->sector_type == SECT_UNDERWATER )
-                  && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
-            mudstrlcat( buf, " is drowning here.", MSL );
-         else if( victim->in_room->sector_type == SECT_UNDERWATER )
-            mudstrlcat( buf, " is here in the water.", MSL );
-         else if( ( victim->in_room->sector_type == SECT_OCEANFLOOR )
-                  && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
-            mudstrlcat( buf, " is drowning here.", MSL );
-         else if( victim->in_room->sector_type == SECT_OCEANFLOOR )
-            mudstrlcat( buf, " is standing here in the water.", MSL );
-         else if( victim->has_aflag( AFF_FLOATING ) || victim->has_aflag( AFF_FLYING ) )
-            mudstrlcat( buf, " is hovering here.", MSL );
-         else
-            mudstrlcat( buf, " is standing here.", MSL );
-         break;
-      case POS_SHOVE:
-         mudstrlcat( buf, " is being shoved around.", MSL );
-         break;
-      case POS_DRAG:
-         mudstrlcat( buf, " is being dragged around.", MSL );
-         break;
-      case POS_MOUNTED:
-         mudstrlcat( buf, " is here, upon ", MSL );
-         if( !victim->mount )
-            mudstrlcat( buf, "thin air???", MSL );
-         else if( victim->mount == ch )
-            mudstrlcat( buf, "your back.", MSL );
-         else if( victim->in_room == victim->mount->in_room )
-         {
-            mudstrlcat( buf, PERS( victim->mount, ch, false ), MSL );
-            mudstrlcat( buf, ".", MSL );
-         }
-         else
-            mudstrlcat( buf, "someone who left??", MSL );
-         break;
-      case POS_FIGHTING:
-      case POS_EVASIVE:
-      case POS_DEFENSIVE:
-      case POS_AGGRESSIVE:
-      case POS_BERSERK:
-         mudstrlcat( buf, " is here, fighting ", MSL );
-         if( !victim->fighting )
-         {
-            mudstrlcat( buf, "thin air???", MSL );
-
-            /*
-             * some bug somewhere.... kinda hackey fix -h 
-             */
+               mudstrlcat( buf, " is standing here.", MSL );
+            break;
+         case POS_SHOVE:
+            mudstrlcat( buf, " is being shoved around.", MSL );
+            break;
+         case POS_DRAG:
+            mudstrlcat( buf, " is being dragged around.", MSL );
+            break;
+         case POS_MOUNTED:
+            mudstrlcat( buf, " is here, upon ", MSL );
             if( !victim->mount )
-               victim->position = POS_STANDING;
+               mudstrlcat( buf, "thin air???", MSL );
+            else if( victim->mount == ch )
+               mudstrlcat( buf, "your back.", MSL );
+            else if( victim->in_room == victim->mount->in_room )
+            {
+               mudstrlcat( buf, PERS( victim->mount, ch, false ), MSL );
+               mudstrlcat( buf, ".", MSL );
+            }
             else
-               victim->position = POS_MOUNTED;
-         }
-         else if( victim->who_fighting(  ) == ch )
-            mudstrlcat( buf, "YOU!", MSL );
-         else if( victim->in_room == victim->fighting->who->in_room )
-         {
-            mudstrlcat( buf, PERS( victim->fighting->who, ch, false ), MSL );
-            mudstrlcat( buf, ".", MSL );
-         }
-         else
-            mudstrlcat( buf, "someone who left??", MSL );
-         break;
+               mudstrlcat( buf, "someone who left??", MSL );
+            break;
+         case POS_FIGHTING:
+         case POS_EVASIVE:
+         case POS_DEFENSIVE:
+         case POS_AGGRESSIVE:
+         case POS_BERSERK:
+            mudstrlcat( buf, " is here, fighting ", MSL );
+            if( !victim->fighting )
+            {
+               mudstrlcat( buf, "thin air???", MSL );
+
+               /*
+                * some bug somewhere.... kinda hackey fix -h 
+                */
+               if( !victim->mount )
+                  victim->position = POS_STANDING;
+               else
+                  victim->position = POS_MOUNTED;
+            }
+            else if( victim->who_fighting(  ) == ch )
+               mudstrlcat( buf, "YOU!", MSL );
+            else if( victim->in_room == victim->fighting->who->in_room )
+            {
+               mudstrlcat( buf, PERS( victim->fighting->who, ch, false ), MSL );
+               mudstrlcat( buf, ".", MSL );
+            }
+            else
+               mudstrlcat( buf, "someone who left??", MSL );
+            break;
+      }
    }
 
    if( num > 1 && victim->isnpc(  ) )
@@ -651,7 +668,6 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
 
    ch->print( buf );
    show_visible_affects_to_char( victim, ch );
-   return;
 }
 
 void show_race_line( char_data * ch, char_data * victim )
@@ -668,6 +684,7 @@ void show_race_line( char_data * ch, char_data * victim )
       ch->printf( "%s is %d'%d\" and weighs %d pounds.\r\n", PERS( victim, ch, false ), feet, inches, victim->weight );
       return;
    }
+
    if( !victim->isnpc(  ) && ( victim == ch ) )
    {
       feet = victim->height / 12;
@@ -707,8 +724,7 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
    }
    else
    {
-      if( victim->morph != NULL && victim->morph->morph != NULL
-          && ( victim->morph->morph->description != NULL && victim->morph->morph->description[0] != '\0' ) )
+      if( victim->morph != NULL && victim->morph->morph != NULL && ( victim->morph->morph->description != NULL && victim->morph->morph->description[0] != '\0' ) )
          ch->print( victim->morph->morph->description );
       else if( victim->isnpc(  ) )
          act( AT_PLAIN, "You see nothing special about $M.", ch, NULL, victim, TO_CHAR );
@@ -741,7 +757,7 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
          else
             ch->print( where_names[iWear] );
 
-         ch->printf( "%s\r\n", obj->format_to_char( ch, true, 1, MXP_NONE, "" ) );
+         ch->printf( "%s\r\n", obj->format_to_char( ch, true, 1 ).c_str(  ) );
       }
    }
 
@@ -767,21 +783,17 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
                   race_table[victim->race]->race_name : "unknown",
                   victim->isnpc(  )? victim->Class < MAX_NPC_CLASS && victim->Class >= 0 ?
                   npc_class[victim->Class] : "unknown" : victim->Class < MAX_PC_CLASS &&
-                  class_table[victim->Class]->who_name &&
-                  class_table[victim->Class]->who_name[0] != '\0' ? class_table[victim->Class]->who_name : "unknown" );
+                  class_table[victim->Class]->who_name && class_table[victim->Class]->who_name[0] != '\0' ? class_table[victim->Class]->who_name : "unknown" );
    }
 
    if( number_percent(  ) < ch->LEARNED( gsn_peek ) )
    {
-      ch->printf( "\r\nYou peek at %s inventory:\r\n",
-                  victim->sex == SEX_MALE ? "his" : victim->sex == SEX_FEMALE ? "her" : "its" );
+      ch->printf( "\r\nYou peek at %s inventory:\r\n", victim->sex == SEX_MALE ? "his" : victim->sex == SEX_FEMALE ? "her" : "its" );
 
-      show_list_to_char( ch, victim->carrying, true, true, MXP_STEAL, victim->name );
+      show_list_to_char( ch, victim->carrying, true, true );
    }
    else if( ch->pcdata->learned[gsn_peek] > 0 )
       ch->learn_from_failure( gsn_peek );
-
-   return;
 }
 
 bool is_same_mob( char_data * i, char_data * j )
@@ -790,32 +802,31 @@ bool is_same_mob( char_data * i, char_data * j )
       return false;
 
    if( i->pIndexData == j->pIndexData && i->position == j->position &&
-       i->get_aflags() == j->get_aflags() && i->get_actflags() == j->get_actflags() &&
+       i->get_aflags(  ) == j->get_aflags(  ) && i->get_actflags(  ) == j->get_actflags(  ) &&
        !str_cmp( i->name, j->name ) && !str_cmp( i->short_descr, j->short_descr ) &&
-       !str_cmp( i->long_descr, j->long_descr )
-       && ( ( i->chardesc && j->chardesc ) && !str_cmp( i->chardesc, j->chardesc ) ) && is_same_char_map( i, j ) )
+       !str_cmp( i->long_descr, j->long_descr ) && ( ( i->chardesc && j->chardesc ) && !str_cmp( i->chardesc, j->chardesc ) ) && is_same_char_map( i, j ) )
       return true;
 
    return false;
 }
 
-void show_char_to_char( char_data *ch )
+void show_char_to_char( char_data * ch )
 {
-   map<char_data*,int> chmap;
-   map<char_data*,int>::iterator mch;
+   map < char_data *, int >chmap;
+   map < char_data *, int >::iterator mch;
    bool found = false;
 
-   chmap.clear();
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   chmap.clear(  );
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
 
       if( rch == ch || ( rch == supermob && !ch->is_imp(  ) ) )
          continue;
 
       found = false;
-      for( mch = chmap.begin(); mch != chmap.end(); ++mch )
+      for( mch = chmap.begin(  ); mch != chmap.end(  ); ++mch )
       {
          if( is_same_mob( mch->first, rch ) )
          {
@@ -828,8 +839,8 @@ void show_char_to_char( char_data *ch )
          chmap[rch] = 1;
    }
 
-   mch = chmap.begin();
-   while( mch != chmap.end() )
+   mch = chmap.begin(  );
+   while( mch != chmap.end(  ) )
    {
       if( ch->can_see( mch->first, false ) && !is_ignoring( mch->first, ch ) )
          show_char_to_char_0( mch->first, ch, mch->second );
@@ -837,7 +848,6 @@ void show_char_to_char( char_data *ch )
          ch->print( "&[blood]The red form of a living creature is here.&D\r\n" );
       ++mch;
    }
-   return;
 }
 
 bool check_blind( char_data * ch )
@@ -859,7 +869,7 @@ bool check_blind( char_data * ch )
 /*
  * Returns classical DIKU door direction based on text in arg	-Thoric
  */
-int get_door( char *arg )
+int get_door( const string & arg )
 {
    int door;
 
@@ -904,18 +914,15 @@ CMDF( do_exits )
       return;
    }
 
-   if( fAuto && ch->MXP_ON(  ) )
-      ch->print( MXP_TAG_ROOMEXIT );
-
    ch->set_color( AT_EXITS );
 
    mudstrlcpy( buf, fAuto ? "[Exits:" : "Obvious exits:\r\n", MSL );
 
    bool found = false;
-   list<exit_data*>::iterator iexit;
-   for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+   list < exit_data * >::iterator iexit;
+   for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
 
       /*
        * Immortals see all exits, even secret ones 
@@ -929,13 +936,7 @@ CMDF( do_exits )
             {
                mudstrlcat( buf, " ", MSL );
 
-               if( ch->MXP_ON(  ) )
-                  mudstrlcat( buf, "¢Ex£", MSL );
-
                mudstrlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
-
-               if( ch->MXP_ON(  ) )
-                  mudstrlcat( buf, "¢/Ex£", MSL );
 
                if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
                   mudstrlcat( buf, "->(Overland)", MSL );
@@ -957,8 +958,7 @@ CMDF( do_exits )
             }
             else
             {
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%s - %s\r\n", capitalize( dir_name[pexit->vdir] ),
-                         pexit->to_room->name );
+               snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%s - %s\r\n", capitalize( dir_name[pexit->vdir] ), pexit->to_room->name );
 
                /*
                 * More new code added to display closed, or otherwise invisible exits to immortals 
@@ -982,28 +982,15 @@ CMDF( do_exits )
       }
       else
       {
-         if( pexit->to_room
-             && !IS_EXIT_FLAG( pexit, EX_SECRET )
-             && ( !IS_EXIT_FLAG( pexit, EX_WINDOW ) || IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
-             && !IS_EXIT_FLAG( pexit, EX_HIDDEN )
-             && !IS_EXIT_FLAG( pexit, EX_FORTIFIED ) /* Checks for walls, Marcus */
-             && !IS_EXIT_FLAG( pexit, EX_HEAVY )
-             && !IS_EXIT_FLAG( pexit, EX_MEDIUM )
-             && !IS_EXIT_FLAG( pexit, EX_LIGHT )
-             && !IS_EXIT_FLAG( pexit, EX_CRUMBLING ) )
+         if( pexit->to_room && !IS_EXIT_FLAG( pexit, EX_SECRET ) && ( !IS_EXIT_FLAG( pexit, EX_WINDOW ) || IS_EXIT_FLAG( pexit, EX_ISDOOR ) ) && !IS_EXIT_FLAG( pexit, EX_HIDDEN ) && !IS_EXIT_FLAG( pexit, EX_FORTIFIED ) /* Checks for walls, Marcus */
+             && !IS_EXIT_FLAG( pexit, EX_HEAVY ) && !IS_EXIT_FLAG( pexit, EX_MEDIUM ) && !IS_EXIT_FLAG( pexit, EX_LIGHT ) && !IS_EXIT_FLAG( pexit, EX_CRUMBLING ) )
          {
             found = true;
             if( fAuto )
             {
                mudstrlcat( buf, " ", MSL );
 
-               if( ch->MXP_ON(  ) )
-                  mudstrlcat( buf, "¢Ex£", MSL );
-
                mudstrlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
-
-               if( ch->MXP_ON(  ) )
-                  mudstrlcat( buf, "¢/Ex£", MSL );
 
                if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !IS_EXIT_FLAG( pexit, EX_DIG ) )
                   mudstrlcat( buf, "->(Closed)", MSL );
@@ -1020,38 +1007,28 @@ CMDF( do_exits )
    }
 
    if( !found )
-   {
       mudstrlcat( buf, fAuto ? " none]" : "None]", MSL );
-      if( ch->MXP_ON(  ) )
-         mudstrlcat( buf, MXP_TAG_ROOMEXIT_CLOSE, MSL );
-   }
    else
    {
       if( fAuto )
-      {
          mudstrlcat( buf, "]", MSL );
-         if( ch->MXP_ON(  ) )
-            mudstrlcat( buf, MXP_TAG_ROOMEXIT_CLOSE, MSL );
-      }
    }
 
    mudstrlcat( buf, "\r\n", MSL );
    ch->print( buf );
-   return;
 }
 
 void print_compass( char_data * ch )
 {
    int exit_info[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-   static char *const exit_colors[] = { "&w", "&Y", "&C", "&b", "&w", "&R" };
+   static const char *exit_colors[] = { "&w", "&Y", "&C", "&b", "&w", "&R" };
 
-   list<exit_data*>::iterator iexit;
-   for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+   list < exit_data * >::iterator iexit;
+   for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
 
-      if( !pexit->to_room || IS_EXIT_FLAG( pexit, EX_HIDDEN ) ||
-          ( IS_EXIT_FLAG( pexit, EX_SECRET ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) ) )
+      if( !pexit->to_room || IS_EXIT_FLAG( pexit, EX_HIDDEN ) || ( IS_EXIT_FLAG( pexit, EX_SECRET ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) ) )
          continue;
       if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )
          exit_info[pexit->vdir] = 2;
@@ -1064,8 +1041,8 @@ void print_compass( char_data * ch )
       else
          exit_info[pexit->vdir] = 1;
    }
-   ch->printf( "\r\n&[rmname]%s%-50s%s         %s%s    %s%s    %s%s\r\n", ch->MXP_ON(  )? MXP_TAG_ROOMNAME : "",
-               ch->in_room->name, ch->MXP_ON(  ) ? MXP_TAG_ROOMNAME_CLOSE : "", exit_colors[exit_info[DIR_NORTHWEST]],
+   ch->printf( "\r\n&[rmname]%-50s         %s%s    %s%s    %s%s\r\n",
+               ch->in_room->name, exit_colors[exit_info[DIR_NORTHWEST]],
                exit_info[DIR_NORTHWEST] ? "NW" : "- ", exit_colors[exit_info[DIR_NORTH]], exit_info[DIR_NORTH] ? "N" : "-",
                exit_colors[exit_info[DIR_NORTHEAST]], exit_info[DIR_NORTHEAST] ? "NE" : " -" );
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_ROOMVNUM ) )
@@ -1077,12 +1054,10 @@ void print_compass( char_data * ch )
                exit_info[DIR_DOWN] ? "D" : "-", exit_colors[exit_info[DIR_EAST]], exit_info[DIR_EAST] ? "E" : "-" );
    ch->printf( "                                                           %s%s    %s%s    %s%s\r\n",
                exit_colors[exit_info[DIR_SOUTHWEST]], exit_info[DIR_SOUTHWEST] ? "SW" : "- ",
-               exit_colors[exit_info[DIR_SOUTH]], exit_info[DIR_SOUTH] ? "S" : "-", exit_colors[exit_info[DIR_SOUTHEAST]],
-               exit_info[DIR_SOUTHEAST] ? "SE" : " -" );
-   return;
+               exit_colors[exit_info[DIR_SOUTH]], exit_info[DIR_SOUTH] ? "S" : "-", exit_colors[exit_info[DIR_SOUTHEAST]], exit_info[DIR_SOUTHEAST] ? "SE" : " -" );
 }
 
-char *roomdesc( char_data *ch )
+char *roomdesc( char_data * ch )
 {
    static char rdesc[MSL];
 
@@ -1093,8 +1068,6 @@ char *roomdesc( char_data *ch )
     */
    if( !ch->has_pcflag( PCFLAG_BRIEF ) )
    {
-      if( ch->MXP_ON(  ) )
-         mudstrlcat( rdesc, MXP_TAG_ROOMDESC, MSL );
       if( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset )
       {
          if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
@@ -1107,15 +1080,13 @@ char *roomdesc( char_data *ch )
          else if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
             mudstrlcat( rdesc, ch->in_room->roomdesc, MSL );
       }
-      if( ch->MXP_ON(  ) )
-         mudstrlcat( rdesc, MXP_TAG_ROOMDESC_CLOSE, MSL );
    }
    if( rdesc[0] == '\0' )
       mudstrlcpy( rdesc, "(Not set)", MSL );
    return rdesc;
 }
 
-void print_infoflags( char_data *ch )
+void print_infoflags( char_data * ch )
 {
    area_data *tarea = ch->in_room->area;
 
@@ -1127,8 +1098,7 @@ void print_infoflags( char_data *ch )
    {
       tarea = ch->in_room->area;
 
-      ch->printf( "&[aflags][Area Flags: %s]\r\n",
-         ( tarea->flags.any(  ) )? bitset_string( tarea->flags, area_flags ) : "none" );
+      ch->printf( "&[aflags][Area Flags: %s]\r\n", ( tarea->flags.any(  ) )? bitset_string( tarea->flags, area_flags ) : "none" );
       ch->printf( "&[rflags][Room Flags: %s]\r\n", bitset_string( ch->in_room->flags, r_flags ) );
    }
 
@@ -1138,8 +1108,7 @@ void print_infoflags( char_data *ch )
     */
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_SECTORD ) )
    {
-       ch->printf( "&[stype][Sector Type: %s] [Continent or Plane: %s]\r\n",
-          sect_types[ch->in_room->sector_type], continents[tarea->continent] );
+      ch->printf( "&[stype][Sector Type: %s] [Continent or Plane: %s]\r\n", sect_types[ch->in_room->sector_type], continents[tarea->continent] );
    }
 
    /*
@@ -1155,11 +1124,8 @@ void print_infoflags( char_data *ch )
    }
 }
 
-void print_roomname( char_data *ch )
+void print_roomname( char_data * ch )
 {
-   if( ch->MXP_ON(  ) )
-      ch->print( MXP_TAG_ROOMNAME );
-
    ch->set_color( AT_RMNAME );
 
    /*
@@ -1169,26 +1135,22 @@ void print_roomname( char_data *ch )
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_ROOMVNUM ) )
       ch->printf( "   &YVnum: %d", ch->in_room->vnum );
 
-   if( ch->MXP_ON(  ) )
-      ch->print( MXP_TAG_ROOMNAME_CLOSE );
    ch->print( "\r\n" );
 }
 
 CMDF( do_showmap )
 {
-   draw_map( ch, roomdesc(ch) );
-   return;
+   draw_map( ch, roomdesc( ch ) );
 }
 
 CMDF( do_look )
 {
-   char arg1[MIL], arg2[MIL];
-   string arg;
+   string arg, arg1, arg2;
    extra_descr_data *ed = NULL;
-   list<exit_data*>::iterator iexit;
+   list < exit_data * >::iterator iexit;
    char_data *victim;
    obj_data *obj;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    room_index *original;
    int number, cnt;
 
@@ -1213,7 +1175,7 @@ CMDF( do_look )
    if( !ch->has_pcflag( PCFLAG_HOLYLIGHT ) && !ch->has_aflag( AFF_TRUESIGHT ) && ch->in_room->is_dark( ch ) )
    {
       ch->print( "&zIt is pitch black ... \r\n" );
-      if( !*argument || !str_cmp( argument, "auto" ) )
+      if( argument.empty(  ) || !str_cmp( argument, "auto" ) )
          show_char_to_char( ch );
       return;
    }
@@ -1221,14 +1183,14 @@ CMDF( do_look )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' || !str_cmp( arg1, "auto" ) )
+   if( arg1.empty(  ) || !str_cmp( arg1, "auto" ) )
    {
       if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
       {
          display_map( ch );
          if( !ch->inflight )
          {
-            show_list_to_char( ch, ch->in_room->objects, false, false, MXP_GROUND, "" );
+            show_list_to_char( ch, ch->in_room->objects, false, false );
             show_char_to_char( ch );
          }
          return;
@@ -1246,22 +1208,24 @@ CMDF( do_look )
        * Moved the exits to be under the name of the room 
        * Yannick 24 september 1997                        
        */
-      /* Added AUTOMAP check because it shows them next to the map now if its active */
+      /*
+       * Added AUTOMAP check because it shows them next to the map now if its active 
+       */
       if( ch->has_pcflag( PCFLAG_AUTOEXIT ) && !ch->has_pcflag( PCFLAG_AUTOMAP ) )
-         do_exits( ch, "auto" );
+         do_exits( ch, NULL );
 
       print_infoflags( ch );
 
       ch->set_color( AT_RMDESC );
       if( ch->has_pcflag( PCFLAG_AUTOMAP ) )
-         draw_map( ch, roomdesc(ch) );
+         draw_map( ch, roomdesc( ch ) );
       else
-         ch->print( roomdesc(ch) );
+         ch->print( roomdesc( ch ) );
 
       if( !ch->isnpc(  ) && ch->hunting )
          do_track( ch, ch->hunting->who->name );
 
-      show_list_to_char( ch, ch->in_room->objects, false, false, MXP_GROUND, "" );
+      show_list_to_char( ch, ch->in_room->objects, false, false );
       show_char_to_char( ch );
       return;
    }
@@ -1315,7 +1279,7 @@ CMDF( do_look )
       /*
        * 'look under' 
        */
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Look beneath what?\r\n" );
          return;
@@ -1343,7 +1307,7 @@ CMDF( do_look )
       obj->count = count;
 
       if( obj->extra_flags.test( ITEM_COVERING ) )
-         show_list_to_char( ch, obj->contents, true, true, MXP_GROUND, obj->name );
+         show_list_to_char( ch, obj->contents, true, true );
       else
          ch->print( "Nothing.\r\n" );
       if( EXA_prog_trigger )
@@ -1361,7 +1325,7 @@ CMDF( do_look )
       /*
        * 'look in' 
        */
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Look in what?\r\n" );
          return;
@@ -1393,16 +1357,16 @@ CMDF( do_look )
                ch->printf( "It's %s full of a %s liquid.\r\n", ( obj->value[1] * 10 ) < ( obj->value[0] * 10 ) / 4
                            ? "less than halfway" : ( obj->value[1] * 10 ) < 2 * ( obj->value[0] * 10 ) / 4
                            ? "around halfway" : ( obj->value[1] * 10 ) < 3 * ( obj->value[0] * 10 ) / 4
-                           ? "more than halfway" : obj->value[1] == obj->value[0] ? "completely" : "almost", liq->color );
+                           ? "more than halfway" : obj->value[1] == obj->value[0] ? "completely" : "almost", liq->color.c_str(  ) );
             }
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
             break;
 
          case ITEM_PORTAL:
-            for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+            for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
             {
-               exit_data *pexit = (*iexit);
+               exit_data *pexit = *iexit;
 
                if( pexit->vdir == DIR_PORTAL && IS_EXIT_FLAG( pexit, EX_PORTAL ) )
                {
@@ -1457,7 +1421,7 @@ CMDF( do_look )
                act( AT_PLAIN, "$p contains:", ch, obj, NULL, TO_CHAR );
             obj->count = count;
 
-            show_list_to_char( ch, obj->contents, true, true, MXP_CONT, obj->name );
+            show_list_to_char( ch, obj->contents, true, true );
             ch->print( "&GItems with a &W*&G after them have other items stored inside.\r\n" );
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
@@ -1470,9 +1434,9 @@ CMDF( do_look )
     * finally fixed the annoying look 2.obj desc bug  -Thoric 
     */
    number = number_argument( arg1, arg );
-   for( cnt = 0, iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( cnt = 0, iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj = (*iobj);
+      obj = *iobj;
       if( ch->can_see_obj( obj, false ) )
       {
          ed = get_extra_descr( arg, obj );
@@ -1515,9 +1479,9 @@ CMDF( do_look )
       }
    }
 
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      obj = (*iobj);
+      obj = *iobj;
       if( ch->can_see_obj( obj, false ) )
       {
          if( ( ed = get_extra_descr( arg, obj ) ) )
@@ -1572,11 +1536,23 @@ CMDF( do_look )
          if( ( IS_EXIT_FLAG( pexit, EX_SECRET ) || IS_EXIT_FLAG( pexit, EX_DIG ) ) && door != -1 )
             ch->print( "Nothing special there.\r\n" );
          else
-            act( AT_PLAIN, "The $d is closed.", ch, NULL, pexit->keyword, TO_CHAR );
+         {
+            if( pexit->keyword[strlen( pexit->keyword ) - 1] == 's'
+                || ( pexit->keyword[strlen( pexit->keyword ) - 1] == '\'' && pexit->keyword[strlen( pexit->keyword ) - 2] == 's' ) )
+               act( AT_PLAIN, "The $d are closed.", ch, NULL, pexit->keyword, TO_CHAR );
+            else
+               act( AT_PLAIN, "The $d is closed.", ch, NULL, pexit->keyword, TO_CHAR );
+         }
          return;
       }
       if( IS_EXIT_FLAG( pexit, EX_BASHED ) )
-         act( AT_RED, "The $d has been bashed from its hinges!", ch, NULL, pexit->keyword, TO_CHAR );
+      {
+         if( pexit->keyword[strlen( pexit->keyword ) - 1] == 's'
+             || ( pexit->keyword[strlen( pexit->keyword ) - 1] == '\'' && pexit->keyword[strlen( pexit->keyword ) - 2] == 's' ) )
+            act( AT_PLAIN, "The $d have been bashed from their hinges.", ch, NULL, pexit->keyword, TO_CHAR );
+         else
+            act( AT_PLAIN, "The $d has been bashed from its hinges.", ch, NULL, pexit->keyword, TO_CHAR );
+      }
 
       if( pexit->exitdesc && pexit->exitdesc[0] != '\0' )
          ch->printf( "%s\r\n", pexit->exitdesc );
@@ -1587,8 +1563,7 @@ CMDF( do_look )
        * Ability to look into the next room        -Thoric
        */
       if( pexit->to_room
-          && ( ch->is_affected( gsn_spy ) || ch->is_affected( gsn_scout ) || ch->is_affected( gsn_scry ) ||
-               IS_EXIT_FLAG( pexit, EX_xLOOK ) || ch->level >= LEVEL_IMMORTAL ) )
+          && ( ch->is_affected( gsn_spy ) || ch->is_affected( gsn_scout ) || ch->is_affected( gsn_scry ) || IS_EXIT_FLAG( pexit, EX_xLOOK ) || ch->level >= LEVEL_IMMORTAL ) )
       {
          if( !IS_EXIT_FLAG( pexit, EX_xLOOK ) && ch->level < LEVEL_IMMORTAL )
          {
@@ -1680,7 +1655,6 @@ CMDF( do_look )
    }
 
    ch->print( "You do not see that here.\r\n" );
-   return;
 }
 
 /* A much simpler version of look, this function will show you only
@@ -1713,7 +1687,7 @@ CMDF( do_glance )
 
    ch->set_color( AT_ACTION );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       if( ch->has_pcflag( PCFLAG_BRIEF ) )
          brief = true;
@@ -1727,10 +1701,7 @@ CMDF( do_glance )
    }
 
    if( !( victim = ch->get_char_room( argument ) ) )
-   {
       ch->print( "They're not here.\r\n" );
-      return;
-   }
    else
    {
       if( victim->can_see( ch, false ) )
@@ -1752,13 +1723,10 @@ CMDF( do_glance )
                      race_table[victim->race]->race_name : "unknown",
                      victim->isnpc(  )? victim->Class < MAX_NPC_CLASS && victim->Class >= 0 ?
                      npc_class[victim->Class] : "unknown" : victim->Class < MAX_PC_CLASS &&
-                     class_table[victim->Class]->who_name &&
-                     class_table[victim->Class]->who_name[0] != '\0' ? class_table[victim->Class]->who_name : "unknown" );
+                     class_table[victim->Class]->who_name && class_table[victim->Class]->who_name[0] != '\0' ? class_table[victim->Class]->who_name : "unknown" );
       }
       show_condition( ch, victim );
-      return;
    }
-   return;
 }
 
 CMDF( do_examine )
@@ -1773,7 +1741,7 @@ CMDF( do_examine )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Examine what?\r\n" );
       return;
@@ -1795,7 +1763,7 @@ CMDF( do_examine )
             break;
 
          case ITEM_ARMOR:
-            ch->printf( "Condition: %s\r\n", condtxt( obj->value[1], obj->value[0] ) );
+            ch->printf( "Condition: %s\r\n", condtxt( obj->value[1], obj->value[0] ).c_str(  ) );
             if( obj->value[2] > 0 )
                ch->printf( "Available sockets: %d\r\n", obj->value[2] );
             if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
@@ -1808,7 +1776,7 @@ CMDF( do_examine )
 
          case ITEM_WEAPON:
          case ITEM_MISSILE_WEAPON:
-            ch->printf( "Condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ) );
+            ch->printf( "Condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
             if( obj->value[7] > 0 )
                ch->printf( "Available sockets: %d\r\n", obj->value[7] );
             if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
@@ -1820,7 +1788,7 @@ CMDF( do_examine )
             break;
 
          case ITEM_PROJECTILE:
-            ch->printf( "Condition: %s\r\n", condtxt( obj->value[5], obj->value[0] ) );
+            ch->printf( "Condition: %s\r\n", condtxt( obj->value[5], obj->value[0] ).c_str(  ) );
             break;
 
          case ITEM_COOK:
@@ -1922,14 +1890,14 @@ CMDF( do_examine )
             ch->print( "When you look inside, you see:\r\n" );
          case ITEM_KEYRING:
             EXA_prog_trigger = false;
-            cmdf( ch, "look in %s", argument );
+            cmdf( ch, "look in %s", argument.c_str(  ) );
             EXA_prog_trigger = true;
             break;
       }
       if( obj->extra_flags.test( ITEM_COVERING ) )
       {
          EXA_prog_trigger = false;
-         cmdf( ch, "look under %s", argument );
+         cmdf( ch, "look under %s", argument.c_str(  ) );
          EXA_prog_trigger = true;
       }
       oprog_examine_trigger( ch, obj );
@@ -1937,7 +1905,6 @@ CMDF( do_examine )
          return;
       check_for_trap( ch, obj, TRAP_EXAMINE );
    }
-   return;
 }
 
 /*
@@ -1970,18 +1937,17 @@ CMDF( do_weather )
       ch->printf( "&B%s and %s.\r\n", preciptemp_msg[precip][temp], wind_msg[wind] );
    else
       ch->printf( "&B%s and %s.\r\n", windtemp_msg[wind][temp], precip_msg[precip] );
-   return;
 }
 
 CMDF( do_compare )
 {
-   char arg1[MIL];
+   string arg1;
    obj_data *obj1, *obj2 = NULL;
    int value1, value2;
-   char *msg;
+   const char *msg;
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Compare what to what?\r\n" );
       return;
@@ -1993,14 +1959,13 @@ CMDF( do_compare )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<obj_data*>::iterator iobj;
-      for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+      list < obj_data * >::iterator iobj;
+      for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
       {
-         obj2 = (*iobj);
-         if( obj2->wear_loc != WEAR_NONE && ch->can_see_obj( obj2, false )
-             && obj1->item_type == obj2->item_type && obj1->wear_flags == obj2->wear_flags )
+         obj2 = *iobj;
+         if( obj2->wear_loc != WEAR_NONE && ch->can_see_obj( obj2, false ) && obj1->item_type == obj2->item_type && obj1->wear_flags == obj2->wear_flags )
             break;
       }
 
@@ -2029,7 +1994,7 @@ CMDF( do_compare )
    value2 = 0;
 
    if( obj1 == obj2 )
-      msg = "You compare $p to itself.  It looks about the same.";
+      msg = "You compare $p to itself. It looks about the same.";
    else if( obj1->item_type != obj2->item_type )
       msg = "You can't compare $p and $P.";
    else
@@ -2061,7 +2026,6 @@ CMDF( do_compare )
          msg = "$p looks worse than $P.";
    }
    act( AT_PLAIN, msg, ch, obj1, obj2, TO_CHAR );
-   return;
 }
 
 CMDF( do_oldwhere )
@@ -2069,14 +2033,14 @@ CMDF( do_oldwhere )
    char_data *victim;
    bool found = false;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<descriptor_data*>::iterator ds;
+      list < descriptor_data * >::iterator ds;
 
       ch->pagerf( "\r\nPlayers near you in %s:\r\n", ch->in_room->area->name );
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
 
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
              && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room
@@ -2086,7 +2050,7 @@ CMDF( do_oldwhere )
 
             ch->pagerf( "&[people]%-13s  ", victim->name );
             if( victim->CAN_PKILL(  ) && victim->pcdata->clan && victim->pcdata->clan->clan_type != CLAN_GUILD )
-               ch->pagerf( "%-18s\t", victim->pcdata->clan->badge );
+               ch->pagerf( "%-18s\t", victim->pcdata->clan->badge.c_str(  ) );
             else if( victim->CAN_PKILL(  ) )
                ch->pager( "(&wUnclanned&[people])\t" );
             else
@@ -2099,13 +2063,13 @@ CMDF( do_oldwhere )
    }
    else
    {
-      list<char_data*>::iterator ich;
-      for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+      list < char_data * >::iterator ich;
+      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
       {
-         victim = (*ich);
+         victim = *ich;
 
          if( victim->in_room && victim->in_room->area == ch->in_room->area && !victim->has_aflag( AFF_HIDE )
-             && !victim->has_aflag( AFF_SNEAK ) && ch->can_see( victim, true ) && is_name( argument, victim->name ) )
+             && !victim->has_aflag( AFF_SNEAK ) && ch->can_see( victim, true ) && hasname( victim->name, argument ) )
          {
             found = true;
             ch->pagerf( "&[people]%-28s &[rmname]%s\r\n", PERS( victim, ch, true ), victim->in_room->name );
@@ -2113,18 +2077,17 @@ CMDF( do_oldwhere )
          }
       }
       if( !found )
-         act( AT_PLAIN, "You didn't find any $T.", ch, NULL, argument, TO_CHAR );
+         ch->printf( "You didn't fine any %s.\r\n", argument.c_str(  ) );
    }
-   return;
 }
 
 CMDF( do_consider )
 {
    char_data *victim;
-   char *msg;
+   const char *msg;
    int diff;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Consider killing whom?\r\n" );
       return;
@@ -2183,8 +2146,6 @@ CMDF( do_consider )
    else
       msg = "$N is built like a TANK!";
    act( AT_CONSIDER, msg, ch, NULL, victim, TO_CHAR );
-
-   return;
 }
 
 CMDF( do_wimpy )
@@ -2198,10 +2159,10 @@ CMDF( do_wimpy )
       else
          wimpy = ( int )( ch->max_hit / 1.2 );
    }
-   else if( !argument || argument[0] == '\0' )
+   else if( argument.empty(  ) )
       wimpy = ( int )ch->max_hit / 5;
    else
-      wimpy = atoi( argument );
+      wimpy = atoi( argument.c_str(  ) );
 
    if( wimpy < 0 )
    {
@@ -2220,7 +2181,6 @@ CMDF( do_wimpy )
    }
    ch->wimpy = wimpy;
    ch->printf( "&YWimpy set to %d hit points.\r\n", wimpy );
-   return;
 }
 
 /* Encryption upgraded to MD5 - Samson 7-10-00 */
@@ -2228,15 +2188,15 @@ CMDF( do_wimpy )
 /* Upgraded yet again to OS independent SHA-256 encryption - Samson 1-7-06 */
 CMDF( do_password )
 {
-   char arg1[MIL];
-   char *pwdnew;
+   string arg1;
+   const char *pwdnew;
 
    if( ch->isnpc(  ) )
       return;
 
    argument = one_argument( argument, arg1 );
 
-   if( arg1[0] == '\0' || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Syntax: password <new> <again>.\r\n" );
       return;
@@ -2251,7 +2211,7 @@ CMDF( do_password )
       return;
    }
 
-   if( strlen( argument ) < 5 )
+   if( argument.length(  ) < 5 )
    {
       ch->print( "New password must be at least five characters long.\r\n" );
       return;
@@ -2263,12 +2223,11 @@ CMDF( do_password )
       return;
    }
 
-   pwdnew = sha256_crypt( argument );   /* SHA-256 Encryption */
+   pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
    DISPOSE( ch->pcdata->pwd );
    ch->pcdata->pwd = str_dup( pwdnew );
    ch->save(  );
    ch->print( "Ok.\r\n" );
-   return;
 }
 
 /*
@@ -2292,7 +2251,7 @@ CMDF( do_config )
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "\r\n&gAFKMud Configurations " );
       ch->print( "&G(use 'config +/-<keyword>' to toggle, see 'help config')&D\r\n" );
@@ -2340,9 +2299,7 @@ CMDF( do_config )
       ch->printf( "&wGroupwho     &z: %3s\t", PCFYN( ch, PCFLAG_GROUPWHO ) );
       ch->printf( "&wNoIntro      &z: %3s\r\n", PCFYN( ch, PCFLAG_NOINTRO ) );
       ch->printf( "           &wMSP          &z: %3s\t", PCFYN( ch, PCFLAG_MSP ) );
-      ch->printf( "&wMXP          &z: %3s\t", PCFYN( ch, PCFLAG_MXP ) );
-      ch->printf( "&wMXPPrompt    &z: %3s\r\n", PCFYN( ch, PCFLAG_MXPPROMPT ) );
-      ch->printf( "           &wCheckboard   &z: %3s\t", PCFYN( ch, PCFLAG_CHECKBOARD ) );
+      ch->printf( "&wCheckboard   &z: %3s\t", PCFYN( ch, PCFLAG_CHECKBOARD ) );
       ch->printf( "&wNoQuote      &z: %3s\r\n", PCFYN( ch, PCFLAG_NOQUOTE ) );
 
       /*
@@ -2399,43 +2356,41 @@ CMDF( do_config )
          return;
       }
 
-      if( !str_prefix( argument + 1, "autoexit" ) )
+      string arg = argument.substr( 1, argument.length(  ) );
+
+      if( !str_prefix( arg, "autoexit" ) )
          bit = PCFLAG_AUTOEXIT;
-      else if( !str_prefix( argument + 1, "automap" ) )
+      else if( !str_prefix( arg, "automap" ) )
          bit = PCFLAG_AUTOMAP;
-      else if( !str_prefix( argument + 1, "autoloot" ) )
+      else if( !str_prefix( arg, "autoloot" ) )
          bit = PCFLAG_AUTOLOOT;
-      else if( !str_prefix( argument + 1, "autosac" ) )
+      else if( !str_prefix( arg, "autosac" ) )
          bit = PCFLAG_AUTOSAC;
-      else if( !str_prefix( argument + 1, "smartsac" ) )
+      else if( !str_prefix( arg, "smartsac" ) )
          bit = PCFLAG_SMARTSAC;
-      else if( !str_prefix( argument + 1, "autogold" ) )
+      else if( !str_prefix( arg, "autogold" ) )
          bit = PCFLAG_AUTOGOLD;
-      else if( !str_prefix( argument + 1, "guildsplit" ) )
+      else if( !str_prefix( arg, "guildsplit" ) )
          bit = PCFLAG_GUILDSPLIT;
-      else if( !str_prefix( argument + 1, "groupsplit" ) )
+      else if( !str_prefix( arg, "groupsplit" ) )
          bit = PCFLAG_GROUPSPLIT;
-      else if( !str_prefix( argument + 1, "autoassist" ) )
+      else if( !str_prefix( arg, "autoassist" ) )
          bit = PCFLAG_AUTOASSIST;
-      else if( !str_prefix( argument + 1, "blank" ) )
+      else if( !str_prefix( arg, "blank" ) )
          bit = PCFLAG_BLANK;
-      else if( !str_prefix( argument + 1, "brief" ) )
+      else if( !str_prefix( arg, "brief" ) )
          bit = PCFLAG_BRIEF;
-      else if( !str_prefix( argument + 1, "telnetga" ) )
+      else if( !str_prefix( arg, "telnetga" ) )
          bit = PCFLAG_TELNET_GA;
-      else if( !str_prefix( argument + 1, "msp" ) )
+      else if( !str_prefix( arg, "msp" ) )
          bit = PCFLAG_MSP;
-      else if( !str_prefix( argument + 1, "mxp" ) )
-         bit = PCFLAG_MXP;
-      else if( !str_prefix( argument + 1, "ansi" ) )
+      else if( !str_prefix( arg, "ansi" ) )
          bit = PCFLAG_ANSI;
-      else if( !str_prefix( argument + 1, "compass" ) )
+      else if( !str_prefix( arg, "compass" ) )
          bit = PCFLAG_COMPASS;
-      else if( !str_prefix( argument + 1, "mxpprompt" ) )
-         bit = PCFLAG_MXPPROMPT;
-      else if( !str_prefix( argument + 1, "drag" ) )
+      else if( !str_prefix( arg, "drag" ) )
          bit = PCFLAG_SHOVEDRAG;
-      else if( ch->is_immortal(  ) && !str_prefix( argument + 1, "roomvnum" ) )
+      else if( ch->is_immortal(  ) && !str_prefix( arg, "roomvnum" ) )
          bit = PCFLAG_ROOMVNUM;
 
       /*
@@ -2452,48 +2407,48 @@ CMDF( do_config )
          if( fSet )
          {
             ch->set_pcflag( bit );
-            ch->printf( "&Y%s &wis now &GON\r\n", capitalize( argument + 1 ) );
+            ch->printf( "&Y%s &wis now &GON\r\n", capitalize( arg ).c_str(  ) );
          }
          else
          {
             ch->unset_pcflag( bit );
-            ch->printf( "&Y%s &wis now &ROFF\r\n", capitalize( argument + 1 ) );
+            ch->printf( "&Y%s &wis now &ROFF\r\n", capitalize( arg ).c_str(  ) );
          }
          return;
       }
       else
       {
-         if( !str_prefix( argument + 1, "norecall" ) )
+         if( !str_prefix( arg, "norecall" ) )
             bit = PCFLAG_NORECALL;
-         else if( !str_prefix( argument + 1, "nointro" ) )
+         else if( !str_prefix( arg, "nointro" ) )
             bit = PCFLAG_NOINTRO;
-         else if( !str_prefix( argument + 1, "nosummon" ) )
+         else if( !str_prefix( arg, "nosummon" ) )
             bit = PCFLAG_NOSUMMON;
-         else if( !str_prefix( argument + 1, "gag" ) )
+         else if( !str_prefix( arg, "gag" ) )
             bit = PCFLAG_GAG;
-         else if( !str_prefix( argument + 1, "pager" ) )
+         else if( !str_prefix( arg, "pager" ) )
             bit = PCFLAG_PAGERON;
-         else if( !str_prefix( argument + 1, "nobeep" ) )
+         else if( !str_prefix( arg, "nobeep" ) )
             bit = PCFLAG_NOBEEP;
-         else if( !str_prefix( argument + 1, "passdoor" ) )
+         else if( !str_prefix( arg, "passdoor" ) )
             bit = PCFLAG_PASSDOOR;
-         else if( !str_prefix( argument + 1, "groupwho" ) )
+         else if( !str_prefix( arg, "groupwho" ) )
             bit = PCFLAG_GROUPWHO;
-         else if( !str_prefix( argument + 1, "@hgflag_" ) )
+         else if( !str_prefix( arg, "@hgflag_" ) )
             bit = PCFLAG_HIGHGAG;
-         else if( !str_prefix( argument + 1, "notell" ) )
+         else if( !str_prefix( arg, "notell" ) )
             bit = PCFLAG_NOTELL;
-         else if( !str_prefix( argument + 1, "checkboard" ) )
+         else if( !str_prefix( arg, "checkboard" ) )
             bit = PCFLAG_CHECKBOARD;
-         else if( !str_prefix( argument + 1, "noquote" ) )
+         else if( !str_prefix( arg, "noquote" ) )
             bit = PCFLAG_NOQUOTE;
          else if( ch->is_immortal(  ) )
          {
-            if( !str_prefix( argument + 1, "roomflags" ) )
+            if( !str_prefix( arg, "roomflags" ) )
                bit = PCFLAG_AUTOFLAGS;
-            else if( !str_prefix( argument + 1, "sectortypes" ) )
+            else if( !str_prefix( arg, "sectortypes" ) )
                bit = PCFLAG_SECTORD;
-            else if( !str_prefix( argument + 1, "filename" ) )
+            else if( !str_prefix( arg, "filename" ) )
                bit = PCFLAG_ANAME;
             else
             {
@@ -2510,17 +2465,16 @@ CMDF( do_config )
          if( fSet )
          {
             ch->set_pcflag( bit );
-            ch->printf( "&Y%s &wis now &GON\r\n", capitalize( argument + 1 ) );
+            ch->printf( "&Y%s &wis now &GON\r\n", capitalize( arg ).c_str(  ) );
          }
          else
          {
             ch->unset_pcflag( bit );
-            ch->printf( "&Y%s &wis now &ROFF\r\n", capitalize( argument + 1 ) );
+            ch->printf( "&Y%s &wis now &ROFF\r\n", capitalize( arg ).c_str(  ) );
          }
          return;
       }
    }
-   return;
 }
 
 /* Maintained strictly for license compliance. Do not remove. */
@@ -2534,12 +2488,6 @@ CMDF( do_history )
 {
    ch->set_pager_color( AT_SOCIAL );
    show_file( ch, HISTORY_FILE );
-}
-
-CMDF( do_news )
-{
-   ch->set_pager_color( AT_NOTE );
-   interpret( ch, "help news" );
 }
 
 /* Statistical display for the mud, added by Samson 1-31-98 */
@@ -2579,10 +2527,9 @@ CMDF( do_afk )
       ch->set_pcflag( PCFLAG_AFK );
       ch->print( "You are now afk.\r\n" );
       DISPOSE( ch->pcdata->afkbuf );
-      if( !argument || argument[0] == '\0' )
-         ch->pcdata->afkbuf = str_dup( argument );
+      if( argument.empty(  ) )
+         ch->pcdata->afkbuf = str_dup( argument.c_str(  ) );
       act( AT_GREY, "$n is now afk.", ch, NULL, NULL, TO_ROOM );
-      return;
    }
 }
 
@@ -2602,7 +2549,6 @@ CMDF( do_busy )
       ch->set_pcflag( PCFLAG_BUSY );
       ch->print( "You are now busy.\r\n" );
       act( AT_GREY, "$n is now busy.", ch, NULL, NULL, TO_ROOM );
-      return;
    }
 }
 
@@ -2611,7 +2557,7 @@ CMDF( do_pager )
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       if( ch->has_pcflag( PCFLAG_PAGERON ) )
       {
@@ -2630,11 +2576,10 @@ CMDF( do_pager )
       ch->print( "Set page pausing to how many lines?\r\n" );
       return;
    }
-   ch->pcdata->pagerlen = atoi( argument );
+   ch->pcdata->pagerlen = atoi( argument.c_str(  ) );
    if( ch->pcdata->pagerlen < 5 )
       ch->pcdata->pagerlen = 5;
    ch->printf( "Page pausing set to %d lines.\r\n", ch->pcdata->pagerlen );
-   return;
 }
 
 /* Command so imms can view the imotd - Samson 1-20-01 */
@@ -2642,7 +2587,6 @@ CMDF( do_imotd )
 {
    if( exists_file( IMOTD_FILE ) )
       show_file( ch, IMOTD_FILE );
-   return;
 }
 
 /* Command so people can call up the MOTDs - Samson 1-20-01 */
@@ -2650,11 +2594,10 @@ CMDF( do_motd )
 {
    if( exists_file( MOTD_FILE ) )
       show_file( ch, MOTD_FILE );
-   return;
 }
 
 /* Saves MOTDs to disk - Samson 12-31-00 */
-void save_motd( char *name, char *str )
+void save_motd( const char *name, const char *str )
 {
    FILE *fp;
 
@@ -2666,10 +2609,9 @@ void save_motd( char *name, char *str )
    else
       fprintf( fp, "%s", str );
    FCLOSE( fp );
-   return;
 }
 
-void load_motd( char_data * ch, char *name )
+void load_motd( char_data * ch, const char *name )
 {
    FILE *fp;
    char buf[MSL];
@@ -2695,13 +2637,12 @@ void load_motd( char_data * ch, char *name )
    FCLOSE( fp );
    DISPOSE( ch->pcdata->motd_buf );
    ch->pcdata->motd_buf = str_dup( buf );
-   return;
 }
 
 /* Handles editing the MOTDs on the server, independent of helpfiles now - Samson 12-31-00 */
 CMDF( do_motdedit )
 {
-   char arg1[MIL];
+   string arg1;
 
    if( ch->isnpc(  ) )
    {
@@ -2733,7 +2674,7 @@ CMDF( do_motdedit )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Usage: motdedit <field>\r\n" );
       ch->print( "Usage: motdedit save <field>\r\n\r\n" );
@@ -2772,9 +2713,10 @@ CMDF( do_motdedit )
          save_sysdata(  );
          return;
       }
-      do_motdedit( ch, "" );
+      do_motdedit( ch, NULL );
       return;
    }
+
    if( !str_cmp( arg1, "motd" ) || !str_cmp( arg1, "imotd" ) )
    {
       if( !str_cmp( arg1, "motd" ) )
@@ -2793,31 +2735,29 @@ CMDF( do_motdedit )
       ch->set_editor_desc( "An MOTD." );
       return;
    }
-   do_motdedit( ch, "" );
-   return;
+   do_motdedit( ch, NULL );
 }
 
 void pc_data::save_ignores( FILE * fp )
 {
-   list<string>::iterator ign;
+   list < string >::iterator ign;
 
-   for( ign = ignore.begin(); ign != ignore.end(); ++ign )
+   for( ign = ignore.begin(  ); ign != ignore.end(  ); ++ign )
    {
-      string temp = (*ign);
-      fprintf( fp, "Ignored      %s~\n", temp.c_str() );
+      string temp = *ign;
+      fprintf( fp, "Ignored      %s~\n", temp.c_str(  ) );
    }
 }
 
 void pc_data::load_ignores( FILE * fp )
 {
-   char *temp;
    char fname[256];
    struct stat fst;
 
    /*
     * Get the name 
     */
-   temp = fread_flagstring( fp );
+   const char* temp = fread_flagstring( fp );
 
    snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( temp[0] ), capitalize( temp ) );
 
@@ -2831,11 +2771,10 @@ void pc_data::load_ignores( FILE * fp )
    /*
     * Add the name unless the limit has been reached 
     */
-   if( ignore.size() >= sysdata->maxign )
+   if( ignore.size(  ) >= sysdata->maxign )
       bug( "%s: too many ignored names", __FUNCTION__ );
    else
       ignore.push_back( ig );
-   return;
 }
 
 /*
@@ -2856,9 +2795,7 @@ void pc_data::load_ignores( FILE * fp )
  */
 CMDF( do_ignore )
 {
-   list<string>::iterator ign;
-   char fname[256], fname2[256];
-   struct stat fst;
+   list < string >::iterator ign;
    char_data *victim;
 
    if( ch->isnpc(  ) )
@@ -2867,23 +2804,23 @@ CMDF( do_ignore )
    /*
     * If no arguements, then list players currently ignored 
     */
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "\r\n&[divider]----------------------------------------\r\n" );
       ch->print( "&GYou are currently ignoring:\r\n" );
       ch->print( "&[divider]----------------------------------------\r\n" );
 
-      if( ch->pcdata->ignore.empty() )
+      if( ch->pcdata->ignore.empty(  ) )
       {
          ch->print( "&[ignore]\t    no one\r\n" );
          return;
       }
 
       ch->print( "&[ignore]" );
-      for( ign = ch->pcdata->ignore.begin(); ign != ch->pcdata->ignore.end(); ++ign )
+      for( ign = ch->pcdata->ignore.begin(  ); ign != ch->pcdata->ignore.end(  ); ++ign )
       {
-         string temp = (*ign);
-         ch->printf( "\t  - %s\r\n", temp.c_str() );
+         string temp = *ign;
+         ch->printf( "\t  - %s\r\n", temp.c_str(  ) );
       }
       return;
    }
@@ -2893,9 +2830,9 @@ CMDF( do_ignore )
     */
    else if( !str_cmp( argument, "none" ) )
    {
-      for( ign = ch->pcdata->ignore.begin(); ign != ch->pcdata->ignore.end(); )
+      for( ign = ch->pcdata->ignore.begin(  ); ign != ch->pcdata->ignore.end(  ); )
       {
-         string ig = (*ign);
+         string ig = *ign;
          ++ign;
 
          ch->pcdata->ignore.remove( ig );
@@ -2907,7 +2844,7 @@ CMDF( do_ignore )
    /*
     * Prevent someone from ignoring themself... 
     */
-   else if( !str_cmp( argument, "self" ) || nifty_is_name( argument, ch->name ) )
+   else if( !str_cmp( argument, "self" ) || !str_cmp( ch->name, argument ) )
    {
       ch->print( "&[ignore]Cannot ignore yourself.\r\n" );
       return;
@@ -2915,10 +2852,12 @@ CMDF( do_ignore )
 
    else
    {
-      unsigned int i;
+      char fname[256], fname2[256];
+      struct stat fst;
+      size_t i;
 
-      snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
-      snprintf( fname2, 256, "%s/%s", GOD_DIR, capitalize( argument ) );
+      snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
+      snprintf( fname2, 256, "%s/%s", GOD_DIR, capitalize( argument ).c_str(  ) );
 
       victim = NULL;
 
@@ -2929,26 +2868,26 @@ CMDF( do_ignore )
       {
          if( !ch->reply )
          {
-            ch->printf( "&[ignore]%s is not here.\r\n", argument );
+            ch->printf( "&[ignore]%s is not here.\r\n", argument.c_str(  ) );
             return;
          }
          else
-            mudstrlcpy( argument, ch->reply->name, MSL );
+            argument = ch->reply->name;
       }
 
       /*
        * Loop through the linked list of ignored players, keep track of how many are being ignored 
        */
-      for( ign = ch->pcdata->ignore.begin(), i = 0; ign != ch->pcdata->ignore.end(); ++ign, ++i )
+      for( ign = ch->pcdata->ignore.begin(  ), i = 0; ign != ch->pcdata->ignore.end(  ); ++ign, ++i )
       {
-         string temp = (*ign);
+         string temp = *ign;
 
          /*
           * If the argument matches a name in list remove it 
           */
-         if( scomp( temp, capitalize( argument ) ) )
+         if( !str_cmp( temp, capitalize( argument ) ) )
          {
-            ch->printf( "&[ignore]You no longer ignore %s.\r\n", temp.c_str() );
+            ch->printf( "&[ignore]You no longer ignore %s.\r\n", temp.c_str(  ) );
             ch->pcdata->ignore.remove( temp );
             return;
          }
@@ -2959,10 +2898,9 @@ CMDF( do_ignore )
        * * This if-statement may seem like overkill but it is intended to prevent people from doing the
        * * spam and log thing while still allowing ya to ignore new chars without pfiles yet... 
        */
-      if( stat( fname, &fst ) == -1 && ( !( victim = ch->get_char_world( argument ) )
-                                         || victim->isnpc(  ) || str_cmp( capitalize( argument ), victim->name ) != 0 ) )
+      if( stat( fname, &fst ) == -1 && ( !( victim = ch->get_char_world( argument ) ) || victim->isnpc(  ) || str_cmp( capitalize( argument ), victim->name ) != 0 ) )
       {
-         ch->printf( "&[ignore]No player exists by the name %s.\r\n", argument );
+         ch->printf( "&[ignore]No player exists by the name %s.\r\n", argument.c_str(  ) );
          return;
       }
 
@@ -2979,7 +2917,7 @@ CMDF( do_ignore )
       }
 
       if( victim )
-         mudstrlcpy( capitalize( argument ), victim->name, MSL );
+         argument = victim->name;
 
       /*
        * If its valid and the list size limit has not been reached create a node and at it to the list 
@@ -2988,7 +2926,7 @@ CMDF( do_ignore )
       {
          string inew = capitalize( argument );
          ch->pcdata->ignore.push_back( inew );
-         ch->printf( "&[ignore]You now ignore %s.\r\n", inew.c_str() );
+         ch->printf( "&[ignore]You now ignore %s.\r\n", inew.c_str(  ) );
          return;
       }
       else
@@ -3006,7 +2944,7 @@ CMDF( do_ignore )
  */
 bool is_ignoring( char_data * ch, char_data * ign_ch )
 {
-   list<string>::iterator temp;
+   list < string >::iterator temp;
 
    if( !ch )   /* Paranoid bug check, you never know. */
    {
@@ -3020,11 +2958,11 @@ bool is_ignoring( char_data * ch, char_data * ign_ch )
    if( ch->isnpc(  ) || ign_ch->isnpc(  ) )
       return false;
 
-   for( temp = ch->pcdata->ignore.begin(); temp != ch->pcdata->ignore.end(); ++temp )
+   for( temp = ch->pcdata->ignore.begin(  ); temp != ch->pcdata->ignore.end(  ); ++temp )
    {
-      string ign = (*temp);
+      string ign = *temp;
 
-      if( scomp( ign, ign_ch->name ) )
+      if( !str_cmp( ign, ign_ch->name ) )
          return true;
    }
    return false;

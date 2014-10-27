@@ -99,8 +99,8 @@ enum dir_types
    DIR_NORTHEAST, DIR_NORTHWEST, DIR_SOUTHEAST, DIR_SOUTHWEST, DIR_SOMEWHERE
 };
 
-const int MAX_DIR = DIR_SOUTHWEST; /* max for normal walking */
-const int DIR_PORTAL = DIR_SOMEWHERE; /* portal direction    */
+const int MAX_DIR = DIR_SOUTHWEST;  /* max for normal walking */
+const int DIR_PORTAL = DIR_SOMEWHERE;  /* portal direction    */
 
 /*
  * ACT bits for mobs.
@@ -231,25 +231,25 @@ enum wear_locations
  */
 enum apply_types
 {
-   APPLY_NONE, APPLY_STR, APPLY_DEX, APPLY_INT, APPLY_WIS, APPLY_CON,            // 5
-   APPLY_SEX, APPLY_CLASS, APPLY_LEVEL, APPLY_AGE, APPLY_HEIGHT, APPLY_WEIGHT,   // 11
-   APPLY_MANA, APPLY_HIT, APPLY_MOVE, APPLY_GOLD, APPLY_EXP, APPLY_AC,           // 17
-   APPLY_HITROLL, APPLY_DAMROLL, APPLY_SAVING_POISON, APPLY_SAVING_ROD,          // 21
-   APPLY_SAVING_PARA, APPLY_SAVING_BREATH, APPLY_SAVING_SPELL, APPLY_CHA,        // 25
-   APPLY_AFFECT, APPLY_RESISTANT, APPLY_IMMUNE, APPLY_SUSCEPTIBLE,               // 29
-   APPLY_WEAPONSPELL, APPLY_LCK, APPLY_BACKSTAB, APPLY_PICK, APPLY_TRACK,        // 34
+   APPLY_NONE, APPLY_STR, APPLY_INT, APPLY_WIS, APPLY_DEX, APPLY_CON,   // 5
+   APPLY_CHA, APPLY_LCK, APPLY_LEVEL, APPLY_AGE, APPLY_HEIGHT, APPLY_WEIGHT,  // 11
+   APPLY_MANA, APPLY_HIT, APPLY_MOVE, APPLY_GOLD, APPLY_EXP, APPLY_AC,  // 17
+   APPLY_HITROLL, APPLY_DAMROLL, APPLY_SAVING_POISON, APPLY_SAVING_ROD, // 21
+   APPLY_SAVING_PARA, APPLY_SAVING_BREATH, APPLY_SAVING_SPELL, APPLY_SEX,  // 25
+   APPLY_AFFECT, APPLY_RESISTANT, APPLY_IMMUNE, APPLY_SUSCEPTIBLE,   // 29
+   APPLY_WEAPONSPELL, APPLY_CLASS, APPLY_BACKSTAB, APPLY_PICK, APPLY_TRACK,   // 34
    APPLY_STEAL, APPLY_SNEAK, APPLY_HIDE, APPLY_PALM, APPLY_DETRAP, APPLY_DODGE,  // 40
    APPLY_SF, APPLY_SCAN, APPLY_GOUGE, APPLY_SEARCH, APPLY_MOUNT, APPLY_DISARM,   // 46
-   APPLY_KICK, APPLY_PARRY, APPLY_BASH, APPLY_STUN, APPLY_PUNCH, APPLY_CLIMB,    // 52
-   APPLY_GRIP, APPLY_SCRIBE, APPLY_BREW, APPLY_WEARSPELL, APPLY_REMOVESPELL,     // 57
-   APPLY_unused, APPLY_MENTALSTATE, APPLY_STRIPSN, APPLY_REMOVE, APPLY_DIG,      // 62
-   APPLY_FULL, APPLY_THIRST, APPLY_DRUNK, APPLY_HIT_REGEN,                       // 66
-   APPLY_MANA_REGEN, APPLY_MOVE_REGEN, APPLY_ANTIMAGIC,                          // 69
-   APPLY_ROOMFLAG, APPLY_SECTORTYPE, APPLY_ROOMLIGHT, APPLY_TELEVNUM,            // 73
+   APPLY_KICK, APPLY_PARRY, APPLY_BASH, APPLY_STUN, APPLY_PUNCH, APPLY_CLIMB, // 52
+   APPLY_GRIP, APPLY_SCRIBE, APPLY_BREW, APPLY_WEARSPELL, APPLY_REMOVESPELL,  // 57
+   APPLY_unused, APPLY_MENTALSTATE, APPLY_STRIPSN, APPLY_REMOVE, APPLY_DIG,   // 62
+   APPLY_FULL, APPLY_THIRST, APPLY_DRUNK, APPLY_HIT_REGEN,  // 66
+   APPLY_MANA_REGEN, APPLY_MOVE_REGEN, APPLY_ANTIMAGIC,  // 69
+   APPLY_ROOMFLAG, APPLY_SECTORTYPE, APPLY_ROOMLIGHT, APPLY_TELEVNUM,   // 73
    APPLY_TELEDELAY, APPLY_COOK, APPLY_RECURRINGSPELL, APPLY_RACE, APPLY_HITNDAM, // 78
-   APPLY_SAVING_ALL, APPLY_EAT_SPELL, APPLY_RACE_SLAYER, APPLY_ALIGN_SLAYER,     // 82
-   APPLY_CONTAGIOUS, APPLY_EXT_AFFECT, APPLY_ODOR, APPLY_PEEK, APPLY_ABSORB,     // 87
-   APPLY_ATTACKS, APPLY_EXTRAGOLD, APPLY_ALLSTATS, MAX_APPLY_TYPE                // 91 ( counting MAX_APPLY_TYPE )
+   APPLY_SAVING_ALL, APPLY_EAT_SPELL, APPLY_RACE_SLAYER, APPLY_ALIGN_SLAYER,  // 82
+   APPLY_CONTAGIOUS, APPLY_EXT_AFFECT, APPLY_ODOR, APPLY_PEEK, APPLY_ABSORB,  // 87
+   APPLY_ATTACKS, APPLY_EXTRAGOLD, APPLY_ALLSTATS, MAX_APPLY_TYPE // 91 ( counting MAX_APPLY_TYPE )
 };
 
 const int REVERSE_APPLY = 1000;
@@ -353,7 +353,8 @@ enum prog_types
    TIME_PROG, WEAR_PROG, REMOVE_PROG, SAC_PROG, LOOK_PROG, EXA_PROG, ZAP_PROG,
    GET_PROG, DROP_PROG, DAMAGE_PROG, REPAIR_PROG, RANDIW_PROG, SPEECHIW_PROG,
    PULL_PROG, PUSH_PROG, SLEEP_PROG, REST_PROG, LEAVE_PROG, SCRIPT_PROG,
-   USE_PROG, SPEECH_AND_PROG, MONTH_PROG, KEYWORD_PROG, MAX_PROG
+   USE_PROG, SPEECH_AND_PROG, MONTH_PROG, KEYWORD_PROG, SELL_PROG, TELL_PROG,
+   TELL_AND_PROG, CMD_PROG, MAX_PROG
 };
 
 /*
@@ -387,130 +388,131 @@ enum traps
  * Values for containers (value[1]).
  * Used in #OBJECTS.
  */
-const int CONT_CLOSEABLE       = BV00;
-const int CONT_PICKPROOF       = BV01;
-const int CONT_CLOSED          = BV02;
-const int CONT_LOCKED          = BV03;
-const int CONT_EATKEY          = BV04;
+const int CONT_CLOSEABLE = BV00;
+const int CONT_PICKPROOF = BV01;
+const int CONT_CLOSED = BV02;
+const int CONT_LOCKED = BV03;
+const int CONT_EATKEY = BV04;
 
-const int MAX_CONT_FLAG = 5; /* This needs to be equal to the number of container flags for the OLC menu editor */
+const int MAX_CONT_FLAG = 5;  /* This needs to be equal to the number of container flags for the OLC menu editor */
 
 /* Lever/dial/switch/button/pullchain flags */
-const int TRIG_UP            = BV00;
-const int TRIG_UNLOCK        = BV01;
-const int TRIG_LOCK          = BV02;
-const int TRIG_D_NORTH       = BV03;
-const int TRIG_D_SOUTH       = BV04;
-const int TRIG_D_EAST        = BV05;
-const int TRIG_D_WEST        = BV06;
-const int TRIG_D_UP          = BV07;
-const int TRIG_D_DOWN        = BV08;
-const int TRIG_DOOR          = BV09;
-const int TRIG_CONTAINER     = BV10;
-const int TRIG_OPEN          = BV11;
-const int TRIG_CLOSE         = BV12;
-const int TRIG_PASSAGE       = BV13;
-const int TRIG_OLOAD         = BV14;
-const int TRIG_MLOAD         = BV15;
-const int TRIG_TELEPORT      = BV16;
-const int TRIG_TELEPORTALL   = BV17;
-const int TRIG_TELEPORTPLUS  = BV18;
-const int TRIG_DEATH         = BV19;
-const int TRIG_CAST          = BV20;
-const int TRIG_FAKEBLADE     = BV21;
-const int TRIG_RAND4         = BV22;
-const int TRIG_RAND6         = BV23;
-const int TRIG_TRAPDOOR      = BV24;
-const int TRIG_ANOTHEROOM    = BV25;
-const int TRIG_USEDIAL       = BV26;
-const int TRIG_ABSOLUTEVNUM  = BV27;
-const int TRIG_SHOWROOMDESC  = BV28;
-const int TRIG_AUTORETURN    = BV29;
+const int TRIG_UP = BV00;
+const int TRIG_UNLOCK = BV01;
+const int TRIG_LOCK = BV02;
+const int TRIG_D_NORTH = BV03;
+const int TRIG_D_SOUTH = BV04;
+const int TRIG_D_EAST = BV05;
+const int TRIG_D_WEST = BV06;
+const int TRIG_D_UP = BV07;
+const int TRIG_D_DOWN = BV08;
+const int TRIG_DOOR = BV09;
+const int TRIG_CONTAINER = BV10;
+const int TRIG_OPEN = BV11;
+const int TRIG_CLOSE = BV12;
+const int TRIG_PASSAGE = BV13;
+const int TRIG_OLOAD = BV14;
+const int TRIG_MLOAD = BV15;
+const int TRIG_TELEPORT = BV16;
+const int TRIG_TELEPORTALL = BV17;
+const int TRIG_TELEPORTPLUS = BV18;
+const int TRIG_DEATH = BV19;
+const int TRIG_CAST = BV20;
+const int TRIG_FAKEBLADE = BV21;
+const int TRIG_RAND4 = BV22;
+const int TRIG_RAND6 = BV23;
+const int TRIG_TRAPDOOR = BV24;
+const int TRIG_ANOTHEROOM = BV25;
+const int TRIG_USEDIAL = BV26;
+const int TRIG_ABSOLUTEVNUM = BV27;
+const int TRIG_SHOWROOMDESC = BV28;
+const int TRIG_AUTORETURN = BV29;
 
-const int MAX_TRIGFLAG       = 30; /* Make equal to the number of trigger flags for OLC menu editor */
+const int MAX_TRIGFLAG = 30;  /* Make equal to the number of trigger flags for OLC menu editor */
 
-const int TELE_SHOWDESC      = BV00;
-const int TELE_TRANSALL      = BV01;
-const int TELE_TRANSALLPLUS  = BV02;
+const int TELE_SHOWDESC = BV00;
+const int TELE_TRANSALL = BV01;
+const int TELE_TRANSALLPLUS = BV02;
 
 /*
  * Sitting/Standing/Sleeping/Sitting on/in/at Objects - Xerves
  * Used for furniture (value[2]) in the #OBJECTS Section
  */
-const int SIT_ON    = BV00;
-const int SIT_IN    = BV01;
-const int SIT_AT    = BV02;
+const int SIT_ON = BV00;
+const int SIT_IN = BV01;
+const int SIT_AT = BV02;
 
-const int STAND_ON  = BV03;
-const int STAND_IN  = BV04;
-const int STAND_AT  = BV05;
+const int STAND_ON = BV03;
+const int STAND_IN = BV04;
+const int STAND_AT = BV05;
 
-const int SLEEP_ON  = BV06;
-const int SLEEP_IN  = BV07;
-const int SLEEP_AT  = BV08;
+const int SLEEP_ON = BV06;
+const int SLEEP_IN = BV07;
+const int SLEEP_AT = BV08;
 
-const int REST_ON   = BV09;
-const int REST_IN   = BV10;
-const int REST_AT   = BV11;
+const int REST_ON = BV09;
+const int REST_IN = BV10;
+const int REST_AT = BV11;
 
 const int MAX_FURNFLAG = 12;
 
 /*
  * Pipe flags
  */
-const int PIPE_TAMPED         = BV01;
-const int PIPE_LIT            = BV02;
-const int PIPE_HOT            = BV03;
-const int PIPE_DIRTY          = BV04;
-const int PIPE_FILTHY         = BV05;
-const int PIPE_GOINGOUT       = BV06;
-const int PIPE_BURNT          = BV07;
-const int PIPE_FULLOFASH      = BV08;
+const int PIPE_TAMPED = BV01;
+const int PIPE_LIT = BV02;
+const int PIPE_HOT = BV03;
+const int PIPE_DIRTY = BV04;
+const int PIPE_FILTHY = BV05;
+const int PIPE_GOINGOUT = BV06;
+const int PIPE_BURNT = BV07;
+const int PIPE_FULLOFASH = BV08;
 
-const int TRAP_ROOM           = BV00;
-const int TRAP_OBJ            = BV01;
-const int TRAP_ENTER_ROOM     = BV02;
-const int TRAP_LEAVE_ROOM     = BV03;
-const int TRAP_OPEN           = BV04;
-const int TRAP_CLOSE          = BV05;
-const int TRAP_GET            = BV06;
-const int TRAP_PUT            = BV07;
-const int TRAP_PICK           = BV08;
-const int TRAP_UNLOCK         = BV09;
-const int TRAP_N              = BV10;
-const int TRAP_S              = BV11;
-const int TRAP_E              = BV12;
-const int TRAP_W              = BV13;
-const int TRAP_U              = BV14;
-const int TRAP_D              = BV15;
-const int TRAP_EXAMINE        = BV16;
-const int TRAP_NE             = BV17;
-const int TRAP_NW             = BV18;
-const int TRAP_SE             = BV19;
-const int TRAP_SW             = BV20;
-const int TRAPFLAG_MAX        = 20;
+const int TRAP_ROOM = BV00;
+const int TRAP_OBJ = BV01;
+const int TRAP_ENTER_ROOM = BV02;
+const int TRAP_LEAVE_ROOM = BV03;
+const int TRAP_OPEN = BV04;
+const int TRAP_CLOSE = BV05;
+const int TRAP_GET = BV06;
+const int TRAP_PUT = BV07;
+const int TRAP_PICK = BV08;
+const int TRAP_UNLOCK = BV09;
+const int TRAP_N = BV10;
+const int TRAP_S = BV11;
+const int TRAP_E = BV12;
+const int TRAP_W = BV13;
+const int TRAP_U = BV14;
+const int TRAP_D = BV15;
+const int TRAP_EXAMINE = BV16;
+const int TRAP_NE = BV17;
+const int TRAP_NW = BV18;
+const int TRAP_SE = BV19;
+const int TRAP_SW = BV20;
+const int TRAPFLAG_MAX = 20;
 
-extern char *const log_flag[];   /* Used in cedit display and command saving */
-extern char *const npc_sex[SEX_MAX];
-extern char *const styles[]; // Combat styles
-extern char *const npc_position[POS_MAX];
-extern char *weapon_skills[WEP_MAX];   /* Used in spell_identify */
-extern char *projectiles[PROJ_MAX]; /* For archery weapons */
-extern char *const container_flags[];  /* Tagith */
-extern char *const furniture_flags[];  /* Zarius */
-extern char *const campgear[GEAR_MAX]; /* For OLC menus */
-extern char *const ores[ORE_MAX];   /* For OLC menus */
+extern const char *log_flag[];   /* Used in cedit display and command saving */
+extern const char *mag_flags[];  /* Used during bootup */
+extern const char *npc_sex[SEX_MAX];
+extern const char *styles[];  // Combat styles
+extern const char *npc_position[POS_MAX];
+extern const char *weapon_skills[WEP_MAX];   /* Used in spell_identify */
+extern const char *projectiles[PROJ_MAX]; /* For archery weapons */
+extern const char *container_flags[];  /* Tagith */
+extern const char *furniture_flags[];  /* Zarius */
+extern const char *campgear[GEAR_MAX]; /* For OLC menus */
+extern const char *ores[ORE_MAX];   /* For OLC menus */
 
 /*. OLC structs .*/
 
 class olc_data
 {
  private:
-   olc_data( const olc_data& o );
-   olc_data& operator=( const olc_data& );
+   olc_data( const olc_data & o );
+     olc_data & operator=( const olc_data & );
 
  public:
-   olc_data();
+     olc_data(  );
 
    mob_index *mob;
    room_index *room;
@@ -548,116 +550,116 @@ class olc_data
 
 /*. Add/Remove save list types	.*/
 const int OLC_SAVE_ROOM = 0;
-const int OLC_SAVE_OBJ  = 1;
+const int OLC_SAVE_OBJ = 1;
 const int OLC_SAVE_ZONE = 2;
-const int OLC_SAVE_MOB  = 3;
+const int OLC_SAVE_MOB = 3;
 const int OLC_SAVE_SHOP = 4;
 
 /* Submodes of OEDIT connectedness */
-const int OEDIT_MAIN_MENU            = 1;
-const int OEDIT_EDIT_NAMELIST        = 2;
-const int OEDIT_SHORTDESC            = 3;
-const int OEDIT_LONGDESC             = 4;
-const int OEDIT_ACTDESC              = 5;
-const int OEDIT_TYPE                 = 6;
-const int OEDIT_EXTRAS               = 7;
-const int OEDIT_WEAR                 = 8;
-const int OEDIT_WEIGHT               = 9;
-const int OEDIT_COST                 = 10;
-const int OEDIT_COSTPERDAY           = 11;
-const int OEDIT_TIMER                = 12;
-const int OEDIT_VALUE_0              = 13;
-const int OEDIT_VALUE_1              = 14;
-const int OEDIT_VALUE_2              = 15;
-const int OEDIT_VALUE_3              = 16;
-const int OEDIT_VALUE_4	             = 17;
-const int OEDIT_VALUE_5              = 18;
-const int OEDIT_EXTRADESC_KEY        = 19;
-const int OEDIT_TRAPFLAGS            = 20;
+const int OEDIT_MAIN_MENU = 1;
+const int OEDIT_EDIT_NAMELIST = 2;
+const int OEDIT_SHORTDESC = 3;
+const int OEDIT_LONGDESC = 4;
+const int OEDIT_ACTDESC = 5;
+const int OEDIT_TYPE = 6;
+const int OEDIT_EXTRAS = 7;
+const int OEDIT_WEAR = 8;
+const int OEDIT_WEIGHT = 9;
+const int OEDIT_COST = 10;
+const int OEDIT_COSTPERDAY = 11;
+const int OEDIT_TIMER = 12;
+const int OEDIT_VALUE_0 = 13;
+const int OEDIT_VALUE_1 = 14;
+const int OEDIT_VALUE_2 = 15;
+const int OEDIT_VALUE_3 = 16;
+const int OEDIT_VALUE_4 = 17;
+const int OEDIT_VALUE_5 = 18;
+const int OEDIT_EXTRADESC_KEY = 19;
+const int OEDIT_TRAPFLAGS = 20;
 
 const int OEDIT_EXTRADESC_DESCRIPTION = 22;
-const int OEDIT_EXTRADESC_MENU      = 23;
-const int OEDIT_LEVEL               = 24;
-const int OEDIT_LAYERS              = 25;
-const int OEDIT_AFFECT_MENU         = 26;
-const int OEDIT_AFFECT_LOCATION     = 27;
-const int OEDIT_AFFECT_MODIFIER     = 28;
-const int OEDIT_AFFECT_REMOVE       = 29;
-const int OEDIT_AFFECT_RIS          = 30;
-const int OEDIT_EXTRADESC_CHOICE    = 31;
-const int OEDIT_EXTRADESC_DELETE    = 32;
-const int OEDIT_VALUE_6             = 33;
-const int OEDIT_VALUE_7             = 34;
-const int OEDIT_VALUE_8             = 35;
-const int OEDIT_VALUE_9             = 36;
-const int OEDIT_VALUE_10            = 37;
+const int OEDIT_EXTRADESC_MENU = 23;
+const int OEDIT_LEVEL = 24;
+const int OEDIT_LAYERS = 25;
+const int OEDIT_AFFECT_MENU = 26;
+const int OEDIT_AFFECT_LOCATION = 27;
+const int OEDIT_AFFECT_MODIFIER = 28;
+const int OEDIT_AFFECT_REMOVE = 29;
+const int OEDIT_AFFECT_RIS = 30;
+const int OEDIT_EXTRADESC_CHOICE = 31;
+const int OEDIT_EXTRADESC_DELETE = 32;
+const int OEDIT_VALUE_6 = 33;
+const int OEDIT_VALUE_7 = 34;
+const int OEDIT_VALUE_8 = 35;
+const int OEDIT_VALUE_9 = 36;
+const int OEDIT_VALUE_10 = 37;
 
 /* Submodes of REDIT connectedness */
 const int REDIT_MAIN_MENU = 1;
-const int REDIT_NAME      = 2;
-const int REDIT_DESC      = 3;
-const int REDIT_FLAGS     = 4;
-const int REDIT_SECTOR    = 5;
+const int REDIT_NAME = 2;
+const int REDIT_DESC = 3;
+const int REDIT_FLAGS = 4;
+const int REDIT_SECTOR = 5;
 const int REDIT_EXIT_MENU = 6;
 
-const int REDIT_EXIT_DIR      = 8;
-const int REDIT_EXIT_VNUM     = 9;
-const int REDIT_EXIT_DESC     = 10;
-const int REDIT_EXIT_KEYWORD  = 11;
-const int REDIT_EXIT_KEY      = 12;
-const int REDIT_EXIT_FLAGS    = 13;
+const int REDIT_EXIT_DIR = 8;
+const int REDIT_EXIT_VNUM = 9;
+const int REDIT_EXIT_DESC = 10;
+const int REDIT_EXIT_KEYWORD = 11;
+const int REDIT_EXIT_KEY = 12;
+const int REDIT_EXIT_FLAGS = 13;
 const int REDIT_EXTRADESC_MENU = 14;
-const int REDIT_EXTRADESC_KEY  =15;
+const int REDIT_EXTRADESC_KEY = 15;
 const int REDIT_EXTRADESC_DESCRIPTION = 16;
-const int REDIT_TUNNEL        = 17;
-const int REDIT_TELEDELAY     = 18;
-const int REDIT_TELEVNUM      = 19;
-const int REDIT_EXIT_EDIT     = 20;
-const int REDIT_EXIT_ADD      = 21;
-const int REDIT_EXIT_DELETE   = 22;
+const int REDIT_TUNNEL = 17;
+const int REDIT_TELEDELAY = 18;
+const int REDIT_TELEVNUM = 19;
+const int REDIT_EXIT_EDIT = 20;
+const int REDIT_EXIT_ADD = 21;
+const int REDIT_EXIT_DELETE = 22;
 const int REDIT_EXIT_ADD_VNUM = 23;
 const int REDIT_EXTRADESC_DELETE = 24;
 const int REDIT_EXTRADESC_CHOICE = 25;
-const int REDIT_NDESC            = 26;
+const int REDIT_NDESC = 26;
 const int REDIT_LIGHT = 27;
 
 /*. Submodes of MEDIT connectedness 	.*/
 const int MEDIT_NPC_MAIN_MENU = 0;
-const int MEDIT_NAME          = 1;
-const int MEDIT_S_DESC        = 2;
-const int MEDIT_L_DESC        = 3;
-const int MEDIT_D_DESC        = 4;
-const int MEDIT_NPC_FLAGS     = 5;
-const int MEDIT_AFF_FLAGS     = 6;
+const int MEDIT_NAME = 1;
+const int MEDIT_S_DESC = 2;
+const int MEDIT_L_DESC = 3;
+const int MEDIT_D_DESC = 4;
+const int MEDIT_NPC_FLAGS = 5;
+const int MEDIT_AFF_FLAGS = 6;
 
-const int MEDIT_SEX           = 8;
-const int MEDIT_HITROLL       = 9;
-const int MEDIT_DAMROLL       = 10;
-const int MEDIT_DAMNUMDIE     = 11;
-const int MEDIT_DAMSIZEDIE    = 12;
-const int MEDIT_DAMPLUS       = 13;
-const int MEDIT_HITPLUS       = 14;
-const int MEDIT_AC            = 15;
-const int MEDIT_GOLD          = 16;
-const int MEDIT_POS           = 17;
-const int MEDIT_DEFPOS        = 18;
-const int MEDIT_ATTACK        = 19;
-const int MEDIT_DEFENSE       = 20;
-const int MEDIT_LEVEL         = 21;
-const int MEDIT_ALIGNMENT     = 22;
-const int MEDIT_THACO         = 23;
-const int MEDIT_EXP           = 24;
-const int MEDIT_SPEC          = 25;
-const int MEDIT_RESISTANT     = 26;
-const int MEDIT_IMMUNE        = 27;
-const int MEDIT_SUSCEPTIBLE   = 28;
-const int MEDIT_ABSORB        = 29;
-const int MEDIT_MENTALSTATE   = 30;
+const int MEDIT_SEX = 8;
+const int MEDIT_HITROLL = 9;
+const int MEDIT_DAMROLL = 10;
+const int MEDIT_DAMNUMDIE = 11;
+const int MEDIT_DAMSIZEDIE = 12;
+const int MEDIT_DAMPLUS = 13;
+const int MEDIT_HITPLUS = 14;
+const int MEDIT_AC = 15;
+const int MEDIT_GOLD = 16;
+const int MEDIT_POS = 17;
+const int MEDIT_DEFPOS = 18;
+const int MEDIT_ATTACK = 19;
+const int MEDIT_DEFENSE = 20;
+const int MEDIT_LEVEL = 21;
+const int MEDIT_ALIGNMENT = 22;
+const int MEDIT_THACO = 23;
+const int MEDIT_EXP = 24;
+const int MEDIT_SPEC = 25;
+const int MEDIT_RESISTANT = 26;
+const int MEDIT_IMMUNE = 27;
+const int MEDIT_SUSCEPTIBLE = 28;
+const int MEDIT_ABSORB = 29;
+const int MEDIT_MENTALSTATE = 30;
 
-const int MEDIT_PARTS         = 32;
-const int MEDIT_HITPOINT      = 33;
-const int MEDIT_MANA          = 34;
-const int MEDIT_MOVE          = 35;
-const int MEDIT_CLASS         = 36;
-const int MEDIT_RACE          = 37;
+const int MEDIT_PARTS = 32;
+const int MEDIT_HITPOINT = 33;
+const int MEDIT_MANA = 34;
+const int MEDIT_MOVE = 35;
+const int MEDIT_CLASS = 36;
+const int MEDIT_RACE = 37;
 #endif

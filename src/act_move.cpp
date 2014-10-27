@@ -33,7 +33,7 @@
 #include "overland.h"
 #include "roomindex.h"
 
-ch_ret move_ship( char_data *, exit_data *, int );   /* Movement if your on a ship */
+ch_ret move_ship( char_data *, exit_data *, int ); /* Movement if your on a ship */
 ch_ret check_room_for_traps( char_data *, int );
 
 /* Return the hide affect for sneaking PCs when they enter a new room */
@@ -44,7 +44,6 @@ void check_sneaks( char_data * ch )
       ch->set_aflag( AFF_HIDE );
       ch->set_aflag( AFF_SNEAK );
    }
-   return;
 }
 
 /*
@@ -89,8 +88,7 @@ bool will_fall( char_data * ch, int fall )
       return false;
    }
 
-   if( ch->in_room->flags.test( ROOM_NOFLOOR ) && CAN_GO( ch, DIR_DOWN )
-       && ( !ch->has_aflag( AFF_FLYING ) || ( ch->mount && !ch->mount->has_aflag( AFF_FLYING ) ) ) )
+   if( ch->in_room->flags.test( ROOM_NOFLOOR ) && CAN_GO( ch, DIR_DOWN ) && ( !ch->has_aflag( AFF_FLYING ) || ( ch->mount && !ch->mount->has_aflag( AFF_FLYING ) ) ) )
    {
       if( fall > 80 )
       {
@@ -109,7 +107,7 @@ bool will_fall( char_data * ch, int fall )
 /* Run command taken from DOTD codebase - Samson 2-25-99 */
 CMDF( do_run )
 {
-   char arg[MIL];
+   string arg;
    room_index *from_room;
    exit_data *pexit;
    int amount = 0, x, fromx, fromy, frommap;
@@ -117,7 +115,7 @@ CMDF( do_run )
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Run where?\r\n" );
       return;
@@ -129,12 +127,12 @@ CMDF( do_run )
       return;
    }
 
-   if( argument )
+   if( !argument.empty(  ) )
    {
       if( is_number( argument ) )
       {
          limited = true;
-         amount = atoi( argument );
+         amount = atoi( argument.c_str(  ) );
       }
    }
 
@@ -212,14 +210,13 @@ CMDF( do_run )
    act( AT_ACTION, "$n slows down after $s run.", ch, NULL, NULL, TO_ROOM );
 
    interpret( ch, "look" );
-   return;
 }
 
 ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bool running )
 {
    room_index *in_room, *to_room, *from_room;
    obj_data *boat;
-   char *txt, *dtxt;
+   const char *txt, *dtxt;
    ch_ret retcode;
    short door;
    bool drunk = false, brief = false;
@@ -257,8 +254,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          if( !pexit || !pexit->to_room )
          {
             log_printf( "Broken Watchtower exit in room %d!", ch->in_room->vnum );
-            ch->printf( "Ooops! The watchtower here is broken. Please contact the immortals. You are in room %d.\r\n",
-                        ch->in_room->vnum );
+            ch->printf( "Ooops! The watchtower here is broken. Please contact the immortals. You are in room %d.\r\n", ch->in_room->vnum );
             return rSTOP;
          }
 
@@ -325,8 +321,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       if( drunk && ch->position != POS_MOUNTED
           && ch->in_room->sector_type != SECT_WATER_SWIM
           && ch->in_room->sector_type != SECT_WATER_NOSWIM
-          && ch->in_room->sector_type != SECT_RIVER
-          && ch->in_room->sector_type != SECT_UNDERWATER && ch->in_room->sector_type != SECT_OCEANFLOOR )
+          && ch->in_room->sector_type != SECT_RIVER && ch->in_room->sector_type != SECT_UNDERWATER && ch->in_room->sector_type != SECT_OCEANFLOOR )
       {
          switch ( number_bits( 4 ) )
          {
@@ -336,18 +331,15 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                break;
 
             case 3:
-               act( AT_ACTION, "In your drunken stupor you trip over your own feet and tumble to the ground.", ch, NULL,
-                    NULL, TO_CHAR );
+               act( AT_ACTION, "In your drunken stupor you trip over your own feet and tumble to the ground.", ch, NULL, NULL, TO_CHAR );
                act( AT_ACTION, "$n stumbles drunkenly, trips and tumbles to the ground.", ch, NULL, NULL, TO_ROOM );
                ch->position = POS_RESTING;
                break;
 
             case 4:
                act( AT_SOCIAL, "You utter a string of slurred obscenities.", ch, NULL, NULL, TO_CHAR );
-               act( AT_ACTION, "Something blurry and immovable has intercepted you as you stagger along.", ch, NULL, NULL,
-                    TO_CHAR );
-               act( AT_HURT, "Oh geez... THAT really hurt.  Everything slowly goes dark and numb...", ch, NULL, NULL,
-                    TO_CHAR );
+               act( AT_ACTION, "Something blurry and immovable has intercepted you as you stagger along.", ch, NULL, NULL, TO_CHAR );
+               act( AT_HURT, "Oh geez... THAT really hurt.  Everything slowly goes dark and numb...", ch, NULL, NULL, TO_CHAR );
                act( AT_ACTION, "$n drunkenly staggers into something.", ch, NULL, NULL, TO_ROOM );
                act( AT_SOCIAL, "$n utters a string of slurred obscenities: @*&^%@*&!", ch, NULL, NULL, TO_ROOM );
                act( AT_ACTION, "$n topples to the ground with a thud.", ch, NULL, NULL, TO_ROOM );
@@ -356,8 +348,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          }
       }
       else if( drunk )
-         act( AT_ACTION, "You stare around trying to make sense of things through your drunken stupor.", ch, NULL, NULL,
-              TO_CHAR );
+         act( AT_ACTION, "You stare around trying to make sense of things through your drunken stupor.", ch, NULL, NULL, TO_CHAR );
       else
          ch->print( "Alas, you cannot go that way.\r\n" );
 
@@ -391,8 +382,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    if( ( IS_EXIT_FLAG( pexit, EX_FORTIFIED )
          || IS_EXIT_FLAG( pexit, EX_HEAVY )
          || IS_EXIT_FLAG( pexit, EX_MEDIUM )
-         || IS_EXIT_FLAG( pexit, EX_LIGHT )
-         || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_PASSDOOR ) ) )
+         || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_PASSDOOR ) ) )
    {
       act( AT_PLAIN, "There is a $d blocking the way.", ch, NULL, pexit->keyword, TO_CHAR );
       check_sneaks( ch );
@@ -419,12 +409,12 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       {
          enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
 
-         list<char_data*>::iterator ich;
-         size_t chars = from_room->people.size();
+         list < char_data * >::iterator ich;
+         size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+         for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
          {
-            char_data *fch = (*ich);
+            char_data *fch = *ich;
             ++ich;
             ++count;
 
@@ -461,12 +451,12 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          {
             enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
 
-            list<char_data*>::iterator ich;
-            size_t chars = from_room->people.size();
+            list < char_data * >::iterator ich;
+            size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+            for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
             {
-               char_data *fch = (*ich);
+               char_data *fch = *ich;
                ++ich;
                ++count;
 
@@ -521,14 +511,14 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       }
    }
 
-   if( IS_EXIT_FLAG( pexit, EX_NOMOB ) && ch->isnpc(  ) )
+   if( IS_EXIT_FLAG( pexit, EX_NOMOB ) && ch->isnpc(  ) && !ch->is_pet(  ) )
    {
       act( AT_PLAIN, "Mobs can't enter there.", ch, NULL, NULL, TO_CHAR );
       check_sneaks( ch );
       return rSTOP;
    }
 
-   if( to_room->flags.test( ROOM_NO_MOB ) && ch->isnpc() )
+   if( to_room->flags.test( ROOM_NO_MOB ) && ch->isnpc(  ) && !ch->is_pet(  ) )
    {
       act( AT_PLAIN, "Mobs can't enter there.", ch, NULL, NULL, TO_CHAR );
       check_sneaks( ch );
@@ -536,8 +526,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    }
 
    if( IS_EXIT_FLAG( pexit, EX_CLOSED )
-       && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) )
-       && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_PASSDOOR ) ) )
+       && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_PASSDOOR ) ) )
    {
       if( !IS_EXIT_FLAG( pexit, EX_SECRET ) && !IS_EXIT_FLAG( pexit, EX_DIG ) )
       {
@@ -592,19 +581,19 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          switch ( to_room->area->low_hard_range - ch->level )
          {
             case 1:
-               ch->print( "A voice in your mind says, 'You are nearly ready to go that way...'" );
+               ch->print( "A voice in your mind says, 'You are nearly ready to go that way...'\r\n" );
                break;
 
             case 2:
-               ch->print( "A voice in your mind says, 'Soon you shall be ready to travel down this path... soon.'" );
+               ch->print( "A voice in your mind says, 'Soon you shall be ready to travel down this path... soon.'\r\n" );
                break;
 
             case 3:
-               ch->print( "A voice in your mind says, 'You are not ready to go down that path... yet.'.\r\n" );
+               ch->print( "A voice in your mind says, 'You are not ready to go down that path... yet.'\r\n" );
                break;
 
             default:
-               ch->print( "A voice in your mind says, 'You are not ready to go down that path.'.\r\n" );
+               ch->print( "A voice in your mind says, 'You are not ready to go down that path.'\r\n" );
          }
          check_sneaks( ch );
          return rSTOP;
@@ -612,7 +601,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       else if( ch->level > to_room->area->hi_hard_range )
       {
          ch->set_color( AT_TELL );
-         ch->print( "A voice in your mind says, 'There is nothing more for you down that path.'" );
+         ch->print( "A voice in your mind says, 'There is nothing more for you down that path.'\r\n" );
          check_sneaks( ch );
          return rSTOP;
       }
@@ -663,8 +652,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                {
                   if( ch->mount )
                      ch->print( "Your mount would drown!\r\n" );
-                  else if( !ch->isnpc(  ) && number_percent(  ) > ch->pcdata->learned[gsn_swim]
-                           && ch->pcdata->learned[gsn_swim] > 0 )
+                  else if( !ch->isnpc(  ) && number_percent(  ) > ch->pcdata->learned[gsn_swim] && ch->pcdata->learned[gsn_swim] > 0 )
                   {
                      ch->print( "Your swimming skills need improvement first.\r\n" );
                      ch->learn_from_failure( gsn_swim );
@@ -681,8 +669,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       /*
        * River sector information added by Samson on unknown date 
        */
-      if( ( in_room->sector_type == SECT_RIVER && to_room->sector_type == SECT_RIVER )
-          || ( in_room->sector_type != SECT_RIVER && to_room->sector_type == SECT_RIVER ) )
+      if( ( in_room->sector_type == SECT_RIVER && to_room->sector_type == SECT_RIVER ) || ( in_room->sector_type != SECT_RIVER && to_room->sector_type == SECT_RIVER ) )
       {
          if( !ch->IS_FLOATING(  ) )
          {
@@ -861,10 +848,10 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
     */
    if( to_room->tunnel > 0 )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
       int count = ch->mount ? 1 : 0;
 
-      for( ich = to_room->people.begin(); ich != to_room->people.end(); ++ich )
+      for( ich = to_room->people.begin(  ); ich != to_room->people.end(  ); ++ich )
          if( ++count >= to_room->tunnel )
          {
             if( ch->mount && count == to_room->tunnel )
@@ -1022,12 +1009,12 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
     */
    if( !fall )
    {
-      list<char_data*>::iterator ich;
-      size_t chars = from_room->people.size();
+      list < char_data * >::iterator ich;
+      size_t chars = from_room->people.size(  );
       size_t count = 0;
-      for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+      for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
       {
-         char_data *fch = (*ich);
+         char_data *fch = *ich;
          ++ich;
          ++count;
 
@@ -1136,7 +1123,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       }
    }
 
-   if( !ch->in_room->objects.empty() )
+   if( !ch->in_room->objects.empty(  ) )
       retcode = check_room_for_traps( ch, TRAP_ENTER_ROOM );
    if( retcode != rNONE )
       return retcode;
@@ -1177,88 +1164,80 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 CMDF( do_north )
 {
    move_char( ch, ch->in_room->get_exit( DIR_NORTH ), 0, DIR_NORTH, false );
-   return;
 }
 
 CMDF( do_east )
 {
    move_char( ch, ch->in_room->get_exit( DIR_EAST ), 0, DIR_EAST, false );
-   return;
 }
 
 CMDF( do_south )
 {
    move_char( ch, ch->in_room->get_exit( DIR_SOUTH ), 0, DIR_SOUTH, false );
-   return;
 }
 
 CMDF( do_west )
 {
    move_char( ch, ch->in_room->get_exit( DIR_WEST ), 0, DIR_WEST, false );
-   return;
 }
 
 CMDF( do_up )
 {
    move_char( ch, ch->in_room->get_exit( DIR_UP ), 0, DIR_UP, false );
-   return;
 }
 
 CMDF( do_down )
 {
    move_char( ch, ch->in_room->get_exit( DIR_DOWN ), 0, DIR_DOWN, false );
-   return;
 }
 
 CMDF( do_northeast )
 {
    move_char( ch, ch->in_room->get_exit( DIR_NORTHEAST ), 0, DIR_NORTHEAST, false );
-   return;
 }
 
 CMDF( do_northwest )
 {
    move_char( ch, ch->in_room->get_exit( DIR_NORTHWEST ), 0, DIR_NORTHWEST, false );
-   return;
 }
 
 CMDF( do_southeast )
 {
    move_char( ch, ch->in_room->get_exit( DIR_SOUTHEAST ), 0, DIR_SOUTHEAST, false );
-   return;
 }
 
 CMDF( do_southwest )
 {
    move_char( ch, ch->in_room->get_exit( DIR_SOUTHWEST ), 0, DIR_SOUTHWEST, false );
-   return;
 }
 
-exit_data *find_door( char_data * ch, char *arg, bool quiet )
+exit_data *find_door( char_data * ch, const string & arg, bool quiet )
 {
-   if( !arg || arg[0] == '\0' || !str_cmp( arg, "" ) )
+   exit_data *pexit = NULL;
+
+   if( arg.empty(  ) )
       return NULL;
 
-   exit_data *pexit = NULL;
    int door = get_dirnum( arg );
    if( door < 0 || door > MAX_DIR )
    {
-      list<exit_data*>::iterator iexit;
-      for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+      list < exit_data * >::iterator iexit;
+      for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
       {
-         pexit = (*iexit);
-         if( ( quiet || IS_EXIT_FLAG( pexit, EX_ISDOOR ) ) && pexit->keyword && nifty_is_name( arg, pexit->keyword ) )
+         pexit = *iexit;
+
+         if( ( quiet || IS_EXIT_FLAG( pexit, EX_ISDOOR ) ) && pexit->keyword && hasname( pexit->keyword, arg ) )
             return pexit;
       }
       if( !quiet )
-         act( AT_PLAIN, "You see no $T here.", ch, NULL, arg, TO_CHAR );
+         ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
       return NULL;
    }
 
    if( !( pexit = ch->in_room->get_exit( door ) ) )
    {
       if( !quiet )
-         act( AT_PLAIN, "You see no $T here.", ch, NULL, arg, TO_CHAR );
+         ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
       return NULL;
    }
 
@@ -1267,7 +1246,7 @@ exit_data *find_door( char_data * ch, char *arg, bool quiet )
 
    if( IS_EXIT_FLAG( pexit, EX_SECRET ) )
    {
-      act( AT_PLAIN, "You see no $T here.", ch, NULL, arg, TO_CHAR );
+      ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
       return NULL;
    }
 
@@ -1303,7 +1282,7 @@ CMDF( do_open )
    exit_data *pexit;
    int door;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Open what?\r\n" );
       return;
@@ -1324,12 +1303,12 @@ CMDF( do_open )
          if( pexit->to_room->flags.test( ROOM_NO_MOB ) )
             return;
       }
-      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !nifty_is_name( argument, pexit->keyword ) )
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
       {
-         ch->printf( "You see no %s here.\r\n", argument );
+         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
          return;
       }
-      if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
+      if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) || IS_EXIT_FLAG( pexit, EX_DIG ) )
       {
          ch->print( "You can't do that.\r\n" );
          return;
@@ -1355,12 +1334,12 @@ CMDF( do_open )
          return;
       }
 
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && nifty_is_name( argument, pexit->keyword ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
       {
          act( AT_ACTION, "$n opens the $d.", ch, NULL, pexit->keyword, TO_ROOM );
          act( AT_ACTION, "You open the $d.", ch, NULL, pexit->keyword, TO_CHAR );
-         if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room && !pexit->to_room->people.empty() )
-            act( AT_ACTION, "The $d opens.", (*pexit->to_room->people.begin()), NULL, pexit_rev->keyword, TO_ROOM );
+         if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room && !pexit->to_room->people.empty(  ) )
+            act( AT_ACTION, "The $d opens.", ( *pexit->to_room->people.begin(  ) ), NULL, pexit_rev->keyword, TO_ROOM );
          remove_bexit_flag( pexit, EX_CLOSED );
          if( ( door = pexit->vdir ) >= 0 && door < DIR_SOMEWHERE )
             check_room_for_traps( ch, trap_door[door] );
@@ -1399,8 +1378,7 @@ CMDF( do_open )
       check_for_trap( ch, obj, TRAP_OPEN );
       return;
    }
-   ch->printf( "You see no %s here.\r\n", argument );
-   return;
+   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
 }
 
 CMDF( do_close )
@@ -1409,7 +1387,7 @@ CMDF( do_close )
    exit_data *pexit;
    int door;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Close what?\r\n" );
       return;
@@ -1422,6 +1400,11 @@ CMDF( do_close )
        */
       exit_data *pexit_rev;
 
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      {
+         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         return;
+      }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
       {
          ch->print( "You can't do that.\r\n" );
@@ -1441,8 +1424,8 @@ CMDF( do_close )
       if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
       {
          SET_EXIT_FLAG( pexit_rev, EX_CLOSED );
-         if( !pexit->to_room->people.empty() )
-            act( AT_ACTION, "The $d closes.", (*pexit->to_room->people.begin()), NULL, pexit_rev->keyword, TO_ROOM );
+         if( !pexit->to_room->people.empty(  ) )
+            act( AT_ACTION, "The $d closes.", ( *pexit->to_room->people.begin(  ) ), NULL, pexit_rev->keyword, TO_ROOM );
       }
       set_bexit_flag( pexit, EX_CLOSED );
       if( ( door = pexit->vdir ) >= 0 && door < 10 )
@@ -1476,8 +1459,7 @@ CMDF( do_close )
       check_for_trap( ch, obj, TRAP_CLOSE );
       return;
    }
-   ch->printf( "You see no %s here.\r\n", argument );
-   return;
+   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
 }
 
 /*
@@ -1491,20 +1473,21 @@ CMDF( do_close )
  */
 obj_data *has_key( char_data * ch, int key )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
+
       if( obj->pIndexData->vnum == key || ( obj->item_type == ITEM_KEY && obj->value[0] == key ) )
          return obj;
       else if( obj->item_type == ITEM_KEYRING )
       {
-         list<obj_data*>::iterator iobj2;
+         list < obj_data * >::iterator iobj2;
 
-         for( iobj2 = obj->contents.begin(); iobj2 != obj->contents.end(); ++iobj2 )
+         for( iobj2 = obj->contents.begin(  ); iobj2 != obj->contents.end(  ); ++iobj2 )
          {
-            obj_data *obj2 = (*iobj2);
+            obj_data *obj2 = *iobj2;
             if( obj2->pIndexData->vnum == key || obj2->value[0] == key )
                return obj2;
          }
@@ -1519,7 +1502,7 @@ CMDF( do_lock )
    exit_data *pexit;
    int count;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Lock what?\r\n" );
       return;
@@ -1530,6 +1513,11 @@ CMDF( do_lock )
       /*
        * 'lock door' 
        */
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      {
+         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         return;
+      }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
       {
          ch->print( "You can't do that.\r\n" );
@@ -1555,7 +1543,7 @@ CMDF( do_lock )
          ch->print( "It's already locked.\r\n" );
          return;
       }
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && nifty_is_name( argument, pexit->keyword ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
       {
          ch->print( "*Click*\r\n" );
          count = key->count;
@@ -1566,7 +1554,6 @@ CMDF( do_lock )
          return;
       }
    }
-
    if( ( obj = ch->get_obj_here( argument ) ) != NULL )
    {
       /*
@@ -1605,8 +1592,7 @@ CMDF( do_lock )
       key->count = count;
       return;
    }
-   ch->printf( "You see no %s here.\r\n", argument );
-   return;
+   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
 }
 
 CMDF( do_unlock )
@@ -1615,7 +1601,7 @@ CMDF( do_unlock )
    exit_data *pexit;
    int count;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Unlock what?\r\n" );
       return;
@@ -1626,6 +1612,11 @@ CMDF( do_unlock )
       /*
        * 'unlock door' 
        */
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      {
+         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         return;
+      }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
       {
          ch->print( "You can't do that.\r\n" );
@@ -1651,7 +1642,7 @@ CMDF( do_unlock )
          ch->print( "It's already unlocked.\r\n" );
          return;
       }
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && nifty_is_name( argument, pexit->keyword ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
       {
          ch->print( "*Click*\r\n" );
          count = key->count;
@@ -1711,8 +1702,109 @@ CMDF( do_unlock )
       }
       return;
    }
-   ch->printf( "You see no %s here.\r\n", argument );
-   return;
+   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+}
+
+/*
+ * This function bolts a door. Written by Blackmane
+ */
+CMDF( do_bolt )
+{
+   exit_data *pexit;
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "Bolt what?\r\n" );
+      return;
+   }
+
+   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
+   {
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      {
+         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
+      {
+         ch->print( "You can't do that.\r\n" );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
+      {
+         ch->print( "It's not closed.\r\n" );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_ISBOLT ) )
+      {
+         ch->print( "You don't see a bolt.\r\n" );
+         return;
+      }
+      if( IS_EXIT_FLAG( pexit, EX_BOLTED ) )
+      {
+         ch->print( "It's already bolted.\r\n" );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
+      {
+         ch->print( "*Clunk*\r\n" );
+         act( AT_ACTION, "$n bolts the $d.", ch, NULL, pexit->keyword, TO_ROOM );
+         set_bexit_flag( pexit, EX_BOLTED );
+         return;
+      }
+   }
+   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+}
+
+/*
+ * This function unbolts a door.  Written by Blackmane
+ */
+CMDF( do_unbolt )
+{
+   exit_data *pexit;
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "Unbolt what?\r\n" );
+      return;
+   }
+
+   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
+   {
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      {
+         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
+      {
+         ch->print( "You can't do that.\r\n" );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
+      {
+         ch->print( "It's not closed.\r\n" );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_ISBOLT ) )
+      {
+         ch->print( "You don't see a bolt.\r\n" );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_BOLTED ) )
+      {
+         ch->print( "It's already unbolted.\r\n" );
+         return;
+      }
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
+      {
+         ch->print( "*Clunk*\r\n" );
+         act( AT_ACTION, "$n unbolts the $d.", ch, NULL, pexit->keyword, TO_ROOM );
+         remove_bexit_flag( pexit, EX_BOLTED );
+         return;
+      }
+   }
+   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
 }
 
 CMDF( do_bashdoor )
@@ -1723,7 +1815,7 @@ CMDF( do_bashdoor )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Bash what?\r\n" );
       return;
@@ -1741,7 +1833,7 @@ CMDF( do_bashdoor )
       room_index *to_room;
       exit_data *pexit_rev;
       int bashchance;
-      char *keyword;
+      const char *keyword;
 
       if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
@@ -1761,8 +1853,7 @@ CMDF( do_bashdoor )
       if( IS_EXIT_FLAG( pexit, EX_LOCKED ) )
          bashchance /= 3;
 
-      if( !IS_EXIT_FLAG( pexit, EX_BASHPROOF )
-          && ch->move >= 15 && number_percent(  ) < ( bashchance + 4 * ( ch->get_curr_str(  ) - 19 ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_BASHPROOF ) && ch->move >= 15 && number_percent(  ) < ( bashchance + 4 * ( ch->get_curr_str(  ) - 19 ) ) )
       {
          REMOVE_EXIT_FLAG( pexit, EX_CLOSED );
          if( IS_EXIT_FLAG( pexit, EX_LOCKED ) )
@@ -1772,15 +1863,14 @@ CMDF( do_bashdoor )
          act( AT_SKILL, "Crash!  You bashed open the $d!", ch, NULL, keyword, TO_CHAR );
          act( AT_SKILL, "$n bashes open the $d!", ch, NULL, keyword, TO_ROOM );
 
-         if( ( to_room = pexit->to_room ) != NULL && ( pexit_rev = pexit->rexit ) != NULL
-             && pexit_rev->to_room == ch->in_room )
+         if( ( to_room = pexit->to_room ) != NULL && ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
          {
             REMOVE_EXIT_FLAG( pexit_rev, EX_CLOSED );
             if( IS_EXIT_FLAG( pexit_rev, EX_LOCKED ) )
                REMOVE_EXIT_FLAG( pexit_rev, EX_LOCKED );
             SET_EXIT_FLAG( pexit_rev, EX_BASHED );
-            if( !to_room->people.empty() )
-               act( AT_SKILL, "The $d crashes open!", (*to_room->people.begin()), NULL, pexit_rev->keyword, TO_ROOM );
+            if( !to_room->people.empty(  ) )
+               act( AT_SKILL, "The $d crashes open!", ( *to_room->people.begin(  ) ), NULL, pexit_rev->keyword, TO_ROOM );
          }
          damage( ch, ch, ( ch->max_hit / 20 ), gsn_bashdoor );
       }
@@ -1799,7 +1889,6 @@ CMDF( do_bashdoor )
       ch->learn_from_failure( gsn_bashdoor );
       damage( ch, ch, ( ch->max_hit / 20 ) + 10, gsn_bashdoor );
    }
-   return;
 }
 
 /* Orginal furniture taken from Russ Walsh's Rot copyright 1996-1997
@@ -1825,7 +1914,7 @@ CMDF( do_stand )
    /*
     * okay, now that we know we can sit, find an object to sit on 
     */
-   if( argument && argument[0] != '\0' )
+   if( !argument.empty(  ) )
    {
       if( !( obj = get_obj_list( ch, argument, ch->in_room->objects ) ) )
       {
@@ -1940,7 +2029,6 @@ CMDF( do_stand )
             ch->print( "You are already standing.\r\n" );
          break;
    }
-   return;
 }
 
 CMDF( do_sit )
@@ -1963,7 +2051,7 @@ CMDF( do_sit )
    /*
     * okay, now that we know we can sit, find an object to sit on 
     */
-   if( argument && argument[0] != '\0' )
+   if( !argument.empty(  ) )
    {
       if( !( obj = get_obj_list( ch, argument, ch->in_room->objects ) ) )
       {
@@ -2084,7 +2172,6 @@ CMDF( do_sit )
          ch->position = POS_SITTING;
          break;
    }
-   return;
 }
 
 CMDF( do_rest )
@@ -2107,7 +2194,7 @@ CMDF( do_rest )
    /*
     * okay, now that we know we can sit, find an object to sit on 
     */
-   if( argument && argument[0] != '\0' )
+   if( !argument.empty(  ) )
    {
       if( !( obj = get_obj_list( ch, argument, ch->in_room->objects ) ) )
       {
@@ -2236,7 +2323,6 @@ CMDF( do_rest )
          break;
    }
    rprog_rest_trigger( ch );
-   return;
 }
 
 CMDF( do_sleep )
@@ -2259,7 +2345,7 @@ CMDF( do_sleep )
    /*
     * okay, now that we know we can sit, find an object to sit on 
     */
-   if( argument && argument[0] != '\0' )
+   if( !argument.empty(  ) )
    {
       if( !( obj = get_obj_list( ch, argument, ch->in_room->objects ) ) )
       {
@@ -2281,6 +2367,7 @@ CMDF( do_sleep )
       else
          ch->on = obj;
    }
+
    switch ( ch->position )
    {
       case POS_SLEEPING:
@@ -2388,16 +2475,16 @@ CMDF( do_sleep )
          break;
    }
    rprog_sleep_trigger( ch );
-   return;
 }
 
 CMDF( do_wake )
 {
    char_data *victim;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      do_stand( ch, "" );
+      interpret( ch, "stand" );
+      interpret( ch, "look auto" );
       return;
    }
 
@@ -2427,7 +2514,7 @@ CMDF( do_wake )
    act( AT_ACTION, "You wake $M.", ch, NULL, victim, TO_CHAR );
    victim->position = POS_STANDING;
    act( AT_ACTION, "$n wakes you.", ch, NULL, victim, TO_VICT );
-   return;
+   interpret( victim, "look auto" );
 }
 
 /*
@@ -2483,10 +2570,10 @@ void teleport( char_data * ch, int room, int flags )
    /*
     * teleport everybody in the room 
     */
-   list<char_data*>::iterator ich;
-   for( ich = start->people.begin(); ich != start->people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = start->people.begin(  ); ich != start->people.end(  ); )
    {
-      char_data *nch = (*ich);
+      char_data *nch = *ich;
       ++ich;
 
       teleportch( nch, dest, show );
@@ -2497,11 +2584,11 @@ void teleport( char_data * ch, int room, int flags )
     */
    if( IS_SET( flags, TELE_TRANSALLPLUS ) )
    {
-      list<obj_data*>::iterator iobj;
+      list < obj_data * >::iterator iobj;
 
-      for( iobj = start->objects.begin(); iobj != start->objects.end(); )
+      for( iobj = start->objects.begin(  ); iobj != start->objects.end(  ); )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          ++iobj;
 
          obj->from_room(  );
@@ -2517,12 +2604,12 @@ CMDF( do_climb )
 {
    exit_data *pexit;
 
-   if( argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<exit_data*>::iterator iexit;
-      for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+      list < exit_data * >::iterator iexit;
+      for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
       {
-         pexit = (*iexit);
+         pexit = *iexit;
 
          if( IS_EXIT_FLAG( pexit, EX_xCLIMB ) )
          {
@@ -2540,7 +2627,6 @@ CMDF( do_climb )
       return;
    }
    ch->print( "You cannot climb there.\r\n" );
-   return;
 }
 
 /*
@@ -2550,12 +2636,13 @@ CMDF( do_enter )
 {
    exit_data *pexit;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<exit_data*>::iterator iexit;
-      for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+      list < exit_data * >::iterator iexit;
+      for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
       {
-         pexit = (*iexit);
+         pexit = *iexit;
+
          if( IS_EXIT_FLAG( pexit, EX_xENTER ) )
          {
             if( IS_EXIT_FLAG( pexit, EX_PORTAL ) && !ch->has_visited( pexit->to_room->area ) )
@@ -2567,14 +2654,14 @@ CMDF( do_enter )
             return;
          }
       }
+
       if( ch->in_room->sector_type != SECT_INDOORS && ch->IS_OUTSIDE(  ) )
       {
-         for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+         for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
          {
-            pexit = (*iexit);
+            pexit = *iexit;
 
-            if( pexit->to_room && ( pexit->to_room->sector_type == SECT_INDOORS
-                                    || pexit->to_room->flags.test( ROOM_INDOORS ) ) )
+            if( pexit->to_room && ( pexit->to_room->sector_type == SECT_INDOORS || pexit->to_room->flags.test( ROOM_INDOORS ) ) )
             {
                move_char( ch, pexit, 0, DIR_SOMEWHERE, false );
                return;
@@ -2596,7 +2683,6 @@ CMDF( do_enter )
       return;
    }
    ch->print( "You cannot enter that.\r\n" );
-   return;
 }
 
 /*
@@ -2606,12 +2692,12 @@ CMDF( do_leave )
 {
    exit_data *pexit;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<exit_data*>::iterator iexit;
-      for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+      list < exit_data * >::iterator iexit;
+      for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
       {
-         pexit = (*iexit);
+         pexit = *iexit;
 
          if( IS_EXIT_FLAG( pexit, EX_xLEAVE ) )
          {
@@ -2624,14 +2710,14 @@ CMDF( do_leave )
             return;
          }
       }
+
       if( ch->in_room->sector_type == SECT_INDOORS || !ch->IS_OUTSIDE(  ) )
       {
-         for( iexit = ch->in_room->exits.begin(); iexit != ch->in_room->exits.end(); ++iexit )
+         for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
          {
-            pexit = (*iexit);
+            pexit = *iexit;
 
-            if( pexit->to_room && pexit->to_room->sector_type != SECT_INDOORS
-                && !pexit->to_room->flags.test( ROOM_INDOORS ) )
+            if( pexit->to_room && pexit->to_room->sector_type != SECT_INDOORS && !pexit->to_room->flags.test( ROOM_INDOORS ) )
             {
                move_char( ch, pexit, 0, DIR_SOMEWHERE, false );
                return;
@@ -2653,7 +2739,6 @@ CMDF( do_leave )
       return;
    }
    ch->print( "You cannot leave that way.\r\n" );
-   return;
 }
 
 /*
@@ -2680,8 +2765,8 @@ ch_ret pullcheck( char_data * ch, int pulse )
    room_index *room;
    bool move = false, moveobj = true, showroom = true;
    int resistance;
-   char *tochar = NULL, *toroom = NULL, *objmsg = NULL;
-   char *destrm = NULL, *destob = NULL, *dtxt = "somewhere";
+   const char *tochar = NULL, *toroom = NULL, *objmsg = NULL;
+   const char *destrm = NULL, *destob = NULL, *dtxt = "somewhere";
 
    if( !( room = ch->in_room ) )
    {
@@ -2693,10 +2778,10 @@ ch_ret pullcheck( char_data * ch, int pulse )
     * Find the exit with the strongest force (if any) 
     */
    exit_data *xit = NULL;
-   list<exit_data*>::iterator iexit;
-   for( iexit = room->exits.begin(); iexit != room->exits.end(); ++iexit )
+   list < exit_data * >::iterator iexit;
+   for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
 
       if( pexit->pull && pexit->to_room && ( !xit || abs( pexit->pull ) > abs( xit->pull ) ) )
          xit = pexit;
@@ -2718,15 +2803,15 @@ ch_ret pullcheck( char_data * ch, int pulse )
    if( ( pulse % pullfact ) != 0 )
    {
       bool found = false;
-      for( iexit = room->exits.begin(); iexit != room->exits.end(); ++iexit )
+      for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
       {
-         exit_data *pexit = (*iexit);
+         exit_data *pexit = *iexit;
 
          if( pexit->pull && pexit->to_room )
          {
             pull = pexit->pull;
             pullfact = URANGE( 1, 20 - ( abs( pull ) / 5 ), 20 );
-            if( ( pulse % pullfact ) != 0 )
+            if( ( pulse % pullfact ) == 0 )
             {
                found = true;
                break;
@@ -2743,6 +2828,24 @@ ch_ret pullcheck( char_data * ch, int pulse )
    if( pull < 0 )
       if( !( xit = room->get_exit( rev_dir[xit->vdir] ) ) )
          return rNONE;
+
+   if( IS_EXIT_FLAG( xit, EX_CLOSED ) )
+      return rNONE;
+
+   /*
+    * check for tunnel 
+    */
+   if( xit->to_room->tunnel > 0 )
+   {
+      list < char_data * >::iterator ich;
+      int count = ch->mount ? 1 : 0;
+
+      for( ich = xit->to_room->people.begin(  ); ich != xit->to_room->people.end(  ); ++ich )
+      {
+         if( ++count >= xit->to_room->tunnel )
+            return rNONE;
+      }
+   }
 
    dtxt = rev_exit( xit->vdir );
 
@@ -2994,8 +3097,8 @@ ch_ret pullcheck( char_data * ch, int pulse )
       /*
        * display an appropriate entrance message 
        */
-      if( destrm && !xit->to_room->people.empty() )
-         act( AT_PLAIN, destrm, (*xit->to_room->people.begin()), NULL, dtxt, TO_ROOM );
+      if( destrm && !xit->to_room->people.empty(  ) )
+         act( AT_PLAIN, destrm, ( *xit->to_room->people.begin(  ) ), NULL, dtxt, TO_ROOM );
 
       /*
        * move the char 
@@ -3027,10 +3130,10 @@ ch_ret pullcheck( char_data * ch, int pulse )
     */
    if( moveobj )
    {
-      list<obj_data*>::iterator iobj;
-      for( iobj = room->objects.begin(); iobj != room->objects.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = room->objects.begin(  ); iobj != room->objects.end(  ); )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          ++iobj;
 
          if( obj->extra_flags.test( ITEM_BURIED ) || !obj->wear_flags.test( ITEM_TAKE ) )
@@ -3071,108 +3174,14 @@ ch_ret pullcheck( char_data * ch, int pulse )
           */
          if( ( abs( pull ) * 10 ) > resistance )
          {
-            if( objmsg && !room->people.empty() )
-               act( AT_PLAIN, objmsg, (*room->people.begin()), obj, dir_name[xit->vdir], TO_ROOM );
-            if( destob && !xit->to_room->people.empty() )
-               act( AT_PLAIN, destob, (*xit->to_room->people.begin()), obj, dtxt, TO_ROOM );
+            if( objmsg && !room->people.empty(  ) )
+               act( AT_PLAIN, objmsg, ( *room->people.begin(  ) ), obj, dir_name[xit->vdir], TO_ROOM );
+            if( destob && !xit->to_room->people.empty(  ) )
+               act( AT_PLAIN, destob, ( *xit->to_room->people.begin(  ) ), obj, dtxt, TO_ROOM );
             obj->from_room(  );
             obj->to_room( xit->to_room, NULL );
          }
       }
    }
    return rNONE;
-}
-
-/*
- * This function bolts a door. Written by Blackmane
- */
-CMDF( do_bolt )
-{
-   exit_data *pexit;
-
-   if( !argument || argument[0] == '\0' )
-   {
-      ch->print( "Bolt what?\r\n" );
-      return;
-   }
-
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
-   {
-      if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
-      {
-         ch->print( "You can't do that.\r\n" );
-         return;
-      }
-      if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-      {
-         ch->print( "It's not closed.\r\n" );
-         return;
-      }
-      if( !IS_EXIT_FLAG( pexit, EX_ISBOLT ) )
-      {
-         ch->print( "You don't see a bolt.\r\n" );
-         return;
-      }
-      if( IS_EXIT_FLAG( pexit, EX_BOLTED ) )
-      {
-         ch->print( "It's already bolted.\r\n" );
-         return;
-      }
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && nifty_is_name( argument, pexit->keyword ) ) )
-      {
-         ch->print( "*Clunk*\r\n" );
-         act( AT_ACTION, "$n bolts the $d.", ch, NULL, pexit->keyword, TO_ROOM );
-         set_bexit_flag( pexit, EX_BOLTED );
-         return;
-      }
-   }
-   ch->printf( "You see no %s here.\r\n", argument );
-   return;
-}
-
-/*
- * This function unbolts a door.  Written by Blackmane
- */
-CMDF( do_unbolt )
-{
-   exit_data *pexit;
-
-   if( !argument || argument[0] == '\0' )
-   {
-      ch->print( "Unbolt what?\r\n" );
-      return;
-   }
-
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
-   {
-      if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
-      {
-         ch->print( "You can't do that.\r\n" );
-         return;
-      }
-      if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-      {
-         ch->print( "It's not closed.\r\n" );
-         return;
-      }
-      if( !IS_EXIT_FLAG( pexit, EX_ISBOLT ) )
-      {
-         ch->print( "You don't see a bolt.\r\n" );
-         return;
-      }
-      if( !IS_EXIT_FLAG( pexit, EX_BOLTED ) )
-      {
-         ch->print( "It's already unbolted.\r\n" );
-         return;
-      }
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && nifty_is_name( argument, pexit->keyword ) ) )
-      {
-         ch->print( "*Clunk*\r\n" );
-         act( AT_ACTION, "$n unbolts the $d.", ch, NULL, pexit->keyword, TO_ROOM );
-         remove_bexit_flag( pexit, EX_BOLTED );
-         return;
-      }
-   }
-   ch->printf( "You see no %s here.\r\n", argument );
-   return;
 }

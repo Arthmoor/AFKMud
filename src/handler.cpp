@@ -65,6 +65,29 @@ void init_memory( void *start, void *end, unsigned int size )
    memset( start, 0, ( int )( ( char * )end + size - ( char * )start ) );
 }
 
+int umin( int check, int ncheck )
+{
+   if( check < ncheck )
+      return check;
+   return ncheck;
+}
+
+int umax( int check, int ncheck )
+{
+   if( check > ncheck )
+      return check;
+   return ncheck;
+}
+
+int urange( int mincheck, int check, int maxcheck )
+{
+   if( check < mincheck )
+      return mincheck;
+   if( check > maxcheck )
+      return maxcheck;
+   return check;
+}
+
 /* - Thoric
  * Return how much experience is required for ch to get to a certain level
  */
@@ -85,20 +108,20 @@ long exp_level( int level )
  *
  * Rewritten by Xorith
  */
-string one_argument2( string arg, string &newArg )
+string one_argument2( string arg, string & newArg )
 {
    string retValue = "";
 
    // Check to see if we start with a double quote
    if( arg[0] == '"' )
    {
-      string::size_type nextIndex = arg.find( '"', 1 ); 
-      if( nextIndex != string::npos ) 
-      { 
-         newArg = arg.substr( 1, nextIndex-1 ); 
+      string::size_type nextIndex = arg.find( '"', 1 );
+      if( nextIndex != string::npos )
+      {
+         newArg = arg.substr( 1, nextIndex - 1 );
          // make sure we strip spaces from the return value 
          int x = 1;
-         while( arg[nextIndex + x] == ' ')
+         while( arg[nextIndex + x] == ' ' )
             ++x;
          retValue = arg.substr( nextIndex + x );
          return retValue;
@@ -108,27 +131,26 @@ string one_argument2( string arg, string &newArg )
    // Check for single-quote
    if( arg[0] == '\'' )
    {
-      string::size_type nextIndex = arg.find( '\'', 1 ); 
-      if( nextIndex != string::npos ) 
-      { 
-         newArg = arg.substr( 1, nextIndex-1 ); 
+      string::size_type nextIndex = arg.find( '\'', 1 );
+      if( nextIndex != string::npos )
+      {
+         newArg = arg.substr( 1, nextIndex - 1 );
          // make sure we strip spaces from the return value 
-         int x = 1; 
-         while( arg[nextIndex + x] == ' ')
-            ++x; 
+         int x = 1;
+         while( arg[nextIndex + x] == ' ' )
+            ++x;
          retValue = arg.substr( nextIndex + x );
          return retValue;
       }
    }
-  
+
    // See which is closest - the next whitespace or hyphen
    string::size_type nextHyphenIndex = arg.find( '-', 0 );
    string::size_type nextSpaceIndex = arg.find( ' ', 0 );
 
    if( nextHyphenIndex != string::npos )
    {
-      if( nextSpaceIndex == string::npos || ( nextHyphenIndex < nextSpaceIndex
-          && ( nextHyphenIndex + 1 != nextSpaceIndex ) ) )
+      if( nextSpaceIndex == string::npos || ( nextHyphenIndex < nextSpaceIndex && ( nextHyphenIndex + 1 != nextSpaceIndex ) ) )
       {
          newArg = arg.substr( 0, nextHyphenIndex );
          retValue = arg.substr( nextHyphenIndex + 1 );
@@ -140,8 +162,8 @@ string one_argument2( string arg, string &newArg )
    {
       newArg = arg.substr( 0, nextSpaceIndex );
       // make sure we strip spaces from the return value 
-      int x = 1; 
-      while( arg[nextSpaceIndex + x] == ' ')
+      int x = 1;
+      while( arg[nextSpaceIndex + x] == ' ' )
          ++x;
       retValue = arg.substr( nextSpaceIndex + 1 );
       return retValue;
@@ -155,241 +177,123 @@ string one_argument2( string arg, string &newArg )
 
 char *one_argument2( char *argument, char *arg_first )
 {
-    char cEnd;
-    short count;
+   char cEnd;
+   short count;
 
-    count = 0;
+   count = 0;
 
-    if ( !argument || argument[0] == '\0' )
-    {
-     	arg_first[0] = '\0';
- 	return argument;
-    }
+   if( !argument || argument[0] == '\0' )
+   {
+      arg_first[0] = '\0';
+      return argument;
+   }
 
-    while ( isspace(*argument) )
-	++argument;
+   while( isspace( *argument ) )
+      ++argument;
 
-    cEnd = ' ';
-    if ( *argument == '\'' || *argument == '"' )
-	cEnd = *argument++;
+   cEnd = ' ';
+   if( *argument == '\'' || *argument == '"' )
+      cEnd = *argument++;
 
-    while( *argument != '\0' || ++count >= 255 )
-    {
-	if( *argument == cEnd || *argument == '-' )
-	{
+   while( *argument != '\0' || ++count >= 255 )
+   {
+      if( *argument == cEnd || *argument == '-' )
+      {
          ++argument;
          break;
       }
-      *arg_first = (*argument);
+      *arg_first = ( *argument );
       ++arg_first;
       ++argument;
-    }
-    *arg_first = '\0';
-
-    while ( isspace(*argument) )
-	++argument;
-
-    return argument;
-}
-
-/*
- * See if a string is one of the names of an object.
- */
-bool is_name( string str, string namelist )
-{
-   string name;
-
-   for( ;; )
-   {
-      namelist = one_argument2( namelist, name );
-      if( name.empty() )
-         return false;
-      if( scomp( str, name ) )
-         return true;
    }
+   *arg_first = '\0';
+
+   while( isspace( *argument ) )
+      ++argument;
+
+   return argument;
 }
 
-bool is_name_prefix( string str, string namelist )
+bool is_name2_prefix( const string & str, string namelist )
 {
    string name;
 
    for( ;; )
    {
       namelist = one_argument2( namelist, name );
-      if( name.empty() )
-         return false;
-      if( scomp( str, name ) )
-         return true;
-   }
-}
-
-bool is_name( const char *str, char *namelist )
-{
-   char name[MIL];
-
-   for( ; ; )
-    {
-	namelist = one_argument( namelist, name );
-	if( name[0] == '\0' )
-	    return false;
-	if( !str_cmp( str, name ) )
-	    return true;
-    }
-}
-
-bool is_name_prefix( const char *str, char *namelist )
-{
-   char name[MIL];
-
-   for( ; ; )
-    {
-	namelist = one_argument( namelist, name );
-	if( name[0] == '\0' )
-	    return false;
-	if( !str_prefix( str, name ) )
-	    return true;
-    }
-}
-
-/*
- * See if a string is one of the names of an object. - Thoric
- * Treats a dash as a word delimiter as well as a space
- */
-bool is_name2( string str, string namelist )
-{
-   string name;
-
-   for( ;; )
-   {
-      namelist = one_argument2( namelist, name );
-
-      if( name.empty() )
-         return false;
-      if( scomp( str, name ) )
-         return true;
-   }
-}
-
-bool is_name2_prefix( const string str, string namelist )
-{
-   string name;
-
-   for( ;; )
-   {
-      namelist = one_argument2( namelist, name );
-      if( name.empty() )
+      if( name.empty(  ) )
          return false;
       if( !str_prefix( str, name ) )
          return true;
    }
 }
 
-bool is_name2( const char *str, char *namelist )
+bool nifty_is_name_prefix( string str, string namelist )
 {
-   char name[MIL];
+   string name;
+   bool valid = false;
 
-    for ( ; ; )
-    {
-	namelist = one_argument2( namelist, name );
-	if( name[0] == '\0' )
-	    return false;
-	if( !str_cmp( str, name ) )
-	    return true;
-    }
+   if( str.empty(  ) || namelist.empty(  ) )
+      return false;
+
+   for( ;; )
+   {
+      str = one_argument2( str, name );
+      if( !name.empty(  ) )
+      {
+         valid = true;
+
+         if( !is_name2_prefix( name, namelist ) )
+            return false;
+      }
+      if( str.empty(  ) )
+         return valid;
+   }
 }
 
 bool is_name2_prefix( const char *str, char *namelist )
 {
    char name[MIL];
 
-   for( ; ; )
-    {
-	namelist = one_argument2( namelist, name );
-	if( name[0] == '\0' )
-	    return false;
-	if( !str_prefix( str, name ) )
-	    return true;
-    }
-}
-
-/*
- * Checks if str is a name in namelist supporting multiple keywords - Thoric
- */
-bool nifty_is_name( string str, string namelist )
-{
-   string name;
-
-   if( str.empty() || namelist.empty() )
-      return false;
-
    for( ;; )
    {
-      str = one_argument2( str, name );
-
-      if( name.empty() )
-         return true;
-
-      if( !is_name2( name, namelist ) )
-         return false;
-   }
-}
-
-bool nifty_is_name_prefix( string str, string namelist )
-{
-   string name;
-
-   if( str.empty() || namelist.empty() )
-      return false;
-
-   for( ;; )
-   {
-      str = one_argument2( str, name );
-      if( name.empty() )
-         return true;
-      if( !is_name2_prefix( name, namelist ) )
-         return false;
-   }
-}
-
-bool nifty_is_name( char *str, const char *namelist )
-{
-   char name[MIL], nlist[MIL];
-    
-   if ( !str || str[0] == '\0' || !namelist || namelist[0] == '\0' )
-      return false;
- 
-   mudstrlcpy( nlist, namelist, MIL );
-   for( ; ; )
-    {
-	str = one_argument2( str, name );
+      namelist = one_argument2( namelist, name );
       if( name[0] == '\0' )
-	    return true;
-      if( !is_name2( name, nlist ) )
-	    return false;
-    }
+         return false;
+      if( !str_prefix( str, name ) )
+         return true;
+   }
 }
 
+/* Rewrote the 'nifty' functions since they mistakenly allowed for all objects
+  to be selected by specifying an empty list like -, '', "", ', " etc,
+  example: ofind -, c loc ''  - Luc 08/2000 */
 bool nifty_is_name_prefix( char *str, char *namelist )
 {
    char name[MIL];
-    
-   if( !str || str[0] == '\0' || !namelist || namelist[0] == '\0' )
+   bool valid = false;
+
+   if( !str || !str[0] || !namelist || !namelist[0] )
       return false;
- 
-   for( ; ; )
-    {
-	str = one_argument2( str, name );
-      if( name[0] == '\0' )  
-	    return true;
-      if( !is_name2_prefix( name, namelist ) )
-	    return false;
-    }
+
+   for( ;; )
+   {
+      str = one_argument2( str, name );
+      if( *name )
+      {
+         valid = true;
+         if( !is_name2_prefix( name, namelist ) )
+            return false;
+      }
+      if( !*str )
+         return valid;
+   }
 }
 
 /*
  * Stick obj onto extraction queue
  */
-void queue_extracted_obj( obj_data *obj )
+void queue_extracted_obj( obj_data * obj )
 {
    extracted_obj_data *ood;
 
@@ -457,18 +361,18 @@ bool obj_data::extracted(  )
 /*
  * Find an obj in a list.
  */
-obj_data *get_obj_list( char_data *ch, string argument, list<obj_data*> source )
+obj_data *get_obj_list( char_data * ch, const string & argument, list < obj_data * >source )
 {
    string arg;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
    int number = number_argument( argument, arg );
    int count = 0;
-   for( iobj = source.begin(); iobj != source.end(); ++iobj )
+   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
-      if( ch->can_see_obj( obj, false ) && nifty_is_name( arg, obj->name ) )
+      if( ch->can_see_obj( obj, false ) && hasname( obj->name, arg ) )
          if( ( count += obj->count ) >= number )
             return obj;
    }
@@ -479,9 +383,9 @@ obj_data *get_obj_list( char_data *ch, string argument, list<obj_data*> source )
     * Added by Narn, Sept/96
     */
    count = 0;
-   for( iobj = source.begin(); iobj != source.end(); ++iobj )
+   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( ch->can_see_obj( obj, false ) && nifty_is_name_prefix( arg, obj->name ) )
          if( ( count += obj->count ) >= number )
@@ -499,7 +403,7 @@ bool ms_find_obj( char_data * ch )
 {
    int ms = ch->mental_state;
    int drunk = ch->isnpc(  )? 0 : ch->pcdata->condition[COND_DRUNK];
-   char *t;
+   const char *t;
 
    /*
     * we're going to be nice and let nothing weird happen unless
@@ -609,18 +513,18 @@ bool ms_find_obj( char_data * ch )
  * Generic get obj function that supports optional containers.	-Thoric
  * currently only used for "eat" and "quaff".
  */
-obj_data *find_obj( char_data * ch, char *argument, bool carryonly )
+obj_data *find_obj( char_data * ch, string argument, bool carryonly )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    obj_data *obj = NULL;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !str_cmp( arg2, "from" ) && argument[0] != '\0' )
+   if( !str_cmp( arg2, "from" ) && !argument.empty(  ) )
       argument = one_argument( argument, arg2 );
 
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       if( carryonly && !( obj = ch->get_obj_carry( arg1 ) ) )
       {
@@ -629,7 +533,7 @@ obj_data *find_obj( char_data * ch, char *argument, bool carryonly )
       }
       else if( !carryonly && !( obj = ch->get_obj_here( arg1 ) ) )
       {
-         act( AT_PLAIN, "I see no $T here.", ch, NULL, arg1, TO_CHAR );
+         ch->printf( "I see no %s here.\r\n", arg1.c_str(  ) );
          return NULL;
       }
       return obj;
@@ -645,12 +549,12 @@ obj_data *find_obj( char_data * ch, char *argument, bool carryonly )
       }
       if( !carryonly && !( container = ch->get_obj_here( arg2 ) ) )
       {
-         act( AT_PLAIN, "I see no $T here.", ch, NULL, arg2, TO_CHAR );
+         ch->printf( "I see no %s here.\r\n", arg2.c_str(  ) );
          return NULL;
       }
       if( !container->extra_flags.test( ITEM_COVERING ) && IS_SET( container->value[1], CONT_CLOSED ) )
       {
-         act( AT_PLAIN, "The $d is closed.", ch, NULL, container->name, TO_CHAR );
+         ch->printf( "The %s is closed.\r\n", container->name );
          return NULL;
       }
       if( !( obj = get_obj_list( ch, arg1, container->contents ) ) )
@@ -666,7 +570,7 @@ obj_data *find_obj( char_data * ch, char *argument, bool carryonly )
 ch_ret spring_trap( char_data * ch, obj_data * obj )
 {
    int dam, typ, lev;
-   char *txt;
+   const char *txt;
    ch_ret retcode;
 
    typ = obj->value[1];
@@ -781,14 +685,14 @@ ch_ret spring_trap( char_data * ch, obj_data * obj )
  */
 ch_ret check_for_trap( char_data * ch, obj_data * obj, int flag )
 {
-   if( obj->contents.empty() )
+   if( obj->contents.empty(  ) )
       return rNONE;
 
    ch_ret retcode = rNONE;
-   list<obj_data*>::iterator iobj;
-   for( iobj = obj->contents.begin(); iobj != obj->contents.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
    {
-      obj_data *check = (*iobj);
+      obj_data *check = *iobj;
 
       if( check->item_type == ITEM_TRAP && IS_SET( check->value[3], flag ) )
       {
@@ -807,14 +711,14 @@ ch_ret check_room_for_traps( char_data * ch, int flag )
 {
    if( !ch )
       return rERROR;
-   if( !ch->in_room || ch->in_room->objects.empty() )
+   if( !ch->in_room || ch->in_room->objects.empty(  ) )
       return rNONE;
 
    ch_ret retcode = rNONE;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
-      obj_data *check = (*iobj);
+      obj_data *check = *iobj;
       if( check->item_type == ITEM_TRAP && IS_SET( check->value[3], flag ) )
       {
          retcode = spring_trap( ch, check );
@@ -856,7 +760,7 @@ void clean_char_queue( void )
       if( ccd->extract )
       {
          charlist.remove( ccd->ch );
-         if( !ccd->ch->isnpc() )
+         if( !ccd->ch->isnpc(  ) )
             pclist.remove( ccd->ch );
          deleteptr( ccd->ch );
       }

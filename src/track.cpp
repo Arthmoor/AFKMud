@@ -39,8 +39,8 @@ const int BFS_MARK = ROOM_TRACK;
 
 void start_hunting( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
-bool mob_fire( char_data *, char * );
-char_data *scan_for_vic( char_data *, exit_data *, char * );
+bool mob_fire( char_data *, const string & );
+char_data *scan_for_vic( char_data *, exit_data *, const string & );
 void stop_hating( char_data * );
 void stop_hunting( char_data * );
 void stop_fearing( char_data * );
@@ -50,7 +50,6 @@ int IsHumanoid( char_data * );
  whether or not you want track to find paths which lead through closed
  or hidden doors.
  */
-
 struct bfs_data
 {
    room_index *room;
@@ -157,10 +156,10 @@ int find_first_step( room_index * src, room_index * target, int maxdist )
     * first, enqueue the first steps, saving which direction we're going. 
     */
    int curr_dir;
-   list<exit_data*>::iterator iexit;
-   for( iexit = src->exits.begin(); iexit != src->exits.end(); ++iexit )
+   list < exit_data * >::iterator iexit;
+   for( iexit = src->exits.begin(  ); iexit != src->exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
 
       if( valid_edge( pexit ) )
       {
@@ -189,9 +188,9 @@ int find_first_step( room_index * src, room_index * target, int maxdist )
       }
       else
       {
-         for( iexit = queue_head->room->exits.begin(); iexit != queue_head->room->exits.end(); ++iexit )
+         for( iexit = queue_head->room->exits.begin(  ); iexit != queue_head->room->exits.end(  ); ++iexit )
          {
-            exit_data *pexit = (*iexit);
+            exit_data *pexit = *iexit;
 
             if( valid_edge( pexit ) )
             {
@@ -216,7 +215,7 @@ CMDF( do_track )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Whom are you trying to track?\r\n" );
       return;
@@ -226,12 +225,12 @@ CMDF( do_track )
 
    bool found = false;
    char_data *vict = NULL;
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      vict = (*ich);
+      vict = *ich;
 
-      if( vict->isnpc(  ) && vict->in_room && nifty_is_name( argument, vict->name ) )
+      if( vict->isnpc(  ) && vict->in_room && hasname( vict->name, argument ) )
       {
          found = true;
          break;
@@ -426,7 +425,6 @@ void found_prey( char_data * ch, char_data * victim )
    stop_hunting( ch );
    set_fighting( ch, victim );
    multi_hit( ch, victim, TYPE_UNDEFINED );
-   return;
 }
 
 void hunt_vic( char_data * ch )
@@ -438,10 +436,10 @@ void hunt_vic( char_data * ch )
     * make sure the char still exists 
     */
    bool found = false;
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *tmp = (*ich);
+      char_data *tmp = *ich;
 
       if( ch->hunting->who == tmp )
       {
@@ -500,8 +498,7 @@ void hunt_vic( char_data * ch )
           && !IS_EXIT_FLAG( pexit, EX_LIGHT )
           && !IS_EXIT_FLAG( pexit, EX_CRUMBLING )
           && !pexit->to_room->flags.test( ROOM_NO_MOB )
-          && !pexit->to_room->flags.test( ROOM_DEATH )
-          && ( !ch->has_actflag( ACT_STAY_AREA ) || pexit->to_room->area == ch->in_room->area ) )
+          && !pexit->to_room->flags.test( ROOM_DEATH ) && ( !ch->has_actflag( ACT_STAY_AREA ) || pexit->to_room->area == ch->in_room->area ) )
       {
          if( pexit->to_room->sector_type == SECT_WATER_NOSWIM && !ch->has_aflag( AFF_AQUA_BREATH ) )
             return;
@@ -553,6 +550,5 @@ void hunt_vic( char_data * ch )
             }
          }
       }
-      return;
    }
 }

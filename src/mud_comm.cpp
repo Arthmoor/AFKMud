@@ -43,14 +43,12 @@
 extern int top_affect;
 
 void transfer_char( char_data *, char_data *, room_index * );
-void set_title( char_data *, char * );
 void raw_kill( char_data *, char_data * );
 double damage_risa( char_data *, double, int );
 void damage_obj( obj_data * );
 int recall( char_data *, int );
-int get_langflag( char * );
-int get_trigflag( char * );
-morph_data *get_morph( char * );
+int get_trigflag( const string & );
+morph_data *get_morph( const string & );
 morph_data *get_morph_vnum( int );
 void start_hunting( char_data *, char_data * );
 void start_hating( char_data *, char_data * );
@@ -58,7 +56,6 @@ void start_fearing( char_data *, char_data * );
 void stop_hating( char_data * );
 void stop_hunting( char_data * );
 void stop_fearing( char_data * );
-char *attribtext( int );
 void add_to_auth( char_data * );
 void advance_level( char_data * );
 int race_bodyparts( char_data * );
@@ -75,7 +72,7 @@ bool can_use_mprog( char_data * ch )
 
 CMDF( do_mpmset )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    char_data *victim;
    int value, minattr, maxattr;
 
@@ -86,9 +83,9 @@ CMDF( do_mpmset )
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   mudstrlcpy( arg3, argument, MIL );
+   arg3 = argument;
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "MpMset: no args" );
       return;
@@ -123,9 +120,9 @@ CMDF( do_mpmset )
       maxattr = 18;
    }
 
-   value = is_number( arg3 ) ? atoi( arg3 ) : -1;
-   if( atoi( arg3 ) < -1 && value == -1 )
-      value = atoi( arg3 );
+   value = is_number( arg3 ) ? atoi( arg3.c_str(  ) ) : -1;
+   if( atoi( arg3.c_str(  ) ) < -1 && value == -1 )
+      value = atoi( arg3.c_str(  ) );
 
    if( !str_cmp( arg2, "str" ) )
    {
@@ -262,7 +259,7 @@ CMDF( do_mpmset )
    /*
     * Modified to allow mobs to set by name instead of number - Samson 7-30-98 
     */
-   if( !str_cmp( arg2, "sex" ) )
+   if( !str_cmp( arg2, "sex" ) || !str_cmp( arg2, "gender" ) )
    {
       switch ( arg3[0] )
       {
@@ -283,7 +280,7 @@ CMDF( do_mpmset )
             value = SEX_HERMAPHRODYTE;
             break;
          default:
-            progbugf( ch, "%s", "MpMset: Attempting to set invalid sex!" );
+            progbugf( ch, "%s", "MpMset: Attempting to set invalid gender!" );
             return;
       }
       victim->sex = value;
@@ -300,7 +297,7 @@ CMDF( do_mpmset )
    {
       value = get_npc_class( arg3 );
       if( value < 0 )
-         value = atoi( arg3 );
+         value = atoi( arg3.c_str(  ) );
       if( !victim->isnpc(  ) )
       {
          if( value < 0 || value >= MAX_CLASS )
@@ -327,7 +324,7 @@ CMDF( do_mpmset )
    {
       value = get_npc_race( arg3 );
       if( value < 0 )
-         value = atoi( arg3 );
+         value = atoi( arg3.c_str(  ) );
       if( !victim->isnpc(  ) )
       {
          if( value < 0 || value >= MAX_RACE )
@@ -565,7 +562,7 @@ CMDF( do_mpmset )
       }
 
       STRFREE( victim->name );
-      victim->name = STRALLOC( arg3 );
+      victim->name = STRALLOC( arg3.c_str(  ) );
       return;
    }
 
@@ -579,9 +576,9 @@ CMDF( do_mpmset )
          return;
       }
 
-      if( !arg3 || arg3[0] == '\0' )
+      if( arg3.empty(  ) )
       {
-         STRFREE( victim->pcdata->deity_name );
+         victim->pcdata->deity_name.clear(  );
          victim->pcdata->deity = NULL;
          return;
       }
@@ -592,8 +589,7 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: Invalid deity" );
          return;
       }
-      STRFREE( victim->pcdata->deity_name );
-      victim->pcdata->deity_name = QUICKLINK( deity->name );
+      victim->pcdata->deity_name = deity->name;
       victim->pcdata->deity = deity;
       return;
    }
@@ -601,13 +597,13 @@ CMDF( do_mpmset )
    if( !str_cmp( arg2, "short" ) )
    {
       STRFREE( victim->short_descr );
-      victim->short_descr = STRALLOC( arg3 );
+      victim->short_descr = STRALLOC( arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "long" ) )
    {
-      stralloc_printf( &victim->long_descr, "%s\r\n", arg3 );
+      stralloc_printf( &victim->long_descr, "%s\r\n", arg3.c_str(  ) );
       return;
    }
 
@@ -619,7 +615,7 @@ CMDF( do_mpmset )
          return;
       }
 
-      set_title( victim, arg3 );
+      victim->set_title( arg3 );
       return;
    }
 
@@ -634,7 +630,7 @@ CMDF( do_mpmset )
       if( !str_cmp( arg3, "none" ) )
       {
          victim->spec_fun = NULL;
-         victim->spec_funname.clear();
+         victim->spec_funname.clear(  );
          return;
       }
 
@@ -655,17 +651,18 @@ CMDF( do_mpmset )
          return;
       }
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no flags" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_actflag( arg3 );
          if( value < 0 || value >= MAX_ACT_FLAG )
-            progbugf( ch, "MpMset: Invalid flag: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid flag: %s", arg3.c_str(  ) );
          else
          {
             if( value == ACT_PROTOTYPE )
@@ -687,17 +684,18 @@ CMDF( do_mpmset )
          return;
       }
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no affected" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            progbugf( ch, "MpMset: Invalid affected: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid affected: %s", arg3.c_str(  ) );
          else
             victim->toggle_aflag( value );
       }
@@ -711,43 +709,43 @@ CMDF( do_mpmset )
     */
    if( !str_cmp( arg2, "r" ) )
    {
-      funcf( ch, do_mpmset, "%s resistant %s", arg1, arg3 );
+      funcf( ch, do_mpmset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "i" ) )
    {
-      funcf( ch, do_mpmset, "%s immune %s", arg1, arg3 );
+      funcf( ch, do_mpmset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "s" ) )
    {
-      funcf( ch, do_mpmset, "%s susceptible %s", arg1, arg3 );
+      funcf( ch, do_mpmset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "ri" ) )
    {
-      funcf( ch, do_mpmset, "%s resistant %s", arg1, arg3 );
-      funcf( ch, do_mpmset, "%s immune %s", arg1, arg3 );
+      funcf( ch, do_mpmset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "rs" ) )
    {
-      funcf( ch, do_mpmset, "%s resistant %s", arg1, arg3 );
-      funcf( ch, do_mpmset, "%s susceptible %s", arg1, arg3 );
+      funcf( ch, do_mpmset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "is" ) )
    {
-      funcf( ch, do_mpmset, "%s immune %s", arg1, arg3 );
-      funcf( ch, do_mpmset, "%s susceptible %s", arg1, arg3 );
+      funcf( ch, do_mpmset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
    if( !str_cmp( arg2, "ris" ) )
    {
-      funcf( ch, do_mpmset, "%s resistant %s", arg1, arg3 );
-      funcf( ch, do_mpmset, "%s immune %s", arg1, arg3 );
-      funcf( ch, do_mpmset, "%s susceptible %s", arg1, arg3 );
+      funcf( ch, do_mpmset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
@@ -758,17 +756,19 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc resistant" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no resistant" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            progbugf( ch, "MpMset: Invalid resistant: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid resistant: %s", arg3.c_str(  ) );
          else
             victim->toggle_resist( value );
       }
@@ -782,17 +782,19 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc immune" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no immune" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            progbugf( ch, "MpMset: Invalid immune: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid immune: %s", arg3.c_str(  ) );
          else
             victim->toggle_immune( value );
       }
@@ -806,17 +808,19 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc susceptible" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no susceptible" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            progbugf( ch, "MpMset: Invalid susceptible: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid susceptible: %s", arg3.c_str(  ) );
          else
             victim->toggle_suscep( value );
       }
@@ -830,17 +834,19 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc absorb" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no absorb" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            progbugf( ch, "MpMset: Invalid absorb: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid absorb: %s", arg3.c_str(  ) );
          else
             victim->toggle_absorb( value );
       }
@@ -854,17 +860,19 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc part" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no part" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_partflag( arg3 );
          if( value < 0 || value >= MAX_BPART )
-            progbugf( ch, "MpMset: Invalid part: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid part: %s", arg3.c_str(  ) );
          else
             victim->toggle_bpart( value );
       }
@@ -878,17 +886,19 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc attack" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no attack" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_attackflag( arg3 );
          if( value < 0 || value >= MAX_ATTACK_TYPE )
-            progbugf( ch, "MpMset: Invalid attack: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid attack: %s", arg3.c_str(  ) );
          else
             victim->toggle_attack( value );
       }
@@ -902,17 +912,19 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc defense" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no defense" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_defenseflag( arg3 );
          if( value < 0 || value >= MAX_DEFENSE_TYPE )
-            progbugf( ch, "MpMset: Invalid defense: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid defense: %s", arg3.c_str(  ) );
          else
             victim->toggle_defense( value );
       }
@@ -926,6 +938,7 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc pos" );
          return;
       }
+
       if( value < 0 || value > POS_STANDING )
       {
          progbugf( ch, "%s", "MpMset: Invalid pos" );
@@ -942,6 +955,7 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc defpos" );
          return;
       }
+
       if( value < 0 || value > POS_STANDING )
       {
          progbugf( ch, "%s", "MpMset: Invalid defpos" );
@@ -953,21 +967,22 @@ CMDF( do_mpmset )
 
    if( !str_cmp( arg2, "speaks" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no speaks" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_langnum( arg3 );
          if( value < 0 || value >= LANG_UNKNOWN )
-            progbugf( ch, "MpMset: Invalid speaks: %s", arg3 );
+            progbugf( ch, "MpMset: Invalid speaks: %s", arg3.c_str(  ) );
          else if( !victim->isnpc(  ) )
          {
             if( !( value &= VALID_LANGS ) )
-               progbugf( ch, "MpMset: Invalid player language: %s", arg3 );
+               progbugf( ch, "MpMset: Invalid player language: %s", arg3.c_str(  ) );
             else
                victim->toggle_lang( value );
          }
@@ -984,26 +999,27 @@ CMDF( do_mpmset )
          progbugf( ch, "%s", "MpMset: can't set pc speaking" );
          return;
       }
-      if( !argument || argument[0] == '\0' )
+
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpMset: no speaking" );
          return;
       }
+
       argument = one_argument( argument, arg3 );
       value = get_langnum( arg3 );
       if( value < 0 || value >= LANG_UNKNOWN )
-         progbugf( ch, "MpMset: Invalid speaking: %s", arg3 );
+         progbugf( ch, "MpMset: Invalid speaking: %s", arg3.c_str(  ) );
       else
          victim->speaking = value;
       return;
    }
-   progbugf( ch, "MpMset: Invalid field: %s", arg2 );
-   return;
+   progbugf( ch, "MpMset: Invalid field: %s", arg2.c_str(  ) );
 }
 
 CMDF( do_mposet )
 {
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    obj_data *obj;
    int value, tmp;
 
@@ -1014,9 +1030,9 @@ CMDF( do_mposet )
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   mudstrlcpy( arg3, argument, MIL );
+   arg3 = argument;
 
-   if( !*arg1 )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "MpOset: no args" );
       return;
@@ -1034,7 +1050,7 @@ CMDF( do_mposet )
       return;
    }
    obj->separate(  );
-   value = atoi( arg3 );
+   value = atoi( arg3.c_str(  ) );
 
    if( !str_cmp( arg2, "value0" ) || !str_cmp( arg2, "v0" ) )
    {
@@ -1110,11 +1126,12 @@ CMDF( do_mposet )
 
    if( !str_cmp( arg2, "type" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpOset: no type" );
          return;
       }
+
       value = get_otype( argument );
       if( value < 1 )
       {
@@ -1127,17 +1144,18 @@ CMDF( do_mposet )
 
    if( !str_cmp( arg2, "flags" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpOset: no flags" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_oflag( arg3 );
          if( value < 0 || value >= MAX_ITEM_FLAG )
-            progbugf( ch, "MpOset: Invalid flag: %s", arg3 );
+            progbugf( ch, "MpOset: Invalid flag: %s", arg3.c_str(  ) );
          else
          {
             if( value == ITEM_PROTOTYPE )
@@ -1151,21 +1169,21 @@ CMDF( do_mposet )
 
    if( !str_cmp( arg2, "wear" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpOset: no wear" );
          return;
       }
-      while( argument[0] != '\0' )
+
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_wflag( arg3 );
          if( value < 0 || value >= MAX_WEAR_FLAG )
-            progbugf( ch, "MpOset: Invalid wear: %s", arg3 );
+            progbugf( ch, "MpOset: Invalid wear: %s", arg3.c_str(  ) );
          else
             obj->wear_flags.flip( value );
       }
-
       return;
    }
 
@@ -1196,14 +1214,14 @@ CMDF( do_mposet )
    if( !str_cmp( arg2, "name" ) )
    {
       STRFREE( obj->name );
-      obj->name = STRALLOC( arg3 );
+      obj->name = STRALLOC( arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "short" ) )
    {
       STRFREE( obj->short_descr );
-      obj->short_descr = STRALLOC( arg3 );
+      obj->short_descr = STRALLOC( arg3.c_str(  ) );
       if( obj == supermob_obj )
       {
          STRFREE( supermob->short_descr );
@@ -1222,19 +1240,19 @@ CMDF( do_mposet )
    if( !str_cmp( arg2, "long" ) )
    {
       STRFREE( obj->objdesc );
-      obj->objdesc = STRALLOC( arg3 );
+      obj->objdesc = STRALLOC( arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "actiondesc" ) )
    {
-      if( strstr( arg3, "%n" ) || strstr( arg3, "%d" ) || strstr( arg3, "%l" ) )
+      if( strstr( arg3.c_str(  ), "%n" ) || strstr( arg3.c_str(  ), "%d" ) || strstr( arg3.c_str(  ), "%l" ) )
       {
          progbugf( ch, "%s", "MpOset: Illegal actiondesc" );
          return;
       }
       STRFREE( obj->action_desc );
-      obj->action_desc = STRALLOC( arg3 );
+      obj->action_desc = STRALLOC( arg3.c_str(  ) );
       return;
    }
 
@@ -1244,17 +1262,19 @@ CMDF( do_mposet )
       short loc;
 
       argument = one_argument( argument, arg2 );
-      if( arg2[0] == '\0' || !argument || argument[0] == 0 )
+      if( arg2.empty(  ) || argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpOset: Bad affect syntax" );
          return;
       }
+
       loc = get_atype( arg2 );
       if( loc < 1 )
       {
          progbugf( ch, "%s", "MpOset: Invalid affect field" );
          return;
       }
+
       if( ( loc >= APPLY_AFFECT && loc < APPLY_WEAPONSPELL ) || loc == APPLY_ABSORB )
       {
          bool found = false;
@@ -1265,7 +1285,7 @@ CMDF( do_mposet )
             value = get_aflag( arg3 );
 
             if( value < 0 || value >= MAX_AFFECTED_BY )
-               ch->printf( "Unknown flag: %s\r\n", arg3 );
+               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
             found = true;
          }
          else
@@ -1273,7 +1293,7 @@ CMDF( do_mposet )
             value = get_risflag( arg3 );
 
             if( value < 0 || value >= MAX_RIS_FLAG )
-               ch->printf( "Unknown flag: %s\r\n", arg3 );
+               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
             found = true;
          }
          if( !found )
@@ -1282,7 +1302,7 @@ CMDF( do_mposet )
       else
       {
          argument = one_argument( argument, arg3 );
-         value = atoi( arg3 );
+         value = atoi( arg3.c_str(  ) );
       }
       paf = new affect_data;
       paf->type = -1;
@@ -1297,15 +1317,16 @@ CMDF( do_mposet )
 
    if( !str_cmp( arg2, "rmaffect" ) )
    {
-      list<affect_data*>::iterator paf;
+      list < affect_data * >::iterator paf;
       short loc, count;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          progbugf( ch, "%s", "MpOset: no rmaffect" );
          return;
       }
-      loc = atoi( argument );
+
+      loc = atoi( argument.c_str(  ) );
       if( loc < 1 )
       {
          progbugf( ch, "%s", "MpOset: Invalid rmaffect" );
@@ -1314,9 +1335,9 @@ CMDF( do_mposet )
 
       count = 0;
 
-      for( paf = obj->affects.begin(); paf != obj->affects.end(); )
+      for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); )
       {
-         affect_data *aff = (*paf);
+         affect_data *aff = *paf;
          ++paf;
 
          if( ++count == loc )
@@ -1336,47 +1357,48 @@ CMDF( do_mposet )
     */
    if( !str_cmp( arg2, "ris" ) )
    {
-      funcf( ch, do_mposet, "%s affect resistant %s", arg1, arg3 );
-      funcf( ch, do_mposet, "%s affect immune %s", arg1, arg3 );
-      funcf( ch, do_mposet, "%s affect susceptible %s", arg1, arg3 );
+      funcf( ch, do_mposet, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "r" ) )
    {
-      funcf( ch, do_mpmset, "%s affect resistant %s", arg1, arg3 );
+      funcf( ch, do_mpmset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "i" ) )
    {
-      funcf( ch, do_mposet, "%s affect immune %s", arg1, arg3 );
+      funcf( ch, do_mposet, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
+
    if( !str_cmp( arg2, "s" ) )
    {
-      funcf( ch, do_mposet, "%s affect susceptible %s", arg1, arg3 );
+      funcf( ch, do_mposet, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "ri" ) )
    {
-      funcf( ch, do_mposet, "%s affect resistant %s", arg1, arg3 );
-      funcf( ch, do_mposet, "%s affect immune %s", arg1, arg3 );
+      funcf( ch, do_mposet, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "rs" ) )
    {
-      funcf( ch, do_mposet, "%s affect resistant %s", arg1, arg3 );
-      funcf( ch, do_mposet, "%s affect susceptible %s", arg1, arg3 );
+      funcf( ch, do_mposet, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg2, "is" ) )
    {
-      funcf( ch, do_mposet, "%s affect immune %s", arg1, arg3 );
-      funcf( ch, do_mposet, "%s affect susceptible %s", arg1, arg3 );
+      funcf( ch, do_mposet, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
       return;
    }
 
@@ -1394,7 +1416,7 @@ CMDF( do_mposet )
          if( !str_cmp( arg2, "weapontype" ) )
          {
             value = -1;
-            for( unsigned int x = 0; x < sizeof( attack_table ) / sizeof( attack_table[0] ); ++x )
+            for( size_t x = 0; x < sizeof( attack_table ) / sizeof( attack_table[0] ); ++x )
                if( !str_cmp( arg3, attack_table[x] ) )
                   value = x;
             if( value < 0 )
@@ -1489,11 +1511,10 @@ CMDF( do_mposet )
       return;
    }
 
-   progbugf( ch, "MpOset: Invalid field: %s", arg2 );
-   return;
+   progbugf( ch, "MpOset: Invalid field: %s", arg2.c_str(  ) );
 }
 
-char *mprog_type_to_name( int type )
+const string mprog_type_to_name( int type )
 {
    switch ( type )
    {
@@ -1578,7 +1599,7 @@ CMDF( do_mpstat )
 {
    char_data *victim;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "MProg stat whom?\r\n" );
       return;
@@ -1604,24 +1625,20 @@ CMDF( do_mpstat )
 
    ch->printf( "Name: %s.  Vnum: %d.\r\n", victim->name, victim->pIndexData->vnum );
 
-   ch->printf( "Short description: %s.\r\nLong  description: %s",
-               victim->short_descr, victim->long_descr[0] != '\0' ? victim->long_descr : "(none).\r\n" );
+   ch->printf( "Short description: %s.\r\nLong  description: %s", victim->short_descr, victim->long_descr[0] != '\0' ? victim->long_descr : "(none).\r\n" );
 
-   ch->printf( "Hp: %d/%d.  Mana: %d/%d.  Move: %d/%d. \r\n",
-               victim->hit, victim->max_hit, victim->mana, victim->max_mana, victim->move, victim->max_move );
+   ch->printf( "Hp: %d/%d.  Mana: %d/%d.  Move: %d/%d. \r\n", victim->hit, victim->max_hit, victim->mana, victim->max_mana, victim->move, victim->max_move );
 
    ch->printf( "Lv: %d.  Class: %d.  Align: %d.  AC: %d.  Gold: %d.  Exp: %d.\r\n",
                victim->level, victim->Class, victim->alignment, victim->GET_AC(  ), victim->gold, victim->exp );
 
-   list<mud_prog_data*>::iterator mprg;
-   for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+   list < mud_prog_data * >::iterator mprg;
+   for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
    {
-      mud_prog_data *prg = (*mprg);
+      mud_prog_data *prg = *mprg;
 
-      ch->printf( "%s>%s %s\r\n%s\r\n", ( prg->fileprog ? "(FILEPROG) " : "" ),
-         mprog_type_to_name( prg->type ), prg->arglist, prg->comlist );
+      ch->printf( "%s>%s %s\r\n%s\r\n", ( prg->fileprog ? "(FILEPROG) " : "" ), mprog_type_to_name( prg->type ).c_str(  ), prg->arglist, prg->comlist );
    }
-   return;
 }
 
 /* Opstat - Scryn 8/12*/
@@ -1629,7 +1646,7 @@ CMDF( do_opstat )
 {
    obj_data *obj;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "OProg stat what?\r\n" );
       return;
@@ -1650,14 +1667,13 @@ CMDF( do_opstat )
    ch->printf( "Name: %s.  Vnum: %d.\r\n", obj->name, obj->pIndexData->vnum );
    ch->printf( "Short description: %s.\r\n", obj->short_descr );
 
-   list<mud_prog_data*>::iterator mprg;
-   for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); ++mprg )
+   list < mud_prog_data * >::iterator mprg;
+   for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
    {
-      mud_prog_data *mprog = (*mprg);
+      mud_prog_data *mprog = *mprg;
 
-      ch->printf( ">%s %s\r\n%s\r\n", mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
+      ch->printf( ">%s %s\r\n%s\r\n", mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
    }
-   return;
 }
 
 /* Rpstat - Scryn 8/12 */
@@ -1665,14 +1681,14 @@ CMDF( do_rpstat )
 {
    room_index *location;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       location = ch->in_room;
    else
       location = ch->find_location( argument );
 
    if( !location )
    {
-      bug( "%s: Bad room index: %s", __FUNCTION__, argument );
+      bug( "%s: Bad room index: %s", __FUNCTION__, argument.c_str(  ) );
       ch->print( "That room does not exist!\r\n" );
       return;
    }
@@ -1685,20 +1701,19 @@ CMDF( do_rpstat )
 
    ch->printf( "Name: %s.  Vnum: %d.\r\n", location->name, location->vnum );
 
-   list<mud_prog_data*>::iterator mprg;
-   for( mprg = location->mudprogs.begin(); mprg != location->mudprogs.end(); ++mprg )
+   list < mud_prog_data * >::iterator mprg;
+   for( mprg = location->mudprogs.begin(  ); mprg != location->mudprogs.end(  ); ++mprg )
    {
-      mud_prog_data *mprog = (*mprg);
+      mud_prog_data *mprog = *mprg;
 
-      ch->printf( ">%s %s\r\n%s\r\n", mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
+      ch->printf( ">%s %s\r\n%s\r\n", mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
    }
-   return;
 }
 
 /* Woowoo - Blodkai, November 1997 */
 CMDF( do_mpasupress )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
    int rnds;
 
@@ -1707,29 +1722,31 @@ CMDF( do_mpasupress )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mpasupress:  invalid (nonexistent?) argument" );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpasupress:  invalid (nonexistent?) argument" );
+      progbugf( ch, "%s", "Mpasupress:  invalid (nonexistent?) second argument" );
       return;
    }
+
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
       progbugf( ch, "%s", "Mpasupress: victim not present" );
       return;
    }
-   rnds = atoi( argument );
+
+   rnds = atoi( argument.c_str(  ) );
    if( rnds < 0 || rnds > 32000 )
    {
-      progbugf( ch, "%s", "Mpsupress: invalid (nonexistent?) argument" );
+      progbugf( ch, "%s", "Mpsupress: invalid rounds argument, non-numeric" );
       return;
    }
    victim->add_timer( TIMER_ASUPRESSED, rnds, NULL, 0 );
-   return;
 }
 
 /* lets the mobile kill any player or mobile without murder*/
@@ -1740,7 +1757,7 @@ CMDF( do_mpkill )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "MpKill - no argument" );
       return;
@@ -1748,7 +1765,7 @@ CMDF( do_mpkill )
 
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "MpKill - Victim %s not in room", argument );
+      progbugf( ch, "MpKill - Victim %s not in room", argument.c_str(  ) );
       return;
    }
 
@@ -1764,7 +1781,6 @@ CMDF( do_mpkill )
       return;
    }
    multi_hit( ch, victim, TYPE_UNDEFINED );
-   return;
 }
 
 /* lets the mobile destroy an object in its inventory
@@ -1776,7 +1792,7 @@ CMDF( do_mpjunk )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpjunk - No argument" );
       return;
@@ -1797,13 +1813,13 @@ CMDF( do_mpjunk )
    }
    else
    {
-      list<obj_data*>::iterator iobj;
-      for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
       {
-         obj = (*iobj);
+         obj = *iobj;
          ++iobj;
 
-         if( argument[3] == '\0' || is_name( &argument[4], obj->name ) )
+         if( !str_cmp( argument, "all" ) || hasname( obj->name, argument.substr( 4, argument.length(  ) ) ) )
          {
             if( obj->wear_loc != WEAR_NONE )
                ch->unequip( obj );
@@ -1811,7 +1827,6 @@ CMDF( do_mpjunk )
          }
       }
    }
-   return;
 }
 
 /* Prints the argument to all the rooms around the mobile */
@@ -1820,26 +1835,27 @@ CMDF( do_mpasound )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpasound - No argument" );
       return;
    }
-   bitset<MAX_ACT_FLAG> actflags = ch->get_actflags();
+
+   bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
    /*
     * DONT_UPPER prevents argument[0] from being captilized. --Shaddai 
     */
    DONT_UPPER = true;
-   list<exit_data*>::iterator iexit;
+   list < exit_data * >::iterator iexit;
    room_index *was_in_room = ch->in_room;
-   for( iexit = was_in_room->exits.begin(); iexit != was_in_room->exits.end(); ++iexit )
+   for( iexit = was_in_room->exits.begin(  ); iexit != was_in_room->exits.end(  ); ++iexit )
    {
-      exit_data *pexit = (*iexit);
+      exit_data *pexit = *iexit;
 
       if( pexit->to_room && pexit->to_room != was_in_room )
       {
-         ch->from_room();
+         ch->from_room(  );
          if( !ch->to_room( pexit->to_room ) )
             log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          MOBtrigger = false;
@@ -1848,23 +1864,22 @@ CMDF( do_mpasound )
    }
    DONT_UPPER = false;  /* Always set it back to false */
    ch->set_actflags( actflags );
-   ch->from_room();
+   ch->from_room(  );
    if( !ch->to_room( was_in_room ) )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-   return;
 }
 
 /* prints the message to all in the room other than the mob and victim */
 CMDF( do_mpechoaround )
 {
    char_data *victim;
-   char arg[MIL];
+   string arg;
    bitset < MAX_ACT_FLAG > actflags;
 
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpechoaround - No argument" );
       return;
@@ -1874,11 +1889,11 @@ CMDF( do_mpechoaround )
 
    if( !( victim = ch->get_char_room( arg ) ) )
    {
-      progbugf( ch, "Mpechoaround - victim %s does not exist", arg );
+      progbugf( ch, "Mpechoaround - victim %s does not exist", arg.c_str(  ) );
       return;
    }
 
-   actflags = ch->get_actflags();
+   actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
    act( AT_ACTION, argument, ch, NULL, victim, TO_NOTVICT );
    ch->set_actflags( actflags );
@@ -1888,13 +1903,13 @@ CMDF( do_mpechoaround )
 CMDF( do_mpechoat )
 {
    char_data *victim;
-   char arg[MIL];
+   string arg;
    bitset < MAX_ACT_FLAG > actflags;
 
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpechoat - No argument" );
       return;
@@ -1903,15 +1918,15 @@ CMDF( do_mpechoat )
    argument = one_argument( argument, arg );
    if( !( victim = ch->get_char_room( arg ) ) )
    {
-      progbugf( ch, "Mpechoat - victim %s does not exist", arg );
+      progbugf( ch, "Mpechoat - victim %s does not exist", arg.c_str(  ) );
       return;
    }
 
-   actflags = ch->get_actflags();
+   actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
 
    DONT_UPPER = true;
-   if( argument[0] == '\0' )
+   if( argument.empty(  ) )
       act( AT_ACTION, " ", ch, NULL, victim, TO_VICT );
    else
       act( AT_ACTION, argument, ch, NULL, victim, TO_VICT );
@@ -1929,11 +1944,11 @@ CMDF( do_mpecho )
    if( !can_use_mprog( ch ) )
       return;
 
-   actflags = ch->get_actflags();
+   actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
 
    DONT_UPPER = true;
-   if( argument[0] == '\0' )
+   if( argument.empty(  ) )
       act( AT_ACTION, " ", ch, NULL, NULL, TO_ROOM );
    else
       act( AT_ACTION, argument, ch, NULL, NULL, TO_ROOM );
@@ -1952,27 +1967,26 @@ CMDF( do_mpmload )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' || !is_number( argument ) )
+   if( argument.empty(  ) || !is_number( argument ) )
    {
-      progbugf( ch, "Mpmload - Bad vnum %s as argument", argument ? argument : "NULL" );
+      progbugf( ch, "Mpmload - Bad vnum %s as argument", !argument.empty(  )? argument.c_str(  ) : "NULL" );
       return;
    }
 
-   if( !( pMobIndex = get_mob_index( atoi( argument ) ) ) )
+   if( !( pMobIndex = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
    {
-      progbugf( ch, "Mpmload - Bad mob vnum %s", argument );
+      progbugf( ch, "Mpmload - Bad mob vnum %s", argument.c_str(  ) );
       return;
    }
 
    victim = pMobIndex->create_mobile(  );
    if( !victim->to_room( ch->in_room ) )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-   return;
 }
 
 CMDF( do_mpoload )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    obj_data *obj;
    int level, timer = 0;
 
@@ -1982,13 +1996,13 @@ CMDF( do_mpoload )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' || !is_number( arg1 ) )
+   if( arg1.empty(  ) || !is_number( arg1 ) )
    {
       progbugf( ch, "%s", "Mpoload - Bad syntax" );
       return;
    }
 
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
       level = ch->get_trust(  );
    else
    {
@@ -1997,10 +2011,11 @@ CMDF( do_mpoload )
        */
       if( !is_number( arg2 ) )
       {
-         progbugf( ch, "Mpoload - Bad level syntax: %s", arg2 );
+         progbugf( ch, "Mpoload - Bad level syntax: %s", arg2.c_str(  ) );
          return;
       }
-      level = atoi( arg2 );
+
+      level = atoi( arg2.c_str(  ) );
       if( level < 0 || level > ch->get_trust(  ) )
       {
          progbugf( ch, "Mpoload - Bad level %d", level );
@@ -2010,7 +2025,7 @@ CMDF( do_mpoload )
       /*
        * New feature from Thoric.
        */
-      timer = atoi( argument );
+      timer = atoi( argument.c_str(  ) );
       if( timer < 0 )
       {
          progbugf( ch, "Mpoload - Bad timer %d", timer );
@@ -2018,10 +2033,10 @@ CMDF( do_mpoload )
       }
    }
 
-   if( !( obj = get_obj_index( atoi( arg1 ) )->create_object( level ) ) )
+   if( !( obj = get_obj_index( atoi( arg1.c_str(  ) ) )->create_object( level ) ) )
    {
       log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-      progbugf( ch, "Mpoload - Bad vnum arg %s", arg1 );
+      progbugf( ch, "Mpoload - Bad vnum arg %s", arg1.c_str(  ) );
       return;
    }
 
@@ -2030,13 +2045,12 @@ CMDF( do_mpoload )
       obj->to_char( ch );
    else
       obj->to_room( ch->in_room, ch );
-   return;
 }
 
 /* Just a hack of do_pardon from act_wiz.c -- Blodkai, 6/15/97 */
 CMDF( do_mppardon )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
 
    if( !can_use_mprog( ch ) )
@@ -2044,21 +2058,24 @@ CMDF( do_mppardon )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mppardon: missing argument" );
       return;
    }
+
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "Mppardon: offender %s not present", arg1 );
+      progbugf( ch, "Mppardon: offender %s not present", arg1.c_str(  ) );
       return;
    }
+
    if( victim->isnpc(  ) )
    {
       progbugf( ch, "Mppardon:  trying to pardon NPC %s", victim->short_descr );
       return;
    }
+
    if( !str_cmp( argument, "litterbug" ) )
    {
       if( victim->has_pcflag( PCFLAG_LITTERBUG ) )
@@ -2069,7 +2086,6 @@ CMDF( do_mppardon )
       return;
    }
    progbugf( ch, "%s", "Mppardon: Invalid argument" );
-   return;
 }
 
 /* lets the mobile purge all objects and other npcs in the room,
@@ -2081,7 +2097,7 @@ CMDF( do_mppurge )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       /*
        * 'purge' 
@@ -2092,20 +2108,20 @@ CMDF( do_mppurge )
          return;
       }
 
-      list<char_data*>::iterator ich;
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+      list < char_data * >::iterator ich;
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
-         char_data *victim = (*ich);
+         char_data *victim = *ich;
          ++ich;
 
          if( victim->isnpc(  ) && victim != ch )
             victim->extract( true );
       }
 
-      list<obj_data*>::iterator iobj;
-      for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          ++iobj;
 
          obj->extract(  );
@@ -2142,7 +2158,6 @@ CMDF( do_mppurge )
       return;
    }
    victim->extract( true );
-   return;
 }
 
 /* Allow mobiles to go wizinvis with programs -- SB */
@@ -2153,14 +2168,15 @@ CMDF( do_mpinvis )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( argument && argument[0] != '\0' )
+   if( !argument.empty(  ) )
    {
       if( !is_number( argument ) )
       {
          progbugf( ch, "%s", "Mpinvis - Non numeric argument " );
          return;
       }
-      level = atoi( argument );
+
+      level = atoi( argument.c_str(  ) );
       if( level < 2 || level > LEVEL_IMMORTAL ) /* Updated hardcode level check - Samson */
       {
          progbugf( ch, "MPinvis - Invalid level %d", level );
@@ -2183,7 +2199,6 @@ CMDF( do_mpinvis )
       ch->set_actflag( ACT_MOBINVIS );
       act( AT_IMMORT, "$n slowly fades into thin air.", ch, NULL, NULL, TO_ROOM );
    }
-   return;
 }
 
 /* lets the mobile goto any location it wishes that is not private */
@@ -2195,7 +2210,7 @@ CMDF( do_mpgoto )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpgoto - No argument" );
       return;
@@ -2203,7 +2218,7 @@ CMDF( do_mpgoto )
 
    if( !( location = ch->find_location( argument ) ) )
    {
-      progbugf( ch, "Mpgoto - No such location %s", argument );
+      progbugf( ch, "Mpgoto - No such location %s", argument.c_str(  ) );
       return;
    }
 
@@ -2211,13 +2226,12 @@ CMDF( do_mpgoto )
       ch->stop_fighting( true );
 
    leave_map( ch, NULL, location );
-   return;
 }
 
 /* lets the mobile do a command at another location. Very useful */
 CMDF( do_mpat )
 {
-   char arg[MIL];
+   string arg;
    room_index *location, *original;
 
    if( !can_use_mprog( ch ) )
@@ -2225,7 +2239,7 @@ CMDF( do_mpat )
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg.empty(  ) || argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpat - Bad argument" );
       return;
@@ -2233,7 +2247,7 @@ CMDF( do_mpat )
 
    if( !( location = ch->find_location( arg ) ) )
    {
-      progbugf( ch, "Mpat - No such location %s", arg );
+      progbugf( ch, "Mpat - No such location %s", arg.c_str(  ) );
       return;
    }
 
@@ -2249,13 +2263,12 @@ CMDF( do_mpat )
       if( !ch->to_room( original ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
    }
-   return;
 }
 
 /* allow a mobile to advance a player's level... very dangerous */
 CMDF( do_mpadvance )
 {
-   char arg[MIL];
+   string arg;
    char_data *victim;
    int level, iLevel;
 
@@ -2263,7 +2276,7 @@ CMDF( do_mpadvance )
       return;
 
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpadvance - Bad syntax" );
       return;
@@ -2273,7 +2286,7 @@ CMDF( do_mpadvance )
 
    if( !( victim = ch->get_char_room( arg ) ) )
    {
-      progbugf( ch, "Mpadvance - Victim %s not there", arg );
+      progbugf( ch, "Mpadvance - Victim %s not there", arg.c_str(  ) );
       return;
    }
 
@@ -2286,7 +2299,7 @@ CMDF( do_mpadvance )
    if( victim->level >= LEVEL_AVATAR )
       return;
 
-   level = atoi( argument );
+   level = atoi( argument.c_str(  ) );
 
    if( victim->level > ch->level )
    {
@@ -2308,12 +2321,12 @@ CMDF( do_mpadvance )
       victim->level += 1;
       advance_level( victim );
    }
+
    /*
     * Modified by Samson 4-30-99 
     */
    victim->exp = exp_level( victim->level );
    victim->trust = 0;
-   return;
 }
 
 /* lets the mobile transfer people.  the all argument transfers
@@ -2322,17 +2335,17 @@ CMDF( do_mpadvance )
    specified location */
 CMDF( do_mptransfer )
 {
-   char arg1[MIL];
+   string arg1;
    room_index *location;
    char_data *victim;
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
    if( !can_use_mprog( ch ) )
       return;
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mptransfer - Bad syntax" );
       return;
@@ -2341,13 +2354,13 @@ CMDF( do_mptransfer )
    /*
     * Thanks to Grodyn for the optional location parameter.
     */
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       location = ch->in_room;
    else
    {
       if( !( location = ch->find_location( argument ) ) )
       {
-         progbugf( ch, "Mptransfer - no such location: to: %s from: %d", argument, ch->in_room->vnum );
+         progbugf( ch, "Mptransfer - no such location: to: %s from: %d", argument.c_str(  ), ch->in_room->vnum );
          return;
       }
    }
@@ -2357,9 +2370,9 @@ CMDF( do_mptransfer )
     */
    if( !str_cmp( arg1, "all" ) )
    {
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
-         victim = (*ich);
+         victim = *ich;
          ++ich;
 
          if( ch == victim )
@@ -2375,41 +2388,20 @@ CMDF( do_mptransfer )
     */
    if( !str_cmp( arg1, "area" ) )
    {
-      list<descriptor_data*>::iterator ds;
-
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
       {
-         descriptor_data *d = (*ds);
+         victim = *ich;
 
-         if( !d->character || ch == d->character || ( d->connected != CON_PLAYING && d->connected != CON_EDITING ) || ch->in_room->area != d->character->in_room->area || d->character->level == 1 )   /* new auth */
+         if( ch->in_room->area != victim->in_room->area || victim->level == 1 )  /* new auth */
             continue;
-         transfer_char( ch, d->character, location );
+         transfer_char( ch, victim, location );
       }
       return;
    }
 
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mptransfer - No such person %s", arg1 );
-      return;
-   }
-
-   /*
-    * Krusty/Wedgy protect 
-    */
-   if( victim->isnpc(  ) &&
-       ( !str_cmp( victim->short_descr, "The Negative Magnetic Space Wedgy" ) || !str_cmp( victim->short_descr, "Krusty" ) ) )
-   {
-      if( location->area != victim->pIndexData->area )
-      {
-         if( !str_cmp( victim->short_descr, "The Negative Magnetic Space Wedgy" ) )
-            interpret( victim, "yell That was a most pathetic attempt to displace me, infidel." );
-         else
-         {
-            if( str_cmp( location->area->name, "The Great Void" ) )
-               interpret( victim, "yell AAARRGGHH! Quit trying to move me around dammit!" );
-         }
-      }
+      progbugf( ch, "Mptransfer - No such person %s", arg1.c_str(  ) );
       return;
    }
 
@@ -2419,8 +2411,6 @@ CMDF( do_mptransfer )
    victim->tempnum = 3210;
    transfer_char( ch, victim, location );
    victim->tempnum = 0;
-
-   return;
 }
 
 /*
@@ -2428,51 +2418,53 @@ CMDF( do_mptransfer )
  */
 CMDF( do_mpbodybag )
 {
-   char arg[MSL], buf2[MSL], buf3[MSL];
+   string arg;
+   char buf[MSL];
+   char_data *victim;
 
    if( !can_use_mprog( ch ) )
       return;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       progbugf( ch, "%s", "Mpbodybag - called w/o enough argument(s)" );
       return;
    }
 
-   char_data *victim;
    if( !( victim = ch->get_char_room( arg ) ) )
    {
-      progbugf( ch, "Mpbodybag: victim %s not in room", arg );
+      progbugf( ch, "Mpbodybag: victim %s not in room", arg.c_str(  ) );
       return;
    }
+
    if( victim->isnpc(  ) )
    {
       progbugf( ch, "%s", "Mpbodybag: bodybagging a npc corpse" );
       return;
    }
-   mudstrlcpy( buf3, " ", MSL );
-   snprintf( buf2, MSL, "the corpse of %s", arg );
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+   snprintf( buf, MSL, "the corpse of %s", arg.c_str(  ) );
+
+   list < obj_data * >::iterator iobj;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
-      if( obj->in_room && !str_cmp( buf2, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
+      if( obj->in_room && !str_cmp( buf, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
       {
          obj->from_room(  );
          obj = obj->to_char( ch );
          obj->timer = -1;
       }
    }
+
    /*
     * Maybe should just make the command logged... Shrug I am not sure
     * * --Shaddai
     */
-   progbugf( ch, "Mpbodybag: Grabbed %s", buf2 );
-   return;
+   progbugf( ch, "Mpbodybag: Grabbed %s", buf );
 }
 
 /*
@@ -2483,14 +2475,14 @@ CMDF( do_mpmorph )
 {
    char_data *victim;
    morph_data *morph;
-   char arg1[MIL];
+   string arg1;
 
    if( !can_use_mprog( ch ) )
       return;
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpmorph - called w/o enough argument(s)" );
       return;
@@ -2498,17 +2490,17 @@ CMDF( do_mpmorph )
 
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "Mpmorph: victim %s not in room", arg1 );
+      progbugf( ch, "Mpmorph: victim %s not in room", arg1.c_str(  ) );
       return;
    }
 
    if( !is_number( argument ) )
       morph = get_morph( argument );
    else
-      morph = get_morph_vnum( atoi( argument ) );
+      morph = get_morph_vnum( atoi( argument.c_str(  ) ) );
    if( !morph )
    {
-      progbugf( ch, "Mpmorph - unknown morph %s", argument );
+      progbugf( ch, "Mpmorph - unknown morph %s", argument.c_str(  ) );
       return;
    }
    if( victim->morph )
@@ -2517,7 +2509,6 @@ CMDF( do_mpmorph )
       return;
    }
    do_morph_char( victim, morph );
-   return;
 }
 
 CMDF( do_mpunmorph )
@@ -2527,7 +2518,7 @@ CMDF( do_mpunmorph )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpmorph - called w/o an argument" );
       return;
@@ -2535,16 +2526,16 @@ CMDF( do_mpunmorph )
 
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "Mpunmorph: victim %s not in room", argument );
+      progbugf( ch, "Mpunmorph: victim %s not in room", argument.c_str(  ) );
       return;
    }
+
    if( !victim->morph )
    {
       progbugf( ch, "Mpunmorph: victim %s not morphed", victim->name );
       return;
    }
    do_unmorph_char( victim );
-   return;
 }
 
 CMDF( do_mpechozone )   /* Blod, late 97 */
@@ -2552,18 +2543,18 @@ CMDF( do_mpechozone )   /* Blod, late 97 */
    if( !can_use_mprog( ch ) )
       return;
 
-   bitset<MAX_ACT_FLAG> actflags = ch->get_actflags();
+   bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
    DONT_UPPER = true;
-   list<char_data*>::iterator ich;
-   for( ich = pclist.begin(); ich != pclist.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); )
    {
-      char_data *vch = (*ich);
+      char_data *vch = *ich;
       ++ich;
 
       if( vch->in_room->area == ch->in_room->area && vch->IS_AWAKE(  ) )
       {
-         if( argument[0] == '\0' )
+         if( argument.empty(  ) )
             act( AT_ACTION, " ", vch, NULL, NULL, TO_CHAR );
          else
             act( AT_ACTION, argument, vch, NULL, NULL, TO_CHAR );
@@ -2583,7 +2574,7 @@ CMDF( do_mpechozone )   /* Blod, late 97 */
  */
 CMDF( do_mp_practice )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    char_data *victim;
    int sn, max, tmp, adept;
    char *skillname;
@@ -2594,7 +2585,7 @@ CMDF( do_mp_practice )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' || !arg2 || arg2[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) || argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mppractice - Bad syntax" );
       return;
@@ -2602,13 +2593,13 @@ CMDF( do_mp_practice )
 
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "Mppractice: Invalid student %s not in room", arg1 );
+      progbugf( ch, "Mppractice: Invalid student %s not in room", arg1.c_str(  ) );
       return;
    }
 
    if( ( sn = skill_lookup( arg2 ) ) < 0 )
    {
-      progbugf( ch, "Mppractice: Invalid spell/skill name %s", arg2 );
+      progbugf( ch, "Mppractice: Invalid spell/skill name %s", arg2.c_str(  ) );
       return;
    }
 
@@ -2620,7 +2611,7 @@ CMDF( do_mp_practice )
 
    skillname = skill_table[sn]->name;
 
-   max = atoi( argument );
+   max = atoi( argument.c_str(  ) );
    if( max < 0 || max > 100 )
    {
       progbugf( ch, "mp_practice: Invalid maxpercent: %d", max );
@@ -2629,8 +2620,7 @@ CMDF( do_mp_practice )
 
    if( victim->level < skill_table[sn]->skill_level[victim->Class] )
    {
-      act_printf( AT_TELL, ch, NULL, victim, TO_VICT,
-                  "$n attempts to tutor you in %s, but it's beyond your comprehension.", skillname );
+      act_printf( AT_TELL, ch, NULL, victim, TO_VICT, "$n attempts to tutor you in %s, but it's beyond your comprehension.", skillname );
       return;
    }
 
@@ -2644,8 +2634,7 @@ CMDF( do_mp_practice )
 
    if( ( victim->pcdata->learned[sn] >= adept ) || ( victim->pcdata->learned[sn] >= max ) )
    {
-      act_printf( AT_TELL, ch, NULL, victim, TO_VICT,
-                  "$n shows some knowledge of %s, but yours is clearly superior.", skillname );
+      act_printf( AT_TELL, ch, NULL, victim, TO_VICT, "$n shows some knowledge of %s, but yours is clearly superior.", skillname );
       return;
    }
 
@@ -2653,8 +2642,7 @@ CMDF( do_mp_practice )
     * past here, victim learns something 
     */
    tmp = UMIN( victim->pcdata->learned[sn] + int_app[victim->get_curr_int(  )].learn, max );
-   act( AT_ACTION, "$N demonstrates $t to you. You feel more learned in this subject.",
-        victim, skill_table[sn]->name, ch, TO_CHAR );
+   act( AT_ACTION, "$N demonstrates $t to you. You feel more learned in this subject.", victim, skill_table[sn]->name, ch, TO_CHAR );
 
    victim->pcdata->learned[sn] = max;
 
@@ -2663,12 +2651,11 @@ CMDF( do_mp_practice )
       victim->pcdata->learned[sn] = adept;
       act( AT_TELL, "$n tells you, 'You have learned all I know on this subject...'", ch, NULL, victim, TO_VICT );
    }
-   return;
 }
 
 CMDF( do_mpstrew )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
    room_index *pRoomIndex;
    int rvnum, vnum;
@@ -2678,21 +2665,24 @@ CMDF( do_mpstrew )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mpstrew: invalid (nonexistent?) argument" );
       return;
    }
+
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "Mpstrew: victim %s not in room", arg1 );
+      progbugf( ch, "Mpstrew: victim %s not in room", arg1.c_str(  ) );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpstrew: No command arguments" );
       return;
    }
+
    if( !str_cmp( argument, "coins" ) )
    {
       if( victim->gold < 1 )
@@ -2702,7 +2692,7 @@ CMDF( do_mpstrew )
    }
 
    obj_data *obj_lose;
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    if( !str_cmp( argument, "inventory" ) )
    {
       for( ;; )
@@ -2713,9 +2703,9 @@ CMDF( do_mpstrew )
             break;
       }
 
-      for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+      for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
       {
-         obj_lose = (*iobj);
+         obj_lose = *iobj;
          ++iobj;
 
          obj_lose->from_char(  );
@@ -2724,11 +2714,11 @@ CMDF( do_mpstrew )
       return;
    }
 
-   vnum = atoi( argument );
+   vnum = atoi( argument.c_str(  ) );
 
-   for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
    {
-      obj_lose = (*iobj);
+      obj_lose = *iobj;
       ++iobj;
 
       if( obj_lose->pIndexData->vnum == vnum )
@@ -2737,7 +2727,6 @@ CMDF( do_mpstrew )
          obj_lose->extract(  );
       }
    }
-   return;
 }
 
 CMDF( do_mpscatter )
@@ -2749,7 +2738,7 @@ CMDF( do_mpscatter )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpscatter: invalid (nonexistent?) argument" );
       return;
@@ -2757,7 +2746,7 @@ CMDF( do_mpscatter )
 
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "Mpscatter: victim %s not in room", argument );
+      progbugf( ch, "Mpscatter: victim %s not in the room", argument.c_str(  ) );
       return;
    }
 
@@ -2799,8 +2788,7 @@ CMDF( do_mpscatter )
       {
          pRoomIndex = get_room_index( number_range( 0, sysdata->maxvnum ) );
          if( pRoomIndex )
-            if( !pRoomIndex->flags.test( ROOM_PRIVATE )
-                && !pRoomIndex->flags.test( ROOM_SOLITARY ) && !pRoomIndex->flags.test( ROOM_PROTOTYPE ) )
+            if( !pRoomIndex->flags.test( ROOM_PRIVATE ) && !pRoomIndex->flags.test( ROOM_SOLITARY ) && !pRoomIndex->flags.test( ROOM_PROTOTYPE ) )
                break;
       }
       if( victim->fighting )
@@ -2815,7 +2803,6 @@ CMDF( do_mpscatter )
       act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, NULL, NULL, TO_ROOM );
       interpret( victim, "look" );
    }
-   return;
 }
 
 /*
@@ -2828,7 +2815,7 @@ CMDF( do_mp_slay )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpslay: invalid (nonexistent?) argument" );
       return;
@@ -2836,7 +2823,7 @@ CMDF( do_mp_slay )
 
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "Mpslay: victim %s not in room", argument );
+      progbugf( ch, "Mpslay: victim %s not in the room", argument.c_str(  ) );
       return;
    }
 
@@ -2869,7 +2856,6 @@ CMDF( do_mp_slay )
       act( AT_IMMORT, "$n attempts to slay you. The Almighty is snickering in the corner.", ch, NULL, victim, TO_VICT );
       act( AT_IMMORT, "$n attempts to slay $N, but the All Mighty protects $M!", ch, NULL, victim, TO_NOTVICT );
    }
-   return;
 }
 
 /*
@@ -3043,7 +3029,6 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
    else if( !npcvict && victim->has_pcflag( PCFLAG_FLEE ) )
       interpret( victim, "flee" );
 
-   tail_chain(  );
    return rNONE;
 }
 
@@ -3052,61 +3037,65 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
  */
 CMDF( do_mp_damage )
 {
+   string arg1;
+   char_data *victim;
+
    if( !can_use_mprog( ch ) )
       return;
 
-   char arg1[MIL];
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpdamage: missing argument1" );
+      progbugf( ch, "%s", "Mpdamage: missing arg1" );
       return;
    }
+
    /*
     * Am I asking for trouble here or what?  But I need it. -- Blodkai 
     */
    if( !str_cmp( arg1, "all" ) )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
 
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
-         char_data *victim = (*ich);
+         victim = *ich;
          ++ich;
 
          if( victim != ch && ch->can_see( victim, false ) ) /* Could go either way */
-            funcf( ch, do_mp_damage, "'%s' %s", victim->name, argument );
+            funcf( ch, do_mp_damage, "'%s' %s", victim->name, argument.c_str(  ) );
       }
       return;
    }
-   if( !argument || argument[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s: missing argument", __FUNCTION__ );
       return;
    }
 
-   char_data *victim;
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "%s: victim %s not in room", __FUNCTION__, arg1 );
+      progbugf( ch, "%s: victim %s not in room", __FUNCTION__, arg1.c_str(  ) );
       return;
    }
+
    if( victim == ch )
    {
       progbugf( ch, "%s: trying to damage self", __FUNCTION__ );
       return;
    }
-   double dam = atoi( argument );
+
+   double dam = atoi( argument.c_str(  ) );
    if( dam < 0 || dam > 32000 )
    {
       progbugf( ch, "Mpdamage: invalid (nonexistent?) argument %f", dam );
       return;
    }
+
    /*
     * this is kinda begging for trouble        
-    */
-   /*
     * Note from Thoric to whoever put this in...
     * Wouldn't it be better to call damage(ch, ch, dam, dt)?
     * I hate redundant code
@@ -3118,7 +3107,6 @@ CMDF( do_mp_damage )
       stop_fearing( ch );
       stop_hunting( ch );
    }
-   return;
 }
 
 CMDF( do_mp_log )
@@ -3128,14 +3116,12 @@ CMDF( do_mp_log )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mp_log:  non-existent entry" );
       return;
    }
-   append_to_file( MOBLOG_FILE, "&p%-2.2d/%-2.2d | %-2.2d:%-2.2d  &P%s:  &p%s",
-                   t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch->short_descr, argument );
-   return;
+   append_to_file( MOBLOG_FILE, "&p%-2.2d/%-2.2d | %-2.2d:%-2.2d  &P%s:  &p%s", t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch->short_descr, argument.c_str(  ) );
 }
 
 /*
@@ -3143,7 +3129,7 @@ CMDF( do_mp_log )
  */
 CMDF( do_mp_restore )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
    int hp;
 
@@ -3152,13 +3138,13 @@ CMDF( do_mp_restore )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
-      progbugf( ch, "%s", "Mprestore: invalid argument1" );
+      progbugf( ch, "%s", "Mprestore: invalid arg1" );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mprestore: invalid argument2" );
       return;
@@ -3166,11 +3152,11 @@ CMDF( do_mp_restore )
 
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "Mprestore: victim %s not in room", arg1 );
+      progbugf( ch, "Mprestore: victim %s not in room", arg1.c_str(  ) );
       return;
    }
 
-   hp = atoi( argument );
+   hp = atoi( argument.c_str(  ) );
    if( hp < 0 || hp > 32000 )
    {
       progbugf( ch, "Mprestore: invalid hp amount %d", hp );
@@ -3186,10 +3172,9 @@ CMDF( do_mp_restore )
  */
 CMDF( do_mpfavor )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
    int favor;
-   char *tmp;
    bool plus = false, minus = false;
 
    if( !can_use_mprog( ch ) )
@@ -3197,47 +3182,36 @@ CMDF( do_mpfavor )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mpfavor: invalid argument1" );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpfavor: invalid argument2" );
       return;
    }
 
-   tmp = argument;
-   if( tmp[0] == '+' )
+   if( !is_number( argument ) )
    {
-      plus = true;
-      ++tmp;
-      if( tmp[0] == '\0' )
-      {
-         progbugf( ch, "%s", "Mpfavor: invalid argument2" );
-         return;
-      }
-   }
-   else if( tmp[0] == '-' )
-   {
-      minus = true;
-      ++tmp;
-      if( tmp[0] == '\0' )
-      {
-         progbugf( ch, "%s", "Mpfavor: invalid argument2" );
-         return;
-      }
+      progbugf( ch, "%s", "Mpfavor: invalid argument2" );
+      return;
    }
 
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "Mpfavor: victim %s not in room", arg1 );
+      progbugf( ch, "Mpfavor: victim %s not in room", arg1.c_str(  ) );
       return;
    }
 
-   favor = atoi( tmp );
+   if( argument[0] == '+' && argument.length(  ) > 1 )
+      plus = true;
+   if( argument[0] == '-' && argument.length(  ) > 1 )
+      minus = true;
+
+   favor = atoi( argument.c_str(  ) );
    if( plus )
       victim->pcdata->favor = URANGE( -2500, victim->pcdata->favor + favor, 2500 );
    else if( minus )
@@ -3255,7 +3229,7 @@ CMDF( do_mpfavor )
  */
 CMDF( do_mp_open_passage )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    room_index *targetRoom, *fromRoom;
    int targetRoomVnum, fromRoomVnum, exit_num = 0;
    exit_data *pexit;
@@ -3265,43 +3239,51 @@ CMDF( do_mp_open_passage )
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !arg1 || arg1[0] == '\0' )
+
+   if( arg1.empty(  ) )
    {
       progbug( "MpOpenPassage - Missing arg1.", ch );
       return;
    }
-   if( !arg2 || arg2[0] == '\0' )
+
+   if( arg2.empty(  ) )
    {
       progbug( "MpOpenPassage - Missing arg2.", ch );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
       progbug( "MpOpenPassage - Missing arg3", ch );
       return;
    }
+
    if( !is_number( arg1 ) )
    {
       progbug( "MpOpenPassage - arg1 isn't a number.", ch );
       return;
    }
-   fromRoomVnum = atoi( arg1 );
+
+   fromRoomVnum = atoi( arg1.c_str(  ) );
    if( !( fromRoom = get_room_index( fromRoomVnum ) ) )
    {
       progbug( "MpOpenPassage - arg1 isn't an existing room.", ch );
       return;
    }
+
    if( !is_number( arg2 ) )
    {
       progbug( "MpOpenPassage - arg2 isn't a number.", ch );
       return;
    }
-   targetRoomVnum = atoi( arg2 );
+
+   targetRoomVnum = atoi( arg2.c_str(  ) );
    if( !( targetRoom = get_room_index( targetRoomVnum ) ) )
    {
       progbug( "MpOpenPassage - arg2 isn't an existing room.", ch );
       return;
    }
+
    if( !is_number( argument ) )
    {
       if( ( exit_num = get_dirnum( argument ) ) < 0 )
@@ -3311,13 +3293,14 @@ CMDF( do_mp_open_passage )
       }
    }
    else if( is_number( argument ) )
-      exit_num = atoi( argument );
+      exit_num = atoi( argument.c_str(  ) );
 
    if( ( exit_num < 0 ) || ( exit_num > MAX_DIR ) )
    {
       progbugf( ch, "MpOpenPassage - argument isn't a valid direction use a number from 0 - %d.", MAX_DIR );
       return;
    }
+
    if( ( pexit = fromRoom->get_exit( exit_num ) ) != NULL )
    {
       if( !IS_EXIT_FLAG( pexit, EX_PASSAGE ) )
@@ -3329,7 +3312,6 @@ CMDF( do_mp_open_passage )
    pexit->key = -1;
    pexit->flags.reset(  );
    SET_EXIT_FLAG( pexit, EX_PASSAGE );
-   return;
 }
 
 /*
@@ -3345,11 +3327,10 @@ CMDF( do_mp_fill_in )
 
    if( !( pexit = find_door( ch, argument, true ) ) )
    {
-      progbugf( ch, "MpFillIn - Exit %s does not exist", argument );
+      progbugf( ch, "MpFillIn - Exit %s does not exist", argument.c_str(  ) );
       return;
    }
    SET_EXIT_FLAG( pexit, EX_CLOSED );
-   return;
 }
 
 /*
@@ -3361,7 +3342,7 @@ CMDF( do_mp_fill_in )
  */
 CMDF( do_mp_close_passage )
 {
-   char arg1[MIL];
+   string arg1;
    room_index *fromRoom;
    int fromRoomVnum, exit_num = 0;
    exit_data *pexit;
@@ -3371,27 +3352,31 @@ CMDF( do_mp_close_passage )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbug( "MpClosePassage - Missing arg1.", ch );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
       progbug( "MpClosePassage - Missing arg2.", ch );
       return;
    }
+
    if( !is_number( arg1 ) )
    {
       progbug( "MpClosePassage - arg1 isn't a number.", ch );
       return;
    }
-   fromRoomVnum = atoi( arg1 );
+
+   fromRoomVnum = atoi( arg1.c_str(  ) );
    if( !( fromRoom = get_room_index( fromRoomVnum ) ) )
    {
       progbug( "MpClosePassage - arg1 isn't an existing room.", ch );
       return;
    }
+
    if( !is_number( argument ) )
    {
       if( ( exit_num = get_dirnum( argument ) ) < 0 )
@@ -3401,21 +3386,23 @@ CMDF( do_mp_close_passage )
       }
    }
    else if( is_number( argument ) )
-      exit_num = atoi( argument );
+      exit_num = atoi( argument.c_str(  ) );
+
    if( ( exit_num < 0 ) || ( exit_num > MAX_DIR ) )
    {
       progbugf( ch, "MpClosePassage - argument isn't a valid direction use a number from 0 - %d.", MAX_DIR );
       return;
    }
+
    if( !( pexit = fromRoom->get_exit( exit_num ) ) )
       return;  /* already closed, ignore...  so rand_progs close without spam */
+
    if( !IS_EXIT_FLAG( pexit, EX_PASSAGE ) )
    {
       progbug( "MpClosePassage - Exit not a passage.", ch );
       return;
    }
    fromRoom->extract_exit( pexit );
-   return;
 }
 
 /*
@@ -3433,7 +3420,7 @@ CMDF( do_mpnothing )
  */
 CMDF( do_mpdream )
 {
-   char arg1[MSL];
+   string arg1;
    char_data *victim;
 
    if( !can_use_mprog( ch ) )
@@ -3443,18 +3430,17 @@ CMDF( do_mpdream )
 
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mpdream: No such character %s", arg1 );
+      progbugf( ch, "Mpdream: No such character %s", arg1.c_str(  ) );
       return;
    }
 
    if( victim->position <= POS_SLEEPING )
-      victim->printf( "%s\r\n", argument );
-   return;
+      victim->printf( "%s\r\n", argument.c_str(  ) );
 }
 
 CMDF( do_mpdelay )
 {
-   char arg[MIL];
+   string arg;
    char_data *victim;
    int delay;
 
@@ -3462,34 +3448,38 @@ CMDF( do_mpdelay )
       return;
 
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' )
+
+   if( arg.empty(  ) )
    {
       progbugf( ch, "%s", "Mpdelay: no duration specified" );
       return;
    }
+
    if( !( victim = ch->get_char_room( arg ) ) )
    {
-      progbugf( ch, "Mpdelay: target %s not in room", arg );
+      progbugf( ch, "Mpdelay: target %s not in room", arg.c_str(  ) );
       return;
    }
+
    if( victim->is_immortal(  ) )
    {
       progbugf( ch, "Mpdelay: target %s is immortal", victim->name );
       return;
    }
+
    if( !is_number( argument ) )
    {
       progbugf( ch, "%s", "Mpdelay: invalid (nonexistant?) argument" );
       return;
    }
-   delay = atoi( argument );
+
+   delay = atoi( argument.c_str(  ) );
    if( delay < 1 || delay > 30 )
    {
       progbugf( ch, "Mpdelay:  argument %d out of range (1 to 30)", delay );
       return;
    }
    victim->WAIT_STATE( delay * sysdata->pulseviolence );
-   return;
 }
 
 CMDF( do_mppeace )
@@ -3497,13 +3487,13 @@ CMDF( do_mppeace )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' || !str_cmp( argument, "all" ) )
+   if( argument.empty(  ) || !str_cmp( argument, "all" ) )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
 
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
       {
-         char_data *rch = (*ich);
+         char_data *rch = *ich;
 
          if( rch->fighting )
          {
@@ -3520,9 +3510,10 @@ CMDF( do_mppeace )
    char_data *victim;
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "Mppeace: target %s not in room", argument );
+      progbugf( ch, "Mppeace: target %s not in room", argument.c_str(  ) );
       return;
    }
+
    if( victim->fighting )
       victim->stop_fighting( true );
    stop_hating( ch );
@@ -3531,21 +3522,20 @@ CMDF( do_mppeace )
    stop_hating( victim );
    stop_hunting( victim );
    stop_fearing( victim );
-   return;
 }
 
 CMDF( do_mpsindhae )
 {
-   char arg[MIL];
+   string arg;
    char prizebuf[MSL];
    obj_index *pObjIndex, *prizeindex = NULL;
+   char_data *victim;
 
    if( !can_use_mprog( ch ) )
       return;
 
    argument = one_argument( argument, arg );
 
-   char_data *victim;
    if( !( victim = ch->get_char_room( arg ) ) )
    {
       progbugf( ch, "%s", "mpsindhae: No target for redemption!" );
@@ -3583,23 +3573,23 @@ CMDF( do_mpsindhae )
    if( !str_cmp( argument, "platinum" ) )
       tokenstart = 32;
 
-   if( victim->pcdata->qbits.find( tokenstart ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
-   if( victim->pcdata->qbits.find( tokenstart +1 ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart + 1 ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
-   if( victim->pcdata->qbits.find( tokenstart +2 ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart + 2 ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
-   if( victim->pcdata->qbits.find( tokenstart +3 ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart + 3 ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
-   if( victim->pcdata->qbits.find( tokenstart +4 ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart + 4 ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
-   if( victim->pcdata->qbits.find( tokenstart +5 ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart + 5 ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
-   if( victim->pcdata->qbits.find( tokenstart +6 ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart + 6 ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
-   if( victim->pcdata->qbits.find( tokenstart +7 ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart + 7 ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
-   if( victim->pcdata->qbits.find( tokenstart +8 ) != victim->pcdata->qbits.end() )
+   if( victim->pcdata->qbits.find( tokenstart + 8 ) != victim->pcdata->qbits.end(  ) )
       ++tokencount;
 
    if( tokencount < 9 )
@@ -3608,32 +3598,32 @@ CMDF( do_mpsindhae )
       if( !victim->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
       interpret( victim, "look" );
-      victim->printf( "&BYou have not killed all 9 %s creatures yet.\r\n", argument );
+      victim->printf( "&BYou have not killed all 9 %s creatures yet.\r\n", argument.c_str(  ) );
       victim->print( "You may not redeem your prize until you do.\r\n" );
       return;
    }
 
-   snprintf( prizebuf, MSL, "%s-", argument );
-   char *Class = npc_class[victim->Class];
+   snprintf( prizebuf, MSL, "%s-", argument.c_str(  ) );
+   const char *Class = npc_class[victim->Class];
    mudstrlcat( prizebuf, Class, MSL );
 
    bool found = false;
-   for( int hash = 0; hash < MAX_KEY_HASH; ++hash )
+   map < int, obj_index * >::iterator mobj = obj_index_table.begin(  );
+   for( mobj = obj_index_table.begin(); mobj != obj_index_table.end(); ++mobj )
    {
-      for( pObjIndex = obj_index_hash[hash]; pObjIndex; pObjIndex = pObjIndex->next )
+      pObjIndex = mobj->second;
+
+      if( hasname( pObjIndex->name, prizebuf ) )
       {
-         if( nifty_is_name( prizebuf, pObjIndex->name ) )
-         {
-            found = true;
-            prizeindex = pObjIndex;
-            break;
-         }
+         found = true;
+         prizeindex = pObjIndex;
+         break;
       }
    }
 
    if( !found || !prizeindex )
    {
-      progbugf( ch, "mpsindhae: Unable to resolve prize index for %s", prizebuf );
+      progbugf( ch, "%s: Unable to resolve prize index for %s", __FUNCTION__, prizebuf );
       victim->from_room(  );
       if( !victim->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
@@ -3642,19 +3632,19 @@ CMDF( do_mpsindhae )
       return;
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
-      obj_data *temp = (*iobj);
+      obj_data *temp = *iobj;
 
       if( temp->pIndexData->vnum == prizeindex->vnum && !str_cmp( temp->owner, victim->name ) )
       {
-         progbugf( ch, "mpsindhae: victim already has %s prize", argument );
+         progbugf( ch, "mpsindhae: victim already has %s prize", argument.c_str(  ) );
          victim->from_room(  );
          if( !victim->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
             log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          interpret( victim, "look" );
-         victim->printf( "&YYou already have a %s %s prize, you may not collect another yet.\r\n", argument, Class );
+         victim->printf( "&YYou already have a %s %s prize, you may not collect another yet.\r\n", argument.c_str(  ), Class );
          return;
       }
    }
@@ -3670,7 +3660,7 @@ CMDF( do_mpsindhae )
    for( int x = tokenstart; x < tokenstart + 9; ++x )
       remove_qbit( victim, x );
 
-   log_printf( "%s is beginning redemption for %s %s Sindhae prize.", victim->name, argument, Class );
+   log_printf( "%s is beginning redemption for %s %s Sindhae prize.", victim->name, argument.c_str(  ), Class );
 
    victim->printf( "&[magic]%s appears from the mists of the void.\r\r\n\n", prize->short_descr );
 
@@ -3683,10 +3673,9 @@ CMDF( do_mpsindhae )
    victim->print( "This will be the name other players will see when they look at you.\r\n" );
    victim->print( "As always, if you get stuck, type 'help' at the command prompt.\r\n\r\n" );
    victim->printf( "&RYou are editing %s.\r\n", prize->short_descr );
-   victim->desc->write_to_buffer( "[SINDHAE] Prizename: ", 0 );
+   victim->desc->write_to_buffer( "[SINDHAE] Prizename: " );
    victim->desc->connected = CON_PRIZENAME;
    victim->pcdata->spare_ptr = prize;
-   return;
 }
 
 /* Copy a PC, creating a doppleganger - Samson 10-11-99 */
@@ -3715,7 +3704,7 @@ char_data *make_doppleganger( char_data * ch )
       mob->chardesc = STRALLOC( "Boring generic something." );
    mob->race = ch->race;
    mob->Class = ch->Class;
-   mob->set_specfun();
+   mob->set_specfun(  );
 
    mob->mpscriptpos = 0;
    mob->level = ch->level;
@@ -3728,7 +3717,7 @@ char_data *make_doppleganger( char_data * ch )
    if( mob->has_actflag( ACT_MOBINVIS ) )
       mob->mobinvis = mob->level;
 
-   mob->set_aflags( ch->get_aflags() );
+   mob->set_aflags( ch->get_aflags(  ) );
 
    mob->set_aflag( AFF_DETECT_INVIS );
    mob->set_aflag( AFF_DETECT_HIDDEN );
@@ -3765,20 +3754,20 @@ char_data *make_doppleganger( char_data * ch )
    mob->saving_spell_staff = ch->saving_spell_staff;
    mob->height = ch->height;
    mob->weight = ch->weight;
-   mob->set_resists( ch->get_resists() );
-   mob->set_immunes( ch->get_immunes() );
-   mob->set_susceps( ch->get_susceps() );
-   mob->set_absorbs( ch->get_absorbs() );
-   mob->set_attacks( ch->get_attacks() );
-   mob->set_defenses( ch->get_defenses() );
+   mob->set_resists( ch->get_resists(  ) );
+   mob->set_immunes( ch->get_immunes(  ) );
+   mob->set_susceps( ch->get_susceps(  ) );
+   mob->set_absorbs( ch->get_absorbs(  ) );
+   mob->set_attacks( ch->get_attacks(  ) );
+   mob->set_defenses( ch->get_defenses(  ) );
    mob->numattacks = ch->numattacks;
-   mob->set_langs( ch->get_langs() );
+   mob->set_langs( ch->get_langs(  ) );
    mob->speaking = ch->speaking;
-   mob->set_bparts( ch->get_bparts() );
-   mob->set_noaflags( ch->get_noaflags() );
-   mob->set_noresists( ch->get_noresists() );
-   mob->set_noimmunes( ch->get_noimmunes() );
-   mob->set_nosusceps( ch->get_nosusceps() );
+   mob->set_bparts( ch->get_bparts(  ) );
+   mob->set_noaflags( ch->get_noaflags(  ) );
+   mob->set_noresists( ch->get_noresists(  ) );
+   mob->set_noimmunes( ch->get_noimmunes(  ) );
+   mob->set_nosusceps( ch->get_nosusceps(  ) );
 
    /*
     * Insert in list.
@@ -3793,11 +3782,11 @@ char_data *make_doppleganger( char_data * ch )
 /* Equip the doppleganger with everything the PC has - Samson 10-11-99 */
 void equip_doppleganger( char_data * ch, char_data * mob )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
 
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *newobj, *obj = (*iobj);
+      obj_data *newobj, *obj = *iobj;
       if( obj->wear_loc != WEAR_NONE )
       {
          newobj = obj->clone(  );
@@ -3805,7 +3794,6 @@ void equip_doppleganger( char_data * ch, char_data * mob )
          newobj->to_char( mob );
       }
    }
-   return;
 }
 
 CMDF( do_mpdoppleganger )
@@ -3822,7 +3810,7 @@ CMDF( do_mpdoppleganger )
       return;
    }
 
-   if( host->isnpc( ) )
+   if( host->isnpc(  ) )
    {
       progbugf( ch, "mpdoppleganger: Tried to copy NPC %s!", host->name );
       return;
@@ -3904,8 +3892,8 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
 
    ch->alignment = 0;   /* Oops, forgot to set this. Causes trouble for restarts :) */
 
-   ch->height = number_range( ( int )( race->height * .8 ), ( int )( race->height * 1.2 ) );
-   ch->weight = number_range( ( int )( race->weight * .8 ), ( int )( race->weight * 1.2 ) );
+   ch->height = ch->calculate_race_height(  );
+   ch->weight = ch->calculate_race_weight(  );
 
    if( ( iLang = skill_lookup( "common" ) ) < 0 )
       bug( "%s: cannot find common language.", __FUNCTION__ );
@@ -3940,7 +3928,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    ch->max_move = 150;
    ch->move = ch->max_move;
 
-   set_title( ch, "the Newbie" );
+   ch->set_title( "the Newbie" );
 
    /*
     * Added by Narn. Start new characters with autoexit and autgold already turned on. Very few people don't use those. 
@@ -3995,8 +3983,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
       add_to_auth( ch );   /* new auth */
    }
    ch->music( "creation.mid", 100, false );
-   addname( &ch->pcdata->chan_listen, "chat" );
-   return;
+   addname( ch->pcdata->chan_listen, "chat" );
 }
 
 /* Alignment setting for Class during creation - Samson 4-17-98 */
@@ -4020,16 +4007,16 @@ void class_create_check( char_data * ch )
          ch->alignment = 350;
          break;
    }
-   return;
 }
 
 /* Strip PC & unlearn racial language when asking to restart creation - Samson 10-12-98 */
 CMDF( do_mpredo )
 {
+   char_data *victim;
+
    if( !can_use_mprog( ch ) )
       return;
 
-   char_data *victim;
    if( !( victim = ch->get_char_world( argument ) ) )
    {
       progbugf( ch, "%s", "Mpredo - No such person" );
@@ -4056,27 +4043,27 @@ CMDF( do_mpredo )
 
    log_printf( "%s is restarting creation from end room.\r\n", victim->name );
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
       obj->extract(  );
    }
 
-   for( int sn = 0; sn < top_sn; ++sn )
+   for( int sn = 0; sn < num_skills; ++sn )
       victim->pcdata->learned[sn] = 0;
 
    setup_newbie( victim, false );
-   return;
 }
 
 /* Final pre-entry setup for new characters - Samson 8-6-98 */
 CMDF( do_mpraceset )
 {
    char_data *victim;
-   char arg1[MIL], buf[MSL];
+   string arg1;
+   char buf[MSL];
    race_type *race;
    class_type *Class;
    char *classname;
@@ -4088,7 +4075,7 @@ CMDF( do_mpraceset )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mpraceset - Bad syntax. No argument!" );
       return;
@@ -4096,7 +4083,7 @@ CMDF( do_mpraceset )
 
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mpraceset - No such person %s", arg1 );
+      progbugf( ch, "Mpraceset - No such person %s", arg1.c_str(  ) );
       return;
    }
 
@@ -4132,8 +4119,8 @@ CMDF( do_mpraceset )
    victim->saving_breath = race->saving_breath;
    victim->saving_spell_staff = race->saving_spell_staff;
 
-   victim->height = number_range( ( int )( race->height * .75 ), ( int )( race->height * 1.25 ) );
-   victim->weight = number_range( ( int )( race->weight * .75 ), ( int )( race->weight * 1.25 ) );
+   victim->height = victim->calculate_race_height(  );
+   victim->weight = victim->calculate_race_weight(  );
 
    for( iLang = 0; iLang < LANG_UNKNOWN; ++iLang )
       if( race->language.test( iLang ) )
@@ -4159,7 +4146,7 @@ CMDF( do_mpraceset )
    victim->mana = victim->max_mana;
 
    snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex == SEX_FEMALE ? 1 : 0] );
-   set_title( victim, buf );
+   victim->set_title( buf );
 
    if( Class->weapon != -1 )
    {
@@ -4272,7 +4259,6 @@ CMDF( do_mpraceset )
          victim->equip( obj, WEAR_HOLD );
       }
    }
-   return;
 }
 
 /* Stat rerolling function for new PC creation system - Samson 8-4-98 */
@@ -4283,7 +4269,7 @@ CMDF( do_mpstatreroll )
    if( !can_use_mprog( ch ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       progbugf( ch, "%s", "Mpstatreroll - Bad syntax. No argument!" );
       return;
@@ -4291,7 +4277,7 @@ CMDF( do_mpstatreroll )
 
    if( !( victim = ch->get_char_world( argument ) ) )
    {
-      progbugf( ch, "Mpstatreroll - No such person %s", argument );
+      progbugf( ch, "Mpstatreroll - No such person %s", argument.c_str(  ) );
       return;
    }
 
@@ -4307,33 +4293,35 @@ CMDF( do_mpstatreroll )
       return;
    }
 
-   victim->desc->write_to_buffer( "You may roll as often as you like.\r\n", 0 );
+   victim->desc->write_to_buffer( "You may roll as often as you like.\r\n" );
 
    name_stamp_stats( victim );
 
-   victim->desc->buffer_printf( "\r\nStr: %s\r\n", attribtext( victim->perm_str ) );
-   victim->desc->buffer_printf( "Int: %s\r\n", attribtext( victim->perm_int ) );
-   victim->desc->buffer_printf( "Wis: %s\r\n", attribtext( victim->perm_wis ) );
-   victim->desc->buffer_printf( "Dex: %s\r\n", attribtext( victim->perm_dex ) );
-   victim->desc->buffer_printf( "Con: %s\r\n", attribtext( victim->perm_con ) );
-   victim->desc->buffer_printf( "Cha: %s\r\n", attribtext( victim->perm_cha ) );
-   victim->desc->buffer_printf( "Lck: %s\r\n", attribtext( victim->perm_lck ) );
-   victim->desc->write_to_buffer( "\r\nKeep these stats? (Y/N)", 0 );
+   victim->desc->buffer_printf( "\r\nStr: %s\r\n", attribtext( victim->perm_str ).c_str(  ) );
+   victim->desc->buffer_printf( "Int: %s\r\n", attribtext( victim->perm_int ).c_str(  ) );
+   victim->desc->buffer_printf( "Wis: %s\r\n", attribtext( victim->perm_wis ).c_str(  ) );
+   victim->desc->buffer_printf( "Dex: %s\r\n", attribtext( victim->perm_dex ).c_str(  ) );
+   victim->desc->buffer_printf( "Con: %s\r\n", attribtext( victim->perm_con ).c_str(  ) );
+   victim->desc->buffer_printf( "Cha: %s\r\n", attribtext( victim->perm_cha ).c_str(  ) );
+   victim->desc->buffer_printf( "Lck: %s\r\n", attribtext( victim->perm_lck ).c_str(  ) );
+   victim->desc->write_to_buffer( "\r\nKeep these stats? (Y/N)" );
    victim->desc->connected = CON_ROLL_STATS;
-   return;
 }
 
 /* Copy of mptransfer with a do_look attatched - Samson 4-14-98 */
 CMDF( do_mptrlook )
 {
+   string arg1, arg2;
+   room_index *location;
+   char_data *victim;
+
    if( !can_use_mprog( ch ) )
       return;
 
-   char arg1[MIL], arg2[MIL];
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mptrlook - Bad syntax" );
       return;
@@ -4344,15 +4332,15 @@ CMDF( do_mptrlook )
     */
    if( !str_cmp( arg1, "all" ) )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
 
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
-         char_data *victim = (*ich);
+         victim = *ich;
          ++ich;
 
          if( victim != ch && victim->level > 1 && ch->can_see( victim, true ) )
-            funcf( ch, do_mptrlook, "%s %s", victim->name, arg2 );
+            funcf( ch, do_mptrlook, "%s %s", victim->name, arg2.c_str(  ) );
       }
       return;
    }
@@ -4360,14 +4348,13 @@ CMDF( do_mptrlook )
    /*
     * Thanks to Grodyn for the optional location parameter.
     */
-   room_index *location;
-   if( !arg2 || arg2[0] == '\0' )
+   if( arg2.empty(  ) )
       location = ch->in_room;
    else
    {
       if( !( location = ch->find_location( arg2 ) ) )
       {
-         progbugf( ch, "Mptrlook - No such location %s", arg2 );
+         progbugf( ch, "Mptrlook - No such location %s", arg2.c_str(  ) );
          return;
       }
 
@@ -4378,10 +4365,9 @@ CMDF( do_mptrlook )
       }
    }
 
-   char_data *victim;
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mptrlook - No such person %s", arg1 );
+      progbugf( ch, "Mptrlook - No such person %s", arg1.c_str(  ) );
       return;
    }
 
@@ -4395,25 +4381,6 @@ CMDF( do_mptrlook )
       progbugf( ch, "Mptrlook - helled character (%s)", victim->name );
 
    /*
-    * Krusty/Wedgy protect 
-    */
-   if( victim->isnpc(  ) &&
-       ( !str_cmp( victim->short_descr, "The Negative Magnetic Space Wedgy" ) || !str_cmp( victim->short_descr, "Krusty" ) ) )
-   {
-      if( location->area != victim->pIndexData->area )
-      {
-         if( !str_cmp( victim->short_descr, "The Negative Magnetic Space Wedgy" ) )
-            interpret( victim, "yell That was a most pathetic attempt to displace me, infidel." );
-         else
-         {
-            if( str_cmp( location->area->name, "The Great Void" ) )
-               interpret( victim, "yell AAARRGGHH! Quit trying to move me around dammit!" );
-         }
-      }
-      return;
-   }
-
-   /*
     * If victim not in area's level range, do not transfer 
     */
    if( !victim->in_hard_range( location->area ) && !location->flags.test( ROOM_PROTOTYPE ) )
@@ -4424,29 +4391,30 @@ CMDF( do_mptrlook )
 
    leave_map( victim, ch, location );
    act( AT_MAGIC, "A swirling vortex arrives, carrying $n!", victim, NULL, NULL, TO_ROOM );
-   return;
 }
 
 /* New mob hate, hunt, and fear code courtesy Rjael of Saltwind MUD Installed by Samson 4-14-98 */
 CMDF( do_mphate )
 {
+   string arg1, arg2;
+   char_data *victim;
+   int vnum = -1;
+
    if( !can_use_mprog( ch ) )
       return;
 
-   char arg1[MIL], arg2[MIL];
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mphate - Bad syntax, bad victim" );
       return;
    }
 
-   char_data *victim;
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mphate - No such person %s", arg1 );
+      progbugf( ch, "Mphate - No such person %s", arg1.c_str(  ) );
       return;
    }
    else if( victim->isnpc(  ) )
@@ -4468,8 +4436,7 @@ CMDF( do_mphate )
       }
    }
 
-   int vnum;
-   if( arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       progbugf( ch, "%s", "Mphate - bad syntax, no aggressor" );
       return;
@@ -4478,7 +4445,7 @@ CMDF( do_mphate )
    {
       if( is_number( arg2 ) )
       {
-         vnum = atoi( arg2 );
+         vnum = atoi( arg2.c_str(  ) );
          if( vnum < 1 || vnum > sysdata->maxvnum )
          {
             progbugf( ch, "Mphate -- aggressor vnum %d out of range", vnum );
@@ -4492,10 +4459,10 @@ CMDF( do_mphate )
       }
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *mob = (*ich);
+      char_data *mob = *ich;
 
       if( !mob->isnpc(  ) || !mob->in_room || !mob->pIndexData->vnum )
          continue;
@@ -4507,23 +4474,25 @@ CMDF( do_mphate )
 
 CMDF( do_mphunt )
 {
+   string arg1, arg2;
+   char_data *victim;
+   int vnum = -1;
+
    if( !can_use_mprog( ch ) )
       return;
 
-   char arg1[MIL], arg2[MIL];
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mphunt - Bad syntax, bad victim" );
       return;
    }
 
-   char_data *victim;
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mphunt - No such person %s", arg1 );
+      progbugf( ch, "Mphunt - No such person %s", arg1.c_str(  ) );
       return;
    }
    else if( victim->isnpc(  ) )
@@ -4545,8 +4514,7 @@ CMDF( do_mphunt )
       }
    }
 
-   int vnum;
-   if( arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       progbugf( ch, "%s", "Mphunt - bad syntax, no aggressor" );
       return;
@@ -4555,7 +4523,7 @@ CMDF( do_mphunt )
    {
       if( is_number( arg2 ) )
       {
-         vnum = atoi( arg2 );
+         vnum = atoi( arg2.c_str(  ) );
          if( vnum < 1 || vnum > sysdata->maxvnum )
          {
             progbugf( ch, "Mphunt -- aggressor vnum %d out of range", vnum );
@@ -4569,10 +4537,10 @@ CMDF( do_mphunt )
       }
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *mob = (*ich);
+      char_data *mob = *ich;
 
       if( !mob->isnpc(  ) || !mob->in_room || !mob->pIndexData->vnum )
          continue;
@@ -4584,23 +4552,25 @@ CMDF( do_mphunt )
 
 CMDF( do_mpfear )
 {
+   string arg1, arg2;
+   char_data *victim;
+   int vnum = -1;
+
    if( !can_use_mprog( ch ) )
       return;
 
-   char arg1[MIL], arg2[MIL];
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       progbugf( ch, "%s", "Mpfear - Bad syntax, bad victim" );
       return;
    }
 
-   char_data *victim;
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mpfear - No such person %s", arg1 );
+      progbugf( ch, "Mpfear - No such person %s", arg1.c_str(  ) );
       return;
    }
    else if( victim->isnpc(  ) )
@@ -4622,8 +4592,7 @@ CMDF( do_mpfear )
       }
    }
 
-   int vnum;
-   if( arg2[0] == '\0' )
+   if( arg2.empty(  ) )
    {
       progbugf( ch, "%s", "Mpfear - bad syntax, no aggressor" );
       return;
@@ -4632,7 +4601,7 @@ CMDF( do_mpfear )
    {
       if( is_number( arg2 ) )
       {
-         vnum = atoi( arg2 );
+         vnum = atoi( arg2.c_str(  ) );
          if( vnum < 1 || vnum > sysdata->maxvnum )
          {
             progbugf( ch, "Mpfear -- aggressor vnum %d out of range", vnum );
@@ -4646,10 +4615,10 @@ CMDF( do_mpfear )
       }
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *mob = (*ich);
+      char_data *mob = *ich;
 
       if( !mob->isnpc(  ) || !mob->in_room || !mob->pIndexData->vnum )
          continue;

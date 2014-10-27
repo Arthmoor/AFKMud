@@ -27,6 +27,7 @@
  *                      Created by Samson of Alsherok                       *
  ****************************************************************************/
 
+#include <fstream>
 #include <gd.h>
 #include <cmath>
 #include "mud.h"
@@ -39,11 +40,11 @@
 #include "skyship.h"
 
 bool survey_environment( char_data * );
-void load_landing_sites( );
+void load_landing_sites(  );
 landing_data *check_landing_site( short, short, short );
 
-list<landmark_data*> landmarklist;
-list<mapexit_data*> mapexitlist;
+list < landmark_data * >landmarklist;
+list < mapexit_data * >mapexitlist;
 
 /* Gee, I got bored and added a bunch of new comments to things. Interested parties know what to look for. 
  * Reorganized the placement of many things so that they're grouped together better.
@@ -51,15 +52,15 @@ list<mapexit_data*> mapexitlist;
 
 unsigned char map_sector[MAP_MAX][MAX_X][MAX_Y];   /* Initializes the sector array */
 
-char *const map_filenames[] = {
+const char *map_filenames[] = {
    "one.png"
 };
 
-char *const map_names[] = {
+const char *map_names[] = {
    "One"
 };
 
-char *const map_name[] = {
+const char *map_name[] = {
    "one"
 };
 
@@ -67,7 +68,7 @@ char *const map_name[] = {
  * the display_map function and probably some other places I've long
  * since forgotten by now.
  */
-char *const sect_types[] = {
+const char *sect_types[] = {
    "indoors", "city", "field", "forest", "hills", "mountain", "water_swim",
    "water_noswim", "air", "underwater", "desert", "river", "oceanfloor",
    "underground", "jungle", "swamp", "tundra", "ice", "ocean", "lava",
@@ -79,7 +80,7 @@ char *const sect_types[] = {
 /* Note - this message array is used to broadcast both the in sector messages,
  * as well as the messages sent to PCs when they can't move into the sector.
  */
-char *const impass_message[SECT_MAX] = {
+const char *impass_message[SECT_MAX] = {
    "You must locate the proper entrance to go in there.",
    "You are travelling along a smooth stretch of road.",
    "Rich farmland stretches out before you.",
@@ -165,7 +166,7 @@ const struct sect_color_type sect_show[] = {
 };
 
 /* The distance messages for the survey command */
-char *landmark_distances[] = {
+const char *landmark_distances[] = {
    "hundreds of miles away in the distance",
    "far off in the skyline",
    "many miles away at great distance",
@@ -469,7 +470,6 @@ int const random_mobs[SECT_MAX][25] = {
 void putterr( short map, short x, short y, short terr )
 {
    map_sector[map][x][y] = terr;
-   return;
 }
 
 /* Alrighty - this checks where the PC is currently standing to see what kind of terrain the space is.
@@ -527,7 +527,7 @@ double calc_angle( short chX, short chY, short lmX, short lmY, double *ipDistan 
    iNx3 = 0;
    iNy3 = iNy2;
 
-   *ipDistan = ( int )distance( iNx1, iNy1, iNx2, iNy2 );
+   *ipDistan = distance( iNx1, iNy1, iNx2, iNy2 );
 
    if( iNx2 == 0 && iNy2 == 0 )
       return ( -1 );
@@ -645,163 +645,111 @@ void fix_maps( char_data * ch, char_data * victim )
    victim->map = ch->map;
    victim->mx = ch->mx;
    victim->my = ch->my;
-
-   return;
 }
 
 /* Overland landmark stuff starts here */
-landmark_data::landmark_data()
+landmark_data::landmark_data(  )
 {
-   init_memory( &description, &Isdesc, sizeof( Isdesc ) );
+   init_memory( &distance, &Isdesc, sizeof( Isdesc ) );
 }
 
-landmark_data::~landmark_data()
+landmark_data::~landmark_data(  )
 {
-   DISPOSE( description );
    landmarklist.remove( this );
-}
-
-void fread_landmark( landmark_data *landmark, FILE * fp )
-{
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
-
-         case 'C':
-            if( !str_cmp( word, "Coordinates" ) )
-            {
-               landmark->map = fread_short( fp );
-               landmark->mx = fread_short( fp );
-               landmark->my = fread_short( fp );
-               landmark->distance = fread_number( fp );
-               break;
-            }
-            break;
-
-         case 'D':
-            KEY( "Description", landmark->description, fread_string_nohash( fp ) );
-            break;
-
-         case 'I':
-            KEY( "Isdesc", landmark->Isdesc, fread_number( fp ) );
-            break;
-
-      }
-   }
 }
 
 void load_landmarks( void )
 {
-   char filename[256];
    landmark_data *landmark;
-   FILE *fp;
+   ifstream stream;
 
-   landmarklist.clear();
+   landmarklist.clear(  );
 
-   snprintf( filename, 256, "%s%s", MAP_DIR, LANDMARK_FILE );
+   stream.open( LANDMARK_FILE );
+   if( !stream.is_open(  ) )
+      return;
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   do
    {
-      for( ;; )
+      string key, value;
+      char buf[MIL];
+
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#LANDMARK" )
+         landmark = new landmark_data;
+      else if( key == "Coordinates" )
       {
-         char letter;
-         char *word;
+         string arg;
 
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
+         value = one_argument( value, arg );
+         landmark->map = atoi( arg.c_str(  ) );
 
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
+         value = one_argument( value, arg );
+         landmark->mx = atoi( arg.c_str(  ) );
 
-         word = fread_word( fp );
-         if( !str_cmp( word, "LANDMARK" ) )
-         {
-            landmark = new landmark_data;
-            fread_landmark( landmark, fp );
-            landmarklist.push_back( landmark );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section: %s.", __FUNCTION__, word );
-            continue;
-         }
+         value = one_argument( value, arg );
+         landmark->my = atoi( arg.c_str(  ) );
+
+         landmark->distance = atoi( value.c_str(  ) );
       }
-      FCLOSE( fp );
+      else if( key == "Description" )
+         landmark->description = value;
+      else if( key == "Isdesc" )
+         landmark->Isdesc = atoi( value.c_str(  ) );
+      else if( key == "End" )
+         landmarklist.push_back( landmark );
+      else
+         log_printf( "%s: Bad line in landmark data file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
    }
-   return;
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 void save_landmarks( void )
 {
-   FILE *fp;
-   char filename[256];
+   ofstream stream;
 
-   snprintf( filename, 256, "%s%s", MAP_DIR, LANDMARK_FILE );
-
-   if( !( fp = fopen( filename, "w" ) ) )
+   stream.open( LANDMARK_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( LANDMARK_FILE );
    }
    else
    {
-      list<landmark_data*>::iterator imark;
+      list < landmark_data * >::iterator imark;
 
-      for( imark = landmarklist.begin(); imark != landmarklist.end(); ++imark )
+      for( imark = landmarklist.begin(  ); imark != landmarklist.end(  ); ++imark )
       {
-         landmark_data *landmark = (*imark);
+         landmark_data *landmark = *imark;
 
-         fprintf( fp, "%s", "#LANDMARK\n" );
-         fprintf( fp, "Coordinates	%hd %hd %hd %d\n", landmark->map, landmark->mx, landmark->my, landmark->distance );
-         fprintf( fp, "Description	%s~\n", landmark->description );
-         fprintf( fp, "Isdesc		%d\n", landmark->Isdesc );
-         fprintf( fp, "%s", "End\n\n" );
+         stream << "#LANDMARK" << endl;
+         stream << "Coordinates " << landmark->map << " " << landmark->mx << " " << landmark->my << " " << landmark->distance << endl;
+         stream << "Description " << landmark->description << endl;
+         stream << "Isdesc      " << landmark->Isdesc << endl;
+         stream << "End" << endl << endl;
       }
-      fprintf( fp, "%s", "#END\n" );
-      FCLOSE( fp );
+      stream.close(  );
    }
-   return;
 }
 
 landmark_data *check_landmark( short map, short x, short y )
 {
-   list<landmark_data*>::iterator imark;
+   list < landmark_data * >::iterator imark;
 
-   for( imark = landmarklist.begin(); imark != landmarklist.end(); ++imark )
+   for( imark = landmarklist.begin(  ); imark != landmarklist.end(  ); ++imark )
    {
-      landmark_data *landmark = (*imark);
+      landmark_data *landmark = *imark;
 
       if( landmark->map == map )
       {
@@ -823,8 +771,6 @@ void add_landmark( short map, short x, short y )
    landmarklist.push_back( landmark );
 
    save_landmarks(  );
-
-   return;
 }
 
 void delete_landmark( landmark_data * landmark )
@@ -839,28 +785,25 @@ void delete_landmark( landmark_data * landmark )
 
    if( !mud_down )
       save_landmarks(  );
-
-   return;
 }
 
 void free_landmarks( void )
 {
-   list<landmark_data*>::iterator land;
+   list < landmark_data * >::iterator land;
 
-   for( land = landmarklist.begin(); land != landmarklist.end(); )
+   for( land = landmarklist.begin(  ); land != landmarklist.end(  ); )
    {
-      landmark_data *landmark = (*land);
+      landmark_data *landmark = *land;
       ++land;
 
       delete_landmark( landmark );
    }
-   return;
 }
 
 /* Landmark survey module - idea snarfed from Medievia and adapted to Smaug by Samson - 8-19-00 */
 CMDF( do_survey )
 {
-   list<landmark_data*>::iterator imark;
+   list < landmark_data * >::iterator imark;
    double dist, angle;
    int dir = -1, iMes = 0;
    bool found = false, env = false;
@@ -868,9 +811,9 @@ CMDF( do_survey )
    if( !ch )
       return;
 
-   for( imark = landmarklist.begin(); imark != landmarklist.end(); ++imark )
+   for( imark = landmarklist.begin(  ); imark != landmarklist.end(  ); ++imark )
    {
-      landmark_data *landmark = (*imark);
+      landmark_data *landmark = *imark;
 
       /*
        * No point in bothering if its not even on this map 
@@ -937,11 +880,10 @@ CMDF( do_survey )
             iMes = 10;
 
          if( dir == -1 )
-            ch->printf( "Right here nearby, %s.\r\n",
-                        landmark->description ? landmark->description : "BUG! Please report!" );
+            ch->printf( "Right here nearby, %s.\r\n", !landmark->description.empty(  )? landmark->description.c_str(  ) : "BUG! Please report!" );
          else
             ch->printf( "To the %s, %s, %s.\r\n", dir_name[dir], landmark_distances[iMes],
-                        landmark->description ? landmark->description : "<BUG! Inform the Immortals>" );
+                        !landmark->description.empty(  )? landmark->description.c_str(  ) : "<BUG! Inform the Immortals>" );
 
          if( ch->is_immortal(  ) )
          {
@@ -954,16 +896,14 @@ CMDF( do_survey )
 
    if( !found )
       ch->print( "Your survey of the area yields nothing special.\r\n" );
-
-   return;
 }
 
 /* Support command to list all landmarks currently loaded */
 CMDF( do_landmarks )
 {
-   list<landmark_data*>::iterator imark;
+   list < landmark_data * >::iterator imark;
 
-   if( landmarklist.empty() )
+   if( landmarklist.empty(  ) )
    {
       ch->print( "No landmarks defined.\r\n" );
       return;
@@ -972,21 +912,19 @@ CMDF( do_landmarks )
    ch->pager( "Continent | Coordinates | Distance | Description\r\n" );
    ch->pager( "-----------------------------------------------------------\r\n" );
 
-   for( imark = landmarklist.begin(); imark != landmarklist.end(); ++imark )
+   for( imark = landmarklist.begin(  ); imark != landmarklist.end(  ); ++imark )
    {
-      landmark_data *landmark = (*imark);
+      landmark_data *landmark = *imark;
 
-      ch->pagerf( "%-10s  %-4dX %-4dY   %-4d       %s\r\n",
-                  map_names[landmark->map], landmark->mx, landmark->my, landmark->distance, landmark->description );
+      ch->pagerf( "%-10s  %-4dX %-4dY   %-4d       %s\r\n", map_names[landmark->map], landmark->mx, landmark->my, landmark->distance, landmark->description.c_str(  ) );
    }
-   return;
 }
 
 /* OLC command to add/delete/edit landmark information */
 CMDF( do_setmark )
 {
    landmark_data *landmark = NULL;
-   char arg[MIL];
+   string arg;
 
 #ifdef MULTIPORT
    if( mud_port == MAINPORT )
@@ -1021,8 +959,7 @@ CMDF( do_setmark )
          landmark = ( landmark_data * ) ch->pcdata->dest_buf;
          if( !landmark )
             bug( "%s: setmark desc: sub_overland_desc: NULL ch->pcdata->dest_buf", __FUNCTION__ );
-         DISPOSE( landmark->description );
-         landmark->description = ch->copy_buffer( false );
+         landmark->description = ch->copy_buffer(  );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          save_landmarks(  );
@@ -1037,7 +974,7 @@ CMDF( do_setmark )
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' || !str_cmp( arg, "help" ) )
+   if( arg.empty(  ) || !str_cmp( arg, "help" ) )
    {
       ch->print( "Usage: setmark add\r\n" );
       ch->print( "Usage: setmark delete\r\n" );
@@ -1101,7 +1038,7 @@ CMDF( do_setmark )
          return;
       }
 
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
 
       if( value < 1 )
       {
@@ -1122,193 +1059,138 @@ CMDF( do_setmark )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_OVERLAND_DESC;
       ch->pcdata->dest_buf = landmark;
-      if( !landmark->description || landmark->description[0] == '\0' )
-         landmark->description = str_dup( "" );
+      if( landmark->description.empty(  ) )
+         landmark->description.clear(  );
       ch->set_editor_desc( "An Overland landmark description." );
       ch->start_editing( landmark->description );
       return;
    }
 
    do_setmark( ch, "" );
-   return;
 }
 
 /* Overland landmark stuff ends here */
 
 /* Overland exit stuff starts here */
-mapexit_data::mapexit_data()
+mapexit_data::mapexit_data(  )
 {
-   init_memory( &area, &prevsector, sizeof( prevsector ) );
+   init_memory( &vnum, &prevsector, sizeof( prevsector ) );
 }
 
-mapexit_data::~mapexit_data()
+mapexit_data::~mapexit_data(  )
 {
-   STRFREE( area );
    mapexitlist.remove( this );
-}
-
-void fread_mapexit( mapexit_data *mexit, FILE * fp )
-{
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'A':
-            KEY( "Area", mexit->area, fread_string( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
-
-         case 'H':
-            if( !str_cmp( word, "Here" ) )
-            {
-               mexit->herex = fread_short( fp );
-               mexit->herey = fread_short( fp );
-               break;
-            }
-            break;
-
-         case 'O':
-            KEY( "OnMap", mexit->onmap, fread_short( fp ) );
-            break;
-
-         case 'P':
-            KEY( "Prevsector", mexit->prevsector, fread_short( fp ) );
-            break;
-
-         case 'T':
-            if( !str_cmp( word, "There" ) )
-            {
-               mexit->therex = fread_short( fp );
-               mexit->therey = fread_short( fp );
-               break;
-            }
-            KEY( "ToMap", mexit->tomap, fread_short( fp ) );
-            break;
-
-         case 'V':
-            KEY( "Vnum", mexit->vnum, fread_number( fp ) );
-            break;
-      }
-   }
 }
 
 void load_mapexits( void )
 {
-   char filename[256];
    mapexit_data *mexit;
-   FILE *fp;
+   ifstream stream;
 
-   mapexitlist.clear();
+   mapexitlist.clear(  );
 
-   snprintf( filename, 256, "%s%s", MAP_DIR, ENTRANCE_FILE );
+   stream.open( ENTRANCE_FILE );
+   if( !stream.is_open(  ) )
+      return;
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   do
    {
-      for( ;; )
+      string key, value;
+      char buf[MIL];
+
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#ENTRANCE" )
       {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "ENTRANCE" ) )
-         {
-            mexit = new mapexit_data;
-            mexit->prevsector = SECT_OCEAN;  /* Default for legacy exits */
-            fread_mapexit( mexit, fp );
-            mapexitlist.push_back( mexit );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section: %s.", __FUNCTION__, word );
-            continue;
-         }
+         mexit = new mapexit_data;
+         mexit->prevsector = SECT_OCEAN;  // Default for legacy exits
       }
-      FCLOSE( fp );
+      else if( key == "ToMap" )
+         mexit->tomap = atoi( value.c_str(  ) );
+      else if( key == "OnMap" )
+         mexit->onmap = atoi( value.c_str(  ) );
+      else if( key == "Here" )
+      {
+         string arg;
+
+         value = one_argument( value, arg );
+         mexit->herex = atoi( arg.c_str(  ) );
+
+         mexit->herey = atoi( value.c_str(  ) );
+      }
+      else if( key == "There" )
+      {
+         string arg;
+
+         value = one_argument( value, arg );
+         mexit->therex = atoi( arg.c_str(  ) );
+
+         mexit->therey = atoi( value.c_str(  ) );
+      }
+      else if( key == "Vnum" )
+         mexit->vnum = atoi( value.c_str(  ) );
+      else if( key == "Prevsector" )
+         mexit->prevsector = atoi( value.c_str(  ) );
+      else if( key == "Area" )
+         mexit->area = value;
+      else if( key == "End" )
+         mapexitlist.push_back( mexit );
+      else
+         log_printf( "%s: Bad line in overland exists file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
    }
-   return;
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 void save_mapexits( void )
 {
-   FILE *fp;
-   char filename[256];
+   ofstream stream;
 
-   snprintf( filename, 256, "%s%s", MAP_DIR, ENTRANCE_FILE );
-
-   if( !( fp = fopen( filename, "w" ) ) )
+   stream.open( ENTRANCE_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( ENTRANCE_FILE );
    }
    else
    {
-      list<mapexit_data*>::iterator iexit;
+      list < mapexit_data * >::iterator iexit;
 
-      for( iexit = mapexitlist.begin(); iexit != mapexitlist.end(); ++iexit )
+      for( iexit = mapexitlist.begin(  ); iexit != mapexitlist.end(  ); ++iexit )
       {
-         mapexit_data *mexit = (*iexit);
+         mapexit_data *mexit = *iexit;
 
-         fprintf( fp, "%s", "#ENTRANCE\n" );
-         fprintf( fp, "ToMap	%hd\n", mexit->tomap );
-         fprintf( fp, "OnMap	%hd\n", mexit->onmap );
-         fprintf( fp, "Here	%hd %hd\n", mexit->herex, mexit->herey );
-         fprintf( fp, "There	%hd %hd\n", mexit->therex, mexit->therey );
-         fprintf( fp, "Vnum	%d\n", mexit->vnum );
-         fprintf( fp, "Prevsector %hd\n", mexit->prevsector );
-         if( mexit->area && mexit->area[0] != '\0' )
-            fprintf( fp, "Area	%s~\n", mexit->area );
-         fprintf( fp, "%s", "End\n\n" );
+         stream << "#ENTRANCE" << endl;
+         stream << "ToMap      " << mexit->tomap << endl;
+         stream << "OnMap      " << mexit->onmap << endl;
+         stream << "Here       " << mexit->herex << " " << mexit->herey << endl;
+         stream << "There      " << mexit->therex << " " << mexit->therey << endl;
+         stream << "Vnum       " << mexit->vnum << endl;
+         stream << "Prevsector " << mexit->prevsector << endl;
+         if( !mexit->area.empty(  ) )
+            stream << "Area       " << mexit->area << endl;
+         stream << "End" << endl << endl;
       }
-      fprintf( fp, "%s", "#END\n" );
-      FCLOSE( fp );
+      stream.close(  );
    }
-   return;
 }
 
 mapexit_data *check_mapexit( short map, short x, short y )
 {
-   list<mapexit_data*>::iterator iexit;
+   list < mapexit_data * >::iterator iexit;
 
-   for( iexit = mapexitlist.begin(); iexit != mapexitlist.end(); ++iexit )
+   for( iexit = mapexitlist.begin(  ); iexit != mapexitlist.end(  ); ++iexit )
    {
-      mapexit_data *mexit = (*iexit);
+      mapexit_data *mexit = *iexit;
 
       if( mexit->onmap == map )
       {
@@ -1319,8 +1201,7 @@ mapexit_data *check_mapexit( short map, short x, short y )
    return NULL;
 }
 
-void modify_mapexit( mapexit_data *mexit, short tomap, short onmap, short hereX, short hereY, short thereX, short thereY,
-                      int vnum, char *area )
+void modify_mapexit( mapexit_data * mexit, short tomap, short onmap, short hereX, short hereY, short thereX, short thereY, int vnum, const string & area )
 {
    if( !mexit )
    {
@@ -1335,14 +1216,10 @@ void modify_mapexit( mapexit_data *mexit, short tomap, short onmap, short hereX,
    mexit->therex = thereX;
    mexit->therey = thereY;
    mexit->vnum = vnum;
-   if( area )
-   {
-      STRFREE( mexit->area );
-      mexit->area = STRALLOC( area );
-   }
+   if( !area.empty(  ) )
+      mexit->area = area;
 
    save_mapexits(  );
-   return;
 }
 
 void add_mapexit( short tomap, short onmap, short hereX, short hereY, short thereX, short thereY, int vnum )
@@ -1361,11 +1238,9 @@ void add_mapexit( short tomap, short onmap, short hereX, short hereY, short ther
    mapexitlist.push_back( mexit );
 
    save_mapexits(  );
-
-   return;
 }
 
-void delete_mapexit( mapexit_data *mexit )
+void delete_mapexit( mapexit_data * mexit )
 {
    if( !mexit )
    {
@@ -1377,28 +1252,25 @@ void delete_mapexit( mapexit_data *mexit )
 
    if( !mud_down )
       save_mapexits(  );
-
-   return;
 }
 
 void free_mapexits( void )
 {
-   list<mapexit_data*>::iterator en;
+   list < mapexit_data * >::iterator en;
 
-   for( en = mapexitlist.begin(); en != mapexitlist.end(); )
+   for( en = mapexitlist.begin(  ); en != mapexitlist.end(  ); )
    {
-      mapexit_data *mexit = (*en);
+      mapexit_data *mexit = *en;
       ++en;
 
       delete_mapexit( mexit );
    }
-   return;
 }
 
 /* OLC command to add/delete/edit overland exit information */
 CMDF( do_setexit )
 {
-   char arg[MIL];
+   string arg;
    room_index *location;
    mapexit_data *mexit = NULL;
    int vnum;
@@ -1425,7 +1297,7 @@ CMDF( do_setexit )
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' || !str_cmp( arg, "help" ) )
+   if( arg.empty(  ) || !str_cmp( arg, "help" ) )
    {
       ch->print( "Usage: setexit create\r\n" );
       ch->print( "Usage: setexit delete\r\n" );
@@ -1467,7 +1339,7 @@ CMDF( do_setexit )
 
    if( !str_cmp( arg, "map" ) )
    {
-      char arg2[MIL], arg3[MIL];
+      string arg2, arg3;
       short x, y, map = -1;
 
       if( ch->map == -1 )
@@ -1480,7 +1352,7 @@ CMDF( do_setexit )
       argument = one_argument( argument, arg2 );
       argument = one_argument( argument, arg3 );
 
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Make an exit to what map??\r\n" );
          return;
@@ -1491,12 +1363,12 @@ CMDF( do_setexit )
 
       if( map == -1 )
       {
-         ch->printf( "There isn't a map for '%s'.\r\n", arg2 );
+         ch->printf( "There isn't a map for '%s'.\r\n", arg2.c_str(  ) );
          return;
       }
 
-      x = atoi( arg3 );
-      y = atoi( argument );
+      x = atoi( arg3.c_str(  ) );
+      y = atoi( argument.c_str(  ) );
 
       if( x < 0 || x >= MAX_X )
       {
@@ -1512,25 +1384,24 @@ CMDF( do_setexit )
 
       modify_mapexit( mexit, map, ch->map, ch->mx, ch->my, x, y, -1, NULL );
       putterr( ch->map, ch->mx, ch->my, SECT_EXIT );
-      ch->printf( "Exit set to map of %s, at %dX, %dY.\r\n", arg2, x, y );
+      ch->printf( "Exit set to map of %s, at %dX, %dY.\r\n", arg2.c_str(  ), x, y );
       return;
    }
 
    if( !str_cmp( arg, "area" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          do_setexit( ch, "" );
          return;
       }
 
-      smash_tilde( argument );
       modify_mapexit( mexit, mexit->onmap, ch->map, ch->mx, ch->my, mexit->therex, mexit->therey, mexit->vnum, argument );
-      ch->printf( "Exit identified for area: %s\r\n", argument );
+      ch->printf( "Exit identified for area: %s\r\n", argument.c_str(  ) );
       return;
    }
 
-   vnum = atoi( arg );
+   vnum = atoi( arg.c_str(  ) );
 
    if( !( location = get_room_index( vnum ) ) )
    {
@@ -1538,10 +1409,9 @@ CMDF( do_setexit )
       return;
    }
 
-   modify_mapexit( mexit, -1, ch->map, ch->mx, ch->my, -1, -1, vnum, NULL );
+   modify_mapexit( mexit, -1, ch->map, ch->mx, ch->my, -1, -1, vnum, "" );
    putterr( ch->map, ch->mx, ch->my, SECT_EXIT );
    ch->printf( "Exit set to room %d.\r\n", vnum );
-   return;
 }
 
 /* Overland exit stuff ends here */
@@ -1563,7 +1433,7 @@ short get_sector_colour( gdImagePtr im, int pixel )
    return SECT_OCEAN;
 }
 
-bool load_oldmapfile( char *mapfile, short mapnumber )
+bool load_oldmapfile( const char *mapfile, short mapnumber )
 {
    FILE *fp;
    char filename[256];
@@ -1607,7 +1477,7 @@ bool load_oldmapfile( char *mapfile, short mapnumber )
 }
 
 /* As it implies, loads the map from the graphic file */
-void load_map_png( char *mapfile, short mapnumber )
+void load_map_png( const char *mapfile, short mapnumber )
 {
    FILE *jpgin;
    char filename[256];
@@ -1634,9 +1504,9 @@ void load_map_png( char *mapfile, short mapnumber )
 
    im = gdImageCreateFromPng( jpgin );
 
-   for( short y = 0; y < gdImageSY(im); ++y )
+   for( short y = 0; y < gdImageSY( im ); ++y )
    {
-      for( short x = 0; x < gdImageSX(im); ++x )
+      for( short x = 0; x < gdImageSX( im ); ++x )
       {
          int pixel = gdImageGetPixel( im, x, y );
          short terr = get_sector_colour( im, pixel );
@@ -1645,7 +1515,6 @@ void load_map_png( char *mapfile, short mapnumber )
    }
    FCLOSE( jpgin );
    gdImageDestroy( im );
-   return;
 }
 
 /* Called from db.c - loads up the map files at bootup */
@@ -1679,8 +1548,6 @@ void load_maps( void )
 
    log_string( "Loading landing sites...." );
    load_landing_sites(  );
-
-   return;
 }
 
 /* The guts of the map display code. Streamlined to only change color codes when it needs to.
@@ -1703,7 +1570,7 @@ void load_maps( void )
  */
 void new_map_to_char( char_data * ch, short startx, short starty, short endx, short endy, int radius )
 {
-   char secbuf[MSL];
+   string secbuf;
 
    if( startx < 0 )
       startx = 0;
@@ -1718,7 +1585,7 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
       endy = MAX_Y - 1;
 
    short lastsector = -1;
-   mudstrlcpy( secbuf, "\r\n", MSL );
+   secbuf.append( "\r\n" );
 
    for( short y = starty; y < endy + 1; ++y )
    {
@@ -1728,7 +1595,7 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
          {
             if( !ch->has_pcflag( PCFLAG_HOLYLIGHT ) && !ch->in_room->flags.test( ROOM_WATCHTOWER ) && !ch->inflight )
             {
-               mudstrlcat( secbuf, " ", MSL );
+               secbuf += " ";
                lastsector = -1;
                continue;
             }
@@ -1736,10 +1603,10 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
 
          short sector = get_terrain( ch->map, x, y );
          bool other = false, npc = false, object = false, group = false, aship = false;
-         list<char_data*>::iterator ich;
-         for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+         list < char_data * >::iterator ich;
+         for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
          {
-            char_data *rch = (*ich);
+            char_data *rch = *ich;
 
             if( x == rch->mx && y == rch->my && rch != ch && ( rch->mx != ch->mx || rch->my != ch->my ) )
             {
@@ -1764,10 +1631,10 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
             }
          }
 
-         list<obj_data*>::iterator iobj;
-         for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+         list < obj_data * >::iterator iobj;
+         for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
          {
-            obj_data *obj = (*iobj);
+            obj_data *obj = *iobj;
 
             if( x == obj->mx && y == obj->my && !is_same_obj_map( ch, obj ) )
             {
@@ -1776,10 +1643,10 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
             }
          }
 
-         list<ship_data*>::iterator sh;
-         for( sh = shiplist.begin(); sh != shiplist.end(); ++sh )
+         list < ship_data * >::iterator sh;
+         for( sh = shiplist.begin(  ); sh != shiplist.end(  ); ++sh )
          {
-            ship_data *ship = (*sh);
+            ship_data *ship = *sh;
 
             if( x == ship->mx && y == ship->my && ship->room == ch->in_room->vnum )
             {
@@ -1789,25 +1656,25 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
          }
 
          if( object && !other && !aship )
-            mudstrlcat( secbuf, "&Y$", MSL );
+            secbuf.append( "&Y$" );
 
          if( other && !aship )
          {
             if( npc )
-               mudstrlcat( secbuf, "&B@", MSL );
+               secbuf.append( "&B@" );
             else
-               mudstrlcat( secbuf, "&P@", MSL );
+               secbuf.append( "&P@" );
          }
 
          if( aship )
-            mudstrlcat( secbuf, "&R4", MSL );
+            secbuf.append( "&R4" );
 
          if( x == ch->mx && y == ch->my && !aship )
          {
             if( group )
-               mudstrlcat( secbuf, "&Y@", MSL );
+               secbuf.append( "&Y@" );
             else
-               mudstrlcat( secbuf, "&R@", MSL );
+               secbuf.append( "&R@" );
             other = true;
             lastsector = -1;
          }
@@ -1815,19 +1682,18 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
          if( !other && !object && !aship )
          {
             if( lastsector == sector )
-               mudstrlcat( secbuf, sect_show[sector].symbol, MSL );
+               secbuf.append( sect_show[sector].symbol );
             else
             {
                lastsector = sector;
-               mudstrlcat( secbuf, sect_show[sector].color, MSL );
-               mudstrlcat( secbuf, sect_show[sector].symbol, MSL );
+               secbuf.append( sect_show[sector].color );
+               secbuf.append( sect_show[sector].symbol );
             }
          }
       }
-      mudstrlcat( secbuf, "\r\n", MSL );
+      secbuf.append( "\r\n" );
    }
    ch->print( secbuf );
-   return;
 }
 
 /* This function determines the size of the display to show to a character.
@@ -1874,8 +1740,7 @@ void display_map( char_data * ch )
 
       if( light != NULL )
       {
-         if( light->item_type == ITEM_LIGHT
-             && ( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise ) )
+         if( light->item_type == ITEM_LIGHT && ( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise ) )
             mod += 1;
       }
 
@@ -1902,7 +1767,7 @@ void display_map( char_data * ch )
       landmark = check_landmark( ch->map, ch->mx, ch->my );
 
       if( landmark && landmark->Isdesc )
-         ch->printf( "&G%s\r\n", landmark->description ? landmark->description : "" );
+         ch->printf( "&G%s\r\n", !landmark->description.empty(  )? landmark->description.c_str(  ) : "" );
       else
          ch->printf( "&G%s\r\n", impass_message[sector] );
    }
@@ -1921,18 +1786,17 @@ void display_map( char_data * ch )
       landing = check_landing_site( ch->map, ch->mx, ch->my );
 
       if( landing )
-         ch->printf( "&CLanding site for %s.\r\n", landing->area ? landing->area : "<NOT SET>" );
+         ch->printf( "&CLanding site for %s.\r\n", !landing->area.empty(  )? landing->area.c_str(  ) : "<NOT SET>" );
 
       if( landmark && !landmark->Isdesc )
       {
-         ch->printf( "&BLandmark present: %s\r\n", landmark->description ? landmark->description : "<NO DESCRIPTION>" );
+         ch->printf( "&BLandmark present: %s\r\n", !landmark->description.empty(  )? landmark->description.c_str(  ) : "<NO DESCRIPTION>" );
          ch->printf( "&BVisibility distance: %d.\r\n", landmark->distance );
       }
 
       if( ch->has_pcflag( PCFLAG_MAPEDIT ) )
          ch->printf( "&YYou are currently creating %s sectors.&z\r\n", sect_types[ch->pcdata->secedit] );
    }
-   return;
 }
 
 /* Called in update.c modification for wandering mobiles - Samson 7-29-00
@@ -1960,8 +1824,7 @@ bool map_wander( char_data * ch, short map, short x, short y, short sector )
     * * we use this to keep SECT_CITY and SECT_TRAIL mobs from leaving the roads
     * * near their origin sites - Samson 7-29-00
     */
-   if( get_terrain( map, x, y ) == ch->sector
-       || get_terrain( map, x, y ) == SECT_CITY || get_terrain( map, x, y ) == SECT_TRAIL )
+   if( get_terrain( map, x, y ) == ch->sector || get_terrain( map, x, y ) == SECT_CITY || get_terrain( map, x, y ) == SECT_TRAIL )
       return true;
 
    /*
@@ -1970,9 +1833,7 @@ bool map_wander( char_data * ch, short map, short x, short y, short sector )
     * * the first differing terrain upon moving, provided it isn't a SECT_ROAD. From then on 
     * * it will only wander in that type of terrain - Samson 7-29-00
     */
-   if( ch->sector == -2
-       && get_terrain( map, x, y ) != sector
-       && get_terrain( map, x, y ) != SECT_ROAD && sect_show[get_terrain( map, x, y )].canpass )
+   if( ch->sector == -2 && get_terrain( map, x, y ) != sector && get_terrain( map, x, y ) != SECT_ROAD && sect_show[get_terrain( map, x, y )].canpass )
    {
       ch->sector = get_terrain( map, x, y );
       return true;
@@ -2009,7 +1870,7 @@ void check_random_mobs( char_data * ch )
       return;
    if( !( imob = get_mob_index( vnum ) ) )
    {
-      log_printf( "check_random_mobs: Missing mob for vnum %d", vnum );
+      log_printf( "%s: Missing mob for vnum %d", __FUNCTION__, vnum );
       return;
    }
 
@@ -2027,7 +1888,6 @@ void check_random_mobs( char_data * ch )
     * * And trust me, this is a necessary measure unless you LIKE having your memory flooded
     * * by random overland mobs.
     */
-   return;
 }
 
 /* An overland hack of the scan command - the OLD scan command, not the one in stock Smaug
@@ -2054,8 +1914,7 @@ void map_scan( char_data * ch )
 
    if( light != NULL )
    {
-      if( light->item_type == ITEM_LIGHT
-          && ( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise ) )
+      if( light->item_type == ITEM_LIGHT && ( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise ) )
          mod += 1;
    }
 
@@ -2068,10 +1927,10 @@ void map_scan( char_data * ch )
    interpret( ch, "look" );
 
    bool found = false;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *gch = (*ich);
+      char_data *gch = *ich;
 
       /*
        * No need in scanning for yourself. 
@@ -2148,8 +2007,6 @@ void map_scan( char_data * ch )
    }
    if( !found )
       ch->print( "Your survey of the area turns up nobody.\r\n" );
-
-   return;
 }
 
 /* Note: For various reasons, this isn't designed to pull PC followers along with you */
@@ -2173,10 +2030,10 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
       return;
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = from->people.begin(); ich != from->people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = from->people.begin(  ); ich != from->people.end(  ); )
    {
-      char_data *fch = (*ich);
+      char_data *fch = *ich;
       ++ich;
 
       if( fch != ch && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) )
@@ -2190,7 +2047,6 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
          fix_maps( ch, fch );
       }
    }
-   return;
 }
 
 /* The guts of movement on the overland. Checks all sorts of nice things. Makes DAMN
@@ -2198,14 +2054,14 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
  */
 ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool running )
 {
-   list<ship_data*>::iterator sh;
+   list < ship_data * >::iterator sh;
 
    /*
     * Cheap ass hack for now - better than nothing though 
     */
-   for( sh = shiplist.begin(); sh != shiplist.end(); ++sh )
+   for( sh = shiplist.begin(  ); sh != shiplist.end(  ); ++sh )
    {
-      ship_data *ship = (*sh);
+      ship_data *ship = *sh;
 
       if( ship->map == map && ship->mx == x && ship->my == y )
       {
@@ -2216,12 +2072,12 @@ ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool 
             ch->mx = ship->mx;
             ch->my = ship->my;
             interpret( ch, "look" );
-            ch->printf( "You board %s.\r\n", ship->name );
+            ch->printf( "You board %s.\r\n", ship->name.c_str(  ) );
             return rSTOP;
          }
          else
          {
-            ch->printf( "The crew abord %s blocks you from boarding!\r\n", ship->name );
+            ch->printf( "The crew abord %s blocks you from boarding!\r\n", ship->name.c_str(  ) );
             return rSTOP;
          }
       }
@@ -2235,10 +2091,10 @@ ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool 
    }
 
    bool boat = false;
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( obj->item_type == ITEM_BOAT )
       {
@@ -2269,18 +2125,17 @@ ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool 
          {
             enter_map( ch, NULL, mexit->therex, mexit->therey, mexit->tomap );
 
-            list<char_data*>::iterator ich;
-            size_t chars = from_room->people.size();
+            list < char_data * >::iterator ich;
+            size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+            for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
             {
-               char_data *fch = (*ich);
+               char_data *fch = *ich;
                ++ich;
                ++count;
 
                if( fch != ch  /* loop room bug fix here by Thoric */
-                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED )
-                   && fch->mx == fx && fch->my == fy && fch->map == fmap )
+                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->map == fmap )
                {
                   if( !fch->isnpc(  ) )
                   {
@@ -2306,13 +2161,13 @@ ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool 
 
          if( ch->isnpc(  ) )
          {
-            list<exit_data*>::iterator ex;
+            list < exit_data * >::iterator ex;
             exit_data *pexit;
             bool found = false;
 
-            for( ex = toroom->exits.begin(); ex != toroom->exits.end(); ++ex )
+            for( ex = toroom->exits.begin(  ); ex != toroom->exits.end(  ); ++ex )
             {
-               pexit = (*ex);
+               pexit = *ex;
 
                if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
                {
@@ -2351,18 +2206,17 @@ ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool 
 
          leave_map( ch, NULL, toroom );
 
-         list<char_data*>::iterator ich;
-         size_t chars = from_room->people.size();
+         list < char_data * >::iterator ich;
+         size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+         for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
          {
-            char_data *fch = (*ich);
+            char_data *fch = *ich;
             ++ich;
             ++count;
 
             if( fch != ch  /* loop room bug fix here by Thoric */
-                && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED )
-                && fch->mx == fx && fch->my == fy && fch->map == fmap )
+                && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->map == fmap )
             {
                if( !fch->isnpc(  ) )
                {
@@ -2493,7 +2347,7 @@ ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool 
       return rSTOP;
    }
 
-   char *txt;
+   const char *txt;
    if( ch->mount )
    {
       if( ch->mount->has_aflag( AFF_FLOATING ) )
@@ -2595,7 +2449,7 @@ ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool 
             txt = "arrives";
       }
    }
-   char *dtxt = rev_exit( dir );
+   const char *dtxt = rev_exit( dir );
 
    if( !running )
    {
@@ -2605,18 +2459,17 @@ ch_ret process_exit( char_data * ch, short map, short x, short y, int dir, bool 
          act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "$n %s from %s.", txt, dtxt );
    }
 
-   list<char_data*>::iterator ich;
-   size_t chars = from_room->people.size();
+   list < char_data * >::iterator ich;
+   size_t chars = from_room->people.size(  );
    size_t count = 0;
-   for( ich = from_room->people.begin(); ich != from_room->people.end(), ( count < chars ); )
+   for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
    {
-      char_data *fch = (*ich);
+      char_data *fch = *ich;
       ++ich;
       ++count;
 
       if( fch != ch  /* loop room bug fix here by Thoric */
-          && fch->master == ch
-          && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy )
+          && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy )
       {
          if( !fch->isnpc(  ) )
          {
@@ -2732,7 +2585,6 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, int continent )
     */
    if( !maproom->flags.test( ROOM_WATCHTOWER ) )
       ch->music( "wilderness.mid", 100, false );
-   return;
 }
 
 /* How one gets off the overland into a regular zone via those nifty white # symbols :) 
@@ -2744,7 +2596,7 @@ void leave_map( char_data * ch, char_data * victim, room_index * target )
    if( !ch->isnpc(  ) )
    {
       ch->unset_pcflag( PCFLAG_ONMAP );
-      ch->unset_pcflag( PCFLAG_MAPEDIT );   /* Just in case they were editing */
+      ch->unset_pcflag( PCFLAG_MAPEDIT ); /* Just in case they were editing */
    }
    else
       ch->unset_actflag( ACT_ONMAP );
@@ -2774,13 +2626,12 @@ void leave_map( char_data * ch, char_data * victim, room_index * target )
       if( !ch->has_pcflag( PCFLAG_ONMAP ) )
          ch->reset_music(  );
    }
-   return;
 }
 
 /* Imm command to jump to a different set of coordinates on the same map */
 CMDF( do_coords )
 {
-   char arg[MIL];
+   string arg;
    int x, y;
 
    if( ch->isnpc(  ) )
@@ -2797,14 +2648,14 @@ CMDF( do_coords )
 
    argument = one_argument( argument, arg );
 
-   if( arg[0] == '\0' || argument[0] == '\0' )
+   if( arg.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Usage: coords <x> <y>\r\n" );
       return;
    }
 
-   x = atoi( arg );
-   y = atoi( argument );
+   x = atoi( arg.c_str(  ) );
+   y = atoi( argument.c_str(  ) );
 
    if( x < 0 || x >= MAX_X )
    {
@@ -2834,7 +2685,6 @@ CMDF( do_coords )
    }
 
    interpret( ch, "look" );
-   return;
 }
 
 /* Online OLC map editing stuff starts here */
@@ -2959,7 +2809,6 @@ void reload_map( char_data * ch )
          putterr( ch->map, x, y, SECT_OCEAN );
    }
    load_map_png( map_filenames[ch->map], ch->map );
-   return;
 }
 
 /* As it implies, this saves the map you are currently standing on to disk.
@@ -2969,7 +2818,7 @@ void reload_map( char_data * ch )
  * command. Using it in any other way could break something.
  */
 // Thanks Davion for this :), PNG format = HUGE time-saver :)
-void save_map_png( char *mapfile, short mapnumber )
+void save_map_png( const char *mapfile, short mapnumber )
 {
    gdImagePtr im;
    FILE *PngOut;
@@ -3003,15 +2852,20 @@ void save_map_png( char *mapfile, short mapnumber )
       perror( graphicname );
    }
 
-   /* Output the same image in JPEG format, using the default JPEG quality setting. */
-   gdImagePng( im, PngOut );//, -1 );
+   /*
+    * Output the same image in JPEG format, using the default JPEG quality setting. 
+    */
+   gdImagePng( im, PngOut );  //, -1 );
 
-   /* Close the files. */
+   /*
+    * Close the files. 
+    */
    FCLOSE( PngOut );
 
-   /* Destroy the image in memory. */
-   gdImageDestroy(im);
-   return;
+   /*
+    * Destroy the image in memory. 
+    */
+   gdImageDestroy( im );
 }
 
 /* And here we have the OLC command itself. Fairly simplistic really. And more or less useless
@@ -3022,7 +2876,7 @@ void save_map_png( char *mapfile, short mapnumber )
  */
 CMDF( do_mapedit )
 {
-   char arg1[MIL];
+   string arg1;
    int value;
 
 #ifdef MULTIPORT
@@ -3047,7 +2901,7 @@ CMDF( do_mapedit )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       if( ch->has_pcflag( PCFLAG_MAPEDIT ) )
       {
@@ -3089,7 +2943,7 @@ CMDF( do_mapedit )
       int flood, fill;
       short standingon = get_terrain( ch->map, ch->mx, ch->my );
 
-      if( argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Floodfill with what???\r\n" );
          return;
@@ -3114,7 +2968,7 @@ CMDF( do_mapedit )
       if( fill == 0 )
       {
          display_map( ch );
-         ch->printf( "&RFooodfill with %s sectors successful.\r\n", argument );
+         ch->printf( "&RFooodfill with %s sectors successful.\r\n", argument.c_str(  ) );
          return;
       }
 
@@ -3145,9 +2999,9 @@ CMDF( do_mapedit )
    {
       int map = -1;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         char *mapname;
+         const char *mapname;
 
          if( ch->map == -1 )
          {
@@ -3167,12 +3021,12 @@ CMDF( do_mapedit )
 
       if( map == -1 )
       {
-         ch->printf( "There isn't a map for '%s'.\r\n", arg1 );
+         ch->printf( "There isn't a map for '%s'.\r\n", arg1.c_str(  ) );
          return;
       }
 
-      ch->printf( "Saving map of %s....", argument );
-      save_map_png( argument, map );
+      ch->printf( "Saving map of %s....", argument.c_str(  ) );
+      save_map_png( argument.c_str(  ), map );
       return;
    }
 
@@ -3193,7 +3047,7 @@ CMDF( do_mapedit )
       }
 
       ch->pcdata->secedit = value;
-      ch->printf( "&YYou are now creating %s sectors.\r\n", argument );
+      ch->printf( "&YYou are now creating %s sectors.\r\n", argument.c_str(  ) );
       return;
    }
 
@@ -3202,7 +3056,6 @@ CMDF( do_mapedit )
    ch->print( "Usage: mapedit fill <sectortype>\r\n" );
    ch->print( "Usage: mapedit undo\r\n" );
    ch->print( "Usage: mapedit reload\r\n\r\n" );
-   return;
 }
 
 /* Online OLC map editing stuff ends here */

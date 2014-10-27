@@ -27,13 +27,14 @@
  *        Original Dragonflight Module written by Ymris of Terahoun         *
  ****************************************************************************/
 
+#include <fstream>
 #include "mud.h"
 #include "event.h"
 #include "mobindex.h"
 #include "overland.h"
 #include "skyship.h"
 
-list<landing_data*> landinglist;
+list < landing_data * >landinglist;
 
 /*
  * Remove a skyship when it is no longer needed
@@ -56,7 +57,6 @@ void purge_skyship( char_data * ch, char_data * skyship )
     */
    skyship->timer = 1;
    cancel_event( ev_skyship, ch );
-   return;
 }
 
 /*
@@ -84,13 +84,9 @@ void land_skyship( char_data * ch, char_data * skyship, bool arrived )
       skyship->print_room( "&CThe skyship descends and lands on the platform.\r\n" );
       skyship->print_room( "Everyone aboard the ship disembarks.\r\n" );
       purge_skyship( ch, skyship );
-      return;
    }
    else
-   {
       skyship->print_room( "&CA skyship descends from above and lands on the platform.\r\n" );
-      return;
-   }
 }
 
 /*
@@ -119,8 +115,7 @@ void fly_skyship( char_data * ch, char_data * skyship )
     * If skyship is close to the landing site... 
     */
    if( ( ( skyship->my - skyship->dcoordy ) <= speed )
-       && ( skyship->my - skyship->dcoordy ) >= -speed
-       && ( ( skyship->mx - skyship->dcoordx ) <= speed ) && ( skyship->mx - skyship->dcoordx ) >= -speed )
+       && ( skyship->my - skyship->dcoordy ) >= -speed && ( ( skyship->mx - skyship->dcoordx ) <= speed ) && ( skyship->mx - skyship->dcoordx ) >= -speed )
    {
       land_skyship( pair, skyship, true );
       return;
@@ -239,8 +234,6 @@ void fly_skyship( char_data * ch, char_data * skyship )
     */
    if( skyship->backtracking )
       land_skyship( pair, skyship, false );
-
-   return;
 }
 
 /*
@@ -297,7 +290,6 @@ void create_skyship( char_data * ch )
 
    add_event( 3, ev_skyship, skyship );
    fly_skyship( NULL, skyship );
-   return;
 }
 
 /*
@@ -309,8 +301,6 @@ CMDF( do_call )
 
    /*
     * Sanity checks Reasons why a skyship wouldn't want to answer
-    */
-   /*
     * You a smelly mobbie?? 
     */
    if( ch->isnpc(  ) )
@@ -345,16 +335,15 @@ CMDF( do_call )
    ch->print( "You send for a skyship.\r\n" );
    act( AT_PLAIN, "$n sends for a skyship.", ch, NULL, NULL, TO_ROOM );
    create_skyship( ch );
-   return;
 }
 
 landing_data *check_landing_site( short map, short x, short y )
 {
-   list<landing_data*>::iterator ilanding;
+   list < landing_data * >::iterator ilanding;
 
-   for( ilanding = landinglist.begin(); ilanding != landinglist.end(); ++ilanding )
+   for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
    {
-      landing_data *landing = (*ilanding);
+      landing_data *landing = *ilanding;
 
       if( landing->map == map )
       {
@@ -400,7 +389,7 @@ CMDF( do_fly )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You need to specify a destination first.\r\n" );
       return;
@@ -408,16 +397,16 @@ CMDF( do_fly )
 
    lsite = check_landing_site( ch->map, ch->mx, ch->my );
 
-   list<landing_data *>::iterator ilanding;
-   for( ilanding = landinglist.begin(); ilanding != landinglist.end(); ++ilanding )
+   list < landing_data * >::iterator ilanding;
+   for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
    {
-      landing_data *landing = (*ilanding);
+      landing_data *landing = *ilanding;
 
-      if( landing->area && !str_prefix( argument, landing->area ) )
+      if( !landing->area.empty(  ) && !str_prefix( argument, landing->area ) )
       {
          if( lsite && !str_cmp( landing->area, lsite->area ) )
          {
-            ch->printf( "You are already at %s though!\r\n", argument );
+            ch->printf( "You are already at %s though!\r\n", argument.c_str(  ) );
             return;
          }
 
@@ -433,13 +422,12 @@ CMDF( do_fly )
 
          if( ch->gold < cost )
          {
-            ch->printf( "A flight to %s will cost you %d, which you cannot afford right now.\r\n",
-                        landing->area, landing->cost );
+            ch->printf( "A flight to %s will cost you %d, which you cannot afford right now.\r\n", landing->area.c_str(  ), landing->cost );
             return;
          }
          ch->gold -= cost;
 
-         ch->printf( "The skyship pilot takes your gold and charts a course to %s.\r\n", landing->area );
+         ch->printf( "The skyship pilot takes your gold and charts a course to %s.\r\n", landing->area.c_str(  ) );
          skyship->dcoordx = landing->mx;
          skyship->dcoordy = landing->my;
          skyship->backtracking = false;
@@ -449,10 +437,9 @@ CMDF( do_fly )
          return;
       }
    }
-   ch->printf( "There is no landing site in the vicinity of %s.\r\n", argument );
+   ch->printf( "There is no landing site in the vicinity of %s.\r\n", argument.c_str(  ) );
    skyship->dcoordx = ch->mx;
    skyship->dcoordy = ch->my;
-   return;
 }
 
 CMDF( do_board )
@@ -485,7 +472,6 @@ CMDF( do_board )
    skyship->set_actflag( ACT_BOARDED );
    ch->set_pcflag( PCFLAG_BOARDED );
    ch->print( "You climb abord the skyship and settle into your seat.\r\n" );
-   return;
 }
 
 /*
@@ -493,144 +479,99 @@ CMDF( do_board )
  *   I take no credit for originality here on down.  This is 
  *   DIRECTLY "ADAPTED" from Samson's landmark code in overland.c
  */
-landing_data::landing_data()
+landing_data::landing_data(  )
 {
-   init_memory( &area, &my, sizeof( my ) );
+   init_memory( &cost, &my, sizeof( my ) );
 }
 
-landing_data::~landing_data()
+landing_data::~landing_data(  )
 {
-   STRFREE( area );
    landinglist.remove( this );
-}
-
-void fread_landing_sites( landing_data *landing, FILE * fp )
-{
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
-         word = "End";
-      }
-
-      switch ( UPPER( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'A':
-            KEY( "Area", landing->area, fread_string( fp ) );
-            break;
-
-         case 'C':
-            if( !str_cmp( word, "Coordinates" ) )
-            {
-               landing->map = fread_short( fp );
-               landing->mx = fread_short( fp );
-               landing->my = fread_short( fp );
-               break;
-            }
-            KEY( "Cost", landing->cost, fread_number( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
-      }
-   }
 }
 
 void load_landing_sites( void )
 {
-   char filename[256];
    landing_data *landing;
-   FILE *fp;
+   ifstream stream;
 
-   landinglist.clear();
+   landinglist.clear(  );
 
-   snprintf( filename, 256, "%s%s", MAP_DIR, LANDING_SITE_FILE );
-
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   stream.open( LANDING_SITE_FILE );
+   if( !stream.is_open(  ) )
    {
-      for( ;; )
-      {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __FUNCTION__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "LANDING_SITE" ) )
-         {
-            landing = new landing_data;
-            fread_landing_sites( landing, fp );
-            landinglist.push_back( landing );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "%s: bad section: %s.", __FUNCTION__, word );
-            continue;
-         }
-      }
-      FCLOSE( fp );
+      bug( "%s: Landing site file cannot be found.", __FUNCTION__ );
+      return;
    }
-   return;
+
+   do
+   {
+      string key, value;
+      char buf[MIL];
+
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#LANDING_SITE" )
+         landing = new landing_data;
+      else if( key == "Coordinates" )
+      {
+         string coord;
+
+         value = one_argument( value, coord );
+         landing->map = atoi( coord.c_str(  ) );
+
+         value = one_argument( value, coord );
+         landing->mx = atoi( coord.c_str(  ) );
+
+         landing->my = atoi( value.c_str(  ) );
+      }
+      else if( key == "Area" )
+         landing->area = value;
+      else if( key == "Cost" )
+         landing->cost = atoi( value.c_str(  ) );
+      else if( key == "End" )
+         landinglist.push_back( landing );
+      else
+         log_printf( "%s: Bad line in landing sites file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+   }
+   while( !stream.eof(  ) );
+   stream.close(  );
 }
 
 void save_landing_sites( void )
 {
-   FILE *fp;
-   char filename[256];
+   ofstream stream;
 
-   snprintf( filename, 256, "%s%s", MAP_DIR, LANDING_SITE_FILE );
-
-   if( !( fp = fopen( filename, "w" ) ) )
+   stream.open( LANDING_SITE_FILE );
+   if( !stream.is_open(  ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( LANDING_SITE_FILE );
    }
    else
    {
-      list<landing_data*>::iterator ilanding;
-      for( ilanding = landinglist.begin(); ilanding != landinglist.end(); ++ilanding )
+      list < landing_data * >::iterator ilanding;
+      for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
       {
-         landing_data *landing = (*ilanding);
+         landing_data *landing = *ilanding;
 
-         fprintf( fp, "%s", "#LANDING_SITE\n" );
-         fprintf( fp, "Coordinates	%d %d %d\n", landing->map, landing->mx, landing->my );
-         if( landing->area && landing->area[0] != '\0' )
-            fprintf( fp, "Area	%s~\n", landing->area );
-         fprintf( fp, "Cost	%d\n", landing->cost );
-         fprintf( fp, "%s", "End\n\n" );
+         stream << "#LANDING_SITE" << endl;
+         stream << "Coordinates     " << landing->map << " " << landing->mx << " " << landing->my << endl;
+         if( !landing->area.empty(  ) )
+            stream << "Area            " << landing->area << endl;
+         stream << "Cost            " << landing->cost << endl;
+         stream << "End" << endl << endl;
       }
-      fprintf( fp, "%s", "#END\n" );
-      FCLOSE( fp );
+      stream.close(  );
    }
-   return;
 }
 
 void add_landing( short map, short x, short y )
@@ -644,10 +585,9 @@ void add_landing( short map, short x, short y )
    landing->cost = 50000;
    landinglist.push_back( landing );
    save_landing_sites(  );
-   return;
 }
 
-void delete_landing_site( landing_data *landing )
+void delete_landing_site( landing_data * landing )
 {
    if( !landing )
    {
@@ -659,29 +599,27 @@ void delete_landing_site( landing_data *landing )
 
    if( !mud_down )
       save_landing_sites(  );
-   return;
 }
 
 void free_landings( void )
 {
-   list<landing_data*>::iterator lands;
+   list < landing_data * >::iterator lands;
 
-   for( lands = landinglist.begin(); lands != landinglist.end(); )
+   for( lands = landinglist.begin(  ); lands != landinglist.end(  ); )
    {
-      landing_data *landing = (*lands);
+      landing_data *landing = *lands;
       ++lands;
 
       delete_landing_site( landing );
    }
-   return;
 }
 
 /* Support command to list all landing sites currently loaded */
 CMDF( do_landing_sites )
 {
-   list<landing_data*>::iterator ilanding;
+   list < landing_data * >::iterator ilanding;
 
-   if( landinglist.empty() )
+   if( landinglist.empty(  ) )
    {
       ch->print( "No landing sites defined.\r\n" );
       return;
@@ -690,21 +628,19 @@ CMDF( do_landing_sites )
    ch->pager( "Continent | Coordinates | Area             | Cost     \r\n" );
    ch->pager( "------------------------------------------------------\r\n" );
 
-   for( ilanding = landinglist.begin(); ilanding != landinglist.end(); ++ilanding )
+   for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
    {
-      landing_data *landing = (*ilanding);
+      landing_data *landing = *ilanding;
 
-      ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n",
-                  map_names[landing->map], landing->mx, landing->my, landing->area, landing->cost );
+      ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", map_names[landing->map], landing->mx, landing->my, landing->area.c_str(  ), landing->cost );
    }
-   return;
 }
 
 /* OLC command to add/delete/edit landing site information */
 CMDF( do_setlanding )
 {
    landing_data *landing = NULL;
-   char arg[MIL];
+   string arg;
 
    if( ch->isnpc(  ) )
    {
@@ -720,7 +656,7 @@ CMDF( do_setlanding )
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' || !str_cmp( arg, "help" ) )
+   if( arg.empty(  ) || !str_cmp( arg, "help" ) )
    {
       ch->print( "Usage: setlanding add\r\n" );
       ch->print( "Usage: setlanding delete\r\n" );
@@ -760,21 +696,18 @@ CMDF( do_setlanding )
 
    if( !str_cmp( arg, "area" ) )
    {
-      smash_tilde( argument );
-      STRFREE( landing->area );
-      landing->area = STRALLOC( argument );
+      landing->area = argument;
       save_landing_sites(  );
-      ch->printf( "Area set to %s.\r\n", argument );
+      ch->printf( "Area set to %s.\r\n", argument.c_str(  ) );
       return;
    }
 
    if( !str_cmp( arg, "cost" ) )
    {
-      landing->cost = atoi( argument );
+      landing->cost = atoi( argument.c_str(  ) );
       save_landing_sites(  );
       ch->printf( "Landing site cost set to %d\r\n", landing->cost );
       return;
    }
    do_setlanding( ch, "" );
-   return;
 }

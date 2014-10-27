@@ -34,7 +34,7 @@
 #include "mud_prog.h"
 #include "roomindex.h"
 #if !defined(__CYGWIN__) && defined(SQL)
- #include "sql.h"
+#include "sql.h"
 #endif
 
 SPELLF( spell_smaug );
@@ -48,15 +48,15 @@ SPELLF( spell_spiral_blast );
 SPELLF( spell_dispel_magic );
 SPELLF( spell_dispel_evil );
 CMDF( do_ageattack );
-void talk_auction( char *, ... );
-void save_aucvault( char_data *, char * );
-void add_sale( string, string, string, string, int, bool );
+void talk_auction( const char *, ... );
+void save_aucvault( char_data *, const string & );
+void add_sale( const string &, const string &, const string &, const string &, int, bool );
 void fly_skyship( char_data *, char_data * );
 void purge_skyship( char_data *, char_data * );
 void check_pfiles( time_t );
-void check_boards( );
-void prune_dns( );
-void web_who( );
+void check_boards(  );
+void prune_dns(  );
+void web_who(  );
 
 int reboot_counter;
 
@@ -133,7 +133,7 @@ void ev_violence( void *data )
    int attacktype = -2, cnt = -2;
    if( ch->isnpc(  ) )
    {
-      if( ch->has_attacks() )
+      if( ch->has_attacks(  ) )
       {
          attacktype = -1;
          if( 30 + ( ch->level / 4 ) >= number_percent(  ) )
@@ -238,7 +238,7 @@ void ev_violence( void *data )
       /*
        * NPC special defense flags - Thoric
        */
-      if( ch->has_defenses() )
+      if( ch->has_defenses(  ) )
       {
          attacktype = -1;
          if( 50 + ( ch->level / 4 ) > number_percent(  ) )
@@ -277,7 +277,7 @@ void ev_violence( void *data )
                   retcode = spell_smaug( skill_lookup( "heal" ), ch->level, ch, ch );
                   break;
                case DFND_DISPELMAGIC:
-                  if( !victim->affects.empty() )
+                  if( !victim->affects.empty(  ) )
                   {
                      act( AT_MAGIC, "$n utters an incantation...", ch, NULL, NULL, TO_ROOM );
                      retcode = spell_dispel_magic( skill_lookup( "dispel magic" ), ch->level, ch, victim );
@@ -311,10 +311,10 @@ void ev_violence( void *data )
    /*
     * Fun for the whole family!
     */
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
       ++ich;
 
       if( ch->in_room != rch->in_room )
@@ -327,7 +327,7 @@ void ev_violence( void *data )
           */
          if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) || ch->has_actflag( ACT_PET ) )
          {
-            if( rch->isnpc(  ) && ( rch->has_aflag( AFF_CHARM ) || rch->is_pet() ) )
+            if( rch->isnpc(  ) && ( rch->has_aflag( AFF_CHARM ) || rch->is_pet(  ) ) )
             {
                multi_hit( rch, victim, TYPE_UNDEFINED );
                continue;
@@ -348,13 +348,13 @@ void ev_violence( void *data )
                break;
             if( rch->pIndexData == ch->pIndexData || number_bits( 3 ) == 0 )
             {
-               list<char_data*>::iterator ich2;
+               list < char_data * >::iterator ich2;
                char_data *target = NULL;
                int number = 0;
 
-               for( ich2 = ch->in_room->people.begin(); ich2 != ch->in_room->people.end(); ++ich2 )
+               for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
                {
-                  char_data *vch = (*ich2);
+                  char_data *vch = *ich2;
 
                   if( rch->can_see( vch, false ) && is_same_group( vch, victim ) && number_range( 0, number ) == 0 )
                   {
@@ -379,7 +379,6 @@ void ev_violence( void *data )
     */
    if( ch && victim && victim->position != POS_DEAD && ch->position != POS_DEAD )
       add_event( 2, ev_violence, ch );
-   return;
 }
 
 /* Replaces area_update */
@@ -391,11 +390,11 @@ void ev_area_reset( void *data )
 
    if( area->resetmsg && str_cmp( area->resetmsg, "" ) )
    {
-      list<descriptor_data*>::iterator ds;
+      list < descriptor_data * >::iterator ds;
 
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
          char_data *ch = d->original ? d->original : d->character;
 
          if( !ch )
@@ -407,8 +406,7 @@ void ev_area_reset( void *data )
 
    area->reset(  );
    area->last_resettime = current_time;
-   add_event( number_range( ( area->reset_frequency * 60 ) / 2, 3 * ( area->reset_frequency * 60 ) / 2 ),
-              ev_area_reset, area );
+   add_event( number_range( ( area->reset_frequency * 60 ) / 2, 3 * ( area->reset_frequency * 60 ) / 2 ), ev_area_reset, area );
 }
 
 /* Replaces auction_update */
@@ -424,12 +422,11 @@ void ev_auction( void *data )
       default:
       case 1: /* going once */
       case 2: /* going twice */
-         {
-            talk_auction( "%s: going %s for %d.", auction->item->short_descr,
-                       ( ( auction->going == 1 ) ? "once" : "twice" ), auction->bet );
+      {
+         talk_auction( "%s: going %s for %d.", auction->item->short_descr, ( ( auction->going == 1 ) ? "once" : "twice" ), auction->bet );
 
-            add_event( sysdata->auctionseconds, ev_auction, NULL );
-         }
+         add_event( sysdata->auctionseconds, ev_auction, NULL );
+      }
          break;
 
       case 3: /* SOLD! */
@@ -516,7 +513,6 @@ void ev_reboot_count( void *data )
       echo_to_all( "}RGame reboot in 1 minute!! Please find somewhere to log off.", ECHOTAR_ALL );
 
    add_event( 60, ev_reboot_count, NULL );
-   return;
 }
 
 void ev_skyship( void *data )
@@ -578,20 +574,20 @@ void ev_pfile_check( void *data )
 
 void ev_board_check( void *data )
 {
-   check_boards( );
+   check_boards(  );
    log_string( "Next board pruning in 24 hours." );
    add_event( 86400, ev_board_check, NULL );
 }
 
 void ev_dns_check( void *data )
 {
-   prune_dns( );
+   prune_dns(  );
    add_event( 86400, ev_dns_check, NULL );
 }
 
 void ev_webwho_refresh( void *data )
 {
-   web_who( );
+   web_who(  );
    add_event( sysdata->webwho, ev_webwho_refresh, NULL );
 }
 

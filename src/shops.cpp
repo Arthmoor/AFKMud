@@ -58,18 +58,16 @@ telnet://northwind.kilnar.com:5555/    +
 #include "roomindex.h"
 #include "shops.h"
 
-char *mxp_obj_str( char_data *, obj_data *, int, char * );
-char *mxp_obj_str_close( char_data *, obj_data *, int );
-void auction_sell( char_data *, char_data *, char * );
-void auction_buy( char_data *, char_data *, char * );
-void auction_value( char_data *, char_data *, char * );
+void auction_sell( char_data *, char_data *, string & );
+void auction_buy( char_data *, char_data *, const string & );
+void auction_value( char_data *, char_data *, const string & );
 bool can_wear_obj( char_data *, obj_data * );
 bool can_mmodify( char_data *, char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 char_data *find_auctioneer( char_data * );
 
-list<shop_data*> shoplist;
-list<repair_data*> repairlist;
+list < shop_data * >shoplist;
+list < repair_data * >repairlist;
 
 void fwrite_mobile( char_data *, FILE *, bool );
 char_data *fread_mobile( FILE *, bool );
@@ -98,7 +96,6 @@ void save_shop( char_data * mob )
    fwrite_mobile( mob, fp, true );
    fprintf( fp, "%s", "#END\n" );
    FCLOSE( fp );
-   return;
 }
 
 void load_shopkeepers( void )
@@ -160,10 +157,10 @@ void load_shopkeepers( void )
             FCLOSE( fp );
             if( mob )
             {
-               list<clan_data*>::iterator cl;
-               for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+               list < clan_data * >::iterator cl;
+               for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
                {
-                  clan_data *clan = (*cl);
+                  clan_data *clan = *cl;
 
                   if( clan->shopkeeper == mob->pIndexData->vnum && clan->bank )
                   {
@@ -172,10 +169,10 @@ void load_shopkeepers( void )
                      save_shop( mob );
                   }
                }
-               list<obj_data*>::iterator iobj;
-               for( iobj = mob->carrying.begin(); iobj != mob->carrying.end(); )
+               list < obj_data * >::iterator iobj;
+               for( iobj = mob->carrying.begin(  ); iobj != mob->carrying.end(  ); )
                {
-                  obj_data *obj = (*iobj);
+                  obj_data *obj = *iobj;
                   ++iobj;
 
                   if( obj->ego >= sysdata->minego )
@@ -187,7 +184,6 @@ void load_shopkeepers( void )
       dentry = readdir( dp );
    }
    closedir( dp );
-   return;
 }
 
 /*
@@ -197,13 +193,13 @@ void load_shopkeepers( void )
 char_data *find_keeper( char_data * ch )
 {
    char_data *keeper = NULL;
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    shop_data *pShop;
 
    pShop = NULL;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      keeper = (*ich);
+      keeper = *ich;
       if( keeper->isnpc(  ) && ( pShop = keeper->pIndexData->pShop ) != NULL )
          break;
    }
@@ -242,12 +238,10 @@ char_data *find_keeper( char_data * ch )
       if( time_info.hour < pShop->open_hour && time_info.hour > pShop->close_hour )
       {
          if( pShop->open_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back later. I open at %dam.",
-                  ( pShop->open_hour == 0 ) ? ( pShop->open_hour + sysdata->hournoon ) : ( pShop->open_hour ) );
+            cmdf( keeper, "say Sorry, come back later. I open at %dam.", ( pShop->open_hour == 0 ) ? ( pShop->open_hour + sysdata->hournoon ) : ( pShop->open_hour ) );
          else
             cmdf( keeper, "say Sorry, come back later. I open at %dpm.",
-                  ( pShop->open_hour ==
-                    sysdata->hournoon ) ? ( pShop->open_hour ) : ( pShop->open_hour - sysdata->hournoon ) );
+                  ( pShop->open_hour == sysdata->hournoon ) ? ( pShop->open_hour ) : ( pShop->open_hour - sysdata->hournoon ) );
          return NULL;
       }
    }
@@ -256,23 +250,19 @@ char_data *find_keeper( char_data * ch )
       if( time_info.hour < pShop->open_hour )
       {
          if( pShop->open_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back later. I open at %dam.",
-                  ( pShop->open_hour == 0 ) ? ( pShop->open_hour + sysdata->hournoon ) : ( pShop->open_hour ) );
+            cmdf( keeper, "say Sorry, come back later. I open at %dam.", ( pShop->open_hour == 0 ) ? ( pShop->open_hour + sysdata->hournoon ) : ( pShop->open_hour ) );
          else
             cmdf( keeper, "say Sorry, come back later. I open at %dpm.",
-                  ( pShop->open_hour ==
-                    sysdata->hournoon ) ? ( pShop->open_hour ) : ( pShop->open_hour - sysdata->hournoon ) );
+                  ( pShop->open_hour == sysdata->hournoon ) ? ( pShop->open_hour ) : ( pShop->open_hour - sysdata->hournoon ) );
          return NULL;
       }
       if( time_info.hour > pShop->close_hour )
       {
          if( pShop->close_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back tomorrow. I close at %dam.",
-                  ( pShop->close_hour == 0 ) ? ( pShop->close_hour + sysdata->hournoon ) : ( pShop->close_hour ) );
+            cmdf( keeper, "say Sorry, come back tomorrow. I close at %dam.", ( pShop->close_hour == 0 ) ? ( pShop->close_hour + sysdata->hournoon ) : ( pShop->close_hour ) );
          else
             cmdf( keeper, "say Sorry, come back tomorrow. I close at %dpm.",
-                  ( pShop->close_hour ==
-                    sysdata->hournoon ) ? ( pShop->close_hour ) : ( pShop->close_hour - sysdata->hournoon ) );
+                  ( pShop->close_hour == sysdata->hournoon ) ? ( pShop->close_hour ) : ( pShop->close_hour - sysdata->hournoon ) );
          return NULL;
       }
    }
@@ -318,7 +308,7 @@ char_data *find_keeper( char_data * ch )
 CMDF( do_setprice )
 {
    char_data *keeper;
-   char arg1[MIL];
+   string arg1;
    obj_data *obj;
    bool found = false;
 
@@ -342,7 +332,7 @@ CMDF( do_setprice )
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Syntax: setprice <item> <price>\r\n" );
       ch->print( "Item should be something the shopkeeper already has.\r\n" );
@@ -364,10 +354,10 @@ CMDF( do_setprice )
    }
 
    clan_data *clan = NULL;
-   list<clan_data*>::iterator cl;
-   for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+   list < clan_data * >::iterator cl;
+   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
-      clan = (*cl);
+      clan = *cl;
 
       if( clan->shopkeeper == keeper->pIndexData->vnum )
       {
@@ -392,7 +382,7 @@ CMDF( do_setprice )
    {
       int price;
 
-      price = atoi( argument );
+      price = atoi( argument.c_str(  ) );
 
       if( price < -1 || price > 2000000000 )
       {
@@ -417,7 +407,6 @@ CMDF( do_setprice )
       return;
    }
    ch->print( "He doesnt have that item!\r\n" );
-   return;
 }
 
 /*
@@ -427,12 +416,12 @@ CMDF( do_setprice )
 char_data *find_fixer( char_data * ch )
 {
    char_data *keeper = NULL;
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    repair_data *rShop = NULL;
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      keeper = (*ich);
+      keeper = *ich;
       if( keeper->isnpc(  ) && ( rShop = keeper->pIndexData->rShop ) != NULL )
          break;
    }
@@ -475,12 +464,10 @@ char_data *find_fixer( char_data * ch )
       if( time_info.hour < rShop->open_hour && time_info.hour > rShop->close_hour )
       {
          if( rShop->open_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back later. I open at %dam.",
-                  ( rShop->open_hour == 0 ) ? ( rShop->open_hour + sysdata->hournoon ) : ( rShop->open_hour ) );
+            cmdf( keeper, "say Sorry, come back later. I open at %dam.", ( rShop->open_hour == 0 ) ? ( rShop->open_hour + sysdata->hournoon ) : ( rShop->open_hour ) );
          else
             cmdf( keeper, "say Sorry, come back later. I open at %dpm.",
-                  ( rShop->open_hour ==
-                    sysdata->hournoon ) ? ( rShop->open_hour ) : ( rShop->open_hour - sysdata->hournoon ) );
+                  ( rShop->open_hour == sysdata->hournoon ) ? ( rShop->open_hour ) : ( rShop->open_hour - sysdata->hournoon ) );
          return NULL;
       }
    }
@@ -489,23 +476,19 @@ char_data *find_fixer( char_data * ch )
       if( time_info.hour < rShop->open_hour )
       {
          if( rShop->open_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back later. I open at %dam.",
-                  ( rShop->open_hour == 0 ) ? ( rShop->open_hour + sysdata->hournoon ) : ( rShop->open_hour ) );
+            cmdf( keeper, "say Sorry, come back later. I open at %dam.", ( rShop->open_hour == 0 ) ? ( rShop->open_hour + sysdata->hournoon ) : ( rShop->open_hour ) );
          else
             cmdf( keeper, "say Sorry, come back later. I open at %dpm.",
-                  ( rShop->open_hour ==
-                    sysdata->hournoon ) ? ( rShop->open_hour ) : ( rShop->open_hour - sysdata->hournoon ) );
+                  ( rShop->open_hour == sysdata->hournoon ) ? ( rShop->open_hour ) : ( rShop->open_hour - sysdata->hournoon ) );
          return NULL;
       }
       if( time_info.hour > rShop->close_hour )
       {
          if( rShop->close_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back tomorrow. I close at %dam.",
-                  ( rShop->close_hour == 0 ) ? ( rShop->close_hour + sysdata->hournoon ) : ( rShop->close_hour ) );
+            cmdf( keeper, "say Sorry, come back tomorrow. I close at %dam.", ( rShop->close_hour == 0 ) ? ( rShop->close_hour + sysdata->hournoon ) : ( rShop->close_hour ) );
          else
             cmdf( keeper, "say Sorry, come back tomorrow. I close at %dpm.",
-                  ( rShop->close_hour ==
-                    sysdata->hournoon ) ? ( rShop->close_hour ) : ( rShop->close_hour - sysdata->hournoon ) );
+                  ( rShop->close_hour == sysdata->hournoon ) ? ( rShop->close_hour ) : ( rShop->close_hour - sysdata->hournoon ) );
          return NULL;
       }
    }
@@ -668,7 +651,7 @@ int get_repaircost( char_data * keeper, obj_data * obj )
 CMDF( do_buy )
 {
    char_data *auc;
-   char arg[MIL];
+   string arg;
    double maxgold;
 
    if( ch->isnpc(  ) )
@@ -685,7 +668,7 @@ CMDF( do_buy )
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Buy what?\r\n" );
       return;
@@ -759,8 +742,8 @@ CMDF( do_buy )
       pet = pet->pIndexData->create_mobile(  );
 
       argument = one_argument( argument, arg );
-      if( arg && arg[0] != '\0' )
-         stralloc_printf( &pet->name, "%s %s", pet->name, arg );
+      if( !arg.empty(  ) )
+         stralloc_printf( &pet->name, "%s %s", pet->name, arg.c_str(  ) );
 
       stralloc_printf( &pet->chardesc, "%sA neck tag says 'I belong to %s'.\r\n", pet->chardesc, ch->name );
 
@@ -788,11 +771,11 @@ CMDF( do_buy )
 
       if( keeper->has_actflag( ACT_GUILDVENDOR ) )
       {
-         list<clan_data*>::iterator cl;
+         list < clan_data * >::iterator cl;
 
-         for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+         for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
          {
-            clan = (*cl);
+            clan = *cl;
 
             if( keeper->pIndexData->vnum == clan->shopkeeper )
             {
@@ -804,7 +787,7 @@ CMDF( do_buy )
 
       if( is_number( arg ) )
       {
-         noi = atoi( arg );
+         noi = atoi( arg.c_str(  ) );
          argument = one_argument( argument, arg );
          if( noi > mnoi )
          {
@@ -833,8 +816,7 @@ CMDF( do_buy )
       if( !obj->extra_flags.test( ITEM_INVENTORY ) && ( noi > 1 ) )
       {
          interpret( keeper, "laugh" );
-         act( AT_TELL, "$n tells you 'I don't have enough of those in stock to sell more than one at a time.'",
-              keeper, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'I don't have enough of those in stock to sell more than one at a time.'", keeper, NULL, ch, TO_VICT );
          ch->reply = keeper;
          return;
       }
@@ -872,10 +854,8 @@ CMDF( do_buy )
       }
       else
       {
-         act_printf( AT_ACTION, ch, obj, NULL, TO_ROOM, "$n buys %d $p%s.", noi,
-                     ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
-         act_printf( AT_ACTION, ch, obj, NULL, TO_CHAR,
-                     "You buy %d $p%s.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
+         act_printf( AT_ACTION, ch, obj, NULL, TO_ROOM, "$n buys %d $p%s.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
+         act_printf( AT_ACTION, ch, obj, NULL, TO_CHAR, "You buy %d $p%s.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
          act( AT_ACTION, "$N puts them into a bag and hands it to you.", ch, NULL, keeper, TO_CHAR );
       }
 
@@ -993,7 +973,7 @@ CMDF( do_list )
       ch->from_room(  );
       if( !ch->to_room( aucvault ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-      show_list_to_char( ch, ch->in_room->objects, true, false, MXP_NONE, "" );
+      show_list_to_char( ch, ch->in_room->objects, true, false );
       ch->from_room(  );
       if( !ch->to_room( original ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
@@ -1012,10 +992,10 @@ CMDF( do_list )
       }
 
       bool found = false;
-      list<char_data*>::iterator ich;
-      for( ich = pRoomIndexNext->people.begin(); ich != pRoomIndexNext->people.end(); ++ich )
+      list < char_data * >::iterator ich;
+      for( ich = pRoomIndexNext->people.begin(  ); ich != pRoomIndexNext->people.end(  ); ++ich )
       {
-         char_data *pet = (*ich);
+         char_data *pet = *ich;
 
          if( pet->has_actflag( ACT_PET ) )
          {
@@ -1029,7 +1009,6 @@ CMDF( do_list )
       }
       if( !found )
          ch->print( "Sorry, we're out of pets right now.\r\n" );
-      return;
    }
    else
    {
@@ -1040,28 +1019,23 @@ CMDF( do_list )
 
       ch->pager( "&w[Price] Item\r\n" );
 
-      list<obj_data*>::iterator iobj;
-      for( iobj = keeper->carrying.begin(); iobj != keeper->carrying.end(); ++iobj )
+      list < obj_data * >::iterator iobj;
+      for( iobj = keeper->carrying.begin(  ); iobj != keeper->carrying.end(  ); ++iobj )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          int cost;
 
-         if( obj->wear_loc == WEAR_NONE && ch->can_see_obj( obj, false )
-             && ( cost = get_cost( ch, keeper, obj, true ) ) > 0 )
+         if( obj->wear_loc == WEAR_NONE && ch->can_see_obj( obj, false ) && ( cost = get_cost( ch, keeper, obj, true ) ) > 0 )
          {
-            ch->pagerf( "[%6d] %s%s%s%s\r\n", cost,
-                        mxp_obj_str( ch, obj, MXP_SHOP, "" ), obj->short_descr, mxp_obj_str_close( ch, obj, MXP_SHOP ),
-                        can_wear_obj( ch, obj ) ? "" : " &R*&w" );
+            ch->pagerf( "[%6d] %s%s\r\n", cost, obj->short_descr, can_wear_obj( ch, obj ) ? "" : " &R*&w" );
          }
       }
       ch->pager( "A &R*&w indicates an item you are not able to use.\r\n" );
-      return;
    }
 }
 
 CMDF( do_sell )
 {
-   char arg[MIL];
    char_data *keeper, *auc;
    clan_data *clan = NULL;
    obj_data *obj;
@@ -1080,9 +1054,8 @@ CMDF( do_sell )
       return;
    }
 
-   one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Sell what?\r\n" );
       return;
@@ -1093,11 +1066,11 @@ CMDF( do_sell )
 
    if( keeper->has_actflag( ACT_GUILDVENDOR ) )
    {
-      list<clan_data*>::iterator cl;
+      list < clan_data * >::iterator cl;
 
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan = (*cl);
+         clan = *cl;
 
          if( keeper->pIndexData->vnum == clan->shopkeeper )
          {
@@ -1107,7 +1080,7 @@ CMDF( do_sell )
       }
    }
 
-   if( !( obj = ch->get_obj_carry( arg ) ) )
+   if( !( obj = ch->get_obj_carry( argument ) ) )
    {
       act( AT_TELL, "$n tells you 'You don't have that item.'", keeper, NULL, ch, TO_VICT );
       ch->reply = keeper;
@@ -1149,7 +1122,7 @@ CMDF( do_sell )
 
    if( found && clan->bank && cost >= clan->balance )
    {
-      act_printf( AT_TELL, keeper, obj, ch, TO_VICT, "$n tells you, '$p is worth more than %s can afford...'", clan->name );
+      act_printf( AT_TELL, keeper, obj, ch, TO_VICT, "$n tells you, '$p is worth more than %s can afford...'", clan->name.c_str(  ) );
       return;
    }
    else
@@ -1192,7 +1165,6 @@ CMDF( do_sell )
       if( keeper->has_actflag( ACT_GUILDVENDOR ) )
          save_shop( keeper );
    }
-   return;
 }
 
 CMDF( do_value )
@@ -1207,7 +1179,7 @@ CMDF( do_value )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Value what?\r\n" );
       return;
@@ -1236,13 +1208,12 @@ CMDF( do_value )
    }
    act_printf( AT_TELL, keeper, obj, ch, TO_VICT, "$n tells you 'I'd give you %d gold coins for $p.'", cost );
    ch->reply = keeper;
-   return;
 }
 
 /*
  * Repair a single object. Used when handling "repair all" - Gorog
  */
-void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, char *arg, char *fixstr, char *fixstr2 )
+void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const string & arg, const string & fixstr, const string & fixstr2 )
 {
    int cost;
    bool found = false;
@@ -1271,11 +1242,11 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, char *a
    clan_data *clan = NULL;
    if( keeper->has_actflag( ACT_GUILDREPAIR ) )
    {
-      list<clan_data*>::iterator cl;
+      list < clan_data * >::iterator cl;
 
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan = (*cl);
+         clan = *cl;
 
          if( clan->repair == keeper->pIndexData->vnum )
          {
@@ -1291,18 +1262,15 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, char *a
    /*
     * "repair all" gets a 10% surcharge - Gorog 
     */
-   if( ( cost = strcmp( "all", arg ) ? cost : 11 * cost / 10 ) > ch->gold )
+   if( ( cost = strcmp( "all", arg.c_str(  ) )? cost : 11 * cost / 10 ) > ch->gold )
    {
-      act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR,
-                  "$N tells you, 'It will cost %d piece%s of gold to %s %s...'", cost,
-                  cost == 1 ? "" : "s", fixstr, obj->name );
+      act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR, "$N tells you, 'It will cost %d piece%s of gold to %s %s...'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ), obj->name );
       act( AT_TELL, "$N tells you, 'Which I see you can't afford.'", ch, NULL, keeper, TO_CHAR );
    }
    else
    {
-      act_printf( AT_ACTION, ch, obj, keeper, TO_ROOM, "$n gives $p to $N, who quickly %s it.", fixstr2 );
-      act_printf( AT_ACTION, ch, obj, keeper, TO_CHAR,
-                  "$N charges you %d gold piece%s to %s $p.", cost, cost == 1 ? "" : "s", fixstr );
+      act_printf( AT_ACTION, ch, obj, keeper, TO_ROOM, "$n gives $p to $N, who quickly %s it.", fixstr2.c_str(  ) );
+      act_printf( AT_ACTION, ch, obj, keeper, TO_CHAR, "$N charges you %d gold piece%s to %s $p.", cost, cost == 1 ? "" : "s", fixstr.c_str(  ) );
       ch->gold -= cost;
 
       if( found && clan->bank )
@@ -1343,17 +1311,18 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, char *a
 
 CMDF( do_repair )
 {
-   if( !argument || argument[0] == '\0' )
+   char_data *keeper;
+   string fixstr, fixstr2;
+
+   if( argument.empty(  ) )
    {
       ch->print( "Repair what?\r\n" );
       return;
    }
 
-   char_data *keeper;
    if( !( keeper = find_fixer( ch ) ) )
       return;
 
-   char *fixstr, *fixstr2;
    switch ( keeper->pIndexData->rShop->shop_type )
    {
       default:
@@ -1367,16 +1336,16 @@ CMDF( do_repair )
          break;
    }
 
-   if( !strcmp( argument, "all" ) )
+   if( !str_cmp( argument, "all" ) )
    {
-      list<obj_data*>::iterator iobj;
+      list < obj_data * >::iterator iobj;
 
-      for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+      for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
+
          if( ch->can_see_obj( obj, false ) && keeper->can_see_obj( obj, false )
-             && ( obj->item_type == ITEM_ARMOR || obj->item_type == ITEM_WEAPON
-                  || obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF ) )
+             && ( obj->item_type == ITEM_ARMOR || obj->item_type == ITEM_WEAPON || obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF ) )
             repair_one_obj( ch, keeper, obj, argument, fixstr, fixstr2 );
       }
       return;
@@ -1390,21 +1359,19 @@ CMDF( do_repair )
       return;
    }
    repair_one_obj( ch, keeper, obj, argument, fixstr, fixstr2 );
-   return;
 }
 
-void appraise_all( char_data * ch, char_data * keeper, char *fixstr )
+void appraise_all( char_data * ch, char_data * keeper, const string & fixstr )
 {
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    int cost = 0, total = 0;
 
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( obj->wear_loc == WEAR_NONE && ch->can_see_obj( obj, false )
-          && ( obj->item_type == ITEM_ARMOR || obj->item_type == ITEM_WEAPON
-               || obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF ) )
+          && ( obj->item_type == ITEM_ARMOR || obj->item_type == ITEM_WEAPON || obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF ) )
       {
          if( !ch->can_drop_obj( obj ) )
             ch->printf( "You can't let go of %s.\r\n", obj->name );
@@ -1418,8 +1385,7 @@ void appraise_all( char_data * ch, char_data * keeper, char *fixstr )
          else
          {
             act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR,
-                        "$N tells you, 'It will cost %d piece%s of gold to %s %s'",
-                        cost, cost == 1 ? "" : "s", fixstr, obj->name );
+                        "$N tells you, 'It will cost %d piece%s of gold to %s %s'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ), obj->name );
             total += cost;
          }
       }
@@ -1427,8 +1393,7 @@ void appraise_all( char_data * ch, char_data * keeper, char *fixstr )
    if( total > 0 )
    {
       ch->print( "\r\n" );
-      act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR,
-                  "$N tells you, 'It will cost %d piece%s of gold in total.'", total, cost == 1 ? "" : "s" );
+      act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR, "$N tells you, 'It will cost %d piece%s of gold in total.'", total, cost == 1 ? "" : "s" );
       act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR, "$N tells you, 'Remember there is a 10%% surcharge for repair all.'" );
    }
 }
@@ -1438,9 +1403,9 @@ CMDF( do_appraise )
    char_data *keeper;
    obj_data *obj;
    int cost;
-   char *fixstr;
+   string fixstr;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Appraise what?\r\n" );
       return;
@@ -1460,7 +1425,7 @@ CMDF( do_appraise )
          break;
    }
 
-   if( !strcmp( argument, "all" ) )
+   if( !str_cmp( argument, "all" ) )
    {
       appraise_all( ch, keeper, fixstr );
       return;
@@ -1488,12 +1453,9 @@ CMDF( do_appraise )
       return;
    }
 
-   act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR,
-               "$N tells you, 'It will cost %d piece%s of gold to %s that...'", cost, cost == 1 ? "" : "s", fixstr );
+   act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR, "$N tells you, 'It will cost %d piece%s of gold to %s that...'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ) );
    if( cost > ch->gold )
       act( AT_TELL, "$N tells you, 'Which I see you can't afford.'", ch, NULL, keeper, TO_CHAR );
-
-   return;
 }
 
 /* ------------------ Shop Building and Editing Section ----------------- */
@@ -1504,7 +1466,7 @@ CMDF( do_makeshop )
    mob_index *mob;
    int vnum;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: makeshop <mobname>\r\n" );
       return;
@@ -1540,7 +1502,39 @@ CMDF( do_makeshop )
    shoplist.push_back( shop );
    mob->pShop = shop;
    ch->print( "Done.\r\n" );
-   return;
+}
+
+CMDF( do_destroyshop )
+{
+   mob_index *mob;
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "Usage: destroyshop <mob vnum>\r\n" );
+      return;
+   }
+
+   if( !is_number( argument ) )
+   {
+      ch->print( "Mob vnums must be specified as numbers.\r\n" );
+      return;
+   }
+
+   if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+   {
+      ch->print( "No mob with that vnum exists.\r\n" );
+      return;
+   }
+
+   if( !mob->pShop )
+   {
+      ch->print( "That mob does not have a shop assigned.\r\n" );
+      return;
+   }
+
+   shoplist.remove( mob->pShop );
+   deleteptr( mob->pShop );
+   ch->print( "Shop data deleted.\r\n" );
 }
 
 CMDF( do_shopset )
@@ -1548,17 +1542,17 @@ CMDF( do_shopset )
    shop_data *shop;
    char_data *keeper;
    mob_index *mob, *mob2;
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    int value;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' || !arg2 || arg2[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Usage: shopset <mob vnum> <field> value\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
-      ch->print( "  buy0 buy1 buy2 buy3 buy4 buy sell open close keeper\r\n" );
+      ch->print( "  buy0 buy1 buy2 buy3 buy4 buy sell open close keeper remove\r\n" );
       return;
    }
 
@@ -1567,11 +1561,13 @@ CMDF( do_shopset )
       ch->print( "Mobile not found.\r\n" );
       return;
    }
+
    if( !keeper->isnpc(  ) )
    {
       ch->print( "PCs can't keep shops.\r\n" );
       return;
    }
+
    mob = keeper->pIndexData;
 
    if( !can_mmodify( ch, keeper ) )
@@ -1583,7 +1579,17 @@ CMDF( do_shopset )
       return;
    }
    shop = mob->pShop;
-   value = atoi( argument );
+   value = atoi( argument.c_str(  ) );
+
+   if( !str_cmp( arg2, "remove" ) )
+   {
+      mob->pShop = NULL;
+      shoplist.remove( shop );
+      deleteptr( shop );
+
+      ch->print( "Shop data has been removed from this mob.\r\n" );
+      return;
+   }
 
    if( !str_cmp( arg2, "buy0" ) )
    {
@@ -1705,7 +1711,7 @@ CMDF( do_shopset )
 
    if( !str_cmp( arg2, "keeper" ) )
    {
-      int vnum = atoi( argument );
+      int vnum = atoi( argument.c_str(  ) );
       if( !( mob2 = get_mob_index( vnum ) ) )
       {
          ch->print( "Mobile not found.\r\n" );
@@ -1725,7 +1731,6 @@ CMDF( do_shopset )
       return;
    }
    do_shopset( ch, "" );
-   return;
 }
 
 CMDF( do_shopstat )
@@ -1734,7 +1739,7 @@ CMDF( do_shopstat )
    char_data *keeper;
    mob_index *mob;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: shopstat <keeper name>\r\n" );
       return;
@@ -1761,28 +1766,26 @@ CMDF( do_shopstat )
 
    ch->printf( "Keeper: %d  %s\r\n", shop->keeper, mob->short_descr );
    ch->printf( "buy0 [%s]  buy1 [%s]  buy2 [%s]  buy3 [%s]  buy4 [%s]\r\n",
-               o_types[shop->buy_type[0]], o_types[shop->buy_type[1]],
-               o_types[shop->buy_type[2]], o_types[shop->buy_type[3]], o_types[shop->buy_type[4]] );
+               o_types[shop->buy_type[0]], o_types[shop->buy_type[1]], o_types[shop->buy_type[2]], o_types[shop->buy_type[3]], o_types[shop->buy_type[4]] );
    ch->printf( "Profit:  buy %3d%%  sell %3d%%\r\n", shop->profit_buy, shop->profit_sell );
    ch->printf( "Hours:   open %2d  close %2d\r\n", shop->open_hour, shop->close_hour );
-   return;
 }
 
 CMDF( do_shops )
 {
-   list<shop_data*>::iterator ishop;
+   list < shop_data * >::iterator ishop;
    mob_index *mob;
 
-   if( shoplist.empty() )
+   if( shoplist.empty(  ) )
    {
       ch->print( "There are no shops.\r\n" );
       return;
    }
 
    ch->pager( "&WFor details on each shopkeeper, use the shopstat command.\r\n" );
-   for( ishop = shoplist.begin(); ishop != shoplist.end(); ++ishop )
+   for( ishop = shoplist.begin(  ); ishop != shoplist.end(  ); ++ishop )
    {
-      shop_data *shop = (*ishop);
+      shop_data *shop = *ishop;
 
       if( !( mob = get_mob_index( shop->keeper ) ) )
       {
@@ -1791,7 +1794,6 @@ CMDF( do_shops )
       }
       ch->pagerf( "&WShopkeeper: &G%-20.20s &WVnum: &G%-5d &WArea: &G%s\r\n", mob->short_descr, mob->vnum, mob->area->name );
    }
-   return;
 }
 
 /* -------------- Repair Shop Building and Editing Section -------------- */
@@ -1802,7 +1804,7 @@ CMDF( do_makerepair )
    mob_index *mob;
    int vnum;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: makerepair <mobvnum>\r\n" );
       return;
@@ -1839,7 +1841,39 @@ CMDF( do_makerepair )
    repairlist.push_back( repair );
    mob->rShop = repair;
    ch->print( "Done.\r\n" );
-   return;
+}
+
+CMDF( do_destroyrepair )
+{
+   mob_index *mob;
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "Usage: destroyrepair <mob vnum>\r\n" );
+      return;
+   }
+
+   if( !is_number( argument ) )
+   {
+      ch->print( "Mob vnums must be specified as numbers.\r\n" );
+      return;
+   }
+
+   if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+   {
+      ch->print( "No mob with that vnum exists.\r\n" );
+      return;
+   }
+
+   if( !mob->rShop )
+   {
+      ch->print( "That mob does not have a repair shop assigned.\r\n" );
+      return;
+   }
+
+   repairlist.remove( mob->rShop );
+   deleteptr( mob->rShop );
+   ch->print( "Repair shop data deleted.\r\n" );
 }
 
 CMDF( do_repairset )
@@ -1847,13 +1881,13 @@ CMDF( do_repairset )
    repair_data *repair;
    char_data *keeper;
    mob_index *mob, *mob2;
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    int value;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( !arg1 || arg1[0] == '\0' || !arg2 || arg2[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Usage: repairset <mob vnum> <field> value\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
@@ -1882,7 +1916,7 @@ CMDF( do_repairset )
       return;
    }
    repair = mob->rShop;
-   value = atoi( argument );
+   value = atoi( argument.c_str(  ) );
 
    if( !str_cmp( arg2, "fix0" ) )
    {
@@ -1976,7 +2010,7 @@ CMDF( do_repairset )
 
    if( !str_cmp( arg2, "keeper" ) )
    {
-      int vnum = atoi( argument );
+      int vnum = atoi( argument.c_str(  ) );
       if( !( mob2 = get_mob_index( vnum ) ) )
       {
          ch->print( "Mobile not found.\r\n" );
@@ -1996,7 +2030,6 @@ CMDF( do_repairset )
       return;
    }
    do_repairset( ch, "" );
-   return;
 }
 
 CMDF( do_repairstat )
@@ -2005,7 +2038,7 @@ CMDF( do_repairstat )
    char_data *keeper;
    mob_index *mob;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: repairstat <keeper vnum>\r\n" );
       return;
@@ -2031,28 +2064,26 @@ CMDF( do_repairstat )
    repair = mob->rShop;
 
    ch->printf( "Keeper: %d  %s\r\n", repair->keeper, mob->short_descr );
-   ch->printf( "fix0 [%s]  fix1 [%s]  fix2 [%s]\r\n",
-               o_types[repair->fix_type[0]], o_types[repair->fix_type[1]], o_types[repair->fix_type[2]] );
+   ch->printf( "fix0 [%s]  fix1 [%s]  fix2 [%s]\r\n", o_types[repair->fix_type[0]], o_types[repair->fix_type[1]], o_types[repair->fix_type[2]] );
    ch->printf( "Profit: %3d%%  Type: %d\r\n", repair->profit_fix, repair->shop_type );
    ch->printf( "Hours:   open %2d  close %2d\r\n", repair->open_hour, repair->close_hour );
-   return;
 }
 
 CMDF( do_repairshops )
 {
-   list<repair_data*>::iterator irepair;
+   list < repair_data * >::iterator irepair;
    mob_index *mob;
 
-   if( repairlist.empty() )
+   if( repairlist.empty(  ) )
    {
       ch->print( "There are no repair shops.\r\n" );
       return;
    }
 
    ch->pager( "&WFor details on each repairsmith, use the repairstat command.\r\n" );
-   for( irepair = repairlist.begin(); irepair != repairlist.end(); ++irepair )
+   for( irepair = repairlist.begin(  ); irepair != repairlist.end(  ); ++irepair )
    {
-      repair_data *repair = (*irepair);
+      repair_data *repair = *irepair;
 
       if( !( mob = get_mob_index( repair->keeper ) ) )
       {
@@ -2061,7 +2092,6 @@ CMDF( do_repairshops )
       }
       ch->pagerf( "&WRepairsmith: &G%-20.20s &WVnum: &G%-5d &WArea: &G%s\r\n", mob->short_descr, mob->vnum, mob->area->name );
    }
-   return;
 }
 
 /***************************************************************************  
@@ -2086,11 +2116,12 @@ CMDF( do_repairshops )
 /* Finds banker mobs in a room. */
 char_data *find_banker( char_data * ch )
 {
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
 
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *banker = (*ich);
+      char_data *banker = *ich;
+
       if( banker->has_actflag( ACT_BANKER ) || banker->has_actflag( ACT_GUILDBANK ) )
          return banker;
    }
@@ -2123,11 +2154,11 @@ CMDF( do_deposit )
    clan_data *clan = NULL;
    if( banker->has_actflag( ACT_GUILDBANK ) )
    {
-      list<clan_data*>::iterator cl;
+      list < clan_data * >::iterator cl;
 
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan = (*cl);
+         clan = *cl;
          if( clan->bank == banker->pIndexData->vnum )
          {
             found = true;
@@ -2142,7 +2173,7 @@ CMDF( do_deposit )
       return;
    }
 
-   if( !argument || argument == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "How much gold do you wish to deposit?\r\n" );
       return;
@@ -2157,7 +2188,7 @@ CMDF( do_deposit )
    if( !str_cmp( argument, "all" ) )
       amount = ch->gold;
    else
-      amount = atoi( argument );
+      amount = atoi( argument.c_str(  ) );
 
    if( amount > ch->gold )
    {
@@ -2185,7 +2216,6 @@ CMDF( do_deposit )
    act_printf( AT_GOLD, ch, NULL, NULL, TO_ROOM, "$n deposits %d gold.", amount );
    ch->sound( "gold.wav", 100, false );
    ch->save(  );  /* Prevent money duplication for clan accounts - Samson */
-   return;
 }
 
 CMDF( do_withdraw )
@@ -2209,11 +2239,11 @@ CMDF( do_withdraw )
    clan_data *clan = NULL;
    if( banker->has_actflag( ACT_GUILDBANK ) )
    {
-      list<clan_data*>::iterator cl;
+      list < clan_data * >::iterator cl;
 
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan = (*cl);
+         clan = *cl;
          if( clan->bank == banker->pIndexData->vnum )
          {
             found = true;
@@ -2228,19 +2258,18 @@ CMDF( do_withdraw )
       return;
    }
 
-   if( found && str_cmp( ch->name, clan->leader )
-       && str_cmp( ch->name, clan->number1 ) && str_cmp( ch->name, clan->number2 ) )
+   if( found && str_cmp( ch->name, clan->leader ) && str_cmp( ch->name, clan->number1 ) && str_cmp( ch->name, clan->number2 ) )
    {
-      ch->printf( "Sorry, only the %s officers are allowed to withdraw funds.\r\n",
-                  clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->printf( "Sorry, only the %s officers are allowed to withdraw funds.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "How much gold do you wish to withdraw?\r\n" );
       return;
    }
+
    if( str_cmp( argument, "all" ) && !is_number( argument ) )
    {
       ch->print( "How much gold do you wish to withdraw?\r\n" );
@@ -2255,7 +2284,7 @@ CMDF( do_withdraw )
          amount = ch->pcdata->balance;
    }
    else
-      amount = atoi( argument );
+      amount = atoi( argument.c_str(  ) );
 
    if( found )
    {
@@ -2293,7 +2322,6 @@ CMDF( do_withdraw )
    act_printf( AT_GOLD, ch, NULL, NULL, TO_ROOM, "$n withdraws %d gold.", amount );
    ch->sound( "gold.wav", 100, false );
    ch->save(  );  /* Prevent money duplication for clan accounts - Samson */
-   return;
 }
 
 CMDF( do_balance )
@@ -2316,11 +2344,11 @@ CMDF( do_balance )
    clan_data *clan = NULL;
    if( banker->has_actflag( ACT_GUILDBANK ) )
    {
-      list<clan_data*>::iterator cl;
+      list < clan_data * >::iterator cl;
 
-      for( cl = clanlist.begin(); cl != clanlist.end(); ++cl )
+      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
-         clan = (*cl);
+         clan = *cl;
 
          if( clan->bank == banker->pIndexData->vnum )
          {
@@ -2338,13 +2366,10 @@ CMDF( do_balance )
 
    if( found )
    {
-      ch->printf( "&[gold]The %s has %d gold in the vault.\r\n",
-                  clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->balance );
+      ch->printf( "&[gold]The %s has %d gold in the vault.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->balance );
    }
    else
       ch->printf( "&[gold]You have %d gold in the bank.\r\n", ch->pcdata->balance );
-
-   return;
 }
 
 /* End of new bank support */

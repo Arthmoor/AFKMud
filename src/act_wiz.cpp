@@ -26,14 +26,11 @@
  *                        Wizard/god command module                         *
  ****************************************************************************/
 
-#if !defined(WIN32)
-#include <fnmatch.h>
-#else
 #include <unistd.h>
-#endif
 #include <sys/stat.h>
 #include <cstdarg>
 #include <cerrno>
+#include <sstream>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -50,38 +47,36 @@
 #include "pfiles.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "sha256.h"
+#include "variables.h"
 
 /* External functions */
 #ifdef IMC
 void imc_check_wizperms( char_data * );
 #endif
-void set_chandler( );
-void unset_chandler( );
-void build_wizinfo( );
-int get_langflag( char * );
-int get_logflag( char * );
-void save_sysdata( );
+void set_chandler(  );
+void unset_chandler(  );
+void build_wizinfo(  );
+void save_sysdata(  );
 void write_race_file( int );
 int calc_thac0( char_data *, char_data *, int );   /* For mstat */
-void remove_member( char *, char * ); /* For do_destroy */
+void remove_member( const string &, const string & ); /* For do_destroy */
 CMDF( do_oldwhere );
 CMDF( do_help );
 CMDF( do_mfind );
 CMDF( do_ofind );
 CMDF( do_bestow );
-void rent_adjust_pfile( char * );
+void rent_adjust_pfile( const string & );
 bool in_arena( char_data * );
-void skill_notfound( char_data *, char * );
 void check_stored_objects( char_data *, int );
-void remove_from_auth( char * );
-void calc_season( );
+void remove_from_auth( const string & );
+void calc_season(  );
 void ostat_plus( char_data *, obj_data *, bool );
 void advance_level( char_data * );
-void set_title( char_data *, char * );
 void stop_hating( char_data * );
 void stop_hunting( char_data * );
 void stop_fearing( char_data * );
-char *sha256_crypt( const char * );
+void check_clan_storeroom( char_data * );
 
 /*
  * Global variables.
@@ -101,13 +96,13 @@ int MAX_PC_RACE;
 time_t last_restore_all_time = 0;
 
 /* Used to check and see if you should be using a command on a certain person - Samson 5-1-04 */
-char_data *get_wizvictim( char_data * ch, char *argument, bool nonpc )
+char_data *get_wizvictim( char_data * ch, const string & argument, bool nonpc )
 {
    char_data *victim = NULL;
 
    if( !( victim = ch->get_char_world( argument ) ) )
    {
-      ch->printf( "%s is not online.\r\n", argument );
+      ch->printf( "%s is not online.\r\n", argument.c_str(  ) );
       return NULL;
    }
 
@@ -130,16 +125,16 @@ char_data *get_wizvictim( char_data * ch, char *argument, bool nonpc )
 /* Upgraded for OS independed SHA-256 encryption - Samson 1-7-06 */
 CMDF( do_newpassword )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
-   char *pwdnew;
+   const char *pwdnew;
 
    if( ch->isnpc(  ) )
       return;
 
    argument = one_argument( argument, arg1 );
 
-   if( ( ch->pcdata->pwd != '\0' ) && ( arg1[0] == '\0' || argument[0] == '\0' ) )
+   if( ( ch->pcdata->pwd != '\0' ) && ( arg1.empty(  ) || argument.empty(  ) ) )
    {
       ch->print( "Syntax: newpass <char> <newpassword>\r\n" );
       return;
@@ -160,35 +155,25 @@ CMDF( do_newpassword )
       }
    }
 
-   if( strlen( argument ) < 5 )
+   if( argument.length(  ) < 5 )
    {
       ch->print( "New password must be at least five characters long.\r\n" );
       return;
    }
 
-   /*
-    * Password Fix - Druid 
-    */
-   if( strlen( argument ) > 16 )
-   {
-      ch->print( "New password cannot exceed 16 characters in length.\r\n" );
-      return;
-   }
-
    if( argument[0] == '!' )
    {
-      ch->print( "New password cannot begin with the '!' character." );
+      ch->print( "New password cannot begin with the '!' character.\r\n" );
       return;
    }
 
-   pwdnew = sha256_crypt( argument );  /* SHA-256 Encryption */
+   pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
 
    DISPOSE( victim->pcdata->pwd );
    victim->pcdata->pwd = str_dup( pwdnew );
    victim->save(  );
-   ch->printf( "&R%s's password has been changed to: %s\r\n&w", victim->name, argument );
-   victim->printf( "&R%s has changed your password to: %s\r\n&w", ch->name, argument );
-   return;
+   ch->printf( "&R%s's password has been changed to: %s\r\n&w", victim->name, argument.c_str(  ) );
+   victim->printf( "&R%s has changed your password to: %s\r\n&w", ch->name, argument.c_str(  ) );
 }
 
 /* Immortal highfive, added by Samson 2-15-98 Inspired by the version used on Crystal Shard */
@@ -200,7 +185,7 @@ CMDF( do_highfive )
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       act( AT_SOCIAL, "You jump in the air and highfive everyone in the room!", ch, NULL, NULL, TO_CHAR );
       act( AT_SOCIAL, "$n jumps in the air and highfives everyone in the room!", ch, NULL, ch, TO_ROOM );
@@ -230,11 +215,11 @@ CMDF( do_highfive )
 
    if( victim->level > LEVEL_TRUEIMM && ch->level > LEVEL_TRUEIMM )
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
 
-      for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
       {
-         char_data *vch = (*ich);
+         char_data *vch = ( *ich );
 
          if( vch == ch )
             act( AT_IMMORT, "The whole world rumbles as you highfive $N!", ch, NULL, victim, TO_CHAR );
@@ -243,14 +228,12 @@ CMDF( do_highfive )
          else
             act( AT_IMMORT, "The whole world rumbles as $n and $N highfive!", ch, vch, victim, TO_THIRD );
       }
-      return;
    }
    else
    {
       act( AT_SOCIAL, "You jump up and highfive $N!", ch, NULL, victim, TO_CHAR );
       act( AT_SOCIAL, "$n jumps up and gives you a highfive!", ch, NULL, victim, TO_VICT );
       act( AT_SOCIAL, "$n jumps up and gives $N a highfive!", ch, NULL, victim, TO_NOTVICT );
-      return;
    }
 }
 
@@ -260,10 +243,9 @@ CMDF( do_bamfin )
    {
       smash_tilde( argument );
       DISPOSE( ch->pcdata->bamfin );
-      ch->pcdata->bamfin = str_dup( argument );
+      ch->pcdata->bamfin = str_dup( argument.c_str(  ) );
       ch->print( "&YBamfin set.\r\n" );
    }
-   return;
 }
 
 CMDF( do_bamfout )
@@ -272,10 +254,9 @@ CMDF( do_bamfout )
    {
       smash_tilde( argument );
       DISPOSE( ch->pcdata->bamfout );
-      ch->pcdata->bamfout = str_dup( argument );
+      ch->pcdata->bamfout = str_dup( argument.c_str(  ) );
       ch->print( "&YBamfout set.\r\n" );
    }
-   return;
 }
 
 CMDF( do_rank )
@@ -283,7 +264,7 @@ CMDF( do_rank )
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "&[immortal]Usage:  rank <string>.\r\n" );
       ch->print( "   or:  rank none.\r\n" );
@@ -292,9 +273,8 @@ CMDF( do_rank )
    smash_tilde( argument );
    STRFREE( ch->pcdata->rank );
    if( str_cmp( argument, "none" ) )
-      ch->pcdata->rank = STRALLOC( argument );
+      ch->pcdata->rank = STRALLOC( argument.c_str(  ) );
    ch->printf( "&[immortal]Rank set to: %s\r\n", ch->pcdata->rank ? ch->pcdata->rank : "None" );
-   return;
 }
 
 CMDF( do_retire )
@@ -303,7 +283,7 @@ CMDF( do_retire )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Retire whom?\r\n" );
       return;
@@ -329,21 +309,20 @@ CMDF( do_retire )
       ch->printf( "%s is now a retired immortal.\r\n", victim->name );
       victim->printf( "Courtesy of %s, you are now a retired immortal.\r\n", ch->name );
    }
-   return;
 }
 
 CMDF( do_delay )
 {
    char_data *victim;
-   char arg[MIL];
+   string arg;
    int delay;
 
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg.empty(  ) || argument.empty(  ) )
    {
-      ch->print( "Syntax:  delay <victim> <# of rounds>\r\n" );
+      ch->print( "Syntax: delay <victim> <# of rounds>\r\n" );
       return;
    }
 
@@ -356,7 +335,7 @@ CMDF( do_delay )
       victim->wait = 0;
       return;
    }
-   delay = atoi( argument );
+   delay = atoi( argument.c_str(  ) );
    if( delay < 1 )
    {
       ch->print( "Pointless. Try a positive number.\r\n" );
@@ -367,7 +346,6 @@ CMDF( do_delay )
 
    victim->WAIT_STATE( delay * sysdata->pulseviolence );
    ch->printf( "You've delayed %s for %d rounds.\r\n", victim->name, delay );
-   return;
 }
 
 CMDF( do_deny )
@@ -376,7 +354,7 @@ CMDF( do_deny )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Deny whom?\r\n" );
       return;
@@ -394,7 +372,6 @@ CMDF( do_deny )
    victim->save(  );
    if( victim->desc )
       close_socket( victim->desc, false );
-   return;
 }
 
 CMDF( do_disconnect )
@@ -404,14 +381,14 @@ CMDF( do_disconnect )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "You must specify a player or descriptor to disconnect.\r\n" );
       return;
    }
 
    if( is_number( argument ) )
-      desc = atoi( argument );
+      desc = atoi( argument.c_str(  ) );
    else if( ( victim = ch->get_char_world( argument ) ) )
    {
       if( victim->desc == NULL )
@@ -424,14 +401,14 @@ CMDF( do_disconnect )
    }
    else
    {
-      ch->printf( "Disconnect: '%s' was not found!\r\n", argument );
+      ch->printf( "Disconnect: '%s' was not found!\r\n", argument.c_str(  ) );
       return;
    }
 
-   list<descriptor_data*>::iterator ds;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   list < descriptor_data * >::iterator ds;
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
 
       if( d->descriptor == desc )
       {
@@ -454,34 +431,32 @@ CMDF( do_disconnect )
    }
    bug( "%s: desc '%d' not found!", __FUNCTION__, desc );
    ch->print( "Descriptor not found!\r\n" );
-   return;
 }
 
-void echo_all_printf( short tar, char *Str, ... )
+void echo_all_printf( short tar, const char *str, ... )
 {
    va_list arg;
    char argument[MSL];
 
-   if( !Str || Str[0] == '\0' )
+   if( !str || str[0] == '\0' )
       return;
 
-   va_start( arg, Str );
-   vsnprintf( argument, MSL, Str, arg );
+   va_start( arg, str );
+   vsnprintf( argument, MSL, str, arg );
    va_end( arg );
 
    echo_to_all( argument, tar );
-   return;
 }
 
-void echo_to_all( char *argument, short tar )
+void echo_to_all( const string & argument, short tar )
 {
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       return;
 
-   list<descriptor_data*>::iterator ds;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   list < descriptor_data * >::iterator ds;
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
+      descriptor_data *d = *ds;
 
       /*
        * Added showing echoes to players who are editing, so they won't
@@ -500,20 +475,15 @@ void echo_to_all( char *argument, short tar )
          else if( tar == ECHOTAR_IMM && !d->character->is_immortal(  ) )
             continue;
 
-         if( d->character->MXP_ON(  ) )
-            d->character->print( MXP_TAG_SECURE );
-
-         d->character->printf( "%s\r\n", argument );
+         d->character->printf( "%s\r\n", argument.c_str(  ) );
       }
    }
-   return;
 }
 
 CMDF( do_echo )
 {
-   char arg[MIL];
+   string arg;
    int target;
-   char *parg;
 
    ch->set_color( AT_IMMORT );
 
@@ -522,13 +492,14 @@ CMDF( do_echo )
       ch->print( "You can't do that right now.\r\n" );
       return;
    }
-   if( !argument || argument[0] == '\0' )
+
+   if( argument.empty(  ) )
    {
       ch->print( "Echo what?\r\n" );
       return;
    }
 
-   parg = argument;
+   string parg = argument;
    argument = one_argument( argument, arg );
    if( !str_cmp( arg, "PC" ) || !str_cmp( arg, "player" ) )
       target = ECHOTAR_PC;
@@ -545,8 +516,7 @@ CMDF( do_echo )
 /* Stupid little function for the Voice of God - Samson 4-30-99 */
 CMDF( do_voice )
 {
-   echo_all_printf( ECHOTAR_ALL, "&[immortal]The Voice of God says: %s", argument );
-   return;
+   echo_all_printf( ECHOTAR_ALL, "&[immortal]The Voice of God says: %s", argument.c_str(  ) );
 }
 
 /* This function shared by do_transfer and do_mptransfer
@@ -557,7 +527,7 @@ CMDF( do_voice )
  * 2. Being sent to private rooms.
  * 3. The victim is in hell.
  */
-void transfer_char( char_data *ch, char_data *victim, room_index *location )
+void transfer_char( char_data * ch, char_data * victim, room_index * location )
 {
    if( !victim->in_room )
    {
@@ -565,7 +535,7 @@ void transfer_char( char_data *ch, char_data *victim, room_index *location )
       return;
    }
 
-   if( ch->isnpc() && location->is_private() )
+   if( ch->isnpc(  ) && location->is_private(  ) )
    {
       progbug( "Mptransfer - Private room", ch );
       return;
@@ -574,27 +544,29 @@ void transfer_char( char_data *ch, char_data *victim, room_index *location )
    if( !ch->can_see( victim, true ) )
       return;
 
-   if( ch->isnpc() && !victim->isnpc() && victim->pcdata->release_date != 0 )
+   if( ch->isnpc(  ) && !victim->isnpc(  ) && victim->pcdata->release_date != 0 )
    {
       progbugf( ch, "Mptransfer - helled character (%s)", victim->name );
       return;
    }
 
-   /* If victim not in area's level range, do not transfer */
-   if( ch->isnpc() && !victim->in_hard_range( location->area ) && !location->flags.test( ROOM_PROTOTYPE ) )
+   /*
+    * If victim not in area's level range, do not transfer 
+    */
+   if( ch->isnpc(  ) && !victim->in_hard_range( location->area ) && !location->flags.test( ROOM_PROTOTYPE ) )
       return;
 
    if( victim->fighting )
       victim->stop_fighting( true );
 
-   if( !ch->isnpc() )
+   if( !ch->isnpc(  ) )
       act( AT_MAGIC, "A swirling vortex arrives to pick up $n!", victim, NULL, NULL, TO_ROOM );
 
    leave_map( victim, ch, location );
 
    act( AT_MAGIC, "A swirling vortex arrives, carrying $n!", victim, NULL, NULL, TO_ROOM );
 
-   if( !ch->isnpc() )
+   if( !ch->isnpc(  ) )
    {
       if( ch != victim )
          act( AT_IMMORT, "$n has sent a swirling vortex to transport you.", ch, NULL, victim, TO_VICT );
@@ -607,12 +579,12 @@ void transfer_char( char_data *ch, char_data *victim, room_index *location )
 
 CMDF( do_transfer )
 {
-   char arg1[MIL];
+   string arg1;
    room_index *location;
    char_data *victim;
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Transfer whom?\r\n" );
       return;
@@ -623,7 +595,7 @@ CMDF( do_transfer )
    /*
     * Thanks to Grodyn for the optional location parameter.
     */
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       location = ch->in_room;
    else
    {
@@ -636,14 +608,13 @@ CMDF( do_transfer )
 
    if( !str_cmp( arg1, "all" ) )
    {
-      list<descriptor_data*>::iterator ds;
+      list < descriptor_data * >::iterator ds;
 
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
 
-         if( d->connected == CON_PLAYING && d->character != ch && d->character->in_room
-             && d->newstate != 2 && ch->can_see( d->character, true ) )
+         if( d->connected == CON_PLAYING && d->character != ch && d->character->in_room && d->newstate != 2 && ch->can_see( d->character, true ) )
             transfer_char( ch, d->character, location );
       }
       return;
@@ -665,10 +636,9 @@ CMDF( do_transfer )
       return;
    }
    transfer_char( ch, victim, location );
-   return;
 }
 
-void location_action( char_data * ch, char *argument, room_index * location, short map, short x, short y )
+void location_action( char_data * ch, const string & argument, room_index * location, short map, short x, short y )
 {
    if( !location )
    {
@@ -748,10 +718,10 @@ void location_action( char_data * ch, char *argument, room_index * location, sho
     * See if 'ch' still exists before continuing!
     * Handles 'at XXXX quit' case.
     */
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *wch = (*ich);
+      char_data *wch = ( *ich );
 
       if( wch == ch && !ch->char_died(  ) )
       {
@@ -761,13 +731,12 @@ void location_action( char_data * ch, char *argument, room_index * location, sho
          break;
       }
    }
-   return;
 }
 
 /*  Added atmob and atobj to reduce lag associated with at
  *  --Shaddai
  */
-void atmob( char_data * ch, char_data * wch, char *argument )
+void atmob( char_data * ch, char_data * wch, const string & argument )
 {
    if( is_ignoring( wch, ch ) )
    {
@@ -775,26 +744,24 @@ void atmob( char_data * ch, char_data * wch, char *argument )
       return;
    }
    location_action( ch, argument, wch->in_room, wch->map, wch->mx, wch->my );
-   return;
 }
 
-void atobj( char_data * ch, obj_data * obj, char *argument )
+void atobj( char_data * ch, obj_data * obj, const string & argument )
 {
    location_action( ch, argument, obj->in_room, obj->map, obj->mx, obj->my );
-   return;
 }
 
 /* Smaug 1.02a at command restored by Samson 8-14-98 */
 CMDF( do_at )
 {
-   char arg[MIL];
+   string arg;
    room_index *location;
    char_data *wch;
    obj_data *obj;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg.empty(  ) || argument.empty(  ) )
    {
       ch->print( "At where what?\r\n" );
       return;
@@ -823,12 +790,11 @@ CMDF( do_at )
       return;
    }
    location_action( ch, argument, location, -1, -1, -1 );
-   return;
 }
 
 CMDF( do_rat )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    room_index *location, *original;
    int Start, End, vnum;
 
@@ -836,14 +802,14 @@ CMDF( do_rat )
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !arg1 || arg1[0] == '\0' || !arg2 || arg2[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Syntax: rat <start> <end> <command>\r\n" );
       return;
    }
 
-   Start = atoi( arg1 );
-   End = atoi( arg2 );
+   Start = atoi( arg1.c_str(  ) );
+   End = atoi( arg2.c_str(  ) );
    if( Start < 1 || End < Start || Start > End || Start == End || End > sysdata->maxvnum )
    {
       ch->print( "Invalid range.\r\n" );
@@ -871,39 +837,36 @@ CMDF( do_rat )
    if( !ch->to_room( original ) )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
    ch->print( "Done.\r\n" );
-   return;
 }
 
 /* Rewritten by Whir to be viewer friendly - 8/26/98 */
 CMDF( do_rstat )
 {
    room_index *location;
-   static char *dir_text[] = { "n", "e", "s", "w", "u", "d", "ne", "nw", "se", "sw", "?" };
+   const char *dir_text[] = { "n", "e", "s", "w", "u", "d", "ne", "nw", "se", "sw", "?" };
 
    if( !str_cmp( argument, "exits" ) )
    {
-      list<exit_data*>::iterator ex;
+      list < exit_data * >::iterator ex;
       location = ch->in_room;
 
       ch->printf( "&wExits for room '&G%s.&w' vnum &G%d&w\r\n", location->name, location->vnum );
 
       int cnt = 0;
-      for( ex = location->exits.begin(); ex != location->exits.end(); ++ex )
+      for( ex = location->exits.begin(  ); ex != location->exits.end(  ); ++ex )
       {
-         exit_data *pexit = (*ex);
+         exit_data *pexit = *ex;
 
          ch->printf( "%2d) &G%2s&w to &G%-5d&w.  Key: &G%d  &wKeywords: '&G%s&w'  &wFlags: &G%s&w.\r\n",
-                     ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
-                     pexit->key, pexit->keyword, bitset_string( pexit->flags, ex_flags ) );
+                     ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0, pexit->key, pexit->keyword, bitset_string( pexit->flags, ex_flags ) );
 
          ch->printf( "Description: &G%s&wExit links back to vnum: &G%d  &wExit's RoomVnum: &G%d&w\r\n\r\n",
-                     ( pexit->exitdesc && pexit->exitdesc[0] != '\0' ) ? pexit->exitdesc : "(NONE)\r\n",
-                     pexit->rexit ? pexit->rexit->vnum : 0, pexit->rvnum );
+                     ( pexit->exitdesc && pexit->exitdesc[0] != '\0' ) ? pexit->exitdesc : "(NONE)\r\n", pexit->rexit ? pexit->rexit->vnum : 0, pexit->rvnum );
       }
       return;
    }
 
-   location = ( argument[0] == '\0' ) ? ch->in_room : ch->find_location( argument );
+   location = ( argument.empty(  ) )? ch->in_room : ch->find_location( argument );
 
    if( !location )
    {
@@ -930,8 +893,8 @@ CMDF( do_rstat )
 
    ch->printf( "&wName: &G%s\r\n&wArea: &G%s  ", location->name, location->area ? location->area->name : "None????" );
    ch->printf( "&wFilename: &G%s\r\n", location->area ? location->area->filename : "None????" );
-   ch->printf( "&wVnum: &G%d&w  Light: &G%d&w  TeleDelay: &G%d&w  TeleVnum: &G%d&w  Tunnel: &G%d&w\r\n",
-               location->vnum, location->light, location->tele_delay, location->tele_vnum, location->tunnel );
+   ch->printf( "&wVnum: &G%d&w  Light: &G%d&w  TeleDelay: &G%d&w  TeleVnum: &G%d&w  Tunnel: &G%d&w  Max Weight: &G%d&w\r\n",
+               location->vnum, location->light, location->tele_delay, location->tele_vnum, location->tunnel, location->max_weight );
 
    ch->printf( "Room flags: &G%s&w\r\n", bitset_string( location->flags, r_flags ) );
    ch->printf( "Sector type: &G%s&w\r\n", sect_types[location->sector_type] );
@@ -944,14 +907,14 @@ CMDF( do_rstat )
    if( location->nitedesc && location->nitedesc[0] != '\0' )
       ch->printf( "NiteDesc:&w\r\n%s&w", location->nitedesc );
 
-   if( !location->extradesc.empty() )
+   if( !location->extradesc.empty(  ) )
    {
-      list<extra_descr_data*>::iterator ex;
+      list < extra_descr_data * >::iterator ex;
 
       ch->print( "Extra description keywords:\r\n&G" );
-      for( ex = location->extradesc.begin(); ex != location->extradesc.end(); ++ex )
+      for( ex = location->extradesc.begin(  ); ex != location->extradesc.end(  ); ++ex )
       {
-         extra_descr_data *ed = (*ex);
+         extra_descr_data *ed = *ex;
 
          ch->print( ed->keyword );
          ch->print( " " );
@@ -960,14 +923,14 @@ CMDF( do_rstat )
    }
 
    ch->print( "Permanent affects: " );
-   if( ch->in_room->indexaffects.empty() )
+   if( ch->in_room->permaffects.empty(  ) )
       ch->print( "&GNone&w\r\n" );
    else
    {
       ch->print( "\r\n" );
 
-      list<affect_data*>::iterator paf;
-      for( paf = location->indexaffects.begin(); paf != location->indexaffects.end(); ++paf )
+      list < affect_data * >::iterator paf;
+      for( paf = location->permaffects.begin(  ); paf != location->permaffects.end(  ); ++paf )
       {
          affect_data *af = *paf;
 
@@ -979,64 +942,62 @@ CMDF( do_rstat )
       ch->print( "Roomprogs: &GNone&w\r\n" );
    else
    {
-      list<mud_prog_data*>::iterator mprg;
+      list < mud_prog_data * >::iterator mprg;
 
       ch->print( "Roomprogs: &G" );
 
-      for( mprg = ch->in_room->mudprogs.begin(); mprg != ch->in_room->mudprogs.end(); ++mprg )
+      for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
       {
-         mud_prog_data *mprog = (*mprg);
+         mud_prog_data *mprog = *mprg;
 
-         ch->printf( "%s ", mprog_type_to_name( mprog->type ) );
+         ch->printf( "%s ", mprog_type_to_name( mprog->type ).c_str(  ) );
       }
       ch->print( "&w\r\n" );
    }
 
-   list<char_data*>::iterator ich;
+   list < char_data * >::iterator ich;
    ch->print( "Characters/Mobiles in the room:\r\n" );
-   for( ich = location->people.begin(); ich != location->people.end(); ++ich )
+   for( ich = location->people.begin(  ); ich != location->people.end(  ); ++ich )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
 
       if( ch->can_see( rch, false ) )
          ch->printf( "(&G%d&w)&G%s&w\r\n", ( rch->isnpc(  )? rch->pIndexData->vnum : 0 ), rch->name );
    }
 
-   list<obj_data*>::iterator iobj;
+   list < obj_data * >::iterator iobj;
    ch->print( "\r\nObjects in the room:\r\n" );
-   for( iobj = location->objects.begin(); iobj != location->objects.end(); ++iobj )
+   for( iobj = location->objects.begin(  ); iobj != location->objects.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( ch->can_see_obj( obj, false ) )
          ch->printf( "(&G%d&w)&G%s&w\r\n", obj->pIndexData->vnum, obj->name );
    }
    ch->print( "\r\n" );
 
-   if( !location->exits.empty() )
+   if( !location->exits.empty(  ) )
       ch->print( "------------------- EXITS -------------------\r\n" );
 
    int cnt = 0;
-   list<exit_data*>::iterator ex;
-   for( ex = location->exits.begin(); ex != location->exits.end(); ++ex )
+   list < exit_data * >::iterator ex;
+   for( ex = location->exits.begin(  ); ex != location->exits.end(  ); ++ex )
    {
-      exit_data *pexit = (*ex);
+      exit_data *pexit = *ex;
 
       ch->printf( "%2d) &G%-2s &wto &G%-5d  &wKey: &G%-5d  &wKeywords: &G%s&w  Flags: &G%s&w.\r\n",
                   ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
-                  pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)",
-                  bitset_string( pexit->flags, ex_flags ) );
+                  pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
 
       if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
          ch->printf( "    &wExit coordinates: &G%d&wX &G%d&wY\r\n", pexit->mx, pexit->my );
    }
-   return;
 }
 
 /* Rewritten by Whir to be viewer friendly - 8/26/98 */
 CMDF( do_ostat )
 {
-   char *suf;
+   const char *suf;
    obj_data *obj;
 
    if( !( obj = ch->get_obj_world( argument ) ) )
@@ -1060,8 +1021,7 @@ CMDF( do_ostat )
 
    ch->printf( "&w|Name   : &G%s&w\r\n", obj->name );
 
-   ch->printf( "|Short  : &G%s&w\r\n|Long   : &G%s&w\r\n", obj->short_descr,
-               ( obj->objdesc && obj->objdesc[0] != '\0' ) ? obj->objdesc : "" );
+   ch->printf( "|Short  : &G%s&w\r\n|Long   : &G%s&w\r\n", obj->short_descr, ( obj->objdesc && obj->objdesc[0] != '\0' ) ? obj->objdesc : "" );
 
    if( obj->action_desc && obj->action_desc[0] != '\0' )
       ch->printf( "|Action : &G%s&w\r\n", obj->action_desc );
@@ -1069,17 +1029,15 @@ CMDF( do_ostat )
    ch->printf( "|Area   : %s\r\n", obj->pIndexData->area ? obj->pIndexData->area->name : "(NONE)" );
 
    ch->printf( "|Vnum   : &G%5d&w |Type  :     &G%9s&w |Count     : &G%3.3d&w |Gcount: &G%3.3d&w\r\n",
-               obj->pIndexData->vnum, obj->item_type_name(  ), obj->pIndexData->count, obj->count );
+               obj->pIndexData->vnum, obj->item_type_name(  ).c_str(  ), obj->pIndexData->count, obj->count );
 
    ch->printf( "|Number : &G%2.2d&w/&G%2.2d&w |Weight:     &G%4.4d&w/&G%4.4d&w |Wear_loc  : &G%3.2d&w |Layers: &G%d&w\r\n",
                1, obj->get_number(  ), obj->weight, obj->get_weight(  ), obj->wear_loc, obj->pIndexData->layers );
 
-   ch->printf( "|Cost   : &G%5d&w |Ego*  : &G%6d&w |Ego   : &G%6d&w |Timer: &G%d&w\r\n",
-               obj->cost, obj->pIndexData->ego, obj->ego, obj->timer );
+   ch->printf( "|Cost   : &G%5d&w |Ego*  : &G%6d&w |Ego   : &G%6d&w |Timer: &G%d&w\r\n", obj->cost, obj->pIndexData->ego, obj->ego, obj->timer );
 
    ch->printf( "|In room: &G%5d&w |In obj: &G%s&w |Level :  &G%5d&w |Limit: &G%5d&w\r\n",
-               obj->in_room == NULL ? 0 : obj->in_room->vnum,
-               obj->in_obj == NULL ? "(NONE)" : obj->in_obj->short_descr, obj->level, obj->pIndexData->limit );
+               obj->in_room == NULL ? 0 : obj->in_room->vnum, obj->in_obj == NULL ? "(NONE)" : obj->in_obj->short_descr, obj->level, obj->pIndexData->limit );
 
    ch->printf( "|On map       : &G%s&w\r\n", obj->extra_flags.test( ITEM_ONMAP ) ? map_names[obj->map] : "(NONE)" );
 
@@ -1095,8 +1053,7 @@ CMDF( do_ostat )
    if( obj->year == 0 )
       ch->print( "|Scheduled donation date: &G(NONE)&w\r\n" );
    else
-      ch->printf( "|Scheduled donation date: &G %d%s day in the Month of %s, in the year %d.&w", day, suf,
-                  month_name[obj->month], obj->year );
+      ch->printf( "|Scheduled donation date: &G %d%s day in the Month of %s, in the year %d.&w", day, suf, month_name[obj->month], obj->year );
 
    ch->printf( "|Index Values : &G%2d %2d %2d %2d %2d %2d %2d %2d %2d %2d %2d&w\r\n",
                obj->pIndexData->value[0], obj->pIndexData->value[1], obj->pIndexData->value[2], obj->pIndexData->value[3],
@@ -1107,14 +1064,14 @@ CMDF( do_ostat )
                obj->value[0], obj->value[1], obj->value[2], obj->value[3],
                obj->value[4], obj->value[5], obj->value[6], obj->value[7], obj->value[8], obj->value[9], obj->value[10] );
 
-   if( !obj->pIndexData->extradesc.empty() )
+   if( !obj->pIndexData->extradesc.empty(  ) )
    {
-      list<extra_descr_data*>::iterator ex;
+      list < extra_descr_data * >::iterator ex;
 
       ch->print( "|Primary description keywords:   '" );
-      for( ex = obj->pIndexData->extradesc.begin(); ex != obj->pIndexData->extradesc.end(); ++ex )
+      for( ex = obj->pIndexData->extradesc.begin(  ); ex != obj->pIndexData->extradesc.end(  ); ++ex )
       {
-         extra_descr_data *ed = (*ex);
+         extra_descr_data *ed = *ex;
 
          ch->print( ed->keyword );
          ch->print( " " );
@@ -1122,14 +1079,14 @@ CMDF( do_ostat )
       ch->print( "'.\r\n" );
    }
 
-   if( !obj->extradesc.empty() )
+   if( !obj->extradesc.empty(  ) )
    {
-      list<extra_descr_data*>::iterator ex;
+      list < extra_descr_data * >::iterator ex;
 
       ch->print( "|Secondary description keywords: '" );
-      for( ex = obj->extradesc.begin(); ex != obj->extradesc.end(); ++ex )
+      for( ex = obj->extradesc.begin(  ); ex != obj->extradesc.end(  ); ++ex )
       {
-         extra_descr_data *ed = (*ex);
+         extra_descr_data *ed = *ex;
 
          ch->print( ed->keyword );
          ch->print( " " );
@@ -1141,15 +1098,15 @@ CMDF( do_ostat )
       ch->print( "|Objprogs     : &GNone&w\r\n" );
    else
    {
-      list<mud_prog_data*>::iterator mprg;
+      list < mud_prog_data * >::iterator mprg;
 
       ch->print( "|Objprogs     : &G" );
 
-      for( mprg = obj->pIndexData->mudprogs.begin(); mprg != obj->pIndexData->mudprogs.end(); ++mprg )
+      for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
       {
-         mud_prog_data *mprog = (*mprg);
+         mud_prog_data *mprog = *mprg;
 
-         ch->printf( "%s ", mprog_type_to_name( mprog->type ) );
+         ch->printf( "%s ", mprog_type_to_name( mprog->type ).c_str(  ) );
       }
       ch->print( "&w\r\n" );
    }
@@ -1162,19 +1119,18 @@ CMDF( do_ostat )
    ch->print( "\r\n" );
 
    affect_data *af;
-   list<affect_data*>::iterator paf;
-   for( paf = obj->affects.begin(); paf != obj->affects.end(); ++paf )
+   list < affect_data * >::iterator paf;
+   for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
    {
-      af = (*paf);
+      af = *paf;
       ch->showaffect( af );
    }
 
-   for( paf = obj->pIndexData->affects.begin(); paf != obj->pIndexData->affects.end(); ++paf )
+   for( paf = obj->pIndexData->affects.begin(  ); paf != obj->pIndexData->affects.end(  ); ++paf )
    {
-      af = (*paf);
+      af = *paf;
       ch->showaffect( af );
    }
-   return;
 }
 
 CMDF( do_moblog )
@@ -1182,7 +1138,89 @@ CMDF( do_moblog )
    ch->set_color( AT_LOG );
    ch->print( "\r\n[Date_|_Time]  Current moblog:\r\n" );
    show_file( ch, MOBLOG_FILE );
-   return;
+}
+
+CMDF( do_vstat )
+{
+   variable_data *vd;
+   list < variable_data * >::iterator ivd;
+   char_data *victim;
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "Vstat whom?\r\n" );
+      return;
+   }
+
+   if( !( victim = get_wizvictim( ch, argument, false ) ) )
+      return;
+
+   if( victim->variables.size(  ) < 1 )
+   {
+      ch->print( "They have no variables currently assigned to them.\r\n" );
+      return;
+   }
+
+   ch->pagerf( "\r\n&cName: &C%-20s &cRoom : &w%-10d", victim->name, victim->in_room == NULL ? 0 : victim->in_room->vnum );
+   ch->pagerf( "\r\n&cVariables:\r\n" );
+
+   /*
+    * Variables:
+    * Vnum:           Tag:                 Type:     Timer:
+    * Flags:
+    * Data:
+    */
+   for( ivd = victim->variables.begin(  ); ivd != victim->variables.end(  ); ++ivd )
+   {
+      vd = *ivd;
+
+      ch->pagerf( "  &cVnum: &W%-10d &cTag: &W%-15s &cTimer: &W%d\r\n", vd->vnum, vd->tag.c_str(  ), vd->timer );
+      ch->pager( "  &cType: " );
+      if( vd->data )
+      {
+         switch ( vd->type )
+         {
+            case vtSTR:
+               if( vd->data )
+                  ch->pagerf( "&CString     &cData: &W%s", ( char * )vd->data );
+               break;
+
+            case vtINT:
+               if( vd->data )
+                  ch->pagerf( "&CInteger    &cData: &W%ld", ( long )vd->data );
+               break;
+
+               /*
+                * case vtXBIT: <--- FIXME: No EXT_BV, convert to std::bitset someday
+                * if( vd->data )
+                * {
+                * char buf[MAX_STRING_LENGTH];
+                * int started = 0;
+                * int x;
+                * 
+                * buf[0] = '\0';
+                * for( x = MAX_BITS; x > 0; --x )
+                * {
+                * if( !started && xIS_SET( *( EXT_BV * ) vd->data, x ) )
+                * started = x;
+                * }
+                * 
+                * for( x = 1; x <= started; x++ )
+                * strcat( buf, xIS_SET( *( EXT_BV * ) vd->data, x ) ? "1 " : "0 " );
+                * 
+                * if( buf[0] != '\0' )
+                * buf[strlen( buf ) - 1] = '\0';
+                * pager_printf( ch, "&CXBIT       &cData: &w[&W%s&w]", buf );
+                * }
+                * break; 
+                */
+         }
+      }
+      else
+         ch->pager( "&CNo Data" );
+
+      ch->pager( "\r\n\r\n" );
+   }
 }
 
 /* do_mstat rewritten by Whir to be view-friendly 8/18/98 */
@@ -1202,20 +1240,17 @@ CMDF( do_mstat )
    if( !victim->isnpc(  ) )
    {
       ch->printf( "&w|Name  : &G%10s &w|Clan  : &G%10s &w|PKill : &G%10s &w|Room  : &G%d&w\r\n",
-                  victim->name, ( victim->pcdata->clan == NULL ) ? "(NONE)" : victim->pcdata->clan->name,
+                  victim->name, ( victim->pcdata->clan == NULL ) ? "(NONE)" : victim->pcdata->clan->name.c_str(  ),
                   victim->has_pcflag( PCFLAG_DEADLY ) ? "Yes" : "No", victim->in_room->vnum );
 
-      ch->printf( "|Level : &G%10d &w|Trust : &G%10d &w|Sex   : &G%10s &w|Gold  : &G%d&w\r\n",
-                  victim->level, victim->trust, npc_sex[victim->sex], victim->gold );
+      ch->printf( "|Level : &G%10d &w|Trust : &G%10d &w|Sex   : &G%10s &w|Gold  : &G%d&w\r\n", victim->level, victim->trust, npc_sex[victim->sex], victim->gold );
 
-      ch->printf( "|STR   : &G%10d &w|HPs   : &G%10d &w|MaxHPs: &G%10d &w|Style : &G%s&w\r\n",
-                  victim->get_curr_str(  ), victim->hit, victim->max_hit, styles[victim->style] );
+      ch->printf( "|STR   : &G%10d &w|HPs   : &G%10d &w|MaxHPs: &G%10d &w|Style : &G%s&w\r\n", victim->get_curr_str(  ), victim->hit, victim->max_hit, styles[victim->style] );
 
       ch->printf( "|INT   : &G%10d &w|Mana  : &G%10d &w|MaxMan: &G%10d &w|Pos   : &G%s&w\r\n",
                   victim->get_curr_int(  ), victim->mana, victim->max_mana, npc_position[victim->position] );
 
-      ch->printf( "|WIS   : &G%10d &w|Move  : &G%10d &w|MaxMov: &G%10d &w|Wimpy : &G%d&w\r\n",
-                  victim->get_curr_wis(  ), victim->move, victim->max_move, victim->wimpy );
+      ch->printf( "|WIS   : &G%10d &w|Move  : &G%10d &w|MaxMov: &G%10d &w|Wimpy : &G%d&w\r\n", victim->get_curr_wis(  ), victim->move, victim->max_move, victim->wimpy );
 
       ch->printf( "|DEX   : &G%10d &w|AC    : &G%10d &w|Align : &G%10d &w|Favor : &G%d&w\r\n",
                   victim->get_curr_dex(  ), victim->GET_AC(  ), victim->alignment, victim->pcdata->favor );
@@ -1223,8 +1258,7 @@ CMDF( do_mstat )
       ch->printf( "|CON   : &G%10d &w|+Hit  : &G%10d &w|+Dam  : &G%10d &w|Pracs : &G%d&w\r\n",
                   victim->get_curr_con(  ), victim->GET_HITROLL(  ), victim->GET_DAMROLL(  ), victim->pcdata->practice );
 
-      ch->printf( "|CHA   : &G%10d &w|BseAge: &G%10d &w|Agemod: &G%10d &w|\r\n",
-                  victim->get_curr_cha(  ), victim->pcdata->age, victim->pcdata->age_bonus );
+      ch->printf( "|CHA   : &G%10d &w|BseAge: &G%10d &w|Agemod: &G%10d &w|\r\n", victim->get_curr_cha(  ), victim->pcdata->age, victim->pcdata->age_bonus );
 
       if( victim->pcdata->condition[COND_THIRST] == -1 )
          mudstrlcpy( lbuf, "|Thirst: &G    Immune &w", 256 );
@@ -1234,25 +1268,20 @@ CMDF( do_mstat )
          mudstrlcat( lbuf, "|Hunger: &G    Immune &w", 256 );
       else
          snprintf( lbuf + strlen( lbuf ), 256 - strlen( lbuf ), "|Hunger: &G%10d &w", victim->pcdata->condition[COND_FULL] );
-      ch->printf( "|LCK   : &G%10d &w%s|Drunk : &G%d &w\r\n",
-                  victim->get_curr_lck(  ), lbuf, victim->pcdata->condition[COND_DRUNK] );
+      ch->printf( "|LCK   : &G%10d &w%s|Drunk : &G%d &w\r\n", victim->get_curr_lck(  ), lbuf, victim->pcdata->condition[COND_DRUNK] );
 
-      ch->printf( "|Class :&G%11s &w|Mental: &G%10d &w|#Attks: &G%10f&w\r\n",
-                  capitalize( victim->get_class(  ) ), victim->mental_state, victim->numattacks );
+      ch->printf( "|Class :&G%11s &w|Mental: &G%10d &w|#Attks: &G%10f&w\r\n", capitalize( victim->get_class(  ) ), victim->mental_state, victim->numattacks );
 
       ch->printf( "|Race  : &G%10s &w|Barehand: &G%d&wd&G%d&w+&G%d&w\r\n",
                   capitalize( victim->get_race(  ) ), victim->barenumdie, victim->baresizedie, victim->GET_DAMROLL(  ) );
 
       ch->printf( "|Deity :&G%11s &w|Authed:&G%11s &w|SF    :&G%11d &w|PVer  : &G%d&w\r\n",
-                  ( victim->pcdata->deity == NULL ) ? "(NONE)" : victim->pcdata->deity->name,
-                  ( victim->pcdata->authed_by && victim->pcdata->authed_by[0] != '\0' ) ? victim->pcdata->authed_by : "Unknown",
-                  victim->spellfail, victim->pcdata->version );
+                  ( victim->pcdata->deity == NULL ) ? "(NONE)" : victim->pcdata->deity->name.c_str(  ),
+                  !victim->pcdata->authed_by.empty(  )? victim->pcdata->authed_by.c_str(  ) : "Unknown", victim->spellfail, victim->pcdata->version );
 
-      ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d&w\r\n",
-                  victim->has_pcflag( PCFLAG_ONMAP ) ? map_names[victim->map] : "(NONE)", victim->mx, victim->my );
+      ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d&w\r\n", victim->has_pcflag( PCFLAG_ONMAP ) ? map_names[victim->map] : "(NONE)", victim->mx, victim->my );
 
-      ch->printf( "|Master: &G%10s &w|Leader: &G%s&w\r\n", victim->master ? victim->master->name : "(NONE)",
-                  victim->leader ? victim->leader->name : "(NONE)" );
+      ch->printf( "|Master: &G%10s &w|Leader: &G%s&w\r\n", victim->master ? victim->master->name : "(NONE)", victim->leader ? victim->leader->name : "(NONE)" );
 
       ch->printf( "|Saves : ---------- | ----------------- | ----------------- | -----------------\r\n" );
 
@@ -1264,18 +1293,13 @@ CMDF( do_mstat )
 
       if( victim->desc )
       {
-         ch->printf( "|Player's Terminal Program: &G%s&w\r\n", victim->desc->client );
-         ch->printf( "|Player's Terminal Support: &GMCCP[%s]  &GMSP[%s]  &GMXP[%s]&w\r\n",
-                     victim->desc->can_compress ? "&wX&G" : " ",
-                     victim->desc->msp_detected ? "&wX&G" : " ", victim->desc->mxp_detected ? "&wX&G" : " " );
+         ch->printf( "|Player's Terminal Program: &G%s&w\r\n", victim->desc->client.c_str(  ) );
+         ch->printf( "|Player's Terminal Support: &GMCCP[%s]  &GMSP[%s]\r\n", victim->desc->can_compress ? "&wX&G" : " ", victim->desc->msp_detected ? "&wX&G" : " " );
 
-         ch->printf( "|Terminal Support In Use  : &GMCCP[%s]  &GMSP[%s]  &GMXP[%s]&w\r\n",
-                     victim->desc->can_compress ? "&wX&G" : " ",
-                     victim->MSP_ON(  )? "&wX&G" : " ", victim->MXP_ON(  )? "&wX&G" : " " );
+         ch->printf( "|Terminal Support In Use  : &GMCCP[%s]  &GMSP[%s]\r\n", victim->desc->can_compress ? "&wX&G" : " ", victim->MSP_ON(  )? "&wX&G" : " " );
       }
 
-      ch->printf( "|PC Flags    : &G%s&w\r\n",
-                  !victim->has_pcflags() ? "(NONE)" : bitset_string( victim->get_pcflags(), pc_flags ) );
+      ch->printf( "|PC Flags    : &G%s&w\r\n", !victim->has_pcflags(  )? "(NONE)" : bitset_string( victim->get_pcflags(  ), pc_flags ) );
 
       ch->print( "|Languages: &[score]" );
       for( iLang = 0; iLang < LANG_UNKNOWN; ++iLang )
@@ -1288,20 +1312,17 @@ CMDF( do_mstat )
          }
       ch->print( "\r\n" );
 
-      ch->printf( "&w|Affected By : &G%s&w\r\n",
-                  !victim->has_aflags() ? "(NONE)" : bitset_string( victim->get_aflags(), aff_flags ) );
-      ch->printf( "|Bestowments : &G%s&w\r\n", !victim->pcdata->bestowments ? "(NONE)" : victim->pcdata->bestowments );
-      ch->printf( "|Resistances : &G%s&w\r\n",
-                  !victim->has_resists() ? "(NONE)" : bitset_string( victim->get_resists(), ris_flags ) );
-      ch->printf( "|Immunities  : &G%s&w\r\n", !victim->has_immunes() ? "(NONE)" : bitset_string( victim->get_immunes(), ris_flags ) );
-      ch->printf( "|Suscepts    : &G%s&w\r\n",
-                  !victim->has_susceps()? "(NONE)" : bitset_string( victim->get_susceps(), ris_flags ) );
-      ch->printf( "|Absorbs     : &G%s&w\r\n", !victim->has_absorbs() ? "(NONE)" : bitset_string( victim->get_absorbs(), ris_flags ) );
+      ch->printf( "&w|Affected By : &G%s&w\r\n", !victim->has_aflags(  )? "(NONE)" : bitset_string( victim->get_aflags(  ), aff_flags ) );
+      ch->printf( "|Bestowments : &G%s&w\r\n", victim->pcdata->bestowments.empty(  )? "(NONE)" : victim->pcdata->bestowments.c_str(  ) );
+      ch->printf( "|Resistances : &G%s&w\r\n", !victim->has_resists(  )? "(NONE)" : bitset_string( victim->get_resists(  ), ris_flags ) );
+      ch->printf( "|Immunities  : &G%s&w\r\n", !victim->has_immunes(  )? "(NONE)" : bitset_string( victim->get_immunes(  ), ris_flags ) );
+      ch->printf( "|Suscepts    : &G%s&w\r\n", !victim->has_susceps(  )? "(NONE)" : bitset_string( victim->get_susceps(  ), ris_flags ) );
+      ch->printf( "|Absorbs     : &G%s&w\r\n", !victim->has_absorbs(  )? "(NONE)" : bitset_string( victim->get_absorbs(  ), ris_flags ) );
 
-      list<affect_data*>::iterator paf;
-      for( paf = victim->affects.begin(); paf != victim->affects.end(); ++paf )
+      list < affect_data * >::iterator paf;
+      for( paf = victim->affects.begin(  ); paf != victim->affects.end(  ); ++paf )
       {
-         affect_data *aff = (*paf);
+         affect_data *aff = *paf;
 
          if( ( skill = get_skilltype( aff->type ) ) != NULL )
          {
@@ -1309,24 +1330,70 @@ CMDF( do_mstat )
 
             if( aff->location == APPLY_AFFECT || aff->location == APPLY_EXT_AFFECT )
                mudstrlcpy( mod, aff_flags[aff->modifier], MIL );
-            else if( aff->location == APPLY_RESISTANT
-             || aff->location == APPLY_IMMUNE
-             || aff->location == APPLY_ABSORB
-             || aff->location == APPLY_SUSCEPTIBLE )
+            else if( aff->location == APPLY_RESISTANT || aff->location == APPLY_IMMUNE || aff->location == APPLY_ABSORB || aff->location == APPLY_SUSCEPTIBLE )
                mudstrlcpy( mod, ris_flags[aff->modifier], MIL );
             else
                snprintf( mod, MIL, "%d", aff->modifier );
 
-            ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds",
-                        skill_tname[skill->type], skill->name, a_types[aff->location],
-                        mod, aff->duration );
+            ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds", skill_tname[skill->type], skill->name, a_types[aff->location], mod, aff->duration );
             if( aff->bit > 0 )
                ch->printf( " with bits &G%s&w.\r\n", aff_flags[aff->bit] );
             else
                ch->print( ".\r\n" );
          }
       }
-      return;
+
+      if( !victim->variables.empty(  ) )
+      {
+         variable_data *vd;
+         list < variable_data * >::iterator ivd;
+
+         ch->pager( "&cVariables  : &w" );
+         for( ivd = victim->variables.begin(  ); ivd != victim->variables.end(  ); ++ivd )
+         {
+            vd = *ivd;
+
+            ch->pagerf( "%s:%d", vd->tag.c_str(  ), vd->vnum );
+            switch ( vd->type )
+            {
+               case vtSTR:
+                  if( vd->data )
+                     ch->pagerf( "=%s", ( char * )vd->data );
+                  break;
+
+               case vtINT:
+                  if( vd->data )
+                     ch->pagerf( "=%ld", ( long )vd->data );
+                  break;
+
+                  /*
+                   * case vtXBIT: <--- FIXME: We don't have EXT_BV. Convert to std::bitset
+                   * if( vd->data )
+                   * {
+                   * char buf[MAX_STRING_LENGTH];
+                   * int started = 0;
+                   * 
+                   * buf[0] = '\0';
+                   * for( x = MAX_BITS; x > 0; --x )
+                   * {
+                   * if( !started && xIS_SET( *( EXT_BV * ) vd->data, x ) )
+                   * started = x;
+                   * }
+                   * 
+                   * for( x = 1; x <= started; x++ )
+                   * strcat( buf, xIS_SET( *( EXT_BV * ) vd->data, x ) ? "1 " : "0 " );
+                   * 
+                   * if( buf[0] != '\0' )
+                   * buf[strlen( buf ) - 1] = '\0';
+                   * pager_printf( ch, "=[%s]", buf );
+                   * }
+                   * break; 
+                   */
+            }
+            ch->pager( "  " );
+         }
+         ch->pager( "\r\n" );
+      }
    }
    else
    {
@@ -1334,18 +1401,15 @@ CMDF( do_mstat )
 
       ch->printf( "|Area  : &G%-50s &w\r\n", victim->pIndexData->area ? victim->pIndexData->area->name : "(NONE)" );
 
-      ch->printf( "|Level : &G%10d &w|Vnum  : &G%10d &w|Sex   : &G%10s &w|Gold  : &G%d&w\r\n",
-                  victim->level, victim->pIndexData->vnum, npc_sex[victim->sex], victim->gold );
+      ch->printf( "|Level : &G%10d &w|Vnum  : &G%10d &w|Sex   : &G%10s &w|Gold  : &G%d&w\r\n", victim->level, victim->pIndexData->vnum, npc_sex[victim->sex], victim->gold );
 
-      ch->printf( "|STR   : &G%10d &w|HPs   : &G%10d &w|MaxHPs: &G%10d &w|Exp   : &G%d&w\r\n",
-                  victim->get_curr_str(  ), victim->hit, victim->max_hit, victim->exp );
+      ch->printf( "|STR   : &G%10d &w|HPs   : &G%10d &w|MaxHPs: &G%10d &w|Exp   : &G%d&w\r\n", victim->get_curr_str(  ), victim->hit, victim->max_hit, victim->exp );
 
       ch->printf( "|INT   : &G%10d &w|Mana  : &G%10d &w|MaxMan: &G%10d &w|Pos   : &G%s&w\r\n",
                   victim->get_curr_int(  ), victim->mana, victim->max_mana, npc_position[victim->position] );
 
       ch->printf( "|WIS   : &G%10d &w|Move  : &G%10d &w|MaxMov: &G%10d &w|H.D.  : &G%d&wd&G%d&w+&G%d&w\r\n",
-                  victim->get_curr_wis(  ), victim->move, victim->max_move, victim->pIndexData->hitnodice,
-                  victim->pIndexData->hitsizedice, victim->pIndexData->hitplus );
+                  victim->get_curr_wis(  ), victim->move, victim->max_move, victim->pIndexData->hitnodice, victim->pIndexData->hitsizedice, victim->pIndexData->hitplus );
 
       ch->printf( "|DEX   : &G%10d &w|AC    : &G%10d &w|Align : &G%10d &w|D.D.  : &G%d&wd&G%d&w+&G%d&w\r\n",
                   victim->get_curr_dex(  ), victim->GET_AC(  ), victim->alignment, victim->pIndexData->damnodice,
@@ -1354,17 +1418,14 @@ CMDF( do_mstat )
       ch->printf( "|CON   : &G%10d &w|Thac0 : &G%10d &w|+Hit  : &G%10d &w|+Dam  : &G%d&w\r\n",
                   victim->get_curr_con(  ), calc_thac0( victim, NULL, 0 ), victim->GET_HITROLL(  ), victim->GET_DAMROLL(  ) );
 
-      ch->printf( "|CHA   : &G%10d &w|Count : &G%10d &w|Timer : &G%10d&w\r\n",
-                  victim->get_curr_cha(  ), victim->pIndexData->count, victim->timer );
+      ch->printf( "|CHA   : &G%10d &w|Count : &G%10d &w|Timer : &G%10d&w\r\n", victim->get_curr_cha(  ), victim->pIndexData->count, victim->timer );
 
       ch->printf( "|LCK   : &G%10d &w|#Attks: &G%10f &w|Thac0*: &G%10d &w|Exp*  : &G%d&w\r\n",
                   victim->get_curr_lck(  ), victim->numattacks, victim->mobthac0, victim->pIndexData->exp );
 
-      ch->printf( "|Class : &G%10s &w|Master: &G%s&w\r\n",
-                  capitalize( npc_class[victim->Class] ), victim->master ? victim->master->name : "(NONE)" );
+      ch->printf( "|Class : &G%10s &w|Master: &G%s&w\r\n", capitalize( npc_class[victim->Class] ), victim->master ? victim->master->name : "(NONE)" );
 
-      ch->printf( "|Race  : &G%10s &w|Leader: &G%s&w\r\n",
-                  capitalize( npc_race[victim->race] ), victim->leader ? victim->leader->name : "(NONE)" );
+      ch->printf( "|Race  : &G%10s &w|Leader: &G%s&w\r\n", capitalize( npc_race[victim->race] ), victim->leader ? victim->leader->name : "(NONE)" );
 
       ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d    &w|Native Sector: &G%s&w\r\n",
                   victim->has_actflag( ACT_ONMAP ) ? map_names[victim->map] : "(NONE)",
@@ -1384,7 +1445,7 @@ CMDF( do_mstat )
 
       ch->print( "|Languages: &[score]" );
       for( iLang = 0; iLang < LANG_UNKNOWN; ++iLang )
-         if( knows_language( victim, iLang, victim ) || ( ch->isnpc(  ) && !victim->has_langs() ) )
+         if( knows_language( victim, iLang, victim ) || ( ch->isnpc(  ) && !victim->has_langs(  ) ) )
          {
             if( iLang == victim->speaking )
                ch->set_color( AT_SCORE3 );
@@ -1393,64 +1454,55 @@ CMDF( do_mstat )
          }
       ch->print( "\r\n" );
 
-      ch->printf( "&w|Act Flags   : &G%s&w\r\n", bitset_string( victim->get_actflags(), act_flags ) );
-      ch->printf( "|Affected By : &G%s&w\r\n",
-                  !victim->has_aflags() ? "(NONE)" : bitset_string( victim->get_aflags(), aff_flags ) );
-      ch->printf( "|Mob Spec Fun: &G%s&w\r\n", !victim->spec_funname.empty() ? victim->spec_funname.c_str() : "(NONE)" );
-      ch->printf( "|Body Parts  : &G%s&w\r\n", bitset_string( victim->get_bparts(), part_flags ) );
-      ch->printf( "|Resistances : &G%s&w\r\n",
-                  !victim->has_resists() ? "(NONE)" : bitset_string( victim->get_resists(), ris_flags ) );
-      ch->printf( "|Immunities  : &G%s&w\r\n", !victim->has_immunes() ? "(NONE)" : bitset_string( victim->get_immunes(), ris_flags ) );
-      ch->printf( "|Suscepts    : &G%s&w\r\n",
-                  !victim->has_susceps() ? "(NONE)" : bitset_string( victim->get_susceps(), ris_flags ) );
-      ch->printf( "|Absorbs     : &G%s&w\r\n", !victim->has_absorbs() ? "(NONE)" : bitset_string( victim->get_absorbs(), ris_flags ) );
-      ch->printf( "|Attacks     : &G%s&w\r\n", bitset_string( victim->get_attacks(), attack_flags ) );
-      ch->printf( "|Defenses    : &G%s&w\r\n", bitset_string( victim->get_defenses(), defense_flags ) );
+      ch->printf( "&w|Act Flags   : &G%s&w\r\n", bitset_string( victim->get_actflags(  ), act_flags ) );
+      ch->printf( "|Affected By : &G%s&w\r\n", !victim->has_aflags(  )? "(NONE)" : bitset_string( victim->get_aflags(  ), aff_flags ) );
+      ch->printf( "|Mob Spec Fun: &G%s&w\r\n", !victim->spec_funname.empty(  )? victim->spec_funname.c_str(  ) : "(NONE)" );
+      ch->printf( "|Body Parts  : &G%s&w\r\n", bitset_string( victim->get_bparts(  ), part_flags ) );
+      ch->printf( "|Resistances : &G%s&w\r\n", !victim->has_resists(  )? "(NONE)" : bitset_string( victim->get_resists(  ), ris_flags ) );
+      ch->printf( "|Immunities  : &G%s&w\r\n", !victim->has_immunes(  )? "(NONE)" : bitset_string( victim->get_immunes(  ), ris_flags ) );
+      ch->printf( "|Suscepts    : &G%s&w\r\n", !victim->has_susceps(  )? "(NONE)" : bitset_string( victim->get_susceps(  ), ris_flags ) );
+      ch->printf( "|Absorbs     : &G%s&w\r\n", !victim->has_absorbs(  )? "(NONE)" : bitset_string( victim->get_absorbs(  ), ris_flags ) );
+      ch->printf( "|Attacks     : &G%s&w\r\n", bitset_string( victim->get_attacks(  ), attack_flags ) );
+      ch->printf( "|Defenses    : &G%s&w\r\n", bitset_string( victim->get_defenses(  ), defense_flags ) );
 
       if( victim->pIndexData->progtypes.none(  ) )
          ch->print( "|Mobprogs    : &GNone&w\r\n" );
       else
       {
-         list<mud_prog_data*>::iterator mprg;
+         list < mud_prog_data * >::iterator mprg;
 
          ch->print( "|Mobprogs    : &G" );
 
-         for( mprg = victim->pIndexData->mudprogs.begin(); mprg != victim->pIndexData->mudprogs.end(); ++mprg )
+         for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
          {
-            mud_prog_data *mprog = (*mprg);
+            mud_prog_data *mprog = *mprg;
 
-            ch->printf( "%s ", mprog_type_to_name( mprog->type ) );
+            ch->printf( "%s ", mprog_type_to_name( mprog->type ).c_str(  ) );
          }
          ch->print( "&w\r\n" );
       }
 
-      list<affect_data*>::iterator paf;
-      for( paf = victim->affects.begin(); paf != victim->affects.end(); ++paf )
+      list < affect_data * >::iterator paf;
+      for( paf = victim->affects.begin(  ); paf != victim->affects.end(  ); ++paf )
       {
-         affect_data *af = (*paf);
+         affect_data *af = *paf;
 
          if( ( skill = get_skilltype( af->type ) ) != NULL )
          {
             char mod[MIL];
 
             if( af->location == APPLY_AFFECT
-             || af->location == APPLY_RESISTANT
-             || af->location == APPLY_IMMUNE
-             || af->location == APPLY_ABSORB
-             || af->location == APPLY_SUSCEPTIBLE )
+                || af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_ABSORB || af->location == APPLY_SUSCEPTIBLE )
                mudstrlcpy( mod, aff_flags[af->modifier], MIL );
             else
                snprintf( mod, MIL, "%d", af->modifier );
-            ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds",
-                        skill_tname[skill->type], skill->name, a_types[af->location],
-                        mod, af->duration );
+            ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds", skill_tname[skill->type], skill->name, a_types[af->location], mod, af->duration );
             if( af->bit > 0 )
                ch->printf( " with bits &G%s&w.\r\n", aff_flags[af->bit] );
             else
                ch->print( ".\r\n" );
          }
       }
-      return;
    }
 }
 
@@ -1458,11 +1510,11 @@ CMDF( do_mstat )
 CMDF( do_stat )
 {
    char_data *victim;
-   char arg[MIL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Syntax:\r\n" );
       if( ch->level >= LEVEL_DEMI )
@@ -1502,7 +1554,7 @@ CMDF( do_stat )
 
       if( victim->isnpc(  ) )
       {
-         ch->printf( "%s is not a player!\r\n", argument );
+         ch->printf( "%s is not a player!\r\n", argument.c_str(  ) );
          return;
       }
       do_mstat( ch, argument );
@@ -1530,10 +1582,10 @@ CMDF( do_stat )
  * Oftype: Object find Type
  * Find object matching a certain type
  *****/
-void find_oftype( char_data * ch, char *argument )
+void find_oftype( char_data * ch, const string & argument )
 {
-   obj_index *pObjIndex;
-   int hash, nMatch, type;
+   map < int, obj_index * >::iterator iobj = obj_index_table.begin(  );
+   int nMatch, type;
 
    ch->set_pager_color( AT_PLAIN );
 
@@ -1545,34 +1597,37 @@ void find_oftype( char_data * ch, char *argument )
    type = get_otype( argument );
    if( type < 0 )
    {
-      ch->printf( "%s is an invalid item type.\r\n", argument );
+      ch->printf( "%s is an invalid item type.\r\n", argument.c_str(  ) );
       return;
    }
 
-   for( hash = 0; hash < MAX_KEY_HASH; ++hash )
-      for( pObjIndex = obj_index_hash[hash]; pObjIndex; pObjIndex = pObjIndex->next )
-         if( type == pObjIndex->item_type )
-         {
-            ++nMatch;
-            ch->pagerf( "[%5d] %s\r\n", pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
-         }
+   while( iobj != obj_index_table.end(  ) )
+   {
+      obj_index *pObjIndex = iobj->second;
+ 
+      if( type == pObjIndex->item_type )
+      {
+         ++nMatch;
+         ch->pagerf( "[%5d] %s\r\n", pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
+      }
+      ++iobj;
+   }
 
    if( nMatch )
       ch->pagerf( "Number of matches: %d\n", nMatch );
    else
       ch->print( "Sorry, no matching item types found.\r\n" );
-   return;
 }
 
 /* Consolidated find command 3-21-98 (SLAY DWIP) */
 CMDF( do_find )
 {
-   char arg[MIL], arg2[MIL];
+   string arg, arg2;
 
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
 
-   if( arg[0] == '\0' || arg2[0] == '\0' )
+   if( arg.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Syntax:\r\n" );
       if( ch->level >= LEVEL_DEMI )
@@ -1594,7 +1649,7 @@ CMDF( do_find )
          do_ofind( ch, arg2 );
       else
       {
-         if( !argument || argument[0] == '\0' )
+         if( argument.empty(  ) )
             do_find( ch, "" );
          else
             find_oftype( ch, argument );
@@ -1609,32 +1664,29 @@ CMDF( do_find )
 
 CMDF( do_mwhere )
 {
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Mwhere whom?\r\n" );
       return;
    }
 
    bool found = false;
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *victim = (*ich);
+      char_data *victim = *ich;
 
-      if( victim->isnpc(  ) && victim->in_room && nifty_is_name( argument, victim->name ) )
+      if( victim->isnpc(  ) && victim->in_room && hasname( victim->name, argument ) )
       {
          found = true;
          if( victim->has_actflag( ACT_ONMAP ) )
-            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &YOverland: &C%s %d %d\r\n",
-                        victim->pIndexData->vnum, victim->short_descr, map_names[victim->map], victim->mx, victim->my );
+            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &YOverland: &C%s %d %d\r\n", victim->pIndexData->vnum, victim->short_descr, map_names[victim->map], victim->mx, victim->my );
          else
-            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &Y[&W%5d&Y] &C%s\r\n",
-                        victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
+            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &Y[&W%5d&Y] &C%s\r\n", victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
       }
    }
    if( !found )
-      act( AT_PLAIN, "You didn't find any $T.", ch, NULL, argument, TO_CHAR );
-   return;
+      ch->printf( "You didn't find any %s.\r\n", argument.c_str(  ) );
 }
 
 /* Added 'show' argument for lowbie imms without ostat -- Blodkai */
@@ -1642,21 +1694,22 @@ CMDF( do_mwhere )
 /* Trimmed size, added vict info, put lipstick on the pig -- Blod */
 CMDF( do_bodybag )
 {
-   char buf2[MSL], buf3[MSL], arg1[MIL], arg2[MIL];
+   char buf2[MSL], buf3[MSL];
+   string arg1, arg2;
    bool found = false, bag = false;
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "&PSyntax:  bodybag <character> | bodybag <character> yes/bag/now\r\n" );
       return;
    }
 
    mudstrlcpy( buf3, " ", MSL );
-   snprintf( buf2, MSL, "the corpse of %s", arg1 );
+   snprintf( buf2, MSL, "the corpse of %s", arg1.c_str(  ) );
    argument = one_argument( argument, arg2 );
 
-   if( arg2[0] != '\0' && ( str_cmp( arg2, "yes" ) && str_cmp( arg2, "bag" ) && str_cmp( arg2, "now" ) ) )
+   if( !arg2.empty(  ) && ( str_cmp( arg2, "yes" ) && str_cmp( arg2, "bag" ) && str_cmp( arg2, "now" ) ) )
    {
       ch->print( "\r\n&PSyntax:  bodybag <character> | bodybag <character> yes/bag/now\r\n" );
       return;
@@ -1664,12 +1717,12 @@ CMDF( do_bodybag )
    if( !str_cmp( arg2, "yes" ) || !str_cmp( arg2, "bag" ) || !str_cmp( arg2, "now" ) )
       bag = true;
 
-   ch->pagerf( "\r\n&P%s remains of %s ... ", bag ? "Retrieving" : "Searching for", capitalize( arg1 ) );
+   ch->pagerf( "\r\n&P%s remains of %s ... ", bag ? "Retrieving" : "Searching for", capitalize( arg1 ).c_str(  ) );
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( obj->in_room && !str_cmp( buf2, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
       {
@@ -1677,7 +1730,7 @@ CMDF( do_bodybag )
          found = true;
          ch->pagerf( "&P%s:  %s%-12.12s   &PIn:  &w%-22.22s  &P[&w%5d&P]   &PTimer:  %s%2d",
                      bag ? "Bagging" : "Corpse",
-                     bag ? "&R" : "&w", capitalize( arg1 ), obj->in_room->area->name, obj->in_room->vnum,
+                     bag ? "&R" : "&w", capitalize( arg1 ).c_str(  ), obj->in_room->area->name, obj->in_room->vnum,
                      obj->timer < 1 ? "&w" : obj->timer < 5 ? "&R" : obj->timer < 10 ? "&Y" : "&w", obj->timer );
          if( bag )
          {
@@ -1688,6 +1741,7 @@ CMDF( do_bodybag )
          }
       }
    }
+
    if( !found )
    {
       ch->pager( "&PNo corpse was found.\r\n" );
@@ -1697,10 +1751,10 @@ CMDF( do_bodybag )
 
    found = false;
    char_data *owner;
-   list<char_data*>::iterator ich;
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
-      owner = (*ich);
+      owner = *ich;
 
       if( ch->can_see( owner, true ) && !str_cmp( arg1, owner->name ) )
       {
@@ -1710,35 +1764,34 @@ CMDF( do_bodybag )
    }
    if( !found )
    {
-      ch->pagerf( "&P%s is not currently online.\r\n", capitalize( arg1 ) );
+      ch->pagerf( "&P%s is not currently online.\r\n", capitalize( arg1 ).c_str(  ) );
       return;
    }
    if( owner->pcdata->deity )
       ch->pagerf( "&P%s (%d) has %d favor with %s (needed to supplicate: %d)\r\n",
-                  owner->name, owner->level, owner->pcdata->favor, owner->pcdata->deity->name,
-                  owner->pcdata->deity->scorpse );
+                  owner->name, owner->level, owner->pcdata->favor, owner->pcdata->deity->name.c_str(  ), owner->pcdata->deity->scorpse );
    else
       ch->pagerf( "&P%s (%d) has no deity.\r\n", owner->name, owner->level );
-   return;
 }
 
 /* New owhere by Altrag, 03/14/96 */
 CMDF( do_owhere )
 {
-   char buf[MSL], arg[MIL], arg1[MIL];
+   char buf[MSL];
+   string arg, arg1;
    obj_data *obj;
    bool found;
    int icnt = 0;
 
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Owhere what?\r\n" );
       return;
    }
 
    argument = one_argument( argument, arg1 );
-   if( arg1[0] != '\0' && !str_prefix( arg1, "nesthunt" ) )
+   if( !arg1.empty(  ) && !str_prefix( arg1, "nesthunt" ) )
    {
       if( !( obj = ch->get_obj_world( arg ) ) )
       {
@@ -1748,22 +1801,19 @@ CMDF( do_owhere )
       for( ; obj->in_obj; obj = obj->in_obj )
       {
          ch->pagerf( "&Y[&W%5d&Y] &G%-28s &Cin object &Y[&W%5d&Y] &C%s\r\n",
-                     obj->pIndexData->vnum, obj->oshort(  ), obj->in_obj->pIndexData->vnum, obj->in_obj->short_descr );
+                     obj->pIndexData->vnum, obj->oshort(  ).c_str(  ), obj->in_obj->pIndexData->vnum, obj->in_obj->short_descr );
          ++icnt;
       }
-      snprintf( buf, MSL, "&Y[&W%5d&Y] &G%-28s ", obj->pIndexData->vnum, obj->oshort(  ) );
+      snprintf( buf, MSL, "&Y[&W%5d&Y] &G%-28s ", obj->pIndexData->vnum, obj->oshort(  ).c_str(  ) );
       if( obj->carried_by )
          snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Cinvent   &Y[&W%5d&Y] &C%s\r\n",
-                   ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch,
-                                                                                                 true ) );
+                   ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, true ) );
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n",
-                      map_names[obj->map], obj->mx, obj->my );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->map], obj->mx, obj->my );
          else
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n",
-                      obj->in_room->vnum, obj->in_room->name );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n", obj->in_room->vnum, obj->in_room->name );
       }
       else if( obj->in_obj )
       {
@@ -1782,32 +1832,28 @@ CMDF( do_owhere )
    }
 
    found = false;
-   list<obj_data*>::iterator iobj;
-   for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
-      obj = (*iobj);
+      obj = *iobj;
 
-      if( !nifty_is_name( arg, obj->name ) )
+      if( !hasname( obj->name, arg ) )
          continue;
       found = true;
 
-      snprintf( buf, MSL, "&Y(&W%3d&Y) [&W%5d&Y] &G%-28s ", ++icnt, obj->pIndexData->vnum, obj->oshort(  ) );
+      snprintf( buf, MSL, "&Y(&W%3d&Y) [&W%5d&Y] &G%-28s ", ++icnt, obj->pIndexData->vnum, obj->oshort(  ).c_str(  ) );
       if( obj->carried_by )
          snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Cinvent   &Y[&W%5d&Y] &C%s\r\n",
-                   ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch,
-                                                                                                 true ) );
+                   ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, true ) );
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n",
-                      map_names[obj->map], obj->mx, obj->my );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->map], obj->mx, obj->my );
          else
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n",
-                      obj->in_room->vnum, obj->in_room->name );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n", obj->in_room->vnum, obj->in_room->name );
       }
       else if( obj->in_obj )
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Cobject &Y[&W%5d&Y] &C%s\r\n",
-                   obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ) );
+         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Cobject &Y[&W%5d&Y] &C%s\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ).c_str(  ) );
       else
       {
          bug( "%s: object doesnt have location!", __FUNCTION__ );
@@ -1816,30 +1862,28 @@ CMDF( do_owhere )
       ch->pager( buf );
    }
    if( !found )
-      act( AT_PLAIN, "You didn't find any $T.", ch, NULL, arg, TO_CHAR );
+      ch->printf( "You didn't find any %s.\r\n", arg.c_str(  ) );
    else
       ch->pagerf( "%d matches.\r\n", icnt );
-   return;
 }
 
 CMDF( do_pwhere )
 {
    bool found;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      list<descriptor_data*>::iterator ds;
+      list < descriptor_data * >::iterator ds;
 
       ch->pager( "&[people]Players you can see online:\r\n" );
       found = false;
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
          char_data *victim;
 
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
-             && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room
-             && ch->can_see( victim, true ) && !is_ignoring( victim, ch ) )
+             && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room && ch->can_see( victim, true ) && !is_ignoring( victim, ch ) )
          {
             found = true;
             if( victim->has_pcflag( PCFLAG_ONMAP ) )
@@ -1853,15 +1897,15 @@ CMDF( do_pwhere )
    }
    else
    {
-      list<char_data*>::iterator ich;
+      list < char_data * >::iterator ich;
 
       ch->pager( "You search high and low and find:\r\n" );
       found = false;
-      for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
       {
-         char_data *victim = (*ich);
+         char_data *victim = *ich;
 
-         if( victim->in_room && ch->can_see( victim, true ) && is_name( argument, victim->name ) )
+         if( victim->in_room && ch->can_see( victim, true ) && hasname( victim->name, argument ) )
          {
             found = true;
             ch->pagerf( "&Y%-28s &G[&W%5d&G]&C %s\r\n", PERS( victim, ch, true ), victim->in_room->vnum, victim->in_room->name );
@@ -1871,10 +1915,9 @@ CMDF( do_pwhere )
       if( !found )
          ch->pager( "Nobody by that name.\r\n" );
    }
-   return;
 }
 
-void where_mobile( char_data * ch, char *argument )
+void where_mobile( char_data * ch, const string & argument )
 {
    ch->set_color( AT_PLAIN );
 
@@ -1884,7 +1927,7 @@ void where_mobile( char_data * ch, char *argument )
       return;
    }
 
-   int vnum = atoi( argument );
+   int vnum = atoi( argument.c_str(  ) );
 
    mob_index *pMobIndex;
    if( !( pMobIndex = get_mob_index( vnum ) ) )
@@ -1895,17 +1938,16 @@ void where_mobile( char_data * ch, char *argument )
 
    int mobcnt = 0;
    bool found = false;
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *victim = (*ich);
+      char_data *victim = *ich;
 
       if( victim->isnpc(  ) && victim->in_room && victim->pIndexData->vnum == vnum )
       {
          found = true;
          ++mobcnt;
-         ch->pagerf( "[%5d] %-28s [%5d] %s\r\n",
-                     victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
+         ch->pagerf( "[%5d] %-28s [%5d] %s\r\n", victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
       }
    }
 
@@ -1913,15 +1955,12 @@ void where_mobile( char_data * ch, char *argument )
       ch->pagerf( "No copies of vnum %d are loaded.\r\n", vnum );
    else
       ch->pagerf( "%d matches for vnum %d are loaded.\r\n", mobcnt, vnum );
-   return;
 }
 
 /* Consolidated Where command - Samson 3-21-98 */
 CMDF( do_where )
 {
-   char arg[MIL];
-
-   argument = one_argument( argument, arg );
+   string arg;
 
    if( ch->level < LEVEL_SAVIOR )
    {
@@ -1929,7 +1968,8 @@ CMDF( do_where )
       return;
    }
 
-   if( !arg || arg[0] == '\0' )
+   argument = one_argument( argument, arg );
+   if( arg.empty(  ) )
    {
       ch->print( "Syntax:\r\n" );
       if( ch->level >= LEVEL_DEMI )
@@ -1967,7 +2007,7 @@ CMDF( do_where )
          return;
       }
 
-      int vnum = atoi( argument );
+      int vnum = atoi( argument.c_str(  ) );
 
       if( !( pObjIndex = get_obj_index( vnum ) ) )
       {
@@ -1975,26 +2015,23 @@ CMDF( do_where )
          return;
       }
 
-      list<obj_data*>::iterator iobj;
-      for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+      list < obj_data * >::iterator iobj;
+      for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
 
          if( obj->pIndexData->vnum != vnum )
             continue;
          found = true;
 
-         snprintf( buf, MSL, "(%3d) [%5d] %-28s in ", ++icnt, obj->pIndexData->vnum, obj->oshort(  ) );
+         snprintf( buf, MSL, "(%3d) [%5d] %-28s in ", ++icnt, obj->pIndexData->vnum, obj->oshort(  ).c_str(  ) );
          if( obj->carried_by )
             snprintf( buf + strlen( buf ), MSL - strlen( buf ), "invent [%5d] %s\r\n",
-                      ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch,
-                                                                                                    false ) );
+                      ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, false ) );
          else if( obj->in_room )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "room   [%5d] %s\r\n", obj->in_room->vnum,
-                      obj->in_room->name );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "room   [%5d] %s\r\n", obj->in_room->vnum, obj->in_room->name );
          else if( obj->in_obj )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "object [%5d] %s\r\n", obj->in_obj->pIndexData->vnum,
-                      obj->in_obj->oshort(  ) );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "object [%5d] %s\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ).c_str(  ) );
          else
          {
             bug( "%s: object '%s' doesn't have location!", __FUNCTION__, obj->short_descr );
@@ -2022,7 +2059,6 @@ CMDF( do_where )
 CMDF( do_reboo )
 {
    ch->print( "&YIf you want to REBOOT, spell it out.\r\n" );
-   return;
 }
 
 /* Added security check for online compiler - Samson 4-8-98 */
@@ -2031,16 +2067,14 @@ CMDF( do_reboot )
 #ifdef MULTIPORT
    if( compilelock )
    {
-      ch->
-         print
-         ( "&RSorry, the mud cannot be rebooted during a compiler operation.\r\nPlease wait for the compiler to finish.\r\n" );
+      ch->print( "&RSorry, the mud cannot be rebooted during a compiler operation.\r\nPlease wait for the compiler to finish.\r\n" );
       return;
    }
 #endif
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       if( bootlock )
       {
@@ -2060,7 +2094,7 @@ CMDF( do_reboot )
       return;
    }
 
-   if( str_cmp( argument, "mud now" ) && str_cmp( argument, "nosave" ) && str_cmp( argument, "and sort skill table" ) )
+   if( str_cmp( argument, "mud now" ) && str_cmp( argument, "nosave" ) )
    {
       ch->print( "Syntax: reboot mud now\r\n" );
       ch->print( "Syntax: reboot nosave\r\n" );
@@ -2077,13 +2111,11 @@ CMDF( do_reboot )
       DONTSAVE = true;
 
    mud_down = true;
-   return;
 }
 
 CMDF( do_shutdow )
 {
    ch->print( "&YIf you want to SHUTDOWN, spell it out.\r\n" );
-   return;
 }
 
 /* Added check for online compiler - Samson 4-8-98 */
@@ -2092,9 +2124,7 @@ CMDF( do_shutdown )
 #ifdef MULTIPORT
    if( compilelock )
    {
-      ch->
-         print
-         ( "&RSorry, the mud cannot be shutdown during a compiler operation.\r\nPlease wait for the compiler to finish.\r\n" );
+      ch->print( "&RSorry, the mud cannot be shutdown during a compiler operation.\r\nPlease wait for the compiler to finish.\r\n" );
       return;
    }
 #endif
@@ -2117,23 +2147,22 @@ CMDF( do_shutdown )
       DONTSAVE = true;
 
    mud_down = true;
-   return;
 }
 
 CMDF( do_snoop )
 {
    char_data *victim;
-   list<descriptor_data*>::iterator ds;
+   list < descriptor_data * >::iterator ds;
    descriptor_data *d;
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "&GSnooping the following people:\r\n\r\n" );
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         d = (*ds);
+         d = *ds;
 
          if( d->snoop_by == ch->desc )
             ch->printf( "%s ", d->original ? d->original->name : d->character->name );
@@ -2153,9 +2182,9 @@ CMDF( do_snoop )
    if( victim == ch )
    {
       ch->print( "Cancelling all snoops.\r\n" );
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         d = (*ds);
+         d = *ds;
 
          if( d->snoop_by == ch->desc )
             d->snoop_by = NULL;
@@ -2180,7 +2209,6 @@ CMDF( do_snoop )
    }
    victim->desc->snoop_by = ch->desc;
    ch->print( "Ok.\r\n" );
-   return;
 }
 
 CMDF( do_switch )
@@ -2189,7 +2217,7 @@ CMDF( do_switch )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Switch into whom?\r\n" );
       return;
@@ -2246,7 +2274,6 @@ CMDF( do_switch )
    ch->desc = NULL;
    ch->switched = victim;
    victim->print( "Ok.\r\n" );
-   return;
 }
 
 CMDF( do_return )
@@ -2274,33 +2301,36 @@ CMDF( do_return )
    ch->desc->character->desc = ch->desc;
    ch->desc->character->switched = NULL;
    ch->desc = NULL;
-   return;
 }
 
-void objinvoke( char_data *ch, string argument )
+void objinvoke( char_data * ch, string & argument )
 {
-   vector<string> arg = vector_argument( argument, 1 );
+   string arg, arg2;
    obj_index *pObjIndex;
    obj_data *obj;
-   int vnum, level;
+   int vnum, level, quantity;
 
    ch->set_color( AT_IMMORT );
 
-   if( arg.empty() )
+   if( argument.empty(  ) )
    {
-      ch->print( "Syntax: load obj <vnum/keyword> <level>\r\n" );
+      ch->print( "Syntax: load obj <vnum/keyword> <level> <quantity>\r\n" );
       return;
    }
-   if( arg.size() < 2 )
+
+   argument = one_argument( argument, arg );
+   argument = one_argument( argument, arg2 );
+   if( arg2.empty(  ) )
       level = 1;
    else
    {
-      if( !is_number( arg[1] ) )
+      if( !is_number( arg2 ) )
       {
          ch->print( "Syntax: load obj <vnum/keyword> <level>\r\n" );
          return;
       }
-      level = atoi( arg[1].c_str() );
+
+      level = atoi( arg2.c_str(  ) );
       if( level < 0 || level > ch->get_trust(  ) )
       {
          ch->print( "Limited to your trust level.\r\n" );
@@ -2308,19 +2338,42 @@ void objinvoke( char_data *ch, string argument )
       }
    }
 
-   if( !is_number( arg[0] ) )
+   if( argument.empty(  ) )
+      quantity = 1;
+   else
+   {
+      if( !is_number( argument ) )
+      {
+         ch->print( "Syntax: load obj <vnum/keyword> <level> <quantity>\r\n" );
+         return;
+      }
+
+      quantity = atoi( argument.c_str(  ) );
+      if( quantity < 1 || quantity > MAX_OINVOKE_QUANTITY )
+      {
+         ch->printf( "You must oinvoke between 1 and %d items.\r\n", MAX_OINVOKE_QUANTITY );
+         return;
+      }
+   }
+
+   if( !is_number( arg ) )
    {
       string arg3;
-      int hash, cnt, count = number_argument( arg[0], arg3 );
+      map < int, obj_index * >::iterator iobj = obj_index_table.begin(  );
+      int cnt = 0, count = number_argument( arg, arg3 );
 
       vnum = -1;
-      for( hash = cnt = 0; hash < MAX_KEY_HASH; ++hash )
-         for( pObjIndex = obj_index_hash[hash]; pObjIndex; pObjIndex = pObjIndex->next )
-            if( nifty_is_name( arg3, pObjIndex->name ) && ++cnt == count )
-            {
-               vnum = pObjIndex->vnum;
-               break;
-            }
+      while( iobj != obj_index_table.end(  ) )
+      {
+         pObjIndex = iobj->second;
+ 
+         if( hasname( pObjIndex->name, arg3 ) && ++cnt == count )
+         {
+            vnum = pObjIndex->vnum;
+            break;
+         }
+         ++iobj;
+      }
 
       if( vnum == -1 )
       {
@@ -2329,7 +2382,7 @@ void objinvoke( char_data *ch, string argument )
       }
    }
    else
-      vnum = atoi( arg[0].c_str() );
+      vnum = atoi( arg.c_str(  ) );
 
    if( !( pObjIndex = get_obj_index( vnum ) ) )
    {
@@ -2343,13 +2396,24 @@ void objinvoke( char_data *ch, string argument )
       return;
    }
 
+   if( obj->ego >= sysdata->minego && quantity > 1 )
+   {
+      if( !ch->is_imp(  ) )
+      {
+         ch->print( "Loading multiple copies of rare items is restricted to KLs and above.\r\n" );
+         obj->extract(  ); // It got created, now we need to destroy it.
+         return;
+      }
+   }
+   obj->count = quantity;
+
 #ifdef MULTIPORT
    if( obj->ego >= sysdata->minego && mud_port == MAINPORT )
    {
       if( !ch->is_imp(  ) )
       {
          ch->print( "Loading of rare items is restricted to KLs and above on this port.\r\n" );
-         obj->extract(); // It got created, now we need to destroy it.
+         obj->extract(  ); // It got created, now we need to destroy it.
          return;
       }
       else
@@ -2389,10 +2453,9 @@ void objinvoke( char_data *ch, string argument )
     * I invoked what? --Blodkai 
     */
    ch->printf( "&Y(&W#%d &Y- &W%s &Y- &Wlvl %d&Y)\r\n", pObjIndex->vnum, pObjIndex->name, obj->level );
-   return;
 }
 
-void mobinvoke( char_data *ch, string argument )
+void mobinvoke( char_data * ch, string & argument )
 {
    mob_index *pMobIndex;
    char_data *victim;
@@ -2400,7 +2463,7 @@ void mobinvoke( char_data *ch, string argument )
 
    ch->set_color( AT_IMMORT );
 
-   if( argument.empty() )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax: load m <vnum/keyword>\r\n" );
       return;
@@ -2409,17 +2472,22 @@ void mobinvoke( char_data *ch, string argument )
    if( !is_number( argument ) )
    {
       string arg2;
-      int hash, cnt;
+      int cnt = 0;
       int count = number_argument( argument, arg2 );
 
       vnum = -1;
-      for( hash = cnt = 0; hash < MAX_KEY_HASH; ++hash )
-         for( pMobIndex = mob_index_hash[hash]; pMobIndex; pMobIndex = pMobIndex->next )
-            if( nifty_is_name( arg2, pMobIndex->player_name ) && ++cnt == count )
-            {
-               vnum = pMobIndex->vnum;
-               break;
-            }
+      map < int, mob_index * >::iterator imob = mob_index_table.begin(  );
+      while( imob != mob_index_table.end(  ) )
+      {
+         pMobIndex = imob->second;
+
+         if( hasname( pMobIndex->player_name, arg2 ) && ++cnt == count )
+         {
+            vnum = pMobIndex->vnum;
+            break;
+         }
+         ++imob;
+      }
       if( vnum == -1 )
       {
          ch->print( "No such mobile exists.\r\n" );
@@ -2427,7 +2495,7 @@ void mobinvoke( char_data *ch, string argument )
       }
    }
    else
-      vnum = atoi( argument.c_str() );
+      vnum = atoi( argument.c_str(  ) );
 
    if( ch->get_trust(  ) < LEVEL_DEMI )
    {
@@ -2474,15 +2542,15 @@ void mobinvoke( char_data *ch, string argument )
     */
    ch->printf( "&YYou peer into the ether.... and pluck out %s!\r\n", pMobIndex->short_descr );
    ch->printf( "(&W#%d &Y- &W%s &Y- &Wlvl %d&Y)\r\n", pMobIndex->vnum, pMobIndex->player_name, victim->level );
-   return;
 }
 
 /* Shard-like load command spliced off of ROT codebase - Samson 3-21-98 */
 CMDF( do_load )
 {
-   vector<string> arg = vector_argument( argument, 1 );
+   string arg;
 
-   if( arg.size() < 2 )
+   argument = one_argument( argument, arg );
+   if( arg.empty(  ) )
    {
       ch->print( "Syntax:\r\n" );
       if( ch->level >= LEVEL_DEMI )
@@ -2491,15 +2559,15 @@ CMDF( do_load )
       return;
    }
 
-   if( ( scomp( arg[0], "mob" ) || scomp( arg[0], "m" ) ) && ch->level >= LEVEL_DEMI )
+   if( ( !str_cmp( arg, "mob" ) || !str_cmp( arg, "m" ) ) && ch->level >= LEVEL_DEMI )
    {
-      mobinvoke( ch, arg[1] );
+      mobinvoke( ch, argument );
       return;
    }
 
-   if( scomp( arg[0], "obj" ) || scomp( arg[0], "o" ) )
+   if( !str_cmp( arg, "obj" ) || !str_cmp( arg, "o" ) )
    {
-      objinvoke( ch, arg[1] );
+      objinvoke( ch, argument );
       return;
    }
    /*
@@ -2512,15 +2580,15 @@ CMDF( do_purge )
 {
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       /*
        * 'purge' 
        */
-      list<char_data*>::iterator ich;
-      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); )
+      list < char_data * >::iterator ich;
+      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
-         char_data *victim = (*ich);
+         char_data *victim = *ich;
          ++ich;
          bool found = false;
 
@@ -2531,10 +2599,10 @@ CMDF( do_purge )
             continue;
 
          char_data *tch = NULL;
-         list<char_data*>::iterator ich2;
-         for( ich2 = ch->in_room->people.begin(); ich2 != ch->in_room->people.end(); ++ich2 )
+         list < char_data * >::iterator ich2;
+         for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
          {
-            tch = (*ich2);
+            tch = *ich2;
 
             if( !tch->isnpc(  ) && tch->pcdata->dest_buf == victim )
             {
@@ -2548,8 +2616,7 @@ CMDF( do_purge )
 
          if( ( !str_cmp( victim->short_descr, "The Negative Magnetic Space Wedgy" )
                || !str_cmp( victim->short_descr, "Krusty" )
-               || !str_cmp( victim->short_descr, "Satan" )
-               || !str_cmp( victim->short_descr, "Mini-Cam" ) ) && str_cmp( ch->name, "Samson" ) )
+               || !str_cmp( victim->short_descr, "Satan" ) || !str_cmp( victim->short_descr, "Mini-Cam" ) ) && str_cmp( ch->name, "Samson" ) )
          {
             ch->print( "Did you REALLY think the Great Lord and Master would allow that?\r\n" );
             continue;
@@ -2562,18 +2629,18 @@ CMDF( do_purge )
             victim->extract( true );
       }
 
-      list<obj_data*>::iterator iobj;
-      for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          ++iobj;
          bool found = false;
 
          char_data *tch = NULL;
-         list<char_data*>::iterator ich2;
-         for( ich2 = ch->in_room->people.begin(); ich2 != ch->in_room->people.end(); ++ich2 )
+         list < char_data * >::iterator ich2;
+         for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
          {
-            tch = (*ich2);
+            tch = *ich2;
             if( !tch->isnpc(  ) && tch->pcdata->dest_buf == obj )
             {
                found = true;
@@ -2590,10 +2657,15 @@ CMDF( do_purge )
          if( is_same_obj_map( ch, obj ) )
             obj->extract(  );
       }
-      act( AT_IMMORT, "$n makes a complex series of gestures.... suddenly things seem a lot cleaner!", ch, NULL, NULL,
-           TO_ROOM );
-      act( AT_IMMORT, "You make a complex series of gestures.... suddenly things seem a lot cleaner!", ch, NULL, NULL,
-           TO_CHAR );
+
+      /*
+       * Clan storeroom checks
+       */
+      if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) )
+         check_clan_storeroom( ch );
+
+      act( AT_IMMORT, "$n makes a complex series of gestures.... suddenly things seem a lot cleaner!", ch, NULL, NULL, TO_ROOM );
+      act( AT_IMMORT, "You make a complex series of gestures.... suddenly things seem a lot cleaner!", ch, NULL, NULL, TO_CHAR );
       return;
    }
 
@@ -2615,10 +2687,10 @@ CMDF( do_purge )
     */
    if( obj )
    {
-      list<char_data*>::iterator ich2;
-      for( ich2 = ch->in_room->people.begin(); ich2 != ch->in_room->people.end(); ++ich2 )
+      list < char_data * >::iterator ich2;
+      for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
       {
-         char_data *tch = (*ich2);
+         char_data *tch = *ich2;
          if( !tch->isnpc(  ) && tch->pcdata->dest_buf == obj )
          {
             ch->print( "You cannot purge something being edited.\r\n" );
@@ -2629,6 +2701,13 @@ CMDF( do_purge )
       act( AT_IMMORT, "$n snaps $s finger, and $p vanishes from sight!", ch, obj, NULL, TO_ROOM );
       act( AT_IMMORT, "You snap your fingers, and $p vanishes from sight!", ch, obj, NULL, TO_CHAR );
       obj->extract(  );
+
+      /*
+       * Clan storeroom checks
+       */
+      if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) )
+         check_clan_storeroom( ch );
+
       return;
    }
 
@@ -2644,10 +2723,10 @@ CMDF( do_purge )
       return;
    }
 
-   list<char_data*>::iterator ich2;
-   for( ich2 = ch->in_room->people.begin(); ich2 != ch->in_room->people.end(); ++ich2 )
+   list < char_data * >::iterator ich2;
+   for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
    {
-      char_data *tch = (*ich2);
+      char_data *tch = *ich2;
       if( !tch->isnpc(  ) && tch->pcdata->dest_buf == victim )
       {
          ch->print( "You cannot purge something being edited.\r\n" );
@@ -2657,8 +2736,7 @@ CMDF( do_purge )
 
    if( ( !str_cmp( victim->short_descr, "The Negative Magnetic Space Wedgy" )
          || !str_cmp( victim->short_descr, "Krusty" )
-         || !str_cmp( victim->short_descr, "Satan" )
-         || !str_cmp( victim->short_descr, "Mini-Cam" ) ) && str_cmp( ch->name, "Samson" ) )
+         || !str_cmp( victim->short_descr, "Satan" ) || !str_cmp( victim->short_descr, "Mini-Cam" ) ) && str_cmp( ch->name, "Samson" ) )
    {
       ch->print( "Did you REALLY think the Great Lord and Master would allow that?\r\n" );
       return;
@@ -2666,16 +2744,13 @@ CMDF( do_purge )
    act( AT_IMMORT, "$n snaps $s fingers, and $N vanishes from sight!", ch, NULL, victim, TO_NOTVICT );
    act( AT_IMMORT, "You snap your fingers, and $N vanishes from sight!", ch, NULL, victim, TO_CHAR );
    victim->extract( true );
-   return;
 }
 
 void destroy_immdata( char_data * ch, const char *vicname )
 {
-   char *name;
    char buf[256], buf2[256];
 
-   name = capitalize( vicname );
-   snprintf( buf, MSL, "%s%s", GOD_DIR, name );
+   snprintf( buf, MSL, "%s%s", GOD_DIR, capitalize( vicname ) );
 
    if( !remove( buf ) )
       ch->print( "&RPlayer's immortal data destroyed.\r\n" );
@@ -2685,12 +2760,12 @@ void destroy_immdata( char_data * ch, const char *vicname )
       snprintf( buf2, MSL, "%s balzhuring %s", ch->name, buf );
       perror( buf2 );
    }
-   snprintf( buf2, MSL, "%s.are", name );
+   snprintf( buf2, MSL, "%s.are", vicname );
 
-   list<area_data*>::iterator iarea;
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   list < area_data * >::iterator iarea;
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
       if( !str_cmp( area->filename, buf2 ) )
       {
@@ -2709,20 +2784,20 @@ void destroy_immdata( char_data * ch, const char *vicname )
          break;
       }
    }
-   return;
 }
 
 CMDF( do_balzhur )
 {
+   char_data *victim;
+
    ch->set_color( AT_BLOOD );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Who is deserving of such a fate?\r\n" );
       return;
    }
 
-   char_data *victim;
    if( !( victim = get_wizvictim( ch, argument, true ) ) )
       return;
 
@@ -2739,7 +2814,7 @@ CMDF( do_balzhur )
    victim->max_move = 150;
    victim->gold = 0;
    victim->pcdata->balance = 0;
-   for( int sn = 0; sn < top_sn; ++sn )
+   for( int sn = 0; sn < num_skills; ++sn )
       victim->pcdata->learned[sn] = 0;
    victim->pcdata->practice = 0;
    victim->hit = victim->max_hit;
@@ -2753,27 +2828,26 @@ CMDF( do_balzhur )
    interpret( victim, "help M_BALZHUR_" );
    victim->print( "&WYou awake after a long period of time...\r\n" );
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
-      obj->extract();
+      obj->extract(  );
    }
-   return;
 }
 
 CMDF( do_advance )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
    int level, iLevel;
 
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' || !is_number( argument ) )
+   if( arg1.empty(  ) || argument.empty(  ) || !is_number( argument ) )
    {
       ch->print( "Syntax: advance <character> <level>\r\n" );
       return;
@@ -2794,7 +2868,7 @@ CMDF( do_advance )
       return;
    }
 
-   if( ( level = atoi( argument ) ) < 1 || level > LEVEL_AVATAR )
+   if( ( level = atoi( argument.c_str(  ) ) ) < 1 || level > LEVEL_AVATAR )
    {
       ch->printf( "Level range is 1 to %d.\r\n", LEVEL_AVATAR );
       return;
@@ -2858,7 +2932,7 @@ CMDF( do_advance )
       victim->max_hit = 20;
       victim->max_mana = 100;
       victim->max_move = 150;
-      for( sn = 0; sn < top_sn; ++sn )
+      for( sn = 0; sn < num_skills; ++sn )
          victim->pcdata->learned[sn] = 0;
       victim->pcdata->practice = 0;
       victim->hit = victim->max_hit;
@@ -2895,7 +2969,6 @@ CMDF( do_advance )
    }
    victim->exp = exp_level( victim->level );
    victim->trust = 0;
-   return;
 }
 
 /*
@@ -2903,15 +2976,38 @@ CMDF( do_advance )
  */
 void fix_char( char_data * ch )
 {
-   list<affect_data*>::iterator paf;
+   list < affect_data * >::iterator paf;
 
    ch->de_equip(  );
 
-   for( paf = ch->affects.begin(); paf != ch->affects.end(); ++paf )
+   for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       ch->affect_modify( af, false );
+   }
+
+   /*
+    * As part of returning the char to their "natural naked state",
+    * we must strip any room affects from them.
+    */
+   if( ch->in_room )
+   {
+      for( paf = ch->in_room->affects.begin(  ); paf != ch->in_room->affects.end(  ); ++paf )
+      {
+         affect_data *aff = *paf;
+
+         if( aff->location != APPLY_WEARSPELL && aff->location != APPLY_REMOVESPELL && aff->location != APPLY_STRIPSN )
+            ch->affect_modify( aff, false );
+      }
+
+      for( paf = ch->in_room->permaffects.begin(  ); paf != ch->in_room->permaffects.end(  ); ++paf )
+      {
+         affect_data *aff = *paf;
+
+         if( aff->location != APPLY_WEARSPELL && aff->location != APPLY_REMOVESPELL && aff->location != APPLY_STRIPSN )
+            ch->affect_modify( aff, false );
+      }
    }
 
    ch->set_aflags( race_table[ch->race]->affected );
@@ -2941,20 +3037,42 @@ void fix_char( char_data * ch )
 
    ch->ClassSpecificStuff(  );   /* Brought over from DOTD code - Samson 4-6-99 */
 
-   for( paf = ch->affects.begin(); paf != ch->affects.end(); ++paf )
+   for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       ch->affect_modify( af, true );
+   }
+
+   /*
+    * Now that the char is fixed, add the room's affects back on.
+    */
+   if( ch->in_room )
+   {
+      for( paf = ch->in_room->affects.begin(  ); paf != ch->in_room->affects.end(  ); ++paf )
+      {
+         affect_data *aff = *paf;
+
+         if( aff->location != APPLY_WEARSPELL && aff->location != APPLY_REMOVESPELL && aff->location != APPLY_STRIPSN )
+            ch->affect_modify( aff, true );
+      }
+
+      for( paf = ch->in_room->permaffects.begin(  ); paf != ch->in_room->permaffects.end(  ); ++paf )
+      {
+         affect_data *aff = *paf;
+
+         if( aff->location != APPLY_WEARSPELL && aff->location != APPLY_REMOVESPELL && aff->location != APPLY_STRIPSN )
+            ch->affect_modify( aff, true );
+      }
    }
 
    ch->carry_weight = 0;
    ch->carry_number = 0;
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = ch->carrying.begin(); iobj != ch->carrying.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( obj->wear_loc == WEAR_NONE )
          ch->carry_number += obj->get_number(  );
@@ -2970,7 +3088,7 @@ CMDF( do_fixchar )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: fixchar <playername>\r\n" );
       return;
@@ -2985,15 +3103,16 @@ CMDF( do_fixchar )
 
 CMDF( do_immortalize )
 {
+   char_data *victim;
+
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax:  immortalize <char>\r\n" );
       return;
    }
 
-   char_data *victim;
    if( !( victim = get_wizvictim( ch, argument, true ) ) )
       return;
 
@@ -3018,13 +3137,13 @@ CMDF( do_immortalize )
    interpret( victim, "help M_GODLVL1_" );
    victim->print( "&WYou awake... all your possessions are gone.\r\n" );
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
       ++iobj;
 
-      obj->extract();
+      obj->extract(  );
    }
    victim->level = LEVEL_IMMORTAL;
    advance_level( victim );
@@ -3041,13 +3160,13 @@ CMDF( do_immortalize )
       if( victim->pcdata->clan->members < 0 )
          victim->pcdata->clan->members = 0;
       if( !str_cmp( victim->name, victim->pcdata->clan->leader ) )
-         STRFREE( victim->pcdata->clan->leader );
+         victim->pcdata->clan->leader.clear(  );
       if( !str_cmp( victim->name, victim->pcdata->clan->number1 ) )
-         STRFREE( victim->pcdata->clan->number1 );
+         victim->pcdata->clan->number1.clear(  );
       if( !str_cmp( victim->name, victim->pcdata->clan->number2 ) )
-         STRFREE( victim->pcdata->clan->number2 );
+         victim->pcdata->clan->number2.clear(  );
       victim->pcdata->clan = NULL;
-      STRFREE( victim->pcdata->clan_name );
+      victim->pcdata->clan_name.clear(  );
    }
    victim->exp = exp_level( victim->level );
    victim->trust = 0;
@@ -3056,7 +3175,7 @@ CMDF( do_immortalize )
     * Automatic settings for imms added by Samson 1-18-98 
     */
    fix_char( victim );
-   for( int sn = 0; sn < top_sn; ++sn )
+   for( int sn = 0; sn < num_skills; ++sn )
       victim->pcdata->learned[sn] = 100;
 
    victim->set_pcflag( PCFLAG_HOLYLIGHT );
@@ -3074,19 +3193,18 @@ CMDF( do_immortalize )
    /*
     * End added automatic settings 
     */
-   return;
 }
 
 CMDF( do_trust )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
    int level;
 
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' || !is_number( argument ) )
+   if( arg1.empty(  ) || argument.empty(  ) || !is_number( argument ) )
    {
       ch->print( "Syntax: trust <char> <level>.\r\n" );
       return;
@@ -3095,7 +3213,7 @@ CMDF( do_trust )
    if( !( victim = get_wizvictim( ch, arg1, true ) ) )
       return;
 
-   if( ( level = atoi( argument ) ) < 0 || level > MAX_LEVEL )
+   if( ( level = atoi( argument.c_str(  ) ) ) < 0 || level > MAX_LEVEL )
    {
       ch->printf( "Level must be 0 (reset) or 1 to %d.\r\n", MAX_LEVEL );
       return;
@@ -3109,22 +3227,21 @@ CMDF( do_trust )
 
    victim->trust = level;
    ch->print( "Ok.\r\n" );
-   return;
 }
 
 /* Command to silently sneak something into someone's inventory - for immortals only */
 CMDF( do_stash )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    char_data *victim;
    obj_data *obj;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !str_cmp( arg2, "to" ) && argument[0] != '\0' )
+   if( !str_cmp( arg2, "to" ) && !argument.empty(  ) )
       argument = one_argument( argument, arg2 );
 
-   if( arg1[0] == '\0' || arg2[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Stash what on whom?\r\n" );
       return;
@@ -3137,7 +3254,7 @@ CMDF( do_stash )
        */
       int amount;
 
-      amount = atoi( arg1 );
+      amount = atoi( arg1.c_str(  ) );
       if( amount <= 0 || ( str_cmp( arg2, "coins" ) && str_cmp( arg2, "coin" ) ) )
       {
          ch->print( "Sorry, you can't do that.\r\n" );
@@ -3145,9 +3262,9 @@ CMDF( do_stash )
       }
 
       argument = one_argument( argument, arg2 );
-      if( !str_cmp( arg2, "to" ) && argument[0] != '\0' )
+      if( !str_cmp( arg2, "to" ) && !argument.empty(  ) )
          argument = one_argument( argument, arg2 );
-      if( !arg2 || arg2[0] == '\0' )
+      if( arg2.empty(  ) )
       {
          ch->print( "Stash what on whom?\r\n" );
          return;
@@ -3249,8 +3366,155 @@ CMDF( do_stash )
 
    if( IS_SAVE_FLAG( SV_RECEIVE ) && !victim->char_died(  ) )
       victim->save(  );
+}
 
-   return;
+/*
+ * "Claim" an object.  Will allow an immortal to "grab" an object no matter
+ * where it is hiding.  ie: from a player's inventory, from deep inside
+ * a container, from a mobile, from anywhere.			-Thoric
+ *
+ * Yanked from Smaug 1.8
+ */
+CMDF( do_immget )
+{
+   string arg, arg1, arg2, arg3, who;
+   char_data *vch = NULL;
+   bool silently = false, found = false;
+   int number, count, vnum;
+
+   number = number_argument( argument, arg );
+   argument = arg;
+   argument = one_argument( argument, arg1 );
+   argument = one_argument( argument, arg2 );
+   argument = one_argument( argument, arg3 );
+
+   if( arg1.empty(  ) )
+   {
+      ch->print( "Syntax: immget <object> [from who] [silent]\r\n" );
+      return;
+   }
+
+   if( arg3.empty(  ) )
+   {
+      if( !arg2.empty(  ) )
+      {
+         if( !str_cmp( arg2, "silent" ) )
+            silently = true;
+         else
+            who = arg2;
+      }
+   }
+   else
+   {
+      who = arg2;
+      if( !str_cmp( arg3, "silent" ) )
+         silently = true;
+   }
+
+   if( !who.empty(  ) )
+   {
+      if( !( vch = ch->get_char_world( who ) ) )
+      {
+         ch->print( "They aren't here.\r\n" );
+         return;
+      }
+      if( ch->get_trust(  ) < vch->get_trust(  ) && !vch->isnpc(  ) )
+      {
+         act( AT_TELL, "$n tells you, 'Keep your hands to yourself!'", vch, NULL, ch, TO_VICT );
+         return;
+      }
+   }
+
+   if( is_number( arg1 ) )
+      vnum = atoi( arg1.c_str(  ) );
+   else
+      vnum = -1;
+
+   count = 0;
+   obj_data *obj = NULL;
+   list < obj_data * >::iterator iobj;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   {
+      obj = *iobj;
+
+      if( ch->can_see_obj( obj, true ) && ( obj->pIndexData->vnum == vnum || hasname( obj->name, arg1 ) ) && ( !vch || vch == obj->who_carrying(  ) ) )
+         if( ( count += obj->count ) >= number )
+         {
+            found = true;
+            break;
+         }
+   }
+
+   if( !found && vnum != -1 )
+   {
+      ch->print( "You can't find that.\r\n" );
+      return;
+   }
+
+   count = 0;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   {
+      obj = *iobj;
+
+      if( ch->can_see_obj( obj, true ) && ( obj->pIndexData->vnum == vnum || nifty_is_name_prefix( arg1, obj->name ) ) && ( !vch || vch == obj->who_carrying(  ) ) )
+         if( ( count += obj->count ) >= number )
+         {
+            found = true;
+            break;
+         }
+   }
+
+   if( !found )
+   {
+      ch->print( "You can't find that.\r\n" );
+      return;
+   }
+
+   if( !vch && ( vch = obj->who_carrying(  ) ) != NULL )
+   {
+      if( ch->get_trust(  ) < vch->get_trust(  ) && !vch->isnpc(  ) )
+      {
+         act( AT_TELL, "$n tells you, 'Keep your hands off $p! It's mine.'", vch, obj, ch, TO_VICT );
+         act( AT_IMMORT, "$n tried to lay claim to $p from your possession!", vch, obj, ch, TO_CHAR );
+         return;
+      }
+   }
+
+   obj->separate(  );
+   if( obj->item_type == ITEM_PORTAL )
+      obj->remove_portal(  );
+
+   if( obj->carried_by )
+      obj->from_char(  );
+   else if( obj->in_room )
+      obj->from_room(  );
+   else if( obj->in_obj )
+      obj->from_obj(  );
+
+   obj->to_char( ch );
+   if( vch )
+   {
+      if( !silently )
+      {
+         act( AT_IMMORT, "$n takes $p from you!", ch, obj, vch, TO_VICT );
+         act( AT_IMMORT, "$n takes $p from $N!", ch, obj, vch, TO_NOTVICT );
+         act( AT_IMMORT, "You take $p from $N!", ch, obj, vch, TO_CHAR );
+      }
+      else
+         act( AT_IMMORT, "You silently take $p from $N.", ch, obj, vch, TO_CHAR );
+   }
+   else
+   {
+      if( !silently )
+      {
+         /*
+          * notify people in the room... (not done yet) 
+          */
+         act( AT_IMMORT, "You take $p!", ch, obj, NULL, TO_CHAR );
+      }
+      else
+         act( AT_IMMORT, "You silently take $p.", ch, obj, NULL, TO_CHAR );
+   }
 }
 
 room_index *select_random_room( bool pickmap )
@@ -3263,9 +3527,7 @@ room_index *select_random_room( bool pickmap )
       pRoomIndex = get_room_index( number_range( 0, sysdata->maxvnum ) );
       if( pRoomIndex )
          if( !pRoomIndex->flags.test( ROOM_PRIVATE )
-             && !pRoomIndex->flags.test( ROOM_SOLITARY )
-             && !pRoomIndex->flags.test( ROOM_PROTOTYPE )
-             && !pRoomIndex->flags.test( ROOM_ISOLATED ) )
+             && !pRoomIndex->flags.test( ROOM_SOLITARY ) && !pRoomIndex->flags.test( ROOM_PROTOTYPE ) && !pRoomIndex->flags.test( ROOM_ISOLATED ) )
          {
             if( !pickmap && !pRoomIndex->flags.test( ROOM_MAP ) )
                break;
@@ -3283,7 +3545,7 @@ CMDF( do_scatter )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Scatter whom?\r\n" );
       return;
@@ -3344,24 +3606,23 @@ CMDF( do_scatter )
       victim->position = POS_RESTING;
       act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, NULL, NULL, TO_ROOM );
    }
-   return;
 }
 
 CMDF( do_strew )
 {
-   char arg1[MIL];
+   string arg1;
+   char_data *victim;
    room_index *pRoomIndex;
 
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Strew who, what?\r\n" );
       return;
    }
 
-   char_data *victim;
    if( !( victim = get_wizvictim( ch, arg1, false ) ) )
       return;
 
@@ -3397,10 +3658,10 @@ CMDF( do_strew )
       act( AT_MAGIC, "You speak a single word, sending $N's possessions flying!", ch, NULL, victim, TO_CHAR );
       act( AT_MAGIC, "$n speaks a single word, sending your possessions flying!", ch, NULL, victim, TO_VICT );
 
-      list<obj_data*>::iterator iobj;
-      for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
       {
-         obj_data *obj_lose = (*iobj);
+         obj_data *obj_lose = *iobj;
          ++iobj;
 
          obj_lose->from_char(  );
@@ -3410,19 +3671,20 @@ CMDF( do_strew )
       return;
    }
    ch->print( "Strew their coins or inventory?\r\n" );
-   return;
 }
 
 CMDF( do_strip )
 {
-   ch->set_color( AT_OBJECT );
-   if( !argument || argument[0] == '\0' )
+   char_data *victim;
+
+   if( argument.empty(  ) )
    {
       ch->print( "Strip who?\r\n" );
       return;
    }
 
-   char_data *victim;
+   ch->set_color( AT_OBJECT );
+
    if( !( victim = get_wizvictim( ch, argument, false ) ) )
       return;
 
@@ -3434,10 +3696,10 @@ CMDF( do_strip )
    act( AT_OBJECT, "Searching $N ...", ch, NULL, victim, TO_CHAR );
 
    int count = 0;
-   list<obj_data*>::iterator iobj;
-   for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
    {
-      obj_data *obj_lose = (*iobj);
+      obj_data *obj_lose = *iobj;
       ++iobj;
 
       obj_lose->from_char(  );
@@ -3447,7 +3709,6 @@ CMDF( do_strip )
    }
    if( !count )
       ch->pager( "&GNothing found to take.\r\n" );
-   return;
 }
 
 const int RESTORE_INTERVAL = 21600;
@@ -3455,7 +3716,7 @@ CMDF( do_restore )
 {
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Restore whom?\r\n" );
       return;
@@ -3490,10 +3751,10 @@ CMDF( do_restore )
       ch->pcdata->restore_time = current_time;
       ch->save(  );
       ch->print( "Ok.\r\n" );
-      list<char_data*>::iterator ich;
-      for( ich = pclist.begin(); ich != pclist.end(); )
+      list < char_data * >::iterator ich;
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); )
       {
-         char_data *vch = (*ich);
+         char_data *vch = *ich;
          ++ich;
 
          if( !vch->is_immortal(  ) && !vch->CAN_PKILL(  ) && !in_arena( vch ) )
@@ -3543,7 +3804,6 @@ CMDF( do_restore )
       if( ch != victim )
          act( AT_IMMORT, "$n has restored you.", ch, NULL, victim, TO_VICT );
       ch->print( "Ok.\r\n" );
-      return;
    }
 }
 
@@ -3577,14 +3837,13 @@ CMDF( do_restoretime )
    hour = ( int )( time_passed / 3600 );
    minute = ( int )( ( time_passed - ( hour * 3600 ) ) / 60 );
    ch->printf( "Your last restore all was %d hours and %d minutes ago.\r\n", hour, minute );
-   return;
 }
 
 CMDF( do_freeze )
 {
    char_data *victim;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Freeze whom?\r\n" );
       return;
@@ -3593,7 +3852,7 @@ CMDF( do_freeze )
    if( !( victim = get_wizvictim( ch, argument, true ) ) )
       return;
 
-   if ( victim->desc && victim->desc->original && victim->desc->original->get_trust() >= ch->get_trust() )
+   if( victim->desc && victim->desc->original && victim->desc->original->get_trust(  ) >= ch->get_trust(  ) )
    {
       ch->print( "For some inexplicable reason, you failed.\r\n" );
       return;
@@ -3607,14 +3866,13 @@ CMDF( do_freeze )
    }
    else
    {
-      if ( victim->switched )
+      if( victim->switched )
          do_return( victim->switched, "" );
       victim->set_pcflag( PCFLAG_FREEZE );
       victim->print( "&CA godly force turns your body to ice!\r\n" );
       ch->printf( "&CYou have frozen %s.\r\n", victim->name );
    }
    victim->save(  );
-   return;
 }
 
 CMDF( do_log )
@@ -3623,7 +3881,7 @@ CMDF( do_log )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Log whom?\r\n" );
       return;
@@ -3657,7 +3915,6 @@ CMDF( do_log )
       victim->set_pcflag( PCFLAG_LOG );
       ch->printf( "LOG applied to %s.\r\n", victim->name );
    }
-   return;
 }
 
 CMDF( do_litterbug )
@@ -3666,7 +3923,7 @@ CMDF( do_litterbug )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Set litterbug flag on whom?\r\n" );
       return;
@@ -3687,7 +3944,6 @@ CMDF( do_litterbug )
       victim->print( "A strange force prevents you from dropping any more items!\r\n" );
       ch->printf( "LITTERBUG set on %s.\r\n", victim->name );
    }
-   return;
 }
 
 CMDF( do_noemote )
@@ -3696,7 +3952,7 @@ CMDF( do_noemote )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Noemote whom?\r\n" );
       return;
@@ -3717,7 +3973,6 @@ CMDF( do_noemote )
       victim->print( "You can't emote!\r\n" );
       ch->printf( "NOEMOTE applied to %s.\r\n", victim->name );
    }
-   return;
 }
 
 CMDF( do_notell )
@@ -3726,7 +3981,7 @@ CMDF( do_notell )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Notell whom?\r\n" );
       return;
@@ -3747,7 +4002,6 @@ CMDF( do_notell )
       victim->print( "You can't send tells!\r\n" );
       ch->printf( "NOTELL applied to %s.\r\n", victim->name );
    }
-   return;
 }
 
 CMDF( do_notitle )
@@ -3757,7 +4011,7 @@ CMDF( do_notitle )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Notitle whom?\r\n" );
       return;
@@ -3776,11 +4030,10 @@ CMDF( do_notitle )
    {
       victim->set_pcflag( PCFLAG_NOTITLE );
       snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex == SEX_FEMALE ? 1 : 0] );
-      set_title( victim, buf );
+      victim->set_title( buf );
       victim->print( "You can't set your own title!\r\n" );
       ch->printf( "NOTITLE set on %s.\r\n", victim->name );
    }
-   return;
 }
 
 CMDF( do_silence )
@@ -3789,7 +4042,7 @@ CMDF( do_silence )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Silence whom?\r\n" );
       return;
@@ -3810,7 +4063,6 @@ CMDF( do_silence )
       victim->print( "You can't use channels!\r\n" );
       ch->printf( "You SILENCE %s.\r\n", victim->name );
    }
-   return;
 }
 
 CMDF( do_peace )
@@ -3818,10 +4070,10 @@ CMDF( do_peace )
    act( AT_IMMORT, "$n booms, 'PEACE!'", ch, NULL, NULL, TO_ROOM );
    act( AT_IMMORT, "You boom, 'PEACE!'", ch, NULL, NULL, TO_CHAR );
 
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
 
       if( rch->fighting )
       {
@@ -3837,7 +4089,6 @@ CMDF( do_peace )
       stop_fearing( rch );
    }
    ch->print( "&YOk.\r\n" );
-   return;
 }
 
 CMDF( do_lockdown )
@@ -3850,7 +4101,6 @@ CMDF( do_lockdown )
       echo_to_all( "&RTotal lockdown activated.", ECHOTAR_IMM );
    else
       echo_to_all( "&RTotal lockdown deactivated.", ECHOTAR_IMM );
-   return;
 }
 
 CMDF( do_implock )
@@ -3863,7 +4113,6 @@ CMDF( do_implock )
       echo_to_all( "&RImplock activated.", ECHOTAR_IMM );
    else
       echo_to_all( "&RImplock deactivated.", ECHOTAR_IMM );
-   return;
 }
 
 CMDF( do_wizlock )
@@ -3876,7 +4125,6 @@ CMDF( do_wizlock )
       echo_to_all( "&RWizlock activated.", ECHOTAR_IMM );
    else
       echo_to_all( "&RWizlock deactivated.", ECHOTAR_IMM );
-   return;
 }
 
 CMDF( do_noresolve )
@@ -3889,7 +4137,6 @@ CMDF( do_noresolve )
       ch->print( "&YName resolving disabled.\r\n" );
    else
       ch->print( "&YName resolving enabled.\r\n" );
-   return;
 }
 
 /* Output of command reformmated by Samson 2-8-98, and again on 4-7-98 */
@@ -3901,11 +4148,11 @@ CMDF( do_users )
    ch->pager( "----+-------------------+----+--------------+--------------------------\r\n" );
 
    int count = 0;
-   list<descriptor_data*>::iterator ds;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   list < descriptor_data * >::iterator ds;
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      descriptor_data *d = (*ds);
-      char *st;
+      descriptor_data *d = *ds;
+      const char *st;
 
       switch ( d->connected )
       {
@@ -3982,13 +4229,13 @@ CMDF( do_users )
             break;
       }
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          if( ch->is_imp(  ) || ( d->character && ch->can_see( d->character, true ) && !is_ignoring( d->character, ch ) ) )
          {
             ++count;
             ch->pagerf( " %3d| %-17s |%4d| %-12s | %s \r\n", d->descriptor, st, d->idle / 4,
-                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->host );
+                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->host.c_str(  ) );
          }
       }
       else
@@ -3998,30 +4245,29 @@ CMDF( do_users )
          {
             ++count;
             ch->pagerf( " %3d| %2d|%4d| %-12s | %s \r\n", d->descriptor, d->connected, d->idle / 4,
-                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->host );
+                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->host.c_str(  ) );
          }
       }
    }
    ch->pagerf( "%d user%s.\r\n", count, count == 1 ? "" : "s" );
-   return;
 }
 
 CMDF( do_invis )
 {
-   char arg[MIL];
+   string arg;
    short level;
 
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg );
-   if( arg && arg[0] != '\0' )
+   if( !arg.empty(  ) )
    {
       if( !is_number( arg ) )
       {
          ch->print( "Usage: invis | invis <level>\r\n" );
          return;
       }
-      level = atoi( arg );
+      level = atoi( arg.c_str(  ) );
       if( level < 2 || level > ch->get_trust(  ) )
       {
          ch->print( "Invalid level.\r\n" );
@@ -4084,7 +4330,6 @@ CMDF( do_invis )
          ch->set_actflag( ACT_MOBINVIS );
       }
    }
-   return;
 }
 
 CMDF( do_holylight )
@@ -4100,7 +4345,6 @@ CMDF( do_holylight )
       ch->print( "Holy light mode on.\r\n" );
    else
       ch->print( "Holy light mode off.\r\n" );
-   return;
 }
 
 /*
@@ -4116,16 +4360,16 @@ CMDF( do_loadup )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: loadup <playername>\r\n" );
       return;
    }
 
-   list<descriptor_data*>::iterator ds;
-   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   list < descriptor_data * >::iterator ds;
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
-      d = (*ds);
+      d = *ds;
       char_data *temp = d->original ? d->original : d->character;
 
       if( !str_cmp( temp->name, argument ) )
@@ -4136,9 +4380,9 @@ CMDF( do_loadup )
    }
    d = NULL;
    argument[0] = UPPER( argument[0] );
-   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
+   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
 
-   if( stat( fname, &fst ) == -1 || !check_parse_name( capitalize( argument ), false ) )
+   if( stat( fname, &fst ) == -1 || !check_parse_name( capitalize( argument ).c_str(  ), false ) )
    {
       ch->print( "&YNo such player exists.\r\n" );
       return;
@@ -4160,7 +4404,7 @@ CMDF( do_loadup )
       {
          interpret( d->character, "say How dare you load my Pfile!" );
          cmdf( d->character, "dino %s", ch->name );
-         ch->printf( "I think you'd better leave %s alone!\r\n", argument );
+         ch->printf( "I think you'd better leave %s alone!\r\n", argument.c_str(  ) );
          d->character->desc = NULL;
          interpret( d->character, "quit auto" );
          return;
@@ -4168,8 +4412,8 @@ CMDF( do_loadup )
       d->character->desc = NULL;
       d->character = NULL;
       deleteptr( d );
-      ch->printf( "&R%s loaded from room %d.\r\n", capitalize( argument ), old_room_vnum );
-      act_printf( AT_IMMORT, ch, NULL, NULL, TO_ROOM, "%s appears from nowhere, eyes glazed over.", capitalize( argument ) );
+      ch->printf( "&R%s loaded from room %d.\r\n", capitalize( argument ).c_str(  ), old_room_vnum );
+      act_printf( AT_IMMORT, ch, NULL, NULL, TO_ROOM, "%s appears from nowhere, eyes glazed over.", capitalize( argument ).c_str(  ) );
       ch->print( "Done.\r\n" );
       return;
    }
@@ -4177,7 +4421,6 @@ CMDF( do_loadup )
     * else no player file 
     */
    ch->print( "No such player.\r\n" );
-   return;
 }
 
 /*
@@ -4188,35 +4431,30 @@ CMDF( do_loadup )
  /*
   * Rewrite by Xorith. 12/1/03
   */
-char *extract_area_names( char_data * ch )
+string extract_area_names( char_data * ch )
 {
-   char tarea[MSL];
-   char *tbuf = NULL;
-   static char area_names[MSL];
+   string tbuf, tarea, area_names;
 
    if( !ch || ch->isnpc(  ) )
       return NULL;
 
-   if( !ch->pcdata->bestowments || ch->pcdata->bestowments[0] == '\0' )
+   if( ch->pcdata->bestowments.empty(  ) )
       return NULL;
 
-   tarea[0] = '\0';
-   area_names[0] = '\0';
    tbuf = ch->pcdata->bestowments;
    tbuf = one_argument( tbuf, tarea );
-   if( !tarea || tarea[0] == '\0' )
+   if( tarea.empty(  ) )
       return NULL;
-   while( 1 )
+
+   while( !tbuf.empty(  ) )
    {
-      if( strstr( tarea, ".are" ) )
+      if( tarea.find( ".are" ) != string::npos )
       {
-         if( !area_names || area_names[0] == '\0' )
-            mudstrlcpy( area_names, tarea, MSL );
+         if( area_names.empty(  ) )
+            area_names.append( tarea );
          else
-            snprintf( area_names + strlen( area_names ), MSL, " %s", tarea );
+            area_names.append( tarea + " " );
       }
-      if( !tbuf || tbuf[0] == '\0' )
-         break;
       tbuf = one_argument( tbuf, tarea );
    }
    return area_names;
@@ -4229,29 +4467,22 @@ char *extract_area_names( char_data * ch )
  */
 void remove_area_names( char_data * ch )
 {
-   char tarea[MSL];
-   char *buf = NULL;
+   string buf, tarea;
 
-   if( !ch || ch->isnpc(  ) )
+   if( !ch || ch->isnpc(  ) || ch->pcdata->bestowments.empty(  ) )
       return;
 
-   if( !ch->pcdata->bestowments || ch->pcdata->bestowments[0] == '\0' )
-      return;
-
-   tarea[0] = '\0';
    buf = ch->pcdata->bestowments;
    buf = one_argument( buf, tarea );
-   if( !tarea || tarea[0] == '\0' )
+   if( tarea.empty(  ) )
       return;
-   while( 1 )
+
+   while( !buf.empty(  ) )
    {
-      if( strstr( tarea, ".are" ) )
-         removename( &ch->pcdata->bestowments, tarea );
-      if( !buf || buf[0] == '\0' )
-         break;
+      if( tarea.find( ".are" ) != string::npos )
+         removename( ch->pcdata->bestowments, tarea );
       buf = one_argument( buf, tarea );
    }
-   return;
 }
 
 /*
@@ -4261,8 +4492,7 @@ void remove_area_names( char_data * ch )
 /* Function revamped by Xorith on 12/1/03 */
 CMDF( do_bestowarea )
 {
-   char arg[MIL];
-   char *buf;
+   string arg, buf;
    char_data *victim;
 
    ch->set_color( AT_IMMORT );
@@ -4275,14 +4505,13 @@ CMDF( do_bestowarea )
    }
 #endif
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax:\r\n"
                  "bestowarea <victim> <filename>.are\r\n"
                  "bestowarea <victim> none                     removes bestowed areas\r\n"
                  "bestowarea <victim> remove <filename>.are    removes a specific area\r\n"
-                 "bestowarea <victim> list                     lists bestowed areas\r\n"
-                 "bestowarea <victim>                          lists bestowed areas\r\n" );
+                 "bestowarea <victim> list                     lists bestowed areas\r\n" "bestowarea <victim>                          lists bestowed areas\r\n" );
       return;
    }
 
@@ -4297,44 +4526,43 @@ CMDF( do_bestowarea )
       return;
    }
 
-   if( !argument || argument[0] == '\0' || !str_cmp( argument, "list" ) )
+   if( argument.empty(  ) || !str_cmp( argument, "list" ) )
    {
-      if( !victim->pcdata->bestowments || victim->pcdata->bestowments[0] == '\0' )
+      if( victim->pcdata->bestowments.empty(  ) )
       {
          ch->printf( "%s does not have any areas bestowed upon them.\r\n", victim->name );
          return;
       }
-      if( !( buf = extract_area_names( victim ) ) || buf[0] == '\0' )
+      buf = extract_area_names( victim );
+      if( buf.empty(  ) )
          ch->printf( "%s does not have any areas bestowed upon them.\r\n", victim->name );
       else
-         ch->printf( "%s's bestowed areas: %s\r\n", victim->name, buf );
+         ch->printf( "%s's bestowed areas: %s\r\n", victim->name, buf.c_str(  ) );
       return;
    }
 
    argument = one_argument( argument, arg );
 
-   if( argument && argument[0] != '\0' && !str_cmp( arg, "remove" ) )
+   if( !argument.empty(  ) && !str_cmp( arg, "remove" ) )
    {
-      while( 1 )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg );
          if( !hasname( victim->pcdata->bestowments, arg ) )
          {
-            ch->printf( "%s does not have an area named %s bestowed.\r\n", victim->name, arg );
+            ch->printf( "%s does not have an area named %s bestowed.\r\n", victim->name, arg.c_str(  ) );
             return;
          }
-         removename( &victim->pcdata->bestowments, arg );
-         ch->printf( "Removed area %s from %s.\r\n", arg, victim->name );
+         removename( victim->pcdata->bestowments, arg );
+         ch->printf( "Removed area %s from %s.\r\n", arg.c_str(  ), victim->name );
          victim->save(  );
-         if( !argument || argument[0] == '\0' )
-            break;
       }
       return;
    }
 
    if( !str_cmp( arg, "none" ) )
    {
-      if( !victim->pcdata->bestowments || !strstr( victim->pcdata->bestowments, ".are" ) )
+      if( victim->pcdata->bestowments.empty(  ) || victim->pcdata->bestowments.find( ".are" ) == string::npos )
       {
          ch->printf( "%s has no areas bestowed!\r\n", victim->name );
          return;
@@ -4345,11 +4573,11 @@ CMDF( do_bestowarea )
       return;
    }
 
-   while( 1 )
+   while( !argument.empty(  ) )
    {
-      if( !strstr( arg, ".are" ) )
+      if( arg.find( ".are" ) == string::npos )
       {
-         ch->printf( "'%s' is not a valid area to bestow.\r\n", arg );
+         ch->printf( "'%s' is not a valid area to bestow.\r\n", arg.c_str(  ) );
          ch->print( "You can only bestow an area name\r\n" );
          ch->print( "E.G. bestow joe sam.are\r\n" );
          return;
@@ -4357,31 +4585,26 @@ CMDF( do_bestowarea )
 
       if( hasname( victim->pcdata->bestowments, arg ) )
       {
-         ch->printf( "%s already has the area %s bestowed.\r\n", victim->name, arg );
+         ch->printf( "%s already has the area %s bestowed.\r\n", victim->name, arg.c_str(  ) );
          return;
       }
 
       smash_tilde( arg );
-      addname( &victim->pcdata->bestowments, arg );
-      victim->printf( "%s has bestowed on you the area: %s\r\n", ch->name, arg );
-      ch->printf( "%s has been bestowed: %s\r\n", victim->name, arg );
+      addname( victim->pcdata->bestowments, arg );
+      victim->printf( "%s has bestowed on you the area: %s\r\n", ch->name, arg.c_str(  ) );
+      ch->printf( "%s has been bestowed: %s\r\n", victim->name, arg.c_str(  ) );
       victim->save(  );
-      if( !argument || argument[0] == '\0' )
-         break;
-      else
-         argument = one_argument( argument, arg );
+
+      argument = one_argument( argument, arg );
    }
-   return;
 }
 
 CMDF( do_demote )
 {
-   char buf[256], buf2[256];
    char_data *victim;
-   char *die;
 
    ch->set_color( AT_IMMORT );
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax: demote <char>.\r\n" );
       return;
@@ -4431,6 +4654,9 @@ CMDF( do_demote )
 
    if( victim->level == LEVEL_AVATAR )
    {
+      char buf[256], buf2[256];
+      char *die;
+
       victim->unset_pcflag( PCFLAG_HOLYLIGHT );
       die = victim->name;
       snprintf( buf, 256, "%s%s", GOD_DIR, capitalize( die ) );
@@ -4448,7 +4674,6 @@ CMDF( do_demote )
 #ifdef IMC
    imc_check_wizperms( victim );
 #endif
-   return;
 }
 
 CMDF( do_promote )
@@ -4457,7 +4682,7 @@ CMDF( do_promote )
    int level;
 
    ch->set_color( AT_IMMORT );
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax: promote <char>.\r\n" );
       return;
@@ -4482,20 +4707,6 @@ CMDF( do_promote )
    {
       ch->printf( "You must use the immortalize command to make %s an immortal.\r\n", victim->name );
       return;
-   }
-
-   if( victim->level == LEVEL_IMMORTAL )
-   {
-      if( !victim->pcdata->email || !str_cmp( victim->pcdata->email, "" ) )
-      {
-         ch->printf( "Cannot promote %s, their email information is missing.\r\n", victim->name );
-         return;
-      }
-      if( victim->pcdata->realm == 0 )
-      {
-         ch->printf( "Cannot promote %s, no realm has been assigned.\r\n", victim->name );
-         return;
-      }
    }
 
    level = victim->level + 1;
@@ -4565,7 +4776,7 @@ CMDF( do_promote )
    victim->exp = exp_level( victim->level );
    victim->trust = 0;
    STRFREE( victim->pcdata->rank );
-   victim->pcdata->rank = STRALLOC( realm_string[victim->pcdata->realm] );
+   victim->pcdata->rank = STRALLOC( "Immortal" );
    victim->save(  );
    make_wizlist(  );
    build_wizinfo(  );
@@ -4575,7 +4786,6 @@ CMDF( do_promote )
       echo_all_printf( ECHOTAR_ALL, "&wA dull grey flash arcs across the sky as %s gains in power!", victim->name );
    if( victim->alignment < -350 )
       echo_all_printf( ECHOTAR_ALL, "&zAn eerie black flash arcs across the sky as %s gains in power!", victim->name );
-   return;
 }
 
 /* Online high level immortal command for displaying what the encryption
@@ -4590,11 +4800,11 @@ CMDF( do_promote )
  */
 CMDF( do_form_password )
 {
-   char *pwcheck;
+   const char *pwcheck;
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: formpass <password>\r\n" );
       return;
@@ -4603,7 +4813,7 @@ CMDF( do_form_password )
    /*
     * This is arbitrary to discourage weak passwords 
     */
-   if( strlen( argument ) < 5 )
+   if( argument.length(  ) < 5 )
    {
       ch->print( "Usage: formpass <password>\r\n" );
       ch->print( "New password must be at least 5 characters in length.\r\n" );
@@ -4617,9 +4827,8 @@ CMDF( do_form_password )
       return;
    }
 
-   pwcheck = sha256_crypt( argument );
-   ch->printf( "%s results in the encrypted string: %s\r\n", argument, pwcheck );
-   return;
+   pwcheck = sha256_crypt( argument.c_str(  ) );
+   ch->printf( "%s results in the encrypted string: %s\r\n", argument.c_str(  ), pwcheck );
 }
 
 /*
@@ -4628,19 +4837,18 @@ CMDF( do_form_password )
 CMDF( do_destro )
 {
    ch->print( "&RIf you want to destroy a character, spell it out!\r\n" );
-   return;
 }
 
 CMDF( do_destroy )
 {
    char_data *victim = NULL;
    char buf[256];
-   char *name;
+   const char *name;
    bool found = false;
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Destroy what player file?\r\n" );
       return;
@@ -4652,10 +4860,10 @@ CMDF( do_destroy )
       return;
    }
 
-   list<char_data*>::iterator ich;
-   for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
-      victim = (*ich);
+      victim = *ich;
 
       if( !str_cmp( victim->name, argument ) )
       {
@@ -4667,16 +4875,16 @@ CMDF( do_destroy )
 
    if( !found )
    {
-      list<descriptor_data*>::iterator ds;
+      list < descriptor_data * >::iterator ds;
       descriptor_data *d = NULL;
       bool dfound = false;
 
       /*
        * Make sure they aren't halfway logged in. 
        */
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         d = (*ds);
+         d = *ds;
 
          if( ( victim = d->character ) && !victim->isnpc(  ) && !str_cmp( victim->name, argument ) )
          {
@@ -4694,11 +4902,11 @@ CMDF( do_destroy )
          clan_data *clan = victim->pcdata->clan;
 
          if( !str_cmp( victim->name, clan->leader ) )
-            STRFREE( clan->leader );
+            clan->leader.clear(  );
          if( !str_cmp( victim->name, clan->number1 ) )
-            STRFREE( clan->number1 );
+            clan->number1.clear(  );
          if( !str_cmp( victim->name, clan->number2 ) )
-            STRFREE( clan->number2 );
+            clan->number2.clear(  );
          remove_roster( clan, victim->name );
          --clan->members;
          save_clan( clan );
@@ -4723,8 +4931,8 @@ CMDF( do_destroy )
          for( int y = 0; y < MAX_LAYERS; ++y )
             save_equipment[x][y] = NULL;
    }
-   name = capitalize( argument );
-   snprintf( buf, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), name );
+   name = argument.c_str(  );
+   snprintf( buf, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( name ) );
    if( !remove( buf ) )
    {
       ch->printf( "&RPlayer %s destroyed.\r\n", name );
@@ -4737,10 +4945,9 @@ CMDF( do_destroy )
    else
    {
       ch->printf( "&RUnknown error #%d - %s.  Report to Samson.\r\n", errno, strerror( errno ) );
-      snprintf( buf, 256, "%s destroying %s", ch->name, argument );
+      snprintf( buf, 256, "%s destroying %s", ch->name, argument.c_str(  ) );
       perror( buf );
    }
-   return;
 }
 
 /* Super-AT command:
@@ -4780,17 +4987,17 @@ target in them. Private rooms are not violated.
 /* Expand the name of a character into a string that identifies THAT
    character within a room. E.g. the second 'guard' -> 2. guard
 */
-const char *name_expand( char_data * ch )
+const string name_expand( char_data * ch )
 {
-   char name[MIL];   /*  HOPEFULLY no mob has a name longer than THAT */
-   static char outbuf[MIL];
+   string name;
+   ostringstream expanded;
 
    if( !ch->isnpc(  ) )
       return ch->name;
 
    one_argument( ch->name, name );  /* copy the first word into name */
 
-   if( !name[0] ) /* weird mob .. no keywords */
+   if( name.empty(  ) ) /* weird mob .. no keywords */
       return "";
 
    /*
@@ -4798,30 +5005,30 @@ const char *name_expand( char_data * ch )
     * ... and back to ->people it is folks! -- Samson
     */
    int count = 1;
-   list<char_data*>::iterator ich;
-   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
-      char_data *rch = (*ich);
+      char_data *rch = *ich;
 
       if( rch == ch )
          continue;
 
-      if( is_name( name, rch->name ) )
+      if( hasname( rch->name, name ) )
          ++count;
    }
-   snprintf( outbuf, MIL, "%d.%s", count, name );
-   return outbuf;
+   expanded << count << "." << name;
+   return expanded.str(  );
 }
 
 CMDF( do_for )
 {
-   char range[MIL], buf[MSL];
+   string range;
    bool fGods = false, fMortals = false, fMobs = false, fEverywhere = false, found;
 
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, range );
-   if( !range || range[0] == '\0' || !argument || argument[0] == '\0' ) /* invalid usage? */
+   if( range.empty(  ) || argument.empty(  ) )  /* invalid usage? */
    {
       interpret( ch, "help for" );
       return;
@@ -4852,19 +5059,19 @@ CMDF( do_for )
    /*
     * do not allow # to make it easier 
     */
-   if( fEverywhere && strchr( argument, '#' ) )
+   if( fEverywhere && strchr( argument.c_str(  ), '#' ) )
    {
       ch->print( "Cannot use FOR EVERYWHERE with the # thingie.\r\n" );
       return;
    }
 
    ch->set_color( AT_PLAIN );
-   if( strchr( argument, '#' ) ) /* replace # ? */
+   if( strchr( argument.c_str(  ), '#' ) )   /* replace # ? */
    {
-      list<char_data*>::iterator ich;
-      for( ich = charlist.begin(); ich != charlist.end(); )
+      list < char_data * >::iterator ich;
+      for( ich = charlist.begin(  ); ich != charlist.end(  ); )
       {
-         char_data *p = (*ich);
+         char_data *p = *ich;
          ++ich;
 
          /*
@@ -4887,24 +5094,16 @@ CMDF( do_for )
           */
          if( found ) /* p is 'appropriate' */
          {
-            char *pSource = argument;  /* head of buffer to be parsed */
-            char *pDest = buf;   /* parse into this */
+            string command = argument; // Buffer to process
+            string target = name_expand( p );   // Target for the command
+            string::size_type pos = 0;
 
-            while( *pSource )
+            // String replacement loop since string_replace() won't accept a char argument
+            while( ( pos = command.find( '#', pos ) ) != string::npos )
             {
-               if( *pSource == '#' )   /* Replace # with name of target */
-               {
-                  const char *namebuf = name_expand( p );
-
-                  if( namebuf )  /* in case there is no mob name ?? */
-                     while( *namebuf ) /* copy name over */
-                        *( pDest++ ) = *( namebuf++ );
-                  ++pSource;
-               }
-               else
-                  *( pDest++ ) = *( pSource++ );
-            }  /* while */
-            *pDest = '\0'; /* Terminate */
+               command.replace( pos, 1, target );
+               pos += target.size(  );
+            }
 
             /*
              * Execute 
@@ -4913,7 +5112,7 @@ CMDF( do_for )
             ch->from_room(  );
             if( !ch->to_room( p->in_room ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-            interpret( ch, buf );
+            interpret( ch, command );
             ch->from_room(  );
             if( !ch->to_room( old_room ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
@@ -4922,72 +5121,68 @@ CMDF( do_for )
    }
    else  /* just for every room with the appropriate people in it */
    {
-      int i;
+      map < int, room_index * >::iterator iroom;
 
-      for( i = 0; i < MAX_KEY_HASH; ++i ) /* run through all the buckets */
+      for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom ) /* run through all the buckets */
       {
-         room_index *room;
+         room_index *room = iroom->second;
+         found = false;
 
-         for( room = room_index_hash[i]; room; room = room->next )
+         /*
+          * Anyone in here at all? 
+          */
+         if( fEverywhere ) /* Everywhere executes always */
+            found = true;
+         else if( room->people.empty(  ) )   /* Skip it if room is empty */
+            continue;
+         /*
+          * ->people changed to first_person -- TRI 
+          * Check if there is anyone here of the requried type 
+          * Stop as soon as a match is found or there are no more ppl in room 
+          * ->people to ->first_person -- TRI
+          * ... and back to ->people it is! -- Samson
+          */
+         list < char_data * >::iterator ich;
+         for( ich = room->people.begin(  ); ich != room->people.end(  ) && !found; ++ich )
          {
-            found = false;
+            char_data *p = *ich;
 
-            /*
-             * Anyone in here at all? 
-             */
-            if( fEverywhere ) /* Everywhere executes always */
-               found = true;
-            else if( room->people.empty() )   /* Skip it if room is empty */
+            if( p == ch )  /* do not execute on oneself */
                continue;
+
+            if( p->isnpc(  ) && fMobs )
+               found = true;
+            else if( !p->isnpc(  ) && ( p->level >= LEVEL_IMMORTAL ) && fGods )
+               found = true;
+            else if( !p->isnpc(  ) && ( p->level <= LEVEL_IMMORTAL ) && fMortals )
+               found = true;
+         }  /* for everyone inside the room */
+
+         if( found && !room->is_private(  ) )   /* Any of the required type here AND room not private? */
+         {
             /*
-             * ->people changed to first_person -- TRI 
-             * Check if there is anyone here of the requried type 
-             * Stop as soon as a match is found or there are no more ppl in room 
-             * ->people to ->first_person -- TRI
-             * ... and back to ->people it is! -- Samson
+             * This may be ineffective. Consider moving character out of old_room
+             * once at beginning of command then moving back at the end.
+             * This however, is more safe?
              */
-            list<char_data*>::iterator ich;
-            for( ich = room->people.begin(); ich != room->people.end() && !found; ++ich )
-            {
-               char_data *p = (*ich);
 
-               if( p == ch )  /* do not execute on oneself */
-                  continue;
-
-               if( p->isnpc(  ) && fMobs )
-                  found = true;
-               else if( !p->isnpc(  ) && ( p->level >= LEVEL_IMMORTAL ) && fGods )
-                  found = true;
-               else if( !p->isnpc(  ) && ( p->level <= LEVEL_IMMORTAL ) && fMortals )
-                  found = true;
-            }  /* for everyone inside the room */
-
-            if( found && !room->is_private(  ) )   /* Any of the required type here AND room not private? */
-            {
-               /*
-                * This may be ineffective. Consider moving character out of old_room
-                * once at beginning of command then moving back at the end.
-                * This however, is more safe?
-                */
-
-               room_index *old_room = ch->in_room;
-               ch->from_room(  );
-               if( !ch->to_room( room ) )
-                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-               interpret( ch, argument );
-               ch->from_room(  );
-               if( !ch->to_room( old_room ) )
-                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
-            }  /* if found */
-         }  /* for every room in a bucket */
-      }
+            room_index *old_room = ch->in_room;
+            ch->from_room(  );
+            if( !ch->to_room( room ) )
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            interpret( ch, argument );
+            ch->from_room(  );
+            if( !ch->to_room( old_room ) )
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         }  /* if found */
+      }  /* for every room in a bucket */
    }  /* if strchr */
 }  /* do_for */
 
 CMDF( do_hell )
 {
    char_data *victim;
-   char arg[MIL];
+   string arg;
    short htime;
    bool h_d = false;
    struct tm *tms;
@@ -4995,35 +5190,38 @@ CMDF( do_hell )
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Hell who, and for how long?\r\n" );
       return;
    }
+
    if( !( victim = ch->get_char_world( arg ) ) || victim->isnpc(  ) )
    {
       ch->print( "They aren't here.\r\n" );
       return;
    }
+
    if( victim->is_immortal(  ) )
    {
       ch->print( "There is no point in helling an immortal.\r\n" );
       return;
    }
+
    if( victim->pcdata->release_date != 0 )
    {
-      ch->printf( "They are already in hell until %24.24s, by %s.\r\n",
-                  c_time( victim->pcdata->release_date, ch->pcdata->timezone ), victim->pcdata->helled_by );
+      ch->printf( "They are already in hell until %24.24s, by %s.\r\n", c_time( victim->pcdata->release_date, ch->pcdata->timezone ), victim->pcdata->helled_by );
       return;
    }
+
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' || !is_number( arg ) )
+   if( arg.empty(  ) || !is_number( arg ) )
    {
       ch->print( "Hell them for how long?\r\n" );
       return;
    }
 
-   htime = atoi( arg );
+   htime = atoi( arg.c_str(  ) );
    if( htime <= 0 )
    {
       ch->print( "You cannot hell for zero or negative time.\r\n" );
@@ -5031,7 +5229,7 @@ CMDF( do_hell )
    }
 
    argument = one_argument( argument, arg );
-   if( !arg || arg[0] == '\0' || !str_cmp( arg, "hours" ) )
+   if( arg.empty(  ) || !str_cmp( arg, "hours" ) )
       h_d = true;
    else if( str_cmp( arg, "days" ) )
    {
@@ -5051,8 +5249,7 @@ CMDF( do_hell )
       tms->tm_mday += htime;
    victim->pcdata->release_date = mktime( tms );
    victim->pcdata->helled_by = STRALLOC( ch->name );
-   ch->printf( "%s will be released from hell at %24.24s.\r\n", victim->name,
-               c_time( victim->pcdata->release_date, ch->pcdata->timezone ) );
+   ch->printf( "%s will be released from hell at %24.24s.\r\n", victim->name, c_time( victim->pcdata->release_date, ch->pcdata->timezone ) );
    act( AT_MAGIC, "$n disappears in a cloud of hellish light.", victim, NULL, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
@@ -5060,9 +5257,8 @@ CMDF( do_hell )
    act( AT_MAGIC, "$n appears in a could of hellish light.", victim, NULL, ch, TO_NOTVICT );
    interpret( victim, "look" );
    victim->printf( "The immortals are not pleased with your actions.\r\n"
-                "You shall remain in hell for %d %s%s.\r\n", htime, ( h_d ? "hour" : "day" ), ( htime == 1 ? "" : "s" ) );
+                   "You shall remain in hell for %d %s%s.\r\n", htime, ( h_d ? "hour" : "day" ), ( htime == 1 ? "" : "s" ) );
    victim->save(  ); /* used to save ch, fixed by Thoric 09/17/96 */
-   return;
 }
 
 CMDF( do_unhell )
@@ -5072,7 +5268,7 @@ CMDF( do_unhell )
 
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Unhell whom..?\r\n" );
       return;
@@ -5114,7 +5310,6 @@ CMDF( do_unhell )
    act( AT_MAGIC, "$n appears in a cloud of godly light.", victim, NULL, ch, TO_NOTVICT );
    victim->pcdata->release_date = 0;
    victim->save(  );
-   return;
 }
 
 /* Vnum search command by Swordbearer */
@@ -5122,13 +5317,13 @@ CMDF( do_vsearch )
 {
    bool found = false;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      ch->print( "Syntax:  vsearch <vnum>.\r\n" );
+      ch->print( "Syntax: vsearch <vnum>.\r\n" );
       return;
    }
 
-   int argi = atoi( argument );
+   int argi = atoi( argument.c_str(  ) );
    if( argi < 1 || argi > sysdata->maxvnum )
    {
       ch->print( "Vnum out of range.\r\n" );
@@ -5136,10 +5331,10 @@ CMDF( do_vsearch )
    }
 
    int obj_counter = 1;
-   list<obj_data*>::iterator iobj;
-   for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+   list < obj_data * >::iterator iobj;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
-      obj_data *obj = (*iobj);
+      obj_data *obj = *iobj;
 
       if( !ch->can_see_obj( obj, true ) || !( argi == obj->pIndexData->vnum ) )
          continue;
@@ -5149,18 +5344,15 @@ CMDF( do_vsearch )
       for( in_obj = obj; in_obj->in_obj != NULL; in_obj = in_obj->in_obj );
 
       if( in_obj->carried_by != NULL )
-         ch->pagerf( "&Y[&W%2d&Y] &GLevel %d %s carried by %s.\r\n",
-                     obj_counter, obj->level, obj->oshort(  ), PERS( in_obj->carried_by, ch, true ) );
+         ch->pagerf( "&Y[&W%2d&Y] &GLevel %d %s carried by %s.\r\n", obj_counter, obj->level, obj->oshort(  ).c_str(  ), PERS( in_obj->carried_by, ch, true ) );
       else
          ch->pagerf( "&Y[&W%2d&Y] [&W%-5d&Y] &G%s in %s.\r\n", obj_counter,
-                     ( ( in_obj->in_room ) ? in_obj->in_room->vnum : 0 ),
-                     obj->oshort(  ), ( in_obj->in_room == NULL ) ? "somewhere" : in_obj->in_room->name );
+                     ( ( in_obj->in_room ) ? in_obj->in_room->vnum : 0 ), obj->oshort(  ).c_str(  ), ( in_obj->in_room == NULL ) ? "somewhere" : in_obj->in_room->name );
 
       ++obj_counter;
    }
    if( !found )
-      ch->print( "Nothing like that in hell, earth, or heaven.\r\n" );
-   return;
+      ch->print( "Nothing like that exists.\r\n" );
 }
 
 /* 
@@ -5173,7 +5365,7 @@ CMDF( do_sober )
    char_data *victim;
 
    ch->set_color( AT_IMMORT );
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Sober up who?\r\n" );
       return;
@@ -5185,7 +5377,6 @@ CMDF( do_sober )
    victim->pcdata->condition[COND_DRUNK] = 0;
    ch->print( "Ok.\r\n" );
    victim->print( "You feel sober again.\r\n" );
-   return;
 }
 
 void update_calendar( void )
@@ -5198,7 +5389,6 @@ void update_calendar( void )
    sysdata->hournightbegin = sysdata->hoursunset + 1;
    sysdata->hourmidnight = sysdata->hoursperday;
    calc_season(  );
-   return;
 }
 
 void update_timers( void )
@@ -5209,33 +5399,30 @@ void update_timers( void )
    sysdata->pulsecalendar = 4 * sysdata->pulsetick;
    sysdata->pulseenvironment = 15 * sysdata->pulsepersec;
    sysdata->pulseskyship = sysdata->pulsemobile;
-   return;
 }
 
 /* Redone cset command, with more in-game changable parameters - Samson 2-19-02 */
 CMDF( do_cset )
 {
-   char arg[MIL];
+   string arg;
    int value = -1;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->pager( "&WThe following options may be set:\r\n\r\n" );
       ch->pager( "&GSite Parameters\r\n" );
       ch->pager( "---------------\r\n" );
-      ch->pagerf( "&BMudname  &c: %s &BEmail&c: %s &BPassword&c: [not shown]\r\n", sysdata->mud_name, sysdata->admin_email );
-      ch->pagerf( "&BURL      &c: %s &BTelnet&c: %s\r\n", show_tilde( sysdata->http ), sysdata->telnet );
+      ch->pagerf( "&BMudname  &c: %s &BEmail&c: %s &BPassword&c: [not shown]\r\n", sysdata->mud_name.c_str(  ), sysdata->admin_email.c_str(  ) );
+      ch->pagerf( "&BURL      &c: %s &BTelnet&c: %s\r\n", show_tilde( sysdata->http ).c_str(  ), sysdata->telnet.c_str(  ) );
       ch->pagerf( "&BDB Server&c: %s &BDB Name&c: %s &BDB User&c: %s &BDB Password&c: [not shown]\r\n\r\n",
-         sysdata->dbserver, sysdata->dbname, sysdata->dbuser );
+                  sysdata->dbserver.c_str(  ), sysdata->dbname.c_str(  ), sysdata->dbuser.c_str(  ) );
 
       ch->pager( "&GGame Toggles\r\n" );
       ch->pager( "------------\r\n" );
       ch->pagerf( "&BNameauth&c: %s &BImmhost Checking&c: %s &BTestmode&c: %s &BMinimum Ego&c: %d\r\n",
-                  sysdata->WAIT_FOR_AUTH ? "Enabled" : "Disabled",
-                  sysdata->check_imm_host ? "Enabled" : "Disabled", sysdata->TESTINGMODE ? "On" : "Off", sysdata->minego );
+                  sysdata->WAIT_FOR_AUTH ? "Enabled" : "Disabled", sysdata->check_imm_host ? "Enabled" : "Disabled", sysdata->TESTINGMODE ? "On" : "Off", sysdata->minego );
       ch->pagerf( "&BPet Save&c: %s &BCrashhandler&c: %s &BPfile Pruning&c: %s\r\n",
-                  sysdata->save_pets ? "On" : "Off", sysdata->crashhandler ? "Enabled" : "Disabled",
-                  sysdata->CLEANPFILES ? "Enabled" : "Disabled" );
+                  sysdata->save_pets ? "On" : "Off", sysdata->crashhandler ? "Enabled" : "Disabled", sysdata->CLEANPFILES ? "Enabled" : "Disabled" );
 
       if( sysdata->CLEANPFILES )
       {
@@ -5254,8 +5441,7 @@ CMDF( do_cset )
       ch->
          pagerf
          ( "&BForce Players&c: %d &BPrivate Override&c: %d &BGet Notake&c: %d &BAutosave Freq&c: %d &BMax Holidays&c: %d\r\n",
-           sysdata->level_forcepc, sysdata->level_override_private, sysdata->level_getobjnotake, sysdata->save_frequency,
-           sysdata->maxholiday );
+           sysdata->level_forcepc, sysdata->level_override_private, sysdata->level_getobjnotake, sysdata->save_frequency, sysdata->maxholiday );
       ch->pagerf( "&BProto Mod&c: %d &B &BMset Player&c: %d &BBestow Diff&c: %d &BBuild Level&c: %d\r\n",
                   sysdata->level_modify_proto, sysdata->level_mset_player, sysdata->bestow_dif, sysdata->build_level );
       ch->pagerf( "&BRead all mail&c: %d &BTake all mail&c: %d &BRead mail free&c: %d &BWrite mail free&c: %d\r\n",
@@ -5267,10 +5453,8 @@ CMDF( do_cset )
       ch->pagerf( "&BSave Flags&c: %s\r\n", bitset_string( sysdata->save_flags, save_flag ) );
       ch->pagerf( "&BWebwho&c: %d &BGame Alarm&c: %d\r\n", sysdata->webwho, sysdata->gameloopalarm );
       ch->pagerf( "\r\n&BSeconds per tick&c: %d   &BPulse per second&c: %d\r\n", sysdata->secpertick, sysdata->pulsepersec );
-      ch->pagerf( "   &RPULSE_TICK&W: %d &RPULSE_VIOLENCE&W: %d &RPULSE_MOBILE&W: %d\r\n",
-                  sysdata->pulsetick, sysdata->pulseviolence, sysdata->pulsemobile );
-      ch->pagerf( "   &RPULSE_CALENDAR&W: %d &RPULSE_ENVIRONMENT&W: %d &RPULSE_SKYSHIP&W: %d\r\n",
-                  sysdata->pulsecalendar, sysdata->pulseenvironment, sysdata->pulseskyship );
+      ch->pagerf( "   &RPULSE_TICK&W: %d &RPULSE_VIOLENCE&W: %d &RPULSE_MOBILE&W: %d\r\n", sysdata->pulsetick, sysdata->pulseviolence, sysdata->pulsemobile );
+      ch->pagerf( "   &RPULSE_CALENDAR&W: %d &RPULSE_ENVIRONMENT&W: %d &RPULSE_SKYSHIP&W: %d\r\n", sysdata->pulsecalendar, sysdata->pulseenvironment, sysdata->pulseskyship );
       return;
    }
 
@@ -5286,17 +5470,16 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "mudname" ) )
    {
-      DISPOSE( sysdata->mud_name );
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         sysdata->mud_name = str_dup( "(Name not set)" );
+         sysdata->mud_name = "(Name not set)";
          ch->print( "Mud name cleared.\r\n" );
       }
       else
       {
          smash_tilde( argument );
-         sysdata->mud_name = str_dup( argument );
-         ch->printf( "Mud name set to: %s\r\n", argument );
+         sysdata->mud_name = argument;
+         ch->printf( "Mud name set to: %s\r\n", argument.c_str(  ) );
       }
       save_sysdata(  );
       return;
@@ -5304,9 +5487,9 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "password" ) )
    {
-      char *pwdnew;
+      const char *pwdnew;
 
-      if( strlen( argument ) < 5 )
+      if( argument.length(  ) < 5 )
       {
          ch->print( "New password must be at least five characters long.\r\n" );
          return;
@@ -5314,13 +5497,12 @@ CMDF( do_cset )
 
       if( argument[0] == '!' )
       {
-         ch->print( "New password cannot begin with the '!' character." );
+         ch->print( "New password cannot begin with the '!' character.\r\n" );
          return;
       }
 
-      pwdnew = sha256_crypt( argument );  /* SHA-256 Encryption */
-      DISPOSE( sysdata->password );
-      sysdata->password = str_dup( pwdnew );
+      pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
+      sysdata->password = pwdnew;
       ch->print( "Mud password changed.\r\n" );
       save_sysdata(  );
       return;
@@ -5328,17 +5510,16 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "email" ) )
    {
-      DISPOSE( sysdata->admin_email );
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         sysdata->admin_email = str_dup( "Not Set" );
+         sysdata->admin_email = "Not Set";
          ch->print( "Email address cleared.\r\n" );
       }
       else
       {
          smash_tilde( argument );
-         sysdata->admin_email = str_dup( argument );
-         ch->printf( "Email address set to %s\r\n", argument );
+         sysdata->admin_email = argument;
+         ch->printf( "Email address set to %s\r\n", argument.c_str(  ) );
       }
       save_sysdata(  );
       return;
@@ -5346,17 +5527,16 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "url" ) )
    {
-      DISPOSE( sysdata->http );
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         sysdata->http = str_dup( "No page set" );
+         sysdata->http = "No page set";
          ch->print( "HTTP address cleared.\r\n" );
       }
       else
       {
          hide_tilde( argument );
-         sysdata->http = str_dup( argument );
-         ch->printf( "HTTP address set to %s\r\n", show_tilde( sysdata->http ) );
+         sysdata->http = argument;
+         ch->printf( "HTTP address set to %s\r\n", show_tilde( sysdata->http ).c_str(  ) );
       }
       save_sysdata(  );
       return;
@@ -5364,17 +5544,16 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "telnet" ) )
    {
-      DISPOSE( sysdata->telnet );
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         sysdata->telnet = str_dup( "Not Set" );
+         sysdata->telnet = "Not Set";
          ch->print( "Telnet address cleared.\r\n" );
       }
       else
       {
          smash_tilde( argument );
-         sysdata->telnet = str_dup( argument );
-         ch->printf( "Telnet address set to %s\r\n", argument );
+         sysdata->telnet = argument;
+         ch->printf( "Telnet address set to %s\r\n", argument.c_str(  ) );
       }
       save_sysdata(  );
       return;
@@ -5382,17 +5561,16 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "db-server" ) )
    {
-      DISPOSE( sysdata->dbserver );
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         sysdata->dbserver = str_dup( "localhost" );
+         sysdata->dbserver = "localhost";
          ch->print( "Database server cleared.\r\n" );
       }
       else
       {
          smash_tilde( argument );
-         sysdata->dbserver = str_dup( argument );
-         ch->printf( "Database server set to: %s\r\n", argument );
+         sysdata->dbserver = argument;
+         ch->printf( "Database server set to: %s\r\n", argument.c_str(  ) );
       }
       save_sysdata(  );
       return;
@@ -5400,7 +5578,7 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "db-password" ) )
    {
-      if( strlen( argument ) < 5 )
+      if( argument.length(  ) < 5 )
       {
          ch->print( "New password must be at least five characters long.\r\n" );
          return;
@@ -5408,12 +5586,11 @@ CMDF( do_cset )
 
       if( argument[0] == '!' )
       {
-         ch->print( "New password cannot begin with the '!' character." );
+         ch->print( "New password cannot begin with the '!' character.\r\n" );
          return;
       }
 
-      DISPOSE( sysdata->dbpass );
-      sysdata->dbpass = str_dup( argument );
+      sysdata->dbpass = argument;
       ch->print( "Database password changed.\r\n" );
       save_sysdata(  );
       return;
@@ -5421,17 +5598,16 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "db-name" ) )
    {
-      DISPOSE( sysdata->dbname );
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         sysdata->dbname = str_dup( "dbname" );
+         sysdata->dbname = "dbname";
          ch->print( "Database name cleared.\r\n" );
       }
       else
       {
          smash_tilde( argument );
-         sysdata->dbname = str_dup( argument );
-         ch->printf( "Database name set to: %s\r\n", argument );
+         sysdata->dbname = argument;
+         ch->printf( "Database name set to: %s\r\n", argument.c_str(  ) );
       }
       save_sysdata(  );
       return;
@@ -5439,17 +5615,16 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "db-user" ) )
    {
-      DISPOSE( sysdata->dbuser );
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
-         sysdata->dbuser = str_dup( "dbuser" );
+         sysdata->dbuser = "dbuser";
          ch->print( "Database username cleared.\r\n" );
       }
       else
       {
          smash_tilde( argument );
-         sysdata->dbuser = str_dup( argument );
-         ch->printf( "Database username set to: %s\r\n", argument );
+         sysdata->dbuser = argument;
+         ch->printf( "Database username set to: %s\r\n", argument.c_str(  ) );
       }
       save_sysdata(  );
       return;
@@ -5533,12 +5708,12 @@ CMDF( do_cset )
 
       if( sysdata->crashhandler )
       {
-         set_chandler();
+         set_chandler(  );
          ch->print( "Crash handling will be enabled at next reboot.\r\n" );
       }
       else
       {
-         unset_chandler();
+         unset_chandler(  );
          ch->print( "Crash handling disabled.\r\n" );
       }
       save_sysdata(  );
@@ -5555,7 +5730,7 @@ CMDF( do_cset )
          return;
       }
       sysdata->save_flags.flip( x );
-      ch->printf( "%s flag toggled.\r\n", argument );
+      ch->printf( "%s flag toggled.\r\n", argument.c_str(  ) );
       save_sysdata(  );
       return;
    }
@@ -5563,7 +5738,7 @@ CMDF( do_cset )
    /*
     * Everything below this point requires an argument, kick them if it's not there. 
     */
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       do_cset( ch, "help" );
       return;
@@ -5578,7 +5753,7 @@ CMDF( do_cset )
       return;
    }
 
-   value = atoi( argument );
+   value = atoi( argument.c_str(  ) );
 
    /*
     * Typical size range of integers 
@@ -5609,7 +5784,7 @@ CMDF( do_cset )
    {
       sysdata->gameloopalarm = value;
       ch->printf( "Game loop alarm time has been set to %d seconds.\r\n", value );
-      save_sysdata();
+      save_sysdata(  );
       return;
    }
 
@@ -5665,13 +5840,13 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "maxvnum" ) )
    {
-      list<area_data*>::iterator iarea;
+      list < area_data * >::iterator iarea;
       char lbuf[MSL];
       int vnum = 0;
 
-      for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
       {
-         area_data *area = (*iarea);
+         area_data *area = *iarea;
          if( area->hi_vnum > vnum )
          {
             mudstrlcpy( lbuf, area->name, MSL );
@@ -5687,8 +5862,7 @@ CMDF( do_cset )
 
       if( value - vnum < 1000 )
       {
-         ch->printf( "Warning: Setting MaxVnum to %d leaves you with less than 1000 vnums beyond the highest area.\r\n",
-                     value );
+         ch->printf( "Warning: Setting MaxVnum to %d leaves you with less than 1000 vnums beyond the highest area.\r\n", value );
          ch->printf( "Highest area %s ends with vnum %d.\r\n", lbuf, vnum );
       }
 
@@ -5773,8 +5947,7 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Private Override above level %d, or below level %d.\r\n", MAX_LEVEL,
-                     LEVEL_IMMORTAL );
+         ch->printf( "&RError: Cannot set Private Override above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->level_override_private = value;
@@ -5976,7 +6149,6 @@ CMDF( do_cset )
    }
 
    do_cset( ch, "help" );
-   return;
 }
 
 void free_all_titles( void )
@@ -5993,12 +6165,12 @@ void free_all_titles( void )
    }
 }
 
-class_type::class_type()
+class_type::class_type(  )
 {
    init_memory( &affected, &fMana, sizeof( fMana ) );
 }
 
-class_type::~class_type()
+class_type::~class_type(  )
 {
    STRFREE( who_name );
 }
@@ -6079,8 +6251,7 @@ bool load_class_file( const char *fname )
                FCLOSE( fp );
                if( cl < 0 || cl >= MAX_CLASS )
                {
-                  bug( "%s: Class (%s) bad/not found (%d)", __FUNCTION__,
-                       Class->who_name ? Class->who_name : "name not found", cl );
+                  bug( "%s: Class (%s) bad/not found (%d)", __FUNCTION__, Class->who_name ? Class->who_name : "name not found", cl );
                   deleteptr( Class );
                   return false;
                }
@@ -6280,7 +6451,7 @@ void write_class_file( int cl )
       fprintf( fpout, "Resist      %s~\n", bitset_string( Class->resist, ris_flags ) );
    if( Class->suscept.any(  ) )
       fprintf( fpout, "Suscept     %s~\n", bitset_string( Class->suscept, ris_flags ) );
-   for( int x = 0; x < top_sn; ++x )
+   for( int x = 0; x < num_skills; ++x )
    {
       int y;
 
@@ -6302,7 +6473,7 @@ void save_classes(  )
       write_class_file( x );
 }
 
-void write_class_list()
+void write_class_list(  )
 {
    FILE *fpList;
    char classlist[256];
@@ -6325,18 +6496,18 @@ void write_class_list()
  */
 CMDF( do_showclass )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    class_type *Class;
    int cl = 0, low, hi;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Syntax: showclass <class> [level range]\r\n" );
       return;
    }
-   if( is_number( arg1 ) && ( cl = atoi( arg1 ) ) >= 0 && cl < MAX_CLASS )
+   if( is_number( arg1 ) && ( cl = atoi( arg1.c_str(  ) ) ) >= 0 && cl < MAX_CLASS )
       Class = class_table[cl];
    else
    {
@@ -6360,28 +6531,26 @@ CMDF( do_showclass )
    ch->pagerf( "&wStarting Shield:  &W%-6d &wStarting Held Item: &W%-6d\r\n", Class->shield, Class->held );
    ch->pagerf( "&wBaseThac0:        &W%-6d &wThac0Gain: &W%f\r\n", Class->base_thac0, Class->thac0_gain );
    ch->pagerf( "&wMax Skill Adept:  &W%-3d ", Class->skill_adept );
-   ch->pagerf( "&wHp Min/Hp Max  : &W%-2d/%-2d           &wMana  : &W%-3s\r\n",
-               Class->hp_min, Class->hp_max, Class->fMana ? "yes" : "no " );
+   ch->pagerf( "&wHp Min/Hp Max  : &W%-2d/%-2d           &wMana  : &W%-3s\r\n", Class->hp_min, Class->hp_max, Class->fMana ? "yes" : "no " );
    ch->pagerf( "&wAffected by:  &W%s\r\n", bitset_string( Class->affected, aff_flags ) );
    ch->pagerf( "&wResistant to: &W%s\r\n", bitset_string( Class->resist, ris_flags ) );
    ch->pagerf( "&wSusceptible to: &W%s\r\n", bitset_string( Class->suscept, ris_flags ) );
 
-   if( arg2 && arg2[0] != '\0' )
+   if( !arg2.empty(  ) )
    {
       int x, y, cnt;
 
-      low = UMAX( 0, atoi( arg2 ) );
-      hi = URANGE( low, atoi( argument ), MAX_LEVEL );
+      low = UMAX( 0, atoi( arg2.c_str(  ) ) );
+      hi = URANGE( low, atoi( argument.c_str(  ) ), MAX_LEVEL );
       for( x = low; x <= hi; ++x )
       {
          ch->pagerf( "&wLevel: &W%d     &wExperience required: &W%ld\r\n", x, exp_level( x ) );
          ch->pagerf( "&wMale: &W%-30s &wFemale: &W%s\r\n", title_table[cl][x][0], title_table[cl][x][1] );
          cnt = 0;
-         for( y = gsn_first_spell; y < gsn_top_sn; ++y )
+         for( y = 0; y < num_skills; ++y )
             if( skill_table[y]->skill_level[cl] == x )
             {
-               ch->pagerf( "  &[skill]%-7s %-19s%3d     ", skill_tname[skill_table[y]->type],
-                           skill_table[y]->name, skill_table[y]->skill_adept[cl] );
+               ch->pagerf( "  &[skill]%-7s %-19s%3d     ", skill_tname[skill_table[y]->type], skill_table[y]->name, skill_table[y]->skill_adept[cl] );
                if( ++cnt % 2 == 0 )
                   ch->pager( "\r\n" );
             }
@@ -6395,14 +6564,12 @@ CMDF( do_showclass )
 /*
  * Create a new Class online - Shaddai
  */
-bool create_new_class( int Class, char *argument )
+bool create_new_class( int Class, const string & argument )
 {
    if( Class >= MAX_CLASS || class_table[Class] == NULL )
       return false;
    STRFREE( class_table[Class]->who_name );
-   if( argument && argument[0] != '\0' )
-      argument[0] = UPPER( argument[0] );
-   class_table[Class]->who_name = STRALLOC( argument );
+   class_table[Class]->who_name = STRALLOC( capitalize( argument ).c_str(  ) );
    class_table[Class]->affected.reset(  );
    class_table[Class]->attr_prime = 0;
    class_table[Class]->resist = 0;
@@ -6427,7 +6594,7 @@ bool create_new_class( int Class, char *argument )
  */
 CMDF( do_setclass )
 {
-   char arg1[MIL], arg2[MIL];
+   string arg1, arg2;
    class_type *Class;
    int cl = 0, value, i;
 
@@ -6436,10 +6603,10 @@ CMDF( do_setclass )
    smash_tilde( argument );
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
-      ch->print( "Syntax: setclass <Class> <field> <value>\r\n" );
-      ch->print( "Syntax: setclass <Class> create\r\n" );
+      ch->print( "Syntax: setclass <class> <field> <value>\r\n" );
+      ch->print( "Syntax: setclass <class> create\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
       ch->print( "  name prime weapon armor legwear headwear\r\n" );
       ch->print( "  armwear footwear shield held basethac0 thac0gain\r\n" );
@@ -6447,7 +6614,8 @@ CMDF( do_setclass )
       ch->print( "  affected resist suscept skill\r\n" );
       return;
    }
-   if( is_number( arg1 ) && ( cl = atoi( arg1 ) ) >= 0 && cl < MAX_CLASS )
+
+   if( is_number( arg1 ) && ( cl = atoi( arg1.c_str(  ) ) ) >= 0 && cl < MAX_CLASS )
       Class = class_table[cl];
    else
    {
@@ -6463,6 +6631,7 @@ CMDF( do_setclass )
          }
       }
    }
+
    if( !str_cmp( arg2, "create" ) && Class )
    {
       ch->print( "That Class already exists!\r\n" );
@@ -6485,7 +6654,7 @@ CMDF( do_setclass )
          return;
       }
 
-      snprintf( filename, sizeof( filename ), "%s.class", arg1 );
+      snprintf( filename, sizeof( filename ), "%s.class", arg1.c_str(  ) );
       if( !is_valid_filename( ch, CLASS_DIR, filename ) )
          return;
 
@@ -6496,12 +6665,12 @@ CMDF( do_setclass )
       }
       write_class_file( MAX_PC_CLASS );
       ++MAX_PC_CLASS;
-      write_class_list();
+      write_class_list(  );
       ch->print( "Done.\r\n" );
       return;
    }
 
-   if( !argument )
+   if( argument.empty(  ) )
    {
       ch->print( "You must specify an argument.\r\n" );
       return;
@@ -6517,16 +6686,16 @@ CMDF( do_setclass )
       {
          skill = get_skilltype( sn );
          argument = one_argument( argument, arg2 );
-         level = atoi( arg2 );
+         level = atoi( arg2.c_str(  ) );
          argument = one_argument( argument, arg2 );
-         adept = atoi( arg2 );
+         adept = atoi( arg2.c_str(  ) );
          skill->skill_level[cl] = level;
          skill->skill_adept[cl] = adept;
          write_class_file( cl );
          ch->printf( "Skill \"%s\" added at level %d and %d%%.\r\n", skill->name, level, adept );
       }
       else
-         ch->printf( "No such skill as %s.\r\n", arg2 );
+         ch->printf( "No such skill as %s.\r\n", arg2.c_str(  ) );
       return;
    }
 
@@ -6536,13 +6705,13 @@ CMDF( do_setclass )
       class_type *ccheck = NULL;
 
       one_argument( argument, arg1 );
-      if( !arg1 || arg1[0] == '\0' )
+      if( arg1.empty(  ) )
       {
          ch->print( "You can't set a class name to nothing.\r\n" );
          return;
       }
 
-      snprintf( buf, sizeof( buf ), "%s.class", arg1 );
+      snprintf( buf, sizeof( buf ), "%s.class", arg1.c_str(  ) );
       if( !is_valid_filename( ch, CLASS_DIR, buf ) )
          return;
 
@@ -6559,35 +6728,34 @@ CMDF( do_setclass )
       }
       if( ccheck != NULL )
       {
-         ch->printf( "Already a class called %s.\r\n", arg1 );
+         ch->printf( "Already a class called %s.\r\n", arg1.c_str(  ) );
          return;
       }
 
       snprintf( buf, sizeof( buf ), "%s%s.class", CLASS_DIR, Class->who_name );
       unlink( buf );
-      if( Class->who_name )
-         STRFREE( Class->who_name );
-      Class->who_name = STRALLOC( capitalize( argument ) );
-      ch->printf( "class renamed to %s.\r\n", arg1 );
+      STRFREE( Class->who_name );
+      Class->who_name = STRALLOC( capitalize( argument ).c_str(  ) );
+      ch->printf( "Class renamed to %s.\r\n", arg1.c_str(  ) );
       write_class_file( cl );
-      write_class_list();
+      write_class_list(  );
       ch->print( "Done.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "affected" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setclass <Class> affected <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg2 );
          value = get_aflag( arg2 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg2 );
+            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
          else
             Class->affected.flip( value );
       }
@@ -6598,17 +6766,17 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "resist" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setclass <Class> resist <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg2 );
          value = get_risflag( arg2 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg2 );
+            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
          else
             Class->resist.flip( value );
       }
@@ -6619,17 +6787,17 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "suscept" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setclass <Class> suscept <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg2 );
          value = get_risflag( arg2 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg2 );
+            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
          else
             Class->suscept.flip( value );
       }
@@ -6642,7 +6810,7 @@ CMDF( do_setclass )
    {
       int x = get_atype( argument );
 
-      if( x < APPLY_STR || ( x > APPLY_CON && x != APPLY_LCK ) )
+      if( x < APPLY_STR || x > APPLY_LCK )
          ch->print( "Invalid prime attribute!\r\n" );
       else
       {
@@ -6652,90 +6820,103 @@ CMDF( do_setclass )
       }
       return;
    }
+
    if( !str_cmp( arg2, "weapon" ) )
    {
-      Class->weapon = atoi( argument );
+      Class->weapon = atoi( argument.c_str(  ) );
       ch->print( "Starting weapon set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "armor" ) )
    {
-      Class->armor = atoi( argument );
+      Class->armor = atoi( argument.c_str(  ) );
       ch->print( "Starting armor set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "legwear" ) )
    {
-      Class->legwear = atoi( argument );
+      Class->legwear = atoi( argument.c_str(  ) );
       ch->print( "Starting legwear set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "headwear" ) )
    {
-      Class->headwear = atoi( argument );
+      Class->headwear = atoi( argument.c_str(  ) );
       ch->print( "Starting headwear set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "armwear" ) )
    {
-      Class->armwear = atoi( argument );
+      Class->armwear = atoi( argument.c_str(  ) );
       ch->print( "Starting armwear set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "footwear" ) )
    {
-      Class->footwear = atoi( argument );
+      Class->footwear = atoi( argument.c_str(  ) );
       ch->print( "Starting footwear set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "shield" ) )
    {
-      Class->shield = atoi( argument );
+      Class->shield = atoi( argument.c_str(  ) );
       ch->print( "Starting shield set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "held" ) )
    {
-      Class->held = atoi( argument );
+      Class->held = atoi( argument.c_str(  ) );
       ch->print( "Starting held item set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "basethac0" ) )
    {
-      Class->base_thac0 = atoi( argument );
+      Class->base_thac0 = atoi( argument.c_str(  ) );
       ch->print( "Base Thac0 set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "thac0gain" ) )
    {
-      Class->thac0_gain = atof( argument );
+      Class->thac0_gain = atof( argument.c_str(  ) );
       ch->print( "Thac0gain set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "hpmin" ) )
    {
-      Class->hp_min = atoi( argument );
+      Class->hp_min = atoi( argument.c_str(  ) );
       ch->print( "Min HP gain set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "hpmax" ) )
    {
-      Class->hp_max = atoi( argument );
+      Class->hp_max = atoi( argument.c_str(  ) );
       ch->print( "Max HP gain set.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "mana" ) )
    {
       if( UPPER( argument[0] ) == 'Y' )
@@ -6746,41 +6927,43 @@ CMDF( do_setclass )
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "mtitle" ) )
    {
-      char arg3[MIL];
+      string arg3;
       int x;
 
       argument = one_argument( argument, arg3 );
-      if( arg3[0] == '\0' || argument[0] == '\0' )
+      if( arg3.empty(  ) || argument.empty(  ) )
       {
          ch->print( "Syntax: setclass <Class> mtitle <level> <title>\r\n" );
          return;
       }
-      if( ( x = atoi( arg3 ) ) < 0 || x > MAX_LEVEL )
+      if( ( x = atoi( arg3.c_str(  ) ) ) < 0 || x > MAX_LEVEL )
       {
          ch->print( "Invalid level.\r\n" );
          return;
       }
       STRFREE( title_table[cl][x][SEX_MALE] );
-      title_table[cl][x][SEX_MALE] = STRALLOC( argument );
+      title_table[cl][x][SEX_MALE] = STRALLOC( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       write_class_file( cl );
       return;
    }
+
    if( !str_cmp( arg2, "ftitle" ) )
    {
-      char arg3[MIL], arg4[MIL];
+      string arg3, arg4;
       int x;
 
       argument = one_argument( argument, arg3 );
       argument = one_argument( argument, arg4 );
-      if( arg3[0] == '\0' || argument[0] == '\0' )
+      if( arg3.empty(  ) || argument.empty(  ) )
       {
          ch->print( "Syntax: setclass <Class> ftitle <level> <title>\r\n" );
          return;
       }
-      if( ( x = atoi( arg4 ) ) < 0 || x > MAX_LEVEL )
+      if( ( x = atoi( arg4.c_str(  ) ) ) < 0 || x > MAX_LEVEL )
       {
          ch->print( "Invalid level.\r\n" );
          return;
@@ -6789,7 +6972,7 @@ CMDF( do_setclass )
       /*
        * Bug fix below -Shaddai
        */
-      title_table[cl][x][SEX_FEMALE] = STRALLOC( argument );
+      title_table[cl][x][SEX_FEMALE] = STRALLOC( argument.c_str(  ) );
       ch->print( "Done\r\n" );
       write_class_file( cl );
       return;
@@ -6797,7 +6980,7 @@ CMDF( do_setclass )
    do_setclass( ch, "" );
 }
 
-race_type::race_type()
+race_type::race_type(  )
 {
    int i;
 
@@ -6806,7 +6989,7 @@ race_type::race_type()
       where_name[i] = STRALLOC( where_names[i] );
 }
 
-race_type::~race_type()
+race_type::~race_type(  )
 {
    int loopa;
 
@@ -6932,8 +7115,7 @@ bool load_race_file( const char *fname )
                FCLOSE( fp );
                if( ra < 0 || ra >= MAX_RACE )
                {
-                  bug( "%s: Race (%s) bad/not found (%d)", __FUNCTION__,
-                       race->race_name ? race->race_name : "name not found", ra );
+                  bug( "%s: Race (%s) bad/not found (%d)", __FUNCTION__, race->race_name ? race->race_name : "name not found", ra );
                   deleteptr( race );
                   return false;
                }
@@ -7073,7 +7255,7 @@ void load_races(  )
     * Pre-init the race_table with blank races
     */
    for( int i = 0; i < MAX_RACE; ++i )
-    	race_table[i] = NULL;
+      race_table[i] = NULL;
 
    snprintf( racelist, 256, "%s%s", RACE_DIR, RACE_LIST );
    if( !( fpList = fopen( racelist, "r" ) ) )
@@ -7111,7 +7293,6 @@ void load_races(  )
       }
    }
    FCLOSE( fpList );
-   return;
 }
 
 void write_race_file( int ra )
@@ -7173,7 +7354,7 @@ void write_race_file( int ra )
    for( int i = 0; i < MAX_WHERE_NAME; ++i )
       fprintf( fpout, "WhereName  %s~\n", race->where_name[i] );
 
-   for( int x = 0; x < top_sn; ++x )
+   for( int x = 0; x < num_skills; ++x )
    {
       int y;
 
@@ -7192,7 +7373,7 @@ void save_races(  )
       write_race_file( x );
 }
 
-void write_race_list()
+void write_race_list(  )
 {
    FILE *fpList;
    char racelist[256];
@@ -7212,15 +7393,13 @@ void write_race_list()
 /*
  * Create an instance of a new race. - Shaddai
  */
-bool create_new_race( int race, char *argument )
+bool create_new_race( int race, const string & argument )
 {
    if( race >= MAX_RACE || race_table[race] == NULL )
       return false;
    for( int i = 0; i < MAX_WHERE_NAME; ++i )
       race_table[race]->where_name[i] = STRALLOC( where_names[i] );
-   if( argument[0] != '\0' )
-      argument[0] = UPPER( argument[0] );
-   race_table[race]->race_name = STRALLOC( argument );
+   race_table[race]->race_name = STRALLOC( capitalize( argument ).c_str(  ) );
    race_table[race]->class_restriction.reset(  );
    race_table[race]->str_plus = 0;
    race_table[race]->dex_plus = 0;
@@ -7255,7 +7434,7 @@ bool create_new_race( int race, char *argument )
 CMDF( do_setrace )
 {
    race_type *race;
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    int value, ra = 0, i;
 
    ch->set_color( AT_IMMORT );
@@ -7263,7 +7442,7 @@ CMDF( do_setrace )
    smash_tilde( argument );
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   if( !arg1 || arg1[0] == '\0' || !arg2 || arg2[0] == '\0' )
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Syntax: setrace <race> <field> <value>\r\n" );
       ch->print( "Syntax: setrace <race> create\r\n" );
@@ -7280,7 +7459,7 @@ CMDF( do_setrace )
       ch->print( "  mana_regen hp_regen\r\n" );
       return;
    }
-   if( is_number( arg1 ) && ( ra = atoi( arg1 ) ) >= 0 && ra < MAX_RACE )
+   if( is_number( arg1 ) && ( ra = atoi( arg1.c_str(  ) ) ) >= 0 && ra < MAX_RACE )
       race = race_table[ra];
    else
    {
@@ -7319,7 +7498,7 @@ CMDF( do_setrace )
          return;
       }
 
-      snprintf( filename, sizeof( filename ), "%s.race", arg1 );
+      snprintf( filename, sizeof( filename ), "%s.race", arg1.c_str(  ) );
       if( !is_valid_filename( ch, RACE_DIR, filename ) )
          return;
 
@@ -7330,12 +7509,12 @@ CMDF( do_setrace )
       }
       write_race_file( MAX_PC_RACE );
       ++MAX_PC_RACE;
-      write_race_list();
+      write_race_list(  );
       ch->print( "Done.\r\n" );
       return;
    }
 
-   if( !argument )
+   if( argument.empty(  ) )
    {
       ch->print( "You must specify an argument.\r\n" );
       return;
@@ -7348,13 +7527,13 @@ CMDF( do_setrace )
 
       one_argument( argument, arg1 );
 
-      if( !arg1 || arg1[0] == '\0' )
+      if( arg1.empty(  ) )
       {
          ch->print( "You can't set a race name to nothing.\r\n" );
          return;
       }
 
-      snprintf( buf, sizeof( buf ), "%s.race", arg1 );
+      snprintf( buf, sizeof( buf ), "%s.race", arg1.c_str(  ) );
       if( !is_valid_filename( ch, RACE_DIR, buf ) )
          return;
 
@@ -7371,7 +7550,7 @@ CMDF( do_setrace )
       }
       if( rcheck != NULL )
       {
-         ch->printf( "Already a race called %s.\r\n", arg1 );
+         ch->printf( "Already a race called %s.\r\n", arg1.c_str(  ) );
          return;
       }
 
@@ -7379,90 +7558,90 @@ CMDF( do_setrace )
       unlink( buf );
 
       STRFREE( race->race_name );
-      race->race_name = STRALLOC( capitalize( argument ) );
+      race->race_name = STRALLOC( capitalize( argument ).c_str(  ) );
 
       write_race_file( ra );
-      write_race_list();
+      write_race_list(  );
       ch->print( "Race name set.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "strplus" ) )
    {
-      race->str_plus = ( short )atoi( argument );
+      race->str_plus = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "dexplus" ) )
    {
-      race->dex_plus = ( short )atoi( argument );
+      race->dex_plus = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "wisplus" ) )
    {
-      race->wis_plus = ( short )atoi( argument );
+      race->wis_plus = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "intplus" ) )
    {
-      race->int_plus = ( short )atoi( argument );
+      race->int_plus = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "conplus" ) )
    {
-      race->con_plus = ( short )atoi( argument );
+      race->con_plus = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "chaplus" ) )
    {
-      race->cha_plus = ( short )atoi( argument );
+      race->cha_plus = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "lckplus" ) )
    {
-      race->lck_plus = ( short )atoi( argument );
+      race->lck_plus = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "hit" ) )
    {
-      race->hit = ( short )atoi( argument );
+      race->hit = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "mana" ) )
    {
-      race->mana = ( short )atoi( argument );
+      race->mana = ( short )atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "affected" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setrace <race> affected <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             race->affected.flip( value );
       }
@@ -7473,17 +7652,17 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "bodyparts" ) || str_cmp( arg2, "part" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setrace <race> bodypart <part> [part]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_partflag( arg3 );
          if( value < 0 || value >= MAX_BPART )
-            ch->printf( "Unknown part: %s\r\n", arg3 );
+            ch->printf( "Unknown part: %s\r\n", arg3.c_str(  ) );
          else
             race->body_parts.flip( value );
       }
@@ -7494,17 +7673,17 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "resist" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setrace <race> resist <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             race->resist.flip( value );
       }
@@ -7515,17 +7694,17 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "suscept" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setrace <race> suscept <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             race->suscept.flip( value );
       }
@@ -7540,12 +7719,12 @@ CMDF( do_setrace )
       value = get_langnum( arg3 );
       if( value < 0 || value >= LANG_UNKNOWN )
       {
-         ch->printf( "Unknown language: %s\r\n", arg3 );
+         ch->printf( "Unknown language: %s\r\n", arg3.c_str(  ) );
          return;
       }
       else if( !( value &= VALID_LANGS ) )
       {
-         ch->printf( "Player races may not speak %s.\r\n", arg3 );
+         ch->printf( "Player races may not speak %s.\r\n", arg3.c_str(  ) );
          return;
       }
       race->language.flip( value );
@@ -7572,7 +7751,7 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "acplus" ) )
    {
-      race->ac_plus = atoi( argument );
+      race->ac_plus = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
@@ -7580,7 +7759,7 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "alignment" ) )
    {
-      race->alignment = atoi( argument );
+      race->alignment = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
@@ -7591,17 +7770,17 @@ CMDF( do_setrace )
     */
    if( !str_cmp( arg2, "defense" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setrace <race> defense <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_defenseflag( arg3 );
          if( value < 0 || value >= MAX_DEFENSE_TYPE )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             race->defenses.flip( value );
       }
@@ -7614,17 +7793,17 @@ CMDF( do_setrace )
     */
    if( !str_cmp( arg2, "attack" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: setrace <race> attack <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_attackflag( arg3 );
          if( value < 0 || value >= MAX_ATTACK_TYPE )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             race->attacks.flip( value );
       }
@@ -7634,91 +7813,91 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "minalign" ) )
    {
-      race->minalign = atoi( argument );
+      race->minalign = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "maxalign" ) )
    {
-      race->maxalign = atoi( argument );
+      race->maxalign = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "height" ) )
    {
-      race->height = atoi( argument );
+      race->height = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "weight" ) )
    {
-      race->weight = atoi( argument );
+      race->weight = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "thirstmod" ) )
    {
-      race->thirst_mod = atoi( argument );
+      race->thirst_mod = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "hungermod" ) )
    {
-      race->hunger_mod = atoi( argument );
+      race->hunger_mod = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "maxalign" ) )
    {
-      race->maxalign = atoi( argument );
+      race->maxalign = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "expmultiplier" ) )
    {
-      race->exp_multiplier = atoi( argument );
+      race->exp_multiplier = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_poison_death" ) )
    {
-      race->saving_poison_death = atoi( argument );
+      race->saving_poison_death = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_wand" ) )
    {
-      race->saving_wand = atoi( argument );
+      race->saving_wand = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_para_petri" ) )
    {
-      race->saving_para_petri = atoi( argument );
+      race->saving_para_petri = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_breath" ) )
    {
-      race->saving_breath = atoi( argument );
+      race->saving_breath = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_spell_staff" ) )
    {
-      race->saving_spell_staff = atoi( argument );
+      race->saving_spell_staff = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
@@ -7728,14 +7907,14 @@ CMDF( do_setrace )
     */
    if( !str_cmp( arg2, "mana_regen" ) )
    {
-      race->mana_regen = atoi( argument );
+      race->mana_regen = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "hp_regen" ) )
    {
-      race->hp_regen = atoi( argument );
+      race->hp_regen = atoi( argument.c_str(  ) );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
@@ -7745,14 +7924,14 @@ CMDF( do_setrace )
 
 CMDF( do_showrace )
 {
-   struct race_type *race;
+   race_type *race;
    int ra = 0, i, ct;
 
    ch->set_pager_color( AT_PLAIN );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
-      ch->print( "Syntax: showrace  \r\n" );
+      ch->print( "Syntax: showrace <race name>\r\n" );
       /*
        * Show the races code addition by Blackmane 
        */
@@ -7770,7 +7949,7 @@ CMDF( do_showrace )
       ch->pager( "\r\n" );
       return;
    }
-   if( is_number( argument ) && ( ra = atoi( argument ) ) >= 0 && ra < MAX_RACE )
+   if( is_number( argument ) && ( ra = atoi( argument.c_str(  ) ) ) >= 0 && ra < MAX_RACE )
       race = race_table[ra];
    else
    {
@@ -7819,18 +7998,15 @@ CMDF( do_showrace )
    if( ( ct % 6 != 0 ) || ( ct == 0 ) )
       ch->pager( "\r\n" );
 
-   ch->pagerf( "Str Plus: %-3d\tDex Plus: %-3d\tWis Plus: %-3d\tInt Plus: %-3d\t\r\n",
-               race->str_plus, race->dex_plus, race->wis_plus, race->int_plus );
+   ch->pagerf( "Str Plus: %-3d\tDex Plus: %-3d\tWis Plus: %-3d\tInt Plus: %-3d\t\r\n", race->str_plus, race->dex_plus, race->wis_plus, race->int_plus );
 
    ch->pagerf( "Con Plus: %-3d\tCha Plus: %-3d\tLck Plus: %-3d\r\n", race->con_plus, race->cha_plus, race->lck_plus );
 
-   ch->pagerf( "Hit Pts:  %-3d\tMana: %-3d\tAlign: %-4d\tAC: %-d\r\n",
-               race->hit, race->mana, race->alignment, race->ac_plus );
+   ch->pagerf( "Hit Pts:  %-3d\tMana: %-3d\tAlign: %-4d\tAC: %-d\r\n", race->hit, race->mana, race->alignment, race->ac_plus );
 
    ch->pagerf( "Min Align: %d\tMax Align: %-d\t\tXP Mult: %-d%%\r\n", race->minalign, race->maxalign, race->exp_multiplier );
 
-   ch->pagerf( "Height: %3d in.\t\tWeight: %4d lbs.\tHungerMod: %d\tThirstMod: %d\r\n",
-               race->height, race->weight, race->hunger_mod, race->thirst_mod );
+   ch->pagerf( "Height: %3d in.\t\tWeight: %4d lbs.\tHungerMod: %d\tThirstMod: %d\r\n", race->height, race->weight, race->hunger_mod, race->thirst_mod );
 
    ch->pagerf( "Spoken Languages: %s\r\n", bitset_string( race->language, lang_names ) );
    ch->pagerf( "Affected by: %s\r\n", bitset_string( race->affected, aff_flags ) );
@@ -7838,12 +8014,10 @@ CMDF( do_showrace )
    ch->pagerf( "Susceptible to: %s\r\n", bitset_string( race->suscept, ris_flags ) );
 
    ch->pagerf( "Saves: (P/D) %d (W) %d (P/P) %d (B) %d (S/S) %d\r\n",
-               race->saving_poison_death, race->saving_wand, race->saving_para_petri,
-               race->saving_breath, race->saving_spell_staff );
+               race->saving_poison_death, race->saving_wand, race->saving_para_petri, race->saving_breath, race->saving_spell_staff );
 
    ch->pagerf( "Innate Attacks: %s\r\n", bitset_string( race->attacks, attack_flags ) );
    ch->pagerf( "Innate Defenses: %s\r\n", bitset_string( race->defenses, defense_flags ) );
-   return;
 }
 
 /* Simple, small way to make keeping track of small mods easier - Blod */
@@ -7852,7 +8026,7 @@ CMDF( do_fixed )
    struct tm *t = localtime( &current_time );
 
    ch->set_color( AT_OBJECT );
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "\r\nUsage:  'fixed list' or 'fixed <message>'" );
       if( ch->get_trust(  ) >= LEVEL_ASCENDANT )
@@ -7877,11 +8051,9 @@ CMDF( do_fixed )
    else
    {
       append_to_file( FIXED_FILE, "&g|&G%-2.2d/%-2.2d &g| &G%5d&g|  %s:  &G%s",
-                      t->tm_mon + 1, t->tm_mday, ch->in_room ? ch->in_room->vnum : 0,
-                      ch->isnpc(  )? ch->short_descr : ch->name, argument );
+                      t->tm_mon + 1, t->tm_mday, ch->in_room ? ch->in_room->vnum : 0, ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ) );
       ch->print( "Thanks, your modification has been logged.\r\n" );
    }
-   return;
 }
 
 /*Added by Adjani, 12-23-02. Plan to add more to this, but for now it works. */
@@ -7890,19 +8062,17 @@ CMDF( do_forgefind )
    ch->pager( "\r\n" );
 
    bool found = false;
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
-      char_data *smith = (*ich);
+      char_data *smith = *ich;
 
       if( smith->has_actflag( ACT_SMITH ) || smith->has_actflag( ACT_GUILDFORGE ) )
       {
          found = true;
-         ch->pagerf( "Forge: *%5d* %-30s at *%5d*, %s.\r\n",
-                     smith->pIndexData->vnum, smith->short_descr, smith->in_room->vnum, smith->in_room->name );
+         ch->pagerf( "Forge: *%5d* %-30s at *%5d*, %s.\r\n", smith->pIndexData->vnum, smith->short_descr, smith->in_room->vnum, smith->in_room->name );
       }
    }
    if( !found )
       ch->print( "You didn't find any forges.\r\n" );
-   return;
 }

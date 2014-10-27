@@ -47,42 +47,40 @@ extern int top_shop;
 extern int top_repair;
 extern FILE *fpArea;
 
-list<area_data*> arealist;
-list<area_data*> area_nsort;
-list<area_data*> area_vsort;
+list < area_data * >arealist;
+list < area_data * >area_nsort;
+list < area_data * >area_vsort;
 
 int recall( char_data *, int );
 void boot_log( const char *, ... );
-void save_sysdata( );
-int get_continent( const char * );
+void save_sysdata(  );
+int get_continent( const string & );
 bool check_area_conflict( area_data *, int, int );
-void web_arealist( );
+void web_arealist(  );
 CMDF( do_areaconvert );
 
-neighbor_data::neighbor_data()
+neighbor_data::neighbor_data(  )
 {
    address = NULL;
-   name = NULL;
 }
 
-neighbor_data::~neighbor_data()
+neighbor_data::~neighbor_data(  )
 {
-   STRFREE( name );
 }
 
-weather_data::weather_data()
+weather_data::weather_data(  )
 {
-   init_memory( &echo, &echo_color, sizeof( echo_color ) );
-   neighborlist.clear();
+   init_memory( &temp, &echo_color, sizeof( echo_color ) );
+   neighborlist.clear(  );
 }
 
-weather_data::~weather_data()
+weather_data::~weather_data(  )
 {
-   list<neighbor_data*>::iterator neigh;
+   list < neighbor_data * >::iterator neigh;
 
-   for( neigh = neighborlist.begin(); neigh != neighborlist.end(); )
+   for( neigh = neighborlist.begin(  ); neigh != neighborlist.end(  ); )
    {
-      neighbor_data *neighbor = (*neigh);
+      neighbor_data *neighbor = *neigh;
       ++neigh;
 
       neighborlist.remove( neighbor );
@@ -92,10 +90,10 @@ weather_data::~weather_data()
 
 area_data::~area_data(  )
 {
-   list<char_data*>::iterator ich;
-   for( ich = charlist.begin(); ich != charlist.end(); )
+   list < char_data * >::iterator ich;
+   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
    {
-      char_data *ech = (*ich);
+      char_data *ech = *ich;
       ++ich;
 
       if( ech->fighting )
@@ -106,8 +104,7 @@ area_data::~area_data(  )
          /*
           * if mob is in area, or part of area. 
           */
-         if( URANGE( low_vnum, ech->pIndexData->vnum, hi_vnum ) == ech->pIndexData->vnum
-             || ( ech->in_room && ech->in_room->area == this ) )
+         if( URANGE( low_vnum, ech->pIndexData->vnum, hi_vnum ) == ech->pIndexData->vnum || ( ech->in_room && ech->in_room->area == this ) )
             ech->extract( true );
          continue;
       }
@@ -124,51 +121,50 @@ area_data::~area_data(  )
       }
    }
 
-   list<obj_data*>::iterator iobj;
-   for( iobj = objlist.begin(); iobj != objlist.end(); )
+   list < obj_data * >::iterator iobj;
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
    {
-      obj_data *eobj = (*iobj);
+      obj_data *eobj = *iobj;
       ++iobj;
 
       /*
        * if obj is in area, or part of area. 
        */
-      if( URANGE( low_vnum, eobj->pIndexData->vnum, hi_vnum ) == eobj->pIndexData->vnum
-          || ( eobj->in_room && eobj->in_room->area == this ) )
+      if( URANGE( low_vnum, eobj->pIndexData->vnum, hi_vnum ) == eobj->pIndexData->vnum || ( eobj->in_room && eobj->in_room->area == this ) )
          eobj->extract(  );
    }
 
-   wipe_resets();
+   wipe_resets(  );
 
-   list<room_index*>::iterator rid;
-   list<mob_index*>::iterator mid;
-   list<obj_index*>::iterator oid;
-   for( rid = rooms.begin(); rid != rooms.end(); )
+   list < room_index * >::iterator rid;
+   list < mob_index * >::iterator mid;
+   list < obj_index * >::iterator oid;
+   for( rid = rooms.begin(  ); rid != rooms.end(  ); )
    {
       room_index *room = *rid;
       ++rid;
 
       deleteptr( room );
    }
-   rooms.clear();
+   rooms.clear(  );
 
-   for( mid = mobs.begin(); mid != mobs.end(); )
+   for( mid = mobs.begin(  ); mid != mobs.end(  ); )
    {
       mob_index *mob = *mid;
       ++mid;
 
       deleteptr( mob );
    }
-   mobs.clear();
+   mobs.clear(  );
 
-   for( oid = objects.begin(); oid != objects.end(); )
+   for( oid = objects.begin(  ); oid != objects.end(  ); )
    {
       obj_index *obj = *oid;
       ++oid;
 
       deleteptr( obj );
    }
-   objects.clear();
+   objects.clear(  );
 
    if( weather )
       deleteptr( weather );
@@ -189,16 +185,16 @@ area_data::area_data(  )
 void area_data::fix_exits(  )
 {
    room_index *pRoomIndex;
-   list<room_index*>::iterator rindex;
-   list<exit_data*>::iterator iexit;
+   list < room_index * >::iterator rindex;
+   list < exit_data * >::iterator iexit;
 
-   for( rindex = rooms.begin(); rindex != rooms.end(); ++rindex )
+   for( rindex = rooms.begin(  ); rindex != rooms.end(  ); ++rindex )
    {
       pRoomIndex = *rindex;
 
-      for( iexit = pRoomIndex->exits.begin(); iexit != pRoomIndex->exits.end(); ++iexit )
+      for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); ++iexit )
       {
-         exit_data *pexit = (*iexit);
+         exit_data *pexit = *iexit;
 
          pexit->rvnum = pRoomIndex->vnum;
          if( pexit->vnum <= 0 )
@@ -208,13 +204,13 @@ void area_data::fix_exits(  )
       }
    }
 
-   for( rindex = rooms.begin(); rindex != rooms.end(); ++rindex )
+   for( rindex = rooms.begin(  ); rindex != rooms.end(  ); ++rindex )
    {
       pRoomIndex = *rindex;
 
-      for( iexit = pRoomIndex->exits.begin(); iexit != pRoomIndex->exits.end(); ++iexit )
+      for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); ++iexit )
       {
-         exit_data *pexit = (*iexit);
+         exit_data *pexit = *iexit;
 
          if( pexit->to_room && !pexit->rexit )
          {
@@ -235,7 +231,7 @@ void area_data::fix_exits(  )
  */
 void area_data::sort_name(  )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
 
    if( !this )
    {
@@ -243,9 +239,9 @@ void area_data::sort_name(  )
       return;
    }
 
-   for( iarea = area_nsort.begin(); iarea != area_nsort.end(); ++iarea )
+   for( iarea = area_nsort.begin(  ); iarea != area_nsort.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
       if( strcmp( name, area->name ) < 0 )
       {
@@ -254,7 +250,6 @@ void area_data::sort_name(  )
       }
    }
    area_nsort.push_back( this );
-   return;
 }
 
 /*
@@ -263,7 +258,7 @@ void area_data::sort_name(  )
  */
 void area_data::sort_vnums(  )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
 
    if( !this )
    {
@@ -271,9 +266,9 @@ void area_data::sort_vnums(  )
       return;
    }
 
-   for( iarea = area_vsort.begin(); iarea != area_vsort.end(); ++iarea )
+   for( iarea = area_vsort.begin(  ); iarea != area_vsort.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
       if( low_vnum < area->low_vnum )
       {
@@ -282,38 +277,36 @@ void area_data::sort_vnums(  )
       }
    }
    area_vsort.push_back( this );
-   return;
 }
 
-void area_data::reset()
+void area_data::reset(  )
 {
-   list<room_index*>::iterator iroom;
+   list < room_index * >::iterator iroom;
 
-   if( rooms.empty() )
+   if( rooms.empty(  ) )
       return;
 
-   for( iroom = rooms.begin(); iroom != rooms.end(); ++iroom )
+   for( iroom = rooms.begin(  ); iroom != rooms.end(  ); ++iroom )
    {
-      room_index *room = (*iroom);
+      room_index *room = *iroom;
 
-      room->reset();
+      room->reset(  );
    }
 }
 
-void area_data::wipe_resets()
+void area_data::wipe_resets(  )
 {
-   list<room_index*>::iterator iroom;
+   list < room_index * >::iterator iroom;
 
    if( !mud_down )
    {
-      for( iroom = rooms.begin(); iroom != rooms.end(); ++iroom )
+      for( iroom = rooms.begin(  ); iroom != rooms.end(  ); ++iroom )
       {
-         room_index *room = (*iroom);
+         room_index *room = *iroom;
 
-         room->wipe_resets();
+         room->wipe_resets(  );
       }
    }
-   return;
 }
 
 area_data *create_area( void )
@@ -323,7 +316,7 @@ area_data *create_area( void )
    pArea = new area_data;
 
    pArea->version = 0;
-   pArea->rooms.clear();
+   pArea->rooms.clear(  );
    pArea->age = 15;
    pArea->reset_frequency = 5;
    pArea->hi_soft_range = MAX_LEVEL;
@@ -356,9 +349,9 @@ area_data *create_area( void )
 void load_mobiles( area_data * tarea, FILE * fp )
 {
    mob_index *pMobIndex;
-   char *ln;
+   const char *ln;
    int x1, x2, x3, x4, x5, x6, x7, x8, value;
-   char flag[MIL];
+   string flag;
 
    if( !tarea )
    {
@@ -374,7 +367,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
 
    for( ;; )
    {
-      int vnum, iHash;
+      int vnum;
       char letter;
       bool oldmob, tmpBootDb;
 
@@ -434,7 +427,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       pMobIndex->short_descr = fread_string( fp );
       pMobIndex->long_descr = fread_string( fp );
 
-      char *desc = fread_flagstring( fp );
+      const char *desc = fread_flagstring( fp );
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
       {
          pMobIndex->chardesc = STRALLOC( desc );
@@ -486,21 +479,25 @@ void load_mobiles( area_data * tarea, FILE * fp )
       pMobIndex->hitsizedice = 8;
       pMobIndex->hitplus = fread_number( fp );
       pMobIndex->damnodice = fread_number( fp );
-      /* 'd' */
+      /*
+       * 'd' 
+       */
       fread_letter( fp );
       pMobIndex->damsizedice = fread_number( fp );
-      /* '+' */
+      /*
+       * '+' 
+       */
       fread_letter( fp );
       pMobIndex->damplus = fread_number( fp );
 
       flag_set( fp, pMobIndex->speaks, lang_names );
 
-      char *speaking = fread_flagstring( fp );
+      string speaking = fread_flagstring( fp );
 
       speaking = one_argument( speaking, flag );
       value = get_langnum( flag );
       if( value < 0 || value >= LANG_UNKNOWN )
-         bug( "Unknown speaking language: %s", flag );
+         bug( "Unknown speaking language: %s", flag.c_str() );
       else
          pMobIndex->speaking = value;
 
@@ -568,14 +565,11 @@ void load_mobiles( area_data * tarea, FILE * fp )
 
       if( !oldmob )
       {
-         iHash = vnum % MAX_KEY_HASH;
-         pMobIndex->next = mob_index_hash[iHash];
-         mob_index_hash[iHash] = pMobIndex;
+         mob_index_table.insert( map < int, mob_index * >::value_type( pMobIndex->vnum, pMobIndex ) );
          tarea->mobs.push_back( pMobIndex );
          ++top_mob_index;
       }
    }
-   return;
 }
 
 /*
@@ -585,7 +579,7 @@ void load_objects( area_data * tarea, FILE * fp )
 {
    obj_index *pObjIndex;
    char letter;
-   char *ln;
+   const char *ln;
    char temp[3][MSL];
    int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
 
@@ -603,7 +597,7 @@ void load_objects( area_data * tarea, FILE * fp )
 
    for( ;; )
    {
-      int vnum, iHash, value;
+      int vnum, value;
       bool tmpBootDb, oldobj;
 
       letter = fread_letter( fp );
@@ -661,11 +655,11 @@ void load_objects( area_data * tarea, FILE * fp )
       pObjIndex->name = fread_string( fp );
       pObjIndex->short_descr = fread_string( fp );
 
-      char *desc = fread_flagstring( fp );
+      const char *desc = fread_flagstring( fp );
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
          pObjIndex->objdesc = STRALLOC( desc );
 
-      char *desc2 = fread_flagstring( fp );
+      const char *desc2 = fread_flagstring( fp );
       if( desc2 && desc2[0] != '\0' && str_cmp( desc2, "(null)" ) )
          pObjIndex->action_desc = STRALLOC( desc2 );
 
@@ -795,9 +789,7 @@ void load_objects( area_data * tarea, FILE * fp )
 
                if( paf->location == APPLY_WEAPONSPELL
                    || paf->location == APPLY_WEARSPELL
-                   || paf->location == APPLY_REMOVESPELL
-                   || paf->location == APPLY_STRIPSN
-                   || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+                   || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
                   paf->modifier = slot_lookup( fread_number( fp ) );
                else if( paf->location == APPLY_AFFECT )
                {
@@ -815,9 +807,7 @@ void load_objects( area_data * tarea, FILE * fp )
                      paf->modifier = value;
                   }
                }
-               else if( paf->location == APPLY_RESISTANT
-                        || paf->location == APPLY_IMMUNE
-                        || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
+               else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
                {
                   value = fread_number( fp );
                   risa = flag_string( value, ris_flags );
@@ -851,9 +841,7 @@ void load_objects( area_data * tarea, FILE * fp )
 
                if( paf->location == APPLY_WEAPONSPELL
                    || paf->location == APPLY_WEARSPELL
-                   || paf->location == APPLY_REMOVESPELL
-                   || paf->location == APPLY_STRIPSN
-                   || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+                   || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
                   paf->modifier = skill_lookup( fread_word( fp ) );
                else if( paf->location == APPLY_AFFECT )
                {
@@ -867,8 +855,7 @@ void load_objects( area_data * tarea, FILE * fp )
                   else
                      paf->modifier = value;
                }
-               else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE
-                     || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
+               else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
                   flag_set( fp, paf->rismod, ris_flags );
                else
                   paf->modifier = fread_number( fp );
@@ -906,22 +893,20 @@ void load_objects( area_data * tarea, FILE * fp )
 
       if( !oldobj )
       {
-         iHash = vnum % MAX_KEY_HASH;
-         pObjIndex->next = obj_index_hash[iHash];
-         obj_index_hash[iHash] = pObjIndex;
+         obj_index_table.insert( map < int, obj_index * >::value_type( pObjIndex->vnum, pObjIndex ) );
+
          if( pObjIndex->ego > 90 )
             pObjIndex->ego = -2;
          tarea->objects.push_back( pObjIndex );
          ++top_obj_index;
       }
    }
-   return;
 }
 
 /*
  * Load a reset section. This is maintained only for legacy areas.
  */
-void load_resets( area_data *tarea, FILE *fp )
+void load_resets( area_data * tarea, FILE * fp )
 {
    room_index *pRoomIndex = NULL;
    bool not01 = false;
@@ -939,13 +924,13 @@ void load_resets( area_data *tarea, FILE *fp )
          return;
    }
 
-   if( tarea->rooms.empty() )
+   if( tarea->rooms.empty(  ) )
    {
       bug( "%s: No #ROOMS section found. Cannot load resets.", __FUNCTION__ );
       if( fBootDb )
       {
          shutdown_mud( "No #ROOMS" );
-         exit(1);
+         exit( 1 );
       }
       else
          return;
@@ -987,7 +972,7 @@ void load_resets( area_data *tarea, FILE *fp )
       ++count;
 
       // Legacy resets are assumed to fire off 100% of the time
-      switch( letter )
+      switch ( letter )
       {
          default:
          case 'M':
@@ -1013,7 +998,7 @@ void load_resets( area_data *tarea, FILE *fp )
        * Validate parameters.
        * We're calling the index functions for the side effect.
        */
-      switch( letter )
+      switch ( letter )
       {
          default:
             bug( "%s: bad command '%c'.", __FUNCTION__, letter );
@@ -1074,7 +1059,7 @@ void load_resets( area_data *tarea, FILE *fp )
             else
             {
                if( arg3 == 0 )
-                  arg3 = OBJ_VNUM_DUMMYOBJ; // This may look stupid, but for some reason it works.
+                  arg3 = OBJ_VNUM_DUMMYOBJ;  // This may look stupid, but for some reason it works.
                pRoomIndex->add_reset( letter, extra, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2 );
             }
             break;
@@ -1115,8 +1100,7 @@ void load_resets( area_data *tarea, FILE *fp )
                break;
             }
 
-            if( arg2 < 0 || arg2 > MAX_DIR + 1
-                || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
+            if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
             {
                bug( "%s: 'D': exit %d not door.", __FUNCTION__, arg2 );
                log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
@@ -1150,31 +1134,30 @@ void load_resets( area_data *tarea, FILE *fp )
    }
    if( !not01 )
    {
-      list<room_index*>::iterator iroom;
+      list < room_index * >::iterator iroom;
 
-      for( iroom = tarea->rooms.begin(); iroom != tarea->rooms.end(); ++iroom )
+      for( iroom = tarea->rooms.begin(  ); iroom != tarea->rooms.end(  ); ++iroom )
       {
-         pRoomIndex = (*iroom);
+         pRoomIndex = *iroom;
 
-         pRoomIndex->renumber_put_resets();
+         pRoomIndex->renumber_put_resets(  );
       }
    }
-   return;
 }
 
 /*
  * Load a room section. Old style AFKMud area file.
  */
-void load_rooms( area_data *tarea, FILE *fp )
+void load_rooms( area_data * tarea, FILE * fp )
 {
    room_index *pRoomIndex;
-   char *ln;
+   const char *ln;
    int area_number, count = 0, value;
 
    for( ;; )
    {
       char letter;
-      int vnum, door, iHash;
+      int vnum, door;
       bool tmpBootDb, oldroom;
       int x1, x2, x3, x4, x5, x6;
 
@@ -1223,20 +1206,20 @@ void load_rooms( area_data *tarea, FILE *fp )
       pRoomIndex->area = tarea;
       pRoomIndex->vnum = vnum;
 
-      if( !pRoomIndex->resets.empty() )
+      if( !pRoomIndex->resets.empty(  ) )
       {
          if( fBootDb )
          {
-            list<reset_data*>::iterator rst;
+            list < reset_data * >::iterator rst;
 
             bug( "%s: WARNING: resets already exist for this room.", __FUNCTION__ );
-            for( rst = pRoomIndex->resets.begin(); rst != pRoomIndex->resets.end(); ++rst )
+            for( rst = pRoomIndex->resets.begin(  ); rst != pRoomIndex->resets.end(  ); ++rst )
             {
-               reset_data *rtmp = (*rst);
+               reset_data *rtmp = *rst;
 
                ++count;
-               if( !rtmp->resets.empty() )
-                  count += rtmp->resets.size();
+               if( !rtmp->resets.empty(  ) )
+                  count += rtmp->resets.size(  );
             }
          }
          else
@@ -1258,7 +1241,7 @@ void load_rooms( area_data *tarea, FILE *fp )
       }
       pRoomIndex->name = fread_string( fp );
 
-      char *desc = fread_flagstring( fp );
+      const char *desc = fread_flagstring( fp );
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
          pRoomIndex->roomdesc = str_dup( desc );
 
@@ -1267,7 +1250,7 @@ void load_rooms( area_data *tarea, FILE *fp )
        */
       if( tarea->version > 13 )
       {
-         char *ndesc = fread_flagstring( fp );
+         const char *ndesc = fread_flagstring( fp );
          if( ndesc && ndesc[0] != '\0' && str_cmp( ndesc, "(null)" ) )
             pRoomIndex->nitedesc = str_dup( ndesc );
       }
@@ -1341,9 +1324,7 @@ void load_rooms( area_data *tarea, FILE *fp )
 
             if( paf->location == APPLY_WEAPONSPELL
                 || paf->location == APPLY_WEARSPELL
-                || paf->location == APPLY_REMOVESPELL
-                || paf->location == APPLY_STRIPSN
-                || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+                || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
                paf->modifier = skill_lookup( fread_word( fp ) );
             else if( paf->location == APPLY_AFFECT )
             {
@@ -1354,8 +1335,7 @@ void load_rooms( area_data *tarea, FILE *fp )
                else
                   paf->modifier = value;
             }
-            else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE
-                  || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
+            else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
                flag_set( fp, paf->rismod, ris_flags );
             else
                paf->modifier = fread_number( fp );
@@ -1367,7 +1347,7 @@ void load_rooms( area_data *tarea, FILE *fp )
             if( paf->bit >= MAX_AFFECTED_BY )
                deleteptr( paf );
             else
-               pRoomIndex->indexaffects.push_back( paf );
+               pRoomIndex->permaffects.push_back( paf );
          }
          else if( letter == 'D' )
          {
@@ -1433,18 +1413,16 @@ void load_rooms( area_data *tarea, FILE *fp )
 
       if( !oldroom )
       {
-         iHash = vnum % MAX_KEY_HASH;
-         pRoomIndex->next = room_index_hash[iHash];
-         room_index_hash[iHash] = pRoomIndex;
+         room_index_table.insert( map < int, room_index * >::value_type( pRoomIndex->vnum, pRoomIndex ) );
+
          tarea->rooms.push_back( pRoomIndex );
          ++top_room;
       }
    }
-   return;
 }
 
 // Old style AFKMud area file.
-void load_shops( FILE *fp )
+void load_shops( FILE * fp )
 {
    shop_data *pShop;
 
@@ -1477,7 +1455,7 @@ void load_shops( FILE *fp )
 }
 
 // Old style AFKMud area file.
-void load_repairs( FILE *fp )
+void load_repairs( FILE * fp )
 {
    repair_data *rShop;
 
@@ -1507,7 +1485,7 @@ void load_repairs( FILE *fp )
    }
 }
 
-void validate_treasure_settings( area_data *area )
+void validate_treasure_settings( area_data * area )
 {
    if( area->tg_nothing > area->tg_gold && area->tg_gold != 0 )
    {
@@ -1580,11 +1558,9 @@ void validate_treasure_settings( area_data *area )
       log_printf( "%s: Armor setting exceeds 100%%, correcting.", area->filename );
       area->tg_armor = 100;
    }
-
-   return;
 }
 
-void fread_afk_exit( FILE *fp, room_index *pRoomIndex )
+void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 {
    exit_data *pexit = NULL;
 
@@ -1598,7 +1574,7 @@ void fread_afk_exit( FILE *fp, room_index *pRoomIndex )
          word = "#ENDEXIT";
       }
 
-      switch( word[0] )
+      switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
@@ -1666,12 +1642,12 @@ void fread_afk_exit( FILE *fp, room_index *pRoomIndex )
    bug( "%s: Reached fallout point! Exit data invalid.", __FUNCTION__ );
    if( pexit )
       pRoomIndex->extract_exit( pexit );
-   return;
 }
 
-affect_data *fread_afk_affect( FILE *fp )
+affect_data *fread_afk_affect( FILE * fp )
 {
    char *loc = NULL;
+   char *aff = NULL;
    int value;
    bool setaff = true;
 
@@ -1693,14 +1669,12 @@ affect_data *fread_afk_affect( FILE *fp )
    paf->location = value;
 
    if( paf->location == APPLY_WEAPONSPELL
-    || paf->location == APPLY_WEARSPELL
-    || paf->location == APPLY_REMOVESPELL
-    || paf->location == APPLY_STRIPSN
-    || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+       || paf->location == APPLY_WEARSPELL
+       || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
       paf->modifier = skill_lookup( fread_word( fp ) );
    else if( paf->location == APPLY_AFFECT )
    {
-      char *aff = fread_word( fp );
+      aff = fread_word( fp );
       value = get_aflag( aff );
       if( value < 0 || value >= MAX_AFFECTED_BY )
       {
@@ -1710,8 +1684,7 @@ affect_data *fread_afk_affect( FILE *fp )
       else
          paf->modifier = value;
    }
-   else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE
-         || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
+   else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
       flag_set( fp, paf->rismod, ris_flags );
    else
       paf->modifier = fread_number( fp );
@@ -1727,7 +1700,7 @@ affect_data *fread_afk_affect( FILE *fp )
    return paf;
 }
 
-extra_descr_data *fread_afk_exdesc( FILE *fp )
+extra_descr_data *fread_afk_exdesc( FILE * fp )
 {
    extra_descr_data *ed = new extra_descr_data;
 
@@ -1741,7 +1714,7 @@ extra_descr_data *fread_afk_exdesc( FILE *fp )
          word = "#ENDEXDESC";
       }
 
-      switch( word[0] )
+      switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
@@ -1751,7 +1724,7 @@ extra_descr_data *fread_afk_exdesc( FILE *fp )
          case '#':
             if( !str_cmp( word, "#ENDEXDESC" ) )
             {
-               if( ed->keyword.empty() )
+               if( ed->keyword.empty(  ) )
                {
                   bug( "%s: Missing ExDesc keyword. Returning NULL.", __FUNCTION__ );
                   deleteptr( ed );
@@ -1774,7 +1747,7 @@ extra_descr_data *fread_afk_exdesc( FILE *fp )
    return NULL;
 }
 
-void fread_afk_areadata( FILE *fp, area_data *tarea )
+void fread_afk_areadata( FILE * fp, area_data * tarea )
 {
    for( ;; )
    {
@@ -1786,7 +1759,7 @@ void fread_afk_areadata( FILE *fp, area_data *tarea )
          word = "#ENDAREADATA";
       }
 
-      switch( word[0] )
+      switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
@@ -1806,6 +1779,8 @@ void fread_afk_areadata( FILE *fp, area_data *tarea )
             break;
 
          case 'C':
+            KEY( "Credits", tarea->credits, fread_string( fp ) );
+
             if( !str_cmp( word, "Climate" ) )
             {
                tarea->weather->climate_temp = fread_number( fp );
@@ -1879,7 +1854,7 @@ void fread_afk_areadata( FILE *fp, area_data *tarea )
 
                anew = new neighbor_data;
                anew->address = NULL;
-               anew->name = fread_string( fp );
+               fread_string( anew->name, fp );
                tarea->weather->neighborlist.push_back( anew );
                break;
             }
@@ -1889,9 +1864,7 @@ void fread_afk_areadata( FILE *fp, area_data *tarea )
             if( !str_cmp( word, "Ranges" ) )
             {
                int x1, x2, x3, x4;
-               char *ln;
-
-               ln = fread_line( fp );
+               const char *ln = fread_line( fp );
 
                x1 = x2 = x3 = x4 = 0;
                sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
@@ -1911,7 +1884,7 @@ void fread_afk_areadata( FILE *fp, area_data *tarea )
             if( !str_cmp( word, "Treasure" ) )
             {
                unsigned short x1, x2, x3, x4, x5, x6, x7, x8;
-               char *ln = fread_line( fp );
+               const char *ln = fread_line( fp );
 
                x1 = 20;
                x2 = 74;
@@ -1961,7 +1934,7 @@ void fread_afk_areadata( FILE *fp, area_data *tarea )
    }
 }
 
-void fread_afk_mobile( FILE *fp, area_data *tarea )
+void fread_afk_mobile( FILE * fp, area_data * tarea )
 {
    mob_index *pMobIndex = NULL;
    bool oldmob = false;
@@ -1976,7 +1949,7 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
          word = "#ENDMOBILE";
       }
 
-      switch( word[0] )
+      switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
@@ -1996,9 +1969,7 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
             {
                if( !oldmob )
                {
-                  int iHash = pMobIndex->vnum % MAX_KEY_HASH;
-                  pMobIndex->next = mob_index_hash[iHash];
-                  mob_index_hash[iHash] = pMobIndex;
+                  mob_index_table.insert( map < int, mob_index * >::value_type( pMobIndex->vnum, pMobIndex ) );
                   tarea->mobs.push_back( pMobIndex );
                   ++top_mob_index;
                }
@@ -2078,7 +2049,8 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
 
             if( !str_cmp( word, "Desc" ) )
             {
-               char *desc = fread_flagstring( fp );
+               const char *desc = fread_flagstring( fp );
+
                if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
                {
                   pMobIndex->chardesc = STRALLOC( desc );
@@ -2217,14 +2189,15 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
 
             if( !str_cmp( word, "Speaking" ) )
             {
-               char flag[MIL];
+               string speaking, flag;
                int value;
-               char *speaking = fread_flagstring( fp );
+
+               speaking = fread_flagstring( fp );
 
                speaking = one_argument( speaking, flag );
                value = get_langnum( flag );
                if( value < 0 || value >= LANG_UNKNOWN )
-                  bug( "Unknown speaking language: %s", flag );
+                  bug( "Unknown speaking language: %s", flag.c_str() );
                else
                   pMobIndex->speaking = value;
 
@@ -2235,7 +2208,8 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
 
             if( !str_cmp( word, "Specfun" ) )
             {
-               char *temp = fread_flagstring( fp );
+               const char *temp = fread_flagstring( fp );
+
                if( !pMobIndex )
                {
                   bug( "%s: Specfun: Invalid mob vnum!", __FUNCTION__ );
@@ -2244,7 +2218,7 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
                if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                {
                   bug( "%s: Specfun: vnum %d, no spec_fun called %s.", __FUNCTION__, pMobIndex->vnum, temp );
-                  pMobIndex->spec_funname.clear();
+                  pMobIndex->spec_funname.clear(  );
                }
                else
                   pMobIndex->spec_funname = temp;
@@ -2253,7 +2227,7 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
 
             if( !str_cmp( word, "Stats1" ) )
             {
-               char *ln = fread_line( fp );
+               const char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5 = 150, x6 = 100;
 
                x1 = x2 = x3 = x4 = 0;
@@ -2276,7 +2250,7 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
 
             if( !str_cmp( word, "Stats2" ) )
             {
-               char *ln = fread_line( fp );
+               const char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5, x6, x7;
                x1 = x2 = x3 = x4 = x5 = x6 = x7 = 0;
                sscanf( ln, "%d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7 );
@@ -2357,7 +2331,7 @@ void fread_afk_mobile( FILE *fp, area_data *tarea )
    }
 }
 
-void fread_afk_object( FILE *fp, area_data *tarea )
+void fread_afk_object( FILE * fp, area_data * tarea )
 {
    obj_index *pObjIndex = NULL;
    bool oldobj = false;
@@ -2372,7 +2346,7 @@ void fread_afk_object( FILE *fp, area_data *tarea )
          word = "#ENDOBJECT";
       }
 
-      switch( word[0] )
+      switch ( word[0] )
       {
          default:
             bug( "%s: no match: %s", __FUNCTION__, word );
@@ -2384,9 +2358,7 @@ void fread_afk_object( FILE *fp, area_data *tarea )
             {
                if( !oldobj )
                {
-                  int iHash = pObjIndex->vnum % MAX_KEY_HASH;
-                  pObjIndex->next = obj_index_hash[iHash];
-                  obj_index_hash[iHash] = pObjIndex;
+                  obj_index_table.insert( map < int, obj_index * >::value_type( pObjIndex->vnum, pObjIndex ) );
                   tarea->objects.push_back( pObjIndex );
                   ++top_obj_index;
                }
@@ -2413,7 +2385,7 @@ void fread_afk_object( FILE *fp, area_data *tarea )
          case 'A':
             if( !str_cmp( word, "Action" ) )
             {
-               char *desc = fread_flagstring( fp );
+               const char *desc = fread_flagstring( fp );
 
                if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
                   pObjIndex->action_desc = STRALLOC( desc );
@@ -2445,13 +2417,10 @@ void fread_afk_object( FILE *fp, area_data *tarea )
          case 'L':
             if( !str_cmp( word, "Long" ) )
             {
-               char *desc = fread_flagstring( fp );
+               const char *desc = fread_flagstring( fp );
 
                if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-               {
-                  desc[0] = UPPER( desc[0] );
-                  pObjIndex->objdesc = STRALLOC( desc );
-               }
+                  pObjIndex->objdesc = STRALLOC( capitalize(desc) );
                break;
             }
             break;
@@ -2460,7 +2429,7 @@ void fread_afk_object( FILE *fp, area_data *tarea )
             KEY( "Short", pObjIndex->short_descr, fread_string( fp ) );
             if( !str_cmp( word, "Spells" ) )
             {
-               switch( pObjIndex->item_type )
+               switch ( pObjIndex->item_type )
                {
                   default:
                      break;
@@ -2489,7 +2458,7 @@ void fread_afk_object( FILE *fp, area_data *tarea )
             if( !str_cmp( word, "Stats" ) )
             {
                char temp[3][MSL];
-               char *ln = fread_line( fp );
+               const char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5;
 
                x1 = x2 = x3 = x5 = 0;
@@ -2546,7 +2515,7 @@ void fread_afk_object( FILE *fp, area_data *tarea )
          case 'V':
             if( !str_cmp( word, "Values" ) )
             {
-               char *ln = fread_line( fp );
+               const char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
                x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x10 = x11 = 0;
 
@@ -2641,7 +2610,7 @@ void fread_afk_object( FILE *fp, area_data *tarea )
    }
 }
 
-void fread_afk_room( FILE *fp, area_data *tarea )
+void fread_afk_room( FILE * fp, area_data * tarea )
 {
    room_index *pRoomIndex = NULL;
    bool oldroom = false;
@@ -2656,7 +2625,7 @@ void fread_afk_room( FILE *fp, area_data *tarea )
          word = "#ENDROOM";
       }
 
-      switch( word[0] )
+      switch ( word[0] )
       {
          default:
             bug( "%s: no match: %s", __FUNCTION__, word );
@@ -2668,9 +2637,7 @@ void fread_afk_room( FILE *fp, area_data *tarea )
             {
                if( !oldroom )
                {
-                  int iHash = pRoomIndex->vnum % MAX_KEY_HASH;
-                  pRoomIndex->next = room_index_hash[iHash];
-                  room_index_hash[iHash] = pRoomIndex;
+                  room_index_table.insert( map < int, room_index * >::value_type( pRoomIndex->vnum, pRoomIndex ) );
                   tarea->rooms.push_back( pRoomIndex );
                   ++top_room;
                }
@@ -2706,7 +2673,7 @@ void fread_afk_room( FILE *fp, area_data *tarea )
                affect_data *af = fread_afk_affect( fp );
 
                if( af )
-                  pRoomIndex->indexaffects.push_back( af );
+                  pRoomIndex->permaffects.push_back( af );
                break;
             }
             break;
@@ -2750,17 +2717,19 @@ void fread_afk_room( FILE *fp, area_data *tarea )
 
             if( !str_cmp( word, "Stats" ) )
             {
-               char *ln = fread_line( fp );
-               int x1, x2, x3, x4;
+               const char *ln = fread_line( fp );
+               int x1, x2, x3, x4, x5;
 
                x1 = x2 = x3 = x4 = 0;
-               sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
+               x5 = 100000;
+               sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
 
                pRoomIndex->tele_delay = x1;
                pRoomIndex->tele_vnum = x2;
                pRoomIndex->tunnel = x3;
                pRoomIndex->baselight = x4;
                pRoomIndex->light = x4;
+               pRoomIndex->max_weight = x5;  // Imported from Smaug 1.8
                break;
             }
             break;
@@ -2814,21 +2783,21 @@ void fread_afk_room( FILE *fp, area_data *tarea )
                      tarea->hi_vnum = vnum;
                }
 
-               if( !pRoomIndex->resets.empty() )
+               if( !pRoomIndex->resets.empty(  ) )
                {
                   if( fBootDb )
                   {
                      int count = 0;
-                     list<reset_data*>::iterator rst;
+                     list < reset_data * >::iterator rst;
 
                      bug( "%s: WARNING: resets already exist for this room.", __FUNCTION__ );
-                     for( rst = pRoomIndex->resets.begin(); rst != pRoomIndex->resets.end(); ++rst )
+                     for( rst = pRoomIndex->resets.begin(  ); rst != pRoomIndex->resets.end(  ); ++rst )
                      {
                         reset_data *rtmp = *rst;
 
                         ++count;
-                        if( !rtmp->resets.empty() )
-                           count += rtmp->resets.size();
+                        if( !rtmp->resets.empty(  ) )
+                           count += rtmp->resets.size(  );
                      }
                   }
                   else
@@ -2848,7 +2817,7 @@ void fread_afk_room( FILE *fp, area_data *tarea )
 }
 
 // AFKMud 2.0 Area file format. Liberal use of KEY macro support. Far more flexible.
-area_data *fread_afk_area( FILE *fp, bool isproto )
+area_data *fread_afk_area( FILE * fp, bool isproto )
 {
    area_data *tarea = NULL;
 
@@ -2868,7 +2837,7 @@ area_data *fread_afk_area( FILE *fp, bool isproto )
       {
          bug( "%s: # not found. Invalid format.", __FUNCTION__ );
          if( fBootDb )
-            exit(1);
+            exit( 1 );
          break;
       }
 
@@ -2882,7 +2851,7 @@ area_data *fread_afk_area( FILE *fp, bool isproto )
 
       if( !str_cmp( word, "AREADATA" ) )
       {
-         tarea = create_area();
+         tarea = create_area(  );
          tarea->filename = str_dup( strArea );
          fread_afk_areadata( fp, tarea );
       }
@@ -2903,7 +2872,7 @@ area_data *fread_afk_area( FILE *fp, bool isproto )
    return tarea;
 }
 
-void process_sorting( area_data *tarea, bool isproto )
+void process_sorting( area_data * tarea, bool isproto )
 {
    tarea->sort_name(  );
    tarea->sort_vnums(  );
@@ -2914,18 +2883,17 @@ void process_sorting( area_data *tarea, bool isproto )
       log_printf( "%-20s: Bad Vnum Range", tarea->filename );
    if( !tarea->author )
       tarea->author = STRALLOC( "Alsherok" );
-   return;
 }
 
-void load_area_file( char *filename, bool isproto )
+void load_area_file( const string & filename, bool isproto )
 {
    area_data *tarea = NULL;
    char *word;
 
-   if( !( fpArea = fopen( filename, "r" ) ) )
+   if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
    {
-      perror( filename );
-      bug( "%s: error loading file (can't open) %s", __FUNCTION__, filename );
+      perror( filename.c_str(  ) );
+      bug( "%s: error loading file (can't open) %s", __FUNCTION__, filename.c_str(  ) );
       return;
    }
 
@@ -2957,15 +2925,12 @@ void load_area_file( char *filename, bool isproto )
       return;
    }
 
-   // Support previous AFKMud stuff here, along with conversions from other bases if encountered. -- Samson 10/28/06
+   // Support conversions from other bases if encountered. -- Samson 12/31/06
+   log_printf( "Area format conversion: %s", filename.c_str(  ) );
+
+   // #AREA header present, read past it. We want the version header.
    if( !str_cmp( word, "AREA" ) )
-   {
-      tarea = create_area(  );
-      tarea->name = fread_string_nohash( fpArea );
-      tarea->author = STRALLOC( "Unknown" );
-      tarea->filename = str_dup( strArea );
-      tarea->version = 0;
-   }
+      fread_flagstring( fpArea );
    else
    {
       if( !str_cmp( word, "VERSION" ) )
@@ -2977,26 +2942,21 @@ void load_area_file( char *filename, bool isproto )
             do_areaconvert( NULL, filename );
             return;
          }
+
+         bug( "%s: Invalid header at start of area file: %s", __FUNCTION__, word );
          if( fBootDb )
-         {
-            bug( "%s: Invalid header at start of area file: %s", __FUNCTION__, word );
             exit( 1 );
-         }
          else
          {
-            bug( "%s: Invalid header at start of area file: %s", __FUNCTION__, word );
             FCLOSE( fpArea );
             return;
          }
       }
+      bug( "%s: Invalid header at start of area file: %s", __FUNCTION__, word );
       if( fBootDb )
-      {
-         bug( "%s: Invalid header at start of area file: %s", __FUNCTION__, word );
          exit( 1 );
-      }
       else
       {
-         bug( "%s: Invalid header at start of area file: %s", __FUNCTION__, word );
          FCLOSE( fpArea );
          return;
       }
@@ -3063,7 +3023,7 @@ void load_area_file( char *filename, bool isproto )
       else if( !str_cmp( word, "RANGES" ) )
       {
          int x1, x2, x3, x4;
-         char *ln;
+         const char *ln;
 
          for( ;; )
          {
@@ -3167,7 +3127,7 @@ void load_area_file( char *filename, bool isproto )
                   if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                   {
                      bug( "%s: 'M': vnum %d, no spec_fun called %s.", __FUNCTION__, pMobIndex->vnum, temp );
-                     pMobIndex->spec_funname.clear();
+                     pMobIndex->spec_funname.clear(  );
                   }
                   else
                      pMobIndex->spec_funname = temp;
@@ -3187,7 +3147,7 @@ void load_area_file( char *filename, bool isproto )
       else if( !str_cmp( word, "TREASURE" ) )
       {
          unsigned short x1, x2, x3, x4;
-         char *ln = fread_line( fpArea );
+         const char *ln = fread_line( fpArea );
 
          x1 = 20;
          x2 = 74;
@@ -3255,46 +3215,39 @@ void load_area_file( char *filename, bool isproto )
    if( tarea )
       process_sorting( tarea, isproto );
    else
-      log_printf( "(%s)", filename );
+      log_printf( "(%s)", filename.c_str(  ) );
 }
 
-void fwrite_afk_affect( FILE *fpout, affect_data *af )
+void fwrite_afk_affect( FILE * fpout, affect_data * af )
 {
    if( af->location == APPLY_AFFECT )
-      fprintf( fpout, "AffData %s '%s' %d %d %d\n",
-         a_types[af->location], aff_flags[af->modifier], af->type, af->duration, af->bit );
+      fprintf( fpout, "AffData %s '%s' %d %d %d\n", a_types[af->location], aff_flags[af->modifier], af->type, af->duration, af->bit );
    else if( af->location == APPLY_WEAPONSPELL
-    || af->location == APPLY_WEARSPELL
-    || af->location == APPLY_REMOVESPELL
-    || af->location == APPLY_STRIPSN
-    || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
+            || af->location == APPLY_WEARSPELL
+            || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
       fprintf( fpout, "AffData %s '%s' %d %d %d\n", a_types[af->location],
-         IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN",
-         af->type, af->duration, af->bit );
-   else if( af->location == APPLY_RESISTANT
-    || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
-      fprintf( fpout, "AffData %s %s~ %d %d %d\n",
-         a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
+               IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN", af->type, af->duration, af->bit );
+   else if( af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
+      fprintf( fpout, "AffData %s %s~ %d %d %d\n", a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
    else
-      fprintf( fpout, "AffData %s %d %d %d %d\n",
-         a_types[af->location], af->modifier, af->type, af->duration, af->bit );
+      fprintf( fpout, "AffData %s %d %d %d %d\n", a_types[af->location], af->modifier, af->type, af->duration, af->bit );
 }
 
-void fwrite_afk_exdesc( FILE *fpout, extra_descr_data *desc )
+void fwrite_afk_exdesc( FILE * fpout, extra_descr_data * desc )
 {
    fprintf( fpout, "%s", "#EXDESC\n" );
-   fprintf( fpout, "ExDescKey    %s~\n", desc->keyword.c_str() );
-   if( !desc->desc.empty() )
-      fprintf( fpout, "ExDesc       %s~\n", strip_cr( desc->desc ).c_str() );
+   fprintf( fpout, "ExDescKey    %s~\n", desc->keyword.c_str(  ) );
+   if( !desc->desc.empty(  ) )
+      fprintf( fpout, "ExDesc       %s~\n", strip_cr( desc->desc ).c_str(  ) );
    fprintf( fpout, "%s", "#ENDEXDESC\n\n" );
 }
 
-void fwrite_afk_exit( FILE *fpout, exit_data *pexit )
+void fwrite_afk_exit( FILE * fpout, exit_data * pexit )
 {
    fprintf( fpout, "%s", "#EXIT\n" );
    fprintf( fpout, "Direction %s~\n", strip_cr( dir_name[pexit->vdir] ) );
    fprintf( fpout, "ToRoom    %d\n", pexit->vnum );
-   if( pexit->key )
+   if( pexit->key != -1 && pexit->key > 0 )
       fprintf( fpout, "Key       %d\n", pexit->key );
    if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) && pexit->mx != 0 && pexit->my != 0 )
       fprintf( fpout, "ToCoords  %d %d\n", pexit->mx, pexit->my );
@@ -3304,18 +3257,18 @@ void fwrite_afk_exit( FILE *fpout, exit_data *pexit )
       fprintf( fpout, "Desc      %s~\n", strip_cr( pexit->exitdesc ) );
    if( pexit->keyword && pexit->keyword[0] != '\0' )
       fprintf( fpout, "Keywords  %s~\n", strip_cr( pexit->keyword ) );
-   if( pexit->flags.any() )
+   if( pexit->flags.any(  ) )
       fprintf( fpout, "Flags     %s~\n", bitset_string( pexit->flags, ex_flags ) );
    fprintf( fpout, "%s", "#ENDEXIT\n\n" );
 }
 
 // Write a prog
-bool mprog_write_prog( FILE *fpout, mud_prog_data *mprog )
+bool mprog_write_prog( FILE * fpout, mud_prog_data * mprog )
 {
    if( ( mprog->arglist && mprog->arglist[0] != '\0' ) )
    {
       fprintf( fpout, "%s", "#MUDPROG\n" );
-      fprintf( fpout, "Progtype  %s~\n", mprog_type_to_name( mprog->type ) );
+      fprintf( fpout, "Progtype  %s~\n", mprog_type_to_name( mprog->type ).c_str(  ) );
       fprintf( fpout, "Arglist   %s~\n", mprog->arglist );
 
       if( mprog->comlist && mprog->comlist[0] != '\0' && !mprog->fileprog )
@@ -3327,114 +3280,110 @@ bool mprog_write_prog( FILE *fpout, mud_prog_data *mprog )
    return false;
 }
 
-void save_reset_level( FILE *fpout, list<reset_data*> source, const int level )
+void save_reset_level( FILE * fpout, list < reset_data * >source, const int level )
 {
-   list<reset_data*>::iterator rst;
+   list < reset_data * >::iterator rst;
    int spaces = level * 2;
 
-   for( rst = source.begin(); rst != source.end(); ++rst )
+   for( rst = source.begin(  ); rst != source.end(  ); ++rst )
    {
-      reset_data *pReset = (*rst);
+      reset_data *pReset = *rst;
 
-      switch( UPPER( pReset->command ) ) /* extra arg1 arg2 arg3 */
+      switch ( UPPER( pReset->command ) ) /* extra arg1 arg2 arg3 */
       {
          case '*':
             break;
 
-         case 'Z': // RT room object - no sub-resets
+         case 'Z':  // RT room object - no sub-resets
             fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
-               pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6,
-               pReset->arg7, pReset->arg8, pReset->arg9, pReset->arg10, pReset->arg11 );
+                     pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6,
+                     pReset->arg7, pReset->arg8, pReset->arg9, pReset->arg10, pReset->arg11 );
             break;
 
          case 'M':
          case 'O':
-         case 'Y': // RT give - has no sub-resets
+         case 'Y':  // RT give - has no sub-resets
             fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
-               pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7 );
+                     pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7 );
             break;
 
-         case 'W': // RT put - has no sub-resets
+         case 'W':  // RT put - has no sub-resets
             fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
-               pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4,
-               pReset->arg5, pReset->arg6, pReset->arg7, pReset->arg8, pReset->arg9 );
+                     pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7, pReset->arg8, pReset->arg9 );
             break;
 
          case 'P':
          case 'E':
             if( UPPER( pReset->command == 'E' ) )
-               fprintf( fpout, "%*.sReset %c %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
-                  pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
+               fprintf( fpout, "%*.sReset %c %d %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
             else
-               fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
-                  pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
+               fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
             break;
 
          case 'G':
          case 'R':
-            fprintf( fpout, "%*.sReset %c %d %d %d\n",
-               spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3 );
+            fprintf( fpout, "%*.sReset %c %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3 );
             break;
 
-         case 'X': // RT equipped - has no sub-resets
+         case 'X':  // RT equipped - has no sub-resets
             fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
-               pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7, pReset->arg8 );
+                     pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7, pReset->arg8 );
             break;
 
          case 'T':
          case 'H':
          case 'D':
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
-               pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
+            fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
             break;
       }  /* end of switch on command */
-       
-      /* recurse to save nested resets */
-      if( !pReset->resets.empty() )
+
+      /*
+       * recurse to save nested resets 
+       */
+      if( !pReset->resets.empty(  ) )
          save_reset_level( fpout, pReset->resets, level + 1 );
    }  /* end of looping through resets */
-} /* end of save_reset_level */
+}  /* end of save_reset_level */
 
 // Write out the top header for the file.
-void fwrite_area_header( area_data *area, FILE *fpout )
+void fwrite_area_header( area_data * area, FILE * fpout )
 {
    fprintf( fpout, "%s", "#AREADATA\n" );
    fprintf( fpout, "Version         %d\n", area->version );
    fprintf( fpout, "Name            %s~\n", area->name );
    fprintf( fpout, "Author          %s~\n", area->author );
+   if( area->credits )
+      fprintf( fpout, "Credits         %s~\n", area->credits );
    fprintf( fpout, "Vnums           %d %d\n", area->low_vnum, area->hi_vnum );
    fprintf( fpout, "Continent       %s~\n", continents[area->continent] );
    fprintf( fpout, "Coordinates     %d %d\n", area->mx, area->my );
-   fprintf( fpout, "Dates           %ld %ld\n", (long)area->creation_date, (long)area->install_date );
-   fprintf( fpout, "Ranges          %d %d %d %d\n",
-      area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+   fprintf( fpout, "Dates           %ld %ld\n", ( long )area->creation_date, ( long )area->install_date );
+   fprintf( fpout, "Ranges          %d %d %d %d\n", area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    if( area->resetmsg ) /* Rennard */
       fprintf( fpout, "ResetMsg        %s~\n", area->resetmsg );
    if( area->reset_frequency )
       fprintf( fpout, "ResetFreq       %d\n", area->reset_frequency );
-   if( area->flags.any() )
+   if( area->flags.any(  ) )
       fprintf( fpout, "Flags           %s~\n", bitset_string( area->flags, area_flags ) );
-   fprintf( fpout, "Climate         %d %d %d\n",
-      area->weather->climate_temp, area->weather->climate_precip, area->weather->climate_wind );
+   fprintf( fpout, "Climate         %d %d %d\n", area->weather->climate_temp, area->weather->climate_precip, area->weather->climate_wind );
    fprintf( fpout, "Treasure        %d %d %d %d %d %d %d %d\n",
-      area->tg_nothing, area->tg_gold, area->tg_item,
-      area->tg_gem, area->tg_scroll, area->tg_potion, area->tg_wand, area->tg_armor );
+            area->tg_nothing, area->tg_gold, area->tg_item, area->tg_gem, area->tg_scroll, area->tg_potion, area->tg_wand, area->tg_armor );
 
    /*
     * neighboring weather systems - FB 
     */
-   list<neighbor_data*>::iterator neigh;
-   for( neigh = area->weather->neighborlist.begin(); neigh != area->weather->neighborlist.end(); ++neigh )
+   list < neighbor_data * >::iterator neigh;
+   for( neigh = area->weather->neighborlist.begin(  ); neigh != area->weather->neighborlist.end(  ); ++neigh )
    {
-      neighbor_data *nb = (*neigh);
-      fprintf( fpout, "Neighbor           %s~\n", nb->name );
+      neighbor_data *nb = *neigh;
+      fprintf( fpout, "Neighbor           %s~\n", nb->name.c_str(  ) );
    }
 
    fprintf( fpout, "%s", "#ENDAREADATA\n\n" );
 }
 
 // Write out an individual mob
-void fwrite_afk_mobile( FILE *fpout, mob_index *pMobIndex, bool install )
+void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
 {
    shop_data *pShop = NULL;
    repair_data *pRepair = NULL;
@@ -3450,59 +3399,56 @@ void fwrite_afk_mobile( FILE *fpout, mob_index *pMobIndex, bool install )
    fprintf( fpout, "Gender    %s~\n", npc_sex[pMobIndex->sex] );
    fprintf( fpout, "Position  %s~\n", npc_position[pMobIndex->position] );
    fprintf( fpout, "DefPos    %s~\n", npc_position[pMobIndex->defposition] );
-   if( pMobIndex->spec_fun && !pMobIndex->spec_funname.empty() )
-      fprintf( fpout, "Specfun   %s~\n", pMobIndex->spec_funname.c_str() );
+   if( pMobIndex->spec_fun && !pMobIndex->spec_funname.empty(  ) )
+      fprintf( fpout, "Specfun   %s~\n", pMobIndex->spec_funname.c_str(  ) );
    fprintf( fpout, "Short     %s~\n", pMobIndex->short_descr );
    if( pMobIndex->long_descr && pMobIndex->long_descr[0] != '\0' )
       fprintf( fpout, "Long      %s~\n", strip_cr( pMobIndex->long_descr ) );
    if( pMobIndex->chardesc && pMobIndex->chardesc[0] != '\0' )
       fprintf( fpout, "Desc      %s~\n", strip_cr( pMobIndex->chardesc ) );
    fprintf( fpout, "Nattacks  %f\n", pMobIndex->numattacks );
-   fprintf( fpout, "Stats1    %d %d %d %d %d %d\n",
-      pMobIndex->alignment, pMobIndex->gold, pMobIndex->height, pMobIndex->weight, pMobIndex->max_move, pMobIndex->max_mana );
+   fprintf( fpout, "Stats1    %d %d %d %d %d %d\n", pMobIndex->alignment, pMobIndex->gold, pMobIndex->height, pMobIndex->weight, pMobIndex->max_move, pMobIndex->max_mana );
    fprintf( fpout, "Stats2    %d %d %d %d %d %d %d\n",
-      pMobIndex->level, pMobIndex->mobthac0, pMobIndex->ac, pMobIndex->hitplus,
-      pMobIndex->damnodice, pMobIndex->damsizedice, pMobIndex->damplus );
-   if( pMobIndex->speaks.any() )
+            pMobIndex->level, pMobIndex->mobthac0, pMobIndex->ac, pMobIndex->hitplus, pMobIndex->damnodice, pMobIndex->damsizedice, pMobIndex->damplus );
+   if( pMobIndex->speaks.any(  ) )
       fprintf( fpout, "Speaks    %s~\n", bitset_string( pMobIndex->speaks, lang_names ) );
    fprintf( fpout, "Speaking  %s~\n", lang_names[pMobIndex->speaking] );
-   if( pMobIndex->actflags.any() )
+   if( pMobIndex->actflags.any(  ) )
       fprintf( fpout, "Actflags  %s~\n", bitset_string( pMobIndex->actflags, act_flags ) );
-   if( pMobIndex->affected_by.any () )
+   if( pMobIndex->affected_by.any(  ) )
       fprintf( fpout, "Affected  %s~\n", bitset_string( pMobIndex->affected_by, aff_flags ) );
-   if( pMobIndex->body_parts.any() )
+   if( pMobIndex->body_parts.any(  ) )
       fprintf( fpout, "Bodyparts %s~\n", bitset_string( pMobIndex->body_parts, part_flags ) );
-   if( pMobIndex->resistant.any() )
+   if( pMobIndex->resistant.any(  ) )
       fprintf( fpout, "Resist    %s~\n", bitset_string( pMobIndex->resistant, ris_flags ) );
-   if( pMobIndex->immune.any() )
+   if( pMobIndex->immune.any(  ) )
       fprintf( fpout, "Immune    %s~\n", bitset_string( pMobIndex->immune, ris_flags ) );
-   if( pMobIndex->susceptible.any() )
+   if( pMobIndex->susceptible.any(  ) )
       fprintf( fpout, "Suscept   %s~\n", bitset_string( pMobIndex->susceptible, ris_flags ) );
-   if( pMobIndex->absorb.any() )
+   if( pMobIndex->absorb.any(  ) )
       fprintf( fpout, "Absorb    %s~\n", bitset_string( pMobIndex->absorb, ris_flags ) );
-   if( pMobIndex->attacks.any() )
+   if( pMobIndex->attacks.any(  ) )
       fprintf( fpout, "Attacks   %s~\n", bitset_string( pMobIndex->attacks, attack_flags ) );
-   if( pMobIndex->defenses.any() )
+   if( pMobIndex->defenses.any(  ) )
       fprintf( fpout, "Defenses  %s~\n", bitset_string( pMobIndex->defenses, defense_flags ) );
 
    // Mob has a shop? Add that data to the mob index.
    if( ( pShop = pMobIndex->pShop ) != NULL )
    {
       fprintf( fpout, "ShopData   %d %d %d %d %d %d %d %d %d\n",
-         pShop->buy_type[0], pShop->buy_type[1], pShop->buy_type[2], pShop->buy_type[3], pShop->buy_type[4],
-         pShop->profit_buy, pShop->profit_sell, pShop->open_hour, pShop->close_hour );
+               pShop->buy_type[0], pShop->buy_type[1], pShop->buy_type[2], pShop->buy_type[3], pShop->buy_type[4],
+               pShop->profit_buy, pShop->profit_sell, pShop->open_hour, pShop->close_hour );
    }
 
    // Mob is a repair shop? Add that data to the mob index.
    if( ( pRepair = pMobIndex->rShop ) != NULL )
    {
       fprintf( fpout, "RepairData %d %d %d %d %d %d %d\n",
-         pRepair->fix_type[0], pRepair->fix_type[1], pRepair->fix_type[2], pRepair->profit_fix, pRepair->shop_type,
-         pRepair->open_hour, pRepair->close_hour );
+               pRepair->fix_type[0], pRepair->fix_type[1], pRepair->fix_type[2], pRepair->profit_fix, pRepair->shop_type, pRepair->open_hour, pRepair->close_hour );
    }
 
-   list<mud_prog_data*>::iterator mprg;
-   for( mprg = pMobIndex->mudprogs.begin(); mprg != pMobIndex->mudprogs.end(); ++mprg )
+   list < mud_prog_data * >::iterator mprg;
+   for( mprg = pMobIndex->mudprogs.begin(  ); mprg != pMobIndex->mudprogs.end(  ); ++mprg )
    {
       mud_prog_data *mp = *mprg;
       mprog_write_prog( fpout, mp );
@@ -3511,7 +3457,7 @@ void fwrite_afk_mobile( FILE *fpout, mob_index *pMobIndex, bool install )
 }
 
 // Write out an individual obj
-void fwrite_afk_object( FILE *fpout, obj_index *pObjIndex, bool install )
+void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
 {
    if( install )
       pObjIndex->extra_flags.reset( ITEM_PROTOTYPE );
@@ -3525,9 +3471,9 @@ void fwrite_afk_object( FILE *fpout, obj_index *pObjIndex, bool install )
       fprintf( fpout, "Long      %s~\n", strip_cr( pObjIndex->objdesc ) );
    if( pObjIndex->action_desc && pObjIndex->action_desc[0] != '\0' )
       fprintf( fpout, "Action    %s~\n", pObjIndex->action_desc );
-   if( pObjIndex->extra_flags.any() )
+   if( pObjIndex->extra_flags.any(  ) )
       fprintf( fpout, "Flags     %s~\n", bitset_string( pObjIndex->extra_flags, o_flags ) );
-   if( pObjIndex->wear_flags.any() )
+   if( pObjIndex->wear_flags.any(  ) )
       fprintf( fpout, "WFlags    %s~\n", bitset_string( pObjIndex->wear_flags, w_flags ) );
 
    int val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10;
@@ -3543,7 +3489,7 @@ void fwrite_afk_object( FILE *fpout, obj_index *pObjIndex, bool install )
    val9 = pObjIndex->value[9];
    val10 = pObjIndex->value[10];
 
-   switch( pObjIndex->item_type )
+   switch ( pObjIndex->item_type )
    {
       default:
          break;
@@ -3572,25 +3518,22 @@ void fwrite_afk_object( FILE *fpout, obj_index *pObjIndex, bool install )
             val5 = HAS_SPELL_INDEX;
          break;
    }
-   fprintf( fpout, "Values    %d %d %d %d %d %d %d %d %d %d %d\n",
-      val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10 );
+   fprintf( fpout, "Values    %d %d %d %d %d %d %d %d %d %d %d\n", val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10 );
 
    fprintf( fpout, "Stats     %d %d %d %d %d %s %s %s\n",
-      pObjIndex->weight, pObjIndex->cost, pObjIndex->ego,
-      pObjIndex->limit, pObjIndex->layers,
-      pObjIndex->socket[0] ? pObjIndex->socket[0] : "None",
-      pObjIndex->socket[1] ? pObjIndex->socket[1] : "None",
-      pObjIndex->socket[2] ? pObjIndex->socket[2] : "None" );
+            pObjIndex->weight, pObjIndex->cost, pObjIndex->ego,
+            pObjIndex->limit, pObjIndex->layers,
+            pObjIndex->socket[0] ? pObjIndex->socket[0] : "None", pObjIndex->socket[1] ? pObjIndex->socket[1] : "None", pObjIndex->socket[2] ? pObjIndex->socket[2] : "None" );
 
-   list<affect_data*>::iterator paf;
-   for( paf = pObjIndex->affects.begin(); paf != pObjIndex->affects.end(); ++paf )
+   list < affect_data * >::iterator paf;
+   for( paf = pObjIndex->affects.begin(  ); paf != pObjIndex->affects.end(  ); ++paf )
    {
-      affect_data *af = (*paf);
+      affect_data *af = *paf;
 
       fwrite_afk_affect( fpout, af );
    }
 
-   switch( pObjIndex->item_type )
+   switch ( pObjIndex->item_type )
    {
       default:
          break;
@@ -3599,9 +3542,9 @@ void fwrite_afk_object( FILE *fpout, obj_index *pObjIndex, bool install )
       case ITEM_POTION:
       case ITEM_SCROLL:
          fprintf( fpout, "Spells       '%s' '%s' '%s'\n",
-            IS_VALID_SN( pObjIndex->value[1] ) ? skill_table[pObjIndex->value[1]]->name : "NONE",
-            IS_VALID_SN( pObjIndex->value[2] ) ? skill_table[pObjIndex->value[2]]->name : "NONE",
-            IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name : "NONE" );
+                  IS_VALID_SN( pObjIndex->value[1] ) ? skill_table[pObjIndex->value[1]]->name : "NONE",
+                  IS_VALID_SN( pObjIndex->value[2] ) ? skill_table[pObjIndex->value[2]]->name : "NONE",
+                  IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name : "NONE" );
          break;
 
       case ITEM_STAFF:
@@ -3611,21 +3554,21 @@ void fwrite_afk_object( FILE *fpout, obj_index *pObjIndex, bool install )
 
       case ITEM_SALVE:
          fprintf( fpout, "Spells       '%s' '%s'\n",
-            IS_VALID_SN( pObjIndex->value[4] ) ? skill_table[pObjIndex->value[4]]->name : "NONE",
-            IS_VALID_SN( pObjIndex->value[5] ) ? skill_table[pObjIndex->value[5]]->name : "NONE" );
+                  IS_VALID_SN( pObjIndex->value[4] ) ? skill_table[pObjIndex->value[4]]->name : "NONE",
+                  IS_VALID_SN( pObjIndex->value[5] ) ? skill_table[pObjIndex->value[5]]->name : "NONE" );
          break;
    }
 
-   list<extra_descr_data*>::iterator ed;
-   for( ed = pObjIndex->extradesc.begin(); ed != pObjIndex->extradesc.end(); ++ed )
+   list < extra_descr_data * >::iterator ed;
+   for( ed = pObjIndex->extradesc.begin(  ); ed != pObjIndex->extradesc.end(  ); ++ed )
    {
-      extra_descr_data *desc = (*ed);
+      extra_descr_data *desc = *ed;
 
       fwrite_afk_exdesc( fpout, desc );
    }
 
-   list<mud_prog_data*>::iterator mprg;
-   for( mprg = pObjIndex->mudprogs.begin(); mprg != pObjIndex->mudprogs.end(); ++mprg )
+   list < mud_prog_data * >::iterator mprg;
+   for( mprg = pObjIndex->mudprogs.begin(  ); mprg != pObjIndex->mudprogs.end(  ); ++mprg )
    {
       mud_prog_data *mp = *mprg;
       mprog_write_prog( fpout, mp );
@@ -3634,7 +3577,7 @@ void fwrite_afk_object( FILE *fpout, obj_index *pObjIndex, bool install )
 }
 
 // Write out an individual room
-void fwrite_afk_room( FILE *fpout, room_index *room, bool install )
+void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
 {
    if( install )
    {
@@ -3645,10 +3588,10 @@ void fwrite_afk_room( FILE *fpout, room_index *room, bool install )
       /*
        * purge room of (prototyped) mobiles 
        */
-      list<char_data*>::iterator ich;
-      for( ich = room->people.begin(); ich != room->people.end(); )
+      list < char_data * >::iterator ich;
+      for( ich = room->people.begin(  ); ich != room->people.end(  ); )
       {
-         char_data *victim = (*ich);
+         char_data *victim = *ich;
          ++ich;
 
          if( victim->isnpc(  ) )
@@ -3657,10 +3600,10 @@ void fwrite_afk_room( FILE *fpout, room_index *room, bool install )
       /*
        * purge room of (prototyped) objects 
        */
-      list<obj_data*>::iterator iobj;
-      for( iobj = room->objects.begin(); iobj != room->objects.end(); )
+      list < obj_data * >::iterator iobj;
+      for( iobj = room->objects.begin(  ); iobj != room->objects.end(  ); )
       {
-         obj_data *obj = (*iobj);
+         obj_data *obj = *iobj;
          ++iobj;
 
          obj->extract(  );
@@ -3704,7 +3647,7 @@ void fwrite_afk_room( FILE *fpout, room_index *room, bool install )
    }
 
    fprintf( fpout, "Flags     %s~\n", bitset_string( room->flags, r_flags ) );
-   fprintf( fpout, "Stats     %d %d %d %d\n", room->tele_delay, room->tele_vnum, room->tunnel, room->baselight );
+   fprintf( fpout, "Stats     %d %d %d %d %d\n", room->tele_delay, room->tele_vnum, room->tunnel, room->baselight, room->max_weight );
 
    if( room->roomdesc && room->roomdesc[0] != '\0' )
       fprintf( fpout, "Desc      %s~\n", strip_cr( room->roomdesc ) );
@@ -3716,16 +3659,16 @@ void fwrite_afk_room( FILE *fpout, room_index *room, bool install )
       fprintf( fpout, "Nightdesc %s~\n", strip_cr( room->nitedesc ) );
 
    // Save the list of room index affects.
-   list<affect_data*>::iterator paf;
-   for( paf = room->indexaffects.begin(); paf != room->indexaffects.end(); ++paf )
+   list < affect_data * >::iterator paf;
+   for( paf = room->permaffects.begin(  ); paf != room->permaffects.end(  ); ++paf )
    {
       affect_data *af = *paf;
 
       fwrite_afk_affect( fpout, af );
    }
 
-   list<exit_data*>::iterator ex;
-   for( ex = room->exits.begin(); ex != room->exits.end(); ++ex )
+   list < exit_data * >::iterator ex;
+   for( ex = room->exits.begin(  ); ex != room->exits.end(  ); ++ex )
    {
       exit_data *pexit = *ex;
 
@@ -3738,16 +3681,16 @@ void fwrite_afk_room( FILE *fpout, room_index *room, bool install )
    // Recursive function that saves the nested resets.
    save_reset_level( fpout, room->resets, 0 );
 
-   list<extra_descr_data*>::iterator ed;
-   for( ed = room->extradesc.begin(); ed != room->extradesc.end(); ++ed )
+   list < extra_descr_data * >::iterator ed;
+   for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
    {
-      extra_descr_data *desc = (*ed);
+      extra_descr_data *desc = *ed;
 
       fwrite_afk_exdesc( fpout, desc );
    }
 
-   list<mud_prog_data*>::iterator mprg;
-   for( mprg = room->mudprogs.begin(); mprg != room->mudprogs.end(); ++mprg )
+   list < mud_prog_data * >::iterator mprg;
+   for( mprg = room->mudprogs.begin(  ); mprg != room->mudprogs.end(  ); ++mprg )
    {
       mud_prog_data *mp = *mprg;
       mprog_write_prog( fpout, mp );
@@ -3769,15 +3712,15 @@ void fwrite_afk_room( FILE *fpout, room_index *room, bool install )
  */
 const int AREA_VERSION_WRITE = 1;
 
-void area_data::fold( char *fname, bool install )
+void area_data::fold( const char *fname, bool install )
 {
    char buf[256];
    FILE *fpout;
-   list<mob_index*>::iterator mindex;
-   list<obj_index*>::iterator oindex;
-   list<room_index*>::iterator rindex;
+   list < mob_index * >::iterator mindex;
+   list < obj_index * >::iterator oindex;
+   list < room_index * >::iterator rindex;
 
-   log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving %s...", filename );
+   log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving %s...", this->filename );
 
    snprintf( buf, 256, "%s.bak", fname );
    rename( fname, buf );
@@ -3794,19 +3737,19 @@ void area_data::fold( char *fname, bool install )
 
    fwrite_area_header( this, fpout );
 
-   for( mindex = mobs.begin(); mindex != mobs.end(); ++mindex )
+   for( mindex = mobs.begin(  ); mindex != mobs.end(  ); ++mindex )
    {
       mob_index *pMobIndex = *mindex;
       fwrite_afk_mobile( fpout, pMobIndex, install );
    }
 
-   for( oindex = objects.begin(); oindex != objects.end(); ++oindex )
+   for( oindex = objects.begin(  ); oindex != objects.end(  ); ++oindex )
    {
       obj_index *pObjIndex = *oindex;
       fwrite_afk_object( fpout, pObjIndex, install );
    }
 
-   for( rindex = rooms.begin(); rindex != rooms.end(); ++rindex )
+   for( rindex = rooms.begin(  ); rindex != rooms.end(  ); ++rindex )
    {
       room_index *pRoomIndex = *rindex;
       fwrite_afk_room( fpout, pRoomIndex, install );
@@ -3814,21 +3757,19 @@ void area_data::fold( char *fname, bool install )
 
    fprintf( fpout, "%s", "#ENDAREA\n" );
    FCLOSE( fpout );
-   return;
 }
 
 void close_all_areas( void )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
 
-   for( iarea = arealist.begin(); iarea != arealist.end(); )
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); )
    {
-      area_data *pArea = (*iarea);
+      area_data *pArea = *iarea;
       ++iarea;
 
       deleteptr( pArea );
    }
-   return;
 }
 
 CMDF( do_savearea )
@@ -3842,15 +3783,15 @@ CMDF( do_savearea )
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       tarea = ch->pcdata->area;
-   else if( ch->is_imp() && !str_cmp( argument, "all" ) )
+   else if( ch->is_imp(  ) && !str_cmp( argument, "all" ) )
    {
-      list<area_data*>::iterator iarea;
+      list < area_data * >::iterator iarea;
 
-      for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
       {
-         tarea = (*iarea);
+         tarea = *iarea;
 
          if( !tarea->flags.test( AFLAG_PROTOTYPE ) )
             continue;
@@ -3897,7 +3838,7 @@ CMDF( do_foldarea )
    area_data *tarea;
    ch->set_color( AT_IMMORT );
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Fold what?\r\n" );
       return;
@@ -3905,11 +3846,11 @@ CMDF( do_foldarea )
 
    if( !str_cmp( argument, "all" ) )
    {
-      list<area_data*>::iterator iarea;
+      list < area_data * >::iterator iarea;
 
-      for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
       {
-         tarea = (*iarea);
+         tarea = *iarea;
 
          if( !tarea->flags.test( AFLAG_PROTOTYPE ) )
             tarea->fold( tarea->filename, false );
@@ -3932,12 +3873,11 @@ CMDF( do_foldarea )
    ch->print( "Folding area...\r\n" );
    tarea->fold( tarea->filename, false );
    ch->print( "&[immortal]Done.\r\n" );
-   return;
 }
 
 void write_area_list( void )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
    FILE *fpout;
 
    fpout = fopen( AREA_LIST, "w" );
@@ -3947,7 +3887,7 @@ void write_area_list( void )
       return;
    }
 
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
       area_data *area = *iarea;
 
@@ -3962,30 +3902,30 @@ void write_area_list( void )
  * Last Modified : July 21, 1997
  * Fireblade
  */
-area_data *get_area( char *name )
+area_data *get_area( const string & name )
 {
-   if( !name || name[0] == '\0' )
+   if( name.empty(  ) )
       return NULL;
 
-   list<area_data*>::iterator iarea;
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   list < area_data * >::iterator iarea;
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
-      if( nifty_is_name( name, area->name ) )
+      if( hasname( area->name, name ) )
          return area;
    }
    return NULL;
 }
 
 /* Locate an area by its filename first, then fall back to other means if not found */
-area_data *find_area( char *filename )
+area_data *find_area( const string & filename )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
 
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
       if( !str_cmp( area->filename, filename ) )
          return area;
@@ -4000,13 +3940,13 @@ area_data *find_area( char *filename )
  */
 void init_area_weather( void )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
 
    log_string( "Initializing area weather data..." );
 
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
       /*
        * init temp and temp vector 
@@ -4030,7 +3970,6 @@ void init_area_weather( void )
       area->weather->wind_vector = cf + number_range( -rand_factor, rand_factor );
    }
    log_string( "Area weather data initialized." );
-   return;
 }
 
 /*
@@ -4093,7 +4032,6 @@ void load_weatherdata( void )
          }
       }
    }
-   return;
 }
 
 /*
@@ -4120,7 +4058,6 @@ void save_weatherdata( void )
    }
    else
       bug( "%s: could not open file", __FUNCTION__ );
-   return;
 }
 
 /*
@@ -4130,13 +4067,13 @@ void save_weatherdata( void )
  */
 CMDF( do_setweather )
 {
-   char arg[MIL];
+   string arg;
 
    ch->set_color( AT_BLUE );
 
    argument = one_argument( argument, arg );
 
-   if( arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->printf( "%-15s%-6s\r\n", "Parameters:", "Value:" );
       ch->printf( "%-15s%-6d\r\n", "random", rand_factor );
@@ -4148,8 +4085,7 @@ CMDF( do_setweather )
       ch->print( "\r\nResulting values:\r\n" );
       ch->printf( "Weather variables range from %d to %d.\r\n", -3 * weath_unit, 3 * weath_unit );
       ch->printf( "Weather vectors range from %d to %d.\r\n", -1 * max_vector, max_vector );
-      ch->printf( "The maximum a vector can change in one update is %d.\r\n",
-                  rand_factor + 2 * climate_factor + ( 6 * weath_unit / neigh_factor ) );
+      ch->printf( "The maximum a vector can change in one update is %d.\r\n", rand_factor + 2 * climate_factor + ( 6 * weath_unit / neigh_factor ) );
    }
 
    else if( !str_cmp( arg, "random" ) )
@@ -4158,7 +4094,7 @@ CMDF( do_setweather )
          ch->print( "Set maximum random change in vectors to what?\r\n" );
       else
       {
-         rand_factor = atoi( argument );
+         rand_factor = atoi( argument.c_str(  ) );
          ch->printf( "Maximum random change in vectors now equals %d.\r\n", rand_factor );
          save_weatherdata(  );
       }
@@ -4170,7 +4106,7 @@ CMDF( do_setweather )
          ch->print( "Set climate effect coefficient to what?\r\n" );
       else
       {
-         climate_factor = atoi( argument );
+         climate_factor = atoi( argument.c_str(  ) );
          ch->printf( "Climate effect coefficient now equals %d.\r\n", climate_factor );
          save_weatherdata(  );
       }
@@ -4182,7 +4118,7 @@ CMDF( do_setweather )
          ch->print( "Set neighbor effect divisor to what?\r\n" );
       else
       {
-         neigh_factor = atoi( argument );
+         neigh_factor = atoi( argument.c_str(  ) );
 
          if( neigh_factor <= 0 )
             neigh_factor = 1;
@@ -4198,7 +4134,7 @@ CMDF( do_setweather )
          ch->print( "Set weather unit size to what?\r\n" );
       else
       {
-         int unit = atoi( argument );
+         int unit = atoi( argument.c_str(  ) );
 
          if( unit == 0 )
          {
@@ -4217,7 +4153,7 @@ CMDF( do_setweather )
          ch->print( "Set maximum vector size to what?\r\n" );
       else
       {
-         max_vector = atoi( argument );
+         max_vector = atoi( argument.c_str(  ) );
          ch->printf( "Maximum vector size now equals %d.\r\n", max_vector );
          save_weatherdata(  );
       }
@@ -4233,7 +4169,7 @@ CMDF( do_setweather )
    {
       int i, number;
 
-      number = atoi( argument );
+      number = atoi( argument.c_str(  ) );
 
       if( number < 1 )
          number = 1;
@@ -4250,15 +4186,15 @@ CMDF( do_setweather )
       ch->print( "\trandom\r\n\tclimate\r\n\tneighbor\r\n\tunit\r\n\tmaxvector\r\n" );
       ch->print( "You may also reset or update the system using the fields 'reset' and 'update' respectively.\r\n" );
    }
-   return;
 }
 
 CMDF( do_adelete )
 {
    area_data *tarea;
-   char arg[MIL], filename[256];
+   string arg;
+   char filename[256];
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Usage: adelete <areafilename>\r\n" );
       return;
@@ -4268,14 +4204,14 @@ CMDF( do_adelete )
 
    if( !( tarea = find_area( arg ) ) )
    {
-      ch->printf( "No such area as %s\r\n", arg );
+      ch->printf( "No such area as %s\r\n", arg.c_str(  ) );
       return;
    }
 
-   if( !argument || argument[0] == '\0' || str_cmp( argument, "yes" ) )
+   if( argument.empty(  ) || str_cmp( argument, "yes" ) )
    {
       ch->print( "&RThis action must be confirmed before executing. It is not reversable.\r\n" );
-      ch->printf( "&RTo delete this area, type: &Wadelete %s yes&D", arg );
+      ch->printf( "&RTo delete this area, type: &Wadelete %s yes&D", arg.c_str(  ) );
       return;
    }
    if( tarea->flags.test( AFLAG_PROTOTYPE ) )
@@ -4285,9 +4221,8 @@ CMDF( do_adelete )
    deleteptr( tarea );
    unlink( filename );
    write_area_list(  );
-   web_arealist();
-   ch->printf( "&W%s&R has been destroyed.&D\r\n", arg );
-   return;
+   web_arealist(  );
+   ch->printf( "&W%s&R has been destroyed.&D\r\n", arg.c_str(  ) );
 }
 
 /*
@@ -4300,22 +4235,21 @@ CMDF( do_adelete )
  */
 CMDF( do_showweather )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
 
    ch->printf( "&B%-40s %-8s %-8s %-8s\r\n", "Area Name:", "Temp:", "Precip:", "Wind:" );
 
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
-      if( !argument || argument[0] == '\0' || nifty_is_name_prefix( argument, area->name ) )
+      if( argument.empty(  ) || nifty_is_name_prefix( argument, area->name ) )
       {
          ch->printf( "&B%-40s &W%3d &B(&C%3d&B) &W%3d &B(&C%3d&B) &W%3d &B(&C%3d&B)\r\n",
                      area->name, area->weather->temp, area->weather->temp_vector, area->weather->precip,
                      area->weather->precip_vector, area->weather->wind, area->weather->wind_vector );
       }
    }
-   return;
 }
 
 void assign_area( char_data * ch )
@@ -4362,11 +4296,10 @@ CMDF( do_aassign )
    if( ch->isnpc(  ) )
       return;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Syntax: aassign <filename.are>  - Assigns you an area for building.\r\n" );
-      ch->print( "        aassign none/null/clear - Clears your assigned area and restores your "
-                 "building area (if any).\r\n" );
+      ch->print( "        aassign none/null/clear - Clears your assigned area and restores your " "building area (if any).\r\n" );
       if( ch->get_trust(  ) < LEVEL_GOD )
          ch->print( "Note: You can only aassign areas bestowed upon you.\r\n" );
       if( ch->get_trust(  ) < sysdata->level_modify_proto )
@@ -4393,21 +4326,19 @@ CMDF( do_aassign )
 
    if( !( tarea = find_area( argument ) ) )
    {
-      ch->printf( "The area '%s' does not exsist. Please use the 'zones' command for a list.\r\n", argument );
+      ch->printf( "The area '%s' does not exsist. Please use the 'zones' command for a list.\r\n", argument.c_str(  ) );
       return;
    }
 
    if( !tarea->flags.test( AFLAG_PROTOTYPE ) && ch->get_trust(  ) < sysdata->level_modify_proto )
    {
-      ch->printf( "The area '%s' is not a proto area, and you're not authorized to work on non-proto areas.\r\n",
-                  tarea->name );
+      ch->printf( "The area '%s' is not a proto area, and you're not authorized to work on non-proto areas.\r\n", tarea->name );
       return;
    }
 
    ch->pcdata->area = tarea;
    ch->printf( "Assigning you: %s\r\n", tarea->name );
    log_printf( "Assigning %s to %s.", tarea->name, ch->name );
-   return;
 }
 
 /*
@@ -4417,8 +4348,8 @@ CMDF( do_aassign )
 CMDF( do_installarea )
 {
    area_data *tarea;
-   char arg1[MIL], arg2[MIL], oldfilename[256];
-   char buf[256];
+   string arg1, arg2;
+   char oldfilename[256], buf[256];
    int num;
 
    ch->set_color( AT_IMMORT );
@@ -4426,7 +4357,7 @@ CMDF( do_installarea )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
 
-   if( ( !arg1[0] || arg1[0] == '\0' ) || ( !arg2[0] || arg2[0] == '\0' ) || ( !argument || argument[0] == '\0' ) )
+   if( arg1.empty(  ) || arg2.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Syntax: installarea <current filename> <new filename> <Area name>\r\n" );
       return;
@@ -4436,19 +4367,16 @@ CMDF( do_installarea )
    {
       if( exists_file( arg2 ) )
       {
-         ch->printf( "An area with filename %s already exists - choose another.\r\n", arg2 );
+         ch->printf( "An area with filename %s already exists - choose another.\r\n", arg2.c_str(  ) );
          return;
       }
 
-      if( argument && argument[0] != '\0' )
-      {
-         DISPOSE( tarea->name );
-         tarea->name = str_dup( argument );
-      }
+      DISPOSE( tarea->name );
+      tarea->name = str_dup( argument.c_str(  ) );
 
       mudstrlcpy( oldfilename, tarea->filename, 256 );
       DISPOSE( tarea->filename );
-      tarea->filename = str_dup( arg2 );
+      tarea->filename = str_dup( arg2.c_str(  ) );
 
       /*
        * Fold area with install flag -- auto-removes prototype flags 
@@ -4461,10 +4389,10 @@ CMDF( do_installarea )
       /*
        * Fix up author if online 
        */
-      list<descriptor_data*>::iterator ds;
-      for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+      list < descriptor_data * >::iterator ds;
+      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
       {
-         descriptor_data *d = (*ds);
+         descriptor_data *d = *ds;
 
          if( d->character && d->character->pcdata && d->character->pcdata->area == tarea )
          {
@@ -4483,7 +4411,7 @@ CMDF( do_installarea )
       ++top_area;
       ch->print( "Writing area.lst...\r\n" );
       write_area_list(  );
-      web_arealist();
+      web_arealist(  );
       ch->print( "Resetting new area.\r\n" );
       num = tarea->nplayer;
       tarea->nplayer = 0;
@@ -4497,8 +4425,7 @@ CMDF( do_installarea )
       ch->print( "Done.\r\n" );
       return;
    }
-   ch->printf( "No area with filename %s exists in the building directory.\r\n", arg1 );
-   return;
+   ch->printf( "No area with filename %s exists in the building directory.\r\n", arg1.c_str(  ) );
 }
 
 CMDF( do_astat )
@@ -4512,7 +4439,7 @@ CMDF( do_astat )
 
    if( !( tarea = find_area( argument ) ) )
    {
-      if( argument && argument[0] != '\0' )
+      if( !argument.empty(  ) )
       {
          ch->print( "Area not found. Check 'zones' or 'vnums'.\r\n" );
          return;
@@ -4526,18 +4453,14 @@ CMDF( do_astat )
    ch->printf( "&wCreated on   : &W%s\r\n", c_time( tarea->creation_date, -1 ) );
    ch->printf( "&wInstalled on : &W%s\r\n", c_time( tarea->install_date, -1 ) );
    ch->printf( "&wLast reset on: &W%s\r\n", c_time( tarea->last_resettime, -1 ) );
-   ch->printf( "&wVersion: &W%-3d &wAge: &W%-3d  &wCurrent number of players: &W%-3d\r\n",
-               tarea->version, tarea->age, tarea->nplayer );
+   ch->printf( "&wVersion: &W%-3d &wAge: &W%-3d  &wCurrent number of players: &W%-3d\r\n", tarea->version, tarea->age, tarea->nplayer );
    ch->printf( "&wlow_vnum: &W%5d    &whi_vnum: &W%5d\r\n", tarea->low_vnum, tarea->hi_vnum );
-   ch->printf( "&wSoft range: &W%d - %d    &wHard range: &W%d - %d\r\n",
-               tarea->low_soft_range, tarea->hi_soft_range, tarea->low_hard_range, tarea->hi_hard_range );
+   ch->printf( "&wSoft range: &W%d - %d    &wHard range: &W%d - %d\r\n", tarea->low_soft_range, tarea->hi_soft_range, tarea->low_hard_range, tarea->hi_hard_range );
    ch->printf( "&wArea flags: &W%s\r\n", bitset_string( tarea->flags, area_flags ) );
 
    ch->print( "&wTreasure Settings:\r\n" );
-   ch->printf( "&wNothing: &W%-3hu &wGold:   &W%-3hu &wItem: &W%-3hu &wGem:   &W%-3hu\r\n",
-               tarea->tg_nothing, tarea->tg_gold, tarea->tg_item, tarea->tg_gem );
-   ch->printf( "&wScroll:  &W%-3hu &wPotion: &W%-3hu &wWand: &W%-3hu &wArmor: &W%-3hu\r\n",
-               tarea->tg_scroll, tarea->tg_potion, tarea->tg_wand, tarea->tg_armor );
+   ch->printf( "&wNothing: &W%-3hu &wGold:   &W%-3hu &wItem: &W%-3hu &wGem:   &W%-3hu\r\n", tarea->tg_nothing, tarea->tg_gold, tarea->tg_item, tarea->tg_gem );
+   ch->printf( "&wScroll:  &W%-3hu &wPotion: &W%-3hu &wWand: &W%-3hu &wArmor: &W%-3hu\r\n", tarea->tg_scroll, tarea->tg_potion, tarea->tg_wand, tarea->tg_armor );
 
    ch->printf( "&wContinent or Plane: &W%s\r\n", continents[tarea->continent] );
 
@@ -4548,13 +4471,13 @@ CMDF( do_astat )
 }
 
 /* check other areas for a conflict while ignoring the current area */
-bool check_for_area_conflicts( area_data *carea, int lo, int hi )
+bool check_for_area_conflicts( area_data * carea, int lo, int hi )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
 
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = ( *iarea );
 
       if( area != carea && check_area_conflict( area, lo, hi ) )
          return true;
@@ -4565,21 +4488,22 @@ bool check_for_area_conflicts( area_data *carea, int lo, int hi )
 CMDF( do_aset )
 {
    area_data *tarea;
-   char arg1[MIL], arg2[MIL], arg3[MIL];
+   string arg1, arg2, arg3;
    int vnum, value;
 
    ch->set_color( AT_IMMORT );
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   vnum = atoi( argument );
-   if( arg1[0] == '\0' || arg2[0] == '\0' )
+   vnum = atoi( argument.c_str(  ) );
+
+   if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Usage: aset <area filename> <field> <value>\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
       ch->print( "  low_vnum hi_vnum coords\r\n" );
       ch->print( "  name filename low_soft hi_soft low_hard hi_hard\r\n" );
-      ch->print( "  author resetmsg resetfreq flags\r\n" );
+      ch->print( "  author credits resetmsg resetfreq flags\r\n" );
       ch->print( "  nothing gold item gem\r\n" );
       ch->print( "  scroll potion wand armor\r\n" );
       return;
@@ -4595,7 +4519,7 @@ CMDF( do_aset )
    {
       area_data *uarea;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "You can't set an area's name to nothing.\r\n" );
          return;
@@ -4608,7 +4532,7 @@ CMDF( do_aset )
       }
 
       DISPOSE( tarea->name );
-      tarea->name = str_dup( argument );
+      tarea->name = str_dup( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       return;
    }
@@ -4622,7 +4546,7 @@ CMDF( do_aset )
 
       mudstrlcpy( filename, tarea->filename, 256 );
       DISPOSE( tarea->filename );
-      tarea->filename = str_dup( argument );
+      tarea->filename = str_dup( argument.c_str(  ) );
       rename( filename, tarea->filename );
       write_area_list(  );
       ch->print( "Done.\r\n" );
@@ -4634,7 +4558,7 @@ CMDF( do_aset )
       /*
        * Area continent editing - Samson 8-8-98 
        */
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Set the area's continent.\r\n" );
          ch->print( "Usage: aset continent <name>\r\n" );
@@ -4650,7 +4574,7 @@ CMDF( do_aset )
       else
       {
          tarea->continent = value;
-         ch->printf( "Area continent set to %s.\r\n", arg2 );
+         ch->printf( "Area continent set to %s.\r\n", arg2.c_str(  ) );
       }
       return;
    }
@@ -4701,8 +4625,8 @@ CMDF( do_aset )
          return;
       }
 
-      x = atoi( arg3 );
-      y = atoi( argument );
+      x = atoi( arg3.c_str(  ) );
+      y = atoi( argument.c_str(  ) );
 
       if( x < 0 || x >= MAX_X )
       {
@@ -4733,7 +4657,7 @@ CMDF( do_aset )
 
       tarea->low_soft_range = vnum;
       ch->print( "Done.\r\n" );
-      web_arealist();
+      web_arealist(  );
       return;
    }
 
@@ -4747,7 +4671,7 @@ CMDF( do_aset )
 
       tarea->hi_soft_range = vnum;
       ch->print( "Done.\r\n" );
-      web_arealist();
+      web_arealist(  );
       return;
    }
 
@@ -4761,7 +4685,7 @@ CMDF( do_aset )
 
       tarea->low_hard_range = vnum;
       ch->print( "Done.\r\n" );
-      web_arealist();
+      web_arealist(  );
       return;
    }
 
@@ -4775,16 +4699,25 @@ CMDF( do_aset )
 
       tarea->hi_hard_range = vnum;
       ch->print( "Done.\r\n" );
-      web_arealist();
+      web_arealist(  );
       return;
    }
 
    if( !str_cmp( arg2, "author" ) )
    {
       STRFREE( tarea->author );
-      tarea->author = STRALLOC( argument );
+      tarea->author = STRALLOC( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
-      web_arealist();
+      web_arealist(  );
+      return;
+   }
+
+   if( !str_cmp( arg2, "credits" ) )
+   {
+      STRFREE( tarea->credits );
+      tarea->credits = STRALLOC( argument.c_str(  ) );
+      ch->print( "Done.\r\n" );
+      web_arealist(  );
       return;
    }
 
@@ -4792,7 +4725,7 @@ CMDF( do_aset )
    {
       DISPOSE( tarea->resetmsg );
       if( str_cmp( argument, "clear" ) )
-         tarea->resetmsg = str_dup( argument );
+         tarea->resetmsg = str_dup( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       return;
    }  /* Rennard */
@@ -4806,17 +4739,17 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "flags" ) )
    {
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Usage: aset <filename> flags <flag> [flag]...\r\n" );
          return;
       }
-      while( argument[0] != '\0' )
+      while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg3 );
          value = get_areaflag( arg3 );
          if( value < 0 || value >= AFLAG_MAX )
-            ch->printf( "Unknown flag: %s\r\n", arg3 );
+            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
          else
             tarea->flags.flip( value );
       }
@@ -4825,12 +4758,12 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "nothing" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Usage: aset <filename> nothing <percentage>\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       tarea->tg_nothing = value;
       ch->printf( "Area chance to generate nothing set to %hu%%\r\n", value );
       return;
@@ -4838,12 +4771,12 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "gold" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Usage: aset <filename> gold <percentage>\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       tarea->tg_gold = value;
       ch->printf( "Area chance to generate gold set to %hu%%\r\n", value );
       return;
@@ -4851,12 +4784,12 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "item" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Usage: aset <filename> item <percentage>\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       tarea->tg_item = value;
       ch->printf( "Area chance to generate item set to %hu%%\r\n", value );
       return;
@@ -4864,12 +4797,12 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "gem" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Usage: aset <filename> gem <percentage>\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       tarea->tg_gem = value;
       ch->printf( "Area chance to generate gem set to %hu%%\r\n", value );
       return;
@@ -4877,12 +4810,12 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "scroll" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Usage: aset <filename> scroll <percentage>\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       tarea->tg_scroll = value;
       ch->printf( "Area chance to generate scroll set to %hu%%\r\n", value );
       return;
@@ -4890,12 +4823,12 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "potion" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Usage: aset <filename> potion <percentage>\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       tarea->tg_potion = value;
       ch->printf( "Area chance to generate potion set to %hu%%\r\n", value );
       return;
@@ -4903,12 +4836,12 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "wand" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Usage: aset <filename> wand <percentage>\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       tarea->tg_wand = value;
       ch->printf( "Area chance to generate wand set to %hu%%\r\n", value );
       return;
@@ -4916,104 +4849,93 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "armor" ) )
    {
-      if( !argument || argument[0] == '\0' || !is_number( argument ) )
+      if( argument.empty(  ) || !is_number( argument ) )
       {
          ch->print( "Usage: aset <filename> armor <percentage>\r\n" );
          return;
       }
-      value = atoi( argument );
+      value = atoi( argument.c_str(  ) );
       tarea->tg_armor = value;
       ch->printf( "Area chance to generate armor set to %hu%%\r\n", value );
       return;
    }
 
    do_aset( ch, "" );
-   return;
 }
 
 /* Displays zone list. Will show proto, non-proto, or all. */
 void show_vnums( char_data * ch, short proto )
 {
-   list<area_data*>::iterator iarea;
+   list < area_data * >::iterator iarea;
    int count = 0;
 
    ch->pagerf( "&W%-15.15s %-40.40s %5.5s\r\n\r\n", "Filename", "Area Name", "Vnums" );
-   for( iarea = area_vsort.begin(); iarea != area_vsort.end(); ++iarea )
+   for( iarea = area_vsort.begin(  ); iarea != area_vsort.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
       if( proto == 0 && !area->flags.test( AFLAG_PROTOTYPE ) )
       {
-         ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d\r\n",
-                     area->filename, area->name, area->low_vnum, area->hi_vnum );
+         ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d\r\n", area->filename, area->name, area->low_vnum, area->hi_vnum );
          ++count;
       }
       else if( proto == 1 && area->flags.test( AFLAG_PROTOTYPE ) )
       {
-         ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d &W[Proto]\r\n",
-                     area->filename, area->name, area->low_vnum, area->hi_vnum );
+         ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d &W[Proto]\r\n", area->filename, area->name, area->low_vnum, area->hi_vnum );
          ++count;
       }
       else if( proto == 2 )
       {
          ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d %s\r\n",
-                     area->filename, area->name, area->low_vnum, area->hi_vnum,
-                     area->flags.test( AFLAG_PROTOTYPE ) ? "&W[Proto]" : "" );
+                     area->filename, area->name, area->low_vnum, area->hi_vnum, area->flags.test( AFLAG_PROTOTYPE ) ? "&W[Proto]" : "" );
          ++count;
       }
    }
    ch->pagerf( "&CAreas listed: %d\r\n", count );
    ch->pagerf( "Maximum allowed vnum is currently %d.&D\r\n", sysdata->maxvnum );
-   return;
 }
 
 CMDF( do_zones )
 {
-   char arg[MIL], arg2[MIL];
-
-   argument = one_argument( argument, arg );
-   argument = one_argument( argument, arg2 );
-
-   if( !arg || arg[0] == '\0' )
+   if( argument.empty(  ) )
    {
       show_vnums( ch, 0 );
       return;
    }
-   if( !str_cmp( arg, "proto" ) )
+   if( !str_cmp( argument, "proto" ) )
    {
       show_vnums( ch, 1 );
       return;
    }
-   if( !str_cmp( arg, "all" ) )
+   if( !str_cmp( argument, "all" ) )
    {
       show_vnums( ch, 2 );
       return;
    }
    ch->print( "Usage: zones [proto/all]\r\n" );
-   return;
 }
 
 /* Similar to checkvnum, but will list the freevnums -- Xerves 3-11-01 */
 CMDF( do_freevnums )
 {
-   char arg1[MIL];
+   string arg1;
    int lohi[600]; /* Up to 300 areas, increase if you have more -- Xerves */
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Please specify the low end of the range to be searched.\r\n" );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Please specify the high end of the range to be searched.\r\n" );
       return;
    }
 
-   int low_range = atoi( arg1 ), high_range = atoi( argument );
+   int low_range = atoi( arg1.c_str(  ) ), high_range = atoi( argument.c_str(  ) );
 
    if( low_range < 1 || low_range > sysdata->maxvnum )
    {
@@ -5037,10 +4959,10 @@ CMDF( do_freevnums )
 
    int x = 0;
    bool area_conflict = false;
-   list<area_data*>::iterator iarea;
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   list < area_data * >::iterator iarea;
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
 
       area_conflict = check_area_conflict( area, low_range, high_range );
 
@@ -5048,18 +4970,17 @@ CMDF( do_freevnums )
       {
          lohi[x++] = area->low_vnum;
          lohi[x++] = area->hi_vnum;
-         ch->printf( "&RArea Conflict: &g%-20.20s &wRange: &g%d - %d\r\n",
-            area->filename, area->low_vnum, area->hi_vnum );
+         ch->printf( "&RArea Conflict: &g%-20.20s &wRange: &g%d - %d\r\n", area->filename, area->low_vnum, area->hi_vnum );
       }
    }
    int xfin = x;
    for( int y = low_range; y < high_range; y += 50 )
    {
       area_conflict = false;
-      int z = y + 49; /* y is min, z is max */
+      int z = y + 49;   /* y is min, z is max */
       for( x = 0; x < xfin; x += 2 )
       {
-        int w = x + 1;
+         int w = x + 1;
 
          if( y < lohi[x] && lohi[x] < z )
          {
@@ -5085,29 +5006,28 @@ CMDF( do_freevnums )
       if( area_conflict == false )
          ch->printf( "&wOpen Range: &g%d - %d\r\n", y, z );
    }
-   return;
 }
 
 /* Check to make sure range of vnums is free - Scryn 2/27/96 */
 CMDF( do_check_vnums )
 {
-   char arg[MSL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Please specify the low end of the range to be searched.\r\n" );
       return;
    }
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Please specify the high end of the range to be searched.\r\n" );
       return;
    }
 
-   int low_range = atoi( arg ), high_range = atoi( argument );
+   int low_range = atoi( arg.c_str(  ) ), high_range = atoi( argument.c_str(  ) );
 
    if( low_range < 1 || low_range > sysdata->maxvnum )
    {
@@ -5129,10 +5049,11 @@ CMDF( do_check_vnums )
 
    ch->set_color( AT_PLAIN );
 
-   list<area_data*>::iterator iarea;
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   // FIXME: Can this use the area_conflict function?
+   list < area_data * >::iterator iarea;
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
-      area_data *area = (*iarea);
+      area_data *area = *iarea;
       bool area_conflict = false;
 
       if( low_range < area->low_vnum && area->low_vnum < high_range )
@@ -5153,7 +5074,6 @@ CMDF( do_check_vnums )
          ch->printf( "Vnums: %5d - %-5d\r\n", area->low_vnum, area->hi_vnum );
       }
    }
-   return;
 }
 
 /* Shogar's code to hunt for exits/entrances to/from a zone, very nice - Samson 12-30-00 */
@@ -5161,7 +5081,7 @@ CMDF( do_aexit )
 {
    area_data *tarea;
 
-   if( argument[0] == '\0' )
+   if( argument.empty(  ) )
       tarea = ch->in_room->area;
    else
    {
@@ -5172,9 +5092,9 @@ CMDF( do_aexit )
       }
    }
 
-   list<room_index*>::iterator rindex;
+   list < room_index * >::iterator rindex;
    int trange = tarea->hi_vnum, lrange = tarea->low_vnum;
-   for( rindex = tarea->rooms.begin(); rindex != tarea->rooms.end(); ++rindex )
+   for( rindex = tarea->rooms.begin(  ); rindex != tarea->rooms.end(  ); ++rindex )
    {
       room_index *room = *rindex;
 
@@ -5183,7 +5103,7 @@ CMDF( do_aexit )
          ch->pagerf( "From: %-20.20s Room: %5d To: Room: %5d (Teleport)\r\n", tarea->filename, room->vnum, room->tele_vnum );
       }
 
-      for( int i = 0; i < MAX_DIR + 2; ++i )  /* MAX_DIR+2 added to include ? exits.  Dwip 5/7/02 */
+      for( int i = 0; i < MAX_DIR + 2; ++i ) /* MAX_DIR+2 added to include ? exits.  Dwip 5/7/02 */
       {
          exit_data *pexit;
          if( !( pexit = room->get_exit( i ) ) )
@@ -5191,20 +5111,18 @@ CMDF( do_aexit )
 
          if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
          {
-            ch->pagerf( "To: Overland %4dX %4dY From: %20.20s Room: %5d (%s)\r\n",
-                        pexit->mx, pexit->my, tarea->filename, room->vnum, dir_name[i] );
+            ch->pagerf( "To: Overland %4dX %4dY From: %20.20s Room: %5d (%s)\r\n", pexit->mx, pexit->my, tarea->filename, room->vnum, dir_name[i] );
             continue;
          }
          if( pexit->to_room->area != tarea )
          {
-            ch->pagerf( "To: %-20.20s Room: %5d From: %-20.20s Room: %5d (%s)\r\n",
-                        pexit->to_room->area->filename, pexit->vnum, tarea->filename, room->vnum, dir_name[i] );
+            ch->pagerf( "To: %-20.20s Room: %5d From: %-20.20s Room: %5d (%s)\r\n", pexit->to_room->area->filename, pexit->vnum, tarea->filename, room->vnum, dir_name[i] );
          }
       }
    }
 
-   list<area_data*>::iterator iarea;
-   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   list < area_data * >::iterator iarea;
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
       area_data *area = *iarea;
 
@@ -5213,15 +5131,14 @@ CMDF( do_aexit )
 
       trange = area->hi_vnum;
       lrange = area->low_vnum;
-      for( rindex = area->rooms.begin(); rindex != area->rooms.end(); ++rindex )
+      for( rindex = area->rooms.begin(  ); rindex != area->rooms.end(  ); ++rindex )
       {
          room_index *room = *rindex;
 
          if( room->flags.test( ROOM_TELEPORT ) )
          {
             if( room->tele_vnum >= tarea->low_vnum && room->tele_vnum <= tarea->hi_vnum )
-               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (Teleport)\r\n",
-                           area->filename, room->vnum, tarea->filename, room->tele_vnum );
+               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (Teleport)\r\n", area->filename, room->vnum, tarea->filename, room->tele_vnum );
          }
 
          for( int i = 0; i < MAX_DIR + 2; ++i )
@@ -5235,22 +5152,20 @@ CMDF( do_aexit )
 
             if( pexit->to_room->area == tarea )
             {
-               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (%s)\r\n",
-                           area->filename, room->vnum, pexit->to_room->area->filename, pexit->vnum, dir_name[i] );
+               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (%s)\r\n", area->filename, room->vnum, pexit->to_room->area->filename, pexit->vnum, dir_name[i] );
             }
          }
       }
    }
 
-   list<mapexit_data*>::iterator imexit;
-   for( imexit = mapexitlist.begin(); imexit != mapexitlist.end(); ++imexit )
+   list < mapexit_data * >::iterator imexit;
+   for( imexit = mapexitlist.begin(  ); imexit != mapexitlist.end(  ); ++imexit )
    {
-      mapexit_data *mexit = (*imexit);
+      mapexit_data *mexit = *imexit;
 
       if( mexit->vnum >= tarea->low_vnum && mexit->vnum <= tarea->hi_vnum )
          ch->pagerf( "From: Overland %4dX %4dY To: Room: %5d\r\n", mexit->herex, mexit->herey, mexit->vnum );
    }
-   return;
 }
 
 /* Revised version of do_areas, orgininally written by Fireblade 4/27/97,
@@ -5259,16 +5174,16 @@ CMDF( do_aexit )
  */
 CMDF( do_areas )
 {
-   char *print_string = "%-12s | %-36s | %4d - %-4d | %3d - %-3d \r\n";
+   const char *print_string = "%-12s | %-36s | %4d - %-4d | %3d - %-3d \r\n";
    int lower_bound = 0, upper_bound = MAX_LEVEL + 1, num_args = 0, swap;
    /*
     * 0-2 = x arguments, 3 = old style 
     */
-   char arg[MSL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
-   if( arg[0] == '\0' )
+   if( arg.empty(  ) )
       num_args = 0;
    else
    {
@@ -5286,14 +5201,14 @@ CMDF( do_areas )
       {
          num_args = 1;
 
-         upper_bound = atoi( arg );
+         upper_bound = atoi( arg.c_str(  ) );
          /*
           * Will need to swap this with ubound later 
           */
 
          argument = one_argument( argument, arg );
 
-         if( arg[0] != '\0' )
+         if( !arg.empty(  ) )
          {
             if( !is_number( arg ) )
             {
@@ -5303,12 +5218,12 @@ CMDF( do_areas )
             num_args = 2;
 
             lower_bound = upper_bound;
-            upper_bound = atoi( arg );
+            upper_bound = atoi( arg.c_str(  ) );
          }
 
          argument = one_argument( argument, arg );
 
-         if( arg[0] != '\0' )
+         if( !arg.empty(  ) )
          {
             ch->print( "Only two level numbers allowed.\r\n" );
             return;
@@ -5326,62 +5241,40 @@ CMDF( do_areas )
    ch->pager( "\r\n   Author    |             Area                     | Recommended |  Enforced\r\n" );
    ch->pager( "-------------+--------------------------------------+-------------+-----------\r\n" );
 
-   area_data *area = NULL;
-   list<area_data*>::iterator iarea;
-   switch ( num_args )
+   list < area_data * >::iterator iarea;
+   for( iarea = area_nsort.begin(  ); iarea != area_nsort.end(  ); ++iarea )
    {
-      case 0:
-         for( iarea = area_nsort.begin(); iarea != area_nsort.end(); ++iarea )
-         {
-            area = (*iarea);
-            ch->pagerf( print_string, area->author, area->name, area->low_soft_range,
-                        area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
-         }
-         break;
+      area_data *area = *iarea;
 
-      case 1:
-         for( iarea = area_nsort.begin(); iarea != area_nsort.end(); ++iarea )
-         {
-            area = (*iarea);
+      switch ( num_args )
+      {
+         case 0:
+            ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+            break;
+
+         case 1:
             if( area->hi_soft_range >= upper_bound && area->low_soft_range <= upper_bound )
             {
-               ch->pagerf( print_string, area->author, area->name, area->low_soft_range,
-                           area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+               ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
             }
-         }
-         break;
+            break;
 
-      case 2:
-         for( iarea = area_nsort.begin(); iarea != area_nsort.end(); ++iarea )
-         {
-            area = (*iarea);
+         case 2:
             if( area->hi_soft_range >= upper_bound && area->low_soft_range <= lower_bound )
             {
-               ch->pagerf( print_string, area->author, area->name, area->low_soft_range,
-                           area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+               ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
             }
-         }
-         break;
+            break;
 
-      case 3:
-         for( iarea = area_nsort.begin(); iarea != area_nsort.end(); ++iarea )
-         {
-            area = (*iarea);
-            ch->pagerf( print_string, area->author, area->name, area->low_soft_range,
-                        area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
-         }
-         break;
+         case 3:
+            ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+            break;
 
-      default:
-         for( iarea = area_nsort.begin(); iarea != area_nsort.end(); ++iarea )
-         {
-            area = (*iarea);
-            ch->pagerf( print_string, area->author, area->name, area->low_soft_range,
-                        area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
-         }
-         break;
+         default:
+            ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+            break;
+      }
    }
-   return;
 }
 
 /*
@@ -5391,7 +5284,7 @@ CMDF( do_areas )
  */
 CMDF( do_climate )
 {
-   char arg[MIL];
+   string arg;
    area_data *area;
 
    /*
@@ -5427,22 +5320,22 @@ CMDF( do_climate )
    /*
     * Display current climate settings 
     */
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->printf( "%s:\r\n", area->name );
       ch->printf( "\tTemperature:\t%s\r\n", temp_settings[area->weather->climate_temp] );
       ch->printf( "\tPrecipitation:\t%s\r\n", precip_settings[area->weather->climate_precip] );
       ch->printf( "\tWind:\t\t%s\r\n", wind_settings[area->weather->climate_wind] );
 
-      if( !area->weather->neighborlist.empty() )
+      if( !area->weather->neighborlist.empty(  ) )
          ch->print( "\r\nNeighboring weather systems:\r\n" );
 
-      list<neighbor_data*>::iterator neigh;
-      for( neigh = area->weather->neighborlist.begin(); neigh != area->weather->neighborlist.end(); ++neigh )
+      list < neighbor_data * >::iterator neigh;
+      for( neigh = area->weather->neighborlist.begin(  ); neigh != area->weather->neighborlist.end(  ); ++neigh )
       {
-         neighbor_data *nb =(*neigh);
+         neighbor_data *nb = *neigh;
 
-         ch->printf( "\t%s\r\n", nb->name );
+         ch->printf( "\t%s\r\n", nb->name.c_str(  ) );
       }
       return;
    }
@@ -5533,10 +5426,10 @@ CMDF( do_climate )
     */
    if( !str_cmp( arg, "neighbor" ) )
    {
-      list<neighbor_data*>::iterator neigh;
+      list < neighbor_data * >::iterator neigh;
       area_data *tarea;
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Add or remove which area?\r\n" );
          return;
@@ -5547,10 +5440,10 @@ CMDF( do_climate )
        */
       neighbor_data *nb;
       bool found = false;
-      for( neigh = area->weather->neighborlist.begin(); neigh != area->weather->neighborlist.end(); ++neigh )
+      for( neigh = area->weather->neighborlist.begin(  ); neigh != area->weather->neighborlist.end(  ); ++neigh )
       {
-         nb = (*neigh);
-         if( nifty_is_name( argument, nb->name ) )
+         nb = *neigh;
+         if( hasname( nb->name, argument ) )
          {
             found = true;
             break;
@@ -5573,14 +5466,14 @@ CMDF( do_climate )
           */
          if( tarea )
          {
-            list<neighbor_data*>::iterator tneigh;
+            list < neighbor_data * >::iterator tneigh;
             neighbor_data *tnb;
 
             tarea = nb->address;
             bool found2 = false;
-            for( tneigh = tarea->weather->neighborlist.begin(); tneigh != tarea->weather->neighborlist.end(); ++tneigh )
+            for( tneigh = tarea->weather->neighborlist.begin(  ); tneigh != tarea->weather->neighborlist.end(  ); ++tneigh )
             {
-               tnb = (*tneigh);
+               tnb = *tneigh;
 
                if( !str_cmp( area->name, tnb->name ) )
                {
@@ -5591,13 +5484,11 @@ CMDF( do_climate )
 
             if( found2 )
             {
-               STRFREE( tnb->name );
                tarea->weather->neighborlist.remove( tnb );
                deleteptr( tnb );
             }
          }
-         ch->printf( "The weather in %s and %s no longer affect each other.\r\n", nb->name, area->name );
-         STRFREE( nb->name );
+         ch->printf( "The weather in %s and %s no longer affect each other.\r\n", nb->name.c_str(  ), area->name );
          area->weather->neighborlist.remove( nb );
          deleteptr( nb );
       }
@@ -5644,5 +5535,4 @@ CMDF( do_climate )
    }
    ch->print( "Climate may only be followed by one of the following fields:\r\n" );
    ch->print( "temp precip wind tneighbor\r\n" );
-   return;
 }

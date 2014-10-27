@@ -32,7 +32,7 @@
 #include "mud.h"
 #include "event.h"
 
-list<event_info*> eventlist;
+list < event_info * >eventlist;
 long events_served = 0;
 
 void free_event( event_info * e )
@@ -43,22 +43,21 @@ void free_event( event_info * e )
 
 void free_all_events( void )
 {
-   list<event_info*>::iterator e;
+   list < event_info * >::iterator e;
 
-   for( e = eventlist.begin(); e != eventlist.end(); )
+   for( e = eventlist.begin(  ); e != eventlist.end(  ); )
    {
-      event_info *ev = (*e);
+      event_info *ev = *e;
       ++e;
 
       free_event( ev );
    }
-   return;
 }
 
 void add_event( time_t when, void ( *callback ) ( void * ), void *data )
 {
    event_info *e;
-   list<event_info*>::iterator cur;
+   list < event_info * >::iterator cur;
 
    e = new event_info;
 
@@ -66,25 +65,24 @@ void add_event( time_t when, void ( *callback ) ( void * ), void *data )
    e->callback = callback;
    e->data = data;
 
-   for( cur = eventlist.begin(); cur != eventlist.end(); ++cur )
+   for( cur = eventlist.begin(  ); cur != eventlist.end(  ); ++cur )
    {
-      if( (*cur)->when > e->when )
+      if( ( *cur )->when > e->when )
       {
          eventlist.insert( cur, e );
          return;
       }
    }
    eventlist.push_back( e );
-   return;
 }
 
 void cancel_event( void ( *callback ) ( void * ), void *data )
 {
-   list<event_info*>::iterator e;
+   list < event_info * >::iterator e;
 
-   for( e = eventlist.begin(); e != eventlist.end(); )
+   for( e = eventlist.begin(  ); e != eventlist.end(  ); )
    {
-      event_info *ev = (*e);
+      event_info *ev = *e;
       ++e;
 
       if( ( !callback ) && ev->data == data )
@@ -100,11 +98,11 @@ void cancel_event( void ( *callback ) ( void * ), void *data )
 
 event_info *find_event( void ( *callback ) ( void * ), void *data )
 {
-   list<event_info*>::iterator e;
+   list < event_info * >::iterator e;
 
-   for( e = eventlist.begin(); e != eventlist.end(); ++e )
+   for( e = eventlist.begin(  ); e != eventlist.end(  ); ++e )
    {
-      event_info *ev = (*e);
+      event_info *ev = *e;
 
       if( ev->callback == callback && ev->data == data )
          return ev;
@@ -114,11 +112,11 @@ event_info *find_event( void ( *callback ) ( void * ), void *data )
 
 time_t next_event( void ( *callback ) ( void * ), void *data )
 {
-   list<event_info*>::iterator e;
+   list < event_info * >::iterator e;
 
-   for( e = eventlist.begin(); e != eventlist.end(); ++e )
+   for( e = eventlist.begin(  ); e != eventlist.end(  ); ++e )
    {
-      event_info *ev = (*e);
+      event_info *ev = *e;
 
       if( ev->callback == callback && ev->data == data )
          return ev->when - current_time;
@@ -132,9 +130,9 @@ void run_events( time_t newtime )
    void ( *callback ) ( void * );
    void *data;
 
-   while( !eventlist.empty() )
+   while( !eventlist.empty(  ) )
    {
-      e = (*eventlist.begin());
+      e = ( *eventlist.begin(  ) );
 
       if( e->when > newtime )
          break;
@@ -156,7 +154,6 @@ void run_events( time_t newtime )
 
 CMDF( do_eventinfo )
 {
-   ch->printf( "&BPending events&c: %d\r\n", eventlist.size() );
+   ch->printf( "&BPending events&c: %d\r\n", eventlist.size(  ) );
    ch->printf( "&BEvents served &c: %ld\r\n", events_served );
-   return;
 }

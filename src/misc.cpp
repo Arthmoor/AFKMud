@@ -134,8 +134,8 @@ void actiondesc( char_data * ch, obj_data * obj )
          if( ( liq = get_liq_vnum( obj->value[2] ) ) == NULL )
             bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
 
-         act( AT_ACTION, charbuf, ch, obj, liq->shortdesc, TO_CHAR );
-         act( AT_ACTION, roombuf, ch, obj, liq->shortdesc, TO_ROOM );
+         act( AT_ACTION, charbuf, ch, obj, liq->shortdesc.c_str(  ), TO_CHAR );
+         act( AT_ACTION, roombuf, ch, obj, liq->shortdesc.c_str(  ), TO_ROOM );
          return;
 
       case ITEM_PIPE:
@@ -160,7 +160,6 @@ void actiondesc( char_data * ch, obj_data * obj )
 
 CMDF( do_eat )
 {
-   char buf[MSL];
    obj_data *obj;
    ch_ret retcode;
    int foodcond;
@@ -168,7 +167,7 @@ CMDF( do_eat )
    bool immH = false;   /* Immune to hunger */
    bool immT = false;   /* Immune to thirst */
 
-   if( argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Eat what?\r\n" );
       return;
@@ -218,13 +217,14 @@ CMDF( do_eat )
    }
    if( ch->fighting && number_percent(  ) > ( ch->get_curr_dex(  ) * 2 + 47 ) )
    {
+      char buf[MSL];
+
       snprintf( buf, MSL, "%s",
                 ( ch->in_room->sector_type == SECT_UNDERWATER ||
                   ch->in_room->sector_type == SECT_WATER_SWIM ||
                   ch->in_room->sector_type == SECT_WATER_NOSWIM ||
                   ch->in_room->sector_type == SECT_RIVER ) ? "dissolves in the water" :
-                ( ch->in_room->sector_type == SECT_AIR ||
-                  ch->in_room->flags.test( ROOM_NOFLOOR ) ) ? "falls far below" : "is trampled underfoot" );
+                ( ch->in_room->sector_type == SECT_AIR || ch->in_room->flags.test( ROOM_NOFLOOR ) ) ? "falls far below" : "is trampled underfoot" );
       act( AT_MAGIC, "$n drops $p, and it $T.", ch, obj, buf, TO_ROOM );
       if( !hgflag )
          act( AT_MAGIC, "Oops, $p slips from your hand and $T!", ch, obj, buf, TO_CHAR );
@@ -268,8 +268,7 @@ CMDF( do_eat )
                   ch->print( "You are full.\r\n" );
             }
 
-            if( obj->value[3] != 0 || ( foodcond < 4 && number_range( 0, foodcond + 1 ) == 0 )
-                || ( obj->item_type == ITEM_COOK && obj->value[2] == 0 ) )
+            if( obj->value[3] != 0 || ( foodcond < 4 && number_range( 0, foodcond + 1 ) == 0 ) || ( obj->item_type == ITEM_COOK && obj->value[2] == 0 ) )
             {
                /*
                 * The food was poisoned! 
@@ -346,7 +345,6 @@ CMDF( do_eat )
       if( immT )
          ch->pcdata->condition[COND_THIRST] = -1;
    }
-   return;
 }
 
 CMDF( do_quaff )
@@ -355,7 +353,7 @@ CMDF( do_quaff )
    ch_ret retcode;
    bool hgflag = true;
 
-   if( argument[0] == '\0' || !str_cmp( argument, "" ) )
+   if( argument.empty(  ) )
    {
       ch->print( "Quaff what?\r\n" );
       return;
@@ -440,19 +438,18 @@ CMDF( do_quaff )
          retcode = obj_cast_spell( obj->value[3], obj->value[0], ch, ch, NULL );
    }
    obj->extract(  );
-   return;
 }
 
 CMDF( do_recite )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
    obj_data *scroll, *obj;
    ch_ret retcode;
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Recite what?\r\n" );
       return;
@@ -487,7 +484,7 @@ CMDF( do_recite )
    }
 
    obj = NULL;
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       victim = ch;
    else
    {
@@ -514,7 +511,6 @@ CMDF( do_recite )
       retcode = obj_cast_spell( scroll->value[3], scroll->value[0], ch, victim, obj );
 
    scroll->extract(  );
-   return;
 }
 
 /*
@@ -529,11 +525,13 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       isup = true;
    else
       isup = false;
+
    switch ( obj->item_type )
    {
       default:
          ch->printf( "You can't %s that!\r\n", pull ? "pull" : "push" );
          return;
+
       case ITEM_SWITCH:
       case ITEM_LEVER:
       case ITEM_PULLCHAIN:
@@ -582,8 +580,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          SET_BIT( obj->value[0], TRIG_UP );
    }
 
-   if( IS_SET( obj->value[0], TRIG_TELEPORT )
-       || IS_SET( obj->value[0], TRIG_TELEPORTALL ) || IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) )
+   if( IS_SET( obj->value[0], TRIG_TELEPORT ) || IS_SET( obj->value[0], TRIG_TELEPORTALL ) || IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) )
    {
       int flags;
 
@@ -620,50 +617,66 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          maxd = 5;
 
       room->randomize_exits( maxd );
-      list<char_data*>::iterator ich;
-      for( ich = room->people.begin(); ich != room->people.end(); ++ich )
+      list < char_data * >::iterator ich;
+      for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
       {
-         char_data *rch = (*ich);
+         char_data *rch = *ich;
 
          rch->print( "You hear a loud rumbling sound.\r\n" );
          rch->print( "Something seems different...\r\n" );
       }
    }
 
-   /* Death support added by Remcon */
+   /*
+    * Death support added by Remcon 
+    */
    if( IS_SET( obj->value[0], TRIG_DEATH ) )
    {
-      /* Should we really send a message to the room? */
+      /*
+       * Should we really send a message to the room? 
+       */
       act( AT_DEAD, "$n falls prey to a terrible death!", ch, NULL, NULL, TO_ROOM );
       act( AT_DEAD, "Oopsie... you're dead!\r\n", ch, NULL, NULL, TO_CHAR );
       log_printf( "%s hit a DEATH TRIGGER in room %d!", ch->name, ch->in_room->vnum );
 
-      /* Personaly I figured if we wanted it to be a full DT we could just have it send them into a DT. */
+      /*
+       * Personaly I figured if we wanted it to be a full DT we could just have it send them into a DT. 
+       */
       raw_kill( ch, ch );
       return;
    }
 
-   /* Object loading added by Remcon */
+   /*
+    * Object loading added by Remcon 
+    */
    if( IS_SET( obj->value[0], TRIG_OLOAD ) )
    {
       obj_index *pObjIndex;
       obj_data *tobj;
 
-      /* value[1] for the obj vnum */
+      /*
+       * value[1] for the obj vnum 
+       */
       if( !( pObjIndex = get_obj_index( obj->value[1] ) ) )
       {
          bug( "%s: obj points to invalid object vnum %d", __FUNCTION__, obj->value[1] );
          return;
       }
-      /* Set room to NULL before the check */
+      /*
+       * Set room to NULL before the check 
+       */
       room = NULL;
-      /* value[2] for the room vnum to put the object in if there is one, 0 for giving it to char or current room */
+      /*
+       * value[2] for the room vnum to put the object in if there is one, 0 for giving it to char or current room 
+       */
       if( obj->value[2] > 0 && !( room = get_room_index( obj->value[2] ) ) )
       {
          bug( "%s: obj points to invalid room vnum %d", __FUNCTION__, obj->value[2] );
          return;
       }
-      /* Uses value[3] for level */
+      /*
+       * Uses value[3] for level 
+       */
       if( !( tobj = pObjIndex->create_object( URANGE( 0, obj->value[3], MAX_LEVEL ) ) ) )
       {
          bug( "%s: obj couldn't create obj vnum %d at level %d", __FUNCTION__, obj->value[1], obj->value[3] );
@@ -681,27 +694,35 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       return;
    }
 
-   /* Mob loading added by Remcon */
+   /*
+    * Mob loading added by Remcon 
+    */
    if( IS_SET( obj->value[0], TRIG_MLOAD ) )
    {
       mob_index *pMobIndex;
       char_data *mob;
 
-      /* value[1] for the obj vnum */
+      /*
+       * value[1] for the obj vnum 
+       */
       if( !( pMobIndex = get_mob_index( obj->value[1] ) ) )
       {
          bug( "%s: obj points to invalid mob vnum %d", __FUNCTION__, obj->value[1] );
          return;
       }
-      /* Set room to current room before the check */
+      /*
+       * Set room to current room before the check 
+       */
       room = ch->in_room;
-      /* value[2] for the room vnum to put the object in if there is one, 0 for giving it to char or current room */
+      /*
+       * value[2] for the room vnum to put the object in if there is one, 0 for giving it to char or current room 
+       */
       if( obj->value[2] > 0 && !( room = get_room_index( obj->value[2] ) ) )
       {
          bug( "%s: obj points to invalid room vnum %d", __FUNCTION__, obj->value[2] );
          return;
       }
-      if( !( mob = pMobIndex->create_mobile() ) )
+      if( !( mob = pMobIndex->create_mobile(  ) ) )
       {
          bug( "%s: obj couldnt create_mobile vnum %d", __FUNCTION__, obj->value[1] );
          return;
@@ -710,7 +731,9 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       return;
    }
 
-   /* Spell casting support added by Remcon */
+   /*
+    * Spell casting support added by Remcon 
+    */
    if( IS_SET( obj->value[0], TRIG_CAST ) )
    {
       if( obj->value[1] <= 0 || !IS_VALID_SN( obj->value[1] ) )
@@ -722,11 +745,13 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       return;
    }
 
-   /* Container support added by Remcon */
+   /*
+    * Container support added by Remcon 
+    */
    if( IS_SET( obj->value[0], TRIG_CONTAINER ) )
    {
       obj_data *container = NULL;
-      list<obj_data*>::iterator iobj;
+      list < obj_data * >::iterator iobj;
       bool found = false;
 
       room = get_room_index( obj->value[1] );
@@ -738,7 +763,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          return;
       }
 
-      for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.end(); ++iobj )
+      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
       {
          container = *iobj;
 
@@ -758,9 +783,15 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: obj points to object [%d], but it isn't a container.", __FUNCTION__, obj->value[2] );
          return;
       }
-      /* Could toss in some messages. Limit how it is handled etc... I'll leave that to each one to do */
-      /* Started to use TRIG_OPEN, TRIG_CLOSE, TRIG_LOCK, and TRIG_UNLOCK like TRIG_DOOR does. */
-      /* It limits it alot, but it wouldn't allow for an EATKEY change */
+      /*
+       * Could toss in some messages. Limit how it is handled etc... I'll leave that to each one to do 
+       */
+      /*
+       * Started to use TRIG_OPEN, TRIG_CLOSE, TRIG_LOCK, and TRIG_UNLOCK like TRIG_DOOR does. 
+       */
+      /*
+       * It limits it alot, but it wouldn't allow for an EATKEY change 
+       */
       if( IS_SET( obj->value[3], CONT_CLOSEABLE ) )
          TOGGLE_BIT( container->value[1], CONT_CLOSEABLE );
       if( IS_SET( obj->value[3], CONT_PICKPROOF ) )
@@ -777,7 +808,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
    if( IS_SET( obj->value[0], TRIG_DOOR ) )
    {
       int edir;
-      char *txt;
+      const char *txt;
 
       if( !( room = get_room_index( obj->value[1] ) ) )
          room = obj->in_room;
@@ -821,8 +852,10 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: door: no direction flag set.", __FUNCTION__ );
          return;
       }
+
       exit_data *pexit = room->get_exit( edir );
       exit_data *pexit_rev;
+
       if( !pexit )
       {
          if( !IS_SET( obj->value[0], TRIG_PASSAGE ) )
@@ -843,6 +876,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          act( AT_PLAIN, "A passage opens!", ch, NULL, NULL, TO_ROOM );
          return;
       }
+
       if( IS_SET( obj->value[0], TRIG_UNLOCK ) && IS_EXIT_FLAG( pexit, EX_LOCKED ) )
       {
          REMOVE_EXIT_FLAG( pexit, EX_LOCKED );
@@ -852,6 +886,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
             REMOVE_EXIT_FLAG( pexit_rev, EX_LOCKED );
          return;
       }
+
       if( IS_SET( obj->value[0], TRIG_LOCK ) && !IS_EXIT_FLAG( pexit, EX_LOCKED ) )
       {
          SET_EXIT_FLAG( pexit, EX_LOCKED );
@@ -861,50 +896,57 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
             SET_EXIT_FLAG( pexit_rev, EX_LOCKED );
          return;
       }
+
       if( IS_SET( obj->value[0], TRIG_OPEN ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
-         list<char_data*>::iterator ich;
+         list < char_data * >::iterator ich;
 
          REMOVE_EXIT_FLAG( pexit, EX_CLOSED );
-         for( ich = room->people.begin(); ich != room->people.end(); ++ich )
+         for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
          {
-            char_data *rch = (*ich);
+            char_data *rch = *ich;
+
             act( AT_ACTION, "The $d opens.", rch, NULL, pexit->keyword, TO_CHAR );
          }
+
          if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
          {
             REMOVE_EXIT_FLAG( pexit_rev, EX_CLOSED );
             /*
              * bug here pointed out by Nick Gammon 
              */
-            for( ich = pexit->to_room->people.begin(); ich != pexit->to_room->people.end(); ++ich )
+            for( ich = pexit->to_room->people.begin(  ); ich != pexit->to_room->people.end(  ); ++ich )
             {
-               char_data *rch = (*ich);
+               char_data *rch = ( *ich );
                act( AT_ACTION, "The $d opens.", rch, NULL, pexit_rev->keyword, TO_CHAR );
             }
          }
          check_room_for_traps( ch, trap_door[edir] );
          return;
       }
+
       if( IS_SET( obj->value[0], TRIG_CLOSE ) && !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
-         list<char_data*>::iterator ich;
+         list < char_data * >::iterator ich;
 
          SET_EXIT_FLAG( pexit, EX_CLOSED );
-         for( ich = room->people.begin(); ich != room->people.end(); ++ich )
+         for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
          {
-            char_data *rch = (*ich);
+            char_data *rch = *ich;
+
             act( AT_ACTION, "The $d closes.", rch, NULL, pexit->keyword, TO_CHAR );
          }
+
          if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
          {
             SET_EXIT_FLAG( pexit_rev, EX_CLOSED );
             /*
              * bug here pointed out by Nick Gammon 
              */
-            for( ich = pexit->to_room->people.begin(); ich != pexit->to_room->people.end(); ++ich )
+            for( ich = pexit->to_room->people.begin(  ); ich != pexit->to_room->people.end(  ); ++ich )
             {
-               char_data *rch = (*ich);
+               char_data *rch = *ich;
+
                act( AT_ACTION, "The $d closes.", rch, NULL, pexit_rev->keyword, TO_CHAR );
             }
          }
@@ -918,7 +960,7 @@ CMDF( do_pull )
 {
    obj_data *obj;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Pull what?\r\n" );
       return;
@@ -929,7 +971,7 @@ CMDF( do_pull )
 
    if( !( obj = ch->get_obj_here( argument ) ) )
    {
-      act( AT_PLAIN, "I see no $T here.", ch, NULL, argument, TO_CHAR );
+      ch->printf( "I see no %s here.\r\n", argument.c_str(  ) );
       return;
    }
    pullorpush( ch, obj, true );
@@ -939,7 +981,7 @@ CMDF( do_push )
 {
    obj_data *obj;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Push what?\r\n" );
       return;
@@ -950,7 +992,7 @@ CMDF( do_push )
 
    if( !( obj = ch->get_obj_here( argument ) ) )
    {
-      act( AT_PLAIN, "I see no $T here.", ch, NULL, argument, TO_CHAR );
+      ch->printf( "I see no %s here.\r\n", argument.c_str(  ) );
       return;
    }
    pullorpush( ch, obj, false );
@@ -960,21 +1002,23 @@ CMDF( do_rap )
 {
    exit_data *pexit;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Rap on what?\r\n" );
       return;
    }
+
    if( ch->fighting )
    {
       ch->print( "You have better things to do with your hands right now.\r\n" );
       return;
    }
+
    if( ( pexit = find_door( ch, argument, false ) ) != NULL )
    {
       room_index *to_room;
       exit_data *pexit_rev;
-      char *keyword;
+      const char *keyword;
 
       if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
@@ -989,11 +1033,12 @@ CMDF( do_rap )
       act( AT_ACTION, "$n raps loudly on the $d.", ch, NULL, keyword, TO_ROOM );
       if( ( to_room = pexit->to_room ) != NULL && ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
       {
-         list<char_data*>::iterator ich;
+         list < char_data * >::iterator ich;
 
-         for( ich = to_room->people.begin(); ich != to_room->people.end(); ++ich )
+         for( ich = to_room->people.begin(  ); ich != to_room->people.end(  ); ++ich )
          {
-            char_data *rch = (*ich);
+            char_data *rch = *ich;
+
             act( AT_ACTION, "Someone raps loudly from the other side of the $d.", rch, NULL, pexit_rev->keyword, TO_CHAR );
          }
       }
@@ -1003,7 +1048,6 @@ CMDF( do_rap )
       act( AT_ACTION, "You make knocking motions through the air.", ch, NULL, NULL, TO_CHAR );
       act( AT_ACTION, "$n makes knocking motions through the air.", ch, NULL, NULL, TO_ROOM );
    }
-   return;
 }
 
 /* pipe commands (light, tamp, smoke) by Thoric */
@@ -1011,7 +1055,7 @@ CMDF( do_tamp )
 {
    obj_data *cpipe;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Tamp what?\r\n" );
       return;
@@ -1046,7 +1090,7 @@ CMDF( do_smoke )
 {
    obj_data *cpipe;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Smoke what?\r\n" );
       return;
@@ -1060,18 +1104,21 @@ CMDF( do_smoke )
       ch->print( "You aren't carrying that.\r\n" );
       return;
    }
+
    if( cpipe->item_type != ITEM_PIPE )
    {
       act( AT_ACTION, "You try to smoke $p... but it doesn't seem to work.", ch, cpipe, NULL, TO_CHAR );
       act( AT_ACTION, "$n tries to smoke $p... (I wonder what $e's been putting in $s pipe?)", ch, cpipe, NULL, TO_ROOM );
       return;
    }
+
    if( !IS_SET( cpipe->value[3], PIPE_LIT ) )
    {
       act( AT_ACTION, "You try to smoke $p, but it's not lit.", ch, cpipe, NULL, TO_CHAR );
       act( AT_ACTION, "$n tries to smoke $p, but it's not lit.", ch, cpipe, NULL, TO_ROOM );
       return;
    }
+
    if( cpipe->value[1] > 0 )
    {
       if( !oprog_use_trigger( ch, cpipe, NULL, NULL ) )
@@ -1108,7 +1155,7 @@ CMDF( do_light )
 {
    obj_data *cpipe;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Light what?\r\n" );
       return;
@@ -1122,11 +1169,13 @@ CMDF( do_light )
       ch->print( "You aren't carrying that.\r\n" );
       return;
    }
+
    if( cpipe->item_type != ITEM_PIPE )
    {
       ch->print( "You can't light that.\r\n" );
       return;
    }
+
    if( !IS_SET( cpipe->value[3], PIPE_LIT ) )
    {
       if( cpipe->value[1] < 1 )
@@ -1149,24 +1198,27 @@ CMDF( do_light )
  */
 CMDF( do_apply )
 {
-   char arg1[MIL];
+   string arg1;
    char_data *victim;
    obj_data *salve, *obj;
    ch_ret retcode;
 
    argument = one_argument( argument, arg1 );
-   if( !arg1 || arg1[0] == '\0' )
+   if( arg1.empty(  ) )
    {
       ch->print( "Apply what?\r\n" );
       return;
    }
+
    if( ch->fighting )
    {
       ch->print( "You're too busy fighting ...\r\n" );
       return;
    }
+
    if( ms_find_obj( ch ) )
       return;
+
    if( !( salve = ch->get_obj_carry( arg1 ) ) )
    {
       ch->print( "You do not have that.\r\n" );
@@ -1174,7 +1226,7 @@ CMDF( do_apply )
    }
 
    obj = NULL;
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
       victim = ch;
    else
    {
@@ -1267,7 +1319,6 @@ CMDF( do_apply )
 
    if( !salve->extracted(  ) && salve->value[1] <= 0 )
       salve->extract(  );
-   return;
 }
 
 /* The Northwind's Rune system */
@@ -1279,7 +1330,7 @@ CMDF( do_invoke )
 
    location = NULL;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Invoke what?\r\n" );
       return;
@@ -1348,11 +1399,11 @@ CMDF( do_invoke )
 CMDF( do_mark )
 {
    obj_data *obj;
-   char arg[MIL];
+   string arg;
 
    argument = one_argument( argument, arg );
 
-   if( !arg || arg[0] == '\0' )
+   if( arg.empty(  ) )
    {
       ch->print( "Mark what?\r\n" );
       return;
@@ -1368,10 +1419,7 @@ CMDF( do_mark )
    }
 
    if( obj->item_type != ITEM_RUNE )
-   {
       ch->print( "&RHow can you mark something that's not a rune?\r\n" );
-      return;
-   }
    else
    {
       if( obj->value[1] > 0 )
@@ -1380,7 +1428,7 @@ CMDF( do_mark )
          return;
       }
 
-      if( !argument || argument[0] == '\0' )
+      if( argument.empty(  ) )
       {
          ch->print( "Ok, but how do you want to identify this rune?\r\n" );
          return;
@@ -1400,12 +1448,11 @@ CMDF( do_mark )
 
       obj->value[1] = ch->in_room->vnum;
       obj->value[2] = 5;
-      stralloc_printf( &obj->name, "%s rune", argument );
-      stralloc_printf( &obj->short_descr, "A recall rune to %s", capitalize( argument ) );
+      stralloc_printf( &obj->name, "%s rune", argument.c_str(  ) );
+      stralloc_printf( &obj->short_descr, "A recall rune to %s", capitalize( argument ).c_str(  ) );
       STRFREE( obj->objdesc );
       obj->objdesc = STRALLOC( "A small magical rune with a mark inscribed on it lies here." );
       ch->print( "&BYou mark the rune with your location.\r\n" );
-      return;
    }
 }
 
@@ -1413,11 +1460,11 @@ CMDF( do_mark )
 CMDF( do_connect )
 {
    obj_data *first_ob, *second_ob, *new_ob;
-   char arg1[MSL];
+   string arg1;
 
    argument = one_argument( argument, arg1 );
 
-   if( !arg1 || arg1[0] == '\0' || !argument || argument[0] == '\0' )
+   if( arg1.empty(  ) || argument.empty(  ) )
    {
       ch->print( "Syntax: Connect <firstobj> <secondobj>.\r\n" );
       return;
@@ -1460,10 +1507,8 @@ CMDF( do_connect )
       first_ob->extract(  );
       second_ob->extract(  );
       new_ob->to_char( ch );
-      act( AT_ACTION, "$n jiggles some pieces together...\r\n...suddenly they snap in place, creating $p!", ch, new_ob, NULL,
-           TO_ROOM );
-      act( AT_ACTION, "You jiggle the pieces together...\r\n...suddenly they snap into place, creating $p!", ch, new_ob,
-           NULL, TO_CHAR );
+      act( AT_ACTION, "$n jiggles some pieces together...\r\n...suddenly they snap in place, creating $p!", ch, new_ob, NULL, TO_ROOM );
+      act( AT_ACTION, "You jiggle the pieces together...\r\n...suddenly they snap into place, creating $p!", ch, new_ob, NULL, TO_CHAR );
    }
    else
    {
@@ -1471,11 +1516,8 @@ CMDF( do_connect )
        * bad connection 
        */
       act( AT_ACTION, "$n jiggles some pieces together, but can't seem to make them connect.", ch, NULL, NULL, TO_ROOM );
-      act( AT_ACTION, "You try to fit them together every which way, but they just don't want to fit together.",
-           ch, NULL, NULL, TO_CHAR );
-      return;
+      act( AT_ACTION, "You try to fit them together every which way, but they just don't want to fit together.", ch, NULL, NULL, TO_CHAR );
    }
-   return;
 }
 
 /* Junk command installed by Samson 1-13-98 */
@@ -1484,7 +1526,7 @@ CMDF( do_junk )
 {
    obj_data *obj;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Junk what?\r\n" );
       return;
@@ -1501,12 +1543,12 @@ CMDF( do_junk )
       ch->print( "You cannot junk that, it's cursed!\r\n" );
       return;
    }
+
    obj->separate(  );
    obj->from_char(  );
    obj->extract(  );
    act( AT_ACTION, "$n junks $p.", ch, obj, NULL, TO_ROOM );
    act( AT_ACTION, "You junk $p.", ch, obj, NULL, TO_CHAR );
-   return;
 }
 
 /* Donate command installed by Samson 2-6-98 
@@ -1516,7 +1558,7 @@ CMDF( do_donate )
 {
    obj_data *obj;
 
-   if( !argument || argument[0] == '\0' )
+   if( argument.empty(  ) )
    {
       ch->print( "Donate what?\r\n" );
       return;
@@ -1529,10 +1571,7 @@ CMDF( do_donate )
    }
 
    if( !( obj = ch->get_obj_carry( argument ) ) )
-   {
       ch->print( "You do not have that!\r\n" );
-      return;
-   }
    else
    {
       if( !ch->can_drop_obj( obj ) && !ch->is_immortal(  ) )
@@ -1558,12 +1597,12 @@ CMDF( do_donate )
          ch->print( "You cannot donate personal items.\r\n" );
          return;
       }
+
       obj->separate(  );
       obj->extra_flags.set( ITEM_DONATION );
       obj->from_char(  );
       act( AT_ACTION, "You donate $p, how generous of you!", ch, obj, NULL, TO_CHAR );
       obj->to_room( get_room_index( ROOM_VNUM_DONATION ), NULL );
       ch->save(  );
-      return;
    }
 }
