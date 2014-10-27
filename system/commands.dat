@@ -1,0 +1,4343 @@
+#VERSION	3
+#COMMAND
+Name        '~
+Code        do_say
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        ,~
+Code        do_emote
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        ;~
+Code        do_gtell
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        ?~
+Code        do_help
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        alias~
+Code        do_alias
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        authorize~
+Code        do_authorize
+Position    dead~
+Level       103
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        at~
+Code        do_at
+Position    dead~
+Level       103
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        attrib~
+Code        do_attrib
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        affected~
+Code        do_affected
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        afk~
+Code        do_afk
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        aassign~
+Code        do_aassign
+Position    dead~
+Level       103
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        advance~
+Code        do_advance
+Position    dead~
+Level       110
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        allow~
+Code        do_allow
+Position    dead~
+Level       108
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        appraise~
+Code        do_appraise
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        areas~
+Code        do_areas
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        aset~
+Code        do_aset
+Position    dead~
+Level       107
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        ask~
+Code        do_ask
+Position    sleeping~
+Level       0
+Log         normal~
+Flags       possessed~
+End
+
+#COMMAND
+Name        assist~
+Code        do_assist
+Position    fighting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        astat~
+Code        do_astat
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        apply~
+Code        do_apply
+Position    resting~
+Level       1
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        aexit~
+Code        do_aexit
+Position    dead~
+Level       103
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        abit~
+Code        do_abit
+Position    dead~
+Level       105
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        areaconvert~
+Code        do_areaconvert
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        alert~
+Code        do_board_alert
+Position    standing~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        adelete~
+Code        do_adelete
+Position    dead~
+Level       114
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        board~
+Code        do_board
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        beep~
+Code        do_beep
+Position    sleeping~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        balance~
+Code        do_balance
+Position    resting~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        buy~
+Code        do_buy
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        brandish~
+Code        do_brandish
+Position    aggressive~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        bs~
+Code        do_backstab
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        balzhur~
+Code        do_balzhur
+Position    dead~
+Level       110
+Log         always~
+Flags       watch ghost~
+End
+
+#COMMAND
+Name        bamfin~
+Code        do_bamfin
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        bamfout~
+Code        do_bamfout
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        ban~
+Code        do_ban
+Position    dead~
+Level       108
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        bestow~
+Code        do_bestow
+Position    dead~
+Level       114
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        bio~
+Code        do_bio
+Position    sleeping~
+Level       1
+Log         normal~
+End
+
+#COMMAND
+Name        bodybag~
+Code        do_bodybag
+Position    dead~
+Level       110
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        bug~
+Code        do_bug
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        bury~
+Code        do_bury
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        bestowarea~
+Code        do_bestowarea
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        busy~
+Code        do_busy
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        beacon~
+Code        do_beacon
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        bolt~
+Code        do_bolt
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        bind~
+Code        do_charge
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        bid~
+Code        do_bid
+Position    sleeping~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        basereport~
+Code        do_basereport
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        boards~
+Code        do_board_list
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        bstat~
+Code        do_board_stat
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        bset~
+Code        do_board_set
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        cast~
+Code        do_cast
+Position    sleeping~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        close~
+Code        do_close
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        consider~
+Code        do_consider
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        channels~
+Code        do_channels
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        clans~
+Code        do_clans
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        cedit~
+Code        do_cedit
+Position    dead~
+Level       114
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        compare~
+Code        do_compare
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        commands~
+Code        do_commands
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        comment~
+Code        do_comment
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        config~
+Code        do_config
+Position    stunned~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        credits~
+Code        do_credits
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        cset~
+Code        do_cset
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        climate~
+Code        do_climate
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        cook~
+Code        do_cook
+Position    resting~
+Level       1
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        color~
+Code        do_color
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        camp~
+Code        do_camp
+Position    standing~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        checkvnums~
+Code        do_check_vnums
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        coords~
+Code        do_coords
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        collect~
+Code        do_collect
+Position    resting~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        compress~
+Code        do_compress
+Position    dead~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        charmies~
+Code        do_petlist
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        checkboards~
+Code        do_checkboards
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        call~
+Code        do_call
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        cache~
+Code        do_cache
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        connect~
+Code        do_connect
+Position    standing~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        down~
+Code        do_down
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        deposit~
+Code        do_deposit
+Position    resting~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        delet~
+Code        do_delet
+Position    dead~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        delete~
+Code        do_delete
+Position    dead~
+Level       1
+Log         normal~
+End
+
+#COMMAND
+Name        demote~
+Code        do_demote
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        donate~
+Code        do_donate
+Position    resting~
+Level       10
+Log         normal~
+End
+
+#COMMAND
+Name        deadly~
+Code        do_deadly
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        drink~
+Code        do_drink
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        drop~
+Code        do_drop
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        deny~
+Code        do_deny
+Position    dead~
+Level       108
+Log         always~
+Flags       watch ghost~
+End
+
+#COMMAND
+Name        description~
+Code        do_description
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        destro~
+Code        do_destro
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        destroy~
+Code        do_destroy
+Position    dead~
+Level       114
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        dig~
+Code        do_dig
+Position    standing~
+Level       3
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        disconnect~
+Code        do_disconnect
+Position    dead~
+Level       108
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        drag~
+Code        do_drag
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        devote~
+Code        do_devote
+Position    resting~
+Level       10
+Log         normal~
+End
+
+#COMMAND
+Name        deities~
+Code        do_deities
+Position    sleeping~
+Level       1
+Log         normal~
+End
+
+#COMMAND
+Name        dismount~
+Code        do_dismount
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        dismiss~
+Code        do_dismiss
+Position    resting~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        delay~
+Code        do_delay
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        destroyslay~
+Code        do_destroyslay
+Position    dead~
+Level       114
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        draw~
+Code        do_draw
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        dislodge~
+Code        do_dislodge
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        dump~
+Code        do_dump
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        destroychannel~
+Code        do_destroychannel
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        destroyrune~
+Code        do_destroyrune
+Position    dead~
+Level       110
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        deleteboard~
+Code        do_board_remove
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        east~
+Code        do_east
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        emote~
+Code        do_emote
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        email~
+Code        do_email
+Position    resting~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        eat~
+Code        do_eat
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        exits~
+Code        do_exits
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        examine~
+Code        do_examine
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        equipment~
+Code        do_equipment
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        echo~
+Code        do_recho
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        empty~
+Code        do_empty
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        enter~
+Code        do_enter
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        env~
+Code        do_env
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        eventinfo~
+Code        do_eventinfo
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        erase~
+Code        do_note_remove
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        find~
+Code        do_find
+Position    dead~
+Level       104
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        finger~
+Code        do_finger
+Position    sleeping~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        fill~
+Code        do_fill
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        follow~
+Code        do_follow
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        fixchar~
+Code        do_fixchar
+Position    dead~
+Level       109
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        flee~
+Code        do_flee
+Position    berserk~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        foldarea~
+Code        do_foldarea
+Position    dead~
+Level       107
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        for~
+Code        do_for
+Position    dead~
+Level       110
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        force~
+Code        do_force
+Position    dead~
+Level       105
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        formpass~
+Code        do_form_password
+Position    dead~
+Level       114
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        freeze~
+Code        do_freeze
+Position    dead~
+Level       108
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        fixed~
+Code        do_fixed
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        fire~
+Code        do_fire
+Position    fighting~
+Level       5
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        fprompt~
+Code        do_fprompt
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        forge~
+Code        do_forge
+Position    dead~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        freevnums~
+Code        do_freevnums
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        fly~
+Code        do_fly
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        forgefind~
+Code        do_forgefind
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        get~
+Code        do_get
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        give~
+Code        do_give
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        gtell~
+Code        do_gtell
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        group~
+Code        do_group
+Position    sleeping~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        goto~
+Code        do_goto
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        glance~
+Code        do_glance
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        guilds~
+Code        do_guilds
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        gold~
+Code        do_gold
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        gfighting~
+Code        do_gfighting
+Position    dead~
+Level       105
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        help~
+Code        do_help
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        history~
+Code        do_history
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        highfive~
+Code        do_highfive
+Position    dead~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        hold~
+Code        do_wear
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        hedit~
+Code        do_hedit
+Position    dead~
+Level       101
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        hell~
+Code        do_hell
+Position    dead~
+Level       104
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        hlist~
+Code        do_hlist
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        holylight~
+Code        do_holylight
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        homepage~
+Code        do_homepage
+Position    sleeping~
+Level       10
+Log         normal~
+End
+
+#COMMAND
+Name        hset~
+Code        do_hset
+Position    dead~
+Level       101
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        holidays~
+Code        do_holidays
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        helpcheck~
+Code        do_helpcheck
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        hotboot~
+Code        do_hotboot
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        inventory~
+Code        do_inventory
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        imotd~
+Code        do_imotd
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        ide~
+Code        do_ide
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        idea~
+Code        do_idea
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        immortalize~
+Code        do_immortalize
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        induct~
+Code        do_induct
+Position    standing~
+Level       10
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        installarea~
+Code        do_installarea
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        instazone~
+Code        do_instazone
+Position    dead~
+Level       105
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        invis~
+Code        do_invis
+Position    dead~
+Level       102
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        instaroom~
+Code        do_instaroom
+Position    dead~
+Level       105
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        ignore~
+Code        do_ignore
+Position    dead~
+Level       1
+Log         normal~
+End
+
+#COMMAND
+Name        immhost~
+Code        do_immhost
+Position    dead~
+Level       114
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        implock~
+Code        do_implock
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        icq~
+Code        do_icq_number
+Position    sleeping~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        ident~
+Code        do_ident
+Position    resting~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        identify~
+Code        do_identify
+Position    resting~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        invoke~
+Code        do_invoke
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        junk~
+Code        do_junk
+Position    resting~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        kill~
+Code        do_kill
+Position    aggressive~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        knock~
+Code        do_rap
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        look~
+Code        do_look
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        load~
+Code        do_load
+Position    dead~
+Level       104
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        lock~
+Code        do_lock
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        level~
+Code        do_level
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        list~
+Code        do_list
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        languages~
+Code        do_languages
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        leave~
+Code        do_leave
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        light~
+Code        do_light
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        litterbug~
+Code        do_litterbug
+Position    dead~
+Level       108
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        loadup~
+Code        do_loadup
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        log~
+Code        do_log
+Position    dead~
+Level       107
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        lockdown~
+Code        do_lockdown
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        landmarks~
+Code        do_landmarks
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        lsites~
+Code        do_landing_sites
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        listen~
+Code        do_listen
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        loadrune~
+Code        do_loadrune
+Position    dead~
+Level       110
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        logins~
+Code        do_logins
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        levelup~
+Code        do_levelup
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        motd~
+Code        do_motd
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        mpecho~
+Code        do_mpecho
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed action mudprog~
+End
+
+#COMMAND
+Name        mpechoat~
+Code        do_mpechoat
+Position    dead~
+Level       0
+Log         normal~
+Flags       action mudprog~
+End
+
+#COMMAND
+Name        mea~
+Code        do_mpechoat
+Position    dead~
+Level       0
+Log         normal~
+Flags       action mudprog~
+End
+
+#COMMAND
+Name        mpat~
+Code        do_mpat
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed watch mudprog~
+End
+
+#COMMAND
+Name        mpforce~
+Code        do_mpforce
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpechoaround~
+Code        do_mpechoaround
+Position    dead~
+Level       0
+Log         normal~
+Flags       action mudprog~
+End
+
+#COMMAND
+Name        mer~
+Code        do_mpechoaround
+Position    dead~
+Level       0
+Log         normal~
+Flags       action mudprog~
+End
+
+#COMMAND
+Name        mpasound~
+Code        do_mpasound
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed action mudprog~
+End
+
+#COMMAND
+Name        mpoload~
+Code        do_mpoload
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpjunk~
+Code        do_mpjunk
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed action mudprog~
+End
+
+#COMMAND
+Name        mpgoto~
+Code        do_mpgoto
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpdamage~
+Code        do_mp_damage
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed action mudprog~
+End
+
+#COMMAND
+Name        mpdelay~
+Code        do_mpdelay
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mprestore~
+Code        do_mp_restore
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpkill~
+Code        do_mpkill
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed action mudprog~
+End
+
+#COMMAND
+Name        mptransfer~
+Code        do_mptransfer
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpmload~
+Code        do_mpmload
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpnothing~
+Code        do_mpnothing
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mppurge~
+Code        do_mppurge
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpinvis~
+Code        do_mpinvis
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpadvance~
+Code        do_mpadvance
+Position    dead~
+Level       0
+Log         always~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpapplyb~
+Code        do_mpapplyb
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpclosepassage~
+Code        do_mp_close_passage
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpopenpassage~
+Code        do_mp_open_passage
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpdream~
+Code        do_mpdream
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpslay~
+Code        do_mp_slay
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mppractice~
+Code        do_mp_practice
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        make~
+Code        do_make
+Position    standing~
+Level       100
+Log         always~
+Flags       watch~
+End
+
+#COMMAND
+Name        makeclan~
+Code        do_makeclan
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        makerepair~
+Code        do_makerepair
+Position    dead~
+Level       106
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        makeshop~
+Code        do_makeshop
+Position    dead~
+Level       106
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        makewizlist~
+Code        do_makewizlist
+Position    dead~
+Level       107
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mcreate~
+Code        do_mcreate
+Position    dead~
+Level       105
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mdelete~
+Code        do_mdelete
+Position    dead~
+Level       105
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        memory~
+Code        do_memory
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mpedit~
+Code        do_mpedit
+Position    dead~
+Level       106
+Log         build~
+Flags       possessed ghost~
+End
+
+#COMMAND
+Name        mpstat~
+Code        do_mpstat
+Position    dead~
+Level       106
+Log         normal~
+Flags       possessed ghost~
+End
+
+#COMMAND
+Name        mset~
+Code        do_mset
+Position    dead~
+Level       105
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mpfear~
+Code        do_mpfear
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mphunt~
+Code        do_mphunt
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mphate~
+Code        do_mphate
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mptrlook~
+Code        do_mptrlook
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        makedeity~
+Code        do_makedeity
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mpfavor~
+Code        do_mpfavor
+Position    dead~
+Level       1
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mposet~
+Code        do_mposet
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpmset~
+Code        do_mpmset
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mppardon~
+Code        do_mppardon
+Position    dead~
+Level       0
+Log         always~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpscatter~
+Code        do_mpscatter
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mppeace~
+Code        do_mppeace
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpechozone~
+Code        do_mpechozone
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mez~
+Code        do_mpechozone
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mplog~
+Code        do_mp_log
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        moblog~
+Code        do_moblog
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mpasupress~
+Code        do_mpasupress
+Position    dead~
+Level       0
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        mpbodybag~
+Code        do_mpbodybag
+Position    dead~
+Level       1
+Log         normal~
+Flags       possessed mudprog~
+End
+
+#COMMAND
+Name        makeslay~
+Code        do_makeslay
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mpstatreroll~
+Code        do_mpstatreroll
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpraceset~
+Code        do_mpraceset
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpcopy~
+Code        do_mpcopy
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mparthmoor~
+Code        do_mparthmoor
+Position    dead~
+Level       90
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        morph~
+Code        do_imm_morph
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        morphset~
+Code        do_morphset
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        morphstat~
+Code        do_morphstat
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        morphcreate~
+Code        do_morphcreate
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        morphdestroy~
+Code        do_morphdestroy
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        morphlist~
+Code        do_morphlist
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mpstrew~
+Code        do_mpstrew
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        map~
+Code        do_map
+Position    dead~
+Level       0
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mapedit~
+Code        do_mapedit
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mpdoppleganger~
+Code        do_mpdoppleganger
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpgwraggedd~
+Code        do_mpgwraggedd
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpsindhae~
+Code        do_mpsindhae
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        motdedit~
+Code        do_motdedit
+Position    dead~
+Level       110
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        makeenv~
+Code        do_makeenv
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mark~
+Code        do_mark
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        mpaset~
+Code        do_mpaset
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpqset~
+Code        do_mpqset
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mix~
+Code        do_mix
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        mpsound~
+Code        do_mpsound
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpsoundaround~
+Code        do_mpsoundaround
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpsoundat~
+Code        do_mpsoundat
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpmusic~
+Code        do_mpmusic
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpmusicaround~
+Code        do_mpmusicaround
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpmusicat~
+Code        do_mpmusicat
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        mpsoundzone~
+Code        do_mpsoundzone
+Position    dead~
+Level       0
+Log         normal~
+Flags       mudprog~
+End
+
+#COMMAND
+Name        makechannel~
+Code        do_makechannel
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        makerune~
+Code        do_makerune
+Position    dead~
+Level       110
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        mcopy~
+Code        do_mcopy
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        makeboard~
+Code        do_board_make
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        north~
+Code        do_north
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        name~
+Code        do_name
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        ne~
+Code        do_northeast
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        nw~
+Code        do_northwest
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        newpass~
+Code        do_newpassword
+Position    dead~
+Level       109
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        noemote~
+Code        do_noemote
+Position    dead~
+Level       103
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        noresolve~
+Code        do_noresolve
+Position    dead~
+Level       115
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        northeast~
+Code        do_northeast
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        northwest~
+Code        do_northwest
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        notell~
+Code        do_notell
+Position    dead~
+Level       103
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        notitle~
+Code        do_notitle
+Position    dead~
+Level       103
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        namegen~
+Code        do_name_generator
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        nset~
+Code        do_note_set
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        order~
+Code        do_order
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        open~
+Code        do_open
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        ocreate~
+Code        do_ocreate
+Position    dead~
+Level       104
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        odelete~
+Code        do_odelete
+Position    dead~
+Level       104
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        opedit~
+Code        do_opedit
+Position    dead~
+Level       106
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        opstat~
+Code        do_opstat
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        outcast~
+Code        do_outcast
+Position    standing~
+Level       10
+Log         normal~
+End
+
+#COMMAND
+Name        oset~
+Code        do_oset
+Position    dead~
+Level       104
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        opcopy~
+Code        do_opcopy
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        oredit~
+Code        do_oredit
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        ooedit~
+Code        do_ooedit
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        omedit~
+Code        do_omedit
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        ocopy~
+Code        do_ocopy
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        promote~
+Code        do_promote
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        put~
+Code        do_put
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        password~
+Code        do_password
+Position    dead~
+Level       0
+Log         never~
+End
+
+#COMMAND
+Name        practice~
+Code        do_practice
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        peace~
+Code        do_peace
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        pull~
+Code        do_pull
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        purge~
+Code        do_purge
+Position    dead~
+Level       104
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        push~
+Code        do_push
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        prompt~
+Code        do_prompt
+Position    sleeping~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        pager~
+Code        do_pager
+Position    sleeping~
+Level       1
+Log         normal~
+End
+
+#COMMAND
+Name        project~
+Code        do_project
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        pcrename~
+Code        do_pcrename
+Position    dead~
+Level       114
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        pfiles~
+Code        do_pfiles
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        play~
+Code        do_play
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        privacy~
+Code        do_privacy
+Position    sleeping~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        pclist~
+Code        do_pclist
+Position    dead~
+Level       115
+Log         normal~
+End
+
+#COMMAND
+Name        quaff~
+Code        do_quaff
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        quit~
+Code        do_quit
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        quiv~
+Code        do_quiv
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        qbit~
+Code        do_qbit
+Position    dead~
+Level       105
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        quotes~
+Code        do_quotes
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        quoteset~
+Code        do_quoteset
+Position    dead~
+Level       105
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        remove~
+Code        do_remove
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        rest~
+Code        do_rest
+Position    sleeping~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        report~
+Code        do_report
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        repair~
+Code        do_repair
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        reply~
+Code        do_reply
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        rank~
+Code        do_rank
+Position    dead~
+Level       110
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        rat~
+Code        do_rat
+Position    dead~
+Level       103
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        rdelete~
+Code        do_rdelete
+Position    dead~
+Level       103
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        reboo~
+Code        do_reboo
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        reboot~
+Code        do_reboot
+Position    dead~
+Level       108
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        recite~
+Code        do_recite
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        redit~
+Code        do_redit
+Position    dead~
+Level       103
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        rent~
+Code        do_rent
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        repairset~
+Code        do_repairset
+Position    dead~
+Level       106
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        repairshops~
+Code        do_repairshops
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        repairstat~
+Code        do_repairstat
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        reset~
+Code        do_reset
+Position    dead~
+Level       105
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        restore~
+Code        do_restore
+Position    dead~
+Level       104
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        restoretime~
+Code        do_restoretime
+Position    dead~
+Level       104
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        restrict~
+Code        do_restrict
+Position    dead~
+Level       114
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        retire~
+Code        do_retire
+Position    dead~
+Level       115
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        rpedit~
+Code        do_rpedit
+Position    dead~
+Level       106
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        rpstat~
+Code        do_rpstat
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        reserve~
+Code        do_reserve
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        rap~
+Code        do_rap
+Position    resting~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        remains~
+Code        do_remains
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        return~
+Code        do_return
+Position    dead~
+Level       102
+Log         normal~
+Flags       action ghost~
+End
+
+#COMMAND
+Name        run~
+Code        do_run
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        revert~
+Code        do_revert
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        renumber~
+Code        do_renumber
+Position    dead~
+Level       114
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        roster~
+Code        do_roster
+Position    dead~
+Level       10
+Log         normal~
+End
+
+#COMMAND
+Name        rcopy~
+Code        do_rcopy
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        runewords~
+Code        do_runewords
+Position    dead~
+Level       105
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        review~
+Code        do_note_list
+Position    standing~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        read~
+Code        do_note_read
+Position    standing~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        rttest~
+Code        do_rttest
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        south~
+Code        do_south
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        score~
+Code        do_score
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        scan~
+Code        do_scan
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        se~
+Code        do_southeast
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        sw~
+Code        do_southwest
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        say~
+Code        do_say
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        save~
+Code        do_save
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        sacrifice~
+Code        do_sacrifice
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        sleep~
+Code        do_sleep
+Position    sleeping~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        stand~
+Code        do_stand
+Position    sleeping~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        skills~
+Code        do_viewskills
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        stat~
+Code        do_stat
+Position    dead~
+Level       103
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        savearea~
+Code        do_savearea
+Position    dead~
+Level       103
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        sell~
+Code        do_sell
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        sedit~
+Code        do_sedit
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setclan~
+Code        do_setclan
+Position    sleeping~
+Level       40
+Log         always~
+End
+
+#COMMAND
+Name        shops~
+Code        do_shops
+Position    dead~
+Level       106
+Log         build~
+Flags       ghost~
+End
+
+#COMMAND
+Name        shopset~
+Code        do_shopset
+Position    dead~
+Level       106
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        shopstat~
+Code        do_shopstat
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        shove~
+Code        do_shove
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        show~
+Code        do_vlist
+Position    dead~
+Level       103
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        system~
+Code        do_echo
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showclan~
+Code        do_showclan
+Position    dead~
+Level       102
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        shutdow~
+Code        do_shutdow
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        shutdown~
+Code        do_shutdown
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        sit~
+Code        do_sit
+Position    sleeping~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        silence~
+Code        do_silence
+Position    dead~
+Level       103
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        slay~
+Code        do_slay
+Position    dead~
+Level       107
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        slist~
+Code        do_slist
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        slookup~
+Code        do_slookup
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        smoke~
+Code        do_smoke
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        snoop~
+Code        do_snoop
+Position    dead~
+Level       108
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        sober~
+Code        do_sober
+Position    dead~
+Level       102
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        socials~
+Code        do_socials
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        southeast~
+Code        do_southeast
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        southwest~
+Code        do_southwest
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        speak~
+Code        do_speak
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        split~
+Code        do_split
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        sset~
+Code        do_sset
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        switch~
+Code        do_switch
+Position    dead~
+Level       102
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setdeity~
+Code        do_setdeity
+Position    dead~
+Level       107
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showdeity~
+Code        do_showdeity
+Position    dead~
+Level       102
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        supplicate~
+Code        do_supplicate
+Position    resting~
+Level       10
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        showclass~
+Code        do_showclass
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setclass~
+Code        do_setclass
+Position    dead~
+Level       113
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        scatter~
+Code        do_scatter
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        style~
+Code        do_style
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        showweather~
+Code        do_showweather
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setweather~
+Code        do_setweather
+Position    dead~
+Level       106
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        strew~
+Code        do_strew
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showguild~
+Code        do_showclan
+Position    dead~
+Level       102
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        strip~
+Code        do_strip
+Position    dead~
+Level       104
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showrace~
+Code        do_showrace
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setrace~
+Code        do_setrace
+Position    dead~
+Level       110
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setslay~
+Code        do_setslay
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showslay~
+Code        do_showslay
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        smartsac~
+Code        do_smartsac
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        setprice~
+Code        do_setprice
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        saleslist~
+Code        do_saleslist
+Position    dead~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        survey~
+Code        do_survey
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        setmark~
+Code        do_setmark
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setexit~
+Code        do_setexit
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showabit~
+Code        do_showabit
+Position    dead~
+Level       105
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showqbit~
+Code        do_showqbit
+Position    dead~
+Level       105
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setabit~
+Code        do_setabit
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setqbit~
+Code        do_setqbit
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setlanding~
+Code        do_setlanding
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setliquid~
+Code        do_setliquid
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setmixture~
+Code        do_setmixture
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        stash~
+Code        do_stash
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setchannel~
+Code        do_setchannel
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showchannels~
+Code        do_showchannels
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        showrunes~
+Code        do_showrunes
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        setrune~
+Code        do_setrune
+Position    dead~
+Level       110
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        socket~
+Code        do_socket
+Position    standing~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        showliquid~
+Code        do_showliquid
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        shatest~
+Code        do_shatest
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        scan2~
+Code        do_scan2
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        tell~
+Code        do_tell
+Position    resting~
+Level       0
+Log         normal~
+Flags       possessed~
+End
+
+#COMMAND
+Name        take~
+Code        do_get
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        tamp~
+Code        do_tamp
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        time~
+Code        do_time
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        title~
+Code        do_title
+Position    sleeping~
+Level       10
+Log         normal~
+End
+
+#COMMAND
+Name        transfer~
+Code        do_transfer
+Position    dead~
+Level       104
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        trust~
+Code        do_trust
+Position    dead~
+Level       115
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        typo~
+Code        do_typo
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        timecmd~
+Code        do_timecmd
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        timezone~
+Code        do_timezone
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        up~
+Code        do_up
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        unlock~
+Code        do_unlock
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        unhell~
+Code        do_unhell
+Position    dead~
+Level       104
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        unalias~
+Code        do_alias
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        users~
+Code        do_users
+Position    dead~
+Level       102
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        unbolt~
+Code        do_unbolt
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        unmorph~
+Code        do_imm_unmorph
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        value~
+Code        do_value
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        visible~
+Code        do_visible
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        vsearch~
+Code        do_vsearch
+Position    dead~
+Level       104
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        victories~
+Code        do_victories
+Position    resting~
+Level       10
+Log         normal~
+End
+
+#COMMAND
+Name        vassign~
+Code        do_vassign
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        voice~
+Code        do_voice
+Position    dead~
+Level       107
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        visits~
+Code        do_visits
+Position    dead~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        viewskills~
+Code        do_viewskills
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        west~
+Code        do_west
+Position    standing~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        wake~
+Code        do_wake
+Position    sleeping~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        who~
+Code        do_who
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        wear~
+Code        do_wear
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        wield~
+Code        do_wear
+Position    resting~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        withdraw~
+Code        do_withdraw
+Position    resting~
+Level       2
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        world~
+Code        do_world
+Position    sleeping~
+Level       2
+Log         normal~
+End
+
+#COMMAND
+Name        wizinfo~
+Code        do_wizinfo
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        weather~
+Code        do_weather
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        wimpy~
+Code        do_wimpy
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        wizlist~
+Code        do_wizlist
+Position    sleeping~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        wizhelp~
+Code        do_wizhelp
+Position    dead~
+Level       101
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        wizlock~
+Code        do_wizlock
+Position    dead~
+Level       103
+Log         always~
+Flags       ghost~
+End
+
+#COMMAND
+Name        warn~
+Code        do_warn
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        watch~
+Code        do_watch
+Position    dead~
+Level       108
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        whisper~
+Code        do_whisper
+Position    resting~
+Level       0
+Log         normal~
+Flags       possessed~
+End
+
+#COMMAND
+Name        web~
+Code        do_web
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        webroom~
+Code        do_webroom
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        where~
+Code        do_where
+Position    resting~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        write~
+Code        do_note_write
+Position    standing~
+Level       0
+Log         normal~
+End
+
+#COMMAND
+Name        wtsave~
+Code        do_wtsave
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        wtload~
+Code        do_wtload
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        zap~
+Code        do_zap
+Position    berserk~
+Level       0
+Log         normal~
+Flags       action~
+End
+
+#COMMAND
+Name        zones~
+Code        do_zones
+Position    dead~
+Level       103
+Log         normal~
+Flags       ghost~
+End
+
+#END

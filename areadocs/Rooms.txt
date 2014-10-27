@@ -1,0 +1,524 @@
+=== The #ROOM block
+
+Last modified by Samson, Dec. 25, 2006
+
+"If you build it, they will come." - Field of Dreams
+An appropriate quote for this section. Without rooms, people will have nowwhere to go.
+Without rooms, you can't have a place for mobiles or objects to exist.
+In short, without rooms you have basically nothing. You have no world to explore!
+
+You may have as many rooms as you like, within the assigned vnum range of the area.
+They can be placed in any order you wish in the file, but each section must obey the syntax.
+
+The syntax of a #ROOM block is:
+
+#ROOM
+-----
+String literal. This is required to mark the beginning of a room block.
+
+Vnum       <#>
+--------------
+An integer value > 0. This value must fall within the range assigned to the builder who owns this area, or in the event
+that this area is installed, it must fall within the vnum range specified in the #AREAHEADER section of the file.
+
+Name       <string>~
+--------------------
+The short title for this room, which will show up even in brief mode to quickly identify the location.
+
+Sector     <string>~
+--------------------
+The name of the terrain type which applies to this room. Terrain affects movement costs
+through the room and certain terrain types require other special capabilities to pass
+through them, such as boats, flight, or other magical means. These terrain types also
+apply to use on the overland graphical maps, and will also be visible on the regional
+mini-map that is displayed in each room.
+
+Choose from the following table:
+
+Sector:      | Move | Description
+-------------+------+-------------
+air          | 1    | Midair.  Must be flying, or will fall through down exit.
+barren       | 2    | Barrens, such as rocky deserts.
+blands       | 2    | Special Blasted Lands overland sector. Should not be used for normal rooms.
+bridge       | 1    | For bridges on the overland. 
+city         | 1    | City roads.
+desert       | 3    | Sandy deserts.
+exit         | 1    | Special exit sector for overland. Should not be used for normal rooms.
+field        | 1    | Grassy fields and meadows.
+forest       | 2    | Normal forests.
+glacier      | 10   | Impassable glacier for overland. Should not be used for normal rooms.
+grassland    | 1    | Normal grasslands.
+hills        | 3    | Hilly terrain.
+ice          | 3    | Solid sheets of ice.
+indoors      | 1    | Building interiors. Cannot use dig command.
+jungle       | 2    | Jungles
+landing      | 1    | Overland landing site. Should not be used for normal rooms.
+lava         | 2    | Lava. Does damage on enterance. See below.
+mountain     | 5    | Mountainous terrain.
+ocean        | 1    | Surface of the ocean. Need boat to enter.
+oceanfloor   | 4    | Bottom of the ocean. Need aquabreath to avoid damage.
+quicksand    | 10   | Impassable swamp for overland. Should not be used for normal rooms.
+road         | 1    | Non-city roads.
+river        | 3    | Rivers. Need boat to enter.
+scrub        | 2    | Sparse vegitation.
+shore        | 3    | Beaches and the like.
+stone        | 10   | Impassable mountains for overland. Should not be used for normal rooms.
+swamp        | 3    | Swampy terrain.
+trail        | 1    | Small trails.
+tree         | 10   | Impassable forest for overland. Should not be used for normal rooms.
+tundra       | 2    | Tundra.  Does damage on enterance.  See below.
+underground  | 3    | Underground caves.
+underwater   | 5    | Underwater.  Need aquabreath to avoid damage.
+wall         | 10   | Impassable wall for overland. Should not be used for normal rooms.
+water_swim   | 2    | Water. Swimming or a boat required to enter.
+water_noswim | 2    | Water. Boat required to enter.
+
+Note that indoors, underground, underwater, and oceanfloors do not prevent the display of
+weather messages and the like. To do that, the indoors room flag is required.
+
+Lava and tundra sectors do damage to characters enterting them.
+This damage is 20 if not protected, 10 if resistant to fire and cold respectively, and 0 if immune.
+
+Flags       <string>~
+---------------------
+A space separated list of attribute flags which affect this room.
+Choose from the following table:
+
+FLAG NAME     | DESCRIPTION
+----------------------------------------------------------------------
+dark          | Room is always dark
+death         | Room causes instant death (A DT)
+nomob         | Mobs cannot wander into this room
+indoors       | A small indoor room - area magic will do full
+                damage to the caster.
+safe          | Room is safe, no violence allowed
+nocamp        | Players cannot camp in this room
+nosummon      | Player cannot be summoned out of or into this room
+nomagic       | Magic cannot be used in this room
+tunnel        | Room is a tunnel - x number of players allowed
+                (use 'redit tunnel #' to  set the number)
+private       | Room is private (restricted to 2 people)
+silence       | Room is silent, players cannot speak in the room
+nosupplicate  | Players cannot supplicate their deities in this room
+arena         | Designates the room as an arena space. Players may duel here with no consequences.
+nomissile     | Projectile weapons cannot be used in this room
+norecall      | Players cannot recall out of this room
+noportal      | Players cannot make portals into or out of this room
+noastral      | Players cannot astral walk from this room
+nodrop        | Nothing can be dropped in this room
+teleport      | People in this room will be teleported out
+teleshowdesc  | Shows description of target room for a teleport
+nofloor       | Room has no floor: exit down + no fly = fall
+solitary      | Only 1 person can be in this room at one time
+petshop       | Petshop (next vnum must be the storeroom)
+donation      | Donation room, player cannot "get all"
+nodropall     | Player cannot "drop all" in this room
+logspeech     | All speech in this room is logged
+proto         | Room is a prototype. Only used by OLC system.
+noteleport    | Players cannot teleport to or from this room
+noscry        | Players cannot scry or use farsight to see this room
+cave          | A medium sized indoor room. Area magic will do half damage to the caster.
+cavern        | A large indoor room. Area magic will not damage the caster.
+nobeacon      | Players cannot set recall beacons in this room.
+auction	      | Room is an auction house. See below.
+forge         | Room is a forge where players can make things.
+clanstoreroom | Room is a storage room for a guild or clan.
+guildinn      | Room is an inn for a guild or clan.
+watchtower    | Room is an overland watchtower. See below.
+noquit        | Players cannot quit while in this room.
+telenofly     | Room will not teleport player if they are flying.
+isolated      | Room cannot be entered by anyone below MAX_LEVEL. Use caution when set.
+
+Auction houses require that the next vnum used be set aside to use as a storage
+room for the items, much like a petshop. Be sure and flag the storage room with the appropriate flags so no players can get in, or the mobs can get out.  There must also be a mob in the room with the AUCTION flag.
+
+-----
+
+To create a watchtower: 
+ 
+in the room you want the tower connected to, make an exit in whichever 
+direction you choose, though up usually makes the most sense. 
+Flag it as overland, and optionally ( though HIGHLY recommended ) as nomob. 
+This exit can lead to any vnum you want, but it would be a Really Bad Plan(tm) 
+to assign this to an existing overland room. You then need to assign it 
+coordinates for where on the overland the watchtower is supposed to be. 
+ 
+Example for how to setup the source room: 
+ 
+redit exit up 7035 overland nomob 
+redit excoord up 468 380 
+ 
+In the room that will be the tower, flag it as "map" and as "watchtower" and 
+then make an exit that returns to the room you just made. 
+ 
+Example for how to setup the target room: 
+ 
+redit flags map watchtower 
+redit exit down 7004 
+ 
+That should do it, and you should end up with a nice view of the overland :)
+
+-----
+
+Stats        <#1> <#2> <#3> <#4>
+--------------------------------
+Additional statistics which can affect this room.
+
+#1 = Teleport delay. Amount of time in game pulses before the occupant is transported out.
+#2 = Teleport vnum. Target vnum of the location for a room flagged as teleport.
+#3 = Tunnel value. Number of occupants a tunnel flagged room can hold before it won't let anyone else in.
+     This count includes NPCs, which includes player pet hoardes.
+#4 = Base lighting value. Minimum amount of natural light this room has.
+     0 should be used for a baseline. Meaning natural darkness at night.
+     Negative values can be used for magical darkness that will keep the room dark even during daylight.
+     Positive values can be used for magical lighting that keeps the room lit even at night.
+     The code to support this fully has not been completed yet.
+
+#1 and #2 will not function on a room with no teleport flag.
+#3 will have no affect on a room with no tunnel flag.
+
+Desc         <string>~
+----------------------
+The detailed descriptive text which shows up when entering the room if brief mode is off, or
+when explicitly calling the look command. This description will be presented during daylight hours,
+between sunrise and sunset. Or if no night description is supplied, it will be displayed at all hours.
+
+A well written room should in theory avoid using "you" in ways which dictate how a player should feel,
+or giving them "commands" as though they performed some action upon entering the room which may
+not actually have happened, and should avoid describing occupants or contents which may not be there
+physically - such as "The king is on his throne" or "The sword sticks up out of the ground."
+
+This isn't always possible or practical, so consider it a guideline.
+
+Nightdesc    <string>~
+----------------------
+Optional descriptive text for how the room should look after dark and before sunrise the next day.
+This should follow the same general guidelines as the normal daylight description.
+
+Affect       <Format varies>
+----------------------------
+Permanent affects this room has. These affects will be imparted temporarily upon anyone entering
+the room, and will be removed again when they leave. This applies to NPCs as well. This will
+not work on objects left in the room or carried in by players/NPCs.
+
+Affects will be listed based on location, types, and other data associated with them.
+These are best left to handle via the OLC as the format is different depending on the
+location of the particular affect. A room can have as many affect sections as are
+appropriate, but should be kept within reason or the room could produce an overbalancing situation.
+
+Reset        <Format varies>
+----------------------------
+Determines what sort of things are placed in this room after the game boots up, and during the
+regular "tick reset" cycle of each area.
+The following commands are used for the reset format:
+
+   For all resets, percent = 1-100% chance that this reset will load. Any resets which depend on this reset
+   will only load if the parent reset loads.
+
+   M <mob-vnum> <limit> <room-vnum> <map-number> <x-coordinate> <y-coordinate> <percent>
+     Load a mobile into a room.
+     Primary reset. Can have dependent G, E, X, or Y resets.
+       limit = Maximum number of these mobs to load in the room at one time.
+       map-number = The number o the continent on the overland. -1 for a standard room.
+       x-coordinate = X coord for a position on the overland. -1 for a standard room.
+       y-coordinate = Y coord for a position on the overland. -1 for a standard room.
+
+   O <obj-vnum> <limit> <room-vnum> <map-number> <x-coordinate> <y-coordinate> <percent>
+     Load an object into a room.
+     Primary reset. Can have dependent P, H, or T resets.
+       limit = Maximum number of these objs to load in the room at one time.
+       map-number = The number o the continent on the overland. -1 for a standard room.
+       x-coordinate = X coord for a position on the overland. -1 for a standard room.
+       y-coordinate = Y coord for a position on the overland. -1 for a standard room.
+
+   Z <rt_type> <level> <value1> <value2> <value3> <sockets> <room_vnum> <map-number> <x-coordinate> <y-coordinate> <percent>
+     Load a random treasure item into a room.
+     Primary reset. Has no dependent resets.
+       rt_type = The type of random treasure this item should be:
+         -1 - Roll utterly randomly, ignore all other fields but level.
+          1 - Gold /* Why you would do this is beyond me, but */
+          2 - Gems
+          3 - Scroll
+          4 - Potion
+          5 - Wand
+          6 - Armor
+          7 - Weapon
+          8 - Rune
+       level = Level to use to generate the item. Item is generated as though a mob of this level died.
+       value1 = Type of weapon or armor to generate. -1 = choose at random. Ignored by all other types.
+       value2 = Material for the armor or weapon. -1 = choose at random. Ignored by all other types.
+       value3 = Weapon quality. -1 = choose at random. Ignored for all other types.
+       sockets = Number of sockets to give the weapon or armor. -1 = choose at random. Ignored by all other types.
+       map-number = The number o the continent on the overland. -1 for a standard room.
+       x-coordinate = X coord for a position on the overland. -1 for a standard room.
+       y-coordinate = Y coord for a position on the overland. -1 for a standard room.
+
+   H <obj-vnum> <limit> <percent>
+     Sets the hide flag on the last successfully loaded object.
+     Dependent reset. The previous reset must be one of: X, Y, G, E, O, or P. Otherwise will not load.
+       limit value is ignored.
+
+   P <nest level> <obj-vnum> <limit> <container-vnum> <percent>
+     Put an item in a container.
+     Dependent reset. The previous parent reset must be one of: E, G, O, or P. Otherwise will not load.
+     Can also have dependent P or H resets.
+       nest level = Container nesting level. If a previous P reset loaded and is a container, a second P reset with a higher
+         nesting level will load the item into that container instead of the primary reset.
+       limit = Maximum number of copies to load into the container at one time.
+
+   W <nest level> <rt_type> <level> <value1> <value2> <value3> <sockets> <container_vnum> <percent>
+     Put a random treasure item into a container.
+     Dependent reset. The previous parent reset must be an O. Otherwise will not load.
+     Cannot have dependent resets.
+     Values for treasure settings are the same as a Z.
+       nest level = 1, this should never be anything else as W cannot be a container item.
+
+   G <obj-vnum> <limit> <percent>
+     Give an item to the mobile.
+     Dependent reset. The previous parent reset must be an M. Otherwise will not load.
+       limit = Maximum number of copies to give the mob at one time.
+
+   Y <rt_type> <level> <value1> <value2> <value3> <sockets> <percent>
+     Give a random treasure item to the mobile. Behaves just like G.
+     Dependent reset. The previous parent reset must be an M. Otherwise will not load.
+       limit = Maximum number of copies to give the mob at one time.
+
+   E <obj-vnum> <limit> <wear_loc> <percent>
+     Equip the mobile with the item.
+     Dependent reset. The previous parent reset must be an M. Otherwise will not load.
+       limit = Maximum number of copies to eqip the mob with at one time.
+       wear_loc = Location on the mob for this item to equip to.
+         0 - Light
+         1-2 - Finger
+         3-4 - Neck
+         5 - Body
+         6 - Head
+         7 - Legs
+         8 - Feet
+         9 - Hands
+         10 - Arms
+         11 - Shield
+         12 - About
+         13 - Waist
+         14-15 - Wrist
+         16 - Wield
+         17 - Hold
+         18 - Dual Wield
+         19 - Ears
+         20 - Eyes
+         21 - Missile
+         22 - Back
+         23 - Face
+         24-25 - Ankles
+
+   X <rt_type> <level> <value1> <value2> <value3> <sockets> <wear_loc> <percent>
+     Equip a random treasure item on the mobile. Behaves just like E.
+     Dependent reset. The previous parent reset must be an M. Otherwise will not load.
+       wear_loc = Same locations as E.
+
+   D <room-vnum> <door> <state> <percent>
+     Door: Places a door on an exit in a room.
+     Primary reset. Has no dependent resets.
+       door = Direction of the exit to place the door on.
+         0 - North
+         1 - East
+         2 - South
+         3 - West
+         4 - Up
+         5 - Down
+         6 - Northeast
+         7 - Northwest
+         8 - Southeast
+         9 - Southwest
+         10 - Somewhere - often used with enter/leave flagged exits to mimic portals.
+       state = The default state the door should be in.
+
+   R <room-vnum> <last-door> <percent>
+     Randomize exits in this room.
+     Primary reset. Has no dependent resets.
+       last-door = ?
+
+    
+   T <flags> <types> <charges> <vnum> <percent>
+     Sets a trap on either an object, or a room.
+     As a primary reset, trap sets on the room. Has no dependents.
+     As a dependent reset, previous parent reset must be an O.
+       flags = Bitvector combination of flags. See Trap Flags section in Values.txt
+       types = Type of trap. See Trap Types section in Values.txt
+       charges = The number of times this trap can fire.
+
+#EXIT
+#ENDEXIT
+--------
+See the Misc.txt file for the format of Exit blocks - which are optional. Yes, you can make rooms with no way out!
+
+#EXDESC
+#ENDEXDESC
+----------
+See the Misc.txt file for the format of Extra Description blocks. These are optional.
+
+#MUDPROG
+#ENDPROG
+--------
+See the Misc.txt file for the format of Mudprog blocks. These are optional.
+
+#ENDROOM
+--------
+String literal. This is required to mark the end of a #ROOM block.
+
+==============================================================================
+
+The following is an example of a completed room:
+
+#ROOM
+Vnum      1204
+Name      Dwip's House of Stone~
+Sector    indoors~
+Flags     nomob indoors nomagic~
+Stats     0 0 0 0
+Desc      You stand in a 20' x 20' cubicle made of well-cut 2' granite blocks inlaid 
+with mithril.  In the center of one wall stands a small door, made of 
+adamanite, and inlaid with mithril.  Past it, you can see stairs leading up.
+Above the door is a small plaque made from steel, with something engraved
+on it.  Along one of the walls, a large rack holds a dazzling array of arms,
+and along the opposite wall is another rack of armor.  Along another wall sits
+a desk, with an odd looking weapon atop it.  The rest of that wall is take up
+by bookshelves.  In the center of the room stands a large map table.
+A large cage sits on a table, with a giant rabbit inside.
+~
+#EXIT
+Direction south~
+ToRoom    1202
+Desc      The door to the south is marked: Graecian Conference Room.~
+Keywords  gr GR~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    1343
+Keywords  door~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction somewhere~
+ToRoom    1402
+Flags     can_enter~
+#ENDEXIT
+
+Reset M 1204 1 1204 -1 -1 -1 100
+Reset D 1204 2 1 100 -2
+Reset D 1204 3 1 100 -2
+Reset O 1210 1 1204 -1 -1 -1 100
+#EXDESC
+ExDescKey    block blocks inlay door mithril~
+ExDesc       The blocks and the door are decorated with mithril runes, which ward this 
+place against creatures entering this place, and which prohibit the use of 
+magic here.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    plaque steel~
+ExDesc       This plaque is made of highly polished steel, and it is inlaid with what 
+looks like molten diamond, although you wonder how anyone could melt diamonds.
+In the dwarf-runes of long past, a short rhyme is written:
+
+An elf calls the deepest wood his own,
+A human everywhere may roam,
+But a dwarf just wants a house of stone.
+
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    weapon weapons~
+ExDesc       This rack holds all the weapons you have ever seen, and more besides.  It is 
+made from adamanite, with gold plating on the corners, and it stands floor to 
+ceiling, and covers the entire wall.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    armor~
+ExDesc       This rack is not precisely a rack, it is more of a stand.  Still, its adama-
+nite construction serves well enough to hold up the uncountable types of 
+armor it holds, from leather armor to plate mail to pieces you cannot describe.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    desk~
+ExDesc       This desk is the only piece of wood in the entire chamber, other than the 
+weapons.  And it is good wood, of a type you have never seen before, with 
+scenes of dwarves killing many creatures, among them orcs and various fiends.
+Laying atop the desk are two things, an axe made from light, and a stack of 
+papers. 
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    weapon axe~
+ExDesc       Upon closer inspection, you see that this axe is not entirely made from light,
+nor can the light be called light, per say.  The axe itself is made from a 
+substance called darksteel, and the light, while it is light, is very dark 
+light, and the entire weapon appears evil.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    stack paper papers~
+ExDesc       This stack of papers is made from the finest vellum from what was once the 
+city of Midgaard.  Upon it is scribed what appear to be maps of someplace, and 
+along with the maps are sheets of runes describing something, but you cannot 
+make out the writing.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    bookshelves bookshelf book books~
+ExDesc       These bookshelves, made from the substance known as darksteel, stand from 
+floor to ceiling.  Many books and tomes sit upon the shelves, all with metal 
+and gemstone-studded covers.  The books include such titles as The Art of War,
+The Prince, and various tomes dealing with castle construction, seige warfare,
+logistics, battlefield tactics, and various tactics used by the different 
+races of the world, including some you have never heard of.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    table map~
+ExDesc       This table is made of a substance known as Blackrock, and is inlaid with what 
+appears to be ruby,  although you cannot begin to figure out how it was put 
+there.   The surface of the map table shows the entire world,  and  you are 
+amazed to see that the water, and the stones, and the houses, and the people, 
+are all seemingly real, and, touching all of those in turn, you are astonished
+to find out that they ARE real!
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    rabbit cage~
+ExDesc       The cage appears to be made from solid inch thick bars of mithril.  It
+has to be, to hold in the rabbit.  A large dish of lettuce and another
+of water sit on the floor of the cage, beside the rabbit.  The rabbit
+is a giant black and white checkered one, with sharp looking teeth.  
+You wonder why Dwip feeds the thing lettuce, and not people.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p approval by clapping~
+Comlist   mpechoat 0.$n You slowly dematerialize, arriving seconds later in the
+mpechoat 0.$n Bywater Inn!
+mpechoaround 0.$n $n slowly dematerializes, and is suddenly gone!
+mptrlook 0.$n 7078
+~
+#ENDPROG
+
+#ENDROOM
+
+This concludes the #ROOMS section.
+In theory if you've done everything right, you're done with the file now! Yay!

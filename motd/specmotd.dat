@@ -1,0 +1,4 @@
+Special login message. Cannot be ignored and will be displayed on
+every login to every player and immortal. Cannot be edited in game.
+Must be replaced or removed manually. Edit the specmotd.dat file
+in your motd directory to change this.

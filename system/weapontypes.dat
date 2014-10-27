@@ -1,0 +1,153 @@
+#WTYPE
+Type   0
+Name   Not Defined
+WD     0
+Weight 0
+Cost   0
+Skill  0
+Damage 0
+Flags  brittle
+End
+
+#WTYPE
+Type   1
+Name   Dagger
+WD     4
+Weight 4
+Cost   200
+Skill  2
+Damage 6
+Flags  anticleric antimonk metal
+End
+
+#WTYPE
+Type   2
+Name   Claw
+WD     5
+Weight 4
+Cost   300
+Skill  4
+Damage 1
+Flags  anticleric antimonk metal
+End
+
+#WTYPE
+Type   3
+Name   Shortsword
+WD     6
+Weight 6
+Cost   500
+Skill  1
+Damage 6
+Flags  anticleric antimonk antimage antinecro antidruid metal
+End
+
+#WTYPE
+Type   4
+Name   Longsword
+WD     8
+Weight 10
+Cost   800
+Skill  1
+Damage 1
+Flags  anticleric antimonk antimage antinecro antidruid metal
+End
+
+#WTYPE
+Type   5
+Name   Claymore
+WD     10
+Weight 20
+Cost   1600
+Skill  1
+Damage 1
+Flags  anticleric antimonk antimage antinecro antidruid antibard antirogue twohand metal
+End
+
+#WTYPE
+Type   6
+Name   Mace
+WD     8
+Weight 12
+Cost   700
+Skill  5
+Damage 4
+Flags  antimonk antimage antinecro antirogue metal
+End
+
+#WTYPE
+Type   7
+Name   Maul
+WD     10
+Weight 24
+Cost   1500
+Skill  5
+Damage 4
+Flags  antimonk antimage antinecro antirogue twohand metal
+End
+
+#WTYPE
+Type   8
+Name   Staff
+WD     7
+Weight 8
+Cost   600
+Skill  11
+Damage 4
+Flags  twohand
+End
+
+#WTYPE
+Type   9
+Name   Axe
+WD     9
+Weight 14
+Cost   800
+Skill  9
+Damage 3
+Flags  anticleric antimonk antimage antinecro antidruid antirogue metal
+End
+
+#WTYPE
+Type   10
+Name   War Axe
+WD     11
+Weight 26
+Cost   1600
+Skill  9
+Damage 3
+Flags  anticleric antimonk antimage antinecro antidruid antirogue twohand metal
+End
+
+#WTYPE
+Type   11
+Name   Spear
+WD     7
+Weight 10
+Cost   600
+Skill  10
+Damage 7
+Flags  antimage anticleric antinecro twohand
+End
+
+#WTYPE
+Type   12
+Name   Pike
+WD     9
+Weight 15
+Cost   900
+Skill  10
+Damage 7
+Flags  anticleric antimonk antimage antinecro antidruid antirogue twohand
+End
+
+#WTYPE
+Type   13
+Name   Whip
+WD     5
+Weight 2
+Cost   150
+Skill  3
+Damage 5
+Flags  antimonk organic
+End

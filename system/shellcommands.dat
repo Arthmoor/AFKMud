@@ -1,0 +1,155 @@
+#VERSION 3
+#COMMAND
+Name        compile~
+Code        do_compile
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copy~
+Code        do_copy
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copybits~
+Code        do_copybits
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copyclass~
+Code        do_copyclass
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copycode~
+Code        do_copycode
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copydeity~
+Code        do_copydeity
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copymap~
+Code        do_copymap
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copymorph~
+Code        do_copymorph
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copyrace~
+Code        do_copyrace
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copyrunes~
+Code        do_copyrunes
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copyslay~
+Code        do_copyslay
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copysocial~
+Code        do_copysocial
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        copyzone~
+Code        do_copyzone
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#COMMAND
+Name        grep~
+Code        do_grep
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        resolve~
+Code        do_resolve
+Position    dead~
+Level       113
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        shell~
+Code        do_mudexec
+Position    dead~
+Level       115
+Log         normal~
+Flags       ghost~
+End
+
+#COMMAND
+Name        shelledit~
+Code        do_shelledit
+Position    dead~
+Level       113
+Log         high~
+Flags       ghost~
+End
+
+#END

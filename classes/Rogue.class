@@ -1,0 +1,437 @@
+Version     1
+Name        Rogue~
+Class       2
+Attrprime   2
+Weapon      2895
+Armor       2884
+Legwear     2885
+Headwear    2887
+Armwear     2886
+Footwear    2888
+Shield      -1
+Held        -1
+Skilladept  95
+Thac0       18
+Thac0gain   0.350000
+Hpmin       3
+Hpmax       8
+Mana        0
+Skill 'aid' 14 95
+Skill 'anatomical lore' 75 95
+Skill 'assassinate' 70 55
+Skill 'backstab' 14 95
+Skill 'beguile' 48 95
+Skill 'circle' 40 95
+Skill 'climb' 9 95
+Skill 'cook' 1 95
+Skill 'deride' 23 80
+Skill 'detect traps' 12 95
+Skill 'detrap' 17 95
+Skill 'dig' 17 95
+Skill 'dual wield' 44 65
+Skill 'elbow' 45 95
+Skill 'garrotte' 32 95
+Skill 'gouge' 65 95
+Skill 'hide' 2 95
+Skill 'item lore' 33 95
+Skill 'kick' 4 70
+Skill 'knee' 25 70
+Skill 'liquidate' 50 85
+Skill 'mount' 2 95
+Skill 'peek' 15 95
+Skill 'pick lock' 10 95
+Skill 'poison weapon' 36 80
+Skill 'recuperate' 24 95
+Skill 'retreat' 15 95
+Skill 'roguish blessing' 28 95
+Skill 'search' 1 95
+Skill 'sense of balance' 22 95
+Skill 'sidestep' 16 95
+Skill 'sixth sense' 18 95
+Skill 'slice' 1 95
+Skill 'sneak' 5 95
+Skill 'spy' 27 85
+Skill 'steal' 3 95
+Skill 'track' 26 90
+Skill 'tumble' 20 95
+Skill 'vault' 56 90
+Skill 'aggressive style' 1 90
+Skill 'archery' 1 70
+Skill 'axes' 1 70
+Skill 'blowguns' 1 95
+Skill 'daggers' 1 95
+Skill 'defensive style' 1 90
+Skill 'evasive style' 1 90
+Skill 'pugilism' 1 70
+Skill 'slings' 1 70
+Skill 'spears' 1 70
+Skill 'standard style' 1 90
+Skill 'staves' 1 75
+Skill 'swords' 1 80
+Skill 'talonous arms' 1 70
+Skill 'whips' 1 80
+Skill 'centaur' 1 99
+Skill 'common' 1 99
+Skill 'dwarven' 1 99
+Skill 'elvish' 1 99
+Skill 'gith' 1 99
+Skill 'gnomish' 1 99
+Skill 'goblin' 1 99
+Skill 'halfling' 1 99
+Skill 'insectoid' 1 95
+Skill 'minotaur' 1 99
+Skill 'ogre' 1 99
+Skill 'orcish' 1 99
+Skill 'pixie' 1 99
+Skill 'reptile' 1 99
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 99
+Title
+Man~
+Woman~
+Title
+Beggar~
+Beggar~
+Title
+Derelict~
+Derelict~
+Title
+Common Felon~
+Common Felon~
+Title
+Felon~
+Felon~
+Title
+Master Felon~
+Master Felon~
+Title
+Pilferer~
+Pilferess~
+Title
+Common Footpad~
+Common Footpad~
+Title
+Footpad~
+Footpad~
+Title
+Master Footpad~
+Master Footpad~
+Title
+Common Filcher~
+Common Filcheress~
+Title
+Filcher~
+Flicheress~
+Title
+Master Filcher~
+Master Filcheress~
+Title
+Common-Crook~
+Common-Crook~
+Title
+Pick-Pocket~
+Pick-Pocket~
+Title
+Common Thug~
+Common Thug~
+Title
+Thug~
+Thug~
+Title
+Master Thug~
+Master Thug~
+Title
+Second-Storyman~
+Second-Storywoman~
+Title
+Common Sneak~
+Common Sneak~
+Title
+Sneak~
+Sneak~
+Title
+Master Sneak~
+Master Sneak~
+Title
+Pincher~
+Pincheress~
+Title
+Common Swindler~
+Common Swindler~
+Title
+Swindler~
+Swindler~
+Title
+Master Swindler~
+Master Swindler~
+Title
+Cut-Purse~
+Cut-Purse~
+Title
+Desperado~
+Desperado~
+Title
+Snatcher~
+Snatcheress~
+Title
+Master-Crook~
+Master-Crook~
+Title
+Common Sharper~
+Common Sharpress~
+Title
+Sharper~
+Sharperess~
+Title
+Master Sharper~
+Master Sharperess~
+Title
+Common Bandit~
+Common Bandit~
+Title
+Bandit~
+Bandit~
+Title
+Common-Criminal~
+Common-Criminal~
+Title
+Rogue~
+Rogue~
+Title
+Outlaw~
+Outlaw~
+Title
+Common Robber~
+Common Robber~
+Title
+Robber~
+Robber~
+Title
+Master Robber~
+Master Robber~
+Title
+Magsman~
+Magswoman~
+Title
+Miscreant~
+Miscreant~
+Title
+Highwayman~
+Highwaywoman~
+Title
+Common Burglar~
+Common Burglaress~
+Title
+Burglar~
+Burglaress~
+Title
+Smuggler~
+Smuggler~
+Title
+Common-Thief~
+Common-Thief~
+Title
+Thief~
+Thief~
+Title
+Master-Criminal~
+Master-Criminal~
+Title
+Knifer~
+Knifer~
+Title
+Griffer~
+Griffer~
+Title
+Quick-Blade~
+Quick-Blade~
+Title
+Master-Thief~
+Master-Thief~
+Title
+Hitman~
+Hitwoman~
+Title
+Killer~
+Killer~
+Title
+Murderer~
+Murderess~
+Title
+Common-Brigand~
+Common-Brigand~
+Title
+Brigand~
+Brigand~
+Title
+Master Brigand~
+Master Brigand~
+Title
+Cut-Throat~
+Cut-Throat~
+Title
+Forger~
+Forger~
+Title
+Counterfeiter~
+Counterfeiter~
+Title
+Stool-Pigeon~
+Stool-Pigeon~
+Title
+Informer~
+Informer~
+Title
+Extortionist~
+Extortionist~
+Title
+Gangster~
+Gangster~
+Title
+Spy~
+Spy~
+Title
+Grand Spy~
+Grand Spy~
+Title
+Master Spy~
+Master Spy~
+Title
+Common Conspirator~
+Common Conspirator~
+Title
+Conspirator~
+Conspirator~
+Title
+Master Conspirator~
+Master Conspirator~
+Title
+Assassin~
+Assassin~
+Title
+Greater Assassin~
+Greater Assassin~
+Title
+Master Assassin~
+Master Assassin~
+Title
+Master of Vision~
+Mistress of Vision~
+Title
+Master of Hearing~
+Mistress of Hearing~
+Title
+Master of Smell~
+Mistress of Smell~
+Title
+Master of Taste~
+Mistress of Taste~
+Title
+Master of Touch~
+Mistress of Touch~
+Title
+Master of Reality~
+Mistress of Reality~
+Title
+Guildmaster of the Unseen~
+Guildmistress of the Unseen~
+Title
+Guildmaster of Stealth~
+Guildmistress of Stealth~
+Title
+Guildmaster of Assassination~
+Guidlmistress of Assassination~
+Title
+High Guildmaster~
+High Guildmistress~
+Title
+Brother of Patience~
+Sister of Patience~
+Title
+Brother of the Dagger~
+Sister of the Dagger~
+Title
+Brother of the Coin~
+Sister of the Coin~
+Title
+Brother of the Shadows~
+Sister of the Shadows~
+Title
+Brother of the Guild~
+Sister of the Guild~
+Title
+Lord of the Wolf~
+Lady of the Wolf~
+Title
+Lord of the Snake~
+Lady of the Snake~
+Title
+Lord of the Hawk~
+Lady of the Hawk~
+Title
+Lord of the Panther~
+Lady of the Panther~
+Title
+Crime Lord~
+Crime Mistress~
+Title
+Infamous Crime Lord~
+Infamous Crime Mistress~
+Title
+Greater Crime Lord~
+Greater Crime Mistress~
+Title
+Master Crime Lord~
+Master Crime Mistress~
+Title
+Godfather~
+Godmother~
+Title
+Avatar of the Shadows~
+Avatar of the Shadows~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

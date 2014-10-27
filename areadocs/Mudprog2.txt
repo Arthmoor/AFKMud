@@ -1,0 +1,230 @@
+Now that your MOB is alive, well sort of. Fred does all kind of neat 
+things, but you know what?
+
+Yes, Johnny?
+Um, teacher can I go to the bathroom?
+I don't know, but you may go if you need to.
+
+Fred can't address Johnny or teacher yet. Here's a secret: In this section 
+we will learn how to do this, and many other cool things.
+
+--No master, I will take Care of Him.(Darth Vader)
+
+
+Now, not coincidentally, the variables in MOB_PROG are addressed the same 
+way that social's are addressed. If you're already coding social's, then 
+WTF are you doing reading this? This is for builders, dammit. To address a 
+variable you use the $ sign and then the variable whatever it is.
+
+NOTE: The Syntax listed is on the line following the mob_prog call.
+NOTE: Mob's _CAN_ activate Trigger's on other Mobs.
+NOTE: If You have used Mob_Progs or Read the Help files you might notice 
+some of the Variables missing. The Author (me) decided to include those 
+Variables in another section because he wrote these things on whim.  
+So cut me some flak, okay?
+
+------------------------------------------------------------------------
+Example:
+
+rand_prog(100)
+say $Variable <msg>
+
+or
+
+rand_prog(100)
+kiss $Variable
+
+Get it?
+Got it?
+Good!
+------------------------------------------------------------------------
+NOTE: For the sake of Flow, and because I'm lazy, the Syntax will contain: 
+say $$ <msg>. Be aware though _ANY_ social may go in place of say.  
+So you can use run, or laugh, or rofl or whatever. You can also instead 
+of using say, use any of the channels that the mob would be able to use.
+Race channels, chat, barter, whatever.
+
+$i	Syntax: say $i likes to eat things
+
+So you want your mob to be a little crazy? What better way then to have him 
+talk in third person or use socials on himself.
+ 
+So In other words: $i calls the first name of the mob itself.
+
+	Example:
+	rand_prog 50
+	say $i was crazy once.
+	bonk $i
+	Snicker
+
+What it does: There is a 50/50 chance of Fred saying, Fred was crazy once.
+Bonk fred, and snicker.
+
+------------------------------------------------------------------------
+$I	Syntax: say $I is really kind of wierd.
+
+Well, well we have gotten really formal haven't we? This gets even a crazier
+response. So in other words: $I calls the short description of the mobile.
+This would be used mostly for says or tells, It's hard to use bonk Fred, 
+the blond male vampire is standing here. 
+--Bet you didn't know Fred was blonde or a vampire did you?
+
+	Example:
+	rand_prog 50
+	say $I is pretty funny isn't he?
+
+What it does: 50/50 chance that Fred says, Fred, the blonde male is pretty 
+funny	isn't he?
+
+------------------------------------------------------------------------
+$r	Syntax: say Hi $r
+
+Doctor! Doctor! Doctor! Doctor! Doctor! Cut that OUT! (3 Stooges)
+So in other words: $r chooses the name of a random char/mob in the room 
+with the mob(FRED). But $r will never be the name of the mob(Fred).
+NOTE:  mob(FRED) is used to differentiate between The mob with the mob_prog 
+andanother random mob in the room. (FRED) has the mob_prog.
+
+	Example:
+	greet_prog 100
+	say Hi $n
+	bite $r
+
+What it does: Whenever someone enter's the room Fred will greet them.  
+But then he	will turn around and bite a random person/mob in the room.
+
+------------------------------------------------------------------------
+$R	Syntax: say Hello $R
+
+Doctor Livingston, I persume. (Doctor Watson)
+So in other words: $R chooses a random char/mob other than the one with 
+the mob_prog and address it by it's title/short description.
+
+	Example:
+	rand_prog 50
+	say $R you are smashing today, mind helping out an old beggar?
+
+What it does: Each Heartbeat there is a 50/50 chance of Fred telling
+Joe Blow the Immortal, you are smashing today, mind helping out an old beggar?
+
+------------------------------------------------------------------------
+$n	Syntax: say $n is really kind of neat
+
+Hello, Joe Blow, welcome to my humble abode. I hope you enjoy your stay, Joe.
+Have fun Joe.
+So in other words: $n is the variable that calls the name of a character that
+triggered an event. This is probably the one to use most of the time.
+
+	Example:
+	greet_prog 100
+	say welcome back $n
+	cast Sanc $n
+
+What it does: Whenever someone comes into this room, Fred greets them with 
+Welcome back Joe. And then being the nice guy he is, Fred cast Sanctuarary 
+on Joe.
+NOTE:  $n --CAN-- be another MOB
+
+------------------------------------------------------------------------
+$N	Syntax: say $N I'm humbled
+
+Once again Fred is being formal. Awfully nice of him isn't it?
+So in other words: $N is the variable that calls the name and title of a 
+char that activates a trigger.
+NOTE: $N --CAN-- be another MOB
+
+	Example:
+	greet_all_prog 100
+	say $N ! I wasn't Expecting you!!!!
+
+What it does: Whenever ANYONE(greet_all_prog [lesson 1]) comes into the 
+room Fred say's Joe Blow the Immortal! I wasn't expecting you!!!!
+NOTE: Since this does use Titles it's is probably _NOT_ a good Idea to use 
+it for socials( pounce, giggle, bite ).
+
+------------------------------------------------------------------------
+$o	Syntax: get $o
+
+Ah, ha, Now we can have Real Janitors! No more dropped items sitting around.
+And heck if we combine this with speech_prog we can have a janitor that people
+bully	around to clean things up!
+So in other words: $o is the name of an object.
+
+	Example:
+	act_prog drops
+	get $o
+
+What it does: Whenever the terminal prints out Someone drops something, 
+Fred our faithful Janitor is going to pick it up. Evil huh?
+ 
+------------------------------------------------------------------------
+$O	Syntax: say $n dropped the $O
+
+Now Fred the Janitorial Mayor can yell at you for dropping an object before 
+he picks it up. Fred can get very mean when you dirty up his town.
+So in other words: $O is the long name of an object.
+
+	Example:
+	act_prog drops
+	say $n you BASTARD I'm Going to fine you 1000 Gold for dropping $O
+
+What it does: Whenever Joe Blow drops ANYTHING, Fred is going to say, 
+Joe you BASTARD I'm going to fine you 1000 Gold for dropping your POT PIE.
+
+------------------------------------------------------------------------
+$a	Syntax: say $n dropped $a $o
+
+A+ in English? Wooohooo! Now I can write good room descriptions!!!
+So in other words: $a checks the first letter of $o. If it is a,e,i,o,u it 
+replaces $a with an, but if it starts with a constanant(sp?) it replaces $a 
+with a.
+
+	Example:
+	act_prog drops
+	say Wow, $n dropped $a $o
+
+What it does: Whenever someone drops something, Fred is going to say, 
+"Joe dropped a pear" or "Joe dropped an apple".
+
+------------------------------------------------------------------------
+These are Grammatical Variables
+
+He, She, it Based upon Sex.
+NOTE: There is no Syntax included because this is a very base-by-base case 
+of using these. So BE CAREFUL to use them _CORRECTLY_.
+
+$j	he, she, it based on sex of $i.
+$e	he, she, it based on sex of $n.
+$J	he, she, it based on sex of $r.
+
+Him, Her, it based upon Sex.
+NOTE: There is no Syntax included because this is a very base-by-base case
+of using these. So BECAREFUL to use them _CORRECTLY_.
+
+$k	him, her, it based on sex of $i.
+$m	him, her, it based on sex of $n.
+$K	him, her, it based on sex of $r.
+
+his, hers, its based upon Sex.
+NOTE: There is no Syntax included because this is a very base-by-base case 
+of using these. So BECAREFUL to use them _CORRECTLY_.
+
+$l	his, hers, its based on sex of $i.
+$s	his, hers, its based on sex of $n.
+$L	his, hers, its based on sex of $r.
+
+------------------------------------------------------------------------
+
+Ah Hah, Now you know how to get Your Mob to interact with what players do.  
+No longer is it that the players trigger a response. That response can be 
+made at a specific, char or obj or even mob!!! Wooohooo!
+
+Now For the Tutorial Part: (or Pop Quiz Time)
+
+Create a Janitor, that mumbles arcane curses at people who drop things.
+Bonus pts, if he gives the obj back to the person who dropped it.
+
+Create a Woman who is in awe of a man who likes to show off his muscles 
+(flex) or likes to change weapons.
+
+Create a corruptable Mayor that goes around kissing people.

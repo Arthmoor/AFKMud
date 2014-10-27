@@ -1,0 +1,60 @@
+Version     1
+Name        Dwarf~
+Race        2
+Classes     Mage Necromancer Druid Ranger Monk Available Available2 Antipaladin Paladin Bard~
+Str_Plus    1
+Dex_Plus    0
+Wis_Plus    1
+Int_Plus    0
+Con_Plus    2
+Cha_Plus    -1
+Lck_Plus    0
+Hit         6
+Mana        -6
+Affected    infrared~
+Resist      poison charm~
+Language    dwarven~
+Align       0
+Min_Align  -1000
+Max_Align	 1000
+AC_Plus    0
+Exp_Mult   104
+Height     52
+Weight     100
+Hunger_Mod  0
+Thirst_mod  0
+Mana_Regen  0
+HP_Regen    0
+WhereName  <used as light>     ~
+WhereName  <worn on finger>    ~
+WhereName  <worn on finger>    ~
+WhereName  <worn around neck>  ~
+WhereName  <worn around neck>  ~
+WhereName  <worn on body>      ~
+WhereName  <worn on head>      ~
+WhereName  <worn on legs>      ~
+WhereName  <worn on feet>      ~
+WhereName  <worn on hands>     ~
+WhereName  <worn on arms>      ~
+WhereName  <worn as shield>    ~
+WhereName  <worn about body>   ~
+WhereName  <worn about waist>  ~
+WhereName  <worn around wrist> ~
+WhereName  <worn around wrist> ~
+WhereName  <wielded>           ~
+WhereName  <held>              ~
+WhereName  <dual wielded>      ~
+WhereName  <worn on ears>      ~
+WhereName  <worn on eyes>      ~
+WhereName  <missile wielded>   ~
+WhereName  <worn on back>      ~
+WhereName  <worn on face>      ~
+WhereName  <worn on ankle>     ~
+WhereName  <worn on ankle>     ~
+WhereName  <lodged in a rib>   ~
+WhereName  <lodged in an arm>  ~
+WhereName  <lodged in a leg>   ~
+Skill 'metallurgy' 70 80
+Skill 'mining' 35 85
+Skill 'tenacity' 10 90
+End

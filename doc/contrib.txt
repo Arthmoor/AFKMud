@@ -1,0 +1,164 @@
+ ****************************************************************************
+ * [S]imulated [M]edieval [A]dventure multi[U]ser [G]ame      |   \\._.//   *
+ * -----------------------------------------------------------|   (0...0)   *
+ * SMAUG 1.0 (C) 1994, 1995, 1996 by Derek Snider             |    ).:.(    *
+ * -----------------------------------------------------------|    {o o}    *
+ * SMAUG code team: Thoric, Altrag, Blodkai, Narn, Haus,      |   / ' ' \   *
+ * Scryn, Rennard, Swordbearer, Gorog, Grishnakh and Tricops  |~'~.VxvxV.~'~*
+ ****************************************************************************
+
+SMAUG is based on Merc 2.1 code, with MobPrograms patched in, (which have
+been expanded into "MudPrograms").  All original versions of Merc MUD may be
+obtained from: ftp://ftp.game.org/pub/mud/diku/merc/
+
+The original mobprograms were written by J Murphy, N'Atas-Ha of ThePrincedom,
+murph@cs.cmu.edu.  (Look in the mudprogs subdirectory for the original
+distribution).
+
+The Free Software Foundation and DJ Delorie wrote our development tools, and
+distribute them for free, with source.  You can ftp them from prep.ai.mit.edu
+and grape.ecs.clarkson.edu.
+
+The automated auction code, and the "FOR" command came from Erwin S.
+Andreasen, erwin@pip.dknet.dk.  He has many code snippets available from:
+http://pip.dknet.dk/~pip1773/ and ftp://ftp.game.org/pub/mud/snippets/Erwin/
+
+Coders Altrag, Swordbearer and Tricops have their roots in "The Abyss",
+and likely some of their contributions/ideas have come from their work on
+there.
+
+
+                         === About the coders ===
+
+
+This is a rough attempt to outline what parts of the code each coder has
+worked on.  Keep in mind that this is a ROUGH attempt, which means I'll
+likely not be mentioning every detail by any means. :)
+
+-----------------------------------------------------------------------------
+
+Thoric is the original coder, and did not take on any other programmers
+for close to a year after starting his work on the code in summer 1994.
+Previous to starting up his own mud, "Realms of Despair", he had played
+a mud called "Mozart", which was a highly modified SillyMUD.
+He is currently the head programmer for JoyCom Interactive, and has
+been programming for over 12 years.  His email address is derek@idirect.com.
+
+His main contributions include, but are not limited to the online building
+code (build.c), clans (clans.c), adding basic ANSI color support, the
+wizlist builder, the original player authorization system, levers, switches,
+pullchains, buttons, expanding the mud to 65 levels, (50 mortal, 15 immortal),
+the new experience system, the complex mobiles, resistances immunities and
+susceptibilities, hunting, mobiles hating and fearing, mounts, pipes, the
+extended container commands, object grouping, the extended/advanced exits,
+delayed room teleports, tunnels, lots of new exit flags, heaps of new affect
+types, kill tracking (individual for each player), new mud economy code, the
+SMAUGSPELL system, the skill table loading/sorting/editing system, the
+command loading/hashing/editing system, the social loading/hashing/editing
+system, the class loading/editing system, the bulletin board system, dual
+wielding, layered clothing, floorless rooms/falling, mental-state code, the
+smart string hashing code (hashstr.c), as well as countless bugfixes, minor
+coding details and many, many speed optimizations.
+
+-----------------------------------------------------------------------------
+
+Haus got involved with SMAUG in early 1995 when Thoric was getting less and
+less free time to work on the mud.
+
+His major contributions include expanding the mobprograms into mudprograms,
+the VT-100 menu based building interface (ibuild.c), the new score command,
+the map-based area creator (mapout.c), player comments (comments.c), rank,
+weapon proficiencies, as well as many of the new spells.
+
+-----------------------------------------------------------------------------
+
+Scryn started coding in the summer of 1995.
+
+He has added many of the popular skills, spells and commands like brew,
+scribe, shove and drag, added private mail support (postoffice), councils,
+work on clans, some of the new area_data fields, clan storage room saving,
+hard/soft area ranges, player homepage field, added luck and support code,
+the checkvnums command, and did a major renovation on the login sequence to
+make it a lot less confusing for new users, including letting them into a
+special area until their name has been accepted by an immortal.
+
+-----------------------------------------------------------------------------
+
+Narn joined the team in the late summer of 1995.
+
+She has done a lot of work on cleaning up the mudprogram code (mud_prog.c),
+and has given it the ability to handle nested if/else blocks.  She has done
+a lot of bugfixing, code cleaning up, and helping some of the junior coders.
+She renovated the who command to be less redundant and more organized, has
+done a lot of work with the clans and pkill code, added support for retired
+and guest immortals, as well as prefix matching for object and character
+names.
+
+-----------------------------------------------------------------------------
+
+Altrag started coding early in 1996.
+
+Has done a lot of major code work including the vnums command, tongues, the
+mposet, mpmset mudprog commands (mpxset.c), rewrote mprog_do_ifcheck from a
+big mess of redundant code into something nice and clean :), the screen
+pager, the configurable prompt code, the inline color codes, the reset code
+(reset.c), the command timing/lag detection code, a lot of "safeguard"
+coding, the fancier "echo" command, the new owhere command, corpse saving,
+hell/unhell commands, ban saving and loading, some work on the RIS stuff,
+some skills and spells, as well as the retrans and regoto commands.
+
+-----------------------------------------------------------------------------
+
+Swordbearer started coding in the spring of 1996.
+
+He has done a lot of fixes and adjustments to many existing and new spells, 
+some of the mpcommands, added mpinvis (like wizinvis for mobs), the 
+augurer class with 4 new spells, the vsearch command, the remove all 
+command, and the gag feature for reducing redundant battle text.
+
+-----------------------------------------------------------------------------
+
+Blodkai while only recently getting involved with coding, has put a great
+deal of effort into making this release possible with his administrative
+duties and expertise with area building.
+
+His coding contributions mainly involve lots of tweaking and fine tuning to
+the pkill and clan code, as well as the addition of item loyalty and some
+new spells.
+
+-----------------------------------------------------------------------------
+
+Gorog is also a recent addition to the coding team.
+
+His work has been on the new, easier to use authorization system, and the
+diagnose command.
+
+-----------------------------------------------------------------------------
+
+Rennard is another newbie coder, but has done a lot of work with Thoric on
+the SMAUGSPELL system before starting any coding.  He basically did all
+the conversion of hard coded spells to the new SMAUGSPELLS.
+
+As far as his coding goes, he as put a lot of work in effort into adding
+coded deities, which being a new addition, will likely go through a lot
+of development over the next few months.  He also added configurable reset
+messages, the dig and bury commands, some new sector types and some work on
+the pkill code.
+
+-----------------------------------------------------------------------------
+
+Tricops while being on the coding team for several months, has not had the
+time to do a great deal of work.
+
+His coding has mainly involved tweaking and fixing, as well as work on the
+unfinished projectile code, (bows, crossbows, arrows, etc).
+
+-----------------------------------------------------------------------------
+
+Grishnakh has also been on the coding team for a long time, and similarily
+has not had the time available to do much coding.
+
+He added the doorbash skill, installed Erwin's "FOR" command, as well as
+a few other minor code additions.
+
+-----------------------------------------------------------------------------

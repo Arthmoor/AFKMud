@@ -1,0 +1,368 @@
+Version     1
+Name        Available2~
+Class       9
+Attrprime   2
+Weapon      -1
+Armor       -1
+Legwear     -1
+Headwear    -1
+Armwear     -1
+Footwear    -1
+Shield      -1
+Held        -1
+Skilladept  85
+Thac0       18
+Thac0gain   0.375000
+Hpmin       10
+Hpmax       15
+Mana        1
+Skill 'aid' 15 75
+Title
+Man~
+Woman~
+Title
+Apprentice~
+Apprentice~
+Title
+Footpad~
+Footpad~
+Title
+Lurker~
+Lurkeress~
+Title
+Pick-Pocket~
+Pick-Pocket~
+Title
+Sneak~
+Sneak~
+Title
+Pincher~
+Pincheress~
+Title
+Cut-Purse~
+Cut-Purse~
+Title
+Snatcher~
+Snatcheress~
+Title
+Sharper~
+Sharpress~
+Title
+Rogue~
+Rogue~
+Title
+Tracker~
+Trackeress~
+Title
+Magsman~
+Magswoman~
+Title
+Highwayman~
+Highwaywoman~
+Title
+Burglar~
+Burglaress~
+Title
+Assassin~
+Assassin~
+Title
+Knifer~
+Knifer~
+Title
+Quick-Blade~
+Quick-Blade~
+Title
+Killer~
+Murderess~
+Title
+Brigand~
+Brigand~
+Title
+Cut-Throat~
+Cut-Throat~
+Title
+1.man~
+1.woman~
+Title
+2.man~
+2.woman~
+Title
+3.man~
+3.woman~
+Title
+4.man~
+4.woman~
+Title
+5.man~
+5.woman~
+Title
+6.man~
+6.woman~
+Title
+7.man~
+7.woman~
+Title
+8.man~
+8.woman~
+Title
+9.man~
+9.woman~
+Title
+10.man~
+10.woman~
+Title
+11.man~
+11.woman~
+Title
+12.man~
+12.woman~
+Title
+13.man~
+13.woman~
+Title
+14.man~
+14.woman~
+Title
+15.man~
+15.woman~
+Title
+16.man~
+16.woman~
+Title
+17.man~
+17.woman~
+Title
+18.man~
+18.woman~
+Title
+19.man~
+19.woman~
+Title
+20.man~
+20.woman~
+Title
+21.man~
+21.woman~
+Title
+22.man~
+22.woman~
+Title
+23.man~
+23.woman~
+Title
+24.man~
+24.woman~
+Title
+25.man~
+25.woman~
+Title
+26.man~
+26.woman~
+Title
+27.man~
+27.woman~
+Title
+28.man~
+28.woman~
+Title
+29.man~
+29.woman~
+Title
+30.man~
+30.woman~
+Title
+31.man~
+31.woman~
+Title
+32.man~
+32.woman~
+Title
+33.man~
+33.woman~
+Title
+34.man~
+34.woman~
+Title
+35.man~
+35.woman~
+Title
+36.man~
+36.woman~
+Title
+37.man~
+37.woman~
+Title
+38.man~
+38.woman~
+Title
+39.man~
+39.woman~
+Title
+40.man~
+40.woman~
+Title
+41.man~
+41.woman~
+Title
+42.man~
+42.woman~
+Title
+43.man~
+43.woman~
+Title
+44.man~
+44.woman~
+Title
+45.man~
+45.woman~
+Title
+46.man~
+46.woman~
+Title
+47.man~
+47.woman~
+Title
+48.man~
+48.woman~
+Title
+49.man~
+49.woman~
+Title
+50.man~
+50.woman~
+Title
+Spy~
+Spy~
+Title
+Grand Spy~
+Grand Spy~
+Title
+Master Spy~
+Master Spy~
+Title
+Ninja~
+Ninja~
+Title
+Greater Assassin~
+Greater Assassin~
+Title
+Master of Vision~
+Mistress of Vision~
+Title
+Master of Hearing~
+Mistress of Hearing~
+Title
+Master of Smell~
+Mistress of Smell~
+Title
+Master of Taste~
+Mistress of Taste~
+Title
+Master of Touch~
+Mistress of Touch~
+Title
+Master of Reality~
+Mistress of Reality~
+Title
+Guildmaster of the Unseen~
+Guildmistress of the Unseen~
+Title
+Guildmaster of Stealth~
+Guildmistress of Stealth~
+Title
+Guildmaster of Assassination~
+Guidlmistress of Assassination~
+Title
+High Guildmaster~
+High Guildmistress~
+Title
+Brother of Patience~
+Sister of Patience~
+Title
+Brother of the Dagger~
+Sister of the Dagger~
+Title
+Brother of the Coin~
+Sister of the Coin~
+Title
+Brother of the Shadows~
+Sister of the Shadows~
+Title
+Brother of the Guild~
+Sister of the Guild~
+Title
+Lord of the Wolf~
+Lady of the Wolf~
+Title
+Lord of the Snake~
+Lady of the Serpent~
+Title
+Lord of the Hawk~
+Lady of the Hawk~
+Title
+Lord of the Panther~
+Lady of the Panther~
+Title
+Crime Lord~
+Crime Mistress~
+Title
+Infamous Crime Lord~
+Infamous Crime Mistress~
+Title
+Greater Crime Lord~
+Greater Crime Mistress~
+Title
+Master Crime Lord~
+Master Crime Mistress~
+Title
+Godfather~
+Godmother~
+Title
+Avatar Assassin~
+Avatar Assassin~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

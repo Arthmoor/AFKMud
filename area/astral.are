@@ -1,0 +1,4739 @@
+#AFKAREA
+#AREADATA
+Version         1
+Name            The Astral Plane~
+Author          Elquin~
+Vnums           4350 4449
+Continent       astral~
+Coordinates     0 0
+Ranges          1 115 0 115
+ResetMsg        Masses of energy spiral past you.~
+ResetFreq       30
+Flags           nocamp noastral noportal norecall nosummon noscry noteleport nobeacon~
+Climate         2 2 2
+Treasure        20 74 85 93 20 50 60 75
+#ENDAREADATA
+
+#MOBILE
+Vnum      4350
+Keywords  illithid traveller mindflayer~
+Race      humanoid~
+Class     Mage~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Specfun   spec_cast_mage~
+Short     &W&wAn &Pillithid &wtraveller~
+Long      A travelling mindflayer zooms through the reaches of the astral plane.
+~
+Desc      &W&wTall, thin, and &ppurple&w, this &Pillithid &wtraveller is making his way
+&W&wto an unknown location. Peering at you briefly, what appears to be
+&W&wa veral grin appears on his face as he considers the prospect of an
+&W&wearly brunch.
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    40 -20 -100 100 4 5 0
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger aggressive stayarea meta_aggr~
+Bodyparts head arms heart brains hands feet fingers eye tentacles~
+Attacks   blindness fireball colorspray weaken~
+Defenses  dispelmagic shield stoneskin teleport~
+#ENDMOBILE
+
+#MOBILE
+Vnum      4351
+Keywords  githyanki anti paladin~
+Race      gith~
+Class     Antipaladin~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     &W&wA &Ggith&Wyanki &zantipaladin&w~
+Long      A githyanki antipaladin is here, looking for something.
+~
+Desc      &W&wA member of a race that originated from a group of humans enslaved and
+bred by illithids, this being could easily pass for his ancestors. The
+&W&wonly difference is the &Gyellowish &wtint to his skin. Travelling the
+&W&wastral plane, he scans the horizen looking for &Pmindflayers &wto slay.
+&W&wSighting you, he moves in, obviously welcoming the new sport.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    30 -20 -100 150 5 6 0
+Speaks    common gith~
+Speaking  gith~
+Actflags  npc aggressive stayarea meta_aggr~
+Affected  detect_invis~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Attacks   kick bash~
+Defenses  parry dodge shield bless disarm~
+#ENDMOBILE
+
+#MOBILE
+Vnum      4352
+Keywords  tiamat dragon~
+Race      dragon~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Specfun   spec_breath_any~
+Short     Tiamat~
+Long      Tiamat, the five-headed dragon, stands here gazing at you.
+~
+Desc      &W&wBefore you stands the biggest dragon you have ever seen. Looming over
+&W&wyou, &WTiamat &wglances in your direction almost questioning your prescence
+&W&wwithin her area. You shiver in fear, and wonder if you should leave 
+&W&wbefore she takes offense.
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    100 -50 -300 10000 10 10 0
+Speaks    common pixie ogre orcish trollese insectoid dragon magical goblin ancient clan centaur gnomish~
+Speaking  pixie~
+Actflags  npc sentinel stayarea~
+Affected  detect_invis detect_hidden sanctuary truesight fireshield shockshield iceshield~
+Bodyparts head heart brains wings tail scales claws tailattack sharpscales~
+Resist    fire cold electricity energy blunt pierce slash~
+Immune    sleep charm hold nonmagic plus1 plus2 paralysis~
+Attacks   bite claws tail stun firebreath frostbreath acidbreath lightnbreath gasbreath~
+Defenses  parry dodge heal~
+#ENDMOBILE
+
+#MOBILE
+Vnum      4449
+Keywords  Last mob~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a newly created last mob~
+Long      Some god abandoned a newly created last mob here.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc proto~
+#ENDMOBILE
+
+#OBJECT
+Vnum      4350
+Keywords  glowing sphere ball~
+Type      light~
+Short     &W&wA &Wglowing&w, &Csphere &wof &Be&Cn&Wer&Cg&By&w~
+Long      A small glowing ball lies here.~
+Flags     glow magic bless antirogue antiwarrior antiranger antipaladin antiapal~
+WFlags    take hold~
+Values    0 0 -1 0 0 0 0 0 0 0 0
+Stats     1 10000 -2 9999 0 None None None
+AffData intelligence 2 -1 -1 0
+AffData mana 20 -1 -1 0
+AffData save_spell -1 -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      4351
+Keywords  purple robes~
+Type      container~
+Short     &W&wSome &ppurple&w robes with &Ygolden &wedging~
+Long      A pile of purple robes lie here.~
+Flags     magic bless antigood antirogue antiwarrior antiranger antipaladin antiapal~
+WFlags    take body~
+Values    100 0 -1 0 0 0 0 0 0 0 0
+Stats     10 0 -2 9999 2 None None None
+AffData armor -10 -1 -1 0
+AffData intelligence 1 -1 -1 0
+AffData mana 20 -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      4352
+Keywords  githyanki silver longsword~
+Type      weapon~
+Short     &W&w A &Csilver &Ggith&Wyanki &wlongsword~
+Long      A silver longsword lies here.~
+Flags     metal magic bless antigood anticleric antimage evil antidruid antimonk loyal antinecro~
+WFlags    take wield~
+Values    12 5 4 1 1 0 12 0 0 0 0
+Stats     6 25000 -2 9999 0 None None None
+AffData hitroll 5 -1 -1 0
+AffData damroll 3 -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      4353
+Keywords  cloak swirling darkness~
+Type      armor~
+Short     &W&wA &pcloak &wof &Ws&Yw&Ri&rrl&Ri&Yn&Wg &zda&wr&Wkn&we&zss&w~
+Long      A pile of darkness lies here.~
+Flags     invis magic bless~
+WFlags    take about~
+Values    3 3 0 0 0 0 0 0 0 0 0
+Stats     1 45000 -2 3 0 None None None
+AffData armor -10 -1 -1 0
+AffData affected 'invisible' -1 -1 0
+AffData affected 'detect_invis' -1 -1 0
+AffData affected 'detect_magic' -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      4354
+Keywords  ring wraith~
+Type      armor~
+Short     &W&wA &Cring&w of the &bW&Br&Ca&Wi&Ct&Bh&w~
+Long      A tiny ring carved with tortued souls lies here.~
+Flags     invis magic bless antigood~
+WFlags    take finger hold~
+Values    5 5 0 0 0 0 0 0 0 0 0
+Stats     1 10000 -2 9999 0 None None None
+AffData affected 'detect_hidden' -1 -1 0
+AffData affected 'detect_invis' -1 -1 0
+AffData affected 'detect_magic' -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      4355
+Keywords  avernus sword~
+Type      weapon~
+Short     &x&zAvernus, the life stealer&w~
+Long      A huge, humming sword lies here.~
+Flags     hum metal magic bless antigood antineutral anticleric antimage antirogue loyal antinecro~
+WFlags    take wield~
+Values    12 7 9 1 1 0 12 0 0 0 0
+Stats     1 100000 -2 1 0 None None None
+AffData damroll 8 -1 -1 0
+AffData hitroll 8 -1 -1 0
+AffData immune drain~ -1 -1 0
+AffData affected 'iceshield' -1 -1 0
+AffData affected 'invisible' -1 -1 0
+AffData weaponspell 'quantum spike' -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      4449
+Keywords  Last obj~
+Type      trash~
+Short     a newly created last obj~
+Long      Some god dropped a newly created last obj here.~
+Flags     proto~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#ROOM
+Vnum      4350
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+
+A &zmurky &ggreen &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4354
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4355
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4351
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4370
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4425
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4375
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4351
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4350
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4356
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4352
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4371
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4426
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4376
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4352
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4351
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4357
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4353
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4372
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4427
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4377
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4353
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4352
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4358
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4354
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4373
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4428
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4378
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4354
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4353
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4359
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4350
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4374
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4429
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4379
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4355
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4359
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4360
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4356
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4350
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4430
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4380
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4356
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Yg&Oolde&Yn yellow &Yp&Ooo&Yl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4355
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4361
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4357
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4351
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4431
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4381
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4357
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4356
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4362
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4358
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4352
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4432
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4382
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4358
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4357
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4363
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4359
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4353
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4433
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4383
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4359
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Ysandy &Obrown &Yp&Ooo&Yl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4358
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4364
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4355
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4354
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4434
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4384
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4360
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4364
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4365
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4361
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4355
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4435
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4385
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4361
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4360
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4366
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4362
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4356
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4436
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4386
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4362
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4361
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4367
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4363
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4357
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4437
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4387
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4363
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+
+A &rm&Oudd&ry &Obrown &rp&Ooo&rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4362
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4368
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4364
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4358
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4438
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4388
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4364
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4363
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4369
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4360
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4359
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4439
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4389
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4365
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4369
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4370
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4366
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4360
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4440
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4390
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4366
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4365
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4371
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4367
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4361
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4441
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4391
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4367
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4366
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4372
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4368
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4362
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4442
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4392
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4368
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4367
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4373
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4369
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4363
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4443
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4393
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4369
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4368
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4374
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4365
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4364
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4444
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4394
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4370
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Phot pink pool &Bshimmers &Where.
+~
+#EXIT
+Direction north~
+ToRoom    4374
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4350
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4371
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4365
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4445
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4395
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4371
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4370
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4351
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4372
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4366
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4446
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4396
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4372
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Gs&glim&Gy &ggreen &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4371
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4352
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4373
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4367
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4447
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4397
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4373
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4372
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4353
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4374
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4368
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4398
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4374
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4373
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4354
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4370
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4369
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4449
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4399
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4375
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+An &bsh&wado&bwy &wgrey &wp&boo&wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4379
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4380
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4376
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4395
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4350
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4400
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4376
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4375
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4381
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4377
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4396
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4351
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4401
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4377
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Ob&Yurnishe&Od &Yo&Orang&Ye &Op&Yoo&Ol &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4376
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4382
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4378
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4397
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4352
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4402
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4378
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4377
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4383
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4379
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4398
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4353
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4403
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4379
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4378
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4384
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4375
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4399
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4354
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4404
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4380
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4384
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4385
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4381
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4375
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4355
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4405
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4381
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4380
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4386
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4382
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4376
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4356
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4406
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4382
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4381
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4387
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4383
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4377
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4357
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4407
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4383
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4382
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4388
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4384
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4378
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4358
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4408
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4384
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4383
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4389
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4380
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4379
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4359
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4409
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4385
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4389
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4390
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4386
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4380
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4360
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4410
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4386
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+
+&wA &Wch&zec&Wke&zre&wd&w &Wp&zoo&Wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4385
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4391
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4387
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4381
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4361
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4411
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4387
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4386
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4392
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4388
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4382
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4362
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4412
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4388
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &cdeep &ppurple &Pp&poo&Pl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4387
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4393
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4389
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4383
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4363
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4413
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4389
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4388
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4394
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4385
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4384
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4364
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4414
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4390
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4394
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4395
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4391
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4385
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4365
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4415
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4391
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4390
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4396
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4392
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4386
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4366
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4416
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4392
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4391
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4397
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4393
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4387
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4367
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4417
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4393
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4392
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4398
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4394
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4388
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4368
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4418
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4394
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+
+&wAn &binky&w &zblack&w &bp&zoo&bl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4393
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4399
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4390
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4389
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4369
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4419
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4395
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4399
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4375
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4396
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4390
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4370
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4420
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4396
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4395
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4376
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4397
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4391
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4371
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4421
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4397
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+&wAn angry &Yfiery &Rred&w portal stands before you, daring you to enter.
+~
+#EXIT
+Direction north~
+ToRoom    4396
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4377
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4398
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4392
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4372
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4422
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4398
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4397
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4378
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4399
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4393
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4373
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4423
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4399
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4398
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4379
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4395
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4394
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4374
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4424
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4400
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Rshimmering&w portal opens into the depths of the &YChaos Gate&w here.
+~
+#EXIT
+Direction north~
+ToRoom    4404
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4405
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4401
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4420
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4375
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4425
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4401
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4400
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4406
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4402
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4421
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4376
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4426
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4402
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4401
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4407
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4403
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4422
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4377
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4427
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4403
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+&W&wA &rr&Ra&Yi&gn&bb&Bo&pw&w-colored &Wpool &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4402
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4408
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4404
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4423
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4378
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4428
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4404
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &zblack void&w swirls dangerously here.&D
+~
+#EXIT
+Direction north~
+ToRoom    4403
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4409
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4400
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4424
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4379
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4429
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4405
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4409
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4410
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4406
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4400
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4380
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4430
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4406
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4405
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4411
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4407
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4401
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4381
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4431
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4407
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4406
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4412
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4408
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4402
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4382
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4432
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4408
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4407
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4413
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4409
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4403
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4383
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4433
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4409
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4408
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4414
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4405
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4404
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4384
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4434
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4410
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4414
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4415
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4411
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4405
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4385
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4435
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4411
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+An &Ci&Wc&Cy &Wwhite &Wp&Coo&Wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4410
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4416
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4412
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4406
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4386
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4436
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4412
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+
+&wA &Gsea&w &ggreen&w &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4411
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4417
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4413
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4407
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4387
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4437
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4413
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4412
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4418
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4414
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4408
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4388
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4438
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4414
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+
+A &zdark grey p&woo&zl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4413
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4419
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4410
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4409
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4389
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4439
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4415
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4419
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4420
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4416
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4410
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4390
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4440
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4416
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4415
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4421
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4417
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4411
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4391
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4441
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4417
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4416
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4422
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4418
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4412
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4392
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4442
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4418
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4417
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4423
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4419
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4413
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4393
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4443
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4419
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4418
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4424
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4415
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4414
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4394
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4444
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4420
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4424
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4400
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4421
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4415
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4395
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4445
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4421
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4420
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4401
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4422
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4416
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4396
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4446
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4422
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4421
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4402
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4423
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4417
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4397
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4447
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4423
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4422
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4403
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4424
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4418
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4398
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4448
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4424
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4423
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4404
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4420
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4419
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4399
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4449
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4425
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+
+A &Rb&rlood&Ry &Rcrimson &Rp&roo&Rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4429
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4430
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4426
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4445
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4400
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4350
+#ENDEXIT
+
+Reset M 4351 5 4425 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+Reset M 4351 5 4425 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+Reset M 4351 5 4425 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+Reset M 4351 5 4425 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+Reset M 4351 5 4425 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+#ENDROOM
+
+#ROOM
+Vnum      4426
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4425
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4431
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4427
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4446
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4401
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4351
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4427
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4426
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4432
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4428
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4447
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4402
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4352
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4428
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Gf&gores&Gt &Ggreen &gp&Goo&gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4427
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4433
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4429
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4448
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4403
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4353
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4429
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4428
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4434
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4425
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4449
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4404
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4354
+#ENDEXIT
+
+Reset M 4351 10 4429 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+Reset M 4351 10 4429 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+Reset M 4351 10 4429 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+Reset M 4351 10 4429 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+Reset M 4351 10 4429 -1 -1 -1 100
+  Reset E 4352 1 16 100
+  Reset E 4353 1 12 100
+  Reset E 4354 1 1 100
+#ENDROOM
+
+#ROOM
+Vnum      4430
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4434
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4435
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4431
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4425
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4405
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4355
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4431
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Broyal &Cblue &Bp&Coo&Bl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4430
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4436
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4432
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4426
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4406
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4356
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4432
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4431
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4437
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4433
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4427
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4407
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4357
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4433
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4432
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4438
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4434
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4428
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4408
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4358
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4434
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4433
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4439
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4430
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4429
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4409
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4359
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4435
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4439
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4440
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4436
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4430
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4410
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4360
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4436
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4435
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4441
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4437
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4431
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4411
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4361
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4437
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4436
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4442
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4438
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4432
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4412
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4362
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4438
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4437
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4443
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4439
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4433
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4413
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4363
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4439
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Ws&zi&Wlv&zer&Wy &Cblue &Cp&Woo&Cl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4438
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4444
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4435
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4434
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4414
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4364
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4440
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4444
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4445
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4441
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4435
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4415
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4365
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4441
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4440
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4446
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4442
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4436
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4416
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4366
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4442
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+ 
+A &Wbright &Rred &rp&Roo&rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
+~
+#EXIT
+Direction north~
+ToRoom    4441
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4447
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4443
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4437
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4417
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4367
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4443
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4442
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4448
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4444
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4438
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4418
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4368
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4444
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4443
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4449
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4440
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4439
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4419
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4369
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4445
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4449
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4425
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4446
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4440
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4420
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4370
+#ENDEXIT
+
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+Reset M 4350 10 4445 -1 -1 -1 100
+  Reset E 4350 1 0 100
+  Reset E 4351 1 5 100
+#ENDROOM
+
+#ROOM
+Vnum      4446
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4445
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4426
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4447
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4441
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4421
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4371
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4447
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4446
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4427
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4448
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4442
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4422
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4372
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4448
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4447
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4428
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4449
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4443
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4423
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4373
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      4449
+Name      The Astral Plane~
+Sector    indoors~
+Flags     indoors norecall~
+Stats     0 0 0 0
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+&W&wwithin the &wemptiness of the &Wastral &wplane. Links between
+&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&W&wcan be seen in the &zdistance&w, as you continue your travels.
+~
+#EXIT
+Direction north~
+ToRoom    4448
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    4429
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    4445
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    4444
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    4424
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    4374
+#ENDEXIT
+
+#ENDROOM
+
+#ENDAREA

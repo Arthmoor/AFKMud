@@ -1,0 +1,162 @@
+MudProg Keyword Trigger
+-----------------------
+Author: Xorith
+Last Updated: 09/20/03
+
+This small snippet allows you to create what I call 'keyword' programs.
+In essence, you can create a program on a room, mobile, or object that
+is triggered by what a player would consider a command.
+
+Here's an example:
+
+   >rpedit add keyword Xorith is god
+   >mea $n I do agree!
+   >/s
+
+Typing that into a room will yield this under rpstat:
+
+   <1000hp 1000m 1000mv> rpstat
+   Name: The Parlour of the Immortals.  Vnum: 1200.
+   >keyword_prog Xorith is god
+   mea $n I do agree!
+
+Now watch the game:
+
+   <1000hp 1000m 1000mv> xorith is god
+   I do agree!
+
+   <1000hp 1000m 1000mv> XORITh is GOD
+   I do agree!
+
+   <1000hp 1000m 1000mv> say Xorith is god
+   You say 'Xorith is god'
+
+   <1000hp 1000m 1000mv> 'Xorith is god
+   You say 'Xorith is god'
+
+   <1000hp 1000m 1000mv> xorith is
+   Huh?
+
+   <1000hp 1000m 1000mv> xorith is god!!
+   Huh?
+
+   <1000hp 1000m 1000mv> xorith is god --
+   Huh?
+
+   <1000hp 1000m 1000mv> 
+
+As you can see, the program was triggered only when I typed the whole text.
+It is case insensitive as well.
+
+You can place a trigger on objects and mobiles, as well as rooms. They operate
+in the same fashion, however objects have a few more options:
+
+Adding r) before the trigger text requires the object to be in the room.
+Adding i) before the trigger text requires the object to only be in the player's inventory.
+Adding e) before the trigger text requires the object to only be equipped.
+Adding c) before the trigger text requires the object to be in inventory or equipped.
+
+
+Here's an example:
+
+I added four programs to a sword.
+
+   opedit sword add keyword wave sword
+   opedit sword add keyword r)grin sword
+   opedit sword add keyword i)kiss sword
+   opedit sword add keyword e)grip sword
+   opedit sword add keyword c)hug sword
+
+Here's the OPSTAT:
+   <1000hp 1000m 1000mv> opstat sword
+   Name: sword academy.  Vnum: 10313.
+   Short description: a finely honed sword.
+   >keyword_prog wave sword
+   mea $n Wave your sword? HA!
+   
+   >keyword_prog r)grin sword
+   mea $n Grinning at a sword, eh? Riiiight...
+   
+   >keyword_prog i)kiss sword
+   mea $n You're truely nuts, you know this right?
+   
+   >keyword_prog e)grip sword
+   mea $n You DO know you're wielding it already, right?
+   
+   >keyword_prog c)hug sword
+   mea $n Get a room, mate.
+   
+And here's the game log of me interacting with it:
+   
+   <1000hp 1000m 1000mv> l
+   The Parlour of the Immortals
+   You are lounging in a quiet cosy parlour, warmed by a gentle magical fire
+   which twinkles happily in a warm fireplace. 
+ 
+   Exits: none.
+   Mystical sparkling colors converge here to form arcane runes...
+
+In my inventory...
+   <1000hp 1000m 1000mv> i
+   You are carrying:
+        (PROTO) a finely honed sword
+   
+   <1000hp 1000m 1000mv> wave sword
+   Wave your sword? HA!
+   
+   <1000hp 1000m 1000mv> grin sword
+   They aren't here.
+   
+   <1000hp 1000m 1000mv> kiss sword
+   You're truely nuts, you know this right?
+   
+   <1000hp 1000m 1000mv> grip sword
+   They aren't here.
+   
+   <1000hp 1000m 1000mv> hug sword
+   Get a room, mate.
+
+In the room....   
+   <1000hp 1000m 1000mv> drop sword
+   You drop a finely honed sword.
+         
+   <1000hp 1000m 1000mv> wave sword
+   Wave your sword? HA!
+
+   <1000hp 1000m 1000mv> grin sword
+   Grinning at a sword, eh? Riiiight...
+
+   <1000hp 1000m 1000mv> kiss sword
+   They aren't here.
+
+   <1000hp 1000m 1000mv> grip sword
+   They aren't here.
+   
+   <1000hp 1000m 1000mv> hug sword
+   They aren't here.
+
+Wielded...
+   <1000hp 1000m 1000mv> get sword
+   You get a finely honed sword.
+
+   <1000hp 1000m 1000mv> wield sword
+   You wield a finely honed sword.
+
+   <1000hp 1000m 1000mv> wave sword
+   Wave your sword? HA!
+
+   <1000hp 1000m 1000mv> grin sword
+   They aren't here.
+
+   <1000hp 1000m 1000mv> kiss sword
+   They aren't here.
+
+   <1000hp 1000m 1000mv> grip sword
+   You DO know you're wielding it already, right?
+   
+   <1000hp 1000m 1000mv> hug sword
+   Get a room, mate.
+
+As you can see, due to the different trigger types it reacted differently.
+
+--Xorith

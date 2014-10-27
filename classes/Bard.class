@@ -1,0 +1,483 @@
+Version     1
+Name        Bard~
+Class       12
+Attrprime   2
+Weapon      2894
+Armor       2889
+Legwear     2891
+Headwear    2890
+Armwear     2892
+Footwear    2888
+Shield      2893
+Held        11470
+Skilladept  95
+Thac0       18
+Thac0gain   0.350000
+Hpmin       3
+Hpmax       8
+Mana        1
+Skill 'acid blast' 17 95
+Skill 'aqua breath' 18 95
+Skill 'armor' 11 95
+Skill 'beacon' 32 95
+Skill 'blindness' 29 95
+Skill 'burning hands' 11 95
+Skill 'cacophony' 68 95
+Skill 'calm' 8 85
+Skill 'chain lightning' 83 90
+Skill 'charm person' 14 95
+Skill 'colour spray' 36 95
+Skill 'continual light' 6 95
+Skill 'counterspell' 95 95
+Skill 'create fire' 16 95
+Skill 'despair' 13 95
+Skill 'detect invis' 14 95
+Skill 'detect magic' 8 95
+Skill 'disintegrate' 78 95
+Skill 'dispel magic' 34 95
+Skill 'dragon wit' 35 95
+Skill 'dragonskin' 75 95
+Skill 'dream' 20 95
+Skill 'elven beauty' 15 95
+Skill 'enchant armor' 80 80
+Skill 'enchant weapon' 80 80
+Skill 'enrage' 19 95
+Skill 'faerie fire' 15 95
+Skill 'faerie fog' 28 95
+Skill 'farsight' 51 95
+Skill 'find traps' 41 95
+Skill 'float' 24 95
+Skill 'fly' 36 95
+Skill 'grounding' 62 85
+Skill 'group fly' 62 85
+Skill 'group shield' 27 85
+Skill 'group waterbreath' 57 85
+Skill 'groupgate' 90 85
+Skill 'harmonic aura' 87 80
+Skill 'infravision' 12 95
+Skill 'invisibility' 17 95
+Skill 'kindred strength' 27 95
+Skill 'knock' 32 95
+Skill 'lightning bolt' 55 95
+Skill 'locate object' 42 95
+Skill 'magic missile' 3 95
+Skill 'mass invis' 53 95
+Skill 'minor track' 70 75
+Skill 'paralyze' 50 50
+Skill 'portal' 95 70
+Skill 'quickening' 46 80
+Skill 'refresh' 40 95
+Skill 'remove invis' 41 95
+Skill 'remove trap' 60 95
+Skill 'sagacity' 30 95
+Skill 'scry' 64 80
+Skill 'shield' 5 95
+Skill 'shocking grasp' 7 95
+Skill 'sleep' 10 95
+Skill 'slink' 31 95
+Skill 'sonic resonance' 29 95
+Skill 'soothe' 33 95
+Skill 'stinking cloud' 38 80
+Skill 'towngate' 75 95
+Skill 'transport' 85 95
+Skill 'ventriloquate' 3 95
+Skill 'weaken' 16 95
+Skill 'web' 31 90
+Skill 'word of recall' 32 95
+Skill 'aid' 9 95
+Skill 'climb' 12 95
+Skill 'cook' 1 95
+Skill 'dig' 10 95
+Skill 'hide' 12 80
+Skill 'inspire' 7 90
+Skill 'item lore' 25 95
+Skill 'kick' 1 95
+Skill 'lunge' 73 75
+Skill 'meditate' 30 95
+Skill 'mount' 2 95
+Skill 'rescue' 10 95
+Skill 'retreat' 22 95
+Skill 'scribe' 90 80
+Skill 'search' 1 95
+Skill 'slice' 1 95
+Skill 'sneak' 13 70
+Skill 'archery' 1 70
+Skill 'axes' 1 70
+Skill 'blowguns' 1 70
+Skill 'daggers' 1 80
+Skill 'defensive style' 1 80
+Skill 'evasive style' 1 80
+Skill 'maces and hammers' 1 65
+Skill 'pugilism' 1 70
+Skill 'slings' 1 70
+Skill 'spears' 1 70
+Skill 'standard style' 1 80
+Skill 'staves' 1 75
+Skill 'swords' 1 80
+Skill 'talonous arms' 1 70
+Skill 'whips' 1 75
+Skill 'centaur' 1 100
+Skill 'common' 1 100
+Skill 'dwarven' 1 100
+Skill 'elvish' 1 100
+Skill 'gith' 1 100
+Skill 'gnomish' 1 100
+Skill 'goblin' 1 100
+Skill 'halfling' 1 100
+Skill 'insectoid' 1 95
+Skill 'minotaur' 1 100
+Skill 'ogre' 1 100
+Skill 'orcish' 1 100
+Skill 'pixie' 1 100
+Skill 'reptile' 1 100
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 100
+Title
+Man~
+Woman~
+Title
+Probationer~
+Probationer~
+Title
+Chanter~
+Chanter~
+Title
+Lutist~
+Lutist~
+Title
+Flutist~
+Flutist~
+Title
+Musician~
+Musician~
+Title
+Storyteller~
+Storyteller~
+Title
+Master Storyteller~
+Master Storyteller~
+Title
+Wanderer~
+Wanderer~
+Title
+College Initiate~
+College Initiate~
+Title
+Fochlucan Probationer~
+Fochlucan Probationer~
+Title
+Fochlucan Initiate~
+Fochlucan Initiate~
+Title
+Fochlucan Student~
+Fochlucan Student~
+Title
+Fochlucan Scholar~
+Fochlucan Scholar~
+Title
+Fochlucan Loremaster~
+Fochlucan Loremistress~
+Title
+Fochlucan Medium~
+Fochlucan Medium~
+Title
+Fochlucan Bard~
+Fochlucan Bard~
+Title
+Fochlucan Master Bard~
+Fochlucan Master Bard~
+Title
+Fochlucan Graduate~
+Fochlucan Graduate~
+Title
+Fochlucan Alumnae~
+Fochlucan Alumnae~
+Title
+Mac-Fuirmidh Probationer~
+Mac-Fuirmidh Probationer~
+Title
+Mac-Fuirmidh Initiate~
+Mac-Fuirmidh Initiate~
+Title
+Mac-Fuirmidh Student~
+Mac-Fuirmidh Student~
+Title
+Mac-Fuirmidh Scholar~
+Mac-Fuirmidh Scholar~
+Title
+Mac-Fuirmidh Loremaster~
+Mac-Fuirmidh Loremistress~
+Title
+Mac-Fuirmidh Medium~
+Mac-Fuirmidh Medium~
+Title
+Mac-Fuirmidh Bard~
+Mac-Fuirmidh Bard~
+Title
+Mac-Fuirmidh Master Bard~
+Mac-Fuirmidh Master Bard~
+Title
+Mac-Fuirmidh Graduate~
+Mac-Fuirmidh Graduate~
+Title
+Mac-Fuirmidh Alumnae~
+Mac-Fuirmidh Alumnae~
+Title
+Doss Probationer~
+Doss Probationer~
+Title
+Doss Initiate~
+Doss Initiate~
+Title
+Doss Student~
+Doss Student~
+Title
+Doss Scholar~
+Doss Scholar~
+Title
+Doss Loremaster~
+Doss Loremistress~
+Title
+Doss Medium~
+Doss Medium~
+Title
+Doss Bard~
+Doss Bard~
+Title
+Doss Master Bard~
+Doss Master Bard~
+Title
+Doss Graduate~
+Doss Graduate~
+Title
+Doss Alumnae~
+Doss Alumnae~
+Title
+Canaith Probationer~
+Canaith Probationer~
+Title
+Canaith Initiate~
+Canaith Initiate~
+Title
+Canaith Student~
+Canaith Student~
+Title
+Canaith Scholar~
+Canaith Scholar~
+Title
+Canaith Loremaster~
+Canaith Loremistress~
+Title
+Canaith Medium~
+Canaith Medium~
+Title
+Canaith Bard~
+Canaith Bard~
+Title
+Canaith Master Bard~
+Canaith Master Bard~
+Title
+Canaith Graduate~
+Canaith Graduate~
+Title
+Canaith Alumnae~
+Canaith Alumnae~
+Title
+Cli Probationer~
+Cli Probationer~
+Title
+Cli Initiate~
+Cli Initiate~
+Title
+Cli Student~
+Cli Student~
+Title
+Cli Scholar~
+Cli Scholar~
+Title
+Cli Loremaster~
+Cli Loremistress~
+Title
+Cli Medium~
+Cli Medium~
+Title
+Cli Bard~
+Cli Bard~
+Title
+Cli Master Bard~
+Cli Master Bard~
+Title
+Cli Graduate~
+Cli Graduate~
+Title
+Cli Alumnae~
+Cli Alumnae~
+Title
+Anstruth Probationer~
+Anstruth Probationer~
+Title
+Anstruth Initiate~
+Anstruth Initiate~
+Title
+Anstruth Student~
+Anstruth Student~
+Title
+Anstruth Scholar~
+Anstruth Scholar~
+Title
+Anstruth Loremaster~
+Anstruth Loremistress~
+Title
+Anstruth Medium~
+Anstruth Medium~
+Title
+Anstruth Bard~
+Anstruth Bard~
+Title
+Anstruth Master Bard~
+Anstruth Master Bard~
+Title
+Anstruth Graduate~
+Anstruth Graduate~
+Title
+Anstruth Alumnae~
+Anstruth Alumnae~
+Title
+Ollamh Probationer~
+Ollamh Probationer~
+Title
+Ollamh Initiate~
+Ollamh Initiate~
+Title
+Ollamh Student~
+Ollamh Student~
+Title
+Ollamh Scholar~
+Ollamh Scholar~
+Title
+Ollamh Loremaster~
+Ollamh Loremistress~
+Title
+Ollamh Medium~
+Ollamh Medium~
+Title
+Ollamh Bard~
+Ollamh Bard~
+Title
+Ollamh Master Bard~
+Ollamh Master Bard~
+Title
+Ollamh Graduate~
+Ollamh Graduate~
+Title
+Ollamh Alumnae~
+Ollamh Alumnae~
+Title
+Graduate of All Colleges~
+Graduate of All Colleges~
+Title
+Lesser Master of All Colleges~
+Lesser Mistress of All Colleges~
+Title
+Master of All Colleges~
+Mistress of All Colleges~
+Title
+Greater Master of All Colleges~
+Greater Mistress of All Colleges~
+Title
+Alumnae~
+Alumnae~
+Title
+Magna Alumnae~
+Magna Alumnae~
+Title
+Novice Bard~
+Novice Bard~
+Title
+Lesser Bard~
+Lesser Bard~
+Title
+Bard~
+Bard~
+Title
+Greater Bard~
+Greater Bard~
+Title
+Master Bard~
+Master Bard~
+Title
+Novice Loremaster~
+Novice Loremistress~
+Title
+Lesser Loremaster~
+Lesser Loremistress~
+Title
+Loremaster~
+Loremistress~
+Title
+Greater Loremaster~
+Greater Loremistress~
+Title
+Master Loremaster~
+Master Loremistress~
+Title
+Bardic Loremaster~
+Bardic Loremistress~
+Title
+Lesser Bardic Master~
+Lesser Bardic Mistress~
+Title
+Bardic Master~
+Bardic Mistress~
+Title
+Master of All Bards~
+Mistress of All Bards~
+Title
+Avatar of Lores~
+Avatar of Lores~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

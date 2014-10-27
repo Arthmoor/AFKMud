@@ -1,0 +1,477 @@
+Version     1
+Name        Druid~
+Class       5
+Attrprime   4
+Weapon      2898
+Armor       2884
+Legwear     2885
+Headwear    2887
+Armwear     2886
+Footwear    2888
+Shield      2893
+Held        11433
+Skilladept  95
+Thac0       18
+Thac0gain   0.315000
+Hpmin       3
+Hpmax       8
+Mana        1
+Skill 'acidmist' 85 80
+Skill 'aqua breath' 25 95
+Skill 'bark skin' 31 95
+Skill 'beacon' 35 95
+Skill 'blazebane' 35 90
+Skill 'blazeward' 35 90
+Skill 'bless' 12 95
+Skill 'call lightning' 74 95
+Skill 'cause critical' 50 95
+Skill 'cause light' 7 95
+Skill 'cause serious' 22 95
+Skill 'change form' 15 85
+Skill 'charged beacon' 39 80
+Skill 'continual light' 10 95
+Skill 'control weather' 54 95
+Skill 'create fire' 26 95
+Skill 'create food' 21 95
+Skill 'create mistletoe' 13 95
+Skill 'create spring' 31 95
+Skill 'create water' 17 95
+Skill 'creeping doom' 90 70
+Skill 'cure blindness' 15 95
+Skill 'cure critical' 37 95
+Skill 'cure light' 3 95
+Skill 'cure poison' 36 95
+Skill 'cure serious' 18 90
+Skill 'detect magic' 9 95
+Skill 'detect poison' 21 95
+Skill 'dispel magic' 60 95
+Skill 'earthquake' 35 95
+Skill 'elemental shield' 92 70
+Skill 'entangle' 23 90
+Skill 'faerie fire' 8 95
+Skill 'faerie fog' 25 95
+Skill 'fireseed' 9 85
+Skill 'firestorm' 80 90
+Skill 'flame blade' 26 90
+Skill 'flamestrike' 62 95
+Skill 'float' 23 95
+Skill 'goodberry' 10 90
+Skill 'grounding' 37 90
+Skill 'group float' 44 80
+Skill 'group refresh' 38 85
+Skill 'gust of wind' 27 95
+Skill 'harm' 47 95
+Skill 'heal' 78 80
+Skill 'heroes feast' 53 95
+Skill 'infravision' 20 95
+Skill 'inner warmth' 33 90
+Skill 'know alignment' 26 95
+Skill 'major track' 70 75
+Skill 'minor track' 46 85
+Skill 'plant pass' 23 90
+Skill 'poison' 24 95
+Skill 'primal fury' 88 70
+Skill 'recharge' 72 75
+Skill 'refresh' 21 95
+Skill 'remove curse' 47 85
+Skill 'remove paralysis' 48 95
+Skill 'sanctuary' 80 95
+Skill 'succor' 28 95
+Skill 'sunray' 29 80
+Skill 'tree transport' 30 95
+Skill 'treespeak' 30 95
+Skill 'true sight' 65 65
+Skill 'valiance' 36 90
+Skill 'venomshield' 58 95
+Skill 'vine whip' 54 90
+Skill 'winter mist' 40 90
+Skill 'word of recall' 35 95
+Skill 'aid' 6 95
+Skill 'brew' 62 75
+Skill 'cook' 1 90
+Skill 'dig' 7 90
+Skill 'meditate' 27 90
+Skill 'mount' 2 95
+Skill 'scribe' 68 70
+Skill 'search' 1 90
+Skill 'slice' 1 95
+Skill 'tan' 45 75
+Skill 'track' 32 95
+Skill 'trance' 76 80
+Skill 'blowguns' 1 60
+Skill 'daggers' 1 70
+Skill 'defensive style' 1 90
+Skill 'evasive style' 1 90
+Skill 'maces and hammers' 1 80
+Skill 'pugilism' 1 35
+Skill 'slings' 1 60
+Skill 'spears' 1 70
+Skill 'standard style' 1 90
+Skill 'staves' 1 70
+Skill 'talonous arms' 1 95
+Skill 'whips' 1 65
+Skill 'centaur' 1 99
+Skill 'common' 1 99
+Skill 'dwarven' 1 99
+Skill 'elvish' 1 99
+Skill 'gith' 1 99
+Skill 'gnomish' 1 99
+Skill 'goblin' 1 99
+Skill 'halfling' 1 99
+Skill 'insectoid' 1 95
+Skill 'minotaur' 1 99
+Skill 'ogre' 1 99
+Skill 'orcish' 1 99
+Skill 'pixie' 1 99
+Skill 'reptile' 1 99
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 99
+Title
+Man~
+Woman~
+Title
+Druid Believer~
+Druidess Believer~
+Title
+Druid Believer~
+Druidess Believer~
+Title
+Druid Attendant~
+Druidess Attendant~
+Title
+Druid Attendant~
+Druidess Attendant~
+Title
+Acolyte of the Wilderness~
+Acolyte of the Wilderness~
+Title
+Acolyte of the Wilderness~
+Acolyte of the Wilderness~
+Title
+Novice Druid~
+Novice Druidess~
+Title
+Novice Druid~
+Novice Druidess~
+Title
+Son of the Forest~
+Daughter of the Forest~
+Title
+Son of the Forest~
+Daughter of the Forest~
+Title
+Son of the Land~
+Daughter of the Land~
+Title
+Son of the Land~
+Daughter of the Land~
+Title
+Watcher of the Forest~
+Watcher of the Forest~
+Title
+Watcher of the Forest~
+Watcher of the Forest~
+Title
+Watcher of the Land~
+Watcher of the Land~
+Title
+Watcher of the Land~
+Watcher of the Land~
+Title
+Friend to the Animals~
+Friend to the Animals~
+Title
+Friend to the Animals~
+Friend to the Animals~
+Title
+Guardian of the Animals~
+Guardian of the Animals~
+Title
+Guardian of the Animals~
+Guardian of the Animals~
+Title
+Priest of the Druidic Order~
+Priestess of the Druidic Order~
+Title
+Priest of the Druidic Order~
+Priestess of the Druidic Order~
+Title
+Sage of Nature's Lore~
+Lady of Nature's Lore~
+Title
+Sage of Nature's Lore~
+Lady of Nature's Lore~
+Title
+Champion of the Animals~
+Champion of the Animals~
+Title
+Champion of the Animals~
+Champion of the Animals~
+Title
+Champion of Life~
+Champion of Life~
+Title
+Champion of Life~
+Champion of Life~
+Title
+Healer of the Forest~
+Healer of the Forest~
+Title
+Healer of the Forest~
+Healer of the Forest~
+Title
+Healer of the Land~
+Healer of the Land~
+Title
+Healer of the Land~
+Healer of the Land~
+Title
+Bush Walker~
+Bush Walker~
+Title
+Bush Walker~
+Bush Walker~
+Title
+Priest of Nature~
+Priestess of Nature~
+Title
+Priest of Nature~
+Priestess of Nature~
+Title
+Elder Druid~
+Elder Druidess~
+Title
+Elder Druid~
+Elder Druidess~
+Title
+Woodland Caretaker~
+Woodland Caretaker~
+Title
+Woodland Caretaker~
+Woodland Caretaker~
+Title
+Arch Druid~
+Arch Druidess~
+Title
+Arch Druid~
+Arch Druidess~
+Title
+Arch Druid Sage~
+Arch Druidess Sage~
+Title
+Arch Druid Sage~
+Arch Druidess Sage~
+Title
+Forest Watcher~
+Forest Watcher~
+Title
+Forest Watcher~
+Forest Watcher~
+Title
+Forest Guardian~
+Forest Guardian~
+Title
+Forest Guardian~
+Forest Guardian~
+Title
+Elder Druid~
+Elder Druidess~
+Title
+Elder Druid~
+Elder Druidess~
+Title
+Hallowed Druid~
+Hallowed Druid~
+Title
+Hallowed Druid~
+Hallowed Druid~
+Title
+Protector of Fire~
+Protector of Fire~
+Title
+Protector of Fire~
+Protector of Fire~
+Title
+Protector of Earth~
+Protector of Earth~
+Title
+Protector of Earth~
+Protector of Earth~
+Title
+Protector of Water~
+Protector of Water~
+Title
+Protector of Water~
+Protector of Water~
+Title
+Protector of Air~
+Protector of Air~
+Title
+Protector of Air~
+Protector of Air~
+Title
+Revered Druid~
+Revered Druid~
+Title
+Revered Druid~
+Revered Druid~
+Title
+Elemental Watcher~
+Elemental Watcher~
+Title
+Elemental Watcher~
+Elemental Watcher~
+Title
+Druid of Autumn~
+Druidess of Autumn~
+Title
+Druid of Autumn~
+Druidess of Autumn~
+Title
+Druid of Winter~
+Druidess of Winter~
+Title
+Druid of Winter~
+Druidess of Winter~
+Title
+Druid of Spring~
+Druidess of Spring~
+Title
+Druid of Spring~
+Druidess of Spring~
+Title
+Druid of Summer~
+Druidess of Summer~
+Title
+Druid of Summer~
+Druidess of Summer~
+Title
+Elemental Sage~
+Elemental Sage~
+Title
+Elemental Sage~
+Elemental Sage~
+Title
+Elemental Guardian~
+Elemental Guardian~
+Title
+Elemental Guardian~
+Elemental Guardian~
+Title
+Weaver of Storms~
+Weaver of Storms~
+Title
+Weaver of Storms~
+Weaver of Storms~
+Title
+Guardian of the Animals~
+Guardian of the Animals~
+Title
+Guardian of the Animals~
+Guardian of the Animals~
+Title
+Grand Druid~
+Grand Druidess~
+Title
+Grand Druid~
+Grand Druidess~
+Title
+Savant of Fire~
+Savanti of Fire~
+Title
+Savant of Fire~
+Savanti of Fire~
+Title
+Savant of Earth~
+Savanti of Earth~
+Title
+Savant of Earth~
+Savanti of Earth~
+Title
+Savant of Water~
+Savanti of Water~
+Title
+Savant of Water~
+Savanti of Water~
+Title
+Savant of Air~
+Savanti of Air~
+Title
+Savant of Air~
+Savanti of Air~
+Title
+Lord of the River~
+Lady of the River~
+Title
+Lord of the River~
+Lady of the River~
+Title
+Master of the Four Seasons~
+Mistress of the Four Seasons~
+Title
+Master of the Four Seasons~
+Mistress of the Four Seasons~
+Title
+Master of the Elements~
+Mistress of the Elements~
+Title
+Master of the Elements~
+Mistress of the Elements~
+Title
+Master of Storms~
+Mistress of Storms~
+Title
+Immaculate Druid~
+Immaculate Druidess~
+Title
+Hand of Nature~
+Hand of Nature~
+Title
+Avatar of Nature~
+Avatar of Nature~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

@@ -1,0 +1,99 @@
+Rune System Documentation
+
+Written by Dwip, 6/17/03
+
+This document describes the rune and runeword system used in AFKMud. For
+anyone who has played Diablo II: Lords of Destruction, the concept is
+exactly the same. There are runes that exist which can be put into socketed
+weapons and armor with the body wearflag. These runes add various affects
+to the item in which they are placed. Certain combinations of runes form
+runewords, which add very powerful affects to the item as well as rename it.
+
+That having been said, all of the code and such for this system is found in
+treasure.c, treasure.h, and in the files runes.dat and runewords.dat.
+
+--------------------------
+
+Sockets:
+
+Sockets are added to items in a few different ways. The random treasure
+system (see Treasure.txt) generates socketed weapons and armor as treasure.
+In addition, sockets can be added by OLC or hand editing - <value7> for
+weapons, <value2> for armor with the body wearflag.
+
+The random treasure generator assumes certain amounts of sockets - 1 for
+low level items, up to 2 for mid-level items, and 3 for high level items.
+The maximum runeword size is three, so items above three are incapable of
+holding runewords. OLCed sockets can be whatever number you desire.
+
+---------------------------
+
+Runes:
+
+Runes can be viewed in two ways. First is the file runes.dat.
+An excerpt from it is below:
+
+#RUNE
+Name     Yaz
+Rarity   1
+Stat1    78 2
+Stat2    17 -20
+End
+
+#RUNE is the rune header, and must be placed before each new rune.
+
+<Name> - The name of the rune.
+
+<Rarity> - 0 for common runes, 1 for rare runes, 2 for ultra-rare runes.
+This is used in the random treasure generator.
+
+<Stat1> - Item affect to apply when socketed in weapons.
+
+<Stat2> - Item affect to apply when socketed in armor.
+
+Item affect values can be found in Values.txt under Affect Modifiers.
+The first number on the line is the affect, the second the amount of
+affect applied.
+
+End - This must be placed after each rune.
+
+#END - This must be at the very end of runes.dat.
+
+The OLC method to show all of this is the showrune command.
+Editing runes is covered by the makerune, setrune, and destroyrune commands.
+
+Please note that currently, all runes are created as part of the random
+treasure generator. There is also no way to identify runes outside of trial
+and error.
+
+-----------------------------------
+
+Runewords:
+
+Runewords can be viewed and edited by way of the file runeword.dat.
+This file is set up similarly to runes.dat:
+[This is a ficticious runeword btw]
+
+#RWORD
+Name   &WSlayer&D
+Type   1
+Rune1  Sef
+Rune2  Tog
+Stat1  4 1
+Stat2  21 -1
+Stat3  78 3
+End
+
+#RWORD - This must begin every new runeword.
+
+<Type> - 0 for armor runewords, 1 for weapon runewords.
+
+<Rune1> through <Rune3> - the names of the runes required to form the runeword.
+
+<Stat1> through <Stat4> - extra affects to apply to the item when the
+runeword is created. These extra affects are described in values.txt, and
+are added to the item in addition to the rune affect.
+
+End - This must be placed after each runeword.
+
+#END - This must be placed after the final runeword in the file.

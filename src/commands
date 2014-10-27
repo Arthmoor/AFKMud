@@ -1,0 +1,20 @@
+bt
+frame 0
+list
+info locals
+frame 1
+list
+info locals
+frame 2
+list
+info locals
+frame 3
+list
+info locals
+frame 4
+list
+info locals
+frame 5
+list
+info locals
+

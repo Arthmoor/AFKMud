@@ -1,0 +1,437 @@
+Version     1
+Name        Monk~
+Class       7
+Attrprime   4
+Weapon      -1
+Armor       2901
+Legwear     2885
+Headwear    2887
+Armwear     2886
+Footwear    2888
+Shield      -1
+Held        -1
+Skilladept  95
+Thac0       18
+Thac0gain   0.350000
+Hpmin       3
+Hpmax       8
+Mana        1
+Skill 'adaptation' 30 95
+Skill 'adrenaline rush' 45 95
+Skill 'aid' 12 90
+Skill 'anatomical lore' 75 95
+Skill 'bash' 12 95
+Skill 'blur' 42 95
+Skill 'cirkick' 13 95
+Skill 'climb' 12 95
+Skill 'cook' 1 95
+Skill 'crushing blow' 40 40
+Skill 'dig' 5 95
+Skill 'disarm' 17 95
+Skill 'dragon palm' 91 95
+Skill 'eagle claw' 5 95
+Skill 'endurance' 19 95
+Skill 'enhanced damage' 12 75
+Skill 'enlightenment' 85 95
+Skill 'feign death' 25 95
+Skill 'flying kick' 26 95
+Skill 'focus' 58 80
+Skill 'fortitude' 55 95
+Skill 'heightened senses' 62 80
+Skill 'hide' 10 95
+Skill 'immunity to poison' 65 95
+Skill 'imperviousness' 80 95
+Skill 'ironskin' 72 95
+Skill 'karmic aura' 90 95
+Skill 'kick' 2 95
+Skill 'levitation' 35 95
+Skill 'mastery of body' 60 95
+Skill 'meditate' 30 95
+Skill 'mount' 2 95
+Skill 'neutralize poison' 40 95
+Skill 'quivering palm' 70 95
+Skill 'recuperate' 21 95
+Skill 'rescue' 6 95
+Skill 'retreat' 20 95
+Skill 'safe fall' 14 95
+Skill 'search' 1 95
+Skill 'sense of balance' 23 95
+Skill 'slice' 1 95
+Skill 'sneak' 15 95
+Skill 'spinkick' 54 95
+Skill 'spring leap' 22 95
+Skill 'stun' 25 40
+Skill 'tumble' 16 95
+Skill 'withering touch' 18 95
+Skill 'aggressive style' 1 95
+Skill 'defensive style' 1 95
+Skill 'evasive style' 1 95
+Skill 'pugilism' 1 95
+Skill 'spears' 1 80
+Skill 'standard style' 1 95
+Skill 'staves' 1 95
+Skill 'centaur' 1 99
+Skill 'common' 1 99
+Skill 'dwarven' 1 99
+Skill 'elvish' 1 99
+Skill 'gith' 1 99
+Skill 'gnomish' 1 99
+Skill 'goblin' 1 99
+Skill 'halfling' 1 99
+Skill 'insectoid' 1 99
+Skill 'minotaur' 1 99
+Skill 'ogre' 1 99
+Skill 'orcish' 1 99
+Skill 'pixie' 1 99
+Skill 'reptile' 1 99
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 99
+Title
+Man~
+Woman~
+Title
+Novice~
+Novice~
+Title
+Initiate~
+Initiate~
+Title
+Brother~
+Sister~
+Title
+Disciple~
+Disciple~
+Title
+Immaculate~
+Immaculate~
+Title
+Master~
+Mistress~
+Title
+Superior Master~
+Superior Mistress~
+Title
+Novice of the North Wind~
+Novice of the North Wind~
+Title
+Initiate of the North Wind~
+Initiate of the North Wind~
+Title
+Brother of the North Wind~
+Sister of the North Wind~
+Title
+Disciple of the North Wind~
+Disciple of the North Wind~
+Title
+Immaculate of the North Wind~
+Immaculate of the North Wind~
+Title
+Master of the North Wind~
+Mistress of the North Wind~
+Title
+Superior Master of the North Wind~
+Superior Mistress of the North Wind~
+Title
+High Master of the North Wind~
+High Mistress of the North Wind~
+Title
+Grand Master of the North Wind~
+Grand Mistress of the North Wind~
+Title
+Novice of the West Wind~
+Novice of the West Wind~
+Title
+Initiate of the West Wind~
+Initiate of the West Wind~
+Title
+Brother of the West Wind~
+Sister of the West Wind~
+Title
+Disciple of the West Wind~
+Disciple of the West Wind~
+Title
+Immaculate of the West Wind~
+Immaculate of the West Wind~
+Title
+Master of the West Wind~
+Mistress of the West Wind~
+Title
+Superior Master of the West Wind~
+Superior Mistress of the West Wind~
+Title
+High Master of the West Wind~
+High Mistress of the West Wind~
+Title
+Grand Master of the West Wind~
+Grand Mistress of the West Wind~
+Title
+Novice of the South Wind~
+Novice of the South Wind~
+Title
+Initiate of the South Wind~
+Initiate of the South Wind~
+Title
+Brother of the South Wind~
+Sister of the South Wind~
+Title
+Disciple of the South Wind~
+Disciple of the South Wind~
+Title
+Immaculate of the South Wind~
+Immaculate of the South Wind~
+Title
+Master of the South Wind~
+Mistress of the South Wind~
+Title
+Superior Master of the South Wind~
+Superior Mistress of the South Wind~
+Title
+High Master of the South Wind~
+High Mistress of the South Wind~
+Title
+Grand Master of the South Wind~
+Grand Mistress of the South Wind~
+Title
+Novice of the East Wind~
+Novice of the East Wind~
+Title
+Initiate of the East Wind~
+Initiate of the East Wind~
+Title
+Brother of the East Wind~
+Sister of the East Wind~
+Title
+Disciple of the East Wind~
+Disciple of the East Wind~
+Title
+Immaculate of the East Wind~
+Immaculate of the East Wind~
+Title
+Master of the East Wind~
+Mistress of the East Wind~
+Title
+Superior Master of the East Wind~
+Superior Mistress of the East Wind~
+Title
+High Master of the East Wind~
+High Mistress of the East Wind~
+Title
+Grand Master of the East Wind~
+Grand Mistress of the East Wind~
+Title
+Novice of Winter~
+Novice of Winter~
+Title
+Initiate of Winter~
+Initiate of Winter~
+Title
+Brother of Winter~
+Sister of Winter~
+Title
+Disciple of Winter~
+Disciple of Winter~
+Title
+Immaculate of Winter~
+Immaculate of Winter~
+Title
+Master of Winter~
+Mistress of Winter~
+Title
+Superior Master of Winter~
+Superior Mistress of Winter~
+Title
+High Master of Winter~
+High Mistress of Winter~
+Title
+Grand Master of Winter~
+Grand Mistress of Winter~
+Title
+Novice of Spring~
+Novice of Spring~
+Title
+Initiate of Spring~
+Initiate of Spring~
+Title
+Brother of Spring~
+Sister of Spring~
+Title
+Disciple of Spring~
+Disciple of Spring~
+Title
+Immaculate of Spring~
+Immaculate of Spring~
+Title
+Master of Spring~
+Mistress of Spring~
+Title
+Superior Master of Spring~
+Superior Mistress of Spring~
+Title
+High Master of Spring~
+High Mistress of Spring~
+Title
+Grand Master of Spring~
+Grand Mistress of Spring~
+Title
+Novice of Summer~
+Novice of Summer~
+Title
+Initiate of Summer~
+Initiate of Summer~
+Title
+Brother of Summer~
+Sister of Summer~
+Title
+Disciple of Summer~
+Disciple of Summer~
+Title
+Immaculate of Summer~
+Immaculate of Summer~
+Title
+Master of Summer~
+Mistress of Summer~
+Title
+Superior Master of Summer~
+Superior Mistress of Summer~
+Title
+High Master of Summer~
+High Mistress of Summer~
+Title
+Grand Master of Summer~
+Grand Mistress of Summer~
+Title
+Novice of Autumn~
+Novice of Autumn~
+Title
+Initiate of Autumn~
+Initiate of Autumn~
+Title
+Brother of Autumn~
+Sister of Autumn~
+Title
+Disciple of Autumn~
+Disciple of Autumn~
+Title
+Immaculate of Autumn~
+Immaculate of Autumn~
+Title
+Master of Autumn~
+Mistress of Autumn~
+Title
+Superior Master of Autumn~
+Superior Mistress of Autumn~
+Title
+High Master of Autumn~
+High Mistress of Autumn~
+Title
+Grand Master of Autumn~
+Grand Mistress of Autumn~
+Title
+Novice of Flowers~
+Novice of Flowers~
+Title
+Initiate of Flowers~
+Initiate of Flowers~
+Title
+Brother of Flowers~
+Sister of Flowers~
+Title
+Disciple of Flowers~
+Disciple of Flowers~
+Title
+Immaculate of Flowers~
+Immaculate of Flowers~
+Title
+Master of Flowers~
+Mistress of Flowers~
+Title
+Superior Master of Flowers~
+Superior Mistress of Flowers~
+Title
+High Master of Flowers~
+High Mistress of Flowers~
+Title
+Grand Master of Flowers~
+Grand Mistress of Flowers~
+Title
+Novice of Dragons~
+Novice of Dragons~
+Title
+Initiate of Dragons~
+Initiate of Dragons~
+Title
+Brother of Dragons~
+Sister of Dragons~
+Title
+Disciple of Dragons~
+Disciple of Dragons~
+Title
+Immaculate of Dragons~
+Immaculate of Dragons~
+Title
+Master of Dragons~
+Mistress of Dragons~
+Title
+Superior Master of Dragons~
+Superior Mistress of Dragons~
+Title
+High Master of Dragons~
+High Mistress of Dragons~
+Title
+Grand Master of Dragons~
+Grand Mistress of Dragons~
+Title
+Superior Master of Monks~
+Superior Mistress of Monks~
+Title
+Grand Master of Monks~
+Grand Master of Monks~
+Title
+Avatar of Meditation~
+Avatar of Meditation~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

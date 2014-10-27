@@ -1,0 +1,60 @@
+Version     1
+Name        Drow~
+Race        15
+Classes     Druid Ranger Monk Available Available2 Antipaladin Paladin Bard~
+Str_Plus    -2
+Dex_Plus    2
+Wis_Plus    0
+Int_Plus    2
+Con_Plus    -2
+Cha_Plus    -2
+Lck_Plus    1
+Hit         -3
+Mana        12
+Affected    infrared~
+Resist      sleep charm~
+Language    elvish~
+Align       0
+Min_Align  -1000
+Max_Align	 1000
+AC_Plus    0
+Exp_Mult   108
+Height     84
+Weight     135
+Hunger_Mod  0
+Thirst_mod  -1
+Mana_Regen  0
+HP_Regen    0
+WhereName  <used as light>     ~
+WhereName  <worn on finger>    ~
+WhereName  <worn on finger>    ~
+WhereName  <worn around neck>  ~
+WhereName  <worn around neck>  ~
+WhereName  <worn on body>      ~
+WhereName  <worn on head>      ~
+WhereName  <worn on legs>      ~
+WhereName  <worn on feet>      ~
+WhereName  <worn on hands>     ~
+WhereName  <worn on arms>      ~
+WhereName  <worn as shield>    ~
+WhereName  <worn about body>   ~
+WhereName  <worn about waist>  ~
+WhereName  <worn around wrist> ~
+WhereName  <worn around wrist> ~
+WhereName  <wielded>           ~
+WhereName  <held>              ~
+WhereName  <dual wielded>      ~
+WhereName  <worn on ears>      ~
+WhereName  <worn on eyes>      ~
+WhereName  <missile wielded>   ~
+WhereName  <worn on back>      ~
+WhereName  <worn on face>      ~
+WhereName  <worn on ankle>     ~
+WhereName  <worn on ankle>     ~
+WhereName  <lodged in a rib>   ~
+WhereName  <lodged in an arm>  ~
+WhereName  <lodged in a leg>   ~
+Skill 'deathsong' 70 80
+Skill 'drow fire' 8 90
+Skill 'globe of darkness' 40 85
+End

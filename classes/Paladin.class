@@ -1,0 +1,457 @@
+Version     1
+Name        Paladin~
+Class       11
+Attrprime   1
+Weapon      2894
+Armor       2889
+Legwear     2891
+Headwear    2890
+Armwear     2892
+Footwear    2888
+Shield      2893
+Held        11452
+Skilladept  95
+Thac0       18
+Thac0gain   0.375000
+Hpmin       4
+Hpmax       10
+Mana        1
+Skill 'alertness' 63 90
+Skill 'armor' 6 90
+Skill 'beacon' 51 95
+Skill 'benefic aura' 43 90
+Skill 'bless' 9 90
+Skill 'continual light' 16 90
+Skill 'create fire' 6 90
+Skill 'create food' 23 90
+Skill 'create paladin symbol' 21 90
+Skill 'create water' 24 90
+Skill 'cure blindness' 13 90
+Skill 'cure critical' 55 90
+Skill 'cure light' 4 90
+Skill 'cure poison' 18 90
+Skill 'cure serious' 36 90
+Skill 'detect evil' 1 95
+Skill 'detect poison' 22 90
+Skill 'dispel evil' 88 90
+Skill 'disruption' 69 90
+Skill 'divine aid' 27 90
+Skill 'divine fury' 92 90
+Skill 'grounding' 76 90
+Skill 'holy strength' 26 90
+Skill 'inner warmth' 73 90
+Skill 'know alignment' 33 90
+Skill 'protection from evil' 8 90
+Skill 'refresh' 19 90
+Skill 'remove curse' 53 90
+Skill 'remove paralysis' 59 95
+Skill 'resilience' 80 90
+Skill 'righteousness' 32 90
+Skill 'sanctuary' 85 90
+Skill 'spiritual hammer' 46 90
+Skill 'true sight' 54 90
+Skill 'valiance' 67 90
+Skill 'warmount' 25 95
+Skill 'warsteed' 40 80
+Skill 'word of recall' 51 90
+Skill 'aid' 2 90
+Skill 'cook' 1 90
+Skill 'dig' 10 90
+Skill 'disarm' 15 90
+Skill 'grip' 15 90
+Skill 'jab' 58 95
+Skill 'kick' 2 70
+Skill 'mount' 2 95
+Skill 'punch' 11 80
+Skill 'rally' 52 90
+Skill 'rescue' 5 95
+Skill 'retreat' 20 95
+Skill 'roundhouse' 33 95
+Skill 'search' 1 90
+Skill 'slice' 1 90
+Skill 'strike' 45 85
+Skill 'swipe' 73 95
+Skill 'tend' 28 95
+Skill 'uppercut' 24 95
+Skill 'aggressive style' 1 90
+Skill 'archery' 1 70
+Skill 'axes' 1 80
+Skill 'berserk style' 1 70
+Skill 'blowguns' 1 80
+Skill 'daggers' 1 80
+Skill 'defensive style' 1 90
+Skill 'evasive style' 1 90
+Skill 'maces and hammers' 1 85
+Skill 'pugilism' 1 80
+Skill 'slings' 1 75
+Skill 'spears' 1 80
+Skill 'standard style' 1 90
+Skill 'staves' 1 80
+Skill 'swords' 1 90
+Skill 'talonous arms' 1 80
+Skill 'whips' 1 85
+Skill 'centaur' 1 99
+Skill 'common' 1 99
+Skill 'dwarven' 1 99
+Skill 'elvish' 1 99
+Skill 'gith' 1 99
+Skill 'gnomish' 1 99
+Skill 'goblin' 1 99
+Skill 'halfling' 1 99
+Skill 'insectoid' 1 95
+Skill 'minotaur' 1 99
+Skill 'ogre' 1 99
+Skill 'orcish' 1 99
+Skill 'pixie' 1 99
+Skill 'reptile' 1 99
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 99
+Title
+Man~
+Woman~
+Title
+Page~
+Page~
+Title
+Squire~
+Squiress~
+Title
+Trainee~
+Trainee~
+Title
+Believer~
+Believer~
+Title
+Attendant~
+Attendant~
+Title
+Initiate~
+Initiate~
+Title
+Soldier~
+Soldier~
+Title
+Missionary~
+Missionary~
+Title
+Gallant~
+Gallant~
+Title
+Keeper~
+Keeper~
+Title
+Protector~
+Protector~
+Title
+Defender~
+Defender~
+Title
+Warder~
+Warder~
+Title
+Guardian~
+Guardian~
+Title
+Warrior of Fidelity~
+Warrior of Fidelity~
+Title
+Warrior of Valour~
+Warrior of Valour~
+Title
+Warrior of Honour~
+Warrior of Honour~
+Title
+Warrior of Justice~
+Warrior of Justice~
+Title
+Warrior of Humility~
+Warrior of Humility~
+Title
+Warrior of Righteousness~
+Warrior of Righteousness~
+Title
+Warrior of Faith~
+Warrior of Faith~
+Title
+Warrior of Zeal~
+Warrior of Zeal~
+Title
+Warrior of Piety~
+Warrior of Piety~
+Title
+Warrior of Light~
+Warrior of Light~
+Title
+Knight of Fidelity~
+Knight of Fidelity~
+Title
+Knight of Valour~
+Knight of Valour~
+Title
+Knight of Honour~
+Knight of Honour~
+Title
+Knight of Justice~
+Knight of Justice~
+Title
+Knight of Righteousness~
+Knight of Righteousness~
+Title
+Knight of Humility~
+Knight of Humility~
+Title
+Knight of Faith~
+Knight of Faith~
+Title
+Knight of Zeal~
+Knight of Zeal~
+Title
+Knight of Piety~
+Knight of Piety~
+Title
+Knight of Light~
+Knight of Light~
+Title
+Crusader of Fidelity~
+Crusader of Fidelity~
+Title
+Crusader of Valour~
+Crusader of Valour~
+Title
+Crusader of Honour~
+Crusader of Honour~
+Title
+Crusader of Justice~
+Crusader of Justice~
+Title
+Crusader of Righteousness~
+Crusader of Righteousness~
+Title
+Crusader of Humility~
+Crusader of Humility~
+Title
+Crusader of Faith~
+Crusader of Faith~
+Title
+Crusader of Zeal~
+Crusader of Zeal~
+Title
+Crusader of Piety~
+Crusader of Piety~
+Title
+Crusader of Light~
+Crusader of Light~
+Title
+Champion of Fidelity~
+Champion of Fidelity~
+Title
+Champion of Valour~
+Champion of Valour~
+Title
+Champion of Honour~
+Champion of Honour~
+Title
+Champion of Justice~
+Champion of Justice~
+Title
+Champion of Righteousness~
+Champion of Righteousness~
+Title
+Champion of Humility~
+Champion of Humility~
+Title
+Champion of Faith~
+Champion of Faith~
+Title
+Champion of Zeal~
+Champion of Zeal~
+Title
+Champion of Piety~
+Champion of Piety~
+Title
+Champion of Light~
+Champion of Light~
+Title
+Holy Warrior of Fidelity~
+Holy Warrior of Fidelity~
+Title
+Holy Warrior of Valour~
+Holy Warrior of Valour~
+Title
+Holy Warrior of Honour~
+Holy Warrior of Honour~
+Title
+Holy Warrior of Justice~
+Holy Warrior of Justice~
+Title
+Holy Warrior of Righteousness~
+Holy Warrior of Righteousness~
+Title
+Holy Warrior of Humility~
+Holy Warrior of Humility~
+Title
+Holy Warrior of Faith~
+Holy Warrior of Faith~
+Title
+Holy Warrior of Zeal~
+Holy Warrior of Zeal~
+Title
+Holy Warrior of Piety~
+Holy Warrior of Piety~
+Title
+Holy Warrior of Light~
+Holy Warrior of Light~
+Title
+Grand Knight of Fidelity~
+Grand Knight of Fidelity~
+Title
+Grand Knight of Valour~
+Grand Knight of Valour~
+Title
+Grand Knight of Honour~
+Grand Knight of Honour~
+Title
+Grand Knight of Justice~
+Grand Knight of Justice~
+Title
+Grand Knight of Righteousness~
+Grand Knight of Righteousness~
+Title
+Grand Knight of Humility~
+Grand Knight of Humility~
+Title
+Grand Knight of Faith~
+Grand Knight of Faith~
+Title
+Grand Knight of Zeal~
+Grand Knight of Zeal~
+Title
+Grand Knight of Piety~
+Grand Knight of Piety~
+Title
+Grand Knight of Light~
+Grand Knight of Light~
+Title
+Lesser Undead Slayer~
+Lesser Undead Slayer~
+Title
+Lesser Devil Slayer~
+Lesser Devil Slayer~
+Title
+Lesser Demon Slayer~
+Lesser Demon Slayer~
+Title
+Undead Slayer~
+Undead Slayer~
+Title
+Devil Slayer~
+Devil Slayer~
+Title
+Demon Slayer~
+Demon Slayer~
+Title
+Greater Undead Slayer~
+Greater Undead Slayer~
+Title
+Greater Devil Slayer~
+Greater Devil Slayer~
+Title
+Greater Demon Slayer~
+Greater Demon Slayer~
+Title
+Master Undead Slayer~
+Master Undead Slayer~
+Title
+Master Devil Slayer~
+Master Devil Slayer~
+Title
+Master Demon Slayer~
+Master Demon Slayer~
+Title
+Supreme Undead Slayer~
+Supreme Undead Slayer~
+Title
+Supreme Devil Slayer~
+Supreme Devil Slayer~
+Title
+Supreme Demon Slayer~
+Supreme Demon Slayer~
+Title
+Paladin Lord of Fidelity~
+Paladin Lady of Fidelity~
+Title
+Paladin Lord of Valour~
+Paladin Lady of Valour~
+Title
+Paladin Lord of Honour~
+Paladin Lady of Honour~
+Title
+Paladin Lord of Justice~
+Paladin Lady of Justice~
+Title
+Paladin Lord of Righteousness~
+Paladin Lady of Righteousness~
+Title
+Paladin Lord of Humility~
+Paladin Lady of Humility~
+Title
+Paladin Lord of Faith~
+Paladin Lady of Faith~
+Title
+Paladin Lord of Zeal~
+Paladin Lady of Zeal~
+Title
+Paladin Lord of Piety~
+Paladin Lady of Piety~
+Title
+Paladin Lord of Light~
+Paladin Lady of Light~
+Title
+Avatar of Light~
+Avatar of Light~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

@@ -1,0 +1,455 @@
+AFKMud: Automatic Rent Generation
+Written by Dwip, 5/31/03
+------------------------
+
+This document is an effort to explain the various parts of the rent system
+used by AFKMud, and how to modify them.
+
+I'll assume that you the reader understand what rent is and how it works,
+in general. That having been said, there are five values an item can have
+in it's rent field:
+
+0 <-> 24,998: Rent value is disregarded, and the item costs nothing to rent.
+This is used for most normal items. Limit values do not apply.
+
+24,999 : Limited items. No rent is charged on the item, but the item does
+possess an "ego" which limits use by lower level characters. This setting
+is used for items that are more powerful than normal, but not extremely
+powerful. Limits also apply. If for example a limit of 5 is set, there
+can only be 5 copies in play at one time and none will reset until the
+copies are removed from play. Logging out with one in your possession
+counts toward removing it from play.
+
+25,000+ : Rent item. Rent is charged on the item, and it possesses an
+"ego" limiting use by lower level characters. This setting is used for
+items that are very powerful. Limit values set on these items are enforced
+globally and the items will NOT reset until the copies are actually
+destroyed, including those saved on players which are logged out of play.
+
+A note on the above two conditions - the 24,999 and 25,000 values are settable
+using the cset command. 25,000 is the default minimum value which is decided
+by you. 24,999 works relative to that and will change based on the value
+you assign.
+
+-1 : The item is deleted from character's inventory upon exiting the game.
+Used for items that are so powerful that they should not be carried longterm,
+or for things like keys that should be deleted on exit so as to encourage
+exploration.
+
+-2 : Sets up automatic calculation of one of the other four rent values.
+This part of the system is explained in greater detail below and is the
+primary purpose for this document.
+
+----------------------------------
+
+A note on balance. The automatic system described here is essentially the
+same one that has been used successfully by Alsherok for 6 years now. It is
+also based on the same system which worked successfully at Crystal Shard for
+5+ years before that. So it's been tried and true for nearly 11 years. Thus
+it should work in most cases. However, there are still times when manual
+setting of rent is advisable - special quest items (like sindhae prizes),
+keys, and the like.
+
+-----------------------------------
+
+In general, the way the system works is that the calc code in rent.c looks
+over the item and adds up all of the various rent-worthy affects on the item.
+There are a few exceptions, however, which automatically set the item rent to
+-1. This is all editable by looking in the calc_aff_rent function in rent.c
+for most things. Spell rent values are set by using sset. That having been
+said, the entire list of item affects looked at by calc_aff_rent.
+
+------------------------------------
+
+Weapons only:
+
+If AVERAGE damage 14 or less: +0
+If AVERAGE damage 15 or 16  : +20000
+If AVERAGE damage 17 or more: +25000
+
+All items:
+
+1   - Strength                | 6k/point for positive, -5k/point for negative
+2   - Dexterity               | 6k/point for positive, -5k/point for negative
+3   - Intelligence            | 4k/point for positive, -3k/point for negative
+4   - Wisdom                  | 4k/point for positive, -3k/point for negative
+5   - Constitution            | 5k/point for positive, -4k/point for negative
+6   - Sex                     | Not checked
+7   - Class ( Don't use )     | Not checked
+8   - Level ( Don't use )     | Not checked
+9   - Age                     | +1k/20 years for positive, no negative
+10  - Height                  | Not checked
+11  - Weight                  | Not checked
+12  - Mana                    | 1k/point to +20, 2k/point to +75, -1k/-point to -50 (IE, 19 points = 19k, 21 points = 42k, etc)
+13  - Hit Points              | 1k/hp to +10, +2k/hp to +20, +3k/hp to +50, -1k/-hp to -25
+14  - Movement                | 1k/5 move for positive, -1k/10 move for negative
+15  - Gold                    | Not checked
+16  - Experience              | Not checked
+17  - Armor Class             | 1k/point, max 12
+18  - Hitroll                 | 2k/point, max +6, -2k/-point
+19  - Damroll                 | 3k/point, max +6, -3k/-point
+20  - Save vs Paralyzation    | 3k/-point, -2k/point
+21  - Save vs Rods            | 3k/-point, -2k/point
+22  - Save vs Poison          | 3k/-point, -2k/point
+23  - Save vs Breath          | 3k/-point, -2k/point
+24  - Save vs Spells          | 3k/-point, -2k/point
+25  - Charisma                | 3k/point, -2k/-point
+26  - Affected by             | Not checked
+27  - Resistance              | 20k for 1, 40k for 2, max 2
+28  - Immunity                | Autoset to -1 rent
+29  - Susceptibility          | -15k for 1, -25k for 2, max 2
+30  - Weapon Spell            | See spell rent values
+31  - Luck                    | 5k/point, -4k/-point
+32  - Backstab                | 1k/point, max 10
+33  - Pick                    | 1k/2 points, max 20
+34  - Track                   | 1k/2 points, max 20
+35  - Steal                   | 1k/2 points, max 20
+36  - Sneak                   | 1k/2 points, max 20
+37  - Hide                    | 1k/2 points, max 20
+38  - Palm                    | Unused in code, not checked
+39  - Detect Traps            | 1k/2 points, max 20
+40  - Dodge                   | 2k/point, max 5
+41  - Spellfail               | +1k/-point, max 25
+42  - Scan                    | Unused in code, not checked
+43  - Gouge                   | 1k/point, max 10
+44  - Search                  | 1k/2 points, max 20
+45  - Mount                   | 1k/5 points, max 50
+46  - Disarm                  | 1k/point, max 10
+47  - Kick                    | 1k/point, max 20
+48  - Parry                   | 2k/point, max 5
+49  - Bash                    | 1k/point, max 10
+50  - Stun                    | 1k/point, max 10
+51  - Punch                   | 1k/point, max 20
+52  - Climb                   | 1k/2 points, max 20
+53  - Grip                    | 1k/point, max 10
+54  - Scribe                  | 2k/point, max 10
+55  - Brew                    | 2k/point, max 10
+56  - Wear Spell              | See spell rent values
+57  - Remove Spell            | Not checked
+58  - NOTUSED                 | Not used, so not checked.
+59  - Mentalstate             | Not checked
+60  - StripSN                 | Autoset rent to -1
+61  - Remove                  | Unused in code, not checked
+62  - Dig                     | 1k/2 points, max 20
+63  - Hunger                  | Not checked
+64  - Thirst                  | Not checked
+65  - Drunk                   | Not checked
+66  - HP Regen                | 1k/point, max 25
+67  - Mana Regen              | 1k/point, max 25
+68  - Move Regen              | 1k/5 points, max 50
+69  - Antimagic               | Not checked
+70  - Roomflag                | Not checked
+71  - Sectortype              | Not checked
+72  - Room Light Level        | Not checked
+73  - Televnum                | Not checked
+74  - Teledelay               | Not checked
+75  - Cook                    | 1k/2 points, max 20
+76  - Recurringspell          | See spell rent values
+77  - Race                    | Not checked
+78  - HitnDam                 | 5k/point, max 6
+79  - Save vs All             | 10k/point
+80  - Eat Spell               | Not checked
+81  - Race Slayer             | Unused in code, not checked
+82  - Align Slayer            | Unused in code, not checked
+83  - Contagious              | Unused in code, not checked
+84  - Ext Affect              | Unused in code, not checked
+85  - Odor                    | Unused in code, not checked
+86  - Peek                    | 1k/2 points, max 20
+87  - Absorb                  | 50k for 1, max 1
+88  - Attacks                 | 20k/1 attack
+89  - Extragold               | 1k/2 points, max 20
+90  - Allstats                | 20k/point
+
+If an affect isn't checked, that means the affect is either so totally
+unbalanced it has to be set on an individual case basis, isn't used
+anywhere so there's no point, or when using it would be totally illogical
+or break the game.
+
+Spells:
+
+This spell list may or may not be up to date at any current moment, since
+such lists are difficult to update. Remember to use slookup. Note that
+these are SLOT numbers and not SN values. Don't mix the two up, Bad Things(tm)
+will happen if you do.
+
+1   - Armor                   | 20k
+2   - Teleport                | -1
+3   - Bless                   | 5k
+4   - Blindness               | 45k
+5   - Burning Hands           | 24k
+6   - Call Lightning          | 35k
+7   - Charm Person            | -2
+8   - Chill Touch             | 29k
+10  - Colour Spray            | 20k
+11  - Control Weather         | -2
+12  - Create Food             | -2
+13  - Create Water            | -2
+14  - Cure Blindness          | -2
+15  - Cure Critical           | -2
+16  - Cure Light              | -2
+17  - Curse                   | 6k
+18  - Detect Evil             | 10k
+19  - Detect Invis            | 25k
+20  - Detect Magic            | 10k
+21  - Detect Poison           | 10k
+22  - Dispel Evil             | 26k
+23  - Earthquake              | 28k
+24  - Enchant Weapon          | -2
+25  - Energy Drain            | -2
+26  - Fireball                | 35k
+27  - Harm                    | 36k
+28  - Heal                    | -2
+29  - Invisibility            | 30k
+30  - Lightning Bolt          | 25k
+31  - Locate Object           | -2
+32  - Magic Missile           | 25k
+33  - Poison                  | 40k
+34  - Protection From Evil    | 25k
+35  - Remove Curse            | -2
+36  - Sanctuary               | 50k
+38  - Sleep                   | 25k
+40  - Summon                  | -2
+41  - Ventriloquate           | -2
+42  - Word of Recall          | -2
+43  - Cure Poison             | -2
+44  - Animal Senses           | 20k
+51  - Shocking Grasp          | 32k
+53  - Identify                | -2
+56  - Fly                     | -2
+57  - Continual Light         | -2
+58  - Know Alignment          | -2
+59  - Dispel Magic            | 50k
+60  - Flare                   | -2
+61  - Cure Serious            | -2
+62  - Cause Light             | 12k
+63  - Cause Critical          | 28k
+64  - Cause Serious           | 20k
+65  - Flamestrike             | 26k
+66  - Stone Skin              | 40k
+67  - Shield                  | 10k
+68  - Weaken                  | 6k
+69  - Mass Invis              | -2
+70  - Acid Blast              | 18k
+71  - Paralyze                | -2
+72  - Faerie Fire             | 20k
+73  - Faerie Fog              | -2
+75  - Enchant Armor           | -2
+76  - Minor Invocation        | 9k
+77  - Infravision             | 5k
+78  - Lifelift                | -2
+79  - Major Invocation        | 50k
+80  - Create Spring           | -2
+81  - Refresh                 | -2
+82  - Change Sex              | 20k
+84  - Restore Mana            | -2
+85  - Create Fire             | -2
+86  - Find Traps              | 20k
+87  - Remove Trap             | -2
+88  - Fireshield              | 30k
+89  - Shockshield             | 40k
+90  - Astral Walk             | -2
+91  - Scry                    | -2
+93  - Meditate                | -2
+94  - Trance                  | -2
+95  - Reserved                | -2
+98  - Benediction             | 25k
+99  - Indignation             | 5k
+101 - Create Symbol           | -2
+102 - Alertness               | 20k
+103 - Fatigue                 | 20k
+104 - Grounding               | 20k
+105 - Charged Beacon          | 20k
+106 - Resilience              | 20k
+107 - Feebleness              | 20k
+108 - Ill Fortune             | 15k
+109 - Lethargy                | 12k
+110 - Unravel Defense         | 40k
+111 - Holy Sanctity           | 75k
+112 - Divinity                | -2
+113 - Restoration             | -2
+114 - Necromantic Touch       | 25k
+115 - Spiritual Wrath         | 350k
+120 - Death Spell             | 40k
+121 - Fortify                 | -2
+123 - Quickening              | 22k
+124 - Uplift                  | -2
+165 - Dragon Ride             | -2
+200 - Acid Breath             | -2
+201 - Fire Breath             | -2
+202 - Frost Breath            | -2
+203 - Gas Breath              | -2
+204 - Lightning Breath        | -2
+205 - Slink                   | 6k
+206 - Trollish Vigor          | -2
+207 - Eldritch Sphere         | 40k
+208 - Valiance                | 20k
+209 - Swordbait               | 20k
+210 - Demonskin               | 20k
+211 - Razorbait               | 20k
+212 - Dragonskin              | 20k
+213 - Group Armor             | -2
+214 - Winter Mist             | 20k
+215 - Blazeward               | 20k
+216 - Blazebane               | 20k
+217 - Ethereal Shield         | 20k
+218 - Ethereal Funnel         | 20k
+219 - Transport               | -2
+220 - Gate                    | -2
+221 - Iceshield               | 20k
+222 - Farsight                | -2
+224 - Antimagic Shell         | 20k
+225 - Shadowform              | 20k
+226 - Elven Beauty            | 2k
+227 - Dragon Wit              | 4k
+228 - Sagacity                | 4k
+229 - Recharge                | 4k
+230 - Remove Invis            | 20k
+231 - Animate Dead            | -2
+233 - Dream                   | -2
+234 - Knock                   | -2
+235 - True Sight              | 20k
+236 - Aqua Breath             | 15k
+291 - Plant Pass              | -2
+292 - Float                   | 20k
+294 - Polymorph               | -2
+295 - Spiral Blast            | 45k
+296 - Scorching Surge         | 34k
+299 - Iceshard                | -2
+300 - Torrent                 | -2
+301 - Black Hand              | 38k
+302 - Acetum Primus           | 29k
+303 - Black Lightning         | 48k
+304 - Galvanic Whip           | 28k
+305 - Disruption              | 32k
+306 - Spectral Furor          | 25k
+308 - Sulfurous Spray         | 21k
+309 - Sonic Resonance         | 25k
+310 - Black Fist              | 25k
+311 - Magnetic Thrust         | 25k
+313 - Caustic Fount           | 25k
+314 - Quantum Spike           | 32k
+315 - Energy Blast            | -1
+342 - Benefic Aura            | 40k
+356 - Succor                  | -2
+500 - Skull of Death          | -2
+501 - Goodberry               | -2
+502 - Flame Blade             | -2
+503 - Spiritual Hammer        | 15k
+504 - Create Paladin Symbol   | -2
+505 - Firestorm               | 45k
+506 - Righteousness           | 5k
+507 - Vine Whip               | -2
+508 - Bark Skin               | 30k
+509 - Elemental Shield        | -1
+510 - Primal Fury             | 20k
+511 - Fletch                  | -2
+512 - Divine Aid              | 20k
+513 - Divine Fury             | 31k
+514 - Lich Curse              | 39k
+515 - Holy Strength           | 6k
+516 - Withering Hand          | 39k
+517 - Chaos Armor             | 54k
+518 - Soul Scream             | 31k
+519 - Stinking Cloud          | 50k
+520 - Web                     | 59k
+521 - Entangle                | 28k
+522 - Blade Barrier           | 30k
+523 - Blades                  | -2
+524 - Heroes Feast            | -2
+525 - Remove Paralysis        | -2
+526 - Remove Silence          | -2
+527 - Silence                 | 30k
+528 - Hold Person             | -2
+529 - Holy Word               | 35k
+530 - Change Form             | -2
+531 - Gust of Wind            | 30k
+532 - Creeping Doom           | -2
+533 - Sunray                  | 37k
+534 - Calm                    | -2
+535 - Fireseed                | -2
+536 - Warmount                | -2
+537 - Despair                 | 50k
+538 - Kindred Strength        | 6k
+539 - Recall                  | 20k
+540 - Portal                  | -2
+541 - Group Shield            | -2
+542 - Arcane Perception       | 10k
+543 - Group Armor             | -2
+544 - Group Float             | -2
+545 - Group Refresh           | -2
+546 - Group Fly               | -2
+547 - Minor Track             | 25k
+548 - Major Track             | 45k
+550 - Acidmist                | 50k
+551 - Venomshield             | 20k
+552 - Nothing                 | -2
+553 - Venomshot               | -2
+554 - Acidshot                | -2
+555 - Meteor Swarm            | 42k
+556 - Cone of Cold            | 38k
+559 - Windstorm               | 28k
+560 - Carrion Stench          | 48k
+561 - Skeletal Armor          | 44k
+562 - Wraithform              | -1
+563 - Mana Drain              | 53k
+564 - Ghoulish Touch          | 35k
+565 - Death Chant             | 34k
+566 - Life Surge              | -2
+567 - Mana Surge              | -2
+568 - Death Aura              | 40k
+569 - Dark Ritual             | -2
+570 - Finger of Death         | -2
+573 - Crystal Blades          | 35k
+574 - Fiery Dragon            | 21k
+575 - Celestial Thunder       | 31k
+576 - Celestial Lightning     | 25k
+577 - Create Mistletoe        | -2
+578 - Toxin Shot              | 20k
+579 - Slow                    | 40k
+580 - Wizardeye               | 10k
+581 - Warsteed                | -2
+582 - Rejuvenate              | -2
+583 - Haste                   | -2
+584 - Cacophony               | 35k
+585 - Disintegrate            | 32k
+586 - Beacon                  | -2
+587 - Enrage                  | -2
+588 - Group Waterbreath       | -2
+589 - Groupgate               | -2
+590 - Towngate                | -2
+591 - Tree Transport          | -2
+592 - Treespeak               | -2
+593 - Bloodslash              | -1
+594 - Counterspell            | -1
+595 - Chain Lightning         | 35k
+596 - Harmonic Aura           | 52k
+597 - Mana Leech              | 0
+598 - Vampiric Touch          | -2
+599 - Soothe                  | -2
+600 - Leech                   | 0
+
+Spells marked -2 generate error messages when used on items.
+Spells marked -1 autoset the rent to -1.
+Spell rent is manually set, works like this, usually:
+
+For damaging spells, take average damage and multiple by 1000.
+For area spells, add 10000.
+For affect-giving spells, like +str, use the proper affect rent.
+For suscept flag spells, treat the suscept like a resist.
+For any fireshield, etc spell, use (avg damage * 1000) + 16000.
+Add it all together to get the proper rent value for the spell.
+There are of course certain spells that should be set to 0 or -1 for special reasons.
+
+-----------------------------------
+
+At the end of the calc, everything is added together, and a value is put out.
+
+If rent:
+
+> 25000 : rent item, and acts like described above.
+
+20000-24999 : set rent to 24999, and acts like described above.
+
+< 20000 : normal item.  Rent set to 0.
+
+-1 : Delete on exit item, acts like described above.

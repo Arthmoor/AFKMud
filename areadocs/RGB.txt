@@ -1,0 +1,75 @@
+Offline editing of Overland map files
+-------------------------------------
+
+Last modified by Samson, Dec. 25, 2006
+
+First thing you need obviously would be a premade image file that
+represents your mud's world. It needs to be in png format to be read
+by the mud. Older .raw files can be read in by the code and will save
+back as png files. Windows Paint, Gimp, Photoshop, and most other
+image editing programs should be able to read and write png files.
+
+Secondly, you need to gather the RGB values for the various colors
+your image file is using to represent your terrain. If your map uses
+the same color to represent more than one type, now would be a good
+time to make sure each terrain type has its own unique color. Once
+you've done that, use the "dropper" icon and pass the mouse over each
+color and record the RGB values shown. One thing to note, if your image
+file blends the borders of 2 colors, this will throw off the in game
+map. You'll need to make certain that any blended borders are edited
+so that they are solid. Any colors that don't match the RGB values
+exactly will be turned into ocean sectors by the code.
+
+Lastly, make a note of the image's dimensions. How many pixels across,
+and how many down. You'll need this information to set your MAX_X and
+MAX_Y values in the overland.h file, as well as for loading the
+file later on.
+
+When you have your png image fixed up just how you want it, upload it into
+the maps directory on the mud. Once the game loads with the map in place,
+take a quick tour around parts of it. Check to be sure the edges are where
+you expect them and so forth.
+
+
+
+The following color codes can be used to create the proper colors needed
+by the Overland code to produce the sector types for the map. Please do
+not change these colors when editing the map or the mud's code will not
+be able to load the map properly. Each sector type will be followed by the
+red, green, and blue values to make the color using the custom color functions.
+
+Indoors         0, 0, 0         Use this for the black spaces where areas are.
+City            255, 128, 64
+Fields          141, 215, 1
+Forests         0, 108, 47
+Hills           140, 102, 54
+Mountains       152, 152, 152
+Shallow water   89, 242, 251    Use for any water you can swim in.
+Deep water      67, 114, 251    Use for lakes and other freshwater that need boats.
+Air             ------------ Not usable on overland.
+Underwater      ------------ Not usable on overland.
+Deserts	        241, 228, 145
+Rivers          0, 0, 255
+Oceanfloor      ------------ Not usable on overland.
+Underground     ------------ Not usable on overland.
+Jungles         70, 149, 52
+Swamps          218, 176, 56
+Tundra          54, 255, 255
+Ice             133, 177, 252
+Ocean           0, 0, 128
+Lava            245, 37, 29
+Seashore/Sand   255, 255, 0
+Impass Forest   0, 64, 0
+Impass Mntn     128, 128, 128
+Quicksand       128, 128, 0
+Walls           255, 0, 255
+Glaciers        141, 207, 244
+Exits           255, 255, 255    Please keep exits to a single pixel each.
+Trails          128, 64, 0
+Blasted Lands   128, 0, 0
+Grasslands      83, 202, 2
+Scrublands      123, 197, 112
+Barren          192, 192, 192
+Bridges         255, 0, 128
+Roads           215, 107, 0      Special case sector. Use City for regular roadways.
+Landing Sites   255, 0, 0

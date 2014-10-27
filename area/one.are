@@ -1,0 +1,169 @@
+#AFKAREA
+#AREADATA
+Version         1
+Name            The Continent of Alsherok~
+Author          Samson~
+Vnums           50000 50499
+Continent       alsherok~
+Coordinates     0 0
+Ranges          0 115 0 115
+ResetMsg        A light breeze stirs up the air around you.~
+ResetFreq       999
+Flags           nobeacon~
+Climate         2 2 2
+Treasure        20 74 85 93 20 50 60 75
+#ENDAREADATA
+
+#MOBILE
+Vnum      50000
+Keywords  top placeholder~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a newly created top placeholder~
+Long      Some god abandoned a newly created top placeholder here.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc proto~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      50499
+Keywords  alsherok portal guardian~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The guardian~
+Long      The guardian of the Alsherok portal stands watch over the continent below.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    100 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel immortal~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#OBJECT
+Vnum      50000
+Keywords  top placeholder~
+Type      trash~
+Short     a newly created top placeholder~
+Long      Some god dropped a newly created top placeholder here.~
+Flags     proto~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      50499
+Keywords  Last obj~
+Type      trash~
+Short     a newly created last obj~
+Long      Some god dropped a newly created last obj here.~
+Flags     proto~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#ROOM
+Vnum      50000
+Name      Somewhere on the Continent of Alsherok~
+Sector    indoors~
+Flags     indoors map~
+Stats     0 0 0 0
+Desc      If you can read this description online, then something REALLY
+bad has happened, contact the immortals at once.
+You should be seeing the ASCII color map of the continent instead
+of this lousy description :)
+~
+#EXIT
+Direction north~
+ToRoom    50000
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    50000
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    50000
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    50000
+#ENDEXIT
+
+#EXIT
+Direction northeast~
+ToRoom    50000
+#ENDEXIT
+
+#EXIT
+Direction northwest~
+ToRoom    50000
+#ENDEXIT
+
+#EXIT
+Direction southeast~
+ToRoom    50000
+#ENDEXIT
+
+#EXIT
+Direction southwest~
+ToRoom    50000
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      50001
+Name      Engulfed in a Swirling Mass of Void Space~
+Sector    indoors~
+Flags     proto~
+Stats     0 0 0 0
+#ENDROOM
+
+#ROOM
+Vnum      50002
+Name      Engulfed in a Swirling Mass of Void Space~
+Sector    indoors~
+Flags     proto~
+Stats     0 0 0 0
+#ENDROOM
+
+#ROOM
+Vnum      50003
+Name      Engulfed in a Swirling Mass of Void Space~
+Sector    indoors~
+Flags     proto~
+Stats     0 0 0 0
+#ENDROOM
+
+#ROOM
+Vnum      50499
+Name      The Alsherok Portal~
+Sector    indoors~
+Flags     indoors nocamp nosummon norecall noportal noastral noteleport noscry~
+Stats     0 0 0 0
+Desc      The shimmering green light of the portal is almost blinding, yet below
+you the view of Alsherok is completely unobstructed and breathtaking to
+behold.
+~
+Reset M 50499 1 50499 -1 -1 -1 100
+#ENDROOM
+
+#ENDAREA

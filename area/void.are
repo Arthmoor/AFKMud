@@ -1,0 +1,3820 @@
+#AFKAREA
+#AREADATA
+Version         1
+Name            The Great Void~
+Author          Alsherok~
+Vnums           11000 11999
+Continent       immortal~
+Coordinates     0 0
+Ranges          100 115 0 115
+ResetMsg        A loud voice booms: Cycle complete. Restarting sequence.~
+ResetFreq       180
+Flags           nocamp noastral noportal norecall nosummon noscry noteleport nobeacon~
+Climate         2 2 2
+Treasure        100 0 0 0 20 50 60 75
+#ENDAREADATA
+
+#MOBILE
+Vnum      11000
+Keywords  namegen~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  sitting~
+DefPos    sitting~
+Short     namegen~
+Long      namegen is here before you, proud of his randomness.
+~
+Desc      namegen is a mob which was given its name via the name generator code.
+It should have a completely random name in the keywords, short description,
+long description, and in this description here that you're looking at. If
+not, it's broken. Report the bug to your administrators, or to the AFKMud
+development team.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc proto~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+ShopData   1 0 0 0 0 120 90 0 28
+#ENDMOBILE
+
+#MOBILE
+Vnum      11001
+Keywords  wild stag~
+Race      mammal~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A wild stag~
+Long      A wild stag waits patiently for its master here.
+~
+Desc      This is a giant wild stag that is often used as a mount by wild elves.
+It has a shiny coat of light brown fur mottled with darker spots of a
+darker brown. Upon its head is a majestic pair of branched horns.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 375 100
+Stats2    20 21 0 100 0 0 2
+Speaks    common mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian mountable~
+Bodyparts head legs heart brains guts ear eye horns hooves~
+Attacks   kick~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11002
+Keywords  cooshee elven dog~
+Race      dog~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A cooshee~
+Long      A cooshee waits faithfully for its master here.
+~
+Desc      This canine beast is of the size of the largest common dog. It has a
+greenish coat with brown spots. This coloration, coupled with its
+ability to move silently, enables it to conceal itself easily in
+brush or woolands where it makes it home.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    20 21 0 100 0 0 0
+Speaks    common mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian~
+Affected  sneak hide~
+Bodyparts head legs heart brains guts ear eye tail~
+Attacks   bite~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11003
+Keywords  wild raccoon~
+Race      rodent~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A wild raccoon~
+Long      A wild raccoon paces up and down here.
+~
+Desc      This rodent-like creature has a long tail and its body is covered with
+a thick black fur with silvery highlights. Its eyes shine brightly with
+intelligence as it regards you with almost cool curiosity.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    20 21 0 80 0 0 2
+Speaks    common rodent~
+Speaking  rodent~
+Actflags  npc sentinel scavenger guardian~
+Bodyparts head guts feet ear eye claws~
+Attacks   bite claws~
+Defenses  parry~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11004
+Keywords  brown bear~
+Race      bear~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A brown bear~
+Long      A brown bear is standing here, waiting for its master.
+~
+Desc      A large and powerful animal with dense fur, this bear looks like it
+will make a formidable foe when angered. Its fur is brownish in colour
+and its paws end in powerful claws. Despite its fierce disposition, it
+looks pretty tame next to its elven master.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 400 100
+Stats2    20 21 0 120 0 0 4
+Speaks    common mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian mountable~
+Affected  detect_hidden~
+Bodyparts head legs heart brains guts ear eye claws~
+Attacks   bite claws bash~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11005
+Keywords  giant lynx~
+Race      cat~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A giant lynx~
+Long      A giant lynx waits patiently for its master here.
+~
+Desc      This large cat has tufted ears and cheeks, a short bobbed tail and a
+dappled colouring. It has a compact muscular body, with heavy legs
+and unusually large paws. It looks highly intelligent.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    20 21 0 100 0 0 0
+Speaks    common mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian~
+Affected  sneak hide~
+Bodyparts head legs heart brains guts ear eye tail claws~
+Attacks   claws~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11006
+Keywords  giant owl~
+Race      avis~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A giant owl~
+Long      A giant owl waits faithfully for its master here.
+~
+Desc      This bird is about 2 feet long and has a 5-foot wingspread. It has a
+heart-shaped face and huge eyes. Its ears are swept back giving them
+the appearance of horns. It lets out a gentle hoot once in a while.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    20 21 0 80 0 0 0
+Speaks    common mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian~
+Affected  detect_hidden infrared sneak flying~
+Bodyparts head guts feet ear eye claws~
+Attacks   bite claws~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11007
+Keywords  skeleton horse antipaladin~
+Race      undead~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A skeleton horse~
+Long      A skeleton horse stands in a state of undeath here.
+~
+Desc      A morbid creation of undeath, this skeleton horse has been called forth from
+the realms of chaos to serve the antipaladin who has summoned it. It is loyal
+to its master and will defend its master with complete abandonment. Its eyes
+glow red with the evil force that is keeping it 'alive'.
+~
+Nattacks  0.000000
+Stats1    -1000 0 0 0 500 100
+Stats2    15 -14 -80 60 1 6 8
+Speaks    common mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian mountable~
+Bodyparts head legs heart brains guts ear eye hooves~
+Resist    pierce slash~
+Immune    drain sleep~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11008
+Keywords  pegasus horse paladin~
+Race      horse~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A pegasus~
+Long      A magnificent pegasus is standing here, waiting for its master's orders.
+~
+Desc      A magnifcent horse with wings, this pegasus has been summoned from its habitat
+to faithfully serve the paladin who has summoned it. It is undyingly loyal and
+fiercely protective in battle. It abhors all evil creatures and will fight
+alongside its master, bearing him into battle.
+~
+Nattacks  0.000000
+Stats1    1000 0 0 0 650 100
+Stats2    30 21 -80 200 2 8 4
+Speaks    common mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian mountable~
+Affected  sanctuary flying~
+Bodyparts head legs heart brains guts ear eye wings hooves~
+Resist    drain sleep~
+Attacks   kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11009
+Keywords  nightmare horse antipaladin~
+Race      horse~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A nightmare~
+Long      A demonic nightmare is standing here, waiting for its master's orders.
+~
+Desc      A demonic steed with a huge head, glowing red eyes, flaming orange nostrils,
+and hooves which burn like embers, this nightmare has been summoned from the
+realms of chaos to serve the antipaladin who has summoned it. Its coat is dead
+black in colour, and its mane and tail are wild and rugged. It will fiercely
+protect its master in combat.
+~
+Nattacks  0.000000
+Stats1    -1000 0 0 0 650 100
+Stats2    30 21 -80 200 2 8 4
+Speaks    common mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian mountable~
+Affected  sanctuary flying~
+Bodyparts head legs heart brains guts ear eye hooves~
+Resist    drain sleep~
+Attacks   bite kick~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11010
+Keywords  gnomish flying machine~
+Race      magical~
+Class     Mage~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A gnomish flying machine~
+Long      A winged gnomish machine designed for flying, rests noisily here.
+~
+Desc      An amazing gnomish contraption. It appears to be little more than a one
+person seat joined to a set of wings. Above the seat, there is a three
+bladed rotor which is spun on its axis by a steam and gear engine
+located behind the seat. The whole machine looks rather dangerous
+to fly in.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 600 100
+Stats2    10 21 0 10 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel immortal mountable noassist pacifist noattack~
+Affected  flying~
+Bodyparts wings~
+Immune    cold poison drain sleep charm hold~
+Suscept   electricity acid~
+#MUDPROG
+Progtype  act_prog~
+Arglist   mounts~
+Comlist   if rand(10)
+mpecho The machine makes strange and loud noises...
+mpecho Black smoke can been coming out from the parts of it!
+mpecho Before you know it, there is a loud explosion!
+mpdamage 0.$n 40
+mea 0.$n &RYou are caught in the blast and take damage!&z
+mpforce 0.$n dismount
+mpecho The machine is destroyed and no trace of it is left behind!
+mpgoto 11001
+endif
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   dismounts~
+Comlist   if rand(10)
+mpecho The machine makes strange and loud noises...
+mpecho Black smoke can been coming out from the parts of it!
+mpecho Before you know it, there is a loud explosion!
+mpdamage 0.$n 40
+mea 0.$n &RYou are caught in the blast and take damage!&z
+mpecho The machine is destroyed and no trace of it is left behind!
+mpgoto 11001
+endif
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      11029
+Keywords  servitor daemon~
+Race      spirit~
+Class     Necromancer~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A servitor daemon~
+Long      A servitor daemon has been bound to this plane.
+~
+Desc      A big, red, grotesque figure with claws for hands. He has a lost look
+on his face, then turns to notice you......
+~
+Nattacks  0.000000
+Stats1    -1000 0 0 0 150 100
+Stats2    50 10 30 200 2 4 7
+Speaks    common spiritual~
+Speaking  common~
+Actflags  npc~
+Affected  truesight~
+Bodyparts head heart guts eye wings claws horns~
+Resist    drain~
+Immune    fire nonmagic~
+Suscept   cold~
+Attacks   bite claws tail firebreath~
+Defenses  parry dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11030
+Keywords  traveller city overland~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a traveller~
+Long      A traveller wanders by on some long journey.
+~
+Desc      A dusty looking traveller who looks like he's seen more than his
+fair share of wilderness travel. He travels lightly with only a single
+backpack full of camping equipment and provisions.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    15 21 0 70 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Attacks   punch~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11031
+Keywords  merchant city overland~
+Race      half-elf~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a merchant~
+Long      A merchant passes by, leading a pair of pack mules.
+~
+Desc      He looks tired and weary. and probably wishes he were at some comfortable
+inn rather than ferrying his trade goods across the wilderness. This
+particular merchant must be on the poorer end of the profession as he
+is not accompanied by any of the guards so commonly found around other 
+merchants.
+~
+Nattacks  0.000000
+Stats1    700 -1 0 0 150 100
+Stats2    15 21 0 50 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Affected  infrared~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Attacks   punch~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11032
+Keywords  gypsy city overland~
+Race      human~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     a gypsy~
+Long      A mysterious gypsy gives you a shy smile.
+~
+Desc      Dark skinned and of lithe build, this southlander gypsy is not commonly
+seen within populated cities. Strangely, their people have always
+been wanderers and are considered the most travelled among all the
+land. Yet, much of their customs and beliefs are still a mystery to
+outsiders.
+~
+Nattacks  0.000000
+Stats1    700 -1 0 0 150 100
+Stats2    15 21 0 50 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Attacks   punch curse~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11033
+Keywords  bandit aggressive city overland~
+Race      half-elf~
+Class     Rogue~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a bandit~
+Long      A ruthless bandit tries to hide behind a bush.
+~
+Desc      The bandit is equipped in worn leathers and wields short sword. While
+he doesn't look very dangerous, the cunning glint of greed in his eyes
+tells you to beware trickery from this scoundrel. Bandits like him
+are a dime a dozen, making it a certainty that his fellow gangmates
+are probably prowling nearby.
+~
+Nattacks  0.000000
+Stats1    -700 -1 0 0 150 100
+Stats2    7 21 0 40 2 5 2
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger aggressive~
+Affected  infrared~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Resist    sleep charm~
+Attacks   bash~
+Defenses  parry dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11034
+Keywords  farmer field overland~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a farmer~
+Long      A weathered farmer plants some seeds in the soil nearby.
+~
+Desc      His skin is tanned and baked from working under the midday sun and it
+looks like his hands are quite heavily calloused. These farmers dedicate
+their lives to their land and their crops almost as ferverently as
+Druids do.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    15 21 0 70 2 4 5
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Attacks   punch~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11035
+Keywords  cow field overland~
+Race      bovine~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     a cow~
+Long      A cow looks at impassively at you as it chews on some grass.
+~
+Desc      A strong-smelling cow from the farmed fields. It doesn't look too bright
+but it is however a rather heavy beast, one that you wouldn't want
+trampling on you. Best that you leave this dull animal alone.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 0 70 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head legs heart brains guts ear eye tail horns haunches hooves forelegs~
+Attacks   bite kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11036
+Keywords  rabbit bunny field overland~
+Race      animal~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     a bunny rabbit~
+Long      A fluffy bunny hops away as you approach.
+~
+Desc      Its not as if you have never seen a bunny rabbit before. This particular
+one looks quite plump and healthy. Its floppy ears twitch at your
+approach and it is always ready to bound away.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 0 30 2 4 4
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head legs heart brains guts ear eye tail haunches forelegs~
+Attacks   bite kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11037
+Keywords  bull aggressive field overland~
+Race      bovine~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a raging bull~
+Long      A dangerous raging bull lowers its horns and charges at you.
+~
+Desc      This creature of pure muscle and fury doesn't seem too happy that you're 
+here. Spittle flies from its mouth as it lowers its horns and prepares
+to gore you to death. Be assured, death like that would not be pleasant.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    20 21 0 70 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc aggressive~
+Bodyparts head legs heart brains guts ear eye tail horns haunches hooves forelegs~
+Attacks   bite kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11038
+Keywords  deer forest overland~
+Race      animal~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     a deer~
+Long      A deer freezes at the sight of you, looking like it would bolt any moment.
+~
+Desc      A healthy brown deer. It looks skittish and nervous at the sight of
+you. This is probably due to the fact that hunters regularly kill
+these magnificent creatures for venison and skins.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 0 70 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc wimpy~
+Affected  silence~
+Bodyparts head legs heart brains guts ear eye tail haunches hooves forelegs~
+Attacks   bite kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11039
+Keywords  dryad forest overland~
+Race      magical~
+Class     Druid~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     a forest dryad~
+Long      A delicate-looking dryad frolics through the forest. 
+~
+Desc      Her skin is the color of smooth wood and probably of the same consistency.
+A wreath of flowers binds her wild green hair, which appears to be
+nothing more than leaves and vines. It is commonly believed that it
+is unlucky to attack a child of nature such as this dryad.
+~
+Nattacks  0.000000
+Stats1    1000 0 0 0 150 100
+Stats2    15 21 0 50 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Resist    energy drain~
+Immune    sleep charm paralysis~
+Suscept   fire acid~
+Attacks   punch weaken~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11040
+Keywords  treant forest overland~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a treant~
+Long      A treant passes by, rustling its leaves and branches loudly.
+~
+Desc      A rather large walking tree passes by you. It seems to be busy getting
+somewhere and is so focused on its journey that it ignores you standing
+and gaping at it.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    15 21 1 275 2 3 4
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Affected  detect_invis~
+Bodyparts guts~
+Resist    blunt~
+Suscept   fire plus4~
+Attacks   bash~
+Defenses  parry~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11041
+Keywords  wurm serpent aggressive forest overland~
+Race      dragon~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a forest wurm~
+Long      A huge serpent thunders through the forest, hissing and snarling.
+~
+Desc      You stand face-to-face with a wurm of incredible size. It most resembles
+a huge serpentine snake with the head of a spined toad. The creature
+glares at you, hissing and spiting out poisonous venom.
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    20 21 0 200 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc aggressive~
+Affected  detect_hidden infrared~
+Bodyparts head legs heart brains guts ear eye tail claws horns~
+Resist    fire energy~
+Immune    poison drain sleep charm paralysis~
+Attacks   bite claws tail poison~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11042
+Keywords  dwarf hill overland~
+Race      dwarf~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a hill dwarf~
+Long      A hill dwarf stands nearby, eyeing you with suspicion.
+~
+Desc      A simple dwarf from one of the nearby hill-clans. As with most other
+hill dwarves, he is extremely suspicious of others outside of his
+clan. He is dressed in tough leather armor and sports a notched axe.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    15 21 0 90 3 3 8
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Affected  infrared~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Resist    poison charm paralysis~
+Attacks   punch bash~
+Defenses  parry~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11043
+Keywords  rock badger hill overland~
+Race      animal~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a rock badger~
+Long      A curious badger with rocky skin pokes its head out of the hillside.
+~
+Desc      A very curious rodent-like animal who seems to be more interested in you
+than you are of it. From what you can see, it has two powerful foreclaws
+which it uses to burrow through the hillside and dig through the rocky
+soil.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 0 70 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  infrared~
+Bodyparts head legs heart brains guts ear eye tail~
+Resist    blunt pierce sleep charm paralysis~
+Immune    cold lash~
+Attacks   bite claws~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11044
+Keywords  crow hill overland~
+Race      animal~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a crow~
+Long      A black crow circles in the sky overhead.
+~
+Desc      The crow looks right back at you with its menacing beady eyes. It appears
+to be waiting for scraps of meat and food so it can swoop by and steal it
+from you.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 0 70 2 4 4
+Speaks    common~
+Speaking  common~
+Actflags  npc wimpy~
+Affected  flying silence~
+Bodyparts head legs heart brains guts ear eye wings~
+Attacks   bite claws~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11045
+Keywords  dragon aggressive hill overland~
+Race      dragon~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a hill dragon~
+Long      A huge hill dragon rears up and prepares to attack!
+~
+Desc      A terrifying dragon that prowls the hills and preys on adventurers
+such as yourself for food and amusement. It could crush you with a
+single blow if it wanted to but it prefers to toy with you before making
+you its meal. This is an extremely evil and hostile creature.
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    20 21 -60 400 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc aggressive~
+Affected  detect_invis infrared~
+Bodyparts head legs heart brains guts ear eye tail claws horns~
+Resist    cold energy blunt pierce slash~
+Immune    poison drain sleep charm paralysis lash~
+Attacks   bite claws tail~
+Defenses  parry dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11046
+Keywords  goat mountain overland~
+Race      animal~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a mountain goat~
+Long      A sure-footed mountain goat hops on a nearby rock.
+~
+Desc      Too bad you aren't as sure footed as this goat. It would surely make your
+journey through these lands much easier.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 0 70 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc wimpy~
+Affected  silence~
+Bodyparts head legs heart brains guts ear eye tail haunches hooves forelegs~
+Attacks   bite kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11047
+Keywords  wild hound mountain overland~
+Race      canine~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a wild hound~
+Long      A wild hound runs freely on this rocky terrain.
+~
+Desc      One of the common wild dogs that roam these mountains and make sport out
+of killing goats and other herd animals. Though they are somewhat of
+a nuisance to the local shepards, these creatures are no threat to you.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 -20 80 2 4 6
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  detect_hidden infrared~
+Bodyparts head legs heart brains guts ear eye tail~
+Attacks   bite~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11048
+Keywords  firbolg aggressive mountain overland~
+Race      Giant~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a firbolg~
+Long      A dangerous firbolg lurks nearby, ready to hurl stones at you.
+~
+Desc      This is one mean looking giant-kin. Though smaller than true-blooded
+giants, this nasty creature is no less vicious. It lives on these
+mountains and attacks almost anything not bigger than it much like
+a large bully. Its favored method of killing includes smashing skulls
+with large rocks.
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    20 21 0 140 2 6 8
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger aggressive~
+Affected  infrared~
+Bodyparts head arms legs heart brains guts ear eye tail~
+Resist    blunt lash~
+Immune    sleep charm~
+Suscept   poison~
+Attacks   punch bash~
+Defenses  parry dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11049
+Keywords  scarab beetle desert overland~
+Race      beetle~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a scarab beetle~
+Long      A strange beetle with intricate patterns on its shell lies in the sand.
+~
+Desc      A beautiful large desert beetle. Its shiny shell carapace has a pretty
+and unique pattern upon it. Some cultures even revere these insects. 
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 0 60 2 4 4
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  infrared~
+Bodyparts head legs heart brains guts ear eye~
+Resist    blunt pierce lash~
+Immune    acid poison paralysis~
+Suscept   cold~
+Attacks   kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11050
+Keywords  nomad desert overland~
+Race      human~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     a desert nomad~
+Long      A desert nomad wanders by, eyes intently scouting the desert sands.
+~
+Desc      She is wrapped so carefully in desert cloth to protect from dehydration
+that all you can see of her are her eyes. However you have no doubt
+that she is a couragous and able warrior who has live all her life under
+the desert skies.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    15 21 -20 85 2 4 8
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Resist    fire~
+Immune    charm~
+Attacks   punch kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11051
+Keywords  sand elemental aggressive desert overland~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a sand elemental~
+Long      A fearsome whirlwind of sand rises before you.
+~
+Desc      A swirling whirlwind of blinding sand. This appears to be an extra-planar
+entity which seems intent on blasting you from the face of the desert.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    20 21 -56 300 2 6 8
+Speaks    common~
+Speaking  common~
+Actflags  npc aggressive~
+Affected  detect_invis detect_hidden infrared flying~
+Bodyparts guts~
+Resist    slash hack~
+Immune    blunt pierce poison drain sleep charm paralysis lash~
+Suscept   energy~
+Absorb    fire~
+Attacks   bash blindness~
+Defenses  parry dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11052
+Keywords  stirge aggressive swamp overland~
+Race      stirge~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a stirge~
+Long      A large mosquito-like stirge swoops at you, hungry for fresh blood.
+~
+Desc      Its a huge hungry stirge that seeks out warm blood to feast on and lay
+its eggs in. Horrible creatures.
+~
+Nattacks  0.000000
+Stats1    -1000 0 0 0 150 100
+Stats2    20 21 0 70 2 4 4
+Speaks    common~
+Speaking  common~
+Actflags  npc aggressive~
+Affected  infrared flying~
+Bodyparts head legs heart brains guts ear eye wings~
+Resist    lash~
+Immune    poison drain charm~
+Suscept   electricity~
+Attacks   bite~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11053
+Keywords  goblin aggressive swamp overland~
+Race      goblin~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a swamp goblin~
+Long      A ruthless goblin leaps out of the fetid swamp water.
+~
+Desc      A ruthless muck encrusted goblin. This cowardly creature would not
+hesitate to slit your throat and paint itself with your blood.
+You would do the world a great favor by killing this wretched creature.
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    20 21 0 60 2 4 6
+Speaks    common~
+Speaking  common~
+Actflags  npc aggressive~
+Affected  infrared~
+Bodyparts head arms legs heart brains guts ear eye~
+Resist    poison drain charm~
+Attacks   claws kick~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11054
+Keywords  orangutan jungle overland~
+Race      ape~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     an orangutan~
+Long      An orangutan hangs on a nearby tree, eating ticks.
+~
+Desc      An intelligent orangutan looks around for food. It doesn't seem to
+alarmed by your presence though. It would do no good to harm this
+peaceful creature.
+~
+Nattacks  0.000000
+Stats1    1000 0 0 0 150 100
+Stats2    15 21 1 90 2 3 4
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Affected  infrared~
+Bodyparts arms legs heart guts feet fingers ear eye~
+Resist    blunt~
+Attacks   bash~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11055
+Keywords  python snake jungle overland~
+Race      snake~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a python~
+Long      A large snake slithers on a nearby branch.
+~
+Desc      This scaly python seems more interested in slithering by than in attacking
+you. It does however appear quite dangerous should you decide to provoke
+it into a fight.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 1 70 2 3 4
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  detect_invis~
+Bodyparts guts eye tail~
+Resist    blunt~
+Immune    poison charm~
+Attacks   bite~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11056
+Keywords  monitor lizard jungle overland~
+Race      reptile~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a monitor lizard~
+Long      A monitor lizard lounges contentedly in a nearby clump of undergrowth.
+~
+Desc      This large lizard stands almost motionless save for the flicking of
+its tongue. It is a denizen of the jungle and one of its less dangerous
+creatures.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 1 70 2 4 4
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  detect_invis infrared~
+Bodyparts legs heart brains guts eye tail~
+Resist    blunt~
+Immune    cold~
+Attacks   claws~
+Defenses  parry~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11057
+Keywords  panther aggressive jungle overland~
+Race      feline~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     a jungle panther~
+Long      A sleek black panther crouches on a branch, its eyes glinting in the light.
+~
+Desc      The natural predator of the jungle. This panther is in a mood for carnage
+and blood and it appears that YOU are its next prey. With a snarl, it
+leaps fully towards you. 
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    20 21 0 150 3 4 6
+Speaks    common~
+Speaking  common~
+Actflags  npc aggressive~
+Affected  infrared~
+Bodyparts head legs heart brains guts ear eye paws~
+Resist    poison drain charm~
+Attacks   bite claws~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11058
+Keywords  crab shore overland~
+Race      crustacean~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a crab~
+Long      A nearby crab scuttles out of your way.
+~
+Desc      Oddly enough, this common shoreside crab can scuttle away quite speedily
+whenever it perceives a threat. When accosted, it raises its powerful
+claws and slowly backs away to the nearest hole or towards the water.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 -50 90 2 3 4
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger~
+Affected  infrared aqua_breath~
+Bodyparts legs guts eye claws~
+Resist    pierce slash~
+Immune    poison paralysis~
+Attacks   claws~
+Defenses  parry dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11059
+Keywords  seagull shore overland~
+Race      animal~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a seagull~
+Long      A white seagull glides elegantly on the shore winds.
+~
+Desc      A noble scavenging seabird regarded by most sailors as a sign of good
+fortune. As such, harming such a bird would undoubtably bring terrible
+luck upon its attacker.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 -20 70 2 4 4
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  flying~
+Bodyparts head legs heart brains guts ear eye wings~
+Attacks   bite claws~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11060
+Keywords  hyena scrub grass overland~
+Race      canine~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a hyena~
+Long      A cackling hyena eyes you as you pass by.
+~
+Desc      The hyena makes a distinctive sound that closely resembles laughter.
+It is as if all hyenas laugh at some eternal cosmic joke. All in all,
+this is a rather interesting creature.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 -20 80 2 4 6
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  detect_hidden infrared~
+Bodyparts head legs heart brains guts ear eye tail~
+Attacks   bite~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11061
+Keywords  meerkat scrub grass overland~
+Race      animal~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     a meerkat~
+Long      A meerkat stands up on its hind legs and regards you curiously.
+~
+Desc      This creature closely resembles a ferret. However, it has the tendency to
+stand upright on its hind legs when not scampering around. No doubt
+this is quite an intelligent and resourceful rodent.
+~
+Nattacks  0.000000
+Stats1    500 0 0 0 150 100
+Stats2    15 21 -40 60 2 4 6
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  detect_hidden infrared~
+Bodyparts head legs heart brains guts ear eye tail~
+Resist    paralysis~
+Attacks   bite claws~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11062
+Keywords  armadillo scrub grass overland~
+Race      animal~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an armadillo~
+Long      An armored armadillo wanders peacefully by, ignoring your presence.
+~
+Desc      A walking piece of armor. This creature has a skin of overlapping
+armor that keeps at bay all except the most dangerous of predators.
+When cornered, the armadillo curls up into an impenatrable ball.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    15 21 -100 100 2 4 2
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Affected  detect_hidden infrared~
+Bodyparts head legs heart brains guts ear eye tail claws~
+Resist    slash poison charm hack lash~
+Immune    pierce~
+Suscept   acid sleep~
+Attacks   bite claws~
+Defenses  dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11063
+Keywords  manticore aggressive scrub grass overland~
+Race      magical~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     a manticore~
+Long      A manticore swoops dangerously towards you, shooting barbed spikes.
+~
+Desc      A creature with the head and body of a lion, large wings of a falcon
+and a barbed tail of a scorpion that shoots poisonous spikes. It is
+fury incarnate and it next victim is going to be you!
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    25 -15 -140 300 3 5 6
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger aggressive~
+Affected  detect_invis detect_hidden infrared flying~
+Bodyparts head legs heart brains guts ear eye wings claws paws~
+Resist    pierce slash poison drain~
+Immune    fire energy charm paralysis~
+Attacks   bite claws blindness curse~
+Defenses  parry dodge~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11072
+Keywords  skyship overland~
+Race      magical~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A magical skyship~
+Long      A magical skyship with large glowing sails rests here awaiting passengers.
+~
+Desc      The skyship is a truly marvelous invention. First created by the mages
+of Palainth and initially used only for their purposes, the skyship
+has since been made safe for travel by the masses.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    105 -23 -100 800 0 0 10
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel immortal~
+Affected  detect_hidden flying truesight~
+Bodyparts head~
+Immune    fire cold electricity energy blunt pierce slash acid poison drain sleep charm hold nonmagic plus1 plus2 plus3 plus4 plus5 plus6 magic paralysis good evil hack lash~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11400
+Keywords  Puff~
+Race      dragon~
+Class     Mage~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     Puff~
+Long      Puff the Fractal Dragon is here, contemplating a higher reality.
+~
+Nattacks  0.000000
+Stats1    1000 -1 0 0 150 100
+Stats2    100 20 -30 30550 4 10 200
+Speaks    common elvish orcish trollese insectoid spiritual magical clan minotaur centaur~
+Speaking  common~
+Actflags  npc sentinel~
+Affected  detect_invis detect_hidden infrared truesight~
+Bodyparts guts wings tail scales claws tailattack forelegs~
+Immune    sleep charm nonmagic magic paralysis~
+Attacks   claws~
+Defenses  parry dodge~
+#MUDPROG
+Progtype  speech_prog~
+Arglist   test~
+Comlist   say triggered by (name):	$n
+say triggered by (name&title): 	$N
+say triggerer is (he,she,it):	$e
+say triggerer is (him,her,it):	$m
+say triggerer is (his,hers,its):$s
+say random char (name):		$r
+say random char (name&title or short): 	$R
+say random char  (he,she,it):	$J
+say random char (him,her,it):	$L
+say random char (his,hers,its):	$K
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  speech_prog~
+Arglist   test2~
+Comlist   say firstname of obj:	 	$i
+say short_desc/title of obj: 	$I
+say he/she/it of obj:	 	$j
+say him/her/it of obj:	 	$k
+say his/hers/its of obj:	$l
+say firstname of victim: 	$t
+say short_desc/title of victim:	$T
+say he/she/it of victim: 	$E
+say him/her/it of victim: 	$M
+say his/hers/its of victim:	$S
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      11401
+Keywords  demon imp~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A demon imp~
+Long      A demon imp hovers nearby...drooling constantly with a fiendish grin.
+~
+Desc      This demon is clearly something that you don't want to mess with...
+It appears to be very agile, and very strong.  
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    100 1 -300 31550 1 2 2
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel immortal~
+Affected  detect_invis detect_hidden truesight~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#MUDPROG
+Progtype  act_prog~
+Arglist   p is dying~
+Comlist   mpforce $n drink
+c heal $n
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p is starved~
+Comlist   mpoload 11413
+give mushroom $n
+mpforce $n eat mushroom
+cast heal $n
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p bashes against~
+Comlist   cast heal $n
+cast heal $n
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p shivers and~
+Comlist   cast 'cure poison' $n
+cast heal $n
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p wears~
+Comlist   c heal $n
+c heal $n
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p wields~
+Comlist   c heal $n
+c heal $n
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p is DEAD.~
+Comlist   mptrans 0.$n 11405
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p A swirling vortex arrives, carrying Krusty!~
+Comlist   mpat 1450 yell Damn lizard! Get out of here!
+mptrans krusty 1401
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  rand_prog~
+Arglist   10~
+Comlist   if mobinroom(1203) > 0
+mpat 1450 yell Damnit Krusty! Get out of here and STAY out!
+mptrans krusty 1401
+endif
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      11402
+Keywords  supermob~
+Race      god~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     the supermob~
+Long      The supermob is here. He's running himself ragged.
+~
+Desc      The supermob is by far the most powerful and wise
+mobs in all the multiverse. He is a true marvel of the gods.
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    105 1 -300 31550 1 2 2
+Speaks    common~
+Speaking  common~
+Actflags  npc polyself secretive~
+Affected  invisible detect_invis detect_hidden hide truesight~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#MUDPROG
+Progtype  rand_prog~
+Arglist   25~
+Comlist   mpinvis 101
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      11403
+Keywords  undead animated corpse~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated corpse~
+Long      An animated corpse struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11404
+Keywords  undead animated skeleton~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated skeleton~
+Long      An animated skeleton struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    10 21 -10 25 1 8 2
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+Resist    pierce slash~
+Immune    cold poison drain sleep charm hold~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11405
+Keywords  undead animated zombie~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated zombie~
+Long      An animated zombie struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    20 21 -20 50 1 8 4
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+Immune    cold poison drain sleep charm hold~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11406
+Keywords  undead animated ghoul~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated ghoul~
+Long      An animated ghoul struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    30 21 -30 75 1 8 6
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+Immune    poison drain sleep charm hold~
+Attacks   weaken~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11407
+Keywords  undead animated crypt thing~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated crypt thing~
+Long      An animated crypt thing struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    40 21 -40 100 2 6 8
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+Immune    poison drain sleep charm hold nonmagic~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11408
+Keywords  undead animated mummy~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated mummy~
+Long      An animated mummy struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    50 21 -50 125 2 8 10
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+Resist    magic~
+Immune    cold poison drain sleep charm hold nonmagic~
+Suscept   fire~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11409
+Keywords  undead animated ghost~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated ghost~
+Long      An animated ghost struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    60 21 -60 150 2 8 12
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+Resist    blunt pierce slash~
+Immune    fire cold electricity energy acid poison drain sleep charm hold nonmagic~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11410
+Keywords  undead animated death knight~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated death knight~
+Long      An animated death knight struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    24 0 0 0 150 100
+Stats2    70 21 -70 200 2 8 14
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+Immune    cold poison drain sleep charm hold nonmagic~
+Attacks   fireball~
+Defenses  dispelmagic~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11411
+Keywords  undead animated dracolich~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     an animated dracolich~
+Long      An animated dracolich struggles with the horror of its undeath.
+~
+Desc      Denied its rightful death, this animated corpse has been infused with the
+powerful energies of its master.  It exists on the precipice between life
+and unlife, even as its physical body rots and decays under the strain of
+its tasks.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    80 21 -80 250 2 8 16
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs~
+Immune    cold electricity poison drain sleep charm hold nonmagic~
+Attacks   fireball~
+Defenses  dispelmagic~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11412
+Keywords  creeping doom~
+Race      insect~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The creeping doom~
+Long      A vile swarm of insects buzzes about the room.
+~
+Desc      A seething morass of biting and stinging insects. It destroys everything
+in its path, leaving not even the corpses of its enemies behind. It
+is the product of a truly powerful Druidic spell.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    90 -30 0 7000 100 5 45
+Speaks    common elvish ogre orcish trollese~
+Speaking  elvish~
+Actflags  npc sentinel noassist~
+Affected  detect_invis detect_hidden infrared flying truesight~
+Bodyparts guts wings~
+Resist    fire cold electricity blunt slash plus4 magic~
+Immune    pierce poison drain sleep charm hold nonmagic plus1 plus2 plus3 paralysis~
+Attacks   bite sting~
+#MUDPROG
+Progtype  all_greet_prog~
+Arglist   100~
+Comlist   if isnpc($n)
+   mpechoaround creeping &gThe creeping insects swarm over $N in a frenzy!&z
+   kill $n
+endif
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  entry_prog~
+Arglist   100~
+Comlist   if isnpc($n)
+   mpechoaround creeping &gThe creeping insects swarm over $N in a frenzy!&z
+   kill $n
+endif
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  rand_prog~
+Arglist   100~
+Comlist   if isnpc($r)
+   mpechoaround creeping &gThe creeping insects swarm over $R in a frenzy!&z
+   kill $r
+endif
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  script_prog~
+Arglist   6 100~
+Comlist   mpechoaround creeping &gThe creeping doom slowly dissipates....&z
+mpgoto 11403
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      11413
+Keywords  doppleganger~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a newly created doppleganger~
+Long      Some god abandoned a newly created doppleganger here.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel aggressive~
+Affected  detect_invis detect_hidden infrared truesight~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      11414
+Keywords  paladin warhorse horse~
+Race      horse~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     A paladin war horse~
+Long      A paladin war horse waits faithfully for its master here.
+~
+Desc      A fine steed of magnificent stature, this horse is the mount of a paladin. It
+is loyal to its master and will fight alongside its master with undying
+loyalty. Its intelligent eyes regard you with an almost haughty look.
+~
+Nattacks  0.000000
+Stats1    1000 0 0 0 500 100
+Stats2    15 -15 -80 100 1 8 8
+Speaks    mammal~
+Speaking  mammal~
+Actflags  npc sentinel guardian mountable~
+Affected  detect_evil protect~
+Bodyparts head legs heart brains guts ear eye hooves~
+Resist    drain sleep~
+Attacks   kick~
+#MUDPROG
+Progtype  speech_prog~
+Arglist   FOLLOW~
+Comlist   if class ($n) == paladin
+follow $n
+mpecho The paladin war horse neighs gently...
+else
+mpecho The paladin horse snorts...
+endif
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      11999
+Keywords  Last mob~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     a newly created last mob~
+Long      Some god abandoned a newly created last mob here.
+~
+Nattacks  0.000000
+Stats1    0 0 0 0 150 100
+Stats2    1 21 0 0 0 0 0
+Speaks    common~
+Speaking  common~
+Actflags  npc~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#OBJECT
+Vnum      11000
+Keywords  Placeholder~
+Type      trash~
+Short     Placeholder~
+Long      Placeholder~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     250 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11001
+Keywords  ash pile~
+Type      trash~
+Short     A pile of ashes~
+Long      A small pile of ashes sits here smoldering.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11002
+Keywords  campfire camp fire~
+Type      fire~
+Short     A campfire~
+Long      A blazing campfire burns brightly here.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11003
+Keywords  bedroll~
+Type      campgear~
+Short     A soft bedroll~
+Long      A soft bedroll suitable for camping is rolled up here.~
+WFlags    take~
+Values    1 0 0 0 0 0 0 0 0 0 0
+Stats     5 500 50 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11004
+Keywords  firewood~
+Type      campgear~
+Short     Some firewood~
+Long      A bundle of firewood sits here on the ground.~
+WFlags    take~
+Values    3 0 0 0 0 0 0 0 0 0 0
+Stats     8 8000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11005
+Keywords  overland fire~
+Type      fire~
+Short     a roaring fire~
+Long      A roaring fire crackles loudly here!~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11006
+Keywords  gear~
+Type      campgear~
+Short     Camping gear~
+Long      A set of camping supplies lies here.~
+WFlags    take~
+Values    2 0 0 0 0 0 0 0 0 0 0
+Stats     8 1000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11007
+Keywords  fireseed seed~
+Type      projectile~
+Short     A fireseed~
+Long      A small seed, glowing like an ember sits here.~
+Flags     glow magic~
+WFlags    take hold~
+Values    1 2 6 4 3 0 0 0 0 0 0
+Stats     1 0 -1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11026
+Keywords  scroll succor~
+Type      scroll~
+Short     A scroll of succor~
+Long      A piece of parchment with runic writings on it lies here.~
+Flags     magic~
+WFlags    take~
+Values    20 -1 -1 -1 0 0 0 0 0 0 0
+Stats     1 0 -1 9999 0 None None None
+Spells       'recall' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      11027
+Keywords  flint rock~
+Type      campgear~
+Short     A piece of flint~
+Long      A small piece of flint lies here on the ground.~
+WFlags    take~
+Values    3 0 0 0 0 0 0 0 0 0 0
+Stats     1 3000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11028
+Keywords  firewood pile twigs~
+Type      tinder~
+Short     Some dry twigs and firewood~
+Long      A pile of dry twigs lies in a heap.~
+WFlags    take~
+Values    3 0 0 0 0 0 0 0 0 0 0
+Stats     2 0 50 9999 0 None None None
+#EXDESC
+ExDescKey    firewood pile twigs~
+ExDesc       A rather unimpressive heap of dry twigs and leaves. It appears to be
+useful if you wanted to start a fire going.
+ 
+To build a fire, follow the steps below:
+1) Drop the firewood onto the ground where you want to build the fire.
+2) Say "strike flint" to strike the tinder with some small flint stone.
+3) Enjoy the warmth and light of your newly built fire.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  speech_prog~
+Arglist   p strike flint~
+Comlist   mpechoat 0.$n You strike the tinder with the flint and sparks fly...
+mpechoat 0.$n The twigs catch fire and soon, you have a fire cackling.
+mpechoat 0.$n The tinder and flint is consumed in building the fire.
+mpoload 11002
+mposet fire timer 15
+mppurge firewood-pile-twigs
+~
+#ENDPROG
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11029
+Keywords  acorns~
+Type      food~
+Short     A bunch of acorns~
+Long      A few acorns lie on the ground, a tempting snack for squirrels.~
+Flags     organic~
+WFlags    take~
+Values    6 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 1 9999 0 None None None
+#EXDESC
+ExDescKey    acorns~
+ExDesc       Small brown nuts found in certain woodland areas. They are rather
+tasty but not really filling. Makes for excellent squirrel bait.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11030
+Keywords  aloe root~
+Type      pill~
+Short     A twisted aloe root~
+Long      A scraggly, twisted aloe root sticks out from the ground. ~
+WFlags    take~
+Values    10 -1 -1 -1 0 0 0 0 0 0 0
+Stats     1 0 -1 9999 0 None None None
+Spells       'cure poison' 'NONE' 'NONE'
+#EXDESC
+ExDescKey    aloe root~
+ExDesc       A root from the aloe plant. Despite how simple and uninteresting it
+looks, it is said to have useful applications in warding against
+poisons of all kinds.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11031
+Keywords  fresh herbs damp poultice~
+Type      salve~
+Short     A poultice of fresh herbs~
+Long      A pungent smelling poultice of damp fresh herbs lie in the dirt.~
+WFlags    take~
+Values    10 1 1 0 -1 -1 0 0 0 0 0
+Stats     1 0 -1 9999 0 None None None
+Spells       'cure light' 'NONE'
+#EXDESC
+ExDescKey    fresh herbs damp poultice~
+ExDesc       Looks like a messy pile of damp mosses, leaves and fungi. It smells
+even worse too. Fortunately it has medicinal uses. Perhaps it would
+take away the sting from some of your wounds.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11032
+Keywords  vermeir herb~
+Type      herb~
+Short     A pinch of vermeir~
+Long      Some greenish herb lies scattered about the floor here.~
+WFlags    take~
+Values    0 3 2 0 0 0 0 0 0 0 0
+Stats     1 0 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11033
+Keywords  occadaal herb~
+Type      herb~
+Short     A pinch of occadaal~
+Long      Some yellowish herb lies scattered about the floor here.~
+WFlags    take~
+Values    0 3 4 0 0 0 0 0 0 0 0
+Stats     1 0 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11034
+Keywords  nooracht herb~
+Type      herb~
+Short     A pinch of nooracht~
+Long      Some reddish herb lies scattered about the floor here.~
+WFlags    take~
+Values    0 3 3 0 0 0 0 0 0 0 0
+Stats     1 0 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11035
+Keywords  breadl herb~
+Type      herb~
+Short     A pinch of breadl~
+Long      Some purplish herb lies scattered about the floor here.~
+WFlags    take~
+Values    0 3 5 0 0 0 0 0 0 0 0
+Stats     1 0 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11036
+Keywords  black gwyvel herb~
+Type      herb~
+Short     A pinch of black gwyvel~
+Long      Some blackish herb lies scattered about the floor here.~
+WFlags    take~
+Values    0 3 1 0 0 0 0 0 0 0 0
+Stats     1 0 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11037
+Keywords  pipeweed herb~
+Type      herb~
+Short     A pinch of pipeweed~
+Long      Some brownish herb lies scattered about the floor here.~
+WFlags    take~
+Values    0 3 0 0 0 0 0 0 0 0 0
+Stats     1 0 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11038
+Keywords  faerie dust~
+Type      salve~
+Short     A pinch of faerie dust~
+Long      A small pinch of faerie dust lies by your feet.~
+WFlags    take~
+Values    15 1 1 0 -1 -1 0 0 0 0 0
+Stats     1 0 -1 0 0 None None None
+Spells       'invisibility' 'NONE'
+#EXDESC
+ExDescKey    faerie dust~
+ExDesc       A shimmering pile of dust that fades in and out of sight.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11039
+Keywords  gnomish flamethrower~
+Type      wand~
+Short     A gnomish flamethrower~
+Long      A hot gnomish flamethrower lies on the ground, spitting out intermittent bursts of flame.~
+Flags     organic~
+WFlags    take hold~
+Values    7 1 1 -1 0 0 0 0 0 0 0
+Stats     5 500 -1 9999 0 None None None
+Spells       'fireball'
+#EXDESC
+ExDescKey    gnomish flamethrower~
+ExDesc       A machine consisting of a long pipe connected to a small bottle of
+flammable oils and spirits by a rubber hose. Interestingly enough,
+there appears to be a small fire burning at the end of the pipe.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  use_prog~
+Arglist   10~
+Comlist   mea 0.$n The flamethrower chokes as it shoots out a ball of fire.
+mea 0.$n You are caught in a backdraft as the flamethrower sputters!
+mpdamage 0.$n 40
+mea 0.$n &RYou are scorched by the flames and take damage!&z
+~
+#ENDPROG
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11040
+Keywords  gnomish collapsible ladder~
+Type      armor~
+Short     A gnomish collapsible ladder~
+Long      A folded up gnomish collapsible ladder gathers dust on the ground.~
+WFlags    take hold~
+Values    1 1 0 0 0 0 0 0 0 0 0
+Stats     8 500 -1 9999 0 None None None
+AffData climb 60 -1 -1 0
+#EXDESC
+ExDescKey    gnomish collapsible ladder~
+ExDesc       A lightweight ladder made out of a mix of metals that lend it some
+strength and sturdiness. By the height of its rungs, you deduce that
+it was made for gnomish use.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  wear_prog~
+Arglist   10~
+Comlist   mea 0.$n The ladder suddenly collapses as you are attempting to hold it!
+mea 0.$n You are caught in between the steps of the ladder!
+mpdamage 0.$n 40
+mea 0.$n &ROUCH!&z
+~
+#ENDPROG
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11041
+Keywords  gnomish digging excavational device~
+Type      shovel~
+Short     A gnomish excavational device~
+Long      A strange digging device is seen on the ground, humming away.~
+Flags     metal~
+WFlags    take hold~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     10 500 -1 0 0 None None None
+AffData dig 25 -1 -1 0
+#EXDESC
+ExDescKey    gnomish digging excavational device~
+ExDesc       A strange mix of machinery resembling a hand-held device with numerous
+rotating spades and spinning drills. Obviously it is used to dig
+through the earth with great efficiency.
+~
+#ENDEXDESC
+
+#MUDPROG
+Progtype  wear_prog~
+Arglist   10~
+Comlist   mea 0.$n The device suddenly goes wild and takes on a life of its own!
+mea 0.$n You are injured by the wildly spinning drills!
+mpdamage 0.$n 40
+mea 0.$n &ROUCH!&z
+~
+#ENDPROG
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11042
+Keywords  gnomish universal lockpick~
+Type      lockpick~
+Short     A gnomish universal lockpick~
+Long      A single piece of thin metal is seen on the ground.~
+Flags     metal~
+WFlags    take hold~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 500 -1 0 0 None None None
+AffData pick 20 -1 -1 0
+#EXDESC
+ExDescKey    gnomish univeral lockpick~
+ExDesc       A thin sliver of metal which can easily slide into a keyhole, this device
+can be adjusted to fit different keyhole sizes. It looks like it is meant
+to be used to pick open locked doors.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11043
+Keywords  gnomish underwater breathing apparatus~
+Type      armor~
+Short     A gnomish underwater breathing apparatus~
+Long      A strange metal cylinder with a short tube and a mouthpiece lies here.~
+Flags     metal~
+WFlags    take back~
+Values    1 1 0 0 0 0 0 0 0 0 0
+Stats     20 500 -1 0 0 None None None
+AffData affected 'recurringspell' -1 -1 0
+#EXDESC
+ExDescKey    gnomish underwater breathin apparatus~
+ExDesc       This strange piece of equipment consists of a metal cylinder with a long
+tube attached to the top. The tube ends in a mouthpiece made from some
+rubbery substance. There is a small knob at the top of the cylinder which
+when you turn, releases a steady stream of air.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11044
+Keywords  generic treasure item~
+Type      trash~
+Short     a newly created generic treasure item~
+Long      Some god dropped a newly created generic treasure item here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11045
+Keywords  generic rune item~
+Type      rune~
+Short     a newly created generic rune item~
+Long      Some god dropped a newly created generic rune item here.~
+Flags     magic~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11064
+Keywords  jailor guard~
+Type      trash~
+Short     a newly created jailor guard~
+Long      Some god dropped a newly created jailor guard here.~
+Flags     proto~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11300
+Keywords  iron ore~
+Type      ore~
+Short     An iron ore~
+Long      A shiny black metallic piece of rock lies here.~
+Flags     metal~
+WFlags    take~
+Values    1 0 0 0 0 0 0 0 0 0 0
+Stats     1 200 25 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11301
+Keywords  gold ore~
+Type      ore~
+Short     A gold ore~
+Long      A piece of black rock with veins of gold lies here.~
+Flags     metal~
+WFlags    take~
+Values    2 0 0 0 0 0 0 0 0 0 0
+Stats     1 350 50 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11302
+Keywords  silver ore~
+Type      ore~
+Short     A silver ore~
+Long      A dull piece of rock with silver veins lies here.~
+Flags     metal~
+WFlags    take~
+Values    3 0 0 0 0 0 0 0 0 0 0
+Stats     1 500 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11303
+Keywords  adamantine ore~
+Type      ore~
+Short     A piece of adamantine ore~
+Long      A metallic rock with specks of silver lies here.~
+Flags     metal~
+WFlags    take~
+Values    4 0 0 0 0 0 0 0 0 0 0
+Stats     1 500 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11304
+Keywords  mithril ore~
+Type      ore~
+Short     A mithril ore~
+Long      A shiny piece of rock with silvery veins lies here.~
+Flags     metal~
+WFlags    take~
+Values    5 0 0 0 0 0 0 0 0 0 0
+Stats     1 500 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11305
+Keywords  blackmite ore~
+Type      ore~
+Short     blackmite ore~
+Long      A piece of shiny black ore rests here.~
+Flags     magic~
+WFlags    take~
+Values    6 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11306
+Keywords  titanium ore~
+Type      ore~
+Short     titanium ore~
+Long      A piece of dull grey ore rests here.~
+Flags     magic~
+WFlags    take~
+Values    9 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11307
+Keywords  steel ingot ore~
+Type      ore~
+Short     A steel ingot~
+Long      A bar of steel rests here.~
+Flags     magic~
+WFlags    take~
+Values    7 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11308
+Keywords  bronze ingot ore~
+Type      ore~
+Short     A bronze ingot~
+Long      A bronze ingot rests here.~
+Flags     magic~
+WFlags    take~
+Values    8 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11309
+Keywords  dwarven steel ingot ore~
+Type      ore~
+Short     A Dwarven steel ingot~
+Long      A darkened steel ingot lies here.~
+Flags     metal~
+WFlags    take~
+Values    9 0 0 0 0 0 0 0 0 0 0
+Stats     1 200 25 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11310
+Keywords  elven steel ingot ore~
+Type      ore~
+Short     An Elven steel ingot~
+Long      A bright, shiny steel ingot lies here.~
+Flags     metal~
+WFlags    take~
+Values    10 0 0 0 0 0 0 0 0 0 0
+Stats     1 200 25 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11368
+Keywords  tan tanned jacket~
+Type      armor~
+Short     A jacket made from the hide of %s~
+Long      A jacket made from something's hide lies here.~
+WFlags    take body~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11369
+Keywords  tan tanned boots~
+Type      armor~
+Short     Boots made from the hide of %s~
+Long      Boots made from something's hide lies here.~
+WFlags    take feet~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11370
+Keywords  tan tanned gloves~
+Type      armor~
+Short     Gloves made from the hide of %s~
+Long      Gloves made from something's hide lies here.~
+WFlags    take hands~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11371
+Keywords  tan tanned leggings~
+Type      armor~
+Short     Leggings made from the hide of %s~
+Long      Leggings made from something's hide lies here.~
+WFlags    take legs~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11372
+Keywords  tan tanned sleeves~
+Type      armor~
+Short     Sleeves made from the hide of %s~
+Long      Sleeves made from something's hide lies here.~
+WFlags    take arms~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11373
+Keywords  tan tanned helmet~
+Type      armor~
+Short     A helmet made from the hide of %s~
+Long      A helmet made from something's hide lies here.~
+WFlags    take head~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11374
+Keywords  tan tanned bag~
+Type      container~
+Short     A bag made from the hide of %s~
+Long      A bag made from something's hide lies here.~
+WFlags    take hold~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11375
+Keywords  tan tanned cloak~
+Type      armor~
+Short     A cloak made from the hide of %s~
+Long      A cloak made from something's hide lies here.~
+WFlags    take about~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11376
+Keywords  tan tanned belt~
+Type      armor~
+Short     A belt made from the hide of %s~
+Long      A belt made from something's hide lies here.~
+WFlags    take waist~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11377
+Keywords  tan tanned collar~
+Type      armor~
+Short     A collar made from the hide of %s~
+Long      A collar made from something's hide lies here.~
+WFlags    take neck~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11378
+Keywords  waterskin skin tan tanned~
+Type      drinkcon~
+Short     A Waterskin mad from the hide of %s~
+Long      A waterskin made from something's hide lies here.~
+WFlags    take hold~
+Values    10 10 0 0 0 0 0 0 0 0 0
+Stats     15 50 10 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11379
+Keywords  tan tanned quiver~
+Type      quiver~
+Short     A quiver made from the hide of %s~
+Long      A quiver made from something's hide lies here~
+Flags     organic~
+WFlags    take back~
+Values    20 0 0 100 0 0 0 0 0 0 0
+Stats     2 100 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11380
+Keywords  whip tan tanned whip~
+Type      weapon~
+Short     A whip made from the hide of %s~
+Long      A whip made of somethings hide lies here.~
+WFlags    take wield~
+Values    12 0 0 1 3 0 12 0 0 0 0
+Stats     1 200 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11381
+Keywords  tan tanned shield~
+Type      armor~
+Short     A shield made from the hide of %s~
+Long      A shield made from something's hide lies here.~
+WFlags    take shield~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11401
+Keywords  coin gold~
+Type      money~
+Short     a gold coin~
+Long      One miserable gold coin.~
+WFlags    take~
+Values    1 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11402
+Keywords  coins gold~
+Type      money~
+Short     %d gold coins~
+Long      A pile of gold coins.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11403
+Keywords  corpse~
+Type      corpse~
+Short     the corpse of %s~
+Long      The corpse of %s lies here.~
+WFlags    take~
+Values    0 0 3 1 0 0 0 0 0 0 0
+Stats     100 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11404
+Keywords  corpse~
+Type      corpse_pc~
+Short     the corpse of %s~
+Long      The corpse of %s is lying here.~
+Values    0 0 3 1 0 0 0 0 0 0 0
+Stats     100 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11405
+Keywords  head~
+Type      cook~
+Short     the head of %s~
+Long      The severed head of %s is lying here.~
+Action    %s gobble$q down $p with gusto... disgusting!~
+WFlags    take~
+Values    10 0 0 0 0 0 0 0 0 0 0
+Stats     5 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11406
+Keywords  heart~
+Type      cook~
+Short     the heart of %s~
+Long      The torn-out heart of %s is lying here.~
+Action    %s savagely devour$q $p!~
+WFlags    take~
+Values    16 0 0 0 0 0 0 0 0 0 0
+Stats     2 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11407
+Keywords  arm~
+Type      cook~
+Short     the arm of %s~
+Long      The sliced-off arm of %s is lying here.~
+Action    %s chomp$q on $p.~
+WFlags    take~
+Values    20 0 0 0 0 0 0 0 0 0 0
+Stats     5 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11408
+Keywords  leg~
+Type      cook~
+Short     the leg of %s~
+Long      The sliced-off leg of %s is lying here.~
+Action    %s chomp$q on $p.~
+WFlags    take~
+Values    20 0 0 0 0 0 0 0 0 0 0
+Stats     5 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11409
+Keywords  guts~
+Type      cook~
+Short     the spilled guts of %s~
+Long      The spilled guts of %s makes you lose your appetite.~
+WFlags    take~
+Values    5 0 0 1 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11410
+Keywords  blood~
+Type      blood~
+Short     the spilled blood~
+Long      A pool of spilled blood lies here.~
+Values    5 0 0 1 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11411
+Keywords  bloodstain~
+Type      bloodstain~
+Short     the bloodstain~
+Long      Blood stains the ground.~
+Values    5 0 0 1 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11412
+Keywords  scraps~
+Type      scraps~
+Short     the scraps of %s~
+Long      The scraps of %s lie here.~
+WFlags    take~
+Values    5 0 0 1 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11413
+Keywords  mushroom~
+Type      food~
+Short     a magic mushroom~
+Long      A delicious magic mushroom is here.~
+Action    %s enjoy$q $p.~
+WFlags    take~
+Values    24 0 0 0 0 0 0 0 0 0 0
+Stats     1 10 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11414
+Keywords  ball light~
+Type      light~
+Short     a bright ball of light~
+Long      A bright ball of light shimmers in the air.~
+WFlags    take~
+Values    0 0 -1 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11415
+Keywords  spring~
+Type      fountain~
+Short     a magical spring~
+Long      A magical spring flows here.~
+Flags     magic~
+Values    100000 100000 0 0 0 0 0 0 0 0 0
+Stats     10 10 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11416
+Keywords  vine whip~
+Type      weapon~
+Short     A vine whip~
+Long      A long whip made out of magical vines is lying on the ground here.~
+Flags     magic bless anticleric antimage antirogue antiwarrior antibard antimonk antipaladin antinecro antiapal~
+WFlags    take wield~
+Values    12 2 10 5 3 0 12 0 0 0 0
+Stats     3 0 -1 9999 0 None None None
+AffData hitroll 4 -1 -1 0
+AffData damroll 4 -1 -1 0
+#EXDESC
+ExDescKey    vine whip~
+ExDesc       A whip made out of magically intertwining vines. It is strong and
+very durable.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11417
+Keywords  meat fresh slice~
+Type      cook~
+Short     a slice of raw meat from %s~
+Long      A slice of raw meat from %s lies lies on the ground.~
+WFlags    take~
+Values    15 1 0 0 0 0 0 0 0 0 0
+Stats     2 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11418
+Keywords  shopping bag~
+Type      container~
+Short     a bag~
+Long      A shopping bag lies discarded on the ground nearby.~
+WFlags    take~
+Values    50 0 0 0 0 0 0 0 0 0 0
+Stats     2 20 2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11419
+Keywords  berry goodberry~
+Type      pill~
+Short     a Goodberry~
+Long      A goodberry lies on the ground here.~
+Flags     magic~
+WFlags    take hold~
+Values    20 -1 -1 -1 10 0 0 0 0 0 0
+Stats     1 0 -1 9999 0 None None None
+Spells       'cure light' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      11420
+Keywords  flame blade~
+Type      weapon~
+Short     A flame blade~
+Long      A blade wreathed in flames is lying on the ground here.~
+Flags     magic anticleric antimage antirogue antibard antimonk antinecro~
+WFlags    take wield~
+Values    12 2 8 1 1 0 12 0 0 0 0
+Stats     1 0 -1 9999 0 None None None
+AffData hitroll 2 -1 -1 0
+AffData damroll 2 -1 -1 0
+#EXDESC
+ExDescKey    flame blade~
+ExDesc       A magically created blade seemingly made of pure fire. Only a druid or
+a ranger safely wield it.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11421
+Keywords  piece flint arrowhead~
+Type      treasure~
+Short     A piece of flint~
+Long      A sharp piece of flint is embedded in the ground here.~
+Action    A piece of flint~
+WFlags    take hold~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 30 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11422
+Keywords  arrow~
+Type      projectile~
+Short     An Arrow~
+Long      An arrow lies discarded here.~
+Action    An Arrow~
+WFlags    take hold~
+Values    5 1 6 6 1 0 0 0 0 0 0
+Stats     1 1000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11423
+Keywords  fire~
+Type      fire~
+Short     a magical fire~
+Long      A magical fire burns brightly.~
+Flags     magic~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     10 10 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11424
+Keywords  trap~
+Type      trap~
+Short     a trap~
+Long      You detect a trap.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     100 10 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11425
+Keywords  portal~
+Type      portal~
+Short     a portal~
+Long      A misty portal beckons you to the unknown.~
+Flags     magic~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     100 10 1 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11426
+Keywords  black poison powder~
+Type      trash~
+Short     Some black poisoning powder~
+Long      A small amount of black poisoning powder sits in a small container on the ground.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 10000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11427
+Keywords  scroll scribing blank~
+Type      scroll~
+Short     a blank scroll~
+Long      A blank scroll lays here gathering dust.~
+WFlags    take hold~
+Values    0 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 1000 -2 9999 0 None None None
+Spells       'NONE' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      11428
+Keywords  flask empty~
+Type      potion~
+Short     an empty flask~
+Long      An empty flask lays here gathering dust.~
+WFlags    take hold~
+Values    1 -1 -1 -1 0 0 0 0 0 0 0
+Stats     1 1000 -2 9999 0 None None None
+Spells       'NONE' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      11429
+Keywords  parchment paper note~
+Type      paper~
+Short     a note~
+Long      A note has been discarded here.~
+WFlags    take hold~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 1500 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11430
+Keywords  quill pen~
+Type      pen~
+Short     a quill~
+Long      A feather dipped in ink here lies.~
+WFlags    take~
+Values    15 15 0 0 0 0 0 0 0 0 0
+Stats     2 2000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11431
+Keywords  black wire garrotte~
+Type      weapon~
+Short     A garrotte wire~
+Long      A black wire rests innocently on the ground, you almost didn't see it.~
+Flags     onlyrogue~
+WFlags    take wield~
+Values    12 3 3 1 0 0 12 0 0 0 0
+Stats     1 5000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11432
+Keywords  blank spell wand~
+Type      wand~
+Short     A blank spell wand~
+Long      An empty spell wand sits here on the ground.~
+WFlags    take hold~
+Values    -1 -1 -1 -1 0 0 0 0 0 0 0
+Stats     1 20000 -2 9999 0 None None None
+Spells       'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      11433
+Keywords  holy mistletoe~
+Type      armor~
+Short     A Holy Mistletoe~
+Long      A mistletoe lies here, shining.~
+Flags     glow bless~
+WFlags    take hold~
+Values    5 5 0 0 0 0 0 0 0 0 0
+Stats     5 0 0 0 0 None None None
+#MUDPROG
+Progtype  wear_prog~
+Arglist   100~
+Comlist   if class ($n) != druid
+mpechoat 0.$n The mistletoe flares with a blinding silver light.
+mpechoat 0.$n You are forced to drop the mistletoe.
+mpechoaround 0.$n $n is forced to drop the mistletoe as it flares silver.
+mpforce 0.$n remove mistletoe
+mpforce 0.$n drop mistletoe
+endif
+~
+#ENDPROG
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11434
+Keywords  holy symbol faith~
+Type      armor~
+Short     A Symbol of Faith~
+Long      A holy symbol lies here, shining.~
+Flags     glow bless~
+WFlags    take hold~
+Values    5 5 0 0 0 0 0 0 0 0 0
+Stats     5 0 0 9999 0 None None None
+#MUDPROG
+Progtype  wear_prog~
+Arglist   100~
+Comlist   if class ($n) != cleric
+mpechoat 0.$n &WThe symbol flares with a blinding white light.&z
+mpechoat 0.$n You are forced to drop the symbol.
+mpechoaround 0.$n &W$n is forced to drop the symbol as it flares white.&z
+mpforce 0.$n remove symbol-faith
+mpforce 0.$n drop symbol-faith
+endif
+~
+#ENDPROG
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11435
+Keywords  brains~
+Type      cook~
+Short     the brains of %s~
+Long      The squishy remains of the brains of %s lie in a gooey pile.~
+WFlags    take~
+Values    12 0 0 0 0 0 0 0 0 0 0
+Stats     3 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11436
+Keywords  hand~
+Type      cook~
+Short     the hand of %s~
+Long      The severed hand of %s lies here.~
+WFlags    take~
+Values    8 0 0 0 0 0 0 0 0 0 0
+Stats     4 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11437
+Keywords  foot~
+Type      cook~
+Short     the foot of %s~
+Long      The severed foot of %s is lying here rotting.~
+WFlags    take~
+Values    10 0 0 0 0 0 0 0 0 0 0
+Stats     3 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11438
+Keywords  FINGER~
+Type      cook~
+Short     the finger of %s~
+Long      A severed finger from %s lies here.~
+WFlags    take~
+Values    3 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11439
+Keywords  ear~
+Type      cook~
+Short     the ear of %s~
+Long      The ear of %s lies here on the ground.~
+WFlags    take~
+Values    2 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11440
+Keywords  eye~
+Type      cook~
+Short     the eye of %s~
+Long      An eyeball from the corpse of %s lies here.~
+WFlags    take~
+Values    1 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11441
+Keywords  tongue~
+Type      cook~
+Short     the long tongue of %s~
+Long      The ripped out tongue of %s is lying here.~
+WFlags    take~
+Values    12 0 0 0 0 0 0 0 0 0 0
+Stats     2 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11442
+Keywords  eyestalk~
+Type      cook~
+Short     the eyestalk of %s~
+Long      A severed eyestalk from %s is here.~
+WFlags    take~
+Values    8 0 0 0 0 0 0 0 0 0 0
+Stats     3 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11443
+Keywords  tentacle~
+Type      cook~
+Short     the tentacle of %s~
+Long      A long tentacle from the body of %s is strung out here.~
+WFlags    take~
+Values    7 0 0 0 0 0 0 0 0 0 0
+Stats     4 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11444
+Keywords  fin~
+Type      cook~
+Short     the fin of %s~
+Long      A scaly fin from the body of %s is here.~
+WFlags    take~
+Values    2 0 0 0 0 0 0 0 0 0 0
+Stats     2 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11445
+Keywords  wing~
+Type      cook~
+Short     the wing of %s~
+Long      A wing from the body of %s is here.~
+WFlags    take~
+Values    9 0 0 0 0 0 0 0 0 0 0
+Stats     6 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11446
+Keywords  tail~
+Type      cook~
+Short     the tail of %s~
+Long      A long tail from the corpse of %s is here.~
+WFlags    take~
+Values    5 0 0 0 0 0 0 0 0 0 0
+Stats     4 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11447
+Keywords  scale~
+Type      treasure~
+Short     the scale of %s~
+Long      A flexible scale from the body of %s is here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 1200 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11448
+Keywords  tusk~
+Type      treasure~
+Short     the tusk of %s~
+Long      A hardened tusk from the body of %s is lying here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     8 4000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11449
+Keywords  horn~
+Type      treasure~
+Short     the horn of %s~
+Long      A sharp horn from the corpse of %s is sitting here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     9 5000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11450
+Keywords  claw~
+Type      weapon~
+Short     the claw of %s~
+Long      A sharp claw from the body of %s is here.~
+WFlags    take wield~
+Values    3 2 6 5 0 0 0 0 0 0 0
+Stats     4 2000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11451
+Keywords  blank rune~
+Type      rune~
+Short     A blank recall rune~
+Long      A small magical rune is lying here.~
+Flags     magic~
+WFlags    take~
+Values    -1 0 0 0 0 0 0 0 0 0 0
+Stats     1 100000 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11452
+Keywords  holy symbol paladin~
+Type      armor~
+Short     The Paladin Holy Symbol~
+Long      A holy symbol lies here, shining.~
+Flags     glow bless~
+WFlags    take hold~
+Values    5 5 0 0 0 0 0 0 0 0 0
+Stats     5 0 0 9999 0 None None None
+#MUDPROG
+Progtype  wear_prog~
+Arglist   100~
+Comlist   if class ($n) != paladin
+mpechoat 0.$n &WThe symbol flares with a blinding white light.&z
+mpechoat 0.$n You are forced to drop the symbol.
+mpechoaround 0.$n &W$n is forced to drop the symbol as it flares white.&z
+mpforce 0.$n remove symbol-paladin
+mpforce 0.$n drop symbol-paladin
+endif
+~
+#ENDPROG
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11453
+Keywords  skull death~
+Type      armor~
+Short     The Skull of Death~
+Long      A skull lies here, shimmering with dark energy.~
+Flags     glow~
+WFlags    take hold~
+Values    5 5 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#MUDPROG
+Progtype  wear_prog~
+Arglist   100~
+Comlist   if class ($n) != necromancer
+mpechoat 0.$n &rThe skull flares with a blazing red light.&z
+mpechoat 0.$n You are forced to drop the skull.
+mpechoaround 0.$n &r$n is forced to drop the skull as it flares red.&z
+mpforce 0.$n remove skull-death
+mpforce 0.$n drop skull-death
+endif
+~
+#ENDPROG
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11462
+Keywords  feather~
+Type      treasure~
+Short     the feather of %s~
+Long      A soft feather from the body of %s is here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 3500 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11463
+Keywords  foreleg~
+Type      cook~
+Short     the foreleg of %s~
+Long      The powerful foreleg of %s is lying here.~
+WFlags    take~
+Values    10 0 0 0 0 0 0 0 0 0 0
+Stats     8 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11464
+Keywords  paw~
+Type      cook~
+Short     the paw of %s~
+Long      A large paw from the body of %s is here.~
+WFlags    take~
+Values    2 0 0 0 0 0 0 0 0 0 0
+Stats     3 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11465
+Keywords  hoof~
+Type      trash~
+Short     the hoof of %s~
+Long      A hard hoof from the body of %s is here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     2 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11466
+Keywords  beak~
+Type      trash~
+Short     the beak of %s~
+Long      A sharp beak from the corpse of %s lies here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     3 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11467
+Keywords  sharp scale~
+Type      weapon~
+Short     the sharp scale of %s~
+Long      A hard, sharp scale from the corpse of %s is here.~
+WFlags    take wield~
+Values    3 2 5 5 0 0 0 0 0 0 0
+Stats     1 2000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11468
+Keywords  haunches~
+Type      cook~
+Short     the haunches of %s~
+Long      The haunches of %s lie here.~
+WFlags    take~
+Values    15 0 0 0 0 0 0 0 0 0 0
+Stats     11 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11469
+Keywords  fang~
+Type      weapon~
+Short     the fang of %s~
+Long      A sharp fang from the body of %s is here.~
+WFlags    take wield~
+Values    3 2 4 5 0 0 0 0 0 0 0
+Stats     3 2000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11470
+Keywords  minstru flute~
+Type      instrument~
+Short     A Flute~
+Long      A finely inlayed silver flute lies here.~
+WFlags    take hold~
+Values    4 4 0 0 0 0 0 0 0 0 0
+Stats     1 200 20 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11471
+Keywords  minstru lute~
+Type      instrument~
+Short     A Lute~
+Long      A finely carved wooden lute is propped against the wall here.~
+WFlags    take hold~
+Values    6 6 0 0 0 0 0 0 0 0 0
+Stats     4 350 35 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11472
+Keywords  minstru mandolin~
+Type      instrument~
+Short     A Mandolin~
+Long      A well-made mandolin rests here.~
+WFlags    take hold~
+Values    8 8 0 0 0 0 0 0 0 0 0
+Stats     5 400 40 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11473
+Keywords  minstru harp~
+Type      instrument~
+Short     A Harp~
+Long      A beautifully sculpted golden harp rests here.~
+WFlags    take hold~
+Values    10 10 0 0 0 0 0 0 0 0 0
+Stats     8 750 75 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11474
+Keywords  minstru horn~
+Type      instrument~
+Short     A Horn~
+Long      A dented brass horn lies here.~
+WFlags    take hold~
+Values    2 2 0 0 0 0 0 0 0 0 0
+Stats     5 100 10 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11475
+Keywords  testing bow~
+Type      missileweapon~
+Short     The bow of testing~
+Long      Just your average coder's toy used to test projectile code~
+WFlags    take missile~
+Values    5 1 7 6 6 1 0 0 0 0 0
+Stats     1 1000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11476
+Keywords  testing arrow~
+Type      projectile~
+Short     A testing arrow~
+Long      An arrow used in a testing bow.~
+WFlags    take~
+Values    5 5 2 6 1 0 0 0 0 0 0
+Stats     1 1000 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11477
+Keywords  idea suggestion board~
+Type      furniture~
+Short     Idea/Suggestion Board~
+Long      The Idea/Suggestion Board sits here patiently.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11478
+Keywords  lantern wisdom light~
+Type      light~
+Short     A lantern of wisdom~
+Long      A lantern stands here, waiting to guide wayfarers in their journeys.~
+Flags     glow magic donated~
+WFlags    take hold~
+Values    0 0 -1 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+AffData save_spell -1 -1 -1 0
+#EXDESC
+ExDescKey    lantern wisdom light~
+ExDesc       This is one of the various types of lightsources available in the Lands.
+It comes in handy especially at night or in dark places. As you journey
+onward you will find better equipment, but this will serve you for now.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11479
+Keywords  book tome beginner's wayfaring guide abecedarium~
+Type      armor~
+Short     The Beginner's Guide to Wayfaring~
+Long      A small tattered book lies here.~
+Flags     organic magic donated~
+WFlags    take hold~
+Values    5 5 0 0 0 0 0 0 0 0 0
+Stats     1 10 10 9999 0 None None None
+AffData intelligence 1 -1 -1 0
+AffData constitution 1 -1 -1 0
+AffData wisdom 1 -1 -1 0
+#EXDESC
+ExDescKey    book tome beginner's wayfaring guide abecedarium~
+ExDesc       Some helpful files for those new to the Lands:
+   
+SPAM -        Will explain what spam is, and why you should not do it.
+CONFIG -      Will teach you about our configuration menu.
+SCORE -       Will tell you about your characters personal score sheet.
+MOVEMENT -    Will teach you various commands for moving about the game.
+OBJECTS -     Will teach you various commands to use your equipment.
+CONTAINER -   Will teach you about using containers to hold belongings.
+CHANNELS -    Will teach you about communication with other players.
+GROUP -       Will help you with grouping with other adventurers.
+COMBAT -      Will teach you how to choose, start and stop a fight.
+DEATH -       Will tell you about the death experience in the game.
+PRACTICE -    Will teach you about training spells, skills, and weapons.
+INFORMATION - Will cover ways to find certain types of information.
+   
+To use these help files, type HELP <topic> from the topics listed in
+capital letters above.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      11999
+Keywords  Last obj~
+Type      trash~
+Short     a newly created last obj~
+Long      Some god dropped a newly created last obj here.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#ROOM
+Vnum      11000
+Name      Quest Storage Room~
+Sector    indoors~
+Flags     nomob indoors safe nocamp noportal proto noteleport noscry nobeacon~
+Stats     0 0 0 0
+Desc      This room is used for quests. No one should be in here except quest mobs/objs.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11001
+Name      The Confiscation Chamber~
+Sector    indoors~
+Flags     nomob~
+Stats     0 0 0 0
+Desc      This is where stuff that mobs need to take from players will end up.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11002
+Name      The Mob Vanishing Room~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      This room is where mobs that need to "disappear" will end up so as
+not to give away that they've left the room they were in.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11400
+Name      The Void~
+Sector    indoors~
+Flags     nomob indoors nosummon norecall noportal noastral~
+Stats     0 0 0 0
+Desc      All around you the blackness of the ether closes in like an evil fog.
+Nothing is visible in any direction. Even the floor itself appears
+to be nonexistant..... you are floating in pure nothingness!
+~
+Reset M 11000 1 11400 -1 -1 -1 100
+#MUDPROG
+Progtype  speech_prog~
+Arglist   test~
+Comlist   say triggered by (name):	$n
+say triggered by (name&title): 	$N
+say triggerer is (he,she,it):	$e
+say triggerer is (him,her,it):	$m
+say triggerer is (his,hers,its):$s
+say random char (name):		$r
+say random char (name&title or short): 	$R
+say random char  (he,she,it):	$J
+say random char (him,her,it):	$K
+say random char (his,hers,its):	$L
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  speech_prog~
+Arglist   test2~
+Comlist   say firstname of room:	 	$i
+say short_desc/title of room: 	$I
+say he/she/it of room:	 	$j
+say him/her/it of room:	 	$k
+say his/hers/its of room:	$l
+say firstname of victim: 	$t
+say short_desc/title of victim:	$T
+say he/she/it of victim: 	$E
+say him/her/it of victim: 	$M
+say his/hers/its of victim:	$S
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      11401
+Name      Limbo~
+Sector    city~
+Flags     nomob indoors nosummon norecall noportal noastral~
+Stats     0 0 0 0
+Desc      You float in a formless void, detached from all sensation of physical
+matter, surrounded by swirling glowing light which fades into the
+relative darkness around you without any trace of edge or shadow.
+~
+Reset M 11400 1 11401 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      11402
+Name      Storage~
+Sector    city~
+Flags     nomob nosummon norecall noportal noastral~
+Stats     0 0 0 0
+Desc      This room is reserved for storage of polymorphed players.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11403
+Name      Creeping Doom Room~
+Sector    indoors~
+Flags     nomob indoors nosummon norecall noportal noastral~
+Stats     0 0 0 0
+Desc      This is where all the creeping dooms come to get purged.
+~
+#MUDPROG
+Progtype  act_prog~
+Arglist   creeping~
+Comlist   mpslay creeping
+~
+#ENDPROG
+
+#ENDROOM
+
+#ROOM
+Vnum      11404
+Name      Failed Animate Dead Room~
+Sector    indoors~
+Flags     nomob indoors nosummon norecall noportal noastral noscry~
+Stats     0 0 0 0
+Desc      Failed animate dead attempts get sent here. This room is not to be
+used for ANYTHING other than that.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11405
+Name      Hell~
+Sector    desert~
+Flags     nomob indoors safe nosummon silence nosupplicate norecall noportal noastral~
+Stats     0 0 0 0
+Desc      You are suddenly dropped off in a truly hellish place! Wait.... not
+just hellish.... this IS hell! The Gods must have been truly angry
+to have sent you to dwell in such a place. Needless to say, hell is
+all you expected, and much more. It stretches on forever in all
+directions, and demons dog your every move. There is no escape.
+You may as well get comfortable, if that's possible, and wait for
+the Gods to decide your fate.
+~
+#EXIT
+Direction north~
+ToRoom    11405
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    11405
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    11405
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    11405
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      11406
+Name      Parlor of the Immortals~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      The parlor room where all immortals come to meet and plan their
+activities. Build to suit, etc.
+~
+Reset M 11000 10 11406 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      11407
+Name      Recall and Death Room - Primary Continent~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      This is where players get recalled to when recalling on the primary
+continent, and on other planes such as Astral. Also where they'll
+come when they die. You will want to change this to something more
+suitable to your needs.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11410
+Name      Donations Room~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      This is where donated goods will come when the donate command is used.
+Build to suite your needs.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11411
+Name      Beginning Redemption Room~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      This is the room players will need to be in to start a prize redemption
+using the automated system and the mpsindhae mudprog.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11412
+Name      Ending Redemption Room~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      This is the room players will be transferred to after completing an
+automated prize redemption.
+~
+#ENDROOM
+
+#ROOM
+Vnum      11999
+Name      Standing in Pure Nothingness~
+Sector    indoors~
+Flags     nomob indoors~
+Stats     0 0 0 0
+#ENDROOM
+
+#ENDAREA

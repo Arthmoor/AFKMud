@@ -1,0 +1,347 @@
+To install MOBprograms.
+Please start by making a copy of all your source files to a backup place 
+just in case somthing weird happens. (I dont want you to hate me forever)
+
+0. Edit Makefile
+----------------
+	Add in mob_commands.o and mob_prog.o to the list of O_FILES
+	(any order is fine here)
+
+	Also, you may need to add the CFLAG -DDUNNO_STRSTR.
+	If your system complains about not knowing this, then put it in.
+
+1. Deal with merc.h
+-------------------
+        There are six changes to make here.
+        a. Add the following lines to the end of the Structure types section
+
+            typedef struct  mob_prog_data           MPROG_DATA;
+            typedef struct  mob_prog_act_list       MPROG_ACT_LIST;
+
+        b. Add the following lines in the mob_index_data structure:
+
+            MPROG_DATA *        mobprogs;
+	    int			progtypes;
+
+        c. Add the following lines in the char_data structure:
+
+	    MPROG_ACT_LIST *    mpact;
+	    int                 mpactnum;
+
+        d. Add the following code block wherever you desire:
+
+struct  mob_prog_act_list
+{
+    MPROG_ACT_LIST * next;
+    char *           buf;
+    CHAR_DATA *      ch;
+    OBJ_DATA *       obj;
+    void *           vo;
+};
+
+struct  mob_prog_data
+{
+    MPROG_DATA *next;
+    int         type;
+    char *      arglist;
+    char *      comlist;
+};
+
+bool    MOBtrigger;
+
+#define ERROR_PROG        -1
+#define IN_FILE_PROG       0
+#define ACT_PROG           1
+#define SPEECH_PROG        2
+#define RAND_PROG          4
+#define FIGHT_PROG         8
+#define DEATH_PROG        16
+#define HITPRCNT_PROG     32
+#define ENTRY_PROG        64
+#define GREET_PROG       128
+#define ALL_GREET_PROG   256
+#define GIVE_PROG        512
+#define BRIBE_PROG      1024
+
+	e. Add this to the PLAYER_DIR, NULL_FILE #defines
+
+#define MOB_DIR		"MOBProgs/"	/* MOBProg files		*/
+
+	   or if you are using MSDOS or Macintosh, add this
+
+#define MOB_DIR		""		/* MOBProg files		*/
+
+        f. Add in the global prototypes for the mob_progs
+
+/* act_wiz.c */
+ROOM_INDEX_DATA *	find_location	args( ( CHAR_DATA *ch, char *arg ) );
+
+/* fight.c */
+void			death_cry	args( ( CHAR_DATA *ch ) );
+
+/* mob_prog.c */
+#ifdef DUNNO_STRSTR
+char *  strstr                  args ( (const char *s1, const char *s2 ) );
+#endif
+
+void    mprog_wordlist_check    args ( ( char * arg, CHAR_DATA *mob,
+                			CHAR_DATA* actor, OBJ_DATA* object,
+					void* vo, int type ) );
+void    mprog_percent_check     args ( ( CHAR_DATA *mob, CHAR_DATA* actor,
+					OBJ_DATA* object, void* vo,
+					int type ) );
+void    mprog_act_trigger       args ( ( char* buf, CHAR_DATA* mob,
+		                        CHAR_DATA* ch, OBJ_DATA* obj,
+					void* vo ) );
+void    mprog_bribe_trigger     args ( ( CHAR_DATA* mob, CHAR_DATA* ch,
+		                        int amount ) );
+void    mprog_entry_trigger     args ( ( CHAR_DATA* mob ) );
+void    mprog_give_trigger      args ( ( CHAR_DATA* mob, CHAR_DATA* ch,
+                		        OBJ_DATA* obj ) );
+void    mprog_greet_trigger     args ( ( CHAR_DATA* mob ) );
+void    mprog_fight_trigger     args ( ( CHAR_DATA* mob, CHAR_DATA* ch ) );
+void    mprog_hitprcnt_trigger  args ( ( CHAR_DATA* mob, CHAR_DATA* ch ) );
+void    mprog_death_trigger     args ( ( CHAR_DATA* mob ) );
+void    mprog_random_trigger    args ( ( CHAR_DATA* mob ) );
+void    mprog_speech_trigger    args ( ( char* txt, CHAR_DATA* mob ) );
+
+2. Make adjustments to db.c
+---------------------------
+	There are 4 changes in here.
+
+        a. import the file: mprog_add_to_db.c
+	   (the prototypes will need to be moved to the beginning
+	   of the db.c file, otherwise this can go wherever) 
+
+	b. in boot_db, add the following line between the MOBILES and the
+	   OBJECTS lines which look mighty similar:
+
+           else if ( !str_cmp( word, "MOBPROGS" ) ) load_mobprogs( fpArea );
+
+	c. in load_mobiles, add the following lines between the
+           letter != 'S' and iHash = vnum... sections. (note that the line
+	   goes after the closing brace for the if statement:
+
+        letter = fread_letter( fp );
+        if ( letter == '>' )
+        {
+          ungetc( letter, fp );
+          mprog_read_programs( fp, pMobIndex );
+        }
+        else ungetc( letter,fp );
+
+	d. In "Fix up exits" section right after the load_notes( )
+	   in boot_db(..)
+
+	Initialize MOBtrigger by adding MOBtrigger = TRUE;
+
+3. Adjust your files a little
+-----------------------------
+     	a. Do this to your comm.c in void act( ... )
+
+	replace
+
+            write_to_buffer ( to->desc, buf, point - buf );
+
+	at the end of the routine with
+
+            if (to->desc)
+	       write_to_buffer( to->desc, buf, point - buf );
+	    if (MOBtrigger)
+	       mprog_act_trigger( buf, to, ch, obj1, vch );
+
+	and right before the return add,
+
+            MOBtrigger = TRUE;
+
+     	b. Where you want the player to NOT trigger MOBprograms add a
+		MOBtrigger = FALSE;
+	   before the appropriate act(..) call in various *.c files.
+
+4. Stick in the triggers
+------------------------
+
+	In update.c in mobile_update just before the Scavenge section
+	(after the busy/sleeping check) add the following line:
+
+           if ( ch->in_room->area->nplayer > 0 ) mprog_random_trigger( ch );
+
+        Also, in update.c in aggr_update just after: wch_next = wch->next;
+        add the following code chunk to process the act triggers. These are
+	performed here to allow everyone in the room to see what just
+	happenened before the mobile reacts - call them mob-reflexes:
+
+        if ( IS_NPC( wch ) && wch->mpactnum > 0
+	    && wch->in_room->area->nplayer > 0 )
+        {
+            MPROG_ACT_LIST * tmp_act, *tmp2_act;
+            for ( tmp_act = wch->mpact; tmp_act != NULL;
+		 tmp_act = tmp_act->next )
+	    {
+                 mprog_wordlist_check( tmp_act->buf,wch, tmp_act->ch,
+                               	      tmp_act->obj, tmp_act->vo, ACT_PROG );
+                 free_string( tmp_act->buf );
+            }
+            for ( tmp_act = wch->mpact; tmp_act != NULL; tmp_act = tmp2_act )
+	    {
+                 tmp2_act = tmp_act->next;
+                 free_mem( tmp_act, sizeof( MPROG_ACT_LIST ) );
+            }
+            wch->mpactnum = 0;
+            wch->mpact    = NULL;
+        }
+
+        In act_comm.c in do_say just before the final return add:
+
+           mprog_speech_trigger( argument, ch );
+
+        In act_move.c in move_char just before the final return add:
+
+           mprog_entry_trigger( ch );
+           mprog_greet_trigger( ch );
+
+        In act_obj.c in do_give just before the final return add:
+
+           mprog_give_trigger( victim, ch, obj );
+
+        and earlier in do_give just after: send_to_char( "OK.\n\r", ch );
+
+           mprog_bribe_trigger( victim, ch, amount );
+
+        In fight.c in violence_update just before the Fun for the whole
+	family, add
+
+           mprog_hitprcnt_trigger( ch, victim );
+           mprog_fight_trigger( ch, victim );
+
+	and in raw_kill replace death_cry(); with
+
+           mprog_death_trigger( victim );
+
+5. MobCommands
+--------------
+
+	If you so desire, use the normal methods described in the merc docs
+        to add the commands. place the following into interp.c in cmd_table:
+
+    /*
+     * MOBprogram commands.
+     */
+    { "mpstat",         do_mpstat,      POS_DEAD,       38,  LOG_NORMAL },
+    { "mpasound",       do_mpasound,    POS_DEAD,        0,  LOG_NORMAL },
+    { "mpjunk",         do_mpjunk,      POS_DEAD,        0,  LOG_NORMAL },
+    { "mpecho",         do_mpecho,      POS_DEAD,        0,  LOG_NORMAL },
+    { "mpechoat",       do_mpechoat,    POS_DEAD,        0,  LOG_NORMAL },
+    { "mpechoaround",   do_mpechoaround,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpkill",         do_mpkill      ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpmload",        do_mpmload     ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpoload",        do_mpoload     ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mppurge",        do_mppurge     ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpgoto",         do_mpgoto      ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpat",           do_mpat        ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mptransfer",     do_mptransfer  ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpforce",        do_mpforce     ,POS_DEAD,        0,  LOG_NORMAL },
+ 
+	Place the following into merc.h with all the other DO_FUN's:
+
+DECLARE_DO_FUN( do_mpasound     );
+DECLARE_DO_FUN( do_mpat         );
+DECLARE_DO_FUN( do_mpecho       );
+DECLARE_DO_FUN( do_mpechoaround );
+DECLARE_DO_FUN( do_mpechoat     );
+DECLARE_DO_FUN( do_mpforce      );
+DECLARE_DO_FUN( do_mpgoto       );
+DECLARE_DO_FUN( do_mpjunk       );
+DECLARE_DO_FUN( do_mpkill       );
+DECLARE_DO_FUN( do_mpmload      );
+DECLARE_DO_FUN( do_mpoload      );
+DECLARE_DO_FUN( do_mppurge      );
+DECLARE_DO_FUN( do_mpstat       );
+DECLARE_DO_FUN( do_mptransfer   );
+
+	Sorry there are no accompanying help files here, but they are fairly
+	basic and obvious commands. Most of the code is stripped from the
+	act_wiz stuff itself.
+
+6.  A few bug fixes.
+--------------------
+
+	In update.c in mobile_update(...), along with the MOBprogram
+	random trigger:
+
+	if ( ch->in_room->area->nplayer > 0 )
+	    mprog_random_trigger( ch );
+
+	should be:
+
+	/* MOBprogram random trigger */
+	if ( ch->in_room->area->nplayer > 0 )
+	{
+	    mprog_random_trigger( ch );
+						/* If ch dies or changes
+						position due to it's random
+						trigger, continue - Kahn */
+	    if ( ch->position < POS_STANDING )
+	        continue;
+	}
+
+	Also in mobile_update after move_char(...) in the /* Wander */
+	block right before the /* Flee */ block it should be:
+
+	..
+	..
+	&&   !IS_SET(pexit->to_room->room_flags, ROOM_NO_MOB)
+	&& ( !IS_SET(ch->act, ACT_STAY_AREA)
+	||   pexit->to_room->area == ch->in_room->area ) )
+	{
+	    move_char( ch, door );
+						/* If ch changes position due
+						to it's or someother mob's
+						movement via MOBProgs,
+						continue - Kahn */
+	    if ( ch->position < POS_STANDING )
+	        continue;
+	}
+
+	This is to prevent the server from referencing a bad pointer
+to ch.  This bug became apparent when a MOBProgram caused a mob to die
+and then continued with mobile_update by fleeing with a bad ch pointer.
+
+7. Give it a whirl
+------------------
+
+"	Try making it and hope it all works for the best.  You may get some
+	warnings from the mob_prog.c file and these are ok to ignore.
+	I also got a bizzare prototype error on one platform I tested with.
+	It was in mprog_translate, and I had to comment out the prototype
+	before it would compile. Haven't any idea why that happened.
+" - N'Atas-Ha
+
+	Also, you may want to do the following little extras...
+	change the calls to act in do_say, do_yell, do_shout, do_emote and
+	also the ones in do_give to not trigger (using MOBtrigger = FALSE;).
+  	This means that	these acts cannot trigger a mobile.  The do_emote is
+	particularly critical, since otherwise a player can emote any trigger
+	they wish. You may find other act calls which you desire to make
+	"safe".
+
+	You may also consider giving MOBProgged mobs the ability to utilize
+	all the commands available.  To do this just make the necessary
+	changes to interpret(...) in interp.c.  MERC 2.2 will have this
+	feature with most of the necessary security loopholes closed.
+
+Below here is the mobinfo help screen which we would sorta like you to include.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-1 MOBINFO~
+.             Our Mobiles have been infused with the breath of a
+             shy faeyrie to give them a slightly warmer nature.
+             Perhaps you have noticed this already.  If not, do
+             take a moment to ask a mobile to tea.  The code is
+             written by J Murphy, N'Atas-Ha of ThePrincedom and
+             based on a concept created on Worlds of Carnage by
+             Aaron Buhr. questions/comments to murph@cs.cmu.edu
+	     A little rewriting of the code/DOC/INSTALL done by
+	     Kahn of MERC Industries and tested extensively on
+             Marble Mud (marble.bu.edu 4000).
+~
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

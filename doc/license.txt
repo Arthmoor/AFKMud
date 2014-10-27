@@ -1,0 +1,92 @@
+ ****************************************************************************
+ *                   ^     +----- |  / ^     ^ |     | +-\                  *
+ *                  / \    |      | /  |\   /| |     | |  \                 *
+ *                 /   \   +---   |<   | \ / | |     | |  |                 *
+ *                /-----\  |      | \  |  v  | |     | |  /                 *
+ *               /       \ |      |  \ |     | +-----+ +-/                  *
+ ****************************************************************************
+ * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
+ * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine, and Adjani.    *
+ * All Rights Reserved.                                                     *
+ *                                                                          *
+ * External contributions from Xorith, Quixadhal, Zarius, and many others.  *
+ *                                                                          *
+ * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
+ * Grishnakh, Fireblade, and Nivek.                                         *
+ *                                                                          *
+ * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
+ *                                                                          *
+ * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
+ * Michael Seifert, and Sebastian Hammer.                                   *
+ ****************************************************************************
+ *                              Usage License                               *
+ ****************************************************************************
+
+In order to use AFKMud, the following minimum conditions must be met:
+
+1. The credits in the initial login screen MUST be left intact. The information
+there is required to comply with the licenses of the codebases AFKMud is
+derived from. You may add your own credit information, ASCII art, or other
+information, but those credits must remain intact AND visible on a standard 24
+line, 80 column telnet display.
+
+2. You must send an email to afkmud(at)alsherok(dot)net informing us you are
+using the code. This is a simple requirement to fulfill. Please include enough
+information so that we may identify you later on if we should happen to run a
+check of your mud.
+
+3. The "credits" command within the game must contain all of the information
+as shipped with the code. This information may NOT be removed, but you can add
+to it as you see fit.
+
+4. All copyright information MUST remain in any source code and data files
+relating to AFKMud. You may add your own, change the ascii art to your own,
+reformat the text in purple and yellow blinking text, but our information must
+remain intact.
+
+5. You may not block the AFKMud development servers from accessing your mud.
+These servers are currently located at: alsherok.net or arthmoor.com
+
+6. We at Alsherok reserve the right to add, delete, or modify any or all of
+the terms of this license as we see fit. You are required to comply with
+any and all future changes to this license.
+
+7. The use of illegal or unauthorized material, such as areas, code, or other
+data files is strictly prohibited.
+
+8. This codebase may not be distributed, in whole or in part, from any site
+without our express written permission either by postal mail or electronic mail.
+This does not refer to derived works from this codebase, but rather refers to
+redistribution of the unmodified packages as they appear at the AFKMud website.
+
+9. You may use portions of this codebase that have not been released as
+snippets provided you email us informing us which portions you have decided to
+use and so long as the use of these portions also complies with section 7 above.
+
+10. You may not accept monetary payment of any type in exchange for in-game benefits
+to users or staff. You may not accept hardware donations in exchange for in-game
+benefits to users or staff. You may not use your website as a way to obscure taking
+payments of any kind which result in in-game benefits for users or staff.
+
+In short: This is a non-commercial codebase.
+You may not use it to engage in commercial enterprises.
+
+You MAY however offer merchandise to visitors to your website which relates to your
+game world content such as areas, characters, items, etc. so long as the proceeds from
+such sales are not used to create in-game benefits for users or staff.
+
+Donations are also allowed provided that they are voluntary donations and are not
+required to advance within the game or otherwise impart any form of in-game benefit
+to users or staff.
+
+11. You are permitted to distribute derived works from this codebase provided written
+notification is made to the AFKMud team prior to doing so. Names such as "AnotherAFK",
+"MyAFK", or anything else using the AFKMud or Alsherok name. Said derivative work may
+be distributed in any manner you see fit, so long as all of the other provisions of
+this license are followed. All licensing documentation must be included in your release.
+It must be clearly labeled as a derivative of the version of AFKMud you started with.
+
+12. You must ALSO comply with the terms of the Smaug, Merc, AND Diku licenses
+which are found in the afkmud/doc directory.

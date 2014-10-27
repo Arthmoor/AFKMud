@@ -1,0 +1,469 @@
+Version     1
+Name        Necromancer~
+Class       4
+Attrprime   3
+Weapon      2897
+Armor       2901
+Legwear     -1
+Headwear    2876
+Armwear     -1
+Footwear    2888
+Shield      -1
+Held        2900
+Skilladept  95
+Thac0       18
+Thac0gain   0.275000
+Hpmin       2
+Hpmax       5
+Mana        1
+Skill 'alertness' 21 95
+Skill 'animate dead' 10 95
+Skill 'antimagic shell' 86 95
+Skill 'arcane perception' 31 80
+Skill 'armor' 8 95
+Skill 'beacon' 32 95
+Skill 'black fist' 24 95
+Skill 'black hand' 13 95
+Skill 'black lightning' 63 80
+Skill 'carrion stench' 23 95
+Skill 'cause critical' 55 95
+Skill 'cause light' 16 95
+Skill 'cause serious' 37 95
+Skill 'chill touch' 2 95
+Skill 'cone of cold' 57 80
+Skill 'continual light' 9 95
+Skill 'counterspell' 90 95
+Skill 'create fire' 5 95
+Skill 'dark ritual' 22 95
+Skill 'death aura' 70 95
+Skill 'death chant' 46 95
+Skill 'death spell' 81 95
+Skill 'detect invis' 12 95
+Skill 'detect magic' 4 95
+Skill 'dispel magic' 25 95
+Skill 'ethereal funnel' 66 95
+Skill 'ethereal shield' 62 95
+Skill 'fatigue' 27 95
+Skill 'feebleness' 39 95
+Skill 'finger of death' 92 95
+Skill 'fly' 43 95
+Skill 'ghoulish touch' 63 95
+Skill 'harm' 68 95
+Skill 'identify' 44 95
+Skill 'infravision' 19 95
+Skill 'invisibility' 14 95
+Skill 'knock' 33 95
+Skill 'lethargy' 34 95
+Skill 'lich curse' 82 95
+Skill 'life surge' 42 95
+Skill 'mana drain' 50 95
+Skill 'mana surge' 42 95
+Skill 'mass invis' 53 95
+Skill 'necromantic touch' 35 95
+Skill 'paralyze' 48 50
+Skill 'poison' 20 95
+Skill 'polymorph' 15 75
+Skill 'recharge' 72 95
+Skill 'refresh' 18 95
+Skill 'remove invis' 41 95
+Skill 'resilience' 54 95
+Skill 'shadowform' 73 95
+Skill 'shield' 3 95
+Skill 'silence' 33 95
+Skill 'skeletal armor' 80 95
+Skill 'skull of death' 22 95
+Skill 'sleep' 7 95
+Skill 'succor' 26 95
+Skill 'valiance' 45 95
+Skill 'vampiric touch' 84 95
+Skill 'venomshield' 56 95
+Skill 'weaken' 11 95
+Skill 'withering hand' 40 95
+Skill 'wizardeye' 65 95
+Skill 'word of recall' 32 95
+Skill 'wraithform' 90 80
+Skill 'aid' 28 80
+Skill 'bind' 75 75
+Skill 'brew' 60 95
+Skill 'cook' 1 95
+Skill 'dig' 8 95
+Skill 'meditate' 24 95
+Skill 'mount' 2 95
+Skill 'scribe' 65 80
+Skill 'search' 1 95
+Skill 'slice' 1 95
+Skill 'trance' 76 95
+Skill 'blowguns' 1 50
+Skill 'daggers' 1 70
+Skill 'evasive style' 1 80
+Skill 'pugilism' 1 35
+Skill 'slings' 1 60
+Skill 'standard style' 1 90
+Skill 'staves' 1 70
+Skill 'talonous arms' 1 65
+Skill 'whips' 1 50
+Skill 'centaur' 1 99
+Skill 'common' 1 99
+Skill 'dwarven' 1 99
+Skill 'elvish' 1 99
+Skill 'gith' 1 99
+Skill 'gnomish' 1 99
+Skill 'goblin' 1 99
+Skill 'halfling' 1 99
+Skill 'insectoid' 1 95
+Skill 'minotaur' 1 99
+Skill 'ogre' 1 99
+Skill 'orcish' 1 99
+Skill 'pixie' 1 99
+Skill 'reptile' 1 99
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 99
+Title
+Man~
+Woman~
+Title
+Initiate~
+Initiate~
+Title
+Student of Sacrifice~
+Student of Sacrifice~
+Title
+Acolyte of Sacrifice~
+Acolyte of Sacrifice~
+Title
+Practitioner of Sacrifice~
+Practitioner of Sacrifice~
+Title
+Master of Sacrifice~
+Mistress of Sacrifice~
+Title
+Student of Death~
+Student of Death~
+Title
+Acolyte of Death~
+Acolyte of Death~
+Title
+Practitioner of Death~
+Practitioner of Death~
+Title
+Master of Death~
+Mistress of Death~
+Title
+Student of Undeath~
+Student of Undeath~
+Title
+Acolyte of Undeath~
+Acolyte of Undeath~
+Title
+Practitioner of Undeath~
+Practitioner of Undeath~
+Title
+Master of Undeath~
+Mistress of Undeath~
+Title
+Lesser Skeleton Maker~
+Lesser Skeleton Maker~
+Title
+Skeleton Maker~
+Skeleton Maker~
+Title
+Greater Skeleton Maker~
+Greater Skeleton Maker~
+Title
+Master Skeleton Maker~
+Master Skeleton Maker~
+Title
+Lesser Zombie Maker~
+Lesser Zombie Maker~
+Title
+Zombie Maker~
+Zombie Maker~
+Title
+Greater Zombie Maker~
+Greater Zombie Maker~
+Title
+Master Zombie Maker~
+Master Zombie Maker~
+Title
+Lesser Ghoul Maker~
+Lesser Ghoul Maker~
+Title
+Ghoul Maker~
+Ghoul Maker~
+Title
+Greater Ghoul Maker~
+Greater Ghoul Maker~
+Title
+Master Ghoul Maker~
+Master Ghoul Maker~
+Title
+Lesser Crypt Thing Maker~
+Lesser Crypt Thing Maker~
+Title
+Crypt Thing Maker~
+Crypt Thing Maker~
+Title
+Greater Crypt Thing Maker~
+Greater Crypt Thing Maker~
+Title
+Master Crypt Thing Maker~
+Master Crypt Thing Maker~
+Title
+Lesser Mummy Maker~
+Lesser Mummy Maker~
+Title
+Mummy Maker~
+Mummy Maker~
+Title
+Greater Mummy Maker~
+Greater Mummy Maker~
+Title
+Master Mummy Maker~
+Master Mummy Maker~
+Title
+Lesser Ghost Maker~
+Lesser Ghost Maker~
+Title
+Ghost Maker~
+Ghost Maker~
+Title
+Greater Ghost Maker~
+Greater Ghost Maker~
+Title
+Master Ghost Maker~
+Master Ghost Maker~
+Title
+Lesser Death Knight Maker~
+Lesser Death Knight Maker~
+Title
+Death Knight Maker~
+Death Knight Maker~
+Title
+Greater Death Knight Maker~
+Greater Death Knight Maker~
+Title
+Master Death Knight Maker~
+Master Death Knight Maker~
+Title
+Lesser Dracolich Maker~
+Lesser Dracolich Maker~
+Title
+Dracolich Maker~
+Dracolich Maker~
+Title
+Greater Dracolich Maker~
+Greater Dracolich Maker~
+Title
+Student of Lesser Animation~
+Student of Lesser Animation~
+Title
+Acolyte of Lesser Animation~
+Acolyte of Lesser Animation~
+Title
+Lesser Master of Lesser Animation~
+Lesser Mistress of Lesser Animation~
+Title
+Master of Lesser Animation~
+Master of Lesser Animation~
+Title
+Greater Master of Lesser Animation~
+Greater Mistress of Lesser Animation~
+Title
+Student of Animation~
+Student of Animation~
+Title
+Acolyte of Animation~
+Acolyte of Animation~
+Title
+Lesser Master of Animation~
+Lesser Mistress of Animation~
+Title
+Master of Animation~
+Mistress of Animation~
+Title
+Greater Master of Animation~
+Greater Mistress of Animation~
+Title
+Student of Greater Animation~
+Student of Greater Animation~
+Title
+Acolyte of Greater Animation~
+Acolyte of Greater Animation~
+Title
+Lesser Master of Greater Animation~
+Lesser Mistress of Greater Animation~
+Title
+Master of Greater Animation~
+Mistress of Greater Animation~
+Title
+Greater Master of Greater Animation~
+Greater Mistress of Greater Animation~
+Title
+Lord of Lesser Animation~
+Lady of Lesser Animation~
+Title
+Lord of Animation~
+Lady of Animation~
+Title
+Lord of Greater Animation~
+Lady of Greater Animation~
+Title
+Lord of All Animation~
+Lady of All Animation~
+Title
+Student of Lesser Necromancy~
+Student of Lesser Necromancy~
+Title
+Acolyte of Lesser Necromancy~
+Acolyte of Lesser Necromancy~
+Title
+Lesser Master of Lesser Necromancy~
+Lesser Mistress of Lesser Necromancy~
+Title
+Master of Lesser Necromancy~
+Mistress of Lesser Necromancy~
+Title
+Greater Master of Lesser Necromancy~
+Greater Mistress of Lesser Necromancy~
+Title
+Student of Necromancy~
+Student of Necromancy~
+Title
+Acolyte of Necromancy~
+Acolyte of Necromancy~
+Title
+Lesser Master of Necromancy~
+Lesser Mistress of Necromancy~
+Title
+Master of Necromancy~
+Mistress of Necromancy~
+Title
+Greater Master of Necromancy~
+Greater Mistress of Necromancy~
+Title
+Student of Greater Necromancy~
+Student of Greater Necromancy~
+Title
+Acolyte of Greater Necromancy~
+Acolyte of Greater Necromancy~
+Title
+Lesser Master of Greater Necromancy~
+Lesser Mistress of Greater Necromancy~
+Title
+Master of Greater Necromancy~
+Mistress of Greater Necromancy~
+Title
+Greater Master of Greater Necromancy~
+Greater Mistress of Greater Necromancy~
+Title
+Lord of Lesser Necromancy~
+Lady of Lesser Necromancy~
+Title
+Lord of Necromancy~
+Lady of Necromancy~
+Title
+Lord of Greater Necromancy~
+Lord of Greater Necromancy~
+Title
+Student Necromancer~
+Student Necromancer~
+Title
+Necromantic Acolyte~
+Necromantic Acolyte~
+Title
+Necromancer~
+Necromancer~
+Title
+Master Necromancer~
+Master Necromancer~
+Title
+Lord Necromancer~
+Lady Necromancer~
+Title
+Master of All Necromancy~
+Mistress of All Necromancy~
+Title
+Lord of All Necromancy~
+Lady of All Necromancy~
+Title
+Master of All Necromancers~
+Mistress of All Necromancers~
+Title
+Lord of All Necromancers~
+Lady of All Necromancers~
+Title
+Master of the Dying~
+Mistress of the Dying~
+Title
+Lord of the Dying~
+Lady of the Dying~
+Title
+Master of the Dead~
+Mistress of the Dead~
+Title
+Lord of the Dead~
+Lady of the Dead~
+Title
+Master of the Undead~
+Mistress of the Undead~
+Title
+Lord of the Undead~
+Lady of the Undead~
+Title
+High Lord of the Dying~
+High Lady of the Dying~
+Title
+High Lord of the Dead~
+High Lord of the Dead~
+Title
+High Lord of the Undead~
+High Lord of the Undead~
+Title
+Avatar of Death~
+Avatar of Death~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

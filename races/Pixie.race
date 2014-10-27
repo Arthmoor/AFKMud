@@ -1,0 +1,60 @@
+Version     1
+Name        Pixie~
+Race        4
+Classes     Warrior Necromancer Monk Available Available2 Antipaladin Paladin Bard~
+Str_Plus    -4
+Dex_Plus    3
+Wis_Plus    0
+Int_Plus    2
+Con_Plus    -2
+Cha_Plus    3
+Lck_Plus    0
+Hit         -4
+Mana        40
+Affected    flying~
+Resist      sleep charm~
+Language    pixie~
+Align       0
+Min_Align  -1000
+Max_Align	 1000
+AC_Plus    0
+Exp_Mult   108
+Height     20
+Weight     37
+Hunger_Mod  0
+Thirst_mod  0
+Mana_Regen  0
+HP_Regen    0
+WhereName  <used as light>     ~
+WhereName  <worn on finger>    ~
+WhereName  <worn on finger>    ~
+WhereName  <worn around neck>  ~
+WhereName  <worn around neck>  ~
+WhereName  <worn on body>      ~
+WhereName  <worn on head>      ~
+WhereName  <worn on legs>      ~
+WhereName  <worn on feet>      ~
+WhereName  <worn on hands>     ~
+WhereName  <worn on arms>      ~
+WhereName  <worn as shield>    ~
+WhereName  <worn about body>   ~
+WhereName  <worn about waist>  ~
+WhereName  <worn around wrist> ~
+WhereName  <worn around wrist> ~
+WhereName  <wielded>           ~
+WhereName  <held>              ~
+WhereName  <dual wielded>      ~
+WhereName  <worn on ears>      ~
+WhereName  <worn on eyes>      ~
+WhereName  <missile wielded>   ~
+WhereName  <worn on back>      ~
+WhereName  <worn on face>      ~
+WhereName  <worn on ankle>     ~
+WhereName  <worn on ankle>     ~
+WhereName  <lodged in a rib>   ~
+WhereName  <lodged in an arm>  ~
+WhereName  <lodged in a leg>   ~
+Skill 'faerie speed' 65 80
+Skill 'faeriedust' 10 90
+Skill 'sleepdart' 40 85
+End

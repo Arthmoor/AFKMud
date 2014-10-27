@@ -1,0 +1,17 @@
+	This file explains how to add a new trigger to the MOBProgram
+system.
+
+	All you have to do is to follow these simple steps...
+
+1.  Add the appropriate global prototypes to merc.h
+2.  Add the appropriate #define XXXXX_PROG to merc.h
+3.  Write a trigger procedure at the end of mob_prog.c
+4.  Add the new case in *mprog_type_to_name(...) in mob_commands.c
+5.  Add a new if statement in mprog_name_to_type(..) in db.c
+
+There you have it, a new trigger for your MOBProgram system.
+
+Kahn
+MERC Industries
+10/29/93
+

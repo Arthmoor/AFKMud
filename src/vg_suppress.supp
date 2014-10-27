@@ -1,0 +1,5 @@
+{
+   libz.so.1.2.3
+   Memcheck:Cond
+   obj:/usr/lib/libz.so.1.2.3
+}

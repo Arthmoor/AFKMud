@@ -1,0 +1,40 @@
+Bug Fixes:
+
+	The act_prog word list bug was fixed.
+	Two crash bugs.  Both were caused by a MOBProged mob dieing as
+		a result of its or others entry_prog and greet_prog.
+
+Changes:
+
+	New INSTALL for MERC 2.0 and above.
+	Updated DOC.
+	Slightly rewritten mob_prog file.
+	Slightly rewritten mob_commands file matching wiz commands in
+		act_wiz.c.
+	Instead of having coders change all their act () from act ()
+		to safe_act(), I've provided for a global boolean
+		called MOBtrigger.
+
+Needs to be done:
+
+	It would be nice to have a speech_prog type trigger for the other
+communication channels.  I've had so little time, I've let this idea slip
+through my hands.  So, I'm going to pass the buck to a more enterprising
+implimentor with more time on his/her hands.
+
+
+	This MOBPrograms2.1 is written for MERC 2.1 or upcoming MERC 2.2
+I have done nothing more than make the code easier to read/squashed a couple
+of bugs/redid the INSTALL and DOC files.
+	I wish you all well in your endevours.  MERC Industries has
+been dissolved and MERC 2.2 will be the last installment.  Bugs/ideas/fixes/etc
+regarding MERC 1.0/2.0/2.1/2.2 should now be forwarded to the merc mailing
+list (merc@kpc.com).  Bugs regarding the MOBProgram code/etc should be
+forwarded to either the list or John Murphy at murph@cs.cmu.edu.  Thank you
+for your support and enthusiasm.  The end of our development is the beginning
+of yours.....
+
+Kahn
+MERC Industries  10/29/93
+
+

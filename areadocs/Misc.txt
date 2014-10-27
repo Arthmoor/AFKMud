@@ -1,0 +1,164 @@
+Miscelaneous blocks
+-------------------
+
+=========================================================================================================
+
+Exit block - Used inside of #ROOM blocks.
+
+Rooms aren't of much value without exits. People don't like to be trapped.
+
+The syntax of an #EXIT block is:
+
+#EXIT
+-----
+String literal. Required to marke the beginning of the block.
+
+Direction     <string>~
+-----------------------
+Name of the direction this exit points in.
+Choose from the following table:
+
+DIRECTION
+---------
+north
+east
+south
+west
+up
+down
+northeast
+northwest
+southeast
+southwest
+somewhere ( usually a portal type exit )
+
+ToRoom        <#>
+-----------------
+Vnum of the target room for this exit. Obviously needs to exist.
+
+ToCoords      <X> <Y>
+---------------------
+Overland map coordinates this exit will lead to if the exit has the EX_OVERLAND flag.
+The actual map the coordinates apply to will be determined by which continent the
+room's area belongs on. Setting coordinates on a room that's not flagged for overland
+will have no affect.
+
+Pull          <#1> <#2>
+-----------------------
+Uh....
+
+Desc          <string>~
+-----------------------
+A one line descriptive message which is displayed if a user types "look direction".
+This is optional.
+
+Keywords      <string>~
+-----------------------
+A single keyword that can be used to manipulate the exit, such as "door" or "gate".
+Somewhat misleading in that it will only support one word being there.
+
+Flags         <string>~
+-----------------------
+A space separated list of attribute flags which affect this exit.
+Choose from the following table:
+
+NAME        | DESCRIPTION OF TYPE              
+---------------------------------------------------
+isdoor      | There is a door in that direction ( required if it's actually intended to be a door )
+closed      | The door is closed
+locked      | The door is locked
+isbolt      | Door a bolt on it
+bolted      | Door has been bolted shut
+secret      | Door is Secret, Trying to go that way won't reveal door
+searchable  | Searching in this direction can remove the SECRET flag
+swim        | Must be able to swim to go that way (or have a boat or float)
+pickproof   | Door is Pickproof (Door can't be picked by spell or skill)
+bashproof   | Door cannot be bashed down
+fly         | Must be able to fly to go that way
+climb       | Must be able to climb to go that way
+dig         | Passage is blocked and must be dug out
+eatkey      | Door will eat the key used to open it
+nopassdoor  | Door is impervious to the passdoor spell
+hidden      | Door is not "obvious" -- doesn't appear with autoexits
+overland    | Exit leads out to the overland map ( see below )
+nomob       | Mobs cannot travel out this exit - recommended to use with the OVERLAND flag
+arrowslit   | Exit is an arrowslit, can see through, fire arrows, but otherwise acts as a wall
+window      | Can see through this exit, otherwise acts as a wall
+fortified   | A heavily fortified wall - can be attacked
+heavy       | A fortified wall - can be attacked*
+medium      | A sturdy wall - can be attacked*
+light       | An ordinary wall - can be attacked*
+crumbling   | A wall on its last legs, one more attack destroys it*
+can_climb   | Can use the climb command to go this way
+can_enter   | Can use the enter command to go this way
+can_leave   | Can use the leave command to go this way
+can_look    | Can look into this exit
+auto        | Keyword can be typed to go this way
+noflee      | Players and mobs cannot flee through this exit
+
+Note: Swim exit flag has not been implemented yet.
+
+* Attackable walls can only be damaged by siege engines - which don't yet exist in game.
+  Each grade of wall is stronger than the one below it. When setting wall flags, only
+  use one flag, combining them will only result in the greatest flag being acknowleged.
+
+=========================================================================================================
+
+An Extra Description block:
+---------------------------
+
+Extra descriptions can be used to enhance the details of either objects or rooms in the same manner
+that long descriptions provide descriptive details for Mobiles. These should be used where they make
+sense. They should avoid substituting for real objects or mobiles if used in a room.
+
+The format of an Extra Description block:
+
+#EXDESC
+-------
+String literal required to mark the beginning of the block.
+
+ExDescKey    <string>~
+----------------------
+The keywords used to display the description to players. Some sort of logical hint that this is possible
+should be provided either by way of an object name or a subtle hint in a room description.
+
+ExDesc       <string>~
+----------------------
+The detailed text displayed when a player uses the look command on one of the keywords associated with it.
+
+#ENDEXDESC
+----------
+String literal required to mark the end of the block.
+
+=========================================================================================================
+
+A Mudprog block:
+----------------
+
+Mudprogs can be used to further enhance the experience provided by mobiles, rooms, or objects.
+Properly done they can be used to simulate crude AI behaviours, transportation tricks such
+as boat rides, elevators, or other more complicated things that the standard tools don't allow.
+Though not as powerful as true scripting languages, in the right hands a lot can be done with mudprogs.
+For details of what types of progs are available and how to use them, refer to the Mudprog text files.
+
+#MUDPROG
+--------
+String literal required to mark the beginning of the block.
+
+Progtype      <string>~
+-----------------------
+Name of the type of mudprog this is.
+
+Arglist       <string>~
+-----------------------
+Argument list which is fed to the specified program type. Can be something as simple as a number.
+Can also be something more complex such as a specific trigger string to make it work.
+
+Comlist       <string>~
+-----------------------
+The detailed list of commands the program is instructed to execute. This can be quite elaborate
+with nested if/else blocks and other things.
+
+#ENDPROG
+--------
+String literal required to mark the end of the block.

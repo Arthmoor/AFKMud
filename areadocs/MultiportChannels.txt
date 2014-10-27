@@ -1,0 +1,30 @@
+AFKMud: Multiport channel setup - Quick and dirty style
+-------------------------------------------------------
+
+Ok. This mini-doc assumes you have the codebase successfully compiled
+with the multiport options enabled. If not, you need to go back and do
+that part first.
+
+1. In the mudmsg.c file, there is a line like this:
+
+#define IPC_KEY_FILE "/home/alsherok/mudmsgkeyDONTDELETEME"
+
+You'll need to change the file path specified to something you own, or
+that you can access that the server itself owns. If you plan to try and
+link muds owned by different users, you *NEED* to get in touch with the
+system administrator and clear it through them first - don't just link to
+any old random file. This needs to be something non-critical that won't be
+deleted by accident but is also not important to the server.
+
+Recompile once this has been settled and a file has been chosen.
+
+2. Reboot and log in to the mud.
+Using the setchannel command, type the following:
+
+setchannel <some name> flags interport
+
+<some name> should be the name of a channel you want shared. Keep in mind
+this will be something others on the other ports can see. Recommended to
+test with an imm only channel at first.
+
+That should take care of it.

@@ -1,0 +1,174 @@
+
+SMAUG SPELL MANUAL V1.0 - by Rennard (first draft)
+--------------------------------------------------
+
+Make sure you read help smaugspells and referenced help pages online as well.
+
+FIELDS
+------
+
+Sn: the spell number.  When using sset to edit a spell, you refer to the 
+spell by its number.  Spell numbers are sorted every reboot, so they may 
+change.
+
+Slot: the spell's slot number.  This is the number used when placing a 
+spell on an object, etc.  To use this, find an empty spell slot and set 
+it to that.
+
+Spell: the spell's name.
+
+Damtype: the type of damage (useful for having your spell affected by 
+resist/suscept/immune.
+
+Acttype: the action of your spell (see examples further on).
+
+Classtype: What the action of your spell affect...
+
+Powertype: the degree of power for your spell.
+
+Flags: the various flags a spell can have (see help spellflags online).
+
+Saves: if you want your spell to give a saving throw, here's where you 
+put the saving throw in.
+
+Type: spell or skill.
+
+Target: offensive, defensive, obj_inv, self and ignore are the target 
+types.  Offensive will incur a counterattack, defensive wont, self is for 
+caster-only spells, ignore generally has no target, and obj_inv is for an 
+item in caster's inventory (use ignore for an item not in inventory).
+
+Minpos: minimum position (standing, sitting, etc) to cast the spell.
+
+Mana: mana required to cast spell.
+
+Beats: the 'lag' incurred by the caster upon casting the spell (12 is the 
+general value for 1 round).
+
+Guild: for a spell specific to a guild. If it's for no guild, set this 
+field to -1.
+
+Code: any smaugspell will use the code 'spell_smaug'.
+
+Dammsg: for offensive spells, the message you will see in the damage 
+line.  I.e. Joe's necromantic touch grazes you.
+
+Wearoff: The message for an affect spell wearing off.
+
+Dice: for an offensive damage spell (act create class death, or act 
+destroy class life), this calculates the amount of damage.
+
+Affects: affects affect the target set in the spell. If you want an 
+offensive spell to do a backlash against the caster, put a '!' in front 
+of the affect type.  I.e. sset 92 affect !hit -20.
+
+Value: field for the vnum afect by your spell. I.e. putting the vnum of a 
+ball of light for continual light spell.
+
+Hit, die, miss and imm messages: These messages are sent to players (in 
+blue ansi) when the spell is cast.  You must specify a target for each, 
+vict, char or room.  Example: hitchar: You have cast the spell.
+
+Class/level/proficiency fields:  These determine what classes, and at 
+what level, can use the spell.  The proficiency field determines what 
+degree the class can master it to.
+
+Components: objects required to cast spell.  See description later.
+
+Participants: number of casters required.
+
+
+EXAMPLES OF POSSIBLE SPELLS
+---------------------------
+
+Spells of target type 'ignore'
+
+If the spell has flag 'area', action and class 'create + death' or 
+'destroy + life', and has a damage type other than none, it will act as 
+an area attack spell (a la earthquake). It will use the dice field to 
+determine the damage done to each target in the room and the saves field 
+to check saving throw.
+
+If the spell has the flag 'object' and action 'create', it will create an 
+object. The vnum comes from the value field. The dice field is used to 
+place a timer on the object. Leave it blank if you dont want the object 
+to expire. The powertype field determines the level of the object:
+minor = 0, none = 10, greater = level / 2, major = level of caster.
+
+
+Spells of target type 'defensive'
+
+Defensive spells are considered to be something good/beneficial, so no 
+matter what the affect you set, the spell will not initiate combat, 
+though if the saves field is set, they'll get a saving throw.  A 
+defensive spell will put an affect on the victim.
+
+
+Spells of target type 'self'
+
+Self spells can only be cast onto oneself.  This is usually for spells 
+that are more like a skill that has to be learned and practiced through 
+self-discipline than ones that can be cast onto anyone.  Like defensive 
+spells, a self spell will put an affect on the caster.
+
+
+Spells of type 'obj_inv'
+
+If the spell has the action create and the class type:
+	-water: it will attempt to fill the object cast upon with water. 
+(obj must be a drink container). The 'dice' field will be used to 
+determine how much water will be put into the container.
+	-death and damtype poison: the spell will poison the object if it 
+is a drink container or a food.
+	-life: the spell will cure an object of poison if its a food or 
+drink con.
+	-none: the object will be cloned.  The powerlevel determines what 
+level of object the caster can clone.
+
+If the spell is of action 'obscure', then the dice field will be used to 
+determine the chance of making the object invisible.
+
+
+DICE FORMULA EXPRESSIONS
+------------------------
+
+To make the special SMAUG spells possible, special dice formula handling 
+had to be coded in (at least to make it nice). This dice formula coded 
+supports full BEDMAS expressions ( )  ^ / * + -, plus extra mud related 
+operators and variables:
+
+D dice		L Level		H hit points	M mana
+V movement	S strength	I intelligence	W wisdom
+X dexterity	C constitution	A charisma	U luck
+Y age
+
+
+SPELL COMPONENTS
+----------------
+
+T####		check for item of type ####
+V#####		check for object vnum #####
+Kword		check for item with keyword 'word'
+G#####		check if player has X amount of gold
+H####		check if player has X amount of hit points
+
+Special operators:
++ don't consume object
+@ decrease component's value[0], extract if reaches 0
+# decrease component's value[1], extract if reaches 0
+$ decrease component's value[2], extract if reaches 0
+% decrease component's value[3], extract if reaches 0
+^ decrease component's value[4], extract if reaches 0
+& decrease component's value[5], extract if reaches 0
+! make the spell fail if the caster is carrying this component
+
+Example:
+Components: V1000 V+1001
+The spell requires objects of vnum 1000 and 1001.  Object 1000 is 
+consumed, object 1001 is not.
+
+That about covers smaug spells.  For examples, take a peek at some of the 
+spells online with slookup.
+
+-Rennard
+

@@ -1,0 +1,162 @@
+#VERSION 1
+#CHANNEL
+ChanName      chat~
+ChanColorname chat~
+ChanLevel     1
+ChanType      0
+ChanFlags     keephistory~
+End
+
+#CHANNEL
+ChanName      auction~
+ChanColorname chat~
+ChanLevel     1
+ChanType      0
+ChanFlags     keephistory~
+End
+
+#CHANNEL
+ChanName      quest~
+ChanColorname chat~
+ChanLevel     1
+ChanType      0
+ChanFlags     keephistory~
+End
+
+#CHANNEL
+ChanName      music~
+ChanColorname chat~
+ChanLevel     1
+ChanType      0
+ChanFlags     keephistory~
+End
+
+#CHANNEL
+ChanName      shout~
+ChanColorname chat~
+ChanLevel     2
+ChanType      0
+ChanFlags     keephistory~
+End
+
+#CHANNEL
+ChanName      wartalk~
+ChanColorname chat~
+ChanLevel     1
+ChanType      4
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      yell~
+ChanColorname chat~
+ChanLevel     2
+ChanType      1
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      newbiechat~
+ChanColorname chat~
+ChanLevel     1
+ChanType      0
+ChanFlags     keephistory~
+End
+
+#CHANNEL
+ChanName      think~
+ChanColorname chat~
+ChanLevel     101
+ChanType      0
+ChanFlags     keephistory interport~
+End
+
+#CHANNEL
+ChanName      muse~
+ChanColorname chat~
+ChanLevel     113
+ChanType      0
+ChanFlags     keephistory interport~
+End
+
+#CHANNEL
+ChanName      comm~
+ChanColorname chat~
+ChanLevel     102
+ChanType      5
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      info~
+ChanColorname chat~
+ChanLevel     101
+ChanType      5
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      auth~
+ChanColorname chat~
+ChanLevel     103
+ChanType      5
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      warn~
+ChanColorname chat~
+ChanLevel     108
+ChanType      5
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      build~
+ChanColorname chat~
+ChanLevel     103
+ChanType      5
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      Log~
+ChanColorname chat~
+ChanLevel     101
+ChanType      5
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      guildtalk~
+ChanColorname chat~
+ChanLevel     1
+ChanType      2
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      Clantalk~
+ChanColorname chat~
+ChanLevel     1
+ChanType      2
+ChanFlags     ~
+End
+
+#CHANNEL
+ChanName      ilog~
+ChanColorname log~
+ChanLevel     101
+ChanType      5
+ChanFlags     keephistory~
+End
+
+#CHANNEL
+ChanName      Bugs~
+ChanColorname log~
+ChanLevel     101
+ChanType      5
+ChanFlags     keephistory~
+End
+
+#END

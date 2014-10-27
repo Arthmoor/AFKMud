@@ -1,0 +1,283 @@
+Written by Socrates
+09/25/98
+OLYMPIAMUD
+
+This is a tutorial for using Mob_progs
+
+Ahh, you say.. mob progs. WTF? Well I will answer that.
+Mop Progs give life to your mobs. Instead of sitting around
+waiting to be slaughtered, they can give advice, hints, give money,
+accept bribes, smile, go down on someone. There are other things 
+that mob-progs can do but this is good for now.  
+
+How to make mob_progs?
+--It's Alive, Alive! (Dr. Frankstein)
+
+	First things first Create your Mob!
+	--Zaaaap! (Me)
+
+	Second Things second: Mset all the stats.
+	--Ack! (Countless Mudders)
+
+	Third ADD in Mob_progs. 
+	--WTF? (Countless Immorts)
+
+        A MUDPROG section of a Mob, Object, or Room is constructed with a simple block in their data.
+        These should be inserted before the #ENDMOBILE, #ENDOBJECT, or #ENDROOM markers depending on
+        what you are applying them too.
+
+So. Lets say Bill Gates has a fight program attached that goes off 40% of the time while in combat.
+This is what that should look like:
+
+#MUDPROG
+Progtype fight_prog~
+Arglist  40
+Comlist  say I will purchase you~
+#ENDPROG
+
+	Get it?
+	That is how you add mob_progs. Now I know you are thinking
+	WTF is fight_prog 40 mean?
+	Well I'll get into that right now.
+
+	TRIGGERS
+	"Pounce Session, all right sir. ... Wait NO!!! Mufasa?" --Zazzo
+	
+	Triggers are what get this, trigger your mob_prog.
+	
+	So can I have just _any_ trigger?
+ 	_NO!_
+	But here is a list of the ones that are built into Smaug:
+
+------------------------------------------------------------------------
+act_prog	syntax: act_prog [p] <Argument>
+
+What Does it do: This makes the Mob listen to what a character is saying
+or doing. So if the character says, Fred tell me about my mother. Fred 
+will listen. The Argument is the list of keywords that fred is listening
+for.
+  
+Example:
+
+act_prog mother lazy kitten
+say It's okay I heard you the first time
+
+What's that mean: If someone says mother, lazy, or kitten Fred will
+reply, "It's okay I heard you the first time".
+
+You can get specific and they have to say a key phrase to say get
+in to an elite club.
+
+Example:
+	
+act_prog [p] p My password is: Jerry
+say alright
+
+What's that mean: When someone says, My password is: Jerry
+Fred will say, "alright".
+
+This trigger can also read anything that happens in the room. For
+example if a char "pokes you in the ribs" can be a trigger. Or a
+certain emote. In these cases remember the preceding p.
+	
+		NOTE:  NONE OF THESE MOB_PROG'S ARE CASE SENSITIVE
+
+------------------------------------------------------------------------
+bribe_prog      Syntax: bribe_prog <NUMBER>
+
+Ahah. Corrupt Officails? Selling certain Items that are 'blackmarket?' 
+Uhuh this is a good one to use if you want to get a corrupt or devious
+feeling. What Does it DO: It is activated when an amountt of coins is
+given to the mob in a number equal to or greater than the NUMBER.
+NOTE: This cash does NOT go into mob->gold. It is seperate. To really 
+get life like the mob can now with a combo of other triggers purchase 
+food, or weapons or whatever with this money.
+			
+Example:
+
+bribe_prog 5000
+grin
+say thanks sir
+
+What's that mean: When someone types give Fred 5000
+Fred grins and says "thanks sir".  
+
+------------------------------------------------------------------------
+entry_prog      Syntax: entry_prog <PERCENT>
+
+Okay this is a neat one. What does a gentleman do when he enters a room?
+Right, he tips his hat. So what entry_prog allows us to do is set up a 
+chance that Fred is going to say Hi! or tip his hat or wave or whatever
+we want him to do. NOTE: it is a percent so unless you set it to 100 it
+won't happen all the time.
+
+Example:
+
+entry_prog 50
+tip
+say Hello, how are you doing this morn?
+
+What's this mean: When Fred walks into a room he has 50/50 chance of
+tipping his hat and saying hello otherwise he won't do anything.
+
+NOTE: Please ONLY use this on wandering MOB's It does no good to use it
+on stationary MOB's. It is only for when they enter a room.
+
+------------------------------------------------------------------------
+give_prog       Syntax: give_prog <ARGUMENT>
+
+Need someone to find a lost ring? Or return a stolen purse? Well that's 
+what this prog is for. This prog is activated when ARGUMENT is given to 
+Fred. The ARGUMENT has to be the complete name, or it can be all. 
+Complete names are like : "Sword shiny magic" vs "sword" or what ever is 
+on the line of the object section following the VNUM.
+			
+Example:
+
+give_prog light saber
+pout
+say darn it Jim, I'm a coder not a Jedi
+
+What's this Mean:  When Joe Blow Character gives Fred his light saber 
+Fred pouts and say darn it jim, I'm a coder not a jedi.
+
+------------------------------------------------------------------------
+ greet_prog      Syntax: greet_prog <PERCENT>
+
+"Ho, what can I sell you?" the mechant asks. Aggromonsters attack, is what
+this prog is for. What it does is detect someone entering the room they 
+are in and gets a percentage of doing whatever it is it does. Remember 
+it is a percent so If you want the merchant/shopkeeper to always say Hi 
+set it to 100.
+
+Example:
+greet_prog 25 
+drop 100 gold
+
+What's this Mean: When Joe Blow walks into the room Fred has a 1/4
+chance of dropping some cash. WoooHooo Joe Blow thinks. He comes back and
+Fred thinks about it, but doesn't. Joe Blow sulks.	
+
+------------------------------------------------------------------------
+all_greet_prog	syntax: all_greet_prog <PERCENT>
+
+This is greet except it detects, invis, sneak, hide and all those devious
+cloak and dagger skills. Good use for creatures that should see invis.
+
+Example:
+	
+all_greet_prog 100
+say aha trying to get pass me?
+
+What's this mean: When an invisible Joe Blow walks in Fred says aha,
+trying to get pass me?
+
+*************NOTE:  THE GREET PROGRAMS DO NOT WORK WHEN THE MOB IS FIGHTING*****************
+
+------------------------------------------------------------------------
+fight_prog      Syntax: fight_prog <PERCENT>
+
+Evil Doer!!!! CHARGE!!!! -Cityguards. This prog is to give mob personalities
+when fighting. A mercanary that complains he's not getting paid enough. 
+It checks the percent every combat round. But, if it is successful it won't
+execute again. SO: IT ONLY CHECKS EACH COMBAT IF IT HAS FAILED.
+			
+Example:
+	
+fight_prog 35
+cast fireball
+
+What it means: When combat is initiated the prog checks to see if it
+can cast fireball, then continues to check until it can. 
+
+NOTE: FOR EACH SPELL OR SKILL A MOB CAN USE CREATE A FIGHT_PROG for it.
+
+------------------------------------------------------------------------
+hitprcnt_prog   Syntax: hitprcnt_prog <PERCENT>
+
+Run away! Run away! This prog activates when the mob's hp drop to
+the percentage given. So if a Mob drops to 50% hp he tries to cast 
+fireball or lightning or flees.
+
+Example:
+
+hitprcnt_prog 20
+say Darn it I'm going to DIE!
+
+What it means: When a 100hp Mob drops to 20Hp or Below, the MOB says 
+'Darn it I'm going to DIE!
+
+------------------------------------------------------------------------
+death_prog      Syntax: death_prog <PERCENT>
+
+'Tis a shame that I have but one life to live for my country. One last 
+quote or action. His last gasp! If the random Percent is below the given
+percent then the action happens.
+
+Example:
+	
+death_prog 100
+smile
+chat Alas, I have been Slain
+		
+What it means: When poor Fred Dies, he smiles and chats Alas, I have been Slain.
+
+------------------------------------------------------------------------
+rand_prog       Syntax: rand_prog <PERCENT>
+
+Ahh, this one is sweet. Basically what it does is check the percent every 
+heartbeat [rd] and if the percent is less then the one given then the action 
+happens. This is a catchall. If you want a mayor who wanders around and does 
+weird things almost absent mindedly then this is the one you want.
+
+Example:
+
+rand_prog 50
+drool
+dance
+sing
+
+What it means: When poor Fred the Mayor is wondering around he has a 50/50 
+chance of drooling, dancing and singing all at the same time.
+
+------------------------------------------------------------------------
+speech_prog 	Syntax: speech_prog [p] <ARGUMENT>
+
+"What's that Whipper-snapper?" This prog is triggered only by messages 
+other wise it works just like act_prog.
+				
+Example:
+
+speech_prog p Hey old man.
+say Huh whipper snapper? My time's almost up.
+		
+What it means: Fred is out of time, he hears a char say Hey old man, or 
+is told Hey old man. He replies Huh whipper snapper? My time's almost up.
+
+------------------------------------------------------------------------
+BIG NOTE:  NONE. NOT A SINGLE MOB_PROG WORKS WHEN A MOB IS CHARMED.  
+I REPEAT NO MOB PROGS WORK WHEN THE MOB IS CHARMED.
+
+Now for your Test:
+
+Create a mob that wonders around, and when he enters a room say hello all.  
+When he dies he chat's fair well world. And when he's given a sword he drops gold.
+
+Test 2
+
+Create a mob that when given money babbles something at a char. If asked to 
+return it gives it back.
+
+A MOB THAT IS CHARMED DOES NOT USE MOB_PROGS
+
+In the Next tutorial we will learn how to address certain characters, like 
+smile socrates or a different mob
+
+In the Third and tutorial we will learn how to make a mob_prog that actually 
+makes decisions.
+
+And on the final tutorial we will learn how to make a mob_prog that does wiz cmds.  
+
+NOTE: PLEASE DO NOT TRY TO DO ANYTHING THAT YOU DO NOT ALREADY KNOW HOW TO DO.  
+MOB_PROGS CAN SCREW UP THE MUD. PLEASE ASK QUESTIONS OF SOCRATES, or HEPH IF YOU 
+DON'T KNOW WHAT YOU ARE DOING.

@@ -1,0 +1,55 @@
+#! /bin/csh -f
+
+# Set the port number.
+set port = 7500
+if ( "$1" != "" ) set port="$1"
+
+# Change to area directory.
+cd ../area
+
+# Set limits.
+nohup
+if ( -e shutdown.txt ) rm -f shutdown.txt
+limit coredumpsize unlimited
+limit stacksize unlimited
+
+while ( 1 )
+    # If you want to have logs in a different directory,
+    #   change the 'set logfile' line to reflect the directory name.
+    set index = 1000
+    while ( 1 )
+	set logfile = ../log/$index.log
+	if ( ! -e $logfile ) break
+	@ index++
+    end
+
+    # Record starting time
+    date > $logfile
+    date > ../area/boot.txt
+
+    # Run AFKMud.
+    # Check if already running
+    set matches = `netstat -an | grep ":$port " | grep -c LISTEN`
+    if ( $matches >= 1 ) then
+        # Already running
+	echo Port $port is already in use.
+        exit 0
+    endif
+    ../src/afkmud $port >&! $logfile
+
+    if ( -e core ) then
+      \mv core ../src     
+      cd ../src     
+      date > ../crash/$index.crash
+      gdb -batch -x commands afkmud core >> ../crash/$index.crash
+      #rm -f core
+      cd ../area   
+    endif 
+
+    # Restart, giving old connections a chance to die.
+    if ( -e shutdown.txt ) then
+	rm -f shutdown.txt
+	exit 0
+    endif
+    sleep 5
+end

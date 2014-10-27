@@ -1,0 +1,27 @@
+[1z¢!ELEMENT RName FLAG="RoomName"£
+[1z¢!ELEMENT RDesc '¢p£' FLAG="RoomDesc"£
+[1z¢!ELEMENT RExits FLAG="RoomExit"£
+[1z¢!ELEMENT Prompt FLAG="Prompt"£
+[1z¢!ELEMENT Hp FLAG="Set hp"£
+[1z¢!ELEMENT MaxHp FLAG="Set maxhp"£
+[1z¢!ELEMENT Mana FLAG="Set mana"£
+[1z¢!ELEMENT MaxMana FLAG="Set maxmana"£
+[1z¢!ELEMENT newbiechat '<SEND>'£
+[1z¢!ELEMENT shout '<SEND>'£
+[1z¢!ELEMENT chat '<SEND>'£
+[1z¢!ELEMENT muse '<SEND>'£
+[1z¢!ELEMENT think '<SEND>'£
+[1z¢!ELEMENT auction '<SEND>'£
+[1z¢!ELEMENT quest '<SEND>'£
+[1z¢!ELEMENT say '<SEND>'£
+[1z¢!ELEMENT look '<SEND>'£
+[1z¢!ELEMENT inventory '<SEND>'£
+[1z¢!ELEMENT equipment '<SEND>'£
+[1z¢!ELEMENT score '<SEND>'£
+[1z¢!ELEMENT attrib '<SEND>'£
+[1z¢!ELEMENT level '<SEND>'£
+[1z¢!ELEMENT who '<SEND>'£
+[1z¢!ELEMENT practice '<SEND>'£
+[1z¢!ELEMENT slist '<SEND>'£
+[1z¢!ELEMENT yell FLAG="Chan yell"£
+[1z¢!ELEMENT ex "<send href='&text;|look &text;|open &text;|close &text;|unlock &text;|lock &text;|bash &text;|pick lock &text;' hint='Left click to move, Right click for menu|&text;|look &text;|open &text;|close &text;|unlock &text;|lock &text;|bash &text;|pico &text;'>"£

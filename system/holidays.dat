@@ -1,0 +1,15 @@
+#HOLIDAY
+Name		New Year's Day~
+Announce	Today is the first day of a new year.~
+Month		1
+Day		1
+End
+
+#HOLIDAY
+Name		Year's End~
+Announce	Today is the last day of the year.~
+Month		12
+Day		26
+End
+
+#END

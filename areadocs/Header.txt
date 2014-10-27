@@ -1,0 +1,144 @@
+=== The #AREADATA section (also referred to as the header)
+
+Last Modified by Samson, Dec. 14, 2006
+
+If a <value> or string literal field is followed by a ~, then that ~ marker is required there.
+Tags with a # in front are required, and must appear in the order in which they are specified.
+Value fields without a # in front are generally optional and default values will be used by
+the code if nothing is specified.
+
+The syntax of this section is:
+
+#AFKAREA
+--------
+String literal. Required to identify new area format.
+
+#AREADATA
+---------
+String literal. Identifies the start of the header section.
+
+Version     <int>
+-----------------
+Numerical value > 0. This determines which area version this file is supposed to be handled as.
+
+Name        <string>~
+---------------------
+String containing the name of the area.
+
+Author      <string>~
+---------------------
+String containing the name of the person who wrote the area.
+
+Vnums       <int> <int>
+-----------------------
+Pair of numerical values. The first int is the low vnum, second int is the high vnum.
+
+Continent   <string>~
+---------------------
+String containing the name of the continent this area is a part of.
+
+Coordinates <int> <int>
+-----------------------
+Numerical values containing the X,Y coordinates of this area on the overland map it belongs to.
+Overland usage is not required, and these values can both be set to 0 if they will not be needed.
+
+Ranges      <int> <int> <int> <int>
+-----------------------------------
+Series of numerical values. In order: Low soft, high soft, low hard, and high hard.
+These values are the level enforcement settings for the area. The soft range is not code enforced
+and are displayed on the "areas" command as recommended levels. The hard range is code enforced and
+anyone not meeting the range boundaries will not be able to enter this area.
+
+ResetMsg    <string>~
+---------------------
+String containing a message to be sent to all player occupants when the area resets.
+
+ResetFreq   <int>
+-----------------
+Numerical value > 0. This is the time in minutes it will take for the area to reset.
+
+Flags       <string> <string> <string> <...>~
+---------------------------------------------
+One or more string values representing the flags that are set on this area. Flags can be chosen from the following table,
+and affect every room in the area when applied. These flags override flags of the same type which are set on individual
+rooms.
+
+FLAG NAME     | DESCRIPTION
+----------------------------------------------------------------------
+nopkill	      | No Pkillers are allowed in this zone.
+nocamp        | Players cannot camp anywhere in this zone.
+noastral      | Players may not astral walk from or to this zone.
+noportal      | Players may not portal to or from this zone.
+norecall      | Players may not recall from this zone.
+nosummon      | Players may not summon to or from this zone.
+noscry        | Players may not use the farsight spell in this zone.
+noteleport    | Players may not teleport to or from this zone.
+freekill      | Treats the entire zone as an arena. Get approval first.
+nobeacon      | Players may not set recall beacons in this zone.
+noquit        | Players may not quit while in this area.
+
+Climate     <value1> <value2> <value3>
+--------------------------------------
+Numerical values indicating climate factors which have been set on the area.
+These values affect the severity of weather within the zone. More information on
+this will be available when we understand it all better. Or better yet, refer to
+the online helpfiles. They probably explain it fairly well.
+
+The <value1> setting is the temperature range, <value2> is the precipitation,
+and <value3> is the wind. Refer to the following tables.
+
+Value1 | Temperature   Value2 | Precipitation   Value3 | Wind
+--------------------   ----------------------   ----------------
+    0  | Cold               0 | Arid                 0 | Still
+    1  | Cool               1 | Dry                  1 | Calm
+    2  | Normal             2 | Normal               2 | Normal 
+    3  | Warm               3 | Damp                 3 | Breezy
+    4  | Hot                4 | Wet                  4 | Windy
+
+Treasure <val1> <val2> <val3> <val4> <val5> <val6> <val7> <val8>
+----------------------------------------------------------------
+These set the random chances of generating a certain type of random
+treasure for this area. If this section is left out, the code will
+adpot some default settings based on the original hardcoded formulas.
+
+<val1> is the chance to generate nothing at all.
+<val2> is the chance to generate some gold.
+<val3> is the chance to generate a random item, which is further broken
+down by <val5> through <val8>
+<val4> is the chance to generate a gem.
+Runes are generated based on the values above, and if you exceed 100% in any
+of the previous 4 settings runes will not be generated at all for this area.
+
+<val5> is the chance to generate a random scroll.
+<val6> is the chance to generate a random potion.
+<val7> is the chance to generate a random wand.
+<val8> is the chance to generate a random armor, which may have item sockets
+for rune insertion.
+Weapons are generated based on the values above, and if you exceed 100% in any
+of the previous 4 settings, weapons will not be generated at all for this area.
+Further, weapons can also randomly be assigned item sockets for rune insertion.
+
+Neighbor     <string>~
+----------------------
+The name of a neighboring area which affects this area's weather patterns.
+There can be multiple neighbor lines in an area header.
+
+====================================================================================
+
+Below is an example of a completed header section:
+
+#AFKAREA
+#AREADATA
+Version         1
+Name            Halls of Creation~
+Author          Samson~
+Vnums           100 199
+Continent       immortal~
+Coordinates     472 381
+Ranges          0 1 0 115
+ResetMsg        A strange pulsing sound reverberates in the background...~
+ResetFreq       240
+Flags           nocamp noastral noportal norecall nosummon noscry noteleport~
+Climate         2 2 2
+Treasure        20 74 85 93 20 50 60 75
+#ENDAREADATA

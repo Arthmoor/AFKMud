@@ -1,0 +1,114 @@
+Adding a new race, with language
+--------------------------------
+
+Last modified by Samson, 6/19/03
+
+Skip the language portions if your new race doesn't need one.
+
+1. In mud.h, find MAX_RACE and increase by one. If you're changing a
+   race into a new one, this isn't necessary.
+
+2. In const.c, find the npc_race table. Change the first empty slot to 
+   the name of your new race. You should be changing something like "r9".
+   Stock AFKMud code only has one free slot - keep this in mind. You may
+   simply want to change an existing race into a new one instead. Only
+   the first 19 races in this table can be used for PCs unless you
+   bumped up MAX_RACE.
+
+3. In act_comm.cpp, find:
+
+   int const lang_array[] = {
+
+   In that, add LANG_<newrace> where <newrace> is the name of the
+   race your adding. In the table right below it, add your race name
+   to the list, just before the empty double quotes.
+
+4. in mud.h again, find LANG_UNKNOWN, you should now be looking at
+   a list of BV values. Add your race to the list, above LANG_UNKNOWN.
+   Add it to the list of VALID_LANGS as well.
+
+5. Add your new race to the race_types list in mud.h. In stock code, this
+   list ends with RACE_19 as the last member.
+
+6. At this point, your done with the code. Make clean, and recompile.
+   Don't reboot yet though.
+
+7. Using an existing race file, copy it's contents to a new file.
+
+8. Set the race# in the file to 1 LESS than MAX_RACE.
+   ( Starts countng with 0 ).
+
+9. Set the language line to the proper BV value for that race.
+   The stock table is included here - just double the last number to get
+   the next race, and so forth - eg, if your race comes after Gith, it's
+   language number would be 1048576.
+
+	common      1
+	elvish      2
+	dwarven     4
+	pixie       8
+	ogre        16
+	orcish      32
+	trollese    64
+	rodent      128
+	insectoid   256
+	mammal      512
+	reptile     1024
+	dragon      2048
+	spiritual   4096
+	magical     8192
+	goblin      16384
+	god         32768
+	ancient     65536
+	halfling    131072
+	clan        262144
+	gith        524288
+
+10. At this point, you're ready to upload the race file.
+    Don't reboot just yet.
+
+11. In entry.are, you need to add a speech_prog to the race rooms. There
+    are two of them, one is used with the name auth system, one is used
+    without. Your speech_prog should look similar to:
+
+#MUDPROG
+Progtype  speech_prog~
+Arglist   p human~
+Comlist   if level($n) == 1
+mpmset 0.$n race human
+mpat 0.$n mpapplyb 0.$n
+mptrlook 0.$n 104
+mpat 0.$n mpforce 0.$n bounce
+endif
+~
+#ENDPROG
+
+   It should be tacked on to the end of the existing list.
+
+12. After the reboot, use the setrace command to fine-tune the settings
+    for the new race.
+
+13. Now you need to create the language skill. Using the sset command,
+    execute the following:
+
+    sset create skill (language)
+    sset (lang) type tongue
+    sset (lang) guild -1   (very important)
+    sset (lang) code spell_null
+    sset save skill table
+
+    'language' being the name of the language, and 'lang' being the sn#
+    of the new language. You can get that by doing an slookup on the
+   language.
+
+14. You'll then need to adjust the levels that each class gets to learn
+    the language at. You can use the ssset command for this, but I find
+    it to be much faster to do this kind of thing offline. Just add a line
+    similar to this at the end of the skills list for each class:
+ 
+    Skill 'trollese' 1 99
+
+    1 is the level at which the class learns the language, 99 is the adept
+    level.
+
+That should be it. Your new race and language should be ready for use.

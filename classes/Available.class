@@ -1,0 +1,368 @@
+Version     1
+Name        Available~
+Class       8
+Attrprime   1
+Weapon      -1
+Armor       -1
+Legwear     -1
+Headwear    -1
+Armwear     -1
+Footwear    -1
+Shield      -1
+Held        -1
+Skilladept  90
+Thac0       18
+Thac0gain   0.375000
+Hpmin       11
+Hpmax       15
+Mana        0
+Skill 'aid' 46 90
+Title
+Man~
+Woman~
+Title
+Runner~
+Runner~
+Title
+Strider~
+Strider~
+Title
+Chaser~
+Chaser~
+Title
+Pursuer~
+Pursuer~
+Title
+Agitator~
+Agitator~
+Title
+Tenderfoot First Class~
+Tenderfoot First Class~
+Title
+Tenderfoot Second Class~
+Tenderfoot Second Class~
+Title
+Scout~
+Scout~
+Title
+Scout Master~
+Scout Master~
+Title
+Collector~
+Collector~
+Title
+Courser~
+Courser~
+Title
+Trailblazer~
+Trailblazer~
+Title
+Tracker~
+Tracker~
+Title
+Sportsman~
+Sportswoman~
+Title
+Huntsman~
+Huntswoman~
+Title
+Caporal~
+Caporal~
+Title
+Bellwether~
+Bellwether~
+Title
+Wanderer~
+Wanderer~
+Title
+Pathfinder~
+Pathfinder~
+Title
+Explorer~
+Explorer~
+Title
+Nomad~
+Nomad~
+Title
+Pioneer~
+Pioneer~
+Title
+Precurser~
+Precurser~
+Title
+Precentor~
+Precentor~
+Title
+Hunter~
+Huntress~
+Title
+Horseman~
+Horseman~
+Title
+Bowman~
+Bowwoman~
+Title
+Fletcher~
+Fletcher~
+Title
+Bowyer~
+Bowyer~
+Title
+Master Bowyer~
+Master Bowyer~
+Title
+Beastmaster~
+Beastmistress~
+Title
+Falconer~
+Falconess~
+Title
+Feralan~
+Feralan~
+Title
+Guardian Of The Forest~
+Guardian Of The Forest~
+Title
+Guardian Of The Water~
+Guardian Of The Water~
+Title
+Guardian Of The Mountains~
+Guardian Of The Mountains~
+Title
+Guardian Of The Desert~
+Guardian Of The Desert~
+Title
+Guardian Of The Realms~
+Guardian Of The Realms~
+Title
+Guardian Of The Land~
+Guardian Of The Land~
+Title
+Guardian~
+Guardian~
+Title
+Justifier~
+Justifier~
+Title
+Deerstalker~
+Deerstalker~
+Title
+Stalker~
+Stalker~
+Title
+Warden~
+Warden~
+Title
+Woodswoman~
+Woodsman~
+Title
+Landreeve~
+Landreeve~
+Title
+Vicar~
+Vicar~
+Title
+Herbalist~
+Herbalist~
+Title
+Enviromentalist~
+Enviromentalist~
+Title
+Journeyman~
+Journeywoman~
+Title
+Traveller~
+Traveller~
+Title
+Master Of Wilderness~
+Mistress Of Wilderness~
+Title
+Archer Of The Seas~
+Archer Of The Seas~
+Title
+Archer Of The Forest~
+Archer Of The Forest~
+Title
+Archer Of The Road~
+Archer Of The Road~
+Title
+Archer Of The Realms~
+Archer Of The Realms~
+Title
+Cavaliere~
+Cavaliere~
+Title
+Archer Squire~
+Archer Squiress~
+Title
+Archer Knight~
+Archer Knight~
+Title
+Archer Lord~
+Archer Lady~
+Title
+Goblin Slayer~
+Goblin Slayer~
+Title
+Gnoll Slayer~
+Gnoll Slayer~
+Title
+Ogre Slayer~
+Ogre Slayer~
+Title
+Minotaur Slayer~
+Minotaur Slayer~
+Title
+Giant Slayer~
+Giant Slayer~
+Title
+Dragonslayer~
+Dragonslayer~
+Title
+Skylord~
+Skylady~
+Title
+Waterlord~
+Waterlady~
+Title
+Treelord~
+Treelady~
+Title
+Aedile~
+Aedile~
+Title
+Fugleman~
+Fugleman~
+Title
+Shepherd~
+Shepherd~
+Title
+Croupier~
+Croupier~
+Title
+Corypheus~
+Corypheus~
+Title
+Friend of Dryads~
+Friend of Dryads~
+Title
+Friend Of Sprites~
+Friend Of Sprites~
+Title
+Friend of Pixies~
+Friend of Pixies~
+Title
+Friend of Elves~
+Friend of Elves~
+Title
+Friend Of The Forest~
+Friend Of The Forest~
+Title
+Protector Of Animals~
+Protector Of Animals~
+Title
+Swamp Master~
+Swamp Mistress~
+Title
+Desert Master~
+Desert Mistress~
+Title
+Mountain Master~
+Mountain Mistress~
+Title
+Forest Master~
+Forest Mistress~
+Title
+Defender of Plants~
+Defender of Plants~
+Title
+Defender of Animals~
+Defender of Animals~
+Title
+Defender of the Earth~
+Defender of the Earth~
+Title
+Defender of Nature~
+Defender of Nature~
+Title
+Defender of the Realms~
+Defender of the Realms~
+Title
+Lord of the Seas~
+Lord of the Seas~
+Title
+Lord of the Plants~
+Lady of the Plants~
+Title
+Lord of the Animals~
+Lady of the Animals~
+Title
+Lord of the Earth~
+Lady of the Earth~
+Title
+Lord of Nature~
+Lady of Nature~
+Title
+Guru~
+Guru~
+Title
+Seneschal~
+Seneschal~
+Title
+Sentinel~
+Sentinel~
+Title
+Shikari~
+Shikari~
+Title
+Demagogue~
+Demagogue~
+Title
+Avatar of Archery~
+Avatar of Archery~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

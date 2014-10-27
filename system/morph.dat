@@ -1,0 +1,1470 @@
+Morph           	cat
+Vnum 1000
+Damroll -5~
+Description The black cat has intelligent glowing green eyes and there is an aura of magic
+about it. It stares dispassionately at you.
+~
+Hit             	-30~
+Hitroll         	-3~
+Keywords        	black cat~
+Longdesc        	A black cat with strangely glowing green eyes is here.
+~
+MorphOther      	A red glow surrounds $n as $e is transformed into a cat!~
+MorphSelf       	A red glow surrounds you as you are transformed into a cat!~
+NoSkills         trance meditate~
+ShortDesc       	A black cat~
+Skills          	claw~
+UnmorphOther    	$n reverts back to $s own form.~
+UnmorphSelf     	You revert back to your own form.~
+Affected        	33280
+Class           	Mage Necromancer~
+Timer		24
+Used       	16
+ManaUsed		15
+Armor        	20
+Charisma        	-3
+Dexterity       	1
+Level        	15
+Strength        	-3
+End
+
+Morph           	eagle
+Vnum 1004
+Damroll 1~
+Description The eagle is very powerful and aggresive looking with its hooked silver beak
+and sharp claws. Its feathers seem to glow with an irridiscent light.
+~
+Hit             	-30~
+Hitroll         	2~
+Keywords        	eagle~
+Longdesc        	An eagle with silvery feathers is here.
+~
+MorphOther      	A red glow surrounds $n as $e is transformed into an eagle!~
+MorphSelf       	A red glow surrounds you as you are transformed into an eagle!~
+NoSkills         trance meditate~
+ShortDesc       	An eagle~
+Skills          	claw~
+UnmorphOther    	$n reverts back to $s own form.~
+UnmorphSelf     	You revert back to your own form.~
+Affected        	526336
+Class           	Mage Druid~
+Timer		24
+Used       	6
+ManaUsed		24
+HpUsed		10
+Armor        	5
+Dexterity       	3
+Dodge        	10
+Level        	35
+Strength        	-2
+End
+
+Morph           	wolf
+Vnum 1003
+Damroll 3~
+Description The wolf has a silvery mane and it seems to be glowing with a magical light.
+~
+Hit             	-40~
+Hitroll         	3~
+Keywords        	wolf~
+Longdesc        	A wolf with a silvery mane is standing here.
+~
+MorphOther      	A red glow surrounds $n as $e is transformed into a wolf!~
+MorphSelf       	A red glow surrounds you as you revert into a wolf!~
+NoSkills         trance meditate~
+ShortDesc       	A wolf~
+Skills          	bite claw~
+UnmorphOther    	$n reverts back to $s own form.~
+UnmorphSelf     	You revert back to your own form.~
+Affected        	1073774592
+Class           	Mage Druid~
+Timer		24
+Used       	6
+ManaUsed		22
+HpUsed		10
+Armor        	-10
+Dexterity       	2
+Dodge        	10
+Intelligence    	-2
+Level        	30
+Strength        	1
+Wisdom          	-1
+End
+
+Morph           	snake
+Vnum 1002
+Damroll 2~
+Description The snake has a shiny silvery set of scales covering its long body. Its tongue
+flicks in and out in rapid motion as it regards you lazily.
+~
+Hit             	-30~
+Hitroll         	-1~
+Keywords        	snake~
+Longdesc        	A snake is lying motionless here, its tongue flickering in and out.
+~
+MorphOther      	A red glow surrounds $n as $e is transformed into a snake!~
+MorphSelf       	A red glow surrounds you as you revert into a snake!~
+NoSkills         trance meditate~
+ShortDesc       	A snake~
+Skills          	poison bite~
+UnmorphOther    	$n reverts back to $s own form.~
+UnmorphSelf     	You revert back to your own form.~
+Affected        	98304
+Class           	Mage Druid~
+Resistant       	256
+Timer		24
+Used       	3
+ManaUsed		20
+HpUsed		5
+Armor        	-10
+Charisma        	-4
+Dexterity       	2
+Level        	25
+Strength        	-2
+Wisdom          	-2
+End
+
+Morph           	owl
+Vnum 1001
+Damroll -3~
+Description The owl has an unusual streak of silver feathers down its back. It huge liquid
+eyes stare unblinkingly at you.
+~
+Hit             	-30~
+Hitroll         	1~
+Keywords        	owl~
+Longdesc        	An owl is flying about here, observing all with its huge eyes.
+~
+MorphOther      	A red glow surrounds $n as $e is transformed into an owl!~
+MorphSelf       	A red glow surrounds you as you are transformed into an owl!~
+NoSkills         trance meditate~
+ShortDesc       	An owl~
+Skills          	claw~
+UnmorphOther    	$n reverts back to $s own form.~
+UnmorphSelf     	You revert back to your own form.~
+Affected        	524800
+Class           	Mage~
+Timer		24
+Used       	1
+ManaUsed		18
+HpUsed		5
+Armor        	10
+Charisma        	-2
+Constitution    	-1
+Dexterity       	2
+Intelligence    	-1
+Level        	20
+Strength        	-2
+Wisdom          	1
+End
+
+Morph           	mindflayer
+Vnum 1005
+Damroll 2~
+Description You observe a repulsive looking member of the illithid race. Ugly it
+may be, but an evil intelligence gleams in its milky pupiless eyes.
+~
+Hit             	-60~
+Hitroll         	2~
+Keywords        	mindflayer illithid~
+Longdesc        	An ugly looking mindflayer stares at you with its pupiless eyes.
+~
+Mana            	40~
+MorphOther      	A green glow surrounds $n as $e polymorphs into a mindflayer!~
+MorphSelf       	A green glow surrounds you as you polymorph into a mindflayer!~
+ShortDesc       	A mindflayer~
+UnmorphOther    	$n sheds $s repulsive exterior and regains $s own form.~
+UnmorphSelf     	You shed your repulsive exterior and regain your own form.~
+Affected        	16
+Class           	Mage~
+Timer		24
+ManaUsed		25
+Charisma        	-3
+Intelligence    	2
+Level        	40
+Strength        	-2
+CastAllowed       1
+End
+
+Morph           	stalker
+Vnum 1006
+Damroll 2~
+Description What? But you can't see anything standing here.
+~
+Help            	I wonder what this does
+~
+Hit             	-30~
+Hitroll         	3~
+Keywords        	invisible stalker~
+Longdesc        	You thought you felt something stalking you... naah...
+~
+MorphOther      	$n fades out of view, gaining the form of an invisible stalker!~
+MorphSelf       	You shed your form, fading into an incorporeal stalker!~
+NoSkills         trance meditate~
+ShortDesc       	An invisible stalker~
+UnmorphOther    	$n slowly becomes visible again as $e regains $s own form.~
+UnmorphSelf     	You feel yourself regain your form and fade back into visibility.~
+Affected        	98826
+Class           	Mage~
+Suscept        	4
+Timer		24
+Used       	2
+ManaUsed		29
+Armor        	-10
+Charisma        	-3
+Constitution    	-1
+Dexterity       	2
+Intelligence    	-1
+Level        	45
+Strength        	-1
+Wisdom          	-1
+End
+
+Morph           	shaman
+Vnum 1007
+Damroll 4~
+Description A fearsome looking troll shaman frowns balefully at you. It looks
+throughly mean and very dangerous indeed. A faint aura of magic
+surrounds him.
+~
+Hit             	-50~
+Hitroll         	1~
+Keywords        	troll shaman~
+Longdesc        	A wart-covered troll shaman is here, droning and chanting incantations.
+~
+Mana            	30~
+MorphOther      	A green glow encompasses $n and a trollish visage replaces $s!~
+MorphSelf       	A green glow fills your senses and you polymorph into a troll shaman!~
+ShortDesc       	The troll shaman~
+Skills          	weaken cause serious~
+UnmorphOther    	The ugly troll visage melts away as $n regains $s own form again.~
+UnmorphSelf     	You return to normal as you regain your own form.~
+Affected        	512
+Class           	Mage~
+Resistant       	2
+Suscept        	128
+Timer		24
+Sex		1
+ManaUsed		32
+Charisma        	-5
+Constitution    	1
+Dexterity       	-2
+Intelligence    	-2
+Level        	50
+Strength        	2
+Wisdom          	-2
+CastAllowed       1
+End
+
+Morph           	hag
+Vnum 1008
+Damroll 2~
+Description A slimy looking crone from the darkest parts of the sea. Her hair
+is filled with foul smelling seaweed and other unmentionables. It
+would not be wise to cross this fearsome creature.
+~
+Hit             	-60~
+Hitroll         	3~
+Keywords        	sea hag~
+Longdesc        	A gangly sea hag creeps about the room, cackling insanely.
+~
+Mana            	40~
+MorphOther      	$n's form melts and reforms into an ugly sea hag!!~
+MorphSelf       	Your form melts and reforms into that of a sea hag!~
+ShortDesc       	The sea hag~
+Skills          	curse colour spray~
+UnmorphOther    	The smell of seaweed fades as $n regains $s normal form.~
+UnmorphSelf     	The taste of sea salt ebbs as you regain your normal form.~
+Affected        	-2147483648
+Class           	Mage~
+Resistant       	2
+Suscept        	1
+Timer		24
+Used       	1
+Sex		2
+ManaUsed		34
+Armor        	-10
+Charisma        	-2
+Constitution    	-2
+Dexterity       	1
+Intelligence    	2
+Luck        	-2
+Level        	55
+CastAllowed       1
+End
+
+Morph           	black
+Vnum 1009
+Damroll 4~
+Description This enormous winged serpent has jet black scales covering most of its
+colossal body. Numerous holes in its heavy wings tell of many fights as do
+the nicks in the horns on its head. It smells as disgusting as only dragons
+do from the acidic drool it spews from its maw.
+~
+Hit             	30~
+Hitroll         	2~
+Keywords        	black dragon~
+Longdesc        	A ferocious black dragon stands here, its mouth dripping acid.
+~
+MorphOther      	Black scales cover $n's skin as $e changes into a black dragon!~
+MorphSelf       	Black scales cover your skin as you polymorph into a black dragon!~
+NoSkills         trance meditate~
+ShortDesc       	A black dragon~
+Skills          	bite claw acid breath acidbreath~
+UnmorphOther    	The black reptilian scales on $n fades away as $e reverts to normal.~
+UnmorphSelf     	The black reptilian scales on you fades away as you revert to normal.~
+Affected        	524800
+Class           	Mage~
+Resistant       	128
+Timer		24
+ManaUsed		37
+Armor        	-20
+Charisma        	-2
+Constitution    	1
+Intelligence    	-2
+Level        	60
+Strength        	3
+Wisdom          	-2
+End
+
+Morph           	iron
+Vnum 1010
+Damroll 8~
+Description You find yourself looking at golem made out of pure iron. Its skin
+seems to be shaped entirely like a suit of plate armor, offering it
+incredible protection indeed. A cold blue light shines from the eye
+holes of helmeted head.
+~
+Hit             	50~
+Hitroll         	-2~
+Keywords        	iron golem~
+Longdesc        	An iron golem towers over you, a cold blue glow in its eyes. 
+~
+MorphOther      	$n's skin solidifies into cold iron as $e becomes an iron golem!~
+MorphSelf       	Your skin hardens as you morph into an iron golem.~
+NoSkills         trance meditate~
+ShortDesc       	An iron golem~
+Skills          	bash~
+UnmorphOther    	A screeching of metal on metal can be heard as $n returns back to normal.~
+UnmorphSelf     	A screeching of metal on metal can be heard as you revert back to normal.~
+Class           	Mage~
+Resistant       	48
+Suscept        	4
+Timer		24
+ManaUsed		45
+Armor        	-30
+Charisma        	-3
+Constitution    	1
+Dexterity       	-2
+Intelligence    	-2
+Luck        	1
+Level        	75
+Parry        	10
+Strength        	4
+Wisdom          	-2
+End
+
+Morph           	priestess
+Vnum 1011
+Damroll 1~
+Description A rather angry looking drow priestess. Her red eyes shift about 
+arrogantly as she regards you with utter contempt. An aura of magic
+surrounds her form.
+~
+Hit             	-90~
+Hitroll         	4~
+Keywords        	drow priestess~
+Longdesc        	An ebony-skinned drow priestess is here, glaring hatefully at you.
+~
+Mana            	55~
+MorphOther      	$n's skin takes on an ebon hue as $e changes into a drow priestess!~
+MorphSelf       	Your skin takes on a darker hue as you are changed into a drow priestess!~
+ShortDesc       	A drow priestess~
+Skills          	heal~
+UnmorphOther    	A deep red glow surrounds the drow priestess as $e reverts back to $n!~
+UnmorphSelf     	A deep red glow dances around you as you revert back!~
+Affected        	640
+Class           	Mage~
+Timer		24
+Used       	1
+Sex		2
+ManaUsed		39
+HpUsed		20
+Armor        	20
+Charisma        	-1
+Constitution    	-1
+Dexterity       	2
+Dodge        	5
+Intelligence    	2
+Level        	65
+Strength        	-2
+Wisdom          	1
+CastAllowed       1
+End
+
+Morph           	blue
+Vnum 1012
+Damroll 5~
+Description This enormous winged serpent has deep blue scales covering most of its
+colossal body. You would consider it a magnificently beautiful creature
+if not for the fact that it seems to be looking at you rather hungrily.
+~
+Hit             	40~
+Hitroll         	3~
+Keywords        	blue dragon~
+Longdesc        	A ferocious blue dragon hovers here, beating its wings violently.
+~
+MorphOther      	Blue scales cover $n's skin as $e changes into a blue dragon!~
+MorphSelf       	Blue scales cover your skin as you polymorph into a blue dragon!~
+NoSkills         trance meditate~
+ShortDesc       	A blue dragon~
+Skills          	bite claw lightning breath lightningbreath~
+UnmorphOther    	The blue reptilian scales on $n ripples away as $e reverts to normal.~
+UnmorphSelf     	The blue reptilian scales on you ripples away as you revert to normal.~
+Affected        	524800
+Class           	Mage~
+Resistant       	4
+Timer		24
+Used       	1
+ManaUsed		42
+Armor        	-20
+Charisma        	-1
+Constitution    	1
+Intelligence    	1
+Level        	70
+Parry        	10
+Strength        	3
+Wisdom          	-2
+End
+
+Morph           	gargoyle
+Vnum 1013
+Damroll 4~
+Description An unsleeping sentinel of stone seemingly armed with stone hard skin
+and sharp talons. It is a disturbingly ugly creature but an effective
+one nonetheless.
+~
+Hit             	35~
+Hitroll         	6~
+Keywords        	stone gargoyle~
+Longdesc        	A stone gargoyle stands perfectly still, grimly keeping watch.
+~
+MorphOther      	You watch as a grey glow envelops $n, ebbing away to reveal a gargoyle!~
+MorphSelf       	A grey glow encompasses you as you polymorph into a stone gargoyle!~
+NoSkills         trance meditate~
+ShortDesc       	A stone gargoyle~
+Skills          	bite claw~
+UnmorphOther    	$n's skin cracks and stone flakes fall off as $e reverts back to normal.~
+UnmorphSelf     	Your stone skin cracks and fall of as you revert back to normal.~
+Class           	Mage~
+Immune          	1024
+Resistant       	104
+Timer		24
+ManaUsed		48
+Armor        	-15
+Charisma        	-2
+Dexterity       	1
+Dodge        	10
+Intelligence    	-1
+Luck        	-2
+Level        	80
+Strength        	2
+End
+
+Morph           	red
+Vnum 1014
+Damroll 6~
+Description This enormous winged serpent has blood red scales covering most of its
+colossal body, almost to the effect of having small fires dance on the
+polished surface of its sleek body. This creature radiates intense
+heat, making it rather unbearable to be so close to it.
+~
+Hit             	50~
+Hitroll         	4~
+Keywords        	red dragon~
+Longdesc        	A fearsome red dragon walks here, its breath starting small fires.
+~
+MorphOther      	Crimson scales cover $n's skin as $e changes into a red dragon!~
+MorphSelf       	Red scales cover your skin as you polymorph into a red dragon!~
+NoSkills         trance meditate~
+ShortDesc       	A red dragon~
+Skills          	bite claw lightning breath lightningbreath~
+UnmorphOther    	The red reptilian scales on $n shimmers away as $e reverts to normal.~
+UnmorphSelf     	The red reptilian scales on you shimmers away as you revert to normal.~
+Affected        	524800
+Class           	Mage~
+Resistant       	1
+Timer		24
+ManaUsed		55
+Armor        	-25
+Charisma        	-2
+Constitution    	1
+Level        	85
+Parry        	10
+Strength        	3
+Wisdom          	1
+End
+
+Morph           	malenti
+Vnum 1015
+Damroll 6~
+Description In all appearances, this man appears to be one of the goodly sea-elven
+kind. However his true nature is far more sinister for he is a malenti.
+An evil sauhagin fish-man, cursed at birth to look like their most
+hated foe. Most are usually killed at birth but some do survive, growing
+amidst a world of hatred and scorn. Because their fair appearance
+hides their true cruel nature, malenti make perfect spies and assassins.
+You have no doubt that the one before you is exceptionally good at
+what he does.
+~
+Hit             	-70~
+Hitroll         	7~
+Keywords        	malenti assassin~
+Longdesc        	A handsome malenti stands nearby with a dangerous glint in his eye.
+~
+Mana            	-50~
+MorphOther      	$n's features become more elfin until $e appears as a malenti assassin!~
+MorphSelf       	Your features turn more elfin until you find yourself taking the form of a malenti assassin!~
+ShortDesc       	The malenti assassin~
+UnmorphOther    	There is a twinkle of light and the malenti before you reverts back into $n!~
+UnmorphSelf     	In a twinkle of light, your features revert back to what it once was.~
+Affected        	-2147382784
+Class           	Mage~
+Resistant       	3072
+Timer		24
+Used       	3
+ManaUsed		60
+Armor        	-20
+Charisma        	2
+Constitution    	-1
+Dexterity       	2
+Dodge        	15
+Intelligence    	2
+Luck        	2
+Level        	90
+Strength        	1
+Tumble          	10
+CastAllowed       1
+End
+
+Morph           	beholder
+Vnum 1016
+Damroll 4~
+Description A large orb with many twisting eye-stalks and one central eye would be
+the best way to describe this horrible monstrosity. Foul fluids drip 
+from its tooth filled maw which seems to always remain slightly open.
+Its a highly magical creature and very evil indeed. You should beware
+its presence.
+~
+Hit             	-150~
+Hitroll         	4~
+Keywords        	beholder eye tyrant~
+Longdesc        	A large orb-like beholder hovers before you, its many eyes studying you.
+~
+Mana            	100~
+MorphOther      	A red glow fills your sight, changing $n into an evil beholder!~
+MorphSelf       	There is a red glow as you take on the form of an evil eye-tyrant!~
+ShortDesc       	The beholder~
+Skills          	bite~
+UnmorphOther    	The red glow around the beholder fades as $e turns back into $n!~
+UnmorphSelf     	The red glow fades and you revert back to your own form.~
+Affected        	1572872
+Class           	Mage~
+Resistant       	8
+Timer		24
+Used       	3
+ManaUsed		70
+MoveUsed		20
+HpUsed		30
+Armor        	-15
+Charisma        	-4
+Dexterity       	-1
+Intelligence    	3
+Level        	95
+Strength        	-2
+Wisdom          	2
+CastAllowed       1
+End
+
+Morph           	demon
+Vnum 1017
+Damroll 8~
+Description Massive and powerfully muscled, this red skinned demon from the abyss is
+out to spread chaos. Dangerous claws and horns that could eviscerate
+you in a mere heartbeat are its most obvious weapons. However the chaotic
+energy which surrounds its form also lends it magic which could very
+well spell out your doom! Fear this creature and you might just live.
+~
+Hit             	80~
+Hitroll         	8~
+Keywords        	demon~
+Longdesc        	A muscular demon stands tensely nearby, its tail whipping back and forth.
+~
+Mana            	-200~
+MorphOther      	You watch as darkness consumes $n and changes $s into a demon!~
+MorphSelf       	You feel darkness creep over you as you are changed into a demon!~
+ShortDesc       	The demon~
+Skills          	claw~
+UnmorphOther    	You feel evil magic creep away from $n as $e returns to $s own form.~
+UnmorphSelf     	The abyssal darkness fades and you are gifted with your normal form.~
+Affected        	144
+Class           	Mage~
+Immune          	1281
+Suscept        	2
+Timer		12
+Used       	2
+ManaUsed		80
+HpUsed		50
+FavourUsed	40
+Armor        	-50
+Charisma        	-3
+Constitution    	2
+Dexterity       	2
+Dodge        	10
+Level        	100
+Parry        	15
+Strength        	4
+CastAllowed       1
+End
+
+Morph           	bat
+Vnum 1018
+Damroll 1~
+Description A nasty looking bat which seems to want a taste of your blood. It
+flutters about as if with a purpose.
+~
+Hit             	-30~
+Hitroll         	-3~
+Keywords        	vampire bat~
+Longdesc        	A menacing vampire bat flutters about blindly here.
+~
+MorphOther      	A grey light surrounds $n as $e changes into a vampire bat!~
+MorphSelf       	A grey light surrounds your form as you change into a vampire bat!~
+NoSkills         trance meditate~
+ShortDesc       	A vampire bat~
+Skills          	claw weaken~
+UnmorphOther    	The vampire bat slowly reverts back into $n.~
+UnmorphSelf     	You regain your normal form again.~
+Affected        	524288
+Class           	Necromancer~
+Timer		24
+Used       	1
+ManaUsed		20
+Armor        	15
+Charisma        	-2
+Constitution    	-1
+Dexterity       	1
+Intelligence    	1
+Level        	20
+Strength        	-3
+Wisdom          	-1
+End
+
+Morph           	raven
+Vnum 1019
+Damroll 1~
+Description The raven stares you squarely back in the eye. With a flap of its
+black feathered wings, it flys off to another nearby perch.
+~
+Hit             	-35~
+Hitroll         	2~
+Keywords        	black raven~
+Longdesc        	A raven with jet black feathers perches nearby.
+~
+MorphOther      	You watch as $n grows feathers and slowly polymorphs into a black raven!~
+MorphSelf       	You feel your form changing into that of a black raven!~
+NoSkills         trance meditate~
+ShortDesc       	A raven~
+Skills          	claw~
+UnmorphOther    	A pile of black feathers are left on the ground as $n reverts to normal.~
+UnmorphSelf     	Your black feathers shed away and you revert back to normal.~
+Affected        	526336
+Class           	Necromancer~
+Timer		24
+ManaUsed		26
+HpUsed		20
+Armor        	5
+Charisma        	-1
+Dexterity       	3
+Dodge        	10
+Level        	30
+Strength        	-2
+End
+
+Morph           	shadow
+Vnum 1020
+Damroll 3~
+Description You see nothing more than a shadow on the wall. Did it just move??
+~
+Hit             	-35~
+Hitroll         	2~
+Keywords        	shadow~
+Longdesc        	A shadow of something can be seen, only there is nothing to cast it.
+~
+MorphOther      	Darkness wraps around $n as $e becomes a living shadow!~
+MorphSelf       	You become insubstantial darkness, nothing more than a shadow!~
+NoSkills         trance meditate~
+ShortDesc       	A shadow~
+UnmorphOther    	You watch as the shadow on the ground rises and becomes $n.~
+UnmorphSelf     	Your form returns as the shadow slips away.~
+Affected        	622592
+Class           	Necromancer~
+Suscept        	8
+Timer		24
+ManaUsed		32
+HpUsed		20
+Armor        	-15
+Charisma        	-2
+Dexterity       	2
+Dodge        	5
+Intelligence    	-1
+Level        	40
+Strength        	-2
+Wisdom          	-1
+End
+
+Morph           	werewolf
+Vnum 1021
+Damroll 3~
+Description An angry looking werewolf stands salivating before you. It is covered
+in grey fur and smells somewhat like a wet dog. Perhaps you should
+stay clear of it.
+~
+Hit             	20~
+Hitroll         	3~
+Keywords        	werewolf~
+Longdesc        	A hungry looking werewolf growls viciously from nearby.
+~
+MorphOther      	$n screams in pain as $e changes into a ferocious werewolf!~
+MorphSelf       	A painful transformation racks your body as you changes into a werewolf!~
+NoSkills         trance meditate~
+ShortDesc       	A werewolf~
+Skills          	claw bite~
+UnmorphOther    	With a sickening pop and tear, $n sheds $s werewolf form!~
+UnmorphSelf     	You feel bones and sinew slip back into place as you regain your normal form.~
+Affected        	512
+Class           	Necromancer~
+Timer		24
+Sex		1
+ManaUsed		36
+Armor        	-10
+Charisma        	-2
+Dexterity       	2
+Dodge        	5
+Intelligence    	-1
+Level        	50
+Strength        	2
+Wisdom          	-3
+End
+
+Morph           	wraith
+Vnum 1022
+Damroll 2~
+Description A patch of darkness that seems to be alive. Or is it a creature of
+unlife? You cannot tell but it is clear to you that the eyes which
+stare at you now are filled with an unearthly malice.
+~
+Hit             	-80~
+Hitroll         	4~
+Keywords        	wraith~
+Longdesc        	A ghostly wraith reaches out to you, bringing with it a graveyard chill.
+~
+Mana            	40~
+MorphOther      	You watch $n's horrifying transformation into a ghostly wraith!~
+MorphSelf       	Darkness intertwines with your soul as you become a wraith~
+ShortDesc       	A wraith~
+UnmorphOther    	$n appears to become more substantial as $e regains $s form.~
+UnmorphSelf     	You feel your soul regaining control as you revert to your old form.~
+Affected        	524320
+Class           	Necromancer~
+Resistant       	512
+Suscept        	1
+Timer		24
+Used       	1
+ManaUsed		42
+HpUsed		30
+Armor        	-15
+Charisma        	-2
+Constitution    	-2
+Dexterity       	1
+Dodge        	10
+Intelligence    	1
+Level        	60
+Strength        	-2
+Tumble          	5
+Wisdom          	2
+CastAllowed       1
+End
+
+Morph           	white
+Vnum 1023
+Damroll 5~
+Description A huge wyrm that exudes so much cold that ice seems to continuously
+form a layer around it. Slowly it turns to face you, grinning wickedly
+with its fang filled maw.
+~
+Hit             	35~
+Hitroll         	3~
+Keywords        	white dragon~
+Longdesc        	A cold white dragon slithers here, uncomfortable in its surroundings
+~
+MorphOther      	White scales cover $n's skin as $e changes into a white dragon!~
+MorphSelf       	White scales cover your skin as you change into a white dragon!~
+NoSkills         trance meditate~
+ShortDesc       	A white dragon~
+Skills          	bite claw frost breath frostbreath~
+UnmorphOther    	The icy white scales on $n melts away as $e reverts to normal.~
+UnmorphSelf     	The icy white scales melt away and you return to your old form.~
+Affected        	524800
+Class           	Necromancer~
+Resistant       	2
+Timer		24
+ManaUsed		45
+Armor        	-15
+Charisma        	-2
+Constitution    	-1
+Dexterity       	1
+Intelligence    	-1
+Luck        	1
+Level        	70
+Parry        	5
+Strength        	3
+Wisdom          	-2
+End
+
+Morph           	flesh
+Vnum 1024
+Damroll 7~
+Description A shambling mound of squirming flesh which smells like decay. It is
+utterly repulsive. You wonder whether it is sentient when it suddenly
+blinks at you.... with all its five eyes!
+~
+Hit             	60~
+Hitroll         	-2~
+Keywords        	flesh golem~
+Longdesc        	A golem made out of foul decaying flesh lumbers about here.
+~
+MorphOther      	You watch as $n's flesh warps and twists into a flesh golem!~
+MorphSelf       	You feel your flesh melt and take on a life of its own.~
+NoSkills         trance meditate~
+ShortDesc       	A flesh golem~
+Skills          	bash~
+UnmorphOther    	The flesh golem slowly reverts back into $n.~
+UnmorphSelf     	Your flesh reverts to normal and you lose your golem form.~
+Class           	Necromancer~
+Resistant       	48
+Suscept        	1
+Timer		24
+Used       	1
+ManaUsed		48
+Armor        	-20
+Charisma        	-4
+Constitution    	1
+Dexterity       	-1
+Dodge        	5
+Intelligence    	-2
+Level        	75
+Parry        	5
+Strength        	3
+Wisdom          	-1
+End
+
+Morph           	bone
+Vnum 1025
+Damroll 5~
+Description Made out of a pile of dusty bones, this undead dragon is a fearsome
+foe indeed. As it moves, you hear the sound of bone scraping on bone.
+~
+Hit             	25~
+Hitroll         	4~
+Keywords        	bone dragon~
+Longdesc        	A monstrous dragon made of old bones towers over you.
+~
+MorphOther      	Large bones cover $n's skin as $e changes into a bone dragon!~
+MorphSelf       	Bone fragments cover your flesh as you polymorph into a bone dragon!~
+NoSkills         trance meditate~
+ShortDesc       	A bone dragon~
+Skills          	claw bite curse cause serious~
+UnmorphOther    	A blue light surrounds $n, changing $m back to normal!~
+UnmorphSelf     	A blue light fills your senses, causing you to shed the bone dragon form.~
+Class           	Necromancer~
+Resistant       	520
+Timer		24
+Used       	1
+ManaUsed		58
+HpUsed		30
+Armor        	-20
+Charisma        	-3
+Constitution    	-2
+Dexterity       	1
+Intelligence    	1
+Luck        	-2
+Level        	80
+Strength        	2
+Tumble          	5
+End
+
+Morph           	death
+Vnum 1026
+Damroll 5~
+Description Dark evil mists curl lazily about you as you realise you are looking
+at the undead chaos form of the crimson death, the black death! Beware 
+for if you dare breathe any of the black mist, you will die an agonizing
+death.
+~
+Hit             	-100~
+Hitroll         	6~
+Keywords        	black death cloud~
+Longdesc        	A deathly black cloud drifts lazily about the area.
+~
+MorphOther      	$n's body dissolves into the misty form of black death!~
+MorphSelf       	Your form dissolves into the misty form of black death!~
+NoSkills         trance meditate~
+ShortDesc       	The black death~
+Skills          	poison~
+UnmorphOther    	The black death mist reforms and solidifies, giving $n back $s form! ~
+UnmorphSelf     	The black mist reforms and solidifies, giving you back your form! ~
+Affected        	134742528
+Class           	Necromancer~
+Resistant       	514
+Timer		24
+ManaUsed		75
+MoveUsed		20
+HpUsed		40
+Armor        	-25
+Charisma        	-3
+Constitution    	-3
+Dexterity       	1
+Dodge        	10
+Intelligence    	2
+Luck        	-2
+Level        	90
+Wisdom          	1
+End
+
+Morph           	lich
+Vnum 1027
+Damroll 4~
+Description The lich's eyes glow with a crimson light which seems to bore down
+deep into your very soul. You find yourself lost in the nightmare
+that is the evil of this powerful eternal member of the undead. It
+has only one purpose, to spread evil and death with its ancient magics.
+~
+Hit             	-150~
+Hitroll         	6~
+Keywords        	lich undead~
+Longdesc        	A lich stands here, spreading evil with its undead existance.
+~
+Mana            	100~
+MorphOther      	$n's flesh seems to shrivel and rot as $e becomes an undead lich!~
+MorphSelf       	Your skin shrivels and rots as you take the form of a lich!!~
+ShortDesc       	The undead lich~
+UnmorphOther    	$n's precious mortality returns as $e sheds $s lichdom!~
+UnmorphSelf     	You feel your precious mortality return as you shed your lich form.~
+Affected        	128
+Class           	Necromancer~
+Immune          	770
+Suscept        	1
+Timer		12
+Used       	3
+ManaUsed		90
+HpUsed		60
+FavourUsed	40
+Armor        	-30
+Charisma        	-3
+Constitution    	-2
+Dexterity       	1
+Intelligence    	4
+Level        	100
+Strength        	-2
+Tumble          	10
+Wisdom          	2
+CastAllowed       1
+End
+
+Morph           	fox
+Vnum 1028
+Damroll -4~
+Description A smart looking red fox eyes you suspiciously. There is the unmistakeable
+touch of intelligence in its eyes. It might be more than it seems.
+~
+Hit             	-30~
+Hitroll         	-3~
+Keywords        	red fox~
+Longdesc        	A sly red fox peers cunningly at you from the ground nearby.
+~
+Mana            	-2000~
+MorphOther      	An amazing transformation comes over $n as $e changes into a fox!~
+MorphSelf       	You grow tufts of red fur as you slowly change into a fox!~
+NoSkills         trance meditate~
+ShortDesc       	A red fox~
+UnmorphOther    	The fox moans in pain as $e regains $s normal form!~
+UnmorphSelf     	You feel the heightened senses of the fox fade as you regain your form.~
+Affected        	34816
+Class           	Druid~
+Timer		24
+ManaUsed		14
+HpUsed		10
+Armor        	10
+Charisma        	1
+Constitution    	-1
+Dexterity       	1
+Dodge        	5
+Luck        	2
+Level        	15
+Strength        	-2
+Wisdom          	1
+End
+
+Morph           	turtle
+Vnum 1029
+Damroll 1~
+Description The turtle appears to be your everyday green shell turtle. A slow
+and steady creature, it is usually found in wetter climates. You
+wonder what it is doing here.
+~
+Hit             	-25~
+Hitroll         	-3~
+Keywords        	green turtle~
+Longdesc        	A slow green turtle munches on some vegetation as it eyes you.
+~
+Mana            	-2000~
+MorphOther      	You watch as $n makes a painful transformation into a turtle!~
+MorphSelf       	Your skin takes on a reptilian texture and a shell forms on your back!~
+NoSkills         trance meditate~
+ShortDesc       	A green turtle~
+Skills          	bite~
+UnmorphOther    	The green turtle slowly shifts and grows back into $n!~
+UnmorphSelf     	You feel the spirit of the turtle fade as you regain your normal form.~
+Affected        	-2147483648
+Class           	Druid~
+Resistant       	2
+Timer		24
+ManaUsed		17
+HpUsed		10
+Armor        	-30
+Charisma        	-1
+Constitution    	1
+Dexterity       	-2
+Intelligence    	-1
+Luck        	1
+Level        	20
+Strength        	-1
+Wisdom          	2
+End
+
+Morph           	basilisk
+Vnum 1030
+Damroll 3~
+Description A large lizardlike creature. Its mottled skin is covered with greenish
+scales which appear to be dry as if the basilisk just came from an
+arid desert. Its eyes are deep and hypnotizing and said to have the
+ability to turn the mortal into unliving stone. Best that you avoid
+testing that legend!
+~
+Hit             	-50~
+Hitroll         	3~
+Keywords        	basilisk~
+Longdesc        	A scaly basilisk slithers nearby, flicking its tail.
+~
+Mana            	-2000~
+MorphOther      	$n's skin ripples grotesquely as $e changes into a basilisk!~
+MorphSelf       	Your skin takes on a reptilian texture and a lizardlike tail forms behind!~
+NoSkills         trance meditate~
+ShortDesc       	A basilisk~
+Skills          	claw bite blindness~
+UnmorphOther    	The basilisk stiffens, slowly changing into $n's natural form!~
+UnmorphSelf     	There is a stillness and you feel released from the basilisk form.~
+Class           	Druid~
+Timer		24
+ManaUsed		25
+Armor        	-20
+Charisma        	-3
+Constitution    	-2
+Dexterity       	2
+Dodge        	5
+Intelligence    	-2
+Level        	40
+Strength        	1
+Wisdom          	1
+End
+
+Morph           	bear
+Vnum 1031
+Damroll 5~
+Description Half a ton of white fur, claws, and teeth stare at you through carnage
+ridden eyes. Soon the smell of blood will be in the air...
+~
+Hit             	30~
+Hitroll         	1~
+Keywords        	polar bear~
+Longdesc        	An angry looking polar bear stands on all fours here, it seems hungry.
+~
+Mana            	-2000~
+MorphOther      	White fur grows from $n's body at a fast rate as $e becomes a polar bear!~
+MorphSelf       	White fur grows from your body at an incredible rate as you become a polar bear!~
+NoSkills         trance meditate~
+ShortDesc       	A polar bear~
+Skills          	claw bite~
+UnmorphOther    	$n appears to shed $s polar bear form and revert to normal.~
+UnmorphSelf     	The strength of the polar bear fades from your limbs as you revert to normal.~
+Class           	Druid~
+Resistant       	2
+Timer		24
+Used       	2
+ManaUsed		29
+Armor        	10
+Charisma        	-2
+Constitution    	1
+Dexterity       	1
+Intelligence    	-1
+Level        	45
+Strength        	3
+Wisdom          	-1
+End
+
+Morph           	pegasus
+Vnum 1032
+Damroll 3~
+Description A pure white pegasus. There is an intellect behind its eyes, something
+which tells you not to even imagine trying to ride this magnificent
+creature.
+~
+Hit             	20~
+Hitroll         	3~
+Keywords        	white pegasus~
+Longdesc        	A noble winged pegasus stands here nervously.
+~
+Mana            	-2000~
+MorphOther      	A magical aura surrounds $n's form as $e changes into a pegasus!~
+MorphSelf       	A magical aura surrounds your form as you change into a pegasus!~
+NoSkills         trance meditate~
+ShortDesc       	A pegasus~
+Skills          	bite~
+UnmorphOther    	$n's appears to revert from pegasus form back to $s natural form.~
+UnmorphSelf     	A strange feeling comes over you as you feel the pegasus form leaving you.~
+Affected        	524336
+Class           	Druid~
+Timer		24
+ManaUsed		32
+Armor        	20
+Charisma        	2
+Constitution    	-2
+Dexterity       	1
+Dodge        	10
+Level        	50
+Strength        	2
+Wisdom          	1
+End
+
+Morph           	treant
+Vnum 1033
+Damroll 4~
+Description An old gnarled tree which seems able to move and walk about. You think
+you can even see a bird's nest up in the living tree's leafy branches.
+~
+Hit             	-60~
+Hitroll         	3~
+Keywords        	treant tree oak~
+Longdesc        	A gnarled treant stands here, resembling an oak tree.
+~
+Mana            	50~
+MorphOther      	$n's flesh becomes that of wood and leaf filled branches grow from $s head!~
+MorphSelf       	Your flesh becomes that of wood and leaf filled branches grow from your head!~
+ShortDesc       	A treant~
+Skills          	bash~
+UnmorphOther    	$n seems to shapechange from the form of a treant back to $s own form.~
+UnmorphSelf     	You lose your tree-like form and revert back to normal.~
+Class           	Druid~
+Resistant       	16
+Suscept        	1
+Timer		24
+Used       	1
+ManaUsed		34
+HpUsed		20
+Armor        	-15
+Dexterity       	-2
+Intelligence    	-1
+Luck        	1
+Level        	55
+Parry        	5
+Strength        	3
+Wisdom          	2
+End
+
+Morph           	crocodile
+Vnum 1034
+Damroll 5~
+Description You come face to face with the jaws of a rather hungry and foul smelling
+giant crocodile. Perhaps if you back away really slowly, it wont eat
+you up.
+~
+Hit             	20~
+Hitroll         	-3~
+Keywords        	giant crocodile~
+Longdesc        	A giant crocodile eyes you lazily, it almost seems to be grinning.
+~
+Mana            	-2000~
+MorphOther      	You watch $n's skin crackle under great magic, leaving a giant crocodile!~
+MorphSelf       	Hard reptile skin covers you as you take the form of a giant crocodile!~
+NoSkills         trance meditate~
+ShortDesc       	A giant crocodile~
+Skills          	claw bite~
+UnmorphOther    	A sickening tear is heard as $n changes back into $s own form.~
+UnmorphSelf     	A sickening tear is heard as you change back into you own form.~
+Affected        	-2147483104
+Class           	Druid~
+Resistant       	2
+Timer		24
+Used       	1
+ManaUsed		36
+HpUsed		20
+Armor        	-15
+Charisma        	-3
+Constitution    	1
+Dexterity       	1
+Dodge        	5
+Intelligence    	-2
+Level        	60
+Strength        	2
+Wisdom          	-3
+End
+
+Morph           	kawai
+Vnum 1035
+Damroll 4~
+Description Just about three to four feet tall, this Kawai warrior looks rather
+out of place here. Resembling a rich brown coloured bear, its cute
+appearance has led many to underestimate the ferocity of this creature.
+~
+Hit             	25~
+Hitroll         	5~
+Keywords        	kawai warrior~
+Longdesc        	One of the bear-like kawai warriors wanders here.
+~
+Mana            	-2000~
+MorphOther      	You watch in fascination as $n gains the form of a kawai warrior!~
+MorphSelf       	Your skin feels furry and your muscles strenghten as you change into a kawai!~
+NoSkills         trance meditate~
+ShortDesc       	A kawai warrior~
+Skills          	claw bite bash~
+UnmorphOther    	$n slowly changes back to normal, leaving $s kawai form behind!~
+UnmorphSelf     	You find yourself losing the furry form of the kawai.~
+Affected        	1073741824
+Class           	Druid~
+Resistant       	11264
+Timer		24
+Used       	5
+Sex		1
+ManaUsed		39
+HpUsed		20
+Armor        	20
+Charisma        	1
+Constitution    	1
+Dexterity       	2
+Dodge        	10
+Intelligence    	-2
+Luck        	2
+Level        	65
+Parry        	5
+Strength        	2
+Tumble          	5
+Wisdom          	1
+End
+
+Morph           	air
+Vnum 1036
+Damroll 5~
+Description A swirling maelstrom of air that seems to have a life of its own. Wherever
+it goes, a spectral wind follows. A shimmer of magic outlines this
+elemental creature. It would be wise to heed that as a warning.
+~
+Hit             	30~
+Hitroll         	5~
+Keywords        	air elemental~
+Longdesc        	An elemental of air swirls around like a mini tornado.
+~
+Mana            	-40~
+MorphOther      	You see $n shift forms, becoming that of a being which consists of air!~
+MorphSelf       	Your form is replaced by swirling and insubstantial air!~
+ShortDesc       	An air elemental~
+UnmorphOther    	$n's true form slowly emerges from the cyclone of air!~
+UnmorphSelf     	You feel your connection severed from the plane of air.~
+Affected        	524288
+Class           	Druid~
+Immune          	384
+Suscept        	8
+Timer		24
+ManaUsed		65
+HpUsed		30
+Armor        	-40
+Constitution    	-1
+Dexterity       	2
+Dodge        	10
+Intelligence    	2
+Luck        	1
+Level        	70
+Strength        	-1
+Wisdom          	2
+CastAllowed       1
+End
+
+Morph           	fire
+Vnum 1037
+Damroll 7~
+Description The heat from this creature nearly blinds you, making you feel instead
+as if your eyes were melting from the outside. The pillar of flame seems
+alive somehow, like flesh made fire. Slowly, you back away before you
+get burnt too badly.
+~
+Hit             	40~
+Hitroll         	5~
+Keywords        	fire elemental~
+Longdesc        	A pillar of fire moves along the ground, leaving a charred trail.
+~
+Mana            	-50~
+MorphOther      	$n is engulfed in a flame that changes $m into living fire!~
+MorphSelf       	You are engulfed in a flame that changes you into living fire!~
+ShortDesc       	A fire elemental~
+Skills          	flamestrike~
+UnmorphOther    	The heat decreases as $n emerges from the pillar of fire!~
+UnmorphSelf     	You feel your fiery form ebb and fade, returning you to normal.~
+Class           	Druid~
+Immune          	257
+Suscept        	2
+Timer		24
+ManaUsed		65
+HpUsed		40
+Armor        	-10
+Constitution    	-1
+Dexterity       	1
+Intelligence    	-2
+Luck        	1
+Level        	75
+Strength        	2
+Wisdom          	-2
+CastAllowed       1
+End
+
+Morph           	water
+Vnum 1038
+Damroll 4~
+Description Water that seems to be clearer than any glass you have ever looked
+through before. It moves about, sloshing and dampening the ground.
+Looking really hard, you see the faint outline of a humanoid form
+within the watery form of this creature.
+~
+Hit             	30~
+Hitroll         	6~
+Keywords        	water elemental~
+Longdesc        	A small tidal wave of water sloshes about, making everything feel damp.
+~
+Mana            	20~
+MorphOther      	You are amazed as $n's form shifts into clear water!~
+MorphSelf       	Your body shimmers and transmutates into a water elemental!~
+ShortDesc       	A water elemental~
+UnmorphOther    	The water elemental begins to gain a more solid form and soon reverts back into $n!~
+UnmorphSelf     	You feel your water form begin to solidify, soon you revert back to normal.~
+Affected        	-2147483648
+Class           	Druid~
+Immune          	258
+Suscept        	1
+Timer		24
+ManaUsed		65
+HpUsed		50
+Armor        	-25
+Constitution    	-2
+Dexterity       	2
+Dodge        	15
+Intelligence    	1
+Luck        	2
+Level        	80
+Strength        	-1
+Tumble          	5
+Wisdom          	3
+CastAllowed       1
+End
+
+Morph           	earth
+Vnum 1039
+Damroll 6~
+Description Large and man-shaped, this powerful looking being of dirt strikes a shiver
+of fear through your heart. With its huge earth fists, it could easily
+pound the life out of anything that might even attempt to threaten it.
+It moves painfully slowly though, and you could easily outrun it if
+you wanted to.
+~
+Hit             	50~
+Hitroll         	6~
+Keywords        	earth elemental~
+Longdesc        	A large humanoid creature made totally out of earth lumbers about here.
+~
+Mana            	-60~
+MorphOther      	$n's flesh slowly changes into rich brown earth, much to your horror!~
+MorphSelf       	Your skin feels prickly and itchy as it slowly turns into brown earth.~
+ShortDesc       	An earth elemental~
+Skills          	earthquake~
+UnmorphOther    	You watch as $n's earthern form crumbles like a dry shell, leaving only $s true form behind!~
+UnmorphSelf     	Soil crumbles around you like a dry dirt shell, leaving only your true form.~
+Class           	Druid~
+Immune          	260
+Suscept        	8
+Timer		24
+ManaUsed		65
+HpUsed		60
+Armor        	-35
+Charisma        	-1
+Constitution    	2
+Dexterity       	-2
+Intelligence    	-2
+Luck        	1
+Level        	85
+Parry        	15
+Strength        	3
+Wisdom          	1
+CastAllowed       1
+End
+
+Morph           	nature
+Vnum 1040
+Damroll 7~
+Description A creature born out of the four elemental planes. Its form is simultaneously
+wreathed in fire, cloaked in air, strengthened by water and armored
+with earth. In fact, it seems to represent a singular harmonious
+interaction between the four living elements, bound together in magic.
+~
+Hit             	55~
+Hitroll         	7~
+Keywords        	nature elemental~
+Longdesc        	A being that is made from the four pure elements of nature towers over you.
+~
+Mana            	100~
+MorphOther      	You watch in awe as $n is engulfed in fire, water, air and earth elements!~
+MorphSelf       	The four elements, earth, water, fire and air weave around your body, changing you into the nature elemental!~
+ShortDesc       	The nature elemental~
+UnmorphOther    	The elemental forces surrounding $n fade away, returning $m to $s normal form.~
+UnmorphSelf     	The four elements leave your being, returning you to your normal form.~
+Affected        	128
+Class           	Druid~
+Immune          	8192
+Resistant       	1048576
+Timer		12
+Used       	1
+ManaUsed		80
+MoveUsed		20
+HpUsed		60
+FavourUsed	40
+Armor        	-40
+Dexterity       	1
+Dodge        	10
+Intelligence    	1
+Luck        	2
+Level        	100
+Parry        	10
+Strength        	3
+Tumble          	5
+Wisdom          	2
+CastAllowed       1
+End
+
+#END

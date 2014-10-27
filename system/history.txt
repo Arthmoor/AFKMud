@@ -1,0 +1,2 @@
+Online history file. Where you would store your mud's history or backstory.
+Did you think we were going to leave one here for you? :P

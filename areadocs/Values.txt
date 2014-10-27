@@ -1,0 +1,283 @@
+Table Documentation:
+--------------------
+
+Last modified by Dwip, 6/20/03
+
+The following tables are values used in some sections of the area file.
+
+===  Liquids Table
+
+The following is the list of liquid types for use in drink containers.
+
+Value | Liquid Type
+------------------------------
+  0       water
+  1       beer
+  2       wine
+  3       ale
+  4       dark ale
+  5       whiskey
+  6       lemonade
+  7       firebreather
+  8       local specialty
+  9       slime mold juice
+  10      milk
+  11      tea
+  12      coffee
+  13      blood
+  14      salt water
+  15      cola
+  16      mead
+  17      grog
+  18      orange juice
+  19      vodka
+  20      screwdriver
+
+===  Affect Modifiers
+
+The following is the list of numbers used to add magical affects to items.
+Not to be confused with spells used on potions, scrolls, etc. See the object
+section on apply types.
+
+1   - Strength
+2   - Dexterity
+3   - Intelligence
+4   - Wisdom
+5   - Constitution
+6   - Sex
+7   - Class ( Don't use )
+8   - Level ( Don't use )
+9   - Age
+10  - Height
+11  - Weight
+12  - Mana
+13  - Hit Points
+14  - Movement
+15  - Gold
+16  - Experience
+17  - Armor Class
+18  - Hitroll
+19  - Damroll
+20  - Save vs Paralyzation
+21  - Save vs Rods
+22  - Save vs Poison
+23  - Save vs Breath
+24  - Save vs Spells
+25  - Charisma
+26  - Affected by (see affected-flags table in mob section for values here)
+27  - Resistance (see res/imm/sus/abs table at the end of this doc)
+28  - Immunity (see res/imm/sus/abs table at the end of this doc)
+29  - Susceptibility (see res/imm/sus/abs table at the end of this doc)
+30  - Weapon Spell (see spell slots at end of document for values here)
+31  - Luck
+32  - Backstab
+33  - Pick
+34  - Track
+35  - Steal
+36  - Sneak
+37  - Hide
+38  - Palm
+39  - Detect Traps
+40  - Dodge
+41  - Spellfail
+42  - Scan
+43  - Gouge
+44  - Search
+45  - Mount
+46  - Disarm
+47  - Kick
+48  - Parry
+49  - Bash
+50  - Stun
+51  - Punch
+52  - Climb
+53  - Grip
+54  - Scribe
+55  - Brew
+56  - Wear Spell (see spell slots at end of document for values here)
+57  - Remove Spell (see spell slots at end of document for values here)
+58  - NOTUSED
+59  - Mentalstate
+60  - StripSN ( Removes a certain skill if the user is affected by it )
+61  - Remove ( Not sure what it means )
+62  - Dig
+63  - Hunger
+64  - Thirst
+65  - Drunk
+66  - HP Regen
+67  - Mana Regen
+68  - Move Regen
+69  - Antimagic
+70  - Roomflag ( Don't ask, I have no idea )
+71  - Sectortype ( Again, don't ask )
+72  - Room Light Level
+73  - Televnum
+74  - Teledelay
+75  - Cook
+76  - Recurringspell
+77  - Race
+78  - HitnDam
+79  - Save vs All
+80  - Eat Spell ( see spell slots at end of document for values here )
+81  - Race Slayer
+82  - Align Slayer
+83  - Contagious
+84  - Ext Affect ( Don't think this does anything )
+85  - Odor
+86  - Peek
+87  - Absorb ( Need to use BV values for modifier )
+88  - Attacks
+89  - Extragold
+90  - Allstats ( Don't abuse this one! )
+
+Note: Weaponspells will cast each time a weapon is used, keep this in mind when
+      creating weapons with spells. Wearspells and Remove spells are only cast
+      when the item is worn or removed.
+      
+
+===  Spell Slots
+
+To find the current slot number for a spell, consult the online command
+'slookup'.
+
+Example: slookup magic missile
+
+In the resulting output, you want the number listed after 'Slot:'
+
+Sn:  162 Slot:   32 Spell: 'magic missile       '
+Author: Smaug
+DamType: energy  ActType: destroy   ClassType: life   PowerType: minor
+Saves: none  SaveEffect: none
+Type: Spell  Target: offensive  Minpos: fighting  Mana: 12  Beats: 15  Range: 0
+Flags: 0  Guild: -1  Value: 0  Info: 852
+Rent: 25000  Code: spell_smaug
+Dammsg: magic missile
+Wearoff: !Magic Missile!
+Dice: ld4+l { 80
+Hitchar   : Your magic missile flies straight and true towards $N!
+Hitvict   : You are struck by a glowing magic missile!
+Hitroom   : $n shoots a glowing magic missile at $N!
+Misschar  : The magic missile shot by $n misses $N narrowly!
+Missvict  : You nimbly avoid the magic missile coming your way!
+Missroom  : $N nimbly avoids the magic missile shot by $n!
+Diechar   : Your magic missile skewers $N alive!
+Dievict   : You are impaled by the magic missile shot by $n!
+Dieroom   : A magic missile impales $N, killing $M instantly!
+--------------------------[CLASS USE]--------------------------
+Mag ) lvl:   1 max: 95%  Cle ) lvl: 101 max: 95%  Rog ) lvl: 101 max: 95%
+War ) lvl: 101 max: 95%  Nec ) lvl: 101 max: 95%  Dru ) lvl: 101 max: 95%
+Ran ) lvl: 101 max: 95%  Mon ) lvl: 101 max: 95%  Ava ) lvl: 101 max: 95%
+Ava ) lvl: 101 max: 95%  Ant ) lvl: 101 max: 95%  Pal ) lvl: 101 max: 95%
+Bar ) lvl:   3 max: 95%
+
+=== Lever Flags (Add values together to combine flags)
+Note: These values apply to levers, switches, pullchains, and buttons, in the value[0] slot.
+
+FLAG NAME     |  BITVECTOR  |  DESCRIPTION
+----------------------------------------------------------------------
+UP            |          1  |  Trigger is UP 
+UNLOCK        |          2  |  Trigger unlocks door in value[1]
+LOCK          |          4  |  Trigger locks door in value[1]
+D_NORTH       |          8  |  Affects the north exit
+D_SOUTH       |         16  |  Affects the south exit
+D_EAST        |         32  |  Affects the east exit
+D_WEST        |         64  |  Affects the west exit
+D_UP          |        128  |  Affects the exit up
+D_DOWN        |        256  |  Affects the exit down
+DOOR          |        512  |  Affects a door: room vnum in value[1]
+CONTAINER     |       1024  |  Affects a container
+OPEN          |       2048  |  Opens door in value[1]
+CLOSE         |       4096  |  Closes door in value[1]
+PASSAGE       |       8192  |  Creates a passage to room in value[1] if DOOR is set, value[2] if not
+OLOAD         |      16384  |  Loads up an object
+MLOAD         |      32768  |  Loads up a mobile
+TELEPORT      |      65536  |  Teleports the puller
+TELEPORTALL   |     131072  |  Teleports everyone in the room
+TELEPORTPLUS  |     262144  |  Teleports everything in the room
+DEATH         |     524288  |  Causes instant death ( corpse still exists )
+CAST          |    1048576  |  Casts a spell (sn in value1)
+FAKEBLADE    *|    2097152  |  Lever is a fake. Does damage if grabbed. OUCH.
+RAND4         |    4194304  |  Randomizes the exits N, S, E, W
+RAND6         |    8388608  |  Randomizes the exits N, S, E, W, U, D
+TRAPDOOR     *|   16777216  |  Opens a trap door, everthing falls down
+ANOTHEROOM   *|   33554432  |  ?? Not sure
+USEDIAL      *|   67108864  |  ?? Not sure
+ABSOLUTEVNUM *|  134217728  |  ?? Not sure
+SHOWROOMDESC  |  268435456  |  Displays the room description to teleported victims
+AUTORETURN    |  536870912  |  Will prevent returning the device to its original position when set.
+
+* = Affect is not yet implemented in the code
+
+=== Trap Flags (Add values together to combine flags)
+These flags govern how a trap gets set off.
+
+FLAG    -     BV  - DESCRIPTION
+------------------------------------------------------------
+ROOM    -       1 - Trap is in a room
+OBJ     -       2 - Trap is on an object
+ENTER   -       4 - Trap is triggered by entering the room
+LEAVE   -       8 - Trap is triggered by leaving the room
+OPEN    -      16 - Trap is triggered by opening
+CLOSE   -      32 - Trap is triggered by closing
+GET     -      64 - Trap is triggered by getting the object
+PUT     -     128 - Trap is triggered by putting the object
+PICK    -     256 - Trap is triggered by picking the object
+UNLOCK  -     512 - Trap is triggered by unlocking the object
+NORTH   -    1024 - Trap is triggered by moving north
+SOUTH   -    2048 - Trap is triggered by moving south
+EAST    -    4096 - Trap is triggered by moving east
+WEST    -    8192 - Trap is triggered by moving west
+UP      -   16384 - Trap is triggered by moving up
+DOWN    -   32768 - Trap is triggered by moving down
+EXAMINE -   65536 - Trap is triggered by examining the object
+NE      -  131072 - Trap is triggered by moving northeast
+NW      -  262144 - Trap is triggered by moving northwest
+SE      -  524288 - Trap is triggered by moving southeast
+SW      - 1048576 - Trap is triggered by moving southwest
+
+=== Trap Types
+
+ --------------------------------------------------------------------
+ | Number | Description             | Number | Description          |
+ --------------------------------------------------------------------
+ |    1   | Poison gas              |    8   | Flame                |
+ |    2   | Poison dart             |    9   | Explosion            |
+ |    3   | Poison needle           |   10   | Acid Spray           |
+ |    4   | Poison dagger           |   11   | Electric Shock       |
+ |    5   | Poison arrow            |   12   | Blade                |
+ |    6   | Blindness gas           |   13   | Sex change spell     |
+ |    7   | Sleeping gas            |    0   | Generic trap         |
+ --------------------------------------------------------------------
+
+=== Resist/Immune/Suscept/Absorb Flags
+
+[Note: Don't use the numerical values, these are listed only for reference purposes in the slookup command]
+
+FLAG NAME     | DESCRIPTION                              | NUMERICAL VALUE
+----------------------------------------------------------------------
+fire          | res/imm/sus/abs to Fire spells.          | 1
+cold          | res/imm/sus/abs to Cold spells.          | 2
+electricity   | res/imm/sus/abs to Elecrical spells.     | 4
+energy        | res/imm/sus/abs to Energy spells.        | 8
+blunt         | res/imm/sus/abs to Blunt weapons.        | 16
+pierce        | res/imm/sus/abs to Piercing weapons.     | 32
+slash         | res/imm/sus/abs to Slashing weapons.     | 64
+acid          | res/imm/sus/abs to Acid.                 | 128
+poison        | res/imm/sus/abs to Poison.               | 256
+drain         | res/imm/sus/abs to Draining.             | 512
+sleep         | res/imm/sus/abs to Sleep spells.         | 1024
+charm         | res/imm/sus/abs to Charm spells.         | 2048
+hold          | res/imm/sus/abs to Paralyze spells.      | 4096
+nonmagic      | res/imm/sus/abs to Non magical weapons.  | 8192
+plus1         | res/imm/sus/abs to +1 weapons.           | 16384
+plus2         | res/imm/sus/abs to +2 weapons.           | 32768
+plus3         | res/imm/sus/abs to +3 weapons.           | 65536
+plus4         | res/imm/sus/abs to +4 weapons.           | 131072
+plus5         | res/imm/sus/abs to +5 weapons.           | 262144
+plus6         | res/imm/sus/abs to +6 weapons.           | 524288
+magic         | res/imm/sus/abs to Magical weapons.      | 1048576
+paralysis     | res/imm/sus/abs to Paralysis.            | 2097152
+good          | res/imm/sus/abs to Good.                 | 4194304
+evil          | res/imm/sus/abs to Evil.                 | 8388608
+hack          | res/imm/sus/abs to Hacking weapons.      | 16777216
+lash          | res/imm/sus/abs to Lashing weapons.      | 33554432

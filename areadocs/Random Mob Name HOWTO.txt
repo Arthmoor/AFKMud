@@ -1,0 +1,137 @@
+Random Mobile Names HOWTO
+
+Version 0.1
+Written by Tarl (lemming@alsherok.net)
+
+One of the additions we have made to the stock smaug codebase is the ability to 
+allow mobiles to have random names. This document aims to describe the methods 
+required to configure this on your copy of the AFKMud codebase.
+
+Random mobile names will require code alterations, as well as the creation of 
+one or more files, the format of which will be described later.
+
+Code Alterations:
+
+In the AFKMud codebase, under the src directory you'll see the file reset.c
+
+On approximately line 1569 you will see the following code snippet. 
+
+
+   /* Added by Tarl 4 Dec 02 so that if a mob is 'flagged' namegen in
+          his name, it will auto assign a random name to it. Similarly,
+          occurances of namegen in the long_descr and description will be
+          replaced with the name. */
+   
+   namegenCheckString = STRALLOC( mob->name );
+   namegenCheckString = one_argument(namegenCheckString, namegenCheck);
+   
+   /* Modified by Tarl 5 Dec 02 to add extra namegen options. ie, namegen_gr will pick a name
+      suitable for Graecian mobs.
+
+      To add more, edit the line below this, and add an if-check similar to the one starting
+      with if (!strcasecmp( namegenCheck, "namegen_gr") ) */
+      
+   if ( ( !strcasecmp(namegenCheck, "namegen") ) || ( !strcasecmp(namegenCheck, "namegen_gr") )
+      || ( !strcasecmp(namegenCheck, "namegen_ven") ) || ( !strcasecmp(namegenCheck, "namegen_orc") ) )
+      {
+
+      <snipped>
+
+  if (!strcasecmp( namegenCheck, "namegen_gr") ) {
+    namePicked = TRUE;
+    if (mob->sex == 2) {
+       sprintf(file, "%s%s", SYSTEM_DIR, "namegen_gr_female.txt");
+    } else {
+       sprintf(file, "%s%s", SYSTEM_DIR, "namegen_gr_other.txt");
+    }
+  }
+  if (!strcasecmp( namegenCheck, "namegen_ven") ) {
+    namePicked = TRUE;
+    if (mob->sex == 2) {
+       sprintf(file, "%s%s", SYSTEM_DIR, "namegen_ven_female.txt");
+    } else {
+       sprintf(file, "%s%s", SYSTEM_DIR, "namegen_ven_other.txt");
+    }
+  }
+
+
+Most of the following instructions are documented as comments in the code, so feel free to skip over them
+here if the code instructions are sufficient for you.
+
+In order to add a new random mobile name section, you need to edit the if check shown above, and add a similar
+option that is suitable for you. Please note that this string is required to start with namegen_ 
+An example of adding a new section called namegen_example is shown below:
+
+ if ( ( !strcasecmp(namegenCheck, "namegen") ) || ( !strcasecmp(namegenCheck, "namegen_gr") )
+      || ( !strcasecmp(namegenCheck, "namegen_ven") ) || ( !strcasecmp(namegenCheck, "namegen_orc") ) 
+      || ( !strcasecmp(namegenCheck, "namegen_example") ) )
+      {
+
+
+
+Next, you will have to add an if check similar to the ones beginning with: if (!strcasecmp( namegenCheck, "namegen_gr") ) {
+
+We base our random names on the sex of our mobiles, but you may choose to remove this check, or to alter it to
+some other attribute. The important parts of the if check that are required are the following:
+
+namePicked = TRUE; 
+sprintf(file, "%s%s", SYSTEM_DIR, "namegen_ven_female.txt"); 
+
+namegen_ven_female.txt should be replaced with the filename of your random names, for more information on the format of this file,
+please see below.
+
+Thats all the code alterations that are required.
+
+Random Name File Format
+
+The random name file (used in the code as outlined above) should have the following format:
+
+[start]
+A
+Ab
+Ac
+Ad
+[middle]
+a
+ae
+ae
+au
+ao
+are
+[end]
+a
+and
+b
+bwyn
+[finish]
+
+Any number (greater then zero) of word-parts can be contained between each of the []'d parts. Please note that ALL FOUR of the []'d parts
+are required, or your MUD will most likely crash. :)
+
+The word-parts are formed into names by randomly selecting one from each section. Based on the example file above, some sample names that
+can be formed include: Abaeb, Adarebwyn, etc. (Obviously these aren't terribly good names, but it is somewhat of a limited example. A real 
+file would have many more combinations.)
+
+This file should be located in the system/ directory.
+
+Thats it for the file format section.
+
+
+
+Mobile Setup
+
+In order to tell a mobile to utilise the random name code, mobs should be mset name namegen_example
+
+Similarly, any occurances of the word namegen (note that this should really be namegen, not namegen_example) in the short and long 
+descriptions of the mobile will be replaced with the mobiles new name.
+
+Thats it for the mobile setup section.
+
+You should now have randomly named mobiles in your MUD. 
+
+Thank you for using the AFKMud codebase, and if you have any problems with either the codebase, or these directions, please feel free to 
+post on the forums located via http://www.alsherok.net
+
+Tarl.
+
+

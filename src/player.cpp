@@ -1,0 +1,2176 @@
+/****************************************************************************
+ *                   ^     +----- |  / ^     ^ |     | +-\                  *
+ *                  / \    |      | /  |\   /| |     | |  \                 *
+ *                 /   \   +---   |<   | \ / | |     | |  |                 *
+ *                /-----\  |      | \  |  v  | |     | |  /                 *
+ *               /       \ |      |  \ |     | +-----+ +-/                  *
+ ****************************************************************************
+ * AFKMud Copyright 1997-2007 by Roger Libiez (Samson),                     *
+ * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
+ * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
+ * Xorith, and Adjani.                                                      *
+ * All Rights Reserved.                                                     *
+ * Registered with the United States Copyright Office: TX 5-877-286         *
+ *                                                                          *
+ * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
+ *                                                                          *
+ * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
+ * Grishnakh, Fireblade, and Nivek.                                         *
+ *                                                                          *
+ * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
+ *                                                                          *
+ * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
+ * Michael Seifert, and Sebastian Hammer.                                   *
+ ****************************************************************************
+ *            Commands for personal player settings/statictics              *
+ ****************************************************************************
+ *                           Pet handling module                            *
+ *                      Created by Samson of Alsherok                       *
+ ****************************************************************************/
+
+#include "mud.h"
+#include "area.h"
+#include "calendar.h"
+#include "clans.h"
+#include "deity.h"
+#include "descriptor.h"
+#include "mobindex.h"
+#include "objindex.h"
+#include "raceclass.h"
+#include "roomindex.h"
+#include "smaugaffect.h"
+
+char *default_fprompt( char_data * );
+char *default_prompt( char_data * );
+void web_colourconv( char *buffer, const char *txt );
+
+extern char *const realm_string[];
+extern int num_logins;
+
+/* Rank buffer code for use in IMC2 ( and elsewhere if we see fit I suppose ) */
+/* buffer size is 200 because IMC2 will be expecting it to be so, DON'T CHANGE THIS */
+char *rankbuffer( char_data * ch )
+{
+   static char rbuf[200];
+
+   if( ch->is_immortal(  ) )
+   {
+      snprintf( rbuf, 200, "&Y%s", realm_string[ch->pcdata->realm] );
+
+      if( ch->pcdata->rank && ch->pcdata->rank[0] != '\0' )
+         snprintf( rbuf, 200, "&Y%s", ch->pcdata->rank );
+   }
+   else
+   {
+      snprintf( rbuf, 200, "&B%s", class_table[ch->Class]->who_name );
+
+      if( ch->pcdata->rank && ch->pcdata->rank[0] != '\0' )
+         snprintf( rbuf, 200, "&B%s", ch->pcdata->rank );
+
+      if( ch->pcdata->clan )
+      {
+         if( ch->pcdata->clan->leadrank && ch->pcdata->clan->leadrank[0] != '\0'
+             && ch->pcdata->clan->leader && !str_cmp( ch->name, ch->pcdata->clan->leader ) )
+            snprintf( rbuf, 200, "&B%s", ch->pcdata->clan->leadrank );
+
+         if( ch->pcdata->clan->onerank && ch->pcdata->clan->onerank[0] != '\0'
+             && ch->pcdata->clan->number1 && !str_cmp( ch->name, ch->pcdata->clan->number1 ) )
+            snprintf( rbuf, 200, "&B%s", ch->pcdata->clan->onerank );
+
+         if( ch->pcdata->clan->tworank && ch->pcdata->clan->tworank[0] != '\0'
+             && ch->pcdata->clan->number2 && !str_cmp( ch->name, ch->pcdata->clan->number2 ) )
+            snprintf( rbuf, 200, "&B%s", ch->pcdata->clan->tworank );
+      }
+   }
+   return rbuf;
+}
+
+char *how_good( int percent )
+{
+   static char buf[256];
+
+   if( percent < 0 )
+      mudstrlcpy( buf, "impossible - tell an immortal!", 256 );
+   else if( percent == 0 )
+      mudstrlcpy( buf, "not learned", 256 );
+   else if( percent <= 10 )
+      mudstrlcpy( buf, "awful", 256 );
+   else if( percent <= 20 )
+      mudstrlcpy( buf, "terrible", 256 );
+   else if( percent <= 30 )
+      mudstrlcpy( buf, "bad", 256 );
+   else if( percent <= 40 )
+      mudstrlcpy( buf, "poor", 256 );
+   else if( percent <= 55 )
+      mudstrlcpy( buf, "average", 256 );
+   else if( percent <= 60 )
+      mudstrlcpy( buf, "tolerable", 256 );
+   else if( percent <= 70 )
+      mudstrlcpy( buf, "fair", 256 );
+   else if( percent <= 80 )
+      mudstrlcpy( buf, "good", 256 );
+   else if( percent <= 85 )
+      mudstrlcpy( buf, "very good", 256 );
+   else if( percent <= 90 )
+      mudstrlcpy( buf, "excellent", 256 );
+   else
+      mudstrlcpy( buf, "Superb", 256 );
+
+   return buf;
+}
+
+bool check_pets( char_data * ch, mob_index * pet )
+{
+   list<char_data*>::iterator ich;
+
+   for( ich = ch->pets.begin(); ich != ch->pets.end(); ++ich )
+   {
+      char_data *mob = (*ich);
+
+      if( mob->pIndexData->vnum == pet->vnum )
+         return true;
+   }
+   return false;
+}
+
+/* 
+ * Edited by Tarl 12 May 2002 to accept a character name as argument.
+ */
+CMDF( do_petlist )
+{
+   if( argument && argument[0] != '\0' )
+   {
+      char_data *victim;
+
+      if( !( victim = ch->get_char_world( argument ) ) )
+      {
+         ch->print( "They aren't here.\r\n" );
+         return;
+      }
+
+      if( victim->isnpc(  ) )
+      {
+         ch->print( "This doesn't work on NPC's.\r\n" );
+         return;
+      }
+      ch->printf( "Pets for %s:\r\n", victim->name );
+      ch->print( "--------------------------------------------------------------------\r\n" );
+
+      list<char_data*>::iterator ipet;
+      for( ipet = victim->pets.begin(); ipet != victim->pets.end(); ++ipet )
+      {
+         char_data *pet = (*ipet);
+
+         if( !pet->in_room )
+            continue;
+
+         ch->printf( "[5%d] %-28s [%5d] %s\r\n",
+                     pet->pIndexData->vnum, pet->short_descr, pet->in_room->vnum, pet->in_room->name );
+      }
+      return;
+   }
+   else
+   {
+      ch->print( "Character           | Follower\r\n" );
+      ch->print( "-----------------------------------------------------------------\r\n" );
+      list<char_data*>::iterator ich;
+      for( ich = pclist.begin(); ich != pclist.end(); ++ich )
+      {
+         char_data *vch = (*ich);
+
+         list<char_data*>::iterator ipet;
+
+         for( ipet = vch->pets.begin(); ipet != vch->pets.end(); ++ipet )
+         {
+            char_data *pet = (*ipet);
+
+            if( !pet->in_room )
+               continue;
+
+            ch->printf( "[5%d] %-28s [%5d] %s\r\n",
+                        pet->pIndexData->vnum, pet->short_descr, pet->in_room->vnum, pet->in_room->name );
+         }
+      }
+      return;
+   }
+}
+
+/* Smartsac toggle - Samson 6-6-99 */
+CMDF( do_smartsac )
+{
+   if( ch->has_pcflag( PCFLAG_SMARTSAC ) )
+   {
+      ch->unset_pcflag( PCFLAG_SMARTSAC );
+      ch->print( "Smartsac off.\r\n" );
+   }
+   else
+   {
+      ch->set_pcflag( PCFLAG_SMARTSAC );
+      ch->print( "Smartsac on.\r\n" );
+   }
+   return;
+}
+
+CMDF( do_gold )
+{
+   ch->printf( "&[gold]You have %d gold pieces.\r\n", ch->gold );
+   return;
+}
+
+/* Spits back a word for a stat being rolled or viewed in score - Samson 12-20-00 */
+char *attribtext( int attribute )
+{
+   static char atext[25];
+
+   if( attribute < 25 )
+      mudstrlcpy( atext, "Excellent", 25 );
+   if( attribute < 17 )
+      mudstrlcpy( atext, "Good", 25 );
+   if( attribute < 13 )
+      mudstrlcpy( atext, "Fair", 25 );
+   if( attribute < 9 )
+      mudstrlcpy( atext, "Poor", 25 );
+   if( attribute < 5 )
+      mudstrlcpy( atext, "Bad", 25 );
+
+   return atext;
+}
+
+/* Return a string for weapon condition - Samson 3-01-02 */
+char *condtxt( int current, int base )
+{
+   static char text[30];
+
+   current *= 100;
+   base *= 100;
+
+   if( current < base * 0.25 )
+      mudstrlcpy( text, " }R[Falling Apart!]&D", 30 );
+   else if( current < base * 0.5 )
+      mudstrlcpy( text, " &R[In Need of Repair]&D", 30 );
+   else if( current < base * 0.75 )
+      mudstrlcpy( text, " &Y[In Fair Condition]&D", 30 );
+   else if( current < base )
+      mudstrlcpy( text, " &g[In Good Condition]&D", 30 );
+   else
+      mudstrlcpy( text, " &G[In Perfect Condition]&D", 30 );
+
+   return text;
+}
+
+void pc_data::save_zonedata( FILE * fp )
+{
+   list <string>::iterator zl;
+
+   /*
+    * Save the list of zones PC has visited - Samson 7-11-00 
+    */
+   for( zl = zone.begin(); zl != zone.end(); ++zl )
+   {
+      string zn = (*zl);
+
+      fprintf( fp, "Zone         %s~\n", zn.c_str() );
+   }
+   return;
+}
+
+void pc_data::load_zonedata( FILE * fp )
+{
+   string zonename;
+   bool found = false;
+
+   fread_string( zonename, fp );
+
+   list<area_data*>::iterator iarea;
+   for( iarea = arealist.begin(); iarea != arealist.end(); ++iarea )
+   {
+      area_data *tarea = (*iarea);
+
+      if( scomp( tarea->name, zonename ) )
+      {
+         found = true;
+         break;
+      }
+   }
+
+   if( !found )
+      return;
+
+   list <string>::iterator zl;
+   for( zl = zone.begin(); zl != zone.end(); ++zl )
+   {
+      string zn = (*zl);
+
+      if( zn >= zonename )
+      {
+         zone.insert( zl, zonename );
+         return;
+      }
+   }
+   zone.push_back( zonename );
+   return;
+}
+
+/* Functions for use with area visiting code - Samson 7-11-00  */
+bool char_data::has_visited( area_data * area )
+{
+   list <string>::iterator zl;
+
+   if( isnpc(  ) )
+      return true;
+
+   for( zl = pcdata->zone.begin(); zl != pcdata->zone.end(); ++zl )
+   {
+      string zn = (*zl);
+
+      if( scomp( area->name, zn ) )
+         return true;
+   }
+   return false;
+}
+
+void char_data::update_visits( room_index * room )
+{
+   list <string>::iterator zl;
+
+   if( isnpc(  ) || has_visited( room->area ) )
+      return;
+
+   string zonename = room->area->name;
+
+   for( zl = pcdata->zone.begin(); zl != pcdata->zone.end(); ++zl )
+   {
+      string zn = (*zl);
+
+      if( zn >= zonename )
+      {
+         pcdata->zone.insert( zl, zonename );
+         return;
+      }
+   }
+   pcdata->zone.push_back( zonename );
+   return;
+}
+
+void char_data::remove_visit( room_index * room )
+{
+   if( !has_visited( room->area ) || isnpc(  ) )
+      return;
+
+   pcdata->zone.remove( room->area->name );
+   return;
+}
+
+/* Modified to display zones in alphabetical order by Tarl - 5th Feb 2001 */
+/* Redone to use the sort methods in load_zonedata and update_visits by Samson 10-4-03 */
+CMDF( do_visits )
+{
+   list <string>::iterator zl;
+   char_data *victim;
+   int visits = 0;
+
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "NPCs cannot use this command.\r\n" );
+      return;
+   }
+
+   if( !ch->is_immortal(  ) || !argument || argument[0] == '\0' )
+   {
+      ch->pager( "You have visited the following areas:\r\n" );
+      ch->pager( "-------------------------------------\r\n" );
+      for( zl = ch->pcdata->zone.begin(); zl != ch->pcdata->zone.end(); ++zl )
+      {
+         string zn = (*zl);
+
+         ch->pagerf( "%s\r\n", zn.c_str() );
+         ++visits;
+      }
+      ch->pagerf( "&YTotal areas visited: %d\r\n", visits );
+      return;
+   }
+
+   if( !( victim = ch->get_char_world( argument ) ) )
+   {
+      ch->print( "No such person is online.\r\n" );
+      return;
+   }
+
+   if( victim->isnpc(  ) )
+   {
+      ch->print( "That's an NPC, they don't have this data.\r\n" );
+      return;
+   }
+
+   if( victim == ch )
+   {
+      do_visits( ch, "" );
+      return;
+   }
+   ch->pagerf( "%s has visited the following areas:\r\n", victim->name );
+   ch->pager( "-------------------------------------------\r\n" );
+   for( zl = victim->pcdata->zone.begin(); zl != victim->pcdata->zone.end(); ++zl )
+   {
+      string zn = (*zl);
+
+      ch->pagerf( "%s\r\n", zn.c_str() );
+      ++visits;
+   }
+   ch->pagerf( "&YTotal areas visited: %d\r\n", visits );
+   return;
+}
+
+/* -Thoric
+ * Display your current exp, level, and surrounding level exp requirements
+ */
+CMDF( do_level )
+{
+   char buf[MSL], buf2[MSL];
+   int lowlvl, hilvl;
+
+   if( ch->level == 1 )
+      lowlvl = 1;
+   else
+      lowlvl = UMAX( 2, ch->level - 5 );
+   hilvl = URANGE( ch->level, ch->level + 5, MAX_LEVEL );
+   ch->printf( "\r\n&[score]Experience required, levels %d to %d:\r\n______________________________________________\r\n\r\n",
+               lowlvl, hilvl );
+   snprintf( buf, MSL, " exp  (You have: %11d)", ch->exp );
+   snprintf( buf2, MSL, " exp  (To level: %11ld)", exp_level( ch->level + 1 ) - ch->exp );
+   for( int x = lowlvl; x <= hilvl; ++x )
+      ch->printf( " (%2d) %11ld%s\r\n", x, exp_level( x ),
+                  ( x == ch->level ) ? buf : ( x == ch->level + 1 ) ? buf2 : " exp" );
+   ch->print( "______________________________________________\r\n" );
+}
+
+/* 1997, Blodkai */
+CMDF( do_remains )
+{
+
+
+
+
+   if( ch->isnpc(  ) )
+      return;
+   ch->set_color( AT_MAGIC );
+   if( !ch->pcdata->deity )
+   {
+      ch->print( "You have no deity from which to seek such assistance...\r\n" );
+      return;
+   }
+   if( ch->pcdata->favor < ch->level * 2 )
+   {
+      ch->print( "Your favor is insufficient for such assistance...\r\n" );
+      return;
+   }
+   ch->pagerf( "%s appears in a vision, revealing that your remains... ", ch->pcdata->deity->name );
+
+   char buf[MSL];
+   list<obj_data*>::iterator iobj;
+   bool found = false;
+   snprintf( buf, MSL, "the corpse of %s", ch->name );
+   for( iobj = objlist.begin(); iobj != objlist.end(); ++iobj )
+   {
+      obj_data *obj = (*iobj);
+
+      if( obj->in_room && !str_cmp( buf, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
+      {
+         found = true;
+         ch->pagerf( "\r\n  - at %s will endure for %d ticks", obj->in_room->name, obj->timer );
+      }
+   }
+   if( !found )
+      ch->pager( " no longer exist.\r\n" );
+   else
+   {
+      ch->pager( "\r\n" );
+      ch->pcdata->favor -= ch->level * 2;
+   }
+   return;
+}
+
+/*-----------------------------------------------
+Added 2-21-05 -- Cam 
+This is a new format for the affected command by Zarius
+
+Edited 2-27-05 to limit the output to various levels -- Cam
+Levels 1-10 : Imbued, Spell Affects (spell name only)
+Levels 11-20: Add Spell Affects (what is affected), Saves (yes/no)
+Levels 21-40: Add Suscept, Resist, Spell Effects (modifier), Saves (modifier)
+Levels 41+  : Add Immune, Absorb, Spell Effects (time), 
+------------------------------------------------*/
+CMDF( do_affected )
+{
+   int affnum = 0;
+   list<affect_data*>::iterator af;
+   skill_type *skill;
+
+   if( ch->isnpc() )
+      return;
+
+   // For a brief "at a glance" output of the affected command
+   if( !str_cmp( argument, "by" ) )
+   {
+      ch->print( "&z-=&w[ &WAffects Quick-View &w]&z=-&D\r\n" );
+
+      ch->print( "\r\n&zImbued with: \r\n" );
+      ch->printf( " &C%s\r\n\r\n", ch->has_aflags() ? bitset_string( ch->get_aflags(), aff_flags ) : "nothing" );
+
+      ch->print( "\r\n&zSpells: \r\n" );
+        
+      for( af = ch->affects.begin(); af != ch->affects.end(); ++af )
+      {
+         affect_data *paf = (*af);
+
+         if( ( skill = get_skilltype( paf->type ) ) != NULL )
+         {
+            ++affnum;
+            ch->printf( "&W%d&z> &BSpell:&w %-18s&D\r\n", affnum, skill->name );
+         }
+      }
+
+      if( affnum == 0 )
+  		ch->print( "&wNo cantrip or skill affects you.\r\n\r\n" );
+      return;
+   }
+
+   // For full output of affected command
+   ch->print( "&z-=&w[ &WAffects Summary &w]&z=-&D\r\n" );
+
+   ch->print( "\r\n&zImbued with:\r\n" );
+   ch->printf( "&C%s&D\r\n\r\n", ch->has_aflags() ? bitset_string( ch->get_aflags(), aff_flags ) : "nothing" );
+
+   if( ch->level > LEVEL_AVATAR * 0.40 )
+   {
+      if( ch->has_immunes() )
+      {
+         ch->print( "&zYou are immune to:\r\n" );
+         ch->printf( "&C%s&D\r\n\r\n", bitset_string( ch->get_immunes(), ris_flags ) );
+      }
+      else
+         ch->print( "&zYou are immune to: \r\n&CNothing&D\r\n\r\n" );
+
+      if( ch->has_absorbs() )
+      {
+         ch->print( "&zYou absorb: \r\n" );
+         ch->printf( "&C%s&D\r\n\r\n", bitset_string( ch->get_absorbs(), ris_flags ) );
+      }
+      else
+         ch->print( "&zYou absorb: \r\n&CNothing&D\r\n\r\n" );
+   }
+
+   if( ch->level >= LEVEL_AVATAR * 0.20 )
+   {
+      if( ch->has_resists() )
+      {
+         ch->print( "&zYou are resistant to:\r\n" );
+         ch->printf( "&C%s&D\r\n\r\n", bitset_string( ch->get_resists(), ris_flags ) );
+      }
+      else
+         ch->print( "&zYou are resistant to: \r\n&CNothing&D\r\n\r\n" );
+
+      if( ch->has_susceps() )
+      {
+         ch->print( "&zYou are susceptible to:\r\n" );
+         ch->printf( "&C%s&D\r\n\r\n", bitset_string( ch->get_susceps(), ris_flags ) );
+      }
+      else
+         ch->print( "&zYou are susceptible to: \r\n&CNothing&D\r\n\r\n" );
+   }
+
+   ch->print( "&z-=&w[ &WSpell Effects &w]&z=-&D\r\n\r\n" );
+   for( af = ch->affects.begin(); af != ch->affects.end(); ++af )
+   {
+      affect_data *paf = (*af);
+
+      if( ( skill = get_skilltype( paf->type ) ) != NULL )
+      {
+         char mod[MIL];
+         ++affnum;
+
+         if( paf->location == APPLY_AFFECT || paf->location == APPLY_EXT_AFFECT )
+            mudstrlcpy( mod, aff_flags[paf->modifier], MIL );
+         else if( paf->location == APPLY_RESISTANT
+          || paf->location == APPLY_IMMUNE
+          || paf->location == APPLY_ABSORB
+          || paf->location == APPLY_SUSCEPTIBLE )
+            mudstrlcpy( mod, ris_flags[paf->modifier], MIL );
+         else
+            snprintf( mod, MIL, "%d", paf->modifier );
+
+         if( ch->level > LEVEL_AVATAR * 0.40 )
+         {
+            ch->printf( "&W%d&z> &BSpell:&w %-18s &W- &PModifies&w %-18s &Bby &Y%-18s&B for&R %-4d&B rounds.&D\r\n",
+               affnum, skill->name, a_types[paf->location], mod, paf->duration );
+         }
+         else if( ch->level > ( LEVEL_AVATAR * 0.20 ) && ch->level <= ( LEVEL_AVATAR * 0.40 ) )
+         {
+            ch->printf( "&W%d&z> &BSpell:&w %-18s &W- &PModifies&w %-18s&B by &Y%-18s&D\r\n",
+               affnum, skill->name, a_types[paf->location], mod );
+         }
+         else if( ch->level > ( LEVEL_AVATAR * 0.10 ) && ch->level <= ( LEVEL_AVATAR * 0.20 ) )
+         {
+            ch->printf( "&W%d&z> &BSpell:&w %-18s &W- &PModifies&w %-18s&D\r\n",
+               affnum, skill->name, a_types[paf->location] );
+         }
+         else
+            ch->printf( "&W%d&z> &BSpell:&w %-18s&D\r\n", affnum, skill->name );
+      }
+   }
+   if( affnum == 0 )
+      ch->print( "&wNo cantrip or skill affects you.\r\n" );
+
+   ch->printf( "\r\n&WTotal of &R%d&W affects.&D\r\n", affnum );
+
+   if( ch->level > LEVEL_AVATAR * 0.10 )
+      ch->print( "\r\n&z-=&w[ &WSaves vs Resistances &w]&z=-&D\r\n\r\n" );
+
+   // This part limits the output to a yes\no for saves
+   if( ch->level > ( LEVEL_AVATAR * 0.10 ) && ch->level < ( LEVEL_AVATAR * 0.20 ) )
+   {
+      if( ch->saving_spell_staff != 0 )
+         ch->print( "&zSpell Effects, Staves    &W- &Gyes&D\r\n" );
+      else
+         ch->print( "&zSpell Effects, Staves    &W- &Gno&D\r\n" );
+
+      if( ch->saving_para_petri != 0 )
+         ch->print( "&zParalysis, Petrification &W- &Gyes&D\r\n" );
+      else
+         ch->print( "&zParalysis, Petrification &W- &Gno&D\r\n" );
+
+      if( ch->saving_wand != 0 )
+         ch->print( "&zWands                    &W- &Gyes&D\r\n" );
+      else
+         ch->print( "&zWands                    &W- &Gno&D\r\n" );
+
+      if( ch->saving_poison_death != 0 )
+         ch->print( "&zPoison, Death            &W- &Gyes&D\r\n" );
+      else
+         ch->print( "&zPoison, Death            &W- &Gno&D\r\n" );
+
+      if( ch->saving_breath != 0 )
+         ch->print( "&zBreath Weapons           &W- &Gyes&D\r\n" );
+      else
+         ch->print( "&zBreath Weapons           &W- &Gno&D\r\n" );
+   }
+
+   if( ch->level > LEVEL_AVATAR * 0.20 )
+   {
+      ch->printf( "&zSpell Effects, Staves    &W- &G%d\r\n&D", ch->saving_spell_staff );
+      ch->printf( "&zParalysis, Petrification &W- &G%d\r\n&D", ch->saving_para_petri );
+      ch->printf( "&zWands                    &W- &G%d\r\n&D", ch->saving_wand );
+      ch->printf( "&zPoison, Death            &W- &G%d\r\n&D", ch->saving_poison_death );
+      ch->printf( "&zBreath Weapons           &W- &G%d\r\n&D", ch->saving_breath );
+   }
+   return;
+}
+
+CMDF( do_inventory )
+{
+   char_data *victim;
+
+   if( !argument || argument[0] == '\0' || !ch->is_immortal(  ) )
+      victim = ch;
+   else
+   {
+      if( !( victim = ch->get_char_world( argument ) ) )
+      {
+         ch->printf( "There is nobody named %s online.\r\n", argument );
+         return;
+      }
+   }
+
+   if( victim != ch )
+      ch->printf( "&R%s is carrying:\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
+   else
+      ch->print( "&RYou are carrying:\r\n" );
+   show_list_to_char( ch, victim->carrying, true, true, MXP_INV, "" );
+   ch->print( "&GItems with a &W*&G after them have other items stored inside.\r\n" );
+   return;
+}
+
+CMDF( do_equipment )
+{
+   if( !ch )
+      return;
+
+   char_data *victim;
+   if( !argument || argument[0] == '\0' || !ch->is_immortal(  ) )
+      victim = ch;
+   else
+   {
+      if( !( victim = ch->get_char_world( argument ) ) )
+      {
+         ch->printf( "There is nobody named %s online.\r\n", argument );
+         return;
+      }
+   }
+
+   if( victim != ch )
+      ch->printf( "&R%s is using:\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
+   else
+      ch->print( "&RYou are using:\r\n" );
+   ch->set_color( AT_OBJECT );
+
+   int iWear;
+   for( iWear = 0; iWear < MAX_WEAR; ++iWear )
+   {
+      obj_data *obj2;
+      int count = 0;
+
+      if( iWear < ( MAX_WEAR - 3 ) )
+      {
+         if( ( !victim->isnpc(  ) ) && ( victim->race > 0 ) && ( victim->race < MAX_PC_RACE ) )
+            ch->print( race_table[victim->race]->where_name[iWear] );
+         else
+            ch->print( where_names[iWear] );
+      }
+      if( !( obj2 = victim->get_eq( iWear ) ) && iWear < ( MAX_WEAR - 3 ) )
+         ch->print( "&R<Nothing>&D" );
+
+      list<obj_data*>::iterator iobj;
+      for( iobj = victim->carrying.begin(); iobj != victim->carrying.end(); ++iobj )
+      {
+         obj_data *obj = (*iobj);
+         if( obj->wear_loc == iWear )
+         {
+            ++count;
+            if( iWear >= ( MAX_WEAR - 3 ) )
+            {
+               if( ( !victim->isnpc(  ) ) && ( victim->race > 0 ) && ( victim->race < MAX_PC_RACE ) )
+                  ch->print( race_table[victim->race]->where_name[iWear] );
+               else
+                  ch->print( where_names[iWear] );
+            }
+            if( count > 1 )
+               ch->print( "&C<&W LAYERED &C>&D         " );
+            if( ch->can_see_obj( obj, false ) )
+            {
+               ch->print( obj->format_to_char( ch, true, 1, MXP_EQ, "" ) );
+
+               if( obj->item_type == ITEM_ARMOR )
+                  ch->print( condtxt( obj->value[0], obj->value[1] ) );
+               if( obj->item_type == ITEM_WEAPON || obj->item_type == ITEM_MISSILE_WEAPON )
+                  ch->print( condtxt( obj->value[6], obj->value[0] ) );
+               if( obj->item_type == ITEM_PROJECTILE )
+                  ch->print( condtxt( obj->value[5], obj->value[0] ) );
+
+               if( !obj->contents.empty() )
+                  ch->print( " &W*" );
+               ch->print( "\r\n" );
+            }
+            else
+               ch->print( "something.\r\n" );
+         }
+      }
+      if( count == 0 && iWear < ( MAX_WEAR - 3 ) )
+         ch->print( "\r\n" );
+   }
+   ch->print( "&GItems with a &W*&G after them have other items stored inside.\r\n" );
+   return;
+}
+
+void set_title( char_data * ch, char *title )
+{
+   char buf[75];
+
+   if( ch->isnpc(  ) )
+   {
+      bug( "%s: NPC %s", __FUNCTION__, ch->name );
+      return;
+   }
+
+   if( isalpha( title[0] ) || isdigit( title[0] ) )
+   {
+      buf[0] = ' ';
+      mudstrlcpy( buf + 1, title, 75 );
+   }
+   else
+      mudstrlcpy( buf, title, 75 );
+
+   STRFREE( ch->pcdata->title );
+   ch->pcdata->title = STRALLOC( buf );
+   return;
+}
+
+CMDF( do_title )
+{
+   char *p;
+
+   if( ch->isnpc(  ) )
+      return;
+
+   if( ch->has_pcflag( PCFLAG_NOTITLE ) )
+   {
+      ch->print( "The Gods prohibit you from changing your title.\r\n" );
+      return;
+   }
+
+   if( !argument || argument[0] == '\0' )
+   {
+      ch->print( "Change your title to what?\r\n" );
+      return;
+   }
+
+   for( p = argument; *p != '\0'; ++p )
+   {
+      if( *p == '}' )
+      {
+         ch->print( "New title is not acceptable, blinking colors are not allowed.\r\n" );
+         return;
+      }
+   }
+   smash_tilde( argument );
+   set_title( ch, argument );
+   ch->print( "Ok.\r\n" );
+   return;
+}
+
+/*
+ * Set your personal description				-Thoric
+ */
+CMDF( do_description )
+{
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "Monsters are too dumb to do that!\r\n" );
+      return;
+   }
+
+   if( !ch->desc )
+   {
+      bug( "%s: no descriptor", __FUNCTION__ );
+      return;
+   }
+
+   switch ( ch->substate )
+   {
+      default:
+         bug( "%s: %s illegal substate %d", __FUNCTION__, ch->name, ch->substate );
+         return;
+
+      case SUB_RESTRICTED:
+         ch->print( "You cannot use this command from within another command.\r\n" );
+         return;
+
+      case SUB_NONE:
+         ch->substate = SUB_PERSONAL_DESC;
+         ch->pcdata->dest_buf = ch;
+         if( !ch->chardesc || ch->chardesc[0] == '\0' )
+            ch->chardesc = STRALLOC( "" );
+         ch->editor_desc_printf( "Your description (%s)", ch->name );
+         ch->start_editing( ch->chardesc );
+         return;
+
+      case SUB_PERSONAL_DESC:
+         STRFREE( ch->chardesc );
+         ch->chardesc = ch->copy_buffer( true );
+         ch->stop_editing(  );
+         return;
+
+      case SUB_EDIT_ABORT:
+         ch->substate = SUB_NONE;
+         ch->print( "Aborting description.\r\n" );
+         return;
+   }
+}
+
+/* Ripped off do_description for whois bio's -- Scryn*/
+CMDF( do_bio )
+{
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "Mobs cannot set a bio.\r\n" );
+      return;
+   }
+   if( ch->level < 5 )
+   {
+      ch->print( "You must be at least level five to write your bio...\r\n" );
+      return;
+   }
+   if( !ch->desc )
+   {
+      bug( "%s: no descriptor", __FUNCTION__ );
+      return;
+   }
+
+   switch ( ch->substate )
+   {
+      default:
+         bug( "%s: %s illegal substate %d", __FUNCTION__, ch->name, ch->substate );
+         return;
+
+      case SUB_RESTRICTED:
+         ch->print( "You cannot use this command from within another command.\r\n" );
+         return;
+
+      case SUB_NONE:
+         ch->substate = SUB_PERSONAL_BIO;
+         ch->pcdata->dest_buf = ch;
+         if( !ch->pcdata->bio || ch->pcdata->bio[0] == '\0' )
+            ch->pcdata->bio = str_dup( "" );
+         ch->editor_desc_printf( "Your bio (%s).", ch->name );
+         ch->start_editing( ch->pcdata->bio );
+         return;
+
+      case SUB_PERSONAL_BIO:
+         DISPOSE( ch->pcdata->bio );
+         ch->pcdata->bio = ch->copy_buffer( false );
+         ch->stop_editing(  );
+         return;
+
+      case SUB_EDIT_ABORT:
+         ch->substate = SUB_NONE;
+         ch->print( "Aborting Bio.\r\n" );
+         return;
+   }
+}
+
+CMDF( do_report )
+{
+   if( ch->isnpc(  ) && ch->fighting )
+      return;
+
+   if( ch->has_aflag( AFF_POSSESS ) )
+   {
+      ch->print( "You can't do that in your current state of mind!\r\n" );
+      return;
+   }
+
+   ch->printf( "You report: %d/%d hp %d/%d mana %d/%d mv %d xp %ld tnl.\r\n",
+               ch->hit, ch->max_hit, ch->mana, ch->max_mana, ch->move, ch->max_move, ch->exp,
+               ( exp_level( ch->level + 1 ) - ch->exp ) );
+
+   act_printf( AT_REPORT, ch, NULL, NULL, TO_ROOM, "$n reports: %d/%d hp %d/%d mana %d/%d mv %d xp %ld tnl.",
+               ch->hit, ch->max_hit, ch->mana, ch->max_mana, ch->move, ch->max_move, ch->exp,
+               ( exp_level( ch->level + 1 ) - ch->exp ) );
+
+   return;
+}
+
+CMDF( do_fprompt )
+{
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "NPC's can't change their prompt..\r\n" );
+      return;
+   }
+   smash_tilde( argument );
+   if( !argument || argument[0] == '\0' || !str_cmp( argument, "display" ) )
+   {
+      ch->print( "Your current fighting prompt string:\r\n" );
+      ch->printf( "&W%s\r\n", ch->pcdata->fprompt );
+      ch->print( "&wType 'help prompt' for information on changing your prompt.\r\n" );
+      return;
+   }
+   ch->print( "&wReplacing old prompt of:\r\n" );
+   ch->printf( "&W%s\r\n", ch->pcdata->fprompt );
+   STRFREE( ch->pcdata->fprompt );
+   if( strlen( argument ) > 128 )
+      argument[128] = '\0';
+
+   /*
+    * Can add a list of pre-set prompts here if wanted.. perhaps
+    * 'prompt 1' brings up a different, pre-set prompt 
+    */
+   if( !str_cmp( argument, "default" ) )
+      ch->pcdata->fprompt = STRALLOC( default_fprompt( ch ) );
+   else
+      ch->pcdata->fprompt = STRALLOC( argument );
+   return;
+}
+
+CMDF( do_prompt )
+{
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "NPC's can't change their prompt..\r\n" );
+      return;
+   }
+   smash_tilde( argument );
+   if( !argument || argument[0] == '\0' || !str_cmp( argument, "display" ) )
+   {
+      ch->print( "&wYour current prompt string:\r\n" );
+      ch->printf( "&W%s\r\n", ch->pcdata->prompt );
+      ch->print( "&wType 'help prompt' for information on changing your prompt.\r\n" );
+      return;
+   }
+   ch->print( "&wReplacing old prompt of:\r\n" );
+   ch->printf( "&W%s\r\n", !str_cmp( ch->pcdata->prompt, "" ) ? "(default prompt)" : ch->pcdata->prompt );
+   STRFREE( ch->pcdata->prompt );
+   if( strlen( argument ) > 128 )
+      argument[128] = '\0';
+
+   /*
+    * Can add a list of pre-set prompts here if wanted.. perhaps
+    * 'prompt 1' brings up a different, pre-set prompt 
+    */
+   if( !str_cmp( argument, "default" ) )
+      ch->pcdata->prompt = STRALLOC( default_prompt( ch ) );
+   else
+      ch->pcdata->prompt = STRALLOC( argument );
+   return;
+}
+
+/* Alternate Self delete command provided by Waldemar Thiel (Swiv) */
+/* Allows characters to delete themselves - Added 1-18-98 by Samson */
+CMDF( do_delet )
+{
+   ch->print( "If you want to DELETE, spell it out.\r\n" );
+   return;
+}
+
+CMDF( do_delete )
+{
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "Yeah, right. Mobs can't delete themselves.\r\n" );
+      return;
+   }
+
+   if( ch->fighting != NULL )
+   {
+      ch->print( "Wait until the fight is over before deleting yourself.\r\n" );
+      return;
+   }
+
+   /*
+    * Reimbursement warning added to code by Samson 1-18-98 
+    */
+   ch->print( "&YRemember, this decision is IRREVERSABLE. There are no reimbursements!\r\n" );
+
+   /*
+    * Immortals warning added to code by Samson 1-18-98 
+    */
+   if( ch->is_immortal(  ) )
+   {
+      ch->printf( "Consider this carefuly %s, if you delete, you will not\r\nbe reinstated as an immortal!\r\n", ch->name );
+      ch->print( "Any area data you have will also be lost if you proceed.\r\n" );
+   }
+   ch->print( "\r\n&RType your password if you wish to delete your character.\r\n" );
+   ch->print( "[DELETE] Password: " );
+   ch->desc->write_to_buffer( echo_off_str, 0 );
+   ch->desc->connected = CON_DELETE;
+   return;
+}
+
+/* New command for players to become pkillers - Samson 4-12-98 */
+CMDF( do_deadly )
+{
+   if( ch->isnpc(  ) )
+      return;
+
+   if( ch->has_pcflag( PCFLAG_DEADLY ) )
+   {
+      ch->print( "You are already a deadly character!\r\n" );
+      return;
+   }
+
+   if( !argument || argument[0] == '\0' )
+   {
+      ch->print( "&RTo become a pkiller, you MUST type DEADLY YES to do so.\r\n" );
+      ch->print( "Remember, this decision is IRREVERSEABLE, so consider it carefuly!\r\n" );
+      return;
+   }
+
+   if( str_cmp( argument, "yes" ) )
+   {
+      ch->print( "&RTo become a pkiller, you MUST type DEADLY YES to do so.\r\n" );
+      ch->print( "Remember, this decision is IRREVERSEABLE, so consider it carefuly!\r\n" );
+      return;
+   }
+
+   ch->set_pcflag( PCFLAG_DEADLY );
+   ch->print( "&YYou have joined the ranks of the deadly. The gods cease to protect you!\r\n" );
+   log_printf( "%s has become a pkiller!", ch->name );
+   return;
+}
+
+/* Derived directly from the i3who code, which is a hybrid mix of Smaug, RM, and Dale who. */
+int afk_who( char_data * ch, char *argument )
+{
+   FILE *webwho = NULL;
+   list<descriptor_data*>::iterator ds;
+   char s1[16], s2[16], s3[16], s4[16], s5[16], s6[16], s7[16];
+   char rank[200], clan_name[MIL], buf[MSL], outbuf[MSL], webbuf[64000], stats[MIL], invis_str[50];
+   int pcount = 0, amount, xx = 0, yy = 0;
+
+   /*
+    * Make sure the CH is before opening the file, don't need some yahoo trying to bug things out this way 
+    */
+   if( !str_cmp( argument, "www" ) && !ch )
+   {
+      if( !( webwho = fopen( WEBWHO_FILE, "w" ) ) )
+      {
+         bug( "%s: Unable to open webwho file for writing!", __FUNCTION__ );
+         return 0;
+      }
+   }
+
+   if( ch )
+   {
+      snprintf( s1, 16, "%s", ch->color_str( AT_WHO ) );
+      snprintf( s2, 16, "%s", ch->color_str( AT_WHO2 ) );
+      snprintf( s3, 16, "%s", ch->color_str( AT_WHO3 ) );
+      snprintf( s4, 16, "%s", ch->color_str( AT_WHO4 ) );
+      snprintf( s5, 16, "%s", ch->color_str( AT_WHO5 ) );
+      snprintf( s6, 16, "%s", ch->color_str( AT_WHO6 ) );
+      snprintf( s7, 16, "%s", ch->color_str( AT_WHO7 ) );
+   }
+
+   if( webwho )
+   {
+      snprintf( buf, MSL, "&R-=[ &WPlayers on %s &R]=-&d", sysdata->mud_name );
+      mudstrlcpy( webbuf, color_align( buf, 80, ALIGN_CENTER ), 64000 );
+
+      mudstrlcat( webbuf, "\n", 64000 );
+
+      snprintf( buf, MSL, "&Y-=[&d &Wtelnet://%s:%d&d &Y]=-&d", sysdata->telnet, mud_port );
+      amount = 78 - color_strlen( buf );  /* Determine amount to put in front of line */
+
+      if( amount < 1 )
+         amount = 1;
+
+      amount = amount / 2;
+
+      for( xx = 0; xx < amount; ++xx )
+         mudstrlcat( webbuf, " ", 64000 );
+
+      mudstrlcat( webbuf, buf, 64000 );
+      mudstrlcat( webbuf, "\n", 64000 );
+   }
+
+   outbuf[0] = '\0';
+   xx = 0;
+   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   {
+      descriptor_data *d = (*ds);
+      char_data *person = d->original ? d->original : d->character;
+
+      if( person && d->connected >= CON_PLAYING )
+      {
+         if( person->level >= LEVEL_IMMORTAL )
+            continue;
+
+         if( ch )
+         {
+            if( !ch->can_see( person, true ) || is_ignoring( person, ch ) )
+               continue;
+         }
+         if( ch && xx == 0 )
+            ch->pagerf( "\r\n%s--------------------------------=[ %sPlayers %s]=---------------------------------\r\n\r\n",
+                        s7, s6, s7 );
+         else if( webwho && xx == 0 )
+            mudstrlcat( webbuf,
+               "\n&B--------------------------------=[&d &WPlayers&d &B]=---------------------------------&d\n\n", 64000 );
+
+         ++pcount;
+
+         snprintf( rank, 200, "%s", rankbuffer( person ) );
+         snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
+
+         if( ch )
+            ch->pager( outbuf );
+         if( webwho )
+            mudstrlcat( webbuf, outbuf, 64000 );
+
+         if( ch )
+            snprintf( stats, MIL, "%s[", s3 );
+         else
+            mudstrlcpy( stats, "&z[", MIL );
+         if( person->has_pcflag( PCFLAG_AFK ) )
+            mudstrlcat( stats, "AFK", MIL );
+         else
+            mudstrlcat( stats, "---", MIL );
+         if( person->CAN_PKILL(  ) )
+            mudstrlcat( stats, "PK]&d", MIL );
+         else
+            mudstrlcat( stats, "--]&d", MIL );
+         if( ch )
+            mudstrlcat( stats, s3, MIL );
+         else
+            mudstrlcat( stats, "&G", MIL );
+
+         if( person->pcdata->clan )
+         {
+            if( ch )
+               snprintf( clan_name, MIL, " %s[", s5 );
+            else
+               mudstrlcpy( clan_name, " &c[", MIL );
+
+            mudstrlcat( clan_name, person->pcdata->clan->name, MIL );
+            if( ch )
+               mudstrlcat( clan_name, s5, MIL );
+            else
+               mudstrlcat( clan_name, "&c", MIL );
+            mudstrlcat( clan_name, "]&d", MIL );
+         }
+         else
+            clan_name[0] = '\0';
+
+         if( ch )
+         {
+            if( ch->MXP_ON(  ) && person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
+            {
+               ch->pagerf( "%s %s" MXP_TAG_SECURE "<a href='%s'>%s</a>" MXP_TAG_LOCKED "%s%s\r\n",
+                           stats, s4, person->pcdata->homepage, person->name, person->pcdata->title, clan_name );
+            }
+            else
+               ch->pagerf( "%s %s%s%s%s\r\n", stats, s4, person->name, person->pcdata->title, clan_name );
+         }
+         if( webwho )
+         {
+            if( person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
+               snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+                  "%s <a href=\"%s\" target=\"_blank\">%s</a>%s%s&d\n", stats, person->pcdata->homepage,
+                  person->name, person->pcdata->title, clan_name );
+            else
+               snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+                  "%s &G%s%s%s&d\n", stats, person->name, person->pcdata->title, clan_name );
+         }
+         ++xx;
+      }
+   }
+
+   yy = 0;
+   for( ds = dlist.begin(); ds != dlist.end(); ++ds )
+   {
+      descriptor_data *d = (*ds);
+      char_data *person = d->original ? d->original : d->character;
+
+      if( person && d->connected >= CON_PLAYING )
+      {
+         if( person->level < LEVEL_IMMORTAL )
+            continue;
+
+         if( ch )
+         {
+            if( !ch->can_see( person, true ) || is_ignoring( person, ch ) )
+               continue;
+         }
+         else
+         {
+            if( person->has_pcflag( PCFLAG_WIZINVIS ) )
+               continue;
+         }
+         if( ch && yy == 0 )
+         {
+            ch->pagerf( "\r\n%s-------------------------------=[ %sImmortals %s]=--------------------------------\r\n\r\n",
+                        s1, s6, s1 );
+         }
+         else if( webwho && yy == 0 )
+            mudstrlcat( webbuf,
+               "\n&R-------------------------------=[&d &WImmortals&d &R]=--------------------------------&d\n\n", 64000 );
+
+         ++pcount;
+
+         snprintf( rank, 200, "%s", rankbuffer( person ) );
+         snprintf( outbuf, MSL, "%s", color_align( rank, 20, ALIGN_CENTER ) );
+         if( ch )
+            ch->pager( outbuf );
+         if( webwho )
+            mudstrlcat( webbuf, outbuf, 64000 );
+
+         if( ch )
+            snprintf( stats, MIL, "%s[", s3 );
+         else
+            mudstrlcpy( stats, "&z[", MIL );
+         if( person->has_pcflag( PCFLAG_AFK ) )
+            mudstrlcat( stats, "AFK", MIL );
+         else
+            mudstrlcat( stats, "---", MIL );
+
+         if( person->CAN_PKILL(  ) )
+            mudstrlcat( stats, "PK]&d", MIL );
+         else
+            mudstrlcat( stats, "--]&d", MIL );
+         if( ch )
+            mudstrlcat( stats, s3, MIL );
+         else
+            mudstrlcat( stats, "&G", MIL );
+         /*
+          * Modified by Tarl 24 April 02 to display an invis level on the AFKMud interface. 
+          */
+         if( person->has_pcflag( PCFLAG_WIZINVIS ) )
+         {
+            snprintf( invis_str, 50, " (%d)", person->pcdata->wizinvis );
+            mudstrlcat( stats, invis_str, MIL );
+         }
+
+         if( person->pcdata->clan )
+         {
+            if( ch )
+               snprintf( clan_name, MIL, " %s[", s5 );
+            else
+               mudstrlcpy( clan_name, " &c[", MIL );
+
+            mudstrlcat( clan_name, person->pcdata->clan->name, MIL );
+            if( ch )
+               mudstrlcat( clan_name, s5, MIL );
+            else
+               mudstrlcat( clan_name, "&c", MIL );
+            mudstrlcat( clan_name, "]&d", MIL );
+         }
+         else
+            clan_name[0] = '\0';
+
+         if( ch )
+         {
+            if( ch->MXP_ON(  ) && person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
+            {
+               ch->pagerf( "%s %s" MXP_TAG_SECURE "<a href='%s'>%s</a>" MXP_TAG_LOCKED "%s%s\r\n",
+                           stats, s4, person->pcdata->homepage, person->name, person->pcdata->title, clan_name );
+            }
+            else
+               ch->pagerf( "%s %s%s%s%s\r\n", stats, s4, person->name, person->pcdata->title, clan_name );
+         }
+         if( webwho )
+         {
+            if( person->pcdata->homepage && person->pcdata->homepage[0] != '\0' )
+               snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+                  "%s <a href=\"%s\" target=\"_blank\">%s</a>%s%s&d\n", stats, person->pcdata->homepage,
+                  person->name, person->pcdata->title, clan_name );
+            else
+               snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+                  "%s &G%s%s%s&d\n", stats, person->name, person->pcdata->title, clan_name );
+         }
+         ++yy;
+      }
+   }
+
+   if( webwho )
+   {
+      char col_buf[64000];
+
+      snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+         "\n&Y[&d&W%d Player%s&d&Y] ", pcount, pcount == 1 ? "" : "s" );
+      snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+         "[&d&WHomepage: <a href=\"%s\" target=\"_blank\">%s</a>&d&Y] [&d&W%d Max Since Reboot&d&Y]&d\n",
+         sysdata->http, sysdata->http, sysdata->maxplayers );
+      snprintf( webbuf+strlen(webbuf), 64000-strlen(webbuf),
+         "&Y[&d&W%d login%s since last reboot on %s&d&Y]&d\n", num_logins, num_logins == 1 ? "" : "s", str_boot_time );
+
+      web_colourconv( col_buf, webbuf );
+      fprintf( webwho, "%s", col_buf );
+      FCLOSE( webwho );
+   }
+   return pcount;
+}
+
+CMDF( do_who )
+{
+   char buf[MSL], buf2[MSL], outbuf[MSL];
+   char s1[16], s2[16], s3[16];
+   int amount = 0, xx = 0, pcount = 0;
+
+   if( argument && !str_cmp( argument, "www" ) )
+   {
+      afk_who( NULL, "www" );
+      return;
+   }
+
+   snprintf( s1, 16, "%s", ch->color_str( AT_WHO ) );
+   snprintf( s2, 16, "%s", ch->color_str( AT_WHO6 ) );
+   snprintf( s3, 16, "%s", ch->color_str( AT_WHO2 ) );
+
+   outbuf[0] = '\0';
+   snprintf( buf, MSL, "%s-=[ %s%s %s]=-", s1, s2, sysdata->mud_name, s1 );
+   snprintf( buf2, MSL, "&R-=[ &W%s &R]=-", sysdata->mud_name );
+   amount = 78 - color_strlen( buf2 ); /* Determine amount to put in front of line */
+
+   if( amount < 1 )
+      amount = 1;
+
+   amount = amount / 2;
+
+   for( xx = 0; xx < amount; ++xx )
+      mudstrlcat( outbuf, " ", MSL );
+
+   mudstrlcat( outbuf, buf, MSL );
+   ch->pagerf( "%s\r\n", outbuf );
+
+   pcount = afk_who( ch, argument );
+
+   ch->pagerf( "\r\n%s[%s%d Player%s%s] ", s3, s2, pcount, pcount == 1 ? "" : "s", s3 );
+   if( ch->MXP_ON(  ) )
+   {
+      ch->
+         pagerf( "%s[%sHomepage: " MXP_TAG_SECURE "<a href='%s' hint='%s Homepage'>%s</a>" MXP_TAG_LOCKED
+                 "%s] [%s%3d Max Since Reboot%s]\r\n", s3, s2, sysdata->http, sysdata->mud_name, sysdata->http, s3, s2,
+                 sysdata->maxplayers, s3 );
+   }
+   else
+   {
+      ch->pagerf( "%s[%sHomepage: %s%s] [%s%d Max since reboot%s]\r\n",
+                  s3, s2, sysdata->http, s3, s2, sysdata->maxplayers, s3 );
+   }
+   ch->pagerf( "%s[%s%d login%s since last reboot on %s%s]\r\n", s3, s2,
+               num_logins, num_logins == 1 ? "" : "s", str_boot_time, s3 );
+}
+
+/*
+ * Place any skill types you don't want them to be able to practice
+ * normally in this list.  Separate each with a space.
+ * (Uses an is_name check). -- Altrag
+ */
+#define CANT_PRAC "Tongue"
+void race_practice( char_data * ch, char_data * mob, int sn )
+{
+   short adept;
+   int race = mob->race;
+
+   if( ch->race != race )
+   {
+      act( AT_TELL, "$n tells you 'I cannot teach those of your race.'", mob, NULL, ch, TO_VICT );
+      return;
+   }
+
+   if( ( mob->level < ( skill_table[sn]->race_level[race] ) ) && skill_table[sn]->race_level[race] > 0 )
+   {
+      act( AT_TELL, "$n tells you 'You cannot learn that from me, you must find another...'", mob, NULL, ch, TO_VICT );
+      return;
+   }
+
+   if( ch->level < skill_table[sn]->race_level[race] )
+   {
+      act( AT_TELL, "$n tells you 'You're not ready to learn that yet...'", mob, NULL, ch, TO_VICT );
+      return;
+   }
+
+   if( is_name( skill_tname[skill_table[sn]->type], CANT_PRAC ) )
+   {
+      act( AT_TELL, "$n tells you 'I do not know how to teach that.'", mob, NULL, ch, TO_VICT );
+      return;
+   }
+
+   adept = ( short )( skill_table[sn]->race_adept[race] * 0.3 + ( ch->get_curr_int(  ) * 2 ) );
+
+   if( ch->pcdata->learned[sn] >= adept )
+   {
+      act_printf( AT_TELL, mob, NULL, ch, TO_VICT, "$n tells you, 'I've taught you everything I can about %s.'",
+                  skill_table[sn]->name );
+      act( AT_TELL, "$n tells you, 'You'll have to practice it on your own now...'", mob, NULL, ch, TO_VICT );
+   }
+   else
+   {
+      --ch->pcdata->practice;
+      ch->pcdata->learned[sn] += ( 4 + int_app[ch->get_curr_int(  )].learn );
+      act( AT_ACTION, "You practice $T.", ch, NULL, skill_table[sn]->name, TO_CHAR );
+      act( AT_ACTION, "$n practices $T.", ch, NULL, skill_table[sn]->name, TO_ROOM );
+      if( ch->pcdata->learned[sn] >= adept )
+      {
+         ch->pcdata->learned[sn] = adept;
+         act( AT_TELL, "$n tells you. 'You'll have to practice it on your own now...'", mob, NULL, ch, TO_VICT );
+      }
+   }
+   return;
+}
+
+CMDF( do_practice )
+{
+   char buf[MSL];
+   char_data *mob = NULL;
+   list<char_data*>::iterator ich;
+   bool found = false;
+
+   if( ch->isnpc(  ) )
+      return;
+
+   for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+   {
+      mob = (*ich);
+      if( mob->isnpc(  ) && ( mob->has_actflag( ACT_PRACTICE ) || mob->has_actflag( ACT_TEACHER ) ) )
+      {
+         found = true;
+         break;
+      }
+   }
+
+   if( !argument || argument[0] == '\0' )
+   {
+      int col, sn, is_ok;
+      short lasttype, cnt;
+      char s1[16], s2[16], s3[16], s4[16];
+
+      col = cnt = 0;
+      lasttype = SKILL_SPELL;
+      ch->set_pager_color( AT_MAGIC );
+
+      snprintf( s1, 16, "%s", ch->color_str( AT_PRAC ) );
+      snprintf( s2, 16, "%s", ch->color_str( AT_PRAC2 ) );
+      snprintf( s3, 16, "%s", ch->color_str( AT_PRAC3 ) );
+      snprintf( s4, 16, "%s", ch->color_str( AT_PRAC4 ) );
+
+      if( found )
+      {
+         if( mob->has_actflag( ACT_PRACTICE ) )
+         {
+            if( mob->Class != ch->Class )
+            {
+               act( AT_TELL, "$n tells you 'I cannot teach those of your class.'", mob, NULL, ch, TO_VICT );
+               return;
+            }
+         }
+         else
+         {
+            if( mob->race != ch->race )
+            {
+               act( AT_TELL, "$n tells you 'I cannot teach those of your race.'", mob, NULL, ch, TO_VICT );
+               return;
+            }
+         }
+      }
+
+      for( sn = 0; sn < top_sn; ++sn )
+      {
+         if( !skill_table[sn]->name )
+            break;
+
+         if( !str_cmp( skill_table[sn]->name, "reserved" ) && ( ch->is_immortal(  ) || ch->CAN_CAST(  ) ) )
+         {
+            if( col % 2 != 0 )
+               ch->pager( "\r\n" );
+            ch->pagerf( "%s--------------------------------[%sSpells%s]---------------------------------\r\n", s4, s2, s4 );
+            col = 0;
+         }
+         if( skill_table[sn]->type != lasttype )
+         {
+            if( !cnt )
+               ch->pager( "                                (none)\r\n" );
+            else if( col % 2 != 0 )
+               ch->pager( "\r\n" );
+            ch->pagerf( "%s--------------------------------[%s%ss%s]---------------------------------\r\n",
+                        s4, s2, skill_tname[skill_table[sn]->type], s4 );
+            col = cnt = 0;
+         }
+         lasttype = skill_table[sn]->type;
+
+         if( !ch->is_immortal(  ) && ( skill_table[sn]->guild != CLASS_NONE && ( !IS_GUILDED( ch ) ) ) )
+            continue;
+
+         if( mob )
+         {
+            if( mob->has_actflag( ACT_PRACTICE ) )
+               if( skill_table[sn]->skill_level[mob->Class] > mob->level )
+                  continue;
+
+            if( mob->has_actflag( ACT_TEACHER ) )
+               if( skill_table[sn]->race_level[mob->race] > mob->level )
+                  continue;
+         }
+         else
+         {
+            is_ok = false;
+
+            if( ch->level >= skill_table[sn]->skill_level[ch->Class] )
+               is_ok = true;
+
+            if( ch->level >= skill_table[sn]->race_level[ch->race] )
+               is_ok = true;
+
+            if( !is_ok )
+               continue;
+         }
+
+         if( ch->pcdata->learned[sn] == 0 && SPELL_FLAG( skill_table[sn], SF_SECRETSKILL ) )
+            continue;
+
+         if( ch->pcdata->learned[sn] ||
+             ( mob && mob->level >= skill_table[sn]->skill_level[mob->Class] )
+             || ( mob && mob->level >= skill_table[sn]->race_level[mob->race] ) )
+         {
+            ++cnt;
+
+            /*
+             * Edited by Whir to look pretty, still want to improve it though - 1/30/03 
+             */
+            ch->pagerf( "%s%22s%s%s(%s%11s%s)", s2, skill_table[sn]->name,
+                        ( ch->level < skill_table[sn]->skill_level[ch->Class]
+                          && ch->level < skill_table[sn]->race_level[ch->race] ) ? "&W*" : " ", s1, s3,
+                        how_good( ch->pcdata->learned[sn] ), s1 );
+
+            if( ++col % 2 == 0 )
+               ch->pager( "\r\n" );
+         }
+      }
+
+      if( col % 2 != 0 )
+         ch->pager( "\r\n" );
+
+      ch->pager( "&W*&D Indicates a skill you have not acheived the required level for yet.\r\n" );
+      ch->pagerf( "%sYou have %s%d %spractice sessions left.\r\n", s1, s4, ch->pcdata->practice, s1 );
+      return;
+   }
+   else
+   {
+      if( !ch->IS_AWAKE(  ) )
+      {
+         ch->print( "In your dreams, or what?\r\n" );
+         return;
+      }
+
+      if( !found )
+      {
+         ch->print( "You can't do that here.\r\n" );
+         return;
+      }
+
+      if( ch->pcdata->practice < 1 )
+      {
+         act( AT_TELL, "$n tells you 'You must earn some more practice sessions.'", mob, NULL, ch, TO_VICT );
+         return;
+      }
+
+      int sn = 0;
+      if( ( sn = skill_lookup( argument ) ) == -1 )
+      {
+         act_printf( AT_TELL, mob, NULL, ch, TO_VICT,
+                     "$n tells you 'I've never heard of %s. Are you sure you know what you want?'", argument );
+         return;
+      }
+
+      if( mob->has_actflag( ACT_TEACHER ) )
+      {
+         race_practice( ch, mob, sn );
+         return;
+      }
+
+      if( ch->Class != mob->Class )
+      {
+         act( AT_TELL, "$n tells you 'I cannot teach those of your Class.'", mob, NULL, ch, TO_VICT );
+         return;
+      }
+
+      if( skill_table[sn]->skill_level[mob->Class] > LEVEL_AVATAR )
+      {
+         act( AT_TELL, "$n tells you 'Only an immortal of your Class may learn that.'", mob, NULL, ch, TO_VICT );
+         return;
+      }
+
+      if( ( mob->level < ( skill_table[sn]->skill_level[mob->Class] ) ) && skill_table[sn]->skill_level[mob->Class] > 0 )
+      {
+         act( AT_TELL, "$n tells you 'You cannot learn that from me, you must find another...'", mob, NULL, ch, TO_VICT );
+         return;
+      }
+
+      if( ch->level < skill_table[sn]->skill_level[mob->Class] )
+      {
+         act( AT_TELL, "$n tells you 'You're not ready to learn that yet...'", mob, NULL, ch, TO_VICT );
+         return;
+      }
+
+      if( is_name( skill_tname[skill_table[sn]->type], CANT_PRAC ) )
+      {
+         act( AT_TELL, "$n tells you 'I do not know how to teach that.'", mob, NULL, ch, TO_VICT );
+         return;
+      }
+
+      /*
+       * Skill requires a special teacher
+       */
+      if( skill_table[sn]->teachers && skill_table[sn]->teachers[0] != '\0' )
+      {
+         snprintf( buf, MSL, "%d", mob->pIndexData->vnum );
+         if( !is_name( buf, skill_table[sn]->teachers ) )
+         {
+            act( AT_TELL, "$n tells you, 'You must find a specialist to learn that!'", mob, NULL, ch, TO_VICT );
+            return;
+         }
+      }
+
+      /*
+       * Guild checks - right now, cant practice guild skills - done on 
+       * induct/outcast
+       */
+      /*
+       * if( !ch->isnpc() && !IS_GUILDED(ch) && skill_table[sn]->guild != CLASS_NONE )
+       * {
+       * act( AT_TELL, "$n tells you 'Only guild members can use that..'", mob, NULL, ch, TO_VICT );
+       * return;
+       * }
+       * 
+       * if( !ch->isnpc() && skill_table[sn]->guild != CLASS_NONE && ch->pcdata->clan->Class != skill_table[sn]->guild )
+       * {
+       * act( AT_TELL, "$n tells you 'That I can not teach to your guild.'", mob, NULL, ch, TO_VICT );
+       * return;
+       * }
+       * 
+       * if( !ch->isnpc() && skill_table[sn]->guild != CLASS_NONE )
+       * {
+       * act( AT_TELL, "$n tells you 'That is only for members of guilds...'", mob, NULL, ch, TO_VICT );
+       * return;
+       * }
+       */
+
+      short adept = ( short )( class_table[ch->Class]->skill_adept * 0.3 + ( ch->get_curr_int(  ) * 2 ) );
+
+      if( ch->pcdata->learned[sn] >= adept )
+      {
+         act_printf( AT_TELL, mob, NULL, ch, TO_VICT,
+                     "$n tells you, 'I've taught you everything I can about %s.'", skill_table[sn]->name );
+         act( AT_TELL, "$n tells you, 'You'll have to practice it on your own now...'", mob, NULL, ch, TO_VICT );
+      }
+      else
+      {
+         --ch->pcdata->practice;
+         ch->pcdata->learned[sn] += ( 4 + int_app[ch->get_curr_int(  )].learn );
+         act( AT_ACTION, "You practice $T.", ch, NULL, skill_table[sn]->name, TO_CHAR );
+         act( AT_ACTION, "$n practices $T.", ch, NULL, skill_table[sn]->name, TO_ROOM );
+         if( ch->pcdata->learned[sn] >= adept )
+         {
+            ch->pcdata->learned[sn] = adept;
+            act( AT_TELL, "$n tells you. 'You'll have to practice it on your own now...'", mob, NULL, ch, TO_VICT );
+         }
+      }
+   }
+   return;
+}
+
+CMDF( do_group )
+{
+   char_data *victim = NULL;
+
+   if( !argument || argument[0] == '\0' )
+   {
+      char_data *leader;
+      list<char_data*>::iterator ich;
+
+      leader = ch->leader ? ch->leader : ch;
+      ch->printf( "%s%s's%s group:\r\n", ch->color_str( AT_SCORE3 ), leader->name, ch->color_str( AT_SCORE ) );
+
+      for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+      {
+         char_data *gch = (*ich);
+
+         if( is_same_group( gch, ch ) )
+         {
+            ch->
+               printf
+               ( "&[score3]%-50s&[score] HP:&[score2]%2.0f&[score]%% %4s:&[score2]%2.0f&[score]%% MV:&[score2]%2.0f&[score]%%\r\n",
+                 capitalize( gch->name ), ( ( float )gch->hit / gch->max_hit ) * 100 + 0.5, "MANA",
+                 ( ( float )gch->mana / gch->max_mana ) * 100 + 0.5, ( ( float )gch->move / gch->max_move ) * 100 + 0.5 );
+         }
+      }
+   }
+
+   if( !str_cmp( argument, "disband" ) )
+   {
+      list<char_data*>::iterator ich;
+      int count = 0;
+
+      if( ch->leader || ch->master )
+      {
+         ch->print( "You cannot disband a group if you're following someone.\r\n" );
+         return;
+      }
+
+      for( ich = charlist.begin(); ich != charlist.end(); ++ich )
+      {
+         char_data *gch = (*ich);
+
+         if( is_same_group( ch, gch ) && ( ch != gch ) )
+         {
+            gch->leader = NULL;
+            if( ( gch->isnpc(  ) && !check_pets( ch, gch->pIndexData ) ) || !gch->isnpc(  ) )
+               gch->master = NULL;
+            ++count;
+            gch->print( "Your group is disbanded.\r\n" );
+         }
+      }
+      if( count == 0 )
+         ch->print( "You have no group members to disband.\r\n" );
+      else
+         ch->print( "You disband your group.\r\n" );
+      return;
+   }
+
+   if( !str_cmp( argument, "all" ) )
+   {
+      list<char_data*>::iterator ich;
+      int count = 0;
+
+      for( ich = ch->in_room->people.begin(); ich != ch->in_room->people.end(); ++ich )
+      {
+         char_data *rch = (*ich);
+
+         if( ch != rch && !rch->isnpc(  ) && ch->can_see( rch, false ) && rch->master == ch
+             && !ch->master && !ch->leader && !is_same_group( rch, ch ) && ch->IS_PKILL(  ) == rch->IS_PKILL(  ) )
+         {
+            rch->leader = ch;
+            ++count;
+         }
+      }
+      if( count == 0 )
+         ch->print( "You have no eligible group members.\r\n" );
+      else
+      {
+         act( AT_ACTION, "$n groups $s followers.", ch, NULL, victim, TO_ROOM );
+         ch->print( "You group your followers.\r\n" );
+      }
+      return;
+   }
+   if( !( victim = ch->get_char_room( argument ) ) )
+   {
+      ch->print( "They aren't here.\r\n" );
+      return;
+   }
+
+   if( ch->master || ( ch->leader && ch->leader != ch ) )
+   {
+      ch->print( "But you are following someone else!\r\n" );
+      return;
+   }
+
+   if( victim->master != ch && ch != victim )
+   {
+      act( AT_PLAIN, "$N isn't following you.", ch, NULL, victim, TO_CHAR );
+      return;
+   }
+
+   if( is_same_group( victim, ch ) && ch != victim )
+   {
+      victim->leader = NULL;
+      act( AT_ACTION, "$n removes $N from $s group.", ch, NULL, victim, TO_NOTVICT );
+      act( AT_ACTION, "$n removes you from $s group.", ch, NULL, victim, TO_VICT );
+      act( AT_ACTION, "You remove $N from your group.", ch, NULL, victim, TO_CHAR );
+      return;
+   }
+
+   victim->leader = ch;
+   act( AT_ACTION, "$N joins $n's group.", ch, NULL, victim, TO_NOTVICT );
+   act( AT_ACTION, "You join $n's group.", ch, NULL, victim, TO_VICT );
+   act( AT_ACTION, "$N joins your group.", ch, NULL, victim, TO_CHAR );
+   return;
+}
+
+CMDF( do_attrib )
+{
+   char *suf;
+   char s1[16], s2[16], s3[16], s4[16], s5[16];
+   int iLang;
+   short day;
+
+   if( ch->isnpc() )
+   {
+      ch->print( "Huh?\r\n" );
+      return;
+   }
+
+   day = ch->pcdata->day + 1;
+
+   if( day > 4 && day < 20 )
+      suf = "th";
+   else if( day % 10 == 1 )
+      suf = "st";
+   else if( day % 10 == 2 )
+      suf = "nd";
+   else if( day % 10 == 3 )
+      suf = "rd";
+   else
+      suf = "th";
+
+   snprintf( s1, 16, "%s", ch->color_str( AT_SCORE ) );
+   snprintf( s2, 16, "%s", ch->color_str( AT_SCORE2 ) );
+   snprintf( s3, 16, "%s", ch->color_str( AT_SCORE3 ) );
+   snprintf( s4, 16, "%s", ch->color_str( AT_SCORE4 ) );
+   snprintf( s5, 16, "%s", ch->color_str( AT_SCORE5 ) );
+
+   ch->printf( "Memory address of ch->pcdata: %X\r\n", &ch->pcdata );
+   ch->printf( "Memory address of do_attrib:  %X\r\n\r\n", &do_attrib );
+
+   ch->printf( "%sYou are %s%d %syears old.\r\n", s2, s3, ch->get_age(  ), s2 );
+
+   ch->printf( "%sYou are %s%d%s inches tall, and weigh %s%d%s lbs.\r\n", s2, s3, ch->height, s2, s3, ch->weight, s2 );
+
+   if( time_info.day == ch->pcdata->day && time_info.month == ch->pcdata->month )
+      ch->printf( "%sToday is your birthday!\r\n", s2 );
+   else
+      ch->printf( "%sYour birthday is: %sDay of %s, %d%s day in the Month of %s, in the year %d.\r\n",
+                  s2, s1, day_name[ch->pcdata->day % 13], day, suf, month_name[ch->pcdata->month], ch->pcdata->year );
+
+   ch->printf( "%sYou have played for %s%ld %shours.\r\n", s2, s3, ( long int )GET_TIME_PLAYED( ch ), s1 );
+
+   if( ch->pcdata->deity )
+      ch->printf( "%sYou have devoted to %s%s.\r\n", s2, s3, ch->pcdata->deity->name );
+
+   ch->printf( "\r\n%sLanguages: ", s2 );
+
+   for( iLang = 0; iLang < LANG_UNKNOWN; ++iLang )
+   {
+      if( knows_language( ch, iLang, ch ) > 0 )
+      {
+         if( iLang == ch->speaking )
+            ch->print( s3 );
+         ch->printf( " %s%s", lang_names[iLang], s1 );
+      }
+   }
+   ch->print( "\r\n\r\n" );
+
+   ch->printf( "%sLogin: %s%s\r\n", s2, s3, c_time( ch->pcdata->logon, ch->pcdata->timezone ) );
+   ch->printf( "%sSaved: %s%s\r\n", s2, s3,
+               ch->pcdata->save_time ? c_time( ch->pcdata->save_time, ch->pcdata->timezone ) : "no save this session" );
+   ch->printf( "%sTime : %s%s\r", s2, s3, c_time( current_time, ch->pcdata->timezone ) );
+
+   ch->printf( "\r\n%sMKills : %s%d\r\n", s2, s3, ch->pcdata->mkills );
+   ch->printf( "%sMDeaths: %s%d\r\n\r\n", s2, s3, ch->pcdata->mdeaths );
+
+   if( ch->pcdata->clan && ch->pcdata->clan->clan_type == CLAN_GUILD )
+   {
+      ch->printf( "%sGuild         : %s%s\r\n", s2, s3, ch->pcdata->clan->name );
+      ch->printf( "%sGuild MDeaths : %s%-6d      %sGuild MKills: %s%d\r\n\r\n",
+                  s2, s3, ch->pcdata->clan->mdeaths, s2, s3, ch->pcdata->clan->mkills );
+   }
+
+   if( ch->CAN_PKILL(  ) )
+   {
+      ch->printf( "%sPKills        : %s%-6d      %sClan        : %s%s\r\n",
+                  s2, s3, ch->pcdata->pkills, s2, s3, ch->pcdata->clan ? ch->pcdata->clan->name : "None" );
+      ch->printf( "%sIllegal PKills: %s%-6d      %sClan PKills : %s%d\r\n",
+                  s2, s3, ch->pcdata->illegal_pk, s2, s3, ( ch->pcdata->clan ? ch->pcdata->clan->pkills[0] : -1 ) );
+      ch->printf( "%sPDeaths       : %s%-6d      %sClan PDeaths: %s%d\r\n",
+                  s2, s3, ch->pcdata->pdeaths, s2, s3, ( ch->pcdata->clan ? ch->pcdata->clan->pdeaths[0] : -1 ) );
+   }
+   return;
+}
+
+CMDF( do_score )
+{
+   char s1[16], s2[16], s3[16], s4[16], s5[16];
+
+   snprintf( s1, 16, "%s", ch->color_str( AT_SCORE ) );
+   snprintf( s2, 16, "%s", ch->color_str( AT_SCORE2 ) );
+   snprintf( s3, 16, "%s", ch->color_str( AT_SCORE3 ) );
+   snprintf( s4, 16, "%s", ch->color_str( AT_SCORE4 ) );
+   snprintf( s5, 16, "%s", ch->color_str( AT_SCORE5 ) );
+
+   ch->printf( "%sScore for %s%s\r\n", s1, ch->name, ch->pcdata->title );
+   ch->printf( "%s--------------------------------------------------------------------------------\r\n", s5 );
+
+   ch->printf( "%sLevel: %s%-15d %sHitPoints: %s%5d%s/%s%5d      %sPager    %s(%s%s%s) %s%4d\r\n",
+               s2, s3, ch->level, s2, s3, ch->hit, s1, s4, ch->max_hit, s2, s1,
+               s3, ch->has_pcflag( PCFLAG_PAGERON ) ? "X" : " ", s1, s4, ch->pcdata->pagerlen );
+
+   ch->printf( "%sRace : %s%-15.15s %sMana     : %s%5d%s/%s%5d      %sAutoexit %s(%s%s%s)\r\n",
+               s2, s3, capitalize( npc_race[ch->race] ), s2, s3, ch->mana, s1, s4, ch->max_mana, s2, s1,
+               s3, ch->has_pcflag( PCFLAG_AUTOEXIT ) ? "X" : " ", s1 );
+
+   ch->printf( "%sClass: %s%-15.15s %sMovement : %s%5d%s/%s%5d      %sAutoloot %s(%s%s%s)\r\n",
+               s2, s3, capitalize( npc_class[ch->Class] ), s2, s3, ch->move, s1, s4, ch->max_move, s2, s1,
+               s3, ch->has_pcflag( PCFLAG_AUTOLOOT ) ? "X" : " ", s1 );
+
+   ch->printf( "%sAlign: %s%-15d %sTo Hit   : %s%s%-9d       %sAutosac  %s(%s%s%s)\r\n",
+               s2, s3, ch->alignment, s2, s3, ch->GET_HITROLL(  ) > 0 ? "+" : "", ch->GET_HITROLL(  ), s2, s1,
+               s3, ch->has_pcflag( PCFLAG_AUTOSAC ) ? "X" : " ", s1 );
+
+   if( ch->level < 10 )
+   {
+      ch->printf( "%sSTR  : %s%-15.15s %sTo Dam   : %s%s%-9d       %sSmartsac %s(%s%s%s)\r\n",
+                  s2, s3, attribtext( ch->get_curr_str(  ) ), s2, s3, ch->GET_DAMROLL(  ) > 0 ? "+" : "",
+                  ch->GET_DAMROLL(  ), s2, s1, s3, ch->has_pcflag( PCFLAG_SMARTSAC ) ? "X" : " ", s1 );
+
+      ch->printf( "%sINT  : %s%-15.15s %sAC       : %s%s%d\r\n",
+                  s2, s3, attribtext( ch->get_curr_int(  ) ), s2, s3, ch->GET_AC(  ) > 0 ? "+" : "", ch->GET_AC(  ) );
+
+      ch->printf( "%sWIS  : %s%-15.15s %sWimpy    : %s%d\r\n",
+                  s2, s3, attribtext( ch->get_curr_wis(  ) ), s2, s3, ch->wimpy );
+
+      ch->printf( "%sDEX  : %s%-15.15s %sExp      : %s%d\r\n", s2, s3, attribtext( ch->get_curr_dex(  ) ), s2, s3, ch->exp );
+
+      ch->printf( "%sCON  : %s%-15.15s %sGold     : %s%d\r\n",
+                  s2, s3, attribtext( ch->get_curr_con(  ) ), s2, s3, ch->gold );
+
+      ch->printf( "%sCHA  : %s%-15.15s %sWeight   : %s%d%s/%s%d\r\n",
+                  s2, s3, attribtext( ch->get_curr_cha(  ) ), s2, s3, ch->carry_weight, s1, s4, ch->can_carry_w(  ) );
+
+      ch->printf( "%sLCK  : %s%-15.15s %sItems    : %s%d%s/%s%d\r\n",
+                  s2, s3, attribtext( ch->get_curr_lck(  ) ), s2, s3, ch->carry_number, s1, s4, ch->can_carry_n(  ) );
+   }
+   else
+   {
+      ch->printf( "%sSTR  : %s%-2d%s/%s%-12d %sTo Dam   : %s%s%-9d       %sSmartsac %s(%s%s%s)\r\n",
+                  s2, s3, ch->get_curr_str(  ), s1, s4, ch->perm_str, s2, s3, ch->GET_DAMROLL(  ) > 0 ? "+" : " ",
+                  ch->GET_DAMROLL(  ), s2, s1, s3, ch->has_pcflag( PCFLAG_SMARTSAC ) ? "X" : " ", s1 );
+
+      ch->printf( "%sINT  : %s%-2d%s/%s%-12d %sAC       : %s%s%d\r\n",
+                  s2, s3, ch->get_curr_int(  ), s1, s4, ch->perm_int, s2, s3, ch->GET_AC(  ) > 0 ? "+" : "",
+                  ch->GET_AC(  ) );
+
+      ch->printf( "%sWIS  : %s%-2d%s/%s%-12d %sWimpy    : %s%d\r\n",
+                  s2, s3, ch->get_curr_wis(  ), s1, s4, ch->perm_wis, s2, s3, ch->wimpy );
+
+      ch->printf( "%sDEX  : %s%-2d%s/%s%-12d %sExp      : %s%d\r\n",
+                  s2, s3, ch->get_curr_dex(  ), s1, s4, ch->perm_dex, s2, s3, ch->exp );
+
+      ch->printf( "%sCON  : %s%-2d%s/%s%-12d %sGold     : %s%d\r\n",
+                  s2, s3, ch->get_curr_con(  ), s1, s4, ch->perm_con, s2, s3, ch->gold );
+
+      ch->printf( "%sCHA  : %s%-2d%s/%s%-12d %sWeight   : %s%d%s/%s%d\r\n",
+                  s2, s3, ch->get_curr_cha(  ), s1, s4, ch->perm_cha, s2, s3, ch->carry_weight, s1, s4,
+                  ch->can_carry_w(  ) );
+
+      ch->printf( "%sLCK  : %s%-2d%s/%s%-12d %sItems    : %s%d%s/%s%d\r\n",
+                  s2, s3, ch->get_curr_lck(  ), s1, s4, ch->perm_lck, s2, s3, ch->carry_number, s1, s4,
+                  ch->can_carry_n(  ) );
+   }
+
+   ch->printf( "%sPracs: %s%-15d %sFavor    : %s%d\r\n\r\n", s2, s3, ch->pcdata->practice, s2, s3, ch->pcdata->favor );
+
+   ch->printf( "%sYou are %s.\r\n", s2, npc_position[ch->position] );
+
+   if( ch->pcdata->condition[COND_DRUNK] > 10 )
+      ch->printf( "%sYou are drunk.\r\n", s2 );
+
+   if( ch->pcdata->condition[COND_THIRST] == 0 )
+      ch->printf( "%sYou are extremely thirsty.\r\n", s2 );
+
+   if( ch->pcdata->condition[COND_FULL] == 0 )
+      ch->printf( "%sYou are starving.\r\n", s2 );
+
+   ch->set_color( AT_SCORE2 );
+   if( ch->position != POS_SLEEPING )
+   {
+      switch ( ch->mental_state / 10 )
+      {
+         default:
+            ch->print( "You're completely messed up!\r\n" );
+            break;
+         case -10:
+            ch->print( "You're barely conscious.\r\n" );
+            break;
+         case -9:
+            ch->print( "You can barely keep your eyes open.\r\n" );
+            break;
+         case -8:
+            ch->print( "You're extremely drowsy.\r\n" );
+            break;
+         case -7:
+            ch->print( "You feel very unmotivated.\r\n" );
+            break;
+         case -6:
+            ch->print( "You feel sedated.\r\n" );
+            break;
+         case -5:
+            ch->print( "You feel sleepy.\r\n" );
+            break;
+         case -4:
+            ch->print( "You feel tired.\r\n" );
+            break;
+         case -3:
+            ch->print( "You could use a rest.\r\n" );
+            break;
+         case -2:
+            ch->print( "You feel a little under the weather.\r\n" );
+            break;
+         case -1:
+            ch->print( "You feel fine.\r\n" );
+            break;
+         case 0:
+            ch->print( "You feel great.\r\n" );
+            break;
+         case 1:
+            ch->print( "You feel energetic.\r\n" );
+            break;
+         case 2:
+            ch->print( "Your mind is racing.\r\n" );
+            break;
+         case 3:
+            ch->print( "You can't think straight.\r\n" );
+            break;
+         case 4:
+            ch->print( "Your mind is going 100 miles an hour.\r\n" );
+            break;
+         case 5:
+            ch->print( "You're high as a kite.\r\n" );
+            break;
+         case 6:
+            ch->print( "Your mind and body are slipping apart.\r\n" );
+            break;
+         case 7:
+            ch->print( "Reality is slipping away.\r\n" );
+            break;
+         case 8:
+            ch->print( "You have no idea what is real, and what is not.\r\n" );
+            break;
+         case 9:
+            ch->print( "You feel immortal.\r\n" );
+            break;
+         case 10:
+            ch->print( "You are a Supreme Entity.\r\n" );
+            break;
+      }
+   }
+   else
+   {
+      if( ch->mental_state > 45 )
+         ch->print( "Your sleep is filled with strange and vivid dreams.\r\n" );
+      else if( ch->mental_state > 25 )
+         ch->print( "Your sleep is uneasy.\r\n" );
+      else if( ch->mental_state < -35 )
+         ch->print( "You are deep in a much needed sleep.\r\n" );
+      else if( ch->mental_state < -25 )
+         ch->print( "You are in deep slumber.\r\n" );
+   }
+
+   if( ch->desc )
+   {
+      ch->printf( "\r\n%sTerminal Support Detected: MCCP%s[%s%s%s] %sMSP%s[%s%s%s] %sMXP%s[%s%s%s]\r\n", s2,
+                  s1, s3, ch->desc->can_compress ? "X" : " ", s1, s2,
+                  s1, s3, ch->desc->msp_detected ? "X" : " ", s1, s2, s1, s3, ch->desc->mxp_detected ? "X" : " ", s1 );
+
+      ch->printf( "%sTerminal Support In Use  : MCCP%s[%s%s%s] %sMSP%s[%s%s%s] %sMXP%s[%s%s%s]\r\n", s2,
+                  s1, s3, ch->desc->can_compress ? "X" : " ", s1, s2,
+                  s1, s3, ch->MSP_ON(  )? "X" : " ", s1, s2, s1, s3, ch->MXP_ON(  )? "X" : " ", s1 );
+   }
+
+   if( ch->pcdata->bestowments && ch->pcdata->bestowments[0] != '\0' )
+      ch->printf( "\r\n%sYou are bestowed with the command(s): %s%s.\r\n", s2, s3, ch->pcdata->bestowments );
+
+   if( ch->is_immortal(  ) )
+   {
+      ch->printf( "\r\n%s--------------------------------------------------------------------------------\r\n", s5 );
+
+      ch->printf( "%sIMMORTAL DATA:  Wizinvis %s(%s%s%s)  %sLevel %s(%s%d%s)\r\n",
+                  s2, s1, s3, ch->has_pcflag( PCFLAG_WIZINVIS ) ? "X" : " ", s1, s2, s1, s3, ch->pcdata->wizinvis, s1 );
+
+      ch->printf( "%sBamfin:  %s%s\r\n", s2, s1,
+                  ( ch->pcdata->bamfin
+                    && ch->pcdata->bamfin[0] != '\0' ) ? ch->pcdata->bamfin : "appears in a swirling mist." );
+
+      ch->printf( "%sBamfout: %s%s\r\n", s2, s1,
+                  ( ch->pcdata->bamfout
+                    && ch->pcdata->bamfout[0] != '\0' ) ? ch->pcdata->bamfout : "leaves in a swirling mist." );
+
+      /*
+       * Area Loaded info - Scryn 8/11
+       */
+      if( ch->pcdata->area )
+      {
+         ch->printf( "%sVnums: %s%-5.5d - %-5.5d\r\n", s2, s1, ch->pcdata->area->low_vnum, ch->pcdata->area->hi_vnum );
+      }
+   }
+
+   if( !ch->affects.empty() )
+   {
+      skill_type *sktmp;
+      list<affect_data*>::iterator paf;
+      char buf[MSL];
+
+      ch->printf( "\r\n%s--------------------------------------------------------------------------------\r\n", s5 );
+      ch->printf( "%sAffect Data:\r\n\r\n", s2 );
+
+      for( paf = ch->affects.begin(); paf != ch->affects.end(); ++paf )
+      {
+         affect_data *af = (*paf);
+
+         if( !( sktmp = get_skilltype( af->type ) ) )
+            continue;
+
+         snprintf( buf, MSL, "%s'%s%s%s'", s1, s3, sktmp->name, s1 );
+
+         ch->printf( "%s%s : %-20s %s(%s%d hours%s)\r\n",
+                     s2, skill_tname[sktmp->type], buf, s1, s4, af->duration / ( int )DUR_CONV, s1 );
+      }
+   }
+   return;
+}

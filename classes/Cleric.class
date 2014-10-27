@@ -1,0 +1,486 @@
+Version     1
+Name        Cleric~
+Class       1
+Attrprime   4
+Weapon      2896
+Armor       2889
+Legwear     2891
+Headwear    2890
+Armwear     2892
+Footwear    2888
+Shield      2893
+Held        11434
+Skilladept  95
+Thac0       19
+Thac0gain   0.315000
+Hpmin       2
+Hpmax       7
+Mana        1
+Skill 'alertness' 51 95
+Skill 'aqua breath' 27 95
+Skill 'armor' 2 95
+Skill 'astral walk' 60 95
+Skill 'beacon' 26 95
+Skill 'benediction' 37 95
+Skill 'blade barrier' 56 95
+Skill 'blazebane' 61 95
+Skill 'blazeward' 61 95
+Skill 'bless' 3 95
+Skill 'blindness' 22 95
+Skill 'cause critical' 32 95
+Skill 'cause light' 4 95
+Skill 'cause serious' 16 95
+Skill 'charged beacon' 67 95
+Skill 'continual light' 8 95
+Skill 'create fire' 4 95
+Skill 'create food' 10 95
+Skill 'create symbol' 11 95
+Skill 'create water' 10 95
+Skill 'cure blindness' 8 95
+Skill 'cure critical' 30 95
+Skill 'cure light' 1 95
+Skill 'cure poison' 12 95
+Skill 'cure serious' 15 95
+Skill 'curse' 6 95
+Skill 'detect evil' 3 95
+Skill 'detect magic' 6 95
+Skill 'detect poison' 12 95
+Skill 'dispel evil' 74 95
+Skill 'dispel magic' 31 95
+Skill 'disruption' 58 95
+Skill 'divine aid' 20 95
+Skill 'divinity' 75 95
+Skill 'earthquake' 60 95
+Skill 'farsight' 52 95
+Skill 'fatigue' 51 95
+Skill 'feebleness' 71 95
+Skill 'find traps' 24 95
+Skill 'flamestrike' 59 95
+Skill 'fortify' 62 95
+Skill 'grounding' 67 95
+Skill 'group armor' 26 85
+Skill 'group refresh' 28 85
+Skill 'groupgate' 90 85
+Skill 'harm' 46 95
+Skill 'heal' 45 90
+Skill 'heroes feast' 48 95
+Skill 'hold person' 29 50
+Skill 'holy sanctity' 95 95
+Skill 'holy word' 78 95
+Skill 'indignation' 73 95
+Skill 'inner warmth' 63 95
+Skill 'know alignment' 18 95
+Skill 'lifelift' 85 95
+Skill 'locate object' 32 95
+Skill 'major invocation' 87 95
+Skill 'minor invocation' 33 95
+Skill 'poison' 23 95
+Skill 'protection from evil' 13 95
+Skill 'recharge' 70 95
+Skill 'refresh' 7 95
+Skill 'rejuvenate' 54 80
+Skill 'remove curse' 28 95
+Skill 'remove paralysis' 42 95
+Skill 'remove silence' 34 95
+Skill 'resilience' 71 95
+Skill 'restoration' 82 95
+Skill 'restore mana' 83 95
+Skill 'righteousness' 35 95
+Skill 'sagacity' 39 95
+Skill 'sanctuary' 47 95
+Skill 'silence' 38 95
+Skill 'spectral furor' 65 95
+Skill 'spiritual hammer' 7 95
+Skill 'spiritual wrath' 92 95
+Skill 'succor' 23 95
+Skill 'summon' 36 95
+Skill 'towngate' 65 95
+Skill 'transport' 86 95
+Skill 'true sight' 41 95
+Skill 'uplift' 55 95
+Skill 'valiance' 53 95
+Skill 'winter mist' 63 95
+Skill 'word of recall' 26 95
+Skill 'aid' 2 95
+Skill 'brew' 65 60
+Skill 'cook' 1 90
+Skill 'dig' 9 95
+Skill 'meditate' 27 95
+Skill 'mount' 2 95
+Skill 'scribe' 66 70
+Skill 'search' 1 90
+Skill 'slice' 1 90
+Skill 'trance' 77 85
+Skill 'defensive style' 1 90
+Skill 'evasive style' 1 90
+Skill 'maces and hammers' 1 85
+Skill 'pugilism' 1 35
+Skill 'slings' 1 60
+Skill 'standard style' 1 90
+Skill 'staves' 1 70
+Skill 'whips' 1 75
+Skill 'centaur' 1 99
+Skill 'common' 1 99
+Skill 'dwarven' 1 99
+Skill 'elvish' 1 99
+Skill 'gith' 1 99
+Skill 'gnomish' 1 99
+Skill 'goblin' 1 99
+Skill 'halfling' 1 99
+Skill 'insectoid' 1 95
+Skill 'minotaur' 1 99
+Skill 'ogre' 1 99
+Skill 'orcish' 1 99
+Skill 'pixie' 1 99
+Skill 'reptile' 1 99
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 99
+Title
+Man~
+Woman~
+Title
+Inquirer~
+Inquiress~
+Title
+Catecumen~
+Catecumen~
+Title
+Initiate~
+Initiate~
+Title
+Believer~
+Believer~
+Title
+Attendant~
+Attendant~
+Title
+Server~
+Server~
+Title
+Acolyte~
+Acolyte~
+Title
+Sacristan~
+Sacristan~
+Title
+Vestryman~
+Vestrywoman~
+Title
+Layman~
+Laywoman~
+Title
+Aspirant~
+Aspirant~
+Title
+Novice~
+Novice~
+Title
+Clergyman~
+Clergywoman~
+Title
+Clerk~
+Clerk~
+Title
+Scribe~
+Scribe~
+Title
+Deacon~
+Deaconess~
+Title
+Priest~
+Priestess~
+Title
+Minister~
+Minister~
+Title
+Canon~
+Canoness~
+Title
+Levite~
+Levitess~
+Title
+Chaplain~
+Chaplain~
+Title
+Curate~
+Curess~
+Title
+Vicar~
+Vicaress~
+Title
+Parson~
+Parsoness~
+Title
+Rector~
+Rectress~
+Title
+Superior~
+Superioress~
+Title
+Abbot~
+Abbess~
+Title
+Archimandrite~
+Archimandritess~
+Title
+Archdeacon~
+Archdeaconess~
+Title
+Bishop of Faith~
+Bishop of Faith~
+Title
+Bishop of Hope~
+Bishop of Hope~
+Title
+Bishop of Charity~
+Bishop of Charity~
+Title
+Bishop of Virtues~
+Bishop of Virtues~
+Title
+Bishop of Sanctity~
+Bishop of Sanctity~
+Title
+Archbishop of Faith~
+Archbishop of Faith~
+Title
+Archbishop of Hope~
+Archbishop of Hope~
+Title
+Archbishop of Charity~
+Archbishop of Charity~
+Title
+Archbishop of Virtues~
+Archbishop of Virtues~
+Title
+Archbishop of Sanctity~
+Archbishop of Sanctity~
+Title
+Primate of Faith~
+Primate of Faith~
+Title
+Primate of Hope~
+Primate of Hope~
+Title
+Primate of Charity~
+Primate of Charity~
+Title
+Primate of Virtues~
+Primate of Virtues~
+Title
+Primate of Sanctity~
+Primate of Sanctity~
+Title
+Prelate of Faith~
+Prelate of Faith~
+Title
+Prelate of Hope~
+Prelate of Hope~
+Title
+Prelate of Charity~
+Prelate of Charity~
+Title
+Prelate of Virtues~
+Prelate of Virtues~
+Title
+Prelate of Sanctity~
+Prelate of Sanctity~
+Title
+High Priest of Faith~
+High Priestess of Faith~
+Title
+High Priest of Hope~
+High Priestess of Hope~
+Title
+High Priest of Charity~
+High Priestess of Charity~
+Title
+High Priest of Virtues~
+High Priestess of Virtues~
+Title
+High Priest of Sanctity~
+High Priestess of Sanctity~
+Title
+Patriarch of Faith~
+Matriarch of Faith~
+Title
+Patriarch of Hope~
+Matriarch of Hope~
+Title
+Patriarch of Charity~
+Matriarch of Charity~
+Title
+Patriarch of Virtues~
+Matriarch of Virtues~
+Title
+Patriarch of Sanctity~
+Matriarch of Sanctity~
+Title
+Great Patriarch of Faith~
+Great Matriarch of Faith~
+Title
+Great Patriarch of Hope~
+Great Matriarch of Hope~
+Title
+Great Patriarch of Charity~
+Great Matriarch of Charity~
+Title
+Great Patriarch of Virtues~
+Great Matriarch of Virtues~
+Title
+Great Patriarch of Sanctity~
+Great Matriarch of Sanctity~
+Title
+Grand Patriarch of Faith~
+Grand Matriarch of Faith~
+Title
+Grand Patriarch of Hope~
+Grand Matriarch of Hope~
+Title
+Grand Patriarch of Charity~
+Grand Matriarch of Charity~
+Title
+Grand Patriarch of Virtues~
+Grand Matriarch of Virtues~
+Title
+Grand Patriarch of Sanctity~
+Grand Matriarch of Sanctity~
+Title
+Cardinal of Faith~
+Cardinal of Faith~
+Title
+Cardinal of Hope~
+Cardinal of Hope~
+Title
+Cardinal of Charity~
+Cardinal of Charity~
+Title
+Cardinal of Virtues~
+Cardinal of Virtues~
+Title
+Cardinal of Sanctity~
+Cardinal of Sanctity~
+Title
+Disciple of Faith~
+Disciple of Faith~
+Title
+Disciple of Hope~
+Disciple of Hope~
+Title
+Disciple of Charity~
+Disciple of Charity~
+Title
+Disciple of Virtues~
+Disciple of Virtues~
+Title
+Disciple of Sanctity~
+Disciple of Sanctity~
+Title
+Apostle of Faith~
+Apostle of Faith~
+Title
+Apostle of Hope~
+Apostle of Hope~
+Title
+Apostle of Charity~
+Apostle of Charity~
+Title
+Apostle of Virtues~
+Apostle of Virtues~
+Title
+Apostle of Sanctity~
+Apostle of Sanctity~
+Title
+Pontiff of Faith~
+Pontiff of Faith~
+Title
+Pontiff of Hope~
+Pontiff of Hope~
+Title
+Pontiff of Charity~
+Pontiff of Charity~
+Title
+Pontiff of Virtues~
+Pontiff of Virtues~
+Title
+Pontiff of Sanctity~
+Pontiff of Sanctity~
+Title
+Supreme Cleric of Faith~
+Supreme Cleric of Faith~
+Title
+Supreme Cleric of Hope~
+Supreme Cleric of Hope~
+Title
+Supreme Cleric of Charity~
+Supreme Cleric of Charity~
+Title
+Supreme Cleric of Virtues~
+Supreme Cleric of Virtues~
+Title
+Supreme Cleric of Sanctity~
+Supreme Cleric of Sanctity~
+Title
+Prophet of Faith~
+Prophetess of Faith~
+Title
+Prophet of Hope~
+Prophetess of Hope~
+Title
+Prophet of Charity~
+Prophetess of Charity~
+Title
+Prophet of Virtues~
+Prophetess of Virtues~
+Title
+Prophet of Sanctity~
+Prophetess of Sanctity~
+Title
+Avatar of Faith~
+Avatar of Faith~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

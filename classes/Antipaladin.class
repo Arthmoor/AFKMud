@@ -1,0 +1,452 @@
+Version     1
+Name        Antipaladin~
+Class       10
+Attrprime   1
+Weapon      2894
+Armor       2889
+Legwear     2891
+Headwear    2890
+Armwear     2892
+Footwear    2888
+Shield      2893
+Held        2911
+Skilladept  95
+Thac0       18
+Thac0gain   0.375000
+Hpmin       4
+Hpmax       10
+Mana        1
+Skill 'alertness' 30 90
+Skill 'antimagic shell' 75 70
+Skill 'armor' 8 80
+Skill 'beacon' 51 95
+Skill 'black hand' 58 95
+Skill 'blazeward' 63 75
+Skill 'blindness' 35 75
+Skill 'chaos armor' 85 80
+Skill 'chill touch' 46 90
+Skill 'continual light' 18 90
+Skill 'create fire' 6 95
+Skill 'curse' 10 90
+Skill 'demonskin' 68 75
+Skill 'dragonskin' 65 75
+Skill 'fatigue' 30 80
+Skill 'feebleness' 42 75
+Skill 'ill fortune' 18 95
+Skill 'inner warmth' 63 90
+Skill 'kindred strength' 25 95
+Skill 'know alignment' 22 80
+Skill 'lethargy' 32 95
+Skill 'paralyze' 65 50
+Skill 'poison' 46 85
+Skill 'quickening' 37 80
+Skill 'razorbait' 72 80
+Skill 'remove invis' 45 95
+Skill 'shadowform' 80 75
+Skill 'soul scream' 74 95
+Skill 'swordbait' 74 75
+Skill 'trollish vigor' 46 80
+Skill 'unravel defense' 90 75
+Skill 'warmount' 25 95
+Skill 'warsteed' 40 80
+Skill 'weaken' 27 85
+Skill 'withering hand' 90 95
+Skill 'word of recall' 51 90
+Skill 'aid' 12 80
+Skill 'bandage' 28 95
+Skill 'cook' 1 95
+Skill 'demoralize' 52 80
+Skill 'dig' 10 80
+Skill 'disarm' 15 80
+Skill 'grip' 15 75
+Skill 'kick' 2 90
+Skill 'mount' 2 95
+Skill 'punch' 11 95
+Skill 'retreat' 20 95
+Skill 'roundhouse' 24 95
+Skill 'search' 1 95
+Skill 'slice' 1 90
+Skill 'strike' 33 85
+Skill 'uppercut' 22 95
+Skill 'aggressive style' 1 95
+Skill 'archery' 1 70
+Skill 'axes' 1 90
+Skill 'berserk style' 1 95
+Skill 'blowguns' 1 80
+Skill 'daggers' 1 80
+Skill 'defensive style' 1 95
+Skill 'evasive style' 1 90
+Skill 'maces and hammers' 1 75
+Skill 'pugilism' 1 80
+Skill 'slings' 1 75
+Skill 'spears' 1 80
+Skill 'standard style' 1 95
+Skill 'staves' 1 80
+Skill 'swords' 1 90
+Skill 'talonous arms' 1 80
+Skill 'whips' 1 85
+Skill 'centaur' 1 99
+Skill 'common' 1 99
+Skill 'dwarven' 1 99
+Skill 'elvish' 1 99
+Skill 'gith' 1 99
+Skill 'gnomish' 1 99
+Skill 'goblin' 1 99
+Skill 'halfling' 1 99
+Skill 'insectoid' 1 95
+Skill 'minotaur' 1 99
+Skill 'ogre' 1 99
+Skill 'orcish' 1 99
+Skill 'pixie' 1 99
+Skill 'reptile' 1 99
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 99
+Title
+Man~
+Woman~
+Title
+Cruel Squire~
+Wicked Maid~
+Title
+Unholy Novice~
+Unholy Novice~
+Title
+Sinner~
+Sinner~
+Title
+Knifeman~
+Knifewoman~
+Title
+Dangerous~
+Dangerous~
+Title
+Vengeful~
+Vengeful~
+Title
+Wandering Mercenary~
+Wandering Mercenary~
+Title
+Feared~
+Feared~
+Title
+Dark Destined~
+Dark Destined~
+Title
+Agent of Evil~
+Agent of Evil~
+Title
+Soldier of Evil~
+Soldier of Evil~
+Title
+Traitor~
+Traitor~
+Title
+Torturer~
+Torturess~
+Title
+Master of Pain~
+Maiden of Pain~
+Title
+Despiser~
+Despiser~
+Title
+Worshipper of Death~
+Worshipper of Death~
+Title
+Worshipper of Doom~
+Worshipper of Doom~
+Title
+Worshipper of Chaos~
+Worshipper of Chaos~
+Title
+Harbinger of Doom~
+Harbinger of Doom~
+Title
+Harbinger of Death~
+Harbinger of Death~
+Title
+Harbinger of Chaos~
+Harbinger of Chaos~
+Title
+Death Savant~
+Death Savanti~
+Title
+Doom Seerer~
+Doom Seeress~
+Title
+Chaos Wielder~
+Chaos Wielder~
+Title
+Order of Death~
+Order of Death~
+Title
+Order of Doom~
+Order of Doom~
+Title
+Order of Chaos~
+Order of Chaos~
+Title
+Hated~
+Hated~
+Title
+Elf Killer~
+Elf Killer~
+Title
+Night Dweller~
+Night Dweller~
+Title
+Soultaker~
+Soultaker~
+Title
+Dark Knight~
+Dark Knight~
+Title
+Death Knight~
+Death Knight~
+Title
+Souless~
+Souless~
+Title
+Shadow Warrior~
+Shadow Warrior~
+Title
+Essence of Evil~
+Essence of Evil~
+Title
+Outcast~
+Outcast~
+Title
+Blackhearted~
+Blackhearted~
+Title
+Flaming Skull~
+Flaming Skull~
+Title
+Bloody Raven~
+Bloody Raven~
+Title
+Black Widow~
+Black Widow~
+Title
+Dark Disciple~
+Dark Disciple~
+Title
+Paladin's Bane~
+Paladin's Bane~
+Title
+Spawn of Evil~
+Spawn of Evil~
+Title
+Devil's Advocate~
+Devil's Advocate~
+Title
+Red Warrior~
+Red Warrior~
+Title
+Black Warrior~
+Black Warrior~
+Title
+Anarchist~
+Anarchist~
+Title
+Fallen~
+Fallen~
+Title
+Damned~
+Damned~
+Title
+Apocalyptic Warrior~
+Apocalyptic Warrior~
+Title
+Dark Bladesman~
+Dark Bladeswoman~
+Title
+Soldier of Darkness~
+Soldier of Darkness~
+Title
+Hater of Good~
+Hater of Good~
+Title
+Demon Knight~
+Demon Knight~
+Title
+Chaos Knight~
+Chaos Knight~
+Title
+Doom Knight~
+Doom Knight~
+Title
+Black Dragon Knight~
+Black Dragon Knight~
+Title
+Green Dragon Knight~
+Green Dragon Knight~
+Title
+Red Dragon Knight~
+Red Dragon Knight~
+Title
+Dragon Highlord~
+Dragon Highlord~
+Title
+Plague of Evil~
+Plague of Evil~
+Title
+Berserker~
+Berserker~
+Title
+Song of Madness~
+Song of Madness~
+Title
+Dark Master~
+Dark Mistress~
+Title
+Master of Undead~
+Master of Undead~
+Title
+Unholy Murderer~
+Unholy Murderer~
+Title
+Cursed~
+Cursed~
+Title
+Corruptor~
+Corruptor~
+Title
+Betrayer~
+Betrayer~
+Title
+Merciless~
+Merciless~
+Title
+Herald of Evil~
+Herald of Evil~
+Title
+Reaper of Souls~
+Reaper of Souls~
+Title
+Scourge of Anger~
+Scourge of Anger~
+Title
+Unholy Blaze~
+Unholy Blaze~
+Title
+Black Mantle of Hades~
+Black Mantle of Hades~
+Title
+Blood-drinker~
+Blood-drinker~
+Title
+Fang of Doom~
+Fang of Doom~
+Title
+Conquerer~
+Conqueress~
+Title
+Blood Knight~
+Blood Lady~
+Title
+Demon-kin~
+Demon-kindress~
+Title
+Sword of Darkness~
+Spear of Darkness~
+Title
+Paladin Slayer~
+Paladin Slayer~
+Title
+Demon Lord~
+Demon Lady~
+Title
+Demon Prince~
+Demon Princess~
+Title
+Champion of Evil~
+Champion of Evil~
+Title
+Bane of the Living~
+Bane of the Living~
+Title
+Hand of Death~
+Hand of Death~
+Title
+Knight of Chaos~
+Lady of Chaos~
+Title
+Champion of Doom~
+Champion of Doom~
+Title
+Slayer of Heroes~
+Slayer of Heroes~
+Title
+Crusher of Hope~
+Crusher of Hope~
+Title
+Destroyer of Life~
+Destroyer of Life~
+Title
+Master of Darkness~
+Mistress of Darkness~
+Title
+Wrath of Chaos~
+Wrath of Chaos~
+Title
+Angel Slayer~
+Angel Slayer~
+Title
+Unholy Maelstrom~
+Unholy Maelstrom~
+Title
+Shadow Bringer~
+Shadow Bringer~
+Title
+Dark Avenger~
+Dark Avenger~
+Title
+Unholy Avatar~
+Unholy Avatar~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

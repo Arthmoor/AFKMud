@@ -1,0 +1,34 @@
+    /*
+     * MOBprogram commands.
+     */
+    { "mpstat",         do_mpstat,      POS_DEAD,       38,  LOG_NORMAL },
+    { "mpasound",       do_mpasound,    POS_DEAD,        0,  LOG_NORMAL },
+    { "mpjunk",         do_mpjunk,      POS_DEAD,        0,  LOG_NORMAL },
+    { "mpecho",         do_mpecho,      POS_DEAD,        0,  LOG_NORMAL },
+    { "mpechoat",       do_mpechoat,    POS_DEAD,        0,  LOG_NORMAL },
+    { "mpechoaround",   do_mpechoaround,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpkill",         do_mpkill      ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpmload",        do_mpmload     ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpoload",        do_mpoload     ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mppurge",        do_mppurge     ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpgoto",         do_mpgoto      ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpat",           do_mpat        ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mptransfer",     do_mptransfer  ,POS_DEAD,        0,  LOG_NORMAL },
+    { "mpforce",        do_mpforce     ,POS_DEAD,        0,  LOG_NORMAL },
+ 
+	Place the following into merc.h with all the other DO_FUN's:
+
+DECLARE_DO_FUN( do_mpasound     );
+DECLARE_DO_FUN( do_mpat         );
+DECLARE_DO_FUN( do_mpecho       );
+DECLARE_DO_FUN( do_mpechoaround );
+DECLARE_DO_FUN( do_mpechoat     );
+DECLARE_DO_FUN( do_mpforce      );
+DECLARE_DO_FUN( do_mpgoto       );
+DECLARE_DO_FUN( do_mpjunk       );
+DECLARE_DO_FUN( do_mpkill       );
+DECLARE_DO_FUN( do_mpmload      );
+DECLARE_DO_FUN( do_mpoload      );
+DECLARE_DO_FUN( do_mppurge      );
+DECLARE_DO_FUN( do_mpstat       );
+DECLARE_DO_FUN( do_mptransfer   );

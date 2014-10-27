@@ -1,0 +1,438 @@
+Version     1
+Name        Warrior~
+Class       3
+Attrprime   1
+Weapon      2894
+Armor       2889
+Legwear     2891
+Headwear    2890
+Armwear     2892
+Footwear    2888
+Shield      2893
+Held        -1
+Skilladept  95
+Thac0       18
+Thac0gain   0.400000
+Hpmin       5
+Hpmax       12
+Mana        0
+Skill 'adrenaline rush' 42 95
+Skill 'aid' 3 95
+Skill 'bandage' 21 95
+Skill 'bash' 8 95
+Skill 'battle fury' 60 95
+Skill 'berserk' 3 95
+Skill 'blitz' 65 85
+Skill 'cook' 1 95
+Skill 'dig' 10 95
+Skill 'disarm' 12 95
+Skill 'doorbash' 4 95
+Skill 'dual wield' 30 65
+Skill 'endurance' 23 95
+Skill 'enhanced damage' 25 95
+Skill 'frenzy' 38 85
+Skill 'grip' 11 95
+Skill 'headbutt' 84 95
+Skill 'hitall' 45 90
+Skill 'jab' 46 95
+Skill 'kick' 2 95
+Skill 'leap' 68 95
+Skill 'lunge' 74 95
+Skill 'mount' 2 95
+Skill 'pummel' 92 95
+Skill 'punch' 7 95
+Skill 'rampage' 86 85
+Skill 'recuperate' 26 95
+Skill 'rescue' 6 95
+Skill 'retreat' 20 95
+Skill 'roundhouse' 27 95
+Skill 'search' 1 95
+Skill 'slice' 1 95
+Skill 'strike' 35 95
+Skill 'stun' 22 40
+Skill 'swipe' 58 95
+Skill 'tan' 35 85
+Skill 'track' 18 80
+Skill 'uppercut' 14 95
+Skill 'aggressive style' 1 95
+Skill 'archery' 1 95
+Skill 'axes' 1 95
+Skill 'berserk style' 1 95
+Skill 'blowguns' 1 95
+Skill 'daggers' 1 95
+Skill 'defensive style' 1 95
+Skill 'evasive style' 1 95
+Skill 'maces and hammers' 1 95
+Skill 'pugilism' 1 95
+Skill 'slings' 1 95
+Skill 'spears' 1 95
+Skill 'standard style' 1 95
+Skill 'staves' 1 95
+Skill 'swords' 1 95
+Skill 'talonous arms' 1 95
+Skill 'whips' 1 95
+Skill 'centaur' 1 99
+Skill 'common' 1 99
+Skill 'dwarven' 1 99
+Skill 'elvish' 1 99
+Skill 'gith' 1 99
+Skill 'gnomish' 1 99
+Skill 'goblin' 1 99
+Skill 'halfling' 1 99
+Skill 'insectoid' 1 95
+Skill 'minotaur' 1 99
+Skill 'ogre' 1 99
+Skill 'orcish' 1 99
+Skill 'pixie' 1 99
+Skill 'reptile' 1 99
+Skill 'sahuagin' 1 95
+Skill 'trollese' 1 99
+Title
+Man~
+Woman~
+Title
+Novice~
+Novice~
+Title
+Swordpupil~
+Swordpupil~
+Title
+Recruit~
+Recruit~
+Title
+Watchman~
+Watchwoman~
+Title
+Guard~
+Guard~
+Title
+Sentry~
+Sentress~
+Title
+Fighter~
+Fighter~
+Title
+Soldier~
+Soldier~
+Title
+Warrior~
+Warrior~
+Title
+Veteran~
+Veteran~
+Title
+Swordsman~
+Swordswoman~
+Title
+Fencer~
+Fenceress~
+Title
+Combatant~
+Combatess~
+Title
+Hero~
+Heroine~
+Title
+Myrmidon~
+Myrmidon~
+Title
+Hoplite~
+Hoplite~
+Title
+Legionary~
+Legionary~
+Title
+Centurion~
+Centurion~
+Title
+Tribune~
+Tribune~
+Title
+Praetorian~
+Praetorian~
+Title
+Swashbuckler~
+Swashbuckleress~
+Title
+Mercenary~
+Mercenaress~
+Title
+Axemaster~
+Axemistress~
+Title
+Stavesmaster~
+Stavesmistress~
+Title
+Bowmaster~
+Bowmistress~
+Title
+Swordmaster~
+Swordmistress~
+Title
+Armsmaster~
+Armsmistress~
+Title
+Weaponsmaster~
+Weaponsmistress~
+Title
+Sergeant~
+Sergeant~
+Title
+Lieutenant~
+Lieutenant~
+Title
+Captain~
+Captain~
+Title
+Champion~
+Lady Champion~
+Title
+Dragoon~
+Lady Dragoon~
+Title
+Cavalier~
+Lady Cavalier~
+Title
+Companion~
+Companion~
+Title
+Novice Knight~
+Novice Knight~
+Title
+Knight~
+Lady Knight~
+Title
+Grand Knight~
+Grand Knight~
+Title
+Master Knight~
+Master Knight~
+Title
+Novice Crusader~
+Novice Crusader~
+Title
+Crusader~
+Crusader~
+Title
+Grand Crusader~
+Grand Crusader~
+Title
+Lesser Demon Slayer~
+Lesser Demon Slayer~
+Title
+Demon Slayer~
+Demon Slayer~
+Title
+Greater Demon Slayer~
+Greater Demon Slayer~
+Title
+Master Demon Slayer~
+Master Demon Slayer~
+Title
+Lesser Dragon Slayer~
+Lesser Dragon Slayer~
+Title
+Dragon Slayer~
+Dragon Slayer~
+Title
+Greater Dragon Slayer~
+Greater Dragon Slayer~
+Title
+Master Dragon Slayer~
+Master Dragon Slayer~
+Title
+Underlord~
+Underlord~
+Title
+Lord~
+Lady~
+Title
+Overlord~
+Overlord~
+Title
+Knight of the Sword~
+Knight of the Sword~
+Title
+Master of the Sword~
+Mistress of the Sword~
+Title
+Lord of the Sword~
+Lady of the Sword~
+Title
+Knight of the Shield~
+Knight of the Shield~
+Title
+Master of the Shield~
+Mistress of the Shield~
+Title
+Lord of the Shield~
+Lady of the Shield~
+Title
+Knight of the Cross~
+Knight of the Cross~
+Title
+Master of the Cross~
+Mistress of the Cross~
+Title
+Lord of the Cross~
+Lady of the Cross~
+Title
+Knight of the Rings~
+Knight of the Rings~
+Title
+Master of the Rings~
+Mistress of the Rings~
+Title
+Lord of the Rings~
+Lady of the Rings~
+Title
+Knight of Battle~
+Knight of Battle~
+Title
+Master of Battle~
+Mistress of Battle~
+Title
+Lord of Battle~
+Lady of Battle~
+Title
+Baron of Thunder~
+Baroness of Thunder~
+Title
+Baron of Storms~
+Baroness of Storms~
+Title
+Baron of Tornadoes~
+Baroness of Tornadoes~
+Title
+Baron of Hurricanes~
+Baroness of Hurricanes~
+Title
+Baron of Meteors~
+Baroness of Meteors~
+Title
+Baron of the Elements~
+Baroness of the Elements~
+Title
+Baron of Nature~
+Baroness of Nature~
+Title
+Duke of Thunder~
+Dutchess of Thunder~
+Title
+Duke of Storms~
+Dutchess of Storms~
+Title
+Duke of Tornadoes~
+Dutchess of Tornadoes~
+Title
+Duke of Hurricanes~
+Dutchess of Hurricanes~
+Title
+Duke of Meteors~
+Dutchess of Meteors~
+Title
+Duke of the Elements~
+Duchess of the Elements~
+Title
+Duke of Nature~
+Duchess of Nature~
+Title
+Prince of Thunder~
+Princess of Thunder~
+Title
+Prince of Storms~
+Princess of Storms~
+Title
+Prince of Tornadoes~
+Princess of Tornadoes~
+Title
+Prince of Hurricanes~
+Princess of Hurricanes~
+Title
+Prince of Meteors~
+Princess of Meteors~
+Title
+Prince of the Elements~
+Princess of the Elements~
+Title
+Prince of Nature~
+Princess of Nature~
+Title
+King of Courage~
+Queen of Courage~
+Title
+King of Honor~
+Queen of Honor~
+Title
+King of Strength~
+Queen of Strength~
+Title
+King of Wisdom~
+Queen of Wisdom~
+Title
+King of Humility~
+Queen of Humility~
+Title
+King of Virtue~
+Queen of Virtue~
+Title
+King of the Realm~
+Queen of the Realm~
+Title
+King of All~
+Queen of All~
+Title
+Emperor of the Realm~
+Emperess of the Realm~
+Title
+Emperor of the World~
+Emperess of the World~
+Title
+Avatar of Conquest~
+Avatar of Conquest~
+Title
+Angel~
+Angel~
+Title
+Acolyte~
+Acolyte~
+Title
+Creator~
+Creator~
+Title
+Savior~
+Savior~
+Title
+Deity~
+Deity~
+Title
+Demi God~
+Demi Goddess~
+Title
+God~
+Goddess~
+Title
+Greater God~
+Greater Goddess~
+Title
+Dream God~
+Dream Goddess~
+Title
+Elemental God~
+Elemental Goddess~
+Title
+Astral God~
+Astral Goddess~
+Title
+Ancient One~
+Ancient One~
+Title
+Eternal One~
+Eternal One~
+Title
+Realm Lord~
+Realm Lord~
+Title
+Supreme Entity~
+Supreme Entity~
+End

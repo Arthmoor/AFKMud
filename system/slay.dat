@@ -1,0 +1,215 @@
+#SLAY
+Type		demon~
+Owner		Any~
+Color		12
+Cmessage	You gesture, and a slavering demon appears.
+With a horrible grin, the foul creature turns on
+$N, who screams in panic before being eaten alive!
+~
+Vmessage	$n gestures, and a slavering demon appears.
+The foul creature turns on you with a horrible grin.
+You scream in panic before being eaten alive!
+~
+Rmessage	$n gestures, and a slavering demon appears.
+With a horrible grin, the foul creature turns on
+$N, who screams in panic before being eaten alive!
+~
+End
+
+#SLAY
+Type		immolate~
+Owner		Any~
+Color		60
+Cmessage	Your fireball turns $N into a blazing inferno.
+~
+Vmessage	$n releases a searing fireball in your direction,
+which turns you into a blazing inferno.
+~
+Rmessage	$n points at $N, who bursts into a flaming inferno.
+~
+End
+
+#SLAY
+Type		shatter~
+Owner		Any~
+Color		40
+Cmessage	You freeze $N with a glance and shatter the frozen corpse into tiny shards.
+~
+Vmessage	$n freezes you with a glance and shatters your frozen body into tiny shards.
+~
+Rmessage	$n freezes $N with a glance and shatters the frozen body into tiny shards.
+~
+End
+
+#SLAY
+Type		pounce~
+Owner		Any~
+Color		8
+Cmessage	Leaping upon $N with bared fangs, you tear open $S throat
+and toss the corpse to the ground...
+~
+Vmessage	In a heartbeat, $n rips $s fangs through your throat!
+Your blood sprays and pours to the ground as your life ends...
+~
+Rmessage	Leaping suddenly, $n sinks $s fangs into $N's throat.
+As blood sprays and gushes to the ground, $n tosses $N's dying body away.
+~
+End
+
+#SLAY
+Type		slit~
+Owner		Any~
+Color		8
+Cmessage	You calmly slit $N's throat with a hidiously clawed finger.
+~
+Vmessage	$n reaches out with a clawed finger and calmly slits your throat.
+~
+Rmessage	$n calmly slits $N's throat with $s hidiously clawed finger.
+~
+End
+
+#SLAY
+Type		die~
+Owner		Any~
+Color		25
+Cmessage	&R
+        diediediediediediediediediediediedie
+                 die         die
+                die          die
+               diediediedie  die
+              die       die  die        die
+             die       die   die       die
+            die       die    die      die
+           die die die       die    die
+          die    die         die  die
+               die           diedie      die
+            die              die     die  die
+         die              diedie          die
+      die               die   die         die
+                     die       diediediedie
+ 
+               &Y(The deed is done.)&z
+~
+Vmessage	&R
+          diediediediediediediediediediediedie
+                  die         die
+                 die          die
+                diediediedie  die
+               die       die  die        die
+              die       die   die       die
+             die       die    die      die
+            die die die       die    die
+           die    die         die  die
+                die           diedie      die
+             die              die     die  die
+          die              diedie          die
+       die               die   die         die
+                      die       diediediedie
+ 
+                       &Y (Die.)&z
+~
+Rmessage	&R
+         diediediediediediediediediediediedie
+                  die         die
+                 die          die
+                diediediedie  die
+               die       die  die        die
+              die       die   die       die
+             die       die    die      die
+            die die die       die    die
+           die    die         die  die
+                die           diedie      die
+             die              die     die  die
+          die              diedie          die
+       die               die   die         die
+                      die       diediediedie
+ 
+                  &Y ($N has died.)&z
+~
+End
+
+#SLAY
+Type		balzhur~
+Owner		Any~
+Color		25
+Cmessage	You have opened the gates of Hell and called Balzhur to slay $N!
+                                       &R.                                  &D
+                &R ,                     |\      -,- ,  .'\ ._              &D
+                &R/|          \    ,     , ]       }  )/  / `-,',           &D
+               &R[ ,          |\  /|     | |       /  \|  |/`  ,`           &D
+               &R| |       ,.`  `,` `,  /  / _,...(   (      _',            &D
+               &R\  \  __ ,-` `  ,  , `/  /,'    Y    (   \_L\              &D
+                &R\  \_\,``,   ` , ,      /       )         _,/             &D
+                &R\     `  ,_ _`_,-,<._.<        /         /                &D
+                  &R', `>.,`  `  `   ,., |_      |         /                &D
+                    &R\/`  `,   `   ,`  | /__,.-`    _,   `\                &D
+                &R-,-..\     \  `  /  }W,&D&R  / `._) _,-\`       \         &D
+    &YBalzhur-     &R\_,,.) }W/\&D&R    ` /  }W/ )&D &R(-,, ``    ,        |&D
+   &Ythe pet demon&R,` )  | }W\_\       '-`&D  &R|  `(               \      &D
+               &R/  /```(   , --, ,' \   |`<`    ,            |             &D
+              &R/  /_,--`\   <\  &WV &R/> ,` )<_/)  | \      _____)         &D
+        &R,-, ,`   `   (_,\ \    |   /) / __/  /   `----`                   &D
+       &R(-, \           ) \ ('_.-._)/ /,`    /                             &D
+       &R| /  `          `/ \\ &WV   V&R, /`     /                          &D
+    &R,--\(        ,     <_/`\\     ||      /                               &D
+   &R(   ,``-     \/|         \-&WA&R.&WA&R-`|     /                        &D
+  &R,>,_ )_,..(    )\          -,,_-`  _--`                                 &D
+ &R(_ \|&R`   _,/_  /  \_            ,--`                                   &D
+  &R\( `   <.,../`     `-.._   _,-`                                         &D
+   &R`                      ```                                             &D
+~
+Vmessage	$n opened the gates of Hell and called Balzhur to take you back!
+                                       &R.                                  &D
+                &R ,                     |\      -,- ,  .'\ ._              &D
+                &R/|          \    ,     , ]       }  )/  / `-,',           &D
+               &R[ ,          |\  /|     | |       /  \|  |/`  ,`           &D
+               &R| |       ,.`  `,` `,  /  / _,...(   (      _',            &D
+               &R\  \  __ ,-` `  ,  , `/  /,'    Y    (   \_L\              &D
+                &R\  \_\,``,   ` , ,      /       )         _,/             &D
+                &R\     `  ,_ _`_,-,<._.<        /         /                &D
+                  &R', `>.,`  `  `   ,., |_      |         /                &D
+                    &R\/`  `,   `   ,`  | /__,.-`    _,   `\                &D
+                &R-,-..\     \  `  /  }W,&D&R  / `._) _,-\`       \         &D
+    &YBalzhur-     &R\_,,.) }W/\&D&R    ` /  }W/ )&D &R(-,, ``    ,        |&D
+   &Ythe pet demon&R,` )  | }W\_\       '-`&D  &R|  `(               \      &D
+               &R/  /```(   , --, ,' \   |`<`    ,            |             &D
+              &R/  /_,--`\   <\  &WV &R/> ,` )<_/)  | \      _____)         &D
+        &R,-, ,`   `   (_,\ \    |   /) / __/  /   `----`                   &D
+       &R(-, \           ) \ ('_.-._)/ /,`    /                             &D
+       &R| /  `          `/ \\ &WV   V&R, /`     /                          &D
+    &R,--\(        ,     <_/`\\     ||      /                               &D
+   &R(   ,``-     \/|         \-&WA&R.&WA&R-`|     /                        &D
+  &R,>,_ )_,..(    )\          -,,_-`  _--`                                 &D
+ &R(_ \|&R`   _,/_  /  \_            ,--`                                   &D
+  &R\( `   <.,../`     `-.._   _,-`                                         &D
+   &R`                      ```                                             &D
+~
+Rmessage	$n opened the gates of Hell and called Balzhur to slay $N!
+                                       &R.                                  &D
+                &R ,                     |\      -,- ,  .'\ ._              &D
+                &R/|          \    ,     , ]       }  )/  / `-,',           &D
+               &R[ ,          |\  /|     | |       /  \|  |/`  ,`           &D
+               &R| |       ,.`  `,` `,  /  / _,...(   (      _',            &D
+               &R\  \  __ ,-` `  ,  , `/  /,'    Y    (   \_L\              &D
+                &R\  \_\,``,   ` , ,      /       )         _,/             &D
+               &R\     `  ,_ _`_,-,<._.<        /         /                 &D
+                  &R', `>.,`  `  `   ,., |_      |         /                &D
+                    &R\/`  `,   `   ,`  | /__,.-`    _,   `\                &D
+                &R-,-..\     \  `  /  }W,&D&R  / `._) _,-\`       \         &D
+    &YBalzhur-     &R\_,,.) }W/\&D&R    ` /  }W/ )&D &R(-,, ``    ,        |&D
+   &Ythe pet demon&R,` )  | }W\_\       '-`&D  &R|  `(               \      &D
+               &R/  /```(   , --, ,' \   |`<`    ,            |             &D
+              &R/  /_,--`\   <\  &WV &R/> ,` )<_/)  | \      _____)         &D
+        &R,-, ,`   `   (_,\ \    |   /) / __/  /   `----`                   &D
+       &R(-, \           ) \ ('_.-._)/ /,`    /                             &D
+       &R| /  `          `/ \\ &WV   V&R, /`     /                          &D
+    &R,--\(        ,     <_/`\\     ||      /                               &D
+   &R(   ,``-     \/|         \-&WA&R.&WA&R-`|     /                        &D
+  &R,>,_ )_,..(    )\          -,,_-`  _--`                                 &D
+ &R(_ \|&R`   _,/_  /  \_            ,--`                                   &D
+  &R\( `   <.,../`     `-.._   _,-`                                         &D
+   &R`                      ```                                             &D
+~
+End
+
+#END

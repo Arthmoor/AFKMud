@@ -1,0 +1,61 @@
+Version     1
+Name        Sahuagin~
+Race        18
+Classes     Mage Druid Ranger Monk Available Available2 Paladin Bard~
+Str_Plus    0
+Dex_Plus    2
+Wis_Plus    0
+Int_Plus    1
+Con_Plus    -1
+Cha_Plus    -2
+Lck_Plus    0
+Hit         5
+Mana        10
+Affected    aqua_breath~
+Resist      cold~
+Suscept     fire~
+Language    sahuagin~
+Align       -1000
+Min_Align  -1000
+Max_Align	 0
+AC_Plus    0
+Exp_Mult   100
+Height     72
+Weight     150
+Hunger_Mod  0
+Thirst_mod  0
+Mana_Regen  0
+HP_Regen    0
+WhereName  <used as light>     ~
+WhereName  <worn on finger>    ~
+WhereName  <worn on finger>    ~
+WhereName  <worn around neck>  ~
+WhereName  <worn around neck>  ~
+WhereName  <worn on body>      ~
+WhereName  <worn on head>      ~
+WhereName  <worn on legs>      ~
+WhereName  <worn on feet>      ~
+WhereName  <worn on hands>     ~
+WhereName  <worn on arms>      ~
+WhereName  <worn as shield>    ~
+WhereName  <worn about body>   ~
+WhereName  <worn about waist>  ~
+WhereName  <worn around wrist> ~
+WhereName  <worn around wrist> ~
+WhereName  <wielded>           ~
+WhereName  <held>              ~
+WhereName  <dual wielded>      ~
+WhereName  <worn on ears>      ~
+WhereName  <worn on eyes>      ~
+WhereName  <missile wielded>   ~
+WhereName  <worn on back>      ~
+WhereName  <worn on face>      ~
+WhereName  <worn on ankle>     ~
+WhereName  <worn on ankle>     ~
+WhereName  <lodged in a rib>   ~
+WhereName  <lodged in an arm>  ~
+WhereName  <lodged in a leg>   ~
+Skill 'blood frenzy' 35 95
+Skill 'sharktooth' 65 95
+Skill 'swim' 2 95
+End

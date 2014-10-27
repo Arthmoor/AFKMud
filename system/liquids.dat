@@ -1,0 +1,190 @@
+#LIQUID
+Name              water~
+Shortdesc         water~
+Color             clear~
+Type              0
+Vnum              0
+Mod			0 1 10 0
+End
+
+#LIQUID
+Name              beer~
+Shortdesc         beer~
+Color             amber~
+Type              1
+Vnum              1
+Mod			3 2 5 0
+End
+
+#LIQUID
+Name              wine~
+Shortdesc         wine~
+Color             rose~
+Type              1
+Vnum              2
+Mod			5 2 5 0
+End
+
+#LIQUID
+Name              ale~
+Shortdesc         ale~
+Color             brown~
+Type              1
+Vnum              3
+Mod			2 2 5 0
+End
+
+#LIQUID
+Name              dark ale~
+Shortdesc         dark ale~
+Color             dark brown~
+Type              1
+Vnum              4
+Mod			1 2 5 0
+End
+
+#LIQUID
+Name              whiskey~
+Shortdesc         whiskey~
+Color             golden~
+Type              1
+Vnum              5
+Mod			6 1 4 0
+End
+
+#LIQUID
+Name              lemonade~
+Shortdesc         lemonade~
+Color             yellow~
+Type              0
+Vnum              6
+Mod			0 1 8 0
+End
+
+#LIQUID
+Name              firebreather~
+Shortdesc         firebreather~
+Color             redish~
+Type              1
+Vnum              7
+Mod			10 0 0 0
+End
+
+#LIQUID
+Name              local specialty~
+Shortdesc         local specialty~
+Color             clear~
+Type              0
+Vnum              8
+Mod			3 3 3 0
+End
+
+#LIQUID
+Name              slime mold juice~
+Shortdesc         slime mold juice~
+Color             green~
+Type              2
+Vnum              9
+Mod			0 4 -8 0
+End
+
+#LIQUID
+Name              milk~
+Shortdesc         milk~
+Color             white~
+Type              0
+Vnum              10
+Mod			0 3 6 0
+End
+
+#LIQUID
+Name              tea~
+Shortdesc         tea~
+Color             light brown~
+Type              0
+Vnum              11
+Mod			0 1 6 0
+End
+
+#LIQUID
+Name              coffee~
+Shortdesc         coffee~
+Color             brown~
+Type              0
+Vnum              12
+Mod			0 1 6 0
+End
+
+#LIQUID
+Name			blood~
+Shortdesc		blood~
+Color			red~
+Type			3
+Vnum			13
+Mod			0 2 -1 0
+End
+
+#LIQUID
+Name              salt water~
+Shortdesc         salt water~
+Color             brine~
+Type              0
+Vnum              14
+Mod			0 1 -2 0
+End
+
+#LIQUID
+Name              cola~
+Shortdesc         cola~
+Color             caramel~
+Type              0
+Vnum              15
+Mod			0 1 5 0
+End
+
+#LIQUID
+Name			mead~
+Shortdesc		mead~
+Color			honey yellow~
+Type			1
+Vnum			16
+Mod			4 2 5 0
+End
+
+#LIQUID
+Name			grog~
+Shortdesc		grog~
+Color			thick brown~
+Type			1
+Vnum			17
+Mod			3 2 5 0
+End
+
+#LIQUID
+Name              orange juice~
+Shortdesc         orange juice~
+Color             orange~
+Type              0
+Vnum              18
+Mod			0 2 5 0
+End
+
+#LIQUID
+Name			vodka~
+Shortdesc		vodka~
+Color			clear~
+Type			1
+Vnum			19
+Mod			7 1 3 0
+End
+
+#LIQUID
+Name              screwdriver~
+Shortdesc         screwdriver~
+Color             peach~
+Type              1
+Vnum              20
+Mod			4 1 4 0
+End
+
+#END
