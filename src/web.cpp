@@ -328,8 +328,7 @@ void web_who(  )
    char col_buf[64000];
 
    webbuf << "\n&Y[&d&W" << pcount << " Player" << ( pcount == 1 ? "" : "s" ) << "&d&Y] ";
-   webbuf << "[&d&WHomepage: <a href=\"" << sysdata->http << "\" target=\"_blank\">" << sysdata->
-      http << "</a>&d&Y] [&d&W" << sysdata->maxplayers << " Max Since Reboot&d&Y]&d\n";
+   webbuf << "[&d&WHomepage: <a href=\"" << sysdata->http << "\">" << sysdata->http << "</a>&d&Y] [&d&W" << sysdata->maxplayers << " Max Since Reboot&d&Y]&d\n";
    webbuf << "&Y[&d&W" << num_logins << " login" << ( num_logins == 1 ? "" : "s" ) << " since last reboot on " << str_boot_time << "&d&Y]&d\n";
    web_colourconv( col_buf, webbuf.str(  ).c_str(  ) );
    fprintf( webwho, "%s", col_buf );
