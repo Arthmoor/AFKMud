@@ -1595,6 +1595,7 @@ void make_webwiz( void )
          {
             bitset < MAX_PCFLAG > iflags;
             iflags.reset(  );
+            http.clear();
 
             word = feof( gfp ) ? "End" : fread_word( gfp );
             ilevel = fread_number( gfp );
