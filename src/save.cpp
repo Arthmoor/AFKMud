@@ -2111,23 +2111,24 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                obj->value[9] = x10;
                obj->value[10] = x11;
 
-               /*
-                * Ugh, the price one pays for forgetting - had to keep corpses from doing this 
-                */
-               if( file_ver < 10 && fVnum == true && os_type != OS_CORPSE )
+               // Note to future self looking at this is what's possibly 2025: Don't try to fix this again, ok? It works properly as listed now that hotboots have been accounted for.
+               // It will still log from other sources though, so hey, if something OTHER that the hotboot recovery is triggering it, investigate that cause it may not be right!
+               if( file_ver < 10 && fVnum == true && os_type != OS_CORPSE && ch->tempnum != -9999 )
                {
                   log_printf( "%s: != OS_CORPSE case encountered. file_ver=%d", __FUNCTION__, file_ver );
-                /* obj->value[0] = obj->pIndexData->value[0];
-                * obj->value[1] = obj->pIndexData->value[1];
-                * obj->value[2] = obj->pIndexData->value[2];
-                * obj->value[3] = obj->pIndexData->value[3];
-                * obj->value[4] = obj->pIndexData->value[4];
-                * obj->value[5] = obj->pIndexData->value[5];
-                * 
-                * if( obj->item_type == ITEM_WEAPON )
-                * obj->value[2] = obj->pIndexData->value[1] * obj->pIndexData->value[2]; */
-                }
-                break;
+                  obj->value[0] = obj->pIndexData->value[0];
+                  obj->value[1] = obj->pIndexData->value[1];
+                  obj->value[2] = obj->pIndexData->value[2];
+                  obj->value[3] = obj->pIndexData->value[3];
+                  obj->value[4] = obj->pIndexData->value[4];
+                  obj->value[5] = obj->pIndexData->value[5];
+
+                  if( obj->item_type == ITEM_WEAPON )
+                  {
+                     obj->value[2] = obj->pIndexData->value[1] * obj->pIndexData->value[2];
+                  }
+               }
+               break;
             }
 
             if( !str_cmp( word, "Vnum" ) )
