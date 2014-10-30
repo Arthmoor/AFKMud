@@ -2078,6 +2078,12 @@ void boot_db( bool fCopyOver )
    log_string( "Fixing exits..." );
    fix_exits(  );
 
+   log_string( "Loading prototype area files..." );
+   load_buildlist(  );
+
+   log_string( "Fixing prototype zone exits..." );
+   fix_exits(  );
+
    load_clans(  );
    load_deity(  );
 
@@ -2131,12 +2137,6 @@ void boot_db( bool fCopyOver )
     */
    log_string( "Loading clan/guild shops..." );
    load_shopkeepers(  );
-
-   log_string( "Loading prototype area files..." );
-   load_buildlist(  );
-
-   log_string( "Fixing prototype zone exits..." );
-   fix_exits(  );
 
    log_string( "Loading boards..." );
    load_boards(  );
