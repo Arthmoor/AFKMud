@@ -123,6 +123,7 @@ void update_connhistory( descriptor_data *, int ); /* connhist.c */
 void free_connhistory( int ); /* connhist.c */
 
 /* Used during memory cleanup */
+void free_immhosts();
 void free_mssp_info( void );
 void free_morphs(  );
 void free_quotes(  );
@@ -1076,6 +1077,9 @@ void cleanup_memory( void )
 
    fprintf( stdout, "%s", "Rune Data.\n" );
    free_runedata(  );
+
+   fprintf( stdout, "%s", "Immortal Hosts Data.\n" );
+   free_immhosts();
 
    fprintf( stdout, "%s", "Connection History Data.\n" );
    free_connhistory( 0 );

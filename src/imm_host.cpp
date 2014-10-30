@@ -76,6 +76,20 @@ immortal_host::~immortal_host(  )
    hostlist.remove( this );
 }
 
+void free_immhosts()
+{
+   list < immortal_host * >::iterator ihost;
+
+   for( ihost = hostlist.begin(  ); ihost != hostlist.end(  ); )
+   {
+      immortal_host *host = *ihost;
+      ++ihost;
+
+      hostlist.remove( host );
+      deleteptr( host );
+   }
+}
+
 immortal_host_log *fread_imm_host_log( FILE * fp )
 {
    immortal_host_log *hlog = new immortal_host_log;
@@ -150,7 +164,10 @@ immortal_host *fread_imm_host( FILE * fp )
                if( dnum >= MAX_DOMAIN )
                   bug( "%s: more saved domains than MAX_DOMAIN", __FUNCTION__ );
                else
-                  host->domain[dnum++] = fread_string( fp );
+               {
+                  dnum++;
+                  fread_string( host->domain[dnum], fp );
+               }
 
                break;
             }
