@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -1098,7 +1098,7 @@ void print_infoflags( char_data * ch )
    {
       tarea = ch->in_room->area;
 
-      ch->printf( "&[aflags][Area Flags: %s]\r\n", ( tarea->flags.any(  ) )? bitset_string( tarea->flags, area_flags ) : "none" );
+      ch->printf( "&[aflags][Area Flags: %s]\r\n", ( tarea->flags.any(  ) ) ? bitset_string( tarea->flags, area_flags ) : "none" );
       ch->printf( "&[rflags][Room Flags: %s]\r\n", bitset_string( ch->in_room->flags, r_flags ) );
    }
 

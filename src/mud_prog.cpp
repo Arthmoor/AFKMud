@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -39,6 +39,7 @@
 
 #include <cstdarg>
 #include "mud.h"
+#include "area.h"
 #include "bits.h"
 #include "clans.h"
 #include "deity.h"
@@ -316,6 +317,14 @@ int mprog_name_to_type( const string & name )
       return TELL_AND_PROG;
    if( !str_cmp( name, "command_prog" ) )
       return CMD_PROG;
+   if( !str_cmp( name, "emote_prog" ) )
+      return EMOTE_PROG;
+   if( !str_cmp( name, "login_prog" ) )
+      return LOGIN_PROG;
+   if( !str_cmp( name, "void_prog" ) )
+      return VOID_PROG;
+   if( !str_cmp( name, "load_prog" ) )
+      return LOAD_PROG;
    return ( ERROR_PROG );
 }
 
@@ -450,6 +459,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
    }
 
    *p++ = '\0';
+
    /*
     * Need to check for spaces or if name( $n ) isn't legal --Shaddai 
     */
@@ -458,7 +468,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
    for( ;; )
    {
       argv[argc++] = p;
-      while( *p == '$' || isalnum( *p ) )
+      while( *p == '$' || isalnum( *p ) || *p == ':' )
          ++p;
       while( isspace( *p ) )
          *p++ = '\0';
@@ -1011,11 +1021,19 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
       if( !str_cmp( chck, "ispacifist" ) )
          return ( chkchar->has_actflag( ACT_PACIFIST ) );
 
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "stopscript" ) )
+         return ( chkchar->has_actflag( ACT_STOP_SCRIPT ) );
+
       if( !str_cmp( chck, "ismobinvis" ) )
          return ( chkchar->has_actflag( ACT_MOBINVIS ) );
 
       if( !str_cmp( chck, "mobinvislevel" ) )
-         return ( chkchar->isnpc(  )? mprog_veval( chkchar->mobinvis, opr, atoi( rval ), mob ) : false );
+         return ( chkchar->isnpc(  ) ? mprog_veval( chkchar->mobinvis, opr, atoi( rval ), mob ) : false );
+
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "drunk" ) )
+         return( !chkchar->isnpc() ? mprog_veval( chkchar->pcdata->condition[COND_DRUNK], opr, atoi(rval), mob) : false );
 
       if( !str_cmp( chck, "ispc" ) )
          return chkchar->isnpc(  )? false : true;
@@ -1064,13 +1082,13 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
       }
 
       if( !str_cmp( chck, "ispkill" ) )
-         return chkchar->IS_PKILL(  )? true : false;
+         return chkchar->IS_PKILL(  ) ? true : false;
 
       if( !str_cmp( chck, "isdevoted" ) )
          return IS_DEVOTED( chkchar ) ? true : false;
 
       if( !str_cmp( chck, "canpkill" ) )
-         return chkchar->CAN_PKILL(  )? true : false;
+         return chkchar->CAN_PKILL(  ) ? true : false;
 
       if( !str_cmp( chck, "ismounted" ) )
          return ( chkchar->position == POS_MOUNTED );
@@ -1088,13 +1106,21 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          return chkchar->IS_EVIL(  );
 
       if( !str_cmp( chck, "isfight" ) )
-         return chkchar->who_fighting(  )? true : false;
+         return chkchar->who_fighting(  ) ? true : false;
 
       if( !str_cmp( chck, "isimmort" ) )
          return chkchar->is_immortal(  );
 
       if( !str_cmp( chck, "ischarmed" ) )
-         return chkchar->has_aflag( AFF_CHARM );
+      {
+         if( chkchar->has_aflag( AFF_CHARM ) || chkchar->has_aflag( AFF_POSSESS ) )
+            return true;
+         return false;
+      }
+
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "ispossesed" ) )
+         return chkchar->has_aflag( AFF_POSSESS );
 
       if( !str_cmp( chck, "isflying" ) )
          return chkchar->has_aflag( AFF_FLYING );
@@ -1218,15 +1244,13 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          switch ( vd->type )
          {
             case vtSTR:
-               return mprog_seval( ( char * )vd->data, opr, rval, mob );
+               return mprog_seval( vd->varstring.c_str(), opr, rval, mob );
 
             case vtINT:
-               return mprog_veval( ( long )vd->data, opr, atoi( rval ), mob );
+               return mprog_veval( vd->vardata, opr, atoi( rval ), mob );
 
-               /*
-                * case vtXBIT: <-- FIXME: Convert to std::bitset
-                * return false; 
-                */
+            case vtXBIT:
+               return false;
          }
          return false;
       }
@@ -1246,6 +1270,30 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
             return false;
          return mprog_veval( chkchar->was_in_room->vnum, opr, atoi( rval ), mob );
       }
+
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "indoors" ) )
+         return ( ( chkchar->IS_OUTSIDE() && chkchar->in_room->sector_type != SECT_INDOORS ) ? false : true );
+
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "nomagic" ) )
+         return chkchar->in_room->flags.test( ROOM_NO_MAGIC ) ? true : false;
+
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "safe" ) )
+         return chkchar->in_room->flags.test( ROOM_SAFE ) ? true : false;
+
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "nosummon" ) )
+         return chkchar->in_room->flags.test( ROOM_NO_SUMMON ) ? true : false;
+
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "noastral" ) )
+         return chkchar->in_room->flags.test( ROOM_NO_ASTRAL ) ? true : false;
+
+      // Imported from Smaug 1.8b
+      if( !str_cmp( chck, "nosupplicate" ) )
+         return chkchar->in_room->flags.test( ROOM_NOSUPPLICATE ) ? true : false;
 
       if( !str_cmp( chck, "norecall" ) )
          return chkchar->in_room->flags.test( ROOM_NO_RECALL ) ? true : false;
@@ -1647,6 +1695,14 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
    {
       if( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset )
          return true;
+      return false;
+   }
+
+   // Imported from Smaug 1.8b
+   if( !str_cmp( chck, "inarea" ) )
+   {
+      if( chkchar )
+         return mprog_seval( chkchar->in_room->area->filename,  opr, rval, mob );
       return false;
    }
 
@@ -2086,7 +2142,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
 {
    bool ifstate[MAX_IFS][DO_ELSE + 1];
 
-   if( mob->has_aflag( AFF_CHARM ) )
+   if( mob->has_aflag( AFF_CHARM ) || mob->has_aflag( AFF_POSSESS ) )
       return;
 
    /*
@@ -3087,7 +3143,7 @@ void mprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
       if( ( mprg->type == type ) && mprg->arglist != NULL && ( number_percent(  ) <= atoi( mprg->arglist ) ) )
       {
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-         if( type != GREET_PROG && type != ALL_GREET_PROG )
+         if( type != GREET_PROG && type != ALL_GREET_PROG && type != LOGIN_PROG && type != VOID_PROG )
             break;
       }
    }
@@ -3356,7 +3412,7 @@ bool mprog_keyword_trigger( const string & txt, char_data * actor )
 void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
 {
    list < mud_prog_data * >::iterator mpg;
-   mud_prog_data *mprg;
+   mud_prog_data *mprg, *tprg = NULL;
    obj_data *obj;
 
    if( mob->isnpc(  ) && mob->can_see( ch, false ) && HAS_PROG( mob->pIndexData, BRIBE_PROG ) )
@@ -3383,9 +3439,17 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
 
          if( ( mprg->type == BRIBE_PROG ) && ( amount >= atoi( mprg->arglist ) ) )
          {
-            mprog_driver( mprg->comlist, mob, ch, obj, NULL, NULL, false );
-            break;
+            if( tprg )
+            {	
+               if( atoi( tprg->arglist ) < atoi( mprg->arglist ) )
+                  tprg = mprg; 
+            }
+            else
+               tprg = mprg;
          }
+
+         if( tprg )
+            mprog_driver( tprg->comlist, mob, ch, obj, NULL, NULL, false );
       }
    }
 }
@@ -3398,6 +3462,49 @@ void mprog_death_trigger( char_data * killer, char_data * mob )
       mprog_percent_check( mob, killer, NULL, NULL, NULL, DEATH_PROG );
       mob->position = POS_DEAD;
    }
+}
+
+/* login and void mob triggers by Edmond */
+void mprog_login_trigger( char_data *ch )
+{
+   list < char_data * >::iterator ich;
+
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+   {
+      char_data *vmob = *ich;
+      ++ich;
+
+      if( !vmob->isnpc() || !vmob->can_see( ch, false ) || vmob->fighting || !vmob->IS_AWAKE() )
+         continue;
+
+      if( ch->isnpc() && ch->pIndexData == vmob->pIndexData )
+         continue;
+
+      if( HAS_PROG( vmob->pIndexData, LOGIN_PROG ) )
+         mprog_percent_check( vmob, ch, NULL, NULL, NULL, LOGIN_PROG );
+   }
+   return;
+}
+
+void mprog_void_trigger( char_data *ch )
+{
+   list < char_data * >::iterator ich;
+
+   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+   {
+      char_data *vmob = *ich;
+      ++ich;
+
+      if( !vmob->isnpc() || !vmob->can_see( ch, false ) || vmob->fighting || !vmob->IS_AWAKE() )
+         continue;
+
+      if( ch->isnpc() && ch->pIndexData == vmob->pIndexData )
+         continue;
+
+      if( HAS_PROG( vmob->pIndexData, VOID_PROG ) )
+         mprog_percent_check( vmob, ch, NULL, NULL, NULL, VOID_PROG );
+   }
+   return;
 }
 
 void mprog_entry_trigger( char_data * mob )
@@ -4205,6 +4312,27 @@ void rprog_leave_trigger( char_data * ch )
       rset_supermob( ch->in_room );
       rprog_percent_check( supermob, ch, NULL, NULL, NULL, LEAVE_PROG );
       release_supermob(  );
+   }
+}
+
+/* login and void room triggers by Edmond */
+void rprog_login_trigger( char_data *ch )
+{
+   if( HAS_PROG( ch->in_room, LOGIN_PROG ) )
+   {
+      rset_supermob( ch->in_room );
+      rprog_percent_check( supermob, ch, NULL, NULL, NULL, LOGIN_PROG );
+      release_supermob();
+   }
+}
+
+void rprog_void_trigger( char_data *ch )
+{
+   if( HAS_PROG( ch->in_room, VOID_PROG ) )
+   {
+      rset_supermob( ch->in_room );
+      rprog_percent_check( supermob, ch, NULL, NULL, NULL, VOID_PROG );
+      release_supermob();
    }
 }
 

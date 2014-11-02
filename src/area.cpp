@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -5245,6 +5245,10 @@ CMDF( do_areas )
    for( iarea = area_nsort.begin(  ); iarea != area_nsort.end(  ); ++iarea )
    {
       area_data *area = *iarea;
+
+      // Hidden areas should not display on the list.
+      if( area->flags.test( AFLAG_HIDDEN ) && !ch->is_immortal() )
+         continue;
 
       switch ( num_args )
       {

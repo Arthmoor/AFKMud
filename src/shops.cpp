@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -71,6 +71,8 @@ list < repair_data * >repairlist;
 
 void fwrite_mobile( char_data *, FILE *, bool );
 char_data *fread_mobile( FILE *, bool );
+
+void mprog_sell_trigger( char_data *, char_data *, obj_data * );
 
 /*
  * Local functions
@@ -917,6 +919,8 @@ CMDF( do_buy )
          }
          else
             buy_obj->to_char( ch );
+
+         mprog_sell_trigger( keeper, ch, obj );
       }
       else
       {

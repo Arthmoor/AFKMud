@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -1054,7 +1054,8 @@ CMDF( do_cast )
             ch->print( "You can't seem to do that right now...\r\n" );
             return;
          }
-         if( ch->in_room->flags.test( ROOM_NO_MAGIC ) )
+
+         if( !ch->in_room || ch->in_room->flags.test( ROOM_NO_MAGIC ) || ch->in_room->flags.test( AFLAG_NOMAGIC ) )
          {
             ch->print( "&[magic]Your magical energies were disperssed mysteriously.\r\n" );
             return;
@@ -1601,7 +1602,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
       return rERROR;
    }
 
-   if( ch->in_room->flags.test( ROOM_NO_MAGIC ) )
+   if( !ch->in_room || ch->in_room->flags.test( ROOM_NO_MAGIC ) || ch->in_room->flags.test( AFLAG_NOMAGIC ) )
    {
       ch->print( "&[magic]The magic from the spell is dispersed...\r\n" );
       return rNONE;
@@ -3783,6 +3784,8 @@ SPELLF( spell_remove_invis )
 
    if( obj )
    {
+      obj->separate();
+
       if( !obj->extra_flags.test( ITEM_INVIS ) )
       {
          ch->print( "Its not invisible!\r\n" );

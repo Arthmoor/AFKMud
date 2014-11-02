@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -1176,49 +1176,28 @@ CMDF( do_vstat )
 
       ch->pagerf( "  &cVnum: &W%-10d &cTag: &W%-15s &cTimer: &W%d\r\n", vd->vnum, vd->tag.c_str(  ), vd->timer );
       ch->pager( "  &cType: " );
-      if( vd->data )
+
+      switch( vd->type )
       {
-         switch ( vd->type )
-         {
-            case vtSTR:
-               if( vd->data )
-                  ch->pagerf( "&CString     &cData: &W%s", ( char * )vd->data );
-               break;
+         default:
+            ch->pager( "&RINVALID!!!" );
+            break;
 
-            case vtINT:
-               if( vd->data )
-                  ch->pagerf( "&CInteger    &cData: &W%ld", ( long )vd->data );
-               break;
+         case vtSTR:
+            if( !vd->varstring.empty() )
+               ch->pagerf( "&CString     &cData: &W%s", vd->varstring.c_str() );
+            break;
 
-               /*
-                * case vtXBIT: <--- FIXME: No EXT_BV, convert to std::bitset someday
-                * if( vd->data )
-                * {
-                * char buf[MAX_STRING_LENGTH];
-                * int started = 0;
-                * int x;
-                * 
-                * buf[0] = '\0';
-                * for( x = MAX_BITS; x > 0; --x )
-                * {
-                * if( !started && xIS_SET( *( EXT_BV * ) vd->data, x ) )
-                * started = x;
-                * }
-                * 
-                * for( x = 1; x <= started; x++ )
-                * strcat( buf, xIS_SET( *( EXT_BV * ) vd->data, x ) ? "1 " : "0 " );
-                * 
-                * if( buf[0] != '\0' )
-                * buf[strlen( buf ) - 1] = '\0';
-                * pager_printf( ch, "&CXBIT       &cData: &w[&W%s&w]", buf );
-                * }
-                * break; 
-                */
-         }
+         case vtINT:
+            if( vd->vardata > 0 )
+               ch->pagerf( "&CInteger    &cData: &W%ld", vd->vardata );
+            break;
+
+         case vtXBIT:
+            if( vd->varflags.any() )
+               ch->pagerf( "&CBitflags: &w[&W%s&w]", vd->varflags.to_string().c_str() );
+            break;
       }
-      else
-         ch->pager( "&CNo Data" );
-
       ch->pager( "\r\n\r\n" );
    }
 }
@@ -1354,41 +1333,27 @@ CMDF( do_mstat )
             vd = *ivd;
 
             ch->pagerf( "%s:%d", vd->tag.c_str(  ), vd->vnum );
-            switch ( vd->type )
+
+            switch( vd->type )
             {
+               default:
+                  ch->pager( "=INVALID!!!" );
+                  break;
+
                case vtSTR:
-                  if( vd->data )
-                     ch->pagerf( "=%s", ( char * )vd->data );
+                  if( !vd->varstring.empty() )
+                     ch->pagerf( "=%s", vd->varstring.c_str() );
                   break;
 
                case vtINT:
-                  if( vd->data )
-                     ch->pagerf( "=%ld", ( long )vd->data );
+                  if( vd->vardata > 0 )
+                     ch->pagerf( "=%ld", vd->vardata );
                   break;
 
-                  /*
-                   * case vtXBIT: <--- FIXME: We don't have EXT_BV. Convert to std::bitset
-                   * if( vd->data )
-                   * {
-                   * char buf[MAX_STRING_LENGTH];
-                   * int started = 0;
-                   * 
-                   * buf[0] = '\0';
-                   * for( x = MAX_BITS; x > 0; --x )
-                   * {
-                   * if( !started && xIS_SET( *( EXT_BV * ) vd->data, x ) )
-                   * started = x;
-                   * }
-                   * 
-                   * for( x = 1; x <= started; x++ )
-                   * strcat( buf, xIS_SET( *( EXT_BV * ) vd->data, x ) ? "1 " : "0 " );
-                   * 
-                   * if( buf[0] != '\0' )
-                   * buf[strlen( buf ) - 1] = '\0';
-                   * pager_printf( ch, "=[%s]", buf );
-                   * }
-                   * break; 
-                   */
+               case vtXBIT:
+                  if( vd->varflags.any() )
+                     ch->pagerf( "=%s", vd->varflags.to_string().c_str() );
+                  break;
             }
             ch->pager( "  " );
          }
@@ -4033,6 +3998,66 @@ CMDF( do_notitle )
       victim->set_title( buf );
       victim->print( "You can't set your own title!\r\n" );
       ch->printf( "NOTITLE set on %s.\r\n", victim->name );
+   }
+}
+
+CMDF( do_nourl )
+{
+   char_data *victim;
+
+   ch->set_color( AT_IMMORT );
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "NoURL whom?\r\n" );
+      return;
+   }
+
+   if( !( victim = get_wizvictim( ch, argument, true ) ) )
+      return;
+
+   if( victim->has_pcflag( PCFLAG_NO_URL ) )
+   {
+      victim->unset_pcflag( PCFLAG_NO_URL );
+      victim->print( "You can set a homepage again.\r\n" );
+      ch->printf( "NOURL removed from %s.\r\n", victim->name );
+   }
+   else
+   {
+      victim->set_pcflag( PCFLAG_NO_URL );
+      victim->pcdata->homepage.clear();
+      victim->print( "You can't set a homepage!\r\n" );
+      ch->printf( "NOURL applied to %s.\r\n", victim->name );
+   }
+}
+
+CMDF( do_noemail )
+{
+   char_data *victim;
+
+   ch->set_color( AT_IMMORT );
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "NoEmail whom?\r\n" );
+      return;
+   }
+
+   if( !( victim = get_wizvictim( ch, argument, true ) ) )
+      return;
+
+   if( victim->has_pcflag( PCFLAG_NO_EMAIL ) )
+   {
+      victim->unset_pcflag( PCFLAG_NO_EMAIL );
+      victim->print( "You can set an email address again.\r\n" );
+      ch->printf( "NOEMAIL removed from %s.\r\n", victim->name );
+   }
+   else
+   {
+      victim->set_pcflag( PCFLAG_NO_EMAIL );
+      victim->pcdata->email.clear();
+      victim->print( "You can't set an email address!\r\n" );
+      ch->printf( "NOEMAIL applied to %s.\r\n", victim->name );
    }
 }
 

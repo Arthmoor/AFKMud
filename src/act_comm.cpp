@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -29,6 +29,7 @@
 #include <cstdarg>
 #include <locale>
 #include "mud.h"
+#include "area.h"
 #include "boards.h"
 #include "descriptor.h"
 #include "language.h"
@@ -155,7 +156,7 @@ CMDF( do_ask )
       return;
    }
 
-   if( ch->in_room->flags.test( ROOM_SILENCE ) )
+   if( ch->in_room->flags.test( ROOM_SILENCE ) || ch->in_room->area->flags.test( AFLAG_SILENCE ) )
    {
       ch->print( "You can't do that here.\r\n" );
       return;
@@ -275,7 +276,7 @@ CMDF( do_say )
       return;
    }
 
-   if( ch->in_room->flags.test( ROOM_SILENCE ) )
+   if( ch->in_room->flags.test( ROOM_SILENCE ) || ch->in_room->area->flags.test( AFLAG_SILENCE ) )
    {
       ch->print( "You can't do that here.\r\n" );
       return;
@@ -444,7 +445,7 @@ CMDF( do_whisper )
    else
       act( AT_WHISPER, "$n whispers to you '$t'", ch, argument.c_str(  ), victim, TO_VICT );
 
-   if( ch->in_room->flags.test( ROOM_SILENCE ) )
+   if( ch->in_room->flags.test( ROOM_SILENCE ) || ch->in_room->area->flags.test( AFLAG_SILENCE ) )
       act( AT_WHISPER, "$n whispers something to $N.", ch, argument.c_str(  ), victim, TO_NOTVICT );
 
    victim->position = position;
@@ -558,7 +559,7 @@ CMDF( do_tell )
       }
    }
 
-   if( ch->in_room->flags.test( ROOM_SILENCE ) )
+   if( ch->in_room->flags.test( ROOM_SILENCE ) || ch->in_room->area->flags.test( AFLAG_SILENCE ) )
    {
       ch->print( "You can't do that here.\r\n" );
       return;
@@ -641,7 +642,7 @@ CMDF( do_tell )
    if( !victim->isnpc(  ) && victim->has_aflag( AFF_SILENCE ) )
       ch->print( "That player has been magically muted!\r\n" );
 
-   if( ( !ch->is_immortal(  ) && !victim->IS_AWAKE(  ) ) || ( !victim->isnpc(  ) && victim->in_room->flags.test( ROOM_SILENCE ) ) )
+   if( ( !ch->is_immortal(  ) && !victim->IS_AWAKE(  ) ) || ( !victim->isnpc(  ) && ( victim->in_room->flags.test( ROOM_SILENCE ) || victim->in_room->area->flags.test( AFLAG_SILENCE ) ) ) )
    {
       act( AT_PLAIN, "$E can't hear you.", ch, 0, victim, TO_CHAR );
       return;
@@ -774,7 +775,7 @@ CMDF( do_emote )
    /*
     * Per Alcane's notice, emote no longer works in silent rooms - Samson 1-14-00 
     */
-   if( ch->in_room->flags.test( ROOM_SILENCE ) )
+   if( ch->in_room->flags.test( ROOM_SILENCE ) || ch->in_room->area->flags.test( AFLAG_SILENCE ) )
    {
       ch->print( "The room is magically silenced! You cannot express emotions!\r\n" );
       return;

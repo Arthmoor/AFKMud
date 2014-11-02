@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -107,6 +107,8 @@ void check_clan_info( char_data * );
 void name_stamp_stats( char_data * );
 void quotes( char_data * );
 void reset_colors( char_data * );
+void mprog_login_trigger( char_data * );
+void rprog_login_trigger( char_data * );
 // bool check_bans( char_data * );
 CMDF( do_help );
 CMDF( do_destroy );
@@ -1834,6 +1836,14 @@ void descriptor_data::prompt(  )
                   pstat = exp_level( ch->level + 1 ) - ch->exp;
                   break;
 
+               case 'w':
+                  pstat = ch->carry_weight;
+                  break;
+
+               case 'W':
+                  pstat = ch->can_carry_w();
+                  break;
+
                case 'o':  /* display name of object on auction */
                   if( auction->item )
                      mudstrlcpy( pbuf, auction->item->name, MSL - ( pbuf - buf ) );
@@ -2121,6 +2131,10 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
             ch->print( "Reconnecting.\r\n\r\n" );
             update_connhistory( ch->desc, CONNTYPE_RECONN );
 
+            /* Login trigger by Edmond */
+            rprog_login_trigger( ch );
+            mprog_login_trigger( ch );
+
             act( AT_ACTION, "$n has reconnected.", ch, NULL, NULL, TO_CANSEE );
             log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name, host.c_str(  ) );
             connected = CON_PLAYING;
@@ -2176,6 +2190,10 @@ short descriptor_data::check_playing( const string & name, bool kick )
             interpret( ch->switched, "return" );
          ch->switched = NULL;
          ch->print( "Reconnecting.\r\n\r\n" );
+
+         /* Login trigger by Edmond */
+         rprog_login_trigger( ch );
+         mprog_login_trigger( ch );
 
          act( AT_ACTION, "$n has reconnected, kicking off old link.", ch, NULL, NULL, TO_CANSEE );
          log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name, host.c_str(  ) );
@@ -2243,6 +2261,10 @@ void char_to_game( char_data * ch )
       ch->remove_timer( TIMER_PKILLED );
 
    act( AT_ACTION, "$n has entered the game.", ch, NULL, NULL, TO_CANSEE );
+
+   /* Login trigger by Edmond */
+   rprog_login_trigger( ch );
+   mprog_login_trigger( ch );
 
    if( !ch->was_in_room && ch->in_room == get_room_index( ROOM_VNUM_TEMPLE ) )
       ch->was_in_room = get_room_index( ROOM_VNUM_TEMPLE );

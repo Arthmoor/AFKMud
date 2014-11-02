@@ -7,7 +7,6 @@ Race         iguanadon~
 Class        Cleric~
 Title         the Administrator~
 Rank         Administrator~
-Site         samson.arthmoor.com
 Prompt       &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&c%X&wexp&z]&D ~
 FPrompt      &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&R%c&z] ~
 PCFlags      pager nstart flags sector aname passdoor checkboards autoexits blank automap holylight roomvnum ansi smartsac msp compass~
@@ -17,7 +16,7 @@ Status       115 1959394 320993749 68 124 101 -10
 Status2      2 451 -1000 0 0 0 2 0
 Configs      29 -1 -1 -1 -1 0 0 11406
 Motd         0 1080528906
-Age          1 21 10 770 1120741369
+Age          1 21 10 770 1120741397
 HpManaMove   30000 30000 30836 30836 30000 30000
 Regens       0 0 0
 Position     standing~
@@ -489,19 +488,6 @@ Zone         The Great Void~
 Zone         The Radiant Tower~
 IMCPerm      5
 IMCFlag      imccolor
-End
-
-#OBJECT
-Version      22
-Ovnum        2875
-Ego          0
-Level        1
-Oday         0
-Omonth       0
-Oyear        0
-Coords       -1 -1 -1
-Values       2 2 0 0 0 0 0 0 0 0 0
-Sockets      None None None
 End
 
 #END

@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -1586,6 +1586,22 @@ const string mprog_type_to_name( int type )
          return "use_prog";
       case KEYWORD_PROG:
          return "keyword_prog";
+      case SELL_PROG:
+         return "sell_prog";
+      case TELL_PROG:
+         return "tell_prog";
+      case TELL_AND_PROG:
+         return "tell_and_prog";
+      case CMD_PROG:
+         return "command_prog";
+      case EMOTE_PROG:
+         return "emote_prog";
+      case LOGIN_PROG:
+         return "login_prog";
+      case VOID_PROG:
+         return "void_prog";
+      case LOAD_PROG:
+         return "load_prog";
       default:
          return "ERROR_PROG";
    }
@@ -1753,6 +1769,12 @@ CMDF( do_mpasupress )
 CMDF( do_mpkill )
 {
    char_data *victim;
+
+   if( !ch )
+   {
+      bug( "%s: Nonexistent ch!", __FUNCTION__ );
+      return;
+   }
 
    if( !can_use_mprog( ch ) )
       return;

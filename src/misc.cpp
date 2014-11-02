@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -1151,9 +1151,68 @@ CMDF( do_smoke )
    }
 }
 
+obj_data *find_tinder( char_data *ch )
+{
+   list < obj_data * >::iterator iobj;
+
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   {
+      obj_data *tinder = *iobj;
+
+      if( ( tinder->item_type == ITEM_TINDER ) && ch->can_see_obj( tinder, false ) )
+         return tinder;
+   }
+   return NULL;
+}
+
+CMDF( do_extinguish )
+{
+   obj_data *obj;
+	string arg;
+
+   argument = one_argument( argument, arg );
+   if( arg.empty() )
+   {
+      ch->print( "Extinguish what?\r\n" );
+      return;
+   }
+
+   if( ms_find_obj( ch ) )
+      return;
+
+   if( ( obj = ch->get_obj_wear( arg ) ) == NULL )
+   {
+      if( ( obj = ch->get_obj_carry( arg ) ) == NULL )
+      {
+         if( ( obj = get_obj_list( ch, arg, ch->in_room->objects ) ) == NULL )
+      	{
+            ch->print( "That object is not present.\r\n" );
+            return;
+         }
+      }
+   }
+
+   obj->separate( );
+
+   if( obj->item_type != ITEM_LIGHT || ( obj->value[1] < 1 ) )
+   {
+      ch->print( "You can't extinguish that.\r\n" );
+      return;
+   }
+
+   if( IS_SET( obj->value[3], PIPE_LIT ) )
+   {
+      act( AT_ACTION, "You extinguish $p.", ch, obj, NULL, TO_CHAR );
+      act( AT_ACTION, "$n extinguishes $p.", ch, obj, NULL, TO_ROOM );
+      REMOVE_BIT( obj->value[3], PIPE_LIT );
+   }
+   else
+      ch->print( "It's not lit.\r\n" );
+}
+
 CMDF( do_light )
 {
-   obj_data *cpipe;
+   obj_data *obj;
 
    if( argument.empty(  ) )
    {
@@ -1164,32 +1223,60 @@ CMDF( do_light )
    if( ms_find_obj( ch ) )
       return;
 
-   if( !( cpipe = ch->get_obj_carry( argument ) ) )
+   if( !( obj = ch->get_obj_carry( argument ) ) )
    {
       ch->print( "You aren't carrying that.\r\n" );
       return;
    }
 
-   if( cpipe->item_type != ITEM_PIPE )
+   if( !find_tinder( ch ) )
    {
-      ch->print( "You can't light that.\r\n" );
+      ch->print( "You need some tinder to light with.\r\n" );
       return;
    }
 
-   if( !IS_SET( cpipe->value[3], PIPE_LIT ) )
-   {
-      if( cpipe->value[1] < 1 )
-      {
-         act( AT_ACTION, "You try to light $p, but it's empty.", ch, cpipe, NULL, TO_CHAR );
-         act( AT_ACTION, "$n tries to light $p, but it's empty.", ch, cpipe, NULL, TO_ROOM );
+   obj->separate();
+
+	switch ( obj->item_type )
+	{
+      default:
+         ch->print( "You can't light that.\r\n" );
          return;
-      }
-      act( AT_ACTION, "You carefully light $p.", ch, cpipe, NULL, TO_CHAR );
-      act( AT_ACTION, "$n carefully lights $p.", ch, cpipe, NULL, TO_ROOM );
-      SET_BIT( cpipe->value[3], PIPE_LIT );
-      return;
+
+      case ITEM_PIPE:
+         if( !IS_SET( obj->value[3], PIPE_LIT ) )
+         {
+            if( obj->value[1] < 1 )
+            {
+               act( AT_ACTION, "You try to light $p, but it's empty.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n tries to light $p, but it's empty.", ch, obj, NULL, TO_ROOM );
+               return;
+            }
+            act( AT_ACTION, "You carefully light $p.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n carefully lights $p.", ch, obj, NULL, TO_ROOM );
+            SET_BIT( obj->value[3], PIPE_LIT );
+            break;
+         }
+         ch->print( "It's already lit.\r\n" );
+         break;
+
+      case ITEM_LIGHT:
+         if( obj->value[1] > 0 )
+         {
+            if( !IS_SET( obj->value[3], PIPE_LIT ) )
+            {
+               act( AT_ACTION, "You carefully light $p.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n carefully lights $p.", ch, obj, NULL, TO_ROOM );
+               SET_BIT( obj->value[3], PIPE_LIT );
+            }
+            else
+               ch->print( "It's already lit.\r\n" );
+            break;
+         }
+         else
+            ch->print( "You can't light that.\r\n" );
+         break;
    }
-   ch->print( "It's already lit.\r\n" );
 }
 
 /*

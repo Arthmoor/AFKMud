@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -48,7 +48,7 @@ list < wizinfo_data * >wizinfolist;
 
 wizinfo_data::wizinfo_data(  )
 {
-   init_memory( &icq, &level, sizeof( level ) );
+   init_memory( &level, &level, sizeof( level ) );
 }
 
 wizinfo_data::~wizinfo_data(  )
@@ -142,8 +142,6 @@ void build_wizinfo( void )
 
                if( key == "Level" )
                   wiz->set_level( atoi( value.c_str(  ) ) );
-               else if( key == "ICQ" )
-                  wiz->set_icq( atoi( value.c_str(  ) ) );
                else if( key == "Email" )
                   wiz->set_email( value );
             }
@@ -166,14 +164,14 @@ CMDF( do_wizinfo )
    list < wizinfo_data * >::iterator wiz;
 
    ch->pager( "&cContact Information for the Immortals:\r\n\r\n" );
-   ch->pager( "&cName         Email Address                     ICQ#\r\n" );
-   ch->pager( "&c------------+---------------------------------+----------\r\n" );
+   ch->pager( "&cName         Email Address                    \r\n" );
+   ch->pager( "&c------------+---------------------------------\r\n" );
 
    for( wiz = wizinfolist.begin(  ); wiz != wizinfolist.end(  ); ++wiz )
    {
       wizinfo_data *wi = *wiz;
 
-      ch->printf( "&R%-12s &g%-33s &B%10d\r\n", wi->get_name(  ).c_str(  ), wi->get_email(  ).c_str(  ), wi->get_icq(  ) );
+      ch->printf( "&R%-12s &g%-33s &B%10d\r\n", wi->get_name(  ).c_str(  ), wi->get_email(  ).c_str(  ) );
    }
 }
 
@@ -311,7 +309,6 @@ CMDF( do_finger )
       ch->printf( "&wTitle   :&G%s\r\n", victim->pcdata->title );
       ch->printf( "&wHomepage: &G%s\r\n", !victim->pcdata->homepage.empty(  )? show_tilde( victim->pcdata->homepage ).c_str(  ) : "Not specified" );
       ch->printf( "&wEmail   : &G%s\r\n", !victim->pcdata->email.empty(  )? victim->pcdata->email.c_str(  ) : "Not specified" );
-      ch->printf( "&wICQ#    : &G%d\r\n", victim->pcdata->icq );
       if( !loaded )
          ch->printf( "&wLast on : &G%s\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone ) );
       else
@@ -375,6 +372,12 @@ CMDF( do_email )
    if( ch->isnpc(  ) )
       return;
 
+   if( ch->has_pcflag( PCFLAG_NO_EMAIL ) )
+   {
+      ch->print( "You are not allowed to set an email address.\r\n" );
+      return;
+   }
+
    if( argument.empty(  ) )
    {
       if( !ch->pcdata->email.empty(  ) )
@@ -390,7 +393,7 @@ CMDF( do_email )
 
       ch->save(  );
       if( ch->is_immortal(  ) );
-      build_wizinfo(  );
+         build_wizinfo(  );
 
       ch->print( "Email address cleared.\r\n" );
       return;
@@ -406,58 +409,18 @@ CMDF( do_email )
    ch->print( "Email address set.\r\n" );
 }
 
-CMDF( do_icq_number )
-{
-   int icq;
-
-   if( ch->isnpc(  ) )
-      return;
-
-   if( argument.empty(  ) )
-   {
-      ch->printf( "Your ICQ# is: %d\r\n", ch->pcdata->icq );
-      return;
-   }
-
-   if( !str_cmp( argument, "clear" ) )
-   {
-      ch->pcdata->icq = 0;
-
-      ch->save(  );
-      if( ch->is_immortal(  ) )
-         build_wizinfo(  );
-      ch->print( "ICQ# cleared.\r\n" );
-      return;
-   }
-
-   if( !is_number( argument ) )
-   {
-      ch->print( "You must enter numeric data.\r\n" );
-      return;
-   }
-
-   icq = atoi( argument.c_str(  ) );
-
-   if( icq < 1 )
-   {
-      ch->print( "Valid range is greater than 0.\r\n" );
-      return;
-   }
-
-   ch->pcdata->icq = icq;
-
-   ch->save(  );
-   if( ch->is_immortal(  ) )
-      build_wizinfo(  );
-   ch->print( "ICQ# set.\r\n" );
-}
-
 CMDF( do_homepage )
 {
    string buf;
 
    if( ch->isnpc(  ) )
       return;
+
+   if( ch->has_pcflag( PCFLAG_NO_URL ) )
+   {
+      ch->print( "You are not allowed to set a homepage.\r\n" );
+      return;
+   }
 
    if( argument.empty(  ) )
    {

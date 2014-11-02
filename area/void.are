@@ -3357,6 +3357,17 @@ endif
 #ENDOBJECT
 
 #OBJECT
+Vnum      11461
+Keywords  shell~
+Type      treasure~
+Short     the shell of %s~
+Long      A hard shell from the body of %s is here.~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 3500 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
 Vnum      11462
 Keywords  feather~
 Type      treasure~

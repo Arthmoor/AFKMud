@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -171,7 +171,8 @@ const char *w_flags[] = {
 /* Area Flags for continent and plane system - Samson 3-28-98 */
 const char *area_flags[] = {
    "nopkill", "nocamp", "noastral", "noportal", "norecall", "nosummon", "noscry",
-   "noteleport", "arena", "nobeacon", "noquit", "prototype"
+   "noteleport", "arena", "nobeacon", "noquit", "prototype", "silence", "nomagic",
+   "hidden"
 };
 
 const char *o_types[] = {
@@ -237,7 +238,7 @@ const char *pc_flags[] = {
    "log", "deny", "freeze", "exempt", "onship", "litterbug", "ansi",
    "flee", "autogold", "ghost", "afk", "invisprompt", "busy", "autoassist",
    "smartsac", "idle", "onmap", "mapedit", "guildsplit", "groupsplit",
-   "msp", "compass"
+   "msp", "compass", "nourl", "noemail"
 };
 
 const char *trap_types[] = {
@@ -279,7 +280,7 @@ const char *part_flags[] = {
    "head", "arms", "legs", "heart", "brains", "guts", "hands", "feet", "fingers",
    "ear", "eye", "long_tongue", "eyestalks", "tentacles", "fins", "wings",
    "tail", "scales", "claws", "fangs", "horns", "tusks", "tailattack",
-   "sharpscales", "beak", "haunches", "hooves", "paws", "forelegs", "feathers"
+   "sharpscales", "beak", "haunches", "hooves", "paws", "forelegs", "feathers", "shell"
 };
 
 const char *attack_flags[] = {
@@ -3713,8 +3714,24 @@ CMDF( do_oset )
       default:
          break;
 
+      case ITEM_CAMPGEAR:
+         if( !str_cmp( arg2, "type" ) )
+         {
+            value = -1;
+            for( size_t x = 0; x < sizeof( campgear ) / sizeof( campgear[0] ); ++x )
+               if( !str_cmp( arg3, campgear[x] ) )
+                  value = x;
+            if( value < 0 )
+            {
+               ch->print( "Unknown camping gear type.\r\n" );
+               return;
+            }
+            tmp = 0;
+            break;
+         }
+
       case ITEM_PROJECTILE:
-         if( !str_cmp( arg2, "missiletype" ) )
+         if( !str_cmp( arg2, "projectiletype" ) )
          {
             value = -1;
             for( size_t x = 0; x < sizeof( projectiles ) / sizeof( projectiles[0] ); ++x )
@@ -3775,6 +3792,7 @@ CMDF( do_oset )
             tmp = 3;
             break;
          }
+
          if( !str_cmp( arg2, "condition" ) )
             tmp = 0;
          if( !str_cmp( arg2, "damage" ) )

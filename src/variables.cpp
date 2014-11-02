@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -30,49 +30,25 @@
 #include "mobindex.h"
 #include "variables.h"
 
-variable_data::variable_data(  )
+variable_data::variable_data()
 {
-   init_memory( &this->tag, &this->timer, sizeof( this->timer ) );
+   init_memory( &this->varflags, &this->timer, sizeof( this->timer ) );
 }
 
 variable_data::variable_data( int vtype, int vvnum, const string& vtag )
 {
    this->type = vtype;
-   // this->flags = 0;
    this->vnum = vvnum;
-
    this->tag = vtag;
    this->c_time = current_time;
    this->m_time = current_time;
    this->r_time = 0;
    this->timer = 0;
-
-   switch ( vtype )
-   {
-      case vtINT:
-      case vtSTR:
-         this->data = NULL;
-         break;
-         /*
-          * case vtXBIT: <--- FIXME: Convert to std::bitset
-          * CREATE( this->data, EXT_BV, 1 );
-          * break; 
-          */
-   }
+   this->vardata = 0;
 }
 
 variable_data::~variable_data(  )
 {
-   switch ( this->type )
-   {
-      case vtSTR:
-         if( this->data )
-         {
-            delete( ( char * )this->data );
-            this->data = NULL;
-         }
-         break;
-   }
 }
 
 /*
@@ -270,13 +246,12 @@ CMDF( do_mptag )
    if( error )
    {
       vd = new variable_data( vtSTR, vnum, arg2 );
-      vd->data = str_dup( argument.c_str() );
+      vd->varstring = argument;
    }
-
    else
    {
       vd = new variable_data( vtINT, vnum, arg2 );
-      vd->data = ( void * )( atol( argument.c_str() ) );
+      vd->vardata = atol( argument.c_str() );
    }
    vd->timer = exp;
    tag_char( victim, vd, 1 );
@@ -334,20 +309,20 @@ CMDF( do_mprmtag )
 
 /*
  * mpflag <victim> <tag> <flag>
- * <--- FIXME: Convert to std::bitset
-void do_mpflag( char_data * ch, string& argument )
+ */
+CMDF( do_mpflag )
 {
    string::const_iterator ptr;
+   string::size_type x;
    char_data *victim;
    variable_data *vd;
-   char *p;
-   string arg1, arg2, arg3;
+   string arg1, arg2, arg3, p;
    int vnum = 0, exp = 0, def = 0, flag = 0;
    bool error = false;
 
-   if( ( !IS_NPC( ch ) && get_trust( ch ) < LEVEL_GREATER ) || IS_AFFECTED( ch, AFF_CHARM ) )
+   if( ( !ch->isnpc() && ch->get_trust() < LEVEL_GREATER ) || ch->has_aflag( AFF_CHARM ) )
    {
-      send_to_char( "Huh?\r\n", ch );
+      ch->print( "Huh?\r\n" );
       return;
    }
 
@@ -365,35 +340,36 @@ void do_mpflag( char_data * ch, string& argument )
    }
    else
    {
-      exp = ch->level * get_curr_int( ch );
+      exp = ch->level * ch->get_curr_int();
       def = 1;
    }
+
    argument = one_argument( argument, arg2 );
    argument = one_argument( argument, arg3 );
 
    if( arg1.empty() || arg2.empty() || arg3.empty() )
    {
-      send_to_char( "MPflag whom with what?\r\n", ch );
+      progbug( "MPflag: No arguments specified.\r\n", ch );
       return;
    }
 
-   if( ( victim = get_char_room( ch, arg1 ) ) == NULL )
+   if( ( victim = ch->get_char_room( arg1 ) ) == NULL )
    {
-      send_to_char( "They aren't here.\r\n", ch );
+      progbug( "MPflag: Victim is not present.\r\n", ch );
       return;
    }
 
-   if( ( p = strchr( arg2.c_str(), ':' ) ) != NULL )
-   {
-      *p++ = '\0';
-      vnum = atoi( p );
-   }
-   else
+   if( ( x = arg2.find_first_of( '!' ) ) == string::npos )
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;
+   else
+   {
+      p = arg2.substr( x + 1, arg2.length(  ) );
+      vnum = atoi( p.c_str() );
+   }
 
    if( !is_valid_tag( arg2 ) )
    {
-      progbug( "Mpflag:  invalid characters in tag", ch );
+      progbug( "Mpflag: invalid characters in tag", ch );
       return;
    }
 
@@ -408,9 +384,9 @@ void do_mpflag( char_data * ch, string& argument )
    }
 
    flag = atoi( arg3.c_str() );
-   if( error || flag < 0 || flag >= MAX_BITS )
+   if( error || flag < 0 || flag >= MAX_VAR_BITS )
    {
-      progbug( "Mpflag:  invalid flag value", ch );
+      progbug( "Mpflag: invalid flag value", ch );
       return;
    }
 
@@ -418,7 +394,7 @@ void do_mpflag( char_data * ch, string& argument )
    {
       if( vd->type != vtXBIT )
       {
-         progbug( "Mpflag:  type mismatch", ch );
+         progbug( "Mpflag: type mismatch", ch );
          return;
       }
       if( !def )
@@ -426,29 +402,30 @@ void do_mpflag( char_data * ch, string& argument )
    }
    else
    {
-      vd = make_variable( vtXBIT, vnum, arg2 );
+      vd = new variable_data( vtXBIT, vnum, arg2 );
       vd->timer = exp;
    }
-   xSET_BIT( *( EXT_BV * ) vd->data, flag );
+   vd->varflags.set( flag );
    tag_char( victim, vd, 1 );
-} */
+}
 
 /*
  * mprmflag <victim> <tag> <flag>
  * <-- FIXME: Convert to std::bitset
-void do_mprmflag( char_data * ch, string& argument )
+ */
+CMDF( do_mprmflag )
 {
    string::const_iterator ptr;
+   string::size_type x;
    char_data *victim;
    variable_data *vd;
-   char *p;
-   string arg1, arg2, arg3;
+   string arg1, arg2, arg3, p;
    int vnum = 0;
    bool error = false;
 
-   if( ( !IS_NPC( ch ) && get_trust( ch ) < LEVEL_GREATER ) || IS_AFFECTED( ch, AFF_CHARM ) )
+   if( ( !ch->isnpc() && ch->get_trust() < LEVEL_GREATER ) || ch->has_aflag( AFF_CHARM ) )
    {
-      send_to_char( "Huh?\r\n", ch );
+      ch->print( "Huh?\r\n" );
       return;
    }
 
@@ -458,27 +435,27 @@ void do_mprmflag( char_data * ch, string& argument )
 
    if( arg1.empty() || arg2.empty() || arg3.empty() )
    {
-      send_to_char( "MPrmflag whom with what?\r\n", ch );
+      progbug( "MPflag: No arguments specified.\r\n", ch );
       return;
    }
 
-   if( ( victim = get_char_room( ch, arg1 ) ) == NULL )
+   if( ( victim = ch->get_char_room( arg1 ) ) == NULL )
    {
-      send_to_char( "They aren't here.\r\n", ch );
+      progbug( "MPflag: Victim is not present.\r\n", ch );
       return;
    }
 
-   if( ( p = strchr( arg2.c_str(), ':' ) ) != NULL )
-   {
-      *p++ = '\0';
-      vnum = atoi( p );
-   }
-   else
+   if( ( x = arg2.find_first_of( '!' ) ) == string::npos )
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;
+   else
+   {
+      p = arg2.substr( x + 1, arg2.length(  ) );
+      vnum = atoi( p.c_str() );
+   }
 
    if( !is_valid_tag( arg2 ) )
    {
-      progbug( "Mprmflag:  invalid characters in tag", ch );
+      progbug( "Mprmflag: invalid characters in tag", ch );
       return;
    }
 
@@ -494,29 +471,24 @@ void do_mprmflag( char_data * ch, string& argument )
 
    if( error )
    {
-      progbug( "Mprmflag:  invalid flag value", ch );
+      progbug( "Mprmflag: invalid flag value", ch );
       return;
    }
 
-   *
+   /*
     * Only bother doing anything if the tag exists
-    *
+    */
    if( ( vd = get_tag( victim, arg2, vnum ) ) != NULL )
    {
       if( vd->type != vtXBIT )
       {
-         progbug( "Mprmflag:  type mismatch", ch );
+         progbug( "Mprmflag: type mismatch", ch );
          return;
       }
-      if( !vd->data )
-      {
-         progbug( "Mprmflag:  missing data???", ch );
-         return;
-      }
-      xREMOVE_BIT( *( EXT_BV * ) vd->data, atoi( arg3 ) );
+      vd->varflags.reset( atoi( arg3.c_str() ) );
       tag_char( victim, vd, 1 );
    }
-} */
+}
 
 void fwrite_variables( char_data * ch, FILE * fp )
 {
@@ -527,28 +499,17 @@ void fwrite_variables( char_data * ch, FILE * fp )
       variable_data *vd = *ivd;
 
       fprintf( fp, "#VARIABLE\n" );
-      fprintf( fp, "Type    %d\n", vd->type );
-      // fprintf( fp, "Flags   %d\n", vd->flags );
-      fprintf( fp, "Vnum    %d\n", vd->vnum );
-      fprintf( fp, "Ctime   %ld\n", vd->c_time );
-      fprintf( fp, "Mtime   %ld\n", vd->m_time );
-      fprintf( fp, "Rtime   %ld\n", vd->r_time );
-      fprintf( fp, "Timer   %d\n", vd->timer );
-      fprintf( fp, "Tag     %s~\n", vd->tag.c_str() );
-      switch ( vd->type )
-      {
-         case vtSTR:
-            fprintf( fp, "Str     %s~\n", ( char * )vd->data );
-            break;
-            /*
-             * case vtXBIT: FIXME: Convert to std::bitset
-             * fprintf( fp, "Xbit    %s\n", print_bitvector( ( EXT_BV * ) vd->data ) );
-             * break; 
-             */
-         case vtINT:
-            fprintf( fp, "Int     %ld\n", ( long )vd->data );
-            break;
-      }
+      fprintf( fp, "Type      %d\n", vd->type );
+      fprintf( fp, "Tag       %s~\n", vd->tag.c_str() );
+      fprintf( fp, "Varstring %s~\n", vd->varstring.c_str() );      
+      fprintf( fp, "Flags     %ld\n", vd->varflags.to_ulong() );
+      fprintf( fp, "Vardata   %ld\n", vd->vardata );
+      fprintf( fp, "Ctime     %ld\n", vd->c_time );
+      fprintf( fp, "Mtime     %ld\n", vd->m_time );
+      fprintf( fp, "Rtime     %ld\n", vd->r_time );
+      fprintf( fp, "Expires   %ld\n", vd->expires );
+      fprintf( fp, "Vnum      %d\n", vd->vnum );
+      fprintf( fp, "Timer     %d\n", vd->timer );
       fprintf( fp, "%s", "End\n\n" );
    }
 }
@@ -579,28 +540,36 @@ void fread_variable( char_data * ch, FILE * fp )
             break;
 
          case 'C':
-            KEY( "Ctime", pvd->c_time, fread_number( fp ) );
+            KEY( "Ctime", pvd->c_time, fread_long( fp ) );
             break;
 
          case 'E':
+            KEY( "Expires", pvd->expires, fread_long( fp ) );
             if( !str_cmp( word, "End" ) )
             {
-               switch ( pvd->type )
+               switch( pvd->type )
                {
                   default:
-                  {
-                     bug( "%s: invalid/incomplete variable: %s", __FUNCTION__, pvd->tag.c_str() );
+                     bug( "%s: invalid variable type. Discarding.", __FUNCTION__ );
                      deleteptr( pvd );
                      break;
-                  }
+
                   case vtSTR:
-                     // case vtXBIT:
-                     if( !pvd->data )
+                     if( pvd->varstring.empty() )
                      {
-                        bug( "%s: invalid/incomplete variable: %s", __FUNCTION__, pvd->tag.c_str() );
+                        bug( "%s: vtSTR: Incomplete data. Discarding.", __FUNCTION__ );
                         deleteptr( pvd );
-                        break;
                      }
+                     break;
+
+                  case vtXBIT:
+                     if( pvd->varflags.none() )
+                     {
+                        bug( "%s: vtXBIT: Incomplete data. Discarding.", __FUNCTION__ );
+                        deleteptr( pvd );
+                     }
+                     break;
+
                   case vtINT:
                      tag_char( ch, pvd, 1 );
                      break;
@@ -609,71 +578,55 @@ void fread_variable( char_data * ch, FILE * fp )
             }
             break;
 
-            /*
-             * case 'F': <--- FIXME: Convert to std::bitset
-             * KEY( "Flags", pvd->flags, fread_number( fp ) );
-             * break; 
-             */
+         case 'F':
+            if( !str_cmp( word, "Flags" ) )
+            {
+               string varbits;
+
+               fread_string( varbits, fp );
+               pvd->varflags = bitset<MAX_VAR_BITS>( varbits );
+
+               break;
+            }
+            break; 
 
          case 'I':
+            // Legacy data
             if( !str_cmp( word, "Int" ) )
             {
-               if( pvd->type != vtINT )
-                  bug( "%s: Type mismatch -- type(%d) != vtInt", __FUNCTION__, pvd->type );
-               else
-               {
-                  pvd->data = ( void * )( ( long )fread_number( fp ) );
-               }
+               pvd->vardata = fread_long( fp );
                break;
             }
             break;
 
          case 'M':
-            KEY( "Mtime", pvd->m_time, fread_number( fp ) );
+            KEY( "Mtime", pvd->m_time, fread_long( fp ) );
             break;
 
          case 'R':
-            KEY( "Rtime", pvd->r_time, fread_number( fp ) );
+            KEY( "Rtime", pvd->r_time, fread_long( fp ) );
             break;
 
          case 'S':
+            // Legacy data
             if( !str_cmp( word, "Str" ) )
             {
-               if( pvd->type != vtSTR )
-                  bug( "%s: Type mismatch -- type(%d) != vtSTR", __FUNCTION__, pvd->type );
-               else
-               {
-                  pvd->data = fread_string_nohash( fp );
-               }
+               pvd->varstring = fread_string( fp );
                break;
             }
             break;
 
          case 'T':
-            KEY( "Tag", pvd->tag, fread_string_nohash( fp ) );
-            KEY( "Timer", pvd->timer, fread_number( fp ) );
+            STDSKEY( "Tag", pvd->tag );
+            KEY( "Timer", pvd->timer, fread_long( fp ) );
             KEY( "Type", pvd->type, fread_number( fp ) );
             break;
 
          case 'V':
+            STDSKEY( "Varstring", pvd->varstring );
+            KEY( "Vardata", pvd->vardata, fread_long( fp ) );
             KEY( "Vnum", pvd->vnum, fread_number( fp ) );
             break;
-
-            /*
-             * case 'X': <--- FIXME: Convert to std::bitset
-             * if( !str_cmp( word, "Xbit" ) )
-             * {
-             * if( pvd->type != vtXBIT )
-             * bug( "%s: Type mismatch -- type(%d) != vtXBIT", __FUNCTION__, pvd->type );
-             * else
-             * {
-             * CREATE( pvd->data, EXT_BV, 1 );
-             * *( EXT_BV * ) pvd->data = fread_bitvector( fp );
-             * }
-             * break;
-             * }
-             * break; 
-             */
       }
    }
    while( !feof( fp ) );

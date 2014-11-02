@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -51,6 +51,7 @@ void boot_log( const char *, ... );
 void fix_exits(  );
 
 obj_data *generate_random( reset_data *, char_data * );
+void mprog_percent_check( char_data *, char_data *, obj_data *, char_data *, obj_data *, int );
 
 const char *dir_name[] = {
    "north", "east", "south", "west", "up", "down",
@@ -1247,6 +1248,10 @@ void room_index::reset(  )
             if( !mob->to_room( pRoomIndex ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
             level = URANGE( 0, mob->level - 2, LEVEL_AVATAR );
+
+            // LOAD_PROG imported from Smaug 1.8b
+            if( HAS_PROG( mob->pIndexData, LOAD_PROG ) )
+               mprog_percent_check( mob, NULL, NULL, NULL, NULL, LOAD_PROG );
 
             /*
              * Added by Tarl 4 Dec 02 so that if a mob is 'flagged' namegen in

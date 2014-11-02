@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -226,8 +226,6 @@ void fwrite_char( char_data * ch, FILE * fp )
    if( !ch->pcdata->email.empty(  ) )  /* Samson 4-19-98 */
       fprintf( fp, "Email        %s~\n", ch->pcdata->email.c_str(  ) );
    fprintf( fp, "Site         %s\n", ch->pcdata->lasthost.c_str(  ) );
-   if( ch->pcdata->icq > 0 )  /* Samson 1-4-99 */
-      fprintf( fp, "ICQ          %d\n", ch->pcdata->icq );
    if( ch->pcdata->bio && ch->pcdata->bio[0] != '\0' )
       fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ) );
    if( !ch->pcdata->authed_by.empty(  ) )
@@ -792,8 +790,6 @@ void char_data::save(  )
             fprintf( fp, "VnumRange    %d %d\n", pcdata->low_vnum, pcdata->hi_vnum );
          if( !pcdata->email.empty(  ) )
             fprintf( fp, "Email        %s~\n", pcdata->email.c_str(  ) );
-         if( pcdata->icq > 0 )
-            fprintf( fp, "ICQ          %d\n", pcdata->icq );
          fprintf( fp, "%s", "End\n" );
          FCLOSE( fp );
       }
@@ -1219,7 +1215,6 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             break;
 
          case 'I':
-            KEY( "ICQ", ch->pcdata->icq, fread_number( fp ) );
             if( !str_cmp( word, "ImmData" ) )
             {
                line = fread_line( fp );

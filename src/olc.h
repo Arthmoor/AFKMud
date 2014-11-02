@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -121,7 +121,7 @@ enum mob_flags
    ACT_PALADIN, ACT_RANGER, ACT_NECROMANCER, ACT_ANTIPALADIN, ACT_HUGE,
    ACT_GREET, ACT_TEACHER, ACT_ONMAP, ACT_SMITH, ACT_GUILDAUC, ACT_GUILDBANK,
    ACT_GUILDVENDOR, ACT_GUILDREPAIR, ACT_GUILDFORGE, ACT_IDMOB,
-   ACT_GUILDIDMOB, MAX_ACT_FLAG
+   ACT_GUILDIDMOB, ACT_STOP_SCRIPT, MAX_ACT_FLAG
 };
 
 /*
@@ -354,7 +354,7 @@ enum prog_types
    GET_PROG, DROP_PROG, DAMAGE_PROG, REPAIR_PROG, RANDIW_PROG, SPEECHIW_PROG,
    PULL_PROG, PUSH_PROG, SLEEP_PROG, REST_PROG, LEAVE_PROG, SCRIPT_PROG,
    USE_PROG, SPEECH_AND_PROG, MONTH_PROG, KEYWORD_PROG, SELL_PROG, TELL_PROG,
-   TELL_AND_PROG, CMD_PROG, MAX_PROG
+   TELL_AND_PROG, CMD_PROG, EMOTE_PROG, LOGIN_PROG, VOID_PROG, LOAD_PROG, MAX_PROG
 };
 
 /*
@@ -372,7 +372,7 @@ enum body_parts
    /*
     * Normal stuff again 
     */
-   PART_HAUNCH, PART_HOOVES, PART_PAWS, PART_FORELEGS, PART_FEATHERS, MAX_BPART
+   PART_HAUNCH, PART_HOOVES, PART_PAWS, PART_FORELEGS, PART_FEATHERS, PART_HUSK_SHELL, MAX_BPART
 };
 
 enum traps

@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -551,7 +551,7 @@ enum pc_flags
    PCFLAG_EXEMPT, PCFLAG_ONSHIP, PCFLAG_LITTERBUG, PCFLAG_ANSI, PCFLAG_FLEE, PCFLAG_AUTOGOLD,
    PCFLAG_GHOST, PCFLAG_AFK, PCFLAG_INVISPROMPT, PCFLAG_BUSY, PCFLAG_AUTOASSIST, PCFLAG_SMARTSAC,
    PCFLAG_IDLING, PCFLAG_ONMAP, PCFLAG_MAPEDIT, PCFLAG_GUILDSPLIT, PCFLAG_GROUPSPLIT,
-   PCFLAG_MSP, PCFLAG_COMPASS, MAX_PCFLAG
+   PCFLAG_MSP, PCFLAG_COMPASS, PCFLAG_NO_URL, PCFLAG_NO_EMAIL, MAX_PCFLAG
 };
 
 /*
@@ -1362,30 +1362,24 @@ void gain_condition( char_data *, int, int );
 void update_handler( void );
 void weather_update( void );
 
-/* This ugly mess here is what used to be the old ext_flagstring function :)
- * So this looks like as good a spot as any to begin dumping globally required templates. Ugh.
- */
-template < size_t N > char *bitset_string( bitset < N > bits, const char *flagarray[] )
+// This used to be the old ext_flagstring converted to C++ and using strings so it can't overflow the temporary buffer.
+template < size_t N > const char *bitset_string( bitset < N > bits, const char *flagarray[] )
 {
-   static char buf[MSL];
-   size_t x;
+   static string s;
 
-   buf[0] = '\0';
-   for( x = 0; x < bits.size(  ); ++x )
+   s.clear();
+
+   for( size_t i = 0; i < bits.size (); ++i )
    {
-      if( bits.test( x ) )
+      if( bits[i] )
       {
-         mudstrlcat( buf, flagarray[x], MSL );
-         // don't catenate a blank if the last char is blank  --Gorog 
-         if( buf[0] != '\0' && ' ' != buf[strlen( buf ) - 1] )
-            mudstrlcat( buf, " ", MSL );
+         s.append( flagarray[i] );
+         s.append( 1, ' ' );
       }
    }
+   strip_tspace(s); // get rid of final space
 
-   if( ( x = strlen( buf ) ) > 0 )
-      buf[--x] = '\0';
-
-   return buf;
+   return s.c_str();
 }
 
 // This temlate is used during file reading to set flags based on the string names.

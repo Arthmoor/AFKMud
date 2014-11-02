@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -39,6 +39,7 @@
 #include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "variables.h"
 
 /*
  * Global Variables
@@ -724,7 +725,7 @@ void mobile_update( void )
       /*
        * Check for mudprogram script on mob 
        */
-      if( HAS_PROG( ch->pIndexData, SCRIPT_PROG ) )
+      if( HAS_PROG( ch->pIndexData, SCRIPT_PROG ) && !ch->has_actflag( ACT_STOP_SCRIPT ) )
       {
          mprog_script_trigger( ch );
          continue;
@@ -1101,6 +1102,24 @@ void char_update( void )
       if( ch->position == POS_STUNNED )
          ch->update_pos(  );
 
+      /* Expire variables */
+      if( !ch->variables.empty() )
+      {
+         list < variable_data * >::iterator ivar;
+
+         for( ivar = ch->variables.begin(); ivar != ch->variables.end(); )
+         {
+            variable_data *vd = *ivar;
+            ++ivar;
+
+            if( vd->timer > 0 && --vd->timer == 0 )
+            {
+               ch->variables.remove( vd );
+               deleteptr( vd );
+            }
+         }
+      }
+
       /*
        * Morph timer expires 
        */
@@ -1187,6 +1206,7 @@ void char_update( void )
                   break;
             }
          }
+
          if( ch->pcdata->condition[COND_THIRST] > 1 )
          {
             switch ( ch->position )
@@ -1217,6 +1237,7 @@ void char_update( void )
             }
          }
       }
+
       if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->pcdata->release_date > 0 && ch->pcdata->release_date <= current_time )
       {
          room_index *location;
@@ -1337,6 +1358,7 @@ void char_update( void )
          }
 
          if( ch->mental_state >= 30 )
+         {
             switch ( ( ch->mental_state + 5 ) / 10 )
             {
                default:
@@ -1373,7 +1395,10 @@ void char_update( void )
                   act( AT_ACTION, "$n is muttering and ranting in tongues...", ch, NULL, NULL, TO_ROOM );
                   break;
             }
+         }
+
          if( ch->mental_state <= -30 )
+         {
             switch ( ( abs( ch->mental_state ) + 5 ) / 10 )
             {
                case 10:
@@ -1425,6 +1450,8 @@ void char_update( void )
                      ch->print( "You could use a rest.\r\n" );
                   break;
             }
+         }
+
          if( ch->timer > 24 )
             interpret( ch, "quit auto" );
          else if( ch == ch_save && IS_SAVE_FLAG( SV_AUTO ) && ++save_count < 10 )   /* save max of 10 per tick */
@@ -1464,6 +1491,55 @@ void obj_update( void )
          oprog_random_trigger( obj );
          if( update_month_trigger == true )
             oprog_month_trigger( obj );
+      }
+
+      if( obj->item_type == ITEM_LIGHT )
+      {
+         char_data *tch = NULL;
+
+         if( ( tch = obj->carried_by ) )
+         {
+            if( !tch->isnpc() /* && ( tch->level < LEVEL_IMMORTAL ) */
+               && ( ( obj == tch->get_eq( WEAR_LIGHT ) )
+               || ( IS_SET( obj->value[3], PIPE_LIT ) ) )
+               && ( obj->value[2] > 0 ) )
+            {
+
+               if( --obj->value[2] == 0 && tch->in_room )
+               {
+                  tch->in_room->light -= obj->count;
+                  if( tch->in_room->light < 0 )
+                     tch->in_room->light = 0;
+
+                  act( AT_ACTION, "$p goes out.", tch, obj, NULL, TO_ROOM );
+                  act( AT_ACTION, "$p goes out.", tch, obj, NULL, TO_CHAR );
+
+                  obj->extract( );
+                  continue;
+               }
+            }
+         }
+         else if( obj->in_room )
+         {
+			   if( IS_SET( obj->value[3], PIPE_LIT ) && ( obj->value[2] > 0 ) )
+            {
+               if ( --obj->value[2] == 0 )
+               {
+                  obj->in_room->light -= obj->count;
+                  if( obj->in_room->light < 0 )
+                     obj->in_room->light = 0;
+
+                  if( !obj->in_room->people.empty() )
+                  {
+                     act( AT_ACTION, "$p goes out.", ( *obj->in_room->people.begin(  ) ), obj, NULL, TO_ROOM );
+                     act( AT_ACTION, "$p goes out.", ( *obj->in_room->people.begin(  ) ), obj, NULL, TO_CHAR );
+                  }
+
+                  obj->extract( );
+                  continue;
+               }
+            }
+         }
       }
 
       if( obj->item_type == ITEM_PIPE )
@@ -2477,7 +2553,7 @@ void get_weather_echo( weather_data * weath )
             const char *echo_strings[4] = {
                "The sky rumbles with thunder as the snow changes to rain.\r\n",
                "The sky rumbles with thunder as the snow changes to rain.\r\n",
-               "The falling turns to freezing rain amidst flashes of lightning.\r\n",
+               "The falling snow turns to freezing rain amidst flashes of lightning.\r\n",
                "The falling snow begins to melt as thunder crashes overhead.\r\n"
             };
             weath->echo = echo_strings[n];

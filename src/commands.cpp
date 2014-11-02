@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -283,7 +283,7 @@ bool check_social( char_data * ch, const string & command, const string & argume
    act( AT_SOCIAL, social->char_found, ch, NULL, victim, TO_CHAR );
    act( AT_SOCIAL, social->vict_found, ch, NULL, victim, TO_VICT );
 
-   if( !ch->isnpc(  ) && victim->isnpc(  ) && !victim->has_aflag( AFF_CHARM ) && victim->IS_AWAKE(  ) && !HAS_PROG( victim->pIndexData, ACT_PROG ) )
+   if( !ch->isnpc(  ) && victim->isnpc(  ) && !victim->has_aflag( AFF_CHARM ) && victim->IS_AWAKE(  ) && !victim->desc && !HAS_PROG( victim->pIndexData, ACT_PROG ) )
    {
       switch ( number_bits( 4 ) )
       {

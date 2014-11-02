@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -2187,7 +2187,7 @@ const int part_vnums[] = { OBJ_VNUM_SEVERED_HEAD,  /* Head */
    OBJ_VNUM_PAWS, /* paws */
    OBJ_VNUM_FORELEG, /* forelegs */
    OBJ_VNUM_FEATHERS,   /* feathers */
-   0, /* r1 */
+   OBJ_VNUM_SHELL, /* shell */
    0  /* r2 */
 };
 
@@ -2223,7 +2223,7 @@ const char *part_messages[] = {
    "A paw is sliced from $n's dead body.",
    "$n's foreleg is sliced from $s dead body.",
    "Some feathers fall from $n's dead body.",
-   "r1 message.",
+   "$n's shell remains.",
    "r2 message."
 };
 

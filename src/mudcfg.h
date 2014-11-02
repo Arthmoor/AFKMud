@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -173,6 +173,7 @@ const int OBJ_VNUM_SCALES = 11447;
 const int OBJ_VNUM_TUSKS = 11448;
 const int OBJ_VNUM_HORNS = 11449;
 const int OBJ_VNUM_CLAWS = 11450;
+const int OBJ_VNUM_SHELL = 11461;
 const int OBJ_VNUM_FEATHERS = 11462;
 const int OBJ_VNUM_FORELEG = 11463;
 const int OBJ_VNUM_PAWS = 11464;

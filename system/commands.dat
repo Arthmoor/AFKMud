@@ -949,6 +949,15 @@ Log         normal
 End
 
 #COMMAND
+Name        extinguish
+Code        do_extinguish
+Position    standing
+Level       0
+Log         normal
+Flags       action
+End
+
+#COMMAND
 Name        examine
 Code        do_examine
 Position    resting
@@ -1477,14 +1486,6 @@ Position    dead
 Level       113
 Log         always
 Flags       ghost
-End
-
-#COMMAND
-Name        icq
-Code        do_icq_number
-Position    sleeping
-Level       2
-Log         normal
 End
 
 #COMMAND
@@ -2585,6 +2586,24 @@ End
 #COMMAND
 Name        notell
 Code        do_notell
+Position    dead
+Level       103
+Log         always
+Flags       ghost
+End
+
+#COMMAND
+Name        nourl
+Code        do_nourl
+Position    dead
+Level       103
+Log         always
+Flags       ghost
+End
+
+#COMMAND
+Name        noemail
+Code        do_noemail
 Position    dead
 Level       103
 Log         always

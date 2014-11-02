@@ -14,9 +14,9 @@
  *                                                                          *
  * External contributions from Remcon, Quixadhal, Zarius, and many others.  *
  *                                                                          *
- * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
+ * Original SMAUG 1.8b written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
- * Grishnakh, Fireblade, and Nivek.                                         *
+ * Grishnakh, Fireblade, Edmond, Conran, and Nivek.                         *
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
@@ -88,6 +88,8 @@ void rprog_time_trigger( char_data * );
 void rprog_month_trigger( char_data * );
 void rprog_hour_trigger( char_data * );
 void rprog_and_speech_trigger( const string &, char_data * );
+void rprog_login_trigger( char_data * );
+void rprog_void_trigger( char_data * );
 void mprog_hitprcnt_trigger( char_data *, char_data * );
 void mprog_fight_trigger( char_data *, char_data * );
 void mprog_death_trigger( char_data *, char_data * );
