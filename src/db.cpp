@@ -1439,8 +1439,6 @@ void make_wizlist(  )
                FCLOSE( gfp );
                if( iflags.test( PCFLAG_RETIRED ) )
                   ilevel = MAX_LEVEL - 15;
-               if( iflags.test( PCFLAG_GUEST ) )
-                  ilevel = MAX_LEVEL - 16;
                add_to_wizlist( dentry->d_name, "", ilevel );
             }
          }
@@ -1609,8 +1607,6 @@ void make_webwiz( void )
             FCLOSE( gfp );
             if( iflags.test( PCFLAG_RETIRED ) )
                ilevel = MAX_LEVEL - 15;
-            if( iflags.test( PCFLAG_GUEST ) )
-               ilevel = MAX_LEVEL - 16;
             add_to_wizlist( dentry->d_name, http, ilevel );
          }
       }

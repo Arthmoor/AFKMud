@@ -769,6 +769,83 @@ CMDF( do_inventory )
    ch->print( "&GItems with a &W*&G after them have other items stored inside.\r\n" );
 }
 
+bool is_valid_wear_loc( char_data *ch, int wear_loc )
+{
+   bitset<MAX_BPART> body_parts;
+
+   if( ch->has_bparts() )
+      body_parts = ch->get_bparts();
+   else
+      body_parts = race_table[ch->race]->body_parts;
+
+   // Parts that have no conditions yet
+   if( wear_loc == WEAR_NECK_1 || wear_loc == WEAR_NECK_2 || wear_loc == WEAR_BODY
+    || wear_loc == WEAR_HEAD || wear_loc == WEAR_SHIELD || wear_loc == WEAR_ABOUT
+    || wear_loc == WEAR_WAIST || wear_loc == WEAR_BACK || wear_loc == WEAR_FACE || wear_loc == WEAR_LODGE_RIB )
+   {
+      return true;
+   }
+
+   // Parts which are conditional
+   if( wear_loc == WEAR_LIGHT || wear_loc == WEAR_HANDS || wear_loc == WEAR_WRIST_L
+    || wear_loc == WEAR_WRIST_R || wear_loc == WEAR_WIELD || wear_loc == WEAR_HOLD
+    || wear_loc == WEAR_DUAL_WIELD || wear_loc == WEAR_MISSILE_WIELD )
+   {
+      if( body_parts.test( PART_HANDS ) )
+         return true;
+   }
+
+   if( wear_loc == WEAR_FINGER_L || wear_loc == WEAR_FINGER_R )
+   {
+      if( body_parts.test( PART_FINGERS ) )
+         return true;
+   }
+
+   if( wear_loc == WEAR_LEGS || wear_loc == WEAR_LODGE_LEG )
+   {
+      if( body_parts.test( PART_LEGS ) )
+         return true;
+   }
+
+   if( wear_loc == WEAR_FEET )
+   {
+      if( body_parts.test( PART_FEET ) )
+         return true;
+   }
+
+   if( wear_loc == WEAR_ARMS || wear_loc == WEAR_LODGE_ARM )
+   {
+      if( body_parts.test( PART_ARMS ) )
+         return true;
+   }
+
+   if( wear_loc == WEAR_EARS )
+   {
+      if( body_parts.test( PART_EAR ) )
+         return true;
+   }
+
+   if( wear_loc == WEAR_EYES )
+   {
+      if( body_parts.test( PART_EYE ) )
+         return true;
+   }
+
+   if( wear_loc == WEAR_HOOVES )
+   {
+      if( body_parts.test( PART_HOOVES ) )
+         return true;
+   }
+
+   if( wear_loc == WEAR_TAIL )
+   {
+      if( body_parts.test( PART_TAIL ) || body_parts.test( PART_TAILATTACK ) )
+         return true;
+   }
+
+   return false;
+}
+
 CMDF( do_equipment )
 {
    char_data *victim;
@@ -801,13 +878,24 @@ CMDF( do_equipment )
 
       if( iWear < ( MAX_WEAR - 3 ) )
       {
-         if( ( !victim->isnpc(  ) ) && ( victim->race > 0 ) && ( victim->race < MAX_PC_RACE ) )
-            ch->print( race_table[victim->race]->where_name[iWear] );
+         if( victim->race > 0 && victim->race < MAX_PC_RACE )
+         {
+            if( !is_valid_wear_loc( victim, iWear ) )
+               continue;
+
+            if( victim->has_bparts() )
+               ch->print( victim->bodypart_where_names[iWear] );
+            else
+               ch->print( race_table[victim->race]->bodypart_where_names[iWear] );
+         }
          else
             ch->print( where_names[iWear] );
       }
       if( !( obj2 = victim->get_eq( iWear ) ) && iWear < ( MAX_WEAR - 3 ) )
-         ch->print( "&R<Nothing>&D" );
+      {
+         ch->print( "&R<Nothing>&D\r\n" );
+         continue;
+      }
 
       list < obj_data * >::iterator iobj;
       for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); ++iobj )
@@ -818,8 +906,16 @@ CMDF( do_equipment )
             ++count;
             if( iWear >= ( MAX_WEAR - 3 ) )
             {
-               if( ( !victim->isnpc(  ) ) && ( victim->race > 0 ) && ( victim->race < MAX_PC_RACE ) )
-                  ch->print( race_table[victim->race]->where_name[iWear] );
+               if( victim->race > 0 && victim->race < MAX_PC_RACE )
+               {
+                  if( !is_valid_wear_loc( victim, iWear ) )
+                     continue;
+
+                  if( victim->has_bparts() )
+                     ch->print( victim->bodypart_where_names[iWear] );
+                  else
+                     ch->print( race_table[victim->race]->bodypart_where_names[iWear] );
+               }
                else
                   ch->print( where_names[iWear] );
             }

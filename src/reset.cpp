@@ -551,8 +551,9 @@ CMDF( do_reset )
       ch->print( "Usage: reset delete <number>\r\n" );
       ch->print( "Usage: reset percent <number> <value>\r\n" );
       ch->print( "Usage: reset hide <objname>\r\n" );
-      ch->print( "Usage: reset trap room <type> <charges> [flags]\r\n" );
-      ch->print( "Usage: reset trap obj <name> <type> <charges> [flags]\r\n" );
+      ch->print( "Usage: reset trap room <type> <charges> <mindamage> <maxdamage> [flags]\r\n" );
+      ch->print( "Usage: reset trap obj <name> <type> <charges> <mindamage> <maxdamage> [flags]\r\n\r\n" );
+      ch->print( "If mindamage and maxdamage are set to 0, trap damage will be determined automatically.\r\n" );
       return;
    }
 
@@ -750,19 +751,26 @@ CMDF( do_reset )
    {
       reset_data *pReset = NULL;
       string arg2, oname;
-      int num, chrg, value, extra = 0, vnum;
+      int type, chrg, flags = 0, vnum, min, max;
 
       argument = one_argument( argument, arg2 );
 
       if( !str_cmp( arg2, "room" ) )
       {
          vnum = ch->in_room->vnum;
-         extra = TRAP_ROOM;
+         flags = TRAP_ROOM;
 
          argument = one_argument( argument, arg );
-         num = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         type = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+
          argument = one_argument( argument, arg );
          chrg = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+
+         argument = one_argument( argument, arg );
+         min = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+
+         argument = one_argument( argument, arg );
+         max = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
       }
       else if( !str_cmp( arg2, "obj" ) )
       {
@@ -773,12 +781,19 @@ CMDF( do_reset )
             return;
          }
          vnum = 0;
-         extra = TRAP_OBJ;
+         flags = TRAP_OBJ;
 
          argument = one_argument( argument, arg );
-         num = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         type = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+
          argument = one_argument( argument, arg );
          chrg = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+
+         argument = one_argument( argument, arg );
+         min = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+
+         argument = one_argument( argument, arg );
+         max = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
       }
       else
       {
@@ -786,7 +801,7 @@ CMDF( do_reset )
          return;
       }
 
-      if( num < 1 || num > MAX_TRAPTYPE )
+      if( type < 1 || type > MAX_TRAPTYPE )
       {
          ch->print( "Invalid trap type.\r\n" );
          return;
@@ -798,18 +813,35 @@ CMDF( do_reset )
          return;
       }
 
+      if( min <= 0 )
+         min = 1;
+      else if( min >= max )
+      {
+         ch->printf( "Min of %d must be smaller than Max of %d\r\n", min, max );
+         return;
+      }
+
+      if( max <= 0 )
+         max = 6;
+      else if( max <= min )
+      {
+         ch->printf( "Max of %d must be larger than Min of %d\r\n", max, min );
+         return;
+      }
+
       while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg );
-         value = get_trapflag( arg );
+         int value = get_trapflag( arg );
+
          if( value < 0 || value > 31 )
          {
             ch->printf( "Bad trap flag: %s\r\n", arg.c_str(  ) );
             continue;
          }
-         SET_BIT( extra, 1 << value );
+         SET_BIT( flags, 1 << value );
       }
-      reset_data *tReset = make_reset( 'T', extra, num, chrg, vnum, 100, -2, -2, -2, -2, -2, -2 );
+      reset_data *tReset = make_reset( 'T', flags, type, chrg, vnum, 100, min, max, -2, -2, -2, -2 );
       if( pReset )
          pReset->resets.push_front( tReset );
       else

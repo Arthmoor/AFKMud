@@ -136,15 +136,15 @@ enum affected_by_types
 {
    AFF_NONE, AFF_BLIND, AFF_INVISIBLE, AFF_DETECT_EVIL, AFF_DETECT_INVIS,
    AFF_DETECT_MAGIC, AFF_DETECT_HIDDEN, AFF_HOLD, AFF_SANCTUARY,
-   AFF_FAERIE_FIRE, AFF_INFRARED, AFF_CURSE, AFF_SPY, AFF_POISON,
+   AFF_FAERIE_FIRE, AFF_INFRARED, AFF_CURSE, AFF_unused, AFF_POISON,
    AFF_PROTECT, AFF_PARALYSIS, AFF_SNEAK, AFF_HIDE, AFF_SLEEP, AFF_CHARM,
    AFF_FLYING, AFF_ACIDMIST, AFF_FLOATING, AFF_TRUESIGHT, AFF_DETECTTRAPS,
    AFF_SCRYING, AFF_FIRESHIELD, AFF_SHOCKSHIELD, AFF_VENOMSHIELD, AFF_ICESHIELD,
    AFF_WIZARDEYE, AFF_BERSERK, AFF_AQUA_BREATH, AFF_RECURRINGSPELL,
-   AFF_CONTAGIOUS, AFF_BLADEBARRIER, AFF_SILENCE, AFF_ANIMAL_INVIS,
-   AFF_HEAT_STUFF, AFF_LIFE_PROT, AFF_DRAGON_RIDE, AFF_GROWTH, AFF_TREE_TRAVEL,
-   AFF_TRAVELLING, AFF_TELEPATHY, AFF_ETHEREAL, AFF_PASS_DOOR, AFF_QUIV,
-   AFF_FLAMING, AFF_HASTE, AFF_SLOW, AFF_ELVENSONG, AFF_BLADESONG,
+   AFF_CONTAGIOUS, AFF_BLADEBARRIER, AFF_SILENCE, AFF_unused2,
+   AFF_unused3, AFF_unused4, AFF_unused5, AFF_GROWTH, AFF_TREE_TRAVEL,
+   AFF_unused6, AFF_unused7, AFF_unused8, AFF_PASS_DOOR, AFF_QUIV,
+   AFF_unused9, AFF_HASTE, AFF_SLOW, AFF_ELVENSONG, AFF_BLADESONG,
    AFF_REVERIE, AFF_TENACITY, AFF_DEATHSONG, AFF_POSSESS, AFF_NOTRACK, AFF_ENLIGHTEN,
    AFF_TREETALK, AFF_SPAMGUARD, AFF_BASH, MAX_AFFECTED_BY
 };
@@ -153,8 +153,9 @@ enum affected_by_types
  * Item types.
  * Used in #OBJECTS.
  */
-/* Don't forget to add the flag to build.c!!! */
-/* also don't forget to add new item types to the find_oftype function in afk.c */
+/* Don't forget to add the flag to build.cpp!!! */
+/* also don't forget to add new item types to the find_oftype function */
+/* Oh, and add valid ones to the switch statement in bid() in auction.cpp */
 /* Current # of types: 68 */
 enum item_types
 {
@@ -165,7 +166,7 @@ enum item_types
    ITEM_BOAT, ITEM_CORPSE_NPC, ITEM_CORPSE_PC, ITEM_FOUNTAIN, ITEM_PILL,
    ITEM_BLOOD, ITEM_BLOODSTAIN, ITEM_SCRAPS, ITEM_PIPE, ITEM_HERB_CON,
    ITEM_HERB, ITEM_INCENSE, ITEM_FIRE, ITEM_BOOK, ITEM_SWITCH, ITEM_LEVER,
-   ITEM_PULLCHAIN, ITEM_BUTTON, ITEM_DIAL, ITEM_RUNE, ITEM_RUNEPOUCH,
+   ITEM_PULLCHAIN, ITEM_BUTTON, ITEM_unused6, ITEM_RUNE, ITEM_RUNEPOUCH,
    ITEM_MATCH, ITEM_TRAP, ITEM_MAP, ITEM_PORTAL, ITEM_PAPER,
    ITEM_TINDER, ITEM_LOCKPICK, ITEM_SPIKE, ITEM_DISEASE, ITEM_OIL, ITEM_FUEL,
    ITEM_PIECE, ITEM_TREE, ITEM_MISSILE_WEAPON, ITEM_PROJECTILE, ITEM_QUIVER,
@@ -207,8 +208,8 @@ enum item_wear_flags
    ITEM_WEAR_LEGS, ITEM_WEAR_FEET, ITEM_WEAR_HANDS, ITEM_WEAR_ARMS, ITEM_WEAR_SHIELD,
    ITEM_WEAR_ABOUT, ITEM_WEAR_WAIST, ITEM_WEAR_WRIST, ITEM_WIELD, ITEM_HOLD,
    ITEM_DUAL_WIELD, ITEM_WEAR_EARS, ITEM_WEAR_EYES, ITEM_MISSILE_WIELD,
-   ITEM_WEAR_BACK, ITEM_WEAR_FACE, ITEM_WEAR_ANKLE, ITEM_LODGE_RIB, ITEM_LODGE_ARM,
-   ITEM_LODGE_LEG, MAX_WEAR_FLAG
+   ITEM_WEAR_BACK, ITEM_WEAR_FACE, ITEM_WEAR_ANKLE, ITEM_WEAR_HOOVES, ITEM_WEAR_TAIL,
+   ITEM_LODGE_RIB, ITEM_LODGE_ARM, ITEM_LODGE_LEG, MAX_WEAR_FLAG
 };
 
 /*
@@ -222,6 +223,7 @@ enum wear_locations
    WEAR_ARMS, WEAR_SHIELD, WEAR_ABOUT, WEAR_WAIST, WEAR_WRIST_L, WEAR_WRIST_R,
    WEAR_WIELD, WEAR_HOLD, WEAR_DUAL_WIELD, WEAR_EARS, WEAR_EYES,
    WEAR_MISSILE_WIELD, WEAR_BACK, WEAR_FACE, WEAR_ANKLE_L, WEAR_ANKLE_R,
+   WEAR_HOOVES, WEAR_TAIL,
    WEAR_LODGE_RIB, WEAR_LODGE_ARM, WEAR_LODGE_LEG, MAX_WEAR
 };
 
@@ -260,8 +262,8 @@ const int REVERSE_APPLY = 1000;
  *			 Lets put it all back... ;)
  */
 /* Roomflags converted to Extended BV - Samson 8-11-98 */
-/* NOTE: If this list grows to 65, raise BFS_MARK in track.c - Samson */
-/* Don't forget to add the flag to build.c!!! */
+/* NOTE: If this list grows to 65, raise BFS_MARK in track.cpp - Samson */
+/* Don't forget to add the flag to build.cpp!!! */
 /* Current # of flags: 41 */
 enum room_flags
 {
@@ -308,7 +310,7 @@ enum sector_types
 };
 
 /*
- * Resistant Immune Susceptible flags
+ * Resistant Immune Susceptible Absorb flags
  * Now also supporting absorb flags - Samson 3-16-00 
  */
 enum risa_flags
@@ -372,7 +374,7 @@ enum body_parts
    /*
     * Normal stuff again 
     */
-   PART_HAUNCH, PART_HOOVES, PART_PAWS, PART_FORELEGS, PART_FEATHERS, PART_HUSK_SHELL, MAX_BPART
+   PART_HAUNCH, PART_HOOVES, PART_PAWS, PART_FORELEGS, PART_FEATHERS, PART_HUSK_SHELL, PART_ANKLES, MAX_BPART
 };
 
 enum traps
@@ -397,6 +399,7 @@ const int CONT_EATKEY = BV04;
 const int MAX_CONT_FLAG = 5;  /* This needs to be equal to the number of container flags for the OLC menu editor */
 
 /* Lever/dial/switch/button/pullchain flags */
+// New flags should be set up to show their stats in olcobj.cpp - Samson
 const int TRIG_UP = BV00;
 const int TRIG_UNLOCK = BV01;
 const int TRIG_LOCK = BV02;
@@ -418,17 +421,12 @@ const int TRIG_TELEPORTALL = BV17;
 const int TRIG_TELEPORTPLUS = BV18;
 const int TRIG_DEATH = BV19;
 const int TRIG_CAST = BV20;
-const int TRIG_FAKEBLADE = BV21;
+const int TRIG_SHOWROOMDESC = BV21;
 const int TRIG_RAND4 = BV22;
 const int TRIG_RAND6 = BV23;
-const int TRIG_TRAPDOOR = BV24;
-const int TRIG_ANOTHEROOM = BV25;
-const int TRIG_USEDIAL = BV26;
-const int TRIG_ABSOLUTEVNUM = BV27;
-const int TRIG_SHOWROOMDESC = BV28;
-const int TRIG_AUTORETURN = BV29;
+const int TRIG_AUTORETURN = BV24;
 
-const int MAX_TRIGFLAG = 30;  /* Make equal to the number of trigger flags for OLC menu editor */
+const int MAX_TRIGFLAG = 25;  /* Make equal to the number of trigger flags for OLC menu editor */
 
 const int TELE_SHOWDESC = BV00;
 const int TELE_TRANSALL = BV01;

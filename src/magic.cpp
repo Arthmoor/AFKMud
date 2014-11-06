@@ -3392,6 +3392,12 @@ SPELLF( spell_transport )
       return rSPELL_FAILED;   /* nice catch, caine */
    }
 
+   if( obj->extra_flags.test( ITEM_PERSONAL ) )
+   {
+      ch->print( "That item is personal. They couldn't use it anyway.\r\n" );
+      return rSPELL_FAILED;
+   }
+
    if( obj->extra_flags.test( ITEM_PROTOTYPE ) && victim->level < LEVEL_IMMORTAL )
    {
       ch->print( "That item is not for mortal hands to touch!\r\n" );

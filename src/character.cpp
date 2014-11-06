@@ -1821,7 +1821,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       case APPLY_ABSORB:
          this->absorb |= paf->rismod;
          break;
-      case APPLY_WEAPONSPELL:   /* see fight.c */
+      case APPLY_WEAPONSPELL:   /* see fight.cpp */
          break;
       case APPLY_REMOVE:
          this->unset_aflag( mod2 );
@@ -1898,9 +1898,9 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       case APPLY_BACKSTAB:
          this->modify_skill( gsn_backstab, mod, fAdd );
          break;
-         /*
-          * case APPLY_DETRAP:   modify_skill( gsn_find_traps,mod, fAdd);  break; 
-          */
+      case APPLY_DETRAP:
+         this->modify_skill( gsn_detrap, mod, fAdd);
+         break;
       case APPLY_DODGE:
          this->modify_skill( gsn_dodge, mod, fAdd );
          break;
@@ -2861,14 +2861,13 @@ void race_bodyparts( char_data * ch )
       return;
    }
 
-   ch->set_bpart( PART_GUTS );
-
    if( IsHumanoid( ch ) || IsPerson( ch ) )
    {
       ch->set_bpart( PART_HEAD );
       ch->set_bpart( PART_ARMS );
       ch->set_bpart( PART_LEGS );
       ch->set_bpart( PART_FEET );
+      ch->set_bpart( PART_ANKLES );
       ch->set_bpart( PART_FINGERS );
       ch->set_bpart( PART_EAR );
       ch->set_bpart( PART_EYE );
@@ -3787,8 +3786,6 @@ void advance_level( char_data * ch )
    ch->max_hit += add_hp;
    ch->max_mana += add_mana;
    ch->pcdata->practice += add_prac;
-
-   ch->unset_pcflag( PCFLAG_BOUGHT_PET );
 
    STRFREE( ch->pcdata->rank );
    ch->pcdata->rank = STRALLOC( class_table[ch->Class]->who_name );
@@ -4744,6 +4741,8 @@ void char_data::set_bpart( int part )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
+   if( this->has_bparts() )
+      this->set_bodypart_where_names();
 }
 
 void char_data::unset_bpart( int part )
@@ -4756,6 +4755,8 @@ void char_data::unset_bpart( int part )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
+   if( this->has_bparts() )
+      this->set_bodypart_where_names();
 }
 
 void char_data::toggle_bpart( int part )
@@ -4768,6 +4769,8 @@ void char_data::toggle_bpart( int part )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
+   if( this->has_bparts() )
+      this->set_bodypart_where_names();
 }
 
 bool char_data::has_bparts(  )
@@ -4792,6 +4795,8 @@ void char_data::set_bparts( bitset < MAX_BPART > bits )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
+   if( this->has_bparts() )
+      this->set_bodypart_where_names();
 }
 
 void char_data::set_file_bparts( FILE * fp )
@@ -4804,6 +4809,129 @@ void char_data::set_file_bparts( FILE * fp )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
+   if( this->has_bparts() )
+      this->set_bodypart_where_names();
+}
+
+void char_data::set_bodypart_where_names( )
+{
+   this->bodypart_where_names.clear();
+
+   // The order of these goes by the traditional listing as found in act_info.cpp
+   if( this->body_parts.test( PART_HANDS ) )
+      this->bodypart_where_names.push_back( "<used as light>     " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( this->body_parts.test( PART_FINGERS ) )
+   {
+      this->bodypart_where_names.push_back( "<worn on finger>    " );
+      this->bodypart_where_names.push_back( "<worn on finger>    " );
+   }
+   else
+   {
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+   }
+
+   this->bodypart_where_names.push_back( "<worn around neck>  " );
+   this->bodypart_where_names.push_back( "<worn around neck>  " );
+   this->bodypart_where_names.push_back( "<worn on body>      " );
+   this->bodypart_where_names.push_back( "<worn on head>      " );
+
+   if( this->body_parts.test( PART_LEGS ) )
+      this->bodypart_where_names.push_back( "<worn on legs>      " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( this->body_parts.test( PART_FEET ) )
+      this->bodypart_where_names.push_back( "<worn on feet>      " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( this->body_parts.test( PART_HANDS ) )
+      this->bodypart_where_names.push_back( "<worn on hands>     " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( this->body_parts.test( PART_ARMS ) )
+      this->bodypart_where_names.push_back( "<worn on arms>      " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   // Shields could potentially be on arms, legs, whatever. Don't limit to just hands.
+   this->bodypart_where_names.push_back( "<worn as shield>    " );
+
+   this->bodypart_where_names.push_back( "<worn about body>   " );
+   this->bodypart_where_names.push_back( "<worn about waist>  " );
+
+   if( this->body_parts.test( PART_HANDS ) )
+   {
+      this->bodypart_where_names.push_back( "<worn around wrist> " );
+      this->bodypart_where_names.push_back( "<worn around wrist> " );
+      this->bodypart_where_names.push_back( "<wielded>           " );
+      this->bodypart_where_names.push_back( "<held>              " );
+      this->bodypart_where_names.push_back( "<dual wielded>      " );
+   }
+   else
+   {
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+   }
+
+   if( this->body_parts.test( PART_EAR ) )
+      this->bodypart_where_names.push_back( "<worn on ears>      " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( this->body_parts.test( PART_EYE ) )
+      this->bodypart_where_names.push_back( "<worn over eyes>    " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( this->body_parts.test( PART_HANDS ) )
+      this->bodypart_where_names.push_back( "<missile wielded>   " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   this->bodypart_where_names.push_back( "<worn on back>      " );
+   this->bodypart_where_names.push_back( "<worn on face>      " );
+
+   if( this->body_parts.test( PART_ANKLES ) )
+   {
+      this->bodypart_where_names.push_back( "<worn on ankle>     " );
+      this->bodypart_where_names.push_back( "<worn on ankle>     " );
+   }
+   else
+   {
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+   }
+
+   if( this->body_parts.test( PART_HOOVES ) )
+      this->bodypart_where_names.push_back( "<worn on hooves>    " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( this->body_parts.test( PART_TAIL ) || this->body_parts.test( PART_TAILATTACK ) )
+      this->bodypart_where_names.push_back( "<worn on tail>      " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   this->bodypart_where_names.push_back( "<lodged in a rib>   " );
+
+   if( this->body_parts.test( PART_ARMS ) )
+      this->bodypart_where_names.push_back( "<lodged in an arm>  " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( this->body_parts.test( PART_LEGS ) )
+      this->bodypart_where_names.push_back( "<lodged in a leg>   " );
+   else
+      this->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
 }
 
 bool char_data::has_pcflag( int bit )

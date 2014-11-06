@@ -1,7 +1,7 @@
 Version     1
 Name        Insectoid~
 Race        17
-Classes     Mage Rogue Necromancer Available Available2 Antipaladin Paladin Bard~
+Classes     Warrior Ranger Cleric Druid Monk~
 Str_Plus    0
 Dex_Plus    1
 Wis_Plus    1
@@ -19,6 +19,7 @@ Min_Align  -1000
 Max_Align	 1000
 AC_Plus    -50
 Exp_Mult   100
+Bodyparts  head arms legs heart brains guts hands feet ankles fingers eye forelegs shell~
 Attacks    bite~
 Height     84
 Weight     145
@@ -26,35 +27,6 @@ Hunger_Mod  0
 Thirst_mod  0
 Mana_Regen  0
 HP_Regen    0
-WhereName  <used as light>     ~
-WhereName  <worn on finger>    ~
-WhereName  <worn on finger>    ~
-WhereName  <worn around neck>  ~
-WhereName  <worn around neck>  ~
-WhereName  <worn on body>      ~
-WhereName  <worn on head>      ~
-WhereName  <worn on legs>      ~
-WhereName  <worn on feet>      ~
-WhereName  <worn on hands>     ~
-WhereName  <worn on arms>      ~
-WhereName  <worn as shield>    ~
-WhereName  <worn about body>   ~
-WhereName  <worn about waist>  ~
-WhereName  <worn around wrist> ~
-WhereName  <worn around wrist> ~
-WhereName  <wielded>           ~
-WhereName  <held>              ~
-WhereName  <dual wielded>      ~
-WhereName  <worn on ears>      ~
-WhereName  <worn on eyes>      ~
-WhereName  <missile wielded>   ~
-WhereName  <worn on back>      ~
-WhereName  <worn on face>      ~
-WhereName  <worn on ankle>     ~
-WhereName  <worn on ankle>     ~
-WhereName  <lodged in a rib>   ~
-WhereName  <lodged in an arm>  ~
-WhereName  <lodged in a leg>   ~
 Skill 'ambidexterity' 45 85
 Skill 'carapace' 65 80
 Skill 'mandible' 7 90

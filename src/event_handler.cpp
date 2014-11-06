@@ -455,7 +455,7 @@ void ev_auction( void *data )
             /*
              * Stop it from listing on house lists - Samson 11-1-99 
              */
-            auction->item->extra_flags.test( ITEM_AUCTION );
+            auction->item->extra_flags.reset( ITEM_AUCTION );
 
             /*
              * Reset the 1 year timer on the item - Samson 11-1-99 

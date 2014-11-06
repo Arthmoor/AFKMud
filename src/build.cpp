@@ -165,7 +165,8 @@ const char *o_flags[] = {
 const char *w_flags[] = {
    "take", "finger", "neck", "body", "head", "legs", "feet", "hands", "arms",
    "shield", "about", "waist", "wrist", "wield", "hold", "dual", "ears", "eyes",
-   "missile", "back", "face", "ankle", "lodge_rib", "lodge_arm", "lodge_leg"
+   "missile", "back", "face", "ankle", "hooves", "tail",
+   "lodge_rib", "lodge_arm", "lodge_leg"
 };
 
 /* Area Flags for continent and plane system - Samson 3-28-98 */
@@ -181,7 +182,7 @@ const char *o_types[] = {
    "container", "UNUSED5", "drinkcon", "key", "food", "money", "pen", "boat",
    "corpse", "corpse_pc", "fountain", "pill", "blood", "bloodstain",
    "scraps", "pipe", "herbcon", "herb", "incense", "fire", "book", "switch",
-   "lever", "pullchain", "button", "dial", "rune", "runepouch", "match", "trap",
+   "lever", "pullchain", "button", "UNUSED", "rune", "runepouch", "match", "trap",
    "map", "portal", "paper", "tinder", "lockpick", "spike", "disease", "oil",
    "fuel", "piece", "tree", "missileweapon", "projectile", "quiver", "shovel",
    "salve", "cook", "keyring", "odor", "campgear", "drinkmix", "instrument", "ore"
@@ -206,13 +207,13 @@ const char *a_types[] = {
 const char *aff_flags[] = {
    "NONE", "blind", "invisible", "detect_evil", "detect_invis", "detect_magic",
    "detect_hidden", "hold", "sanctuary", "faerie_fire", "infrared", "curse",
-   "spy", "poison", "protect", "paralysis", "sneak", "hide", "sleep",
+   "UNUSED", "poison", "protect", "paralysis", "sneak", "hide", "sleep",
    "charm", "flying", "acidmist", "floating", "truesight", "detect_traps",
    "scrying", "fireshield", "shockshield", "venomshield", "iceshield", "wizardeye",
    "berserk", "aqua_breath", "recurringspell", "contagious", "bladebarrier",
-   "silence", "animal_invis", "heat_stuff", "life_prot", "dragonride",
-   "growth", "tree_travel", "travelling", "telepathy", "ethereal",
-   "passdoor", "quiv", "_flaming", "haste", "slow", "elvensong", "bladesong",
+   "silence", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
+   "growth", "tree_travel", "UNUSED", "UNUSED", "UNUSED",
+   "passdoor", "quiv", "UNUSED", "haste", "slow", "elvensong", "bladesong",
    "reverie", "tenacity", "deathsong", "possess", "notrack", "enlighten", "treetalk",
    "spamguard", "bash"
 };
@@ -229,14 +230,14 @@ const char *act_flags[] = {
 };
 
 const char *pc_flags[] = {
-   "NONE", "deadly", "unauthed", "norecall", "nointro", "gag", "retired", "guest",
-   "nosummon", "pager", "notitled", "groupwho", "highgag",
+   "NONE", "deadly", "unauthed", "norecall", "nointro", "gag", "retired", "UNUSED",
+   "nosummon", "pager", "notitled", "groupwho", "UNUSED",
    "nstart", "flags", "sector", "aname", "nobeep", "passdoor", "privacy",
-   "notell", "checkboards", "noquote", "boughtpet", "shovedrag", "autoexits",
+   "notell", "checkboards", "noquote", "UNUSED", "shovedrag", "autoexits",
    "autoloot", "autosac", "blank", "brief", "automap", "telnet_ga",
-   "holylight", "wizinvis", "roomvnum", "silence", "noemote", "boarded", "notell",
+   "holylight", "wizinvis", "roomvnum", "silence", "noemote", "boarded", "no_tell",
    "log", "deny", "freeze", "exempt", "onship", "litterbug", "ansi",
-   "flee", "autogold", "ghost", "afk", "invisprompt", "busy", "autoassist",
+   "UNUSED", "autogold", "ghost", "afk", "UNUSED", "busy", "autoassist",
    "smartsac", "idle", "onmap", "mapedit", "guildsplit", "groupsplit",
    "msp", "compass", "nourl", "noemail"
 };
@@ -250,7 +251,7 @@ const char *trap_types[] = {
 const char *trap_flags[] = {
    "room", "obj", "enter", "leave", "open", "close", "get", "put", "pick",
    "unlock", "north", "south", "east", "west", "up", "down", "examine",
-   "northeast", "northwest", "southeast", "southwest", "r6", "r7", "r8",
+   "r2", "r3", "r4", "r5", "r6", "r7", "r8",
    "r9", "r10", "r11", "r12", "r13", "r14", "r15"
 };
 
@@ -258,7 +259,7 @@ const char *wear_locs[] = {
    "light", "finger1", "finger2", "neck1", "neck2", "body", "head", "legs",
    "feet", "hands", "arms", "shield", "about", "waist", "wrist1", "wrist2",
    "wield", "hold", "dual_wield", "ears", "eyes", "missile_wield", "back",
-   "face", "ankle1", "ankle2"
+   "face", "ankle1", "ankle2", "hooves", "tail"
 };
 
 const char *ris_flags[] = {
@@ -271,16 +272,16 @@ const char *ris_flags[] = {
 const char *trig_flags[] = {
    "up", "unlock", "lock", "north", "south", "east", "west", "d_up", "d_down",
    "door", "container", "open", "close", "passage", "oload", "mload", "teleport",
-   "examine", "teleportall", "teleportplus", "death", "cast", "fakeblade", "rand4",
-   "rand6", "trapdoor", "anotherroom", "usedial", "absvnum", "showdesc", "autoreturn",
-   "r31"
+   "teleportall", "teleportplus", "death", "cast", "showdesc", "rand4",
+   "rand6", "autoreturn", "r26", "r27", "r28", "r29", "r30", "r31"
 };
 
 const char *part_flags[] = {
    "head", "arms", "legs", "heart", "brains", "guts", "hands", "feet", "fingers",
    "ear", "eye", "long_tongue", "eyestalks", "tentacles", "fins", "wings",
    "tail", "scales", "claws", "fangs", "horns", "tusks", "tailattack",
-   "sharpscales", "beak", "haunches", "hooves", "paws", "forelegs", "feathers", "shell"
+   "sharpscales", "beak", "haunches", "hooves", "paws", "forelegs", "feathers", "shell",
+   "ankles"
 };
 
 const char *attack_flags[] = {
@@ -822,6 +823,22 @@ int get_defenseflag( const string & flag )
 {
    for( size_t x = 0; x < ( sizeof( defense_flags ) / sizeof( defense_flags[0] ) ); ++x )
       if( !str_cmp( flag, defense_flags[x] ) )
+         return x;
+   return -1;
+}
+
+int get_containerflag( const string & flag )
+{
+   for( size_t x = 0; x < ( sizeof( container_flags ) / sizeof( container_flags[0] ) ); ++x )
+      if( !str_cmp( flag, container_flags[x] ) )
+         return x;
+   return -1;
+}
+
+int get_furnitureflag( const string & flag )
+{
+   for( size_t x = 0; x < ( sizeof( furniture_flags ) / sizeof( furniture_flags[0] ) ); ++x )
+      if( !str_cmp( flag, furniture_flags[x] ) )
          return x;
    return -1;
 }
@@ -2023,7 +2040,7 @@ CMDF( do_mset )
 
       if( argument.empty(  ) )
       {
-         ch->print( "Usage: mset <victim> flags <flag> [flag]...\r\n" );
+         ch->print( "Usage: mset <victim> flags <flag> [flag] ...\r\n" );
          return;
       }
 
@@ -2181,7 +2198,7 @@ CMDF( do_mset )
 
       if( argument.empty(  ) )
       {
-         ch->print( "Usage: mset <victim> resistant <flag> [flag]...\r\n" );
+         ch->print( "Usage: mset <victim> resistant <flag> [flag] ...\r\n" );
          return;
       }
 
@@ -2210,7 +2227,7 @@ CMDF( do_mset )
 
       if( argument.empty(  ) )
       {
-         ch->print( "Usage: mset <victim> immune <flag> [flag]...\r\n" );
+         ch->print( "Usage: mset <victim> immune <flag> [flag] ...\r\n" );
          return;
       }
 
@@ -2239,7 +2256,7 @@ CMDF( do_mset )
 
       if( argument.empty(  ) )
       {
-         ch->print( "Usage: mset <victim> susceptible <flag> [flag]...\r\n" );
+         ch->print( "Usage: mset <victim> susceptible <flag> [flag] ...\r\n" );
          return;
       }
 
@@ -2268,7 +2285,7 @@ CMDF( do_mset )
 
       if( argument.empty(  ) )
       {
-         ch->print( "Usage: mset <victim> absorb <flag> [flag]...\r\n" );
+         ch->print( "Usage: mset <victim> absorb <flag> [flag] ...\r\n" );
          return;
       }
 
@@ -2297,7 +2314,7 @@ CMDF( do_mset )
 
       if( argument.empty(  ) )
       {
-         ch->print( "Usage: mset <victim> part <flag> [flag]...\r\n" );
+         ch->print( "Usage: mset <victim> part <flag> [flag] ...\r\n" );
          return;
       }
 
@@ -3381,7 +3398,7 @@ CMDF( do_oset )
    /*
     * Crash fix and name support by Shaddai 
     */
-   if( !str_cmp( arg2, "affect" ) )
+   if( !str_cmp( arg2, "effect" ) )
    {
       affect_data *paf;
       bitset < MAX_RIS_FLAG > risabit;
@@ -3393,7 +3410,7 @@ CMDF( do_oset )
       argument = one_argument( argument, arg2 );
       if( arg2.empty(  ) || argument.empty(  ) )
       {
-         ch->print( "Usage: oset <object> affect <field> <value>\r\n" );
+         ch->print( "Usage: oset <object> effect <field> <value>\r\n" );
          return;
       }
       loc = get_atype( arg2 );
@@ -3714,6 +3731,64 @@ CMDF( do_oset )
       default:
          break;
 
+      case ITEM_TRAP:
+         if( !str_cmp( arg2, "charges" ) )
+            tmp = 0;
+         if( !str_cmp( arg2, "level" ) )
+            tmp = 2;
+         if( !str_cmp( arg2, "mindamage" ) )
+            tmp = 4;
+         if( !str_cmp( arg2, "maxdamage" ) )
+            tmp = 5;
+
+         if( !str_cmp( arg2, "type" ) )
+         {
+            value = -1;
+            for( size_t x = 0; x < sizeof( trap_types ) / sizeof( trap_types[0] ); ++x )
+               if( !str_cmp( arg3, trap_types[x] ) )
+                  value = x;
+            if( value < 0 )
+            {
+               ch->print( "Unknown trap type.\r\n" );
+               return;
+            }
+            tmp = 1;
+            break;
+         }
+
+         if( !str_cmp( arg2, "flags" ) )
+         {
+            int tmpval = 0;
+
+            tmp = 3;
+            argument = arg3;
+
+            if( is_number( argument ) )
+            {
+               int bv = atoi( argument.c_str() );
+
+               if( bv < 0 || bv > BV31 )
+               {
+                  ch->printf( "Invalid bitvector value %d. Edit cancelled.\r\n", bv );
+                  return;
+               }
+               tmpval = bv;
+            }
+            else
+            {
+               while( !argument.empty(  ) )
+               {
+                  argument = one_argument( argument, arg3 );
+                  value = get_trapflag( arg3 );
+                  if( value < 0 || value > 31 )
+                     ch->printf( "Invalid trap flag %s\r\n", arg3.c_str(  ) );
+                  else
+                     tmpval += ( 1 << value );
+               }
+            }
+            value = tmpval;
+         }
+
       case ITEM_CAMPGEAR:
          if( !str_cmp( arg2, "type" ) )
          {
@@ -3728,6 +3803,56 @@ CMDF( do_oset )
             }
             tmp = 0;
             break;
+         }
+
+      case ITEM_ORE:
+         if( !str_cmp( arg2, "type" ) )
+         {
+            value = -1;
+            for( size_t x = 0; x < sizeof( ores ) / sizeof( ores[0] ); ++x )
+               if( !str_cmp( arg3, ores[x] ) )
+                  value = x;
+            if( value < 0 )
+            {
+               ch->print( "Unknown ore type.\r\n" );
+               return;
+            }
+            tmp = 0;
+            break;
+         }
+
+      case ITEM_FURNITURE:
+         if( !str_cmp( arg2, "flags" ) )
+         {
+            int tmpval = 0;
+
+            tmp = 2;
+            argument = arg3;
+
+            if( is_number( argument ) )
+            {
+               int bv = atoi( argument.c_str() );
+
+               if( bv < 0 || bv > BV31 )
+               {
+                  ch->printf( "Invalid bitvector value %d. Edit cancelled.\r\n", bv );
+                  return;
+               }
+               tmpval = bv;
+            }
+            else
+            {
+               while( !argument.empty(  ) )
+               {
+                  argument = one_argument( argument, arg3 );
+                  value = get_furnitureflag( arg3 );
+                  if( value < 0 || value > 31 )
+                     ch->printf( "Invalid furniture flag %s\r\n", arg3.c_str(  ) );
+                  else
+                     tmpval += ( 1 << value );
+               }
+            }
+            value = tmpval;
          }
 
       case ITEM_PROJECTILE:
@@ -3860,8 +3985,40 @@ CMDF( do_oset )
       case ITEM_CONTAINER:
          if( !str_cmp( arg2, "capacity" ) )
             tmp = 0;
-         if( !str_cmp( arg2, "cflags" ) )
+
+         if( !str_cmp( arg2, "flags" ) )
+         {
+            int tmpval = 0;
+
             tmp = 1;
+            argument = arg3;
+
+            if( is_number( argument ) )
+            {
+               int bv = atoi( argument.c_str() );
+
+               if( bv < 0 || bv > BV31 )
+               {
+                  ch->printf( "Invalid bitvector value %d. Edit cancelled.\r\n", bv );
+                  return;
+               }
+               tmpval = bv;
+            }
+            else
+            {
+               while( !argument.empty(  ) )
+               {
+                  argument = one_argument( argument, arg3 );
+                  value = get_containerflag( arg3 );
+                  if( value < 0 || value > 31 )
+                     ch->printf( "Invalid container flag %s\r\n", arg3.c_str(  ) );
+                  else
+                     tmpval += ( 1 << value );
+               }
+            }
+            value = tmpval;
+         }
+
          if( !str_cmp( arg2, "key" ) )
             tmp = 2;
          break;
@@ -3870,25 +4027,41 @@ CMDF( do_oset )
       case ITEM_LEVER:
       case ITEM_PULLCHAIN:
       case ITEM_BUTTON:
-         if( !str_cmp( arg2, "tflags" ) )
+         if( !str_cmp( arg2, "flags" ) )
          {
             int tmpval = 0;
 
             tmp = 0;
             argument = arg3;
-            while( !argument.empty(  ) )
+
+            if( is_number( argument ) )
             {
-               argument = one_argument( argument, arg3 );
-               value = get_trigflag( arg3 );
-               if( value < 0 || value > 31 )
-                  ch->printf( "Invalid tflag %s\r\n", arg3.c_str(  ) );
-               else
-                  tmpval += ( 1 << value );
+               int bv = atoi( argument.c_str() );
+
+               if( bv < 0 || bv > BV31 )
+               {
+                  ch->printf( "Invalid bitvector value %d. Edit cancelled.\r\n", bv );
+                  return;
+               }
+               tmpval = bv;
+            }
+            else
+            {
+               while( !argument.empty(  ) )
+               {
+                  argument = one_argument( argument, arg3 );
+                  value = get_trigflag( arg3 );
+                  if( value < 0 || value > 31 )
+                     ch->printf( "Invalid trigger flag %s\r\n", arg3.c_str(  ) );
+                  else
+                     tmpval += ( 1 << value );
+               }
             }
             value = tmpval;
          }
          break;
    }
+
    if( tmp >= 0 && tmp <= 10 )
    {
       obj->value[tmp] = value;

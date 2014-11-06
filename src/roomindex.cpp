@@ -1038,7 +1038,7 @@ obj_data *get_obj_room( obj_index * pObjIndex, room_index * pRoomIndex )
 /*
  * Make a trap.
  */
-obj_data *make_trap( int v0, int v1, int v2, int v3 )
+obj_data *make_trap( int charges, int type, int level, int flags, int mindamage, int maxdamage )
 {
    obj_data *trap;
 
@@ -1048,10 +1048,13 @@ obj_data *make_trap( int v0, int v1, int v2, int v3 )
       return NULL;
    }
    trap->timer = 0;
-   trap->value[0] = v0;
-   trap->value[1] = v1;
-   trap->value[2] = v2;
-   trap->value[3] = v3;
+   trap->value[0] = charges;
+   trap->value[1] = type;
+   trap->value[2] = level;
+   trap->value[3] = flags;
+   trap->value[4] = mindamage;
+   trap->value[5] = maxdamage;
+
    return trap;
 }
 
@@ -1671,7 +1674,7 @@ void room_index::reset(  )
                                  break;
                               to_obj = obj;
                            }
-                           pobj = make_trap( tReset->arg3, tReset->arg2, number_fuzzy( to_obj->level ), tReset->arg1 );
+                           pobj = make_trap( tReset->arg3, tReset->arg2, number_fuzzy( to_obj->level ), tReset->arg1, tReset->arg6, tReset->arg7 );
                            pobj->to_obj( to_obj );
                         }
                         break;
@@ -1785,7 +1788,7 @@ void room_index::reset(  )
                }
                if( area->nplayer > 0 || count_obj_list( pReset, get_obj_index( OBJ_VNUM_TRAP ), pRoomIndex->objects ) > 0 )
                   break;
-               to_obj = make_trap( pReset->arg2, pReset->arg2, 10, pReset->arg1 );
+               to_obj = make_trap( pReset->arg2, pReset->arg2, 10, pReset->arg1, pReset->arg6, pReset->arg7 );
                to_obj->to_room( pRoomIndex, NULL );
             }
             break;

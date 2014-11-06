@@ -623,7 +623,15 @@ ch_ret spring_trap( char_data * ch, obj_data * obj )
          txt = "surrounded by a mysterious aura";
          break;
    }
+
+   /* Values 4 and 5 had never been set anywhere before so make the damage count now.
+    * Formula is 1d6 + (trap level) points of non-magical damage.
+    * Only applies to trap types that use poison.
+    */
    dam = number_range( obj->value[4], obj->value[5] );
+   if( dam <= 0 )
+      dam = number_range( 1, 6 ) + lev;
+   
    act_printf( AT_HITME, ch, NULL, NULL, TO_CHAR, "You are %s!", txt );
    act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "$n is %s.", txt );
    --obj->value[0];

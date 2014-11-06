@@ -1,7 +1,7 @@
 Version     1
 Name        Minotaur~
 Race        10
-Classes     Mage Rogue Necromancer Druid Ranger Monk Available Available2 Antipaladin Paladin Bard~
+Classes     Warrior Cleric~
 Str_Plus    2
 Dex_Plus    0
 Wis_Plus    0
@@ -18,41 +18,13 @@ Min_Align  -1000
 Max_Align	 1000
 AC_Plus    0
 Exp_Mult   106
+Bodyparts  head arms legs heart brains guts hands ankles hooves fingers ear eye horns~
 Height     88
 Weight     200
 Hunger_Mod  0
 Thirst_mod  0
 Mana_Regen  0
 HP_Regen    0
-WhereName  <used as light>     ~
-WhereName  <worn on finger>    ~
-WhereName  <worn on finger>    ~
-WhereName  <worn around neck>  ~
-WhereName  <worn around neck>  ~
-WhereName  <worn on body>      ~
-WhereName  <worn on head>      ~
-WhereName  <worn on legs>      ~
-WhereName  <worn on feet>      ~
-WhereName  <worn on hands>     ~
-WhereName  <worn on arms>      ~
-WhereName  <worn as shield>    ~
-WhereName  <worn about body>   ~
-WhereName  <worn about waist>  ~
-WhereName  <worn around wrist> ~
-WhereName  <worn around wrist> ~
-WhereName  <wielded>           ~
-WhereName  <held>              ~
-WhereName  <dual wielded>      ~
-WhereName  <worn on ears>      ~
-WhereName  <worn on eyes>      ~
-WhereName  <missile wielded>   ~
-WhereName  <worn on back>      ~
-WhereName  <worn on face>      ~
-WhereName  <worn on ankle>     ~
-WhereName  <worn on ankle>     ~
-WhereName  <lodged in a rib>   ~
-WhereName  <lodged in an arm>  ~
-WhereName  <lodged in a leg>   ~
 Skill 'bloodlust' 75 80
 Skill 'hunt' 35 85
 Skill 'impale' 7 90

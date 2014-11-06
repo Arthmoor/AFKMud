@@ -163,7 +163,6 @@ CMDF( do_eat )
    obj_data *obj;
    ch_ret retcode;
    int foodcond;
-   bool hgflag = true;
    bool immH = false;   /* Immune to hunger */
    bool immT = false;   /* Immune to thirst */
 
@@ -202,17 +201,13 @@ CMDF( do_eat )
    if( !ch->isnpc(  ) && ch->pcdata->condition[COND_THIRST] == -1 )
       immT = true;
 
-   if( !ch->IS_PKILL(  ) || ( ch->IS_PKILL(  ) && !ch->has_pcflag( PCFLAG_HIGHGAG ) ) )
-      hgflag = false;
-
    /*
     * required due to object grouping 
     */
    obj->separate(  );
    if( obj->in_obj )
    {
-      if( !hgflag )
-         act( AT_PLAIN, "You take $p from $P.", ch, obj, obj->in_obj, TO_CHAR );
+      act( AT_PLAIN, "You take $p from $P.", ch, obj, obj->in_obj, TO_CHAR );
       act( AT_PLAIN, "$n takes $p from $P.", ch, obj, obj->in_obj, TO_ROOM );
    }
    if( ch->fighting && number_percent(  ) > ( ch->get_curr_dex(  ) * 2 + 47 ) )
@@ -226,8 +221,7 @@ CMDF( do_eat )
                   ch->in_room->sector_type == SECT_RIVER ) ? "dissolves in the water" :
                 ( ch->in_room->sector_type == SECT_AIR || ch->in_room->flags.test( ROOM_NOFLOOR ) ) ? "falls far below" : "is trampled underfoot" );
       act( AT_MAGIC, "$n drops $p, and it $T.", ch, obj, buf, TO_ROOM );
-      if( !hgflag )
-         act( AT_MAGIC, "Oops, $p slips from your hand and $T!", ch, obj, buf, TO_CHAR );
+      act( AT_MAGIC, "Oops, $p slips from your hand and $T!", ch, obj, buf, TO_CHAR );
    }
    else
    {
@@ -236,8 +230,7 @@ CMDF( do_eat )
          if( !obj->action_desc || obj->action_desc[0] == '\0' )
          {
             act( AT_ACTION, "$n eats $p.", ch, obj, NULL, TO_ROOM );
-            if( !hgflag )
-               act( AT_ACTION, "You eat $p.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You eat $p.", ch, obj, NULL, TO_CHAR );
             ch->sound( "eat.wav", 100, false );
          }
          else
@@ -351,7 +344,6 @@ CMDF( do_quaff )
 {
    obj_data *obj;
    ch_ret retcode;
-   bool hgflag = true;
 
    if( argument.empty(  ) )
    {
@@ -386,9 +378,6 @@ CMDF( do_quaff )
       return;
    }
 
-   if( !ch->IS_PKILL(  ) || ( ch->IS_PKILL(  ) && !ch->has_pcflag( PCFLAG_HIGHGAG ) ) )
-      hgflag = false;
-
    obj->separate(  );
    if( obj->in_obj )
    {
@@ -405,8 +394,7 @@ CMDF( do_quaff )
    if( ch->fighting && number_percent(  ) > ( ch->get_curr_dex(  ) * 2 + 48 ) )
    {
       act( AT_MAGIC, "$n fumbles $p and shatters it into fragments.", ch, obj, NULL, TO_ROOM );
-      if( !hgflag )
-         act( AT_MAGIC, "Oops... $p is knocked from your hand and shatters!", ch, obj, NULL, TO_CHAR );
+      act( AT_MAGIC, "Oops... $p is knocked from your hand and shatters!", ch, obj, NULL, TO_CHAR );
    }
    else
    {
@@ -415,14 +403,12 @@ CMDF( do_quaff )
          if( !ch->CAN_PKILL(  ) || !obj->in_obj )
          {
             act( AT_ACTION, "$n quaffs $p.", ch, obj, NULL, TO_ROOM );
-            if( !hgflag )
-               act( AT_ACTION, "You quaff $p.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You quaff $p.", ch, obj, NULL, TO_CHAR );
          }
          else if( obj->in_obj )
          {
             act( AT_ACTION, "$n quaffs $p from $P.", ch, obj, obj->in_obj, TO_ROOM );
-            if( !hgflag )
-               act( AT_ACTION, "You quaff $p from $P.", ch, obj, obj->in_obj, TO_CHAR );
+            act( AT_ACTION, "You quaff $p from $P.", ch, obj, obj->in_obj, TO_CHAR );
          }
       }
 
@@ -582,14 +568,14 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
 
    if( IS_SET( obj->value[0], TRIG_TELEPORT ) || IS_SET( obj->value[0], TRIG_TELEPORTALL ) || IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) )
    {
-      int flags;
+      int flags = 0;
 
       if( !( room = get_room_index( obj->value[1] ) ) )
       {
          bug( "%s: obj points to invalid room %d", __FUNCTION__, obj->value[1] );
          return;
       }
-      flags = 0;
+
       if( IS_SET( obj->value[0], TRIG_SHOWROOMDESC ) )
          SET_BIT( flags, TELE_SHOWDESC );
       if( IS_SET( obj->value[0], TRIG_TELEPORTALL ) )
@@ -662,10 +648,12 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: obj points to invalid object vnum %d", __FUNCTION__, obj->value[1] );
          return;
       }
+
       /*
        * Set room to NULL before the check 
        */
       room = NULL;
+
       /*
        * value[2] for the room vnum to put the object in if there is one, 0 for giving it to char or current room 
        */
@@ -674,6 +662,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: obj points to invalid room vnum %d", __FUNCTION__, obj->value[2] );
          return;
       }
+
       /*
        * Uses value[3] for level 
        */
@@ -682,6 +671,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: obj couldn't create obj vnum %d at level %d", __FUNCTION__, obj->value[1], obj->value[3] );
          return;
       }
+
       if( room )
          tobj->to_room( room, ch );
       else
@@ -710,10 +700,12 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: obj points to invalid mob vnum %d", __FUNCTION__, obj->value[1] );
          return;
       }
+
       /*
        * Set room to current room before the check 
        */
       room = ch->in_room;
+
       /*
        * value[2] for the room vnum to put the object in if there is one, 0 for giving it to char or current room 
        */
@@ -722,6 +714,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: obj points to invalid room vnum %d", __FUNCTION__, obj->value[2] );
          return;
       }
+
       if( !( mob = pMobIndex->create_mobile(  ) ) )
       {
          bug( "%s: obj couldnt create_mobile vnum %d", __FUNCTION__, obj->value[1] );
@@ -757,6 +750,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       room = get_room_index( obj->value[1] );
       if( !room )
          room = obj->in_room;
+
       if( !room )
       {
          bug( "%s: obj points to invalid room %d", __FUNCTION__, obj->value[1] );
@@ -773,23 +767,22 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
             break;
          }
       }
+
       if( !found )
       {
          bug( "%s: obj points to a container [%d] thats not where it should be?", __FUNCTION__, obj->value[2] );
          return;
       }
+
       if( container->item_type != ITEM_CONTAINER )
       {
          bug( "%s: obj points to object [%d], but it isn't a container.", __FUNCTION__, obj->value[2] );
          return;
       }
+
       /*
        * Could toss in some messages. Limit how it is handled etc... I'll leave that to each one to do 
-       */
-      /*
        * Started to use TRIG_OPEN, TRIG_CLOSE, TRIG_LOCK, and TRIG_UNLOCK like TRIG_DOOR does. 
-       */
-      /*
        * It limits it alot, but it wouldn't allow for an EATKEY change 
        */
       if( IS_SET( obj->value[3], CONT_CLOSEABLE ) )

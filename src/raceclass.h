@@ -43,6 +43,7 @@ class race_type
      race_type(  );
     ~race_type(  );
 
+     vector < string > bodypart_where_names; /* Body part wear messages */
      bitset < MAX_AFFECTED_BY > affected; /* Default affect bitvectors  */
      bitset < MAX_ATTACK_TYPE > attacks;
      bitset < MAX_DEFENSE_TYPE > defenses;
@@ -50,9 +51,8 @@ class race_type
      bitset < LANG_UNKNOWN > language; /* Default racial language - can have multiples */
      bitset < MAX_RIS_FLAG > resist;   /* Bugfix: Samson 5-7-99 */
      bitset < MAX_RIS_FLAG > suscept;  /* Bugfix: Samson 5-7-99 */
-     bitset < MAX_CLASS > class_restriction; /* Flags for illegal classes */
+     bitset < MAX_CLASS > allowed_classes; /* Flags for allowed classes */
    char *race_name;  /* Race name */
-   char *where_name[MAX_WHERE_NAME];
    short str_plus;   /* Str bonus/penalty    */
    short dex_plus;   /* Dex      "        */
    short wis_plus;   /* Wis      "        */

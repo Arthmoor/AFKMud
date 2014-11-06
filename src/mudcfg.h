@@ -62,9 +62,9 @@ const int MAX_RGRID_ROOMS = 30000;
 extern int MAX_PC_RACE;
 extern int MAX_PC_CLASS;
 
-const int MAX_LEVEL = 115; /* Raised from 65 by Teklord */
-const int MAX_PERSONAL = 5;   /* Maximum personal skills */
-const int MAX_WHERE_NAME = 29;   /* See act_info.c for the text messages */
+const int MAX_LEVEL = 115;     /* Raised from 65 by Teklord */
+const int MAX_PERSONAL = 5;    /* Maximum personal skills */
+const int MAX_WHERE_NAME = 35; /* See act_info.cpp for the text messages */
 
 const int LEVEL_SUPREME = MAX_LEVEL;
 const int LEVEL_ADMIN = ( MAX_LEVEL - 1 );
@@ -212,6 +212,7 @@ const int OBJ_VNUM_TAN_WATERSKIN = 11378;
 const int OBJ_VNUM_TAN_QUIVER = 11379;
 const int OBJ_VNUM_TAN_WHIP = 11380;
 const int OBJ_VNUM_TAN_SHIELD = 11381;
+const int OBJ_VNUM_ORE_BASE = 11299;
 
 /* Academy eq */
 const int OBJ_VNUM_SCHOOL_BANNER = 11478;

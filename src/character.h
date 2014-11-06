@@ -391,6 +391,7 @@ class char_data
      bitset < MAX_BPART > get_bparts(  );
    void set_bparts( bitset < MAX_BPART > );
    void set_file_bparts( FILE * );
+   void set_bodypart_where_names( );
 
    bool has_pcflag( int );
    void set_pcflag( int );
@@ -484,6 +485,7 @@ class char_data
    list < timer_data * >timers;
    list < struct mprog_act_list *>mpact;  /* Mudprogs */
    list < struct variable_data *>variables;  // Quest flags
+   vector < string > bodypart_where_names; /* Body part wear messages */
    string spec_funname;
    char_data *master;
    char_data *leader;

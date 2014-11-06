@@ -3045,8 +3045,6 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
 
    if( !npcvict && victim->hit > 0 && victim->hit <= victim->wimpy && victim->wait == 0 )
       interpret( victim, "flee" );
-   else if( !npcvict && victim->has_pcflag( PCFLAG_FLEE ) )
-      interpret( victim, "flee" );
 
    return rNONE;
 }
@@ -3782,7 +3780,10 @@ char_data *make_doppleganger( char_data * ch )
    mob->numattacks = ch->numattacks;
    mob->set_langs( ch->get_langs(  ) );
    mob->speaking = ch->speaking;
-   mob->set_bparts( ch->get_bparts(  ) );
+   if( ch->has_bparts() )
+      mob->set_bparts( ch->get_bparts(  ) );
+   else
+      mob->set_bparts( race_table[ch->race]->body_parts );
    mob->set_noaflags( ch->get_noaflags(  ) );
    mob->set_noresists( ch->get_noresists(  ) );
    mob->set_noimmunes( ch->get_noimmunes(  ) );

@@ -2781,7 +2781,7 @@ CMDF( do_forge )
     * Oh, Dwip.... you thought that get_ore had no purpose? Guess again..... 
     */
    int ore_vnum = 0, material = 0, armor = 0, weapon = 0;
-   int base_vnum = 11299;  /* All ore vnums must be one after this one */
+   int base_vnum = OBJ_VNUM_ORE_BASE;  /* All ore vnums must be one after this one */
    switch ( ore_type )
    {
       default:

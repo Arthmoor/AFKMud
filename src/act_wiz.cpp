@@ -7058,19 +7058,11 @@ CMDF( do_setclass )
 
 race_type::race_type(  )
 {
-   int i;
-
    init_memory( &affected, &hp_regen, sizeof( hp_regen ) );
-   for( i = 0; i < MAX_WHERE_NAME; ++i )
-      where_name[i] = STRALLOC( where_names[i] );
 }
 
 race_type::~race_type(  )
 {
-   int loopa;
-
-   for( loopa = 0; loopa < MAX_WHERE_NAME; ++loopa )
-      STRFREE( where_name[loopa] );
    STRFREE( race_name );
 }
 
@@ -7085,11 +7077,132 @@ void free_all_races( void )
    }
 }
 
+void set_bodypart_where_names( race_type *race )
+{
+   race->bodypart_where_names.clear();
+
+   // The order of these goes by the traditional listing as found in act_info.cpp
+   if( race->body_parts.test( PART_HANDS ) )
+      race->bodypart_where_names.push_back( "<used as light>     " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( race->body_parts.test( PART_FINGERS ) )
+   {
+      race->bodypart_where_names.push_back( "<worn on finger>    " );
+      race->bodypart_where_names.push_back( "<worn on finger>    " );
+   }
+   else
+   {
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+   }
+
+   race->bodypart_where_names.push_back( "<worn around neck>  " );
+   race->bodypart_where_names.push_back( "<worn around neck>  " );
+   race->bodypart_where_names.push_back( "<worn on body>      " );
+   race->bodypart_where_names.push_back( "<worn on head>      " );
+
+   if( race->body_parts.test( PART_LEGS ) )
+      race->bodypart_where_names.push_back( "<worn on legs>      " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( race->body_parts.test( PART_FEET ) )
+      race->bodypart_where_names.push_back( "<worn on feet>      " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( race->body_parts.test( PART_HANDS ) )
+      race->bodypart_where_names.push_back( "<worn on hands>     " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( race->body_parts.test( PART_ARMS ) )
+      race->bodypart_where_names.push_back( "<worn on arms>      " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   // Shields could potentially be on arms, legs, whatever. Don't limit to just hands.
+   race->bodypart_where_names.push_back( "<worn as shield>    " );
+
+   race->bodypart_where_names.push_back( "<worn about body>   " );
+   race->bodypart_where_names.push_back( "<worn about waist>  " );
+
+   if( race->body_parts.test( PART_HANDS ) )
+   {
+      race->bodypart_where_names.push_back( "<worn around wrist> " );
+      race->bodypart_where_names.push_back( "<worn around wrist> " );
+      race->bodypart_where_names.push_back( "<wielded>           " );
+      race->bodypart_where_names.push_back( "<held>              " );
+      race->bodypart_where_names.push_back( "<dual wielded>      " );
+   }
+   else
+   {
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+   }
+
+   if( race->body_parts.test( PART_EAR ) )
+      race->bodypart_where_names.push_back( "<worn on ears>      " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( race->body_parts.test( PART_EYE ) )
+      race->bodypart_where_names.push_back( "<worn over eyes>    " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( race->body_parts.test( PART_HANDS ) )
+      race->bodypart_where_names.push_back( "<missile wielded>   " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   race->bodypart_where_names.push_back( "<worn on back>      " );
+   race->bodypart_where_names.push_back( "<worn on face>      " );
+
+   if( race->body_parts.test( PART_ANKLES ) )
+   {
+      race->bodypart_where_names.push_back( "<worn on ankle>     " );
+      race->bodypart_where_names.push_back( "<worn on ankle>     " );
+   }
+   else
+   {
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+   }
+
+   if( race->body_parts.test( PART_HOOVES ) )
+      race->bodypart_where_names.push_back( "<worn on hooves>    " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( race->body_parts.test( PART_TAIL ) || race->body_parts.test( PART_TAILATTACK ) )
+      race->bodypart_where_names.push_back( "<worn on tail>      " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   race->bodypart_where_names.push_back( "<lodged in a rib>   " );
+
+   if( race->body_parts.test( PART_ARMS ) )
+      race->bodypart_where_names.push_back( "<lodged in an arm>  " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+
+   if( race->body_parts.test( PART_LEGS ) )
+      race->bodypart_where_names.push_back( "<lodged in a leg>   " );
+   else
+      race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
+}
+
 bool load_race_file( const char *fname )
 {
    char buf[256];
    race_type *race;
-   int ra = -1, wear = 0, file_ver = 0;
+   int ra = -1, file_ver = 0;
    FILE *fp;
 
    snprintf( buf, 256, "%s%s", RACE_DIR, fname );
@@ -7156,6 +7269,8 @@ bool load_race_file( const char *fname )
                   race->body_parts = fread_number( fp );
                else
                   flag_set( fp, race->body_parts, part_flags );
+
+               set_bodypart_where_names( race );
                break;
             }
             break;
@@ -7166,9 +7281,9 @@ bool load_race_file( const char *fname )
             if( !str_cmp( word, "Classes" ) )
             {
                if( file_ver < 1 )
-                  race->class_restriction = fread_number( fp );
+                  race->allowed_classes = fread_number( fp );
                else
-                  flag_set( fp, race->class_restriction, npc_class );
+                  flag_set( fp, race->allowed_classes, npc_class );
                break;
             }
             break;
@@ -7294,23 +7409,11 @@ bool load_race_file( const char *fname )
          case 'W':
             KEY( "Weight", race->weight, fread_number( fp ) );
             KEY( "Wis_Plus", race->wis_plus, fread_number( fp ) );
+
+            // WhereNames no longer stored in race files. Ignore them if they're found.
             if( !str_cmp( word, "WhereName" ) )
             {
-               if( ra < 0 || ra >= MAX_RACE )
-               {
-                  bug( "%s: WhereName -- race bad/not found (%d)", __FUNCTION__, ra );
                   fread_flagstring( fp );
-                  fread_flagstring( fp );
-               }
-               else if( wear < MAX_WHERE_NAME )
-               {
-                  STRFREE( race->where_name[wear] );
-                  race->where_name[wear] = fread_string( fp );
-                  ++wear;
-               }
-               else
-                  bug( "%s: Too many where_names", __FUNCTION__ );
-               break;
             }
             break;
       }
@@ -7392,7 +7495,7 @@ void write_race_file( int ra )
    fprintf( fpout, "Version     %d\n", RACEFILEVER );
    fprintf( fpout, "Name        %s~\n", race->race_name );
    fprintf( fpout, "Race        %d\n", ra );
-   fprintf( fpout, "Classes     %s~\n", bitset_string( race->class_restriction, npc_class ) );
+   fprintf( fpout, "Classes     %s~\n", bitset_string( race->allowed_classes, npc_class ) );
    fprintf( fpout, "Str_Plus    %d\n", race->str_plus );
    fprintf( fpout, "Dex_Plus    %d\n", race->dex_plus );
    fprintf( fpout, "Wis_Plus    %d\n", race->wis_plus );
@@ -7411,10 +7514,10 @@ void write_race_file( int ra )
    if( race->language.any(  ) )
       fprintf( fpout, "Language    %s~\n", bitset_string( race->language, lang_names ) );
    fprintf( fpout, "Align       %d\n", race->alignment );
-   fprintf( fpout, "Min_Align  %d\n", race->minalign );
-   fprintf( fpout, "Max_Align	 %d\n", race->maxalign );
-   fprintf( fpout, "AC_Plus    %d\n", race->ac_plus );
-   fprintf( fpout, "Exp_Mult   %d\n", race->exp_multiplier );
+   fprintf( fpout, "Min_Align   %d\n", race->minalign );
+   fprintf( fpout, "Max_Align	  %d\n", race->maxalign );
+   fprintf( fpout, "AC_Plus     %d\n", race->ac_plus );
+   fprintf( fpout, "Exp_Mult    %d\n", race->exp_multiplier );
    if( race->body_parts.any(  ) )
       fprintf( fpout, "Bodyparts  %s~\n", bitset_string( race->body_parts, part_flags ) );
    if( race->attacks.any(  ) )
@@ -7427,8 +7530,6 @@ void write_race_file( int ra )
    fprintf( fpout, "Thirst_mod  %d\n", race->thirst_mod );
    fprintf( fpout, "Mana_Regen  %d\n", race->mana_regen );
    fprintf( fpout, "HP_Regen    %d\n", race->hp_regen );
-   for( int i = 0; i < MAX_WHERE_NAME; ++i )
-      fprintf( fpout, "WhereName  %s~\n", race->where_name[i] );
 
    for( int x = 0; x < num_skills; ++x )
    {
@@ -7473,10 +7574,9 @@ bool create_new_race( int race, const string & argument )
 {
    if( race >= MAX_RACE || race_table[race] == NULL )
       return false;
-   for( int i = 0; i < MAX_WHERE_NAME; ++i )
-      race_table[race]->where_name[i] = STRALLOC( where_names[i] );
+
    race_table[race]->race_name = STRALLOC( capitalize( argument ).c_str(  ) );
-   race_table[race]->class_restriction.reset(  );
+   race_table[race]->allowed_classes.reset(  );
    race_table[race]->str_plus = 0;
    race_table[race]->dex_plus = 0;
    race_table[race]->wis_plus = 0;
@@ -7498,12 +7598,14 @@ bool create_new_race( int race, const string & argument )
    race_table[race]->attacks.reset(  );
    race_table[race]->defenses.reset(  );
    race_table[race]->body_parts.reset(  );
+   race_table[race]->bodypart_where_names.clear();
    race_table[race]->height = 0;
    race_table[race]->weight = 0;
    race_table[race]->hunger_mod = 0;
    race_table[race]->thirst_mod = 0;
    race_table[race]->mana_regen = 0;
    race_table[race]->hp_regen = 0;
+
    return true;
 }
 
@@ -7742,6 +7844,7 @@ CMDF( do_setrace )
          else
             race->body_parts.flip( value );
       }
+      set_bodypart_where_names( race );
       write_race_file( ra );
       ch->print( "Racial body parts set.\r\n" );
       return;
@@ -7815,7 +7918,7 @@ CMDF( do_setrace )
       {
          if( !str_cmp( argument, class_table[i]->who_name ) )
          {
-            race->class_restriction.flip( i );  /* k, that's boggling */
+            race->allowed_classes.flip( i );  /* k, that's boggling */
             write_race_file( ra );
             ch->print( "Classes set.\r\n" );
             return;
@@ -8044,26 +8147,12 @@ CMDF( do_showrace )
    }
 
    ch->pagerf( "RACE: %s\r\n", race->race_name );
-   ct = 0;
-   ch->pager( "Disallowed Classes: " );
-   for( i = 0; i < MAX_CLASS; ++i )
-   {
-      if( race->class_restriction.test( i ) )
-      {
-         ++ct;
-         ch->pagerf( "%s ", class_table[i]->who_name );
-         if( ct % 6 == 0 )
-            ch->pager( "\r\n" );
-      }
-   }
-   if( ( ct % 6 != 0 ) || ( ct == 0 ) )
-      ch->pager( "\r\n" );
 
    ct = 0;
    ch->pager( "Allowed Classes: " );
    for( i = 0; i < MAX_CLASS; ++i )
    {
-      if( !race->class_restriction.test( i ) )
+      if( race->allowed_classes.test( i ) )
       {
          ++ct;
          ch->pagerf( "%s ", class_table[i]->who_name );
@@ -8084,6 +8173,7 @@ CMDF( do_showrace )
 
    ch->pagerf( "Height: %3d in.\t\tWeight: %4d lbs.\tHungerMod: %d\tThirstMod: %d\r\n", race->height, race->weight, race->hunger_mod, race->thirst_mod );
 
+   ch->pagerf( "Body Parts: %s\r\n", bitset_string( race->body_parts, part_flags ) );
    ch->pagerf( "Spoken Languages: %s\r\n", bitset_string( race->language, lang_names ) );
    ch->pagerf( "Affected by: %s\r\n", bitset_string( race->affected, aff_flags ) );
    ch->pagerf( "Resistant to: %s\r\n", bitset_string( race->resist, ris_flags ) );

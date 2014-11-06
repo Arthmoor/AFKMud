@@ -312,7 +312,7 @@ const char *npc_race[MAX_NPC_RACE] = { /* starting from 0.... */
  */
 const char *npc_class[MAX_NPC_CLASS] = {
    "Mage", "Cleric", "Rogue", "Warrior", "Necromancer", "Druid", "Ranger",
-   "Monk", "Available", "Available2", "Antipaladin", "Paladin", "Bard", "pc13",
+   "Monk", "pc8", "pc9", "Antipaladin", "Paladin", "Bard", "pc13",
    "pc14", "pc15", "pc16", "pc17", "pc18", "pc19",
    "baker", "butcher", "blacksmith", "mayor", "king", "queen"
 };

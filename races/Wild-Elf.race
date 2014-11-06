@@ -1,7 +1,7 @@
 Version     1
 Name        Wild-Elf~
 Race        16
-Classes     Mage Necromancer Monk Available Available2 Antipaladin Paladin~
+Classes     Warrior Ranger Cleric Druid Rogue Bard~
 Str_Plus    2
 Dex_Plus    2
 Wis_Plus    -1
@@ -19,41 +19,13 @@ Min_Align  -1000
 Max_Align	 1000
 AC_Plus    0
 Exp_Mult   108
+Bodyparts  head arms legs heart brains guts hands ankles feet fingers ear eye~
 Height     84
 Weight     145
 Hunger_Mod  0
 Thirst_mod  -1
 Mana_Regen  0
 HP_Regen    0
-WhereName  <used as light>     ~
-WhereName  <worn on finger>    ~
-WhereName  <worn on finger>    ~
-WhereName  <worn around neck>  ~
-WhereName  <worn around neck>  ~
-WhereName  <worn on body>      ~
-WhereName  <worn on head>      ~
-WhereName  <worn on legs>      ~
-WhereName  <worn on feet>      ~
-WhereName  <worn on hands>     ~
-WhereName  <worn on arms>      ~
-WhereName  <worn as shield>    ~
-WhereName  <worn about body>   ~
-WhereName  <worn about waist>  ~
-WhereName  <worn around wrist> ~
-WhereName  <worn around wrist> ~
-WhereName  <wielded>           ~
-WhereName  <held>              ~
-WhereName  <dual wielded>      ~
-WhereName  <worn on ears>      ~
-WhereName  <worn on eyes>      ~
-WhereName  <missile wielded>   ~
-WhereName  <worn on back>      ~
-WhereName  <worn on face>      ~
-WhereName  <worn on ankle>     ~
-WhereName  <worn on ankle>     ~
-WhereName  <lodged in a rib>   ~
-WhereName  <lodged in an arm>  ~
-WhereName  <lodged in a leg>   ~
 Skill 'scout' 10 90
 Skill 'wardance' 70 80
 Skill 'woodcall' 35 85

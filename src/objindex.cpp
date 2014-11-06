@@ -342,7 +342,6 @@ obj_data *obj_index::create_object( int olevel )
       case ITEM_LEVER:
       case ITEM_PULLCHAIN:
       case ITEM_BUTTON:
-      case ITEM_DIAL:
       case ITEM_RUNE:
       case ITEM_RUNEPOUCH:
       case ITEM_MATCH:

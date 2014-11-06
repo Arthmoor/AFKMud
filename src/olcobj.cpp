@@ -94,12 +94,14 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
     * value[x] means... -Druid
     ******/
    ch->print( "&wAdditional Object information:\r\n" );
+
    switch ( obj->item_type )
    {
       default:
-         ch->print( "Additional details not available. Perhaps this item has no values??\r\n" );
-         ch->print( "Report this to your Kingdom Lord so that it can be looked into.\r\n" );
+         ch->print( "Additional details not available. This item type is not yet supported.\r\n" );
+         ch->print( "Please report this to your immortal supervisor so this can be resolved.\r\n" );
          break;
+
       case ITEM_LIGHT:
          ch->printf( "%sValue[2] - Hours left: ", olc ? "&gG&w) " : "&w" );
          if( obj->value[2] >= 0 )
@@ -107,10 +109,12 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          else
             ch->print( "&cInfinite\r\n" );
          break;
+
       case ITEM_POTION:
       case ITEM_PILL:
       case ITEM_SCROLL:
          ch->printf( "%sValue[0] - Spell Level: %d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+
          for( x = 1; x <= 3; ++x )
          {
             snprintf( lbuf, 10, "&g%c&w) ", 'E' + x );
@@ -119,9 +123,11 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             else
                ch->printf( "%sValue[%d] - Spell: None\r\n", olc ? lbuf : "&w", x );
          }
+
          if( obj->item_type == ITEM_PILL )
             ch->printf( "%sValue[4] - Food Value: &c%d\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
          break;
+
       case ITEM_SALVE:
       case ITEM_WAND:
       case ITEM_STAFF:
@@ -146,6 +152,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
                ch->printf( "%sValue[%d] - Spell: None\r\n", olc ? lbuf : "&w", x );
          }
          break;
+
       case ITEM_WEAPON:
       case ITEM_MISSILE_WEAPON:
          ch->printf( "%sValue[0] - Base Condition: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
@@ -171,6 +178,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%sValue[9] - Weapon Material (%d): &c%s\r\n", olc ? "&gN&w) " : "&w", obj->value[9], materials[obj->value[9]].name );
          ch->printf( "%sValue[10] - Weapon Quality (%d): &c%s\r\n", olc ? "&gO&w) " : "&w", obj->value[10], weapon_quality[obj->value[10]] );
          break;
+
       case ITEM_ARMOR:
          ch->printf( "%sValue[0] - Current AC: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[1] - Base AC: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
@@ -183,9 +191,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%sValue[3] - Armor Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], armor_type[obj->value[3]].name );
          ch->printf( "%sValue[4] - Armor Material (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4], materials[obj->value[4]].name );
          break;
-         /*
-          * Bug Fix 7/9/00 -Druid
-          */
+
       case ITEM_COOK:
       case ITEM_FOOD:
          ch->printf( "%sValue[0] - Food Value: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
@@ -252,6 +258,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          if( obj->value[4] )
             ch->printf( "%sValue[4] - Timer: &c%d\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
          break;
+
       case ITEM_DRINK_CON:
          if( !( liq = get_liq_vnum( obj->value[2] ) ) )
             bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
@@ -285,10 +292,12 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             ch->printf( "Affects Thirst by: %d\r\n", liq->mod[COND_THIRST] );
          ch->printf( "Poisoned: &c%s\r\n", liq->type == LIQTYPE_POISON ? "Yes" : "No" );
          break;
+
       case ITEM_HERB:
          ch->printf( "%sValue[1] - Charges: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
          ch->printf( "%sValue[2] - Herb #: &cY%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          break;
+
       case ITEM_CONTAINER:
          ch->printf( "%sValue[0] - Capacity (%d): &c", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%s\r\n",
@@ -316,6 +325,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          if( obj->timer )
             ch->printf( "Object Timer, Time Left: %d\r\n", obj->timer );
          break;
+
       case ITEM_PROJECTILE:
          ch->printf( "%sValue[0] - Condition: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[1] - Min. Damage: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
@@ -326,12 +336,15 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%sValue[5] - Current Condition: &c%d\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
          ch->printf( "Condition: %s", condtxt( obj->value[5], obj->value[0] ).c_str(  ) );
          break;
+
       case ITEM_MONEY:
          ch->printf( "%sValue[0] - # of Coins: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          break;
+
       case ITEM_FURNITURE:
          ch->printf( "%sValue[2] - Furniture Flags: &c%s\r\n", olc ? "&gG&w) " : "&w", flag_string( obj->value[2], furniture_flags ) );
          break;
+
       case ITEM_TRAP:
          ch->printf( "%sValue[0] - Charges Remaining: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[1] - Type (%d): &c%s\r\n", olc ? "&gF&w) " : "&w", obj->value[1], trap_types[obj->value[1]] );
@@ -404,11 +417,13 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%sValue[4] - Min. Damage: &c%d\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
          ch->printf( "%sValue[5] - Max Damage: &c%d\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
          break;
+
       case ITEM_KEY:
          ch->printf( "%sValue[0] - Lock #: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[4] - Durability: &c%d\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
          ch->printf( "%sValue[5] - Container Lock Number: &c%d\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
          break;
+
       case ITEM_SWITCH:
       case ITEM_LEVER:
       case ITEM_PULLCHAIN:
@@ -418,18 +433,18 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          if( obj->item_type != ITEM_BUTTON )
          {
             if( IS_SET( obj->value[0], TRIG_UP ) )
-               ch->print( "UP\r\n" );
+               ch->print( "Up\r\n" );
             else
                ch->print( "Down\r\n" );
          }
          else
          {
             if( IS_SET( obj->value[0], TRIG_UP ) )
-               ch->print( "IN\r\n" );
+               ch->print( "In\r\n" );
             else
                ch->print( "Out\r\n" );
          }
-         ch->printf( "Automatically Reset Trigger?: %s\r\n", IS_SET( obj->value[0], TRIG_AUTORETURN ) ? "Yes" : "No" );
+         ch->printf( "Automatically Reset Trigger? : %s\r\n", IS_SET( obj->value[0], TRIG_AUTORETURN ) ? "Yes" : "No" );
          if( HAS_PROG( obj->pIndexData, PULL_PROG ) || HAS_PROG( obj->pIndexData, PUSH_PROG ) )
             ch->print( "Object Has: " );
          if( HAS_PROG( obj->pIndexData, PULL_PROG ) && HAS_PROG( obj->pIndexData, PUSH_PROG ) )
@@ -438,16 +453,53 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             ch->print( "Pull Program\r\n" );
          else if( HAS_PROG( obj->pIndexData, PUSH_PROG ) )
             ch->print( "Push Program\r\n" );
+         if( IS_SET( obj->value[0], TRIG_OLOAD ) || IS_SET( obj->value[0], TRIG_MLOAD ) )
+         {
+            if( IS_SET( obj->value[0], TRIG_OLOAD ) )
+            {
+               ch->printf( "Triggers: Object Load &c%d&w into room &c%d&w at level &c%d&w.\r\n",
+                  obj->value[1], obj->value[2], obj->value[3] );
+            }
+
+            if( IS_SET( obj->value[0], TRIG_MLOAD ) )
+            {
+               ch->printf( "Triggers: Mob Load &c%d&w into room &c%d&w.\r\n",
+                  obj->value[1], obj->value[2] );
+            }
+         }
+         if( IS_SET( obj->value[0], TRIG_CONTAINER ) )
+         {
+            ch->printf( "Triggers: Container &c%d&w in room &c%d&w.\r\n", obj->value[2], obj->value[1] );
+            if( obj->value[3] > 0 )
+            {
+               ch->printf( "Manipulates the following container flags: &c%s&w\r\n",
+                  flag_string( obj->value[3], container_flags ) );
+            }
+         }
+         if( IS_SET( obj->value[0], TRIG_DEATH ) )
+         {
+            ch->print( "Triggers: Death - The player touching it is instantly killed. Corpse is retrievable.\r\n" );
+         }
+         if( IS_SET( obj->value[0], TRIG_CAST ) )
+         {
+            ch->printf( "Triggers: Casts '&c%s&w' at the player touching it.\r\n",
+               !IS_VALID_SN( obj->value[1] ) ? "&RINVALID SN" : skill_table[obj->value[1]]->name );
+            if( obj->value[2] > 0 )
+               ch->printf( "Casts at spell level &c%d&w.\r\n" );
+            else
+               ch->print( "Casts at the player's level.\r\n" );
+         }
          if( IS_SET( obj->value[0], TRIG_TELEPORT ) || IS_SET( obj->value[0], TRIG_TELEPORTALL ) || IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) )
          {
             ch->printf( "Triggers: Teleport %s\r\n",
                         IS_SET( obj->value[0], TRIG_TELEPORT ) ? "Character <actor>" :
-                        IS_SET( obj->value[0], TRIG_TELEPORTALL ) ? "All Characters in room" : "All Characters and Objects in room" );
+                        IS_SET( obj->value[0], TRIG_TELEPORTALL ) ? "All Characters in room" :
+                        IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) ? "All Characters and Objects in room" : "");
             ch->printf( "%sValue[1] - Teleport to Room: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
             ch->printf( "Show Room Description on Teleport? %s\r\n", IS_SET( obj->value[0], TRIG_SHOWROOMDESC ) ? "Yes" : "No" );
          }
          if( IS_SET( obj->value[0], TRIG_RAND4 ) || IS_SET( obj->value[0], TRIG_RAND6 ) )
-            ch->printf( "Triggers: Randomize Exits (%s)\r\n", IS_SET( obj->value[0], TRIG_RAND4 ) ? "3" : "5" );
+            ch->printf( "Triggers: Randomize %s Exits in room %d.\r\n", IS_SET( obj->value[0], TRIG_RAND4 ) ? "4" : "6", obj->value[1] );
          if( IS_SET( obj->value[0], TRIG_DOOR ) )
          {
             ch->print( "Triggers: Door\r\n" );
@@ -472,11 +524,13 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
                ch->printf( "%sValue[2] - To Room: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          }
          break;
+
       case ITEM_BLOOD:
          ch->printf( "%sValue[1] - Amount Remaining: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
          if( obj->timer )
             ch->printf( "Object Timer, Time Left: %d\r\n", obj->timer );
          break;
+
       case ITEM_CAMPGEAR:
          ch->printf( "%sValue[0] - Type of Gear (%d): &c", olc ? "&gE&w) " : "&w", obj->value[0] );
          switch ( obj->value[0] )
@@ -498,10 +552,12 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
                break;
          }
          break;
+
       case ITEM_ORE:
          ch->printf( "%sValue[0] - Type of Ore (%d): &c%s\r\n", olc ? "&gE&w) " : "&w", obj->value[0], ores[obj->value[0]] );
          ch->printf( "%sValue[1] - Purity: &c%d", olc ? "&gF&w) " : "&w", obj->value[1] );
          break;
+
       case ITEM_PIECE:
          ch->printf( "%sValue[0] - Obj Vnum for Other Half: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[1] - Obj Vnum for Combined Object: &c%d", olc ? "&gF&w) " : "&w", obj->value[1] );

@@ -764,37 +764,48 @@ void bid( char_data * ch, char_data * buyer, const string & argument )
              * insert any more item types here... items with a timer MAY NOT BE AUCTIONED! 
              */
          case ITEM_LIGHT:
+         case ITEM_SCROLL:
+         case ITEM_WAND:
+         case ITEM_STAFF:
+         case ITEM_WEAPON:
+         case ITEM_SCABBARD:
          case ITEM_TREASURE:
+         case ITEM_ARMOR:
          case ITEM_POTION:
+         case ITEM_CLOTHING:
          case ITEM_CONTAINER:
-         case ITEM_INSTRUMENT:
-         case ITEM_KEYRING:
-         case ITEM_QUIVER:
          case ITEM_DRINK_CON:
+         case ITEM_KEY:
          case ITEM_FOOD:
-         case ITEM_COOK:
          case ITEM_PEN:
-         case ITEM_CAMPGEAR:
          case ITEM_BOAT:
          case ITEM_PILL:
          case ITEM_PIPE:
          case ITEM_HERB_CON:
+         case ITEM_HERB:
          case ITEM_INCENSE:
-         case ITEM_FIRE:
-         case ITEM_RUNEPOUCH:
-         case ITEM_MAP:
          case ITEM_BOOK:
          case ITEM_RUNE:
+         case ITEM_RUNEPOUCH:
          case ITEM_MATCH:
-         case ITEM_HERB:
-         case ITEM_WEAPON:
+         case ITEM_MAP:
+         case ITEM_PAPER:
+         case ITEM_TINDER:
+         case ITEM_LOCKPICK:
+         case ITEM_OIL:
+         case ITEM_FUEL:
+         case ITEM_PIECE:
          case ITEM_MISSILE_WEAPON:
-         case ITEM_ARMOR:
-         case ITEM_STAFF:
-         case ITEM_WAND:
-         case ITEM_SCROLL:
-         case ITEM_ORE:
          case ITEM_PROJECTILE:
+         case ITEM_QUIVER:
+         case ITEM_SHOVEL:
+         case ITEM_SALVE:
+         case ITEM_COOK:
+         case ITEM_KEYRING:
+         case ITEM_CAMPGEAR:
+         case ITEM_DRINK_MIX:
+         case ITEM_INSTRUMENT:
+         case ITEM_ORE:
             obj->separate(  );
             obj->from_char(  );
             auction->item = obj;

@@ -1407,19 +1407,8 @@ int mob_xp( char_data * mob )
        || mob->has_defense( DFND_STONESKIN ) || mob->has_defense( DFND_TELEPORT ) || mob->has_defense( DFND_GRIP ) || mob->has_defense( DFND_TRUESIGHT ) )
       ++flags;
 
-   /*
-    * Gotta do this because otherwise mobs with negative flags will take xp AWAY from the player. 
-    */
-   if( flags < 0 )
-      flags = 0;
-
-   /*
-    * And cap all mobs to no more than 10 flags to keep xp from going haywire 
-    */
-   if( flags > 10 )
-      flags = 10;
-
-   return calculate_mob_exp( mob, flags );
+   // Flags: Floor of 0, or it goes negative and the player LOSES xp. Ceiling of 10 or it gets overpowered.
+   return calculate_mob_exp( mob, urange( 0, flags, 10 ) );
 }
 
 void group_gain( char_data * ch, char_data * victim )
@@ -2267,16 +2256,31 @@ void death_cry( char_data * ch )
          msg = "$n gasps $s last breath and blood spurts out of $s mouth and ears.";
          break;
       case 5:
-
-         for( i = 0; i < MAX_BPART && ch->has_bparts(  ); ++i )
+         if( ch->has_bparts() )
          {
-            if( ch->has_bpart( i ) )
+            for( i = 0; i < MAX_BPART; ++i )
             {
-               msg = part_messages[i];
-               vnum = part_vnums[i];
-               break;
+               if( ch->has_bpart( i ) )
+               {
+                  msg = part_messages[i];
+                  vnum = part_vnums[i];
+                  break;
+               }
             }
          }
+         else
+         {
+            for( i = 0; i < MAX_BPART; ++i )
+            {
+               if( race_table[ch->race]->body_parts.test( i ) )
+               {
+                  msg = part_messages[i];
+                  vnum = part_vnums[i];
+                  break;
+               }
+            }
+         }
+
          if( !msg )
             msg = "You hear $n's death cry.";
          break;
@@ -3114,8 +3118,6 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
    }
 
    if( !npcvict && victim->hit > 0 && victim->hit <= victim->wimpy && victim->wait == 0 )
-      interpret( victim, "flee" );
-   else if( !npcvict && victim->has_pcflag( PCFLAG_FLEE ) )
       interpret( victim, "flee" );
 
    return rNONE;

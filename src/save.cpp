@@ -62,6 +62,7 @@ char *default_prompt( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 void assign_area( char_data * );
 affect_data *fread_afk_affect( FILE * );
+bool is_valid_wear_loc( char_data *, int );
 
 /*
  * Increment with every major format change.
@@ -279,6 +280,8 @@ void fwrite_char( char_data * ch, FILE * fp )
     */
    fprintf( fp, "RentRooms    %d\n", ch->pcdata->one );
 
+   if( ch->has_bparts( )  )
+      fprintf( fp, "BodyParts    %s~\n", bitset_string( ch->get_bparts(  ), part_flags ) );
    if( ch->has_aflags(  ) )
       fprintf( fp, "AffectFlags  %s~\n", bitset_string( ch->get_aflags(  ), aff_flags ) );
    if( ch->has_noaflags(  ) )
@@ -1038,8 +1041,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   ch->pcdata->beacon[x] = fread_number( fp );
                break;
             }
+
             STDSKEY( "Bestowments", ch->pcdata->bestowments );
             KEY( "Bio", ch->pcdata->bio, fread_string_nohash( fp ) );
+
             if( !str_cmp( word, "Board_Data" ) )
             {
                board_chardata *pboard;
@@ -1058,6 +1063,12 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                pboard->last_read = fread_long( fp );
                pboard->alert = fread_number( fp );
                ch->pcdata->boarddata.push_back( pboard );
+               break;
+            }
+
+            if( !str_cmp( word, "BodyParts" ) )
+            {
+               ch->set_file_bparts( fp );
                break;
             }
             break;
@@ -1673,6 +1684,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( ch->pcdata->clan )
                   update_roster( ch );
+
                return;
             }
             STDSKEY( "Email", ch->pcdata->email );
@@ -1909,8 +1921,16 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                      rgObjNest[iNest] = obj;
                   numobjsloaded += obj->count;
                   ++physicalobjects;
-                  if( file_ver > 1 || obj->wear_loc < -1 || obj->wear_loc >= MAX_WEAR )
+                  if( file_ver > 1 || wear_loc < -1 || wear_loc >= MAX_WEAR )
                      obj->wear_loc = -1;
+
+                  // Fix equipment on invalid body parts
+                  if( !is_valid_wear_loc( ch, wear_loc ) )
+                  {
+                     wear_loc = -1;
+                     obj->wear_loc = -1;
+                  }
+
                   /*
                    * Corpse saving. -- Altrag 
                    */
@@ -2535,9 +2555,6 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
    {
       if( !ch->name )
          ch->name = STRALLOC( name.c_str(  ) );
-
-      if( ch->has_pcflag( PCFLAG_FLEE ) )
-         ch->unset_pcflag( PCFLAG_FLEE );
 
       if( ch->is_immortal(  ) )
       {

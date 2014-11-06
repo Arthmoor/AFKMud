@@ -61,6 +61,8 @@ void save_sysdata(  );
 void display_map( char_data * );
 void draw_map( char_data *, const char * );
 
+bool is_valid_wear_loc( char_data *, int );
+
 const char *where_names[] = {
    "<used as light>     ",
    "<worn on finger>    ",
@@ -88,9 +90,15 @@ const char *where_names[] = {
    "<worn on face>      ",
    "<worn on ankle>     ", /* 25 */
    "<worn on ankle>     ",
+   "<worn on hooves>    ",
+   "<worn on tail>      ",
    "<lodged in a rib>   ",
-   "<lodged in an arm>  ",
-   "<lodged in a leg>   "
+   "<lodged in an arm>  ", // 30
+   "<lodged in a leg>   ",
+   "<UNDEFINED>         ",
+   "<UNDEFINED>         ",
+   "<UNDEFINED>         ",
+   "<UNDEFINED>         ", // 35
 };
 
 /*
@@ -751,9 +759,19 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
                act( AT_PLAIN, "You are using:", ch, NULL, NULL, TO_CHAR );
             found = true;
          }
+
+         // Used to block NPCs here, but the race_table has always supported them so not sure why it did that.
          ch->set_color( AT_OBJECT );
-         if( !victim->isnpc(  ) && victim->race > 0 && victim->race < MAX_PC_RACE )
-            ch->print( race_table[victim->race]->where_name[iWear] );
+         if( victim->race > 0 && victim->race < MAX_PC_RACE )
+         {
+            if( !is_valid_wear_loc( victim, iWear ) )
+               continue;
+
+            if( victim->has_bparts() )
+               ch->print( victim->bodypart_where_names[iWear] );
+            else
+               ch->print( race_table[victim->race]->bodypart_where_names[iWear] );
+         }
          else
             ch->print( where_names[iWear] );
 
@@ -2393,9 +2411,6 @@ CMDF( do_config )
       else if( ch->is_immortal(  ) && !str_prefix( arg, "roomvnum" ) )
          bit = PCFLAG_ROOMVNUM;
 
-      /*
-       * removed PCFLAG_FLEE check here, because it should never happen since there is no toggle - Zarius
-       */
       if( bit )
       {
          if( ( bit == PCFLAG_SHOVEDRAG ) && ch->has_pcflag( PCFLAG_DEADLY ) )
@@ -2434,8 +2449,6 @@ CMDF( do_config )
             bit = PCFLAG_PASSDOOR;
          else if( !str_prefix( arg, "groupwho" ) )
             bit = PCFLAG_GROUPWHO;
-         else if( !str_prefix( arg, "@hgflag_" ) )
-            bit = PCFLAG_HIGHGAG;
          else if( !str_prefix( arg, "notell" ) )
             bit = PCFLAG_NOTELL;
          else if( !str_prefix( arg, "checkboard" ) )
@@ -2530,25 +2543,6 @@ CMDF( do_afk )
       if( argument.empty(  ) )
          ch->pcdata->afkbuf = str_dup( argument.c_str(  ) );
       act( AT_GREY, "$n is now afk.", ch, NULL, NULL, TO_ROOM );
-   }
-}
-
-CMDF( do_busy )
-{
-   if( ch->isnpc(  ) )
-      return;
-
-   if( ch->has_pcflag( PCFLAG_BUSY ) )
-   {
-      ch->unset_pcflag( PCFLAG_BUSY );
-      ch->print( "You are no longer busy.\r\n" );
-      act( AT_GREY, "$n is no longer busy.", ch, NULL, NULL, TO_ROOM );
-   }
-   else
-   {
-      ch->set_pcflag( PCFLAG_BUSY );
-      ch->print( "You are now busy.\r\n" );
-      act( AT_GREY, "$n is now busy.", ch, NULL, NULL, TO_ROOM );
    }
 }
 

@@ -1112,6 +1112,12 @@ CMDF( do_sell )
       return;
    }
 
+   if( obj->extra_flags.test( ITEM_PERSONAL ) )
+   {
+      ch->print( "Personal items may not be sold.\r\n" );
+      return;
+   }
+
    if( obj->timer > 0 )
    {
       act( AT_TELL, "$n tells you, '$p is depreciating in value too quickly...'", keeper, obj, ch, TO_VICT );
