@@ -65,15 +65,15 @@ enum note_flags
 class note_data
 {
  private:
-   note_data( const note_data & n );
-     note_data & operator=( const note_data & );
+   note_data( const note_data& n );
+   note_data& operator=( const note_data& );
 
  public:
-     note_data(  );
-    ~note_data(  );
+   note_data();
+   ~note_data();
 
-     list < note_data * >rlist;
-     bitset < MAX_NOTE_FLAGS > flags;  /* Note Flags */
+   list<note_data*> rlist;
+   bitset<MAX_NOTE_FLAGS> flags; /* Note Flags */
    note_data *parent;
    char *sender;
    char *to_list;
@@ -87,15 +87,15 @@ class note_data
 class board_data
 {
  private:
-   board_data( const board_data & b );
-     board_data & operator=( const board_data & );
+   board_data( const board_data& b );
+   board_data& operator=( const board_data& );
 
  public:
-     board_data(  );
-    ~board_data(  );
+   board_data();
+   ~board_data();
 
-     list < note_data * >nlist;  /* List of notes on the board */
-     bitset < MAX_BOARD_FLAGS > flags; /* Board Flags */
+   list<note_data*> nlist; /* List of notes on the board */
+   bitset<MAX_BOARD_FLAGS> flags; /* Board Flags */
    char *name; /* Name of Board */
    char *filename;   /* Filename for the board */
    char *desc; /* Short description of the board */
@@ -115,14 +115,14 @@ class board_data
 class project_data
 {
  private:
-   project_data( const project_data & p );
-     project_data & operator=( const project_data & );
+   project_data( const project_data& p );
+   project_data& operator=( const project_data& );
 
  public:
-     project_data(  );
-    ~project_data(  );
+   project_data();
+   ~project_data();
 
-     list < note_data * >nlist;  /* List of note logs for the project */
+   list<note_data*> nlist; /* List of note logs for the project */
    char *name;
    char *owner;
    char *coder;
@@ -136,12 +136,12 @@ class project_data
 class board_chardata
 {
  private:
-   board_chardata( const board_chardata & b );
-     board_chardata & operator=( const board_chardata & );
+   board_chardata( const board_chardata& b );
+   board_chardata& operator=( const board_chardata& );
 
  public:
-     board_chardata(  );
-    ~board_chardata(  );
+   board_chardata();
+   ~board_chardata();
 
    string board_name;
    time_t last_read;

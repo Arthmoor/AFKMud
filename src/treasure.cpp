@@ -781,7 +781,7 @@ CMDF( do_setrune )
 
    if( !str_cmp( arg2, "stat2" ) )
    {
-      int value = get_atype( arg3.c_str(  ) );
+      int value = get_atype( arg3 );
 
       if( value < 0 )
       {
@@ -797,7 +797,7 @@ CMDF( do_setrune )
 
       if( value == APPLY_AFFECT )
       {
-         int val2 = get_aflag( argument.c_str(  ) );
+         int val2 = get_aflag( argument );
 
          if( val2 < 0 || val2 >= MAX_AFFECTED_BY )
          {
@@ -813,7 +813,7 @@ CMDF( do_setrune )
 
       if( value == APPLY_RESISTANT || value == APPLY_IMMUNE || value == APPLY_SUSCEPTIBLE || value == APPLY_ABSORB )
       {
-         int val2 = get_risflag( argument.c_str(  ) );
+         int val2 = get_risflag( argument );
 
          if( val2 < 0 || val2 >= MAX_RIS_FLAG )
          {
@@ -2683,6 +2683,7 @@ CMDF( do_forge )
    list < char_data * >::iterator ich;
    char_data *smith = NULL;
    bool msmith = false, gsmith = false;
+
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
       smith = *ich;

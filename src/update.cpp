@@ -100,7 +100,7 @@ const char *corpse_descs[] = {
 int graf( int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6 )
 {
    if( age < 15 )
-      return p0;  /* < 15   */
+      return p0;  // < 15
    else if( age <= 29 )
       return ( int )( p1 + ( ( ( age - 15 ) * ( p2 - p1 ) ) / 15 ) );   /* 15..29 */
    else if( age <= 44 )
@@ -110,7 +110,7 @@ int graf( int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6 )
    else if( age <= 79 )
       return ( int )( p4 + ( ( ( age - 60 ) * ( p5 - p4 ) ) / 20 ) );   /* 60..79 */
    else
-      return p6;  /* >= 80 */
+      return p6;  // >= 80
 }
 
 /* manapoint gain pr. game hour */

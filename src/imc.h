@@ -108,10 +108,6 @@ enum imc_channel_flags
 #define IMC_RREPLY_NAME(ch)   (CH_IMCDATA((ch))->rreply_name)
 #define IMC_EMAIL(ch)         (CH_IMCDATA((ch))->email)
 #define IMC_HOMEPAGE(ch)      (CH_IMCDATA((ch))->homepage)
-#define IMC_AIM(ch)           (CH_IMCDATA((ch))->aim)
-#define IMC_ICQ(ch)           (CH_IMCDATA((ch))->icq)
-#define IMC_YAHOO(ch)         (CH_IMCDATA((ch))->yahoo)
-#define IMC_MSN(ch)           (CH_IMCDATA((ch))->msn)
 #define IMC_COMMENT(ch)       (CH_IMCDATA((ch))->comment)
 #define IMCTELLHISTORY(ch,x)  (CH_IMCDATA((ch))->imc_tellhistory[(x)])
 #define IMCISINVIS(ch)        ( IMCIS_SET( IMCFLAG((ch)), IMC_INVIS ) )
@@ -155,30 +151,26 @@ struct imc_ucache_data
 struct imc_chardata
 {
    list < string > imc_ignore;
-   bitset < IMC_MAXFLAG > imcflag;  /* Flags set on the player */
-   string email;  /* Person's email address - for imcfinger - Samson 3-21-04 */
-   string homepage;  /* Person's homepage - Samson 3-21-04 */
-   string aim; /* Person's AOL Instant Messenger screenname - Samson 3-21-04 */
-   string yahoo;  /* Person's Y! screenname - Samson 3-21-04 */
-   string msn; /* Person's MSN Messenger screenname - Samson 3-21-04 */
-   string comment;   /* Person's personal comment - Samson 3-21-04 */
-   string imc_listen;   /* Channels the player is listening to */
-   string imc_denied;   /* Channels the player has been denied use of */
-   string rreply; /* IMC reply-to */
-   string rreply_name;  /* IMC reply-to shown to char */
+   bitset < IMC_MAXFLAG > imcflag; /* Flags set on the player */
+   string email;                   /* Person's email address - for imcfinger - Samson 3-21-04 */
+   string homepage;                /* Person's homepage - Samson 3-21-04 */
+   string comment;                 /* Person's personal comment - Samson 3-21-04 */
+   string imc_listen;              /* Channels the player is listening to */
+   string imc_denied;              /* Channels the player has been denied use of */
+   string rreply;                  /* IMC reply-to */
+   string rreply_name;             /* IMC reply-to shown to char */
    string imc_tellhistory[MAX_IMCTELLHISTORY];  /* History of received imctells - Samson 1-21-04 */
-   int icq; /* Person's ICQ UIN Number - Samson 3-21-04 */
-   int imcperm;   /* Permission level for the player */
+   int imcperm;                    /* Permission level for the player */
 };
 
 struct imc_channel
 {
-   string chname; /* name of channel */
-   string owner;  /* owner (singular) of channel */
-   string operators; /* current operators of channel */
+   string chname;     /* name of channel */
+   string owner;      /* owner (singular) of channel */
+   string operators;  /* current operators of channel */
    string invited;
    string excluded;
-   string local_name;   /* Operational localname */
+   string local_name; /* Operational localname */
    string regformat;
    string emoteformat;
    string socformat;
@@ -206,40 +198,40 @@ class imc_packet
 /* The mud's connection data for the server */
 struct imc_siteinfo
 {
-   imc_siteinfo(  );
+   imc_siteinfo();
 
-   string servername;   // The name of the IMC server this MUD connects to. Set during startup.
-   string rhost;  // DNS/IP of the IMC server this MUD will connect to
-   string network;   // Network name of the server, set at keepalive - Samson
-   string serverpw;  // Server password
-   string clientpw;  // Client password
-   string localname; // One word localname used on the network
-   string fullname;  // FULL name of the MUD
-   string ihost;  // DNS/IP address for the MUD
-   string email;  // Contact email address for the MUD's administrator
-   string www; // This MUD's homepage
-   string details;   // BRIEF description of the MUD
-   string versionid; // Transient version id for the imclist
-   int iport;  // The port number used to log on to the MUD
-   int minlevel;  // Minimum player level allowed to access IMC
-   int immlevel;  // First level at which users become Immortals
-   int adminlevel;   // Admin level: Level at which users become higher administrators
-   int implevel;  // Implementor level. Duh. The big cheese. The top banana. God king of all mankind, etc.
-   unsigned short rport;   // Remote port number of the server this MUD connects to.
-   bool sha256;   // Client will support SHA256 authentication
-   bool sha256pass;  // Client is using SHA256 authentication
-   bool autoconnect; // Do we autoconnect on bootup or not? - Samson
+   string servername; // The name of the IMC server this MUD connects to. Set during startup.
+   string rhost;      // DNS/IP of the IMC server this MUD will connect to
+   string network;    // Network name of the server, set at keepalive - Samson
+   string serverpw;   // Server password
+   string clientpw;   // Client password
+   string localname;  // One word localname used on the network
+   string fullname;   // FULL name of the MUD
+   string ihost;      // DNS/IP address for the MUD
+   string email;      // Contact email address for the MUD's administrator
+   string www;        // This MUD's homepage
+   string details;    // BRIEF description of the MUD
+   string versionid;  // Transient version id for the imclist
+   int iport;         // The port number used to log on to the MUD
+   int minlevel;      // Minimum player level allowed to access IMC
+   int immlevel;      // First level at which users become Immortals
+   int adminlevel;    // Admin level: Level at which users become higher administrators
+   int implevel;      // Implementor level. Duh. The big cheese. The top banana. God king of all mankind, etc.
+   unsigned short rport; // Remote port number of the server this MUD connects to.
+   bool sha256;       // Client will support SHA256 authentication
+   bool sha256pass;   // Client is using SHA256 authentication
+   bool autoconnect;  // Do we autoconnect on bootup or not? - Samson
 
    /*
     * Conection parameters - These don't save in the config file 
     */
    char inbuf[IMC_BUFF_SIZE]; // The input buffer for the IMC connection
-   string incomm; // Um....
-   char *outbuf;  // The output buffer for the IMC connection
-   unsigned long outsize;  // The size of the current output buffer
-   size_t outtop; // Uh....
-   int desc;   // Descriptor number assigned to the IMC socket
-   unsigned short state;   // The state of the connection to the IMC server
+   string incomm;             // Um....
+   char *outbuf;              // The output buffer for the IMC connection
+   unsigned long outsize;     // The size of the current output buffer
+   size_t outtop;             // Uh....
+   int desc;                  // Descriptor number assigned to the IMC socket
+   unsigned short state;      // The state of the connection to the IMC server
 };
 
 struct imc_remoteinfo

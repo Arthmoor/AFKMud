@@ -1048,6 +1048,7 @@ obj_data *make_trap( int charges, int type, int level, int flags, int mindamage,
       return NULL;
    }
    trap->timer = 0;
+
    trap->value[0] = charges;
    trap->value[1] = type;
    trap->value[2] = level;
@@ -1061,8 +1062,8 @@ obj_data *make_trap( int charges, int type, int level, int flags, int mindamage,
 /*
  * Add a reset to a room
  */
-reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, short arg4, short arg5, short arg6, short arg7, short arg8, short arg9, short arg10,
-                                   short arg11 )
+reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, short arg4, short arg5, short arg6, short arg7,
+                                   short arg8, short arg9, short arg10, short arg11 )
 {
    reset_data *pReset;
 
@@ -1332,6 +1333,7 @@ void room_index::reset(  )
                if( mob->chardesc )
                {
                   string char_desc = mob->chardesc;
+
                   string_replace( char_desc, genstring, nameg );
                   STRFREE( mob->chardesc );
                   mob->chardesc = STRALLOC( char_desc.c_str(  ) );

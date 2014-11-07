@@ -1,4 +1,4 @@
-#AFKMud dynamically loaded modules.
+#AFKMud dynamically loaded commands.
 #This makefile can be invoked directly, or via the makefile in the src directory.
 #
 #Takes any existing cpp files in this directory and makes dynamically loadable .so files out of them.
@@ -6,7 +6,7 @@
 #Type of machine to compile for. Athlon works just as well on Duron too.
 #The march option needs to match the general family of CPU.
 #If you don't know what to set for these options, and your system administrator doesn't either, comment this line out
-#MACHINE = -march=athlon-xp
+#MACHINE = -mtune=athlon64 -march=athlon64
 
 # Uncomment the two lines below if compiling on a Solaris box
 #SOLARIS_FLAG = -Dsun -DSYSV -Wno-char-subscripts

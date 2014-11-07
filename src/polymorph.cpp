@@ -528,6 +528,7 @@ CMDF( do_morphset )
       stralloc_printf( &ch->pcdata->subprompt, "<&CMorphset &W%s&w> %%i", morph->name );
       return;
    }
+
    if( !str_cmp( arg2, "str" ) )
    {
       if( value < -10 || value > 10 )
@@ -1214,6 +1215,7 @@ CMDF( do_morphstat )
       ch->print( "Morphstat what?\r\n" );
       return;
    }
+
    if( ch->isnpc(  ) )
    {
       ch->print( "Mob's can't morphstat\r\n" );
@@ -1479,6 +1481,7 @@ int do_morph_char( char_data * ch, morph_data * morph )
          obj->extract(  );
       }
    }
+
    if( morph->obj[1] )
    {
       if( !( obj = ch->get_obj_vnum( morph->obj[1] ) ) )
@@ -1492,6 +1495,7 @@ int do_morph_char( char_data * ch, morph_data * morph )
          obj->extract(  );
       }
    }
+
    if( morph->obj[2] )
    {
       if( !( obj = ch->get_obj_vnum( morph->obj[2] ) ) )

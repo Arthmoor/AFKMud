@@ -682,27 +682,6 @@ bool check_parse_name( const string & name, bool newchar )
    if( name.length(  ) < 3 || name.length(  ) > 12 )
       return false;
 
-   /*
-    * Alphanumerics only.
-    * Lock out IllIll twits.
-    *
-    {
-    char *pc;
-    bool fIll;
-    
-    fIll = true;
-    for( pc = name; *pc != '\0'; ++pc )
-    {
-    if( !isalpha( *pc ) )
-    return false;
-    if( LOWER( *pc ) != 'i' && LOWER( *pc ) != 'l' )
-    fIll = false;
-    }
-    
-    if( fIll )
-    return false;
-    } */
-
    // Alphanumeric checks
    string::const_iterator ptr = name.begin(  );
    while( ptr != name.end(  ) )

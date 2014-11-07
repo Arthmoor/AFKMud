@@ -588,7 +588,7 @@ void fread_variable( char_data * ch, FILE * fp )
 
                break;
             }
-            break; 
+            break;
 
          case 'I':
             // Legacy data

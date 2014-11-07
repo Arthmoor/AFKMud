@@ -222,6 +222,7 @@ CMDF( do_slay )
       for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
       {
          slay_data *slay = *sl;
+
          ch->pagerf( "&G%-14s &g%13s\r\n", slay->get_type(  ).c_str(  ), slay->get_owner(  ).c_str(  ) );
       }
       ch->print( "\r\n&gTyping just 'slay <player>' will work too...\r\n" );

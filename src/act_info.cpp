@@ -1822,6 +1822,7 @@ CMDF( do_examine )
                mudstrlcat( buf, "is raw.", MSL );
             mudstrlcat( buf, "\r\n", MSL );
             ch->print( buf );
+
          case ITEM_FOOD:
             if( obj->timer > 0 && obj->value[1] > 0 )
                dam = ( obj->timer * 10 ) / obj->value[1];
@@ -1900,24 +1901,29 @@ CMDF( do_examine )
                   break;
             }
          }
+
          case ITEM_CONTAINER:
             if( obj->extra_flags.test( ITEM_COVERING ) )
                break;
+
          case ITEM_DRINK_CON:
          case ITEM_QUIVER:
             ch->print( "When you look inside, you see:\r\n" );
+
          case ITEM_KEYRING:
             EXA_prog_trigger = false;
             cmdf( ch, "look in %s", argument.c_str(  ) );
             EXA_prog_trigger = true;
             break;
       }
+
       if( obj->extra_flags.test( ITEM_COVERING ) )
       {
          EXA_prog_trigger = false;
          cmdf( ch, "look under %s", argument.c_str(  ) );
          EXA_prog_trigger = true;
       }
+
       oprog_examine_trigger( ch, obj );
       if( ch->char_died(  ) || obj->extracted(  ) )
          return;

@@ -631,7 +631,7 @@ ch_ret spring_trap( char_data * ch, obj_data * obj )
    dam = number_range( obj->value[4], obj->value[5] );
    if( dam <= 0 )
       dam = number_range( 1, 6 ) + lev;
-   
+
    act_printf( AT_HITME, ch, NULL, NULL, TO_CHAR, "You are %s!", txt );
    act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "$n is %s.", txt );
    --obj->value[0];

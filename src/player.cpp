@@ -47,7 +47,6 @@
 
 char *default_fprompt( char_data * );
 char *default_prompt( char_data * );
-void web_who(  );
 
 extern int num_logins;
 
@@ -75,7 +74,7 @@ bool exists_player( const string & name )
 }
 
 /* Rank buffer code for use in IMC2 ( and elsewhere if we see fit I suppose ) */
-string rankbuffer( char_data* ch )
+string rankbuffer( char_data * ch )
 {
    ostringstream rbuf;
 
@@ -1382,7 +1381,7 @@ CMDF( do_who )
 
    pcount = afk_who( ch );
 
-   ch->pagerf( "\r\n%s[%s%d Player%s%s] ", s3, s2, pcount, pcount == 1 ? "" : "s", s3 );
+   ch->pagerf( "\r\n\r\n%s[%s%d Player%s%s] ", s3, s2, pcount, pcount == 1 ? "" : "s", s3 );
 
    ch->pagerf( "%s[%sHomepage: %s%s] [%s%d Max since reboot%s]\r\n", s3, s2, sysdata->http.c_str(  ), s3, s2, sysdata->maxplayers, s3 );
 

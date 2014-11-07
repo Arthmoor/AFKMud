@@ -116,7 +116,7 @@ class area_data
    char *resetmsg;   /* Rennard */
    time_t creation_date;   // Timestamp for when this area was first created. Samson 1/20/07
    time_t install_date; // Timestamp for when this area was "live" installed. Samson 1/20/07
-   time_t last_resettime;  // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
+   time_t last_resettime; // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
    int low_vnum;
    int hi_vnum;
    int low_soft_range;
@@ -126,7 +126,7 @@ class area_data
    short age;
    short nplayer;
    short reset_frequency;
-   short continent;  // Added for Overland support - Samson 9-16-00
+   short continent; // Added for Overland support - Samson 9-16-00
    short mx;   // Coordinates of a zone on the overland, for recall/death purposes - Samson 12-25-00
    short my;
    unsigned short version; // Replaces the file_ver method of tracking - Samson 12-23-02

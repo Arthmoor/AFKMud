@@ -1,7 +1,7 @@
 Random Mobile Names HOWTO
 
 Version 0.1
-Written by Tarl (lemming@alsherok.net)
+Written by Tarl
 
 One of the additions we have made to the stock smaug codebase is the ability to 
 allow mobiles to have random names. This document aims to describe the methods 

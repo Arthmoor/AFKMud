@@ -2449,6 +2449,7 @@ ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool
             txt = "arrives";
       }
    }
+
    const char *dtxt = rev_exit( dir );
 
    if( !running )

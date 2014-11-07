@@ -522,11 +522,11 @@ bool descriptor_data::flush_buffer( bool fPrompt )
    {
       char buf[4096];
 
-      memcpy( buf, this->outbuf.c_str(  ), 4096 );
-      this->outbuf = this->outbuf.substr( 4097, this->outbuf.length(  ) - 4097 );
+      memcpy( buf, this->outbuf.c_str(  ), 4095 );
+      this->outbuf = this->outbuf.substr( 4096, this->outbuf.length(  ) - 4096 );
       if( snoop_by )
       {
-         buf[4095] = '\0';
+         buf[4095] = '\0'; // Holds the record for the longest standing bug that never got spotted. Because GCC should have had ways to see this sooner!
          if( character && character->name )
          {
             if( original && original->name )
@@ -2466,7 +2466,7 @@ void descriptor_data::nanny( string & argument )
          if( !str_cmp( argument, "MSSP-REQUEST" ) )
          {
             send_mssp_data( this );
-            //Uncomment below if you want to know when an MSSP request occurs
+            // Uncomment below if you want to know when an MSSP request occurs
             //log_printf( "IP: %s requested MSSP data!", d->host );
             close_socket( this, false );
             return;
@@ -2803,7 +2803,7 @@ void descriptor_data::nanny( string & argument )
          {
             write_to_buffer( "This is a restricted access port. Only immortals and their test players are allowed.\r\n" );
             write_to_buffer( "Enter access code: " );
-            write_to_buffer( echo_off_str );
+            write_to_buffer( (const char*)echo_off_str );
             connected = CON_GET_PORT_PASSWORD;
             return;
          }

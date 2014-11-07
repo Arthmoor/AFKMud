@@ -45,6 +45,7 @@
 #include "roomindex.h"
 
 vector < vector < cmd_type * > >command_table;
+
 extern char lastplayercmd[MIL * 2];
 #if defined(WIN32)
 void gettimeofday( struct timeval *, struct timezone * );
@@ -682,10 +683,13 @@ void interpret( char_data * ch, string argument )
        * Added by Narn to show who is switched into a mob that executes
        * a logged command.  Check for descriptor in case force is used. 
        */
-      if( ch->desc && ch->desc->original )
-         log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name, ch->desc->original->name, logline );
-      else
-         log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name, logline );
+      if( !ch->isnpc(  ) )
+      {
+         if( ch->desc && ch->desc->original )
+            log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name, ch->desc->original->name, logline );
+         else
+            log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name, logline );
+      }
    }
 
    if( ch->desc && ch->desc->snoop_by )
@@ -1123,9 +1127,6 @@ CMDF( do_cedit )
          ch->print( "Syntax: cedit <command> create [code]\r\n" );
          ch->print( "Syntax: cedit <command> delete\r\n" );
          ch->print( "Syntax: cedit <command> show\r\n" );
-//         ch->print( "Syntax: cedit <command> raise\r\n" );
-//         ch->print( "Syntax: cedit <command> lower\r\n" );
-//         ch->print( "Syntax: cedit <command> list\r\n" );
          ch->print( "Syntax: cedit <command> [field]\r\n" );
          ch->print( "\r\nField being one of:\r\n" );
          ch->print( "  level position log code flags\r\n" );
@@ -1366,6 +1367,10 @@ CMDF( do_cedit )
       return;
    }
 
+// So you should be able to call... swap(it, it+1) or swap(it, it-1)
+// Raise = it-1
+// Lower = it+1
+// Where it = iterator of command being moved. Safety check it != cmd_list.begin()
    /*
     * display usage message 
     */

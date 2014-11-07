@@ -441,7 +441,7 @@ int get_line( const char *desc, size_t max_len )
    if( strlen( desc ) <= max_len )
       return 0;
 
-    /*
+   /*
     * Calculate end point in string without color 
     */
    for( i = 0; i <= strlen( desc ); ++i )
@@ -464,7 +464,7 @@ int get_line( const char *desc, size_t max_len )
             ++j;
             break;
       }
-      
+
       if( j > max_len )
          break;
    }

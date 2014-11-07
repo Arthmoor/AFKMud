@@ -97,7 +97,7 @@ Code        do_advance
 Position    dead
 Level       110
 Log         always
-Flags       ghost
+Flags       ghost noforce
 End
 
 #COMMAND
@@ -606,7 +606,7 @@ End
 Name        checkboards
 Code        do_checkboards
 Position    dead
-Level       101
+Level       2
 Log         normal
 Flags       ghost
 End
@@ -669,6 +669,7 @@ Code        do_delete
 Position    dead
 Level       1
 Log         normal
+Flags       noforce
 End
 
 #COMMAND
@@ -677,7 +678,7 @@ Code        do_demote
 Position    dead
 Level       113
 Log         always
-Flags       ghost
+Flags       ghost noforce
 End
 
 #COMMAND

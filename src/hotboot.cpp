@@ -692,7 +692,7 @@ CMDF( do_hotboot )
       {
          fprintf( fp, "%d %d %d %d %d %d %d %s %s %s\n",
                   d->descriptor, d->can_compress, d->is_compressing, d->msp_detected,
-                  och->in_room->vnum, d->client_port, d->idle, d->client.c_str(  ), och->name, d->host.c_str(  ) );
+                  och->in_room->vnum, d->client_port, d->idle, och->name, d->host.c_str(  ), d->client.c_str(  ) );
 
          /*
           * One of two places this gets changed 
@@ -790,7 +790,7 @@ void hotboot_recover( void )
    unlink( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
    for( ;; )
    {
-      iError = fscanf( fp, "%d %d %d %d %d %d %d %s %s %s\n", &desc, &dcompress, &discompressing, &dmsp, &room, &dport, &idle, client, name, host );
+      iError = fscanf( fp, "%d %d %d %d %d %d %d %s %s %s\n", &desc, &dcompress, &discompressing, &dmsp, &room, &dport, &idle, name, host, client );
 
       if( desc == -1 || feof( fp ) )
          break;

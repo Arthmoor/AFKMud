@@ -9,7 +9,7 @@ End
 
 #CHANNEL
 ChanName      auction
-ChanColorname chat
+ChanColorname auction
 ChanLevel     1
 ChanType      0
 ChanFlags     keephistory
@@ -33,7 +33,7 @@ End
 
 #CHANNEL
 ChanName      shout
-ChanColorname chat
+ChanColorname shout
 ChanLevel     2
 ChanType      0
 ChanFlags     keephistory
@@ -41,14 +41,14 @@ End
 
 #CHANNEL
 ChanName      wartalk
-ChanColorname chat
+ChanColorname wartalk
 ChanLevel     1
 ChanType      4
 End
 
 #CHANNEL
 ChanName      yell
-ChanColorname chat
+ChanColorname yell
 ChanLevel     2
 ChanType      1
 End
@@ -63,7 +63,7 @@ End
 
 #CHANNEL
 ChanName      think
-ChanColorname chat
+ChanColorname think
 ChanLevel     101
 ChanType      0
 ChanFlags     keephistory interport
@@ -71,7 +71,7 @@ End
 
 #CHANNEL
 ChanName      muse
-ChanColorname chat
+ChanColorname muse
 ChanLevel     113
 ChanType      0
 ChanFlags     keephistory interport
@@ -79,56 +79,56 @@ End
 
 #CHANNEL
 ChanName      comm
-ChanColorname chat
+ChanColorname log
 ChanLevel     102
 ChanType      5
 End
 
 #CHANNEL
 ChanName      info
-ChanColorname chat
+ChanColorname log
 ChanLevel     101
 ChanType      5
 End
 
 #CHANNEL
 ChanName      auth
-ChanColorname chat
+ChanColorname log
 ChanLevel     103
 ChanType      5
 End
 
 #CHANNEL
 ChanName      warn
-ChanColorname chat
+ChanColorname log
 ChanLevel     108
 ChanType      5
 End
 
 #CHANNEL
 ChanName      build
-ChanColorname chat
+ChanColorname log
 ChanLevel     103
 ChanType      5
 End
 
 #CHANNEL
 ChanName      Log
-ChanColorname chat
+ChanColorname log
 ChanLevel     101
 ChanType      5
 End
 
 #CHANNEL
 ChanName      guildtalk
-ChanColorname chat
+ChanColorname guildtalk
 ChanLevel     1
 ChanType      2
 End
 
 #CHANNEL
 ChanName      Clantalk
-ChanColorname chat
+ChanColorname guildtalk
 ChanLevel     1
 ChanType      2
 End

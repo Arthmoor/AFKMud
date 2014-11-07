@@ -2239,6 +2239,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
       bug( "%s: Vnum not found", __FUNCTION__ );
       return NULL;
    }
+
    for( ;; )
    {
       if( !shopmob )

@@ -527,6 +527,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
             return;
          }
          break;
+
       case ITEM_BUTTON:
          if( ( !pull && isup ) || ( pull && !isup ) )
          {

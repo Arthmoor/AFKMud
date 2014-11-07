@@ -311,6 +311,7 @@ char_data *mob_index::create_mobile(  )
       mob->weight = mob->calculate_race_weight(  );
    else
       mob->weight = weight;
+
    mob->set_resists( resistant );
    mob->set_immunes( immune );
    mob->set_susceps( susceptible );

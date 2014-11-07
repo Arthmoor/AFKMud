@@ -31,7 +31,7 @@
 
 /* Capability to create, edit and delete slaytypes added to original code by Samson 8-3-98 */
 
-#define SLAY_FILE SYSTEM_DIR "slay.dat"   /* Slay data file for online editing - Samson 8-3-98 */
+#define SLAY_FILE SYSTEM_DIR "slay.dat"  /* Slay data file for online editing - Samson 8-3-98 */
 
 /* Improved data structure for online slay editing - Samson 8-3-98 */
 class slay_data

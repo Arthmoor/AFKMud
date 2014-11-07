@@ -90,7 +90,7 @@ class social_type
  * Cmd flag names --Shaddai
  */
 extern const char *cmd_flags[];
-extern vector < vector <cmd_type *> >command_table;
+extern vector < vector < cmd_type * > >command_table;
 extern map < string, social_type * >social_table;
 
 cmd_type *find_command( const string & );

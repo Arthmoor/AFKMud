@@ -869,6 +869,7 @@ void oedit_liquid_type( descriptor_data * d )
          ++counter;
       }
    }
+
    d->character->print( "\r\n&wEnter drink type: " );
    OLC_MODE( d ) = OEDIT_VALUE_2;
 }
@@ -2061,7 +2062,7 @@ void oedit_parse( descriptor_data * d, string & arg )
       case OEDIT_LAYERS:  // FIXME: Jesus Christ, for the love of God, etc. This is *NOT* right!
          /*
           * Like they say, easy on the user, hard on the programmer :) 
-          * Or did I just make that up.... 
+          * Or did I just make that up....
           */
          number = atoi( arg.c_str(  ) );
          switch ( number )

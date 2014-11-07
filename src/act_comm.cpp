@@ -172,6 +172,12 @@ CMDF( do_ask )
    if( ch->isnpc(  ) )
       ch->unset_actflag( ACT_SECRETIVE );
 
+   if( victim == ch )
+   {
+      ch->print( "You ask yourself the question. Did it help?\r\n" );
+      return;
+   }
+
    /*
     * Check to see if a player on a map is at the same coords as the recipient 
     */

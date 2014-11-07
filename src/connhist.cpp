@@ -289,21 +289,27 @@ CMDF( do_logins )
             case CONNTYPE_LOGIN:
                typebuf = " has logged in.";
                break;
+
             case CONNTYPE_QUIT:
                typebuf = " has logged out.";
                break;
+
             case CONNTYPE_IDLE:
                typebuf = " has been logged out due to inactivity.";
                break;
+
             case CONNTYPE_LINKDEAD:
                typebuf = " has lost their link.";
                break;
+
             case CONNTYPE_NEWPLYR:
                typebuf = " has logged in for the first time!";
                break;
+
             case CONNTYPE_RECONN:
                typebuf = " has reconnected.";
                break;
+
             default:
                typebuf = ".";
                break;

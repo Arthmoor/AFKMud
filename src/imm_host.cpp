@@ -168,7 +168,6 @@ immortal_host *fread_imm_host( FILE * fp )
                   dnum++;
                   fread_string( host->domain[dnum], fp );
                }
-
                break;
             }
             break;

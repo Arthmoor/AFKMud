@@ -225,6 +225,9 @@ string color_itom( const string & buf, bool incolor )
    }
    else
       cbuf = imc_strip_colors( cbuf );
+
+   string_replace( cbuf, "&quot;", "\"" ); // Yes, thank you Kiasyn you supreme asshat!
+   string_replace( cbuf, "&apos;", "'" );
    return cbuf;
 }
 
@@ -1690,10 +1693,6 @@ void imc_process_finger( const string & from, string & type )
    {
       buf << "~cEmail   : ~W" << ( !IMC_EMAIL( victim ).empty(  )? IMC_EMAIL( victim ) : "None" ) << endl;
       buf << "~cHomepage: ~W" << ( !IMC_HOMEPAGE( victim ).empty(  )? IMC_HOMEPAGE( victim ) : "None" ) << endl;
-      buf << "~cICQ     : ~W" << IMC_ICQ( victim ) << endl;
-      buf << "~cAIM     : ~W" << ( !IMC_AIM( victim ).empty(  )? IMC_AIM( victim ) : "None" ) << endl;
-      buf << "~cYahoo   : ~W" << ( !IMC_YAHOO( victim ).empty(  )? IMC_YAHOO( victim ) : "None" ) << endl;
-      buf << "~cMSN     : ~W" << ( !IMC_MSN( victim ).empty(  )? IMC_MSN( victim ) : "None" ) << endl;
    }
 
    buf << "~W" << ( !IMC_COMMENT( victim ).empty(  )? IMC_COMMENT( victim ) : "" ) << endl;
@@ -2771,10 +2770,6 @@ void imc_loadchar( char_data * ch, FILE * fp, const char *word )
       case 'I':
          KEY( "IMCPerm", IMCPERM( ch ), fread_short( fp ) );
          STDSLINE( "IMCEmail", IMC_EMAIL( ch ) );
-         STDSLINE( "IMCAIM", IMC_AIM( ch ) );
-         KEY( "IMCICQ", IMC_ICQ( ch ), fread_number( fp ) );
-         STDSLINE( "IMCYahoo", IMC_YAHOO( ch ) );
-         STDSLINE( "IMCMSN", IMC_MSN( ch ) );
          STDSLINE( "IMCHomepage", IMC_HOMEPAGE( ch ) );
          STDSLINE( "IMCComment", IMC_COMMENT( ch ) );
          if( !strcasecmp( word, "IMCFlags" ) )
@@ -2874,14 +2869,6 @@ void imc_savechar( char_data * ch, FILE * fp )
       fprintf( fp, "IMCEmail     %s\n", IMC_EMAIL( ch ).c_str(  ) );
    if( !IMC_HOMEPAGE( ch ).empty(  ) )
       fprintf( fp, "IMCHomepage  %s\n", IMC_HOMEPAGE( ch ).c_str(  ) );
-   if( IMC_ICQ( ch ) )
-      fprintf( fp, "IMCICQ       %d\n", IMC_ICQ( ch ) );
-   if( !IMC_AIM( ch ).empty(  ) )
-      fprintf( fp, "IMCAIM       %s\n", IMC_AIM( ch ).c_str(  ) );
-   if( !IMC_YAHOO( ch ).empty(  ) )
-      fprintf( fp, "IMCYahoo     %s\n", IMC_YAHOO( ch ).c_str(  ) );
-   if( !IMC_MSN( ch ).empty(  ) )
-      fprintf( fp, "IMCMSN       %s\n", IMC_MSN( ch ).c_str(  ) );
    if( !IMC_COMMENT( ch ).empty(  ) )
       fprintf( fp, "IMCComment   %s\n", IMC_COMMENT( ch ).c_str(  ) );
 
@@ -2913,7 +2900,6 @@ void imc_initchar( char_data * ch )
 
    CH_IMCDATA( ch ) = new imc_chardata;
 
-   IMC_ICQ( ch ) = 0;
    CH_IMCDATA( ch )->imc_ignore.clear(  );
    IMCFLAG( ch ).reset(  );
    IMCSET_BIT( IMCFLAG( ch ), IMC_COLORFLAG );
@@ -4964,7 +4950,7 @@ IMC_CMD( imcfinger )
       imc_to_char( "~wUsage: imcfinger person@mud\r\n", ch );
       imc_to_char( "~wUsage: imcfinger <field> <value>\r\n", ch );
       imc_to_char( "~wWhere field is one of:\r\n\r\n", ch );
-      imc_to_char( "~wdisplay email homepage icq aim yahoo msn privacy comment\r\n", ch );
+      imc_to_char( "~wdisplay email homepage privacy comment\r\n", ch );
       return;
    }
 
@@ -4973,10 +4959,6 @@ IMC_CMD( imcfinger )
       imc_to_char( "~GYour current information:\r\n\r\n", ch );
       imc_printf( ch, "~GEmail   : ~g%s\r\n", !IMC_EMAIL( ch ).empty(  )? IMC_EMAIL( ch ).c_str(  ) : "None" );
       imc_printf( ch, "~GHomepage: ~g%s\r\n", !IMC_HOMEPAGE( ch ).empty(  )? IMC_HOMEPAGE( ch ).c_str(  ) : "None" );
-      imc_printf( ch, "~GICQ     : ~g%d\r\n", IMC_ICQ( ch ) );
-      imc_printf( ch, "~GAIM     : ~g%s\r\n", !IMC_AIM( ch ).empty(  )? IMC_AIM( ch ).c_str(  ) : "None" );
-      imc_printf( ch, "~GYahoo   : ~g%s\r\n", !IMC_YAHOO( ch ).empty(  )? IMC_YAHOO( ch ).c_str(  ) : "None" );
-      imc_printf( ch, "~GMSN     : ~g%s\r\n", !IMC_MSN( ch ).empty(  )? IMC_MSN( ch ).c_str(  ) : "None" );
       imc_printf( ch, "~GComment : ~g%s\r\n", !IMC_COMMENT( ch ).empty(  )? IMC_COMMENT( ch ).c_str(  ) : "None" );
       imc_printf( ch, "~GPrivacy : ~g%s\r\n", IMCIS_SET( IMCFLAG( ch ), IMC_PRIVACY ) ? "Enabled" : "Disabled" );
       return;
@@ -5026,34 +5008,6 @@ IMC_CMD( imcfinger )
    {
       IMC_HOMEPAGE( ch ) = argument;
       imc_printf( ch, "Your homepage has changed to: %s\r\n", IMC_HOMEPAGE( ch ).c_str(  ) );
-      return;
-   }
-
-   if( !str_cmp( command, "icq" ) )
-   {
-      IMC_ICQ( ch ) = atoi( argument.c_str(  ) );
-      imc_printf( ch, "Your ICQ Number has changed to: %d\r\n", IMC_ICQ( ch ) );
-      return;
-   }
-
-   if( !str_cmp( command, "aim" ) )
-   {
-      IMC_AIM( ch ) = argument;
-      imc_printf( ch, "Your AIM Screenname has changed to: %s\r\n", IMC_AIM( ch ).c_str(  ) );
-      return;
-   }
-
-   if( !str_cmp( command, "yahoo" ) )
-   {
-      IMC_YAHOO( ch ) = argument;
-      imc_printf( ch, "Your Yahoo Screenname has changed to: %s\r\n", IMC_YAHOO( ch ).c_str(  ) );
-      return;
-   }
-
-   if( !str_cmp( command, "msn" ) )
-   {
-      IMC_MSN( ch ) = argument;
-      imc_printf( ch, "Your MSN Screenname has changed to: %s\r\n", IMC_MSN( ch ).c_str(  ) );
       return;
    }
 

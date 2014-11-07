@@ -124,6 +124,7 @@ char *sprint_reset( reset_data * pReset, short &num )
                             num, objname, tReset->arg1, tReset->arg3, mobname, tReset->arg2 );
                   break;
             }
+
             if( !tReset->resets.empty(  ) )
             {
                list < reset_data * >::iterator gst;
@@ -338,6 +339,7 @@ void add_obj_reset( room_index * room, char cm, obj_data * obj, int v2, int v3 )
    for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
    {
       obj_data *inobj = *iobj;
+
       if( inobj->pIndexData->vnum == OBJ_VNUM_TRAP )
          add_obj_reset( room, 'O', inobj, 0, 0 );
    }

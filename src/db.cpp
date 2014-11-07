@@ -1269,10 +1269,11 @@ bool load_systemdata( void )
 void fix_exits( void )
 {
    map < int, room_index * >::iterator iroom;
+   room_index *pRoomIndex;
 
    for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {
-      room_index *pRoomIndex = iroom->second;
+      pRoomIndex = iroom->second;
 
       list < exit_data * >::iterator iexit;
       for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); )
@@ -1297,7 +1298,7 @@ void fix_exits( void )
     */
    for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {
-      room_index *pRoomIndex = iroom->second;
+      pRoomIndex = iroom->second;
 
       list < exit_data * >::iterator iexit;
       for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); ++iexit )
@@ -1708,7 +1709,12 @@ void make_webwiz( void )
          mudstrlcat( buf, lbuf, MSL );
       }
       else
-         mudstrlcat( buf, wiz->name.c_str(  ), MSL );
+      {
+         char lbuf[MSL];
+
+         snprintf( lbuf, MSL, "<span style=\"font-size:14px;\">%s</span>", wiz->name.c_str(  ) );
+         mudstrlcat( buf, lbuf, MSL );
+      }
 
       if( strlen( buf ) > 999 )
       {

@@ -1227,6 +1227,7 @@ CMDF( do_mposet )
          STRFREE( supermob->short_descr );
          supermob->short_descr = QUICKLINK( obj->short_descr );
       }
+
       /*
        * Feature added by Narn, Apr/96 
        * * If the item is not proto, add the word 'rename' to the keywords
@@ -2495,7 +2496,6 @@ CMDF( do_mpbodybag )
 /*
  * mpmorph and mpunmorph for morphing people with mobs. --Shaddai
  */
-
 CMDF( do_mpmorph )
 {
    char_data *victim;
@@ -2528,6 +2528,7 @@ CMDF( do_mpmorph )
       progbugf( ch, "Mpmorph - unknown morph %s", argument.c_str(  ) );
       return;
    }
+
    if( victim->morph )
    {
       progbugf( ch, "Mpmorph - victim %s already morphed", victim->name );
@@ -2768,7 +2769,7 @@ CMDF( do_mpscatter )
 
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "Mpscatter: victim %s not in the room", argument.c_str(  ) );
+      progbugf( ch, "Mpscatter: victim %s not in room", argument.c_str(  ) );
       return;
    }
 
@@ -2845,7 +2846,7 @@ CMDF( do_mp_slay )
 
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "Mpslay: victim %s not in the room", argument.c_str(  ) );
+      progbugf( ch, "Mpslay: victim %s not in room", argument.c_str(  ) );
       return;
    }
 
@@ -3325,6 +3326,7 @@ CMDF( do_mp_open_passage )
       progbugf( ch, "MpOpenPassage - Exit %d already exists.", exit_num );
       return;
    }
+
    pexit = fromRoom->make_exit( targetRoom, exit_num );
    pexit->key = -1;
    pexit->flags.reset(  );
@@ -3432,8 +3434,7 @@ CMDF( do_mpnothing )
 }
 
 /*
- *   Sends a message to sleeping character.  Should be fun
- *    with room sleep_progs
+ * Sends a message to sleeping character. Should be fun with room sleep_progs
  */
 CMDF( do_mpdream )
 {

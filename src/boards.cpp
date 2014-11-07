@@ -1338,10 +1338,8 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
    }
 
    if( id > 0 && board != NULL )
-      ch->
-         printf
-         ( "&[board3][&[board]Note #&[board2]%d&[board] of &[board2]%d&[board3]]&[board]           -- &[board2]%s&[board] --&D\r\n",
-           id, total_notes( ch, board ), board->name );
+      ch->printf( "&[board3][&[board]Note #&[board2]%d&[board] of &[board2]%d&[board3]]&[board]           -- &[board2]%s&[board] --&D\r\n", id, total_notes( ch, board ),
+                  board->name );
 
    /*
     * Using a negative ID# for a bit of beauty -- Xorith 
@@ -2578,19 +2576,15 @@ CMDF( do_note_remove )
          return;
       }
 
-      ch->
-         printf
-         ( "&[board]You remove the reply from &[board2]%s&[board], titled '&[board2]%s&[board]' from the &[board2]%s&[board] board.&D\r\n",
-           reply->sender ? reply->sender : "--Error--", reply->subject ? reply->subject : "--Error--", board->name );
+      ch->printf( "&[board]You remove the reply from &[board2]%s&[board], titled '&[board2]%s&[board]' from the &[board2]%s&[board] board.&D\r\n",
+                  reply->sender ? reply->sender : "--Error--", reply->subject ? reply->subject : "--Error--", board->name );
       note_remove( board, reply );
       act( AT_BOARD, "$n removes a reply from the board.", ch, NULL, NULL, TO_ROOM );
       return;
    }
 
-   ch->
-      printf
-      ( "&[board]You remove the note from &[board2]%s&[board], titled '&[board2]%s&[board]' from the &[board2]%s&[board] board.&D\r\n",
-        pnote->sender ? pnote->sender : "--Error--", pnote->subject ? pnote->subject : "--Error--", board->name );
+   ch->printf( "&[board]You remove the note from &[board2]%s&[board], titled '&[board2]%s&[board]' from the &[board2]%s&[board] board.&D\r\n",
+               pnote->sender ? pnote->sender : "--Error--", pnote->subject ? pnote->subject : "--Error--", board->name );
    note_remove( board, pnote );
    act( AT_BOARD, "$n removes a note from the board.", ch, NULL, NULL, TO_ROOM );
 }
@@ -2678,8 +2672,8 @@ CMDF( do_board_list )
       }
       else
       {
-         ch->printf( "&[board2]%2d&[board3])  &[board2]%-15s  &[board3][ &[board2]%3d&[board3]]  ", count + 1,
-                     print_lngstr( board->name, 15 ).c_str(  ), unread_notes( ch, board ) );
+         ch->printf( "&[board2]%2d&[board3])  &[board2]%-15s  &[board3][ &[board2]%3d&[board3]]  ", count + 1, print_lngstr( board->name, 15 ).c_str(  ),
+                     unread_notes( ch, board ) );
          if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
             ch->printf( "[&[board2]%3d&[board3]]          ", total_notes( ch, board ) );
          else

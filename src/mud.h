@@ -46,7 +46,7 @@ using namespace std;
  */
 #define CODENAME "AFKMud"
 #define CODEVERSION "2.1.7"
-#define COPYRIGHT "Copyright The Alsherok Team 1997-2015. All rights reserved. "
+#define COPYRIGHT "Copyright The Alsherok Team 1997-2015. All rights reserved."
 
 const int LGST = 4096;  /* Large String */
 const int SMST = 1024;  /* Small String */
@@ -230,6 +230,7 @@ extern short gsn_dual_wield;
 
 extern short gsn_aid;
 
+/* used to do specific lookups */
 extern short num_skills;
 extern short num_sorted_skills;
 
@@ -1114,7 +1115,6 @@ extern int top_disease;
 extern ch_ret global_retcode;
 
 extern char *title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
-
 extern skill_type *skill_table[MAX_SKILL];
 extern skill_type *herb_table[MAX_HERB];
 extern skill_type *disease_table[MAX_DISEASE];
@@ -1228,7 +1228,7 @@ void append_to_file( const string &, const char *, ... ) __attribute__ ( ( forma
 void log_string_plus( short, short, const string & );
 void make_wizlist( void );
 
-/* editor.c */
+/* editor.cpp */
 bool hasname( const string &, const string & );
 void removename( string &, const string & );
 void addname( string &, const string & );

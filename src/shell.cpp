@@ -133,6 +133,7 @@ CMDF( do_mudexec )
       dup2( desc, STDIN_FILENO );
       dup2( desc, STDOUT_FILENO );
       dup2( desc, STDERR_FILENO );
+
       mudstrlcpy( term, "TERM=vt100", 15 );
       putenv( term );
 
@@ -821,7 +822,7 @@ CMDF( do_copydeity )
 GREP In-Game command	-Nopey
 ====================
 */
-/* Modified by Samson to be a bit less restrictive. So one can grep anywhere the account will allow. */
+// Modified by Samson to be a bit less restrictive. So one can grep anywhere the account will allow.
 CMDF( do_grep )
 {
    char buf[MSL];

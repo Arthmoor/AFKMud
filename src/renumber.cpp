@@ -438,7 +438,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       room = *iroom;
 
       /*
-       * add it to the hash list again (new position) 
+       * add it to the hash list again
        */
       room_index_table.insert( map < int, room_index * >::value_type( room->vnum, room ) );
    }

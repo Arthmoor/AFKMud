@@ -1266,9 +1266,9 @@ CMDF( do_mset )
       if( ch->substate == SUB_REPEATCMD )
       {
          if( victim )
-            ch->print( "Syntax: <field>  <value>\r\n" );
+            ch->print( "Syntax: <field> <value>\r\n" );
          else
-            ch->print( "Syntax: <victim> <field>  <value>\r\n" );
+            ch->print( "Syntax: <victim> <field> <value>\r\n" );
       }
 
       /*
@@ -1832,6 +1832,7 @@ CMDF( do_mset )
          ch->print( "Valid range for realm is 0 - 5. See 'help realms'.\r\n" );
          return;
       }
+
       victim->pcdata->realm = value;
       victim->save(  );
       build_wizinfo(  );
@@ -1862,6 +1863,7 @@ CMDF( do_mset )
           */
          if( victim->pcdata->clan == NULL )
             return;
+
          /*
           * Added a check on immortals so immortals don't take up
           * * any membership space. --Shaddai
@@ -2779,6 +2781,7 @@ CMDF( do_oset )
             ch->substate = SUB_NONE;
             return;
          }
+
          /*
           * hopefully the object didn't get extracted...
           * if you're REALLY paranoid, you could always go through

@@ -2216,6 +2216,7 @@ CMDF( do_rest )
       else
          ch->on = obj;
    }
+
    switch ( ch->position )
    {
       case POS_SLEEPING:

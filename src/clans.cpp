@@ -376,6 +376,7 @@ void delete_clan( char_data * ch, clan_data * clan )
       }
    }
 
+   clanlist.remove( clan );
    deleteptr( clan );
 
    if( !ch )

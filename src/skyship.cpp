@@ -300,7 +300,7 @@ CMDF( do_call )
    short terrain = get_terrain( ch->cmap, ch->mx, ch->my );
 
    /*
-    * Sanity checks Reasons why a skyship wouldn't want to answer
+    * Sanity checks Reasons why a skyship wouldn't want to answer.
     * You a smelly mobbie?? 
     */
    if( ch->isnpc(  ) )

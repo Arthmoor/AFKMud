@@ -36,7 +36,7 @@
 
 #define WEB_ROOMS "../public_html/"
 
-string rankbuffer( char_data* ch );
+string rankbuffer( char_data * );
 extern int num_logins;
 
 int web_colour( char type, char *string, bool & firsttag )

@@ -1036,10 +1036,10 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          return( !chkchar->isnpc() ? mprog_veval( chkchar->pcdata->condition[COND_DRUNK], opr, atoi(rval), mob) : false );
 
       if( !str_cmp( chck, "ispc" ) )
-         return chkchar->isnpc(  )? false : true;
+         return chkchar->isnpc(  ) ? false : true;
 
       if( !str_cmp( chck, "isnpc" ) )
-         return chkchar->isnpc(  )? true : false;
+         return chkchar->isnpc(  ) ? true : false;
 
       if( !str_cmp( chck, "cansee" ) )
          return mob->can_see( chkchar, false );

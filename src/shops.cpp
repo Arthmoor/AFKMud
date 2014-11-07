@@ -202,6 +202,7 @@ char_data *find_keeper( char_data * ch )
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
       keeper = *ich;
+
       if( keeper->isnpc(  ) && ( pShop = keeper->pIndexData->pShop ) != NULL )
          break;
    }
@@ -424,6 +425,7 @@ char_data *find_fixer( char_data * ch )
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
       keeper = *ich;
+
       if( keeper->isnpc(  ) && ( rShop = keeper->pIndexData->rShop ) != NULL )
          break;
    }
@@ -1057,7 +1059,6 @@ CMDF( do_sell )
       auction_sell( ch, auc, argument );
       return;
    }
-
 
    if( argument.empty(  ) )
    {

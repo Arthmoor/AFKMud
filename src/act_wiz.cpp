@@ -297,6 +297,7 @@ CMDF( do_retire )
       ch->printf( "The minimum level for retirement is %d.\r\n", LEVEL_SAVIOR );
       return;
    }
+
    if( victim->has_pcflag( PCFLAG_RETIRED ) )
    {
       victim->unset_pcflag( PCFLAG_RETIRED );
@@ -1569,7 +1570,7 @@ void find_oftype( char_data * ch, const string & argument )
    while( iobj != obj_index_table.end(  ) )
    {
       obj_index *pObjIndex = iobj->second;
- 
+
       if( type == pObjIndex->item_type )
       {
          ++nMatch;
@@ -2331,7 +2332,7 @@ void objinvoke( char_data * ch, string & argument )
       while( iobj != obj_index_table.end(  ) )
       {
          pObjIndex = iobj->second;
- 
+
          if( hasname( pObjIndex->name, arg3 ) && ++cnt == count )
          {
             vnum = pObjIndex->vnum;
@@ -5151,6 +5152,7 @@ CMDF( do_for )
       for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom ) /* run through all the buckets */
       {
          room_index *room = iroom->second;
+
          found = false;
 
          /*
@@ -6442,7 +6444,6 @@ void load_classes(  )
          class_table[i] = Class;
       }
    }
-   return;
 }
 
 void write_class_file( int cl )
@@ -7513,11 +7514,11 @@ void write_race_file( int ra )
       fprintf( fpout, "Suscept     %s~\n", bitset_string( race->suscept, ris_flags ) );
    if( race->language.any(  ) )
       fprintf( fpout, "Language    %s~\n", bitset_string( race->language, lang_names ) );
-   fprintf( fpout, "Align       %d\n", race->alignment );
-   fprintf( fpout, "Min_Align   %d\n", race->minalign );
-   fprintf( fpout, "Max_Align	  %d\n", race->maxalign );
-   fprintf( fpout, "AC_Plus     %d\n", race->ac_plus );
-   fprintf( fpout, "Exp_Mult    %d\n", race->exp_multiplier );
+   fprintf( fpout, "Align      %d\n", race->alignment );
+   fprintf( fpout, "Min_Align  %d\n", race->minalign );
+   fprintf( fpout, "Max_Align	 %d\n", race->maxalign );
+   fprintf( fpout, "AC_Plus    %d\n", race->ac_plus );
+   fprintf( fpout, "Exp_Mult   %d\n", race->exp_multiplier );
    if( race->body_parts.any(  ) )
       fprintf( fpout, "Bodyparts  %s~\n", bitset_string( race->body_parts, part_flags ) );
    if( race->attacks.any(  ) )
@@ -7944,9 +7945,6 @@ CMDF( do_setrace )
       return;
    }
 
-   /*
-    * not implemented 
-    */
    if( !str_cmp( arg2, "defense" ) )
    {
       if( argument.empty(  ) )
@@ -7967,9 +7965,6 @@ CMDF( do_setrace )
       return;
    }
 
-   /*
-    * not implemented 
-    */
    if( !str_cmp( arg2, "attack" ) )
    {
       if( argument.empty(  ) )
@@ -8081,9 +8076,7 @@ CMDF( do_setrace )
       ch->print( "Done.\r\n" );
       return;
    }
-   /*
-    * unimplemented stuff follows 
-    */
+
    if( !str_cmp( arg2, "mana_regen" ) )
    {
       race->mana_regen = atoi( argument.c_str(  ) );
