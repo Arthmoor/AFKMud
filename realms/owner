@@ -1,0 +1,19 @@
+#REALM
+Version      1
+Name         Owner~
+Filename     ../realms/owner~
+Description  The owner of the game. Usually the guy paying the bills.~
+Leader       Admin~
+Leadrank     Owner~
+Badge        ~
+Type         Owner~
+Members      1
+Board        0
+End
+
+#ROSTER
+Name      Admin~
+Joined    1415515211
+End
+
+#END

@@ -39,6 +39,7 @@
 #include "deity.h"
 #include "descriptor.h"
 #include "objindex.h"
+#include "realms.h"
 #include "roomindex.h"
 
 list < board_data * >bdlist;
@@ -3270,11 +3271,6 @@ CMDF( do_board_set )
 }
 
 /* Begin Project Code */
-
-#define PROJ_ADMIN( proj, ch ) ( !((ch))->isnpc() && ( (((proj)->type == 1) && ((ch)->pcdata->realm == REALM_HEAD_CODER)) \
-                                  || (((proj)->type == 2) && ((ch)->pcdata->realm == REALM_HEAD_BUILDER)) \
-                                  || ((ch)->pcdata->realm == REALM_IMP)))
-
 project_data *get_project_by_number( int pnum )
 {
    list < project_data * >::iterator pr;
@@ -3332,7 +3328,8 @@ void write_projects( void )
          fprintf( fpout, "Coder  %s~\n", proj->coder );
       fprintf( fpout, "Status %s~\n", ( proj->status ) ? proj->status : "No update." );
       fprintf( fpout, "Date_stamp   %ld\n", ( long int )proj->date_stamp );
-      fprintf( fpout, "Type         %d\n", proj->type );
+      if( !proj->realm_name.empty() )
+         fprintf( fpout, "Realm       %s~\n", proj->realm_name.c_str() );
       if( proj->description )
          fprintf( fpout, "Description %s~\n", proj->description );
 
@@ -3478,12 +3475,23 @@ project_data *read_project( FILE * fp )
             KEY( "Owner", project->owner, fread_string( fp ) );
             break;
 
-         case 'S':
-            KEY( "Status", project->status, fread_string_nohash( fp ) );
+         case 'R':
+            if( !str_cmp( word, "Realm" ) )
+            {
+               realm_data *realm = get_realm( fread_flagstring( fp ) );
+
+               if( !realm )
+                  log_printf( "Project %s has no valid realm.", project->name );
+               else
+                  project->realm_name = realm->name;
+               break;
+            }
+
+            KEY( "Realm", project->realm_name, fread_string( fp ) );
             break;
 
-         case 'T':
-            KEY( "Type", project->type, fread_number( fp ) );
+         case 'S':
+            KEY( "Status", project->status, fread_string_nohash( fp ) );
             break;
 
          case 'V':
@@ -3509,6 +3517,7 @@ void load_projects( void ) /* Copied load_boards structure for simplicity */
    while( ( project = read_project( fp ) ) != NULL )
       projlist.push_back( project );
 
+   FCLOSE( fp );
    return;
 }
 
@@ -3552,12 +3561,15 @@ void free_projects( void )
    return;
 }
 
+// Hacky looking ugly define, but fuck having to type all this out all the time.
+#define IS_PROJECT_ADMIN(ch, proj) ( IS_ADMIN_REALM((ch)) || (IS_REALM_LEADER((ch)) && !str_cmp( (ch)->pcdata->realm_name, (proj)->realm_name )) )
+
 /* Last thing left to revampitize -- Xorith */
 CMDF( do_project )
 {
    project_data *pproject;
    string arg;
-   int pcount, pnum, ptype = 0;
+   int pcount, pnum;
 
    if( ch->isnpc(  ) )
       return;
@@ -3651,14 +3663,14 @@ CMDF( do_project )
          if( !aflag )
          {
             ch->pagerf( "%2d%c | %-11s | %-26s | %-15s | %-12s\r\n",
-                        pcount, proj->type == 1 ? 'C' : 'B', proj->owner ? proj->owner : "(None)",
+                        pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)",
                         print_lngstr( proj->name, 26 ).c_str(  ), mini_c_time( proj->date_stamp, ch->pcdata->timezone ), proj->status ? proj->status : "(None)" );
          }
          else if( !proj->taken )
          {
             if( !projects_available )
                projects_available = true;
-            ch->pagerf( "%2d%c | %-30s | %s\r\n", pcount, proj->type == 1 ? 'C' : 'B',
+            ch->pagerf( "%2d%c | %-30s | %s\r\n", pcount, proj->realm_name.c_str(),
                         proj->name ? proj->name : "(None)", mini_c_time( proj->date_stamp, ch->pcdata->timezone ) );
          }
       }
@@ -3690,7 +3702,7 @@ CMDF( do_project )
          ++pcount;
          if( ( proj->status && str_cmp( proj->status, "approved" ) ) || proj->coder != NULL )
             continue;
-         ch->pagerf( "%2d%c | %-11s | %-26s\r\n", pcount, proj->type == 1 ? 'C' : 'B', proj->owner ? proj->owner : "(None)", proj->name ? proj->name : "(None)" );
+         ch->pagerf( "%2d%c | %-11s | %-26s\r\n", pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)", proj->name ? proj->name : "(None)" );
       }
       return;
    }
@@ -3720,7 +3732,7 @@ CMDF( do_project )
             continue;
          int num_logs = proj->nlist.size(  );
          ch->pagerf( "%2d%c | %-11s | %-26s | %-11s | %-10s | %3d\r\n",
-                     pcount, proj->type == 1 ? 'C' : 'B', proj->owner ? proj->owner : "(None)",
+                     pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)",
                      print_lngstr( proj->name, 26 ).c_str(  ), proj->coder ? proj->coder : "(None)", proj->status ? proj->status : "(None)", num_logs );
       }
       return;
@@ -3728,38 +3740,30 @@ CMDF( do_project )
 
    if( !str_cmp( arg, "add" ) )
    {
-      if( ch->get_trust(  ) < LEVEL_GOD && !( ch->pcdata->realm == REALM_HEAD_CODER || ch->pcdata->realm == REALM_HEAD_BUILDER || ch->pcdata->realm == REALM_IMP ) )
+      realm_data *realm = NULL;
+
+      if( !IS_REALM_LEADER(ch) && !IS_ADMIN_REALM(ch) )
       {
-         ch->print( "You are not powerful enough to add a new project.\r\n" );
+         ch->print( "Only realm leaders or administrators may add a new project.\r\n" );
          return;
       }
 
-      if( ( ch->pcdata->realm == REALM_IMP ) )
+      if( IS_ADMIN_REALM(ch) )
       {
          argument = one_argument( argument, arg );
 
-         if( arg.empty(  ) || ( str_cmp( arg, "code" ) && str_cmp( arg, "build" ) ) )
+         if( arg.empty(  ) )
          {
-            ch->print( "Since you are an Implementor, you must specify either Build or Code for a project type.\r\n" );
-            ch->print( "Syntax would be: PROJECT ADD [CODE/BUILD] [NAME]\r\n" );
+            ch->print( "As an administrator, you must specify the project's realm before creating it.\r\n" );
             return;
          }
-      }
 
-      switch ( ch->pcdata->realm )
-      {
-         case REALM_HEAD_CODER:
-            ptype = 1;
-            break;
-         default:
-         case REALM_HEAD_BUILDER:
-            ptype = 2;
-            break;
-         case REALM_IMP:
-            if( !str_cmp( arg, "code" ) )
-               ptype = 1;
-            else
-               ptype = 2;
+         realm = get_realm( arg );
+         if( !realm )
+         {
+            ch->printf( "%s is not a valid realm.\r\n", arg.c_str() );
+            return;
+         }
       }
 
       project_data *new_project = new project_data;
@@ -3767,11 +3771,11 @@ CMDF( do_project )
       new_project->coder = NULL;
       new_project->taken = false;
       new_project->description = NULL;
-      new_project->type = ptype;
+      new_project->realm_name = realm->name;
       new_project->date_stamp = current_time;
       projlist.push_back( new_project );
       write_projects(  );
-      ch->printf( "New %s Project '%s' added.\r\n", ( new_project->type == 1 ) ? "Code" : "Build", new_project->name );
+      ch->printf( "New %s Project '%s' added.\r\n", new_project->realm_name.c_str(), new_project->name );
       return;
    }
 
@@ -3793,7 +3797,7 @@ CMDF( do_project )
 
    if( !str_cmp( arg, "description" ) )
    {
-      if( ch->get_trust(  ) < LEVEL_GOD && !PROJ_ADMIN( pproject, ch ) )
+      if( !IS_PROJECT_ADMIN(ch, pproject) && str_cmp( ch->name, pproject->owner ) )
          ch->CHECK_SUBRESTRICTED(  );
       ch->tempnum = SUB_NONE;
       ch->substate = SUB_PROJ_DESC;
@@ -3807,11 +3811,12 @@ CMDF( do_project )
 
    if( !str_cmp( arg, "delete" ) )
    {
-      if( !PROJ_ADMIN( pproject, ch ) && ch->get_trust(  ) < LEVEL_ASCENDANT )
+      if( !IS_PROJECT_ADMIN(ch, pproject) )
       {
-         ch->print( "You are not high enough level to delete a project.\r\n" );
+         ch->print( "You do not have the authority to delete this project.\r\n" );
          return;
       }
+
       ch->printf( "Project '%s' has been deleted.\r\n", pproject->name );
       deleteptr( pproject );
       write_projects(  );
@@ -3828,12 +3833,12 @@ CMDF( do_project )
          write_projects(  );
          return;
       }
-      else if( pproject->taken && !PROJ_ADMIN( pproject, ch ) )
+      else if( pproject->taken && !IS_PROJECT_ADMIN(ch, pproject) )
       {
          ch->print( "This project is already taken.\r\n" );
          return;
       }
-      else if( pproject->taken && PROJ_ADMIN( pproject, ch ) )
+      else if( pproject->taken && IS_PROJECT_ADMIN(ch, pproject) )
          ch->printf( "Taking Project: '%s' from Owner: '%s'!\r\n", pproject->name, pproject->owner ? pproject->owner : "NULL" );
 
       STRFREE( pproject->owner );
@@ -3849,18 +3854,18 @@ CMDF( do_project )
       if( pproject->coder && !str_cmp( ch->name, pproject->coder ) )
       {
          STRFREE( pproject->coder );
-         ch->printf( "You removed yourself as the %s.\r\n", pproject->type == 1 ? "coder" : "builder" );
+         ch->printf( "You removed yourself as the %s.\r\n", arg.c_str() );
          write_projects(  );
          return;
       }
-      else if( pproject->coder && !PROJ_ADMIN( pproject, ch ) )
+      else if( pproject->coder && !IS_PROJECT_ADMIN(ch, pproject) )
       {
-         ch->printf( "This project already has a %s.\r\n", pproject->type == 1 ? "coder" : "builder" );
+         ch->printf( "This project already has a %s.\r\n", arg.c_str() );
          return;
       }
-      else if( pproject->coder && PROJ_ADMIN( pproject, ch ) )
+      else if( pproject->coder && IS_PROJECT_ADMIN(ch, pproject) )
       {
-         ch->printf( "Removing %s as %s of this project!\r\n", pproject->coder ? pproject->coder : "NULL", pproject->type == 1 ? "coder" : "builder" );
+         ch->printf( "Removing %s as %s of this project!\r\n", arg.c_str() );
          STRFREE( pproject->coder );
          ch->print( "Coder removed.\r\n" );
          write_projects(  );
@@ -3869,14 +3874,13 @@ CMDF( do_project )
 
       pproject->coder = QUICKLINK( ch->name );
       write_projects(  );
-      ch->printf( "You are now the %s of %s.\r\n", pproject->type == 1 ? "coder" : "builder", pproject->name );
+      ch->printf( "You are now the %s of %s.\r\n", arg.c_str(), pproject->name );
       return;
    }
 
    if( !str_cmp( arg, "status" ) )
    {
-      if( pproject->owner && str_cmp( pproject->owner, ch->name )
-          && ch->get_trust(  ) < LEVEL_GREATER && pproject->coder && str_cmp( pproject->coder, ch->name ) && !PROJ_ADMIN( pproject, ch ) )
+      if( pproject->owner && str_cmp( pproject->owner, ch->name ) && !IS_PROJECT_ADMIN(ch, pproject) )
       {
          ch->print( "This is not your project!\r\n" );
          return;
@@ -3930,7 +3934,7 @@ CMDF( do_project )
       if( !str_cmp( arg, "post" ) )
       {
          if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
-             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || ( ( ch->get_trust(  ) < LEVEL_GREATER ) && !PROJ_ADMIN( pproject, ch ) ) )
+             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
          {
             ch->print( "This is not your project!\r\n" );
             return;
@@ -3990,7 +3994,7 @@ CMDF( do_project )
          list < note_data * >::iterator ilog;
 
          if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
-             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || ( ( ch->get_trust(  ) < LEVEL_SAVIOR ) && !PROJ_ADMIN( pproject, ch ) ) )
+             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
          {
             ch->print( "This is not your project!\r\n" );
             return;
@@ -4031,7 +4035,7 @@ CMDF( do_project )
       if( !str_cmp( argument, "delete" ) )
       {
          if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
-             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || ( ( ch->get_trust(  ) < LEVEL_ASCENDANT ) && !PROJ_ADMIN( pproject, ch ) ) )
+             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
          {
             ch->print( "This is not your project!\r\n" );
             return;
@@ -4046,7 +4050,7 @@ CMDF( do_project )
       if( !str_cmp( argument, "read" ) )
       {
          if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
-             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || ( ( ch->get_trust(  ) < LEVEL_SAVIOR ) && !PROJ_ADMIN( pproject, ch ) ) )
+             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
          {
             ch->print( "This is not your project!\r\n" );
             return;

@@ -7,6 +7,7 @@ Race         iguanadon~
 Class        Cleric~
 Title         the Administrator~
 Rank         Administrator~
+Site         boralis.iguanadons.net
 Prompt       &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&c%X&wexp&z]&D ~
 FPrompt      &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&R%c&z] ~
 PCFlags      pager nstart flags sector aname passdoor checkboards autoexits blank automap holylight roomvnum ansi smartsac msp compass~
@@ -14,9 +15,9 @@ Channels     chat Bugs Log auction quest music shout wartalk yell newbiechat thi
 Speaks       common elvish dwarven pixie ogre orcish trollese rodent insectoid mammal reptile dragon spiritual magical goblin god ancient halfling clan gith minotaur centaur gnomish sahuagin~
 Status       115 1959394 320993749 68 124 101 -10
 Status2      2 451 -1000 0 0 0 2 0
-Configs      29 -1 -1 -1 -1 0 0 11406
+Configs      29 -1 -1 -1 -1 0 0 2939
 Motd         0 1080528906
-Age          1 21 10 770 1120741397
+Age          1 21 10 770 1120747901
 HpManaMove   30000 30000 30836 30836 30000 30000
 Regens       0 0 0
 Position     standing~
@@ -28,9 +29,10 @@ KillInfo     0 0 1 0 0
 AttrPerm     20 18 18 19 19 18 18
 AttrMod      0 0 0 0 0 0 0
 Condition    0 -1 -1
+ImmRealm     Owner~
 Bamfin       A large red moongate rises from the earth, $n steps forth from within!~
 Bamfout      A large red moongate rises from the earth, $n steps inside and vanishes!~
-ImmData      0 0 101 0 0 5
+ImmData      0 0 101 0 0
 Spell        100 'acetum primus'
 Spell        100 'acid blast'
 Spell        100 'acid breath'
@@ -488,6 +490,20 @@ Zone         The Great Void~
 Zone         The Radiant Tower~
 IMCPerm      5
 IMCFlag      imccolor
+End
+
+#OBJECT
+Version      22
+Ovnum        2894
+Ego          0
+WearLoc      16
+Level        1
+Oday         0
+Omonth       0
+Oyear        0
+Coords       -1 -1 -1
+Values       10 2 10 1 1 0 10 0 0 0 0
+Sockets      None None None
 End
 
 #END

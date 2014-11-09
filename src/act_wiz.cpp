@@ -4670,9 +4670,6 @@ CMDF( do_demote )
     * * than their actual level and to take wizinvis away from advance below 100
     */
    if( victim->has_pcflag( PCFLAG_WIZINVIS ) )
-      victim->pcdata->wizinvis = victim->level;
-
-   if( victim->has_pcflag( PCFLAG_WIZINVIS ) && ( victim->level <= LEVEL_AVATAR ) )
    {
       victim->unset_pcflag( PCFLAG_WIZINVIS );
       victim->pcdata->wizinvis = 0;
@@ -4691,7 +4688,8 @@ CMDF( do_demote )
       snprintf( buf2, 256, "%s.are", capitalize( die ) );
       victim->print( "You have been thrown from the heavens by the Gods!\r\nYou are no longer immortal!\r\n" );
       victim->unset_pcflag( PCFLAG_PASSDOOR );
-      victim->pcdata->realm = 0;
+      victim->pcdata->realm = NULL;
+      victim->pcdata->realm_name.clear();
    }
    funcf( ch, do_bestow, "%s none", victim->name );
    victim->save(  );

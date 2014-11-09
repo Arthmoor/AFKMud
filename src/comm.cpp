@@ -60,6 +60,7 @@ const int WAIT_ANY = -1;   /* This is not guaranteed to work! */
 #include "objindex.h"
 #include "pfiles.h"
 #include "raceclass.h"
+#include "realms.h"
 #include "roomindex.h"
 #include "shops.h"
 
@@ -142,7 +143,6 @@ void free_liquiddata(  );
 void free_mudchannels(  );
 void free_commands(  );
 void free_deities(  );
-void free_clans(  );
 void free_socials(  );
 void free_boards(  );
 void free_teleports(  );
@@ -173,7 +173,8 @@ void close_db(  );
 const char *directory_table[] = {
    AREA_CONVERT_DIR, PLAYER_DIR, GOD_DIR, BUILD_DIR, SYSTEM_DIR,
    PROG_DIR, CORPSE_DIR, CLASS_DIR, RACE_DIR, MOTD_DIR, HOTBOOT_DIR, AUC_DIR,
-   BOARD_DIR, COLOR_DIR, MAP_DIR, DEITY_DIR, WEB_DIR, SHOP_DIR, CLAN_DIR
+   BOARD_DIR, COLOR_DIR, MAP_DIR, DEITY_DIR, WEB_DIR, SHOP_DIR, CLAN_DIR,
+   REALM_DIR
 };
 
 void directory_check( void )
@@ -1158,6 +1159,10 @@ void cleanup_memory( void )
    // Clans 
    fprintf( stdout, "%s", "Clans.\n" );
    free_clans(  );
+
+   // Realms 
+   fprintf( stdout, "%s", "Realms.\n" );
+   free_realms(  );
 
    // Races 
    fprintf( stdout, "%s", "Races.\n" );

@@ -128,5 +128,6 @@ void save_clan( clan_data * );
 void save_clan_storeroom( char_data *, clan_data * );
 void delete_clan( char_data *, clan_data * );
 void verify_clans(  );
+void free_clans(  );
 clan_data *get_clan( const string & );
 #endif

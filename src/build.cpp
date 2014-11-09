@@ -35,6 +35,7 @@
 #include "objindex.h"
 #include "overland.h"
 #include "raceclass.h"
+#include "realms.h"
 #include "roomindex.h"
 #include "treasure.h"
 
@@ -1295,9 +1296,9 @@ CMDF( do_mset )
       ch->print( "For editing index/prototype mobiles:\r\n" );
       ch->print( "   |hitnumdie  |hitsizedie |hitplus (hit points)\r\n" );
       ch->print( "   |damnumdie  |damsizedie |damplus (damage roll)\r\n" );
-      if( ch->level >= LEVEL_ADMIN )
+      if( IS_ADMIN_REALM(ch) )
       {
-         ch->print( "To toggle pkill flag: pkill\r\n" );
+         ch->print( "\r\nTo toggle pkill flag: pkill\r\n" );
          ch->print( "------------------------------------------------------------\r\n" );
          ch->print( "   realm\r\n" );
       }
@@ -1812,28 +1813,70 @@ CMDF( do_mset )
 
    if( !str_cmp( arg2, "realm" ) )
    {
-      if( !ch->is_imp(  ) )
+      realm_data *realm;
+
+      if( !IS_ADMIN_REALM(ch) )
       {
          ch->print( "You can't do that.\r\n" );
          return;
       }
+
       if( victim->isnpc(  ) )
       {
          ch->print( "Not on NPC's.\r\n" );
          return;
       }
+
       if( !victim->is_immortal(  ) )
       {
          ch->print( "This can only be done for immortals.\r\n" );
          return;
       }
-      if( value < 0 || value > 5 )
+
+      if( arg3.empty(  ) )
       {
-         ch->print( "Valid range for realm is 0 - 5. See 'help realms'.\r\n" );
+         /*
+          * Crash bug fix, oops guess I should have caught this one :)
+          * * But it was early in the morning :P --Shaddai 
+          */
+         if( victim->pcdata->realm == NULL )
+            return;
+
+         remove_realm_roster( victim->pcdata->realm, victim->name );
+         --victim->pcdata->realm->members;
+         if( victim->pcdata->realm->members < 0 )
+            victim->pcdata->realm->members = 0;
+         save_realm( victim->pcdata->realm );
+
+         victim->pcdata->realm_name.clear(  );
+         victim->pcdata->realm = NULL;
+         victim->save(  );
+         build_wizinfo(  );
+         ch->print( "Realm removed.\r\n" );
          return;
       }
 
-      victim->pcdata->realm = value;
+      if( !( realm = get_realm( arg3 ) ) )
+      {
+         ch->print( "No such realm.\r\n" );
+         return;
+      }
+
+      if( victim->pcdata->realm != NULL )
+      {
+         remove_realm_roster( victim->pcdata->realm, victim->name );
+         --victim->pcdata->realm->members;
+         if( victim->pcdata->realm->members < 0 )
+            victim->pcdata->realm->members = 0;
+         save_realm( victim->pcdata->realm );
+      }
+      victim->pcdata->realm_name = realm->name;
+      victim->pcdata->realm = realm;
+
+      add_realm_roster( victim->pcdata->realm, victim->name );
+      ++victim->pcdata->realm->members;
+      save_realm( victim->pcdata->realm );
+
       victim->save(  );
       build_wizinfo(  );
       ch->print( "Realm set.\r\n" );
@@ -1849,6 +1892,7 @@ CMDF( do_mset )
          ch->print( "You can't do that.\r\n" );
          return;
       }
+
       if( victim->isnpc(  ) )
       {
          ch->print( "Not on NPC's.\r\n" );

@@ -85,14 +85,6 @@ const int LEVEL_AVATAR = ( MAX_LEVEL - 15 );
 
 const int LEVEL_LOG = LEVEL_LESSER;
 
-/* Realm Globals */
-/* --- Xorith -- */
-const int REALM_IMP = 5;
-const int REALM_HEAD_BUILDER = 4;
-const int REALM_HEAD_CODER = 3;
-const int REALM_CODE = 2;
-const int REALM_BUILD = 1;
-
 #ifdef MULTIPORT
 /* Port definitions for various commands - Samson 8-22-98 */
 /* Now only works if Multiport support is enabled at compile time - Samson 7-12-02 */

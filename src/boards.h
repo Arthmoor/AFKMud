@@ -123,14 +123,14 @@ class project_data
    ~project_data();
 
    list<note_data*> nlist; /* List of note logs for the project */
+   string realm_name; // Realm this project belongs to.
    char *name;
    char *owner;
    char *coder;
    char *status;
    char *description;
    time_t date_stamp;
-   short type; /* Type of Project -- XORITH */
-   bool taken; /* Has someone taken project?      */
+   bool taken;        // Has someone taken project?
 };
 
 class board_chardata

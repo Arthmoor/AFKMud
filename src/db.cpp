@@ -182,6 +182,7 @@ void load_mudchannels(  );
 void to_channel( const string &, const string &, int );
 void load_runes(  );
 void load_clans(  );
+void load_realms(  );
 void load_socials(  );
 void load_commands(  );
 void load_mssp_data( );
@@ -2087,6 +2088,7 @@ void boot_db( bool fCopyOver )
    fix_exits(  );
 
    load_clans(  );
+   load_realms( );
    load_deity(  );
 
    load_equipment_totals( fCopyOver ); /* Samson 10-16-98 - scans pfiles for rares */

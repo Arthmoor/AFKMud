@@ -80,6 +80,7 @@ class pc_data
    string bestowments;  // Special bestowed commands
    string chan_listen;  // For dynamic channels - Samson 3-2-02
    string clan_name; // Name of the clan/guild this person belongs to if any.
+   string realm_name; // Name of the immortal realm this person belongs to.
    string deity_name;   // Name of the deity this person worships.
    string lasthost;  // Stores host info so it doesn't have to depend on a descriptor, for things like finger.
    string homepage;  // The person's homepage in the big bad world out there.
@@ -87,6 +88,7 @@ class pc_data
    string authed_by; // The immortal who authorized this player's name.
    area_data *area;  /* For the area a PC has been assigned to build */
    struct clan_data *clan;
+   struct realm_data *realm;
    struct deity_data *deity;
    struct editor_data *editor;
    struct note_data *pnote;
@@ -147,7 +149,6 @@ class pc_data
    short colors[MAX_COLORS];  /* Custom color codes - Samson 9-28-98 */
    short beacon[MAX_BEACONS]; /* For beacon spell, recall points - Samson 2-7-99 */
    short charmies;   /* Number of Charmies */
-   short realm;   /* What immortal realm are they in? - Samson 6-6-99 */
    short cmd_recurse;
    short age_bonus;
    short age;

@@ -35,6 +35,7 @@
 #include "deity.h"
 #include "objindex.h"
 #include "pfiles.h"
+#include "realms.h"
 
 int num_quotes;   /* for quotes */
 #define QUOTE_FILE "quotes.dat"
@@ -557,6 +558,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
 {
    char *name = NULL;
    char *clan = NULL;
+   char *realm = NULL;
    char *deity = NULL;
    short level = 0;
    bitset < MAX_PCFLAG > pact;
@@ -603,6 +605,10 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
             }
             break;
 
+         case 'R':
+            KEY( "Realm", realm, fread_string( fp ) );
+            break;
+
          case 'S':
             if( !str_cmp( word, "Status" ) )
             {
@@ -640,6 +646,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
             }
             ++deleted;
             STRFREE( clan );
+            STRFREE( realm );
             STRFREE( deity );
             STRFREE( name );
             return;
@@ -664,6 +671,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
                }
                ++deleted;
                STRFREE( clan );
+               STRFREE( realm );
                STRFREE( deity );
                STRFREE( name );
                return;
@@ -683,6 +691,14 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
          ++guild->members;
    }
 
+   if( realm != NULL )
+   {
+      realm_data *rl = get_realm( realm );
+
+      if( rl )
+         ++rl->members;
+   }
+
    if( deity != NULL )
    {
       deity_data *god = get_deity( deity );
@@ -691,6 +707,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
          ++god->worshippers;
    }
    STRFREE( clan );
+   STRFREE( realm );
    STRFREE( deity );
    STRFREE( name );
 }
@@ -758,22 +775,42 @@ void pfile_scan( bool count )
     */
    list < clan_data * >::iterator cl;
    if( !count )
+   {
       for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
          clan_data *clan = *cl;
+
          clan->members = 0;
       }
+   }
+
+   /*
+    * Reset all realms to 0 members prior to scan - Samson 11-08-2014
+    */
+   list < realm_data * >::iterator rl;
+   if( !count )
+   {
+      for( rl = realmlist.begin(  ); rl != realmlist.end(  ); ++rl )
+      {
+         realm_data *realm = *rl;
+
+         realm->members = 0;
+      }
+   }
 
    /*
     * Reset all deities to 0 worshippers prior to scan - Samson 7-26-00 
     */
    list < deity_data * >::iterator ideity;
    if( !count )
+   {
       for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
       {
          deity_data *deity = *ideity;
+
          deity->worshippers = 0;
       }
+   }
 
    short cou = 0;
    for( short alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
@@ -829,12 +866,18 @@ void pfile_scan( bool count )
          clan_data *clan = *cl;
          save_clan( clan );
       }
+      for( rl = realmlist.begin(  ); rl != realmlist.end(  ); ++rl )
+      {
+         realm_data *realm = *rl;
+         save_realm( realm );
+      }
       for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
       {
          deity_data *deity = *ideity;
          save_deity( deity );
       }
       verify_clans(  );
+      verify_realms( );
       prune_sales(  );
    }
 }

@@ -39,6 +39,7 @@
 #include "mobindex.h"
 #include "objindex.h"
 #include "raceclass.h"
+#include "realms.h"
 #include "roomindex.h"
 
 extern FILE *fpArea;
@@ -314,12 +315,14 @@ void fwrite_char( char_data * ch, FILE * fp )
 
    if( ch->is_immortal(  ) )
    {
+      if( ch->pcdata->realm && !ch->pcdata->realm_name.empty() )
+         fprintf( fp, "ImmRealm     %s~\n", ch->pcdata->realm_name.c_str() );
       if( ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
          fprintf( fp, "Bamfin       %s~\n", ch->pcdata->bamfin );
       if( ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
          fprintf( fp, "Bamfout      %s~\n", ch->pcdata->bamfout );
-      fprintf( fp, "ImmData      %d %ld %d %d %d %d\n",
-               ch->trust, ch->pcdata->restore_time, ch->pcdata->wizinvis, ch->pcdata->low_vnum, ch->pcdata->hi_vnum, ch->pcdata->realm );
+      fprintf( fp, "ImmData      %d %ld %d %d %d\n",
+               ch->trust, ch->pcdata->restore_time, ch->pcdata->wizinvis, ch->pcdata->low_vnum, ch->pcdata->hi_vnum );
    }
 
    for( int sn = 1; sn < num_skills; ++sn )
@@ -788,7 +791,8 @@ void char_data::save(  )
          fprintf( fp, "Pcflags      %s~\n", bitset_string( pcdata->flags, pc_flags ) );
          if( !pcdata->homepage.empty(  ) )
             fprintf( fp, "Homepage     %s~\n", pcdata->homepage.c_str(  ) );
-         fprintf( fp, "Realm        %d\n", pcdata->realm );
+         if( pcdata->realm && !pcdata->realm_name.empty() )
+            fprintf( fp, "ImmRealm     %s~\n", pcdata->realm_name.c_str() );
          if( pcdata->low_vnum && pcdata->hi_vnum )
             fprintf( fp, "VnumRange    %d %d\n", pcdata->low_vnum, pcdata->hi_vnum );
          if( !pcdata->email.empty(  ) )
@@ -1230,16 +1234,16 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                line = fread_line( fp );
                time_t xx2 = 0;
-               x1 = x3 = x4 = x5 = x6 = 0;
-               sscanf( line, "%d %ld %d %d %d %d", &x1, &xx2, &x3, &x4, &x5, &x6 );
+               x1 = x3 = x4 = x5 = 0;
+               sscanf( line, "%d %ld %d %d %d", &x1, &xx2, &x3, &x4, &x5 );
                ch->trust = x1;
                ch->pcdata->restore_time = xx2;
                ch->pcdata->wizinvis = x3;
                ch->pcdata->low_vnum = x4;
                ch->pcdata->hi_vnum = x5;
-               ch->pcdata->realm = x6;
                break;
             }
+            STDSKEY( "ImmRealm", ch->pcdata->realm_name );
 
             if( !str_cmp( word, "Immune" ) )
             {
@@ -1677,13 +1681,20 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->clan_name.empty(  ) && !( ch->pcdata->clan = get_clan( ch->pcdata->clan_name ) ) )
                {
-                  ch->printf( "Warning: the organization %s no longer exists, and therefore you no longer\r\nbelong to that organization.\r\n",
+                  ch->printf( "Warning: The organization %s no longer exists, and therefore you no longer\r\nbelong to that organization.\r\n",
                               ch->pcdata->clan_name.c_str(  ) );
                   ch->pcdata->clan_name.clear(  );
                }
 
                if( ch->pcdata->clan )
                   update_roster( ch );
+
+               if( !ch->pcdata->realm_name.empty(  ) && !( ch->pcdata->realm = get_realm( ch->pcdata->realm_name ) ) )
+               {
+                  ch->printf( "Warning: The realm %s no longer exists, and therefore you no longer\r\nbelong to that realm.\r\n",
+                              ch->pcdata->realm_name.c_str(  ) );
+                  ch->pcdata->realm_name.clear(  );
+               }
 
                return;
             }

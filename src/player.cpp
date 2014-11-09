@@ -2097,11 +2097,12 @@ CMDF( do_score )
    {
       ch->printf( "\r\n%s--------------------------------------------------------------------------------\r\n", s5 );
 
-      ch->printf( "%sIMMORTAL DATA:  Wizinvis %s(%s%s%s)  %sLevel %s(%s%d%s)\r\n",
-                  s2, s1, s3, ch->has_pcflag( PCFLAG_WIZINVIS ) ? "X" : " ", s1, s2, s1, s3, ch->pcdata->wizinvis, s1 );
+      ch->printf( "%sIMMORTAL DATA: Wizinvis %s(%s%s%s) %sLevel %s(%s%d%s) %sRealm: %s(%s%s%s)\r\n",
+                  s2, s1, s3, ch->has_pcflag( PCFLAG_WIZINVIS ) ? "X" : " ", s1,
+                  s2, s1, s3, ch->pcdata->wizinvis, s1,
+                  s2, s1, s3, ch->pcdata->realm_name.c_str(), s1 );
 
       ch->printf( "%sBamfin:  %s%s\r\n", s2, s1, ( ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' ) ? ch->pcdata->bamfin : "appears in a swirling mist." );
-
       ch->printf( "%sBamfout: %s%s\r\n", s2, s1, ( ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' ) ? ch->pcdata->bamfout : "leaves in a swirling mist." );
 
       /*

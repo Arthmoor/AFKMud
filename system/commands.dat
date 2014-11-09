@@ -355,6 +355,14 @@ Flags       ghost
 End
 
 #COMMAND
+Name        busy
+Code        do_busy
+Position    dead
+Level       0
+Log         normal
+End
+
+#COMMAND
 Name        beacon
 Code        do_beacon
 Position    resting
@@ -2497,6 +2505,14 @@ Flags       ghost
 End
 
 #COMMAND
+Name        makerealm
+Code        do_makerealm
+Position    dead
+Level       113
+Log         normal
+End
+
+#COMMAND
 Name        north
 Code        do_north
 Position    standing
@@ -3255,6 +3271,22 @@ Flags       ghost
 End
 
 #COMMAND
+Name        realmroster
+Code        do_realmroster
+Position    dead
+Level       101
+Log         normal
+End
+
+#COMMAND
+Name        realms
+Code        do_realms
+Position    dead
+Level       101
+Log         normal
+End
+
+#COMMAND
 Name        south
 Code        do_south
 Position    standing
@@ -3948,6 +3980,22 @@ Name        setmssp
 Code        do_setmssp
 Position    dead
 Level       113
+Log         normal
+End
+
+#COMMAND
+Name        setrealm
+Code        do_setrealm
+Position    dead
+Level       101
+Log         normal
+End
+
+#COMMAND
+Name        showrealm
+Code        do_showrealm
+Position    dead
+Level       101
 Log         normal
 End
 
