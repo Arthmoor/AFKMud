@@ -63,7 +63,6 @@
 #ifdef IMC
 #include "imc.h"
 #endif
-#include "md5.h"
 #include "new_auth.h"
 #include "raceclass.h"
 #include "roomindex.h"
@@ -2371,49 +2370,10 @@ void display_motd( char_data * ch )
    char_to_game( ch );
 }
 
-char *md5_crypt( const char *pwd )
-{
-   md5_state_t state;
-   static md5_byte_t digest[17];
-   static char passwd[17];
-   unsigned int x;
-
-   md5_init( &state );
-   md5_append( &state, ( const md5_byte_t * )pwd, strlen( pwd ) );
-   md5_finish( &state, digest );
-
-   mudstrlcpy( passwd, ( const char * )digest, 16 );
-
-   /*
-    * The listed exceptions below will fubar the MD5 authentication packets, so change them 
-    */
-   for( x = 0; x < strlen( passwd ); ++x )
-   {
-      if( passwd[x] == '\n' )
-         passwd[x] = 'n';
-      if( passwd[x] == '\r' )
-         passwd[x] = 'r';
-      if( passwd[x] == '\t' )
-         passwd[x] = 't';
-      if( passwd[x] == ' ' )
-         passwd[x] = 's';
-      if( ( int )passwd[x] == 11 )
-         passwd[x] = 'x';
-      if( ( int )passwd[x] == 12 )
-         passwd[x] = 'X';
-      if( passwd[x] == '~' )
-         passwd[x] = '+';
-      if( passwd[x] == EOF )
-         passwd[x] = 'E';
-   }
-   return ( passwd );
-}
-
 CMDF( do_shatest )
 {
    ch->printf( "%s\r\n", argument.c_str(  ) );
    ch->printf( "%s\r\n", sha256_crypt( argument.c_str(  ) ) );
-   ch->printf( "%s\r\n", md5_crypt( argument.c_str(  ) ) );
 }
 
 /*
@@ -2675,20 +2635,7 @@ void descriptor_data::nanny( string & argument )
       case CON_GET_OLD_PASSWORD:
          write_to_buffer( "\r\n" );
 
-         if( ch->pcdata->version < 22 )
-         {
-            if( str_cmp( md5_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
-            {
-               write_to_buffer( "Wrong password, disconnecting.\r\n" );
-               /*
-                * clear descriptor pointer to get rid of bug message in log 
-                */
-               character->desc = NULL;
-               close_socket( this, false );
-               return;
-            }
-         }
-         else if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
+         if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
          {
             write_to_buffer( "Wrong password, disconnecting.\r\n" );
             /*

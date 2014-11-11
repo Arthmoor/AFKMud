@@ -135,10 +135,8 @@ const int BV31 = ( 1 << 31 );
 /*
  * String and memory management parameters.
  */
-const int MAX_KEY_HASH = 2048;
 const int MSL = 8192;   /* MAX_STRING_LENGTH */
 const int MIL = 2048;   /* MAX_INPUT_LENGTH */
-const int MAX_INBUF_SIZE = 4096;
 
 /*
  * Command logging types.

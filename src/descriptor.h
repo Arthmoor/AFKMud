@@ -31,6 +31,8 @@
 
 #include <zlib.h>
 
+const int MAX_INBUF_SIZE = 4096;
+
 const int TELOPT_COMPRESS2 = 86;
 const int COMPRESS_BUF_SIZE = MSL;
 
