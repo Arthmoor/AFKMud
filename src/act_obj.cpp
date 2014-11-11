@@ -700,6 +700,13 @@ CMDF( do_put )
          return;
       }
 
+      if( container->in_room && container->in_room->max_weight
+         && container->in_room->max_weight < obj->get_real_weight( ) / obj->count + container->in_room->weight )
+      {
+         ch->print( "It won't fit.\r\n" );
+         return;
+      }
+
       obj->separate(  );
       container->separate(  );
       obj->from_char(  );
@@ -729,6 +736,7 @@ CMDF( do_put )
          write_corpse( container, container->short_descr + 14 );
       if( save_char )
          ch->save(  );
+
       /*
        * Clan storeroom check 
        */
@@ -956,6 +964,13 @@ CMDF( do_drop )
          return;
       }
 
+      if( ch->in_room->max_weight > 0
+         && ch->in_room->max_weight < obj->get_real_weight( ) / obj->count + ch->in_room->weight )
+      {
+         ch->print( "There is not enough room on the ground for that.\r\n" );
+         return;
+      }
+
       obj->separate(  );
       act( AT_ACTION, "$n drops $t.", ch, aoran( obj->short_descr ), NULL, TO_ROOM );
       act( AT_ACTION, "You drop $t.", ch, aoran( obj->short_descr ), NULL, TO_CHAR );
@@ -1028,7 +1043,8 @@ CMDF( do_drop )
          obj = *iobj;
          ++iobj;
 
-         if( ( fAll || hasname( obj->name, chk ) ) && ch->can_see_obj( obj, false ) && obj->wear_loc == WEAR_NONE && ch->can_drop_obj( obj ) )
+         if( ( fAll || hasname( obj->name, chk ) ) && ch->can_see_obj( obj, false ) && obj->wear_loc == WEAR_NONE && ch->can_drop_obj( obj )
+            && ( !ch->in_room->max_weight || ch->in_room->max_weight > obj->get_real_weight( ) / obj->count + ch->in_room->weight ) )
          {
             found = true;
             if( HAS_PROG( obj->pIndexData, DROP_PROG ) && obj->count > 1 )
@@ -1044,6 +1060,7 @@ CMDF( do_drop )
                cnt += obj->count;
                obj->from_char(  );
             }
+
             /*
              * Edited by Whir for being too spammy (see above)- 1/29/98 
              */
@@ -1063,6 +1080,7 @@ CMDF( do_drop )
                   continue;
                }
             }
+
             oprog_drop_trigger( ch, obj );   /* mudprogs */
             if( ch->char_died(  ) )
                return;
