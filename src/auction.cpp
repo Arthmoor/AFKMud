@@ -31,6 +31,7 @@
 #include <sstream>
 #include <dirent.h>
 #include "mud.h"
+#include "area.h"
 #include "auction.h"
 #include "clans.h"
 #include "descriptor.h"
@@ -269,7 +270,7 @@ void read_aucvault( const char *dirname, const char *filename )
 
    if( !( aucmob = supermob->get_char_world( filename ) ) )
    {
-      bug( "Um. Missing mob for %s's auction vault.", filename );
+      bug( "%s: Um. Missing mob for %s's auction vault.", __func__, filename );
       return;
    }
 
@@ -573,7 +574,8 @@ void talk_auction( const char *fmt, ... )
       descriptor_data *d = *ds;
       char_data *original = d->original ? d->original : d->character;   /* if switched */
 
-      if( d->connected == CON_PLAYING && hasname( original->pcdata->chan_listen, "auction" ) && !original->in_room->flags.test( ROOM_SILENCE ) && original->level > 1 )
+      if( d->connected == CON_PLAYING && hasname( original->pcdata->chan_listen, "auction" )
+         && !original->in_room->flags.test( ROOM_SILENCE ) && !original->in_room->area->flags.test( AFLAG_SILENCE ) && original->level > 1 )
          act_printf( AT_AUCTION, original, NULL, NULL, TO_CHAR, "Auction: %s", buf );
    }
 }
@@ -773,7 +775,6 @@ void bid( char_data * ch, char_data * buyer, const string & argument )
          case ITEM_ARMOR:
          case ITEM_POTION:
          case ITEM_CLOTHING:
-         case ITEM_CONTAINER:
          case ITEM_DRINK_CON:
          case ITEM_KEY:
          case ITEM_FOOD:
@@ -1373,6 +1374,18 @@ void auction_sell( char_data * ch, char_data * auc, string & argument )
    if( obj->ego >= sysdata->minego || obj->ego == -1 )
    {
       ch->print( "Sorry, rare items cannot be sold here.\r\n" );
+      return;
+   }
+
+   if( obj->extra_flags.test( ITEM_CLANOBJECT ) )
+   {
+      ch->print( "You can't auction clan/guild items.\r\n" );
+      return;
+   }
+
+   if( obj->extra_flags.test( ITEM_PERMANENT ) )
+   {
+      ch->print( "This item cannot leave your possession.\r\n" );
       return;
    }
 

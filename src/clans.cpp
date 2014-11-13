@@ -85,6 +85,9 @@ void update_roster( char_data * ch )
 {
    list < roster_data * >::iterator mem;
 
+   if( ch->isnpc() || !ch->pcdata->clan )
+      return;
+
    for( mem = ch->pcdata->clan->memberlist.begin(  ); mem != ch->pcdata->clan->memberlist.end(  ); ++mem )
    {
       roster_data *member = *mem;
@@ -98,6 +101,7 @@ void update_roster( char_data * ch )
          return;
       }
    }
+
    /*
     * If we make it here, assume they haven't been added previously 
     */
@@ -1305,6 +1309,12 @@ CMDF( do_induct )
       return;
    }
 
+   if( !victim->IS_PKILL( ) && clan->clan_type != CLAN_GUILD )
+   {
+      ch->print( "You cannot induct a peaceful character.\r\n" );
+      return;
+   }
+
    if( victim->pcdata->clan )
    {
       if( victim->pcdata->clan->clan_type == CLAN_GUILD )
@@ -1324,11 +1334,13 @@ CMDF( do_induct )
          return;
       }
    }
+
    if( clan->mem_limit && clan->members >= clan->mem_limit )
    {
       ch->print( "Your clan is too big to induct anymore players.\r\n" );
       return;
    }
+
    ++clan->members;
    if( clan->clan_type != CLAN_GUILD )
       victim->set_lang( LANG_CLAN );
@@ -1482,11 +1494,14 @@ CMDF( do_outcast )
    victim->pcdata->clan_name.clear(  );
    act( AT_MAGIC, "You outcast $N from $t", ch, clan->name.c_str(  ), victim, TO_CHAR );
    act( AT_MAGIC, "$n outcasts $N from $t", ch, clan->name.c_str(  ), victim, TO_ROOM );
-   act( AT_MAGIC, "$n outcasts you from $t", ch, clan->name.c_str(  ), victim, TO_VICT );
+   if( victim->desc )
+      act( AT_MAGIC, "$n outcasts you from $t", ch, clan->name.c_str(  ), victim, TO_VICT );
+   else
+      add_loginmsg( victim->name, 6, NULL );
 
-   echo_all_printf( ECHOTAR_ALL, "&[guildtalk]%s has been outcast from %s!", victim->name, clan->name.c_str(  ) );
+   echo_all_printf( ECHOTAR_PK, "&[guildtalk]%s has been outcast from %s!", victim->name, clan->name.c_str(  ) );
    remove_roster( clan, victim->name );
-   victim->save(  ); /* clan gets saved when pfile is saved */
+   victim->save(  );
    save_clan( clan );
 }
 
@@ -2483,6 +2498,42 @@ CMDF( do_guilds )
    ch->printf( "\r\n&gDescription:\r\n%s\r\n", porder->clandesc.c_str(  ) );
 }
 
+CMDF( do_defeats )
+{
+   char filename[256];
+
+   if( ch->isnpc() || !ch->pcdata->clan )
+   {
+      ch->print( "Huh?\r\n" );
+      return;
+   }
+
+   if( ch->pcdata->clan->clan_type == CLAN_CLAN )
+   {
+      snprintf( filename, 256, "%s%s.defeats", CLAN_DIR, ch->pcdata->clan->name.c_str() );
+      ch->set_pager_color( AT_PURPLE );
+      if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
+      {
+         FILE *fp = fopen( filename, "w" );
+         if( fp )
+            FCLOSE( fp );
+         ch->print( "\r\nDefeats ledger has been cleared.\r\n" );
+         return;
+      }
+      else
+      {
+         ch->pager( "\r\nLVL  Character                LVL  Character\r\n" );
+         show_file( ch, filename );
+         return;
+      }
+   }
+   else
+   {
+      ch->print( "Huh?\r\n" );
+      return;
+   }
+}
+
 CMDF( do_victories )
 {
    char filename[256];
@@ -2493,7 +2544,7 @@ CMDF( do_victories )
       return;
    }
 
-   if( ch->pcdata->clan->clan_type != CLAN_GUILD )
+   if( ch->pcdata->clan->clan_type == CLAN_CLAN )
    {
       snprintf( filename, 256, "%s%s.record", CLAN_DIR, ch->pcdata->clan->name.c_str(  ) );
       if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
@@ -2604,6 +2655,7 @@ CMDF( do_shove )
    bool nogo;
    room_index *to_room;
    int schance = 0;
+   short temp;
 
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
@@ -2656,7 +2708,7 @@ CMDF( do_shove )
       ch->print( "That character cannot be shoved right now.\r\n" );
       return;
    }
-   victim->position = POS_SHOVE;
+
    nogo = false;
    if( !( pexit = ch->in_room->get_exit( exit_dir ) ) )
       nogo = true;
@@ -2670,21 +2722,19 @@ CMDF( do_shove )
    if( nogo )
    {
       ch->print( "There's no exit in that direction.\r\n" );
-      victim->position = POS_STANDING;
       return;
    }
+
    to_room = pexit->to_room;
    if( to_room->flags.test( ROOM_DEATH ) )
    {
       ch->print( "You cannot shove someone into a death trap.\r\n" );
-      victim->position = POS_STANDING;
       return;
    }
 
    if( ch->in_room->area != to_room->area && !victim->in_hard_range( to_room->area ) )
    {
       ch->print( "That character cannot enter that area.\r\n" );
-      victim->position = POS_STANDING;
       return;
    }
 
@@ -2723,15 +2773,19 @@ CMDF( do_shove )
    if( schance < number_percent(  ) )
    {
       ch->print( "You failed.\r\n" );
-      victim->position = POS_STANDING;
       return;
    }
+
+   temp = victim->position;
+   victim->position = POS_SHOVE;
+
    act( AT_ACTION, "You shove $M.", ch, NULL, victim, TO_CHAR );
    act( AT_ACTION, "$n shoves you.", ch, NULL, victim, TO_VICT );
    move_char( victim, ch->in_room->get_exit( exit_dir ), 0, exit_dir, false );
    if( !victim->char_died(  ) )
-      victim->position = POS_STANDING;
+      victim->position = temp;
    ch->WAIT_STATE( 12 );
+
    /*
     * Remove protection from shove/drag if char shoves -- Blodkai 
     */

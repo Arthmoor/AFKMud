@@ -270,6 +270,289 @@ void descriptor_data::init(  )
    mccp = new mccp_data;
 }
 
+const char *const login_msg[] = {
+/*0*/ "",
+/*1*/ "\r\n&GYou did not have enough money for the residence you bid on.\r\n"
+      "It has been readded to the auction and you've been penalized.\r\n",
+/*2*/ "\r\n&GThere was an error in looking up the seller for the residence\r\n"
+      "you had bid on. Residence removed and no interaction has taken place.\r\n",
+/*3*/ "\r\n&GThere was no bidder on your residence. Your residence has been\r\n"
+      "removed from auction and you have been penalized.\r\n",
+/*4*/ "\r\n&GYou have successfully received your new residence.\r\n",
+/*5*/ "\r\n&GYou have successfully sold your residence.\r\n",
+/*6*/ "\r\n&RYou have been outcast from your clan/guild.\r\n"
+      "Contact a leader of that organization if you have any questions.\r\n",
+/*7*/ "\r\n&RYou have been silenced. Contact an immortal if you wish to discuss your sentence.\r\n",
+/*8*/ "\r\n&RYou have lost your ability to set your title. Contact an immortal if you wish to discuss your sentence.\r\n",
+/*9*/ "\r\n&RYou have lost your ability to set your bio. Contact an immortal if you wish to discuss your sentence.\r\n",
+/*10*/ "\r\n&RYou have been sent to hell. You will be automatically released when your sentence is up.\r\n"
+      "Contact an immortal if you wish to discuss your sentence.\r\n",
+/*11*/ "\r\n&RYou have lost your ability to set your own description.\r\n"
+      "Contact an immortal if you wish to discuss your sentence.\r\n",
+/*12*/ "\r\n&RYou have lost your ability to set your homepage address.\r\n"
+      "Contact an immortal if you wish to discuss your sentence.\r\n",
+/*13*/ "\r\n&RYou have lost your ability to beep other players.\r\n"
+      "Contact an immortal if you wish to discuss your sentence.\r\n",
+/*14*/ "\r\n&RYou have lost your ability to send tells. Contact an immortal if you wish to discuss your sentence.\r\n",
+/*15*/ "\r\n&CYour character has been frozen. Contact an immortal if you wish to discuss your sentence.\r\n",
+/*16*/ "\r\n&RYou have lost your ability to emote. Contact an immortal if you wish to discuss your sentence.\r\n",
+/*17*/ "RESERVED FOR LINKDEAD DEATH MESSAGES",
+/*18*/ "RESERVED FOR CODE-SENT MESSAGES"
+};
+
+/* MAX_MSG = 18 - IF ADDING MESSAGE TYPES, ENSURE YOU BUMP THIS VALUE IN MUDCFG.H */
+
+lmsg_data::~lmsg_data(  )
+{
+   STRFREE( this->name );
+   STRFREE( this->text );
+}
+
+lmsg_data::lmsg_data(  )
+{
+   init_memory( &name, &type, sizeof( type ) );
+}
+
+list < lmsg_data *> login_messages;
+
+void fread_loginmsg( FILE * fp )
+{
+   lmsg_data *lmsg = NULL;
+
+   lmsg = new lmsg_data;
+
+   for( ;; )
+   {
+      const char *word = feof( fp ) ? "End" : fread_word( fp );
+
+      switch ( UPPER( word[0] ) )
+      {
+         default:
+            bug( "%s: no match: %s", __FUNCTION__, word );
+            fread_to_eol( fp );
+            break;
+
+         case '*':
+            fread_to_eol( fp );
+            break;
+
+         case 'E':
+            if( !str_cmp( word, "End" ) )
+            {
+               if( !lmsg->name || lmsg->name[0] == '\0' )
+               {
+                  bug( "%s: Login message with no name", __FUNCTION__ );
+                  deleteptr( lmsg );
+                  return;
+               }
+               else
+               {
+                  if( !exists_player( lmsg->name ) )
+                  {
+                     bug( "%s: Login message expired - %s no longer exists", __FUNCTION__, lmsg->name );
+
+                     deleteptr( lmsg );
+                     return;
+                  }
+               }
+
+               login_messages.push_back( lmsg );
+               return;
+            }
+            break;
+
+         case 'N':
+            KEY( "Name", lmsg->name, fread_string( fp ) );
+            break;
+
+         case 'T':
+            KEY( "Type", lmsg->type, fread_short( fp ) );
+            KEY( "Text", lmsg->text, fread_string( fp ) );
+            break;
+      }
+   }
+}
+
+/* load_loginmsg, check_loginmsg, fread_loginmsg, etc.. all support the do_message */
+/* command - hugely modified from the orginal housing module by Edmond June 02     */
+void load_loginmsg(  )
+{
+   FILE *fp;
+   char filename[256];
+
+   login_messages.clear();
+
+   snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
+   if( ( fp = fopen( filename, "r" ) ) == NULL )
+   {
+      bug( "%s: Cannot open login message file.", __func__ );
+      return;
+   }
+
+   for( ;; )
+   {
+      char letter;
+      const char *word;
+
+      letter = fread_letter( fp );
+
+      if( letter == '*' )
+      {
+         fread_to_eol( fp );
+         continue;
+      }
+
+      if( letter != '#' )
+      {
+         bug( "%s: # not found. ", __FUNCTION__ );
+         break;
+      }
+
+      word = fread_word( fp );
+
+      if( !str_cmp( word, "LOGINMSG" ) )
+      {
+         fread_loginmsg( fp );
+         continue;
+      }
+      else if( !str_cmp( word, "END" ) )
+         break;
+      else
+      {
+         bug( "%s: bad section: %s", __FUNCTION__, word );
+         continue;
+      }
+   }
+
+   FCLOSE( fp );
+}
+
+void save_loginmsg(  )
+{
+   FILE *fp;
+   char filename[256];
+   list < lmsg_data * >::iterator imsg;
+
+   snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
+   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   {
+      bug( "%s: Cannot open login message file.", __FUNCTION__ );
+      return;
+   }
+
+   for( imsg = login_messages.begin(  ); imsg != login_messages.end(  ); ++imsg )
+   {
+      lmsg_data *lmsg = *imsg;
+
+      fprintf( fp, "%s", "#LOGINMSG\n" );
+      fprintf( fp, "Name  %s~\n", lmsg->name );
+      if( lmsg->text )
+         fprintf( fp, "Text  %s~\n", lmsg->text );
+      fprintf( fp, "Type  %d\n", lmsg->type );
+      fprintf( fp, "%s", "End\n" );
+   }
+
+   fprintf( fp, "%s", "#END\n" );
+   FCLOSE( fp );
+}
+
+void add_loginmsg( const char *name, short type, const char *argument )
+{
+   lmsg_data *lmsg;
+
+   if( type < 0 || !name || name[0] == '\0' )
+   {
+      bug( "%s: bad name or type", __FUNCTION__ );
+      return;
+   }
+
+   lmsg = new lmsg_data;
+
+   lmsg->type = type;
+   lmsg->name = STRALLOC( name );
+   if( argument && argument[0] != '\0' )
+      lmsg->text = STRALLOC( argument );
+
+   login_messages.push_back( lmsg );
+   save_loginmsg(  );
+}
+
+void check_loginmsg( char_data * ch )
+{
+   list < lmsg_data * >::iterator imsg;
+
+
+   if( !ch || ch->isnpc() )
+      return;
+
+   for( imsg = login_messages.begin(  ); imsg != login_messages.end(  ); )
+   {
+      lmsg_data *lmsg = *imsg;
+      ++imsg;
+
+      if( !str_cmp( lmsg->name, ch->name ) )
+      {
+         if( lmsg->type > MAX_MSG )
+            bug( "%s: Error: Unknown login msg: %d for %s.", __FUNCTION__, lmsg->type, ch->name );
+
+         switch ( lmsg->type )
+         {
+            case 0: /* Imm sent message */
+            {
+               if( !lmsg->text || lmsg->text[0] == '\0' )
+               {
+                  bug( "%s: NULL loginmsg text for type 0", __FUNCTION__ );
+
+                  login_messages.remove( lmsg );
+                  deleteptr( lmsg );
+                  continue;
+               }
+               ch->printf( "\r\n&YThe game administrators have left you the following message:\r\n%s\r\n", lmsg->text );
+               break;
+            }
+
+            case 17:   /* Death message */
+            {
+               if( !lmsg->text || lmsg->text[0] == '\0' )
+               {
+                  bug( "%s: NULL loginmsg text for type 17", __FUNCTION__ );
+
+                  login_messages.remove( lmsg );
+                  deleteptr( lmsg );
+                  continue;
+               }
+               ch->printf( "\r\n&RYou were killed by %s while your character was link-dead.\r\n", lmsg->text );
+               ch->print( "You should look for your corpse immediately.\r\n" );
+               break;
+            }
+
+            case 18:   /* Code-sent message for 'World change' notice */
+            {
+               if( !lmsg->text || lmsg->text[0] == '\0' )
+               {
+                  bug( "%s: NULL loginmsg text for type 18", __FUNCTION__ );
+
+                  login_messages.remove( lmsg );
+                  deleteptr( lmsg );
+                  continue;
+               }
+               ch->printf( "\r\n&GA change in the Realms has affected you personally:\r\n%s\r\n", lmsg->text );
+               break;
+            }
+
+            default:
+               ch->print( login_msg[lmsg->type] );
+               break;
+         }
+
+         login_messages.remove( lmsg );
+         deleteptr( lmsg );
+
+         save_loginmsg(  );
+      }
+   }
+}
+
 /*Prompt, fprompt made to include exp and victim's condition, prettyfied too - Adjani, 12-07-2002*/
 char *default_fprompt( char_data * ch )
 {
@@ -845,6 +1128,9 @@ void descriptor_data::write_to_buffer( const string & txt )
       bug( "%s: NULL descriptor", __FUNCTION__ );
       return;
    }
+
+   if( MPSilent )
+      return;
 
    /*
     * Normally a bug... but can happen if loadup is used.
@@ -2139,6 +2425,7 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
             connected = CON_PLAYING;
             check_auth_state( ch ); /* Link dead support -- Rantic */
             show_status( ch );
+            check_loginmsg( ch );
          }
          return true;
       }
@@ -2199,6 +2486,8 @@ short descriptor_data::check_playing( const string & name, bool kick )
          connected = cstate;
          check_auth_state( ch ); /* Link dead support -- Rantic */
          show_status( ch );
+         check_loginmsg( ch );
+
          return true;
       }
    }
@@ -2309,6 +2598,9 @@ void char_to_game( char_data * ch )
       ch->desc->show_stats( ch );
       ch->desc->connected = CON_RAISE_STAT;
    }
+
+   check_loginmsg( ch );
+
    ch->save(  );  /* Just making sure their status is saved at least once after login, in case of crashes */
    ++num_logins;
 

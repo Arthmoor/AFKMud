@@ -475,6 +475,8 @@ void echo_to_all( const string & argument, short tar )
             continue;
          else if( tar == ECHOTAR_IMM && !d->character->is_immortal(  ) )
             continue;
+         else if( tar == ECHOTAR_PK && !d->character->IS_PKILL( ) )
+            continue;
 
          d->character->printf( "%s\r\n", argument.c_str(  ) );
       }
@@ -504,6 +506,8 @@ CMDF( do_echo )
    argument = one_argument( argument, arg );
    if( !str_cmp( arg, "PC" ) || !str_cmp( arg, "player" ) )
       target = ECHOTAR_PC;
+   else if( !str_cmp( arg, "pk" ) )
+      target = ECHOTAR_PK;
    else if( !str_cmp( arg, "imm" ) )
       target = ECHOTAR_IMM;
    else
@@ -1270,6 +1274,9 @@ CMDF( do_mstat )
 
       ch->printf( "|Death : &G%10d &w|Petri : &G%10d &w|Breath: &G%10d &w|Staves: &G%d&w\r\n",
                   victim->saving_poison_death, victim->saving_para_petri, victim->saving_breath, victim->saving_spell_staff );
+
+      ch->printf( "|Recent Host  : &G%s&w\r\n", !victim->pcdata->lasthost.empty() ? victim->pcdata->lasthost.c_str() : "Unknown" );
+      ch->printf( "|Previous Host: &G%s&w\r\n", !victim->pcdata->prevhost.empty() ? victim->pcdata->prevhost.c_str() : "Unknown" );
 
       if( victim->desc )
       {
@@ -3506,7 +3513,7 @@ room_index *select_random_room( bool pickmap )
 CMDF( do_scatter )
 {
    char_data *victim;
-   room_index *pRoomIndex, *from;
+   room_index *pRoomIndex;
    int schance;
 
    ch->set_color( AT_IMMORT );
@@ -3527,8 +3534,6 @@ CMDF( do_scatter )
    }
 
    schance = number_range( 1, 2 );
-
-   from = victim->in_room;
 
    if( schance == 1 || victim->is_immortal(  ) )
    {
@@ -3551,7 +3556,6 @@ CMDF( do_scatter )
       act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, NULL, victim, TO_VICT );
       act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, NULL, victim, TO_CHAR );
       enter_map( victim, NULL, x, y, map );
-      collect_followers( victim, from, victim->in_room );
       victim->position = POS_STANDING;
       act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, NULL, NULL, TO_ROOM );
    }
@@ -3559,7 +3563,7 @@ CMDF( do_scatter )
    {
       if( !( pRoomIndex = select_random_room( true ) ) )
       {
-         ch->print( "&[immortal]No room selected. Scatter command cancelled." );
+         ch->print( "&[immortal]No room selected. Scatter command cancelled.\r\n" );
          return;
       }
 
@@ -3680,6 +3684,9 @@ CMDF( do_strip )
 const int RESTORE_INTERVAL = 21600;
 CMDF( do_restore )
 {
+   deity_data *deity = NULL;
+   string arg;
+
    ch->set_color( AT_IMMORT );
 
    if( argument.empty(  ) )
@@ -3688,7 +3695,20 @@ CMDF( do_restore )
       return;
    }
 
-   if( !str_cmp( argument, "all" ) )
+   argument = one_argument( argument, arg );
+
+   // Restore-by-deity. -- Alty
+   if( !str_cmp( arg, "deity" ) )
+   {
+      argument = one_argument( argument, arg );
+      if( !( deity = get_deity( arg ) ) )
+      {
+         ch->print( "No such deity holds weight on this world.\r\n" );
+         return;
+      }
+   }
+
+   if( deity || !str_cmp( argument, "all" ) )
    {
       if( !ch->pcdata )
          return;
@@ -3725,6 +3745,9 @@ CMDF( do_restore )
 
          if( !vch->is_immortal(  ) && !vch->CAN_PKILL(  ) && !in_arena( vch ) )
          {
+            if( deity && vch->pcdata->deity != deity )
+               continue;
+
             vch->hit = vch->max_hit;
             vch->mana = vch->max_mana;
             vch->move = vch->max_move;
@@ -3749,11 +3772,18 @@ CMDF( do_restore )
          return;
       }
 
+      if( victim == ch )
+      {
+         ch->print( "Restore yourself? Don't be silly.\r\n" );
+         return;
+      }
+
       if( ch->get_trust(  ) < LEVEL_LESSER && victim != ch && !( victim->has_actflag( ACT_PROTOTYPE ) ) )
       {
          ch->print( "You can't do that.\r\n" );
          return;
       }
+
       victim->hit = victim->max_hit;
       victim->mana = victim->max_mana;
       victim->move = victim->max_move;
@@ -3767,8 +3797,7 @@ CMDF( do_restore )
          victim->mental_state = 0;
       }
       victim->update_pos(  );
-      if( ch != victim )
-         act( AT_IMMORT, "$n has restored you.", ch, NULL, victim, TO_VICT );
+      act( AT_IMMORT, "$n has restored you.", ch, NULL, victim, TO_VICT );
       ch->print( "Ok.\r\n" );
    }
 }
@@ -3835,7 +3864,10 @@ CMDF( do_freeze )
       if( victim->switched )
          do_return( victim->switched, "" );
       victim->set_pcflag( PCFLAG_FREEZE );
-      victim->print( "&CA godly force turns your body to ice!\r\n" );
+      if( !victim->desc )
+         add_loginmsg( victim->name, 15, NULL );
+      else
+         victim->print( "&CA godly force turns your body to ice!\r\n" );
       ch->printf( "&CYou have frozen %s.\r\n", victim->name );
    }
    victim->save(  );
@@ -3881,6 +3913,7 @@ CMDF( do_log )
       victim->set_pcflag( PCFLAG_LOG );
       ch->printf( "LOG applied to %s.\r\n", victim->name );
    }
+   victim->save( );
 }
 
 CMDF( do_litterbug )
@@ -3910,6 +3943,73 @@ CMDF( do_litterbug )
       victim->print( "A strange force prevents you from dropping any more items!\r\n" );
       ch->printf( "LITTERBUG set on %s.\r\n", victim->name );
    }
+   victim->save( );
+}
+
+CMDF( do_nobio )
+{
+   char_data *victim;
+
+   ch->set_color( AT_IMMORT );
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "Nobio whom?\r\n" );
+      return;
+   }
+
+   if( !( victim = get_wizvictim( ch, argument, true ) ) )
+      return;
+
+   if( victim->has_pcflag( PCFLAG_NOBIO ) )
+   {
+      victim->unset_pcflag( PCFLAG_NOBIO );
+      victim->print( "You can set a bio again.\r\n" );
+      ch->printf( "NOBIO removed from %s.\r\n", victim->name );
+   }
+   else
+   {
+      victim->set_pcflag( PCFLAG_NOBIO );
+      if( !victim->desc )
+         add_loginmsg( victim->name, 9, NULL );
+      else
+         victim->print( "You can't set a bio!\r\n" );
+      ch->printf( "NOBIO applied to %s.\r\n", victim->name );
+   }
+   victim->save( );
+}
+
+CMDF( do_nodesc )
+{
+   char_data *victim;
+
+   ch->set_color( AT_IMMORT );
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "Nodesc whom?\r\n" );
+      return;
+   }
+
+   if( !( victim = get_wizvictim( ch, argument, true ) ) )
+      return;
+
+   if( victim->has_pcflag( PCFLAG_NODESC ) )
+   {
+      victim->unset_pcflag( PCFLAG_NODESC );
+      victim->print( "You can set a description again.\r\n" );
+      ch->printf( "NODESC removed from %s.\r\n", victim->name );
+   }
+   else
+   {
+      victim->set_pcflag( PCFLAG_NODESC );
+      if( !victim->desc )
+         add_loginmsg( victim->name, 11, NULL );
+      else
+         victim->print( "You can't set a description!\r\n" );
+      ch->printf( "NODESC applied to %s.\r\n", victim->name );
+   }
+   victim->save( );
 }
 
 CMDF( do_noemote )
@@ -3936,9 +4036,13 @@ CMDF( do_noemote )
    else
    {
       victim->set_pcflag( PCFLAG_NO_EMOTE );
-      victim->print( "You can't emote!\r\n" );
+      if ( !victim->desc )
+         add_loginmsg( victim->name, 16, NULL );
+      else
+         victim->print( "You can't emote!\r\n" );
       ch->printf( "NOEMOTE applied to %s.\r\n", victim->name );
    }
+   victim->save( );
 }
 
 CMDF( do_notell )
@@ -3965,9 +4069,13 @@ CMDF( do_notell )
    else
    {
       victim->set_pcflag( PCFLAG_NO_TELL );
-      victim->print( "You can't send tells!\r\n" );
+      if( !victim->desc )
+         add_loginmsg( victim->name, 14, NULL );
+      else
+         victim->print( "You can't send tells!\r\n" );
       ch->printf( "NOTELL applied to %s.\r\n", victim->name );
    }
+   victim->save( );
 }
 
 CMDF( do_notitle )
@@ -3997,9 +4105,13 @@ CMDF( do_notitle )
       victim->set_pcflag( PCFLAG_NOTITLE );
       snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex] );
       victim->set_title( buf );
-      victim->print( "You can't set your own title!\r\n" );
+      if( !victim->desc )
+         add_loginmsg( victim->name, 8, NULL );
+      else
+         victim->print( "You can't set your own title!\r\n" );
       ch->printf( "NOTITLE set on %s.\r\n", victim->name );
    }
+   victim->save( );
 }
 
 CMDF( do_nourl )
@@ -4027,9 +4139,13 @@ CMDF( do_nourl )
    {
       victim->set_pcflag( PCFLAG_NO_URL );
       victim->pcdata->homepage.clear();
-      victim->print( "You can't set a homepage!\r\n" );
+      if( !victim->desc )
+         add_loginmsg( victim->name, 12, NULL );
+      else
+         victim->print( "You can't set a homepage!\r\n" );
       ch->printf( "NOURL applied to %s.\r\n", victim->name );
    }
+   victim->save( );
 }
 
 CMDF( do_noemail )
@@ -4060,6 +4176,7 @@ CMDF( do_noemail )
       victim->print( "You can't set an email address!\r\n" );
       ch->printf( "NOEMAIL applied to %s.\r\n", victim->name );
    }
+   victim->save( );
 }
 
 CMDF( do_silence )
@@ -4086,9 +4203,13 @@ CMDF( do_silence )
    else
    {
       victim->set_pcflag( PCFLAG_SILENCE );
-      victim->print( "You can't use channels!\r\n" );
+      if( !victim->desc )
+         add_loginmsg( victim->name, 7, NULL );
+      else
+         victim->print( "You can't use channels!\r\n" );
       ch->printf( "You SILENCE %s.\r\n", victim->name );
    }
+   victim->save( );
 }
 
 CMDF( do_peace )
@@ -5281,7 +5402,10 @@ CMDF( do_hell )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
    act( AT_MAGIC, "$n appears in a could of hellish light.", victim, NULL, ch, TO_NOTVICT );
    interpret( victim, "look" );
-   victim->printf( "The immortals are not pleased with your actions.\r\n"
+   if( !victim->desc )
+      add_loginmsg( victim->name, 10, NULL );
+   else
+      victim->printf( "The immortals are not pleased with your actions.\r\n"
                    "You shall remain in hell for %d %s%s.\r\n", htime, ( h_d ? "hour" : "day" ), ( htime == 1 ? "" : "s" ) );
    victim->save(  ); /* used to save ch, fixed by Thoric 09/17/96 */
 }
@@ -6432,6 +6556,7 @@ void load_classes(  )
          ++MAX_PC_CLASS;
    }
    FCLOSE( fpList );
+
    for( int i = 0; i < MAX_CLASS; ++i )
    {
       if( !class_table[i] )
@@ -6456,6 +6581,7 @@ void write_class_file( int cl )
       bug( "%s: Cannot open: %s for writing", __FUNCTION__, filename );
       return;
    }
+
    fprintf( fpout, "Version     %d\n", CLASSFILEVER );
    fprintf( fpout, "Name        %s~\n", Class->who_name );
    fprintf( fpout, "Class       %d\n", cl );
@@ -6480,6 +6606,7 @@ void write_class_file( int cl )
       fprintf( fpout, "Resist      %s~\n", bitset_string( Class->resist, ris_flags ) );
    if( Class->suscept.any(  ) )
       fprintf( fpout, "Suscept     %s~\n", bitset_string( Class->suscept, ris_flags ) );
+
    for( int x = 0; x < num_skills; ++x )
    {
       int y;
@@ -6489,6 +6616,7 @@ void write_class_file( int cl )
       if( ( y = skill_table[x]->skill_level[cl] ) < LEVEL_IMMORTAL )
          fprintf( fpout, "Skill '%s' %d %d\n", skill_table[x]->name, y, skill_table[x]->skill_adept[cl] );
    }
+
    for( int x = 0; x <= MAX_LEVEL; ++x )
       fprintf( fpout, "Title\n%s~\n%s~\n%s~\n%s~\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
 
@@ -8232,4 +8360,102 @@ CMDF( do_forgefind )
    }
    if( !found )
       ch->print( "You didn't find any forges.\r\n" );
+}
+
+/* Send login messages to characters - big modification to the original */
+/* login message stuff from the housing module - Edmond - June 02       */
+extern list < lmsg_data *> login_messages;
+CMDF( do_message )
+{
+   string name, arg1, arg2;
+   char checkname[256];
+   short type = 0;
+
+   if( argument[0] == '\0' )
+   {
+      ch->print( "Leave a login message for who?\r\n" );
+      return;
+   }
+
+   argument = one_argument( argument, name );
+   argument = one_argument( argument, arg1 );
+   argument = one_argument( argument, arg2 );
+
+   if( !str_cmp( name, "list" ) && ch->get_trust( ) >= LEVEL_GREATER )
+   {
+      list < lmsg_data * >::iterator imsg;
+
+      for( imsg = login_messages.begin(  ); imsg != login_messages.end(  ); ++imsg )
+      {
+         lmsg_data *lmsg = *imsg;
+
+         ch->printf( "&CName: &c%-20s &CType: &c%d\r\n", capitalize(lmsg->name), lmsg->type );
+
+         if( lmsg->text )
+            ch->printf( "&CText:\r\n  &c%s\r\n", lmsg->text );
+
+         ch->print( "\r\n" );
+      }
+      ch->print( "Ok.\r\n" );
+      return;
+   }
+
+   snprintf( checkname, 256, "%s%c/%s", PLAYER_DIR, tolower(name[0]), capitalize( name ).c_str() );
+
+   if( exists_player( name ) )
+   {
+      list < char_data * >::iterator ich;
+
+      for( ich = pclist.begin(  ); ich != pclist.end(  ); )
+      {
+         char_data *temp = *ich;
+         ++ich;
+
+         if( !str_cmp( name, temp->name ) && temp->desc )
+         {
+            ch->print( "They are online, wouldn't tells be just as easy?\r\n" );
+            return;
+         }
+      }
+
+      if( !str_cmp( arg1, "type" ) )
+      {
+         if( is_number( arg2 ) )
+         {
+            type = atoi( arg2.c_str() );
+
+            if( type > MAX_MSG )
+            {
+               ch->print( "Invalid login message.\r\n" );
+               return;
+            }
+            argument.clear();
+         }
+         else
+         {
+            ch->print( "Which type?\r\n" );
+            return;
+         }
+      }
+
+      if( !type && argument.empty() )
+      {
+         ch->print( "Send them what message?\r\n" );
+         return;
+      }
+
+      add_loginmsg( name.c_str(), type, argument.c_str() );
+      ch->printf( "You have sent %s the following message:\r\n", capitalize(name).c_str() );
+
+      if( type == 0 )
+         ch->print( argument );
+      else
+         ch->print( login_msg[type] );
+      ch->print( "\r\n" );
+   }
+   else
+   {
+      ch->print( "That player does not exist.\r\n" );
+      return;
+   }
 }

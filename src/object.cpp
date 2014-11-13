@@ -26,6 +26,7 @@
  *                           Object Support Functions                       *
  ****************************************************************************/
 
+#include <limits.h>
 #include "mud.h"
 #include "mobindex.h"
 #include "mud_prog.h"
@@ -339,7 +340,7 @@ const string obj_data::format_to_char( char_data * ch, bool fShort, int num )
    bool glowsee = false;
 
    /*
-    * can see glowing invis items in the dark 
+    * can see glowing invis items in the dark
     */
    if( extra_flags.test( ITEM_GLOW ) && extra_flags.test( ITEM_INVIS ) && !ch->has_aflag( AFF_TRUESIGHT ) && !ch->has_aflag( AFF_DETECT_INVIS ) )
       glowsee = true;
@@ -659,6 +660,11 @@ void show_list_to_char( char_data * ch, list < obj_data * >source, bool fShort, 
                ch->set_color( AT_BLOOD );
                break;
 
+            case ITEM_CORPSE_PC:
+            case ITEM_CORPSE_NPC:
+               ch->set_color( AT_ORANGE );
+               break;
+
             case ITEM_MONEY:
             case ITEM_TREASURE:
                ch->set_color( AT_YELLOW );
@@ -671,6 +677,7 @@ void show_list_to_char( char_data * ch, list < obj_data * >source, bool fShort, 
 
             case ITEM_DRINK_CON:
             case ITEM_FOUNTAIN:
+            case ITEM_PUDDLE:
                ch->set_color( AT_THIRSTY );
                break;
 
@@ -944,6 +951,7 @@ void obj_data::from_room(  )
    if( item_type == ITEM_FIRE )
       in_room->light -= count;
 
+   in_room->weight -= this->get_weight( );
    carried_by = NULL;
    in_obj = NULL;
    in_room = NULL;
@@ -972,6 +980,8 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
       pRoomIndex->room_affect( af, true );
    }
 
+   pRoomIndex->weight += this->get_weight( );
+
    list < obj_data * >::iterator iobj;
    for( iobj = pRoomIndex->objects.begin(  ); iobj != pRoomIndex->objects.end(  ); ++iobj )
    {
@@ -983,8 +993,10 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
          return oret;
       }
    }
+
    // Want to see if pushing to the front of the list instead helps with stuff like sacing corpses.
    pRoomIndex->objects.push_front( this );
+
    in_room = pRoomIndex;
    carried_by = NULL;
    in_obj = NULL;
@@ -1036,6 +1048,9 @@ obj_data *obj_data::to_obj( obj_data * obj_to )
    if( !obj_to->in_magic_container(  ) && ( who = obj_to->who_carrying(  ) ) != NULL )
       who->carry_weight += get_weight(  );
 
+   if( obj_to->in_room )
+      obj_to->in_room->weight += this->get_weight( );
+
    list < obj_data * >::iterator iobj;
    for( iobj = obj_to->contents.begin(  ); iobj != obj_to->contents.end(  ); ++iobj )
    {
@@ -1079,6 +1094,8 @@ void obj_data::from_obj(  )
    in_obj = NULL;
    in_room = NULL;
    carried_by = NULL;
+   if( obj_from->in_room )
+      obj_from->in_room->weight -= this->get_weight( );
 
    /*
     * This will hopefully cover all objs coming from containers going to the maps - Samson 8-22-99 
@@ -1090,6 +1107,7 @@ void obj_data::from_obj(  )
       mx = obj_from->mx;
       my = obj_from->my;
    }
+
    if( !magic )
       for( ; obj_from; obj_from = obj_from->in_obj )
          if( obj_from->carried_by )
@@ -1303,7 +1321,43 @@ obj_data *group_obj( obj_data * obj, obj_data * obj2 )
    if( obj->pIndexData->vnum == OBJ_VNUM_TREASURE || obj2->pIndexData->vnum == OBJ_VNUM_TREASURE )
       return obj2;
 
-   if( obj->pIndexData == obj2->pIndexData && !str_cmp( obj->name, obj2->name ) && !str_cmp( obj->short_descr, obj2->short_descr ) && !str_cmp( obj->objdesc, obj2->objdesc ) && ( obj->action_desc && obj2->action_desc && !str_cmp( obj->action_desc, obj2->action_desc ) ) && !str_cmp( obj->socket[0], obj2->socket[0] ) && !str_cmp( obj->socket[1], obj2->socket[1] ) && !str_cmp( obj->socket[2], obj2->socket[2] ) && obj->item_type == obj2->item_type && obj->extra_flags == obj2->extra_flags && obj->wear_flags == obj2->wear_flags && obj->wear_loc == obj2->wear_loc && obj->weight == obj2->weight && obj->cost == obj2->cost && obj->level == obj2->level && obj->timer == obj2->timer && obj->value[0] == obj2->value[0] && obj->value[1] == obj2->value[1] && obj->value[2] == obj2->value[2] && obj->value[3] == obj2->value[3] && obj->value[4] == obj2->value[4] && obj->value[5] == obj2->value[5] && obj->value[6] == obj2->value[6] && obj->value[7] == obj2->value[7] && obj->value[8] == obj2->value[8] && obj->value[9] == obj2->value[9] && obj->value[10] == obj2->value[10] && obj->extradesc.empty(  ) && obj2->extradesc.empty(  ) && obj->affects.empty(  ) && obj2->affects.empty(  ) && obj->contents.empty(  ) && obj2->contents.empty(  ) && obj->count + obj2->count > 0 && obj->cmap == obj2->cmap && obj->mx == obj2->mx && obj->my == obj2->my && !str_cmp( obj->seller, obj2->seller ) && !str_cmp( obj->buyer, obj2->buyer ) && obj->bid == obj2->bid )   /* prevent count overflow */
+   if( obj->pIndexData == obj2->pIndexData
+    && !str_cmp( obj->name, obj2->name )
+    && !str_cmp( obj->short_descr, obj2->short_descr )
+    && !str_cmp( obj->objdesc, obj2->objdesc )
+    && ( obj->action_desc && obj2->action_desc && !str_cmp( obj->action_desc, obj2->action_desc ) )
+    && !str_cmp( obj->socket[0], obj2->socket[0] )
+    && !str_cmp( obj->socket[1], obj2->socket[1] )
+    && !str_cmp( obj->socket[2], obj2->socket[2] )
+    && obj->item_type == obj2->item_type
+    && obj->extra_flags == obj2->extra_flags
+    && obj->wear_flags == obj2->wear_flags
+    && obj->wear_loc == obj2->wear_loc
+    && obj->weight == obj2->weight
+    && obj->cost == obj2->cost
+    && obj->level == obj2->level
+    && obj->timer == obj2->timer
+    && obj->value[0] == obj2->value[0]
+    && obj->value[1] == obj2->value[1]
+    && obj->value[2] == obj2->value[2]
+    && obj->value[3] == obj2->value[3]
+    && obj->value[4] == obj2->value[4]
+    && obj->value[5] == obj2->value[5]
+    && obj->value[6] == obj2->value[6]
+    && obj->value[7] == obj2->value[7]
+    && obj->value[8] == obj2->value[8]
+    && obj->value[9] == obj2->value[9]
+    && obj->value[10] == obj2->value[10]
+    && obj->extradesc.empty(  ) && obj2->extradesc.empty(  )
+    && obj->affects.empty(  ) && obj2->affects.empty(  )
+    && obj->contents.empty(  ) && obj2->contents.empty(  )
+    && obj->cmap == obj2->cmap
+    && obj->mx == obj2->mx
+    && obj->my == obj2->my
+    && !str_cmp( obj->seller, obj2->seller )
+    && !str_cmp( obj->buyer, obj2->buyer )
+    && obj->bid == obj2->bid
+    && obj->count + obj2->count <= SHRT_MAX )   /* prevent count overflow */
    {
       obj->count += obj2->count;
       obj->pIndexData->count += obj2->count; /* to be decremented in */
@@ -1391,8 +1445,8 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
          if( destobj->item_type == ITEM_QUIVER && otmp->item_type != ITEM_PROJECTILE )
             continue;
          if( ( destobj->item_type == ITEM_CONTAINER || destobj->item_type == ITEM_KEYRING || destobj->item_type == ITEM_QUIVER )
-            && ( otmp->get_real_weight( ) + destobj->get_real_weight( ) > destobj->value[0]
-            || ( destobj->in_room && destobj->in_room->max_weight && destobj->in_room->max_weight < otmp->get_real_weight( ) + destobj->in_room->weight ) ) )
+             && ( otmp->get_real_weight( ) + destobj->get_real_weight( ) > destobj->value[0]
+                  || ( destobj->in_room && destobj->in_room->max_weight && destobj->in_room->max_weight < otmp->get_real_weight( ) + destobj->in_room->weight ) ) )
             continue;
          otmp->from_obj(  );
          otmp->to_obj( destobj );

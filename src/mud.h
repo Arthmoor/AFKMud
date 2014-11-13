@@ -45,7 +45,7 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.1.7"
+#define CODEVERSION "2.2.0"
 #define COPYRIGHT "Copyright The Alsherok Team 1997-2015. All rights reserved."
 
 const int LGST = 4096;  /* Large String */
@@ -159,7 +159,7 @@ enum ret_types
 /* Echo types for echo_to_all */
 enum echo_types
 {
-   ECHOTAR_ALL, ECHOTAR_PC, ECHOTAR_IMM
+   ECHOTAR_ALL, ECHOTAR_PC, ECHOTAR_PK, ECHOTAR_IMM
 };
 
 /* Global Skill Numbers */
@@ -225,6 +225,8 @@ extern short gsn_kick;
 extern short gsn_parry;
 extern short gsn_rescue;
 extern short gsn_dual_wield;
+extern short gsn_grapple;
+extern short gsn_cleave;
 
 extern short gsn_aid;
 
@@ -399,7 +401,7 @@ enum char_substates
    SUB_PROJ_DESC, SUB_SLAYCMSG, SUB_SLAYVMSG, SUB_SLAYRMSG, SUB_EDMOTD,
    SUB_ROOM_DESC_NITE, SUB_OVERLAND_DESC, SUB_BOARD_TO, SUB_BOARD_SUBJECT,
    SUB_BOARD_STICKY, SUB_BOARD_TEXT, SUB_BOARD_CONFIRM, SUB_BOARD_REDO_MENU,
-   SUB_EDIT_ABORT,
+   SUB_JOURNAL_WRITE, SUB_EDIT_ABORT,
    /*
     * timer types ONLY below this point 
     */
@@ -539,18 +541,18 @@ enum combat_styles
 enum pc_flags
 {
    PCFLAG_NONE, PCFLAG_DEADLY, PCFLAG_UNAUTHED, PCFLAG_NORECALL, PCFLAG_NOINTRO, PCFLAG_GAG,
-   PCFLAG_RETIRED, PCFLAG_unused1, PCFLAG_NOSUMMON, PCFLAG_PAGERON, PCFLAG_NOTITLE,
-   PCFLAG_GROUPWHO, PCFLAG_unused2, PCFLAG_HELPSTART,
+   PCFLAG_NOBIO, PCFLAG_NODESC, PCFLAG_NOSUMMON, PCFLAG_PAGERON, PCFLAG_NOTITLE,
+   PCFLAG_GROUPWHO, PCFLAG_GROUPSPLIT, PCFLAG_HELPSTART,
    PCFLAG_AUTOFLAGS, PCFLAG_SECTORD, PCFLAG_ANAME, PCFLAG_NOBEEP, PCFLAG_PASSDOOR,
    PCFLAG_PRIVACY, PCFLAG_NOTELL, PCFLAG_CHECKBOARD, PCFLAG_NOQUOTE,
-   PCFLAG_unused3, PCFLAG_SHOVEDRAG, PCFLAG_AUTOEXIT, PCFLAG_AUTOLOOT,
+   PCFLAG_AUTOASSIST, PCFLAG_SHOVEDRAG, PCFLAG_AUTOEXIT, PCFLAG_AUTOLOOT,
    PCFLAG_AUTOSAC, PCFLAG_BLANK, PCFLAG_BRIEF, PCFLAG_AUTOMAP,
    PCFLAG_TELNET_GA, PCFLAG_HOLYLIGHT, PCFLAG_WIZINVIS, PCFLAG_ROOMVNUM, PCFLAG_SILENCE,
    PCFLAG_NO_EMOTE, PCFLAG_BOARDED, PCFLAG_NO_TELL, PCFLAG_LOG, PCFLAG_DENY, PCFLAG_FREEZE,
-   PCFLAG_EXEMPT, PCFLAG_ONSHIP, PCFLAG_LITTERBUG, PCFLAG_ANSI, PCFLAG_unused4, PCFLAG_AUTOGOLD,
-   PCFLAG_GHOST, PCFLAG_AFK, PCFLAG_unused5, PCFLAG_unused6, PCFLAG_AUTOASSIST, PCFLAG_SMARTSAC,
-   PCFLAG_IDLING, PCFLAG_ONMAP, PCFLAG_MAPEDIT, PCFLAG_GUILDSPLIT, PCFLAG_GROUPSPLIT,
-   PCFLAG_MSP, PCFLAG_COMPASS, PCFLAG_NO_URL, PCFLAG_NO_EMAIL, MAX_PCFLAG
+   PCFLAG_EXEMPT, PCFLAG_ONSHIP, PCFLAG_LITTERBUG, PCFLAG_ANSI, PCFLAG_MSP, PCFLAG_AUTOGOLD,
+   PCFLAG_GHOST, PCFLAG_AFK, PCFLAG_NO_URL, PCFLAG_NO_EMAIL, PCFLAG_SMARTSAC,
+   PCFLAG_IDLING, PCFLAG_ONMAP, PCFLAG_MAPEDIT, PCFLAG_GUILDSPLIT, PCFLAG_COMPASS,
+   PCFLAG_RETIRED, MAX_PCFLAG
 };
 
 /*
@@ -607,6 +609,7 @@ enum pc_flags
 #define MOTD_FILE       MOTD_DIR "motd.dat"
 #define IMOTD_FILE      MOTD_DIR "imotd.dat"
 #define SPEC_MOTD       MOTD_DIR "specmotd.dat" /* Special MOTD - cannot be ignored on login */
+#define LOGIN_MSG       "login.msg"               /* List of login msgs      */
 
 // This damn thing is used in so many places it was about time to just move it here - Samson 10-4-03
 #define KEY( literal, field, value ) \
@@ -811,6 +814,22 @@ enum damage_types
    DAM_PIERCE, DAM_THRUST, DAM_MAX_TYPE
 };
 
+// Login Messages
+struct lmsg_data
+{
+ private:
+   lmsg_data( const lmsg_data & p );
+     lmsg_data & operator=( const lmsg_data & );
+
+ public:
+     lmsg_data(  );
+    ~lmsg_data(  );
+
+   char *name;
+   char *text;
+   short type;
+};
+
 /*
  * Used to keep track of system settings and statistics - Thoric
  */
@@ -948,7 +967,7 @@ enum skill_spell_flags
    SF_REVERSE, SF_NOSELF, SF_NOCHARGE, SF_ACCUMULATIVE, SF_RECASTABLE,
    SF_NOSCRIBE, SF_NOBREW, SF_GROUPSPELL, SF_OBJECT, SF_CHARACTER,
    SF_SECRETSKILL, SF_PKSENSITIVE, SF_STOPONFAIL, SF_NOFIGHT,
-   SF_NODISPEL, SF_RANDOMTARGET, SF_NOMOUNT, MAX_SF_FLAG
+   SF_NODISPEL, SF_RANDOMTARGET, SF_NOMOUNT, SF_NOMOB, MAX_SF_FLAG
 };
 
 /*
@@ -1075,6 +1094,7 @@ extern const char *preciptemp_msg[6][6];
 extern const char *windtemp_msg[6][6];
 extern const char *precip_msg[];
 extern const char *wind_msg[];
+extern const char *const login_msg[];
 
 /*
  * Global variables.
@@ -1086,6 +1106,7 @@ const int HAS_SPELL_INDEX = -1;
 /* This is to tell if act uses uppercasestring or not --Shaddai */
 extern bool DONT_UPPER;
 extern bool MOBtrigger;
+extern bool MPSilent;
 extern bool mud_down;
 extern bool DONTSAVE;
 
@@ -1187,6 +1208,7 @@ char *c_time( time_t, int );
 
 /* comm.c */
 bool check_parse_name( const string &, bool );
+void add_loginmsg( const char *, short, const char * );
 
 /* commands.c */
 int check_command_level( const string &, int );
@@ -1274,6 +1296,7 @@ void string_erase( string & src, char find );
 void string_erase( string &, const string & );
 void string_replace( string &, const string &, const string & );
 vector < string > string_explode( const string &, char );
+const char *print_array_string( const char *flagarray[] );
 
 /* fight.c */
 ch_ret multi_hit( char_data *, char_data *, int );

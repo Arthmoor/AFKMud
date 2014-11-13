@@ -329,6 +329,7 @@ obj_data *obj_index::create_object( int olevel )
       case ITEM_CORPSE_NPC:
       case ITEM_CORPSE_PC:
       case ITEM_FOUNTAIN:
+      case ITEM_PUDDLE:
       case ITEM_BLOOD:
       case ITEM_BLOODSTAIN:
       case ITEM_SCRAPS:
@@ -360,6 +361,7 @@ obj_data *obj_index::create_object( int olevel )
       case ITEM_SHOVEL:
       case ITEM_ORE:
       case ITEM_PIECE:
+      case ITEM_JOURNAL:
          break;
 
       case ITEM_SALVE:

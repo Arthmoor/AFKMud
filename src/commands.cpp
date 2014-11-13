@@ -78,7 +78,8 @@ bool oprog_command_trigger( char_data *, const string & );
 bool rprog_command_trigger( char_data *, const string & );
 
 const char *cmd_flags[] = {
-   "possessed", "polymorphed", "action", "nospam", "ghost", "mudprog", "noforce", "loaded"
+   "possessed", "polymorphed", "action", "nospam", "ghost", "mudprog",
+   "noforce", "loaded", "noabort"
 };
 
 /*
@@ -239,8 +240,10 @@ bool check_social( char_data * ch, const string & command, const string & argume
          /*
           * I just know this is the path to a 12" 'if' statement.  :(
           * But two players asked for it already!  -- Furey
+          *
+          * No 12 inch or 12 foot long if statement bro, add a position value to solve it! - Samson
           */
-         if( !str_cmp( social->name, "snore" ) )
+         if( social->minposition == POS_SLEEPING )
             break;
          ch->print( "In your dreams, or what?\r\n" );
          return true;
@@ -257,6 +260,7 @@ bool check_social( char_data * ch, const string & command, const string & argume
    if( !( victim = ch->get_char_room( arg ) ) )
    {
       obj_data *obj; /* Object socials */
+
       if( ( ( obj = get_obj_list( ch, arg, ch->in_room->objects ) ) || ( obj = get_obj_list( ch, arg, ch->carrying ) ) ) && !victim )
       {
          if( !social->obj_self.empty(  ) && !social->obj_others.empty(  ) )
@@ -703,7 +707,7 @@ void interpret( char_data * ch, string argument )
    /*
     * check for a timer delayed command (search, dig, detrap, etc) 
     */
-   if( ( chtimer = ch->get_timerptr( TIMER_DO_FUN ) ) != NULL )
+   if( ( ( chtimer = ch->get_timerptr( TIMER_DO_FUN ) ) != NULL ) && ( !found || !cmd->flags.test( CMD_NOABORT ) ) )
    {
       int tempsub;
 
@@ -2020,6 +2024,7 @@ social_type *find_social( const string & command )
 map < string, social_type * >social_table;
 social_type::social_type(  )
 {
+   minposition = POS_RESTING; // Most socials should default to this.
 }
 
 /*
@@ -2134,6 +2139,7 @@ void save_socials( void )
          stream << "ObjSelf     " << social->obj_self << endl;
       if( !social->obj_others.empty(  ) )
          stream << "ObjOthers   " << social->obj_others << endl;
+      stream << "MinPosition " << npc_position[social->minposition] << endl;
       stream << "End" << endl << endl;
    }
    stream.close(  );
@@ -2191,6 +2197,15 @@ void load_socials( void )
          social->obj_self = value;
       else if( key == "ObjOthers" )
          social->obj_others = value;
+      else if( key == "MinPosition" )
+      {
+         int minpos = get_npc_position( value );
+
+         if( minpos < POS_SLEEPING || minpos >= POS_MAX )
+            minpos = POS_RESTING;
+
+         social->minposition = minpos;
+      }
       else if( key == "End" )
          social_table[social->name] = social;
       else
@@ -2222,7 +2237,7 @@ CMDF( do_sedit )
       if( ch->level > LEVEL_GREATER )
          ch->print( "Syntax: sedit <social> name <newname>\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
-      ch->print( "  cnoarg onoarg cfound ofound vfound cauto oauto objself objothers\r\n" );
+      ch->print( "  cnoarg onoarg cfound ofound vfound cauto oauto objself objothers minposition\r\n" );
       return;
    }
 
@@ -2266,6 +2281,7 @@ CMDF( do_sedit )
                   !social->char_auto.empty(  )? social->char_auto.c_str(  ) : "(not set)", !social->others_auto.empty(  )? social->others_auto.c_str(  ) : "(not set)" );
       ch->printf( "ObjSelf  : %s\r\nObjOthers: %s\r\n",
                   !social->obj_self.empty(  )? social->obj_self.c_str(  ) : "(not set)", !social->obj_others.empty(  )? social->obj_others.c_str(  ) : "(not set)" );
+      ch->printf( "MinPos   : %s\r\n", npc_position[social->minposition] );
       return;
    }
 
@@ -2361,6 +2377,20 @@ CMDF( do_sedit )
       return;
    }
 
+   if( !str_cmp( arg2, "minposition" ) )
+   {
+      int minpos = get_npc_position( arg2 );
+
+      if( minpos < POS_SLEEPING || minpos >= POS_MAX )
+      {
+         ch->printf( "%s is not a valid position.\r\n", arg2.c_str() );
+         return;
+      }
+      social->minposition = minpos;
+      ch->print( "Done.\r\n" );
+      return;
+   }
+
    if( ch->level > LEVEL_GREATER && !str_cmp( arg2, "name" ) )
    {
       social_type *checksocial;
@@ -2384,6 +2414,7 @@ CMDF( do_sedit )
       ch->print( "Done.\r\n" );
       return;
    }
+
    /*
     * display usage message 
     */

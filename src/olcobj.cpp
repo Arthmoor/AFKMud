@@ -68,7 +68,6 @@
 extern int top_affect;
 extern const char *liquid_types[];
 
-liquid_data *get_liq_vnum( int );
 void medit_disp_aff_flags( descriptor_data * );
 void medit_disp_ris( descriptor_data * );
 void olc_log( descriptor_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );

@@ -68,6 +68,7 @@ int IsDragon( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 void save_classes(  );
 void save_races(  );
+void remove_bexit_flag( exit_data *, int );
 
 /* global variables */
 int top_herb;
@@ -304,7 +305,7 @@ const char *spell_flag[] = {
    "water", "earth", "air", "astral", "area", "distant", "reverse",
    "noself", "nobind", "accumulative", "recastable", "noscribe",
    "nobrew", "group", "object", "character", "secretskill", "pksensitive",
-   "stoponfail", "nofight", "nodispel", "randomtarget"
+   "stoponfail", "nofight", "nodispel", "randomtarget", "nomob"
 };
 
 const char *spell_saves[] = { "none", "Poison/Death", "Wands", "Paralysis/Petrification", "Breath", "Spells" };
@@ -894,14 +895,14 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
    {
       int y, min = 1000;
 
-      for( y = 0; y < MAX_CLASS; ++y )
+      for( y = 0; y < MAX_PC_CLASS; ++y )
          if( skill->skill_level[y] < min )
             min = skill->skill_level[y];
 
       fprintf( fpout, "Minlevel     %d\n", min );
 
       min = 1000;
-      for( y = 0; y < MAX_RACE; ++y )
+      for( y = 0; y < MAX_PC_RACE; ++y )
          if( skill->race_level[y] < min )
             min = skill->race_level[y];
    }
@@ -913,7 +914,7 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
 /*
  * Save the skill table to disk
  */
-const int SKILLVERSION = 4;
+const int SKILLVERSION = 5;
 /* Updated to 1 for position text - Samson 4-26-00 */
 /* Updated to 2 for bitset flags - Samson 7-10-04 */
 /* Updated to 3 for AFF_NONE insertion - Samson 7-27-04 */
@@ -3391,6 +3392,116 @@ CMDF( do_sset )
       victim->pcdata->learned[sn] = value;
 }
 
+CMDF( do_grapple )
+{
+   char_data *victim;
+   affect_data af;
+   string arg;
+   short percent;
+
+   if( !ch->IS_PKILL( ) && !ch->is_immortal() )
+      return;
+
+   if( ch->isnpc() && ch->has_aflag( AFF_CHARM ) )
+   {
+      ch->print( "You can't do that right now.\r\n" );
+      return;
+   }
+
+   if( ch->mount )
+   {
+      ch->print( "You can't get close enough while mounted.\r\n" );
+      return;
+   }
+
+   if( ( victim = ch->who_fighting( ) ) == NULL )
+   {
+      one_argument( argument, arg );
+      if( arg[0] == '\0' )
+      {
+         act( AT_ACTION, "You move in a circle looking for someone to grapple.", ch, NULL, NULL, TO_CHAR );
+         act( AT_ACTION, "$n moves in a circle looking for someone to grapple.", ch, NULL, NULL, TO_ROOM );
+         return;
+      }
+
+      if( ( victim = ch->get_char_room( arg ) ) == NULL )
+      {
+         ch->print( "They aren't here.\r\n" );
+         return;
+      }
+
+      if( victim == ch )
+      {
+         ch->print( "How can you sneak up on yourself?\r\n" );
+         return;
+      }
+   }
+
+   if( victim->isnpc() )
+   {
+      ch->print( "Stick to wrestling players.\r\n" );
+      return;
+   }
+
+   if( victim->has_aflag( AFF_GRAPPLE ) )
+      return;
+
+   if( is_safe( ch, victim ) )
+   {
+      ch->print( "A magical force prevents you from attacking.\r\n" );
+      return;
+   }
+
+   if( ch->who_fighting( ) && ch->who_fighting( ) != victim )
+   {
+      ch->print( "You're fighting someone else!\r\n" );
+      return;
+   }
+
+   if( victim->who_fighting( ) && victim->who_fighting( ) != ch )
+   {
+      ch->print( "You can't get close enough.\r\n" );
+      return;
+   }
+
+   percent = ch->LEARNED( gsn_grapple );
+   ch->WAIT_STATE( skill_table[gsn_grapple]->beats );
+
+   if( !ch->chance( percent ) )
+   {
+      ch->print( "You lost your balance.\r\n" );
+      act( AT_ACTION, "$n tries to grapple you but can't get close enough.", ch, NULL, victim, TO_VICT );
+      ch->learn_from_failure( gsn_grapple );
+      check_illegal_pk( ch, victim );
+      return;
+   }
+
+   af.type = gsn_grapple;
+   af.duration = 2;
+   af.location = APPLY_DEX;
+   af.modifier = -2;
+   af.bit = AFF_GRAPPLE;
+   victim->affect_to_char( &af );
+
+   af.type = gsn_grapple;
+   af.duration = 2;
+   af.location = APPLY_DEX;
+   af.modifier = -2;
+   af.bit = AFF_GRAPPLE;
+   ch->affect_to_char( &af );
+
+   ch->printf( "You manage to grab hold of %s!\r\n", capitalize( victim->name ) );
+   act( AT_ACTION, "$n grabs hold of you!", ch, NULL, victim, TO_VICT );
+   act( AT_ACTION, "$n begins grappling with $N!", ch, NULL, victim, TO_NOTVICT );
+   check_illegal_pk( ch, victim );
+
+   if( !ch->fighting && victim->in_room == ch->in_room )
+      set_fighting( ch, victim );
+   if( !victim->fighting && ch->in_room == victim->in_room )
+      set_fighting( victim, ch );
+   return;
+}
+
 CMDF( do_gouge )
 {
    char_data *victim;
@@ -3717,10 +3828,18 @@ CMDF( do_dig )
           */
          if( can_use_skill( ch, ( number_percent(  ) * ( shovel ? 1 : 4 ) ), gsn_dig ) )
          {
-            REMOVE_EXIT_FLAG( pexit, EX_CLOSED );
-            ch->print( "You dig open a passageway!\r\n" );
-            act( AT_PLAIN, "$n digs open a passageway!", ch, NULL, NULL, TO_ROOM );
-            return;
+            if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
+            {
+               remove_bexit_flag( pexit, EX_CLOSED );
+               ch->print( "You dig open a passageway!\r\n" );
+               act( AT_PLAIN, "$n digs open a passageway!", ch, NULL, NULL, TO_ROOM );
+            }
+            else
+            {
+               REMOVE_EXIT_FLAG( pexit, EX_DIG );
+               ch->print( "You uncover a doorway!\r\n" );
+               act( AT_PLAIN, "$n uncovers a doorway!", ch, NULL, NULL, TO_ROOM );
+            }
          }
       }
       ch->learn_from_failure( gsn_dig );
@@ -3942,7 +4061,7 @@ CMDF( do_steal )
       }
    }
 
-   if( victim->has_actflag( ACT_PACIFIST ) ) /* Gorog */
+   if( victim->isnpc() && victim->has_actflag( ACT_PACIFIST ) ) /* Gorog */
    {
       ch->print( "They are a pacifist - Shame on you!\r\n" );
       return;
@@ -4949,6 +5068,63 @@ void trip( char_data * ch, char_data * victim )
    }
 }
 
+/* Shargate, May 2002 */
+CMDF( do_cleave )
+{
+   char_data *victim;
+   obj_data *obj;
+   int dam = 0;
+   short percent;
+
+   if( ch->isnpc() && ch->has_aflag( AFF_CHARM ) )
+   {
+      ch->print( "A clear mind is required to use that skill.\r\n" );
+      return;
+   }
+
+   if( !ch->isnpc() && ch->level < skill_table[gsn_cleave]->skill_level[ch->Class] )
+   {
+      ch->print( "You can't seem to summon the strength.\r\n" );
+      return;
+   }
+
+   if( ( obj = ch->get_eq( WEAR_WIELD ) ) == NULL || ( obj->value[3] != 1 && obj->value[3] != 3 && obj->value[3] != 5 ) )
+   {
+      ch->print( "You need a slashing weapon.\r\n" );
+      return;
+   }
+
+   if( ( victim = ch->who_fighting( ) ) == NULL )
+   {
+      ch->print( "You aren't fighting anyone.\r\n" );
+      return;
+   }
+
+   percent = number_percent();
+   if( can_use_skill( ch, percent, gsn_cleave ) )
+   {
+      ch->WAIT_STATE( skill_table[gsn_cleave]->beats );
+      if( percent <= 20 )
+      {
+         ch->set_color( AT_WHITE );
+         ch->print( "You deal a devastating blow!\r\n" );
+         dam = ( number_range( 11, 22 ) * ch->get_curr_str( ) ) + 30;
+         victim->WAIT_STATE( 2 );
+      }
+      else
+      {
+         dam = ( number_range( 9, 18 ) * ch->get_curr_str( ) ) + 30;
+      }
+
+      global_retcode = damage( ch, victim, dam, gsn_cleave );
+   }
+   else
+   {
+      ch->learn_from_failure( gsn_cleave );
+      global_retcode = damage( ch, victim, 0, gsn_cleave );
+   }
+}
+
 CMDF( do_pick )
 {
    string arg;
@@ -5739,6 +5915,8 @@ CMDF( do_scribe )
    act( AT_MAGIC, "$n magically scribes $p.", ch, scroll, NULL, TO_ROOM );
    act( AT_MAGIC, "You magically scribe $p.", ch, scroll, NULL, TO_CHAR );
 
+   ch->WAIT_STATE( skill_table[gsn_scribe]->beats );
+
    ch->mana -= mana;
 }
 
@@ -5749,7 +5927,7 @@ CMDF( do_brew )
 
    if( !ch->isnpc(  ) && ch->level < skill_table[gsn_brew]->skill_level[ch->Class] )
    {
-      ch->print( "A skill such as this requires more magical ability than that of your Class.\r\n" );
+      ch->print( "A skill such as this requires more magical ability than that of your class.\r\n" );
       return;
    }
 
@@ -5856,6 +6034,8 @@ CMDF( do_brew )
 
    act( AT_MAGIC, "$n brews up $p.", ch, potion, NULL, TO_ROOM );
    act( AT_MAGIC, "You brew up $p.", ch, potion, NULL, TO_CHAR );
+
+   ch->WAIT_STATE( skill_table[gsn_brew]->beats );
 
    ch->mana -= mana;
 }
@@ -6537,23 +6717,23 @@ CMDF( do_tinker )
    }
 
    if( !str_cmp( argument, "flamethrower" ) )
-      pobj = get_obj_index( 11039 );
+      pobj = get_obj_index( OBJ_VNUM_FLAMETHROWER );
 
    if( !str_cmp( argument, "ladder" ) )
-      pobj = get_obj_index( 11040 );
+      pobj = get_obj_index( OBJ_VNUM_LADDER );
 
    if( !str_cmp( argument, "digger" ) )
-      pobj = get_obj_index( 11041 );
+      pobj = get_obj_index( OBJ_VNUM_DIGGER );
 
    if( !str_cmp( argument, "lockpick" ) )
-      pobj = get_obj_index( 11042 );
+      pobj = get_obj_index( OBJ_VNUM_GNOME_LOCKPICK );
 
    if( !str_cmp( argument, "breather" ) )
-      pobj = get_obj_index( 11043 );
+      pobj = get_obj_index( OBJ_VNUM_REBREATHER );
 
    if( !str_cmp( argument, "flyer" ) )
    {
-      pmob = get_mob_index( 11010 );
+      pmob = get_mob_index( MOB_VNUM_GNOME_FLYER );
       cost = 20000;
    }
 
@@ -7033,26 +7213,33 @@ CMDF( do_forage )
       case SECT_OCEANFLOOR:
          ch->print( "You can't spend that kind of time underwater!\r\n" );
          return;
+
       case SECT_RIVER:
          ch->print( "The river's current is too strong to stay in one spot!\r\n" );
          return;
+
       case SECT_WATER_SWIM:
       case SECT_WATER_NOSWIM:
       case SECT_OCEAN:
          ch->print( "The water is too deep to see anything here!\r\n" );
          return;
+
       case SECT_AIR:
          ch->print( "Yeah, sure, forage in thin air???\r\n" );
          return;
+
       case SECT_CITY:
          ch->print( "This spot is far too well traveled to find anything useful.\r\n" );
          return;
+
       case SECT_ICE:
          ch->print( "Nothing but ice here buddy.\r\n" );
          return;
+
       case SECT_LAVA:
          ch->print( "What? You want to barbecue yourself?\r\n" );
          return;
+
       default:
          break;
    }
@@ -7129,26 +7316,33 @@ CMDF( do_woodcall )
       case SECT_OCEANFLOOR:
          ch->print( "You can't call out underwater!\r\n" );
          return;
+
       case SECT_RIVER:
          ch->print( "The river is too swift for that!\r\n" );
          return;
+
       case SECT_WATER_SWIM:
       case SECT_WATER_NOSWIM:
       case SECT_OCEAN:
          ch->print( "The water is too deep to call anything here!\r\n" );
          return;
+
       case SECT_AIR:
          ch->print( "Yeah, sure, in thin air???\r\n" );
          return;
+
       case SECT_CITY:
          ch->print( "This spot is far too well traveled to attract anything.\r\n" );
          return;
+
       case SECT_ICE:
          ch->print( "Nothing but ice here buddy.\r\n" );
          return;
+
       case SECT_LAVA:
          ch->print( "What? You want to barbecue yourself?\r\n" );
          return;
+
       default:
          break;
    }

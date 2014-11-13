@@ -83,6 +83,7 @@ class pc_data
    string realm_name; // Name of the immortal realm this person belongs to.
    string deity_name;   // Name of the deity this person worships.
    string lasthost;  // Stores host info so it doesn't have to depend on a descriptor, for things like finger.
+   string prevhost;  // Stores IP logged into prior to the lasthost field.
    string homepage;  // The person's homepage in the big bad world out there.
    string email;  // The person's email address.
    string authed_by; // The immortal who authorized this player's name.

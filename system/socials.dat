@@ -7892,6 +7892,7 @@ End
 Name        snore
 CharNoArg   Zzzzzzzzzzzzzzzzz.
 OthersNoArg $n snores loudly.
+MinPosition sleeping
 End
 
 #SOCIAL

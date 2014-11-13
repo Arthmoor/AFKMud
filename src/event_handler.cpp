@@ -154,78 +154,102 @@ void ev_violence( void *data )
             {
                default:
                   break;
+
                case ATCK_BASH:
                   interpret( ch, "bash" );
                   retcode = global_retcode;
                   break;
+
                case ATCK_STUN:
                   interpret( ch, "stun" );
                   retcode = global_retcode;
                   break;
+
                case ATCK_GOUGE:
                   interpret( ch, "gouge" );
                   retcode = global_retcode;
                   break;
+
                case ATCK_AGE:
                   do_ageattack( ch, "" );
                   retcode = global_retcode;
                   break;
+
                case ATCK_DRAIN:
                   retcode = spell_energy_drain( skill_lookup( "energy drain" ), ch->level, ch, victim );
                   break;
+
                case ATCK_FIREBREATH:
                   retcode = spell_fire_breath( skill_lookup( "fire breath" ), ch->level, ch, victim );
                   break;
+
                case ATCK_FROSTBREATH:
                   retcode = spell_frost_breath( skill_lookup( "frost breath" ), ch->level, ch, victim );
                   break;
+
                case ATCK_ACIDBREATH:
                   retcode = spell_acid_breath( skill_lookup( "acid breath" ), ch->level, ch, victim );
                   break;
+
                case ATCK_LIGHTNBREATH:
                   retcode = spell_lightning_breath( skill_lookup( "lightning breath" ), ch->level, ch, victim );
                   break;
+
                case ATCK_GASBREATH:
                   retcode = spell_gas_breath( skill_lookup( "gas breath" ), ch->level, ch, victim );
                   break;
+
                case ATCK_SPIRALBLAST:
                   retcode = spell_spiral_blast( skill_lookup( "spiral blast" ), ch->level, ch, victim );
                   break;
+
                case ATCK_POISON:
                   retcode = spell_smaug( gsn_poison, ch->level, ch, victim );
                   break;
+
                case ATCK_NASTYPOISON:
                   retcode = spell_smaug( gsn_poison, ch->level, ch, victim );
                   break;
+
                case ATCK_GAZE:
                   break;
+
                case ATCK_BLINDNESS:
                   retcode = spell_smaug( skill_lookup( "blindness" ), ch->level, ch, victim );
                   break;
+
                case ATCK_CAUSESERIOUS:
                   retcode = spell_smaug( skill_lookup( "cause serious" ), ch->level, ch, victim );
                   break;
+
                case ATCK_EARTHQUAKE:
                   retcode = spell_smaug( skill_lookup( "earthquake" ), ch->level, ch, victim );
                   break;
+
                case ATCK_CAUSECRITICAL:
                   retcode = spell_smaug( skill_lookup( "cause critical" ), ch->level, ch, victim );
                   break;
+
                case ATCK_CURSE:
                   retcode = spell_smaug( skill_lookup( "curse" ), ch->level, ch, victim );
                   break;
+
                case ATCK_FLAMESTRIKE:
                   retcode = spell_smaug( skill_lookup( "flamestrike" ), ch->level, ch, victim );
                   break;
+
                case ATCK_HARM:
                   retcode = spell_smaug( skill_lookup( "harm" ), ch->level, ch, victim );
                   break;
+
                case ATCK_FIREBALL:
                   retcode = spell_smaug( skill_lookup( "fireball" ), ch->level, ch, victim );
                   break;
+
                case ATCK_COLORSPRAY:
                   retcode = spell_smaug( skill_lookup( "colour spray" ), ch->level, ch, victim );
                   break;
+
                case ATCK_WEAKEN:
                   retcode = spell_smaug( skill_lookup( "weaken" ), ch->level, ch, victim );
                   break;
@@ -240,6 +264,12 @@ void ev_violence( void *data )
        */
       if( ch->has_defenses(  ) )
       {
+         /*
+          * Fix for character not here bugs --Shaddai 
+          */
+         if( ch->char_died( ) || victim->char_died( ) )
+            return;
+
          attacktype = -1;
          if( 50 + ( ch->level / 4 ) > number_percent(  ) )
          {
@@ -260,22 +290,27 @@ void ev_violence( void *data )
             {
                default:
                   break;
+
                case DFND_CURELIGHT:
                   act( AT_MAGIC, "$n mutters a few incantations...and looks a little better.", ch, NULL, NULL, TO_ROOM );
                   retcode = spell_smaug( skill_lookup( "cure light" ), ch->level, ch, ch );
                   break;
+
                case DFND_CURESERIOUS:
                   act( AT_MAGIC, "$n mutters a few incantations...and looks a bit better.", ch, NULL, NULL, TO_ROOM );
                   retcode = spell_smaug( skill_lookup( "cure serious" ), ch->level, ch, ch );
                   break;
+
                case DFND_CURECRITICAL:
                   act( AT_MAGIC, "$n mutters a few incantations...and looks healthier.", ch, NULL, NULL, TO_ROOM );
                   retcode = spell_smaug( skill_lookup( "cure critical" ), ch->level, ch, ch );
                   break;
+
                case DFND_HEAL:
                   act( AT_MAGIC, "$n mutters a few incantations...and looks much healthier.", ch, NULL, NULL, TO_ROOM );
                   retcode = spell_smaug( skill_lookup( "heal" ), ch->level, ch, ch );
                   break;
+
                case DFND_DISPELMAGIC:
                   if( !victim->affects.empty(  ) )
                   {
@@ -283,10 +318,12 @@ void ev_violence( void *data )
                      retcode = spell_dispel_magic( skill_lookup( "dispel magic" ), ch->level, ch, victim );
                   }
                   break;
+
                case DFND_DISPELEVIL:
                   act( AT_MAGIC, "$n utters an incantation...", ch, NULL, NULL, TO_ROOM );
                   retcode = spell_dispel_evil( skill_lookup( "dispel evil" ), ch->level, ch, victim );
                   break;
+
                case DFND_SANCTUARY:
                   if( !ch->has_aflag( AFF_SANCTUARY ) )
                   {

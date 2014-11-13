@@ -397,9 +397,11 @@ CMDF( do_camp )
          case SECT_OCEANFLOOR:
             ch->print( "You cannot camp underwater, you'd drown!\r\n" );
             return;
+
          case SECT_RIVER:
             ch->print( "The river would sweep any such camp away!\r\n" );
             return;
+
          case SECT_WATER_SWIM:
          case SECT_WATER_NOSWIM:
          case SECT_OCEAN:
@@ -412,20 +414,25 @@ CMDF( do_camp )
          case SECT_AIR:
             ch->print( "Yeah, sure, set camp in thin air???\r\n" );
             return;
+
          case SECT_CITY:
          case SECT_ROAD:
          case SECT_BRIDGE:
             ch->print( "This spot is too heavily travelled to setup camp.\r\n" );
             return;
+
          case SECT_INDOORS:
             ch->print( "You must be outdoors to make camp.\r\n" );
             return;
+
          case SECT_ICE:
             ch->print( "It isn't safe to setup camp on the ice.\r\n" );
             return;
+
          case SECT_LAVA:
             ch->print( "What? You want to barbecue yourself?\r\n" );
             return;
+
          default:
             break;
       }
@@ -439,6 +446,7 @@ CMDF( do_camp )
          case SECT_RIVER:
             ch->print( "The river would sweep any such camp away!\r\n" );
             return;
+
          case SECT_WATER_SWIM:
          case SECT_WATER_NOSWIM:
             ch->print( "You cannot camp on the open water like that!\r\n" );
@@ -447,14 +455,17 @@ CMDF( do_camp )
              * we ever get code to support boats of any real size 
              */
             return;
+
          case SECT_CITY:
          case SECT_ROAD:
          case SECT_BRIDGE:
             ch->print( "This spot is too heavily travelled to setup camp.\r\n" );
             return;
+
          case SECT_ICE:
             ch->print( "It isn't safe to setup camp on the ice.\r\n" );
             return;
+
          default:
             break;
       }

@@ -407,7 +407,7 @@ CMDF( do_get )
                 && container->value[4] - ch->level < 6 && container->value[4] - ch->level > -6 )
                break;
 
-            if( str_cmp( name, ch->name ) && !ch->is_immortal(  ) )
+            if( !str_cmp( name, ch->name ) && !ch->is_immortal(  ) )
             {
                bool fGroup = false;
                list < char_data * >::iterator ich;
@@ -2432,15 +2432,20 @@ CMDF( do_sacrifice )
    obj->separate(  );
    if( !obj->wear_flags.test( ITEM_TAKE ) )
    {
-      act( AT_PLAIN, "$p is not an acceptable sacrifice.", ch, obj, 0, TO_CHAR );
+      act( AT_PLAIN, "$p is not an acceptable sacrifice.", ch, obj, NULL, TO_CHAR );
       return;
    }
+
+   if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) )
+   {
+      ch->print( "The gods would not accept such a foolish sacrifice.\r\n" );
+      return;
+   }
+
    if( !ch->isnpc(  ) && ch->pcdata->deity && ch->pcdata->deity->name[0] != '\0' )
       name = ch->pcdata->deity->name;
-
    else if( !ch->isnpc(  ) && ch->pcdata->clan && !ch->pcdata->clan->deity.empty(  ) )
       name = ch->pcdata->clan->deity;
-
    else
       name = "The Wedgy";
 

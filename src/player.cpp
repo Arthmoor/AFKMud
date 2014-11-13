@@ -984,6 +984,12 @@ CMDF( do_description )
       return;
    }
 
+   if( ch->has_pcflag( PCFLAG_NODESC ) )
+   {
+      ch->print( "You cannot set your description.\r\n" );
+      return;
+   }
+
    if( !ch->desc )
    {
       bug( "%s: no descriptor", __FUNCTION__ );
@@ -1030,11 +1036,13 @@ CMDF( do_bio )
       ch->print( "Mobs cannot set a bio.\r\n" );
       return;
    }
-   if( ch->level < 5 )
+
+   if( ch->has_pcflag( PCFLAG_NOBIO ) )
    {
-      ch->print( "You must be at least level five to write your bio...\r\n" );
+      ch->print( "The gods won't allow you to do that!\r\n" );
       return;
    }
+
    if( !ch->desc )
    {
       bug( "%s: no descriptor", __FUNCTION__ );
@@ -2135,4 +2143,234 @@ CMDF( do_score )
          ch->printf( "%s%s : %-20s %s(%s%d hours%s)\r\n", s2, skill_tname[sktmp->type], buf, s1, s4, af->duration / ( int )DUR_CONV, s1 );
       }
    }
+}
+
+obj_data *find_quill( char_data * ch )
+{
+   list < obj_data * >::iterator iobj;
+
+   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   {
+      obj_data *quill = *iobj;
+
+      if( quill->item_type == ITEM_PEN && ch->can_see_obj( quill, false ) )
+         return quill;
+   }
+
+   return NULL;
+}
+
+/*
+ * Journal command. Allows users to write notes to an object of type "journal".
+ * Options are Write, Read and Size. Write and Read options require a numerical
+ * argument. Option Size retrives v0 or value0 from the object, which is indicitive
+ * of how many pages are in the journal.
+ *
+ * Forced a maximum limit of 50 pages to all journals, just incase someone slipped
+ * with a value command and we ended up with an object that could store 500 pages.
+ * This is added in journal write and journal size. Leart.
+ */
+CMDF( do_journal )
+{
+   string arg1, arg2;
+   char buf[MSL];
+   extra_descr_data *ed;
+   obj_data *quill = NULL, *journal = NULL;
+   int pages;
+   int anum = 0;
+
+   if( ch->isnpc() )
+      return;
+
+   if( !ch->desc )
+   {
+      bug( "%s: no descriptor", __FUNCTION__ );
+      return;
+   }
+
+   argument = one_argument( argument, arg1 );
+   argument = one_argument( argument, arg2 );
+
+   switch ( ch->substate )
+   {
+      default:
+         break;
+
+      case SUB_JOURNAL_WRITE:
+         if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
+         {
+            bug( "%s: Player not holding journal. (Player: %s)", __FUNCTION__, ch->name );
+            ch->stop_editing( );
+            return;
+         }
+         ed = ( extra_descr_data * )ch->pcdata->dest_buf;
+         ed->desc = ch->copy_buffer( );
+         ch->stop_editing( );
+         ch->substate = ch->tempnum;
+         return;
+
+      case SUB_EDIT_ABORT:
+         ch->substate = ch->tempnum;
+         ch->print( "Aborting journal entry.\r\n" );
+         return;
+   }
+
+   if( arg1[0] == '\0' )
+   {
+      ch->print( "Syntax: Journal <command>\r\n\r\n" );
+      ch->print( "Where command is one of:\r\n" );
+      ch->print( "write read size\r\n" );
+      return;
+   }
+
+   /* 
+    * Write option. Allows user to enter the buffer, adding an extra_desc to the
+    * journal object called "PageX" where X is the argument associated with the write command
+    */
+   if( !str_cmp( arg1, "write" ) )
+   {
+      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
+      {
+         ch->print( "You must be holding a journal in order to write in it.\r\n" );
+         return;
+      }
+
+      if( arg2[0] == '\0' || !is_number( arg2 ) )
+      {
+         ch->print( "Syntax: Journal write <number>\r\n" );
+         return;
+      }
+
+      quill = find_quill( ch );
+      if( !quill )
+      {
+         ch->print( "You need a quill to write in your journal.\r\n" );
+         return;
+      }
+
+      if( quill->value[0] < 1 )
+      {
+         ch->print( "Your quill is dry.\r\n" );
+         return;
+      }
+
+      if( journal->value[0] < 1 )
+      {
+         ch->print( "There are no pages in this journal. Seek an immortal for assistance.\r\n" );
+         return;
+      }
+
+      /* Force a max value of 50 */
+      if( journal->value[0] > 50 )
+      {
+         journal->value[0] = 50;
+         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __FUNCTION__, ch->name );
+      }
+
+      ch->set_color( AT_GREY );
+      pages = journal->value[0];
+      if( is_number( arg2 ) )
+      {
+         anum = atoi( arg2.c_str() );
+      }
+
+      if( pages < anum )
+      {
+         ch->print( "That page does not exist in this journal.\r\n" );
+         return;
+      }
+
+      /* Making the edits turn out to be "page1" etc - just so people can't/don't type "look 1" */
+      snprintf( buf, MSL, "page %s", arg2.c_str() );
+
+      ed = new extra_descr_data;
+      ed->keyword = buf;
+      ch->substate = SUB_JOURNAL_WRITE;
+      ch->pcdata->dest_buf = ed;
+      --quill->value[0];
+      ch->set_editor_desc( "Writing a journal entry." );
+      ch->start_editing( ed->desc );
+      journal->value[1]++;
+
+      return;
+   }
+
+   /* Size option, returns how many pages are in the journal */
+   if( !str_cmp( arg1, "size" ) )
+   {
+      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
+      {
+         ch->print( "You must be holding a journal in order to check it's size.\r\n" );
+         return;
+      }
+
+      if( journal->value[0] < 1 )
+      {
+         ch->print( "There are no pages in this journal. Seek an immortal for assistance.\r\n" );
+      }
+      else
+      {
+         if( journal->value[0] > 50 )
+         {
+            journal->value[0] = 50;
+            bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __FUNCTION__, ch->name );
+         }
+         ch->set_color( AT_GREY );
+         ch->printf( "There are %d pages in this journal.\r\n", journal->value[0] );
+         return;
+      }
+   }
+
+   /* Read option. Players can read the desc on the journal by typing "look page1", but I thought about putting
+    * in this option anyway.
+    */
+   if( !str_cmp( arg1, "read" ) )
+   {
+      if( arg2[0] == '\0' )
+      {
+         ch->print( "Syntax: Journal read <number>\r\n" );
+         return;
+      }
+
+      if( !is_number( arg2 ) )
+      {
+         ch->print( "Syntax: Journal read <number>\r\n" );
+         return;
+      }
+
+      if( is_number( arg2 ) )
+      {
+         anum = atoi( arg2.c_str() );
+      }
+
+      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
+      {
+         ch->print( "You must be holding a journal in order to read it.\r\n" );
+         return;
+      }
+
+      if( journal->value[0] > 50 )
+      {
+         journal->value[0] = 50;
+         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __FUNCTION__, ch->name );
+      }
+
+      ch->set_color( AT_GREY );
+      pages = journal->value[0];
+      if( pages < anum )
+      {
+         ch->print( "That page does not exist in this journal.\r\n" );
+         return;
+      }
+
+      snprintf( buf, MSL, "page %s", arg2.c_str() );
+
+      if( ( ed = get_extra_descr( buf, journal ) ) == NULL )
+         ch->print( "That journal page is blank.\r\n" );
+      else
+         ch->print( ed->desc.c_str() );
+      return;
+   }
+
+   do_journal( ch, "" );
 }

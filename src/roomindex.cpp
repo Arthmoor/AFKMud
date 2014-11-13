@@ -978,25 +978,16 @@ int count_obj_list( reset_data * pReset, obj_index * pObjIndex, list < obj_data 
    for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
       obj_data *obj = *iobj;
+
       if( obj->pIndexData == pObjIndex )
       {
          if( pReset->command == 'M' || pReset->command == 'O' )
          {
             if( pReset->arg4 == obj->cmap && pReset->arg5 == obj->mx && pReset->arg6 == obj->my )
-            {
-               if( obj->count > 1 )
-                  nMatch += obj->count;
-               else
-                  ++nMatch;
-            }
+               nMatch += obj->count;
          }
          else
-         {
-            if( obj->count > 1 )
-               nMatch += obj->count;
-            else
-               ++nMatch;
-         }
+            nMatch += obj->count;
       }
    }
    return nMatch;

@@ -1603,6 +1603,8 @@ const string mprog_type_to_name( int type )
          return "void_prog";
       case LOAD_PROG:
          return "load_prog";
+      case GREET_IN_FIGHT_PROG:
+         return "greet_in_fight_prog";
       default:
          return "ERROR_PROG";
    }
@@ -1615,6 +1617,7 @@ const string mprog_type_to_name( int type )
 CMDF( do_mpstat )
 {
    char_data *victim;
+   short cnt = 0;
 
    if( argument.empty(  ) )
    {
@@ -1636,7 +1639,7 @@ CMDF( do_mpstat )
 
    if( victim->pIndexData->progtypes.none(  ) )
    {
-      ch->print( "That Mobile has no Programs set.\r\n" );
+      ch->printf( "No programs on mobile: %s - #%d\r\n", victim->name, victim->pIndexData->vnum );
       return;
    }
 
@@ -1654,7 +1657,7 @@ CMDF( do_mpstat )
    {
       mud_prog_data *prg = *mprg;
 
-      ch->printf( "%s>%s %s\r\n%s\r\n", ( prg->fileprog ? "(FILEPROG) " : "" ), mprog_type_to_name( prg->type ).c_str(  ), prg->arglist, prg->comlist );
+      ch->printf( "%d%s>%s %s\r\n%s\r\n", ++cnt, ( prg->fileprog ? "(FILEPROG) " : "" ), mprog_type_to_name( prg->type ).c_str(  ), prg->arglist, prg->comlist );
    }
 }
 
@@ -1662,6 +1665,7 @@ CMDF( do_mpstat )
 CMDF( do_opstat )
 {
    obj_data *obj;
+   short cnt = 0;
 
    if( argument.empty(  ) )
    {
@@ -1677,7 +1681,7 @@ CMDF( do_opstat )
 
    if( obj->pIndexData->progtypes.none(  ) )
    {
-      ch->print( "That object has no programs set.\r\n" );
+      ch->printf( "No programs on object: %s - #%d\r\n", obj->short_descr, obj->pIndexData->vnum );
       return;
    }
 
@@ -1689,7 +1693,7 @@ CMDF( do_opstat )
    {
       mud_prog_data *mprog = *mprg;
 
-      ch->printf( ">%s %s\r\n%s\r\n", mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
+      ch->printf( "%d >%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
    }
 }
 
@@ -1697,6 +1701,7 @@ CMDF( do_opstat )
 CMDF( do_rpstat )
 {
    room_index *location;
+   short cnt = 0;
 
    if( argument.empty(  ) )
       location = ch->in_room;
@@ -1712,7 +1717,7 @@ CMDF( do_rpstat )
 
    if( location->progtypes.none(  ) )
    {
-      ch->print( "This room has no programs set.\r\n" );
+      ch->printf( "No programs on room: %s - #%d\r\n", ch->in_room->name, ch->in_room->vnum );
       return;
    }
 
@@ -1723,7 +1728,7 @@ CMDF( do_rpstat )
    {
       mud_prog_data *mprog = *mprg;
 
-      ch->printf( ">%s %s\r\n%s\r\n", mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
+      ch->printf( "%d >%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
    }
 }
 
@@ -1809,7 +1814,6 @@ CMDF( do_mpkill )
 /* lets the mobile destroy an object in its inventory
    it can also destroy a worn object and it can destroy
    items using all.xxxxx or just plain all of them */
-
 CMDF( do_mpjunk )
 {
    if( !can_use_mprog( ch ) )

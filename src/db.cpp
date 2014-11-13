@@ -38,6 +38,7 @@
 #endif
 #if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
 #include <execinfo.h>
+#include <cxxabi.h>
 #endif
 #include <cstdarg>
 #include <cmath>
@@ -200,6 +201,7 @@ void load_races(  );
 void load_herb_table(  );
 void load_tongues(  );
 void load_helps(  );
+void load_loginmsg(  );
 void init_chess(  );
 
 affect_data::affect_data(  )
@@ -1439,8 +1441,6 @@ void make_wizlist(  )
                if( !str_cmp( word, "Pcflags" ) )
                   flag_set( gfp, iflags, pc_flags );
                FCLOSE( gfp );
-               if( iflags.test( PCFLAG_RETIRED ) )
-                  ilevel = MAX_LEVEL - 15;
                add_to_wizlist( dentry->d_name, "", ilevel );
             }
          }
@@ -1607,8 +1607,6 @@ void make_webwiz( void )
             if( !str_cmp( word, "Homepage" ) )
                fread_string( http, gfp );
             FCLOSE( gfp );
-            if( iflags.test( PCFLAG_RETIRED ) )
-               ilevel = MAX_LEVEL - 15;
             add_to_wizlist( dentry->d_name, http, ilevel );
          }
       }
@@ -2160,11 +2158,16 @@ void boot_db( bool fCopyOver )
 
    load_quotes(  );
 
+   log_string( "Loading login messages..." );
+   load_loginmsg( );
+
    /*
     * Morphs MUST be loaded after Class and race tables are set up --Shaddai 
     */
    log_string( "Loading Morphs..." );
    load_morphs(  );
+
+   MPSilent = false;
    MOBtrigger = true;
 
    /*
@@ -2420,6 +2423,37 @@ void append_to_file( const string & file, const char *fmt, ... )
    }
 }
 
+/*
+ * This very slick beauty was found here: http://mykospark.net/2009/09/runtime-backtrace-in-c-with-name-demangling/
+ * At least now the symbols are readable :P
+ */
+const char *demangle( const char *symbol )
+{
+   size_t size;
+   int status;
+   static char temp[128];
+   char* demangled;
+
+   // First, try to demangle a c++ name
+   if( sscanf( symbol, "%*[^(]%*[^_]%127[^)+]", temp ) == 1 )
+   {
+      if( ( demangled = abi::__cxa_demangle( temp, NULL, &size, &status ) ) != NULL )
+      {
+         mudstrlcpy( temp, demangled, 128 );
+         free( demangled );
+
+         return temp;
+      }
+   }
+
+   // If that didn't work, try to get a regular c symbol
+   if( sscanf( symbol, "%127s", temp ) == 1 )
+      return temp;
+
+   // If all else fails, just return the symbol
+   return symbol;
+}
+
 /* Reports a bug. */
 /* Now includes backtrace data for that supernifty bug report! - Samson 10-11-03 */
 void bug( const char *str, ... )
@@ -2470,8 +2504,9 @@ void bug( const char *str, ... )
 
       log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %zd stack frames.", size );
 
-      for( i = 0; i < size; ++i )
-         log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, strings[i] );
+      // Intentionally starting from 1, because who cares about the bug() call itself.
+      for( i = 1; i < size; ++i )
+         log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, demangle( strings[i] ) );
 
       free( strings );
    }

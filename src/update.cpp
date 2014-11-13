@@ -670,6 +670,7 @@ void mobile_update( void )
                   ch->extract( true );
                continue;
             }
+
          case MOB_VNUM_GATE:
             if( !ch->has_aflag( AFF_CHARM ) )
             {
@@ -794,7 +795,7 @@ void mobile_update( void )
 
             if( obj->extra_flags.test( ITEM_PROTOTYPE ) && !ch->has_actflag( ACT_PROTOTYPE ) )
                continue;
-            if( obj->wear_flags.test( ITEM_TAKE ) && obj->cost > max && !obj->extra_flags.test( ITEM_BURIED ) )
+            if( obj->wear_flags.test( ITEM_TAKE ) && obj->cost > max && !obj->extra_flags.test( ITEM_BURIED ) && !obj->extra_flags.test( ITEM_HIDDEN ) )
             {
                obj_best = obj;
                max = obj->cost;
@@ -1652,6 +1653,7 @@ void obj_update( void )
             break;
 
          case ITEM_FOUNTAIN:
+         case ITEM_PUDDLE:
             message = "$p dries up.";
             AT_TEMP = AT_BLUE;
             break;
@@ -1682,7 +1684,7 @@ void obj_update( void )
 
          case ITEM_BLOODSTAIN:
             message = "$p dries up into flakes and blows away.";
-            AT_TEMP = AT_BLOOD;
+            AT_TEMP = AT_ORANGE;
             break;
 
          case ITEM_SCRAPS:
@@ -1805,6 +1807,20 @@ void char_check( void )
          timer_data *timer = *chtimer;
          ++chtimer;
 
+         if( ch->fighting && timer->type == TIMER_DO_FUN )
+         {
+            int tempsub;
+
+            tempsub = ch->substate;
+            ch->substate = SUB_TIMER_DO_ABORT;
+            ( timer->do_fun ) ( ch, "" );
+            if( ch->char_died( ) )
+               break;
+            ch->substate = tempsub;
+            ch->extract_timer( timer );
+            continue;
+         }
+
          if( --timer->count <= 0 )
          {
             if( timer->type == TIMER_ASUPRESSED )
@@ -1826,6 +1842,8 @@ void char_check( void )
                if( ch->char_died(  ) )
                   break;
                ch->substate = tempsub;
+               if( timer->count > 0 )
+                  continue;
             }
             ch->extract_timer( timer );
          }

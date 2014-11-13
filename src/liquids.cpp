@@ -27,7 +27,7 @@
  *                     by Noplex (noplex@crimsonblade.org)                  *
  *                   Redistributed in AFKMud with permission                *
  ****************************************************************************
- * 	                       Version History      			          *
+ *                              Version History                             *
  ****************************************************************************
  *  (v1.0) - Liquidtable converted into linked list, original 15 Smaug liqs *
  *           now read from a .dat file in /system                           *
@@ -51,7 +51,7 @@
  *  	   - Blood fix for blood on the ground.                               *
  *         - do_look/do_exam fix from Sirek.                                *
  *  (v2.8) - Ability to mix objects into liquids.                           *
- *	     (original code/concept -Sirek)                                   *
+ *	     (original code/concept -Sirek)                                      *
  ****************************************************************************/
 
 /*
@@ -500,7 +500,7 @@ liquid_data *get_liq( const string & str )
    {
       i = atoi( str.c_str(  ) );
 
-      return liquid_table[i];
+      return get_liq_vnum( i );
    }
    else
    {
@@ -513,6 +513,17 @@ liquid_data *get_liq( const string & str )
 
 liquid_data *get_liq_vnum( int vnum )
 {
+   /*
+    * Bugfix - This could have crashed things if the number was out of range.
+    * Calling function should be validating for NULLs, or it'll crash there instead.
+    * Samson 11-09-2014
+    */
+   if( vnum < 0 || vnum >= top_liquid )
+   {
+      bug( "%s: Invalid vnum %d, returning NULL", __func__, vnum );
+      return NULL;
+   }
+
    return liquid_table[vnum];
 }
 
@@ -529,6 +540,27 @@ mixture_data *get_mix( const string & str )
          return mix;
    }
    return NULL;
+}
+
+void free_liquiddata( void )
+{
+   list < mixture_data * >::iterator mx;
+   liquid_data *liq;
+   int loopa;
+
+   for( mx = mixlist.begin(  ); mx != mixlist.end(  ); )
+   {
+      mixture_data *mix = *mx;
+      ++mx;
+
+      deleteptr( mix );
+   }
+   for( loopa = 0; loopa < top_liquid; ++loopa )
+   {
+      liq = get_liq_vnum( loopa );
+
+      deleteptr( liq );
+   }
 }
 
 /* Function to display liquid list. - Tarl 9 Jan 03 */
@@ -1276,7 +1308,7 @@ CMDF( do_drink )
       {
          obj = *iobj;
 
-         if( obj->item_type == ITEM_FOUNTAIN )
+         if( obj->item_type == ITEM_FOUNTAIN || obj->item_type == ITEM_PUDDLE )
             break;
       }
 
@@ -1370,6 +1402,74 @@ CMDF( do_drink )
          break;
       }
 
+      case ITEM_PUDDLE: 
+      {
+         liquid_data *liq = NULL;
+
+         if( obj->value[1] <= 0 )
+         { 
+            bug( "%s: empty puddle %d.", __FUNCTION__, obj->in_room->vnum ); 
+            return; 
+         } 
+
+         if( ( liq = get_liq_vnum( obj->value[2] ) ) == NULL )
+         { 
+            bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
+            liq = get_liq_vnum( 0 );
+         }
+
+         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         { 
+            act( AT_ACTION, "$n stoops to the ground and drinks from $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You stoop to the ground and drink $T from $p.", ch, obj, liq->name.c_str(), TO_CHAR );
+            ch->sound( "drink.wav", 100, false );
+         }
+
+         gain_condition( ch, COND_DRUNK, liq->mod[COND_DRUNK] );
+         gain_condition( ch, COND_FULL, liq->mod[COND_FULL] );
+         gain_condition( ch, COND_THIRST, liq->mod[COND_THIRST] );
+
+         if( liq->type == LIQTYPE_POISON )
+         {
+            affect_data af;
+
+            act( AT_POISON, "$n sputters and gags.", ch, NULL, NULL, TO_ROOM );
+            act( AT_POISON, "You sputter and gag.", ch, NULL, NULL, TO_CHAR );
+            ch->mental_state = URANGE( 20, ch->mental_state + 5, 100 );
+            af.type = gsn_poison;
+            af.duration = obj->value[3];
+            af.location = APPLY_NONE;
+            af.modifier = 0;
+            af.bit = AFF_POISON;
+            ch->affect_join( &af );
+         }
+
+         if( !ch->isnpc() )
+         {
+            if( ch->pcdata->condition[COND_DRUNK] > ( sysdata->maxcondval / 2 ) && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .4 ) )
+               ch->print( "You feel quite sloshed.\r\n" );
+            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .4 ) && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .6 ) )
+               ch->print( "You start to feel a little drunk.\r\n" );
+            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .6 ) && ch->pcdata->condition[COND_DRUNK] < ( sysdata->maxcondval * .9 ) )
+               ch->print( "Your vision starts to get blurry.\r\n" );
+            else if( ch->pcdata->condition[COND_DRUNK] >= ( sysdata->maxcondval * .9 ) && ch->pcdata->condition[COND_DRUNK] < sysdata->maxcondval )
+               ch->print( "You feel very drunk.\r\n" );
+            else if( ch->pcdata->condition[COND_DRUNK] == sysdata->maxcondval )
+               ch->print( "You feel like your going to pass out.\r\n" );
+
+            if( ch->pcdata->condition[COND_THIRST] > ( sysdata->maxcondval / 2 ) && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .4 ) )
+               ch->print( "Your stomach begins to slosh around.\r\n" );
+            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .4 ) && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .6 ) )
+               ch->print( "You start to feel bloated.\r\n" );
+            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .6 ) && ch->pcdata->condition[COND_THIRST] < ( sysdata->maxcondval * .9 ) )
+               ch->print( "You feel bloated.\r\n" );
+            else if( ch->pcdata->condition[COND_THIRST] >= ( sysdata->maxcondval * .9 ) && ch->pcdata->condition[COND_THIRST] < sysdata->maxcondval )
+               ch->print( "You stomach is almost filled to it's brim!\r\n" );
+            else if( ch->pcdata->condition[COND_THIRST] == sysdata->maxcondval )
+               ch->print( "Your stomach is full, you can't manage to get anymore down.\r\n" );
+         }
+      }
+
       case ITEM_DRINK_CON:
       {
          liquid_data *liq = NULL;
@@ -1402,7 +1502,7 @@ CMDF( do_drink )
             ch->sound( "drink.wav", 100, false );
          }
 
-         int amount = 1;   /* UMIN(amount, obj->value[1]); */
+         int amount = 1;
 
          /*
           * gain conditions accordingly              -Nopey 
@@ -1517,21 +1617,26 @@ CMDF( do_fill )
          act( AT_ACTION, "$n tries to fill $p... (Don't ask me how)", ch, obj, NULL, TO_ROOM );
          ch->print( "You cannot fill that.\r\n" );
          return;
+
          /*
           * place all fillable item types here 
           */
       case ITEM_DRINK_CON:
          src_item1 = ITEM_FOUNTAIN;
          src_item2 = ITEM_BLOOD;
+         src_item3 = ITEM_PUDDLE;
          break;
+
       case ITEM_HERB_CON:
          src_item1 = ITEM_HERB;
          src_item2 = ITEM_HERB_CON;
          break;
+
       case ITEM_PIPE:
          src_item1 = ITEM_HERB;
          src_item2 = ITEM_HERB_CON;
          break;
+
       case ITEM_CONTAINER:
          src_item1 = ITEM_CONTAINER;
          src_item2 = ITEM_CORPSE_NPC;
@@ -1575,14 +1680,13 @@ CMDF( do_fill )
          all = true;
          source = NULL;
       }
-      else
-         /*
-          * This used to let you fill a pipe from an object on the ground.  Seems
-          * to me you should be holding whatever you want to fill a pipe with.
-          * It's nitpicking, but I needed to change it to get a mobprog to work
-          * right.  Check out Lord Fitzgibbon if you're curious.  -Narn 
-          */
-      if( dest_item == ITEM_PIPE )
+      /*
+       * This used to let you fill a pipe from an object on the ground.  Seems
+       * to me you should be holding whatever you want to fill a pipe with.
+       * It's nitpicking, but I needed to change it to get a mobprog to work
+       * right.  Check out Lord Fitzgibbon if you're curious.  -Narn 
+       */
+      else if( dest_item == ITEM_PIPE )
       {
          if( !( source = ch->get_obj_carry( arg2 ) ) )
          {
@@ -1626,7 +1730,7 @@ CMDF( do_fill )
 
          if( dest_item == ITEM_CONTAINER )
          {
-            if( !source->wear_flags.test( ITEM_TAKE ) || source->extra_flags.test( ITEM_BURIED )
+            if( !source->wear_flags.test( ITEM_TAKE ) || source->extra_flags.test( ITEM_BURIED ) || source->extra_flags.test( ITEM_NOFILL )
                 || ( source->extra_flags.test( ITEM_PROTOTYPE ) && !ch->can_take_proto(  ) )
                 || ch->carry_weight + source->get_weight(  ) > ch->can_carry_w(  ) || ( source->get_real_weight(  ) + obj->get_real_weight(  ) / obj->count ) > obj->value[0] )
                continue;
@@ -1650,6 +1754,7 @@ CMDF( do_fill )
             break;
          }
       }
+
       if( !found )
       {
          switch ( src_item1 )
@@ -1657,20 +1762,25 @@ CMDF( do_fill )
             default:
                ch->print( "There is nothing appropriate here!\r\n" );
                return;
+
             case ITEM_FOUNTAIN:
                ch->print( "There is no fountain or pool here!\r\n" );
                return;
+
             case ITEM_BLOOD:
                ch->print( "There is no blood pool here!\r\n" );
                return;
+
             case ITEM_HERB_CON:
                ch->print( "There are no herbs here!\r\n" );
                return;
+
             case ITEM_HERB:
                ch->print( "You cannot find any smoking herbs.\r\n" );
                return;
          }
       }
+
       if( dest_item == ITEM_CONTAINER )
       {
          act( AT_ACTION, "You fill $p.", ch, obj, NULL, TO_CHAR );
@@ -1691,13 +1801,14 @@ CMDF( do_fill )
       {
          default:   /* put something in container */
             if( !source->in_room /* disallow inventory items */
-                || !source->wear_flags.test( ITEM_TAKE ) || ( source->extra_flags.test( ITEM_PROTOTYPE )
-                                                              && !ch->can_take_proto(  ) )
+                || !source->wear_flags.test( ITEM_TAKE ) || source->extra_flags.test( ITEM_NOFILL )
+                || ( source->extra_flags.test( ITEM_PROTOTYPE ) && !ch->can_take_proto(  ) )
                 || ch->carry_weight + source->get_weight(  ) > ch->can_carry_w(  ) || ( source->get_real_weight(  ) + obj->get_real_weight(  ) / obj->count ) > obj->value[0] )
             {
                ch->print( "You can't do that.\r\n" );
                return;
             }
+
             obj->separate(  );
             act( AT_ACTION, "You take $P and put it inside $p.", ch, obj, source, TO_CHAR );
             act( AT_ACTION, "$n takes $P and puts it inside $p.", ch, obj, source, TO_ROOM );
@@ -1715,11 +1826,13 @@ CMDF( do_fill )
                ch->print( "You can't do that.\r\n" );
                return;
             }
+
             if( source->extra_flags.test( ITEM_CLANCORPSE ) && !ch->is_immortal(  ) )
             {
                ch->print( "Your hands fumble. Maybe you better loot a different way.\r\n" );
                return;
             }
+
             if( !source->extra_flags.test( ITEM_CLANCORPSE ) || !ch->has_pcflag( PCFLAG_DEADLY ) )
             {
                char name[MIL];
@@ -1770,6 +1883,7 @@ CMDF( do_fill )
                ++iobj;
 
                if( !otmp->wear_flags.test( ITEM_TAKE )
+                   || otmp->extra_flags.test( ITEM_NOFILL )
                    || ( otmp->extra_flags.test( ITEM_PROTOTYPE ) && !ch->can_take_proto(  ) )
                    || ch->carry_number + otmp->count > ch->can_carry_n(  )
                    || ch->carry_weight + otmp->get_weight(  ) > ch->can_carry_w(  )
@@ -1799,6 +1913,7 @@ CMDF( do_fill )
    }
    if( source->count > 1 && source->item_type != ITEM_FOUNTAIN )
       source->separate(  );
+
    obj->separate(  );
 
    switch ( source->item_type )
@@ -1881,7 +1996,98 @@ CMDF( do_fill )
          act( AT_ACTION, "You fill $p from $P.", ch, obj, source, TO_CHAR );
          act( AT_ACTION, "$n fills $p from $P.", ch, obj, source, TO_ROOM );
          return;
+
+      case ITEM_PUDDLE:
+         if( obj->value[1] != 0 && obj->value[2] != source->value[2] )
+         {
+            ch->print( "There is already another liquid in it.\r\n" );
+            return;
+         }
+         obj->value[2] = source->value[2];
+
+         if( source->value[1] < diff )
+	         diff = source->value[1];
+
+         obj->value[1] += diff;
+         source->value[1] -= diff;
+
+         if( source->item_type == ITEM_PUDDLE )
+         {
+            char buf[20];
+            liquid_data *liq = get_liq_vnum( source->value[2] );
+
+            if( source->value[1] > 15 )
+               mudstrlcpy( buf, "large", 20 );
+            else if( source->value[1] > 10 )
+               mudstrlcpy( buf, "rather large", 20 );
+            else if( source->value[1] > 5 )
+               mudstrlcpy( buf, "rather small", 20 );
+            else
+               mudstrlcpy( buf, "small", 20 );
+            stralloc_printf( &source->objdesc, "There is a %s puddle of %s.", buf, ( liq == NULL ? "water" : liq->name.c_str() ) );
+         }
+         act( AT_ACTION, "You fill $p from $P.", ch, obj, source, TO_CHAR );
+         act( AT_ACTION, "$n fills $p from $P.", ch, obj, source, TO_ROOM );
+
+         if( source->value[1] < 1 )
+         {
+            act( AT_ACTION, "The remaining contents of the puddle seep into the ground.", ch, NULL, NULL, TO_CHAR );
+            act( AT_ACTION, "The remaining contents of the puddle seep into the ground.", ch, NULL, NULL, TO_ROOM );
+            source->extract( );
+         }
+         return;
    }
+}
+
+void make_puddle( char_data * ch, obj_data * cont )
+{
+   obj_data *obj;
+   char buf[20];
+   bool found = false;
+   liquid_data *liq = NULL;
+   list < obj_data * >::iterator iobj;
+
+   for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.begin(); ++iobj )
+   {
+      obj = *iobj;
+
+      if( obj->pIndexData->item_type == ITEM_PUDDLE )
+      {
+         if( obj->value[2] == cont->value[2] )
+         {
+            obj->value[1] += cont->value[1];
+            obj->value[3] += cont->value[3];
+            obj->timer = number_range( 2, 4 );
+            found = true;
+            break;
+         }
+      }
+   }
+
+   if( !found )
+   {
+      obj = get_obj_index( OBJ_VNUM_PUDDLE )->create_object( 1 );
+      obj->timer = number_range( 2, 8 );
+      obj->value[1] += cont->value[1];
+      obj->value[2] = cont->value[2];
+      obj->value[3] = cont->value[3];
+      obj->to_room( ch->in_room, ch );
+   }
+
+   liq = get_liq_vnum( obj->value[2] );
+
+   if( obj->value[1] > 15 )
+      mudstrlcpy( buf, "large", 20 );
+   else if( obj->value[1] > 10 )
+      mudstrlcpy( buf, "rather large", 20 );
+   else if( obj->value[1] > 5 )
+      mudstrlcpy( buf, "rather small", 20 );
+   else
+      mudstrlcpy( buf, "small", 20 );
+   stralloc_printf( &obj->name, "puddle %s", ( liq == NULL ? "water" : liq->name.c_str() ) );
+   stralloc_printf( &obj->short_descr, "A puddle of %s", ( liq == NULL ? "water" : liq->name.c_str() ) );
+   stralloc_printf( &obj->objdesc, "This is a %s puddle of %s.", buf, ( liq == NULL ? "water" : liq->name.c_str() ) );
+   return;
 }
 
 CMDF( do_empty )
@@ -1950,6 +2156,7 @@ CMDF( do_empty )
             ch->print( "It's already empty.\r\n" );
             return;
          }
+
          if( arg2.empty(  ) )
          {
             if( ch->in_room->flags.test( ROOM_NODROP ) || ch->has_pcflag( PCFLAG_LITTERBUG ) )
@@ -1982,21 +2189,25 @@ CMDF( do_empty )
                ch->print( "You can't find it.\r\n" );
                return;
             }
+
             if( dest == obj )
             {
                ch->print( "You can't empty something into itself!\r\n" );
                return;
             }
+
             if( dest->item_type != ITEM_CONTAINER && dest->item_type != ITEM_KEYRING && dest->item_type != ITEM_QUIVER )
             {
                ch->print( "That's not a container!\r\n" );
                return;
             }
+
             if( IS_SET( dest->value[1], CONT_CLOSED ) )
             {
                act( AT_PLAIN, "The $d is closed.", ch, NULL, dest->name, TO_CHAR );
                return;
             }
+
             dest->separate(  );
             if( obj->empty( dest, NULL ) )
             {
@@ -2009,26 +2220,5 @@ CMDF( do_empty )
                act( AT_ACTION, "$P is too full.", ch, obj, dest, TO_CHAR );
          }
          return;
-   }
-}
-
-void free_liquiddata( void )
-{
-   list < mixture_data * >::iterator mx;
-   liquid_data *liq;
-   int loopa;
-
-   for( mx = mixlist.begin(  ); mx != mixlist.end(  ); )
-   {
-      mixture_data *mix = *mx;
-      ++mx;
-
-      deleteptr( mix );
-   }
-   for( loopa = 0; loopa <= top_liquid; ++loopa )
-   {
-      liq = get_liq_vnum( loopa );
-
-      deleteptr( liq );
    }
 }

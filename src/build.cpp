@@ -146,7 +146,7 @@ const char *r_flags[] = {
    "teleshowdesc", "nofloor", "solitary", "petshop", "donation", "nodropall",
    "logspeech", "proto", "noteleport", "noscry", "cave", "cavern", "nobeacon",
    "auction", "map", "forge", "guildinn", "isolated", "watchtower",
-   "noquit", "telenofly", "track"
+   "noquit", "telenofly", "_track_", "noyell", "nowhere", "notrack"
 };
 
 const char *o_flags[] = {
@@ -160,7 +160,7 @@ const char *o_flags[] = {
    "antipaladin", "antinecro", "antiapal", "onlycleric", "onlymage", "onlyrogue",
    "onlywarrior", "onlybard", "onlydruid", "onlymonk", "onlyranger", "onlypaladin",
    "onlynecro", "onlyapal", "auction", "onmap", "personal", "lodged", "sindhae",
-   "mustmount", "noauction", "thrown"
+   "mustmount", "noauction", "thrown", "permanent", "deathdrop", "nofill"
 };
 
 const char *w_flags[] = {
@@ -174,12 +174,12 @@ const char *w_flags[] = {
 const char *area_flags[] = {
    "nopkill", "nocamp", "noastral", "noportal", "norecall", "nosummon", "noscry",
    "noteleport", "arena", "nobeacon", "noquit", "prototype", "silence", "nomagic",
-   "hidden"
+   "hidden", "nowhere"
 };
 
 const char *o_types[] = {
-   "NONE", "light", "scroll", "wand", "staff", "weapon", "scabbard", "UNUSED2",
-   "treasure", "armor", "potion", "clothing", "furniture", "trash", "UNUSED4",
+   "NONE", "light", "scroll", "wand", "staff", "weapon", "scabbard", "puddle",
+   "treasure", "armor", "potion", "clothing", "furniture", "trash", "journal",
    "container", "UNUSED5", "drinkcon", "key", "food", "money", "pen", "boat",
    "corpse", "corpse_pc", "fountain", "pill", "blood", "bloodstain",
    "scraps", "pipe", "herbcon", "herb", "incense", "fire", "book", "switch",
@@ -208,7 +208,7 @@ const char *a_types[] = {
 const char *aff_flags[] = {
    "NONE", "blind", "invisible", "detect_evil", "detect_invis", "detect_magic",
    "detect_hidden", "hold", "sanctuary", "faerie_fire", "infrared", "curse",
-   "UNUSED", "poison", "protect", "paralysis", "sneak", "hide", "sleep",
+   "grapple", "poison", "protect", "paralysis", "sneak", "hide", "sleep",
    "charm", "flying", "acidmist", "floating", "truesight", "detect_traps",
    "scrying", "fireshield", "shockshield", "venomshield", "iceshield", "wizardeye",
    "berserk", "aqua_breath", "recurringspell", "contagious", "bladebarrier",
@@ -221,26 +221,25 @@ const char *aff_flags[] = {
 
 const char *act_flags[] = {
    "npc", "sentinel", "scavenger", "innkeeper", "banker", "aggressive", "stayarea",
-   "wimpy", "pet", "autonomous", "practice", "immortal", "deadly", "polyself",
+   "wimpy", "pet", "nosteal", "practice", "immortal", "deadly", "polyself",
    "meta_aggr", "guardian", "boarded", "nowander", "mountable", "mounted",
    "scholar", "secretive", "hardhat", "mobinvis", "noassist", "illusion",
    "pacifist", "noattack", "annoying", "auction", "proto", "mage", "warrior", "cleric",
    "rogue", "druid", "monk", "paladin", "ranger", "necromancer", "antipaladin",
    "huge", "greet", "teacher", "onmap", "smith", "guildauc", "guildbank", "guildvendor",
-   "guildrepair", "guildforge", "idmob", "guildidmob"
+   "guildrepair", "guildforge", "idmob", "guildidmob", "stopscript"
 };
 
 const char *pc_flags[] = {
-   "NONE", "deadly", "unauthed", "norecall", "nointro", "gag", "retired", "UNUSED",
-   "nosummon", "pager", "notitled", "groupwho", "UNUSED",
-   "nstart", "flags", "sector", "aname", "nobeep", "passdoor", "privacy",
-   "notell", "checkboards", "noquote", "UNUSED", "shovedrag", "autoexits",
-   "autoloot", "autosac", "blank", "brief", "automap", "telnet_ga",
-   "holylight", "wizinvis", "roomvnum", "silence", "noemote", "boarded", "no_tell",
-   "log", "deny", "freeze", "exempt", "onship", "litterbug", "ansi",
-   "UNUSED", "autogold", "ghost", "afk", "UNUSED", "busy", "autoassist",
-   "smartsac", "idle", "onmap", "mapedit", "guildsplit", "groupsplit",
-   "msp", "compass", "nourl", "noemail"
+   "NONE", "deadly", "unauthed", "norecall", "nointro", "gag", "nobio", "nodesc",
+   "nosummon", "pager", "notitled", "groupwho", "groupsplit", "nstart", "flags",
+   "sector", "aname", "nobeep", "passdoor", "privacy", "notell", "checkboards",
+   "noquote", "autoassist", "shovedrag", "autoexits", "autoloot", "autosac",
+   "blank", "brief", "automap", "telnet_ga", "holylight", "wizinvis", "roomvnum",
+   "silence", "noemote", "boarded", "no_tell", "log", "deny", "freeze", "exempt",
+   "onship", "litterbug", "ansi", "msp", "autogold", "ghost", "afk", "nourl",
+   "noemail", "smartsac", "idle", "onmap", "mapedit", "guildsplit", "compass",
+   "retired"
 };
 
 const char *trap_types[] = {
@@ -327,7 +326,8 @@ const char *mprog_flags[] = {
    "allgreet", "give", "bribe", "hour", "time", "wear", "remove", "sac",
    "look", "exa", "zap", "get", "drop", "damage", "repair", "randiw",
    "speechiw", "pull", "push", "sleep", "rest", "leave", "script", "use",
-   "speechand", "month", "keyword", "sell", "tell", "telland", "command"
+   "speechand", "month", "keyword", "sell", "tell", "telland", "command",
+   "emote", "login", "void", "load", "greetinfight"
 };
 
 /* Bamfin parsing code by Altrag, installed by Samson 12-10-97
@@ -5825,8 +5825,7 @@ CMDF( do_mpedit )
       ch->print( "Command being one of:\r\n" );
       ch->print( "  add delete insert edit list\r\n" );
       ch->print( "Program being one of:\r\n" );
-      ch->print( "  act speech rand fight hitprcnt greet allgreet\r\n" );
-      ch->print( "  entry give bribe death time hour script keyword\r\n" );
+      ch->print( print_array_string( mprog_flags ) );
       return;
    }
 
@@ -6110,9 +6109,7 @@ CMDF( do_opedit )
       ch->print( "Command being one of:\r\n" );
       ch->print( "  add delete insert edit list\r\n" );
       ch->print( "Program being one of:\r\n" );
-      ch->print( "  act speech rand wear remove sac zap get\r\n" );
-      ch->print( "  drop damage repair greet exa use keyword\r\n" );
-      ch->print( "  pull push (for levers, pullchains, buttons)\r\n\r\n" );
+      ch->print( print_array_string( mprog_flags ) );
       ch->print( "Object should be in your inventory to edit.\r\n" );
       return;
    }
@@ -6376,8 +6373,7 @@ CMDF( do_rpedit )
       ch->print( "Command being one of:\r\n" );
       ch->print( "  add delete insert edit list\r\n" );
       ch->print( "Program being one of:\r\n" );
-      ch->print( "  act speech rand sleep rest rfight enter\r\n" );
-      ch->print( "  leave death keyword\r\n\r\n" );
+      ch->print( print_array_string( mprog_flags ) );
       ch->print( "You should be standing in the room you wish to edit.\r\n" );
       return;
    }

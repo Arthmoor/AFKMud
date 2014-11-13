@@ -30,13 +30,13 @@
 #define __AREA_H__
 
 /* Area flags - Narn Mar/96 */
-/* Don't forget to update build.c!!! */
+/* Don't forget to update build.cpp!!! */
 enum area_flags
 {
    AFLAG_NOPKILL, AFLAG_NOCAMP, AFLAG_NOASTRAL, AFLAG_NOPORTAL, AFLAG_NORECALL,
    AFLAG_NOSUMMON, AFLAG_NOSCRY, AFLAG_NOTELEPORT, AFLAG_ARENA, AFLAG_NOBEACON,
    AFLAG_NOQUIT, AFLAG_PROTOTYPE, AFLAG_SILENCE, AFLAG_NOMAGIC, AFLAG_HIDDEN,
-   AFLAG_MAX
+   AFLAG_NOWHERE, AFLAG_MAX
 };
 
 class neighbor_data

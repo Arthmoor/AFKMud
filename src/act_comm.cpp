@@ -288,6 +288,9 @@ CMDF( do_say )
       return;
    }
 
+   // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
+   strip_spaces( argument );
+
    bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
    if( ch->isnpc(  ) )
       ch->unset_actflag( ACT_SECRETIVE );
@@ -318,8 +321,9 @@ CMDF( do_say )
          if( !ch->is_immortal(  ) || vch->level > ch->level )
             continue;
          else
-            vch->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", ch->name );
+            vch->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", !vch->can_see( ch, false ) ? "Someone" : ch->name );
       }
+
       if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
       {
          int speakswell = UMIN( knows_language( vch, ch->speaking, ch ), knows_language( ch, ch->speaking, vch ) );
@@ -345,16 +349,25 @@ CMDF( do_say )
       append_to_file( LOG_FILE, "%s: %s", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ) );
 
    mprog_speech_trigger( argument, ch );
+   if( ch->char_died(  ) )
+      return;
+
    mprog_and_speech_trigger( argument, ch );
    if( ch->char_died(  ) )
       return;
 
    oprog_speech_trigger( argument, ch );
+   if( ch->char_died(  ) )
+      return;
+
    oprog_and_speech_trigger( argument, ch );
    if( ch->char_died(  ) )
       return;
 
    rprog_speech_trigger( argument, ch );
+   if( ch->char_died(  ) )
+      return;
+
    rprog_and_speech_trigger( argument, ch );
 }
 
@@ -372,6 +385,12 @@ CMDF( do_whisper )
          speaking = lang;
          break;
       }
+   }
+
+   if( ch->in_room->flags.test( ROOM_SILENCE ) || ch->in_room->area->flags.test( AFLAG_SILENCE ) )
+   {
+      ch->print( "You can't do that here.\r\n" );
+      return;
    }
 
    argument = one_argument( argument, arg );
@@ -404,11 +423,13 @@ CMDF( do_whisper )
       ch->print( "That player is link-dead.\r\n" );
       return;
    }
+
    if( victim->has_pcflag( PCFLAG_AFK ) )
    {
       ch->print( "That player is afk.\r\n" );
       return;
    }
+
    if( victim->has_pcflag( PCFLAG_SILENCE ) )
       ch->print( "That player is silenced. They will receive your message but can not respond.\r\n" );
 
@@ -422,6 +443,20 @@ CMDF( do_whisper )
    }
 
    /*
+    * Stopping people from sending tells whispers etc to people on their ignore list. -Leart
+    */
+   if( is_ignoring( ch, victim ) )
+   {
+      /* If the sender is an imm then they can bypass this check */
+      if( !ch->is_immortal( ) || victim->get_trust( ) > ch->get_trust( ) )
+      {
+         ch->printf( "&[ignore]You are currently ignoring %s.\r\n"
+            "Please type 'ignore %s' to stop ignoring them, then try whispering to them again.\r\n", victim->name, victim->name );
+         return;
+   	}
+   }
+
+   /*
     * Check to see if target of tell is ignoring the sender 
     */
    if( is_ignoring( victim, ch ) )
@@ -432,8 +467,11 @@ CMDF( do_whisper )
       if( !ch->is_immortal(  ) || victim->get_trust(  ) > ch->get_trust(  ) )
          return;
       else
-         victim->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", ch->name );
+         victim->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", !victim->can_see( ch, false ) ? "Someone" : ch->name );
    }
+
+   // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
+   strip_spaces( argument );
 
    MOBtrigger = false;
    act( AT_WHISPER, "You whisper to $N '$t'", ch, argument.c_str(  ), victim, TO_CHAR );
@@ -451,10 +489,12 @@ CMDF( do_whisper )
    else
       act( AT_WHISPER, "$n whispers to you '$t'", ch, argument.c_str(  ), victim, TO_VICT );
 
+   MOBtrigger = true;
+   victim->position = position;
+
    if( ch->in_room->flags.test( ROOM_SILENCE ) || ch->in_room->area->flags.test( AFLAG_SILENCE ) )
       act( AT_WHISPER, "$n whispers something to $N.", ch, argument.c_str(  ), victim, TO_NOTVICT );
 
-   victim->position = position;
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
       append_to_file( LOG_FILE, "%s: %s (whisper to) %s.", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ),
                       victim->isnpc(  )? victim->short_descr : victim->name );
@@ -462,6 +502,8 @@ CMDF( do_whisper )
    if( victim->isnpc(  ) )
    {
       mprog_speech_trigger( argument, ch );
+      if( ch->char_died(  ) )
+         return;
       mprog_and_speech_trigger( argument, ch );
    }
 }
@@ -583,7 +625,7 @@ CMDF( do_tell )
    {
       if( ch->isnpc(  ) )
       {
-         ch->print( "Tell who what?" );
+         ch->print( "Tell who what?\r\n" );
          return;
       }
 
@@ -629,8 +671,13 @@ CMDF( do_tell )
 
    if( victim->has_pcflag( PCFLAG_AFK ) )
    {
-      ch->print( "That player is afk.\r\n" );
-      return;
+      if( ch->is_immortal() )
+         ch->print( "That player is AFK, but will receive your message.\r\n" );
+      else
+      {
+         ch->print( "That player is afk.\r\n" );
+         return;
+      }
    }
 
    if( victim->has_pcflag( PCFLAG_NOTELL ) && !ch->is_immortal(  ) )
@@ -650,7 +697,7 @@ CMDF( do_tell )
 
    if( ( !ch->is_immortal(  ) && !victim->IS_AWAKE(  ) ) || ( !victim->isnpc(  ) && ( victim->in_room->flags.test( ROOM_SILENCE ) || victim->in_room->area->flags.test( AFLAG_SILENCE ) ) ) )
    {
-      act( AT_PLAIN, "$E can't hear you.", ch, 0, victim, TO_CHAR );
+      act( AT_PLAIN, "$E can't hear you.", ch, NULL, victim, TO_CHAR );
       return;
    }
 
@@ -659,6 +706,20 @@ CMDF( do_tell )
    {
       act( AT_PLAIN, "$E is currently in a writing buffer. Please try again in a few minutes.", ch, 0, victim, TO_CHAR );
       return;
+   }
+
+   /*
+    * Stopping people from sending tells whispers etc to people on their ignore list. -Leart
+    */
+   if( is_ignoring( ch, victim ) )
+   {
+      /* If the sender is an imm then they can bypass this check */
+      if( !ch->is_immortal( ) || victim->get_trust( ) > ch->get_trust( ) )
+      {
+         ch->printf( "&[ignore]You are currently ignoring %s.\r\n"
+            "Please type 'ignore %s' to stop ignoring them, then try sending your tell to them again.\r\n", victim->name, victim->name );
+         return;
+   	}
    }
 
    /*
@@ -678,7 +739,7 @@ CMDF( do_tell )
          return;
       }
       else
-         victim->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", ch->name );
+         victim->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", !victim->can_see( ch, false ) ? "Someone" : ch->name );
    }
 
    if( switched_victim )
@@ -722,6 +783,8 @@ CMDF( do_tell )
    if( victim->isnpc(  ) )
    {
       mprog_tell_trigger( argument, ch );
+      if( ch->char_died(  ) )
+         return;
       mprog_and_tell_trigger( argument, ch );
    }
 }
@@ -827,8 +890,9 @@ CMDF( do_emote )
          if( !ch->is_immortal(  ) || vch->level > ch->level )
             continue;
          else
-            vch->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", ch->name );
+            vch->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", !vch->can_see( ch, false ) ? "Someone" : ch->name );
       }
+
       if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
       {
          int speakswell = UMIN( knows_language( vch, ch->speaking, ch ), knows_language( ch, ch->speaking, vch ) );
@@ -836,12 +900,13 @@ CMDF( do_emote )
          if( speakswell < 85 )
             sbuf = translate( speakswell, argument, lang_names[speaking] );
       }
+
       MOBtrigger = false;
       act( AT_SOCIAL, "$n $t", ch, sbuf.c_str(  ), vch, ( vch == ch ? TO_CHAR : TO_VICT ) );
    }
    ch->set_actflags( actflags );
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
-      append_to_file( LOG_FILE, "%s %s (emote)", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ) );
+      append_to_file( LOG_FILE, "%s %s (emote)", ch->isnpc(  ) ? ch->short_descr : ch->name, argument.c_str(  ) );
 }
 
 /* 0 = bug 1 = idea 2 = typo */

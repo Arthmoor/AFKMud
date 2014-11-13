@@ -58,6 +58,7 @@ const int MAX_SKILL = 500; /* Raised during 1.4a patch */
 const int MAX_HERB = 100;
 const int MAX_DISEASE = 20;
 const int MAX_RGRID_ROOMS = 30000;
+const int MAX_MSG = 18;
 
 extern int MAX_PC_RACE;
 extern int MAX_PC_CLASS;
@@ -98,6 +99,53 @@ const int MAINPORT = 9500;
  * Defined in #MOBILES.
  */
 /* Added animate dead mobs - Whir - 8/29/98 */
+const int MOB_VNUM_WOODCALL1 = 11001;
+const int MOB_VNUM_WOODCALL2 = 11002;
+const int MOB_VNUM_WOODCALL3 = 11003;
+const int MOB_VNUM_WOODCALL4 = 11004;
+const int MOB_VNUM_WOODCALL5 = 11005;
+const int MOB_VNUM_WOODCALL6 = 11006;
+const int MOB_VNUM_WARMOUNTTWO = 11007;      // Antipaladin warmount - Samson 4-2-00 */
+const int MOB_VNUM_WARMOUNTTHREE = 11008;    // Paladin flying warmount - Samson 4-2-00 */
+const int MOB_VNUM_WARMOUNTFOUR = 11009;     // Antipaladin flying warmount - Samson 4-2-00 */
+const int MOB_VNUM_GNOME_FLYER = 11010;      // Gnomish Flyer - for the Tinker skill
+const int MOB_VNUM_GATE = 11029;             // Gate spell servitor daemon - Samson 3-26-98 */
+const int MOB_VNUM_MAP_TRAVELER = 11030;     // Random traveler for Overland city sectors
+const int MOB_VNUM_MAP_MERCHANT = 11031;     // Random merchant for Overland city sectors
+const int MOB_VNUM_MAP_GYPSY = 11032;        // Random gypsy for Overland city sectors
+const int MOB_VNUM_MAP_BANDIT = 11033;       // Random bandit for Overland city sectors
+const int MOB_VNUM_MAP_FARMER = 11034;       // Random farmer for Overland field sectors
+const int MOB_VNUM_MAP_COW = 11035;          // Random cow for Overland field sectors
+const int MOB_VNUM_MAP_RABBIT = 11036;       // Random rabbit for Overland field sectors
+const int MOB_VNUM_MAP_BULL = 11037;         // Random bull for Overland field sectors
+const int MOB_VNUM_MAP_DEER = 11038;         // Random deer for Overland forest sectors
+const int MOB_VNUM_MAP_DRYAD = 11039;        // Random dryad for Overland forest sectors
+const int MOB_VNUM_MAP_TREANT = 11040;       // Random treant for Overland forest sectors
+const int MOB_VNUM_MAP_WURM = 11041;         // Random wurm for Overland forest sectors
+const int MOB_VNUM_MAP_DWARF = 11042;        // Random dwarf for Overland hill sectors
+const int MOB_VNUM_MAP_BADGER = 11043;       // Random rock badger for Overland hill sectors
+const int MOB_VNUM_MAP_CROW = 11044;         // Random crow for Overland hill sectors
+const int MOB_VNUM_MAP_DRAGON = 11045;       // Random dragon for Overland hill sectors
+const int MOB_VNUM_MAP_GOAT = 11046;         // Random goat for Overland mountain sectors
+const int MOB_VNUM_MAP_HOUND = 11047;        // Random wild hound for Overland mountain sectors
+const int MOB_VNUM_MAP_FIRBOLG = 11048;      // Random firbolg for Overland mountain sectors
+const int MOB_VNUM_MAP_BEETLE = 11049;       // Random scarab beetle for Overland desert sectors
+const int MOB_VNUM_MAP_NOMAD = 11050;        // Random nomad for Overland desert sectors
+const int MOB_VNUM_MAP_ELEMENTAL = 11051;    // Random sand elemental for Overland desert sectors
+const int MOB_VNUM_MAP_STIRGE = 11052;       // Random stirge for Overland swamp sectors
+const int MOB_VNUM_MAP_GOBLIN = 11053;       // Random goblin for Overland swamp sectors
+const int MOB_VNUM_MAP_ORANGUTAN = 11054;    // Random orangutan for Overland jungle sectors
+const int MOB_VNUM_MAP_PYTHON = 11055;       // Random python for Overland jungle sectors
+const int MOB_VNUM_MAP_LIZARD = 11056;       // Random monitor lizard for Overland jungle sectors
+const int MOB_VNUM_MAP_PANTHER = 11057;      // Random panther for Overland jungle sectors
+const int MOB_VNUM_MAP_CRAB = 11058;         // Random crab for Overland shore sectors
+const int MOB_VNUM_MAP_SEAGULL = 11059;      // Random seagull for Overland shore sectors
+const int MOB_VNUM_MAP_HYENA = 11060;        // Random hyena for Overland scrub sectors
+const int MOB_VNUM_MAP_MEERKAT = 11061;      // Random meerkat for Overland scrub sectors
+const int MOB_VNUM_MAP_ARMADILLO = 11062;    // Random armadillo for Overland scrub sectors
+const int MOB_VNUM_MAP_MANTICORE = 11063;    // Random manticore for Overland scrub sectors
+const int MOB_VNUM_SKYSHIP = 11072;
+const int MOB_VNUM_CITYGUARD = 11074;        // Replaced original cityguard - Samson 3-26-98 */
 const int MOB_VNUM_SUPERMOB = 11402;
 const int MOB_VNUM_ANIMATED_CORPSE = 11403;
 const int MOB_VNUM_ANIMATED_SKELETON = 11404;
@@ -108,21 +156,9 @@ const int MOB_VNUM_ANIMATED_MUMMY = 11408;
 const int MOB_VNUM_ANIMATED_GHOST = 11409;
 const int MOB_VNUM_ANIMATED_DEATH_KNIGHT = 11410;
 const int MOB_VNUM_ANIMATED_DRACOLICH = 11411;
-const int MOB_VNUM_CITYGUARD = 11074;  /* Replaced original cityguard - Samson 3-26-98 */
-const int MOB_VNUM_GATE = 11029; /* Gate spell servitor daemon - Samson 3-26-98 */
-const int MOB_VNUM_CREEPINGDOOM = 11412;  /* Creeping Doom mob - Samson 9-27-98 */
-const int MOB_DOPPLEGANGER = 11413; /* Doppleganger base mob - Samson 10-11-99 */
-const int MOB_VNUM_WARMOUNT = 11414;   /* Paladin warmount - Samson 10-13-98 */
-const int MOB_VNUM_WARMOUNTTWO = 11007;   /* Antipaladin warmount - Samson 4-2-00 */
-const int MOB_VNUM_WARMOUNTTHREE = 11008; /* Paladin flying warmount - Samson 4-2-00 */
-const int MOB_VNUM_WARMOUNTFOUR = 11009;  /* Antipaladin flying warmount - Samson 4-2-00 */
-const int MOB_VNUM_SKYSHIP = 11072;
-const int MOB_VNUM_WOODCALL1 = 11001;
-const int MOB_VNUM_WOODCALL2 = 11002;
-const int MOB_VNUM_WOODCALL3 = 11003;
-const int MOB_VNUM_WOODCALL4 = 11004;
-const int MOB_VNUM_WOODCALL5 = 11005;
-const int MOB_VNUM_WOODCALL6 = 11006;
+const int MOB_VNUM_CREEPINGDOOM = 11412;           // Creeping Doom mob - Samson 9-27-98 */
+const int MOB_DOPPLEGANGER = 11413;                // Doppleganger base mob - Samson 10-11-99 */
+const int MOB_VNUM_WARMOUNT = 11414;               // Paladin warmount - Samson 10-13-98 */
 
 /* Deity avatars */
 
@@ -130,25 +166,71 @@ const int MOB_VNUM_WOODCALL6 = 11006;
  * Well known object virtual numbers.
  * Defined in #OBJECTS.
  */
-const int OBJ_VNUM_DUMMYOBJ = 11000;   /* This one is used by resets to make sure they work right - Samson 2/25/05 */
-const int OBJ_VNUM_FIREPIT = 11001; /* Campfires turn into these when dead - Samson 8-10-98 */
-const int OBJ_VNUM_CAMPFIRE = 11002;   /* Campfire that loads when a player camps - Samson 8-10-98 */
-const int OBJ_VNUM_OVFIRE = 11005;  /* Overland environmental fire */
-const int OBJ_VNUM_FIRESEED = 11007;   /* Fireseed object for spell_fireseed - Samson 10-13-98 */
-const int OBJ_VNUM_FORAGE = 11027;  /* This is the start of a range of 10 vnums - Samson 5-1-04 */
-const int OBJ_VNUM_MAPS = 11046; /* Object used for mapout - Samson 1/28/06 */
-const int OBJ_VNUM_MINING = 11300;  /* This is the start of a range of 5 vnums - Samson 5-1-04 */
+const int OBJ_VNUM_DUMMYOBJ = 11000;       // This one is used by resets to make sure they work right - Samson 2/25/05
+const int OBJ_VNUM_FIREPIT = 11001;        // Campfires turn into these when dead - Samson 8-10-98
+const int OBJ_VNUM_CAMPFIRE = 11002;       // Campfire that loads when a player camps - Samson 8-10-98
+const int OBJ_VNUM_BEDROLL = 11003;        // Bedroll for camping gear
+const int OBJ_VNUM_FIREWOOD = 11004;       // Firewood for camping gear
+const int OBJ_VNUM_OVFIRE = 11005;         // Overland environmental fire
+const int OBJ_VNUM_CAMPGEAR = 11006;       // Generic camping gear object
+const int OBJ_VNUM_FIRESEED = 11007;       // Fireseed object for spell_fireseed - Samson 10-13-98
+const int OBJ_VNUM_FORAGE = 11027;         // This is the start of a range of 10 vnums - Samson 5-1-04
+                                           //  ( 11027 -> 11037 )
+const int OBJ_VNUM_FLAMETHROWER = 11039;   // Gnomish Flamethrower - for the Tinker skill
+const int OBJ_VNUM_LADDER = 11040;         // Gnomish Ladder - for the Tinker skill
+const int OBJ_VNUM_DIGGER = 11041;         // Gnomish Differ - for the Tinker skill
+const int OBJ_VNUM_GNOME_LOCKPICK = 11042; // Gnomish Lockpick - for the Tinker skill
+const int OBJ_VNUM_REBREATHER = 11043;     // Gnomish Rebreather - for the Tinker skill
+const int OBJ_VNUM_TREASURE = 11044;       // Base object used for generating random treasure in treasure.cpp
+const int OBJ_VNUM_RUNE = 11045;           // Base object used to generate runes in treasure.cpp for the socketing system
+const int OBJ_VNUM_MAPS = 11046;           // Object used for mapout - Samson 1/28/06
+const int OBJ_VNUM_ORE_BASE = 11299;       // This object does not actually exist, it's used by the blacksmithing code in treasure.cpp
+const int OBJ_VNUM_MINING = 11300;         // This is the start of a range of 5 vnums - Samson 5-1-04
+                                           // 11300 -> 11304 [11305 and 11306 are special cases]
+const int OBJ_VNUM_TAN_JACKET = 11368;     // Block of objects used by the Tan skill in skills.cpp
+const int OBJ_VNUM_TAN_BOOTS = 11369;
+const int OBJ_VNUM_TAN_GLOVES = 11370;
+const int OBJ_VNUM_TAN_LEGGINGS = 11371;
+const int OBJ_VNUM_TAN_SLEEVES = 11372;
+const int OBJ_VNUM_TAN_HELMET = 11373;
+const int OBJ_VNUM_TAN_BAG = 11374;
+const int OBJ_VNUM_TAN_CLOAK = 11375;
+const int OBJ_VNUM_TAN_BELT = 11376;
+const int OBJ_VNUM_TAN_COLLAR = 11377;
+const int OBJ_VNUM_TAN_WATERSKIN = 11378;
+const int OBJ_VNUM_TAN_QUIVER = 11379;
+const int OBJ_VNUM_TAN_WHIP = 11380;
+const int OBJ_VNUM_TAN_SHIELD = 11381;
+
+const int OBJ_VNUM_PUDDLE = 11400;
 const int OBJ_VNUM_MONEY_ONE = 11401;
 const int OBJ_VNUM_MONEY_SOME = 11402;
 const int OBJ_VNUM_CORPSE_NPC = 11403;
 const int OBJ_VNUM_CORPSE_PC = 11404;
-const int OBJ_VNUM_TREASURE = 11044;
-const int OBJ_VNUM_RUNE = 11045;
 const int OBJ_VNUM_SEVERED_HEAD = 11405;
 const int OBJ_VNUM_TORN_HEART = 11406;
 const int OBJ_VNUM_SLICED_ARM = 11407;
 const int OBJ_VNUM_SLICED_LEG = 11408;
 const int OBJ_VNUM_SPILLED_GUTS = 11409;
+const int OBJ_VNUM_BLOOD = 11410;
+const int OBJ_VNUM_BLOODSTAIN = 11411;
+const int OBJ_VNUM_SCRAPS = 11412;
+const int OBJ_VNUM_MUSHROOM = 11413;
+const int OBJ_VNUM_LIGHT_BALL = 11414;
+const int OBJ_VNUM_SPRING = 11415;
+const int OBJ_VNUM_SLICE = 11417;
+const int OBJ_VNUM_SHOPPING_BAG = 11418;
+
+const int OBJ_VNUM_FIRE = 11423;
+const int OBJ_VNUM_TRAP = 11424;
+const int OBJ_VNUM_PORTAL = 11425;
+const int OBJ_VNUM_BLACK_POWDER = 11426;
+const int OBJ_VNUM_SCROLL_SCRIBING = 11427;
+const int OBJ_VNUM_FLASK_BREWING = 11428;
+const int OBJ_VNUM_NOTE = 11429;
+
+const int OBJ_VNUM_WAND_CHARGING = 11432;
+
 const int OBJ_VNUM_BRAINS = 11435;
 const int OBJ_VNUM_HANDS = 11436;
 const int OBJ_VNUM_FOOT = 11437;
@@ -165,6 +247,7 @@ const int OBJ_VNUM_SCALES = 11447;
 const int OBJ_VNUM_TUSKS = 11448;
 const int OBJ_VNUM_HORNS = 11449;
 const int OBJ_VNUM_CLAWS = 11450;
+
 const int OBJ_VNUM_SHELL = 11461;
 const int OBJ_VNUM_FEATHERS = 11462;
 const int OBJ_VNUM_FORELEG = 11463;
@@ -174,37 +257,6 @@ const int OBJ_VNUM_BEAK = 11466;
 const int OBJ_VNUM_SHARPSCALE = 11467;
 const int OBJ_VNUM_HAUNCHES = 11468;
 const int OBJ_VNUM_FANGS = 11469;
-const int OBJ_VNUM_BLOOD = 11410;
-const int OBJ_VNUM_BLOODSTAIN = 11411;
-const int OBJ_VNUM_SCRAPS = 11412;
-const int OBJ_VNUM_MUSHROOM = 11413;
-const int OBJ_VNUM_LIGHT_BALL = 11414;
-const int OBJ_VNUM_SPRING = 11415;
-const int OBJ_VNUM_SLICE = 11417;
-const int OBJ_VNUM_SHOPPING_BAG = 11418;
-const int OBJ_VNUM_FIRE = 11423;
-const int OBJ_VNUM_TRAP = 11424;
-const int OBJ_VNUM_PORTAL = 11425;
-const int OBJ_VNUM_BLACK_POWDER = 11426;
-const int OBJ_VNUM_SCROLL_SCRIBING = 11427;
-const int OBJ_VNUM_FLASK_BREWING = 11428;
-const int OBJ_VNUM_NOTE = 11429;
-const int OBJ_VNUM_WAND_CHARGING = 11432;
-const int OBJ_VNUM_TAN_JACKET = 11368;
-const int OBJ_VNUM_TAN_BOOTS = 11369;
-const int OBJ_VNUM_TAN_GLOVES = 11370;
-const int OBJ_VNUM_TAN_LEGGINGS = 11371;
-const int OBJ_VNUM_TAN_SLEEVES = 11372;
-const int OBJ_VNUM_TAN_HELMET = 11373;
-const int OBJ_VNUM_TAN_BAG = 11374;
-const int OBJ_VNUM_TAN_CLOAK = 11375;
-const int OBJ_VNUM_TAN_BELT = 11376;
-const int OBJ_VNUM_TAN_COLLAR = 11377;
-const int OBJ_VNUM_TAN_WATERSKIN = 11378;
-const int OBJ_VNUM_TAN_QUIVER = 11379;
-const int OBJ_VNUM_TAN_WHIP = 11380;
-const int OBJ_VNUM_TAN_SHIELD = 11381;
-const int OBJ_VNUM_ORE_BASE = 11299;
 
 /* Academy eq */
 const int OBJ_VNUM_SCHOOL_BANNER = 11478;
@@ -214,20 +266,18 @@ const int OBJ_VNUM_NEWBIE_GUIDE = 11479;
  * Well known room virtual numbers.
  * Defined in #ROOMS.
  */
+const int ROOM_AUTH_START = 100;       /* Pregame Entry, auth system on */
+const int ROOM_NOAUTH_START = 102;     /* Pregame Entry, auth system off */
 const int ROOM_VNUM_LIMBO = 11401;
 const int ROOM_VNUM_POLY = 11402;
+const int ROOM_VNUM_RAREUPDATE = 11402;   /* Room where players get scanned for rare items - Samson 1-24-00 */
+const int ROOM_VNUM_HELL = 11405;   /* Vnum for Hell - Samson */
 const int ROOM_VNUM_CHAT = 11406;   /* Parlour of the Immortals */
-const int ROOM_NOAUTH_START = 102;  /* Pregame Entry, auth system off */
-const int ROOM_AUTH_START = 100; /* Pregame Entry, auth system on */
 const int ROOM_VNUM_TEMPLE = 11407; /* Primary continent recall */
 const int ROOM_VNUM_ALTAR = 11407;  /* Primary continent death */
-const int ROOM_VNUM_ASTRAL_DEATH = 11407; /* Astral Plane, death sends you to Primary continent */
-const int ROOM_VNUM_HELL = 11405;   /* Vnum for Hell - Samson */
 const int ROOM_VNUM_DONATION = 11410;  /* First donation room - Samson 2-6-98 */
 const int ROOM_VNUM_REDEEM = 11411; /* Sindhae prize redemption start room - Samson 6-2-00 */
 const int ROOM_VNUM_ENDREDEEM = 11412; /* Sindhae prize redemption ending room - Samson 6-2-00 */
-const int ROOM_VNUM_RAREUPDATE = 11402;   /* Room where players get scanned for rare items - Samson 1-24-00 */
-const int ROOM_VNUM_TEMPSHOP = 11402;  /* Shopkeeper mobs get loaded here at bootup - Samson 7-4-04 */
 
 /* New continent and plane support - Samson 3-28-98
  * Name of continent or plane is followed by the recall and death zone.

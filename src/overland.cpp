@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *	                     Overland ANSI Map Module                         *
+ *	                       Overland ANSI Map Module                          *
  *                      Created by Samson of Alsherok                       *
  ****************************************************************************/
 
@@ -197,7 +197,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11030, 11031, 11032, 11033, -1,
+    MOB_VNUM_MAP_TRAVELER, MOB_VNUM_MAP_MERCHANT, MOB_VNUM_MAP_GYPSY, MOB_VNUM_MAP_BANDIT, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -205,7 +205,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11034, 11035, 11036, 11037, -1,
+    MOB_VNUM_MAP_FARMER, MOB_VNUM_MAP_COW, MOB_VNUM_MAP_RABBIT, MOB_VNUM_MAP_BULL, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -213,7 +213,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11038, 11039, 11040, 11041, -1,
+    MOB_VNUM_MAP_DEER, MOB_VNUM_MAP_DRYAD, MOB_VNUM_MAP_TREANT, MOB_VNUM_MAP_WURM, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -221,7 +221,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11042, 11043, 11044, 11045, -1,
+    MOB_VNUM_MAP_DWARF, MOB_VNUM_MAP_BADGER, MOB_VNUM_MAP_CROW, MOB_VNUM_MAP_DRAGON, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -229,7 +229,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11046, 11047, 4900, 11048, -1,
+    MOB_VNUM_MAP_GOAT, MOB_VNUM_MAP_HOUND, MOB_VNUM_MAP_FIRBOLG, -1, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -269,7 +269,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11049, 11050, 4654, 11051, -1,
+    MOB_VNUM_MAP_BEETLE, MOB_VNUM_MAP_NOMAD, MOB_VNUM_MAP_ELEMENTAL, -1, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -301,7 +301,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11054, 11055, 11056, 11057, -1,
+    MOB_VNUM_MAP_ORANGUTAN, MOB_VNUM_MAP_PYTHON, MOB_VNUM_MAP_LIZARD, MOB_VNUM_MAP_PANTHER, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -309,7 +309,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11052, 11053, 25111, 5393, -1,
+    MOB_VNUM_MAP_STIRGE, MOB_VNUM_MAP_GOBLIN, -1, -1, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -349,7 +349,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11058, 11059, -1, -1, -1,
+    MOB_VNUM_MAP_CRAB, MOB_VNUM_MAP_SEAGULL, -1, -1, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*
@@ -429,7 +429,7 @@ int const random_mobs[SECT_MAX][25] = {
     */
    {-1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1,
-    11060, 11061, 11062, 11063, -1,
+    MOB_VNUM_MAP_HYENA, MOB_VNUM_MAP_MEERKAT, MOB_VNUM_MAP_ARMADILLO, MOB_VNUM_MAP_MANTICORE, -1,
     -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1},
    /*

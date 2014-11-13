@@ -1148,7 +1148,13 @@ CMDF( do_setdeity )
 
          if( vch->pcdata->deity == deity )
          {
-            vch->printf( "&RYour deity, %s, has met its demise!\r\n", vch->pcdata->deity_name.c_str(  ) );
+            char buf[MSL];
+
+            snprintf( buf, MSL, "&R\r\nYour deity, %s, has met its demise!\r\n", vch->pcdata->deity_name.c_str() );
+            if( !vch->desc )
+               add_loginmsg( vch->name, 18, buf );
+            else
+               vch->print( buf );
 
             vch->unset_aflag( ch->pcdata->deity->affected[0] );
             vch->unset_aflag( ch->pcdata->deity->affected[1] );

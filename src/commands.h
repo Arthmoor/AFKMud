@@ -35,7 +35,7 @@
 enum command_flags
 {
    CMD_POSSESS, CMD_POLYMORPHED, CMD_ACTION, CMD_NOSPAM, CMD_GHOST,
-   CMD_MUDPROG, CMD_NOFORCE, CMD_LOADED, MAX_CMD_FLAG
+   CMD_MUDPROG, CMD_NOFORCE, CMD_LOADED, CMD_NOABORT, MAX_CMD_FLAG
 };
 
 /*
@@ -84,6 +84,7 @@ class social_type
    string others_auto;
    string obj_self;
    string obj_others;
+   short minposition;
 };
 
 /*

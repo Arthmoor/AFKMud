@@ -110,7 +110,7 @@ class class_type
    short hp_min;  /* Min hp gained on leveling  */
    short hp_max;  /* Max hp gained on leveling  */
    short skill_adept;   /* Maximum skill level */
-   short attr_prime; /* Prime attribute (Not Used - Samson) */
+   short attr_prime; /* Prime attribute */
    bool fMana; /* Class gains mana on level  */
 };
 

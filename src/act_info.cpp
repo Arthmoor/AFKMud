@@ -51,7 +51,6 @@
  * True = Trigger
  */
 bool EXA_prog_trigger = true;
-liquid_data *get_liq_vnum( int );
 CMDF( do_track );
 CMDF( do_cast );
 CMDF( do_dig );
@@ -529,18 +528,23 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
          default:
             mudstrlcat( buf, " is... wait... WTF?", MSL );
             break;
+
          case POS_DEAD:
             mudstrlcat( buf, " is DEAD!!", MSL );
             break;
+
          case POS_MORTAL:
             mudstrlcat( buf, " is mortally wounded.", MSL );
             break;
+
          case POS_INCAP:
             mudstrlcat( buf, " is incapacitated.", MSL );
             break;
+
          case POS_STUNNED:
             mudstrlcat( buf, " is lying here stunned.", MSL );
             break;
+
          case POS_SLEEPING:
             if( victim->on != NULL )
             {
@@ -559,6 +563,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
                   mudstrlcat( buf, " is deep in slumber here.", MSL );
             }
             break;
+
          case POS_RESTING:
             if( victim->on != NULL )
             {
@@ -579,6 +584,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
                   mudstrlcat( buf, " is sprawled out here.", MSL );
             }
             break;
+
          case POS_SITTING:
             if( victim->on != NULL )
             {
@@ -592,6 +598,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             else
                mudstrlcat( buf, " is sitting here.", MSL );
             break;
+
          case POS_STANDING:
             if( victim->on != NULL )
             {
@@ -603,7 +610,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing in %s.", victim->on->short_descr );
             }
             else if( victim->is_immortal(  ) )
-               mudstrlcat( buf, " is here before you.", MSL );
+               mudstrlcat( buf, " radiates with a godly light.", MSL );
             else if( ( victim->in_room->sector_type == SECT_UNDERWATER ) && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
                mudstrlcat( buf, " is drowning here.", MSL );
             else if( victim->in_room->sector_type == SECT_UNDERWATER )
@@ -617,12 +624,15 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             else
                mudstrlcat( buf, " is standing here.", MSL );
             break;
+
          case POS_SHOVE:
             mudstrlcat( buf, " is being shoved around.", MSL );
             break;
+
          case POS_DRAG:
             mudstrlcat( buf, " is being dragged around.", MSL );
             break;
+
          case POS_MOUNTED:
             mudstrlcat( buf, " is here, upon ", MSL );
             if( !victim->mount )
@@ -637,6 +647,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             else
                mudstrlcat( buf, "someone who left??", MSL );
             break;
+
          case POS_FIGHTING:
          case POS_EVASIVE:
          case POS_DEFENSIVE:
@@ -1225,8 +1236,6 @@ CMDF( do_look )
       /*
        * Moved the exits to be under the name of the room 
        * Yannick 24 september 1997                        
-       */
-      /*
        * Added AUTOMAP check because it shows them next to the map now if its active 
        */
       if( ch->has_pcflag( PCFLAG_AUTOEXIT ) && !ch->has_pcflag( PCFLAG_AUTOMAP ) )
@@ -1308,16 +1317,19 @@ CMDF( do_look )
          ch->print( "You do not see that here.\r\n" );
          return;
       }
+
       if( !obj->wear_flags.test( ITEM_TAKE ) && ch->level < sysdata->level_getobjnotake )
       {
          ch->print( "You can't seem to get a grip on it.\r\n" );
          return;
       }
+
       if( ch->carry_weight + obj->weight > ch->can_carry_w(  ) )
       {
          ch->print( "It's too heavy for you to look under.\r\n" );
          return;
       }
+
       count = obj->count;
       obj->count = 1;
       act( AT_PLAIN, "You lift $p and look beneath it:", ch, obj, NULL, TO_CHAR );
@@ -1490,6 +1502,12 @@ CMDF( do_look )
                ch->print( "You see nothing special.\r\n" );
             else
                ch->print( ed->desc );
+            if( obj->item_type == ITEM_PUDDLE )
+            {
+               liquid_data *liq = get_liq_vnum( obj->value[2] );
+
+               ch->printf( "It's a puddle of %s liquid.\r\n", ( liq == NULL ? "clear" : liq->color.c_str() ) );
+            }
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
             return;
@@ -1532,6 +1550,12 @@ CMDF( do_look )
                ch->print( "You see nothing special.\r\n" );
             else
                ch->print( ed->desc );
+            if( obj->item_type == ITEM_PUDDLE )
+            {
+               liquid_data *liq = get_liq_vnum( obj->value[2] );
+
+               ch->printf( "It's a puddle of %s liquid.\r\n", ( liq == NULL ? "clear" : liq->color.c_str() ) );
+            }
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
             return;
@@ -1915,6 +1939,16 @@ CMDF( do_examine )
             cmdf( ch, "look in %s", argument.c_str(  ) );
             EXA_prog_trigger = true;
             break;
+
+         case ITEM_JOURNAL:
+         {
+            short count = obj->extradesc.size();
+
+            ch->printf( "%s has %d %s written in out of a possible %d.\r\n",
+                       obj->short_descr, count, count == 1 ? "page" : "pages", obj->value[0] );
+
+            break;
+         }
       }
 
       if( obj->extra_flags.test( ITEM_COVERING ) )
@@ -2068,7 +2102,9 @@ CMDF( do_oldwhere )
 
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
              && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room
-             && victim->in_room->area == ch->in_room->area && ch->can_see( victim, true ) && !is_ignoring( victim, ch ) )
+             && victim->in_room->area == ch->in_room->area && ch->can_see( victim, true ) && !is_ignoring( victim, ch )
+             && !ch->in_room->flags.test( ROOM_NOWHERE ) && !victim->in_room->flags.test( ROOM_NOWHERE )
+             && !ch->in_room->area->flags.test( AFLAG_NOWHERE ) && !victim->in_room->area->flags.test( AFLAG_NOWHERE ) )
          {
             found = true;
 

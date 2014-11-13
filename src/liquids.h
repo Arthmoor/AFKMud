@@ -128,4 +128,8 @@ class mixture_data
 };
 
 extern liquid_data *liquid_table[MAX_LIQUIDS];
+
+liquid_data *get_liq_vnum( int );
+liquid_data *get_liq( const string & );
+
 #endif

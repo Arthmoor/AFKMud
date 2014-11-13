@@ -319,6 +319,7 @@ CMDF( do_finger )
          ch->print( "--------------------\r\n" );
          ch->printf( "&wRealm         : &G%s\r\n", victim->pcdata->realm_name.c_str() );
          ch->printf( "&wIP Info       : &G%s\r\n", victim->pcdata->lasthost.c_str(  ) );
+         ch->printf( "&wPrev IP Info  : &G%s\r\n", victim->pcdata->prevhost.c_str(  ) );
          ch->printf( "&wTime played   : &G%ld hours\r\n", ( long int )GET_TIME_PLAYED( victim ) );
          ch->printf( "&wAuthorized by : &G%s\r\n",
                      !victim->pcdata->authed_by.empty(  ) ? victim->pcdata->authed_by.c_str(  ) : ( sysdata->WAIT_FOR_AUTH ? "Not Authed" : "The Code" ) );

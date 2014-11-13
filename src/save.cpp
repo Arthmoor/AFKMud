@@ -537,9 +537,11 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
          fprintf( fp, "WearFlags    %s~\n", bitset_string( obj->wear_flags, w_flags ) );
 
       short wear, wear_loc = -1, x;
-      for( wear = 0; wear < MAX_WEAR; ++wear )
-         for( x = 0; x < MAX_LAYERS; ++x )
-            if( ch )
+      if( ch )
+      {
+         for( wear = 0; wear < MAX_WEAR; ++wear )
+         {
+            for( x = 0; x < MAX_LAYERS; ++x )
             {
                if( ch->isnpc(  ) )
                {
@@ -562,6 +564,8 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
                      break;
                }
             }
+         }
+      }
       if( wear_loc != -1 )
          fprintf( fp, "WearLoc      %d\n", wear_loc );
       if( obj->item_type != obj->pIndexData->item_type )
@@ -1488,7 +1492,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             if( !str_cmp( word, "Site" ) )
             {
                if( !copyover && !preload )
-                  ch->printf( "Last connected from: %s\r\n", fread_word( fp ) );
+               {
+                  fread_string( ch->pcdata->prevhost, fp );
+                  ch->printf( "Last connected from: %s\r\n", ch->pcdata->prevhost.c_str() );
+               }
                else
                   fread_to_eol( fp );
                break;
@@ -1608,6 +1615,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'E':
             if( !str_cmp( word, "End" ) )
             {
+               char buf[MSL];
+
                if( preload )
                   return;
 
@@ -1671,9 +1680,9 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->deity_name.empty(  ) && !( ch->pcdata->deity = get_deity( ch->pcdata->deity_name ) ) )
                {
-                  ch->printf( "Warning: the deity %s no longer exists.\r\n", ch->pcdata->deity_name.c_str(  ) );
+                  snprintf( buf, MSL, "&R\r\nYour deity, %s, has met its demise!\r\n", ch->pcdata->deity_name.c_str() );
+                  add_loginmsg( ch->name, 18, buf );
                   ch->pcdata->deity_name.clear(  );
-                  ch->pcdata->favor = 0;
                }
 
                if( ch->pcdata->deity_name.empty(  ) )
@@ -1681,8 +1690,9 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->clan_name.empty(  ) && !( ch->pcdata->clan = get_clan( ch->pcdata->clan_name ) ) )
                {
-                  ch->printf( "Warning: The organization %s no longer exists, and therefore you no longer\r\nbelong to that organization.\r\n",
-                              ch->pcdata->clan_name.c_str(  ) );
+                  snprintf( buf, MSL, "&R\r\nWarning: The organization %s no longer exists, and therefore you no longer\r\nbelong to that organization.\r\n",
+                     ch->pcdata->clan_name.c_str() );
+                  add_loginmsg( ch->name, 18, buf );
                   ch->pcdata->clan_name.clear(  );
                }
 
@@ -1691,8 +1701,9 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->realm_name.empty(  ) && !( ch->pcdata->realm = get_realm( ch->pcdata->realm_name ) ) )
                {
-                  ch->printf( "Warning: The realm %s no longer exists, and therefore you no longer\r\nbelong to that realm.\r\n",
-                              ch->pcdata->realm_name.c_str(  ) );
+                  snprintf( buf, MSL, "&Y\r\nWarning: The realm %s no longer exists, and therefore you no longer\r\nbelong to a realm.\r\n",
+                     ch->pcdata->realm_name.c_str() );
+                  add_loginmsg( ch->name, 18, buf );
                   ch->pcdata->realm_name.clear(  );
                }
 
@@ -2449,6 +2460,8 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
    d->character = ch;
    ch->desc = d;
    ch->pcdata->filename = STRALLOC( name.c_str(  ) );
+   if( !d->host.empty() )
+      ch->pcdata->lasthost = d->host;
    ch->style = STYLE_FIGHTING;
    ch->mental_state = -10;
    ch->pcdata->prompt = STRALLOC( default_prompt( ch ) );

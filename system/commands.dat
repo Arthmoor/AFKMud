@@ -315,7 +315,7 @@ End
 Name        bio
 Code        do_bio
 Position    sleeping
-Level       1
+Level       5
 Log         normal
 End
 
@@ -652,6 +652,14 @@ Position    standing
 Level       0
 Log         normal
 Flags       action
+End
+
+#COMMAND
+Name        defeats
+Code        do_defeats
+Position    resting
+Level       10
+Log         normal
 End
 
 #COMMAND
@@ -1516,6 +1524,15 @@ Log         normal
 End
 
 #COMMAND
+Name        journal
+Code        do_journal
+Position    resting
+Level       5
+Log         normal
+Flags       action
+End
+
+#COMMAND
 Name        junk
 Code        do_junk
 Position    resting
@@ -1731,6 +1748,14 @@ Position    dead
 Level       0
 Log         normal
 Flags       action mudprog
+End
+
+#COMMAND
+Name        message
+Code        do_message
+Position    dead
+Level       101
+Log         Normal
 End
 
 #COMMAND
@@ -2553,6 +2578,24 @@ Code        do_newpassword
 Position    dead
 Level       109
 Log         always
+Flags       ghost
+End
+
+#COMMAND
+Name        nobio
+Code        do_nobio
+Position    dead
+Level       103
+Log         normal
+Flags       ghost
+End
+
+#COMMAND
+Name        nodesc
+Code        do_nodesc
+Position    dead
+Level       103
+Log         normal
 Flags       ghost
 End
 

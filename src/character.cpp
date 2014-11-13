@@ -491,7 +491,7 @@ short char_data::get_trust(  )
    if( ch->isnpc(  ) && ch->level >= LEVEL_AVATAR )
       return LEVEL_AVATAR;
 
-   if( !ch->isnpc(  ) && ch->level >= LEVEL_IMMORTAL && ch->pcdata->flags.test( PCFLAG_RETIRED ) )
+   if( !ch->isnpc(  ) && ch->level >= LEVEL_IMMORTAL )
       return LEVEL_IMMORTAL;
 
    return ch->level;
@@ -948,7 +948,7 @@ bool char_data::can_see_obj( obj_data * obj, bool override )
  */
 bool char_data::can_drop_obj( obj_data * obj )
 {
-   if( !obj->extra_flags.test( ITEM_NODROP ) )
+   if( !obj->extra_flags.test( ITEM_NODROP ) && !obj->extra_flags.test( ITEM_PERMANENT ) )
       return true;
 
    if( !this->is_immortal(  ) )
@@ -1276,12 +1276,14 @@ void char_data::equip( obj_data * obj, int iWear )
       af = *paf;
       this->affect_modify( af, true );
    }
+
    for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
    {
       af = *paf;
       this->affect_modify( af, true );
    }
-   if( obj->item_type == ITEM_LIGHT && obj->value[2] != 0 && this->in_room )
+
+   if( obj->item_type == ITEM_LIGHT && ( obj->value[2] != 0 || IS_SET( obj->value[3], PIPE_LIT ) ) && this->in_room )
       ++this->in_room->light;
 }
 
@@ -1290,11 +1292,21 @@ void char_data::equip( obj_data * obj, int iWear )
  */
 void char_data::unequip( obj_data * obj )
 {
+   obj_data *tobj;
+
    if( obj->wear_loc == WEAR_NONE )
    {
       bug( "%s: %s already unequipped.", __FUNCTION__, name );
       return;
    }
+
+   /*
+    * Bug fix to prevent dual wielding from getting stuck. Fix by Gianfranco
+    * * Finell   -- Shaddai
+    */
+   if( obj->wear_loc == WEAR_WIELD && this != saving_char
+       && this != loading_char && this != quitting_char && ( tobj = this->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+      tobj->wear_loc = WEAR_WIELD;
 
    this->carry_number += obj->get_number(  );
    if( obj->extra_flags.test( ITEM_MAGIC ) )
@@ -1325,7 +1337,7 @@ void char_data::unequip( obj_data * obj )
    if( !obj->carried_by )
       return;
 
-   if( obj->item_type == ITEM_LIGHT && obj->value[2] != 0 && this->in_room && this->in_room->light > 0 )
+   if( obj->item_type == ITEM_LIGHT && ( obj->value[2] != 0 || IS_SET( obj->value[3], PIPE_LIT ) ) && this->in_room && this->in_room->light > 0 )
       --this->in_room->light;
 }
 
@@ -1334,13 +1346,15 @@ void char_data::unequip( obj_data * obj )
  */
 void char_data::aris_affect( affect_data * paf )
 {
+   int location = paf->location % REVERSE_APPLY;
+
    /*
     * How the hell have you SmaugDevs gotten away with this for so long! 
     */
    if( paf->bit >= 0 && paf->bit < MAX_AFFECTED_BY )
       this->affected_by.set( paf->bit );
 
-   switch ( paf->location % REVERSE_APPLY )
+   switch ( location )
    {
       default:
          break;
@@ -1597,10 +1611,12 @@ void char_data::modify_skill( int sn, int mod, bool fAdd )
  */
 void char_data::affect_modify( affect_data * paf, bool fAdd )
 {
-   obj_data *wield;
+   obj_data *WPos, *DPos, *MPos, *ToDrop;
+   int WWeight, DWeight, MWeight, ToDropW;
    int mod, mod2 = -1;
    struct skill_type *skill;
    ch_ret retcode;
+   int location = paf->location % REVERSE_APPLY;
 
    mod = paf->modifier;
 
@@ -1622,7 +1638,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       if( paf->bit >= 0 && paf->bit < MAX_AFFECTED_BY )
          this->set_aflag( paf->bit );
 
-      if( paf->location % REVERSE_APPLY == APPLY_RECURRINGSPELL )
+      if( location == APPLY_RECURRINGSPELL )
       {
          mod = abs( mod );
          if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != NULL && skill->type == SKILL_SPELL )
@@ -1641,7 +1657,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
        * the spell after the duration... but would have to store
        * the removed spell's information somewhere...    -Thoric
        */
-      if( paf->location % REVERSE_APPLY == APPLY_RECURRINGSPELL )
+      if( location == APPLY_RECURRINGSPELL )
       {
          mod = abs( mod );
          if( !IS_VALID_SN( mod ) || ( skill = skill_table[mod] ) == NULL || skill->type != SKILL_SPELL )
@@ -1650,27 +1666,33 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          return;
       }
 
-      switch ( paf->location % REVERSE_APPLY )
+      switch ( location )
       {
          case APPLY_AFFECT:
          case APPLY_EXT_AFFECT:
             this->unset_aflag( mod2 );
             return;
+
          case APPLY_RESISTANT:
             this->resistant &= ~( paf->rismod );
             return;
+
          case APPLY_IMMUNE:
             this->immune &= ~( paf->rismod );
             return;
+
          case APPLY_SUSCEPTIBLE:
             this->susceptible &= ~( paf->rismod );
             return;
+
          case APPLY_ABSORB:
             this->absorb &= ~( paf->rismod );
             return;
+
          case APPLY_REMOVE:
             this->set_aflag( mod2 );
             return;
+
          default:
             break;
       }
@@ -1678,10 +1700,10 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    }
 
    // Only reaches this pont when an affect is being added.
-   switch ( paf->location % REVERSE_APPLY )
+   switch ( location )
    {
       default:
-         bug( "%s: unknown location %d.", __FUNCTION__, paf->location );
+         bug( "%s: unknown location %d. (%s)", __FUNCTION__, paf->location, this->name );
          return;
 
       case APPLY_NONE:
@@ -1850,6 +1872,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          break;
       case APPLY_ODOR:
          break;
+
       case APPLY_STRIPSN:
          if( IS_VALID_SN( mod ) )
             this->affect_strip( mod );
@@ -1979,16 +2002,42 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
     * Check for weapon wielding.
     * Guard against recursion (for weapons with affects).
     */
-   if( !this->isnpc(  ) && saving_char != this && ( wield = this->get_eq( WEAR_WIELD ) ) != NULL && wield->get_weight(  ) > str_app[this->get_curr_str(  )].wield )
+   ToDrop = WPos = this->get_eq( WEAR_WIELD );
+   ToDropW = WWeight = WPos ? WPos->get_weight( ) : 0;
+   DWeight = MWeight = 0;
+
+   DPos = this->get_eq( WEAR_DUAL_WIELD );
+
+   if( DPos && ( DWeight = DPos->get_weight( ) ) > ToDropW )
+   {
+      ToDrop = DPos;
+      ToDropW = WWeight;
+   }
+
+   MPos = this->get_eq( WEAR_MISSILE_WIELD );
+   if( MPos && ( MWeight = MPos->get_weight( ) ) > ToDropW )
+   {
+      ToDrop = MPos;
+      ToDropW = MWeight;
+   }
+
+   if( !this->isnpc() && saving_char != this
+       /*
+        * &&  (wield = get_eq_char(ch, WEAR_WIELD) ) != NULL
+        * &&   get_obj_weight(wield) > str_app[get_curr_str(ch)].wield ) 
+        */
+       && ( WWeight + DWeight + MWeight ) > str_app[this->get_curr_str( )].wield )
    {
       static int depth;
 
-      if( depth == 0 )
+      if( depth <= 1 )
       {
          ++depth;
-         act( AT_ACTION, "You are too weak to wield $p any longer.", this, wield, NULL, TO_CHAR );
-         act( AT_ACTION, "$n stops wielding $p.", this, wield, NULL, TO_ROOM );
-         this->unequip( wield );
+
+         act( AT_ACTION, "You are too weak to wield $p any longer.", this, ToDrop, NULL, TO_CHAR );
+         act( AT_ACTION, "$n stops wielding $p.", this, ToDrop, NULL, TO_ROOM );
+
+         this->unequip( ToDrop );
          --depth;
       }
    }
@@ -2369,7 +2418,8 @@ void char_data::from_room(  )
    if( !this->isnpc(  ) )
       --this->in_room->area->nplayer;
 
-   if( ( obj = this->get_eq( WEAR_LIGHT ) ) != NULL && obj->item_type == ITEM_LIGHT && obj->value[2] != 0 && this->in_room->light > 0 )
+   if( ( obj = this->get_eq( WEAR_LIGHT ) ) != NULL && obj->item_type == ITEM_LIGHT
+       && ( obj->value[2] != 0 || IS_SET( obj->value[3], PIPE_LIT ) ) && this->in_room->light > 0 )
       --this->in_room->light;
 
    // Take some weight off the room.
@@ -2452,7 +2502,8 @@ bool char_data::to_room( room_index * pRoomIndex )
    if( !this->isnpc(  ) )
       ++this->in_room->area->nplayer;
 
-   if( ( obj = this->get_eq( WEAR_LIGHT ) ) != NULL && obj->item_type == ITEM_LIGHT && obj->value[2] != 0 )
+   if( ( obj = this->get_eq( WEAR_LIGHT ) ) != NULL 
+      && obj->item_type == ITEM_LIGHT && ( obj->value[2] != 0 || IS_SET( obj->value[3], PIPE_LIT ) ) )
       ++pRoomIndex->light;
 
    // Put some weight on the room.
@@ -2515,6 +2566,7 @@ bool char_data::to_room( room_index * pRoomIndex )
       this->on = NULL;
       this->position = POS_STANDING;
    }
+
    if( this->position != POS_STANDING && this->tempnum != -9998 ) /* Hackish hotboot fix! WOO! */
       this->position = POS_STANDING;
    return true;
@@ -3501,6 +3553,7 @@ void char_data::extract( bool fPull )
                check_mount_objs( this, true );  /* Check to see if they have ITEM_MUSTMOUNT stuff */
             }
          }
+
          if( !wch->isnpc(  ) && !wch->pets.empty(  ) )
          {
             if( this->master == wch )
@@ -3545,7 +3598,14 @@ void char_data::extract( bool fPull )
 
       if( obj->ego >= sysdata->minego && this->in_room->flags.test( ROOM_DEATH ) )
          obj->pIndexData->count += obj->count;
-      obj->extract(  );
+
+      if( !fPull && obj->extra_flags.test( ITEM_PERMANENT ) )
+      {
+         if( obj->wear_loc != WEAR_NONE )
+            this->unequip( obj );
+      }
+      else
+         obj->extract(  );
    }
 
    room_index *dieroom = this->in_room;   /* Added for checking where to send you at death - Samson */
@@ -3752,10 +3812,12 @@ void advance_level( char_data * ch )
          case CLASS_CLERIC:
             manamod = 20;
             break;
+
          case CLASS_DRUID:
          case CLASS_NECROMANCER:
             manamod = 17;
             break;
+
          default:
             manamod = 13;
             break;
@@ -3792,7 +3854,7 @@ void advance_level( char_data * ch )
 
    if( ch->level == LEVEL_AVATAR )
    {
-      echo_all_printf( ECHOTAR_ALL, "&[immortal]%s has just achieved Avatarhood!", ch->name );
+      echo_all_printf( ECHOTAR_ALL, "&[immortal]%s has attained the rank of Avatar!", ch->name );
       STRFREE( ch->pcdata->rank );
       ch->pcdata->rank = STRALLOC( "Avatar" );
       interpret( ch, "help M_ADVHERO_" );
@@ -5182,6 +5244,20 @@ CMDF( do_follow )
    {
       ch->print( "Following in loops is not allowed... sorry.\r\n" );
       return;
+   }
+
+   /*
+    * Check to see if the victim a player is trying to follow is ignoring them.
+    * If so, they aren't permitted to follow. -Leart
+    */
+   if( is_ignoring( victim, ch ) )
+   {
+      /* If the person trying to follow is an imm, then they can still follow */
+      if( !ch->is_immortal() || victim->get_trust( ) > ch->get_trust( ) )
+      {
+         ch->printf( "&[ignore]%s is ignoring you.\r\n", victim->name );
+         return;
+      }
    }
 
    if( ch->master )

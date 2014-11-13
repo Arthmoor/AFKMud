@@ -140,11 +140,13 @@ void load_shopkeepers( void )
                   fread_to_eol( fp );
                   continue;
                }
+
                if( letter != '#' )
                {
                   bug( "%s: # not found.", __FUNCTION__ );
                   break;
                }
+
                word = fread_word( fp );
                if( !strcmp( word, "SHOP" ) )
                   mob = fread_mobile( fp, true );
@@ -157,6 +159,7 @@ void load_shopkeepers( void )
                   break;
             }
             FCLOSE( fp );
+
             if( mob )
             {
                list < clan_data * >::iterator cl;
@@ -1237,7 +1240,7 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const s
 
    if( !ch->can_drop_obj( obj ) )
    {
-      ch->printf( "You can't let go of %s.\r\n", obj->name );
+      ch->printf( "You can't let go of %s.\r\n", obj->short_descr );
       return;
    }
 
@@ -1275,7 +1278,7 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const s
     */
    if( ( cost = strcmp( "all", arg.c_str(  ) )? cost : 11 * cost / 10 ) > ch->gold )
    {
-      act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR, "$N tells you, 'It will cost %d piece%s of gold to %s %s...'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ), obj->name );
+      act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR, "$N tells you, 'It will cost %d piece%s of gold to %s %s...'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ), obj->short_descr );
       act( AT_TELL, "$N tells you, 'Which I see you can't afford.'", ch, NULL, keeper, TO_CHAR );
    }
    else
@@ -1385,7 +1388,7 @@ void appraise_all( char_data * ch, char_data * keeper, const string & fixstr )
           && ( obj->item_type == ITEM_ARMOR || obj->item_type == ITEM_WEAPON || obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF ) )
       {
          if( !ch->can_drop_obj( obj ) )
-            ch->printf( "You can't let go of %s.\r\n", obj->name );
+            ch->printf( "You can't let go of %s.\r\n", obj->short_descr );
          else if( ( cost = get_repaircost( keeper, obj ) ) < 0 )
          {
             if( cost != -2 )
@@ -1396,11 +1399,12 @@ void appraise_all( char_data * ch, char_data * keeper, const string & fixstr )
          else
          {
             act_printf( AT_TELL, ch, NULL, keeper, TO_CHAR,
-                        "$N tells you, 'It will cost %d piece%s of gold to %s %s'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ), obj->name );
+                        "$N tells you, 'It will cost %d piece%s of gold to %s %s'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ), obj->short_descr );
             total += cost;
          }
       }
    }
+
    if( total > 0 )
    {
       ch->print( "\r\n" );

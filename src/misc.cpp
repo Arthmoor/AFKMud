@@ -35,7 +35,6 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-liquid_data *get_liq_vnum( int );
 ch_ret check_room_for_traps( char_data *, int );
 void teleport( char_data *, int, int );
 void raw_kill( char_data *, char_data * );

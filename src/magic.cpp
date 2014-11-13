@@ -44,7 +44,6 @@ int astral_target;   /* Added for Astral Walk spell - Samson */
 
 ch_ret ranged_attack( char_data *, string, obj_data *, obj_data *, short, short );
 SPELLF( spell_null );
-liquid_data *get_liq_vnum( int );
 bool is_safe( char_data *, char_data * );
 bool check_illegal_pk( char_data *, char_data * );
 bool in_arena( char_data * );
@@ -338,11 +337,11 @@ int ris_save( char_data * ch, int rchance, int ris )
    short modifier;
 
    modifier = 10;
-   if( ch->has_immune( ris ) || ch->has_absorb( ris ) )
+   if( (ch->has_immune( ris ) || ch->has_absorb( ris )) && !ch->has_noimmune( ris ) )
       return 1000;
-   if( ch->has_resist( ris ) )
+   if( ch->has_resist( ris ) && !ch->has_noresist( ris ) )
       modifier -= 2;
-   if( ch->has_suscep( ris ) )
+   if( ch->has_suscep( ris ) && !ch->has_nosuscep( ris ) )
    {
       if( ch->isnpc(  ) && ch->has_immune( ris ) )
          modifier += 0;
@@ -971,6 +970,13 @@ void *locate_targets( char_data * ch, const string & arg, int sn )
          {
             if( !silence_locate_targets )
                ch->print( "They aren't here.\r\n" );
+            return &pAbort;
+         }
+
+         if( SPELL_FLAG( skill, SF_NOMOB ) && victim->isnpc() )
+         {
+            if( !silence_locate_targets )
+               ch->print( "Your magic fails to take hold.\r\n" );
             return &pAbort;
          }
 
@@ -1618,7 +1624,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
     * Basically this was added to cut down on level 5 players using level
     * 40 scrolls in battle too often ;)      -Thoric
     */
-   if( ( skill->target == TAR_CHAR_OFFENSIVE || number_bits( 7 ) == 1 ) /* 1/128 chance if non-offensive */
+   if( ch != victim && ( skill->target == TAR_CHAR_OFFENSIVE || number_bits( 7 ) == 1 ) /* 1/128 chance if non-offensive */
        && skill->type != SKILL_HERB && !ch->chance( 95 + levdiff ) )
    {
       switch ( number_bits( 2 ) )
@@ -1627,15 +1633,18 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
          case 0:
             failed_casting( skill, ch, victim, NULL );
             break;
+
          case 1:
             act( AT_MAGIC, "The $t spell backfires!", ch, skill->name, victim, TO_CHAR );
             if( victim )
                act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name, victim, TO_VICT );
             act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name, victim, TO_NOTVICT );
             return damage( ch, ch, number_range( 1, level ), TYPE_UNDEFINED );
+
          case 2:
             failed_casting( skill, ch, victim, NULL );
             break;
+
          case 3:
             act( AT_MAGIC, "The $t spell backfires!", ch, skill->name, victim, TO_CHAR );
             if( victim )
@@ -1681,6 +1690,13 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
          if( victim == NULL )
             victim = ch;
          vo = ( void * )victim;
+
+         if( SPELL_FLAG( skill, SF_NOMOB ) && victim->isnpc() )
+         {
+            ch->print( "Your magic fails to take hold.\r\n" );
+            return rNONE;
+         }
+
          if( skill->type != SKILL_HERB && victim->has_immune( RIS_MAGIC ) )
          {
             immune_casting( skill, ch, victim, NULL );
@@ -1796,6 +1812,7 @@ SPELLF( spell_cure_poison )
 {
    char_data *victim = ( char_data * ) vo;
    skill_type *skill = get_skilltype( sn );
+   int x = 0;
 
    if( victim->has_immune( RIS_MAGIC ) )
    {
@@ -1808,7 +1825,8 @@ SPELLF( spell_cure_poison )
       victim->affect_strip( gsn_poison );
       victim->set_color( AT_MAGIC );
       victim->print( "A warm feeling runs through your body.\r\n" );
-      victim->mental_state = URANGE( -100, victim->mental_state, -10 );
+      x = victim->mental_state < 0 ? -x : x;
+      victim->mental_state = URANGE( -25, victim->mental_state, 25 );
       if( ch != victim )
       {
          act( AT_MAGIC, "A flush of health washes over $N.", ch, NULL, victim, TO_NOTVICT );
@@ -1883,6 +1901,9 @@ SPELLF( spell_call_lightning )
       ch_ret retcode = rNONE;
       char_data *vch = *ich;
       ++ich;
+
+      if( vch->isnpc() && vch->has_actflag( ACT_MOBINVIS ) )
+         continue;
 
       if( vch->has_pcflag( PCFLAG_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
          continue;
@@ -2929,7 +2950,7 @@ SPELLF( spell_astral_walk )
 SPELLF( spell_teleport )
 {
    char_data *victim = ( char_data * ) vo;
-   room_index *pRoomIndex, *from;
+   room_index *pRoomIndex;
    skill_type *skill = get_skilltype( sn );
    int schance;
 
@@ -2961,8 +2982,6 @@ SPELLF( spell_teleport )
    if( ch->position != POS_STANDING )
       ch->position = POS_STANDING;
 
-   from = victim->in_room;
-
    if( schance == 1 )
    {
       short map, x, y, sector;
@@ -2981,7 +3000,6 @@ SPELLF( spell_teleport )
       }
       act( AT_MAGIC, "$n slowly fades out of view.", victim, NULL, NULL, TO_ROOM );
       enter_map( victim, NULL, x, y, map );
-      collect_followers( victim, from, victim->in_room );
       if( !victim->isnpc(  ) )
          act( AT_MAGIC, "$n slowly fades into view.", victim, NULL, NULL, TO_ROOM );
    }
@@ -3286,6 +3304,9 @@ SPELLF( spell_gas_breath )
       char_data *vch = *ich;
       ++ich;
 
+      if( vch->isnpc() && vch->has_actflag( ACT_MOBINVIS ) )
+         continue;
+
       if( vch->has_pcflag( PCFLAG_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
          continue;
 
@@ -3295,7 +3316,7 @@ SPELLF( spell_gas_breath )
             continue;
       }
 
-      if( ch->isnpc(  )? !vch->isnpc(  ) : vch->isnpc(  ) )
+      if( ch->isnpc(  ) ? !vch->isnpc(  ) : vch->isnpc(  ) )
       {
          int hpch = UMAX( 10, ch->hit );
          int dam = number_range( hpch / 16 + 1, hpch / 8 );
@@ -3386,7 +3407,7 @@ SPELLF( spell_transport )
 
    obj->separate(  );   /* altrag shoots, haus alley-oops! */
 
-   if( obj->extra_flags.test( ITEM_NODROP ) || obj->extra_flags.test( ITEM_SINDHAE ) )
+   if( obj->extra_flags.test( ITEM_NODROP ) || obj->extra_flags.test( ITEM_SINDHAE ) || obj->extra_flags.test( ITEM_PERMANENT ) )
    {
       ch->print( "You can't seem to let go of it.\r\n" );
       return rSPELL_FAILED;   /* nice catch, caine */
@@ -4478,6 +4499,9 @@ SPELLF( spell_area_attack )
       char_data *vch = *ich;
       ++ich;
 
+      if( vch->isnpc() && vch->has_actflag( ACT_MOBINVIS ) )
+         continue;
+
       if( vch->has_pcflag( PCFLAG_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
          continue;
 
@@ -4580,6 +4604,9 @@ SPELLF( spell_affect )
    else
       areasp = false;
 
+   if( SPELL_FLAG( skill, SF_NOMOB ) && victim && victim->isnpc() )
+      return rSPELL_FAILED;
+
    if( !groupsp && !areasp )
    {
       /*
@@ -4590,6 +4617,9 @@ SPELLF( spell_affect )
          failed_casting( skill, ch, victim, NULL );
          return rSPELL_FAILED;
       }
+
+      if( SPELL_FLAG( skill, SF_NOMOB ) && victim->isnpc() )
+         return rSPELL_FAILED;
 
       if( ( skill->type != SKILL_HERB && victim->has_immune( RIS_MAGIC ) ) || is_immune( victim, SPELL_DAMAGE( skill ) ) )
       {
@@ -4632,6 +4662,7 @@ SPELLF( spell_affect )
          else
             act( AT_MAGIC, skill->hit_char, ch, NULL, NULL, TO_CHAR );
       }
+
       if( skill->hit_room && skill->hit_room[0] != '\0' )
       {
          if( strstr( skill->hit_room, "$N" ) )
@@ -4639,6 +4670,7 @@ SPELLF( spell_affect )
          else
             act( AT_MAGIC, skill->hit_room, ch, NULL, NULL, TO_ROOM );
       }
+
       if( skill->hit_vict && skill->hit_vict[0] != '\0' )
          hitvict = true;
       if( victim )
@@ -4646,6 +4678,7 @@ SPELLF( spell_affect )
       else
          victim = ( *ch->in_room->people.begin(  ) );
    }
+
    if( !victim )
    {
       bug( "%s: could not find victim: sn %d", __FUNCTION__, sn );
@@ -4671,7 +4704,9 @@ SPELLF( spell_affect )
       if( groupsp || areasp )
       {
          if( ( groupsp && !is_same_group( vch, ch ) ) || vch->has_immune( RIS_MAGIC )
-             || is_immune( vch, SPELL_DAMAGE( skill ) ) || check_save( sn, level, ch, vch ) || ( !SPELL_FLAG( skill, SF_RECASTABLE ) && vch->is_affected( sn ) ) )
+             || is_immune( vch, SPELL_DAMAGE( skill ) ) || check_save( sn, level, ch, vch )
+             || ( SPELL_FLAG( skill, SF_NOMOB ) && victim->isnpc() )
+             || ( !SPELL_FLAG( skill, SF_RECASTABLE ) && vch->is_affected( sn ) ) )
             continue;
 
          if( hitvict && ch != vch )
@@ -5135,7 +5170,7 @@ SPELLF( spell_smaug )
    }
 }
 
-/* Everything from here down has been added by Alsherok */
+/* Everything from here down has been added by AFKMud */
 
 SPELLF( spell_treespeak )
 {
@@ -5222,10 +5257,14 @@ SPELLF( spell_tree_transport )
 
 SPELLF( spell_group_towngate )
 {
+   room_index *room = NULL;
+   room_index *original = ch->in_room;
+   int groupcount = 0, groupvisit = 0;
+
    if( target_name.empty(  ) )
    {
       ch->print( "Where do you wish to go??\r\n" );
-      ch->print( "bywater, maldoth, palainth, greyhaven, dragongate, venetorium or graecia ?\r\n" );
+      ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!!!!\r\n" );
       return rSPELL_FAILED;
    }
 
@@ -5235,38 +5274,19 @@ SPELLF( spell_group_towngate )
       return rSPELL_FAILED;
    }
 
-   room_index *room = NULL;
-   if( !str_cmp( target_name, "bywater" ) )
-      room = get_room_index( 7035 );
-   /*
-    * Updated Vnum for bywater -- Tarl 16 July 2002 
-    */
-   if( !str_cmp( target_name, "maldoth" ) )
-      room = get_room_index( 10058 );
+   // Someone needs to add some room VNUMs here cause the spell won't work without them.
+   // Example of how the thing should work:
 
-   if( !str_cmp( target_name, "palainth" ) )
-      room = get_room_index( 5150 );
-
-   if( !str_cmp( target_name, "greyhaven" ) )
-      room = get_room_index( 4118 );
-
-   if( !str_cmp( target_name, "dragongate" ) )
-      room = get_room_index( 19339 );
-
-   if( !str_cmp( target_name, "venetorium" ) )
-      room = get_room_index( 5562 );
-
-   if( !str_cmp( target_name, "graecia" ) )
-      room = get_room_index( 13806 );
+   // if( !str_cmp( target_name, "bywater" ) )
+   //   room = get_room_index( 7035 );
 
    if( !room )
    {
       ch->print( "Where do you wish to go??\r\n" );
-      ch->print( "bywater, maldoth, palainth, greyhaven, dragongate, venetorium or graecia ?\r\n" );
+      ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!!!!\r\n" );
       return rSPELL_FAILED;
    }
 
-   int groupcount = 0, groupvisit = 0;
    list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
@@ -5283,8 +5303,6 @@ SPELLF( spell_group_towngate )
       if( is_same_group( rch, ch ) && rch->has_visited( room->area ) && !rch->isnpc(  ) )
          ++groupvisit;
    }
-
-   room_index *original = ch->in_room;
 
    if( groupcount == groupvisit )
    {
@@ -5315,7 +5333,7 @@ SPELLF( spell_towngate )
    if( target_name.empty(  ) )
    {
       ch->print( "Where do you wish to go??\r\n" );
-      ch->print( "bywater, maldoth, palainth, greyhaven, dragongate, venetorium or graecia ?\r\n" );
+      ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!!!!\r\n" );
       return rSPELL_FAILED;
    }
 
@@ -5325,34 +5343,16 @@ SPELLF( spell_towngate )
       return rSPELL_FAILED;
    }
 
-   if( !str_cmp( target_name, "bywater" ) )
-      room = get_room_index( 7035 );
-   /*
-    * Updated Vnum for bywater -- Tarl 16 July 2002 
-    */
+   // Someone needs to add some room VNUMs here cause the spell won't work without them.
+   // Example of how the thing should work:
 
-   if( !str_cmp( target_name, "maldoth" ) )
-      room = get_room_index( 10058 );
-
-   if( !str_cmp( target_name, "palainth" ) )
-      room = get_room_index( 5150 );
-
-   if( !str_cmp( target_name, "greyhaven" ) )
-      room = get_room_index( 4118 );
-
-   if( !str_cmp( target_name, "dragongate" ) )
-      room = get_room_index( 19339 );
-
-   if( !str_cmp( target_name, "venetorium" ) )
-      room = get_room_index( 5562 );
-
-   if( !str_cmp( target_name, "graecia" ) )
-      room = get_room_index( 13806 );
+   // if( !str_cmp( target_name, "bywater" ) )
+   //   room = get_room_index( 7035 );
 
    if( !room )
    {
       ch->print( "Where do you wish to go??\r\n" );
-      ch->print( "bywater, maldoth, palainth, greyhaven, dragongate, venetorium or graecia ?\r\n" );
+      ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!!!!\r\n" );
       return rSPELL_FAILED;
    }
 
@@ -5715,7 +5715,7 @@ SPELLF( spell_despair )
    if( despair )
       ch->print( "&[magic]Your magic strikes fear into the hearts of the occupants!\r\n" );
    else
-      ch->print( "&[magic]You weave your magic, but there was no noticable affect.\r\n" );
+      ch->print( "&[magic]You weave your magic, but there was no noticable effect.\r\n" );
    return rNONE;
 }
 
@@ -5749,7 +5749,7 @@ SPELLF( spell_enrage )
    if( anger )
       ch->print( "&[magic]The occupants of the room become highly enraged!\r\n" );
    else
-      ch->print( "&[magic]You weave your magic, but there was no noticable affect.\r\n" );
+      ch->print( "&[magic]You weave your magic, but there was no noticable effect.\r\n" );
    return rNONE;
 }
 
@@ -5788,7 +5788,7 @@ SPELLF( spell_calm )
    if( soothe )
       ch->print( "&[magic]A soothing calm settles upon the occupants in the room.\r\n" );
    else
-      ch->print( "&[magic]You weave your magic, but there was no noticable affect.\r\n" );
+      ch->print( "&[magic]You weave your magic, but there was no noticable effect.\r\n" );
    return rNONE;
 }
 
@@ -5901,6 +5901,7 @@ SPELLF( spell_creeping_doom )
       ch->print( "You must be outdoors to cast this spell.\r\n" );
       return rSPELL_FAILED;
    }
+
    if( !( temp = get_mob_index( MOB_VNUM_CREEPINGDOOM ) ) )
    {
       bug( "%s: Creeping Doom vnum %d doesn't exist.", __FUNCTION__, MOB_VNUM_CREEPINGDOOM );
@@ -6109,7 +6110,7 @@ SPELLF( spell_remove_curse )
          obj = *iobj;
          if( !obj->in_obj && ( obj->extra_flags.test( ITEM_NOREMOVE ) || obj->extra_flags.test( ITEM_NODROP ) ) )
          {
-            if( obj->extra_flags.test( ITEM_SINDHAE ) )
+            if( obj->extra_flags.test( ITEM_SINDHAE ) || obj->extra_flags.test( ITEM_PERMANENT ) )
                continue;
             if( obj->extra_flags.test( ITEM_NOREMOVE ) )
                obj->extra_flags.reset( ITEM_NOREMOVE );
@@ -6157,7 +6158,6 @@ SPELLF( spell_beacon )
    /*
     * Set beacons with this spell, up to 5 
     */
-
    for( a = 0; a < MAX_BEACONS; ++a )
    {
       if( ch->pcdata->beacon[a] == 0 || ch->pcdata->beacon[a] == ch->in_room->vnum )
@@ -6344,7 +6344,7 @@ SPELLF( spell_chain_lightning )
 
       int dam = dice( UMAX( 1, level - 1 ), 6 );
 
-      if( vch != ch && ( ch->isnpc(  )? !vch->isnpc(  ) : vch->isnpc(  ) ) )
+      if( vch != ch && ( ch->isnpc(  ) ? !vch->isnpc(  ) : vch->isnpc(  ) ) )
          retcode = damage( ch, vch, dam, sn );
 
       if( retcode == rCHAR_DIED || ch->char_died(  ) )

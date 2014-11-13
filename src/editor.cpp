@@ -995,6 +995,31 @@ bool is_number( const char *arg )
    return true;
 }
 
+// I r lazy and just want a good way to output the contents of the various string arrays.
+const char *print_array_string( const char *flagarray[] )
+{
+   static string s;
+   int columns = 0;
+
+   s.clear();
+
+   for( size_t i = 0; i < ( sizeof( flagarray ) / sizeof( flagarray[0] ) ); ++i )
+   {
+      s.append( flagarray[i] );
+
+      if( !( ++columns % 6 ) )
+         s.append( "\r\n" );
+      else
+         s.append( 1, '\t' );
+   }
+   strip_tspace(s); // get rid of final space
+
+   if( !( columns % 6 ) )
+      s.append( "\r\n" );
+
+   return s.c_str();
+}
+
 const int max_buf_lines = 60;
 
 struct editor_data
@@ -1305,6 +1330,7 @@ void char_data::edit_buffer( string & argument )
    {
       one_argument( argument, cmd );
       cmd = cmd.substr( 1, cmd.length(  ) );
+
       if( !str_cmp( cmd, "?" ) )
       {
          print( "Editing commands\r\n---------------------------------\r\n" );
@@ -1323,6 +1349,7 @@ void char_data::edit_buffer( string & argument )
          print( "/s              save buffer\r\n\r\n> " );
          return;
       }
+
       if( !str_cmp( cmd, "c" ) )
       {
          delete edit;
@@ -1331,6 +1358,7 @@ void char_data::edit_buffer( string & argument )
          print( "Buffer cleared.\r\n> " );
          return;
       }
+
       if( !str_cmp( cmd, "r" ) )
       {
          string word1, word2, sptr, lwptr;
@@ -1602,7 +1630,7 @@ void char_data::edit_buffer( string & argument )
       mudstrlcpy( edit->line[edit->on_line++], buf, 81 );
       while( edit->on_line > edit->numlines )
          ++edit->numlines;
-      if( edit->numlines > max_buf_lines )
+      if( edit->numlines >= max_buf_lines )
       {
          edit->numlines = max_buf_lines;
          print( "Your buffer is full.\r\n" );

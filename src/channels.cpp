@@ -28,6 +28,7 @@
 
 #include <fstream>
 #include "mud.h"
+#include "area.h"
 #include "channels.h"
 #include "commands.h"
 #include "descriptor.h"
@@ -588,11 +589,13 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
    int speaking = -1;
 
    for( int lang = 0; lang < LANG_UNKNOWN; ++lang )
+   {
       if( ch->speaking == lang )
       {
          speaking = lang;
          break;
       }
+   }
 
    if( ch->isnpc(  ) && channel->type == CHAN_GUILD )
    {
@@ -600,18 +603,9 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
       return;
    }
 
-   if( !ch->IS_PKILL(  ) && channel->type == CHAN_PK )
+   if( ch->has_pcflag( PCFLAG_SILENCE ) )
    {
-      if( !ch->is_immortal(  ) )
-      {
-         ch->print( "Peacefuls have no need to use wartalk.\r\n" );
-         return;
-      }
-   }
-
-   if( ch->in_room->flags.test( ROOM_SILENCE ) )
-   {
-      ch->print( "The room absorbs your words!\r\n" );
+      ch->printf( "You can't %s.\r\n", channel->name.c_str(  ) );
       return;
    }
 
@@ -620,6 +614,22 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
       ch->print( "You are unable to utter a sound!\r\n" );
       return;
    }
+
+   if( !ch->IS_PKILL(  ) && channel->type == CHAN_PK )
+   {
+      if( !ch->is_immortal(  ) )
+      {
+         ch->print( "Peacefuls have no need to use PK channels.\r\n" );
+         return;
+      }
+   }
+
+   if( ch->in_room->flags.test( ROOM_SILENCE ) || ch->in_room->flags.test( ROOM_NOYELL ) || ch->in_room->area->flags.test( AFLAG_SILENCE ) )
+   {
+      ch->print( "The room absorbs your words!\r\n" );
+      return;
+   }
+
 
    if( ch->isnpc(  ) && ch->has_aflag( AFF_CHARM ) )
    {
@@ -650,29 +660,14 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
       return;
    }
 
-   if( ch->has_pcflag( PCFLAG_SILENCE ) )
+   if( !hasname( ch->pcdata->chan_listen, channel->name ) )
    {
-      ch->printf( "You can't %s.\r\n", channel->name.c_str(  ) );
+      ch->printf( "You are not currently listening to the %s channel. To turn it on, use the listen command.\r\n", channel->name.c_str() );
       return;
    }
 
-   /*
-    * Inverts the speech of anyone carrying the burgundy amulet 
-    */
-   if( str_cmp( ch->name, "Krusty" ) )
-   {
-      list < obj_data * >::iterator iobj;
-
-      for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
-      {
-         obj_data *obj = ( *iobj ); /* Burgundy Amulet */
-         if( obj->pIndexData->vnum == 1405 ) /* The amulet itself */
-         {
-            argument = invert_string( argument );
-            break;
-         }
-      }
-   }
+   // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
+   strip_spaces( argument );
 
    string arg, word;
    char_data *victim = NULL;
@@ -746,7 +741,12 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
                   channel->colorname.c_str(  ), capitalize( channel->name ).c_str(  ), channel->colorname.c_str(  ), ch->name, argument.c_str(  ) );
    }
    else
-      ch->printf( "&[%s]You %s '%s'\r\n", channel->colorname.c_str(  ), channel->name.c_str(  ), argument.c_str(  ) );
+   {
+      if( ch->has_pcflag( PCFLAG_WIZINVIS ) )
+         ch->printf( "&[%s](%d) You %s '%s'\r\n", channel->colorname.c_str(  ), ( !ch->isnpc(  ) ? ch->pcdata->wizinvis : ch->mobinvis ), channel->name.c_str(  ), argument.c_str(  ) );
+      else
+         ch->printf( "&[%s]You %s '%s'\r\n", channel->colorname.c_str(  ), channel->name.c_str(  ), argument.c_str(  ) );
+   }
 
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
       append_to_file( LOG_FILE, "%s: %s (%s)", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ), channel->name.c_str(  ) );
@@ -779,10 +779,10 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          if( vch->level < channel->level )
             continue;
 
-         if( vch->in_room->flags.test( ROOM_SILENCE ) )
+         if( vch->in_room->flags.test( ROOM_SILENCE ) || vch->in_room->area->flags.test( AFLAG_SILENCE ) )
             continue;
 
-         if( channel->type == CHAN_ZONE && vch->in_room->area != ch->in_room->area )
+         if( channel->type == CHAN_ZONE && ( vch->in_room->area != ch->in_room->area || vch->in_room->flags.test( ROOM_NOYELL ) ) )
             continue;
 
          if( channel->type == CHAN_PK && !vch->IS_PKILL(  ) && !vch->is_immortal(  ) )
@@ -800,7 +800,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          vch->position = POS_STANDING;
 
          if( ch->has_pcflag( PCFLAG_WIZINVIS ) && vch->can_see( ch, false ) && vch->is_immortal(  ) )
-            snprintf( lbuf, MIL + 4, "&[%s](%d) ", channel->colorname.c_str(  ), ( !ch->isnpc(  ) )? ch->pcdata->wizinvis : ch->mobinvis );
+            snprintf( lbuf, MIL + 4, "&[%s](%d) ", channel->colorname.c_str(  ), ( !ch->isnpc(  ) ) ? ch->pcdata->wizinvis : ch->mobinvis );
          else
             lbuf[0] = '\0';
 
@@ -841,6 +841,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
             origy = ch->my;
             origmap = ch->cmap;
          }
+
          if( ch->isnpc(  ) && ch->has_actflag( ACT_ONMAP ) )
          {
             mapped = true;

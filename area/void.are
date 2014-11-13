@@ -1361,6 +1361,34 @@ Immune    fire cold electricity energy blunt pierce slash acid poison drain slee
 #ENDMOBILE
 
 #MOBILE
+Vnum      11074
+Keywords  generic cityguard guard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     A Guard~
+Long      A city guard watches you go by.
+~
+Desc      This guard is big and strong, and he doesn't look like someone you want
+to mess with.  He is part of the city guard, which is famed throughout
+the dominion as being one of the best fighting forces around.
+He has been trained to be vigilent, so as to watch for orc attacks, and
+he practices his training on you, watching every move you make.
+~
+Nattacks  0.000000
+Stats1    0 -1 0 0 150 100
+Stats2    30 21 100 400 1 8 3
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+Attacks   punch kick bash~
+Defenses  parry disarm~
+#ENDMOBILE
+
+#MOBILE
 Vnum      11400
 Keywords  Puff~
 Race      dragon~
@@ -2390,6 +2418,16 @@ Stats     1 0 0 9999 0 None None None
 #ENDOBJECT
 
 #OBJECT
+Vnum      11046
+Keywords  generic map~
+Type      trash~
+Short     a newly created generic map~
+Long      Some god dropped a newly created generic map here.~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 -2 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
 Vnum      11064
 Keywords  jailor guard~
 Type      trash~
@@ -2683,6 +2721,16 @@ Type      armor~
 Short     A shield made from the hide of %s~
 Long      A shield made from something's hide lies here.~
 WFlags    take shield~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      11400
+Keywords  puddle~
+Type      puddle~
+Short     A puddle of %s~
+Long      A puddle of %s is here.~
 Values    0 0 0 0 0 0 0 0 0 0 0
 Stats     1 0 0 9999 0 None None None
 #ENDOBJECT

@@ -6842,6 +6842,19 @@ Minlevel     101
 End
 
 #SKILL
+Name         cleave~
+Type         Skill
+Info         0
+Author       Smaug~
+Minpos       fighting~
+Rounds       18
+Ego          -2
+Code         do_cleave
+Dammsg       cleave~
+Minlevel     50
+End
+
+#SKILL
 Name         climb~
 Type         Skill
 Info         0
@@ -7388,6 +7401,20 @@ your opponent, causing damage and temporary blindness.
  
 Note that gouge has a reduced chance of hitting if the gouger is not
 one of the primary combatants (i.e. is not tanking).~
+End
+
+#SKILL
+Name         grapple~
+Type         Skill
+Info         0
+Author       Smaug~
+Minpos       fighting~
+Rounds       36
+Ego          -2
+Code         do_grapple
+Dammsg       !grapple!~
+Wearoff      You stop grappling.~
+Minlevel     50
 End
 
 #SKILL

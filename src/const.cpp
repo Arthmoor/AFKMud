@@ -86,6 +86,8 @@ short gsn_grip;
 short gsn_berserk;
 short gsn_hitall;
 short gsn_tumble;
+short gsn_grapple;
+short gsn_cleave;
 short gsn_retreat;   /* Samson 5-27-99 */
 
 /* other   */
@@ -252,6 +254,8 @@ void assign_gsn_data( void )
    ASSIGN_GSN( gsn_climb, "climb" );
    ASSIGN_GSN( gsn_cook, "cook" );
    ASSIGN_GSN( gsn_slice, "slice" );
+   ASSIGN_GSN( gsn_grapple, "grapple" );
+   ASSIGN_GSN( gsn_cleave, "cleave" );
    ASSIGN_GSN( gsn_fireball, "fireball" );
    ASSIGN_GSN( gsn_chill_touch, "chill touch" );
    ASSIGN_GSN( gsn_lightning_bolt, "lightning bolt" );

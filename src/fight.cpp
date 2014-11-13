@@ -133,12 +133,12 @@ void make_corpse( char_data * ch, char_data * killer )
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          return;
       }
+
       corpse->timer = 8;
       corpse->value[3] = 100; /* So the slice skill will work */
+
       /*
        * Just use the 4th value - cost is creating odd errors on compile - Samson 
-       */
-      /*
        * Used by do_slice and spell_animate_dead 
        */
       corpse->value[4] = ch->pIndexData->vnum;
@@ -173,10 +173,12 @@ void make_corpse( char_data * ch, char_data * killer )
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          return;
       }
+
       if( in_arena( ch ) )
          corpse->timer = 0;
       else
          corpse->timer = 45;  /* This will provide a slight window to resurrect at full health - Samson */
+
       if( ch->gold > 0 )
       {
          create_money( ch->gold )->to_obj( corpse );
@@ -215,9 +217,20 @@ void make_corpse( char_data * ch, char_data * killer )
       obj = ( *iobj );
       ++iobj;
 
+      /*
+       * don't put perm player eq in the corpse
+       */
+      if( !ch->isnpc() && obj->extra_flags.test( ITEM_PERMANENT ) )
+         continue;
+
       obj->from_char(  );
       if( obj->extra_flags.test( ITEM_INVENTORY ) || obj->extra_flags.test( ITEM_DEATHROT ) )
          obj->extract(  );
+      else if( obj->extra_flags.test( ITEM_DEATHDROP ) )
+      {
+         obj->to_room( ch->in_room, ch );
+         oprog_drop_trigger( ch, obj ); /* mudprogs */
+      }
       else
          obj->to_obj( corpse );
    }
@@ -366,6 +379,9 @@ bool is_attack_supressed( char_data * ch )
 
    if( ch->isnpc(  ) )
       return false;
+
+   if( ch->has_aflag( AFF_GRAPPLE ) )
+      return true;
 
    if( !( chtimer = ch->get_timerptr( TIMER_ASUPRESSED ) ) )
       return false;
@@ -786,6 +802,10 @@ void align_zap( char_data * ch )
          act( AT_MAGIC, "$n is zapped by $p.", ch, obj, NULL, TO_ROOM );
          obj->from_char(  );
          obj = obj->to_room( ch->in_room, ch );
+         if( in_arena( ch ) )
+            obj = obj->to_char( ch );
+         else
+            obj = obj->to_room( ch->in_room, ch );
          oprog_zap_trigger( ch, obj ); /* mudprogs */
          if( ch->char_died(  ) )
             return;
@@ -1504,7 +1524,6 @@ void group_gain( char_data * ch, char_data * victim )
       gch->gain_exp( xp ); /* group gain */
       align_zap( gch );
    }
-   return;
 }
 
 /*
@@ -2118,12 +2137,44 @@ void free_fight( char_data * ch )
    return;
 }
 
+void strip_grapple( char_data * ch )
+{
+   if( ch->isnpc() )
+      return;
+
+   if( ch->has_aflag( AFF_GRAPPLE ) )
+   {
+      ch->affect_strip( gsn_grapple );
+      ch->set_color( AT_WEAROFF );
+      ch->printf( "%s\r\n", skill_table[gsn_grapple]->msg_off );
+      if( ch->get_timer( TIMER_PKILLED ) > 0 )
+         ch->remove_timer( TIMER_ASUPRESSED );
+   }
+
+   if( ch->who_fighting() )
+   {
+      char_data *vch = ch->who_fighting();
+
+      if( ch->fighting->who->who_fighting( ) == ch && vch->has_aflag( AFF_GRAPPLE ) )
+      {
+         vch->affect_strip( gsn_grapple );
+         vch->set_color( AT_WEAROFF );
+         vch->printf( "%s\r\n", skill_table[gsn_grapple]->msg_off );
+
+         if( vch->get_timer( TIMER_PKILLED ) > 0 )
+            vch->remove_timer( TIMER_ASUPRESSED );
+      }
+   }
+   return;
+}
+
 /*
  * Stop fights.
  */
 void char_data::stop_fighting( bool fBoth )
 {
    cancel_event( ev_violence, this );
+   strip_grapple( this );
    free_fight( this );
    update_pos(  );
 
@@ -2146,37 +2197,38 @@ void char_data::stop_fighting( bool fBoth )
 }
 
 /* Vnums for the various bodyparts */
-const int part_vnums[] = { OBJ_VNUM_SEVERED_HEAD,  /* Head */
+const int part_vnums[] = {
+    OBJ_VNUM_SEVERED_HEAD, /* Head */
    OBJ_VNUM_SLICED_ARM, /* arms */
    OBJ_VNUM_SLICED_LEG, /* legs */
    OBJ_VNUM_TORN_HEART, /* heart */
-   OBJ_VNUM_BRAINS,  /* brains */
+   OBJ_VNUM_BRAINS,     /* brains */
    OBJ_VNUM_SPILLED_GUTS,  /* guts */
-   OBJ_VNUM_HANDS,   /* hands */
-   OBJ_VNUM_FOOT, /* feet */
-   OBJ_VNUM_FINGERS, /* fingers */
-   OBJ_VNUM_EAR,  /* ear */
-   OBJ_VNUM_EYE,  /* eye */
-   OBJ_VNUM_TONGUE,  /* long_tongue */
+   OBJ_VNUM_HANDS,      /* hands */
+   OBJ_VNUM_FOOT,       /* feet */
+   OBJ_VNUM_FINGERS,    /* fingers */
+   OBJ_VNUM_EAR,        /* ear */
+   OBJ_VNUM_EYE,        /* eye */
+   OBJ_VNUM_TONGUE,     /* long_tongue */
    OBJ_VNUM_EYESTALK,   /* eyestalks */
    OBJ_VNUM_TENTACLE,   /* tentacles */
-   OBJ_VNUM_FINS, /* fins */
-   OBJ_VNUM_WINGS,   /* wings */
-   OBJ_VNUM_TAIL, /* tail */
-   OBJ_VNUM_SCALES,  /* scales */
-   OBJ_VNUM_CLAWS,   /* claws */
-   OBJ_VNUM_FANGS,   /* fangs */
-   OBJ_VNUM_HORNS,   /* horns */
-   OBJ_VNUM_TUSKS,   /* tusks */
-   OBJ_VNUM_TAIL, /* tailattack */
+   OBJ_VNUM_FINS,       /* fins */
+   OBJ_VNUM_WINGS,      /* wings */
+   OBJ_VNUM_TAIL,       /* tail */
+   OBJ_VNUM_SCALES,     /* scales */
+   OBJ_VNUM_CLAWS,      /* claws */
+   OBJ_VNUM_FANGS,      /* fangs */
+   OBJ_VNUM_HORNS,      /* horns */
+   OBJ_VNUM_TUSKS,      /* tusks */
+   OBJ_VNUM_TAIL,       /* tailattack */
    OBJ_VNUM_SHARPSCALE, /* sharpscales */
-   OBJ_VNUM_BEAK, /* beak */
+   OBJ_VNUM_BEAK,       /* beak */
    OBJ_VNUM_HAUNCHES,   /* haunches */
-   OBJ_VNUM_HOOVES,  /* hooves */
-   OBJ_VNUM_PAWS, /* paws */
-   OBJ_VNUM_FORELEG, /* forelegs */
+   OBJ_VNUM_HOOVES,     /* hooves */
+   OBJ_VNUM_PAWS,       /* paws */
+   OBJ_VNUM_FORELEG,    /* forelegs */
    OBJ_VNUM_FEATHERS,   /* feathers */
-   OBJ_VNUM_SHELL, /* shell */
+   OBJ_VNUM_SHELL,      /* shell */
    0  /* r2 */
 };
 
@@ -2240,21 +2292,27 @@ void death_cry( char_data * ch )
       default:
          msg = "You hear $n's death cry.";
          break;
+
       case 0:
          msg = "$n screams furiously as $e falls to the ground in a heap!";
          break;
+
       case 1:
          msg = "$n hits the ground ... DEAD.";
          break;
+
       case 2:
          msg = "$n catches $s guts in $s hands as they pour through $s fatal wound!";
          break;
+
       case 3:
          msg = "$n splatters blood on your armor.";
          break;
+
       case 4:
          msg = "$n gasps $s last breath and blood spurts out of $s mouth and ears.";
          break;
+
       case 5:
          if( ch->has_bparts() )
          {
@@ -2503,6 +2561,7 @@ void damage_obj( obj_data * obj )
       default:
          obj->make_scraps(  );
          break;
+
       case ITEM_CONTAINER:
       case ITEM_KEYRING:
       case ITEM_QUIVER:
@@ -2514,6 +2573,7 @@ void damage_obj( obj_data * obj )
                obj->value[3] = 1;
          }
          break;
+
       case ITEM_LIGHT:
          if( --obj->value[0] <= 0 )
          {
@@ -2523,6 +2583,7 @@ void damage_obj( obj_data * obj )
                obj->value[0] = 1;
          }
          break;
+
       case ITEM_ARMOR:
          if( ch && obj->value[0] >= 1 )
             ch->armor += obj->apply_ac( obj->wear_loc );
@@ -2539,6 +2600,7 @@ void damage_obj( obj_data * obj )
          else if( ch && obj->value[0] >= 1 )
             ch->armor -= obj->apply_ac( obj->wear_loc );
          break;
+
       case ITEM_WEAPON:
       case ITEM_MISSILE_WEAPON:
          if( --obj->value[6] <= 0 )
@@ -2549,6 +2611,7 @@ void damage_obj( obj_data * obj )
                obj->value[6] = 1;
          }
          break;
+
       case ITEM_PROJECTILE:
          if( --obj->value[5] <= 0 )
          {
@@ -2727,6 +2790,9 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
        * Certain attacks are forbidden.
        * Most other attacks are returned.
        */
+      if( victim == supermob ) /* Stop any damage */
+         return rNONE;
+
       if( is_safe( ch, victim ) )
          return rNONE;
 
@@ -2749,15 +2815,19 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
                case ( STYLE_EVASIVE ):
                   victim->position = POS_EVASIVE;
                   break;
+
                case ( STYLE_DEFENSIVE ):
                   victim->position = POS_DEFENSIVE;
                   break;
+
                case ( STYLE_AGGRESSIVE ):
                   victim->position = POS_AGGRESSIVE;
                   break;
+
                case ( STYLE_BERSERK ):
                   victim->position = POS_BERSERK;
                   break;
+
                default:
                   victim->position = POS_FIGHTING;
             }
@@ -2840,8 +2910,10 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
          if( check_parry( ch, victim ) )
             return rNONE;
+
          if( check_dodge( ch, victim ) )
             return rNONE;
+
          if( check_tumble( ch, victim ) )
             return rNONE;
       }
@@ -2876,7 +2948,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       /*
        * get a random body eq part 
        */
-      dameq = number_range( WEAR_LIGHT, WEAR_ANKLE_R );
+      dameq = number_range( WEAR_LIGHT, WEAR_TAIL );
       damobj = victim->get_eq( dameq );
       if( damobj )
       {
@@ -2988,6 +3060,9 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
       if( !npcvict )
       {
+         if( !victim->desc )
+            add_loginmsg( victim->name, 17, ( ch->isnpc() ? ch->short_descr : ch->name ) );
+
          log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s (%d) killed by %s at %d",
                           victim->name, victim->level, ( ch->isnpc(  )? ch->short_descr : ch->name ), victim->in_room->vnum );
 
@@ -3004,6 +3079,21 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
                                ch->level, ch->name, victim->level, !victim->CAN_PKILL(  )? "&W<Peaceful>" :
                                victim->pcdata->clan ? victim->pcdata->clan->badge.c_str(  ) : "&P(&WUnclanned&P)", victim->name, ch->in_room->area->name );
             }
+         }
+
+         if( !victim->isnpc() && !victim->is_immortal() && victim->pcdata->clan
+             && victim->pcdata->clan->clan_type == CLAN_CLAN && ch != victim && !ch->isnpc() )
+         {
+            char filename[256];
+
+            snprintf( filename, 256, "%s%s.defeats", CLAN_DIR, victim->pcdata->clan->name.c_str() );
+
+            if( ch->pcdata && ch->pcdata->clan && ch->pcdata->clan->name == victim->pcdata->clan->name )
+               ;
+            else
+               append_to_file( filename, "&P(%2d) %-12s &wdefeated by &P(%2d) %s &P%s ... &w%s",
+                     victim->level, victim->name, ch->level, !ch->CAN_PKILL( ) ? "&W<Peaceful>" :
+                     ch->pcdata->clan ? ch->pcdata->clan->badge.c_str() : "&P(&WUnclanned&P)", ch->name, victim->in_room->area->name );
          }
 
          /*
@@ -3849,16 +3939,25 @@ CMDF( do_flee )
       ch->print( "You aren't fighting anyone.\r\n" );
       return;
    }
+
    if( ch->has_aflag( AFF_BERSERK ) )
    {
       ch->print( "Flee while berserking?  You aren't thinking very clearly...\r\n" );
       return;
    }
+
+   if( ch->has_aflag( AFF_GRAPPLE ) )
+   {
+      ch->print( "You're too wrapped up to flee!\r\n" );
+      return;
+   }
+
    if( ch->move <= 0 )
    {
       ch->print( "You're too exhausted to flee from combat!\r\n" );
       return;
    }
+
    /*
     * No fleeing while more aggressive than standard or hurt. - Haus 
     */
@@ -3867,14 +3966,17 @@ CMDF( do_flee )
       ch->print( "You can't flee in an aggressive stance...\r\n" );
       return;
    }
+
    if( ch->isnpc(  ) && ch->position <= POS_SLEEPING )
       return;
+
    was_in = ch->in_room;
    for( attempt = 0; attempt < 8; ++attempt )
    {
       door = number_door(  );
       if( !( pexit = was_in->get_exit( door ) )
           || !pexit->to_room || IS_EXIT_FLAG( pexit, EX_NOFLEE )
+          || pexit->to_room->flags.test( ROOM_DEATH )
           || ( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !ch->has_aflag( AFF_PASS_DOOR ) ) || ( ch->isnpc(  ) && pexit->to_room->flags.test( ROOM_NO_MOB ) ) )
          continue;
 

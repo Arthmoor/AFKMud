@@ -52,6 +52,7 @@
 #include "variables.h"
 
 bool MOBtrigger;
+bool MPSilent;
 
 /* Defines by Narn for new mudprog parsing, used as 
    return values from mprog_do_command. */
@@ -64,6 +65,8 @@ const int FOUNDELSE = 6;
 const int FOUNDENDIF = 7;
 const int IFIGNORED = 8;
 const int ORIGNORED = 9;
+
+bool in_arena( char_data * );
 
 /*
  * Local function prototypes
@@ -325,6 +328,8 @@ int mprog_name_to_type( const string & name )
       return VOID_PROG;
    if( !str_cmp( name, "load_prog" ) )
       return LOAD_PROG;
+   if( !str_cmp( name, "greet_in_fight_prog" ) )
+      return GREET_IN_FIGHT_PROG;
    return ( ERROR_PROG );
 }
 
@@ -501,6 +506,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
             goto doneargs;
       }
    }
+
  doneargs:
    q = p;
    while( isoperator( *p ) )
@@ -1090,6 +1096,10 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
       if( !str_cmp( chck, "canpkill" ) )
          return chkchar->CAN_PKILL(  ) ? true : false;
 
+      // Imported from Smaug 1.8
+      if( !str_cmp( chck, "inarena" ) )
+         return in_arena( chkchar ) ? true : false;
+
       if( !str_cmp( chck, "ismounted" ) )
          return ( chkchar->position == POS_MOUNTED );
 
@@ -1183,40 +1193,38 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          return BERR;
       }
 
-      /*
-       * if( !str_cmp( chck, "isflagged" ) ) <--- FIXME: We don't have EXT_BV, conver to std::bitset
-       * {
-       * variable_data *vd;
-       * int vnum = mob->pIndexData->vnum;
-       * int flag = 0;
-       * 
-       * if( argc < 3 )
-       * return BERR;
-       * 
-       * if( argc > 3 )
-       * flag = atoi( argv[3] );
-       * 
-       * if( ( p = strchr( argv[2], ':' ) ) != NULL )
-       * {
-       * *p++ = '\0';
-       * vnum = atoi( p );
-       * }
-       * 
-       * if( ( vd = get_tag( chkchar, argv[2], vnum ) ) == NULL )
-       * return false;
-       * 
-       * flag = abs( flag ) % MAX_BITS;
-       * switch ( vd->type )
-       * {
-       * case vtSTR:
-       * case vtINT:
-       * return false;
-       * case vtXBIT:
-       * return xIS_SET( *( EXT_BV * ) vd->data, flag ) ? true : false;
-       * }
-       * return false;
-       * } 
-       */
+      if( !str_cmp( chck, "isflagged" ) ) 
+      {
+         variable_data *vd;
+         int vnum = mob->pIndexData->vnum;
+         int flag = 0;
+
+         if( argc < 3 )
+            return BERR;
+
+         if( argc > 3 )
+            flag = atoi( argv[3] );
+
+         if( ( p = strchr( argv[2], ':' ) ) != NULL )
+         {
+            *p++ = '\0';
+            vnum = atoi( p );
+         }
+
+         if( ( vd = get_tag( chkchar, argv[2], vnum ) ) == NULL )
+            return false;
+
+         switch( vd->type )
+         {
+            case vtSTR:
+            case vtINT:
+               return false;
+
+            case vtXBIT:
+               return vd->varflags.test( flag ) ? true : false;
+         }
+         return false;
+      }
 
       if( !str_cmp( chck, "istagged" ) )
       {
@@ -1350,6 +1358,28 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          return mprog_seval( chkchar->desc->host.c_str(  ), opr, rval, mob );
       }
 
+      if( !str_cmp( chck, "areamulti" ) )
+      {
+         int clhsvl = 0;
+
+         for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+         {
+            char_data *ch = *ich;
+
+            if( !chkchar->isnpc() && !ch->isnpc() && ch->in_room && chkchar->in_room
+                && ch->in_room->area == chkchar->in_room->area
+                && ch->desc && chkchar->desc && !str_cmp( ch->desc->host, chkchar->desc->host ) )
+               ++clhsvl;
+         }
+
+         rhsvl = atoi( rval );
+         if( rhsvl < 0 )
+            rhsvl = 0;
+         if( !*opr )
+            strcpy( opr, "==" );
+         return mprog_veval( clhsvl, opr, rhsvl, mob );
+      }
+
       if( !str_cmp( chck, "multi" ) )
       {
          lhsvl = 0;
@@ -1361,6 +1391,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
             if( !chkchar->isnpc(  ) && ch->desc && chkchar->desc && !str_cmp( ch->desc->host, chkchar->desc->host ) )
                ++lhsvl;
          }
+
          rhsvl = atoi( rval );
          if( rhsvl < 0 )
             rhsvl = 0;
@@ -1515,6 +1546,9 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
             return false;
          return mprog_veval( chkchar->wait, opr, atoi( rval ), mob );
       }
+
+      if( !str_cmp( chck, "pkadrenalized" ) )
+         return mprog_veval( chkchar->get_timer( TIMER_RECENTFIGHT ), opr, atoi( rval ), mob );
 
       if( !str_cmp( chck, "asupressed" ) )
          return mprog_veval( chkchar->get_timer( TIMER_ASUPRESSED ), opr, atoi( rval ), mob );
@@ -1913,7 +1947,6 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
                else
                {
                   strcpy( t, vict->name );
-                  strcat( t, " " );
                   strcat( t, vict->pcdata->title );
                }
             }
@@ -1950,7 +1983,6 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
                else
                {
                   strcpy( t, rndm->name );
-                  strcat( t, " " );
                   strcat( t, rndm->pcdata->title );
                }
             }
@@ -2140,7 +2172,14 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
  */
 void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, bool single_step )
 {
+   static int prog_nest;
+   static int serial;
+   int curr_serial;
+   room_index *supermob_room;
+   obj_data *true_supermob_obj;
+   bool rprog_oprog = ( mob == supermob );
    bool ifstate[MAX_IFS][DO_ELSE + 1];
+   bool oldMPSilent;
 
    if( mob->has_aflag( AFF_CHARM ) || mob->has_aflag( AFF_POSSESS ) )
       return;
@@ -2153,13 +2192,6 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
       progbug( "triggering oneself.", mob );
       return;
    }
-
-   static int prog_nest;
-   static int serial;
-   int curr_serial;
-   room_index *supermob_room;
-   obj_data *true_supermob_obj;
-   bool rprog_oprog = ( mob == supermob );
 
    if( rprog_oprog )
    {
@@ -2259,6 +2291,9 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
       }
    }
 
+   oldMPSilent = MPSilent;
+   MPSilent = false;
+
    /*
     * From here on down, the function is all mine.  The original code
     * did not support nested ifs, so it had to be redone.  The max 
@@ -2284,6 +2319,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             progbug( "Missing endif", mob );
          }
          --prog_nest;
+         MPSilent = oldMPSilent;
          return;
       }
 
@@ -2361,6 +2397,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          sleeplist.push_back( mpsleep );
 
          --prog_nest;
+         MPSilent = oldMPSilent;
          return;
       }
 
@@ -2381,6 +2418,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
       {
          mob->mpscriptpos = command_list - tmpcmndlst;
          --prog_nest;
+         MPSilent = oldMPSilent;
          return;
       }
 
@@ -2406,6 +2444,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             {
                progbug( "Maximum nested ifs exceeded", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
 
@@ -2424,6 +2463,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             {
                progbug( "Maximum nested ifs exceeded", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
             ifstate[iflevel][IN_IF] = true;
@@ -2439,6 +2479,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             {
                progbug( "Unmatched or", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
             ifstate[iflevel][DO_IF] = true;
@@ -2455,6 +2496,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             {
                progbug( "Unmatched or", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
             continue;
@@ -2474,12 +2516,15 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             {
                progbug( "Found else in an else section", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
+
             if( !ifstate[iflevel][IN_IF] )
             {
                progbug( "Unmatched else", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
 
@@ -2502,6 +2547,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             {
                progbug( "Unmatched endif", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
 
@@ -2524,6 +2570,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             {
                progbug( "Parse error, ignoring if while not in if or else", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
             ++ignorelevel;
@@ -2534,12 +2581,15 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             {
                progbug( "Unmatched or", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
+
             if( ignorelevel == 0 )
             {
                progbug( "Parse error, mistakenly ignoring or", mob );
                --prog_nest;
+               MPSilent = oldMPSilent;
                return;
             }
             break;
@@ -2547,9 +2597,12 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          default:
          case BERR:
             --prog_nest;
+            MPSilent = oldMPSilent;
             return;
       }
    }
+   --prog_nest;
+   MPSilent = oldMPSilent;
 }
 
 /* This function replaces mprog_process_cmnd.  It is called from 
@@ -2643,6 +2696,12 @@ int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data *
    if( !str_cmp( firstword, "break" ) )
       return BERR;
 
+   if( !str_cmp( firstword, "silent" ) )
+   {
+      MPSilent = true;
+      cmnd = one_argument( cmnd, firstword );
+   }
+
    vnum = mob->pIndexData->vnum;
    point = buf;
    str = cmnd;
@@ -2667,6 +2726,8 @@ int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data *
    *point = '\0';
 
    interpret( mob, buf );
+
+   MPSilent = false;
 
    /*
     * If the mob is mentally unstable and does things like fireball
@@ -3143,7 +3204,7 @@ void mprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
       if( ( mprg->type == type ) && mprg->arglist != NULL && ( number_percent(  ) <= atoi( mprg->arglist ) ) )
       {
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-         if( type != GREET_PROG && type != ALL_GREET_PROG && type != LOGIN_PROG && type != VOID_PROG )
+         if( type != GREET_PROG && type != ALL_GREET_PROG && type != LOGIN_PROG && type != VOID_PROG && type != GREET_IN_FIGHT_PROG )
             break;
       }
    }
@@ -3428,6 +3489,7 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
          return;
       }
+
       stralloc_printf( &obj->short_descr, obj->short_descr, amount );
       obj->value[0] = amount;
       obj = obj->to_char( mob );
@@ -3447,10 +3509,10 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
             else
                tprg = mprg;
          }
-
-         if( tprg )
-            mprog_driver( tprg->comlist, mob, ch, obj, NULL, NULL, false );
       }
+ 
+      if( tprg )
+         mprog_driver( tprg->comlist, mob, ch, obj, NULL, NULL, false );
    }
 }
 
@@ -3671,10 +3733,12 @@ void mprog_greet_trigger( char_data * ch )
       if( ch->isnpc(  ) && ch->pIndexData == vmob->pIndexData )
          continue;
 
-      if( !vmob->isnpc(  ) || !vmob->can_see( ch, false ) || vmob->fighting || !vmob->IS_AWAKE(  ) )
+      if( !vmob->isnpc() || !vmob->can_see( ch, false ) || ( vmob->fighting && !HAS_PROG( vmob->pIndexData, GREET_IN_FIGHT_PROG ) ) || !vmob->IS_AWAKE( ) )
          continue;
 
-      if( HAS_PROG( vmob->pIndexData, GREET_PROG ) )
+      if( vmob->fighting && HAS_PROG( vmob->pIndexData, GREET_IN_FIGHT_PROG ) )
+         mprog_percent_check( vmob, ch, NULL, NULL, NULL, GREET_IN_FIGHT_PROG );
+      else if( HAS_PROG( vmob->pIndexData, GREET_PROG ) )
          mprog_percent_check( vmob, ch, NULL, NULL, NULL, GREET_PROG );
       else if( HAS_PROG( vmob->pIndexData, ALL_GREET_PROG ) )
          mprog_percent_check( vmob, ch, NULL, NULL, NULL, ALL_GREET_PROG );
