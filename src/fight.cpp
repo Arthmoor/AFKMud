@@ -158,8 +158,6 @@ void make_corpse( char_data * ch, char_data * killer )
        * Cannot use these! They are used.
        * corpse->value[0] = ch->pIndexData->vnum;
        * corpse->value[1] = ch->max_hit;
-       */
-      /*
        * Using corpse cost to cheat, since corpses not sellable 
        */
       corpse->cost = ( -( int )ch->pIndexData->vnum );
@@ -801,7 +799,6 @@ void align_zap( char_data * ch )
          act( AT_MAGIC, "You are zapped by $p.", ch, obj, NULL, TO_CHAR );
          act( AT_MAGIC, "$n is zapped by $p.", ch, obj, NULL, TO_ROOM );
          obj->from_char(  );
-         obj = obj->to_room( ch->in_room, ch );
          if( in_arena( ch ) )
             obj = obj->to_char( ch );
          else
@@ -2198,7 +2195,7 @@ void char_data::stop_fighting( bool fBoth )
 
 /* Vnums for the various bodyparts */
 const int part_vnums[] = {
-    OBJ_VNUM_SEVERED_HEAD, /* Head */
+   OBJ_VNUM_SEVERED_HEAD, /* Head */
    OBJ_VNUM_SLICED_ARM, /* arms */
    OBJ_VNUM_SLICED_LEG, /* legs */
    OBJ_VNUM_TORN_HEART, /* heart */

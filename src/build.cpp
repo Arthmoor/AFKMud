@@ -239,7 +239,7 @@ const char *pc_flags[] = {
    "silence", "noemote", "boarded", "no_tell", "log", "deny", "freeze", "exempt",
    "onship", "litterbug", "ansi", "msp", "autogold", "ghost", "afk", "nourl",
    "noemail", "smartsac", "idle", "onmap", "mapedit", "guildsplit", "compass",
-   "retired"
+   "retired", "no_beep"
 };
 
 const char *trap_types[] = {

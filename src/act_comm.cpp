@@ -514,6 +514,12 @@ CMDF( do_beep )
 {
    char_data *victim = NULL;
 
+   if( ch->has_pcflag( PCFLAG_NO_BEEP ) )
+   {
+      ch->print( "You are not allowed to send beeps!\r\n" );
+      return;
+   }
+
    if( ch->pcdata->release_date != 0 )
    {
       ch->print( "Nope, no beeping from hell.\r\n" );
@@ -532,6 +538,12 @@ CMDF( do_beep )
    if( victim->isnpc(  ) || is_ignoring( victim, ch ) )
    {
       ch->print( "Beep who?\r\n" );
+      return;
+   }
+
+   if( victim->has_pcflag( PCFLAG_NO_BEEP ) )
+   {
+      ch->printf( "%s is not allowed to receive beeps!\r\n", victim->name );
       return;
    }
 

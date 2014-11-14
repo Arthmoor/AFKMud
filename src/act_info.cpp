@@ -1946,7 +1946,6 @@ CMDF( do_examine )
 
             ch->printf( "%s has %d %s written in out of a possible %d.\r\n",
                        obj->short_descr, count, count == 1 ? "page" : "pages", obj->value[0] );
-
             break;
          }
       }

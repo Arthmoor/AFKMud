@@ -984,15 +984,15 @@ CMDF( do_description )
       return;
    }
 
-   if( ch->has_pcflag( PCFLAG_NODESC ) )
-   {
-      ch->print( "You cannot set your description.\r\n" );
-      return;
-   }
-
    if( !ch->desc )
    {
       bug( "%s: no descriptor", __FUNCTION__ );
+      return;
+   }
+
+   if( ch->has_pcflag( PCFLAG_NODESC ) )
+   {
+      ch->print( "You cannot set your description.\r\n" );
       return;
    }
 
@@ -1037,15 +1037,15 @@ CMDF( do_bio )
       return;
    }
 
-   if( ch->has_pcflag( PCFLAG_NOBIO ) )
-   {
-      ch->print( "The gods won't allow you to do that!\r\n" );
-      return;
-   }
-
    if( !ch->desc )
    {
       bug( "%s: no descriptor", __FUNCTION__ );
+      return;
+   }
+
+   if( ch->has_pcflag( PCFLAG_NOBIO ) )
+   {
+      ch->print( "The gods won't allow you to do that!\r\n" );
       return;
    }
 

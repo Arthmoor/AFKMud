@@ -339,8 +339,10 @@ int ris_save( char_data * ch, int rchance, int ris )
    modifier = 10;
    if( (ch->has_immune( ris ) || ch->has_absorb( ris )) && !ch->has_noimmune( ris ) )
       return 1000;
+
    if( ch->has_resist( ris ) && !ch->has_noresist( ris ) )
       modifier -= 2;
+
    if( ch->has_suscep( ris ) && !ch->has_nosuscep( ris ) )
    {
       if( ch->isnpc(  ) && ch->has_immune( ris ) )
@@ -348,10 +350,13 @@ int ris_save( char_data * ch, int rchance, int ris )
       else
          modifier += 2;
    }
+
    if( modifier <= 0 )
       return 1000;
+
    if( modifier == 10 )
       return rchance;
+
    return ( rchance * modifier ) / 10;
 }
 
@@ -1664,6 +1669,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
 
       case TAR_IGNORE:
          vo = NULL;
+
          if( victim )
             target_name = victim->name;
          else if( obj )
@@ -1681,6 +1687,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
                return rNONE;
             }
          }
+
          if( ch != victim && is_safe( ch, victim ) )
             return rNONE;
          vo = ( void * )victim;
@@ -1913,6 +1920,7 @@ SPELLF( spell_call_lightning )
 
       if( vch != ch && ( ch->isnpc(  )? !vch->isnpc(  ) : vch->isnpc(  ) ) )
          retcode = damage( ch, vch, saves_spell_staff( level, vch ) ? dam / 2 : dam, sn );
+
       if( retcode == rCHAR_DIED || ch->char_died(  ) )
       {
          ch_died = true;
@@ -2979,6 +2987,7 @@ SPELLF( spell_teleport )
       ch->on = NULL;
       ch->position = POS_STANDING;
    }
+
    if( ch->position != POS_STANDING )
       ch->position = POS_STANDING;
 
@@ -4594,6 +4603,7 @@ SPELLF( spell_affect )
       bug( "%s: spell_affect has no affects sn %d", __FUNCTION__, sn );
       return rNONE;
    }
+
    if( SPELL_FLAG( skill, SF_GROUPSPELL ) )
       groupsp = true;
    else
@@ -4673,6 +4683,7 @@ SPELLF( spell_affect )
 
       if( skill->hit_vict && skill->hit_vict[0] != '\0' )
          hitvict = true;
+
       if( victim )
          victim = ( *victim->in_room->people.begin(  ) );
       else

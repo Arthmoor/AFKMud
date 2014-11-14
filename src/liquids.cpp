@@ -1502,8 +1502,6 @@ CMDF( do_drink )
             ch->sound( "drink.wav", 100, false );
          }
 
-         int amount = 1;
-
          /*
           * gain conditions accordingly              -Nopey 
           */
@@ -1551,7 +1549,7 @@ CMDF( do_drink )
                ch->print( "Your stomach is full, you can't manage to get anymore down.\r\n" );
          }
 
-         obj->value[1] -= amount;
+         obj->value[1] -= 1;
          if( obj->value[1] <= 0 )   /* Come now, what good is a drink container that vanishes?? */
          {
             obj->value[1] = 0;   /* Prevents negative values - Samson */
@@ -1894,6 +1892,7 @@ CMDF( do_fill )
                otmp->to_obj( obj );
                found = true;
             }
+
             if( found )
             {
                act( AT_ACTION, "You fill $p from $P.", ch, obj, source, TO_CHAR );
@@ -2105,6 +2104,7 @@ CMDF( do_empty )
       ch->print( "Empty what?\r\n" );
       return;
    }
+
    if( ms_find_obj( ch ) )
       return;
 
@@ -2113,6 +2113,7 @@ CMDF( do_empty )
       ch->print( "You aren't carrying that.\r\n" );
       return;
    }
+
    if( obj->count > 1 )
       obj->separate(  );
 
@@ -2137,6 +2138,7 @@ CMDF( do_empty )
             ch->print( "It's already empty.\r\n" );
             return;
          }
+         make_puddle( ch, obj );
          act( AT_ACTION, "You empty $p.", ch, obj, NULL, TO_CHAR );
          act( AT_ACTION, "$n empties $p.", ch, obj, NULL, TO_ROOM );
          obj->value[1] = 0;
@@ -2165,11 +2167,13 @@ CMDF( do_empty )
                ch->print( "&[tell]Someone tells you, 'No littering here!'\r\n" );
                return;
             }
+
             if( ch->in_room->flags.test( ROOM_NODROPALL ) || ch->in_room->flags.test( ROOM_CLANSTOREROOM ) )
             {
                ch->print( "You can't seem to do that here...\r\n" );
                return;
             }
+
             if( obj->empty( NULL, ch->in_room ) )
             {
                act( AT_ACTION, "You empty $p.", ch, obj, NULL, TO_CHAR );

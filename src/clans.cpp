@@ -103,7 +103,7 @@ void update_roster( char_data * ch )
    }
 
    /*
-    * If we make it here, assume they haven't been added previously 
+    * If we make it here, assume they haven't been added previously
     */
    add_roster( ch->pcdata->clan, ch->name, ch->Class, ch->level, ch->pcdata->mkills, ch->pcdata->mdeaths );
    save_clan( ch->pcdata->clan );
@@ -2900,7 +2900,6 @@ CMDF( do_drag )
    if( ch->in_room->area != to_room->area && !victim->in_hard_range( to_room->area ) )
    {
       ch->print( "That character cannot enter that area.\r\n" );
-      victim->position = POS_STANDING;
       return;
    }
 
@@ -2941,9 +2940,9 @@ CMDF( do_drag )
    if( dchance < number_percent(  ) )
    {
       ch->print( "You failed.\r\n" );
-      victim->position = POS_STANDING;
       return;
    }
+
    if( victim->position < POS_STANDING )
    {
       short temp;

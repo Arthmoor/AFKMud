@@ -491,7 +491,7 @@ short char_data::get_trust(  )
    if( ch->isnpc(  ) && ch->level >= LEVEL_AVATAR )
       return LEVEL_AVATAR;
 
-   if( !ch->isnpc(  ) && ch->level >= LEVEL_IMMORTAL )
+   if( !ch->isnpc(  ) && ch->level >= LEVEL_IMMORTAL && ch->pcdata->flags.test( PCFLAG_RETIRED ) )
       return LEVEL_IMMORTAL;
 
    return ch->level;
@@ -1323,6 +1323,7 @@ void char_data::unequip( obj_data * obj )
 
       this->affect_modify( af, false );
    }
+
    if( obj->carried_by )
    {
       for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )

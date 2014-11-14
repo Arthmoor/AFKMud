@@ -3787,6 +3787,7 @@ CMDF( do_restore )
       victim->hit = victim->max_hit;
       victim->mana = victim->max_mana;
       victim->move = victim->max_move;
+
       if( !victim->isnpc(  ) )
       {
          if( victim->pcdata->condition[COND_FULL] != -1 )
@@ -4177,6 +4178,39 @@ CMDF( do_noemail )
       ch->printf( "NOEMAIL applied to %s.\r\n", victim->name );
    }
    victim->save( );
+}
+
+CMDF( do_nobeep )
+{
+   char_data *victim;
+
+   ch->set_color( AT_IMMORT );
+
+   if( argument.empty(  ) )
+   {
+      ch->print( "NoBeep whom?\r\n" );
+      return;
+   }
+
+   if( !( victim = get_wizvictim( ch, argument, true ) ) )
+      return;
+
+   if( victim->has_pcflag( PCFLAG_NO_BEEP ) )
+   {
+      victim->unset_pcflag( PCFLAG_NO_BEEP );
+      victim->print( "You can send beeps again.\r\n" );
+      ch->printf( "NOBEEP removed from %s.\r\n", victim->name );
+   }
+   else
+   {
+      victim->set_pcflag( PCFLAG_NO_BEEP );
+      if( !victim->desc )
+         add_loginmsg( victim->name, 13, NULL );
+      else
+         victim->print( "You can't send beeps anymore!\r\n" );
+      ch->printf( "NOBEEP applied to %s.\r\n", victim->name );
+   }
+   victim->save();
 }
 
 CMDF( do_silence )

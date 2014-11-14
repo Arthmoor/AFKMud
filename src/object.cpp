@@ -700,6 +700,7 @@ void show_list_to_char( char_data * ch, list < obj_data * >source, bool fShort, 
       }
       ++mobj;
    }
+
    if( wcount == 0 && fShowNothing )
    {
       ch->print( "     " );

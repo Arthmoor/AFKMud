@@ -279,8 +279,7 @@ enum room_flags
  * Used in #ROOMS.		SMAUG development team ( No RES flags left, sorry. - Samson )
  */
 /* Converted to Extended BV - Samson 7-23-00 */
-/* Don't forget to add the flag to build.c!!! */
-/* Current # of flags: 35 */
+/* Don't forget to add the flag to build.cpp!!! */
 enum exit_flags
 {
    EX_ISDOOR, EX_CLOSED, EX_LOCKED, EX_SECRET, EX_SWIM, EX_PICKPROOF, EX_FLY,

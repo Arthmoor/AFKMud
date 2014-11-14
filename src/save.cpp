@@ -68,7 +68,7 @@ bool is_valid_wear_loc( char_data *, int );
 /*
  * Increment with every major format change.
  */
-const int SAVEVERSION = 22;
+const int SAVEVERSION = 23;
 /* Updated to version 4 after addition of alias code - Samson 3-23-98 */
 /* Updated to version 5 after installation of color code - Samson */
 /* Updated to version 6 for rare item tracking support - Samson */
@@ -88,6 +88,7 @@ const int SAVEVERSION = 22;
 /* Updated to 20: Starting version for official support of AFKMud 2.0 pfiles */
 /* Updated to 21 because Samson was stupid and acted hastily before finalizing the bitset conversions 7-8-04 */
 /* Updated to 22 for sha256 password conversion */
+// Updated to 23 - Site data in the save requires the tilde now which pfiles won't have yet.
 
 /*
  * Array to keep track of equipment temporarily. - Thoric
@@ -227,7 +228,7 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, "Homepage     %s~\n", ch->pcdata->homepage.c_str(  ) );
    if( !ch->pcdata->email.empty(  ) )  /* Samson 4-19-98 */
       fprintf( fp, "Email        %s~\n", ch->pcdata->email.c_str(  ) );
-   fprintf( fp, "Site         %s\n", ch->pcdata->lasthost.c_str(  ) );
+   fprintf( fp, "Site         %s~\n", ch->pcdata->lasthost.c_str(  ) );
    if( ch->pcdata->bio && ch->pcdata->bio[0] != '\0' )
       fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ) );
    if( !ch->pcdata->authed_by.empty(  ) )
@@ -1493,7 +1494,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                if( !copyover && !preload )
                {
-                  fread_string( ch->pcdata->prevhost, fp );
+                  if( file_ver < 23 )
+                     ch->pcdata->prevhost = fread_word( fp );
+                  else
+                     fread_string( ch->pcdata->prevhost, fp );
                   ch->printf( "Last connected from: %s\r\n", ch->pcdata->prevhost.c_str() );
                }
                else

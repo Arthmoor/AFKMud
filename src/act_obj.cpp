@@ -2471,6 +2471,7 @@ CMDF( do_sacrifice )
       ch->gold += 1;
       ch->printf( "%s gives you one gold coin for your sacrifice.\r\n", name.c_str(  ) );
    }
+
    act_printf( AT_ACTION, ch, obj, NULL, TO_ROOM, "$n sacrifices $p to %s.", name.c_str(  ) );
    oprog_sac_trigger( ch, obj );
    if( obj->extracted(  ) )

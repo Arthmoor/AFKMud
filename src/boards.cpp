@@ -3486,8 +3486,6 @@ project_data *read_project( FILE * fp )
                   project->realm_name = realm->name;
                break;
             }
-
-            KEY( "Realm", project->realm_name, fread_string( fp ) );
             break;
 
          case 'S':
@@ -3518,7 +3516,6 @@ void load_projects( void ) /* Copied load_boards structure for simplicity */
       projlist.push_back( project );
 
    FCLOSE( fp );
-   return;
 }
 
 project_data::project_data(  )

@@ -866,16 +866,19 @@ void pfile_scan( bool count )
          clan_data *clan = *cl;
          save_clan( clan );
       }
+
       for( rl = realmlist.begin(  ); rl != realmlist.end(  ); ++rl )
       {
          realm_data *realm = *rl;
          save_realm( realm );
       }
+
       for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
       {
          deity_data *deity = *ideity;
          save_deity( deity );
       }
+
       verify_clans(  );
       verify_realms( );
       prune_sales(  );

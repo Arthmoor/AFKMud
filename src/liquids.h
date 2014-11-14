@@ -27,7 +27,7 @@
  *                     by Noplex (noplex@crimsonblade.org)                  *
  *                   Redistributed in AFKMud with permission                *
  ****************************************************************************
- * 	                       Version History      			          *
+ *                              Version History                             *
  ****************************************************************************
  *  (v1.0) - Liquidtable converted into linked list, original 15 Smaug liqs *
  *           now read from a .dat file in /system                           *
@@ -51,7 +51,7 @@
  *  	   - Blood fix for blood on the ground.                               *
  *         - do_look/do_exam fix from Sirek.                                *
  *  (v2.8) - Ability to mix objects into liquids.                           *
- *	     (original code/concept -Sirek)                                   *
+ *	     (original code/concept -Sirek)                                      *
  ****************************************************************************/
 
 /*
