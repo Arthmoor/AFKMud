@@ -815,7 +815,7 @@ enum damage_types
 };
 
 // Login Messages
-struct lmsg_data
+class lmsg_data
 {
  private:
    lmsg_data( const lmsg_data & p );

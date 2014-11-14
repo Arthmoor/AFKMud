@@ -53,20 +53,39 @@ const char *chan_flags[] = {
    "keephistory", "interport"
 };
 
+chan_history::~chan_history(  )
+{
+   DISPOSE( this->format );
+}
+
+chan_history::chan_history(  )
+{
+   init_memory( &this->format, &this->invis, sizeof( this->invis ) );
+}
+
+void purge_channel_history( mud_channel *channel )
+{
+   list < chan_history * >::iterator ihist;
+
+   for( ihist = channel->history.begin(  ); ihist != channel->history.end(  ); )
+   {
+      chan_history *entry = *ihist;
+      ++ihist;
+
+      deleteptr( entry );
+   }
+   channel->history.clear();
+}
+
 mud_channel::mud_channel(  )
 {
-   init_memory( &history, &type, sizeof( type ) );
+   init_memory( &level, &type, sizeof( type ) );
 }
 
 mud_channel::~mud_channel(  )
 {
-   int loopa;
+   purge_channel_history( this );
 
-   for( loopa = 0; loopa < MAX_CHANHISTORY; ++loopa )
-   {
-      DISPOSE( this->history[loopa][0] );
-      DISPOSE( this->history[loopa][1] );
-   }
    chanlist.remove( this );
 }
 
@@ -481,105 +500,77 @@ CMDF( do_channels )
 void show_channel_history( char_data * ch, mud_channel * channel )
 {
    const char *name;
+   list < chan_history * >::iterator ihist;
 
    ch->printf( "&cThe last %d %s messages:\r\n", MAX_CHANHISTORY, channel->name.c_str(  ) );
-   for( int x = 0; x < MAX_CHANHISTORY; ++x )
+
+   for( ihist = channel->history.begin(  ); ihist != channel->history.end(  ); ++ihist )
    {
-      if( channel->history[x][0] )
+      chan_history *entry = *ihist;
+
+      switch( entry->level )
       {
-         switch ( channel->hlevel[x] )
-         {
-            case 0:
-               name = channel->history[x][0];
-               break;
-            case 1:
-               if( ch->has_aflag( AFF_DETECT_INVIS ) || ch->has_pcflag( PCFLAG_HOLYLIGHT ) )
-                  name = channel->history[x][0];
-               else
-                  name = "Someone";
-               break;
-            case 2:
-               if( ch->level >= channel->hinvis[x] )
-                  name = channel->history[x][0];
-               else
-                  name = "Someone";
-               break;
-            default:
+         case 0:
+            name = entry->name.c_str();
+            break;
+
+         case 1:
+            if( ch->has_aflag( AFF_DETECT_INVIS ) || ch->has_pcflag( PCFLAG_HOLYLIGHT ) )
+               name = entry->name.c_str();
+            else
                name = "Someone";
-         }
-         ch->printf( channel->history[x][1], mini_c_time( channel->htime[x], ch->pcdata->timezone ), name );
+            break;
+
+         case 2:
+            if( ch->level >= entry->invis )
+               name = entry->name.c_str();
+            else
+               name = "Someone";
+            break;
+
+         default:
+            name = "Someone";
       }
-      else
-         break;
+      ch->printf( entry->format, mini_c_time( entry->timestamp, ch->pcdata->timezone ), name );
    }
 }
 
 /* Channel history. Records the last MAX_CHANHISTORY messages to channels which keep historys */
 void update_channel_history( char_data * ch, mud_channel * channel, const string & argument, bool emote )
 {
-   for( int x = 0; x < MAX_CHANHISTORY; ++x )
+   int type = 0;
+   const string newarg = add_percent( argument );
+
+   chan_history *entry = new chan_history;
+
+   if( !ch )
+      entry->name = "System";
+   else if( ch->isnpc() )
+      entry->name = ch->short_descr;
+   else
+      entry->name = ch->name;
+
+   strdup_printf( &entry->format, "   &R[%%s] &G%%s%s %s\r\n", emote ? "" : ":", newarg.c_str(  ) );
+
+   entry->timestamp = current_time;
+
+   if( ch && ch->has_aflag( AFF_INVISIBLE ) )
+      type = 1;
+   if( ch && ch->has_pcflag( PCFLAG_WIZINVIS ) )
    {
-      int type = 0;
-      if( ch && ch->has_aflag( AFF_INVISIBLE ) )
-         type = 1;
-      if( ch && ch->has_pcflag( PCFLAG_WIZINVIS ) )
-         type = 2;
+      type = 2;
+      entry->invis = ch->pcdata->wizinvis;
+   }
+   entry->level = type;
 
-      if( !channel->history[x][0] )
-      {
-         if( !ch )
-            channel->history[x][0] = str_dup( "System" );
-         else if( ch->isnpc(  ) )
-            channel->history[x][0] = str_dup( ch->short_descr );
-         else
-            channel->history[x][0] = str_dup( ch->name );
+   channel->history.push_back( entry );
 
-         const string newarg = add_percent( argument );
-         strdup_printf( &channel->history[x][1], "   &R[%%s] &G%%s%s %s\r\n", emote ? "" : ":", newarg.c_str(  ) );
-         channel->htime[x] = current_time;
-         channel->hlevel[x] = type;
-         if( type == 2 )
-            channel->hinvis[x] = ch->pcdata->wizinvis;
-         else
-            channel->hinvis[x] = 0;
-         break;
-      }
+   if( channel->history.size() > MAX_CHANHISTORY )
+   {
+      chan_history *oldentry = channel->history.front();
 
-      if( x == MAX_CHANHISTORY - 1 )
-      {
-         for( int y = 1; y < MAX_CHANHISTORY; ++y )
-         {
-            int z = y - 1;
-
-            if( channel->history[z][0] != NULL )
-            {
-               DISPOSE( channel->history[z][0] );
-               DISPOSE( channel->history[z][1] );
-               channel->history[z][0] = str_dup( channel->history[y][0] );
-               channel->history[z][1] = str_dup( channel->history[y][1] );
-               channel->hlevel[z] = channel->hlevel[y];
-               channel->hinvis[z] = channel->hinvis[y];
-               channel->htime[z] = channel->htime[y];
-            }
-         }
-         DISPOSE( channel->history[x][0] );
-         DISPOSE( channel->history[x][1] );
-         if( !ch )
-            channel->history[x][0] = str_dup( "System" );
-         else if( ch->isnpc(  ) )
-            channel->history[x][0] = str_dup( ch->short_descr );
-         else
-            channel->history[x][0] = str_dup( ch->name );
-
-         const string newarg = add_percent( argument );
-         strdup_printf( &channel->history[x][1], "   &R[%%s] &G%%s%s %s\r\n", emote ? "" : ":", newarg.c_str(  ) );
-         channel->hlevel[x] = type;
-         channel->htime[x] = current_time;
-         if( type == 2 )
-            channel->hinvis[x] = ch->pcdata->wizinvis;
-         else
-            channel->hinvis[x] = 0;
-      }
+      channel->history.pop_front();
+      deleteptr( oldentry );
    }
 }
 
@@ -648,11 +639,8 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
 
       if( !str_cmp( argument, "hpurge" ) )
       {
-         for( int x = 0; x < MAX_CHANHISTORY; ++x )
-         {
-            DISPOSE( channel->history[x][0] );
-            DISPOSE( channel->history[x][1] );
-         }
+         purge_channel_history( channel );
+
          ch->printf( "The %s channel history has been purged.\r\n", channel->name.c_str(  ) );
          return;
       }
