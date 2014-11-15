@@ -727,10 +727,10 @@ CMDF( do_reset )
 
       if( door < 0 || door > 9 )
       {
-         ch->print( "Reset which directions randomly?\r\n", ch );
-         ch->print( "3 would randomize north, south, east, west.\r\n", ch );
-         ch->print( "5 would do those plus up, down.\r\n", ch );
-         ch->print( "9 would do those, plus ne, nw, se, sw as well.\r\n", ch );
+         ch->print( "Reset which directions randomly?\r\n" );
+         ch->print( "3 would randomize north, south, east, west.\r\n" );
+         ch->print( "5 would do those plus up, down.\r\n" );
+         ch->print( "9 would do those, plus ne, nw, se, sw as well.\r\n" );
          return;
       }
 

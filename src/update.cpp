@@ -875,6 +875,7 @@ void mobile_update( void )
            * && !IS_EXIT_FLAG( pexit, EX_CLOSED ) - Test to see if mobs will open doors like this. 
            */
           && !IS_EXIT_FLAG( pexit, EX_WINDOW ) && !IS_EXIT_FLAG( pexit, EX_NOMOB )
+          && ( ch->has_aflag( AFF_PASS_DOOR ) && !IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) )
           /*
            * Keep em from wandering through my walls, Marcus 
            */
