@@ -2172,10 +2172,13 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
  */
 void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, bool single_step )
 {
+   char tmpcmndlst[MSL];
+   char *command_list;
    static int prog_nest;
    static int serial;
-   int curr_serial;
+   int curr_serial, ignorelevel = 0, rand_pick = 0;
    room_index *supermob_room;
+   char_data *rndm = NULL;
    obj_data *true_supermob_obj;
    bool rprog_oprog = ( mob == supermob );
    bool ifstate[MAX_IFS][DO_ELSE + 1];
@@ -2239,28 +2242,49 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
     * imms, but decided to just take it out.  If the mob can see you, 
     * you may be chosen as the random player. -Narn
     *
+    * BUGFIX - Reported by Aurin on the SmaugMuds.org forum.
+    *  Adapted for simplicity by Samson. The random pick wasn't as random as one might like.
+    *  It had a heavy bias toward the first chosen target, but her fix relied
+    *  on what looked like dodgy dynamic array allocation. This is safer as it doesn't
+    *  need to do anything like that.
     */
    count = 0;
-   char_data *rndm = NULL;
+
    list < char_data * >::iterator ich;
    for( ich = mob->in_room->people.begin(  ); ich != mob->in_room->people.end(  ); ++ich )
    {
       char_data *vch = *ich;
+
       if( !vch->isnpc(  ) && mob->can_see( vch, false ) )
-      {
-         if( number_range( 0, count ) == 0 )
-            rndm = vch;
          ++count;
+   }
+   rand_pick = number_range( 1, count );
+
+   // Now that we have the count and have picked a random number in that range, run the list again if there's a point in doing so.
+   if( count > 0 )
+   {
+      for( ich = mob->in_room->people.begin(  ); ich != mob->in_room->people.end(  ); ++ich )
+      {
+         char_data *vch = *ich;
+
+         if( !vch->isnpc(  ) && mob->can_see( vch, false ) )
+         {
+            if( count == rand_pick )
+            {
+               rndm = vch;
+               break;
+            }
+            ++count;
+         }
       }
    }
-   char tmpcmndlst[MSL];
+
    mudstrlcpy( tmpcmndlst, com_list, MSL );
-   char *command_list = tmpcmndlst;
+   command_list = tmpcmndlst;
 
    /*
     * mpsleep - Restore the environment  -rkb 
     */
-   int ignorelevel = 0;
    if( current_mpsleep )
    {
       ignorelevel = current_mpsleep->ignorelevel;
