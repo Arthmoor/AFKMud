@@ -3381,8 +3381,11 @@ CMDF( do_sset )
           */
          if( victim->level >= skill_table[sn]->skill_level[victim->Class] || victim->level >= skill_table[sn]->race_level[victim->race] )
          {
-            if( value == 100 && !victim->is_immortal(  ) )
-               victim->pcdata->learned[sn] = victim->GET_ADEPT( sn );
+            // Bugfix by Sadiq - Modified slightly by Samson. No need to call GET_ADEPT more than once each time this loop runs.
+            int adept = victim->GET_ADEPT( sn );
+
+            if( value > adept && !victim->is_immortal() )
+               victim->pcdata->learned[sn] = adept;
             else
                victim->pcdata->learned[sn] = value;
          }

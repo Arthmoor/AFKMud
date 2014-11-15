@@ -313,8 +313,13 @@ int char_data::GET_DAMROLL(  )
 {
    return ( this->damroll + this->damplus + str_app[this->get_curr_str(  )].todam );
 }
+
 int char_data::GET_ADEPT( int sn )
 {
+   // Bugfix by Sadiq - Imms should have perfect skills.
+   if( this->is_immortal() )
+      return 100;
+
    return skill_table[sn]->skill_adept[this->Class];
 }
 
