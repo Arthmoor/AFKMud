@@ -723,27 +723,24 @@ CMDF( do_reset )
    if( !str_cmp( arg, "random" ) )
    {
       argument = one_argument( argument, arg );
-      int vnum = get_dir( arg );
+      int door = get_dir( arg );
 
-      if( vnum < 0 || vnum > 9 )
+      if( door < 0 || door > 9 )
       {
-         ch->print( "Reset which random doors?\r\n" );
+         ch->print( "Reset which directions randomly?\r\n", ch );
+         ch->print( "3 would randomize north, south, east, west.\r\n", ch );
+         ch->print( "5 would do those plus up, down.\r\n", ch );
+         ch->print( "9 would do those, plus ne, nw, se, sw as well.\r\n", ch );
          return;
       }
 
-      if( vnum == 0 )
+      if( door == 0 )
       {
          ch->print( "There is no point in randomizing one door.\r\n" );
          return;
       }
 
-      if( !get_room_index( vnum ) )
-      {
-         ch->print( "Target room does not exist.\r\n" );
-         return;
-      }
-
-      reset_data *pReset = make_reset( 'R', ch->in_room->vnum, vnum, 100, -2, -2, -2, -2, -2, -2, -2, -2 );
+      reset_data *pReset = make_reset( 'R', ch->in_room->vnum, door, 100, -2, -2, -2, -2, -2, -2, -2, -2 );
       ch->in_room->resets.push_front( pReset );
       ch->print( "Reset random doors created.\r\n" );
       return;
