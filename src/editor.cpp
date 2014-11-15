@@ -426,12 +426,7 @@ bool str_cmp( const char *astr, const char *bstr )
       return true;
    }
 
-   for( ; *astr || *bstr; ++astr, ++bstr )
-   {
-      if( LOWER( *astr ) != LOWER( *bstr ) )
-         return true;
-   }
-   return false;
+   return strcasecmp( astr, bstr );
 }
 
 // Checks to see if astr is a prefix ( beginning part of ) bstr.
@@ -477,12 +472,11 @@ bool str_prefix( const char *needle, const char *haystack )
       return true;
    }
 
-   for( ; *needle; ++needle, ++haystack )
-   {
-      if( LOWER( *needle ) != LOWER( *haystack ) )
-         return true;
-   }
-   return false;
+   if( strlen( needle ) > strlen( haystack ) )
+      return true;
+
+   // Something Quixadhal suggested - OS functions for this are faster.
+   return strncasecmp( needle, haystack, strlen( needle ) );
 }
 
 // Is astr a part of any portion of bstr?
@@ -504,14 +498,14 @@ bool str_infix( const char *astr, const char *bstr )
    int sstr1, sstr2, ichar;
    char c0;
 
-   if( ( c0 = LOWER( astr[0] ) ) == '\0' )
+   if( ( c0 = tolower( astr[0] ) ) == '\0' )
       return false;
 
    sstr1 = strlen( astr );
    sstr2 = strlen( bstr );
 
    for( ichar = 0; ichar <= sstr2 - sstr1; ++ichar )
-      if( c0 == LOWER( bstr[ichar] ) && !str_prefix( astr, bstr + ichar ) )
+      if( c0 == tolower( bstr[ichar] ) && !str_prefix( astr, bstr + ichar ) )
          return false;
 
    return true;
@@ -747,7 +741,7 @@ char *strlower( const char *str )
    int i;
 
    for( i = 0; str[i] != '\0'; ++i )
-      strlow[i] = LOWER( str[i] );
+      strlow[i] = tolower( str[i] );
    strlow[i] = '\0';
    return strlow;
 }
@@ -766,7 +760,7 @@ char *strupper( const char *str )
    int i;
 
    for( i = 0; str[i] != '\0'; ++i )
-      strup[i] = UPPER( str[i] );
+      strup[i] = toupper( str[i] );
    strup[i] = '\0';
    return strup;
 }
@@ -783,7 +777,7 @@ bool isavowel( char letter )
 {
    char c;
 
-   c = LOWER( letter );
+   c = tolower( letter );
    if( c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' )
       return true;
    else
@@ -803,7 +797,7 @@ const char *aoran( const string & str )
       return "";
    }
 
-   if( isavowel( str[0] ) || ( str.length(  ) > 1 && LOWER( str[0] ) == 'y' && !isavowel( str[1] ) ) )
+   if( isavowel( str[0] ) || ( str.length(  ) > 1 && tolower( str[0] ) == 'y' && !isavowel( str[1] ) ) )
       mudstrlcpy( temp, "an ", MSL );
    else
       mudstrlcpy( temp, "a ", MSL );
