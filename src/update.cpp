@@ -2782,7 +2782,7 @@ void time_update( void )
       {
          descriptor_data *d = *ds;
 
-         if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && d->character->IS_AWAKE(  ) )
+         if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && !INDOOR_SECTOR( d->character->in_room->sector_type ) && d->character->IS_AWAKE(  ) )
          {
             weather_data *weath = d->character->in_room->area->weather;
 
