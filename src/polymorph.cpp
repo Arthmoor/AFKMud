@@ -2466,6 +2466,7 @@ void fread_morph_data( char_data * ch, FILE * fp )
                      bug( "%s: Morph Name doesn't match vnum %d.", __FUNCTION__, morph->morph->vnum );
                break;
             }
+
             if( !str_cmp( word, "NoAffect" ) )
             {
                flag_set( fp, morph->no_affected_by, aff_flags );
