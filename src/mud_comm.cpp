@@ -2068,7 +2068,9 @@ CMDF( do_mpoload )
    }
 
    obj->timer = timer;
-   if( obj->wear_flags.test( ITEM_TAKE ) )
+
+   // Bugfix - objects & rooms use supermob, so he should ALWAYS drop stuff.
+   if( obj->wear_flags.test( ITEM_TAKE ) && ch != supermob )
       obj->to_char( ch );
    else
       obj->to_room( ch->in_room, ch );

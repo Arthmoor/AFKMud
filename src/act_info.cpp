@@ -1267,7 +1267,7 @@ CMDF( do_look )
 
       if( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) )
       {
-         ch->print( "You can't see the sky indoors.\r\n" );
+         ch->print( "You can't see the sky from here.\r\n" );
          return;
       }
       else
