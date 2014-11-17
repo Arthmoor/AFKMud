@@ -986,7 +986,7 @@ CMDF( do_description )
 
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __FUNCTION__ );
+      bug( "%s: no descriptor", __func__ );
       return;
    }
 
@@ -999,7 +999,7 @@ CMDF( do_description )
    switch ( ch->substate )
    {
       default:
-         bug( "%s: %s illegal substate %d", __FUNCTION__, ch->name, ch->substate );
+         bug( "%s: %s illegal substate %d", __func__, ch->name, ch->substate );
          return;
 
       case SUB_RESTRICTED:
@@ -1039,7 +1039,7 @@ CMDF( do_bio )
 
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __FUNCTION__ );
+      bug( "%s: no descriptor", __func__ );
       return;
    }
 
@@ -1052,7 +1052,7 @@ CMDF( do_bio )
    switch ( ch->substate )
    {
       default:
-         bug( "%s: %s illegal substate %d", __FUNCTION__, ch->name, ch->substate );
+         bug( "%s: %s illegal substate %d", __func__, ch->name, ch->substate );
          return;
 
       case SUB_RESTRICTED:
@@ -1296,7 +1296,7 @@ int afk_who( char_data * ch )
 
    if( !ch )
    {
-      bug( "%s: Called with no *ch!", __FUNCTION__ );
+      bug( "%s: Called with no *ch!", __func__ );
       return 0;
    }
 
@@ -2184,7 +2184,7 @@ CMDF( do_journal )
 
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __FUNCTION__ );
+      bug( "%s: no descriptor", __func__ );
       return;
    }
 
@@ -2199,7 +2199,7 @@ CMDF( do_journal )
       case SUB_JOURNAL_WRITE:
          if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
          {
-            bug( "%s: Player not holding journal. (Player: %s)", __FUNCTION__, ch->name );
+            bug( "%s: Player not holding journal. (Player: %s)", __func__, ch->name );
             ch->stop_editing( );
             return;
          }
@@ -2264,7 +2264,7 @@ CMDF( do_journal )
       if( journal->value[0] > 50 )
       {
          journal->value[0] = 50;
-         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __FUNCTION__, ch->name );
+         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name );
       }
 
       ch->set_color( AT_GREY );
@@ -2313,7 +2313,7 @@ CMDF( do_journal )
          if( journal->value[0] > 50 )
          {
             journal->value[0] = 50;
-            bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __FUNCTION__, ch->name );
+            bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name );
          }
          ch->set_color( AT_GREY );
          ch->printf( "There are %d pages in this journal.\r\n", journal->value[0] );
@@ -2352,7 +2352,7 @@ CMDF( do_journal )
       if( journal->value[0] > 50 )
       {
          journal->value[0] = 50;
-         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __FUNCTION__, ch->name );
+         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name );
       }
 
       ch->set_color( AT_GREY );

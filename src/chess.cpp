@@ -1258,7 +1258,7 @@ CMDF( do_chess )
             break;
 
          default:
-            bug( "%s: Unknown return value", __FUNCTION__ );
+            bug( "%s: Unknown return value", __func__ );
             break;
       }
 #undef SEND_TO_OPP

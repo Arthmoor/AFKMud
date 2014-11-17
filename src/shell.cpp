@@ -883,19 +883,19 @@ void add_shellcommand( shell_cmd * command )
 
    if( !command )
    {
-      bug( "%s: NULL command", __FUNCTION__ );
+      bug( "%s: NULL command", __func__ );
       return;
    }
 
    if( command->get_name(  ).empty(  ) )
    {
-      bug( "%s: Empty command->name", __FUNCTION__ );
+      bug( "%s: Empty command->name", __func__ );
       return;
    }
 
    if( !command->get_func(  ) )
    {
-      bug( "%s: NULL command->do_fun for command %s", __FUNCTION__, command->get_name(  ).c_str(  ) );
+      bug( "%s: NULL command->do_fun for command %s", __func__, command->get_name(  ).c_str(  ) );
       return;
    }
 
@@ -959,7 +959,7 @@ void load_shellcommands( void )
    stream.open( SHELL_COMMAND_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open %s", __FUNCTION__, SHELL_COMMAND_FILE );
+      bug( "%s: Cannot open %s", __func__, SHELL_COMMAND_FILE );
       exit( 1 );
    }
 
@@ -1007,14 +1007,14 @@ void load_shellcommands( void )
       {
          if( scmd->get_name(  ).empty(  ) )
          {
-            bug( "%s: Command name not found", __FUNCTION__ );
+            bug( "%s: Command name not found", __func__ );
             deleteptr( scmd );
             continue;
          }
 
          if( scmd->get_func_name(  ).empty(  ) )
          {
-            bug( "%s: Command name not found", __FUNCTION__ );
+            bug( "%s: Command name not found", __func__ );
             deleteptr( scmd );
             continue;
          }
@@ -1027,7 +1027,7 @@ void load_shellcommands( void )
             scmd->flags.set( CMD_GHOST );
       }
       else
-         bug( "%s: Bad line in shell commands file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         bug( "%s: Bad line in shell commands file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -1058,7 +1058,7 @@ void save_shellcommands( void )
 
       if( command->get_name(  ).empty(  ) )
       {
-         bug( "%s: blank command in list", __FUNCTION__ );
+         bug( "%s: blank command in list", __func__ );
          continue;
       }
       stream << "#COMMAND" << endl;

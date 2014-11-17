@@ -147,7 +147,7 @@ void run_events( time_t newtime )
       if( callback )
          ( *callback ) ( data );
       else
-         bug( "%s: NULL callback", __FUNCTION__ );
+         bug( "%s: NULL callback", __func__ );
    }
    current_time = newtime;
 }

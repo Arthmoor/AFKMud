@@ -213,7 +213,7 @@ void clean_auth_list( void )
          if( stat( file, &fst ) != -1 )
             tdiff = ( curr_time - fst.st_mtime ) / 86400;
          else
-            bug( "%s: File %s does not exist!", __FUNCTION__, file );
+            bug( "%s: File %s does not exist!", __func__, file );
 
          if( tdiff > MAX_AUTH_WAIT )
          {
@@ -234,7 +234,7 @@ void save_auth_list( void )
    stream.open( AUTH_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open auth.dat for writing.", __FUNCTION__ );
+      bug( "%s: Cannot open auth.dat for writing.", __func__ );
       perror( AUTH_FILE );
       return;
    }
@@ -280,7 +280,7 @@ void load_auth_list( void )
    stream.open( AUTH_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open auth.dat", __FUNCTION__ );
+      bug( "%s: Cannot open auth.dat", __func__ );
       return;
    }
 
@@ -321,7 +321,7 @@ void load_auth_list( void )
       else if( key == "End" )
          authlist.push_back( auth );
       else
-         log_printf( "%s: Bad line in auth.dat file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in auth.dat file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );

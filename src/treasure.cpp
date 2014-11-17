@@ -237,7 +237,7 @@ void load_weapontable(  )
       else if( key == "End" )
          w_table.push_back( wt );
       else
-         log_printf( "%s: Bad line in weapon types file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in weapon types file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -426,7 +426,7 @@ void load_runewords( void )
             rwordlist.push_back( rword );
       }
       else
-         log_printf( "%s: Bad line in runewords file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in runewords file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -524,7 +524,7 @@ void load_runes( void )
          }
       }
       else
-         log_printf( "%s: Bad line in runes file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in runes file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -876,7 +876,7 @@ CMDF( do_loadrune )
 
    if( !( obj = get_obj_index( OBJ_VNUM_RUNE )->create_object( ch->level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       ch->print( "&RGeneric rune item is MISSING! Report to Samson.\r\n" );
       return;
    }
@@ -1060,7 +1060,7 @@ obj_data *generate_rune( short level )
    obj_data *newrune;
    if( !( newrune = get_obj_index( OBJ_VNUM_RUNE )->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return NULL;
    }
 
@@ -1084,7 +1084,7 @@ obj_data *generate_gem( short level )
 
    if( !( gem = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return NULL;
    }
 
@@ -1142,27 +1142,27 @@ void obj_data::weapongen(  )
 
    if( item_type != ITEM_WEAPON )
    {
-      bug( "%s: Improperly set item passed: %s", __FUNCTION__, name );
+      bug( "%s: Improperly set item passed: %s", __func__, name );
       return;
    }
 
    if( value[8] >= TWTP_MAX )
    {
-      bug( "%s: Improper weapon type passed for %s", __FUNCTION__, name );
+      bug( "%s: Improper weapon type passed for %s", __func__, name );
       value[8] = 0;
       return;
    }
 
    if( value[9] >= TMAT_MAX )
    {
-      bug( "%s: Improper material passed for %s", __FUNCTION__, name );
+      bug( "%s: Improper material passed for %s", __func__, name );
       value[9] = 0;
       return;
    }
 
    if( value[10] >= TQUAL_MAX )
    {
-      bug( "%s: Improper quality passed for %s", __FUNCTION__, name );
+      bug( "%s: Improper quality passed for %s", __func__, name );
       value[10] = 0;
       return;
    }
@@ -1189,7 +1189,7 @@ void obj_data::weapongen(  )
       eflags = one_argument( eflags, flag );
       ovalue = get_oflag( flag );
       if( ovalue < 0 || ovalue >= MAX_ITEM_FLAG )
-         bug( "%s: Unknown object extraflag: %s", __FUNCTION__, flag.c_str(  ) );
+         bug( "%s: Unknown object extraflag: %s", __func__, flag.c_str(  ) );
       else
          extra_flags.set( ovalue );
    }
@@ -1287,20 +1287,20 @@ void obj_data::armorgen(  )
 
    if( item_type != ITEM_ARMOR )
    {
-      bug( "%s: Improperly set item passed: %s", __FUNCTION__, name );
+      bug( "%s: Improperly set item passed: %s", __func__, name );
       return;
    }
 
    if( value[3] >= TATP_MAX )
    {
-      bug( "%s: Improper armor type passed for %s", __FUNCTION__, name );
+      bug( "%s: Improper armor type passed for %s", __func__, name );
       value[3] = 0;
       return;
    }
 
    if( value[4] >= TMAT_MAX )
    {
-      bug( "%s: Improper material passed for %s", __FUNCTION__, name );
+      bug( "%s: Improper material passed for %s", __func__, name );
       value[4] = 0;
       return;
    }
@@ -1341,7 +1341,7 @@ void obj_data::armorgen(  )
       eflags = one_argument( eflags, flag );
       ovalue = get_oflag( flag );
       if( ovalue < 0 || ovalue >= MAX_ITEM_FLAG )
-         bug( "%s: Unknown object extraflag: %s", __FUNCTION__, flag.c_str(  ) );
+         bug( "%s: Unknown object extraflag: %s", __func__, flag.c_str(  ) );
       else
          extra_flags.set( ovalue );
    }
@@ -1472,7 +1472,7 @@ short choose_material( short level )
       if( materials[mval].minlevel <= level && materials[mval].maxlevel >= level )
          return mval;
    }
-   log_printf( "Notice: %s failed to choose. Setting generic.", __FUNCTION__ );
+   log_printf( "Notice: %s failed to choose. Setting generic.", __func__ );
    return ( TMAT_MAX - 1 );
 }
 
@@ -1490,7 +1490,7 @@ short choose_armor( short level )
       if( armor_type[mval].minlevel <= level && armor_type[mval].maxlevel >= level )
          return mval;
    }
-   log_printf( "Notice: %s failed to choose. Setting hide armor.", __FUNCTION__ );
+   log_printf( "Notice: %s failed to choose. Setting hide armor.", __func__ );
    return ( 3 );
 }
 
@@ -2048,7 +2048,7 @@ obj_data *generate_item( area_data * area, short level )
 
    if( !( newitem = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return NULL;
    }
 
@@ -2094,7 +2094,7 @@ obj_data *create_money( int amount )
 
    if( amount <= 0 )
    {
-      bug( "%s: zero or negative money %d.", __FUNCTION__, amount );
+      bug( "%s: zero or negative money %d.", __func__, amount );
       amount = 1;
    }
 
@@ -2102,7 +2102,7 @@ obj_data *create_money( int amount )
    {
       if( !( obj = get_obj_index( OBJ_VNUM_MONEY_ONE )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return NULL;
       }
    }
@@ -2110,7 +2110,7 @@ obj_data *create_money( int amount )
    {
       if( !( obj = get_obj_index( OBJ_VNUM_MONEY_SOME )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return NULL;
       }
       stralloc_printf( &obj->short_descr, obj->short_descr, amount );
@@ -2272,7 +2272,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
       obj_data *item = generate_item( area, level );
       if( !item )
       {
-         bug( "%s: Item object failed to create!", __FUNCTION__ );
+         bug( "%s: Item object failed to create!", __func__ );
          return;
       }
       item->to_obj( corpse );
@@ -2287,7 +2287,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
          obj_data *item = generate_gem( level );
          if( !item )
          {
-            bug( "%s: Gem object failed to create!", __FUNCTION__ );
+            bug( "%s: Gem object failed to create!", __func__ );
             return;
          }
          item->to_obj( corpse );
@@ -2301,7 +2301,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
       obj_data *item = generate_rune( level );
       if( !item )
       {
-         bug( "%s: Rune object failed to create!", __FUNCTION__ );
+         bug( "%s: Rune object failed to create!", __func__ );
          return;
       }
       item->to_obj( corpse );
@@ -2346,7 +2346,7 @@ CMDF( do_rttest )
    }
    if( !( corpse = get_obj_index( OBJ_VNUM_CORPSE_NPC )->create_object( mlvl ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    stralloc_printf( &corpse->name, "%s", "corpse random" );
@@ -2584,7 +2584,7 @@ CMDF( do_socket )
          add_rune_affect( ch, item, rune );
          return;
       }
-      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __FUNCTION__, ch->name, item->short_descr );
+      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __func__, ch->name, item->short_descr );
       ch->print( "Ooops. Something bad happened. Contact the immortals for assitance.\r\n" );
       return;
    }
@@ -2623,7 +2623,7 @@ CMDF( do_socket )
          add_rune_affect( ch, item, rune );
          return;
       }
-      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __FUNCTION__, ch->name, item->short_descr );
+      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __func__, ch->name, item->short_descr );
       ch->print( "Ooops. Something bad happened. Contact the immortals for assitance.\r\n" );
       return;
    }
@@ -2786,7 +2786,7 @@ CMDF( do_forge )
    switch ( ore_type )
    {
       default:
-         bug( "%s: Bad ore value: %d", __FUNCTION__, ore_type );
+         bug( "%s: Bad ore value: %d", __func__, ore_type );
          break;
 
       case ORE_IRON:
@@ -3345,7 +3345,7 @@ CMDF( do_forge )
    obj_data *item;
    if( !( item = get_obj_index( OBJ_VNUM_TREASURE )->create_object( 50 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       ch->print( "Ooops. Something happened while forging the item. Inform the immortals.\r\n" );
       return;
    }

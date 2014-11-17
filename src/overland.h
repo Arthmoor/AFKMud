@@ -64,7 +64,7 @@ class landmark_data
 
    string description;  // Description of the landmark
    int distance;  // Distance the landmark is visible from
-   short cmap;  // Map the landmark is on
+   short wmap;  // Map the landmark is on
    short mx;   // X coordinate of landmark
    short my;   // Y coordinate of landmark
    bool Isdesc;   // If true is room desc. If not is landmark

@@ -1710,7 +1710,7 @@ CMDF( do_rpstat )
 
    if( !location )
    {
-      bug( "%s: Bad room index: %s", __FUNCTION__, argument.c_str(  ) );
+      bug( "%s: Bad room index: %s", __func__, argument.c_str(  ) );
       ch->print( "That room does not exist!\r\n" );
       return;
    }
@@ -1778,7 +1778,7 @@ CMDF( do_mpkill )
 
    if( !ch )
    {
-      bug( "%s: Nonexistent ch!", __FUNCTION__ );
+      bug( "%s: Nonexistent ch!", __func__ );
       return;
    }
 
@@ -1884,7 +1884,7 @@ CMDF( do_mpasound )
       {
          ch->from_room(  );
          if( !ch->to_room( pexit->to_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          MOBtrigger = false;
          act( AT_ACTION, argument, ch, NULL, NULL, TO_ROOM );
       }
@@ -1893,7 +1893,7 @@ CMDF( do_mpasound )
    ch->set_actflags( actflags );
    ch->from_room(  );
    if( !ch->to_room( was_in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 }
 
 /* prints the message to all in the room other than the mob and victim */
@@ -2008,7 +2008,7 @@ CMDF( do_mpmload )
 
    victim = pMobIndex->create_mobile(  );
    if( !victim->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 }
 
 CMDF( do_mpoload )
@@ -2062,7 +2062,7 @@ CMDF( do_mpoload )
 
    if( !( obj = get_obj_index( atoi( arg1.c_str(  ) ) )->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       progbugf( ch, "Mpoload - Bad vnum arg %s", arg1.c_str(  ) );
       return;
    }
@@ -2286,14 +2286,14 @@ CMDF( do_mpat )
    original = ch->in_room;
    ch->from_room(  );
    if( !ch->to_room( location ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    interpret( ch, argument );
 
    if( !ch->char_died(  ) )
    {
       ch->from_room(  );
       if( !ch->to_room( original ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
 }
 
@@ -2827,7 +2827,7 @@ CMDF( do_mpscatter )
       act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, NULL, victim, TO_CHAR );
       victim->from_room(  );
       if( !victim->to_room( pRoomIndex ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       victim->position = POS_RESTING;
       act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, NULL, NULL, TO_ROOM );
       interpret( victim, "look" );
@@ -2900,7 +2900,7 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
 
    if( !ch )
    {
-      bug( "%s: null ch!", __FUNCTION__ );
+      bug( "%s: null ch!", __func__ );
       return rERROR;
    }
    if( !victim )
@@ -3095,19 +3095,19 @@ CMDF( do_mp_damage )
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s: missing argument", __FUNCTION__ );
+      progbugf( ch, "%s: missing argument", __func__ );
       return;
    }
 
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "%s: victim %s not in room", __FUNCTION__, arg1.c_str(  ) );
+      progbugf( ch, "%s: victim %s not in room", __func__, arg1.c_str(  ) );
       return;
    }
 
    if( victim == ch )
    {
-      progbugf( ch, "%s: trying to damage self", __FUNCTION__ );
+      progbugf( ch, "%s: trying to damage self", __func__ );
       return;
    }
 
@@ -3570,7 +3570,7 @@ CMDF( do_mpsindhae )
    {
       progbugf( ch, "mpsindhae: Redemption target %s in NULL room! Transplanting to Limbo.", victim->name );
       if( !victim->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -3579,7 +3579,7 @@ CMDF( do_mpsindhae )
       progbugf( ch, "mpsindhae: NPC %s triggered the program, bouncing his butt to Bywater!", victim->short_descr );
       victim->from_room(  );
       if( !victim->to_room( get_room_index( ROOM_VNUM_TEMPLE ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -3620,7 +3620,7 @@ CMDF( do_mpsindhae )
    {
       victim->from_room(  );
       if( !victim->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       interpret( victim, "look" );
       victim->printf( "&BYou have not killed all 9 %s creatures yet.\r\n", argument.c_str(  ) );
       victim->print( "You may not redeem your prize until you do.\r\n" );
@@ -3647,10 +3647,10 @@ CMDF( do_mpsindhae )
 
    if( !found || !prizeindex )
    {
-      progbugf( ch, "%s: Unable to resolve prize index for %s", __FUNCTION__, prizebuf );
+      progbugf( ch, "%s: Unable to resolve prize index for %s", __func__, prizebuf );
       victim->from_room(  );
       if( !victim->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       interpret( victim, "look" );
       victim->print( "&RAn internal error occured, please ask an immortal for assistance.\r\n" );
       return;
@@ -3666,7 +3666,7 @@ CMDF( do_mpsindhae )
          progbugf( ch, "mpsindhae: victim already has %s prize", argument.c_str(  ) );
          victim->from_room(  );
          if( !victim->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          interpret( victim, "look" );
          victim->printf( "&YYou already have a %s %s prize, you may not collect another yet.\r\n", argument.c_str(  ), Class );
          return;
@@ -3676,7 +3676,7 @@ CMDF( do_mpsindhae )
    obj_data *prize;
    if( !( prize = prizeindex->create_object( victim->level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    prize = prize->to_char( victim );
@@ -3710,7 +3710,7 @@ char_data *make_doppleganger( char_data * ch )
 
    if( !( pMobIndex = get_mob_index( MOB_DOPPLEGANGER ) ) )
    {
-      bug( "%s: Doppleganger mob %d not found!", __FUNCTION__, MOB_DOPPLEGANGER );
+      bug( "%s: Doppleganger mob %d not found!", __func__, MOB_DOPPLEGANGER );
       return NULL;
    }
 
@@ -3734,7 +3734,7 @@ char_data *make_doppleganger( char_data * ch )
    mob->level = ch->level;
    mob->set_actflags( pMobIndex->actflags );
    mob->set_actflag( ACT_AGGRESSIVE );
-   mob->cmap = ch->cmap;
+   mob->wmap = ch->wmap;
    mob->mx = ch->mx;
    mob->my = ch->my;
 
@@ -3859,7 +3859,7 @@ CMDF( do_mpdoppleganger )
       return;
    }
    if( !mob->to_room( pRoomIndex ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
    equip_doppleganger( host, mob );
 }
@@ -3923,7 +3923,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    ch->weight = ch->calculate_race_weight(  );
 
    if( ( iLang = skill_lookup( "common" ) ) < 0 )
-      bug( "%s: cannot find common language.", __FUNCTION__ );
+      bug( "%s: cannot find common language.", __func__ );
    else
       ch->pcdata->learned[iLang] = 100;
 
@@ -3973,18 +3973,18 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    if( objcheck != NULL )
    {
       if( !( obj = get_obj_index( OBJ_VNUM_NEWBIE_GUIDE )->create_object( 1 ) ) )
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       else
          obj->to_char( ch );
    }
    else
-      bug( "%s: Newbie Guide object %d not found.", __FUNCTION__, OBJ_VNUM_NEWBIE_GUIDE );
+      bug( "%s: Newbie Guide object %d not found.", __func__, OBJ_VNUM_NEWBIE_GUIDE );
 
    objcheck = get_obj_index( OBJ_VNUM_SCHOOL_BANNER );
    if( objcheck != NULL )
    {
       if( !( obj = get_obj_index( OBJ_VNUM_SCHOOL_BANNER )->create_object( 1 ) ) )
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       else
       {
          obj->to_char( ch );
@@ -3992,7 +3992,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
       }
    }
    else
-      bug( "%s: Newbie light object %d not found.", __FUNCTION__, OBJ_VNUM_SCHOOL_BANNER );
+      bug( "%s: Newbie light object %d not found.", __func__, OBJ_VNUM_SCHOOL_BANNER );
 
    if( !NEWLOGIN )
       return;
@@ -4000,12 +4000,12 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    if( !sysdata->WAIT_FOR_AUTH ) /* Altered by Samson 4-12-98 */
    {
       if( !ch->to_room( get_room_index( ROOM_NOAUTH_START ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
    else
    {
       if( !ch->to_room( get_room_index( ROOM_AUTH_START ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       ch->set_pcflag( PCFLAG_UNAUTHED );
       add_to_auth( ch );   /* new auth */
    }
@@ -4179,7 +4179,7 @@ CMDF( do_mpraceset )
    {
       if( !( obj = get_obj_index( Class->weapon )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          bug( "Class weapon %d not found for Class %s.", Class->weapon, classname );
       }
       else
@@ -4193,7 +4193,7 @@ CMDF( do_mpraceset )
    {
       if( !( obj = get_obj_index( Class->armor )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          bug( "Class armor %d not found for Class %s.", Class->armor, classname );
       }
       else
@@ -4207,7 +4207,7 @@ CMDF( do_mpraceset )
    {
       if( !( obj = get_obj_index( Class->legwear )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          bug( "Class legwear %d not found for Class %s.", Class->legwear, classname );
       }
       else
@@ -4221,7 +4221,7 @@ CMDF( do_mpraceset )
    {
       if( !( obj = get_obj_index( Class->headwear )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          bug( "Class headwear %d not found for Class %s.", Class->headwear, classname );
       }
       else
@@ -4235,7 +4235,7 @@ CMDF( do_mpraceset )
    {
       if( !( obj = get_obj_index( Class->armwear )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          bug( "Class armwear %d not found for Class %s.", Class->armwear, classname );
       }
       else
@@ -4249,7 +4249,7 @@ CMDF( do_mpraceset )
    {
       if( !( obj = get_obj_index( Class->footwear )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          bug( "Class footwear %d not found for Class %s.", Class->footwear, classname );
       }
       else
@@ -4263,7 +4263,7 @@ CMDF( do_mpraceset )
    {
       if( !( obj = get_obj_index( Class->shield )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          bug( "Class shield %d not found for Class %s.", Class->shield, classname );
       }
       else
@@ -4277,7 +4277,7 @@ CMDF( do_mpraceset )
    {
       if( !( obj = get_obj_index( Class->held )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          bug( "Class held %d not found for Class %s.", Class->held, classname );
       }
       else

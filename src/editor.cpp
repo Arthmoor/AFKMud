@@ -396,7 +396,7 @@ int str_cmp( const string & astr, const string & bstr )
       ++a1;
       ++b1;
    }
-   return ( bstr.size(  ) == astr.size(  )? 0 : ( astr.size(  ) < bstr.size(  )? -1 : 1 ) );
+   return ( bstr.size(  ) == astr.size(  ) ? 0 : ( astr.size(  ) < bstr.size(  )? -1 : 1 ) );
 }
 
 /*
@@ -412,7 +412,7 @@ bool str_cmp( const char *astr, const char *bstr )
 
    if( !astr )
    {
-      bug( "%s: null astr.", __FUNCTION__ );
+      bug( "%s: null astr.", __func__ );
       if( bstr )
          log_printf_plus( LOG_DEBUG, LEVEL_ADMIN, "astr: (null)  bstr: %s", bstr );
       return true;
@@ -420,7 +420,7 @@ bool str_cmp( const char *astr, const char *bstr )
 
    if( !bstr )
    {
-      bug( "%s: null bstr.", __FUNCTION__ );
+      bug( "%s: null bstr.", __func__ );
       if( astr )
          log_printf_plus( LOG_DEBUG, LEVEL_ADMIN, "astr: %s  bstr: (null)", astr );
       return true;
@@ -462,13 +462,13 @@ bool str_prefix( const char *needle, const char *haystack )
 {
    if( !needle )
    {
-      bug( "%s: null needle.", __FUNCTION__ );
+      bug( "%s: null needle.", __func__ );
       return true;
    }
 
    if( !haystack )
    {
-      bug( "%s: null haystack.", __FUNCTION__ );
+      bug( "%s: null haystack.", __func__ );
       return true;
    }
 
@@ -793,7 +793,7 @@ const char *aoran( const string & str )
 
    if( str.empty(  ) )
    {
-      bug( "%s: NULL str", __FUNCTION__ );
+      bug( "%s: NULL str", __func__ );
       return "";
    }
 
@@ -885,7 +885,7 @@ void string_erase( string & src, char find )
 
    if( !find )
    {
-      bug( "%s: Cannot search for an empty character!", __FUNCTION__ );
+      bug( "%s: Cannot search for an empty character!", __func__ );
       return;
    }
 
@@ -903,7 +903,7 @@ void string_erase( string & src, const string & find )
 
    if( find.empty(  ) )
    {
-      bug( "%s: Cannot search for an empty string!", __FUNCTION__ );
+      bug( "%s: Cannot search for an empty string!", __func__ );
       return;
    }
 
@@ -917,7 +917,7 @@ void string_replace( string & src, const string & find, const string & replace )
 
    if( find.empty(  ) )
    {
-      bug( "%s: Cannot search for an empty string!", __FUNCTION__ );
+      bug( "%s: Cannot search for an empty string!", __func__ );
       return;
    }
 
@@ -1074,7 +1074,7 @@ void char_data::stop_editing(  )
 
    if( !desc )
    {
-      bug( "Fatal: %s: no desc", __FUNCTION__ );
+      bug( "Fatal: %s: no desc", __func__ );
       return;
    }
    desc->connected = CON_PLAYING;
@@ -1088,11 +1088,11 @@ void char_data::start_editing( string data )
 
    if( !desc )
    {
-      bug( "Fatal: %s: no desc", __FUNCTION__ );
+      bug( "Fatal: %s: no desc", __func__ );
       return;
    }
    if( substate == SUB_RESTRICTED )
-      bug( "NOT GOOD: %s: ch->substate == SUB_RESTRICTED", __FUNCTION__ );
+      bug( "NOT GOOD: %s: ch->substate == SUB_RESTRICTED", __func__ );
 
    set_color( AT_GREEN );
    print( "Begin entering your text now (/? = help /s = save /c = clear /l = list)\r\n" );
@@ -1156,11 +1156,11 @@ void char_data::start_editing( char *data )
 
    if( !desc )
    {
-      bug( "Fatal: %s: no desc", __FUNCTION__ );
+      bug( "Fatal: %s: no desc", __func__ );
       return;
    }
    if( substate == SUB_RESTRICTED )
-      bug( "NOT GOOD: %s: ch->substate == SUB_RESTRICTED", __FUNCTION__ );
+      bug( "NOT GOOD: %s: ch->substate == SUB_RESTRICTED", __func__ );
 
    set_color( AT_GREEN );
    print( "Begin entering your text now (/? = help /s = save /c = clear /l = list)\r\n" );
@@ -1223,7 +1223,7 @@ string char_data::copy_buffer(  )
 
    if( !pcdata->editor )
    {
-      bug( "%s: null editor", __FUNCTION__ );
+      bug( "%s: null editor", __func__ );
       return "";
    }
 
@@ -1250,7 +1250,7 @@ char *char_data::copy_buffer( bool hash )
 
    if( !pcdata->editor )
    {
-      bug( "%s: null editor", __FUNCTION__ );
+      bug( "%s: null editor", __func__ );
       if( hash )
          return STRALLOC( "" );
       return str_dup( "" );
@@ -1298,14 +1298,14 @@ void char_data::edit_buffer( string & argument )
    if( d->connected != CON_EDITING )
    {
       print( "You can't do that!\r\n" );
-      bug( "%s: d->connected != CON_EDITING", __FUNCTION__ );
+      bug( "%s: d->connected != CON_EDITING", __func__ );
       return;
    }
 
    if( substate <= SUB_PAUSE )
    {
       print( "You can't do that!\r\n" );
-      bug( "%s: illegal ch->substate (%d)", __FUNCTION__, substate );
+      bug( "%s: illegal ch->substate (%d)", __func__, substate );
       d->connected = CON_PLAYING;
       return;
    }
@@ -1313,7 +1313,7 @@ void char_data::edit_buffer( string & argument )
    if( !pcdata->editor )
    {
       print( "You can't do that!\r\n" );
-      bug( "%s: null editor", __FUNCTION__ );
+      bug( "%s: null editor", __func__ );
       d->connected = CON_PLAYING;
       return;
    }

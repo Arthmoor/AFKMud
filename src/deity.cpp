@@ -88,7 +88,7 @@ void write_deity_list( void )
    snprintf( filename, 256, "%s%s", DEITY_DIR, DEITY_LIST );
    fpout = fopen( filename, "w" );
    if( !fpout )
-      bug( "%s: FATAL: cannot open deity.lst for writing!", __FUNCTION__ );
+      bug( "%s: FATAL: cannot open deity.lst for writing!", __func__ );
    else
    {
       for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
@@ -114,13 +114,13 @@ void save_deity( deity_data * deity )
 
    if( !deity )
    {
-      bug( "%s: null deity pointer!", __FUNCTION__ );
+      bug( "%s: null deity pointer!", __func__ );
       return;
    }
 
    if( deity->filename.empty(  ) )
    {
-      bug( "%s: %s has no filename", __FUNCTION__, deity->name.c_str(  ) );
+      bug( "%s: %s has no filename", __func__, deity->name.c_str(  ) );
       return;
    }
 
@@ -128,7 +128,7 @@ void save_deity( deity_data * deity )
 
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( filename );
    }
    else
@@ -216,14 +216,14 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -246,19 +246,19 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                value = get_risflag( temp[0] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[0] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[0] );
                else
                   deity->affected[0] = value;
 
                value = get_risflag( temp[1] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[1] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[1] );
                else
                   deity->affected[1] = value;
 
                value = get_risflag( temp[2] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[2] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[2] );
                else
                   deity->affected[2] = value;
                break;
@@ -281,7 +281,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                   value = get_aflag( flag );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
-                     bug( "%s: Unknown affectflag for %s: %s", __FUNCTION__, word, flag );
+                     bug( "%s: Unknown affectflag for %s: %s", __func__, word, flag );
                   else
                      deity->affected[0] = value;
                }
@@ -302,7 +302,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                   value = get_aflag( flag );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
-                     bug( "%s: Unknown affectflag for %s: %s", __FUNCTION__, word, flag );
+                     bug( "%s: Unknown affectflag for %s: %s", __func__, word, flag );
                   else
                      deity->affected[1] = value;
                }
@@ -323,7 +323,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                   value = get_aflag( flag );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
-                     bug( "%s: Unknown affectflag for %s: %s", __FUNCTION__, word, flag );
+                     bug( "%s: Unknown affectflag for %s: %s", __func__, word, flag );
                   else
                      deity->affected[2] = value;
                }
@@ -447,19 +447,19 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                value = get_risflag( temp[0] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[0] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[0] );
                else
                   deity->element[0] = value;
 
                value = get_risflag( temp[1] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[1] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[1] );
                else
                   deity->element[1] = value;
 
                value = get_risflag( temp[2] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[2] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[2] );
                else
                   deity->element[2] = value;
                break;
@@ -480,7 +480,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                      value = get_risflag( elem );
                      if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                        bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                      else
                         deity->element[0] = value;
                   }
@@ -490,7 +490,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   elem = fread_flagstring( fp );
                   value = get_risflag( elem );
                   if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                     bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                   else
                      deity->element[0] = value;
                }
@@ -512,7 +512,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                      value = get_risflag( elem );
                      if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                        bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                      else
                         deity->element[1] = value;
                   }
@@ -522,7 +522,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   elem = fread_flagstring( fp );
                   value = get_risflag( elem );
                   if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                     bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                   else
                      deity->element[1] = value;
                }
@@ -544,7 +544,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                      value = get_risflag( elem );
                      if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                        bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                      else
                         deity->element[2] = value;
                   }
@@ -554,7 +554,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   elem = fread_flagstring( fp );
                   value = get_risflag( elem );
                   if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                     bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                   else
                      deity->element[2] = value;
                }
@@ -641,7 +641,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                if( npcfoe < -1 || npcfoe >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __func__, deity->name.c_str(  ), word );
                   npcfoe = RACE_HUMAN;
                }
                deity->npcfoe[0] = npcfoe;
@@ -658,7 +658,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   npcfoe2 = get_npc_race( fread_flagstring( fp ) );
                if( npcfoe2 < -1 || npcfoe2 >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __func__, deity->name.c_str(  ), word );
                   npcfoe2 = RACE_HUMAN;
                }
                deity->npcfoe[1] = npcfoe2;
@@ -675,7 +675,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   npcfoe3 = get_npc_race( fread_flagstring( fp ) );
                if( npcfoe3 < -1 || npcfoe3 >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __func__, deity->name.c_str(  ), word );
                   npcfoe3 = RACE_HUMAN;
                }
                deity->npcfoe[2] = npcfoe3;
@@ -693,7 +693,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                if( npcrace < -1 || npcrace >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __func__, deity->name.c_str(  ), word );
                   npcrace = RACE_HUMAN;
                }
                deity->npcrace[0] = npcrace;
@@ -710,7 +710,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   npcrace2 = get_npc_race( fread_flagstring( fp ) );
                if( npcrace2 < -1 || npcrace2 >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __func__, deity->name.c_str(  ), word );
                   npcrace2 = RACE_HUMAN;
                }
                deity->npcrace[1] = npcrace2;
@@ -727,7 +727,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   npcrace3 = get_npc_race( fread_flagstring( fp ) );
                if( npcrace3 < -1 || npcrace3 >= MAX_NPC_RACE )
                {
-                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __FUNCTION__, deity->name.c_str(  ), word );
+                  bug( "%s: Deity %s has invalid %s! Defaulting to human.", __func__, deity->name.c_str(  ), word );
                   npcrace3 = RACE_HUMAN;
                }
                deity->npcrace[2] = npcrace3;
@@ -789,7 +789,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   sex = get_npc_sex( fread_flagstring( fp ) );
                   if( sex < -1 || sex >= SEX_MAX )
                   {
-                     bug( "%s: Deity %s has invalid %s! Defaulting to neuter.", __FUNCTION__, deity->name.c_str(  ), word );
+                     bug( "%s: Deity %s has invalid %s! Defaulting to neuter.", __func__, deity->name.c_str(  ), word );
                      sex = SEX_NEUTRAL;
                   }
                   deity->sex = sex;
@@ -834,19 +834,19 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                value = get_risflag( temp[0] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[0] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[0] );
                else
                   deity->suscept[0] = value;
 
                value = get_risflag( temp[1] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[1] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[1] );
                else
                   deity->suscept[1] = value;
 
                value = get_risflag( temp[2] );
                if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, temp[2] );
+                  bug( "%s: Invalid RISA flag for %s: %s", __func__, word, temp[2] );
                else
                   deity->suscept[2] = value;
                break;
@@ -867,7 +867,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                      value = get_risflag( elem );
                      if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                        bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                      else
                         deity->suscept[0] = value;
                   }
@@ -877,7 +877,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   elem = fread_flagstring( fp );
                   value = get_risflag( elem );
                   if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                     bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                   else
                      deity->suscept[0] = value;
                }
@@ -899,7 +899,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                      value = get_risflag( elem );
                      if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                        bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                      else
                         deity->suscept[1] = value;
                   }
@@ -909,7 +909,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   elem = fread_flagstring( fp );
                   value = get_risflag( elem );
                   if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                     bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                   else
                      deity->suscept[1] = value;
                }
@@ -931,7 +931,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
                      value = get_risflag( elem );
                      if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                        bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                      else
                         deity->suscept[2] = value;
                   }
@@ -941,7 +941,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   elem = fread_flagstring( fp );
                   value = get_risflag( elem );
                   if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "%s: Invalid RISA flag for %s: %s", __FUNCTION__, word, elem );
+                     bug( "%s: Invalid RISA flag for %s: %s", __func__, word, elem );
                   else
                      deity->suscept[2] = value;
                }
@@ -995,7 +995,7 @@ bool load_deity_file( const char *deityfile )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -1006,7 +1006,7 @@ bool load_deity_file( const char *deityfile )
             letter = fread_letter( fp );
             if( letter != '#' )
             {
-               bug( "%s: # not found after reading file version %d.", __FUNCTION__, filever );
+               bug( "%s: # not found after reading file version %d.", __func__, filever );
                break;
             }
             word = fread_word( fp );
@@ -1021,7 +1021,7 @@ bool load_deity_file( const char *deityfile )
          }
          else
          {
-            bug( "%s: bad section: %s.", __FUNCTION__, word );
+            bug( "%s: bad section: %s.", __func__, word );
             break;
          }
       }
@@ -1054,14 +1054,14 @@ void load_deity( void )
 
       if( filename[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          break;
       }
 
       if( filename[0] == '$' )
          break;
       if( !load_deity_file( filename ) )
-         bug( "%s: Cannot load deity file: %s", __FUNCTION__, filename );
+         bug( "%s: Cannot load deity file: %s", __func__, filename );
    }
    FCLOSE( fpList );
    log_string( "Done deities" );
@@ -2880,7 +2880,7 @@ CMDF( do_supplicate )
 
       victim = pMobIndex->create_mobile(  );
       if( !victim->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
       act( AT_MAGIC, "$n summons a powerful avatar!", ch, NULL, NULL, TO_ROOM );
@@ -2924,7 +2924,7 @@ CMDF( do_supplicate )
 
       victim = pMobIndex->create_mobile(  );
       if( !victim->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
       act( AT_MAGIC, "$n summons a mount!", ch, NULL, NULL, TO_ROOM );
@@ -2963,7 +2963,7 @@ CMDF( do_supplicate )
 
       victim = pMobIndex->create_mobile(  );
       if( !victim->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
       act( AT_MAGIC, "$n summons a minion!", ch, NULL, NULL, TO_ROOM );
@@ -2999,7 +2999,7 @@ CMDF( do_supplicate )
 
       if( !( obj = pObjIndex->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       if( obj->wear_flags.test( ITEM_TAKE ) )
@@ -3070,7 +3070,7 @@ CMDF( do_supplicate )
 
       if( !( obj = pObjIndex->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       if( obj->wear_flags.test( ITEM_TAKE ) )
@@ -3149,7 +3149,7 @@ CMDF( do_supplicate )
 
       if( !location )
       {
-         bug( "%s: No room index for recall supplication. Deity: %s", __FUNCTION__, ch->pcdata->deity->name.c_str(  ) );
+         bug( "%s: No room index for recall supplication. Deity: %s", __func__, ch->pcdata->deity->name.c_str(  ) );
          ch->print( "Your deity has forsaken you!\r\n" );
          return;
       }

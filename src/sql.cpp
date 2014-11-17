@@ -38,7 +38,7 @@ void init_mysql(  )
    if( !mysql_init( &myconn ) )
    {
       mysql_close( &myconn );
-      bug( "%s: mysql_init() failed.", __FUNCTION__ );
+      bug( "%s: mysql_init() failed.", __func__ );
       log_printf( "Error: %s.", mysql_error( &myconn ) );
       return;
    }
@@ -46,7 +46,7 @@ void init_mysql(  )
    if( !mysql_real_connect( &myconn, sysdata->dbserver.c_str(  ), sysdata->dbuser.c_str(  ), sysdata->dbpass.c_str(  ), sysdata->dbname.c_str(  ), 0, NULL, 0 ) )
    {
       mysql_close( &myconn );
-      bug( "%s: mysql_real_connect() failed.", __FUNCTION__ );
+      bug( "%s: mysql_real_connect() failed.", __func__ );
       log_printf( "Error: %s.", mysql_error( &myconn ) );
       return;
    }

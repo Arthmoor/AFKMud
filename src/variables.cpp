@@ -524,14 +524,14 @@ void fread_variable( char_data * ch, FILE * fp )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            log_printf( "%s: no match: %s", __FUNCTION__, word );
+            log_printf( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -550,14 +550,14 @@ void fread_variable( char_data * ch, FILE * fp )
                switch( pvd->type )
                {
                   default:
-                     bug( "%s: invalid variable type. Discarding.", __FUNCTION__ );
+                     bug( "%s: invalid variable type. Discarding.", __func__ );
                      deleteptr( pvd );
                      break;
 
                   case vtSTR:
                      if( pvd->varstring.empty() )
                      {
-                        bug( "%s: vtSTR: Incomplete data. Discarding.", __FUNCTION__ );
+                        bug( "%s: vtSTR: Incomplete data. Discarding.", __func__ );
                         deleteptr( pvd );
                      }
                      break;
@@ -565,7 +565,7 @@ void fread_variable( char_data * ch, FILE * fp )
                   case vtXBIT:
                      if( pvd->varflags.none() )
                      {
-                        bug( "%s: vtXBIT: Incomplete data. Discarding.", __FUNCTION__ );
+                        bug( "%s: vtXBIT: Incomplete data. Discarding.", __func__ );
                         deleteptr( pvd );
                      }
                      break;
@@ -632,6 +632,6 @@ void fread_variable( char_data * ch, FILE * fp )
    while( !feof( fp ) );
 
    // If you make it here, something got borked.
-   bug( "%s: Fell through to bottom!", __FUNCTION__ );
+   bug( "%s: Fell through to bottom!", __func__ );
    deleteptr( pvd );
 }

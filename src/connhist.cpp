@@ -87,7 +87,7 @@ int check_conn_entry( conn_data * conn )
    if( conn->user.empty(  ) || conn->host.empty(  ) || conn->when.empty(  ) )
    {
       deleteptr( conn );
-      bug( "%s: Removed bugged conn entry!", __FUNCTION__ );
+      bug( "%s: Removed bugged conn entry!", __func__ );
       return CHK_CONN_REMOVED;
    }
    return CHK_CONN_OK;
@@ -145,13 +145,13 @@ void load_connhistory( void )
          }
          else
          {
-            bug( "%s: more connection histories than MAX_CONNHISTORY %zd", __FUNCTION__, MAX_CONNHISTORY );
+            bug( "%s: more connection histories than MAX_CONNHISTORY %zd", __func__, MAX_CONNHISTORY );
             stream.close(  );
             return;
          }
       }
       else
-         bug( "%s: Bad line in connection history file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         bug( "%s: Bad line in connection history file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -169,7 +169,7 @@ void save_connhistory( void )
    stream.open( CH_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Error opening '%s'", __FUNCTION__, CH_FILE );
+      bug( "%s: Error opening '%s'", __func__, CH_FILE );
       return;
    }
 
@@ -210,7 +210,7 @@ void update_connhistory( descriptor_data * d, int type )
 
    if( !d )
    {
-      bug( "%s: NULL descriptor!", __FUNCTION__ );
+      bug( "%s: NULL descriptor!", __func__ );
       return;
    }
 

@@ -48,7 +48,7 @@ list < wizinfo_data * >wizinfolist;
 
 wizinfo_data::wizinfo_data(  )
 {
-   init_memory( &level, &level, sizeof( level ) );
+   level = 0;
 }
 
 wizinfo_data::~wizinfo_data(  )
@@ -58,18 +58,19 @@ wizinfo_data::~wizinfo_data(  )
 
 /* Construct wizinfo list from god dir info - Samson 6-6-99 */
 void add_to_wizinfo( const string & name, wizinfo_data * wiz )
+void add_to_wizinfo( const string & name, wizinfo_data * wiz )
 {
    list < wizinfo_data * >::iterator wizinfo;
 
-   wiz->set_name( name );
-   if( wiz->get_email(  ).empty(  ) )
-      wiz->set_email( "Not Set" );
+   wiz->name = name;
+   if( wiz->email.empty(  ) )
+      wiz->email = "Not Set";
 
    for( wizinfo = wizinfolist.begin(  ); wizinfo != wizinfolist.end(  ); ++wizinfo )
    {
       wizinfo_data *w = *wizinfo;
 
-      if( w->get_name(  ) >= name )
+      if( w->name >= name )
       {
          wizinfolist.insert( wizinfo, wiz );
          return;
@@ -141,9 +142,11 @@ void build_wizinfo( void )
                strip_lspace( value );
 
                if( key == "Level" )
-                  wiz->set_level( atoi( value.c_str(  ) ) );
+                  wiz->level = atoi( value.c_str(  ) );
+               else if( key == "ImmRealm" )
+                  wiz->realm = value;
                else if( key == "Email" )
-                  wiz->set_email( value );
+                  wiz->email = value;
             }
             while( !stream.eof(  ) );
             add_to_wizinfo( dentry->d_name, wiz );
@@ -164,14 +167,20 @@ CMDF( do_wizinfo )
    list < wizinfo_data * >::iterator wiz;
 
    ch->pager( "&cContact Information for the Immortals:\r\n\r\n" );
-   ch->pager( "&cName         Email Address                    \r\n" );
-   ch->pager( "&c------------+---------------------------------\r\n" );
+   ch->pager( "&cName         Email Address                     Realm\r\n" );
+   ch->pager( "&c------------+---------------------------------+----------------\r\n" );
 
    for( wiz = wizinfolist.begin(  ); wiz != wizinfolist.end(  ); ++wiz )
    {
       wizinfo_data *wi = *wiz;
 
-      ch->printf( "&R%-12s &g%-33s &B%10d\r\n", wi->get_name(  ).c_str(  ), wi->get_email(  ).c_str(  ) );
+      // Allows an argument to show only a certain realm
+      // --Cynshard
+      if( !argument.empty(  ) )
+         if( str_cmp( wi->realm, argument ) )
+            continue;
+
+      ch->pagerf( "&R%-12s &g%-33s &B%10d &P%s&D\r\n", wi->name.c_str(  ), wi->email.c_str(  ), wi->realm.c_str(  ) );
    }
 }
 
@@ -246,7 +255,7 @@ CMDF( do_finger )
       temproom = get_room_index( ROOM_VNUM_LIMBO );
       if( !temproom )
       {
-         bug( "%s: Limbo room is not available!", __FUNCTION__ );
+         bug( "%s: Limbo room is not available!", __func__ );
          ch->print( "Fatal error, report to the immortals.\r\n" );
          return;
       }
@@ -262,7 +271,7 @@ CMDF( do_finger )
       pclist.push_back( d->character );
       original = d->character->in_room;
       if( !d->character->to_room( temproom ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       victim = d->character;  /* Hopefully this will work, if not, we're SOL */
       d->character->desc = NULL;
       d->character = NULL;
@@ -340,7 +349,7 @@ CMDF( do_finger )
 
       victim->from_room(  );
       if( !victim->to_room( original ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       quitting_char = victim;
 

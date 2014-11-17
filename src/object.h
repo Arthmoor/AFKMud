@@ -112,7 +112,7 @@ class obj_data
    short count;   /* support for object grouping */
    short mx;   /* Object coordinates on overland maps - Samson 8-21-99 */
    short my;
-   short cmap;  /* Which map is it on? - Samson 8-21-99 */
+   short wmap;  /* Which map is it on? - Samson 8-21-99 */
    short day;  /* What day of the week was it offered or sold? */
    short month;   /* What month? */
    short year; /* What year? */

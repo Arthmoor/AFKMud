@@ -31,6 +31,7 @@
 #endif
 #include <algorithm>
 #include "mud.h"
+#include "mudcfg.h"
 #include "fight.h"
 #include "mobindex.h"
 #include "objindex.h"
@@ -660,7 +661,7 @@ int slot_lookup( int slot )
          return sn;
 
    if( fBootDb )
-      bug( "%s: bad slot %d.", __FUNCTION__, slot );
+      bug( "%s: bad slot %d.", __func__, slot );
 
    return -1;
 }
@@ -928,7 +929,7 @@ void save_skill_table( void )
    if( !( fpout = fopen( SKILL_FILE, "w" ) ) )
    {
       perror( SKILL_FILE );
-      bug( "%s: Cannot open skills.dat for writing", __FUNCTION__ );
+      bug( "%s: Cannot open skills.dat for writing", __func__ );
       return;
    }
 
@@ -957,7 +958,7 @@ void save_herb_table(  )
    if( !( fpout = fopen( HERB_FILE, "w" ) ) )
    {
       perror( HERB_FILE );
-      bug( "%s: Cannot open herbs.dat for writing", __FUNCTION__ );
+      bug( "%s: Cannot open herbs.dat for writing", __func__ );
       return;
    }
 
@@ -998,14 +999,14 @@ skill_type *fread_skill( FILE * fp, int version )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1102,7 +1103,7 @@ skill_type *fread_skill( FILE * fp, int version )
 
                if( validate_spec_fun( w ) )
                {
-                  bug( "%s: ERROR: Trying to assign spec_fun to skill/spell %s", __FUNCTION__, w );
+                  bug( "%s: ERROR: Trying to assign spec_fun to skill/spell %s", __func__, w );
                   skill->skill_fun = skill_notfound;
                   skill->spell_fun = spell_notfound;
                }
@@ -1120,7 +1121,7 @@ skill_type *fread_skill( FILE * fp, int version )
                }
                else
                {
-                  bug( "%s: unknown skill/spell %s", __FUNCTION__, w );
+                  bug( "%s: unknown skill/spell %s", __func__, w );
                   skill->spell_fun = spell_null;
                }
                break;
@@ -1143,7 +1144,7 @@ skill_type *fread_skill( FILE * fp, int version )
             {
                if( skill->saves != 0 && SPELL_SAVE( skill ) == SE_NONE )
                {
-                  bug( "%s: %s: Has saving throw (%d) with no saving effect.", __FUNCTION__, skill->name, skill->saves );
+                  bug( "%s: %s: Has saving throw (%d) with no saving effect.", __func__, skill->name, skill->saves );
                   SET_SSAV( skill, SE_NEGATE );
                }
                if( !skill->author )
@@ -1242,7 +1243,7 @@ skill_type *fread_skill( FILE * fp, int version )
 
                   if( position < 0 || position >= POS_MAX )
                   {
-                     bug( "%s: Skill %s has invalid position! Defaulting to standing.", __FUNCTION__, skill->name );
+                     bug( "%s: Skill %s has invalid position! Defaulting to standing.", __func__, skill->name );
                      position = POS_STANDING;
                   }
                   skill->minimum_position = position;
@@ -1321,7 +1322,7 @@ void load_skill_table( void )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -1335,7 +1336,7 @@ void load_skill_table( void )
          {
             if( num_skills >= MAX_SKILL )
             {
-               bug( "%s: more skills than MAX_SKILL %d", __FUNCTION__, MAX_SKILL );
+               bug( "%s: more skills than MAX_SKILL %d", __func__, MAX_SKILL );
                FCLOSE( fp );
                fpArea = NULL;
                return;
@@ -1347,7 +1348,7 @@ void load_skill_table( void )
             break;
          else
          {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
+            bug( "%s: bad section: %s", __func__, word );
             continue;
          }
       }
@@ -1357,7 +1358,7 @@ void load_skill_table( void )
    else
    {
       perror( SKILL_FILE );
-      bug( "%s: Cannot open skills.dat", __FUNCTION__ );
+      bug( "%s: Cannot open skills.dat", __func__ );
       exit( 1 );
    }
 }
@@ -1384,7 +1385,7 @@ void load_herb_table(  )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -1398,7 +1399,7 @@ void load_herb_table(  )
          {
             if( top_herb >= MAX_HERB )
             {
-               bug( "%s: more herbs than MAX_HERB %d", __FUNCTION__, MAX_HERB );
+               bug( "%s: more herbs than MAX_HERB %d", __func__, MAX_HERB );
                FCLOSE( fp );
                return;
             }
@@ -1411,7 +1412,7 @@ void load_herb_table(  )
             break;
          else
          {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
+            bug( "%s: bad section: %s", __func__, word );
             continue;
          }
       }
@@ -1419,7 +1420,7 @@ void load_herb_table(  )
    }
    else
    {
-      bug( "%s: Cannot open herbs.dat", __FUNCTION__ );
+      bug( "%s: Cannot open herbs.dat", __func__ );
       exit( 1 );
    }
 }
@@ -1866,7 +1867,7 @@ bool check_ability( char_data * ch, const string & command, const string & argum
       switch ( skill_table[sn]->target )
       {
          default:
-            bug( "%s: bad target for sn %d.", __FUNCTION__, sn );
+            bug( "%s: bad target for sn %d.", __func__, sn );
             ch->print( "Something went wrong...\r\n" );
             return true;
 
@@ -2097,7 +2098,7 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
       switch ( skill_table[sn]->target )
       {
          default:
-            bug( "%s: bad target for sn %d.", __FUNCTION__, sn );
+            bug( "%s: bad target for sn %d.", __func__, sn );
             ch->print( "Something went wrong...\r\n" );
             return true;
 
@@ -3650,7 +3651,7 @@ CMDF( do_detrap )
          if( !ch->alloc_ptr )
          {
             ch->print( "Your detrapping was interrupted!\r\n" );
-            bug( "%s: ch->alloc_ptr NULL!", __FUNCTION__ );
+            bug( "%s: ch->alloc_ptr NULL!", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -3745,7 +3746,7 @@ CMDF( do_dig )
             int sector;
 
             if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
-               sector = map_sector[ch->cmap][ch->mx][ch->my];
+               sector = map_sector[ch->wmap][ch->mx][ch->my];
             else
                sector = ch->in_room->sector_type;
 
@@ -3787,7 +3788,7 @@ CMDF( do_dig )
          {
             ch->print( "Your digging was interrupted!\r\n" );
             act( AT_PLAIN, "$n's digging was interrupted!", ch, NULL, NULL, TO_ROOM );
-            bug( "%s: alloc_ptr NULL", __FUNCTION__ );
+            bug( "%s: alloc_ptr NULL", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -3930,7 +3931,7 @@ CMDF( do_search )
          if( !ch->alloc_ptr )
          {
             ch->print( "Your search was interrupted!\r\n" );
-            bug( "%s: alloc_ptr NULL", __FUNCTION__ );
+            bug( "%s: alloc_ptr NULL", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -6369,7 +6370,7 @@ CMDF( do_slice )
    if( !( pMobIndex = get_mob_index( corpse->value[4] ) ) )
    {
       ch->print( "Error - report to immortals\r\n" );
-      bug( "%s: Can not find mob for value[4] of corpse", __FUNCTION__ );
+      bug( "%s: Can not find mob for value[4] of corpse", __func__ );
       return;
    }
 
@@ -6388,7 +6389,7 @@ CMDF( do_slice )
    if( !( slice = get_obj_index( OBJ_VNUM_SLICE )->create_object( 1 ) ) )
    {
       ch->print( "Error - report to immortals\r\n" );
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -6777,12 +6778,12 @@ CMDF( do_tinker )
    {
       mob = pmob->create_mobile(  );
       if( !mob->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       ch->printf( "You tinker around awhile and construct a %s!\r\n", mob->short_descr );
       return;
    }
-   bug( "%s: Somehow reached the end of the function!!!", __FUNCTION__ );
+   bug( "%s: Somehow reached the end of the function!!!", __func__ );
    ch->print( "Oops. Something mighty odd just happened. The imms have been informed.\r\n" );
    ch->print( "Reimbursing the gold you lost...\r\n" );
    ch->gold += cost;
@@ -7206,7 +7207,7 @@ CMDF( do_forage )
    }
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
-      sector = map_sector[ch->cmap][ch->mx][ch->my];
+      sector = map_sector[ch->wmap][ch->mx][ch->my];
    else
       sector = ch->in_room->sector_type;
 
@@ -7254,7 +7255,7 @@ CMDF( do_forage )
 
    if( herb == NULL )
    {
-      bug( "%s: Cannot locate item for vnum %d", __FUNCTION__, vnum );
+      bug( "%s: Cannot locate item for vnum %d", __func__, vnum );
       ch->print( "Oops. Slight bug here. The immortals have been notified.\r\n" );
       return;
    }
@@ -7309,7 +7310,7 @@ CMDF( do_woodcall )
    }
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
-      sector = map_sector[ch->cmap][ch->mx][ch->my];
+      sector = map_sector[ch->wmap][ch->mx][ch->my];
    else
       sector = ch->in_room->sector_type;
 
@@ -7355,7 +7356,7 @@ CMDF( do_woodcall )
 
    if( !( call = get_mob_index( vnum ) ) )
    {
-      bug( "%s: Cannot locate mob for vnum %d", __FUNCTION__, vnum );
+      bug( "%s: Cannot locate mob for vnum %d", __func__, vnum );
       ch->print( "Oops. Slight bug here. The immortals have been notified.\r\n" );
       return;
    }
@@ -7375,7 +7376,7 @@ CMDF( do_woodcall )
    {
       mob = call->create_mobile(  );
       if( !mob->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       ch->printf( "&[skill]Your calls attract %s to your side!\r\n", mob->short_descr );
       bind_follower( mob, ch, gsn_woodcall, ch->level * 10 );
       return;
@@ -7406,7 +7407,7 @@ CMDF( do_mining )
       return;
    }
 
-   if( ch->has_pcflag( PCFLAG_ONMAP ) && map_sector[ch->cmap][ch->mx][ch->my] != SECT_MOUNTAIN )
+   if( ch->has_pcflag( PCFLAG_ONMAP ) && map_sector[ch->wmap][ch->mx][ch->my] != SECT_MOUNTAIN )
    {
       ch->print( "You must be in the mountains to do mining.\r\n" );
       return;
@@ -7435,7 +7436,7 @@ CMDF( do_mining )
 
    if( ore == NULL )
    {
-      bug( "%s: Cannot locate item for vnum %d", __FUNCTION__, vnum );
+      bug( "%s: Cannot locate item for vnum %d", __func__, vnum );
       ch->print( "Oops. Slight bug here. The immortals have been notified.\r\n" );
       return;
    }
@@ -7750,7 +7751,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_SHIELD )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       ++acapply;
@@ -7762,7 +7763,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_JACKET )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       acapply += 5;
@@ -7774,7 +7775,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_BOOTS )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7790,7 +7791,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_GLOVES )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7806,7 +7807,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_LEGGINGS )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       ++acapply;
@@ -7818,7 +7819,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_SLEEVES )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       ++acapply;
@@ -7830,7 +7831,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_HELMET )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7846,7 +7847,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_BAG )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       hidetype = "A bag";
@@ -7856,7 +7857,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_BELT )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7872,7 +7873,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_CLOAK )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7888,7 +7889,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_QUIVER )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       hidetype = "A quiver";
@@ -7898,7 +7899,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_WATERSKIN )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       hidetype = "A waterskin";
@@ -7908,7 +7909,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_COLLAR )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7924,7 +7925,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_WHIP )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       ++acapply;
@@ -7938,7 +7939,7 @@ CMDF( do_tan )
 
    if( !hide )
    {
-      bug( "%s: Tan objects missing.", __FUNCTION__ );
+      bug( "%s: Tan objects missing.", __func__ );
       ch->print( "You messed up the hide and it's useless.\r\n" );
       return;
    }

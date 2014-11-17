@@ -175,7 +175,7 @@ void start_timer( struct timeval *starttime )
 {
    if( !starttime )
    {
-      bug( "%s: NULL stime.", __FUNCTION__ );
+      bug( "%s: NULL stime.", __func__ );
       return;
    }
    gettimeofday( starttime, NULL );
@@ -192,7 +192,7 @@ time_t end_timer( struct timeval * starttime )
    gettimeofday( &etime, NULL );
    if( !starttime || ( !starttime->tv_sec && !starttime->tv_usec ) )
    {
-      bug( "%s: bad starttime.", __FUNCTION__ );
+      bug( "%s: bad starttime.", __func__ );
       return 0;
    }
    subtract_times( &etime, starttime );
@@ -462,13 +462,13 @@ void interpret( char_data * ch, string argument )
 
    if( !ch )
    {
-      bug( "%s: null ch!", __FUNCTION__ );
+      bug( "%s: null ch!", __func__ );
       return;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: %s null in_room!", __FUNCTION__, ch->name );
+      bug( "%s: %s null in_room!", __func__, ch->name );
       return;
    }
 
@@ -480,7 +480,7 @@ void interpret( char_data * ch, string argument )
       if( !( fun = ch->last_cmd ) )
       {
          ch->substate = SUB_NONE;
-         bug( "%s: %s SUB_REPEATCMD with NULL last_cmd", __FUNCTION__, ch->name );
+         bug( "%s: %s SUB_REPEATCMD with NULL last_cmd", __func__, ch->name );
          return;
       }
       else
@@ -510,7 +510,7 @@ void interpret( char_data * ch, string argument )
          if( !found )
          {
             cmd = NULL;
-            bug( "%s: SUB_REPEATCMD: last_cmd invalid", __FUNCTION__ );
+            bug( "%s: SUB_REPEATCMD: last_cmd invalid", __func__ );
             return;
          }
          snprintf( logline, MIL, "(%s) %s", cmd->name.c_str(  ), argument.c_str(  ) );
@@ -524,7 +524,7 @@ void interpret( char_data * ch, string argument )
        */
       if( argument.empty(  ) || !str_cmp( argument, "" ) )
       {
-         bug( "%s: null argument!", __FUNCTION__ );
+         bug( "%s: null argument!", __func__ );
          return;
       }
 
@@ -622,7 +622,7 @@ void interpret( char_data * ch, string argument )
          else
          {
             ch->print( "Huh?\r\n" );
-            bug( "%s: %s", __FUNCTION__, error );
+            bug( "%s: %s", __func__, error );
             return;
          }
       }
@@ -864,7 +864,7 @@ void funcf( char_data * ch, DO_FUN * cmd, const char *fmt, ... )
 
    if( !cmd )
    {
-      bug( "%s: Bad function passed to funcf!", __FUNCTION__ );
+      bug( "%s: Bad function passed to funcf!", __func__ );
       return;
    }
 
@@ -913,7 +913,7 @@ void unlink_command( cmd_type * command )
 {
    if( !command )
    {
-      bug( "%s: NULL command", __FUNCTION__ );
+      bug( "%s: NULL command", __func__ );
       return;
    }
 
@@ -939,13 +939,13 @@ void add_command( cmd_type * command )
 {
    if( !command )
    {
-      bug( "%s: NULL command", __FUNCTION__ );
+      bug( "%s: NULL command", __func__ );
       return;
    }
 
    if( command->name.empty(  ) )
    {
-      bug( "%s: Empty command->name", __FUNCTION__ );
+      bug( "%s: Empty command->name", __func__ );
       return;
    }
 
@@ -986,7 +986,7 @@ void save_commands( void )
    stream.open( COMMAND_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open commands.dat for writing", __FUNCTION__ );
+      bug( "%s: Cannot open commands.dat for writing", __func__ );
       perror( COMMAND_FILE );
       return;
    }
@@ -1004,7 +1004,7 @@ void save_commands( void )
 
          if( command->name.empty(  ) )
          {
-            bug( "%s: blank command in command table", __FUNCTION__ );
+            bug( "%s: blank command in command table", __func__ );
             continue;
          }
          stream << "#COMMAND" << endl;
@@ -1037,7 +1037,7 @@ void load_commands( void )
    stream.open( COMMAND_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: No command file found.", __FUNCTION__ );
+      bug( "%s: No command file found.", __func__ );
       exit( 1 );
    }
 
@@ -1075,7 +1075,7 @@ void load_commands( void )
          int pos = get_npc_position( value );
          if( pos < 0 || pos >= POS_MAX )
          {
-            bug( "%s: Command %s has invalid position! Defaulting to standing.", __FUNCTION__, cmd->name.c_str(  ) );
+            bug( "%s: Command %s has invalid position! Defaulting to standing.", __func__, cmd->name.c_str(  ) );
             pos = POS_STANDING;
          }
          cmd->position = pos;
@@ -1092,7 +1092,7 @@ void load_commands( void )
 
             if( lognum < 0 || lognum > LOG_ALL )
             {
-               bug( "%s: Command %s has invalid log flag! Defaulting to normal.", __FUNCTION__, cmd->name.c_str(  ) );
+               bug( "%s: Command %s has invalid log flag! Defaulting to normal.", __func__, cmd->name.c_str(  ) );
                lognum = LOG_NORMAL;
             }
             cmd->log = lognum;
@@ -1103,7 +1103,7 @@ void load_commands( void )
       else if( key == "End" )
          add_command( cmd );
       else
-         log_printf( "%s: Bad line in command file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in command file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -2054,7 +2054,7 @@ void unlink_social( social_type * social )
 {
    if( !social )
    {
-      bug( "%s: NULL social", __FUNCTION__ );
+      bug( "%s: NULL social", __func__ );
       return;
    }
 
@@ -2069,19 +2069,19 @@ void add_social( social_type * social )
 {
    if( !social )
    {
-      bug( "%s: NULL social", __FUNCTION__ );
+      bug( "%s: NULL social", __func__ );
       return;
    }
 
    if( social->name.empty(  ) )
    {
-      bug( "%s: NULL social->name", __FUNCTION__ );
+      bug( "%s: NULL social->name", __func__ );
       return;
    }
 
    if( social->char_no_arg.empty(  ) )
    {
-      bug( "%s: NULL social->char_no_arg on social %s", __FUNCTION__, social->name.c_str(  ) );
+      bug( "%s: NULL social->char_no_arg on social %s", __func__, social->name.c_str(  ) );
       return;
    }
 
@@ -2113,7 +2113,7 @@ void save_socials( void )
 
       if( social->name.empty(  ) )
       {
-         bug( "%s: blank social in social table", __FUNCTION__ );
+         bug( "%s: blank social in social table", __func__ );
          continue;
       }
 
@@ -2122,7 +2122,7 @@ void save_socials( void )
       if( !social->char_no_arg.empty(  ) )
          stream << "CharNoArg   " << social->char_no_arg << endl;
       else
-         bug( "%s: NULL char_no_arg in social_table for %s", __FUNCTION__, social->name.c_str(  ) );
+         bug( "%s: NULL char_no_arg in social_table for %s", __func__, social->name.c_str(  ) );
       if( !social->others_no_arg.empty(  ) )
          stream << "OthersNoArg " << social->others_no_arg << endl;
       if( !social->char_found.empty(  ) )
@@ -2155,7 +2155,7 @@ void load_socials( void )
    stream.open( SOCIAL_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open socials.dat", __FUNCTION__ );
+      bug( "%s: Cannot open socials.dat", __func__ );
       exit( 1 );
    }
 

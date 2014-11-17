@@ -112,7 +112,7 @@ void save_quotes( void )
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Unable to open quote file for writing!", __FUNCTION__ );
+      bug( "%s: Unable to open quote file for writing!", __func__ );
       perror( filename );
       return;
    }
@@ -445,7 +445,7 @@ void search_pfiles( char_data * ch, const char *dirname, const char *filename, i
 
       if( letter == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file: %s!", __FUNCTION__, fname );
+         log_printf( "%s: EOF encountered reading file: %s!", __func__, fname );
          break;
       }
 
@@ -456,7 +456,7 @@ void search_pfiles( char_data * ch, const char *dirname, const char *filename, i
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file: %s!", __FUNCTION__, fname );
+         log_printf( "%s: EOF encountered reading file: %s!", __func__, fname );
          word = "End";
       }
 
@@ -471,7 +471,7 @@ void search_pfiles( char_data * ch, const char *dirname, const char *filename, i
 
             if( word[0] == '\0' )
             {
-               log_printf( "%s: EOF encountered reading file: %s!", __FUNCTION__, fname );
+               log_printf( "%s: EOF encountered reading file: %s!", __func__, fname );
                word = "End";
             }
 
@@ -506,7 +506,7 @@ void search_pfiles( char_data * ch, const char *dirname, const char *filename, i
                      vnum = fread_number( fpChar );
                      if( !( get_obj_index( vnum ) ) )
                      {
-                        bug( "Bad obj vnum in %s: %d", __FUNCTION__, vnum );
+                        bug( "Bad obj vnum in %s: %d", __func__, vnum );
                         adjust_pfile( filename );
                      }
                      else
@@ -571,7 +571,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -743,7 +743,7 @@ void read_pfile( const char *dirname, const char *filename, bool count )
 
             if( word[0] == '\0' )
             {
-               bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+               bug( "%s: EOF encountered reading file!", __func__ );
                word = "End";
             }
 

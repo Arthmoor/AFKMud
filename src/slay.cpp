@@ -147,7 +147,7 @@ void load_slays( void )
       else if( key == "End" )
          slaylist.push_back( slay );
       else
-         log_printf( "%s: Bad line in slay file: %s", __FUNCTION__, key.c_str(  ) );
+         log_printf( "%s: Bad line in slay file: %s", __func__, key.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -161,7 +161,7 @@ void save_slays( void )
    stream.open( SLAY_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( SLAY_FILE );
    }
    else

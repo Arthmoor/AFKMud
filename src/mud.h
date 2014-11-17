@@ -724,7 +724,7 @@ do                                             \
 } while(0)
 #endif
 
-#define STRALLOC(point)		str_alloc((point), __FUNCTION__, __FILE__, __LINE__)
+#define STRALLOC(point)		str_alloc((point), __func__, __FILE__, __LINE__)
 #define QUICKLINK(point)	quick_link((point))
 #if defined(__FreeBSD__)
 #define STRFREE(point)                          \
@@ -1418,7 +1418,7 @@ template < size_t N > void flag_set( FILE * fp, bitset < N > &field, const char 
 
       // Casting N down to an int might not look good, but we can't check for -1 any other way.
       if( value < 0 || value >= ( int )N )
-         bug( "%s: Invalid flag: %s", __FUNCTION__, flag.c_str() );
+         bug( "%s: Invalid flag: %s", __func__, flag.c_str() );
       else
          field.set( value );
    }
@@ -1437,7 +1437,7 @@ template < size_t N > void flag_string_set( string & original, bitset < N > &fie
 
       // Casting N down to an int might not look good, but we can't check for -1 any other way.
       if( value < 0 || value >= ( int )N )
-         bug( "%s: Invalid flag: %s", __FUNCTION__, flag.c_str(  ) );
+         bug( "%s: Invalid flag: %s", __func__, flag.c_str(  ) );
       else
          field.set( value );
    }

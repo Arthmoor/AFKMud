@@ -43,7 +43,7 @@ struct environment_data
    short direction;
    short mx;
    short my;
-   short cmap;
+   short wmap;
    short type;
    short damage_per_shake;
    short radius;
@@ -232,7 +232,7 @@ void environment_actual_update( void )
                   {
                      ch->print( "&RScorching flames erupt all around!\r\n" );
                      if( !( obj = get_obj_index( OBJ_VNUM_OVFIRE )->create_object( 1 ) ) )
-                        log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                        log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                      else
                      {
                         obj->timer = en->time_left;
@@ -291,7 +291,7 @@ void generate_random_environment( int type )
    q->type = type;
    q->mx = number_range( 0, MAX_X );
    q->my = number_range( 0, MAX_Y );
-   q->cmap = number_range( MAP_ONE, MAP_MAX - 1 );
+   q->wmap = number_range( MAP_ONE, MAP_MAX - 1 );
 
    switch ( type )
    {
@@ -403,7 +403,7 @@ CMDF( do_makeenv )
 
    atx = ch->mx;
    aty = ch->my;
-   atmap = ch->cmap;
+   atmap = ch->wmap;
 
    if( arg.empty(  ) )
    {
@@ -449,7 +449,7 @@ CMDF( do_makeenv )
    t = new environment_data;
    t->mx = atx;
    t->my = aty;
-   t->cmap = atmap;
+   t->wmap = atmap;
    t->type = atype;
    t->direction = door;
    t->radius = chosenradius;
@@ -471,12 +471,12 @@ CMDF( do_env )
       ++count;
       if( en->type == ENV_QUAKE )
       {
-         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n", en->radius, en->radius, en->intensity, en->mx, en->my, map_names[en->cmap] );
+         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n", en->radius, en->radius, en->intensity, en->mx, en->my, map_names[en->wmap] );
       }
       else
       {
          ch->printf( "&GA %d by %d %s bound %s at coordinates %d,%d on %s.\r\n",
-                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->mx, en->my, map_names[en->cmap] );
+                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->mx, en->my, map_names[en->wmap] );
       }
    }
 
@@ -504,7 +504,7 @@ bool survey_environment( char_data * ch )
    {
       environment_data *en = *env;
 
-      if( ch->cmap != en->cmap )
+      if( ch->wmap != en->wmap )
          continue;
 
       dist = ( int )distance( ch->mx, ch->my, en->mx, en->my );

@@ -356,7 +356,7 @@ void make_campfire( room_index * in_room, char_data * ch, short timer )
 
    if( !( fire = get_obj_index( OBJ_VNUM_CAMPFIRE )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    fire->timer = number_fuzzy( timer );
@@ -411,6 +411,7 @@ CMDF( do_camp )
              * we ever get code to support boats of any real size 
              */
             return;
+
          case SECT_AIR:
             ch->print( "Yeah, sure, set camp in thin air???\r\n" );
             return;
@@ -439,7 +440,7 @@ CMDF( do_camp )
    }
    else
    {
-      short sector = map_sector[ch->cmap][ch->mx][ch->my];
+      short sector = map_sector[ch->wmap][ch->mx][ch->my];
 
       switch ( sector )
       {
@@ -649,7 +650,7 @@ void adjust_pfile( const string & name )
    room_index *temproom, *original;
    if( !( temproom = get_room_index( ROOM_VNUM_RAREUPDATE ) ) )
    {
-      bug( "%s: Error in rare item adjustment, temporary loading room is missing!", __FUNCTION__ );
+      bug( "%s: Error in rare item adjustment, temporary loading room is missing!", __func__ );
       return;
    }
 
@@ -666,7 +667,7 @@ void adjust_pfile( const string & name )
       pclist.push_back( d->character );
       original = d->character->in_room;
       if( !d->character->to_room( temproom ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       ch = d->character;   /* Hopefully this will work, if not, we're SOL */
       d->character->desc = NULL;
       d->character = NULL;
@@ -679,7 +680,7 @@ void adjust_pfile( const string & name )
 
       ch->from_room(  );
       if( !ch->to_room( original ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       quitting_char = ch;
       ch->save(  );
@@ -753,7 +754,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -768,7 +769,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+            bug( "%s: EOF encountered reading file!", __func__ );
             word = "End";
          }
 
@@ -816,7 +817,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
             vnum = fread_number( fpChar );
             if( ( pObjIndex = get_obj_index( vnum ) ) == NULL )
             {
-               bug( "%s: %s has bad obj vnum.", __FUNCTION__, filename );
+               bug( "%s: %s has bad obj vnum.", __func__, filename );
                adjust = 1; /* So it can clean out the bad object - Samson 4-16-00 */
             }
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
@@ -871,7 +872,7 @@ void corpse_scan( const char *dirname, const char *filename )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -884,7 +885,7 @@ void corpse_scan( const char *dirname, const char *filename )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+            bug( "%s: EOF encountered reading file!", __func__ );
             word = "End";
          }
 
@@ -907,7 +908,7 @@ void corpse_scan( const char *dirname, const char *filename )
          {
             vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == NULL )
-               bug( "%s: %s's corpse has bad obj vnum.", __FUNCTION__, filename );
+               bug( "%s: %s's corpse has bad obj vnum.", __func__, filename );
             else
             {
                int ego = 0;
@@ -955,7 +956,7 @@ void mobfile_scan( void )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -968,7 +969,7 @@ void mobfile_scan( void )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+            bug( "%s: EOF encountered reading file!", __func__ );
             word = "End";
          }
 
@@ -991,7 +992,7 @@ void mobfile_scan( void )
          {
             vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == NULL )
-               bug( "%s: bad obj vnum %d.", __FUNCTION__, vnum );
+               bug( "%s: bad obj vnum %d.", __func__, vnum );
             else
             {
                int ego = 0;
@@ -1039,7 +1040,7 @@ void objfile_scan( const char *dirname, const char *filename )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -1052,7 +1053,7 @@ void objfile_scan( const char *dirname, const char *filename )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+            bug( "%s: EOF encountered reading file!", __func__ );
             word = "End";
          }
 
@@ -1075,7 +1076,7 @@ void objfile_scan( const char *dirname, const char *filename )
          {
             vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == NULL )
-               bug( "%s: bad obj vnum %d.", __FUNCTION__, vnum );
+               bug( "%s: bad obj vnum %d.", __func__, vnum );
             else
             {
                int ego = 0;

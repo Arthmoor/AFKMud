@@ -87,7 +87,7 @@ void save_bits( void )
       stream.open( filename );
       if( !stream.is_open(  ) )
       {
-         bug( "%s: Cannot open bit list %d for writing", __FUNCTION__, mode );
+         bug( "%s: Cannot open bit list %d for writing", __func__, mode );
          return;
       }
 
@@ -121,14 +121,14 @@ void load_oldbits( void )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading old bits file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading old bits file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -156,7 +156,7 @@ void load_oldbits( void )
             }
             else
             {
-               bug( "%s: Bad section: %s", __FUNCTION__, word );
+               bug( "%s: Bad section: %s", __func__, word );
                return;
             }
 
@@ -190,7 +190,7 @@ void load_abits( void )
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open abit file.", __FUNCTION__ );
+      bug( "%s: Cannot open abit file.", __func__ );
       return;
    }
 
@@ -218,7 +218,7 @@ void load_qbits( void )
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open qbit file.", __FUNCTION__ );
+      bug( "%s: Cannot open qbit file.", __func__ );
       return;
    }
 

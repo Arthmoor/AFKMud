@@ -67,7 +67,7 @@ void ev_violence( void *data )
 
    if( !ch )
    {
-      bug( "%s: NULL ch pointer!", __FUNCTION__ );
+      bug( "%s: NULL ch pointer!", __func__ );
       return;
    }
    char_data *victim = ch->who_fighting(  );
@@ -97,7 +97,7 @@ void ev_violence( void *data )
 
    if( ch->in_room->flags.test( ROOM_SAFE ) )
    {
-      log_printf( "%s: %s fighting %s in a SAFE room.", __FUNCTION__, ch->name, victim->name );
+      log_printf( "%s: %s fighting %s in a SAFE room.", __func__, ch->name, victim->name );
       ch->stop_fighting( true );
    }
    else if( ch->IS_AWAKE(  ) && ch->in_room == victim->in_room )
@@ -469,7 +469,7 @@ void ev_auction( void *data )
       case 3: /* SOLD! */
          if( !auction->buyer && auction->bet )
          {
-            bug( "%s: Auction code reached SOLD, with NULL buyer, but %d gold bid", __FUNCTION__, auction->bet );
+            bug( "%s: Auction code reached SOLD, with NULL buyer, but %d gold bid", __func__, auction->bet );
             auction->bet = 0;
          }
          if( auction->bet > 0 && auction->buyer != auction->seller )

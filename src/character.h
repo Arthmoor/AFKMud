@@ -608,7 +608,7 @@ class char_data
    short mobinvis;   /* Mobinvis level SB */
    short mx;   /* Coordinates on the overland map - Samson 7-31-99 */
    short my;
-   short cmap;  /* Which map are they on? - Samson 8-3-99 */
+   short wmap;  /* Which map are they on? - Samson 8-3-99 */
    short sector;  /* Type of terrain to restrict a wandering mob to on overland - Samson 7-27-00 */
    unsigned short mpscriptpos;
    bool has_skyship; /* Identifies has skyship */

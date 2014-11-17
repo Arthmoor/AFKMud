@@ -326,7 +326,7 @@ void add_obj_reset( room_index * room, char cm, obj_data * obj, int v2, int v3 )
    }
    if( cm == 'O' )
    {
-      room->add_reset( cm, obj->pIndexData->vnum, v2, v3, obj->cmap, obj->mx, obj->my, 100, -2, -2, -2, -2 );
+      room->add_reset( cm, obj->pIndexData->vnum, v2, v3, obj->wmap, obj->mx, obj->my, 100, -2, -2, -2, -2 );
       if( obj->extra_flags.test( ITEM_HIDDEN ) && !obj->wear_flags.test( ITEM_TAKE ) )
          room->add_reset( 'H', 0, 0, 100, -2, -2, -2, -2, -2, -2, -2, -2 );
    }
@@ -385,7 +385,7 @@ void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
       bool added = false;
       if( pRoom->flags.test( ROOM_MAP ) && is_same_char_map( ch, rch ) )
       {
-         pRoom->add_reset( 'M', rch->pIndexData->vnum, rch->pIndexData->count, pRoom->vnum, ch->cmap, ch->mx, ch->my, 100, -2, -2, -2, -2 );
+         pRoom->add_reset( 'M', rch->pIndexData->vnum, rch->pIndexData->count, pRoom->vnum, ch->wmap, ch->mx, ch->my, 100, -2, -2, -2, -2 );
          added = true;
       }
       else if( !pRoom->flags.test( ROOM_MAP ) )
@@ -474,7 +474,7 @@ CMDF( do_instaroom )
       return;
    }
    if( !ch->in_room->resets.empty() && ch->has_pcflag( PCFLAG_ONMAP ) )
-      ch->in_room->wipe_coord_resets( ch->cmap, ch->mx, ch->my );
+      ch->in_room->wipe_coord_resets( ch->wmap, ch->mx, ch->my );
    else if( !ch->in_room->resets.empty() )
       ch->in_room->wipe_resets();
    if( !ch->in_room->resets.empty(  ) )

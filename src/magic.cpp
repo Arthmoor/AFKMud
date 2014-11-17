@@ -871,7 +871,7 @@ void *locate_targets( char_data * ch, const string & arg, int sn )
    switch ( skill->target )
    {
       default:
-         bug( "%s: bad target for sn %d.", __FUNCTION__, sn );
+         bug( "%s: bad target for sn %d.", __func__, sn );
          return &pAbort;
 
       case TAR_IGNORE:
@@ -1280,7 +1280,7 @@ CMDF( do_cast )
             if( !( skill = get_skilltype( sn ) ) )
             {
                ch->print( "Something went wrong...\r\n" );
-               bug( "%s: SUB_TIMER_DO_ABORT: bad sn %d", __FUNCTION__, sn );
+               bug( "%s: SUB_TIMER_DO_ABORT: bad sn %d", __func__, sn );
                return;
             }
             mana = ch->isnpc(  )? 0 : UMAX( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
@@ -1299,13 +1299,13 @@ CMDF( do_cast )
          if( !( skill = get_skilltype( sn ) ) )
          {
             ch->print( "Something went wrong...\r\n" );
-            bug( "%s: substate 1: bad sn %d", __FUNCTION__, sn );
+            bug( "%s: substate 1: bad sn %d", __func__, sn );
             return;
          }
          if( !ch->alloc_ptr || !IS_VALID_SN( sn ) || skill->type != SKILL_SPELL )
          {
             ch->print( "Something cancels out the spell!\r\n" );
-            bug( "%s: ch->alloc_ptr NULL or bad sn (%d)", __FUNCTION__, sn );
+            bug( "%s: ch->alloc_ptr NULL or bad sn (%d)", __func__, sn );
             return;
          }
          mana = ch->isnpc(  )? 0 : UMAX( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
@@ -1609,7 +1609,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
 
    if( !skill || !skill->spell_fun )
    {
-      bug( "%s: bad sn %d.", __FUNCTION__, sn );
+      bug( "%s: bad sn %d.", __func__, sn );
       return rERROR;
    }
 
@@ -1664,7 +1664,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
    switch ( skill->target )
    {
       default:
-         bug( "%s: bad target for sn %d.", __FUNCTION__, sn );
+         bug( "%s: bad target for sn %d.", __func__, sn );
          return rERROR;
 
       case TAR_IGNORE:
@@ -2078,7 +2078,7 @@ SPELLF( spell_create_water )
 
    if( !( liq = get_liq_vnum( obj->value[2] ) ) )
    {
-      bug( "%s: bad liquid number %d", __FUNCTION__, obj->value[2] );
+      bug( "%s: bad liquid number %d", __func__, obj->value[2] );
       ch->print( "There's already another liquid in the container.\r\n" );
       return rSPELL_FAILED;
    }
@@ -2452,7 +2452,7 @@ SPELLF( spell_gate )
 
    if( !( temp = get_mob_index( MOB_VNUM_GATE ) ) )
    {
-      bug( "%s: Servitor daemon vnum %d doesn't exist.", __FUNCTION__, MOB_VNUM_GATE );
+      bug( "%s: Servitor daemon vnum %d doesn't exist.", __func__, MOB_VNUM_GATE );
       return rSPELL_FAILED;
    }
 
@@ -2464,7 +2464,7 @@ SPELLF( spell_gate )
 
    mob = temp->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    fix_maps( ch, mob );
    act( AT_MAGIC, "You bring forth $N from another plane!", ch, NULL, mob, TO_CHAR );
    act( AT_MAGIC, "$n brings forth $N from another plane!", ch, NULL, mob, TO_ROOM );
@@ -2693,7 +2693,7 @@ SPELLF( spell_locate_object )
          ;
       if( cnt >= MAX_NEST )
       {
-         bug( "%s: object [%d] %s is nested more than %d times!", __FUNCTION__, obj->pIndexData->vnum, obj->short_descr, MAX_NEST );
+         bug( "%s: object [%d] %s is nested more than %d times!", __func__, obj->pIndexData->vnum, obj->short_descr, MAX_NEST );
          continue;
       }
 
@@ -3556,7 +3556,7 @@ SPELLF( spell_portal )
    obj_data *portalObj;
    if( !( portalObj = get_obj_index( OBJ_VNUM_PORTAL )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return rSPELL_FAILED;
    }
    portalObj->timer = 3;
@@ -3643,7 +3643,7 @@ SPELLF( spell_farsight )
    successful_casting( skill, ch, victim, NULL );
 
    original = ch->in_room;
-   origmap = ch->cmap;
+   origmap = ch->wmap;
    origx = ch->mx;
    origy = ch->my;
 
@@ -3653,20 +3653,20 @@ SPELLF( spell_farsight )
    if( location->flags.test( ROOM_MAP ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->set_pcflag( PCFLAG_ONMAP );
-      ch->cmap = victim->cmap;
+      ch->wmap = victim->wmap;
       ch->mx = victim->mx;
       ch->my = victim->my;
    }
    else if( location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
-      ch->cmap = victim->cmap;
+      ch->wmap = victim->wmap;
       ch->mx = victim->mx;
       ch->my = victim->my;
    }
    else if( !location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->unset_pcflag( PCFLAG_ONMAP );
-      ch->cmap = -1;
+      ch->wmap = -1;
       ch->mx = -1;
       ch->my = -1;
    }
@@ -3674,12 +3674,12 @@ SPELLF( spell_farsight )
    visited = ch->has_visited( location->area );
    ch->from_room(  );
    if( !ch->to_room( location ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
    interpret( ch, "look" );
    ch->from_room(  );
    if( !ch->to_room( original ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    if( !visited )
       ch->remove_visit( location );
 
@@ -3688,7 +3688,7 @@ SPELLF( spell_farsight )
    else if( !ch->has_pcflag( PCFLAG_ONMAP ) && original->flags.test( ROOM_MAP ) )
       ch->set_pcflag( PCFLAG_ONMAP );
 
-   ch->cmap = origmap;
+   ch->wmap = origmap;
    ch->mx = origx;
    ch->my = origy;
    return rNONE;
@@ -3938,7 +3938,7 @@ SPELLF( spell_animate_dead )
 
    if( !( pMobIndex = get_mob_index( corpse->value[4] ) ) )
    {
-      bug( "%s: Can't find mob for value[4] of corpse", __FUNCTION__ );
+      bug( "%s: Can't find mob for value[4] of corpse", __func__ );
       ch->print( "Ooops. Something didn't go quite right here....\r\n" );
       return rSPELL_FAILED;
    }
@@ -4015,7 +4015,7 @@ SPELLF( spell_animate_dead )
          {
             ch->print( "Only dead dragons can become dracoliches.\r\n" );
             if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             return rSPELL_FAILED;
          }
       }
@@ -4024,7 +4024,7 @@ SPELLF( spell_animate_dead )
       {
          ch->printf( "The spirit of this corpse is not powerful enough to become a %s.\r\n", corpse_name );
          if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return rSPELL_FAILED;
       }
 
@@ -4032,12 +4032,12 @@ SPELLF( spell_animate_dead )
       {
          ch->printf( "You are not powerful enough to animate a %s yet.\r\n", corpse_name );
          if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return rSPELL_FAILED;
       }
 
       if( !mob->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       act( AT_MAGIC, "$n makes $T rise from the grave!", ch, NULL, pMobIndex->short_descr, TO_ROOM );
       act( AT_MAGIC, "You make $T rise from the grave!", ch, NULL, pMobIndex->short_descr, TO_CHAR );
@@ -4600,7 +4600,7 @@ SPELLF( spell_affect )
 
    if( skill->affects.empty(  ) )
    {
-      bug( "%s: spell_affect has no affects sn %d", __FUNCTION__, sn );
+      bug( "%s: spell_affect has no affects sn %d", __func__, sn );
       return rNONE;
    }
 
@@ -4692,7 +4692,7 @@ SPELLF( spell_affect )
 
    if( !victim )
    {
-      bug( "%s: could not find victim: sn %d", __FUNCTION__, sn );
+      bug( "%s: could not find victim: sn %d", __func__, sn );
       failed_casting( skill, ch, victim, NULL );
       return rSPELL_FAILED;
    }
@@ -4781,7 +4781,7 @@ SPELLF( spell_obj_inv )
 
             if( !( liq = get_liq_vnum( obj->value[2] ) ) )
             {
-               bug( "%s: bad liquid number %d", __FUNCTION__, obj->value[2] );
+               bug( "%s: bad liquid number %d", __func__, obj->value[2] );
                ch->print( "There's already another liquid in the container.\r\n" );
                return rSPELL_FAILED;
             }
@@ -4962,7 +4962,7 @@ SPELLF( spell_create_obj )
 
    if( !( obj = get_obj_index( vnum )->create_object( lvl ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       failed_casting( skill, ch, NULL, NULL );
       return rNONE;
    }
@@ -5028,7 +5028,7 @@ SPELLF( spell_create_mob )
    mob->gold = 0;
    successful_casting( skill, ch, mob, NULL );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    add_follower( mob, ch );
    af.type = sn;
    af.duration = ( int )( number_fuzzy( ( int )( ( level + 1 ) / 3 ) + 1 ) * DUR_CONV );
@@ -5051,7 +5051,7 @@ SPELLF( spell_smaug )
     */
    if( !skill )
    {
-      bug( "%s: Called with a null skill for sn %d", __FUNCTION__, sn );
+      bug( "%s: Called with a null skill for sn %d", __func__, sn );
       return rERROR;
    }
 
@@ -5257,7 +5257,7 @@ SPELLF( spell_tree_transport )
     * Need to explicitly set coordinates and map information with objects 
     */
    leave_map( ch, NULL, target );
-   ch->cmap = obj->cmap;
+   ch->wmap = obj->wmap;
    ch->mx = obj->mx;
    ch->my = obj->my;
 
@@ -5598,7 +5598,7 @@ SPELLF( spell_warsteed )
    {
       if( !( temp = get_mob_index( MOB_VNUM_WARMOUNTTHREE ) ) )
       {
-         bug( "%s: Paladin Warmount vnum %d doesn't exist.", __FUNCTION__, MOB_VNUM_WARMOUNTTHREE );
+         bug( "%s: Paladin Warmount vnum %d doesn't exist.", __func__, MOB_VNUM_WARMOUNTTHREE );
          return rSPELL_FAILED;
       }
    }
@@ -5606,7 +5606,7 @@ SPELLF( spell_warsteed )
    {
       if( !( temp = get_mob_index( MOB_VNUM_WARMOUNTFOUR ) ) )
       {
-         bug( "%s: Antipaladin warmount vnum %d doesn't exist.", __FUNCTION__, MOB_VNUM_WARMOUNTFOUR );
+         bug( "%s: Antipaladin warmount vnum %d doesn't exist.", __func__, MOB_VNUM_WARMOUNTFOUR );
          return rSPELL_FAILED;
       }
    }
@@ -5619,7 +5619,7 @@ SPELLF( spell_warsteed )
 
    mob = temp->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    fix_maps( ch, mob );
    ch->print( "&[magic]You summon a spectacular flying steed into being!\r\n" );
    bind_follower( mob, ch, sn, ch->level * 10 );
@@ -5641,7 +5641,7 @@ SPELLF( spell_warmount )
    {
       if( !( temp = get_mob_index( MOB_VNUM_WARMOUNT ) ) )
       {
-         bug( "%s: Paladin Warmount vnum %d doesn't exist.", __FUNCTION__, MOB_VNUM_WARMOUNT );
+         bug( "%s: Paladin Warmount vnum %d doesn't exist.", __func__, MOB_VNUM_WARMOUNT );
          return rSPELL_FAILED;
       }
    }
@@ -5649,7 +5649,7 @@ SPELLF( spell_warmount )
    {
       if( !( temp = get_mob_index( MOB_VNUM_WARMOUNTTWO ) ) )
       {
-         bug( "%s: Antipaladin warmount vnum %d doesn't exist.", __FUNCTION__, MOB_VNUM_WARMOUNTTWO );
+         bug( "%s: Antipaladin warmount vnum %d doesn't exist.", __func__, MOB_VNUM_WARMOUNTTWO );
          return rSPELL_FAILED;
       }
    }
@@ -5662,7 +5662,7 @@ SPELLF( spell_warmount )
 
    mob = temp->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    fix_maps( ch, mob );
    ch->print( "&[magic]You summon a spectacular steed into being!\r\n" );
    bind_follower( mob, ch, sn, ch->level * 10 );
@@ -5689,7 +5689,7 @@ SPELLF( spell_fireseed )
    }
    else
    {
-      bug( "%s: Fireseed object %d not found.", __FUNCTION__, OBJ_VNUM_FIRESEED );
+      bug( "%s: Fireseed object %d not found.", __func__, OBJ_VNUM_FIRESEED );
       return rSPELL_FAILED;
    }
 }
@@ -5915,13 +5915,13 @@ SPELLF( spell_creeping_doom )
 
    if( !( temp = get_mob_index( MOB_VNUM_CREEPINGDOOM ) ) )
    {
-      bug( "%s: Creeping Doom vnum %d doesn't exist.", __FUNCTION__, MOB_VNUM_CREEPINGDOOM );
+      bug( "%s: Creeping Doom vnum %d doesn't exist.", __func__, MOB_VNUM_CREEPINGDOOM );
       return rSPELL_FAILED;
    }
 
    mob = temp->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    fix_maps( ch, mob );
    ch->print( "&[magic]You summon a vile swarm of insects into being!\r\n" );
    return rNONE;
@@ -6119,6 +6119,7 @@ SPELLF( spell_remove_curse )
       for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); ++iobj )
       {
          obj = *iobj;
+
          if( !obj->in_obj && ( obj->extra_flags.test( ITEM_NOREMOVE ) || obj->extra_flags.test( ITEM_NODROP ) ) )
          {
             if( obj->extra_flags.test( ITEM_SINDHAE ) || obj->extra_flags.test( ITEM_PERMANENT ) )
@@ -6285,7 +6286,7 @@ int recall( char_data * ch, int target )
 
    if( !location )
    {
-      bug( "%s: No recall room found!", __FUNCTION__ );
+      bug( "%s: No recall room found!", __func__ );
       ch->print( "You cannot recall on this plane!\r\n" );
       return -1;
    }

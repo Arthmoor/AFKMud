@@ -477,6 +477,7 @@ CMDF( do_whisper )
    act( AT_WHISPER, "You whisper to $N '$t'", ch, argument.c_str(  ), victim, TO_CHAR );
    position = victim->position;
    victim->position = POS_STANDING;
+
    if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
    {
       int speakswell = UMIN( knows_language( victim, ch->speaking, ch ), knows_language( ch, ch->speaking, victim ) );
@@ -504,6 +505,7 @@ CMDF( do_whisper )
       mprog_speech_trigger( argument, ch );
       if( ch->char_died(  ) )
          return;
+
       mprog_and_speech_trigger( argument, ch );
    }
 }
@@ -797,6 +799,7 @@ CMDF( do_tell )
       mprog_tell_trigger( argument, ch );
       if( ch->char_died(  ) )
          return;
+
       mprog_and_tell_trigger( argument, ch );
    }
 }
@@ -946,7 +949,7 @@ void tybuid( char_data * ch, const string & argument, int type )
       FILE *fp;
       if( !( fp = fopen( tybuid_file[type], "w" ) ) )
       {
-         bug( "%s: unable to stat %s file '%s'!", __FUNCTION__, tybuid_name[type], tybuid_file[type] );
+         bug( "%s: unable to stat %s file '%s'!", __func__, tybuid_name[type], tybuid_file[type] );
          return;
       }
       FCLOSE( fp );
@@ -1292,7 +1295,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
 
    if( format.empty(  ) )
    {
-      bug( "%s: NULL str!", __FUNCTION__ );
+      bug( "%s: NULL str!", __func__ );
       return "";
    }
 
@@ -1321,7 +1324,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
 
       if( !arg2 && *ptr >= 'A' && *ptr <= 'Z' )
       {
-         bug( "%s: missing arg2 for code %c:", __FUNCTION__, *ptr );
+         bug( "%s: missing arg2 for code %c:", __func__, *ptr );
          log_printf( "Missing arg2 came from %s", ch->name );
          if( ch->isnpc(  ) )
             log_printf( "NPC vnum: %d", ch->pIndexData->vnum );
@@ -1333,7 +1336,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
          switch ( *ptr )
          {
             default:
-               bug( "%s: bad code %c.", __FUNCTION__, *ptr );
+               bug( "%s: bad code %c.", __func__, *ptr );
                log_printf( "Bad code came from %s", ch->name );
                buf.append( " <@@@> " );
                break;
@@ -1343,7 +1346,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                   buf.append( ( char * )arg1 );
                else
                {
-                  bug( "%s: bad $t.", __FUNCTION__ );
+                  bug( "%s: bad $t.", __func__ );
                   buf.append( " <@@@> " );
                }
                break;
@@ -1353,7 +1356,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                   buf.append( ( char * )arg2 );
                else
                {
-                  bug( "%s: bad $T.", __FUNCTION__ );
+                  bug( "%s: bad $T.", __func__ );
                   buf.append( " <@@@> " );
                }
                break;
@@ -1523,7 +1526,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
 
    if( !ch )
    {
-      bug( "%s: null ch. (%s)", __FUNCTION__, format.c_str(  ) );
+      bug( "%s: null ch. (%s)", __func__, format.c_str(  ) );
       return;
    }
 
@@ -1586,20 +1589,20 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
 
    if( flags1 != ACTF_NONE && flags1 != ACTF_TXT && flags1 != ACTF_CH && flags1 != ACTF_OBJ )
    {
-      bug( "%s: arg1 has more than one type in format %s. Setting all NULL.", __FUNCTION__, format.c_str(  ) );
+      bug( "%s: arg1 has more than one type in format %s. Setting all NULL.", __func__, format.c_str(  ) );
       obj1 = NULL;
    }
 
    if( flags2 != ACTF_NONE && flags2 != ACTF_TXT && flags2 != ACTF_CH && flags2 != ACTF_OBJ )
    {
-      bug( "%s: arg2 has more than one type in format %s. Setting all NULL.", __FUNCTION__, format.c_str(  ) );
+      bug( "%s: arg2 has more than one type in format %s. Setting all NULL.", __func__, format.c_str(  ) );
       vch = NULL;
       obj2 = NULL;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: NULL ch->in_room! (%s:%s)", __FUNCTION__, ch->name, format.c_str(  ) );
+      bug( "%s: NULL ch->in_room! (%s:%s)", __func__, ch->name, format.c_str(  ) );
       return;
    }
    else if( type == TO_CHAR )
@@ -1617,13 +1620,13 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
    {
       if( !vch )
       {
-         bug( "%s: null vch with TO_VICT.", __FUNCTION__ );
+         bug( "%s: null vch with TO_VICT.", __func__ );
          log_printf( "%s (%s)", ch->name, format.c_str(  ) );
          return;
       }
       if( !vch->in_room )
       {
-         bug( "%s: vch in NULL room!", __FUNCTION__ );
+         bug( "%s: vch in NULL room!", __func__ );
          log_printf( "%s -> %s (%s)", ch->name, vch->name, format.c_str(  ) );
          return;
       }
@@ -1667,7 +1670,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
     */
    if( !to )
    {
-      bug( "%s: NULL TARGET - CANNOT CONTINUE", __FUNCTION__ );
+      bug( "%s: NULL TARGET - CANNOT CONTINUE", __func__ );
       return;
    }
 

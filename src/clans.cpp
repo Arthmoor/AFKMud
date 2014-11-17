@@ -164,20 +164,20 @@ void save_clan_storeroom( char_data * ch, clan_data * clan )
 
    if( !clan )
    {
-      bug( "%s: Null clan pointer!", __FUNCTION__ );
+      bug( "%s: Null clan pointer!", __func__ );
       return;
    }
 
    if( !ch )
    {
-      bug( "%s: Null ch pointer!", __FUNCTION__ );
+      bug( "%s: Null ch pointer!", __func__ );
       return;
    }
 
    snprintf( filename, 256, "%s%s.vault", CLAN_DIR, clan->filename.c_str(  ) );
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( filename );
    }
    else
@@ -407,7 +407,7 @@ void write_clan_list( void )
    fpout = fopen( filename, "w" );
    if( !fpout )
    {
-      bug( "%s: FATAL: cannot open clan.lst for writing!", __FUNCTION__ );
+      bug( "%s: FATAL: cannot open clan.lst for writing!", __func__ );
       return;
    }
    for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
@@ -452,7 +452,7 @@ void fread_memberlist( clan_data * clan, FILE * fp )
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -467,7 +467,7 @@ void fread_memberlist( clan_data * clan, FILE * fp )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: Invalid class in clan roster", __FUNCTION__ );
+                  bug( "%s: Invalid class in clan roster", __func__ );
                   Class = get_npc_class( "warrior" );
                }
                roster->Class = Class;
@@ -517,13 +517,13 @@ void save_clan( clan_data * clan )
 
    if( !clan )
    {
-      bug( "%s: null clan pointer!", __FUNCTION__ );
+      bug( "%s: null clan pointer!", __func__ );
       return;
    }
 
    if( clan->filename.empty(  ) )
    {
-      bug( "%s: %s has no filename", __FUNCTION__, clan->name.c_str(  ) );
+      bug( "%s: %s has no filename", __func__, clan->name.c_str(  ) );
       return;
    }
 
@@ -531,7 +531,7 @@ void save_clan( clan_data * clan )
 
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( filename );
    }
    else
@@ -616,7 +616,7 @@ void fread_clan( clan_data * clan, FILE * fp )
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -862,7 +862,7 @@ bool load_clan_file( const char *clanfile )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -875,7 +875,7 @@ bool load_clan_file( const char *clanfile )
             break;
          else
          {
-            bug( "%s: bad section: %s.", __FUNCTION__, word );
+            bug( "%s: bad section: %s.", __func__, word );
             break;
          }
       }
@@ -913,7 +913,7 @@ bool load_clan_file( const char *clanfile )
 
             if( letter != '#' )
             {
-               bug( "%s: # not found. %s", __FUNCTION__, clan->name.c_str(  ) );
+               bug( "%s: # not found. %s", __func__, clan->name.c_str(  ) );
                break;
             }
 
@@ -927,7 +927,7 @@ bool load_clan_file( const char *clanfile )
                break;
             else
             {
-               bug( "%s: %s bad section.", __FUNCTION__, clan->name.c_str(  ) );
+               bug( "%s: %s bad section.", __func__, clan->name.c_str(  ) );
                break;
             }
          }
@@ -1133,7 +1133,7 @@ void load_clans( void )
          break;
 
       if( !load_clan_file( filename ) )
-         bug( "%s: Cannot load clan file: %s", __FUNCTION__, filename );
+         bug( "%s: Cannot load clan file: %s", __func__, filename );
    }
    FCLOSE( fpList );
    verify_clans(  ); /* Check against pfiles to see if clans should still exist */
@@ -1245,7 +1245,7 @@ CMDF( do_make )
 
    if( !( obj = pObjIndex->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->extra_flags.set( ITEM_CLANOBJECT );

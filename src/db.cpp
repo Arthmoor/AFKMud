@@ -299,7 +299,7 @@ char fread_letter( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -328,7 +328,7 @@ float fread_float( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -355,7 +355,7 @@ float fread_float( FILE * fp )
 
    if( !isdigit( c ) )
    {
-      bug( "%s: bad format. (%c)", __FUNCTION__, c );
+      bug( "%s: bad format. (%c)", __func__, c );
       if( fBootDb )
          exit( 1 );
       return 0;
@@ -373,7 +373,7 @@ float fread_float( FILE * fp )
 
          if( feof( fp ) )
          {
-            bug( "%s: EOF encountered on read.", __FUNCTION__ );
+            bug( "%s: EOF encountered on read.", __func__ );
             if( fBootDb )
                exit( 1 );
             return number;
@@ -415,7 +415,7 @@ long fread_long( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -440,7 +440,7 @@ long fread_long( FILE * fp )
 
    if( !isdigit( c ) )
    {
-      bug( "%s: bad format. (%c)", __FUNCTION__, c );
+      bug( "%s: bad format. (%c)", __func__, c );
       if( fBootDb )
          exit( 1 );
       return 0;
@@ -450,7 +450,7 @@ long fread_long( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
             exit( 1 );
          return number;
@@ -483,7 +483,7 @@ short fread_short( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -508,7 +508,7 @@ short fread_short( FILE * fp )
 
    if( !isdigit( c ) )
    {
-      bug( "%s: bad format. (%c)", __FUNCTION__, c );
+      bug( "%s: bad format. (%c)", __func__, c );
       if( fBootDb )
          exit( 1 );
       return 0;
@@ -518,7 +518,7 @@ short fread_short( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
             exit( 1 );
          return number;
@@ -551,7 +551,7 @@ int fread_number( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -576,7 +576,7 @@ int fread_number( FILE * fp )
 
    if( !isdigit( c ) )
    {
-      bug( "%s: bad format. (%c)", __FUNCTION__, c );
+      bug( "%s: bad format. (%c)", __func__, c );
       if( fBootDb )
          exit( 1 );
       return 0;
@@ -586,7 +586,7 @@ int fread_number( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
             exit( 1 );
          return number;
@@ -628,7 +628,7 @@ const char *fread_flagstring( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -647,7 +647,7 @@ const char *fread_flagstring( FILE * fp )
    {
       if( ln >= ( MSL - 1 ) )
       {
-         bug( "%s: string too long", __FUNCTION__ );
+         bug( "%s: string too long", __func__ );
          *plast = '\0';
          return buf;
       }
@@ -659,7 +659,7 @@ const char *fread_flagstring( FILE * fp )
             break;
 
          case EOF:
-            bug( "%s: EOF", __FUNCTION__ );
+            bug( "%s: EOF", __func__ );
             if( fBootDb )
                exit( 1 );
             *plast = '\0';
@@ -725,7 +725,7 @@ void fread_to_eol( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -768,7 +768,7 @@ const char *fread_line( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -786,7 +786,7 @@ const char *fread_line( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
             exit( 1 );
          *pline = '\0';
@@ -797,7 +797,7 @@ const char *fread_line( FILE * fp )
       ++ln;
       if( ln >= ( MSL - 1 ) )
       {
-         bug( "%s: line too long", __FUNCTION__ );
+         bug( "%s: line too long", __func__ );
          break;
       }
    }
@@ -836,7 +836,7 @@ char *fread_word( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "Corrupt file somewhere." );
@@ -862,7 +862,7 @@ char *fread_word( FILE * fp )
    {
       if( feof( fp ) )
       {
-         bug( "%s: EOF encountered on read.", __FUNCTION__ );
+         bug( "%s: EOF encountered on read.", __func__ );
          if( fBootDb )
             exit( 1 );
          *pword = '\0';
@@ -877,7 +877,7 @@ char *fread_word( FILE * fp )
          return word;
       }
    }
-   bug( "%s: word too long", __FUNCTION__ );
+   bug( "%s: word too long", __func__ );
    *pword = '\0';
    return word;
 }
@@ -958,7 +958,7 @@ void save_sysdata( void )
 
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( filename );
    }
    else
@@ -1052,7 +1052,7 @@ void fread_sysdata( FILE * fp )
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1239,7 +1239,7 @@ bool load_systemdata( void )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -1253,7 +1253,7 @@ bool load_systemdata( void )
             break;
          else
          {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
+            bug( "%s: bad section: %s", __func__, word );
             break;
          }
       }
@@ -1290,7 +1290,7 @@ void fix_exits( void )
             if( fBootDb )
                boot_log( "Fix_exits: room %d, exit %s leads to bad vnum (%d)", pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
 
-            bug( "%s: Deleting %s exit in room %d", __FUNCTION__, dir_name[pexit->vdir], pRoomIndex->vnum );
+            bug( "%s: Deleting %s exit in room %d", __func__, dir_name[pexit->vdir], pRoomIndex->vnum );
             pRoomIndex->extract_exit( pexit );
          }
       }
@@ -1846,7 +1846,7 @@ void boot_db( bool fCopyOver )
    sysdata->dlHandle = dlopen( NULL, RTLD_NOW );
    if( !sysdata->dlHandle )
    {
-      log_printf( "%s: Error opening local system executable as handle, please check compile flags.", __FUNCTION__ );
+      log_printf( "%s: Error opening local system executable as handle, please check compile flags.", __func__ );
       shutdown_mud( "libdl failure" );
       exit( 1 );
    }
@@ -1865,7 +1865,7 @@ void boot_db( bool fCopyOver )
    snprintf( lbuf, MSL, "%sgreeting.dat", MOTD_DIR );
    if( !exists_file( lbuf ) )
    {
-      bug( "%s: Login greeting not found!", __FUNCTION__ );
+      bug( "%s: Login greeting not found!", __func__ );
       shutdown_mud( "Missing login greeting" );
       exit( 1 );
    }
@@ -2043,7 +2043,7 @@ void boot_db( bool fCopyOver )
       {
          if( feof( fpList ) )
          {
-            bug( "%s: EOF encountered reading area list - no $ found at end of file.", __FUNCTION__ );
+            bug( "%s: EOF encountered reading area list - no $ found at end of file.", __func__ );
             break;
          }
          mudstrlcpy( strArea, fread_word( fpList ), MIL );

@@ -78,13 +78,13 @@ bool will_fall( char_data * ch, int fall )
 {
    if( !ch )
    {
-      bug( "%s: NULL *ch!!", __FUNCTION__ );
+      bug( "%s: NULL *ch!!", __func__ );
       return false;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: Character in NULL room: %s", __FUNCTION__, ch->name ? ch->name : "Unknown?!?" );
+      bug( "%s: Character in NULL room: %s", __func__, ch->name ? ch->name : "Unknown?!?" );
       return false;
    }
 
@@ -92,7 +92,7 @@ bool will_fall( char_data * ch, int fall )
    {
       if( fall > 80 )
       {
-         bug( "%s: Falling (in a loop?) more than 80 rooms: vnum %d", __FUNCTION__, ch->in_room->vnum );
+         bug( "%s: Falling (in a loop?) more than 80 rooms: vnum %d", __func__, ch->in_room->vnum );
          leave_map( ch, NULL, get_room_index( ROOM_VNUM_TEMPLE ) );
          fall = 0;
          return true;
@@ -137,7 +137,7 @@ CMDF( do_run )
    }
 
    from_room = ch->in_room;
-   frommap = ch->cmap;
+   frommap = ch->wmap;
    fromx = ch->mx;
    fromy = ch->my;
 
@@ -189,7 +189,7 @@ CMDF( do_run )
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
    {
-      if( ch->mx == fromx && ch->my == fromy && ch->cmap == frommap )
+      if( ch->mx == fromx && ch->my == fromy && ch->wmap == frommap )
       {
          ch->print( "You try to run but don't get anywhere.\r\n" );
          act( AT_ACTION, "$n tries to run but doesn't get anywhere.", ch, NULL, NULL, TO_ROOM );
@@ -298,7 +298,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       if( newx == ch->mx && newy == ch->my )
          return rSTOP;
 
-      retcode = process_exit( ch, ch->cmap, newx, newy, direction, running );
+      retcode = process_exit( ch, ch->wmap, newx, newy, direction, running );
       return retcode;
    }
 
@@ -399,7 +399,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       if( pexit->mx < 0 || pexit->mx >= MAX_X || pexit->my < 0 || pexit->my >= MAX_Y )
       {
-         log_printf( "%s: Room #%d - Invalid exit coordinates: %d %d", __FUNCTION__, in_room->vnum, pexit->mx, pexit->my );
+         log_printf( "%s: Room #%d - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->mx, pexit->my );
          ch->print( "Oops. Something is wrong with this map exit - notify the immortals.\r\n" );
          check_sneaks( ch );
          return rSTOP;
@@ -925,7 +925,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
    ch->from_room(  );
    if( !ch->to_room( to_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    check_sneaks( ch );
    if( ch->mount )
    {
@@ -936,7 +936,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       {
          ch->mount->from_room(  );
          if( !ch->mount->to_room( to_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       }
    }
 
@@ -2532,7 +2532,7 @@ void teleportch( char_data * ch, room_index * room, bool show )
    act( AT_ACTION, "$n disappears suddenly!", ch, NULL, NULL, TO_ROOM );
    ch->from_room(  );
    if( !ch->to_room( room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    act( AT_ACTION, "$n arrives suddenly!", ch, NULL, NULL, TO_ROOM );
    if( show )
       interpret( ch, "look" );
@@ -2554,7 +2554,7 @@ void teleport( char_data * ch, int room, int flags )
 
    if( !( dest = get_room_index( room ) ) )
    {
-      bug( "%s: bad room vnum %d", __FUNCTION__, room );
+      bug( "%s: bad room vnum %d", __func__, room );
       return;
    }
 
@@ -2771,7 +2771,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
 
    if( !( room = ch->in_room ) )
    {
-      bug( "%s: %s not in a room?!?", __FUNCTION__, ch->name );
+      bug( "%s: %s not in a room?!?", __func__, ch->name );
       return rNONE;
    }
 
@@ -3108,7 +3108,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
          return move_char( ch, xit, 1, xit->vdir, false );
       ch->from_room(  );
       if( !ch->to_room( xit->to_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       if( showroom )
          interpret( ch, "look" );
@@ -3120,7 +3120,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
       {
          ch->mount->from_room(  );
          if( !ch->mount->to_room( xit->to_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          if( showroom )
             interpret( ch->mount, "look" );
       }

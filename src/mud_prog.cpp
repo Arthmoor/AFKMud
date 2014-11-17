@@ -145,7 +145,7 @@ void uphold_supermob( int *curr_serial, int serial, room_index ** supermob_room,
       {
          supermob->from_room(  );
          if( !supermob->to_room( *supermob_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       }
 
       if( true_supermob_obj && true_supermob_obj != supermob_obj )
@@ -340,7 +340,7 @@ void init_supermob( void )
    supermob = get_mob_index( MOB_VNUM_SUPERMOB )->create_mobile(  );
    office = get_room_index( MOB_VNUM_SUPERMOB );
    if( !supermob->to_room( office ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 }
 
 /* Used to get sequential lines of a multi line string (separated by "\r\n")
@@ -380,7 +380,7 @@ bool mprog_seval( const char *lhs, const char *opr, const char *rhs, char_data *
    if( !str_cmp( opr, "!/" ) )
       return ( bool ) ( str_infix( rhs, lhs ) );
 
-   progbugf( mob, "%s: Improper MOBprog operator '%s'", __FUNCTION__, opr );
+   progbugf( mob, "%s: Improper MOBprog operator '%s'", __func__, opr );
    return 0;
 }
 
@@ -2759,7 +2759,7 @@ int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data *
     */
    if( mob->char_died(  ) )
    {
-      bug( "%s: Mob died while executing program, vnum %d.", __FUNCTION__, vnum );
+      bug( "%s: Mob died while executing program, vnum %d.", __func__, vnum );
       return BERR;
    }
 
@@ -3510,7 +3510,7 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
 
       if( !( obj = get_obj_index( OBJ_VNUM_MONEY_SOME )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
 
@@ -3534,7 +3534,7 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
                tprg = mprg;
          }
       }
- 
+
       if( tprg )
          mprog_driver( tprg->comlist, mob, ch, obj, NULL, NULL, false );
    }
@@ -3731,9 +3731,9 @@ void mprog_greet_trigger( char_data * ch )
 {
    if( !ch->in_room )
    {
-      bug( "%s: ch '%s' not in room. Transferring to Limbo.", __FUNCTION__, ch->name );
+      bug( "%s: ch '%s' not in room. Transferring to Limbo.", __func__, ch->name );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -4010,11 +4010,11 @@ void set_supermob( obj_data * obj )
    {
       supermob->from_room(  );
       if( !supermob->to_room( room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       if( obj->extra_flags.test( ITEM_ONMAP ) )
       {
          supermob->set_actflag( ACT_ONMAP );
-         supermob->cmap = obj->cmap;
+         supermob->wmap = obj->wmap;
          supermob->mx = obj->mx;
          supermob->my = obj->my;
       }
@@ -4026,11 +4026,11 @@ void release_supermob(  )
    supermob_obj = NULL;
    supermob->from_room(  );
    if( !supermob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    if( supermob->has_actflag( ACT_ONMAP ) )
    {
       supermob->unset_actflag( ACT_ONMAP );
-      supermob->cmap = -1;
+      supermob->wmap = -1;
       supermob->mx = -1;
       supermob->my = -1;
    }
@@ -4345,7 +4345,7 @@ void rset_supermob( room_index * room )
 
       supermob->from_room(  );
       if( !supermob->to_room( room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
 }
 

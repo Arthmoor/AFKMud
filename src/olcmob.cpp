@@ -495,7 +495,7 @@ CMDF( do_medit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_mob_desc: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_mob_desc: NULL ch->pcdata->dest_buf", __func__ );
             cleanup_olc( ch->desc );
             ch->substate = SUB_NONE;
             return;
@@ -696,7 +696,7 @@ void medit_parse( descriptor_data * d, string & arg )
           * . We should never get here .
           */
          cleanup_olc( d );
-         bug( "%s: OLC: medit_parse(): Reached D_DESC case!", __FUNCTION__ );
+         bug( "%s: OLC: medit_parse(): Reached D_DESC case!", __func__ );
          break;
 
       case MEDIT_NPC_FLAGS:
@@ -1195,7 +1195,7 @@ void medit_parse( descriptor_data * d, string & arg )
          /*
           * . We should never get here .
           */
-         bug( "%s: OLC: medit_parse(): Reached default case!", __FUNCTION__ );
+         bug( "%s: OLC: medit_parse(): Reached default case!", __func__ );
          cleanup_olc( d );
          return;
    }

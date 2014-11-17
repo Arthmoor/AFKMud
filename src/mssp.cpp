@@ -111,7 +111,7 @@ void save_mssp_info( void )
    stream.open( MSSP_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( MSSP_FILE );
    }
    else
@@ -559,7 +559,7 @@ void show_mssp( char_data * ch )
 {
    if( !ch )
    {
-      bug( "%s: NULL ch", __FUNCTION__ );
+      bug( "%s: NULL ch", __func__ );
       return;
    }
 
@@ -872,12 +872,12 @@ void mssp_reply( descriptor_data * d, const char *var, const char *fmt, ... )
 
    if( !d )
    {
-      bug( "%s: NULL d", __FUNCTION__ );
+      bug( "%s: NULL d", __func__ );
       return;
    }
    if( !var || var[0] == '\0' )
    {
-      bug( "%s: NULL var", __FUNCTION__ );
+      bug( "%s: NULL var", __func__ );
       return;
    }
 
@@ -914,7 +914,7 @@ void send_mssp_data( descriptor_data * d )
 {
    if( !d )
    {
-      bug( "%s: NULL d", __FUNCTION__ );
+      bug( "%s: NULL d", __func__ );
       return;
    }
 

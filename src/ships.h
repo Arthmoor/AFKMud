@@ -57,7 +57,7 @@ class ship_data
    int room;
    short mx;
    short my;
-   short cmap;
+   short wmap;
 };
 
 enum ship_types

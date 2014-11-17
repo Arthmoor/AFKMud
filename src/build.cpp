@@ -353,17 +353,17 @@ void RelCreate( relation_type tp, void *actor, void *subject )
 
    if( tp < relMSET_ON || tp > relOSET_ON )
    {
-      bug( "%s: invalid type (%d)", __FUNCTION__, tp );
+      bug( "%s: invalid type (%d)", __func__, tp );
       return;
    }
    if( !actor )
    {
-      bug( "%s: NULL actor", __FUNCTION__ );
+      bug( "%s: NULL actor", __func__ );
       return;
    }
    if( !subject )
    {
-      bug( "%s: NULL subject", __FUNCTION__ );
+      bug( "%s: NULL subject", __func__ );
       return;
    }
 
@@ -373,7 +373,7 @@ void RelCreate( relation_type tp, void *actor, void *subject )
 
       if( rel->Type == tp && rel->Actor == actor && rel->Subject == subject )
       {
-         bug( "%s: duplicated relation", __FUNCTION__ );
+         bug( "%s: duplicated relation", __func__ );
          return;
       }
    }
@@ -392,17 +392,17 @@ void RelDestroy( relation_type tp, void *actor, void *subject )
 {
    if( tp < relMSET_ON || tp > relOSET_ON )
    {
-      bug( "%s: invalid type (%d)", __FUNCTION__, tp );
+      bug( "%s: invalid type (%d)", __func__, tp );
       return;
    }
    if( !actor )
    {
-      bug( "%s: NULL actor", __FUNCTION__ );
+      bug( "%s: NULL actor", __func__ );
       return;
    }
    if( !subject )
    {
-      bug( "%s: NULL subject", __FUNCTION__ );
+      bug( "%s: NULL subject", __func__ );
       return;
    }
 
@@ -921,7 +921,7 @@ void goto_obj( char_data * ch, obj_data * obj, const string & argument )
 
    if( !location )
    {
-      bug( "%s: Object in NULL room!", __FUNCTION__ );
+      bug( "%s: Object in NULL room!", __func__ );
       return;
    }
 
@@ -1094,7 +1094,7 @@ CMDF( do_goto )
       location = make_room( vnum, ch->pcdata->area );
       if( !location )
       {
-         bug( "%s: failed", __FUNCTION__ );
+         bug( "%s: failed", __func__ );
          return;
       }
       ch->print( "&WWaving your hand, you form order from swirling chaos,\r\nand step into a new reality...\r\n" );
@@ -1171,7 +1171,7 @@ CMDF( do_mset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_mob_desc: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_mob_desc: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -2821,7 +2821,7 @@ CMDF( do_oset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -2844,7 +2844,7 @@ CMDF( do_oset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_obj_long: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_obj_long: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -4290,7 +4290,7 @@ CMDF( do_redit )
          location = ( room_index * ) ch->pcdata->dest_buf;
          if( !location )
          {
-            bug( "%s: sub_room_desc: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_room_desc: NULL ch->pcdata->dest_buf", __func__ );
             location = ch->in_room;
          }
          DISPOSE( location->roomdesc );
@@ -4303,7 +4303,7 @@ CMDF( do_redit )
          location = ( room_index * ) ch->pcdata->dest_buf;
          if( !location )
          {
-            bug( "%s: sub_room_desc_nite: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_room_desc_nite: NULL ch->pcdata->dest_buf", __func__ );
             location = ch->in_room;
          }
          DISPOSE( location->nitedesc );
@@ -4315,7 +4315,7 @@ CMDF( do_redit )
       case SUB_ROOM_EXTRA:
          if( !( ed = ( extra_descr_data * ) ch->pcdata->dest_buf ) )
          {
-            bug( "%s: sub_room_extra: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_room_extra: NULL ch->pcdata->dest_buf", __func__ );
             ch->stop_editing(  );
             return;
          }
@@ -4881,7 +4881,7 @@ CMDF( do_redit )
          tmp = make_room( evnum, ch->pcdata->area );
          if( !tmp )
          {
-            bug( "%s: make_room failed", __FUNCTION__ );
+            bug( "%s: make_room failed", __func__ );
             return;
          }
       }
@@ -5226,7 +5226,7 @@ CMDF( do_rdig )
       location = make_room( vnum, pArea );
       if( !location )
       {
-         bug( "%s: make_room failed", __FUNCTION__ );
+         bug( "%s: make_room failed", __func__ );
          return;
       }
       location->area = ch->pcdata->area;
@@ -5345,7 +5345,7 @@ CMDF( do_rgrid )
          location = make_room( vnum, pArea );
          if( !location )
          {
-            bug( "%s: make_room failed", __FUNCTION__ );
+            bug( "%s: make_room failed", __func__ );
             return;
          }
 
@@ -5489,12 +5489,12 @@ CMDF( do_ocreate )
    if( !pObjIndex )
    {
       ch->print( "Error.\r\n" );
-      bug( "%s: make_object failed.", __FUNCTION__ );
+      bug( "%s: make_object failed.", __func__ );
       return;
    }
    if( !( obj = pObjIndex->create_object( ch->level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->to_char( ch );
@@ -5572,12 +5572,12 @@ CMDF( do_mcreate )
    if( !( pMobIndex = make_mobile( vnum, cvnum, argument, pArea ) ) )
    {
       ch->print( "Error.\r\n" );
-      bug( "%s: make_mobile failed.", __FUNCTION__ );
+      bug( "%s: make_mobile failed.", __func__ );
       return;
    }
    mob = pMobIndex->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
    /*
     * If you create one on the map, make sure it gets placed properly - Samson 8-21-99 
@@ -5799,7 +5799,7 @@ CMDF( do_mpedit )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_mprog_edit: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_mprog_edit: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -6081,7 +6081,7 @@ CMDF( do_opedit )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_oprog_edit: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_oprog_edit: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -6343,7 +6343,7 @@ CMDF( do_rpedit )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_oprog_edit: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_oprog_edit: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -7084,7 +7084,7 @@ CMDF( do_makerooms )
 
          if( !( location = make_room( vnum, ch->pcdata->area ) ) )
          {
-            bug( "%s: failed", __FUNCTION__ );
+            bug( "%s: failed", __func__ );
             return;
          }
       }
@@ -7191,7 +7191,7 @@ CMDF( do_vassign )
 
    if( !victim->pcdata->area )
    {
-      bug( "%s: assign_area failed", __FUNCTION__ );
+      bug( "%s: assign_area failed", __func__ );
       return;
    }
 
@@ -7202,13 +7202,13 @@ CMDF( do_vassign )
     */
    if( !( room = make_room( lo, tarea ) ) )
    {
-      bug( "%s: failed to initialize first room.", __FUNCTION__ );
+      bug( "%s: failed to initialize first room.", __func__ );
       return;
    }
 
    if( !( room = make_room( hi, tarea ) ) )
    {
-      bug( "%s: failed to initialize last room.", __FUNCTION__ );
+      bug( "%s: failed to initialize last room.", __func__ );
       return;
    }
 
@@ -7217,36 +7217,36 @@ CMDF( do_vassign )
     */
    if( !( pMobIndex = make_mobile( lo, 0, "first mob", tarea ) ) )
    {
-      bug( "%s: make_mobile failed to initialize first mob.", __FUNCTION__ );
+      bug( "%s: make_mobile failed to initialize first mob.", __func__ );
       return;
    }
    mob = pMobIndex->create_mobile(  );
    if( !mob->to_room( room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
    /*
     * Initialize last mob in range 
     */
    if( !( pMobIndex = make_mobile( hi, 0, "last mob", tarea ) ) )
    {
-      bug( "%s: make_mobile failed to initialize last mob.", __FUNCTION__ );
+      bug( "%s: make_mobile failed to initialize last mob.", __func__ );
       return;
    }
    mob = pMobIndex->create_mobile(  );
    if( !mob->to_room( room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
    /*
     * Initialize first obj in range 
     */
    if( !( pObjIndex = make_object( lo, 0, "first obj", tarea ) ) )
    {
-      bug( "%s: make_object failed to initialize first obj.", __FUNCTION__ );
+      bug( "%s: make_object failed to initialize first obj.", __func__ );
       return;
    }
    if( !( obj = pObjIndex->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->to_room( room, NULL );
@@ -7256,12 +7256,12 @@ CMDF( do_vassign )
     */
    if( !( pObjIndex = make_object( hi, 0, "last obj", tarea ) ) )
    {
-      bug( "%s: make_object failed to initialize last obj.", __FUNCTION__ );
+      bug( "%s: make_object failed to initialize last obj.", __func__ );
       return;
    }
    if( !( obj = pObjIndex->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->to_room( room, NULL );

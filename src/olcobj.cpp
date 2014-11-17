@@ -260,7 +260,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
 
       case ITEM_DRINK_CON:
          if( !( liq = get_liq_vnum( obj->value[2] ) ) )
-            bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
+            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
 
          ch->printf( "%sValue[0] - Capacity: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->printf( "%sValue[1] - Quantity Left (%d): &c", olc ? "&gF&w) " : "&w", obj->value[1] );
@@ -1686,7 +1686,7 @@ CMDF( do_oedit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -1704,7 +1704,7 @@ CMDF( do_oedit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_long: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_obj_long: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -2774,7 +2774,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          /*
           * Should never reach this 
           */
-         bug( "%s: Reached OEDIT_EXTRADESC_DESCRIPTION", __FUNCTION__ );
+         bug( "%s: Reached OEDIT_EXTRADESC_DESCRIPTION", __func__ );
          break;
 
       case OEDIT_EXTRADESC_CHOICE:
@@ -2861,7 +2861,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       default:
-         bug( "%s: Reached default case!", __FUNCTION__ );
+         bug( "%s: Reached default case!", __func__ );
          break;
    }
 

@@ -92,7 +92,7 @@ void save_shop( char_data * mob )
 
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( filename );
    }
    fwrite_mobile( mob, fp, true );
@@ -143,7 +143,7 @@ void load_shopkeepers( void )
 
                if( letter != '#' )
                {
-                  bug( "%s: # not found.", __FUNCTION__ );
+                  bug( "%s: # not found.", __func__ );
                   break;
                }
 
@@ -692,7 +692,7 @@ CMDF( do_buy )
       pRoomIndexNext = get_room_index( ch->in_room->vnum + 1 );
       if( !pRoomIndexNext )
       {
-         bug( "%s: bad pet shop at vnum %d.", __FUNCTION__, ch->in_room->vnum );
+         bug( "%s: bad pet shop at vnum %d.", __func__, ch->in_room->vnum );
          ch->print( "Sorry, you can't buy that here.\r\n" );
          return;
       }
@@ -755,7 +755,7 @@ CMDF( do_buy )
       stralloc_printf( &pet->chardesc, "%sA neck tag says 'I belong to %s'.\r\n", pet->chardesc, ch->name );
 
       if( !pet->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       bind_follower( pet, ch, gsn_charm_person, -1 );
       ch->print( "Enjoy your pet.\r\n" );
       act( AT_ACTION, "$n bought $N as a pet.", ch, NULL, pet, TO_ROOM );
@@ -892,7 +892,7 @@ CMDF( do_buy )
          if( !( buy_obj = obj->pIndexData->create_object( obj->level ) ) )
          {
             ch->gold += ( int )cost;
-            log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             return;
          }
 
@@ -907,7 +907,7 @@ CMDF( do_buy )
             if( !( bag = get_obj_index( OBJ_VNUM_SHOPPING_BAG )->create_object( 1 ) ) )
             {
                ch->gold += ( int )cost;
-               log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                return;
             }
             bag->extra_flags.set( ITEM_GROUNDROT );
@@ -964,7 +964,7 @@ CMDF( do_list )
 
       if( !( aucvault = get_room_index( ch->in_room->vnum + 1 ) ) )
       {
-         bug( "%s: bad auction house at vnum %d.", __FUNCTION__, ch->in_room->vnum );
+         bug( "%s: bad auction house at vnum %d.", __func__, ch->in_room->vnum );
          ch->print( "You can't do that here.\r\n" );
          return;
       }
@@ -981,11 +981,11 @@ CMDF( do_list )
 
       ch->from_room(  );
       if( !ch->to_room( aucvault ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       show_list_to_char( ch, ch->in_room->objects, true, false );
       ch->from_room(  );
       if( !ch->to_room( original ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -995,7 +995,7 @@ CMDF( do_list )
 
       if( !( pRoomIndexNext = get_room_index( ch->in_room->vnum + 1 ) ) )
       {
-         bug( "%s: bad pet shop at vnum %d.", __FUNCTION__, ch->in_room->vnum );
+         bug( "%s: bad pet shop at vnum %d.", __func__, ch->in_room->vnum );
          ch->print( "You can't do that here.\r\n" );
          return;
       }
@@ -1804,7 +1804,7 @@ CMDF( do_shops )
 
       if( !( mob = get_mob_index( shop->keeper ) ) )
       {
-         bug( "%s: Bad mob index on shopkeeper %d", __FUNCTION__, shop->keeper );
+         bug( "%s: Bad mob index on shopkeeper %d", __func__, shop->keeper );
          continue;
       }
       ch->pagerf( "&WShopkeeper: &G%-20.20s &WVnum: &G%-5d &WArea: &G%s\r\n", mob->short_descr, mob->vnum, mob->area->name );
@@ -2102,7 +2102,7 @@ CMDF( do_repairshops )
 
       if( !( mob = get_mob_index( repair->keeper ) ) )
       {
-         bug( "%s: Bad mob index on repairsmith %d", __FUNCTION__, repair->keeper );
+         bug( "%s: Bad mob index on repairsmith %d", __func__, repair->keeper );
          continue;
       }
       ch->pagerf( "&WRepairsmith: &G%-20.20s &WVnum: &G%-5d &WArea: &G%s\r\n", mob->short_descr, mob->vnum, mob->area->name );

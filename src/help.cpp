@@ -84,7 +84,7 @@ void add_help( help_data * pHelp )
 
       if( pHelp->level == help->level && !str_cmp( pHelp->keyword, help->keyword ) )
       {
-         bug( "%s: duplicate: %s. Deleting.", __FUNCTION__, pHelp->keyword.c_str(  ) );
+         bug( "%s: duplicate: %s. Deleting.", __func__, pHelp->keyword.c_str(  ) );
          deleteptr( pHelp );
          return;
       }
@@ -379,7 +379,7 @@ CMDF( do_hedit )
       case SUB_HELP_EDIT:
          if( !( pHelp = ( help_data * ) ch->pcdata->dest_buf ) )
          {
-            bug( "%s: sub_help_edit: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_help_edit: NULL ch->pcdata->dest_buf", __func__ );
             ch->stop_editing(  );
             return;
          }

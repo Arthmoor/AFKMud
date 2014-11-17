@@ -279,7 +279,7 @@ void olc_log( descriptor_data * d, const char *format, ... )
 
    if( !d )
    {
-      bug( "%s: called with null descriptor", __FUNCTION__ );
+      bug( "%s: called with null descriptor", __func__ );
       return;
    }
 
@@ -301,7 +301,7 @@ void olc_log( descriptor_data * d, const char *format, ... )
          log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s PLR(%s): ", d->character->name, victim->name );
    }
    else
-      bug( "%s: called with a bad connected state", __FUNCTION__ );
+      bug( "%s: called with a bad connected state", __func__ );
 }
 
 /**************************************************************************
@@ -528,7 +528,7 @@ CMDF( do_redit_reset )
    switch ( ch->substate )
    {
       default:
-         bug( "%s: Invalid substate!", __FUNCTION__ );
+         bug( "%s: Invalid substate!", __func__ );
          return;
 
       case SUB_ROOM_DESC:
@@ -538,7 +538,7 @@ CMDF( do_redit_reset )
              * If theres no dest_buf, theres no object, so stick em back as playing 
              */
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             ch->desc->connected = CON_PLAYING;
             return;
@@ -561,7 +561,7 @@ CMDF( do_redit_reset )
              * If theres no dest_buf, theres no object, so stick em back as playing 
              */
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             ch->desc->connected = CON_PLAYING;
             return;
@@ -697,14 +697,14 @@ void redit_parse( descriptor_data * d, string & arg )
          /*
           * we will NEVER get here 
           */
-         bug( "%s: Reached REDIT_DESC case", __FUNCTION__ );
+         bug( "%s: Reached REDIT_DESC case", __func__ );
          break;
 
       case REDIT_NDESC:
          /*
           * we will NEVER get here 
           */
-         bug( "%s: Reached REDIT_NDESC case", __FUNCTION__ );
+         bug( "%s: Reached REDIT_NDESC case", __func__ );
          break;
 
       case REDIT_FLAGS:
@@ -1127,7 +1127,7 @@ void redit_parse( descriptor_data * d, string & arg )
          /*
           * we should never get here 
           */
-         bug( "%s: Reached default case", __FUNCTION__ );
+         bug( "%s: Reached default case", __func__ );
          break;
    }
    /*

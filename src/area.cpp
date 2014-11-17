@@ -236,7 +236,7 @@ void area_data::sort_name(  )
 
    if( !this )
    {
-      bug( "%s: NULL pArea", __FUNCTION__ );
+      bug( "%s: NULL pArea", __func__ );
       return;
    }
 
@@ -263,7 +263,7 @@ void area_data::sort_vnums(  )
 
    if( !this )
    {
-      bug( "%s: NULL pArea", __FUNCTION__ );
+      bug( "%s: NULL pArea", __func__ );
       return;
    }
 
@@ -356,7 +356,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __FUNCTION__ );
+      bug( "%s: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
@@ -375,7 +375,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __FUNCTION__ );
+         bug( "%s: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
@@ -395,7 +395,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+            bug( "%s: vnum %d duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
             exit( 1 );
          }
@@ -510,7 +510,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       int position = get_npc_position( fread_flagstring( fp ) );
       if( position < 0 || position >= POS_MAX )
       {
-         bug( "%s: vnum %d: Mobile in invalid position! Defaulting to standing.", __FUNCTION__, vnum );
+         bug( "%s: vnum %d: Mobile in invalid position! Defaulting to standing.", __func__, vnum );
          position = POS_STANDING;
       }
       pMobIndex->position = position;
@@ -518,7 +518,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       position = get_npc_position( fread_flagstring( fp ) );
       if( position < 0 || position >= POS_MAX )
       {
-         bug( "%s: vnum %d: Mobile in invalid default position! Defaulting to standing.", __FUNCTION__, vnum );
+         bug( "%s: vnum %d: Mobile in invalid default position! Defaulting to standing.", __func__, vnum );
          position = POS_STANDING;
       }
       pMobIndex->defposition = position;
@@ -526,7 +526,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       int sex = get_npc_sex( fread_flagstring( fp ) );
       if( sex < 0 || sex >= SEX_MAX )
       {
-         bug( "%s: vnum %d: Mobile has invalid sex! Defaulting to neuter.", __FUNCTION__, vnum );
+         bug( "%s: vnum %d: Mobile has invalid sex! Defaulting to neuter.", __func__, vnum );
          sex = SEX_NEUTRAL;
       }
       pMobIndex->sex = sex;
@@ -534,7 +534,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       int race = get_npc_race( fread_flagstring( fp ) );
       if( race < 0 || race >= MAX_NPC_RACE )
       {
-         bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __FUNCTION__, vnum );
+         bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __func__, vnum );
          race = get_npc_race( "monster" );
       }
       pMobIndex->race = race;
@@ -542,7 +542,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       int Class = get_npc_class( fread_flagstring( fp ) );
       if( Class < 0 || Class >= MAX_NPC_CLASS )
       {
-         bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __FUNCTION__, vnum );
+         bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __func__, vnum );
          Class = get_npc_class( "warrior" );
       }
       pMobIndex->Class = Class;
@@ -586,7 +586,7 @@ void load_objects( area_data * tarea, FILE * fp )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __FUNCTION__ );
+      bug( "%s: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
@@ -604,7 +604,7 @@ void load_objects( area_data * tarea, FILE * fp )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __FUNCTION__ );
+         bug( "%s: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
@@ -624,7 +624,7 @@ void load_objects( area_data * tarea, FILE * fp )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+            bug( "%s: vnum %d duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
             exit( 1 );
          }
@@ -670,7 +670,7 @@ void load_objects( area_data * tarea, FILE * fp )
       value = get_otype( fread_flagstring( fp ) );
       if( value < 0 )
       {
-         bug( "%s: vnum %d: Object has invalid type! Defaulting to trash.", __FUNCTION__, vnum );
+         bug( "%s: vnum %d: Object has invalid type! Defaulting to trash.", __func__, vnum );
          value = get_otype( "trash" );
       }
       pObjIndex->item_type = value;
@@ -799,7 +799,7 @@ void load_objects( area_data * tarea, FILE * fp )
                   value = get_aflag( aff );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
                   {
-                     bug( "%s: Unsupportable value for affect flag: %s", __FUNCTION__, aff );
+                     bug( "%s: Unsupportable value for affect flag: %s", __func__, aff );
                      setaff = false;
                   }
                   else
@@ -818,7 +818,7 @@ void load_objects( area_data * tarea, FILE * fp )
                      risa = one_argument( risa, flag );
                      value = get_risflag( flag );
                      if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "%s: Unsupportable value for RISA flag: %s", __FUNCTION__, flag );
+                        bug( "%s: Unsupportable value for RISA flag: %s", __func__, flag );
                      else
                         paf->rismod.set( value );
                   }
@@ -835,7 +835,7 @@ void load_objects( area_data * tarea, FILE * fp )
                value = get_atype( loc );
                if( value < 0 || value >= MAX_APPLY_TYPE )
                {
-                  bug( "%s: Invalid apply type: %s", __FUNCTION__, loc );
+                  bug( "%s: Invalid apply type: %s", __func__, loc );
                   setaff = false;
                }
                paf->location = value;
@@ -850,7 +850,7 @@ void load_objects( area_data * tarea, FILE * fp )
                   value = get_aflag( aff );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
                   {
-                     bug( "%s: Unsupportable value for affect flag: %s", __FUNCTION__, aff );
+                     bug( "%s: Unsupportable value for affect flag: %s", __func__, aff );
                      setaff = false;
                   }
                   else
@@ -915,7 +915,7 @@ void load_resets( area_data * tarea, FILE * fp )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __FUNCTION__ );
+      bug( "%s: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
@@ -927,7 +927,7 @@ void load_resets( area_data * tarea, FILE * fp )
 
    if( tarea->rooms.empty(  ) )
    {
-      bug( "%s: No #ROOMS section found. Cannot load resets.", __FUNCTION__ );
+      bug( "%s: No #ROOMS section found. Cannot load resets.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #ROOMS" );
@@ -1004,61 +1004,61 @@ void load_resets( area_data * tarea, FILE * fp )
       switch ( letter )
       {
          default:
-            bug( "%s: bad command '%c'.", __FUNCTION__, letter );
+            bug( "%s: bad command '%c'.", __func__, letter );
             if( fBootDb )
-               boot_log( "%s: %s (%d) bad command '%c'.", __FUNCTION__, tarea->filename, count, letter );
+               boot_log( "%s: %s (%d) bad command '%c'.", __func__, tarea->filename, count, letter );
             return;
 
          case 'M':
             if( get_mob_index( arg1 ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg1 );
+               boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __func__, tarea->filename, count, arg1 );
 
             if( ( pRoomIndex = get_room_index( arg3 ) ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) 'M': room %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg3 );
+               boot_log( "%s: %s (%d) 'M': room %d doesn't exist.", __func__, tarea->filename, count, arg3 );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
 
             if( arg4 != -1 && ( arg4 < 0 || arg4 >= MAP_MAX ) )
-               boot_log( "%s: %s (%d) 'M': Map %d does not exist.", __FUNCTION__, tarea->filename, count, arg4 );
+               boot_log( "%s: %s (%d) 'M': Map %d does not exist.", __func__, tarea->filename, count, arg4 );
             if( arg5 != -1 && ( arg5 < 0 || arg5 >= MAX_X ) )
-               boot_log( "%s: %s (%d) 'M': X coordinate %d is out of range.", __FUNCTION__, tarea->filename, count, arg5 );
+               boot_log( "%s: %s (%d) 'M': X coordinate %d is out of range.", __func__, tarea->filename, count, arg5 );
             if( arg6 != -1 && ( arg6 < 0 || arg6 >= MAX_Y ) )
-               boot_log( "%s: %s (%d) 'M': Y coordinate %d is out of range.", __FUNCTION__, tarea->filename, count, arg6 );
+               boot_log( "%s: %s (%d) 'M': Y coordinate %d is out of range.", __func__, tarea->filename, count, arg6 );
             break;
 
          case 'O':
             if( get_obj_index( arg1 ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter, arg1 );
+               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
 
             if( ( pRoomIndex = get_room_index( arg3 ) ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) '%c': room %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter, arg3 );
+               boot_log( "%s: %s (%d) '%c': room %d doesn't exist.", __func__, tarea->filename, count, letter, arg3 );
             else
             {
                if( !pRoomIndex )
-                  bug( "%s: Unable to add room reset - room not found.", __FUNCTION__ );
+                  bug( "%s: Unable to add room reset - room not found.", __func__ );
                else
                   pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
             }
             if( arg4 != -1 && ( arg4 < 0 || arg4 >= MAP_MAX ) )
-               boot_log( "%s: %s (%d) 'M': Map %d does not exist.", __FUNCTION__, tarea->filename, count, arg4 );
+               boot_log( "%s: %s (%d) 'M': Map %d does not exist.", __func__, tarea->filename, count, arg4 );
             if( arg5 != -1 && ( arg5 < 0 || arg5 >= MAX_X ) )
-               boot_log( "%s: %s (%d) 'M': X coordinate %d is out of range.", __FUNCTION__, tarea->filename, count, arg5 );
+               boot_log( "%s: %s (%d) 'M': X coordinate %d is out of range.", __func__, tarea->filename, count, arg5 );
             if( arg6 != -1 && ( arg6 < 0 || arg6 >= MAX_Y ) )
-               boot_log( "%s: %s (%d) 'M': Y coordinate %d is out of range.", __FUNCTION__, tarea->filename, count, arg6 );
+               boot_log( "%s: %s (%d) 'M': Y coordinate %d is out of range.", __func__, tarea->filename, count, arg6 );
             break;
 
          case 'P':
             if( get_obj_index( arg1 ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter, arg1 );
+               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( arg3 > 0 )
             {
                if( get_obj_index( arg3 ) == NULL && fBootDb )
-                  boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg3 );
+                  boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __func__, tarea->filename, count, arg3 );
                if( extra > 1 )
                   not01 = true;
             }
             if( !pRoomIndex )
-               bug( "%s: Unable to add room reset - room not found.", __FUNCTION__ );
+               bug( "%s: Unable to add room reset - room not found.", __func__ );
             else
             {
                if( arg3 == 0 )
@@ -1070,66 +1070,66 @@ void load_resets( area_data * tarea, FILE * fp )
          case 'G':
          case 'E':
             if( get_obj_index( arg1 ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter, arg1 );
+               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( !pRoomIndex )
-               bug( "%s: Unable to add room reset - room not found.", __FUNCTION__ );
+               bug( "%s: Unable to add room reset - room not found.", __func__ );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2, -2 );
             break;
 
          case 'T':
             if( IS_SET( extra, TRAP_OBJ ) )
-               bug( "%s: Unable to add legacy object trap reset. Must be converted manually.", __FUNCTION__ );
+               bug( "%s: Unable to add legacy object trap reset. Must be converted manually.", __func__ );
             else
             {
                if( !( pRoomIndex = get_room_index( arg3 ) ) )
-                  bug( "%s: Unable to add trap reset - room not found.", __FUNCTION__ );
+                  bug( "%s: Unable to add trap reset - room not found.", __func__ );
                else
                   pRoomIndex->add_reset( letter, extra, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2 );
             }
             break;
 
          case 'H':
-            bug( "%s: Unable to convert legacy hide reset. Must be converted manually.", __FUNCTION__ );
+            bug( "%s: Unable to convert legacy hide reset. Must be converted manually.", __func__ );
             break;
 
          case 'D':
             if( !( pRoomIndex = get_room_index( arg1 ) ) )
             {
-               bug( "%s: 'D': room %d doesn't exist.", __FUNCTION__, arg1 );
+               bug( "%s: 'D': room %d doesn't exist.", __func__, arg1 );
                log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': room %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg1 );
+                  boot_log( "%s: %s (%d) 'D': room %d doesn't exist.", __func__, tarea->filename, count, arg1 );
                break;
             }
 
             if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
             {
-               bug( "%s: 'D': exit %d not door.", __FUNCTION__, arg2 );
+               bug( "%s: 'D': exit %d not door.", __func__, arg2 );
                log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': exit %d not door.", __FUNCTION__, tarea->filename, count, arg2 );
+                  boot_log( "%s: %s (%d) 'D': exit %d not door.", __func__, tarea->filename, count, arg2 );
             }
 
             if( arg3 < 0 || arg3 > 2 )
             {
-               bug( "%s: 'D': bad 'locks': %d.", __FUNCTION__, arg3 );
+               bug( "%s: 'D': bad 'locks': %d.", __func__, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': bad 'locks': %d.", __FUNCTION__, tarea->filename, count, arg3 );
+                  boot_log( "%s: %s (%d) 'D': bad 'locks': %d.", __func__, tarea->filename, count, arg3 );
             }
             pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2, -2 );
             break;
 
          case 'R':
             if( !( pRoomIndex = get_room_index( arg1 ) ) && fBootDb )
-               boot_log( "%s: %s (%d) 'R': room %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg1 );
+               boot_log( "%s: %s (%d) 'R': room %d doesn't exist.", __func__, tarea->filename, count, arg1 );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, -2, -2, -2, -2, -2, -2, -2, -2 );
             if( arg2 < 0 || arg2 > 10 )
             {
-               bug( "%s: 'R': bad exit %d.", __FUNCTION__, arg2 );
+               bug( "%s: 'R': bad exit %d.", __func__, arg2 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'R': bad exit %d.", __FUNCTION__, tarea->filename, count, arg2 );
+                  boot_log( "%s: %s (%d) 'R': bad exit %d.", __func__, tarea->filename, count, arg2 );
                break;
             }
             break;
@@ -1167,7 +1167,7 @@ void load_rooms( area_data * tarea, FILE * fp )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __FUNCTION__ );
+         bug( "%s: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
@@ -1187,7 +1187,7 @@ void load_rooms( area_data * tarea, FILE * fp )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+            bug( "%s: vnum %d duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
             exit( 1 );
          }
@@ -1215,7 +1215,7 @@ void load_rooms( area_data * tarea, FILE * fp )
          {
             list < reset_data * >::iterator rst;
 
-            bug( "%s: WARNING: resets already exist for this room.", __FUNCTION__ );
+            bug( "%s: WARNING: resets already exist for this room.", __func__ );
             for( rst = pRoomIndex->resets.begin(  ); rst != pRoomIndex->resets.end(  ); ++rst )
             {
                reset_data *rtmp = *rst;
@@ -1261,7 +1261,7 @@ void load_rooms( area_data * tarea, FILE * fp )
       int sector = get_sectypes( fread_flagstring( fp ) );
       if( sector < 0 || sector >= SECT_MAX )
       {
-         bug( "%s: Room #%d has bad sector type.", __FUNCTION__, vnum );
+         bug( "%s: Room #%d has bad sector type.", __func__, vnum );
          sector = 1;
       }
 
@@ -1294,7 +1294,7 @@ void load_rooms( area_data * tarea, FILE * fp )
 
       if( pRoomIndex->sector_type < 0 || pRoomIndex->sector_type >= SECT_MAX )
       {
-         bug( "%s: vnum %d has bad sector_type %d.", __FUNCTION__, vnum, pRoomIndex->sector_type );
+         bug( "%s: vnum %d has bad sector_type %d.", __func__, vnum, pRoomIndex->sector_type );
          pRoomIndex->sector_type = 1;
       }
 
@@ -1321,7 +1321,7 @@ void load_rooms( area_data * tarea, FILE * fp )
             loc = fread_word( fp );
             value = get_atype( loc );
             if( value < 0 || value >= MAX_APPLY_TYPE )
-               bug( "%s: Invalid apply type: %s", __FUNCTION__, loc );
+               bug( "%s: Invalid apply type: %s", __func__, loc );
             else
                paf->location = value;
 
@@ -1334,7 +1334,7 @@ void load_rooms( area_data * tarea, FILE * fp )
                aff = fread_word( fp );
                value = get_aflag( aff );
                if( value < 0 || value >= MAX_AFFECTED_BY )
-                  bug( "%s: Unsupportable value for affect flag: %s", __FUNCTION__, aff );
+                  bug( "%s: Unsupportable value for affect flag: %s", __func__, aff );
                else
                   paf->modifier = value;
             }
@@ -1358,7 +1358,7 @@ void load_rooms( area_data * tarea, FILE * fp )
 
             if( door < 0 || door > DIR_SOMEWHERE )
             {
-               bug( "%s: vnum %d has bad door number %d.", __FUNCTION__, vnum, door );
+               bug( "%s: vnum %d has bad door number %d.", __func__, vnum, door );
                if( fBootDb )
                   exit( 1 );
             }
@@ -1408,7 +1408,7 @@ void load_rooms( area_data * tarea, FILE * fp )
          }
          else
          {
-            bug( "%s: vnum %d has flag '%c' not 'ADESR'.", __FUNCTION__, vnum, letter );
+            bug( "%s: vnum %d has flag '%c' not 'ADESR'.", __func__, vnum, letter );
             shutdown_mud( "Room flag not ADESR" );
             exit( 1 );
          }
@@ -1573,14 +1573,14 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "#ENDEXIT";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __FUNCTION__, word );
+            log_printf( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1599,7 +1599,7 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 
                if( door < 0 || door > DIR_SOMEWHERE )
                {
-                  bug( "%s: vnum %d has bad door number %d.", __FUNCTION__, pRoomIndex->vnum, door );
+                  bug( "%s: vnum %d has bad door number %d.", __func__, pRoomIndex->vnum, door );
                   if( fBootDb )
                      return;
                }
@@ -1642,7 +1642,7 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
    }
 
    // Reach this point, you fell through somehow. The data is no longer valid.
-   bug( "%s: Reached fallout point! Exit data invalid.", __FUNCTION__ );
+   bug( "%s: Reached fallout point! Exit data invalid.", __func__ );
    if( pexit )
       pRoomIndex->extract_exit( pexit );
 }
@@ -1666,7 +1666,7 @@ affect_data *fread_afk_affect( FILE * fp )
    value = get_atype( loc );
    if( value < 0 || value >= MAX_APPLY_TYPE )
    {
-      bug( "%s: Invalid apply type: %s", __FUNCTION__, loc );
+      bug( "%s: Invalid apply type: %s", __func__, loc );
       setaff = false;
    }
    paf->location = value;
@@ -1681,7 +1681,7 @@ affect_data *fread_afk_affect( FILE * fp )
       value = get_aflag( aff );
       if( value < 0 || value >= MAX_AFFECTED_BY )
       {
-         bug( "%s: Unsupportable value for affect flag: %s", __FUNCTION__, aff );
+         bug( "%s: Unsupportable value for affect flag: %s", __func__, aff );
          setaff = false;
       }
       else
@@ -1713,14 +1713,14 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "#ENDEXDESC";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __FUNCTION__, word );
+            log_printf( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1729,7 +1729,7 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
             {
                if( ed->keyword.empty(  ) )
                {
-                  bug( "%s: Missing ExDesc keyword. Returning NULL.", __FUNCTION__ );
+                  bug( "%s: Missing ExDesc keyword. Returning NULL.", __func__ );
                   deleteptr( ed );
                   return NULL;
                }
@@ -1745,7 +1745,7 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
    }
 
    // Reach this point, you fell through somehow. The data is no longer valid.
-   bug( "%s: Reached fallout point! ExtraDesc data invalid.", __FUNCTION__ );
+   bug( "%s: Reached fallout point! ExtraDesc data invalid.", __func__ );
    deleteptr( ed );
    return NULL;
 }
@@ -1758,14 +1758,14 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "#ENDAREADATA";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __FUNCTION__, word );
+            log_printf( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1801,7 +1801,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
                if( value < 0 || value > ACON_MAX )
                {
                   tarea->continent = 0;
-                  bug( "%s: Invalid area continent, set to 'Alsherok' by default.", __FUNCTION__ );
+                  bug( "%s: Invalid area continent, set to 'Alsherok' by default.", __func__ );
                }
                else
                   tarea->continent = value;
@@ -1817,13 +1817,13 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
                if( x < 0 || x >= MAX_X )
                {
-                  bug( "%s: Area has bad x coord - setting X to 0", __FUNCTION__ );
+                  bug( "%s: Area has bad x coord - setting X to 0", __func__ );
                   x = 0;
                }
 
                if( y < 0 || y >= MAX_Y )
                {
-                  bug( "%s: Area has bad y coord - setting Y to 0", __FUNCTION__ );
+                  bug( "%s: Area has bad y coord - setting Y to 0", __func__ );
                   y = 0;
                }
 
@@ -1948,14 +1948,14 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "#ENDMOBILE";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __FUNCTION__, word );
+            log_printf( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -2022,7 +2022,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __FUNCTION__, pMobIndex->vnum );
+                  bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __func__, pMobIndex->vnum );
                   Class = get_npc_class( "warrior" );
                }
 
@@ -2044,7 +2044,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: vnum %d: Mobile in invalid default position! Defaulting to standing.", __FUNCTION__, pMobIndex->vnum );
+                  bug( "%s: vnum %d: Mobile in invalid default position! Defaulting to standing.", __func__, pMobIndex->vnum );
                   position = POS_STANDING;
                }
                pMobIndex->defposition = position;
@@ -2072,7 +2072,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( sex < 0 || sex >= SEX_MAX )
                {
-                  bug( "%s: vnum %d: Mobile has invalid gender! Defaulting to neuter.", __FUNCTION__, pMobIndex->vnum );
+                  bug( "%s: vnum %d: Mobile has invalid gender! Defaulting to neuter.", __func__, pMobIndex->vnum );
                   sex = SEX_NEUTRAL;
                }
                pMobIndex->sex = sex;
@@ -2107,7 +2107,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: vnum %d: Mobile in invalid position! Defaulting to standing.", __FUNCTION__, pMobIndex->vnum );
+                  bug( "%s: vnum %d: Mobile in invalid position! Defaulting to standing.", __func__, pMobIndex->vnum );
                   position = POS_STANDING;
                }
                pMobIndex->position = position;
@@ -2122,7 +2122,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( race < 0 || race >= MAX_NPC_RACE )
                {
-                  bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __FUNCTION__, pMobIndex->vnum );
+                  bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __func__, pMobIndex->vnum );
                   race = get_npc_race( "monster" );
                }
 
@@ -2216,12 +2216,12 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( !pMobIndex )
                {
-                  bug( "%s: Specfun: Invalid mob vnum!", __FUNCTION__ );
+                  bug( "%s: Specfun: Invalid mob vnum!", __func__ );
                   break;
                }
                if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                {
-                  bug( "%s: Specfun: vnum %d, no spec_fun called %s.", __FUNCTION__, pMobIndex->vnum, temp );
+                  bug( "%s: Specfun: vnum %d, no spec_fun called %s.", __func__, pMobIndex->vnum, temp );
                   pMobIndex->spec_funname.clear(  );
                }
                else
@@ -2293,7 +2293,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+                     bug( "%s: vnum %d duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated mobile and then bail out
                      for( ;; )
@@ -2346,14 +2346,14 @@ void fread_afk_object( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "#ENDOBJECT";
       }
 
       switch ( word[0] )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -2509,7 +2509,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
 
                if( value < 0 )
                {
-                  bug( "%s: vnum %d: Object has invalid type! Defaulting to trash.", __FUNCTION__, pObjIndex->vnum );
+                  bug( "%s: vnum %d: Object has invalid type! Defaulting to trash.", __func__, pObjIndex->vnum );
                   value = get_otype( "trash" );
                }
                pObjIndex->item_type = value;
@@ -2565,7 +2565,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+                     bug( "%s: vnum %d duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated object and then bail out
                      for( ;; )
@@ -2626,14 +2626,14 @@ void fread_afk_room( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "#ENDROOM";
       }
 
       switch ( word[0] )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -2712,7 +2712,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
 
                if( sector < 0 || sector >= SECT_MAX )
                {
-                  bug( "%s: Room #%d has bad sector type.", __FUNCTION__, pRoomIndex->vnum );
+                  bug( "%s: Room #%d has bad sector type.", __func__, pRoomIndex->vnum );
                   sector = 1;
                }
 
@@ -2753,7 +2753,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+                     bug( "%s: vnum %d duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated room and then bail out
                      for( ;; )
@@ -2796,7 +2796,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                      int count = 0;
                      list < reset_data * >::iterator rst;
 
-                     bug( "%s: WARNING: resets already exist for this room.", __FUNCTION__ );
+                     bug( "%s: WARNING: resets already exist for this room.", __func__ );
                      for( rst = pRoomIndex->resets.begin(  ); rst != pRoomIndex->resets.end(  ); ++rst )
                      {
                         reset_data *rtmp = *rst;
@@ -2841,7 +2841,7 @@ area_data *fread_afk_area( FILE * fp, bool isproto )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found. Invalid format.", __FUNCTION__ );
+         bug( "%s: # not found. Invalid format.", __func__ );
          if( fBootDb )
             exit( 1 );
          break;
@@ -2851,7 +2851,7 @@ area_data *fread_afk_area( FILE * fp, bool isproto )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "ENDAREA";
       }
 
@@ -2871,7 +2871,7 @@ area_data *fread_afk_area( FILE * fp, bool isproto )
          break;
       else
       {
-         bug( "%s: Bad section header: %s", __FUNCTION__, word );
+         bug( "%s: Bad section header: %s", __func__, word );
          fread_to_eol( fp );
       }
    }
@@ -2899,7 +2899,7 @@ void load_area_file( const string & filename, bool isproto )
    if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
    {
       perror( filename.c_str(  ) );
-      bug( "%s: error loading file (can't open) %s", __FUNCTION__, filename.c_str(  ) );
+      bug( "%s: error loading file (can't open) %s", __func__, filename.c_str(  ) );
       return;
    }
 
@@ -2907,12 +2907,12 @@ void load_area_file( const string & filename, bool isproto )
    {
       if( fBootDb )
       {
-         bug( "%s: No # found at start of area file.", __FUNCTION__ );
+         bug( "%s: No # found at start of area file.", __func__ );
          exit( 1 );
       }
       else
       {
-         bug( "%s: No # found at start of area file.", __FUNCTION__ );
+         bug( "%s: No # found at start of area file.", __func__ );
          FCLOSE( fpArea );
          return;
       }
@@ -2949,7 +2949,7 @@ void load_area_file( const string & filename, bool isproto )
             return;
          }
 
-         bug( "%s: Invalid header at start of area file: %s", __FUNCTION__, word );
+         bug( "%s: Invalid header at start of area file: %s", __func__, word );
          if( fBootDb )
             exit( 1 );
          else
@@ -2958,7 +2958,7 @@ void load_area_file( const string & filename, bool isproto )
             return;
          }
       }
-      bug( "%s: Invalid header at start of area file: %s", __FUNCTION__, word );
+      bug( "%s: Invalid header at start of area file: %s", __func__, word );
       if( fBootDb )
          exit( 1 );
       else
@@ -2975,7 +2975,7 @@ void load_area_file( const string & filename, bool isproto )
 
       if( fread_letter( fpArea ) != '#' )
       {
-         bug( "%s: # not found %s", __FUNCTION__, tarea->filename );
+         bug( "%s: # not found %s", __func__, tarea->filename );
          exit( 1 );
       }
 
@@ -3056,13 +3056,13 @@ void load_area_file( const string & filename, bool isproto )
 
          if( x < 0 || x >= MAX_X )
          {
-            bug( "%s: Area has bad x coord - setting X to 0", __FUNCTION__ );
+            bug( "%s: Area has bad x coord - setting X to 0", __func__ );
             x = 0;
          }
 
          if( y < 0 || y >= MAX_Y )
          {
-            bug( "%s: Area has bad y coord - setting Y to 0", __FUNCTION__ );
+            bug( "%s: Area has bad y coord - setting Y to 0", __func__ );
             y = 0;
          }
          tarea->mx = x;
@@ -3077,7 +3077,7 @@ void load_area_file( const string & filename, bool isproto )
          if( value < 0 || value > ACON_MAX )
          {
             tarea->continent = 0;
-            bug( "%s: Invalid area continent, set to 'alsherok' by default.", __FUNCTION__ );
+            bug( "%s: Invalid area continent, set to 'alsherok' by default.", __func__ );
          }
          else
             tarea->continent = value;
@@ -3112,7 +3112,7 @@ void load_area_file( const string & filename, bool isproto )
             switch ( letter = fread_letter( fpArea ) )
             {
                default:
-                  bug( "%s: letter '%c' not *MSOR.", __FUNCTION__, letter );
+                  bug( "%s: letter '%c' not *MSOR.", __func__, letter );
                   exit( 1 );
 
                case 'S':
@@ -3127,12 +3127,12 @@ void load_area_file( const string & filename, bool isproto )
                   temp = fread_word( fpArea );
                   if( !pMobIndex )
                   {
-                     bug( "%s: 'M': Invalid mob vnum!", __FUNCTION__ );
+                     bug( "%s: 'M': Invalid mob vnum!", __func__ );
                      break;
                   }
                   if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                   {
-                     bug( "%s: 'M': vnum %d, no spec_fun called %s.", __FUNCTION__, pMobIndex->vnum, temp );
+                     bug( "%s: 'M': vnum %d, no spec_fun called %s.", __func__, pMobIndex->vnum, temp );
                      pMobIndex->spec_funname.clear(  );
                   }
                   else
@@ -3206,7 +3206,7 @@ void load_area_file( const string & filename, bool isproto )
       }
       else
       {
-         bug( "%s: %s bad section name %s", __FUNCTION__, tarea->filename, word );
+         bug( "%s: %s bad section name %s", __func__, tarea->filename, word );
          if( fBootDb )
             exit( 1 );
          else
@@ -3587,10 +3587,10 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
 {
    if( install )
    {
-      // remove prototype flag from room 
+      // remove prototype flag from room
       room->flags.reset( ROOM_PROTOTYPE );
 
-      // purge room of (prototyped) mobiles 
+      // purge room of (prototyped) mobiles
       list < char_data * >::iterator ich;
       for( ich = room->people.begin(  ); ich != room->people.end(  ); )
       {
@@ -3729,7 +3729,7 @@ void area_data::fold( const char *fname, bool install )
    rename( fname, buf );
    if( !( fpout = fopen( fname, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( fname );
       return;
    }
@@ -3886,7 +3886,7 @@ void write_area_list( void )
    fpout = fopen( AREA_LIST, "w" );
    if( !fpout )
    {
-      bug( "%s: cannot open area.lst for writing!", __FUNCTION__ );
+      bug( "%s: cannot open area.lst for writing!", __func__ );
       return;
    }
 
@@ -4000,7 +4000,7 @@ void load_weatherdata( void )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found", __FUNCTION__ );
+            bug( "%s: # not found", __func__ );
             return;
          }
          word = fread_word( fp );
@@ -4029,7 +4029,7 @@ void load_weatherdata( void )
          }
          else
          {
-            bug( "%s: unknown field", __FUNCTION__ );
+            bug( "%s: unknown field", __func__ );
             FCLOSE( fp );
             break;
          }
@@ -4060,7 +4060,7 @@ void save_weatherdata( void )
       FCLOSE( fp );
    }
    else
-      bug( "%s: could not open file", __FUNCTION__ );
+      bug( "%s: could not open file", __func__ );
 }
 
 /*
@@ -5296,22 +5296,22 @@ CMDF( do_climate )
     */
    if( !ch )
    {
-      bug( "%s: NULL character.", __FUNCTION__ );
+      bug( "%s: NULL character.", __func__ );
       return;
    }
    else if( !ch->in_room )
    {
-      bug( "%s: %s not in a room.", __FUNCTION__, ch->name );
+      bug( "%s: %s not in a room.", __func__, ch->name );
       return;
    }
    else if( !ch->in_room->area )
    {
-      bug( "%s: %s not in an area.", __FUNCTION__, ch->name );
+      bug( "%s: %s not in an area.", __func__, ch->name );
       return;
    }
    else if( !ch->in_room->area->weather )
    {
-      bug( "%s: %s with NULL weather data.", __FUNCTION__, ch->in_room->area->name );
+      bug( "%s: %s with NULL weather data.", __func__, ch->in_room->area->name );
       return;
    }
 

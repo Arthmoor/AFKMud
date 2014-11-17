@@ -187,7 +187,7 @@ void write_realm_list( void )
    fpout = fopen( filename, "w" );
    if( !fpout )
    {
-      bug( "%s: FATAL: cannot open %s for writing!", __FUNCTION__, filename );
+      bug( "%s: FATAL: cannot open %s for writing!", __func__, filename );
       return;
    }
 
@@ -229,7 +229,7 @@ void fread_realm_memberlist( realm_data * realm, FILE * fp )
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -267,13 +267,13 @@ void save_realm( realm_data * realm )
 
    if( !realm )
    {
-      bug( "%s: null realm pointer!", __FUNCTION__ );
+      bug( "%s: null realm pointer!", __func__ );
       return;
    }
 
    if( realm->filename.empty(  ) )
    {
-      bug( "%s: %s has no filename", __FUNCTION__, realm->name.c_str(  ) );
+      bug( "%s: %s has no filename", __func__, realm->name.c_str(  ) );
       return;
    }
 
@@ -281,7 +281,7 @@ void save_realm( realm_data * realm )
 
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( filename );
    }
    else
@@ -318,7 +318,7 @@ void fread_realm( realm_data * realm, FILE * fp )
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -365,7 +365,7 @@ void fread_realm( realm_data * realm, FILE * fp )
 
                if( value < 0 || value > MAX_REALM )
                {
-                  bug( "%s: Invalid realm type: %s. Setting to None.", __FUNCTION__, temp );
+                  bug( "%s: Invalid realm type: %s. Setting to None.", __func__, temp );
                   value = 0;
                }
                realm->type = value;
@@ -420,7 +420,7 @@ bool load_realm_file( const char *realmfile )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -433,7 +433,7 @@ bool load_realm_file( const char *realmfile )
             break;
          else
          {
-            bug( "%s: bad section: %s.", __FUNCTION__, word );
+            bug( "%s: bad section: %s.", __func__, word );
             break;
          }
       }
@@ -524,7 +524,7 @@ void load_realms( void )
          break;
 
       if( !load_realm_file( filename ) )
-         bug( "%s: Cannot load realm file: %s", __FUNCTION__, filename );
+         bug( "%s: Cannot load realm file: %s", __func__, filename );
    }
    FCLOSE( fpList );
    verify_realms(  ); /* Check against pfiles to see if realms should still exist */

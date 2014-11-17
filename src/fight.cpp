@@ -80,16 +80,16 @@ bool in_arena( char_data * ch )
 {
    if( !ch )   /* Um..... Could THIS be why ? */
    {
-      bug( "%s: NULL CH!!! Wedgy, you better spill the beans!", __FUNCTION__ );
+      bug( "%s: NULL CH!!! Wedgy, you better spill the beans!", __func__ );
       return false;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: %s in NULL room. Only The Wedgy knows how though.", __FUNCTION__, ch->name );
+      bug( "%s: %s in NULL room. Only The Wedgy knows how though.", __func__, ch->name );
       log_string( "Going to attempt to move them to Limbo to prevent a crash." );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return false;
    }
 
@@ -109,7 +109,7 @@ void make_blood( char_data * ch )
 
    if( !( obj = get_obj_index( OBJ_VNUM_BLOOD )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->timer = number_range( 2, 4 );
@@ -130,7 +130,7 @@ void make_corpse( char_data * ch, char_data * killer )
       name = ch->short_descr;
       if( !( corpse = get_obj_index( OBJ_VNUM_CORPSE_NPC )->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
 
@@ -168,7 +168,7 @@ void make_corpse( char_data * ch, char_data * killer )
       name = ch->name;
       if( !( corpse = get_obj_index( OBJ_VNUM_CORPSE_PC )->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
 
@@ -680,13 +680,13 @@ bool is_safe( char_data * ch, char_data * victim )
 
    if( !victim )  /*Gonna find this is_safe crash bug -Blod */
    {
-      bug( "%s: %s opponent does not exist!", __FUNCTION__, ch->name );
+      bug( "%s: %s opponent does not exist!", __func__, ch->name );
       return true;
    }
 
    if( !victim->in_room )
    {
-      bug( "%s: %s has no physical location!", __FUNCTION__, victim->name );
+      bug( "%s: %s has no physical location!", __func__, victim->name );
       return true;
    }
 
@@ -1484,7 +1484,7 @@ void group_gain( char_data * ch, char_data * victim )
    }
    if( members == 0 )
    {
-      bug( "%s: members.", __FUNCTION__ );
+      bug( "%s: members.", __func__ );
       members = 1;
    }
 
@@ -1552,7 +1552,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       was_in_room = ch->in_room;
       ch->from_room(  );
       if( !ch->to_room( victim->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
    else
       was_in_room = NULL;
@@ -1566,7 +1566,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       w_index = dt - TYPE_HIT;
    else
    {
-      bug( "%s: bad dt %d from %s in %d.", __FUNCTION__, dt, ch->name, ch->in_room->vnum );
+      bug( "%s: bad dt %d from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
       dt = TYPE_HIT;
       w_index = 0;
    }
@@ -1615,7 +1615,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          attack = attack_table[dt - TYPE_HIT];
       else
       {
-         bug( "%s: bad dt %d from %s in %d.", __FUNCTION__, dt, ch->name, ch->in_room->vnum );
+         bug( "%s: bad dt %d from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
          dt = TYPE_HIT;
          attack = attack_table[0];
       }
@@ -1654,7 +1654,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
                {
                   ch->from_room(  );
                   if( !ch->to_room( was_in_room ) )
-                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                }
                return;
             }
@@ -1678,7 +1678,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       }
       else
       {
-         bug( "%s: bad dt %d from %s in %d.", __FUNCTION__, dt, ch->name, ch->in_room->vnum );
+         bug( "%s: bad dt %d from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
          dt = TYPE_HIT;
          attack = attack_table[0];
       }
@@ -1697,7 +1697,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
    {
       ch->from_room(  );
       if( !ch->to_room( was_in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
    return;
 }
@@ -1730,7 +1730,7 @@ void check_attacker( char_data * ch, char_data * victim )
    {
       if( !ch->master )
       {
-         bug( "%s: %s bad AFF_CHARM", __FUNCTION__, ch->isnpc(  )? ch->short_descr : ch->name );
+         bug( "%s: %s bad AFF_CHARM", __func__, ch->isnpc(  )? ch->short_descr : ch->name );
          ch->affect_strip( gsn_charm_person );
          ch->unset_aflag( AFF_CHARM );
          return;
@@ -1758,7 +1758,7 @@ void set_fighting( char_data * ch, char_data * victim )
 
    if( ch->fighting )
    {
-      bug( "%s: %s -> %s (already fighting %s)", __FUNCTION__, ch->name, victim->name, ch->fighting->who->name );
+      bug( "%s: %s -> %s (already fighting %s)", __func__, ch->name, victim->name, ch->fighting->who->name );
       return;
    }
 
@@ -2000,7 +2000,7 @@ void check_killer( char_data * ch, char_data * victim )
    {
       if( !ch->master )
       {
-         bug( "%s: %s bad AFF_CHARM", __FUNCTION__, ch->isnpc(  )? ch->short_descr : ch->name );
+         bug( "%s: %s bad AFF_CHARM", __func__, ch->isnpc(  )? ch->short_descr : ch->name );
          ch->affect_strip( gsn_charm_person );
          ch->unset_aflag( AFF_CHARM );
          return;
@@ -2277,7 +2277,7 @@ void death_cry( char_data * ch )
 
    if( !ch )
    {
-      bug( "%s: null ch!", __FUNCTION__ );
+      bug( "%s: null ch!", __func__ );
       return;
    }
 
@@ -2350,14 +2350,14 @@ void death_cry( char_data * ch )
 
       if( !get_obj_index( vnum ) )
       {
-         bug( "%s: invalid vnum %d", __FUNCTION__, vnum );
+         bug( "%s: invalid vnum %d", __func__, vnum );
          return;
       }
 
       name = ch->isnpc(  )? ch->short_descr : ch->name;
       if( !( obj = get_obj_index( vnum )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       obj->timer = number_range( 4, 7 );
@@ -2374,7 +2374,7 @@ void raw_kill( char_data * ch, char_data * victim )
 {
    if( !victim )
    {
-      bug( "%s: null victim! CH: %s", __FUNCTION__, ch->name );
+      bug( "%s: null victim! CH: %s", __func__, ch->name );
       return;
    }
 
@@ -2383,7 +2383,7 @@ void raw_kill( char_data * ch, char_data * victim )
     */
    if( !victim->isnpc(  ) && victim->level == 1 )
    {
-      bug( "%s: killing level 1", __FUNCTION__ );
+      bug( "%s: killing level 1", __func__ );
       return;
    }
 
@@ -2406,7 +2406,7 @@ void raw_kill( char_data * ch, char_data * victim )
 
       victim->from_room(  );
       if( !victim->to_room( location ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       if( victim->has_aflag( AFF_PARALYSIS ) )
          victim->unset_aflag( AFF_PARALYSIS );
@@ -2472,7 +2472,7 @@ void raw_kill( char_data * ch, char_data * victim )
    victim->extract( false );
    if( !victim )
    {
-      bug( "%s: extract_char destroyed pc char", __FUNCTION__ );
+      bug( "%s: extract_char destroyed pc char", __func__ );
       return;
    }
 
@@ -2672,13 +2672,13 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
    if( !ch )
    {
-      bug( "%s: null ch!", __FUNCTION__ );
+      bug( "%s: null ch!", __func__ );
       return rERROR;
    }
 
    if( !victim )
    {
-      bug( "%s: null victim!", __FUNCTION__ );
+      bug( "%s: null victim!", __func__ );
       return rVICT_DIED;
    }
 
@@ -2776,7 +2776,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       maxdam = ch->level * 80;
    if( dam > maxdam )
    {
-      bug( "%s: %d more than %d points!", __FUNCTION__, ( int )dam, maxdam );
+      bug( "%s: %d more than %d points!", __func__, ( int )dam, maxdam );
       log_printf( "** %s (lvl %d) -> %s **", ch->name, ch->level, victim->name );
       dam = maxdam;
    }
@@ -3755,7 +3755,7 @@ ch_ret multi_hit( char_data * ch, char_data * victim, int dt )
          {
             if( !ch->get_eq( WEAR_WIELD ) )
             {
-               bug( "%s: !WEAR_WIELD in multi_hit in fight.c: %s", __FUNCTION__, ch->name );
+               bug( "%s: !WEAR_WIELD in multi_hit in fight.c: %s", __func__, ch->name );
                return rNONE;
             }
             /*
@@ -3920,7 +3920,7 @@ CMDF( do_flee )
 {
    room_index *was_in, *now_in;
    double los;
-   int attempt, oldmap = ch->cmap, oldx = ch->mx, oldy = ch->my;
+   int attempt, oldmap = ch->wmap, oldx = ch->mx, oldy = ch->my;
    short door;
    exit_data *pexit;
 
@@ -3989,7 +3989,7 @@ CMDF( do_flee )
       if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
       {
          now_in = ch->in_room;
-         if( ch->cmap == oldmap && ch->mx == oldx && ch->my == oldy )
+         if( ch->wmap == oldmap && ch->mx == oldx && ch->my == oldy )
             continue;
       }
       else

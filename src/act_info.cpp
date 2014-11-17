@@ -1420,11 +1420,11 @@ CMDF( do_look )
                      original = ch->in_room;
                      ch->from_room(  );
                      if( !ch->to_room( pexit->to_room ) )
-                        log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                        log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                      do_look( ch, "auto" );
                      ch->from_room(  );
                      if( !ch->to_room( original ) )
-                        log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                        log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                      if( !visited )
                         ch->remove_visit( pexit->to_room );
                   }
@@ -1670,11 +1670,11 @@ CMDF( do_look )
             original = ch->in_room;
             ch->from_room(  );
             if( !ch->to_room( pexit->to_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             do_look( ch, "auto" );
             ch->from_room(  );
             if( !ch->to_room( original ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             if( !visited )
                ch->remove_visit( pexit->to_room );
          }
@@ -1779,7 +1779,7 @@ CMDF( do_examine )
 
    if( !ch )
    {
-      bug( "%s: null ch.", __FUNCTION__ );
+      bug( "%s: null ch.", __func__ );
       return;
    }
 
@@ -2638,7 +2638,7 @@ void save_motd( const char *name, const char *str )
 
    if( !( fp = fopen( name, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( name );
    }
    else
@@ -2655,7 +2655,7 @@ void load_motd( char_data * ch, const char *name )
 
    if( !( fp = fopen( name, "r" ) ) )
    {
-      bug( "%s: Cannot open", __FUNCTION__ );
+      bug( "%s: Cannot open", __func__ );
       perror( name );
    }
    while( !feof( fp ) )
@@ -2807,7 +2807,7 @@ void pc_data::load_ignores( FILE * fp )
     * Add the name unless the limit has been reached 
     */
    if( ignore.size(  ) >= sysdata->maxign )
-      bug( "%s: too many ignored names", __FUNCTION__ );
+      bug( "%s: too many ignored names", __func__ );
    else
       ignore.push_back( ig );
 }
@@ -2983,7 +2983,7 @@ bool is_ignoring( char_data * ch, char_data * ign_ch )
 
    if( !ch )   /* Paranoid bug check, you never know. */
    {
-      bug( "%s: NULL CH!", __FUNCTION__ );
+      bug( "%s: NULL CH!", __func__ );
       return false;
    }
 

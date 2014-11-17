@@ -161,7 +161,7 @@ void load_mudchannels( void )
       else if( key == "End" )
          chanlist.push_back( channel );
       else
-         log_printf( "%s: Bad line in channel file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in channel file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -175,7 +175,7 @@ void save_mudchannels( void )
    stream.open( CHANNEL_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( CHANNEL_FILE );
    }
    else
@@ -621,7 +621,6 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
       return;
    }
 
-
    if( ch->isnpc(  ) && ch->has_aflag( AFF_CHARM ) )
    {
       if( ch->master )
@@ -827,7 +826,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
             mapped = true;
             origx = ch->mx;
             origy = ch->my;
-            origmap = ch->cmap;
+            origmap = ch->wmap;
          }
 
          if( ch->isnpc(  ) && ch->has_actflag( ACT_ONMAP ) )
@@ -835,7 +834,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
             mapped = true;
             origx = ch->mx;
             origy = ch->my;
-            origmap = ch->cmap;
+            origmap = ch->wmap;
          }
          fix_maps( vch, ch );
 
@@ -874,7 +873,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
           */
          if( mapped )
          {
-            ch->cmap = origmap;
+            ch->wmap = origmap;
             ch->mx = origx;
             ch->my = origy;
             if( ch->isnpc(  ) )
@@ -888,7 +887,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
                ch->unset_actflag( ACT_ONMAP );
             else
                ch->unset_pcflag( PCFLAG_ONMAP );
-            ch->cmap = -1;
+            ch->wmap = -1;
             ch->mx = -1;
             ch->my = -1;
          }

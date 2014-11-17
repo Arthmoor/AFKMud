@@ -131,7 +131,7 @@ CMDF( do_shipstat )
    ch->printf( "Vnum:  %d\r\n", ship->vnum );
    if( ship->flags.test( SHIP_ONMAP ) )
    {
-      ch->printf( "On map: %s\r\n", map_names[ship->cmap] );
+      ch->printf( "On map: %s\r\n", map_names[ship->wmap] );
       ch->printf( "Coords: %4dX %4dY\r\n", ship->mx, ship->my );
    }
    else
@@ -144,7 +144,7 @@ CMDF( do_shipstat )
 
 ship_data::ship_data(  )
 {
-   init_memory( &flags, &cmap, sizeof( cmap ) );
+   init_memory( &flags, &wmap, sizeof( wmap ) );
 }
 
 ship_data::~ship_data(  )
@@ -161,7 +161,7 @@ void save_ships( void )
    if( !stream.is_open(  ) )
    {
       perror( SHIP_FILE );
-      bug( "%s: can't open ship file", __FUNCTION__ );
+      bug( "%s: can't open ship file", __func__ );
       return;
    }
 
@@ -180,7 +180,7 @@ void save_ships( void )
       stream << "Max_hull  " << ship->max_hull << endl;
       stream << "Fuel      " << ship->fuel << endl;
       stream << "Max_fuel  " << ship->max_fuel << endl;
-      stream << "Coordinates " << ship->cmap << " " << ship->mx << " " << ship->my << endl;
+      stream << "Coordinates " << ship->wmap << " " << ship->mx << " " << ship->my << endl;
       stream << "End" << endl << endl;
    }
    stream.close(  );
@@ -196,7 +196,7 @@ void load_ships( void )
    stream.open( SHIP_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Unable to open ships file.", __FUNCTION__ );
+      bug( "%s: Unable to open ships file.", __func__ );
       return;
    }
 
@@ -247,7 +247,7 @@ void load_ships( void )
          string coord;
 
          value = one_argument( value, coord );
-         ship->cmap = atoi( coord.c_str(  ) );
+         ship->wmap = atoi( coord.c_str(  ) );
 
          value = one_argument( value, coord );
          ship->mx = atoi( coord.c_str(  ) );
@@ -257,7 +257,7 @@ void load_ships( void )
       else if( key == "End" )
          shiplist.push_back( ship );
       else
-         log_printf( "%s: Bad line in ships file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in ships file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -304,7 +304,7 @@ CMDF( do_shipset )
          return;
       }
       ship = new ship_data;
-      ship->cmap = -1;
+      ship->wmap = -1;
       ship->mx = -1;
       ship->my = -1;
       ship->name = arg;
@@ -502,7 +502,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
    from_room = ch->in_room;
    fx = ch->mx;
    fy = ch->my;
-   fmap = ch->cmap;
+   fmap = ch->wmap;
 
    retcode = rNONE;
    if( ch->has_pcflag( PCFLAG_MAPEDIT ) )
@@ -539,12 +539,12 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
                ++count;
 
                if( fch != ch  /* loop room bug fix here by Thoric */
-                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->cmap == fmap )
+                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->wmap == fmap )
                {
                   if( !fch->isnpc(  ) )
                   {
                      act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
-                     process_exit( fch, fch->cmap, x, y, dir, false );
+                     process_exit( fch, fch->wmap, x, y, dir, false );
                   }
                   else
                      enter_map( fch, NULL, mexit->therex, mexit->therey, mexit->tomap );
@@ -555,7 +555,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
 
          if( !( toroom = get_room_index( mexit->vnum ) ) )
          {
-            bug( "%s: Target vnum %d for map exit does not exist!", __FUNCTION__, mexit->vnum );
+            bug( "%s: Target vnum %d for map exit does not exist!", __func__, mexit->vnum );
             ch->print( "Ooops. Something bad happened. Contact the immortals ASAP.\r\n" );
             return rSTOP;
          }
@@ -580,12 +580,12 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
             ++count;
 
             if( fch != ch  /* loop room bug fix here by Thoric */
-                && fch->master == ch && fch->position == POS_STANDING && fch->mx == fx && fch->my == fy && fch->cmap == fmap )
+                && fch->master == ch && fch->position == POS_STANDING && fch->mx == fx && fch->my == fy && fch->wmap == fmap )
             {
                if( !fch->isnpc(  ) )
                {
                   act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
-                  process_shipexit( fch, fch->cmap, x, y, dir );
+                  process_shipexit( fch, fch->wmap, x, y, dir );
                }
                else
                   leave_map( fch, ch, toroom );
@@ -709,7 +709,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
          if( !fch->isnpc(  ) )
          {
             act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
-            process_exit( fch, fch->cmap, x, y, dir, false );
+            process_exit( fch, fch->wmap, x, y, dir, false );
          }
          else
          {
@@ -774,7 +774,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       if( newx == ch->mx && newy == ch->my )
          return rSTOP;
 
-      retcode = process_shipexit( ch, ch->cmap, newx, newy, direction );
+      retcode = process_shipexit( ch, ch->wmap, newx, newy, direction );
       return retcode;
    }
 
@@ -800,7 +800,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
    {
       if( pexit->mx < 0 || pexit->mx >= MAX_X || pexit->my < 0 || pexit->my >= MAX_Y )
       {
-         bug( "%s: Room #%d - Invalid exit coordinates: %d %d", __FUNCTION__, in_room->vnum, pexit->mx, pexit->my );
+         bug( "%s: Room #%d - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->mx, pexit->my );
          ch->print( "Oops. Something is wrong with this map exit - notify the immortals.\r\n" );
          check_sneaks( ch );
          return rSTOP;
@@ -963,11 +963,11 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       {
          ch->mount->from_room(  );
          if( !ch->mount->to_room( to_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       }
    }
    if( !ch->to_room( to_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    ship->room = to_room->vnum;
    check_sneaks( ch );
 

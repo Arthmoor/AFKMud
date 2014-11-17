@@ -224,7 +224,7 @@ obj_index *get_obj_index( int vnum )
       return iobj->second;
 
    if( fBootDb )
-      bug( "%s: bad vnum %d.", __FUNCTION__, vnum );
+      bug( "%s: bad vnum %d.", __func__, vnum );
 
    return NULL;
 }
@@ -238,7 +238,7 @@ obj_data *obj_index::create_object( int olevel )
 
    if( !this )
    {
-      bug( "%s: NULL pObjIndex.", __FUNCTION__ );
+      bug( "%s: NULL pObjIndex.", __func__ );
       return NULL;
    }
 
@@ -282,7 +282,7 @@ obj_data *obj_index::create_object( int olevel )
 
    obj->mx = -1;
    obj->my = -1;
-   obj->cmap = -1;
+   obj->wmap = -1;
    obj->day = 0;
    obj->month = 0;
    obj->year = 0;
@@ -293,7 +293,7 @@ obj_data *obj_index::create_object( int olevel )
    switch ( obj->item_type )
    {
       default:
-         bug( "%s: vnum %d bad type.", __FUNCTION__, vnum );
+         bug( "%s: vnum %d bad type.", __func__, vnum );
          log_printf( "------------------------>    %d", obj->item_type );
          break;
 
@@ -684,14 +684,14 @@ int obj_index::set_ego(  )
          switch ( af->location )
          {
             default:
-               log_printf( "%s: Affect %s exceeds maximum item ego specs. Object %d", __FUNCTION__, a_types[af->location], vnum );
+               log_printf( "%s: Affect %s exceeds maximum item ego specs. Object %d", __func__, a_types[af->location], vnum );
                break;
 
             case APPLY_WEAPONSPELL:
             case APPLY_WEARSPELL:
             case APPLY_REMOVESPELL:
             case APPLY_EAT_SPELL:
-               log_printf( "%s: Item spell %s exceeds allowable item ego specs. Object %d", __FUNCTION__,
+               log_printf( "%s: Item spell %s exceeds allowable item ego specs. Object %d", __func__,
                            IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "unknown", vnum );
                break;
 
@@ -699,7 +699,7 @@ int obj_index::set_ego(  )
             case APPLY_IMMUNE:
             case APPLY_SUSCEPTIBLE:
             case APPLY_ABSORB:
-               log_printf( "%s: Item RISA flags exceed allowable item ego specs. Object %d", __FUNCTION__, vnum );
+               log_printf( "%s: Item RISA flags exceed allowable item ego specs. Object %d", __func__, vnum );
                break;
          }
          return -2;
@@ -855,7 +855,7 @@ void obj_index::oprog_read_programs( FILE * fp )
 
       if( letter != '>' )
       {
-         bug( "%s: vnum %d MUDPROG char", __FUNCTION__, vnum );
+         bug( "%s: vnum %d MUDPROG char", __func__, vnum );
          exit( 1 );
       }
       mprg = new mud_prog_data;
@@ -867,7 +867,7 @@ void obj_index::oprog_read_programs( FILE * fp )
       switch ( mprg->type )
       {
          case ERROR_PROG:
-            bug( "%s: vnum %d MUDPROG type.", __FUNCTION__, vnum );
+            bug( "%s: vnum %d MUDPROG type.", __func__, vnum );
             exit( 1 );
 
          case IN_FILE_PROG:

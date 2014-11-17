@@ -194,7 +194,7 @@ mob_index *get_mob_index( int vnum )
       return imob->second;
 
    if( fBootDb )
-      bug( "%s: bad vnum %d.", __FUNCTION__, vnum );
+      bug( "%s: bad vnum %d.", __func__, vnum );
 
    return NULL;
 }
@@ -217,7 +217,7 @@ char_data *mob_index::create_mobile(  )
 
    if( !this )
    {
-      bug( "%s: NULL pMobIndex.", __FUNCTION__ );
+      bug( "%s: NULL pMobIndex.", __func__ );
       exit( 1 );
    }
 
@@ -519,7 +519,7 @@ void mob_index::mprog_read_programs( FILE * fp )
 
       if( letter != '>' )
       {
-         bug( "%s: vnum %d MUDPROG char", __FUNCTION__, vnum );
+         bug( "%s: vnum %d MUDPROG char", __func__, vnum );
          exit( 1 );
       }
       mprg = new mud_prog_data;
@@ -531,7 +531,7 @@ void mob_index::mprog_read_programs( FILE * fp )
       switch ( mprg->type )
       {
          case ERROR_PROG:
-            bug( "%s: vnum %d MUDPROG type.", __FUNCTION__, vnum );
+            bug( "%s: vnum %d MUDPROG type.", __func__, vnum );
             exit( 1 );
 
          case IN_FILE_PROG:

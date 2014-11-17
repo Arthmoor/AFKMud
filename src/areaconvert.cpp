@@ -294,7 +294,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __FUNCTION__ );
+      bug( "%s: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
@@ -312,7 +312,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __FUNCTION__ );
+         bug( "%s: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
@@ -363,7 +363,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+            bug( "%s: vnum %d duplicated.", __func__, vnum );
             if( manual )
             {
                area_failed = true;
@@ -579,7 +579,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
       if( letter != 'S' && letter != 'C' && letter != 'D' && letter != 'Z' )
       {
-         bug( "%s: vnum %d: letter '%c' not S, C, Z, or D.", __FUNCTION__, vnum, letter );
+         bug( "%s: vnum %d: letter '%c' not S, C, Z, or D.", __func__, vnum, letter );
          shutdown_mud( "bad mob data" );
          exit( 1 );
       }
@@ -617,7 +617,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
                if( pMobIndex->race < 0 || pMobIndex->race >= MAX_NPC_RACE )
                {
-                  bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __FUNCTION__, vnum );
+                  bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __func__, vnum );
                   pMobIndex->race = get_npc_race( "monster" );
                }
 
@@ -630,7 +630,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
                if( pMobIndex->Class < 0 || pMobIndex->Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __FUNCTION__, vnum );
+                  bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __func__, vnum );
                   pMobIndex->Class = get_npc_class( "warrior" );
                }
             }
@@ -689,7 +689,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
                if( pMobIndex->race < 0 || pMobIndex->race >= MAX_NPC_RACE )
                {
-                  bug( "%s: vnum %d: Mob has invalid race: %s. Defaulting to monster.", __FUNCTION__, vnum, srace );
+                  bug( "%s: vnum %d: Mob has invalid race: %s. Defaulting to monster.", __func__, vnum, srace );
                   pMobIndex->race = get_npc_race( "monster" );
                }
 
@@ -702,7 +702,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
                if( pMobIndex->Class < 0 || pMobIndex->Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: vnum %d: Mob has invalid class: %s. Defaulting to warrior.", __FUNCTION__, vnum, sclass );
+                  bug( "%s: vnum %d: Mob has invalid class: %s. Defaulting to warrior.", __func__, vnum, sclass );
                   pMobIndex->Class = get_npc_class( "warrior" );
                }
             }
@@ -836,7 +836,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          }
          else
          {
-            bug( "%s: vnum %d has unknown field '%c' after defense values", __FUNCTION__, vnum, letter );
+            bug( "%s: vnum %d has unknown field '%c' after defense values", __func__, vnum, letter );
             shutdown_mud( "Invalid mob field data" );
             exit( 1 );
          }
@@ -860,7 +860,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __FUNCTION__ );
+      bug( "%s: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
@@ -877,7 +877,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __FUNCTION__ );
+         bug( "%s: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
@@ -928,7 +928,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+            bug( "%s: vnum %d duplicated.", __func__, vnum );
             if( manual )
             {
                area_failed = true;
@@ -1144,7 +1144,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
                   risa = one_argument( risa, flag );
                   value = get_risflag( flag );
                   if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "%s: Unsupportable value for RISA flag: %s", __FUNCTION__, flag );
+                     bug( "%s: Unsupportable value for RISA flag: %s", __func__, flag );
                   else
                      paf->rismod.set( value );
                }
@@ -1238,7 +1238,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __FUNCTION__ );
+      bug( "%s: no #AREA seen yet.", __func__ );
       shutdown_mud( "No #AREA" );
       exit( 1 );
    }
@@ -1254,7 +1254,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __FUNCTION__ );
+         bug( "%s: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
@@ -1305,7 +1305,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __FUNCTION__, vnum );
+            bug( "%s: vnum %d duplicated.", __func__, vnum );
             if( manual )
             {
                area_failed = true;
@@ -1387,7 +1387,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
       if( pRoomIndex->sector_type < 0 || pRoomIndex->sector_type >= SECT_MAX )
       {
-         bug( "%s: vnum %d has unsupported sector_type %d.", __FUNCTION__, vnum, pRoomIndex->sector_type );
+         bug( "%s: vnum %d has unsupported sector_type %d.", __func__, vnum, pRoomIndex->sector_type );
          pRoomIndex->sector_type = 1;
       }
 
@@ -1425,35 +1425,35 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             switch ( letter2 )
             {
                default:
-                  bug( "%s: SmaugWiz - bad command '%c'.", __FUNCTION__, letter2 );
+                  bug( "%s: SmaugWiz - bad command '%c'.", __func__, letter2 );
                   if( fBootDb )
-                     boot_log( "%s: %s (%d) bad command '%c'.", __FUNCTION__, tarea->filename, count, letter2 );
+                     boot_log( "%s: %s (%d) bad command '%c'.", __func__, tarea->filename, count, letter2 );
                   return;
 
                case 'M':
                   if( get_mob_index( arg2 ) == NULL && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) 'M': mobile %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg2 );
+                     boot_log( "%s: SmaugWiz - %s (%d) 'M': mobile %d doesn't exist.", __func__, tarea->filename, count, arg2 );
                   break;
 
                case 'O':
                   if( get_obj_index( arg2 ) == NULL && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter2, arg2 );
+                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   break;
 
                case 'P':
                   if( get_obj_index( arg2 ) == NULL && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter2, arg2 );
+                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   if( arg4 > 0 )
                   {
                      if( get_obj_index( arg4 ) == NULL && fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'P': destination object %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg4 );
+                        boot_log( "%s: SmaugWiz - %s (%d) 'P': destination object %d doesn't exist.", __func__, tarea->filename, count, arg4 );
                   }
                   break;
 
                case 'G':
                case 'E':
                   if( get_obj_index( arg2 ) == NULL && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter2, arg2 );
+                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   break;
 
                case 'T':
@@ -1462,31 +1462,31 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                case 'H':
                   if( arg1 > 0 )
                      if( get_obj_index( arg2 ) == NULL && fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'H': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg2 );
+                        boot_log( "%s: SmaugWiz - %s (%d) 'H': object %d doesn't exist.", __func__, tarea->filename, count, arg2 );
                   break;
 
                case 'D':
                   if( arg3 < 0 || arg3 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg3 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
                   {
-                     bug( "%s: SmaugWiz - 'D': exit %d not door.", __FUNCTION__, arg3 );
+                     bug( "%s: SmaugWiz - 'D': exit %d not door.", __func__, arg3 );
                      log_printf( "Reset: %c %d %d %d %d %d", letter2, extra, arg1, arg2, arg3, arg4 );
                      if( fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'D': exit %d not door.", __FUNCTION__, tarea->filename, count, arg3 );
+                        boot_log( "%s: SmaugWiz - %s (%d) 'D': exit %d not door.", __func__, tarea->filename, count, arg3 );
                   }
                   if( arg4 < 0 || arg4 > 2 )
                   {
-                     bug( "%s: 'D': bad 'locks': %d.", __FUNCTION__, arg4 );
+                     bug( "%s: 'D': bad 'locks': %d.", __func__, arg4 );
                      if( fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'D': bad 'locks': %d.", __FUNCTION__, tarea->filename, count, arg4 );
+                        boot_log( "%s: SmaugWiz - %s (%d) 'D': bad 'locks': %d.", __func__, tarea->filename, count, arg4 );
                   }
                   break;
 
                case 'R':
                   if( arg3 < 0 || arg3 > 10 )
                   {
-                     bug( "%s: 'R': bad exit %d.", __FUNCTION__, arg3 );
+                     bug( "%s: 'R': bad exit %d.", __func__, arg3 );
                      if( fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'R': bad exit %d.", __FUNCTION__, tarea->filename, count, arg3 );
+                        boot_log( "%s: SmaugWiz - %s (%d) 'R': bad exit %d.", __func__, tarea->filename, count, arg3 );
                      break;
                   }
                   break;
@@ -1509,7 +1509,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             door = fread_number( fp );
             if( door < 0 || door > DIR_SOMEWHERE )
             {
-               bug( "%s: vnum %d has bad door number %d.", __FUNCTION__, vnum, door );
+               bug( "%s: vnum %d has bad door number %d.", __func__, vnum, door );
                if( fBootDb )
                   exit( 1 );
             }
@@ -1601,7 +1601,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                   risa = one_argument( risa, flag );
                   value = get_risflag( flag );
                   if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "%s: Unsupportable value for RISA flag: %s", __FUNCTION__, flag );
+                     bug( "%s: Unsupportable value for RISA flag: %s", __func__, flag );
                   else
                      paf->rismod.set( value );
                }
@@ -1621,7 +1621,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
          }
          else
          {
-            bug( "%s: vnum %d has flag '%c' not 'RDES'.", __FUNCTION__, vnum, letter );
+            bug( "%s: vnum %d has flag '%c' not 'RDES'.", __func__, vnum, letter );
             shutdown_mud( "Room flag not RDES" );
             exit( 1 );
          }
@@ -1644,7 +1644,7 @@ void load_stresets( area_data * tarea, FILE * fp )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __FUNCTION__ );
+      bug( "%s: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
@@ -1656,7 +1656,7 @@ void load_stresets( area_data * tarea, FILE * fp )
 
    if( tarea->rooms.empty(  ) )
    {
-      bug( "%s: No #ROOMS section found. Cannot load resets.", __FUNCTION__ );
+      bug( "%s: No #ROOMS section found. Cannot load resets.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #ROOMS" );
@@ -1724,31 +1724,31 @@ void load_stresets( area_data * tarea, FILE * fp )
       switch ( letter )
       {
          default:
-            bug( "%s: bad command '%c'.", __FUNCTION__, letter );
+            bug( "%s: bad command '%c'.", __func__, letter );
             if( fBootDb )
-               boot_log( "%s: %s (%d) bad command '%c'.", __FUNCTION__, tarea->filename, count, letter );
+               boot_log( "%s: %s (%d) bad command '%c'.", __func__, tarea->filename, count, letter );
             return;
 
          case 'M':
             if( get_mob_index( arg1 ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg1 );
+               boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __func__, tarea->filename, count, arg1 );
 
             if( ( pRoomIndex = get_room_index( arg3 ) ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) 'M': room %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg3 );
+               boot_log( "%s: %s (%d) 'M': room %d doesn't exist.", __func__, tarea->filename, count, arg3 );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
             break;
 
          case 'O':
             if( get_obj_index( arg1 ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter, arg1 );
+               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
 
             if( ( pRoomIndex = get_room_index( arg3 ) ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) '%c': room %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter, arg3 );
+               boot_log( "%s: %s (%d) '%c': room %d doesn't exist.", __func__, tarea->filename, count, letter, arg3 );
             else
             {
                if( !pRoomIndex )
-                  bug( "%s: Unable to add object reset - room not found.", __FUNCTION__ );
+                  bug( "%s: Unable to add object reset - room not found.", __func__ );
                else
                   pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
             }
@@ -1756,16 +1756,16 @@ void load_stresets( area_data * tarea, FILE * fp )
 
          case 'P':
             if( get_obj_index( arg1 ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter, arg1 );
+               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( arg3 > 0 )
             {
                if( get_obj_index( arg3 ) == NULL && fBootDb )
-                  boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg3 );
+                  boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __func__, tarea->filename, count, arg3 );
                if( extra > 1 )
                   not01 = true;
             }
             if( !pRoomIndex )
-               bug( "%s: Unable to add put reset - room not found.", __FUNCTION__ );
+               bug( "%s: Unable to add put reset - room not found.", __func__ );
             else
             {
                if( arg3 == 0 )
@@ -1777,66 +1777,66 @@ void load_stresets( area_data * tarea, FILE * fp )
          case 'G':
          case 'E':
             if( get_obj_index( arg1 ) == NULL && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __FUNCTION__, tarea->filename, count, letter, arg1 );
+               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( !pRoomIndex )
-               bug( "%s: Unable to add give/equip reset - room not found.", __FUNCTION__ );
+               bug( "%s: Unable to add give/equip reset - room not found.", __func__ );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2, -2 );
             break;
 
          case 'T':
             if( IS_SET( extra, TRAP_OBJ ) )
-               bug( "%s: Unable to add legacy object trap reset. Must be converted manually.", __FUNCTION__ );
+               bug( "%s: Unable to add legacy object trap reset. Must be converted manually.", __func__ );
             else
             {
                if( !( pRoomIndex = get_room_index( arg3 ) ) )
-                  bug( "%s: Unable to add trap reset - room not found.", __FUNCTION__ );
+                  bug( "%s: Unable to add trap reset - room not found.", __func__ );
                else
                   pRoomIndex->add_reset( letter, extra, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2 );
             }
             break;
 
          case 'H':
-            bug( "%s: Unable to convert legacy hide reset. Must be converted manually.", __FUNCTION__ );
+            bug( "%s: Unable to convert legacy hide reset. Must be converted manually.", __func__ );
             break;
 
          case 'D':
             if( !( pRoomIndex = get_room_index( arg1 ) ) )
             {
-               bug( "%s: 'D': room %d doesn't exist.", __FUNCTION__, arg1 );
+               bug( "%s: 'D': room %d doesn't exist.", __func__, arg1 );
                log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': room %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg1 );
+                  boot_log( "%s: %s (%d) 'D': room %d doesn't exist.", __func__, tarea->filename, count, arg1 );
                break;
             }
 
             if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
             {
-               bug( "%s: 'D': exit %d not door.", __FUNCTION__, arg2 );
+               bug( "%s: 'D': exit %d not door.", __func__, arg2 );
                log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': exit %d not door.", __FUNCTION__, tarea->filename, count, arg2 );
+                  boot_log( "%s: %s (%d) 'D': exit %d not door.", __func__, tarea->filename, count, arg2 );
             }
 
             if( arg3 < 0 || arg3 > 2 )
             {
-               bug( "%s: 'D': bad 'locks': %d.", __FUNCTION__, arg3 );
+               bug( "%s: 'D': bad 'locks': %d.", __func__, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': bad 'locks': %d.", __FUNCTION__, tarea->filename, count, arg3 );
+                  boot_log( "%s: %s (%d) 'D': bad 'locks': %d.", __func__, tarea->filename, count, arg3 );
             }
             pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2, -2 );
             break;
 
          case 'R':
             if( !( pRoomIndex = get_room_index( arg1 ) ) && fBootDb )
-               boot_log( "%s: %s (%d) 'R': room %d doesn't exist.", __FUNCTION__, tarea->filename, count, arg1 );
+               boot_log( "%s: %s (%d) 'R': room %d doesn't exist.", __func__, tarea->filename, count, arg1 );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, -2, -2, -2, -2, -2, -2, -2, -2 );
             if( arg2 < 0 || arg2 > 10 )
             {
-               bug( "%s: 'R': bad exit %d.", __FUNCTION__, arg2 );
+               bug( "%s: 'R': bad exit %d.", __func__, arg2 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'R': bad exit %d.", __FUNCTION__, tarea->filename, count, arg2 );
+                  boot_log( "%s: %s (%d) 'R': bad exit %d.", __func__, tarea->filename, count, arg2 );
                break;
             }
             break;
@@ -1931,7 +1931,7 @@ void load_stock_area_file( const string & filename, bool manual )
       if( !( fpArea = fopen( fname, "r" ) ) )
       {
          perror( fname );
-         bug( "%s: Error locating area file for conversion. Not present in conversion directory.", __FUNCTION__ );
+         bug( "%s: Error locating area file for conversion. Not present in conversion directory.", __func__ );
          return;
       }
       if( stat( fname, &fst ) != -1 )
@@ -1940,7 +1940,7 @@ void load_stock_area_file( const string & filename, bool manual )
    else if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
    {
       perror( filename.c_str(  ) );
-      bug( "%s: error loading file (can't open) %s", __FUNCTION__, filename.c_str(  ) );
+      bug( "%s: error loading file (can't open) %s", __func__, filename.c_str(  ) );
       return;
    }
 
@@ -1951,12 +1951,12 @@ void load_stock_area_file( const string & filename, bool manual )
    {
       if( fBootDb )
       {
-         bug( "%s: No # found at start of area file.", __FUNCTION__ );
+         bug( "%s: No # found at start of area file.", __func__ );
          exit( 1 );
       }
       else
       {
-         log_printf( "%s: No # found at start of area file %s", __FUNCTION__, filename.c_str(  ) );
+         log_printf( "%s: No # found at start of area file %s", __func__, filename.c_str(  ) );
          return;
       }
    }
@@ -1988,7 +1988,7 @@ void load_stock_area_file( const string & filename, bool manual )
          {
             area_failed = true;
             FCLOSE( fpArea );
-            log_printf( "%s: Invalid header at start of area file %s", __FUNCTION__, filename.c_str(  ) );
+            log_printf( "%s: Invalid header at start of area file %s", __func__, filename.c_str(  ) );
             return;
          }
       }
@@ -1997,7 +1997,7 @@ void load_stock_area_file( const string & filename, bool manual )
    {
       area_failed = true;
       FCLOSE( fpArea );
-      log_printf( "%s: Invalid header at start of area file %s", __FUNCTION__, filename.c_str(  ) );
+      log_printf( "%s: Invalid header at start of area file %s", __func__, filename.c_str(  ) );
       return;
    }
    dotdcheck = 0;
@@ -2012,7 +2012,7 @@ void load_stock_area_file( const string & filename, bool manual )
 
       if( fread_letter( fpArea ) != '#' )
       {
-         log_printf( "%s: # not found. %s", __FUNCTION__, tarea->filename );
+         log_printf( "%s: # not found. %s", __func__, tarea->filename );
          return;
       }
 
@@ -2122,7 +2122,7 @@ void load_stock_area_file( const string & filename, bool manual )
             switch ( letter = fread_letter( fpArea ) )
             {
                default:
-                  bug( "%s: letter '%c' not *MORS.", __FUNCTION__, letter );
+                  bug( "%s: letter '%c' not *MORS.", __func__, letter );
                   exit( 1 );
 
                case 'S':
@@ -2139,12 +2139,12 @@ void load_stock_area_file( const string & filename, bool manual )
                   temp = fread_word( fpArea );
                   if( !pMobIndex )
                   {
-                     bug( "%s: 'M': Invalid mob vnum!", __FUNCTION__ );
+                     bug( "%s: 'M': Invalid mob vnum!", __func__ );
                      break;
                   }
                   if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                   {
-                     bug( "%s: 'M': vnum %d, no spec_fun called %s.", __FUNCTION__, pMobIndex->vnum, temp );
+                     bug( "%s: 'M': vnum %d, no spec_fun called %s.", __func__, pMobIndex->vnum, temp );
                      pMobIndex->spec_funname.clear(  );
                   }
                   else
@@ -2192,7 +2192,7 @@ void load_stock_area_file( const string & filename, bool manual )
          if( ( area_version < 0 || area_version > 1 ) && area_version != 1000 )
          {
             area_failed = true;
-            bug( "%s: Version %d in %s is non-stock area format. Unable to process.", __FUNCTION__, area_version, filename.c_str(  ) );
+            bug( "%s: Version %d in %s is non-stock area format. Unable to process.", __func__, area_version, filename.c_str(  ) );
             if( !manual )
             {
                shutdown_mud( "Non-standard area format" );
@@ -2234,7 +2234,7 @@ void load_stock_area_file( const string & filename, bool manual )
       }
       else
       {
-         bug( "%s: %s: bad section name.", __FUNCTION__, tarea->filename );
+         bug( "%s: %s: bad section name.", __func__, tarea->filename );
          if( fBootDb )
          {
             shutdown_mud( "Corrupted area file" );
@@ -2297,7 +2297,7 @@ CMDF( do_areaconvert )
       if( ch )
          ch->print( "Convert what zone?\r\n" );
       else
-         bug( "%s: Attempt made to convert with no filename.", __FUNCTION__ );
+         bug( "%s: Attempt made to convert with no filename.", __func__ );
       return;
    }
 

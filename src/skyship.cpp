@@ -72,7 +72,7 @@ void land_skyship( char_data * ch, char_data * skyship, bool arrived )
       cancel_event( ev_skyship, ch );
    }
 
-   skyship->cmap = skyship->my_rider->cmap;
+   skyship->wmap = skyship->my_rider->wmap;
    skyship->mx = skyship->my_rider->mx;
    skyship->my = skyship->my_rider->my;
    skyship->backtracking = false;
@@ -246,7 +246,7 @@ void create_skyship( char_data * ch )
 
    if( !( vskyship = get_mob_index( MOB_VNUM_SKYSHIP ) ) )
    {
-      bug( "%s: Vnum %d not found for skyship", __FUNCTION__, MOB_VNUM_SKYSHIP );
+      bug( "%s: Vnum %d not found for skyship", __func__, MOB_VNUM_SKYSHIP );
       return;
    }
 
@@ -262,11 +262,11 @@ void create_skyship( char_data * ch )
     * skyship can be safely spawned using the same room as the PC calling it - Samson 
     */
    if( !skyship->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    skyship->set_actflag( ACT_ONMAP );
    skyship->inflight = true;
    skyship->heading = -1;
-   skyship->cmap = ch->cmap;
+   skyship->wmap = ch->wmap;
    skyship->mx = ch->mx;
    skyship->my = ch->my;
 
@@ -297,7 +297,7 @@ void create_skyship( char_data * ch )
  */
 CMDF( do_call )
 {
-   short terrain = get_terrain( ch->cmap, ch->mx, ch->my );
+   short terrain = get_terrain( ch->wmap, ch->mx, ch->my );
 
    /*
     * Sanity checks Reasons why a skyship wouldn't want to answer.
@@ -337,7 +337,7 @@ CMDF( do_call )
    create_skyship( ch );
 }
 
-landing_data *check_landing_site( short cmap, short x, short y )
+landing_data *check_landing_site( short wmap, short x, short y )
 {
    list < landing_data * >::iterator ilanding;
 
@@ -345,7 +345,7 @@ landing_data *check_landing_site( short cmap, short x, short y )
    {
       landing_data *landing = *ilanding;
 
-      if( landing->cmap == cmap )
+      if( landing->wmap == wmap )
       {
          if( landing->mx == x && landing->my == y )
             return landing;
@@ -395,7 +395,7 @@ CMDF( do_fly )
       return;
    }
 
-   lsite = check_landing_site( ch->cmap, ch->mx, ch->my );
+   lsite = check_landing_site( ch->wmap, ch->mx, ch->my );
 
    list < landing_data * >::iterator ilanding;
    for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
@@ -410,7 +410,7 @@ CMDF( do_fly )
             return;
          }
 
-         if( landing->cmap != ch->cmap )
+         if( landing->wmap != ch->wmap )
          {
             /*
              * Simplifies things. Especially since it would look funny to see alien terrain below you - Samson 
@@ -499,7 +499,7 @@ void load_landing_sites( void )
    stream.open( LANDING_SITE_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Landing site file cannot be found.", __FUNCTION__ );
+      bug( "%s: Landing site file cannot be found.", __func__ );
       return;
    }
 
@@ -526,7 +526,7 @@ void load_landing_sites( void )
          string coord;
 
          value = one_argument( value, coord );
-         landing->cmap = atoi( coord.c_str(  ) );
+         landing->wmap = atoi( coord.c_str(  ) );
 
          value = one_argument( value, coord );
          landing->mx = atoi( coord.c_str(  ) );
@@ -540,7 +540,7 @@ void load_landing_sites( void )
       else if( key == "End" )
          landinglist.push_back( landing );
       else
-         log_printf( "%s: Bad line in landing sites file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in landing sites file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -553,7 +553,7 @@ void save_landing_sites( void )
    stream.open( LANDING_SITE_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( LANDING_SITE_FILE );
    }
    else
@@ -564,7 +564,7 @@ void save_landing_sites( void )
          landing_data *landing = *ilanding;
 
          stream << "#LANDING_SITE" << endl;
-         stream << "Coordinates     " << landing->cmap << " " << landing->mx << " " << landing->my << endl;
+         stream << "Coordinates     " << landing->wmap << " " << landing->mx << " " << landing->my << endl;
          if( !landing->area.empty(  ) )
             stream << "Area            " << landing->area << endl;
          stream << "Cost            " << landing->cost << endl;
@@ -574,12 +574,12 @@ void save_landing_sites( void )
    }
 }
 
-void add_landing( short cmap, short x, short y )
+void add_landing( short wmap, short x, short y )
 {
    landing_data *landing;
 
    landing = new landing_data;
-   landing->cmap = cmap;
+   landing->wmap = wmap;
    landing->mx = x;
    landing->my = y;
    landing->cost = 50000;
@@ -591,7 +591,7 @@ void delete_landing_site( landing_data * landing )
 {
    if( !landing )
    {
-      bug( "%s: Trying to delete NULL landing site.", __FUNCTION__ );
+      bug( "%s: Trying to delete NULL landing site.", __func__ );
       return;
    }
 
@@ -632,7 +632,7 @@ CMDF( do_landing_sites )
    {
       landing_data *landing = *ilanding;
 
-      ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", map_names[landing->cmap], landing->mx, landing->my, landing->area.c_str(  ), landing->cost );
+      ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", map_names[landing->wmap], landing->mx, landing->my, landing->area.c_str(  ), landing->cost );
    }
 }
 
@@ -665,7 +665,7 @@ CMDF( do_setlanding )
       return;
    }
 
-   landing = check_landing_site( ch->cmap, ch->mx, ch->my );
+   landing = check_landing_site( ch->wmap, ch->mx, ch->my );
 
    if( !str_cmp( arg, "add" ) )
    {
@@ -674,8 +674,8 @@ CMDF( do_setlanding )
          ch->print( "There's already a landing site at this location.\r\n" );
          return;
       }
-      add_landing( ch->cmap, ch->mx, ch->my );
-      putterr( ch->cmap, ch->mx, ch->my, SECT_LANDING );
+      add_landing( ch->wmap, ch->mx, ch->my );
+      putterr( ch->wmap, ch->mx, ch->my, SECT_LANDING );
       ch->print( "Landing site added.\r\n" );
       return;
    }
@@ -689,7 +689,7 @@ CMDF( do_setlanding )
    if( !str_cmp( arg, "delete" ) )
    {
       delete_landing_site( landing );
-      putterr( ch->cmap, ch->mx, ch->my, SECT_OCEAN );
+      putterr( ch->wmap, ch->mx, ch->my, SECT_OCEAN );
       ch->print( "Landing site deleted.\r\n" );
       return;
    }

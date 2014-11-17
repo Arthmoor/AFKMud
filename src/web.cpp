@@ -199,7 +199,7 @@ void web_who(  )
 
    if( !( webwho = fopen( WEBWHO_FILE, "w" ) ) )
    {
-      bug( "%s: Unable to open webwho file for writing!", __FUNCTION__ );
+      bug( "%s: Unable to open webwho file for writing!", __func__ );
       return;
    }
 
@@ -227,7 +227,7 @@ void web_who(  )
 
       if( !d )
       {
-         bug( "%s: NULL DESCRIPTOR in list!", __FUNCTION__ );
+         bug( "%s: NULL DESCRIPTOR in list!", __func__ );
          continue;
       }
 
@@ -278,7 +278,7 @@ void web_who(  )
 
       if( !d )
       {
-         bug( "%s: NULL DESCRIPTOR in list!", __FUNCTION__ );
+         bug( "%s: NULL DESCRIPTOR in list!", __func__ );
          continue;
       }
 
@@ -344,7 +344,7 @@ void web_arealist(  )
 
    if( !( fp = fopen( AREALIST_FILE, "w" ) ) )
    {
-      bug( "%s: Unable to open arealist file for writing!", __FUNCTION__ );
+      bug( "%s: Unable to open arealist file for writing!", __func__ );
       return;
    }
 
@@ -435,7 +435,7 @@ void room_to_html( room_index * room, bool complete )
       FCLOSE( fp );
    }
    else
-      bug( "%s: Error Opening room to html index stream!", __FUNCTION__ );
+      bug( "%s: Error Opening room to html index stream!", __func__ );
 }
 
 CMDF( do_webroom )

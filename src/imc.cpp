@@ -583,7 +583,7 @@ void imc_freechan( imc_channel * c )
 {
    if( !c )
    {
-      imcbug( "%s: Freeing NULL channel!", __FUNCTION__ );
+      imcbug( "%s: Freeing NULL channel!", __func__ );
       return;
    }
    deleteptr( c );
@@ -652,13 +652,13 @@ void imc_new_channel( const string & chan, const string & owner, const string & 
 {
    if( chan.empty(  ) )
    {
-      imclog( "%s: NULL channel name received, skipping", __FUNCTION__ );
+      imclog( "%s: NULL channel name received, skipping", __func__ );
       return;
    }
 
    if( chan.find( ':' ) == string::npos )
    {
-      imclog( "%s: Improperly formatted channel name: %s", __FUNCTION__, chan.c_str(  ) );
+      imclog( "%s: Improperly formatted channel name: %s", __func__, chan.c_str(  ) );
       return;
    }
 
@@ -842,7 +842,7 @@ void imc_write_buffer( const string & txt )
     */
    if( !this_imcmud || this_imcmud->desc < 1 )
    {
-      imcbug( "%s: Configuration or socket is invalid!", __FUNCTION__ );
+      imcbug( "%s: Configuration or socket is invalid!", __func__ );
       return;
    }
 
@@ -851,7 +851,7 @@ void imc_write_buffer( const string & txt )
     */
    if( !this_imcmud->outbuf )
    {
-      imcbug( "%s: Output buffer has not been allocated!", __FUNCTION__ );
+      imcbug( "%s: Output buffer has not been allocated!", __func__ );
       return;
    }
 
@@ -905,13 +905,13 @@ void imc_packet::send(  )
 imc_packet::imc_packet( const string & pfrom, const string & ptype, const string & pto )
 {
    if( ptype.empty(  ) )
-      imcbug( "%s: Attempt to build packet with no type field.", __FUNCTION__ );
+      imcbug( "%s: Attempt to build packet with no type field.", __func__ );
 
    if( pfrom.empty(  ) )
-      imcbug( "%s: Attempt to build %s packet with no from field.", __FUNCTION__, ptype.c_str(  ) );
+      imcbug( "%s: Attempt to build %s packet with no from field.", __func__, ptype.c_str(  ) );
 
    if( pto.empty(  ) )
-      imcbug( "%s: Attempt to build %s packet with no to field.", __FUNCTION__, ptype.c_str(  ) );
+      imcbug( "%s: Attempt to build %s packet with no to field.", __func__, ptype.c_str(  ) );
 
    this->from = pfrom + "@" + this_imcmud->localname;
    this->type = ptype;
@@ -1065,13 +1065,13 @@ void update_imchistory( imc_channel * channel, const string & message )
 
    if( !channel )
    {
-      imcbug( "%s: NULL channel received!", __FUNCTION__ );
+      imcbug( "%s: NULL channel received!", __func__ );
       return;
    }
 
    if( message.empty(  ) )
    {
-      imcbug( "%s: NULL message received!", __FUNCTION__ );
+      imcbug( "%s: NULL message received!", __func__ );
       return;
    }
 
@@ -1933,7 +1933,7 @@ PFUN( imc_recv_iceupdate )
 
    if( keymap["channel"].empty(  ) )
    {
-      imclog( "%s: NULL channel name received, skipping", __FUNCTION__ );
+      imclog( "%s: NULL channel name received, skipping", __func__ );
       return;
    }
 
@@ -2565,7 +2565,7 @@ bool imc_read_socket( void )
          break;
       else if( nRead == -1 )
       {
-         imclog( "%s: Descriptor error on #%d: %s", __FUNCTION__, this_imcmud->desc, strerror( iErr ) );
+         imclog( "%s: Descriptor error on #%d: %s", __func__, this_imcmud->desc, strerror( iErr ) );
          return false;
       }
    }
@@ -2763,7 +2763,7 @@ void imc_loadchar( char_data * ch, FILE * fp, const char *word )
    switch ( word[0] )
    {
       default:
-         bug( "%s: no match: %s", __FUNCTION__, word );
+         bug( "%s: no match: %s", __func__, word );
          fread_to_eol( fp );
          break;
 
@@ -3081,7 +3081,7 @@ void imc_loadchannels( void )
          imc_chanlist.push_back( c );
       }
       else
-         imclog( "%s: Invalid key: %s", __FUNCTION__, key.c_str(  ) );
+         imclog( "%s: Invalid key: %s", __func__, key.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -3095,7 +3095,7 @@ void imc_savebans( void )
    stream.open( IMC_BAN_FILE );
    if( !stream.is_open(  ) )
    {
-      imcbug( "%s: error opening ban file for write", __FUNCTION__ );
+      imcbug( "%s: error opening ban file for write", __func__ );
       return;
    }
 
@@ -3121,7 +3121,7 @@ void imc_readbans( void )
    stream.open( IMC_BAN_FILE );
    if( !stream.is_open(  ) )
    {
-      imcbug( "%s: couldn't open ban file", __FUNCTION__ );
+      imcbug( "%s: couldn't open ban file", __func__ );
       return;
    }
 
@@ -3292,7 +3292,7 @@ void imc_load_helps( void )
 
          if( permvalue < 0 || permvalue > IMCPERM_IMP )
          {
-            imclog( "%s: Command %s loaded with invalid permission %s. Set to Imp.", __FUNCTION__, help->hname.c_str(  ), value.c_str(  ) );
+            imclog( "%s: Command %s loaded with invalid permission %s. Set to Imp.", __func__, help->hname.c_str(  ), value.c_str(  ) );
             help->level = IMCPERM_IMP;
          }
          else
@@ -3311,7 +3311,7 @@ void imc_load_helps( void )
          imc_helplist.push_back( help );
 
       else
-         imclog( "%s: Invalid key in IMC helps: %s", __FUNCTION__, key.c_str(  ) );
+         imclog( "%s: Invalid key in IMC helps: %s", __func__, key.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -3395,7 +3395,7 @@ bool imc_load_commands( void )
          cmd->function = imc_function( value );
          if( !cmd->function )
          {
-            imcbug( "%s: Command %s loaded with invalid function. Set to NULL.", __FUNCTION__, cmd->name.c_str(  ) );
+            imcbug( "%s: Command %s loaded with invalid function. Set to NULL.", __func__, cmd->name.c_str(  ) );
             cmd->funcname.clear(  );
          }
       }
@@ -3418,7 +3418,7 @@ bool imc_load_commands( void )
       else if( key == "End" )
          imc_commandlist.push_back( cmd );
       else
-         imcbug( "%s: Invalid key: %s", __FUNCTION__, key.c_str(  ) );
+         imcbug( "%s: Invalid key: %s", __func__, key.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -3468,7 +3468,7 @@ void imc_load_ucache( void )
       else if( key == "End" )
          imc_ucachelist.push_back( user );
       else
-         imcbug( "%s: Invalid key: %s", __FUNCTION__, key.c_str(  ) );
+         imcbug( "%s: Invalid key: %s", __func__, key.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -3635,42 +3635,42 @@ bool imc_load_config( int desc )
 
    if( !this_imcmud )
    {
-      imclog( "%s: No server connection information!!", __FUNCTION__ );
+      imclog( "%s: No server connection information!!", __func__ );
       imclog( "%s", "Network configuration aborted." );
       return false;
    }
 
    if( this_imcmud->rhost.empty(  ) || this_imcmud->clientpw.empty(  ) || this_imcmud->serverpw.empty(  ) )
    {
-      imclog( "%s: Missing required configuration info.", __FUNCTION__ );
+      imclog( "%s: Missing required configuration info.", __func__ );
       imclog( "%s", "Network configuration aborted." );
       return false;
    }
 
    if( this_imcmud->localname.empty(  ) )
    {
-      imclog( "%s: Mud name not loaded in configuration file.", __FUNCTION__ );
+      imclog( "%s: Mud name not loaded in configuration file.", __func__ );
       imclog( "%s", "Network configuration aborted." );
       return false;
    }
 
    if( this_imcmud->fullname.empty(  ) )
    {
-      imclog( "%s: Missing InfoName parameter in configuration file.", __FUNCTION__ );
+      imclog( "%s: Missing InfoName parameter in configuration file.", __func__ );
       imclog( "%s", "Network configuration aborted." );
       return false;
    }
 
    if( this_imcmud->ihost.empty(  ) )
    {
-      imclog( "%s: Missing InfoHost parameter in configuration file.", __FUNCTION__ );
+      imclog( "%s: Missing InfoHost parameter in configuration file.", __func__ );
       imclog( "%s", "Network configuration aborted." );
       return false;
    }
 
    if( this_imcmud->email.empty(  ) )
    {
-      imclog( "%s: Missing InfoEmail parameter in configuration file.", __FUNCTION__ );
+      imclog( "%s: Missing InfoEmail parameter in configuration file.", __func__ );
       imclog( "%s", "Network configuration aborted." );
       return false;
    }
@@ -3729,7 +3729,7 @@ void imc_load_who_template( void )
 
    if( !stream.is_open(  ) )
    {
-      imclog( "%s: Unable to load template file for imcwho", __FUNCTION__ );
+      imclog( "%s: Unable to load template file for imcwho", __func__ );
       whot = NULL;
       return;
    }
@@ -3833,7 +3833,7 @@ int ipv4_connect( void )
       hostp = gethostbyname( this_imcmud->rhost.c_str(  ) );
       if( !hostp )
       {
-         imclog( "%s: Cannot resolve server hostname.", __FUNCTION__ );
+         imclog( "%s: Cannot resolve server hostname.", __func__ );
          imc_shutdown( false );
          return -1;
       }
@@ -3874,7 +3874,7 @@ int ipv4_connect( void )
    {
       if( errno != EINPROGRESS )
       {
-         imclog( "%s: Failed connect: Error %d: %s", __FUNCTION__, errno, strerror( errno ) );
+         imclog( "%s: Failed connect: Error %d: %s", __func__, errno, strerror( errno ) );
          perror( "connect" );
          close( desc );
          return -1;
@@ -3921,7 +3921,7 @@ bool imc_server_connect( void )
 
    if( n )
    {
-      imclog( "%s: getaddrinfo: %s", __FUNCTION__, gai_strerror( n ) );
+      imclog( "%s: getaddrinfo: %s", __func__, gai_strerror( n ) );
       return false;
    }
 
@@ -3938,7 +3938,7 @@ bool imc_server_connect( void )
    freeaddrinfo( ai_list );
    if( ai == NULL )
    {
-      imclog( "%s: socket or connect: failed for %s port %hu", __FUNCTION__, this_imcmud->rhost.c_str(  ), this_imcmud->rport );
+      imclog( "%s: socket or connect: failed for %s port %hu", __func__, this_imcmud->rhost.c_str(  ), this_imcmud->rport );
       imcwait = 100; // So it will try again according to the reconnect count.
       return false;
    }
@@ -4085,7 +4085,7 @@ void imc_hotboot( void )
    {
       stream.open( IMC_HOTBOOT_FILE );
       if( !stream.is_open(  ) )
-         imcbug( "%s: Unable to open IMC hotboot file for write.", __FUNCTION__ );
+         imcbug( "%s: Unable to open IMC hotboot file for write.", __func__ );
       else
       {
          stream << ( !this_imcmud->network.empty(  )? this_imcmud->network : "Unknown" ) << " " << ( !this_imcmud->
@@ -4131,7 +4131,7 @@ bool imc_startup_network( bool connected )
 
       stream.open( IMC_HOTBOOT_FILE );
       if( !stream.is_open(  ) )
-         imcbug( "%s: Unable to load IMC hotboot file.", __FUNCTION__ );
+         imcbug( "%s: Unable to load IMC hotboot file.", __func__ );
       else
       {
          stream >> this_imcmud->network >> this_imcmud->servername;
@@ -4168,7 +4168,7 @@ void imc_startup( bool force, int desc, bool connected )
 
    if( this_imcmud && this_imcmud->state > IMC_OFFLINE )
    {
-      imclog( "%s: Network startup called when already engaged!", __FUNCTION__ );
+      imclog( "%s: Network startup called when already engaged!", __func__ );
       return;
    }
 
@@ -4182,7 +4182,7 @@ void imc_startup( bool force, int desc, bool connected )
    {
       if( !imc_load_commands(  ) )
       {
-         imcbug( "%s: Unable to load command table!", __FUNCTION__ );
+         imcbug( "%s: Unable to load command table!", __func__ );
          return;
       }
    }
@@ -5115,7 +5115,7 @@ void web_imc_list(  )
    stream.open( IMC_WEBLIST );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( IMC_WEBLIST );
    }
 
@@ -6662,7 +6662,7 @@ IMC_FUN *imc_function( const string & name )
    funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
    if( ( error = dlerror(  ) ) )
    {
-      imcbug( "%s: %s", __FUNCTION__, error );
+      imcbug( "%s: %s", __func__, error );
       return NULL;
    }
    return ( IMC_FUN * ) funHandle;
@@ -6728,7 +6728,7 @@ bool imc_command_hook( char_data * ch, string & command, string & argument )
          if( cmd->function == NULL )
          {
             imc_to_char( "That command has no code set. Inform the administration.\r\n", ch );
-            imcbug( "%s: Command %s has no code set!", __FUNCTION__, cmd->name.c_str(  ) );
+            imcbug( "%s: Command %s has no code set!", __func__, cmd->name.c_str(  ) );
             return true;
          }
 

@@ -430,7 +430,7 @@ CMDF( do_disconnect )
          return;
       }
    }
-   bug( "%s: desc '%d' not found!", __FUNCTION__, desc );
+   bug( "%s: desc '%d' not found!", __func__, desc );
    ch->print( "Descriptor not found!\r\n" );
 }
 
@@ -536,7 +536,7 @@ void transfer_char( char_data * ch, char_data * victim, room_index * location )
 {
    if( !victim->in_room )
    {
-      bug( "%s: victim in NULL room: %s", __FUNCTION__, victim->name );
+      bug( "%s: victim in NULL room: %s", __func__, victim->name );
       return;
    }
 
@@ -643,17 +643,17 @@ CMDF( do_transfer )
    transfer_char( ch, victim, location );
 }
 
-void location_action( char_data * ch, const string & argument, room_index * location, short map, short x, short y )
+void location_action( char_data * ch, const string & argument, room_index * location, short wmap, short x, short y )
 {
    if( !location )
    {
-      bug( "%s: NULL room!", __FUNCTION__ );
+      bug( "%s: NULL room!", __func__ );
       return;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: NULL ch->in_room!", __FUNCTION__ );
+      bug( "%s: NULL ch->in_room!", __func__ );
       return;
    }
 
@@ -674,7 +674,7 @@ void location_action( char_data * ch, const string & argument, room_index * loca
       return;
    }
 
-   short origmap = ch->cmap;
+   short origmap = ch->wmap;
    short origx = ch->mx;
    short origy = ch->my;
 
@@ -685,20 +685,20 @@ void location_action( char_data * ch, const string & argument, room_index * loca
    if( location->flags.test( ROOM_MAP ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->set_pcflag( PCFLAG_ONMAP );
-      ch->cmap = map;
+      ch->wmap = wmap;
       ch->mx = x;
       ch->my = y;
    }
    else if( location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
-      ch->cmap = map;
+      ch->wmap = wmap;
       ch->mx = x;
       ch->my = y;
    }
    else if( !location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->unset_pcflag( PCFLAG_ONMAP );
-      ch->cmap = -1;
+      ch->wmap = -1;
       ch->mx = -1;
       ch->my = -1;
    }
@@ -707,7 +707,7 @@ void location_action( char_data * ch, const string & argument, room_index * loca
    room_index *original = ch->in_room;
    ch->from_room(  );
    if( !ch->to_room( location ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    interpret( ch, argument );
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) && !original->flags.test( ROOM_MAP ) )
@@ -715,7 +715,7 @@ void location_action( char_data * ch, const string & argument, room_index * loca
    else if( !ch->has_pcflag( PCFLAG_ONMAP ) && original->flags.test( ROOM_MAP ) )
       ch->set_pcflag( PCFLAG_ONMAP );
 
-   ch->cmap = origmap;
+   ch->wmap = origmap;
    ch->mx = origx;
    ch->my = origy;
 
@@ -732,7 +732,7 @@ void location_action( char_data * ch, const string & argument, room_index * loca
       {
          ch->from_room(  );
          if( !ch->to_room( original ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          break;
       }
    }
@@ -748,12 +748,12 @@ void atmob( char_data * ch, char_data * wch, const string & argument )
       ch->print( "No such location.\r\n" );
       return;
    }
-   location_action( ch, argument, wch->in_room, wch->cmap, wch->mx, wch->my );
+   location_action( ch, argument, wch->in_room, wch->wmap, wch->mx, wch->my );
 }
 
 void atobj( char_data * ch, obj_data * obj, const string & argument )
 {
-   location_action( ch, argument, obj->in_room, obj->cmap, obj->mx, obj->my );
+   location_action( ch, argument, obj->in_room, obj->wmap, obj->mx, obj->my );
 }
 
 /* Smaug 1.02a at command restored by Samson 8-14-98 */
@@ -834,13 +834,13 @@ CMDF( do_rat )
 
       ch->from_room(  );
       if( !ch->to_room( location ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       interpret( ch, argument );
    }
 
    ch->from_room(  );
    if( !ch->to_room( original ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    ch->print( "Done.\r\n" );
 }
 
@@ -1044,7 +1044,7 @@ CMDF( do_ostat )
    ch->printf( "|In room: &G%5d&w |In obj: &G%s&w |Level :  &G%5d&w |Limit: &G%5d&w\r\n",
                obj->in_room == NULL ? 0 : obj->in_room->vnum, obj->in_obj == NULL ? "(NONE)" : obj->in_obj->short_descr, obj->level, obj->pIndexData->limit );
 
-   ch->printf( "|On map       : &G%s&w\r\n", obj->extra_flags.test( ITEM_ONMAP ) ? map_names[obj->cmap] : "(NONE)" );
+   ch->printf( "|On map       : &G%s&w\r\n", obj->extra_flags.test( ITEM_ONMAP ) ? map_names[obj->wmap] : "(NONE)" );
 
    ch->printf( "|Object Coords: &G%d %d&w\r\n", obj->mx, obj->my );
    ch->printf( "|Wear flags   : &G%s&w\r\n", bitset_string( obj->wear_flags, w_flags ) );
@@ -1263,7 +1263,7 @@ CMDF( do_mstat )
                   ( victim->pcdata->deity == NULL ) ? "(NONE)" : victim->pcdata->deity->name.c_str(  ),
                   !victim->pcdata->authed_by.empty(  )? victim->pcdata->authed_by.c_str(  ) : "Unknown", victim->spellfail, victim->pcdata->version );
 
-      ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d&w\r\n", victim->has_pcflag( PCFLAG_ONMAP ) ? map_names[victim->cmap] : "(NONE)", victim->mx, victim->my );
+      ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d&w\r\n", victim->has_pcflag( PCFLAG_ONMAP ) ? map_names[victim->wmap] : "(NONE)", victim->mx, victim->my );
 
       ch->printf( "|Master: &G%10s &w|Leader: &G%s&w\r\n", victim->master ? victim->master->name : "(NONE)", victim->leader ? victim->leader->name : "(NONE)" );
 
@@ -1401,7 +1401,7 @@ CMDF( do_mstat )
       ch->printf( "|Race  : &G%10s &w|Leader: &G%s&w\r\n", capitalize( npc_race[victim->race] ), victim->leader ? victim->leader->name : "(NONE)" );
 
       ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d    &w|Native Sector: &G%s&w\r\n",
-                  victim->has_actflag( ACT_ONMAP ) ? map_names[victim->cmap] : "(NONE)",
+                  victim->has_actflag( ACT_ONMAP ) ? map_names[victim->wmap] : "(NONE)",
                   victim->mx, victim->my, victim->sector < 0 ? "Not set yet" : sect_types[victim->sector] );
 
       ch->printf( "|Saves : ---------- | ----------------- | ----------------- | -----------------\r\n" );
@@ -1653,7 +1653,7 @@ CMDF( do_mwhere )
       {
          found = true;
          if( victim->has_actflag( ACT_ONMAP ) )
-            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &YOverland: &C%s %d %d\r\n", victim->pIndexData->vnum, victim->short_descr, map_names[victim->cmap], victim->mx, victim->my );
+            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &YOverland: &C%s %d %d\r\n", victim->pIndexData->vnum, victim->short_descr, map_names[victim->wmap], victim->mx, victim->my );
          else
             ch->pagerf( "&Y[&W%5d&Y] &G%-28s &Y[&W%5d&Y] &C%s\r\n", victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
       }
@@ -1784,18 +1784,18 @@ CMDF( do_owhere )
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->cmap], obj->mx, obj->my );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->wmap], obj->mx, obj->my );
          else
             snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n", obj->in_room->vnum, obj->in_room->name );
       }
       else if( obj->in_obj )
       {
-         bug( "%s: obj->in_obj after NULL!", __FUNCTION__ );
+         bug( "%s: obj->in_obj after NULL!", __func__ );
          mudstrlcat( buf, "object??\r\n", MSL );
       }
       else
       {
-         bug( "%s: object doesnt have location!", __FUNCTION__ );
+         bug( "%s: object doesnt have location!", __func__ );
          mudstrlcat( buf, "nowhere??\r\n", MSL );
       }
       ch->pager( buf );
@@ -1821,7 +1821,7 @@ CMDF( do_owhere )
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->cmap], obj->mx, obj->my );
+            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", map_names[obj->wmap], obj->mx, obj->my );
          else
             snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n", obj->in_room->vnum, obj->in_room->name );
       }
@@ -1829,7 +1829,7 @@ CMDF( do_owhere )
          snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Cobject &Y[&W%5d&Y] &C%s\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ).c_str(  ) );
       else
       {
-         bug( "%s: object doesnt have location!", __FUNCTION__ );
+         bug( "%s: object doesnt have location!", __func__ );
          mudstrlcat( buf, "nowhere??\r\n", MSL );
       }
       ch->pager( buf );
@@ -1860,7 +1860,7 @@ CMDF( do_pwhere )
          {
             found = true;
             if( victim->has_pcflag( PCFLAG_ONMAP ) )
-               ch->pagerf( "&G%-28s &Y[&WOverland&Y] &C%s %d %d\r\n", victim->name, map_names[victim->cmap], victim->mx, victim->my );
+               ch->pagerf( "&G%-28s &Y[&WOverland&Y] &C%s %d %d\r\n", victim->name, map_names[victim->wmap], victim->mx, victim->my );
             else
                ch->pagerf( "&G%-28s &Y[&W%5d&Y]&C %s\r\n", victim->name, victim->in_room->vnum, victim->in_room->name );
          }
@@ -2007,7 +2007,7 @@ CMDF( do_where )
             snprintf( buf + strlen( buf ), MSL - strlen( buf ), "object [%5d] %s\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ).c_str(  ) );
          else
          {
-            bug( "%s: object '%s' doesn't have location!", __FUNCTION__, obj->short_descr );
+            bug( "%s: object '%s' doesn't have location!", __func__, obj->short_descr );
             mudstrlcat( buf, "nowhere??\r\n", MSL );
          }
          ch->pager( buf );
@@ -2365,7 +2365,7 @@ void objinvoke( char_data * ch, string & argument )
 
    if( !( obj = pObjIndex->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -2392,14 +2392,14 @@ void objinvoke( char_data * ch, string & argument )
       else
       {
          ch->printf( "WARNING: This item has ego exceeding %d! Destroy this item when finished!\r\n", sysdata->minego );
-         log_printf( "%s: %s has loaded a copy of vnum %d.", __FUNCTION__, ch->name, pObjIndex->vnum );
+         log_printf( "%s: %s has loaded a copy of vnum %d.", __func__, ch->name, pObjIndex->vnum );
       }
    }
 #else
    if( obj->ego >= sysdata->minego )
    {
       ch->printf( "WARNING: This item has ego exceeding %d! Destroy this item when finished!\r\n", sysdata->minego );
-      log_printf( "%s: %s has loaded a copy of vnum %d.", __FUNCTION__, ch->name, pObjIndex->vnum );
+      log_printf( "%s: %s has loaded a copy of vnum %d.", __func__, ch->name, pObjIndex->vnum );
    }
 #endif
 
@@ -2501,13 +2501,13 @@ void mobinvoke( char_data * ch, string & argument )
 
    victim = pMobIndex->create_mobile(  );
    if( !victim->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
    /*
     * If you load one on the map, make sure it gets placed properly - Samson 8-21-99 
     */
    fix_maps( ch, victim );
-   victim->sector = get_terrain( ch->cmap, ch->mx, ch->my );
+   victim->sector = get_terrain( ch->wmap, ch->mx, ch->my );
 
    act( AT_IMMORT, "$n peers into the ether, and plucks out $N!", ch, NULL, victim, TO_ROOM );
    /*
@@ -4578,7 +4578,7 @@ CMDF( do_loadup )
       charlist.push_back( d->character );
       pclist.push_back( d->character );
       if( !d->character->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       old_room_vnum = d->character->in_room->vnum;
       if( d->character->get_trust(  ) >= ch->get_trust(  ) )
       {
@@ -5290,11 +5290,11 @@ CMDF( do_for )
             room_index *old_room = ch->in_room;
             ch->from_room(  );
             if( !ch->to_room( p->in_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             interpret( ch, command );
             ch->from_room(  );
             if( !ch->to_room( old_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          }  /* if found */
       }  /* for every char */
    }
@@ -5349,11 +5349,11 @@ CMDF( do_for )
             room_index *old_room = ch->in_room;
             ch->from_room(  );
             if( !ch->to_room( room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             interpret( ch, argument );
             ch->from_room(  );
             if( !ch->to_room( old_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          }  /* if found */
       }  /* for every room in a bucket */
    }  /* if strchr */
@@ -5433,7 +5433,7 @@ CMDF( do_hell )
    act( AT_MAGIC, "$n disappears in a cloud of hellish light.", victim, NULL, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    act( AT_MAGIC, "$n appears in a could of hellish light.", victim, NULL, ch, TO_NOTVICT );
    interpret( victim, "look" );
    if( !victim->desc )
@@ -5478,7 +5478,7 @@ CMDF( do_unhell )
    act( AT_MAGIC, "$n disappears in a cloud of godly light.", victim, NULL, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( location ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    victim->print( "The gods have smiled on you and released you from hell early!\r\n" );
    interpret( victim, "look" );
    if( victim != ch )
@@ -6393,14 +6393,14 @@ bool load_class_file( const char *fname )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -6436,7 +6436,7 @@ bool load_class_file( const char *fname )
                FCLOSE( fp );
                if( cl < 0 || cl >= MAX_CLASS )
                {
-                  bug( "%s: Class (%s) bad/not found (%d)", __FUNCTION__, Class->who_name ? Class->who_name : "name not found", cl );
+                  bug( "%s: Class (%s) bad/not found (%d)", __func__, Class->who_name ? Class->who_name : "name not found", cl );
                   deleteptr( Class );
                   return false;
                }
@@ -6490,9 +6490,9 @@ bool load_class_file( const char *fname )
                adp = fread_number( fp );
                sn = skill_lookup( word );
                if( cl < 0 || cl >= MAX_CLASS )
-                  bug( "%s: Skill %s -- Class bad/not found (%d)", __FUNCTION__, word, cl );
+                  bug( "%s: Skill %s -- Class bad/not found (%d)", __func__, word, cl );
                else if( !IS_VALID_SN( sn ) )
-                  bug( "%s: Skill %s unknown. Class: %d", __FUNCTION__, word, cl );
+                  bug( "%s: Skill %s unknown. Class: %d", __func__, word, cl );
                else
                {
                   skill_table[sn]->skill_level[cl] = lev;
@@ -6516,7 +6516,7 @@ bool load_class_file( const char *fname )
             {
                if( cl < 0 || cl >= MAX_CLASS )
                {
-                  bug( "%s: Title -- Class bad/not found (%d)", __FUNCTION__, cl );
+                  bug( "%s: Title -- Class bad/not found (%d)", __func__, cl );
                   fread_flagstring( fp );
                   fread_flagstring( fp );
                }
@@ -6530,7 +6530,7 @@ bool load_class_file( const char *fname )
                   ++tlev;
                }
                else
-                  bug( "%s: Too many titles. Class: %d", __FUNCTION__, cl );
+                  bug( "%s: Too many titles. Class: %d", __func__, cl );
                break;
             }
             KEY( "Thac0gain", Class->thac0_gain, fread_float( fp ) );
@@ -6577,7 +6577,7 @@ void load_classes(  )
 
       if( filename[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading class list!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading class list!", __func__ );
          break;
       }
 
@@ -6585,7 +6585,7 @@ void load_classes(  )
          break;
 
       if( !load_class_file( filename ) )
-         bug( "%s: Cannot load Class file: %s", __FUNCTION__, filename );
+         bug( "%s: Cannot load Class file: %s", __func__, filename );
       else
          ++MAX_PC_CLASS;
    }
@@ -6612,7 +6612,7 @@ void write_class_file( int cl )
    snprintf( filename, 256, "%s%s.class", CLASS_DIR, Class->who_name );
    if( !( fpout = fopen( filename, "w" ) ) )
    {
-      bug( "%s: Cannot open: %s for writing", __FUNCTION__, filename );
+      bug( "%s: Cannot open: %s for writing", __func__, filename );
       return;
    }
 
@@ -6672,7 +6672,7 @@ void write_class_list(  )
    snprintf( classlist, 256, "%s%s", CLASS_DIR, CLASS_LIST );
    if( !( fpList = fopen( classlist, "w" ) ) )
    {
-      bug( "%s: Can't open class list for writing.", __FUNCTION__ );
+      bug( "%s: Can't open class list for writing.", __func__ );
       return;
    }
 
@@ -7383,14 +7383,14 @@ bool load_race_file( const char *fname )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -7467,7 +7467,7 @@ bool load_race_file( const char *fname )
                FCLOSE( fp );
                if( ra < 0 || ra >= MAX_RACE )
                {
-                  bug( "%s: Race (%s) bad/not found (%d)", __FUNCTION__, race->race_name ? race->race_name : "name not found", ra );
+                  bug( "%s: Race (%s) bad/not found (%d)", __func__, race->race_name ? race->race_name : "name not found", ra );
                   deleteptr( race );
                   return false;
                }
@@ -7544,10 +7544,10 @@ bool load_race_file( const char *fname )
                adp = fread_number( fp );
                sn = skill_lookup( word );
                if( ra < 0 || ra >= MAX_RACE )
-                  bug( "%s: Skill %s -- race bad/not found (%d)", __FUNCTION__, word, ra );
+                  bug( "%s: Skill %s -- race bad/not found (%d)", __func__, word, ra );
                else if( !IS_VALID_SN( sn ) )
                {
-                  bug( "%s: skill %s = SN %d", __FUNCTION__, word, sn );
+                  bug( "%s: skill %s = SN %d", __func__, word, sn );
                   log_printf( "Skill %s unknown", word );
                }
                else
@@ -7610,7 +7610,7 @@ void load_races(  )
 
       if( filename[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          break;
       }
 
@@ -7618,7 +7618,7 @@ void load_races(  )
          break;
 
       if( !load_race_file( filename ) )
-         bug( "%s: Cannot load race file: %s", __FUNCTION__, filename );
+         bug( "%s: Cannot load race file: %s", __func__, filename );
       else
          ++MAX_PC_RACE;
    }
@@ -7719,7 +7719,7 @@ void write_race_list(  )
    snprintf( racelist, 256, "%s%s", RACE_DIR, RACE_LIST );
    if( !( fpList = fopen( racelist, "w" ) ) )
    {
-      bug( "%s: Error opening racelist.", __FUNCTION__ );
+      bug( "%s: Error opening racelist.", __func__ );
       return;
    }
    for( int i = 0; i < MAX_PC_RACE; ++i )

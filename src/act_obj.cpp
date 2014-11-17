@@ -744,7 +744,7 @@ CMDF( do_put )
       {
          if( obj == NULL )
          {
-            bug( "%s: clanstoreroom check: Object is NULL!", __FUNCTION__ );
+            bug( "%s: clanstoreroom check: Object is NULL!", __func__ );
             return;
          }
          if( obj->ego < sysdata->minego )
@@ -846,7 +846,7 @@ CMDF( do_put )
       {
          if( obj == NULL )
          {
-            bug( "%s: clanstoreroom check: Object is NULL!", __FUNCTION__ );
+            bug( "%s: clanstoreroom check: Object is NULL!", __func__ );
             return;
          }
          if( obj->ego < sysdata->minego )
@@ -1615,7 +1615,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
    switch ( bit )
    {
       default:
-         bug( "%s: uknown/unused item_wear bit %d. Obj vnum: %d", __FUNCTION__, bit, obj->pIndexData->vnum );
+         bug( "%s: uknown/unused item_wear bit %d. Obj vnum: %d", __func__, bit, obj->pIndexData->vnum );
          if( fReplace )
             ch->print( "You can't wear, wield, or hold that.\r\n" );
          return;
@@ -2553,7 +2553,7 @@ CMDF( do_brandish )
          ch_ret retcode = obj_cast_spell( staff->value[3], staff->value[0], ch, vch, NULL );
          if( retcode == rCHAR_DIED )
          {
-            bug( "%s: char died", __FUNCTION__ );
+            bug( "%s: char died", __func__ );
             return;
          }
       }
@@ -2634,7 +2634,7 @@ CMDF( do_zap )
       retcode = obj_cast_spell( wand->value[3], wand->value[0], ch, victim, obj );
       if( retcode == rCHAR_DIED )
       {
-         bug( "%s: char died", __FUNCTION__ );
+         bug( "%s: char died", __func__ );
          return;
       }
    }

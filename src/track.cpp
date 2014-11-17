@@ -139,7 +139,7 @@ int find_first_step( room_index * src, room_index * target, int maxdist )
 {
    if( !src || !target )
    {
-      bug( "%s: NULL source and target rooms passed to find_first_step!", __FUNCTION__ );
+      bug( "%s: NULL source and target rooms passed to find_first_step!", __func__ );
       return BFS_ERROR;
    }
 
@@ -316,13 +316,13 @@ void found_prey( char_data * ch, char_data * victim )
 
    if( !victim )
    {
-      bug( "%s: null victim", __FUNCTION__ );
+      bug( "%s: null victim", __func__ );
       return;
    }
 
    if( victim->in_room == NULL )
    {
-      bug( "%s: null victim->in_room: %s", __FUNCTION__, victim->name );
+      bug( "%s: null victim->in_room: %s", __func__, victim->name );
       return;
    }
 
@@ -476,7 +476,7 @@ void hunt_vic( char_data * ch )
 
       if( !( pexit = ch->in_room->get_exit( ret ) ) )
       {
-         bug( "%s: lost exit?", __FUNCTION__ );
+         bug( "%s: lost exit?", __func__ );
          return;
       }
 
@@ -521,9 +521,9 @@ void hunt_vic( char_data * ch )
       {
          if( !ch->in_room )
          {
-            bug( "%s: no ch->in_room! Name: %s. Placing mob in limbo.", __FUNCTION__, ch->name );
+            bug( "%s: no ch->in_room! Name: %s. Placing mob in limbo.", __func__, ch->name );
             if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             return;
          }
          interpret( ch, "say Damn! I lost track of my quarry!" );

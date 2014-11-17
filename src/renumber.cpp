@@ -177,7 +177,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
          r_table = r_data->r_obj;
       else
       {
-         bug( "%s: Invalid 'T' reset found.", __FUNCTION__ );
+         bug( "%s: Invalid 'T' reset found.", __func__ );
          return;
       }
       new_vnum = find_translation( reset->arg4, r_table );
@@ -201,7 +201,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
                r_table = r_data->r_room;
             else
             {
-               bug( "%s: Invalid action found in action table.", __FUNCTION__ );
+               bug( "%s: Invalid action found in action table.", __func__ );
                p += 2;
                continue;
             }
@@ -215,7 +215,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
                parg = &( reset->arg3 );
             else
             {
-               bug( "%s: Invalid argument number found in action table.", __FUNCTION__ );
+               bug( "%s: Invalid argument number found in action table.", __func__ );
                ++p;
                continue;
             }
@@ -230,7 +230,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
    }
 
    if( action_table[i] == NULL )
-      bug( "%s: Invalid reset '%c' found.", __FUNCTION__, reset->command );
+      bug( "%s: Invalid reset '%c' found.", __func__, reset->command );
 }
 
 void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_area, bool verbose )
@@ -407,7 +407,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       room = get_room_index( r_data->old_vnum );
       if( !room )
       {
-         bug( "%s: NULL room %d", __FUNCTION__, r_data->old_vnum );
+         bug( "%s: NULL room %d", __func__, r_data->old_vnum );
          continue;
       }
 
@@ -462,7 +462,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       mob = get_mob_index( r_data->old_vnum );
       if( !mob )
       {
-         bug( "%s: NULL mob %d", __FUNCTION__, r_data->old_vnum );
+         bug( "%s: NULL mob %d", __func__, r_data->old_vnum );
          continue;
       }
 
@@ -528,7 +528,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       obj = get_obj_index( r_data->old_vnum );
       if( !obj )
       {
-         bug( "%s: NULL obj %d", __FUNCTION__, r_data->old_vnum );
+         bug( "%s: NULL obj %d", __func__, r_data->old_vnum );
          continue;
       }
 

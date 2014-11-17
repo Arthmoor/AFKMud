@@ -169,7 +169,7 @@ void load_tongues(  )
       }
       else if( letter != '#' )
       {
-         bug( "%s: Letter '%c' not #.", __FUNCTION__, letter );
+         bug( "%s: Letter '%c' not #.", __func__, letter );
          exit( 1 );
       }
       word = fread_word( fp );

@@ -328,7 +328,7 @@ void save_morphs( void )
 
    if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( SYSTEM_DIR MORPH_FILE );
       return;
    }
@@ -377,7 +377,7 @@ CMDF( do_morphset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_morph_desc: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_morph_desc: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -394,7 +394,7 @@ CMDF( do_morphset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_morph_help: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: sub_morph_help: NULL ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -1727,7 +1727,7 @@ morph_data *fread_morph( FILE * fp )
 
    if( word[0] == '\0' )
    {
-      bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+      bug( "%s: EOF encountered reading file!", __func__ );
       word = "End";
    }
 
@@ -1744,14 +1744,14 @@ morph_data *fread_morph( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             /*
              * Bailing out on this morph as something may be messed up 
@@ -2012,7 +2012,7 @@ void load_morphs( void )
 
    if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "r" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( SYSTEM_DIR MORPH_FILE );
       return;
    }
@@ -2024,14 +2024,14 @@ void load_morphs( void )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "#END";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -2394,14 +2394,14 @@ void fread_morph_data( char_data * ch, FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -2463,7 +2463,7 @@ void fread_morph_data( char_data * ch, FILE * fp )
             {
                if( morph->morph )
                   if( str_cmp( morph->morph->name, fread_flagstring( fp ) ) )
-                     bug( "%s: Morph Name doesn't match vnum %d.", __FUNCTION__, morph->morph->vnum );
+                     bug( "%s: Morph Name doesn't match vnum %d.", __func__, morph->morph->vnum );
                break;
             }
 

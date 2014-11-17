@@ -167,7 +167,7 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "#ENDPROG";
       }
 
@@ -177,7 +177,7 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __FUNCTION__, word );
+            log_printf( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -226,7 +226,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
    if( !( progfile = fopen( MUDProgfile, "r" ) ) )
    {
-      bug( "%s: couldn't open mudprog file", __FUNCTION__ );
+      bug( "%s: couldn't open mudprog file", __func__ );
       return;
    }
 
@@ -236,7 +236,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
       if( letter != '#' )
       {
-         bug( "%s: MUDPROG char", __FUNCTION__ );
+         bug( "%s: MUDPROG char", __func__ );
          break;
       }
 
@@ -244,7 +244,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "ENDFILE";
       }
 
@@ -261,7 +261,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
             if( word[0] == '\0' )
             {
-               log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+               log_printf( "%s: EOF encountered reading file!", __func__ );
                word = "#ENDPROG";
             }
 
@@ -275,7 +275,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
             switch ( word[0] )
             {
                default:
-                  log_printf( "%s: no match: %s", __FUNCTION__, word );
+                  log_printf( "%s: no match: %s", __func__, word );
                   fread_to_eol( progfile );
                   break;
 
@@ -288,7 +288,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
                      switch ( mprg->type )
                      {
                         case IN_FILE_PROG:
-                           bug( "%s: Nested file programs are not allowed.", __FUNCTION__ );
+                           bug( "%s: Nested file programs are not allowed.", __func__ );
                            deleteptr( mprg );
                            break;
 

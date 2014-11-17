@@ -36,39 +36,12 @@ class wizinfo_data
      wizinfo_data & operator=( const wizinfo_data & );
 
  public:
-     wizinfo_data(  );
-    ~wizinfo_data(  );
+    wizinfo_data(  );
+   ~wizinfo_data(  );
 
-   void set_name( const string & newname )
-   {
-      name = newname;
-   }
-   string get_name(  )
-   {
-      return name;
-   }
-
-   void set_email( const string & newmail )
-   {
-      email = newmail;
-   }
-   const string get_email(  )
-   {
-      return email;
-   }
-
-   void set_level( short num )
-   {
-      level = num;
-   }
-   short get_level(  )
-   {
-      return level;
-   }
-
- private:
    string name;
    string email;
+   string realm;
    short level;
 };
 #endif

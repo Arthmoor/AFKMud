@@ -44,7 +44,7 @@ class landing_data
 
    string area;
    int cost;
-   short cmap;
+   short wmap;
    short mx;
    short my;
 };

@@ -137,14 +137,14 @@ char_data::~char_data(  )
 {
    if( !this )
    {
-      bug( "%s: NULL ch!", __FUNCTION__ );
+      bug( "%s: NULL ch!", __func__ );
       return;
    }
 
    // Hackish fix - if we forget, whoever reads this should remind us someday - Samson 3-28-05
    if( this->desc )
    {
-      bug( "%s: char still has descriptor.", __FUNCTION__ );
+      bug( "%s: char still has descriptor.", __func__ );
       log_printf( "Desc# %d, DescHost %s DescClient %s", this->desc->descriptor, this->desc->host.c_str(  ), this->desc->client.c_str(  ) );
       deleteptr( this->desc );
    }
@@ -264,7 +264,7 @@ char_data::char_data(  )
    this->perm_lck = 13;
    this->mx = -1; /* Overland Map - Samson 7-31-99 */
    this->my = -1;
-   this->cmap = -1;
+   this->wmap = -1;
    this->wait = 0;
    this->variables.clear(  );
 }
@@ -409,7 +409,7 @@ void char_data::set_color( short AType )
    this->desc->write_to_buffer( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "%s: NULL descriptor after WTB! CH: %s", __FUNCTION__, this->name ? this->name : "Unknown?!?" );
+      bug( "%s: NULL descriptor after WTB! CH: %s", __func__, this->name ? this->name : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];
@@ -426,7 +426,7 @@ void char_data::set_pager_color( short AType )
    this->desc->pager( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "%s: NULL descriptor after WTP! CH: %s", __FUNCTION__, this->name ? this->name : "Unknown?!?" );
+      bug( "%s: NULL descriptor after WTP! CH: %s", __func__, this->name ? this->name : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];
@@ -438,7 +438,7 @@ void char_data::set_title( const string & title )
 
    if( this->isnpc(  ) )
    {
-      bug( "%s: NPC %s", __FUNCTION__, this->name );
+      bug( "%s: NPC %s", __func__, this->name );
       return;
    }
 
@@ -662,7 +662,7 @@ bool char_data::can_see( char_data * victim, bool override )
 {
    if( !victim )  /* Gorog - panicked attempt to stop crashes */
    {
-      bug( "%s: NULL victim! CH %s tried to see it.", __FUNCTION__, name );
+      bug( "%s: NULL victim! CH %s tried to see it.", __func__, name );
       return false;
    }
 
@@ -1236,13 +1236,13 @@ void char_data::equip( obj_data * obj, int iWear )
 
    if( ( otmp = this->get_eq( iWear ) ) != NULL && ( !otmp->pIndexData->layers || !obj->pIndexData->layers ) )
    {
-      bug( "%s: already equipped (%d).", __FUNCTION__, iWear );
+      bug( "%s: already equipped (%d).", __func__, iWear );
       return;
    }
 
    if( obj->carried_by != this )
    {
-      bug( "%s: obj (%s) not being carried by ch (%s)!", __FUNCTION__, obj->name, this->name );
+      bug( "%s: obj (%s) not being carried by ch (%s)!", __func__, obj->name, this->name );
       return;
    }
 
@@ -1301,7 +1301,7 @@ void char_data::unequip( obj_data * obj )
 
    if( obj->wear_loc == WEAR_NONE )
    {
-      bug( "%s: %s already unequipped.", __FUNCTION__, name );
+      bug( "%s: %s already unequipped.", __func__, name );
       return;
    }
 
@@ -1633,7 +1633,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    {
       if( paf->bit < 0 || paf->bit >= MAX_AFFECTED_BY )
       {
-         bug( "%s: %s: Unknown bitflag: '%d' for location %d, with modifier %d", __FUNCTION__, name, paf->bit, paf->location, paf->modifier );
+         bug( "%s: %s: Unknown bitflag: '%d' for location %d, with modifier %d", __func__, name, paf->bit, paf->location, paf->modifier );
          return;
       }
       mod2 = mod;
@@ -1650,7 +1650,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != NULL && skill->type == SKILL_SPELL )
             this->set_aflag( AFF_RECURRINGSPELL );
          else
-            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __FUNCTION__, this->name, mod );
+            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name, mod );
          return;
       }
    }
@@ -1667,7 +1667,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       {
          mod = abs( mod );
          if( !IS_VALID_SN( mod ) || ( skill = skill_table[mod] ) == NULL || skill->type != SKILL_SPELL )
-            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __FUNCTION__, this->name, mod );
+            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name, mod );
          this->unset_aflag( AFF_RECURRINGSPELL );
          return;
       }
@@ -1709,7 +1709,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    switch ( location )
    {
       default:
-         bug( "%s: unknown location %d. (%s)", __FUNCTION__, paf->location, this->name );
+         bug( "%s: unknown location %d. (%s)", __func__, paf->location, this->name );
          return;
 
       case APPLY_NONE:
@@ -1883,7 +1883,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          if( IS_VALID_SN( mod ) )
             this->affect_strip( mod );
          else
-            bug( "%s: APPLY_STRIPSN invalid sn %d", __FUNCTION__, mod );
+            bug( "%s: APPLY_STRIPSN invalid sn %d", __func__, mod );
          break;
 
          /*
@@ -2058,13 +2058,13 @@ void char_data::affect_to_char( affect_data * paf )
 
    if( !this )
    {
-      bug( "%s: (NULL, %d)", __FUNCTION__, paf ? paf->type : 0 );
+      bug( "%s: (NULL, %d)", __func__, paf ? paf->type : 0 );
       return;
    }
 
    if( !paf )
    {
-      bug( "%s: (%s, NULL)", __FUNCTION__, name );
+      bug( "%s: (%s, NULL)", __func__, name );
       return;
    }
 
@@ -2087,7 +2087,7 @@ void char_data::affect_remove( affect_data * paf )
 {
    if( affects.empty(  ) )
    {
-      bug( "%s: (%s, %d): no affect.", __FUNCTION__, name, paf ? paf->type : 0 );
+      bug( "%s: (%s, %d): no affect.", __func__, name, paf ? paf->type : 0 );
       return;
    }
 
@@ -2168,7 +2168,7 @@ void char_data::showaffect( affect_data * paf )
 
    if( !paf )
    {
-      bug( "%s: NULL paf", __FUNCTION__ );
+      bug( "%s: NULL paf", __func__ );
       return;
    }
 
@@ -2417,7 +2417,7 @@ void char_data::from_room(  )
 
    if( !this->in_room )
    {
-      bug( "%s: %s not in a room!", __FUNCTION__, this->name );
+      bug( "%s: %s not in a room!", __func__, this->name );
       return;
    }
 
@@ -2478,7 +2478,7 @@ bool char_data::to_room( room_index * pRoomIndex )
    // Ok, asshole code, lets see you get past this!
    if( !pRoomIndex || !get_room_index( pRoomIndex->vnum ) )
    {
-      bug( "%s: %s -> NULL room!  Putting char in limbo (%d)", __FUNCTION__, this->name, ROOM_VNUM_LIMBO );
+      bug( "%s: %s -> NULL room!  Putting char in limbo (%d)", __func__, this->name, ROOM_VNUM_LIMBO );
       if( pRoomIndex )
          log_printf( "Supposedly from Vnum: %d", pRoomIndex->vnum );
 
@@ -2488,7 +2488,7 @@ bool char_data::to_room( room_index * pRoomIndex )
        */
       if( !( pRoomIndex = get_room_index( ROOM_VNUM_LIMBO ) ) )
       {
-         bug( "FATAL: Limbo room is MISSING! Expect crash! %s:%s, line %d", __FILE__, __FUNCTION__, __LINE__ );
+         bug( "FATAL: Limbo room is MISSING! Expect crash! %s:%s, line %d", __FILE__, __func__, __LINE__ );
          return false;
       }
    }
@@ -3247,7 +3247,7 @@ void stop_follower( char_data * ch )
 {
    if( !ch->master )
    {
-      bug( "%s: %s has null master.", __FUNCTION__, ch->name );
+      bug( "%s: %s has null master.", __func__, ch->name );
       return;
    }
 
@@ -3284,7 +3284,7 @@ void add_follower( char_data * ch, char_data * master )
 {
    if( ch->master )
    {
-      bug( "%s: non-null master.", __FUNCTION__ );
+      bug( "%s: non-null master.", __func__ );
       return;
    }
 
@@ -3479,20 +3479,20 @@ void char_data::extract( bool fPull )
 {
    if( !this->in_room )
    {
-      bug( "%s: %s in NULL room. Transferring to Limbo.", __FUNCTION__, this->name ? this->name : "???" );
+      bug( "%s: %s in NULL room. Transferring to Limbo.", __func__, this->name ? this->name : "???" );
       if( !this->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
 
    if( this == supermob && !mud_down )
    {
-      bug( "%s: ch == supermob!", __FUNCTION__ );
+      bug( "%s: ch == supermob!", __func__ );
       return;
    }
 
    if( this->char_died(  ) )
    {
-      bug( "%s: %s already died!", __FUNCTION__, this->name );
+      bug( "%s: %s already died!", __func__, this->name );
       /*
        * return; This return is commented out in the hops of allowing the dead mob to be extracted anyway 
        */
@@ -3628,7 +3628,7 @@ void char_data::extract( bool fPull )
          location = get_room_index( ROOM_VNUM_LIMBO );
 
       if( !this->to_room( location ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       if( this->has_pcflag( PCFLAG_ONMAP ) )
       {
@@ -3637,7 +3637,7 @@ void char_data::extract( bool fPull )
 
          this->mx = -1;
          this->my = -1;
-         this->cmap = -1;
+         this->wmap = -1;
       }
 
       /*
@@ -3695,7 +3695,7 @@ void char_data::extract( bool fPull )
    if( this->desc )
    {
       if( this->desc->character != this )
-         bug( "%s: %s's descriptor points to another char", __FUNCTION__, this->name );
+         bug( "%s: %s's descriptor points to another char", __func__, this->name );
       else
          close_socket( this->desc, false );
    }
@@ -3705,7 +3705,7 @@ void char_data::extract( bool fPull )
       --sysdata->playersonline;
       if( sysdata->playersonline < 0 )
       {
-         bug( "%s: Player count went negative!", __FUNCTION__ );
+         bug( "%s: Player count went negative!", __func__ );
          sysdata->playersonline = 0;
       }
    }
@@ -5010,7 +5010,7 @@ bool char_data::has_pcflag( int bit )
 void char_data::set_pcflag( int bit )
 {
    if( this->isnpc(  ) )
-      bug( "%s: Setting PC flag on NPC!", __FUNCTION__ );
+      bug( "%s: Setting PC flag on NPC!", __func__ );
    else
    {
       try
@@ -5027,7 +5027,7 @@ void char_data::set_pcflag( int bit )
 void char_data::unset_pcflag( int bit )
 {
    if( this->isnpc(  ) )
-      bug( "%s: Removing PC flag on NPC!", __FUNCTION__ );
+      bug( "%s: Removing PC flag on NPC!", __func__ );
    else
    {
       try
@@ -5044,7 +5044,7 @@ void char_data::unset_pcflag( int bit )
 void char_data::toggle_pcflag( int bit )
 {
    if( this->isnpc(  ) )
-      bug( "%s: Toggling PC flag on NPC!", __FUNCTION__ );
+      bug( "%s: Toggling PC flag on NPC!", __func__ );
    else
    {
       try
@@ -5062,7 +5062,7 @@ bool char_data::has_pcflags(  )
 {
    if( this->isnpc(  ) )
    {
-      bug( "%s: Checking PC flags on NPC!", __FUNCTION__ );
+      bug( "%s: Checking PC flags on NPC!", __func__ );
       return false;
    }
    else
@@ -5077,7 +5077,7 @@ bitset < MAX_PCFLAG > char_data::get_pcflags(  )
 {
    if( this->isnpc(  ) )
    {
-      bug( "%s: Retreving PC flags on NPC!", __FUNCTION__ );
+      bug( "%s: Retreving PC flags on NPC!", __func__ );
       return 0;
    }
    else
@@ -5088,7 +5088,7 @@ void char_data::set_file_pcflags( FILE * fp )
 {
    if( this->isnpc(  ) )
    {
-      bug( "%s: Setting PC flags on NPC from FILE!", __FUNCTION__ );
+      bug( "%s: Setting PC flags on NPC from FILE!", __func__ );
       return;
    }
 

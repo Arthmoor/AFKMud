@@ -134,7 +134,7 @@ void char_data::de_equip(  )
             {
                if( x == MAX_LAYERS )
                {
-                  bug( "%s: %s had on more than %d layers of clothing in one location (%d): %s", __FUNCTION__, name, MAX_LAYERS, obj->wear_loc, obj->name );
+                  bug( "%s: %s had on more than %d layers of clothing in one location (%d): %s", __func__, name, MAX_LAYERS, obj->wear_loc, obj->name );
                   break;
                }
 
@@ -205,7 +205,7 @@ void fwrite_char( char_data * ch, FILE * fp )
 
    if( ch->isnpc(  ) )
    {
-      bug( "%s: NPC save called!", __FUNCTION__ );
+      bug( "%s: NPC save called!", __func__ );
       return;
    }
 
@@ -274,7 +274,7 @@ void fwrite_char( char_data * ch, FILE * fp )
    /*
     * Overland Map - Samson 7-31-99 
     */
-   fprintf( fp, "Coordinates  %d %d %d\n", ch->mx, ch->my, ch->cmap );
+   fprintf( fp, "Coordinates  %d %d %d\n", ch->mx, ch->my, ch->wmap );
    fprintf( fp, "SavingThrows %d %d %d %d %d\n", ch->saving_poison_death, ch->saving_wand, ch->saving_para_petri, ch->saving_breath, ch->saving_spell_staff );
    fprintf( fp, "RentData     %d %d 0 0 %d\n", ch->pcdata->balance, ch->pcdata->daysidle, ch->pcdata->camp );
    /*
@@ -457,7 +457,7 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
 {
    if( iNest >= MAX_NEST )
    {
-      bug( "%s: iNest hit MAX_NEST %d", __FUNCTION__, iNest );
+      bug( "%s: iNest hit MAX_NEST %d", __func__, iNest );
       return;
    }
 
@@ -468,7 +468,7 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
 
       if( !obj )
       {
-         bug( "%s: NULL obj", __FUNCTION__ );
+         bug( "%s: NULL obj", __func__ );
          continue;
       }
 
@@ -590,7 +590,7 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
       fprintf( fp, "Oday         %d\n", obj->day );
       fprintf( fp, "Omonth       %d\n", obj->month );
       fprintf( fp, "Oyear        %d\n", obj->year );
-      fprintf( fp, "Coords       %d %d %d\n", obj->mx, obj->my, obj->cmap );
+      fprintf( fp, "Coords       %d %d %d\n", obj->mx, obj->my, obj->wmap );
       fprintf( fp, "%s", "Values      " );
       for( x = 0; x < MAX_OBJ_VALUE; ++x )
          fprintf( fp, " %d", obj->value[x] );
@@ -690,7 +690,7 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
       fprintf( fp, "Room      %d\n", mob->in_room->vnum );
    else
       fprintf( fp, "Room      %d\n", ROOM_VNUM_ALTAR );
-   fprintf( fp, "Coordinates  %d %d %d\n", mob->mx, mob->my, mob->cmap );
+   fprintf( fp, "Coordinates  %d %d %d\n", mob->mx, mob->my, mob->wmap );
    if( mob->name && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
       fprintf( fp, "Name     %s~\n", mob->name );
    if( mob->short_descr && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
@@ -788,7 +788,7 @@ void char_data::save(  )
       if( !( fp = fopen( strback, "w" ) ) )
       {
          perror( strback );
-         bug( "%s: fopen", __FUNCTION__ );
+         bug( "%s: fopen", __func__ );
       }
       else
       {
@@ -809,7 +809,7 @@ void char_data::save(  )
 
    if( !( fp = fopen( strsave, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( strsave );
    }
    else
@@ -883,14 +883,14 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            log_printf( "%s: no match: %s", __FUNCTION__, word );
+            log_printf( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -906,7 +906,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_ability( NULL, ability, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown ability: %s", __FUNCTION__, ability );
+                  log_printf( "%s: unknown ability: %s", __func__, ability );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -969,7 +969,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
                      if( ( sn = herb_lookup( sname ) ) < 0 )
-                        log_printf( "%s: unknown skill.", __FUNCTION__ );
+                        log_printf( "%s: unknown skill.", __func__ );
                      else
                         sn += TYPE_HERB;
                   }
@@ -1092,7 +1092,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: Player %s has invalid Class! Defaulting to warrior.", __FUNCTION__, ch->name );
+                  bug( "%s: Player %s has invalid Class! Defaulting to warrior.", __func__, ch->name );
                   Class = CLASS_WARRIOR;
                }
                ch->Class = Class;
@@ -1106,7 +1106,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_combat( NULL, combat, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown combat skill: %s", __FUNCTION__, combat );
+                  log_printf( "%s: unknown combat skill: %s", __func__, combat );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1181,13 +1181,13 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                ch->mx = fread_short( fp );
                ch->my = fread_short( fp );
-               ch->cmap = fread_short( fp );
+               ch->wmap = fread_short( fp );
 
                if( !ch->has_pcflag( PCFLAG_ONMAP ) )
                {
                   ch->mx = -1;
                   ch->my = -1;
-                  ch->cmap = -1;
+                  ch->wmap = -1;
                }
                break;
             }
@@ -1289,7 +1289,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_lore( NULL, lore, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown lore: %s", __FUNCTION__, lore );
+                  log_printf( "%s: unknown lore: %s", __func__, lore );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1364,7 +1364,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: Player %s has invalid position! Defaulting to standing.", __FUNCTION__, ch->name );
+                  bug( "%s: Player %s has invalid position! Defaulting to standing.", __func__, ch->name );
                   position = POS_STANDING;
                }
                ch->position = position;
@@ -1415,7 +1415,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( race < 0 || race >= MAX_NPC_RACE )
                {
-                  bug( "%s: Player %s has invalid race! Defaulting to human.", __FUNCTION__, ch->name );
+                  bug( "%s: Player %s has invalid race! Defaulting to human.", __func__, ch->name );
                   race = RACE_HUMAN;
                }
                ch->race = race;
@@ -1470,7 +1470,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( sex < 0 || sex >= SEX_MAX )
                {
-                  bug( "%s: Player %s has invalid sex! Defaulting to Neuter.", __FUNCTION__, ch->name );
+                  bug( "%s: Player %s has invalid sex! Defaulting to Neuter.", __func__, ch->name );
                   sex = SEX_NEUTRAL;
                }
                ch->sex = sex;
@@ -1512,7 +1512,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_skill( NULL, skill, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown skill: %s", __FUNCTION__, skill );
+                  log_printf( "%s: unknown skill: %s", __func__, skill );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1559,7 +1559,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_spell( NULL, spell, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown spell: %s", __FUNCTION__, spell );
+                  log_printf( "%s: unknown spell: %s", __func__, spell );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1724,7 +1724,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_tongue( NULL, tongue, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown tongue: %s", __FUNCTION__, tongue );
+                  log_printf( "%s: unknown tongue: %s", __func__, tongue );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1793,7 +1793,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
    obj->count = 1;
    obj->wear_loc = -1;
    obj->weight = 1;
-   obj->cmap = -1;
+   obj->wmap = -1;
    obj->mx = -1;
    obj->my = -1;
 
@@ -1807,14 +1807,14 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
+         log_printf( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             deleteptr( obj );
             return;
@@ -1839,7 +1839,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 
                   sn = skill_lookup( fread_word( fp ) );
                   if( sn < 0 )
-                     bug( "%s: Vnum %d - unknown skill: %s", __FUNCTION__, obj->pIndexData->vnum, word );
+                     bug( "%s: Vnum %d - unknown skill: %s", __func__, obj->pIndexData->vnum, word );
                   else
                      paf->type = sn;
                }
@@ -1867,7 +1867,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             {
                obj->mx = fread_short( fp );
                obj->my = fread_short( fp );
-               obj->cmap = fread_short( fp );
+               obj->wmap = fread_short( fp );
                break;
             }
             KEY( "Cost", obj->cost, fread_number( fp ) );
@@ -1901,9 +1901,9 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                if( !fNest || !fVnum )
                {
                   if( obj->name )
-                     bug( "%s: %s incomplete object. obj_file_ver=%d", __FUNCTION__, obj->name, obj_file_ver );
+                     bug( "%s: %s incomplete object. obj_file_ver=%d", __func__, obj->name, obj_file_ver );
                   else
-                     bug( "%s: incomplete object. obj_file_ver=%d", __FUNCTION__, obj_file_ver );
+                     bug( "%s: incomplete object. obj_file_ver=%d", __func__, obj_file_ver );
                   deleteptr( obj );
                   return;
                }
@@ -1964,7 +1964,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                   {
                      if( !room )
                      {
-                        bug( "%s: Corpse without room", __FUNCTION__ );
+                        bug( "%s: Corpse without room", __func__ );
                         room = get_room_index( ROOM_VNUM_LIMBO );
                      }
 
@@ -2021,7 +2021,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                         obj = obj->to_obj( rgObjNest[iNest - 1] );
                      }
                      else
-                        bug( "%s: nest layer missing %d", __FUNCTION__, iNest - 1 );
+                        bug( "%s: nest layer missing %d", __func__, iNest - 1 );
                   }
                   if( fNest )
                      rgObjNest[iNest] = obj;
@@ -2046,7 +2046,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                iNest = fread_number( fp );
                if( iNest < 0 || iNest >= MAX_NEST )
                {
-                  bug( "%s: bad nest %d.", __FUNCTION__, iNest );
+                  bug( "%s: bad nest %d.", __func__, iNest );
                   iNest = 0;
                   fNest = false;
                }
@@ -2097,13 +2097,13 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                iValue = fread_number( fp );
                sn = skill_lookup( fread_word( fp ) );
                if( iValue < 0 || iValue > 10 )
-                  bug( "%s: bad iValue %d.", __FUNCTION__, iValue );
+                  bug( "%s: bad iValue %d.", __func__, iValue );
                /*
                 * Bug fixed here to change corrupted spell values to -1 to stop spamming logs - Samson 7-5-03 
                 */
                else if( sn < 0 )
                {
-                  bug( "%s: Vnum %d - unknown skill: %s", __FUNCTION__, obj->pIndexData->vnum, word );
+                  bug( "%s: Vnum %d - unknown skill: %s", __func__, obj->pIndexData->vnum, word );
                   obj->value[iValue] = -1;
                }
                else
@@ -2156,7 +2156,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                // It will still log from other sources though, so hey, if something OTHER that the hotboot recovery is triggering it, investigate that cause it may not be right!
                if( file_ver < 10 && fVnum == true && os_type != OS_CORPSE && ch->tempnum != -9999 )
                {
-                  log_printf( "%s: != OS_CORPSE case encountered. file_ver=%d", __FUNCTION__, file_ver );
+                  log_printf( "%s: != OS_CORPSE case encountered. file_ver=%d", __func__, file_ver );
                   obj->value[0] = obj->pIndexData->value[0];
                   obj->value[1] = obj->pIndexData->value[1];
                   obj->value[2] = obj->pIndexData->value[2];
@@ -2241,7 +2241,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             if( !str_cmp( word, "EndMobile" ) || !str_cmp( word, "EndVendor" ) )
                break;
          }
-         bug( "%s: No index data for vnum %d", __FUNCTION__, vnum );
+         bug( "%s: No index data for vnum %d", __func__, vnum );
          return NULL;
       }
       mob = pMobIndex->create_mobile(  );
@@ -2262,7 +2262,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             break;
       }
       mob->extract( true );
-      bug( "%s: Vnum not found", __FUNCTION__ );
+      bug( "%s: Vnum not found", __func__ );
       return NULL;
    }
 
@@ -2276,7 +2276,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -2306,7 +2306,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
                      if( ( sn = herb_lookup( sname ) ) < 0 )
-                        bug( "%s: unknown skill.", __FUNCTION__ );
+                        bug( "%s: unknown skill.", __func__ );
                      else
                         sn += TYPE_HERB;
                   }
@@ -2336,7 +2336,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             {
                mob->mx = fread_short( fp );
                mob->my = fread_short( fp );
-               mob->cmap = fread_short( fp );
+               mob->wmap = fread_short( fp );
                break;
             }
             break;
@@ -2359,7 +2359,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                if( !pRoomIndex )
                   pRoomIndex = get_room_index( ROOM_VNUM_LIMBO );
                if( !mob->to_room( pRoomIndex ) )
-                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
                for( int i = 0; i < MAX_WEAR; ++i )
                   for( int x = 0; x < MAX_LAYERS; ++x )
@@ -2522,7 +2522,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
 
          if( letter != '#' )
          {
-            bug( "%s: # not found. %s", __FUNCTION__, name.c_str(  ) );
+            bug( "%s: # not found. %s", __func__, name.c_str(  ) );
             break;
          }
 
@@ -2552,7 +2552,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
                {
                   mob->from_room(  );
                   if( !mob->to_room( ch->in_room ) )
-                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                }
             }
          }
@@ -2562,7 +2562,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
             break;
          else
          {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
+            bug( "%s: bad section: %s", __func__, word );
             break;
          }
       }
@@ -2631,7 +2631,7 @@ void write_corpse( obj_data * corpse, const string & name )
 
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: Error opening corpse file for write: %s", __FUNCTION__, filename );
+      bug( "%s: Error opening corpse file for write: %s", __func__, filename );
       return;
    }
 
@@ -2659,7 +2659,7 @@ void write_corpse( obj_data * corpse, const string & name )
       fprintf( fp, "Timer        %d\n", corpse->timer );
    if( corpse->cost != corpse->pIndexData->cost )
       fprintf( fp, "Cost         %d\n", corpse->cost );
-   fprintf( fp, "Coords       %d %d %d\n", corpse->mx, corpse->my, corpse->cmap );
+   fprintf( fp, "Coords       %d %d %d\n", corpse->mx, corpse->my, corpse->wmap );
    fprintf( fp, "Values      " );
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
       fprintf( fp, " %d", corpse->value[x] );
@@ -2680,7 +2680,7 @@ void load_corpses( void )
 
    if( !( dp = opendir( CORPSE_DIR ) ) )
    {
-      bug( "%s: can't open %s", __FUNCTION__, CORPSE_DIR );
+      bug( "%s: can't open %s", __func__, CORPSE_DIR );
       perror( CORPSE_DIR );
       return;
    }
@@ -2712,7 +2712,7 @@ void load_corpses( void )
             }
             if( letter != '#' )
             {
-               bug( "%s: # not found.", __FUNCTION__ );
+               bug( "%s: # not found.", __func__ );
                break;
             }
             word = fread_word( fpArea );
@@ -2724,7 +2724,7 @@ void load_corpses( void )
                break;
             else
             {
-               bug( "%s: bad section: %s", __FUNCTION__, word );
+               bug( "%s: bad section: %s", __func__, word );
                break;
             }
          }

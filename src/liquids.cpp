@@ -144,7 +144,7 @@ void save_liquids( void )
    snprintf( filename, 256, "%sliquids.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: cannot open %s for writing", __FUNCTION__, filename );
+      bug( "%s: cannot open %s for writing", __func__, filename );
       return;
    }
 
@@ -185,14 +185,14 @@ liquid_data *fread_liquid( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -254,7 +254,7 @@ void load_liquids( void )
    snprintf( filename, 256, "%sliquids.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename, "r" ) ) )
    {
-      bug( "%s: cannot open %s for reading", __FUNCTION__, filename );
+      bug( "%s: cannot open %s for reading", __func__, filename );
       return;
    }
 
@@ -277,7 +277,7 @@ void load_liquids( void )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found (%c)", __FUNCTION__, letter );
+         bug( "%s: # not found (%c)", __func__, letter );
          return;
       }
 
@@ -292,7 +292,7 @@ void load_liquids( void )
          liquid_data *liq = fread_liquid( fp );
 
          if( !liq )
-            bug( "%s: returned NULL liquid", __FUNCTION__ );
+            bug( "%s: returned NULL liquid", __func__ );
          else
          {
             liquid_table[liq->vnum] = liq;
@@ -306,7 +306,7 @@ void load_liquids( void )
          break;
       else
       {
-         bug( "%s: no match for %s", __FUNCTION__, word );
+         bug( "%s: no match for %s", __func__, word );
          continue;
       }
    }
@@ -323,7 +323,7 @@ void save_mixtures( void )
    snprintf( filename, 256, "%smixtures.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: cannot open %s for writing", __FUNCTION__, filename );
+      bug( "%s: cannot open %s for writing", __func__, filename );
       return;
    }
 
@@ -358,14 +358,14 @@ mixture_data *fread_mixture( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -424,7 +424,7 @@ void load_mixtures( void )
    snprintf( filename, 256, "%smixtures.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename, "r" ) ) )
    {
-      bug( "%s: cannot open %s for reading", __FUNCTION__, filename );
+      bug( "%s: cannot open %s for reading", __func__, filename );
       return;
    }
 
@@ -441,7 +441,7 @@ void load_mixtures( void )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found (%c)", __FUNCTION__, letter );
+         bug( "%s: # not found (%c)", __func__, letter );
          return;
       }
 
@@ -457,7 +457,7 @@ void load_mixtures( void )
 
          mix = fread_mixture( fp );
          if( !mix )
-            bug( "%s: mixture returned NULL", __FUNCTION__ );
+            bug( "%s: mixture returned NULL", __func__ );
          else
             mixlist.push_back( mix );
       }
@@ -465,7 +465,7 @@ void load_mixtures( void )
          break;
       else
       {
-         bug( "%s: no match for %s", __FUNCTION__, word );
+         bug( "%s: no match for %s", __func__, word );
          break;
       }
    }
@@ -555,7 +555,8 @@ void free_liquiddata( void )
 
       deleteptr( mix );
    }
-   for( loopa = 0; loopa < top_liquid; ++loopa )
+
+   for( loopa = 0; loopa <= top_liquid; ++loopa )
    {
       liq = get_liq_vnum( loopa );
 
@@ -1380,7 +1381,7 @@ CMDF( do_drink )
 
          if( !( liq = get_liq_vnum( obj->value[2] ) ) )
          {
-            bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
+            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
             liq = get_liq_vnum( 0 );
          }
 
@@ -1408,13 +1409,13 @@ CMDF( do_drink )
 
          if( obj->value[1] <= 0 )
          { 
-            bug( "%s: empty puddle %d.", __FUNCTION__, obj->in_room->vnum ); 
+            bug( "%s: empty puddle %d.", __func__, obj->in_room->vnum ); 
             return; 
          } 
 
          if( ( liq = get_liq_vnum( obj->value[2] ) ) == NULL )
          { 
-            bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
+            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
             liq = get_liq_vnum( 0 );
          }
 
@@ -1491,7 +1492,7 @@ CMDF( do_drink )
 
          if( !( liq = get_liq_vnum( obj->value[2] ) ) )
          {
-            bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
+            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
             liq = get_liq_vnum( 0 );
          }
 
@@ -1691,6 +1692,7 @@ CMDF( do_fill )
             ch->print( "You don't have that item.\r\n" );
             return;
          }
+
          if( source->item_type != src_item1 && source->item_type != src_item2 && source->item_type != src_item3 )
          {
             act( AT_PLAIN, "You cannot fill $p with $P!", ch, obj, source, TO_CHAR );
@@ -1918,7 +1920,7 @@ CMDF( do_fill )
    switch ( source->item_type )
    {
       default:
-         bug( "%s: got bad item type: %d", __FUNCTION__, source->item_type );
+         bug( "%s: got bad item type: %d", __func__, source->item_type );
          ch->print( "Something went wrong...\r\n" );
          return;
 

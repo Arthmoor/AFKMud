@@ -326,7 +326,7 @@ void gain_condition( char_data * ch, int iCond, int value )
             break;
 
          default:
-            bug( "%s: invalid condition type %d", __FUNCTION__, iCond );
+            bug( "%s: invalid condition type %d", __func__, iCond );
             retcode = rNONE;
             break;
       }
@@ -570,9 +570,9 @@ void mobile_update( void )
 
       if( !ch->in_room )
       {
-         log_printf( "%s: ch in NULL room - attempting limbo transfer", __FUNCTION__ );
+         log_printf( "%s: ch in NULL room - attempting limbo transfer", __func__ );
          if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          continue;
       }
 
@@ -815,8 +815,8 @@ void mobile_update( void )
        */
       if( ch->has_actflag( ACT_ONMAP ) )
       {
-         short sector = get_terrain( ch->cmap, ch->mx, ch->my );
-         short cmap = ch->cmap;
+         short sector = get_terrain( ch->wmap, ch->mx, ch->my );
+         short wmap = ch->wmap;
          short x = ch->mx;
          short y = ch->my;
          short dir = number_bits( 5 );
@@ -828,35 +828,35 @@ void mobile_update( void )
                default:
                   break;
                case DIR_NORTH:
-                  if( map_wander( ch, cmap, x, y - 1, sector ) )
+                  if( map_wander( ch, wmap, x, y - 1, sector ) )
                      move_char( ch, NULL, 0, DIR_NORTH, false );
                   break;
                case DIR_NORTHEAST:
-                  if( map_wander( ch, cmap, x + 1, y - 1, sector ) )
+                  if( map_wander( ch, wmap, x + 1, y - 1, sector ) )
                      move_char( ch, NULL, 0, DIR_NORTHEAST, false );
                   break;
                case DIR_EAST:
-                  if( map_wander( ch, cmap, x + 1, y, sector ) )
+                  if( map_wander( ch, wmap, x + 1, y, sector ) )
                      move_char( ch, NULL, 0, DIR_EAST, false );
                   break;
                case DIR_SOUTHEAST:
-                  if( map_wander( ch, cmap, x + 1, y + 1, sector ) )
+                  if( map_wander( ch, wmap, x + 1, y + 1, sector ) )
                      move_char( ch, NULL, 0, DIR_SOUTHEAST, false );
                   break;
                case DIR_SOUTH:
-                  if( map_wander( ch, cmap, x, y + 1, sector ) )
+                  if( map_wander( ch, wmap, x, y + 1, sector ) )
                      move_char( ch, NULL, 0, DIR_SOUTH, false );
                   break;
                case DIR_SOUTHWEST:
-                  if( map_wander( ch, cmap, x - 1, y + 1, sector ) )
+                  if( map_wander( ch, wmap, x - 1, y + 1, sector ) )
                      move_char( ch, NULL, 0, DIR_SOUTHWEST, false );
                   break;
                case DIR_WEST:
-                  if( map_wander( ch, cmap, x - 1, y, sector ) )
+                  if( map_wander( ch, wmap, x - 1, y, sector ) )
                      move_char( ch, NULL, 0, DIR_WEST, false );
                   break;
                case DIR_NORTHWEST:
-                  if( map_wander( ch, cmap, x - 1, y - 1, sector ) )
+                  if( map_wander( ch, wmap, x - 1, y - 1, sector ) )
                      move_char( ch, NULL, 0, DIR_NORTHWEST, false );
                   break;
             }
@@ -994,7 +994,7 @@ void char_calendar_update( void )
             int sector;
 
             if( ch->has_pcflag( PCFLAG_ONMAP ) )
-               sector = get_terrain( ch->cmap, ch->mx, ch->my );
+               sector = get_terrain( ch->wmap, ch->mx, ch->my );
             else
                sector = ch->in_room->sector_type;
 
@@ -1257,7 +1257,7 @@ void char_update( void )
          MOBtrigger = false;
          ch->from_room(  );
          if( !ch->to_room( location ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          ch->print( "The gods have released you from hell as your sentence is up!\r\n" );
          interpret( ch, "look" );
          STRFREE( ch->pcdata->helled_by );
@@ -1760,10 +1760,10 @@ void obj_update( void )
          obj_data *firepit;
 
          if( !( firepit = get_obj_index( OBJ_VNUM_FIREPIT )->create_object( 1 ) ) )
-            log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          else
          {
-            firepit->cmap = obj->cmap;
+            firepit->wmap = obj->wmap;
             firepit->mx = obj->mx;
             firepit->my = obj->my;
             set_supermob( obj );
@@ -2185,11 +2185,11 @@ void aggr_update( void )
 
          if( !victim )
          {
-            bug( "%s: null victim. Aggro: %s", __FUNCTION__, ch->name );
-            log_printf( "Breaking %s loop and transferring aggressor to Limbo.", __FUNCTION__ );
+            bug( "%s: null victim. Aggro: %s", __func__, ch->name );
+            log_printf( "Breaking %s loop and transferring aggressor to Limbo.", __func__ );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             break;
          }
 
@@ -2300,7 +2300,7 @@ void adjust_vectors( weather_data * weather )
 
    if( !weather )
    {
-      bug( "%s: NULL weather data.", __FUNCTION__ );
+      bug( "%s: NULL weather data.", __func__ );
       return;
    }
 
@@ -2592,7 +2592,7 @@ void get_weather_echo( weather_data * weath )
          break;
 
       default:
-         bug( "%s: invalid precip index", __FUNCTION__ );
+         bug( "%s: invalid precip index", __func__ );
          weath->precip = 0;
          break;
    }

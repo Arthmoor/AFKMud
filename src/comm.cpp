@@ -1101,29 +1101,29 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Helps.\n" );
    free_helps(  );
 
-   // Commands 
+   // Commands
    fprintf( stdout, "%s", "Commands.\n" );
    free_commands(  );
 
 #ifdef MULTIPORT
-   // Shell Commands 
+   // Shell Commands
    fprintf( stdout, "%s", "Shell Commands.\n" );
    free_shellcommands(  );
 #endif
 
-   // Socials 
+   // Socials
    fprintf( stdout, "%s", "Socials.\n" );
    free_socials(  );
 
-   // Languages 
+   // Languages
    fprintf( stdout, "%s", "Languages.\n" );
    free_tongues(  );
 
-   // Boards 
+   // Boards
    fprintf( stdout, "%s", "Boards.\n" );
    free_boards(  );
 
-   // Events 
+   // Events
    fprintf( stdout, "%s", "Events.\n" );
    free_all_events(  );
 
@@ -1131,7 +1131,7 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Ending chess games.\n" );
    free_all_chess_games(  );
 
-   // Whack supermob 
+   // Whack supermob
    fprintf( stdout, "%s", "Whacking supermob.\n" );
    if( supermob )
    {
@@ -1140,59 +1140,59 @@ void cleanup_memory( void )
       deleteptr( supermob );
    }
 
-   // Free Characters 
+   // Free Characters
    fprintf( stdout, "%s", "Characters.\n" );
    extract_all_chars(  );
 
-   // Free Objects 
+   // Free Objects
    fprintf( stdout, "%s", "Objects.\n" );
    extract_all_objs(  );
 
-   // Descriptors 
+   // Descriptors
    fprintf( stdout, "%s", "Descriptors.\n" );
    free_all_descs(  );
 
-   // Deities 
+   // Deities
    fprintf( stdout, "%s", "Deities.\n" );
    free_deities(  );
 
-   // Clans 
+   // Clans
    fprintf( stdout, "%s", "Clans.\n" );
    free_clans(  );
 
-   // Realms 
+   // Realms
    fprintf( stdout, "%s", "Realms.\n" );
    free_realms(  );
 
-   // Races 
+   // Races
    fprintf( stdout, "%s", "Races.\n" );
    free_all_races(  );
 
-   // Classes 
+   // Classes
    fprintf( stdout, "%s", "Classes.\n" );
    free_all_classes(  );
 
-   // Teleport lists 
+   // Teleport lists
    fprintf( stdout, "%s", "Teleport Data.\n" );
    free_teleports(  );
 
-   // Areas - this includes killing off the hash tables and such 
+   // Areas - this includes killing off the hash tables and such
    fprintf( stdout, "%s", "Area Data Tables.\n" );
    close_all_areas(  );
 
-   // Get rid of auction pointer MUST BE AFTER OBJECTS DESTROYED 
+   // Get rid of auction pointer MUST BE AFTER OBJECTS DESTROYED
    fprintf( stdout, "%s", "Auction.\n" );
    deleteptr( auction );
 
-   // Title table 
+   // Title table
    fprintf( stdout, "%s", "Title table.\n" );
    free_all_titles(  );
 
-   // Skills 
+   // Skills
    fprintf( stdout, "%s", "Skills and Herbs.\n" );
    free_skills(  );
 
-   // Prog Act lists 
+   // Prog Act lists
    fprintf( stdout, "%s", "Mudprog act lists.\n" );
    free_prog_actlists(  );
 
@@ -1213,7 +1213,7 @@ void cleanup_memory( void )
    close_db(  );
 #endif
 
-   // Last but not least, close the libdl and dispose of sysdata - Samson 
+   // Last but not least, close the libdl and dispose of sysdata - Samson
    fprintf( stdout, "%s", "System data.\n" );
    dlclose( sysdata->dlHandle );
    deleteptr( sysdata );

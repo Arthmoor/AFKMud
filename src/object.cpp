@@ -150,7 +150,7 @@ void obj_data::fall( bool through )
 
    if( fall_count > 30 )
    {
-      bug( "%s: object falling in loop more than 30 times", __FUNCTION__ );
+      bug( "%s: object falling in loop more than 30 times", __func__ );
       extract(  );
       fall_count = 0;
       return;
@@ -168,7 +168,7 @@ void obj_data::fall( bool through )
 
       if( in_room == to )
       {
-         bug( "%s: Object falling into same room, room %d", __FUNCTION__, to->vnum );
+         bug( "%s: Object falling into same room, room %d", __func__, to->vnum );
          extract(  );
          return;
       }
@@ -490,7 +490,7 @@ bool is_same_obj( obj_data * src, obj_data * dest )
        && src->value[10] == dest->value[10]
        && src->contents == dest->contents
        && src->count + dest->count > 0
-       && src->cmap == dest->cmap
+       && src->wmap == dest->wmap
        && src->mx == dest->mx && src->my == dest->my && !str_cmp( src->seller, dest->seller ) && !str_cmp( src->buyer, dest->buyer ) && src->bid == dest->bid )
       return true;
 
@@ -777,7 +777,7 @@ obj_data *obj_data::to_char( char_data * ch )
          if( ch != supermob )
          {
             extra_flags.reset( ITEM_ONMAP );
-            cmap = -1;
+            wmap = -1;
             mx = -1;
             my = -1;
          }
@@ -814,7 +814,7 @@ obj_data *obj_data::to_char( char_data * ch )
          if( ch != supermob )
          {
             extra_flags.reset( ITEM_ONMAP );
-            cmap = -1;
+            wmap = -1;
             mx = -1;
             my = -1;
          }
@@ -839,7 +839,7 @@ void obj_data::from_char(  )
 
    if( !( ch = carried_by ) )
    {
-      bug( "%s: null ch.", __FUNCTION__ );
+      bug( "%s: null ch.", __func__ );
       log_printf( "Object was vnum %d - %s", pIndexData->vnum, short_descr );
       return;
    }
@@ -914,7 +914,7 @@ void obj_data::from_room(  )
 
    if( !( room = in_room ) )
    {
-      bug( "%s: %s not in a room!", __FUNCTION__, name );
+      bug( "%s: %s not in a room!", __func__, name );
       return;
    }
 
@@ -924,7 +924,7 @@ void obj_data::from_room(  )
    extra_flags.reset( ITEM_ONMAP );
    mx = -1;
    my = -1;
-   cmap = -1;
+   wmap = -1;
 
    list < affect_data * >::iterator paf;
    for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
@@ -1016,14 +1016,14 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
       if( ch->has_actflag( ACT_ONMAP ) || ch->has_pcflag( PCFLAG_ONMAP ) )
       {
          extra_flags.set( ITEM_ONMAP );
-         cmap = ch->cmap;
+         wmap = ch->wmap;
          mx = ch->mx;
          my = ch->my;
       }
       else
       {
          extra_flags.reset( ITEM_ONMAP );
-         cmap = -1;
+         wmap = -1;
          mx = -1;
          my = -1;
       }
@@ -1041,7 +1041,7 @@ obj_data *obj_data::to_obj( obj_data * obj_to )
 {
    if( this == obj_to )
    {
-      bug( "%s: trying to put object inside itself: vnum %d", __FUNCTION__, pIndexData->vnum );
+      bug( "%s: trying to put object inside itself: vnum %d", __func__, pIndexData->vnum );
       return this;
    }
 
@@ -1078,7 +1078,7 @@ void obj_data::from_obj(  )
 
    if( !( obj_from = in_obj ) )
    {
-      bug( "%s: %s null obj_from.", __FUNCTION__, name );
+      bug( "%s: %s null obj_from.", __func__, name );
       return;
    }
 
@@ -1104,7 +1104,7 @@ void obj_data::from_obj(  )
    if( obj_from->extra_flags.test( ITEM_ONMAP ) )
    {
       extra_flags.set( ITEM_ONMAP );
-      cmap = obj_from->cmap;
+      wmap = obj_from->wmap;
       mx = obj_from->mx;
       my = obj_from->my;
    }
@@ -1122,7 +1122,7 @@ void obj_data::extract(  )
 {
    if( extracted(  ) )
    {
-      bug( "%s: obj %d already extracted!", __FUNCTION__, pIndexData->vnum );
+      bug( "%s: obj %d already extracted!", __func__, pIndexData->vnum );
       /*
        * return; Seeing if we can get it to either extract it for real, or die trying! 
        */
@@ -1202,7 +1202,7 @@ const string obj_data::item_type_name(  )
 {
    if( item_type < 1 || item_type >= MAX_ITEM_TYPE )
    {
-      bug( "%s: unknown type %d.", __FUNCTION__, item_type );
+      bug( "%s: unknown type %d.", __func__, item_type );
       return "(unknown)";
    }
    return o_types[item_type];
@@ -1290,7 +1290,7 @@ obj_data *obj_data::clone(  )
    oclone->cost = cost;
    oclone->level = level;
    oclone->timer = timer;
-   oclone->cmap = cmap;
+   oclone->wmap = wmap;
    oclone->mx = mx;
    oclone->my = my;
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
@@ -1352,7 +1352,7 @@ obj_data *group_obj( obj_data * obj, obj_data * obj2 )
     && obj->extradesc.empty(  ) && obj2->extradesc.empty(  )
     && obj->affects.empty(  ) && obj2->affects.empty(  )
     && obj->contents.empty(  ) && obj2->contents.empty(  )
-    && obj->cmap == obj2->cmap
+    && obj->wmap == obj2->wmap
     && obj->mx == obj2->mx
     && obj->my == obj2->my
     && !str_cmp( obj->seller, obj2->seller )
@@ -1427,7 +1427,7 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
 
    if( !this )
    {
-      bug( "%s: NULL obj", __FUNCTION__ );
+      bug( "%s: NULL obj", __func__ );
       return false;
    }
 
@@ -1498,7 +1498,7 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
       }
       return movedsome;
    }
-   bug( "%s: could not determine a destination for vnum %d", __FUNCTION__, pIndexData->vnum );
+   bug( "%s: could not determine a destination for vnum %d", __func__, pIndexData->vnum );
    return false;
 }
 
@@ -1508,13 +1508,13 @@ void obj_data::remove_portal(  )
 
    if( !this )
    {
-      bug( "%s: portal is NULL", __FUNCTION__ );
+      bug( "%s: portal is NULL", __func__ );
       return;
    }
 
    if( !( fromRoom = in_room ) )
    {
-      bug( "%s: portal->in_room is NULL", __FUNCTION__ );
+      bug( "%s: portal->in_room is NULL", __func__ );
       return;
    }
 
@@ -1534,15 +1534,15 @@ void obj_data::remove_portal(  )
 
    if( !found )
    {
-      bug( "%s: portal not found in room %d!", __FUNCTION__, fromRoom->vnum );
+      bug( "%s: portal not found in room %d!", __func__, fromRoom->vnum );
       return;
    }
 
    if( pexit->vdir != DIR_PORTAL )
-      bug( "%s: exit in dir %d != DIR_PORTAL", __FUNCTION__, pexit->vdir );
+      bug( "%s: exit in dir %d != DIR_PORTAL", __func__, pexit->vdir );
 
    if( !( toRoom = pexit->to_room ) )
-      bug( "%s: toRoom is NULL", __FUNCTION__ );
+      bug( "%s: toRoom is NULL", __func__ );
 
    fromRoom->extract_exit( pexit );
 }
@@ -1581,14 +1581,14 @@ void obj_data::make_scraps(  )
    separate(  );
    if( !( scraps = get_obj_index( OBJ_VNUM_SCRAPS )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
    scraps->timer = number_range( 5, 15 );
    if( extra_flags.test( ITEM_ONMAP ) )
    {
       scraps->extra_flags.set( ITEM_ONMAP );
-      scraps->cmap = cmap;
+      scraps->wmap = wmap;
       scraps->mx = mx;
       scraps->my = my;
    }

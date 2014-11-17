@@ -169,7 +169,7 @@ void mud_send_message( const char *arg )
       qbuf.mtype = other_ports[x];
 
       if( msgsnd( qid, &qbuf, strlen( qbuf.mtext ) + 1, 0 ) == -1 )
-         bug( "%s: errno: %d", __FUNCTION__, errno );
+         bug( "%s: errno: %d", __func__, errno );
    }
 }
 
@@ -208,7 +208,7 @@ void recv_text_handler( string & str )
 
    if( !( channel = find_channel( arg1 ) ) )
    {
-      bug( "%s: channel %s doesn't exist!", __FUNCTION__, arg1.c_str(  ) );
+      bug( "%s: channel %s doesn't exist!", __func__, arg1.c_str(  ) );
       return;
    }
 
@@ -254,5 +254,5 @@ void mud_recv_message( void )
    }
 
    if( ret == -1 && errno != ENOMSG )
-      bug( "%s: errno: %d", __FUNCTION__, errno );
+      bug( "%s: errno: %d", __func__, errno );
 }

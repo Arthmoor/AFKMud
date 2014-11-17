@@ -779,13 +779,13 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, const string & name 
 
       ch->from_room(  );
       if( !ch->to_room( pexit->to_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       if( ( victim = ch->get_char_room( name ) ) != NULL )
       {
          ch->from_room(  );
          if( !ch->to_room( was_in_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return victim;
       }
 
@@ -831,7 +831,7 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, const string & name 
 
    ch->from_room(  );
    if( !ch->to_room( was_in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
    return NULL;
 }
@@ -1040,7 +1040,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
    }
    else
    {
-      bug( "%s: no projectile, no skill dt %d", __FUNCTION__, dt );
+      bug( "%s: no projectile, no skill dt %d", __func__, dt );
       return rNONE;
    }
 
@@ -1069,7 +1069,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
    {
       ch->from_room(  );
       if( !ch->to_room( pexit->to_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
       if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
@@ -1107,7 +1107,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
          {
             ch->from_room(  );
             if( !ch->to_room( was_in_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             return rNONE;
          }
       }
@@ -1127,7 +1127,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
           */
          ch->from_room(  );
          if( !ch->to_room( was_in_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
          check_illegal_pk( ch, victim );
          check_attacker( ch, victim );
@@ -1182,7 +1182,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
 
    ch->from_room(  );
    if( !ch->to_room( was_in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
    if( projectile->carried_by == ch )
       projectile->extract(  );

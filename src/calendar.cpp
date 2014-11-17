@@ -334,14 +334,14 @@ void fread_timedata( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -400,7 +400,7 @@ bool load_timedata( void )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -414,7 +414,7 @@ bool load_timedata( void )
             break;
          else
          {
-            bug( "%s: bad section - %s.", __FUNCTION__, word );
+            bug( "%s: bad section - %s.", __func__, word );
             break;
          }
       }
@@ -433,7 +433,7 @@ void save_timedata( void )
 
    if( ( fp = fopen( filename, "w" ) ) == NULL )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( filename );
    }
    else
@@ -784,7 +784,7 @@ void load_holidays( void )
       else if( key == "End" )
          daylist.push_back( day );
       else
-         log_printf( "%s: Bad line in holiday file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in holiday file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -798,7 +798,7 @@ void save_holidays( void )
    stream.open( HOLIDAY_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( HOLIDAY_FILE );
    }
    else

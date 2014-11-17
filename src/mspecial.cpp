@@ -82,7 +82,7 @@ void load_specfuns( void )
    snprintf( filename, 256, "%sspecfuns.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename, "r" ) ) )
    {
-      bug( "%s: FATAL - cannot load specfuns.dat, exiting.", __FUNCTION__ );
+      bug( "%s: FATAL - cannot load specfuns.dat, exiting.", __func__ );
       perror( filename );
       exit( 1 );
    }
@@ -92,7 +92,7 @@ void load_specfuns( void )
       {
          if( feof( fp ) )
          {
-            bug( "%s: Premature end of file!", __FUNCTION__ );
+            bug( "%s: Premature end of file!", __func__ );
             FCLOSE( fp );
             return;
          }
@@ -136,7 +136,7 @@ SPEC_FUN *m_spec_lookup( const string & name )
    funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
    if( ( error = dlerror(  ) ) )
    {
-      bug( "%s: %s", __FUNCTION__, error );
+      bug( "%s: %s", __func__, error );
       return NULL;
    }
    return ( SPEC_FUN * ) funHandle;
@@ -1376,11 +1376,11 @@ SPECF( spec_wanderer )
                   trash->to_room( pexit->to_room, ch );
                   ch->from_room(  );
                   if( !ch->to_room( pexit->to_room ) )
-                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                   act( AT_CYAN, "$p thrown by $n lands in the room.", ch, trash, ch, TO_ROOM );
                   ch->from_room(  );
                   if( !ch->to_room( was_in_room ) )
-                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                }
                else
                {

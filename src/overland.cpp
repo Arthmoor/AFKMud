@@ -575,7 +575,7 @@ double calc_angle( short chX, short chY, short lmX, short lmY, double *ipDistan 
  */
 bool is_same_char_map( char_data * ch, char_data * victim )
 {
-   if( victim->cmap != ch->cmap || victim->mx != ch->mx || victim->my != ch->my )
+   if( victim->wmap != ch->wmap || victim->mx != ch->mx || victim->my != ch->my )
       return false;
    return true;
 }
@@ -591,7 +591,7 @@ bool is_same_obj_map( char_data * ch, obj_data * obj )
       return true;
    }
 
-   if( ch->cmap != obj->cmap || ch->mx != obj->mx || ch->my != obj->my )
+   if( ch->wmap != obj->wmap || ch->mx != obj->mx || ch->my != obj->my )
       return false;
    return true;
 }
@@ -617,7 +617,7 @@ void fix_maps( char_data * ch, char_data * victim )
     */
    if( !victim )
    {
-      bug( "%s: NULL victim!", __FUNCTION__ );
+      bug( "%s: NULL victim!", __func__ );
       return;
    }
 
@@ -642,7 +642,7 @@ void fix_maps( char_data * ch, char_data * victim )
    /*
     * Either way, the map will be the same 
     */
-   victim->cmap = ch->cmap;
+   victim->wmap = ch->wmap;
    victim->mx = ch->mx;
    victim->my = ch->my;
 }
@@ -692,7 +692,7 @@ void load_landmarks( void )
          string arg;
 
          value = one_argument( value, arg );
-         landmark->cmap = atoi( arg.c_str(  ) );
+         landmark->wmap = atoi( arg.c_str(  ) );
 
          value = one_argument( value, arg );
          landmark->mx = atoi( arg.c_str(  ) );
@@ -709,7 +709,7 @@ void load_landmarks( void )
       else if( key == "End" )
          landmarklist.push_back( landmark );
       else
-         log_printf( "%s: Bad line in landmark data file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in landmark data file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -722,7 +722,7 @@ void save_landmarks( void )
    stream.open( LANDMARK_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( LANDMARK_FILE );
    }
    else
@@ -734,7 +734,7 @@ void save_landmarks( void )
          landmark_data *landmark = *imark;
 
          stream << "#LANDMARK" << endl;
-         stream << "Coordinates " << landmark->cmap << " " << landmark->mx << " " << landmark->my << " " << landmark->distance << endl;
+         stream << "Coordinates " << landmark->wmap << " " << landmark->mx << " " << landmark->my << " " << landmark->distance << endl;
          stream << "Description " << landmark->description << endl;
          stream << "Isdesc      " << landmark->Isdesc << endl;
          stream << "End" << endl << endl;
@@ -743,7 +743,7 @@ void save_landmarks( void )
    }
 }
 
-landmark_data *check_landmark( short cmap, short x, short y )
+landmark_data *check_landmark( short wmap, short x, short y )
 {
    list < landmark_data * >::iterator imark;
 
@@ -751,7 +751,7 @@ landmark_data *check_landmark( short cmap, short x, short y )
    {
       landmark_data *landmark = *imark;
 
-      if( landmark->cmap == cmap )
+      if( landmark->wmap == wmap )
       {
          if( landmark->mx == x && landmark->my == y )
             return landmark;
@@ -760,12 +760,12 @@ landmark_data *check_landmark( short cmap, short x, short y )
    return NULL;
 }
 
-void add_landmark( short cmap, short x, short y )
+void add_landmark( short wmap, short x, short y )
 {
    landmark_data *landmark;
 
    landmark = new landmark_data;
-   landmark->cmap = cmap;
+   landmark->wmap = wmap;
    landmark->mx = x;
    landmark->my = y;
    landmarklist.push_back( landmark );
@@ -777,7 +777,7 @@ void delete_landmark( landmark_data * landmark )
 {
    if( !landmark )
    {
-      bug( "%s: Trying to delete NULL landmark!", __FUNCTION__ );
+      bug( "%s: Trying to delete NULL landmark!", __func__ );
       return;
    }
 
@@ -818,7 +818,7 @@ CMDF( do_survey )
       /*
        * No point in bothering if its not even on this map 
        */
-      if( ch->cmap != landmark->cmap )
+      if( ch->wmap != landmark->wmap )
          continue;
 
       if( landmark->Isdesc )
@@ -916,7 +916,7 @@ CMDF( do_landmarks )
    {
       landmark_data *landmark = *imark;
 
-      ch->pagerf( "%-10s  %-4dX %-4dY   %-4d       %s\r\n", map_names[landmark->cmap], landmark->mx, landmark->my, landmark->distance, landmark->description.c_str(  ) );
+      ch->pagerf( "%-10s  %-4dX %-4dY   %-4d       %s\r\n", map_names[landmark->wmap], landmark->mx, landmark->my, landmark->distance, landmark->description.c_str(  ) );
    }
 }
 
@@ -958,7 +958,7 @@ CMDF( do_setmark )
       case SUB_OVERLAND_DESC:
          landmark = ( landmark_data * ) ch->pcdata->dest_buf;
          if( !landmark )
-            bug( "%s: setmark desc: sub_overland_desc: NULL ch->pcdata->dest_buf", __FUNCTION__ );
+            bug( "%s: setmark desc: sub_overland_desc: NULL ch->pcdata->dest_buf", __func__ );
          landmark->description = ch->copy_buffer(  );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
@@ -984,7 +984,7 @@ CMDF( do_setmark )
       return;
    }
 
-   landmark = check_landmark( ch->cmap, ch->mx, ch->my );
+   landmark = check_landmark( ch->wmap, ch->mx, ch->my );
 
    if( !str_cmp( arg, "add" ) )
    {
@@ -993,7 +993,7 @@ CMDF( do_setmark )
          ch->print( "There's already a landmark at this location.\r\n" );
          return;
       }
-      add_landmark( ch->cmap, ch->mx, ch->my );
+      add_landmark( ch->wmap, ch->mx, ch->my );
       ch->print( "Landmark added.\r\n" );
       return;
    }
@@ -1145,7 +1145,7 @@ void load_mapexits( void )
       else if( key == "End" )
          mapexitlist.push_back( mexit );
       else
-         log_printf( "%s: Bad line in overland exists file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in overland exists file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -1158,7 +1158,7 @@ void save_mapexits( void )
    stream.open( ENTRANCE_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( ENTRANCE_FILE );
    }
    else
@@ -1205,7 +1205,7 @@ void modify_mapexit( mapexit_data * mexit, short tomap, short onmap, short hereX
 {
    if( !mexit )
    {
-      bug( "%s: NULL exit being modified!", __FUNCTION__ );
+      bug( "%s: NULL exit being modified!", __func__ );
       return;
    }
 
@@ -1244,7 +1244,7 @@ void delete_mapexit( mapexit_data * mexit )
 {
    if( !mexit )
    {
-      bug( "%s: Trying to delete NULL exit!", __FUNCTION__ );
+      bug( "%s: Trying to delete NULL exit!", __func__ );
       return;
    }
 
@@ -1307,7 +1307,7 @@ CMDF( do_setexit )
       return;
    }
 
-   mexit = check_mapexit( ch->cmap, ch->mx, ch->my );
+   mexit = check_mapexit( ch->wmap, ch->mx, ch->my );
 
    if( !str_cmp( arg, "create" ) )
    {
@@ -1317,8 +1317,8 @@ CMDF( do_setexit )
          return;
       }
 
-      add_mapexit( ch->cmap, ch->cmap, ch->mx, ch->my, ch->mx, ch->my, -1 );
-      putterr( ch->cmap, ch->mx, ch->my, SECT_EXIT );
+      add_mapexit( ch->wmap, ch->wmap, ch->mx, ch->my, ch->mx, ch->my, -1 );
+      putterr( ch->wmap, ch->mx, ch->my, SECT_EXIT );
       ch->print( "New exit created.\r\n" );
       return;
    }
@@ -1331,7 +1331,7 @@ CMDF( do_setexit )
 
    if( !str_cmp( arg, "delete" ) )
    {
-      putterr( ch->cmap, ch->mx, ch->my, mexit->prevsector );
+      putterr( ch->wmap, ch->mx, ch->my, mexit->prevsector );
       delete_mapexit( mexit );
       ch->print( "Exit deleted.\r\n" );
       return;
@@ -1342,9 +1342,9 @@ CMDF( do_setexit )
       string arg2, arg3;
       short x, y, map = -1;
 
-      if( ch->cmap == -1 )
+      if( ch->wmap == -1 )
       {
-         bug( "%s: %s is not on a valid map!", __FUNCTION__, ch->name );
+         bug( "%s: %s is not on a valid map!", __func__, ch->name );
          ch->print( "Can't do that - your on an invalid map.\r\n" );
          return;
       }
@@ -1382,8 +1382,8 @@ CMDF( do_setexit )
          return;
       }
 
-      modify_mapexit( mexit, map, ch->cmap, ch->mx, ch->my, x, y, -1, NULL );
-      putterr( ch->cmap, ch->mx, ch->my, SECT_EXIT );
+      modify_mapexit( mexit, map, ch->wmap, ch->mx, ch->my, x, y, -1, NULL );
+      putterr( ch->wmap, ch->mx, ch->my, SECT_EXIT );
       ch->printf( "Exit set to map of %s, at %dX, %dY.\r\n", arg2.c_str(  ), x, y );
       return;
    }
@@ -1396,7 +1396,7 @@ CMDF( do_setexit )
          return;
       }
 
-      modify_mapexit( mexit, mexit->onmap, ch->cmap, ch->mx, ch->my, mexit->therex, mexit->therey, mexit->vnum, argument );
+      modify_mapexit( mexit, mexit->onmap, ch->wmap, ch->mx, ch->my, mexit->therex, mexit->therey, mexit->vnum, argument );
       ch->printf( "Exit identified for area: %s\r\n", argument.c_str(  ) );
       return;
    }
@@ -1409,8 +1409,8 @@ CMDF( do_setexit )
       return;
    }
 
-   modify_mapexit( mexit, -1, ch->cmap, ch->mx, ch->my, -1, -1, vnum, "" );
-   putterr( ch->cmap, ch->mx, ch->my, SECT_EXIT );
+   modify_mapexit( mexit, -1, ch->wmap, ch->mx, ch->my, -1, -1, vnum, "" );
+   putterr( ch->wmap, ch->mx, ch->my, SECT_EXIT );
    ch->printf( "Exit set to room %d.\r\n", vnum );
 }
 
@@ -1494,7 +1494,7 @@ void load_map_png( const char *mapfile, short mapnumber )
       snprintf( oldfile, 256, "%s%s.raw", MAP_DIR, map_name[mapnumber] );
       if( !load_oldmapfile( oldfile, mapnumber ) )
       {
-         bug( "%s: Missing graphical map file %s for continent!", __FUNCTION__, mapfile );
+         bug( "%s: Missing graphical map file %s for continent!", __func__, mapfile );
          shutdown_mud( "Missing map file" );
          exit( 1 );
       }
@@ -1601,7 +1601,7 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
             }
          }
 
-         short sector = get_terrain( ch->cmap, x, y );
+         short sector = get_terrain( ch->wmap, x, y );
          bool other = false, npc = false, object = false, group = false, aship = false;
          list < char_data * >::iterator ich;
          for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
@@ -1706,15 +1706,15 @@ void display_map( char_data * ch )
    short startx, starty, endx, endy, sector;
    int mod = sysdata->mapsize;
 
-   if( ch->cmap == -1 )
+   if( ch->wmap == -1 )
    {
-      bug( "%s: Player %s on invalid map! Moving them to %s.", __FUNCTION__, ch->name, map_names[MAP_ONE] );
+      bug( "%s: Player %s on invalid map! Moving them to %s.", __func__, ch->name, map_names[MAP_ONE] );
       ch->printf( "&RYou were found on an invalid map and have been moved to %s.\r\n", map_names[MAP_ONE] );
       enter_map( ch, NULL, 499, 500, ACON_ONE );
       return;
    }
 
-   sector = get_terrain( ch->cmap, ch->mx, ch->my );
+   sector = get_terrain( ch->wmap, ch->mx, ch->my );
 
    if( ch->has_pcflag( PCFLAG_HOLYLIGHT ) || ch->in_room->flags.test( ROOM_WATCHTOWER ) || ch->inflight )
    {
@@ -1755,7 +1755,7 @@ void display_map( char_data * ch )
 
    if( ch->has_pcflag( PCFLAG_MAPEDIT ) && sector != SECT_EXIT )
    {
-      putterr( ch->cmap, ch->mx, ch->my, ch->pcdata->secedit );
+      putterr( ch->wmap, ch->mx, ch->my, ch->pcdata->secedit );
       sector = ch->pcdata->secedit;
    }
 
@@ -1763,8 +1763,8 @@ void display_map( char_data * ch )
 
    if( !ch->inflight && !ch->in_room->flags.test( ROOM_WATCHTOWER ) )
    {
-      ch->printf( "&GTravelling on the continent of %s.\r\n", map_names[ch->cmap] );
-      landmark = check_landmark( ch->cmap, ch->mx, ch->my );
+      ch->printf( "&GTravelling on the continent of %s.\r\n", map_names[ch->wmap] );
+      landmark = check_landmark( ch->wmap, ch->mx, ch->my );
 
       if( landmark && landmark->Isdesc )
          ch->printf( "&G%s\r\n", !landmark->description.empty(  )? landmark->description.c_str(  ) : "" );
@@ -1773,17 +1773,17 @@ void display_map( char_data * ch )
    }
    else if( ch->in_room->flags.test( ROOM_WATCHTOWER ) )
    {
-      ch->printf( "&YYou are overlooking the continent of %s.\r\n", map_names[ch->cmap] );
+      ch->printf( "&YYou are overlooking the continent of %s.\r\n", map_names[ch->wmap] );
       ch->print( "The view from this watchtower is amazing!\r\n" );
    }
    else
-      ch->printf( "&GRiding a skyship over the continent of %s.\r\n", map_names[ch->cmap] );
+      ch->printf( "&GRiding a skyship over the continent of %s.\r\n", map_names[ch->wmap] );
 
    if( ch->is_immortal(  ) )
    {
       ch->printf( "&GSector type: %s. Coordinates: %dX, %dY\r\n", sect_types[sector], ch->mx, ch->my );
 
-      landing = check_landing_site( ch->cmap, ch->mx, ch->my );
+      landing = check_landing_site( ch->wmap, ch->mx, ch->my );
 
       if( landing )
          ch->printf( "&CLanding site for %s.\r\n", !landing->area.empty(  )? landing->area.c_str(  ) : "<NOT SET>" );
@@ -1854,7 +1854,7 @@ void check_random_mobs( char_data * ch )
    mob_index *imob = NULL;
    char_data *mob = NULL;
    int vnum = -1;
-   int terrain = get_terrain( ch->cmap, ch->mx, ch->my );
+   int terrain = get_terrain( ch->wmap, ch->mx, ch->my );
 
    /*
     * This could ( and did ) get VERY messy
@@ -1870,16 +1870,16 @@ void check_random_mobs( char_data * ch )
       return;
    if( !( imob = get_mob_index( vnum ) ) )
    {
-      log_printf( "%s: Missing mob for vnum %d", __FUNCTION__, vnum );
+      log_printf( "%s: Missing mob for vnum %d", __func__, vnum );
       return;
    }
 
    mob = imob->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    mob->set_actflag( ACT_ONMAP );
    mob->sector = terrain;
-   mob->cmap = ch->cmap;
+   mob->wmap = ch->wmap;
    mob->mx = ch->mx;
    mob->my = ch->my;
    mob->timer = 400;
@@ -2014,19 +2014,19 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
 {
    if( !ch )
    {
-      bug( "%s: NULL master!", __FUNCTION__ );
+      bug( "%s: NULL master!", __func__ );
       return;
    }
 
    if( !from )
    {
-      bug( "%s: %s NULL source room!", __FUNCTION__, ch->name );
+      bug( "%s: %s NULL source room!", __func__, ch->name );
       return;
    }
 
    if( !to )
    {
-      bug( "%s: %s NULL target room!", __FUNCTION__, ch->name );
+      bug( "%s: %s NULL target room!", __func__, ch->name );
       return;
    }
 
@@ -2043,7 +2043,7 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
 
          fch->from_room(  );
          if( !fch->to_room( to ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          fix_maps( ch, fch );
       }
    }
@@ -2052,7 +2052,7 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
 /* The guts of movement on the overland. Checks all sorts of nice things. Makes DAMN
  * sure you can actually go where you just tried to. Breaks easily if messed with wrong too.
  */
-ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool running )
+ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool running )
 {
    list < ship_data * >::iterator sh;
 
@@ -2063,7 +2063,7 @@ ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool
    {
       ship_data *ship = *sh;
 
-      if( ship->cmap == cmap && ship->mx == x && ship->my == y )
+      if( ship->wmap == wmap && ship->mx == x && ship->my == y )
       {
          if( !str_cmp( ch->name, ship->owner ) )
          {
@@ -2110,14 +2110,14 @@ ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool
       boat = true;   /* Cheap hack, but hey, imms need a break on this one :P */
 
    room_index *from_room = ch->in_room;
-   int sector = get_terrain( cmap, x, y );
-   short fx = ch->mx, fy = ch->my, fmap = ch->cmap;
+   int sector = get_terrain( wmap, x, y );
+   short fx = ch->mx, fy = ch->my, fmap = ch->wmap;
    if( sector == SECT_EXIT )
    {
       mapexit_data *mexit;
       room_index *toroom = NULL;
 
-      mexit = check_mapexit( cmap, x, y );
+      mexit = check_mapexit( wmap, x, y );
 
       if( mexit != NULL && !ch->has_pcflag( PCFLAG_MAPEDIT ) )
       {
@@ -2135,12 +2135,12 @@ ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool
                ++count;
 
                if( fch != ch  /* loop room bug fix here by Thoric */
-                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->cmap == fmap )
+                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->wmap == fmap )
                {
                   if( !fch->isnpc(  ) )
                   {
                      act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
-                     process_exit( fch, fch->cmap, x, y, dir, running );
+                     process_exit( fch, fch->wmap, x, y, dir, running );
                   }
                   else
                      enter_map( fch, NULL, mexit->therex, mexit->therey, mexit->tomap );
@@ -2153,7 +2153,7 @@ ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool
          {
             if( !ch->isnpc(  ) )
             {
-               bug( "%s: Target vnum %d for map exit does not exist!", __FUNCTION__, mexit->vnum );
+               bug( "%s: Target vnum %d for map exit does not exist!", __func__, mexit->vnum );
                ch->print( "Ooops. Something bad happened. Contact the immortals ASAP.\r\n" );
             }
             return rSTOP;
@@ -2216,12 +2216,12 @@ ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool
             ++count;
 
             if( fch != ch  /* loop room bug fix here by Thoric */
-                && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->cmap == fmap )
+                && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->wmap == fmap )
             {
                if( !fch->isnpc(  ) )
                {
                   act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
-                  process_exit( fch, fch->cmap, x, y, dir, running );
+                  process_exit( fch, fch->wmap, x, y, dir, running );
                }
                else
                   leave_map( fch, ch, toroom );
@@ -2233,7 +2233,7 @@ ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool
       if( mexit != NULL && ch->has_pcflag( PCFLAG_MAPEDIT ) )
       {
          delete_mapexit( mexit );
-         putterr( ch->cmap, x, y, ch->pcdata->secedit );
+         putterr( ch->wmap, x, y, ch->pcdata->secedit );
          ch->print( "&RMap exit deleted.\r\n" );
       }
    }
@@ -2476,7 +2476,7 @@ ch_ret process_exit( char_data * ch, short cmap, short x, short y, int dir, bool
          {
             if( !running )
                act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
-            process_exit( fch, fch->cmap, x, y, dir, running );
+            process_exit( fch, fch->wmap, x, y, dir, running );
          }
          else
          {
@@ -2519,7 +2519,7 @@ room_index *find_continent( char_data * ch, room_index * maproom )
    if( maproom->area->continent == ACON_ONE )
    {
       location = get_room_index( OVERLAND_ONE );
-      ch->cmap = MAP_ONE;
+      ch->wmap = MAP_ONE;
    }
 
    return location;
@@ -2539,10 +2539,10 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, int continent )
       {
          case ACON_ONE:
             maproom = get_room_index( OVERLAND_ONE );
-            ch->cmap = MAP_ONE;
+            ch->wmap = MAP_ONE;
             break;
          default:
-            bug( "%s: Invalid target map specified: %d", __FUNCTION__, continent );
+            bug( "%s: Invalid target map specified: %d", __func__, continent );
             return;
       }
    }
@@ -2555,7 +2555,7 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, int continent )
 
    if( !maproom )
    {
-      bug( "%s: Overland map room is missing!", __FUNCTION__ );
+      bug( "%s: Overland map room is missing!", __func__ );
       ch->print( "Woops. Something is majorly wrong here - inform the immortals.\r\n" );
       return;
    }
@@ -2565,8 +2565,8 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, int continent )
    else
    {
       ch->set_actflag( ACT_ONMAP );
-      if( ch->sector == -1 && get_terrain( ch->cmap, x, y ) == ch->in_room->sector_type )
-         ch->sector = get_terrain( ch->cmap, x, y );
+      if( ch->sector == -1 && get_terrain( ch->wmap, x, y ) == ch->in_room->sector_type )
+         ch->sector = get_terrain( ch->wmap, x, y );
       else
          ch->sector = -2;
    }
@@ -2577,7 +2577,7 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, int continent )
    original = ch->in_room;
    ch->from_room(  );
    if( !ch->to_room( maproom ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    collect_followers( ch, original, ch->in_room );
    interpret( ch, "look" );
 
@@ -2604,14 +2604,14 @@ void leave_map( char_data * ch, char_data * victim, room_index * target )
 
    ch->mx = -1;
    ch->my = -1;
-   ch->cmap = -1;
+   ch->wmap = -1;
 
    if( target != NULL )
    {
       room_index *from = ch->in_room;
       ch->from_room(  );
       if( !ch->to_room( target ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       fix_maps( victim, ch );
       collect_followers( ch, from, target );
 
@@ -2694,7 +2694,7 @@ CMDF( do_coords )
 struct undotype
 {
    struct undotype *next;
-   short cmap;
+   short wmap;
    short xcoord;
    short ycoord;
    short prevterr;
@@ -2708,7 +2708,7 @@ struct undotype *undocurr = 0x0; /* most recent undo data */
  * Aborts if you attempt to fill with the same sector your standing on.
  * Floodfill code courtesy of Vor - don't ask for his address, I'm not allowed to give it to you!
  */
-int floodfill( short cmap, short xcoord, short ycoord, short fill, char terr )
+int floodfill( short wmap, short xcoord, short ycoord, short fill, char terr )
 {
    struct undotype *undonew;
 
@@ -2720,7 +2720,7 @@ int floodfill( short cmap, short xcoord, short ycoord, short fill, char terr )
 
    undonew = new undotype;
 
-   undonew->cmap = cmap;
+   undonew->wmap = wmap;
    undonew->xcoord = xcoord;
    undonew->ycoord = ycoord;
    undonew->prevterr = terr;
@@ -2734,16 +2734,16 @@ int floodfill( short cmap, short xcoord, short ycoord, short fill, char terr )
       undocurr = undonew;
    };
 
-   putterr( cmap, xcoord, ycoord, fill );
+   putterr( wmap, xcoord, ycoord, fill );
 
-   if( get_terrain( cmap, xcoord + 1, ycoord ) == terr )
-      floodfill( cmap, xcoord + 1, ycoord, fill, terr );
-   if( get_terrain( cmap, xcoord, ycoord + 1 ) == terr )
-      floodfill( cmap, xcoord, ycoord + 1, fill, terr );
-   if( get_terrain( cmap, xcoord - 1, ycoord ) == terr )
-      floodfill( cmap, xcoord - 1, ycoord, fill, terr );
-   if( get_terrain( cmap, xcoord, ycoord - 1 ) == terr )
-      floodfill( cmap, xcoord, ycoord - 1, fill, terr );
+   if( get_terrain( wmap, xcoord + 1, ycoord ) == terr )
+      floodfill( wmap, xcoord + 1, ycoord, fill, terr );
+   if( get_terrain( wmap, xcoord, ycoord + 1 ) == terr )
+      floodfill( wmap, xcoord, ycoord + 1, fill, terr );
+   if( get_terrain( wmap, xcoord - 1, ycoord ) == terr )
+      floodfill( wmap, xcoord - 1, ycoord, fill, terr );
+   if( get_terrain( wmap, xcoord, ycoord - 1 ) == terr )
+      floodfill( wmap, xcoord, ycoord - 1, fill, terr );
 
    return ( 0 );
 }
@@ -2761,8 +2761,8 @@ int unfloodfill( void )
    undocurr = undohead;
    do
    {
-      terr = get_terrain( undocurr->cmap, undocurr->xcoord, undocurr->ycoord );
-      putterr( undocurr->cmap, undocurr->xcoord, undocurr->ycoord, undocurr->prevterr );
+      terr = get_terrain( undocurr->wmap, undocurr->xcoord, undocurr->ycoord );
+      putterr( undocurr->wmap, undocurr->xcoord, undocurr->ycoord, undocurr->prevterr );
       undocurr->prevterr = terr;
       undocurr = undocurr->next;
    }
@@ -2796,20 +2796,20 @@ int purgeundo( void )
  */
 void reload_map( char_data * ch )
 {
-   if( ch->cmap < 0 || ch->cmap >= MAP_MAX )
+   if( ch->wmap < 0 || ch->wmap >= MAP_MAX )
    {
-      bug( "%s: Trying to reload invalid map!", __FUNCTION__ );
+      bug( "%s: Trying to reload invalid map!", __func__ );
       return;
    }
 
-   ch->pagerf( "&GReinitializing map grid for %s....\r\n", map_names[ch->cmap] );
+   ch->pagerf( "&GReinitializing map grid for %s....\r\n", map_names[ch->wmap] );
 
    for( short x = 0; x < MAX_X; ++x )
    {
       for( short y = 0; y < MAX_Y; ++y )
-         putterr( ch->cmap, x, y, SECT_OCEAN );
+         putterr( ch->wmap, x, y, SECT_OCEAN );
    }
-   load_map_png( map_filenames[ch->cmap], ch->cmap );
+   load_map_png( map_filenames[ch->wmap], ch->wmap );
 }
 
 /* As it implies, this saves the map you are currently standing on to disk.
@@ -2849,7 +2849,7 @@ void save_map_png( const char *mapfile, short mapnumber )
 
    if( ( PngOut = fopen( graphicname, "w" ) ) == NULL )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( graphicname );
    }
 
@@ -2942,7 +2942,7 @@ CMDF( do_mapedit )
    if( !str_cmp( arg1, "fill" ) )
    {
       int flood, fill;
-      short standingon = get_terrain( ch->cmap, ch->mx, ch->my );
+      short standingon = get_terrain( ch->wmap, ch->mx, ch->my );
 
       if( argument.empty(  ) )
       {
@@ -2964,7 +2964,7 @@ CMDF( do_mapedit )
       }
 
       purgeundo(  );
-      fill = floodfill( ch->cmap, ch->mx, ch->my, flood, standingon );
+      fill = floodfill( ch->wmap, ch->mx, ch->my, flood, standingon );
 
       if( fill == 0 )
       {
@@ -3004,16 +3004,16 @@ CMDF( do_mapedit )
       {
          const char *mapname;
 
-         if( ch->cmap == -1 )
+         if( ch->wmap == -1 )
          {
-            bug( "%s: %s is not on a valid map!", __FUNCTION__, ch->name );
+            bug( "%s: %s is not on a valid map!", __func__, ch->name );
             ch->print( "Can't do that - your on an invalid map.\r\n" );
             return;
          }
-         mapname = map_name[ch->cmap];
+         mapname = map_name[ch->wmap];
 
          ch->printf( "Saving map of %s....\r\n", mapname );
-         save_map_png( mapname, ch->cmap );
+         save_map_png( mapname, ch->wmap );
          return;
       }
 

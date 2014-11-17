@@ -131,7 +131,7 @@ void actiondesc( char_data * ch, obj_data * obj )
 
       case ITEM_DRINK_CON:
          if( ( liq = get_liq_vnum( obj->value[2] ) ) == NULL )
-            bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
+            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
 
          act( AT_ACTION, charbuf, ch, obj, liq->shortdesc.c_str(  ), TO_CHAR );
          act( AT_ACTION, roombuf, ch, obj, liq->shortdesc.c_str(  ), TO_ROOM );
@@ -572,7 +572,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
 
       if( !( room = get_room_index( obj->value[1] ) ) )
       {
-         bug( "%s: obj points to invalid room %d", __FUNCTION__, obj->value[1] );
+         bug( "%s: obj points to invalid room %d", __func__, obj->value[1] );
          return;
       }
 
@@ -593,7 +593,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
 
       if( !( room = get_room_index( obj->value[1] ) ) )
       {
-         bug( "%s: obj points to invalid room %d", __FUNCTION__, obj->value[1] );
+         bug( "%s: obj points to invalid room %d", __func__, obj->value[1] );
          return;
       }
 
@@ -645,7 +645,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
        */
       if( !( pObjIndex = get_obj_index( obj->value[1] ) ) )
       {
-         bug( "%s: obj points to invalid object vnum %d", __FUNCTION__, obj->value[1] );
+         bug( "%s: obj points to invalid object vnum %d", __func__, obj->value[1] );
          return;
       }
 
@@ -659,7 +659,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
        */
       if( obj->value[2] > 0 && !( room = get_room_index( obj->value[2] ) ) )
       {
-         bug( "%s: obj points to invalid room vnum %d", __FUNCTION__, obj->value[2] );
+         bug( "%s: obj points to invalid room vnum %d", __func__, obj->value[2] );
          return;
       }
 
@@ -668,7 +668,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
        */
       if( !( tobj = pObjIndex->create_object( URANGE( 0, obj->value[3], MAX_LEVEL ) ) ) )
       {
-         bug( "%s: obj couldn't create obj vnum %d at level %d", __FUNCTION__, obj->value[1], obj->value[3] );
+         bug( "%s: obj couldn't create obj vnum %d at level %d", __func__, obj->value[1], obj->value[3] );
          return;
       }
 
@@ -697,7 +697,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
        */
       if( !( pMobIndex = get_mob_index( obj->value[1] ) ) )
       {
-         bug( "%s: obj points to invalid mob vnum %d", __FUNCTION__, obj->value[1] );
+         bug( "%s: obj points to invalid mob vnum %d", __func__, obj->value[1] );
          return;
       }
 
@@ -711,13 +711,13 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
        */
       if( obj->value[2] > 0 && !( room = get_room_index( obj->value[2] ) ) )
       {
-         bug( "%s: obj points to invalid room vnum %d", __FUNCTION__, obj->value[2] );
+         bug( "%s: obj points to invalid room vnum %d", __func__, obj->value[2] );
          return;
       }
 
       if( !( mob = pMobIndex->create_mobile(  ) ) )
       {
-         bug( "%s: obj couldnt create_mobile vnum %d", __FUNCTION__, obj->value[1] );
+         bug( "%s: obj couldnt create_mobile vnum %d", __func__, obj->value[1] );
          return;
       }
       mob->to_room( room );
@@ -731,7 +731,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
    {
       if( obj->value[1] <= 0 || !IS_VALID_SN( obj->value[1] ) )
       {
-         bug( "%s: obj points to invalid sn [%d]", __FUNCTION__, obj->value[1] );
+         bug( "%s: obj points to invalid sn [%d]", __func__, obj->value[1] );
          return;
       }
       obj_cast_spell( obj->value[1], URANGE( 1, ( obj->value[2] > 0 ) ? obj->value[2] : ch->level, MAX_LEVEL ), ch, ch, NULL );
@@ -753,7 +753,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
 
       if( !room )
       {
-         bug( "%s: obj points to invalid room %d", __FUNCTION__, obj->value[1] );
+         bug( "%s: obj points to invalid room %d", __func__, obj->value[1] );
          return;
       }
 
@@ -770,13 +770,13 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
 
       if( !found )
       {
-         bug( "%s: obj points to a container [%d] thats not where it should be?", __FUNCTION__, obj->value[2] );
+         bug( "%s: obj points to a container [%d] thats not where it should be?", __func__, obj->value[2] );
          return;
       }
 
       if( container->item_type != ITEM_CONTAINER )
       {
-         bug( "%s: obj points to object [%d], but it isn't a container.", __FUNCTION__, obj->value[2] );
+         bug( "%s: obj points to object [%d], but it isn't a container.", __func__, obj->value[2] );
          return;
       }
 
@@ -807,7 +807,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          room = obj->in_room;
       if( !room )
       {
-         bug( "%s: obj points to invalid room %d", __FUNCTION__, obj->value[1] );
+         bug( "%s: obj points to invalid room %d", __func__, obj->value[1] );
          return;
       }
       if( IS_SET( obj->value[0], TRIG_D_NORTH ) )
@@ -842,7 +842,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       }
       else
       {
-         bug( "%s: door: no direction flag set.", __FUNCTION__ );
+         bug( "%s: door: no direction flag set.", __func__ );
          return;
       }
 
@@ -853,12 +853,12 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       {
          if( !IS_SET( obj->value[0], TRIG_PASSAGE ) )
          {
-            bug( "%s: obj points to non-exit %d", __FUNCTION__, obj->value[1] );
+            bug( "%s: obj points to non-exit %d", __func__, obj->value[1] );
             return;
          }
          if( !( to_room = get_room_index( obj->value[2] ) ) )
          {
-            bug( "%s: dest points to invalid room %d", __FUNCTION__, obj->value[2] );
+            bug( "%s: dest points to invalid room %d", __func__, obj->value[2] );
             return;
          }
          pexit = room->make_exit( to_room, edir );
@@ -1132,7 +1132,7 @@ CMDF( do_smoke )
             return;
       }
       else
-         bug( "%s: bad herb type %d", __FUNCTION__, cpipe->value[2] );
+         bug( "%s: bad herb type %d", __func__, cpipe->value[2] );
 
       SET_BIT( cpipe->value[3], PIPE_HOT );
       if( --cpipe->value[1] < 1 )
@@ -1393,7 +1393,7 @@ CMDF( do_apply )
       retcode = obj_cast_spell( salve->value[5], salve->value[0], ch, victim, NULL );
    if( retcode == rCHAR_DIED )
    {
-      bug( "%s: char died", __FUNCTION__ );
+      bug( "%s: char died", __func__ );
       return;
    }
 
@@ -1450,7 +1450,7 @@ CMDF( do_invoke )
       if( !location )
       {
          ch->print( "There is a problem with your rune. Contact the immortals.\r\n" );
-         bug( "%s: Rune with NULL room!", __FUNCTION__ );
+         bug( "%s: Rune with NULL room!", __func__ );
          return;
       }
 
@@ -1581,7 +1581,7 @@ CMDF( do_connect )
        */
       if( !( new_ob = get_obj_index( first_ob->value[1] )->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          return;
       }
       first_ob->extract(  );

@@ -100,7 +100,7 @@ void save_mobile( FILE * fp, char_data * mob )
    }
    else
       fprintf( fp, "Room	%d\n", ROOM_VNUM_LIMBO );
-   fprintf( fp, "Coordinates  %d %d %d\n", mob->mx, mob->my, mob->cmap );
+   fprintf( fp, "Coordinates  %d %d %d\n", mob->mx, mob->my, mob->wmap );
    if( mob->name && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
       fprintf( fp, "Name     %s~\n", mob->name );
    if( mob->short_descr && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
@@ -162,7 +162,7 @@ void save_world( void )
          snprintf( filename, 256, "%s%d", HOTBOOT_DIR, pRoomIndex->vnum );
          if( !( objfp = fopen( filename, "w" ) ) )
          {
-            bug( "%s: fopen %d", __FUNCTION__, pRoomIndex->vnum );
+            bug( "%s: fopen %d", __func__, pRoomIndex->vnum );
             perror( filename );
             continue;
          }
@@ -177,7 +177,7 @@ void save_world( void )
    snprintf( filename, 256, "%s%s", SYSTEM_DIR, MOB_FILE );
    if( !( mobfp = fopen( filename, "w" ) ) )
    {
-      bug( "%s: fopen mob file", __FUNCTION__ );
+      bug( "%s: fopen mob file", __func__ );
       perror( filename );
    }
    else
@@ -207,7 +207,7 @@ char_data *load_mobile( FILE * fp )
 
    if( word[0] == '\0' )
    {
-      bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+      bug( "%s: EOF encountered reading file!", __func__ );
       word = "EndMobile";
    }
 
@@ -218,7 +218,7 @@ char_data *load_mobile( FILE * fp )
       vnum = fread_number( fp );
       if( !get_mob_index( vnum ) )
       {
-         bug( "%s: No index data for vnum %d", __FUNCTION__, vnum );
+         bug( "%s: No index data for vnum %d", __func__, vnum );
          return NULL;
       }
       mob = get_mob_index( vnum )->create_mobile(  );
@@ -230,7 +230,7 @@ char_data *load_mobile( FILE * fp )
 
             if( word[0] == '\0' )
             {
-               bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+               bug( "%s: EOF encountered reading file!", __func__ );
                word = "EndMobile";
             }
             /*
@@ -240,7 +240,7 @@ char_data *load_mobile( FILE * fp )
             if( !str_cmp( word, "EndMobile" ) )
                break;
          }
-         bug( "%s: Unable to create mobile for vnum %d", __FUNCTION__, vnum );
+         bug( "%s: Unable to create mobile for vnum %d", __func__, vnum );
          return NULL;
       }
    }
@@ -252,7 +252,7 @@ char_data *load_mobile( FILE * fp )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+            bug( "%s: EOF encountered reading file!", __func__ );
             word = "EndMobile";
          }
 
@@ -264,7 +264,7 @@ char_data *load_mobile( FILE * fp )
             break;
       }
       mob->extract( true );
-      bug( "%s: Vnum not found", __FUNCTION__ );
+      bug( "%s: Vnum not found", __func__ );
       return NULL;
    }
 
@@ -274,14 +274,14 @@ char_data *load_mobile( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __FUNCTION__ );
+         bug( "%s: EOF encountered reading file!", __func__ );
          word = "EndMobile";
       }
 
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -319,7 +319,7 @@ char_data *load_mobile( FILE * fp )
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
                      if( ( sn = herb_lookup( sname ) ) < 0 )
-                        log_printf( "%s: unknown skill.", __FUNCTION__ );
+                        log_printf( "%s: unknown skill.", __func__ );
                      else
                         sn += TYPE_HERB;
                   }
@@ -348,7 +348,7 @@ char_data *load_mobile( FILE * fp )
             {
                mob->mx = fread_short( fp );
                mob->my = fread_short( fp );
-               mob->cmap = fread_short( fp );
+               mob->wmap = fread_short( fp );
                break;
             }
             break;
@@ -372,7 +372,7 @@ char_data *load_mobile( FILE * fp )
                   pRoomIndex = get_room_index( ROOM_VNUM_LIMBO );
                mob->tempnum = -9998;   /* Yet another hackish fix! */
                if( !mob->to_room( pRoomIndex ) )
-                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                update_room_reset( mob, false );
                return mob;
             }
@@ -461,7 +461,7 @@ void read_obj_file( const char *dirname, const char *filename )
 
    if( !( room = get_room_index( vnum ) ) )
    {
-      bug( "%s: ARGH! Missing room index for %d!", __FUNCTION__, vnum );
+      bug( "%s: ARGH! Missing room index for %d!", __func__, vnum );
       unlink( fname );
       return;
    }
@@ -484,7 +484,7 @@ void read_obj_file( const char *dirname, const char *filename )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -498,7 +498,7 @@ void read_obj_file( const char *dirname, const char *filename )
             break;
          else
          {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
+            bug( "%s: bad section: %s", __func__, word );
             break;
          }
       }
@@ -514,14 +514,14 @@ void read_obj_file( const char *dirname, const char *filename )
          if( tobj->extra_flags.test( ITEM_ONMAP ) )
          {
             supermob->set_actflag( ACT_ONMAP );
-            supermob->cmap = tobj->cmap;
+            supermob->wmap = tobj->wmap;
             supermob->mx = tobj->mx;
             supermob->my = tobj->my;
          }
          tobj->from_char(  );
          tobj = tobj->to_room( room, supermob );
          supermob->unset_actflag( ACT_ONMAP );
-         supermob->cmap = -1;
+         supermob->wmap = -1;
          supermob->mx = -1;
          supermob->my = -1;
       }
@@ -571,7 +571,7 @@ void load_world( void )
    snprintf( file1, 256, "%s%s", SYSTEM_DIR, MOB_FILE );
    if( !( mobfp = fopen( file1, "r" ) ) )
    {
-      bug( "%s: fopen mob file", __FUNCTION__ );
+      bug( "%s: fopen mob file", __func__ );
       perror( file1 );
    }
    else
@@ -658,7 +658,7 @@ CMDF( do_hotboot )
    if( !fp )
    {
       ch->print( "Hotboot file not writeable, aborted.\r\n" );
-      bug( "%s: Could not write to hotboot file: %s. Hotboot aborted.", __FUNCTION__, HOTBOOT_FILE );
+      bug( "%s: Could not write to hotboot file: %s. Hotboot aborted.", __func__, HOTBOOT_FILE );
       perror( "do_copyover:fopen" );
       return;
    }
@@ -761,13 +761,13 @@ CMDF( do_hotboot )
    sysdata->dlHandle = dlopen( NULL, RTLD_LAZY );
    if( !sysdata->dlHandle )
    {
-      bug( "%s: FATAL ERROR: Unable to reopen system executable handle!", __FUNCTION__ );
+      bug( "%s: FATAL ERROR: Unable to reopen system executable handle!", __func__ );
       exit( 1 );
    }
 #if !defined(__CYGWIN__) && defined(SQL)
    init_mysql(  );
 #endif
-   bug( "%s: Hotboot execution failed!!", __FUNCTION__ );
+   bug( "%s: Hotboot execution failed!!", __func__ );
    ch->print( "Hotboot FAILED!\r\n" );
 }
 
@@ -783,7 +783,7 @@ void hotboot_recover( void )
    if( !( fp = fopen( HOTBOOT_FILE, "r" ) ) )   /* there are some descriptors open which will hang forever then ? */
    {
       perror( "hotboot_recover: fopen" );
-      bug( "%s: Hotboot file not found. Exitting.", __FUNCTION__ );
+      bug( "%s: Hotboot file not found. Exitting.", __func__ );
       exit( 1 );
    }
 
@@ -819,7 +819,7 @@ void hotboot_recover( void )
 
       if( desc == 0 )
       {
-         bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Name: %s Host: %s", __FUNCTION__, name, host );
+         bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Name: %s Host: %s", __func__, name, host );
          continue;
       }
 
@@ -863,7 +863,7 @@ void hotboot_recover( void )
          pclist.push_back( d->character );
 
          if( !d->character->to_room( d->character->in_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          act( AT_MAGIC, "A puff of ethereal smoke dissipates around you!", d->character, NULL, NULL, TO_CHAR );
          act( AT_MAGIC, "$n appears in a puff of ethereal smoke!", d->character, NULL, NULL, TO_ROOM );
          d->connected = CON_PLAYING;
@@ -874,7 +874,7 @@ void hotboot_recover( void )
          {
             if( !d->compressStart(  ) )
             {
-               log_printf( "%s: Error restarting compression for %s on desc %d", __FUNCTION__, name, desc );
+               log_printf( "%s: Error restarting compression for %s on desc %d", __func__, name, desc );
                d->can_compress = false;
                d->is_compressing = false;
             }

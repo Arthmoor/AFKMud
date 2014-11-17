@@ -216,7 +216,7 @@ descriptor_data::~descriptor_data(  )
    if( descriptor > 0 )
       close( descriptor );
    else if( descriptor == 0 )
-      bug( "%s: }RALERT! Closing socket 0! BAD BAD BAD!", __FUNCTION__ );
+      bug( "%s: }RALERT! Closing socket 0! BAD BAD BAD!", __func__ );
 }
 
 descriptor_data::descriptor_data(  )
@@ -328,7 +328,7 @@ void fread_loginmsg( FILE * fp )
       switch ( UPPER( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __FUNCTION__, word );
+            bug( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -341,7 +341,7 @@ void fread_loginmsg( FILE * fp )
             {
                if( !lmsg->name || lmsg->name[0] == '\0' )
                {
-                  bug( "%s: Login message with no name", __FUNCTION__ );
+                  bug( "%s: Login message with no name", __func__ );
                   deleteptr( lmsg );
                   return;
                }
@@ -349,7 +349,7 @@ void fread_loginmsg( FILE * fp )
                {
                   if( !exists_player( lmsg->name ) )
                   {
-                     bug( "%s: Login message expired - %s no longer exists", __FUNCTION__, lmsg->name );
+                     bug( "%s: Login message expired - %s no longer exists", __func__, lmsg->name );
 
                      deleteptr( lmsg );
                      return;
@@ -404,7 +404,7 @@ void load_loginmsg(  )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found. ", __FUNCTION__ );
+         bug( "%s: # not found. ", __func__ );
          break;
       }
 
@@ -419,7 +419,7 @@ void load_loginmsg(  )
          break;
       else
       {
-         bug( "%s: bad section: %s", __FUNCTION__, word );
+         bug( "%s: bad section: %s", __func__, word );
          continue;
       }
    }
@@ -436,7 +436,7 @@ void save_loginmsg(  )
    snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
    if( ( fp = fopen( filename, "w" ) ) == NULL )
    {
-      bug( "%s: Cannot open login message file.", __FUNCTION__ );
+      bug( "%s: Cannot open login message file.", __func__ );
       return;
    }
 
@@ -462,7 +462,7 @@ void add_loginmsg( const char *name, short type, const char *argument )
 
    if( type < 0 || !name || name[0] == '\0' )
    {
-      bug( "%s: bad name or type", __FUNCTION__ );
+      bug( "%s: bad name or type", __func__ );
       return;
    }
 
@@ -493,7 +493,7 @@ void check_loginmsg( char_data * ch )
       if( !str_cmp( lmsg->name, ch->name ) )
       {
          if( lmsg->type > MAX_MSG )
-            bug( "%s: Error: Unknown login msg: %d for %s.", __FUNCTION__, lmsg->type, ch->name );
+            bug( "%s: Error: Unknown login msg: %d for %s.", __func__, lmsg->type, ch->name );
 
          switch ( lmsg->type )
          {
@@ -501,7 +501,7 @@ void check_loginmsg( char_data * ch )
             {
                if( !lmsg->text || lmsg->text[0] == '\0' )
                {
-                  bug( "%s: NULL loginmsg text for type 0", __FUNCTION__ );
+                  bug( "%s: NULL loginmsg text for type 0", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -515,7 +515,7 @@ void check_loginmsg( char_data * ch )
             {
                if( !lmsg->text || lmsg->text[0] == '\0' )
                {
-                  bug( "%s: NULL loginmsg text for type 17", __FUNCTION__ );
+                  bug( "%s: NULL loginmsg text for type 17", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -530,7 +530,7 @@ void check_loginmsg( char_data * ch )
             {
                if( !lmsg->text || lmsg->text[0] == '\0' )
                {
-                  bug( "%s: NULL loginmsg text for type 18", __FUNCTION__ );
+                  bug( "%s: NULL loginmsg text for type 18", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -780,9 +780,9 @@ bool descriptor_data::read(  )
          break;
       else
       {
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __FUNCTION__, this->descriptor );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __func__, this->descriptor );
          log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( this->character && this->character->name ) ? this->character->name : this->host.c_str(  ) );
-         perror( __FUNCTION__ );
+         perror( __func__ );
          return false;
       }
    }
@@ -1125,7 +1125,7 @@ void descriptor_data::write_to_buffer( const string & txt )
 {
    if( !this )
    {
-      bug( "%s: NULL descriptor", __FUNCTION__ );
+      bug( "%s: NULL descriptor", __func__ );
       return;
    }
 
@@ -1158,7 +1158,7 @@ void descriptor_data::send_color( const string & txt )
 {
    if( !this )
    {
-      bug( "%s: NULL *d", __FUNCTION__ );
+      bug( "%s: NULL *d", __func__ );
       return;
    }
 
@@ -1172,7 +1172,7 @@ void descriptor_data::pager( const string & txt )
 {
    if( !this )
    {
-      bug( "%s: NULL *d", __FUNCTION__ );
+      bug( "%s: NULL *d", __func__ );
       return;
    }
 
@@ -1348,7 +1348,7 @@ void save_dns( void )
    stream.open( DNS_FILE );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: stream.open()", __FUNCTION__ );
+      bug( "%s: stream.open()", __func__ );
       perror( DNS_FILE );
    }
    else
@@ -1456,7 +1456,7 @@ void load_dns( void )
             dnslist.push_back( cache );
          }
          else
-            log_printf( "%s: Bad line in DNS cache file: %s %s", __FUNCTION__, key.c_str(  ), value.c_str(  ) );
+            log_printf( "%s: Bad line in DNS cache file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
       }
       while( !stream.eof(  ) );
       stream.close(  );
@@ -1479,7 +1479,7 @@ bool read_from_dns( int fd, char *buffer )
    iStart = strlen( inbuf );
    if( iStart >= sizeof( inbuf ) - 10 )
    {
-      bug( "%s: DNS input overflow!!!", __FUNCTION__ );
+      bug( "%s: DNS input overflow!!!", __func__ );
       return false;
    }
 
@@ -1648,7 +1648,7 @@ void descriptor_data::resolve_dns( long ip )
       /*
        * Still here --> hmm. An error. 
        */
-      bug( "%s: Exec failed; Closing child.", __FUNCTION__ );
+      bug( "%s: Exec failed; Closing child.", __func__ );
       ifd = -1;
       ipid = -1;
       exit( 0 );
@@ -1726,7 +1726,7 @@ void new_descriptor( int new_desc )
    dnew->init(  );
    if( desc == 0 )
    {
-      bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Host: %s", __FUNCTION__, inet_ntoa( sock.sin_addr ) );
+      bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Host: %s", __func__, inet_ntoa( sock.sin_addr ) );
       deleteptr( dnew );
       set_alarm( 0 );
       return;
@@ -1838,7 +1838,7 @@ void accept_new( int ctrl )
 
    if( FD_ISSET( ctrl, &exc_set ) )
    {
-      bug( "%s: Exception raised on controlling descriptor %d", __FUNCTION__, ctrl );
+      bug( "%s: Exception raised on controlling descriptor %d", __func__, ctrl );
       FD_CLR( ctrl, &in_set );
       FD_CLR( ctrl, &out_set );
    }
@@ -1864,7 +1864,7 @@ void descriptor_data::prompt(  )
 
    if( !ch )
    {
-      bug( "%s: NULL ch", __FUNCTION__ );
+      bug( "%s: NULL ch", __func__ );
       return;
    }
 
@@ -1917,7 +1917,7 @@ void descriptor_data::prompt(  )
       switch ( *( cprompt - 1 ) )
       {
          default:
-            bug( "%s: bad command char '%c'.", __FUNCTION__, *( cprompt - 1 ) );
+            bug( "%s: bad command char '%c'.", __func__, *( cprompt - 1 ) );
             break;
 
          case '%':
@@ -2240,7 +2240,7 @@ void close_socket( descriptor_data * d, bool force )
          interpret( ch, "return" );
       else
       {
-         bug( "%s: original without character %s", __FUNCTION__, ( d->original->name ? d->original->name : "unknown" ) );
+         bug( "%s: original without character %s", __func__, ( d->original->name ? d->original->name : "unknown" ) );
          d->character = d->original;
          d->original = NULL;
       }
@@ -2521,25 +2521,25 @@ void char_to_game( char_data * ch )
    else if( !ch->is_immortal(  ) && ch->pcdata->release_date > 0 && ch->pcdata->release_date > current_time )
    {
       if( !ch->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
 
    else if( ch->in_room && ( ch->is_immortal(  ) || !ch->in_room->flags.test( ROOM_PROTOTYPE ) ) )
    {
       if( !ch->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
 
    else if( ch->is_immortal(  ) )
    {
       if( !ch->to_room( get_room_index( ROOM_VNUM_CHAT ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
 
    else
    {
       if( !ch->to_room( get_room_index( ROOM_VNUM_TEMPLE ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
 
    if( ch->get_timer( TIMER_SHOVEDRAG ) > 0 )
@@ -2688,7 +2688,7 @@ void descriptor_data::nanny( string & argument )
    switch ( connected )
    {
       default:
-         bug( "%s: bad d->connected %d.", __FUNCTION__, connected );
+         bug( "%s: bad d->connected %d.", __func__, connected );
          close_socket( this, true );
          return;
 
@@ -3197,11 +3197,11 @@ void descriptor_data::nanny( string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned NULL somehow!", __FUNCTION__ );
+            bug( "%s: Prize object turned NULL somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             connected = CON_PLAYING;
             break;
          }
@@ -3252,11 +3252,11 @@ void descriptor_data::nanny( string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned NULL somehow!", __FUNCTION__ );
+            bug( "%s: Prize object turned NULL somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             connected = CON_PLAYING;
             break;
          }
@@ -3299,11 +3299,11 @@ void descriptor_data::nanny( string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned NULL somehow!", __FUNCTION__ );
+            bug( "%s: Prize object turned NULL somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             connected = CON_PLAYING;
             break;
          }
@@ -3338,11 +3338,11 @@ void descriptor_data::nanny( string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned NULL somehow!", __FUNCTION__ );
+            bug( "%s: Prize object turned NULL somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             connected = CON_PLAYING;
             break;
          }
@@ -3355,7 +3355,7 @@ void descriptor_data::nanny( string & argument )
                ch->pcdata->spare_ptr = NULL;
                ch->from_room(  );
                if( !ch->to_room( get_room_index( ROOM_VNUM_ENDREDEEM ) ) )
-                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __FUNCTION__, __LINE__ );
+                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
                interpret( ch, "look" );
                ch->set_color( AT_BLUE );
                if( ch->Class == CLASS_BARD && prize->item_type == ITEM_INSTRUMENT )
@@ -3389,7 +3389,7 @@ void descriptor_data::nanny( string & argument )
       {
          if( ch->tempnum < 1 )
          {
-            bug( "%s: CON_RAISE_STAT: ch loop counter is < 1 for %s", __FUNCTION__, ch->name );
+            bug( "%s: CON_RAISE_STAT: ch loop counter is < 1 for %s", __func__, ch->name );
             connected = CON_PLAYING;
             return;
          }
@@ -3401,7 +3401,7 @@ void descriptor_data::nanny( string & argument )
              && ch->perm_con >= 18 + race_table[ch->race]->con_plus
              && ch->perm_cha >= 18 + race_table[ch->race]->cha_plus && ch->perm_lck >= 18 + race_table[ch->race]->lck_plus )
          {
-            bug( "%s: CON_RAISE_STAT: %s is unable to raise anything.", __FUNCTION__, ch->name );
+            bug( "%s: CON_RAISE_STAT: %s is unable to raise anything.", __func__, ch->name );
             write_to_buffer( "All of your stats are already at their maximum values!\r\n" );
             connected = CON_PLAYING;
             return;
