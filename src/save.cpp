@@ -1030,7 +1030,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                ch->perm_con = x5;
                ch->perm_cha = x6;
                ch->perm_lck = x7;
-               if( !x7 || x7 == 0 )
+               if( x7 == 0 )
                   ch->perm_lck = 13;
                break;
             }
@@ -2449,14 +2449,22 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
    struct stat fst;
    int i, x;
 
+   if( !d )
+   {
+      bug( "%s: NULL d! This should not have happened!", __func__ );
+      return false;
+   }
+
    char_data *ch = new char_data;
 
    for( x = 0; x < MAX_WEAR; ++x )
+   {
       for( i = 0; i < MAX_LAYERS; ++i )
       {
          save_equipment[x][i] = NULL;
          mob_save_equipment[x][i] = NULL;
       }
+   }
    loading_char = ch;
 
    ch->pcdata = new pc_data;

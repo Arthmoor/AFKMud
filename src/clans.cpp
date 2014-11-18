@@ -504,6 +504,9 @@ void fread_memberlist( clan_data * clan, FILE * fp )
             break;
       }
    }
+
+   bug( "%s: Fell through to bottom!", __func__ );
+   deleteptr( roster );
 }
 
 /*

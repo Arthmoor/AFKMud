@@ -375,7 +375,6 @@ void save_aucvault( char_data * ch, const string & aucmob )
    room_index *aucvault;
    FILE *fp;
    char filename[256];
-   short templvl;
 
    if( !ch )
    {
@@ -393,8 +392,9 @@ void save_aucvault( char_data * ch, const string & aucmob )
    }
    else
    {
-      templvl = ch->level;
+      short templvl = ch->level;
       ch->level = LEVEL_AVATAR;  /* make sure EQ doesn't get lost */
+
       if( !aucvault->objects.empty(  ) )
          fwrite_obj( ch, aucvault->objects, NULL, fp, 0, false );
       fprintf( fp, "%s", "#END\n" );

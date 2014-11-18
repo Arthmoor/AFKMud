@@ -680,23 +680,28 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
     * check type of projectile to determine value of wtype 
     * * wtype points to same "short" as the skill assigned to that
     * * range by the code and as such the proper skill will be used. 
-    * * Grimm 
+    * * Grimm
+    *
+    * Bugfix: Projectile could be NULL here - Samson
     */
-   switch ( projectile->value[4] )
+   if( projectile )
    {
-      default:
-      case PROJ_BOLT:
-      case PROJ_ARROW:
-         wtype = gsn_archery;
-         break;
+      switch ( projectile->value[4] )
+      {
+         default:
+         case PROJ_BOLT:
+         case PROJ_ARROW:
+            wtype = gsn_archery;
+            break;
 
-      case PROJ_DART:
-         wtype = gsn_blowguns;
-         break;
+         case PROJ_DART:
+            wtype = gsn_blowguns;
+            break;
 
-      case PROJ_STONE:
-         wtype = gsn_slings;
-         break;
+         case PROJ_STONE:
+            wtype = gsn_slings;
+            break;
+      }
    }
 
    if( number_percent(  ) > 50 || ( projectile && weapon && can_use_skill( ch, number_percent(  ), wtype ) ) )

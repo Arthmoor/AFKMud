@@ -484,7 +484,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             ch->printf( "Triggers: Casts '&c%s&w' at the player touching it.\r\n",
                !IS_VALID_SN( obj->value[1] ) ? "&RINVALID SN" : skill_table[obj->value[1]]->name );
             if( obj->value[2] > 0 )
-               ch->printf( "Casts at spell level &c%d&w.\r\n" );
+               ch->printf( "Casts at spell level &c%d&w.\r\n", obj->value[2] );
             else
                ch->print( "Casts at the player's level.\r\n" );
          }
@@ -2478,7 +2478,6 @@ void oedit_parse( descriptor_data * d, string & arg )
                   return;
                }
                break;
-               break;
 
             default:
                min_val = -32000;
@@ -2506,7 +2505,6 @@ void oedit_parse( descriptor_data * d, string & arg )
                   return;
                }
                break;
-               break;
 
             default:
                min_val = -32000;
@@ -2533,7 +2531,6 @@ void oedit_parse( descriptor_data * d, string & arg )
                   oedit_disp_val9_menu( d );
                   return;
                }
-               break;
                break;
 
             default:

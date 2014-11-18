@@ -2337,17 +2337,17 @@ void show_file( char_data * ch, const string & filename )
 {
    FILE *fp;
    char buf[MSL];
-   int c, num = 0;
+   int num = 0;
 
    if( ( fp = fopen( filename.c_str(  ), "r" ) ) != NULL )
    {
       ch->pager( "\r\n" );
       while( !feof( fp ) )
       {
-         while( ( buf[num] = fgetc( fp ) ) != EOF && buf[num] != '\n' && buf[num] != '\r' && num < ( MSL - 4 ) )
+         while( num < ( MSL - 4 ) && ( buf[num] = fgetc( fp ) ) != EOF && buf[num] != '\n' && buf[num] != '\r' )
             ++num;
 
-         c = fgetc( fp );
+         int c = fgetc( fp );
          if( ( c != '\n' && c != '\r' ) || c == buf[num] )
             ungetc( c, fp );
 
@@ -2459,11 +2459,6 @@ const char *demangle( const char *symbol )
 void bug( const char *str, ... )
 {
    char buf[MSL];
-#if !defined(__CYGWIN__) && !defined(__FreeBSD__)
-   void *array[20];
-   size_t size, i;
-   char **strings;
-#endif
 
    mudstrlcpy( buf, "[*****] BUG: ", MSL );
    {
@@ -2478,13 +2473,12 @@ void bug( const char *str, ... )
    if( fpArea != NULL )
    {
       int iLine;
-      int iChar;
 
       if( fpArea == stdin )
          iLine = 0;
       else
       {
-         iChar = ftell( fpArea );
+         int iChar = ftell( fpArea );
          fseek( fpArea, 0, 0 );
          for( iLine = 0; ftell( fpArea ) < iChar; ++iLine )
          {
@@ -2499,13 +2493,15 @@ void bug( const char *str, ... )
 #if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
    if( !fBootDb )
    {
-      size = backtrace( array, 20 );
-      strings = backtrace_symbols( array, size );
+      void *array[20];
+
+      size_t size = backtrace( array, 20 );
+      char **strings = backtrace_symbols( array, size );
 
       log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %zd stack frames.", size );
 
       // Intentionally starting from 1, because who cares about the bug() call itself.
-      for( i = 1; i < size; ++i )
+      for( size_t i = 1; i < size; ++i )
          log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, demangle( strings[i] ) );
 
       free( strings );

@@ -300,7 +300,6 @@ void imcpager_printf( char_data * ch, const char *fmt, ... )
 string imc_nameof( string src )
 {
    string::size_type x;
-   string name;
 
    if( ( x = src.find( '@' ) ) != string::npos && x > 0 )
       return src.substr( 0, x );
@@ -311,7 +310,6 @@ string imc_nameof( string src )
 string imc_mudof( string src )
 {
    string::size_type x;
-   string name;
 
    if( ( x = src.find( '@' ) ) != string::npos && x > 0 )
       return src.substr( x + 1, src.length(  ) );
@@ -322,7 +320,6 @@ string imc_mudof( string src )
 string imc_channel_nameof( string src )
 {
    string::size_type x;
-   string name;
 
    if( ( x = src.find( ':' ) ) != string::npos && x > 0 )
       return src.substr( x + 1, src.length(  ) );
@@ -333,7 +330,6 @@ string imc_channel_nameof( string src )
 string imc_channel_mudof( string src )
 {
    string::size_type x;
-   string name;
 
    if( ( x = src.find( ':' ) ) != string::npos && x > 0 )
       return src.substr( 0, x );
@@ -1562,8 +1558,8 @@ string imc_assemble_who( void )
 {
    char_data *person;
    list < descriptor_data * >::iterator ds;
-   string buf, plrlines = "", immlines = "", plrheader = "", immheader = "";
-   ostringstream whoreply, whobuf, whobuf2;
+   string plrlines = "", immlines = "", plrheader = "", immheader = "";
+   ostringstream whoreply;
 
    int pcount = 0;
 
@@ -2507,7 +2503,7 @@ bool imc_read_buffer( void )
    if( this_imcmud->inbuf[0] == '\0' )
       return false;
 
-   for( i = 0; this_imcmud->inbuf[i] != '\0' && this_imcmud->inbuf[i] != '\n' && this_imcmud->inbuf[i] != '\r' && i < IMC_BUFF_SIZE; ++i )
+   for( i = 0; i < IMC_BUFF_SIZE && this_imcmud->inbuf[i] != '\0' && this_imcmud->inbuf[i] != '\n' && this_imcmud->inbuf[i] != '\r'; ++i )
    {
       this_imcmud->incomm += this_imcmud->inbuf[i];
    }
@@ -2948,7 +2944,7 @@ void imc_loadhistory( void )
 
       filename = IMC_DIR + chn->local_name + ".hist";
 
-      if( !exists_file( filename.c_str(  ) ) )
+      if( !exists_file( filename ) )
          continue;
 
       imc_loadhistfile( filename, chn );
@@ -3810,8 +3806,6 @@ void imc_load_templates( void )
 int ipv4_connect( void )
 {
    struct sockaddr_in sa;
-   struct hostent *hostp;
-   int desc = -1;
 #if defined(WIN32)
    ULONG r;
 #else
@@ -3830,7 +3824,7 @@ int ipv4_connect( void )
 #if !defined(WIN32)
    if( !inet_aton( this_imcmud->rhost.c_str(  ), &sa.sin_addr ) )
    {
-      hostp = gethostbyname( this_imcmud->rhost.c_str(  ) );
+      struct hostent *hostp = gethostbyname( this_imcmud->rhost.c_str(  ) );
       if( !hostp )
       {
          imclog( "%s: Cannot resolve server hostname.", __func__ );
@@ -3845,7 +3839,7 @@ int ipv4_connect( void )
 
    sa.sin_port = htons( this_imcmud->rport );
 
-   desc = socket( AF_INET, SOCK_STREAM, 0 );
+   int desc = socket( AF_INET, SOCK_STREAM, 0 );
    if( desc < 0 )
    {
       perror( "socket" );
@@ -6756,7 +6750,7 @@ bool imc_command_hook( char_data * ch, string & command, string & argument )
    if( !c || c->level > IMCPERM( ch ) )
       return false;
 
-   if( hasname( IMC_DENY( ch ), c->local_name.c_str(  ) ) )
+   if( hasname( IMC_DENY( ch ), c->local_name ) )
    {
       imc_printf( ch, "You have been denied the use of %s by the administration.\r\n", c->local_name.c_str(  ) );
       return true;

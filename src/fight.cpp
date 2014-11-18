@@ -1679,7 +1679,6 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       else
       {
          bug( "%s: bad dt %d from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
-         dt = TYPE_HIT;
          attack = attack_table[0];
       }
       snprintf( buf1, 256, "$n's %s %s $N%c", attack, vp, punct );
@@ -1699,7 +1698,6 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       if( !ch->to_room( was_in_room ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
-   return;
 }
 
 /*

@@ -40,7 +40,7 @@ obj_data *create_money( int );
 
 void get_obj( char_data * ch, obj_data * obj, obj_data * container )
 {
-   int weight, amt;  /* gold per-race multipliers */
+   int weight;  /* gold per-race multipliers */
 
    if( !obj->wear_flags.test( ITEM_TAKE ) && ( ch->level < sysdata->level_getobjnotake ) )
    {
@@ -151,7 +151,7 @@ void get_obj( char_data * ch, obj_data * obj, obj_data * container )
       /*
        * Handle grouping -- noticed by Guy Petty 
        */
-      amt = obj->value[0] * obj->count;
+      int amt = obj->value[0] * obj->count;
       ch->gold += amt;
       obj->extract(  );
       return;
@@ -1292,7 +1292,7 @@ CMDF( do_give )
  */
 bool remove_obj( char_data * ch, int iWear, bool fReplace )
 {
-   obj_data *obj, *tmpobj;
+   obj_data *tmpobj, *obj;
 
    if( !( obj = ch->get_eq( iWear ) ) )
       return true;
@@ -1320,14 +1320,15 @@ bool remove_obj( char_data * ch, int iWear, bool fReplace )
    act( AT_ACTION, "$n stops using $p.", ch, obj, NULL, TO_ROOM );
    act( AT_ACTION, "You stop using $p.", ch, obj, NULL, TO_CHAR );
    oprog_remove_trigger( ch, obj );
+
    /*
     * Added check in case, the trigger forces them to rewear the item
     * * --Shaddai
     */
-   if( !( obj = ch->get_eq( iWear ) ) )
+   if( !ch->get_eq( iWear ) )
       return true;
-   else
-      return false;
+
+   return false;
 }
 
 /*

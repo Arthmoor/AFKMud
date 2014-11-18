@@ -716,7 +716,6 @@ void show_race_line( char_data * ch, char_data * victim )
 
 void show_char_to_char_1( char_data * victim, char_data * ch )
 {
-   obj_data *obj;
    int iWear;
    bool found;
 
@@ -759,6 +758,8 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
    found = false;
    for( iWear = 0; iWear < MAX_WEAR; ++iWear )
    {
+      obj_data *obj;
+
       if( ( obj = victim->get_eq( iWear ) ) != NULL && ch->can_see_obj( obj, false ) )
       {
          if( !found )
@@ -2650,7 +2651,6 @@ void load_motd( char_data * ch, const char *name )
 {
    FILE *fp;
    char buf[MSL];
-   int c;
    int num = 0;
 
    if( !( fp = fopen( name, "r" ) ) )
@@ -2658,11 +2658,13 @@ void load_motd( char_data * ch, const char *name )
       bug( "%s: Cannot open", __func__ );
       perror( name );
    }
+
    while( !feof( fp ) )
    {
-      while( ( buf[num] = fgetc( fp ) ) != EOF && buf[num] != '\n' && buf[num] != '\r' && num < ( MSL - 4 ) )
+      while( num < ( MSL - 4 ) && ( buf[num] = fgetc( fp ) ) != EOF && buf[num] != '\n' && buf[num] != '\r' )
          ++num;
-      c = fgetc( fp );
+
+      int c = fgetc( fp );
       if( ( c != '\n' && c != '\r' ) || c == buf[num] )
          ungetc( c, fp );
       buf[num++] = '\r';

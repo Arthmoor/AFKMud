@@ -1408,13 +1408,12 @@ template < size_t N > const char *bitset_string( bitset < N > bits, const char *
 template < size_t N > void flag_set( FILE * fp, bitset < N > &field, const char *flagarray[] )
 {
    string flags, flag;
-   int value;
 
    flags = fread_flagstring( fp );
    while( flags[0] != '\0' )
    {
       flags = one_argument( flags, flag );
-      value = get_flag( flag, flagarray, N );
+      int value = get_flag( flag, flagarray, N );
 
       // Casting N down to an int might not look good, but we can't check for -1 any other way.
       if( value < 0 || value >= ( int )N )
@@ -1428,12 +1427,11 @@ template < size_t N > void flag_set( FILE * fp, bitset < N > &field, const char 
 template < size_t N > void flag_string_set( string & original, bitset < N > &field, const char *flagarray[] )
 {
    string flag;
-   int value;
 
    while( !original.empty(  ) )
    {
       original = one_argument( original, flag );
-      value = get_flag( flag, flagarray, N );
+      int value = get_flag( flag, flagarray, N );
 
       // Casting N down to an int might not look good, but we can't check for -1 any other way.
       if( value < 0 || value >= ( int )N )

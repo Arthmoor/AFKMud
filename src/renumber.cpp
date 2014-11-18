@@ -690,6 +690,12 @@ renumber_areas *gather_renumber_data( area_data * area, int new_base, bool fill_
 
 bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
 {
+   if( !r_area )
+   {
+      bug( "%s: NULL r_area!", __func__ );
+      return true;
+   }
+
    /*
     * this function assumes all the lows are always gonna be lower or equal to all the highs .. 
     */
@@ -849,6 +855,9 @@ CMDF( do_renumber )
           r_area->low_obj < ch->pcdata->low_vnum || r_area->hi_obj > ch->pcdata->hi_vnum || r_area->low_mob < ch->pcdata->low_vnum || r_area->hi_mob > ch->pcdata->hi_vnum )
       {
          ch->print( "The renumbered area would be outside your assigned vnum range.\r\n" );
+
+         // Bugfix - Memory leak if r_area was valid.
+         deleteptr( r_area );
          return;
       }
    }
@@ -859,6 +868,9 @@ CMDF( do_renumber )
    if( new_base >= sysdata->maxvnum )
    {
       ch->printf( "%d is beyond the maximum allowed vnum of %d\r\n", new_base, sysdata->maxvnum );
+
+      // Bugfix - Memory leak if r_area was valid.
+      deleteptr( r_area );
       return;
    }
 
@@ -866,7 +878,11 @@ CMDF( do_renumber )
     * no overwriting of dest vnums 
     */
    if( check_vnums( ch, area, r_area ) )
+   {
+      // Bugfix - Memory leak if r_area was valid.
+      deleteptr( r_area );
       return;
+   }
 
    /*
     * another sanity check :) 

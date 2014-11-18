@@ -6249,12 +6249,11 @@ CMDF( do_beacon )
 int recall( char_data * ch, int target )
 {
    room_index *location, *beacon;
-   char_data *opponent;
 
    location = NULL;
    beacon = NULL;
 
-   if( ( opponent = ch->who_fighting(  ) ) != NULL )
+   if( ch->who_fighting(  ) != NULL )
    {
       ch->print( "You cannot recall while fighting!\r\n" );
       return -1;

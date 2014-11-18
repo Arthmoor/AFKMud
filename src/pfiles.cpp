@@ -158,7 +158,7 @@ void load_quotes( void )
 
    do
    {
-      string line, key, value;
+      string key, value;
       char buf[MIL];
 
       stream >> key;

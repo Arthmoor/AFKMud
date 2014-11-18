@@ -1902,8 +1902,7 @@ void where_mobile( char_data * ch, const string & argument )
 
    int vnum = atoi( argument.c_str(  ) );
 
-   mob_index *pMobIndex;
-   if( !( pMobIndex = get_mob_index( vnum ) ) )
+   if( !get_mob_index( vnum ) )
    {
       ch->print( "No mobile has that vnum.\r\n" );
       return;
@@ -6554,7 +6553,6 @@ bool load_class_file( const char *fname )
 void load_classes(  )
 {
    FILE *fpList;
-   const char *filename;
    char classlist[256];
 
    MAX_PC_CLASS = 0;
@@ -6573,7 +6571,7 @@ void load_classes(  )
 
    for( ;; )
    {
-      filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
+      const char *filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
 
       if( filename[0] == '\0' )
       {
@@ -7587,7 +7585,6 @@ bool load_race_file( const char *fname )
 void load_races(  )
 {
    FILE *fpList;
-   const char *filename;
    char racelist[256];
 
    MAX_PC_RACE = 0;
@@ -7606,7 +7603,7 @@ void load_races(  )
 
    for( ;; )
    {
-      filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
+      const char *filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
 
       if( filename[0] == '\0' )
       {

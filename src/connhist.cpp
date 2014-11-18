@@ -201,7 +201,6 @@ void save_connhistory( void )
  */
 void update_connhistory( descriptor_data * d, int type )
 {
-   list < conn_data * >::iterator conn;
    conn_data *con;
    char_data *vch;
    struct tm *local;

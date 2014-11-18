@@ -350,7 +350,6 @@ area_data *create_area( void )
 void load_mobiles( area_data * tarea, FILE * fp )
 {
    mob_index *pMobIndex;
-   const char *ln;
    int x1, x2, x3, x4, x5, x6, x7, x8, value;
    string flag;
 
@@ -447,7 +446,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       pMobIndex->rShop = NULL;
 
       float x9 = 0;
-      ln = fread_line( fp );
+      const char *ln = fread_line( fp );
       x1 = x2 = x3 = x4 = x5 = x8 = 0;
       x6 = 150;
       x7 = 100;
@@ -580,7 +579,6 @@ void load_objects( area_data * tarea, FILE * fp )
 {
    obj_index *pObjIndex;
    char letter;
-   const char *ln;
    char temp[3][MSL];
    int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
 
@@ -682,7 +680,7 @@ void load_objects( area_data * tarea, FILE * fp )
       // These things were never used, but will leave this here to allow it to get ignored if it's been inserted.
       fread_flagstring( fp );
 
-      ln = fread_line( fp );
+      const char *ln = fread_line( fp );
       x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x10 = x11 = 0;
       sscanf( ln, "%d %d %d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9, &x10, &x11 );
 
@@ -3253,7 +3251,7 @@ void fwrite_afk_exit( FILE * fpout, exit_data * pexit )
    fprintf( fpout, "%s", "#EXIT\n" );
    fprintf( fpout, "Direction %s~\n", strip_cr( dir_name[pexit->vdir] ) );
    fprintf( fpout, "ToRoom    %d\n", pexit->vnum );
-   if( pexit->key != -1 && pexit->key > 0 )
+   if( pexit->key > 0 )
       fprintf( fpout, "Key       %d\n", pexit->key );
    if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) && pexit->mx != 0 && pexit->my != 0 )
       fprintf( fpout, "ToCoords  %d %d\n", pexit->mx, pexit->my );

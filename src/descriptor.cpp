@@ -941,7 +941,7 @@ void descriptor_data::read_from_buffer(  )
    /*
     * Look for at least one new line.
     */
-   for( i = 0; this->inbuf[i] != '\n' && this->inbuf[i] != '\r' && i < MAX_INBUF_SIZE; ++i )
+   for( i = 0; i < MAX_INBUF_SIZE && this->inbuf[i] != '\n' && this->inbuf[i] != '\r'; ++i )
    {
       if( this->inbuf[i] == '\0' )
          return;
@@ -2398,6 +2398,7 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
             }
             return BERR;
          }
+
          if( fConn == false )
          {
             DISPOSE( character->pcdata->pwd );
@@ -2427,10 +2428,10 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
             show_status( ch );
             check_loginmsg( ch );
          }
-         return true;
+         return 1;
       }
    }
-   return false;
+   return 0;
 }
 
 /*
@@ -2951,7 +2952,7 @@ void descriptor_data::nanny( string & argument )
             close_socket( this, false );
             return;
          }
-         if( chk == true )
+         if( chk == 1 )
             return;
 
          mudstrlcpy( buf, ch->pcdata->filename, MSL );

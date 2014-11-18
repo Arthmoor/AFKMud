@@ -157,7 +157,7 @@ int mana_gain( char_data * ch )
          gain += ( gain / 4 );
    }
 
-   if( ch->Class != CLASS_MAGE || ch->Class != CLASS_NECROMANCER || ch->Class != CLASS_CLERIC || ch->Class != CLASS_DRUID )
+   if( ch->Class != CLASS_MAGE && ch->Class != CLASS_NECROMANCER && ch->Class != CLASS_CLERIC && ch->Class != CLASS_DRUID )
       gain -= 2;
 
    return gain;
@@ -216,7 +216,7 @@ int hit_gain( char_data * ch )
          gain += ( gain / 4 );
    }
 
-   if( ch->Class != CLASS_WARRIOR || ch->Class != CLASS_PALADIN || ch->Class != CLASS_ANTIPALADIN || ch->Class != CLASS_RANGER )
+   if( ch->Class != CLASS_WARRIOR && ch->Class != CLASS_PALADIN && ch->Class != CLASS_ANTIPALADIN && ch->Class != CLASS_RANGER )
    {
       gain -= 2;
       if( gain < 0 && !ch->fighting )
@@ -271,7 +271,7 @@ int move_gain( char_data * ch )
       if( ch->pcdata->condition[COND_FULL] == 0 || ch->pcdata->condition[COND_THIRST] == 0 )
          gain = gain / 4;
 
-   if( ch->Class != CLASS_ROGUE || ch->Class != CLASS_BARD || ch->Class != CLASS_MONK )
+   if( ch->Class != CLASS_ROGUE && ch->Class != CLASS_BARD && ch->Class != CLASS_MONK )
       gain -= 2;
 
    return gain;

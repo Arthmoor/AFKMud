@@ -58,7 +58,6 @@ wizinfo_data::~wizinfo_data(  )
 
 /* Construct wizinfo list from god dir info - Samson 6-6-99 */
 void add_to_wizinfo( const string & name, wizinfo_data * wiz )
-void add_to_wizinfo( const string & name, wizinfo_data * wiz )
 {
    list < wizinfo_data * >::iterator wizinfo;
 
@@ -130,7 +129,7 @@ void build_wizinfo( void )
             wiz = new wizinfo_data;
             do
             {
-               string line, key, value;
+               string key, value;
                char buf2[MIL];
 
                stream >> key;

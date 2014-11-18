@@ -2161,7 +2161,7 @@ void load_socials( void )
 
    do
    {
-      string line, key, value;
+      string key, value;
       char buf[MIL];
 
       stream >> key;

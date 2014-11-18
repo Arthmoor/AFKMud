@@ -545,8 +545,6 @@ mixture_data *get_mix( const string & str )
 void free_liquiddata( void )
 {
    list < mixture_data * >::iterator mx;
-   liquid_data *liq;
-   int loopa;
 
    for( mx = mixlist.begin(  ); mx != mixlist.end(  ); )
    {
@@ -556,9 +554,9 @@ void free_liquiddata( void )
       deleteptr( mix );
    }
 
-   for( loopa = 0; loopa <= top_liquid; ++loopa )
+   for( int loopa = 0; loopa <= top_liquid; ++loopa )
    {
-      liq = get_liq_vnum( loopa );
+      liquid_data *liq = get_liq_vnum( loopa );
 
       deleteptr( liq );
    }

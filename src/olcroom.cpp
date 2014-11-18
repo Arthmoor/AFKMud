@@ -271,9 +271,6 @@ void olc_log( descriptor_data * d, const char *format, ... ) __attribute__ ( ( f
 
 void olc_log( descriptor_data * d, const char *format, ... )
 {
-   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
    char logline[MSL];
    va_list args;
 
@@ -282,6 +279,10 @@ void olc_log( descriptor_data * d, const char *format, ... )
       bug( "%s: called with null descriptor", __func__ );
       return;
    }
+
+   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
+   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
 
    va_start( args, format );
    vsnprintf( logline, MSL, format, args );

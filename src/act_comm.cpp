@@ -1087,8 +1087,6 @@ bool is_same_group( char_data * ach, char_data * bch )
  */
 int knows_language( char_data * ch, int language, char_data * cch )
 {
-   short sn;
-
    if( !ch->isnpc(  ) && ch->is_immortal(  ) )
       return 100;
 
@@ -1126,6 +1124,8 @@ int knows_language( char_data * ch, int language, char_data * cch )
 
       if( ch->has_lang( language ) )
       {
+         short sn;
+
          if( ( sn = skill_lookup( lang_names[language] ) ) != -1 )
             return ch->pcdata->learned[sn];
       }
@@ -1646,7 +1646,6 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
 
    if( MOBtrigger && type != TO_CHAR && type != TO_VICT && to )
    {
-      obj_data *to_obj;
       list < obj_data * >::iterator iobj;
 
       txt = act_string( format, NULL, ch, arg1, arg2, STRING_IMM );
@@ -1654,7 +1653,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
          rprog_act_trigger( txt, to->in_room, ch, obj1, vch, obj2 );
       for( iobj = to->in_room->objects.begin(  ); iobj != to->in_room->objects.end(  ); ++iobj )
       {
-         to_obj = *iobj;
+         obj_data *to_obj = *iobj;
 
          if( HAS_PROG( to_obj->pIndexData, ACT_PROG ) )
             oprog_act_trigger( txt, to_obj, ch, obj1, vch, obj2 );

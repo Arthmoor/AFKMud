@@ -181,7 +181,6 @@ void directory_check( void )
 {
    char buf[256];
    size_t x;
-   int iError;
 
    // Successful directory check will drop this file in the area dir once done.
    if( exists_file( "DIR_CHECK_PASSED" ) )
@@ -235,7 +234,7 @@ void directory_check( void )
                   exit( 1 );
                }
             }
-            else if( ( iError = chdir( ".." ) ) == -1 )
+            else if( chdir( ".." ) == -1 )
             {
                fprintf( stderr, "FATAL ERROR :: Unable to change directories during directory check! Cannot continue." );
                exit( 1 );
@@ -246,12 +245,13 @@ void directory_check( void )
 
    // Made it? Sweet. Drop the check file so we don't do this on every last reboot.
    log_string( "Directory check passed." );
-   if( ( iError = chdir( "../area" ) ) == -1 )
+   if( chdir( "../area" ) == -1 )
    {
       fprintf( stderr, "FATAL ERROR :: Unable to change directories during directory check! Cannot continue." );
       exit( 1 );
    }
-   if( ( iError = system( "touch DIR_CHECK_PASSED" ) ) == -1 )
+
+   if( system( "touch DIR_CHECK_PASSED" ) == -1 )
    {
       fprintf( stderr, "FATAL ERROR :: Unable to generate DIR_CHECK_PASSED" );
       exit( 1 );
@@ -942,7 +942,7 @@ void game_loop( void )
       alarm_section = "game_loop";
 
       // If no descriptors are present, why bother processing input for them?
-      if( dlist.size(  ) > 0 )
+      if( !dlist.empty(  ) )
          process_input(  );
 
 #if !defined(__CYGWIN__)
@@ -955,14 +955,14 @@ void game_loop( void )
 #endif
 
       // Autonomous game motion. Stops processing when there are no people at all online.
-      if( dlist.size(  ) > 0 )
+      if( !dlist.empty(  ) )
          update_handler(  );
 
       // Event handling. Will continue to process even with nobody around. Keeps areas fresh this way.
       run_events( current_time );
 
       // If no descriptors are present, why bother processing output for them?
-      if( dlist.size(  ) > 0 )
+      if( !dlist.empty(  ) )
          process_output(  );
 
       /*

@@ -220,7 +220,6 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
    mud_prog_data *mprg = NULL;
    char MUDProgfile[256];
    FILE *progfile;
-   char letter;
 
    snprintf( MUDProgfile, 256, "%s%s", PROG_DIR, f );
 
@@ -232,7 +231,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
    for( ;; )
    {
-      letter = fread_letter( progfile );
+      char letter = fread_letter( progfile );
 
       if( letter != '#' )
       {
