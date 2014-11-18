@@ -179,7 +179,7 @@ CMDF( do_wizinfo )
          if( str_cmp( wi->realm, argument ) )
             continue;
 
-      ch->pagerf( "&R%-12s &g%-33s &B%10d &P%s&D\r\n", wi->name.c_str(  ), wi->email.c_str(  ), wi->realm.c_str(  ) );
+      ch->pagerf( "&R%-12s &g%-33s &P%s&D\r\n", wi->name.c_str(  ), wi->email.c_str(  ), wi->realm.c_str(  ) );
    }
 }
 

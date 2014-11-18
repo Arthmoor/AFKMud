@@ -501,7 +501,7 @@ void redit_disp_menu( descriptor_data * d )
                          OLC_NUM( d ), room->area ? room->area->name : "None????",
                          room->name, room->roomdesc,
                          room->nitedesc ? room->nitedesc : "None Set\r\n", bitset_string( room->flags, r_flags ),
-                         sect_types[room->sector_type], room->tunnel, room->tele_delay, room->tele_vnum );
+                         sect_types[room->sector_type], room->tunnel, room->tele_delay, room->tele_vnum, room->light );
 
    OLC_MODE( d ) = REDIT_MAIN_MENU;
 }

@@ -48,7 +48,7 @@ SPELLF( spell_spiral_blast );
 SPELLF( spell_dispel_magic );
 SPELLF( spell_dispel_evil );
 CMDF( do_ageattack );
-void talk_auction( const char *, ... );
+void talk_auction( const char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 void save_aucvault( char_data *, const string & );
 void add_sale( const string &, const string &, const string &, const string &, int, bool );
 void fly_skyship( char_data *, char_data * );

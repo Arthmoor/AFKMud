@@ -3661,7 +3661,7 @@ CMDF( do_project )
             continue;
          if( !aflag )
          {
-            ch->pagerf( "%2d%c | %-11s | %-26s | %-15s | %-12s\r\n",
+            ch->pagerf( "%2d%s | %-11s | %-26s | %-15s | %-12s\r\n",
                         pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)",
                         print_lngstr( proj->name, 26 ).c_str(  ), mini_c_time( proj->date_stamp, ch->pcdata->timezone ), proj->status ? proj->status : "(None)" );
          }
@@ -3669,7 +3669,7 @@ CMDF( do_project )
          {
             if( !projects_available )
                projects_available = true;
-            ch->pagerf( "%2d%c | %-30s | %s\r\n", pcount, proj->realm_name.c_str(),
+            ch->pagerf( "%2d%s | %-30s | %s\r\n", pcount, proj->realm_name.c_str(),
                         proj->name ? proj->name : "(None)", mini_c_time( proj->date_stamp, ch->pcdata->timezone ) );
          }
       }
@@ -3701,7 +3701,7 @@ CMDF( do_project )
          ++pcount;
          if( ( proj->status && str_cmp( proj->status, "approved" ) ) || proj->coder != NULL )
             continue;
-         ch->pagerf( "%2d%c | %-11s | %-26s\r\n", pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)", proj->name ? proj->name : "(None)" );
+         ch->pagerf( "%2d%s | %-11s | %-26s\r\n", pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)", proj->name ? proj->name : "(None)" );
       }
       return;
    }
@@ -3730,7 +3730,7 @@ CMDF( do_project )
          else if( !MINE && proj->status && !str_cmp( "Done", proj->status ) )
             continue;
          int num_logs = proj->nlist.size(  );
-         ch->pagerf( "%2d%c | %-11s | %-26s | %-11s | %-10s | %3d\r\n",
+         ch->pagerf( "%2d%s | %-11s | %-26s | %-11s | %-10s | %3d\r\n",
                      pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)",
                      print_lngstr( proj->name, 26 ).c_str(  ), proj->coder ? proj->coder : "(None)", proj->status ? proj->status : "(None)", num_logs );
       }
@@ -3864,7 +3864,7 @@ CMDF( do_project )
       }
       else if( pproject->coder && IS_PROJECT_ADMIN(ch, pproject) )
       {
-         ch->printf( "Removing %s as %s of this project!\r\n", arg.c_str() );
+         ch->printf( "Removing %s as %s of this project!\r\n", pproject->coder, arg.c_str() );
          STRFREE( pproject->coder );
          ch->print( "Coder removed.\r\n" );
          write_projects(  );

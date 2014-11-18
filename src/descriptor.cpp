@@ -179,9 +179,9 @@ CMDF( do_trdata )
    {
       ch->print( "Type &Ytrdata clear&d to reset this data.\r\n\r\n" );
 
-      ch->printf( "Bytes received     : %d\r\n", tr_in );
-      ch->printf( "Bytes sent         : %d\r\n", tr_out );
-      ch->printf( "Bytes saved by MCCP: %d\r\n", tr_saved );
+      ch->printf( "Bytes received     : %ld\r\n", tr_in );
+      ch->printf( "Bytes sent         : %ld\r\n", tr_out );
+      ch->printf( "Bytes saved by MCCP: %ld\r\n", tr_saved );
    }
    /*
     * Just so we can start it over 
@@ -3582,5 +3582,5 @@ CMDF( do_cache )
       dns_data *dns = *idns;
       ch->pagerf( "&w%16.16s  &g%s\r\n", dns->ip.c_str(  ), dns->name.c_str(  ) );
    }
-   ch->pagerf( "\r\n&W%d IPs in the cache.\r\n", dnslist.size(  ) );
+   ch->pagerf( "\r\n&W%zd IPs in the cache.\r\n", dnslist.size(  ) );
 }

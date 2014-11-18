@@ -2091,11 +2091,11 @@ CMDF( do_score )
 
    if( ch->desc )
    {
-      ch->printf( "\r\n%sTerminal Support Detected: MCCP%s[%s%s%s] %sMSP%s[%s%s%s]\r\n", s2,
-                  s1, s3, ch->desc->can_compress ? "X" : " ", s1, s2, s1, s3, ch->desc->msp_detected ? "X" : " ", s1, s2 );
+      ch->printf( "\r\n%sTerminal Support Detected: MCCP%s[%s%s%s] %sMSP%s[%s%s%s]\r\n",
+                  s2, s1, s3, (ch->desc->can_compress ? "X" : " "), s1, s2, s1, s3, (ch->desc->msp_detected ? "X" : " "), s1 );
 
-      ch->printf( "%sTerminal Support In Use  : MCCP%s[%s%s%s] %sMSP%s[%s%s%s]\r\n", s2,
-                  s1, s3, ch->desc->can_compress ? "X" : " ", s1, s2, s1, s3, ch->MSP_ON(  )? "X" : " ", s1, s2 );
+      ch->printf( "%sTerminal Support In Use  : MCCP%s[%s%s%s] %sMSP%s[%s%s%s]\r\n",
+                  s2, s1, s3, (ch->desc->can_compress ? "X" : " "), s1, s2, s1, s3, (ch->MSP_ON(  )? "X" : " "), s1 );
    }
 
    if( !ch->pcdata->bestowments.empty(  ) )

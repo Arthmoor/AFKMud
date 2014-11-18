@@ -859,7 +859,7 @@ CMDF( do_reserve )
 
       if( system( buf ) == 0 )
       {
-         ch->printf( "%s is already a reserved name.\r\n" );
+         ch->printf( "%s is already a reserved name.\r\n", arg.c_str(  ) );
          return;
       }
 

@@ -145,6 +145,7 @@ void write_area_list(  );
 area_data *get_area( const string & ); /* FB */
 area_data *find_area( const string & );
 void load_area_file( const string &, bool );
+void boot_log( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
 extern list < area_data * >arealist;
 extern list < area_data * >area_nsort;

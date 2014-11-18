@@ -2055,7 +2055,7 @@ CMDF( do_mset )
       if( !victim->chardesc || victim->chardesc[0] == '\0' )
          victim->chardesc = STRALLOC( "" );
       if( victim->isnpc(  ) )
-         ch->editor_desc_printf( "Description of mob, vnum %ld (%s).", victim->pIndexData->vnum, victim->name );
+         ch->editor_desc_printf( "Description of mob, vnum %d (%s).", victim->pIndexData->vnum, victim->name );
       else
          ch->editor_desc_printf( "Description of player %s.", capitalize( victim->name ) );
       ch->start_editing( victim->chardesc );

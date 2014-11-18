@@ -559,6 +559,7 @@ int parsebet( const int currentbet, const char *s )
  * this function sends raw argument over the AUCTION: channel
  * I am not too sure if this method is right..
  */
+void talk_auction( const char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 void talk_auction( const char *fmt, ... )
 {
    list < descriptor_data * >::iterator ds;
@@ -956,7 +957,7 @@ CMDF( do_identify )
       ;
    else
    {
-      act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n charges you %d gold for the identification.", idcost );
+      act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n charges you %.0f gold for the identification.", idcost );
       ch->gold -= ( int )idcost;
       if( found && clan->bank )
       {
@@ -1047,7 +1048,7 @@ CMDF( do_collect )
          return;
       }
 
-      act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n collects his fee of %d, and hands you %d gold.", totalfee, totalnet );
+      act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n collects his fee of %.0f, and hands you %.0f gold.", totalfee, totalnet );
       act( AT_AUCTION, "$n collects his fees and hands $N some gold.", auc, NULL, ch, TO_NOTVICT );
 
       ch->gold += ( int )totalnet;
@@ -1128,7 +1129,7 @@ CMDF( do_collect )
       {
          ch->gold -= ( int )fee;
          ch->save(  );
-         act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n charges you a fee of %d for $s services.", fee );
+         act_printf( AT_AUCTION, auc, NULL, ch, TO_VICT, "$n charges you a fee of %.0f for $s services.", fee );
          if( found && clan->bank )
          {
             clan->balance += ( int )fee;

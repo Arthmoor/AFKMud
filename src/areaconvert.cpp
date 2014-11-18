@@ -64,8 +64,6 @@ struct extended_bitvector
 EXT_BV fread_bitvector( FILE * );
 char *ext_flag_string( EXT_BV *, char *const flagarray[] );
 
-void boot_log( const char *, ... );
-
 extern int top_affect;
 extern int top_exit;
 extern int top_reset;

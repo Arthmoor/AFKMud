@@ -1211,7 +1211,7 @@ CMDF( do_cedit )
 
       if( command->fun_name.empty(  ) )
       {
-         ch->printf( "The %s command has a NULL function name!\r\n" );
+         ch->printf( "The %s command has a NULL function name!\r\n", command->name.c_str() );
          return;
       }
 

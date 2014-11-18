@@ -47,7 +47,6 @@ void update_room_reset( char_data *, bool );
 void delete_reset( reset_data * );
 void name_generator( string & );
 void pick_name( string & name, const char * );
-void boot_log( const char *, ... );
 void fix_exits(  );
 
 obj_data *generate_random( reset_data *, char_data * );

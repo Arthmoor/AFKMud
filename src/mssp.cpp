@@ -852,6 +852,7 @@ CMDF( do_setmssp )
       do_setmssp( ch, "" );
 }
 
+void write_to_descriptor_printf( descriptor_data * desc, const char *fmt, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void write_to_descriptor_printf( descriptor_data * desc, const char *fmt, ... )
 {
     char buf[MSL * 2];
@@ -865,6 +866,7 @@ void write_to_descriptor_printf( descriptor_data * desc, const char *fmt, ... )
     desc->write( buf );
 }
 
+void mssp_reply( descriptor_data * d, const char *var, const char *fmt, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 void mssp_reply( descriptor_data * d, const char *var, const char *fmt, ... )
 {
    char buf[MSL];

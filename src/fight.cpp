@@ -4018,7 +4018,7 @@ CMDF( do_flee )
          else
          {
             if( ch->level < LEVEL_AVATAR )
-               act_printf( AT_FLEE, ch, NULL, NULL, TO_CHAR, "You flee head over heels from combat, losing %d experience.", los );
+               act_printf( AT_FLEE, ch, NULL, NULL, TO_CHAR, "You flee head over heels from combat, losing %.0f experience.", los );
             else
                act( AT_FLEE, "You flee head over heels from combat!", ch, NULL, NULL, TO_CHAR );
             ch->gain_exp( 0 - los );
@@ -4052,7 +4052,7 @@ CMDF( do_flee )
    }
    los = ( exp_level( ch->level + 1 ) - exp_level( ch->level ) ) * 0.01;
    if( ch->level < LEVEL_AVATAR )
-      act_printf( AT_FLEE, ch, NULL, NULL, TO_CHAR, "You attempt to flee from combat, losing %d experience.\r\n", los );
+      act_printf( AT_FLEE, ch, NULL, NULL, TO_CHAR, "You attempt to flee from combat, losing %.0f experience.\r\n", los );
    else
       act( AT_FLEE, "You attempt to flee from combat, but can't escape!", ch, NULL, NULL, TO_CHAR );
    ch->gain_exp( 0 - los );

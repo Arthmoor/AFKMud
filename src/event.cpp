@@ -154,6 +154,6 @@ void run_events( time_t newtime )
 
 CMDF( do_eventinfo )
 {
-   ch->printf( "&BPending events&c: %d\r\n", eventlist.size(  ) );
+   ch->printf( "&BPending events&c: %zd\r\n", eventlist.size(  ) );
    ch->printf( "&BEvents served &c: %ld\r\n", events_served );
 }

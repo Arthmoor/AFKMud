@@ -53,7 +53,6 @@ list < area_data * >area_nsort;
 list < area_data * >area_vsort;
 
 int recall( char_data *, int );
-void boot_log( const char *, ... );
 void save_sysdata(  );
 int get_continent( const string & );
 bool check_area_conflict( area_data *, int, int );

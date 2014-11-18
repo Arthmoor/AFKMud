@@ -1288,7 +1288,7 @@ void fix_exits( void )
          if( pexit->vnum <= 0 || !( pexit->to_room = get_room_index( pexit->vnum ) ) )
          {
             if( fBootDb )
-               boot_log( "Fix_exits: room %d, exit %s leads to bad vnum (%d)", pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
+               boot_log( "%s: room %d, exit %s leads to bad vnum (%d)", __func__, pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
 
             bug( "%s: Deleting %s exit in room %d", __func__, dir_name[pexit->vdir], pRoomIndex->vnum );
             pRoomIndex->extract_exit( pexit );
@@ -1765,7 +1765,7 @@ void boot_db( bool fCopyOver )
    fpArea = NULL;
    show_hash( 32 );
    unlink( BOOTLOG_FILE );
-   boot_log( "---------------------[ Boot Log ]--------------------" );
+   boot_log( "%s", "---------------------[ Boot Log ]--------------------" );
    log_string( "Database bootup starting." );
    fBootDb = true;   /* Supposed to help with EOF bugs, so it got moved up */
 
@@ -1982,7 +1982,7 @@ void boot_db( bool fCopyOver )
 
       if( !load_timedata(  ) )   /* Loads time from stored file if true - Samson 1-21-99 */
       {
-         boot_log( "Resetting mud time based on current system time." );
+         boot_log( "%s", "Resetting mud time based on current system time." );
          lhour = ( current_time - 650336715 ) / ( sysdata->pulsetick / sysdata->pulsepersec );
          time_info.hour = lhour % sysdata->hoursperday;
          lday = lhour / sysdata->hoursperday;

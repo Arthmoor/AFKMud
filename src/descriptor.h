@@ -73,7 +73,7 @@ class descriptor_data
    bool flush_buffer( bool );
    void read_from_buffer(  );
    void write_to_buffer( const string & );
-   void buffer_printf( const char *, ... );
+   void buffer_printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void send_color( const string & );
    void pager( const string & );
    void show_stats( char_data * );

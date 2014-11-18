@@ -2636,7 +2636,7 @@ CMDF( do_ident )
          act( AT_TELL, "$n tells you 'You cannot afford to identify that!'", mob, NULL, ch, TO_VICT );
          return;
       }
-      act_printf( AT_TELL, mob, NULL, ch, TO_VICT, "$n charges you %d gold for the identification.", idcost );
+      act_printf( AT_TELL, mob, NULL, ch, TO_VICT, "$n charges you %.0f gold for the identification.", idcost );
       ch->gold -= ( int )idcost;
       if( found && clan->bank )
       {

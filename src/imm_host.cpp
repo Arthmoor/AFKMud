@@ -415,7 +415,7 @@ CMDF( do_immhost )
          while( dnum < MAX_DOMAIN && !host->domain[dnum].empty(  ) )
             ++dnum;
 
-         ch->pagerf( "&C&G%-10s %-10d %d\r\n", host->name.c_str(  ), dnum, host->loglist.size(  ) );
+         ch->pagerf( "&C&G%-10s %-10d %zd\r\n", host->name.c_str(  ), dnum, host->loglist.size(  ) );
       }
       ch->pagerf( "&C&R%d immortals are being protected.&g\r\n", x );
       return;

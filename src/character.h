@@ -177,9 +177,9 @@ class char_data
     * Internal to character.c 
     */
    void print( const string & );
-   void printf( const char *, ... );
+   void printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void pager( const string & );
-   void pagerf( const char *, ... );
+   void pagerf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void print_room( const string & );
    void set_color( short );
    void set_pager_color( short );
@@ -266,7 +266,7 @@ class char_data
    void update_pos(  );
    char_data *who_fighting(  );
    void stop_fighting( bool );
-   void editor_desc_printf( const char *, ... );
+   void editor_desc_printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void start_editing( char * );
    void start_editing( string );
    void stop_editing(  );

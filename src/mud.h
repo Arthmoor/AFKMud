@@ -1169,7 +1169,7 @@ void log_printf( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) 
 bool is_same_group( char_data *, char_data * );
 int knows_language( char_data *, int, char_data * );
 void act( short, const string &, char_data *, const void *, const void *, int );
-void act_printf( short, char_data *, const void *, const void *, int, const char *, ... );
+void act_printf( short, char_data *, const void *, const void *, int, const char *, ... ) __attribute__ ( ( format( printf, 6, 7 ) ) );
 
 /* act_info.c */
 bool is_ignoring( char_data *, char_data * );
