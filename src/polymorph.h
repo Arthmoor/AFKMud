@@ -118,8 +118,13 @@ class morph_data
    bool cast_allowed;   /* Can you cast spells whilst morphed into this */
 };
 
-struct char_morph
+class char_morph
 {
+ private:
+   char_morph( const char_morph & m );
+     char_morph & operator=( const char_morph & );
+
+ public:
    char_morph(  );
    ~char_morph(  );
 
