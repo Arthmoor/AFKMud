@@ -190,7 +190,7 @@ void save_weapontable(  )
 void load_weapontable(  )
 {
    ifstream stream;
-   weapontable *wt = NULL;
+   weapontable *wt = nullptr;
 
    w_table.clear(  );
 
@@ -324,13 +324,13 @@ runeword_data *pick_runeword(  )
       if( counter == wordpick )
          return rword;
    }
-   return NULL;
+   return nullptr;
 }
 
 void load_runewords( void )
 {
    ifstream stream;
-   runeword_data *rword = NULL;
+   runeword_data *rword = nullptr;
 
    rwordlist.clear(  );
 
@@ -568,12 +568,12 @@ rune_data *check_rune( const string & name )
       if( !str_cmp( rune->get_name(  ), name ) )
          return rune;
    }
-   return NULL;
+   return nullptr;
 }
 
 CMDF( do_makerune )
 {
-   rune_data *rune = NULL;
+   rune_data *rune = nullptr;
 
    if( ch->isnpc(  ) )
    {
@@ -587,7 +587,7 @@ CMDF( do_makerune )
       return;
    }
 
-   if( ( rune = check_rune( argument ) ) != NULL )
+   if( ( rune = check_rune( argument ) ) != nullptr )
    {
       ch->printf( "A rune called %s already exists. Choose another name.\r\n", argument.c_str(  ) );
       return;
@@ -619,7 +619,7 @@ CMDF( do_makerune )
 
 CMDF( do_destroyrune )
 {
-   rune_data *rune = NULL;
+   rune_data *rune = nullptr;
 
    if( ch->isnpc(  ) )
    {
@@ -677,7 +677,7 @@ CMDF( do_setrune )
    {
       rune_data *newrune;
 
-      if( ( newrune = check_rune( arg3 ) ) != NULL )
+      if( ( newrune = check_rune( arg3 ) ) != nullptr )
       {
          ch->printf( "A rune named %s already exists. Choose a new name.\r\n", arg3.c_str(  ) );
          return;
@@ -1024,7 +1024,7 @@ obj_data *generate_rune( short level )
    }
 
    bool found = false;
-   rune_data *rune = NULL;
+   rune_data *rune = nullptr;
    list < rune_data * >::iterator rn;
    for( rn = runelist.begin(  ); rn != runelist.end(  ); ++rn )
    {
@@ -1055,13 +1055,13 @@ obj_data *generate_rune( short level )
    }
 
    if( !found )
-      return NULL;
+      return nullptr;
 
    obj_data *newrune;
    if( !( newrune = get_obj_index( OBJ_VNUM_RUNE )->create_object( level ) ) )
    {
       log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-      return NULL;
+      return nullptr;
    }
 
    stralloc_printf( &newrune->name, "%s rune", rune->get_cname(  ) );
@@ -1085,7 +1085,7 @@ obj_data *generate_gem( short level )
    if( !( gem = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level ) ) )
    {
       log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-      return NULL;
+      return nullptr;
    }
 
    if( gemtable <= 25 )
@@ -1517,7 +1517,7 @@ short choose_quality( short level )
 
 void make_scroll( obj_data * newitem )
 {
-   runeword_data *runeword = NULL;
+   runeword_data *runeword = nullptr;
    const char *name = "Empty", *desc = "Empty";
    short value = 0, pick2 = 0;
 
@@ -2043,13 +2043,13 @@ void make_weapon( obj_data * newitem )
 
 obj_data *generate_item( area_data * area, short level )
 {
-   obj_data *newitem = NULL;
+   obj_data *newitem = nullptr;
    short pick = number_range( 1, 100 );
 
    if( !( newitem = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level ) ) )
    {
       log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-      return NULL;
+      return nullptr;
    }
 
    // Make a random scroll
@@ -2103,7 +2103,7 @@ obj_data *create_money( int amount )
       if( !( obj = get_obj_index( OBJ_VNUM_MONEY_ONE )->create_object( 1 ) ) )
       {
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-         return NULL;
+         return nullptr;
       }
    }
    else
@@ -2111,7 +2111,7 @@ obj_data *create_money( int amount )
       if( !( obj = get_obj_index( OBJ_VNUM_MONEY_SOME )->create_object( 1 ) ) )
       {
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-         return NULL;
+         return nullptr;
       }
       stralloc_printf( &obj->short_descr, obj->short_descr, amount );
       obj->value[0] = amount;
@@ -2154,7 +2154,7 @@ int make_gold( short level, char_data * ch )
 // A slightly butchered way for resets to pick out random junk too
 obj_data *generate_random( reset_data * pReset, char_data * mob )
 {
-   obj_data *newobj = NULL;
+   obj_data *newobj = nullptr;
    short picker = pReset->arg1;
    short level = pReset->arg2;
 
@@ -2681,7 +2681,7 @@ CMDF( do_forge )
     * Check to see what sort of flunky the smith is 
     */
    list < char_data * >::iterator ich;
-   char_data *smith = NULL;
+   char_data *smith = nullptr;
    bool msmith = false, gsmith = false;
 
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
@@ -3273,7 +3273,7 @@ CMDF( do_forge )
 
       if( ch->gold < cost )
       {
-         act_printf( AT_TELL, smith, NULL, ch, TO_VICT, "$n tells you 'It will cost %d gold to forge this, but you cannot afford it!", cost );
+         act_printf( AT_TELL, smith, nullptr, ch, TO_VICT, "$n tells you 'It will cost %d gold to forge this, but you cannot afford it!", cost );
          return;
       }
       else

@@ -99,7 +99,7 @@ obj_data *find_quiver( char_data * ch )
             return obj;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 obj_data *find_projectile( char_data * ch, obj_data * quiver )
@@ -116,7 +116,7 @@ obj_data *find_projectile( char_data * ch, obj_data * quiver )
             return obj;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 /* Bowfire code -- used to draw an arrow from a quiver */
@@ -137,13 +137,13 @@ CMDF( do_draw )
       return;
    }
 
-   if( ch->get_eq( WEAR_LIGHT ) != NULL )
+   if( ch->get_eq( WEAR_LIGHT ) != nullptr )
       ++hand_count;
-   if( ch->get_eq( WEAR_SHIELD ) != NULL )
+   if( ch->get_eq( WEAR_SHIELD ) != nullptr )
       ++hand_count;
-   if( ch->get_eq( WEAR_HOLD ) != NULL )
+   if( ch->get_eq( WEAR_HOLD ) != nullptr )
       ++hand_count;
-   if( ch->get_eq( WEAR_WIELD ) != NULL )
+   if( ch->get_eq( WEAR_WIELD ) != nullptr )
       ++hand_count;
    if( hand_count > 1 )
    {
@@ -151,7 +151,7 @@ CMDF( do_draw )
       return;
    }
 
-   if( ch->get_eq( WEAR_HOLD ) != NULL )
+   if( ch->get_eq( WEAR_HOLD ) != nullptr )
    {
       ch->print( "Your hand is not empty!\r\n" );
       return;
@@ -180,8 +180,8 @@ CMDF( do_draw )
    }
 
    ch->WAIT_STATE( sysdata->pulseviolence );
-   act_printf( AT_ACTION, ch, quiver, NULL, TO_ROOM, "$n draws %s from $p.", arrow->short_descr );
-   act_printf( AT_ACTION, ch, quiver, NULL, TO_CHAR, "You draw %s from $p.", arrow->short_descr );
+   act_printf( AT_ACTION, ch, quiver, nullptr, TO_ROOM, "$n draws %s from $p.", arrow->short_descr );
+   act_printf( AT_ACTION, ch, quiver, nullptr, TO_CHAR, "You draw %s from $p.", arrow->short_descr );
    arrow->from_obj(  );
    arrow->to_char( ch );
 
@@ -195,7 +195,7 @@ CMDF( do_draw )
 /* Bowfire code -- Used to dislodge an arrow already lodged */
 CMDF( do_dislodge )
 {
-   obj_data *arrow = NULL;
+   obj_data *arrow = nullptr;
    double dam = 0;
 
    if( argument.empty(  ) )   /* empty */
@@ -204,33 +204,33 @@ CMDF( do_dislodge )
       return;
    }
 
-   if( ch->get_eq( WEAR_LODGE_RIB ) != NULL )
+   if( ch->get_eq( WEAR_LODGE_RIB ) != nullptr )
    {
       arrow = ch->get_eq( WEAR_LODGE_RIB );
-      act( AT_CARNAGE, "With a wrenching pull, you dislodge $p from your chest.", ch, arrow, NULL, TO_CHAR );
-      act( AT_CARNAGE, "$N winces in pain as $e dislodges $p from $s chest.", ch, arrow, NULL, TO_ROOM );
+      act( AT_CARNAGE, "With a wrenching pull, you dislodge $p from your chest.", ch, arrow, nullptr, TO_CHAR );
+      act( AT_CARNAGE, "$N winces in pain as $e dislodges $p from $s chest.", ch, arrow, nullptr, TO_ROOM );
       ch->unequip( arrow );
       arrow->wear_flags.reset( ITEM_LODGE_RIB );
       arrow->extra_flags.reset( ITEM_LODGED );
       dam = number_range( ( 3 * arrow->value[1] ), ( 3 * arrow->value[2] ) );
       damage( ch, ch, dam, TYPE_UNDEFINED );
    }
-   else if( ch->get_eq( WEAR_LODGE_ARM ) != NULL )
+   else if( ch->get_eq( WEAR_LODGE_ARM ) != nullptr )
    {
       arrow = ch->get_eq( WEAR_LODGE_ARM );
-      act( AT_CARNAGE, "With a tug you dislodge $p from your arm.", ch, arrow, NULL, TO_CHAR );
-      act( AT_CARNAGE, "$N winces in pain as $e dislodges $p from $s arm.", ch, arrow, NULL, TO_ROOM );
+      act( AT_CARNAGE, "With a tug you dislodge $p from your arm.", ch, arrow, nullptr, TO_CHAR );
+      act( AT_CARNAGE, "$N winces in pain as $e dislodges $p from $s arm.", ch, arrow, nullptr, TO_ROOM );
       ch->unequip( arrow );
       arrow->wear_flags.reset( ITEM_LODGE_ARM );
       arrow->extra_flags.reset( ITEM_LODGED );
       dam = number_range( ( 3 * arrow->value[1] ), ( 2 * arrow->value[2] ) );
       damage( ch, ch, dam, TYPE_UNDEFINED );
    }
-   else if( ch->get_eq( WEAR_LODGE_LEG ) != NULL )
+   else if( ch->get_eq( WEAR_LODGE_LEG ) != nullptr )
    {
       arrow = ch->get_eq( WEAR_LODGE_LEG );
-      act( AT_CARNAGE, "With a tug you dislodge $p from your leg.", ch, arrow, NULL, TO_CHAR );
-      act( AT_CARNAGE, "$N winces in pain as $e dislodges $p from $s leg.", ch, arrow, NULL, TO_ROOM );
+      act( AT_CARNAGE, "With a tug you dislodge $p from your leg.", ch, arrow, nullptr, TO_CHAR );
+      act( AT_CARNAGE, "$N winces in pain as $e dislodges $p from $s leg.", ch, arrow, nullptr, TO_ROOM );
       ch->unequip( arrow );
       arrow->wear_flags.reset( ITEM_LODGE_LEG );
       arrow->extra_flags.reset( ITEM_LODGED );
@@ -469,17 +469,17 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
 
          if( skill->imm_char && skill->imm_char[0] != '\0' )
          {
-            act( AT_HIT, skill->imm_char, ch, NULL, victim, TO_CHAR );
+            act( AT_HIT, skill->imm_char, ch, nullptr, victim, TO_CHAR );
             found = true;
          }
          if( skill->imm_vict && skill->imm_vict[0] != '\0' )
          {
-            act( AT_HITME, skill->imm_vict, ch, NULL, victim, TO_VICT );
+            act( AT_HITME, skill->imm_vict, ch, nullptr, victim, TO_VICT );
             found = true;
          }
          if( skill->imm_room && skill->imm_room[0] != '\0' )
          {
-            act( AT_ACTION, skill->imm_room, ch, NULL, victim, TO_NOTVICT );
+            act( AT_ACTION, skill->imm_room, ch, nullptr, victim, TO_NOTVICT );
             found = true;
          }
          if( found )
@@ -620,13 +620,13 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
       if( projectile )
       {
          ch->printf( "Your %s is blasted from existance by a godly presense.", projectile->myobj(  ).c_str(  ) );
-         act( color, "A godly presence smites $p!", ch, projectile, NULL, TO_ROOM );
+         act( color, "A godly presence smites $p!", ch, projectile, nullptr, TO_ROOM );
          projectile->extract(  );
       }
       else
       {
          ch->printf( "Your %s is blasted from existance by a godly presense.", stxt );
-         act( color, "A godly presence smites $t!", ch, aoran( stxt ), NULL, TO_ROOM );
+         act( color, "A godly presence smites $t!", ch, aoran( stxt ), nullptr, TO_ROOM );
       }
       return rNONE;
    }
@@ -682,7 +682,7 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
     * * range by the code and as such the proper skill will be used. 
     * * Grimm
     *
-    * Bugfix: Projectile could be NULL here - Samson
+    * Bugfix: Projectile could be nullptr here - Samson
     */
    if( projectile )
    {
@@ -763,7 +763,7 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, const string & name 
    short max_dist = 8;
 
    if( ch->has_aflag( AFF_BLIND ) || !pexit )
-      return NULL;
+      return nullptr;
 
    was_in_room = ch->in_room;
 
@@ -786,7 +786,7 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, const string & name 
       if( !ch->to_room( pexit->to_room ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
-      if( ( victim = ch->get_char_room( name ) ) != NULL )
+      if( ( victim = ch->get_char_room( name ) ) != nullptr )
       {
          ch->from_room(  );
          if( !ch->to_room( was_in_room ) )
@@ -838,7 +838,7 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, const string & name 
    if( !ch->to_room( was_in_room ) )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -868,7 +868,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
     */
    short dir = -1;
    exit_data *pexit;
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    if( !( pexit = find_door( ch, arg, true ) ) )
    {
       if( !( victim = ch->get_char_room( arg ) ) )
@@ -908,7 +908,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
       }
    }
 
-   skill_type *skill = NULL;
+   skill_type *skill = nullptr;
    if( IS_VALID_SN( dt ) )
       skill = skill_table[dt];
 
@@ -944,7 +944,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
       }
    }
 
-   char_data *vch = NULL;
+   char_data *vch = nullptr;
    if( pexit && !arg1.empty(  ) )
    {
       if( !( vch = scan_for_vic( ch, pexit, arg1 ) ) )
@@ -1086,9 +1086,9 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
          else
             ch->printf( "&wYou see your %s hit a door in the distance to the %s.", stxt, dir_name[dir] );
          if( projectile )
-            act_printf( AT_GREY, ch, projectile, NULL, TO_ROOM, "$p flies in from %s and implants itself solidly in the %sern door.", dtxt, dir_name[dir] );
+            act_printf( AT_GREY, ch, projectile, nullptr, TO_ROOM, "$p flies in from %s and implants itself solidly in the %sern door.", dtxt, dir_name[dir] );
          else
-            act_printf( AT_GREY, ch, NULL, NULL, TO_ROOM, "%s flies in from %s and implants itself solidly in the %sern door.", aoran( stxt ), dtxt, dir_name[dir] );
+            act_printf( AT_GREY, ch, nullptr, nullptr, TO_ROOM, "%s flies in from %s and implants itself solidly in the %sern door.", aoran( stxt ), dtxt, dir_name[dir] );
          break;
       }
 
@@ -1198,7 +1198,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
 CMDF( do_fire )
 {
    string arg;
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    obj_data *arrow, *bow;
    short max_dist;
 
@@ -1209,7 +1209,7 @@ CMDF( do_fire )
    }
 
    one_argument( argument, arg );
-   if( arg.empty(  ) && ch->fighting == NULL )
+   if( arg.empty(  ) && ch->fighting == nullptr )
    {
       ch->print( "Fire at whom or what?\r\n" );
       return;

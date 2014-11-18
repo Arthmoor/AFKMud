@@ -48,7 +48,7 @@ extern int astral_target;
 // Right now it's pretty silly looking.
 room_index *check_room( char_data * ch, room_index * dieroom )
 {
-   room_index *location = NULL;
+   room_index *location = nullptr;
 
    if( dieroom->area->continent == ACON_ONE )
       location = get_room_index( ROOM_VNUM_ALTAR );
@@ -61,7 +61,7 @@ room_index *check_room( char_data * ch, room_index * dieroom )
 
 room_index *recall_room( char_data * ch )
 {
-   room_index *location = NULL;
+   room_index *location = nullptr;
 
    if( ch->isnpc(  ) )
    {

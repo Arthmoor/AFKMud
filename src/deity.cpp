@@ -76,7 +76,7 @@ deity_data *get_deity( const string & name )
       if( !str_cmp( name, deity->name ) )
          return deity;
    }
-   return NULL;
+   return nullptr;
 }
 
 void write_deity_list( void )
@@ -467,7 +467,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Element" ) )
             {
-               const char *elem = NULL;
+               const char *elem = nullptr;
                int value;
 
                if( filever < 3 )
@@ -499,7 +499,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Element2" ) )  /* Added by Tarl 24 Feb 02 */
             {
-               const char *elem = NULL;
+               const char *elem = nullptr;
                int value;
 
                if( filever < 3 )
@@ -531,7 +531,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Element3" ) )  /* Added by Tarl 24 Feb 02 */
             {
-               const char *elem = NULL;
+               const char *elem = nullptr;
                int value;
 
                if( filever < 3 )
@@ -854,7 +854,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Suscept" ) )
             {
-               const char *elem = NULL;
+               const char *elem = nullptr;
                int value;
 
                if( filever < 3 )
@@ -886,7 +886,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Suscept2" ) )  /* Added by Tarl 24 Feb 02 */
             {
-               const char *elem = NULL;
+               const char *elem = nullptr;
                int value;
 
                if( filever < 3 )
@@ -918,7 +918,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 
             if( !str_cmp( word, "Suscept3" ) )  /* Added by Tarl 24 Feb 02 */
             {
-               const char *elem = NULL;
+               const char *elem = nullptr;
                int value;
 
                if( filever < 3 )
@@ -979,7 +979,7 @@ bool load_deity_file( const char *deityfile )
    found = false;
    snprintf( filename, 256, "%s%s", DEITY_DIR, deityfile );
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( filename, "r" ) ) != nullptr )
    {
       for( ;; )
       {
@@ -1165,7 +1165,7 @@ CMDF( do_setdeity )
             vch->unset_suscep( ch->pcdata->deity->suscept[0] );
             vch->unset_suscep( ch->pcdata->deity->suscept[1] );
             vch->unset_suscep( ch->pcdata->deity->suscept[2] );
-            vch->pcdata->deity = NULL;
+            vch->pcdata->deity = nullptr;
             vch->pcdata->deity_name.clear(  );
             vch->update_aris(  );
             vch->save(  );
@@ -2311,7 +2311,7 @@ CMDF( do_devote )
       ch->affect_to_char( &af );
       save_deity( ch->pcdata->deity );
       ch->print( "You cease to worship any deity.\r\n" );
-      ch->pcdata->deity = NULL;
+      ch->pcdata->deity = nullptr;
       ch->pcdata->deity_name.clear(  );
       ch->save(  );
       return;
@@ -2362,7 +2362,7 @@ CMDF( do_devote )
    ch->pcdata->deity_name = deity->name;
    ch->pcdata->deity = deity;
 
-   act( AT_MAGIC, "Body and soul, you devote yourself to $t!", ch, ch->pcdata->deity_name.c_str(  ), NULL, TO_CHAR );
+   act( AT_MAGIC, "Body and soul, you devote yourself to $t!", ch, ch->pcdata->deity_name.c_str(  ), nullptr, TO_CHAR );
    ++ch->pcdata->deity->worshippers;
    save_deity( ch->pcdata->deity );
    ch->save(  );
@@ -2834,11 +2834,11 @@ CMDF( do_supplicate )
             found = true;
             if( obj->in_room->flags.test( ROOM_NOSUPPLICATE ) )
             {
-               act( AT_MAGIC, "The image of your corpse appears, but suddenly wavers away.", ch, NULL, NULL, TO_CHAR );
+               act( AT_MAGIC, "The image of your corpse appears, but suddenly wavers away.", ch, nullptr, nullptr, TO_CHAR );
                return;
             }
-            act( AT_MAGIC, "Your corpse appears suddenly, surrounded by a divine presence...", ch, NULL, NULL, TO_CHAR );
-            act( AT_MAGIC, "$n's corpse appears suddenly, surrounded by a divine force...", ch, NULL, NULL, TO_ROOM );
+            act( AT_MAGIC, "Your corpse appears suddenly, surrounded by a divine presence...", ch, nullptr, nullptr, TO_CHAR );
+            act( AT_MAGIC, "$n's corpse appears suddenly, surrounded by a divine force...", ch, nullptr, nullptr, TO_ROOM );
             obj->from_room(  );
             obj = obj->to_room( ch->in_room, ch );
             obj->extra_flags.reset( ITEM_BURIED );
@@ -2883,8 +2883,8 @@ CMDF( do_supplicate )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
-      act( AT_MAGIC, "$n summons a powerful avatar!", ch, NULL, NULL, TO_ROOM );
-      act( AT_MAGIC, "You summon a powerful avatar!", ch, NULL, NULL, TO_CHAR );
+      act( AT_MAGIC, "$n summons a powerful avatar!", ch, nullptr, nullptr, TO_ROOM );
+      act( AT_MAGIC, "You summon a powerful avatar!", ch, nullptr, nullptr, TO_CHAR );
       bind_follower( victim, ch, gsn_charm_person, ( ch->pcdata->favor / 4 ) + 1 );
       victim->level = LEVEL_AVATAR / 2;
       victim->hit = ch->hit + ch->pcdata->favor;
@@ -2927,8 +2927,8 @@ CMDF( do_supplicate )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
-      act( AT_MAGIC, "$n summons a mount!", ch, NULL, NULL, TO_ROOM );
-      act( AT_MAGIC, "You summon a mount!", ch, NULL, NULL, TO_CHAR );
+      act( AT_MAGIC, "$n summons a mount!", ch, nullptr, nullptr, TO_ROOM );
+      act( AT_MAGIC, "You summon a mount!", ch, nullptr, nullptr, TO_CHAR );
       bind_follower( victim, ch, gsn_charm_person, ( ch->pcdata->favor / 4 ) + 1 );
       ch->pcdata->favor -= ch->pcdata->deity->smount;
       ch->adjust_favor( -1, 1 );
@@ -2966,8 +2966,8 @@ CMDF( do_supplicate )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
-      act( AT_MAGIC, "$n summons a minion!", ch, NULL, NULL, TO_ROOM );
-      act( AT_MAGIC, "You summon a minion!", ch, NULL, NULL, TO_CHAR );
+      act( AT_MAGIC, "$n summons a minion!", ch, nullptr, nullptr, TO_ROOM );
+      act( AT_MAGIC, "You summon a minion!", ch, nullptr, nullptr, TO_CHAR );
       bind_follower( victim, ch, gsn_charm_person, ( ch->pcdata->favor / 4 ) + 1 );
       victim->level = LEVEL_AVATAR / 3;
       victim->hit = ( ch->hit / 2 ) + ( ch->pcdata->favor / 4 );
@@ -3007,8 +3007,8 @@ CMDF( do_supplicate )
       else
          obj = obj->to_room( ch->in_room, ch );
 
-      act( AT_MAGIC, "$n weaves $p from divine matter!", ch, obj, NULL, TO_ROOM );
-      act( AT_MAGIC, "You weave $p from divine matter!", ch, obj, NULL, TO_CHAR );
+      act( AT_MAGIC, "$n weaves $p from divine matter!", ch, obj, nullptr, TO_ROOM );
+      act( AT_MAGIC, "You weave $p from divine matter!", ch, obj, nullptr, TO_CHAR );
       ch->pcdata->favor -= ch->pcdata->deity->sdeityobj;
       ch->adjust_favor( -1, 1 );
 
@@ -3080,8 +3080,8 @@ CMDF( do_supplicate )
 
       stralloc_printf( &obj->name, "sigil %s", ch->pcdata->deity->name.c_str(  ) );
 
-      act( AT_MAGIC, "$n weaves $p from divine matter!", ch, obj, NULL, TO_ROOM );
-      act( AT_MAGIC, "You weave $p from divine matter!", ch, obj, NULL, TO_CHAR );
+      act( AT_MAGIC, "$n weaves $p from divine matter!", ch, obj, nullptr, TO_ROOM );
+      act( AT_MAGIC, "You weave $p from divine matter!", ch, obj, nullptr, TO_CHAR );
       ch->pcdata->favor -= ch->pcdata->deity->sdeityobj2;
       ch->adjust_favor( -1, 1 );
 
@@ -3125,7 +3125,7 @@ CMDF( do_supplicate )
 
    if( !str_cmp( argument, "recall" ) )
    {
-      room_index *location = NULL;
+      room_index *location = nullptr;
 
       if( ch->pcdata->favor < ch->pcdata->deity->srecall )
       {
@@ -3154,11 +3154,11 @@ CMDF( do_supplicate )
          return;
       }
 
-      act( AT_MAGIC, "$n disappears in a column of divine power.", ch, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "$n disappears in a column of divine power.", ch, nullptr, nullptr, TO_ROOM );
 
-      leave_map( ch, NULL, location );
+      leave_map( ch, nullptr, location );
 
-      act( AT_MAGIC, "$n appears in the room from a column of divine mist.", ch, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "$n appears in the room from a column of divine mist.", ch, nullptr, nullptr, TO_ROOM );
       ch->pcdata->favor -= ch->pcdata->deity->srecall;
       ch->adjust_favor( -1, 1 );
       return;

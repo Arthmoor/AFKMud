@@ -79,7 +79,7 @@ void oedit_disp_menu( descriptor_data * );
 
 void ostat_plus( char_data * ch, obj_data * obj, bool olc )
 {
-   liquid_data *liq = NULL;
+   liquid_data *liq = nullptr;
    skill_type *sktmp;
    int dam;
    char buf[MSL], lbuf[10];
@@ -117,7 +117,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          for( x = 1; x <= 3; ++x )
          {
             snprintf( lbuf, 10, "&g%c&w) ", 'E' + x );
-            if( obj->value[x] >= 0 && ( sktmp = get_skilltype( obj->value[x] ) ) != NULL )
+            if( obj->value[x] >= 0 && ( sktmp = get_skilltype( obj->value[x] ) ) != nullptr )
                ch->printf( "%sValue[%d] - Spell (%d): &c%s\r\n", olc ? lbuf : "", x, obj->value[x], sktmp->name );
             else
                ch->printf( "%sValue[%d] - Spell: None\r\n", olc ? lbuf : "&w", x );
@@ -135,7 +135,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->printf( "%sValue[2] - Charges Remaining: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          if( obj->item_type != ITEM_SALVE )
          {
-            if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != NULL )
+            if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != nullptr )
                ch->printf( "%sValue[3] - Spell (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], sktmp->name );
             else
                ch->printf( "%sValue[3] - Spell: &cNone\r\n", olc ? "&gH&w) " : "&w" );
@@ -145,7 +145,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          for( x = 4; x <= 5; ++x )
          {
             snprintf( lbuf, 10, "&g%c&w) ", 'E' + x );
-            if( obj->value[x] >= 0 && ( sktmp = get_skilltype( obj->value[x] ) ) != NULL )
+            if( obj->value[x] >= 0 && ( sktmp = get_skilltype( obj->value[x] ) ) != nullptr )
                ch->printf( "%sValue[%d] - Spell (%d): &c%s\r\n", olc ? lbuf : "&w", x, obj->value[x], sktmp->name );
             else
                ch->printf( "%sValue[%d] - Spell: None\r\n", olc ? lbuf : "&w", x );
@@ -575,8 +575,8 @@ void cleanup_olc( descriptor_data * d )
    {
       if( d->character )
       {
-         d->character->pcdata->dest_buf = NULL;
-         act( AT_ACTION, "$n stops using OLC.", d->character, NULL, NULL, TO_CANSEE );
+         d->character->pcdata->dest_buf = nullptr;
+         act( AT_ACTION, "$n stops using OLC.", d->character, nullptr, nullptr, TO_CANSEE );
       }
       d->connected = CON_PLAYING;
       deleteptr( d->olc );
@@ -636,7 +636,7 @@ CMDF( do_ooedit )
    d->connected = CON_OEDIT;
    oedit_disp_menu( d );
 
-   act( AT_ACTION, "$n starts using OLC.", ch, NULL, NULL, TO_CANSEE );
+   act( AT_ACTION, "$n starts using OLC.", ch, nullptr, nullptr, TO_CANSEE );
 }
 
 CMDF( do_ocopy )
@@ -1666,7 +1666,7 @@ extra_descr_data *oedit_find_extradesc( obj_data * obj, int number )
       if( ++count == number )
          return edesc;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1686,7 +1686,7 @@ CMDF( do_oedit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -1704,7 +1704,7 @@ CMDF( do_oedit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_long: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_obj_long: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -2586,7 +2586,7 @@ void oedit_parse( descriptor_data * d, string & arg )
 
             case 'q':
             case 'Q':
-               d->character->pcdata->spare_ptr = NULL;
+               d->character->pcdata->spare_ptr = nullptr;
                break;
          }
          break;   /* If we reach here, we're done */
@@ -2600,7 +2600,7 @@ void oedit_parse( descriptor_data * d, string & arg )
                /*
                 * Junk the affect 
                 */
-               d->character->pcdata->spare_ptr = NULL;
+               d->character->pcdata->spare_ptr = nullptr;
                deleteptr( paf );
                break;
             }
@@ -2691,7 +2691,7 @@ void oedit_parse( descriptor_data * d, string & arg )
                }
                else
                {
-                  value = find_spell( NULL, arg, false );
+                  value = find_spell( nullptr, arg, false );
                   if( value < 0 )
                   {
                      d->character->printf( "Invalid spell %s, try again: ", arg.c_str(  ) );
@@ -2730,7 +2730,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          olc_log( d, "Added new affect: %s by %d", a_types[npaf->location], npaf->modifier );
 
          deleteptr( paf );
-         d->character->pcdata->spare_ptr = NULL;
+         d->character->pcdata->spare_ptr = nullptr;
          oedit_disp_prompt_apply_menu( d );
          return;
 

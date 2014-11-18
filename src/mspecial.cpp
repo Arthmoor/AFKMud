@@ -137,7 +137,7 @@ SPEC_FUN *m_spec_lookup( const string & name )
    if( ( error = dlerror(  ) ) )
    {
       bug( "%s: %s", __func__, error );
-      return NULL;
+      return nullptr;
    }
    return ( SPEC_FUN * ) funHandle;
 }
@@ -145,7 +145,7 @@ SPEC_FUN *m_spec_lookup( const string & name )
 char_data *spec_find_victim( char_data * ch, bool combat )
 {
    list < char_data * >::iterator ich;
-   char_data *chosen = NULL;
+   char_data *chosen = nullptr;
    int count = 0;
 
    if( !combat )
@@ -157,7 +157,7 @@ char_data *spec_find_victim( char_data * ch, bool combat )
          if( victim != ch && ch->can_see( victim, false ) && number_bits( 1 ) == 0 )
             return victim;
       }
-      return NULL;
+      return nullptr;
    }
 
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
@@ -248,7 +248,7 @@ bool dragon( char_data * ch, const string & spellname )
    if( ch->position != POS_FIGHTING && ch->position != POS_EVASIVE && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
       return false;
 
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    if( !( victim = spec_find_victim( ch, true ) ) )
       return false;
 
@@ -310,7 +310,7 @@ SPECF( spec_breath_gas )
    int sn;
    if( ( sn = skill_lookup( "gas breath" ) ) < 0 )
       return false;
-   ( *skill_table[sn]->spell_fun ) ( sn, ch->level, ch, NULL );
+   ( *skill_table[sn]->spell_fun ) ( sn, ch->level, ch, nullptr );
    return true;
 }
 
@@ -324,7 +324,7 @@ SPECF( spec_breath_lightning )
 */
 SPECF( spec_cast_adept )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    int percent;
 
    if( !ch->IS_AWAKE(  ) || ch->fighting )
@@ -345,32 +345,32 @@ SPECF( spec_cast_adept )
    switch ( number_bits( 4 ) )
    {
       case 0:
-         act( AT_MAGIC, "$n utters the word 'ciroht'.", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n utters the word 'ciroht'.", ch, nullptr, nullptr, TO_ROOM );
          spell_smaug( skill_lookup( "armor" ), ch->level, ch, victim );
          return true;
 
       case 1:
-         act( AT_MAGIC, "$n utters the word 'sunimod'.", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n utters the word 'sunimod'.", ch, nullptr, nullptr, TO_ROOM );
          spell_smaug( skill_lookup( "bless" ), ch->level, ch, victim );
          return true;
 
       case 2:
-         act( AT_MAGIC, "$n utters the word 'suah'.", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n utters the word 'suah'.", ch, nullptr, nullptr, TO_ROOM );
          spell_cure_blindness( skill_lookup( "cure blindness" ), ch->level, ch, victim );
          return true;
 
       case 3:
-         act( AT_MAGIC, "$n utters the word 'nyrcs'.", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n utters the word 'nyrcs'.", ch, nullptr, nullptr, TO_ROOM );
          spell_cure_poison( skill_lookup( "cure poison" ), ch->level, ch, victim );
          return true;
 
       case 4:
-         act( AT_MAGIC, "$n utters the word 'gartla'.", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n utters the word 'gartla'.", ch, nullptr, nullptr, TO_ROOM );
          spell_smaug( skill_lookup( "refresh" ), ch->level, ch, victim );
          return true;
 
       case 5:
-         act( AT_MAGIC, "$n utters the word 'gorog'.", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n utters the word 'gorog'.", ch, nullptr, nullptr, TO_ROOM );
          spell_remove_curse( skill_lookup( "remove curse" ), ch->level, ch, victim );
          return true;
 
@@ -382,22 +382,22 @@ SPECF( spec_cast_adept )
 
          if( percent >= 90 )
          {
-            act( AT_MAGIC, "$n utters the word 'nran'.", ch, NULL, NULL, TO_ROOM );
+            act( AT_MAGIC, "$n utters the word 'nran'.", ch, nullptr, nullptr, TO_ROOM );
             spell_smaug( skill_lookup( "cure light" ), ch->level, ch, victim );
          }
          else if( percent >= 75 )
          {
-            act( AT_MAGIC, "$n utters the word 'naimad'.", ch, NULL, NULL, TO_ROOM );
+            act( AT_MAGIC, "$n utters the word 'naimad'.", ch, nullptr, nullptr, TO_ROOM );
             spell_smaug( skill_lookup( "cure serious" ), ch->level, ch, victim );
          }
          else if( percent >= 60 )
          {
-            act( AT_MAGIC, "$n utters the word 'piwd'.", ch, NULL, NULL, TO_ROOM );
+            act( AT_MAGIC, "$n utters the word 'piwd'.", ch, nullptr, nullptr, TO_ROOM );
             spell_smaug( skill_lookup( "cure critical" ), ch->level, ch, victim );
          }
          else
          {
-            act( AT_MAGIC, "$n utters the word 'nosmas'.", ch, NULL, NULL, TO_ROOM );
+            act( AT_MAGIC, "$n utters the word 'nosmas'.", ch, nullptr, nullptr, TO_ROOM );
             spell_smaug( skill_lookup( "heal" ), ch->level, ch, victim );
          }
          return true;
@@ -406,7 +406,7 @@ SPECF( spec_cast_adept )
 
 SPECF( spec_cast_cleric )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string spell;
    int sn;
 
@@ -490,7 +490,7 @@ SPECF( spec_cast_cleric )
 
 SPECF( spec_cast_mage )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string spell;
    int sn;
 
@@ -589,7 +589,7 @@ SPECF( spec_cast_mage )
 
 SPECF( spec_cast_undead )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string spell;
    int sn;
 
@@ -680,7 +680,7 @@ SPECF( spec_guard )
       return false;
 
    int max_evil = 300;
-   char_data *ech = NULL;
+   char_data *ech = nullptr;
 
    list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
@@ -696,7 +696,7 @@ SPECF( spec_guard )
 
    if( ech )
    {
-      act( AT_YELL, "$n screams 'PROTECT THE INNOCENT!!  BANZAI!!  SPOON!!", ch, NULL, NULL, TO_ROOM );
+      act( AT_YELL, "$n screams 'PROTECT THE INNOCENT!!  BANZAI!!  SPOON!!", ch, nullptr, nullptr, TO_ROOM );
       multi_hit( ch, ech, TYPE_UNDEFINED );
       return true;
    }
@@ -729,7 +729,7 @@ SPECF( spec_janitor )
       if( trash->item_type == ITEM_DRINK_CON || trash->item_type == ITEM_TRASH
           || trash->cost < 10 || ( trash->pIndexData->vnum == OBJ_VNUM_SHOPPING_BAG && trash->contents.empty(  ) ) )
       {
-         act( AT_ACTION, "$n picks up some trash.", ch, NULL, NULL, TO_ROOM );
+         act( AT_ACTION, "$n picks up some trash.", ch, nullptr, nullptr, TO_ROOM );
          trash->from_room(  );
          trash->to_char( ch );
          return true;
@@ -757,9 +757,9 @@ SPECF( spec_snake )
    if( number_percent(  ) > ch->level )
       return false;
 
-   act( AT_HIT, "You bite $N!", ch, NULL, victim, TO_CHAR );
-   act( AT_ACTION, "$n bites $N!", ch, NULL, victim, TO_NOTVICT );
-   act( AT_POISON, "$n bites you!", ch, NULL, victim, TO_VICT );
+   act( AT_HIT, "You bite $N!", ch, nullptr, victim, TO_CHAR );
+   act( AT_ACTION, "$n bites $N!", ch, nullptr, victim, TO_NOTVICT );
+   act( AT_POISON, "$n bites you!", ch, nullptr, victim, TO_VICT );
    spell_smaug( gsn_poison, ch->level, ch, victim );
    return true;
 }
@@ -779,8 +779,8 @@ SPECF( spec_thief )
 
       if( victim->IS_AWAKE(  ) && number_range( 0, ch->level ) == 0 )
       {
-         act( AT_ACTION, "You discover $n's hands in your sack of gold!", ch, NULL, victim, TO_VICT );
-         act( AT_ACTION, "$N discovers $n's hands in $S sack of gold!", ch, NULL, victim, TO_NOTVICT );
+         act( AT_ACTION, "You discover $n's hands in your sack of gold!", ch, nullptr, victim, TO_VICT );
+         act( AT_ACTION, "$N discovers $n's hands in $S sack of gold!", ch, nullptr, victim, TO_NOTVICT );
          return true;
       }
       else
@@ -1020,7 +1020,7 @@ char_data *race_align_hatee( char_data * ch )
                || ( IsUndead( vch ) && !IsUndead( ch ) ) || ( !IsUndead( vch ) && IsUndead( ch ) ) ) )
          return vch;
    }
-   return NULL;
+   return nullptr;
 }
 
 SPECF( spec_GenericCityguard )
@@ -1047,7 +1047,7 @@ SPECF( spec_GenericCityguard )
          return true;
    }
 
-   if( ( hatee = race_align_hatee( ch ) ) != NULL )
+   if( ( hatee = race_align_hatee( ch ) ) != nullptr )
    {
       interpret( ch, "say Die!" );
       set_fighting( ch, hatee );
@@ -1094,7 +1094,7 @@ SPECF( spec_fido )
          if( !is_same_obj_map( ch, corpse ) )
             continue;
       }
-      act( AT_ACTION, "$n savagely devours a corpse.", ch, NULL, NULL, TO_ROOM );
+      act( AT_ACTION, "$n savagely devours a corpse.", ch, nullptr, nullptr, TO_ROOM );
 
       list < obj_data * >::iterator iobj2;
       for( iobj2 = corpse->contents.begin(  ); iobj2 != corpse->contents.end(  ); )
@@ -1120,11 +1120,11 @@ bool StandUp( char_data * ch )
       return false;
 
    if( ch->hit > ( ch->max_hit / 2 ) )
-      act( AT_PLAIN, "$n quickly stands up.", ch, NULL, NULL, TO_ROOM );
+      act( AT_PLAIN, "$n quickly stands up.", ch, nullptr, nullptr, TO_ROOM );
    else if( ch->hit > ( ch->max_hit / 6 ) )
-      act( AT_PLAIN, "$n slowly stands up.", ch, NULL, NULL, TO_ROOM );
+      act( AT_PLAIN, "$n slowly stands up.", ch, nullptr, nullptr, TO_ROOM );
    else
-      act( AT_PLAIN, "$n gets to $s feet very slowly.", ch, NULL, NULL, TO_ROOM );
+      act( AT_PLAIN, "$n gets to $s feet very slowly.", ch, nullptr, nullptr, TO_ROOM );
 
    if( ch->who_fighting(  ) )
       ch->position = POS_FIGHTING;
@@ -1225,11 +1225,11 @@ SPECF( spec_RustMonster )
             continue;
       }
 
-      act( AT_ACTION, "$n picks up $p and swallows it.", ch, eat, NULL, TO_ROOM );
+      act( AT_ACTION, "$n picks up $p and swallows it.", ch, eat, nullptr, TO_ROOM );
 
       if( eat->item_type == ITEM_CORPSE_NPC )
       {
-         act( AT_ACTION, "$n savagely devours a corpse.", ch, NULL, NULL, TO_ROOM );
+         act( AT_ACTION, "$n savagely devours a corpse.", ch, nullptr, nullptr, TO_ROOM );
 
          list < obj_data * >::iterator iobj2;
          for( iobj2 = eat->contents.begin(  ); iobj2 != eat->contents.end(  ); )
@@ -1262,7 +1262,7 @@ SPECF( spec_wanderer )
 {
    obj_data *trash;
    room_index *was_in_room;
-   exit_data *pexit = NULL;
+   exit_data *pexit = nullptr;
    int door, schance = 50;
    bool found = false;  /* Valid direction */
    bool thrown = false; /* Whether to be thrown or not */
@@ -1295,7 +1295,7 @@ SPECF( spec_wanderer )
          if( trash->item_type == ITEM_WEAPON || trash->item_type == ITEM_ARMOR || trash->item_type == ITEM_LIGHT )
          {
             trash->separate(  ); // So there is no 'sword <6>' gets only one object off ground
-            act( AT_ACTION, "$n leans over and gets $p.", ch, trash, NULL, TO_ROOM );
+            act( AT_ACTION, "$n leans over and gets $p.", ch, trash, nullptr, TO_ROOM );
             trash->from_room(  );
             trash->to_char( ch );
 
@@ -1304,7 +1304,7 @@ SPECF( spec_wanderer )
              *****/
             if( ch->level < trash->level )
             {
-               act( AT_ACTION, "$n tries to use $p, but is too inexperienced.", ch, trash, NULL, TO_ROOM );
+               act( AT_ACTION, "$n tries to use $p, but is too inexperienced.", ch, trash, nullptr, TO_ROOM );
                thrown = true;
             }
 
@@ -1350,7 +1350,7 @@ SPECF( spec_wanderer )
             {
                door = number_door(  );
 
-               if( ( pexit = ch->in_room->get_exit( door ) ) != NULL && pexit->to_room && !IS_EXIT_FLAG( pexit, EX_CLOSED ) && !pexit->to_room->flags.test( ROOM_NODROP ) )
+               if( ( pexit = ch->in_room->get_exit( door ) ) != nullptr && pexit->to_room && !IS_EXIT_FLAG( pexit, EX_CLOSED ) && !pexit->to_room->flags.test( ROOM_NODROP ) )
                {
                   list < char_data * >::iterator ich;
                   for( ich = pexit->to_room->people.begin(  ); ich != pexit->to_room->people.end(  ); ++ich )
@@ -1386,7 +1386,7 @@ SPECF( spec_wanderer )
                else
                {
                   interpret( ch, "say This thing is junk!" );
-                  act( AT_ACTION, "$n growls and breaks $p.", ch, trash, NULL, TO_ROOM );
+                  act( AT_ACTION, "$n growls and breaks $p.", ch, trash, nullptr, TO_ROOM );
                }
                return true;
             }
@@ -1400,7 +1400,7 @@ SPECF( spec_wanderer )
 
 bool cast_ranger( char_data * ch )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string spell;
    int sn;
 
@@ -1487,7 +1487,7 @@ SPECF( spec_ranger )
 
 bool cast_paladin( char_data * ch )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string spell;
    int sn;
 
@@ -1557,7 +1557,7 @@ SPECF( spec_paladin )
 
 SPECF( spec_druid )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string spell;
    int sn;
 
@@ -1627,7 +1627,7 @@ SPECF( spec_druid )
 
 bool cast_antipaladin( char_data * ch )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string spell;
    int sn;
 
@@ -1703,7 +1703,7 @@ SPECF( spec_antipaladin )
 
 SPECF( spec_bard )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string spell;
    int sn;
 

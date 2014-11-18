@@ -56,7 +56,7 @@ void get_obj( char_data * ch, obj_data * obj, obj_data * container )
 
    if( ch->carry_number + obj->get_number(  ) > ch->can_carry_n(  ) )
    {
-      act( AT_PLAIN, "$d: you can't carry that many items.", ch, NULL, obj->short_descr, TO_CHAR );
+      act( AT_PLAIN, "$d: you can't carry that many items.", ch, nullptr, obj->short_descr, TO_CHAR );
       return;
    }
 
@@ -101,14 +101,14 @@ void get_obj( char_data * ch, obj_data * obj, obj_data * container )
          {
             if( ( ch->carry_weight + weight ) > ch->can_carry_w(  ) )
             {
-               act( AT_PLAIN, "$d: you can't carry that much weight.", ch, NULL, obj->short_descr, TO_CHAR );
+               act( AT_PLAIN, "$d: you can't carry that much weight.", ch, nullptr, obj->short_descr, TO_CHAR );
                return;
             }
          }
       }
       else if( ( ch->carry_weight + weight ) > ch->can_carry_w(  ) )
       {
-         act( AT_PLAIN, "$d: you can't carry that much weight.", ch, NULL, obj->short_descr, TO_CHAR );
+         act( AT_PLAIN, "$d: you can't carry that much weight.", ch, nullptr, obj->short_descr, TO_CHAR );
          return;
       }
    }
@@ -137,7 +137,7 @@ void get_obj( char_data * ch, obj_data * obj, obj_data * container )
    /*
     * Clan storeroom checks 
     */
-   if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) && ( !container || container->carried_by == NULL ) )
+   if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) && ( !container || container->carried_by == nullptr ) )
       check_clan_storeroom( ch );
 
    if( obj->item_type != ITEM_CONTAINER )
@@ -236,12 +236,12 @@ CMDF( do_get )
 
          if( ch->char_ego(  ) < obj->ego && obj->ego >= sysdata->minego )
          {
-            act( AT_OBJECT, "$P glows brightly and clings tightly to the ground, refusing to be picked up.", ch, NULL, obj, TO_CHAR );
+            act( AT_OBJECT, "$P glows brightly and clings tightly to the ground, refusing to be picked up.", ch, nullptr, obj, TO_CHAR );
             return;
          }
 
          obj->separate(  );
-         get_obj( ch, obj, NULL );
+         get_obj( ch, obj, nullptr );
 
          if( ch->char_died(  ) )
             return;
@@ -293,7 +293,7 @@ CMDF( do_get )
 
                if( ch->char_ego(  ) < obj->ego && obj->ego >= sysdata->minego )
                {
-                  act( AT_OBJECT, "$p glows brightly and clings tightly to the ground, refusing to be picked up.", ch, obj, NULL, TO_CHAR );
+                  act( AT_OBJECT, "$p glows brightly and clings tightly to the ground, refusing to be picked up.", ch, obj, nullptr, TO_CHAR );
                   continue;
                }
 
@@ -307,7 +307,7 @@ CMDF( do_get )
                if( number && ( cnt + obj->count ) > number )
                   obj->split( number - cnt );
                cnt += obj->count;
-               get_obj( ch, obj, NULL );
+               get_obj( ch, obj, nullptr );
 
                if( ch->char_died(  ) || ch->carry_number >= ch->can_carry_n(  ) || ch->carry_weight >= ch->can_carry_w(  ) || ( number && cnt >= number ) )
                {
@@ -433,7 +433,7 @@ CMDF( do_get )
 
       if( !container->extra_flags.test( ITEM_COVERING ) && IS_SET( container->value[1], CONT_CLOSED ) )
       {
-         act( AT_PLAIN, "The $d is closed.", ch, NULL, container->name, TO_CHAR );
+         act( AT_PLAIN, "The $d is closed.", ch, nullptr, container->name, TO_CHAR );
          return;
       }
 
@@ -456,7 +456,7 @@ CMDF( do_get )
 
          if( ch->char_ego(  ) < obj->ego && obj->ego >= sysdata->minego )
          {
-            act( AT_OBJECT, "$p glows brightly and clings tightly to the container, refusing to be picked up.", ch, obj, NULL, TO_CHAR );
+            act( AT_OBJECT, "$p glows brightly and clings tightly to the container, refusing to be picked up.", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -520,7 +520,7 @@ CMDF( do_get )
 
                if( ch->char_ego(  ) < obj->ego && obj->ego >= sysdata->minego )
                {
-                  act( AT_OBJECT, "$p glows brightly and clings tightly to the container, refusing to be picked up.", ch, obj, NULL, TO_CHAR );
+                  act( AT_OBJECT, "$p glows brightly and clings tightly to the container, refusing to be picked up.", ch, obj, nullptr, TO_CHAR );
                   continue;
                }
 
@@ -576,7 +576,7 @@ CMDF( do_get )
 CMDF( do_put )
 {
    string arg1, arg2;
-   obj_data *container, *obj = NULL;
+   obj_data *container, *obj = nullptr;
    short count;
    int number = 0;
    bool save_char = false;
@@ -740,11 +740,11 @@ CMDF( do_put )
       /*
        * Clan storeroom check 
        */
-      if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) && container->carried_by == NULL )
+      if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) && container->carried_by == nullptr )
       {
-         if( obj == NULL )
+         if( obj == nullptr )
          {
-            bug( "%s: clanstoreroom check: Object is NULL!", __func__ );
+            bug( "%s: clanstoreroom check: Object is nullptr!", __func__ );
             return;
          }
          if( obj->ego < sysdata->minego )
@@ -842,11 +842,11 @@ CMDF( do_put )
       /*
        * Clan storeroom check 
        */
-      if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) && container->carried_by == NULL )
+      if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) && container->carried_by == nullptr )
       {
-         if( obj == NULL )
+         if( obj == nullptr )
          {
-            bug( "%s: clanstoreroom check: Object is NULL!", __func__ );
+            bug( "%s: clanstoreroom check: Object is nullptr!", __func__ );
             return;
          }
          if( obj->ego < sysdata->minego )
@@ -938,7 +938,7 @@ CMDF( do_drop )
             }
          }
 
-         act( AT_ACTION, "$n drops some gold.", ch, NULL, NULL, TO_ROOM );
+         act( AT_ACTION, "$n drops some gold.", ch, nullptr, nullptr, TO_ROOM );
          create_money( number )->to_room( ch->in_room, ch );
          ch->print( "You let the gold slip from your hand.\r\n" );
          if( IS_SAVE_FLAG( SV_DROP ) )
@@ -972,8 +972,8 @@ CMDF( do_drop )
       }
 
       obj->separate(  );
-      act( AT_ACTION, "$n drops $t.", ch, aoran( obj->short_descr ), NULL, TO_ROOM );
-      act( AT_ACTION, "You drop $t.", ch, aoran( obj->short_descr ), NULL, TO_CHAR );
+      act( AT_ACTION, "$n drops $t.", ch, aoran( obj->short_descr ), nullptr, TO_ROOM );
+      act( AT_ACTION, "You drop $t.", ch, aoran( obj->short_descr ), nullptr, TO_CHAR );
 
       obj->from_char(  );
       obj->to_room( ch->in_room, ch );
@@ -1103,7 +1103,7 @@ CMDF( do_drop )
             /*
              * Added by Whir - 1/28/98 
              */
-            act( AT_ACTION, "$n drops everything $e owns.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n drops everything $e owns.", ch, nullptr, nullptr, TO_ROOM );
             ch->print( "&[action]You drop everything you own.\r\n" );
 
             // Drop all command with rare items in it will spawn an evil infinite loop so we handle that here now.
@@ -1125,7 +1125,7 @@ CMDF( do_drop )
          else
          {
             ch->printf( "&[action]You drop every %s you own.\r\n", chk.c_str(  ) );
-            act( AT_ACTION, "$n drops every $t $e owns.", ch, chk.c_str(  ), NULL, TO_ROOM );
+            act( AT_ACTION, "$n drops every $t $e owns.", ch, chk.c_str(  ), nullptr, TO_ROOM );
          }
       }
    }
@@ -1191,9 +1191,9 @@ CMDF( do_give )
       ch->gold -= amount;
       victim->gold += amount;
 
-      act_printf( AT_ACTION, ch, NULL, victim, TO_VICT, "$n gives you %d coin%s.", amount, amount == 1 ? "" : "s" );
-      act( AT_ACTION, "$n gives $N some gold.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_ACTION, "You give $N some gold.", ch, NULL, victim, TO_CHAR );
+      act_printf( AT_ACTION, ch, nullptr, victim, TO_VICT, "$n gives you %d coin%s.", amount, amount == 1 ? "" : "s" );
+      act( AT_ACTION, "$n gives $N some gold.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_ACTION, "You give $N some gold.", ch, nullptr, victim, TO_CHAR );
       mprog_bribe_trigger( victim, ch, amount );
       if( IS_SAVE_FLAG( SV_GIVE ) && !ch->char_died(  ) )
          ch->save(  );
@@ -1228,25 +1228,25 @@ CMDF( do_give )
 
    if( victim->carry_number + ( obj->get_number(  ) / obj->count ) > victim->can_carry_n(  ) )
    {
-      act( AT_PLAIN, "$N has $S hands full.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N has $S hands full.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( victim->carry_weight + ( obj->get_weight(  ) / obj->count ) > victim->can_carry_w(  ) )
    {
-      act( AT_PLAIN, "$N can't carry that much weight.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N can't carry that much weight.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( !victim->can_see_obj( obj, false ) )
    {
-      act( AT_PLAIN, "$N can't see it.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N can't see it.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( obj->extra_flags.test( ITEM_PROTOTYPE ) && !victim->can_take_proto(  ) )
    {
-      act( AT_PLAIN, "You cannot give that to $N!", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "You cannot give that to $N!", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -1299,7 +1299,7 @@ bool remove_obj( char_data * ch, int iWear, bool fReplace )
 
    if( !fReplace && ch->carry_number + obj->get_number(  ) > ch->can_carry_n(  ) )
    {
-      act( AT_PLAIN, "$d: you can't carry that many items.", ch, NULL, obj->short_descr, TO_CHAR );
+      act( AT_PLAIN, "$d: you can't carry that many items.", ch, nullptr, obj->short_descr, TO_CHAR );
       return false;
    }
 
@@ -1308,17 +1308,17 @@ bool remove_obj( char_data * ch, int iWear, bool fReplace )
 
    if( obj->extra_flags.test( ITEM_NOREMOVE ) )
    {
-      act( AT_PLAIN, "You can't remove $p.", ch, obj, NULL, TO_CHAR );
+      act( AT_PLAIN, "You can't remove $p.", ch, obj, nullptr, TO_CHAR );
       return false;
    }
 
-   if( obj == ch->get_eq( WEAR_WIELD ) && ( tmpobj = ch->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+   if( obj == ch->get_eq( WEAR_WIELD ) && ( tmpobj = ch->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
       tmpobj->wear_loc = WEAR_WIELD;
 
    ch->unequip( obj );
 
-   act( AT_ACTION, "$n stops using $p.", ch, obj, NULL, TO_ROOM );
-   act( AT_ACTION, "You stop using $p.", ch, obj, NULL, TO_CHAR );
+   act( AT_ACTION, "$n stops using $p.", ch, obj, nullptr, TO_ROOM );
+   act( AT_ACTION, "You stop using $p.", ch, obj, nullptr, TO_CHAR );
    oprog_remove_trigger( ch, obj );
 
    /*
@@ -1345,7 +1345,7 @@ bool could_dual( char_data * ch )
 // Remcon's version of this is hugely cleaner than the others
 bool can_dual( char_data * ch )
 {
-   obj_data *wield = NULL;
+   obj_data *wield = nullptr;
    bool nwield = false;
 
    if( !could_dual( ch ) )
@@ -1492,7 +1492,7 @@ bool can_wear_obj( char_data * ch, obj_data * obj )
  */
 void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 {
-   obj_data *tmpobj = NULL;
+   obj_data *tmpobj = nullptr;
    int bit, tmp;
    bitset<MAX_BPART> body_parts;
 
@@ -1510,14 +1510,14 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
    if( ch->char_ego(  ) < obj->ego )
    {
       ch->print( "You can't figure out how to use it.\r\n" );
-      act( AT_ACTION, "$n tries to use $p, but can't figure it out.", ch, obj, NULL, TO_ROOM );
+      act( AT_ACTION, "$n tries to use $p, but can't figure it out.", ch, obj, nullptr, TO_ROOM );
       return;
    }
 
    if( !ch->is_immortal(  ) && !can_wear_obj( ch, obj ) )
    {
-      act( AT_MAGIC, "You are forbidden to use that item.", ch, NULL, NULL, TO_CHAR );
-      act( AT_ACTION, "$n tries to use $p, but is forbidden to do so.", ch, obj, NULL, TO_ROOM );
+      act( AT_MAGIC, "You are forbidden to use that item.", ch, nullptr, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n tries to use $p, but is forbidden to do so.", ch, obj, nullptr, TO_ROOM );
       return;
    }
 
@@ -1526,8 +1526,8 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
     */
    if( !ch->is_immortal(  ) && obj->extra_flags.test( ITEM_MUSTMOUNT ) && !ch->IS_MOUNTED(  ) )
    {
-      act( AT_ACTION, "You must be mounted to use $p.", ch, obj, NULL, TO_CHAR );
-      act( AT_ACTION, "$n tries to use $p while not mounted.", ch, obj, NULL, TO_ROOM );
+      act( AT_ACTION, "You must be mounted to use $p.", ch, obj, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n tries to use $p while not mounted.", ch, obj, nullptr, TO_ROOM );
       return;
    }
 
@@ -1538,7 +1538,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
    {
       if( ch->race == RACE_HORSE )
       {
-         act( AT_ACTION, "$n snorts in surprise. Maybe they can't use that?", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "$n snorts in surprise. Maybe they can't use that?", ch, obj, nullptr, TO_ROOM );
          return;
       }
    }
@@ -1590,16 +1590,16 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
    {
       if( !body_parts.test( PART_HANDS ) )
       {
-         act( AT_ACTION, "You have no hands! How do you expect to hold $p?!?", ch, obj, NULL, TO_CHAR );
+         act( AT_ACTION, "You have no hands! How do you expect to hold $p?!?", ch, obj, nullptr, TO_CHAR );
          return;
       }
 
       if( !remove_obj( ch, WEAR_LIGHT, fReplace ) )
          return;
-      if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+      if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
       {
-         act( AT_ACTION, "$n holds $p as a light.", ch, obj, NULL, TO_ROOM );
-         act( AT_ACTION, "You hold $p as your light.", ch, obj, NULL, TO_CHAR );
+         act( AT_ACTION, "$n holds $p as a light.", ch, obj, nullptr, TO_ROOM );
+         act( AT_ACTION, "You hold $p as your light.", ch, obj, nullptr, TO_CHAR );
       }
       ch->equip( obj, WEAR_LIGHT );
       oprog_wear_trigger( ch, obj );
@@ -1622,8 +1622,8 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
          return;
 
       case ITEM_LODGE_RIB:
-         act( AT_ACTION, "$p strikes you and deeply imbeds itself in your ribs!", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$p strikes $n and deeply imbeds itself in $s ribs!", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "$p strikes you and deeply imbeds itself in your ribs!", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$p strikes $n and deeply imbeds itself in $s ribs!", ch, obj, nullptr, TO_ROOM );
          ch->equip( obj, WEAR_LODGE_RIB );
          break;
 
@@ -1631,8 +1631,8 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
          // No arms, just skip it.
          if( !body_parts.test( PART_ARMS ) )
             return;
-         act( AT_ACTION, "$p strikes you and deeply imbeds itself in your arm!", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$p strikes $n and deeply imbeds itself in $s arm!", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "$p strikes you and deeply imbeds itself in your arm!", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$p strikes $n and deeply imbeds itself in $s arm!", ch, obj, nullptr, TO_ROOM );
          ch->equip( obj, WEAR_LODGE_ARM );
          break;
 
@@ -1640,15 +1640,15 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
          // No legs, just skip it.
          if( !body_parts.test( PART_LEGS ) )
             return;
-         act( AT_ACTION, "$p strikes you and deeply imbeds itself in your leg!", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$p strikes $n and deeply imbeds itself in $s leg!", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "$p strikes you and deeply imbeds itself in your leg!", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$p strikes $n and deeply imbeds itself in $s leg!", ch, obj, nullptr, TO_ROOM );
          ch->equip( obj, WEAR_LODGE_LEG );
          break;
 
       case ITEM_HOLD:
          if( !body_parts.test( PART_HANDS ) )
          {
-            act( AT_ACTION, "You have no hands! How do you expect to hold $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no hands! How do you expect to hold $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -1671,10 +1671,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
          if( obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF || obj->item_type == ITEM_FOOD
              || obj->item_type == ITEM_COOK || obj->item_type == ITEM_PILL || obj->item_type == ITEM_POTION
              || obj->item_type == ITEM_SCROLL || obj->item_type == ITEM_DRINK_CON || obj->item_type == ITEM_BLOOD
-             || obj->item_type == ITEM_PIPE || obj->item_type == ITEM_HERB || obj->item_type == ITEM_KEY || !oprog_use_trigger( ch, obj, NULL, NULL ) )
+             || obj->item_type == ITEM_PIPE || obj->item_type == ITEM_HERB || obj->item_type == ITEM_KEY || !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n holds $p in $s hands.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You hold $p in your hands.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n holds $p in $s hands.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You hold $p in your hands.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_HOLD );
          oprog_wear_trigger( ch, obj );
@@ -1683,7 +1683,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_FINGER:
          if( !body_parts.test( PART_FINGERS ) )
          {
-            act( AT_ACTION, "You have no fingers! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no fingers! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -1692,10 +1692,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 
          if( !ch->get_eq( WEAR_FINGER_L ) )
          {
-            if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+            if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
             {
-               act( AT_ACTION, "$n slips $s left finger into $p.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "You slip your left finger into $p.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n slips $s left finger into $p.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "You slip your left finger into $p.", ch, obj, nullptr, TO_CHAR );
             }
             ch->equip( obj, WEAR_FINGER_L );
             oprog_wear_trigger( ch, obj );
@@ -1704,10 +1704,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 
          if( !ch->get_eq( WEAR_FINGER_R ) )
          {
-            if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+            if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
             {
-               act( AT_ACTION, "$n slips $s right finger into $p.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "You slip your right finger into $p.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n slips $s right finger into $p.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "You slip your right finger into $p.", ch, obj, nullptr, TO_CHAR );
             }
             ch->equip( obj, WEAR_FINGER_R );
             oprog_wear_trigger( ch, obj );
@@ -1718,15 +1718,15 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
          return;
 
       case ITEM_WEAR_NECK:
-         if( ch->get_eq( WEAR_NECK_1 ) != NULL && ch->get_eq( WEAR_NECK_2 ) != NULL && !remove_obj( ch, WEAR_NECK_1, fReplace ) && !remove_obj( ch, WEAR_NECK_2, fReplace ) )
+         if( ch->get_eq( WEAR_NECK_1 ) != nullptr && ch->get_eq( WEAR_NECK_2 ) != nullptr && !remove_obj( ch, WEAR_NECK_1, fReplace ) && !remove_obj( ch, WEAR_NECK_2, fReplace ) )
             return;
 
          if( !ch->get_eq( WEAR_NECK_1 ) )
          {
-            if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+            if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
             {
-               act( AT_ACTION, "$n wears $p around $s neck.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "You wear $p around your neck.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n wears $p around $s neck.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "You wear $p around your neck.", ch, obj, nullptr, TO_CHAR );
             }
             ch->equip( obj, WEAR_NECK_1 );
             oprog_wear_trigger( ch, obj );
@@ -1735,10 +1735,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 
          if( !ch->get_eq( WEAR_NECK_2 ) )
          {
-            if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+            if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
             {
-               act( AT_ACTION, "$n wears $p around $s neck.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "You wear $p around your neck.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n wears $p around $s neck.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "You wear $p around your neck.", ch, obj, nullptr, TO_CHAR );
             }
             ch->equip( obj, WEAR_NECK_2 );
             oprog_wear_trigger( ch, obj );
@@ -1754,10 +1754,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n fits $p on $s body.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You fit $p on your body.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n fits $p on $s body.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You fit $p on your body.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_BODY );
          oprog_wear_trigger( ch, obj );
@@ -1766,10 +1766,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_HEAD:
          if( !remove_obj( ch, WEAR_HEAD, fReplace ) )
             return;
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n dons $p upon $s head.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You don $p upon your head.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n dons $p upon $s head.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You don $p upon your head.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_HEAD );
          oprog_wear_trigger( ch, obj );
@@ -1778,16 +1778,16 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_EYES:
          if( !body_parts.test( PART_EYE ) )
          {
-            act( AT_ACTION, "You have no eyes! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no eyes! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
          if( !remove_obj( ch, WEAR_EYES, fReplace ) )
             return;
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n places $p on $s eyes.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You place $p on your eyes.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n places $p on $s eyes.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You place $p on your eyes.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_EYES );
          oprog_wear_trigger( ch, obj );
@@ -1796,10 +1796,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_FACE:
          if( !remove_obj( ch, WEAR_FACE, fReplace ) )
             return;
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n places $p on $s face.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You place $p on your face.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n places $p on $s face.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You place $p on your face.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_FACE );
          oprog_wear_trigger( ch, obj );
@@ -1808,16 +1808,16 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_EARS:
          if( !body_parts.test( PART_EAR ) )
          {
-            act( AT_ACTION, "You have no ears! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no ears! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
          if( !remove_obj( ch, WEAR_EARS, fReplace ) )
             return;
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wears $p on $s ears.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wear $p on your ears.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wears $p on $s ears.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wear $p on your ears.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_EARS );
          oprog_wear_trigger( ch, obj );
@@ -1826,7 +1826,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_LEGS:
          if( !body_parts.test( PART_LEGS ) )
          {
-            act( AT_ACTION, "You have no legs! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no legs! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -1835,10 +1835,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n slips into $p.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You slip into $p.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n slips into $p.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You slip into $p.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_LEGS );
          oprog_wear_trigger( ch, obj );
@@ -1847,7 +1847,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_FEET:
          if( !body_parts.test( PART_FEET ) )
          {
-            act( AT_ACTION, "You have no feet! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no feet! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -1856,10 +1856,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wears $p on $s feet.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wear $p on your feet.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wears $p on $s feet.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wear $p on your feet.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_FEET );
          oprog_wear_trigger( ch, obj );
@@ -1868,7 +1868,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_TAIL:
          if( !body_parts.test( PART_TAIL ) && !body_parts.test( PART_TAILATTACK ) )
          {
-            act( AT_ACTION, "You have no tail! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no tail! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -1877,10 +1877,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wears $p on $s tail.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wear $p on your tail.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wears $p on $s tail.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wear $p on your tail.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_TAIL );
          oprog_wear_trigger( ch, obj );
@@ -1889,7 +1889,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_HOOVES:
          if( !body_parts.test( PART_HOOVES ) )
          {
-            act( AT_ACTION, "You have no hooves! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no hooves! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -1898,10 +1898,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wears $p on $s hooves.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wear $p on your hooves.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wears $p on $s hooves.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wear $p on your hooves.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_HOOVES );
          oprog_wear_trigger( ch, obj );
@@ -1910,7 +1910,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_HANDS:
          if( !body_parts.test( PART_HANDS ) )
          {
-            act( AT_ACTION, "You have no hands! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no hands! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -1919,10 +1919,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wears $p on $s hands.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wear $p on your hands.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wears $p on $s hands.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wear $p on your hands.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_HANDS );
          oprog_wear_trigger( ch, obj );
@@ -1931,7 +1931,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_ARMS:
          if( !body_parts.test( PART_ARMS ) )
          {
-            act( AT_ACTION, "You have no arms! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no arms! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -1940,10 +1940,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wears $p on $s arms.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wear $p on your arms.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wears $p on $s arms.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wear $p on your arms.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_ARMS );
          oprog_wear_trigger( ch, obj );
@@ -1955,10 +1955,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wears $p about $s body.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wear $p about your body.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wears $p about $s body.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wear $p about your body.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_ABOUT );
          oprog_wear_trigger( ch, obj );
@@ -1967,10 +1967,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_BACK:
          if( !remove_obj( ch, WEAR_BACK, fReplace ) )
             return;
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n slings $p on $s back.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You sling $p on your back.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n slings $p on $s back.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You sling $p on your back.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_BACK );
          oprog_wear_trigger( ch, obj );
@@ -1982,10 +1982,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             ch->print( "It won't fit overtop of what you're already wearing.\r\n" );
             return;
          }
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wears $p about $s waist.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wear $p about your waist.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wears $p about $s waist.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wear $p about your waist.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_WAIST );
          oprog_wear_trigger( ch, obj );
@@ -1994,7 +1994,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_WRIST:
          if( !body_parts.test( PART_HANDS ) )
          {
-            act( AT_ACTION, "You have no wrists! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no wrists! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -2003,10 +2003,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 
          if( !ch->get_eq( WEAR_WRIST_L ) )
          {
-            if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+            if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
             {
-               act( AT_ACTION, "$n fits $p around $s left wrist.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "You fit $p around your left wrist.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n fits $p around $s left wrist.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "You fit $p around your left wrist.", ch, obj, nullptr, TO_CHAR );
             }
             ch->equip( obj, WEAR_WRIST_L );
             oprog_wear_trigger( ch, obj );
@@ -2015,10 +2015,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 
          if( !ch->get_eq( WEAR_WRIST_R ) )
          {
-            if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+            if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
             {
-               act( AT_ACTION, "$n fits $p around $s right wrist.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "You fit $p around your right wrist.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n fits $p around $s right wrist.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "You fit $p around your right wrist.", ch, obj, nullptr, TO_CHAR );
             }
             ch->equip( obj, WEAR_WRIST_R );
             oprog_wear_trigger( ch, obj );
@@ -2031,7 +2031,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WEAR_ANKLE:
          if( !body_parts.test( PART_ANKLES ) )
          {
-            act( AT_ACTION, "You have no ankles! How do you expect to wear $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no ankles! How do you expect to wear $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -2040,10 +2040,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 
          if( !ch->get_eq( WEAR_ANKLE_L ) )
          {
-            if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+            if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
             {
-               act( AT_ACTION, "$n fits $p around $s left ankle.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "You fit $p around your left ankle.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n fits $p around $s left ankle.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "You fit $p around your left ankle.", ch, obj, nullptr, TO_CHAR );
             }
             ch->equip( obj, WEAR_ANKLE_L );
             oprog_wear_trigger( ch, obj );
@@ -2052,10 +2052,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 
          if( !ch->get_eq( WEAR_ANKLE_R ) )
          {
-            if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+            if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
             {
-               act( AT_ACTION, "$n fits $p around $s right ankle.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "You fit $p around your right ankle.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$n fits $p around $s right ankle.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "You fit $p around your right ankle.", ch, obj, nullptr, TO_CHAR );
             }
             ch->equip( obj, WEAR_ANKLE_R );
             oprog_wear_trigger( ch, obj );
@@ -2082,10 +2082,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
          }
          if( !remove_obj( ch, WEAR_SHIELD, fReplace ) )
             return;
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n uses $p as a shield.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You use $p as a shield.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n uses $p as a shield.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You use $p as a shield.", ch, obj, nullptr, TO_CHAR );
          }
          ch->equip( obj, WEAR_SHIELD );
          oprog_wear_trigger( ch, obj );
@@ -2096,7 +2096,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
       case ITEM_WIELD:
          if( !body_parts.test( PART_HANDS ) )
          {
-            act( AT_ACTION, "You have no hands! How do you expect to wield $p?!?", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "You have no hands! How do you expect to wield $p?!?", ch, obj, nullptr, TO_CHAR );
             return;
          }
 
@@ -2106,7 +2106,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
                return;
             if( !remove_obj( ch, WEAR_WIELD, fReplace ) )
                return;
-            tmpobj = NULL;
+            tmpobj = nullptr;
          }
          else
          {
@@ -2152,10 +2152,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
                   return;
                }
 
-               if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+               if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
                {
-                  act( AT_ACTION, "$n dual-wields $p.", ch, obj, NULL, TO_ROOM );
-                  act( AT_ACTION, "You dual-wield $p.", ch, obj, NULL, TO_CHAR );
+                  act( AT_ACTION, "$n dual-wields $p.", ch, obj, nullptr, TO_ROOM );
+                  act( AT_ACTION, "You dual-wield $p.", ch, obj, nullptr, TO_CHAR );
                }
                if( bit == ITEM_MISSILE_WIELD )
                   ch->equip( obj, WEAR_MISSILE_WIELD );
@@ -2200,10 +2200,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
                   return;
                }
 
-               if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+               if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
                {
-                  act( AT_ACTION, "$n wields $p.", ch, obj, NULL, TO_ROOM );
-                  act( AT_ACTION, "You wield $p.", ch, obj, NULL, TO_CHAR );
+                  act( AT_ACTION, "$n wields $p.", ch, obj, nullptr, TO_ROOM );
+                  act( AT_ACTION, "You wield $p.", ch, obj, nullptr, TO_CHAR );
                }
                ch->equip( obj, WEAR_WIELD );
                oprog_wear_trigger( ch, obj );
@@ -2217,10 +2217,10 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
             return;
          }
 
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n wields $p.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You wield $p.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n wields $p.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You wield $p.", ch, obj, nullptr, TO_CHAR );
          }
          if( bit == ITEM_MISSILE_WIELD )
             ch->equip( obj, WEAR_MISSILE_WIELD );
@@ -2318,7 +2318,7 @@ CMDF( do_remove )
    }
    if( ( obj2 = ch->get_eq( obj->wear_loc ) ) != obj )
    {
-      act( AT_PLAIN, "You must remove $p first.", ch, obj2, NULL, TO_CHAR );
+      act( AT_PLAIN, "You must remove $p first.", ch, obj2, nullptr, TO_CHAR );
       return;
    }
    remove_obj( ch, obj->wear_loc, true );
@@ -2359,7 +2359,7 @@ CMDF( do_bury )
    {
       if( !obj->extra_flags.test( ITEM_CLANCORPSE ) || !ch->has_pcflag( PCFLAG_DEADLY ) )
       {
-         act( AT_PLAIN, "You cannot bury $p.", ch, obj, NULL, TO_CHAR );
+         act( AT_PLAIN, "You cannot bury $p.", ch, obj, nullptr, TO_CHAR );
          return;
       }
    }
@@ -2403,8 +2403,8 @@ CMDF( do_bury )
    if( obj->item_type == ITEM_CORPSE_NPC || obj->item_type == ITEM_CORPSE_PC )
       ch->adjust_favor( 6, 1 );
 
-   act( AT_ACTION, "You solemnly bury $p...", ch, obj, NULL, TO_CHAR );
-   act( AT_ACTION, "$n solemnly buries $p...", ch, obj, NULL, TO_ROOM );
+   act( AT_ACTION, "You solemnly bury $p...", ch, obj, nullptr, TO_CHAR );
+   act( AT_ACTION, "$n solemnly buries $p...", ch, obj, nullptr, TO_ROOM );
    obj->extra_flags.set( ITEM_BURIED );
    ch->WAIT_STATE( URANGE( 10, move / 2, 100 ) );
 }
@@ -2416,7 +2416,7 @@ CMDF( do_sacrifice )
 
    if( argument.empty(  ) || !str_cmp( argument, ch->name ) )
    {
-      act( AT_ACTION, "$n offers $mself to $s deity, who graciously declines.", ch, NULL, NULL, TO_ROOM );
+      act( AT_ACTION, "$n offers $mself to $s deity, who graciously declines.", ch, nullptr, nullptr, TO_ROOM );
       ch->print( "Your deity appreciates your offer and may accept it later.\r\n" );
       return;
    }
@@ -2433,7 +2433,7 @@ CMDF( do_sacrifice )
    obj->separate(  );
    if( !obj->wear_flags.test( ITEM_TAKE ) )
    {
-      act( AT_PLAIN, "$p is not an acceptable sacrifice.", ch, obj, NULL, TO_CHAR );
+      act( AT_PLAIN, "$p is not an acceptable sacrifice.", ch, obj, nullptr, TO_CHAR );
       return;
    }
 
@@ -2473,7 +2473,7 @@ CMDF( do_sacrifice )
       ch->printf( "%s gives you one gold coin for your sacrifice.\r\n", name.c_str(  ) );
    }
 
-   act_printf( AT_ACTION, ch, obj, NULL, TO_ROOM, "$n sacrifices $p to %s.", name.c_str(  ) );
+   act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n sacrifices $p to %s.", name.c_str(  ) );
    oprog_sac_trigger( ch, obj );
    if( obj->extracted(  ) )
       return;
@@ -2498,7 +2498,7 @@ CMDF( do_brandish )
       return;
    }
 
-   if( ( sn = staff->value[3] ) < 0 || sn >= num_skills || skill_table[sn]->spell_fun == NULL )
+   if( ( sn = staff->value[3] ) < 0 || sn >= num_skills || skill_table[sn]->spell_fun == nullptr )
    {
       log_printf( "Object: %s Vnum %d, bad sn: %d.", staff->short_descr, staff->pIndexData->vnum, sn );
       return;
@@ -2510,10 +2510,10 @@ CMDF( do_brandish )
    {
       list < char_data * >::iterator ich;
 
-      if( !oprog_use_trigger( ch, staff, NULL, NULL ) )
+      if( !oprog_use_trigger( ch, staff, nullptr, nullptr ) )
       {
-         act( AT_MAGIC, "$n brandishes $p.", ch, staff, NULL, TO_ROOM );
-         act( AT_MAGIC, "You brandish $p.", ch, staff, NULL, TO_CHAR );
+         act( AT_MAGIC, "$n brandishes $p.", ch, staff, nullptr, TO_ROOM );
+         act( AT_MAGIC, "You brandish $p.", ch, staff, nullptr, TO_CHAR );
       }
 
       for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
@@ -2551,7 +2551,7 @@ CMDF( do_brandish )
                   break;
             }
 
-         ch_ret retcode = obj_cast_spell( staff->value[3], staff->value[0], ch, vch, NULL );
+         ch_ret retcode = obj_cast_spell( staff->value[3], staff->value[0], ch, vch, nullptr );
          if( retcode == rCHAR_DIED )
          {
             bug( "%s: char died", __func__ );
@@ -2563,15 +2563,15 @@ CMDF( do_brandish )
    if( --staff->value[2] <= 0 )  /* Modified to prevent extraction when reaching zero - Samson */
    {
       staff->value[2] = 0; /* Added to prevent the damn things from getting negative values - Samson 4-21-98 */
-      act( AT_MAGIC, "$p blazes brightly in $n's hands, but does nothing.", ch, staff, NULL, TO_ROOM );
-      act( AT_MAGIC, "$p blazes brightly, but does nothing.", ch, staff, NULL, TO_CHAR );
+      act( AT_MAGIC, "$p blazes brightly in $n's hands, but does nothing.", ch, staff, nullptr, TO_ROOM );
+      act( AT_MAGIC, "$p blazes brightly, but does nothing.", ch, staff, nullptr, TO_CHAR );
    }
 }
 
 CMDF( do_zap )
 {
    char_data *victim;
-   obj_data *wand, *obj = NULL;
+   obj_data *wand, *obj = nullptr;
    ch_ret retcode;
 
    if( ( argument.empty(  ) ) && !ch->fighting )
@@ -2617,7 +2617,7 @@ CMDF( do_zap )
    {
       if( victim )
       {
-         if( !oprog_use_trigger( ch, wand, victim, NULL ) )
+         if( !oprog_use_trigger( ch, wand, victim, nullptr ) )
          {
             act( AT_MAGIC, "$n aims $p at $N.", ch, wand, victim, TO_ROOM );
             act( AT_MAGIC, "You aim $p at $N.", ch, wand, victim, TO_CHAR );
@@ -2625,7 +2625,7 @@ CMDF( do_zap )
       }
       else
       {
-         if( !oprog_use_trigger( ch, wand, NULL, obj ) )
+         if( !oprog_use_trigger( ch, wand, nullptr, obj ) )
          {
             act( AT_MAGIC, "$n aims $p at $P.", ch, wand, obj, TO_ROOM );
             act( AT_MAGIC, "You aim $p at $P.", ch, wand, obj, TO_CHAR );
@@ -2643,7 +2643,7 @@ CMDF( do_zap )
    if( --wand->value[2] <= 0 )   /* Modified to prevent extraction when reaching zero - Samson */
    {
       wand->value[2] = 0;  /* To prevent negative values - Samson */
-      act( AT_MAGIC, "$p hums softly, but does nothing.", ch, wand, NULL, TO_ROOM );
-      act( AT_MAGIC, "$p hums softly, but does nothing.", ch, wand, NULL, TO_CHAR );
+      act( AT_MAGIC, "$p hums softly, but does nothing.", ch, wand, nullptr, TO_ROOM );
+      act( AT_MAGIC, "$p hums softly, but does nothing.", ch, wand, nullptr, TO_CHAR );
    }
 }

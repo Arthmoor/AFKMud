@@ -50,7 +50,7 @@ void purge_skyship( char_data * ch, char_data * skyship )
     */
    ch->unset_pcflag( PCFLAG_BOARDED );
    ch->has_skyship = false;
-   ch->my_skyship = NULL;
+   ch->my_skyship = nullptr;
 
    /*
     * After this short timer runs out, it'll be extracted properly 
@@ -241,7 +241,7 @@ void fly_skyship( char_data * ch, char_data * skyship )
  */
 void create_skyship( char_data * ch )
 {
-   mob_index *vskyship = NULL;
+   mob_index *vskyship = nullptr;
    char_data *skyship;
 
    if( !( vskyship = get_mob_index( MOB_VNUM_SKYSHIP ) ) )
@@ -289,7 +289,7 @@ void create_skyship( char_data * ch )
    skyship->dcoordy = ch->my;
 
    add_event( 3, ev_skyship, skyship );
-   fly_skyship( NULL, skyship );
+   fly_skyship( nullptr, skyship );
 }
 
 /*
@@ -333,7 +333,7 @@ CMDF( do_call )
       return;
    }
    ch->print( "You send for a skyship.\r\n" );
-   act( AT_PLAIN, "$n sends for a skyship.", ch, NULL, NULL, TO_ROOM );
+   act( AT_PLAIN, "$n sends for a skyship.", ch, nullptr, nullptr, TO_ROOM );
    create_skyship( ch );
 }
 
@@ -351,7 +351,7 @@ landing_data *check_landing_site( short wmap, short x, short y )
             return landing;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -359,8 +359,8 @@ landing_data *check_landing_site( short wmap, short x, short y )
  */
 CMDF( do_fly )
 {
-   char_data *skyship = NULL;
-   landing_data *lsite = NULL;
+   char_data *skyship = nullptr;
+   landing_data *lsite = nullptr;
    int cost = 0;
 
    if( !ch->has_pcflag( PCFLAG_ONMAP ) )
@@ -491,7 +491,7 @@ landing_data::~landing_data(  )
 
 void load_landing_sites( void )
 {
-   landing_data *landing = NULL;
+   landing_data *landing = nullptr;
    ifstream stream;
 
    landinglist.clear(  );
@@ -591,7 +591,7 @@ void delete_landing_site( landing_data * landing )
 {
    if( !landing )
    {
-      bug( "%s: Trying to delete NULL landing site.", __func__ );
+      bug( "%s: Trying to delete nullptr landing site.", __func__ );
       return;
    }
 
@@ -639,7 +639,7 @@ CMDF( do_landing_sites )
 /* OLC command to add/delete/edit landing site information */
 CMDF( do_setlanding )
 {
-   landing_data *landing = NULL;
+   landing_data *landing = nullptr;
    string arg;
 
    if( ch->isnpc(  ) )

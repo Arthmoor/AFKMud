@@ -694,7 +694,7 @@ do                                          \
    if( (point) )                            \
    {                                        \
       free( (point) );                      \
-      (point) = NULL;                       \
+      (point) = nullptr;                       \
    }                                        \
 } while(0)
 
@@ -705,7 +705,7 @@ do                                          \
    if( (point) )                            \
    {                                        \
       free( (point) );                      \
-      (point) = NULL;                       \
+      (point) = nullptr;                       \
    }                                        \
 } while(0)
 #else
@@ -728,10 +728,10 @@ do                                             \
       }                                        \
       else                                     \
          free( (point) );                      \
-      (point) = NULL;                          \
+      (point) = nullptr;                          \
    }                                           \
    else                                          \
-      (point) = NULL;                            \
+      (point) = nullptr;                            \
 } while(0)
 #endif
 
@@ -745,7 +745,7 @@ do                                              \
    {                                            \
       if( str_free((point)) == -1 )             \
          bug( "&RSTRFREEing bad pointer: %s, line %d", __FILE__, __LINE__ ); \
-      (point) = NULL;                           \
+      (point) = nullptr;                           \
    }                                            \
 } while(0)
 #else
@@ -762,10 +762,10 @@ do                                               \
       }                                          \
       else if( str_free((point)) == -1 )         \
          log_printf( "&RSTRFREEing bad pointer: %s, line %d\n", __FILE__, __LINE__ ); \
-      (point) = NULL;                            \
+      (point) = nullptr;                            \
    }                                             \
    else                                          \
-      (point) = NULL;                            \
+      (point) = nullptr;                            \
 } while(0)
 #endif
 
@@ -798,7 +798,7 @@ int urange( int, int, int );
 #define UPPER( c )        ( (c) >= 'a' && (c) <= 'z' ? (c) + 'A' - 'a' : (c) )
 
 /* Safe fclose macro adopted from DOTD Codebase */
-#define FCLOSE(fp) fclose((fp)); (fp)=NULL;
+#define FCLOSE(fp) fclose((fp)); (fp)=nullptr;
 
 /* Character data is used in pretty much everything. May as well globally include it here.
  * This includes the pc_data information as well.
@@ -869,6 +869,7 @@ class system_data
    time_t motd;   // Last time MOTD was edited
    time_t imotd;  // Last time IMOTD was edited
    size_t maxign;
+   size_t maxholiday;
    int maxplayers;   // Maximum players this boot
    int alltimemax;   // Maximum players ever
    int auctionseconds;  // Seconds between auction events
@@ -876,7 +877,6 @@ class system_data
    int minguildlevel;
    int maxcondval;
    int maximpact;
-   size_t maxholiday;
    int initcond;
    int minego;
    int secpertick;
@@ -1466,12 +1466,12 @@ template < class N > extra_descr_data * get_extra_descr( const string & name, N 
             return ed;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 template < class N > extra_descr_data * set_extra_descr( N * target, const string & name )
 {
-   extra_descr_data *desc = NULL;
+   extra_descr_data *desc = nullptr;
    list < extra_descr_data * >::iterator ied;
 
    for( ied = target->extradesc.begin(  ); ied != target->extradesc.end(  ); ++ied )
@@ -1499,6 +1499,6 @@ template < class N > extra_descr_data * set_extra_descr( N * target, const strin
 template < typename T > void deleteptr( T * &ptr )
 {
    delete ptr;
-   ptr = NULL;
+   ptr = nullptr;
 }
 #endif

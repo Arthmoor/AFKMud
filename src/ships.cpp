@@ -76,7 +76,7 @@ ship_data *ship_lookup_by_vnum( int vnum )
       if( ship->vnum == vnum )
          return ship;
    }
-   return NULL;
+   return nullptr;
 }
 
 ship_data *ship_lookup( const string & name )
@@ -90,7 +90,7 @@ ship_data *ship_lookup( const string & name )
       if( !str_cmp( name, ship->name ) )
          return ship;
    }
-   return NULL;
+   return nullptr;
 }
 
 CMDF( do_shiplist )
@@ -514,20 +514,20 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
    if( sector == SECT_EXIT )
    {
       mapexit_data *mexit;
-      room_index *toroom = NULL;
+      room_index *toroom = nullptr;
 
       mexit = check_mapexit( map, x, y );
 
-      if( mexit != NULL )
+      if( mexit != nullptr )
       {
          if( mexit->tomap != -1 )   /* Means exit goes to another map */
          {
             if( !can_move_ship( ch, get_terrain( mexit->tomap, mexit->therex, mexit->therey ) ) )
                return rSTOP;
 
-            enter_map( ch, NULL, mexit->therex, mexit->therey, mexit->tomap );
+            enter_map( ch, nullptr, mexit->therex, mexit->therey, mexit->tomap );
             if( ch->mount )
-               enter_map( ch->mount, NULL, mexit->therex, mexit->therey, mexit->tomap );
+               enter_map( ch->mount, nullptr, mexit->therex, mexit->therey, mexit->tomap );
 
             list < char_data * >::iterator ich;
             size_t chars = from_room->people.size(  );
@@ -543,11 +543,11 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
                {
                   if( !fch->isnpc(  ) )
                   {
-                     act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
+                     act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[dir], TO_CHAR );
                      process_exit( fch, fch->wmap, x, y, dir, false );
                   }
                   else
-                     enter_map( fch, NULL, mexit->therex, mexit->therey, mexit->tomap );
+                     enter_map( fch, nullptr, mexit->therex, mexit->therey, mexit->tomap );
                }
             }
             return rSTOP;
@@ -564,11 +564,11 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
             return rSTOP;
 
          if( !str_cmp( ch->name, ship->owner ) )
-            act_printf( AT_ACTION, ch, NULL, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
+            act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
 
          ch->on_ship->room = toroom->vnum;
 
-         leave_map( ch, NULL, toroom );
+         leave_map( ch, nullptr, toroom );
 
          list < char_data * >::iterator ich;
          size_t chars = from_room->people.size(  );
@@ -584,7 +584,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
             {
                if( !fch->isnpc(  ) )
                {
-                  act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
+                  act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[dir], TO_CHAR );
                   process_shipexit( fch, fch->wmap, x, y, dir );
                }
                else
@@ -681,7 +681,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
       ship->fuel -= move;
 
    if( !str_cmp( ch->name, ship->owner ) )
-      act_printf( AT_ACTION, ch, NULL, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
+      act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
 
    ch->mx = x;
    ch->my = y;
@@ -691,7 +691,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
    if( !str_cmp( ch->name, ship->owner ) )
    {
       const char *txt = rev_exit( dir );
-      act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
+      act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
    }
 
    list < char_data * >::iterator ich;
@@ -708,7 +708,7 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
       {
          if( !fch->isnpc(  ) )
          {
-            act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[dir], TO_CHAR );
+            act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[dir], TO_CHAR );
             process_exit( fch, fch->wmap, x, y, dir, false );
          }
          else
@@ -826,7 +826,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
             {
                if( !fch->isnpc(  ) )
                {
-                  act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[direction], TO_CHAR );
+                  act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[direction], TO_CHAR );
                   move_char( fch, pexit, 0, direction, false );
                }
                else
@@ -856,7 +856,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
                {
                   if( !fch->isnpc(  ) )
                   {
-                     act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[direction], TO_CHAR );
+                     act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[direction], TO_CHAR );
                      move_char( fch, pexit, 0, direction, false );
                   }
                   else
@@ -951,7 +951,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       return global_retcode;
 
    if( !str_cmp( ch->name, ship->owner ) )
-      act_printf( AT_ACTION, ch, NULL, dir_name[door], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
+      act_printf( AT_ACTION, ch, nullptr, dir_name[door], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
 
    ch->from_room(  );
    if( ch->mount )
@@ -975,7 +975,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
    {
       const char *txt = rev_exit( door );
 
-      act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
+      act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
    }
 
    list < char_data * >::iterator ich;
@@ -990,7 +990,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       if( fch != ch  /* loop room bug fix here by Thoric */
           && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) )
       {
-         act( AT_ACTION, "The ship sails $T.", fch, NULL, dir_name[door], TO_CHAR );
+         act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[door], TO_CHAR );
          move_char( fch, pexit, 0, direction, false );
       }
    }

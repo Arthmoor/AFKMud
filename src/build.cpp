@@ -358,12 +358,12 @@ void RelCreate( relation_type tp, void *actor, void *subject )
    }
    if( !actor )
    {
-      bug( "%s: NULL actor", __func__ );
+      bug( "%s: nullptr actor", __func__ );
       return;
    }
    if( !subject )
    {
-      bug( "%s: NULL subject", __func__ );
+      bug( "%s: nullptr subject", __func__ );
       return;
    }
 
@@ -397,12 +397,12 @@ void RelDestroy( relation_type tp, void *actor, void *subject )
    }
    if( !actor )
    {
-      bug( "%s: NULL actor", __func__ );
+      bug( "%s: nullptr actor", __func__ );
       return;
    }
    if( !subject )
    {
-      bug( "%s: NULL subject", __func__ );
+      bug( "%s: nullptr subject", __func__ );
       return;
    }
 
@@ -889,9 +889,9 @@ void goto_char( char_data * ch, char_data * wch )
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
-      act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, NULL, NULL, TO_CANSEE );
+      act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, nullptr, nullptr, TO_CANSEE );
 
    leave_map( ch, wch, location );
 
@@ -899,9 +899,9 @@ void goto_char( char_data * ch, char_data * wch )
     * Bamfin processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
-      act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, NULL, NULL, TO_CANSEE );
+      act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, nullptr, nullptr, TO_CANSEE );
 }
 
 void goto_obj( char_data * ch, obj_data * obj, const string & argument )
@@ -921,7 +921,7 @@ void goto_obj( char_data * ch, obj_data * obj, const string & argument )
 
    if( !location )
    {
-      bug( "%s: Object in NULL room!", __func__ );
+      bug( "%s: Object in nullptr room!", __func__ );
       return;
    }
 
@@ -949,19 +949,19 @@ void goto_obj( char_data * ch, obj_data * obj, const string & argument )
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
-      act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, NULL, NULL, TO_CANSEE );
+      act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, nullptr, nullptr, TO_CANSEE );
 
-   leave_map( ch, NULL, location );
+   leave_map( ch, nullptr, location );
 
    /*
     * Bamfin processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
-      act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, NULL, NULL, TO_CANSEE );
+      act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, nullptr, nullptr, TO_CANSEE );
 }
 
 CMDF( do_goto )
@@ -1009,7 +1009,7 @@ CMDF( do_goto )
 
       if( arg2.empty(  ) && argument.empty(  ) )
       {
-         enter_map( ch, NULL, 499, 499, map );
+         enter_map( ch, nullptr, 499, 499, map );
          return;
       }
 
@@ -1034,7 +1034,7 @@ CMDF( do_goto )
          return;
       }
 
-      enter_map( ch, NULL, x, y, map );
+      enter_map( ch, nullptr, x, y, map );
       return;
    }
    /*
@@ -1043,13 +1043,13 @@ CMDF( do_goto )
 
    if( !is_number( arg ) )
    {
-      if( ( wch = ch->get_char_world( arg ) ) != NULL && wch->in_room != NULL )
+      if( ( wch = ch->get_char_world( arg ) ) != nullptr && wch->in_room != nullptr )
       {
          goto_char( ch, wch );
          return;
       }
 
-      if( ( obj = ch->get_obj_world( arg ) ) != NULL )
+      if( ( obj = ch->get_obj_world( arg ) ) != nullptr )
       {
          goto_obj( ch, obj, arg );
          return;
@@ -1124,19 +1124,19 @@ CMDF( do_goto )
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
    if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
-      act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, NULL, NULL, TO_CANSEE );
+      act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, nullptr, nullptr, TO_CANSEE );
 
    /*
     * It's assumed that if you've come this far, it's a room vnum you entered 
     */
-   leave_map( ch, NULL, location );
+   leave_map( ch, nullptr, location );
 
    if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, NULL, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
+      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
-      act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, NULL, NULL, TO_CANSEE );
+      act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, nullptr, nullptr, TO_CANSEE );
 }
 
 CMDF( do_mset )
@@ -1171,7 +1171,7 @@ CMDF( do_mset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_mob_desc: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_mob_desc: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -1202,7 +1202,7 @@ CMDF( do_mset )
          return;
    }
 
-   victim = NULL;
+   victim = nullptr;
    lockvic = false;
    smash_tilde( argument );
 
@@ -1235,7 +1235,7 @@ CMDF( do_mset )
             RelDestroy( relMSET_ON, ch, ch->pcdata->dest_buf );
          ch->print( "Mset mode off.\r\n" );
          ch->substate = SUB_NONE;
-         ch->pcdata->dest_buf = NULL;
+         ch->pcdata->dest_buf = nullptr;
          STRFREE( ch->pcdata->subprompt );
          return;
       }
@@ -1325,7 +1325,7 @@ CMDF( do_mset )
    if( ch->get_trust(  ) < victim->get_trust(  ) && !victim->isnpc(  ) )
    {
       ch->print( "Not this time chummer!\r\n" );
-      ch->pcdata->dest_buf = NULL;
+      ch->pcdata->dest_buf = nullptr;
       return;
    }
 
@@ -1839,7 +1839,7 @@ CMDF( do_mset )
           * Crash bug fix, oops guess I should have caught this one :)
           * * But it was early in the morning :P --Shaddai 
           */
-         if( victim->pcdata->realm == NULL )
+         if( victim->pcdata->realm == nullptr )
             return;
 
          remove_realm_roster( victim->pcdata->realm, victim->name );
@@ -1849,7 +1849,7 @@ CMDF( do_mset )
          save_realm( victim->pcdata->realm );
 
          victim->pcdata->realm_name.clear(  );
-         victim->pcdata->realm = NULL;
+         victim->pcdata->realm = nullptr;
          victim->save(  );
          build_wizinfo(  );
          ch->print( "Realm removed.\r\n" );
@@ -1862,7 +1862,7 @@ CMDF( do_mset )
          return;
       }
 
-      if( victim->pcdata->realm != NULL )
+      if( victim->pcdata->realm != nullptr )
       {
          remove_realm_roster( victim->pcdata->realm, victim->name );
          --victim->pcdata->realm->members;
@@ -1905,7 +1905,7 @@ CMDF( do_mset )
           * Crash bug fix, oops guess I should have caught this one :)
           * * But it was early in the morning :P --Shaddai 
           */
-         if( victim->pcdata->clan == NULL )
+         if( victim->pcdata->clan == nullptr )
             return;
 
          /*
@@ -1921,7 +1921,7 @@ CMDF( do_mset )
             save_clan( victim->pcdata->clan );
          }
          victim->pcdata->clan_name.clear(  );
-         victim->pcdata->clan = NULL;
+         victim->pcdata->clan = nullptr;
          victim->save(  );
          ch->print( "Clan removed.\r\n" );
          return;
@@ -1933,7 +1933,7 @@ CMDF( do_mset )
          return;
       }
 
-      if( victim->pcdata->clan != NULL && !victim->is_immortal(  ) )
+      if( victim->pcdata->clan != nullptr && !victim->is_immortal(  ) )
       {
          remove_roster( victim->pcdata->clan, victim->name );
          --victim->pcdata->clan->members;
@@ -1974,7 +1974,7 @@ CMDF( do_mset )
             save_deity( victim->pcdata->deity );
          }
          victim->pcdata->deity_name.clear(  );
-         victim->pcdata->deity = NULL;
+         victim->pcdata->deity = nullptr;
          ch->print( "Deity removed.\r\n" );
          return;
       }
@@ -2048,7 +2048,7 @@ CMDF( do_mset )
       if( lockvic )
          ch->pcdata->spare_ptr = victim;
       else
-         ch->pcdata->spare_ptr = NULL;
+         ch->pcdata->spare_ptr = nullptr;
 
       ch->substate = SUB_MOB_DESC;
       ch->pcdata->dest_buf = victim;
@@ -2418,7 +2418,7 @@ CMDF( do_mset )
             victim->pcdata->clan->number2.clear(  );
          save_clan( victim->pcdata->clan );
          victim->pcdata->clan_name.clear(  );
-         victim->pcdata->clan = NULL;
+         victim->pcdata->clan = nullptr;
       }
       victim->save(  );
       return;
@@ -2559,12 +2559,12 @@ CMDF( do_mset )
 
       if( !str_cmp( arg3, "none" ) )
       {
-         victim->spec_fun = NULL;
+         victim->spec_fun = nullptr;
          victim->spec_funname.clear(  );
          ch->print( "Special function removed.\r\n" );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
-            victim->pIndexData->spec_fun = NULL;
+            victim->pIndexData->spec_fun = nullptr;
             victim->pIndexData->spec_funname.clear(  );
          }
          return;
@@ -2821,7 +2821,7 @@ CMDF( do_oset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -2844,7 +2844,7 @@ CMDF( do_oset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_obj_long: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_obj_long: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -2877,7 +2877,7 @@ CMDF( do_oset )
          return;
    }
 
-   obj = NULL;
+   obj = nullptr;
    smash_tilde( argument );
 
    if( ch->substate == SUB_REPEATCMD )
@@ -2902,7 +2902,7 @@ CMDF( do_oset )
             RelDestroy( relOSET_ON, ch, ch->pcdata->dest_buf );
          ch->print( "Oset mode off.\r\n" );
          ch->substate = SUB_NONE;
-         ch->pcdata->dest_buf = NULL;
+         ch->pcdata->dest_buf = nullptr;
          STRFREE( ch->pcdata->subprompt );
          return;
       }
@@ -3076,7 +3076,7 @@ CMDF( do_oset )
       if( lockobj )
          ch->pcdata->spare_ptr = obj;
       else
-         ch->pcdata->spare_ptr = NULL;
+         ch->pcdata->spare_ptr = nullptr;
       ch->substate = SUB_OBJ_LONG;
       ch->pcdata->dest_buf = obj;
       if( !obj->objdesc || obj->objdesc[0] == '\0' )
@@ -3682,7 +3682,7 @@ CMDF( do_oset )
       if( lockobj )
          ch->pcdata->spare_ptr = obj;
       else
-         ch->pcdata->spare_ptr = NULL;
+         ch->pcdata->spare_ptr = nullptr;
       ch->substate = SUB_OBJ_EXTRA;
       ch->pcdata->dest_buf = ed;
       ch->editor_desc_printf( "Extra description '%s' on object vnum %d (%s).", arg3.c_str(  ), obj->pIndexData->vnum, obj->short_descr );
@@ -4290,7 +4290,7 @@ CMDF( do_redit )
          location = ( room_index * ) ch->pcdata->dest_buf;
          if( !location )
          {
-            bug( "%s: sub_room_desc: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_room_desc: nullptr ch->pcdata->dest_buf", __func__ );
             location = ch->in_room;
          }
          DISPOSE( location->roomdesc );
@@ -4303,7 +4303,7 @@ CMDF( do_redit )
          location = ( room_index * ) ch->pcdata->dest_buf;
          if( !location )
          {
-            bug( "%s: sub_room_desc_nite: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_room_desc_nite: nullptr ch->pcdata->dest_buf", __func__ );
             location = ch->in_room;
          }
          DISPOSE( location->nitedesc );
@@ -4315,7 +4315,7 @@ CMDF( do_redit )
       case SUB_ROOM_EXTRA:
          if( !( ed = ( extra_descr_data * ) ch->pcdata->dest_buf ) )
          {
-            bug( "%s: sub_room_extra: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_room_extra: nullptr ch->pcdata->dest_buf", __func__ );
             ch->stop_editing(  );
             return;
          }
@@ -4601,7 +4601,7 @@ CMDF( do_redit )
 
    if( !str_cmp( arg, "televnum" ) )
    {
-      room_index *temp = NULL;
+      room_index *temp = nullptr;
       int tvnum;
 
       if( argument.empty(  ) )
@@ -4841,7 +4841,7 @@ CMDF( do_redit )
 
       if( numnotdir )
       {
-         if( ( xit = location->get_exit_num( edir ) ) != NULL )
+         if( ( xit = location->get_exit_num( edir ) ) != nullptr )
             edir = xit->vdir;
       }
       else
@@ -4902,10 +4902,10 @@ CMDF( do_redit )
          xit = location->make_exit( tmp, edir );
          xit->key = -1;
          xit->flags.reset(  );
-         act( AT_IMMORT, "$n reveals a hidden passage!", ch, NULL, NULL, TO_ROOM );
+         act( AT_IMMORT, "$n reveals a hidden passage!", ch, nullptr, nullptr, TO_ROOM );
       }
       else
-         act( AT_IMMORT, "Something is different...", ch, NULL, NULL, TO_ROOM );
+         act( AT_IMMORT, "Something is different...", ch, nullptr, nullptr, TO_ROOM );
 
       // A sanity check to make sure it got sent to the proper place.
       if( xit->to_room != tmp )
@@ -4996,13 +4996,13 @@ CMDF( do_redit )
       exnum = edir;
       if( numnotdir )
       {
-         if( ( bxit = tmploc->get_exit_num( edir ) ) != NULL )
+         if( ( bxit = tmploc->get_exit_num( edir ) ) != nullptr )
             edir = bxit->vdir;
       }
       else
          bxit = tmploc->get_exit( edir );
 
-      rxit = NULL;
+      rxit = nullptr;
       vnum = 0;
       rvnum[0] = '\0';
       if( bxit )
@@ -5013,7 +5013,7 @@ CMDF( do_redit )
          if( bxit->to_room )
             rxit = bxit->to_room->get_exit( rev_dir[edir] );
          else
-            rxit = NULL;
+            rxit = nullptr;
       }
 
       funcf( ch, do_redit, "exit %s %s %s", arg2.c_str(  ), arg3.c_str(  ), argument.c_str(  ) );
@@ -5029,7 +5029,7 @@ CMDF( do_redit )
          if( bxit->to_room )
             rxit = bxit->to_room->get_exit( rev_dir[edir] );
          else
-            rxit = NULL;
+            rxit = nullptr;
       }
       if( vnum )
          cmdf( ch, "at %d redit exit %d %s %s", vnum, rev_dir[edir], rvnum, argument.c_str(  ) );
@@ -5212,7 +5212,7 @@ CMDF( do_rdig )
 
       vnum = pArea->low_vnum;
 
-      while( vnum <= pArea->hi_vnum && get_room_index( vnum ) != NULL )
+      while( vnum <= pArea->hi_vnum && get_room_index( vnum ) != nullptr )
          ++vnum;
 
       if( vnum > pArea->hi_vnum )
@@ -5318,7 +5318,7 @@ CMDF( do_rgrid )
 
    for( vnum = pArea->low_vnum; vnum <= pArea->hi_vnum; ++vnum )
    {
-      if( get_room_index( vnum ) == NULL )
+      if( get_room_index( vnum ) == nullptr )
          ++room_count;
 
       if( room_count >= maxnum )
@@ -5499,7 +5499,7 @@ CMDF( do_ocreate )
    }
    obj->to_char( ch );
 
-   act( AT_IMMORT, "$n makes arcane gestures, and opens $s hands to reveal $p!", ch, obj, NULL, TO_ROOM );
+   act( AT_IMMORT, "$n makes arcane gestures, and opens $s hands to reveal $p!", ch, obj, nullptr, TO_ROOM );
    ch->printf( "&YYou make arcane gestures, and open your hands to reveal %s!\r\nObjVnum:  &W%d   &YKeywords:  &W%s\r\n",
                pObjIndex->short_descr, pObjIndex->vnum, pObjIndex->name );
 }
@@ -5584,7 +5584,7 @@ CMDF( do_mcreate )
     */
    fix_maps( ch, mob );
 
-   act( AT_IMMORT, "$n waves $s arms about, and $N appears at $s command!", ch, NULL, mob, TO_ROOM );
+   act( AT_IMMORT, "$n waves $s arms about, and $N appears at $s command!", ch, nullptr, mob, TO_ROOM );
    ch->printf( "&YYou wave your arms about, and %s appears at your command!\r\nMobVnum:  &W%d   &YKeywords:  &W%s\r\n",
                pMobIndex->short_descr, pMobIndex->vnum, pMobIndex->player_name );
 }
@@ -5657,7 +5657,7 @@ CMDF( do_mlist )
 CMDF( do_vlist )
 {
    string arg, arg2;
-   area_data *tarea = NULL;
+   area_data *tarea = nullptr;
 
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
@@ -5799,7 +5799,7 @@ CMDF( do_mpedit )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_mprog_edit: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_mprog_edit: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -6081,7 +6081,7 @@ CMDF( do_opedit )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_oprog_edit: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_oprog_edit: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -6343,7 +6343,7 @@ CMDF( do_rpedit )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_oprog_edit: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_oprog_edit: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -6567,7 +6567,7 @@ void mpcopy( mud_prog_data * source, mud_prog_data * destination )
 CMDF( do_opcopy )
 {
    string sobj, prog, num, dobj;
-   obj_data *source = NULL, *destination = NULL;
+   obj_data *source = nullptr, *destination = nullptr;
    int value = -1, optype = -1, cnt = 0;
    bool COPY = false;
 
@@ -6724,7 +6724,7 @@ CMDF( do_opcopy )
 CMDF( do_mpcopy )
 {
    string smob, prog, num, dmob;
-   char_data *source = NULL, *destination = NULL;
+   char_data *source = nullptr, *destination = nullptr;
    list < mud_prog_data * >::iterator sp;
    int value = -1, mptype = -1, cnt = 0;
    bool COPY = false;
@@ -6886,7 +6886,7 @@ CMDF( do_mpcopy )
 CMDF( do_rpcopy )
 {
    string sroom, prog, num, droom;
-   room_index *source = NULL, *destination = NULL;
+   room_index *source = nullptr, *destination = nullptr;
    list < mud_prog_data * >::iterator sp;
    int value = -1, mptype = -1, cnt = 0;
    bool COPY = false;
@@ -7144,7 +7144,7 @@ CMDF( do_vassign )
 
    if( lo == 0 && hi == 0 )
    {
-      victim->pcdata->area = NULL;
+      victim->pcdata->area = nullptr;
       victim->pcdata->low_vnum = 0;
       victim->pcdata->hi_vnum = 0;
       victim->printf( "%s has removed your vnum range.\r\n", ch->name );
@@ -7249,7 +7249,7 @@ CMDF( do_vassign )
       log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
-   obj->to_room( room, NULL );
+   obj->to_room( room, nullptr );
 
    /*
     * Initialize last obj in range 
@@ -7264,7 +7264,7 @@ CMDF( do_vassign )
       log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
    }
-   obj->to_room( room, NULL );
+   obj->to_room( room, nullptr );
 
    /*
     * Save character and newly created zone 

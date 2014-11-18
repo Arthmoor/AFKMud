@@ -256,7 +256,7 @@ help_data *get_help( char_data * ch, string argument )
       if( hasname( pHelp->keyword, argall ) )
          return pHelp;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -379,7 +379,7 @@ CMDF( do_hedit )
       case SUB_HELP_EDIT:
          if( !( pHelp = ( help_data * ) ch->pcdata->dest_buf ) )
          {
-            bug( "%s: sub_help_edit: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_help_edit: nullptr ch->pcdata->dest_buf", __func__ );
             ch->stop_editing(  );
             return;
          }
@@ -528,7 +528,7 @@ CMDF( do_hlist )
    string arg;
    list < help_data * >::iterator ihelp;
    bool minfound, maxfound;
-   char *idx = NULL;
+   char *idx = nullptr;
 
    maxlimit = ch->get_trust(  );
    minlimit = maxlimit >= LEVEL_GREATER ? -1 : 0;

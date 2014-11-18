@@ -99,7 +99,7 @@ quote_data *get_quote( int q )
       if( quote->number == q )
          return quote;
    }
-   return NULL;
+   return nullptr;
 }
 
 void save_quotes( void )
@@ -556,10 +556,10 @@ void check_stored_objects( char_data * ch, int cvnum )
 
 void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
 {
-   char *name = NULL;
-   char *clan = NULL;
-   char *realm = NULL;
-   char *deity = NULL;
+   char *name = nullptr;
+   char *clan = nullptr;
+   char *realm = nullptr;
+   char *deity = nullptr;
    short level = 0;
    bitset < MAX_PCFLAG > pact;
 
@@ -639,7 +639,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
             days = sysdata->newbie_purge;
             log_printf( "Player %s was deleted. Exceeded time limit of %d days.", name, days );
             remove_from_auth( name );
-            if( clan != NULL )
+            if( clan != nullptr )
             {
                clan_data *pclan = get_clan( clan );
                remove_roster( pclan, name );
@@ -664,7 +664,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
                days = sysdata->regular_purge;
                log_printf( "Player %s was deleted. Exceeded time limit of %d days.", name, days );
                remove_from_auth( name );
-               if( clan != NULL )
+               if( clan != nullptr )
                {
                   clan_data *pclan = get_clan( clan );
                   remove_roster( pclan, name );
@@ -683,7 +683,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
    if( pact.test( PCFLAG_EXEMPT ) || level >= LEVEL_IMMORTAL )
       ++pexempt;
 
-   if( clan != NULL )
+   if( clan != nullptr )
    {
       clan_data *guild = get_clan( clan );
 
@@ -691,7 +691,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
          ++guild->members;
    }
 
-   if( realm != NULL )
+   if( realm != nullptr )
    {
       realm_data *rl = get_realm( realm );
 
@@ -699,7 +699,7 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
          ++rl->members;
    }
 
-   if( deity != NULL )
+   if( deity != nullptr )
    {
       deity_data *god = get_deity( deity );
 
@@ -727,7 +727,7 @@ void read_pfile( const char *dirname, const char *filename, bool count )
    {
       tdiff = ( now_time - fst.st_mtime ) / 86400;
 
-      if( ( fp = fopen( fname, "r" ) ) != NULL )
+      if( ( fp = fopen( fname, "r" ) ) != nullptr )
       {
          for( ;; )
          {

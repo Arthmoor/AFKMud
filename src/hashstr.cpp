@@ -75,7 +75,7 @@ char *str_alloc( const char *str, const char *function, const char *filename, in
    if( !str || str[0] == '\0' )
    {
       bug( "%s: %s@%d trying to allocate an empty/null string", function, filename, line );
-      return NULL;
+      return nullptr;
    }
 
    len = strlen( str );
@@ -113,7 +113,7 @@ char *quick_link( char *str )
    if( ptr->links == 0 )
    {
       fprintf( stderr, "%s", "quick_link: bad pointer\n" );
-      return NULL;
+      return nullptr;
    }
    if( ptr->links < 65535 )
       ++ptr->links;
@@ -209,7 +209,7 @@ char *check_hash( const char *str )
    len = strlen( str );
    psize = sizeof( struct hashstr_data );
    hash = len % STR_HASH_SIZE;
-   for( fnd = NULL, ptr = string_hash[hash], c = 0; ptr; ptr = ptr->next, ++c )
+   for( fnd = nullptr, ptr = string_hash[hash], c = 0; ptr; ptr = ptr->next, ++c )
       if( len == ptr->length && !strcasecmp( str, ( char * )ptr + psize ) )
       {
          fnd = ptr;

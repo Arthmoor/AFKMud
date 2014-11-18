@@ -142,7 +142,7 @@ map_index *get_map_index( int vnum )
       if( map->vnum == vnum )
          return map;
    }
-   return NULL;
+   return nullptr;
 }
 
 void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
@@ -153,7 +153,7 @@ void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
 
    if( !ch->pcdata->pnote )
    {
-      bug( "%s: ch->pcdata->pnote == NULL!", __func__ );
+      bug( "%s: ch->pcdata->pnote == nullptr!", __func__ );
       return;
    }
    n = 0;
@@ -264,7 +264,7 @@ CMDF( do_mapout )
       ch->printf( "Map represents %d rooms, %d rows, and %d columns\r\n", rooms, rows, cols );
       avail_rooms = num_rooms_avail( ch );
       ch->printf( "You currently have %d unused rooms.\r\n", avail_rooms );
-      act( AT_ACTION, "$n glances at an etherial map.", ch, NULL, NULL, TO_ROOM );
+      act( AT_ACTION, "$n glances at an etherial map.", ch, nullptr, nullptr, TO_ROOM );
       return;
    }
 
@@ -289,7 +289,7 @@ CMDF( do_mapout )
       STRFREE( ch->pcdata->pnote->to_list );
       STRFREE( ch->pcdata->pnote->sender );
       deleteptr( ch->pcdata->pnote );
-      ch->pcdata->pnote = NULL;
+      ch->pcdata->pnote = nullptr;
       ch->print( "Map cleared.\r\n" );
       return;
    }
@@ -324,9 +324,9 @@ CMDF( do_mapout )
          ch->print( "You don't have enough unused rooms allocated!\r\n" );
          return;
       }
-      act( AT_ACTION, "$n warps the very dimensions of space!", ch, NULL, NULL, TO_ROOM );
+      act( AT_ACTION, "$n warps the very dimensions of space!", ch, nullptr, nullptr, TO_ROOM );
 
-      map_to_rooms( ch, NULL );  /* this does the grunt work */
+      map_to_rooms( ch, nullptr );  /* this does the grunt work */
 
       map_obj_index = get_obj_index( OBJ_VNUM_MAPS );
       if( map_obj_index )
@@ -364,7 +364,7 @@ int add_new_room_to_map( char_data * ch, char code )
     */
    for( i = ch->pcdata->low_vnum; i <= ch->pcdata->hi_vnum; ++i )
    {
-      if( get_room_index( i ) == NULL )
+      if( get_room_index( i ) == nullptr )
       {
          if( !( location = make_room( i, ch->pcdata->area ) ) )
          {
@@ -457,13 +457,13 @@ void map_to_rooms( char_data * ch, map_index * m_index )
    int newx, newy;
    char *l, c;
    room_index *newrm;
-   map_index *map_index = NULL, *tmp;
+   map_index *map_index = nullptr, *tmp;
    exit_data *xit;   /* these are for exits */
    bool getroomnext = false;
 
    if( !ch->pcdata->pnote )
    {
-      bug( "%s: ch->pcdata->pnote == NULL!", __func__ );
+      bug( "%s: ch->pcdata->pnote == nullptr!", __func__ );
       return;
    }
 
@@ -485,7 +485,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
    {  /* Make a new vnum */
       for( i = ch->pcdata->low_vnum; i <= ch->pcdata->hi_vnum; ++i )
       {
-         if( ( tmp = get_map_index( i ) ) == NULL )
+         if( ( tmp = get_map_index( i ) ) == nullptr )
          {
             map_index = make_new_map_index( i );
             break;
@@ -606,8 +606,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[newy][x].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_UP );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                xit->flags.reset(  );
             }
@@ -631,8 +631,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[newy][x].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_DOWN );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                xit->flags.reset(  );
             }
@@ -656,8 +656,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[newy][x].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_NORTH );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                if( rmap[newy + 1][x].code == ':' || rmap[newy + 1][x].code == '=' )
                {
@@ -687,8 +687,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[newy][x].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_SOUTH );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                if( rmap[newy - 1][x].code == ':' || rmap[newy - 1][x].code == '=' )
                {
@@ -719,8 +719,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[y][newx].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_EAST );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                if( rmap[y][newx - 2].code == ':' || rmap[y][newx - 2].code == '=' )
                {
@@ -752,8 +752,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[y][newx].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_WEST );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                if( rmap[y][newx + 2].code == ':' || rmap[y][newx + 2].code == '=' )
                {
@@ -789,8 +789,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[newy][newx].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_SOUTHEAST );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                xit->flags.reset(  );
             }
@@ -821,8 +821,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[newy][newx].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_NORTHEAST );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                xit->flags.reset(  );
             }
@@ -853,8 +853,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[newy][newx].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_NORTHWEST );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                xit->flags.reset(  );
             }
@@ -885,8 +885,8 @@ void map_to_rooms( char_data * ch, map_index * m_index )
             if( ( tvnum = rmap[newy][newx].vnum ) != 0 )
             {
                xit = get_room_index( tvnum )->make_exit( newrm, DIR_SOUTHWEST );
-               xit->keyword = NULL;
-               xit->exitdesc = NULL;
+               xit->keyword = nullptr;
+               xit->exitdesc = nullptr;
                xit->key = -1;
                xit->flags.reset(  );
             }

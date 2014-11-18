@@ -459,7 +459,7 @@ void init_mud( bool fCopyOver, int gameport, int wsocket, int imcsocket )
 void close_mud( void )
 {
    if( auction->item )
-      bid( supermob, NULL, "stop" );
+      bid( supermob, nullptr, "stop" );
 
    if( !DONTSAVE )
    {
@@ -835,7 +835,7 @@ void process_input( void )
 
 #if !defined(WIN32)
          // Check for input from the dns 
-         if( ( d->connected == CON_PLAYING || d->character != NULL ) && d->ifd != -1 && FD_ISSET( d->ifd, &in_set ) )
+         if( ( d->connected == CON_PLAYING || d->character != nullptr ) && d->ifd != -1 && FD_ISSET( d->ifd, &in_set ) )
             d->process_dns(  );
 #endif
 
@@ -929,7 +929,7 @@ void game_loop( void )
 {
    struct timeval last_time;
 
-   gettimeofday( &last_time, NULL );
+   gettimeofday( &last_time, nullptr );
    current_time = last_time.tv_sec;
 
    // Main loop 
@@ -975,7 +975,7 @@ void game_loop( void )
          long secDelta;
          long usecDelta;
 
-         gettimeofday( &now_time, NULL );
+         gettimeofday( &now_time, nullptr );
          usecDelta = ( last_time.tv_usec ) - ( now_time.tv_usec ) + 1000000 / sysdata->pulsepersec;
          secDelta = ( last_time.tv_sec ) - ( now_time.tv_sec );
          while( usecDelta < 0 )
@@ -996,14 +996,14 @@ void game_loop( void )
 
             stall_time.tv_usec = usecDelta;
             stall_time.tv_sec = secDelta;
-            if( select( 0, NULL, NULL, NULL, &stall_time ) < 0 && errno != EINTR )
+            if( select( 0, nullptr, nullptr, nullptr, &stall_time ) < 0 && errno != EINTR )
             {
                perror( "game_loop: select: stall" );
                exit( 1 );
             }
          }
       }
-      gettimeofday( &last_time, NULL );
+      gettimeofday( &last_time, nullptr );
       current_time = last_time.tv_sec;
 
       // Dunno if it needs to be reset, but I'll do it anyway. End of the loop here. 
@@ -1266,7 +1266,7 @@ int main( int argc, char **argv )
 
    // Init time.
    tzset(  );
-   gettimeofday( &now_time, NULL );
+   gettimeofday( &now_time, nullptr );
    current_time = now_time.tv_sec;
    mudstrlcpy( str_boot_time, c_time( current_time, -1 ), MIL );  /* Records when the mud was last rebooted */
 

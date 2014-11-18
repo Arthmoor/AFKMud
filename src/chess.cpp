@@ -452,13 +452,13 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
 {
    if( !ch )
    {
-      bug( "%s: NULL ch!", __func__ );
+      bug( "%s: nullptr ch!", __func__ );
       return MOVE_INVALID;
    }
 
    if( !board )
    {
-      bug( "%s: NULL board!", __func__ );
+      bug( "%s: nullptr board!", __func__ );
       return MOVE_INVALID;
    }
 
@@ -732,7 +732,7 @@ PFUN( imc_recv_chess )
 
       buf << imc_nameof( q->to ) << "  is not ready to be joined in a game.";
       imc_send_tell( "*", q->from, buf.str(  ), 1 );
-      imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : NULL, q->from, "stop" );
+      imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : nullptr, q->from, "stop" );
       return;
    }
 
@@ -742,7 +742,7 @@ PFUN( imc_recv_chess )
       {
          buf << imc_nameof( q->to ) << " is already playing a game.";
          imc_send_tell( "*", q->from, buf.str(  ), 1 );
-         imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : NULL, q->from, "stop" );
+         imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : nullptr, q->from, "stop" );
          return;
       }
       victim->pcdata->game_board->player2 = q->from;
@@ -758,7 +758,7 @@ PFUN( imc_recv_chess )
       if( !victim->pcdata->game_board ||
           victim->pcdata->game_board->player2.empty(  ) || victim->pcdata->game_board->type != TYPE_IMC || str_cmp( victim->pcdata->game_board->player2, q->from ) )
       {
-         imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : NULL, q->from, "stop" );
+         imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : nullptr, q->from, "stop" );
          return;
       }
       imc_printf( victim, "You have joined %s in a game.\r\n", q->from.c_str(  ) );
@@ -799,7 +799,7 @@ PFUN( imc_recv_chess )
 
       if( sscanf( txt, "move %c%d %c%d", &a, &y, &b, &dy ) != 4 || a < '0' || a > '7' || b < '0' || b > '7' || y < 0 || y > 7 || dy < 0 || dy > 7 )
       {
-         imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : NULL, q->from, "invalidmove" );
+         imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : nullptr, q->from, "invalidmove" );
          return;
       }
 
@@ -831,11 +831,11 @@ PFUN( imc_recv_chess )
          else
          {
             ++board->turn;
-            imc_send_chess( !board->player1.empty(  )? board->player1 : NULL, q->from, "moveok" );
+            imc_send_chess( !board->player1.empty(  )? board->player1 : nullptr, q->from, "moveok" );
             return;
          }
       }
-      imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : NULL, q->from, "invalidmove" );
+      imc_send_chess( !victim->pcdata->game_board->player1.empty(  )? victim->pcdata->game_board->player1 : nullptr, q->from, "invalidmove" );
       return;
    }
 
@@ -860,7 +860,7 @@ void free_game( game_board_data * board )
    if( board->type == TYPE_IMC )
    {
       deleteptr( board->imc_player );
-      imc_send_chess( !board->player1.empty(  )? board->player1 : NULL, board->player2, "stop" );
+      imc_send_chess( !board->player1.empty(  )? board->player1 : nullptr, board->player2, "stop" );
       board->player2.clear(  );
    }
 #endif
@@ -870,7 +870,7 @@ void free_game( game_board_data * board )
       if( char_data * ch = supermob->get_char_world( board->player1 ) ) // Added for bugfix - Findecano 23/11/07
       {
          ch->printf( "Your chess game has been stopped at %d total moves.\r\n", board->turn );
-         ch->pcdata->game_board = NULL;
+         ch->pcdata->game_board = nullptr;
       }
    }
 
@@ -879,7 +879,7 @@ void free_game( game_board_data * board )
       if( char_data * ch = supermob->get_char_world( board->player2 ) ) // Added for bugfix - Findecano 23/11/07
       {
          ch->printf( "Your chess game has been stopped at %d total moves.\r\n", board->turn );
-         ch->pcdata->game_board = NULL;
+         ch->pcdata->game_board = nullptr;
       }
    }
    deleteptr( board );
@@ -928,7 +928,7 @@ CMDF( do_chess )
 
    if( !str_cmp( arg, "join" ) )
    {
-      game_board_data *board = NULL;
+      game_board_data *board = nullptr;
       char_data *vch;
       string arg2;
 

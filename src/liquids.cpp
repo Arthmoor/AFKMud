@@ -119,7 +119,7 @@ liquid_data::~liquid_data(  )
          if( j > top_liquid )
             top_liquid = j;
    }
-   liquid_table[vnum] = NULL;
+   liquid_table[vnum] = nullptr;
    --liq_count;
 }
 
@@ -136,8 +136,8 @@ mixture_data::~mixture_data(  )
 /* save the liquids to the liquidtable.dat file in the system directory -Nopey */
 void save_liquids( void )
 {
-   FILE *fp = NULL;
-   liquid_data *liq = NULL;
+   FILE *fp = nullptr;
+   liquid_data *liq = nullptr;
    char filename[256];
    int i;
 
@@ -208,7 +208,7 @@ liquid_data *fread_liquid( FILE * fp )
             if( !str_cmp( word, "End" ) )
             {
                if( liq->vnum <= -1 )
-                  return NULL;
+                  return nullptr;
                return liq;
             }
             break;
@@ -246,7 +246,7 @@ liquid_data *fread_liquid( FILE * fp )
 /* load the liquids from the liquidtable.dat file in the system directory -Nopey */
 void load_liquids( void )
 {
-   FILE *fp = NULL;
+   FILE *fp = nullptr;
    char filename[256];
    int x;
 
@@ -262,7 +262,7 @@ void load_liquids( void )
    liq_count = 0;
 
    for( x = 0; x < MAX_LIQUIDS; ++x )
-      liquid_table[x] = NULL;
+      liquid_table[x] = nullptr;
 
    for( ;; )
    {
@@ -292,7 +292,7 @@ void load_liquids( void )
          liquid_data *liq = fread_liquid( fp );
 
          if( !liq )
-            bug( "%s: returned NULL liquid", __func__ );
+            bug( "%s: returned nullptr liquid", __func__ );
          else
          {
             liquid_table[liq->vnum] = liq;
@@ -317,7 +317,7 @@ void load_liquids( void )
 void save_mixtures( void )
 {
    list < mixture_data * >::iterator imix;
-   FILE *fp = NULL;
+   FILE *fp = nullptr;
    char filename[256];
 
    snprintf( filename, 256, "%smixtures.dat", SYSTEM_DIR );
@@ -415,7 +415,7 @@ mixture_data *fread_mixture( FILE * fp )
 /* load the mixtures from the mixture table - Nopey */
 void load_mixtures( void )
 {
-   FILE *fp = NULL;
+   FILE *fp = nullptr;
    char filename[256];
 
    mixlist.clear(  );
@@ -453,11 +453,11 @@ void load_mixtures( void )
       }
       else if( !str_cmp( word, "MIXTURE" ) )
       {
-         mixture_data *mix = NULL;
+         mixture_data *mix = nullptr;
 
          mix = fread_mixture( fp );
          if( !mix )
-            bug( "%s: mixture returned NULL", __func__ );
+            bug( "%s: mixture returned nullptr", __func__ );
          else
             mixlist.push_back( mix );
       }
@@ -480,7 +480,7 @@ static int figure_liq_vnum( void )
    /*
     * incase a liquid gets removed; we can fill it's place 
     */
-   for( i = 0; liquid_table[i] != NULL; ++i );
+   for( i = 0; liquid_table[i] != nullptr; ++i );
 
    /*
     * add to the top 
@@ -508,20 +508,20 @@ liquid_data *get_liq( const string & str )
          if( !str_cmp( liquid_table[i]->name, str ) )
             return liquid_table[i];
    }
-   return NULL;
+   return nullptr;
 }
 
 liquid_data *get_liq_vnum( int vnum )
 {
    /*
     * Bugfix - This could have crashed things if the number was out of range.
-    * Calling function should be validating for NULLs, or it'll crash there instead.
+    * Calling function should be validating for nullptrs, or it'll crash there instead.
     * Samson 11-09-2014
     */
    if( vnum < 0 || vnum >= top_liquid )
    {
-      bug( "%s: Invalid vnum %d, returning NULL", __func__, vnum );
-      return NULL;
+      bug( "%s: Invalid vnum %d, returning nullptr", __func__, vnum );
+      return nullptr;
    }
 
    return liquid_table[vnum];
@@ -539,7 +539,7 @@ mixture_data *get_mix( const string & str )
       if( !str_cmp( mix->name, str ) )
          return mix;
    }
-   return NULL;
+   return nullptr;
 }
 
 void free_liquiddata( void )
@@ -565,7 +565,7 @@ void free_liquiddata( void )
 /* Function to display liquid list. - Tarl 9 Jan 03 */
 CMDF( do_showliquid )
 {
-   liquid_data *liq = NULL;
+   liquid_data *liq = nullptr;
    int i;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
@@ -582,7 +582,7 @@ CMDF( do_showliquid )
       return;
    }
 
-   if( !argument.empty(  ) && ( ( liq = get_liq( argument ) ) != NULL ) )
+   if( !argument.empty(  ) && ( ( liq = get_liq( argument ) ) != nullptr ) )
    {
       if( !liq->name.empty(  ) )
          ch->pagerf( "&GLiquid information for:&g %s\r\n", liq->name.c_str(  ) );
@@ -638,7 +638,7 @@ CMDF( do_setliquid )
 
    if( !str_cmp( arg, "create" ) )
    {
-      liquid_data *liq = NULL;
+      liquid_data *liq = nullptr;
       int i;
 
       if( liq_count >= MAX_LIQUIDS )
@@ -668,7 +668,7 @@ CMDF( do_setliquid )
    }
    else if( !str_cmp( arg, "delete" ) )
    {
-      liquid_data *liq = NULL;
+      liquid_data *liq = nullptr;
 
       if( argument.empty(  ) )
       {
@@ -702,7 +702,7 @@ CMDF( do_setliquid )
    else
    {
       string arg2;
-      liquid_data *liq = NULL;
+      liquid_data *liq = nullptr;
 
       argument = one_argument( argument, arg2 );
       if( arg2.empty(  ) )
@@ -853,7 +853,7 @@ void displaymixture( char_data * ch, mixture_data * mix )
 /* Function for showmixture - Tarl 9 Jan 03 */
 CMDF( do_showmixture )
 {
-   mixture_data *mix = NULL;
+   mixture_data *mix = nullptr;
    list < mixture_data * >::iterator imx;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
@@ -862,7 +862,7 @@ CMDF( do_showmixture )
       return;
    }
 
-   if( !argument.empty(  ) && ( ( mix = get_mix( argument ) ) != NULL ) )
+   if( !argument.empty(  ) && ( ( mix = get_mix( argument ) ) != nullptr ) )
    {
       displaymixture( ch, mix );
       return;
@@ -895,7 +895,7 @@ CMDF( do_showmixture )
 CMDF( do_setmixture )
 {
    string arg;
-   liquid_data *liq = NULL;
+   liquid_data *liq = nullptr;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
    {
@@ -917,10 +917,10 @@ CMDF( do_setmixture )
 
    if( !str_cmp( arg, "list" ) )
    {
-      mixture_data *mix = NULL;
+      mixture_data *mix = nullptr;
       list < mixture_data * >::iterator imx;
 
-      if( !argument.empty(  ) && ( ( mix = get_mix( argument ) ) != NULL ) )
+      if( !argument.empty(  ) && ( ( mix = get_mix( argument ) ) != nullptr ) )
       {
          displaymixture( ch, mix );
          return;
@@ -952,7 +952,7 @@ CMDF( do_setmixture )
    }
    else if( !str_cmp( arg, "create" ) )
    {
-      mixture_data *mix = NULL;
+      mixture_data *mix = nullptr;
 
       if( argument.empty(  ) )
       {
@@ -979,7 +979,7 @@ CMDF( do_setmixture )
    }
    else if( !str_cmp( arg, "delete" ) )
    {
-      mixture_data *mix = NULL;
+      mixture_data *mix = nullptr;
 
       if( argument.empty(  ) )
       {
@@ -1000,7 +1000,7 @@ CMDF( do_setmixture )
    else
    {
       string arg2;
-      mixture_data *mix = NULL;
+      mixture_data *mix = nullptr;
 
       if( arg.empty(  ) || !( mix = get_mix( arg ) ) )
       {
@@ -1131,7 +1131,7 @@ CMDF( do_setmixture )
 liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
 {
    list < mixture_data * >::iterator imix;
-   mixture_data *mix = NULL;
+   mixture_data *mix = nullptr;
    bool mix_found = false;
 
    for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
@@ -1145,14 +1145,14 @@ liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
       }
    }
    if( !mix_found )
-      return NULL;
+      return nullptr;
 
    if( mix->data[2] > -1 )
    {
-      liquid_data *liq = NULL;
+      liquid_data *liq = nullptr;
 
       if( !( liq = get_liq_vnum( mix->data[2] ) ) )
-         return NULL;
+         return nullptr;
       else
       {
          iObj->value[1] += tObj->value[1];
@@ -1162,14 +1162,14 @@ liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
          return liq;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 /* used to mix an object with a liquid to form another liquid; returns the result  -Nopey */
 liquid_data *liqobj_can_mix( obj_data * iObj, obj_data * oLiq )
 {
    list < mixture_data * >::iterator imix;
-   mixture_data *mix = NULL;
+   mixture_data *mix = nullptr;
    bool mix_found = false;
 
    for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
@@ -1184,14 +1184,14 @@ liquid_data *liqobj_can_mix( obj_data * iObj, obj_data * oLiq )
          }
    }
    if( !mix_found )
-      return NULL;
+      return nullptr;
 
    if( mix->data[2] > -1 )
    {
-      liquid_data *liq = NULL;
+      liquid_data *liq = nullptr;
 
       if( !( liq = get_liq_vnum( mix->data[2] ) ) )
-         return NULL;
+         return nullptr;
       else
       {
          oLiq->value[1] += iObj->value[1];
@@ -1202,14 +1202,14 @@ liquid_data *liqobj_can_mix( obj_data * iObj, obj_data * oLiq )
          return liq;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 /* the actual -mix- funciton  -Nopey */
 CMDF( do_mix )
 {
    string arg;
-   obj_data *iObj, *tObj = NULL;
+   obj_data *iObj, *tObj = nullptr;
 
    argument = one_argument( argument, arg );
    /*
@@ -1298,7 +1298,7 @@ CMDF( do_drink )
    if( !str_cmp( arg, "from" ) && !argument.empty(  ) )
       argument = one_argument( argument, arg );
 
-   obj_data *obj = NULL;
+   obj_data *obj = nullptr;
    if( arg.empty(  ) )
    {
       list < obj_data * >::iterator iobj;
@@ -1349,13 +1349,13 @@ CMDF( do_drink )
       default:
          if( obj->carried_by == ch )
          {
-            act( AT_ACTION, "$n lifts $p up to $s mouth and tries to drink from it...", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You bring $p up to your mouth and try to drink from it...", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n lifts $p up to $s mouth and tries to drink from it...", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You bring $p up to your mouth and try to drink from it...", ch, obj, nullptr, TO_CHAR );
          }
          else
          {
-            act( AT_ACTION, "$n gets down and tries to drink from $p... (Is $e feeling ok?)", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You get down on the ground and try to drink from $p...", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n gets down and tries to drink from $p... (Is $e feeling ok?)", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You get down on the ground and try to drink from $p...", ch, obj, nullptr, TO_CHAR );
          }
          break;
 
@@ -1372,7 +1372,7 @@ CMDF( do_drink )
 
       case ITEM_FOUNTAIN:
       {
-         liquid_data *liq = NULL;
+         liquid_data *liq = nullptr;
 
          if( obj->value[1] <= 0 )
             obj->value[1] = sysdata->maxcondval;
@@ -1392,9 +1392,9 @@ CMDF( do_drink )
          else if( !ch->isnpc(  ) && obj->value[2] == 0 )
             ch->pcdata->condition[COND_THIRST] = sysdata->maxcondval;
 
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
-            act( AT_ACTION, "$n drinks from the fountain.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n drinks from the fountain.", ch, nullptr, nullptr, TO_ROOM );
             ch->print( "You take a long thirst quenching drink.\r\n" );
             ch->sound( "drink.wav", 100, false );
          }
@@ -1403,7 +1403,7 @@ CMDF( do_drink )
 
       case ITEM_PUDDLE: 
       {
-         liquid_data *liq = NULL;
+         liquid_data *liq = nullptr;
 
          if( obj->value[1] <= 0 )
          { 
@@ -1411,15 +1411,15 @@ CMDF( do_drink )
             return; 
          } 
 
-         if( ( liq = get_liq_vnum( obj->value[2] ) ) == NULL )
+         if( ( liq = get_liq_vnum( obj->value[2] ) ) == nullptr )
          { 
             bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
             liq = get_liq_vnum( 0 );
          }
 
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          { 
-            act( AT_ACTION, "$n stoops to the ground and drinks from $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "$n stoops to the ground and drinks from $p.", ch, obj, nullptr, TO_ROOM );
             act( AT_ACTION, "You stoop to the ground and drink $T from $p.", ch, obj, liq->name.c_str(), TO_CHAR );
             ch->sound( "drink.wav", 100, false );
          }
@@ -1432,8 +1432,8 @@ CMDF( do_drink )
          {
             affect_data af;
 
-            act( AT_POISON, "$n sputters and gags.", ch, NULL, NULL, TO_ROOM );
-            act( AT_POISON, "You sputter and gag.", ch, NULL, NULL, TO_CHAR );
+            act( AT_POISON, "$n sputters and gags.", ch, nullptr, nullptr, TO_ROOM );
+            act( AT_POISON, "You sputter and gag.", ch, nullptr, nullptr, TO_CHAR );
             ch->mental_state = URANGE( 20, ch->mental_state + 5, 100 );
             af.type = gsn_poison;
             af.duration = obj->value[3];
@@ -1471,7 +1471,7 @@ CMDF( do_drink )
 
       case ITEM_DRINK_CON:
       {
-         liquid_data *liq = NULL;
+         liquid_data *liq = nullptr;
 
          if( obj->value[1] <= 0 )
          {
@@ -1494,7 +1494,7 @@ CMDF( do_drink )
             liq = get_liq_vnum( 0 );
          }
 
-         if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+         if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
          {
             act( AT_ACTION, "$n drinks $T from $p.", ch, obj, liq->shortdesc.c_str(  ), TO_ROOM );
             act( AT_ACTION, "You drink $T from $p.", ch, obj, liq->shortdesc.c_str(  ), TO_CHAR );
@@ -1512,8 +1512,8 @@ CMDF( do_drink )
          {
             affect_data af;
 
-            act( AT_POISON, "$n sputters and gags.", ch, NULL, NULL, TO_ROOM );
-            act( AT_POISON, "You sputter and gag.", ch, NULL, NULL, TO_CHAR );
+            act( AT_POISON, "$n sputters and gags.", ch, nullptr, nullptr, TO_ROOM );
+            act( AT_POISON, "You sputter and gag.", ch, nullptr, nullptr, TO_CHAR );
             ch->mental_state = URANGE( 20, ch->mental_state + 5, 100 );
             af.type = gsn_poison;
             af.duration = obj->value[3];
@@ -1611,7 +1611,7 @@ CMDF( do_fill )
    switch ( dest_item )
    {
       default:
-         act( AT_ACTION, "$n tries to fill $p... (Don't ask me how)", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "$n tries to fill $p... (Don't ask me how)", ch, obj, nullptr, TO_ROOM );
          ch->print( "You cannot fill that.\r\n" );
          return;
 
@@ -1645,7 +1645,7 @@ CMDF( do_fill )
    {
       if( IS_SET( obj->value[1], CONT_CLOSED ) )
       {
-         act( AT_PLAIN, "The $d is closed.", ch, NULL, obj->name, TO_CHAR );
+         act( AT_PLAIN, "The $d is closed.", ch, nullptr, obj->name, TO_CHAR );
          return;
       }
       if( obj->get_real_weight(  ) / obj->count >= obj->value[0] )
@@ -1675,7 +1675,7 @@ CMDF( do_fill )
       if( dest_item == ITEM_CONTAINER && ( !str_cmp( arg2, "all" ) || !str_prefix( "all.", arg2 ) ) )
       {
          all = true;
-         source = NULL;
+         source = nullptr;
       }
       /*
        * This used to let you fill a pipe from an object on the ground.  Seems
@@ -1707,7 +1707,7 @@ CMDF( do_fill )
       }
    }
    else
-      source = NULL;
+      source = nullptr;
 
    if( !source && dest_item == ITEM_PIPE )
    {
@@ -1781,8 +1781,8 @@ CMDF( do_fill )
 
       if( dest_item == ITEM_CONTAINER )
       {
-         act( AT_ACTION, "You fill $p.", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$n fills $p.", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "You fill $p.", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n fills $p.", ch, obj, nullptr, TO_ROOM );
          return;
       }
    }
@@ -1861,7 +1861,7 @@ CMDF( do_fill )
          case ITEM_CONTAINER:
             if( source->item_type == ITEM_CONTAINER /* don't remove */  && IS_SET( source->value[1], CONT_CLOSED ) )
             {
-               act( AT_PLAIN, "The $d is closed.", ch, NULL, source->name, TO_CHAR );
+               act( AT_PLAIN, "The $d is closed.", ch, nullptr, source->name, TO_CHAR );
                return;
             }
 
@@ -2023,15 +2023,15 @@ CMDF( do_fill )
                mudstrlcpy( buf, "rather small", 20 );
             else
                mudstrlcpy( buf, "small", 20 );
-            stralloc_printf( &source->objdesc, "There is a %s puddle of %s.", buf, ( liq == NULL ? "water" : liq->name.c_str() ) );
+            stralloc_printf( &source->objdesc, "There is a %s puddle of %s.", buf, ( liq == nullptr ? "water" : liq->name.c_str() ) );
          }
          act( AT_ACTION, "You fill $p from $P.", ch, obj, source, TO_CHAR );
          act( AT_ACTION, "$n fills $p from $P.", ch, obj, source, TO_ROOM );
 
          if( source->value[1] < 1 )
          {
-            act( AT_ACTION, "The remaining contents of the puddle seep into the ground.", ch, NULL, NULL, TO_CHAR );
-            act( AT_ACTION, "The remaining contents of the puddle seep into the ground.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "The remaining contents of the puddle seep into the ground.", ch, nullptr, nullptr, TO_CHAR );
+            act( AT_ACTION, "The remaining contents of the puddle seep into the ground.", ch, nullptr, nullptr, TO_ROOM );
             source->extract( );
          }
          return;
@@ -2043,7 +2043,7 @@ void make_puddle( char_data * ch, obj_data * cont )
    obj_data *obj;
    char buf[20];
    bool found = false;
-   liquid_data *liq = NULL;
+   liquid_data *liq = nullptr;
    list < obj_data * >::iterator iobj;
 
    for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.begin(); ++iobj )
@@ -2083,9 +2083,9 @@ void make_puddle( char_data * ch, obj_data * cont )
       mudstrlcpy( buf, "rather small", 20 );
    else
       mudstrlcpy( buf, "small", 20 );
-   stralloc_printf( &obj->name, "puddle %s", ( liq == NULL ? "water" : liq->name.c_str() ) );
-   stralloc_printf( &obj->short_descr, "A puddle of %s", ( liq == NULL ? "water" : liq->name.c_str() ) );
-   stralloc_printf( &obj->objdesc, "This is a %s puddle of %s.", buf, ( liq == NULL ? "water" : liq->name.c_str() ) );
+   stralloc_printf( &obj->name, "puddle %s", ( liq == nullptr ? "water" : liq->name.c_str() ) );
+   stralloc_printf( &obj->short_descr, "A puddle of %s", ( liq == nullptr ? "water" : liq->name.c_str() ) );
+   stralloc_printf( &obj->objdesc, "This is a %s puddle of %s.", buf, ( liq == nullptr ? "water" : liq->name.c_str() ) );
    return;
 }
 
@@ -2120,13 +2120,13 @@ CMDF( do_empty )
    switch ( obj->item_type )
    {
       default:
-         act( AT_ACTION, "You shake $p in an attempt to empty it...", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$n begins to shake $p in an attempt to empty it...", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "You shake $p in an attempt to empty it...", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n begins to shake $p in an attempt to empty it...", ch, obj, nullptr, TO_ROOM );
          return;
 
       case ITEM_PIPE:
-         act( AT_ACTION, "You gently tap $p and empty it out.", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$n gently taps $p and empties it out.", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "You gently tap $p and empty it out.", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n gently taps $p and empties it out.", ch, obj, nullptr, TO_ROOM );
          REMOVE_BIT( obj->value[3], PIPE_FULLOFASH );
          REMOVE_BIT( obj->value[3], PIPE_LIT );
          obj->value[1] = 0;
@@ -2139,8 +2139,8 @@ CMDF( do_empty )
             return;
          }
          make_puddle( ch, obj );
-         act( AT_ACTION, "You empty $p.", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$n empties $p.", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "You empty $p.", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n empties $p.", ch, obj, nullptr, TO_ROOM );
          obj->value[1] = 0;
          return;
 
@@ -2148,7 +2148,7 @@ CMDF( do_empty )
       case ITEM_QUIVER:
          if( IS_SET( obj->value[1], CONT_CLOSED ) )
          {
-            act( AT_PLAIN, "The $d is closed.", ch, NULL, obj->name, TO_CHAR );
+            act( AT_PLAIN, "The $d is closed.", ch, nullptr, obj->name, TO_CHAR );
             return;
          }
 
@@ -2174,10 +2174,10 @@ CMDF( do_empty )
                return;
             }
 
-            if( obj->empty( NULL, ch->in_room ) )
+            if( obj->empty( nullptr, ch->in_room ) )
             {
-               act( AT_ACTION, "You empty $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n empties $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You empty $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n empties $p.", ch, obj, nullptr, TO_ROOM );
                if( IS_SAVE_FLAG( SV_EMPTY ) )
                   ch->save(  );
             }
@@ -2208,12 +2208,12 @@ CMDF( do_empty )
 
             if( IS_SET( dest->value[1], CONT_CLOSED ) )
             {
-               act( AT_PLAIN, "The $d is closed.", ch, NULL, dest->name, TO_CHAR );
+               act( AT_PLAIN, "The $d is closed.", ch, nullptr, dest->name, TO_CHAR );
                return;
             }
 
             dest->separate(  );
-            if( obj->empty( dest, NULL ) )
+            if( obj->empty( dest, nullptr ) )
             {
                act( AT_ACTION, "You empty $p into $P.", ch, obj, dest, TO_CHAR );
                act( AT_ACTION, "$n empties $p into $P.", ch, obj, dest, TO_ROOM );

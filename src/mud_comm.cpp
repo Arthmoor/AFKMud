@@ -579,7 +579,7 @@ CMDF( do_mpmset )
       if( arg3.empty(  ) )
       {
          victim->pcdata->deity_name.clear(  );
-         victim->pcdata->deity = NULL;
+         victim->pcdata->deity = nullptr;
          return;
       }
 
@@ -629,7 +629,7 @@ CMDF( do_mpmset )
 
       if( !str_cmp( arg3, "none" ) )
       {
-         victim->spec_fun = NULL;
+         victim->spec_fun = nullptr;
          victim->spec_funname.clear(  );
          return;
       }
@@ -1768,7 +1768,7 @@ CMDF( do_mpasupress )
       progbugf( ch, "%s", "Mpsupress: invalid rounds argument, non-numeric" );
       return;
    }
-   victim->add_timer( TIMER_ASUPRESSED, rnds, NULL, 0 );
+   victim->add_timer( TIMER_ASUPRESSED, rnds, nullptr, 0 );
 }
 
 /* lets the mobile kill any player or mobile without murder*/
@@ -1828,7 +1828,7 @@ CMDF( do_mpjunk )
    obj_data *obj;
    if( str_cmp( argument, "all" ) && str_prefix( "all.", argument ) )
    {
-      if( ( obj = ch->get_obj_wear( argument ) ) != NULL )
+      if( ( obj = ch->get_obj_wear( argument ) ) != nullptr )
       {
          ch->unequip( obj );
          obj->extract(  );
@@ -1886,7 +1886,7 @@ CMDF( do_mpasound )
          if( !ch->to_room( pexit->to_room ) )
             log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          MOBtrigger = false;
-         act( AT_ACTION, argument, ch, NULL, NULL, TO_ROOM );
+         act( AT_ACTION, argument, ch, nullptr, nullptr, TO_ROOM );
       }
    }
    DONT_UPPER = false;  /* Always set it back to false */
@@ -1922,7 +1922,7 @@ CMDF( do_mpechoaround )
 
    actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
-   act( AT_ACTION, argument, ch, NULL, victim, TO_NOTVICT );
+   act( AT_ACTION, argument, ch, nullptr, victim, TO_NOTVICT );
    ch->set_actflags( actflags );
 }
 
@@ -1954,9 +1954,9 @@ CMDF( do_mpechoat )
 
    DONT_UPPER = true;
    if( argument.empty(  ) )
-      act( AT_ACTION, " ", ch, NULL, victim, TO_VICT );
+      act( AT_ACTION, " ", ch, nullptr, victim, TO_VICT );
    else
-      act( AT_ACTION, argument, ch, NULL, victim, TO_VICT );
+      act( AT_ACTION, argument, ch, nullptr, victim, TO_VICT );
 
    DONT_UPPER = false;
 
@@ -1976,9 +1976,9 @@ CMDF( do_mpecho )
 
    DONT_UPPER = true;
    if( argument.empty(  ) )
-      act( AT_ACTION, " ", ch, NULL, NULL, TO_ROOM );
+      act( AT_ACTION, " ", ch, nullptr, nullptr, TO_ROOM );
    else
-      act( AT_ACTION, argument, ch, NULL, NULL, TO_ROOM );
+      act( AT_ACTION, argument, ch, nullptr, nullptr, TO_ROOM );
    DONT_UPPER = false;
    ch->set_actflags( actflags );
 }
@@ -1996,7 +1996,7 @@ CMDF( do_mpmload )
 
    if( argument.empty(  ) || !is_number( argument ) )
    {
-      progbugf( ch, "Mpmload - Bad vnum %s as argument", !argument.empty(  )? argument.c_str(  ) : "NULL" );
+      progbugf( ch, "Mpmload - Bad vnum %s as argument", !argument.empty(  )? argument.c_str(  ) : "nullptr" );
       return;
    }
 
@@ -2162,7 +2162,7 @@ CMDF( do_mppurge )
    obj_data *obj;
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      if( ( obj = ch->get_obj_here( argument ) ) != NULL )
+      if( ( obj = ch->get_obj_here( argument ) ) != nullptr )
       {
          obj->separate( );
          obj->extract( );
@@ -2224,12 +2224,12 @@ CMDF( do_mpinvis )
    if( ch->has_actflag( ACT_MOBINVIS ) )
    {
       ch->unset_actflag( ACT_MOBINVIS );
-      act( AT_IMMORT, "$n slowly fades into existence.", ch, NULL, NULL, TO_ROOM );
+      act( AT_IMMORT, "$n slowly fades into existence.", ch, nullptr, nullptr, TO_ROOM );
    }
    else
    {
       ch->set_actflag( ACT_MOBINVIS );
-      act( AT_IMMORT, "$n slowly fades into thin air.", ch, NULL, NULL, TO_ROOM );
+      act( AT_IMMORT, "$n slowly fades into thin air.", ch, nullptr, nullptr, TO_ROOM );
    }
 }
 
@@ -2257,7 +2257,7 @@ CMDF( do_mpgoto )
    if( ch->fighting )
       ch->stop_fighting( true );
 
-   leave_map( ch, NULL, location );
+   leave_map( ch, nullptr, location );
 }
 
 /* lets the mobile do a command at another location. Very useful */
@@ -2335,7 +2335,7 @@ CMDF( do_mpadvance )
 
    if( victim->level > ch->level )
    {
-      act( AT_TELL, "$n tells you, 'Sorry... you must seek someone more powerful than I.'", ch, NULL, victim, TO_VICT );
+      act( AT_TELL, "$n tells you, 'Sorry... you must seek someone more powerful than I.'", ch, nullptr, victim, TO_VICT );
       return;
    }
 
@@ -2587,9 +2587,9 @@ CMDF( do_mpechozone )   /* Blod, late 97 */
       if( vch->in_room->area == ch->in_room->area && vch->IS_AWAKE(  ) )
       {
          if( argument.empty(  ) )
-            act( AT_ACTION, " ", vch, NULL, NULL, TO_CHAR );
+            act( AT_ACTION, " ", vch, nullptr, nullptr, TO_CHAR );
          else
-            act( AT_ACTION, argument, vch, NULL, NULL, TO_CHAR );
+            act( AT_ACTION, argument, vch, nullptr, nullptr, TO_CHAR );
       }
    }
    DONT_UPPER = false;
@@ -2652,7 +2652,7 @@ CMDF( do_mp_practice )
 
    if( victim->level < skill_table[sn]->skill_level[victim->Class] )
    {
-      act_printf( AT_TELL, ch, NULL, victim, TO_VICT, "$n attempts to tutor you in %s, but it's beyond your comprehension.", skillname );
+      act_printf( AT_TELL, ch, nullptr, victim, TO_VICT, "$n attempts to tutor you in %s, but it's beyond your comprehension.", skillname );
       return;
    }
 
@@ -2664,7 +2664,7 @@ CMDF( do_mp_practice )
 
    if( ( victim->pcdata->learned[sn] >= adept ) || ( victim->pcdata->learned[sn] >= max ) )
    {
-      act_printf( AT_TELL, ch, NULL, victim, TO_VICT, "$n shows some knowledge of %s, but yours is clearly superior.", skillname );
+      act_printf( AT_TELL, ch, nullptr, victim, TO_VICT, "$n shows some knowledge of %s, but yours is clearly superior.", skillname );
       return;
    }
 
@@ -2678,7 +2678,7 @@ CMDF( do_mp_practice )
    if( victim->pcdata->learned[sn] >= adept )
    {
       victim->pcdata->learned[sn] = adept;
-      act( AT_TELL, "$n tells you, 'You have learned all I know on this subject...'", ch, NULL, victim, TO_VICT );
+      act( AT_TELL, "$n tells you, 'You have learned all I know on this subject...'", ch, nullptr, victim, TO_VICT );
    }
 }
 
@@ -2738,7 +2738,7 @@ CMDF( do_mpstrew )
          ++iobj;
 
          obj_lose->from_char(  );
-         obj_lose->to_room( pRoomIndex, NULL );
+         obj_lose->to_room( pRoomIndex, nullptr );
       }
       return;
    }
@@ -2804,12 +2804,12 @@ CMDF( do_mpscatter )
          if( sect_show[sector].canpass )
             break;
       }
-      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, NULL, victim, TO_VICT );
-      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, NULL, victim, TO_CHAR );
-      enter_map( victim, NULL, x, y, map );
+      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, nullptr, victim, TO_VICT );
+      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, nullptr, victim, TO_CHAR );
+      enter_map( victim, nullptr, x, y, map );
       victim->position = POS_STANDING;
-      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, nullptr, nullptr, TO_ROOM );
    }
    else
    {
@@ -2822,14 +2822,14 @@ CMDF( do_mpscatter )
       }
       if( victim->fighting )
          victim->stop_fighting( true );
-      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, NULL, victim, TO_VICT );
-      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, NULL, victim, TO_CHAR );
+      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, nullptr, victim, TO_VICT );
+      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, nullptr, victim, TO_CHAR );
       victim->from_room(  );
       if( !victim->to_room( pRoomIndex ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       victim->position = POS_RESTING;
-      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, nullptr, nullptr, TO_ROOM );
       interpret( victim, "look" );
    }
 }
@@ -2870,9 +2870,9 @@ CMDF( do_mp_slay )
 
    if( victim->level < LEVEL_SUPREME )
    {
-      act( AT_IMMORT, "You slay $M in cold blood!", ch, NULL, victim, TO_CHAR );
-      act( AT_IMMORT, "$n slays you in cold blood!", ch, NULL, victim, TO_VICT );
-      act( AT_IMMORT, "$n slays $N in cold blood!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_IMMORT, "You slay $M in cold blood!", ch, nullptr, victim, TO_CHAR );
+      act( AT_IMMORT, "$n slays you in cold blood!", ch, nullptr, victim, TO_VICT );
+      act( AT_IMMORT, "$n slays $N in cold blood!", ch, nullptr, victim, TO_NOTVICT );
       raw_kill( ch, victim );
       ch->stop_fighting( false );
       stop_hating( ch );
@@ -2881,9 +2881,9 @@ CMDF( do_mp_slay )
    }
    else
    {
-      act( AT_IMMORT, "You attempt to slay $M, but the All Mighty protects $M!", ch, NULL, victim, TO_CHAR );
-      act( AT_IMMORT, "$n attempts to slay you. The Almighty is snickering in the corner.", ch, NULL, victim, TO_VICT );
-      act( AT_IMMORT, "$n attempts to slay $N, but the All Mighty protects $M!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_IMMORT, "You attempt to slay $M, but the All Mighty protects $M!", ch, nullptr, victim, TO_CHAR );
+      act( AT_IMMORT, "$n attempts to slay you. The Almighty is snickering in the corner.", ch, nullptr, victim, TO_VICT );
+      act( AT_IMMORT, "$n attempts to slay $N, but the All Mighty protects $M!", ch, nullptr, victim, TO_NOTVICT );
    }
 }
 
@@ -2969,20 +2969,20 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
    switch ( victim->position )
    {
       case POS_MORTAL:
-         act( AT_DYING, "$n is mortally wounded, and will die soon, if not aided.", victim, NULL, NULL, TO_ROOM );
-         act( AT_DANGER, "You are mortally wounded, and will die soon, if not aided.", victim, NULL, NULL, TO_CHAR );
+         act( AT_DYING, "$n is mortally wounded, and will die soon, if not aided.", victim, nullptr, nullptr, TO_ROOM );
+         act( AT_DANGER, "You are mortally wounded, and will die soon, if not aided.", victim, nullptr, nullptr, TO_CHAR );
          break;
 
       case POS_INCAP:
-         act( AT_DYING, "$n is incapacitated and will slowly die, if not aided.", victim, NULL, NULL, TO_ROOM );
-         act( AT_DANGER, "You are incapacitated and will slowly die, if not aided.", victim, NULL, NULL, TO_CHAR );
+         act( AT_DYING, "$n is incapacitated and will slowly die, if not aided.", victim, nullptr, nullptr, TO_ROOM );
+         act( AT_DANGER, "You are incapacitated and will slowly die, if not aided.", victim, nullptr, nullptr, TO_CHAR );
          break;
 
       case POS_STUNNED:
          if( !victim->has_aflag( AFF_PARALYSIS ) )
          {
-            act( AT_ACTION, "$n is stunned, but will probably recover.", victim, NULL, NULL, TO_ROOM );
-            act( AT_HURT, "You are stunned, but will probably recover.", victim, NULL, NULL, TO_CHAR );
+            act( AT_ACTION, "$n is stunned, but will probably recover.", victim, nullptr, nullptr, TO_ROOM );
+            act( AT_HURT, "You are stunned, but will probably recover.", victim, nullptr, nullptr, TO_CHAR );
          }
          break;
 
@@ -3017,7 +3017,7 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
             victim->gain_exp( ( exp_level( victim->level ) - victim->exp ) / 2 );
       }
       raw_kill( ch, victim );
-      victim = NULL;
+      victim = nullptr;
       return rVICT_DIED;
    }
 
@@ -3325,7 +3325,7 @@ CMDF( do_mp_open_passage )
       return;
    }
 
-   if( ( pexit = fromRoom->get_exit( exit_num ) ) != NULL )
+   if( ( pexit = fromRoom->get_exit( exit_num ) ) != nullptr )
    {
       if( !IS_EXIT_FLAG( pexit, EX_PASSAGE ) )
          return;
@@ -3552,7 +3552,7 @@ CMDF( do_mpsindhae )
 {
    string arg;
    char prizebuf[MSL];
-   obj_index *pObjIndex, *prizeindex = NULL;
+   obj_index *pObjIndex, *prizeindex = nullptr;
    char_data *victim;
 
    if( !can_use_mprog( ch ) )
@@ -3568,7 +3568,7 @@ CMDF( do_mpsindhae )
 
    if( !victim->in_room )
    {
-      progbugf( ch, "mpsindhae: Redemption target %s in NULL room! Transplanting to Limbo.", victim->name );
+      progbugf( ch, "mpsindhae: Redemption target %s in nullptr room! Transplanting to Limbo.", victim->name );
       if( !victim->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
@@ -3711,7 +3711,7 @@ char_data *make_doppleganger( char_data * ch )
    if( !( pMobIndex = get_mob_index( MOB_DOPPLEGANGER ) ) )
    {
       bug( "%s: Doppleganger mob %d not found!", __func__, MOB_DOPPLEGANGER );
-      return NULL;
+      return nullptr;
    }
 
    mob = new char_data;
@@ -3833,7 +3833,7 @@ CMDF( do_mpdoppleganger )
 
    if( !( host = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "%s", "mpdoppleganger: Attempting to copy NULL host!" );
+      progbugf( ch, "%s", "mpdoppleganger: Attempting to copy nullptr host!" );
       return;
    }
 
@@ -3901,7 +3901,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
 
    ch->Class = CLASS_WARRIOR; /* Default for new PC - Samson 8-4-98 */
    ch->race = RACE_HUMAN;  /* Default for new PC - Samson 8-4-98 */
-   ch->pcdata->clan = NULL;
+   ch->pcdata->clan = nullptr;
 
    race = race_table[ch->race];
 
@@ -3970,7 +3970,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
     * Modified by Samson to use variable so object can be moved to a new zone if needed - 9-5-98 
     */
    objcheck = get_obj_index( OBJ_VNUM_NEWBIE_GUIDE );
-   if( objcheck != NULL )
+   if( objcheck != nullptr )
    {
       if( !( obj = get_obj_index( OBJ_VNUM_NEWBIE_GUIDE )->create_object( 1 ) ) )
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -3981,7 +3981,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
       bug( "%s: Newbie Guide object %d not found.", __func__, OBJ_VNUM_NEWBIE_GUIDE );
 
    objcheck = get_obj_index( OBJ_VNUM_SCHOOL_BANNER );
-   if( objcheck != NULL )
+   if( objcheck != nullptr )
    {
       if( !( obj = get_obj_index( OBJ_VNUM_SCHOOL_BANNER )->create_object( 1 ) ) )
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -4417,7 +4417,7 @@ CMDF( do_mptrlook )
       victim->stop_fighting( true );
 
    leave_map( victim, ch, location );
-   act( AT_MAGIC, "A swirling vortex arrives, carrying $n!", victim, NULL, NULL, TO_ROOM );
+   act( AT_MAGIC, "A swirling vortex arrives, carrying $n!", victim, nullptr, nullptr, TO_ROOM );
 }
 
 /* New mob hate, hunt, and fear code courtesy Rjael of Saltwind MUD Installed by Samson 4-14-98 */
@@ -4452,7 +4452,7 @@ CMDF( do_mphate )
       {
          if( !( victim = ch->get_char_world( master->name ) ) )
          {
-            progbugf( ch, "Mphate - NULL NPC Master for %s", victim->name );
+            progbugf( ch, "Mphate - nullptr NPC Master for %s", victim->name );
             return;
          }
       }
@@ -4530,7 +4530,7 @@ CMDF( do_mphunt )
       {
          if( !( victim = ch->get_char_world( master->name ) ) )
          {
-            progbugf( ch, "Mphunt - NULL NPC Master for %s", victim->name );
+            progbugf( ch, "Mphunt - nullptr NPC Master for %s", victim->name );
             return;
          }
       }
@@ -4608,7 +4608,7 @@ CMDF( do_mpfear )
       {
          if( !( victim = ch->get_char_world( master->name ) ) )
          {
-            progbugf( ch, "Mpfear - NULL NPC Master for %s", victim->name );
+            progbugf( ch, "Mpfear - nullptr NPC Master for %s", victim->name );
             return;
          }
       }

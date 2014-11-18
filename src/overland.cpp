@@ -617,7 +617,7 @@ void fix_maps( char_data * ch, char_data * victim )
     */
    if( !victim )
    {
-      bug( "%s: NULL victim!", __func__ );
+      bug( "%s: nullptr victim!", __func__ );
       return;
    }
 
@@ -660,7 +660,7 @@ landmark_data::~landmark_data(  )
 
 void load_landmarks( void )
 {
-   landmark_data *landmark = NULL;
+   landmark_data *landmark = nullptr;
    ifstream stream;
 
    landmarklist.clear(  );
@@ -757,7 +757,7 @@ landmark_data *check_landmark( short wmap, short x, short y )
             return landmark;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 void add_landmark( short wmap, short x, short y )
@@ -777,7 +777,7 @@ void delete_landmark( landmark_data * landmark )
 {
    if( !landmark )
    {
-      bug( "%s: Trying to delete NULL landmark!", __func__ );
+      bug( "%s: Trying to delete nullptr landmark!", __func__ );
       return;
    }
 
@@ -923,7 +923,7 @@ CMDF( do_landmarks )
 /* OLC command to add/delete/edit landmark information */
 CMDF( do_setmark )
 {
-   landmark_data *landmark = NULL;
+   landmark_data *landmark = nullptr;
    string arg;
 
 #ifdef MULTIPORT
@@ -958,7 +958,7 @@ CMDF( do_setmark )
       case SUB_OVERLAND_DESC:
          landmark = ( landmark_data * ) ch->pcdata->dest_buf;
          if( !landmark )
-            bug( "%s: setmark desc: sub_overland_desc: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: setmark desc: sub_overland_desc: nullptr ch->pcdata->dest_buf", __func__ );
          landmark->description = ch->copy_buffer(  );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
@@ -1084,7 +1084,7 @@ mapexit_data::~mapexit_data(  )
 
 void load_mapexits( void )
 {
-   mapexit_data *mexit = NULL;
+   mapexit_data *mexit = nullptr;
    ifstream stream;
 
    mapexitlist.clear(  );
@@ -1198,14 +1198,14 @@ mapexit_data *check_mapexit( short map, short x, short y )
             return mexit;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 void modify_mapexit( mapexit_data * mexit, short tomap, short onmap, short hereX, short hereY, short thereX, short thereY, int vnum, const string & area )
 {
    if( !mexit )
    {
-      bug( "%s: NULL exit being modified!", __func__ );
+      bug( "%s: nullptr exit being modified!", __func__ );
       return;
    }
 
@@ -1244,7 +1244,7 @@ void delete_mapexit( mapexit_data * mexit )
 {
    if( !mexit )
    {
-      bug( "%s: Trying to delete NULL exit!", __func__ );
+      bug( "%s: Trying to delete nullptr exit!", __func__ );
       return;
    }
 
@@ -1272,7 +1272,7 @@ CMDF( do_setexit )
 {
    string arg;
    room_index *location;
-   mapexit_data *mexit = NULL;
+   mapexit_data *mexit = nullptr;
    int vnum;
 
 #ifdef MULTIPORT
@@ -1382,7 +1382,7 @@ CMDF( do_setexit )
          return;
       }
 
-      modify_mapexit( mexit, map, ch->wmap, ch->mx, ch->my, x, y, -1, NULL );
+      modify_mapexit( mexit, map, ch->wmap, ch->mx, ch->my, x, y, -1, nullptr );
       putterr( ch->wmap, ch->mx, ch->my, SECT_EXIT );
       ch->printf( "Exit set to map of %s, at %dX, %dY.\r\n", arg2.c_str(  ), x, y );
       return;
@@ -1701,8 +1701,8 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
  */
 void display_map( char_data * ch )
 {
-   landmark_data *landmark = NULL;
-   landing_data *landing = NULL;
+   landmark_data *landmark = nullptr;
+   landing_data *landing = nullptr;
    short startx, starty, endx, endy, sector;
    int mod = sysdata->mapsize;
 
@@ -1710,7 +1710,7 @@ void display_map( char_data * ch )
    {
       bug( "%s: Player %s on invalid map! Moving them to %s.", __func__, ch->name, map_names[MAP_ONE] );
       ch->printf( "&RYou were found on an invalid map and have been moved to %s.\r\n", map_names[MAP_ONE] );
-      enter_map( ch, NULL, 499, 500, ACON_ONE );
+      enter_map( ch, nullptr, 499, 500, ACON_ONE );
       return;
    }
 
@@ -1738,7 +1738,7 @@ void display_map( char_data * ch )
       if( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise )
          mod = 2;
 
-      if( light != NULL )
+      if( light != nullptr )
       {
          if( light->item_type == ITEM_LIGHT && ( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise ) )
             mod += 1;
@@ -1851,8 +1851,8 @@ bool map_wander( char_data * ch, short map, short x, short y, short sector )
  */
 void check_random_mobs( char_data * ch )
 {
-   mob_index *imob = NULL;
-   char_data *mob = NULL;
+   mob_index *imob = nullptr;
+   char_data *mob = nullptr;
    int vnum = -1;
    int terrain = get_terrain( ch->wmap, ch->mx, ch->my );
 
@@ -1912,7 +1912,7 @@ void map_scan( char_data * ch )
    if( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise )
       mod = 1;
 
-   if( light != NULL )
+   if( light != nullptr )
    {
       if( light->item_type == ITEM_LIGHT && ( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise ) )
          mod += 1;
@@ -2014,19 +2014,19 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
 {
    if( !ch )
    {
-      bug( "%s: NULL master!", __func__ );
+      bug( "%s: nullptr master!", __func__ );
       return;
    }
 
    if( !from )
    {
-      bug( "%s: %s NULL source room!", __func__, ch->name );
+      bug( "%s: %s nullptr source room!", __func__, ch->name );
       return;
    }
 
    if( !to )
    {
-      bug( "%s: %s NULL target room!", __func__, ch->name );
+      bug( "%s: %s nullptr target room!", __func__, ch->name );
       return;
    }
 
@@ -2115,15 +2115,15 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
    if( sector == SECT_EXIT )
    {
       mapexit_data *mexit;
-      room_index *toroom = NULL;
+      room_index *toroom = nullptr;
 
       mexit = check_mapexit( wmap, x, y );
 
-      if( mexit != NULL && !ch->has_pcflag( PCFLAG_MAPEDIT ) )
+      if( mexit != nullptr && !ch->has_pcflag( PCFLAG_MAPEDIT ) )
       {
          if( mexit->tomap != -1 )   /* Means exit goes to another map */
          {
-            enter_map( ch, NULL, mexit->therex, mexit->therey, mexit->tomap );
+            enter_map( ch, nullptr, mexit->therex, mexit->therey, mexit->tomap );
 
             list < char_data * >::iterator ich;
             size_t chars = from_room->people.size(  );
@@ -2139,11 +2139,11 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
                {
                   if( !fch->isnpc(  ) )
                   {
-                     act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
+                     act( AT_ACTION, "You follow $N.", fch, nullptr, ch, TO_CHAR );
                      process_exit( fch, fch->wmap, x, y, dir, running );
                   }
                   else
-                     enter_map( fch, NULL, mexit->therex, mexit->therey, mexit->tomap );
+                     enter_map( fch, nullptr, mexit->therex, mexit->therey, mexit->tomap );
                }
             }
             return rSTOP;
@@ -2204,7 +2204,7 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
             return rSTOP;
          }
 
-         leave_map( ch, NULL, toroom );
+         leave_map( ch, nullptr, toroom );
 
          list < char_data * >::iterator ich;
          size_t chars = from_room->people.size(  );
@@ -2220,7 +2220,7 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
             {
                if( !fch->isnpc(  ) )
                {
-                  act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
+                  act( AT_ACTION, "You follow $N.", fch, nullptr, ch, TO_CHAR );
                   process_exit( fch, fch->wmap, x, y, dir, running );
                }
                else
@@ -2230,7 +2230,7 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
          return rSTOP;
       }
 
-      if( mexit != NULL && ch->has_pcflag( PCFLAG_MAPEDIT ) )
+      if( mexit != nullptr && ch->has_pcflag( PCFLAG_MAPEDIT ) )
       {
          delete_mapexit( mexit );
          putterr( ch->wmap, x, y, ch->pcdata->secedit );
@@ -2386,9 +2386,9 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
    if( !running )
    {
       if( ch->mount )
-         act_printf( AT_ACTION, ch, NULL, ch->mount, TO_NOTVICT, "$n %s %s upon $N.", txt, dir_name[dir] );
+         act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_NOTVICT, "$n %s %s upon $N.", txt, dir_name[dir] );
       else
-         act_printf( AT_ACTION, ch, NULL, dir_name[dir], TO_ROOM, "$n %s $T.", txt );
+         act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "$n %s $T.", txt );
    }
 
    if( !ch->is_immortal(  ) ) /* Imms don't get charged movement */
@@ -2455,9 +2455,9 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
    if( !running )
    {
       if( ch->mount )
-         act_printf( AT_ACTION, ch, NULL, ch->mount, TO_ROOM, "$n %s from %s upon $N.", txt, dtxt );
+         act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_ROOM, "$n %s from %s upon $N.", txt, dtxt );
       else
-         act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "$n %s from %s.", txt, dtxt );
+         act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n %s from %s.", txt, dtxt );
    }
 
    list < char_data * >::iterator ich;
@@ -2475,7 +2475,7 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
          if( !fch->isnpc(  ) )
          {
             if( !running )
-               act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
+               act( AT_ACTION, "You follow $N.", fch, nullptr, ch, TO_CHAR );
             process_exit( fch, fch->wmap, x, y, dir, running );
          }
          else
@@ -2514,7 +2514,7 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
 /* Fairly self-explanitory. It finds out what continent an area is on and drops the PC on the appropriate map for it */
 room_index *find_continent( char_data * ch, room_index * maproom )
 {
-   room_index *location = NULL;
+   room_index *location = nullptr;
 
    if( maproom->area->continent == ACON_ONE )
    {
@@ -2528,7 +2528,7 @@ room_index *find_continent( char_data * ch, room_index * maproom )
 /* How one gets from a normal zone onto the overland, via an exit flagged as EX_OVERLAND */
 void enter_map( char_data * ch, exit_data * pexit, int x, int y, int continent )
 {
-   room_index *maproom = NULL, *original;
+   room_index *maproom = nullptr, *original;
 
    if( continent < 0 )  /* -1 means you came in from a regular area exit */
       maproom = find_continent( ch, ch->in_room );
@@ -2606,7 +2606,7 @@ void leave_map( char_data * ch, char_data * victim, room_index * target )
    ch->my = -1;
    ch->wmap = -1;
 
-   if( target != NULL )
+   if( target != nullptr )
    {
       room_index *from = ch->in_room;
       ch->from_room(  );
@@ -2847,7 +2847,7 @@ void save_map_png( const char *mapfile, short mapnumber )
    mapfile = strlower( mapfile );   /* Forces filename into lowercase */
    snprintf( graphicname, 256, "%s%s.png", MAP_DIR, mapfile );
 
-   if( ( PngOut = fopen( graphicname, "w" ) ) == NULL )
+   if( ( PngOut = fopen( graphicname, "w" ) ) == nullptr )
    {
       bug( "%s: fopen", __func__ );
       perror( graphicname );

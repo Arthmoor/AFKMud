@@ -73,7 +73,7 @@ char *fgetf( char *s, int n, register FILE * iop )
       if( ( *cs++ = c ) == '\0' )
          break;
    *cs = '\0';
-   return ( ( c == EOF && cs == s ) ? NULL : s );
+   return ( ( c == EOF && cs == s ) ? nullptr : s );
 }
 
 /* NOT recommended to be used as a conventional command! */
@@ -147,15 +147,15 @@ CMDF( do_mudexec )
       g.gl_offs = 1;
       strtok( arg, " " );
 
-      if( ( p = strtok( NULL, " " ) ) != NULL )
-         glob( p, GLOB_DOOFFS | GLOB_NOCHECK, NULL, &g );
+      if( ( p = strtok( nullptr, " " ) ) != nullptr )
+         glob( p, GLOB_DOOFFS | GLOB_NOCHECK, nullptr, &g );
 
       if( !g.gl_pathv[g.gl_pathc - 1] )
          g.gl_pathv[g.gl_pathc - 1] = p;
 
-      while( ( p = strtok( NULL, " " ) ) != NULL )
+      while( ( p = strtok( nullptr, " " ) ) != nullptr )
       {
-         glob( p, GLOB_DOOFFS | GLOB_NOCHECK | GLOB_APPEND, NULL, &g );
+         glob( p, GLOB_DOOFFS | GLOB_NOCHECK | GLOB_APPEND, nullptr, &g );
          if( !g.gl_pathv[g.gl_pathc - 1] )
             g.gl_pathv[g.gl_pathc - 1] = p;
       }
@@ -184,7 +184,7 @@ CMDF( do_mudexec )
 
       argc = 0;
       argv[argc] = strtok( argument.c_str(  ), " " );
-      while( ( argv[++argc] = strtok( NULL, " " ) ) != NULL );
+      while( ( argv[++argc] = strtok( nullptr, " " ) ) != nullptr );
 
       execvp( argv[0], argv );
 #endif
@@ -883,7 +883,7 @@ void add_shellcommand( shell_cmd * command )
 
    if( !command )
    {
-      bug( "%s: NULL command", __func__ );
+      bug( "%s: nullptr command", __func__ );
       return;
    }
 
@@ -895,7 +895,7 @@ void add_shellcommand( shell_cmd * command )
 
    if( !command->get_func(  ) )
    {
-      bug( "%s: NULL command->do_fun for command %s", __func__, command->get_name(  ).c_str(  ) );
+      bug( "%s: nullptr command->do_fun for command %s", __func__, command->get_name(  ).c_str(  ) );
       return;
    }
 
@@ -926,7 +926,7 @@ void add_shellcommand( shell_cmd * command )
     * Kick it out of the main command table if it's there 
     */
    cmd_type *cmd;
-   if( ( cmd = find_command( command->get_name(  ) ) ) != NULL )
+   if( ( cmd = find_command( command->get_name(  ) ) ) != nullptr )
    {
       log_printf( "Removing command: %s and replacing in shell command table.", cmd->name.c_str(  ) );
       unlink_command( cmd );
@@ -945,12 +945,12 @@ shell_cmd *find_shellcommand( const string & command )
       if( !str_prefix( command, scmd->get_name(  ) ) )
          return scmd;
    }
-   return NULL;
+   return nullptr;
 }
 
 void load_shellcommands( void )
 {
-   shell_cmd *scmd = NULL;
+   shell_cmd *scmd = nullptr;
    ifstream stream;
    int version = 0;
 
@@ -1244,13 +1244,13 @@ CMDF( do_shelledit )
    /*
     * display usage message 
     */
-   do_shelledit( ch, NULL );
+   do_shelledit( ch, nullptr );
 }
 
 bool shell_hook( char_data * ch, const string & command, string & argument )
 {
    list < shell_cmd * >::iterator icmd;
-   shell_cmd *cmd = NULL;
+   shell_cmd *cmd = nullptr;
    char logline[MIL];
    bool found = false;
 

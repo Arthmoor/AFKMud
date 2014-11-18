@@ -72,7 +72,7 @@ void init_mysql(  );
  */
 void save_mobile( FILE * fp, char_data * mob )
 {
-   skill_type *skill = NULL;
+   skill_type *skill = nullptr;
 
    if( !mob->isnpc(  ) || !fp )
       return;
@@ -132,7 +132,7 @@ void save_mobile( FILE * fp, char_data * mob )
    mob->de_equip(  );
 
    if( !mob->carrying.empty(  ) )
-      fwrite_obj( mob, mob->carrying, NULL, fp, 0, true );
+      fwrite_obj( mob, mob->carrying, nullptr, fp, 0, true );
 
    mob->re_equip(  );
 
@@ -166,7 +166,7 @@ void save_world( void )
             perror( filename );
             continue;
          }
-         fwrite_obj( NULL, pRoomIndex->objects, NULL, objfp, 0, true );
+         fwrite_obj( nullptr, pRoomIndex->objects, nullptr, objfp, 0, true );
          fprintf( objfp, "%s", "#END\n" );
          FCLOSE( objfp );
       }
@@ -199,9 +199,9 @@ void save_world( void )
 
 char_data *load_mobile( FILE * fp )
 {
-   char_data *mob = NULL;
+   char_data *mob = nullptr;
    int inroom = 0;
-   room_index *pRoomIndex = NULL;
+   room_index *pRoomIndex = nullptr;
 
    const char *word = ( feof( fp ) ? "EndMobile" : fread_word( fp ) );
 
@@ -219,7 +219,7 @@ char_data *load_mobile( FILE * fp )
       if( !get_mob_index( vnum ) )
       {
          bug( "%s: No index data for vnum %d", __func__, vnum );
-         return NULL;
+         return nullptr;
       }
       mob = get_mob_index( vnum )->create_mobile(  );
       if( !mob )
@@ -241,7 +241,7 @@ char_data *load_mobile( FILE * fp )
                break;
          }
          bug( "%s: Unable to create mobile for vnum %d", __func__, vnum );
-         return NULL;
+         return nullptr;
       }
    }
    else
@@ -265,7 +265,7 @@ char_data *load_mobile( FILE * fp )
       }
       mob->extract( true );
       bug( "%s: Vnum not found", __func__ );
-      return NULL;
+      return nullptr;
    }
 
    for( ;; )
@@ -469,7 +469,7 @@ void read_obj_file( const char *dirname, const char *filename )
       return;
    }
 
-   if( ( fp = fopen( fname, "r" ) ) != NULL )
+   if( ( fp = fopen( fname, "r" ) ) != nullptr )
    {
       rset_supermob( room );
 
@@ -634,7 +634,7 @@ CMDF( do_hotboot )
       descriptor_data *d = *ds;
       char_data *victim;
 
-      if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING ) && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room )
+      if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING ) && ( victim = d->character ) != nullptr && !victim->isnpc(  ) && victim->in_room )
       {
          if( victim->fighting && victim->level >= 1 && victim->level <= MAX_LEVEL )
          {
@@ -755,14 +755,14 @@ CMDF( do_hotboot )
    close_db(  );
 #endif
    dlclose( sysdata->dlHandle );
-   execl( EXE_FILE, "afkmud", buf, "hotboot", buf2, buf3, ( char * )NULL );
+   execl( EXE_FILE, "afkmud", buf, "hotboot", buf2, buf3, ( char * )nullptr );
 
    /*
     * Failed - sucessful exec will not return 
     */
    perror( "do_copyover: execl" );
 
-   sysdata->dlHandle = dlopen( NULL, RTLD_LAZY );
+   sysdata->dlHandle = dlopen( nullptr, RTLD_LAZY );
    if( !sysdata->dlHandle )
    {
       bug( "%s: FATAL ERROR: Unable to reopen system executable handle!", __func__ );
@@ -868,8 +868,8 @@ void hotboot_recover( void )
 
          if( !d->character->to_room( d->character->in_room ) )
             log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-         act( AT_MAGIC, "A puff of ethereal smoke dissipates around you!", d->character, NULL, NULL, TO_CHAR );
-         act( AT_MAGIC, "$n appears in a puff of ethereal smoke!", d->character, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "A puff of ethereal smoke dissipates around you!", d->character, nullptr, nullptr, TO_CHAR );
+         act( AT_MAGIC, "$n appears in a puff of ethereal smoke!", d->character, nullptr, nullptr, TO_ROOM );
          d->connected = CON_PLAYING;
 
          d->character->pcdata->lasthost = d->host;

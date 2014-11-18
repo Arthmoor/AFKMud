@@ -191,7 +191,7 @@ void web_colourconv( char *buffer, const char *txt )
 
 void web_who(  )
 {
-   FILE *webwho = NULL;
+   FILE *webwho = nullptr;
    list < descriptor_data * >::iterator ds;
    ostringstream webbuf, buf1, buf2;
    string rank, outbuf, stats, clan_name;
@@ -227,7 +227,7 @@ void web_who(  )
 
       if( !d )
       {
-         bug( "%s: NULL DESCRIPTOR in list!", __func__ );
+         bug( "%s: nullptr DESCRIPTOR in list!", __func__ );
          continue;
       }
 
@@ -278,7 +278,7 @@ void web_who(  )
 
       if( !d )
       {
-         bug( "%s: NULL DESCRIPTOR in list!", __func__ );
+         bug( "%s: nullptr DESCRIPTOR in list!", __func__ );
          continue;
       }
 
@@ -365,7 +365,7 @@ void web_arealist(  )
 /* Aurora's room-to-web toy - this could be quite fun to mess with */
 void room_to_html( room_index * room, bool complete )
 {
-   FILE *fp = NULL;
+   FILE *fp = nullptr;
    char filename[256];
    bool found = false;
 
@@ -374,7 +374,7 @@ void room_to_html( room_index * room, bool complete )
 
    snprintf( filename, 256, "%s%d.html", WEB_ROOMS, room->vnum );
 
-   if( ( fp = fopen( filename, "w" ) ) != NULL )
+   if( ( fp = fopen( filename, "w" ) ) != nullptr )
    {
       char roomdesc[MSL];
 

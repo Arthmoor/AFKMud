@@ -134,7 +134,7 @@ CMDF( do_comment )
          ch->substate = SUB_NONE;
          if( ch->pcdata->pnote )
             deleteptr( ch->pcdata->pnote );
-         ch->pcdata->pnote = NULL;
+         ch->pcdata->pnote = nullptr;
          return;
    }
 
@@ -232,7 +232,7 @@ CMDF( do_comment )
          ++vnum;
          if( fAll || vnum == atoi( argument.c_str(  ) ) )
          {
-            note_to_char( ch, note, NULL, 0 );
+            note_to_char( ch, note, nullptr, 0 );
             return;
          }
       }
@@ -282,7 +282,7 @@ CMDF( do_comment )
          ch->print( "You have no comment in progress.\r\n" );
          return;
       }
-      note_to_char( ch, ch->pcdata->pnote, NULL, 0 );
+      note_to_char( ch, ch->pcdata->pnote, nullptr, 0 );
       return;
    }
 
@@ -317,7 +317,7 @@ CMDF( do_comment )
       ch->pcdata->pnote->date_stamp = current_time;
 
       pnote = ch->pcdata->pnote;
-      ch->pcdata->pnote = NULL;
+      ch->pcdata->pnote = nullptr;
 
       victim->pcdata->comments.push_back( pnote );
       victim->save(  );

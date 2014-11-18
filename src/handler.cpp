@@ -299,7 +299,7 @@ void queue_extracted_obj( obj_data * obj )
 
    if( !obj )
    {
-      bug( "%s: obj = NULL", __func__ );
+      bug( "%s: obj = nullptr", __func__ );
       return;
    }
    ood = new extracted_obj_data;
@@ -318,7 +318,7 @@ void queue_extracted_char( char_data * ch, bool extract )
 
    if( !ch )
    {
-      bug( "%s: ch = NULL", __func__ );
+      bug( "%s: ch = nullptr", __func__ );
       return;
    }
    ccd = new extracted_char_data;
@@ -391,7 +391,7 @@ obj_data *get_obj_list( char_data * ch, const string & argument, list < obj_data
          if( ( count += obj->count ) >= number )
             return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -516,7 +516,7 @@ bool ms_find_obj( char_data * ch )
 obj_data *find_obj( char_data * ch, string argument, bool carryonly )
 {
    string arg1, arg2;
-   obj_data *obj = NULL;
+   obj_data *obj = nullptr;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
@@ -529,37 +529,37 @@ obj_data *find_obj( char_data * ch, string argument, bool carryonly )
       if( carryonly && !( obj = ch->get_obj_carry( arg1 ) ) )
       {
          ch->print( "You do not have that item.\r\n" );
-         return NULL;
+         return nullptr;
       }
       else if( !carryonly && !( obj = ch->get_obj_here( arg1 ) ) )
       {
          ch->printf( "I see no %s here.\r\n", arg1.c_str(  ) );
-         return NULL;
+         return nullptr;
       }
       return obj;
    }
    else
    {
-      obj_data *container = NULL;
+      obj_data *container = nullptr;
 
       if( carryonly && !( container = ch->get_obj_carry( arg2 ) ) && !( container = ch->get_obj_wear( arg2 ) ) )
       {
          ch->print( "You do not have that item.\r\n" );
-         return NULL;
+         return nullptr;
       }
       if( !carryonly && !( container = ch->get_obj_here( arg2 ) ) )
       {
          ch->printf( "I see no %s here.\r\n", arg2.c_str(  ) );
-         return NULL;
+         return nullptr;
       }
       if( !container->extra_flags.test( ITEM_COVERING ) && IS_SET( container->value[1], CONT_CLOSED ) )
       {
          ch->printf( "The %s is closed.\r\n", container->name );
-         return NULL;
+         return nullptr;
       }
       if( !( obj = get_obj_list( ch, arg1, container->contents ) ) )
          act( AT_PLAIN, container->extra_flags.test( ITEM_COVERING ) ?
-              "I see nothing like that beneath $p." : "I see nothing like that in $p.", ch, container, NULL, TO_CHAR );
+              "I see nothing like that beneath $p." : "I see nothing like that in $p.", ch, container, nullptr, TO_CHAR );
       return obj;
    }
 }
@@ -632,8 +632,8 @@ ch_ret spring_trap( char_data * ch, obj_data * obj )
    if( dam <= 0 )
       dam = number_range( 1, 6 ) + lev;
 
-   act_printf( AT_HITME, ch, NULL, NULL, TO_CHAR, "You are %s!", txt );
-   act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "$n is %s.", txt );
+   act_printf( AT_HITME, ch, nullptr, nullptr, TO_CHAR, "You are %s!", txt );
+   act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n is %s.", txt );
    --obj->value[0];
    if( obj->value[0] <= 0 )
       obj->extract(  );
@@ -648,41 +648,41 @@ ch_ret spring_trap( char_data * ch, obj_data * obj )
       case TRAP_TYPE_POISON_NEEDLE:
       case TRAP_TYPE_POISON_DAGGER:
       case TRAP_TYPE_POISON_ARROW:
-         retcode = obj_cast_spell( gsn_poison, lev, ch, ch, NULL );
+         retcode = obj_cast_spell( gsn_poison, lev, ch, ch, nullptr );
          if( retcode == rNONE )
             retcode = damage( ch, ch, dam, TYPE_UNDEFINED );
          break;
 
       case TRAP_TYPE_POISON_GAS:
-         retcode = obj_cast_spell( gsn_poison, lev, ch, ch, NULL );
+         retcode = obj_cast_spell( gsn_poison, lev, ch, ch, nullptr );
          break;
 
       case TRAP_TYPE_BLINDNESS_GAS:
-         retcode = obj_cast_spell( gsn_blindness, lev, ch, ch, NULL );
+         retcode = obj_cast_spell( gsn_blindness, lev, ch, ch, nullptr );
          break;
 
       case TRAP_TYPE_SLEEPING_GAS:
-         retcode = obj_cast_spell( skill_lookup( "sleep" ), lev, ch, ch, NULL );
+         retcode = obj_cast_spell( skill_lookup( "sleep" ), lev, ch, ch, nullptr );
          break;
 
       case TRAP_TYPE_ACID_SPRAY:
-         retcode = obj_cast_spell( skill_lookup( "acid blast" ), lev, ch, ch, NULL );
+         retcode = obj_cast_spell( skill_lookup( "acid blast" ), lev, ch, ch, nullptr );
          break;
 
       case TRAP_TYPE_SEX_CHANGE:
-         retcode = obj_cast_spell( skill_lookup( "change sex" ), lev, ch, ch, NULL );
+         retcode = obj_cast_spell( skill_lookup( "change sex" ), lev, ch, ch, nullptr );
          break;
 
       case TRAP_TYPE_FLAME:
-         retcode = obj_cast_spell( skill_lookup( "flamestrike" ), lev, ch, ch, NULL );
+         retcode = obj_cast_spell( skill_lookup( "flamestrike" ), lev, ch, ch, nullptr );
          break;
 
       case TRAP_TYPE_EXPLOSION:
-         retcode = obj_cast_spell( gsn_fireball, lev, ch, ch, NULL );
+         retcode = obj_cast_spell( gsn_fireball, lev, ch, ch, nullptr );
          break;
 
       case TRAP_TYPE_ELECTRIC_SHOCK:
-         retcode = obj_cast_spell( skill_lookup( "lightning bolt" ), lev, ch, ch, NULL );
+         retcode = obj_cast_spell( skill_lookup( "lightning bolt" ), lev, ch, ch, nullptr );
          break;
    }
    return retcode;

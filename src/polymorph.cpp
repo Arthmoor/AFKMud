@@ -67,7 +67,7 @@ morph_data *get_morph( const string & arg )
    list < morph_data * >::iterator imorph;
 
    if( arg.empty(  ) )
-      return NULL;
+      return nullptr;
 
    for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
@@ -76,7 +76,7 @@ morph_data *get_morph( const string & arg )
       if( !str_cmp( morph->name, arg ) )
          return morph;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -88,7 +88,7 @@ morph_data *get_morph_vnum( int vnum )
    list < morph_data * >::iterator imorph;
 
    if( vnum < 1 )
-      return NULL;
+      return nullptr;
 
    for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
@@ -97,7 +97,7 @@ morph_data *get_morph_vnum( int vnum )
       if( morph->vnum == vnum )
          return morph;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -108,7 +108,7 @@ morph_data *get_morph_vnum( int vnum )
  */
 bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
 {
-   if( morph == NULL )
+   if( morph == nullptr )
       return false;
    if( ch->is_immortal(  ) || ch->isnpc(  ) )   /* Let immortals morph to anything Also NPC can do any morph  */
       return true;
@@ -165,7 +165,7 @@ morph_data *find_morph( char_data * ch, const string & target, bool is_cast )
    list < morph_data * >::iterator imorph;
 
    if( target.empty(  ) )
-      return NULL;
+      return nullptr;
 
    for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
    {
@@ -176,7 +176,7 @@ morph_data *find_morph( char_data * ch, const string & target, bool is_cast )
       if( can_morph( ch, morph, is_cast ) )
          return morph;
    }
-   return NULL;
+   return nullptr;
 }
 
 /* 
@@ -355,7 +355,7 @@ CMDF( do_morphset )
    string origarg = argument;
    char buf[MSL];
    int value;
-   morph_data *morph = NULL;
+   morph_data *morph = nullptr;
 
    if( ch->isnpc(  ) )
    {
@@ -377,7 +377,7 @@ CMDF( do_morphset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_morph_desc: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_morph_desc: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -394,7 +394,7 @@ CMDF( do_morphset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error: report to Samson.\r\n" );
-            bug( "%s: sub_morph_help: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_morph_help: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -412,7 +412,7 @@ CMDF( do_morphset )
          ch->print( "Aborting description.\r\n" );
          return;
    }
-   morph = NULL;
+   morph = nullptr;
    smash_tilde( argument );
 
    if( ch->substate == SUB_REPEATCMD )
@@ -441,7 +441,7 @@ CMDF( do_morphset )
       {
          ch->print( "Morphset mode off.\r\n" );
          ch->substate = SUB_NONE;
-         ch->pcdata->dest_buf = NULL;
+         ch->pcdata->dest_buf = nullptr;
          STRFREE( ch->pcdata->subprompt );
          return;
       }
@@ -512,7 +512,7 @@ CMDF( do_morphset )
       else
          morph = get_morph_vnum( atoi( arg1.c_str(  ) ) );
 
-      if( morph == NULL )
+      if( morph == nullptr )
       {
          ch->print( "That morph does not exist.\r\n" );
          return;
@@ -1245,7 +1245,7 @@ CMDF( do_morphstat )
    else
       morph = get_morph_vnum( atoi( arg.c_str(  ) ) );
 
-   if( morph == NULL )
+   if( morph == nullptr )
    {
       ch->print( "No such morph exists.\r\n" );
       return;
@@ -1332,17 +1332,17 @@ CMDF( do_morphstat )
  */
 void send_morph_message( char_data * ch, morph_data * morph, bool is_morph )
 {
-   if( morph == NULL )
+   if( morph == nullptr )
       return;
    if( is_morph )
    {
-      act( AT_MORPH, morph->morph_other, ch, NULL, NULL, TO_ROOM );
-      act( AT_MORPH, morph->morph_self, ch, NULL, NULL, TO_CHAR );
+      act( AT_MORPH, morph->morph_other, ch, nullptr, nullptr, TO_ROOM );
+      act( AT_MORPH, morph->morph_self, ch, nullptr, nullptr, TO_CHAR );
    }
    else
    {
-      act( AT_MORPH, morph->unmorph_other, ch, NULL, NULL, TO_ROOM );
-      act( AT_MORPH, morph->unmorph_self, ch, NULL, NULL, TO_CHAR );
+      act( AT_MORPH, morph->unmorph_other, ch, nullptr, nullptr, TO_ROOM );
+      act( AT_MORPH, morph->unmorph_self, ch, nullptr, nullptr, TO_CHAR );
    }
 }
 
@@ -1354,8 +1354,8 @@ char_morph *make_char_morph( morph_data * morph )
 {
    char_morph *ch_morph;
 
-   if( morph == NULL )
-      return NULL;
+   if( morph == nullptr )
+      return nullptr;
 
    ch_morph = new char_morph;
    ch_morph->morph = morph;
@@ -1474,8 +1474,8 @@ int do_morph_char( char_data * ch, morph_data * morph )
          canmorph = false;
       else if( morph->objuse[0] )
       {
-         act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, NULL, TO_CHAR );
-         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+         act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, nullptr, TO_CHAR );
+         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
             tmpobj->wear_loc = WEAR_WIELD;
          obj->separate(  );
          obj->extract(  );
@@ -1488,8 +1488,8 @@ int do_morph_char( char_data * ch, morph_data * morph )
          canmorph = false;
       else if( morph->objuse[1] )
       {
-         act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, NULL, TO_CHAR );
-         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+         act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, nullptr, TO_CHAR );
+         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
             tmpobj->wear_loc = WEAR_WIELD;
          obj->separate(  );
          obj->extract(  );
@@ -1502,8 +1502,8 @@ int do_morph_char( char_data * ch, morph_data * morph )
          canmorph = false;
       else if( morph->objuse[2] )
       {
-         act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, NULL, TO_CHAR );
-         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+         act( AT_OBJECT, "$p disappears in a whisp of smoke!", obj->carried_by, obj, nullptr, TO_CHAR );
+         if( obj == obj->carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = obj->carried_by->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
             tmpobj->wear_loc = WEAR_WIELD;
          obj->separate(  );
          obj->extract(  );
@@ -1662,7 +1662,7 @@ void setup_morph_vnum( void )
 void morph_defaults( morph_data * morph )
 {
    morph->affected_by.reset(  );
-   morph->name = NULL;
+   morph->name = nullptr;
    morph->Class.reset(  );
    morph->sex = -1;
    morph->timefrom = -1;
@@ -1732,7 +1732,7 @@ morph_data *fread_morph( FILE * fp )
    }
 
    if( !str_cmp( word, "End" ) )
-      return NULL;
+      return nullptr;
 
    morph = new morph_data;
    morph_defaults( morph );
@@ -1760,7 +1760,7 @@ morph_data *fread_morph( FILE * fp )
              * * up! --Shaddai
              */
             deleteptr( morph );
-            return NULL;
+            return nullptr;
             break;
 
          case 'A':
@@ -2019,7 +2019,7 @@ void load_morphs( void )
 
    while( my_continue )
    {
-      morph_data *morph = NULL;
+      morph_data *morph = nullptr;
       const char *word = ( feof( fp ) ? "#END" : fread_word( fp ) );
 
       if( word[0] == '\0' )
@@ -2134,7 +2134,7 @@ void copy_morph( morph_data * morph, morph_data * temp )
  */
 CMDF( do_morphcreate )
 {
-   morph_data *morph, *temp = NULL;
+   morph_data *morph, *temp = nullptr;
    string arg1;
 
    argument = one_argument( argument, arg1 );
@@ -2185,7 +2185,7 @@ void unmorph_all( morph_data * morph )
    {
       char_data *vch = *ich;
 
-      if( vch->morph == NULL || vch->morph->morph == NULL || vch->morph->morph != morph )
+      if( vch->morph == nullptr || vch->morph->morph == nullptr || vch->morph->morph != morph )
          continue;
       do_unmorph_char( vch );
    }
@@ -2269,7 +2269,7 @@ void fwrite_morph_data( char_data * ch, FILE * fp )
 {
    char_morph *morph;
 
-   if( ch->morph == NULL )
+   if( ch->morph == nullptr )
       return;
 
    morph = ch->morph;
@@ -2277,7 +2277,7 @@ void fwrite_morph_data( char_data * ch, FILE * fp )
    /*
     * Only Print Out what is necessary 
     */
-   if( morph->morph != NULL )
+   if( morph->morph != nullptr )
    {
       fprintf( fp, "Vnum %d\n", morph->morph->vnum );
       fprintf( fp, "Name %s~\n", morph->morph->name );
@@ -2379,7 +2379,7 @@ void clear_char_morph( char_morph * morph )
    morph->str = 0;
    morph->tumble = 0;
    morph->wis = 0;
-   morph->morph = NULL;
+   morph->morph = nullptr;
 }
 
 void fread_morph_data( char_data * ch, FILE * fp )
@@ -2544,7 +2544,7 @@ void fread_morph_data( char_data * ch, FILE * fp )
 CMDF( do_imm_morph )
 {
    morph_data *morph;
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    string arg;
    int vnum;
 
@@ -2564,7 +2564,7 @@ CMDF( do_imm_morph )
    vnum = atoi( arg.c_str(  ) );
    morph = get_morph_vnum( vnum );
 
-   if( morph == NULL )
+   if( morph == nullptr )
    {
       ch->printf( "No such morph %d exists.\r\n", vnum );
       return;
@@ -2576,12 +2576,12 @@ CMDF( do_imm_morph )
       ch->print( "No one like that in all the realms.\r\n" );
       return;
    }
-   if( victim != NULL && ch->get_trust(  ) < victim->get_trust(  ) && !victim->isnpc(  ) )
+   if( victim != nullptr && ch->get_trust(  ) < victim->get_trust(  ) && !victim->isnpc(  ) )
    {
       ch->print( "You can't do that!\r\n" );
       return;
    }
-   else if( victim != NULL )
+   else if( victim != nullptr )
       do_morph_char( victim, morph );
    ch->print( "Done.\r\n" );
 }
@@ -2591,7 +2591,7 @@ CMDF( do_imm_morph )
  */
 CMDF( do_imm_unmorph )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
 
    if( argument.empty(  ) )
       do_unmorph_char( ch );
@@ -2600,12 +2600,12 @@ CMDF( do_imm_unmorph )
       ch->print( "No one like that in all the realms.\r\n" );
       return;
    }
-   if( victim != NULL && ch->get_trust(  ) < victim->get_trust(  ) && !victim->isnpc(  ) )
+   if( victim != nullptr && ch->get_trust(  ) < victim->get_trust(  ) && !victim->isnpc(  ) )
    {
       ch->print( "You can't do that!\r\n" );
       return;
    }
-   else if( victim != NULL )
+   else if( victim != nullptr )
       do_unmorph_char( victim );
    ch->print( "Done.\r\n" );
 }

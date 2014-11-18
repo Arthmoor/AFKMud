@@ -67,7 +67,7 @@ void ev_violence( void *data )
 
    if( !ch )
    {
-      bug( "%s: NULL ch pointer!", __func__ );
+      bug( "%s: nullptr ch pointer!", __func__ );
       return;
    }
    char_data *victim = ch->who_fighting(  );
@@ -292,42 +292,42 @@ void ev_violence( void *data )
                   break;
 
                case DFND_CURELIGHT:
-                  act( AT_MAGIC, "$n mutters a few incantations...and looks a little better.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_MAGIC, "$n mutters a few incantations...and looks a little better.", ch, nullptr, nullptr, TO_ROOM );
                   retcode = spell_smaug( skill_lookup( "cure light" ), ch->level, ch, ch );
                   break;
 
                case DFND_CURESERIOUS:
-                  act( AT_MAGIC, "$n mutters a few incantations...and looks a bit better.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_MAGIC, "$n mutters a few incantations...and looks a bit better.", ch, nullptr, nullptr, TO_ROOM );
                   retcode = spell_smaug( skill_lookup( "cure serious" ), ch->level, ch, ch );
                   break;
 
                case DFND_CURECRITICAL:
-                  act( AT_MAGIC, "$n mutters a few incantations...and looks healthier.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_MAGIC, "$n mutters a few incantations...and looks healthier.", ch, nullptr, nullptr, TO_ROOM );
                   retcode = spell_smaug( skill_lookup( "cure critical" ), ch->level, ch, ch );
                   break;
 
                case DFND_HEAL:
-                  act( AT_MAGIC, "$n mutters a few incantations...and looks much healthier.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_MAGIC, "$n mutters a few incantations...and looks much healthier.", ch, nullptr, nullptr, TO_ROOM );
                   retcode = spell_smaug( skill_lookup( "heal" ), ch->level, ch, ch );
                   break;
 
                case DFND_DISPELMAGIC:
                   if( !victim->affects.empty(  ) )
                   {
-                     act( AT_MAGIC, "$n utters an incantation...", ch, NULL, NULL, TO_ROOM );
+                     act( AT_MAGIC, "$n utters an incantation...", ch, nullptr, nullptr, TO_ROOM );
                      retcode = spell_dispel_magic( skill_lookup( "dispel magic" ), ch->level, ch, victim );
                   }
                   break;
 
                case DFND_DISPELEVIL:
-                  act( AT_MAGIC, "$n utters an incantation...", ch, NULL, NULL, TO_ROOM );
+                  act( AT_MAGIC, "$n utters an incantation...", ch, nullptr, nullptr, TO_ROOM );
                   retcode = spell_dispel_evil( skill_lookup( "dispel evil" ), ch->level, ch, victim );
                   break;
 
                case DFND_SANCTUARY:
                   if( !ch->has_aflag( AFF_SANCTUARY ) )
                   {
-                     act( AT_MAGIC, "$n utters a few incantations...", ch, NULL, NULL, TO_ROOM );
+                     act( AT_MAGIC, "$n utters a few incantations...", ch, nullptr, nullptr, TO_ROOM );
                      retcode = spell_smaug( skill_lookup( "sanctuary" ), ch->level, ch, ch );
                   }
                   else
@@ -386,7 +386,7 @@ void ev_violence( void *data )
             if( rch->pIndexData == ch->pIndexData || number_bits( 3 ) == 0 )
             {
                list < char_data * >::iterator ich2;
-               char_data *target = NULL;
+               char_data *target = nullptr;
                int number = 0;
 
                for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
@@ -396,7 +396,7 @@ void ev_violence( void *data )
                   if( rch->can_see( vch, false ) && is_same_group( vch, victim ) && number_range( 0, number ) == 0 )
                   {
                      if( vch->mount && vch->mount == rch )
-                        target = NULL;
+                        target = nullptr;
                      else
                      {
                         target = vch;
@@ -437,7 +437,7 @@ void ev_area_reset( void *data )
          if( !ch )
             continue;
          if( ch->IS_AWAKE(  ) && ch->in_room && ch->in_room->area == area )
-            act( AT_RESET, "$t", ch, area->resetmsg, NULL, TO_CHAR );
+            act( AT_RESET, "$t", ch, area->resetmsg, nullptr, TO_CHAR );
       }
    }
 
@@ -462,14 +462,14 @@ void ev_auction( void *data )
       {
          talk_auction( "%s: going %s for %d.", auction->item->short_descr, ( ( auction->going == 1 ) ? "once" : "twice" ), auction->bet );
 
-         add_event( sysdata->auctionseconds, ev_auction, NULL );
+         add_event( sysdata->auctionseconds, ev_auction, nullptr );
       }
          break;
 
       case 3: /* SOLD! */
          if( !auction->buyer && auction->bet )
          {
-            bug( "%s: Auction code reached SOLD, with NULL buyer, but %d gold bid", __func__, auction->bet );
+            bug( "%s: Auction code reached SOLD, with nullptr buyer, but %d gold bid", __func__, auction->bet );
             auction->bet = 0;
          }
          if( auction->bet > 0 && auction->buyer != auction->seller )
@@ -506,8 +506,8 @@ void ev_auction( void *data )
 
             add_sale( auction->seller->short_descr, obj->seller, auction->buyer->name, obj->short_descr, obj->bid, false );
 
-            auction->item = NULL;   /* reset item */
-            obj = NULL;
+            auction->item = nullptr;   /* reset item */
+            obj = nullptr;
          }
          else  /* not sold */
          {
@@ -519,7 +519,7 @@ void ev_auction( void *data )
             auction->item->to_room( aucvault, auction->seller );
             save_aucvault( auction->seller, auction->seller->short_descr );
          }  /* else */
-         auction->item = NULL;   /* clear auction */
+         auction->item = nullptr;   /* clear auction */
    }  /* switch */
 }
 
@@ -549,7 +549,7 @@ void ev_reboot_count( void *data )
    if( reboot_counter == 1 )
       echo_to_all( "}RGame reboot in 1 minute!! Please find somewhere to log off.", ECHOTAR_ALL );
 
-   add_event( 60, ev_reboot_count, NULL );
+   add_event( 60, ev_reboot_count, nullptr );
 }
 
 void ev_skyship( void *data )
@@ -606,32 +606,32 @@ void ev_skyship( void *data )
 void ev_pfile_check( void *data )
 {
    check_pfiles( 0 );
-   add_event( 86400, ev_pfile_check, NULL );
+   add_event( 86400, ev_pfile_check, nullptr );
 }
 
 void ev_board_check( void *data )
 {
    check_boards(  );
    log_string( "Next board pruning in 24 hours." );
-   add_event( 86400, ev_board_check, NULL );
+   add_event( 86400, ev_board_check, nullptr );
 }
 
 void ev_dns_check( void *data )
 {
    prune_dns(  );
-   add_event( 86400, ev_dns_check, NULL );
+   add_event( 86400, ev_dns_check, nullptr );
 }
 
 void ev_webwho_refresh( void *data )
 {
    web_who(  );
-   add_event( sysdata->webwho, ev_webwho_refresh, NULL );
+   add_event( sysdata->webwho, ev_webwho_refresh, nullptr );
 }
 
 #if !defined(__CYGWIN__) && defined(SQL)
 void ev_mysql_ping( void *data )
 {
    mysql_ping( &myconn );
-   add_event( 1800, ev_mysql_ping, NULL );
+   add_event( 1800, ev_mysql_ping, nullptr );
 }
 #endif

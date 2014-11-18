@@ -54,7 +54,7 @@ bool exists_player( const string & name )
 {
    struct stat fst;
    char buf[256];
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
 
    /*
     * Stands to reason that if there ain't a name to look at, they damn well don't exist! 
@@ -67,7 +67,7 @@ bool exists_player( const string & name )
    if( stat( buf, &fst ) != -1 )
       return true;
 
-   else if( ( victim = supermob->get_char_world( name ) ) != NULL )
+   else if( ( victim = supermob->get_char_world( name ) ) != nullptr )
       return true;
 
    return false;
@@ -297,7 +297,7 @@ CMDF( do_split )
 
       if( gch != ch && is_same_group( gch, ch ) )
       {
-         act_printf( AT_GOLD, ch, NULL, gch, TO_VICT, "$n splits %d gold coins. Your share is %d gold coins.", amount, share );
+         act_printf( AT_GOLD, ch, nullptr, gch, TO_VICT, "$n splits %d gold coins. Your share is %d gold coins.", amount, share );
          gch->gold += share;
       }
    }
@@ -608,7 +608,7 @@ CMDF( do_affected )
       {
          affect_data *paf = *af;
 
-         if( ( skill = get_skilltype( paf->type ) ) != NULL )
+         if( ( skill = get_skilltype( paf->type ) ) != nullptr )
          {
             ++affnum;
             ch->printf( "&W%d&z> &BSpell:&w %-18s&D\r\n", affnum, skill->name );
@@ -669,7 +669,7 @@ CMDF( do_affected )
    {
       affect_data *paf = ( *af );
 
-      if( ( skill = get_skilltype( paf->type ) ) != NULL )
+      if( ( skill = get_skilltype( paf->type ) ) != nullptr )
       {
          char mod[MIL];
          ++affnum;
@@ -1095,7 +1095,7 @@ CMDF( do_report )
    ch->printf( "You report: %d/%d hp %d/%d mana %d/%d mv %d xp %ld tnl.\r\n",
                ch->hit, ch->max_hit, ch->mana, ch->max_mana, ch->move, ch->max_move, ch->exp, ( exp_level( ch->level + 1 ) - ch->exp ) );
 
-   act_printf( AT_REPORT, ch, NULL, NULL, TO_ROOM, "$n reports: %d/%d hp %d/%d mana %d/%d mv %d xp %ld tnl.",
+   act_printf( AT_REPORT, ch, nullptr, nullptr, TO_ROOM, "$n reports: %d/%d hp %d/%d mana %d/%d mv %d xp %ld tnl.",
                ch->hit, ch->max_hit, ch->mana, ch->max_mana, ch->move, ch->max_move, ch->exp, ( exp_level( ch->level + 1 ) - ch->exp ) );
 }
 
@@ -1184,7 +1184,7 @@ CMDF( do_delete )
       return;
    }
 
-   if( ch->fighting != NULL )
+   if( ch->fighting != nullptr )
    {
       ch->print( "Wait until the fight is over before deleting yourself.\r\n" );
       return;
@@ -1409,25 +1409,25 @@ void race_practice( char_data * ch, char_data * mob, int sn )
 
    if( ch->race != race )
    {
-      act( AT_TELL, "$n tells you 'I cannot teach those of your race.'", mob, NULL, ch, TO_VICT );
+      act( AT_TELL, "$n tells you 'I cannot teach those of your race.'", mob, nullptr, ch, TO_VICT );
       return;
    }
 
    if( ( mob->level < ( skill_table[sn]->race_level[race] ) ) && skill_table[sn]->race_level[race] > 0 )
    {
-      act( AT_TELL, "$n tells you 'You cannot learn that from me, you must find another...'", mob, NULL, ch, TO_VICT );
+      act( AT_TELL, "$n tells you 'You cannot learn that from me, you must find another...'", mob, nullptr, ch, TO_VICT );
       return;
    }
 
    if( ch->level < skill_table[sn]->race_level[race] )
    {
-      act( AT_TELL, "$n tells you 'You're not ready to learn that yet...'", mob, NULL, ch, TO_VICT );
+      act( AT_TELL, "$n tells you 'You're not ready to learn that yet...'", mob, nullptr, ch, TO_VICT );
       return;
    }
 
    if( hasname( CANT_PRAC, skill_tname[skill_table[sn]->type] ) )
    {
-      act( AT_TELL, "$n tells you 'I do not know how to teach that.'", mob, NULL, ch, TO_VICT );
+      act( AT_TELL, "$n tells you 'I do not know how to teach that.'", mob, nullptr, ch, TO_VICT );
       return;
    }
 
@@ -1435,19 +1435,19 @@ void race_practice( char_data * ch, char_data * mob, int sn )
 
    if( ch->pcdata->learned[sn] >= adept )
    {
-      act_printf( AT_TELL, mob, NULL, ch, TO_VICT, "$n tells you, 'I've taught you everything I can about %s.'", skill_table[sn]->name );
-      act( AT_TELL, "$n tells you, 'You'll have to practice it on your own now...'", mob, NULL, ch, TO_VICT );
+      act_printf( AT_TELL, mob, nullptr, ch, TO_VICT, "$n tells you, 'I've taught you everything I can about %s.'", skill_table[sn]->name );
+      act( AT_TELL, "$n tells you, 'You'll have to practice it on your own now...'", mob, nullptr, ch, TO_VICT );
    }
    else
    {
       --ch->pcdata->practice;
       ch->pcdata->learned[sn] += ( 4 + int_app[ch->get_curr_int(  )].learn );
-      act( AT_ACTION, "You practice $T.", ch, NULL, skill_table[sn]->name, TO_CHAR );
-      act( AT_ACTION, "$n practices $T.", ch, NULL, skill_table[sn]->name, TO_ROOM );
+      act( AT_ACTION, "You practice $T.", ch, nullptr, skill_table[sn]->name, TO_CHAR );
+      act( AT_ACTION, "$n practices $T.", ch, nullptr, skill_table[sn]->name, TO_ROOM );
       if( ch->pcdata->learned[sn] >= adept )
       {
          ch->pcdata->learned[sn] = adept;
-         act( AT_TELL, "$n tells you. 'You'll have to practice it on your own now...'", mob, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you. 'You'll have to practice it on your own now...'", mob, nullptr, ch, TO_VICT );
       }
    }
 }
@@ -1540,7 +1540,7 @@ void display_practice( char_data * ch, char_data * mob, SKILL_INDEX * index, con
 CMDF( do_practice )
 {
    char buf[MSL];
-   char_data *mob = NULL;
+   char_data *mob = nullptr;
    list < char_data * >::iterator ich;
    bool mobfound = false;
 
@@ -1572,7 +1572,7 @@ CMDF( do_practice )
          {
             if( mob->Class != ch->Class )
             {
-               act( AT_TELL, "$n tells you 'I cannot teach those of your class.'", mob, NULL, ch, TO_VICT );
+               act( AT_TELL, "$n tells you 'I cannot teach those of your class.'", mob, nullptr, ch, TO_VICT );
                return;
             }
          }
@@ -1580,14 +1580,14 @@ CMDF( do_practice )
          {
             if( mob->race != ch->race )
             {
-               act( AT_TELL, "$n tells you 'I cannot teach those of your race.'", mob, NULL, ch, TO_VICT );
+               act( AT_TELL, "$n tells you 'I cannot teach those of your race.'", mob, nullptr, ch, TO_VICT );
                return;
             }
          }
       }
 
       if( !mobfound )
-         mob = NULL;
+         mob = nullptr;
 
       if( ch->is_immortal(  ) || ch->CAN_CAST(  ) )
       {
@@ -1619,14 +1619,14 @@ CMDF( do_practice )
 
       if( ch->pcdata->practice < 1 )
       {
-         act( AT_TELL, "$n tells you 'You must earn some more practice sessions.'", mob, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'You must earn some more practice sessions.'", mob, nullptr, ch, TO_VICT );
          return;
       }
 
       int sn = 0;
       if( ( sn = skill_lookup( argument ) ) == -1 )
       {
-         act_printf( AT_TELL, mob, NULL, ch, TO_VICT, "$n tells you 'I've never heard of %s. Are you sure you know what you want?'", argument.c_str(  ) );
+         act_printf( AT_TELL, mob, nullptr, ch, TO_VICT, "$n tells you 'I've never heard of %s. Are you sure you know what you want?'", argument.c_str(  ) );
          return;
       }
 
@@ -1638,31 +1638,31 @@ CMDF( do_practice )
 
       if( ch->Class != mob->Class )
       {
-         act( AT_TELL, "$n tells you 'I cannot teach those of your Class.'", mob, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'I cannot teach those of your Class.'", mob, nullptr, ch, TO_VICT );
          return;
       }
 
       if( skill_table[sn]->skill_level[mob->Class] > LEVEL_AVATAR )
       {
-         act( AT_TELL, "$n tells you 'Only an immortal of your Class may learn that.'", mob, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'Only an immortal of your Class may learn that.'", mob, nullptr, ch, TO_VICT );
          return;
       }
 
       if( ( mob->level < ( skill_table[sn]->skill_level[mob->Class] ) ) && skill_table[sn]->skill_level[mob->Class] > 0 )
       {
-         act( AT_TELL, "$n tells you 'You cannot learn that from me, you must find another...'", mob, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'You cannot learn that from me, you must find another...'", mob, nullptr, ch, TO_VICT );
          return;
       }
 
       if( ch->level < skill_table[sn]->skill_level[mob->Class] )
       {
-         act( AT_TELL, "$n tells you 'You're not ready to learn that yet...'", mob, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'You're not ready to learn that yet...'", mob, nullptr, ch, TO_VICT );
          return;
       }
 
       if( hasname( CANT_PRAC, skill_tname[skill_table[sn]->type] ) )
       {
-         act( AT_TELL, "$n tells you 'I do not know how to teach that.'", mob, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'I do not know how to teach that.'", mob, nullptr, ch, TO_VICT );
          return;
       }
 
@@ -1674,7 +1674,7 @@ CMDF( do_practice )
          snprintf( buf, MSL, "%d", mob->pIndexData->vnum );
          if( !hasname( skill_table[sn]->teachers, buf ) )
          {
-            act( AT_TELL, "$n tells you, 'You must find a specialist to learn that!'", mob, NULL, ch, TO_VICT );
+            act( AT_TELL, "$n tells you, 'You must find a specialist to learn that!'", mob, nullptr, ch, TO_VICT );
             return;
          }
       }
@@ -1686,19 +1686,19 @@ CMDF( do_practice )
       /*
        * if( !ch->isnpc() && !IS_GUILDED(ch) && skill_table[sn]->guild != CLASS_NONE )
        * {
-       * act( AT_TELL, "$n tells you 'Only guild members can use that..'", mob, NULL, ch, TO_VICT );
+       * act( AT_TELL, "$n tells you 'Only guild members can use that..'", mob, nullptr, ch, TO_VICT );
        * return;
        * }
        * 
        * if( !ch->isnpc() && skill_table[sn]->guild != CLASS_NONE && ch->pcdata->clan->Class != skill_table[sn]->guild )
        * {
-       * act( AT_TELL, "$n tells you 'That I can not teach to your guild.'", mob, NULL, ch, TO_VICT );
+       * act( AT_TELL, "$n tells you 'That I can not teach to your guild.'", mob, nullptr, ch, TO_VICT );
        * return;
        * }
        * 
        * if( !ch->isnpc() && skill_table[sn]->guild != CLASS_NONE )
        * {
-       * act( AT_TELL, "$n tells you 'That is only for members of guilds...'", mob, NULL, ch, TO_VICT );
+       * act( AT_TELL, "$n tells you 'That is only for members of guilds...'", mob, nullptr, ch, TO_VICT );
        * return;
        * }
        */
@@ -1707,19 +1707,19 @@ CMDF( do_practice )
 
       if( ch->pcdata->learned[sn] >= adept )
       {
-         act_printf( AT_TELL, mob, NULL, ch, TO_VICT, "$n tells you, 'I've taught you everything I can about %s.'", skill_table[sn]->name );
-         act( AT_TELL, "$n tells you, 'You'll have to practice it on your own now...'", mob, NULL, ch, TO_VICT );
+         act_printf( AT_TELL, mob, nullptr, ch, TO_VICT, "$n tells you, 'I've taught you everything I can about %s.'", skill_table[sn]->name );
+         act( AT_TELL, "$n tells you, 'You'll have to practice it on your own now...'", mob, nullptr, ch, TO_VICT );
       }
       else
       {
          --ch->pcdata->practice;
          ch->pcdata->learned[sn] += ( 4 + int_app[ch->get_curr_int(  )].learn );
-         act( AT_ACTION, "You practice $T.", ch, NULL, skill_table[sn]->name, TO_CHAR );
-         act( AT_ACTION, "$n practices $T.", ch, NULL, skill_table[sn]->name, TO_ROOM );
+         act( AT_ACTION, "You practice $T.", ch, nullptr, skill_table[sn]->name, TO_CHAR );
+         act( AT_ACTION, "$n practices $T.", ch, nullptr, skill_table[sn]->name, TO_ROOM );
          if( ch->pcdata->learned[sn] >= adept )
          {
             ch->pcdata->learned[sn] = adept;
-            act( AT_TELL, "$n tells you. 'You'll have to practice it on your own now...'", mob, NULL, ch, TO_VICT );
+            act( AT_TELL, "$n tells you. 'You'll have to practice it on your own now...'", mob, nullptr, ch, TO_VICT );
          }
       }
    }
@@ -1727,7 +1727,7 @@ CMDF( do_practice )
 
 CMDF( do_group )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
 
    if( argument.empty(  ) )
    {
@@ -1770,9 +1770,9 @@ CMDF( do_group )
 
          if( is_same_group( ch, gch ) && ( ch != gch ) )
          {
-            gch->leader = NULL;
+            gch->leader = nullptr;
             if( ( gch->isnpc(  ) && !check_pets( ch, gch->pIndexData ) ) || !gch->isnpc(  ) )
-               gch->master = NULL;
+               gch->master = nullptr;
             ++count;
             gch->print( "Your group is disbanded.\r\n" );
          }
@@ -1804,7 +1804,7 @@ CMDF( do_group )
          ch->print( "You have no eligible group members.\r\n" );
       else
       {
-         act( AT_ACTION, "$n groups $s followers.", ch, NULL, victim, TO_ROOM );
+         act( AT_ACTION, "$n groups $s followers.", ch, nullptr, victim, TO_ROOM );
          ch->print( "You group your followers.\r\n" );
       }
       return;
@@ -1824,23 +1824,23 @@ CMDF( do_group )
 
    if( victim->master != ch && ch != victim )
    {
-      act( AT_PLAIN, "$N isn't following you.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N isn't following you.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( is_same_group( victim, ch ) && ch != victim )
    {
-      victim->leader = NULL;
-      act( AT_ACTION, "$n removes $N from $s group.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_ACTION, "$n removes you from $s group.", ch, NULL, victim, TO_VICT );
-      act( AT_ACTION, "You remove $N from your group.", ch, NULL, victim, TO_CHAR );
+      victim->leader = nullptr;
+      act( AT_ACTION, "$n removes $N from $s group.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_ACTION, "$n removes you from $s group.", ch, nullptr, victim, TO_VICT );
+      act( AT_ACTION, "You remove $N from your group.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    victim->leader = ch;
-   act( AT_ACTION, "$N joins $n's group.", ch, NULL, victim, TO_NOTVICT );
-   act( AT_ACTION, "You join $n's group.", ch, NULL, victim, TO_VICT );
-   act( AT_ACTION, "$N joins your group.", ch, NULL, victim, TO_CHAR );
+   act( AT_ACTION, "$N joins $n's group.", ch, nullptr, victim, TO_NOTVICT );
+   act( AT_ACTION, "You join $n's group.", ch, nullptr, victim, TO_VICT );
+   act( AT_ACTION, "$N joins your group.", ch, nullptr, victim, TO_CHAR );
 }
 
 CMDF( do_attrib )
@@ -2157,7 +2157,7 @@ obj_data *find_quill( char_data * ch )
          return quill;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -2175,7 +2175,7 @@ CMDF( do_journal )
    string arg1, arg2;
    char buf[MSL];
    extra_descr_data *ed;
-   obj_data *quill = NULL, *journal = NULL;
+   obj_data *quill = nullptr, *journal = nullptr;
    int pages;
    int anum = 0;
 
@@ -2197,7 +2197,7 @@ CMDF( do_journal )
          break;
 
       case SUB_JOURNAL_WRITE:
-         if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
+         if( ( journal = ch->get_eq( WEAR_HOLD ) ) == nullptr || journal->item_type != ITEM_JOURNAL )
          {
             bug( "%s: Player not holding journal. (Player: %s)", __func__, ch->name );
             ch->stop_editing( );
@@ -2229,7 +2229,7 @@ CMDF( do_journal )
     */
    if( !str_cmp( arg1, "write" ) )
    {
-      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
+      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == nullptr || journal->item_type != ITEM_JOURNAL )
       {
          ch->print( "You must be holding a journal in order to write in it.\r\n" );
          return;
@@ -2298,7 +2298,7 @@ CMDF( do_journal )
    /* Size option, returns how many pages are in the journal */
    if( !str_cmp( arg1, "size" ) )
    {
-      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
+      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == nullptr || journal->item_type != ITEM_JOURNAL )
       {
          ch->print( "You must be holding a journal in order to check it's size.\r\n" );
          return;
@@ -2343,7 +2343,7 @@ CMDF( do_journal )
          anum = atoi( arg2.c_str() );
       }
 
-      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == NULL || journal->item_type != ITEM_JOURNAL )
+      if( ( journal = ch->get_eq( WEAR_HOLD ) ) == nullptr || journal->item_type != ITEM_JOURNAL )
       {
          ch->print( "You must be holding a journal in order to read it.\r\n" );
          return;
@@ -2365,7 +2365,7 @@ CMDF( do_journal )
 
       snprintf( buf, MSL, "page %s", arg2.c_str() );
 
-      if( ( ed = get_extra_descr( buf, journal ) ) == NULL )
+      if( ( ed = get_extra_descr( buf, journal ) ) == nullptr )
          ch->print( "That journal page is blank.\r\n" );
       else
          ch->print( ed->desc.c_str() );

@@ -382,14 +382,14 @@ bool load_timedata( void )
    found = false;
    snprintf( filename, 256, "%stime.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( filename, "r" ) ) != nullptr )
    {
 
       found = true;
       for( ;; )
       {
          char letter = '\0';
-         char *word = NULL;
+         char *word = nullptr;
 
          letter = fread_letter( fp );
          if( letter == '*' )
@@ -431,7 +431,7 @@ void save_timedata( void )
 
    snprintf( filename, 256, "%stime.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   if( ( fp = fopen( filename, "w" ) ) == nullptr )
    {
       bug( "%s: fopen", __func__ );
       perror( filename );
@@ -490,7 +490,7 @@ CMDF( do_time )
    ch->printf( "Your local time      : %s\r\n\r\n", c_time( current_time, ch->pcdata->timezone ) );
    holiday = get_holiday( time_info.month, day - 1 );
 
-   if( holiday != NULL )
+   if( holiday != nullptr )
       ch->printf( "It's a holiday today: %s\r\n", holiday->get_name(  ).c_str(  ) );
 
    if( !ch->isnpc(  ) )
@@ -580,7 +580,7 @@ void season_update( void )
 
    day = get_holiday( time_info.month, time_info.day );
 
-   if( day != NULL )
+   if( day != nullptr )
    {
       if( time_info.day + 1 == day->get_day(  ) && time_info.hour == 0 )
          echo_all_printf( ECHOTAR_ALL, "&[immortal]%s", day->get_announce(  ).c_str(  ) );
@@ -685,7 +685,7 @@ void check_holiday( char_data * ch )
     */
    day = get_holiday( time_info.month, time_info.day );
 
-   if( day != NULL )
+   if( day != nullptr )
       ch->printf( "&Y%s\r\n", day->get_announce(  ).c_str(  ) );
 }
 
@@ -700,7 +700,7 @@ holiday_data *get_holiday( short month, short day )
       if( month + 1 == holiday->get_month(  ) && day + 1 == holiday->get_day(  ) )
          return holiday;
    }
-   return NULL;
+   return nullptr;
 }
 
 holiday_data *get_holiday( const string & name )
@@ -714,7 +714,7 @@ holiday_data *get_holiday( const string & name )
       if( !str_cmp( name, holiday->get_name(  ) ) )
          return holiday;
    }
-   return NULL;
+   return nullptr;
 }
 
 CMDF( do_holidays )

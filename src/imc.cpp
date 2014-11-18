@@ -103,7 +103,7 @@ list < imc_help_table * >imc_helplist;
 list < imc_remoteinfo * >imc_reminfolist;
 list < imc_ucache_data * >imc_ucachelist;
 list < imc_command_table * >imc_commandlist;
-who_template *whot = NULL;
+who_template *whot = nullptr;
 
 /****************************
  * Constructors/Destructors *
@@ -121,7 +121,7 @@ imc_siteinfo::imc_siteinfo(  )
    sha256pass = false;
    autoconnect = false;
 
-   outbuf = NULL;
+   outbuf = nullptr;
    outsize = 0;
    outtop = 0;
    desc = -1;
@@ -363,16 +363,16 @@ string imcgetname( string & from )
 char_data *imc_find_user( const string & name )
 {
    list < descriptor_data * >::iterator ds;
-   char_data *vch = NULL;
+   char_data *vch = nullptr;
 
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
       descriptor_data *d = *ds;
 
-      if( ( vch = d->character ? d->character : d->original ) != NULL && !strcasecmp( CH_IMCNAME( vch ), name.c_str(  ) ) && d->connected == CON_PLAYING )
+      if( ( vch = d->character ? d->character : d->original ) != nullptr && !strcasecmp( CH_IMCNAME( vch ), name.c_str(  ) ) && d->connected == CON_PLAYING )
          return vch;
    }
-   return NULL;
+   return nullptr;
 }
 
 void imc_check_wizperms( char_data * ch )
@@ -433,7 +433,7 @@ void imc_delete_info( void )
 {
    // DISPOSE( this_imcmud->outbuf );
    free( this_imcmud->outbuf );
-   this_imcmud->outbuf = NULL;
+   this_imcmud->outbuf = nullptr;
    deleteptr( this_imcmud );
 }
 
@@ -491,7 +491,7 @@ imc_remoteinfo *imc_find_reminfo( const string & name )
       if( !str_cmp( rin->rname, name ) )
          return rin;
    }
-   return NULL;
+   return nullptr;
 }
 
 bool check_mud( char_data * ch, const string & mud )
@@ -572,14 +572,14 @@ imc_channel *imc_findchannel( const string & name )
       if( ( !chn->chname.empty(  ) && !str_cmp( chn->chname, name ) ) || ( !chn->local_name.empty(  ) && !str_cmp( chn->local_name, name ) ) )
          return chn;
    }
-   return NULL;
+   return nullptr;
 }
 
 void imc_freechan( imc_channel * c )
 {
    if( !c )
    {
-      imcbug( "%s: Freeing NULL channel!", __func__ );
+      imcbug( "%s: Freeing nullptr channel!", __func__ );
       return;
    }
    deleteptr( c );
@@ -648,7 +648,7 @@ void imc_new_channel( const string & chan, const string & owner, const string & 
 {
    if( chan.empty(  ) )
    {
-      imclog( "%s: NULL channel name received, skipping", __func__ );
+      imclog( "%s: nullptr channel name received, skipping", __func__ );
       return;
    }
 
@@ -676,7 +676,7 @@ void imc_new_channel( const string & chan, const string & owner, const string & 
    c->level = perm;
    c->refreshed = true;
    c->open = copen;
-   imcformat_channel( NULL, c, 4, false );
+   imcformat_channel( nullptr, c, 4, false );
    imc_chanlist.push_back( c );
 }
 
@@ -1048,7 +1048,7 @@ PFUN( imc_recv_emote )
    {
       descriptor_data *d = ( *ds );
 
-      if( d->connected == CON_PLAYING && ( ch = d->original ? d->original : d->character ) != NULL && IMCPERM( ch ) >= level )
+      if( d->connected == CON_PLAYING && ( ch = d->original ? d->original : d->character ) != nullptr && IMCPERM( ch ) >= level )
          imc_printf( ch, "~p[~GIMC~p] %s %s\r\n", imcgetname( q->from ).c_str(  ), keymap["text"].c_str(  ) );
    }
 }
@@ -1061,13 +1061,13 @@ void update_imchistory( imc_channel * channel, const string & message )
 
    if( !channel )
    {
-      imcbug( "%s: NULL channel received!", __func__ );
+      imcbug( "%s: nullptr channel received!", __func__ );
       return;
    }
 
    if( message.empty(  ) )
    {
-      imcbug( "%s: NULL message received!", __func__ );
+      imcbug( "%s: nullptr message received!", __func__ );
       return;
    }
 
@@ -1776,7 +1776,7 @@ PFUN( imc_recv_whois )
 
 PFUN( imc_recv_beep )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    ostringstream buf;
 
    if( !( victim = imc_find_user( imc_nameof( q->to ) ) ) || IMCPERM( victim ) < IMCPERM_MORT )
@@ -1894,7 +1894,7 @@ void imc_request_keepalive( void )
    p = new imc_packet( "*", "keepalive-request", "*@*" );
    p->send(  );
 
-   imc_send_keepalive( NULL, "*@*" );
+   imc_send_keepalive( nullptr, "*@*" );
 }
 
 void imc_firstrefresh( void )
@@ -1929,7 +1929,7 @@ PFUN( imc_recv_iceupdate )
 
    if( keymap["channel"].empty(  ) )
    {
-      imclog( "%s: NULL channel name received, skipping", __func__ );
+      imclog( "%s: nullptr channel name received, skipping", __func__ );
       return;
    }
 
@@ -2198,12 +2198,12 @@ PACKET_FUN *pfun_lookup( const string & type )
 {
    if( phandler.find( type ) != phandler.end(  ) )
       return phandler[type];
-   return NULL;
+   return nullptr;
 }
 
 void imc_parse_packet( string & packet )
 {
-   imc_packet *p = NULL;
+   imc_packet *p = nullptr;
    PACKET_FUN *pfun;
    string original = packet, sequ;
    unsigned long seq = 0;
@@ -2574,7 +2574,7 @@ void imc_loop( void )
    fd_set in_set, out_set;
    struct timeval last_time, null_time;
 
-   gettimeofday( &last_time, NULL );
+   gettimeofday( &last_time, nullptr );
    imc_time = last_time.tv_sec;
 
    if( imcwait > 0 )
@@ -2624,7 +2624,7 @@ void imc_loop( void )
 
    null_time.tv_sec = null_time.tv_usec = 0;
 
-   if( select( this_imcmud->desc + 1, &in_set, &out_set, NULL, &null_time ) < 0 )
+   if( select( this_imcmud->desc + 1, &in_set, &out_set, nullptr, &null_time ) < 0 )
    {
       perror( "imc_loop: select: poll" );
       imc_shutdown( true );
@@ -2799,7 +2799,7 @@ void imc_loadchar( char_data * ch, FILE * fp, const char *word )
             fread_line( IMC_LISTEN( ch ), fp );
             if( !IMC_LISTEN( ch ).empty(  ) && this_imcmud->state == IMC_ONLINE )
             {
-               imc_channel *channel = NULL;
+               imc_channel *channel = nullptr;
                string chan;
                string channels = IMC_LISTEN( ch );
 
@@ -2821,7 +2821,7 @@ void imc_loadchar( char_data * ch, FILE * fp, const char *word )
             fread_line( IMC_DENY( ch ), fp );
             if( !IMC_DENY( ch ).empty(  ) && this_imcmud->state == IMC_ONLINE )
             {
-               imc_channel *channel = NULL;
+               imc_channel *channel = nullptr;
                string chan;
                string channels = IMC_LISTEN( ch );
 
@@ -2881,7 +2881,7 @@ void imc_freechardata( char_data * ch )
    if( ch->isnpc(  ) )
       return;
 
-   if( CH_IMCDATA( ch ) == NULL )
+   if( CH_IMCDATA( ch ) == nullptr )
       return;
 
    CH_IMCDATA( ch )->imc_ignore.clear(  );
@@ -3020,7 +3020,7 @@ void imc_save_channels( void )
 
 void imc_loadchannels( void )
 {
-   imc_channel *c;
+   imc_channel *c = nullptr;
    ifstream stream;
 
    imc_chanlist.clear(  );
@@ -3243,7 +3243,7 @@ void imc_savehelps( void )
 
 void imc_load_helps( void )
 {
-   imc_help_table *help = NULL;
+   imc_help_table *help = nullptr;
    ifstream stream;
 
    imc_helplist.clear(  );
@@ -3381,7 +3381,7 @@ bool imc_load_commands( void )
       if( key == "#COMMAND" )
       {
          cmd = new imc_command_table;
-         cmd->function = NULL;
+         cmd->function = nullptr;
       }
       else if( key == "Name" )
          cmd->name = value;
@@ -3391,7 +3391,7 @@ bool imc_load_commands( void )
          cmd->function = imc_function( value );
          if( !cmd->function )
          {
-            imcbug( "%s: Command %s loaded with invalid function. Set to NULL.", __func__, cmd->name.c_str(  ) );
+            imcbug( "%s: Command %s loaded with invalid function. Set to nullptr.", __func__, cmd->name.c_str(  ) );
             cmd->funcname.clear(  );
          }
       }
@@ -3423,7 +3423,7 @@ bool imc_load_commands( void )
 
 void imc_load_ucache( void )
 {
-   imc_ucache_data *user = NULL;
+   imc_ucache_data *user = nullptr;
    ifstream stream;
 
    stream.open( IMC_UCACHE_FILE );
@@ -3530,9 +3530,9 @@ bool imc_load_config( int desc )
    ifstream stream;
    ostringstream lib_buf;
 
-   if( this_imcmud != NULL )
+   if( this_imcmud != nullptr )
       imc_delete_info(  );
-   this_imcmud = NULL;
+   this_imcmud = nullptr;
 
    stream.open( IMC_CONFIG_FILE );
 
@@ -3726,7 +3726,7 @@ void imc_load_who_template( void )
    if( !stream.is_open(  ) )
    {
       imclog( "%s: Unable to load template file for imcwho", __func__ );
-      whot = NULL;
+      whot = nullptr;
       return;
    }
 
@@ -3930,7 +3930,7 @@ bool imc_server_connect( void )
       close( desc );
    }
    freeaddrinfo( ai_list );
-   if( ai == NULL )
+   if( ai == nullptr )
    {
       imclog( "%s: socket or connect: failed for %s port %hu", __func__, this_imcmud->rhost.c_str(  ), this_imcmud->rport );
       imcwait = 100; // So it will try again according to the reconnect count.
@@ -4106,7 +4106,7 @@ void imc_shutdown( bool reconnect )
    free_imcdata( false );
 
    this_imcmud->state = IMC_OFFLINE;
-   cancel_event( ev_imcweb_refresh, NULL );
+   cancel_event( ev_imcweb_refresh, nullptr );
    if( reconnect )
    {
       imcwait = 100; /* About 20 seconds or so */
@@ -4138,7 +4138,7 @@ bool imc_startup_network( bool connected )
       CREATE( this_imcmud->outbuf, char, this_imcmud->outsize );
       imc_request_keepalive(  );
       imc_firstrefresh(  );
-      add_event( 60, ev_imcweb_refresh, NULL );
+      add_event( 60, ev_imcweb_refresh, nullptr );
       return true;
    }
 
@@ -4152,7 +4152,7 @@ bool imc_startup_network( bool connected )
       this_imcmud->state = IMC_OFFLINE;
       return false;
    }
-   add_event( 60, ev_imcweb_refresh, NULL );
+   add_event( 60, ev_imcweb_refresh, nullptr );
    return true;
 }
 
@@ -4166,7 +4166,7 @@ void imc_startup( bool force, int desc, bool connected )
       return;
    }
 
-   imc_time = time( NULL );
+   imc_time = time( nullptr );
    imc_sequencenumber = imc_time;
 
    /*
@@ -4276,7 +4276,7 @@ bool verify_format( const char *fmt, short sneed )
    int i = 0;
 
    c = fmt;
-   while( ( c = strchr( c, '%' ) ) != NULL )
+   while( ( c = strchr( c, '%' ) ) != nullptr )
    {
       if( *( c + 1 ) == '%' ) /* %% */
       {
@@ -4302,7 +4302,7 @@ bool verify_format( const char *fmt, short sneed )
 IMC_CMD( imcsetup )
 {
    string command, target;
-   imc_channel *c = NULL;
+   imc_channel *c = nullptr;
    bool all = false;
 
    argument = one_argument( argument, command );
@@ -4414,7 +4414,7 @@ IMC_CMD( imcsetup )
    {
       if( all )
       {
-         imcformat_channel( ch, NULL, 4, true );
+         imcformat_channel( ch, nullptr, 4, true );
          imc_to_char( "All channel formats have been reset to default.\r\n", ch );
       }
       else
@@ -4577,7 +4577,7 @@ IMC_CMD( imcsetup )
 /* The imcchanlist command. Basic listing of channels. */
 IMC_CMD( imcchanlist )
 {
-   imc_channel *c = NULL;
+   imc_channel *c = nullptr;
    int count = 0; /* Count -- Xorith */
    char col = 'C';   /* Listening Color -- Xorith */
 
@@ -5177,7 +5177,7 @@ void web_imc_list(  )
 void ev_imcweb_refresh( void *data )
 {
    web_imc_list(  );
-   add_event( 60, ev_imcweb_refresh, NULL );
+   add_event( 60, ev_imcweb_refresh, nullptr );
 }
 
 IMC_CMD( imclist )
@@ -5422,7 +5422,7 @@ IMC_CMD( imcconfig )
       this_imcmud->www = argument;
       imc_save_config(  );
       imc_printf( ch, "InfoWWW changed to %s\r\n", argument.c_str(  ) );
-      imc_send_keepalive( NULL, "*@*" );
+      imc_send_keepalive( nullptr, "*@*" );
       return;
    }
 
@@ -5781,7 +5781,7 @@ IMC_CMD( imcpermset )
     */
    if( !IMC_LISTEN( victim ).empty(  ) && this_imcmud->state == IMC_ONLINE )
    {
-      imc_channel *channel = NULL;
+      imc_channel *channel = nullptr;
       string chan;
       string channels = IMC_LISTEN( victim );
 
@@ -6110,12 +6110,12 @@ IMC_CMD( imccedit )
       {
          cmd->function = imc_function( argument );
          if( !cmd->function )
-            imc_printf( ch, "~gFunction ~W%s ~gdoes not exist - set to NULL.\r\n", argument.c_str(  ) );
+            imc_printf( ch, "~gFunction ~W%s ~gdoes not exist - set to nullptr.\r\n", argument.c_str(  ) );
       }
       else
       {
-         imc_to_char( "~gFunction set to NULL.\r\n", ch );
-         cmd->function = NULL;
+         imc_to_char( "~gFunction set to nullptr.\r\n", ch );
+         cmd->function = nullptr;
       }
       imc_commandlist.push_back( cmd );
       imc_savecommands(  );
@@ -6253,7 +6253,7 @@ IMC_CMD( imccedit )
    {
       cmd->function = imc_function( argument );
       if( !cmd->function )
-         imc_printf( ch, "~gFunction ~W%s ~gdoes not exist - set to NULL.\r\n", argument.c_str(  ) );
+         imc_printf( ch, "~gFunction ~W%s ~gdoes not exist - set to nullptr.\r\n", argument.c_str(  ) );
       else
       {
          imc_printf( ch, "~gFunction set to ~W%s.\r\n", argument.c_str(  ) );
@@ -6281,7 +6281,7 @@ IMC_CMD( imccedit )
 IMC_CMD( imchedit )
 {
    string target, command;
-   imc_help_table *help = NULL;
+   imc_help_table *help = nullptr;
    bool found = false;
 
    argument = one_argument( argument, target );
@@ -6595,7 +6595,7 @@ char_data *imc_make_skeleton( const string & name )
 string imc_send_social( char_data * ch, string argument, int telloption )
 {
    string social, target;
-   char_data *skeleton = NULL;
+   char_data *skeleton = nullptr;
    string msg, person, mud, socbuf;
    string::size_type ps;
 
@@ -6657,7 +6657,7 @@ IMC_FUN *imc_function( const string & name )
    if( ( error = dlerror(  ) ) )
    {
       imcbug( "%s: %s", __func__, error );
-      return NULL;
+      return nullptr;
    }
    return ( IMC_FUN * ) funHandle;
 }
@@ -6666,7 +6666,7 @@ IMC_FUN *imc_function( const string & name )
 bool imc_command_hook( char_data * ch, string & command, string & argument )
 {
    imc_channel *c;
-   imc_command_table *cmd = NULL;
+   imc_command_table *cmd = nullptr;
    string p;
 
    if( ch->isnpc(  ) )
@@ -6719,7 +6719,7 @@ bool imc_command_hook( char_data * ch, string & command, string & argument )
             return true;
          }
 
-         if( cmd->function == NULL )
+         if( cmd->function == nullptr )
          {
             imc_to_char( "That command has no code set. Inform the administration.\r\n", ch );
             imcbug( "%s: Command %s has no code set!", __func__, cmd->name.c_str(  ) );

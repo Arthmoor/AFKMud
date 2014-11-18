@@ -43,7 +43,7 @@ void init_mysql(  )
       return;
    }
 
-   if( !mysql_real_connect( &myconn, sysdata->dbserver.c_str(  ), sysdata->dbuser.c_str(  ), sysdata->dbpass.c_str(  ), sysdata->dbname.c_str(  ), 0, NULL, 0 ) )
+   if( !mysql_real_connect( &myconn, sysdata->dbserver.c_str(  ), sysdata->dbuser.c_str(  ), sysdata->dbpass.c_str(  ), sysdata->dbname.c_str(  ), 0, nullptr, 0 ) )
    {
       mysql_close( &myconn );
       bug( "%s: mysql_real_connect() failed.", __func__ );

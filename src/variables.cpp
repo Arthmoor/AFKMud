@@ -65,7 +65,7 @@ variable_data *get_tag( char_data * ch, const string& tag, int vnum )
       if( ( !vnum || vnum == vd->vnum ) && !str_cmp( tag, vd->tag ) )
          return vd;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -103,7 +103,7 @@ bool remove_tag( char_data * ch, const string& tag, int vnum )
  */
 int tag_char( char_data * ch, variable_data * var, bool replace )
 {
-   variable_data *vd = NULL;
+   variable_data *vd = nullptr;
    list < variable_data * >::iterator ivd;
    bool found = false;
 
@@ -180,7 +180,7 @@ CMDF( do_mptag )
    char_data *victim;
    variable_data *vd;
    const char *p;
-   char *tmp = NULL;
+   char *tmp = nullptr;
    string arg1, arg2;
    int vnum = 0, exp = 0;
    bool error = false;
@@ -219,7 +219,7 @@ CMDF( do_mptag )
       return;
    }
 
-   if( ( p = strchr( arg2.c_str(  ), ':' ) ) != NULL ) 
+   if( ( p = strchr( arg2.c_str(  ), ':' ) ) != nullptr ) 
    {
       mudstrlcpy( tmp, p, MSL );
       vnum = atoi( tmp );
@@ -264,7 +264,7 @@ CMDF( do_mprmtag )
 {
    char_data *victim;
    const char *p;
-   char *tmp = NULL;
+   char *tmp = nullptr;
    string arg1, arg2;
    int vnum = 0;
 
@@ -289,7 +289,7 @@ CMDF( do_mprmtag )
       return;
    }
 
-   if( ( p = strchr( arg2.c_str(  ), ':' ) ) != NULL ) 
+   if( ( p = strchr( arg2.c_str(  ), ':' ) ) != nullptr ) 
    {
       mudstrlcpy( tmp, p, MSL );
       vnum = atoi( tmp );
@@ -353,7 +353,7 @@ CMDF( do_mpflag )
       return;
    }
 
-   if( ( victim = ch->get_char_room( arg1 ) ) == NULL )
+   if( ( victim = ch->get_char_room( arg1 ) ) == nullptr )
    {
       progbug( "MPflag: Victim is not present.\r\n", ch );
       return;
@@ -390,7 +390,7 @@ CMDF( do_mpflag )
       return;
    }
 
-   if( ( vd = get_tag( victim, arg2, vnum ) ) != NULL )
+   if( ( vd = get_tag( victim, arg2, vnum ) ) != nullptr )
    {
       if( vd->type != vtXBIT )
       {
@@ -439,7 +439,7 @@ CMDF( do_mprmflag )
       return;
    }
 
-   if( ( victim = ch->get_char_room( arg1 ) ) == NULL )
+   if( ( victim = ch->get_char_room( arg1 ) ) == nullptr )
    {
       progbug( "MPflag: Victim is not present.\r\n", ch );
       return;
@@ -478,7 +478,7 @@ CMDF( do_mprmflag )
    /*
     * Only bother doing anything if the tag exists
     */
-   if( ( vd = get_tag( victim, arg2, vnum ) ) != NULL )
+   if( ( vd = get_tag( victim, arg2, vnum ) ) != nullptr )
    {
       if( vd->type != vtXBIT )
       {

@@ -211,7 +211,7 @@ class runeword_data
    string _name;  /* The runeword name */
    string _rune1; /* 1st required rune */
    string _rune2; /* 2nd required rune */
-   string _rune3; /* 3rd required rune - NULL if not required */
+   string _rune3; /* 3rd required rune - nullptr if not required */
    short _type;   /* Weapon(1) or Armor(0) ? */
 
  public:

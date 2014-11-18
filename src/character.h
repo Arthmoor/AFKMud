@@ -437,7 +437,7 @@ class char_data
    }
    bool IS_MOUNTED(  )
    {
-      return ( position == POS_MOUNTED && mount != NULL );
+      return ( position == POS_MOUNTED && mount != nullptr );
    }
    bool CAN_CAST(  )
    {
@@ -504,7 +504,7 @@ class char_data
    room_index *in_room;
    room_index *was_in_room;
    room_index *orig_room;  /* Xorith's boards */
-   struct ship_data *on_ship; /* Ship char is on, or NULL if not - Samson 1-6-00 */
+   struct ship_data *on_ship; /* Ship char is on, or nullptr if not - Samson 1-6-00 */
    struct fighting_data *fighting;
    struct hunt_hate_fear *hunting;
    struct hunt_hate_fear *fearing;

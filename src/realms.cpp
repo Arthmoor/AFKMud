@@ -121,7 +121,7 @@ realm_data *get_realm( const string & name )
       if( !str_cmp( name, realm->name ) )
          return realm;
    }
-   return NULL;
+   return nullptr;
 }
 
 void free_realms( void )
@@ -155,7 +155,7 @@ void delete_realm( char_data * ch, realm_data * realm )
       if( vch->pcdata->realm == realm )
       {
          vch->pcdata->realm_name.clear(  );
-         vch->pcdata->realm = NULL;
+         vch->pcdata->realm = nullptr;
          vch->printf( "The realm known as &W%s&D has been destroyed by the gods!\r\n", realm->name.c_str(  ) );
       }
    }
@@ -403,7 +403,7 @@ bool load_realm_file( const char *realmfile )
    found = false;
    snprintf( filename, 256, "%s%s", REALM_DIR, realmfile );
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( filename, "r" ) ) != nullptr )
    {
       found = true;
       for( ;; )
@@ -463,19 +463,19 @@ void verify_realms( void )
 
       if( realm->leader.empty(  ) )
       {
-         delete_realm( NULL, realm );
+         delete_realm( nullptr, realm );
          continue;
       }
 
       if( realm->members < 1 )
       {
-         delete_realm( NULL, realm );
+         delete_realm( nullptr, realm );
          continue;
       }
 
       if( !exists_player( realm->leader ) )
       {
-         delete_realm( NULL, realm );
+         delete_realm( nullptr, realm );
          continue;
       }
 
@@ -589,7 +589,7 @@ CMDF( do_setrealm )
 
       if( !str_cmp( arg1, "name" ) )
       {
-         realm_data *urealm = NULL;
+         realm_data *urealm = nullptr;
 
          if( argument.empty(  ) )
          {
@@ -655,7 +655,7 @@ CMDF( do_setrealm )
 
    if( !str_cmp( arg2, "name" ) )
    {
-      realm_data *urealm = NULL;
+      realm_data *urealm = nullptr;
 
       if( argument.empty(  ) )
       {

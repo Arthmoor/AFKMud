@@ -56,7 +56,7 @@ list < slay_data * >slaylist;
 /* Load the slay file */
 void load_slays( void )
 {
-   slay_data *slay = NULL;
+   slay_data *slay = nullptr;
    ifstream stream;
    int file_ver = 0;
 
@@ -249,9 +249,9 @@ CMDF( do_slay )
 
    if( argument.empty(  ) )
    {
-      act( AT_IMMORT, "You brutally slay $N!", ch, NULL, victim, TO_CHAR );
-      act( AT_IMMORT, "$n chops you up into little pieces!", ch, NULL, victim, TO_VICT );
-      act( AT_IMMORT, "$n brutally slays $N!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_IMMORT, "You brutally slay $N!", ch, nullptr, victim, TO_CHAR );
+      act( AT_IMMORT, "$n chops you up into little pieces!", ch, nullptr, victim, TO_VICT );
+      act( AT_IMMORT, "$n brutally slays $N!", ch, nullptr, victim, TO_NOTVICT );
       raw_kill( ch, victim );
       return;
    }
@@ -266,9 +266,9 @@ CMDF( do_slay )
              || ( !str_cmp( slay->get_owner(  ), ch->name ) && !str_cmp( argument, slay->get_type(  ) ) ) )
          {
             found = true;
-            act( slay->get_color(  ), slay->get_cmsg(  ).c_str(  ), ch, NULL, victim, TO_CHAR );
-            act( slay->get_color(  ), slay->get_vmsg(  ).c_str(  ), ch, NULL, victim, TO_VICT );
-            act( slay->get_color(  ), slay->get_rmsg(  ).c_str(  ), ch, NULL, victim, TO_NOTVICT );
+            act( slay->get_color(  ), slay->get_cmsg(  ).c_str(  ), ch, nullptr, victim, TO_CHAR );
+            act( slay->get_color(  ), slay->get_vmsg(  ).c_str(  ), ch, nullptr, victim, TO_VICT );
+            act( slay->get_color(  ), slay->get_rmsg(  ).c_str(  ), ch, nullptr, victim, TO_NOTVICT );
             raw_kill( ch, victim );
             return;
          }
@@ -293,7 +293,7 @@ slay_data *get_slay( const string & name )
       if( !str_cmp( name, slay->get_type(  ) ) )
          return slay;
    }
-   return NULL;
+   return nullptr;
 }
 
 /* Create a slaytype online - Samson 8-3-98 */
@@ -316,7 +316,7 @@ CMDF( do_makeslay )
    /*
     * Glaring oversight just noticed - Samson 7-5-99 
     */
-   if( ( slay = get_slay( argument ) ) != NULL )
+   if( ( slay = get_slay( argument ) ) != nullptr )
    {
       ch->print( "That slay type already exists.\r\n" );
       return;

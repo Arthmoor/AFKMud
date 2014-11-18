@@ -550,7 +550,7 @@ const char *char_data::color_str( short AType )
 {
    if( !this )
    {
-      bug( "%s: NULL ch!", __func__ );
+      bug( "%s: nullptr ch!", __func__ );
       return ( "" );
    }
 
@@ -751,9 +751,9 @@ const char *random_ansi( short type )
  */
 int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int *vislen )
 {
-   char_data *ch = NULL;
+   char_data *ch = nullptr;
    bool ansi = false;
-   const char *sympos = NULL;
+   const char *sympos = nullptr;
 
    /*
     * No descriptor, assume ANSI conversion can't be done. 
@@ -1156,7 +1156,7 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
  *
  * This function returns the intended screen length of a string which has
  * color codes embedded in it.  It does this by stripping the codes out
- * entirely (A NULL descriptor means ANSI will be false).
+ * entirely (A nullptr descriptor means ANSI will be false).
  */
 int color_strlen( const char *src )
 {
@@ -1178,7 +1178,7 @@ int color_strlen( const char *src )
          case '}':  /* BLINK Foreground colour */
             *dst = '\0';
             vislen = 0;
-            i += colorcode( &src[i], dst, NULL, 20, &vislen ); /* Skip input token */
+            i += colorcode( &src[i], dst, nullptr, 20, &vislen ); /* Skip input token */
             len += vislen; /* Count output token length */
             break;   /* this was missing - if you have issues, remove it */
 
@@ -1230,7 +1230,7 @@ const char *colorize( const string & txt, descriptor_data * d )
       char colbuf[20];
       int ln;
 
-      while( ( colstr = strpbrk( prevstr, "&{}hH" ) ) != NULL )
+      while( ( colstr = strpbrk( prevstr, "&{}hH" ) ) != nullptr )
       {
          register int reslen = 0;
 
@@ -1242,9 +1242,9 @@ const char *colorize( const string & txt, descriptor_data * d )
                break;
             }
             strncat( result, prevstr, ( colstr - prevstr ) );  /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
-            result[reslen + ( colstr - prevstr )] = '\0';   /* strncat will NOT NULL terminate this! */
+            result[reslen + ( colstr - prevstr )] = '\0';   /* strncat will NOT nullptr terminate this! */
          }
-         ln = colorcode( colstr, colbuf, d, 20, NULL );
+         ln = colorcode( colstr, colbuf, d, 20, nullptr );
 
          if( colstr[0] == 'h' || colstr[0] == 'H' )
             if( colstr[1] == 't' || colstr[1] == 'T' )

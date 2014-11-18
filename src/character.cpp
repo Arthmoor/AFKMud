@@ -113,9 +113,9 @@ pc_data::pc_data(  )
    this->zone.clear(  );
    this->ignore.clear(  );
    for( int sn = 0; sn < MAX_SAYHISTORY; ++sn )
-      this->say_history[sn] = NULL;
+      this->say_history[sn] = nullptr;
    for( int sn = 0; sn < MAX_TELLHISTORY; ++sn )
-      this->tell_history[sn] = NULL;
+      this->tell_history[sn] = nullptr;
    for( int sn = 0; sn < MAX_BEACONS; ++sn )
       this->beacon[sn] = 0;
    this->condition[COND_THIRST] = ( int )( sysdata->maxcondval * .75 );
@@ -137,7 +137,7 @@ char_data::~char_data(  )
 {
    if( !this )
    {
-      bug( "%s: NULL ch!", __func__ );
+      bug( "%s: nullptr ch!", __func__ );
       return;
    }
 
@@ -409,7 +409,7 @@ void char_data::set_color( short AType )
    this->desc->write_to_buffer( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "%s: NULL descriptor after WTB! CH: %s", __func__, this->name ? this->name : "Unknown?!?" );
+      bug( "%s: nullptr descriptor after WTB! CH: %s", __func__, this->name ? this->name : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];
@@ -426,7 +426,7 @@ void char_data::set_pager_color( short AType )
    this->desc->pager( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "%s: NULL descriptor after WTP! CH: %s", __func__, this->name ? this->name : "Unknown?!?" );
+      bug( "%s: nullptr descriptor after WTP! CH: %s", __func__, this->name ? this->name : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];
@@ -662,7 +662,7 @@ bool char_data::can_see( char_data * victim, bool override )
 {
    if( !victim )  /* Gorog - panicked attempt to stop crashes */
    {
-      bug( "%s: NULL victim! CH %s tried to see it.", __func__, name );
+      bug( "%s: nullptr victim! CH %s tried to see it.", __func__, name );
       return false;
    }
 
@@ -757,7 +757,7 @@ char_data *char_data::get_char_room( const string & argument )
    }
 
    if( vnum != -1 )
-      return NULL;
+      return nullptr;
 
    /*
     * If we didn't find an exact match, run through the list of characters
@@ -777,7 +777,7 @@ char_data *char_data::get_char_room( const string & argument )
       else if( ++count == number )
          return rch;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -838,7 +838,7 @@ char_data *char_data::get_char_world( const string & argument )
     * bail out if looking for a vnum match 
     */
    if( vnum != -1 )
-      return NULL;
+      return nullptr;
 
    /*
     * If we didn't find an exact match, check the room for
@@ -875,7 +875,7 @@ char_data *char_data::get_char_world( const string & argument )
       else if( ++count == number )
          return wch;
    }
-   return NULL;
+   return nullptr;
 }
 
 room_index *char_data::find_location( const string & arg )
@@ -889,13 +889,13 @@ room_index *char_data::find_location( const string & arg )
    if( !str_cmp( arg, "pk" ) )   /* "Goto pk", "at pk", etc */
       return get_room_index( last_pkroom );
 
-   if( ( victim = this->get_char_world( arg ) ) != NULL )
+   if( ( victim = this->get_char_world( arg ) ) != nullptr )
       return victim->in_room;
 
-   if( ( obj = this->get_obj_world( arg ) ) != NULL )
+   if( ( obj = this->get_obj_world( arg ) ) != nullptr )
       return obj->in_room;
 
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -979,7 +979,7 @@ obj_data *char_data::get_obj_vnum( int vnum )
       if( this->can_see_obj( obj, false ) && obj->pIndexData->vnum == vnum )
          return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1008,7 +1008,7 @@ obj_data *char_data::get_obj_carry( const string & argument )
             return obj;
    }
    if( vnum != -1 )
-      return NULL;
+      return nullptr;
 
    /*
     * If we didn't find an exact match, run through the list of objects
@@ -1024,7 +1024,7 @@ obj_data *char_data::get_obj_carry( const string & argument )
          if( ( count += obj->count ) >= number )
             return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1054,7 +1054,7 @@ obj_data *char_data::get_obj_wear( const string & argument )
             return obj;
    }
    if( vnum != -1 )
-      return NULL;
+      return nullptr;
 
    /*
     * If we didn't find an exact match, run through the list of objects
@@ -1070,7 +1070,7 @@ obj_data *char_data::get_obj_wear( const string & argument )
          if( ++count == number )
             return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1089,7 +1089,7 @@ obj_data *char_data::get_obj_here( const string & argument )
    if( ( obj = this->get_obj_wear( argument ) ) )
       return obj;
 
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1102,7 +1102,7 @@ obj_data *char_data::get_obj_world( const string & argument )
    list < obj_data * >::iterator iobj;
    int number, count, vnum;
 
-   if( ( obj = this->get_obj_here( argument ) ) != NULL )
+   if( ( obj = this->get_obj_here( argument ) ) != nullptr )
       return obj;
 
    number = number_argument( argument, arg );
@@ -1129,7 +1129,7 @@ obj_data *char_data::get_obj_world( const string & argument )
     * bail out if looking for a vnum 
     */
    if( vnum != -1 )
-      return NULL;
+      return nullptr;
 
    /*
     * If we didn't find an exact match, run through the list of objects
@@ -1145,7 +1145,7 @@ obj_data *char_data::get_obj_world( const string & argument )
          if( ( count += obj->count ) >= number )
             return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1154,7 +1154,7 @@ obj_data *char_data::get_obj_world( const string & argument )
  */
 obj_data *char_data::get_eq( int iWear )
 {
-   obj_data *maxobj = NULL;
+   obj_data *maxobj = nullptr;
    list < obj_data * >::iterator iobj;
 
    for( iobj = this->carrying.begin(  ); iobj != this->carrying.end(  ); ++iobj )
@@ -1234,7 +1234,7 @@ void char_data::equip( obj_data * obj, int iWear )
 {
    obj_data *otmp;
 
-   if( ( otmp = this->get_eq( iWear ) ) != NULL && ( !otmp->pIndexData->layers || !obj->pIndexData->layers ) )
+   if( ( otmp = this->get_eq( iWear ) ) != nullptr && ( !otmp->pIndexData->layers || !obj->pIndexData->layers ) )
    {
       bug( "%s: already equipped (%d).", __func__, iWear );
       return;
@@ -1255,8 +1255,8 @@ void char_data::equip( obj_data * obj, int iWear )
        */
       if( loading_char != this )
       {
-         act( AT_MAGIC, "You are zapped by $p and drop it.", this, obj, NULL, TO_CHAR );
-         act( AT_MAGIC, "$n is zapped by $p and drops it.", this, obj, NULL, TO_ROOM );
+         act( AT_MAGIC, "You are zapped by $p and drop it.", this, obj, nullptr, TO_CHAR );
+         act( AT_MAGIC, "$n is zapped by $p and drops it.", this, obj, nullptr, TO_ROOM );
       }
       if( obj->carried_by )
          obj->from_char(  );
@@ -1310,7 +1310,7 @@ void char_data::unequip( obj_data * obj )
     * * Finell   -- Shaddai
     */
    if( obj->wear_loc == WEAR_WIELD && this != saving_char
-       && this != loading_char && this != quitting_char && ( tobj = this->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+       && this != loading_char && this != quitting_char && ( tobj = this->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
       tobj->wear_loc = WEAR_WIELD;
 
    this->carry_number += obj->get_number(  );
@@ -1647,7 +1647,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       if( location == APPLY_RECURRINGSPELL )
       {
          mod = abs( mod );
-         if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != NULL && skill->type == SKILL_SPELL )
+         if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != nullptr && skill->type == SKILL_SPELL )
             this->set_aflag( AFF_RECURRINGSPELL );
          else
             bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name, mod );
@@ -1666,7 +1666,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       if( location == APPLY_RECURRINGSPELL )
       {
          mod = abs( mod );
-         if( !IS_VALID_SN( mod ) || ( skill = skill_table[mod] ) == NULL || skill->type != SKILL_SPELL )
+         if( !IS_VALID_SN( mod ) || ( skill = skill_table[mod] ) == nullptr || skill->type != SKILL_SPELL )
             bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name, mod );
          this->unset_aflag( AFF_RECURRINGSPELL );
          return;
@@ -1896,7 +1896,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
             return;
 
          mod = abs( mod );
-         if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != NULL && skill->type == SKILL_SPELL )
+         if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != nullptr && skill->type == SKILL_SPELL )
             if( ( retcode = ( *skill->spell_fun ) ( mod, this->level, this, this ) ) == rCHAR_DIED || char_died(  ) )
                return;
          break;
@@ -2029,7 +2029,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
 
    if( !this->isnpc() && saving_char != this
        /*
-        * &&  (wield = get_eq_char(ch, WEAR_WIELD) ) != NULL
+        * &&  (wield = get_eq_char(ch, WEAR_WIELD) ) != nullptr
         * &&   get_obj_weight(wield) > str_app[get_curr_str(ch)].wield ) 
         */
        && ( WWeight + DWeight + MWeight ) > str_app[this->get_curr_str( )].wield )
@@ -2040,8 +2040,8 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       {
          ++depth;
 
-         act( AT_ACTION, "You are too weak to wield $p any longer.", this, ToDrop, NULL, TO_CHAR );
-         act( AT_ACTION, "$n stops wielding $p.", this, ToDrop, NULL, TO_ROOM );
+         act( AT_ACTION, "You are too weak to wield $p any longer.", this, ToDrop, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n stops wielding $p.", this, ToDrop, nullptr, TO_ROOM );
 
          this->unequip( ToDrop );
          --depth;
@@ -2058,13 +2058,13 @@ void char_data::affect_to_char( affect_data * paf )
 
    if( !this )
    {
-      bug( "%s: (NULL, %d)", __func__, paf ? paf->type : 0 );
+      bug( "%s: (nullptr, %d)", __func__, paf ? paf->type : 0 );
       return;
    }
 
    if( !paf )
    {
-      bug( "%s: (%s, NULL)", __func__, name );
+      bug( "%s: (%s, nullptr)", __func__, name );
       return;
    }
 
@@ -2168,7 +2168,7 @@ void char_data::showaffect( affect_data * paf )
 
    if( !paf )
    {
-      bug( "%s: NULL paf", __func__ );
+      bug( "%s: nullptr paf", __func__ );
       return;
    }
 
@@ -2294,14 +2294,14 @@ timer_data *char_data::get_timerptr( short type )
       if( ct->type == type )
          return ct;
    }
-   return NULL;
+   return nullptr;
 }
 
 short char_data::get_timer( short type )
 {
    timer_data *chtimer;
 
-   if( ( chtimer = this->get_timerptr( type ) ) != NULL )
+   if( ( chtimer = this->get_timerptr( type ) ) != nullptr )
       return chtimer->count;
    else
       return 0;
@@ -2313,7 +2313,7 @@ short char_data::get_timer( short type )
  */
 void char_data::add_timer( short type, short count, DO_FUN * fun, int value )
 {
-   timer_data *chtimer = NULL;
+   timer_data *chtimer = nullptr;
 
    if( !( chtimer = get_timerptr( type ) ) )
    {
@@ -2340,7 +2340,7 @@ void char_data::extract_timer( timer_data * chtimer )
 
 void char_data::remove_timer( short type )
 {
-   timer_data *chtimer = NULL;
+   timer_data *chtimer = nullptr;
 
    if( !( chtimer = this->get_timerptr( type ) ) )
       return;
@@ -2424,7 +2424,7 @@ void char_data::from_room(  )
    if( !this->isnpc(  ) )
       --this->in_room->area->nplayer;
 
-   if( ( obj = this->get_eq( WEAR_LIGHT ) ) != NULL && obj->item_type == ITEM_LIGHT
+   if( ( obj = this->get_eq( WEAR_LIGHT ) ) != nullptr && obj->item_type == ITEM_LIGHT
        && ( obj->value[2] != 0 || IS_SET( obj->value[3], PIPE_LIT ) ) && this->in_room->light > 0 )
       --this->in_room->light;
 
@@ -2461,7 +2461,7 @@ void char_data::from_room(  )
    this->in_room->people.remove( this );
 
    this->was_in_room = this->in_room;
-   this->in_room = NULL;
+   this->in_room = nullptr;
 
    if( !this->isnpc(  ) && this->get_timer( TIMER_SHOVEDRAG ) > 0 )
       this->remove_timer( TIMER_SHOVEDRAG );
@@ -2478,7 +2478,7 @@ bool char_data::to_room( room_index * pRoomIndex )
    // Ok, asshole code, lets see you get past this!
    if( !pRoomIndex || !get_room_index( pRoomIndex->vnum ) )
    {
-      bug( "%s: %s -> NULL room!  Putting char in limbo (%d)", __func__, this->name, ROOM_VNUM_LIMBO );
+      bug( "%s: %s -> nullptr room!  Putting char in limbo (%d)", __func__, this->name, ROOM_VNUM_LIMBO );
       if( pRoomIndex )
          log_printf( "Supposedly from Vnum: %d", pRoomIndex->vnum );
 
@@ -2508,7 +2508,7 @@ bool char_data::to_room( room_index * pRoomIndex )
    if( !this->isnpc(  ) )
       ++this->in_room->area->nplayer;
 
-   if( ( obj = this->get_eq( WEAR_LIGHT ) ) != NULL 
+   if( ( obj = this->get_eq( WEAR_LIGHT ) ) != nullptr 
       && obj->item_type == ITEM_LIGHT && ( obj->value[2] != 0 || IS_SET( obj->value[3], PIPE_LIT ) ) )
       ++pRoomIndex->light;
 
@@ -2541,7 +2541,7 @@ bool char_data::to_room( room_index * pRoomIndex )
    }
 
    if( !isnpc(  ) && pRoomIndex->flags.test( ROOM_SAFE ) && get_timer( TIMER_SHOVEDRAG ) <= 0 )
-      this->add_timer( TIMER_SHOVEDRAG, 10, NULL, 0 );  /*-30 Seconds-*/
+      this->add_timer( TIMER_SHOVEDRAG, 10, nullptr, 0 );  /*-30 Seconds-*/
 
    /*
     * Delayed Teleport rooms - Thoric
@@ -2569,7 +2569,7 @@ bool char_data::to_room( room_index * pRoomIndex )
 
    if( this->on )
    {
-      this->on = NULL;
+      this->on = nullptr;
       this->position = POS_STANDING;
    }
 
@@ -3238,7 +3238,7 @@ void char_data::set_specfun( void )
          break;
 
       default:
-         this->spec_fun = NULL;
+         this->spec_fun = nullptr;
          break;
    }
 }
@@ -3259,11 +3259,11 @@ void stop_follower( char_data * ch )
 
    if( ch->master->can_see( ch, false ) )
       if( !( !ch->master->isnpc(  ) && ch->is_immortal(  ) && !ch->master->is_immortal(  ) ) )
-         act( AT_ACTION, "$n stops following you.", ch, NULL, ch->master, TO_VICT );
-   act( AT_ACTION, "You stop following $N.", ch, NULL, ch->master, TO_CHAR );
+         act( AT_ACTION, "$n stops following you.", ch, nullptr, ch->master, TO_VICT );
+   act( AT_ACTION, "You stop following $N.", ch, nullptr, ch->master, TO_CHAR );
 
-   ch->master = NULL;
-   ch->leader = NULL;
+   ch->master = nullptr;
+   ch->leader = nullptr;
 }
 
 /* Small utility functions to bind & unbind charmies to their owners etc. - Samson 4-19-00 */
@@ -3289,11 +3289,11 @@ void add_follower( char_data * ch, char_data * master )
    }
 
    ch->master = master;
-   ch->leader = NULL;
+   ch->leader = nullptr;
 
    if( master->can_see( ch, false ) )
-      act( AT_ACTION, "$n now follows you.", ch, NULL, master, TO_VICT );
-   act( AT_ACTION, "You now follow $N.", ch, NULL, master, TO_CHAR );
+      act( AT_ACTION, "$n now follows you.", ch, nullptr, master, TO_VICT );
+   act( AT_ACTION, "You now follow $N.", ch, nullptr, master, TO_CHAR );
 }
 
 void bind_follower( char_data * mob, char_data * ch, int sn, int duration )
@@ -3332,7 +3332,7 @@ void die_follower( char_data * ch )
    if( ch->master )
       unbind_follower( ch, ch->master );
 
-   ch->leader = NULL;
+   ch->leader = nullptr;
 
    list < char_data * >::iterator ich;
    for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
@@ -3381,8 +3381,8 @@ void check_mount_objs( char_data * ch, bool fell )
 
       if( fell )
       {
-         act( AT_ACTION, "As you fall, $p drops to the ground.", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$n drops $p as $e falls to the ground.", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "As you fall, $p drops to the ground.", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n drops $p as $e falls to the ground.", ch, obj, nullptr, TO_ROOM );
 
          obj->from_char(  );
          obj = obj->to_room( ch->in_room, ch );
@@ -3392,8 +3392,8 @@ void check_mount_objs( char_data * ch, bool fell )
       }
       else
       {
-         act( AT_ACTION, "As you dismount, you remove $p.", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$n removes $p as $e dismounts.", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "As you dismount, you remove $p.", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n removes $p as $e dismounts.", ch, obj, nullptr, TO_ROOM );
          ch->unequip( obj );
       }
    }
@@ -3445,11 +3445,11 @@ void retrieve_corpse( char_data * ch, char_data * healer )
 
       if( healer )
       {
-         act( AT_MAGIC, "$n closes $s eyes in deep prayer....", healer, NULL, NULL, TO_ROOM );
-         act( AT_MAGIC, "A moment later $T appears in the room!", healer, NULL, buf, TO_ROOM );
+         act( AT_MAGIC, "$n closes $s eyes in deep prayer....", healer, nullptr, nullptr, TO_ROOM );
+         act( AT_MAGIC, "A moment later $T appears in the room!", healer, nullptr, buf, TO_ROOM );
       }
       else
-         act( AT_MAGIC, "From out of nowhere, $T appears in a bright flash!", ch, NULL, buf, TO_ROOM );
+         act( AT_MAGIC, "From out of nowhere, $T appears in a bright flash!", ch, nullptr, buf, TO_ROOM );
 
       if( ch->level > 7 )
       {
@@ -3479,7 +3479,7 @@ void char_data::extract( bool fPull )
 {
    if( !this->in_room )
    {
-      bug( "%s: %s in NULL room. Transferring to Limbo.", __func__, this->name ? this->name : "???" );
+      bug( "%s: %s in nullptr room. Transferring to Limbo.", __func__, this->name ? this->name : "???" );
       if( !this->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
@@ -3512,7 +3512,7 @@ void char_data::extract( bool fPull )
       if( fPull && RQueue->Type == relMSET_ON )
       {
          if( this == RQueue->Subject )
-            ( ( char_data * ) RQueue->Actor )->pcdata->dest_buf = NULL;
+            ( ( char_data * ) RQueue->Actor )->pcdata->dest_buf = nullptr;
          else if( this != RQueue->Actor )
             continue;
          relationlist.remove( RQueue );
@@ -3530,7 +3530,7 @@ void char_data::extract( bool fPull )
    {
       update_room_reset( this, true );
       this->mount->unset_actflag( ACT_MOUNTED );
-      this->mount = NULL;
+      this->mount = nullptr;
       position = POS_STANDING;
    }
 
@@ -3549,13 +3549,13 @@ void char_data::extract( bool fPull )
 
          if( wch->mount == this )
          {
-            wch->mount = NULL;
+            wch->mount = nullptr;
             wch->position = POS_SITTING;
             if( wch->in_room == this->in_room )
             {
-               act( AT_SOCIAL, "Your faithful mount, $N collapses beneath you...", wch, NULL, this, TO_CHAR );
-               act( AT_SOCIAL, "You hit the ground with a thud.", wch, NULL, NULL, TO_CHAR );
-               act( AT_PLAIN, "$n falls from $N as $N is slain.", wch, NULL, this, TO_ROOM );
+               act( AT_SOCIAL, "Your faithful mount, $N collapses beneath you...", wch, nullptr, this, TO_CHAR );
+               act( AT_SOCIAL, "You hit the ground with a thud.", wch, nullptr, nullptr, TO_CHAR );
+               act( AT_PLAIN, "$n falls from $N as $N is slain.", wch, nullptr, this, TO_ROOM );
                check_mount_objs( this, true );  /* Check to see if they have ITEM_MUSTMOUNT stuff */
             }
          }
@@ -3566,7 +3566,7 @@ void char_data::extract( bool fPull )
             {
                unbind_follower( wch, this );
                if( wch->in_room == this->in_room )
-                  act( AT_SOCIAL, "You mourn for the loss of $N.", wch, NULL, this, TO_CHAR );
+                  act( AT_SOCIAL, "You mourn for the loss of $N.", wch, nullptr, this, TO_CHAR );
             }
          }
       }
@@ -3644,11 +3644,11 @@ void char_data::extract( bool fPull )
        * Make things a little fancier           -Thoric
        */
       char_data *wch;
-      if( ( wch = get_char_room( "healer" ) ) != NULL )
+      if( ( wch = get_char_room( "healer" ) ) != nullptr )
       {
-         act( AT_MAGIC, "$n mutters a few incantations, waves $s hands and points $s finger.", wch, NULL, NULL, TO_ROOM );
-         act( AT_MAGIC, "$n appears from some strange swirling mists!", this, NULL, NULL, TO_ROOM );
-         act_printf( AT_MAGIC, wch, NULL, NULL, TO_ROOM, "$n says 'Welcome back to the land of the living, %s.'", capitalize( name ) );
+         act( AT_MAGIC, "$n mutters a few incantations, waves $s hands and points $s finger.", wch, nullptr, nullptr, TO_ROOM );
+         act( AT_MAGIC, "$n appears from some strange swirling mists!", this, nullptr, nullptr, TO_ROOM );
+         act_printf( AT_MAGIC, wch, nullptr, nullptr, TO_ROOM, "$n says 'Welcome back to the land of the living, %s.'", capitalize( name ) );
          if( this->level < 10 )
          {
             retrieve_corpse( this, wch );
@@ -3657,10 +3657,10 @@ void char_data::extract( bool fPull )
       }
       else
       {
-         act( AT_MAGIC, "$n appears from some strange swirling mists!", this, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n appears from some strange swirling mists!", this, nullptr, nullptr, TO_ROOM );
          if( this->level < 10 )
          {
-            retrieve_corpse( this, NULL );
+            retrieve_corpse( this, nullptr );
             collect_followers( this, dieroom, location );
          }
       }
@@ -3688,7 +3688,7 @@ void char_data::extract( bool fPull )
          char_data *wch = *ich;
 
          if( wch->reply == this )
-            wch->reply = NULL;
+            wch->reply = nullptr;
       }
    }
 
@@ -3939,7 +3939,7 @@ void char_data::stop_idling(  )
    this->timer = 0;
 
    this->unset_pcflag( PCFLAG_IDLING );
-   act( AT_ACTION, "$n returns to normal.", this, NULL, NULL, TO_ROOM );
+   act( AT_ACTION, "$n returns to normal.", this, nullptr, nullptr, TO_ROOM );
 }
 
 void char_data::set_actflag( int value )
@@ -5214,8 +5214,8 @@ CMDF( do_dismiss )
       stop_hating( victim );
       stop_hunting( victim );
       stop_fearing( victim );
-      act( AT_ACTION, "$n dismisses $N.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_ACTION, "You dismiss $N.", ch, NULL, victim, TO_CHAR );
+      act( AT_ACTION, "$n dismisses $N.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_ACTION, "You dismiss $N.", ch, nullptr, victim, TO_CHAR );
    }
    else
       ch->print( "You cannot dismiss them.\r\n" );
@@ -5239,7 +5239,7 @@ CMDF( do_follow )
 
    if( ch->has_aflag( AFF_CHARM ) && ch->master )
    {
-      act( AT_PLAIN, "But you'd rather follow $N!", ch, NULL, ch->master, TO_CHAR );
+      act( AT_PLAIN, "But you'd rather follow $N!", ch, nullptr, ch->master, TO_CHAR );
       return;
    }
 
@@ -5304,7 +5304,7 @@ CMDF( do_order )
    if( !str_cmp( arg, "all" ) )
    {
       fAll = true;
-      victim = NULL;
+      victim = nullptr;
    }
    else
    {

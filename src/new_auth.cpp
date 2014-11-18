@@ -103,7 +103,7 @@ void name_generator( string & argument )
          mudstrlcpy( end_string[end_counter++], tempstring, 100 );
    }
    FCLOSE( infile );
-   gettimeofday( &starttime, NULL );
+   gettimeofday( &starttime, nullptr );
    srand( ( unsigned )time( &t ) + starttime.tv_usec );
    --start_counter;
    --middle_counter;
@@ -137,7 +137,7 @@ void pick_name( string & argument, const char *filename )
    tempstring[0] = '\0';
 
    infile = fopen( filename, "r" );
-   if( infile == NULL )
+   if( infile == nullptr )
    {
       log_printf( "Can't find %s", filename );
       return;
@@ -158,7 +158,7 @@ void pick_name( string & argument, const char *filename )
          mudstrlcpy( names[counter++], tempstring, 200 );
    }
    FCLOSE( infile );
-   gettimeofday( &starttime, NULL );
+   gettimeofday( &starttime, nullptr );
    srand( ( unsigned )time( &t ) + starttime.tv_usec );
    --counter;
 
@@ -273,7 +273,7 @@ void clear_auth_list( void )
 void load_auth_list( void )
 {
    ifstream stream;
-   auth_data *auth = NULL;
+   auth_data *auth = nullptr;
 
    authlist.clear(  );
 
@@ -357,14 +357,14 @@ auth_data *get_auth_name( const string & name )
       if( !str_cmp( auth->name, name ) )  /* If the name is already in the list, break */
          return auth;
    }
-   return NULL;
+   return nullptr;
 }
 
 void add_to_auth( char_data * ch )
 {
    auth_data *new_name;
 
-   if( ( new_name = get_auth_name( ch->name ) ) != NULL )
+   if( ( new_name = get_auth_name( ch->name ) ) != nullptr )
       return;
    else
    {
@@ -436,7 +436,7 @@ void check_auth_state( char_data * ch )
 char_data *get_waiting_desc( char_data * ch, const string & name )
 {
    list < descriptor_data * >::iterator ds;
-   char_data *ret_char = NULL;
+   char_data *ret_char = nullptr;
    static size_t number_of_hits;
 
    number_of_hits = 0;
@@ -449,7 +449,7 @@ char_data *get_waiting_desc( char_data * ch, const string & name )
          if( ++number_of_hits > 1 )
          {
             ch->printf( "%s does not uniquely identify a char.\r\n", name.c_str(  ) );
-            return NULL;
+            return nullptr;
          }
          ret_char = d->character;   /* return current char on exit */
       }
@@ -459,7 +459,7 @@ char_data *get_waiting_desc( char_data * ch, const string & name )
    else
    {
       ch->print( "No one like that waiting for authorization.\r\n" );
-      return NULL;
+      return nullptr;
    }
 }
 
@@ -467,9 +467,9 @@ char_data *get_waiting_desc( char_data * ch, const string & name )
 CMDF( do_authorize )
 {
    string arg1;
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    list < auth_data * >::iterator auth;
-   auth_data *nauth = NULL;
+   auth_data *nauth = nullptr;
    int level;
    bool authed, changename, pending;
 
@@ -582,7 +582,7 @@ CMDF( do_authorize )
       return;
    }
 
-   if( ( nauth = get_auth_name( arg1 ) ) != NULL )
+   if( ( nauth = get_auth_name( arg1 ) ) != nullptr )
    {
       if( nauth->state == AUTH_OFFLINE || nauth->state == AUTH_LINK_DEAD )
       {

@@ -86,7 +86,7 @@ obj_index::~obj_index(  )
             {
                ch->print( "You suddenly forget which object you were working on.\r\n" );
                ch->stop_editing(  );
-               ch->pcdata->dest_buf = NULL;
+               ch->pcdata->dest_buf = nullptr;
                ch->substate = SUB_NONE;
                break;
             }
@@ -226,7 +226,7 @@ obj_index *get_obj_index( int vnum )
    if( fBootDb )
       bug( "%s: bad vnum %d.", __func__, vnum );
 
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -238,16 +238,16 @@ obj_data *obj_index::create_object( int olevel )
 
    if( !this )
    {
-      bug( "%s: NULL pObjIndex.", __func__ );
-      return NULL;
+      bug( "%s: nullptr pObjIndex.", __func__ );
+      return nullptr;
    }
 
    obj = new obj_data;
    obj->pIndexData = this;
 
-   obj->in_room = NULL;
-   obj->in_obj = NULL;
-   obj->carried_by = NULL;
+   obj->in_room = nullptr;
+   obj->in_obj = nullptr;
+   obj->carried_by = nullptr;
    obj->extradesc.clear(  );
    obj->affects.clear(  );
    obj->level = olevel;
@@ -260,9 +260,9 @@ obj_data *obj_index::create_object( int olevel )
       obj->objdesc = QUICKLINK( objdesc );
    if( action_desc && action_desc[0] != '\0' )
       obj->action_desc = QUICKLINK( action_desc );
-   obj->owner = NULL;
-   obj->buyer = NULL;
-   obj->seller = NULL;
+   obj->owner = nullptr;
+   obj->buyer = nullptr;
+   obj->seller = nullptr;
    obj->bid = 0;
    obj->socket[0] = QUICKLINK( socket[0] );
    obj->socket[1] = QUICKLINK( socket[1] );
@@ -746,7 +746,7 @@ int obj_index::set_ego(  )
  */
 obj_index *make_object( int vnum, int cvnum, const string & name, area_data * area )
 {
-   obj_index *cObjIndex = NULL;
+   obj_index *cObjIndex = nullptr;
 
    if( cvnum > 0 )
       cObjIndex = get_obj_index( cvnum );

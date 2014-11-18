@@ -117,13 +117,13 @@ void expire_items( char_data * ch )
 
 void char_leaving( char_data * ch, int howleft )
 {
-   auth_data *old_auth = NULL;
+   auth_data *old_auth = nullptr;
 
    /*
     * new auth 
     */
    old_auth = get_auth_name( ch->name );
-   if( old_auth != NULL )
+   if( old_auth != nullptr )
       if( old_auth->state == AUTH_ONLINE )
          old_auth->state = AUTH_OFFLINE;  /* Logging off */
 
@@ -189,12 +189,12 @@ void char_leaving( char_data * ch, int howleft )
    if( ch->pcdata->clan )
       save_clan( ch->pcdata->clan );
 
-   saving_char = NULL;
+   saving_char = nullptr;
    ch->extract( true );
 
    for( int x = 0; x < MAX_WEAR; ++x )
       for( int y = 0; y < MAX_LAYERS; ++y )
-         save_equipment[x][y] = NULL;
+         save_equipment[x][y] = nullptr;
 }
 
 CMDF( do_quit )
@@ -247,7 +247,7 @@ CMDF( do_quit )
       return;
    }
 
-   if( auction->item != NULL && ( ( ch == auction->buyer ) || ( ch == auction->seller ) ) )
+   if( auction->item != nullptr && ( ( ch == auction->buyer ) || ( ch == auction->seller ) ) )
    {
       ch->print( "&[auction]Wait until you have bought/sold the item on auction.\r\n" );
       return;
@@ -260,9 +260,9 @@ CMDF( do_quit )
    }
 
    ch->print( "&WYou make a hasty break for the confines of reality...\r\n" );
-   act( AT_SAY, "A strange voice says, 'We await your return, $n...'", ch, NULL, NULL, TO_CHAR );
+   act( AT_SAY, "A strange voice says, 'We await your return, $n...'", ch, nullptr, nullptr, TO_CHAR );
    ch->print( "&d\r\n" );
-   act( AT_BYE, "$n has left the game.", ch, NULL, NULL, TO_ROOM );
+   act( AT_BYE, "$n has left the game.", ch, nullptr, nullptr, TO_ROOM );
 
    log_printf_plus( LOG_COMM, ch->level, "%s has quit.", ch->name );
    char_leaving( ch, 3 );
@@ -281,7 +281,7 @@ char_data *find_innkeeper( char_data * ch )
       if( innkeeper->has_actflag( ACT_INNKEEPER ) )
          return innkeeper;
    }
-   return NULL;
+   return nullptr;
 }
 
 void scan_rares( char_data * ch )
@@ -331,16 +331,16 @@ CMDF( do_rent )
       return;
    }
 
-   if( auction->item != NULL && ( ( ch == auction->buyer ) || ( ch == auction->seller ) ) )
+   if( auction->item != nullptr && ( ( ch == auction->buyer ) || ( ch == auction->seller ) ) )
    {
       ch->print( "Wait until you have bought/sold the item on auction.\r\n" );
       return;
    }
 
-   act( AT_WHITE, "$n takes your equipment into storage, and shows you to your room.", victim, NULL, ch, TO_VICT );
-   act( AT_SAY, "A strange voice says, 'We await your return, $n...'", ch, NULL, NULL, TO_CHAR );
+   act( AT_WHITE, "$n takes your equipment into storage, and shows you to your room.", victim, nullptr, ch, TO_VICT );
+   act( AT_SAY, "A strange voice says, 'We await your return, $n...'", ch, nullptr, nullptr, TO_CHAR );
    ch->print( "&d\r\n" );
-   act( AT_BYE, "$n shows $N to $S room, and stores $S equipment.", victim, NULL, ch, TO_NOTVICT );
+   act( AT_BYE, "$n shows $N to $S room, and stores $S equipment.", victim, nullptr, ch, TO_NOTVICT );
 
    log_printf_plus( LOG_COMM, level, "%s rented in: %s, %s", ch->name, ch->in_room->name, ch->in_room->area->name );
 
@@ -472,7 +472,7 @@ CMDF( do_camp )
       }
    }
 
-   if( auction->item != NULL && ( ( ch == auction->buyer ) || ( ch == auction->seller ) ) )
+   if( auction->item != nullptr && ( ( ch == auction->buyer ) || ( ch == auction->seller ) ) )
    {
       ch->print( "Wait until you have bought/sold the item on auction.\r\n" );
       return;
@@ -527,7 +527,7 @@ CMDF( do_camp )
       make_campfire( ch->in_room, ch, 40 );
 
    ch->print( "After tending to your fire and securing your belongings, you make camp for the night.\r\n" );
-   act( AT_GREEN, "$n secures $s belongings and makes camp for the night.\r\n", ch, NULL, NULL, TO_ROOM );
+   act( AT_GREEN, "$n secures $s belongings and makes camp for the night.\r\n", ch, nullptr, nullptr, TO_ROOM );
 
    log_printf( "%s has made camp for the night in %s.", ch->name, ch->in_room->area->name );
    char_leaving( ch, 1 );
@@ -669,8 +669,8 @@ void adjust_pfile( const string & name )
       if( !d->character->to_room( temproom ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       ch = d->character;   /* Hopefully this will work, if not, we're SOL */
-      d->character->desc = NULL;
-      d->character = NULL;
+      d->character->desc = nullptr;
+      d->character = nullptr;
       deleteptr( d );
 
       log_printf( "Updating rare items for %s", ch->name );
@@ -704,7 +704,7 @@ void adjust_pfile( const string & name )
       if( ch->pcdata->clan )
          save_clan( ch->pcdata->clan );
 
-      saving_char = NULL;
+      saving_char = nullptr;
 
       /*
        * After extract_char the ch is no longer valid!
@@ -712,7 +712,7 @@ void adjust_pfile( const string & name )
       ch->extract( true );
       for( int x = 0; x < MAX_WEAR; ++x )
          for( int y = 0; y < MAX_LAYERS; ++y )
-            save_equipment[x][y] = NULL;
+            save_equipment[x][y] = nullptr;
 
       log_printf( "Rare items for %s updated sucessfully.", name.c_str(  ) );
    }
@@ -743,7 +743,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
       char letter;
       const char *word;
       string tempstring;
-      obj_index *pObjIndex = NULL;
+      obj_index *pObjIndex = nullptr;
 
       letter = fread_letter( fpChar );
 
@@ -815,7 +815,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
          if( !str_cmp( word, "Ovnum" ) )
          {
             vnum = fread_number( fpChar );
-            if( ( pObjIndex = get_obj_index( vnum ) ) == NULL )
+            if( ( pObjIndex = get_obj_index( vnum ) ) == nullptr )
             {
                bug( "%s: %s has bad obj vnum.", __func__, filename );
                adjust = 1; /* So it can clean out the bad object - Samson 4-16-00 */
@@ -907,7 +907,7 @@ void corpse_scan( const char *dirname, const char *filename )
          if( !str_cmp( word, "Ovnum" ) )
          {
             vnum = fread_number( fpChar );
-            if( ( get_obj_index( vnum ) ) == NULL )
+            if( ( get_obj_index( vnum ) ) == nullptr )
                bug( "%s: %s's corpse has bad obj vnum.", __func__, filename );
             else
             {
@@ -991,7 +991,7 @@ void mobfile_scan( void )
          if( !str_cmp( word, "Ovnum" ) )
          {
             vnum = fread_number( fpChar );
-            if( ( get_obj_index( vnum ) ) == NULL )
+            if( ( get_obj_index( vnum ) ) == nullptr )
                bug( "%s: bad obj vnum %d.", __func__, vnum );
             else
             {
@@ -1075,7 +1075,7 @@ void objfile_scan( const char *dirname, const char *filename )
          if( !str_cmp( word, "Ovnum" ) )
          {
             vnum = fread_number( fpChar );
-            if( ( get_obj_index( vnum ) ) == NULL )
+            if( ( get_obj_index( vnum ) ) == nullptr )
                bug( "%s: bad obj vnum %d.", __func__, vnum );
             else
             {

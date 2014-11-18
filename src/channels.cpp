@@ -108,7 +108,7 @@ int get_chanflag( const string & flag )
 /* Load the channel file */
 void load_mudchannels( void )
 {
-   mud_channel *channel = NULL;
+   mud_channel *channel = nullptr;
    int filever = 0;
    ifstream stream;
 
@@ -212,7 +212,7 @@ mud_channel *find_channel( const string & name )
       if( !str_prefix( name, channel->name ) )
          return channel;
    }
-   return NULL;
+   return nullptr;
 }
 
 CMDF( do_makechannel )
@@ -657,14 +657,14 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
    strip_spaces( argument );
 
    string arg, word;
-   char_data *victim = NULL;
-   social_type *social = NULL;
+   char_data *victim = nullptr;
+   social_type *social = nullptr;
    string socbuf_char, socbuf_vict, socbuf_other;
 
    arg = argument;
    arg = one_argument( arg, word );
 
-   if( word[0] == '@' && ( social = find_social( word.substr( 1, word.length(  ) ) ) ) != NULL )
+   if( word[0] == '@' && ( social = find_social( word.substr( 1, word.length(  ) ) ) ) != nullptr )
    {
       if( !arg.empty(  ) )
       {
@@ -681,7 +681,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
             socbuf_vict = social->others_no_arg;
             socbuf_other = social->others_no_arg;
             if( socbuf_char.empty(  ) && socbuf_other.empty(  ) )
-               social = NULL;
+               social = nullptr;
          }
          else if( victim == ch )
          {
@@ -689,7 +689,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
             socbuf_vict = social->others_auto;
             socbuf_other = social->others_auto;
             if( socbuf_char.empty(  ) && socbuf_other.empty(  ) )
-               social = NULL;
+               social = nullptr;
          }
          else
          {
@@ -697,7 +697,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
             socbuf_vict = social->vict_found;
             socbuf_other = social->others_found;
             if( socbuf_char.empty(  ) && socbuf_other.empty(  ) && socbuf_vict.empty(  ) )
-               social = NULL;
+               social = nullptr;
          }
       }
       else
@@ -706,7 +706,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          socbuf_vict = social->others_no_arg;
          socbuf_other = social->others_no_arg;
          if( socbuf_char.empty(  ) && socbuf_other.empty(  ) )
-            social = NULL;
+            social = nullptr;
       }
    }
 
@@ -857,7 +857,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          {
             if( vch == victim )
             {
-               act_printf( AT_PLAIN, ch, NULL, vch, TO_VICT, "&W[&[%s]%s&W] &[%s]%s",
+               act_printf( AT_PLAIN, ch, nullptr, vch, TO_VICT, "&W[&[%s]%s&W] &[%s]%s",
                            channel->colorname.c_str(  ), capitalize( channel->name ).c_str(  ), channel->colorname.c_str(  ), socbuf_vict.c_str(  ) );
             }
             else
@@ -909,7 +909,7 @@ void to_channel( const string & argument, const string & xchannel, int level )
       return;
 
    if( channel->flags.test( CHAN_KEEPHISTORY ) )
-      update_channel_history( NULL, channel, argument, false );
+      update_channel_history( nullptr, channel, argument, false );
 
    list < descriptor_data * >::iterator ds;
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )

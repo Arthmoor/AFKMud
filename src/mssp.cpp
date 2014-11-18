@@ -559,7 +559,7 @@ void show_mssp( char_data * ch )
 {
    if( !ch )
    {
-      bug( "%s: NULL ch", __func__ );
+      bug( "%s: nullptr ch", __func__ );
       return;
    }
 
@@ -613,8 +613,8 @@ void show_mssp( char_data * ch )
 CMDF( do_setmssp )
 {
    string arg1;
-   string *strptr = NULL;
-   bool *ynptr = NULL;
+   string *strptr = nullptr;
+   bool *ynptr = nullptr;
 
    if( argument.empty() )
    {
@@ -669,7 +669,7 @@ CMDF( do_setmssp )
    else if( !str_cmp( arg1, "subgenre" ) )
       strptr = &mssp_info->subgenre;
 
-   if( strptr != NULL )
+   if( strptr != nullptr )
    {
       *strptr = argument;
       ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
@@ -717,7 +717,7 @@ CMDF( do_setmssp )
    else if( !str_cmp( arg1, "player_guilds" ) )
       ynptr = &mssp_info->playerGuilds;
 
-   if( ynptr != NULL )
+   if( ynptr != nullptr )
    {
       bool newvalue = false;
 
@@ -874,12 +874,12 @@ void mssp_reply( descriptor_data * d, const char *var, const char *fmt, ... )
 
    if( !d )
    {
-      bug( "%s: NULL d", __func__ );
+      bug( "%s: nullptr d", __func__ );
       return;
    }
    if( !var || var[0] == '\0' )
    {
-      bug( "%s: NULL var", __func__ );
+      bug( "%s: nullptr var", __func__ );
       return;
    }
 
@@ -916,7 +916,7 @@ void send_mssp_data( descriptor_data * d )
 {
    if( !d )
    {
-      bug( "%s: NULL d", __func__ );
+      bug( "%s: nullptr d", __func__ );
       return;
    }
 

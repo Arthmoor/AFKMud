@@ -456,7 +456,7 @@ int get_line( const char *desc, size_t max_len )
          case '}':  /* BLINK Foreground colour */
             *dst = '\0';
             vislen = 0;
-            i += colorcode( &desc[i], dst, NULL, 20, &vislen ); /* Skip input token */
+            i += colorcode( &desc[i], dst, nullptr, 20, &vislen ); /* Skip input token */
             j += vislen; /* Count output token length */
             break;   /* this was missing - if you have issues, remove it */
 

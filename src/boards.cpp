@@ -319,11 +319,11 @@ board_data *get_board_by_obj( obj_data * obj )
       if( board->objvnum == obj->pIndexData->vnum )
          return board;
    }
-   return NULL;
+   return nullptr;
 }
 
 /* Gets a board by name, or a number. The number should be the board # given in do_board_list.
-   If ch == NULL, then it'll perform the search without checks. Otherwise, it'll perform the
+   If ch == nullptr, then it'll perform the search without checks. Otherwise, it'll perform the
    search and weed out boards that the ch can't view remotely. */
 board_data *get_board( char_data * ch, const string & name )
 {
@@ -334,7 +334,7 @@ board_data *get_board( char_data * ch, const string & name )
    {
       board_data *board = *bd;
 
-      if( ch != NULL )
+      if( ch != nullptr )
       {
          if( !can_read( ch, board ) )
             continue;
@@ -347,7 +347,7 @@ board_data *get_board( char_data * ch, const string & name )
          return board;
       ++count;
    }
-   return NULL;
+   return nullptr;
 }
 
 /* This will find a board on an object in the character's current room */
@@ -360,10 +360,10 @@ board_data *find_board( char_data * ch )
       obj_data *obj = *iobj;
       board_data *board;
 
-      if( ( board = get_board_by_obj( obj ) ) != NULL )
+      if( ( board = get_board_by_obj( obj ) ) != nullptr )
          return board;
    }
-   return NULL;
+   return nullptr;
 }
 
 board_chardata *get_chboard( char_data * ch, const string & board_name )
@@ -377,7 +377,7 @@ board_chardata *get_chboard( char_data * ch, const string & board_name )
       if( !str_cmp( board->board_name, board_name ) )
          return board;
    }
-   return NULL;
+   return nullptr;
 }
 
 board_chardata *create_chboard( char_data * ch, const string & board_name )
@@ -597,7 +597,7 @@ board_data *read_board( FILE * fp )
       if( feof( fp ) )
       {
          FCLOSE( fp );
-         return NULL;
+         return nullptr;
       }
    }
    while( isspace( letter ) );
@@ -687,7 +687,7 @@ board_data *read_board( FILE * fp )
             {
                bug( "%s: Bad section: %s", __func__, word );
                deleteptr( board );
-               return NULL;
+               return nullptr;
             }
       }
    }
@@ -704,7 +704,7 @@ board_data *read_old_board( FILE * fp )
       if( feof( fp ) )
       {
          FCLOSE( fp );
-         return NULL;
+         return nullptr;
       }
    }
    while( isspace( letter ) );
@@ -798,8 +798,8 @@ board_data *read_old_board( FILE * fp )
 
 note_data *read_note( FILE * fp )
 {
-   note_data *pnote = NULL;
-   note_data *reply = NULL;
+   note_data *pnote = nullptr;
+   note_data *reply = nullptr;
    char letter;
 
    do
@@ -808,7 +808,7 @@ note_data *read_note( FILE * fp )
       if( feof( fp ) )
       {
          FCLOSE( fp );
-         return NULL;
+         return nullptr;
       }
    }
    while( isspace( letter ) );
@@ -875,7 +875,7 @@ note_data *read_note( FILE * fp )
                   bug( "%s: Reply found when MAX_REPLY has already been reached!", __func__ );
                   continue;
                }
-               if( reply != NULL )
+               if( reply != nullptr )
                {
                   bug( "%s: Unsupported nested reply found!", __func__ );
                   continue;
@@ -884,7 +884,7 @@ note_data *read_note( FILE * fp )
                break;
             }
 
-            if( !str_cmp( word, "Reply-Date" ) && reply != NULL )
+            if( !str_cmp( word, "Reply-Date" ) && reply != nullptr )
             {
                fread_to_eol( fp );
                break;
@@ -896,37 +896,37 @@ note_data *read_note( FILE * fp )
                break;
             }
 
-            if( !str_cmp( word, "Reply-DateStamp" ) && reply != NULL )
+            if( !str_cmp( word, "Reply-DateStamp" ) && reply != nullptr )
             {
                reply->date_stamp = fread_number( fp );
                break;
             }
 
-            if( !str_cmp( word, "Reply-Sender" ) && reply != NULL )
+            if( !str_cmp( word, "Reply-Sender" ) && reply != nullptr )
             {
                reply->sender = fread_string( fp );
                break;
             }
 
-            if( !str_cmp( word, "Reply-Subject" ) && reply != NULL )
+            if( !str_cmp( word, "Reply-Subject" ) && reply != nullptr )
             {
                reply->subject = fread_string_nohash( fp );
                break;
             }
 
-            if( !str_cmp( word, "Reply-To" ) && reply != NULL )
+            if( !str_cmp( word, "Reply-To" ) && reply != nullptr )
             {
                reply->to_list = fread_string( fp );
                break;
             }
 
-            if( !str_cmp( word, "Reply-Text" ) && reply != NULL )
+            if( !str_cmp( word, "Reply-Text" ) && reply != nullptr )
             {
                reply->text = fread_string_nohash( fp );
                break;
             }
 
-            if( !str_cmp( word, "Reply-End" ) && reply != NULL )
+            if( !str_cmp( word, "Reply-End" ) && reply != nullptr )
             {
                reply->expire = 0;
                if( !reply->date_stamp )
@@ -934,7 +934,7 @@ note_data *read_note( FILE * fp )
                reply->parent = pnote;
                pnote->rlist.push_back( reply );
                pnote->reply_count += 1;
-               reply = NULL;
+               reply = nullptr;
                break;
             }
 
@@ -953,7 +953,7 @@ note_data *read_note( FILE * fp )
             {
                bug( "%s: Bad section: %s", __func__, word );
                deleteptr( pnote );
-               return NULL;
+               return nullptr;
             }
       }
    }
@@ -961,7 +961,7 @@ note_data *read_note( FILE * fp )
 
 note_data *read_old_note( FILE * fp )
 {
-   note_data *pnote = NULL;
+   note_data *pnote = nullptr;
    char letter;
 
    do
@@ -970,7 +970,7 @@ note_data *read_old_note( FILE * fp )
       if( feof( fp ) )
       {
          FCLOSE( fp );
-         return NULL;
+         return nullptr;
       }
    }
    while( isspace( letter ) );
@@ -1124,7 +1124,7 @@ void load_boards( void )
 
    if( oldboards )
    {
-      while( ( board = read_old_board( board_fp ) ) != NULL )
+      while( ( board = read_old_board( board_fp ) ) != nullptr )
       {
          bdlist.push_back( board );
          snprintf( notefile, 256, "%s%s", BOARD_DIR, board->filename );
@@ -1134,10 +1134,10 @@ void load_boards( void )
          if( (system( backupCmd )) == -1 )
             bug( "%s: Cannot execute backup command for old boards.", __func__ );
 
-         if( ( note_fp = fopen( notefile, "r" ) ) != NULL )
+         if( ( note_fp = fopen( notefile, "r" ) ) != nullptr )
          {
             log_string( notefile );
-            while( ( pnote = read_old_note( note_fp ) ) != NULL )
+            while( ( pnote = read_old_note( note_fp ) ) != nullptr )
             {
                board->nlist.push_back( pnote );
                board->msg_count += 1;
@@ -1159,14 +1159,14 @@ void load_boards( void )
    }
    else
    {
-      while( ( board = read_board( board_fp ) ) != NULL )
+      while( ( board = read_board( board_fp ) ) != nullptr )
       {
          bdlist.push_back( board );
          snprintf( notefile, 256, "%s%s.board", BOARD_DIR, board->filename );
-         if( ( note_fp = fopen( notefile, "r" ) ) != NULL )
+         if( ( note_fp = fopen( notefile, "r" ) ) != nullptr )
          {
             log_string( notefile );
-            while( ( pnote = read_note( note_fp ) ) != NULL )
+            while( ( pnote = read_note( note_fp ) ) != nullptr )
             {
                board->nlist.push_back( pnote );
                board->msg_count += 1;
@@ -1332,13 +1332,13 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
 {
    int count = 1;
 
-   if( pnote == NULL )
+   if( pnote == nullptr )
    {
       bug( "%s: null pnote!", __func__ );
       return;
    }
 
-   if( id > 0 && board != NULL )
+   if( id > 0 && board != nullptr )
       ch->printf( "&[board3][&[board]Note #&[board2]%d&[board] of &[board2]%d&[board3]]&[board]           -- &[board2]%s&[board] --&D\r\n", id, total_notes( ch, board ),
                   board->name );
 
@@ -1447,7 +1447,7 @@ CMDF( do_note_set )
    }
 
    i = 1;
-   note_data *pnote = NULL;
+   note_data *pnote = nullptr;
    list < note_data * >::iterator inote;
    for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
    {
@@ -1719,7 +1719,7 @@ void board_parse( descriptor_data * d, const string & argument )
       case SUB_BOARD_CONFIRM:
          if( argument.empty(  ) )
          {
-            note_to_char( ch, ch->pcdata->pnote, NULL, 0 );
+            note_to_char( ch, ch->pcdata->pnote, nullptr, 0 );
             ch->printf( "%sYou %smust%s confirm! Is this correct? %s(%sType: %sY%s or %sN%s)&D   ", s1, s3, s1, s3, s1, s2, s1, s2, s3 );
             return;
          }
@@ -1728,7 +1728,7 @@ void board_parse( descriptor_data * d, const string & argument )
          {
             if( !ch->pcdata->pnote )
             {
-               bug( "%s: NULL (ch)%s->pcdata->pnote!", __func__, ch->name );
+               bug( "%s: nullptr (ch)%s->pcdata->pnote!", __func__, ch->name );
                d->connected = CON_PLAYING;
                ch->substate = SUB_NONE;
                return;
@@ -1744,7 +1744,7 @@ void board_parse( descriptor_data * d, const string & argument )
                }
                else
                {
-                  ch->pcdata->pnote->parent = NULL;
+                  ch->pcdata->pnote->parent = nullptr;
                   ch->pcdata->board->nlist.push_back( ch->pcdata->pnote );
                   ++ch->pcdata->board->msg_count;
                }
@@ -1761,10 +1761,10 @@ void board_parse( descriptor_data * d, const string & argument )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
             ch->printf( "%sYou post the note '%s%s%s' on the %s%s%s board.&D\r\n", s1, s2, ch->pcdata->pnote->subject, s1, s2, ch->pcdata->board->name, s1 );
-            act( AT_GREY, "$n posts a note on the board.", ch, NULL, NULL, TO_ROOM );
+            act( AT_GREY, "$n posts a note on the board.", ch, nullptr, nullptr, TO_ROOM );
             board_announce( ch, ch->pcdata->board, ch->pcdata->pnote );
-            ch->pcdata->pnote = NULL;
-            ch->pcdata->board = NULL;
+            ch->pcdata->pnote = nullptr;
+            ch->pcdata->board = nullptr;
             ch->substate = SUB_NONE;
             d->connected = CON_PLAYING;
             return;
@@ -1830,7 +1830,7 @@ void board_parse( descriptor_data * d, const string & argument )
          if( !str_cmp( argument, "q" ) )
          {
             ch->substate = SUB_BOARD_CONFIRM;
-            note_to_char( ch, ch->pcdata->pnote, NULL, 0 );
+            note_to_char( ch, ch->pcdata->pnote, nullptr, 0 );
             ch->printf( "%sIs this correct? %s(%sY%s/%sN%s)&D   ", s1, s3, s2, s3, s2, s3 );
             return;
          }
@@ -1891,7 +1891,7 @@ CMDF( do_board_moderate )
    }
 
    i = 1;
-   note_data *pnote = NULL;
+   note_data *pnote = nullptr;
    list < note_data * >::iterator inote;
    for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
    {
@@ -1999,7 +1999,7 @@ CMDF( do_board_moderate )
 
 CMDF( do_note_write )
 {
-   board_data *board = NULL;
+   board_data *board = nullptr;
    room_index *board_room;
    string arg;
    char buf[MSL];
@@ -2026,23 +2026,23 @@ CMDF( do_note_write )
          ch->substate = SUB_NONE;
          if( ch->pcdata->pnote )
             deleteptr( ch->pcdata->pnote );
-         ch->pcdata->pnote = NULL;
+         ch->pcdata->pnote = nullptr;
          ch->from_room(  );
          if( !ch->to_room( ch->orig_room ) )
             log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          ch->desc->connected = CON_PLAYING;
-         act( AT_GREY, "$n aborts $s note writing.", ch, NULL, NULL, TO_ROOM );
-         ch->pcdata->board = NULL;
+         act( AT_GREY, "$n aborts $s note writing.", ch, nullptr, nullptr, TO_ROOM );
+         ch->pcdata->board = nullptr;
          return;
 
       case SUB_BOARD_TEXT:
-         if( ch->pcdata->pnote == NULL )
+         if( ch->pcdata->pnote == nullptr )
          {
             bug( "%s: SUB_BOARD_TEXT: Null pnote on character (%s)!", __func__, ch->name );
             ch->stop_editing(  );
             return;
          }
-         if( ch->pcdata->board == NULL )
+         if( ch->pcdata->board == nullptr )
          {
             bug( "%s: SUB_BOARD_TEXT: Null board on character (%s)!", __func__, ch->name );
             ch->stop_editing(  );
@@ -2061,7 +2061,7 @@ CMDF( do_note_write )
             ch->start_editing( ch->pcdata->pnote->text );
             return;
          }
-         note_to_char( ch, ch->pcdata->pnote, NULL, 0 );
+         note_to_char( ch, ch->pcdata->pnote, nullptr, 0 );
          ch->printf( "%sIs this correct? %s(%sY%s/%sN%s)&D   ", s1, s3, s2, s3, s2, s3 );
          ch->desc->connected = CON_BOARD;
          ch->substate = SUB_BOARD_CONFIRM;
@@ -2118,7 +2118,7 @@ CMDF( do_note_write )
    if( n_num )
    {
       list < note_data * >::iterator inote;
-      note_data *pnote = NULL;
+      note_data *pnote = nullptr;
       int i = 1;
       for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
       {
@@ -2147,7 +2147,7 @@ CMDF( do_note_write )
       }
 
       ch->printf( "%sYou begin to write a reply for %s%s's%s note '%s%s%s'.&D\r\n", s1, s2, pnote->sender, s1, s2, pnote->subject, s1 );
-      act( AT_GREY, "$n departs for a moment, replying to a note.", ch, NULL, NULL, TO_ROOM );
+      act( AT_GREY, "$n departs for a moment, replying to a note.", ch, nullptr, nullptr, TO_ROOM );
       ch->note_attach(  );
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
@@ -2208,7 +2208,7 @@ CMDF( do_note_write )
       else
          ch->printf( "%sTo whom is this note addressed? %s(%sDefault: %sAll%s)&D   ", s1, s3, s1, s2, s3 );
    }
-   act( AT_GREY, "$n begins to write a new note.", ch, NULL, NULL, TO_ROOM );
+   act( AT_GREY, "$n begins to write a new note.", ch, nullptr, nullptr, TO_ROOM );
    ch->desc->connected = CON_BOARD;
    ch->orig_room = ch->in_room;
    ch->from_room(  );
@@ -2218,11 +2218,11 @@ CMDF( do_note_write )
 
 CMDF( do_note_read )
 {
-   board_data *board = NULL;
+   board_data *board = nullptr;
    list < board_data * >::iterator bd;
    list < note_data * >::iterator inote;
-   note_data *pnote = NULL;
-   board_chardata *pboard = NULL;
+   note_data *pnote = nullptr;
+   board_chardata *pboard = nullptr;
    int n_num = 0, i = 1;
    string arg;
    char s1[16], s2[16], s3[16];
@@ -2284,7 +2284,7 @@ CMDF( do_note_read )
       if( !pnote )
       {
          ch->printf( "%sThere are no more unread messages on this board.&D\r\n", s1 );
-         ch->pcdata->board = NULL;
+         ch->pcdata->board = nullptr;
          return;
       }
 
@@ -2296,7 +2296,7 @@ CMDF( do_note_read )
 
       note_to_char( ch, pnote, board, n_num );
       pboard->last_read = pnote->date_stamp;
-      act( AT_GREY, "$n reads a note.", ch, NULL, NULL, TO_ROOM );
+      act( AT_GREY, "$n reads a note.", ch, nullptr, nullptr, TO_ROOM );
       return;
    }
 
@@ -2362,12 +2362,12 @@ CMDF( do_note_read )
    pboard = create_chboard( ch, board->name );
    if( pboard->last_read < pnote->date_stamp )
       pboard->last_read = pnote->date_stamp;
-   act( AT_GREY, "$n reads a note.", ch, NULL, NULL, TO_ROOM );
+   act( AT_GREY, "$n reads a note.", ch, nullptr, nullptr, TO_ROOM );
 }
 
 CMDF( do_note_list )
 {
-   board_data *board = NULL;
+   board_data *board = nullptr;
    board_chardata *chboard;
    char buf[MSL];
    int count = 0;
@@ -2404,7 +2404,7 @@ CMDF( do_note_list )
 
    snprintf( buf, MSL, "%s--[ %sNotes on %s%s%s ]--", s3, s1, s2, board->name, s3 );
    ch->printf( "\r\n%s\r\n", color_align( buf, 80, ALIGN_CENTER ) );
-   act_printf( AT_GREY, ch, NULL, NULL, TO_ROOM, "&w$n reviews the notes on the &W%s&w board.", board->name );
+   act_printf( AT_GREY, ch, nullptr, nullptr, TO_ROOM, "&w$n reviews the notes on the &W%s&w board.", board->name );
 
    if( total_notes( ch, board ) == 0 )
    {
@@ -2463,7 +2463,7 @@ CMDF( do_note_list )
 CMDF( do_note_remove )
 {
    board_data *board;
-   note_data *pnote = NULL;
+   note_data *pnote = nullptr;
    string arg;
    short n_num = 0, r_num = 0, i = 0;
 
@@ -2554,7 +2554,7 @@ CMDF( do_note_remove )
 
    if( r_num > 0 )
    {
-      note_data *reply = NULL;
+      note_data *reply = nullptr;
       list < note_data * >::iterator rp;
 
       i = 1;
@@ -2580,14 +2580,14 @@ CMDF( do_note_remove )
       ch->printf( "&[board]You remove the reply from &[board2]%s&[board], titled '&[board2]%s&[board]' from the &[board2]%s&[board] board.&D\r\n",
                   reply->sender ? reply->sender : "--Error--", reply->subject ? reply->subject : "--Error--", board->name );
       note_remove( board, reply );
-      act( AT_BOARD, "$n removes a reply from the board.", ch, NULL, NULL, TO_ROOM );
+      act( AT_BOARD, "$n removes a reply from the board.", ch, nullptr, nullptr, TO_ROOM );
       return;
    }
 
    ch->printf( "&[board]You remove the note from &[board2]%s&[board], titled '&[board2]%s&[board]' from the &[board2]%s&[board] board.&D\r\n",
                pnote->sender ? pnote->sender : "--Error--", pnote->subject ? pnote->subject : "--Error--", board->name );
    note_remove( board, pnote );
-   act( AT_BOARD, "$n removes a note from the board.", ch, NULL, NULL, TO_ROOM );
+   act( AT_BOARD, "$n removes a note from the board.", ch, nullptr, nullptr, TO_ROOM );
 }
 
 CMDF( do_board_list )
@@ -2662,7 +2662,7 @@ CMDF( do_board_list )
          {
             ch->printf( "%-5d ", board->objvnum );
             snprintf( buf, MSL, "%d", board->objvnum );
-            if( ( obj = ch->get_obj_world( buf ) ) && ( obj->in_room != NULL ) )
+            if( ( obj = ch->get_obj_world( buf ) ) && ( obj->in_room != nullptr ) )
                ch->printf( "%-5d ", obj->in_room->vnum );
             else
                ch->print( "----- " );
@@ -2706,7 +2706,7 @@ CMDF( do_board_list )
 CMDF( do_board_alert )
 {
    board_chardata *chboard;
-   board_data *board = NULL;
+   board_data *board = nullptr;
    string arg;
    int bd_value = -1;
    char s1[16], s2[16], s3[16];
@@ -2813,7 +2813,7 @@ CMDF( do_checkboards )
          char buf[MSL];
 
          snprintf( buf, MSL, "%d", board->objvnum );
-         if( ( obj = ch->get_obj_world( buf ) ) && ( obj->in_room != NULL ) )
+         if( ( obj = ch->get_obj_world( buf ) ) && ( obj->in_room != nullptr ) )
             ch->printf( " %s[%sObj# %s%-5d %s@ %sRoom# %s%-5d%s]", s3, s1, s2, board->objvnum, s3, s1, s2, obj->in_room->vnum, s3 );
          else
             ch->printf( " %s[ %sGlobal Board %s]", s3, s2, s3 );
@@ -3285,7 +3285,7 @@ project_data *get_project_by_number( int pnum )
       else
          ++pcount;
    }
-   return NULL;
+   return nullptr;
 }
 
 note_data *get_log_by_number( project_data * pproject, int pnum )
@@ -3302,7 +3302,7 @@ note_data *get_log_by_number( project_data * pproject, int pnum )
       else
          ++pcount;
    }
-   return NULL;
+   return nullptr;
 }
 
 void write_projects( void )
@@ -3372,7 +3372,7 @@ note_data *read_old_log( FILE * fp )
       {
          deleteptr( nlog );
          bug( "%s: bad key word: %s", __func__, word );
-         return NULL;
+         return nullptr;
       }
    }
 }
@@ -3388,7 +3388,7 @@ project_data *read_project( FILE * fp )
       if( feof( fp ) )
       {
          FCLOSE( fp );
-         return NULL;
+         return nullptr;
       }
    }
    while( isspace( letter ) );
@@ -3512,7 +3512,7 @@ void load_projects( void ) /* Copied load_boards structure for simplicity */
    if( !( fp = fopen( PROJECTS_FILE, "r" ) ) )
       return;
 
-   while( ( project = read_project( fp ) ) != NULL )
+   while( ( project = read_project( fp ) ) != nullptr )
       projlist.push_back( project );
 
    // Bugfix - CPPcheck flagged this. It's possible for it to be closed in fread_project before getting back here.
@@ -3603,7 +3603,7 @@ CMDF( do_project )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Your description was lost!" );
-            bug( "%s: sub_project_desc: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_project_desc: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -3619,11 +3619,11 @@ CMDF( do_project )
          ch->print( "Aborting...\r\n" );
          ch->substate = SUB_NONE;
          if( ch->pcdata->dest_buf )
-            ch->pcdata->dest_buf = NULL;
+            ch->pcdata->dest_buf = nullptr;
          if( ch->pcdata->pnote )
          {
             deleteptr( ch->pcdata->pnote );
-            ch->pcdata->pnote = NULL;
+            ch->pcdata->pnote = nullptr;
          }
          return;
    }
@@ -3699,7 +3699,7 @@ CMDF( do_project )
          project_data *proj = ( *pr );
 
          ++pcount;
-         if( ( proj->status && str_cmp( proj->status, "approved" ) ) || proj->coder != NULL )
+         if( ( proj->status && str_cmp( proj->status, "approved" ) ) || proj->coder != nullptr )
             continue;
          ch->pagerf( "%2d%s | %-11s | %-26s\r\n", pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)", proj->name ? proj->name : "(None)" );
       }
@@ -3739,7 +3739,7 @@ CMDF( do_project )
 
    if( !str_cmp( arg, "add" ) )
    {
-      realm_data *realm = NULL;
+      realm_data *realm = nullptr;
 
       if( !IS_REALM_LEADER(ch) && !IS_ADMIN_REALM(ch) )
       {
@@ -3767,9 +3767,9 @@ CMDF( do_project )
 
       project_data *new_project = new project_data;
       new_project->name = str_dup( argument.c_str(  ) );
-      new_project->coder = NULL;
+      new_project->coder = nullptr;
       new_project->taken = false;
-      new_project->description = NULL;
+      new_project->description = nullptr;
       new_project->realm_name = realm->name;
       new_project->date_stamp = current_time;
       projlist.push_back( new_project );
@@ -3838,7 +3838,7 @@ CMDF( do_project )
          return;
       }
       else if( pproject->taken && IS_PROJECT_ADMIN(ch, pproject) )
-         ch->printf( "Taking Project: '%s' from Owner: '%s'!\r\n", pproject->name, pproject->owner ? pproject->owner : "NULL" );
+         ch->printf( "Taking Project: '%s' from Owner: '%s'!\r\n", pproject->name, pproject->owner ? pproject->owner : "nullptr" );
 
       STRFREE( pproject->owner );
       pproject->owner = QUICKLINK( ch->name );
@@ -3959,7 +3959,7 @@ CMDF( do_project )
 
          ch->pcdata->pnote->date_stamp = current_time;
          plog = ch->pcdata->pnote;
-         ch->pcdata->pnote = NULL;
+         ch->pcdata->pnote = nullptr;
 
          if( !argument.empty(  ) )
          {
@@ -4054,7 +4054,7 @@ CMDF( do_project )
             ch->print( "This is not your project!\r\n" );
             return;
          }
-         note_to_char( ch, plog, NULL, -1 );
+         note_to_char( ch, plog, nullptr, -1 );
          return;
       }
    }

@@ -463,11 +463,11 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    if( ( victim->position == victim->defposition && victim->long_descr && victim->long_descr[0] != '\0' )
        || ( victim->morph && victim->morph->morph && victim->morph->morph->defpos == victim->position ) )
    {
-      if( victim->morph != NULL )
+      if( victim->morph != nullptr )
       {
          if( !ch->is_immortal(  ) )
          {
-            if( victim->morph->morph != NULL )
+            if( victim->morph->morph != nullptr )
                mudstrlcat( buf, victim->morph->morph->long_desc, MSL );
             else
                mudstrlcat( buf, strip_crlf( victim->long_descr ), MSL );
@@ -492,7 +492,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    }
    else
    {
-      if( victim->morph != NULL && victim->morph->morph != NULL && !ch->is_immortal(  ) )
+      if( victim->morph != nullptr && victim->morph->morph != nullptr && !ch->is_immortal(  ) )
          mudstrlcat( buf, MORPHPERS( victim, ch, false ), MSL );
       else
          mudstrlcat( buf, PERS( victim, ch, false ), MSL );
@@ -504,7 +504,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    mudstrlcat( buf, ch->color_str( AT_PERSON ), MSL );
 
    timer_data *timer;
-   if( ( timer = victim->get_timerptr( TIMER_DO_FUN ) ) != NULL )
+   if( ( timer = victim->get_timerptr( TIMER_DO_FUN ) ) != nullptr )
    {
       if( timer->do_fun == do_cast )
          mudstrlcat( buf, " is here chanting.", MSL );
@@ -546,7 +546,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             break;
 
          case POS_SLEEPING:
-            if( victim->on != NULL )
+            if( victim->on != nullptr )
             {
                if( IS_SET( victim->on->value[2], SLEEP_AT ) )
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping at %s.", victim->on->short_descr );
@@ -565,7 +565,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             break;
 
          case POS_RESTING:
-            if( victim->on != NULL )
+            if( victim->on != nullptr )
             {
                if( IS_SET( victim->on->value[2], REST_AT ) )
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting at %s.", victim->on->short_descr );
@@ -586,7 +586,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             break;
 
          case POS_SITTING:
-            if( victim->on != NULL )
+            if( victim->on != nullptr )
             {
                if( IS_SET( victim->on->value[2], SIT_AT ) )
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting at %s.", victim->on->short_descr );
@@ -600,7 +600,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             break;
 
          case POS_STANDING:
-            if( victim->on != NULL )
+            if( victim->on != nullptr )
             {
                if( IS_SET( victim->on->value[2], STAND_AT ) )
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing at %s.", victim->on->short_descr );
@@ -721,35 +721,35 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
 
    if( victim->can_see( ch, false ) && !ch->has_pcflag( PCFLAG_WIZINVIS ) )
    {
-      act( AT_ACTION, "$n looks at you.", ch, NULL, victim, TO_VICT );
+      act( AT_ACTION, "$n looks at you.", ch, nullptr, victim, TO_VICT );
       if( victim != ch )
-         act( AT_ACTION, "$n looks at $N.", ch, NULL, victim, TO_NOTVICT );
+         act( AT_ACTION, "$n looks at $N.", ch, nullptr, victim, TO_NOTVICT );
       else
-         act( AT_ACTION, "$n looks at $mself.", ch, NULL, victim, TO_NOTVICT );
+         act( AT_ACTION, "$n looks at $mself.", ch, nullptr, victim, TO_NOTVICT );
    }
 
    if( victim->chardesc && victim->chardesc[0] != '\0' )
    {
-      if( victim->morph != NULL && victim->morph->morph != NULL )
+      if( victim->morph != nullptr && victim->morph->morph != nullptr )
       {
-         if( victim->morph->morph->description != NULL && victim->morph->morph->description[0] != '\0' )
+         if( victim->morph->morph->description != nullptr && victim->morph->morph->description[0] != '\0' )
             ch->print( victim->morph->morph->description );
          else
-            act( AT_PLAIN, "You see nothing special about $M.", ch, NULL, victim, TO_CHAR );
+            act( AT_PLAIN, "You see nothing special about $M.", ch, nullptr, victim, TO_CHAR );
       }
       else
          ch->print( victim->chardesc );
    }
    else
    {
-      if( victim->morph != NULL && victim->morph->morph != NULL && ( victim->morph->morph->description != NULL && victim->morph->morph->description[0] != '\0' ) )
+      if( victim->morph != nullptr && victim->morph->morph != nullptr && ( victim->morph->morph->description != nullptr && victim->morph->morph->description[0] != '\0' ) )
          ch->print( victim->morph->morph->description );
       else if( victim->isnpc(  ) )
-         act( AT_PLAIN, "You see nothing special about $M.", ch, NULL, victim, TO_CHAR );
+         act( AT_PLAIN, "You see nothing special about $M.", ch, nullptr, victim, TO_CHAR );
       else if( ch != victim )
-         act( AT_PLAIN, "$E isn't much to look at...", ch, NULL, victim, TO_CHAR );
+         act( AT_PLAIN, "$E isn't much to look at...", ch, nullptr, victim, TO_CHAR );
       else
-         act( AT_PLAIN, "You're not much to look at...", ch, NULL, NULL, TO_CHAR );
+         act( AT_PLAIN, "You're not much to look at...", ch, nullptr, nullptr, TO_CHAR );
    }
 
    show_race_line( ch, victim );
@@ -760,15 +760,15 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
    {
       obj_data *obj;
 
-      if( ( obj = victim->get_eq( iWear ) ) != NULL && ch->can_see_obj( obj, false ) )
+      if( ( obj = victim->get_eq( iWear ) ) != nullptr && ch->can_see_obj( obj, false ) )
       {
          if( !found )
          {
             ch->print( "\r\n" );
             if( victim != ch )
-               act( AT_PLAIN, "$N is using:", ch, NULL, victim, TO_CHAR );
+               act( AT_PLAIN, "$N is using:", ch, nullptr, victim, TO_CHAR );
             else
-               act( AT_PLAIN, "You are using:", ch, NULL, NULL, TO_CHAR );
+               act( AT_PLAIN, "You are using:", ch, nullptr, nullptr, TO_CHAR );
             found = true;
          }
 
@@ -1176,7 +1176,7 @@ CMDF( do_showmap )
 CMDF( do_look )
 {
    string arg, arg1, arg2;
-   extra_descr_data *ed = NULL;
+   extra_descr_data *ed = nullptr;
    list < exit_data * >::iterator iexit;
    char_data *victim;
    obj_data *obj;
@@ -1333,8 +1333,8 @@ CMDF( do_look )
 
       count = obj->count;
       obj->count = 1;
-      act( AT_PLAIN, "You lift $p and look beneath it:", ch, obj, NULL, TO_CHAR );
-      act( AT_PLAIN, "$n lifts $p and looks beneath it:", ch, obj, NULL, TO_ROOM );
+      act( AT_PLAIN, "You lift $p and look beneath it:", ch, obj, nullptr, TO_CHAR );
+      act( AT_PLAIN, "$n lifts $p and looks beneath it:", ch, obj, nullptr, TO_ROOM );
       obj->count = count;
 
       if( obj->extra_flags.test( ITEM_COVERING ) )
@@ -1411,7 +1411,7 @@ CMDF( do_look )
                   {
                      original = ch->in_room;
                      enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
-                     leave_map( ch, NULL, original );
+                     leave_map( ch, nullptr, original );
                   }
                   else
                   {
@@ -1447,9 +1447,9 @@ CMDF( do_look )
             count = obj->count;
             obj->count = 1;
             if( obj->item_type == ITEM_KEYRING )
-               act( AT_PLAIN, "$p holds:", ch, obj, NULL, TO_CHAR );
+               act( AT_PLAIN, "$p holds:", ch, obj, nullptr, TO_CHAR );
             else
-               act( AT_PLAIN, "$p contains:", ch, obj, NULL, TO_CHAR );
+               act( AT_PLAIN, "$p contains:", ch, obj, nullptr, TO_CHAR );
             obj->count = count;
 
             show_list_to_char( ch, obj->contents, true, true );
@@ -1507,7 +1507,7 @@ CMDF( do_look )
             {
                liquid_data *liq = get_liq_vnum( obj->value[2] );
 
-               ch->printf( "It's a puddle of %s liquid.\r\n", ( liq == NULL ? "clear" : liq->color.c_str() ) );
+               ch->printf( "It's a puddle of %s liquid.\r\n", ( liq == nullptr ? "clear" : liq->color.c_str() ) );
             }
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
@@ -1555,7 +1555,7 @@ CMDF( do_look )
             {
                liquid_data *liq = get_liq_vnum( obj->value[2] );
 
-               ch->printf( "It's a puddle of %s liquid.\r\n", ( liq == NULL ? "clear" : liq->color.c_str() ) );
+               ch->printf( "It's a puddle of %s liquid.\r\n", ( liq == nullptr ? "clear" : liq->color.c_str() ) );
             }
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
@@ -1572,7 +1572,7 @@ CMDF( do_look )
 
    exit_data *pexit;
    short door = get_door( arg1 );
-   if( ( pexit = find_door( ch, arg1, true ) ) != NULL )
+   if( ( pexit = find_door( ch, arg1, true ) ) != nullptr )
    {
       if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !IS_EXIT_FLAG( pexit, EX_WINDOW ) )
       {
@@ -1582,9 +1582,9 @@ CMDF( do_look )
          {
             if( pexit->keyword[strlen( pexit->keyword ) - 1] == 's'
                 || ( pexit->keyword[strlen( pexit->keyword ) - 1] == '\'' && pexit->keyword[strlen( pexit->keyword ) - 2] == 's' ) )
-               act( AT_PLAIN, "The $d are closed.", ch, NULL, pexit->keyword, TO_CHAR );
+               act( AT_PLAIN, "The $d are closed.", ch, nullptr, pexit->keyword, TO_CHAR );
             else
-               act( AT_PLAIN, "The $d is closed.", ch, NULL, pexit->keyword, TO_CHAR );
+               act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword, TO_CHAR );
          }
          return;
       }
@@ -1592,9 +1592,9 @@ CMDF( do_look )
       {
          if( pexit->keyword[strlen( pexit->keyword ) - 1] == 's'
              || ( pexit->keyword[strlen( pexit->keyword ) - 1] == '\'' && pexit->keyword[strlen( pexit->keyword ) - 2] == 's' ) )
-            act( AT_PLAIN, "The $d have been bashed from their hinges.", ch, NULL, pexit->keyword, TO_CHAR );
+            act( AT_PLAIN, "The $d have been bashed from their hinges.", ch, nullptr, pexit->keyword, TO_CHAR );
          else
-            act( AT_PLAIN, "The $d has been bashed from its hinges.", ch, NULL, pexit->keyword, TO_CHAR );
+            act( AT_PLAIN, "The $d has been bashed from its hinges.", ch, nullptr, pexit->keyword, TO_CHAR );
       }
 
       if( pexit->exitdesc && pexit->exitdesc[0] != '\0' )
@@ -1661,7 +1661,7 @@ CMDF( do_look )
          {
             original = ch->in_room;
             enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
-            leave_map( ch, NULL, original );
+            leave_map( ch, nullptr, original );
          }
          else
          {
@@ -1688,7 +1688,7 @@ CMDF( do_look )
       return;
    }
 
-   if( ( victim = ch->get_char_room( arg1 ) ) != NULL )
+   if( ( victim = ch->get_char_room( arg1 ) ) != nullptr )
    {
       if( !is_ignoring( victim, ch ) )
       {
@@ -1749,8 +1749,8 @@ CMDF( do_glance )
    {
       if( victim->can_see( ch, false ) )
       {
-         act( AT_ACTION, "$n glances at you.", ch, NULL, victim, TO_VICT );
-         act( AT_ACTION, "$n glances at $N.", ch, NULL, victim, TO_NOTVICT );
+         act( AT_ACTION, "$n glances at you.", ch, nullptr, victim, TO_VICT );
+         act( AT_ACTION, "$n glances at $N.", ch, nullptr, victim, TO_NOTVICT );
       }
       if( ch->is_immortal(  ) && victim != ch )
       {
@@ -1798,7 +1798,7 @@ CMDF( do_examine )
     * Support for checking equipment conditions,
     * and support for trigger positions by Thoric
     */
-   if( ( obj = ch->get_obj_here( argument ) ) != NULL )
+   if( ( obj = ch->get_obj_here( argument ) ) != nullptr )
    {
       switch ( obj->item_type )
       {
@@ -2000,7 +2000,7 @@ CMDF( do_weather )
 CMDF( do_compare )
 {
    string arg1;
-   obj_data *obj1, *obj2 = NULL;
+   obj_data *obj1, *obj2 = nullptr;
    int value1, value2;
    const char *msg;
 
@@ -2047,7 +2047,7 @@ CMDF( do_compare )
       ch->printf( "Why would you compare a %s to a %s?\r\n", o_types[obj1->item_type], o_types[obj2->item_type] );
       return;
    }
-   msg = NULL;
+   msg = nullptr;
    value1 = 0;
    value2 = 0;
 
@@ -2101,7 +2101,7 @@ CMDF( do_oldwhere )
          descriptor_data *d = *ds;
 
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
-             && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room
+             && ( victim = d->character ) != nullptr && !victim->isnpc(  ) && victim->in_room
              && victim->in_room->area == ch->in_room->area && ch->can_see( victim, true ) && !is_ignoring( victim, ch )
              && !ch->in_room->flags.test( ROOM_NOWHERE ) && !victim->in_room->flags.test( ROOM_NOWHERE )
              && !ch->in_room->area->flags.test( AFLAG_NOWHERE ) && !victim->in_room->area->flags.test( AFLAG_NOWHERE ) )
@@ -2181,7 +2181,7 @@ CMDF( do_consider )
       msg = "$N is far more experienced than you!";
    else
       msg = "$N would make a great teacher for you!";
-   act( AT_CONSIDER, msg, ch, NULL, victim, TO_CHAR );
+   act( AT_CONSIDER, msg, ch, nullptr, victim, TO_CHAR );
 
    diff = ( victim->max_hit - ch->max_hit ) / 6;
 
@@ -2205,7 +2205,7 @@ CMDF( do_consider )
       msg = "Why don't you dig a grave for yourself first?";
    else
       msg = "$N is built like a TANK!";
-   act( AT_CONSIDER, msg, ch, NULL, victim, TO_CHAR );
+   act( AT_CONSIDER, msg, ch, nullptr, victim, TO_CHAR );
 }
 
 CMDF( do_wimpy )
@@ -2575,7 +2575,7 @@ CMDF( do_afk )
       ch->unset_pcflag( PCFLAG_AFK );
       ch->print( "You are no longer afk.\r\n" );
       DISPOSE( ch->pcdata->afkbuf );
-      act( AT_GREY, "$n is no longer afk.", ch, NULL, NULL, TO_ROOM );
+      act( AT_GREY, "$n is no longer afk.", ch, nullptr, nullptr, TO_ROOM );
    }
    else
    {
@@ -2584,7 +2584,7 @@ CMDF( do_afk )
       DISPOSE( ch->pcdata->afkbuf );
       if( argument.empty(  ) )
          ch->pcdata->afkbuf = str_dup( argument.c_str(  ) );
-      act( AT_GREY, "$n is now afk.", ch, NULL, NULL, TO_ROOM );
+      act( AT_GREY, "$n is now afk.", ch, nullptr, nullptr, TO_ROOM );
    }
 }
 
@@ -2722,7 +2722,7 @@ CMDF( do_motdedit )
 
    if( !str_cmp( arg1, "save" ) )
    {
-      if( ch->pcdata->motd_buf == NULL )
+      if( ch->pcdata->motd_buf == nullptr )
       {
          ch->print( "Nothing to save.\r\n" );
          return;
@@ -2750,7 +2750,7 @@ CMDF( do_motdedit )
          save_sysdata(  );
          return;
       }
-      do_motdedit( ch, NULL );
+      do_motdedit( ch, nullptr );
       return;
    }
 
@@ -2772,7 +2772,7 @@ CMDF( do_motdedit )
       ch->set_editor_desc( "An MOTD." );
       return;
    }
-   do_motdedit( ch, NULL );
+   do_motdedit( ch, nullptr );
 }
 
 void pc_data::save_ignores( FILE * fp )
@@ -2896,7 +2896,7 @@ CMDF( do_ignore )
       snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
       snprintf( fname2, 256, "%s/%s", GOD_DIR, capitalize( argument ).c_str(  ) );
 
-      victim = NULL;
+      victim = nullptr;
 
       /*
        * get the name of the char who last sent tell to ch 
@@ -2985,11 +2985,11 @@ bool is_ignoring( char_data * ch, char_data * ign_ch )
 
    if( !ch )   /* Paranoid bug check, you never know. */
    {
-      bug( "%s: NULL CH!", __func__ );
+      bug( "%s: nullptr CH!", __func__ );
       return false;
    }
 
-   if( !ign_ch )  /* Bail out, webwho can access this and ign_ch will be NULL */
+   if( !ign_ch )  /* Bail out, webwho can access this and ign_ch will be nullptr */
       return false;
 
    if( ch->isnpc(  ) || ign_ch->isnpc(  ) )

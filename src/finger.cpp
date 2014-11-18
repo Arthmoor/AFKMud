@@ -192,11 +192,11 @@ CMDF( do_wizinfo )
 /* Further refined by Samson on 8-26-03 */
 CMDF( do_finger )
 {
-   char_data *victim = NULL;
-   room_index *temproom, *original = NULL;
+   char_data *victim = nullptr;
+   room_index *temproom, *original = nullptr;
    int level = LEVEL_IMMORTAL;
    char buf[MIL], fingload[256];
-   const char *suf, *laston = NULL;
+   const char *suf, *laston = nullptr;
    struct stat fst;
    short day = 0;
    bool loaded = false, skip = false;
@@ -218,7 +218,7 @@ CMDF( do_finger )
    /*
     * If player is online, check for fingerability (yeah, I coined that one)  -Edge 
     */
-   if( ( victim = ch->get_char_world( buf ) ) != NULL )
+   if( ( victim = ch->get_char_world( buf ) ) != nullptr )
    {
       if( victim->has_pcflag( PCFLAG_PRIVACY ) && !ch->is_immortal(  ) )
       {
@@ -272,8 +272,8 @@ CMDF( do_finger )
       if( !d->character->to_room( temproom ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       victim = d->character;  /* Hopefully this will work, if not, we're SOL */
-      d->character->desc = NULL;
-      d->character = NULL;
+      d->character->desc = nullptr;
+      d->character = nullptr;
       deleteptr( d );
 
       if( victim->has_pcflag( PCFLAG_PRIVACY ) && !ch->is_immortal(  ) )
@@ -364,7 +364,7 @@ CMDF( do_finger )
             cpet->extract( true );
          }
       }
-      saving_char = NULL;
+      saving_char = nullptr;
 
       /*
        * After extract_char the ch is no longer valid!
@@ -372,7 +372,7 @@ CMDF( do_finger )
       victim->extract( true );
       for( x = 0; x < MAX_WEAR; ++x )
          for( y = 0; y < MAX_LAYERS; ++y )
-            save_equipment[x][y] = NULL;
+            save_equipment[x][y] = nullptr;
    }
 }
 

@@ -73,7 +73,7 @@ mob_index::~mob_index(  )
             {
                ch->print( "Your victim has departed.\r\n" );
                ch->stop_editing(  );
-               ch->pcdata->dest_buf = NULL;
+               ch->pcdata->dest_buf = nullptr;
                ch->substate = SUB_NONE;
                break;
             }
@@ -132,9 +132,9 @@ void mob_index::clean_mob(  )
    STRFREE( long_descr );
    STRFREE( chardesc );
    spec_funname.clear(  );
-   spec_fun = NULL;
-   pShop = NULL;
-   rShop = NULL;
+   spec_fun = nullptr;
+   pShop = nullptr;
+   rShop = nullptr;
    progtypes.reset(  );
 
    list < mud_prog_data * >::iterator mpg;
@@ -196,7 +196,7 @@ mob_index *get_mob_index( int vnum )
    if( fBootDb )
       bug( "%s: bad vnum %d.", __func__, vnum );
 
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -217,7 +217,7 @@ char_data *mob_index::create_mobile(  )
 
    if( !this )
    {
-      bug( "%s: NULL pMobIndex.", __func__ );
+      bug( "%s: nullptr pMobIndex.", __func__ );
       exit( 1 );
    }
 
@@ -373,7 +373,7 @@ char_data *mob_index::create_mobile(  )
  */
 mob_index *make_mobile( int vnum, int cvnum, const string & name, area_data * area )
 {
-   mob_index *cMobIndex = NULL;
+   mob_index *cMobIndex = nullptr;
 
    if( cvnum > 0 )
       cMobIndex = get_mob_index( cvnum );
@@ -396,9 +396,9 @@ mob_index *make_mobile( int vnum, int cvnum, const string & name, area_data * ar
       pMobIndex->actflags.set( ACT_IS_NPC );
       pMobIndex->actflags.set( ACT_PROTOTYPE );
       pMobIndex->affected_by.reset(  );
-      pMobIndex->pShop = NULL;
-      pMobIndex->rShop = NULL;
-      pMobIndex->spec_fun = NULL;
+      pMobIndex->pShop = nullptr;
+      pMobIndex->rShop = nullptr;
+      pMobIndex->spec_fun = nullptr;
       pMobIndex->mudprogs.clear(  );
       pMobIndex->progtypes.reset(  );
       pMobIndex->alignment = 0;
@@ -451,8 +451,8 @@ mob_index *make_mobile( int vnum, int cvnum, const string & name, area_data * ar
       pMobIndex->actflags = cMobIndex->actflags;
       pMobIndex->actflags.set( ACT_PROTOTYPE );
       pMobIndex->affected_by = cMobIndex->affected_by;
-      pMobIndex->pShop = NULL;
-      pMobIndex->rShop = NULL;
+      pMobIndex->pShop = nullptr;
+      pMobIndex->rShop = nullptr;
       pMobIndex->spec_fun = cMobIndex->spec_fun;
       pMobIndex->mudprogs.clear(  );
       pMobIndex->progtypes.reset(  );

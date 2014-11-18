@@ -115,9 +115,9 @@ void char_data::de_equip(  )
       for( int y = 0; y < MAX_LAYERS; ++y )
       {
          if( isnpc(  ) )
-            mob_save_equipment[x][y] = NULL;
+            mob_save_equipment[x][y] = nullptr;
          else
-            save_equipment[x][y] = NULL;
+            save_equipment[x][y] = nullptr;
       }
    }
 
@@ -172,22 +172,22 @@ void char_data::re_equip(  )
       {
          if( isnpc(  ) )
          {
-            if( mob_save_equipment[x][y] != NULL )
+            if( mob_save_equipment[x][y] != nullptr )
             {
                if( quitting_char != this )
                   equip( mob_save_equipment[x][y], x );
-               mob_save_equipment[x][y] = NULL;
+               mob_save_equipment[x][y] = nullptr;
             }
             else
                break;
          }
          else
          {
-            if( save_equipment[x][y] != NULL )
+            if( save_equipment[x][y] != nullptr )
             {
                if( quitting_char != this )
                   equip( save_equipment[x][y], x );
-               save_equipment[x][y] = NULL;
+               save_equipment[x][y] = nullptr;
             }
             else
                break;
@@ -362,7 +362,7 @@ void fwrite_char( char_data * ch, FILE * fp )
    for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); ++paf )
    {
       affect_data *af = *paf;
-      skill_type *skill = NULL;
+      skill_type *skill = nullptr;
 
       if( af->type >= 0 && !( skill = get_skilltype( af->type ) ) )
          continue;
@@ -468,7 +468,7 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
 
       if( !obj )
       {
-         bug( "%s: NULL obj", __func__ );
+         bug( "%s: nullptr obj", __func__ );
          continue;
       }
 
@@ -579,13 +579,13 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
          fprintf( fp, "Timer        %d\n", obj->timer );
       if( obj->cost != obj->pIndexData->cost )
          fprintf( fp, "Cost         %d\n", obj->cost );
-      if( obj->seller != NULL )
+      if( obj->seller != nullptr )
          fprintf( fp, "Seller       %s~\n", obj->seller );
-      if( obj->buyer != NULL )
+      if( obj->buyer != nullptr )
          fprintf( fp, "Buyer        %s~\n", obj->buyer );
       if( obj->bid != 0 )
          fprintf( fp, "Bid          %d\n", obj->bid );
-      if( obj->owner != NULL )
+      if( obj->owner != nullptr )
          fprintf( fp, "Owner        %s~\n", obj->owner );
       fprintf( fp, "Oday         %d\n", obj->day );
       fprintf( fp, "Omonth       %d\n", obj->month );
@@ -711,7 +711,7 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
    for( paf = mob->affects.begin(  ); paf != mob->affects.end(  ); ++paf )
    {
       affect_data *af = *paf;
-      skill_type *skill = NULL;
+      skill_type *skill = nullptr;
 
       if( af->type >= 0 && !( skill = get_skilltype( af->type ) ) )
          continue;
@@ -742,7 +742,7 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
 
    mob->de_equip(  );
    if( !mob->carrying.empty(  ) )
-      fwrite_obj( mob, mob->carrying, NULL, fp, 0, ( shopmob ? false : mob->master->pcdata->hotboot ) );
+      fwrite_obj( mob, mob->carrying, nullptr, fp, 0, ( shopmob ? false : mob->master->pcdata->hotboot ) );
    mob->re_equip(  );
 
    if( !shopmob )
@@ -818,7 +818,7 @@ void char_data::save(  )
       if( morph )
          fwrite_morph_data( this, fp );
       if( !carrying.empty(  ) )
-         fwrite_obj( this, carrying, NULL, fp, 0, pcdata->hotboot );
+         fwrite_obj( this, carrying, nullptr, fp, 0, pcdata->hotboot );
 
       if( sysdata->save_pets && !pets.empty(  ) )
       {
@@ -841,8 +841,8 @@ void char_data::save(  )
 
    re_equip(  );
 
-   quitting_char = NULL;
-   saving_char = NULL;
+   quitting_char = nullptr;
+   saving_char = nullptr;
 }
 
 short find_old_age( char_data * ch )
@@ -903,7 +903,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                int value = fread_number( fp );
                char *ability = fread_word( fp );
-               int sn = find_ability( NULL, ability, false );
+               int sn = find_ability( nullptr, ability, false );
 
                if( sn < 0 )
                   log_printf( "%s: unknown ability: %s", __func__, ability );
@@ -1060,7 +1060,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                board_data *board;
 
                word = fread_flagstring( fp );
-               if( !( board = get_board( NULL, word ) ) )
+               if( !( board = get_board( nullptr, word ) ) )
                {
                   log_printf( "Player %s has board %s which apparently doesn't exist?", ch->name, word );
                   ch->printf( "Warning: the board %s no longer exsists.\r\n", word );
@@ -1103,7 +1103,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                int value = fread_number( fp );
                char *combat = fread_word( fp );
-               int sn = find_combat( NULL, combat, false );
+               int sn = find_combat( nullptr, combat, false );
 
                if( sn < 0 )
                   log_printf( "%s: unknown combat skill: %s", __func__, combat );
@@ -1286,7 +1286,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                int value = fread_number( fp );
                char *lore = fread_word( fp );
-               int sn = find_lore( NULL, lore, false );
+               int sn = find_lore( nullptr, lore, false );
 
                if( sn < 0 )
                   log_printf( "%s: unknown lore: %s", __func__, lore );
@@ -1380,7 +1380,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "PTimer" ) )
             {
-               ch->add_timer( TIMER_PKILLED, fread_number( fp ), NULL, 0 );
+               ch->add_timer( TIMER_PKILLED, fread_number( fp ), nullptr, 0 );
                break;
             }
             break;
@@ -1509,7 +1509,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                int value = fread_number( fp );
                char *skill = fread_word( fp );
-               int sn = find_skill( NULL, skill, false );
+               int sn = find_skill( nullptr, skill, false );
 
                if( sn < 0 )
                   log_printf( "%s: unknown skill: %s", __func__, skill );
@@ -1556,7 +1556,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                int value = fread_number( fp );
                char *spell = fread_word( fp );
-               int sn = find_spell( NULL, spell, false );
+               int sn = find_spell( nullptr, spell, false );
 
                if( sn < 0 )
                   log_printf( "%s: unknown spell: %s", __func__, spell );
@@ -1634,7 +1634,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->chan_listen.empty(  ) )
                {
-                  mud_channel *channel = NULL;
+                  mud_channel *channel = nullptr;
                   string channels = ch->pcdata->chan_listen;
                   string arg;
 
@@ -1652,7 +1652,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                else
                   ch->pcdata->chan_listen = "chat";
 
-               ch->pcdata->editor = NULL;
+               ch->pcdata->editor = nullptr;
 
                /*
                 * no good for newbies at all 
@@ -1721,7 +1721,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                int value = fread_number( fp );
                char *tongue = fread_word( fp );
-               int sn = find_tongue( NULL, tongue, false );
+               int sn = find_tongue( nullptr, tongue, false );
 
                if( sn < 0 )
                   log_printf( "%s: unknown tongue: %s", __func__, tongue );
@@ -1743,7 +1743,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             if( !str_cmp( word, "Title" ) )
             {
                ch->pcdata->title = fread_string( fp );
-               if( ch->pcdata->title != NULL && ( isalpha( ch->pcdata->title[0] ) || isdigit( ch->pcdata->title[0] ) ) )
+               if( ch->pcdata->title != nullptr && ( isalpha( ch->pcdata->title[0] ) || isdigit( ch->pcdata->title[0] ) ) )
                   stralloc_printf( &ch->pcdata->title, " %s", ch->pcdata->title );
                break;
             }
@@ -1775,7 +1775,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
    obj_data *obj;
    int iNest, obj_file_ver;
    bool fNest, fVnum;
-   room_index *room = NULL;
+   room_index *room = nullptr;
 
    if( ch )
    {
@@ -1911,13 +1911,13 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                {
                   short wear_loc = obj->wear_loc;
 
-                  if( !obj->name && obj->pIndexData->name != NULL )
+                  if( !obj->name && obj->pIndexData->name != nullptr )
                      obj->name = QUICKLINK( obj->pIndexData->name );
-                  if( !obj->objdesc && obj->pIndexData->objdesc != NULL )
+                  if( !obj->objdesc && obj->pIndexData->objdesc != nullptr )
                      obj->objdesc = QUICKLINK( obj->pIndexData->objdesc );
-                  if( !obj->short_descr && obj->pIndexData->short_descr != NULL )
+                  if( !obj->short_descr && obj->pIndexData->short_descr != nullptr )
                      obj->short_descr = QUICKLINK( obj->pIndexData->short_descr );
-                  if( !obj->action_desc && obj->pIndexData->action_desc != NULL )
+                  if( !obj->action_desc && obj->pIndexData->action_desc != nullptr )
                      obj->action_desc = QUICKLINK( obj->pIndexData->action_desc );
                   if( obj->extra_flags.test( ITEM_PERSONAL ) && !obj->owner && ch )
                      obj->owner = QUICKLINK( ch->name );
@@ -1973,9 +1973,9 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                       */
                      if( obj->timer < 1 )
                         obj->timer = 80;
-                     obj->to_room( room, NULL );
+                     obj->to_room( room, nullptr );
                   }
-                  else if( iNest == 0 || rgObjNest[iNest] == NULL )
+                  else if( iNest == 0 || rgObjNest[iNest] == nullptr )
                   {
                      int slot = -1;
                      bool reslot = false;
@@ -2212,11 +2212,11 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
  */
 char_data *fread_mobile( FILE * fp, bool shopmob )
 {
-   char_data *mob = NULL;
+   char_data *mob = nullptr;
    const char *word;
    int inroom = 0;
-   room_index *pRoomIndex = NULL;
-   mob_index *pMobIndex = NULL;
+   room_index *pRoomIndex = nullptr;
+   mob_index *pMobIndex = nullptr;
 
    if( !shopmob )
       word = feof( fp ) ? "EndMobile" : fread_word( fp );
@@ -2242,7 +2242,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                break;
          }
          bug( "%s: No index data for vnum %d", __func__, vnum );
-         return NULL;
+         return nullptr;
       }
       mob = pMobIndex->create_mobile(  );
    }
@@ -2263,7 +2263,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
       }
       mob->extract( true );
       bug( "%s: Vnum not found", __func__ );
-      return NULL;
+      return nullptr;
    }
 
    for( ;; )
@@ -2366,7 +2366,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                      if( mob_save_equipment[i][x] )
                      {
                         mob->equip( mob_save_equipment[i][x], i );
-                        mob_save_equipment[i][x] = NULL;
+                        mob_save_equipment[i][x] = nullptr;
                      }
                return mob;
             }
@@ -2451,7 +2451,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
 
    if( !d )
    {
-      bug( "%s: NULL d! This should not have happened!", __func__ );
+      bug( "%s: nullptr d! This should not have happened!", __func__ );
       return false;
    }
 
@@ -2461,8 +2461,8 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
    {
       for( i = 0; i < MAX_LAYERS; ++i )
       {
-         save_equipment[x][i] = NULL;
-         mob_save_equipment[x][i] = NULL;
+         save_equipment[x][i] = nullptr;
+         mob_save_equipment[x][i] = nullptr;
       }
    }
    loading_char = ch;
@@ -2505,10 +2505,10 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
     * else no player file 
     */
 
-   if( ( fp = fopen( strsave, "r" ) ) != NULL )
+   if( ( fp = fopen( strsave, "r" ) ) != nullptr )
    {
       for( int iNest = 0; iNest < MAX_NEST; ++iNest )
-         rgObjNest[iNest] = NULL;
+         rgObjNest[iNest] = nullptr;
 
       found = true;
       /*
@@ -2551,7 +2551,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
             ch->pcdata->fread_old_comment( fp );   /* Older Comments */
          else if( !str_cmp( word, "MOBILE" ) )
          {
-            char_data *mob = NULL;
+            char_data *mob = nullptr;
             mob = fread_mobile( fp, false );
             if( mob )
             {
@@ -2575,7 +2575,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
          }
       }
       FCLOSE( fp );
-      fpArea = NULL;
+      fpArea = nullptr;
       mudstrlcpy( strArea, "$", MIL );
    }
 
@@ -2606,7 +2606,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
                if( save_equipment[i][x] )
                {
                   ch->equip( save_equipment[i][x], i );
-                  save_equipment[i][x] = NULL;
+                  save_equipment[i][x] = nullptr;
                }
                else
                   break;
@@ -2618,7 +2618,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
     * Rebuild affected_by and RIS to catch errors - FB 
     */
    ch->update_aris(  );
-   loading_char = NULL;
+   loading_char = nullptr;
    return found;
 }
 
@@ -2675,7 +2675,7 @@ void write_corpse( obj_data * corpse, const string & name )
    fprintf( fp, "%s", "End\n\n" );
 
    if( !corpse->contents.empty(  ) )
-      fwrite_obj( NULL, corpse->contents, NULL, fp, 1, false );
+      fwrite_obj( nullptr, corpse->contents, nullptr, fp, 1, false );
 
    fprintf( fp, "%s", "#END\n\n" );
    FCLOSE( fp );
@@ -2694,7 +2694,7 @@ void load_corpses( void )
    }
 
    falling = 1;   /* Arbitrary, must be >0 though. */
-   while( ( de = readdir( dp ) ) != NULL )
+   while( ( de = readdir( dp ) ) != nullptr )
    {
       if( de->d_name[0] != '.' )
       {
@@ -2725,9 +2725,9 @@ void load_corpses( void )
             }
             word = fread_word( fpArea );
             if( !str_cmp( word, "CORPSE" ) )
-               fread_obj( NULL, fpArea, OS_CORPSE );
+               fread_obj( nullptr, fpArea, OS_CORPSE );
             else if( !str_cmp( word, "OBJECT" ) )
-               fread_obj( NULL, fpArea, OS_CARRY );
+               fread_obj( nullptr, fpArea, OS_CARRY );
             else if( !str_cmp( word, "END" ) )
                break;
             else
@@ -2752,6 +2752,6 @@ CMDF( do_save )
    ch->WAIT_STATE( 2 ); /* For big muds with save-happy players, like RoD */
    ch->update_aris(  ); /* update char affects and RIS */
    ch->save(  );
-   saving_char = NULL;
+   saving_char = nullptr;
    ch->print( "Saved...\r\n" );
 }

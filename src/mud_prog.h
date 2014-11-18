@@ -217,7 +217,7 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
 
 template < class N > void mprog_file_read( N * prog_target, const char *f )
 {
-   mud_prog_data *mprg = NULL;
+   mud_prog_data *mprg = nullptr;
    char MUDProgfile[256];
    FILE *progfile;
 

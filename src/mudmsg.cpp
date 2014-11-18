@@ -189,8 +189,8 @@ void mud_message( char_data * ch, mud_channel * channel, const string & arg )
 
 void recv_text_handler( string & str )
 {
-   mud_channel *channel = NULL;
-   char_data *ch = NULL;
+   mud_channel *channel = nullptr;
+   char_data *ch = nullptr;
    string arg1, arg2, arg3, arg4, arg5, chname;
    int ilevel = -1, clevel = -1;
    bool isnpc, isinvis;

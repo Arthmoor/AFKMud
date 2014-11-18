@@ -124,7 +124,7 @@ room_index::~room_index(  )
          ch->print( "The room is no more.\r\n" );
          ch->stop_editing(  );
          ch->substate = SUB_NONE;
-         ch->pcdata->dest_buf = NULL;
+         ch->pcdata->dest_buf = nullptr;
       }
       else if( ch->substate == SUB_ROOM_EXTRA && ch->pcdata->dest_buf )
       {
@@ -139,7 +139,7 @@ room_index::~room_index(  )
                ch->print( "The room is no more.\r\n" );
                ch->stop_editing(  );
                ch->substate = SUB_NONE;
-               ch->pcdata->dest_buf = NULL;
+               ch->pcdata->dest_buf = nullptr;
                break;
             }
          }
@@ -179,7 +179,7 @@ room_index::~room_index(  )
          exit_data *aexit;
          area_data *pArea = pexit->to_room->area;
 
-         if( ( ( aexit = pexit->rexit ) != NULL ) && aexit != pexit )
+         if( ( ( aexit = pexit->rexit ) != nullptr ) && aexit != pexit )
          {
             pexit->to_room->extract_exit( aexit );
 
@@ -399,7 +399,7 @@ exit_data::exit_data(  )
 exit_data::~exit_data(  )
 {
    if( rexit )
-      rexit->rexit = NULL;
+      rexit->rexit = nullptr;
    STRFREE( keyword );
    STRFREE( exitdesc );
 }
@@ -463,7 +463,7 @@ exit_data *room_index::get_exit( short dir )
       if( pexit->vdir == dir )
          return pexit;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -481,7 +481,7 @@ exit_data *room_index::get_exit_num( short count )
       if( ++cnt == count )
          return pexit;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -498,7 +498,7 @@ exit_data *room_index::get_exit_to( short dir, int evnum )
       if( pexit->vdir == dir && pexit->vnum == evnum )
          return pexit;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -638,7 +638,7 @@ bool room_index::is_dark( char_data * ch )
       else
          snprintf( buf, MSL, "Player %s", ch->name );
 
-      bug( "%s: NULL pRoomIndex. Occupant: %s", __func__, ch->name );
+      bug( "%s: nullptr pRoomIndex. Occupant: %s", __func__, ch->name );
 
       if( ch->char_died(  ) )
          log_printf( "%s was probably dead when this happened.", buf );
@@ -668,7 +668,7 @@ bool room_index::is_private(  )
 {
    if( !this )
    {
-      bug( "%s: NULL pRoomIndex", __func__ );
+      bug( "%s: nullptr pRoomIndex", __func__ );
       return false;
    }
 
@@ -686,7 +686,7 @@ bool room_index::is_private(  )
 void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const string & argument )
 {
    list < affect_data * >::iterator paf;
-   affect_data *aff = NULL;
+   affect_data *aff = nullptr;
    short loc;
 
    if( argument.empty(  ) )
@@ -893,7 +893,7 @@ room_index *get_room_index( int vnum )
    if( fBootDb )
       bug( "%s: bad vnum %d.", __func__, vnum );
 
-   return NULL;
+   return nullptr;
 }
 
 void room_index::echo( const string & argument )
@@ -1007,7 +1007,7 @@ obj_data *get_obj_type( obj_index * pObjIndex )
       if( obj->pIndexData == pObjIndex )
          return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /* Find an object in a room so we can check it's dependents. Used by 'O' resets. */
@@ -1022,7 +1022,7 @@ obj_data *get_obj_room( obj_index * pObjIndex, room_index * pRoomIndex )
       if( obj->pIndexData == pObjIndex )
          return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1035,7 +1035,7 @@ obj_data *make_trap( int charges, int type, int level, int flags, int mindamage,
    if( !( trap = get_obj_index( OBJ_VNUM_TRAP )->create_object( 1 ) ) )
    {
       log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-      return NULL;
+      return nullptr;
    }
    trap->timer = 0;
 
@@ -1059,8 +1059,8 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, sh
 
    if( !this )
    {
-      bug( "%s: NULL room!", __func__ );
-      return NULL;
+      bug( "%s: nullptr room!", __func__ );
+      return nullptr;
    }
 
    letter = UPPER( letter );
@@ -1082,8 +1082,8 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, sh
       case 'Y':
          if( !last_mob_reset )
          {
-            bug( "%s: Can't add '%c' reset to room: last_mob_reset is NULL.", __func__, letter );
-            return NULL;
+            bug( "%s: Can't add '%c' reset to room: last_mob_reset is nullptr.", __func__, letter );
+            return nullptr;
          }
          last_obj_reset = pReset;
          last_mob_reset->resets.push_back( pReset );
@@ -1093,8 +1093,8 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, sh
       case 'W':
          if( !last_obj_reset )
          {
-            bug( "%s: Can't add '%c' reset to room: last_obj_reset is NULL.", __func__, letter );
-            return NULL;
+            bug( "%s: Can't add '%c' reset to room: last_obj_reset is nullptr.", __func__, letter );
+            return nullptr;
          }
          last_obj_reset->resets.push_back( pReset );
          return pReset;
@@ -1124,7 +1124,7 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, sh
    actually reset, or if they're bugged. */
 void room_index::renumber_put_resets(  )
 {
-   reset_data *lastobj = NULL;
+   reset_data *lastobj = nullptr;
    list < reset_data * >::iterator rst, dst;
 
    for( rst = resets.begin(  ); rst != resets.end(  ); ++rst )
@@ -1174,16 +1174,16 @@ void room_index::reset(  )
    map < int, obj_data * >nestmap;
    char_data *mob;
    obj_data *obj, *lastobj, *to_obj;
-   room_index *pRoomIndex = NULL;
-   mob_index *pMobIndex = NULL;
-   obj_index *pObjIndex = NULL, *pObjToIndex;
+   room_index *pRoomIndex = nullptr;
+   mob_index *pMobIndex = nullptr;
+   obj_index *pObjIndex = nullptr, *pObjToIndex;
    exit_data *pexit;
    char *filename = area->filename;
    int level = 0, num, lastnest, onreset = 0;
 
-   mob = NULL;
-   obj = NULL;
-   lastobj = NULL;
+   mob = nullptr;
+   obj = nullptr;
+   lastobj = nullptr;
    if( resets.empty(  ) )
       return;
    level = 0;
@@ -1218,7 +1218,7 @@ void room_index::reset(  )
             }
             if( !pReset->sreset )
             {
-               mob = NULL;
+               mob = nullptr;
                break;
             }
             mob = pMobIndex->create_mobile(  );
@@ -1245,7 +1245,7 @@ void room_index::reset(  )
 
             // LOAD_PROG imported from Smaug 1.8b
             if( HAS_PROG( mob->pIndexData, LOAD_PROG ) )
-               mprog_percent_check( mob, NULL, NULL, NULL, NULL, LOAD_PROG );
+               mprog_percent_check( mob, nullptr, nullptr, nullptr, nullptr, LOAD_PROG );
 
             /*
              * Added by Tarl 4 Dec 02 so that if a mob is 'flagged' namegen in
@@ -1380,14 +1380,14 @@ void room_index::reset(  )
                         }
                         if( !mob )
                         {
-                           lastobj = NULL;
+                           lastobj = nullptr;
                            break;
                         }
 
                         if( pObjIndex->count >= pObjIndex->limit )
                         {
-                           obj = NULL;
-                           lastobj = NULL;
+                           obj = nullptr;
+                           lastobj = nullptr;
                            break;
                         }
 
@@ -1456,7 +1456,7 @@ void room_index::reset(  )
                                     }
                                     if( pObjIndex->count >= pObjIndex->limit || count_obj_list( gReset, pObjIndex, to_obj->contents ) > 0 )
                                     {
-                                       obj = NULL;
+                                       obj = nullptr;
                                        break;
                                     }
 
@@ -1473,7 +1473,7 @@ void room_index::reset(  )
                                        num = pObjIndex->limit - gReset->arg3;
                                        if( num < 1 )
                                        {
-                                          obj = NULL;
+                                          obj = nullptr;
                                           break;
                                        }
                                     }
@@ -1519,13 +1519,13 @@ void room_index::reset(  )
                break;
             }
 
-            obj = generate_random( pReset, NULL );
+            obj = generate_random( pReset, nullptr );
 
             nestmap.clear(  );
             nestmap[0] = obj;
             lastobj = nestmap[0];
             lastnest = 0;
-            obj->to_room( pRoomIndex, NULL );
+            obj->to_room( pRoomIndex, nullptr );
          }
             break;
 
@@ -1584,14 +1584,14 @@ void room_index::reset(  )
                   obj->mx = pReset->arg5;
                   obj->my = pReset->arg6;
                }
-               obj->to_room( pRoomIndex, NULL );
+               obj->to_room( pRoomIndex, nullptr );
             }
             else
             {
                if( !( obj = get_obj_room( pObjIndex, pRoomIndex ) ) )
                {
-                  obj = NULL;
-                  lastobj = NULL;
+                  obj = nullptr;
+                  lastobj = nullptr;
                   break;
                }
                obj->extra_flags = pObjIndex->extra_flags;
@@ -1676,7 +1676,7 @@ void room_index::reset(  )
                         if( number_percent(  ) > tReset->arg9 )
                            break;
 
-                        obj_data *newobj = generate_random( tReset, NULL );
+                        obj_data *newobj = generate_random( tReset, nullptr );
 
                         iNest = tReset->arg1;
                         if( iNest < lastnest )
@@ -1715,7 +1715,7 @@ void room_index::reset(  )
 
                         if( pObjIndex->count >= pObjIndex->limit || count_obj_list( tReset, pObjIndex, to_obj->contents ) > 0 )
                         {
-                           obj = NULL;
+                           obj = nullptr;
                            break;
                         }
 
@@ -1732,7 +1732,7 @@ void room_index::reset(  )
                            num = pObjIndex->limit - tReset->arg3;
                            if( num < 1 )
                            {
-                              obj = NULL;
+                              obj = nullptr;
                               break;
                            }
                         }
@@ -1781,7 +1781,7 @@ void room_index::reset(  )
                if( area->nplayer > 0 || count_obj_list( pReset, get_obj_index( OBJ_VNUM_TRAP ), pRoomIndex->objects ) > 0 )
                   break;
                to_obj = make_trap( pReset->arg2, pReset->arg2, 10, pReset->arg1, pReset->arg6, pReset->arg7 );
-               to_obj->to_room( pRoomIndex, NULL );
+               to_obj->to_room( pRoomIndex, nullptr );
             }
             break;
 
@@ -1926,7 +1926,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          if( arg7 > 100 )
             arg7 = 100;
 
-         if( get_mob_index( arg1 ) == NULL && fBootDb )
+         if( get_mob_index( arg1 ) == nullptr && fBootDb )
             boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __func__, area->filename, count, arg1 );
          if( arg4 != -1 && ( arg4 < 0 || arg4 >= MAP_MAX ) )
          {
@@ -1951,7 +1951,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          if( arg7 > 100 )
             arg7 = 100;
 
-         if( get_obj_index( arg1 ) == NULL && fBootDb )
+         if( get_obj_index( arg1 ) == nullptr && fBootDb )
             boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg1 );
          if( arg4 != -1 && ( arg4 < 0 || arg4 >= MAP_MAX ) )
          {
@@ -1999,12 +1999,12 @@ void room_index::load_reset( FILE * fp, bool newformat )
          if( arg5 > 100 )
             arg5 = 100;
 
-         if( get_obj_index( arg2 ) == NULL && fBootDb )
+         if( get_obj_index( arg2 ) == nullptr && fBootDb )
             boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg2 );
 
          if( arg4 <= 0 )
             arg4 = OBJ_VNUM_DUMMYOBJ;  // This may look stupid, but for some reason it works.
-         if( get_obj_index( arg4 ) == NULL && fBootDb )
+         if( get_obj_index( arg4 ) == nullptr && fBootDb )
             boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __func__, area->filename, count, arg4 );
          if( !newformat && area->version < 21 )
          {
@@ -2023,7 +2023,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
             arg3 = 1;
          if( arg3 > 100 )
             arg3 = 100;
-         if( get_obj_index( arg1 ) == NULL && fBootDb )
+         if( get_obj_index( arg1 ) == nullptr && fBootDb )
             boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg1 );
          break;
 
@@ -2033,7 +2033,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          if( arg4 > 100 )
             arg4 = 100;
 
-         if( get_obj_index( arg1 ) == NULL && fBootDb )
+         if( get_obj_index( arg1 ) == nullptr && fBootDb )
             boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg1 );
          break;
 

@@ -317,7 +317,7 @@ list < lmsg_data *> login_messages;
 
 void fread_loginmsg( FILE * fp )
 {
-   lmsg_data *lmsg = NULL;
+   lmsg_data *lmsg = nullptr;
 
    lmsg = new lmsg_data;
 
@@ -383,7 +383,7 @@ void load_loginmsg(  )
    login_messages.clear();
 
    snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
-   if( ( fp = fopen( filename, "r" ) ) == NULL )
+   if( ( fp = fopen( filename, "r" ) ) == nullptr )
    {
       bug( "%s: Cannot open login message file.", __func__ );
       return;
@@ -434,7 +434,7 @@ void save_loginmsg(  )
    list < lmsg_data * >::iterator imsg;
 
    snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
-   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   if( ( fp = fopen( filename, "w" ) ) == nullptr )
    {
       bug( "%s: Cannot open login message file.", __func__ );
       return;
@@ -501,7 +501,7 @@ void check_loginmsg( char_data * ch )
             {
                if( !lmsg->text || lmsg->text[0] == '\0' )
                {
-                  bug( "%s: NULL loginmsg text for type 0", __func__ );
+                  bug( "%s: nullptr loginmsg text for type 0", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -515,7 +515,7 @@ void check_loginmsg( char_data * ch )
             {
                if( !lmsg->text || lmsg->text[0] == '\0' )
                {
-                  bug( "%s: NULL loginmsg text for type 17", __func__ );
+                  bug( "%s: nullptr loginmsg text for type 17", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -530,7 +530,7 @@ void check_loginmsg( char_data * ch )
             {
                if( !lmsg->text || lmsg->text[0] == '\0' )
                {
-                  bug( "%s: NULL loginmsg text for type 18", __func__ );
+                  bug( "%s: nullptr loginmsg text for type 18", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -1036,8 +1036,8 @@ void descriptor_data::read_from_buffer(  )
           * * As we know, code rarely does what we expect, and there could still be problems here.
           * * The only other solution seen as viable beyond this is to remove the spamguard entirely.
           */
-         cmd_type *cmd = NULL;
-         mud_channel *channel = NULL;
+         cmd_type *cmd = nullptr;
+         mud_channel *channel = nullptr;
          map < string, string >::iterator al;
          string c = this->incomm, arg;
 
@@ -1059,7 +1059,7 @@ void descriptor_data::read_from_buffer(  )
 
          if( !cmd )
          {
-            if( ( channel = find_channel( arg ) ) != NULL && !str_cmp( this->incomm, this->inlast ) )
+            if( ( channel = find_channel( arg ) ) != nullptr && !str_cmp( this->incomm, this->inlast ) )
                ++this->repeat;
          }
          else if( cmd->flags.test( CMD_NOSPAM ) && !str_cmp( this->incomm, this->inlast ) )
@@ -1068,7 +1068,7 @@ void descriptor_data::read_from_buffer(  )
          {
             imc_channel *imcchan;
 
-            if( ( imcchan = imc_findchannel( arg ) ) != NULL && !str_cmp( this->incomm, this->inlast ) )
+            if( ( imcchan = imc_findchannel( arg ) ) != nullptr && !str_cmp( this->incomm, this->inlast ) )
                ++this->repeat;
          }
 #endif
@@ -1125,7 +1125,7 @@ void descriptor_data::write_to_buffer( const string & txt )
 {
    if( !this )
    {
-      bug( "%s: NULL descriptor", __func__ );
+      bug( "%s: nullptr descriptor", __func__ );
       return;
    }
 
@@ -1158,7 +1158,7 @@ void descriptor_data::send_color( const string & txt )
 {
    if( !this )
    {
-      bug( "%s: NULL *d", __func__ );
+      bug( "%s: nullptr *d", __func__ );
       return;
    }
 
@@ -1172,7 +1172,7 @@ void descriptor_data::pager( const string & txt )
 {
    if( !this )
    {
-      bug( "%s: NULL *d", __func__ );
+      bug( "%s: nullptr *d", __func__ );
       return;
    }
 
@@ -1280,7 +1280,7 @@ void descriptor_data::send_greeting(  )
    char BUFF[MSL], filename[256];
 
    snprintf( filename, 256, "%sgreeting.dat", MOTD_DIR );
-   if( ( rpfile = fopen( filename, "r" ) ) != NULL )
+   if( ( rpfile = fopen( filename, "r" ) ) != nullptr )
    {
       while( ( ( BUFF[num] = fgetc( rpfile ) ) != EOF ) && num < MSL - 2 )
          ++num;
@@ -1414,7 +1414,7 @@ string in_dns_cache( const string & ip )
 
 void load_dns( void )
 {
-   dns_data *cache = NULL;
+   dns_data *cache = nullptr;
    ifstream stream;
 
    dnslist.clear(  );
@@ -1641,9 +1641,9 @@ void descriptor_data::resolve_dns( long ip )
 
       snprintf( str_ip, 64, "%ld", ip );
 #if defined(__CYGWIN__)
-      execl( "../src/resolver.exe", "AFKMud Resolver", str_ip, ( char * )NULL );
+      execl( "../src/resolver.exe", "AFKMud Resolver", str_ip, ( char * )nullptr );
 #else
-      execl( "../src/resolver", "AFKMud Resolver", str_ip, ( char * )NULL );
+      execl( "../src/resolver", "AFKMud Resolver", str_ip, ( char * )nullptr );
 #endif
       /*
        * Still here --> hmm. An error. 
@@ -1864,7 +1864,7 @@ void descriptor_data::prompt(  )
 
    if( !ch )
    {
-      bug( "%s: NULL ch", __func__ );
+      bug( "%s: nullptr ch", __func__ );
       return;
    }
 
@@ -1948,9 +1948,9 @@ void descriptor_data::prompt(  )
                   break;
 
                case 'C':  /* Tank */
-                  if( !ch->fighting || ( victim = ch->fighting->who ) == NULL )
+                  if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
                      mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
-                  else if( !victim->fighting || ( victim = victim->fighting->who ) == NULL )
+                  else if( !victim->fighting || ( victim = victim->fighting->who ) == nullptr )
                      mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else
                   {
@@ -1984,7 +1984,7 @@ void descriptor_data::prompt(  )
                   break;
 
                case 'c':
-                  if( !ch->fighting || ( victim = ch->fighting->who ) == NULL )
+                  if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
                      mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else
                   {
@@ -2034,9 +2034,9 @@ void descriptor_data::prompt(  )
                   break;
 
                case 'N':  /* Tank */
-                  if( !ch->fighting || ( victim = ch->fighting->who ) == NULL )
+                  if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
                      mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
-                  else if( !victim->fighting || ( victim = victim->fighting->who ) == NULL )
+                  else if( !victim->fighting || ( victim = victim->fighting->who ) == nullptr )
                      mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else
                   {
@@ -2051,7 +2051,7 @@ void descriptor_data::prompt(  )
                   break;
 
                case 'n':
-                  if( !ch->fighting || ( victim = ch->fighting->who ) == NULL )
+                  if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
                      mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else
                   {
@@ -2228,7 +2228,7 @@ void close_socket( descriptor_data * d, bool force )
       descriptor_data *s = *ds;
 
       if( s->snoop_by == d )
-         s->snoop_by = NULL;
+         s->snoop_by = nullptr;
    }
 
    /*
@@ -2236,13 +2236,13 @@ void close_socket( descriptor_data * d, bool force )
     */
    if( d->original )
    {
-      if( ( ch = d->character ) != NULL )
+      if( ( ch = d->character ) != nullptr )
          interpret( ch, "return" );
       else
       {
          bug( "%s: original without character %s", __func__, ( d->original->name ? d->original->name : "unknown" ) );
          d->character = d->original;
-         d->original = NULL;
+         d->original = nullptr;
       }
    }
 
@@ -2258,7 +2258,7 @@ void close_socket( descriptor_data * d, bool force )
        * Link dead auth -- Rantic 
        */
       old_auth = get_auth_name( ch->name );
-      if( old_auth != NULL && old_auth->state == AUTH_ONLINE )
+      if( old_auth != nullptr && old_auth->state == AUTH_ONLINE )
       {
          old_auth->state = AUTH_LINK_DEAD;
          save_auth_list(  );
@@ -2284,15 +2284,15 @@ void close_socket( descriptor_data * d, bool force )
           || d->connected == CON_CONFIRMPRIZEKEY || d->connected == CON_OEDIT || d->connected == CON_REDIT || d->connected == CON_MEDIT || d->connected == CON_BOARD )
       {
          if( ch->in_room )
-            act( AT_ACTION, "$n has lost $s link.", ch, NULL, NULL, TO_CANSEE );
-         ch->desc = NULL;
+            act( AT_ACTION, "$n has lost $s link.", ch, nullptr, nullptr, TO_CANSEE );
+         ch->desc = nullptr;
       }
       else
       {
          /*
           * clear descriptor pointer to get rid of bug message in log 
           */
-         ch->desc = NULL;
+         ch->desc = nullptr;
          deleteptr( ch );
       }
    }
@@ -2393,7 +2393,7 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
                /*
                 * clear descriptor pointer to get rid of bug message in log 
                 */
-               character->desc = NULL;
+               character->desc = nullptr;
                deleteptr( character );
             }
             return BERR;
@@ -2409,7 +2409,7 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
             /*
              * clear descriptor pointer to get rid of bug message in log 
              */
-            character->desc = NULL;
+            character->desc = nullptr;
             deleteptr( character );
             character = ch;
             ch->desc = this;
@@ -2421,7 +2421,7 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
             rprog_login_trigger( ch );
             mprog_login_trigger( ch );
 
-            act( AT_ACTION, "$n has reconnected.", ch, NULL, NULL, TO_CANSEE );
+            act( AT_ACTION, "$n has reconnected.", ch, nullptr, nullptr, TO_CANSEE );
             log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name, host.c_str(  ) );
             connected = CON_PLAYING;
             check_auth_state( ch ); /* Link dead support -- Rantic */
@@ -2468,21 +2468,21 @@ short descriptor_data::check_playing( const string & name, bool kick )
          /*
           * clear descriptor pointer to get rid of bug message in log 
           */
-         character->desc = NULL;
+         character->desc = nullptr;
          deleteptr( character );
          character = ch;
          ch->desc = this;
          ch->timer = 0;
          if( ch->switched )
             interpret( ch->switched, "return" );
-         ch->switched = NULL;
+         ch->switched = nullptr;
          ch->print( "Reconnecting.\r\n\r\n" );
 
          /* Login trigger by Edmond */
          rprog_login_trigger( ch );
          mprog_login_trigger( ch );
 
-         act( AT_ACTION, "$n has reconnected, kicking off old link.", ch, NULL, NULL, TO_CANSEE );
+         act( AT_ACTION, "$n has reconnected, kicking off old link.", ch, nullptr, nullptr, TO_CANSEE );
          log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name, host.c_str(  ) );
          connected = cstate;
          check_auth_state( ch ); /* Link dead support -- Rantic */
@@ -2549,7 +2549,7 @@ void char_to_game( char_data * ch )
    if( ch->get_timer( TIMER_PKILLED ) > 0 )
       ch->remove_timer( TIMER_PKILLED );
 
-   act( AT_ACTION, "$n has entered the game.", ch, NULL, NULL, TO_CANSEE );
+   act( AT_ACTION, "$n has entered the game.", ch, nullptr, nullptr, TO_CANSEE );
 
    /* Login trigger by Edmond */
    rprog_login_trigger( ch );
@@ -2826,7 +2826,7 @@ void descriptor_data::nanny( string & argument )
             {
                write_to_buffer( "That name is already taken.  Please choose another: " );
                connected = CON_GET_NAME;
-               character->desc = NULL;
+               character->desc = nullptr;
                deleteptr( character ); /* Big Memory Leak before --Shaddai */
                return;
             }
@@ -2891,7 +2891,7 @@ void descriptor_data::nanny( string & argument )
             {
                write_to_buffer( "That name is already taken.  Please choose another: " );
                connected = CON_GET_NAME;
-               character->desc = NULL;
+               character->desc = nullptr;
                deleteptr( character ); /* Big Memory Leak before --Shaddai */
                return;
             }
@@ -2912,7 +2912,7 @@ void descriptor_data::nanny( string & argument )
                 */
                write_to_buffer( "\r\nNo such player exists.\r\nPlease check your spelling, or type new to start a new player.\r\n\r\nName: " );
                connected = CON_GET_NAME;
-               character->desc = NULL;
+               character->desc = nullptr;
                deleteptr( character ); /* Big Memory Leak before --Shaddai */
                return;
             }
@@ -2934,7 +2934,7 @@ void descriptor_data::nanny( string & argument )
             /*
              * clear descriptor pointer to get rid of bug message in log 
              */
-            character->desc = NULL;
+            character->desc = nullptr;
             close_socket( this, false );
             return;
          }
@@ -2948,7 +2948,7 @@ void descriptor_data::nanny( string & argument )
          if( chk == BERR )
          {
             if( character && character->desc )
-               character->desc = NULL;
+               character->desc = nullptr;
             close_socket( this, false );
             return;
          }
@@ -2956,7 +2956,7 @@ void descriptor_data::nanny( string & argument )
             return;
 
          mudstrlcpy( buf, ch->pcdata->filename, MSL );
-         character->desc = NULL;
+         character->desc = nullptr;
          deleteptr( character );
          fOld = load_char_obj( this, buf, false, false );
          if( !character )
@@ -2995,7 +2995,7 @@ void descriptor_data::nanny( string & argument )
                /*
                 * clear descriptor pointer to get rid of bug message in log 
                 */
-               character->desc = NULL;
+               character->desc = nullptr;
                deleteptr( character );
                connected = CON_GET_NAME;
                break;
@@ -3066,7 +3066,7 @@ void descriptor_data::nanny( string & argument )
             /*
              * clear descriptor pointer to get rid of bug message in log 
              */
-            character->desc = NULL;
+            character->desc = nullptr;
             close_socket( this, false );
             return;
          }
@@ -3155,7 +3155,7 @@ void descriptor_data::nanny( string & argument )
             write_to_buffer( "\r\nYou've deleted your character!!!\r\n" );
             log_printf( "Player: %s has deleted.", capitalize( ch->name ) );
 
-            if( donate != NULL && ch->level > 1 )  /* No more deleting to remove goodies from play */
+            if( donate != nullptr && ch->level > 1 )  /* No more deleting to remove goodies from play */
             {
                list < obj_data * >::iterator iobj;
 
@@ -3198,7 +3198,7 @@ void descriptor_data::nanny( string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned NULL somehow!", __func__ );
+            bug( "%s: Prize object turned nullptr somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
@@ -3253,7 +3253,7 @@ void descriptor_data::nanny( string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned NULL somehow!", __func__ );
+            bug( "%s: Prize object turned nullptr somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
@@ -3300,7 +3300,7 @@ void descriptor_data::nanny( string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned NULL somehow!", __func__ );
+            bug( "%s: Prize object turned nullptr somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
@@ -3339,7 +3339,7 @@ void descriptor_data::nanny( string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned NULL somehow!", __func__ );
+            bug( "%s: Prize object turned nullptr somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
@@ -3353,7 +3353,7 @@ void descriptor_data::nanny( string & argument )
             case 'y':
             case 'Y':
                write_to_buffer( "\r\nPrize keywords confirmed.\r\n\r\n" );
-               ch->pcdata->spare_ptr = NULL;
+               ch->pcdata->spare_ptr = nullptr;
                ch->from_room(  );
                if( !ch->to_room( get_room_index( ROOM_VNUM_ENDREDEEM ) ) )
                   log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );

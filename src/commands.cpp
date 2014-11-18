@@ -164,7 +164,7 @@ char *check_cmd_flags( char_data * ch, cmd_type * cmd )
 {
    if( ch->has_aflag( AFF_POSSESS ) && cmd->flags.test( CMD_POSSESS ) )
       snprintf( cmd_flag_buf, MSL, "You can't %s while you are possessing someone!\r\n", cmd->name.c_str(  ) );
-   else if( ch->morph != NULL && cmd->flags.test( CMD_POLYMORPHED ) )
+   else if( ch->morph != nullptr && cmd->flags.test( CMD_POLYMORPHED ) )
       snprintf( cmd_flag_buf, MSL, "You can't %s while you are polymorphed!\r\n", cmd->name.c_str(  ) );
    else
       cmd_flag_buf[0] = '\0';
@@ -175,10 +175,10 @@ void start_timer( struct timeval *starttime )
 {
    if( !starttime )
    {
-      bug( "%s: NULL stime.", __func__ );
+      bug( "%s: nullptr stime.", __func__ );
       return;
    }
-   gettimeofday( starttime, NULL );
+   gettimeofday( starttime, nullptr );
    return;
 }
 
@@ -189,7 +189,7 @@ time_t end_timer( struct timeval * starttime )
    /*
     * Mark etime before checking stime, so that we get a better reading.. 
     */
-   gettimeofday( &etime, NULL );
+   gettimeofday( &etime, nullptr );
    if( !starttime || ( !starttime->tv_sec && !starttime->tv_usec ) )
    {
       bug( "%s: bad starttime.", __func__ );
@@ -207,7 +207,7 @@ bool check_social( char_data * ch, const string & command, const string & argume
 {
    string arg;
    social_type *social;
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
 
    if( !( social = find_social( command ) ) )
       return false;
@@ -252,8 +252,8 @@ bool check_social( char_data * ch, const string & command, const string & argume
    one_argument( argument, arg );
    if( arg.empty(  ) )
    {
-      act( AT_SOCIAL, social->char_no_arg, ch, NULL, victim, TO_CHAR );
-      act( AT_SOCIAL, social->others_no_arg, ch, NULL, victim, TO_ROOM );
+      act( AT_SOCIAL, social->char_no_arg, ch, nullptr, victim, TO_CHAR );
+      act( AT_SOCIAL, social->others_no_arg, ch, nullptr, victim, TO_ROOM );
       return true;
    }
 
@@ -265,8 +265,8 @@ bool check_social( char_data * ch, const string & command, const string & argume
       {
          if( !social->obj_self.empty(  ) && !social->obj_others.empty(  ) )
          {
-            act( AT_SOCIAL, social->obj_self, ch, NULL, obj, TO_CHAR );
-            act( AT_SOCIAL, social->obj_others, ch, NULL, obj, TO_ROOM );
+            act( AT_SOCIAL, social->obj_self, ch, nullptr, obj, TO_CHAR );
+            act( AT_SOCIAL, social->obj_others, ch, nullptr, obj, TO_ROOM );
          }
          return true;
       }
@@ -279,14 +279,14 @@ bool check_social( char_data * ch, const string & command, const string & argume
 
    if( victim == ch )
    {
-      act( AT_SOCIAL, social->others_auto, ch, NULL, victim, TO_ROOM );
-      act( AT_SOCIAL, social->char_auto, ch, NULL, victim, TO_CHAR );
+      act( AT_SOCIAL, social->others_auto, ch, nullptr, victim, TO_ROOM );
+      act( AT_SOCIAL, social->char_auto, ch, nullptr, victim, TO_CHAR );
       return true;
    }
 
-   act( AT_SOCIAL, social->others_found, ch, NULL, victim, TO_NOTVICT );
-   act( AT_SOCIAL, social->char_found, ch, NULL, victim, TO_CHAR );
-   act( AT_SOCIAL, social->vict_found, ch, NULL, victim, TO_VICT );
+   act( AT_SOCIAL, social->others_found, ch, nullptr, victim, TO_NOTVICT );
+   act( AT_SOCIAL, social->char_found, ch, nullptr, victim, TO_CHAR );
+   act( AT_SOCIAL, social->vict_found, ch, nullptr, victim, TO_VICT );
 
    if( !ch->isnpc(  ) && victim->isnpc(  ) && !victim->has_aflag( AFF_CHARM ) && victim->IS_AWAKE(  ) && !victim->desc && !HAS_PROG( victim->pIndexData, ACT_PROG ) )
    {
@@ -296,15 +296,15 @@ bool check_social( char_data * ch, const string & command, const string & argume
          case 0:
             if( ch->IS_EVIL(  ) || ch->IS_NEUTRAL(  ) )
             {
-               act( AT_ACTION, "$n slaps $N.", victim, NULL, ch, TO_NOTVICT );
-               act( AT_ACTION, "You slap $N.", victim, NULL, ch, TO_CHAR );
-               act( AT_ACTION, "$n slaps you.", victim, NULL, ch, TO_VICT );
+               act( AT_ACTION, "$n slaps $N.", victim, nullptr, ch, TO_NOTVICT );
+               act( AT_ACTION, "You slap $N.", victim, nullptr, ch, TO_CHAR );
+               act( AT_ACTION, "$n slaps you.", victim, nullptr, ch, TO_VICT );
             }
             else
             {
-               act( AT_ACTION, "$n acts like $N doesn't even exist.", victim, NULL, ch, TO_NOTVICT );
-               act( AT_ACTION, "You just ignore $N.", victim, NULL, ch, TO_CHAR );
-               act( AT_ACTION, "$n appears to be ignoring you.", victim, NULL, ch, TO_VICT );
+               act( AT_ACTION, "$n acts like $N doesn't even exist.", victim, nullptr, ch, TO_NOTVICT );
+               act( AT_ACTION, "You just ignore $N.", victim, nullptr, ch, TO_CHAR );
+               act( AT_ACTION, "$n appears to be ignoring you.", victim, nullptr, ch, TO_VICT );
             }
             break;
 
@@ -316,18 +316,18 @@ bool check_social( char_data * ch, const string & command, const string & argume
          case 6:
          case 7:
          case 8:
-            act( AT_SOCIAL, social->others_found, victim, NULL, ch, TO_NOTVICT );
-            act( AT_SOCIAL, social->char_found, victim, NULL, ch, TO_CHAR );
-            act( AT_SOCIAL, social->vict_found, victim, NULL, ch, TO_VICT );
+            act( AT_SOCIAL, social->others_found, victim, nullptr, ch, TO_NOTVICT );
+            act( AT_SOCIAL, social->char_found, victim, nullptr, ch, TO_CHAR );
+            act( AT_SOCIAL, social->vict_found, victim, nullptr, ch, TO_VICT );
             break;
 
          case 9:
          case 10:
          case 11:
          case 12:
-            act( AT_ACTION, "$n slaps $N.", victim, NULL, ch, TO_NOTVICT );
-            act( AT_ACTION, "You slap $N.", victim, NULL, ch, TO_CHAR );
-            act( AT_ACTION, "$n slaps you.", victim, NULL, ch, TO_VICT );
+            act( AT_ACTION, "$n slaps $N.", victim, nullptr, ch, TO_NOTVICT );
+            act( AT_ACTION, "You slap $N.", victim, nullptr, ch, TO_CHAR );
+            act( AT_ACTION, "$n slaps you.", victim, nullptr, ch, TO_VICT );
             break;
       }
    }
@@ -453,8 +453,8 @@ void interpret( char_data * ch, string argument )
    string origarg = argument;
    char logline[MIL];
    char *buf;
-   timer_data *chtimer = NULL;
-   cmd_type *cmd = NULL;
+   timer_data *chtimer = nullptr;
+   cmd_type *cmd = nullptr;
    int trust, loglvl;
    bool found;
    struct timeval time_used;
@@ -480,7 +480,7 @@ void interpret( char_data * ch, string argument )
       if( !( fun = ch->last_cmd ) )
       {
          ch->substate = SUB_NONE;
-         bug( "%s: %s SUB_REPEATCMD with NULL last_cmd", __func__, ch->name );
+         bug( "%s: %s SUB_REPEATCMD with nullptr last_cmd", __func__, ch->name );
          return;
       }
       else
@@ -509,7 +509,7 @@ void interpret( char_data * ch, string argument )
 
          if( !found )
          {
-            cmd = NULL;
+            cmd = nullptr;
             bug( "%s: SUB_REPEATCMD: last_cmd invalid", __func__ );
             return;
          }
@@ -561,7 +561,7 @@ void interpret( char_data * ch, string argument )
             ch->unset_pcflag( PCFLAG_AFK );
             ch->unset_pcflag( PCFLAG_IDLING );
             DISPOSE( ch->pcdata->afkbuf );
-            act( AT_GREY, "$n is no longer afk.", ch, NULL, NULL, TO_CANSEE );
+            act( AT_GREY, "$n is no longer afk.", ch, nullptr, nullptr, TO_CANSEE );
             ch->print( "You are no longer afk.\r\n" );
          }
          return;
@@ -614,7 +614,7 @@ void interpret( char_data * ch, string argument )
 
          snprintf( filename, 256, "../src/cmd/so/do_%s.so", cmd->name.c_str(  ) );
          cmd->fileHandle = dlopen( filename, RTLD_NOW );
-         if( ( error = dlerror(  ) ) == NULL )
+         if( ( error = dlerror(  ) ) == nullptr )
          {
             cmd->do_fun = ( DO_FUN * ) ( dlsym( cmd->fileHandle, cmd->fun_name.c_str(  ) ) );
             cmd->flags.set( CMD_LOADED );
@@ -635,7 +635,7 @@ void interpret( char_data * ch, string argument )
          ch->unset_pcflag( PCFLAG_AFK );
          ch->unset_pcflag( PCFLAG_IDLING );
          DISPOSE( ch->pcdata->afkbuf );
-         act( AT_GREY, "$n is no longer afk.", ch, NULL, NULL, TO_CANSEE );
+         act( AT_GREY, "$n is no longer afk.", ch, nullptr, nullptr, TO_CANSEE );
          ch->print( "You are no longer afk.\r\n" );
       }
 
@@ -707,7 +707,7 @@ void interpret( char_data * ch, string argument )
    /*
     * check for a timer delayed command (search, dig, detrap, etc) 
     */
-   if( ( ( chtimer = ch->get_timerptr( TIMER_DO_FUN ) ) != NULL ) && ( !found || !cmd->flags.test( CMD_NOABORT ) ) )
+   if( ( ( chtimer = ch->get_timerptr( TIMER_DO_FUN ) ) != nullptr ) && ( !found || !cmd->flags.test( CMD_NOABORT ) ) )
    {
       int tempsub;
 
@@ -752,12 +752,12 @@ void interpret( char_data * ch, string argument )
          /*
           * check for an auto-matic exit command 
           */
-         if( ( pexit = find_door( ch, command, true ) ) != NULL && IS_EXIT_FLAG( pexit, EX_xAUTO ) )
+         if( ( pexit = find_door( ch, command, true ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_xAUTO ) )
          {
             if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) )
             {
                if( !IS_EXIT_FLAG( pexit, EX_SECRET ) )
-                  act( AT_PLAIN, "The $d is closed.", ch, NULL, pexit->keyword, TO_CHAR );
+                  act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword, TO_CHAR );
                else
                   ch->print( "You cannot do that here.\r\n" );
                return;
@@ -885,7 +885,7 @@ cmd_type::cmd_type(  )
  */
 cmd_type::~cmd_type(  )
 {
-   do_fun = NULL;
+   do_fun = nullptr;
 }
 
 void free_commands( void )
@@ -913,7 +913,7 @@ void unlink_command( cmd_type * command )
 {
    if( !command )
    {
-      bug( "%s: NULL command", __func__ );
+      bug( "%s: nullptr command", __func__ );
       return;
    }
 
@@ -939,7 +939,7 @@ void add_command( cmd_type * command )
 {
    if( !command )
    {
-      bug( "%s: NULL command", __func__ );
+      bug( "%s: nullptr command", __func__ );
       return;
    }
 
@@ -968,7 +968,7 @@ cmd_type *find_command( const string & command )
       if( !str_prefix( command, cmd->name ) )
          return cmd;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1028,7 +1028,7 @@ void save_commands( void )
 void load_commands( void )
 {
    ifstream stream;
-   cmd_type *cmd = NULL;
+   cmd_type *cmd = nullptr;
    int version = 0;
 
    command_table.clear(  );
@@ -1068,7 +1068,7 @@ void load_commands( void )
          cmd->fun_name = value;
          cmd->do_fun = skill_function( value );
          if( cmd->do_fun == skill_notfound )
-            cmd->do_fun = NULL;
+            cmd->do_fun = nullptr;
       }
       else if( key == "Position" )
       {
@@ -1211,13 +1211,13 @@ CMDF( do_cedit )
 
       if( command->fun_name.empty(  ) )
       {
-         ch->printf( "The %s command has a NULL function name!\r\n", command->name.c_str() );
+         ch->printf( "The %s command has a nullptr function name!\r\n", command->name.c_str() );
          return;
       }
 
       snprintf( filename, 256, "../src/cmd/so/do_%s.so", command->name.c_str(  ) );
       command->fileHandle = dlopen( filename, RTLD_NOW );
-      if( ( error = dlerror(  ) ) == NULL )
+      if( ( error = dlerror(  ) ) == nullptr )
       {
          command->do_fun = ( DO_FUN * ) ( dlsym( command->fileHandle, command->fun_name.c_str(  ) ) );
          command->flags.set( CMD_LOADED );
@@ -1239,7 +1239,7 @@ CMDF( do_cedit )
 
       dlclose( command->fileHandle );
       command->flags.reset( CMD_LOADED );
-      command->do_fun = NULL;
+      command->do_fun = nullptr;
       ch->printf( "The %s command has been unloaded.\r\n", command->name.c_str(  ) );
       return;
    }
@@ -1254,7 +1254,7 @@ CMDF( do_cedit )
 
       dlclose( command->fileHandle );
       command->flags.reset( CMD_LOADED );
-      command->do_fun = NULL;
+      command->do_fun = nullptr;
       ch->printf( "The %s command has been unloaded.\r\n", command->name.c_str(  ) );
 
       funcf( ch, do_cedit, "%s load", command->name.c_str(  ) );
@@ -1359,7 +1359,7 @@ CMDF( do_cedit )
          ch->print( "Cannot clear name field!\r\n" );
          return;
       }
-      if( ( checkcmd = find_command( arg1 ) ) != NULL )
+      if( ( checkcmd = find_command( arg1 ) ) != nullptr )
       {
          ch->printf( "There is already a command named %s.\r\n", arg1.c_str(  ) );
          return;
@@ -1585,7 +1585,7 @@ CMDF( do_bestow )
 /* Samson 4-7-98, added protection against forced delete */
 CMDF( do_force )
 {
-   cmd_type *cmd = NULL;
+   cmd_type *cmd = nullptr;
    string arg, arg2, command;
 
    ch->set_color( AT_IMMORT );
@@ -1674,7 +1674,7 @@ CMDF( do_force )
    and the all argument only affects those in the room with the mobile */
 CMDF( do_mpforce )
 {
-   cmd_type *cmd = NULL;
+   cmd_type *cmd = nullptr;
    string arg, arg2;
 
    if( !can_use_mprog( ch ) )
@@ -1947,9 +1947,9 @@ CMDF( do_timecmd )
    }
    ch->print( "&[plain]Starting timer.\r\n" );
    timing = true;
-   gettimeofday( &starttime, NULL );
+   gettimeofday( &starttime, nullptr );
    interpret( ch, argument );
-   gettimeofday( &endtime, NULL );
+   gettimeofday( &endtime, nullptr );
    timing = false;
    ch->print( "&[plain]Timing complete.\r\n" );
    subtract_times( &endtime, &starttime );
@@ -2018,7 +2018,7 @@ social_type *find_social( const string & command )
    if( ( isoc = social_table.find( command ) ) != social_table.end(  ) )
       return isoc->second;
 
-   return NULL;
+   return nullptr;
 }
 
 map < string, social_type * >social_table;
@@ -2054,7 +2054,7 @@ void unlink_social( social_type * social )
 {
    if( !social )
    {
-      bug( "%s: NULL social", __func__ );
+      bug( "%s: nullptr social", __func__ );
       return;
    }
 
@@ -2069,19 +2069,19 @@ void add_social( social_type * social )
 {
    if( !social )
    {
-      bug( "%s: NULL social", __func__ );
+      bug( "%s: nullptr social", __func__ );
       return;
    }
 
    if( social->name.empty(  ) )
    {
-      bug( "%s: NULL social->name", __func__ );
+      bug( "%s: nullptr social->name", __func__ );
       return;
    }
 
    if( social->char_no_arg.empty(  ) )
    {
-      bug( "%s: NULL social->char_no_arg on social %s", __func__, social->name.c_str(  ) );
+      bug( "%s: nullptr social->char_no_arg on social %s", __func__, social->name.c_str(  ) );
       return;
    }
 
@@ -2122,7 +2122,7 @@ void save_socials( void )
       if( !social->char_no_arg.empty(  ) )
          stream << "CharNoArg   " << social->char_no_arg << endl;
       else
-         bug( "%s: NULL char_no_arg in social_table for %s", __func__, social->name.c_str(  ) );
+         bug( "%s: nullptr char_no_arg in social_table for %s", __func__, social->name.c_str(  ) );
       if( !social->others_no_arg.empty(  ) )
          stream << "OthersNoArg " << social->others_no_arg << endl;
       if( !social->char_found.empty(  ) )
@@ -2148,7 +2148,7 @@ void save_socials( void )
 void load_socials( void )
 {
    ifstream stream;
-   social_type *social = NULL;
+   social_type *social = nullptr;
 
    social_table.clear(  );
 
@@ -2402,7 +2402,7 @@ CMDF( do_sedit )
          return;
       }
 
-      if( ( checksocial = find_social( arg1 ) ) != NULL )
+      if( ( checksocial = find_social( arg1 ) ) != nullptr )
       {
          ch->printf( "There is already a social named %s.\r\n", arg1.c_str(  ) );
          return;

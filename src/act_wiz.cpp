@@ -98,24 +98,24 @@ time_t last_restore_all_time = 0;
 /* Used to check and see if you should be using a command on a certain person - Samson 5-1-04 */
 char_data *get_wizvictim( char_data * ch, const string & argument, bool nonpc )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
 
    if( !( victim = ch->get_char_world( argument ) ) )
    {
       ch->printf( "%s is not online.\r\n", argument.c_str(  ) );
-      return NULL;
+      return nullptr;
    }
 
    if( victim->isnpc(  ) && nonpc )
    {
       ch->print( "You cannot use this command on NPC's.\r\n" );
-      return NULL;
+      return nullptr;
    }
 
    if( victim->level > ch->level )
    {
       ch->printf( "You do not have sufficient access to affect %s.\r\n", victim->name );
-      return NULL;
+      return nullptr;
    }
    return victim;
 }
@@ -187,8 +187,8 @@ CMDF( do_highfive )
 
    if( argument.empty(  ) )
    {
-      act( AT_SOCIAL, "You jump in the air and highfive everyone in the room!", ch, NULL, NULL, TO_CHAR );
-      act( AT_SOCIAL, "$n jumps in the air and highfives everyone in the room!", ch, NULL, ch, TO_ROOM );
+      act( AT_SOCIAL, "You jump in the air and highfive everyone in the room!", ch, nullptr, nullptr, TO_CHAR );
+      act( AT_SOCIAL, "$n jumps in the air and highfives everyone in the room!", ch, nullptr, ch, TO_ROOM );
       return;
    }
 
@@ -200,16 +200,16 @@ CMDF( do_highfive )
 
    if( victim == ch )
    {
-      act( AT_SOCIAL, "Sometimes you really amaze yourself!", ch, NULL, NULL, TO_CHAR );
-      act( AT_SOCIAL, "$n gives $mself a highfive!", ch, NULL, ch, TO_ROOM );
+      act( AT_SOCIAL, "Sometimes you really amaze yourself!", ch, nullptr, nullptr, TO_CHAR );
+      act( AT_SOCIAL, "$n gives $mself a highfive!", ch, nullptr, ch, TO_ROOM );
       return;
    }
 
    if( victim->isnpc(  ) )
    {
-      act( AT_SOCIAL, "You jump up and highfive $N!", ch, NULL, victim, TO_CHAR );
-      act( AT_SOCIAL, "$n jumps up and gives you a highfive!", ch, NULL, victim, TO_VICT );
-      act( AT_SOCIAL, "$n jumps up and gives $N a highfive!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SOCIAL, "You jump up and highfive $N!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SOCIAL, "$n jumps up and gives you a highfive!", ch, nullptr, victim, TO_VICT );
+      act( AT_SOCIAL, "$n jumps up and gives $N a highfive!", ch, nullptr, victim, TO_NOTVICT );
       return;
    }
 
@@ -222,18 +222,18 @@ CMDF( do_highfive )
          char_data *vch = ( *ich );
 
          if( vch == ch )
-            act( AT_IMMORT, "The whole world rumbles as you highfive $N!", ch, NULL, victim, TO_CHAR );
+            act( AT_IMMORT, "The whole world rumbles as you highfive $N!", ch, nullptr, victim, TO_CHAR );
          else if( vch == victim )
-            act( AT_IMMORT, "The whole world rumbles as $n highfives you!", ch, NULL, victim, TO_VICT );
+            act( AT_IMMORT, "The whole world rumbles as $n highfives you!", ch, nullptr, victim, TO_VICT );
          else
             act( AT_IMMORT, "The whole world rumbles as $n and $N highfive!", ch, vch, victim, TO_THIRD );
       }
    }
    else
    {
-      act( AT_SOCIAL, "You jump up and highfive $N!", ch, NULL, victim, TO_CHAR );
-      act( AT_SOCIAL, "$n jumps up and gives you a highfive!", ch, NULL, victim, TO_VICT );
-      act( AT_SOCIAL, "$n jumps up and gives $N a highfive!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SOCIAL, "You jump up and highfive $N!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SOCIAL, "$n jumps up and gives you a highfive!", ch, nullptr, victim, TO_VICT );
+      act( AT_SOCIAL, "$n jumps up and gives $N a highfive!", ch, nullptr, victim, TO_NOTVICT );
    }
 }
 
@@ -392,7 +392,7 @@ CMDF( do_disconnect )
       desc = atoi( argument.c_str(  ) );
    else if( ( victim = ch->get_char_world( argument ) ) )
    {
-      if( victim->desc == NULL )
+      if( victim->desc == nullptr )
       {
          ch->printf( "%s does not have a desriptor.\r\n", victim->name );
          return;
@@ -536,7 +536,7 @@ void transfer_char( char_data * ch, char_data * victim, room_index * location )
 {
    if( !victim->in_room )
    {
-      bug( "%s: victim in NULL room: %s", __func__, victim->name );
+      bug( "%s: victim in nullptr room: %s", __func__, victim->name );
       return;
    }
 
@@ -565,16 +565,16 @@ void transfer_char( char_data * ch, char_data * victim, room_index * location )
       victim->stop_fighting( true );
 
    if( !ch->isnpc(  ) )
-      act( AT_MAGIC, "A swirling vortex arrives to pick up $n!", victim, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "A swirling vortex arrives to pick up $n!", victim, nullptr, nullptr, TO_ROOM );
 
    leave_map( victim, ch, location );
 
-   act( AT_MAGIC, "A swirling vortex arrives, carrying $n!", victim, NULL, NULL, TO_ROOM );
+   act( AT_MAGIC, "A swirling vortex arrives, carrying $n!", victim, nullptr, nullptr, TO_ROOM );
 
    if( !ch->isnpc(  ) )
    {
       if( ch != victim )
-         act( AT_IMMORT, "$n has sent a swirling vortex to transport you.", ch, NULL, victim, TO_VICT );
+         act( AT_IMMORT, "$n has sent a swirling vortex to transport you.", ch, nullptr, victim, TO_VICT );
       ch->print( "Ok.\r\n" );
 
       if( !victim->is_immortal(  ) && !victim->isnpc(  ) && !victim->in_hard_range( location->area ) )
@@ -647,13 +647,13 @@ void location_action( char_data * ch, const string & argument, room_index * loca
 {
    if( !location )
    {
-      bug( "%s: NULL room!", __func__ );
+      bug( "%s: nullptr room!", __func__ );
       return;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: NULL ch->in_room!", __func__ );
+      bug( "%s: nullptr ch->in_room!", __func__ );
       return;
    }
 
@@ -774,13 +774,13 @@ CMDF( do_at )
 
    if( !is_number( arg ) )
    {
-      if( ( wch = ch->get_char_world( arg ) ) != NULL && wch->in_room != NULL )
+      if( ( wch = ch->get_char_world( arg ) ) != nullptr && wch->in_room != nullptr )
       {
          atmob( ch, wch, argument );
          return;
       }
 
-      if( ( obj = ch->get_obj_world( arg ) ) != NULL && obj->in_room != NULL )
+      if( ( obj = ch->get_obj_world( arg ) ) != nullptr && obj->in_room != nullptr )
       {
          atobj( ch, obj, argument );
          return;
@@ -1042,17 +1042,17 @@ CMDF( do_ostat )
    ch->printf( "|Cost   : &G%5d&w |Ego*  : &G%6d&w |Ego   : &G%6d&w |Timer: &G%d&w\r\n", obj->cost, obj->pIndexData->ego, obj->ego, obj->timer );
 
    ch->printf( "|In room: &G%5d&w |In obj: &G%s&w |Level :  &G%5d&w |Limit: &G%5d&w\r\n",
-               obj->in_room == NULL ? 0 : obj->in_room->vnum, obj->in_obj == NULL ? "(NONE)" : obj->in_obj->short_descr, obj->level, obj->pIndexData->limit );
+               obj->in_room == nullptr ? 0 : obj->in_room->vnum, obj->in_obj == nullptr ? "(NONE)" : obj->in_obj->short_descr, obj->level, obj->pIndexData->limit );
 
    ch->printf( "|On map       : &G%s&w\r\n", obj->extra_flags.test( ITEM_ONMAP ) ? map_names[obj->wmap] : "(NONE)" );
 
    ch->printf( "|Object Coords: &G%d %d&w\r\n", obj->mx, obj->my );
    ch->printf( "|Wear flags   : &G%s&w\r\n", bitset_string( obj->wear_flags, w_flags ) );
    ch->printf( "|Extra flags  : &G%s&w\r\n", bitset_string( obj->extra_flags, o_flags ) );
-   ch->printf( "|Carried by   : &G%s&w\r\n", obj->carried_by == NULL ? "(NONE)" : obj->carried_by->name );
-   ch->printf( "|Prizeowner   : &G%s&w\r\n", obj->owner == NULL ? "(NONE)" : obj->owner );
-   ch->printf( "|Seller       : &G%s&w\r\n", obj->seller == NULL ? "(NONE)" : obj->seller );
-   ch->printf( "|Buyer        : &G%s&w\r\n", obj->buyer == NULL ? "(NONE)" : obj->buyer );
+   ch->printf( "|Carried by   : &G%s&w\r\n", obj->carried_by == nullptr ? "(NONE)" : obj->carried_by->name );
+   ch->printf( "|Prizeowner   : &G%s&w\r\n", obj->owner == nullptr ? "(NONE)" : obj->owner );
+   ch->printf( "|Seller       : &G%s&w\r\n", obj->seller == nullptr ? "(NONE)" : obj->seller );
+   ch->printf( "|Buyer        : &G%s&w\r\n", obj->buyer == nullptr ? "(NONE)" : obj->buyer );
    ch->printf( "|Current bid  : &G%d&w\r\n", obj->bid );
 
    if( obj->year == 0 )
@@ -1166,7 +1166,7 @@ CMDF( do_vstat )
       return;
    }
 
-   ch->pagerf( "\r\n&cName: &C%-20s &cRoom : &w%-10d", victim->name, victim->in_room == NULL ? 0 : victim->in_room->vnum );
+   ch->pagerf( "\r\n&cName: &C%-20s &cRoom : &w%-10d", victim->name, victim->in_room == nullptr ? 0 : victim->in_room->vnum );
    ch->pagerf( "\r\n&cVariables:\r\n" );
 
    /*
@@ -1224,7 +1224,7 @@ CMDF( do_mstat )
    if( !victim->isnpc(  ) )
    {
       ch->printf( "&w|Name  : &G%10s &w|Clan  : &G%10s &w|PKill : &G%10s &w|Room  : &G%d&w\r\n",
-                  victim->name, ( victim->pcdata->clan == NULL ) ? "(NONE)" : victim->pcdata->clan->name.c_str(  ),
+                  victim->name, ( victim->pcdata->clan == nullptr ) ? "(NONE)" : victim->pcdata->clan->name.c_str(  ),
                   victim->has_pcflag( PCFLAG_DEADLY ) ? "Yes" : "No", victim->in_room->vnum );
 
       ch->printf( "|Level : &G%10d &w|Trust : &G%10d &w|Sex   : &G%10s &w|Gold  : &G%d&w\r\n", victim->level, victim->trust, npc_sex[victim->sex], victim->gold );
@@ -1260,7 +1260,7 @@ CMDF( do_mstat )
                   capitalize( victim->get_race(  ) ), victim->barenumdie, victim->baresizedie, victim->GET_DAMROLL(  ) );
 
       ch->printf( "|Deity :&G%11s &w|Authed:&G%11s &w|SF    :&G%11d &w|PVer  : &G%d&w\r\n",
-                  ( victim->pcdata->deity == NULL ) ? "(NONE)" : victim->pcdata->deity->name.c_str(  ),
+                  ( victim->pcdata->deity == nullptr ) ? "(NONE)" : victim->pcdata->deity->name.c_str(  ),
                   !victim->pcdata->authed_by.empty(  )? victim->pcdata->authed_by.c_str(  ) : "Unknown", victim->spellfail, victim->pcdata->version );
 
       ch->printf( "|Map   : &G%10s &w|Coords: &G%d %d&w\r\n", victim->has_pcflag( PCFLAG_ONMAP ) ? map_names[victim->wmap] : "(NONE)", victim->mx, victim->my );
@@ -1311,7 +1311,7 @@ CMDF( do_mstat )
       {
          affect_data *aff = *paf;
 
-         if( ( skill = get_skilltype( aff->type ) ) != NULL )
+         if( ( skill = get_skilltype( aff->type ) ) != nullptr )
          {
             char mod[MIL];
 
@@ -1389,7 +1389,7 @@ CMDF( do_mstat )
                   victim->pIndexData->damsizedice, victim->pIndexData->damplus );
 
       ch->printf( "|CON   : &G%10d &w|Thac0 : &G%10d &w|+Hit  : &G%10d &w|+Dam  : &G%d&w\r\n",
-                  victim->get_curr_con(  ), calc_thac0( victim, NULL, 0 ), victim->GET_HITROLL(  ), victim->GET_DAMROLL(  ) );
+                  victim->get_curr_con(  ), calc_thac0( victim, nullptr, 0 ), victim->GET_HITROLL(  ), victim->GET_DAMROLL(  ) );
 
       ch->printf( "|CHA   : &G%10d &w|Count : &G%10d &w|Timer : &G%10d&w\r\n", victim->get_curr_cha(  ), victim->pIndexData->count, victim->timer );
 
@@ -1460,7 +1460,7 @@ CMDF( do_mstat )
       {
          affect_data *af = *paf;
 
-         if( ( skill = get_skilltype( af->type ) ) != NULL )
+         if( ( skill = get_skilltype( af->type ) ) != nullptr )
          {
             char mod[MIL];
 
@@ -1790,7 +1790,7 @@ CMDF( do_owhere )
       }
       else if( obj->in_obj )
       {
-         bug( "%s: obj->in_obj after NULL!", __func__ );
+         bug( "%s: obj->in_obj after nullptr!", __func__ );
          mudstrlcat( buf, "object??\r\n", MSL );
       }
       else
@@ -1856,7 +1856,7 @@ CMDF( do_pwhere )
          char_data *victim;
 
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
-             && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room && ch->can_see( victim, true ) && !is_ignoring( victim, ch ) )
+             && ( victim = d->character ) != nullptr && !victim->isnpc(  ) && victim->in_room && ch->can_see( victim, true ) && !is_ignoring( victim, ch ) )
          {
             found = true;
             if( victim->has_pcflag( PCFLAG_ONMAP ) )
@@ -2062,7 +2062,7 @@ CMDF( do_reboot )
       echo_to_all( "&RReboot countdown started.", ECHOTAR_ALL );
       echo_all_printf( ECHOTAR_ALL, "&YGame reboot in %d minutes.", reboot_counter );
       bootlock = true;
-      add_event( 60, ev_reboot_count, NULL );
+      add_event( 60, ev_reboot_count, nullptr );
       return;
    }
 
@@ -2159,7 +2159,7 @@ CMDF( do_snoop )
          d = *ds;
 
          if( d->snoop_by == ch->desc )
-            d->snoop_by = NULL;
+            d->snoop_by = nullptr;
       }
       return;
    }
@@ -2243,7 +2243,7 @@ CMDF( do_switch )
    ch->desc->character = victim;
    ch->desc->original = ch;
    victim->desc = ch->desc;
-   ch->desc = NULL;
+   ch->desc = nullptr;
    ch->switched = victim;
    victim->print( "Ok.\r\n" );
 }
@@ -2269,10 +2269,10 @@ CMDF( do_return )
    ch->print( "You return to your original body.\r\n" );
 
    ch->desc->character = ch->desc->original;
-   ch->desc->original = NULL;
+   ch->desc->original = nullptr;
    ch->desc->character->desc = ch->desc;
-   ch->desc->character->switched = NULL;
-   ch->desc = NULL;
+   ch->desc->character->switched = nullptr;
+   ch->desc = nullptr;
 }
 
 void objinvoke( char_data * ch, string & argument )
@@ -2405,14 +2405,14 @@ void objinvoke( char_data * ch, string & argument )
    if( obj->wear_flags.test( ITEM_TAKE ) )
    {
       obj = obj->to_char( ch );
-      act( AT_IMMORT, "$n waves $s hand, and $p appears in $s inventory!", ch, obj, NULL, TO_ROOM );
-      act( AT_IMMORT, "You wave your hand, and $p appears in your inventory!", ch, obj, NULL, TO_CHAR );
+      act( AT_IMMORT, "$n waves $s hand, and $p appears in $s inventory!", ch, obj, nullptr, TO_ROOM );
+      act( AT_IMMORT, "You wave your hand, and $p appears in your inventory!", ch, obj, nullptr, TO_CHAR );
    }
    else
    {
       obj = obj->to_room( ch->in_room, ch );
-      act( AT_IMMORT, "$n waves $s hand, and $p appears in the room!", ch, obj, NULL, TO_ROOM );
-      act( AT_IMMORT, "You wave your hand, and $p appears in the room!", ch, obj, NULL, TO_CHAR );
+      act( AT_IMMORT, "$n waves $s hand, and $p appears in the room!", ch, obj, nullptr, TO_ROOM );
+      act( AT_IMMORT, "You wave your hand, and $p appears in the room!", ch, obj, nullptr, TO_CHAR );
    }
 
    /*
@@ -2508,7 +2508,7 @@ void mobinvoke( char_data * ch, string & argument )
    fix_maps( ch, victim );
    victim->sector = get_terrain( ch->wmap, ch->mx, ch->my );
 
-   act( AT_IMMORT, "$n peers into the ether, and plucks out $N!", ch, NULL, victim, TO_ROOM );
+   act( AT_IMMORT, "$n peers into the ether, and plucks out $N!", ch, nullptr, victim, TO_ROOM );
    /*
     * How about seeing what we're invoking for a change. -Blodkai
     */
@@ -2570,7 +2570,7 @@ CMDF( do_purge )
          if( !victim->isnpc(  ) )
             continue;
 
-         char_data *tch = NULL;
+         char_data *tch = nullptr;
          list < char_data * >::iterator ich2;
          for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
          {
@@ -2608,7 +2608,7 @@ CMDF( do_purge )
          ++iobj;
          bool found = false;
 
-         char_data *tch = NULL;
+         char_data *tch = nullptr;
          list < char_data * >::iterator ich2;
          for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
          {
@@ -2636,13 +2636,13 @@ CMDF( do_purge )
       if( ch->in_room->flags.test( ROOM_CLANSTOREROOM ) )
          check_clan_storeroom( ch );
 
-      act( AT_IMMORT, "$n makes a complex series of gestures.... suddenly things seem a lot cleaner!", ch, NULL, NULL, TO_ROOM );
-      act( AT_IMMORT, "You make a complex series of gestures.... suddenly things seem a lot cleaner!", ch, NULL, NULL, TO_CHAR );
+      act( AT_IMMORT, "$n makes a complex series of gestures.... suddenly things seem a lot cleaner!", ch, nullptr, nullptr, TO_ROOM );
+      act( AT_IMMORT, "You make a complex series of gestures.... suddenly things seem a lot cleaner!", ch, nullptr, nullptr, TO_CHAR );
       return;
    }
 
-   char_data *victim = NULL;
-   obj_data *obj = NULL;
+   char_data *victim = nullptr;
+   obj_data *obj = nullptr;
    /*
     * fixed to get things in room first -- i.e., purge portal (obj),
     * * no more purging mobs with that keyword in another room first
@@ -2670,8 +2670,8 @@ CMDF( do_purge )
          }
       }
       obj->separate(  );
-      act( AT_IMMORT, "$n snaps $s finger, and $p vanishes from sight!", ch, obj, NULL, TO_ROOM );
-      act( AT_IMMORT, "You snap your fingers, and $p vanishes from sight!", ch, obj, NULL, TO_CHAR );
+      act( AT_IMMORT, "$n snaps $s finger, and $p vanishes from sight!", ch, obj, nullptr, TO_ROOM );
+      act( AT_IMMORT, "You snap your fingers, and $p vanishes from sight!", ch, obj, nullptr, TO_CHAR );
       obj->extract(  );
 
       /*
@@ -2713,8 +2713,8 @@ CMDF( do_purge )
       ch->print( "Did you REALLY think the Great Lord and Master would allow that?\r\n" );
       return;
    }
-   act( AT_IMMORT, "$n snaps $s fingers, and $N vanishes from sight!", ch, NULL, victim, TO_NOTVICT );
-   act( AT_IMMORT, "You snap your fingers, and $N vanishes from sight!", ch, NULL, victim, TO_CHAR );
+   act( AT_IMMORT, "$n snaps $s fingers, and $N vanishes from sight!", ch, nullptr, victim, TO_NOTVICT );
+   act( AT_IMMORT, "You snap your fingers, and $N vanishes from sight!", ch, nullptr, victim, TO_CHAR );
    victim->extract( true );
 }
 
@@ -3104,7 +3104,7 @@ CMDF( do_immortalize )
    }
 
    ch->print( "Immortalizing a player...\r\n" );
-   act( AT_IMMORT, "$n begins to chant softly... then raises $s arms to the sky...", ch, NULL, NULL, TO_ROOM );
+   act( AT_IMMORT, "$n begins to chant softly... then raises $s arms to the sky...", ch, nullptr, nullptr, TO_ROOM );
    victim->print( "&WYou suddenly feel very strange...\r\n\r\n" );
    interpret( victim, "help M_GODLVL1_" );
    victim->print( "&WYou awake... all your possessions are gone.\r\n" );
@@ -3137,7 +3137,7 @@ CMDF( do_immortalize )
          victim->pcdata->clan->number1.clear(  );
       if( !str_cmp( victim->name, victim->pcdata->clan->number2 ) )
          victim->pcdata->clan->number2.clear(  );
-      victim->pcdata->clan = NULL;
+      victim->pcdata->clan = nullptr;
       victim->pcdata->clan_name.clear(  );
    }
    victim->exp = exp_level( victim->level );
@@ -3274,7 +3274,7 @@ CMDF( do_stash )
 
       victim->gold += amount;
 
-      act( AT_ACTION, "You stash some coins on $N.", ch, NULL, victim, TO_CHAR );
+      act( AT_ACTION, "You stash some coins on $N.", ch, nullptr, victim, TO_CHAR );
 
       if( IS_SAVE_FLAG( SV_GIVE ) && !ch->char_died(  ) )
          ch->save(  );
@@ -3311,19 +3311,19 @@ CMDF( do_stash )
 
    if( victim->carry_number + ( obj->get_number(  ) / obj->count ) > victim->can_carry_n(  ) )
    {
-      act( AT_PLAIN, "$N has $S hands full.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N has $S hands full.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( victim->carry_weight + ( obj->get_weight(  ) / obj->count ) > victim->can_carry_w(  ) )
    {
-      act( AT_PLAIN, "$N can't carry that much weight.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N can't carry that much weight.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( obj->extra_flags.test( ITEM_PROTOTYPE ) && !victim->can_take_proto(  ) )
    {
-      act( AT_PLAIN, "You cannot give that to $N!", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "You cannot give that to $N!", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -3350,7 +3350,7 @@ CMDF( do_stash )
 CMDF( do_immget )
 {
    string arg, arg1, arg2, arg3, who;
-   char_data *vch = NULL;
+   char_data *vch = nullptr;
    bool silently = false, found = false;
    int number, count, vnum;
 
@@ -3392,7 +3392,7 @@ CMDF( do_immget )
       }
       if( ch->get_trust(  ) < vch->get_trust(  ) && !vch->isnpc(  ) )
       {
-         act( AT_TELL, "$n tells you, 'Keep your hands to yourself!'", vch, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you, 'Keep your hands to yourself!'", vch, nullptr, ch, TO_VICT );
          return;
       }
    }
@@ -3403,7 +3403,7 @@ CMDF( do_immget )
       vnum = -1;
 
    count = 0;
-   obj_data *obj = NULL;
+   obj_data *obj = nullptr;
    list < obj_data * >::iterator iobj;
    for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
@@ -3442,7 +3442,7 @@ CMDF( do_immget )
       return;
    }
 
-   if( !vch && ( vch = obj->who_carrying(  ) ) != NULL )
+   if( !vch && ( vch = obj->who_carrying(  ) ) != nullptr )
    {
       if( ch->get_trust(  ) < vch->get_trust(  ) && !vch->isnpc(  ) )
       {
@@ -3482,16 +3482,16 @@ CMDF( do_immget )
          /*
           * notify people in the room... (not done yet) 
           */
-         act( AT_IMMORT, "You take $p!", ch, obj, NULL, TO_CHAR );
+         act( AT_IMMORT, "You take $p!", ch, obj, nullptr, TO_CHAR );
       }
       else
-         act( AT_IMMORT, "You silently take $p.", ch, obj, NULL, TO_CHAR );
+         act( AT_IMMORT, "You silently take $p.", ch, obj, nullptr, TO_CHAR );
    }
 }
 
 room_index *select_random_room( bool pickmap )
 {
-   room_index *pRoomIndex = NULL;
+   room_index *pRoomIndex = nullptr;
 
    // If you need more than 50000 iterations, you have a problem.
    for( int i = 0; i < 50000; ++i )
@@ -3551,12 +3551,12 @@ CMDF( do_scatter )
          if( sect_show[sector].canpass )
             break;
       }
-      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, NULL, victim, TO_VICT );
-      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, NULL, victim, TO_CHAR );
-      enter_map( victim, NULL, x, y, map );
+      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, nullptr, victim, TO_VICT );
+      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, nullptr, victim, TO_CHAR );
+      enter_map( victim, nullptr, x, y, map );
       victim->position = POS_STANDING;
-      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, nullptr, nullptr, TO_ROOM );
    }
    else
    {
@@ -3568,12 +3568,12 @@ CMDF( do_scatter )
 
       if( victim->fighting )
          victim->stop_fighting( true );
-      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, NULL, victim, TO_VICT );
-      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, NULL, victim, TO_CHAR );
-      leave_map( victim, NULL, pRoomIndex );
+      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, nullptr, victim, TO_VICT );
+      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, nullptr, victim, TO_CHAR );
+      leave_map( victim, nullptr, pRoomIndex );
       victim->position = POS_RESTING;
-      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, nullptr, nullptr, TO_ROOM );
    }
 }
 
@@ -3609,9 +3609,9 @@ CMDF( do_strew )
          return;
       }
       victim->gold = 0;
-      act( AT_MAGIC, "$n gestures and an unearthly gale sends $N's coins flying!", ch, NULL, victim, TO_NOTVICT );
-      act( AT_MAGIC, "You gesture and an unearthly gale sends $N's coins flying!", ch, NULL, victim, TO_CHAR );
-      act( AT_MAGIC, "As $n gestures, an unearthly gale sends your currency flying!", ch, NULL, victim, TO_VICT );
+      act( AT_MAGIC, "$n gestures and an unearthly gale sends $N's coins flying!", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_MAGIC, "You gesture and an unearthly gale sends $N's coins flying!", ch, nullptr, victim, TO_CHAR );
+      act( AT_MAGIC, "As $n gestures, an unearthly gale sends your currency flying!", ch, nullptr, victim, TO_VICT );
       return;
    }
 
@@ -3623,9 +3623,9 @@ CMDF( do_strew )
 
    if( !str_cmp( argument, "inventory" ) )
    {
-      act( AT_MAGIC, "$n speaks a single word, sending $N's possessions flying!", ch, NULL, victim, TO_NOTVICT );
-      act( AT_MAGIC, "You speak a single word, sending $N's possessions flying!", ch, NULL, victim, TO_CHAR );
-      act( AT_MAGIC, "$n speaks a single word, sending your possessions flying!", ch, NULL, victim, TO_VICT );
+      act( AT_MAGIC, "$n speaks a single word, sending $N's possessions flying!", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_MAGIC, "You speak a single word, sending $N's possessions flying!", ch, nullptr, victim, TO_CHAR );
+      act( AT_MAGIC, "$n speaks a single word, sending your possessions flying!", ch, nullptr, victim, TO_VICT );
 
       list < obj_data * >::iterator iobj;
       for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
@@ -3634,7 +3634,7 @@ CMDF( do_strew )
          ++iobj;
 
          obj_lose->from_char(  );
-         obj_lose->to_room( pRoomIndex, NULL );
+         obj_lose->to_room( pRoomIndex, nullptr );
          ch->pagerf( "\t&w%s sent to %d\r\n", capitalize( obj_lose->short_descr ), pRoomIndex->vnum );
       }
       return;
@@ -3662,7 +3662,7 @@ CMDF( do_strip )
       ch->print( "Kinky.\r\n" );
       return;
    }
-   act( AT_OBJECT, "Searching $N ...", ch, NULL, victim, TO_CHAR );
+   act( AT_OBJECT, "Searching $N ...", ch, nullptr, victim, TO_CHAR );
 
    int count = 0;
    list < obj_data * >::iterator iobj;
@@ -3683,7 +3683,7 @@ CMDF( do_strip )
 const int RESTORE_INTERVAL = 21600;
 CMDF( do_restore )
 {
-   deity_data *deity = NULL;
+   deity_data *deity = nullptr;
    string arg;
 
    ch->set_color( AT_IMMORT );
@@ -3757,7 +3757,7 @@ CMDF( do_restore )
             vch->pcdata->condition[COND_DRUNK] = 0;
             vch->mental_state = 0;
             vch->update_pos(  );
-            act( AT_IMMORT, "$n has restored you.", ch, NULL, vch, TO_VICT );
+            act( AT_IMMORT, "$n has restored you.", ch, nullptr, vch, TO_VICT );
          }
       }
    }
@@ -3797,7 +3797,7 @@ CMDF( do_restore )
          victim->mental_state = 0;
       }
       victim->update_pos(  );
-      act( AT_IMMORT, "$n has restored you.", ch, NULL, victim, TO_VICT );
+      act( AT_IMMORT, "$n has restored you.", ch, nullptr, victim, TO_VICT );
       ch->print( "Ok.\r\n" );
    }
 }
@@ -3865,7 +3865,7 @@ CMDF( do_freeze )
          do_return( victim->switched, "" );
       victim->set_pcflag( PCFLAG_FREEZE );
       if( !victim->desc )
-         add_loginmsg( victim->name, 15, NULL );
+         add_loginmsg( victim->name, 15, nullptr );
       else
          victim->print( "&CA godly force turns your body to ice!\r\n" );
       ch->printf( "&CYou have frozen %s.\r\n", victim->name );
@@ -3971,7 +3971,7 @@ CMDF( do_nobio )
    {
       victim->set_pcflag( PCFLAG_NOBIO );
       if( !victim->desc )
-         add_loginmsg( victim->name, 9, NULL );
+         add_loginmsg( victim->name, 9, nullptr );
       else
          victim->print( "You can't set a bio!\r\n" );
       ch->printf( "NOBIO applied to %s.\r\n", victim->name );
@@ -4004,7 +4004,7 @@ CMDF( do_nodesc )
    {
       victim->set_pcflag( PCFLAG_NODESC );
       if( !victim->desc )
-         add_loginmsg( victim->name, 11, NULL );
+         add_loginmsg( victim->name, 11, nullptr );
       else
          victim->print( "You can't set a description!\r\n" );
       ch->printf( "NODESC applied to %s.\r\n", victim->name );
@@ -4037,7 +4037,7 @@ CMDF( do_noemote )
    {
       victim->set_pcflag( PCFLAG_NO_EMOTE );
       if ( !victim->desc )
-         add_loginmsg( victim->name, 16, NULL );
+         add_loginmsg( victim->name, 16, nullptr );
       else
          victim->print( "You can't emote!\r\n" );
       ch->printf( "NOEMOTE applied to %s.\r\n", victim->name );
@@ -4070,7 +4070,7 @@ CMDF( do_notell )
    {
       victim->set_pcflag( PCFLAG_NO_TELL );
       if( !victim->desc )
-         add_loginmsg( victim->name, 14, NULL );
+         add_loginmsg( victim->name, 14, nullptr );
       else
          victim->print( "You can't send tells!\r\n" );
       ch->printf( "NOTELL applied to %s.\r\n", victim->name );
@@ -4106,7 +4106,7 @@ CMDF( do_notitle )
       snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex] );
       victim->set_title( buf );
       if( !victim->desc )
-         add_loginmsg( victim->name, 8, NULL );
+         add_loginmsg( victim->name, 8, nullptr );
       else
          victim->print( "You can't set your own title!\r\n" );
       ch->printf( "NOTITLE set on %s.\r\n", victim->name );
@@ -4140,7 +4140,7 @@ CMDF( do_nourl )
       victim->set_pcflag( PCFLAG_NO_URL );
       victim->pcdata->homepage.clear();
       if( !victim->desc )
-         add_loginmsg( victim->name, 12, NULL );
+         add_loginmsg( victim->name, 12, nullptr );
       else
          victim->print( "You can't set a homepage!\r\n" );
       ch->printf( "NOURL applied to %s.\r\n", victim->name );
@@ -4204,7 +4204,7 @@ CMDF( do_nobeep )
    {
       victim->set_pcflag( PCFLAG_NO_BEEP );
       if( !victim->desc )
-         add_loginmsg( victim->name, 13, NULL );
+         add_loginmsg( victim->name, 13, nullptr );
       else
          victim->print( "You can't send beeps anymore!\r\n" );
       ch->printf( "NOBEEP applied to %s.\r\n", victim->name );
@@ -4237,7 +4237,7 @@ CMDF( do_silence )
    {
       victim->set_pcflag( PCFLAG_SILENCE );
       if( !victim->desc )
-         add_loginmsg( victim->name, 7, NULL );
+         add_loginmsg( victim->name, 7, nullptr );
       else
          victim->print( "You can't use channels!\r\n" );
       ch->printf( "You SILENCE %s.\r\n", victim->name );
@@ -4247,8 +4247,8 @@ CMDF( do_silence )
 
 CMDF( do_peace )
 {
-   act( AT_IMMORT, "$n booms, 'PEACE!'", ch, NULL, NULL, TO_ROOM );
-   act( AT_IMMORT, "You boom, 'PEACE!'", ch, NULL, NULL, TO_CHAR );
+   act( AT_IMMORT, "$n booms, 'PEACE!'", ch, nullptr, nullptr, TO_ROOM );
+   act( AT_IMMORT, "You boom, 'PEACE!'", ch, nullptr, nullptr, TO_CHAR );
 
    list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
@@ -4485,12 +4485,12 @@ CMDF( do_invis )
       if( ch->has_pcflag( PCFLAG_WIZINVIS ) )
       {
          ch->unset_pcflag( PCFLAG_WIZINVIS );
-         act( AT_IMMORT, "$n slowly fades into existence.", ch, NULL, NULL, TO_ROOM );
+         act( AT_IMMORT, "$n slowly fades into existence.", ch, nullptr, nullptr, TO_ROOM );
          ch->print( "You slowly fade back into existence.\r\n" );
       }
       else
       {
-         act( AT_IMMORT, "$n slowly fades into thin air.", ch, NULL, NULL, TO_ROOM );
+         act( AT_IMMORT, "$n slowly fades into thin air.", ch, nullptr, nullptr, TO_ROOM );
          ch->print( "You slowly vanish into thin air.\r\n" );
          ch->set_pcflag( PCFLAG_WIZINVIS );
       }
@@ -4500,12 +4500,12 @@ CMDF( do_invis )
       if( ch->has_actflag( ACT_MOBINVIS ) )
       {
          ch->unset_actflag( ACT_MOBINVIS );
-         act( AT_IMMORT, "$n slowly fades into existence.", ch, NULL, NULL, TO_ROOM );
+         act( AT_IMMORT, "$n slowly fades into existence.", ch, nullptr, nullptr, TO_ROOM );
          ch->print( "You slowly fade back into existence.\r\n" );
       }
       else
       {
-         act( AT_IMMORT, "$n slowly fades into thin air.", ch, NULL, NULL, TO_ROOM );
+         act( AT_IMMORT, "$n slowly fades into thin air.", ch, nullptr, nullptr, TO_ROOM );
          ch->print( "You slowly vanish into thin air.\r\n" );
          ch->set_actflag( ACT_MOBINVIS );
       }
@@ -4557,7 +4557,7 @@ CMDF( do_loadup )
          return;
       }
    }
-   d = NULL;
+   d = nullptr;
    argument[0] = UPPER( argument[0] );
    snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
 
@@ -4584,15 +4584,15 @@ CMDF( do_loadup )
          interpret( d->character, "say How dare you load my Pfile!" );
          cmdf( d->character, "dino %s", ch->name );
          ch->printf( "I think you'd better leave %s alone!\r\n", argument.c_str(  ) );
-         d->character->desc = NULL;
+         d->character->desc = nullptr;
          interpret( d->character, "quit auto" );
          return;
       }
-      d->character->desc = NULL;
-      d->character = NULL;
+      d->character->desc = nullptr;
+      d->character = nullptr;
       deleteptr( d );
       ch->printf( "&R%s loaded from room %d.\r\n", capitalize( argument ).c_str(  ), old_room_vnum );
-      act_printf( AT_IMMORT, ch, NULL, NULL, TO_ROOM, "%s appears from nowhere, eyes glazed over.", capitalize( argument ).c_str(  ) );
+      act_printf( AT_IMMORT, ch, nullptr, nullptr, TO_ROOM, "%s appears from nowhere, eyes glazed over.", capitalize( argument ).c_str(  ) );
       ch->print( "Done.\r\n" );
       return;
    }
@@ -4615,15 +4615,15 @@ string extract_area_names( char_data * ch )
    string tbuf, tarea, area_names;
 
    if( !ch || ch->isnpc(  ) )
-      return NULL;
+      return nullptr;
 
    if( ch->pcdata->bestowments.empty(  ) )
-      return NULL;
+      return nullptr;
 
    tbuf = ch->pcdata->bestowments;
    tbuf = one_argument( tbuf, tarea );
    if( tarea.empty(  ) )
-      return NULL;
+      return nullptr;
 
    while( !tbuf.empty(  ) )
    {
@@ -4842,7 +4842,7 @@ CMDF( do_demote )
       snprintf( buf2, 256, "%s.are", capitalize( die ) );
       victim->print( "You have been thrown from the heavens by the Gods!\r\nYou are no longer immortal!\r\n" );
       victim->unset_pcflag( PCFLAG_PASSDOOR );
-      victim->pcdata->realm = NULL;
+      victim->pcdata->realm = nullptr;
       victim->pcdata->realm_name.clear();
    }
    funcf( ch, do_bestow, "%s none", victim->name );
@@ -4894,9 +4894,9 @@ CMDF( do_promote )
       return;
    }
 
-   act( AT_IMMORT, "You make some arcane gestures with your hands, then point a finger at $N!", ch, NULL, victim, TO_CHAR );
-   act( AT_IMMORT, "$n makes some arcane gestures with $s hands, then points $s finger at you!", ch, NULL, victim, TO_VICT );
-   act( AT_IMMORT, "$n makes some arcane gestures with $s hands, then points $s finger at $N!", ch, NULL, victim, TO_NOTVICT );
+   act( AT_IMMORT, "You make some arcane gestures with your hands, then point a finger at $N!", ch, nullptr, victim, TO_CHAR );
+   act( AT_IMMORT, "$n makes some arcane gestures with $s hands, then points $s finger at you!", ch, nullptr, victim, TO_VICT );
+   act( AT_IMMORT, "$n makes some arcane gestures with $s hands, then points $s finger at $N!", ch, nullptr, victim, TO_NOTVICT );
    victim->set_color( AT_WHITE );
    victim->print( "&WYou suddenly feel very strange...\r\n\r\n" );
 
@@ -5019,7 +5019,7 @@ CMDF( do_destro )
 
 CMDF( do_destroy )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
    char buf[256];
    const char *name;
    bool found = false;
@@ -5054,7 +5054,7 @@ CMDF( do_destroy )
    if( !found )
    {
       list < descriptor_data * >::iterator ds;
-      descriptor_data *d = NULL;
+      descriptor_data *d = nullptr;
       bool dfound = false;
 
       /*
@@ -5103,11 +5103,11 @@ CMDF( do_destroy )
       }
       quitting_char = victim;
       victim->save(  );
-      saving_char = NULL;
+      saving_char = nullptr;
       victim->extract( true );
       for( int x = 0; x < MAX_WEAR; ++x )
          for( int y = 0; y < MAX_LAYERS; ++y )
-            save_equipment[x][y] = NULL;
+            save_equipment[x][y] = nullptr;
    }
    name = argument.c_str(  );
    snprintf( buf, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( name ) );
@@ -5429,14 +5429,14 @@ CMDF( do_hell )
    victim->pcdata->release_date = mktime( tms );
    victim->pcdata->helled_by = STRALLOC( ch->name );
    ch->printf( "%s will be released from hell at %24.24s.\r\n", victim->name, c_time( victim->pcdata->release_date, ch->pcdata->timezone ) );
-   act( AT_MAGIC, "$n disappears in a cloud of hellish light.", victim, NULL, ch, TO_NOTVICT );
+   act( AT_MAGIC, "$n disappears in a cloud of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-   act( AT_MAGIC, "$n appears in a could of hellish light.", victim, NULL, ch, TO_NOTVICT );
+   act( AT_MAGIC, "$n appears in a could of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    interpret( victim, "look" );
    if( !victim->desc )
-      add_loginmsg( victim->name, 10, NULL );
+      add_loginmsg( victim->name, 10, nullptr );
    else
       victim->printf( "The immortals are not pleased with your actions.\r\n"
                    "You shall remain in hell for %d %s%s.\r\n", htime, ( h_d ? "hour" : "day" ), ( htime == 1 ? "" : "s" ) );
@@ -5474,7 +5474,7 @@ CMDF( do_unhell )
    if( !location )
       location = get_room_index( ROOM_VNUM_LIMBO );
    MOBtrigger = false;
-   act( AT_MAGIC, "$n disappears in a cloud of godly light.", victim, NULL, ch, TO_NOTVICT );
+   act( AT_MAGIC, "$n disappears in a cloud of godly light.", victim, nullptr, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( location ) )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -5489,7 +5489,7 @@ CMDF( do_unhell )
       STRFREE( victim->pcdata->helled_by );
    }
    MOBtrigger = false;
-   act( AT_MAGIC, "$n appears in a cloud of godly light.", victim, NULL, ch, TO_NOTVICT );
+   act( AT_MAGIC, "$n appears in a cloud of godly light.", victim, nullptr, ch, TO_NOTVICT );
    victim->pcdata->release_date = 0;
    victim->save(  );
 }
@@ -5523,13 +5523,13 @@ CMDF( do_vsearch )
 
       found = true;
       obj_data *in_obj;
-      for( in_obj = obj; in_obj->in_obj != NULL; in_obj = in_obj->in_obj );
+      for( in_obj = obj; in_obj->in_obj != nullptr; in_obj = in_obj->in_obj );
 
-      if( in_obj->carried_by != NULL )
+      if( in_obj->carried_by != nullptr )
          ch->pagerf( "&Y[&W%2d&Y] &GLevel %d %s carried by %s.\r\n", obj_counter, obj->level, obj->oshort(  ).c_str(  ), PERS( in_obj->carried_by, ch, true ) );
       else
          ch->pagerf( "&Y[&W%2d&Y] [&W%-5d&Y] &G%s in %s.\r\n", obj_counter,
-                     ( ( in_obj->in_room ) ? in_obj->in_room->vnum : 0 ), obj->oshort(  ).c_str(  ), ( in_obj->in_room == NULL ) ? "somewhere" : in_obj->in_room->name );
+                     ( ( in_obj->in_room ) ? in_obj->in_room->vnum : 0 ), obj->oshort(  ).c_str(  ), ( in_obj->in_room == nullptr ) ? "somewhere" : in_obj->in_room->name );
 
       ++obj_counter;
    }
@@ -5946,12 +5946,12 @@ CMDF( do_cset )
       if( value == 0 )
       {
          ch->print( "Webwho refresh has been disabled.\r\n" );
-         cancel_event( ev_webwho_refresh, NULL );
+         cancel_event( ev_webwho_refresh, nullptr );
       }
       else
       {
          ch->printf( "Webwho refresh set to %d seconds.\r\n", value );
-         add_event( value, ev_webwho_refresh, NULL );
+         add_event( value, ev_webwho_refresh, nullptr );
       }
       return;
    }
@@ -6554,7 +6554,7 @@ void load_classes(  )
     * Pre-init the class_table with blank classes
     */
    for( int i = 0; i < MAX_CLASS; ++i )
-      class_table[i] = NULL;
+      class_table[i] = nullptr;
 
    snprintf( classlist, 256, "%s%s", CLASS_DIR, CLASS_LIST );
    if( !( fpList = fopen( classlist, "r" ) ) )
@@ -6694,7 +6694,7 @@ CMDF( do_showclass )
       Class = class_table[cl];
    else
    {
-      Class = NULL;
+      Class = nullptr;
       for( cl = 0; cl < MAX_CLASS && class_table[cl]; ++cl )
          if( !str_cmp( class_table[cl]->who_name, arg1 ) )
          {
@@ -6749,7 +6749,7 @@ CMDF( do_showclass )
  */
 bool create_new_class( int Class, const string & argument )
 {
-   if( Class >= MAX_CLASS || class_table[Class] == NULL )
+   if( Class >= MAX_CLASS || class_table[Class] == nullptr )
       return false;
    STRFREE( class_table[Class]->who_name );
    class_table[Class]->who_name = STRALLOC( capitalize( argument ).c_str(  ) );
@@ -6804,7 +6804,7 @@ CMDF( do_setclass )
       Class = class_table[cl];
    else
    {
-      Class = NULL;
+      Class = nullptr;
       for( cl = 0; cl < MAX_CLASS && class_table[cl]; ++cl )
       {
          if( !class_table[cl]->who_name )
@@ -6887,7 +6887,7 @@ CMDF( do_setclass )
    if( !str_cmp( arg2, "name" ) )
    {
       char buf[256];
-      class_type *ccheck = NULL;
+      class_type *ccheck = nullptr;
 
       one_argument( argument, arg1 );
       if( arg1.empty(  ) )
@@ -6911,7 +6911,7 @@ CMDF( do_setclass )
             break;
          }
       }
-      if( ccheck != NULL )
+      if( ccheck != nullptr )
       {
          ch->printf( "Already a class called %s.\r\n", arg1.c_str(  ) );
          return;
@@ -7586,7 +7586,7 @@ void load_races(  )
     * Pre-init the race_table with blank races
     */
    for( int i = 0; i < MAX_RACE; ++i )
-      race_table[i] = NULL;
+      race_table[i] = nullptr;
 
    snprintf( racelist, 256, "%s%s", RACE_DIR, RACE_LIST );
    if( !( fpList = fopen( racelist, "r" ) ) )
@@ -7724,7 +7724,7 @@ void write_race_list(  )
  */
 bool create_new_race( int race, const string & argument )
 {
-   if( race >= MAX_RACE || race_table[race] == NULL )
+   if( race >= MAX_RACE || race_table[race] == nullptr )
       return false;
 
    race_table[race]->race_name = STRALLOC( capitalize( argument ).c_str(  ) );
@@ -7793,7 +7793,7 @@ CMDF( do_setrace )
       race = race_table[ra];
    else
    {
-      race = NULL;
+      race = nullptr;
       for( ra = 0; ra < MAX_RACE && race_table[ra]; ++ra )
       {
          if( !race_table[ra]->race_name )
@@ -7853,7 +7853,7 @@ CMDF( do_setrace )
    if( !str_cmp( arg2, "name" ) )
    {
       char buf[256];
-      race_type *rcheck = NULL;
+      race_type *rcheck = nullptr;
 
       one_argument( argument, arg1 );
 
@@ -7878,7 +7878,7 @@ CMDF( do_setrace )
             break;
          }
       }
-      if( rcheck != NULL )
+      if( rcheck != nullptr )
       {
          ch->printf( "Already a race called %s.\r\n", arg1.c_str(  ) );
          return;
@@ -8276,7 +8276,7 @@ CMDF( do_showrace )
       race = race_table[ra];
    else
    {
-      race = NULL;
+      race = nullptr;
       for( ra = 0; ra < MAX_RACE && race_table[ra]; ++ra )
          if( !str_cmp( race_table[ra]->race_name, argument ) )
          {

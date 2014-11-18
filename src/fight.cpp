@@ -80,13 +80,13 @@ bool in_arena( char_data * ch )
 {
    if( !ch )   /* Um..... Could THIS be why ? */
    {
-      bug( "%s: NULL CH!!! Wedgy, you better spill the beans!", __func__ );
+      bug( "%s: nullptr CH!!! Wedgy, you better spill the beans!", __func__ );
       return false;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: %s in NULL room. Only The Wedgy knows how though.", __func__, ch->name );
+      bug( "%s: %s in nullptr room. Only The Wedgy knows how though.", __func__, ch->name );
       log_string( "Going to attempt to move them to Limbo to prevent a crash." );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -327,7 +327,7 @@ void class_monitor( char_data * ch )
 char_data *char_data::who_fighting(  )
 {
    if( !fighting )
-      return NULL;
+      return nullptr;
    return fighting->who;
 }
 
@@ -409,9 +409,9 @@ bool is_wielding_poisoned( char_data * ch )
    if( !used_weapon )
       return false;
 
-   if( ( obj = ch->get_eq( WEAR_WIELD ) ) != NULL && used_weapon == obj && obj->extra_flags.test( ITEM_POISONED ) )
+   if( ( obj = ch->get_eq( WEAR_WIELD ) ) != nullptr && used_weapon == obj && obj->extra_flags.test( ITEM_POISONED ) )
       return true;
-   if( ( obj = ch->get_eq( WEAR_DUAL_WIELD ) ) != NULL && used_weapon == obj && obj->extra_flags.test( ITEM_POISONED ) )
+   if( ( obj = ch->get_eq( WEAR_DUAL_WIELD ) ) != nullptr && used_weapon == obj && obj->extra_flags.test( ITEM_POISONED ) )
       return true;
 
    return false;
@@ -461,14 +461,14 @@ CMDF( do_gfighting )
          descriptor_data *d = *ds;
 
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
-             && ( victim = d->character ) != NULL && !victim->isnpc(  ) && victim->in_room
+             && ( victim = d->character ) != nullptr && !victim->isnpc(  ) && victim->in_room
              && ch->can_see( victim, false ) && victim->fighting && victim->level >= low && victim->level <= high )
          {
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
                         victim->name, victim->level, victim->fighting->who->level,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->short_descr : victim->fighting->who->name,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->pIndexData->vnum : 0,
-                        victim->in_room->area->name, victim->in_room == NULL ? 0 : victim->in_room->vnum );
+                        victim->in_room->area->name, victim->in_room == nullptr ? 0 : victim->in_room->vnum );
             ++count;
          }
       }
@@ -485,7 +485,7 @@ CMDF( do_gfighting )
                         victim->name, victim->level, victim->fighting->who->level,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->short_descr : victim->fighting->who->name,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->pIndexData->vnum : 0,
-                        victim->in_room->area->name, victim->in_room == NULL ? 0 : victim->in_room->vnum );
+                        victim->in_room->area->name, victim->in_room == nullptr ? 0 : victim->in_room->vnum );
             ++count;
          }
       }
@@ -501,7 +501,7 @@ CMDF( do_gfighting )
             ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
                         victim->name, victim->level, victim->hating->who->level, victim->hating->who->isnpc(  )?
                         victim->hating->who->short_descr : victim->hating->who->name, victim->hating->who->isnpc(  )?
-                        victim->hating->who->pIndexData->vnum : 0, victim->in_room->area->name, victim->in_room == NULL ? 0 : victim->in_room->vnum );
+                        victim->hating->who->pIndexData->vnum : 0, victim->in_room->area->name, victim->in_room == nullptr ? 0 : victim->in_room->vnum );
             ++count;
          }
       }
@@ -518,7 +518,7 @@ CMDF( do_gfighting )
                         victim->name, victim->level, victim->hunting->who->level, victim->hunting->who->isnpc(  )?
                         victim->hunting->who->short_descr : victim->hunting->who->name,
                         victim->hunting->who->isnpc(  )? victim->hunting->who->pIndexData->vnum : 0,
-                        victim->in_room->area->name, victim->in_room == NULL ? 0 : victim->in_room->vnum );
+                        victim->in_room->area->name, victim->in_room == nullptr ? 0 : victim->in_room->vnum );
             ++count;
          }
       }
@@ -796,8 +796,8 @@ void align_zap( char_data * ch )
       if( ( obj->extra_flags.test( ITEM_ANTI_EVIL ) && ch->IS_EVIL(  ) )
           || ( obj->extra_flags.test( ITEM_ANTI_GOOD ) && ch->IS_GOOD(  ) ) || ( obj->extra_flags.test( ITEM_ANTI_NEUTRAL ) && ch->IS_NEUTRAL(  ) ) )
       {
-         act( AT_MAGIC, "You are zapped by $p.", ch, obj, NULL, TO_CHAR );
-         act( AT_MAGIC, "$n is zapped by $p.", ch, obj, NULL, TO_ROOM );
+         act( AT_MAGIC, "You are zapped by $p.", ch, obj, nullptr, TO_CHAR );
+         act( AT_MAGIC, "$n is zapped by $p.", ch, obj, nullptr, TO_ROOM );
          obj->from_char(  );
          if( in_arena( ch ) )
             obj = obj->to_char( ch );
@@ -1536,7 +1536,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
    const char *attack;
    char punct;
    double dampc, d_index;
-   struct skill_type *skill = NULL;
+   struct skill_type *skill = nullptr;
    bool gcflag = false;
    bool gvflag = false;
    int w_index;
@@ -1555,7 +1555,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
    else
-      was_in_room = NULL;
+      was_in_room = nullptr;
 
    /*
     * Get the weapon index 
@@ -1634,18 +1634,18 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
 
             if( skill->miss_char && skill->miss_char[0] != '\0' )
             {
-               act( AT_HIT, skill->miss_char, ch, NULL, victim, TO_CHAR );
+               act( AT_HIT, skill->miss_char, ch, nullptr, victim, TO_CHAR );
                found = true;
             }
             if( skill->miss_vict && skill->miss_vict[0] != '\0' )
             {
-               act( AT_HITME, skill->miss_vict, ch, NULL, victim, TO_VICT );
+               act( AT_HITME, skill->miss_vict, ch, nullptr, victim, TO_VICT );
                found = true;
             }
             if( skill->miss_room && skill->miss_room[0] != '\0' )
             {
                if( str_cmp( skill->miss_room, "supress" ) )
-                  act( AT_ACTION, skill->miss_room, ch, NULL, victim, TO_NOTVICT );
+                  act( AT_ACTION, skill->miss_room, ch, nullptr, victim, TO_NOTVICT );
                found = true;
             }
             if( found ) /* miss message already sent */
@@ -1662,11 +1662,11 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          else
          {
             if( skill->hit_char && skill->hit_char[0] != '\0' )
-               act( AT_HIT, skill->hit_char, ch, NULL, victim, TO_CHAR );
+               act( AT_HIT, skill->hit_char, ch, nullptr, victim, TO_CHAR );
             if( skill->hit_vict && skill->hit_vict[0] != '\0' )
-               act( AT_HITME, skill->hit_vict, ch, NULL, victim, TO_VICT );
+               act( AT_HITME, skill->hit_vict, ch, nullptr, victim, TO_VICT );
             if( skill->hit_room && skill->hit_room[0] != '\0' )
-               act( AT_ACTION, skill->hit_room, ch, NULL, victim, TO_NOTVICT );
+               act( AT_ACTION, skill->hit_room, ch, nullptr, victim, TO_NOTVICT );
          }
       }
       else if( dt >= ( unsigned int )TYPE_HIT && dt < ( unsigned int )TYPE_HIT + sizeof( attack_table ) / sizeof( attack_table[0] ) )
@@ -1686,11 +1686,11 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       snprintf( buf3, 256, "$n's %s %s you%c", attack, vp, punct );
    }
 
-   act( AT_ACTION, buf1, ch, NULL, victim, TO_NOTVICT );
+   act( AT_ACTION, buf1, ch, nullptr, victim, TO_NOTVICT );
    if( !gcflag )
-      act( AT_HIT, buf2, ch, NULL, victim, TO_CHAR );
+      act( AT_HIT, buf2, ch, nullptr, victim, TO_CHAR );
    if( !gvflag )
-      act( AT_HITME, buf3, ch, NULL, victim, TO_VICT );
+      act( AT_HITME, buf3, ch, nullptr, victim, TO_VICT );
 
    if( was_in_room )
    {
@@ -1830,9 +1830,9 @@ void char_data::update_pos(  )
    {
       if( mount )
       {
-         act( AT_ACTION, "$n falls from $N.", this, NULL, mount, TO_ROOM );
+         act( AT_ACTION, "$n falls from $N.", this, nullptr, mount, TO_ROOM );
          mount->unset_actflag( ACT_MOUNTED );
-         mount = NULL;
+         mount = nullptr;
       }
       position = POS_DEAD;
       return;
@@ -1850,9 +1850,9 @@ void char_data::update_pos(  )
 
    if( mount )
    {
-      act( AT_ACTION, "$n falls unconscious from $N.", this, NULL, mount, TO_ROOM );
+      act( AT_ACTION, "$n falls unconscious from $N.", this, nullptr, mount, TO_ROOM );
       mount->unset_actflag( ACT_MOUNTED );
-      mount = NULL;
+      mount = nullptr;
    }
    return;
 }
@@ -1956,8 +1956,8 @@ void check_killer( char_data * ch, char_data * victim )
          victim->update_pos(  );
          if( victim != ch )
          {
-            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into $n.", ch, victim->name, NULL, TO_ROOM );
-            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into you.", ch, victim->name, NULL, TO_CHAR );
+            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into $n.", ch, victim->name, nullptr, TO_ROOM );
+            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into you.", ch, victim->name, nullptr, TO_CHAR );
          }
          if( victim->pcdata->clan )
          {
@@ -1985,7 +1985,7 @@ void check_killer( char_data * ch, char_data * victim )
          ++victim->pcdata->pdeaths;
          victim->adjust_favor( 11, 1 );
          ch->adjust_favor( 2, 1 );
-         victim->add_timer( TIMER_PKILLED, 115, NULL, 0 );
+         victim->add_timer( TIMER_PKILLED, 115, nullptr, 0 );
          victim->WAIT_STATE( 3 * sysdata->pulseviolence );
          return;
       }
@@ -2114,7 +2114,7 @@ void free_fight( char_data * ch )
          --ch->fighting->who->num_fighting;
       deleteptr( ch->fighting );
    }
-   ch->fighting = NULL;
+   ch->fighting = nullptr;
    if( ch->mount )
       ch->position = POS_MOUNTED;
    else
@@ -2280,7 +2280,7 @@ void death_cry( char_data * ch )
    }
 
    vnum = 0;
-   msg = NULL;
+   msg = nullptr;
 
    switch ( number_range( 0, 5 ) )
    {
@@ -2339,7 +2339,7 @@ void death_cry( char_data * ch )
          break;
    }
 
-   act( AT_CARNAGE, msg, ch, NULL, NULL, TO_ROOM );
+   act( AT_CARNAGE, msg, ch, nullptr, nullptr, TO_ROOM );
 
    if( vnum )
    {
@@ -2389,7 +2389,7 @@ void raw_kill( char_data * ch, char_data * victim )
 
    if( in_arena( victim ) )
    {
-      room_index *location = NULL;
+      room_index *location = nullptr;
 
       log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s bested %s in the arena.", ch->name, victim->name );
       ch->printf( "You bested %s in arena combat!\r\n", victim->name );
@@ -2447,9 +2447,9 @@ void raw_kill( char_data * ch, char_data * victim )
    if( victim->in_room->sector_type == SECT_OCEANFLOOR
        || victim->in_room->sector_type == SECT_UNDERWATER
        || victim->in_room->sector_type == SECT_WATER_SWIM || victim->in_room->sector_type == SECT_WATER_NOSWIM || victim->in_room->sector_type == SECT_RIVER )
-      act( AT_BLOOD, "$n's blood slowly clouds the surrounding water.", victim, NULL, NULL, TO_ROOM );
+      act( AT_BLOOD, "$n's blood slowly clouds the surrounding water.", victim, nullptr, nullptr, TO_ROOM );
    else if( victim->in_room->sector_type == SECT_AIR )
-      act( AT_BLOOD, "$n's blood sprays wildly through the air.", victim, NULL, NULL, TO_ROOM );
+      act( AT_BLOOD, "$n's blood sprays wildly through the air.", victim, nullptr, nullptr, TO_ROOM );
    else
       make_blood( victim );
 
@@ -2457,7 +2457,7 @@ void raw_kill( char_data * ch, char_data * victim )
    {
       ++victim->pIndexData->killed;
       victim->extract( true );
-      victim = NULL;
+      victim = nullptr;
       return;
    }
 
@@ -2535,12 +2535,12 @@ void damage_obj( obj_data * obj )
 
    obj->separate(  );
    if( !ch->IS_PKILL(  ) || ( ch->IS_PKILL(  ) && !ch->has_pcflag( PCFLAG_GAG ) ) )
-      act( AT_OBJECT, "($p gets damaged)", ch, obj, NULL, TO_CHAR );
-   else if( obj->in_room && ( ch = ( *obj->in_room->people.begin(  ) ) ) != NULL )
+      act( AT_OBJECT, "($p gets damaged)", ch, obj, nullptr, TO_CHAR );
+   else if( obj->in_room && ( ch = ( *obj->in_room->people.begin(  ) ) ) != nullptr )
    {
-      act( AT_OBJECT, "($p gets damaged)", ch, obj, NULL, TO_ROOM );
-      act( AT_OBJECT, "($p gets damaged)", ch, obj, NULL, TO_CHAR );
-      ch = NULL;
+      act( AT_OBJECT, "($p gets damaged)", ch, obj, nullptr, TO_ROOM );
+      act( AT_OBJECT, "($p gets damaged)", ch, obj, nullptr, TO_CHAR );
+      ch = nullptr;
    }
 
    if( obj->item_type != ITEM_LIGHT )
@@ -2617,7 +2617,7 @@ void damage_obj( obj_data * obj )
          }
          break;
    }
-   if( ch != NULL )
+   if( ch != nullptr )
       ch->save(  );  /* Stop scrap duping - Samson 1-2-00 */
 }
 
@@ -2709,17 +2709,17 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
             if( skill->imm_char && skill->imm_char[0] != '\0' )
             {
-               act( AT_HIT, skill->imm_char, ch, NULL, victim, TO_CHAR );
+               act( AT_HIT, skill->imm_char, ch, nullptr, victim, TO_CHAR );
                found = true;
             }
             if( skill->imm_vict && skill->imm_vict[0] != '\0' )
             {
-               act( AT_HITME, skill->imm_vict, ch, NULL, victim, TO_VICT );
+               act( AT_HITME, skill->imm_vict, ch, nullptr, victim, TO_VICT );
                found = true;
             }
             if( skill->imm_room && skill->imm_room[0] != '\0' )
             {
-               act( AT_ACTION, skill->imm_room, ch, NULL, victim, TO_NOTVICT );
+               act( AT_ACTION, skill->imm_room, ch, nullptr, victim, TO_NOTVICT );
                found = true;
             }
             if( found )
@@ -2859,7 +2859,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          ch->affect_strip( gsn_invis );
          ch->affect_strip( gsn_mass_invis );
          ch->unset_aflag( AFF_INVISIBLE );
-         act( AT_MAGIC, "$n fades into existence.", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n fades into existence.", ch, nullptr, nullptr, TO_ROOM );
       }
 
       /*
@@ -2956,7 +2956,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
    }
 
    if( ch != victim )
-      dam_message( ch, victim, dam, dt, NULL );
+      dam_message( ch, victim, dam, dt, nullptr );
 
    /*
     * Hurt the victim.
@@ -2995,20 +2995,20 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
    switch ( victim->position )
    {
       case POS_MORTAL:
-         act( AT_DYING, "$n is mortally wounded, and will die soon, if not aided.", victim, NULL, NULL, TO_ROOM );
-         act( AT_DANGER, "You are mortally wounded, and will die soon, if not aided.", victim, NULL, NULL, TO_CHAR );
+         act( AT_DYING, "$n is mortally wounded, and will die soon, if not aided.", victim, nullptr, nullptr, TO_ROOM );
+         act( AT_DANGER, "You are mortally wounded, and will die soon, if not aided.", victim, nullptr, nullptr, TO_CHAR );
          break;
 
       case POS_INCAP:
-         act( AT_DYING, "$n is incapacitated and will slowly die, if not aided.", victim, NULL, NULL, TO_ROOM );
-         act( AT_DANGER, "You are incapacitated and will slowly die, if not aided.", victim, NULL, NULL, TO_CHAR );
+         act( AT_DYING, "$n is incapacitated and will slowly die, if not aided.", victim, nullptr, nullptr, TO_ROOM );
+         act( AT_DANGER, "You are incapacitated and will slowly die, if not aided.", victim, nullptr, nullptr, TO_CHAR );
          break;
 
       case POS_STUNNED:
          if( !victim->has_aflag( AFF_PARALYSIS ) )
          {
-            act( AT_ACTION, "$n is stunned, but will probably recover.", victim, NULL, NULL, TO_ROOM );
-            act( AT_HURT, "You are stunned, but will probably recover.", victim, NULL, NULL, TO_CHAR );
+            act( AT_ACTION, "$n is stunned, but will probably recover.", victim, nullptr, nullptr, TO_ROOM );
+            act( AT_HURT, "You are stunned, but will probably recover.", victim, nullptr, nullptr, TO_CHAR );
          }
          break;
 
@@ -3018,11 +3018,11 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             skill_type *skill = skill_table[dt];
 
             if( skill->die_char && skill->die_char[0] != '\0' )
-               act( AT_DEAD, skill->die_char, ch, NULL, victim, TO_CHAR );
+               act( AT_DEAD, skill->die_char, ch, nullptr, victim, TO_CHAR );
             if( skill->die_vict && skill->die_vict[0] != '\0' )
-               act( AT_DEAD, skill->die_vict, ch, NULL, victim, TO_VICT );
+               act( AT_DEAD, skill->die_vict, ch, nullptr, victim, TO_VICT );
             if( skill->die_room && skill->die_room[0] != '\0' )
-               act( AT_DEAD, skill->die_room, ch, NULL, victim, TO_NOTVICT );
+               act( AT_DEAD, skill->die_room, ch, nullptr, victim, TO_NOTVICT );
          }
          act( AT_DEAD, "$n is DEAD!!", victim, 0, 0, TO_ROOM );
          act( AT_DEAD, "You have been KILLED!!\r\n", victim, 0, 0, TO_CHAR );
@@ -3116,7 +3116,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          loot = false;
 
       raw_kill( ch, victim );
-      victim = NULL;
+      victim = nullptr;
 
       if( !ch->isnpc(  ) && loot )
       {
@@ -3156,7 +3156,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          {
             obj_data *corpse;
 
-            if( ( corpse = ch->get_obj_here( "corpse" ) ) != NULL )
+            if( ( corpse = ch->get_obj_here( "corpse" ) ) != nullptr )
             {
                if( corpse->contents.empty(  ) )
                   interpret( ch, "sacrifice corpse" );
@@ -3225,11 +3225,11 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    if( victim->position == POS_DEAD || ch->in_room != victim->in_room )
       return rVICT_DIED;
 
-   used_weapon = NULL;
+   used_weapon = nullptr;
    /*
     * Figure out the weapon doing the damage       -Thoric
     */
-   if( ( wield = ch->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+   if( ( wield = ch->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
    {
       if( dual_flip == true )
          dual_flip = false;
@@ -3556,17 +3556,17 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
 
          if( skill->imm_char && skill->imm_char[0] != '\0' )
          {
-            act( AT_HIT, skill->imm_char, ch, NULL, victim, TO_CHAR );
+            act( AT_HIT, skill->imm_char, ch, nullptr, victim, TO_CHAR );
             found = true;
          }
          if( skill->imm_vict && skill->imm_vict[0] != '\0' )
          {
-            act( AT_HITME, skill->imm_vict, ch, NULL, victim, TO_VICT );
+            act( AT_HITME, skill->imm_vict, ch, nullptr, victim, TO_VICT );
             found = true;
          }
          if( skill->imm_room && skill->imm_room[0] != '\0' )
          {
-            act( AT_ACTION, skill->imm_room, ch, NULL, victim, TO_NOTVICT );
+            act( AT_ACTION, skill->imm_room, ch, nullptr, victim, TO_NOTVICT );
             found = true;
          }
          if( found )
@@ -3702,8 +3702,8 @@ ch_ret multi_hit( char_data * ch, char_data * victim, int dt )
     */
    if( ch->CAN_PKILL(  ) && victim->CAN_PKILL(  ) )
    {
-      ch->add_timer( TIMER_RECENTFIGHT, 11, NULL, 0 );
-      victim->add_timer( TIMER_RECENTFIGHT, 11, NULL, 0 );
+      ch->add_timer( TIMER_RECENTFIGHT, 11, nullptr, 0 );
+      victim->add_timer( TIMER_RECENTFIGHT, 11, nullptr, 0 );
    }
 
    if( ch->isnpc(  ) )
@@ -3838,7 +3838,7 @@ CMDF( do_assist )
 
    if( ch->has_aflag( AFF_CHARM ) && ch->master == victim )
    {
-      act( AT_PLAIN, "$N is your beloved master.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N is your beloved master.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -3901,7 +3901,7 @@ CMDF( do_kill )
 
    if( ch->has_aflag( AFF_CHARM ) && ch->master == victim )
    {
-      act( AT_PLAIN, "$N is your beloved master.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N is your beloved master.", ch, nullptr, victim, TO_CHAR );
       return;
    }
    if( ch->position > POS_SITTING && ch->position < POS_STANDING )
@@ -3996,9 +3996,9 @@ CMDF( do_flee )
             continue;
       }
       ch->in_room = was_in;
-      act( AT_FLEE, "$n flees head over heels!", ch, NULL, NULL, TO_ROOM );
+      act( AT_FLEE, "$n flees head over heels!", ch, nullptr, nullptr, TO_ROOM );
       ch->in_room = now_in;
-      act( AT_FLEE, "$n glances around for signs of pursuit.", ch, NULL, NULL, TO_ROOM );
+      act( AT_FLEE, "$n glances around for signs of pursuit.", ch, nullptr, nullptr, TO_ROOM );
       if( !ch->isnpc(  ) )
       {
          char_data *wf = ch->who_fighting(  );
@@ -4011,16 +4011,16 @@ CMDF( do_flee )
          if( ( number_percent(  ) + fchance ) < ch->pcdata->learned[gsn_retreat] )
          {
             ch->in_room = was_in;
-            act( AT_FLEE, "You skillfuly retreat from combat.", ch, NULL, NULL, TO_CHAR );
+            act( AT_FLEE, "You skillfuly retreat from combat.", ch, nullptr, nullptr, TO_CHAR );
             ch->in_room = now_in;
-            act( AT_FLEE, "$n skillfully retreats from combat.", ch, NULL, NULL, TO_ROOM );
+            act( AT_FLEE, "$n skillfully retreats from combat.", ch, nullptr, nullptr, TO_ROOM );
          }
          else
          {
             if( ch->level < LEVEL_AVATAR )
-               act_printf( AT_FLEE, ch, NULL, NULL, TO_CHAR, "You flee head over heels from combat, losing %.0f experience.", los );
+               act_printf( AT_FLEE, ch, nullptr, nullptr, TO_CHAR, "You flee head over heels from combat, losing %.0f experience.", los );
             else
-               act( AT_FLEE, "You flee head over heels from combat!", ch, NULL, NULL, TO_CHAR );
+               act( AT_FLEE, "You flee head over heels from combat!", ch, nullptr, nullptr, TO_CHAR );
             ch->gain_exp( 0 - los );
             if( ch->level >= skill_table[gsn_retreat]->skill_level[ch->Class] )
                ch->learn_from_failure( gsn_retreat );
@@ -4052,9 +4052,9 @@ CMDF( do_flee )
    }
    los = ( exp_level( ch->level + 1 ) - exp_level( ch->level ) ) * 0.01;
    if( ch->level < LEVEL_AVATAR )
-      act_printf( AT_FLEE, ch, NULL, NULL, TO_CHAR, "You attempt to flee from combat, losing %.0f experience.\r\n", los );
+      act_printf( AT_FLEE, ch, nullptr, nullptr, TO_CHAR, "You attempt to flee from combat, losing %.0f experience.\r\n", los );
    else
-      act( AT_FLEE, "You attempt to flee from combat, but can't escape!", ch, NULL, NULL, TO_CHAR );
+      act( AT_FLEE, "You attempt to flee from combat, but can't escape!", ch, nullptr, nullptr, TO_CHAR );
    ch->gain_exp( 0 - los );
    if( ch->level >= skill_table[gsn_retreat]->skill_level[ch->Class] )
       ch->learn_from_failure( gsn_retreat );

@@ -213,7 +213,7 @@ void shutdown_mud( const string & reason )
 {
    FILE *fp;
 
-   if( ( fp = fopen( SHUTDOWN_FILE, "a" ) ) != NULL )
+   if( ( fp = fopen( SHUTDOWN_FILE, "a" ) ) != nullptr )
    {
       fprintf( fp, "%s\n", reason.c_str(  ) );
       FCLOSE( fp );
@@ -690,7 +690,7 @@ char *fread_string( FILE * fp )
    mudstrlcpy( buf, fread_flagstring( fp ), MSL );
 
    if( !str_cmp( buf, "" ) )
-      return NULL;
+      return nullptr;
    return STRALLOC( buf );
 }
 
@@ -897,7 +897,7 @@ void boot_log( const char *str, ... )
    va_end( param );
    log_string( buf );
 
-   if( ( fp = fopen( BOOTLOG_FILE, "a" ) ) != NULL )
+   if( ( fp = fopen( BOOTLOG_FILE, "a" ) ) != nullptr )
    {
       fprintf( fp, "%s\n", buf );
       FCLOSE( fp );
@@ -1222,7 +1222,7 @@ bool load_systemdata( void )
    found = false;
    snprintf( filename, 256, "%ssysdata.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( filename, "r" ) ) != nullptr )
    {
       found = true;
       for( ;; )
@@ -1762,7 +1762,7 @@ void boot_db( bool fCopyOver )
    short wear = 0;
    short x;
 
-   fpArea = NULL;
+   fpArea = nullptr;
    show_hash( 32 );
    unlink( BOOTLOG_FILE );
    boot_log( "%s", "---------------------[ Boot Log ]--------------------" );
@@ -1843,7 +1843,7 @@ void boot_db( bool fCopyOver )
     * Open up a handle to the executable's symbol table for later use
     * when working with commands
     */
-   sysdata->dlHandle = dlopen( NULL, RTLD_NOW );
+   sysdata->dlHandle = dlopen( nullptr, RTLD_NOW );
    if( !sysdata->dlHandle )
    {
       log_printf( "%s: Error opening local system executable as handle, please check compile flags.", __func__ );
@@ -1857,7 +1857,7 @@ void boot_db( bool fCopyOver )
 #if !defined(__CYGWIN__) && defined(SQL)
    log_string( "Initializing MySQL support..." );
    init_mysql(  );
-   add_event( 1800, ev_mysql_ping, NULL );
+   add_event( 1800, ev_mysql_ping, nullptr );
 #endif
 
    char lbuf[MSL];
@@ -1943,15 +1943,15 @@ void boot_db( bool fCopyOver )
    mob_act_list.clear(  );
    cur_qobjs = 0;
    cur_qchars = 0;
-   extracted_obj_queue = NULL;
-   extracted_char_queue = NULL;
-   quitting_char = NULL;
-   loading_char = NULL;
-   saving_char = NULL;
+   extracted_obj_queue = nullptr;
+   extracted_char_queue = nullptr;
+   quitting_char = nullptr;
+   loading_char = nullptr;
+   saving_char = nullptr;
    last_pkroom = 1;
 
    auction = new auction_data;
-   auction->item = NULL;
+   auction->item = nullptr;
 
    weath_unit = 10;
    rand_factor = 2;
@@ -1961,7 +1961,7 @@ void boot_db( bool fCopyOver )
 
    for( wear = 0; wear < MAX_WEAR; ++wear )
       for( x = 0; x < MAX_LAYERS; ++x )
-         save_equipment[wear][x] = NULL;
+         save_equipment[wear][x] = nullptr;
 
    /*
     * Init random number generator.
@@ -2182,7 +2182,7 @@ void boot_db( bool fCopyOver )
    init_chess(  );
 
    if( sysdata->webwho > 0 )
-      add_event( sysdata->webwho, ev_webwho_refresh, NULL );
+      add_event( sysdata->webwho, ev_webwho_refresh, nullptr );
    web_arealist(  );
 
    /*
@@ -2191,11 +2191,11 @@ void boot_db( bool fCopyOver )
    time_t ptime = new_pfile_time_t - current_time;
    if( ptime < 1 )
       ptime = 1;
-   add_event( ptime, ev_pfile_check, NULL );
+   add_event( ptime, ev_pfile_check, nullptr );
 
-   add_event( 86400, ev_board_check, NULL );
+   add_event( 86400, ev_board_check, nullptr );
 
-   add_event( 1, ev_dns_check, NULL );
+   add_event( 1, ev_dns_check, nullptr );
 
    log_string( "Database bootup completed." );
 }
@@ -2339,7 +2339,7 @@ void show_file( char_data * ch, const string & filename )
    char buf[MSL];
    int num = 0;
 
-   if( ( fp = fopen( filename.c_str(  ), "r" ) ) != NULL )
+   if( ( fp = fopen( filename.c_str(  ), "r" ) ) != nullptr )
    {
       ch->pager( "\r\n" );
       while( !feof( fp ) )
@@ -2437,7 +2437,7 @@ const char *demangle( const char *symbol )
    // First, try to demangle a c++ name
    if( sscanf( symbol, "%*[^(]%*[^_]%127[^)+]", temp ) == 1 )
    {
-      if( ( demangled = abi::__cxa_demangle( temp, NULL, &size, &status ) ) != NULL )
+      if( ( demangled = abi::__cxa_demangle( temp, nullptr, &size, &status ) ) != nullptr )
       {
          mudstrlcpy( temp, demangled, 128 );
          free( demangled );
@@ -2470,7 +2470,7 @@ void bug( const char *str, ... )
    }
    log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, buf );
 
-   if( fpArea != NULL )
+   if( fpArea != nullptr )
    {
       int iLine;
 
@@ -2519,7 +2519,7 @@ void log_string_plus( short log_type, short level, const string & str )
    char *strtime;
    string newstr = str;
 
-   gettimeofday( &last_time, NULL );
+   gettimeofday( &last_time, nullptr );
    curtime = last_time.tv_sec;
 
    strtime = c_time( curtime, -1 );
@@ -2606,7 +2606,7 @@ CMDF( do_dump )
       {
          mob_index *mob;
 
-         if( ( mob = get_mob_index( counter ) ) != NULL )
+         if( ( mob = get_mob_index( counter ) ) != nullptr )
          {
             fprintf( fp, "VNUM:  %d\n", mob->vnum );
             fprintf( fp, "S_DESC:  %s\n", mob->short_descr );
@@ -2639,7 +2639,7 @@ CMDF( do_dump )
       {
          room_index *room;
 
-         if( ( room = get_room_index( counter ) ) != NULL )
+         if( ( room = get_room_index( counter ) ) != nullptr )
          {
             fprintf( fp, "VNUM:  %d\n", room->vnum );
             fprintf( fp, "NAME:  %s\n", room->name );
@@ -2661,7 +2661,7 @@ CMDF( do_dump )
       {
          obj_index *obj;
 
-         if( ( obj = get_obj_index( counter ) ) != NULL )
+         if( ( obj = get_obj_index( counter ) ) != nullptr )
          {
             fprintf( fp, "VNUM: %d\n", obj->vnum );
             fprintf( fp, "KEYWORDS: %s\n", obj->name );

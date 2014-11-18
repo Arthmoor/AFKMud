@@ -147,7 +147,7 @@ char *str_dup( const char *str )
    int len;
 
    if( !str )
-      return NULL;
+      return nullptr;
 
    len = strlen( str ) + 1;
 
@@ -166,7 +166,7 @@ char *str_dup( const char *str )
    static char *ret;
 
    if( !str )
-      return NULL;
+      return nullptr;
 
    ret = new char[strlen( str ) + 1];
    mudstrlcpy( ret, str, strlen( str ) + 1 );
@@ -793,7 +793,7 @@ const char *aoran( const string & str )
 
    if( str.empty(  ) )
    {
-      bug( "%s: NULL str", __func__ );
+      bug( "%s: nullptr str", __func__ );
       return "";
    }
 
@@ -1068,8 +1068,8 @@ void char_data::editor_desc_printf( const char *desc_fmt, ... )
 void char_data::stop_editing(  )
 {
    deleteptr( pcdata->editor );
-   pcdata->dest_buf = NULL;
-   pcdata->spare_ptr = NULL;
+   pcdata->dest_buf = nullptr;
+   pcdata->spare_ptr = nullptr;
    substate = SUB_NONE;
 
    if( !desc )
@@ -1272,7 +1272,7 @@ char *char_data::copy_buffer( bool hash )
    {
       if( buf[0] != '\0' )
          return STRALLOC( buf );
-      return NULL;
+      return nullptr;
    }
    return str_dup( buf );
 }
@@ -1577,8 +1577,8 @@ void char_data::edit_buffer( string & argument )
          substate = SUB_EDIT_ABORT;
          deleteptr( pcdata->editor );
          print( "Done.\r\n" );
-         pcdata->dest_buf = NULL;
-         pcdata->spare_ptr = NULL;
+         pcdata->dest_buf = nullptr;
+         pcdata->spare_ptr = nullptr;
          ( *last_cmd ) ( this, "" );
          return;
       }

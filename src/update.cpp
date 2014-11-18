@@ -307,14 +307,14 @@ void gain_condition( char_data * ch, int iCond, int value )
       {
          case COND_FULL:
             ch->print( "&[hungry]You are STARVING!\r\n" );
-            act( AT_HUNGRY, "$n is starved half to death!", ch, NULL, NULL, TO_ROOM );
+            act( AT_HUNGRY, "$n is starved half to death!", ch, nullptr, nullptr, TO_ROOM );
             if( number_bits( 1 ) == 0 )
                ch->worsen_mental_state( 1 );
             break;
 
          case COND_THIRST:
             ch->print( "&[thirsty]You are DYING of THIRST!\r\n" );
-            act( AT_THIRSTY, "$n is dying of thirst!", ch, NULL, NULL, TO_ROOM );
+            act( AT_THIRSTY, "$n is dying of thirst!", ch, nullptr, nullptr, TO_ROOM );
             if( number_bits( 1 ) == 0 )
                ch->worsen_mental_state( 1 );
             break;
@@ -344,14 +344,14 @@ void gain_condition( char_data * ch, int iCond, int value )
 
          case COND_FULL:
             ch->print( "&[hungry]You are really hungry.\r\n" );
-            act( AT_HUNGRY, "You can hear $n's stomach growling.", ch, NULL, NULL, TO_ROOM );
+            act( AT_HUNGRY, "You can hear $n's stomach growling.", ch, nullptr, nullptr, TO_ROOM );
             if( number_bits( 1 ) == 0 )
                ch->worsen_mental_state( 1 );
             break;
 
          case COND_THIRST:
             ch->print( "&[thirsty]You are really thirsty.\r\n" );
-            act( AT_THIRSTY, "$n looks a little parched.", ch, NULL, NULL, TO_ROOM );
+            act( AT_THIRSTY, "$n looks a little parched.", ch, nullptr, nullptr, TO_ROOM );
             if( number_bits( 1 ) == 0 )
                ch->worsen_mental_state( 1 );
             break;
@@ -427,7 +427,7 @@ void drunk_randoms( char_data * ch )
    else if( drunk > ( 10 + ( ch->get_curr_con(  ) / 5 ) ) && number_percent(  ) < ( 2 * drunk / 18 ) )
    {
       list < char_data * >::iterator ich;
-      char_data *rvch = NULL;
+      char_data *rvch = nullptr;
 
       for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
          if( number_percent(  ) < 10 )
@@ -570,7 +570,7 @@ void mobile_update( void )
 
       if( !ch->in_room )
       {
-         log_printf( "%s: ch in NULL room - attempting limbo transfer", __func__ );
+         log_printf( "%s: ch in nullptr room - attempting limbo transfer", __func__ );
          if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
             log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          continue;
@@ -629,7 +629,7 @@ void mobile_update( void )
             if( !ch->has_aflag( AFF_CHARM ) )
             {
                if( !ch->in_room->people.empty(  ) )
-                  act( AT_MAGIC, "$n returns to the dust from whence $e came.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_MAGIC, "$n returns to the dust from whence $e came.", ch, nullptr, nullptr, TO_ROOM );
                if( ch->isnpc(  ) )  /* Guard against purging switched? */
                   ch->extract( true );
                continue;
@@ -644,7 +644,7 @@ void mobile_update( void )
             if( !ch->has_aflag( AFF_CHARM ) )
             {
                if( !ch->in_room->people.empty(  ) )
-                  act( AT_MAGIC, "$n dashes back into the brush.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_MAGIC, "$n dashes back into the brush.", ch, nullptr, nullptr, TO_ROOM );
                if( ch->isnpc(  ) )
                   ch->extract( true );
                continue;
@@ -664,7 +664,7 @@ void mobile_update( void )
                else
                {
                   if( !ch->in_room->people.empty(  ) )
-                     act( AT_MAGIC, "$n suddenly bolts and gallops away.", ch, NULL, NULL, TO_ROOM );
+                     act( AT_MAGIC, "$n suddenly bolts and gallops away.", ch, nullptr, nullptr, TO_ROOM );
                }
                if( ch->isnpc(  ) )
                   ch->extract( true );
@@ -675,7 +675,7 @@ void mobile_update( void )
             if( !ch->has_aflag( AFF_CHARM ) )
             {
                if( !ch->in_room->people.empty(  ) )
-                  act( AT_MAGIC, "The magic binding $n to this plane dissipates and $e vanishes.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_MAGIC, "The magic binding $n to this plane dissipates and $e vanishes.", ch, nullptr, nullptr, TO_ROOM );
                if( ch->isnpc(  ) )
                   ch->extract( true );
                continue;
@@ -785,7 +785,7 @@ void mobile_update( void )
        */
       if( ch->has_actflag( ACT_SCAVENGER ) && !ch->in_room->objects.empty(  ) && number_bits( 2 ) == 0 )
       {
-         obj_data *obj_best = NULL;
+         obj_data *obj_best = nullptr;
          int max = 1;
 
          list < obj_data * >::iterator iobj;
@@ -806,7 +806,7 @@ void mobile_update( void )
          {
             obj_best->from_room(  );
             obj_best->to_char( ch );
-            act( AT_ACTION, "$n gets $p.", ch, obj_best, NULL, TO_ROOM );
+            act( AT_ACTION, "$n gets $p.", ch, obj_best, nullptr, TO_ROOM );
          }
       }
 
@@ -829,35 +829,35 @@ void mobile_update( void )
                   break;
                case DIR_NORTH:
                   if( map_wander( ch, wmap, x, y - 1, sector ) )
-                     move_char( ch, NULL, 0, DIR_NORTH, false );
+                     move_char( ch, nullptr, 0, DIR_NORTH, false );
                   break;
                case DIR_NORTHEAST:
                   if( map_wander( ch, wmap, x + 1, y - 1, sector ) )
-                     move_char( ch, NULL, 0, DIR_NORTHEAST, false );
+                     move_char( ch, nullptr, 0, DIR_NORTHEAST, false );
                   break;
                case DIR_EAST:
                   if( map_wander( ch, wmap, x + 1, y, sector ) )
-                     move_char( ch, NULL, 0, DIR_EAST, false );
+                     move_char( ch, nullptr, 0, DIR_EAST, false );
                   break;
                case DIR_SOUTHEAST:
                   if( map_wander( ch, wmap, x + 1, y + 1, sector ) )
-                     move_char( ch, NULL, 0, DIR_SOUTHEAST, false );
+                     move_char( ch, nullptr, 0, DIR_SOUTHEAST, false );
                   break;
                case DIR_SOUTH:
                   if( map_wander( ch, wmap, x, y + 1, sector ) )
-                     move_char( ch, NULL, 0, DIR_SOUTH, false );
+                     move_char( ch, nullptr, 0, DIR_SOUTH, false );
                   break;
                case DIR_SOUTHWEST:
                   if( map_wander( ch, wmap, x - 1, y + 1, sector ) )
-                     move_char( ch, NULL, 0, DIR_SOUTHWEST, false );
+                     move_char( ch, nullptr, 0, DIR_SOUTHWEST, false );
                   break;
                case DIR_WEST:
                   if( map_wander( ch, wmap, x - 1, y, sector ) )
-                     move_char( ch, NULL, 0, DIR_WEST, false );
+                     move_char( ch, nullptr, 0, DIR_WEST, false );
                   break;
                case DIR_NORTHWEST:
                   if( map_wander( ch, wmap, x - 1, y - 1, sector ) )
-                     move_char( ch, NULL, 0, DIR_NORTHWEST, false );
+                     move_char( ch, nullptr, 0, DIR_NORTHWEST, false );
                   break;
             }
          }
@@ -870,7 +870,7 @@ void mobile_update( void )
        * Update hunt_vic also if any changes are made here 
        */
       if( !ch->has_actflag( ACT_SENTINEL )
-          && !ch->has_actflag( ACT_PROTOTYPE ) && ( door = number_bits( 5 ) ) <= 9 && ( pexit = ch->in_room->get_exit( door ) ) != NULL && pexit->to_room
+          && !ch->has_actflag( ACT_PROTOTYPE ) && ( door = number_bits( 5 ) ) <= 9 && ( pexit = ch->in_room->get_exit( door ) ) != nullptr && pexit->to_room
           /*
            * && !IS_EXIT_FLAG( pexit, EX_CLOSED ) - Test to see if mobs will open doors like this. 
            */
@@ -912,7 +912,7 @@ void mobile_update( void )
        */
       if( ch->hit < ch->max_hit / 2
           && ( door = number_bits( 4 ) ) <= 9
-          && ( pexit = ch->in_room->get_exit( door ) ) != NULL
+          && ( pexit = ch->in_room->get_exit( door ) ) != nullptr
           && pexit->to_room && !IS_EXIT_FLAG( pexit, EX_CLOSED ) && !IS_EXIT_FLAG( pexit, EX_NOMOB ) && !IS_EXIT_FLAG( pexit, EX_WINDOW )
           /*
            * Keep em from wandering through my walls, Marcus 
@@ -1024,7 +1024,7 @@ void char_calendar_update( void )
 void char_update( void )
 {
    list < char_data * >::iterator ich;
-   char_data *ch_save = NULL;
+   char_data *ch_save = nullptr;
    short save_count = 0;
 
    for( ich = charlist.begin(  ); ich != charlist.end(  ); )
@@ -1069,7 +1069,7 @@ void char_update( void )
       if( !ch->isnpc(  ) && ( !ch->desc || ch->desc->connected == CON_PLAYING ) && current_time - ch->pcdata->save_time > ( sysdata->save_frequency * 60 ) )
          ch_save = ch;
       else
-         ch_save = NULL;
+         ch_save = nullptr;
 
       if( ch->position >= POS_STUNNED )
       {
@@ -1139,15 +1139,15 @@ void char_update( void )
       {
          obj_data *obj;
 
-         if( ( obj = ch->get_eq( WEAR_LIGHT ) ) != NULL && obj->item_type == ITEM_LIGHT && obj->value[2] > 0 )
+         if( ( obj = ch->get_eq( WEAR_LIGHT ) ) != nullptr && obj->item_type == ITEM_LIGHT && obj->value[2] > 0 )
          {
             if( --obj->value[2] == 0 && ch->in_room )
             {
                ch->in_room->light -= obj->count;
                if( ch->in_room->light < 0 )
                   ch->in_room->light = 0;
-               act( AT_ACTION, "$p goes out.", ch, obj, NULL, TO_ROOM );
-               act( AT_ACTION, "$p goes out.", ch, obj, NULL, TO_CHAR );
+               act( AT_ACTION, "$p goes out.", ch, obj, nullptr, TO_ROOM );
+               act( AT_ACTION, "$p goes out.", ch, obj, nullptr, TO_CHAR );
                obj->extract(  );
             }
          }
@@ -1158,7 +1158,7 @@ void char_update( void )
             {
                if( ch->fighting )
                   ch->stop_fighting( true );
-               act( AT_ACTION, "$n enters a state of suspended animation.", ch, NULL, NULL, TO_ROOM );
+               act( AT_ACTION, "$n enters a state of suspended animation.", ch, nullptr, nullptr, TO_ROOM );
                ch->print( "You have entered a state of suspended animation.\r\n" );
                ch->set_pcflag( PCFLAG_IDLING ); /* Samson 5-8-99 */
                if( IS_SAVE_FLAG( SV_IDLE ) )
@@ -1261,7 +1261,7 @@ void char_update( void )
          ch->print( "The gods have released you from hell as your sentence is up!\r\n" );
          interpret( ch, "look" );
          STRFREE( ch->pcdata->helled_by );
-         ch->pcdata->helled_by = NULL;
+         ch->pcdata->helled_by = nullptr;
          ch->pcdata->release_date = 0;
          ch->save(  );
       }
@@ -1271,34 +1271,34 @@ void char_update( void )
 
       if( !ch->char_died(  ) )
       {
-         obj_data *arrow = NULL;
+         obj_data *arrow = nullptr;
          int dam = 0;
 
-         if( ( arrow = ch->get_eq( WEAR_LODGE_RIB ) ) != NULL )
+         if( ( arrow = ch->get_eq( WEAR_LODGE_RIB ) ) != nullptr )
          {
             dam = number_range( ( 2 * arrow->value[1] ), ( 2 * arrow->value[2] ) );
-            act( AT_CARNAGE, "$n suffers damage from $p stuck in $s rib.", ch, arrow, NULL, TO_ROOM );
-            act( AT_CARNAGE, "You suffer damage from $p stuck in your rib.", ch, arrow, NULL, TO_CHAR );
+            act( AT_CARNAGE, "$n suffers damage from $p stuck in $s rib.", ch, arrow, nullptr, TO_ROOM );
+            act( AT_CARNAGE, "You suffer damage from $p stuck in your rib.", ch, arrow, nullptr, TO_CHAR );
             damage( ch, ch, dam, TYPE_UNDEFINED );
          }
          if( ch->char_died(  ) )
             continue;
 
-         if( ( arrow = ch->get_eq( WEAR_LODGE_LEG ) ) != NULL )
+         if( ( arrow = ch->get_eq( WEAR_LODGE_LEG ) ) != nullptr )
          {
             dam = number_range( arrow->value[1], arrow->value[2] );
-            act( AT_CARNAGE, "$n suffers damage from $p stuck in $s leg.", ch, arrow, NULL, TO_ROOM );
-            act( AT_CARNAGE, "You suffer damage from $p stuck in your leg.", ch, arrow, NULL, TO_CHAR );
+            act( AT_CARNAGE, "$n suffers damage from $p stuck in $s leg.", ch, arrow, nullptr, TO_ROOM );
+            act( AT_CARNAGE, "You suffer damage from $p stuck in your leg.", ch, arrow, nullptr, TO_CHAR );
             damage( ch, ch, dam, TYPE_UNDEFINED );
          }
          if( ch->char_died(  ) )
             continue;
 
-         if( ( arrow = ch->get_eq( WEAR_LODGE_ARM ) ) != NULL )
+         if( ( arrow = ch->get_eq( WEAR_LODGE_ARM ) ) != nullptr )
          {
             dam = number_range( arrow->value[1], arrow->value[2] );
-            act( AT_CARNAGE, "$n suffers damage from $p stuck in $s arm.", ch, arrow, NULL, TO_ROOM );
-            act( AT_CARNAGE, "You suffer damage from $p stuck in your arm.", ch, arrow, NULL, TO_CHAR );
+            act( AT_CARNAGE, "$n suffers damage from $p stuck in $s arm.", ch, arrow, nullptr, TO_ROOM );
+            act( AT_CARNAGE, "You suffer damage from $p stuck in your arm.", ch, arrow, nullptr, TO_CHAR );
             damage( ch, ch, dam, TYPE_UNDEFINED );
          }
          if( ch->char_died(  ) )
@@ -1314,8 +1314,8 @@ void char_update( void )
           */
          if( ch->has_aflag( AFF_POISON ) )
          {
-            act( AT_POISON, "$n shivers and suffers.", ch, NULL, NULL, TO_ROOM );
-            act( AT_POISON, "You shiver and suffer.", ch, NULL, NULL, TO_CHAR );
+            act( AT_POISON, "$n shivers and suffers.", ch, nullptr, nullptr, TO_ROOM );
+            act( AT_POISON, "You shiver and suffer.", ch, nullptr, nullptr, TO_CHAR );
             ch->mental_state = URANGE( 20, ch->mental_state + ( ch->isnpc(  )? 2 : 4 ), 100 );
             damage( ch, ch, 30, gsn_poison );
          }
@@ -1343,7 +1343,7 @@ void char_update( void )
                if( aff->location == APPLY_RECURRINGSPELL )
                {
                   found = true;
-                  if( IS_VALID_SN( aff->modifier ) && ( skill = skill_table[aff->modifier] ) != NULL && skill->type == SKILL_SPELL )
+                  if( IS_VALID_SN( aff->modifier ) && ( skill = skill_table[aff->modifier] ) != nullptr && skill->type == SKILL_SPELL )
                   {
                      if( ( *skill->spell_fun ) ( aff->modifier, ch->level, ch, ch ) == rCHAR_DIED || ch->char_died(  ) )
                      {
@@ -1366,35 +1366,35 @@ void char_update( void )
                default:
                case 3:
                   ch->print( "You feel feverish.\r\n" );
-                  act( AT_ACTION, "$n looks kind of out of it.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_ACTION, "$n looks kind of out of it.", ch, nullptr, nullptr, TO_ROOM );
                   break;
                case 4:
                   ch->print( "You do not feel well at all.\r\n" );
-                  act( AT_ACTION, "$n doesn't look too good.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_ACTION, "$n doesn't look too good.", ch, nullptr, nullptr, TO_ROOM );
                   break;
                case 5:
                   ch->print( "You need help!\r\n" );
-                  act( AT_ACTION, "$n looks like $e could use your help.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_ACTION, "$n looks like $e could use your help.", ch, nullptr, nullptr, TO_ROOM );
                   break;
                case 6:
                   ch->print( "Seekest thou a cleric.\r\n" );
-                  act( AT_ACTION, "Someone should fetch a healer for $n.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_ACTION, "Someone should fetch a healer for $n.", ch, nullptr, nullptr, TO_ROOM );
                   break;
                case 7:
                   ch->print( "You feel reality slipping away...\r\n" );
-                  act( AT_ACTION, "$n doesn't appear to be aware of what's going on.", ch, NULL, NULL, TO_ROOM );
+                  act( AT_ACTION, "$n doesn't appear to be aware of what's going on.", ch, nullptr, nullptr, TO_ROOM );
                   break;
                case 8:
                   ch->print( "You begin to understand... everything.\r\n" );
-                  act( AT_ACTION, "$n starts ranting like a madman!", ch, NULL, NULL, TO_ROOM );
+                  act( AT_ACTION, "$n starts ranting like a madman!", ch, nullptr, nullptr, TO_ROOM );
                   break;
                case 9:
                   ch->print( "You are ONE with the universe.\r\n" );
-                  act( AT_ACTION, "$n is ranting on about 'the answer', 'ONE' and other mumbo-jumbo...", ch, NULL, NULL, TO_ROOM );
+                  act( AT_ACTION, "$n is ranting on about 'the answer', 'ONE' and other mumbo-jumbo...", ch, nullptr, nullptr, TO_ROOM );
                   break;
                case 10:
                   ch->print( "You feel the end is near.\r\n" );
-                  act( AT_ACTION, "$n is muttering and ranting in tongues...", ch, NULL, NULL, TO_ROOM );
+                  act( AT_ACTION, "$n is muttering and ranting in tongues...", ch, nullptr, nullptr, TO_ROOM );
                   break;
             }
          }
@@ -1497,7 +1497,7 @@ void obj_update( void )
 
       if( obj->item_type == ITEM_LIGHT )
       {
-         char_data *tch = NULL;
+         char_data *tch = nullptr;
 
          if( ( tch = obj->carried_by ) )
          {
@@ -1513,8 +1513,8 @@ void obj_update( void )
                   if( tch->in_room->light < 0 )
                      tch->in_room->light = 0;
 
-                  act( AT_ACTION, "$p goes out.", tch, obj, NULL, TO_ROOM );
-                  act( AT_ACTION, "$p goes out.", tch, obj, NULL, TO_CHAR );
+                  act( AT_ACTION, "$p goes out.", tch, obj, nullptr, TO_ROOM );
+                  act( AT_ACTION, "$p goes out.", tch, obj, nullptr, TO_CHAR );
 
                   obj->extract( );
                   continue;
@@ -1533,8 +1533,8 @@ void obj_update( void )
 
                   if( !obj->in_room->people.empty() )
                   {
-                     act( AT_ACTION, "$p goes out.", ( *obj->in_room->people.begin(  ) ), obj, NULL, TO_ROOM );
-                     act( AT_ACTION, "$p goes out.", ( *obj->in_room->people.begin(  ) ), obj, NULL, TO_CHAR );
+                     act( AT_ACTION, "$p goes out.", ( *obj->in_room->people.begin(  ) ), obj, nullptr, TO_ROOM );
+                     act( AT_ACTION, "$p goes out.", ( *obj->in_room->people.begin(  ) ), obj, nullptr, TO_CHAR );
                   }
 
                   obj->extract( );
@@ -1712,12 +1712,12 @@ void obj_update( void )
       }
 
       if( obj->carried_by )
-         act( AT_TEMP, message, obj->carried_by, obj, NULL, TO_CHAR );
+         act( AT_TEMP, message, obj->carried_by, obj, nullptr, TO_CHAR );
 
       else if( obj->in_room && !obj->in_room->people.empty(  ) && !obj->extra_flags.test( ITEM_BURIED ) )
       {
-         act( AT_TEMP, message, ( *obj->in_room->people.begin(  ) ), obj, NULL, TO_ROOM );
-         act( AT_TEMP, message, ( *obj->in_room->people.begin(  ) ), obj, NULL, TO_CHAR );
+         act( AT_TEMP, message, ( *obj->in_room->people.begin(  ) ), obj, nullptr, TO_ROOM );
+         act( AT_TEMP, message, ( *obj->in_room->people.begin(  ) ), obj, nullptr, TO_CHAR );
       }
 
       /*
@@ -1747,9 +1747,9 @@ void obj_update( void )
          else
          {
             if( obj->carried_by )
-               obj->empty( NULL, obj->carried_by->in_room );
+               obj->empty( nullptr, obj->carried_by->in_room );
             else if( obj->in_room )
-               obj->empty( NULL, obj->in_room );
+               obj->empty( nullptr, obj->in_room );
 
             write_corpse( obj, obj->short_descr + 14 );
          }
@@ -1776,7 +1776,7 @@ void obj_update( void )
       {
          // Dump contents from PC carried containers onto ground before extraction - Samson 2/4/05
          if( obj->carried_by && obj->carried_by->in_room && !obj->carried_by->isnpc(  ) )
-            obj->empty( NULL, obj->carried_by->in_room );
+            obj->empty( nullptr, obj->carried_by->in_room );
          obj->extract(  );
       }
    }
@@ -1863,7 +1863,7 @@ void char_check( void )
       if( ch->mount && ch->in_room != ch->mount->in_room )
       {
          ch->mount->unset_actflag( ACT_MOUNTED );
-         ch->mount = NULL;
+         ch->mount = nullptr;
          ch->position = POS_STANDING;
          ch->print( "No longer upon your mount, you fall to the ground...\r\nOUCH!\r\n" );
       }
@@ -2127,7 +2127,7 @@ void aggr_update( void )
     */
    for( ds = dlist.begin(  ); ds != dlist.end(  ); )
    {
-      char_data *wch = NULL;
+      char_data *wch = nullptr;
       descriptor_data *d = *ds;
       ++ds;
 
@@ -2143,7 +2143,7 @@ void aggr_update( void )
       list < char_data * >::iterator ich;
       for( ich = wch->in_room->people.begin(  ); ich != wch->in_room->people.end(  ); )
       {
-         char_data *victim = NULL;
+         char_data *victim = nullptr;
          int count = 0;
          char_data *ch = *ich;
          ++ich;
@@ -2206,7 +2206,7 @@ void aggr_update( void )
          {
             obj_data *obj;
 
-            if( !ch->mount && ( obj = ch->get_eq( WEAR_WIELD ) ) != NULL && ( obj->value[4] == WEP_DAGGER ) && !victim->fighting && victim->hit >= victim->max_hit )
+            if( !ch->mount && ( obj = ch->get_eq( WEAR_WIELD ) ) != nullptr && ( obj->value[4] == WEP_DAGGER ) && !victim->fighting && victim->hit >= victim->max_hit )
             {
                check_attacker( ch, victim );
                ch->WAIT_STATE( skill_table[gsn_backstab]->beats );
@@ -2248,7 +2248,7 @@ void mob_act_update(  )
             ++mal;
 
             if( tmp_act->obj && tmp_act->obj->extracted(  ) )
-               tmp_act->obj = NULL;
+               tmp_act->obj = nullptr;
             if( tmp_act->ch && !tmp_act->ch->char_died(  ) )
                mprog_wordlist_check( tmp_act->buf, pch, tmp_act->ch, tmp_act->obj, tmp_act->victim, tmp_act->target, ACT_PROG );
             pch->mpact.remove( tmp_act );
@@ -2300,7 +2300,7 @@ void adjust_vectors( weather_data * weather )
 
    if( !weather )
    {
-      bug( "%s: NULL weather data.", __func__ );
+      bug( "%s: nullptr weather data.", __func__ );
       return;
    }
 
@@ -2855,7 +2855,7 @@ void update_handler( void )
    {
       timechar->set_color( AT_PLAIN );
       timechar->print( "Starting update timer.\r\n" );
-      gettimeofday( &sttime, NULL );
+      gettimeofday( &sttime, nullptr );
    }
 
    if( --pulse_mobile <= 0 )
@@ -2920,11 +2920,11 @@ void update_handler( void )
 
    if( timechar )
    {
-      gettimeofday( &entime, NULL );
+      gettimeofday( &entime, nullptr );
       timechar->set_color( AT_PLAIN );
       timechar->print( "Update timing complete.\r\n" );
       subtract_times( &entime, &sttime );
       timechar->printf( "Timing took %ld.%ld seconds.\r\n", entime.tv_sec, entime.tv_usec );
-      timechar = NULL;
+      timechar = nullptr;
    }
 }

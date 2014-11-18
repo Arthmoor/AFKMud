@@ -158,7 +158,7 @@ void uphold_supermob( int *curr_serial, int serial, room_index ** supermob_room,
       else
       {
          if( !true_supermob_obj )
-            supermob_obj = NULL;
+            supermob_obj = nullptr;
          STRFREE( supermob->short_descr );
          supermob->short_descr = QUICKLINK( ( *supermob_room )->name );
          stralloc_printf( &supermob->chardesc, "Room #%d", ( *supermob_room )->vnum );
@@ -173,7 +173,7 @@ void uphold_supermob( int *curr_serial, int serial, room_index ** supermob_room,
  * Global variables to handle sleeping mud progs.
  * mpsleep snippet - Samson 6-1-99 
  */
-mpsleep_data *current_mpsleep = NULL;
+mpsleep_data *current_mpsleep = nullptr;
 list < mpsleep_data * >sleeplist;
 
 mpsleep_data::mpsleep_data(  )
@@ -433,8 +433,8 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
    int argc = 0;
    list < char_data * >::iterator ich;
    list < descriptor_data * >::iterator ds;
-   char_data *chkchar = NULL;
-   obj_data *chkobj = NULL;
+   char_data *chkchar = nullptr;
+   obj_data *chkobj = nullptr;
    int lhsvl, rhsvl = 0, lang;
 
    if( !*ifcheck )
@@ -1104,7 +1104,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          return ( chkchar->position == POS_MOUNTED );
 
       if( !str_cmp( chck, "ismorphed" ) )
-         return ( chkchar->morph != NULL ) ? true : false;
+         return ( chkchar->morph != nullptr ) ? true : false;
 
       if( !str_cmp( chck, "isgood" ) )
          return chkchar->IS_GOOD(  );
@@ -1136,7 +1136,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          return chkchar->has_aflag( AFF_FLYING );
 
       if( !str_cmp( chck, "isfollow" ) )
-         return ( chkchar->master != NULL && chkchar->master->in_room == chkchar->in_room ) ? true : false;
+         return ( chkchar->master != nullptr && chkchar->master->in_room == chkchar->in_room ) ? true : false;
 
       if( !str_cmp( chck, "isaffected" ) )
       {
@@ -1205,13 +1205,13 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          if( argc > 3 )
             flag = atoi( argv[3] );
 
-         if( ( p = strchr( argv[2], ':' ) ) != NULL )
+         if( ( p = strchr( argv[2], ':' ) ) != nullptr )
          {
             *p++ = '\0';
             vnum = atoi( p );
          }
 
-         if( ( vd = get_tag( chkchar, argv[2], vnum ) ) == NULL )
+         if( ( vd = get_tag( chkchar, argv[2], vnum ) ) == nullptr )
             return false;
 
          switch( vd->type )
@@ -1238,13 +1238,13 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          if( argc > 3 )
             vnum = atoi( argv[3] );
 
-         if( ( p = strchr( argv[2], ':' ) ) != NULL )
+         if( ( p = strchr( argv[2], ':' ) ) != nullptr )
          {
             *p++ = '\0';
             vnum = atoi( p );
          }
 
-         if( ( vd = get_tag( chkchar, argv[2], vnum ) ) == NULL )
+         if( ( vd = get_tag( chkchar, argv[2], vnum ) ) == nullptr )
             return false;
 
          if( !*opr && !*rval )
@@ -1645,7 +1645,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
 
    /*
     * The following checks depend on the fact that cval[1] can only contain
-    * one character, and that NULL checks were made previously.
+    * one character, and that nullptr checks were made previously.
     */
    if( !str_cmp( chck, "number" ) )
    {
@@ -2180,7 +2180,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
    static int serial;
    int curr_serial, ignorelevel = 0, rand_pick = 0;
    room_index *supermob_room;
-   char_data *rndm = NULL;
+   char_data *rndm = nullptr;
    obj_data *true_supermob_obj;
    bool rprog_oprog = ( mob == supermob );
    bool ifstate[MAX_IFS][DO_ELSE + 1];
@@ -2205,7 +2205,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
       true_supermob_obj = supermob_obj;
    }
    else
-      true_supermob_obj = NULL, supermob_room = NULL;
+      true_supermob_obj = nullptr, supermob_room = nullptr;
    curr_serial = serial;
 
    if( ++prog_nest > MAX_PROG_NEST )
@@ -2232,8 +2232,8 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
    /*
     * get a random visible player who is in the room with the mob.
     *
-    *  If there isn't a random player in the room, rndm stays NULL.
-    *  If you do a $r, $R, $j, or $k with rndm = NULL, you'll crash
+    *  If there isn't a random player in the room, rndm stays nullptr.
+    *  If you do a $r, $R, $j, or $k with rndm = nullptr, you'll crash
     *  in mprog_translate.
     *
     *  Adding appropriate error checking in mprog_translate.
@@ -2301,7 +2301,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          for( count2 = 0; count2 <= DO_ELSE; ++count2 )
             ifstate[count][count2] = current_mpsleep->ifstate[count][count2];
       }
-      current_mpsleep = NULL;
+      current_mpsleep = nullptr;
    }
 
    if( single_step )
@@ -3227,7 +3227,7 @@ void mprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
    {
       mprg = *mpg;
 
-      if( ( mprg->type == type ) && mprg->arglist != NULL && ( number_percent(  ) <= atoi( mprg->arglist ) ) )
+      if( ( mprg->type == type ) && mprg->arglist != nullptr && ( number_percent(  ) <= atoi( mprg->arglist ) ) )
       {
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
          if( type != GREET_PROG && type != ALL_GREET_PROG && type != LOGIN_PROG && type != VOID_PROG && type != GREET_IN_FIGHT_PROG )
@@ -3347,7 +3347,7 @@ bool mprog_keyword_trigger( const string & txt, char_data * actor )
          if( ( mprg->type = KEYWORD_PROG ) && ( !str_cmp( mprg->arglist, txt ) ) )
          {
             rset_supermob( actor->in_room );
-            mprog_driver( mprg->comlist, supermob, actor, NULL, NULL, NULL, false );
+            mprog_driver( mprg->comlist, supermob, actor, nullptr, nullptr, nullptr, false );
             release_supermob(  );
             rValue = true;
          }
@@ -3378,7 +3378,7 @@ bool mprog_keyword_trigger( const string & txt, char_data * actor )
 
             if( ( mprg->type == KEYWORD_PROG ) && ( !str_cmp( mprg->arglist, txt ) ) )
             {
-               mprog_driver( mprg->comlist, vmob, actor, NULL, NULL, NULL, false );
+               mprog_driver( mprg->comlist, vmob, actor, nullptr, nullptr, nullptr, false );
                rValue = true;
             }
          }
@@ -3397,7 +3397,7 @@ bool mprog_keyword_trigger( const string & txt, char_data * actor )
       if( HAS_PROG( vobj->pIndexData, KEYWORD_PROG ) )
       {
          list < mud_prog_data * >::iterator mpg;
-         char *buf = NULL;
+         char *buf = nullptr;
 
          for( mpg = vobj->pIndexData->mudprogs.begin(  ); mpg != vobj->pIndexData->mudprogs.end(  ); ++mpg )
          {
@@ -3428,7 +3428,7 @@ bool mprog_keyword_trigger( const string & txt, char_data * actor )
             if( !str_cmp( buf, txt ) )
             {
                set_supermob( vobj );
-               mprog_driver( mprg->comlist, supermob, actor, vobj, NULL, NULL, false );
+               mprog_driver( mprg->comlist, supermob, actor, vobj, nullptr, nullptr, false );
                release_supermob(  );
                rValue = true;
             }
@@ -3446,7 +3446,7 @@ bool mprog_keyword_trigger( const string & txt, char_data * actor )
       if( HAS_PROG( vobj->pIndexData, KEYWORD_PROG ) )
       {
          list < mud_prog_data * >::iterator mpg;
-         char *buf = NULL;
+         char *buf = nullptr;
 
          for( mpg = vobj->pIndexData->mudprogs.begin(  ); mpg != vobj->pIndexData->mudprogs.end(  ); ++mpg )
          {
@@ -3486,7 +3486,7 @@ bool mprog_keyword_trigger( const string & txt, char_data * actor )
             if( !str_cmp( buf, txt ) )
             {
                set_supermob( vobj );
-               mprog_driver( mprg->comlist, supermob, actor, vobj, NULL, NULL, false );
+               mprog_driver( mprg->comlist, supermob, actor, vobj, nullptr, nullptr, false );
                release_supermob(  );
                rValue = true;
             }
@@ -3499,7 +3499,7 @@ bool mprog_keyword_trigger( const string & txt, char_data * actor )
 void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
 {
    list < mud_prog_data * >::iterator mpg;
-   mud_prog_data *mprg, *tprg = NULL;
+   mud_prog_data *mprg, *tprg = nullptr;
    obj_data *obj;
 
    if( mob->isnpc(  ) && mob->can_see( ch, false ) && HAS_PROG( mob->pIndexData, BRIBE_PROG ) )
@@ -3538,7 +3538,7 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
       }
 
       if( tprg )
-         mprog_driver( tprg->comlist, mob, ch, obj, NULL, NULL, false );
+         mprog_driver( tprg->comlist, mob, ch, obj, nullptr, nullptr, false );
    }
 }
 
@@ -3547,7 +3547,7 @@ void mprog_death_trigger( char_data * killer, char_data * mob )
    if( mob->isnpc(  ) && killer != mob && HAS_PROG( mob->pIndexData, DEATH_PROG ) )
    {
       mob->position = POS_STANDING;
-      mprog_percent_check( mob, killer, NULL, NULL, NULL, DEATH_PROG );
+      mprog_percent_check( mob, killer, nullptr, nullptr, nullptr, DEATH_PROG );
       mob->position = POS_DEAD;
    }
 }
@@ -3569,7 +3569,7 @@ void mprog_login_trigger( char_data *ch )
          continue;
 
       if( HAS_PROG( vmob->pIndexData, LOGIN_PROG ) )
-         mprog_percent_check( vmob, ch, NULL, NULL, NULL, LOGIN_PROG );
+         mprog_percent_check( vmob, ch, nullptr, nullptr, nullptr, LOGIN_PROG );
    }
    return;
 }
@@ -3590,7 +3590,7 @@ void mprog_void_trigger( char_data *ch )
          continue;
 
       if( HAS_PROG( vmob->pIndexData, VOID_PROG ) )
-         mprog_percent_check( vmob, ch, NULL, NULL, NULL, VOID_PROG );
+         mprog_percent_check( vmob, ch, nullptr, nullptr, nullptr, VOID_PROG );
    }
    return;
 }
@@ -3598,13 +3598,13 @@ void mprog_void_trigger( char_data *ch )
 void mprog_entry_trigger( char_data * mob )
 {
    if( mob->isnpc(  ) && HAS_PROG( mob->pIndexData, ENTRY_PROG ) )
-      mprog_percent_check( mob, NULL, NULL, NULL, NULL, ENTRY_PROG );
+      mprog_percent_check( mob, nullptr, nullptr, nullptr, nullptr, ENTRY_PROG );
 }
 
 void mprog_fight_trigger( char_data * mob, char_data * ch )
 {
    if( mob->isnpc(  ) && HAS_PROG( mob->pIndexData, FIGHT_PROG ) )
-      mprog_percent_check( mob, ch, NULL, NULL, NULL, FIGHT_PROG );
+      mprog_percent_check( mob, ch, nullptr, nullptr, nullptr, FIGHT_PROG );
 }
 
 void mprog_give_trigger( char_data * mob, char_data * ch, obj_data * obj )
@@ -3630,7 +3630,7 @@ void mprog_give_trigger( char_data * mob, char_data * ch, obj_data * obj )
 
          if( mprg->type == GIVE_PROG && ( !str_cmp( obj->name, mprg->arglist ) || !str_cmp( "all", buf ) ) )
          {
-            mprog_driver( mprg->comlist, mob, ch, obj, NULL, NULL, false );
+            mprog_driver( mprg->comlist, mob, ch, obj, nullptr, nullptr, false );
             break;
          }
       }
@@ -3662,7 +3662,7 @@ void mprog_sell_trigger( char_data * mob, char_data * ch, obj_data * obj )
 
          if( mprg->type == SELL_PROG && ( ( s_vnum == obj->pIndexData->vnum ) || ( s_vnum == 0 ) ) )
          {
-            mprog_driver( mprg->comlist, mob, ch, obj, NULL, NULL, false );
+            mprog_driver( mprg->comlist, mob, ch, obj, nullptr, nullptr, false );
             break;
          }
       }
@@ -3681,7 +3681,7 @@ void mprog_tell_trigger( const string & txt, char_data * actor )
       {
          if( actor->isnpc(  ) && actor->pIndexData == vmob->pIndexData )
             continue;
-         mprog_wordlist_check( txt, vmob, actor, NULL, NULL, NULL, TELL_PROG );
+         mprog_wordlist_check( txt, vmob, actor, nullptr, nullptr, nullptr, TELL_PROG );
       }
    }
 }
@@ -3706,7 +3706,7 @@ void mprog_and_tell_trigger( const string & txt, char_data * actor )
          break;
 
       if( vmob->isnpc(  ) && HAS_PROG( vmob->pIndexData, TELL_AND_PROG ) )
-         mprog_and_wordlist_check( txt, vmob, actor, NULL, NULL, NULL, TELL_AND_PROG );
+         mprog_and_wordlist_check( txt, vmob, actor, nullptr, nullptr, nullptr, TELL_AND_PROG );
    }
 }
 
@@ -3722,7 +3722,7 @@ bool mprog_command_trigger( char_data * actor, const string & txt )
       {
          if( actor->isnpc(  ) && actor->pIndexData == vmob->pIndexData )
             continue;
-         if( mprog_wordlist_check( txt, vmob, actor, NULL, NULL, NULL, CMD_PROG ) )
+         if( mprog_wordlist_check( txt, vmob, actor, nullptr, nullptr, nullptr, CMD_PROG ) )
             return true;
       }
    }
@@ -3763,11 +3763,11 @@ void mprog_greet_trigger( char_data * ch )
          continue;
 
       if( vmob->fighting && HAS_PROG( vmob->pIndexData, GREET_IN_FIGHT_PROG ) )
-         mprog_percent_check( vmob, ch, NULL, NULL, NULL, GREET_IN_FIGHT_PROG );
+         mprog_percent_check( vmob, ch, nullptr, nullptr, nullptr, GREET_IN_FIGHT_PROG );
       else if( HAS_PROG( vmob->pIndexData, GREET_PROG ) )
-         mprog_percent_check( vmob, ch, NULL, NULL, NULL, GREET_PROG );
+         mprog_percent_check( vmob, ch, nullptr, nullptr, nullptr, GREET_PROG );
       else if( HAS_PROG( vmob->pIndexData, ALL_GREET_PROG ) )
-         mprog_percent_check( vmob, ch, NULL, NULL, NULL, ALL_GREET_PROG );
+         mprog_percent_check( vmob, ch, nullptr, nullptr, nullptr, ALL_GREET_PROG );
    }
 }
 
@@ -3784,7 +3784,7 @@ void mprog_hitprcnt_trigger( char_data * mob, char_data * ch )
 
          if( mprg->type == HITPRCNT_PROG && ( 100 * mob->hit / mob->max_hit ) < atoi( mprg->arglist ) )
          {
-            mprog_driver( mprg->comlist, mob, ch, NULL, NULL, NULL, false );
+            mprog_driver( mprg->comlist, mob, ch, nullptr, nullptr, nullptr, false );
             break;
          }
       }
@@ -3794,19 +3794,19 @@ void mprog_hitprcnt_trigger( char_data * mob, char_data * ch )
 void mprog_random_trigger( char_data * mob )
 {
    if( HAS_PROG( mob->pIndexData, RAND_PROG ) )
-      mprog_percent_check( mob, NULL, NULL, NULL, NULL, RAND_PROG );
+      mprog_percent_check( mob, nullptr, nullptr, nullptr, nullptr, RAND_PROG );
 }
 
 void mprog_time_trigger( char_data * mob )
 {
    if( HAS_PROG( mob->pIndexData, TIME_PROG ) )
-      mprog_time_check( mob, NULL, NULL, NULL, NULL, TIME_PROG );
+      mprog_time_check( mob, nullptr, nullptr, nullptr, nullptr, TIME_PROG );
 }
 
 void mprog_hour_trigger( char_data * mob )
 {
    if( HAS_PROG( mob->pIndexData, HOUR_PROG ) )
-      mprog_time_check( mob, NULL, NULL, NULL, NULL, HOUR_PROG );
+      mprog_time_check( mob, nullptr, nullptr, nullptr, nullptr, HOUR_PROG );
 }
 
 /* Added by Tarl 7-21-00 */
@@ -3831,7 +3831,7 @@ void mprog_and_speech_trigger( const string & txt, char_data * actor )
 
       if( vmob->isnpc(  ) && HAS_PROG( vmob->pIndexData, SPEECH_AND_PROG ) )
       {
-         mprog_and_wordlist_check( txt, vmob, actor, NULL, NULL, NULL, SPEECH_AND_PROG );
+         mprog_and_wordlist_check( txt, vmob, actor, nullptr, nullptr, nullptr, SPEECH_AND_PROG );
       }
    }
 }
@@ -3842,7 +3842,7 @@ void mprog_targetted_speech_trigger( const string & txt, char_data * actor, char
    {
       if( actor->isnpc(  ) && actor->pIndexData == victim->pIndexData )
          return;
-      mprog_wordlist_check( txt, victim, actor, NULL, NULL, NULL, SPEECH_PROG );
+      mprog_wordlist_check( txt, victim, actor, nullptr, nullptr, nullptr, SPEECH_PROG );
    }
 }
 
@@ -3867,7 +3867,7 @@ void mprog_speech_trigger( const string & txt, char_data * actor )
          break;
 
       if( vmob->isnpc(  ) && HAS_PROG( vmob->pIndexData, SPEECH_PROG ) )
-         mprog_wordlist_check( txt, vmob, actor, NULL, NULL, NULL, SPEECH_PROG );
+         mprog_wordlist_check( txt, vmob, actor, nullptr, nullptr, nullptr, SPEECH_PROG );
    }
 }
 
@@ -3883,7 +3883,7 @@ void mprog_script_trigger( char_data * mob )
          mprg = *mpg;
 
          if( mprg->type == SCRIPT_PROG && ( mprg->arglist[0] == '\0' || mob->mpscriptpos != 0 || atoi( mprg->arglist ) == time_info.hour ) )
-            mprog_driver( mprg->comlist, mob, NULL, NULL, NULL, NULL, true );
+            mprog_driver( mprg->comlist, mob, nullptr, nullptr, nullptr, nullptr, true );
       }
    }
 }
@@ -3904,7 +3904,7 @@ void oprog_script_trigger( obj_data * obj )
             if( mprg->arglist[0] == '\0' || obj->mpscriptpos != 0 || atoi( mprg->arglist ) == time_info.hour )
             {
                set_supermob( obj );
-               mprog_driver( mprg->comlist, supermob, NULL, NULL, NULL, NULL, true );
+               mprog_driver( mprg->comlist, supermob, nullptr, nullptr, nullptr, nullptr, true );
                obj->mpscriptpos = supermob->mpscriptpos;
                release_supermob(  );
             }
@@ -3925,7 +3925,7 @@ bool oprog_command_trigger( char_data * ch, const string & txt )
       obj_data *vobj = *iobj;
 
       if( HAS_PROG( vobj->pIndexData, CMD_PROG ) )
-         if( oprog_wordlist_check( txt, supermob, ch, vobj, NULL, NULL, CMD_PROG, vobj ) )
+         if( oprog_wordlist_check( txt, supermob, ch, vobj, nullptr, nullptr, CMD_PROG, vobj ) )
             return true;
    }
    return false;
@@ -3947,7 +3947,7 @@ void rprog_script_trigger( room_index * room )
             if( mprg->arglist[0] == '\0' || room->mpscriptpos != 0 || atoi( mprg->arglist ) == time_info.hour )
             {
                rset_supermob( room );
-               mprog_driver( mprg->comlist, supermob, NULL, NULL, NULL, NULL, true );
+               mprog_driver( mprg->comlist, supermob, nullptr, nullptr, nullptr, nullptr, true );
                room->mpscriptpos = supermob->mpscriptpos;
                release_supermob(  );
             }
@@ -3963,7 +3963,7 @@ bool rprog_command_trigger( char_data * ch, const string & txt )
       /*
        * supermob is set and released in rprog_wordlist_check 
        */
-      if( rprog_wordlist_check( txt, supermob, ch, NULL, NULL, NULL, CMD_PROG, ch->in_room ) )
+      if( rprog_wordlist_check( txt, supermob, ch, nullptr, nullptr, nullptr, CMD_PROG, ch->in_room ) )
          return true;
    }
    return false;
@@ -4008,7 +4008,7 @@ void set_supermob( obj_data * obj )
     */
    stralloc_printf( &supermob->chardesc, "Object #%d", obj->pIndexData->vnum );
 
-   if( room != NULL )
+   if( room != nullptr )
    {
       supermob->from_room(  );
       if( !supermob->to_room( room ) )
@@ -4025,7 +4025,7 @@ void set_supermob( obj_data * obj )
 
 void release_supermob(  )
 {
-   supermob_obj = NULL;
+   supermob_obj = nullptr;
    supermob->from_room(  );
    if( !supermob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -4078,7 +4078,7 @@ void oprog_greet_trigger( char_data * ch )
       if( HAS_PROG( vobj->pIndexData, GREET_PROG ) )
       {
          set_supermob( vobj );   /* not very efficient to do here */
-         oprog_percent_check( supermob, ch, vobj, NULL, NULL, GREET_PROG );
+         oprog_percent_check( supermob, ch, vobj, nullptr, nullptr, GREET_PROG );
          release_supermob(  );
       }
    }
@@ -4098,7 +4098,7 @@ void oprog_and_speech_trigger( const string & txt, char_data * ch )
          break;
 
       if( HAS_PROG( vobj->pIndexData, SPEECH_AND_PROG ) )
-         oprog_and_wordlist_check( txt, supermob, ch, vobj, NULL, NULL, SPEECH_AND_PROG, vobj );
+         oprog_and_wordlist_check( txt, supermob, ch, vobj, nullptr, nullptr, SPEECH_AND_PROG, vobj );
    }
 }
 
@@ -4116,7 +4116,7 @@ void oprog_speech_trigger( const string & txt, char_data * ch )
          break;
 
       if( HAS_PROG( vobj->pIndexData, SPEECH_PROG ) )
-         oprog_wordlist_check( txt, supermob, ch, vobj, NULL, NULL, SPEECH_PROG, vobj );
+         oprog_wordlist_check( txt, supermob, ch, vobj, nullptr, nullptr, SPEECH_PROG, vobj );
    }
 }
 
@@ -4130,7 +4130,7 @@ void oprog_random_trigger( obj_data * obj )
    if( HAS_PROG( obj->pIndexData, RAND_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, NULL, obj, NULL, NULL, RAND_PROG );
+      oprog_percent_check( supermob, nullptr, obj, nullptr, nullptr, RAND_PROG );
       release_supermob(  );
    }
 }
@@ -4144,7 +4144,7 @@ void oprog_wear_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, WEAR_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, WEAR_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, WEAR_PROG );
       release_supermob(  );
    }
 }
@@ -4161,10 +4161,10 @@ bool oprog_use_trigger( char_data * ch, obj_data * obj, char_data * vict, obj_da
          if( vict )
             executed = oprog_percent_check( supermob, ch, obj, vict, targ, USE_PROG );
          else
-            executed = oprog_percent_check( supermob, ch, obj, NULL, NULL, USE_PROG );
+            executed = oprog_percent_check( supermob, ch, obj, nullptr, nullptr, USE_PROG );
       }
       else
-         executed = oprog_percent_check( supermob, ch, obj, NULL, NULL, USE_PROG );
+         executed = oprog_percent_check( supermob, ch, obj, nullptr, nullptr, USE_PROG );
       release_supermob(  );
    }
    return executed;
@@ -4180,7 +4180,7 @@ void oprog_remove_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, REMOVE_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, REMOVE_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, REMOVE_PROG );
       release_supermob(  );
    }
 }
@@ -4193,7 +4193,7 @@ void oprog_sac_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, SAC_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, SAC_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, SAC_PROG );
       release_supermob(  );
    }
 }
@@ -4207,7 +4207,7 @@ void oprog_get_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, GET_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, GET_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, GET_PROG );
       release_supermob(  );
    }
 }
@@ -4220,7 +4220,7 @@ void oprog_damage_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, DAMAGE_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, DAMAGE_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, DAMAGE_PROG );
       release_supermob(  );
    }
 }
@@ -4233,7 +4233,7 @@ void oprog_repair_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, REPAIR_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, REPAIR_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, REPAIR_PROG );
       release_supermob(  );
    }
 }
@@ -4247,7 +4247,7 @@ void oprog_drop_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, DROP_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, DROP_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, DROP_PROG );
       release_supermob(  );
    }
 }
@@ -4260,7 +4260,7 @@ void oprog_examine_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, EXA_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, EXA_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, EXA_PROG );
       release_supermob(  );
    }
 }
@@ -4273,7 +4273,7 @@ void oprog_zap_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, ZAP_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, ZAP_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, ZAP_PROG );
       release_supermob(  );
    }
 }
@@ -4287,7 +4287,7 @@ void oprog_pull_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, PULL_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, PULL_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, PULL_PROG );
       release_supermob(  );
    }
 }
@@ -4301,7 +4301,7 @@ void oprog_push_trigger( char_data * ch, obj_data * obj )
    if( HAS_PROG( obj->pIndexData, PUSH_PROG ) )
    {
       set_supermob( obj );
-      oprog_percent_check( supermob, ch, obj, NULL, NULL, PUSH_PROG );
+      oprog_percent_check( supermob, ch, obj, nullptr, nullptr, PUSH_PROG );
       release_supermob(  );
    }
 }
@@ -4400,7 +4400,7 @@ void rprog_leave_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, LEAVE_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, LEAVE_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, LEAVE_PROG );
       release_supermob(  );
    }
 }
@@ -4411,7 +4411,7 @@ void rprog_login_trigger( char_data *ch )
    if( HAS_PROG( ch->in_room, LOGIN_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, LOGIN_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, LOGIN_PROG );
       release_supermob();
    }
 }
@@ -4421,7 +4421,7 @@ void rprog_void_trigger( char_data *ch )
    if( HAS_PROG( ch->in_room, VOID_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, VOID_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, VOID_PROG );
       release_supermob();
    }
 }
@@ -4431,7 +4431,7 @@ void rprog_enter_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, ENTER_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, ENTER_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, ENTER_PROG );
       release_supermob(  );
    }
 }
@@ -4441,7 +4441,7 @@ void rprog_sleep_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, SLEEP_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, SLEEP_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, SLEEP_PROG );
       release_supermob(  );
    }
 }
@@ -4451,7 +4451,7 @@ void rprog_rest_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, REST_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, REST_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, REST_PROG );
       release_supermob(  );
    }
 }
@@ -4461,7 +4461,7 @@ void rprog_rfight_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, RFIGHT_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, RFIGHT_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, RFIGHT_PROG );
       release_supermob(  );
    }
 }
@@ -4471,7 +4471,7 @@ void rprog_death_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, RDEATH_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, RDEATH_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, RDEATH_PROG );
       release_supermob(  );
    }
 }
@@ -4483,7 +4483,7 @@ void rprog_and_speech_trigger( const string & txt, char_data * ch )
       /*
        * supermob is set and released in rprog_wordlist_check 
        */
-      rprog_and_wordlist_check( txt, supermob, ch, NULL, NULL, NULL, SPEECH_AND_PROG, ch->in_room );
+      rprog_and_wordlist_check( txt, supermob, ch, nullptr, nullptr, nullptr, SPEECH_AND_PROG, ch->in_room );
    }
 }
 
@@ -4494,7 +4494,7 @@ void rprog_speech_trigger( const string & txt, char_data * ch )
       /*
        * supermob is set and released in rprog_wordlist_check 
        */
-      rprog_wordlist_check( txt, supermob, ch, NULL, NULL, NULL, SPEECH_PROG, ch->in_room );
+      rprog_wordlist_check( txt, supermob, ch, nullptr, nullptr, nullptr, SPEECH_PROG, ch->in_room );
    }
 }
 
@@ -4503,7 +4503,7 @@ void rprog_random_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, RAND_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, NULL, NULL, NULL, RAND_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, RAND_PROG );
       release_supermob(  );
    }
 }
@@ -4530,7 +4530,7 @@ void rprog_time_check( char_data * mob, char_data * actor, obj_data * obj, room_
       if( mprg->type == type && ( ( !mprg->triggered ) || ( mprg->type == HOUR_PROG ) ) )
       {
          mprg->triggered = true;
-         mprog_driver( mprg->comlist, mob, actor, obj, NULL, NULL, false );
+         mprog_driver( mprg->comlist, mob, actor, obj, nullptr, nullptr, false );
       }
    }
 }
@@ -4540,7 +4540,7 @@ void rprog_time_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, TIME_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_time_check( supermob, NULL, NULL, ch->in_room, TIME_PROG );
+      rprog_time_check( supermob, nullptr, nullptr, ch->in_room, TIME_PROG );
       release_supermob(  );
    }
 }
@@ -4550,7 +4550,7 @@ void rprog_hour_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, HOUR_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_time_check( supermob, NULL, NULL, ch->in_room, HOUR_PROG );
+      rprog_time_check( supermob, nullptr, nullptr, ch->in_room, HOUR_PROG );
       release_supermob(  );
    }
 }
@@ -4585,7 +4585,7 @@ void rprog_month_check( char_data * mob, char_data * actor, obj_data * obj, room
       mprg = *mpg;
 
       if( mprg->type == type && time_info.month == atoi( mprg->arglist ) )
-         mprog_driver( mprg->comlist, mob, actor, obj, NULL, NULL, false );
+         mprog_driver( mprg->comlist, mob, actor, obj, nullptr, nullptr, false );
    }
 }
 
@@ -4606,7 +4606,7 @@ void oprog_month_check( char_data * mob, char_data * actor, obj_data * obj, char
 void mprog_month_trigger( char_data * mob )
 {
    if( HAS_PROG( mob->pIndexData, MONTH_PROG ) )
-      mprog_month_check( mob, NULL, NULL, NULL, NULL, MONTH_PROG );
+      mprog_month_check( mob, nullptr, nullptr, nullptr, nullptr, MONTH_PROG );
 }
 
 void rprog_month_trigger( char_data * ch )
@@ -4614,7 +4614,7 @@ void rprog_month_trigger( char_data * ch )
    if( HAS_PROG( ch->in_room, MONTH_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_month_check( supermob, NULL, NULL, ch->in_room, MONTH_PROG );
+      rprog_month_check( supermob, nullptr, nullptr, ch->in_room, MONTH_PROG );
       release_supermob(  );
    }
 }
@@ -4624,7 +4624,7 @@ void oprog_month_trigger( obj_data * obj )
    if( HAS_PROG( obj->pIndexData, MONTH_PROG ) )
    {
       set_supermob( obj );
-      oprog_month_check( supermob, NULL, obj, NULL, NULL, MONTH_PROG );
+      oprog_month_check( supermob, nullptr, obj, nullptr, nullptr, MONTH_PROG );
       release_supermob(  );
    }
 }
@@ -4657,7 +4657,7 @@ void progbug( const string & str, char_data * mob )
        * was set to indicate the object or room, so we just need to show
        * the description in the bug message.
        */
-      bug( "%s, %s.", str.c_str(  ), mob->chardesc == NULL ? "(unknown)" : mob->chardesc );
+      bug( "%s, %s.", str.c_str(  ), mob->chardesc == nullptr ? "(unknown)" : mob->chardesc );
    }
    else
       bug( "%s, Mob #%d.", str.c_str(  ), vnum );
@@ -4693,7 +4693,7 @@ void room_act_update( void )
          mprog_act_list *mpact = *mal;
          ++mal;
 
-         if( mpact->ch != NULL && mpact->ch->in_room == room )
+         if( mpact->ch != nullptr && mpact->ch->in_room == room )
             rprog_wordlist_check( mpact->buf, supermob, mpact->ch, mpact->obj, mpact->victim, mpact->target, ACT_PROG, room );
          room->mpact.remove( mpact );
          deleteptr( mpact );

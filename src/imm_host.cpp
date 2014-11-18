@@ -122,7 +122,7 @@ immortal_host_log *fread_imm_host_log( FILE * fp )
                   return hlog;
 
                deleteptr( hlog );
-               return NULL;
+               return nullptr;
             }
             STDSKEY( "Log_Date", hlog->date );
             STDSKEY( "Log_Host", hlog->host );
@@ -134,7 +134,7 @@ immortal_host_log *fread_imm_host_log( FILE * fp )
 immortal_host *fread_imm_host( FILE * fp )
 {
    immortal_host *host = new immortal_host;
-   immortal_host_log *nlog = NULL;
+   immortal_host_log *nlog = nullptr;
    short dnum = 0;
 
    for( ;; )
@@ -194,7 +194,7 @@ immortal_host *fread_imm_host( FILE * fp )
                if( host->name.empty(  ) || host->domain[0].empty(  ) )
                {
                   deleteptr( host );
-                  return NULL;
+                  return nullptr;
                }
                return host;
             }
@@ -236,7 +236,7 @@ void load_imm_host( void )
 
       if( !str_cmp( word, "IMMORTAL" ) )
       {
-         immortal_host *host = NULL;
+         immortal_host *host = nullptr;
 
          if( !( host = fread_imm_host( fp ) ) )
          {
@@ -298,7 +298,7 @@ void save_imm_host( void )
 bool check_immortal_domain( char_data * ch, const string & lhost )
 {
    list < immortal_host * >::iterator ihost;
-   immortal_host *host = NULL;
+   immortal_host *host = nullptr;
    bool found = false;
 
    for( ihost = hostlist.begin(  ); ihost != hostlist.end(  ); ++ihost )
@@ -371,7 +371,7 @@ bool check_immortal_domain( char_data * ch, const string & lhost )
 
 CMDF( do_immhost )
 {
-   immortal_host *host = NULL;
+   immortal_host *host = nullptr;
    list < immortal_host * >::iterator ihost;
    list < immortal_host_log * >::iterator ilog;
    string arg, arg2;
@@ -488,7 +488,7 @@ CMDF( do_immhost )
 
    if( !str_cmp( arg, "removelog" ) )
    {
-      immortal_host_log *hlog = NULL;
+      immortal_host_log *hlog = nullptr;
 
       if( argument.empty(  ) || !is_number( argument ) )
       {

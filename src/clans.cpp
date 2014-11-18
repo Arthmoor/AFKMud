@@ -150,7 +150,7 @@ clan_data *get_clan( const string & name )
       if( !str_cmp( name, clan->name ) )
          return clan;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -214,7 +214,7 @@ void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
    if( ch->isnpc(  ) )
       return;
 
-   clan_data *clan = NULL;
+   clan_data *clan = nullptr;
    for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
       if( victim->pIndexData->vnum == clan->shopkeeper )
@@ -254,8 +254,8 @@ void free_clans( void )
 void delete_clan( char_data * ch, clan_data * clan )
 {
    list < char_data * >::iterator ich;
-   room_index *room = NULL;
-   mob_index *mob = NULL;
+   room_index *room = nullptr;
+   mob_index *mob = nullptr;
    char filename[256], storeroom[256], record[256];
    string clanname = clan->name;
 
@@ -273,7 +273,7 @@ void delete_clan( char_data * ch, clan_data * clan )
       if( vch->pcdata->clan == clan )
       {
          vch->pcdata->clan_name.clear(  );
-         vch->pcdata->clan = NULL;
+         vch->pcdata->clan = nullptr;
          vch->printf( "The %s known as &W%s&D has been destroyed by the gods!\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->name.c_str(  ) );
       }
    }
@@ -848,7 +848,7 @@ bool load_clan_file( const char *clanfile )
    found = false;
    snprintf( filename, 256, "%s%s", CLAN_DIR, clanfile );
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( filename, "r" ) ) != nullptr )
    {
       found = true;
       for( ;; )
@@ -891,13 +891,13 @@ bool load_clan_file( const char *clanfile )
 
       clanlist.push_back( clan );
 
-      if( clan->storeroom == 0 || ( storeroom = get_room_index( clan->storeroom ) ) == NULL )
+      if( clan->storeroom == 0 || ( storeroom = get_room_index( clan->storeroom ) ) == nullptr )
       {
          log_string( "Storeroom not found" );
          return found;
       }
       snprintf( filename, 256, "%s%s.vault", CLAN_DIR, clan->filename.c_str(  ) );
-      if( ( fp = fopen( filename, "r" ) ) != NULL )
+      if( ( fp = fopen( filename, "r" ) ) != nullptr )
       {
          log_string( "Loading clan storage room" );
          rset_supermob( storeroom );
@@ -973,13 +973,13 @@ void verify_clans( void )
 
       if( clan->leader.empty(  ) && clan->number1.empty(  ) && clan->number2.empty(  ) )
       {
-         delete_clan( NULL, clan );
+         delete_clan( nullptr, clan );
          continue;
       }
 
       if( clan->members < 1 )
       {
-         delete_clan( NULL, clan );
+         delete_clan( nullptr, clan );
          continue;
       }
 
@@ -1256,8 +1256,8 @@ CMDF( do_make )
       obj = obj->to_char( ch );
    else
       obj = obj->to_room( ch->in_room, ch );
-   act( AT_MAGIC, "$n makes $p!", ch, obj, NULL, TO_ROOM );
-   act( AT_MAGIC, "You make $p!", ch, obj, NULL, TO_CHAR );
+   act( AT_MAGIC, "$n makes $p!", ch, obj, nullptr, TO_ROOM );
+   act( AT_MAGIC, "You make $p!", ch, obj, nullptr, TO_CHAR );
 }
 
 CMDF( do_induct )
@@ -1357,7 +1357,7 @@ CMDF( do_induct )
 
       for( sn = 0; sn < num_skills; ++sn )
       {
-         if( skill_table[sn]->guild == clan->Class && skill_table[sn]->name != NULL )
+         if( skill_table[sn]->guild == clan->Class && skill_table[sn]->name != nullptr )
          {
             victim->pcdata->learned[sn] = victim->GET_ADEPT( sn );
             victim->printf( "%s instructs you in the ways of %s.\r\n", ch->name, skill_table[sn]->name );
@@ -1474,7 +1474,7 @@ CMDF( do_outcast )
       int sn;
 
       for( sn = 0; sn < num_skills; ++sn )
-         if( skill_table[sn]->guild == victim->pcdata->clan->Class && skill_table[sn]->name != NULL )
+         if( skill_table[sn]->guild == victim->pcdata->clan->Class && skill_table[sn]->name != nullptr )
          {
             victim->pcdata->learned[sn] = 0;
             victim->printf( "You forget the ways of %s.\r\n", skill_table[sn]->name );
@@ -1493,14 +1493,14 @@ CMDF( do_outcast )
       ch->pcdata->clan->number2.clear(  );
    if( !str_cmp( victim->name, ch->pcdata->clan->deity ) )
       ch->pcdata->clan->deity.clear(  );
-   victim->pcdata->clan = NULL;
+   victim->pcdata->clan = nullptr;
    victim->pcdata->clan_name.clear(  );
    act( AT_MAGIC, "You outcast $N from $t", ch, clan->name.c_str(  ), victim, TO_CHAR );
    act( AT_MAGIC, "$n outcasts $N from $t", ch, clan->name.c_str(  ), victim, TO_ROOM );
    if( victim->desc )
       act( AT_MAGIC, "$n outcasts you from $t", ch, clan->name.c_str(  ), victim, TO_VICT );
    else
-      add_loginmsg( victim->name, 6, NULL );
+      add_loginmsg( victim->name, 6, nullptr );
 
    echo_all_printf( ECHOTAR_PK, "&[guildtalk]%s has been outcast from %s!", victim->name, clan->name.c_str(  ) );
    remove_roster( clan, victim->name );
@@ -1585,7 +1585,7 @@ void pcsetclan( char_data * ch, string argument )
       }
 
       ch->pcdata->clan_name.clear(  );
-      ch->pcdata->clan = NULL;
+      ch->pcdata->clan = nullptr;
 
       list < char_data * >::iterator ich;
       for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
@@ -1595,7 +1595,7 @@ void pcsetclan( char_data * ch, string argument )
          if( vch->pcdata->clan == clan )
          {
             vch->pcdata->clan_name.clear(  );
-            vch->pcdata->clan = NULL;
+            vch->pcdata->clan = nullptr;
          }
       }
       echo_all_printf( ECHOTAR_ALL, "&[guildtalk]%s has dissolved %s!", ch->name, clan->name.c_str(  ) );
@@ -1935,7 +1935,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "shopkeeper" ) )
    {
-      mob_index *mob = NULL;
+      mob_index *mob = nullptr;
       int value = 0;
 
       if( atoi( argument.c_str(  ) ) != 0 )
@@ -1955,7 +1955,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "idmob" ) )
    {
-      mob_index *mob = NULL;
+      mob_index *mob = nullptr;
       int value = 0;
 
       if( atoi( argument.c_str(  ) ) != 0 )
@@ -1975,7 +1975,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "repair" ) )
    {
-      mob_index *mob = NULL;
+      mob_index *mob = nullptr;
       int value = 0;
 
       if( atoi( argument.c_str(  ) ) != 0 )
@@ -1995,7 +1995,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "forge" ) )
    {
-      mob_index *mob = NULL;
+      mob_index *mob = nullptr;
       int value = 0;
 
       if( atoi( argument.c_str(  ) ) != 0 )
@@ -2015,7 +2015,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "bank" ) )
    {
-      mob_index *mob = NULL;
+      mob_index *mob = nullptr;
       int value = 0;
 
       if( atoi( argument.c_str(  ) ) != 0 )
@@ -2035,7 +2035,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "inn" ) )
    {
-      room_index *room = NULL;
+      room_index *room = nullptr;
       int value = 0;
 
       if( atoi( argument.c_str(  ) ) != 0 )
@@ -2089,7 +2089,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "name" ) )
    {
-      clan_data *uclan = NULL;
+      clan_data *uclan = nullptr;
 
       if( argument.empty(  ) )
       {
@@ -2578,7 +2578,7 @@ CMDF( do_ident )
    }
 
    bool idmob = false;
-   char_data *mob = NULL;
+   char_data *mob = nullptr;
    list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
@@ -2598,19 +2598,19 @@ CMDF( do_ident )
 
    if( argument.empty(  ) )
    {
-      act( AT_TELL, "$n tells you 'What would you like identified?'\r\n", mob, NULL, ch, TO_VICT );
+      act( AT_TELL, "$n tells you 'What would you like identified?'\r\n", mob, nullptr, ch, TO_VICT );
       return;
    }
 
    obj_data *obj;
    if( !( obj = ch->get_obj_carry( argument ) ) )
    {
-      act( AT_TELL, "$n tells you 'You don't have that item.'", mob, NULL, ch, TO_VICT );
+      act( AT_TELL, "$n tells you 'You don't have that item.'", mob, nullptr, ch, TO_VICT );
       return;
    }
 
    bool found = false;
-   clan_data *clan = NULL;
+   clan_data *clan = nullptr;
    if( mob->has_actflag( ACT_GUILDIDMOB ) )
    {
       list < clan_data * >::iterator cl;
@@ -2633,10 +2633,10 @@ CMDF( do_ident )
 
       if( ch->gold - idcost < 0 )
       {
-         act( AT_TELL, "$n tells you 'You cannot afford to identify that!'", mob, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'You cannot afford to identify that!'", mob, nullptr, ch, TO_VICT );
          return;
       }
-      act_printf( AT_TELL, mob, NULL, ch, TO_VICT, "$n charges you %.0f gold for the identification.", idcost );
+      act_printf( AT_TELL, mob, nullptr, ch, TO_VICT, "$n charges you %.0f gold for the identification.", idcost );
       ch->gold -= ( int )idcost;
       if( found && clan->bank )
       {
@@ -2645,7 +2645,7 @@ CMDF( do_ident )
       }
    }
 
-   act_printf( AT_LBLUE, mob, NULL, ch, TO_VICT, "$n tells you 'Information on a %s:'", obj->short_descr );
+   act_printf( AT_LBLUE, mob, nullptr, ch, TO_VICT, "$n tells you 'Information on a %s:'", obj->short_descr );
    obj_identify_output( ch, obj );
 }
 
@@ -2695,7 +2695,7 @@ CMDF( do_shove )
 
    if( ( victim->position ) != POS_STANDING )
    {
-      act( AT_PLAIN, "$N isn't standing up.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N isn't standing up.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -2782,8 +2782,8 @@ CMDF( do_shove )
    temp = victim->position;
    victim->position = POS_SHOVE;
 
-   act( AT_ACTION, "You shove $M.", ch, NULL, victim, TO_CHAR );
-   act( AT_ACTION, "$n shoves you.", ch, NULL, victim, TO_VICT );
+   act( AT_ACTION, "You shove $M.", ch, nullptr, victim, TO_CHAR );
+   act( AT_ACTION, "$n shoves you.", ch, nullptr, victim, TO_VICT );
    move_char( victim, ch->in_room->get_exit( exit_dir ), 0, exit_dir, false );
    if( !victim->char_died(  ) )
       victim->position = temp;
@@ -2793,7 +2793,7 @@ CMDF( do_shove )
     * Remove protection from shove/drag if char shoves -- Blodkai 
     */
    if( ch->in_room->flags.test( ROOM_SAFE ) && ch->get_timer( TIMER_SHOVEDRAG ) <= 0 )
-      ch->add_timer( TIMER_SHOVEDRAG, 10, NULL, 0 );
+      ch->add_timer( TIMER_SHOVEDRAG, 10, nullptr, 0 );
 }
 
 CMDF( do_drag )
@@ -2952,8 +2952,8 @@ CMDF( do_drag )
 
       temp = victim->position;
       victim->position = POS_DRAG;
-      act( AT_ACTION, "You drag $M into the next room.", ch, NULL, victim, TO_CHAR );
-      act( AT_ACTION, "$n grabs your hair and drags you.", ch, NULL, victim, TO_VICT );
+      act( AT_ACTION, "You drag $M into the next room.", ch, nullptr, victim, TO_CHAR );
+      act( AT_ACTION, "$n grabs your hair and drags you.", ch, nullptr, victim, TO_VICT );
       move_char( victim, ch->in_room->get_exit( exit_dir ), 0, exit_dir, false );
       if( !victim->char_died(  ) )
          victim->position = temp;

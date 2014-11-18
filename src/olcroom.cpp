@@ -132,7 +132,7 @@ CMDF( do_oredit )
    d->connected = CON_REDIT;
    redit_disp_menu( d );
 
-   act( AT_ACTION, "$n starts using OLC.", ch, NULL, NULL, TO_ROOM );
+   act( AT_ACTION, "$n starts using OLC.", ch, nullptr, nullptr, TO_ROOM );
 }
 
 CMDF( do_rcopy )
@@ -518,7 +518,7 @@ extra_descr_data *redit_find_extradesc( room_index * room, int number )
       if( ++count == number )
          return edesc;
    }
-   return NULL;
+   return nullptr;
 }
 
 CMDF( do_redit_reset )
@@ -539,7 +539,7 @@ CMDF( do_redit_reset )
              * If theres no dest_buf, theres no object, so stick em back as playing 
              */
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             ch->desc->connected = CON_PLAYING;
             return;
@@ -562,7 +562,7 @@ CMDF( do_redit_reset )
              * If theres no dest_buf, theres no object, so stick em back as playing 
              */
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             ch->desc->connected = CON_PLAYING;
             return;
@@ -805,7 +805,7 @@ void redit_parse( descriptor_data * d, string & arg )
                d->character->print( "Delete which exit? " );
                return;
             case 'Q':
-               d->character->pcdata->spare_ptr = NULL;
+               d->character->pcdata->spare_ptr = nullptr;
                break;
          }
          break;
@@ -815,7 +815,7 @@ void redit_parse( descriptor_data * d, string & arg )
          {
             default:
             case 'Q':
-               d->character->pcdata->spare_ptr = NULL;
+               d->character->pcdata->spare_ptr = nullptr;
                redit_disp_exit_menu( d );
                return;
             case '1':
@@ -937,7 +937,7 @@ void redit_parse( descriptor_data * d, string & arg )
          pexit = room->make_exit( tmp, d->character->tempnum );
          pexit->key = -1;
          pexit->flags.reset(  );
-         act( AT_IMMORT, "$n reveals a hidden passage!", d->character, NULL, NULL, TO_ROOM );
+         act( AT_IMMORT, "$n reveals a hidden passage!", d->character, nullptr, nullptr, TO_ROOM );
          d->character->pcdata->spare_ptr = pexit;
 
          olc_log( d, "Added %s exit to %d", dir_name[pexit->vdir], pexit->vnum );
@@ -1048,7 +1048,7 @@ void redit_parse( descriptor_data * d, string & arg )
                   deleteptr( ed );
                   --top_ed;
                }
-               d->character->pcdata->spare_ptr = NULL;
+               d->character->pcdata->spare_ptr = nullptr;
                redit_disp_extradesc_menu( d );
                return;
 

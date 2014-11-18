@@ -160,7 +160,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
     * a list based approach to fixing the resets. instead of having a bunch of several instances of very 
     * similar code, i just made this array that tells the code what to do. it's pretty straightforward 
     */
-   const char *action_table[] = { "Mm1r3", "Oo1r3", "Ho1", "Po2o4", "Go1", "Eo1", "Dr1", "Rr1", "Wo8", "Zr7", NULL };
+   const char *action_table[] = { "Mm1r3", "Oo1r3", "Ho1", "Po2o4", "Go1", "Eo1", "Dr1", "Rr1", "Wo8", "Zr7", nullptr };
    const char *p;
    renumber_data *r_table;
    int *parg, new_vnum, i;
@@ -185,7 +185,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
       return;
    }
 
-   for( i = 0; action_table[i] != NULL; ++i )
+   for( i = 0; action_table[i] != nullptr; ++i )
    {
       if( reset->command == action_table[i][0] )
       {
@@ -228,7 +228,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
       }
    }
 
-   if( action_table[i] == NULL )
+   if( action_table[i] == nullptr )
       bug( "%s: Invalid reset '%c' found.", __func__, reset->command );
 }
 
@@ -406,7 +406,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       room = get_room_index( r_data->old_vnum );
       if( !room )
       {
-         bug( "%s: NULL room %d", __func__, r_data->old_vnum );
+         bug( "%s: nullptr room %d", __func__, r_data->old_vnum );
          continue;
       }
 
@@ -445,7 +445,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    /*
     * if nothing was moved, dont change this 
     */
-   if( r_area->r_room != NULL )
+   if( r_area->r_room != nullptr )
    {
       area->low_vnum = r_area->low_room;
       area->hi_vnum = r_area->hi_room;
@@ -461,7 +461,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       mob = get_mob_index( r_data->old_vnum );
       if( !mob )
       {
-         bug( "%s: NULL mob %d", __func__, r_data->old_vnum );
+         bug( "%s: nullptr mob %d", __func__, r_data->old_vnum );
          continue;
       }
 
@@ -527,7 +527,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       obj = get_obj_index( r_data->old_vnum );
       if( !obj )
       {
-         bug( "%s: NULL obj %d", __func__, r_data->old_vnum );
+         bug( "%s: nullptr obj %d", __func__, r_data->old_vnum );
          continue;
       }
 
@@ -629,17 +629,17 @@ renumber_data *gather_one_list( short type, int low, int high, int new_base, boo
             break;
          case REN_ROOM:
             room = get_room_index( i );
-            if( room != NULL )
+            if( room != nullptr )
                found = true;
             break;
          case REN_OBJ:
             obj = get_obj_index( i );
-            if( obj != NULL )
+            if( obj != nullptr )
                found = true;
             break;
          case REN_MOB:
             mob = get_mob_index( i );
-            if( mob != NULL )
+            if( mob != nullptr )
                found = true;
             break;
       }
@@ -691,7 +691,7 @@ bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
 {
    if( !r_area )
    {
-      bug( "%s: NULL r_area!", __func__ );
+      bug( "%s: nullptr r_area!", __func__ );
       return true;
    }
 
@@ -733,7 +733,7 @@ void free_renumber_data( renumber_data * r_data )
 {
    renumber_data *r_next;
 
-   while( r_data != NULL )
+   while( r_data != nullptr )
    {
       r_next = r_data->next;
       OLD_DISPOSE( r_data );
@@ -767,7 +767,7 @@ CMDF( do_renumber )
    }
 
    area = find_area( arg1 );
-   if( area == NULL )
+   if( area == nullptr )
    {
       ch->printf( "No such area '%s'.\r\n", arg1.c_str(  ) );
       return;
@@ -886,7 +886,7 @@ CMDF( do_renumber )
    /*
     * another sanity check :) 
     */
-   if( r_area == NULL || ( r_area->r_obj == NULL && r_area->r_mob == NULL && r_area->r_room == NULL ) )
+   if( r_area == nullptr || ( r_area->r_obj == nullptr && r_area->r_mob == nullptr && r_area->r_room == nullptr ) )
    {
       ch->print( "No changes to make.\r\n" );
       deleteptr( r_area );
@@ -910,11 +910,11 @@ CMDF( do_renumber )
    /*
     * clean up and goodbye 
     */
-   if( r_area->r_room != NULL )
+   if( r_area->r_room != nullptr )
       free_renumber_data( r_area->r_room );
-   if( r_area->r_obj != NULL )
+   if( r_area->r_obj != nullptr )
       free_renumber_data( r_area->r_obj );
-   if( r_area->r_mob != NULL )
+   if( r_area->r_mob != nullptr )
       free_renumber_data( r_area->r_mob );
    deleteptr( r_area );
 }

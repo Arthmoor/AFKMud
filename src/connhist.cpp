@@ -97,7 +97,7 @@ int check_conn_entry( conn_data * conn )
 void load_connhistory( void )
 {
    ifstream stream;
-   conn_data *conn = NULL;
+   conn_data *conn = nullptr;
    size_t conncount = 0;
 
    connlist.clear(  );
@@ -209,7 +209,7 @@ void update_connhistory( descriptor_data * d, int type )
 
    if( !d )
    {
-      bug( "%s: NULL descriptor!", __func__ );
+      bug( "%s: nullptr descriptor!", __func__ );
       return;
    }
 
@@ -233,7 +233,7 @@ void update_connhistory( descriptor_data * d, int type )
    /*
     * Build our time string... 
     */
-   t = time( NULL );
+   t = time( nullptr );
    local = localtime( &t );
 
    /*

@@ -95,7 +95,7 @@ obj_data::~obj_data(  )
       if( RQueue->Type == relOSET_ON )
       {
          if( this == RQueue->Subject )
-            ( ( char_data * ) RQueue->Actor )->pcdata->dest_buf = NULL;
+            ( ( char_data * ) RQueue->Actor )->pcdata->dest_buf = nullptr;
          else
             continue;
          relationlist.remove( RQueue );
@@ -175,18 +175,18 @@ void obj_data::fall( bool through )
 
       if( !in_room->people.empty(  ) )
       {
-         act( AT_PLAIN, "$p falls far below...", ( *in_room->people.begin(  ) ), this, NULL, TO_ROOM );
-         act( AT_PLAIN, "$p falls far below...", ( *in_room->people.begin(  ) ), this, NULL, TO_CHAR );
+         act( AT_PLAIN, "$p falls far below...", ( *in_room->people.begin(  ) ), this, nullptr, TO_ROOM );
+         act( AT_PLAIN, "$p falls far below...", ( *in_room->people.begin(  ) ), this, nullptr, TO_CHAR );
       }
       from_room(  );
       is_falling = true;
-      to_room( to, NULL );
+      to_room( to, nullptr );
       is_falling = false;
 
       if( !in_room->people.empty(  ) )
       {
-         act( AT_PLAIN, "$p falls from above...", ( *in_room->people.begin(  ) ), this, NULL, TO_ROOM );
-         act( AT_PLAIN, "$p falls from above...", ( *in_room->people.begin(  ) ), this, NULL, TO_CHAR );
+         act( AT_PLAIN, "$p falls from above...", ( *in_room->people.begin(  ) ), this, nullptr, TO_ROOM );
+         act( AT_PLAIN, "$p falls from above...", ( *in_room->people.begin(  ) ), this, nullptr, TO_CHAR );
       }
 
       if( !in_room->flags.test( ROOM_NOFLOOR ) && through )
@@ -205,7 +205,7 @@ void obj_data::fall( bool through )
          if( !in_room->people.empty(  ) && number_percent(  ) > 15 )
          {
             list < char_data * >::iterator ich;
-            char_data *vch = NULL;
+            char_data *vch = nullptr;
             int chcnt = 0;
 
             for( ich = in_room->people.begin(  ); ich != in_room->people.end(  ); ++ich, ++chcnt )
@@ -214,11 +214,11 @@ void obj_data::fall( bool through )
 
             if( vch )
             {
-               act( AT_WHITE, "$p falls on $n!", vch, this, NULL, TO_ROOM );
-               act( AT_WHITE, "$p falls on you!", vch, this, NULL, TO_CHAR );
+               act( AT_WHITE, "$p falls on $n!", vch, this, nullptr, TO_ROOM );
+               act( AT_WHITE, "$p falls on you!", vch, this, nullptr, TO_CHAR );
 
                if( vch->has_actflag( ACT_HARDHAT ) )
-                  act( AT_WHITE, "$p bounces harmlessly off your head!", vch, this, NULL, TO_CHAR );
+                  act( AT_WHITE, "$p bounces harmlessly off your head!", vch, this, nullptr, TO_CHAR );
                else
                   damage( vch, vch, dam * vch->level, TYPE_UNDEFINED );
             }
@@ -261,8 +261,8 @@ void obj_data::fall( bool through )
          {
             if( !in_room->people.empty(  ) )
             {
-               act( AT_PLAIN, "$p is destroyed by the fall!", ( *in_room->people.begin(  ) ), this, NULL, TO_ROOM );
-               act( AT_PLAIN, "$p is destroyed by the fall!", ( *in_room->people.begin(  ) ), this, NULL, TO_CHAR );
+               act( AT_PLAIN, "$p is destroyed by the fall!", ( *in_room->people.begin(  ) ), this, nullptr, TO_ROOM );
+               act( AT_PLAIN, "$p is destroyed by the fall!", ( *in_room->people.begin(  ) ), this, nullptr, TO_CHAR );
             }
             make_scraps(  );
          }
@@ -772,8 +772,8 @@ obj_data *obj_data::to_char( char_data * ch )
       {
          ch->carrying.push_back( this );
          carried_by = ch;
-         in_room = NULL;
-         in_obj = NULL;
+         in_room = nullptr;
+         in_obj = nullptr;
          if( ch != supermob )
          {
             extra_flags.reset( ITEM_ONMAP );
@@ -809,8 +809,8 @@ obj_data *obj_data::to_char( char_data * ch )
             ch->carrying.push_back( this );
 
          carried_by = ch;
-         in_room = NULL;
-         in_obj = NULL;
+         in_room = nullptr;
+         in_obj = nullptr;
          if( ch != supermob )
          {
             extra_flags.reset( ITEM_ONMAP );
@@ -856,10 +856,10 @@ void obj_data::from_char(  )
    ch->carrying.remove( this );
 
    if( extra_flags.test( ITEM_COVERING ) && !contents.empty(  ) )
-      empty( NULL, NULL );
+      empty( nullptr, nullptr );
 
-   in_room = NULL;
-   carried_by = NULL;
+   in_room = nullptr;
+   carried_by = nullptr;
    ch->carry_number -= get_number(  );
    ch->carry_weight -= get_weight(  );
 }
@@ -947,15 +947,15 @@ void obj_data::from_room(  )
     * uncover contents 
     */
    if( extra_flags.test( ITEM_COVERING ) && !contents.empty(  ) )
-      empty( NULL, in_room );
+      empty( nullptr, in_room );
 
    if( item_type == ITEM_FIRE )
       in_room->light -= count;
 
    in_room->weight -= this->get_weight( );
-   carried_by = NULL;
-   in_obj = NULL;
-   in_room = NULL;
+   carried_by = nullptr;
+   in_obj = nullptr;
+   in_room = nullptr;
    if( pIndexData->vnum == OBJ_VNUM_CORPSE_PC && falling < 1 )
       write_corpse( this, short_descr + 14 );
 }
@@ -999,8 +999,8 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
    pRoomIndex->objects.push_front( this );
 
    in_room = pRoomIndex;
-   carried_by = NULL;
-   in_obj = NULL;
+   carried_by = nullptr;
+   in_obj = nullptr;
    room_vnum = pRoomIndex->vnum; /* hotboot tracker */
    if( oitem_type == ITEM_FIRE )
       pRoomIndex->light += count;
@@ -1011,7 +1011,7 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
    /*
     * Hoping that this will cover all instances of objects from character to room - Samson 8-22-99 
     */
-   if( ch != NULL )
+   if( ch != nullptr )
    {
       if( ch->has_actflag( ACT_ONMAP ) || ch->has_pcflag( PCFLAG_ONMAP ) )
       {
@@ -1046,7 +1046,7 @@ obj_data *obj_data::to_obj( obj_data * obj_to )
    }
 
    char_data *who;
-   if( !obj_to->in_magic_container(  ) && ( who = obj_to->who_carrying(  ) ) != NULL )
+   if( !obj_to->in_magic_container(  ) && ( who = obj_to->who_carrying(  ) ) != nullptr )
       who->carry_weight += get_weight(  );
 
    if( obj_to->in_room )
@@ -1062,8 +1062,8 @@ obj_data *obj_data::to_obj( obj_data * obj_to )
 
    obj_to->contents.push_back( this );
    in_obj = obj_to;
-   in_room = NULL;
-   carried_by = NULL;
+   in_room = nullptr;
+   carried_by = nullptr;
 
    return this;
 }
@@ -1090,11 +1090,11 @@ void obj_data::from_obj(  )
     * uncover contents 
     */
    if( extra_flags.test( ITEM_COVERING ) && !contents.empty(  ) )
-      empty( in_obj, NULL );
+      empty( in_obj, nullptr );
 
-   in_obj = NULL;
-   in_room = NULL;
-   carried_by = NULL;
+   in_obj = nullptr;
+   in_room = nullptr;
+   carried_by = nullptr;
    if( obj_from->in_room )
       obj_from->in_room->weight -= this->get_weight( );
 
@@ -1232,7 +1232,7 @@ bool obj_data::is_trapped(  )
 obj_data *obj_data::get_trap(  )
 {
    if( contents.empty(  ) )
-      return NULL;
+      return nullptr;
 
    list < obj_data * >::iterator iobj;
    for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
@@ -1241,7 +1241,7 @@ obj_data *obj_data::get_trap(  )
       if( obj->item_type == ITEM_TRAP )
          return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1258,7 +1258,7 @@ obj_data *get_objtype( char_data * ch, short type )
       if( obj->item_type == type )
          return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -1314,7 +1314,7 @@ obj_data *obj_data::clone(  )
 obj_data *group_obj( obj_data * obj, obj_data * obj2 )
 {
    if( !obj || !obj2 )
-      return NULL;
+      return nullptr;
 
    if( obj == obj2 )
       return obj;
@@ -1391,22 +1391,22 @@ void obj_data::split( int num )
    {
       carried_by->carrying.push_back( rest );
       rest->carried_by = carried_by;
-      rest->in_room = NULL;
-      rest->in_obj = NULL;
+      rest->in_room = nullptr;
+      rest->in_obj = nullptr;
    }
    else if( in_room )
    {
       in_room->objects.push_back( rest );
-      rest->carried_by = NULL;
+      rest->carried_by = nullptr;
       rest->in_room = in_room;
-      rest->in_obj = NULL;
+      rest->in_obj = nullptr;
    }
    else if( in_obj )
    {
       in_obj->contents.push_back( rest );
       rest->in_obj = in_obj;
-      rest->in_room = NULL;
-      rest->carried_by = NULL;
+      rest->in_room = nullptr;
+      rest->carried_by = nullptr;
    }
 }
 
@@ -1427,11 +1427,11 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
 
    if( !this )
    {
-      bug( "%s: NULL obj", __func__ );
+      bug( "%s: nullptr obj", __func__ );
       return false;
    }
 
-   if( destobj || ( !destroom && !ch && ( destobj = in_obj ) != NULL ) )
+   if( destobj || ( !destroom && !ch && ( destobj = in_obj ) != nullptr ) )
    {
       for( iobj = contents.begin(  ); iobj != contents.end(  ); )
       {
@@ -1456,7 +1456,7 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
       return movedsome;
    }
 
-   if( destroom || ( !ch && ( destroom = in_room ) != NULL ) )
+   if( destroom || ( !ch && ( destroom = in_room ) != nullptr ) )
    {
       for( iobj = contents.begin(  ); iobj != contents.end(  ); )
       {
@@ -1478,7 +1478,7 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
          {
             oprog_drop_trigger( ch, otmp );  /* mudprogs */
             if( ch->char_died(  ) )
-               ch = NULL;
+               ch = nullptr;
          }
          movedsome = true;
       }
@@ -1508,13 +1508,13 @@ void obj_data::remove_portal(  )
 
    if( !this )
    {
-      bug( "%s: portal is NULL", __func__ );
+      bug( "%s: portal is nullptr", __func__ );
       return;
    }
 
    if( !( fromRoom = in_room ) )
    {
-      bug( "%s: portal->in_room is NULL", __func__ );
+      bug( "%s: portal->in_room is nullptr", __func__ );
       return;
    }
 
@@ -1542,7 +1542,7 @@ void obj_data::remove_portal(  )
       bug( "%s: exit in dir %d != DIR_PORTAL", __func__, pexit->vdir );
 
    if( !( toRoom = pexit->to_room ) )
-      bug( "%s: toRoom is NULL", __func__ );
+      bug( "%s: toRoom is nullptr", __func__ );
 
    fromRoom->extract_exit( pexit );
 }
@@ -1576,7 +1576,7 @@ bool obj_data::in_magic_container(  )
 void obj_data::make_scraps(  )
 {
    obj_data *scraps, *tmpobj;
-   char_data *ch = NULL;
+   char_data *ch = nullptr;
 
    separate(  );
    if( !( scraps = get_obj_index( OBJ_VNUM_SCRAPS )->create_object( 1 ) ) )
@@ -1609,8 +1609,8 @@ void obj_data::make_scraps(  )
 
    if( carried_by )
    {
-      act( AT_OBJECT, "$p falls to the ground in scraps!", carried_by, this, NULL, TO_CHAR );
-      if( this == carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = carried_by->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+      act( AT_OBJECT, "$p falls to the ground in scraps!", carried_by, this, nullptr, TO_CHAR );
+      if( this == carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = carried_by->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
          tmpobj->wear_loc = WEAR_WIELD;
 
       scraps->to_room( carried_by->in_room, carried_by );
@@ -1619,24 +1619,24 @@ void obj_data::make_scraps(  )
    {
       if( !in_room->people.empty(  ) )
       {
-         act( AT_OBJECT, "$p is reduced to little more than scraps.", ( *in_room->people.begin(  ) ), this, NULL, TO_ROOM );
-         act( AT_OBJECT, "$p is reduced to little more than scraps.", ( *in_room->people.begin(  ) ), this, NULL, TO_CHAR );
+         act( AT_OBJECT, "$p is reduced to little more than scraps.", ( *in_room->people.begin(  ) ), this, nullptr, TO_ROOM );
+         act( AT_OBJECT, "$p is reduced to little more than scraps.", ( *in_room->people.begin(  ) ), this, nullptr, TO_CHAR );
       }
-      scraps->to_room( in_room, NULL );
+      scraps->to_room( in_room, nullptr );
    }
    if( ( item_type == ITEM_CONTAINER || item_type == ITEM_KEYRING || item_type == ITEM_QUIVER || item_type == ITEM_CORPSE_PC ) && !contents.empty(  ) )
    {
       if( ch && ch->in_room )
       {
-         act( AT_OBJECT, "The contents of $p fall to the ground.", ch, this, NULL, TO_ROOM );
-         act( AT_OBJECT, "The contents of $p fall to the ground.", ch, this, NULL, TO_CHAR );
+         act( AT_OBJECT, "The contents of $p fall to the ground.", ch, this, nullptr, TO_ROOM );
+         act( AT_OBJECT, "The contents of $p fall to the ground.", ch, this, nullptr, TO_CHAR );
       }
       if( carried_by )
-         empty( NULL, carried_by->in_room );
+         empty( nullptr, carried_by->in_room );
       else if( in_room )
-         empty( NULL, in_room );
+         empty( nullptr, in_room );
       else if( in_obj )
-         empty( in_obj, NULL );
+         empty( in_obj, nullptr );
    }
    extract(  );
 }
@@ -1723,13 +1723,13 @@ void obj_identify_output( char_data * ch, obj_data * obj )
       case ITEM_POTION:
          ch->printf( "Level %d spells of:", obj->value[0] );
 
-         if( obj->value[1] >= 0 && ( sktmp = get_skilltype( obj->value[1] ) ) != NULL )
+         if( obj->value[1] >= 0 && ( sktmp = get_skilltype( obj->value[1] ) ) != nullptr )
             ch->printf( " '%s'", sktmp->name );
 
-         if( obj->value[2] >= 0 && ( sktmp = get_skilltype( obj->value[2] ) ) != NULL )
+         if( obj->value[2] >= 0 && ( sktmp = get_skilltype( obj->value[2] ) ) != nullptr )
             ch->printf( " '%s'", sktmp->name );
 
-         if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != NULL )
+         if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != nullptr )
             ch->printf( " '%s'", sktmp->name );
 
          ch->print( ".\r\n" );
@@ -1737,10 +1737,10 @@ void obj_identify_output( char_data * ch, obj_data * obj )
 
       case ITEM_SALVE:
          ch->printf( "Has %d of %d applications of level %d", obj->value[2], obj->value[1], obj->value[0] );
-         if( obj->value[4] >= 0 && ( sktmp = get_skilltype( obj->value[4] ) ) != NULL )
+         if( obj->value[4] >= 0 && ( sktmp = get_skilltype( obj->value[4] ) ) != nullptr )
             ch->printf( " '%s'", sktmp->name );
 
-         if( obj->value[5] >= 0 && ( sktmp = get_skilltype( obj->value[5] ) ) != NULL )
+         if( obj->value[5] >= 0 && ( sktmp = get_skilltype( obj->value[5] ) ) != nullptr )
             ch->printf( " '%s'", sktmp->name );
 
          ch->print( ".\r\n" );
@@ -1750,7 +1750,7 @@ void obj_identify_output( char_data * ch, obj_data * obj )
       case ITEM_STAFF:
          ch->printf( "Has %d of %d charges of level %d", obj->value[2], obj->value[1], obj->value[0] );
 
-         if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != NULL )
+         if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != nullptr )
             ch->printf( " '%s'", sktmp->name );
 
          ch->print( ".\r\n" );

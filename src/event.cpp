@@ -88,10 +88,10 @@ void cancel_event( void ( *callback ) ( void * ), void *data )
       if( ( !callback ) && ev->data == data )
          free_event( ev );
 
-      else if( ( callback ) && ev->data == data && data != NULL )
+      else if( ( callback ) && ev->data == data && data != nullptr )
          free_event( ev );
 
-      else if( ev->callback == callback && data == NULL )
+      else if( ev->callback == callback && data == nullptr )
          free_event( ev );
    }
 }
@@ -107,7 +107,7 @@ event_info *find_event( void ( *callback ) ( void * ), void *data )
       if( ev->callback == callback && ev->data == data )
          return ev;
    }
-   return NULL;
+   return nullptr;
 }
 
 time_t next_event( void ( *callback ) ( void * ), void *data )
@@ -147,7 +147,7 @@ void run_events( time_t newtime )
       if( callback )
          ( *callback ) ( data );
       else
-         bug( "%s: NULL callback", __func__ );
+         bug( "%s: nullptr callback", __func__ );
    }
    current_time = newtime;
 }

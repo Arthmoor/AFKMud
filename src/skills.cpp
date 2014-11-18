@@ -449,7 +449,7 @@ int search_skill_prefix( SKILL_INDEX index, const string & key )
    it = index.begin(  );
    end = index.end(  );
 
-   if( ( fnd = find_if( it, end, find__skill_prefix( NULL, key ) ) ) == end )
+   if( ( fnd = find_if( it, end, find__skill_prefix( nullptr, key ) ) ) == end )
       return -1;
    return fnd->second;
 }
@@ -459,7 +459,7 @@ int search_skill_prefix( SKILL_INDEX index, const string & key, char_data * acto
    SKILL_INDEX::iterator fnd, it, end;
 
    // Safety
-   if( actor == NULL || actor->isnpc(  ) )
+   if( actor == nullptr || actor->isnpc(  ) )
       return -1;
 
    it = index.begin(  );
@@ -487,7 +487,7 @@ int search_skill_exact( SKILL_INDEX index, const string & key, char_data * actor
    SKILL_INDEX::iterator fnd, it, end;
 
    // Safety
-   if( actor == NULL || actor->isnpc(  ) )
+   if( actor == nullptr || actor->isnpc(  ) )
       return -1;
 
    it = index.begin(  );
@@ -617,17 +617,17 @@ int skill_lookup( const string & name )
 
 /*
  * Return a skilltype pointer based on sn			-Thoric
- * Returns NULL if bad, unused or personal sn.
+ * Returns nullptr if bad, unused or personal sn.
  */
 skill_type *get_skilltype( int sn )
 {
    if( sn >= TYPE_PERSONAL )
-      return NULL;
+      return nullptr;
    if( sn >= TYPE_HERB )
-      return IS_VALID_HERB( sn - TYPE_HERB ) ? herb_table[sn - TYPE_HERB] : NULL;
+      return IS_VALID_HERB( sn - TYPE_HERB ) ? herb_table[sn - TYPE_HERB] : nullptr;
    if( sn >= TYPE_HIT )
-      return NULL;
-   return IS_VALID_SN( sn ) ? skill_table[sn] : NULL;
+      return nullptr;
+   return IS_VALID_SN( sn ) ? skill_table[sn] : nullptr;
 }
 
 /*
@@ -690,7 +690,7 @@ void remap_slot_numbers( void )
 
    for( int sn = 0; sn < num_skills; ++sn )
    {
-      if( ( skill = skill_table[sn] ) != NULL )
+      if( ( skill = skill_table[sn] ) != nullptr )
       {
          for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); ++aff )
          {
@@ -1106,8 +1106,8 @@ skill_type *fread_skill( FILE * fp, int version )
             }
             if( !str_cmp( word, "Code" ) )
             {
-               SPELL_FUN *spellfun = NULL;
-               DO_FUN *dofun = NULL;
+               SPELL_FUN *spellfun = nullptr;
+               DO_FUN *dofun = nullptr;
                char *w = fread_word( fp );
 
                if( validate_spec_fun( w ) )
@@ -1119,13 +1119,13 @@ skill_type *fread_skill( FILE * fp, int version )
                else if( !str_prefix( "do_", w ) && ( dofun = skill_function( w ) ) != skill_notfound )
                {
                   skill->skill_fun = dofun;
-                  skill->spell_fun = NULL;
+                  skill->spell_fun = nullptr;
                   skill->skill_fun_name = str_dup( w );
                }
                else if( str_prefix( "do_", w ) && ( spellfun = spell_function( w ) ) != spell_notfound )
                {
                   skill->spell_fun = spellfun;
-                  skill->skill_fun = NULL;
+                  skill->skill_fun = nullptr;
                   skill->spell_fun_name = str_dup( w );
                }
                else
@@ -1313,7 +1313,7 @@ void load_skill_table( void )
    FILE *fp;
    int version = 0;
 
-   if( ( fp = fopen( SKILL_FILE, "r" ) ) != NULL )
+   if( ( fp = fopen( SKILL_FILE, "r" ) ) != nullptr )
    {
       fpArea = fp;
       num_skills = 0;
@@ -1347,7 +1347,7 @@ void load_skill_table( void )
             {
                bug( "%s: more skills than MAX_SKILL %d", __func__, MAX_SKILL );
                FCLOSE( fp );
-               fpArea = NULL;
+               fpArea = nullptr;
                return;
             }
             skill_table[num_skills++] = fread_skill( fp, version );
@@ -1362,7 +1362,7 @@ void load_skill_table( void )
          }
       }
       FCLOSE( fp );
-      fpArea = NULL;
+      fpArea = nullptr;
    }
    else
    {
@@ -1377,7 +1377,7 @@ void load_herb_table(  )
    FILE *fp;
    int version = 0;
 
-   if( ( fp = fopen( HERB_FILE, "r" ) ) != NULL )
+   if( ( fp = fopen( HERB_FILE, "r" ) ) != nullptr )
    {
       top_herb = 0;
       for( ;; )
@@ -1582,7 +1582,7 @@ CMDF( do_viewskills )
       ch->set_color( AT_SKILL );
       for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
       {
-         if( skill_table[sn]->name == NULL )
+         if( skill_table[sn]->name == nullptr )
             break;
          if( victim->pcdata->learned[sn] == 0 )
             continue;
@@ -1670,7 +1670,7 @@ int skill_number( const string & argument )
 
 bool get_skill_help( char_data * ch, const string & argument )
 {
-   skill_type *skill = NULL;
+   skill_type *skill = nullptr;
    char buf[MSL], target[MSL];
    int sn;
 
@@ -1841,7 +1841,7 @@ bool check_ability( char_data * ch, const string & command, const string & argum
    if( ch->isnpc(  ) && ( ch->has_aflag( AFF_CHARM ) || ch->has_aflag( AFF_POSSESS ) ) )
    {
       ch->print( "For some reason, you seem unable to perform that...\r\n" );
-      act( AT_GREY, "$n wanders around aimlessly.", ch, NULL, NULL, TO_ROOM );
+      act( AT_GREY, "$n wanders around aimlessly.", ch, nullptr, nullptr, TO_ROOM );
       return true;
    }
 
@@ -1867,9 +1867,9 @@ bool check_ability( char_data * ch, const string & command, const string & argum
    if( !skill_table[sn]->skill_fun )
    {
       ch_ret retcode = rNONE;
-      void *vo = NULL;
-      char_data *victim = NULL;
-      obj_data *obj = NULL;
+      void *vo = nullptr;
+      char_data *victim = nullptr;
+      obj_data *obj = nullptr;
 
       target_name.clear(  );
 
@@ -1881,10 +1881,10 @@ bool check_ability( char_data * ch, const string & command, const string & argum
             return true;
 
          case TAR_IGNORE:
-            vo = NULL;
+            vo = nullptr;
             if( argument.empty(  ) )
             {
-               if( ( victim = ch->who_fighting(  ) ) != NULL )
+               if( ( victim = ch->who_fighting(  ) ) != nullptr )
                   target_name = victim->name;
             }
             else
@@ -2072,7 +2072,7 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
    if( ch->isnpc(  ) && ( ch->has_aflag( AFF_CHARM ) || ch->has_aflag( AFF_POSSESS ) ) )
    {
       ch->print( "For some reason, you seem unable to perform that...\r\n" );
-      act( AT_GREY, "$n wanders around aimlessly.", ch, NULL, NULL, TO_ROOM );
+      act( AT_GREY, "$n wanders around aimlessly.", ch, nullptr, nullptr, TO_ROOM );
       return true;
    }
 
@@ -2098,9 +2098,9 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
    if( !skill_table[sn]->skill_fun )
    {
       ch_ret retcode = rNONE;
-      void *vo = NULL;
-      char_data *victim = NULL;
-      obj_data *obj = NULL;
+      void *vo = nullptr;
+      char_data *victim = nullptr;
+      obj_data *obj = nullptr;
 
       target_name.clear(  );
 
@@ -2112,10 +2112,10 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
             return true;
 
          case TAR_IGNORE:
-            vo = NULL;
+            vo = nullptr;
             if( argument.empty(  ) )
             {
-               if( ( victim = ch->who_fighting(  ) ) != NULL )
+               if( ( victim = ch->who_fighting(  ) ) != nullptr )
                   target_name = victim->name;
             }
             else
@@ -2405,7 +2405,7 @@ CMDF( do_slookup )
    char buf[MSL];
    int sn;
    int iClass, iRace;
-   skill_type *skill = NULL;
+   skill_type *skill = nullptr;
 
    if( argument.empty(  ) )
    {
@@ -2424,7 +2424,7 @@ CMDF( do_slookup )
       int num = 0;
 
       for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
-         if( ( skill_table[sn]->skill_fun == skill_notfound || skill_table[sn]->skill_fun == NULL )
+         if( ( skill_table[sn]->skill_fun == skill_notfound || skill_table[sn]->skill_fun == nullptr )
              && ( skill_table[sn]->spell_fun == spell_notfound || skill_table[sn]->spell_fun == spell_null ) && skill_table[sn]->type != SKILL_TONGUE )
          {
             ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s' Damtype: %s\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
@@ -2911,8 +2911,8 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "code" ) )
       {
-         DO_FUN *skillfun = NULL;
-         SPELL_FUN *spellfun = NULL;
+         DO_FUN *skillfun = nullptr;
+         SPELL_FUN *spellfun = nullptr;
 
          if( validate_spec_fun( argument ) )
          {
@@ -2922,14 +2922,14 @@ CMDF( do_sset )
          else if( !str_prefix( "do_", argument ) && ( skillfun = skill_function( argument ) ) != skill_notfound )
          {
             skill->skill_fun = skillfun;
-            skill->spell_fun = NULL;
+            skill->spell_fun = nullptr;
             DISPOSE( skill->skill_fun_name );
             skill->skill_fun_name = str_dup( argument.c_str(  ) );
          }
          else if( ( spellfun = spell_function( argument ) ) != spell_notfound )
          {
             skill->spell_fun = spellfun;
-            skill->skill_fun = NULL;
+            skill->skill_fun = nullptr;
             DISPOSE( skill->skill_fun_name );
             skill->spell_fun_name = str_dup( argument.c_str(  ) );
          }
@@ -3427,17 +3427,17 @@ CMDF( do_grapple )
       return;
    }
 
-   if( ( victim = ch->who_fighting( ) ) == NULL )
+   if( ( victim = ch->who_fighting( ) ) == nullptr )
    {
       one_argument( argument, arg );
       if( arg[0] == '\0' )
       {
-         act( AT_ACTION, "You move in a circle looking for someone to grapple.", ch, NULL, NULL, TO_CHAR );
-         act( AT_ACTION, "$n moves in a circle looking for someone to grapple.", ch, NULL, NULL, TO_ROOM );
+         act( AT_ACTION, "You move in a circle looking for someone to grapple.", ch, nullptr, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n moves in a circle looking for someone to grapple.", ch, nullptr, nullptr, TO_ROOM );
          return;
       }
 
-      if( ( victim = ch->get_char_room( arg ) ) == NULL )
+      if( ( victim = ch->get_char_room( arg ) ) == nullptr )
       {
          ch->print( "They aren't here.\r\n" );
          return;
@@ -3483,7 +3483,7 @@ CMDF( do_grapple )
    if( !ch->chance( percent ) )
    {
       ch->print( "You lost your balance.\r\n" );
-      act( AT_ACTION, "$n tries to grapple you but can't get close enough.", ch, NULL, victim, TO_VICT );
+      act( AT_ACTION, "$n tries to grapple you but can't get close enough.", ch, nullptr, victim, TO_VICT );
       ch->learn_from_failure( gsn_grapple );
       check_illegal_pk( ch, victim );
       return;
@@ -3504,8 +3504,8 @@ CMDF( do_grapple )
    ch->affect_to_char( &af );
 
    ch->printf( "You manage to grab hold of %s!\r\n", capitalize( victim->name ) );
-   act( AT_ACTION, "$n grabs hold of you!", ch, NULL, victim, TO_VICT );
-   act( AT_ACTION, "$n begins grappling with $N!", ch, NULL, victim, TO_NOTVICT );
+   act( AT_ACTION, "$n grabs hold of you!", ch, nullptr, victim, TO_VICT );
+   act( AT_ACTION, "$n begins grappling with $N!", ch, nullptr, victim, TO_NOTVICT );
    check_illegal_pk( ch, victim );
 
    if( !ch->fighting && victim->in_room == ch->in_room )
@@ -3568,7 +3568,7 @@ CMDF( do_gouge )
                af.duration = 3 + ( ch->level / 15 );
             af.bit = AFF_BLIND;
             victim->affect_to_char( &af );
-            act( AT_SKILL, "You can't see a thing!", victim, NULL, NULL, TO_CHAR );
+            act( AT_SKILL, "You can't see a thing!", victim, nullptr, nullptr, TO_CHAR );
          }
          ch->WAIT_STATE( sysdata->pulseviolence );
          if( !ch->isnpc(  ) && !victim->isnpc(  ) )
@@ -3584,7 +3584,7 @@ CMDF( do_gouge )
             victim->WAIT_STATE( sysdata->pulseviolence );
       }
       else if( global_retcode == rVICT_DIED )
-         act( AT_BLOOD, "Your fingers plunge into your victim's brain, causing immediate death!", ch, NULL, NULL, TO_CHAR );
+         act( AT_BLOOD, "Your fingers plunge into your victim's brain, causing immediate death!", ch, nullptr, nullptr, TO_CHAR );
    }
    else
    {
@@ -3597,7 +3597,7 @@ CMDF( do_gouge )
 CMDF( do_detrap )
 {
    string arg;
-   obj_data *trap, *obj = NULL;
+   obj_data *trap, *obj = nullptr;
    list < obj_data * >::iterator iobj;
    int percent;
    bool found = false;
@@ -3649,8 +3649,8 @@ CMDF( do_detrap )
             ch->print( "You can't find that here.\r\n" );
             return;
          }
-         act( AT_ACTION, "You carefully begin your attempt to remove a trap from $p...", ch, obj, NULL, TO_CHAR );
-         act( AT_ACTION, "$n carefully attempts to remove a trap from $p...", ch, obj, NULL, TO_ROOM );
+         act( AT_ACTION, "You carefully begin your attempt to remove a trap from $p...", ch, obj, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n carefully attempts to remove a trap from $p...", ch, obj, nullptr, TO_ROOM );
          ch->alloc_ptr = str_dup( obj->name );
          ch->add_timer( TIMER_DO_FUN, 3, do_detrap, 1 );
 /*	    ch->WAIT_STATE( skill_table[gsn_detrap]->beats ); */
@@ -3660,7 +3660,7 @@ CMDF( do_detrap )
          if( !ch->alloc_ptr )
          {
             ch->print( "Your detrapping was interrupted!\r\n" );
-            bug( "%s: ch->alloc_ptr NULL!", __func__ );
+            bug( "%s: ch->alloc_ptr nullptr!", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -3736,7 +3736,7 @@ CMDF( do_dig )
          one_argument( argument, arg );
          if( !arg.empty(  ) )
          {
-            if( ( pexit = find_door( ch, arg, true ) ) == NULL && get_dir( arg ) == -1 )
+            if( ( pexit = find_door( ch, arg, true ) ) == nullptr && get_dir( arg ) == -1 )
             {
                ch->print( "What direction is that?\r\n" );
                return;
@@ -3789,15 +3789,15 @@ CMDF( do_dig )
          ch->add_timer( TIMER_DO_FUN, UMIN( skill_table[gsn_dig]->beats / 10, 3 ), do_dig, 1 );
          ch->alloc_ptr = str_dup( arg.c_str(  ) );
          ch->print( "You begin digging...\r\n" );
-         act( AT_PLAIN, "$n begins digging...", ch, NULL, NULL, TO_ROOM );
+         act( AT_PLAIN, "$n begins digging...", ch, nullptr, nullptr, TO_ROOM );
          return;
 
       case 1:
          if( !ch->alloc_ptr )
          {
             ch->print( "Your digging was interrupted!\r\n" );
-            act( AT_PLAIN, "$n's digging was interrupted!", ch, NULL, NULL, TO_ROOM );
-            bug( "%s: alloc_ptr NULL", __func__ );
+            act( AT_PLAIN, "$n's digging was interrupted!", ch, nullptr, nullptr, TO_ROOM );
+            bug( "%s: alloc_ptr nullptr", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -3808,7 +3808,7 @@ CMDF( do_dig )
          DISPOSE( ch->alloc_ptr );
          ch->substate = SUB_NONE;
          ch->print( "You stop digging...\r\n" );
-         act( AT_PLAIN, "$n stops digging...", ch, NULL, NULL, TO_ROOM );
+         act( AT_PLAIN, "$n stops digging...", ch, nullptr, nullptr, TO_ROOM );
          return;
    }
 
@@ -3834,7 +3834,7 @@ CMDF( do_dig )
     */
    if( !arg.empty(  ) )
    {
-      if( ( pexit = find_door( ch, arg, true ) ) != NULL && IS_EXIT_FLAG( pexit, EX_DIG ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) )
+      if( ( pexit = find_door( ch, arg, true ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_DIG ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
          /*
           * 4 times harder to dig open a passage without a shovel 
@@ -3845,24 +3845,24 @@ CMDF( do_dig )
             {
                remove_bexit_flag( pexit, EX_CLOSED );
                ch->print( "You dig open a passageway!\r\n" );
-               act( AT_PLAIN, "$n digs open a passageway!", ch, NULL, NULL, TO_ROOM );
+               act( AT_PLAIN, "$n digs open a passageway!", ch, nullptr, nullptr, TO_ROOM );
             }
             else
             {
                REMOVE_EXIT_FLAG( pexit, EX_DIG );
                ch->print( "You uncover a doorway!\r\n" );
-               act( AT_PLAIN, "$n uncovers a doorway!", ch, NULL, NULL, TO_ROOM );
+               act( AT_PLAIN, "$n uncovers a doorway!", ch, nullptr, nullptr, TO_ROOM );
             }
          }
       }
       ch->learn_from_failure( gsn_dig );
       ch->print( "Your dig did not discover any exit...\r\n" );
-      act( AT_PLAIN, "$n's dig did not discover any exit...", ch, NULL, NULL, TO_ROOM );
+      act( AT_PLAIN, "$n's dig did not discover any exit...", ch, nullptr, nullptr, TO_ROOM );
       return;
    }
 
    bool found = false;
-   obj_data *obj = NULL;
+   obj_data *obj = nullptr;
    for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
       obj = *iobj;
@@ -3879,15 +3879,15 @@ CMDF( do_dig )
    if( !found )
    {
       ch->print( "Your dig uncovered nothing.\r\n" );
-      act( AT_PLAIN, "$n's dig uncovered nothing.", ch, NULL, NULL, TO_ROOM );
+      act( AT_PLAIN, "$n's dig uncovered nothing.", ch, nullptr, nullptr, TO_ROOM );
       ch->learn_from_failure( gsn_dig );
       return;
    }
 
    obj->separate(  );
    obj->extra_flags.reset( ITEM_BURIED );
-   act( AT_SKILL, "Your dig uncovered $p!", ch, obj, NULL, TO_CHAR );
-   act( AT_SKILL, "$n's dig uncovered $p!", ch, obj, NULL, TO_ROOM );
+   act( AT_SKILL, "Your dig uncovered $p!", ch, obj, nullptr, TO_CHAR );
+   act( AT_SKILL, "$n's dig uncovered $p!", ch, obj, nullptr, TO_ROOM );
    if( obj->item_type == ITEM_CORPSE_PC || obj->item_type == ITEM_CORPSE_NPC )
       ch->adjust_favor( 14, 1 );
 }
@@ -3932,7 +3932,7 @@ CMDF( do_search )
          }
          ch->add_timer( TIMER_DO_FUN, UMIN( skill_table[gsn_search]->beats / 10, 3 ), do_search, 1 );
          ch->print( "You begin your search...\r\n" );
-         act( AT_MAGIC, "$n begins searching the room.....", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "$n begins searching the room.....", ch, nullptr, nullptr, TO_ROOM );
          ch->alloc_ptr = str_dup( arg.c_str(  ) );
          return;
 
@@ -3940,7 +3940,7 @@ CMDF( do_search )
          if( !ch->alloc_ptr )
          {
             ch->print( "Your search was interrupted!\r\n" );
-            bug( "%s: alloc_ptr NULL", __func__ );
+            bug( "%s: alloc_ptr nullptr", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -3981,7 +3981,7 @@ CMDF( do_search )
    if( ( !found && door == -1 ) || ch->isnpc(  ) )
    {
       ch->print( "You find nothing.\r\n" );
-      act( AT_MAGIC, "$n found nothing in $s search.", ch, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "$n found nothing in $s search.", ch, nullptr, nullptr, TO_ROOM );
       ch->learn_from_failure( gsn_search );
       return;
    }
@@ -3992,11 +3992,11 @@ CMDF( do_search )
    {
       exit_data *pexit;
 
-      if( ( pexit = ch->in_room->get_exit( door ) ) != NULL && IS_EXIT_FLAG( pexit, EX_SECRET )
+      if( ( pexit = ch->in_room->get_exit( door ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_SECRET )
           && IS_EXIT_FLAG( pexit, EX_xSEARCHABLE ) && can_use_skill( ch, percent, gsn_search ) )
       {
-         act( AT_SKILL, "Your search reveals the $d!", ch, NULL, pexit->keyword, TO_CHAR );
-         act( AT_SKILL, "$n finds the $d!", ch, NULL, pexit->keyword, TO_ROOM );
+         act( AT_SKILL, "Your search reveals the $d!", ch, nullptr, pexit->keyword, TO_CHAR );
+         act( AT_SKILL, "$n finds the $d!", ch, nullptr, pexit->keyword, TO_ROOM );
          REMOVE_EXIT_FLAG( pexit, EX_SECRET );
          return;
       }
@@ -4011,14 +4011,14 @@ CMDF( do_search )
          {
             obj->separate(  );
             obj->extra_flags.reset( ITEM_HIDDEN );
-            act( AT_SKILL, "Your search reveals $p!", ch, obj, NULL, TO_CHAR );
-            act( AT_SKILL, "$n finds $p!", ch, obj, NULL, TO_ROOM );
+            act( AT_SKILL, "Your search reveals $p!", ch, obj, nullptr, TO_CHAR );
+            act( AT_SKILL, "$n finds $p!", ch, obj, nullptr, TO_ROOM );
             return;
          }
       }
    }
    ch->print( "You find nothing.\r\n" );
-   act( AT_MAGIC, "$n found nothing in $s search.", ch, NULL, NULL, TO_ROOM );
+   act( AT_MAGIC, "$n found nothing in $s search.", ch, nullptr, nullptr, TO_ROOM );
    ch->learn_from_failure( gsn_search );
 }
 
@@ -4101,8 +4101,8 @@ CMDF( do_steal )
        * Failure.
        */
       ch->print( "Oops...\r\n" );
-      act( AT_ACTION, "$n tried to steal from you!\r\n", ch, NULL, victim, TO_VICT );
-      act( AT_ACTION, "$n tried to steal from $N.\r\n", ch, NULL, victim, TO_NOTVICT );
+      act( AT_ACTION, "$n tried to steal from you!\r\n", ch, nullptr, victim, TO_VICT );
+      act( AT_ACTION, "$n tried to steal from $N.\r\n", ch, nullptr, victim, TO_NOTVICT );
 
       cmdf( victim, "yell %s is a bloody thief!", ch->name );
 
@@ -4310,9 +4310,9 @@ CMDF( do_backstab )
          /*
           * Victim saw attempt at backstab 
           */
-         act( AT_SKILL, "$n nearly slices off $s finger trying to backstab $N!", ch, NULL, victim, TO_NOTVICT );
-         act( AT_SKILL, "$n nearly slices off $s finger trying to backstab you!", ch, NULL, victim, TO_VICT );
-         act( AT_SKILL, "You nearly slice off your finger trying to backstab $N!", ch, NULL, victim, TO_CHAR );
+         act( AT_SKILL, "$n nearly slices off $s finger trying to backstab $N!", ch, nullptr, victim, TO_NOTVICT );
+         act( AT_SKILL, "$n nearly slices off $s finger trying to backstab you!", ch, nullptr, victim, TO_VICT );
+         act( AT_SKILL, "You nearly slice off your finger trying to backstab $N!", ch, nullptr, victim, TO_CHAR );
          global_retcode = damage( ch, victim, 0, gsn_backstab );
       }
       else
@@ -4320,8 +4320,8 @@ CMDF( do_backstab )
          /*
           * victim did not see failed attempt 
           */
-         act( AT_SKILL, "$N didn't seem to notice your futile attempt to backstab!", ch, NULL, victim, TO_CHAR );
-         act( AT_SKILL, "$N didn't seem to notice $n's failed backstab attempt!", ch, NULL, victim, TO_NOTVICT );
+         act( AT_SKILL, "$N didn't seem to notice your futile attempt to backstab!", ch, nullptr, victim, TO_CHAR );
+         act( AT_SKILL, "$N didn't seem to notice $n's failed backstab attempt!", ch, nullptr, victim, TO_NOTVICT );
       }
       ch->learn_from_failure( gsn_backstab );
 
@@ -4343,15 +4343,15 @@ CMDF( do_backstab )
       {
          if( to_saw > awake_paralysis && !no_para )
          {  /* Para victim */
-            act( AT_SKILL, "$N is frozen by a critical pierce to the spine!", ch, NULL, victim, TO_CHAR );
-            act( AT_SKILL, "$n got you in the spine! You are paralyzed!!", ch, NULL, victim, TO_VICT );
-            act( AT_SKILL, "$n paralyzed $N with a critical pierce to the spine!", ch, NULL, victim, TO_NOTVICT );
+            act( AT_SKILL, "$N is frozen by a critical pierce to the spine!", ch, nullptr, victim, TO_CHAR );
+            act( AT_SKILL, "$n got you in the spine! You are paralyzed!!", ch, nullptr, victim, TO_VICT );
+            act( AT_SKILL, "$n paralyzed $N with a critical pierce to the spine!", ch, nullptr, victim, TO_NOTVICT );
             victim->affect_to_char( &af );
          }
 
-         act( AT_SKILL, "$n sneaks up behind $N, stabbing $M in the back!", ch, NULL, victim, TO_NOTVICT );
-         act( AT_SKILL, "$n sneaks up behind you, stabbing you in the back!", ch, NULL, victim, TO_VICT );
-         act( AT_SKILL, "You sneak up behind $N, stabbing $M in the back!", ch, NULL, victim, TO_CHAR );
+         act( AT_SKILL, "$n sneaks up behind $N, stabbing $M in the back!", ch, nullptr, victim, TO_NOTVICT );
+         act( AT_SKILL, "$n sneaks up behind you, stabbing you in the back!", ch, nullptr, victim, TO_VICT );
+         act( AT_SKILL, "You sneak up behind $N, stabbing $M in the back!", ch, nullptr, victim, TO_CHAR );
          ch->hitroll += base;
          global_retcode = multi_hit( ch, victim, gsn_backstab );
          ch->hitroll -= base;
@@ -4361,14 +4361,14 @@ CMDF( do_backstab )
       {
          if( to_saw > sleep_paralysis && !no_para )
          {  /* Para victim */
-            act( AT_SKILL, "$N is frozen by a critical pierce to the spine!", ch, NULL, victim, TO_NOTVICT );
-            act( AT_SKILL, "$n got you in the spine! You are paralyzed!!", ch, NULL, victim, TO_CHAR );
+            act( AT_SKILL, "$N is frozen by a critical pierce to the spine!", ch, nullptr, victim, TO_NOTVICT );
+            act( AT_SKILL, "$n got you in the spine! You are paralyzed!!", ch, nullptr, victim, TO_CHAR );
             victim->affect_to_char( &af );
          }
 
-         act( AT_SKILL, "$n sneaks up behind $N, stabbing $M in the back!", ch, NULL, victim, TO_NOTVICT );
-         act( AT_SKILL, "$n sneaks up behind you, stabbing you in the back!", ch, NULL, victim, TO_VICT );
-         act( AT_SKILL, "You sneak up behind $N, stabbing $M in the back!", ch, NULL, victim, TO_CHAR );
+         act( AT_SKILL, "$n sneaks up behind $N, stabbing $M in the back!", ch, nullptr, victim, TO_NOTVICT );
+         act( AT_SKILL, "$n sneaks up behind you, stabbing you in the back!", ch, nullptr, victim, TO_VICT );
+         act( AT_SKILL, "You sneak up behind $N, stabbing $M in the back!", ch, nullptr, victim, TO_CHAR );
          ch->hitroll += base;
          global_retcode = multi_hit( ch, victim, gsn_backstab );
          ch->hitroll -= base;
@@ -4454,15 +4454,15 @@ CMDF( do_rescue )
    if( !can_use_skill( ch, percent, gsn_rescue ) )
    {
       ch->print( "You fail the rescue.\r\n" );
-      act( AT_SKILL, "$n tries to rescue you!", ch, NULL, victim, TO_VICT );
-      act( AT_SKILL, "$n tries to rescue $N!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n tries to rescue you!", ch, nullptr, victim, TO_VICT );
+      act( AT_SKILL, "$n tries to rescue $N!", ch, nullptr, victim, TO_NOTVICT );
       ch->learn_from_failure( gsn_rescue );
       return;
    }
 
-   act( AT_SKILL, "You rescue $N!", ch, NULL, victim, TO_CHAR );
-   act( AT_SKILL, "$n rescues you!", ch, NULL, victim, TO_VICT );
-   act( AT_SKILL, "$n moves in front of $N!", ch, NULL, victim, TO_NOTVICT );
+   act( AT_SKILL, "You rescue $N!", ch, nullptr, victim, TO_CHAR );
+   act( AT_SKILL, "$n rescues you!", ch, nullptr, victim, TO_VICT );
+   act( AT_SKILL, "$n moves in front of $N!", ch, nullptr, victim, TO_NOTVICT );
 
    ch->adjust_favor( 8, 1 );
    fch->stop_fighting( false );
@@ -4584,23 +4584,23 @@ void kick_messages( char_data * ch, char_data * victim, int dam, ch_ret rcode )
 
    if( !dam || rcode == rVICT_IMMUNE )
    {
-      act( AT_GREY, att_kick_miss_ch[i], ch, NULL, victim, TO_CHAR );
-      act( AT_GREY, att_kick_miss_vic[i], ch, NULL, victim, TO_VICT );
-      act( AT_GREY, att_kick_miss_room[i], ch, NULL, victim, TO_NOTVICT );
+      act( AT_GREY, att_kick_miss_ch[i], ch, nullptr, victim, TO_CHAR );
+      act( AT_GREY, att_kick_miss_vic[i], ch, nullptr, victim, TO_VICT );
+      act( AT_GREY, att_kick_miss_room[i], ch, nullptr, victim, TO_NOTVICT );
    }
    else if( rcode == rVICT_DIED )
    {
-      act( AT_GREY, att_kick_kill_ch[i], ch, NULL, victim, TO_CHAR );
+      act( AT_GREY, att_kick_kill_ch[i], ch, nullptr, victim, TO_CHAR );
       /*
-       * act(AT_GREY, att_kick_kill_vic[i], ch, NULL, victim, TO_VICT); 
+       * act(AT_GREY, att_kick_kill_vic[i], ch, nullptr, victim, TO_VICT); 
        */
-      act( AT_GREY, att_kick_kill_room[i], ch, NULL, victim, TO_NOTVICT );
+      act( AT_GREY, att_kick_kill_room[i], ch, nullptr, victim, TO_NOTVICT );
    }
    else
    {
-      act( AT_GREY, att_kick_hit_ch[i], ch, NULL, victim, TO_CHAR );
-      act( AT_GREY, att_kick_hit_vic[i], ch, NULL, victim, TO_VICT );
-      act( AT_GREY, att_kick_hit_room[i], ch, NULL, victim, TO_NOTVICT );
+      act( AT_GREY, att_kick_hit_ch[i], ch, nullptr, victim, TO_CHAR );
+      act( AT_GREY, att_kick_hit_vic[i], ch, nullptr, victim, TO_VICT );
+      act( AT_GREY, att_kick_hit_room[i], ch, nullptr, victim, TO_NOTVICT );
    }
 }
 
@@ -4810,9 +4810,9 @@ CMDF( do_bash )
       ch->WAIT_STATE( 2 * sysdata->pulseviolence );
       victim->WAIT_STATE( 2 * sysdata->pulseviolence );
       victim->position = POS_SITTING;
-      act( AT_SKILL, "$N smashes into you, and knocks you to the ground!", victim, NULL, ch, TO_CHAR );
-      act( AT_SKILL, "You smash into $N, and knock $M to the ground!", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n smashes into $N, and knocks $M to the ground!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$N smashes into you, and knocks you to the ground!", victim, nullptr, ch, TO_CHAR );
+      act( AT_SKILL, "You smash into $N, and knock $M to the ground!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n smashes into $N, and knocks $M to the ground!", ch, nullptr, victim, TO_NOTVICT );
       global_retcode = damage( ch, victim, number_range( 1, 2 ), gsn_bash );
       victim->position = POS_SITTING;
 
@@ -4831,9 +4831,9 @@ CMDF( do_bash )
       ch->WAIT_STATE( 2 * sysdata->pulseviolence );
       ch->learn_from_failure( gsn_bash );
       ch->position = POS_SITTING;
-      act( AT_SKILL, "$N tries to smash into you, but falls to the ground!", victim, NULL, ch, TO_CHAR );
-      act( AT_SKILL, "You smash into $N, and bounce off $M to the ground!", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n smashes into $N, and bounces off $M to the ground!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$N tries to smash into you, but falls to the ground!", victim, nullptr, ch, TO_CHAR );
+      act( AT_SKILL, "You smash into $N, and bounce off $M to the ground!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n smashes into $N, and bounces off $M to the ground!", ch, nullptr, victim, TO_NOTVICT );
       global_retcode = damage( ch, victim, 0, gsn_bash );
    }
 }
@@ -4894,9 +4894,9 @@ CMDF( do_stun )
          ch->move -= ch->max_move / 10;
       ch->WAIT_STATE( 2 * sysdata->pulseviolence );
       victim->WAIT_STATE( sysdata->pulseviolence );
-      act( AT_SKILL, "$N smashes into you, leaving you stunned!", victim, NULL, ch, TO_CHAR );
-      act( AT_SKILL, "You smash into $N, leaving $M stunned!", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n smashes into $N, leaving $M stunned!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$N smashes into you, leaving you stunned!", victim, nullptr, ch, TO_CHAR );
+      act( AT_SKILL, "You smash into $N, leaving $M stunned!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n smashes into $N, leaving $M stunned!", ch, nullptr, victim, TO_NOTVICT );
       if( !victim->has_aflag( AFF_PARALYSIS ) )
       {
          af.type = gsn_stun;
@@ -4914,9 +4914,9 @@ CMDF( do_stun )
       if( !ch->isnpc(  ) )
          ch->move -= ch->max_move / 15;
       ch->learn_from_failure( gsn_stun );
-      act( AT_SKILL, "$n charges at you screaming, but you dodge out of the way.", ch, NULL, victim, TO_VICT );
-      act( AT_SKILL, "You try to stun $N, but $E dodges out of the way.", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n charges screaming at $N, but keeps going right on past.", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n charges at you screaming, but you dodge out of the way.", ch, nullptr, victim, TO_VICT );
+      act( AT_SKILL, "You try to stun $N, but $E dodges out of the way.", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n charges screaming at $N, but keeps going right on past.", ch, nullptr, victim, TO_NOTVICT );
    }
 }
 
@@ -4945,8 +4945,8 @@ bool check_grip( char_data * ch, char_data * victim )
       victim->learn_from_failure( gsn_grip );
       return false;
    }
-   act( AT_SKILL, "You evade $n's attempt to disarm you.", ch, NULL, victim, TO_VICT );
-   act( AT_SKILL, "$N holds $S weapon strongly, and is not disarmed.", ch, NULL, victim, TO_CHAR );
+   act( AT_SKILL, "You evade $n's attempt to disarm you.", ch, nullptr, victim, TO_VICT );
+   act( AT_SKILL, "$N holds $S weapon strongly, and is not disarmed.", ch, nullptr, victim, TO_CHAR );
    return true;
 }
 
@@ -4962,7 +4962,7 @@ void disarm( char_data * ch, char_data * victim )
    if( !( obj = victim->get_eq( WEAR_WIELD ) ) )
       return;
 
-   if( ( tmpobj = victim->get_eq( WEAR_DUAL_WIELD ) ) != NULL && number_bits( 1 ) == 0 )
+   if( ( tmpobj = victim->get_eq( WEAR_DUAL_WIELD ) ) != nullptr && number_bits( 1 ) == 0 )
       obj = tmpobj;
 
    if( !ch->get_eq( WEAR_WIELD ) && number_bits( 1 ) == 0 )
@@ -4983,11 +4983,11 @@ void disarm( char_data * ch, char_data * victim )
       return;
    }
 
-   act( AT_SKILL, "$n DISARMS you!", ch, NULL, victim, TO_VICT );
-   act( AT_SKILL, "You disarm $N!", ch, NULL, victim, TO_CHAR );
-   act( AT_SKILL, "$n disarms $N!", ch, NULL, victim, TO_NOTVICT );
+   act( AT_SKILL, "$n DISARMS you!", ch, nullptr, victim, TO_VICT );
+   act( AT_SKILL, "You disarm $N!", ch, nullptr, victim, TO_CHAR );
+   act( AT_SKILL, "$n disarms $N!", ch, nullptr, victim, TO_NOTVICT );
 
-   if( obj == victim->get_eq( WEAR_WIELD ) && ( tmpobj = victim->get_eq( WEAR_DUAL_WIELD ) ) != NULL )
+   if( obj == victim->get_eq( WEAR_WIELD ) && ( tmpobj = victim->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
       tmpobj->wear_loc = WEAR_WIELD;
 
    obj->from_char(  );
@@ -5059,11 +5059,11 @@ void trip( char_data * ch, char_data * victim )
    {
       if( victim->mount->has_aflag( AFF_FLYING ) || victim->mount->has_aflag( AFF_FLOATING ) )
          return;
-      act( AT_SKILL, "$n trips your mount and you fall off!", ch, NULL, victim, TO_VICT );
-      act( AT_SKILL, "You trip $N's mount and $N falls off!", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n trips $N's mount and $N falls off!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n trips your mount and you fall off!", ch, nullptr, victim, TO_VICT );
+      act( AT_SKILL, "You trip $N's mount and $N falls off!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n trips $N's mount and $N falls off!", ch, nullptr, victim, TO_NOTVICT );
       victim->mount->unset_actflag( ACT_MOUNTED );
-      victim->mount = NULL;
+      victim->mount = nullptr;
       ch->WAIT_STATE( 2 * sysdata->pulseviolence );
       victim->WAIT_STATE( 2 * sysdata->pulseviolence );
       victim->position = POS_RESTING;
@@ -5071,9 +5071,9 @@ void trip( char_data * ch, char_data * victim )
    }
    if( victim->wait == 0 )
    {
-      act( AT_SKILL, "$n trips you and you go down!", ch, NULL, victim, TO_VICT );
-      act( AT_SKILL, "You trip $N and $N goes down!", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n trips $N and $N goes down!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n trips you and you go down!", ch, nullptr, victim, TO_VICT );
+      act( AT_SKILL, "You trip $N and $N goes down!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n trips $N and $N goes down!", ch, nullptr, victim, TO_NOTVICT );
 
       ch->WAIT_STATE( 2 * sysdata->pulseviolence );
       victim->WAIT_STATE( 2 * sysdata->pulseviolence );
@@ -5101,13 +5101,13 @@ CMDF( do_cleave )
       return;
    }
 
-   if( ( obj = ch->get_eq( WEAR_WIELD ) ) == NULL || ( obj->value[3] != 1 && obj->value[3] != 3 && obj->value[3] != 5 ) )
+   if( ( obj = ch->get_eq( WEAR_WIELD ) ) == nullptr || ( obj->value[3] != 1 && obj->value[3] != 3 && obj->value[3] != 5 ) )
    {
       ch->print( "You need a slashing weapon.\r\n" );
       return;
    }
 
-   if( ( victim = ch->who_fighting( ) ) == NULL )
+   if( ( victim = ch->who_fighting( ) ) == nullptr )
    {
       ch->print( "You aren't fighting anyone.\r\n" );
       return;
@@ -5177,7 +5177,7 @@ CMDF( do_pick )
 
       if( gch->isnpc(  ) && gch->IS_AWAKE(  ) && ch->level + 5 < gch->level )
       {
-         act( AT_PLAIN, "$N is standing too close to the lock.", ch, NULL, gch, TO_CHAR );
+         act( AT_PLAIN, "$N is standing too close to the lock.", ch, nullptr, gch, TO_CHAR );
          return;
       }
    }
@@ -5190,7 +5190,7 @@ CMDF( do_pick )
    }
 
    exit_data *pexit;
-   if( ( pexit = find_door( ch, arg, true ) ) != NULL )
+   if( ( pexit = find_door( ch, arg, true ) ) != nullptr )
    {
       /*
        * 'pick door' 
@@ -5220,13 +5220,13 @@ CMDF( do_pick )
 
       REMOVE_EXIT_FLAG( pexit, EX_LOCKED );
       ch->print( "*Click*\r\n" );
-      act( AT_ACTION, "$n picks the $d.", ch, NULL, pexit->keyword, TO_ROOM );
+      act( AT_ACTION, "$n picks the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
       ch->adjust_favor( 9, 1 );
       /*
        * pick the other side 
        */
       exit_data *pexit_rev;
-      if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
+      if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
       {
          REMOVE_EXIT_FLAG( pexit_rev, EX_LOCKED );
       }
@@ -5235,7 +5235,7 @@ CMDF( do_pick )
    }
 
    obj_data *obj;
-   if( ( obj = ch->get_obj_here( arg ) ) != NULL )
+   if( ( obj = ch->get_obj_here( arg ) ) != nullptr )
    {
       /*
        * 'pick object' 
@@ -5271,7 +5271,7 @@ CMDF( do_pick )
       obj->separate(  );
       REMOVE_BIT( obj->value[1], CONT_LOCKED );
       ch->print( "*Click*\r\n" );
-      act( AT_ACTION, "$n picks $p.", ch, obj, NULL, TO_ROOM );
+      act( AT_ACTION, "$n picks $p.", ch, obj, nullptr, TO_ROOM );
       ch->adjust_favor( 9, 1 );
       check_for_trap( ch, obj, TRAP_PICK );
       return;
@@ -5297,7 +5297,7 @@ CMDF( do_visible )
    if( ch->has_pcflag( PCFLAG_WIZINVIS ) )
    {
       ch->unset_pcflag( PCFLAG_WIZINVIS );
-      act( AT_IMMORT, "$n slowly fades into existence.", ch, NULL, NULL, TO_ROOM );
+      act( AT_IMMORT, "$n slowly fades into existence.", ch, nullptr, nullptr, TO_ROOM );
       ch->print( "&[immortal]You slowly fade back into existence.\r\n" );
    }
    ch->print( "Ok.\r\n" );
@@ -5340,13 +5340,13 @@ CMDF( do_aid )
 
    if( victim->position > POS_STUNNED )
    {
-      act( AT_PLAIN, "$N doesn't need your help.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N doesn't need your help.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( victim->hit <= -6 )
    {
-      act( AT_PLAIN, "$N's condition is beyond your aiding ability.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N's condition is beyond your aiding ability.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -5359,14 +5359,14 @@ CMDF( do_aid )
       return;
    }
 
-   act( AT_SKILL, "You aid $N!", ch, NULL, victim, TO_CHAR );
-   act( AT_SKILL, "$n aids $N!", ch, NULL, victim, TO_NOTVICT );
+   act( AT_SKILL, "You aid $N!", ch, nullptr, victim, TO_CHAR );
+   act( AT_SKILL, "$n aids $N!", ch, nullptr, victim, TO_NOTVICT );
    ch->adjust_favor( 8, 1 );
    if( victim->hit < 1 )
       victim->hit = 1;
 
    victim->update_pos(  );
-   act( AT_SKILL, "$n aids you!", ch, NULL, victim, TO_VICT );
+   act( AT_SKILL, "$n aids you!", ch, nullptr, victim, TO_VICT );
 }
 
 int mount_ego_check( char_data * ch, char_data * horse )
@@ -5480,15 +5480,15 @@ CMDF( do_mount )
    check = mount_ego_check( ch, victim );
    if( check > 5 )
    {
-      act( AT_SKILL, "$N snarls and attacks!", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "As $n tries to mount $N, $N attacks $n!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$N snarls and attacks!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "As $n tries to mount $N, $N attacks $n!", ch, nullptr, victim, TO_NOTVICT );
       cmdf( victim, "kill %s", ch->name );
       return;
    }
    else if( check > -1 )
    {
-      act( AT_SKILL, "$N moves out of the way and you fall on your butt.", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "as $n tries to mount $N, $N moves out of the way", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "$N moves out of the way and you fall on your butt.", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "as $n tries to mount $N, $N moves out of the way", ch, nullptr, victim, TO_NOTVICT );
       ch->position = POS_SITTING;
       return;
    }
@@ -5505,16 +5505,16 @@ CMDF( do_mount )
    {
       victim->set_actflag( ACT_MOUNTED );
       ch->mount = victim;
-      act( AT_SKILL, "You mount $N.", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n skillfully mounts $N.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_SKILL, "$n mounts you.", ch, NULL, victim, TO_VICT );
+      act( AT_SKILL, "You mount $N.", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n skillfully mounts $N.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n mounts you.", ch, nullptr, victim, TO_VICT );
       ch->position = POS_MOUNTED;
    }
    else
    {
-      act( AT_SKILL, "You unsuccessfully try to mount $N.", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n unsuccessfully attempts to mount $N.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_SKILL, "$n tries to mount you.", ch, NULL, victim, TO_VICT );
+      act( AT_SKILL, "You unsuccessfully try to mount $N.", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n unsuccessfully attempts to mount $N.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n tries to mount you.", ch, nullptr, victim, TO_VICT );
       ch->learn_from_failure( gsn_mount );
    }
 }
@@ -5533,21 +5533,21 @@ CMDF( do_dismount )
    ch->WAIT_STATE( skill_table[gsn_mount]->beats );
    if( ch->isnpc(  ) || number_percent(  ) < ch->pcdata->learned[gsn_mount] )
    {
-      act( AT_SKILL, "You dismount $N.", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n skillfully dismounts $N.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_SKILL, "$n dismounts you.  Whew!", ch, NULL, victim, TO_VICT );
+      act( AT_SKILL, "You dismount $N.", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n skillfully dismounts $N.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n dismounts you.  Whew!", ch, nullptr, victim, TO_VICT );
       victim->unset_actflag( ACT_MOUNTED );
-      ch->mount = NULL;
+      ch->mount = nullptr;
       ch->position = POS_STANDING;
    }
    else
    {
-      act( AT_SKILL, "You fall off while dismounting $N.  Ouch!", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "$n falls off of $N while dismounting.", ch, NULL, victim, TO_NOTVICT );
-      act( AT_SKILL, "$n falls off your back.", ch, NULL, victim, TO_VICT );
+      act( AT_SKILL, "You fall off while dismounting $N.  Ouch!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "$n falls off of $N while dismounting.", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n falls off your back.", ch, nullptr, victim, TO_VICT );
       ch->learn_from_failure( gsn_mount );
       victim->unset_actflag( ACT_MOUNTED );
-      ch->mount = NULL;
+      ch->mount = nullptr;
       ch->position = POS_SITTING;
       fell = true;
       global_retcode = damage( ch, ch, 1, TYPE_UNDEFINED );
@@ -5601,12 +5601,12 @@ bool check_parry( char_data * ch, char_data * victim )
     * Macro cleanup made that unnecessary on 9-18-03 - Samson 
     */
    if( !victim->has_pcflag( PCFLAG_GAG ) )
-      act( AT_SKILL, "You parry $n's attack.", ch, NULL, victim, TO_VICT );
+      act( AT_SKILL, "You parry $n's attack.", ch, nullptr, victim, TO_VICT );
 
    if( !ch->isnpc(  ) && !ch->has_pcflag( PCFLAG_GAG ) )
-      act( AT_SKILL, "$N parries your attack.", ch, NULL, victim, TO_CHAR );
+      act( AT_SKILL, "$N parries your attack.", ch, nullptr, victim, TO_CHAR );
 
-   act( AT_SKILL, "$N parries $n's attack.", ch, NULL, victim, TO_NOTVICT );
+   act( AT_SKILL, "$N parries $n's attack.", ch, nullptr, victim, TO_NOTVICT );
 
    return true;
 }
@@ -5629,7 +5629,7 @@ bool check_dodge( char_data * ch, char_data * victim )
    else
       chances = ( victim->LEARNED( gsn_dodge ) / sysdata->dodge_mod );
 
-   if( chances != 0 && victim->morph != NULL )
+   if( chances != 0 && victim->morph != nullptr )
       chances += victim->morph->dodge;
 
    /*
@@ -5646,12 +5646,12 @@ bool check_dodge( char_data * ch, char_data * victim )
     * And the macro cleanup made this one moot as well - Samson 
     */
    if( !victim->has_pcflag( PCFLAG_GAG ) )
-      act( AT_SKILL, "You dodge $n's attack.", ch, NULL, victim, TO_VICT );
+      act( AT_SKILL, "You dodge $n's attack.", ch, nullptr, victim, TO_VICT );
 
    if( !ch->has_pcflag( PCFLAG_GAG ) )
-      act( AT_SKILL, "$N dodges your attack.", ch, NULL, victim, TO_CHAR );
+      act( AT_SKILL, "$N dodges your attack.", ch, nullptr, victim, TO_CHAR );
 
-   act( AT_SKILL, "$N dodges $n's attack.", ch, NULL, victim, TO_NOTVICT );
+   act( AT_SKILL, "$N dodges $n's attack.", ch, nullptr, victim, TO_NOTVICT );
 
    return true;
 }
@@ -5675,9 +5675,9 @@ bool check_tumble( char_data * ch, char_data * victim )
       victim->learn_from_failure( gsn_tumble );
       return false;
    }
-   act( AT_SKILL, "You tumble away from $n's attack.", ch, NULL, victim, TO_VICT );
-   act( AT_SKILL, "$N tumbles away from your attack.", ch, NULL, victim, TO_CHAR );
-   act( AT_SKILL, "$N tumbles away from $n's attack.", ch, NULL, victim, TO_NOTVICT );
+   act( AT_SKILL, "You tumble away from $n's attack.", ch, nullptr, victim, TO_VICT );
+   act( AT_SKILL, "$N tumbles away from your attack.", ch, nullptr, victim, TO_CHAR );
+   act( AT_SKILL, "$N tumbles away from $n's attack.", ch, nullptr, victim, TO_NOTVICT );
    return true;
 }
 
@@ -5727,7 +5727,7 @@ CMDF( do_poison_weapon )
    /*
     * Now we have a valid weapon...check to see if we have the powder. 
     */
-   obj_data *pobj = NULL, *wobj = NULL;
+   obj_data *pobj = nullptr, *wobj = nullptr;
    list < obj_data * >::iterator iobj;
    bool pfound = false;
    for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
@@ -5795,7 +5795,7 @@ CMDF( do_poison_weapon )
    {
       ch->print( "&RYou failed and spill some on yourself.  Ouch!&w\r\n" );
       damage( ch, ch, ch->level, gsn_poison_weapon );
-      act( AT_RED, "$n spills the poison all over!", ch, NULL, NULL, TO_ROOM );
+      act( AT_RED, "$n spills the poison all over!", ch, nullptr, nullptr, TO_ROOM );
       pobj->extract(  );
       wobj->extract(  );
       ch->learn_from_failure( gsn_poison_weapon );
@@ -5808,8 +5808,8 @@ CMDF( do_poison_weapon )
     */
    act( AT_RED, "You mix $p in $P, creating a deadly poison!", ch, pobj, wobj, TO_CHAR );
    act( AT_RED, "$n mixes $p in $P, creating a deadly poison!", ch, pobj, wobj, TO_ROOM );
-   act( AT_GREEN, "You pour the poison over $p, which glistens wickedly!", ch, obj, NULL, TO_CHAR );
-   act( AT_GREEN, "$n pours the poison over $p, which glistens wickedly!", ch, obj, NULL, TO_ROOM );
+   act( AT_GREEN, "You pour the poison over $p, which glistens wickedly!", ch, obj, nullptr, TO_CHAR );
+   act( AT_GREEN, "$n pours the poison over $p, which glistens wickedly!", ch, obj, nullptr, TO_ROOM );
    obj->extra_flags.set( ITEM_POISONED );
    obj->cost *= 2;
    /*
@@ -5826,8 +5826,8 @@ CMDF( do_poison_weapon )
    /*
     * WHAT?  All of that, just for that one bit?  How lame. ;) 
     */
-   act( AT_BLUE, "The remainder of the poison eats through $p.", ch, wobj, NULL, TO_CHAR );
-   act( AT_BLUE, "The remainder of the poison eats through $p.", ch, wobj, NULL, TO_ROOM );
+   act( AT_BLUE, "The remainder of the poison eats through $p.", ch, wobj, nullptr, TO_CHAR );
+   act( AT_BLUE, "The remainder of the poison eats through $p.", ch, wobj, nullptr, TO_ROOM );
    pobj->extract(  );
    wobj->extract(  );
 }
@@ -5925,8 +5925,8 @@ CMDF( do_scribe )
    stralloc_printf( &scroll->objdesc, "A glowing scroll inscribed '%s' lies in the dust.", skill_table[sn]->name );
    stralloc_printf( &scroll->name, "scroll scribing %s", skill_table[sn]->name );
 
-   act( AT_MAGIC, "$n magically scribes $p.", ch, scroll, NULL, TO_ROOM );
-   act( AT_MAGIC, "You magically scribe $p.", ch, scroll, NULL, TO_CHAR );
+   act( AT_MAGIC, "$n magically scribes $p.", ch, scroll, nullptr, TO_ROOM );
+   act( AT_MAGIC, "You magically scribe $p.", ch, scroll, nullptr, TO_CHAR );
 
    ch->WAIT_STATE( skill_table[gsn_scribe]->beats );
 
@@ -6045,8 +6045,8 @@ CMDF( do_brew )
    stralloc_printf( &potion->objdesc, "A strange potion labelled '%s' sizzles in a glass flask.", skill_table[sn]->name );
    stralloc_printf( &potion->name, "flask potion %s", skill_table[sn]->name );
 
-   act( AT_MAGIC, "$n brews up $p.", ch, potion, NULL, TO_ROOM );
-   act( AT_MAGIC, "You brew up $p.", ch, potion, NULL, TO_CHAR );
+   act( AT_MAGIC, "$n brews up $p.", ch, potion, nullptr, TO_ROOM );
+   act( AT_MAGIC, "You brew up $p.", ch, potion, nullptr, TO_CHAR );
 
    ch->WAIT_STATE( skill_table[gsn_brew]->beats );
 
@@ -6121,7 +6121,7 @@ CMDF( do_circle )
 
    if( victim->num_fighting < 2 )
    {
-      act( AT_PLAIN, "You can't circle around them without a distraction.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "You can't circle around them without a distraction.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -6137,9 +6137,9 @@ CMDF( do_circle )
    if( can_use_skill( ch, percent, gsn_circle ) )
    {
       ch->WAIT_STATE( 2 * sysdata->pulseviolence );
-      act( AT_SKILL, "$n sneaks up behind $N, stabbing $M in the back!", ch, NULL, victim, TO_NOTVICT );
-      act( AT_SKILL, "$n sneaks up behind you, stabbing you in the back!", ch, NULL, victim, TO_VICT );
-      act( AT_SKILL, "You sneak up behind $N, stabbing $M in the back!", ch, NULL, victim, TO_CHAR );
+      act( AT_SKILL, "$n sneaks up behind $N, stabbing $M in the back!", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n sneaks up behind you, stabbing you in the back!", ch, nullptr, victim, TO_VICT );
+      act( AT_SKILL, "You sneak up behind $N, stabbing $M in the back!", ch, nullptr, victim, TO_CHAR );
       global_retcode = multi_hit( ch, victim, gsn_circle );
       ch->adjust_favor( 10, 1 );
    }
@@ -6147,9 +6147,9 @@ CMDF( do_circle )
    {
       ch->learn_from_failure( gsn_circle );
       ch->WAIT_STATE( 2 * sysdata->pulseviolence );
-      act( AT_SKILL, "$n nearly slices off $s finger trying to backstab $N!", ch, NULL, victim, TO_NOTVICT );
-      act( AT_SKILL, "$n nearly slices off $s finger trying to backstab you!", ch, NULL, victim, TO_VICT );
-      act( AT_SKILL, "You nearly slice off your finger trying to backstab $N!", ch, NULL, victim, TO_CHAR );
+      act( AT_SKILL, "$n nearly slices off $s finger trying to backstab $N!", ch, nullptr, victim, TO_NOTVICT );
+      act( AT_SKILL, "$n nearly slices off $s finger trying to backstab you!", ch, nullptr, victim, TO_VICT );
+      act( AT_SKILL, "You nearly slice off your finger trying to backstab $N!", ch, nullptr, victim, TO_CHAR );
       global_retcode = damage( ch, victim, 0, gsn_circle );
    }
 }
@@ -6287,7 +6287,7 @@ static void scanroom( char_data * ch, room_index * room, int dir, int maxdist, i
    }
 
    list < exit_data * >::iterator ex;
-   exit_data *pexit = NULL;
+   exit_data *pexit = nullptr;
    for( ex = room->exits.begin(  ); ex != room->exits.end(  ); ++ex )
    {
       exit_data *iexit = *ex;
@@ -6389,7 +6389,7 @@ CMDF( do_slice )
       ch->learn_from_failure( gsn_slice );   /* Just in case they die :> */
       if( number_percent(  ) + ( ch->get_curr_dex(  ) - 13 ) < 10 )
       {
-         act( AT_BLOOD, "You cut yourself!", ch, NULL, NULL, TO_CHAR );
+         act( AT_BLOOD, "You cut yourself!", ch, nullptr, nullptr, TO_CHAR );
          damage( ch, ch, ch->level, gsn_slice );
       }
       return;
@@ -6406,8 +6406,8 @@ CMDF( do_slice )
    stralloc_printf( &slice->short_descr, "a slice of raw meat from %s", pMobIndex->short_descr );
    stralloc_printf( &slice->objdesc, "A slice of raw meat from %s lies on the ground.", pMobIndex->short_descr );
 
-   act( AT_BLOOD, "$n cuts a slice of meat from $p.", ch, corpse, NULL, TO_ROOM );
-   act( AT_BLOOD, "You cut a slice of meat from $p.", ch, corpse, NULL, TO_CHAR );
+   act( AT_BLOOD, "$n cuts a slice of meat from $p.", ch, corpse, nullptr, TO_ROOM );
+   act( AT_BLOOD, "You cut a slice of meat from $p.", ch, corpse, nullptr, TO_CHAR );
 
    slice->to_char( ch );
    corpse->value[3] -= 25;
@@ -6457,7 +6457,7 @@ CMDF( do_style )
          {
             ch->position = POS_DEFENSIVE;
             if( ch->IS_PKILL(  ) )
-               act( AT_ACTION, "$n moves into a defensive posture.", ch, NULL, NULL, TO_ROOM );
+               act( AT_ACTION, "$n moves into a defensive posture.", ch, nullptr, nullptr, TO_ROOM );
          }
          ch->style = STYLE_DEFENSIVE;
          ch->print( "You adopt a defensive fighting style.\r\n" );
@@ -6490,7 +6490,7 @@ CMDF( do_style )
          {
             ch->position = POS_FIGHTING;
             if( ch->IS_PKILL(  ) )
-               act( AT_ACTION, "$n switches to a standard fighting style.", ch, NULL, NULL, TO_ROOM );
+               act( AT_ACTION, "$n switches to a standard fighting style.", ch, nullptr, nullptr, TO_ROOM );
          }
          ch->style = STYLE_FIGHTING;
          ch->print( "You adopt a standard fighting style.\r\n" );
@@ -6523,7 +6523,7 @@ CMDF( do_style )
          {
             ch->position = POS_AGGRESSIVE;
             if( ch->IS_PKILL(  ) )
-               act( AT_ACTION, "$n assumes an aggressive stance.", ch, NULL, NULL, TO_ROOM );
+               act( AT_ACTION, "$n assumes an aggressive stance.", ch, nullptr, nullptr, TO_ROOM );
          }
          ch->style = STYLE_AGGRESSIVE;
          ch->print( "You adopt an aggressive fighting style.\r\n" );
@@ -6556,7 +6556,7 @@ CMDF( do_style )
          {
             ch->position = POS_BERSERK;
             if( ch->IS_PKILL(  ) )
-               act( AT_ACTION, "$n enters a wildly aggressive style.", ch, NULL, NULL, TO_ROOM );
+               act( AT_ACTION, "$n enters a wildly aggressive style.", ch, nullptr, nullptr, TO_ROOM );
          }
          ch->style = STYLE_BERSERK;
          ch->print( "You adopt a berserk fighting style.\r\n" );
@@ -6636,8 +6636,8 @@ CMDF( do_cook )
       food->timer = food->timer / 2;
       food->value[0] = 0;
       food->value[2] = 3;
-      act( AT_MAGIC, "$p catches on fire burning it to a crisp!\r\n", ch, food, NULL, TO_CHAR );
-      act( AT_MAGIC, "$n catches $p on fire burning it to a crisp.", ch, food, NULL, TO_ROOM );
+      act( AT_MAGIC, "$p catches on fire burning it to a crisp!\r\n", ch, food, nullptr, TO_CHAR );
+      act( AT_MAGIC, "$n catches $p on fire burning it to a crisp.", ch, food, nullptr, TO_ROOM );
       stralloc_printf( &food->short_descr, "a burnt %s", food->pIndexData->name );
       stralloc_printf( &food->objdesc, "A burnt %s.", food->pIndexData->name );
       ch->learn_from_failure( gsn_cook );
@@ -6648,8 +6648,8 @@ CMDF( do_cook )
    {
       food->timer = food->timer * 3;
       food->value[2] += 2;
-      act( AT_MAGIC, "$n overcooks $p.", ch, food, NULL, TO_ROOM );
-      act( AT_MAGIC, "You overcook $p.", ch, food, NULL, TO_CHAR );
+      act( AT_MAGIC, "$n overcooks $p.", ch, food, nullptr, TO_ROOM );
+      act( AT_MAGIC, "You overcook $p.", ch, food, nullptr, TO_CHAR );
       stralloc_printf( &food->short_descr, "an overcooked %s", food->pIndexData->name );
       stralloc_printf( &food->objdesc, "An overcooked %s.", food->pIndexData->name );
    }
@@ -6657,8 +6657,8 @@ CMDF( do_cook )
    {
       food->timer = food->timer * 4;
       food->value[0] *= 2;
-      act( AT_MAGIC, "$n roasts $p.", ch, food, NULL, TO_ROOM );
-      act( AT_MAGIC, "You roast $p.", ch, food, NULL, TO_CHAR );
+      act( AT_MAGIC, "$n roasts $p.", ch, food, nullptr, TO_ROOM );
+      act( AT_MAGIC, "You roast $p.", ch, food, nullptr, TO_CHAR );
       stralloc_printf( &food->short_descr, "a roasted %s", food->pIndexData->name );
       stralloc_printf( &food->objdesc, "A roasted %s.", food->pIndexData->name );
       ++food->value[2];
@@ -6715,10 +6715,10 @@ CMDF( do_backheel )
 
 CMDF( do_tinker )
 {
-   obj_index *pobj = NULL;
-   obj_data *obj = NULL;
-   mob_index *pmob = NULL;
-   char_data *mob = NULL;
+   obj_index *pobj = nullptr;
+   obj_data *obj = nullptr;
+   mob_index *pmob = nullptr;
+   char_data *mob = nullptr;
    int cost = 10000;
 
    ch->set_color( AT_SKILL );
@@ -7108,7 +7108,7 @@ CMDF( do_assassinate )
     */
    if( victim->hit < victim->max_hit && victim->IS_AWAKE(  ) )
    {
-      act( AT_PLAIN, "$N is hurt and suspicious ... you can't sneak up.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N is hurt and suspicious ... you can't sneak up.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -7116,24 +7116,24 @@ CMDF( do_assassinate )
    percent = number_percent(  ) + UMAX( 0, ( victim->level - ch->level ) * 2 );
    if( ch->isnpc(  ) || percent < ch->pcdata->learned[gsn_assassinate] )
    {
-      act( AT_ACTION, "You slip quietly up behind $N, plunging your", ch, NULL, victim, TO_CHAR );
+      act( AT_ACTION, "You slip quietly up behind $N, plunging your", ch, nullptr, victim, TO_CHAR );
       act( AT_ACTION, "$p deep into $s back!", ch, obj, victim, TO_CHAR );
-      act( AT_ACTION, "Piercing a vital organ, $N falls to the ground, dead.", ch, NULL, victim, TO_CHAR );
-      act( AT_ACTION, "$n slips behind you, and before you can react, plunges", ch, NULL, victim, TO_VICT );
+      act( AT_ACTION, "Piercing a vital organ, $N falls to the ground, dead.", ch, nullptr, victim, TO_CHAR );
+      act( AT_ACTION, "$n slips behind you, and before you can react, plunges", ch, nullptr, victim, TO_VICT );
       act( AT_ACTION, "$s $p deep into your back!", ch, obj, victim, TO_VICT );
-      act( AT_ACTION, "You slip quietly off to your death as $e pierces a vital organ.....", ch, NULL, victim, TO_VICT );
-      act( AT_ACTION, "$n slips quietly up behind $N, plunging $s", ch, NULL, victim, TO_NOTVICT );
+      act( AT_ACTION, "You slip quietly off to your death as $e pierces a vital organ.....", ch, nullptr, victim, TO_VICT );
+      act( AT_ACTION, "$n slips quietly up behind $N, plunging $s", ch, nullptr, victim, TO_NOTVICT );
       act( AT_ACTION, "$p deep into $S back!", ch, obj, victim, TO_NOTVICT );
-      act( AT_ACTION, "$N falls to the ground, dead, after $n pierces a vital organ.....", ch, NULL, victim, TO_NOTVICT );
+      act( AT_ACTION, "$N falls to the ground, dead, after $n pierces a vital organ.....", ch, nullptr, victim, TO_NOTVICT );
       check_killer( ch, victim );
       group_gain( ch, victim );
       raw_kill( ch, victim );
    }
    else
    {
-      act( AT_MAGIC, "You fail to assassinate $N.", ch, NULL, victim, TO_CHAR );
-      act( AT_MAGIC, "$n tried to assassinate you, but luckily $e failed...", ch, NULL, victim, TO_VICT );
-      act( AT_MAGIC, "$n tries to assassinate $N but fails.", ch, NULL, victim, TO_NOTVICT );
+      act( AT_MAGIC, "You fail to assassinate $N.", ch, nullptr, victim, TO_CHAR );
+      act( AT_MAGIC, "$n tried to assassinate you, but luckily $e failed...", ch, nullptr, victim, TO_VICT );
+      act( AT_MAGIC, "$n tries to assassinate $N but fails.", ch, nullptr, victim, TO_NOTVICT );
       ch->learn_from_failure( gsn_assassinate );
       global_retcode = one_hit( ch, victim, TYPE_UNDEFINED );
    }
@@ -7172,7 +7172,7 @@ CMDF( do_feign )
    ch->print( "You try to fake your own demise\r\n" );
    death_cry( ch );
 
-   act( AT_SKILL, "$n is dead! R.I.P.", ch, NULL, victim, TO_NOTVICT );
+   act( AT_SKILL, "$n is dead! R.I.P.", ch, nullptr, victim, TO_NOTVICT );
 
    ch->WAIT_STATE( skill_table[gsn_feign]->beats );
    if( can_use_skill( ch, number_percent(  ), gsn_feign ) )
@@ -7262,7 +7262,7 @@ CMDF( do_forage )
 
    herb = get_obj_index( vnum );
 
-   if( herb == NULL )
+   if( herb == nullptr )
    {
       bug( "%s: Cannot locate item for vnum %d", __func__, vnum );
       ch->print( "Oops. Slight bug here. The immortals have been notified.\r\n" );
@@ -7443,7 +7443,7 @@ CMDF( do_mining )
 
    ore = get_obj_index( vnum );
 
-   if( ore == NULL )
+   if( ore == nullptr )
    {
       bug( "%s: Cannot locate item for vnum %d", __func__, vnum );
       ch->print( "Oops. Slight bug here. The immortals have been notified.\r\n" );
@@ -7521,13 +7521,13 @@ CMDF( do_quiv )
 
    if( ch->level < victim->level && number_percent(  ) > 15 )
    {
-      act( AT_SKILL, "$N's experience prevents your attempt.", ch, NULL, victim, TO_CHAR );
+      act( AT_SKILL, "$N's experience prevents your attempt.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( ch->max_hit * 2 < victim->max_hit && number_percent(  ) > 10 )
    {
-      act( AT_PLAIN, "$N's might prevents your attempt.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N's might prevents your attempt.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -7541,9 +7541,9 @@ CMDF( do_quiv )
 
    if( number_percent(  ) < ch->pcdata->learned[gsn_quiv] )
    {
-      act( AT_SKILL, "Your hand vibrates intensly as it strikes $N dead!", ch, NULL, victim, TO_CHAR );
-      act( AT_SKILL, "The last thing you see before dying is $n's blurred palm!", ch, NULL, victim, TO_VICT );
-      act( AT_SKILL, "$n's palm blurs from sight, and suddenly $N drops dead!", ch, NULL, victim, TO_NOTVICT );
+      act( AT_SKILL, "Your hand vibrates intensly as it strikes $N dead!", ch, nullptr, victim, TO_CHAR );
+      act( AT_SKILL, "The last thing you see before dying is $n's blurred palm!", ch, nullptr, victim, TO_VICT );
+      act( AT_SKILL, "$n's palm blurs from sight, and suddenly $N drops dead!", ch, nullptr, victim, TO_NOTVICT );
       group_gain( ch, victim );
       raw_kill( ch, victim );
       ch->affect_to_char( &af );
@@ -7662,15 +7662,15 @@ CMDF( do_charge )
    stralloc_printf( &wand->short_descr, "wand of %s", skill_table[sn]->name );
    stralloc_printf( &wand->objdesc, "A polished wand of '%s' has been left here.", skill_table[sn]->name );
    stralloc_printf( &wand->name, "wand %s", skill_table[sn]->name );
-   act( AT_MAGIC, "$n magically charges $p.", ch, wand, NULL, TO_ROOM );
-   act( AT_MAGIC, "You magically charge $p.", ch, wand, NULL, TO_CHAR );
+   act( AT_MAGIC, "$n magically charges $p.", ch, wand, nullptr, TO_ROOM );
+   act( AT_MAGIC, "You magically charge $p.", ch, wand, nullptr, TO_CHAR );
 
    ch->mana -= mana;
 }
 
 CMDF( do_tan )
 {
-   obj_data *corpse = NULL, *hide = NULL;
+   obj_data *corpse = nullptr, *hide = nullptr;
    string itemname, itemtype, hidetype;
    int percent = 0, acapply = 0, acbonus = 0, lev = 0;
 
@@ -7728,17 +7728,17 @@ CMDF( do_tan )
 
    if( percent > ch->LEARNED( gsn_tan ) )
    {
-      act( AT_PLAIN, "You hack at $p but manage to only destroy the hide.", ch, corpse, NULL, TO_CHAR );
-      act( AT_PLAIN, "$n tries to skins $p for its hide, but destroys it.", ch, corpse, NULL, TO_ROOM );
+      act( AT_PLAIN, "You hack at $p but manage to only destroy the hide.", ch, corpse, nullptr, TO_CHAR );
+      act( AT_PLAIN, "$n tries to skins $p for its hide, but destroys it.", ch, corpse, nullptr, TO_ROOM );
       ch->learn_from_failure( gsn_tan );
 
       /*
        * Tanning won't destroy what the corpse was carrying - Samson 11-20-99 
        */
       if( corpse->carried_by )
-         corpse->empty( NULL, corpse->carried_by->in_room );
+         corpse->empty( nullptr, corpse->carried_by->in_room );
       else if( corpse->in_room )
-         corpse->empty( NULL, corpse->in_room );
+         corpse->empty( nullptr, corpse->in_room );
 
       corpse->extract(  );
       return;
@@ -7974,16 +7974,16 @@ CMDF( do_tan )
    else if( hide->item_type == ITEM_DRINK_CON )
       hide->value[0] = acapply + 10;
 
-   act_printf( AT_PLAIN, ch, corpse, NULL, TO_CHAR, "You carve %s from $p.", hide->name );
-   act_printf( AT_PLAIN, ch, corpse, NULL, TO_ROOM, "$n carves %s from $p.", hide->name );
+   act_printf( AT_PLAIN, ch, corpse, nullptr, TO_CHAR, "You carve %s from $p.", hide->name );
+   act_printf( AT_PLAIN, ch, corpse, nullptr, TO_ROOM, "$n carves %s from $p.", hide->name );
 
    /*
     * Tanning won't destroy what the corpse was carrying - Samson 11-20-99 
     */
    if( corpse->carried_by )
-      corpse->empty( NULL, corpse->carried_by->in_room );
+      corpse->empty( nullptr, corpse->carried_by->in_room );
    else if( corpse->in_room )
-      corpse->empty( NULL, corpse->in_room );
+      corpse->empty( nullptr, corpse->in_room );
 
    corpse->extract(  );
 }
@@ -8015,9 +8015,9 @@ CMDF( do_throw )
     * handle the ranged attack
     */
    string name = obj->name;
-   ranged_attack( ch, argument, NULL, obj, TYPE_HIT + obj->value[3], ( short )( ( ch->perm_str / 4 ) * .5 ) );
+   ranged_attack( ch, argument, nullptr, obj, TYPE_HIT + obj->value[3], ( short )( ( ch->perm_str / 4 ) * .5 ) );
 
-   obj_data *item = NULL;
+   obj_data *item = nullptr;
    list < obj_data * >::iterator iobj;
    for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {

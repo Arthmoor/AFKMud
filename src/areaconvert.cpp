@@ -410,7 +410,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          pMobIndex->chardesc[0] = UPPER( pMobIndex->chardesc[0] );
       }
 
-      if( pMobIndex->long_descr != NULL )
+      if( pMobIndex->long_descr != nullptr )
          pMobIndex->long_descr[0] = UPPER( pMobIndex->long_descr[0] );
       {
          char *sact, *saff;
@@ -446,8 +446,8 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          }
       }
 
-      pMobIndex->pShop = NULL;
-      pMobIndex->rShop = NULL;
+      pMobIndex->pShop = nullptr;
+      pMobIndex->rShop = nullptr;
       pMobIndex->alignment = fread_number( fp );
       letter = fread_letter( fp );
       pMobIndex->level = fread_number( fp );
@@ -636,7 +636,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             pMobIndex->weight = x4;
 
             {
-               char *speaks = NULL, *speaking = NULL;
+               char *speaks = nullptr, *speaking = nullptr;
                char flag[MIL];
                int value;
 
@@ -973,7 +973,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
          pObjIndex->action_desc = STRALLOC( desc );
 
-      if( pObjIndex->objdesc != NULL )
+      if( pObjIndex->objdesc != nullptr )
          pObjIndex->objdesc[0] = UPPER( pObjIndex->objdesc[0] );
       {
          const char *sotype;
@@ -1115,7 +1115,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          if( letter == 'A' )
          {
             affect_data *paf;
-            char *risa = NULL;
+            char *risa = nullptr;
             char flag[MIL];
             int value;
 
@@ -1299,7 +1299,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
          }
       }
 
-      if( get_room_index( vnum ) != NULL )
+      if( get_room_index( vnum ) != nullptr )
       {
          if( tmpBootDb )
          {
@@ -1429,28 +1429,28 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                   return;
 
                case 'M':
-                  if( get_mob_index( arg2 ) == NULL && fBootDb )
+                  if( get_mob_index( arg2 ) == nullptr && fBootDb )
                      boot_log( "%s: SmaugWiz - %s (%d) 'M': mobile %d doesn't exist.", __func__, tarea->filename, count, arg2 );
                   break;
 
                case 'O':
-                  if( get_obj_index( arg2 ) == NULL && fBootDb )
+                  if( get_obj_index( arg2 ) == nullptr && fBootDb )
                      boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   break;
 
                case 'P':
-                  if( get_obj_index( arg2 ) == NULL && fBootDb )
+                  if( get_obj_index( arg2 ) == nullptr && fBootDb )
                      boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   if( arg4 > 0 )
                   {
-                     if( get_obj_index( arg4 ) == NULL && fBootDb )
+                     if( get_obj_index( arg4 ) == nullptr && fBootDb )
                         boot_log( "%s: SmaugWiz - %s (%d) 'P': destination object %d doesn't exist.", __func__, tarea->filename, count, arg4 );
                   }
                   break;
 
                case 'G':
                case 'E':
-                  if( get_obj_index( arg2 ) == NULL && fBootDb )
+                  if( get_obj_index( arg2 ) == nullptr && fBootDb )
                      boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   break;
 
@@ -1459,7 +1459,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
                case 'H':
                   if( arg1 > 0 )
-                     if( get_obj_index( arg2 ) == NULL && fBootDb )
+                     if( get_obj_index( arg2 ) == nullptr && fBootDb )
                         boot_log( "%s: SmaugWiz - %s (%d) 'H': object %d doesn't exist.", __func__, tarea->filename, count, arg2 );
                   break;
 
@@ -1513,7 +1513,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             }
             else
             {
-               pexit = pRoomIndex->make_exit( NULL, door );
+               pexit = pRoomIndex->make_exit( nullptr, door );
                pexit->exitdesc = fread_string( fp );
                pexit->keyword = fread_string( fp );
                pexit->flags.reset(  );
@@ -1541,7 +1541,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                      break;
                   default:
                   {
-                     char *oldexits = NULL;
+                     char *oldexits = nullptr;
                      char flag[MIL];
                      int value;
 
@@ -1572,7 +1572,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
          else if( letter == 'A' )   // This section was added in SmaugFUSS 1.8
          {
             affect_data *paf;
-            char *risa = NULL;
+            char *risa = nullptr;
             char flag[MIL];
             int value;
 
@@ -1636,7 +1636,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
 void load_stresets( area_data * tarea, FILE * fp )
 {
-   room_index *pRoomIndex = NULL;
+   room_index *pRoomIndex = nullptr;
    bool not01 = false;
    int count = 0;
 
@@ -1728,20 +1728,20 @@ void load_stresets( area_data * tarea, FILE * fp )
             return;
 
          case 'M':
-            if( get_mob_index( arg1 ) == NULL && fBootDb )
+            if( get_mob_index( arg1 ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __func__, tarea->filename, count, arg1 );
 
-            if( ( pRoomIndex = get_room_index( arg3 ) ) == NULL && fBootDb )
+            if( ( pRoomIndex = get_room_index( arg3 ) ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) 'M': room %d doesn't exist.", __func__, tarea->filename, count, arg3 );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
             break;
 
          case 'O':
-            if( get_obj_index( arg1 ) == NULL && fBootDb )
+            if( get_obj_index( arg1 ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
 
-            if( ( pRoomIndex = get_room_index( arg3 ) ) == NULL && fBootDb )
+            if( ( pRoomIndex = get_room_index( arg3 ) ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) '%c': room %d doesn't exist.", __func__, tarea->filename, count, letter, arg3 );
             else
             {
@@ -1753,11 +1753,11 @@ void load_stresets( area_data * tarea, FILE * fp )
             break;
 
          case 'P':
-            if( get_obj_index( arg1 ) == NULL && fBootDb )
+            if( get_obj_index( arg1 ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( arg3 > 0 )
             {
-               if( get_obj_index( arg3 ) == NULL && fBootDb )
+               if( get_obj_index( arg3 ) == nullptr && fBootDb )
                   boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __func__, tarea->filename, count, arg3 );
                if( extra > 1 )
                   not01 = true;
@@ -1774,7 +1774,7 @@ void load_stresets( area_data * tarea, FILE * fp )
 
          case 'G':
          case 'E':
-            if( get_obj_index( arg1 ) == NULL && fBootDb )
+            if( get_obj_index( arg1 ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( !pRoomIndex )
                bug( "%s: Unable to add give/equip reset - room not found.", __func__ );
@@ -1916,7 +1916,7 @@ void load_strepairs( FILE * fp )
 
 void load_stock_area_file( const string & filename, bool manual )
 {
-   area_data *tarea = NULL;
+   area_data *tarea = nullptr;
    char *word;
    struct stat fst;
    time_t umod = 0;
@@ -2179,7 +2179,7 @@ void load_stock_area_file( const string & filename, bool manual )
          neighbor_data *anew;
 
          anew = new neighbor_data;
-         anew->address = NULL;
+         anew->address = nullptr;
          anew->name = fread_string( fpArea );
          tarea->weather->neighborlist.push_back( anew );
       }
@@ -2283,7 +2283,7 @@ void load_stock_area_file( const string & filename, bool manual )
  */
 CMDF( do_areaconvert )
 {
-   area_data *tarea = NULL;
+   area_data *tarea = nullptr;
    int tmp;
    bool manual;
    string arg;

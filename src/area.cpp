@@ -61,7 +61,7 @@ CMDF( do_areaconvert );
 
 neighbor_data::neighbor_data(  )
 {
-   address = NULL;
+   address = nullptr;
 }
 
 neighbor_data::~neighbor_data(  )
@@ -114,7 +114,7 @@ area_data::~area_data(  )
 
       if( !ech->isnpc(  ) && ech->pcdata->area == this )
       {
-         ech->pcdata->area = NULL;
+         ech->pcdata->area = nullptr;
          ech->pcdata->low_vnum = 0;
          ech->pcdata->hi_vnum = 0;
          ech->save(  );
@@ -198,7 +198,7 @@ void area_data::fix_exits(  )
 
          pexit->rvnum = pRoomIndex->vnum;
          if( pexit->vnum <= 0 )
-            pexit->to_room = NULL;
+            pexit->to_room = nullptr;
          else
             pexit->to_room = get_room_index( pexit->vnum );
       }
@@ -235,7 +235,7 @@ void area_data::sort_name(  )
 
    if( !this )
    {
-      bug( "%s: NULL pArea", __func__ );
+      bug( "%s: nullptr pArea", __func__ );
       return;
    }
 
@@ -262,7 +262,7 @@ void area_data::sort_vnums(  )
 
    if( !this )
    {
-      bug( "%s: NULL pArea", __func__ );
+      bug( "%s: nullptr pArea", __func__ );
       return;
    }
 
@@ -434,15 +434,15 @@ void load_mobiles( area_data * tarea, FILE * fp )
             pMobIndex->chardesc[0] = UPPER( pMobIndex->chardesc[0] );
       }
 
-      if( pMobIndex->long_descr != NULL && str_prefix( "namegen", pMobIndex->long_descr ) )
+      if( pMobIndex->long_descr != nullptr && str_prefix( "namegen", pMobIndex->long_descr ) )
          pMobIndex->long_descr[0] = UPPER( pMobIndex->long_descr[0] );
 
       flag_set( fp, pMobIndex->actflags, act_flags );
       flag_set( fp, pMobIndex->affected_by, aff_flags );
 
       pMobIndex->actflags.set( ACT_IS_NPC );
-      pMobIndex->pShop = NULL;
-      pMobIndex->rShop = NULL;
+      pMobIndex->pShop = nullptr;
+      pMobIndex->rShop = nullptr;
 
       float x9 = 0;
       const char *ln = fread_line( fp );
@@ -661,7 +661,7 @@ void load_objects( area_data * tarea, FILE * fp )
       if( desc2 && desc2[0] != '\0' && str_cmp( desc2, "(null)" ) )
          pObjIndex->action_desc = STRALLOC( desc2 );
 
-      if( pObjIndex->objdesc != NULL )
+      if( pObjIndex->objdesc != nullptr )
          pObjIndex->objdesc[0] = UPPER( pObjIndex->objdesc[0] );
 
       value = get_otype( fread_flagstring( fp ) );
@@ -779,8 +779,8 @@ void load_objects( area_data * tarea, FILE * fp )
 
             if( tarea->version < 20 )
             {
-               char *aff = NULL;
-               char *risa = NULL;
+               char *aff = nullptr;
+               char *risa = nullptr;
                char flag[MIL];
 
                paf->location = fread_number( fp );
@@ -825,8 +825,8 @@ void load_objects( area_data * tarea, FILE * fp )
             }
             else
             {
-               char *loc = NULL;
-               char *aff = NULL;
+               char *loc = nullptr;
+               char *aff = nullptr;
 
                loc = fread_word( fp );
                value = get_atype( loc );
@@ -906,7 +906,7 @@ void load_objects( area_data * tarea, FILE * fp )
  */
 void load_resets( area_data * tarea, FILE * fp )
 {
-   room_index *pRoomIndex = NULL;
+   room_index *pRoomIndex = nullptr;
    bool not01 = false;
    int count = 0;
 
@@ -1007,10 +1007,10 @@ void load_resets( area_data * tarea, FILE * fp )
             return;
 
          case 'M':
-            if( get_mob_index( arg1 ) == NULL && fBootDb )
+            if( get_mob_index( arg1 ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __func__, tarea->filename, count, arg1 );
 
-            if( ( pRoomIndex = get_room_index( arg3 ) ) == NULL && fBootDb )
+            if( ( pRoomIndex = get_room_index( arg3 ) ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) 'M': room %d doesn't exist.", __func__, tarea->filename, count, arg3 );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
@@ -1024,10 +1024,10 @@ void load_resets( area_data * tarea, FILE * fp )
             break;
 
          case 'O':
-            if( get_obj_index( arg1 ) == NULL && fBootDb )
+            if( get_obj_index( arg1 ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
 
-            if( ( pRoomIndex = get_room_index( arg3 ) ) == NULL && fBootDb )
+            if( ( pRoomIndex = get_room_index( arg3 ) ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) '%c': room %d doesn't exist.", __func__, tarea->filename, count, letter, arg3 );
             else
             {
@@ -1045,11 +1045,11 @@ void load_resets( area_data * tarea, FILE * fp )
             break;
 
          case 'P':
-            if( get_obj_index( arg1 ) == NULL && fBootDb )
+            if( get_obj_index( arg1 ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( arg3 > 0 )
             {
-               if( get_obj_index( arg3 ) == NULL && fBootDb )
+               if( get_obj_index( arg3 ) == nullptr && fBootDb )
                   boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __func__, tarea->filename, count, arg3 );
                if( extra > 1 )
                   not01 = true;
@@ -1066,7 +1066,7 @@ void load_resets( area_data * tarea, FILE * fp )
 
          case 'G':
          case 'E':
-            if( get_obj_index( arg1 ) == NULL && fBootDb )
+            if( get_obj_index( arg1 ) == nullptr && fBootDb )
                boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( !pRoomIndex )
                bug( "%s: Unable to add room reset - room not found.", __func__ );
@@ -1180,7 +1180,7 @@ void load_rooms( area_data * tarea, FILE * fp )
 
       tmpBootDb = fBootDb;
       fBootDb = false;
-      if( get_room_index( vnum ) != NULL )
+      if( get_room_index( vnum ) != nullptr )
       {
          if( tmpBootDb )
          {
@@ -1305,8 +1305,8 @@ void load_rooms( area_data * tarea, FILE * fp )
          if( letter == 'A' )
          {
             affect_data *paf;
-            char *loc = NULL;
-            char *aff = NULL;
+            char *loc = nullptr;
+            char *aff = nullptr;
 
             paf = new affect_data;
             paf->type = -1;
@@ -1361,7 +1361,7 @@ void load_rooms( area_data * tarea, FILE * fp )
             }
             else
             {
-               exit_data *pexit = pRoomIndex->make_exit( NULL, door );
+               exit_data *pexit = pRoomIndex->make_exit( nullptr, door );
                pexit->exitdesc = fread_string( fp );
                pexit->keyword = fread_string( fp );
 
@@ -1562,7 +1562,7 @@ void validate_treasure_settings( area_data * area )
 
 void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 {
-   exit_data *pexit = NULL;
+   exit_data *pexit = nullptr;
 
    for( ;; )
    {
@@ -1600,7 +1600,7 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
                   if( fBootDb )
                      return;
                }
-               pexit = pRoomIndex->make_exit( NULL, door );
+               pexit = pRoomIndex->make_exit( nullptr, door );
             }
             break;
 
@@ -1646,8 +1646,8 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 
 affect_data *fread_afk_affect( FILE * fp )
 {
-   char *loc = NULL;
-   char *aff = NULL;
+   char *loc = nullptr;
+   char *aff = nullptr;
    int value;
    bool setaff = true;
 
@@ -1726,9 +1726,9 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
             {
                if( ed->keyword.empty(  ) )
                {
-                  bug( "%s: Missing ExDesc keyword. Returning NULL.", __func__ );
+                  bug( "%s: Missing ExDesc keyword. Returning nullptr.", __func__ );
                   deleteptr( ed );
-                  return NULL;
+                  return nullptr;
                }
                return ed;
             }
@@ -1744,7 +1744,7 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
    // Reach this point, you fell through somehow. The data is no longer valid.
    bug( "%s: Reached fallout point! ExtraDesc data invalid.", __func__ );
    deleteptr( ed );
-   return NULL;
+   return nullptr;
 }
 
 void fread_afk_areadata( FILE * fp, area_data * tarea )
@@ -1853,7 +1853,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
                neighbor_data *anew;
 
                anew = new neighbor_data;
-               anew->address = NULL;
+               anew->address = nullptr;
                fread_string( anew->name, fp );
                tarea->weather->neighborlist.push_back( anew );
                break;
@@ -1936,7 +1936,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
 void fread_afk_mobile( FILE * fp, area_data * tarea )
 {
-   mob_index *pMobIndex = NULL;
+   mob_index *pMobIndex = nullptr;
    bool oldmob = false;
 
    for( ;; )
@@ -2334,7 +2334,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
 void fread_afk_object( FILE * fp, area_data * tarea )
 {
-   obj_index *pObjIndex = NULL;
+   obj_index *pObjIndex = nullptr;
    bool oldobj = false;
 
    for( ;; )
@@ -2614,7 +2614,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
 
 void fread_afk_room( FILE * fp, area_data * tarea )
 {
-   room_index *pRoomIndex = NULL;
+   room_index *pRoomIndex = nullptr;
    bool oldroom = false;
 
    for( ;; )
@@ -2822,7 +2822,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
 // AFKMud 2.0 Area file format. Liberal use of KEY macro support. Far more flexible.
 area_data *fread_afk_area( FILE * fp )
 {
-   area_data *tarea = NULL;
+   area_data *tarea = nullptr;
 
    for( ;; )
    {
@@ -2890,7 +2890,7 @@ void process_sorting( area_data * tarea, bool isproto )
 
 void load_area_file( const string & filename, bool isproto )
 {
-   area_data *tarea = NULL;
+   area_data *tarea = nullptr;
    char *word;
 
    if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
@@ -2942,7 +2942,7 @@ void load_area_file( const string & filename, bool isproto )
          if( temp >= 1000 )
          {
             FCLOSE( fpArea );
-            do_areaconvert( NULL, filename );
+            do_areaconvert( nullptr, filename );
             return;
          }
 
@@ -2989,7 +2989,7 @@ void load_area_file( const string & filename, bool isproto )
             FCLOSE( fpArea );
             deleteptr( tarea );
             --top_area;
-            do_areaconvert( NULL, filename );
+            do_areaconvert( nullptr, filename );
             return;
          }
          STRFREE( tarea->author );
@@ -3183,7 +3183,7 @@ void load_area_file( const string & filename, bool isproto )
          neighbor_data *anew;
 
          anew = new neighbor_data;
-         anew->address = NULL;
+         anew->address = nullptr;
          anew->name = fread_string( fpArea );
          tarea->weather->neighborlist.push_back( anew );
       }
@@ -3196,7 +3196,7 @@ void load_area_file( const string & filename, bool isproto )
             log_string( "SmaugWiz area encountered. Attempting to pass to Area Convertor." );
             FCLOSE( fpArea );
             deleteptr( tarea );
-            do_areaconvert( NULL, filename );
+            do_areaconvert( nullptr, filename );
             return;
          }
          tarea->version = aversion;
@@ -3392,8 +3392,8 @@ void fwrite_area_header( area_data * area, FILE * fpout )
 // Write out an individual mob
 void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
 {
-   shop_data *pShop = NULL;
-   repair_data *pRepair = NULL;
+   shop_data *pShop = nullptr;
+   repair_data *pRepair = nullptr;
 
    if( install )
       pMobIndex->actflags.reset( ACT_PROTOTYPE );
@@ -3440,7 +3440,7 @@ void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
       fprintf( fpout, "Defenses  %s~\n", bitset_string( pMobIndex->defenses, defense_flags ) );
 
    // Mob has a shop? Add that data to the mob index.
-   if( ( pShop = pMobIndex->pShop ) != NULL )
+   if( ( pShop = pMobIndex->pShop ) != nullptr )
    {
       fprintf( fpout, "ShopData   %d %d %d %d %d %d %d %d %d\n",
                pShop->buy_type[0], pShop->buy_type[1], pShop->buy_type[2], pShop->buy_type[3], pShop->buy_type[4],
@@ -3448,7 +3448,7 @@ void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
    }
 
    // Mob is a repair shop? Add that data to the mob index.
-   if( ( pRepair = pMobIndex->rShop ) != NULL )
+   if( ( pRepair = pMobIndex->rShop ) != nullptr )
    {
       fprintf( fpout, "RepairData %d %d %d %d %d %d %d\n",
                pRepair->fix_type[0], pRepair->fix_type[1], pRepair->fix_type[2], pRepair->profit_fix, pRepair->shop_type, pRepair->open_hour, pRepair->close_hour );
@@ -3909,7 +3909,7 @@ void write_area_list( void )
 area_data *get_area( const string & name )
 {
    if( name.empty(  ) )
-      return NULL;
+      return nullptr;
 
    list < area_data * >::iterator iarea;
    for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
@@ -3919,7 +3919,7 @@ area_data *get_area( const string & name )
       if( hasname( area->name, name ) )
          return area;
    }
-   return NULL;
+   return nullptr;
 }
 
 /* Locate an area by its filename first, then fall back to other means if not found */
@@ -3990,7 +3990,7 @@ void load_weatherdata( void )
 
    snprintf( filename, 256, "%sweather.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( filename, "r" ) ) != nullptr )
    {
       for( ;; )
       {
@@ -4050,7 +4050,7 @@ void save_weatherdata( void )
 
    snprintf( filename, 256, "%sweather.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename, "w" ) ) != NULL )
+   if( ( fp = fopen( filename, "w" ) ) != nullptr )
    {
       fprintf( fp, "#RANDOM %d\n", rand_factor );
       fprintf( fp, "#CLIMATE %d\n", climate_factor );
@@ -4313,7 +4313,7 @@ CMDF( do_aassign )
 
    if( !str_cmp( "none", argument ) || !str_cmp( "null", argument ) || !str_cmp( "clear", argument ) )
    {
-      ch->pcdata->area = NULL;
+      ch->pcdata->area = nullptr;
       assign_area( ch );
       if( !ch->pcdata->area )
          ch->print( "Area pointer cleared.\r\n" );
@@ -4403,7 +4403,7 @@ CMDF( do_installarea )
             /*
              * remove area from author 
              */
-            d->character->pcdata->area = NULL;
+            d->character->pcdata->area = nullptr;
             /*
              * clear out author vnums  
              */
@@ -4526,7 +4526,7 @@ CMDF( do_aset )
          return;
       }
 
-      if( ( uarea = find_area( argument ) ) != NULL )
+      if( ( uarea = find_area( argument ) ) != nullptr )
       {
          ch->print( "There is already an installed area with that name.\r\n" );
          return;
@@ -5297,7 +5297,7 @@ CMDF( do_climate )
     */
    if( !ch )
    {
-      bug( "%s: NULL character.", __func__ );
+      bug( "%s: nullptr character.", __func__ );
       return;
    }
    else if( !ch->in_room )
@@ -5312,7 +5312,7 @@ CMDF( do_climate )
    }
    else if( !ch->in_room->area->weather )
    {
-      bug( "%s: %s with NULL weather data.", __func__, ch->in_room->area->name );
+      bug( "%s: %s with nullptr weather data.", __func__, ch->in_room->area->name );
       return;
    }
 

@@ -145,10 +145,10 @@ char *sprint_reset( reset_data * pReset, short &num )
                            mudstrlcpy( objname, "Object1: *BAD VNUM*", MSL );
                         else
                            mudstrlcpy( objname, obj2->name, MSL );
-                        if( gReset->arg4 > 0 && ( obj = get_obj_index( gReset->arg4 ) ) == NULL )
+                        if( gReset->arg4 > 0 && ( obj = get_obj_index( gReset->arg4 ) ) == nullptr )
                            mudstrlcpy( roomname, "Object2: *BAD VNUM*", MSL );
                         else if( !obj )
-                           mudstrlcpy( roomname, "Object2: *NULL obj*", MSL );
+                           mudstrlcpy( roomname, "Object2: *nullptr obj*", MSL );
                         else
                            mudstrlcpy( roomname, obj->name, MSL );
                         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
@@ -205,10 +205,10 @@ char *sprint_reset( reset_data * pReset, short &num )
                      mudstrlcpy( objname, "Object1: *BAD VNUM*", MSL );
                   else
                      mudstrlcpy( objname, obj2->name, MSL );
-                  if( tReset->arg4 > 0 && ( obj = get_obj_index( tReset->arg4 ) ) == NULL )
+                  if( tReset->arg4 > 0 && ( obj = get_obj_index( tReset->arg4 ) ) == nullptr )
                      mudstrlcpy( roomname, "Object2: *BAD VNUM*", MSL );
                   else if( !obj )
-                     mudstrlcpy( roomname, "Object2: *NULL obj*", MSL );
+                     mudstrlcpy( roomname, "Object2: *nullptr obj*", MSL );
                   else
                      mudstrlcpy( roomname, obj->name, MSL );
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
@@ -217,10 +217,10 @@ char *sprint_reset( reset_data * pReset, short &num )
 
                case 'W':
                   mudstrlcpy( objname, "<RT>", MSL );
-                  if( tReset->arg8 > 0 && ( obj = get_obj_index( tReset->arg8 ) ) == NULL )
+                  if( tReset->arg8 > 0 && ( obj = get_obj_index( tReset->arg8 ) ) == nullptr )
                      mudstrlcpy( roomname, "Object2: *BAD VNUM*", MSL );
                   else if( !obj )
-                     mudstrlcpy( roomname, "Object2: *NULL obj*", MSL );
+                     mudstrlcpy( roomname, "Object2: *nullptr obj*", MSL );
                   else
                      mudstrlcpy( roomname, obj->name, MSL );
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (RT put) %s (%d%%) -> %s (%d)\r\n",
@@ -539,7 +539,7 @@ reset_data *find_oreset( room_index * room, const string & oname )
       if( hasname( pobj->name, arg ) && ++cnt == num )
          return pReset;
    }
-   return NULL;
+   return nullptr;
 }
 
 CMDF( do_reset )
@@ -748,7 +748,7 @@ CMDF( do_reset )
 
    if( !str_cmp( arg, "trap" ) )
    {
-      reset_data *pReset = NULL;
+      reset_data *pReset = nullptr;
       string arg2, oname;
       int type, chrg, flags = 0, vnum, min, max;
 
@@ -851,7 +851,7 @@ CMDF( do_reset )
 
    if( !str_cmp( arg, "hide" ) )
    {
-      reset_data *pReset = NULL;
+      reset_data *pReset = nullptr;
 
       if( !( pReset = find_oreset( ch->in_room, argument ) ) )
       {

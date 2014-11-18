@@ -50,7 +50,7 @@ void register_function( const char *name )
 void init_modules(  )
 {
    map < string, void *>::iterator mod;
-   const char *error;
+   const char *error = nullptr;
 
    while( mod != module.end(  ) )
    {

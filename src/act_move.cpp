@@ -78,13 +78,13 @@ bool will_fall( char_data * ch, int fall )
 {
    if( !ch )
    {
-      bug( "%s: NULL *ch!!", __func__ );
+      bug( "%s: nullptr *ch!!", __func__ );
       return false;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: Character in NULL room: %s", __func__, ch->name ? ch->name : "Unknown?!?" );
+      bug( "%s: Character in nullptr room: %s", __func__, ch->name ? ch->name : "Unknown?!?" );
       return false;
    }
 
@@ -93,7 +93,7 @@ bool will_fall( char_data * ch, int fall )
       if( fall > 80 )
       {
          bug( "%s: Falling (in a loop?) more than 80 rooms: vnum %d", __func__, ch->in_room->vnum );
-         leave_map( ch, NULL, get_room_index( ROOM_VNUM_TEMPLE ) );
+         leave_map( ch, nullptr, get_room_index( ROOM_VNUM_TEMPLE ) );
          fall = 0;
          return true;
       }
@@ -145,7 +145,7 @@ CMDF( do_run )
    {
       for( x = 1; x <= amount; ++x )
       {
-         if( ( pexit = find_door( ch, arg, true ) ) != NULL )
+         if( ( pexit = find_door( ch, arg, true ) ) != nullptr )
          {
             if( ch->move < 1 )
             {
@@ -167,7 +167,7 @@ CMDF( do_run )
    }
    else
    {
-      while( ( pexit = find_door( ch, arg, true ) ) != NULL )
+      while( ( pexit = find_door( ch, arg, true ) ) != nullptr )
       {
          if( ch->move < 1 )
          {
@@ -192,7 +192,7 @@ CMDF( do_run )
       if( ch->mx == fromx && ch->my == fromy && ch->wmap == frommap )
       {
          ch->print( "You try to run but don't get anywhere.\r\n" );
-         act( AT_ACTION, "$n tries to run but doesn't get anywhere.", ch, NULL, NULL, TO_ROOM );
+         act( AT_ACTION, "$n tries to run but doesn't get anywhere.", ch, nullptr, nullptr, TO_ROOM );
          return;
       }
    }
@@ -201,13 +201,13 @@ CMDF( do_run )
       if( ch->in_room == from_room )
       {
          ch->print( "You try to run but don't get anywhere.\r\n" );
-         act( AT_ACTION, "$n tries to run but doesn't get anywhere.", ch, NULL, NULL, TO_ROOM );
+         act( AT_ACTION, "$n tries to run but doesn't get anywhere.", ch, nullptr, nullptr, TO_ROOM );
          return;
       }
    }
 
    ch->print( "You slow down after your run.\r\n" );
-   act( AT_ACTION, "$n slows down after $s run.", ch, NULL, NULL, TO_ROOM );
+   act( AT_ACTION, "$n slows down after $s run.", ch, nullptr, nullptr, TO_ROOM );
 
    interpret( ch, "look" );
 }
@@ -222,9 +222,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    bool drunk = false, brief = false;
 
    retcode = rNONE;
-   txt = NULL;
+   txt = nullptr;
 
-   if( ch->has_pcflag( PCFLAG_ONSHIP ) && ch->on_ship != NULL )
+   if( ch->has_pcflag( PCFLAG_ONSHIP ) && ch->on_ship != nullptr )
    {
       retcode = move_ship( ch, pexit, direction );
       return retcode;
@@ -258,7 +258,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
             return rSTOP;
          }
 
-         leave_map( ch, NULL, pexit->to_room );
+         leave_map( ch, nullptr, pexit->to_room );
          return rSTOP;
       }
 
@@ -316,7 +316,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
    in_room = ch->in_room;
    from_room = in_room;
-   if( !pexit || ( to_room = pexit->to_room ) == NULL )
+   if( !pexit || ( to_room = pexit->to_room ) == nullptr )
    {
       if( drunk && ch->position != POS_MOUNTED
           && ch->in_room->sector_type != SECT_WATER_SWIM
@@ -326,29 +326,29 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          switch ( number_bits( 4 ) )
          {
             default:
-               act( AT_ACTION, "You drunkenly stumble into some obstacle.", ch, NULL, NULL, TO_CHAR );
-               act( AT_ACTION, "$n drunkenly stumbles into a nearby obstacle.", ch, NULL, NULL, TO_ROOM );
+               act( AT_ACTION, "You drunkenly stumble into some obstacle.", ch, nullptr, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n drunkenly stumbles into a nearby obstacle.", ch, nullptr, nullptr, TO_ROOM );
                break;
 
             case 3:
-               act( AT_ACTION, "In your drunken stupor you trip over your own feet and tumble to the ground.", ch, NULL, NULL, TO_CHAR );
-               act( AT_ACTION, "$n stumbles drunkenly, trips and tumbles to the ground.", ch, NULL, NULL, TO_ROOM );
+               act( AT_ACTION, "In your drunken stupor you trip over your own feet and tumble to the ground.", ch, nullptr, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n stumbles drunkenly, trips and tumbles to the ground.", ch, nullptr, nullptr, TO_ROOM );
                ch->position = POS_RESTING;
                break;
 
             case 4:
-               act( AT_SOCIAL, "You utter a string of slurred obscenities.", ch, NULL, NULL, TO_CHAR );
-               act( AT_ACTION, "Something blurry and immovable has intercepted you as you stagger along.", ch, NULL, NULL, TO_CHAR );
-               act( AT_HURT, "Oh geez... THAT really hurt.  Everything slowly goes dark and numb...", ch, NULL, NULL, TO_CHAR );
-               act( AT_ACTION, "$n drunkenly staggers into something.", ch, NULL, NULL, TO_ROOM );
-               act( AT_SOCIAL, "$n utters a string of slurred obscenities: @*&^%@*&!", ch, NULL, NULL, TO_ROOM );
-               act( AT_ACTION, "$n topples to the ground with a thud.", ch, NULL, NULL, TO_ROOM );
+               act( AT_SOCIAL, "You utter a string of slurred obscenities.", ch, nullptr, nullptr, TO_CHAR );
+               act( AT_ACTION, "Something blurry and immovable has intercepted you as you stagger along.", ch, nullptr, nullptr, TO_CHAR );
+               act( AT_HURT, "Oh geez... THAT really hurt.  Everything slowly goes dark and numb...", ch, nullptr, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n drunkenly staggers into something.", ch, nullptr, nullptr, TO_ROOM );
+               act( AT_SOCIAL, "$n utters a string of slurred obscenities: @*&^%@*&!", ch, nullptr, nullptr, TO_ROOM );
+               act( AT_ACTION, "$n topples to the ground with a thud.", ch, nullptr, nullptr, TO_ROOM );
                ch->position = POS_INCAP;
                break;
          }
       }
       else if( drunk )
-         act( AT_ACTION, "You stare around trying to make sense of things through your drunken stupor.", ch, NULL, NULL, TO_CHAR );
+         act( AT_ACTION, "You stare around trying to make sense of things through your drunken stupor.", ch, nullptr, nullptr, TO_CHAR );
       else
          ch->print( "Alas, you cannot go that way.\r\n" );
 
@@ -384,7 +384,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          || IS_EXIT_FLAG( pexit, EX_MEDIUM )
          || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_PASSDOOR ) ) )
    {
-      act( AT_PLAIN, "There is a $d blocking the way.", ch, NULL, pexit->keyword, TO_CHAR );
+      act( AT_PLAIN, "There is a $d blocking the way.", ch, nullptr, pexit->keyword, TO_CHAR );
       check_sneaks( ch );
       return rSTOP;
    }
@@ -433,10 +433,10 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                   {
                      if( !from_room->get_exit( direction ) )
                      {
-                        act( AT_ACTION, "The entrance closes behind $N, preventing you from following!", fch, NULL, ch, TO_CHAR );
+                        act( AT_ACTION, "The entrance closes behind $N, preventing you from following!", fch, nullptr, ch, TO_CHAR );
                         continue;
                      }
-                     act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
+                     act( AT_ACTION, "You follow $N.", fch, nullptr, ch, TO_CHAR );
                      move_char( fch, pexit, 0, direction, running );
                   }
                }
@@ -475,10 +475,10 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                      {
                         if( !from_room->get_exit( direction ) )
                         {
-                           act( AT_ACTION, "The entrance closes behind $N, preventing you from following!", fch, NULL, ch, TO_CHAR );
+                           act( AT_ACTION, "The entrance closes behind $N, preventing you from following!", fch, nullptr, ch, TO_CHAR );
                            continue;
                         }
-                        act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
+                        act( AT_ACTION, "You follow $N.", fch, nullptr, ch, TO_CHAR );
                         move_char( fch, pexit, 0, direction, running );
                      }
                   }
@@ -496,7 +496,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       if( ch->isnpc(  ) )
       {
-         act( AT_PLAIN, "Mobs can't use portals.", ch, NULL, NULL, TO_CHAR );
+         act( AT_PLAIN, "Mobs can't use portals.", ch, nullptr, nullptr, TO_CHAR );
          check_sneaks( ch );
          return rSTOP;
       }
@@ -513,14 +513,14 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
    if( IS_EXIT_FLAG( pexit, EX_NOMOB ) && ch->isnpc(  ) && !ch->is_pet(  ) )
    {
-      act( AT_PLAIN, "Mobs can't enter there.", ch, NULL, NULL, TO_CHAR );
+      act( AT_PLAIN, "Mobs can't enter there.", ch, nullptr, nullptr, TO_CHAR );
       check_sneaks( ch );
       return rSTOP;
    }
 
    if( to_room->flags.test( ROOM_NO_MOB ) && ch->isnpc(  ) && !ch->is_pet(  ) )
    {
-      act( AT_PLAIN, "Mobs can't enter there.", ch, NULL, NULL, TO_CHAR );
+      act( AT_PLAIN, "Mobs can't enter there.", ch, nullptr, nullptr, TO_CHAR );
       check_sneaks( ch );
       return rSTOP;
    }
@@ -532,11 +532,11 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       {
          if( drunk )
          {
-            act( AT_PLAIN, "$n runs into the $d in $s drunken state.", ch, NULL, pexit->keyword, TO_ROOM );
-            act( AT_PLAIN, "You run into the $d in your drunken state.", ch, NULL, pexit->keyword, TO_CHAR );
+            act( AT_PLAIN, "$n runs into the $d in $s drunken state.", ch, nullptr, pexit->keyword, TO_ROOM );
+            act( AT_PLAIN, "You run into the $d in your drunken state.", ch, nullptr, pexit->keyword, TO_CHAR );
          }
          else
-            act( AT_PLAIN, "The $d is closed.", ch, NULL, pexit->keyword, TO_CHAR );
+            act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword, TO_CHAR );
       }
       else
       {
@@ -641,7 +641,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                 * Look for a boat.
                 * We can use the boat obj for a more detailed description.
                 */
-               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != NULL )
+               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != nullptr )
                {
                   if( drunk )
                      txt = "paddles unevenly";
@@ -679,7 +679,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                 * Look for a boat.
                 * We can use the boat obj for a more detailed description.
                 */
-               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != NULL )
+               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != nullptr )
                {
                   if( drunk )
                      txt = "paddles unevenly";
@@ -713,7 +713,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                 * Look for a boat.
                 * We can use the boat obj for a more detailed description.
                 */
-               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != NULL )
+               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != nullptr )
                {
                   if( drunk )
                      txt = "paddles unevenly";
@@ -913,9 +913,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       if( !running )
       {
          if( ch->mount )
-            act_printf( AT_ACTION, ch, NULL, ch->mount, TO_NOTVICT, "$n %s %s upon $N.", txt, dir_name[door] );
+            act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_NOTVICT, "$n %s %s upon $N.", txt, dir_name[door] );
          else
-            act_printf( AT_ACTION, ch, NULL, dir_name[door], TO_ROOM, "$n %s $T.", txt );
+            act_printf( AT_ACTION, ch, nullptr, dir_name[door], TO_ROOM, "$n %s $T.", txt );
       }
    }
 
@@ -985,9 +985,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       if( !running )
       {
          if( ch->mount )
-            act_printf( AT_ACTION, ch, NULL, ch->mount, TO_ROOM, "$n %s from %s upon $N.", txt, dtxt );
+            act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_ROOM, "$n %s from %s upon $N.", txt, dtxt );
          else
-            act_printf( AT_ACTION, ch, NULL, NULL, TO_ROOM, "$n %s from %s.", txt, dtxt );
+            act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n %s from %s.", txt, dtxt );
       }
    }
 
@@ -1030,7 +1030,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                if( pexit->to_room->flags.test( ROOM_DEATH ) )
                   fch->print( "You stand your ground.\r\n" );
                else
-                  act( AT_ACTION, "You follow $N.", fch, NULL, ch, TO_CHAR );
+                  act( AT_ACTION, "You follow $N.", fch, nullptr, ch, TO_CHAR );
             }
             if( pexit->to_room->flags.test( ROOM_DEATH ) )
                fch->print( "You decide to wait here.\r\n" );
@@ -1038,7 +1038,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
             {
                if( !from_room->get_exit( direction ) )
                {
-                  act( AT_ACTION, "The entrance closes behind $N, preventing you from following!", fch, NULL, ch, TO_CHAR );
+                  act( AT_ACTION, "The entrance closes behind $N, preventing you from following!", fch, nullptr, ch, TO_CHAR );
                   continue;
                }
                move_char( fch, pexit, 0, direction, running );
@@ -1058,7 +1058,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
     */
    if( ch->in_room->flags.test( ROOM_DEATH ) && !ch->is_immortal(  ) )
    {
-      act( AT_DEAD, "$n falls prey to a terrible death!", ch, NULL, NULL, TO_ROOM );
+      act( AT_DEAD, "$n falls prey to a terrible death!", ch, nullptr, nullptr, TO_ROOM );
       ch->print( "&[dead]Oopsie... you're dead!\r\n" );
       log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s hit a DEATH TRAP in room %d!", ch->name, ch->in_room->vnum );
       if( ch->isnpc(  ) )
@@ -1213,10 +1213,10 @@ CMDF( do_southwest )
 
 exit_data *find_door( char_data * ch, const string & arg, bool quiet )
 {
-   exit_data *pexit = NULL;
+   exit_data *pexit = nullptr;
 
    if( arg.empty(  ) )
-      return NULL;
+      return nullptr;
 
    int door = get_dirnum( arg );
    if( door < 0 || door > MAX_DIR )
@@ -1231,14 +1231,14 @@ exit_data *find_door( char_data * ch, const string & arg, bool quiet )
       }
       if( !quiet )
          ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
-      return NULL;
+      return nullptr;
    }
 
    if( !( pexit = ch->in_room->get_exit( door ) ) )
    {
       if( !quiet )
          ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
-      return NULL;
+      return nullptr;
    }
 
    if( quiet )
@@ -1247,13 +1247,13 @@ exit_data *find_door( char_data * ch, const string & arg, bool quiet )
    if( IS_EXIT_FLAG( pexit, EX_SECRET ) )
    {
       ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
-      return NULL;
+      return nullptr;
    }
 
    if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
    {
       ch->print( "You can't do that.\r\n" );
-      return NULL;
+      return nullptr;
    }
    return pexit;
 }
@@ -1263,7 +1263,7 @@ void set_bexit_flag( exit_data * pexit, int flag )
    exit_data *pexit_rev;
 
    SET_EXIT_FLAG( pexit, flag );
-   if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev != pexit )
+   if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev != pexit )
       SET_EXIT_FLAG( pexit_rev, flag );
 }
 
@@ -1272,7 +1272,7 @@ void remove_bexit_flag( exit_data * pexit, int flag )
    exit_data *pexit_rev;
 
    REMOVE_EXIT_FLAG( pexit, flag );
-   if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev != pexit )
+   if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev != pexit )
       REMOVE_EXIT_FLAG( pexit_rev, flag );
 }
 
@@ -1288,7 +1288,7 @@ CMDF( do_open )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr )
    {
       /*
        * 'open door' 
@@ -1336,10 +1336,10 @@ CMDF( do_open )
 
       if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
       {
-         act( AT_ACTION, "$n opens the $d.", ch, NULL, pexit->keyword, TO_ROOM );
-         act( AT_ACTION, "You open the $d.", ch, NULL, pexit->keyword, TO_CHAR );
-         if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room && !pexit->to_room->people.empty(  ) )
-            act( AT_ACTION, "The $d opens.", ( *pexit->to_room->people.begin(  ) ), NULL, pexit_rev->keyword, TO_ROOM );
+         act( AT_ACTION, "$n opens the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
+         act( AT_ACTION, "You open the $d.", ch, nullptr, pexit->keyword, TO_CHAR );
+         if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room && !pexit->to_room->people.empty(  ) )
+            act( AT_ACTION, "The $d opens.", ( *pexit->to_room->people.begin(  ) ), nullptr, pexit_rev->keyword, TO_ROOM );
          remove_bexit_flag( pexit, EX_CLOSED );
          if( ( door = pexit->vdir ) >= 0 && door < DIR_SOMEWHERE )
             check_room_for_traps( ch, trap_door[door] );
@@ -1347,7 +1347,7 @@ CMDF( do_open )
       }
    }
 
-   if( ( obj = ch->get_obj_here( argument ) ) != NULL )
+   if( ( obj = ch->get_obj_here( argument ) ) != nullptr )
    {
       /*
        * 'open object' 
@@ -1373,8 +1373,8 @@ CMDF( do_open )
          return;
       }
       REMOVE_BIT( obj->value[1], CONT_CLOSED );
-      act( AT_ACTION, "You open $p.", ch, obj, NULL, TO_CHAR );
-      act( AT_ACTION, "$n opens $p.", ch, obj, NULL, TO_ROOM );
+      act( AT_ACTION, "You open $p.", ch, obj, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n opens $p.", ch, obj, nullptr, TO_ROOM );
       check_for_trap( ch, obj, TRAP_OPEN );
       return;
    }
@@ -1393,7 +1393,7 @@ CMDF( do_close )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr )
    {
       /*
        * 'close door' 
@@ -1415,17 +1415,17 @@ CMDF( do_close )
          ch->print( "It's already closed.\r\n" );
          return;
       }
-      act( AT_ACTION, "$n closes the $d.", ch, NULL, pexit->keyword, TO_ROOM );
-      act( AT_ACTION, "You close the $d.", ch, NULL, pexit->keyword, TO_CHAR );
+      act( AT_ACTION, "$n closes the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
+      act( AT_ACTION, "You close the $d.", ch, nullptr, pexit->keyword, TO_CHAR );
 
       /*
        * close the other side 
        */
-      if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
+      if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
       {
          SET_EXIT_FLAG( pexit_rev, EX_CLOSED );
          if( !pexit->to_room->people.empty(  ) )
-            act( AT_ACTION, "The $d closes.", ( *pexit->to_room->people.begin(  ) ), NULL, pexit_rev->keyword, TO_ROOM );
+            act( AT_ACTION, "The $d closes.", ( *pexit->to_room->people.begin(  ) ), nullptr, pexit_rev->keyword, TO_ROOM );
       }
       set_bexit_flag( pexit, EX_CLOSED );
       if( ( door = pexit->vdir ) >= 0 && door < 10 )
@@ -1433,7 +1433,7 @@ CMDF( do_close )
       return;
    }
 
-   if( ( obj = ch->get_obj_here( argument ) ) != NULL )
+   if( ( obj = ch->get_obj_here( argument ) ) != nullptr )
    {
       /*
        * 'close object' 
@@ -1454,8 +1454,8 @@ CMDF( do_close )
          return;
       }
       SET_BIT( obj->value[1], CONT_CLOSED );
-      act( AT_ACTION, "You close $p.", ch, obj, NULL, TO_CHAR );
-      act( AT_ACTION, "$n closes $p.", ch, obj, NULL, TO_ROOM );
+      act( AT_ACTION, "You close $p.", ch, obj, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n closes $p.", ch, obj, nullptr, TO_ROOM );
       check_for_trap( ch, obj, TRAP_CLOSE );
       return;
    }
@@ -1466,7 +1466,7 @@ CMDF( do_close )
  * Keyring support added by Thoric
  * Idea suggested by Onyx <MtRicmer@worldnet.att.net> of Eldarion
  *
- * New: returns pointer to key/NULL instead of true/false
+ * New: returns pointer to key/nullptr instead of true/false
  *
  * If you want a feature like having immortals always have a key... you'll
  * need to code in a generic key, and make sure extract_obj doesn't extract it
@@ -1493,7 +1493,7 @@ obj_data *has_key( char_data * ch, int key )
          }
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 CMDF( do_lock )
@@ -1508,7 +1508,7 @@ CMDF( do_lock )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr )
    {
       /*
        * 'lock door' 
@@ -1533,7 +1533,7 @@ CMDF( do_lock )
          ch->print( "It can't be locked.\r\n" );
          return;
       }
-      if( ( key = has_key( ch, pexit->key ) ) == NULL )
+      if( ( key = has_key( ch, pexit->key ) ) == nullptr )
       {
          ch->print( "You lack the key.\r\n" );
          return;
@@ -1554,7 +1554,7 @@ CMDF( do_lock )
          return;
       }
    }
-   if( ( obj = ch->get_obj_here( argument ) ) != NULL )
+   if( ( obj = ch->get_obj_here( argument ) ) != nullptr )
    {
       /*
        * 'lock object' 
@@ -1607,7 +1607,7 @@ CMDF( do_unlock )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr )
    {
       /*
        * 'unlock door' 
@@ -1659,7 +1659,7 @@ CMDF( do_unlock )
       }
    }
 
-   if( ( obj = ch->get_obj_here( argument ) ) != NULL )
+   if( ( obj = ch->get_obj_here( argument ) ) != nullptr )
    {
       /*
        * 'unlock object' 
@@ -1718,7 +1718,7 @@ CMDF( do_bolt )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr )
    {
       if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
       {
@@ -1748,7 +1748,7 @@ CMDF( do_bolt )
       if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
       {
          ch->print( "*Clunk*\r\n" );
-         act( AT_ACTION, "$n bolts the $d.", ch, NULL, pexit->keyword, TO_ROOM );
+         act( AT_ACTION, "$n bolts the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
          set_bexit_flag( pexit, EX_BOLTED );
          return;
       }
@@ -1769,7 +1769,7 @@ CMDF( do_unbolt )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr )
    {
       if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
       {
@@ -1799,7 +1799,7 @@ CMDF( do_unbolt )
       if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
       {
          ch->print( "*Clunk*\r\n" );
-         act( AT_ACTION, "$n unbolts the $d.", ch, NULL, pexit->keyword, TO_ROOM );
+         act( AT_ACTION, "$n unbolts the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
          remove_bexit_flag( pexit, EX_BOLTED );
          return;
       }
@@ -1828,7 +1828,7 @@ CMDF( do_bashdoor )
    }
 
    exit_data *pexit;
-   if( ( pexit = find_door( ch, argument, false ) ) != NULL )
+   if( ( pexit = find_door( ch, argument, false ) ) != nullptr )
    {
       room_index *to_room;
       exit_data *pexit_rev;
@@ -1860,32 +1860,32 @@ CMDF( do_bashdoor )
             REMOVE_EXIT_FLAG( pexit, EX_LOCKED );
          SET_EXIT_FLAG( pexit, EX_BASHED );
 
-         act( AT_SKILL, "Crash!  You bashed open the $d!", ch, NULL, keyword, TO_CHAR );
-         act( AT_SKILL, "$n bashes open the $d!", ch, NULL, keyword, TO_ROOM );
+         act( AT_SKILL, "Crash!  You bashed open the $d!", ch, nullptr, keyword, TO_CHAR );
+         act( AT_SKILL, "$n bashes open the $d!", ch, nullptr, keyword, TO_ROOM );
 
-         if( ( to_room = pexit->to_room ) != NULL && ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
+         if( ( to_room = pexit->to_room ) != nullptr && ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
          {
             REMOVE_EXIT_FLAG( pexit_rev, EX_CLOSED );
             if( IS_EXIT_FLAG( pexit_rev, EX_LOCKED ) )
                REMOVE_EXIT_FLAG( pexit_rev, EX_LOCKED );
             SET_EXIT_FLAG( pexit_rev, EX_BASHED );
             if( !to_room->people.empty(  ) )
-               act( AT_SKILL, "The $d crashes open!", ( *to_room->people.begin(  ) ), NULL, pexit_rev->keyword, TO_ROOM );
+               act( AT_SKILL, "The $d crashes open!", ( *to_room->people.begin(  ) ), nullptr, pexit_rev->keyword, TO_ROOM );
          }
          damage( ch, ch, ( ch->max_hit / 20 ), gsn_bashdoor );
       }
       else
       {
-         act( AT_SKILL, "WHAAAAM!!!  You bash against the $d, but it doesn't budge.", ch, NULL, keyword, TO_CHAR );
-         act( AT_SKILL, "WHAAAAM!!!  $n bashes against the $d, but it holds strong.", ch, NULL, keyword, TO_ROOM );
+         act( AT_SKILL, "WHAAAAM!!!  You bash against the $d, but it doesn't budge.", ch, nullptr, keyword, TO_CHAR );
+         act( AT_SKILL, "WHAAAAM!!!  $n bashes against the $d, but it holds strong.", ch, nullptr, keyword, TO_ROOM );
          ch->learn_from_failure( gsn_bashdoor );
          damage( ch, ch, ( ch->max_hit / 20 ) + 10, gsn_bashdoor );
       }
    }
    else
    {
-      act( AT_SKILL, "WHAAAAM!!!  You bash against the wall, but it doesn't budge.", ch, NULL, NULL, TO_CHAR );
-      act( AT_SKILL, "WHAAAAM!!!  $n bashes against the wall, but it holds strong.", ch, NULL, NULL, TO_ROOM );
+      act( AT_SKILL, "WHAAAAM!!!  You bash against the wall, but it doesn't budge.", ch, nullptr, nullptr, TO_CHAR );
+      act( AT_SKILL, "WHAAAAM!!!  $n bashes against the wall, but it holds strong.", ch, nullptr, nullptr, TO_ROOM );
       ch->learn_from_failure( gsn_bashdoor );
       damage( ch, ch, ( ch->max_hit / 20 ) + 10, gsn_bashdoor );
    }
@@ -1896,7 +1896,7 @@ CMDF( do_bashdoor )
    Allows you to stand/sit/rest/sleep on/at/in objects -- Xerves */
 CMDF( do_stand )
 {
-   obj_data *obj = NULL;
+   obj_data *obj = nullptr;
    int aon = 0;
 
    if( ch->position > POS_SITTING && ch->position < POS_STANDING )
@@ -1946,26 +1946,26 @@ CMDF( do_stand )
             return;
          }
 
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You wake and stand up.\r\n" );
-            act( AT_ACTION, "$n wakes and stands up.", ch, NULL, NULL, TO_ROOM );
-            ch->on = NULL;
+            act( AT_ACTION, "$n wakes and stands up.", ch, nullptr, nullptr, TO_ROOM );
+            ch->on = nullptr;
          }
          else if( IS_SET( obj->value[2], STAND_AT ) )
          {
-            act( AT_ACTION, "You wake and stand at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes and stands at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake and stand at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes and stands at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], STAND_ON ) )
          {
-            act( AT_ACTION, "You wake and stand on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes and stands on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake and stand on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes and stands on $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You wake and stand in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes and stands in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake and stand in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes and stands in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_STANDING;
          interpret( ch, "look" );
@@ -1973,57 +1973,57 @@ CMDF( do_stand )
 
       case POS_RESTING:
       case POS_SITTING:
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You stand up.\r\n" );
-            act( AT_ACTION, "$n stands up.", ch, NULL, NULL, TO_ROOM );
-            ch->on = NULL;
+            act( AT_ACTION, "$n stands up.", ch, nullptr, nullptr, TO_ROOM );
+            ch->on = nullptr;
          }
          else if( IS_SET( obj->value[2], STAND_AT ) )
          {
-            act( AT_ACTION, "You stand at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n stands at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You stand at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n stands at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], STAND_ON ) )
          {
-            act( AT_ACTION, "You stand on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n stands on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You stand on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n stands on $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You stand in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n stands on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You stand in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n stands on $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_STANDING;
          break;
 
       default:
       case POS_STANDING:
-         if( obj != NULL && aon != 1 )
+         if( obj != nullptr && aon != 1 )
          {
             if( IS_SET( obj->value[2], STAND_AT ) )
             {
-               act( AT_ACTION, "You stand at $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n stands at $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You stand at $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n stands at $p.", ch, obj, nullptr, TO_ROOM );
             }
             else if( IS_SET( obj->value[2], STAND_ON ) )
             {
-               act( AT_ACTION, "You stand on $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n stands on $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You stand on $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n stands on $p.", ch, obj, nullptr, TO_ROOM );
             }
             else
             {
-               act( AT_ACTION, "You stand in $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n stands on $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You stand in $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n stands on $p.", ch, obj, nullptr, TO_ROOM );
             }
          }
          else if( aon == 1 )
-            act( AT_ACTION, "You are already using $p for furniture.", ch, obj, NULL, TO_CHAR );
-         else if( ch->on != NULL && obj == NULL )
+            act( AT_ACTION, "You are already using $p for furniture.", ch, obj, nullptr, TO_CHAR );
+         else if( ch->on != nullptr && obj == nullptr )
          {
-            act( AT_ACTION, "You hop off of $p and stand on the ground.", ch, ch->on, NULL, TO_CHAR );
-            act( AT_ACTION, "$n hops off of $p and stands on the ground.", ch, ch->on, NULL, TO_ROOM );
-            ch->on = NULL;
+            act( AT_ACTION, "You hop off of $p and stand on the ground.", ch, ch->on, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n hops off of $p and stands on the ground.", ch, ch->on, nullptr, TO_ROOM );
+            ch->on = nullptr;
          }
          else
             ch->print( "You are already standing.\r\n" );
@@ -2033,7 +2033,7 @@ CMDF( do_stand )
 
 CMDF( do_sit )
 {
-   obj_data *obj = NULL;
+   obj_data *obj = nullptr;
    int aon = 0;
 
    if( ch->position > POS_SITTING && ch->position < POS_STANDING )
@@ -2080,22 +2080,22 @@ CMDF( do_sit )
          if( !obj )
          {
             ch->print( "You wake and sit up.\r\n" );
-            act( AT_ACTION, "$n wakes and sits up.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n wakes and sits up.", ch, nullptr, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SIT_AT ) )
          {
-            act( AT_ACTION, "You wake up and sit at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes and sits at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake up and sit at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes and sits at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SIT_ON ) )
          {
-            act( AT_ACTION, "You wake and sit on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes and sits at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake and sit on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes and sits at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You wake and sit in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes and sits in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake and sit in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes and sits in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_SITTING;
          break;
@@ -2105,43 +2105,43 @@ CMDF( do_sit )
             ch->print( "You stop resting.\r\n" );
          else if( IS_SET( obj->value[2], SIT_AT ) )
          {
-            act( AT_ACTION, "You sit at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sits at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sit at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sits at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SIT_ON ) )
          {
-            act( AT_ACTION, "You sit on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sits on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sit on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sits on $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_SITTING;
          break;
 
       case POS_SITTING:
-         if( obj != NULL && aon != 1 )
+         if( obj != nullptr && aon != 1 )
          {
             if( IS_SET( obj->value[2], SIT_AT ) )
             {
-               act( AT_ACTION, "You sit at $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n sits at $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You sit at $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n sits at $p.", ch, obj, nullptr, TO_ROOM );
             }
             else if( IS_SET( obj->value[2], STAND_ON ) )
             {
-               act( AT_ACTION, "You sit on $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n sits on $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You sit on $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n sits on $p.", ch, obj, nullptr, TO_ROOM );
             }
             else
             {
-               act( AT_ACTION, "You sit in $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n sits on $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You sit in $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n sits on $p.", ch, obj, nullptr, TO_ROOM );
             }
          }
          else if( aon == 1 )
-            act( AT_ACTION, "You are already using $p for furniture.", ch, obj, NULL, TO_CHAR );
-         else if( ch->on != NULL && obj == NULL )
+            act( AT_ACTION, "You are already using $p for furniture.", ch, obj, nullptr, TO_CHAR );
+         else if( ch->on != nullptr && obj == nullptr )
          {
-            act( AT_ACTION, "You hop off of $p and sit on the ground.", ch, ch->on, NULL, TO_CHAR );
-            act( AT_ACTION, "$n hops off of $p and sits on the ground.", ch, ch->on, NULL, TO_ROOM );
-            ch->on = NULL;
+            act( AT_ACTION, "You hop off of $p and sit on the ground.", ch, ch->on, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n hops off of $p and sits on the ground.", ch, ch->on, nullptr, TO_ROOM );
+            ch->on = nullptr;
          }
          else
             ch->print( "You are already sitting.\r\n" );
@@ -2149,25 +2149,25 @@ CMDF( do_sit )
 
       default:
       case POS_STANDING:
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You sit down.\r\n" );
-            act( AT_ACTION, "$n sits down on the ground.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n sits down on the ground.", ch, nullptr, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SIT_AT ) )
          {
-            act( AT_ACTION, "You sit down at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sits down at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sit down at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sits down at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SIT_ON ) )
          {
-            act( AT_ACTION, "You sit on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sits on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sit on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sits on $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You sit down in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sits down in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sit down in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sits down in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_SITTING;
          break;
@@ -2176,7 +2176,7 @@ CMDF( do_sit )
 
 CMDF( do_rest )
 {
-   obj_data *obj = NULL;
+   obj_data *obj = nullptr;
    int aon = 0;
 
    if( ch->position > POS_SITTING && ch->position < POS_STANDING )
@@ -2220,55 +2220,55 @@ CMDF( do_rest )
    switch ( ch->position )
    {
       case POS_SLEEPING:
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You wake up and start resting.\r\n" );
-            act( AT_ACTION, "$n wakes up and starts resting.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n wakes up and starts resting.", ch, nullptr, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], REST_AT ) )
          {
-            act( AT_ACTION, "You wake up and rest at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes up and rests at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake up and rest at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes up and rests at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], REST_ON ) )
          {
-            act( AT_ACTION, "You wake up and rest on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes up and rests on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake up and rest on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes up and rests on $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You wake up and rest in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n wakes up and rests in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You wake up and rest in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n wakes up and rests in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_RESTING;
          break;
 
       case POS_RESTING:
-         if( obj != NULL && aon != 1 )
+         if( obj != nullptr && aon != 1 )
          {
             if( IS_SET( obj->value[2], REST_AT ) )
             {
-               act( AT_ACTION, "You rest at $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n rests at $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You rest at $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n rests at $p.", ch, obj, nullptr, TO_ROOM );
             }
             else if( IS_SET( obj->value[2], REST_ON ) )
             {
-               act( AT_ACTION, "You rest on $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n rests on $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You rest on $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n rests on $p.", ch, obj, nullptr, TO_ROOM );
             }
             else
             {
-               act( AT_ACTION, "You rest in $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n rests on $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You rest in $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n rests on $p.", ch, obj, nullptr, TO_ROOM );
             }
          }
          else if( aon == 1 )
-            act( AT_ACTION, "You are already using $p for furniture.", ch, obj, NULL, TO_CHAR );
-         else if( ch->on != NULL && obj == NULL )
+            act( AT_ACTION, "You are already using $p for furniture.", ch, obj, nullptr, TO_CHAR );
+         else if( ch->on != nullptr && obj == nullptr )
          {
-            act( AT_ACTION, "You hop off of $p and start resting on the ground.", ch, ch->on, NULL, TO_CHAR );
-            act( AT_ACTION, "$n hops off of $p and starts to rest on the ground.", ch, ch->on, NULL, TO_ROOM );
-            ch->on = NULL;
+            act( AT_ACTION, "You hop off of $p and start resting on the ground.", ch, ch->on, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n hops off of $p and starts to rest on the ground.", ch, ch->on, nullptr, TO_ROOM );
+            ch->on = nullptr;
          }
          else
             ch->print( "You are already resting.\r\n" );
@@ -2276,49 +2276,49 @@ CMDF( do_rest )
 
       default:
       case POS_STANDING:
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You rest.\r\n" );
-            act( AT_ACTION, "$n sits down and rests.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n sits down and rests.", ch, nullptr, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], REST_AT ) )
          {
-            act( AT_ACTION, "You sit down at $p and rest.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sits down at $p and rests.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sit down at $p and rest.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sits down at $p and rests.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], REST_ON ) )
          {
-            act( AT_ACTION, "You sit on $p and rest.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sits on $p and rests.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sit on $p and rest.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sits on $p and rests.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You rest in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n rests in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You rest in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n rests in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_RESTING;
          break;
 
       case POS_SITTING:
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You rest.\r\n" );
-            act( AT_ACTION, "$n rests.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n rests.", ch, nullptr, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], REST_AT ) )
          {
-            act( AT_ACTION, "You rest at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n rests at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You rest at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n rests at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], REST_ON ) )
          {
-            act( AT_ACTION, "You rest on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n rests on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You rest on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n rests on $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You rest in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n rests in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You rest in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n rests in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_RESTING;
          break;
@@ -2328,7 +2328,7 @@ CMDF( do_rest )
 
 CMDF( do_sleep )
 {
-   obj_data *obj = NULL;
+   obj_data *obj = nullptr;
    int aon = 0;
 
    if( ch->position > POS_SITTING && ch->position < POS_STANDING )
@@ -2372,105 +2372,105 @@ CMDF( do_sleep )
    switch ( ch->position )
    {
       case POS_SLEEPING:
-         if( obj != NULL && aon != 1 )
+         if( obj != nullptr && aon != 1 )
          {
             if( IS_SET( obj->value[2], SLEEP_AT ) )
             {
-               act( AT_ACTION, "You sleep at $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n sleeps at $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You sleep at $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n sleeps at $p.", ch, obj, nullptr, TO_ROOM );
             }
             else if( IS_SET( obj->value[2], SLEEP_ON ) )
             {
-               act( AT_ACTION, "You sleep on $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n sleeps on $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You sleep on $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n sleeps on $p.", ch, obj, nullptr, TO_ROOM );
             }
             else
             {
-               act( AT_ACTION, "You sleep in $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n sleeps on $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You sleep in $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n sleeps on $p.", ch, obj, nullptr, TO_ROOM );
             }
          }
          else if( aon == 1 )
-            act( AT_ACTION, "You are already using $p for furniture.", ch, obj, NULL, TO_CHAR );
-         else if( ch->on != NULL && obj == NULL )
+            act( AT_ACTION, "You are already using $p for furniture.", ch, obj, nullptr, TO_CHAR );
+         else if( ch->on != nullptr && obj == nullptr )
          {
-            act( AT_ACTION, "You hop off of $p and try to sleep on the ground.", ch, ch->on, NULL, TO_CHAR );
-            act( AT_ACTION, "$n hops off of $p and falls quickly asleep on the ground.", ch, ch->on, NULL, TO_ROOM );
-            ch->on = NULL;
+            act( AT_ACTION, "You hop off of $p and try to sleep on the ground.", ch, ch->on, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n hops off of $p and falls quickly asleep on the ground.", ch, ch->on, nullptr, TO_ROOM );
+            ch->on = nullptr;
          }
          else
             ch->print( "You are already sleeping.\r\n" );
          break;
 
       case POS_RESTING:
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You lean your head back more and go to sleep.\r\n" );
-            act( AT_ACTION, "$n lies back and falls asleep on the ground.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n lies back and falls asleep on the ground.", ch, nullptr, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SLEEP_AT ) )
          {
-            act( AT_ACTION, "You sleep at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SLEEP_ON ) )
          {
-            act( AT_ACTION, "You sleep on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps on $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You sleep in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_SLEEPING;
          break;
 
       case POS_SITTING:
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You lay down and go to sleep.\r\n" );
-            act( AT_ACTION, "$n lies back and falls asleep on the ground.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n lies back and falls asleep on the ground.", ch, nullptr, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SLEEP_AT ) )
          {
-            act( AT_ACTION, "You sleep at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SLEEP_ON ) )
          {
-            act( AT_ACTION, "You sleep on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps on $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You sleep in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_SLEEPING;
          break;
 
       default:
       case POS_STANDING:
-         if( obj == NULL )
+         if( obj == nullptr )
          {
             ch->print( "You drop down and fall asleep on the ground.\r\n" );
-            act( AT_ACTION, "$n drops down and falls asleep on the ground.", ch, NULL, NULL, TO_ROOM );
+            act( AT_ACTION, "$n drops down and falls asleep on the ground.", ch, nullptr, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SLEEP_AT ) )
          {
-            act( AT_ACTION, "You sleep at $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps at $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep at $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps at $p.", ch, obj, nullptr, TO_ROOM );
          }
          else if( IS_SET( obj->value[2], SLEEP_ON ) )
          {
-            act( AT_ACTION, "You sleep on $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps on $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep on $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps on $p.", ch, obj, nullptr, TO_ROOM );
          }
          else
          {
-            act( AT_ACTION, "You sleep down in $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n sleeps down in $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You sleep down in $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n sleeps down in $p.", ch, obj, nullptr, TO_ROOM );
          }
          ch->position = POS_SLEEPING;
          break;
@@ -2503,18 +2503,18 @@ CMDF( do_wake )
 
    if( victim->IS_AWAKE(  ) )
    {
-      act( AT_PLAIN, "$N is already awake.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$N is already awake.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
    if( victim->has_aflag( AFF_SLEEP ) || victim->position < POS_SLEEPING )
    {
-      act( AT_PLAIN, "You can't seem to wake $M!", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "You can't seem to wake $M!", ch, nullptr, victim, TO_CHAR );
       return;
    }
-   act( AT_ACTION, "You wake $M.", ch, NULL, victim, TO_CHAR );
+   act( AT_ACTION, "You wake $M.", ch, nullptr, victim, TO_CHAR );
    victim->position = POS_STANDING;
-   act( AT_ACTION, "$n wakes you.", ch, NULL, victim, TO_VICT );
+   act( AT_ACTION, "$n wakes you.", ch, nullptr, victim, TO_VICT );
    interpret( victim, "look auto" );
 }
 
@@ -2529,11 +2529,11 @@ void teleportch( char_data * ch, room_index * room, bool show )
    if( ch->has_aflag( AFF_FLYING ) && ch->in_room->flags.test( ROOM_TELENOFLY ) )
       return;
 
-   act( AT_ACTION, "$n disappears suddenly!", ch, NULL, NULL, TO_ROOM );
+   act( AT_ACTION, "$n disappears suddenly!", ch, nullptr, nullptr, TO_ROOM );
    ch->from_room(  );
    if( !ch->to_room( room ) )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-   act( AT_ACTION, "$n arrives suddenly!", ch, NULL, NULL, TO_ROOM );
+   act( AT_ACTION, "$n arrives suddenly!", ch, nullptr, nullptr, TO_ROOM );
    if( show )
       interpret( ch, "look" );
    if( ch->in_room->flags.test( ROOM_DEATH ) && !ch->is_immortal(  ) )
@@ -2593,7 +2593,7 @@ void teleport( char_data * ch, int room, int flags )
          ++iobj;
 
          obj->from_room(  );
-         obj->to_room( dest, NULL );
+         obj->to_room( dest, nullptr );
       }
    }
 }
@@ -2622,7 +2622,7 @@ CMDF( do_climb )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL && IS_EXIT_FLAG( pexit, EX_xCLIMB ) )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_xCLIMB ) )
    {
       move_char( ch, pexit, 0, pexit->vdir, false );
       return;
@@ -2673,7 +2673,7 @@ CMDF( do_enter )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL && IS_EXIT_FLAG( pexit, EX_xENTER ) )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_xENTER ) )
    {
       if( IS_EXIT_FLAG( pexit, EX_PORTAL ) && !ch->has_visited( pexit->to_room->area ) )
       {
@@ -2729,7 +2729,7 @@ CMDF( do_leave )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != NULL && IS_EXIT_FLAG( pexit, EX_xLEAVE ) )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_xLEAVE ) )
    {
       if( IS_EXIT_FLAG( pexit, EX_PORTAL ) && !ch->has_visited( pexit->to_room->area ) )
       {
@@ -2766,8 +2766,8 @@ ch_ret pullcheck( char_data * ch, int pulse )
    room_index *room;
    bool move = false, moveobj = true, showroom = true;
    int resistance;
-   const char *tochar = NULL, *toroom = NULL, *objmsg = NULL;
-   const char *destrm = NULL, *destob = NULL, *dtxt = "somewhere";
+   const char *tochar = nullptr, *toroom = nullptr, *objmsg = nullptr;
+   const char *destrm = nullptr, *destob = nullptr, *dtxt = "somewhere";
 
    if( !( room = ch->in_room ) )
    {
@@ -2778,7 +2778,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
    /*
     * Find the exit with the strongest force (if any) 
     */
-   exit_data *xit = NULL;
+   exit_data *xit = nullptr;
    list < exit_data * >::iterator iexit;
    for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
    {
@@ -3089,17 +3089,17 @@ ch_ret pullcheck( char_data * ch, int pulse )
        */
       if( tochar )
       {
-         act( AT_PLAIN, tochar, ch, NULL, dir_name[xit->vdir], TO_CHAR );
+         act( AT_PLAIN, tochar, ch, nullptr, dir_name[xit->vdir], TO_CHAR );
          ch->print( "\r\n" );
       }
       if( toroom )
-         act( AT_PLAIN, toroom, ch, NULL, dir_name[xit->vdir], TO_ROOM );
+         act( AT_PLAIN, toroom, ch, nullptr, dir_name[xit->vdir], TO_ROOM );
 
       /*
        * display an appropriate entrance message 
        */
       if( destrm && !xit->to_room->people.empty(  ) )
-         act( AT_PLAIN, destrm, ( *xit->to_room->people.begin(  ) ), NULL, dtxt, TO_ROOM );
+         act( AT_PLAIN, destrm, ( *xit->to_room->people.begin(  ) ), nullptr, dtxt, TO_ROOM );
 
       /*
        * move the char 
@@ -3180,7 +3180,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
             if( destob && !xit->to_room->people.empty(  ) )
                act( AT_PLAIN, destob, ( *xit->to_room->people.begin(  ) ), obj, dtxt, TO_ROOM );
             obj->from_room(  );
-            obj->to_room( xit->to_room, NULL );
+            obj->to_room( xit->to_room, nullptr );
          }
       }
    }

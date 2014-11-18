@@ -57,7 +57,7 @@ struct bfs_data
    bfs_data *next;
 };
 
-static bfs_data *queue_head = NULL, *queue_tail = NULL, *room_queue = NULL;
+static bfs_data *queue_head = nullptr, *queue_tail = nullptr, *room_queue = nullptr;
 
 /* Utility macros */
 #define MARK(room)	( (room)->flags.set( BFS_MARK ) )
@@ -83,7 +83,7 @@ void bfs_enqueue( room_index * room, char dir )
    curr = new bfs_data;
    curr->room = room;
    curr->dir = dir;
-   curr->next = NULL;
+   curr->next = nullptr;
 
    if( queue_tail )
    {
@@ -101,7 +101,7 @@ void bfs_dequeue( void )
    curr = queue_head;
 
    if( !( queue_head = queue_head->next ) )
-      queue_tail = NULL;
+      queue_tail = nullptr;
    deleteptr( curr );
 }
 
@@ -132,14 +132,14 @@ void clean_room_queue( void )
       curr_next = curr->next;
       deleteptr( curr );
    }
-   room_queue = NULL;
+   room_queue = nullptr;
 }
 
 int find_first_step( room_index * src, room_index * target, int maxdist )
 {
    if( !src || !target )
    {
-      bug( "%s: NULL source and target rooms passed to find_first_step!", __func__ );
+      bug( "%s: nullptr source and target rooms passed to find_first_step!", __func__ );
       return BFS_ERROR;
    }
 
@@ -224,7 +224,7 @@ CMDF( do_track )
    ch->WAIT_STATE( skill_table[gsn_track]->beats );
 
    bool found = false;
-   char_data *vict = NULL;
+   char_data *vict = nullptr;
    list < char_data * >::iterator ich;
    for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
@@ -320,7 +320,7 @@ void found_prey( char_data * ch, char_data * victim )
       return;
    }
 
-   if( victim->in_room == NULL )
+   if( victim->in_room == nullptr )
    {
       bug( "%s: null victim->in_room: %s", __func__, victim->name );
       return;
@@ -340,9 +340,9 @@ void found_prey( char_data * ch, char_data * victim )
                cmdf( ch, "say Don't make me find you, %s!", victname );
                break;
             case 1:
-               act( AT_ACTION, "$n sniffs around the room for $N.", ch, NULL, victim, TO_NOTVICT );
-               act( AT_ACTION, "You sniff around the room for $N.", ch, NULL, victim, TO_CHAR );
-               act( AT_ACTION, "$n sniffs around the room for you.", ch, NULL, victim, TO_VICT );
+               act( AT_ACTION, "$n sniffs around the room for $N.", ch, nullptr, victim, TO_NOTVICT );
+               act( AT_ACTION, "You sniff around the room for $N.", ch, nullptr, victim, TO_CHAR );
+               act( AT_ACTION, "$n sniffs around the room for you.", ch, nullptr, victim, TO_VICT );
                interpret( ch, "say I can smell your blood!" );
                break;
             case 2:
@@ -377,9 +377,9 @@ void found_prey( char_data * ch, char_data * victim )
                cmdf( ch, "yell %s is a yellow-bellied wimp!", victname );
                break;
             case 3:
-               act( AT_ACTION, "$n takes a few swipes at $N.", ch, NULL, victim, TO_NOTVICT );
-               act( AT_ACTION, "You try to take a few swipes $N.", ch, NULL, victim, TO_CHAR );
-               act( AT_ACTION, "$n takes a few swipes at you.", ch, NULL, victim, TO_VICT );
+               act( AT_ACTION, "$n takes a few swipes at $N.", ch, nullptr, victim, TO_NOTVICT );
+               act( AT_ACTION, "You try to take a few swipes $N.", ch, nullptr, victim, TO_CHAR );
+               act( AT_ACTION, "$n takes a few swipes at you.", ch, nullptr, victim, TO_VICT );
                break;
             default:
                break;
@@ -402,9 +402,9 @@ void found_prey( char_data * ch, char_data * victim )
             cmdf( ch, "say What do you want on your tombstone, %s?", victname );
             break;
          case 3:
-            act( AT_ACTION, "$n lunges at $N from out of nowhere!", ch, NULL, victim, TO_NOTVICT );
-            act( AT_ACTION, "You lunge at $N catching $M off guard!", ch, NULL, victim, TO_CHAR );
-            act( AT_ACTION, "$n lunges at you from out of nowhere!", ch, NULL, victim, TO_VICT );
+            act( AT_ACTION, "$n lunges at $N from out of nowhere!", ch, nullptr, victim, TO_NOTVICT );
+            act( AT_ACTION, "You lunge at $N catching $M off guard!", ch, nullptr, victim, TO_CHAR );
+            act( AT_ACTION, "$n lunges at you from out of nowhere!", ch, nullptr, victim, TO_VICT );
             break;
          default:
             break;
@@ -540,7 +540,7 @@ void hunt_vic( char_data * ch )
           * Changed who to name as scan_for_vic expects the name and
           * * Not the char struct. --Shaddai
           */
-         if( ( vch = scan_for_vic( ch, pexit, ch->hunting->name ) ) != NULL )
+         if( ( vch = scan_for_vic( ch, pexit, ch->hunting->name ) ) != nullptr )
          {
             if( !mob_fire( ch, ch->hunting->who->name ) )
             {

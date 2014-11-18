@@ -129,7 +129,7 @@ bool descriptor_data::compressStart(  )
    CREATE( s, z_stream, 1 );
    CREATE( mccp->out_compress_buf, unsigned char, COMPRESS_BUF_SIZE );
 
-   s->next_in = NULL;
+   s->next_in = nullptr;
    s->avail_in = 0;
 
    s->next_out = mccp->out_compress_buf;
@@ -137,7 +137,7 @@ bool descriptor_data::compressStart(  )
 
    s->zalloc = Z_NULL;
    s->zfree = Z_NULL;
-   s->opaque = NULL;
+   s->opaque = nullptr;
 
    if( deflateInit( s, 9 ) != Z_OK )
    {

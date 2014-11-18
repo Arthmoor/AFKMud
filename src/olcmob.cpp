@@ -139,7 +139,7 @@ CMDF( do_omedit )
    OLC_CHANGE( d ) = false;
    medit_disp_menu( d );
 
-   act( AT_ACTION, "$n starts using OLC.", ch, NULL, NULL, TO_ROOM );
+   act( AT_ACTION, "$n starts using OLC.", ch, nullptr, nullptr, TO_ROOM );
 }
 
 CMDF( do_mcopy )
@@ -453,7 +453,7 @@ void medit_disp_menu( descriptor_data * d )
    ch->printf( "&g6&w) Class: [&c%-11.11s&w], &g7&w) Race:   [&c%-11.11s&w]\r\n", npc_class[mob->Class], npc_race[mob->race] );
    ch->printf( "&g8&w) Level:       [&c%5d&w], &g9&w) Alignment:    [&c%5d&w]\r\n\r\n", mob->level, mob->alignment );
 
-   ch->printf( " &w) Calc Thac0:      [&c%5d&w]\r\n", calc_thac0( mob, NULL, 0 ) );
+   ch->printf( " &w) Calc Thac0:      [&c%5d&w]\r\n", calc_thac0( mob, nullptr, 0 ) );
    ch->printf( "&gA&w) Real Thac0:  [&c%5d&w]\r\n\r\n", mob->mobthac0 );
 
    ch->printf( " &w) Calc Experience: [&c%10d&w]\r\n", mob->exp );
@@ -495,7 +495,7 @@ CMDF( do_medit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_mob_desc: NULL ch->pcdata->dest_buf", __func__ );
+            bug( "%s: sub_mob_desc: nullptr ch->pcdata->dest_buf", __func__ );
             cleanup_olc( ch->desc );
             ch->substate = SUB_NONE;
             return;
@@ -1174,7 +1174,7 @@ void medit_parse( descriptor_data * d, string & arg )
             break;
          if( number < 1 || number >= SPEC_MAX )
          {
-            victim->spec_fun = NULL;
+            victim->spec_fun = nullptr;
             victim->spec_funname.clear(  );
          }
          else

@@ -56,13 +56,13 @@ lang_data *get_lang( const string & name )
       if( !str_cmp( lang->name, name ) )
          return lang;
    }
-   return NULL;
+   return nullptr;
 }
 
 // Rewritten by Xorith for more C++
 string translate( int percent, const string & in, const string & name )
 {
-   lang_data *lng = NULL;
+   lang_data *lng = nullptr;
    string retVal = "", inVal = in;
    string::size_type inValIndex = 0;
    bool lfound = false;
@@ -150,7 +150,7 @@ CMDF( do_ask )
       return;
    }
 
-   if( ( victim = ch->get_char_room( arg ) ) == NULL || ( victim->isnpc(  ) && victim->in_room != ch->in_room ) )
+   if( ( victim = ch->get_char_room( arg ) ) == nullptr || ( victim->isnpc(  ) && victim->in_room != ch->in_room ) )
    {
       ch->print( "They aren't here.\r\n" );
       return;
@@ -274,7 +274,7 @@ CMDF( do_say )
       for( int x = 0; x < MAX_SAYHISTORY; ++x )
       {
          char histbuf[MSL];
-         if( ch->pcdata->say_history[x] == NULL )
+         if( ch->pcdata->say_history[x] == nullptr )
             break;
          one_argument( ch->pcdata->say_history[x], histbuf );
          ch->printf( "&R[%s]%s\r\n", mini_c_time( atoi( histbuf ), ch->pcdata->timezone ), ch->pcdata->say_history[x] + strlen( histbuf ) );
@@ -340,7 +340,7 @@ CMDF( do_say )
    ch->set_actflags( actflags );
    MOBtrigger = false;
 
-   act( AT_SAY, "You say '$T'", ch, NULL, argument.c_str(  ), TO_CHAR );
+   act( AT_SAY, "You say '$T'", ch, nullptr, argument.c_str(  ), TO_CHAR );
 
    if( !ch->isnpc(  ) )
       update_sayhistory( ch, ch, argument );
@@ -438,7 +438,7 @@ CMDF( do_whisper )
 
    if( victim->desc && victim->desc->connected == CON_EDITING && ch->get_trust(  ) < LEVEL_GOD )
    {
-      act( AT_PLAIN, "$E is currently in a writing buffer. Please try again in a few minutes.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$E is currently in a writing buffer. Please try again in a few minutes.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -514,7 +514,7 @@ CMDF( do_whisper )
 /* Installed by Samson on unknown date, allows user to beep other users */
 CMDF( do_beep )
 {
-   char_data *victim = NULL;
+   char_data *victim = nullptr;
 
    if( ch->has_pcflag( PCFLAG_NO_BEEP ) )
    {
@@ -609,7 +609,7 @@ CMDF( do_tell )
    string arg;
    char_data *victim;
    int position;
-   char_data *switched_victim = NULL;
+   char_data *switched_victim = nullptr;
    int speaking = -1, lang;
 
    for( lang = 0; lang < LANG_UNKNOWN; ++lang )
@@ -648,7 +648,7 @@ CMDF( do_tell )
       for( int x = 0; x < MAX_TELLHISTORY; ++x )
       {
          char histbuf[MSL];
-         if( ch->pcdata->tell_history[x] == NULL )
+         if( ch->pcdata->tell_history[x] == nullptr )
             break;
          one_argument( ch->pcdata->tell_history[x], histbuf );
          ch->printf( "&R[%s]%s\r\n", mini_c_time( atoi( histbuf ), ch->pcdata->timezone ), ch->pcdata->tell_history[x] + strlen( histbuf ) );
@@ -699,7 +699,7 @@ CMDF( do_tell )
        * Immortal check added to let imms tell players at all times, Adjani, 12-02-2002
        */
    {
-      act( AT_PLAIN, "$E has $S tells turned off.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$E has $S tells turned off.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -711,7 +711,7 @@ CMDF( do_tell )
 
    if( ( !ch->is_immortal(  ) && !victim->IS_AWAKE(  ) ) || ( !victim->isnpc(  ) && ( victim->in_room->flags.test( ROOM_SILENCE ) || victim->in_room->area->flags.test( AFLAG_SILENCE ) ) ) )
    {
-      act( AT_PLAIN, "$E can't hear you.", ch, NULL, victim, TO_CHAR );
+      act( AT_PLAIN, "$E can't hear you.", ch, nullptr, victim, TO_CHAR );
       return;
    }
 
@@ -1110,7 +1110,7 @@ int knows_language( char_data * ch, int language, char_data * cch )
       if( ch->isnpc(  ) || cch->isnpc(  ) )
          return 100;
 
-      if( ch->pcdata->clan == cch->pcdata->clan && ch->pcdata->clan != NULL )
+      if( ch->pcdata->clan == cch->pcdata->clan && ch->pcdata->clan != nullptr )
          return 100;
    }
 
@@ -1173,7 +1173,7 @@ CMDF( do_languages )
    argument = one_argument( argument, arg );
    if( !arg.empty(  ) && !str_prefix( arg, "learn" ) && !ch->is_immortal(  ) && !ch->isnpc(  ) )
    {
-      char_data *sch = NULL;
+      char_data *sch = nullptr;
       int sn, prct, prac;
       bool found = false;
 
@@ -1234,7 +1234,7 @@ CMDF( do_languages )
       prac = 2 - ( ch->get_curr_cha(  ) / 17 );
       if( ch->pcdata->practice < prac )
       {
-         act( AT_TELL, "$n tells you 'You do not have enough practices.'", sch, NULL, ch, TO_VICT );
+         act( AT_TELL, "$n tells you 'You do not have enough practices.'", sch, nullptr, ch, TO_VICT );
          return;
       }
       ch->pcdata->practice -= prac;
@@ -1276,7 +1276,7 @@ CMDF( do_languages )
 
 const char *MORPHNAME( char_data * ch )
 {
-   if( ch->morph && ch->morph->morph && ch->morph->morph->short_desc != NULL )
+   if( ch->morph && ch->morph->morph && ch->morph->morph->short_desc != nullptr )
       return ch->morph->morph->short_desc;
    else
       return NAME( ch );
@@ -1295,7 +1295,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
 
    if( format.empty(  ) )
    {
-      bug( "%s: NULL str!", __func__ );
+      bug( "%s: nullptr str!", __func__ );
       return "";
    }
 
@@ -1342,7 +1342,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                break;
 
             case 't':
-               if( arg1 != NULL )
+               if( arg1 != nullptr )
                   buf.append( ( char * )arg1 );
                else
                {
@@ -1352,7 +1352,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                break;
 
             case 'T':
-               if( arg2 != NULL )
+               if( arg2 != nullptr )
                   buf.append( ( char * )arg2 );
                else
                {
@@ -1362,7 +1362,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                break;
 
             case 'n':
-               if( ch->morph == NULL )
+               if( ch->morph == nullptr )
                   buf.append( ( to ? PERS( ch, to, false ) : NAME( ch ) ) );
                else if( flags == STRING_NONE )
                   buf.append( ( to ? MORPHPERS( ch, to, false ) : MORPHNAME( ch ) ) );
@@ -1376,7 +1376,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                break;
 
             case 'N':
-               if( vch->morph == NULL )
+               if( vch->morph == nullptr )
                   buf.append( ( to ? PERS( vch, to, false ) : NAME( vch ) ) );
                else if( flags == STRING_NONE )
                   buf.append( ( to ? MORPHPERS( vch, to, false ) : MORPHNAME( vch ) ) );
@@ -1532,7 +1532,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
 
    // Do some proper type checking here..  Sort of.  We base it on the $* params.
    // This is kinda lame really, but I suppose in some weird sense it beats having
-   // to pass like 8 different NULL parameters every time we need to call act()..
+   // to pass like 8 different nullptr parameters every time we need to call act()..
    string::const_iterator ptr = format.begin(  );
    while( ptr != format.end(  ) )
    {
@@ -1548,14 +1548,14 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
 
             case 't':
                flags1 |= ACTF_TXT;
-               obj1 = NULL;
+               obj1 = nullptr;
                break;
 
             case 'T':
             case 'd':
                flags2 |= ACTF_TXT;
-               vch = NULL;
-               obj2 = NULL;
+               vch = nullptr;
+               obj2 = nullptr;
                break;
 
             case 'n':
@@ -1571,7 +1571,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
             case 'S':
             case 'Q':
                flags2 |= ACTF_CH;
-               obj2 = NULL;
+               obj2 = nullptr;
                break;
 
             case 'p':
@@ -1580,7 +1580,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
 
             case 'P':
                flags2 |= ACTF_OBJ;
-               vch = NULL;
+               vch = nullptr;
                break;
          }
       }
@@ -1589,20 +1589,20 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
 
    if( flags1 != ACTF_NONE && flags1 != ACTF_TXT && flags1 != ACTF_CH && flags1 != ACTF_OBJ )
    {
-      bug( "%s: arg1 has more than one type in format %s. Setting all NULL.", __func__, format.c_str(  ) );
-      obj1 = NULL;
+      bug( "%s: arg1 has more than one type in format %s. Setting all nullptr.", __func__, format.c_str(  ) );
+      obj1 = nullptr;
    }
 
    if( flags2 != ACTF_NONE && flags2 != ACTF_TXT && flags2 != ACTF_CH && flags2 != ACTF_OBJ )
    {
-      bug( "%s: arg2 has more than one type in format %s. Setting all NULL.", __func__, format.c_str(  ) );
-      vch = NULL;
-      obj2 = NULL;
+      bug( "%s: arg2 has more than one type in format %s. Setting all nullptr.", __func__, format.c_str(  ) );
+      vch = nullptr;
+      obj2 = nullptr;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: NULL ch->in_room! (%s:%s)", __func__, ch->name, format.c_str(  ) );
+      bug( "%s: nullptr ch->in_room! (%s:%s)", __func__, ch->name, format.c_str(  ) );
       return;
    }
    else if( type == TO_CHAR )
@@ -1626,7 +1626,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
       }
       if( !vch->in_room )
       {
-         bug( "%s: vch in NULL room!", __func__ );
+         bug( "%s: vch in nullptr room!", __func__ );
          log_printf( "%s -> %s (%s)", ch->name, vch->name, format.c_str(  ) );
          return;
       }
@@ -1648,7 +1648,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
    {
       list < obj_data * >::iterator iobj;
 
-      txt = act_string( format, NULL, ch, arg1, arg2, STRING_IMM );
+      txt = act_string( format, nullptr, ch, arg1, arg2, STRING_IMM );
       if( HAS_PROG( to->in_room, ACT_PROG ) )
          rprog_act_trigger( txt, to->in_room, ch, obj1, vch, obj2 );
       for( iobj = to->in_room->objects.begin(  ); iobj != to->in_room->objects.end(  ); ++iobj )
@@ -1669,7 +1669,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
     */
    if( !to )
    {
-      bug( "%s: NULL TARGET - CANNOT CONTINUE", __func__ );
+      bug( "%s: nullptr TARGET - CANNOT CONTINUE", __func__ );
       return;
    }
 
@@ -1719,7 +1719,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
          if( is_ignoring( ch, to ) )
             continue;
 
-         if( vch != NULL && is_ignoring( vch, to ) )
+         if( vch != nullptr && is_ignoring( vch, to ) )
             continue;
 
          if( !is_same_char_map( ch, to ) )

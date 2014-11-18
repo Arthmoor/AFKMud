@@ -56,10 +56,10 @@ SERVICE_STATUS ssStatus;   // current status of the service
 SERVICE_STATUS_HANDLE sshStatusHandle;
 DWORD dwGlobalErr;
 DWORD TID = 0;
-HANDLE threadHandle = NULL;
+HANDLE threadHandle = nullptr;
 
-SC_HANDLE service = NULL;
-SC_HANDLE SCmanager = NULL;
+SC_HANDLE service = nullptr;
+SC_HANDLE SCmanager = nullptr;
 
 //  declare the service threads:
 //
@@ -83,7 +83,7 @@ int main( int argc, char **argv )
 {
    SERVICE_TABLE_ENTRY dispatchTable[] = {
       {THIS_SERVICE, ( LPSERVICE_MAIN_FUNCTION ) service_main},
-      {NULL, NULL}
+      {nullptr, nullptr}
    };
 
    SERVICE_STATUS svcstatus;
@@ -115,7 +115,7 @@ Get the command line parameters and see what the user wants us to do.
             fprintf( stderr, "AFKMud is already running as a service.\n" );
             return 1;
          }
-         worker_thread( NULL );
+         worker_thread( nullptr );
       }
       else
          CmdDisplayFormat(  );
@@ -138,7 +138,7 @@ Get the command line parameters and see what the user wants us to do.
 
       if( status == ERROR_CALL_NOT_IMPLEMENTED )
       {
-         worker_thread( NULL );
+         worker_thread( nullptr );
          return 0;
       }
 
@@ -154,7 +154,7 @@ Get the command line parameters and see what the user wants us to do.
       {
          fprintf( stderr, "Unable to start service, assuming running console-mode application.\n" );
          fprintf( stderr, "You can save time on the next invocation by specifying: AFKMud /run\n" );
-         worker_thread( NULL );
+         worker_thread( nullptr );
       }
 
    }  // end of argc == 1
@@ -195,9 +195,9 @@ static VOID service_main( DWORD dwArgc, LPTSTR * lpszArgv )
 
    // start the thread that performs the work of the service.
    //
-   threadHandle = ( HANDLE ) _beginthreadex( NULL, // security attributes
+   threadHandle = ( HANDLE ) _beginthreadex( nullptr, // security attributes
                                              0, // stack size (0 means inherit parent's stack size)
-                                             ( LPTHREAD_START_ROUTINE ) worker_thread, NULL, // argument to thread
+                                             ( LPTHREAD_START_ROUTINE ) worker_thread, nullptr, // argument to thread
                                              0, // thread creation flags
                                              &TID );  // pointer to thread ID
 
@@ -357,7 +357,7 @@ static void StopService( LPTSTR lpszMsg )
 
    // Use event logging to log the error.
    //
-   hEventSource = RegisterEventSource( NULL, THIS_SERVICE );
+   hEventSource = RegisterEventSource( nullptr, THIS_SERVICE );
 
    snprintf( chMsg, 256, "%s error: %s", THIS_SERVICE, convert_error( dwGlobalErr ) );
    lpszStrings[0] = chMsg;
@@ -369,11 +369,11 @@ static void StopService( LPTSTR lpszMsg )
                    EVENTLOG_ERROR_TYPE,   // event type
                    0,   // event category
                    0,   // event ID
-                   NULL,   // current user's SID
+                   nullptr,   // current user's SID
                    2,   // strings in lpszStrings
                    0,   // no bytes of raw data
                    lpszStrings,  // array of error strings
-                   NULL ); // no raw data
+                   nullptr ); // no raw data
 
       ( VOID ) DeregisterEventSource( hEventSource );
    }
@@ -393,7 +393,7 @@ BOOL WINAPI shut_down_handler( DWORD dwCtrlType )
 
       if( threadHandle )
          TerminateThread( threadHandle, 1 );
-      threadHandle = NULL;
+      threadHandle = nullptr;
 
       _exit( 99 );
 
@@ -427,7 +427,7 @@ static VOID worker_thread( VOID * notused )
    char *argv[2] = { "", "" };
    char *p;
 
-   if( !GetModuleFileName( NULL, fullfilename, sizeof( fullfilename ) ) )
+   if( !GetModuleFileName( nullptr, fullfilename, sizeof( fullfilename ) ) )
    {
       service_error( GetLastError(  ), "Cannot locate full filename" );
       Win32_Exit( 1 );
@@ -452,7 +452,7 @@ static VOID worker_thread( VOID * notused )
 // if running as a service, redirect stderr to a log file.
 
    if( threadHandle )
-      if( freopen( "..\\log\\game.log", "w", stderr ) == NULL )
+      if( freopen( "..\\log\\game.log", "w", stderr ) == nullptr )
          printf( "Could not redirect game output to: ..\\log\\game.log\n" );
 
 // handle shutdowns and ctrl-c
@@ -499,10 +499,10 @@ static void close_service_handles( void )
 {
    if( service )
       CloseServiceHandle( service );
-   service = NULL;
+   service = nullptr;
    if( SCmanager )
       CloseServiceHandle( SCmanager );
-   SCmanager = NULL;
+   SCmanager = nullptr;
 }  // end of close_service_handles
 
 // We put out *so* many error messages, let's centralise the whole thing
@@ -532,7 +532,7 @@ int service_error( DWORD error_code, char *themessage, ... )
 // Open a handle to the Service Control Manager
 static int open_service_manager( void )
 {
-   SCmanager = OpenSCManager( NULL, NULL, SC_MANAGER_ALL_ACCESS );
+   SCmanager = OpenSCManager( nullptr, nullptr, SC_MANAGER_ALL_ACCESS );
 
    if( !SCmanager )
       return service_error( GetLastError(  ), "Unable to talk to the Service Control Manager" );
@@ -556,7 +556,7 @@ static DWORD get_service_status( SERVICE_STATUS * svcstatus, int leave_open )
 {
 
    // Open a handle to the Service Control Manager.
-   SCmanager = OpenSCManager( NULL, NULL, SC_MANAGER_ALL_ACCESS );
+   SCmanager = OpenSCManager( nullptr, nullptr, SC_MANAGER_ALL_ACCESS );
 
    if( !SCmanager )
    {
@@ -594,7 +594,7 @@ static int CmdInstallService( int argc, char *argv[] )
    char fullfilename[MAX_PATH];
 
    // Pick up our full path and file name.
-   if( !GetModuleFileName( NULL, fullfilename, sizeof( fullfilename ) ) )
+   if( !GetModuleFileName( nullptr, fullfilename, sizeof( fullfilename ) ) )
       return service_error( GetLastError(  ), "Cannot locate full filename" );
 
    // Open a handle to the Service Control Manager.
@@ -602,11 +602,11 @@ static int CmdInstallService( int argc, char *argv[] )
       return true;
 
    // Now create the service definition.
-   service = CreateService( SCmanager, THIS_SERVICE, THIS_SERVICE_DISPLAY, SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS, SERVICE_AUTO_START, SERVICE_ERROR_NORMAL, fullfilename, NULL,   // no load ordering group
-                            NULL,   // no tag identifier
-                            NULL,   // no dependencies
-                            NULL,   // LocalSystem account
-                            NULL ); // no password
+   service = CreateService( SCmanager, THIS_SERVICE, THIS_SERVICE_DISPLAY, SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS, SERVICE_AUTO_START, SERVICE_ERROR_NORMAL, fullfilename, nullptr,   // no load ordering group
+                            nullptr,   // no tag identifier
+                            nullptr,   // no dependencies
+                            nullptr,   // LocalSystem account
+                            nullptr ); // no password
    if( !service )
       return service_error( GetLastError(  ), "Unable to create service" );
 
@@ -656,7 +656,7 @@ static int CmdStartService( void )
       return service_error( 0, "The service is not currently stopped." );
 
    // Everything is fine, so start the service
-   if( !StartService( service, 0, NULL ) )
+   if( !StartService( service, 0, nullptr ) )
       return service_error( GetLastError(  ), "Cannot start service" );
 
    close_service_handles(  );
@@ -756,7 +756,7 @@ static char *convert_error( DWORD error )
 
    if( !FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM |
                        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                       FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, LANG_NEUTRAL, ( LPTSTR ) & formattedmsg, 0, NULL ) )
+                       FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error, LANG_NEUTRAL, ( LPTSTR ) & formattedmsg, 0, nullptr ) )
    {
       snprintf( buff, 100, "<Error code: %ld>", error );
       return buff;

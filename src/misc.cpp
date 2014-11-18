@@ -44,7 +44,7 @@ extern int top_exit;
 /* generate an action description message */
 void actiondesc( char_data * ch, obj_data * obj )
 {
-   liquid_data *liq = NULL;
+   liquid_data *liq = nullptr;
    char charbuf[MSL], roombuf[MSL];
    char *srcptr = obj->action_desc;
    char *charptr = charbuf;
@@ -130,7 +130,7 @@ void actiondesc( char_data * ch, obj_data * obj )
          return;
 
       case ITEM_DRINK_CON:
-         if( ( liq = get_liq_vnum( obj->value[2] ) ) == NULL )
+         if( ( liq = get_liq_vnum( obj->value[2] ) ) == nullptr )
             bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
 
          act( AT_ACTION, charbuf, ch, obj, liq->shortdesc.c_str(  ), TO_CHAR );
@@ -182,8 +182,8 @@ CMDF( do_eat )
    {
       if( obj->item_type != ITEM_FOOD && obj->item_type != ITEM_PILL && obj->item_type != ITEM_COOK )
       {
-         act( AT_ACTION, "$n starts to nibble on $p... ($e must really be hungry)", ch, obj, NULL, TO_ROOM );
-         act( AT_ACTION, "You try to nibble on $p...", ch, obj, NULL, TO_CHAR );
+         act( AT_ACTION, "$n starts to nibble on $p... ($e must really be hungry)", ch, obj, nullptr, TO_ROOM );
+         act( AT_ACTION, "You try to nibble on $p...", ch, obj, nullptr, TO_CHAR );
          return;
       }
 
@@ -224,12 +224,12 @@ CMDF( do_eat )
    }
    else
    {
-      if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+      if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
       {
          if( !obj->action_desc || obj->action_desc[0] == '\0' )
          {
-            act( AT_ACTION, "$n eats $p.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You eat $p.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n eats $p.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You eat $p.", ch, obj, nullptr, TO_CHAR );
             ch->sound( "eat.wav", 100, false );
          }
          else
@@ -277,14 +277,14 @@ CMDF( do_eat )
                {
                   if( obj->value[3] != 0 )
                   {
-                     act( AT_POISON, "$n chokes and gags.", ch, NULL, NULL, TO_ROOM );
-                     act( AT_POISON, "You choke and gag.", ch, NULL, NULL, TO_CHAR );
+                     act( AT_POISON, "$n chokes and gags.", ch, nullptr, nullptr, TO_ROOM );
+                     act( AT_POISON, "You choke and gag.", ch, nullptr, nullptr, TO_CHAR );
                      ch->mental_state = URANGE( 20, ch->mental_state + 5, 100 );
                   }
                   else
                   {
-                     act( AT_POISON, "$n gags on $p.", ch, obj, NULL, TO_ROOM );
-                     act( AT_POISON, "You gag on $p.", ch, obj, NULL, TO_CHAR );
+                     act( AT_POISON, "$n gags on $p.", ch, obj, nullptr, TO_ROOM );
+                     act( AT_POISON, "You gag on $p.", ch, obj, nullptr, TO_CHAR );
                      ch->mental_state = URANGE( 15, ch->mental_state + 5, 100 );
                   }
 
@@ -317,11 +317,11 @@ CMDF( do_eat )
                else if( ch->pcdata->condition[COND_FULL] > sysdata->maxcondval - 8 )
                   ch->print( "You are full.\r\n" );
             }
-            retcode = obj_cast_spell( obj->value[1], obj->value[0], ch, ch, NULL );
+            retcode = obj_cast_spell( obj->value[1], obj->value[0], ch, ch, nullptr );
             if( retcode == rNONE )
-               retcode = obj_cast_spell( obj->value[2], obj->value[0], ch, ch, NULL );
+               retcode = obj_cast_spell( obj->value[2], obj->value[0], ch, ch, nullptr );
             if( retcode == rNONE )
-               retcode = obj_cast_spell( obj->value[3], obj->value[0], ch, ch, NULL );
+               retcode = obj_cast_spell( obj->value[3], obj->value[0], ch, ch, nullptr );
             break;
       }
    }
@@ -362,8 +362,8 @@ CMDF( do_quaff )
          cmdf( ch, "drink %s", obj->name );
       else
       {
-         act( AT_ACTION, "$n lifts $p up to $s mouth and tries to drink from it...", ch, obj, NULL, TO_ROOM );
-         act( AT_ACTION, "You bring $p up to your mouth and try to drink from it...", ch, obj, NULL, TO_CHAR );
+         act( AT_ACTION, "$n lifts $p up to $s mouth and tries to drink from it...", ch, obj, nullptr, TO_ROOM );
+         act( AT_ACTION, "You bring $p up to your mouth and try to drink from it...", ch, obj, nullptr, TO_CHAR );
       }
       return;
    }
@@ -392,17 +392,17 @@ CMDF( do_quaff )
     */
    if( ch->fighting && number_percent(  ) > ( ch->get_curr_dex(  ) * 2 + 48 ) )
    {
-      act( AT_MAGIC, "$n fumbles $p and shatters it into fragments.", ch, obj, NULL, TO_ROOM );
-      act( AT_MAGIC, "Oops... $p is knocked from your hand and shatters!", ch, obj, NULL, TO_CHAR );
+      act( AT_MAGIC, "$n fumbles $p and shatters it into fragments.", ch, obj, nullptr, TO_ROOM );
+      act( AT_MAGIC, "Oops... $p is knocked from your hand and shatters!", ch, obj, nullptr, TO_CHAR );
    }
    else
    {
-      if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+      if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
       {
          if( !ch->CAN_PKILL(  ) || !obj->in_obj )
          {
-            act( AT_ACTION, "$n quaffs $p.", ch, obj, NULL, TO_ROOM );
-            act( AT_ACTION, "You quaff $p.", ch, obj, NULL, TO_CHAR );
+            act( AT_ACTION, "$n quaffs $p.", ch, obj, nullptr, TO_ROOM );
+            act( AT_ACTION, "You quaff $p.", ch, obj, nullptr, TO_CHAR );
          }
          else if( obj->in_obj )
          {
@@ -416,11 +416,11 @@ CMDF( do_quaff )
       else
          ch->WAIT_STATE( sysdata->pulsepersec / 3 );
 
-      retcode = obj_cast_spell( obj->value[1], obj->value[0], ch, ch, NULL );
+      retcode = obj_cast_spell( obj->value[1], obj->value[0], ch, ch, nullptr );
       if( retcode == rNONE )
-         retcode = obj_cast_spell( obj->value[2], obj->value[0], ch, ch, NULL );
+         retcode = obj_cast_spell( obj->value[2], obj->value[0], ch, ch, nullptr );
       if( retcode == rNONE )
-         retcode = obj_cast_spell( obj->value[3], obj->value[0], ch, ch, NULL );
+         retcode = obj_cast_spell( obj->value[3], obj->value[0], ch, ch, nullptr );
    }
    obj->extract(  );
 }
@@ -451,8 +451,8 @@ CMDF( do_recite )
 
    if( scroll->item_type != ITEM_SCROLL )
    {
-      act( AT_ACTION, "$n holds up $p as if to recite something from it...", ch, scroll, NULL, TO_ROOM );
-      act( AT_ACTION, "You hold up $p and stand there with your mouth open.  (Now what?)", ch, scroll, NULL, TO_CHAR );
+      act( AT_ACTION, "$n holds up $p as if to recite something from it...", ch, scroll, nullptr, TO_ROOM );
+      act( AT_ACTION, "You hold up $p and stand there with your mouth open.  (Now what?)", ch, scroll, nullptr, TO_CHAR );
       return;
    }
 
@@ -468,7 +468,7 @@ CMDF( do_recite )
       return;
    }
 
-   obj = NULL;
+   obj = nullptr;
    if( argument.empty(  ) )
       victim = ch;
    else
@@ -481,8 +481,8 @@ CMDF( do_recite )
    }
 
    scroll->separate(  );
-   act( AT_MAGIC, "$n recites $p.", ch, scroll, NULL, TO_ROOM );
-   act( AT_MAGIC, "You recite $p.", ch, scroll, NULL, TO_CHAR );
+   act( AT_MAGIC, "$n recites $p.", ch, scroll, nullptr, TO_ROOM );
+   act( AT_MAGIC, "You recite $p.", ch, scroll, nullptr, TO_CHAR );
 
    if( victim != ch )
       ch->WAIT_STATE( 2 * sysdata->pulseviolence );
@@ -552,10 +552,10 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       return;
    }
 
-   if( !oprog_use_trigger( ch, obj, NULL, NULL ) )
+   if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
    {
-      act_printf( AT_ACTION, ch, obj, NULL, TO_ROOM, "$n %s $p.", pull ? "pulls" : "pushes" );
-      act_printf( AT_ACTION, ch, obj, NULL, TO_CHAR, "You %s $p.", pull ? "pull" : "push" );
+      act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n %s $p.", pull ? "pulls" : "pushes" );
+      act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You %s $p.", pull ? "pull" : "push" );
    }
 
    if( !IS_SET( obj->value[0], TRIG_AUTORETURN ) )
@@ -621,8 +621,8 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       /*
        * Should we really send a message to the room? 
        */
-      act( AT_DEAD, "$n falls prey to a terrible death!", ch, NULL, NULL, TO_ROOM );
-      act( AT_DEAD, "Oopsie... you're dead!\r\n", ch, NULL, NULL, TO_CHAR );
+      act( AT_DEAD, "$n falls prey to a terrible death!", ch, nullptr, nullptr, TO_ROOM );
+      act( AT_DEAD, "Oopsie... you're dead!\r\n", ch, nullptr, nullptr, TO_CHAR );
       log_printf( "%s hit a DEATH TRIGGER in room %d!", ch->name, ch->in_room->vnum );
 
       /*
@@ -650,9 +650,9 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       }
 
       /*
-       * Set room to NULL before the check 
+       * Set room to nullptr before the check 
        */
-      room = NULL;
+      room = nullptr;
 
       /*
        * value[2] for the room vnum to put the object in if there is one, 0 for giving it to char or current room 
@@ -734,7 +734,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: obj points to invalid sn [%d]", __func__, obj->value[1] );
          return;
       }
-      obj_cast_spell( obj->value[1], URANGE( 1, ( obj->value[2] > 0 ) ? obj->value[2] : ch->level, MAX_LEVEL ), ch, ch, NULL );
+      obj_cast_spell( obj->value[1], URANGE( 1, ( obj->value[2] > 0 ) ? obj->value[2] : ch->level, MAX_LEVEL ), ch, ch, nullptr );
       return;
    }
 
@@ -743,7 +743,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
     */
    if( IS_SET( obj->value[0], TRIG_CONTAINER ) )
    {
-      obj_data *container = NULL;
+      obj_data *container = nullptr;
       list < obj_data * >::iterator iobj;
       bool found = false;
 
@@ -865,17 +865,17 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          pexit->key = -1;
          pexit->flags.reset(  );
          ++top_exit;
-         act( AT_PLAIN, "A passage opens!", ch, NULL, NULL, TO_CHAR );
-         act( AT_PLAIN, "A passage opens!", ch, NULL, NULL, TO_ROOM );
+         act( AT_PLAIN, "A passage opens!", ch, nullptr, nullptr, TO_CHAR );
+         act( AT_PLAIN, "A passage opens!", ch, nullptr, nullptr, TO_ROOM );
          return;
       }
 
       if( IS_SET( obj->value[0], TRIG_UNLOCK ) && IS_EXIT_FLAG( pexit, EX_LOCKED ) )
       {
          REMOVE_EXIT_FLAG( pexit, EX_LOCKED );
-         act( AT_PLAIN, "You hear a faint click $T.", ch, NULL, txt, TO_CHAR );
-         act( AT_PLAIN, "You hear a faint click $T.", ch, NULL, txt, TO_ROOM );
-         if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
+         act( AT_PLAIN, "You hear a faint click $T.", ch, nullptr, txt, TO_CHAR );
+         act( AT_PLAIN, "You hear a faint click $T.", ch, nullptr, txt, TO_ROOM );
+         if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
             REMOVE_EXIT_FLAG( pexit_rev, EX_LOCKED );
          return;
       }
@@ -883,9 +883,9 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       if( IS_SET( obj->value[0], TRIG_LOCK ) && !IS_EXIT_FLAG( pexit, EX_LOCKED ) )
       {
          SET_EXIT_FLAG( pexit, EX_LOCKED );
-         act( AT_PLAIN, "You hear a faint click $T.", ch, NULL, txt, TO_CHAR );
-         act( AT_PLAIN, "You hear a faint click $T.", ch, NULL, txt, TO_ROOM );
-         if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
+         act( AT_PLAIN, "You hear a faint click $T.", ch, nullptr, txt, TO_CHAR );
+         act( AT_PLAIN, "You hear a faint click $T.", ch, nullptr, txt, TO_ROOM );
+         if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
             SET_EXIT_FLAG( pexit_rev, EX_LOCKED );
          return;
       }
@@ -899,10 +899,10 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          {
             char_data *rch = *ich;
 
-            act( AT_ACTION, "The $d opens.", rch, NULL, pexit->keyword, TO_CHAR );
+            act( AT_ACTION, "The $d opens.", rch, nullptr, pexit->keyword, TO_CHAR );
          }
 
-         if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
+         if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
          {
             REMOVE_EXIT_FLAG( pexit_rev, EX_CLOSED );
             /*
@@ -911,7 +911,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
             for( ich = pexit->to_room->people.begin(  ); ich != pexit->to_room->people.end(  ); ++ich )
             {
                char_data *rch = ( *ich );
-               act( AT_ACTION, "The $d opens.", rch, NULL, pexit_rev->keyword, TO_CHAR );
+               act( AT_ACTION, "The $d opens.", rch, nullptr, pexit_rev->keyword, TO_CHAR );
             }
          }
          check_room_for_traps( ch, trap_door[edir] );
@@ -927,10 +927,10 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          {
             char_data *rch = *ich;
 
-            act( AT_ACTION, "The $d closes.", rch, NULL, pexit->keyword, TO_CHAR );
+            act( AT_ACTION, "The $d closes.", rch, nullptr, pexit->keyword, TO_CHAR );
          }
 
-         if( ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
+         if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
          {
             SET_EXIT_FLAG( pexit_rev, EX_CLOSED );
             /*
@@ -940,7 +940,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
             {
                char_data *rch = *ich;
 
-               act( AT_ACTION, "The $d closes.", rch, NULL, pexit_rev->keyword, TO_CHAR );
+               act( AT_ACTION, "The $d closes.", rch, nullptr, pexit_rev->keyword, TO_CHAR );
             }
          }
          check_room_for_traps( ch, trap_door[edir] );
@@ -1007,7 +1007,7 @@ CMDF( do_rap )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, false ) ) != NULL )
+   if( ( pexit = find_door( ch, argument, false ) ) != nullptr )
    {
       room_index *to_room;
       exit_data *pexit_rev;
@@ -1022,9 +1022,9 @@ CMDF( do_rap )
          keyword = "wall";
       else
          keyword = pexit->keyword;
-      act( AT_ACTION, "You rap loudly on the $d.", ch, NULL, keyword, TO_CHAR );
-      act( AT_ACTION, "$n raps loudly on the $d.", ch, NULL, keyword, TO_ROOM );
-      if( ( to_room = pexit->to_room ) != NULL && ( pexit_rev = pexit->rexit ) != NULL && pexit_rev->to_room == ch->in_room )
+      act( AT_ACTION, "You rap loudly on the $d.", ch, nullptr, keyword, TO_CHAR );
+      act( AT_ACTION, "$n raps loudly on the $d.", ch, nullptr, keyword, TO_ROOM );
+      if( ( to_room = pexit->to_room ) != nullptr && ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
       {
          list < char_data * >::iterator ich;
 
@@ -1032,14 +1032,14 @@ CMDF( do_rap )
          {
             char_data *rch = *ich;
 
-            act( AT_ACTION, "Someone raps loudly from the other side of the $d.", rch, NULL, pexit_rev->keyword, TO_CHAR );
+            act( AT_ACTION, "Someone raps loudly from the other side of the $d.", rch, nullptr, pexit_rev->keyword, TO_CHAR );
          }
       }
    }
    else
    {
-      act( AT_ACTION, "You make knocking motions through the air.", ch, NULL, NULL, TO_CHAR );
-      act( AT_ACTION, "$n makes knocking motions through the air.", ch, NULL, NULL, TO_ROOM );
+      act( AT_ACTION, "You make knocking motions through the air.", ch, nullptr, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n makes knocking motions through the air.", ch, nullptr, nullptr, TO_ROOM );
    }
 }
 
@@ -1071,8 +1071,8 @@ CMDF( do_tamp )
 
    if( !IS_SET( cpipe->value[3], PIPE_TAMPED ) )
    {
-      act( AT_ACTION, "You gently tamp $p.", ch, cpipe, NULL, TO_CHAR );
-      act( AT_ACTION, "$n gently tamps $p.", ch, cpipe, NULL, TO_ROOM );
+      act( AT_ACTION, "You gently tamp $p.", ch, cpipe, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n gently tamps $p.", ch, cpipe, nullptr, TO_ROOM );
       SET_BIT( cpipe->value[3], PIPE_TAMPED );
       return;
    }
@@ -1100,24 +1100,24 @@ CMDF( do_smoke )
 
    if( cpipe->item_type != ITEM_PIPE )
    {
-      act( AT_ACTION, "You try to smoke $p... but it doesn't seem to work.", ch, cpipe, NULL, TO_CHAR );
-      act( AT_ACTION, "$n tries to smoke $p... (I wonder what $e's been putting in $s pipe?)", ch, cpipe, NULL, TO_ROOM );
+      act( AT_ACTION, "You try to smoke $p... but it doesn't seem to work.", ch, cpipe, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n tries to smoke $p... (I wonder what $e's been putting in $s pipe?)", ch, cpipe, nullptr, TO_ROOM );
       return;
    }
 
    if( !IS_SET( cpipe->value[3], PIPE_LIT ) )
    {
-      act( AT_ACTION, "You try to smoke $p, but it's not lit.", ch, cpipe, NULL, TO_CHAR );
-      act( AT_ACTION, "$n tries to smoke $p, but it's not lit.", ch, cpipe, NULL, TO_ROOM );
+      act( AT_ACTION, "You try to smoke $p, but it's not lit.", ch, cpipe, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n tries to smoke $p, but it's not lit.", ch, cpipe, nullptr, TO_ROOM );
       return;
    }
 
    if( cpipe->value[1] > 0 )
    {
-      if( !oprog_use_trigger( ch, cpipe, NULL, NULL ) )
+      if( !oprog_use_trigger( ch, cpipe, nullptr, nullptr ) )
       {
-         act( AT_ACTION, "You draw thoughtfully from $p.", ch, cpipe, NULL, TO_CHAR );
-         act( AT_ACTION, "$n draws thoughtfully from $p.", ch, cpipe, NULL, TO_ROOM );
+         act( AT_ACTION, "You draw thoughtfully from $p.", ch, cpipe, nullptr, TO_CHAR );
+         act( AT_ACTION, "$n draws thoughtfully from $p.", ch, cpipe, nullptr, TO_ROOM );
       }
 
       if( IS_VALID_HERB( cpipe->value[2] ) && cpipe->value[2] < top_herb )
@@ -1127,7 +1127,7 @@ CMDF( do_smoke )
 
          ch->WAIT_STATE( skill->beats );
          if( skill->spell_fun )
-            obj_cast_spell( sn, UMIN( skill->min_level, ch->level ), ch, ch, NULL );
+            obj_cast_spell( sn, UMIN( skill->min_level, ch->level ), ch, ch, nullptr );
          if( cpipe->extracted(  ) )
             return;
       }
@@ -1155,7 +1155,7 @@ obj_data *find_tinder( char_data *ch )
       if( ( tinder->item_type == ITEM_TINDER ) && ch->can_see_obj( tinder, false ) )
          return tinder;
    }
-   return NULL;
+   return nullptr;
 }
 
 CMDF( do_extinguish )
@@ -1173,11 +1173,11 @@ CMDF( do_extinguish )
    if( ms_find_obj( ch ) )
       return;
 
-   if( ( obj = ch->get_obj_wear( arg ) ) == NULL )
+   if( ( obj = ch->get_obj_wear( arg ) ) == nullptr )
    {
-      if( ( obj = ch->get_obj_carry( arg ) ) == NULL )
+      if( ( obj = ch->get_obj_carry( arg ) ) == nullptr )
       {
-         if( ( obj = get_obj_list( ch, arg, ch->in_room->objects ) ) == NULL )
+         if( ( obj = get_obj_list( ch, arg, ch->in_room->objects ) ) == nullptr )
       	{
             ch->print( "That object is not present.\r\n" );
             return;
@@ -1195,8 +1195,8 @@ CMDF( do_extinguish )
 
    if( IS_SET( obj->value[3], PIPE_LIT ) )
    {
-      act( AT_ACTION, "You extinguish $p.", ch, obj, NULL, TO_CHAR );
-      act( AT_ACTION, "$n extinguishes $p.", ch, obj, NULL, TO_ROOM );
+      act( AT_ACTION, "You extinguish $p.", ch, obj, nullptr, TO_CHAR );
+      act( AT_ACTION, "$n extinguishes $p.", ch, obj, nullptr, TO_ROOM );
       REMOVE_BIT( obj->value[3], PIPE_LIT );
    }
    else
@@ -1241,12 +1241,12 @@ CMDF( do_light )
          {
             if( obj->value[1] < 1 )
             {
-               act( AT_ACTION, "You try to light $p, but it's empty.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n tries to light $p, but it's empty.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You try to light $p, but it's empty.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n tries to light $p, but it's empty.", ch, obj, nullptr, TO_ROOM );
                return;
             }
-            act( AT_ACTION, "You carefully light $p.", ch, obj, NULL, TO_CHAR );
-            act( AT_ACTION, "$n carefully lights $p.", ch, obj, NULL, TO_ROOM );
+            act( AT_ACTION, "You carefully light $p.", ch, obj, nullptr, TO_CHAR );
+            act( AT_ACTION, "$n carefully lights $p.", ch, obj, nullptr, TO_ROOM );
             SET_BIT( obj->value[3], PIPE_LIT );
             break;
          }
@@ -1258,8 +1258,8 @@ CMDF( do_light )
          {
             if( !IS_SET( obj->value[3], PIPE_LIT ) )
             {
-               act( AT_ACTION, "You carefully light $p.", ch, obj, NULL, TO_CHAR );
-               act( AT_ACTION, "$n carefully lights $p.", ch, obj, NULL, TO_ROOM );
+               act( AT_ACTION, "You carefully light $p.", ch, obj, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n carefully lights $p.", ch, obj, nullptr, TO_ROOM );
                SET_BIT( obj->value[3], PIPE_LIT );
             }
             else
@@ -1305,7 +1305,7 @@ CMDF( do_apply )
       return;
    }
 
-   obj = NULL;
+   obj = nullptr;
    if( argument.empty(  ) )
       victim = ch;
    else
@@ -1336,8 +1336,8 @@ CMDF( do_apply )
    {
       if( victim == ch )
       {
-         act( AT_ACTION, "$n starts to rub $p on $mself...", ch, salve, NULL, TO_ROOM );
-         act( AT_ACTION, "You try to rub $p on yourself...", ch, salve, NULL, TO_CHAR );
+         act( AT_ACTION, "$n starts to rub $p on $mself...", ch, salve, nullptr, TO_ROOM );
+         act( AT_ACTION, "You try to rub $p on yourself...", ch, salve, nullptr, TO_CHAR );
       }
       else
       {
@@ -1350,7 +1350,7 @@ CMDF( do_apply )
    salve->separate(  );
    --salve->value[1];
 
-   if( !oprog_use_trigger( ch, salve, NULL, NULL ) )
+   if( !oprog_use_trigger( ch, salve, nullptr, nullptr ) )
    {
       if( !salve->action_desc || salve->action_desc[0] == '\0' )
       {
@@ -1364,8 +1364,8 @@ CMDF( do_apply )
             }
             else
             {
-               act( AT_ACTION, "You rub the last of $p onto yourself.", ch, salve, NULL, TO_CHAR );
-               act( AT_ACTION, "$n rubs the last of $p onto $mself.", ch, salve, NULL, TO_ROOM );
+               act( AT_ACTION, "You rub the last of $p onto yourself.", ch, salve, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n rubs the last of $p onto $mself.", ch, salve, nullptr, TO_ROOM );
             }
          }
          else
@@ -1378,8 +1378,8 @@ CMDF( do_apply )
             }
             else
             {
-               act( AT_ACTION, "You rub $p onto yourself.", ch, salve, NULL, TO_CHAR );
-               act( AT_ACTION, "$n rubs $p onto $mself.", ch, salve, NULL, TO_ROOM );
+               act( AT_ACTION, "You rub $p onto yourself.", ch, salve, nullptr, TO_CHAR );
+               act( AT_ACTION, "$n rubs $p onto $mself.", ch, salve, nullptr, TO_ROOM );
             }
          }
       }
@@ -1388,9 +1388,9 @@ CMDF( do_apply )
    }
 
    ch->WAIT_STATE( salve->value[3] );
-   retcode = obj_cast_spell( salve->value[4], salve->value[0], ch, victim, NULL );
+   retcode = obj_cast_spell( salve->value[4], salve->value[0], ch, victim, nullptr );
    if( retcode == rNONE )
-      retcode = obj_cast_spell( salve->value[5], salve->value[0], ch, victim, NULL );
+      retcode = obj_cast_spell( salve->value[5], salve->value[0], ch, victim, nullptr );
    if( retcode == rCHAR_DIED )
    {
       bug( "%s: char died", __func__ );
@@ -1408,7 +1408,7 @@ CMDF( do_invoke )
    room_index *location;
    char_data *opponent;
 
-   location = NULL;
+   location = nullptr;
 
    if( argument.empty(  ) )
    {
@@ -1441,7 +1441,7 @@ CMDF( do_invoke )
    {
       location = get_room_index( obj->value[1] );
 
-      if( ( opponent = ch->who_fighting(  ) ) != NULL )
+      if( ( opponent = ch->who_fighting(  ) ) != nullptr )
       {
          ch->print( "&RYou cannot recall during a fight!\r\n" );
          return;
@@ -1450,14 +1450,14 @@ CMDF( do_invoke )
       if( !location )
       {
          ch->print( "There is a problem with your rune. Contact the immortals.\r\n" );
-         bug( "%s: Rune with NULL room!", __func__ );
+         bug( "%s: Rune with nullptr room!", __func__ );
          return;
       }
 
-      act( AT_MAGIC, "$n disappears in a swirl of smoke.", ch, NULL, NULL, TO_ROOM );
+      act( AT_MAGIC, "$n disappears in a swirl of smoke.", ch, nullptr, nullptr, TO_ROOM );
       ch->print( "&[magic]You invoke the rune and are instantly transported away!\r\n" );
 
-      leave_map( ch, NULL, location );
+      leave_map( ch, nullptr, location );
 
       obj->value[2] -= 1;
       if( obj->value[2] == 0 )
@@ -1466,7 +1466,7 @@ CMDF( do_invoke )
          obj->short_descr = STRALLOC( "A depleted recall rune" );
          ch->print( "The rune hums softly and is now depleted of power.\r\n" );
       }
-      act( AT_ACTION, "$n appears in the room.", ch, NULL, NULL, TO_ROOM );
+      act( AT_ACTION, "$n appears in the room.", ch, nullptr, nullptr, TO_ROOM );
       return;
    }
    else
@@ -1587,16 +1587,16 @@ CMDF( do_connect )
       first_ob->extract(  );
       second_ob->extract(  );
       new_ob->to_char( ch );
-      act( AT_ACTION, "$n jiggles some pieces together...\r\n...suddenly they snap in place, creating $p!", ch, new_ob, NULL, TO_ROOM );
-      act( AT_ACTION, "You jiggle the pieces together...\r\n...suddenly they snap into place, creating $p!", ch, new_ob, NULL, TO_CHAR );
+      act( AT_ACTION, "$n jiggles some pieces together...\r\n...suddenly they snap in place, creating $p!", ch, new_ob, nullptr, TO_ROOM );
+      act( AT_ACTION, "You jiggle the pieces together...\r\n...suddenly they snap into place, creating $p!", ch, new_ob, nullptr, TO_CHAR );
    }
    else
    {
       /*
        * bad connection 
        */
-      act( AT_ACTION, "$n jiggles some pieces together, but can't seem to make them connect.", ch, NULL, NULL, TO_ROOM );
-      act( AT_ACTION, "You try to fit them together every which way, but they just don't want to fit together.", ch, NULL, NULL, TO_CHAR );
+      act( AT_ACTION, "$n jiggles some pieces together, but can't seem to make them connect.", ch, nullptr, nullptr, TO_ROOM );
+      act( AT_ACTION, "You try to fit them together every which way, but they just don't want to fit together.", ch, nullptr, nullptr, TO_CHAR );
    }
 }
 
@@ -1627,8 +1627,8 @@ CMDF( do_junk )
    obj->separate(  );
    obj->from_char(  );
    obj->extract(  );
-   act( AT_ACTION, "$n junks $p.", ch, obj, NULL, TO_ROOM );
-   act( AT_ACTION, "You junk $p.", ch, obj, NULL, TO_CHAR );
+   act( AT_ACTION, "$n junks $p.", ch, obj, nullptr, TO_ROOM );
+   act( AT_ACTION, "You junk $p.", ch, obj, nullptr, TO_CHAR );
 }
 
 /* Donate command installed by Samson 2-6-98 
@@ -1681,8 +1681,8 @@ CMDF( do_donate )
       obj->separate(  );
       obj->extra_flags.set( ITEM_DONATION );
       obj->from_char(  );
-      act( AT_ACTION, "You donate $p, how generous of you!", ch, obj, NULL, TO_CHAR );
-      obj->to_room( get_room_index( ROOM_VNUM_DONATION ), NULL );
+      act( AT_ACTION, "You donate $p, how generous of you!", ch, obj, nullptr, TO_CHAR );
+      obj->to_room( get_room_index( ROOM_VNUM_DONATION ), nullptr );
       ch->save(  );
    }
 }
