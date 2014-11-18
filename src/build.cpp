@@ -852,7 +852,7 @@ int get_langnum( const string & flag )
    return -1;
 }
 
-void goto_char( char_data * ch, char_data * wch, const string & argument )
+void goto_char( char_data * ch, char_data * wch )
 {
    room_index *location;
 
@@ -1045,7 +1045,7 @@ CMDF( do_goto )
    {
       if( ( wch = ch->get_char_world( arg ) ) != NULL && wch->in_room != NULL )
       {
-         goto_char( ch, wch, arg );
+         goto_char( ch, wch );
          return;
       }
 

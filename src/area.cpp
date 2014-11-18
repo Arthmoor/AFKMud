@@ -2821,7 +2821,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
 }
 
 // AFKMud 2.0 Area file format. Liberal use of KEY macro support. Far more flexible.
-area_data *fread_afk_area( FILE * fp, bool isproto )
+area_data *fread_afk_area( FILE * fp )
 {
    area_data *tarea = NULL;
 
@@ -2921,7 +2921,7 @@ void load_area_file( const string & filename, bool isproto )
    // New AFKMud area format support -- Samson 10/28/06
    if( !str_cmp( word, "AFKAREA" ) )
    {
-      tarea = fread_afk_area( fpArea, isproto );
+      tarea = fread_afk_area( fpArea );
       FCLOSE( fpArea );
 
       if( tarea )

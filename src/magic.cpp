@@ -2305,8 +2305,8 @@ SPELLF( spell_disruption )
 
    dam = dice( level, 8 );
 
-   if( ch->Class == CLASS_PALADIN );
-   dam = dice( level, 6 );
+   if( ch->Class == CLASS_PALADIN )
+      dam = dice( level, 6 );
 
    if( !IsUndead( victim ) )
    {

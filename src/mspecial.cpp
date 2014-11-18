@@ -1042,9 +1042,9 @@ SPECF( spec_GenericCityguard )
    if( fighting )
    {
       if( number_bits( 2 ) > 2 )
-         interpret( ch, "shout To me, my fellows!  I need thy aid!" );
-      if( !callforhelp( ch, ch->spec_fun ) );
-      return true;
+         interpret( ch, "yell To me, my fellows!  I need thy aid!" );
+      if( !callforhelp( ch, ch->spec_fun ) )
+         return true;
    }
 
    if( ( hatee = race_align_hatee( ch ) ) != NULL )
@@ -1064,12 +1064,13 @@ SPECF( spec_GenericCitizen )
       return false;
 
    if( ch->who_fighting(  ) )
+   {
       if( !callforhelp( ch, ch->spec_fun ) )
       {
          interpret( ch, "say Alas, I am alone!" );
          return true;
       }
-
+   }
    greet_people( ch );
    return true;
 }

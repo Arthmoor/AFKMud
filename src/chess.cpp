@@ -105,7 +105,7 @@ game_board_data::game_board_data(  )
    this->type = TYPE_LOCAL;
 }
 
-char *print_big_board( char_data * ch, game_board_data * board )
+char *print_big_board( game_board_data * board )
 {
    static char retbuf[MSL * 2];
    char buf[MSL], buf2[MSL];
@@ -1077,7 +1077,7 @@ CMDF( do_chess )
 
    if( !str_prefix( arg, "board" ) )
    {
-      ch->print( print_big_board( ch, ch->pcdata->game_board ) );
+      ch->print( print_big_board( ch->pcdata->game_board ) );
       return;
    }
 

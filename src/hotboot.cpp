@@ -376,8 +376,11 @@ char_data *load_mobile( FILE * fp )
                update_room_reset( mob, false );
                return mob;
             }
+
             if( !str_cmp( word, "End" ) ) /* End of object, need to ignore this. sometimes they creep in there somehow -- Scion */
+            {
                ;  /* Trick the system into thinking it matched something */
+            }
             break;
 
          case 'F':

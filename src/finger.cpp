@@ -402,7 +402,7 @@ CMDF( do_email )
       ch->pcdata->email.clear(  );
 
       ch->save(  );
-      if( ch->is_immortal(  ) );
+      if( ch->is_immortal(  ) )
          build_wizinfo(  );
 
       ch->print( "Email address cleared.\r\n" );

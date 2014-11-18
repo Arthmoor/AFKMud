@@ -1601,7 +1601,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
    if( dam == 0 && ( victim->has_pcflag( PCFLAG_GAG ) ) )
       gvflag = true;
 
-   if( dt >= 0 && dt < ( unsigned int )num_skills )
+   if( dt < ( unsigned int )num_skills )
       skill = skill_table[dt];
    if( dt == ( unsigned int )TYPE_HIT )
    {

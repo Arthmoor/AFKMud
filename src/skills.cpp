@@ -1440,7 +1440,7 @@ void free_skills( void )
 }
 
 /*
- * Dummy function
+ * Dummy function - Unused parameter should be left alone, as-is.
  */
 void skill_notfound( char_data * ch, string argument )
 {
