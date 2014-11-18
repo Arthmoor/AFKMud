@@ -122,6 +122,7 @@ class pc_data
    time_t motd;   /* Last time they read an MOTD - Samson 12-31-00 */
    time_t imotd;  /* Last time they read an IMOTD for immortals - 12-31-00 */
    time_t logon;
+   time_t played;
    time_t save_time;
    long restore_time;   /* The last time the char did a restore all */
    int pkills; /* Number of pkills on behalf of clan */
@@ -137,7 +138,6 @@ class pc_data
    int exgold; /* Extragold affect - Samson */
    int one; /* Last room they rented in on primary continent - Samson 12-20-00 */
    int spam;   /* How many times have they triggered the spamguard? - 3-18-01 */
-   int played;
    int timezone;
    int version;   /* Temporary variable to track pfile password conversion */
    short learned[MAX_SKILL];
@@ -282,6 +282,7 @@ class char_data
    void update_visits( room_index * );
    void remove_visit( room_index * );
    void adjust_favor( int, int );
+   time_t time_played( );
 
    void set_actflag( int );
    void unset_actflag( int );
@@ -615,8 +616,6 @@ class char_data
    bool inflight; /* skyship is in flight   */
    bool backtracking;   /* Unsafe landing flag   */
 };
-
-#define GET_TIME_PLAYED(ch)  (((ch)->pcdata->played + (current_time - (ch)->pcdata->logon)) / 3600)
 
 extern list < char_data * >charlist;
 extern list < char_data * >pclist;

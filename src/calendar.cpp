@@ -443,8 +443,8 @@ void save_timedata( void )
       fprintf( fp, "Mday	%d\n", time_info.day );
       fprintf( fp, "Mmonth	%d\n", time_info.month );
       fprintf( fp, "Myear	%d\n", time_info.year );
-      fprintf( fp, "Purgetime %ld\n", ( long int )new_pfile_time_t );
-      fprintf( fp, "Boardtime %ld\n", ( long int )board_expire_time_t );
+      fprintf( fp, "Purgetime %ld\n", new_pfile_time_t );
+      fprintf( fp, "Boardtime %ld\n", board_expire_time_t );
       fprintf( fp, "%s", "End\n\n" );
       fprintf( fp, "%s", "#END\n" );
    }
@@ -501,25 +501,17 @@ CMDF( do_time )
 
    if( ch->is_immortal(  ) && sysdata->CLEANPFILES == true )
    {
-      long ptime, curtime;
-
-      ptime = ( long int )( new_pfile_time_t );
-      curtime = ( long int )( current_time );
-
       buf[0] = '\0';
-      sec_to_hms( ptime - curtime, buf );
+
+      sec_to_hms( new_pfile_time_t - current_time, buf );
       ch->printf( "The next pfile cleanup is in %s.\r\n", buf );
    }
 
    if( ch->is_immortal(  ) )
    {
-      long qtime, dtime;
-
-      qtime = ( long int )( new_pfile_time_t );
-      dtime = ( long int )( current_time );
-
       buf[0] = '\0';
-      sec_to_hms( qtime - dtime, buf );
+
+      sec_to_hms( new_pfile_time_t - current_time, buf );
       ch->printf( "The next rare item update is in %s.\r\n", buf );
    }
 }

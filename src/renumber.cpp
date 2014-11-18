@@ -52,10 +52,9 @@ enum
 
 struct renumber_data
 {
+   renumber_data *next;
    int old_vnum;
    int new_vnum;
-
-   renumber_data *next;
 };
 
 struct renumber_areas
@@ -737,7 +736,7 @@ void free_renumber_data( renumber_data * r_data )
    while( r_data != NULL )
    {
       r_next = r_data->next;
-      DISPOSE( r_data );
+      OLD_DISPOSE( r_data );
       r_data = r_next;
    }
 }

@@ -3295,6 +3295,10 @@ void save_reset_level( FILE * fpout, list < reset_data * >source, const int leve
 
       switch ( UPPER( pReset->command ) ) /* extra arg1 arg2 arg3 */
       {
+         default:
+            bug( "%s: Invalid reset type %c", __func__, UPPER( pReset->command ) );
+            break;
+
          case '*':
             break;
 
@@ -3361,7 +3365,7 @@ void fwrite_area_header( area_data * area, FILE * fpout )
    fprintf( fpout, "Vnums           %d %d\n", area->low_vnum, area->hi_vnum );
    fprintf( fpout, "Continent       %s~\n", continents[area->continent] );
    fprintf( fpout, "Coordinates     %d %d\n", area->mx, area->my );
-   fprintf( fpout, "Dates           %ld %ld\n", ( long )area->creation_date, ( long )area->install_date );
+   fprintf( fpout, "Dates           %ld %ld\n", area->creation_date, area->install_date );
    fprintf( fpout, "Ranges          %d %d %d %d\n", area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    if( area->resetmsg ) /* Rennard */
       fprintf( fpout, "ResetMsg        %s~\n", area->resetmsg );

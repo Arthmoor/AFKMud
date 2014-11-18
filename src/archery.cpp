@@ -292,7 +292,7 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
 
    thac0 = calc_thac0( ch, victim, dist );
 
-   vic_ac = UMAX( -19, ( int )( victim->GET_AC(  ) / 10 ) );
+   vic_ac = umax( -19, ( victim->GET_AC(  ) / 10 ) );
 
    /*
     * if you can't see what's coming... 

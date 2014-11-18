@@ -6628,7 +6628,7 @@ void write_class_file( int cl )
    fprintf( fpout, "Held        %d\n", Class->held ); /* Samson 1-3-99 */
    fprintf( fpout, "Skilladept  %d\n", Class->skill_adept );
    fprintf( fpout, "Thac0       %d\n", Class->base_thac0 );
-   fprintf( fpout, "Thac0gain   %f\n", ( float )Class->thac0_gain );
+   fprintf( fpout, "Thac0gain   %f\n", Class->thac0_gain );
    fprintf( fpout, "Hpmin       %d\n", Class->hp_min );
    fprintf( fpout, "Hpmax       %d\n", Class->hp_max );
    fprintf( fpout, "Mana        %d\n", Class->fMana );

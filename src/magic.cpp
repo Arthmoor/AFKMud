@@ -85,6 +85,9 @@ bool is_immune( char_data * ch, short damtype )
 {
    switch ( damtype )
    {
+      default:
+         break;
+
       case SD_FIRE:
          return ( ch->has_immune( RIS_FIRE ) );
       case SD_COLD:
@@ -493,7 +496,7 @@ int rd_parse( char_data * ch, int level, char *pexp )
    operation = pexp[x];
    pexp[x] = '\0';
    sexp[0] = pexp;
-   sexp[1] = ( char * )( pexp + x + 1 );
+   sexp[1] = ( pexp + x + 1 );
 
    /*
     * work it out 
@@ -2016,7 +2019,7 @@ SPELLF( spell_charm_person )
    if( victim->master )
       stop_follower( victim );
 
-   bind_follower( victim, ch, sn, ( int )( number_fuzzy( ( int )( ( level + 1 ) / 5 ) + 1 ) * DUR_CONV ) );
+   bind_follower( victim, ch, sn, ( number_fuzzy( ( ( level + 1 ) / 5 ) + 1 ) * DUR_CONV ) );
    successful_casting( skill, ch, victim, NULL );
 
    if( victim->isnpc(  ) )
@@ -2468,7 +2471,7 @@ SPELLF( spell_gate )
    fix_maps( ch, mob );
    act( AT_MAGIC, "You bring forth $N from another plane!", ch, NULL, mob, TO_CHAR );
    act( AT_MAGIC, "$n brings forth $N from another plane!", ch, NULL, mob, TO_ROOM );
-   bind_follower( mob, ch, sn, ( int )( number_fuzzy( ( int )( ( level + 1 ) / 5 ) + 1 ) * DUR_CONV ) );
+   bind_follower( mob, ch, sn, ( number_fuzzy( ( ( level + 1 ) / 5 ) + 1 ) * DUR_CONV ) );
    return rNONE;
 }
 
@@ -4045,7 +4048,7 @@ SPELLF( spell_animate_dead )
       stralloc_printf( &mob->name, "%s %s", corpse_name, pMobIndex->player_name );
       stralloc_printf( &mob->short_descr, "The %s", corpse_name );
       stralloc_printf( &mob->long_descr, "A %s struggles with the horror of its undeath.\r\n", corpse_name );
-      bind_follower( mob, ch, sn, ( int )( number_fuzzy( ( int )( ( level + 1 ) / 4 ) + 1 ) * DUR_CONV ) );
+      bind_follower( mob, ch, sn, ( number_fuzzy( ( ( level + 1 ) / 4 ) + 1 ) * DUR_CONV ) );
 
       if( !corpse->contents.empty(  ) )
          for( iobj = corpse->contents.begin(  ); iobj != corpse->contents.end(  ); )
@@ -5031,7 +5034,7 @@ SPELLF( spell_create_mob )
       log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    add_follower( mob, ch );
    af.type = sn;
-   af.duration = ( int )( number_fuzzy( ( int )( ( level + 1 ) / 3 ) + 1 ) * DUR_CONV );
+   af.duration = ( number_fuzzy( ( ( level + 1 ) / 3 ) + 1 ) * DUR_CONV );
    af.location = 0;
    af.modifier = 0;
    af.bit = AFF_CHARM;

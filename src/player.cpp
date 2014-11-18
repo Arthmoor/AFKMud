@@ -1885,7 +1885,7 @@ CMDF( do_attrib )
       ch->printf( "%sYour birthday is: %sDay of %s, %d%s day in the Month of %s, in the year %d.\r\n",
                   s2, s1, day_name[ch->pcdata->day % sysdata->daysperweek], day, suf, month_name[ch->pcdata->month], ch->pcdata->year );
 
-   ch->printf( "%sYou have played for %s%ld %shours.\r\n", s2, s3, ( long int )GET_TIME_PLAYED( ch ), s1 );
+   ch->printf( "%sYou have played for %s%ld %shours.\r\n", s2, s3, ch->time_played( ), s1 );
 
    if( ch->pcdata->deity )
       ch->printf( "%sYou have devoted to %s%s.\r\n", s2, s3, ch->pcdata->deity->name.c_str(  ) );

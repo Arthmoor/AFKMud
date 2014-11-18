@@ -549,9 +549,9 @@ int get_cost( char_data * ch, char_data * keeper, obj_data * obj, bool fBuy )
 
    if( fBuy )
    {
-      profitmod = 13 - ch->get_curr_cha(  ) + ( ( URANGE( 5, ch->level, LEVEL_AVATAR ) - 20 ) / 2 );
-      cost = ( int )( obj->cost * UMAX( ( pShop->profit_sell + 1 ), pShop->profit_buy + profitmod ) ) / 100;
-      cost = ( int )( cost * ( 80 + UMIN( ch->level, LEVEL_AVATAR ) ) ) / 100;
+      profitmod = 13 - ch->get_curr_cha(  ) + ( ( urange( 5, ch->level, LEVEL_AVATAR ) - 20 ) / 2 );
+      cost = ( obj->cost * umax( ( pShop->profit_sell + 1 ), pShop->profit_buy + profitmod ) ) / 100;
+      cost = ( cost * ( 80 + umin( ch->level, LEVEL_AVATAR ) ) ) / 100;
    }
    else
    {
@@ -563,7 +563,7 @@ int get_cost( char_data * ch, char_data * keeper, obj_data * obj, bool fBuy )
       {
          if( obj->item_type == pShop->buy_type[itype] )
          {
-            cost = ( int )( obj->cost * UMIN( ( pShop->profit_buy - 1 ), pShop->profit_sell + profitmod ) ) / 100;
+            cost = ( obj->cost * umin( ( pShop->profit_buy - 1 ), pShop->profit_sell + profitmod ) ) / 100;
             break;
          }
       }
@@ -574,7 +574,7 @@ int get_cost( char_data * ch, char_data * keeper, obj_data * obj, bool fBuy )
       if( obj->value[2] < 0 && obj->value[1] < 0 )
          ;
       else
-         cost = ( int )( cost * obj->value[2] / ( obj->value[1] > 0 ? obj->value[1] : 1 ) );
+         cost = ( cost * obj->value[2] / ( obj->value[1] > 0 ? obj->value[1] : 1 ) );
    }
 
    /*
@@ -603,7 +603,7 @@ int get_repaircost( char_data * keeper, obj_data * obj )
    {
       if( obj->item_type == rShop->fix_type[itype] )
       {
-         cost = ( int )( obj->cost * rShop->profit_fix / 1000 );
+         cost = ( obj->cost * rShop->profit_fix / 1000 );
          found = true;
          break;
       }

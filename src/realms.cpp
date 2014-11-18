@@ -211,7 +211,7 @@ void fwrite_realm_memberlist( FILE * fp, realm_data * realm )
 
       fprintf( fp, "%s", "#ROSTER\n" );
       fprintf( fp, "Name      %s~\n", member->name.c_str(  ) );
-      fprintf( fp, "Joined    %ld\n", ( time_t ) member->joined );
+      fprintf( fp, "Joined    %ld\n", member->joined );
       fprintf( fp, "%s", "End\n\n" );
    }
 }

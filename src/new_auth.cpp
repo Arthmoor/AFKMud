@@ -220,7 +220,7 @@ void clean_auth_list( void )
             if( unlink( file ) == -1 )
                perror( "Unlink: do_auth: \"clean\"" );
             else
-               log_printf( "%s deleted for inactivity: %ld days", file, ( long int )tdiff );
+               log_printf( "%s deleted for inactivity: %ld days", file, tdiff );
          }
       }
    }

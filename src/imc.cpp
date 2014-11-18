@@ -2575,7 +2575,7 @@ void imc_loop( void )
    struct timeval last_time, null_time;
 
    gettimeofday( &last_time, NULL );
-   imc_time = ( time_t ) last_time.tv_sec;
+   imc_time = last_time.tv_sec;
 
    if( imcwait > 0 )
       --imcwait;

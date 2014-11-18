@@ -126,7 +126,7 @@ char *quick_link( char *str )
  * hash table and disposed of.
  * returns how many links are left, or -1 if an error occurred.
  */
-int str_free( char *str )
+int str_free( const char *str )
 {
    register int len, hash;
    register struct hashstr_data *ptr, *ptr2, *ptr2_next;
@@ -269,7 +269,7 @@ void show_high_hash( int top )
  * str must be the actual pointer you want to know about, it cannot be a copy
  * of a pointer, or a variable.
  */
-bool in_hash_table( char *str )
+bool in_hash_table( const char *str )
 {
    register int len, hash, psize;
    register struct hashstr_data *ptr;

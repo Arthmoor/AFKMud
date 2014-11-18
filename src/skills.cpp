@@ -734,21 +734,30 @@ void update_skill_index( skill_type * skill, int sn )
    skill_table__index[buf] = sn;
    switch ( skill->type )
    {
+      default:
+         bug( "%s: Invalid skill type %d", __func__, skill->type );
+         break;
+
       case SKILL_SPELL:
          skill_table__spell[buf] = sn;
          break;
+
       case SKILL_SKILL:
          skill_table__skill[buf] = sn;
          break;
+
       case SKILL_RACIAL:
          skill_table__racial[buf] = sn;
          break;
+
       case SKILL_COMBAT:
          skill_table__combat[buf] = sn;
          break;
+
       case SKILL_TONGUE:
          skill_table__tongue[buf] = sn;
          break;
+
       case SKILL_LORE:
          skill_table__lore[buf] = sn;
          break;
@@ -4122,7 +4131,7 @@ CMDF( do_steal )
    {
       int amount;
 
-      amount = ( int )( victim->gold * number_range( 1, 10 ) / 100 );
+      amount = ( victim->gold * number_range( 1, 10 ) / 100 );
       if( amount <= 0 )
       {
          ch->print( "You couldn't get any gold.\r\n" );
@@ -4922,9 +4931,9 @@ bool check_grip( char_data * ch, char_data * victim )
       return false;
 
    if( victim->isnpc(  ) )
-      schance = UMIN( 60, 2 * victim->level );
+      schance = umin( 60, 2 * victim->level );
    else
-      schance = ( int )( victim->LEARNED( gsn_grip ) / 2 );
+      schance = ( victim->LEARNED( gsn_grip ) / 2 );
 
    /*
     * Consider luck as a factor 
@@ -5570,7 +5579,7 @@ bool check_parry( char_data * ch, char_data * victim )
    {
       if( victim->get_eq( WEAR_WIELD ) )
          return false;
-      chances = ( int )( victim->LEARNED( gsn_parry ) / sysdata->parry_mod );
+      chances = ( victim->LEARNED( gsn_parry ) / sysdata->parry_mod );
    }
 
    /*
@@ -5618,7 +5627,7 @@ bool check_dodge( char_data * ch, char_data * victim )
    if( victim->isnpc(  ) )
       chances = UMIN( 60, 2 * victim->level );
    else
-      chances = ( int )( victim->LEARNED( gsn_dodge ) / sysdata->dodge_mod );
+      chances = ( victim->LEARNED( gsn_dodge ) / sysdata->dodge_mod );
 
    if( chances != 0 && victim->morph != NULL )
       chances += victim->morph->dodge;
@@ -5656,9 +5665,9 @@ bool check_tumble( char_data * ch, char_data * victim )
    if( !victim->isnpc(  ) && !victim->pcdata->learned[gsn_tumble] > 0 )
       return false;
    if( victim->isnpc(  ) )
-      chances = UMIN( 60, 2 * victim->level );
+      chances = umin( 60, 2 * victim->level );
    else
-      chances = ( int )( victim->LEARNED( gsn_tumble ) / sysdata->tumble_mod + ( victim->get_curr_dex(  ) - 13 ) );
+      chances = ( victim->LEARNED( gsn_tumble ) / sysdata->tumble_mod + ( victim->get_curr_dex(  ) - 13 ) );
    if( chances != 0 && victim->morph )
       chances += victim->morph->tumble;
    if( !victim->chance( chances + victim->level - ch->level ) )

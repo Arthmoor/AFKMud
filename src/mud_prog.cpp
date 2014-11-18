@@ -372,13 +372,13 @@ char *mprog_next_command( char *clist )
 bool mprog_seval( const char *lhs, const char *opr, const char *rhs, char_data * mob )
 {
    if( !str_cmp( opr, "==" ) )
-      return ( bool ) ( !str_cmp( lhs, rhs ) );
+      return ( !str_cmp( lhs, rhs ) );
    if( !str_cmp( opr, "!=" ) )
-      return ( bool ) ( str_cmp( lhs, rhs ) );
+      return ( str_cmp( lhs, rhs ) );
    if( !str_cmp( opr, "/" ) )
-      return ( bool ) ( !str_infix( rhs, lhs ) );
+      return ( !str_infix( rhs, lhs ) );
    if( !str_cmp( opr, "!/" ) )
-      return ( bool ) ( str_infix( rhs, lhs ) );
+      return ( str_infix( rhs, lhs ) );
 
    progbugf( mob, "%s: Improper MOBprog operator '%s'", __func__, opr );
    return 0;
@@ -1216,6 +1216,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
 
          switch( vd->type )
          {
+            default:
             case vtSTR:
             case vtINT:
                return false;
@@ -1257,6 +1258,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
             case vtINT:
                return mprog_veval( vd->vardata, opr, atoi( rval ), mob );
 
+            default:
             case vtXBIT:
                return false;
          }

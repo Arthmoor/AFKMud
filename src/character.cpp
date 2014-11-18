@@ -3890,9 +3890,9 @@ void char_data::gain_exp( double gain )
     * xp cap to prevent any one event from giving enuf xp to 
     * gain more than one level - FB 
     */
-   modgain = UMIN( ( int )modgain, exp_level( this->level + 2 ) - exp_level( this->level + 1 ) );
+   modgain = umin( modgain, exp_level( this->level + 2 ) - exp_level( this->level + 1 ) );
 
-   this->exp = ( int )( UMAX( 0, this->exp + ( int )modgain ) );
+   this->exp = umax( 0, this->exp + modgain );
 
    if( NOT_AUTHED( this ) && this->exp >= exp_level( 10 ) ) /* new auth */
    {
@@ -5182,6 +5182,14 @@ void char_data::set_file_langs( FILE * fp )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
+}
+
+time_t char_data::time_played( )
+{
+   if( this->isnpc() )
+      return -1;
+
+   return ( ( this->pcdata->played + ( current_time - this->pcdata->logon ) ) / 3600 );
 }
 
 CMDF( do_dismiss )

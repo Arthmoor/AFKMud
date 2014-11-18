@@ -687,6 +687,17 @@ do                                                                      \
    }                                                                    \
 } while(0)
 
+// WARNING! This macro should only be used on things explicitly handled by CREATE or RECREATE!
+#define OLD_DISPOSE(point)                  \
+do                                          \
+{                                           \
+   if( (point) )                            \
+   {                                        \
+      free( (point) );                      \
+      (point) = NULL;                       \
+   }                                        \
+} while(0)
+
 #if defined(__FreeBSD__)
 #define DISPOSE(point)                      \
 do                                          \
@@ -705,11 +716,11 @@ do                                             \
    {                                           \
       if( typeid((point)) == typeid(char*) || typeid((point)) == typeid(const char*) ) \
       {                                        \
-         if( in_hash_table( (char*)(point) ) ) \
+         if( in_hash_table( (point) ) )        \
          {                                     \
             log_printf( "&RDISPOSE called on STRALLOC pointer: %s, line %d\n", __FILE__, __LINE__ ); \
             log_string( "Attempting to correct." ); \
-            if( str_free( (char*)(point) ) == -1 ) \
+            if( str_free( (point) ) == -1 )    \
                log_printf( "&RSTRFREEing bad pointer: %s, line %d\n", __FILE__, __LINE__ ); \
          }                                     \
          else                                  \
@@ -1315,13 +1326,13 @@ bool ms_find_obj( char_data * );
 /* hashstr.c */
 char *str_alloc( const char *, const char *, const char *, int );
 char *quick_link( char * );
-int str_free( char * );
+int str_free( const char * );
 void show_hash( int );
 char *hash_stats( void );
 char *check_hash( const char * );
 void hash_dump( int );
 void show_high_hash( int );
-bool in_hash_table( char * );
+bool in_hash_table( const char * );
 
 /* magic.c */
 bool process_spell_components( char_data *, int );

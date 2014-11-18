@@ -160,7 +160,7 @@ void make_corpse( char_data * ch, char_data * killer )
        * corpse->value[1] = ch->max_hit;
        * Using corpse cost to cheat, since corpses not sellable 
        */
-      corpse->cost = ( -( int )ch->pIndexData->vnum );
+      corpse->cost = ( -(ch->pIndexData->vnum) );
       corpse->value[2] = corpse->timer;
    }
    else
@@ -187,7 +187,7 @@ void make_corpse( char_data * ch, char_data * killer )
       /*
        * Removed special handling for PK corpses because it was messing up my evil plot - Samson 
        */
-      corpse->value[2] = ( int )( corpse->timer / 8 );
+      corpse->value[2] = corpse->timer / 8;
       corpse->value[3] = 5;   /* Decay stage - 5 is best. */
       corpse->value[4] = ch->level;
       corpse->value[5] = 0;   /* Still flesh rotting */
@@ -583,7 +583,7 @@ int weapon_prof_bonus_check( char_data * ch, obj_data * wield, int &gsn_ptr )
             break;
       }
       if( gsn_ptr != -1 )
-         bonus = ( int )( ( ch->LEARNED( gsn_ptr ) - 50 ) / 10 );
+         bonus = ( ( ch->LEARNED( gsn_ptr ) - 50 ) / 10 );
    }
    return bonus;
 }
@@ -3333,7 +3333,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    /*
     * Get the victim's armor Class 
     */
-   vic_ac = UMAX( -19, ( int )( victim->GET_AC(  ) / 10 ) );   /* Use -19 or AC / 10 */
+   vic_ac = umax( -19, ( victim->GET_AC(  ) / 10 ) );   /* Use -19 or AC / 10 */
 
    /*
     * if you can't see what's coming... 
@@ -3784,7 +3784,7 @@ ch_ret multi_hit( char_data * ch, char_data * victim, int dt )
       }
    retcode = rNONE;
 
-   hchance = ch->isnpc(  )? ( int )( ch->level / 2 ) : 0;
+   hchance = ch->isnpc(  ) ? ( ch->level / 2 ) : 0;
    if( number_percent(  ) < hchance )
       retcode = one_hit( ch, victim, dt );
 

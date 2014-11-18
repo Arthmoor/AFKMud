@@ -83,6 +83,9 @@ int mysql_safe_query( const char *fmt, ... )
 
       switch ( *++p )
       {
+         default:
+            break;
+
          case 'c':
             i = va_arg( argp, int );
             out += sprintf( out, "%c", i );

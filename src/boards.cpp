@@ -476,7 +476,7 @@ void fwrite_reply( note_data * pnote, FILE * fpout )
    fprintf( fpout, "Reply-Sender         %s~\n", pnote->sender );
    fprintf( fpout, "Reply-To             %s~\n", pnote->to_list );
    fprintf( fpout, "Reply-Subject        %s~\n", pnote->subject );
-   fprintf( fpout, "Reply-DateStamp      %ld\n", ( long int )pnote->date_stamp );
+   fprintf( fpout, "Reply-DateStamp      %ld\n", pnote->date_stamp );
    fprintf( fpout, "Reply-Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
    fprintf( fpout, "Reply-Text           %s~\n", pnote->text );
    fprintf( fpout, "%s\n", "Reply-End" );
@@ -498,7 +498,7 @@ void fwrite_note( note_data * pnote, FILE * fpout )
       fprintf( fpout, "To             %s~\n", pnote->to_list );
    if( pnote->subject )
       fprintf( fpout, "Subject        %s~\n", pnote->subject );
-   fprintf( fpout, "DateStamp      %ld\n", ( long int )pnote->date_stamp );
+   fprintf( fpout, "DateStamp      %ld\n", pnote->date_stamp );
    fprintf( fpout, "Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
    if( pnote->to_list ) /* Comments and Project Logs do not use to_list or Expire */
       fprintf( fpout, "Expire         %d\n", pnote->expire );
@@ -3327,7 +3327,7 @@ void write_projects( void )
       if( proj->coder )
          fprintf( fpout, "Coder  %s~\n", proj->coder );
       fprintf( fpout, "Status %s~\n", ( proj->status ) ? proj->status : "No update." );
-      fprintf( fpout, "Date_stamp   %ld\n", ( long int )proj->date_stamp );
+      fprintf( fpout, "Date_stamp   %ld\n", proj->date_stamp );
       if( !proj->realm_name.empty() )
          fprintf( fpout, "Realm       %s~\n", proj->realm_name.c_str() );
       if( proj->description )

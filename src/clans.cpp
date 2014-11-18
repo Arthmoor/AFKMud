@@ -430,7 +430,7 @@ void fwrite_memberlist( FILE * fp, clan_data * clan )
 
       fprintf( fp, "%s", "#ROSTER\n" );
       fprintf( fp, "Name      %s~\n", member->name.c_str(  ) );
-      fprintf( fp, "Joined    %ld\n", ( time_t ) member->joined );
+      fprintf( fp, "Joined    %ld\n", member->joined );
       fprintf( fp, "Class     %s~\n", npc_class[member->Class] );
       fprintf( fp, "Level     %d\n", member->level );
       fprintf( fp, "Kills     %d\n", member->kills );

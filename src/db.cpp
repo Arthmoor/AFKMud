@@ -1012,8 +1012,8 @@ void save_sysdata( void )
       fprintf( fp, "Autopurge      %d\n", sysdata->CLEANPFILES );
       fprintf( fp, "Testmode       %d\n", sysdata->TESTINGMODE );
       fprintf( fp, "Mapsize        %d\n", sysdata->mapsize );
-      fprintf( fp, "Motd           %ld\n", ( time_t ) sysdata->motd );
-      fprintf( fp, "Imotd          %ld\n", ( time_t ) sysdata->imotd );
+      fprintf( fp, "Motd           %ld\n", sysdata->motd );
+      fprintf( fp, "Imotd          %ld\n", sysdata->imotd );
       fprintf( fp, "Telnet         %s~\n", sysdata->telnet.c_str(  ) );
       fprintf( fp, "HTTP           %s~\n", sysdata->http.c_str(  ) );
       fprintf( fp, "Maxvnum        %d\n", sysdata->maxvnum );
@@ -2520,7 +2520,7 @@ void log_string_plus( short log_type, short level, const string & str )
    string newstr = str;
 
    gettimeofday( &last_time, NULL );
-   curtime = ( time_t ) last_time.tv_sec;
+   curtime = last_time.tv_sec;
 
    strtime = c_time( curtime, -1 );
    fprintf( stderr, "%s :: %s\n", strtime, newstr.c_str(  ) );

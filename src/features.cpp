@@ -141,8 +141,8 @@ bool descriptor_data::compressStart(  )
 
    if( deflateInit( s, 9 ) != Z_OK )
    {
-      DISPOSE( mccp->out_compress_buf );
-      DISPOSE( s );
+      OLD_DISPOSE( mccp->out_compress_buf );
+      OLD_DISPOSE( s );
       return false;
    }
 
@@ -166,8 +166,8 @@ bool descriptor_data::compressEnd(  )
       process_compressed();   /* try to send any residual data */
 
    deflateEnd( mccp->out_compress );
-   DISPOSE( mccp->out_compress_buf );
-   DISPOSE( mccp->out_compress );
+   OLD_DISPOSE( mccp->out_compress_buf );
+   OLD_DISPOSE( mccp->out_compress );
    is_compressing = false;
    return true;
 }

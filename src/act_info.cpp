@@ -2183,7 +2183,7 @@ CMDF( do_consider )
       msg = "$N would make a great teacher for you!";
    act( AT_CONSIDER, msg, ch, NULL, victim, TO_CHAR );
 
-   diff = ( int )( victim->max_hit - ch->max_hit ) / 6;
+   diff = ( victim->max_hit - ch->max_hit ) / 6;
 
    if( diff <= -200 )
       msg = "$N looks like a feather!";

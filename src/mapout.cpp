@@ -122,13 +122,13 @@ char count_lines( char *txt )
    char *c, buf[MSL];
 
    if( !txt )
-      return ( char )'0';
+      return '0';
    i = 1;
    for( c = txt; *c != '\0'; ++c )
       if( *c == '\n' )
          ++i;
    if( i > 9 )
-      return ( char )'+';
+      return '+';
    snprintf( buf, MSL, "%d", i );
    return ( buf[0] );
 }
@@ -165,16 +165,20 @@ void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
       c = l[0];
       switch ( c )
       {
+         default:
          case '\n':
             break;
+
          case '\r':
             col = 0;
             ++row;
             break;
+
          case ' ':
             ++col;
             break;
       }
+
       if( c == '[' )
       {
          /*
@@ -521,20 +525,25 @@ void map_to_rooms( char_data * ch, map_index * m_index )
    do
    {
       c = l[0];
+
       switch ( c )
       {
+         default:
          case '\n':
             break;
+
          case '\r':
             col = 0;
             ++row;
             break;
       }
+
       if( c != ' ' && c != '-' && c != '|' && c != '=' && c != '\\' && c != '/' && c != '^' && c != ':' && c != '[' && c != ']' && c != '^' && !getroomnext )
       {
          ++l;
          continue;
       }
+
       if( getroomnext )
       {
          ++n;

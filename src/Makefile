@@ -44,7 +44,7 @@ OPT_FLAG = -pipe -Os
 DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
-W_FLAGS = -Wall -Wshadow -Wformat-security -Wpointer-arith -Wcast-align -Wredundant-decls
+W_FLAGS = -Wall -Wshadow -Wformat-security -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast
 
 ifndef CYGWIN
    W_FLAGS := $(W_FLAGS) #-Werror

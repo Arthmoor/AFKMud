@@ -259,7 +259,7 @@ void fwrite_char( char_data * ch, FILE * fp )
    /*
     * MOTD times - Samson 12-31-00 
     */
-   fprintf( fp, "Motd         %ld %ld\n", ( long int )ch->pcdata->motd, ( long int )ch->pcdata->imotd );
+   fprintf( fp, "Motd         %ld %ld\n", ch->pcdata->motd, ch->pcdata->imotd );
 
    fprintf( fp, "Age          %d %d %d %d %ld\n",
             ch->pcdata->age_bonus, ch->pcdata->day, ch->pcdata->month, ch->pcdata->year, ch->pcdata->played + ( current_time - ch->pcdata->logon ) );
@@ -430,7 +430,7 @@ void fwrite_char( char_data * ch, FILE * fp )
             deleteptr( chbd );
             continue;
          }
-         fprintf( fp, "Board_Data   %s~ %ld %d\n", chbd->board_name.c_str(  ), ( long int )chbd->last_read, chbd->alert );
+         fprintf( fp, "Board_Data   %s~ %ld %d\n", chbd->board_name.c_str(  ), chbd->last_read, chbd->alert );
       }
    }
 
