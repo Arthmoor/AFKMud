@@ -259,32 +259,26 @@ void load_bits( void )
 /* Add an abit to a character */
 void set_abit( char_data * ch, int number )
 {
-   map < int, string >::iterator bit;
-   map < int, string >::iterator abit;
-
    if( number < 0 || number > MAX_xBITS )
       return;
 
-   if( ( bit = abits.find( number ) ) == abits.end(  ) )
+   if( abits.find( number ) == abits.end(  ) )
       return;
 
-   if( ( abit = ch->abits.find( number ) ) != ch->abits.end(  ) )
+   if( ch->abits.find( number ) != ch->abits.end(  ) )
       ch->abits[number] = abits[number];
 }
 
 /* Add a qbit to a character */
 void set_qbit( char_data * ch, int number )
 {
-   map < int, string >::iterator bit;
-   map < int, string >::iterator qbit;
-
    if( number < 0 || number > MAX_xBITS )
       return;
 
-   if( ( bit = qbits.find( number ) ) == qbits.end(  ) )
+   if( qbits.find( number ) == qbits.end(  ) )
       return;
 
-   if( ( qbit = ch->pcdata->qbits.find( number ) ) == ch->pcdata->qbits.end(  ) )
+   if( ch->pcdata->qbits.find( number ) == ch->pcdata->qbits.end(  ) )
       ch->pcdata->qbits[number] = qbits[number];
 }
 

@@ -177,12 +177,10 @@ char *str_dup( const char *str )
 /* Does the list have the member in it? */
 bool hasname( const string & list, const string & member )
 {
-   string::size_type x;
-
    if( list.empty(  ) )
       return false;
 
-   if( ( x = list.find( member ) ) != string::npos )
+   if( list.find( member ) != string::npos )
       return true;
 
    return false;

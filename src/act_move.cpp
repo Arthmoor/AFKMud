@@ -215,7 +215,6 @@ CMDF( do_run )
 ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bool running )
 {
    room_index *in_room, *to_room, *from_room;
-   obj_data *boat;
    const char *txt, *dtxt;
    ch_ret retcode;
    short door;
@@ -639,9 +638,8 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
             {
                /*
                 * Look for a boat.
-                * We can use the boat obj for a more detailed description.
                 */
-               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != nullptr )
+               if( get_objtype( ch, ITEM_BOAT ) != nullptr )
                {
                   if( drunk )
                      txt = "paddles unevenly";
@@ -677,9 +675,8 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
             {
                /*
                 * Look for a boat.
-                * We can use the boat obj for a more detailed description.
                 */
-               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != nullptr )
+               if( get_objtype( ch, ITEM_BOAT ) != nullptr )
                {
                   if( drunk )
                      txt = "paddles unevenly";
@@ -711,9 +708,8 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
             {
                /*
                 * Look for a boat.
-                * We can use the boat obj for a more detailed description.
                 */
-               if( ( boat = get_objtype( ch, ITEM_BOAT ) ) != nullptr )
+               if( get_objtype( ch, ITEM_BOAT ) != nullptr )
                {
                   if( drunk )
                      txt = "paddles unevenly";

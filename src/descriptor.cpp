@@ -1037,7 +1037,6 @@ void descriptor_data::read_from_buffer(  )
           * * The only other solution seen as viable beyond this is to remove the spamguard entirely.
           */
          cmd_type *cmd = nullptr;
-         mud_channel *channel = nullptr;
          map < string, string >::iterator al;
          string c = this->incomm, arg;
 
@@ -1059,19 +1058,16 @@ void descriptor_data::read_from_buffer(  )
 
          if( !cmd )
          {
-            if( ( channel = find_channel( arg ) ) != nullptr && !str_cmp( this->incomm, this->inlast ) )
+            if( find_channel( arg ) != nullptr && !str_cmp( this->incomm, this->inlast ) )
                ++this->repeat;
          }
          else if( cmd->flags.test( CMD_NOSPAM ) && !str_cmp( this->incomm, this->inlast ) )
             ++this->repeat;
 #ifdef IMC
-         {
-            imc_channel *imcchan;
-
-            if( ( imcchan = imc_findchannel( arg ) ) != nullptr && !str_cmp( this->incomm, this->inlast ) )
-               ++this->repeat;
-         }
+         else if( imc_findchannel( arg ) != nullptr && !str_cmp( this->incomm, this->inlast ) )
+            ++this->repeat;
 #endif
+
          if( this->repeat == 3 && this->character && this->character->level < LEVEL_IMMORTAL )
             this->character->print( "}R\r\nYou have repeated the same command 3 times now.\r\nRepeating it 7 more will result in an autofreeze by the spamguard code.&D\r\n" );
 
@@ -2959,7 +2955,7 @@ void descriptor_data::nanny( string & argument )
          character->desc = nullptr;
          deleteptr( character );
          fOld = load_char_obj( this, buf, false, false );
-         if( !character )
+         if( !fOld )
          {
             log_printf( "Bad player file %s@%s.", argument.c_str(  ), host.c_str(  ) );
             buffer_printf( "Your playerfile is corrupt...Please notify %s\r\n", sysdata->admin_email.c_str(  ) );
@@ -2971,11 +2967,6 @@ void descriptor_data::nanny( string & argument )
          if( ch->position > POS_SITTING && ch->position < POS_STANDING )
             ch->position = POS_STANDING;
 
-         if( ch->pcdata->version < 22 )
-         {
-            DISPOSE( ch->pcdata->pwd );
-            ch->pcdata->pwd = str_dup( sha256_crypt( argument.c_str(  ) ) );
-         }
          log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, host.c_str(  ) );
          show_title(  );
          break;

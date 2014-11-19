@@ -1621,7 +1621,6 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    int WWeight, DWeight, MWeight, ToDropW;
    int mod, mod2 = -1;
    struct skill_type *skill;
-   ch_ret retcode;
    int location = paf->location % REVERSE_APPLY;
 
    mod = paf->modifier;
@@ -1897,7 +1896,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
 
          mod = abs( mod );
          if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != nullptr && skill->type == SKILL_SPELL )
-            if( ( retcode = ( *skill->spell_fun ) ( mod, this->level, this, this ) ) == rCHAR_DIED || char_died(  ) )
+            if( ( ( *skill->spell_fun ) ( mod, this->level, this, this ) ) == rCHAR_DIED || char_died(  ) )
                return;
          break;
 

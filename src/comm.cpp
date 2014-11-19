@@ -716,10 +716,7 @@ bool check_parse_name( const string & name, bool newchar )
    snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", name.c_str(  ) );
 
    if( system( buf ) == 0 && newchar )
-   {
-      buf[0] = '\0';
       return false;
-   }
 
    /*
     * Check for inverse naming as well 
@@ -728,10 +725,8 @@ bool check_parse_name( const string & name, bool newchar )
    snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", invname.c_str(  ) );
 
    if( system( buf ) == 0 && newchar )
-   {
-      buf[0] = '\0';
       return false;
-   }
+
    return true;
 }
 

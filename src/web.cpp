@@ -223,7 +223,6 @@ void web_who(  )
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
       descriptor_data *d = *ds;
-      char_data *person = d->original ? d->original : d->character;
 
       if( !d )
       {
@@ -231,6 +230,7 @@ void web_who(  )
          continue;
       }
 
+      char_data *person = d->original ? d->original : d->character;
       if( person && d->connected >= CON_PLAYING )
       {
          if( person->level >= LEVEL_IMMORTAL )
@@ -274,7 +274,6 @@ void web_who(  )
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
       descriptor_data *d = *ds;
-      char_data *person = d->original ? d->original : d->character;
 
       if( !d )
       {
@@ -282,6 +281,7 @@ void web_who(  )
          continue;
       }
 
+      char_data *person = d->original ? d->original : d->character;
       if( person && d->connected >= CON_PLAYING )
       {
          if( person->level < LEVEL_IMMORTAL )

@@ -1634,7 +1634,6 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->chan_listen.empty(  ) )
                {
-                  mud_channel *channel = nullptr;
                   string channels = ch->pcdata->chan_listen;
                   string arg;
 
@@ -1642,7 +1641,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   {
                      channels = one_argument( channels, arg );
 
-                     if( !( channel = find_channel( arg ) ) )
+                     if( !find_channel( arg ) )
                         removename( ch->pcdata->chan_listen, arg );
                   }
                }

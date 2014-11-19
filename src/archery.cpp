@@ -715,21 +715,25 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
    }
    else
    {
-      switch ( projectile->value[4] )
+      // Bugfix: Projectile could be nullptr here - Samson
+      if( projectile )
       {
-         default:
-         case PROJ_BOLT:
-         case PROJ_ARROW:
-            ch->learn_from_failure( gsn_archery );
-            break;
+         switch ( projectile->value[4] )
+         {
+            default:
+            case PROJ_BOLT:
+            case PROJ_ARROW:
+               ch->learn_from_failure( gsn_archery );
+               break;
 
-         case PROJ_DART:
-            ch->learn_from_failure( gsn_blowguns );
-            break;
+            case PROJ_DART:
+               ch->learn_from_failure( gsn_blowguns );
+               break;
 
-         case PROJ_STONE:
-            ch->learn_from_failure( gsn_slings );
-            break;
+            case PROJ_STONE:
+               ch->learn_from_failure( gsn_slings );
+               break;
+         }
       }
       global_retcode = damage( ch, victim, 0, dt );
 

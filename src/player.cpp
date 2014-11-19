@@ -54,7 +54,6 @@ bool exists_player( const string & name )
 {
    struct stat fst;
    char buf[256];
-   char_data *victim = nullptr;
 
    /*
     * Stands to reason that if there ain't a name to look at, they damn well don't exist! 
@@ -67,7 +66,7 @@ bool exists_player( const string & name )
    if( stat( buf, &fst ) != -1 )
       return true;
 
-   else if( ( victim = supermob->get_char_world( name ) ) != nullptr )
+   else if( supermob->get_char_world( name ) != nullptr )
       return true;
 
    return false;

@@ -752,12 +752,13 @@ static void CmdDisplayFormat( void )
 static char *convert_error( DWORD error )
 {
    char *formattedmsg;
-   static char buff[100];
 
    if( !FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM |
                        FORMAT_MESSAGE_ALLOCATE_BUFFER |
                        FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error, LANG_NEUTRAL, ( LPTSTR ) & formattedmsg, 0, nullptr ) )
    {
+      static char buff[100];
+
       snprintf( buff, 100, "<Error code: %ld>", error );
       return buff;
    }

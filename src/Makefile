@@ -44,6 +44,9 @@ OPT_FLAG = -pipe -Os
 DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
+#GCC 4.8+ memory checking option. https://code.google.com/p/address-sanitizer/
+#MEM_FLAG = -fsanitize=address -fno-omit-frame-pointer
+
 W_FLAGS = -std=c++0x -Wall -Wshadow -Wformat=2 -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel
 
 ifndef CYGWIN
@@ -51,7 +54,7 @@ ifndef CYGWIN
    OPT_FLAG := -rdynamic $(OPT_FLAG)
 endif
 
-C_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
+C_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
 L_FLAGS = $(MACHINE) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL)
 #D_FLAGS : For the DNS Resolver process. No need in linking all the extra libs for this.
 D_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(SOLARIS_LINK)

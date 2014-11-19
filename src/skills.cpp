@@ -472,12 +472,9 @@ int search_skill_prefix( SKILL_INDEX index, const string & key, char_data * acto
 
 int search_skill_exact( SKILL_INDEX index, const string & key )
 {
-   SKILL_INDEX::iterator fnd, it, end;
+   SKILL_INDEX::iterator fnd;
 
-   it = index.begin(  );
-   end = index.end(  );
-
-   if( ( fnd = index.find( key ) ) == end )
+   if( ( fnd = index.find( key ) ) == index.end(  ) )
       return -1;
    return fnd->second;
 }
@@ -1983,6 +1980,7 @@ bool check_ability( char_data * ch, const string & command, const string & argum
        * waitstate 
        */
       ch->WAIT_STATE( skill_table[sn]->beats );
+
       /*
        * check for failure 
        */
@@ -2024,7 +2022,7 @@ bool check_ability( char_data * ch, const string & command, const string & argum
 
             if( victim == vch && !victim->fighting && victim->master != ch )
             {
-               retcode = multi_hit( victim, ch, TYPE_UNDEFINED );
+               multi_hit( victim, ch, TYPE_UNDEFINED );
                break;
             }
          }
@@ -2214,6 +2212,7 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
        * waitstate 
        */
       ch->WAIT_STATE( skill_table[sn]->beats );
+
       /*
        * check for failure 
        */
@@ -2255,7 +2254,7 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
 
             if( victim == vch && !victim->fighting && victim->master != ch )
             {
-               retcode = multi_hit( victim, ch, TYPE_UNDEFINED );
+               multi_hit( victim, ch, TYPE_UNDEFINED );
                break;
             }
          }

@@ -91,7 +91,6 @@ char *resolve_address( int address )
 {
    static char addr_str[256];
    struct hostent *from;
-   int addr;
 
    if( ( from = gethostbyaddr( ( char * )&address, sizeof( address ), AF_INET ) ) != nullptr )
    {
@@ -99,7 +98,7 @@ char *resolve_address( int address )
    }
    else
    {
-      addr = ntohl( address );
+      int addr = ntohl( address );
       snprintf( addr_str, 256, "%d.%d.%d.%d", ( addr >> 24 ) & 0xFF, ( addr >> 16 ) & 0xFF, ( addr >> 8 ) & 0xFF, ( addr ) & 0xFF );
    }
    return addr_str;

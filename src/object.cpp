@@ -1192,7 +1192,7 @@ int obj_data::get_real_weight(  )
       obj_data *obj = *iobj;
       oweight += obj->get_real_weight(  );
    }
-   return weight;
+   return oweight;
 }
 
 /*

@@ -392,11 +392,6 @@ void remove_from_auth( const string & name )
 void check_auth_state( char_data * ch )
 {
    auth_data *old_auth;
-   int level;
-
-   level = check_command_level( "authorize", MAX_LEVEL );
-   if( level == -1 )
-      level = LEVEL_IMMORTAL;
 
    if( !( old_auth = get_auth_name( ch->name ) ) )
       return;

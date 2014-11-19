@@ -43,14 +43,9 @@ list < lang_data * >langlist;
 SPELL_FUN *spell_function( const string & name )
 {
    void *funHandle;
-#if !defined(WIN32)
-   const char *error;
-#else
-   DWORD error;
-#endif
 
    funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
-   if( ( error = dlerror(  ) ) )
+   if( dlerror(  ) )
       return ( SPELL_FUN * ) spell_notfound;
 
    return ( SPELL_FUN * ) funHandle;
@@ -59,14 +54,9 @@ SPELL_FUN *spell_function( const string & name )
 DO_FUN *skill_function( const string & name )
 {
    void *funHandle;
-#if !defined(WIN32)
-   const char *error;
-#else
-   DWORD error;
-#endif
 
    funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
-   if( ( error = dlerror(  ) ) )
+   if( dlerror(  ) )
       return ( DO_FUN * ) skill_notfound;
 
    return ( DO_FUN * ) funHandle;

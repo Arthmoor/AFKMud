@@ -742,7 +742,6 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
       int vnum = 0, counter = 1;
       char letter;
       const char *word;
-      string tempstring;
       obj_index *pObjIndex = nullptr;
 
       letter = fread_letter( fpChar );
@@ -790,25 +789,25 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
 
          if( !str_cmp( word, "Name" ) )
          {
-            tempstring = fread_flagstring( fpChar );
+            fread_flagstring( fpChar );
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
          }
 
          if( !str_cmp( word, "ShortDescr" ) )
          {
-            tempstring = fread_flagstring( fpChar );
+            fread_flagstring( fpChar );
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
          }
 
          if( !str_cmp( word, "Description" ) )
          {
-            tempstring = fread_flagstring( fpChar );
+            fread_flagstring( fpChar );
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
          }
 
          if( !str_cmp( word, "ActionDesc" ) )
          {
-            tempstring = fread_flagstring( fpChar );
+            fread_flagstring( fpChar );
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
          }
 

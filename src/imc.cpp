@@ -6597,14 +6597,13 @@ string imc_send_social( char_data * ch, string argument, int telloption )
    string social, target;
    char_data *skeleton = nullptr;
    string msg, person, mud, socbuf;
-   string::size_type ps;
 
    argument = one_argument( argument, social );
    argument = one_argument( argument, target );
 
    if( !target.empty(  ) )
    {
-      if( ( ps = target.find( '@' ) ) == string::npos )
+      if( target.find( '@' ) == string::npos )
       {
          imc_to_char( "You need to specify a person@mud for a target.\r\n", ch );
          return "";

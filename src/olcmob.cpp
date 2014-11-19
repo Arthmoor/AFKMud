@@ -749,7 +749,7 @@ void medit_parse( descriptor_data * d, string & arg )
             number = atoi( arg.c_str(  ) );
             if( number == 0 )
                break;
-            if( number > 0 || number < MAX_AFFECTED_BY )
+            if( number > 0 && number < MAX_AFFECTED_BY )
             {
                number -= 1;
                victim->toggle_aflag( number );

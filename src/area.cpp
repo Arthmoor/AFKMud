@@ -349,7 +349,7 @@ area_data *create_area( void )
 void load_mobiles( area_data * tarea, FILE * fp )
 {
    mob_index *pMobIndex;
-   int x1, x2, x3, x4, x5, x6, x7, x8, value;
+   int x1, x2, x3, x4, x5, x6, x7, value;
    string flag;
 
    if( !tarea )
@@ -444,12 +444,12 @@ void load_mobiles( area_data * tarea, FILE * fp )
       pMobIndex->pShop = nullptr;
       pMobIndex->rShop = nullptr;
 
-      float x9 = 0;
       const char *ln = fread_line( fp );
-      x1 = x2 = x3 = x4 = x5 = x8 = 0;
+      x1 = x2 = x3 = x4 = x5 = 0;
       x6 = 150;
       x7 = 100;
-      sscanf( ln, "%d %d %d %d %d %d %d %f", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x9 );
+      float x8 = 0;
+      sscanf( ln, "%d %d %d %d %d %d %d %f", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8 );
 
       pMobIndex->alignment = x1;
       pMobIndex->gold = x2;
@@ -457,7 +457,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       pMobIndex->weight = x5;
       pMobIndex->max_move = x6;
       pMobIndex->max_mana = x7;
-      pMobIndex->numattacks = x9;
+      pMobIndex->numattacks = x8;
 
       if( pMobIndex->max_move < 1 )
          pMobIndex->max_move = 150;

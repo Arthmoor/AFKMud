@@ -1856,8 +1856,7 @@ void char_check( void )
       /*
        * check for exits moving players around 
        */
-      ch_ret retcode;
-      if( ( retcode = pullcheck( ch, pulse ) ) == rCHAR_DIED || ch->char_died(  ) )
+      if( pullcheck( ch, pulse ) == rCHAR_DIED || ch->char_died(  ) )
          continue;
 
       if( ch->mount && ch->in_room != ch->mount->in_room )
