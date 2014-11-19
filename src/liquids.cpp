@@ -518,7 +518,7 @@ liquid_data *get_liq_vnum( int vnum )
     * Calling function should be validating for nullptrs, or it'll crash there instead.
     * Samson 11-09-2014
     */
-   if( vnum < 0 || vnum >= top_liquid )
+   if( vnum < 0 || vnum > top_liquid )
    {
       bug( "%s: Invalid vnum %d, returning nullptr", __func__, vnum );
       return nullptr;

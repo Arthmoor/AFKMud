@@ -221,31 +221,19 @@ CMDF( do_ask )
 void update_sayhistory( char_data * ch, char_data * vch, const string & msg )
 {
    char new_msg[MSL];
+   string message;
 
-   snprintf( new_msg, MSL, "%ld %s%s said '%s'", current_time,
+   if( vch->isnpc() )
+      return;
+
+   snprintf( new_msg, MSL, "&R[%s] %s%s said '%s'", mini_c_time( current_time, vch->pcdata->timezone ),
              ( vch == ch ? ch->color_str( AT_SAY ) : vch->color_str( AT_SAY ) ), vch == ch ? "You" : PERS( ch, vch, false ), msg.c_str(  ) );
+   message = new_msg;
 
-   for( int x = 0; x < MAX_SAYHISTORY; ++x )
-   {
-      if( vch->pcdata->say_history[x] == '\0' )
-      {
-         vch->pcdata->say_history[x] = str_dup( new_msg );
-         break;
-      }
+   vch->pcdata->say_history.push_back( message );
 
-      if( x == MAX_SAYHISTORY - 1 )
-      {
-         int i;
-
-         for( i = 1; i < MAX_SAYHISTORY; ++i )
-         {
-            DISPOSE( vch->pcdata->say_history[i - 1] );
-            vch->pcdata->say_history[i - 1] = str_dup( vch->pcdata->say_history[i] );
-         }
-         DISPOSE( vch->pcdata->say_history[x] );
-         vch->pcdata->say_history[x] = str_dup( new_msg );
-      }
-   }
+   if( vch->pcdata->say_history.size() >= MAX_SAYHISTORY )
+      vch->pcdata->say_history.erase( vch->pcdata->say_history.begin() );
 }
 
 CMDF( do_say )
@@ -265,20 +253,15 @@ CMDF( do_say )
    {
       if( ch->isnpc(  ) )
       {
-         ch->print( "Say what?" );
+         ch->print( "Say what?\r\n" );
          return;
       }
 
       ch->printf( "&cThe last %d things you heard said:\r\n", MAX_SAYHISTORY );
 
-      for( int x = 0; x < MAX_SAYHISTORY; ++x )
-      {
-         char histbuf[MSL];
-         if( ch->pcdata->say_history[x] == nullptr )
-            break;
-         one_argument( ch->pcdata->say_history[x], histbuf );
-         ch->printf( "&R[%s]%s\r\n", mini_c_time( atoi( histbuf ), ch->pcdata->timezone ), ch->pcdata->say_history[x] + strlen( histbuf ) );
-      }
+      for( size_t x = 0; x < ch->pcdata->say_history.size(); ++x )
+         ch->printf( "%s\r\n", ch->pcdata->say_history[x].c_str() );
+
       return;
    }
 
@@ -305,18 +288,18 @@ CMDF( do_say )
          continue;
 
       /*
-       * Check to see if a player on a map is at the same coords as the recipient 
+       * Check to see if a player on a map is at the same coords as the recipient
        */
       if( !is_same_char_map( ch, vch ) )
          continue;
 
       /*
-       * Check to see if character is ignoring speaker 
+       * Check to see if character is ignoring speaker
        */
       if( is_ignoring( vch, ch ) )
       {
          /*
-          * continue unless speaker is an immortal 
+          * continue unless speaker is an immortal
           */
          if( !ch->is_immortal(  ) || vch->level > ch->level )
             continue;
@@ -566,42 +549,32 @@ void update_tellhistory( char_data * vch, char_data * ch, const string & msg, bo
 {
    char_data *tch;
    char new_msg[MSL];
+   string message;
 
    if( self )
    {
-      snprintf( new_msg, MSL, "%ld %sYou told %s '%s'", current_time, ch->color_str( AT_TELL ), PERS( vch, ch, false ), msg.c_str(  ) );
+      snprintf( new_msg, MSL, "&R[%s] %sYou told %s '%s'",
+         ch->isnpc() ? ( mini_c_time( current_time, -1 ) ) : ( mini_c_time( current_time, ch->pcdata->timezone ) ),
+         ch->color_str( AT_TELL ), PERS( vch, ch, false ), msg.c_str(  ) );
       tch = ch;
    }
    else
    {
-      snprintf( new_msg, MSL, "%ld %s%s told you '%s'", current_time, vch->color_str( AT_TELL ), PERS( ch, vch, false ), msg.c_str(  ) );
+      snprintf( new_msg, MSL, "&R[%s] %s%s told you '%s'",
+         vch->isnpc() ? ( mini_c_time( current_time, -1 ) ) : ( mini_c_time( current_time, vch->pcdata->timezone ) ),
+         vch->color_str( AT_TELL ), PERS( ch, vch, false ), msg.c_str(  ) );
       tch = vch;
    }
 
    if( tch->isnpc(  ) )
       return;
 
-   for( int x = 0; x < MAX_TELLHISTORY; ++x )
-   {
-      if( !tch->pcdata->tell_history[x] || tch->pcdata->tell_history[x] == '\0' )
-      {
-         tch->pcdata->tell_history[x] = str_dup( new_msg );
-         break;
-      }
+   message = new_msg;
 
-      if( x == MAX_TELLHISTORY - 1 )
-      {
-         int i;
+   tch->pcdata->tell_history.push_back( message );
 
-         for( i = 1; i < MAX_TELLHISTORY; ++i )
-         {
-            DISPOSE( tch->pcdata->tell_history[i - 1] );
-            tch->pcdata->tell_history[i - 1] = str_dup( tch->pcdata->tell_history[i] );
-         }
-         DISPOSE( tch->pcdata->tell_history[x] );
-         tch->pcdata->tell_history[x] = str_dup( new_msg );
-      }
-   }
+   if( tch->pcdata->tell_history.size() >= MAX_TELLHISTORY )
+      tch->pcdata->tell_history.erase( tch->pcdata->tell_history.begin() );
 }
 
 CMDF( do_tell )
@@ -645,14 +618,8 @@ CMDF( do_tell )
 
       ch->printf( "&cThe last %d things you were told:\r\n", MAX_TELLHISTORY );
 
-      for( int x = 0; x < MAX_TELLHISTORY; ++x )
-      {
-         char histbuf[MSL];
-         if( ch->pcdata->tell_history[x] == nullptr )
-            break;
-         one_argument( ch->pcdata->tell_history[x], histbuf );
-         ch->printf( "&R[%s]%s\r\n", mini_c_time( atoi( histbuf ), ch->pcdata->timezone ), ch->pcdata->tell_history[x] + strlen( histbuf ) );
-      }
+      for( size_t x = 0; x < ch->pcdata->tell_history.size(); ++x )
+         ch->printf( "%s\r\n", ch->pcdata->tell_history[x].c_str() );
       return;
    }
 

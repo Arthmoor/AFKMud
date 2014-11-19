@@ -1646,7 +1646,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   }
                }
                /*
-                * Provide at least the one channel 
+                * Provide at least the one channel
                 */
                else
                   ch->pcdata->chan_listen = "chat";

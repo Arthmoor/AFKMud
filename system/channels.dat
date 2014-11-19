@@ -113,7 +113,7 @@ ChanType      5
 End
 
 #CHANNEL
-ChanName      Log
+ChanName      log
 ChanColorname log
 ChanLevel     101
 ChanType      5
@@ -127,7 +127,7 @@ ChanType      2
 End
 
 #CHANNEL
-ChanName      Clantalk
+ChanName      clantalk
 ChanColorname guildtalk
 ChanLevel     1
 ChanType      2
@@ -142,10 +142,9 @@ ChanFlags     keephistory
 End
 
 #CHANNEL
-ChanName      Bugs
+ChanName      bugs
 ChanColorname log
 ChanLevel     101
 ChanType      5
 ChanFlags     keephistory
 End
-

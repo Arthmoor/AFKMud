@@ -87,18 +87,8 @@ pc_data::~pc_data(  )
    this->zone.clear(  );
    this->ignore.clear(  );
    this->qbits.clear(  );
-
-   /*
-    * God. How does one forget something like this anyway? BAD SAMSON! 
-    */
-   for( int x = 0; x < MAX_SAYHISTORY; ++x )
-      DISPOSE( this->say_history[x] );
-
-   /*
-    * Dammit! You forgot another one you git! 
-    */
-   for( int x = 0; x < MAX_TELLHISTORY; ++x )
-      DISPOSE( this->tell_history[x] );
+   this->say_history.clear();
+   this->tell_history.clear();
 }
 
 /*
@@ -112,10 +102,8 @@ pc_data::pc_data(  )
    this->alias_map.clear(  );
    this->zone.clear(  );
    this->ignore.clear(  );
-   for( int sn = 0; sn < MAX_SAYHISTORY; ++sn )
-      this->say_history[sn] = nullptr;
-   for( int sn = 0; sn < MAX_TELLHISTORY; ++sn )
-      this->tell_history[sn] = nullptr;
+   this->say_history.clear();
+   this->tell_history.clear();
    for( int sn = 0; sn < MAX_BEACONS; ++sn )
       this->beacon[sn] = 0;
    this->condition[COND_THIRST] = ( int )( sysdata->maxcondval * .75 );

@@ -34,12 +34,12 @@ const int MAX_CHANHISTORY = 20;
 
 enum channel_types
 {
-   CHAN_GLOBAL, CHAN_ZONE, CHAN_GUILD, CHAN_unused, CHAN_PK, CHAN_LOG
+   CHAN_GLOBAL, CHAN_ZONE, CHAN_GUILD, CHAN_ROOM, CHAN_PK, CHAN_LOG
 };
 
 enum channel_flags
 {
-   CHAN_KEEPHISTORY, CHAN_INTERPORT, CHAN_MAXFLAG
+   CHAN_KEEPHISTORY, CHAN_INTERPORT, CHAN_ALWAYSON, CHAN_MAXFLAG
 };
 /* Interport flag will only operate when multiport code is active */
 

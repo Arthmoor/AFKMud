@@ -46,11 +46,11 @@ void mud_message( char_data *, mud_channel *, const string & );
 list < mud_channel * >chanlist;
 
 const char *chan_types[] = {
-   "Global", "Zone", "Guild", "Council", "PK", "Log"
+   "Global", "Zone", "Guild", "Room", "PK", "Log"
 };
 
 const char *chan_flags[] = {
-   "keephistory", "interport"
+   "keephistory", "interport", "alwayson"
 };
 
 chan_history::~chan_history(  )
@@ -251,7 +251,7 @@ CMDF( do_setchannel )
    {
       ch->print( "&GSyntax: setchannel <channel> <field> <value>\r\n\r\n" );
       ch->print( "&YField may be one of the following:\r\n" );
-      ch->print( "name level type flags color\r\n" );
+      ch->print( "name level type flags color purge\r\n" );
       return;
    }
 
@@ -351,6 +351,20 @@ CMDF( do_setchannel )
       save_mudchannels(  );
       return;
    }
+
+   if( !str_cmp( arg2, "purge" ) )
+   {
+      if( !channel->flags.test( CHAN_KEEPHISTORY ) )
+      {
+         ch->printf( "The %s channel does not maintain a history.\r\n", channel->name.c_str(  ) );
+         return;
+      }
+
+      purge_channel_history( channel );
+
+      ch->printf( "The %s channel history has been purged.\r\n", channel->name.c_str(  ) );
+      return;
+   }
    do_setchannel( ch, "" );
 }
 
@@ -442,13 +456,29 @@ CMDF( do_listen )
 
    if( !str_cmp( argument, "none" ) )
    {
-      ch->pcdata->chan_listen.clear(  );
-      ch->print( "&YYou no longer listen to any available channels.\r\n" );
+      for( chan = chanlist.begin(  ); chan != chanlist.end(  ); ++chan )
+      {
+         channel = *chan;
+
+         if( channel->flags.test( CHAN_ALWAYSON ) )
+            continue;
+
+         if( hasname( ch->pcdata->chan_listen, channel->name ) )
+            removename( ch->pcdata->chan_listen, channel->name );
+      }
+      ch->print( "&YYou no longer listen to any available muteable channels.\r\n" );
       return;
    }
 
    if( hasname( ch->pcdata->chan_listen, argument ) )
    {
+      channel = find_channel( argument );
+
+      if( channel && channel->flags.test( CHAN_ALWAYSON ) )
+      {
+         ch->printf( "&YYou cannot turn the &W%s&Y channel off.\r\n", argument.c_str() );
+         return;
+      }
       removename( ch->pcdata->chan_listen, argument );
       ch->printf( "&YYou no longer listen to &W%s\r\n", argument.c_str(  ) );
    }
@@ -459,6 +489,7 @@ CMDF( do_listen )
          ch->print( "No such channel.\r\n" );
          return;
       }
+
       if( channel->level > ch->level )
       {
          ch->print( "That channel is above your level.\r\n" );
@@ -628,7 +659,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
       return;
    }
 
-   if( argument.empty(  ) || !str_cmp( argument, "hpurge" ) )
+   if( argument.empty(  ) )
    {
       if( !channel->flags.test( CHAN_KEEPHISTORY ) )
       {
@@ -636,20 +667,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          return;
       }
 
-      if( !str_cmp( argument, "hpurge" ) )
-      {
-         purge_channel_history( channel );
-
-         ch->printf( "The %s channel history has been purged.\r\n", channel->name.c_str(  ) );
-         return;
-      }
       show_channel_history( ch, channel );
-      return;
-   }
-
-   if( !hasname( ch->pcdata->chan_listen, channel->name ) )
-   {
-      ch->printf( "You are not currently listening to the %s channel. To turn it on, use the listen command.\r\n", channel->name.c_str() );
       return;
    }
 
@@ -768,6 +786,18 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
 
          if( vch->in_room->flags.test( ROOM_SILENCE ) || vch->in_room->area->flags.test( AFLAG_SILENCE ) )
             continue;
+
+         if( channel->type == CHAN_ROOM )
+         {
+            if( vch->in_room != ch->in_room )
+               continue;
+
+            /*
+             * Check to see if a player on a map is at the same coords as the recipient
+             */
+            if( !is_same_char_map( ch, vch ) )
+               continue;
+         }
 
          if( channel->type == CHAN_ZONE && ( vch->in_room->area != ch->in_room->area || vch->in_room->flags.test( ROOM_NOYELL ) ) )
             continue;
@@ -963,7 +993,7 @@ bool local_channel_hook( char_data * ch, const string & command, string & argume
       return true;
    }
 
-   if( !ch->isnpc(  ) && !hasname( ch->pcdata->chan_listen, channel->name ) )
+   if( !ch->isnpc(  ) && !hasname( ch->pcdata->chan_listen, channel->name ) && !channel->flags.test( CHAN_ALWAYSON ) )
    {
       ch->printf( "&RYou are not listening to the &G%s &Rchannel.\r\n", channel->name.c_str(  ) );
       return true;

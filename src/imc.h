@@ -109,7 +109,7 @@ enum imc_channel_flags
 #define IMC_EMAIL(ch)         (CH_IMCDATA((ch))->email)
 #define IMC_HOMEPAGE(ch)      (CH_IMCDATA((ch))->homepage)
 #define IMC_COMMENT(ch)       (CH_IMCDATA((ch))->comment)
-#define IMCTELLHISTORY(ch,x)  (CH_IMCDATA((ch))->imc_tellhistory[(x)])
+#define IMCTELLHISTORY(ch)    (CH_IMCDATA((ch))->tell_history)
 #define IMCISINVIS(ch)        ( IMCIS_SET( IMCFLAG((ch)), IMC_INVIS ) )
 #define IMCAFK(ch)            ( IMCIS_SET( IMCFLAG((ch)), IMC_AFK ) )
 
@@ -159,7 +159,7 @@ struct imc_chardata
    string imc_denied;              /* Channels the player has been denied use of */
    string rreply;                  /* IMC reply-to */
    string rreply_name;             /* IMC reply-to shown to char */
-   string imc_tellhistory[MAX_IMCTELLHISTORY];  /* History of received imctells - Samson 1-21-04 */
+   vector < string > tell_history; /* History of received imctells - Samson 1-21-04 */
    int imcperm;                    /* Permission level for the player */
 };
 
@@ -174,7 +174,7 @@ struct imc_channel
    string regformat;
    string emoteformat;
    string socformat;
-   string history[MAX_IMCHISTORY];
+   vector < string > history;
      bitset < IMC_MAXCHANFLAG > flags;
    short level;
    bool open;

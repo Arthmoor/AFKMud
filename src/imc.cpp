@@ -925,28 +925,13 @@ void imc_update_tellhistory( char_data * ch, const string & msg )
 {
    ostringstream new_msg;
    struct tm *local = localtime( &imc_time );
-   int x;
 
    new_msg << "~R[" << setw( 2 ) << local->tm_hour << ":" << setw( 2 ) << local->tm_min << "] " << msg;
 
-   for( x = 0; x < MAX_IMCTELLHISTORY; ++x )
-   {
-      if( IMCTELLHISTORY( ch, x ).empty(  ) )
-      {
-         IMCTELLHISTORY( ch, x ) = new_msg.str(  );
-         break;
-      }
+   IMCTELLHISTORY(ch).push_back( new_msg.str() );
 
-      if( x == MAX_IMCTELLHISTORY - 1 )
-      {
-         int i;
-
-         for( i = 1; i < MAX_IMCTELLHISTORY; ++i )
-            IMCTELLHISTORY( ch, i - 1 ) = IMCTELLHISTORY( ch, i );
-
-         IMCTELLHISTORY( ch, x ) = new_msg.str(  );
-      }
-   }
+   if( IMCTELLHISTORY(ch).size() >= MAX_IMCTELLHISTORY )
+      IMCTELLHISTORY(ch).erase( IMCTELLHISTORY(ch).begin() );
 }
 
 void imc_send_tell( string from, string to, const string & txt, int reply )
@@ -1057,7 +1042,6 @@ void update_imchistory( imc_channel * channel, const string & message )
 {
    ostringstream buf;
    struct tm *local;
-   int x;
 
    if( !channel )
    {
@@ -1071,79 +1055,36 @@ void update_imchistory( imc_channel * channel, const string & message )
       return;
    }
 
-   for( x = 0; x < MAX_IMCHISTORY; ++x )
+   local = localtime( &imc_time );
+   buf << "~R[" << setw( 2 ) << local->tm_mon + 1 << "/" << setw( 2 ) << local->tm_mday;
+   buf << " " << setw( 2 ) << local->tm_hour << ":" << setw( 2 ) << local->tm_min << "] ~G" << message;
+
+   channel->history.push_back( buf.str() );
+
+   if( IMCIS_SET( channel->flags, IMCCHAN_LOG ) )
    {
-      if( channel->history[x].empty(  ) )
+      ofstream stream;
+      ostringstream fname;
+
+      fname << IMC_DIR << channel->local_name << ".log";
+      stream.open( fname.str(  ).c_str(  ), ios::app );
+      if( !stream.is_open(  ) )
       {
-         local = localtime( &imc_time );
-         buf << "~R[" << setw( 2 ) << local->tm_mon + 1 << "/" << setw( 2 ) << local->tm_mday;
-         buf << " " << setw( 2 ) << local->tm_hour << ":" << setw( 2 ) << local->tm_min << "] ~G" << message;
-         channel->history[x] = buf.str(  );
-
-         if( IMCIS_SET( channel->flags, IMCCHAN_LOG ) )
-         {
-            ofstream stream;
-            ostringstream fname;
-
-            fname << IMC_DIR << channel->local_name << ".log";
-            stream.open( fname.str(  ).c_str(  ), ios::app );
-            if( !stream.is_open(  ) )
-            {
-               perror( fname.str(  ).c_str(  ) );
-               imcbug( "Could not open file %s!", fname.str(  ).c_str(  ) );
-            }
-            else
-            {
-               string history = channel->history[x];
-
-               imc_strip_colors( history );
-               stream << history << endl;
-               stream.close(  );
-            }
-         }
-         break;
+         perror( fname.str(  ).c_str(  ) );
+         imcbug( "Could not open file %s!", fname.str(  ).c_str(  ) );
       }
-
-      if( x == MAX_IMCHISTORY - 1 )
+      else
       {
-         int y;
+         string hist = buf.str();
 
-         for( y = 1; y < MAX_IMCHISTORY; ++y )
-         {
-            int z = y - 1;
-
-            if( !channel->history[z].empty(  ) )
-               channel->history[z] = channel->history[y];
-         }
-
-         local = localtime( &imc_time );
-         buf << "~R[" << setw( 2 ) << local->tm_mon + 1 << "/" << setw( 2 ) << local->tm_mday;
-         buf << " " << setw( 2 ) << local->tm_hour << ":" << setw( 2 ) << local->tm_min << "] ~G" << message;
-         channel->history[x] = buf.str(  );
-
-         if( IMCIS_SET( channel->flags, IMCCHAN_LOG ) )
-         {
-            ofstream stream;
-            ostringstream fname;
-
-            fname << IMC_DIR << channel->local_name << ".log";
-            stream.open( fname.str(  ).c_str(  ), ios::app );
-            if( !stream.is_open(  ) )
-            {
-               perror( fname.str(  ).c_str(  ) );
-               imcbug( "Could not open file %s!", fname.str(  ).c_str(  ) );
-            }
-            else
-            {
-               string history = channel->history[x];
-
-               imc_strip_colors( history );
-               stream << history << endl;
-               stream.close(  );
-            }
-         }
+         imc_strip_colors( hist );
+         stream << hist << endl;
+         stream.close(  );
       }
    }
+
+   if( channel->history.size() >= MAX_IMCHISTORY )
+      channel->history.erase( channel->history.begin() );
 }
 
 void imc_display_channel( imc_channel * c, const string & from, const string & txt, int emote )
@@ -2923,7 +2864,7 @@ void imc_loadhistfile( const string & filename, imc_channel * channel )
          char line[LGST];
 
          stream.getline( line, LGST );
-         channel->history[x] = line;
+         channel->history.push_back( line );
       }
    }
    stream.close(  );
@@ -2959,11 +2900,9 @@ void imc_savehistfile( const string & filename, imc_channel * channel )
    if( !stream.is_open(  ) )
       return;
 
-   for( int x = 0; x < MAX_IMCHISTORY; ++x )
-   {
-      if( !channel->history[x].empty(  ) )
-         stream << channel->history[x] << endl;
-   }
+   for( size_t x = 0; x < channel->history.size(); ++x )
+      stream << channel->history[x] << endl;
+
    stream.close(  );
 }
 
@@ -3001,7 +2940,7 @@ void imc_save_channels( void )
    list < imc_channel * >::iterator ichn;
    for( ichn = imc_chanlist.begin(  ); ichn != imc_chanlist.end(  ); ++ichn )
    {
-      imc_channel *chn = ( *ichn );
+      imc_channel *chn = *ichn;
 
       if( chn->local_name.empty(  ) )
          continue;
@@ -3069,8 +3008,7 @@ void imc_loadchannels( void )
          c->level = atoi( value.c_str(  ) );
       else if( key == "End" )
       {
-         for( int x = 0; x < MAX_IMCHISTORY; ++x )
-            c->history[x].clear(  );
+         c->history.clear(  );
 
          c->refreshed = false;   /* Prevents crash trying to use a bogus channel */
          imclog( "Configured %s as %s", c->chname.c_str(  ), c->local_name.c_str(  ) );
@@ -4732,18 +4670,13 @@ IMC_CMD( imctell )
 
    if( target.empty(  ) || argument.empty(  ) )
    {
-      int x;
-
       imc_to_char( "~wUsage: imctell user@mud <message>\r\n", ch );
       imc_to_char( "~wUsage: imctell [on]/[off]\r\n\r\n", ch );
       imc_printf( ch, "~cThe last %d things you were told:\r\n", MAX_IMCTELLHISTORY );
 
-      for( x = 0; x < MAX_IMCTELLHISTORY; ++x )
-      {
-         if( IMCTELLHISTORY( ch, x ).empty(  ) )
-            break;
-         imc_to_char( IMCTELLHISTORY( ch, x ), ch );
-      }
+      for( size_t x = 0; x < IMCTELLHISTORY(ch).size(); ++x )
+         imc_to_char( IMCTELLHISTORY(ch)[x].c_str(), ch );
+
       return;
    }
 
@@ -6763,16 +6696,10 @@ bool imc_command_hook( char_data * ch, string & command, string & argument )
 
    if( argument.empty(  ) )
    {
-      int y;
-
       imc_printf( ch, "~cThe last %d %s messages:\r\n", MAX_IMCHISTORY, c->local_name.c_str(  ) );
-      for( y = 0; y < MAX_IMCHISTORY; ++y )
-      {
-         if( !c->history[y].empty(  ) )
-            imc_printf( ch, "%s\r\n", c->history[y].c_str(  ) );
-         else
-            break;
-      }
+
+      for( size_t y = 0; y < c->history.size(); ++y )
+         imc_printf( ch, "%s\r\n", c->history[y].c_str(  ) );
       return true;
    }
 

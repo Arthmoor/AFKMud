@@ -77,6 +77,8 @@ class pc_data
      list < struct note_data *>comments;
      list < string > zone; /* List of zones this PC has visited - Samson 7-11-00 */
      list < string > ignore;  /* List of players to ignore */
+     vector < string > say_history;
+     vector < string > tell_history;
    string bestowments;  // Special bestowed commands
    string chan_listen;  // For dynamic channels - Samson 3-2-02
    string clan_name; // Name of the clan/guild this person belongs to if any.
@@ -116,8 +118,6 @@ class pc_data
    char *subprompt;  /* Substate prompt */
    char *afkbuf;  /* afk reason buffer - Samson 8-31-98 */
    char *motd_buf;   /* A temp buffer for editing MOTDs - 12-31-00 */
-   char *say_history[MAX_SAYHISTORY];  /* Say history -- Kratas */
-   char *tell_history[MAX_TELLHISTORY];
    time_t release_date; /* Auto-helling.. Altrag */
    time_t motd;   /* Last time they read an MOTD - Samson 12-31-00 */
    time_t imotd;  /* Last time they read an IMOTD for immortals - 12-31-00 */
