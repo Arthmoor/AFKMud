@@ -34,7 +34,7 @@
 /*
  * Site ban structure.
  */
-struct ban_data
+class ban_data
 {
  private:
    ban_data( const ban_data & b );

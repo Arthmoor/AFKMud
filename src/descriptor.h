@@ -97,7 +97,8 @@ class descriptor_data
    // bool check_total_bans(  );
    void send_msp_startup(  );
 
-   string host;
+   string ipaddress;
+   string hostname;
    string outbuf;
    string pagebuf;
    string incomm;

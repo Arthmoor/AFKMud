@@ -1275,15 +1275,15 @@ CMDF( do_mstat )
       ch->printf( "|Death : &G%10d &w|Petri : &G%10d &w|Breath: &G%10d &w|Staves: &G%d&w\r\n",
                   victim->saving_poison_death, victim->saving_para_petri, victim->saving_breath, victim->saving_spell_staff );
 
-      ch->printf( "|Recent Host  : &G%s&w\r\n", !victim->pcdata->lasthost.empty() ? victim->pcdata->lasthost.c_str() : "Unknown" );
+      ch->printf( "|Hostname     : &G%s&w\r\n", !victim->pcdata->lasthost.empty() ? victim->pcdata->lasthost.c_str() : "Unknown" );
+      ch->printf( "|IP Address   : &G%s&w\r\n", victim->desc ? victim->desc->ipaddress.c_str() : "Unknown" );
       ch->printf( "|Previous Host: &G%s&w\r\n", !victim->pcdata->prevhost.empty() ? victim->pcdata->prevhost.c_str() : "Unknown" );
 
       if( victim->desc )
       {
          ch->printf( "|Player's Terminal Program: &G%s&w\r\n", victim->desc->client.c_str(  ) );
-         ch->printf( "|Player's Terminal Support: &GMCCP[%s]  &GMSP[%s]\r\n", victim->desc->can_compress ? "&wX&G" : " ", victim->desc->msp_detected ? "&wX&G" : " " );
-
-         ch->printf( "|Terminal Support In Use  : &GMCCP[%s]  &GMSP[%s]\r\n", victim->desc->can_compress ? "&wX&G" : " ", victim->MSP_ON(  )? "&wX&G" : " " );
+         ch->printf( "|Player's Terminal Support: &GMCCP[%s]  &GMSP[%s]&w\r\n", victim->desc->can_compress ? "&wX&G" : " ", victim->desc->msp_detected ? "&wX&G" : " " );
+         ch->printf( "|Terminal Support In Use  : &GMCCP[%s]  &GMSP[%s]&w\r\n", victim->desc->can_compress ? "&wX&G" : " ", victim->MSP_ON(  )? "&wX&G" : " " );
       }
 
       ch->printf( "|PC Flags    : &G%s&w\r\n", !victim->has_pcflags(  )? "(NONE)" : bitset_string( victim->get_pcflags(  ), pc_flags ) );
@@ -4324,8 +4324,8 @@ CMDF( do_users )
 {
    ch->set_pager_color( AT_PLAIN );
 
-   ch->pager( "Desc|     Constate      |Idle|    Player    | HostIP                   \r\n" );
-   ch->pager( "----+-------------------+----+--------------+--------------------------\r\n" );
+   ch->pager( "Desc|     Constate      |Idle|    Player    | IP Address        Hostname\r\n" );
+   ch->pager( "----+-------------------+----+--------------+-----------------+----------------\r\n" );
 
    int count = 0;
    list < descriptor_data * >::iterator ds;
@@ -4414,18 +4414,18 @@ CMDF( do_users )
          if( ch->is_imp(  ) || ( d->character && ch->can_see( d->character, true ) && !is_ignoring( d->character, ch ) ) )
          {
             ++count;
-            ch->pagerf( " %3d| %-17s |%4d| %-12s | %s \r\n", d->descriptor, st, d->idle / 4,
-                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->host.c_str(  ) );
+            ch->pagerf( " %3d| %-17s |%4d| %-12s | %-15s | %s\r\n", d->descriptor, st, d->idle / 4,
+                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->ipaddress.c_str(), d->hostname.c_str(  ) );
          }
       }
       else
       {
          if( ( ch->get_trust(  ) >= LEVEL_SUPREME || ( d->character && ch->can_see( d->character, true ) ) )
-             && ( !str_prefix( argument, d->host ) || ( d->character && !str_prefix( argument, d->character->name ) ) ) )
+             && ( !str_prefix( argument, d->hostname ) || ( d->character && !str_prefix( argument, d->character->name ) ) ) )
          {
             ++count;
-            ch->pagerf( " %3d| %2d|%4d| %-12s | %s \r\n", d->descriptor, d->connected, d->idle / 4,
-                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->host.c_str(  ) );
+            ch->pagerf( " %3d| %2d|%4d| %-12s | %-15s | %s \r\n", d->descriptor, d->connected, d->idle / 4,
+                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->ipaddress.c_str(), d->hostname.c_str(  ) );
          }
       }
    }

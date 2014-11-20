@@ -1355,9 +1355,9 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
 
       if( !str_cmp( chck, "hostdesc" ) )
       {
-         if( chkchar->isnpc(  ) || chkchar->desc->host.empty(  ) )
+         if( chkchar->isnpc(  ) || chkchar->desc->hostname.empty(  ) )
             return false;
-         return mprog_seval( chkchar->desc->host.c_str(  ), opr, rval, mob );
+         return mprog_seval( chkchar->desc->hostname.c_str(  ), opr, rval, mob );
       }
 
       if( !str_cmp( chck, "areamulti" ) )
@@ -1370,7 +1370,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
 
             if( !chkchar->isnpc() && !ch->isnpc() && ch->in_room && chkchar->in_room
                 && ch->in_room->area == chkchar->in_room->area
-                && ch->desc && chkchar->desc && !str_cmp( ch->desc->host, chkchar->desc->host ) )
+                && ch->desc && chkchar->desc && !str_cmp( ch->desc->ipaddress, chkchar->desc->ipaddress ) )
                ++clhsvl;
          }
 
@@ -1390,7 +1390,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          {
             char_data *ch = *ich;
 
-            if( !chkchar->isnpc(  ) && ch->desc && chkchar->desc && !str_cmp( ch->desc->host, chkchar->desc->host ) )
+            if( !chkchar->isnpc(  ) && ch->desc && chkchar->desc && !str_cmp( ch->desc->ipaddress, chkchar->desc->ipaddress ) )
                ++lhsvl;
          }
 

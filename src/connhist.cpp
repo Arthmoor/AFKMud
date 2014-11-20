@@ -243,7 +243,7 @@ void update_connhistory( descriptor_data * d, int type )
    con->user = vch->name ? vch->name : "NoName";
    snprintf( when, MIL, "%-2.2d/%-2.2d %-2.2d:%-2.2d", local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min );
    con->when = when;
-   con->host = !d->host.empty(  )? d->host : "unknown";
+   con->host = !d->hostname.empty(  ) ? d->hostname : d->ipaddress;
    con->type = type;
    con->level = vch->level;
    con->invis_lvl = vch->has_pcflag( PCFLAG_WIZINVIS ) ? vch->pcdata->wizinvis : 0;

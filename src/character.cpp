@@ -133,7 +133,7 @@ char_data::~char_data(  )
    if( this->desc )
    {
       bug( "%s: char still has descriptor.", __func__ );
-      log_printf( "Desc# %d, DescHost %s DescClient %s", this->desc->descriptor, this->desc->host.c_str(  ), this->desc->client.c_str(  ) );
+      log_printf( "Desc# %d, DescHost %s DescClient %s", this->desc->descriptor, this->desc->hostname.c_str(  ), this->desc->client.c_str(  ) );
       deleteptr( this->desc );
    }
 

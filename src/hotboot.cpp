@@ -696,7 +696,7 @@ CMDF( do_hotboot )
       {
          fprintf( fp, "%d %d %d %d %d %d %d %s %s %s\n",
                   d->descriptor, d->can_compress, d->is_compressing, d->msp_detected,
-                  och->in_room->vnum, d->client_port, d->idle, och->name, d->host.c_str(  ), d->client.c_str(  ) );
+                  och->in_room->vnum, d->client_port, d->idle, och->name, d->hostname.c_str(  ), d->client.c_str(  ) );
 
          /*
           * One of two places this gets changed 
@@ -832,7 +832,7 @@ void hotboot_recover( void )
       d->connected = CON_PLOADED;
       d->descriptor = desc;
 
-      d->host = host;
+      d->hostname = host;
       d->client = client;
       d->client_port = dport;
       d->idle = idle;
@@ -872,7 +872,7 @@ void hotboot_recover( void )
          act( AT_MAGIC, "$n appears in a puff of ethereal smoke!", d->character, nullptr, nullptr, TO_ROOM );
          d->connected = CON_PLAYING;
 
-         d->character->pcdata->lasthost = d->host;
+         d->character->pcdata->lasthost = d->hostname;
 
          if( d->can_compress )
          {

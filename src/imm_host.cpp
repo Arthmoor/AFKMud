@@ -344,8 +344,8 @@ bool check_immortal_domain( char_data * ch, const string & lhost )
          suffix = true;
       }
 
-      if( ( prefix && suffix && !str_infix( ch->desc->host, chost ) )
-          || ( prefix && !str_suffix( chost, ch->desc->host.c_str(  ) ) ) || ( suffix && !str_prefix( chost, ch->desc->host ) ) || ( !str_cmp( chost, ch->desc->host ) ) )
+      if( ( prefix && suffix && !str_infix( ch->desc->ipaddress, chost ) )
+          || ( prefix && !str_suffix( chost, ch->desc->ipaddress.c_str(  ) ) ) || ( suffix && !str_prefix( chost, ch->desc->ipaddress ) ) || ( !str_cmp( chost, ch->desc->ipaddress ) ) )
       {
          log_printf( "&C&GImmotal_Host: %s's host authorized.", ch->name );
          return true;

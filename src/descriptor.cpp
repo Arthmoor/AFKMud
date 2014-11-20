@@ -222,7 +222,8 @@ descriptor_data::~descriptor_data(  )
 descriptor_data::descriptor_data(  )
 {
    init_memory( &snoop_by, &disconnect, sizeof( disconnect ) );
-   host.clear(  );
+   hostname.clear(  );
+   ipaddress.clear( );
    outbuf.clear(  );
    pagebuf.clear(  );
    incomm.clear(  );
@@ -752,7 +753,7 @@ bool descriptor_data::read(  )
    iStart = strlen( this->inbuf );
    if( iStart >= sizeof( this->inbuf ) - 10 )
    {
-      log_printf( "%s input overflow!", this->host.c_str(  ) );
+      log_printf( "%s input overflow!", this->hostname.c_str(  ) );
       this->write( "\r\n*** PUT A LID ON IT!!! ***\r\n" );
       return false;
    }
@@ -781,7 +782,7 @@ bool descriptor_data::read(  )
       else
       {
          log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __func__, this->descriptor );
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( this->character && this->character->name ) ? this->character->name : this->host.c_str(  ) );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( this->character && this->character->name ) ? this->character->name : this->hostname.c_str(  ) );
          perror( __func__ );
          return false;
       }
@@ -1561,8 +1562,8 @@ void descriptor_data::process_dns(  )
 
    if( address[0] != '\0' )
    {
-      add_dns( host, address );  /* Add entry to DNS cache */
-      host = address;
+      add_dns( hostname, address );  /* Add entry to DNS cache */
+      hostname = address;
       if( character && character->pcdata )
          character->pcdata->lasthost = address;
    }
@@ -1730,17 +1731,18 @@ void new_descriptor( int new_desc )
    dnew->descriptor = desc;
    dnew->client_port = ntohs( sock.sin_port );
 
-   dnew->host = inet_ntoa( sock.sin_addr );
+   dnew->ipaddress = inet_ntoa( sock.sin_addr );
+   dnew->hostname = dnew->ipaddress;
 
 #if !defined(WIN32)
    if( !sysdata->NO_NAME_RESOLVING )
    {
-      string buf = in_dns_cache( dnew->host );
+      string buf = in_dns_cache( dnew->ipaddress );
 
       if( buf.empty(  ) )
          dnew->resolve_dns( sock.sin_addr.s_addr );
       else
-         dnew->host = buf;
+         dnew->hostname = buf;
    }
 #endif
 
@@ -2418,7 +2420,7 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
             mprog_login_trigger( ch );
 
             act( AT_ACTION, "$n has reconnected.", ch, nullptr, nullptr, TO_CANSEE );
-            log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name, host.c_str(  ) );
+            log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name, hostname.c_str(  ) );
             connected = CON_PLAYING;
             check_auth_state( ch ); /* Link dead support -- Rantic */
             show_status( ch );
@@ -2479,7 +2481,7 @@ short descriptor_data::check_playing( const string & name, bool kick )
          mprog_login_trigger( ch );
 
          act( AT_ACTION, "$n has reconnected, kicking off old link.", ch, nullptr, nullptr, TO_CANSEE );
-         log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name, host.c_str(  ) );
+         log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name, hostname.c_str(  ) );
          connected = cstate;
          check_auth_state( ch ); /* Link dead support -- Rantic */
          show_status( ch );
@@ -2574,7 +2576,7 @@ void char_to_game( char_data * ch )
       scan_rares( ch );
    ch->pcdata->daysidle = 0;
 
-   ch->pcdata->lasthost = ch->desc->host;
+   ch->pcdata->lasthost = ch->desc->hostname;
 
    sale_count( ch ); /* New auction system - Samson 6-24-99 */
 
@@ -2716,7 +2718,7 @@ void descriptor_data::nanny( string & argument )
          {
             send_mssp_data( this );
             // Uncomment below if you want to know when an MSSP request occurs
-            //log_printf( "IP: %s requested MSSP data!", d->host );
+            //log_printf( "IP: %s requested MSSP data!", d->ipaddress );
             close_socket( this, false );
             return;
          }
@@ -2794,12 +2796,12 @@ void descriptor_data::nanny( string & argument )
             return;
          }
 
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Incoming connection: %s, port %d.", host.c_str(  ), client_port );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Incoming connection: %s, port %d.", hostname.c_str(  ), client_port );
 
          fOld = load_char_obj( this, argument, true, false );
          if( !character )
          {
-            log_printf( "Bad player file %s@%s.", argument.c_str(  ), host.c_str(  ) );
+            log_printf( "Bad player file %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
             buffer_printf( "Your playerfile is corrupt...Please notify %s\r\n", sysdata->admin_email.c_str(  ) );
             close_socket( this, false );
             return;
@@ -2817,7 +2819,7 @@ void descriptor_data::nanny( string & argument )
 
          if( ch->has_pcflag( PCFLAG_DENY ) )
          {
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Denying access to %s@%s.", argument.c_str(  ), host.c_str(  ) );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Denying access to %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
             if( newstate != 0 )
             {
                write_to_buffer( "That name is already taken.  Please choose another: " );
@@ -2834,7 +2836,7 @@ void descriptor_data::nanny( string & argument )
          /*
           * Make sure the immortal host is from the correct place. Shaddai 
           */
-         if( ch->is_immortal(  ) && sysdata->check_imm_host && !check_immortal_domain( ch, host ) )
+         if( ch->is_immortal(  ) && sysdata->check_imm_host && !check_immortal_domain( ch, ipaddress ) )
          {
             write_to_buffer( "Invalid host profile. This event has been logged for inspection.\r\n" );
             close_socket( this, false );
@@ -2957,7 +2959,7 @@ void descriptor_data::nanny( string & argument )
          fOld = load_char_obj( this, buf, false, false );
          if( !fOld )
          {
-            log_printf( "Bad player file %s@%s.", argument.c_str(  ), host.c_str(  ) );
+            log_printf( "Bad player file %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
             buffer_printf( "Your playerfile is corrupt...Please notify %s\r\n", sysdata->admin_email.c_str(  ) );
             close_socket( this, false );
             return;
@@ -2967,7 +2969,7 @@ void descriptor_data::nanny( string & argument )
          if( ch->position > POS_SITTING && ch->position < POS_STANDING )
             ch->position = POS_STANDING;
 
-         log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, host.c_str(  ) );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, hostname.c_str(  ) );
          show_title(  );
          break;
 

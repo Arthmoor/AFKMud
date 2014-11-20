@@ -2471,8 +2471,10 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
    d->character = ch;
    ch->desc = d;
    ch->pcdata->filename = STRALLOC( name.c_str(  ) );
-   if( !d->host.empty() )
-      ch->pcdata->lasthost = d->host;
+   if( !d->hostname.empty() )
+      ch->pcdata->lasthost = d->hostname;
+   else
+      ch->pcdata->lasthost = d->ipaddress;
    ch->style = STYLE_FIGHTING;
    ch->mental_state = -10;
    ch->pcdata->prompt = STRALLOC( default_prompt( ch ) );

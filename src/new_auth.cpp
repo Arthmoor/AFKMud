@@ -778,7 +778,7 @@ CMDF( do_mpapplyb )
 
    if( NOT_AUTHED( victim ) )
    {
-      log_printf_plus( LOG_AUTH, level, "%s [%s] New player entering the game.\r\n", victim->name, victim->desc->host.c_str(  ) );
+      log_printf_plus( LOG_AUTH, level, "%s [%s] New player entering the game.\r\n", victim->name, victim->desc->hostname.c_str(  ) );
       victim->printf( "\r\nYou are now entering the game...\r\n"
                       "However, your character has not been authorized yet and can not\r\n"
                       "advance past level 5 until then. Your character will be saved,\r\n" "but not allowed to fully indulge in %s.\r\n", sysdata->mud_name.c_str(  ) );

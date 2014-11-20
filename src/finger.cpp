@@ -326,7 +326,8 @@ CMDF( do_finger )
          ch->print( "&wImmortal Information\r\n" );
          ch->print( "--------------------\r\n" );
          ch->printf( "&wRealm         : &G%s\r\n", victim->pcdata->realm_name.c_str() );
-         ch->printf( "&wIP Info       : &G%s\r\n", victim->pcdata->lasthost.c_str(  ) );
+         ch->printf( "&wHost Info     : &G%s\r\n", victim->pcdata->lasthost.c_str(  ) );
+         ch->printf( "&wIP Info       : &G%s\r\n", victim->desc ? victim->desc->ipaddress.c_str() : "Unknown" );
          ch->printf( "&wPrev IP Info  : &G%s\r\n", victim->pcdata->prevhost.c_str(  ) );
          ch->printf( "&wTime played   : &G%ld hours\r\n", victim->time_played( ) );
          ch->printf( "&wAuthorized by : &G%s\r\n",
