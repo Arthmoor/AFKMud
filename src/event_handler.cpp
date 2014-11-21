@@ -57,6 +57,7 @@ void check_pfiles( time_t );
 void check_boards(  );
 void prune_dns(  );
 void web_who(  );
+void check_ban_expirations( );
 
 int reboot_counter;
 
@@ -626,6 +627,12 @@ void ev_webwho_refresh( void *data )
 {
    web_who(  );
    add_event( sysdata->webwho, ev_webwho_refresh, nullptr );
+}
+
+void ev_ban_check( void *data )
+{
+   check_ban_expirations( );
+   add_event( 3600, ev_ban_check, nullptr );
 }
 
 #if !defined(__CYGWIN__) && defined(SQL)

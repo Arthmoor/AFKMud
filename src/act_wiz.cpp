@@ -112,7 +112,7 @@ char_data *get_wizvictim( char_data * ch, const string & argument, bool nonpc )
       return nullptr;
    }
 
-   if( victim->level > ch->level )
+   if( victim->level >= ch->level )
    {
       ch->printf( "You do not have sufficient access to affect %s.\r\n", victim->name );
       return nullptr;

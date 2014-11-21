@@ -55,6 +55,7 @@
 #include <cerrno>
 #include "mud.h"
 #include "auction.h"
+#include "ban.h"
 #include "channels.h"
 #include "commands.h"
 #include "connhist.h"
@@ -1746,17 +1747,15 @@ void new_descriptor( int new_desc )
    }
 #endif
 
-/* FIXME: Write a new ban module so this code has meaning again.
-   if( dnew->check_total_bans(  ) )
+   // Ban notice is given in the ban.cpp file
+   if( is_banned( dnew ) )
    {
-      dnew->write( "Your site has been banned from this Mud.\r\n" );
       deleteptr( dnew );
       set_alarm( 0 );
       return;
    }
-*/
 
-   if( dlist.size(  ) < 1 )
+   if( dlist.empty(  ) )
       log_string( "Waking up autonomous update handlers." );
 
    dlist.push_back( dnew );
@@ -2808,14 +2807,12 @@ void descriptor_data::nanny( string & argument )
          }
          ch = character;
 
-/* FIXME: Write new ban code so this has meaning again.
-         if( check_bans( ch ) )
+         // Ban notice is given in the ban.cpp file
+         if( is_banned( this ) )
          {
-            write_to_buffer( "Your site has been banned from this Mud.\r\n" );
             close_socket( this, false );
             return;
          }
-*/
 
          if( ch->has_pcflag( PCFLAG_DENY ) )
          {

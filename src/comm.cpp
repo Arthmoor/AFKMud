@@ -771,12 +771,12 @@ void process_input( void )
       }
 #endif
 
-      // True if do_disconnect is called. Hasta la vista baby!
+      // True if the disconnect flag is set. Hasta la vista baby!
       if( d->disconnect )
       {
-            d->outbuf.clear(  );
-            close_socket( d, true );
-            continue;
+         d->outbuf.clear(  );
+         close_socket( d, true );
+         continue;
       }
 
       ++d->idle;  /* make it so a descriptor can idle out */
@@ -889,12 +889,12 @@ void process_output( void )
       descriptor_data *d = *ds;
       ++ds;
 
-      // True if do_disconnect is called. Hasta la vista baby!
+      // True if the disconnect flag is set. Hasta la vista baby!
       if( d->disconnect )
       {
-            d->outbuf.clear(  );
-            close_socket( d, true );
-            continue;
+         d->outbuf.clear(  );
+         close_socket( d, true );
+         continue;
       }
 
       if( ( d->fcommand || d->outbuf.length(  ) > 0 || d->pagebuf.length(  ) > 0 ) && FD_ISSET( d->descriptor, &out_set ) )
@@ -932,7 +932,7 @@ void game_loop( void )
    {
       accept_new( control );
 
-      // Primative, yet effective infinite loop catcher. At least that's the idea.
+      // Primitive, yet effective infinite loop catcher. At least that's the idea.
       set_alarm( 30 );
       alarm_section = "game_loop";
 

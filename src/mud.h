@@ -1179,6 +1179,7 @@ exit_data *find_door( char_data *, const string &, bool );
 ch_ret move_char( char_data *, exit_data *, int, int, bool );
 
 /* act_wiz.c */
+char_data *get_wizvictim( char_data *, const string &, bool );
 void echo_to_all( const string &, short );
 void echo_all_printf( short, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 

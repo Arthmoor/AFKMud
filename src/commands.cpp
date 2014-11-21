@@ -70,7 +70,6 @@ void shellcommands( char_data *, short );
 bool imc_command_hook( char_data *, string &, string & );
 #endif
 bool local_channel_hook( char_data *, const string &, string & );
-char_data *get_wizvictim( char_data *, const string &, bool );
 char *extract_area_names( char_data * );
 bool can_use_mprog( char_data * );
 bool mprog_command_trigger( char_data *, const string & );
