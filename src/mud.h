@@ -1295,6 +1295,7 @@ void strip_spaces( string & );
 const char *strip_cr( const char * );
 string strip_cr( const string & );
 const char *strip_crlf( const char * );
+void strip_whitespace( string & str );
 bool is_number( const string & );
 bool is_number( const char * );
 int number_argument( const string &, string & );
@@ -1318,6 +1319,8 @@ ch_ret damage( char_data *, char_data *, double, int );
 long exp_level( int );
 bool nifty_is_name_prefix( string, string );
 bool nifty_is_name_prefix( char *, char * );
+bool is_name2_prefix( const string &, string );
+bool is_name2_prefix( const char *, char * );
 obj_data *get_obj_list( char_data *, const string &, list < obj_data * > );
 ch_ret check_for_trap( char_data *, obj_data *, int );
 ch_ret spring_trap( char_data *, obj_data * );
@@ -1461,7 +1464,7 @@ template < class N > extra_descr_data * get_extra_descr( const string & name, N 
    {
       extra_descr_data *ed = *ied;
 
-      if( ed->keyword.find( name ) != string::npos )
+      if( is_name2_prefix( name, ed->keyword ) )
       {
          if( !ed->desc.empty(  ) )
             return ed;

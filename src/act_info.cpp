@@ -1468,6 +1468,7 @@ CMDF( do_look )
    for( cnt = 0, iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
       obj = *iobj;
+
       if( ch->can_see_obj( obj, false ) )
       {
          ed = get_extra_descr( arg, obj );
@@ -1503,6 +1504,7 @@ CMDF( do_look )
                ch->print( "You see nothing special.\r\n" );
             else
                ch->print( ed->desc );
+
             if( obj->item_type == ITEM_PUDDLE )
             {
                liquid_data *liq = get_liq_vnum( obj->value[2] );
@@ -1519,6 +1521,7 @@ CMDF( do_look )
    for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
       obj = *iobj;
+
       if( ch->can_see_obj( obj, false ) )
       {
          if( ( ed = get_extra_descr( arg, obj ) ) )
@@ -1614,8 +1617,6 @@ CMDF( do_look )
             /*
              * Change by Narn, Sept 96 to allow characters who don't have the
              * scry spell to benefit from objects that are affected by scry.
-             */
-            /*
              * Except that I agree with DOTD logic - scrying doesn't work like this.
              * * Samson - 6-20-99
              */

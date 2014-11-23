@@ -3043,7 +3043,7 @@ void descriptor_data::nanny( string & argument )
 
          write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game." );
          write_to_buffer( "\r\nWhat is your sex? " );
-         write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodyte ?" );
+         write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodite ?" );
          connected = CON_GET_NEW_SEX;
          break;
 
@@ -3063,7 +3063,7 @@ void descriptor_data::nanny( string & argument )
          write_to_buffer( (const char*)echo_on_str );
          write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game." );
          write_to_buffer( "\r\nWhat is your sex? " );
-         write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodyte ?" );
+         write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodite ?" );
          connected = CON_GET_NEW_SEX;
          break;
 

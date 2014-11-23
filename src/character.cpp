@@ -789,7 +789,7 @@ char_data *char_data::get_char_world( const string & argument )
       vnum = -1;
 
    /*
-    * check the room for an exact match 
+    * check the room for an exact match [for certain values of exact in the case of mobs]
     */
    int count = 0;
    list < char_data * >::iterator ich;
@@ -797,28 +797,39 @@ char_data *char_data::get_char_world( const string & argument )
    {
       char_data *wch = *ich;
 
-      if( this->can_see( wch, true ) && !is_ignoring( wch, this ) && ( hasname( wch->name, arg ) || ( wch->isnpc(  ) && vnum == wch->pIndexData->vnum ) ) )
+      if( !wch->isnpc() )
       {
-         if( number == 0 && !wch->isnpc(  ) )
+         if( !str_cmp( wch->name, arg ) && this->can_see( wch, true ) && !is_ignoring( wch, this ) )
             return wch;
-         else if( ++count == number )
+      }
+      else if( ( is_name2_prefix( arg, wch->name ) && this->can_see( wch, true ) ) || vnum == wch->pIndexData->vnum )
+      {
+         if( number == count )
             return wch;
+
+         ++count;
       }
    }
 
    /*
-    * check the world for an exact match 
+    * check the world for an exact match [for certain values of exact in the case of mobs]
     */
+   count = 0;
    for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
       char_data *wch = *ich;
 
-      if( this->can_see( wch, true ) && !is_ignoring( wch, this ) && ( hasname( wch->name, arg ) || ( wch->isnpc(  ) && vnum == wch->pIndexData->vnum ) ) )
+      if( !wch->isnpc() )
       {
-         if( number == 0 && !wch->isnpc(  ) )
+         if( !str_cmp( wch->name, arg ) && this->can_see( wch, true ) && !is_ignoring( wch, this ) )
             return wch;
-         else if( ++count == number )
+      }
+      else if( ( is_name2_prefix( arg, wch->name ) && this->can_see( wch, true ) ) || vnum == wch->pIndexData->vnum )
+      {
+         if( number == count )
             return wch;
+
+         ++count;
       }
    }
 

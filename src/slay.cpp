@@ -215,7 +215,7 @@ CMDF( do_slay )
    {
       ch->pager( "&gSyntax: slay <victim> [type]\r\n" );
       ch->pager( "Where type is one of the following...\r\n\r\n" );
-      ch->pager( "&YSlay                 &ROwner\r\n" );
+      ch->pager( "&GSlay                      &ROwner\r\n" );
       ch->pager( "&g-------------------------+---------------\r\n" );
 
       list < slay_data * >::iterator sl;
@@ -223,7 +223,7 @@ CMDF( do_slay )
       {
          slay_data *slay = *sl;
 
-         ch->pagerf( "&G%-14s &g%13s\r\n", slay->get_type(  ).c_str(  ), slay->get_owner(  ).c_str(  ) );
+         ch->pagerf( "&G%-27s &g%s\r\n", slay->get_type(  ).c_str(  ), slay->get_owner(  ).c_str(  ) );
       }
       ch->print( "\r\n&gTyping just 'slay <player>' will work too...\r\n" );
       return;

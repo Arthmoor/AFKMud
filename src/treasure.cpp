@@ -353,7 +353,7 @@ void load_runewords( void )
       value = buf;
 
       strip_lspace( key );
-      strip_lspace( value );
+      strip_whitespace( value );
 
       if( key.empty(  ) )
          continue;
@@ -458,8 +458,7 @@ void load_runes( void )
       value = buf;
 
       strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
+      strip_whitespace( value );
 
       if( key.empty(  ) )
          continue;
@@ -904,7 +903,8 @@ CMDF( do_showrunes )
    }
 
    ch->pager( "Currently created runes:\r\n\r\n" );
-   ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6.6s %-15.15s %-6.6s\r\n", "Rune", "Rarity", "Stat1", "Mod1", "Stat2", "Mod2" );
+   ch->pager( " Rune    Rarity        Stat1       Mod1      Stat2       Mod2\r\n" );
+   ch->pager( "------+----------+---------------+------+--------------+------\r\n" );
 
    if( argument.empty(  ) )
    {
@@ -913,7 +913,7 @@ CMDF( do_showrunes )
       {
          rune_data *rune = *irune;
 
-         ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %-6d\r\n", rune->get_cname(  ), rarity[rune->get_rarity(  )],
+         ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %d\r\n", rune->get_cname(  ), rarity[rune->get_rarity(  )],
                      a_types[rune->stat1[0]], rune->stat1[1], a_types[rune->stat2[0]], rune->stat2[1] );
          ++total;
       }
@@ -2560,27 +2560,27 @@ CMDF( do_socket )
 
       if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
       {
-         stralloc_printf( &item->socket[0], "%s", capitalize( arg ).c_str(  ) );
+         stralloc_printf( &item->socket[0], "%s", rune->short_descr );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
 
       if( !item->socket[1] || !str_cmp( item->socket[1], "None" ) )
       {
-         stralloc_printf( &item->socket[1], "%s", capitalize( arg ).c_str(  ) );
+         stralloc_printf( &item->socket[1], "%s", rune->short_descr );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
 
       if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
       {
-         stralloc_printf( &item->socket[2], "%s", capitalize( arg ).c_str(  ) );
+         stralloc_printf( &item->socket[2], "%s", rune->short_descr );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
@@ -2599,27 +2599,27 @@ CMDF( do_socket )
 
       if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
       {
-         stralloc_printf( &item->socket[0], "%s", capitalize( arg ).c_str(  ) );
+         stralloc_printf( &item->socket[0], "%s", rune->short_descr );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
 
       if( !item->socket[1] || !str_cmp( item->socket[1], "None" ) )
       {
-         stralloc_printf( &item->socket[1], "%s", capitalize( arg ).c_str(  ) );
+         stralloc_printf( &item->socket[1], "%s", rune->short_descr );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
 
       if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
       {
-         stralloc_printf( &item->socket[2], "%s", capitalize( arg ).c_str(  ) );
+         stralloc_printf( &item->socket[2], "%s", rune->short_descr );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, capitalize( arg ).c_str(  ) );
+         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }

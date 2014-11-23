@@ -69,7 +69,7 @@ const char *ex_pfire[] = { "lava", "hotair" };
 /* Stuff that isn't from stock Smaug */
 
 const char *npc_sex[SEX_MAX] = {
-   "neuter", "male", "female", "hermaphrodyte"
+   "neuter", "male", "female", "hermaphrodite"
 };
 
 const char *npc_position[POS_MAX] = {

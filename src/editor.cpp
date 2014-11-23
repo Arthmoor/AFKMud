@@ -174,13 +174,16 @@ char *str_dup( const char *str )
 }
 #endif
 
-/* Does the list have the member in it? */
+/* Does the list have the member in it?
+ *
+ * Holy Christ this was the DUMBEST IDEA EVER.
+ * "not a" -> Log: Samson: not a -> You can't send tells! NOTELL applied to Samson.
+ * So... yeah. U dun goof'd.
+ * Fixing it by turning this into a wrapper for is_name2_prefix cause there's a mountain of code using this.
+ */
 bool hasname( const string & list, const string & member )
 {
-   if( list.empty(  ) )
-      return false;
-
-   if( list.find( member ) != string::npos )
+   if( is_name2_prefix( member, list ) )
       return true;
 
    return false;
@@ -618,6 +621,13 @@ const char *strip_crlf( const char *str )
          newstr[j++] = str[i];
    newstr[j] = '\0';
    return newstr;
+}
+
+// Strips off any leading and trailing spaces, plus any stray tabs, carriage returns, or newlines.
+void strip_whitespace( string & str )
+{
+   str = strip_crlf( str );
+   strip_spaces( str );
 }
 
 /* invert_string( original, inverted );

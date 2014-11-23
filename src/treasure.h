@@ -109,7 +109,7 @@ class rune_data
    {
       _name = name;
    }
-   string get_name(  )
+   const string& get_name(  )
    {
       return _name;
    }

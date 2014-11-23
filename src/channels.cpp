@@ -476,11 +476,12 @@ CMDF( do_listen )
 
       if( channel && channel->flags.test( CHAN_ALWAYSON ) )
       {
-         ch->printf( "&YYou cannot turn the &W%s&Y channel off.\r\n", argument.c_str() );
+         ch->printf( "&YYou cannot turn the &W%s&Y channel off.\r\n", channel->name.c_str() );
          return;
       }
-      removename( ch->pcdata->chan_listen, argument );
-      ch->printf( "&YYou no longer listen to &W%s\r\n", argument.c_str(  ) );
+
+      removename( ch->pcdata->chan_listen, channel->name );
+      ch->printf( "&YYou no longer listen to &W%s\r\n", channel->name.c_str(  ) );
    }
    else
    {

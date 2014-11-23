@@ -799,7 +799,7 @@ void medit_parse( descriptor_data * d, string & arg )
          victim->sex = URANGE( 0, atoi( arg.c_str(  ) ), SEX_MAX - 1 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->sex = victim->sex;
-         olc_log( d, "Changed sex to %s", victim->sex == SEX_MALE ? "Male" : victim->sex == SEX_FEMALE ? "Female" : victim->sex == SEX_NEUTRAL ? "Neutral" : "Hermaphrodyte" );
+         olc_log( d, "Changed sex to %s", victim->sex == SEX_MALE ? "Male" : victim->sex == SEX_FEMALE ? "Female" : victim->sex == SEX_NEUTRAL ? "Neutral" : "Hermaphrodite" );
          break;
 
       case MEDIT_HITROLL:

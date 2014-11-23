@@ -1280,6 +1280,8 @@ const string output_person( char_data * ch, char_data * player )
 
    outbuf << " " << ch->color_str( AT_WHO4 ) << player->name << player->pcdata->title << clan_name.str(  );
 
+   outbuf << endl;
+
    return outbuf.str(  );
 }
 

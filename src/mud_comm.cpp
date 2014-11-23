@@ -289,8 +289,6 @@ CMDF( do_mpmset )
 
    /*
     * Modified to allow mudprogs to set PC Class/race during new creation process 
-    */
-   /*
     * Samson - 7-30-98 
     */
    if( !str_cmp( arg2, "Class" ) )
@@ -298,16 +296,23 @@ CMDF( do_mpmset )
       value = get_npc_class( arg3 );
       if( value < 0 )
          value = atoi( arg3.c_str(  ) );
+
       if( !victim->isnpc(  ) )
       {
-         if( value < 0 || value >= MAX_CLASS )
+         char tbuf[MIL];
+
+         if( value < 0 || value >= MAX_PC_CLASS )
          {
             progbugf( ch, "%s", "MpMset: Attempting to set invalid player Class!" );
             return;
          }
          victim->Class = value;
+
+         snprintf( tbuf, MIL, "the %s", title_table[value][victim->level][victim->sex] );
+         victim->set_title( tbuf );
          return;
       }
+
       if( victim->isnpc(  ) )
       {
          if( value < 0 || value >= MAX_NPC_CLASS )
@@ -3906,7 +3911,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    race = race_table[ch->race];
 
    /*
-    * Set to zero as default values - Samson 9-5-98 
+    * Set to zero as default values - Samson 9-5-98
     */
    ch->set_aflags( race->affected );
    ch->set_attacks( race->attacks );
@@ -4011,6 +4016,8 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    }
    ch->music( "creation.mid", 100, false );
    addname( ch->pcdata->chan_listen, "chat" );
+
+   ch->set_color( AT_PLAIN );
 }
 
 /* Alignment setting for Class during creation - Samson 4-17-98 */

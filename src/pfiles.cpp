@@ -593,6 +593,10 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
             KEY( "Deity", deity, fread_string( fp ) );
             break;
 
+         case 'I':
+            KEY( "ImmRealm", realm, fread_string( fp ) );
+            break;
+
          case 'N':
             KEY( "Name", name, fread_string( fp ) );
             break;
@@ -603,10 +607,6 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
                flag_set( fp, pact, pc_flags );
                break;
             }
-            break;
-
-         case 'R':
-            KEY( "Realm", realm, fread_string( fp ) );
             break;
 
          case 'S':
