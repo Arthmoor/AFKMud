@@ -1271,7 +1271,14 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
 
    // No $ token in the string, return now with the contents as is.
    if( format.find( '$', 0 ) == string::npos )
-      return format;
+   {
+      buf = format;
+
+      buf.append( "\r\n" );
+      if( !DONT_UPPER )
+         buf[0] = UPPER( buf[0] );
+      return buf;
+   }
 
    string::const_iterator ptr = format.begin(  );
    while( ptr != format.end(  ) )

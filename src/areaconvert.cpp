@@ -2202,8 +2202,8 @@ void load_stock_area_file( const string & filename, bool manual )
          }
          tarea->version = area_version;
       }
-      else if( !str_cmp( word, "SPELLLIMIT" ) )
-         fread_number( fpArea ); /* Skip, AFKMud doesn't have this */
+      else if( !str_cmp( word, "SPELLLIMIT" ) )  /* Skip, AFKMud doesn't have this */
+         fread_number( fpArea );
       else if( !str_cmp( word, "DERIVATIVES" ) )   /* Chronicles tag, safe to skip */
          fread_to_eol( fpArea );
       else if( !str_cmp( word, "NAMEFORMAT" ) ) /* Chronicles tag, safe to skip */
@@ -2338,8 +2338,10 @@ CMDF( do_areaconvert )
             tarea->reset(  );
             tarea->nplayer = tmp;
          }
+
          if( tarea->version < 2 || tarea->version == 1000 )
          {
+            tarea->install_date = current_time;
             ch->print( "&GWriting area in AFKMud format...\r\n" );
             tarea->fold( tarea->filename, false );
             ch->print( "&YArea conversion complete.\r\n" );
