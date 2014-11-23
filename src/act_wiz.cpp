@@ -112,7 +112,7 @@ char_data *get_wizvictim( char_data * ch, const string & argument, bool nonpc )
       return nullptr;
    }
 
-   if( victim->level >= ch->level )
+   if( victim->level >= ch->level && victim != ch )
    {
       ch->printf( "You do not have sufficient access to affect %s.\r\n", victim->name );
       return nullptr;
@@ -1073,7 +1073,7 @@ CMDF( do_ostat )
    {
       list < extra_descr_data * >::iterator ex;
 
-      ch->print( "|Primary description keywords:   '" );
+      ch->print( "|Primary description keywords:   " );
       for( ex = obj->pIndexData->extradesc.begin(  ); ex != obj->pIndexData->extradesc.end(  ); ++ex )
       {
          extra_descr_data *ed = *ex;
@@ -1081,14 +1081,13 @@ CMDF( do_ostat )
          ch->print( ed->keyword );
          ch->print( " " );
       }
-      ch->print( "'.\r\n" );
    }
 
    if( !obj->extradesc.empty(  ) )
    {
       list < extra_descr_data * >::iterator ex;
 
-      ch->print( "|Secondary description keywords: '" );
+      ch->print( "|Secondary description keywords: " );
       for( ex = obj->extradesc.begin(  ); ex != obj->extradesc.end(  ); ++ex )
       {
          extra_descr_data *ed = *ex;
@@ -1096,7 +1095,6 @@ CMDF( do_ostat )
          ch->print( ed->keyword );
          ch->print( " " );
       }
-      ch->print( "'.\r\n" );
    }
 
    if( obj->pIndexData->progtypes.none(  ) )
@@ -1254,10 +1252,10 @@ CMDF( do_mstat )
          snprintf( lbuf + strlen( lbuf ), 256 - strlen( lbuf ), "|Hunger: &G%10d &w", victim->pcdata->condition[COND_FULL] );
       ch->printf( "|LCK   : &G%10d &w%s|Drunk : &G%d &w\r\n", victim->get_curr_lck(  ), lbuf, victim->pcdata->condition[COND_DRUNK] );
 
-      ch->printf( "|Class :&G%11s &w|Mental: &G%10d &w|#Attks: &G%10f&w\r\n", capitalize( victim->get_class(  ) ), victim->mental_state, victim->numattacks );
+      ch->printf( "|Class :&G%11s &w|Mental: &G%10d &w|#Attks: &G%10f&w |Barehand: &G%d&wd&G%d&w+&G%d&w\r\n",
+         capitalize( victim->get_class(  ) ), victim->mental_state, victim->numattacks, victim->barenumdie, victim->baresizedie, victim->GET_DAMROLL(  ) );
 
-      ch->printf( "|Race  : &G%10s &w|Barehand: &G%d&wd&G%d&w+&G%d&w\r\n",
-                  capitalize( victim->get_race(  ) ), victim->barenumdie, victim->baresizedie, victim->GET_DAMROLL(  ) );
+      ch->printf( "|Race  : &G%10s &w|Title: &G%s&w\r\n", capitalize( victim->get_race(  ) ), ch->pcdata->title );
 
       ch->printf( "|Deity :&G%11s &w|Authed:&G%11s &w|SF    :&G%11d &w|PVer  : &G%d&w\r\n",
                   ( victim->pcdata->deity == nullptr ) ? "(NONE)" : victim->pcdata->deity->name.c_str(  ),
@@ -6515,10 +6513,21 @@ bool load_class_file( const char *fname )
                }
                else if( tlev < MAX_LEVEL + 1 )
                {
-                  title_table[cl][tlev][SEX_NEUTRAL] = fread_string( fp );
-                  title_table[cl][tlev][SEX_MALE] = fread_string( fp );
-                  title_table[cl][tlev][SEX_FEMALE] = fread_string( fp );
-                  title_table[cl][tlev][SEX_HERMAPHRODYTE] = fread_string( fp );
+                  if( file_ver < 2 )
+                  {
+                     title_table[cl][tlev][SEX_MALE] = fread_string( fp );
+                     title_table[cl][tlev][SEX_FEMALE] = fread_string( fp );
+
+                     title_table[cl][tlev][SEX_NEUTRAL] = STRALLOC( title_table[cl][tlev][SEX_MALE] );
+                     title_table[cl][tlev][SEX_HERMAPHRODYTE] = STRALLOC( title_table[cl][tlev][SEX_FEMALE] );
+                  }
+                  else
+                  {
+                     title_table[cl][tlev][SEX_NEUTRAL] = fread_string( fp );
+                     title_table[cl][tlev][SEX_MALE] = fread_string( fp );
+                     title_table[cl][tlev][SEX_FEMALE] = fread_string( fp );
+                     title_table[cl][tlev][SEX_HERMAPHRODYTE] = fread_string( fp );
+                  }
 
                   ++tlev;
                }
@@ -6728,7 +6737,7 @@ CMDF( do_showclass )
       for( x = low; x <= hi; ++x )
       {
          ch->pagerf( "&wLevel: &W%d     &wExperience required: &W%ld\r\n", x, exp_level( x ) );
-         ch->pagerf( "&wNeutral: &W%-20s &wMale: &W%-20s &wFemale: &W%-20s &wHermaphrodyte: &W%s\r\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
+         ch->pagerf( "&wNeutral: &W%-20s &wMale: &W%-20s &wFemale: &W%-20s &wHermaphrodite: &W%s\r\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
          cnt = 0;
          for( y = 0; y < num_skills; ++y )
             if( skill_table[y]->skill_level[cl] == x )

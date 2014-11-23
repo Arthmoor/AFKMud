@@ -29,7 +29,7 @@
 #ifndef __RACE_CLASS_H__
 #define __RACE_CLASS_H__
 
-const int CLASSFILEVER = 1;
+const int CLASSFILEVER = 2;
 const int RACEFILEVER = 1;
 
 /* race dedicated stuff */
