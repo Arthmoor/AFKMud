@@ -1211,6 +1211,7 @@ void room_index::reset(  )
                bug( "%s: %s: 'M': bad mob vnum %d.", __func__, filename, pReset->arg1 );
                break;
             }
+
             if( !( pRoomIndex = get_room_index( pReset->arg3 ) ) )
             {
                bug( "%s: %s: 'M': bad room vnum %d.", __func__, filename, pReset->arg3 );
@@ -1221,6 +1222,7 @@ void room_index::reset(  )
                mob = nullptr;
                break;
             }
+
             mob = pMobIndex->create_mobile(  );
             if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
             {
@@ -1370,8 +1372,17 @@ void room_index::reset(  )
 
                      case 'G':
                      case 'E':
-                        if( number_percent(  ) > tReset->arg4 )
-                           break;
+                        // BugFix: G Resets don't have an arg4, so they were all broken.
+                        if( tReset->command == 'G' )
+                        {
+                           if( number_percent(  ) > tReset->arg3 )
+                              break;
+                        }
+                        else
+                        {
+                           if( number_percent(  ) > tReset->arg4 )
+                              break;
+                        }
 
                         if( !( pObjIndex = get_obj_index( tReset->arg1 ) ) )
                         {
