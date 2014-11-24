@@ -42,7 +42,7 @@ extern int top_exit;
 extern int top_reset;
 extern int top_affect;
 
-reset_data *make_reset( char, int, int, int, short, short, short, short, short, short, short, short );
+reset_data *make_reset( char, int, int, int, int, int, int, int, int, int, int, int );
 void update_room_reset( char_data *, bool );
 void delete_reset( reset_data * );
 void name_generator( string & );
@@ -1052,8 +1052,7 @@ obj_data *make_trap( int charges, int type, int level, int flags, int mindamage,
 /*
  * Add a reset to a room
  */
-reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, short arg4, short arg5, short arg6, short arg7,
-                                   short arg8, short arg9, short arg10, short arg11 )
+reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11 )
 {
    reset_data *pReset;
 
@@ -1851,8 +1850,9 @@ void room_index::load_reset( FILE * fp, bool newformat )
    exit_data *pexit;
    char letter;
    const char *line;
-   int extra, arg1, arg2, arg3;
-   short arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11;
+   // Attention at the keyboard: Don't go setting these back to shorts. Charlana.are will drain your soul!
+   // Cause, ya know, this shit loads vnums all over the place and you'll break stuff. Badly.
+   int extra, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11;
    bool not01 = false;
    int count = 0;
 

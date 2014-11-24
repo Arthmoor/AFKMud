@@ -1255,7 +1255,7 @@ CMDF( do_mstat )
       ch->printf( "|Class :&G%11s &w|Mental: &G%10d &w|#Attks: &G%10f&w |Barehand: &G%d&wd&G%d&w+&G%d&w\r\n",
          capitalize( victim->get_class(  ) ), victim->mental_state, victim->numattacks, victim->barenumdie, victim->baresizedie, victim->GET_DAMROLL(  ) );
 
-      ch->printf( "|Race  : &G%10s &w|Title: &G%s&w\r\n", capitalize( victim->get_race(  ) ), ch->pcdata->title );
+      ch->printf( "|Race  : &G%10s &w|Title : &G%s&w\r\n", capitalize( victim->get_race(  ) ), victim->pcdata->title );
 
       ch->printf( "|Deity :&G%11s &w|Authed:&G%11s &w|SF    :&G%11d &w|PVer  : &G%d&w\r\n",
                   ( victim->pcdata->deity == nullptr ) ? "(NONE)" : victim->pcdata->deity->name.c_str(  ),

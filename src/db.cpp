@@ -2058,6 +2058,8 @@ void boot_db( bool fCopyOver )
       FCLOSE( fpList );
    }
 
+   mudstrlcpy( strArea, "NO FILE", MIL );
+
    log_string( "Loading ships..." );
    load_ships(  );
 
@@ -2081,6 +2083,8 @@ void boot_db( bool fCopyOver )
 
    log_string( "Loading prototype area files..." );
    load_buildlist(  );
+
+   mudstrlcpy( strArea, "NO FILE", MIL );
 
    log_string( "Fixing prototype zone exits..." );
    fix_exits(  );

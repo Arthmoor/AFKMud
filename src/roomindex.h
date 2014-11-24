@@ -43,17 +43,19 @@ class reset_data
 
      list < reset_data * >resets;   // Child resets associated with this reset
    char command;
+   // Attention at the keyboard: Don't go setting these back to shorts. Charlana.are will drain your soul!
+   // Cause, ya know, this shit loads vnums all over the place and you'll break stuff. Badly.
    int arg1;
    int arg2;
    int arg3;
-   short arg4; /* arg4 - arg6 used for overland coordinates */
-   short arg5;
-   short arg6;
-   short arg7;
-   short arg8;
-   short arg9;
-   short arg10;
-   short arg11;
+   int arg4; /* arg4 - arg6 used for overland coordinates */
+   int arg5;
+   int arg6;
+   int arg7;
+   int arg8;
+   int arg9;
+   int arg10;
+   int arg11;
    bool sreset;
 };
 
@@ -112,7 +114,7 @@ class room_index
    bool is_dark( char_data * );
    bool is_private(  );
    void room_affect( affect_data *, bool );
-   reset_data *add_reset( char, int, int, int, short, short, short, short, short, short, short, short );
+   reset_data *add_reset( char, int, int, int, int, int, int, int, int, int, int, int );
    void reset(  );
    void wipe_coord_resets( short, short, short );
    void wipe_resets(  );

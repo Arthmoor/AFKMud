@@ -293,7 +293,7 @@ char *sprint_reset( reset_data * pReset, short &num )
 /*
  * Create a new reset (for online building) - Thoric
  */
-reset_data *make_reset( char letter, int arg1, int arg2, int arg3, short arg4, short arg5, short arg6, short arg7, short arg8, short arg9, short arg10, short arg11 )
+reset_data *make_reset( char letter, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11 )
 {
    reset_data *pReset;
 
