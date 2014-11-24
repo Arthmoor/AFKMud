@@ -1910,12 +1910,12 @@ void room_index::load_reset( FILE * fp, bool newformat )
    if( !newformat )
    {
       if( letter == 'P' || letter == 'T' || letter == 'W' )
-         sscanf( line, "%d %d %d %hd %hd %hd %hd %hd %hd %hd %hd", &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+         sscanf( line, "%d %d %d %d %d %d %d %d %d %d %d", &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
       else
-         sscanf( line, "%d %d %d %d %hd %hd %hd %hd %hd %hd %hd %hd", &extra, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+         sscanf( line, "%d %d %d %d %d %d %d %d %d %d %d %d", &extra, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
    }
    else  // Means this is an AFKMud 2.0 native area.
-      sscanf( line, "%d %d %d %hd %hd %hd %hd %hd %hd %hd %hd", &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+      sscanf( line, "%d %d %d %d %d %d %d %d %d %d %d", &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
    ++count;
 
    /*
