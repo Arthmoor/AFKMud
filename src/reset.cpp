@@ -858,7 +858,7 @@ CMDF( do_reset )
          ch->print( "No such object to hide in this room.\r\n" );
          return;
       }
-      reset_data *tReset = make_reset( 'H', 0, 0, 100, -2, -2, -2, -2, -2, -2, -2, -2 );
+      reset_data *tReset = make_reset( 'H', 100, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2 );
       if( pReset )
          pReset->resets.push_front( tReset );
       else
