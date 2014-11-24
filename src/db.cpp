@@ -916,8 +916,6 @@ void load_buildlist( void )
    struct dirent *dentry;
    char buf[256];
 
-   fBootDb = true;
-
    dp = opendir( BUILD_DIR );
    dentry = readdir( dp );
    while( dentry )
@@ -942,7 +940,6 @@ void load_buildlist( void )
       dentry = readdir( dp );
    }
    closedir( dp );
-   fBootDb = false;
 }
 
 const int SYSFILEVER = 1;
@@ -2077,7 +2074,6 @@ void boot_db( bool fCopyOver )
     * Reset all areas once.
     * Load up the notes file.
     */
-
    log_string( "Fixing exits..." );
    fix_exits(  );
 

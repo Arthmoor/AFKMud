@@ -3895,7 +3895,8 @@ void write_area_list( void )
    {
       area_data *area = *iarea;
 
-      fprintf( fpout, "%s\n", area->filename );
+      if( !area->flags.test( AFLAG_PROTOTYPE ) )
+         fprintf( fpout, "%s\n", area->filename );
    }
    fprintf( fpout, "%s", "$\n" );
    FCLOSE( fpout );
