@@ -582,6 +582,14 @@ bool is_same_char_map( char_data * ch, char_data * victim )
 
 bool is_same_obj_map( char_data * ch, obj_data * obj )
 {
+   // If it's being carried, treat it as a match.
+   if( obj->carried_by )
+      return true;
+
+   // Similarly, if it's in another object, treat it as a match.
+   if( obj->in_obj )
+      return true;
+
    if( !obj->extra_flags.test( ITEM_ONMAP ) )
    {
       if( ch->has_pcflag( PCFLAG_ONMAP ) )
@@ -1636,7 +1644,8 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
          {
             obj_data *obj = *iobj;
 
-            if( x == obj->mx && y == obj->my && !is_same_obj_map( ch, obj ) )
+            // Nolocate flags should block the $. Useful for road signs and such.
+            if( x == obj->mx && y == obj->my && !is_same_obj_map( ch, obj ) && !obj->extra_flags.test( ITEM_NOLOCATE ) )
             {
                object = true;
                lastsector = -1;
@@ -1767,7 +1776,7 @@ void display_map( char_data * ch )
       landmark = check_landmark( ch->wmap, ch->mx, ch->my );
 
       if( landmark && landmark->Isdesc )
-         ch->printf( "&G%s\r\n", !landmark->description.empty(  )? landmark->description.c_str(  ) : "" );
+         ch->printf( "&G%s\r\n", !landmark->description.empty(  ) ? landmark->description.c_str(  ) : "" );
       else
          ch->printf( "&G%s\r\n", impass_message[sector] );
    }
@@ -1786,11 +1795,11 @@ void display_map( char_data * ch )
       landing = check_landing_site( ch->wmap, ch->mx, ch->my );
 
       if( landing )
-         ch->printf( "&CLanding site for %s.\r\n", !landing->area.empty(  )? landing->area.c_str(  ) : "<NOT SET>" );
+         ch->printf( "&CLanding site for %s.\r\n", !landing->area.empty(  ) ? landing->area.c_str(  ) : "<NOT SET>" );
 
       if( landmark && !landmark->Isdesc )
       {
-         ch->printf( "&BLandmark present: %s\r\n", !landmark->description.empty(  )? landmark->description.c_str(  ) : "<NO DESCRIPTION>" );
+         ch->printf( "&BLandmark present: %s\r\n", !landmark->description.empty(  ) ? landmark->description.c_str(  ) : "<NO DESCRIPTION>" );
          ch->printf( "&BVisibility distance: %d.\r\n", landmark->distance );
       }
 
