@@ -283,41 +283,49 @@ void assign_gsn_data( void )
 /*
  * Race table.
  */
-const char *npc_race[MAX_NPC_RACE] = { /* starting from 0.... */
-   "human", "high-elf", "dwarf", "halfling", "pixie", "half-ogre", "half-orc",   /* 6  */
-   "half-troll", "half-elf", "gith", "minotaur", "duergar", "centaur",  /* 12 */
-   "iguanadon", "gnome", "drow", "wild-elf", "insectoid", "sahuagin", "r9",   /* 19 */
-   "halfbreed", "reptile", "Mysterion", "lycanthrope", "dragon", "undead", /* 25 */
-   "orc", "insect", "spider", "dinosaur", "fish", "avis", "Giant",   /* 32 */
-   "Carnivorous", "Parasitic", "slime", "Demonic", "snake", "Herbivorous", "Tree",  /* 39 */
-   "Vegan", "Elemental", "Planar", "Diabolic", "ghost", "goblin", "troll", /* 46 */
-   "Vegman", "Mindflayer", "Primate", "Enfan", "golem", "Aarakocra", "troglodyte",  /* 53 */
-   "Patryn", "Labrynthian", "Sartan", "Titan", "Smurf", "Kangaroo", "horse",  /* 60 */
-   "Ratperson", "Astralion", "god", "Hill Giant", "Frost Giant", "Fire Giant",   /* 66 */
-   "Cloud Giant", "Storm Giant", "Stone Giant", "Red Dragon", "Black Dragon", /* 71 */
-   "Green Dragon", "White Dragon", "Blue Dragon", "Silver Dragon", "Gold Dragon",   /* 76 */
-   "Bronze Dragon", "Copper Dragon", "Brass Dragon", "Vampire", "Lich", "wight", /* 82 */
-   "Ghast", "Spectre", "zombie", "skeleton", "ghoul", "Half Giant", "Deep Gnome",   /* 89 */
-   "gnoll", "Sylvan Elf", "Sea Elf", "Tiefling", "Aasimar", "Solar", "Planitar", /* 96 */
-   "shadow", "Giant Skeleton", "Nilbog", "Houser", "Baku", "Beast Lord", "Deva", /* 103 */
-   "Polaris", "Demodand", "Tarasque", "Diety", "Daemon", "Vagabond", /* 109 */
-   "gargoyle", "bear", "bat", "cat", "dog", "ant", "ape", "baboon",  /* 117 */
-   "bee", "beetle", "boar", "bugbear", "ferret", "fly", "gelatin", "gorgon",  /* 125 */
-   "harpy", "hobgoblin", "kobold", "locust", "mold", "mule",   /* 131 */
-   "neanderthal", "ooze", "rat", "rustmonster", "shapeshifter", "shrew",   /* 137 */
-   "shrieker", "stirge", "thoul", "wolf", "worm", "bovine", "canine",   /* 144 */
-   "feline", "porcine", "mammal", "rodent", "amphibian", "crustacean",  /* 150 */
-   "spirit", "magical", "animal", "humanoid", "monster", "???", "???", "???", /* 158 */
-   "???", "???", "???"  /* 161 */
+const char *npc_race[MAX_NPC_RACE] = {
+   // Playable Races - MAX_RACE in mudcfg.h must be raised before more can be added after r9.
+   // The race_types enum also needs to be syncd with this.
+   "human", "high-elf", "dwarf", "halfling", "pixie", "half-ogre", "half-orc",     // 6 (starts from 0)
+   "half-troll", "half-elf", "gith", "minotaur", "duergar", "centaur",             // 12
+   "iguanadon", "gnome", "drow", "wild-elf", "insectoid", "sahuagin", "r9",        // 19
+
+   // NPCs only
+   "halfbreed", "reptile", "Mysterion", "lycanthrope", "dragon", "undead",         // 25
+   "orc", "insect", "spider", "dinosaur", "fish", "avis", "Giant",                 // 32
+   "Carnivorous", "Parasitic", "slime", "Demonic", "snake", "Herbivorous", "Tree", // 39
+   "Vegan", "Elemental", "Planar", "Diabolic", "ghost", "goblin", "troll",         // 46
+   "Vegman", "Mindflayer", "Primate", "Enfan", "golem", "Aarakocra", "troglodyte", // 53
+   "Patryn", "Labrynthian", "Sartan", "Titan", "Smurf", "Kangaroo", "horse",       // 60
+   "Ratperson", "Astralion", "god", "Hill Giant", "Frost Giant", "Fire Giant",     // 66
+   "Cloud Giant", "Storm Giant", "Stone Giant", "Red Dragon", "Black Dragon",      // 71
+   "Green Dragon", "White Dragon", "Blue Dragon", "Silver Dragon", "Gold Dragon",  // 76
+   "Bronze Dragon", "Copper Dragon", "Brass Dragon", "Vampire", "Lich", "wight",   // 82
+   "Ghast", "Spectre", "zombie", "skeleton", "ghoul", "Half Giant", "Deep Gnome",  // 89
+   "gnoll", "Sylvan Elf", "Sea-Elf", "Tiefling", "Aasimar", "Solar", "Planitar",   // 96
+   "shadow", "Giant Skeleton", "Nilbog", "Houser", "Baku", "Beast Lord", "Deva",   // 103
+   "Polaris", "Demodand", "Tarasque", "Diety", "Daemon", "Vagabond",               // 109
+   "gargoyle", "bear", "bat", "cat", "dog", "ant", "ape", "baboon",                // 117
+   "bee", "beetle", "boar", "bugbear", "ferret", "fly", "gelatin", "gorgon",       // 125
+   "harpy", "hobgoblin", "kobold", "locust", "mold", "mule",                       // 131
+   "neanderthal", "ooze", "rat", "rustmonster", "shapeshifter", "shrew",           // 137
+   "shrieker", "stirge", "thoul", "wolf", "worm", "bovine", "canine",              // 144
+   "feline", "porcine", "mammal", "rodent", "amphibian", "crustacean",             // 150
+   "spirit", "magical", "animal", "humanoid", "monster", "???", "???", "???",      // 158
+   "???", "???", "???"                                                             // 161
 };
 
 /*
  * Class table.
  */
 const char *npc_class[MAX_NPC_CLASS] = {
+   // Playable classes - MAX_CLASS in mudcfg.h must be raised before more can be added after pc19.
+   // The class_types enum also needs to be synced with this.
    "Mage", "Cleric", "Rogue", "Warrior", "Necromancer", "Druid", "Ranger",
    "Monk", "pc8", "pc9", "Antipaladin", "Paladin", "Bard", "pc13",
    "pc14", "pc15", "pc16", "pc17", "pc18", "pc19",
+
+   // NPCs only
    "baker", "butcher", "blacksmith", "mayor", "king", "queen"
 };
 

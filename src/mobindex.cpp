@@ -275,7 +275,6 @@ char_data *mob_index::create_mobile(  )
    mob->hitplus = hitplus;
    mob->damplus = damplus;
    mob->perm_str = number_range( 9, 18 );
-   mob->perm_str = number_range( 9, 18 );
    mob->perm_wis = number_range( 9, 18 );
    mob->perm_int = number_range( 9, 18 );
    mob->perm_dex = number_range( 9, 18 );

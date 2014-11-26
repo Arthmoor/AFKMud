@@ -28,16 +28,16 @@ EXPORT_SYMBOLS = -export-dynamic
 #Math functions - uncomment if you get errors or warnings about math functions.
 MATH_LIB = -lm
 
-#MySQL support. Need to specify the proper path for your system.
-#Uncomment this to enable SQL support.
-#DO NOT ENABLE if running in Cygwin. Cygwin has no library support!
-#LIB_MYSQL = -L/usr/lib/mysql/ -lmysqlclient
-
 #IMC2 - Comment out to disable IMC2 support
 IMC = 1
 
 #Multiport support. Comment out to disable this feature.
 #MULTIPORT = 1
+
+#MySQL support. Need to specify the proper path for your system.
+#Uncomment this to enable SQL support.
+#DO NOT ENABLE if running in Cygwin. Cygwin has no library support!
+#LIB_MYSQL = -L/usr/lib/mysql/ -lmysqlclient
 
 #Miscellaneous compiler options.
 OPT_FLAG = -pipe -Os
@@ -60,11 +60,11 @@ L_FLAGS = $(MACHINE) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(EXPORT_SYMBOLS) $(
 D_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(SOLARIS_LINK)
 
 C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
-          archery.cpp area.cpp areaconvert.cpp auction.cpp ban.cpp bits.cpp boards.cpp \
-          build.cpp calendar.cpp channels.cpp character.cpp chess.cpp clans.cpp color.cpp \
-          comm.cpp commands.cpp comments.cpp connhist.cpp const.cpp db.cpp \
-          deity.cpp descriptor.cpp editor.cpp environment.cpp event.cpp \
-          event_handler.cpp features.cpp fight.cpp finger.cpp handler.cpp \
+          archery.cpp area.cpp areaconvert.cpp area_fussconvert.cpp area_oldafk.cpp \
+          auction.cpp ban.cpp bits.cpp boards.cpp build.cpp calendar.cpp channels.cpp \
+          character.cpp chess.cpp clans.cpp color.cpp comm.cpp commands.cpp comments.cpp \
+          connhist.cpp const.cpp db.cpp deity.cpp descriptor.cpp editor.cpp environment.cpp \
+          event.cpp event_handler.cpp features.cpp fight.cpp finger.cpp handler.cpp \
           hashstr.cpp help.cpp hotboot.cpp imm_host.cpp liquids.cpp magic.cpp \
           mapout.cpp mapper.cpp misc.cpp mobindex.cpp modules.cpp \
           mspecial.cpp mssp.cpp mudcfg.cpp mud_comm.cpp mud_prog.cpp new_auth.cpp \

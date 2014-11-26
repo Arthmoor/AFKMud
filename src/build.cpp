@@ -294,8 +294,8 @@ const char *attack_flags[] = {
 
 const char *defense_flags[] = {
    "parry", "dodge", "heal", "curelight", "cureserious", "curecritical",
-   "dispelmagic", "dispelevil", "sanctuary", "r1", "r2", "shield", "bless",
-   "stoneskin", "teleport", "r3", "r4", "r5", "r6", "disarm", "r7", "grip",
+   "dispelmagic", "dispelevil", "sanctuary", "fireshield", "shockshield", "shield",
+   "bless", "stoneskin", "teleport", "r3", "r4", "r5", "r6", "disarm", "r7", "grip",
    "truesight"
 };
 

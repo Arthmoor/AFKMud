@@ -288,8 +288,9 @@ enum acon_types
    ACON_ONE, ACON_ASTRAL, ACON_IMMORTAL, ACON_MAX
 };
 
-/* the races */
-/* If you add a new race to this table, make sure you update update_aris in character.c as well */
+// Playable Races
+// If you add a new race to this table, make sure you update update_aris in character.cpp as well
+// Also make sure the array in const.cpp is synced with this.
 enum race_types
 {
    RACE_HUMAN, RACE_HIGH_ELF, RACE_DWARF, RACE_HALFLING, RACE_PIXIE,
@@ -463,12 +464,15 @@ const int RACE_UNUSED6 = 161;
 
 const int CLASS_NONE = -1; /* For skill/spells according to guild */
 
-/* If you add a new class to this, make sure you update update_aris in character.c as well */
+// Playable Classes
+// If you add a new class to this, make sure you update update_aris in character.cpp as well.
+// You also need to make sure the array in const.cpp is synced with this.
 enum class_types
 {
    CLASS_MAGE, CLASS_CLERIC, CLASS_ROGUE, CLASS_WARRIOR, CLASS_NECROMANCER,
-   CLASS_DRUID, CLASS_RANGER, CLASS_MONK, CLASS_AVAILABLE, CLASS_AVAILABLE2,
-   CLASS_ANTIPALADIN, CLASS_PALADIN, CLASS_BARD
+   CLASS_DRUID, CLASS_RANGER, CLASS_MONK, CLASS_PC08, CLASS_PC09,
+   CLASS_ANTIPALADIN, CLASS_PALADIN, CLASS_BARD, CLASS_PC13, CLASS_PC14, CLASS_PC15,
+   CLASS_PC16, CLASS_PC17, CLASS_PC18, CLASS_PC19
 };
 
 /*

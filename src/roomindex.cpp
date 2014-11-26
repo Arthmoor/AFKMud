@@ -43,7 +43,6 @@ extern int top_reset;
 extern int top_affect;
 
 reset_data *make_reset( char, int, int, int, int, int, int, int, int, int, int, int );
-void update_room_reset( char_data *, bool );
 void delete_reset( reset_data * );
 void name_generator( string & );
 void pick_name( string & name, const char * );
@@ -1216,6 +1215,7 @@ void room_index::reset(  )
                bug( "%s: %s: 'M': bad room vnum %d.", __func__, filename, pReset->arg3 );
                break;
             }
+
             if( !pReset->sreset )
             {
                mob = nullptr;
@@ -1388,6 +1388,7 @@ void room_index::reset(  )
                            bug( "%s: %s: 'E' or 'G': bad obj vnum %d.", __func__, filename, tReset->arg1 );
                            break;
                         }
+
                         if( !mob )
                         {
                            lastobj = nullptr;
@@ -1411,6 +1412,7 @@ void room_index::reset(  )
                            obj = pObjIndex->create_object( number_fuzzy( level ) );
                         obj->level = URANGE( 0, obj->level, LEVEL_AVATAR );
                         obj = obj->to_char( mob );
+
                         if( tReset->command == 'E' )
                         {
                            if( obj->carried_by != mob )
@@ -1453,6 +1455,7 @@ void room_index::reset(  )
                                     // Failed percentage check, don't bother processing. Move along.
                                     if( number_percent(  ) > gReset->arg5 )
                                        break;
+
                                     if( !( pObjIndex = get_obj_index( gReset->arg2 ) ) )
                                     {
                                        bug( "%s: %s: 'P': bad obj vnum %d.", __func__, filename, gReset->arg2 );
@@ -1464,6 +1467,7 @@ void room_index::reset(  )
                                        bug( "%s: %s: 'P': bad objto vnum %d.", __func__, filename, gReset->arg4 );
                                        break;
                                     }
+
                                     if( pObjIndex->count >= pObjIndex->limit || count_obj_list( gReset, pObjIndex, to_obj->contents ) > 0 )
                                     {
                                        obj = nullptr;
@@ -1586,7 +1590,7 @@ void room_index::reset(  )
                   pObjIndex->count += ( num - 1 );
                obj->count = num;
                obj->level = UMIN( obj->level, LEVEL_AVATAR );
-               obj->cost = 0;
+               // obj->cost = 0; <-- This goes all the way back to Smaug 1.4 at least. If this turns out to be a bad idea, put it back. - Samson 11/24/14
                if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
                {
                   obj->extra_flags.set( ITEM_ONMAP );
@@ -1860,7 +1864,8 @@ void room_index::load_reset( FILE * fp, bool newformat )
    line = fread_line( fp );
 
    // Useful to ferret out bad stuff
-   extra = arg1 = arg2 = arg3 = arg4 = arg5 = arg6 = arg7 = arg8 = arg9 = arg10 = arg11 = -2;
+   extra = arg1 = arg2 = arg3 = arg7 = arg8 = arg9 = arg10 = arg11 = -2;
+   arg4 = arg5 = arg6 = -1; // Overland uses -1 for stuff that's not on maps.
 
    switch ( letter )
    {
@@ -1906,7 +1911,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          break;
    }
 
-   // Means this is being loaded from a Smaug or SmaugWiz area.
+   // Means this is being loaded from a Smaug, SmaugFUSS, or SmaugWiz area.
    if( !newformat )
    {
       if( letter == 'P' || letter == 'T' || letter == 'W' )

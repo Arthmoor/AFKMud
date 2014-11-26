@@ -23,53 +23,20 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                     Stock Zone reader and convertor                      *
+ *                     Stock Zone Reader and Convertor                      *
  ****************************************************************************/
 
-/* Converts stock Smaug version 0 and version 1 areas into AFKMud format - Samson 12-21-01 */
+/* Converts stock Smaug version 0 thru 3 areas into AFKMud format - Samson 12-21-01 */
 /* Converts SmaugWiz version 1000 files into AFKMud format - Samson 4-24-03 */
 
 #include <sys/stat.h>
 #include "mud.h"
 #include "area.h"
+#include "areaconvert.h"
 #include "mobindex.h"
 #include "objindex.h"
 #include "roomindex.h"
 #include "shops.h"
-
-/* Extended bitvector matierial is now kept only for legacy purposes to convert old areas. */
-typedef struct extended_bitvector EXT_BV;
-
-/*
- * Defines for extended bitvectors
- */
-#ifndef INTBITS
-const int INTBITS = 32;
-#endif
-const int XBM = 31;  /* extended bitmask   ( INTBITS - 1 )  */
-const int RSV = 5;   /* right-shift value  ( sqrt(XBM+1) )  */
-const int XBI = 4;   /* integers in an extended bitvector   */
-const int MAX_BITS = XBI * INTBITS;
-
-#define xIS_SET(var, bit) ((var).bits[(bit) >> RSV] & 1 << ((bit) & XBM))
-
-/*
- * Structure for extended bitvectors -- Thoric
- */
-struct extended_bitvector
-{
-   unsigned int bits[XBI]; /* Needs to be unsigned to compile in Redhat 6 - Samson */
-};
-
-EXT_BV fread_bitvector( FILE * );
-char *ext_flag_string( EXT_BV *, char *const flagarray[] );
-
-extern int top_affect;
-extern int top_exit;
-extern int top_reset;
-extern int top_shop;
-extern int top_repair;
-extern FILE *fpArea;
 
 bool area_failed;
 int dotdcheck;
@@ -426,7 +393,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             sact = one_argument( sact, flag );
             value = get_actflag( flag );
             if( value < 0 || value >= MAX_ACT_FLAG )
-               bug( "Unsupported act_flag dropped: %s", flag );
+               bug( "%s: Unsupported act_flag dropped: %s", __func__, flag );
             else
                pMobIndex->actflags.set( value );
          }
@@ -458,20 +425,24 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       pMobIndex->hitnodice = fread_number( fp );
       /*
        * 'd'      
-       */ fread_letter( fp );
+       */
+      fread_letter( fp );
       pMobIndex->hitsizedice = fread_number( fp );
       /*
        * '+'      
-       */ fread_letter( fp );
+       */
+      fread_letter( fp );
       pMobIndex->hitplus = fread_number( fp );
       pMobIndex->damnodice = fread_number( fp );
       /*
        * 'd'      
-       */ fread_letter( fp );
+       */
+      fread_letter( fp );
       pMobIndex->damsizedice = fread_number( fp );
       /*
        * '+'      
-       */ fread_letter( fp );
+       */
+      fread_letter( fp );
       pMobIndex->damplus = fread_number( fp );
 
       ln = fread_line( fp );
@@ -570,19 +541,20 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          sdefpos = stock_pos[defpos];
          pMobIndex->defposition = get_npc_position( sdefpos );
       }
+
       /*
        * Back to meaningful values.
        */
       pMobIndex->sex = fread_number( fp );
 
-      if( letter != 'S' && letter != 'C' && letter != 'D' && letter != 'Z' )
+      if( letter != 'S' && letter != 'C' && letter != 'D' && letter != 'Z' && letter != 'V' )
       {
-         bug( "%s: vnum %d: letter '%c' not S, C, Z, or D.", __func__, vnum, letter );
+         bug( "%s: vnum %d: letter '%c' not S, C, Z, V, or D.", __func__, vnum, letter );
          shutdown_mud( "bad mob data" );
          exit( 1 );
       }
 
-      if( letter == 'C' || letter == 'D' || letter == 'Z' ) /* Realms complex mob  -Thoric */
+      if( letter == 'C' || letter == 'D' || letter == 'Z' || letter == 'V' ) /* Realms complex mob  -Thoric */
       {
          pMobIndex->perm_str = fread_number( fp );
          pMobIndex->perm_int = fread_number( fp );
@@ -597,7 +569,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          pMobIndex->saving_breath = fread_number( fp );
          pMobIndex->saving_spell_staff = fread_number( fp );
 
-         if( tarea->version < 1000 )   /* Standard Smaug version 0 or 1 */
+         if( tarea->version < AREA_SMAUGWIZ_VERSION )   /* Standard Smaug up to version 3 */
          {
             ln = fread_line( fp );
             x1 = x2 = x3 = x4 = x5 = x6 = x7 = 0;
@@ -772,6 +744,10 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
                   pMobIndex->defenses.set( value );
             }
          }
+
+         if( letter == 'V' ) // Smaug 1.8b mobs with stances. Just read it, we don't care.
+            fread_line( fp );
+
          if( letter == 'Z' )
          {
             fread_number( fp );
@@ -783,6 +759,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             fread_number( fp );
             fread_number( fp );
          }
+
          if( letter == 'D' && dotdcheck )
          {
             fread_number( fp );
@@ -993,14 +970,14 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
             eflags = one_argument( eflags, flag );
             value = get_oflag( flag );
             if( value < 0 || value >= MAX_ITEM_FLAG )
-               bug( "Unsupported flag dropped: %s", flag );
+               bug( "Unsupported item flag dropped: %s", flag );
             else
                pObjIndex->extra_flags.set( value );
          }
 
          ln = fread_line( fp );
-         x1 = x2 = 0;
-         sscanf( ln, "%d %d", &x1, &x2 );
+         x1 = x2 = x3 = 0;
+         sscanf( ln, "%d %d %d", &x1, &x2, &x3 );
 
          wflags = flag_string( x1, stock_wflags );
 
@@ -1014,9 +991,10 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
                pObjIndex->wear_flags.set( value );
          }
          pObjIndex->layers = x2;
+         pObjIndex->level = x3; // Smaug 1.8b v2 or v3
       }
 
-      if( tarea->version < 1000 )
+      if( tarea->version < AREA_SMAUGWIZ_VERSION )
       {
          ln = fread_line( fp );
          x1 = x2 = x3 = x4 = x5 = x6 = 0;
@@ -1056,7 +1034,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          pObjIndex->value[5] = x6;
       }
 
-      if( tarea->version == 1 || tarea->version == 1000 )
+      if( ( tarea->version >= 1 && tarea->version <= AREA_STOCK_VERSION ) || tarea->version == AREA_SMAUGWIZ_VERSION )
       {
          switch ( pObjIndex->item_type )
          {
@@ -1083,7 +1061,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          }
       }
 
-      if( tarea->version == 1000 )
+      if( tarea->version == AREA_SMAUGWIZ_VERSION )
       {
          while( !isdigit( letter = fread_letter( fp ) ) )
             fread_to_eol( fp );
@@ -1380,6 +1358,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
       pRoomIndex->tele_delay = x4;
       pRoomIndex->tele_vnum = x5;
       pRoomIndex->tunnel = x6;
+      pRoomIndex->max_weight = x7 ? x7 : 100000;
       pRoomIndex->baselight = 0;
       pRoomIndex->light = 0;
 
@@ -1397,10 +1376,10 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             break;
 
          // Smaug resets, applied reset fix. We can cheat some here since we wrote that :)
-         if( letter == 'R' && ( tarea->version == 0 || tarea->version == 1 ) )
+         if( letter == 'R' && ( tarea->version >= 0 && tarea->version <= AREA_STOCK_VERSION ) )
             pRoomIndex->load_reset( fp, false );
 
-         else if( letter == 'R' && tarea->version == 1000 ) /* SmaugWiz resets */
+         else if( letter == 'R' && tarea->version == AREA_SMAUGWIZ_VERSION ) /* SmaugWiz resets */
          {
             exit_data *pexit;
             char letter2;
@@ -1668,8 +1647,7 @@ void load_stresets( area_data * tarea, FILE * fp )
    {
       exit_data *pexit;
       char letter;
-      int extra, arg1, arg2, arg3 = 0;
-      short arg4, arg5, arg6, arg7 = 0;
+      int extra, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11;
 
       if( ( letter = fread_letter( fp ) ) == 'S' )
          break;
@@ -1679,6 +1657,9 @@ void load_stresets( area_data * tarea, FILE * fp )
          fread_to_eol( fp );
          continue;
       }
+
+      // Useful to ferret out bad stuff
+      extra = arg1 = arg2 = arg3 = arg4 = arg5 = arg6 = arg7 = arg8 = arg9 = arg10 = arg11 = -2;
 
       extra = fread_number( fp );
       if( letter == 'M' || letter == 'O' )
@@ -1709,9 +1690,12 @@ void load_stresets( area_data * tarea, FILE * fp )
             break;
 
          case 'G':
-         case 'H':
          case 'R':
             arg3 = 100;
+            break;
+
+         case 'H':
+            arg1 = 100;
             break;
       }
 
@@ -1840,6 +1824,7 @@ void load_stresets( area_data * tarea, FILE * fp )
             break;
       }
    }
+
    if( !not01 )
    {
       list < room_index * >::iterator iroom;
@@ -1971,7 +1956,7 @@ void load_stock_area_file( const string & filename, bool manual )
    {
       int temp = fread_number( fpArea );
 
-      if( temp >= 1000 )
+      if( temp >= AREA_SMAUGWIZ_VERSION )
       {
          word = fread_word( fpArea );
          if( !str_cmp( word, "#AREA" ) )
@@ -2018,7 +2003,30 @@ void load_stock_area_file( const string & filename, bool manual )
 
       if( word[0] == '$' )
          break;
+      else if( !str_cmp( word, "VERSION" ) )
+      {
+         int area_version = fread_number( fpArea );
 
+         if( ( area_version < 0 || area_version > AREA_STOCK_VERSION ) && area_version != AREA_SMAUGWIZ_VERSION )
+         {
+            area_failed = true;
+            bug( "%s: Version %d in %s is non-stock area format. Unable to process.", __func__, area_version, filename.c_str(  ) );
+            if( !manual )
+            {
+               shutdown_mud( "Non-standard area format" );
+               exit( 1 );
+            }
+            deleteptr( tarea );
+            --top_area;
+            return;
+         }
+
+         if( area_version == 2 )
+            log_string( "------ Warning: Encountered Smaug 1.8b Version 2 format. Proceeding with unknown results. ------" );
+         tarea->version = area_version;
+
+         log_printf( "&Y%s: Format version %d detected.", tarea->filename, tarea->version );
+      }
       // Skip the helps as we no longer support them imbedded in area files
       else if( !str_cmp( word, "HELPS" ) )
       {
@@ -2036,6 +2044,37 @@ void load_stock_area_file( const string & filename, bool manual )
       {
          STRFREE( tarea->author );
          tarea->author = fread_string( fpArea );
+      }
+      else if( !str_cmp( word, "CREDITS" ) ) /* Smaug 1.8b v3 format */
+      {
+         STRFREE( tarea->credits );
+         tarea->credits = fread_string( fpArea );
+      }
+      else if( !str_cmp( word, "RANGES" ) )
+      {
+         int x1, x2, x3, x4;
+         const char *ln;
+
+         for( ;; )
+         {
+            ln = fread_line( fpArea );
+
+            if( ln[0] == '$' )
+               break;
+
+            x1 = x2 = x3 = x4 = 0;
+            sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
+
+            tarea->low_soft_range = x1;
+            tarea->hi_soft_range = x2;
+            tarea->low_hard_range = x3;
+            tarea->hi_hard_range = x4;
+         }
+      }
+      else if( !str_cmp( word, "RESETMSG" ) )
+      {
+         DISPOSE( tarea->resetmsg );
+         tarea->resetmsg = fread_string_nohash( fpArea );
       }
       else if( !str_cmp( word, "FLAGS" ) )
       {
@@ -2061,27 +2100,6 @@ void load_stock_area_file( const string & filename, bool manual )
          }
          tarea->reset_frequency = x2;
       }
-      else if( !str_cmp( word, "RANGES" ) )
-      {
-         int x1, x2, x3, x4;
-         const char *ln;
-
-         for( ;; )
-         {
-            ln = fread_line( fpArea );
-
-            if( ln[0] == '$' )
-               break;
-
-            x1 = x2 = x3 = x4 = 0;
-            sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
-
-            tarea->low_soft_range = x1;
-            tarea->hi_soft_range = x2;
-            tarea->low_hard_range = x3;
-            tarea->hi_hard_range = x4;
-         }
-      }
       else if( !str_cmp( word, "ECONOMY" ) )
       {
          /*
@@ -2090,10 +2108,34 @@ void load_stock_area_file( const string & filename, bool manual )
          fread_number( fpArea );
          fread_number( fpArea );
       }
-      else if( !str_cmp( word, "RESETMSG" ) )
+      else if( !str_cmp( word, "CLIMATE" ) )
       {
-         DISPOSE( tarea->resetmsg );
-         tarea->resetmsg = fread_string_nohash( fpArea );
+         const char *ln;
+         int x1, x2, x3, x4;
+
+         if( dotdcheck > 0 && dotdcheck < 4 )
+         {
+            bug( "DOTDII area encountered with invalid header format, check value %d", dotdcheck );
+            shutdown_mud( "Invalid DOTDII area" );
+            exit( 1 );
+         }
+
+         ln = fread_line( fpArea );
+         x1 = x2 = x3 = x4 = 0;
+         sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
+
+         tarea->weather->climate_temp = x1;
+         tarea->weather->climate_precip = x2;
+         tarea->weather->climate_wind = x3;
+      }
+      else if( !str_cmp( word, "NEIGHBOR" ) )
+      {
+         neighbor_data *anew;
+
+         anew = new neighbor_data;
+         anew->address = nullptr;
+         anew->name = fread_string( fpArea );
+         tarea->weather->neighborlist.push_back( anew );
       }
       else if( !str_cmp( word, "MOBILES" ) )
          load_stmobiles( tarea, fpArea, manual );
@@ -2140,6 +2182,7 @@ void load_stock_area_file( const string & filename, bool manual )
                      bug( "%s: 'M': Invalid mob vnum!", __func__ );
                      break;
                   }
+
                   if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                   {
                      bug( "%s: 'M': vnum %d, no spec_fun called %s.", __func__, pMobIndex->vnum, temp );
@@ -2153,54 +2196,6 @@ void load_stock_area_file( const string & filename, bool manual )
                break;
             fread_to_eol( fpArea );
          }
-      }
-      else if( !str_cmp( word, "CLIMATE" ) )
-      {
-         const char *ln;
-         int x1, x2, x3, x4;
-
-         if( dotdcheck > 0 && dotdcheck < 4 )
-         {
-            bug( "DOTDII area encountered with invalid header format, check value %d", dotdcheck );
-            shutdown_mud( "Invalid DOTDII area" );
-            exit( 1 );
-         }
-
-         ln = fread_line( fpArea );
-         x1 = x2 = x3 = x4 = 0;
-         sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
-
-         tarea->weather->climate_temp = x1;
-         tarea->weather->climate_precip = x2;
-         tarea->weather->climate_wind = x3;
-      }
-      else if( !str_cmp( word, "NEIGHBOR" ) )
-      {
-         neighbor_data *anew;
-
-         anew = new neighbor_data;
-         anew->address = nullptr;
-         anew->name = fread_string( fpArea );
-         tarea->weather->neighborlist.push_back( anew );
-      }
-      else if( !str_cmp( word, "VERSION" ) )
-      {
-         int area_version = fread_number( fpArea );
-
-         if( ( area_version < 0 || area_version > 1 ) && area_version != 1000 )
-         {
-            area_failed = true;
-            bug( "%s: Version %d in %s is non-stock area format. Unable to process.", __func__, area_version, filename.c_str(  ) );
-            if( !manual )
-            {
-               shutdown_mud( "Non-standard area format" );
-               exit( 1 );
-            }
-            deleteptr( tarea );
-            --top_area;
-            return;
-         }
-         tarea->version = area_version;
       }
       else if( !str_cmp( word, "SPELLLIMIT" ) )  /* Skip, AFKMud doesn't have this */
          fread_number( fpArea );
@@ -2246,6 +2241,7 @@ void load_stock_area_file( const string & filename, bool manual )
       }
    }
    FCLOSE( fpArea );
+
    if( tarea )
    {
       tarea->sort_name(  );
@@ -2254,6 +2250,8 @@ void load_stock_area_file( const string & filename, bool manual )
          log_printf( "%-20s: Converted Smaug 1.02a Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
       else if( tarea->version == 1 && !dotdcheck )
          log_printf( "%-20s: Converted Smaug 1.4a Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
+      else if( ( tarea->version == 2 || tarea->version == 3 ) && !dotdcheck )
+         log_printf( "%-20s: Converted Smaug 1.8b Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
       else if( dotdcheck )
          log_printf( "%-20s: Converted DOTDII 2.3.6 Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
       else
@@ -2285,7 +2283,7 @@ CMDF( do_areaconvert )
 {
    area_data *tarea = nullptr;
    int tmp;
-   bool manual;
+   bool manual, forced = false;
    string arg;
 
    argument = one_argument( argument, arg );
@@ -2311,15 +2309,19 @@ CMDF( do_areaconvert )
    }
    else
       manual = false;
+
    if( !argument.empty(  ) && !str_cmp( argument, "forceload" ) )
+   {
+      forced = true;
       load_area_file( strArea, false );
+   }
    else
       load_stock_area_file( arg, manual );
-   if( ch )
-      fBootDb = false;
 
    if( ch )
    {
+      fBootDb = false;
+
       if( area_failed )
       {
          ch->print( "&YArea conversion failed! See your logs for why.\r\n" );
@@ -2328,6 +2330,15 @@ CMDF( do_areaconvert )
 
       if( ( tarea = find_area( arg ) ) )
       {
+         struct stat fst;
+         time_t umod = 0;
+
+         if( stat( tarea->filename, &fst ) != -1 )
+            umod = fst.st_mtime;
+
+         tarea->creation_date = umod;
+         tarea->install_date = current_time;
+
          ch->print( "&YLinking exits...\r\n" );
          tarea->fix_exits(  );
          if( !tarea->rooms.empty(  ) )
@@ -2339,7 +2350,8 @@ CMDF( do_areaconvert )
             tarea->nplayer = tmp;
          }
 
-         if( tarea->version < 2 || tarea->version == 1000 )
+         // Stock Smaug areas now go up to version 3.
+         if( !forced && ( tarea->version <= AREA_STOCK_VERSION || tarea->version == AREA_SMAUGWIZ_VERSION ) )
          {
             tarea->install_date = current_time;
             ch->print( "&GWriting area in AFKMud format...\r\n" );

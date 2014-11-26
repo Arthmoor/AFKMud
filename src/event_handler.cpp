@@ -34,7 +34,7 @@
 #include "mud_prog.h"
 #include "roomindex.h"
 #if !defined(__CYGWIN__) && defined(SQL)
-#include "sql.h"
+ #include "sql.h"
 #endif
 
 SPELLF( spell_smaug );
@@ -48,7 +48,7 @@ SPELLF( spell_spiral_blast );
 SPELLF( spell_dispel_magic );
 SPELLF( spell_dispel_evil );
 CMDF( do_ageattack );
-void talk_auction( const char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
+void talk_auction( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 void save_aucvault( char_data *, const string & );
 void add_sale( const string &, const string &, const string &, const string &, int, bool );
 void fly_skyship( char_data *, char_data * );
@@ -323,6 +323,26 @@ void ev_violence( void *data )
                case DFND_DISPELEVIL:
                   act( AT_MAGIC, "$n utters an incantation...", ch, nullptr, nullptr, TO_ROOM );
                   retcode = spell_dispel_evil( skill_lookup( "dispel evil" ), ch->level, ch, victim );
+                  break;
+
+               case DFND_FIRESHIELD:
+                  if( !ch->has_aflag( AFF_FIRESHIELD ) )
+                  {
+                     act( AT_MAGIC, "$n utters a few incantations...", ch, nullptr, nullptr, TO_ROOM );
+                     retcode = spell_smaug( skill_lookup( "fireshield" ), ch->level, ch, ch );
+                  }
+                  else
+                     retcode = rNONE;
+                  break;
+
+               case DFND_SHOCKSHIELD:
+                  if( !ch->has_aflag( AFF_SHOCKSHIELD ) )
+                  {
+                     act( AT_MAGIC, "$n utters a few incantations...", ch, nullptr, nullptr, TO_ROOM );
+                     retcode = spell_smaug( skill_lookup( "shockshield" ), ch->level, ch, ch );
+                  }
+                  else
+                     retcode = rNONE;
                   break;
 
                case DFND_SANCTUARY:
