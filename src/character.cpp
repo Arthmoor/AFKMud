@@ -903,14 +903,15 @@ room_index *char_data::find_location( const string & arg )
  */
 bool char_data::can_see_obj( obj_data * obj, bool override )
 {
+   // This check ALWAYS needs to be first because otherwise imms and the Supermob will see a flood on the overland.
+   if( !is_same_obj_map( this, obj ) && !override )
+      return false;
+
    if( this->has_pcflag( PCFLAG_HOLYLIGHT ) )
       return true;
 
    if( this->isnpc(  ) && this->pIndexData->vnum == MOB_VNUM_SUPERMOB )
       return true;
-
-   if( !is_same_obj_map( this, obj ) && !override )
-      return false;
 
    if( obj->extra_flags.test( ITEM_BURIED ) )
       return false;
