@@ -1282,7 +1282,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
                const char *desc = fread_flagstring( fp );
 
                if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-                  pObjIndex->objdesc = STRALLOC( capitalize(desc) );
+                  pObjIndex->objdesc = STRALLOC( desc );
                break;
             }
             break;

@@ -392,6 +392,7 @@ const string obj_data::format_to_char( char_data * ch, bool fShort, int num )
 
             buf.append( v );
          }
+
          if( !contents.empty(  ) )
          {
             list < obj_data * >::iterator iobj;

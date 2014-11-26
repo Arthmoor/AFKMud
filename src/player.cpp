@@ -935,7 +935,7 @@ CMDF( do_equipment )
                ch->print( "\r\n" );
             }
             else
-               ch->print( "something.\r\n" );
+               ch->print( "Something\r\n" );
          }
       }
       if( count == 0 && iWear < ( MAX_WEAR - 3 ) )
