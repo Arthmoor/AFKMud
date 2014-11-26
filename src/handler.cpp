@@ -222,6 +222,7 @@ bool is_name2_prefix( const string & str, string namelist )
    for( ;; )
    {
       namelist = one_argument2( namelist, name );
+
       if( name.empty(  ) )
          return false;
 

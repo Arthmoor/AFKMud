@@ -7676,7 +7676,7 @@ void write_race_file( int ra )
       fprintf( fpout, "Language    %s~\n", bitset_string( race->language, lang_names ) );
    fprintf( fpout, "Align      %d\n", race->alignment );
    fprintf( fpout, "Min_Align  %d\n", race->minalign );
-   fprintf( fpout, "Max_Align	 %d\n", race->maxalign );
+   fprintf( fpout, "Max_Align  %d\n", race->maxalign );
    fprintf( fpout, "AC_Plus    %d\n", race->ac_plus );
    fprintf( fpout, "Exp_Mult   %d\n", race->exp_multiplier );
    if( race->body_parts.any(  ) )

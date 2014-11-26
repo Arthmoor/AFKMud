@@ -1620,7 +1620,6 @@ CMDF( do_look )
              * Except that I agree with DOTD logic - scrying doesn't work like this.
              * * Samson - 6-20-99
              */
-
             if( pexit->to_room->flags.test( ROOM_NOSCRY ) || pexit->to_room->area->flags.test( AFLAG_NOSCRY ) )
             {
                ch->print( "That room is magically protected. You cannot see inside.\r\n" );

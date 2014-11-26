@@ -905,6 +905,9 @@ short player_count( void )
    return count;
 }
 
+#if !defined(__CYGWIN__) && defined(SQL)
+ int db_help_count();
+#endif
 extern time_t mud_start_time;
 extern int mud_port;
 extern int top_prog;
@@ -951,7 +954,11 @@ void send_mssp_data( descriptor_data * d )
    mssp_reply( d, "MOBILES", "%d", top_mob_index );
    mssp_reply( d, "OBJECTS", "%d", top_obj_index );
    mssp_reply( d, "MUDPROGS", "%d", top_prog );
+#if !defined(__CYGWIN__) && defined(SQL)
+   mssp_reply( d, "HELPFILES", "%d", db_help_count() );
+#else
    mssp_reply( d, "HELPFILES", "%d", top_help );
+#endif
    mssp_reply( d, "LEVELS", "%d", LEVEL_AVATAR );
    mssp_reply( d, "RACES", "%d", MAX_PC_RACE );
    mssp_reply( d, "CLASSES", "%d", MAX_PC_CLASS );

@@ -53,6 +53,6 @@ void ev_dns_check( void * );
 void ev_webwho_refresh( void * );
 void ev_ban_check( void * );
 #if !defined(__CYGWIN__) && defined(SQL)
-void ev_mysql_ping( void * );
+ void ev_mysql_ping( void * );
 #endif
 #endif

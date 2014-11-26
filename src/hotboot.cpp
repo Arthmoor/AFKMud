@@ -63,8 +63,8 @@ void check_auth_state( char_data * );
 affect_data *fread_afk_affect( FILE * );
 void fwrite_afk_affect( FILE *, affect_data * );
 #if !defined(__CYGWIN__) && defined(SQL)
-void close_db(  );
-void init_mysql(  );
+ void close_db(  );
+ void init_mysql(  );
 #endif
 
 /*

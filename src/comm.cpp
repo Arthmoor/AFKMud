@@ -167,7 +167,7 @@ void free_all_titles(  );
 void free_all_chess_games(  );
 void free_helps(  );
 #if !defined(__CYGWIN__) && defined(SQL)
-void close_db(  );
+ void close_db(  );
 #endif
 
 const char *directory_table[] = {

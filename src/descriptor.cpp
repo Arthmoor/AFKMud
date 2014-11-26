@@ -109,7 +109,6 @@ void quotes( char_data * );
 void reset_colors( char_data * );
 void mprog_login_trigger( char_data * );
 void rprog_login_trigger( char_data * );
-// bool check_bans( char_data * );
 CMDF( do_help );
 CMDF( do_destroy );
 

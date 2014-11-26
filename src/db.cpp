@@ -56,7 +56,7 @@
 #include "roomindex.h"
 #include "shops.h"
 #if !defined(__CYGWIN__) && defined(SQL)
-#include "sql.h"
+ #include "sql.h"
 #endif
 
 #if defined(WIN32)

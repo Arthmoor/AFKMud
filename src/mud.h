@@ -45,7 +45,7 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.2.0"
+#define CODEVERSION "2.2.1"
 #define COPYRIGHT "Copyright The Alsherok Team 1997-2015. All rights reserved."
 
 const int LGST = 4096;  /* Large String */
@@ -694,7 +694,7 @@ do                                          \
    if( (point) )                            \
    {                                        \
       free( (point) );                      \
-      (point) = nullptr;                       \
+      (point) = nullptr;                    \
    }                                        \
 } while(0)
 
@@ -705,7 +705,7 @@ do                                          \
    if( (point) )                            \
    {                                        \
       free( (point) );                      \
-      (point) = nullptr;                       \
+      (point) = nullptr;                    \
    }                                        \
 } while(0)
 #else
@@ -728,10 +728,10 @@ do                                             \
       }                                        \
       else                                     \
          free( (point) );                      \
-      (point) = nullptr;                          \
+      (point) = nullptr;                       \
    }                                           \
-   else                                          \
-      (point) = nullptr;                            \
+   else                                        \
+      (point) = nullptr;                       \
 } while(0)
 #endif
 
@@ -745,7 +745,7 @@ do                                              \
    {                                            \
       if( str_free((point)) == -1 )             \
          bug( "&RSTRFREEing bad pointer: %s, line %d", __FILE__, __LINE__ ); \
-      (point) = nullptr;                           \
+      (point) = nullptr;                        \
    }                                            \
 } while(0)
 #else
@@ -762,10 +762,10 @@ do                                               \
       }                                          \
       else if( str_free((point)) == -1 )         \
          log_printf( "&RSTRFREEing bad pointer: %s, line %d\n", __FILE__, __LINE__ ); \
-      (point) = nullptr;                            \
+      (point) = nullptr;                         \
    }                                             \
    else                                          \
-      (point) = nullptr;                            \
+      (point) = nullptr;                         \
 } while(0)
 #endif
 

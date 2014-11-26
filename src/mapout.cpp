@@ -163,6 +163,7 @@ void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
    do
    {
       c = l[0];
+
       switch ( c )
       {
          default:

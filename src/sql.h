@@ -38,4 +38,5 @@ void init_mysql(  );
 void close_db(  );
 int mysql_safe_query( const char *, ... );
 void login_log( char_data *, int );
+
 #endif

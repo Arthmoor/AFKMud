@@ -397,7 +397,7 @@ int str_cmp( const string & astr, const string & bstr )
       ++a1;
       ++b1;
    }
-   return ( bstr.size(  ) == astr.size(  ) ? 0 : ( astr.size(  ) < bstr.size(  )? -1 : 1 ) );
+   return ( bstr.size(  ) == astr.size(  ) ? 0 : ( astr.size(  ) < bstr.size(  ) ? -1 : 1 ) );
 }
 
 /*

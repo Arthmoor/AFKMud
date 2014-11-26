@@ -3938,7 +3938,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    ch->exp = 0;
 
    /*
-    * Set player birthday to current mud day, -17 years - Samson 10-25-99 
+    * Set player birthday to current mud day, -17 years - Samson 10-25-99
     */
    ch->pcdata->day = time_info.day;
    ch->pcdata->month = time_info.month;
@@ -3947,7 +3947,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    ch->pcdata->age_bonus = 0;
 
    /*
-    * Set recall point - Samson 5-13-01 
+    * Set recall point - Samson 5-13-01
     */
    ch->pcdata->one = ROOM_VNUM_TEMPLE;
 
@@ -3963,16 +3963,14 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    ch->set_title( "the Newbie" );
 
    /*
-    * Added by Narn. Start new characters with autoexit and autgold already turned on. Very few people don't use those. 
+    * Added by Narn. Start new characters with autoexit and autgold already turned on. Very few people don't use those.
     */
    ch->set_pcflag( PCFLAG_AUTOGOLD );
    ch->set_pcflag( PCFLAG_AUTOEXIT );
 
    /*
-    * Added by Brittany, Nov 24/96.  The object is the adventurer's guide to Alsherok, part of newbie.are. 
-    */
-   /*
-    * Modified by Samson to use variable so object can be moved to a new zone if needed - 9-5-98 
+    * Added by Brittany, Nov 24/96.  The object is the adventurer's guide to Alsherok, part of newbie.are.
+    * Modified by Samson to use variable so object can be moved to a new zone if needed - 9-5-98
     */
    objcheck = get_obj_index( OBJ_VNUM_NEWBIE_GUIDE );
    if( objcheck != nullptr )

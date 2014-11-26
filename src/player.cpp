@@ -82,7 +82,7 @@ string rankbuffer( char_data * ch )
       if( ch->pcdata->rank && ch->pcdata->rank[0] != '\0' )
          rbuf << "&Y" << ch->pcdata->rank;
       else
-         rbuf << "&YImmortal";
+         rbuf << "&Y" << ch->pcdata->realm_name;
    }
    else
    {

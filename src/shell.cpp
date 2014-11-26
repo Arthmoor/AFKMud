@@ -396,6 +396,12 @@ CMDF( do_copyzone )
          fname2 = "immtrain.are";
       if( !str_cmp( argument, "one.are" ) )
          fname2 = "one.are";
+      if( !str_cmp( argument, "gwyn.are" ) )
+         fname2 = "gwyn.are";
+      if( !str_cmp( argument, "catacombs.are" ) )
+         fname2 = "catacombs.are";
+      if( !str_cmp( argument, "rtower.are" ) )
+         fname2 = "rtower.are";
    }
 
    if( !sysdata->TESTINGMODE )
