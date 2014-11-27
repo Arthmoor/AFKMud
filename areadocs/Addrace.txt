@@ -1,68 +1,50 @@
-Adding a new race, with language
+Adding a New Race, With Language
 --------------------------------
 
-Last modified by Samson, 6/19/03
+Last Modified by Samson, Nov. 26, 2014
 
 Skip the language portions if your new race doesn't need one.
 
-1. In mud.h, find MAX_RACE and increase by one. If you're changing a
-   race into a new one, this isn't necessary.
+1. In mudcfg.h, find MAX_RACE. You will need to increase this if your
+   MUD has filled all 20 playable class slots. If this is the case,
+   it'll be a big undertaking since there are some NPC-only classes
+   listed in the tables.
 
-2. In const.c, find the npc_race table. Change the first empty slot to 
+2. In const.cpp, find the npc_race table. Change the first empty slot to 
    the name of your new race. You should be changing something like "r9".
    Stock AFKMud code only has one free slot - keep this in mind. You may
    simply want to change an existing race into a new one instead. Only
    the first 19 races in this table can be used for PCs unless you
-   bumped up MAX_RACE.
+   bumped up MAX_RACE and do a bunch of ugly surgery on the NPC race
+   values.
 
-3. In act_comm.cpp, find:
+3. In build.cpp, find:
 
-   int const lang_array[] = {
+   const char *lang_names[] = {
 
    In that, add LANG_<newrace> where <newrace> is the name of the
    race your adding. In the table right below it, add your race name
    to the list, just before the empty double quotes.
 
-4. in mud.h again, find LANG_UNKNOWN, you should now be looking at
-   a list of BV values. Add your race to the list, above LANG_UNKNOWN.
-   Add it to the list of VALID_LANGS as well.
+4. in mudcfg.h again, find LANG_UNKNOWN, you should be looking at a list
+   of capitalized values. Add your race to the list, right before LANG_UNKNOWN.
+   Then add it to the list of VALID_LANGS as well, after the last listed
+   language.
 
-5. Add your new race to the race_types list in mud.h. In stock code, this
-   list ends with RACE_19 as the last member.
+5. Add your new race to the race_types enum list in mudcfg.h.
+   In stock code, this list ends with RACE_19 as the last member.
 
 6. At this point, your done with the code. Make clean, and recompile.
    Don't reboot yet though.
 
 7. Using an existing race file, copy it's contents to a new file.
 
-8. Set the race# in the file to 1 LESS than MAX_RACE.
-   ( Starts countng with 0 ).
+8. Set the race# in the file to the number that matches the slot you put it
+   in in mudcfg.h. Zero is the first value. Stock code ends with 19.
 
-9. Set the language line to the proper BV value for that race.
-   The stock table is included here - just double the last number to get
-   the next race, and so forth - eg, if your race comes after Gith, it's
-   language number would be 1048576.
-
-	common      1
-	elvish      2
-	dwarven     4
-	pixie       8
-	ogre        16
-	orcish      32
-	trollese    64
-	rodent      128
-	insectoid   256
-	mammal      512
-	reptile     1024
-	dragon      2048
-	spiritual   4096
-	magical     8192
-	goblin      16384
-	god         32768
-	ancient     65536
-	halfling    131072
-	clan        262144
-	gith        524288
+9. Set the language line to the proper string value for that race.
+   This should match the name you used when editing the lang_names
+   array in build.cpp.
 
 10. At this point, you're ready to upload the race file.
     Don't reboot just yet.
@@ -99,7 +81,7 @@ endif
 
     'language' being the name of the language, and 'lang' being the sn#
     of the new language. You can get that by doing an slookup on the
-   language.
+    language.
 
 14. You'll then need to adjust the levels that each class gets to learn
     the language at. You can use the ssset command for this, but I find

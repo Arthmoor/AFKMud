@@ -1,6 +1,6 @@
 === The #AREADATA section (also referred to as the header)
 
-Last Modified by Samson, Jul. 22, 2007
+Last Modified by Samson, Nov. 26, 2014
 
 If a <value> or string literal field is followed by a ~, then that ~ marker is required there.
 Tags with a # in front are required, and must appear in the order in which they are specified.
@@ -20,6 +20,8 @@ String literal. Identifies the start of the header section.
 Version     <int>
 -----------------
 Numerical value > 0. This determines which area version this file is supposed to be handled as.
+The version number will only need to be raised under special circumstances since the overall
+area format is very tolerant of adding and/or removing data fields.
 
 Name        <string>~
 ---------------------
@@ -46,6 +48,15 @@ Coordinates <int> <int>
 Numerical values containing the X,Y coordinates of this area on the overland map it belongs to.
 Overland usage is not required, and these values can both be set to 0 if they will not be needed.
 
+Dates       <time> <time>
+-------------------------
+Numerical values representing the number of seconds since January 1, 1970.
+Commonly known as "unix time". Generally these values will be set up automatically in the code.
+You can use the conversion tool at http://www.onlineconversion.com/unix_time.htm to get the numbers.
+The first one is the date the area file was first created.
+The second one is the date the area file was installed into the live player port.
+If left as zeros, they will work, but will report both dates as being the current date and time.
+
 Ranges      <int> <int> <int> <int>
 -----------------------------------
 Series of numerical values. In order: Low soft, high soft, low hard, and high hard.
@@ -67,37 +78,32 @@ One or more string values representing the flags that are set on this area. Flag
 and affect every room in the area when applied. These flags override flags of the same type which are set on individual
 rooms.
 
-FLAG NAME     | DESCRIPTION
-----------------------------------------------------------------------
-nopkill	      | No Pkillers are allowed in this zone.
-nocamp        | Players cannot camp anywhere in this zone.
-noastral      | Players may not astral walk from or to this zone.
-noportal      | Players may not portal to or from this zone.
-norecall      | Players may not recall from this zone.
-nosummon      | Players may not summon to or from this zone.
-noscry        | Players may not use the farsight spell in this zone.
-noteleport    | Players may not teleport to or from this zone.
-freekill      | Treats the entire zone as an arena.
-nobeacon      | Players may not set recall beacons in this zone.
-noquit        | Players may not quit while in this area.
+The following flags are available to set on areas:
 
-Climate     <value1> <value2> <value3>
---------------------------------------
-Numerical values indicating climate factors which have been set on the area.
-These values affect the severity of weather within the zone. More information on
-this will be available when we understand it all better. Or better yet, refer to
-the online helpfiles. They probably explain it fairly well.
-
-The <value1> setting is the temperature range, <value2> is the precipitation,
-and <value3> is the wind. Refer to the following tables.
-
-Value1 | Temperature   Value2 | Precipitation   Value3 | Wind
---------------------   ----------------------   ----------------
-    0  | Cold               0 | Arid                 0 | Still
-    1  | Cool               1 | Dry                  1 | Calm
-    2  | Normal             2 | Normal               2 | Normal 
-    3  | Warm               3 | Damp                 3 | Breezy
-    4  | Hot                4 | Wet                  4 | Windy
+Flag       | Details
+-----------+--------------------------------------
+nopkill    | Player killers cannot enter this area.
+nocamp     | Camping is not allowed in this area.
+noastral   | Astral Walk spells will not function in this area.
+noportal   | Portal spells will not function in this area.
+             Players also cannot make portals to this area from elsewhere.
+norecall   | Recall spells will not function in this area.
+nosummon   | Summoning magic will not function in this area.
+noscry     | Scrying magic does not function in this area.
+             Players in other rooms cannot scry into this area either.
+noteleport | Teleportation magic will not work in this area.
+             Players also cannot teleport here from other locations.
+nobeacon   | Player cannot use the beacon spell in this area.
+noquit     | Players cannot quit in this area.
+nowhere    | Players in areas flagged with this will not show up
+             on the "where" command list.
+silence    | No speech can take place in this area.
+nomagic    | Magic does not function in this area.
+arena      | An arena. Players may fight each other for sport here.
+             This requires administrative approval in a finished zone.
+hidden     | The area will not be shown on the public area list.
+prototype  | This area is a prototype.
+             The prototype flag should only be found on unfinished areas.
 
 Treasure <val1> <val2> <val3> <val4> <val5> <val6> <val7> <val8>
 ----------------------------------------------------------------
@@ -122,6 +128,24 @@ Weapons are generated based on the values above, and if you exceed 100% in any
 of the previous 4 settings, weapons will not be generated at all for this area.
 Further, weapons can also randomly be assigned item sockets for rune insertion.
 
+Climate     <value1> <value2> <value3>
+--------------------------------------
+Numerical values indicating climate factors which have been set on the area.
+These values affect the severity of weather within the zone. More information on
+this will be available when we understand it all better. Or better yet, refer to
+the online helpfiles. They probably explain it fairly well.
+
+The <value1> setting is the temperature range, <value2> is the precipitation,
+and <value3> is the wind. Refer to the following tables.
+
+Value1 | Temperature   Value2 | Precipitation   Value3 | Wind
+--------------------   ----------------------   ----------------
+    0  | Cold               0 | Arid                 0 | Still
+    1  | Cool               1 | Dry                  1 | Calm
+    2  | Normal             2 | Normal               2 | Normal 
+    3  | Warm               3 | Damp                 3 | Breezy
+    4  | Hot                4 | Wet                  4 | Windy
+
 Neighbor     <string>~
 ----------------------
 The name of a neighboring area which affects this area's weather patterns.
@@ -143,6 +167,6 @@ Ranges          0 1 0 115
 ResetMsg        A strange pulsing sound reverberates in the background...~
 ResetFreq       240
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport~
-Climate         2 2 2
 Treasure        20 74 85 93 20 50 60 75
+Climate         2 2 2
 #ENDAREADATA

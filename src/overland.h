@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *	                     Overland ANSI Map Module                         *
+ *                         Overland ANSI Map Module                         *
  *                      Created by Samson of Alsherok                       *
  ****************************************************************************/
 

@@ -173,67 +173,56 @@ Bar ) lvl:   3 max: 95%
 === Lever Flags (Add values together to combine flags)
 Note: These values apply to levers, switches, pullchains, and buttons, in the value[0] slot.
 
-FLAG NAME     |  BITVECTOR  |  DESCRIPTION
-----------------------------------------------------------------------
-UP            |          1  |  Trigger is UP 
-UNLOCK        |          2  |  Trigger unlocks door in value[1]
-LOCK          |          4  |  Trigger locks door in value[1]
-D_NORTH       |          8  |  Affects the north exit
-D_SOUTH       |         16  |  Affects the south exit
-D_EAST        |         32  |  Affects the east exit
-D_WEST        |         64  |  Affects the west exit
-D_UP          |        128  |  Affects the exit up
-D_DOWN        |        256  |  Affects the exit down
-DOOR          |        512  |  Affects a door: room vnum in value[1]
-CONTAINER     |       1024  |  Affects a container
-OPEN          |       2048  |  Opens door in value[1]
-CLOSE         |       4096  |  Closes door in value[1]
-PASSAGE       |       8192  |  Creates a passage to room in value[1] if DOOR is set, value[2] if not
-OLOAD         |      16384  |  Loads up an object
-MLOAD         |      32768  |  Loads up a mobile
-TELEPORT      |      65536  |  Teleports the puller
-TELEPORTALL   |     131072  |  Teleports everyone in the room
-TELEPORTPLUS  |     262144  |  Teleports everything in the room
-DEATH         |     524288  |  Causes instant death ( corpse still exists )
-CAST          |    1048576  |  Casts a spell (sn in value1)
-FAKEBLADE    *|    2097152  |  Lever is a fake. Does damage if grabbed. OUCH.
-RAND4         |    4194304  |  Randomizes the exits N, S, E, W
-RAND6         |    8388608  |  Randomizes the exits N, S, E, W, U, D
-TRAPDOOR     *|   16777216  |  Opens a trap door, everthing falls down
-ANOTHEROOM   *|   33554432  |  ?? Not sure
-USEDIAL      *|   67108864  |  ?? Not sure
-ABSOLUTEVNUM *|  134217728  |  ?? Not sure
-SHOWROOMDESC  |  268435456  |  Displays the room description to teleported victims
-AUTORETURN    |  536870912  |  Will prevent returning the device to its original position when set.
-
-* = Affect is not yet implemented in the code
+Value   | Details
+--------+-------------------------------------
+      0 | Trigger starts in the "up" or "in" position.
+      1 | Unlocks a door in the designated room. Combines with one of the direction flags for the actual door in the room.
+      2 | Locks a door in the designated direction. Combines with one of the direction flags for the actual door in the room.
+      4 | North exit direction setting used with other flags.
+      8 | South exit direction setting used with other flags.
+     16 | East exit direction setting used with other flags.
+     32 | West exit direction setting used with other flags.
+     64 | Up exit direction setting used with other flags.
+    128 | Down exit direction setting used with other flags.
+    256 | Must be set for any door based triggers to work.
+    512 | Trigger acts on a designated container object. The Value3 field for this trigger uses container flags to toggle the states of the same flags on the actual container.
+   1024 | Unlocks a door in the designated room. Combines with one of the direction flags for the actual door in the room.
+   2048 | Closes a door in the designated room. Combines with one of the direction flags for the actual door in the room.
+   4096 | Trigger creates a passage from the room it's in to the room designated by the Value2 field. Must be combined with the exit flags to determine the direction.
+   8192 | Trigger loads an object into the designated room.
+  16384 | Trigger loads an NPC into the designated room.
+  32768 | Trigger teleports the NPC or player who activated it to the room designated by the Value1 field.
+  65536 | If set, the trigger teleports all NPCs and Mobs in the room to the room designated in the Value1 field. Used with the "teleport" flag.
+ 131072 | If set, the trigger will also include any objects in the room if the "teleportall" flag is set.
+ 262144 | The trigger instantly kills the player who touched it.
+ 524288 | Trigger casts the spell designated by the Value1 field. If set, the Value2 field specifies the spell level. If not set, the spell casts at the player's level.
+1048576 | For "teleport" triggers, this makes the game show the destination room upon arrival.
+2097152 | Trigger randomizes up to 4 exits in the room designated by the Value1 field.
+4194304 | Trigger randomizes up to 6 exits in the room designated by the Value1 field.
+8388608 | If set, the trigger will return to its default state after being activated.
 
 === Trap Flags (Add values together to combine flags)
 These flags govern how a trap gets set off.
 
-FLAG    -     BV  - DESCRIPTION
-------------------------------------------------------------
-ROOM    -       1 - Trap is in a room
-OBJ     -       2 - Trap is on an object
-ENTER   -       4 - Trap is triggered by entering the room
-LEAVE   -       8 - Trap is triggered by leaving the room
-OPEN    -      16 - Trap is triggered by opening
-CLOSE   -      32 - Trap is triggered by closing
-GET     -      64 - Trap is triggered by getting the object
-PUT     -     128 - Trap is triggered by putting the object
-PICK    -     256 - Trap is triggered by picking the object
-UNLOCK  -     512 - Trap is triggered by unlocking the object
-NORTH   -    1024 - Trap is triggered by moving north
-SOUTH   -    2048 - Trap is triggered by moving south
-EAST    -    4096 - Trap is triggered by moving east
-WEST    -    8192 - Trap is triggered by moving west
-UP      -   16384 - Trap is triggered by moving up
-DOWN    -   32768 - Trap is triggered by moving down
-EXAMINE -   65536 - Trap is triggered by examining the object
-NE      -  131072 - Trap is triggered by moving northeast
-NW      -  262144 - Trap is triggered by moving northwest
-SE      -  524288 - Trap is triggered by moving southeast
-SW      - 1048576 - Trap is triggered by moving southwest
+Value | Details
+------+--------------------------------------
+    0 | Attaches the trap to the room's reset list.
+    1 | Attaches the trap to an object's reset list.
+    2 | Trap triggers when a player enters the room.
+    4 | Trap triggers when a player leaves the room.
+    8 | Trap is sprung when a door or container is opened.
+   16 | Trap is sprung when a door or container is closed.
+   32 | Trap is sprung when an object is picked up.
+   64 | Trap is sprung when putting an object inside a container.
+  128 | Trap is sprung when a door or container is lockpicked.
+  256 | Trap is sprung when a door or container is unlocked.
+  512 | Unused.
+ 1024 | Unused.
+ 2048 | Unused.
+ 4096 | Unused.
+ 8192 | Unused.
+16384 | Unused.
+32768 | Trap is sprung when an object is examined.
 
 === Trap Types
 
@@ -253,31 +242,41 @@ SW      - 1048576 - Trap is triggered by moving southwest
 
 [Note: Don't use the numerical values, these are listed only for reference purposes in the slookup command]
 
-FLAG NAME     | DESCRIPTION                              | NUMERICAL VALUE
-----------------------------------------------------------------------
-fire          | res/imm/sus/abs to Fire spells.          | 1
-cold          | res/imm/sus/abs to Cold spells.          | 2
-electricity   | res/imm/sus/abs to Elecrical spells.     | 4
-energy        | res/imm/sus/abs to Energy spells.        | 8
-blunt         | res/imm/sus/abs to Blunt weapons.        | 16
-pierce        | res/imm/sus/abs to Piercing weapons.     | 32
-slash         | res/imm/sus/abs to Slashing weapons.     | 64
-acid          | res/imm/sus/abs to Acid.                 | 128
-poison        | res/imm/sus/abs to Poison.               | 256
-drain         | res/imm/sus/abs to Draining.             | 512
-sleep         | res/imm/sus/abs to Sleep spells.         | 1024
-charm         | res/imm/sus/abs to Charm spells.         | 2048
-hold          | res/imm/sus/abs to Paralyze spells.      | 4096
-nonmagic      | res/imm/sus/abs to Non magical weapons.  | 8192
-plus1         | res/imm/sus/abs to +1 weapons.           | 16384
-plus2         | res/imm/sus/abs to +2 weapons.           | 32768
-plus3         | res/imm/sus/abs to +3 weapons.           | 65536
-plus4         | res/imm/sus/abs to +4 weapons.           | 131072
-plus5         | res/imm/sus/abs to +5 weapons.           | 262144
-plus6         | res/imm/sus/abs to +6 weapons.           | 524288
-magic         | res/imm/sus/abs to Magical weapons.      | 1048576
-paralysis     | res/imm/sus/abs to Paralysis.            | 2097152
-good          | res/imm/sus/abs to Good.                 | 4194304
-evil          | res/imm/sus/abs to Evil.                 | 8388608
-hack          | res/imm/sus/abs to Hacking weapons.      | 16777216
-lash          | res/imm/sus/abs to Lashing weapons.      | 33554432
+Players and NPCs can have resistance, immunity, susceptibility, or
+ability to absorb certain types of attacks. This is referred to
+as the "RISA" settings.
+
+Resistance to an attack reduced damage by 20%.
+Immunity reduces an attack's damage to 0.
+Susceptibility increases damage by 20%.
+Absorption heals the victim rather than damaging them.
+
+Value    | Text        | Details
+---------+-------------+-------------------------------------
+       0 | nothing     | RISA default value - no benefits etc.
+       1 | fire        | RISA for fire based attacks.
+       2 | cold        | RISA for cold based attacks.
+       4 | electricity | RISA for electricity based attacks.
+       8 | energy      | RISA for energy based attacks.
+      16 | blunt       | RISA for blunt weapons.
+      32 | pierce      | RISA for piercing weapons.
+      64 | slash       | RISA for slashing weapons.
+     128 | acid        | RISA for acid based attacks.
+     256 | poison      | RISA for poison.
+     512 | drain       | RISA for drain attacks.
+    1024 | sleep       | RISA for sleep spells.
+    2048 | charm       | RISA for charm spells.
+    4096 | hold        | RISA for hold spells.
+    8192 | nonmagic    | RISA for non-magical weapons.
+   16384 | plus1       | RISA for +1 weapons.
+   32768 | plus2       | RISA for +2 weapons.
+   65536 | plus3       | RISA for +3 weapons.
+  131072 | plus4       | RISA for +4 weapons.
+  262144 | plus5       | RISA for +5 weapons.
+  524288 | plus6       | RISA for +6 weapons.
+ 1048576 | magic       | RISA for magical weapons.
+ 2097152 | paralysis   | RISA for paralysis spells.
+ 4194304 | good        | RISA for good aligned attackers.
+ 8388608 | evil        | RISA for evil aligned attackers.
+16777216 | hack        | RISA for hacking weapons.
+33554432 | lash        | RISA for lashing weapons.

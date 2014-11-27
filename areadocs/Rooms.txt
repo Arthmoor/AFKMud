@@ -1,6 +1,6 @@
 === The #ROOM block
 
-Last modified by Samson, Dec. 25, 2006
+Last Modified by Samson, Nov. 26, 2014
 
 "If you build it, they will come." - Field of Dreams
 An appropriate quote for this section. Without rooms, people will have nowwhere to go.
@@ -84,53 +84,73 @@ Flags       <string>~
 A space separated list of attribute flags which affect this room.
 Choose from the following table:
 
-FLAG NAME     | DESCRIPTION
-----------------------------------------------------------------------
-dark          | Room is always dark
-death         | Room causes instant death (A DT)
-nomob         | Mobs cannot wander into this room
-indoors       | A small indoor room - area magic will do full
-                damage to the caster.
-safe          | Room is safe, no violence allowed
-nocamp        | Players cannot camp in this room
-nosummon      | Player cannot be summoned out of or into this room
-nomagic       | Magic cannot be used in this room
-tunnel        | Room is a tunnel - x number of players allowed
+Flag          | Details
+--------------+-------------------------------------------------------
+dark          | The room is always dark. Cannot be overridden with lights.
+death         | The room is a death trap. Anyone entering is instantly killed.
+indoors       | Room is a medium to small sized man-made structure.
+                Area spells do full damage to the caster when used.
+tunnel        | Room is a tunnel - x number of players allowed.
                 (use 'redit tunnel #' to  set the number)
-private       | Room is private (restricted to 2 people)
-silence       | Room is silent, players cannot speak in the room
-nosupplicate  | Players cannot supplicate their deities in this room
-arena         | Designates the room as an arena space. Players may duel here with no consequences.
-nomissile     | Projectile weapons cannot be used in this room
-norecall      | Players cannot recall out of this room
-noportal      | Players cannot make portals into or out of this room
-noastral      | Players cannot astral walk from this room
-nodrop        | Nothing can be dropped in this room
-teleport      | People in this room will be teleported out
-teleshowdesc  | Shows description of target room for a teleport
-nofloor       | Room has no floor: exit down + no fly = fall
-solitary      | Only 1 person can be in this room at one time
-petshop       | Petshop (next vnum must be the storeroom)
-donation      | Donation room, player cannot "get all"
-nodropall     | Player cannot "drop all" in this room
-logspeech     | All speech in this room is logged
-proto         | Room is a prototype. Only used by OLC system.
-noteleport    | Players cannot teleport to or from this room
-noscry        | Players cannot scry or use farsight to see this room
-cave          | A medium sized indoor room. Area magic will do half damage to the caster.
-cavern        | A large indoor room. Area magic will not damage the caster.
-nobeacon      | Players cannot set recall beacons in this room.
-auction	      | Room is an auction house. See below.
-forge         | Room is a forge where players can make things.
-clanstoreroom | Room is a storage room for a guild or clan.
-guildinn      | Room is an inn for a guild or clan.
-watchtower    | Room is an overland watchtower. See below.
-noquit        | Players cannot quit while in this room.
-telenofly     | Room will not teleport player if they are flying.
-isolated      | Room cannot be entered by anyone below MAX_LEVEL. Use caution when set.
+cave          | Room is a medium sized indoor area, either a large man-made
+                structure, or smaller sized natural formation. Area spells
+                cause half-damage to the caster in these rooms.
+cavern        | Room is a larger naturally occurring indoor formation.
+                Area spells operate normally.
+arena         | An arena. Players may fight each other for sport here.
+                This requires administrative approval in a finished zone.
+petshop       | This room is a pet shop.
+donation      | This is a donation room. Items donated by players will be here.
+auction       | This room serves as an auction house.
+forge         | This room is a forge. Players may craft items here.
+guildinn      | This room designated an inn owned by a clan or guild. *
+teleport      | Players in this room will be teleported away.
+teleshowdesc  | When teleported, the destination room is shown to the player.
+safe          | No violent activity is allowed in this room.
+silence       | No speech can take place in this room.
+noyell        | Players cannot yell in this room.
+nomob         | Mobs cannot wander into this room.
+nocamp        | Players cannot camp in this room.
+nosummon      | Summoning magic will not function in this room.
+nomagic       | Magic does not function in this room.
+nosupplicate  | Deity supplication will not work in this room.
+nomissile     | Projectiles (including magic ones) cannot be fired here.
+norecall      | Recall spells will not function in this room.
+noportal      | Portal spells will not function in this room.
+                Players also cannot make portals to this room from elsewhere.
+noastral      | Astral Walk spells will not function in this room.
+nodrop        | Items cannot be dropped in this room.
+nofloor       | The room has no floor. If a down exit exists and the player
+                is not flying, they will fall through and may take damage.
+nodropall     | A player cannot drop their entire inventory at once here.
+noteleport    | Teleportation magic will not work in this room.
+                Players also cannot teleport here from other locations.
+noscry        | Scrying magic does not function in this room.
+                Players in other rooms cannot scry into this room either.
+nowhere       | Players in rooms flagged with this will not show up on the
+                "where" command list.
+notrack       | Tracking skills is useless on a player or NPC in this room.
+nobeacon      | Player cannot use the beacon spell in this room.
+logspeech     | All speech is logged here. Useful for meetings etc.
+private       | Room is private (restricted to 2 people).
+solitary      | Only one player or NPC may occupy this room at a time.
+isolated      | An isolated room. If set, only an Implementor may occupy it.
+                Implementors can transfer people into this room if desired.
+watchtower    | Indicates the room is a watchtower, which displays a wide view
+                of the overland from it. (See Below)
+noquit        | Players cannot quit in this room.
+telenofly     | Flying players who are teleported will not be allowed
+                in this room.
+map           | This room is part of the overland system.
+proto         | This room is a prototype.
+                The prototype flag should only be found on unfinished rooms.
+
+* Has not been completely implemented yet.
 
 Auction houses require that the next vnum used be set aside to use as a storage
-room for the items, much like a petshop. Be sure and flag the storage room with the appropriate flags so no players can get in, or the mobs can get out.  There must also be a mob in the room with the AUCTION flag.
+room for the items, much like a petshop. Be sure and flag the storage room with the
+appropriate flags so no players can get in, or the mobs can get out.
+There must also be a mob in the room with the AUCTION flag.
 
 -----
 
@@ -160,8 +180,8 @@ That should do it, and you should end up with a nice view of the overland :)
 
 -----
 
-Stats        <#1> <#2> <#3> <#4>
---------------------------------
+Stats        <#1> <#2> <#3> <#4> <#5>
+-------------------------------------
 Additional statistics which can affect this room.
 
 #1 = Teleport delay. Amount of time in game pulses before the occupant is transported out.
@@ -173,6 +193,10 @@ Additional statistics which can affect this room.
      Negative values can be used for magical darkness that will keep the room dark even during daylight.
      Positive values can be used for magical lighting that keeps the room lit even at night.
      The code to support this fully has not been completed yet.
+#5 = Maximum weight limit. Or, the capacity this room holds. This is measured in object weight.
+     The more objects placed in the room, the less capacity it has to hold more.
+     If this is not set, the default value is 100000 units. As players drop stuff and take stuff
+     out, the game keeps track of this in an internal value.
 
 #1 and #2 will not function on a room with no teleport flag.
 #3 will have no affect on a room with no tunnel flag.
@@ -217,21 +241,25 @@ The following commands are used for the reset format:
 
    M <mob-vnum> <limit> <room-vnum> <map-number> <x-coordinate> <y-coordinate> <percent>
      Load a mobile into a room.
-     Primary reset. Can have dependent G, E, X, or Y resets.
-       limit = Maximum number of these mobs to load in the room at one time.
-       map-number = The number o the continent on the overland. -1 for a standard room.
+     Primary reset. Can have dependent G, E, X, or Y resets. G and E resets can in turn have dependent P, or H resets.
+       mob-vnum = The vnum of the mob you want to load here. Generally should be something from the area you're building.
+       limit = This value is no longer in use for M resets, but something must be put here or things break. Just use a 1.
+       room-vnum = The room vnum the mob should reset to. Should almost always match the room you're making, but for the overland it needs to be properly specified.
+       map-number = The number of the continent on the overland. -1 for a standard room.
        x-coordinate = X coord for a position on the overland. -1 for a standard room.
        y-coordinate = Y coord for a position on the overland. -1 for a standard room.
 
    O <obj-vnum> <limit> <room-vnum> <map-number> <x-coordinate> <y-coordinate> <percent>
      Load an object into a room.
-     Primary reset. Can have dependent P, H, or T resets.
-       limit = Maximum number of these objs to load in the room at one time.
+     Primary reset. Can have dependent P, W, H, or T resets.
+       obj-vnum = The vnum of the object you want to load here. Generally should be something from the area you're building.
+       limit = Maximum number of these objs to load in the room at one time. If this object is limited (ie: rare) and this reset would cause it to go over the limit, the reset will fail.
+       room-vnum = The room vnum the object should reset to. Should almost always match the room you're making, but for the overland it needs to be properly specified.
        map-number = The number o the continent on the overland. -1 for a standard room.
        x-coordinate = X coord for a position on the overland. -1 for a standard room.
        y-coordinate = Y coord for a position on the overland. -1 for a standard room.
 
-   Z <rt_type> <level> <value1> <value2> <value3> <sockets> <room_vnum> <map-number> <x-coordinate> <y-coordinate> <percent>
+   Z <rt_type> <level> <value1> <value2> <value3> <sockets> <room-vnum> <map-number> <x-coordinate> <y-coordinate> <percent>
      Load a random treasure item into a room.
      Primary reset. Has no dependent resets.
        rt_type = The type of random treasure this item should be:
@@ -249,14 +277,15 @@ The following commands are used for the reset format:
        value2 = Material for the armor or weapon. -1 = choose at random. Ignored by all other types.
        value3 = Weapon quality. -1 = choose at random. Ignored for all other types.
        sockets = Number of sockets to give the weapon or armor. -1 = choose at random. Ignored by all other types.
+       room-vnum = The room vnum the object should reset to. Should almost always match the room you're making, but for the overland it needs to be properly specified.
        map-number = The number o the continent on the overland. -1 for a standard room.
        x-coordinate = X coord for a position on the overland. -1 for a standard room.
        y-coordinate = Y coord for a position on the overland. -1 for a standard room.
 
-   H <obj-vnum> <limit> <percent>
+   H <percent>
      Sets the hide flag on the last successfully loaded object.
      Dependent reset. The previous reset must be one of: X, Y, G, E, O, or P. Otherwise will not load.
-       limit value is ignored.
+       Only the percentage argument is valid.
 
    P <nest level> <obj-vnum> <limit> <container-vnum> <percent>
      Put an item in a container.
@@ -264,9 +293,11 @@ The following commands are used for the reset format:
      Can also have dependent P or H resets.
        nest level = Container nesting level. If a previous P reset loaded and is a container, a second P reset with a higher
          nesting level will load the item into that container instead of the primary reset.
-       limit = Maximum number of copies to load into the container at one time.
+       obj-vnum = The object vnum you are trying to load. Should always be something from the area you're building.
+       limit = Maximum number of copies to load into the container at one time. If this object is limited (ie: rare) and this reset would cause it to go over the limit, the reset will fail.
+       container-vnum = The container the object is being reset into. Should always be something from the area you're building.
 
-   W <nest level> <rt_type> <level> <value1> <value2> <value3> <sockets> <container_vnum> <percent>
+   W <nest level> <rt_type> <level> <value1> <value2> <value3> <sockets> <container-vnum> <percent>
      Put a random treasure item into a container.
      Dependent reset. The previous parent reset must be an O. Otherwise will not load.
      Cannot have dependent resets.
@@ -276,12 +307,13 @@ The following commands are used for the reset format:
    G <obj-vnum> <limit> <percent>
      Give an item to the mobile.
      Dependent reset. The previous parent reset must be an M. Otherwise will not load.
-       limit = Maximum number of copies to give the mob at one time.
+       obj-vnum = The object vnum you are trying to load. Should always be something from the area you're building.
+       limit = Maximum number of copies to give the mob at one time. If this object is limited (ie: rare) and this reset would cause it to go over the limit, the reset will fail.
 
    Y <rt_type> <level> <value1> <value2> <value3> <sockets> <percent>
      Give a random treasure item to the mobile. Behaves just like G.
      Dependent reset. The previous parent reset must be an M. Otherwise will not load.
-       limit = Maximum number of copies to give the mob at one time.
+       limit = Maximum number of copies to give the mob at one time. If this object is limited (ie: rare) and this reset would cause it to go over the limit, the reset will fail.
 
    E <obj-vnum> <limit> <wear_loc> <percent>
      Equip the mobile with the item.
@@ -310,6 +342,8 @@ The following commands are used for the reset format:
          22 - Back
          23 - Face
          24-25 - Ankles
+         26 - Hooves
+         27 - Tail
 
    X <rt_type> <level> <value1> <value2> <value3> <sockets> <wear_loc> <percent>
      Equip a random treasure item on the mobile. Behaves just like E.
@@ -319,6 +353,7 @@ The following commands are used for the reset format:
    D <room-vnum> <door> <state> <percent>
      Door: Places a door on an exit in a room.
      Primary reset. Has no dependent resets.
+       room-vnum: The room vnum this door should lead to. Should generally be something from your own area.
        door = Direction of the exit to place the door on.
          0 - North
          1 - East
@@ -332,12 +367,14 @@ The following commands are used for the reset format:
          9 - Southwest
          10 - Somewhere - often used with enter/leave flagged exits to mimic portals.
        state = The default state the door should be in.
+         0 - Open and unlocked.
+         1 - Closed. If the exit is marked as secret, the secret flag is turned on.
+         2 - Closed and Locked. If the exit is marked as secret, the secret flag is turned on.
 
    R <room-vnum> <last-door> <percent>
      Randomize exits in this room.
      Primary reset. Has no dependent resets.
        last-door = ?
-
     
    T <flags> <types> <charges> <vnum> <percent>
      Sets a trap on either an object, or a room.

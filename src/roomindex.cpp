@@ -1254,7 +1254,6 @@ void room_index::reset(  )
              * occurances of namegen in the long_descr and description will be
              * replaced with the name.
              */
-
             string namegenCheckString = mob->name;
 
             /*
@@ -1780,6 +1779,7 @@ void room_index::reset(  )
             // Failed percentage check, don't bother processing. Move along.
             if( number_percent(  ) > pReset->arg5 )
                break;
+
             if( IS_SET( pReset->arg1, TRAP_OBJ ) )
             {
                bug( "%s: Object trap found in room %d reset list", __func__, vnum );
@@ -1803,13 +1803,16 @@ void room_index::reset(  )
             // Failed percentage check, don't bother processing. Move along.
             if( number_percent(  ) > pReset->arg4 )
                break;
+
             if( !( pRoomIndex = get_room_index( pReset->arg1 ) ) )
             {
                bug( "%s: %s: 'D': bad room vnum %d.", __func__, filename, pReset->arg1 );
                break;
             }
+
             if( !( pexit = pRoomIndex->get_exit( pReset->arg2 ) ) )
                break;
+
             switch ( pReset->arg3 )
             {
                default:
@@ -1838,6 +1841,7 @@ void room_index::reset(  )
             // Failed percentage check, don't bother processing. Move along.
             if( number_percent(  ) > pReset->arg3 )
                break;
+
             if( !( pRoomIndex = get_room_index( pReset->arg1 ) ) )
             {
                bug( "%s: %s: 'R': bad room vnum %d.", __func__, filename, pReset->arg1 );

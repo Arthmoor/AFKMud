@@ -1,6 +1,6 @@
 === The #MOBILE block
 
-Last modified by Samson, Dec. 25, 2006
+Last Modified by Samson, Nov. 26, 2014
 
 Mobiles add life to an otherwise boring place. Afterall, you need people to talk to!
 A well constructed area should have several mobiles populating it. Whether they are there
@@ -30,45 +30,45 @@ Race         <string>~
 The name of the race this mobile belongs to. Needs to match one of the defined races within your game.
 Choose one from the following:
 
-"human", "high-elf", "dwarf", "halfling", "pixie", "half-ogre", "half-orc",
-"half-troll", "half-elf", "gith", "minotaur", "duergar", "centaur",
-"lizardman", "gnome", "drow", "wild-elf",
-"halfbreed", "reptile", "Mysterion", "lycanthrope", "dragon", "undead",
-"orc", "insect", "spider", "dinosaur", "fish", "avis", "Giant",
-"Carnivorous", "Parasitic", "slime", "Demonic", "snake", "Herbivorous", "Tree",
-"Vegan", "Elemental", "Planar", "Diabolic", "ghost", "goblin", "troll",
-"Vegman", "Mindflayer", "Primate", "Enfan", "golem", "Aarakocra", "troglodyte",
-"Patryn", "Labrynthian", "Sartan", "Titan", "Smurf", "Kangaroo", "horse",
-"Ratperson", "Astralion", "god", "Hill Giant", "Frost Giant", "Fire Giant",
-"Cloud Giant", "Storm Giant", "Stone Giant", "Red Dragon", "Black Dragon",
-"Green Dragon", "White Dragon", "Blue Dragon", "Silver Dragon", "Gold Dragon",
-"Bronze Dragon", "Copper Dragon", "Brass Dragon", "Vampire", "Lich", "wight",
-"Ghast", "Spectre", "zombie", "skeleton", "ghoul", "Half Giant", "Deep Gnome",
-"gnoll", "Sylvan Elf", "Sea Elf", "Tiefling", "Aasimar", "Solar", "Planitar", 
-"shadow", "Giant Skeleton", "Nilbog", "Houser", "Baku", "Beast Lord", "Deva", 
-"Polaris", "Demodand", "Tarasque", "Diety", "Daemon", "Vagabond",
-"gargoyle", "bear", "bat", "cat", "dog", "ant", "ape", "baboon",
-"bee", "beetle", "boar", "bugbear", "ferret", "fly", "gelatin", "gorgon",
-"harpy", "hobgoblin", "kobold", "locust", "mold", "mule",
-"neanderthal", "ooze", "rat", "rustmonster", "shapeshifter", "shrew",
-"shrieker", "stirge", "thoul", "wolf", "worm", "bovine", "canine",
-"feline", "porcine", "mammal", "rodent", "amphibian", "crustacean",
-"spirit", "magical", "animal", "humanoid", "monster"
+   "human", "high-elf", "dwarf", "halfling", "pixie", "half-ogre", "half-orc",
+   "half-troll", "half-elf", "gith", "minotaur", "duergar", "centaur",
+   "iguanadon", "gnome", "drow", "wild-elf", "insectoid", "sahuagin", "r9",
+   "halfbreed", "reptile", "Mysterion", "lycanthrope", "dragon", "undead",
+   "orc", "insect", "spider", "dinosaur", "fish", "avis", "Giant",
+   "Carnivorous", "Parasitic", "slime", "Demonic", "snake", "Herbivorous", "Tree",
+   "Vegan", "Elemental", "Planar", "Diabolic", "ghost", "goblin", "troll",
+   "Vegman", "Mindflayer", "Primate", "Enfan", "golem", "Aarakocra", "troglodyte",
+   "Patryn", "Labrynthian", "Sartan", "Titan", "Smurf", "Kangaroo", "horse",
+   "Ratperson", "Astralion", "god", "Hill Giant", "Frost Giant", "Fire Giant",
+   "Cloud Giant", "Storm Giant", "Stone Giant", "Red Dragon", "Black Dragon",
+   "Green Dragon", "White Dragon", "Blue Dragon", "Silver Dragon", "Gold Dragon",
+   "Bronze Dragon", "Copper Dragon", "Brass Dragon", "Vampire", "Lich", "wight",
+   "Ghast", "Spectre", "zombie", "skeleton", "ghoul", "Half Giant", "Deep Gnome",
+   "gnoll", "Sylvan Elf", "Sea-Elf", "Tiefling", "Aasimar", "Solar", "Planitar",
+   "shadow", "Giant Skeleton", "Nilbog", "Houser", "Baku", "Beast Lord", "Deva",
+   "Polaris", "Demodand", "Tarasque", "Diety", "Daemon", "Vagabond",
+   "gargoyle", "bear", "bat", "cat", "dog", "ant", "ape", "baboon",
+   "bee", "beetle", "boar", "bugbear", "ferret", "fly", "gelatin", "gorgon",
+   "harpy", "hobgoblin", "kobold", "locust", "mold", "mule",
+   "neanderthal", "ooze", "rat", "rustmonster", "shapeshifter", "shrew",
+   "shrieker", "stirge", "thoul", "wolf", "worm", "bovine", "canine",
+   "feline", "porcine", "mammal", "rodent", "amphibian", "crustacean",
+   "spirit", "magical", "animal", "humanoid", "monster"
 
 Class        <string>~
 ----------------------
 The name of the class this mobile belongs to. Needs to match one of the defined classes within your game.
 Choose one from the following:
 
-"mage", "cleric", "rogue", "warrior", "necromancer", "druid", "ranger",
-"monk", "antipaladin", "paladin", "bard", "baker", "butcher", "blacksmith",
-"mayor", "king", "queen"
+   "Mage", "Cleric", "Rogue", "Warrior", "Necromancer", "Druid", "Ranger",
+   "Monk", "Antipaladin", "Paladin", "Bard",
+   "baker", "butcher", "blacksmith", "mayor", "king", "queen"
 
 Gender       <string>~
 ----------------------
 The gender of this mobile. Accepted values are:
 
-Male, Female, Neutral, Hermaphrodyte
+Male, Female, Neuter, Hermaphrodite
 
 Position     <string>~
 ----------------------
@@ -115,7 +115,7 @@ Stats1 <#1> <#2> <#3> <#4> <#5> <#6>
 ------------------------------------
 The first set of statistical values for this mobile.
 
-#1 = Alignment. Number must be between -1000 and +1000.
+#1 = Alignment. Number must be between -1000 and +1000. It will be clamped if it exceeds this range.
    -1000 to -350 is for Evil mobiles.
    -349 to +349 is for Neutral mobiles.
    +350 to +1000 is for Good mobiles.
@@ -141,7 +141,7 @@ The second set of statisical values for this mobile.
 #3 = Armor Class. This value can range from -300 to +300 but for practical purposes should be between -100 and +100.
    The lower this value is set, the harder the mobile is to hit in combat.
 #4 = Bonus hit points. This value is added on to the mobile's natural hit points.
-   Natural hit points is calculated as: ld8 + bonus. l = level, d8 meaning 8 sided dice.
+   Natural hit points is calculated as: ld8 + bonus. l = level, d8 meaning an 8 sided die.
 #5 = Number of damage dice. This value determines the number of dice to roll for determining combat damage.
 #6 = Size of damage dice. This value determines the number of sides the combat dice being rolled have.
 #7 = Additional damage added to the value rolled for combat damage.
@@ -170,41 +170,60 @@ The names of the flags this mobile has set. Separate names with spaces.
 Choose from the following table:
 
 FLAG NAME     | DESCRIPTION
-----------------------------------------------------------------------
+--------------+-------------------------------------------------------
 npc           | MUST be included for all mobs ( autoset on bootup ).
 sentinel      | Mob never moves from its room.
 scavenger     | Mob picks up items.
 innkeeper     | Mob is an Innkeeper, where PC's can rent.
 banker        | Mob is a Banker, where PC's do their banking.
-auction       | Mob is an auctioneer, where PC's conduct auctions. **
 aggressive    | Mob attacks players on site.
 stayarea      | Mob wanders, but won't leave its area.
-wimpy         | Mob will flee when wounded.
-practice      | Mob trains player class skills.
-teacher       | Mob trains player race abilities.
+wimpy	      | Mob will flee when wounded.
+pet           | Autoset for all pets, Do not use.
+nosteal       | Mob cannot be stolen from, ever.
+practice      | Mob trains player skills.
 immortal      | Mob cannot be harmed. Useful for shopkeepers :P
 deadly        | Mob Has a deadly poison.
-meta_aggr     | Mob is extremely aggressive, will attack anything it sees. Including other mobs.
+polyself      | Used for polymorphs? DONT USE.
+meta_aggr     | Mob is extremely aggressive, will attack anything it sees.
 guardian      | Mob protects its master.
-running       | Mob hunts quickly.
+boarded       | Set on a mob acting as a Skyship when the player boards.
 nowander      | Mob doesn't wander unless attacked.
 mountable     | Mob can be mounted.
 mounted	      | Mob is mounted.
 scholar       | Mob can teach languages.
 secretive     | Mob's actions aren't seen.
+hardhat       | Prevents the NPC from taking damage from falling objects.
 mobinvis      | Mob has wizinvis, equal to its level.
 noassist      | Mob won't assist other mobs.
+illusion      | Currently does nothing.
 pacifist      | Mob will never fight.
 noattack      | Mob has no physical attacks.
 annoying      | Other mobs will attack this mob.
-smith         | Mob can forge items for players.
+auction       | Mob is an auctioneer, where PC's conduct auctions. **
+proto         | Mob is a prototype. Used only by OLC system.
+mage          | Currently does nothing.
+warrior       | Currently does nothing.
+cleric        | Currently does nothing.
+rogue         | Currently does nothing.
+druid         | Currently does nothing.
+monk          | Currently does nothing.
+paladin       | Currently does nothing.
+ranger        | Currently does nothing.
+necromancer   | Currently does nothing.
+antipaladin   | Currently does nothing.
+huge          | Mob is too large to be bashed in combat.
+greet         | Mob will great people at random when they're in the same room.
+teacher       | Mob is a trainer for racial abilities.
+onmap         | Mob is on a map in the overland system.
+smith         | Mob is a blacksmith. Players can do crafting with them.
 guildauc      | Mob is an auctioneer for a guild or clan. **
 guildbank     | Mob is a banker for a guild or clan.
-guildvendor   | Mob is a shopkeeper for a guild or clan.
-guildrepair   | Mob is a repairsmith for a guild or clan.
-guildforge    | Mob can forge items for a guild or clan.
-guildidmob    | Mob can identify items for a guild or clan.
-proto         | Mob is a prototype. Used only by OLC system.
+guildvendor   | Mob is a vendor running a shop for a guild or clan.
+guildrepair   | Mob is a repair smith for a guild or clan.
+guildforge    | Mob is a blacksmith for a guild or clan.
+idmob         | Mob performs item identification services.
+guildidmob    | Mob performs item identification services for a guild or clan.
 
 ** See the room flags section of rooms.txt for information on auction houses.
 The GUILDAUC flag is used in place of the AUCTION flag for guild and clan auctioneers.
@@ -214,85 +233,120 @@ Affected            <string>~
 List of magical affects this mobile is affected by. Separate names with spaces.
 Choose from the following table:
 
-FLAG NAME     | DESCRIPTION
-----------------------------------------------------------------------
-blind         | Mob is blinded. (Kinda pointless :P)
-invisible     | Mob is invisible.
-detect_evil   | Mob can detect evil.
-detect_invis  | Mob can see invisible.
-detect_magic  | Mob can detect magic.
-detect_hidden | Mob can detect hidden players.
-hold          | Mob is paralyzed. (Kinda pointless :P)
-sanctuary     | Mob has a sanctuary spell.
-faerie_fire   | Mob is affected by a faerie fire spell.
-infrared      | Mob has infravision.
-curse         | Mob is cursed.
-poison        | Mob is poisoned. (Not much point :P)
-protect       | Mob is protected from evil.
-paralysis     | Mob is paralyzed. (Again, pointless :P)
-sneak         | Mob is sneaking.
-hide          | Mob is hiding.
-sleep         | Mob is sleeping.
-charm         | Mob is charmed.
-flying        | Mob is flying.
-pass_door     | Mob can pass through doors.
-floating      | Mob is floating.
-truesight     | Mob has True Sight (see spell).
-detect_traps  | Mob can detect traps.
-scrying       | Mob can scry.
-fireshield    | Mob is affected by a Fireshield spell.
-shockshield   | Mob is affected by a Shockshield spell.
-venomshield   | Mob is affected by a Venomshield spell.
-acidmist      | Mob is affected by an Acidmist spell.
-iceshield     | Mob is affected by an Iceshield spell.
-berserk       | Mob is berserk, will fight until dead.
-aqua_breath   | Mob can breathe underwater.
-recurringspell| Mob has a recurring spell on it. ( Not sure )
-contagious    | Mob carries a contagious disease.
-bladebarrier  | Mob is affected by a Bladebarrier spell.
-silence       | Mob cannot speak or cast spells.
-
+Effect         | Details
+---------------+-------------------------------------------------------
+blind          | Mob is blinded. (Kinda pointless :P)
+invisible      | Mob is invisible.
+detect_evil    | Mob can detect evil.
+detect_invis   | Mob can see invisible.
+detect_magic   | Mob can detect magic.
+detect_hidden  | Mob can detect hidden players.
+hold           | Mob is paralyzed. (Kinda pointless :P)
+sanctuary      | Mob has a sanctuary spell.
+faerie_fire    | Mob is affected by a faerie fire spell.
+infrared       | Mob has infravision.
+curse          | Mob is cursed.
+poison         | Mob is poisoned. (Not much point :P)
+protect        | Mob is protected from evil.
+paralysis      | Mob is paralyzed. (Again, pointless :P)
+sneak          | Mob is sneaking.
+hide           | Mob is hiding.
+sleep          | Mob is sleeping.
+charm          | Mob is charmed.
+flying         | Mob is flying.
+pass_door      | Mob can pass through doors.
+floating       | Mob is floating.
+truesight      | Mob has True Sight (see spell).
+detect_traps   | Mob can detect traps.
+scrying        | Mob can scry.
+fireshield     | Mob is affected by a Fireshield spell.
+shockshield    | Mob is affected by a Shockshield spell.
+venomshield    | Mob is affected by a Venomshield spell.
+acidmist       | Mob is affected by an Acidmist spell.
+iceshield      | Mob is affected by an Iceshield spell.
+wizardeye      | Player affected by the Wizard Eye spell.
+berserk        | Mob is berserk, will fight until dead.
+aqua_breath    | Mob can breathe underwater.
+recurringspell | Mob has a recurring spell on it. ( Not sure )
+contagious     | Mob carries a contagious disease.
+bladebarrier   | Mob is affected by a Bladebarrier spell.
+silence        | Mob cannot speak or cast spells.
+growth         | Mob is too large to be bashed.
+tree_travel    | Can pass through thick forest that is otherwise impassible.
+passdoor       | Can pass through otherwise closed doors.
+quiv           | Set by the game when a player uses the Quivering Palm skill.
+                 Can only be used once per day.
+haste          | Doubles the number of attacks in combat.
+slow           | Halves the number of attacks in combat.
+notrack        | The target cannot be tracked using the track skill.
+elvensong      | Set by the game when a player uses the Elvensong skill.
+                 Can only be used once per day.
+bladesong      | Set by the game when a player uses the Bladesong skill.
+                 Can only be used once per day.
+reverie        | Set by the game when a player uses the Reverie skill.
+                 Can only be used once per day.
+tenacity       | Improves a player's armor class by -4 when in use.
+deathsong      | Set by the game when a player uses the Deathsong skill.
+                 Can only be used once per day.
+possess        | Set by the game when an immortal uses the switch command.
+enlighten      | Set by the game when a player uses the Enlightenment skill.
+                 Can only be used once per day.
+treetalk       | Set by the game when a player uses the Treetalk skill.
+                 Lasts for one hour.
+spamguard      | Set by the game when a player is flagged as a command spammer.
+                 This can last progressively longer depending on how often the
+                 player is flagged.
+bash           | Set by the game when a player has used the Bash skill.
+                 Victim is affected for 4 combat rounds.
 
 Bodyparts           <string>~
 -----------------------------
 The list of body parts this mobile has. Separate names with spaces.
 Choose from the following table:
 
-FLAG NAME     | DESCRIPTION
-----------------------------------------------------------------------
-head          | Mob has a head.
-arms          | Mob has arms.
-legs          | Mob has legs.
-heart         | Mob has a heart.
-brains        | Mob has brains.
-guts          | Mob has guts.
-hands         | Mob has hands.
-feet          | Mob has feet.
-fingers       | Mob has fingers.
-ear           | Mob has ears.
-eye           | Mob has eyes.
-long_tongue   | Mob has a long tongue.
-eyestalks     | Mob has eyestalks.
-tentacles     | Mob has tentacles.
-fins          | Mob has fins.
-wings         | Mob has wings.
-tail          | Mob has a tail.
-scales        | Mob has scales.
-haunches      | Mob has haunches.
-hooves        | Mob has hooves.
-paws          | Mob has paws.
-forelegs      | Mob has forelegs.
-feathers      | Mob has feathers.
+Part          | Details
+--------------+-----------------------------------
+head          | Has a head. Most mobs probably need this.
+arms          | Has arms. Typically used for humanoid forms.
+legs          | Has legs. Can be for any humanoid or animal form.
+heart         | Has a heart. Anything that bleeds should have this.
+brains        | Has a brain. Any living form should probably have this.
+guts          | Has intestines, stomach, etc.
+hands         | Has hands.
+feet          | Has feet.
+ankles        | Has ankles.
+fingers       | Has fingers.
+ear           | Has ears.
+eye           | Has eyes.
+long_tongue   | Has an unusually long tongue.
+eyestalks     | Has eyestalks.
+tentacles     | Has tentacles.
+fins          | Has fins.
+wings         | Has wings.
+tail          | Has a tail. Not useful in combat.
+scales        | Has scales. Not useful in combat.
+claws         | Has claws. Can be used in combat.
+fangs         | Has fangs. Can be used in combat.
+horns         | Has horns. Can be used in combat.
+tusks         | Has tusks. Can be used in combat.
+tailattack    | Has a tail which is useful in combat.
+sharpscales   | Has sharp scales which are useful in combat.
+beak          | Has a beak. Can be used in combat.
+haunches      | Has haunches.
+hooves        | Has hooves.
+paws          | Has paws.
+forelegs      | Has forelegs.
+feathers      | Has feathers.
+shell         | Has a hard shell.
 
-***Combat parts***
+Body parts dictate what equipment slots can be available on an NPC as well as
+what sort of gore drops are made when one is killed. These flags should be set
+appropriately for the type of mob being created.
 
-claws         | Mob has claws.
-fangs         | Mob has fangs.
-horns         | Mob has horns.
-tusks         | Mob has tusks.
-tailattack    | Mob uses its tail for a weapon.
-sharpscales   | Mob has sharp scales.
-beak          | Mob has a beak.
+If no body parts are set manually, then the game will generate a default set
+for instances of mobs based on their race data. If the mob's race data does not
+have any body parts set, then the code will generate a generic set based on
+certain racial traits.
 
 Resist              <string>~
 -----------------------------
@@ -317,65 +371,70 @@ Attacks             <string>~
 List of special attack flags this mobile has.
 Choose from the following:
 
-FLAG NAME     | DESCRIPTION
-----------------------------------------------------------------------
-bite          | Mob can bite.
-claws         | Mob can use its claws.
-tail          | Mob can use its tail.
-sting         | Mob can sting.
-punch         | Mob can use the punch skill.
-kick          | Mob can use the kick skill.
-trip          | Mob can use the trip skill.
-bash          | Mob can use the bash skill.
-stun          | Mob can use the stun skill.
-gouge         | Mob can use the gouge skill.
-backstab      | Mob can use the backstab skill.
-drain         | Mob can cast energy drain.
-firebreath    | Mob can breathe fire.
-frostbreath   | Mob can breathe frost.
-acidbreath    | Mob can breathe acid.
-lightnbreath  | Mob can breathe lightning.
-gasbreath     | Mob can breathe poison gas.
-poison        | Mob can cast poison.
-nastypoison   | Mob has a deadly poison. (Not operational)
-gaze          | Mob has a gaze attack. (Not operational)
-blindness     | Mob can cast blindness.
-causeserious  | Mob can cast cause serious.
-earthquake    | Mob can cast earthquake.
-causecritical | Mob can cast cause critical.
-curse         | Mob can cast curse.
-flamestrike   | Mob can cast flamestrike.
-harm          | Mob can cast harm.
-fireball      | Mob can cast fireball.
-colorspray    | Mob can cast color spray.
-weaken        | Mob can cast weakness.
-spiralblast   | Mob can cast spiral blast.
+Attack        | Details
+--------------+-----------------------------------
+bite          | Uses its teeth to bite with.
+claws         | Uses its claws to scratch with.
+tail          | Uses its tail to lash with.
+sting         | Has a stinger to stab with.
+punch         | Can punch for unarmed damage.
+kick          | Can kick for unarmed damage.
+trip          | Can use the trip skill.
+bash          | Does backstab damage if successful.
+stun          | Can use the stun skill.
+gouge         | Can use the gouge skill.
+backstab      | Can use the backstab or circle skill.
+age           | Ages the victim 1 year when successful.
+drain         | Casts the Energy Drain spell.
+firebreath    | Has a fire breath attack available.
+frostbreath   | Has a frost breath attack available.
+acidbreath    | Has an acid breath attack available.
+lightnbreath  | Has a lightning breath attack available. [Flag spelling intentional]
+gasbreath     | Has a gas breath attack available.
+poison        | Can cause poison damage.
+nastypoison   | Can cause deadly poison damage.
+gaze          | Currently does nothing.
+blindness     | Can use the Blindness spell.
+causeserious  | Can use the Cause Serious Wounds spell.
+earthquake    | Can use the Earthquake spell.
+causecritical | Can use the Cause Critical Wounds spell.
+curse         | Can use the Curse spell.
+flamestrike   | Can use the Flamestrike spell.
+harm          | Can use the Harm spell.
+fireball      | Can use the Fireball spell.
+colorspray    | Can use the Color Spray spell.
+weaken        | Can use the Weakness spell.
+spiralblast   | Can use the Spiral Blast spell.
 
+Attack types may be combined, but try not to make the NPC too overpowered.
 
 Defenses            <string>~
 -----------------------------
 List of special defense flags this mobile has set.
 Choose from the following:
 
-FLAG NAME     | DESCRIPTION
-----------------------------------------------------------------------
-parry         | Mob can use the parry skill.
-dodge         | Mob can use the dodge skill.
-heal          | Mob can cast heal.
-curelight     | Mob can cast cure light.
-cureserious   | Mob can cast cure serious.
-curecritical  | Mob can cast cure critical.
-dispelmagic   | Mob can cast dispel magic.
-dispelevil    | Mob can cast dispel evil.
-sanctuary     | Mob can cast sanctuary.
-shield        | Mob can cast shield.
-bless         | Mob can cast bless.
-stoneskin     | Mob can cast stoneskin.
-teleport      | Mob teleports when wounded.
-disarm        | Mob can use the disarm skill.
-grip          | Mob has the grip skill.
-truesight     | Mob can cast truesight.
+Defense       | Details
+--------------+-----------------------------------
+parry         | Allows the NPC to parry attacks.
+dodge         | Allows the NPC to dodge attacks.
+heal          | Allows the NPC to cast the Heal spell.
+curelight     | Allows the NPC to cast Cure Light Wounds.
+cureserious   | Allows the NPC to cast Cure Serious Wounds.
+curecritical  | Allows the NPC to cast Cure Critical Wounds.
+dispelmagic   | Allows the NPC to cast Dispel Magic.
+dispelevil    | Allows the NPC to cast Dispel Evil.
+sanctuary     | Allows the NPC to cast Sanctuary.
+fireshield    | Allows the NPC to cast Fireshield.
+shockshield   | Allows the NPC to cast Shockshield.
+shield        | Unused.
+bless         | Unused.
+stoneskin     | Unused.
+teleport      | Unused.
+disarm        | Allows the NPC to disarm opponents.
+grip          | Fortifies the NPC against disarm attempts.
+truesight     | Unused.
 
+Defense types may be combined, but try not to make the NPC too overpowered.
 
 If this mobile is going to be a shopkeeper, then the following section needs to be added at this point:
 
@@ -391,7 +450,7 @@ The shop information values.
 #8 = Hour of the day the shop opens.
 #9 = Hour of the day the shop closes.
 
-For a 24hr shop, specify open of 0 and close of 28 ( unmodified code ).
+For a 28hr shop, specify open of 0 and close of 28 ( unmodified code ). Yes, the game's unmodified clock is a 28hr day.
 
 If this mobile is going to be a repairsmith, then the following section needs to be added at this point:
 
@@ -407,7 +466,7 @@ The shop information values.
 #6 = Hour of the day the shop opens.
 #7 = Hour of the day the shop closes.
 
-For a 24hr shop, specify open of 0 and close of 28 ( unmodified code ).
+For a 28hr shop, specify open of 0 and close of 28 ( unmodified code ). Yes, the game's unmodified clock is a 28hr day.
 
 #MUDPROG
 #ENDPROG

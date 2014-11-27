@@ -1,6 +1,7 @@
-How to add a new continent to the Overland - Version 3.01
+How to add a new continent to the Overland - Version 3.02
 ---------------------------------------------------------
 
+Version 3.02 - Samson: Updated for current codebase standards on Nov. 26, 2014.
 Further typo and logic fixes provided by RazorZero 9/23/03
 Modified by Kilroy of The Obsidian Palace 6/13/2003
 Modified by Kilroy of The Obsidian Palace 5/9/2002
@@ -18,9 +19,9 @@ effort. The file should be saved as a png graphic.
 2. In overland.h 
 
 2.1 In the Definitions at the Top add
-#define OVERLAND_XXXXXXX VNUMS under the other #definitions
-where XXXXXXX is the name of the Continent, and VNUMS is the 1st VNUM assigned
-into your continent.are file
+const int OVERLAND_XXX = VNUM;
+under the other constant values. XXX is the name of the Continent,
+and VNUM is the 1st VNUM assigned into your continent.are file.
 
 2.2 Then just below that, in this enum:
 
@@ -146,7 +147,7 @@ And add below that
 
 Where xxxxxx = your continent name & XXXXXX = the ACON that you will define in step 5.
 
-4. In build.c:
+4. In build.cpp:
 
 4.1 Beneath this section:
 

@@ -5,7 +5,7 @@ Ok. This mini-doc assumes you have the codebase successfully compiled
 with the multiport options enabled. If not, you need to go back and do
 that part first.
 
-1. In the mudmsg.c file, there is a line like this:
+1. In the mudmsg.cpp file, there is a line like this:
 
 #define IPC_KEY_FILE "/home/alsherok/mudmsgkeyDONTDELETEME"
 

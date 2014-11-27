@@ -1,24 +1,29 @@
-Adding a new class
+Adding a New Class
 ------------------
 
-Last modified by Samson, 6/19/03
+Last Modified by Samson, Nov. 26, 2014
 
-1. In mud.h, find MAX_CLASS and increase by one. If you're changing a
-   class into a new one, this isn't necessary.
+1. In mudcfg.h, find MAX_CLASS. You will need to increase this if your
+   MUD has filled all 20 playable class slots. If this is the case,
+   it'll be a big undertaking since there are some NPC-only classes
+   listed in the tables.
 
-2. In const.c, find the npc_class table. Change the first empty slot to 
+2. Add your new class to the class_types enum list in mudcfg.h.
+   In stock code, this list ends with CLASS_PC19 as the last member.
+   If all of the PC_* slots are gone, you'll need to do some major organizing
+   to address this.
+
+3. In const.cpp, find the npc_class table. Change the first empty slot to 
    the name of your new class. You should be changing something like "pc13".
-
-3. Add your new class to the class_types list in mud.h. In stock code, this
-   list ends with CLASS_BARD as the last member.
+   Pay attention to the comments in the code there, they are important.
 
 4. At this point, your done with the code. Make clean, and recompile.
    Don't reboot yet though.
 
 5. Using an existing class file, copy it's contents to a new file.
 
-6. Set the class# in the file to 1 LESS than MAX_CLASS.
-   ( Starts countng with 0 ).
+6. Set the class# in the file to the number that matches the slot you put it
+   in in mudcfg.h. Zero is the first value. Stock code ends with 19.
 
 7. At this point, you're ready to upload the class file.
    Don't reboot just yet.

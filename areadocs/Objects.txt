@@ -1,6 +1,6 @@
 === The #OBJECT block
 
-Last modified by Samson, Dec. 25, 2006
+Last Modified by Samson, Nov. 26, 2014
 
 Objects add life to an otherwise boring place. Afterall, people came to this place to loot!
 A well constructed area should have several objects available in it. Whether they are available
@@ -30,12 +30,12 @@ Type         <string>~
 The typoe of object this instance represents.
 Choose from the following table:
 
-   "NONE", "light", "scroll", "wand", "staff", "weapon", "scabbard",
-   "treasure", "armor", "potion", "clothing", "furniture", "trash",
+   "NONE", "light", "scroll", "wand", "staff", "weapon", "scabbard", "puddle",
+   "treasure", "armor", "potion", "clothing", "furniture", "trash", "journal",
    "container", "drinkcon", "key", "food", "money", "pen", "boat",
    "corpse", "corpse_pc", "fountain", "pill", "blood", "bloodstain",
    "scraps", "pipe", "herbcon", "herb", "incense", "fire", "book", "switch",
-   "lever", "pullchain", "button", "dial", "rune", "runepouch", "match", "trap",
+   "lever", "pullchain", "button", "rune", "runepouch", "match", "trap",
    "map", "portal", "paper", "tinder", "lockpick", "spike", "disease", "oil",
    "fuel", "piece", "tree", "missileweapon", "projectile", "quiver", "shovel",
    "salve", "cook", "keyring", "odor", "campgear", "drinkmix", "instrument", "ore"
@@ -62,100 +62,120 @@ Flags        <string>~
 A space separated list of flags this object has.
 Choose from the following table:
 
-FLAG NAME       | DESCRIPTION
-----------------------------------------------------------------------
-glow            | Item glows.
-hum             | Item makes noise, thieves can't sneak.
-metal           | Item has +20% resistance to damage. ( metallic composition )
-mineral	        | Currently inactive.
-loyal           | Item returns to PC when disarmed (PK only).
-organic         | Item has +20% suceptibility to damage.
-invis           | Item cannot be seen without detect invisible.
-magic           | Item is magical, cannot be enchanted.
-nodrop          | Item cannot be dropped, is cursed.
-bless           | Item has +20% resistance to damage. ( magical resistance )
-antigood        | Item cannot be used by Good alignment. (>+350)
-antievil        | Item cannot be used by Evil alignment. (<-350)
-antineutral     | Item cannot be used by Neutral alignment (-350 to +350)
-anticleric      | Item cannot be used by clerics.
-antimage        | Item cannot be used by mages.
-antirogue       | Item cannot be used by rogues.
-antiwarrior     | Item cannot be used by warriors.
-antibard        | Item cannot be used by bards.
-antidruid       | Item cannot be used by druids.
-noremove        | Item cannot be removed when worn, is cursed.
-twohand         | Item requires two hand to use it.
-dark            | Currently this flag does nothing.
-evil            | Item will glow red with detect evil spell.
-donation        | Prevents "get all" when item is a container.
-hidden          | Item is hidden, need search skill to locate it.
-poisoned        | Item has poison damage.
-covering        | Item is able to cover other items (see 'help layers' in game)
-deathrot        | Item disappears when owner dies.
-buried          | Item is underground, and needs to be dug up.
-proto           | Item is a prototype. Used only by OLC system.
-nolocate        | Item cannot be located using the locate object spell.
-groundrot       | Item rots when on the ground.
-antimonk        | Item cannot be used by monks.
-brittle         | Item breaks easily.
-resistant       | Item has a +20% natural resistance to damage.
-immune          | Currently inactive.
-antimen	        | Item cannot be used by males.
-antiwomen       | Item cannot be used by females.
-antineuter      | Item cannot be used by neuters.
-antiherma       | Item cannot be used by hermaphrodytes.
-antisun         | Currently inactive.
-antiranger      | Item cannot be used by rangers.
-antipaladin     | Item cannot be used by paladins.
-antinecro       | Item cannot be used by necromancers.
-antiapal        | Item cannot be used by antipaladins.
-onlycleric      | Item can only be used by clerics.
-onlymage        | Item can only be used by mages.
-onlyrogue       | Item can only be used by rogues.
-onlywarrior     | Item can only be used by warriors.
-onlybard        | Item can only be used by bards.
-onlydruid       | Item can only be used by druids.
-onlymonk        | Item can only be used by monks.
-onlyranger      | Item can only be used by rangers.
-onlypaladin     | Item can only be used by paladins.
-onlynecro       | Item can only be used by necromancers.
-onlyapal        | Item can only be used by antipaladins.
-personal        | A personal item. Must also set the item's owner to use this.
-sindhae         | A Sindhae prize item.
-mustmount       | Item can only be used while mounted.
-noauction       | Item cannot be auctioned.
-thrown          | Item is classified as a throwable.
+Flag          | Details
+--------------+-------------------------------------------------------
+glow          | Reveals objects in dark rooms. Also nullifies invisibility.
+hum           | Object hums. Overrides darkness and invisibility.
+metal         | The object is 20% more resistant to damage.
+bless         | The object is 20% more resistant to damage.
+                This will stack with the metal flag.
+organic       | The object is 20% more susceptible to damage.
+resistant     | Currently unused.
+immune        | Currently unused.
+brittle       | Currently unused.
+mineral       | Currently unused.
+evil          | Currently does nothing other than display a red aura in lists.
+loyal         | The object cannot be separated from its owner in combat.
+invis         | The object is invisible. It will not be detectable without
+                magic or one of the overriding flags.
+hidden        | An object that can be revealed by searching a room.
+covering      | This object is covering other objects.
+buried        | An object buried in the ground. Must be dug up.
+poisoned      | A poisoned weapon. Inflicts poison damage on its victim.
+twohand       | An object requiring two free hands before it can be equipped.
+mustmount     | An object that requires being mounted before it can be worn.
+thrown        | An object that can be thrown, such as a throwing dagger.
+magic         | Object is enchanted and cannot be further enchanted.
+nodrop        | A cursed object. It cannot be dropped normally.
+noremove      | A cursed object. It cannot be unequipped normally if worn.
+nolocate      | The object will not be revealed by locate spells.
+noauction     | This object cannot be auctioned.
+antigood      | Cannot be used by good aligned players.
+antievil      | Cannot be used by evil aligned players.
+antineutral   | Cannot be used by neutral aligned players.
+anticleric    | Cannot be used by clerics.
+antimage      | Cannot be used by mages.
+antirogue     | Cannot be used by rogues.
+antiwarrior   | Cannot be used by warriors.
+antibard      | Cannot be used by bards.
+antidruid     | Cannot be used by druids.
+antimonk      | Cannot be used by monks.
+antiranger    | Cannot be used by rangers.
+antipaladin   | Cannot be used by paladins.
+antiapal      | Cannot be used by antipaladins.
+antinecro     | Cannot be used by necromancers.
+antimen       | Cannot be used by males.
+antiwomen     | Cannot be used by females.
+antineuter    | Cannot be used by neuters.
+antiherma     | Cannot be used by hermaphrodites.
+antisun       | Currently unused.
+onlycleric    | Only clerics can use this.
+onlymage      | Only mages can use this.
+onlyrogue     | Only rogues can use this.
+onlywarrior   | Only warriors can use this.
+onlybard      | Only bards can use this.
+onlydruid     | Only druids can use this.
+onlymonk      | Only monks can use this.
+onlyranger    | Only rangers can use this.
+onlypaladin   | Only paladins can use this.
+onlyapal      | Only antipaladins can use this.
+onlynecro     | Only necromancers can use this.
+permanent     | Once acquired, this object can never be removed.
+                Suitable for use as a tattoo or a branding etc.
+nofill        | Object cannot be used as a source to fill liquid containers.
+personal      | Only the item's designated owner can use it.
+                May not be auctioned or sold.
+                Cannot be looted by others if dropped.
+deathrot      | This object will disintegrate when its owner is killed.
+deathdrop     | This object will fall to the ground when its owner is killed.
+groundrot     | This object will disintegrate if left on the ground too long.
+inventory     | Store inventory. Has an additional 20% resistance to damage
+                while still owned by a shopkeeper. When killed, if the
+                object is still on the shopkeeper, it will disintegrate.
+lodged        | Set when a projectile becomes lodged in a target.
+                Additional damage is done when the victim dislodges it.
+sindhae       | Set on a prize item redeemed in the Sindhae Challenge.
+auction       | Set when an item is currently being bid on in an auction.
+donated       | Set when an object is dropped in a donation room.
+                Prevents the object from being auctioned by players or sold
+                to shopkeepers.
+clanobject    | Set when a clan/guild leader creates one of their designated
+                objects. When a weapon has this flag, it cannot be poisoned.
+clancorpse    | Designates the corpse of a clan member killed during PK.
+                Prevents various actions from being performed by someone
+                other than the person who killed them.
+onmap         | Set when the object is on an overland map.
+proto         | An unfinished object.
 
 WFlags       <string>~
 ----------------------
 A space separated list of body locations the object can be worn on.
 Choose from the following table:
 
-FLAG NAME       | DESCRIPTION
-----------------------------------------------------------------------
-take            | Item can be picked up by players.
-finger          | Worn on fingers (2 slots)
-neck            | Worn on neck    (2 slots)
-body            | Worn on the body
-head            | Worn on the head
-legs            | Worn on the legs
-feet            | Worn on the feet
-hands           | Worn on the hands
-arms            | Worn on the arms
-shield          | Used as a shield
-about           | Worn about the body
-waist           | Worn on the waist
-wrist           | Worn on the wrists (2 slots)
-wield           | Used as a weapon
-hold            | Item is held in hand
-throw           | Item can be thrown (no code support yet)
-dual            | Weapon can be dual wielded
-ears            | Worn on the ears
-eyes            | Worn over the eyes
-missile         | Weapon is a missile shooter
-back            | Worn on the back
-face            | Worn on the face
-ankle           | Worn on the ankle (2 slots)
+Flag   | Details
+-------+------------------------------------------
+take   | The item can be picked up.
+finger | Worn on the fingers. (2 slots)
+neck   | Worn around the neck. (2 slots)
+body   | Worn on the body.
+head   | Worn on the head.
+legs   | Worn on the legs.
+feet   | Worn on the feet.
+hands  | Worn on the hands.
+arms   | Worn on the arms.
+shield | Equipped as a shield.
+about  | Worn around the body. Like a cloak.
+waist  | Worn around the waist.
+wrist  | Worn on the wrists. (2 slots)
+wield  | Wielded as a weapon.
+hold   | Held in a hand. Like a torch etc.
+ears   | Worn on the ears.
+eyes   | Worn over the eyes.
+back   | Worn on the back.
+ankle  | Worn around the ankles. (2 slots)
+face   | Worn on the face.
+hooves | Worn on the hooves.
+tail   | Worn on the tail.
 
 Values         <#0> <#1> <#2> <#3> <#4> <#5> <#6> <#7> <#8> <#9> <#10>
 ----------------------------------------------------------------------
@@ -365,12 +385,6 @@ Item type: button
    value[2] vnum
    value[3] vnum/value
 
-Item type: dial
-   value[0] flags
-   value[1] vnum or sn
-   value[2] vnum
-   value[3] vnum/value
-
 Item type: trap
    value[0] charges
    value[1] type
@@ -407,13 +421,16 @@ Item type: piece
    value[0] Vnum of other half of the object.
    value[1] Vnum of the combined object.
 
+Item type: journal
+   value[0] Number of pages the journal has. Has a limit of 50 pages.
+
 Stats       <#1> <#2> <#3> <#4> <#5> <string1> <string2> <string3>
----------------------------------------------------------------
+------------------------------------------------------------------
 Other statistics which affect this object.
 
 #1 = Weight. How much this object weighs in pounds.
 #2 = Cost. What this object costs in gold pieces.
-#3 = Ego. The relative power or personality this item holds, usually calculated automatically.
+#3 = Ego. The relative power or personality this item holds. Set to -2 to have this calculated automatically.
 #4 = Limit. The hard limit of how many copies of this object are allowed to exist in play.
      This limit is enforced even with players who are logged off if the item's "ego" value
      is over 25. For non-limited items, specify 9999 here.
@@ -438,7 +455,7 @@ A pill, potion or scroll should contain 3 strings. Specify "none" if one or more
 A staff or wand uses only the first string. Extras will be ignored.
 A salve uses the first two slots. The third is ignored.
 
-The single quotes around the spell names re required.
+The single quotes around the spell names are required.
 
 #EXDESC
 #ENDEXDESC
