@@ -2081,9 +2081,9 @@ void fwrite_area_header( area_data * area, FILE * fpout )
       fprintf( fpout, "ResetFreq       %d\n", area->reset_frequency );
    if( area->flags.any(  ) )
       fprintf( fpout, "Flags           %s~\n", bitset_string( area->flags, area_flags ) );
-   fprintf( fpout, "Climate         %d %d %d\n", area->weather->climate_temp, area->weather->climate_precip, area->weather->climate_wind );
    fprintf( fpout, "Treasure        %d %d %d %d %d %d %d %d\n",
             area->tg_nothing, area->tg_gold, area->tg_item, area->tg_gem, area->tg_scroll, area->tg_potion, area->tg_wand, area->tg_armor );
+   fprintf( fpout, "Climate         %d %d %d\n", area->weather->climate_temp, area->weather->climate_precip, area->weather->climate_wind );
 
    /*
     * neighboring weather systems - FB 
@@ -2380,6 +2380,9 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       fwrite_afk_affect( fpout, af );
    }
 
+   // Recursive function that saves the nested resets.
+   save_reset_level( fpout, room->resets, 0 );
+
    list < exit_data * >::iterator ex;
    for( ex = room->exits.begin(  ); ex != room->exits.end(  ); ++ex )
    {
@@ -2390,9 +2393,6 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
 
       fwrite_afk_exit( fpout, pexit );
    }
-
-   // Recursive function that saves the nested resets.
-   save_reset_level( fpout, room->resets, 0 );
 
    list < extra_descr_data * >::iterator ed;
    for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
