@@ -68,6 +68,12 @@ void remove_roster( clan_data * clan, const string & name )
 {
    list < roster_data * >::iterator mem;
 
+   if( !clan )
+   {
+      bug( "%s: Invalid clan pointer!", __func__ );
+      return;
+   }
+
    for( mem = clan->memberlist.begin(  ); mem != clan->memberlist.end(  ); ++mem )
    {
       roster_data *member = *mem;
@@ -113,6 +119,12 @@ void update_roster( char_data * ch )
 void remove_all_rosters( clan_data * clan )
 {
    list < roster_data * >::iterator member;
+
+   if( !clan )
+   {
+      bug( "%s: Invalid clan pointer!", __func__ );
+      return;
+   }
 
    for( member = clan->memberlist.begin(  ); member != clan->memberlist.end(  ); )
    {

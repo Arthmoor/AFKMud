@@ -642,7 +642,9 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
             if( clan != nullptr )
             {
                clan_data *pclan = get_clan( clan );
-               remove_roster( pclan, name );
+
+               if( pclan ) // Check, cause there may be nothing there for some reason.
+                  remove_roster( pclan, name );
             }
             ++deleted;
             STRFREE( clan );
@@ -667,7 +669,9 @@ void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
                if( clan != nullptr )
                {
                   clan_data *pclan = get_clan( clan );
-                  remove_roster( pclan, name );
+
+                  if( pclan ) // Check, cause there may be nothing there for some reason.
+                     remove_roster( pclan, name );
                }
                ++deleted;
                STRFREE( clan );
