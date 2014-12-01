@@ -875,7 +875,6 @@ void mobile_update( void )
            * && !IS_EXIT_FLAG( pexit, EX_CLOSED ) - Test to see if mobs will open doors like this. 
            */
           && !IS_EXIT_FLAG( pexit, EX_WINDOW ) && !IS_EXIT_FLAG( pexit, EX_NOMOB )
-          && ( ch->has_aflag( AFF_PASS_DOOR ) && !IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) )
           /*
            * Keep em from wandering through my walls, Marcus 
            */
@@ -893,8 +892,18 @@ void mobile_update( void )
          if( pexit->to_room->sector_type == SECT_RIVER && !ch->has_aflag( AFF_AQUA_BREATH ) )
             continue;
 
-         if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !pexit->to_room->flags.test( ROOM_NO_MOB ) )
+         // Is it closed? If the mob doesn't have passdoor, OR the exit is passdoor-proof, have them try and open it first.
+         if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) )
             cmdf( ch, "open %s", pexit->keyword );
+
+         // Is it STILL closed? Is it marked no passdoor? Bail out.
+         if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) )
+            continue;
+
+         // Yes, I know, this is probably not very efficient, but... if the mob does not have passdoor and it's still closed, then we're done here.
+         if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !ch->has_aflag( AFF_PASS_DOOR ) )
+            continue;
+
          retcode = move_char( ch, pexit, 0, pexit->vdir, false );
 
          /*

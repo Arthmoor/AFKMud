@@ -1804,7 +1804,7 @@ void load_area_file( const string & filename, bool isproto )
       return;
    }
 
-   // #AREA header present, read past it. We want the version header.
+   // Found #AREA, let the process begin!
    if( !str_cmp( word, "AREA" ) )
    {
       tarea = create_area();
@@ -1814,6 +1814,7 @@ void load_area_file( const string & filename, bool isproto )
    }
    else
    {
+      // If you found #VERSION first though, it's a SmaugWiz zone or it's invalid.
       if( !str_cmp( word, "VERSION" ) )
       {
          int temp = fread_number( fpArea );

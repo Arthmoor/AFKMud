@@ -738,7 +738,7 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
    }
 
    if( shopmob )
-      fprintf( fp, "%s", "EndMobile\n\n" );
+      fprintf( fp, "%s", "EndVendor\n\n" );
 
    mob->de_equip(  );
    if( !mob->carrying.empty(  ) )
