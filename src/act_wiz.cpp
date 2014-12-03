@@ -916,7 +916,7 @@ CMDF( do_rstat )
    {
       list < extra_descr_data * >::iterator ex;
 
-      ch->print( "Extra description keywords:\r\n&G" );
+      ch->print( "\r\nExtra description keywords:\r\n&G" );
       for( ex = location->extradesc.begin(  ); ex != location->extradesc.end(  ); ++ex )
       {
          extra_descr_data *ed = *ex;
@@ -924,10 +924,10 @@ CMDF( do_rstat )
          ch->print( ed->keyword );
          ch->print( " " );
       }
-      ch->print( "&w'.\r\n\r\n" );
+      ch->print( "&w\r\n" );
    }
 
-   ch->print( "Permanent affects: " );
+   ch->print( "\r\nPermanent affects: " );
    if( ch->in_room->permaffects.empty(  ) )
       ch->print( "&GNone&w\r\n" );
    else
@@ -960,42 +960,56 @@ CMDF( do_rstat )
       ch->print( "&w\r\n" );
    }
 
-   list < char_data * >::iterator ich;
-   ch->print( "Characters/Mobiles in the room:\r\n" );
-   for( ich = location->people.begin(  ); ich != location->people.end(  ); ++ich )
+   // Don't bother if nobody is in it
+   if( !location->people.empty() )
    {
-      char_data *rch = *ich;
+      list < char_data * >::iterator ich;
 
-      if( ch->can_see( rch, false ) )
-         ch->printf( "(&G%d&w)&G%s&w\r\n", ( rch->isnpc(  )? rch->pIndexData->vnum : 0 ), rch->name );
+      ch->print( "\r\nCharacters/Mobiles in the room:\r\n" );
+      for( ich = location->people.begin(  ); ich != location->people.end(  ); ++ich )
+      {
+         char_data *rch = *ich;
+
+         if( ch->can_see( rch, false ) )
+            ch->printf( "(&G%d&w)&G%s&w\r\n", ( rch->isnpc(  ) ? rch->pIndexData->vnum : 0 ), rch->name );
+      }
    }
 
-   list < obj_data * >::iterator iobj;
-   ch->print( "\r\nObjects in the room:\r\n" );
-   for( iobj = location->objects.begin(  ); iobj != location->objects.end(  ); ++iobj )
+   // Don't bother if there are no objects
+   if( !location->objects.empty() )
    {
-      obj_data *obj = *iobj;
+      list < obj_data * >::iterator iobj;
 
-      if( ch->can_see_obj( obj, false ) )
-         ch->printf( "(&G%d&w)&G%s&w\r\n", obj->pIndexData->vnum, obj->name );
+      ch->print( "\r\nObjects in the room:\r\n" );
+      for( iobj = location->objects.begin(  ); iobj != location->objects.end(  ); ++iobj )
+      {
+         obj_data *obj = *iobj;
+
+         if( ch->can_see_obj( obj, false ) )
+            ch->printf( "(&G%d&w)&G%s&w\r\n", obj->pIndexData->vnum, obj->name );
+      }
+      ch->print( "\r\n" );
    }
-   ch->print( "\r\n" );
 
+   // Don't bother if there are no exits
    if( !location->exits.empty(  ) )
-      ch->print( "------------------- EXITS -------------------\r\n" );
-
-   int cnt = 0;
-   list < exit_data * >::iterator ex;
-   for( ex = location->exits.begin(  ); ex != location->exits.end(  ); ++ex )
    {
-      exit_data *pexit = *ex;
+      int cnt = 0;
+      list < exit_data * >::iterator ex;
 
-      ch->printf( "%2d) &G%-2s &wto &G%-5d  &wKey: &G%-5d  &wKeywords: &G%s&w  Flags: &G%s&w.\r\n",
-                  ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
-                  pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
+      ch->print( "\r\n------------------- EXITS -------------------\r\n" );
 
-      if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
-         ch->printf( "    &wExit coordinates: &G%d&wX &G%d&wY\r\n", pexit->mx, pexit->my );
+      for( ex = location->exits.begin(  ); ex != location->exits.end(  ); ++ex )
+      {
+         exit_data *pexit = *ex;
+
+         ch->printf( "%2d) &G%-2s &wto &G%-5d  &wKey: &G%-5d  &wKeywords: &G%-12s&w  Flags: &G%s&w\r\n",
+                     ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
+                     pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
+
+         if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
+            ch->printf( "    &wExit coordinates: &G%d&wX &G%d&wY\r\n", pexit->mx, pexit->my );
+      }
    }
 }
 

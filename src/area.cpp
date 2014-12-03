@@ -975,11 +975,12 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
          case 'R':
             if( !str_cmp( word, "Race" ) )
             {
-               short race = get_npc_race( fread_flagstring( fp ) );
+               const char *race_text = fread_flagstring( fp );
+               short race = get_npc_race( race_text );
 
                if( race < 0 || race >= MAX_NPC_RACE )
                {
-                  bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __func__, pMobIndex->vnum );
+                  bug( "%s: vnum %d: Mob has invalid race: %s. Defaulting to monster.", __func__, pMobIndex->vnum, race_text );
                   race = get_npc_race( "monster" );
                }
 

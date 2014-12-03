@@ -499,7 +499,8 @@ void hunt_vic( char_data * ch )
           && !IS_EXIT_FLAG( pexit, EX_LIGHT )
           && !IS_EXIT_FLAG( pexit, EX_CRUMBLING )
           && !pexit->to_room->flags.test( ROOM_NO_MOB )
-          && !pexit->to_room->flags.test( ROOM_DEATH ) && ( !ch->has_actflag( ACT_STAY_AREA ) || pexit->to_room->area == ch->in_room->area ) )
+          && !pexit->to_room->flags.test( ROOM_DEATH )
+          && ( !ch->has_actflag( ACT_STAY_AREA ) || pexit->to_room->area == ch->in_room->area ) )
       {
          if( pexit->to_room->sector_type == SECT_WATER_NOSWIM && !ch->has_aflag( AFF_AQUA_BREATH ) )
             return;
