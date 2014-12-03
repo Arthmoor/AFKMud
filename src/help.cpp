@@ -129,8 +129,10 @@ void save_helps( void )
 
       stream << "#HELP" << endl;
       stream << "Level    " << hlp->level << endl;
+      stream << "WebInvis " << hlp->webinvis << endl;
       stream << "Keywords " << hlp->keyword << endl;
-      stream << "Text " << hlp->text << "¢" << endl;
+      stream << "Related  " << hlp->related << endl;
+      stream << "Text     " << hlp->text << "¢" << endl;
       stream << "End" << endl << endl;
    }
    stream.close(  );
@@ -169,9 +171,18 @@ void load_helps( void )
       {
          stream.getline( buf, MSL );
          value = buf;
-         strip_lspace( value );
+         strip_whitespace( value );
          std::transform(value.begin(), value.end(), value.begin(), (int(*)(int)) toupper);
          help->keyword = value;
+      }
+
+      else if( key == "Related" )
+      {
+         stream.getline( buf, MSL );
+         value = buf;
+         strip_whitespace( value );
+         std::transform(value.begin(), value.end(), value.begin(), (int(*)(int)) toupper);
+         help->related = value;
       }
 
       else if( key == "Level" )
@@ -183,11 +194,20 @@ void load_helps( void )
          help->level = atoi( value.c_str(  ) );
       }
 
+      else if( key == "WebInvis" )
+      {
+         stream.getline( buf, MSL );
+         value = buf;
+         strip_lspace( value );
+
+         help->webinvis = atoi( value.c_str(  ) );
+      }
+
       else if( key == "Text" )
       {
          stream.getline( buf, MSL, '¢' );
          value = buf;
-         strip_lspace( value );
+         strip_whitespace( value );
          help->text = value;
       }
 
@@ -298,6 +318,7 @@ CMDF( do_help )
          {
             matched = 0;   /* Set to 0 for each time we check lol */
             keyword = one_argument( keyword, oneword );
+
             /*
              * Lets check only up to 10 spots 
              */
@@ -308,6 +329,7 @@ CMDF( do_help )
                if( LOWER( oneword[checked] ) == LOWER( argument[checked] ) )
                   ++matched;
             }
+
             if( ( matched > 1 && matched > ( checked / 2 ) ) || ( matched > 0 && checked < 2 ) )
             {
                ch->pagerf( "&G %-20s &D", oneword.c_str(  ) );
@@ -322,17 +344,20 @@ CMDF( do_help )
             }
          }
       }
+
       if( totalmatched == 0 )
       {
          ch->pager( "&C&GNo suggested help files.\r\n" );
          return;
       }
+
       if( totalmatched == 1 && !lastmatch.empty(  ) )
       {
          ch->pager( "&COpening only suggested helpfile.&D\r\n" );
          do_help( ch, lastmatch );
          return;
       }
+
       if( found > 0 && found <= 3 )
          ch->pager( "\r\n" );
       return;
@@ -353,9 +378,12 @@ CMDF( do_help )
     * Strip leading '.' to allow initial blanks.
     */
    if( pHelp->text[0] == '.' )
-      ch->pager( pHelp->text.substr( 1, pHelp->text.length(  ) ) );
+      ch->pagerf( "%s\r\n", pHelp->text.substr( 1, pHelp->text.length(  ) ).c_str() );
    else
-      ch->pager( pHelp->text );
+      ch->pagerf( "%s\r\n", pHelp->text.c_str() );
+
+   if( !pHelp->related.empty() )
+      ch->pagerf( "\r\nSee Also: %s\r\n", pHelp->related.c_str() );
 }
 
 /*
@@ -384,6 +412,7 @@ CMDF( do_hedit )
             return;
          }
          pHelp->text = ch->copy_buffer(  );
+         strip_whitespace( pHelp->text );
          ch->stop_editing(  );
          return;
 
@@ -428,6 +457,7 @@ CMDF( do_hedit )
          add_help( pHelp );
       }
    }
+
    ch->substate = SUB_HELP_EDIT;
    ch->pcdata->dest_buf = pHelp;
    if( pHelp->text.empty(  ) )
@@ -462,7 +492,7 @@ CMDF( do_hset )
    {
       ch->print( "Syntax: hset <field> [value] [help page]\r\r\n\n" );
       ch->print( "Field being one of:\r\n" );
-      ch->printf( "  level keyword remove save%s\r\n", ch->is_imp(  )? " reload" : "" );
+      ch->printf( "  level keyword related webinvis remove save%s\r\n", ch->is_imp(  ) ? " reload" : "" );
       return;
    }
 
@@ -507,10 +537,27 @@ CMDF( do_hset )
       return;
    }
 
+   if( !str_cmp( arg1, "webinvis" ) )
+   {
+      pHelp->webinvis = !pHelp->webinvis;
+      ch->print( "Done.\r\n" );
+      return;
+   }
+
    if( !str_cmp( arg1, "keyword" ) )
    {
+      strip_whitespace( arg2 );
       pHelp->keyword = arg2;
       strupper( pHelp->keyword );
+      ch->print( "Done.\r\n" );
+      return;
+   }
+
+   if( !str_cmp( arg1, "related" ) )
+   {
+      strip_whitespace( arg2 );
+      pHelp->related = arg2;
+      strupper( pHelp->related );
       ch->print( "Done.\r\n" );
       return;
    }
