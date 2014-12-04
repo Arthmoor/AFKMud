@@ -230,6 +230,21 @@ These are best left to handle via the OLC as the format is different depending o
 location of the particular affect. A room can have as many affect sections as are
 appropriate, but should be kept within reason or the room could produce an overbalancing situation.
 
+#EXIT
+#ENDEXIT
+--------
+See the Misc.txt file for the format of Exit blocks - which are optional. Yes, you can make rooms with no way out!
+
+#EXDESC
+#ENDEXDESC
+----------
+See the Misc.txt file for the format of Extra Description blocks. These are optional.
+
+#MUDPROG
+#ENDPROG
+--------
+See the Misc.txt file for the format of Mudprog blocks. These are optional.
+
 Reset        <Format varies>
 ----------------------------
 Determines what sort of things are placed in this room after the game boots up, and during the
@@ -383,21 +398,6 @@ The following commands are used for the reset format:
        flags = Bitvector combination of flags. See Trap Flags section in Values.txt
        types = Type of trap. See Trap Types section in Values.txt
        charges = The number of times this trap can fire.
-
-#EXIT
-#ENDEXIT
---------
-See the Misc.txt file for the format of Exit blocks - which are optional. Yes, you can make rooms with no way out!
-
-#EXDESC
-#ENDEXDESC
-----------
-See the Misc.txt file for the format of Extra Description blocks. These are optional.
-
-#MUDPROG
-#ENDPROG
---------
-See the Misc.txt file for the format of Mudprog blocks. These are optional.
 
 #ENDROOM
 --------

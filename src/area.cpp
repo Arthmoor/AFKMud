@@ -2382,9 +2382,6 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       fwrite_afk_affect( fpout, af );
    }
 
-   // Recursive function that saves the nested resets.
-   save_reset_level( fpout, room->resets, 0 );
-
    list < exit_data * >::iterator ex;
    for( ex = room->exits.begin(  ); ex != room->exits.end(  ); ++ex )
    {
@@ -2410,6 +2407,10 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       mud_prog_data *mp = *mprg;
       mprog_write_prog( fpout, mp );
    }
+
+   // Recursive function that saves the nested resets.
+   save_reset_level( fpout, room->resets, 0 );
+
    fprintf( fpout, "%s", "#ENDROOM\n\n" );
 }
 
