@@ -1190,30 +1190,38 @@ void descriptor_data::set_pager_input( const string & argument )
 bool descriptor_data::pager_output(  )
 {
    char_data *ch;
-   int pclines, start, end;
-   register int lines;
+   int pclines;
+   size_t start, end;
    bool ret;
 
    if( !this || this->pagebuf.empty(  ) || this->pagecmd == -1 )
       return true;
+
    ch = this->original ? this->original : this->character;
-   pclines = UMAX( ch->pcdata->pagerlen, 5 ) - 1;
+   pclines = umax( ch->pcdata->pagerlen, 5 );
 
    switch ( LOWER( this->pagecmd ) )
    {
       default:
-         lines = 0;
+         start = this->pageindex;
+         end = start + pclines;
          break;
+
       case 'b':
-         lines = -1 - ( pclines * 2 );
+         start = this->pageindex - ( pclines * 2 );
+         end = this->pageindex - ( pclines + 2 );
          break;
+
       case 'r':
-         lines = -1 - pclines;
+         start = this->pageindex - pclines;
+         end = this->pageindex - 1;
          break;
+
       case 'n':
-         lines = 0;
-         pclines = 0x7FFFFFFF;   /* As many lines as possible */
+         start = this->pageindex;
+         end = 0x7FFFFFFF;   /* As many lines as possible */
          break;
+
       case 'q':
          this->flush_buffer( true );
          this->pagebuf.clear(  );
@@ -1225,26 +1233,24 @@ bool descriptor_data::pager_output(  )
    // This is going to get seriously messed up if people use the wrong line termination.
    vector < string > pagelines = string_explode( this->pagebuf, '\n' );
 
-   if( lines < 0 )
-      start = this->pageindex + lines;
-   else
-      start = this->pageindex;
-   end = start + pclines;
-   for( int x = start; x < end; ++x )
-   {
-      if( x < 0 )
-         continue;
+   if( start < 0 )
+      start = 0;
+   if( end > pagelines.size() )
+      end = pagelines.size();
 
-      if( ( size_t ) x >= pagelines.size(  ) )
+   for( size_t x = start; x <= end; ++x )
+   {
+      if( x >= pagelines.size(  ) )
       {
          this->flush_buffer( true );
          this->pagebuf.clear(  );
          this->pageindex = 0;
+         this->pagecmd = 0;
          return true;
       }
 
       this->write( pagelines[x].c_str(  ) );
-      this->pageindex = x;
+      this->pageindex = x + 1;
    }
 
    this->pagecmd = -1;

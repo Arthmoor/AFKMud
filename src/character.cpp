@@ -405,7 +405,7 @@ void char_data::set_color( short AType )
 
 void char_data::set_pager_color( short AType )
 {
-   if( this->desc )
+   if( !this->desc )
       return;
 
    if( this->isnpc(  ) )

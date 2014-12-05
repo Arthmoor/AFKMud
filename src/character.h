@@ -124,7 +124,7 @@ class pc_data
    time_t logon;
    time_t played;
    time_t save_time;
-   long restore_time;   /* The last time the char did a restore all */
+   time_t restore_time;   /* The last time the char did a restore all */
    int pkills; /* Number of pkills on behalf of clan */
    int pdeaths;   /* Number of times pkilled (legally)  */
    int mkills; /* Number of mobs killed        */
