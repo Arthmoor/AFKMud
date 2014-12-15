@@ -697,14 +697,16 @@ ch_ret spring_trap( char_data * ch, obj_data * obj )
  */
 ch_ret check_for_trap( char_data * ch, obj_data * obj, int flag )
 {
+   ch_ret retcode = rNONE;
+
    if( obj->contents.empty(  ) )
       return rNONE;
 
-   ch_ret retcode = rNONE;
    list < obj_data * >::iterator iobj;
-   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
+   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); )
    {
       obj_data *check = *iobj;
+      ++iobj;
 
       if( check->item_type == ITEM_TRAP && IS_SET( check->value[3], flag ) )
       {
