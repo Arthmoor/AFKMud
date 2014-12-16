@@ -446,7 +446,7 @@ int char_data::calculate_race_height(  )
 {
    int Height;
 
-   if( this->race <= MAX_RACE )
+   if( this->race < MAX_RACE )
       Height = number_range( ( int )( race_table[this->race]->height * 0.75 ), ( int )( race_table[this->race]->height * 1.25 ) );
    else
       Height = 72;   // FIXME: There's got to be some kind of randomness we can spin on this later.
@@ -458,7 +458,7 @@ int char_data::calculate_race_weight(  )
 {
    int Weight;
 
-   if( this->race <= MAX_RACE )
+   if( this->race < MAX_RACE )
       Weight = number_range( ( int )( race_table[this->race]->weight * 0.75 ), ( int )( race_table[this->race]->weight * 1.25 ) );
    else
       Weight = 180;  // FIXME: There's got to be some kind of randomness we can spin on this later.
