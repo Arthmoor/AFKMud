@@ -2176,22 +2176,27 @@ obj_data *generate_random( reset_data * pReset, char_data * mob )
          newobj = create_money( gold );
          break;
       }
+
       case 2: // Random number of gems
          for( int x = 0; x < ( ( level / 25 ) + 1 ); ++x )
             newobj = generate_gem( level );
          break;
+
       case 3: // Random scroll
          newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
          make_scroll( newobj );
          break;
+
       case 4: // Random potion
          newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
          make_potion( newobj );
          break;
+
       case 5: // Random wand
          newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
          make_wand( newobj );
          break;
+
       case 6: // Random armor
          newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
          if( pReset->command == 'W' )
@@ -2208,6 +2213,7 @@ obj_data *generate_random( reset_data * pReset, char_data * mob )
          }
          make_armor( newobj );
          break;
+
       case 7: // Random weapon
          newobj = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level );
          if( pReset->command == 'W' )
@@ -2226,6 +2232,7 @@ obj_data *generate_random( reset_data * pReset, char_data * mob )
          }
          make_weapon( newobj );
          break;
+
       case 8: // Random rune
          newobj = generate_rune( level );
          break;

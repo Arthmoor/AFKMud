@@ -85,7 +85,7 @@ void free_teleports( void )
 
 reset_data::reset_data(  )
 {
-   init_memory( &command, &arg6, sizeof( arg6 ) );
+   init_memory( &resetobj, &sreset, sizeof( sreset ) );
    resets.clear(  );
 }
 
@@ -1532,13 +1532,25 @@ void room_index::reset(  )
                break;
             }
 
+            // See if it's already been reset and is still here. If so, bail out. Random resets will pile up otherwise.
+            if( pReset->resetobj && pReset->resetobj->in_room )
+            {
+               if( pReset->resetobj->in_room == pRoomIndex )
+                  break;
+            }
+
             obj = generate_random( pReset, nullptr );
+
+            // Possible to get back nothing.
+            if( obj == nullptr )
+               break;
 
             nestmap.clear(  );
             nestmap[0] = obj;
             lastobj = nestmap[0];
             lastnest = 0;
             obj->to_room( pRoomIndex, nullptr );
+            pReset->resetobj = obj;
          }
             break;
 
@@ -1650,6 +1662,7 @@ void room_index::reset(  )
                         // Failed percentage check, don't bother processing. Move along.
                         if( number_percent(  ) > tReset->arg5 )
                            break;
+
                         if( !IS_SET( tReset->arg1, TRAP_OBJ ) )
                         {
                            bug( "%s: Room reset found on object reset list", __func__ );
@@ -1699,13 +1712,25 @@ void room_index::reset(  )
                         else
                            to_obj = lastobj;
 
+                        // See if it's already been reset and is still here. If so, bail out. Random resets will pile up otherwise.
+                        if( pReset->resetobj && pReset->resetobj->in_obj )
+                        {
+                           if( pReset->resetobj->in_obj == to_obj )
+                           {
+                              newobj->extract();
+                              break;
+                           }
+                        }
+
                         newobj->to_obj( to_obj );
+
                         if( iNest > lastnest )
                         {
                            nestmap[iNest] = to_obj;
                            lastnest = iNest;
                         }
                         lastobj = newobj;
+                        pReset->resetobj = newobj;
                         break;
                      }
 

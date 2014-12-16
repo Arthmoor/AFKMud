@@ -42,6 +42,7 @@ class reset_data
      reset_data(  );
 
      list < reset_data * >resets;   // Child resets associated with this reset
+   obj_data *resetobj;
    char command;
    // Attention at the keyboard: Don't go setting these back to shorts. Charlana.are will drain your soul!
    // Cause, ya know, this shit loads vnums all over the place and you'll break stuff. Badly.
