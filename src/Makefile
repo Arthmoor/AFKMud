@@ -47,7 +47,7 @@ DEBUG_FLAG = -g2
 #GCC 4.8+ memory checking option. https://code.google.com/p/address-sanitizer/
 #MEM_FLAG = -fsanitize=address -fno-omit-frame-pointer
 
-W_FLAGS = -std=c++0x -Wall -Wshadow -Wformat=2 -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel
+W_FLAGS = -std=c++0x -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security
 
 ifndef CYGWIN
    W_FLAGS := $(W_FLAGS) #-Werror
