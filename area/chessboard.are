@@ -1,0 +1,3568 @@
+#AFKAREA
+#AREADATA
+Version         1
+Name            Chessboard~
+Author          SillyMUD/Dwip~
+Vnums           6000 6069
+Continent       alsherok~
+Coordinates     0 0
+Dates           754272000 1417996800
+Ranges          0 115 0 115
+ResetMsg        The pieces on the chessboard line up and prepare for another round.~
+ResetFreq       20
+Climate         2 2 2
+Treasure        20 74 85 93 20 50 60 75
+#ENDAREADATA
+
+#MOBILE
+Vnum      6000
+Keywords  rook black chess chessboard~
+Race      golem~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Black Rook~
+Long      A black rook stands here, prepared for battle.
+~
+Desc      It reminds of you a stone golem, but quite a bit smaller.
+~
+Nattacks  2.000000
+Stats1    -700 0 0 0 150 100
+Stats2    5 15 5 15 2 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6001
+Keywords  knight black chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Black Knight~
+Long      There is a scraggly knight dressed in black here.
+~
+Desc      This is most certainly not the Black Knight of legendary fame.
+~
+Nattacks  0.000000
+Stats1    -500 0 0 0 150 100
+Stats2    3 17 7 9 1 7 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6002
+Keywords  bishop black chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Black Bishop~
+Long      There is a bishop dressed in black standing here.
+~
+Desc      Hmm, maybe it's an arch bishop.  Or an arch arch bishop.
+~
+Nattacks  0.000000
+Stats1    -500 0 0 0 150 100
+Stats2    3 18 5 9 1 7 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6003
+Keywords  queen black chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     The Black Queen~
+Long      There is a queen dressed in black standing here.
+~
+Desc      She looks rather fearsome.
+~
+Nattacks  0.000000
+Stats1    -1000 500 0 0 150 100
+Stats2    8 10 1 24 3 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Affected  detect_invis~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6004
+Keywords  king black chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Black King~
+Long      The Black King, Ruler of Darkness, is standing here.
+~
+Desc      He is a far cry from the white haired wizened old man you might expect.  It
+looks as though he could put up a good fight.
+~
+Nattacks  2.000000
+Stats1    -1000 1000 0 0 150 100
+Stats2    12 6 2 48 2 7 1
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Affected  detect_invis~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6008
+Keywords  pawn black chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Black Pawn~
+Long      A statuesque black pawn stands here.
+~
+Desc      Though this scrawny fighter is not an impressive sight, he is obedient to his
+master.
+~
+Nattacks  0.000000
+Stats1    -400 0 0 0 150 100
+Stats2    1 20 9 1 1 5 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea wimpy~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6016
+Keywords  mini flayer mindflayer minimindflayer chessboard~
+Race      Mindflayer~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Mini Mindflayer~
+Long      A mini mindflayer is here, looking at you with a... well, some kind of look.
+~
+Desc      It's a three foot tall humanoid that seems rather menacing for its size.
+In the middle of its head are four tentacles with sharp points.
+~
+Nattacks  0.000000
+Stats1    -450 50 0 0 150 100
+Stats2    2 17 6 4 1 6 2
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger stayarea wimpy~
+Affected  detect_invis~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye tentacles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6017
+Keywords  curser chessboard~
+Race      human~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Curser~
+Long      The Curser is here, muttering incomprehensible obscenities to the air.
+~
+Desc      It is short stocky guy dressed in clashing colors, spewing gutteral sounds
+and interjections continuously.
+~
+Nattacks  0.000000
+Stats1    -600 0 0 0 150 100
+Stats2    3 16 5 9 2 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#MUDPROG
+Progtype  rand_prog~
+Arglist   4~
+Comlist   curse 
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      6018
+Keywords  cow chessboard~
+Race      bovine~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Cow~
+Long      A hard-eyed cow is here, going about his business.
+~
+Desc      He is walking around purposefully, as if searching for something,
+occasionally lowering his head, sniffing at the air, then eating
+pieces of the ground that are apparently somewhat grassy.  When he
+notices your intense scrutiny, he looks at you coldly, until you are
+forced to look away.
+~
+Nattacks  0.000000
+Stats1    400 40 0 0 150 100
+Stats2    5 10 6 10 2 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea~
+Bodyparts guts~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6020
+Keywords  sapling young chessboard~
+Race      Tree~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Young Sapling~
+Long      A sapling stands here eye to eye with you.
+~
+Desc      Its roots are rather petite, and small parts of them are above ground.
+~
+Nattacks  4.000000
+Stats1    0 0 0 0 150 100
+Stats2    6 13 4 18 1 2 1
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6021
+Keywords  juggler jugglernaut chessboard~
+Race      golem~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Jugglernaut~
+Long      A Jugglernaut is here, juggling madly.
+~
+Desc      It is kind of large, some 10 yds in length, walking on several hundred 
+tiny legs. It is metallic-looking, with large spots of corrosion 
+marring its angular skin. On its sides are large signs, written in an 
+incomprehensible language. On its top, a small eye cluster swivels back 
+and forth continually.  A number of tentacles are juggling a dizzying
+blur of objects.
+~
+Nattacks  0.000000
+Stats1    0 500 0 0 150 100
+Stats2    8 11 3 24 2 5 1
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger stayarea~
+Affected  detect_invis~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6022
+Keywords  mutterfly butterfly fly chessboard~
+Race      avis~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Mutterfly~
+Long      An ugly butterfly-like thing is here, muttering about its problems.
+~
+Desc      It is ugly, and unfriendly.
+~
+Nattacks  1.000000
+Stats1    -1000 10 0 0 150 100
+Stats2    1 20 9 6 1 3 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea~
+Bodyparts guts head heart brains eye wings~
+#MUDPROG
+Progtype  rand_prog~
+Arglist   4~
+Comlist   mutter
+~
+#ENDPROG
+#ENDMOBILE
+
+#MOBILE
+Vnum      6023
+Keywords  peel banana chessboard~
+Race      Tree~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Banana Peel~
+Long      There is a magical banana peel here.
+~
+Desc      It seems harmless enough, although according to ancient legend, they
+cause people to slip and fall.
+~
+Nattacks  0.000000
+Stats1    -400 0 0 0 150 100
+Stats2    2 19 7 0 1 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc aggressive stayarea wimpy~
+Affected  detect_invis detect_hidden sneak~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6024
+Keywords  pawn white chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The White Pawn~
+Long      A statuesque white pawn stands here.
+~
+Desc      Though this scrawny fighter is not an impressive sight, he is obedient to his
+master.
+~
+Nattacks  0.000000
+Stats1    300 0 0 0 150 100
+Stats2    1 20 9 1 1 5 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea wimpy~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6032
+Keywords  rook white chess chessboard~
+Race      golem~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The White Rook~
+Long      A white rook stands here, prepared for battle.
+~
+Desc      It reminds of you a stone golem, but quite a bit smaller.  He matches the
+white marble quite nicely.
+~
+Nattacks  2.000000
+Stats1    700 0 0 0 150 100
+Stats2    5 15 5 15 2 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Affected  detect_invis~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6033
+Keywords  knight white chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The White Knight~
+Long      There is a scraggly knight dressed in white here.
+~
+Desc      You're not so sure that you'd want *him* to come to your rescue.
+~
+Nattacks  0.000000
+Stats1    600 0 0 0 150 100
+Stats2    3 17 7 9 1 7 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Affected  truesight~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6034
+Keywords  bishop white chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The White Bishop~
+Long      There is a bishop dressed in white standing here.
+~
+Desc      Hmm, maybe it's an arch bishop.  Or an arch arch bishop.
+~
+Nattacks  0.000000
+Stats1    500 0 0 0 150 100
+Stats2    3 18 5 9 1 7 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6035
+Keywords  queen white chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    female~
+Position  standing~
+DefPos    standing~
+Short     The White Queen~
+Long      There is a queen dressed in white standing here.
+~
+Desc      She looks rather fearsome.
+~
+Nattacks  0.000000
+Stats1    1000 500 0 0 150 100
+Stats2    8 10 1 24 3 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6036
+Keywords  king white chess chessboard~
+Race      human~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The White King~
+Long      The King, Protector of the Flame, is standing here.
+~
+Desc      He is a far cry from the white haired wizened old man you might expect.  It
+looks as though he could put up a good fight.
+~
+Nattacks  2.000000
+Stats1    1000 1000 0 0 150 100
+Stats2    12 6 2 48 2 7 1
+Speaks    common~
+Speaking  common~
+Actflags  npc nowander stayarea~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6040
+Keywords  jabberwocky chessboard~
+Race      Enfan~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Jabberwocky~
+Long      The Jabberwocky stands here, prepared to maul you.
+~
+Desc      It is big, and alien in appearance.  Probably not here for a cup of tea.
+~
+Nattacks  3.000000
+Stats1    -900 0 0 0 150 100
+Stats2    14 4 0 56 1 8 2
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel scavenger aggressive~
+Affected  detect_invis~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6041
+Keywords  elf cleric chessboard~
+Race      high-elf~
+Class     Cleric~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Specfun   spec_cast_adept~
+Short     The Elven Cleric~
+Long      An elven cleric is here, looking for someone to help.
+~
+Desc      He is dressed in white robes covered in red crosses.
+~
+Nattacks  0.000000
+Stats1    1000 0 0 0 150 100
+Stats2    7 14 4 14 2 4 2
+Speaks    common~
+Speaking  common~
+Actflags  npc immortal wimpy~
+Affected  detect_invis detect_hidden sanctuary truesight~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6042
+Keywords  flame chessboard~
+Race      Elemental~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Flame~
+Long      The Flame hovers here before you.
+~
+Desc      The Flame flickers almost imperceptibly about you.  You can barely feel the
+warmth, so gentle is The Flame.
+~
+Nattacks  3.000000
+Stats1    900 0 0 0 150 100
+Stats2    14 3 0 56 3 3 4
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Immune    NONE~
+Suscept   fire~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6043
+Keywords  oil beast chessboard~
+Race      slime~
+Class     Warrior~
+Gender    neuter~
+Position  sleeping~
+DefPos    sleeping~
+Short     An Oil Beast~
+Long      An oil beast is here, sleeping on the job.
+~
+Desc      Well, it looks beastly.  And oily.  It's black, and shiny, and oozes
+slime as it goes...hard to be more specific than that.
+~
+Nattacks  1.000000
+Stats1    800 0 0 0 150 100
+Stats2    10 10 2 40 2 6 3
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Bodyparts guts~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6044
+Keywords  oil beast chessboard~
+Race      slime~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     An Oil Beast~
+Long      An oil beast is here, working quasi-diligently.
+~
+Desc      Well, it looks beastly.  And oily.  It's black, and shiny, and oozes
+slime as it goes...hard to be more specific than that.
+~
+Nattacks  0.000000
+Stats1    800 0 0 0 150 100
+Stats2    10 10 2 40 2 6 3
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Bodyparts guts~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6045
+Keywords  elf chessboard~
+Race      high-elf~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Delivery Elf~
+Long      An elf is here, making deliveries of tasty bread.
+~
+Nattacks  0.000000
+Stats1    800 49 0 0 150 100
+Stats2    10 10 2 40 2 6 3
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea~
+Affected  detect_invis~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#MUDPROG
+Progtype  rand_prog~
+Arglist   4~
+Comlist   , mutters something about sacks of flour. 
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  give_prog~
+Arglist   sack flour chessboard~
+Comlist   if ispc ($n)
+   say Thank you, $n, I've been looking all over for this!
+   say Here, take this for your efforts.
+   , sprinkles some flour in a vial of liquid.
+   mpoload 6004
+   give potion 0.$n
+   wave 0.$n
+endif
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      6046
+Keywords  elf chessboard~
+Race      high-elf~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     An Elf~
+Long      An elf is here, working diligently.
+~
+Nattacks  0.000000
+Stats1    800 0 0 0 150 100
+Stats2    10 10 2 40 2 6 3
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6047
+Keywords  cat cheshire chessboard~
+Race      cat~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Cheshire Cat~
+Long      The Cheshire Cat flashes a grin at you.
+~
+Desc      Looks like the obligatory invisible monster for this area.  He has that
+confident, artificial smile that means he knows too much about you.
+~
+Nattacks  0.000000
+Stats1    600 49 0 0 150 100
+Stats2    4 15 3 8 1 9 0
+Speaks    common~
+Speaking  common~
+Actflags  npc scavenger stayarea~
+Affected  detect_invis~
+Bodyparts guts~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6048
+Keywords  pigeon chessboard~
+Race      avis~
+Class     Warrior~
+Gender    neuter~
+Position  standing~
+DefPos    standing~
+Short     The Pigeon~
+Long      A plump pigeon is wandering here, oblivious to your presence.
+~
+Desc      Dinner on the table....
+~
+Nattacks  0.000000
+Stats1    0 10 0 0 150 100
+Stats2    1 20 9 1 1 4 0
+Speaks    common~
+Speaking  common~
+Actflags  npc stayarea wimpy~
+Bodyparts guts wings head legs heart brains feet eye feathers~
+#ENDMOBILE
+
+#MOBILE
+Vnum      6049
+Keywords  fordwyn chessboard~
+Race      high-elf~
+Class     Mage~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     Fordwyn~
+Long      Fordwyn the Chessmaster is here, planning a move.
+~
+Desc      The lord of the tower is a wizened old elf with wild tangles of hair
+and a somewhat crazed expression on his face.
+~
+Nattacks  3.000000
+Stats1    1000 0 0 0 150 100
+Stats2    47 0 -7 200 3 6 6
+Speaks    common~
+Speaking  common~
+Actflags  npc sentinel~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
+#MUDPROG
+Progtype  greet_prog~
+Arglist   100~
+Comlist   say Oh ho, a visitor to my tower.
+say Care for a game of chess?
+cackle
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#OBJECT
+Vnum      6000
+Keywords  sack flour chessboard~
+Type      trash~
+Short     A Sack of Flour~
+Long      A lumpy sack of flour is here.~
+Flags     organic~
+WFlags    take~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     50 20 -2 9999 0 None None None
+#EXDESC
+ExDescKey    sack flour~
+ExDesc       Doesn't look all that exciting.  It has the words "Property of the Abecedarium"
+stamped on it.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      6001
+Keywords  ivory scroll chessboard~
+Type      scroll~
+Short     An Ivory Scroll~
+Long      A scroll with a skull and crossbones drawn on it is lying here.~
+Flags     mineral magic~
+WFlags    take hold~
+Values    21 -1 -1 -1 0 0 0 0 0 0 0
+Stats     2 2500 -2 9999 0 None None None
+Spells       'fly' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      6002
+Keywords  slime mold chessboard~
+Type      food~
+Short     A green slime mold~
+Long      An oozing green slime mold lies in a puddle.~
+Flags     organic~
+WFlags    take~
+Values    1 1 0 1 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#EXDESC
+ExDescKey    slime mold~
+ExDesc       It wasn't meant to be food, - Certainly not for humans.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      6003
+Keywords  cow bell chessboard~
+Type      armor~
+Short     A Cow Bell~
+Long      A cow bell with a strap attached to it has been left here.~
+Flags     metal~
+WFlags    take neck~
+Values    5 0 0 0 0 0 0 0 0 0 0
+Stats     1 10 -2 9999 0 None None None
+AffData armor -4 -1 -1 0
+AffData backstab -30 -1 -1 0
+#EXDESC
+ExDescKey    bell cow~
+ExDesc       It has a strap attached to it.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      6004
+Keywords  potion flour chessboard~
+Type      potion~
+Short     A Flour Potion~
+Long      A potion with flour in it has been left here.~
+Flags     organic magic~
+WFlags    take~
+Values    38 -1 -1 -1 0 0 0 0 0 0 0
+Stats     1 450 -2 9999 0 None None None
+Spells       'armor' 'NONE' 'NONE'
+#ENDOBJECT
+
+#OBJECT
+Vnum      6005
+Keywords  bronze leggings phoenix chessboard~
+Type      armor~
+Short     The Leggings of the Phoenix~
+Long      A pair of bronze leggings is lying on the ground.~
+Flags     glow metal antievil~
+WFlags    take legs~
+Values    6 0 0 0 0 0 0 0 0 0 0
+Stats     1 2050 -2 9999 0 None None None
+AffData constitution 1 -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      6006
+Keywords  vorpal blade chessboard~
+Type      weapon~
+Short     The Vorpal Blade~
+Long      The vorpal blade sits here.~
+Flags     hum metal antigood~
+WFlags    take wield~
+Values    1 8 5 0 0 0 0 0 0 0 0
+Stats     10 5000 -2 9999 0 None None None
+AffData hitroll 1 -1 -1 0
+AffData damroll 3 -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      6007
+Keywords  sword phoenix chessboard~
+Type      weapon~
+Short     Sword of the Phoenix~
+Long      The sword of the phoenix has been left here.~
+Flags     glow hum metal magic~
+WFlags    take wield~
+Values    3 6 3 0 0 0 0 0 0 0 0
+Stats     22 5000 -2 9999 0 None None None
+AffData hitroll 1 -1 -1 0
+AffData damroll 1 -1 -1 0
+#ENDOBJECT
+
+#OBJECT
+Vnum      6008
+Keywords  clay oven chessboard~
+Type      container~
+Short     The oven~
+Long      A large clay oven is here. Something inside smells delicious.~
+Values    100 1 -1 0 0 0 0 0 0 0 0
+Stats     1000 1 -1 9999 0 None None None
+#EXDESC
+ExDescKey    oven clay~
+ExDesc       Well, it radiates a lot of heat, and it appears to be full of half-baked loaves of bread.~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      6009
+Keywords  bread elven chessboard~
+Type      food~
+Short     An Elven Bread~
+Long      A piping hot loaf of elven bread sits here.~
+Flags     organic~
+WFlags    take~
+Values    18 0 0 0 0 0 0 0 0 0 0
+Stats     1 10 0 9999 0 None None None
+#ENDOBJECT
+
+#ROOM
+Vnum      6000
+Name      A White Square~
+Sector    field~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There's a
+lot of dust on the floor here.
+~
+#EXIT
+Direction east~
+ToRoom    6001
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6008
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6000 1 6000 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6001
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There's a
+lot of dust on the floor.
+~
+#EXIT
+Direction east~
+ToRoom    6002
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6009
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6000
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6001 1 6001 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6002
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There's
+a lot of garbage here.
+~
+#EXIT
+Direction east~
+ToRoom    6003
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6010
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6001
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6002 1 6002 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6003
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  It doesn't
+seem like the janitor comes here often.
+~
+#EXIT
+Direction east~
+ToRoom    6004
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6011
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6002
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6003 1 6003 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6004
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  It smells
+like beer was spilled here.
+~
+#EXIT
+Direction east~
+ToRoom    6005
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6012
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6003
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    6064
+Desc      As you peer into the darkness you can only imagine what kind of beast lies
+in wait for you.
+~
+#ENDEXIT
+
+Reset M 6004 1 6004 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6005
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  It smells
+like beer here.
+~
+#EXIT
+Direction east~
+ToRoom    6006
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6013
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6004
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6002 1 6005 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6006
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  This is the
+northwest corner of a slime mold factory.  Malodorous toxic fumes assault
+your sense of smell.  Toxic mushrooms and half empty beer barrels are
+strewn about.
+~
+#EXIT
+Direction east~
+ToRoom    6007
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6014
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6005
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6001 1 6006 -1 -1 -1 100
+Reset M 6044 1 6006 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6007
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  This is the
+northeast corner of a slime mold factory.  There is a large vat of slime
+bubbling juice here.  You can feel your appetite wilting away as an Oil
+Beast tosses some rotting corpses and poisonous mushrooms into the vat.
+~
+#EXIT
+Direction south~
+ToRoom    6015
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6006
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6000 1 6007 -1 -1 -1 100
+Reset M 6044 1 6007 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6008
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  It's really
+quite dusty here.  To the west is a large wall-sized mirror.
+~
+#EXIT
+Direction north~
+ToRoom    6000
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6009
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6016
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6066
+Desc      You see a wall sized mirror.
+~
+#ENDEXIT
+
+Reset M 6008 1 6008 -1 -1 -1 100
+#EXDESC
+ExDescKey    mirror wall~
+ExDesc       You see your reflection, but superimposed on that is what looks like
+a distant horizon.  Maybe you can enter this mirror?
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      6009
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  So much
+dust around here!
+~
+#EXIT
+Direction north~
+ToRoom    6001
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6010
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6017
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6008
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6008 1 6009 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6010
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  The floor
+is scuffed up and needs polishing.
+~
+#EXIT
+Direction north~
+ToRoom    6002
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6011
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6018
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6009
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6008 1 6010 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6011
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  Sure is
+filthy here!
+~
+#EXIT
+Direction north~
+ToRoom    6003
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6012
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6019
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6010
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6008 1 6011 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6012
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  It smells
+like beer around here.
+~
+#EXIT
+Direction north~
+ToRoom    6004
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6013
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6020
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6011
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6008 1 6012 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6013
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There is
+a puddle of spilled beer here.
+~
+#EXIT
+Direction north~
+ToRoom    6005
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6014
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6021
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6012
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6008 1 6013 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6014
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  This is the
+southwest corner of a slime mold factory.  Some molds have been stacked
+here ready for shipment.  You involuntarily hold your breath.
+~
+#EXIT
+Direction north~
+ToRoom    6006
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6015
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6022
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6013
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6008 1 6014 -1 -1 -1 100
+Reset M 6044 1 6014 -1 -1 -1 100
+Reset M 6043 1 6014 -1 -1 -1 100
+  Reset G 6002 1 100
+Reset M 6045 1 6014 -1 -1 -1 100
+  Reset G 6009 1 100
+#ENDROOM
+
+#ROOM
+Vnum      6015
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  This is the
+southeast corner of a slime mold factory.  Rotting corpses and half dried
+slime molds litter the floor.  Oil Beasts slither about, leaving shiny
+trails of ooze behind them.
+~
+#EXIT
+Direction north~
+ToRoom    6007
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6023
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6014
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6008 1 6015 -1 -1 -1 100
+Reset M 6044 1 6015 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6016
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6008
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6017
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6024
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6017
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6009
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6018
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6025
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6016
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6016 1 6017 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6018
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6010
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6019
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6026
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6017
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6017 1 6018 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6019
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6011
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6020
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6027
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6018
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6018 1 6019 -1 -1 -1 100
+Reset M 6018 1 6019 -1 -1 -1 100
+Reset M 6018 1 6019 -1 -1 -1 100
+  Reset E 6003 1 3 100
+#ENDROOM
+
+#ROOM
+Vnum      6020
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6012
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6021
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6028
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6019
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6021
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6013
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6022
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6029
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6020
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6020 1 6021 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6022
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6014
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6023
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6030
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6021
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6023
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6015
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6031
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6022
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6047 1 6023 -1 -1 -1 100
+  Reset G 2860 1 100
+#ENDROOM
+
+#ROOM
+Vnum      6024
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You hear
+crickets chirping.
+~
+#EXIT
+Direction north~
+ToRoom    6016
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6025
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6032
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6025
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+birds chirping in the distance.
+~
+#EXIT
+Direction north~
+ToRoom    6017
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6026
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6033
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6024
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6023 1 6025 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6026
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6018
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6027
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6034
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6025
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6048 1 6026 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6027
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  To the
+southeast are some stairs.
+~
+#EXIT
+Direction north~
+ToRoom    6019
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6028
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6035
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6026
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6028
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.  You see some stairs to the south.
+~
+#EXIT
+Direction north~
+ToRoom    6020
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6029
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6036
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6027
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6021 1 6028 -1 -1 -1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+#ENDROOM
+
+#ROOM
+Vnum      6029
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  To the
+southwest are some stairs.
+~
+#EXIT
+Direction north~
+ToRoom    6021
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6030
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6037
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6028
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6048 1 6029 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6030
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There is
+a statue of a unicorn here.
+~
+#EXIT
+Direction north~
+ToRoom    6022
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6031
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6038
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6029
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6022 1 6030 -1 -1 -1 100
+Reset M 6022 1 6030 -1 -1 -1 100
+#EXDESC
+ExDescKey    statue unicorn~
+ExDesc       The statue says "Come to Unicorn Mount!"
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      6031
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There is
+a statue of John the Lumberjack here.
+~
+#EXIT
+Direction north~
+ToRoom    6023
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6039
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6030
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXDESC
+ExDescKey    statue john~
+ExDesc       The statue says "Been to the forest recently?"
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      6032
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+nothing here.
+~
+#EXIT
+Direction north~
+ToRoom    6024
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6033
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6040
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6041 1 6032 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6033
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+footsteps nearby.
+~
+#EXIT
+Direction north~
+ToRoom    6025
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6034
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6041
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6032
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6022 1 6033 -1 -1 -1 100
+Reset M 6022 1 6033 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6034
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6026
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6035
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6042
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6033
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6035
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.  You see some stairs to east.
+~
+#EXIT
+Direction north~
+ToRoom    6027
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6036
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6043
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6034
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6036
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.  A staircase leads down from here.
+     You hear a voice say, 'Fido, I don't think we're in Bywater any more.'
+~
+#EXIT
+Direction north~
+ToRoom    6028
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6037
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6044
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6035
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    6068
+Desc      The stairs spiral downwards toward familiar ground.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6037
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.  You see some stairs to west.
+~
+#EXIT
+Direction north~
+ToRoom    6029
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6038
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6045
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6036
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6023 1 6037 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6038
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There is
+a statue of a spider here.
+~
+#EXIT
+Direction north~
+ToRoom    6030
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6039
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6046
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6037
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXDESC
+ExDescKey    statue spider~
+ExDesc       The statue says "I like Arachnos."
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      6039
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There is
+a statue of a butterfly here.
+~
+#EXIT
+Direction north~
+ToRoom    6031
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6047
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6038
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXDESC
+ExDescKey    statue butterfly~
+ExDesc       The statue weeps "Augh, where's my Matrix?"
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      6040
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6032
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6041
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6048
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6020 1 6040 -1 -1 -1 100
+  Reset E 6001 100 17 100
+#ENDROOM
+
+#ROOM
+Vnum      6041
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6033
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6042
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6049
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6040
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6020 1 6041 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6042
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6034
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6043
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6050
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6041
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6048 1 6042 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6043
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  To the
+northeast are some stairs.
+~
+#EXIT
+Direction north~
+ToRoom    6035
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6044
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6051
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6042
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6017 1 6043 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6044
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.  You see some stairs to the north.
+~
+#EXIT
+Direction north~
+ToRoom    6036
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6045
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6052
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6043
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6021 1 6044 -1 -1 -1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2852 1 100
+  Reset G 2855 1 100
+#ENDROOM
+
+#ROOM
+Vnum      6045
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  To the
+northwest are some stairs.
+~
+#EXIT
+Direction north~
+ToRoom    6037
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6046
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6053
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6044
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6048 1 6045 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6046
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6038
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6047
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6054
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6045
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6016 1 6046 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6047
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You can hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.
+~
+#EXIT
+Direction north~
+ToRoom    6039
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6055
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6046
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#ENDROOM
+
+#ROOM
+Vnum      6048
+Name      A White Square~
+Sector    city~
+Flags     nomob~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  This is the
+northwest corner of a bread factory.  Elves run in and out, stacking
+and removing supplies.  You feel the warmth of an oven nearby.
+~
+#EXIT
+Direction north~
+ToRoom    6040
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6049
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6056
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6024 1 6048 -1 -1 -1 100
+Reset M 6046 1 6048 -1 -1 -1 100
+Reset O 6000 1 6048 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6049
+Name      A Black Square~
+Sector    city~
+Flags     nomob~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  This is the
+northeast corner of a bread factory.  Finished pastries and breads lie
+here, awaiting delivery.
+~
+#EXIT
+Direction north~
+ToRoom    6041
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6050
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6057
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6048
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6024 1 6049 -1 -1 -1 100
+Reset M 6046 1 6049 -1 -1 -1 100
+  Reset E 6004 100 17 100
+Reset O 6009 5 6049 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6050
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You see
+some pastry crumbs on the floor.
+~
+#EXIT
+Direction north~
+ToRoom    6042
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6051
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6058
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6049
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6024 1 6050 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6051
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  It looks
+as though someone was eating here recently.
+~
+#EXIT
+Direction north~
+ToRoom    6043
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6052
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6059
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6050
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6024 1 6051 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6052
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  The plaza
+has a large white gladiola painted on it.
+~
+#EXIT
+Direction north~
+ToRoom    6044
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6053
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6060
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6051
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6024 1 6052 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6053
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There is
+a purple tulip painted on the floor.
+~
+#EXIT
+Direction north~
+ToRoom    6045
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6054
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6061
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6052
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6024 1 6053 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6054
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There are
+a lot puddles here.
+~
+#EXIT
+Direction north~
+ToRoom    6046
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6055
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6062
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6053
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6024 1 6054 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6055
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  The plaza
+is wet, and you can see your reflection in the floor.
+~
+#EXIT
+Direction north~
+ToRoom    6047
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6063
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6054
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6024 1 6055 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6056
+Name      A Black Square~
+Sector    city~
+Flags     nomob~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  This is the
+southwest corner of a bread factory.  You see a large clay oven watched
+carefully by frantic elves.  The smell of bread is overpowering.
+~
+#EXIT
+Direction north~
+ToRoom    6048
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6057
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6032 1 6056 -1 -1 -1 100
+Reset M 6046 1 6056 -1 -1 -1 100
+Reset O 6009 1 6056 -1 -1 -1 100
+  Reset P 0 6008 3 6009 100
+#ENDROOM
+
+#ROOM
+Vnum      6057
+Name      A White Square~
+Sector    city~
+Flags     nomob~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  This is the
+southeast corner of a bread factory.  There is a giant vat of dough
+here, and on some racks you see tidy arrays of dough.
+~
+#EXIT
+Direction north~
+ToRoom    6049
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6058
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6056
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6033 1 6057 -1 -1 -1 100
+Reset M 6046 1 6057 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6058
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  Little
+bits of bread are scattered about.
+~
+#EXIT
+Direction north~
+ToRoom    6050
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6059
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6057
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6034 1 6058 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6059
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  You see
+bread crumbs strewn everywhere.
+~
+#EXIT
+Direction north~
+ToRoom    6051
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6060
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6058
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6035 1 6059 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6060
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light. You hear
+all kinds of noises around you -- shouting, the clatter of swords, and
+cries of death.  To the south is a small circular building ringed by
+columns.
+~
+#EXIT
+Direction north~
+ToRoom    6052
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6061
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    6065
+Desc      It looks nice and quiet in there.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6059
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6036 1 6060 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6061
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  There is
+a white daisy painted on the floor here.
+~
+#EXIT
+Direction north~
+ToRoom    6053
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6062
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6060
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6034 1 6061 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6062
+Name      A Black Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  As you
+walk along, your feet splash in puddles of water.
+
+~
+#EXIT
+Direction north~
+ToRoom    6054
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    6063
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6061
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6033 1 6062 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6063
+Name      A White Square~
+Sector    city~
+Flags     ~
+Stats     0 0 0 0 100000
+Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
+of inlaid gold and silver in the marble glitter in the light.  It looks
+as though it rained here recently.
+~
+#EXIT
+Direction north~
+ToRoom    6055
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    6062
+Desc      The plaza continues onward.
+~
+#ENDEXIT
+
+Reset M 6032 1 6063 -1 -1 -1 100
+#ENDROOM
+
+#ROOM
+Vnum      6064
+Name      Lair of the Jabberwocky~
+Sector    field~
+Flags     dark nomob~
+Stats     0 0 0 0 100000
+Desc      It is dark and muggy in here.  The walls have a dim luminescent
+blue glow, but the room itself seems to absorb the light.  From
+somewhere in here you hear water dripping, and what might be the sound
+of a monster breathing.  A debris covered slope allows you return
+upwards to the surface.
+~
+#EXIT
+Direction up~
+ToRoom    6004
+Desc      You see an opening in the plaza floor above you.
+~
+#ENDEXIT
+
+Reset M 6040 1 6064 -1 -1 -1 100
+  Reset G 6006 1 100
+#ENDROOM
+
+#ROOM
+Vnum      6065
+Name      Tempietto~
+Sector    city~
+Flags     nomob indoors~
+Stats     0 0 0 0 100000
+Desc      You are in a small circular chapel.  There is a dome above you with
+colorful frescoes on it depicting robed clerics driving back the warriors
+of evil with a wall of flame.  The walls have ornately carved niches occupied
+by small statues of ancient saints.  The plaza is to the north.
+~
+#EXIT
+Direction north~
+ToRoom    6060
+Desc      You see the plaza.
+~
+#ENDEXIT
+
+Reset M 6042 1 6065 -1 -1 -1 100
+  Reset G 6005 1 100
+#EXDESC
+ExDescKey    statues niches~
+ExDesc       The craftsmanship is almost beyond that of mortals.
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      6066
+Name      Fordwyn's Retreat~
+Sector    city~
+Flags     nomob indoors~
+Stats     0 0 0 0 100000
+Desc      As you step through the mirror you feel a tingling sensation run
+through your body.  Much to your surprise you are standing on dusty
+clifftop overlooking a magnificient ocean.  The sun seems to be frozen
+just over the horizon, turning the ocean into a swirling plain of gold
+and black reflections.  A warm and gentle breeze brushes your face.
+You hear the roar of the waves crashing rhythmically on the rocks below,
+interspersed with cries of seagulls floating lazily overhead.
+     To the north you can see a large city by the oceanside, far larger
+than Bywater, perhaps far larger than any city you've seen before.  It
+seems to extend infinitely to the north.  From this distance the city
+resembles a spectacular field of colorful lights, twinkling before you
+in silent majesty.
+~
+#EXIT
+Direction east~
+ToRoom    6008
+Desc      You see a giant mirror frame.
+~
+#ENDEXIT
+
+#EXDESC
+ExDescKey    city north~
+ExDesc       The cliffs prevent you from getting closer to it.  Perhaps you'll find this
+city some time in the future.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    seagulls seagull~
+ExDesc       The phrase "...would have given men wings..." comes to mind.
+~
+#ENDEXDESC
+
+#EXDESC
+ExDescKey    ocean sunset sun~
+ExDesc       It's breathtaking.  You're glad that this sun doesn't move.
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      6067
+Name      Fordwyn's Game Room~
+Sector    city~
+Flags     indoors~
+Stats     0 0 0 0 100000
+Desc      You seem to be in a fog shrouded room.  On a tiny table surrounded by
+some comfortable looking chairs is a chessboard.  But the pieces on the
+board are alive, and some are actually moving by themselves.  At the base
+of the table you see a two inch tall humanoid guarding a gate...or is that
+just the fog playing tricks on your imagination?
+~
+#ENDROOM
+
+#ROOM
+Vnum      6068
+Name      The Ivory Tower~
+Sector    city~
+Flags     nomob~
+Stats     0 0 0 0 100000
+Desc      You are inside the tower.  You see stairs spiraling above you
+towards the sky... apparently there's no roof on this tower.  Windows
+going along the stairs allow sunbeams to dance on the walls as the
+haze outside thickens and thins.  The gateway is to the east.  There
+is some writing on the wall.
+~
+#EXIT
+Direction east~
+ToRoom    6069
+Desc      You see the gateway.
+~
+Keywords  gate~
+Flags     isdoor closed~
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    6036
+Desc      Round and round she goes, where she stops....
+~
+#ENDEXIT
+
+Reset D 6068 1 1 100 -2
+#EXDESC
+ExDescKey    writing wall~
+ExDesc       Adapted from the original SillyMUD area by Dwip, 12/2014.  In
+memory of all the times we all spent killing chess pieces on Shard.  We've
+come a long way since 1996.  We hope you will too.
+ 
+ ^^
+(**)
+(  )
+ ==
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
+Vnum      6069
+Name      Gateway to the Ivory Tower~
+Sector    city~
+Flags     nomob~
+Stats     0 0 0 0 100000
+Desc      An enormous circular tower of gleaming ivory stands just west of you,
+shrouded in a bluish haze that matches the sky, giving the illusion that
+the tower disappears as it ascends above the island.
+~
+#EXIT
+Direction west~
+ToRoom    6068
+Desc      You see the gated entrance to the tower.
+~
+Keywords  gate~
+Flags     isdoor closed~
+#ENDEXIT
+
+Reset D 6069 3 1 100 -2
+Reset M 6049 1 6069 -1 -1 -1 100
+  Reset E 6007 1 16 100
+#ENDROOM
+
+#ENDAREA

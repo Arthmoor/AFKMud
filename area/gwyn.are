@@ -205,13 +205,10 @@ Bodyparts head heart~
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   if isimmort($n)
-else
-if level($n) > 10
+Comlist   if level($n) > 10
 mea $n &YThe voice of Faeia Quenath whispers magically in your ears.&D
 mea $n &YFaeia Quenath says, "You may not enter into the inner confines."&D
 mptrlook $n 2850
-endif
 endif
 say I will teach you the LANGUAGES of the land.
 ~
@@ -1351,17 +1348,7 @@ say In addition, you may go downward to gain a better idea about DTs.
 
 #MUDPROG
 Progtype  speech_prog~
-Arglist   DEATHTRAP~
-Comlist   say It is a room that causes death upon entry.
-say Unlike a regular death, you do not leave a corpse behind.
-say All items you wear or carry at the time of entry is destroyed.
-say It is not possible to get items back if you enter a deathtrap.
-~
-#ENDPROG
-
-#MUDPROG
-Progtype  speech_prog~
-Arglist   DT~
+Arglist   DEATHTRAP DT~
 Comlist   say It is a room that causes death upon entry.
 say Unlike a regular death, you do not leave a corpse behind.
 say All items you wear or carry at the time of entry is destroyed.
@@ -3866,13 +3853,10 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   if isimmort($n)
-else
-if level($n) > 10
+Comlist   if level($n) > 10
 mea $n &YThe voice of Faeia Quenath whispers magically in your ears.&D
 mea $n &YFaeia Quenath says, "You may not enter into the inner confines."&D
 mptrlook $n 2850
-endif
 endif
 say Welcome young one. I am Master Zepharn, ranger of the woods.
 say I am here to teach you about MOVEMENT and MOUNTS.
@@ -4291,13 +4275,10 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   if isimmort($n)
-else
-if level($n) > 10
+Comlist   if level($n) > 10
 mea $n &YThe voice of Faeia Quenath whispers magically in your ears.&D
 mea $n &YFaeia Quenath says, "You may not enter into the inner confines."&D
 mptrlook $n 2850
-endif
 endif
 ~
 #ENDPROG
@@ -4807,633 +4788,6 @@ longer :P
 #ENDOBJECT
 
 #OBJECT
-Vnum      2871
-Keywords  book tome history abecedarium~
-Type      trash~
-Short     A History Of Alsherok~
-Long      A thick tome with a blue leather cover lies here.~
-Flags     donated~
-WFlags    take~
-Values    0 0 0 0 0 0 0 0 0 0 0
-Stats     1 10 -2 9999 0 None None None
-#EXDESC
-ExDescKey    book tome history abecedarium~
-ExDesc       The cover is dyed blue leather, with red lettering. It says:
- 
-                           &RA History of Alsherok
-                     &RAs written by Brasidas of Graecia
-                &RCompiled from various sources of information
-                            &GSecond Edition&D
- 
-Type LOOK <number> to read the sections.
-To a list of sections, type LOOK SECTIONS.
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    sections~
-ExDesc       1. The Age of Exploration
-2. The Age of Omens
-3. The Age of Life
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1~
-ExDesc       The history of Alsherok begins in the village of Graecia, a place whose
-origins are shrouded with uncertainty.  Lacking any historical records,
-a common tale that travels many hearths is the one that states Graecia
-as being founded by nomadic tribes that sought the peace and stability
-of a fixed home. Once established, it rapidly became a focus point for
-all trade in the region, a place for congregation even amongst the
-nomads.  However, many also settled, bringing about the rapid growth and
-an urge for exploration that years of settled life had not driven out of
-their blood.  The then Council of Elders argued against ideas of
-exploration, preferring the semi-isolated state they had currently, but
-the majority favored exploration.  Subsequently, the explorers left
-under the leadership of Panteleimon.
-(To read further, type LOOK 1a)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1a~
-ExDesc       Almost immediately, the group ran into trouble, encountering a race of
-Frost Giants to the north that goaded the aggressive mind of
-Panteleimon.  Attempts at negotiations failed, due to inability to
-communicate, but primarily because neither side was willing to set aside
-the differences.  It is said that the war between the Graecians and the
-Frost Giants erupted at the conference table itself, resulting in
-Panteleimons death.  The troops retreated rapidly, overwhelmed by sheer
-numbers, but with reinforcements, the Frost Giants were kept in the
-north while Fort Deme was established.  A watchpost against the Giants,
-it stands to this day overlooking the Arctic Wastes.  This unfortunate
-excursion and the resulting war served to curb any remaining urge for
-exploration, and Graecia remained isolated for a while longer.
-(To read further, type LOOK 1b)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1b~
-ExDesc       Over the years, simple excursions were made, and Graecia grew to greater
-proportions, developing a steady economy that was largely trade-based.
-The Guilds and trade associations were first founded here, formed on the
-basis of mutual interests.  One such group that arose from these Guilds
-was the group that referred to themselves as the Wako.  They were drawn
-to the criminal side of society, attracted by the endless possibilities
-that the city offered in terms of wealth.  They soon overran the city,
-almost turning into a plague that fed upon the citizens.  Out of fear of
-the repercussions on the economy, the King gathered an army against the
-Wako, and after a brief sortie with them, expelled them into the south.
-Rumors say that they have vanished in the general direction of the
-ocean.
-(To read further type LOOK 1c)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1c~
-ExDesc       Not long after the expulsion of the Wako, the King sent out scouts to
-establish the precise location of the Wako.  Headed southwards, the
-scouts failed to encounter any Wako, but instead discovered a massive
-palace atop the ancient Black Mountains.  While tales had always
-abounded about the evil nature of the Black Mountains, the palace that
-had suddenly appeared took everyone by surprise.   Spies were
-immediately sent out to determine the exact nature of the inhabitants of
-the Black Mountains, and only a scant five returned with news of the
-evil Lord that had taken control of the area.  While the news of an evil
-Lord from another dimension filled the King with dread, the scouts also
-brought welcome news that the Lord was trapped within the palace by a
-strange magical barrier that defied the imaginations of the human mages.
-(To read further type LOOK 1d)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1d~
-ExDesc       The success of the scouting mission soon renewed interest in
-exploration, and prompted by the formation of Guilds and associations
-within Graecia, the Guild of Cartographers was formed.  At its helm was
-a well-traveled and wise adventurer called Aristeides, who despite his
-youth, gathered many of his fellow wanderers and began the extensive
-exploration of the immediate areas.  Travelling further south from the
-Black Mountain, they soon discovered the existence of a large river,
-headed west towards the ocean.  A short distance from the river, the
-Guild also found, much to their horror, a land route that traced its
-path up to the dreaded Lord Arthmoors Palace.  Previously undiscovered
-by the scouts, the Guild immediately reported back to the new King with
-the news, and anxiously waited for his commands.  Advised with caution
-from his advisors and from his fathers words, the new King commissioned
-the construction of her second fortress, Fort Balasi.  Thus it is, to
-this day, that the walls of Fort Balasi stands on silent watch over the
-southern border from the eventual day of conflict between Lord Arthmoor
-and Graecia.
-(To read further type LOOK 1e)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1e~
-ExDesc       Although the minimal explorations before the discovery of the land route
-had discovered traces of other races within the lands, all exploration
-came to a standstill while Fort Balasi was constructed.  Now, with the
-border secure, the Cartographers Guild had the leisure to explore even
-further.  It turned out that a small settlement of Dwarves had made
-their home just south of the Black Mountains, mining out what little
-resources they could find.  Rather cursory by nature, they bluntly
-informed the Cartographers Guild, and through them, the King of
-Graecia, that they would welcome whatever trade could be spared, but it
-really wasnt necessary.  Of course, trade relations were begun almost
-instantaneously, but the only real thing garnered from these relations
-were the skills of mining and smithing, with which Graecia propelled
-itself into further growth.  Once things were running smoothly in the
-Dwarven settlements, the restless Cartographers Guild left to explore
-the river that flowed just past the settlements.
-(To read further type LOOK 1f)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1f~
-ExDesc       The River Branduin, named for the leader of scouts who had returned from
-Lord Arthmoors, proved too wide to cross easily, thus when explorations
-continued, Aristeides led his party along the eastern banks into a
-massive forest now known collectively as the Great Haon Dor Forest.
-Attention was quickly drawn to the largest tree that the adventurers had
-ever seen.  For as long as they had lived tales of this giant tree had
-circulated amongst the known world, and they were eager to explore this
-new find.  However, the Elves that had made residence in the tree were
-insistent that they leave, and not wishing to press the issue,
-Aristeides led his party further east, into the Haon Dor Forest.  Almost
-by chance, they came upon a community of incredibly swift creatures whom
-they dubbed as Quicklings.  Their leader, Tephanis, grew incensed at
-this apparent violation of his borders and immediately ordered an all
-out attack.  The battle did not last long, and the Quicklings returned
-to their tree homes, ever watchful of newcomers to the forest.
-(To read further type LOOK 1g)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1g~
-ExDesc       After their departure, Aristeides continued exploration along a more
-cautious vein.  Their exploration was rewarded when they discovered a
-much more friendly race of elves that valued knowledge.  They were eager
-to establish relations on a more permanent basis, and trade routes were
-soon established.  Their scholars were also glad to share whatever
-information they had on the forest and the immediate area.  In
-particular, they revealed that there was a village of Halflings nearby.
-Before they left in search of the Halflings, Queen Calandra of the
-Elves, in a token of appreciation to the Cartographers Guild,
-commissioned the construction of a Guildhall for Aristeides and his
-fellow travelers to serve as a base camp for any future explorations
-that they might undertake.
-(To read further type LOOK 1h)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1h~
-ExDesc       Pressing on further after several weeks of rest, Aristeides and his
-Guild members soon found the Halfling Shire, and once again friendly
-relations were established.  The Mayor of the Halfling Shire, with
-little persuasion, signed a defense and trade pact with the group on
-behalf of the King of Graecia.  Upon the news of a friendly Halfling
-town, the current King of Graecia, Callimachus gladly ratified the
-treaty and formed the Graecian Confederation.  The Dwarven settlements,
-approached with the same offer, refused it as politely as they could.
-However, Queen Calandra was quick to agree, and a tri-party treaty was
-signed.  Soon, a small trading post was constructed along a forest trail
-outside the Shire, called Perioeci.  As time passed, the Confederation
-settled down to a period of much growth, development, and peace.  Along
-with the new alliance, the Halflings founded a mine in the mountains
-north of the city and vast amounts of gold began to trickle into the
-Confederation, benefiting the both the Shire and Confederation.
-(To read further type LOOK 1i)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    1i~
-ExDesc       With a new era dawning in relationships between the various races, a
-band of nine legendary heroes, famed for their exploits against the evil
-forces, traveled to the southern part of the world. There they rallied
-the goodly races of the land, especially the Humans and the Half-Elven
-kind, to build a city of immense beauty. Because the world had just
-entered an age of peace, this new city stood as a bastion of hope and
-friendship for all goodly races in the land. From all around the world,
-the peoples of the land came to help the nine heroes build the city.
-Elves from their citadel, Dwarves from their mountain, Halflings from
-their towns, Gnomes from their underground caverns and even other Humans
-from far away cities all came together to forge a new friendship. In
-just under two years, the city was complete! From then on, city was
-known as Palainth, the city of Magic. It is said that the Goddess of
-Magic herself, Laeral Dayspring was one of the nine who founded the
-city. She traveled with them in the guise of her Half-Elven avatar.
-Thus, the citizens of Palainth regard her as their patron goddess and
-have built a garden within Palainth as a tribute to her.  She also
-became an unofficial member of the Graecian Confederation, contributing
-to the great trade that traced its way across the Alsherok continent.
-(Here, the chapter ends.)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2~
-ExDesc       As the years passed and the Graecian Confederation settled down to a
-period of prosperity, news soon reached the ears of new, undiscovered
-lands to the east.  Under commission by the King, Elutherios, the new
-head of the Cartographers Guild, led his band of adventurers into the
-east to seek out these new lands.  Much to their delight, they
-discovered a small village of humans called Midgaard.  Entranced by the
-possibility of bring another nation into the Graecian Confederation,
-they eagerly issued the proposal on behalf of the King.  After much
-deliberation, Midgaard refused to sign the treaty that would bring it
-into the Graecian Confederation, but made it clear that it would welcome
-trade.  Despite being disappointed by the lack of interest on Midgaards
-part, the Graecian King agreed to allow trade relations to continue, but
-remained wary of his eastern neighbors, as the Guild brought back news
-of the recklessness of those in Midgaard.
-(To read further, type LOOK 2a)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2a~
-ExDesc       As the trade between the Graecian Confederation and Midgaard grew, the
-wealth and resources that flowed into Midgaard transformed the village
-into large city, surpassing even Graecia itself.  It soon gained a
-reputation as a vibrant and prosperous city, and was commonly referred
-to as the Jewel of the East.  Eventually, to help facilitate trade and
-to encourage still more trade, the King of Midgaard sent out a noble
-called Lord Argalath to establish a trading base within the Graecian
-Confederation itself.  The long trek from Midgaard to Graecia was thus
-made easier, and trade soared during those early years.  But the peace
-and prosperity that followed was not to last, for evil omens were
-apparent everywhere one looked
-bad times were upon their cherished
-land.
-(To read further, type LOOK 2b)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2b~
-ExDesc       Trade, what little that continued into the south, came to an abrupt
-standstill as the Dwarven settlements had all been deserted. There had
-been no explanation given, just a complete disappearance on the part of
-the Dwarves.  In the last effective excursion by the Cartographers
-Guild, it was roughly determined that they had packed up, and fled east
-in a rush, not bothering to cover what little tracks they laid.  The
-Guild tried to catch up, mounting the best horses offered by Fort
-Balasi, but the trail was lost within the thick forests and falling
-snow.  Returning to the settlements, a more through examination
-revealing nothing of their purpose in leaving east, and in much
-frustration, returned to their Guild Hall, worried over the illness
-their Guild leader had caught while embroiled in this scouting attempt.
-(To read further type LOOK 2c)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2c~
-ExDesc       Troubles first began in the mines, where a band of Jermlaine drove the
-bewildered Halflings out of their mines, claiming it as their own.
-Before the Halflings could even begin to regroup, the Jermlaine set
-traps within the mines, entrapping anyone who dared venture into their
-newfound territory. Helpless against such a wily and ruthless foe, the
-Halflings abandoned the mines to deal with more pressing problems in the
-east. A band of Orcs had grown restless further east of Midgaard, and
-the King thought it an opportune moment to quell any chances of
-expansion by the Orcs, thus striking first without warning. However,
-that proved to be a mistake, as both sides suffered heavy losses.
-Conflict tapered down as the heavy winter chill set in, and an uneasy
-peace settled upon the lands.
-(To read further, type LOOK 2d)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2d~
-ExDesc       Deep into mid winter, it became apparent that communication was not
-forthcoming from Lord Argalath and similarly, all Midgaard merchants
-that frequented the Keep went missing.  Any attempts by the Graecian
-Confederation or Midgaard to establish contact failed as their scouting
-parties followed the footsteps of the merchants and vanished.  The
-Cartographers Guild also failed to act decisively during this period as
-the death of Elutherios threw the entire Guild into disarray.  With the
-passing of their leader, their once proud Guild faded into the annals of
-history, as did the Guildhall, which was slowly reclaimed by nature.
-(To read further, type LOOK 2e)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2e~
-ExDesc       Following these events came a decision that confirmed the suspected
-reckless nature of Midgaard Kings.  Midgaard declared an all out war
-upon the Orcs, urged on by a particularly aggressive Council and
-immature King.  The losses reached new heights, virtually robbing
-Midgaard of all their able-bodied warriors.  The Orcs seemed to flow
-like an inexhaustible tide to overrun the lands, and soon, Midgaard
-resorted to fighting a defensive war.  Slowly but steadily, they lost
-more and more lands, and they themselves began to realize the folly of
-their decision.  Graecia, at first only mildly concerned, soon found
-themselves stepping up military patrols along the eastern border, hoping
-that the warfront would not advance, but not holding out much hope for
-it.  Palainth, seeing the desperate situation Midgaard was in, sent
-forces to aid against the Orcish hordes, hoping to prevent what could
-erupt into a war of immense proportions, but as it turned out, it was
-unable to do anything worthwhile.
-(To read further, type LOOK 2f)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2f~
-ExDesc       Finally, out of sheer desperation and fatalism, a small detachment of
-Midgaards finest warriors were sent into the mountains north of the
-city in an attempt to gather aid for their falling city.  Tales had
-abounded about fierce Dragons that dwelt in those mountains, and it was
-hoped that with the aid of magiks, these Dragons could be turned into a
-force that would challenge the might of the Orcs.  Unfortunately, once
-the Dragons were brought into the skies of Midgaard, they broke the
-inadequate binding magiks worked upon them, and promptly laid waste to
-the area as a symbol of their anger.  The skies that day were red with
-the unnatural heat of stone burning, and none of all those that lived
-within the city and in its immediate surroundings were left alive.
-Then, just as swiftly as it had begun, the Dragons vanished into the
-sky, never to be seen again.
-(To read further, type LOOK 2g)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2g~
-ExDesc       The survivors, few as they were, fled east into the hills, regardless of
-the Orcs that lurked in waiting.  Anything was better than facing the
-Dragons wrath again.
-With determination, the survivors set about rebuilding their lives,
-starting with the building of a new city, Maldoth.  Although cut off
-from the rest of the world by the extensive destruction the Orcs
-wrought, the citizens knew that the lands to the east still lay open to
-them, and life would still go on.
-(To read further, type LOOK 2h)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2h~
-ExDesc       On the other hand, the Orcs, seeing a prime opportunity, advanced upon
-the borders of Graecia.  Despite all their precautions, the troops were
-swarmed under by the vast number of Orcs.  Shire was the first to fall.
-Reinforcements that arrived were too late to save the Halfling town, but
-they were able to make a stand at the edge of River Branduin, managing
-to save the Elven City from imminent destruction, though it cost more
-lives than the King cared to count.  Subsequently, the Graecian King
-also ordered Perioeci upgraded into a fully defensive fortress, hoping
-that this would serve to stem the tide of Orcs that flowed across the
-lands.
-(To read further, type LOOK 2i)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2i~
-ExDesc       While this was enough to prevent extensive incursions into the northern
-regions, this was not so for the City of Palainth.  In the south, they
-were open to attacks from the Orcs, who had no qualms about doing so.
-Ever since Palainths interference in Midgaards war with the Orcs, the
-Orcs have regarded them as an enemy to be vanquished and tried all means
-and ways to eradicate her and her inhabitants.  Her greatest battle
-against the might of evil is recorded as the battle between the citizens
-and attacking hordes of Demons.  A rift in the void allowed the Demons
-to escape from their dwelling place, but it is still unknown as whether
-the Orcs had caused the rift to appear.  Nevertheless, with their adept
-balance in using both the sword and sorcery to defend their city, they
-withstood the onslaught for three days, while their mages worked
-furiously to find means and ways to return the demons to their
-dimension.  At last, they succeeded, and the weary citizens of Palainth
-banished the demons from the world.  But the threat still lingers, as
-Demons have eternal life and they but wait the chance to return and
-destroy the city.
-(To read further, type LOOK 2j)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2j~
-ExDesc       The following years after Palainths battle, while not exactly peaceful, 
-were predictable, and the lives of the peasants carried on.  However, 
-with the death of his father, King Agamemnon ascended the throne of 
-Graecia.  A ruthless imperialist, he bent all his resources towards 
-world conquest.  To facilitate his desire, he ordered the building of a 
-massive brick road between Graecia and Bywater, the newly rebuilt 
-Halfling city.  The military was tripled in size, and intense training 
-marked the Graecian forces that were slowly mounting up against the 
-Orcs.  Full-time garrisons were soon stationed in all three forts, and 
-reserves were mustered up to serve as additional border guards.  Each 
-garrison soon became the dominion of the armys finest warriors, and
-with their help, Agamemnon tightened his grip over the Confederation and 
-rechristened it as The Graecian Empire.  In addition to the boosting of 
-existing forces, Agamemnon decided that a new fort would be needed in 
-the continuing fight against the Orcs.  Thus it came to be that he 
-ordered the construction of Fort Palaestras at the base of the mountain 
-pass that led upwards to Bywater.  This was a fortunate move, as 
-scouting missions were to prove.  The first scout mission returned 
-shortly after they left, bearing with them the news that Orcs had 
-constructed their own fort on the opposite end of the pass.  The news 
-greatly angered Agamemnon, and he immediately called up all the reserves 
-he could muster and doubled the garrison at Fort Palaestras.  The
-Halflings, leery of further threat to their newly rebuilt city, 
-volunteered an auxiliary group of their best Slingers to aid in manning 
-the garrison, the first time a fortress within the empire was staffed by 
-more than just humans.  Further scouting missions undertaken revealed 
-that the Orcs called their fort Gulghack, but they were unable to 
-acertain any further information of use.
-(To read further, type LOOK 2k)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2k~
-ExDesc       With the possibility of a new threat on the border, Agamemnon urged 
-Palainth to enter the Graecian Empire to strengthen it further.  
-Palainth, however, refused to join this time, as she held on to her 
-ideals of peace and trust
-rather, she stood alone, isolated in the 
-south, against those few Orcish hordes that still ventured against them, 
-offering protection and help to those who needed it.  Agamemnon, while 
-far from happy at this, agreed to let them go, as they had never 
-officially signed a treaty to join the Confederation.
-(To read further, type LOOK 2l)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2l~
-ExDesc       With the formation of The Graecian Empire, Agamemnon gathered greater
-wealth than before, and channeled it into the building of a navy that
-would transverse the oceans that formed the western border.  Their
-efforts at navigation were soon rewarded with the discovery of a small
-island, and it was decided that a colony should be established as a last
-resort, and the Ventorium Colony was born.  Not long after the
-establishment of the colony, further explorations upon the islands led
-them to a town populated by Balericans.  Several overtures were made
-towards the town, but it remained largely isolated, and the Graecians
-abandoned their attempts at communication.  Soon, more and more citizens
-of Graecia traveled over to their new colony to flee the encroaching
-forces of the Orcs.
-(To read further, type READ 2m)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2m~
-ExDesc       Without warning, the highest peak of the Black Mountains, Mount Doria,
-exploded into a boiling tumult of fiery ash and pouring lava.  This
-momentous natural disaster, coupled with the close proximity of Dark
-Magic, set up a whole chain of other deadly calamities.  Earthquakes
-stalked the once quiet lands, and the waves rose one after another,
-drowning lands to recreate new seas, whilst existing oceans dried up and
-died under the blazing sun.  The vast forest that stretched across the
-Graecian Empire was also altered beyond recognition, and more
-importantly, the city of Graecia lay in ruins.
-(To read further, type LOOK 2n)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2n~
-ExDesc       This did not deter Agamemnon in the least.  Calling upon the last
-reserves of his empire, he ordered the painstaking labor of rebuilding
-the city to begin.  Within years, what had seemed an impossible task was
-completed, and New Graecia was born upon the ruins of the old.  However,
-that first earthquake was but a hint of what lay in store, for as the
-years passed, earthquakes still ravaged the lands, and the forest was
-scarred beyond repair.  What people that dared venture out into new
-territories reported vast caverns that had been opened up beneath the
-mighty forest, and as yet, little is known of what they contain. It was
-also during this time that all communication with Palainth was lost, as
-the disasters opened up the Bloodmire Swamp on the trading routes that
-had marked the way to the City of Righteousness.
-(To read further, type LOOK 2o)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    2o~
-ExDesc       Life has returned to the lands, with new beginnings in many ways.  Chaos
-still reigns in the lands, but the Light glows yet within the Dark, and
-there is fresh hope.
-(Here, the chapter ends.)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    3~
-ExDesc       Even as Maldoth was completed, new contacts were made with other races.
-From deep within the Broken Hills in which Maldoth lay, adventurers
-trekked north only to discover the Dwarven stronghold, named Kelgarn.
-The Dwarves explained that they had premonitions of the trouble that
-would settle upon the land, and had fled the destruction.
-Unfortunately, they had also become embroiled with the war with the
-Orcs, despite having founded a new stronghold.  While trade relations
-were again set up between Kelgarn and Maldoth, the explorers continued
-scouting the land.   Further travels saw the naming of the Misty Sea,
-this time in the south, and the revelation that a small trading town
-existed on its far southern coast.
-(To read further, type LOOK 3a)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    3a~
-ExDesc       The worshippers of the old Midgaardish god of knowledge and life,
-Mithgilran, were determined to eke out a new life for themselves outside
-of Maldoth.  Largely consisting of craftsmen and traders, this group of
-survivors were delivered from the ruins of Midgaard by Mithgilran, and
-led to the shores of the Misty Sea.  Fertile coastal plains lay open
-before them, and the fair town of Greyhaven was born.  Because of their
-brush with war and their immense respect for knowledge, they have no
-King, but instead follow the teachings of their current scribe, Lorthan.
-It was on his advice, that they decided to hold no allegiance to any
-empire or city, hard pressed as they are in a world of troubles, and it
-has benefited them immensely.
-(To read further, type LOOK 3b)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    3b~
-ExDesc       The skilled craftsmen of Greyhaven soon made many sea-worthy vessels and
-numbering paramount amongst those were huge trading ships.  With these
-ships, exploration was soon under way, and thus it came to pass that the
-people of the continent of Alsherok established contact with the people of
-the ancient and mystical continent of Eletar.  There they encountered,
-for the first time, the culture that was named Eletari.
-(To read further, type LOOK 3c)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    3c~
-ExDesc       The Eletari were friendly people, although possessed of dark features
-and yellow skin that had not been seen in Alsherok before.  They too, had
-their own intensely different culture, but they welcomed the explorers
-into their home with equality, and led them to the village of Dragon
-Gate as their point of disembarkation.  The village, nestled within the
-verdant valleys north of the Dragonhead Bay, proved to be an excellent
-choice, as it soon blossomed into a major stopping point along the trade
-route between both continents.  Adventurers also ventured further and
-further beyond the gates of Dragon Gate, journeying into the far north
-to the Imperial City of Chang-An where the Emperor of the Nine Dragon
-Pearls, holds court over Eletar.
-(To read further, type LOOK 3d)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    3d~
-ExDesc       Even as these new explorations and ventures took place, a clear path was
-found linking Palainth back to the rest of the cities of Alsherok.  Trade
-relations were soon resumed, and due to its strategic location, it
-blossomed into the largest city in the southern parts of the main
-continent.  Renowned for their acceptance of all that come in search of
-knowledge, regardless of race, this majestic city is frequently visited
-by all peoples of the land. They are a city founded and structured on
-the tenets of individuality and fairness, where peoples of all races can
-find welcome if they come in goodwill. A city of endless splendors,
-unrivaled in aesthetic beauty, Palainth exists in open defiance of the
-conquerors and tyrants of the world, a place where no one holds claim
-over another. People of all good races walk freely here and without
-fear, down every road and alleyway on the darkest of nights.  Protection
-for all those within its walls comes from the Knights of Palainth, who
-are the direct descendents of the citys founders.
-(To read further, type LOOK 3e)
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    3e~
-ExDesc       With the increasing activities of the Orcs and other evil forces in the
-world, Alsherok is now in a delicate balance as new horizons
-(Here the book ends and you see a small note pasted to the back.)
-(To read the note, type LOOK NOTE)
-your own...
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    note~
-ExDesc       The 3rd edition is forthcoming soon.
-~
-#ENDEXDESC
-
-#ENDOBJECT
-
-#OBJECT
 Vnum      2872
 Keywords  book tome beginner's wayfaring guide abecedarium~
 Type      armor~
@@ -5903,9 +5257,9 @@ Keywords  wooden shield abecedarium~
 Type      armor~
 Short     A wooden Abecedarium shield~
 Long      A wooden shield engraved with the abecedarium symbol lies here.~
-Flags     donated~
+Flags     donated antimage antinecro antimonk~
 WFlags    take shield~
-Values    7 7 0 14 1 0 0 0 0 0 0
+Values    7 7 0 14 13 0 0 0 0 0 0
 Stats     6 449 -2 9999 0 None None None
 #EXDESC
 ExDescKey    wooden shield abecedarium~
@@ -6291,6 +5645,86 @@ Stats     1 0 -2 9999 0 None None None
 #ENDOBJECT
 
 #OBJECT
+Vnum      2912
+Keywords  shimmeringportal abecedarium~
+Type      treasure~
+Short     The shimmering portal~
+Long      &BA shimmering portal fills an elaborate frame standing in a corner.&D~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#ENDOBJECT
+
+#OBJECT
+Vnum      2913
+Keywords  silver plaque abecedarium~
+Type      treasure~
+Short     The silver plaque~
+Long      &CA glittering silver plaque draws your attention.&D~
+Values    0 0 0 0 0 0 0 0 0 0 0
+Stats     1 0 0 9999 0 None None None
+#EXDESC
+ExDescKey    silver plaque~
+ExDesc       A silver plaque is mounted on the wall here with words on it. It says:
+ 
+You stand in the Abecedarium, dedicated to Meia, goddess of learning.
+Within these holy walls, you will be taught everything a young
+adventurer might need to venture forth into Alsherok.
+ 
+Simply walk from room to room by typing the direction in which you wish
+to go.
+ 
+To learn, you will have to talk to the tutors. Just &YSAY&D the words
+and they will tell you what you wish to know. Although keywords are not
+always obvious, they will be highlighted through the Abecedarium in
+capital letters.
+
+During your lessons, you may sometimes forget what has been said. If you
+wish a repeat, merely say the keywords again. Also, you may type &YSAY REPEAT&D
+for them to tell you what topics they teach.
+
+In every room, there will be a map on the wall. It will show your position.
+To look at the map, type &YLOOK MAP&D.
+
+                                 &RNOTE
+                                &R------&D
+
+The Abecedarium is located on the island of Reonn which is a safe enclave
+for new adventurers in Alsherok. Until level 10, you will benefit from
+having your corpse being transported to you when you die so you do not
+need to do a corpse retrieval. Also, you will have access to newbie
+areas located on Reonn where you can gain experience to level.
+ 
+Once you have reached level 5, you can attempt the Abecedarium challenge
+where you will be rewarded with a weapon on successful completion and be
+transported into Bywater City where more adventures await in the lands. At
+level 10, you MUST attempt the challenge as you may no longer access the
+Abecedarium and the newbie areas.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
+Vnum      2914
+Keywords  sandals abecedarium~
+Type      armor~
+Short     A pair of Abecedarium sandals~
+Long      A pair of sandals marked with the Abecedarium symbol lies here.~
+Flags     organic donated~
+WFlags    take feet~
+Values    2 2 0 1 13 0 0 0 0 0 0
+Stats     3 500 -2 9999 0 None None None
+#EXDESC
+ExDescKey    sandals abecedarium~
+ExDesc       This is one of the various pieces of armour available in the Lands. As
+you journey onward, you will find better equipment, but for now the
+Abecedarium armour will have to do.
+~
+#ENDEXDESC
+
+#ENDOBJECT
+
+#OBJECT
 Vnum      2949
 Keywords  Last obj~
 Type      trash~
@@ -6316,7 +5750,6 @@ everything they may have to say. To talk to any mobile, just type
 will be highlighted throughout the Abecedarium in capital letters. If
 you want them to repeat anything they say, merely say the keyword again.
 Also, you can type &YSAY REPEAT&D for them to tell you the topics again.
-&BA shimmering portal fills an elaborate frame standing in a corner.&D
 ~
 #EXIT
 Direction north~
@@ -6339,6 +5772,9 @@ ToRoom    2851
 #ENDEXIT
 
 Reset M 2850 1 2850 -1 -1 -1 100
+Reset O 2912 1 2850 -1 -1 -1 100
+Reset O 2913 1 2850 -1 -1 -1 100
+
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6352,68 +5788,13 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[&R#&C]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.
 &GIf you cannot read the map and need help, please type LOOK HELP.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    newbie~
-ExDesc       A silver plaque is mounted on the wall here with words on it. It says:
- 
-You stand in the Abecedarium, dedicated to Meia, goddess of learning.
-Within these holy walls, you will be taught everything a young
-adventurer might need to venture forth into the world.
- 
-Simply walk from room to room by typing the direction in which you wish
-to go.
- 
-To learn, you will have to talk to the tutors. Just &YSAY&D the words
-and they will tell you what you wish to know. Although keywords are not
-always obvious, they will be highlighted through the Abecedarium in
-capital letters.
-
-During your lessons, you may sometimes forget what has been said. If you
-wish a repeat, merely say the keywords again. Also, you may type &YSAY REPEAT&D
-for them to tell you what topics they teach.
-
-In every room, there will be a map on the wall. It will show your position.
-To look at the map, type &YLOOK MAP&D.
-
-                                 &RNOTE
-                                &R------&D
-
-The Abecedarium is located on the island of Reonn which is a safe enclave
-for new adventurers in the world. Until level 10, you will benefit from
-having your corpse being transported to you when you die so you do not
-need to do a corpse retrieval. Also, you will have access to newbie
-areas located on Reonn where you can gain experience to level.
- 
-Once you have reached level 5, you can attempt the Abecedarium challenge
-where you will be rewarded with a weapon on successful completion and be
-transported into the city where more adventures await in the lands. At
-level 10, you MUST attempt the challenge as you may no longer access the
-Abecedarium and the newbie areas.
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6437,13 +5818,13 @@ else
 if level($n) >= 5
 if level($n) <= 10
 if mortcount(2926) == 0
-mpechoat 0.$n &y A magical portal opens before you.
+mpechoat 0.$n &YA magical portal opens before you.&D
 mpopenpassage 2850 2926 4
-mer 0.$n &y A magical portal opens before $n.
-mpechoat 0.$n &y A magical force pulls you through the portal.
-mer 0.$n &y $n is pulled by a magical force through the portal.
+mer 0.$n &YA magical portal opens before $n.&D
+mpechoat 0.$n &YA magical force pulls you through the portal.&D
+mer 0.$n &Y$n is pulled by a magical force through the portal.&Y
 mpforce 0.$n up
-mpecho &y The magical portal winks shut.
+mpecho &YThe magical portal winks shut.&D
 mpclosepassage 2850 4
 else
 mea $n A voice whispers, "There is someone attempting the challenge now."
@@ -6492,27 +5873,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[&R#&C]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6553,27 +5919,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [&R#&C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6614,7 +5965,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
+
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6623,26 +5979,6 @@ ExDescKey    plaque~
 ExDesc       In large letters, the words "Rules of Conduct"
 are engraved on it.
 For more information on the rules, type HELP RULES.
-~
-#ENDEXDESC
-
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6683,27 +6019,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6744,27 +6065,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6812,27 +6118,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6873,27 +6164,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6934,27 +6210,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -6995,27 +6256,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -7059,27 +6305,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -7126,27 +6357,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -7206,27 +6422,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[&R#&C]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -7344,27 +6545,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[N]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -8494,7 +7680,6 @@ ToRoom    2927
 Reset M 2863 1 2912 -1 -1 -1 100
 Reset O 2850 1 2912 -1 -1 -1 100
   Reset P 0 2872 1 2850 100
-  Reset P 0 2871 1 2850 100
   Reset P 0 2870 1 2850 100
 #ENDROOM
 
@@ -8519,12 +7704,12 @@ ToRoom    2861
 #MUDPROG
 Progtype  entry_prog~
 Arglist   100~
-Comlist   mpechoat 0.$n &y &CA voice calls from above and says,
-mpechoat 0.$n &y &C"This is what a DT will look like from the inside.
-mpechoat 0.$n &y &CBy the time you see this, it will be too late to escape.
-mpechoat 0.$n &y &CRemember to take hints from the other room descriptions.
-mpechoat 0.$n &y &CIn case you are worrying, not every place has DTs.
-mpechoat 0.$n &y There are none in Gywn al'Fer and the island of Reonn.
+Comlist   mpechoat 0.$n &CA voice calls from above and says,&D
+mpechoat 0.$n &C"This is what a DT will look like from the inside.&D
+mpechoat 0.$n &CBy the time you see this, it will be too late to escape.&D
+mpechoat 0.$n &CRemember to take hints from the other room descriptions.&D
+mpechoat 0.$n &CIn case you are worrying, not every place has DTs.&D
+mpechoat 0.$n There are none in Gywn al'Fer and the island of Reonn.&D
 ~
 #ENDPROG
 
@@ -8655,27 +7840,12 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
                          [C]-[B]-[A]-[&R#&C]-[M]
  
 &CYour present position in the Abecedarium is denoted by the &R#&D.
-&CTo get a legend for the map, type LOOK LEGEND.&D
-~
-#ENDEXDESC
 
-#EXDESC
-ExDescKey    legend~
-ExDesc       &PA. Abecedarium Foyer
-B. Languages
-C. Channels
-D. Configuration
-E. Personal Commands
-F. Hunger, Thirst and Resting
-G. Shopping and Renting
-H. Self Defense
-I. Combat
-J. Death and DTs
-K. Player Killing
-L. Rules of Conduct
-M. Miscellaneous Information
-N. Movement and Overland Map
-O. Abecedarium Porch&D
+&CA. Abecedarium Foyer   F. Hunger, Thirst, and Resting   K. Player Killing
+B. Languages           G. Shopping and Renting          L. Rules of Conduct
+C. Channels            H. Self Defense                  M. Misc. Information
+D. Configuration       I. Combat                        N. Movement and Overland
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
@@ -8929,13 +8099,10 @@ Reset O 2905 1 2927 -1 -1 -1 100
 #MUDPROG
 Progtype  act_prog~
 Arglist   p from the north.~
-Comlist   if isimmort($n)
-else
-if level($n) > 10
+Comlist   if level($n) > 10
 mea $n The voice of Faeia Quenath whispers magically in your ears.
 mea $n Faeia Quenath says, "You may not enter into the village."
 mptrlook $n 2850
-endif
 endif
 ~
 #ENDPROG
@@ -8943,20 +8110,20 @@ endif
 #MUDPROG
 Progtype  act_prog~
 Arglist   p from the south.~
-Comlist   mpechoat 0.$n &y The Librarian walks in from the south.
-mpechoat 0.$n &y The Librarian smiles and says,
-mpechoat 0.$n &y "Feel free to come back anytime."
+Comlist   mpechoat 0.$n &YThe Librarian walks in from the south.&D
+mpechoat 0.$n &YThe Librarian smiles and says,&D
+mpechoat 0.$n &C"Feel free to come back anytime."&D
 if carryingvnum($n) == 2875
-mpechoat 0.$n &y &C"Fare thee well in your travels."&D
+mpechoat 0.$n &C"Fare thee well in your travels."&D
 else
-mpechoat 0.$n &y &C"Here is a little something to help you on your travels."&D
+mpechoat 0.$n &C"Here is a little something to help you on your travels."&D
 mpoload 2875 1
-mpechoat 0.$n &y The Librarian gives you a pair of silver armbands.
+mpechoat 0.$n &YThe Librarian gives you a pair of silver armbands.&D
 give silver-armbands $n
 mpforce $n save
 endif
-mpechoat 0.$n &y &C"Don't forget to type SAVE frequently!"&D
-mpechoat 0.$n &y The Librarian waves kindly and leaves south.
+mpechoat 0.$n &C"Don't forget to type SAVE frequently!"&D
+mpechoat 0.$n &YThe Librarian waves kindly and leaves south.&D
 ~
 #ENDPROG
 

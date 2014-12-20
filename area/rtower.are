@@ -7,6 +7,7 @@ Vnums           7700 7799
 Continent       one~
 Coordinates     911 928
 Ranges          0 10 0 10
+Dates           963014400 963014400
 ResetMsg        &BA wave of soft blue light radiates through your surroundings...~
 ResetFreq       5
 Flags           nopkill nocamp noportal nosummon noteleport~
@@ -4632,17 +4633,17 @@ Reset M 7715 1 7757 -1 -1 -1 100
 #MUDPROG
 Progtype  act_prog~
 Arglist   p pushes A beehive.~
-Comlist   mpechoat 0.$n _y You hear an angry buzzing sound emanating from within
-mpechoat 0.$n _y the beehive, and an uneasy feeling creeps over you.
+Comlist   mpechoat 0.$n &YYou hear an angry buzzing sound emanating from within&D
+mpechoat 0.$n &Ythe beehive, and an uneasy feeling creeps over you.&D
 ~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p pulls A beehive.~
-Comlist   mpechoat 0.$n _y The angry buzzing grows louder and more furious...
-mpechoat 0.$n _y Suddenly, a swarm of furious bees start pouring out of
-mpechoat 0.$n _y the hive!
+Comlist   mpechoat 0.$n &YThe angry buzzing grows louder and more furious...&D
+mpechoat 0.$n &YSuddenly, a swarm of furious bees start pouring out of&D
+mpechoat 0.$n &Ythe hive!&D
 mpmload 7757
 ~
 #ENDPROG
