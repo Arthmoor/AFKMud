@@ -5661,7 +5661,7 @@ bool check_tumble( char_data * ch, char_data * victim )
 
    if( ( victim->Class != CLASS_ROGUE && victim->Class != CLASS_MONK ) || !victim->IS_AWAKE(  ) )
       return false;
-   if( !victim->isnpc(  ) && !victim->pcdata->learned[gsn_tumble] > 0 )
+   if( !victim->isnpc(  ) && !victim->pcdata->learned[gsn_tumble] )
       return false;
    if( victim->isnpc(  ) )
       chances = umin( 60, 2 * victim->level );
