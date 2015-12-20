@@ -211,11 +211,18 @@ void removename( string & list, const string & member )
    // Implies the list has more than just this name.
    if( list.length(  ) > member.length(  ) )
    {
-      string die = " " + member;
-      string::size_type pos = list.find( die );
+		string die = " " + member;
+		string::size_type pos = list.find( die );
 
-      list.erase( pos, die.length(  ) );
-   }
+		if ( pos != string::npos )
+			list.erase( pos, die.length( ) );
+		else
+		{
+			pos = list.find( member );
+
+			if ( pos != string::npos )
+				list.erase( pos, member.length( ) );
+		}
    else
       list.clear(  );
    strip_lspace( list );
