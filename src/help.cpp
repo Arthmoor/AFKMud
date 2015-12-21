@@ -132,7 +132,7 @@ void save_helps( void )
       stream << "WebInvis " << hlp->webinvis << endl;
       stream << "Keywords " << hlp->keyword << endl;
       stream << "Related  " << hlp->related << endl;
-      stream << "Text     " << hlp->text << "¢" << endl;
+      stream << "Text     " << hlp->text << "Â¢" << endl;
       stream << "End" << endl << endl;
    }
    stream.close(  );
@@ -205,9 +205,9 @@ void load_helps( void )
 
       else if( key == "Text" )
       {
-         stream.getline( buf, MSL, '¢' );
+         stream.getline( buf, MSL, 'Â¢' );
          value = buf;
-         strip_whitespace( value );
+         strip_lspace( value );
          help->text = value;
       }
 
