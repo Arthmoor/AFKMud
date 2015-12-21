@@ -5825,7 +5825,7 @@ CMDF( do_mpedit )
       ch->print( "Command being one of:\r\n" );
       ch->print( "  add delete insert edit list\r\n" );
       ch->print( "Program being one of:\r\n" );
-      ch->print( print_array_string( mprog_flags ) );
+      ch->print( print_array_string( mprog_flags, ( sizeof( mprog_flags ) / sizeof( mprog_flags[ 0 ] ) ) ) );
       return;
    }
 
@@ -6109,7 +6109,7 @@ CMDF( do_opedit )
       ch->print( "Command being one of:\r\n" );
       ch->print( "  add delete insert edit list\r\n" );
       ch->print( "Program being one of:\r\n" );
-      ch->print( print_array_string( mprog_flags ) );
+      ch->print( print_array_string( mprog_flags, ( sizeof( mprog_flags ) / sizeof( mprog_flags[ 0 ] ) ) ) );
       ch->print( "Object should be in your inventory to edit.\r\n" );
       return;
    }
@@ -6373,7 +6373,7 @@ CMDF( do_rpedit )
       ch->print( "Command being one of:\r\n" );
       ch->print( "  add delete insert edit list\r\n" );
       ch->print( "Program being one of:\r\n" );
-      ch->print( print_array_string( mprog_flags ) );
+      ch->print( print_array_string( mprog_flags, ( sizeof( mprog_flags ) / sizeof( mprog_flags[ 0 ] ) ) ) );
       ch->print( "You should be standing in the room you wish to edit.\r\n" );
       return;
    }
