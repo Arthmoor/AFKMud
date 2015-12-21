@@ -220,7 +220,7 @@ void removename( string & list, const string & member )
 		{
 			pos = list.find( member );
 
-			if ( pos != string::npos )
+			if ( pos != string::npos && pos == 0 )
 				list.erase( pos, member.length( ) );
 		}
    else
