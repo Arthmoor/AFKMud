@@ -1005,14 +1005,14 @@ bool is_number( const char *arg )
 }
 
 // I r lazy and just want a good way to output the contents of the various string arrays.
-const char *print_array_string( const char *flagarray[] )
+const char *print_array_string( const char *flagarray[], size_t arraySize )
 {
    static string s;
    int columns = 0;
 
    s.clear();
 
-   for( size_t i = 0; i < ( sizeof( flagarray ) / sizeof( flagarray[0] ) ); ++i )
+   for( size_t i = 0; i < arraySize ); ++i )
    {
       s.append( flagarray[i] );
 
