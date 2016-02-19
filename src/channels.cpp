@@ -463,8 +463,7 @@ CMDF( do_listen )
          if( channel->flags.test( CHAN_ALWAYSON ) )
             continue;
 
-         if( hasname( ch->pcdata->chan_listen, channel->name ) )
-            removename( ch->pcdata->chan_listen, channel->name );
+         removename( ch->pcdata->chan_listen, channel->name );
       }
       ch->print( "&YYou no longer listen to any available muteable channels.\r\n" );
       return;

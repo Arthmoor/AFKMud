@@ -919,7 +919,7 @@ void unlink_command( cmd_type * command )
    vector < cmd_type * >&cmd_list = command_table[command->name[0] % 126];
    vector < cmd_type * >::iterator icmd;
 
-   for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); )
+   for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
    {
       cmd_type *cmd = *icmd;
 

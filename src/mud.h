@@ -95,7 +95,7 @@ typedef bool SPEC_FUN( char_data * ch );
 /* Hidden tilde char generated with alt155 on the number pad.
  * The code blocks the use of these symbols by default, so this should be quite safe. Samson 3-14-04
  */
-#define HIDDEN_TILDE	'¢'
+#define HIDDEN_TILDE	'Â¢'
 
 /* 32bit bitvector defines */
 const int BV00 = ( 1 << 0 );
@@ -1309,7 +1309,7 @@ void string_erase( string & src, char find );
 void string_erase( string &, const string & );
 void string_replace( string &, const string &, const string & );
 vector < string > string_explode( const string &, char );
-const char *print_array_string( const char *flagarray[] );
+const char *print_array_string( const char *flagarray[], size_t arraySize );
 
 /* fight.c */
 ch_ret multi_hit( char_data *, char_data *, int );

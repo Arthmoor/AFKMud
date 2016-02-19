@@ -1950,7 +1950,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                      obj->wear_loc = -1;
 
                   // Fix equipment on invalid body parts
-                  if( ch && !is_valid_wear_loc( ch, wear_loc ) )
+                  if( ch && ch->race > 0 && ch->race < MAX_PC_RACE && !is_valid_wear_loc( ch, wear_loc ) )
                   {
                      wear_loc = -1;
                      obj->wear_loc = -1;

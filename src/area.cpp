@@ -2032,7 +2032,7 @@ void save_reset_level( FILE * fpout, list < reset_data * >source, const int leve
 
          case 'P':
          case 'E':
-            if( UPPER( pReset->command == 'E' ) )
+            if( pReset->command == 'E' )
                fprintf( fpout, "%*.sReset %c %d %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
             else
                fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
