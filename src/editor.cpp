@@ -211,18 +211,19 @@ void removename( string & list, const string & member )
    // Implies the list has more than just this name.
    if( list.length(  ) > member.length(  ) )
    {
-		string die = " " + member;
-		string::size_type pos = list.find( die );
+      string die = " " + member;
+      string::size_type pos = list.find( die );
 
-		if ( pos != string::npos )
-			list.erase( pos, die.length( ) );
-		else
-		{
-			pos = list.find( member );
+      if( pos != string::npos )
+         list.erase( pos, die.length( ) );
+      else
+      {
+         pos = list.find( member );
 
-			if ( pos != string::npos && pos == 0 )
-				list.erase( pos, member.length( ) );
-		}
+         if( pos != string::npos && pos == 0 )
+            list.erase( pos, member.length( ) );
+      }
+   }
    else
       list.clear(  );
    strip_lspace( list );
@@ -1012,7 +1013,7 @@ const char *print_array_string( const char *flagarray[], size_t arraySize )
 
    s.clear();
 
-   for( size_t i = 0; i < arraySize ); ++i )
+   for( size_t i = 0; i < arraySize; ++i )
    {
       s.append( flagarray[i] );
 
