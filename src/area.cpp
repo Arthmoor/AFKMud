@@ -3477,9 +3477,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> nothing <percentage>\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
-      tarea->tg_nothing = value;
-      ch->printf( "Area chance to generate nothing set to %hu%%\r\n", value );
+      tarea->tg_nothing = stoi( argument );
+      ch->printf( "Area chance to generate nothing set to %hu%%\r\n", tarea->tg_nothing );
       return;
    }
 
@@ -3490,9 +3489,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> gold <percentage>\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
-      tarea->tg_gold = value;
-      ch->printf( "Area chance to generate gold set to %hu%%\r\n", value );
+      tarea->tg_gold = stoi( argument );
+      ch->printf( "Area chance to generate gold set to %hu%%\r\n", tarea->tg_gold );
       return;
    }
 
@@ -3503,9 +3501,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> item <percentage>\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
-      tarea->tg_item = value;
-      ch->printf( "Area chance to generate item set to %hu%%\r\n", value );
+      tarea->tg_item = stoi( argument );
+      ch->printf( "Area chance to generate item set to %hu%%\r\n", tarea->tg_item );
       return;
    }
 
@@ -3516,9 +3513,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> gem <percentage>\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
-      tarea->tg_gem = value;
-      ch->printf( "Area chance to generate gem set to %hu%%\r\n", value );
+      tarea->tg_gem = stoi( argument );
+      ch->printf( "Area chance to generate gem set to %hu%%\r\n", tarea->tg_ge );
       return;
    }
 
@@ -3529,9 +3525,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> scroll <percentage>\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
-      tarea->tg_scroll = value;
-      ch->printf( "Area chance to generate scroll set to %hu%%\r\n", value );
+      tarea->tg_scroll = stoi( argument );
+      ch->printf( "Area chance to generate scroll set to %hu%%\r\n", tarea->tg_scroll );
       return;
    }
 
@@ -3542,9 +3537,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> potion <percentage>\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
-      tarea->tg_potion = value;
-      ch->printf( "Area chance to generate potion set to %hu%%\r\n", value );
+      tarea->tg_potion = stoi( argument );
+      ch->printf( "Area chance to generate potion set to %hu%%\r\n", tarea->tg_potion );
       return;
    }
 
@@ -3555,9 +3549,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> wand <percentage>\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
-      tarea->tg_wand = value;
-      ch->printf( "Area chance to generate wand set to %hu%%\r\n", value );
+      tarea->tg_wand = stoi( argument );
+      ch->printf( "Area chance to generate wand set to %hu%%\r\n", tarea->tg_wand );
       return;
    }
 
@@ -3568,9 +3561,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> armor <percentage>\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
-      tarea->tg_armor = value;
-      ch->printf( "Area chance to generate armor set to %hu%%\r\n", value );
+      tarea->tg_armor = stoi( argument );
+      ch->printf( "Area chance to generate armor set to %hu%%\r\n", tarea->tg_armor );
       return;
    }
 
