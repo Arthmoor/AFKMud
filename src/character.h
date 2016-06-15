@@ -92,7 +92,7 @@ class pc_data
    area_data *area;  /* For the area a PC has been assigned to build */
    class clan_data *clan;
    struct realm_data *realm;
-   struct deity_data *deity;
+   class deity_data *deity;
    struct editor_data *editor;
    class note_data *pnote;
    class board_data *board;
