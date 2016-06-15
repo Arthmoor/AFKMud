@@ -1277,11 +1277,11 @@ obj_data *obj_data::clone(  )
    oclone->objdesc = QUICKLINK( objdesc );
    if( action_desc && action_desc[0] != '\0' )
       oclone->action_desc = QUICKLINK( action_desc );
-   if( socket[0] && socket[0] != '\0' )
+   if( socket[0] && *socket[0] != '\0' )
       oclone->socket[0] = QUICKLINK( socket[0] );
-   if( socket[1] && socket[1] != '\0' )
+   if( socket[1] && *socket[1] != '\0' )
       oclone->socket[1] = QUICKLINK( socket[1] );
-   if( socket[2] && socket[2] != '\0' )
+   if( socket[2] && *socket[2] != '\0' )
       oclone->socket[2] = QUICKLINK( socket[2] );
    oclone->item_type = item_type;
    oclone->extra_flags = extra_flags;
