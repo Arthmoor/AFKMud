@@ -73,7 +73,7 @@ class pc_data
 
      map < string, string > alias_map; /* Command aliases */
      map < int, string > qbits;  /* abit/qbit code */
-     list < struct board_chardata *>boarddata;
+     list < class board_chardata *>boarddata;
      list < class note_data *>comments;
      list < string > zone; /* List of zones this PC has visited - Samson 7-11-00 */
      list < string > ignore;  /* List of players to ignore */
@@ -95,7 +95,7 @@ class pc_data
    struct deity_data *deity;
    struct editor_data *editor;
    class note_data *pnote;
-   struct board_data *board;
+   class board_data *board;
    struct game_board_data *game_board;
 #ifdef IMC
    struct imc_chardata *imcchardata;
