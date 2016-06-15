@@ -5047,7 +5047,7 @@ SPELLF( spell_create_mob )
  */
 SPELLF( spell_smaug )
 {
-   struct skill_type *skill = get_skilltype( sn );
+   class skill_type *skill = get_skilltype( sn );
 
    /*
     * Put this check in to prevent crashes from this getting a bad skill 
