@@ -90,7 +90,7 @@ class pc_data
    string email;  // The person's email address.
    string authed_by; // The immortal who authorized this player's name.
    area_data *area;  /* For the area a PC has been assigned to build */
-   struct clan_data *clan;
+   clan_data *clan;
    struct realm_data *realm;
    struct deity_data *deity;
    struct editor_data *editor;
@@ -486,7 +486,7 @@ class char_data
    list < obj_data * >carrying;
    list < affect_data * >affects;
    list < timer_data * >timers;
-   list < struct mprog_act_list *>mpact;  /* Mudprogs */
+   list < mprog_act_list *>mpact;  /* Mudprogs */
    list < struct variable_data *>variables;  // Quest flags
    vector < string > bodypart_where_names; /* Body part wear messages */
    string spec_funname;
@@ -508,8 +508,8 @@ class char_data
    struct fighting_data *fighting;
    struct hunt_hate_fear *hunting;
    struct hunt_hate_fear *fearing;
-   struct hunt_hate_fear *hating;
-   struct char_morph *morph;
+   struct hunt_hate_fear *hating
+   char_morph *morph;
    DO_FUN *last_cmd;
    DO_FUN *prev_cmd; /* mapping */
    SPEC_FUN *spec_fun;
