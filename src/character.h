@@ -91,7 +91,7 @@ class pc_data
    string authed_by; // The immortal who authorized this player's name.
    area_data *area;  /* For the area a PC has been assigned to build */
    class clan_data *clan;
-   struct realm_data *realm;
+   class realm_data *realm;
    class deity_data *deity;
    struct editor_data *editor;
    class note_data *pnote;
