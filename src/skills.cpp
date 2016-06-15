@@ -53,7 +53,7 @@ bool is_safe( char_data *, char_data * );
 bool check_illegal_pk( char_data *, char_data * );
 bool legal_loot( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
-void failed_casting( struct skill_type *, char_data *, char_data *, obj_data * );
+void failed_casting( class skill_type *, char_data *, char_data *, obj_data * );
 void start_timer( struct timeval * );
 time_t end_timer( struct timeval * );
 void check_mount_objs( char_data *, bool );
@@ -2708,7 +2708,7 @@ CMDF( do_sset )
    }
    if( ch->is_imp(  ) && !str_cmp( arg1, "create" ) && ( !str_cmp( arg2, "skill" ) || !str_cmp( arg2, "herb" ) || !str_cmp( arg2, "ability" ) ) )
    {
-      struct skill_type *skill;
+      class skill_type *skill;
       short type = SKILL_UNKNOWN;
 
       if( !str_cmp( arg2, "herb" ) )
