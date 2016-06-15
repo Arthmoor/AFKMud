@@ -3514,7 +3514,7 @@ CMDF( do_aset )
          return;
       }
       tarea->tg_gem = stoi( argument );
-      ch->printf( "Area chance to generate gem set to %hu%%\r\n", tarea->tg_ge );
+      ch->printf( "Area chance to generate gem set to %hu%%\r\n", tarea->tg_gem );
       return;
    }
 
