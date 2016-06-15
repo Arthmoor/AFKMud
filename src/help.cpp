@@ -205,7 +205,7 @@ void load_helps( void )
 
       else if( key == "Text" )
       {
-         stream.getline( buf, MSL, steam.narrow( L'¢' ) );
+         stream.getline( buf, MSL, '¢' );
          value = buf;
          strip_lspace( value );
          help->text = value;
