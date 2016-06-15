@@ -95,7 +95,7 @@ typedef bool SPEC_FUN( char_data * ch );
 /* Hidden tilde char generated with alt155 on the number pad.
  * The code blocks the use of these symbols by default, so this should be quite safe. Samson 3-14-04
  */
-#define HIDDEN_TILDE "¢"
+#define HIDDEN_TILDE '¢'
 
 /* 32bit bitvector defines */
 const int BV00 = ( 1 << 0 );
