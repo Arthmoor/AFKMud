@@ -846,7 +846,7 @@ void hide_tilde( string & str )
    if( str.find( '~' ) == string::npos )
       return;
 
-   string_replace( str, "~", HIDDEN_TILDE );
+   string_replace( str, "~", ( char * )HIDDEN_TILDE );
 }
 
 const string show_tilde( const string & str )
@@ -856,7 +856,7 @@ const string show_tilde( const string & str )
    if( str.find( HIDDEN_TILDE ) == string::npos )
       return newstr;
 
-   string_replace( newstr, HIDDEN_TILDE, "~" );
+   string_replace( newstr, ( char * )HIDDEN_TILDE, "~" );   // <-- Stupid C++ making me use ugly casting.
    return newstr;
 }
 
