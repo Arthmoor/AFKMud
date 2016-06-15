@@ -74,7 +74,7 @@ class pc_data
      map < string, string > alias_map; /* Command aliases */
      map < int, string > qbits;  /* abit/qbit code */
      list < struct board_chardata *>boarddata;
-     list < note_data *>comments;
+     list < class note_data *>comments;
      list < string > zone; /* List of zones this PC has visited - Samson 7-11-00 */
      list < string > ignore;  /* List of players to ignore */
      vector < string > say_history;
@@ -486,7 +486,7 @@ class char_data
    list < obj_data * >carrying;
    list < affect_data * >affects;
    list < timer_data * >timers;
-   list < mprog_act_list *>mpact;  /* Mudprogs */
+   list < class mprog_act_list *>mpact;  /* Mudprogs */
    list < struct variable_data *>variables;  // Quest flags
    vector < string > bodypart_where_names; /* Body part wear messages */
    string spec_funname;
