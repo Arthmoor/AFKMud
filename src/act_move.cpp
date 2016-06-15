@@ -410,7 +410,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
          size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( auto ich = from_room->people.begin(  ); ( ich != from_room->people.end(  ) ) && ( count < chars ); )
+         for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
          {
             char_data *fch = *ich;
             ++ich;
@@ -451,7 +451,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
             size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( auto ich = from_room->people.begin(  ); ( ich != from_room->people.end( ) ) && ( count < chars ); )
+            for( auto ich = from_room->people.begin(  ); ich != from_room->people.end( ) && ( count < chars ); )
             {
                char_data *fch = *ich;
                ++ich;
@@ -1005,7 +1005,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       size_t chars = from_room->people.size(  );
       size_t count = 0;
-      for( auto ich = from_room->people.begin(  ); ( ich != from_room->people.end( ) ) && ( count < chars ); )
+      for( auto ich = from_room->people.begin(  ); ich != from_room->people.end( ) && ( count < chars ); )
       {
          char_data *fch = *ich;
          ++ich;
