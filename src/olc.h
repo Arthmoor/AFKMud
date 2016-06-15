@@ -515,7 +515,7 @@ class olc_data
    area_data *area;
    struct shop_data *shop;
    extra_descr_data *extradesc;
-   affect_data *paf;
+   class affect_data *paf;
    class exit_data *xit;
    int mode;
    int zone_num;
