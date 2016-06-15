@@ -131,7 +131,7 @@ class room_index
      list < exit_data * >exits;  /* Exits from the room */
      list < extra_descr_data * >extradesc;   /* Extra descriptions */
      list < struct mud_prog_data *>mudprogs; /* Mudprogs */
-     list < struct mprog_act_list *>mpact;   /* Mudprogs */
+     list < mprog_act_list *>mpact;   /* Mudprogs */
    room_index *next;
    area_data *area;
    reset_data *last_mob_reset;
