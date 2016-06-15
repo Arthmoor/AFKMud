@@ -1536,7 +1536,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
    const char *attack;
    char punct;
    double dampc, d_index;
-   struct skill_type *skill = nullptr;
+   class skill_type *skill = nullptr;
    bool gcflag = false;
    bool gvflag = false;
    int w_index;
