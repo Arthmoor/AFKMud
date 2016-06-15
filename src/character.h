@@ -94,7 +94,7 @@ class pc_data
    struct realm_data *realm;
    struct deity_data *deity;
    struct editor_data *editor;
-   struct note_data *pnote;
+   class note_data *pnote;
    struct board_data *board;
    struct game_board_data *game_board;
 #ifdef IMC
