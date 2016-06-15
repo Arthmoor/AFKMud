@@ -74,7 +74,7 @@ class pc_data
      map < string, string > alias_map; /* Command aliases */
      map < int, string > qbits;  /* abit/qbit code */
      list < struct board_chardata *>boarddata;
-     list < struct note_data *>comments;
+     list < note_data *>comments;
      list < string > zone; /* List of zones this PC has visited - Samson 7-11-00 */
      list < string > ignore;  /* List of players to ignore */
      vector < string > say_history;
@@ -90,7 +90,7 @@ class pc_data
    string email;  // The person's email address.
    string authed_by; // The immortal who authorized this player's name.
    area_data *area;  /* For the area a PC has been assigned to build */
-   clan_data *clan;
+   class clan_data *clan;
    struct realm_data *realm;
    struct deity_data *deity;
    struct editor_data *editor;
@@ -509,7 +509,7 @@ class char_data
    struct hunt_hate_fear *hunting;
    struct hunt_hate_fear *fearing;
    struct hunt_hate_fear *hating
-   char_morph *morph;
+   class char_morph *morph;
    DO_FUN *last_cmd;
    DO_FUN *prev_cmd; /* mapping */
    SPEC_FUN *spec_fun;
