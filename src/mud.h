@@ -37,7 +37,6 @@
 #include <map>
 #include <bitset>
 #include <typeinfo>
-#include <algorithm>
 
 using namespace std;
 
