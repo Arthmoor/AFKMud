@@ -941,7 +941,7 @@ CMDF( do_odelete )
       return;
    }
 
-   vnum = stoi( argument );
+   vnum = atoi( argument.c_str(  ) );
 
    /*
     * Find the obj. 
