@@ -2249,11 +2249,13 @@ CMDF( do_rdelete )
    /*
     * Does the player have the right to delete this room? 
     */
-   if( ch->get_trust(  ) < sysdata->level_modify_proto && ( location->vnum < ch->pcdata->low_vnum || location->vnum > ch->pcdata->hi_vnum ) )
+   if( ch->get_trust(  ) < sysdata->level_modify_proto && ch->pcdata->area != location->area )
    {
       ch->print( "That room is not in your assigned range.\r\n" );
       return;
    }
+   
+   location->area->fix_exits( ); /* Fix bug with rooms in prototype areas */
    deleteptr( location );
    fix_exits(  ); /* Need to call this to solve a crash */
    ch->printf( "Room %s has been deleted.\r\n", argument.c_str(  ) );
