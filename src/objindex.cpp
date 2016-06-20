@@ -941,7 +941,7 @@ CMDF( do_odelete )
       return;
    }
 
-   vnum = atoi( argument.c_str(  ) );
+   vnum = stoi( argument );
 
    /*
     * Find the obj. 
@@ -952,14 +952,37 @@ CMDF( do_odelete )
       return;
    }
 
+   auto pArea = obj->area;
+   
    /*
     * Does the player have the right to delete this object? 
     */
-   if( ch->get_trust(  ) < sysdata->level_modify_proto && ( obj->vnum < ch->pcdata->low_vnum || obj->vnum > ch->pcdata->hi_vnum ) )
+   if( ch->get_trust( ) < sysdata->level_modify_proto && ch->pcdata->area != pArea )
    {
       ch->print( "That object is not in your assigned range.\r\n" );
       return;
    }
-   deleteptr( obj );
-   ch->printf( "Object %d has been deleted.\r\n", vnum );
+
+	auto iobj = obj_index_table.find( obj->vnum );
+
+	if ( iobj != obj_index_table.end( ) )
+	{
+		auto it = find( pArea->objects.begin( ), pArea->objects.end( ), obj );
+
+		if ( it != pArea->objects.end( ) )
+			pArea->objects.erase( it );
+		else
+		{
+			bug( "Object %d could not be found in %s.", vnum, pArea->filename );
+			return;
+		}
+
+		obj_index_table.erase( iobj );
+		deleteptr( obj );
+
+		ch->printf( "Object %d has been deleted.\r\n", vnum );
+		return;
+	}
+
+	ch->printf( "Object %d could not be found.\r\n", vnum ); /* We will probably never get here */
 }

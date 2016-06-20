@@ -2224,6 +2224,7 @@ CMDF( do_recho )
 CMDF( do_rdelete )
 {
    room_index *location;
+   area_data* pArea;
 
    if( ch->substate == SUB_RESTRICTED )
    {
@@ -2245,16 +2246,40 @@ CMDF( do_rdelete )
       ch->print( "No such location.\r\n" );
       return;
    }
-
+   
+   pArea = location->area;
+   
    /*
     * Does the player have the right to delete this room? 
     */
-   if( ch->get_trust(  ) < sysdata->level_modify_proto && ( location->vnum < ch->pcdata->low_vnum || location->vnum > ch->pcdata->hi_vnum ) )
+   if( ch->get_trust(  ) < sysdata->level_modify_proto && ch->pcdata->area != pArea )
    {
       ch->print( "That room is not in your assigned range.\r\n" );
       return;
    }
-   deleteptr( location );
-   fix_exits(  ); /* Need to call this to solve a crash */
-   ch->printf( "Room %s has been deleted.\r\n", argument.c_str(  ) );
+   
+	auto iroom = room_index_table.find( location->vnum );
+
+	if ( iroom != room_index_table.end( ) )
+	{
+		auto it = find( pArea->rooms.begin( ), pArea->rooms.end( ), location );
+
+		if ( it != pArea->rooms.end( ) )
+			pArea->rooms.erase( it );
+		else
+		{
+			bug( "Room %s could not be found in %s.", argument.c_str( ), pArea->filename );
+			return;
+		}
+
+		pArea->fix_exits( ); /* Fix bug with rooms in prototype areas */
+		room_index_table.erase( iroom );
+		deleteptr( location );
+		fix_exits( );  /* Need to call this to solve a crash */
+
+		ch->printf( "Room %s has been deleted.\r\n", argument.c_str( ) );
+		return;
+	}
+   
+   ch->printf( "Room %s could not be found.\r\n", argument.c_str(  ) ); /* We will probably never get here */
 }
