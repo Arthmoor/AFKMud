@@ -2268,7 +2268,7 @@ CMDF( do_rdelete )
 			pArea->rooms.erase( it );
 		else
 		{
-			bug( "Room %s could not be found in %s.", argument.c_str( ), pArea->filename );
+			ch->printf( "Room %s could not be found in %s.", argument.c_str( ), pArea->filename );
 			return;
 		}
 
