@@ -2272,8 +2272,8 @@ CMDF( do_rdelete )
 			return;
 		}
 
-		room_index_table.erase( iroom );
 		pArea->fix_exits( ); /* Fix bug with rooms in prototype areas */
+		room_index_table.erase( iroom );
 		deleteptr( location );
 		fix_exits( );  /* Need to call this to solve a crash */
 
