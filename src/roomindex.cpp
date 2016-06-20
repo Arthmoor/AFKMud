@@ -2258,28 +2258,18 @@ CMDF( do_rdelete )
       return;
    }
    
-	auto iroom = room_index_table.find( location->vnum );
-
-	if ( iroom != room_index_table.end( ) )
-	{
-		auto it = find( pArea->rooms.begin( ), pArea->rooms.end( ), location );
-
-		if ( it != pArea->rooms.end( ) )
-			pArea->rooms.erase( it );
-		else
-		{
-			ch->printf( "Room %s could not be found in %s.", argument.c_str( ), pArea->filename );
-			return;
-		}
-
-		room_index_table.erase( iroom );
-		pArea->fix_exits( ); /* Fix bug with rooms in prototype areas */
-		deleteptr( location );
-		fix_exits( );  /* Need to call this to solve a crash */
-
-		ch->printf( "Room %s has been deleted.\r\n", argument.c_str( ) );
-		return;
-	}
+   auto pRoom = room_index_table.find( location->vnum );
+   
+   if ( pRoom != room_index_table.end( ) )
+   {
+      room_index_table.erase( pRoom );
+      pRoom->second->area->fix_exits( ); /* Fix bug with rooms in prototype areas */
+      deleteptr( pRoom->second );
+      fix_exits( ); /* Need to call this to solve a crash */
+      ch->printf( "Room %s has been deleted.\r\n", argument.c_str( ) );
+      
+      return;
+   }
    
    ch->printf( "Room %s could not be found.\r\n", argument.c_str(  ) ); /* We will probably never get here */
 }
