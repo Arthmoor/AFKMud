@@ -119,7 +119,7 @@ void load_slays( void )
          if( file_ver < 1 )
             stream.getline( buf, MIL, '~' );
          else
-            stream.getline( buf, MIL, '¢' );
+            stream.getline( buf, MIL, '\xa2' );
          value = buf;
          strip_lspace( value );
          slay->set_cmsg( value );
@@ -129,7 +129,7 @@ void load_slays( void )
          if( file_ver < 1 )
             stream.getline( buf, MIL, '~' );
          else
-            stream.getline( buf, MIL, '¢' );
+            stream.getline( buf, MIL, '\xa2' );
          value = buf;
          strip_lspace( value );
          slay->set_vmsg( value );
@@ -139,7 +139,7 @@ void load_slays( void )
          if( file_ver < 1 )
             stream.getline( buf, MIL, '~' );
          else
-            stream.getline( buf, MIL, '¢' );
+            stream.getline( buf, MIL, '\xa2' );
          value = buf;
          strip_lspace( value );
          slay->set_rmsg( value );
@@ -177,9 +177,9 @@ void save_slays( void )
          stream << "Type      " << slay->get_type(  ) << endl;
          stream << "Owner     " << slay->get_owner(  ) << endl;
          stream << "Color     " << slay->get_color(  ) << endl;
-         stream << "Cmessage  " << slay->get_cmsg(  ) << "¢" << endl;
-         stream << "Vmessage  " << slay->get_vmsg(  ) << "¢" << endl;
-         stream << "Rmessage  " << slay->get_rmsg(  ) << "¢" << endl;
+         stream << "Cmessage  " << slay->get_cmsg(  ) << '\xa2' << endl;
+         stream << "Vmessage  " << slay->get_vmsg(  ) << '\xa2' << endl;
+         stream << "Rmessage  " << slay->get_rmsg(  ) << '\xa2' << endl;
          stream << "End" << endl << endl;
       }
       stream.close(  );

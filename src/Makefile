@@ -5,6 +5,7 @@
 
 #Change this to reflect whichever compiler you want to use.
 CC      = g++
+#CC      = clang++-4.0
 
 #Type of machine to compile for. Athlon works just as well on Duron too.
 #The march option needs to match the general family of CPU.
@@ -47,15 +48,27 @@ DEBUG_FLAG = -g2
 #GCC 4.8+ memory checking option. https://code.google.com/p/address-sanitizer/
 #MEM_FLAG = -fsanitize=address -fno-omit-frame-pointer
 
-W_FLAGS = -std=c++0x -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security
+ifneq ($(CC), clang++-4.0)
+   W_FLAGS = -std=c++0x -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security
+else
+   W_FLAGS = -std=c++0x -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security
+endif
 
 ifndef CYGWIN
    W_FLAGS := $(W_FLAGS) #-Werror
-   OPT_FLAG := -rdynamic $(OPT_FLAG)
+   ifeq ($(CC), g++)
+      OPT_FLAG := -rdynamic $(OPT_FLAG)
+   endif
 endif
 
 C_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
-L_FLAGS = $(MACHINE) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL)
+
+ifeq ($(CC), g++)
+   L_FLAGS = $(MACHINE) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL)
+else
+   L_FLAGS = $(MACHINE) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
+endif
+
 #D_FLAGS : For the DNS Resolver process. No need in linking all the extra libs for this.
 D_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(SOLARIS_LINK)
 

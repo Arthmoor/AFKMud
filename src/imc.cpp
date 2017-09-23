@@ -399,7 +399,7 @@ bool imc_isbanned( const string & who )
 }
 
 /* Beefed up to include wildcard ignores. */
-bool imc_isignoring( char_data * ch, const string & ignore )
+bool imc_isignoring( char_data * ch, const string & ignoring )
 {
    list < string >::iterator iign;
 
@@ -412,17 +412,17 @@ bool imc_isignoring( char_data * ch, const string & ignore )
 
       if( !str_cmp( imc_nameof( ign ), "*" ) )
       {
-         if( !str_cmp( imc_mudof( ign ), imc_mudof( ignore ) ) )
+         if( !str_cmp( imc_mudof( ign ), imc_mudof( ignoring ) ) )
             return true;
       }
 
       if( !str_cmp( imc_mudof( ign ), "*" ) )
       {
-         if( !str_cmp( imc_nameof( ign ), imc_nameof( ignore ) ) )
+         if( !str_cmp( imc_nameof( ign ), imc_nameof( ignoring ) ) )
             return true;
       }
 
-      if( !str_prefix( ignore, ign ) )
+      if( !str_prefix( ignoring, ign ) )
          return true;
    }
    return false;
@@ -780,7 +780,7 @@ string imcParseWord( string & line )
    // character unless it has strings with spaces inside of it
    string::size_type iQuote = line.find( '"' );
 
-   if( iQuote >= 0 && iQuote < iSpace && line[iQuote - 1] != '\\' )
+   if( iQuote < iSpace && line[iQuote - 1] != '\\' )
    {
       line = line.substr( iQuote + 1, line.length(  ) );
       while( ( iQuote = line.find( '"', iSpace + 1 ) ) != string::npos )
@@ -3173,7 +3173,7 @@ void imc_savehelps( void )
       stream << "#HELP" << endl;
       stream << "Name " << hlp->hname << endl;
       stream << "Perm " << imcperm_names[hlp->level] << endl;
-      stream << "Text " << hlp->text << "¢" << endl;
+      stream << "Text " << hlp->text << '\xa2' << endl;
       stream << "End" << endl << endl;
    }
    stream.close(  );
@@ -3235,7 +3235,7 @@ void imc_load_helps( void )
 
       else if( key == "Text" )
       {
-         stream.getline( buf, LGST, '¢' );
+         stream.getline( buf, LGST, '\xa2' );
          value = buf;
          strip_lspace( value );
          help->text = value;
@@ -3682,7 +3682,7 @@ void imc_load_who_template( void )
 
       if( key == "Head:" )
       {
-         stream.getline( buf, LGST, '¢' );
+         stream.getline( buf, LGST, '\xa2' );
          value = buf;
          strip_lspace( value );
          parse_who_header( value );
@@ -3690,7 +3690,7 @@ void imc_load_who_template( void )
       }
       else if( key == "Tail:" )
       {
-         stream.getline( buf, LGST, '¢' );
+         stream.getline( buf, LGST, '\xa2' );
          value = buf;
          strip_lspace( value );
          parse_who_tail( value );
@@ -3698,35 +3698,35 @@ void imc_load_who_template( void )
       }
       else if( key == "Plrline:" )
       {
-         stream.getline( buf, LGST, '¢' );
+         stream.getline( buf, LGST, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->plrline = value;
       }
       else if( key == "Immline:" )
       {
-         stream.getline( buf, LGST, '¢' );
+         stream.getline( buf, LGST, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->immline = value;
       }
       else if( key == "Immheader:" )
       {
-         stream.getline( buf, LGST, '¢' );
+         stream.getline( buf, LGST, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->immheader = value;
       }
       else if( key == "Plrheader:" )
       {
-         stream.getline( buf, LGST, '¢' );
+         stream.getline( buf, LGST, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->plrheader = value;
       }
       else if( key == "Master:" )
       {
-         stream.getline( buf, LGST, '¢' );
+         stream.getline( buf, LGST, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->master = value;

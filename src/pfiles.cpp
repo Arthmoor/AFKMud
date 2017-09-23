@@ -122,7 +122,7 @@ void save_quotes( void )
    {
       quote_data *quote = *iquote;
 
-      stream << "Quote: " << quote->quote << "¢" << endl;
+      stream << "Quote: " << quote->quote << '\xa2' << endl;
       quote->number = ++q;
    }
    stream.close(  );
@@ -180,7 +180,7 @@ void load_quotes( void )
       }
       else if( key == "Quote:" )
       {
-         stream.getline( buf, MIL, '¢' );
+         stream.getline( buf, MIL, '\xa2' );
          value = buf;
 
          quote = new quote_data;
