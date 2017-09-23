@@ -908,7 +908,7 @@ CMDF( do_setholiday )
           * List all the months with a counter next to them 
           */
          count = 1;
-         while( month_name[x] != '\0' && str_cmp( month_name[x], " " ) && x < sysdata->monthsperyear )
+         while( *month_name[x] != '\0' && str_cmp( month_name[x], " " ) && x < sysdata->monthsperyear )
          {
             ch->printf( "&[red](&[white]%d&[red])&[yellow]%s\r\n", count, month_name[x] );
             ++x;

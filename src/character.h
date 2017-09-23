@@ -73,8 +73,8 @@ class pc_data
 
      map < string, string > alias_map; /* Command aliases */
      map < int, string > qbits;  /* abit/qbit code */
-     list < struct board_chardata *>boarddata;
-     list < struct note_data *>comments;
+     list < class board_chardata *>boarddata;
+     list < class note_data *>comments;
      list < string > zone; /* List of zones this PC has visited - Samson 7-11-00 */
      list < string > ignore;  /* List of players to ignore */
      vector < string > say_history;
@@ -90,12 +90,12 @@ class pc_data
    string email;  // The person's email address.
    string authed_by; // The immortal who authorized this player's name.
    area_data *area;  /* For the area a PC has been assigned to build */
-   struct clan_data *clan;
-   struct realm_data *realm;
-   struct deity_data *deity;
+   class clan_data *clan;
+   class realm_data *realm;
+   class deity_data *deity;
    struct editor_data *editor;
-   struct note_data *pnote;
-   struct board_data *board;
+   class note_data *pnote;
+   class board_data *board;
    struct game_board_data *game_board;
 #ifdef IMC
    struct imc_chardata *imcchardata;
@@ -486,7 +486,7 @@ class char_data
    list < obj_data * >carrying;
    list < affect_data * >affects;
    list < timer_data * >timers;
-   list < struct mprog_act_list *>mpact;  /* Mudprogs */
+   list < class mprog_act_list *>mpact;  /* Mudprogs */
    list < struct variable_data *>variables;  // Quest flags
    vector < string > bodypart_where_names; /* Body part wear messages */
    string spec_funname;
@@ -504,12 +504,12 @@ class char_data
    room_index *in_room;
    room_index *was_in_room;
    room_index *orig_room;  /* Xorith's boards */
-   struct ship_data *on_ship; /* Ship char is on, or nullptr if not - Samson 1-6-00 */
+   class ship_data *on_ship; /* Ship char is on, or nullptr if not - Samson 1-6-00 */
    struct fighting_data *fighting;
    struct hunt_hate_fear *hunting;
    struct hunt_hate_fear *fearing;
    struct hunt_hate_fear *hating;
-   struct char_morph *morph;
+   class char_morph *morph;
    DO_FUN *last_cmd;
    DO_FUN *prev_cmd; /* mapping */
    SPEC_FUN *spec_fun;

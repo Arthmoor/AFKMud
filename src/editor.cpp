@@ -41,9 +41,9 @@
  */
 size_t mudstrlcpy( char *dst, const char *src, size_t siz )
 {
-   register char *d = dst;
-   register const char *s = src;
-   register size_t n = siz;
+   char *d = dst;
+   const char *s = src;
+   size_t n = siz;
 
    /*
     * Copy as many bytes as will fit 
@@ -83,9 +83,9 @@ size_t mudstrlcpy( char *dst, const char *src, size_t siz )
  */
 size_t mudstrlcat( char *dst, const char *src, size_t siz )
 {
-   register char *d = dst;
-   register const char *s = src;
-   register size_t n = siz;
+   char *d = dst;
+   const char *s = src;
+   size_t n = siz;
    size_t dlen;
 
    /*

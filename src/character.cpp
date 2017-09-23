@@ -1620,7 +1620,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    obj_data *WPos, *DPos, *MPos, *ToDrop;
    int WWeight, DWeight, MWeight, ToDropW;
    int mod, mod2 = -1;
-   struct skill_type *skill;
+   class skill_type *skill;
    int location = paf->location % REVERSE_APPLY;
 
    mod = paf->modifier;

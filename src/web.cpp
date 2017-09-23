@@ -42,9 +42,9 @@ extern int num_logins;
 int web_colour( char type, char *string, bool & firsttag )
 {
    char code[50];
-   char *p = '\0';
+   char *p = nullptr;
    bool validcolor = false;
-
+   
    switch ( type )
    {
       default:

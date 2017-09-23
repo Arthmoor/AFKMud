@@ -408,10 +408,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       {
          enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
 
-         list < char_data * >::iterator ich;
          size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+         for( auto ich = from_room->people.begin(  ); ( ich != from_room->people.end(  ) ) && ( count < chars ); )
          {
             char_data *fch = *ich;
             ++ich;
@@ -450,10 +449,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          {
             enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
 
-            list < char_data * >::iterator ich;
             size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+            for( auto ich = from_room->people.begin(  ); ( ich != from_room->people.end( ) ) && ( count < chars ); )
             {
                char_data *fch = *ich;
                ++ich;
@@ -1005,10 +1003,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
     */
    if( !fall )
    {
-      list < char_data * >::iterator ich;
       size_t chars = from_room->people.size(  );
       size_t count = 0;
-      for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+      for( auto ich = from_room->people.begin(  ); ( ich != from_room->people.end( ) ) && ( count < chars ); )
       {
          char_data *fch = *ich;
          ++ich;

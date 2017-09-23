@@ -412,7 +412,7 @@ CMDF( do_hedit )
             return;
          }
          pHelp->text = ch->copy_buffer(  );
-         strip_whitespace( pHelp->text );
+         strip_lspace( pHelp->text );
          ch->stop_editing(  );
          return;
 

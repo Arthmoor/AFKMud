@@ -608,7 +608,7 @@ CMDF( do_mdelete )
       return;
    }
 
-   vnum = atoi( argument.c_str(  ) );
+   vnum = stoi( argument );
 
    /*
     * Find the mob. 
@@ -622,11 +622,12 @@ CMDF( do_mdelete )
    /*
     * Does the player have the right to delete this mob? 
     */
-   if( ch->get_trust(  ) < sysdata->level_modify_proto && ( mob->vnum < ch->pcdata->low_vnum || mob->vnum > ch->pcdata->hi_vnum ) )
+   if( ch->get_trust(  ) < sysdata->level_modify_proto && ch->pcdata->area != mob->area )
    {
       ch->print( "That mob is not in your assigned range.\r\n" );
       return;
    }
+   
    deleteptr( mob );
    ch->printf( "Mob %d has been deleted.\r\n", vnum );
 }

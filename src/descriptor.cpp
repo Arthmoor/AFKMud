@@ -1233,8 +1233,6 @@ bool descriptor_data::pager_output(  )
    // This is going to get seriously messed up if people use the wrong line termination.
    vector < string > pagelines = string_explode( this->pagebuf, '\n' );
 
-   if( start < 0 )
-      start = 0;
    if( end > pagelines.size() )
       end = pagelines.size();
 

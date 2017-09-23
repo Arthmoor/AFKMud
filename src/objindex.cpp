@@ -941,7 +941,7 @@ CMDF( do_odelete )
       return;
    }
 
-   vnum = atoi( argument.c_str(  ) );
+   vnum = stoi( argument );
 
    /*
     * Find the obj. 
@@ -955,11 +955,12 @@ CMDF( do_odelete )
    /*
     * Does the player have the right to delete this object? 
     */
-   if( ch->get_trust(  ) < sysdata->level_modify_proto && ( obj->vnum < ch->pcdata->low_vnum || obj->vnum > ch->pcdata->hi_vnum ) )
+   if( ch->get_trust(  ) < sysdata->level_modify_proto && ch->pcdata->area != obj->area )
    {
       ch->print( "That object is not in your assigned range.\r\n" );
       return;
    }
+   
    deleteptr( obj );
    ch->printf( "Object %d has been deleted.\r\n", vnum );
 }

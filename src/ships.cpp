@@ -529,10 +529,9 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
             if( ch->mount )
                enter_map( ch->mount, nullptr, mexit->therex, mexit->therey, mexit->tomap );
 
-            list < char_data * >::iterator ich;
             size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+            for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
             {
                char_data *fch = *ich;
                ++ich;
@@ -570,10 +569,9 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
 
          leave_map( ch, nullptr, toroom );
 
-         list < char_data * >::iterator ich;
          size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+         for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
          {
             char_data *fch = *ich;
             ++ich;
@@ -694,10 +692,9 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
       act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
    }
 
-   list < char_data * >::iterator ich;
    size_t chars = from_room->people.size(  );
    size_t count = 0;
-   for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+   for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
    {
       char_data *fch = *ich;
       ++ich;
@@ -812,10 +809,9 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
          if( ch->mount )
             enter_map( ch->mount, pexit, pexit->mx, pexit->my, -1 );
 
-         list < char_data * >::iterator ich;
          size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+         for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
          {
             char_data *fch = *ich;
             ++ich;
@@ -842,10 +838,9 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
             if( ch->mount )
                enter_map( ch->mount, pexit, pexit->mx, pexit->my, -1 );
 
-            list < char_data * >::iterator ich;
             size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+            for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
             {
                char_data *fch = *ich;
                ++ich;
@@ -978,10 +973,9 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
    }
 
-   list < char_data * >::iterator ich;
    size_t chars = from_room->people.size(  );
    size_t count = 0;
-   for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+   for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
    {
       char_data *fch = *ich;
       ++ich;

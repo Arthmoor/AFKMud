@@ -2134,10 +2134,9 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
          {
             enter_map( ch, nullptr, mexit->therex, mexit->therey, mexit->tomap );
 
-            list < char_data * >::iterator ich;
             size_t chars = from_room->people.size(  );
             size_t count = 0;
-            for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+            for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
             {
                char_data *fch = *ich;
                ++ich;
@@ -2215,10 +2214,9 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
 
          leave_map( ch, nullptr, toroom );
 
-         list < char_data * >::iterator ich;
          size_t chars = from_room->people.size(  );
          size_t count = 0;
-         for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+         for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
          {
             char_data *fch = *ich;
             ++ich;
@@ -2469,10 +2467,9 @@ ch_ret process_exit( char_data * ch, short wmap, short x, short y, int dir, bool
          act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n %s from %s.", txt, dtxt );
    }
 
-   list < char_data * >::iterator ich;
    size_t chars = from_room->people.size(  );
    size_t count = 0;
-   for( ich = from_room->people.begin(  ); ich != from_room->people.end(  ), ( count < chars ); )
+   for( auto ich = from_room->people.begin(  ); ich != from_room->people.end(  ) && ( count < chars ); )
    {
       char_data *fch = *ich;
       ++ich;

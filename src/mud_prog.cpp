@@ -2636,7 +2636,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
  * checks what the line is, executes if/or checks and calls interpret
  * to perform the the commands.  Written by Narn, Dec 95.
  */
-int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, char_data * rndm, bool ignore, bool ignore_ors )
+int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, char_data * rndm, bool ignore_ifs, bool ignore_ors )
 {
    char firstword[MIL];
    char *ifcheck;
@@ -2658,7 +2658,7 @@ int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data *
        * ignore the ifcheck and report that back to mprog_driver or do
        * the ifcheck and report whether it was successful. 
        */
-      if( ignore )
+      if( ignore_ifs )
          return IFIGNORED;
       else
          validif = mprog_do_ifcheck( ifcheck, mob, actor, obj, victim, target, rndm );
@@ -2713,7 +2713,7 @@ int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data *
     * return.  If not, we try to execute the command. 
     */
 
-   if( ignore )
+   if( ignore_ifs )
       return COMMANDOK;
 
    /*

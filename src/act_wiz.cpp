@@ -134,7 +134,7 @@ CMDF( do_newpassword )
 
    argument = one_argument( argument, arg1 );
 
-   if( ( ch->pcdata->pwd != '\0' ) && ( arg1.empty(  ) || argument.empty(  ) ) )
+   if( ( *ch->pcdata->pwd != '\0' ) && ( arg1.empty(  ) || argument.empty(  ) ) )
    {
       ch->print( "Syntax: newpass <char> <newpassword>\r\n" );
       return;
