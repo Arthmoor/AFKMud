@@ -51,6 +51,9 @@
 #include <sys/types.h>
 #include <csignal>
 #endif
+#if defined(__APPLE__)
+#include <signal.h>
+#endif
 #include <cstdarg>
 #include <cerrno>
 #include "mud.h"

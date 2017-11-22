@@ -44,6 +44,9 @@ void bailout( int );
 const int WAIT_ANY = -1;   /* This is not guaranteed to work! */
 #include <sys/socket.h>
 #endif
+#if defined(__APPLE__)
+#include <sys/socket.h>
+#endif
 #include <sys/time.h>
 #include <fcntl.h>
 #include <cerrno>
@@ -373,8 +376,12 @@ int init_socket( int mudport )
    /*
     * sa.sin_addr.s_addr = inet_addr( "x.x.x.x" ); 
     */
-
+#if defined(__APPLE__)
+   if( bind( fd, ( const struct sockaddr * )&sa, (socklen_t)sizeof( sa ) ) == -1 )
+#else
    if( bind( fd, ( struct sockaddr * )&sa, sizeof( sa ) ) == -1 )
+#endif
+   
    {
       perror( "Init_socket: bind" );
       close( fd );

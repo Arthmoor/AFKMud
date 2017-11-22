@@ -15,6 +15,9 @@ CC      = g++
 #Uncomment if compiling in Windows under Cygwin
 #CYGWIN = 1
 
+#Uncomment if compiling in Mac OSX Sierra
+#MACOSX = 1
+
 # Uncomment the two lines below if compiling on a Solaris box
 #SOLARIS_FLAG = -Dsun -DSYSV -Wno-char-subscripts
 #SOLARIS_LINK = -lnsl -lsocket -lresolv
@@ -24,7 +27,10 @@ CC      = g++
 NEED_DL = -ldl
 
 #Some systems need this for dynamic linking to work.
-EXPORT_SYMBOLS = -export-dynamic
+ifndef MACOSX
+	EXPORT_SYMBOLS = -export-dynamic
+endif
+
 
 #Math functions - uncomment if you get errors or warnings about math functions.
 MATH_LIB = -lm
