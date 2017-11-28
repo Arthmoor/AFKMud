@@ -54,7 +54,7 @@ const int ALIGN_RIGHT = 3;
 #define ANSI_GREY    "\033[0;37m"
 #define ANSI_DGREY   "\033[1;30m"
 #define ANSI_RED     "\033[1;31m"
-#define ANSI_GREEN	"\033[1;32m"
+#define ANSI_GREEN   "\033[1;32m"
 #define ANSI_YELLOW  "\033[1;33m"
 #define ANSI_BLUE    "\033[1;34m"
 #define ANSI_PINK    "\033[1;35m"
