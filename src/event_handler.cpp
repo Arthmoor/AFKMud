@@ -399,8 +399,13 @@ void ev_violence( void *data )
 
          /*
           * NPC's assist NPC's of same type or 12.5% chance regardless.
+          * -----
+          * Fix bug with PCs and Imms autoassisting when not grouped and/or with autoassist flag off. 
+          * (rch is sometimes PC/Imm) - Stymie 12/6/2017
+          * -----
           */
-         if( !rch->is_pet(  ) && !rch->has_aflag( AFF_CHARM ) && !rch->has_actflag( ACT_NOASSIST ) )
+         
+         if( rch->isnpc( ) && !rch->is_pet(  ) && !rch->has_aflag( AFF_CHARM ) && !rch->has_actflag( ACT_NOASSIST ) )
          {
             if( ch->char_died(  ) )
                break;
