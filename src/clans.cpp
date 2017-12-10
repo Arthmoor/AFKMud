@@ -2729,8 +2729,8 @@ CMDF( do_shove )
       nogo = true;
    else if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) && !ch->has_pcflag( PCFLAG_PASSDOOR ) )
       nogo = true;
-
-   if( ( IS_EXIT_FLAG( pexit, EX_FORTIFIED )
+   // fix crash bug with 'else '. pexit is sometimes null. - Parsival 2017-1209
+   else if( ( IS_EXIT_FLAG( pexit, EX_FORTIFIED )
          || IS_EXIT_FLAG( pexit, EX_HEAVY ) || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) )
       nogo = true;
 
