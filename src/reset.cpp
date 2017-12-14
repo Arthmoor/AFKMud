@@ -373,7 +373,7 @@ void delete_reset( reset_data * pReset )
 
 void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
 {
-   list < char_data * >::iterator ich;
+10   list < char_data * >::iterator ich;
 
    for( ich = pRoom->people.begin(  ); ich != pRoom->people.end(  ); ++ich )
    {
@@ -401,7 +401,7 @@ void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
             obj_data *obj = *iobj;
 
             if( obj->wear_loc == WEAR_NONE )
-               add_obj_reset( pRoom, 'G', obj, 1, 0 );
+               add_obj_reset( pRoom, 'G', obj, 1, 100 ); // we want obj to load 100% of the time in mob inv, not 0%. - Parsival 2017-1214
             else
                add_obj_reset( pRoom, 'E', obj, 1, obj->wear_loc );
          }
