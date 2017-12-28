@@ -2309,6 +2309,8 @@ void death_cry( char_data * ch )
          break;
 
       case 5:
+      // TODO: Right now, this selects the first body part it finds, which makes multiple bodyparts on NPCs irrelevant.
+      //       Make this randomly select one of the listed bodyparts. I'm sure this was the original intention. - Parsival
          if( ch->has_bparts() )
          {
             for( i = 0; i < MAX_BPART; ++i )
@@ -2323,15 +2325,18 @@ void death_cry( char_data * ch )
          }
          else
          {
-            for( i = 0; i < MAX_BPART; ++i )
-            {
-               if( race_table[ch->race]->body_parts.test( i ) )
+	    if( !ch->isnpc() ) // Crash bug fix when NPCs have no bodyparts (and it's possible!). race_table[] only applies to PC races. - Parsival 2017-1228
+	    {    
+               for( i = 0; i < MAX_BPART; ++i )
                {
-                  msg = part_messages[i];
-                  vnum = part_vnums[i];
-                  break;
+                  if( race_table[ch->race]->body_parts.test( i ) )
+                  {
+                     msg = part_messages[i];
+                     vnum = part_vnums[i];
+                     break;
+                  }
                }
-            }
+	    }
          }
 
          if( !msg )
