@@ -204,7 +204,7 @@ affect_data *fread_fuss_affect( FILE * fp, const char *word )
 
 void fread_fuss_room( FILE * fp, area_data * tarea )
 {
-   room_index *pRoomIndex = NULL;
+   room_index *pRoomIndex = nullptr;
    bool oldroom = false;
 
    for( ;; )
