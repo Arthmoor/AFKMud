@@ -32,7 +32,7 @@
  *
  * AFKMud: Versions 2.0 and up.
  *
- * Other derivatives should work too, please submit any needed changes to the SmaugMuds.org forums.
+ * Other derivatives should work too, please submit any needed changes to the SmaugMuds forums.
  */
 #ifndef __IMC2CFG_H__
 #define __IMC2CFG_H__

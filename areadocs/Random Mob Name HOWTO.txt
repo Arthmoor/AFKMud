@@ -130,6 +130,6 @@ Thats it for the mobile setup section.
 You should now have randomly named mobiles in your MUD. 
 
 Thank you for using the AFKMud codebase, and if you have any problems with either the codebase, or these directions, please feel free to 
-post on the forums located via http://www.smaugmuds.org
+post on the forums located via https://smaugmuds.afkmods.com/
 
 Tarl.

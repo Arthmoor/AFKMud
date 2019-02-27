@@ -11,7 +11,7 @@ Either way, have fun. Enjoy yourself and the new world you're about to create.
 
 --- Samson, Implementor of Alsherok. Home site for the AFKMud codebase.
 
-Homepage: http://www.smaugmuds.org
+Homepage: https://smaugmuds.afkmods.com/
 
 Licensing
 =========

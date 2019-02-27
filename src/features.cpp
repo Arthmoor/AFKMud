@@ -34,7 +34,7 @@
 /*
  * mccp.c - support functions for mccp (the Mud Client Compression Protocol)
  *
- * see http://mccp.smaugmuds.org
+ * see https://smaugmuds.afkmods.com/mccp
  *
  * Copyright (c) 1999, Oliver Jowett <oliver@randomly.org>.
  *
