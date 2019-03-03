@@ -373,7 +373,7 @@ void delete_reset( reset_data * pReset )
 
 void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
 {
-10   list < char_data * >::iterator ich;
+   list < char_data * >::iterator ich;
 
    for( ich = pRoom->people.begin(  ); ich != pRoom->people.end(  ); ++ich )
    {

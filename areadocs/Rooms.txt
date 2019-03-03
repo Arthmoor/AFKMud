@@ -324,6 +324,7 @@ The following commands are used for the reset format:
      Dependent reset. The previous parent reset must be an M. Otherwise will not load.
        obj-vnum = The object vnum you are trying to load. Should always be something from the area you're building.
        limit = Maximum number of copies to give the mob at one time. If this object is limited (ie: rare) and this reset would cause it to go over the limit, the reset will fail.
+       percent = Percentage chance for this item to load on the mob. Usually 100% but can be varied if desired.
 
    Y <rt_type> <level> <value1> <value2> <value3> <sockets> <percent>
      Give a random treasure item to the mobile. Behaves just like G.
