@@ -35,7 +35,13 @@ class string_sort
    bool operator(  ) ( const string &, const string & );
 };
 
+#if defined(__APPLE__)
+//Just deciding to go with default std:less for MacOSX
+typedef map < string, int > SKILL_INDEX;
+#else
 typedef map < string, int, string_sort > SKILL_INDEX;
+#endif
+
 
 extern SKILL_INDEX skill_table__index;
 extern SKILL_INDEX skill_table__spell;
