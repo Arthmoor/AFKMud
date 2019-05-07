@@ -114,7 +114,7 @@ AFKMud comes with a wilderness ANSI map system we've dubbed "The overland". Basi
 IMC2
 ====
 
-The code comes with IMC2 support installed. IMC2 is an intermud chat protocol which allows you to communicate with other people on other muds. There is currently only 1 network in operation. The network caters mainly to the Diku community, but some LPMuds have also joined. The AFKMud team highly recommends connecting to the network as it is a valuable resource for new and old admins alike. Information is available at: http://www.mudbytes.net/intermud
+The code comes with IMC2 support installed. IMC2 is an intermud chat protocol which allows you to communicate with other people on other muds. The AFKMud team highly recommends connecting to the network as it is a valuable resource for new and old admins alike. Information is available at: http://lpmuds.net/intermud.html
 
 If your host does not allow outbound connections from your mud you can't use it.
 
