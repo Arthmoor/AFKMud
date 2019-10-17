@@ -8003,7 +8003,7 @@ CMDF( do_setrace )
       return;
    }
 
-   if( !str_cmp( arg2, "bodyparts" ) || str_cmp( arg2, "part" ) )
+   if( !str_cmp( arg2, "bodyparts" ) || !str_cmp( arg2, "part" ) )
    {
       if( argument.empty(  ) )
       {
