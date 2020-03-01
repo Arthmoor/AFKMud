@@ -627,7 +627,7 @@ CMDF( do_mdelete )
       ch->print( "That mob is not in your assigned range.\r\n" );
       return;
    }
-   
+
    deleteptr( mob );
    ch->printf( "Mob %d has been deleted.\r\n", vnum );
 }

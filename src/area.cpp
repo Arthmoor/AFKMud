@@ -3479,6 +3479,7 @@ CMDF( do_aset )
       }
       tarea->tg_nothing = stoi( argument );
       ch->printf( "Area chance to generate nothing set to %hu%%\r\n", tarea->tg_nothing );
+
       return;
    }
 
@@ -3491,6 +3492,7 @@ CMDF( do_aset )
       }
       tarea->tg_gold = stoi( argument );
       ch->printf( "Area chance to generate gold set to %hu%%\r\n", tarea->tg_gold );
+
       return;
    }
 
@@ -3503,6 +3505,7 @@ CMDF( do_aset )
       }
       tarea->tg_item = stoi( argument );
       ch->printf( "Area chance to generate item set to %hu%%\r\n", tarea->tg_item );
+
       return;
    }
 
@@ -3515,6 +3518,7 @@ CMDF( do_aset )
       }
       tarea->tg_gem = stoi( argument );
       ch->printf( "Area chance to generate gem set to %hu%%\r\n", tarea->tg_gem );
+
       return;
    }
 
@@ -3527,6 +3531,7 @@ CMDF( do_aset )
       }
       tarea->tg_scroll = stoi( argument );
       ch->printf( "Area chance to generate scroll set to %hu%%\r\n", tarea->tg_scroll );
+
       return;
    }
 
@@ -3539,6 +3544,7 @@ CMDF( do_aset )
       }
       tarea->tg_potion = stoi( argument );
       ch->printf( "Area chance to generate potion set to %hu%%\r\n", tarea->tg_potion );
+
       return;
    }
 
@@ -3551,6 +3557,7 @@ CMDF( do_aset )
       }
       tarea->tg_wand = stoi( argument );
       ch->printf( "Area chance to generate wand set to %hu%%\r\n", tarea->tg_wand );
+
       return;
    }
 
@@ -3563,6 +3570,7 @@ CMDF( do_aset )
       }
       tarea->tg_armor = stoi( argument );
       ch->printf( "Area chance to generate armor set to %hu%%\r\n", tarea->tg_armor );
+
       return;
    }
 

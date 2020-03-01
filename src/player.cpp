@@ -889,6 +889,7 @@ CMDF( do_equipment )
          else
             ch->print( where_names[iWear] );
       }
+
       if( !( obj2 = victim->get_eq( iWear ) ) && iWear < ( MAX_WEAR - 3 ) )
       {
          ch->print( "&R<Nothing>&D\r\n" );
@@ -919,6 +920,7 @@ CMDF( do_equipment )
             }
             if( count > 1 )
                ch->print( "&C<&W LAYERED &C>&D         " );
+
             if( ch->can_see_obj( obj, false ) )
             {
                ch->print( obj->format_to_char( ch, true, true ) );

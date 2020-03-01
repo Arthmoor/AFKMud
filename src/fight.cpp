@@ -2325,8 +2325,8 @@ void death_cry( char_data * ch )
          }
          else
          {
-	    if( !ch->isnpc() ) // Crash bug fix when NPCs have no bodyparts (and it's possible!). race_table[] only applies to PC races. - Parsival 2017-1228
-	    {    
+	        if( !ch->isnpc() ) // Crash bug fix when NPCs have no bodyparts (and it's possible!). race_table[] only applies to PC races. - Parsival 2017-1228
+	        {    
                for( i = 0; i < MAX_BPART; ++i )
                {
                   if( race_table[ch->race]->body_parts.test( i ) )
@@ -2336,7 +2336,7 @@ void death_cry( char_data * ch )
                      break;
                   }
                }
-	    }
+	        }
          }
 
          if( !msg )

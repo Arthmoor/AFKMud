@@ -2254,7 +2254,7 @@ CMDF( do_rdelete )
       ch->print( "That room is not in your assigned range.\r\n" );
       return;
    }
-   
+
    location->area->fix_exits( ); /* Fix bug with rooms in prototype areas */
    deleteptr( location );
    fix_exits(  ); /* Need to call this to solve a crash */

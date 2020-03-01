@@ -481,7 +481,7 @@ void hunt_vic( char_data * ch )
       }
 
       /*
-       * Segment copied from update.c, why should a hunting mob get an automatic move into a room
+       * Segment copied from update.cpp, why should a hunting mob get an automatic move into a room
        * it should otherwise be unable to occupy? Exception for sentinel mobs, you attack it, it
        * gets to hunt you down, and they'll ignore EX_NOMOB in this section too 
        */

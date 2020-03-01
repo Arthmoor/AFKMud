@@ -960,7 +960,7 @@ CMDF( do_odelete )
       ch->print( "That object is not in your assigned range.\r\n" );
       return;
    }
-   
+
    deleteptr( obj );
    ch->printf( "Object %d has been deleted.\r\n", vnum );
 }

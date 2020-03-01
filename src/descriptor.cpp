@@ -2723,7 +2723,7 @@ void descriptor_data::nanny( string & argument )
          {
             send_mssp_data( this );
             // Uncomment below if you want to know when an MSSP request occurs
-            //log_printf( "IP: %s requested MSSP data!", d->ipaddress );
+            //log_printf( "IP: %s requested MSSP data!", this->ipaddress.c_str() );
             close_socket( this, false );
             return;
          }

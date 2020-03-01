@@ -404,7 +404,6 @@ void ev_violence( void *data )
           * (rch is sometimes PC/Imm) - Stymie 12/6/2017
           * -----
           */
-         
          if( rch->isnpc( ) && !rch->is_pet(  ) && !rch->has_aflag( AFF_CHARM ) && !rch->has_actflag( ACT_NOASSIST ) )
          {
             if( ch->char_died(  ) )
