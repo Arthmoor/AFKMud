@@ -180,7 +180,7 @@ CMDF( do_mptag )
    char_data *victim;
    variable_data *vd;
    const char *p;
-   char *tmp = nullptr;
+   char tmp[MSL];
    string arg1, arg2;
    int vnum = 0, exp = 0;
    bool error = false;
@@ -264,7 +264,7 @@ CMDF( do_mprmtag )
 {
    char_data *victim;
    const char *p;
-   char *tmp = nullptr;
+   char tmp[MSL];
    string arg1, arg2;
    int vnum = 0;
 
