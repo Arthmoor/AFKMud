@@ -1376,7 +1376,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             break;
 
          // Smaug resets, applied reset fix. We can cheat some here since we wrote that :)
-         if( letter == 'R' && ( tarea->version >= 0 && tarea->version <= AREA_STOCK_VERSION ) )
+         if( letter == 'R' && tarea->version <= AREA_STOCK_VERSION )
             pRoomIndex->load_reset( fp, false );
 
          else if( letter == 'R' && tarea->version == AREA_SMAUGWIZ_VERSION ) /* SmaugWiz resets */
