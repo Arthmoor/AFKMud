@@ -30,7 +30,6 @@
 #define __HELP_H__
 
 #define HELP_FILE SYSTEM_DIR "helps.dat"  // Data file where helps are stored now.
-#define NOHELP_FILE SYSTEM_DIR "nohelp.txt"  /* For tracking missing help entries */
 
 /*
  * Help table types.

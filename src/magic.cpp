@@ -299,7 +299,7 @@ void say_spell( char_data * ch, int sn )
       {
          if( !str_prefix( syl_table[iSyl].old, pName ) )
          {
-            mudstrlcat( buf, syl_table[iSyl].snew, MSL );
+            mudstrlcat( buf, syl_table[iSyl].snew, MSL-30 );
             break;
          }
       }

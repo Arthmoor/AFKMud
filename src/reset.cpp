@@ -161,7 +161,7 @@ char *sprint_reset( reset_data * pReset, short &num )
          break;
 
       case 'Z':
-         mudstrlcpy( objname, "<RT>", MSL );
+         mudstrlcpy( objname, "<RT>", MIL );
          room = get_room_index( pReset->arg7 );
          if( !room )
             mudstrlcpy( roomname, "Room: *BAD VNUM*", MIL );

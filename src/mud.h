@@ -46,7 +46,7 @@ using namespace std;
  */
 #define CODENAME "AFKMud"
 #define CODEVERSION "2.2.3"
-#define COPYRIGHT "Copyright The Alsherok Team 1997-2019. All rights reserved."
+#define COPYRIGHT "Copyright The Alsherok Team 1997-2020. All rights reserved."
 
 /*
  * String and memory management parameters.

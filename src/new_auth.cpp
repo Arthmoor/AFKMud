@@ -128,8 +128,7 @@ CMDF( do_name_generator )
    ch->printf( "%s\r\n", name.c_str(  ) );
 }
 
-/* Added by Tarl 5 Dec 02 to allow picking names from a file. Used for the namegen
-   code in reset.c */
+/* Added by Tarl 5 Dec 02 to allow picking names from a file. Used for the namegen code in reset.cpp */
 void pick_name( string & argument, const char *filename )
 {
    FILE *infile;

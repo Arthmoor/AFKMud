@@ -588,9 +588,12 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
          reset_data *preset = *rst;
 
          translate_reset( preset, r_area );
+
          list < reset_data * >::iterator dst;
-         for( dst = treset->resets.begin(  ); dst != treset->resets.end(  ); ++dst )
+         for( dst = preset->resets.begin(  ); dst != preset->resets.end(  ); ++dst )
          {
+            reset_data *treset = *rst;
+
             translate_reset( treset, r_area );
          }
       }

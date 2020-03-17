@@ -34,8 +34,6 @@
 #include "raceclass.h"
 #include "smaugaffect.h"
 
-#define NOHELP_FILE SYSTEM_DIR "nohelp.txt"  /* For tracking missing help entries */
-
 bool get_skill_help( char_data *, const string & );
 int skill_number( const string & );
 
