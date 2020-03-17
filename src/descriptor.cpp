@@ -2160,7 +2160,7 @@ void descriptor_data::prompt(  )
                   break;
             }
             if( pstat != 0x80000000 )
-               snprintf( pbuf, MSL - ( pbuf - buf ), "%zd", pstat );
+               snprintf( pbuf, MSL - ( pbuf - buf ), "%zu", pstat );
             pbuf += strlen( pbuf );
             break;
       }
@@ -3560,5 +3560,5 @@ CMDF( do_cache )
       dns_data *dns = *idns;
       ch->pagerf( "&w%16.16s  &g%s\r\n", dns->ip.c_str(  ), dns->name.c_str(  ) );
    }
-   ch->pagerf( "\r\n&W%zd IPs in the cache.\r\n", dnslist.size(  ) );
+   ch->pagerf( "\r\n&W%zu IPs in the cache.\r\n", dnslist.size(  ) );
 }

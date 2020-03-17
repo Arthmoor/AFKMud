@@ -145,7 +145,7 @@ void load_connhistory( void )
          }
          else
          {
-            bug( "%s: more connection histories than MAX_CONNHISTORY %zd", __func__, MAX_CONNHISTORY );
+            bug( "%s: more connection histories than MAX_CONNHISTORY %zu", __func__, MAX_CONNHISTORY );
             stream.close(  );
             return;
          }

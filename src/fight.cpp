@@ -1566,7 +1566,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       w_index = dt - TYPE_HIT;
    else
    {
-      bug( "%s: bad dt %d from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
+      bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
       dt = TYPE_HIT;
       w_index = 0;
    }
@@ -1615,7 +1615,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          attack = attack_table[dt - TYPE_HIT];
       else
       {
-         bug( "%s: bad dt %d from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
+         bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
          dt = TYPE_HIT;
          attack = attack_table[0];
       }
@@ -1678,7 +1678,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       }
       else
       {
-         bug( "%s: bad dt %d from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
+         bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
          attack = attack_table[0];
       }
       snprintf( buf1, 256, "$n's %s %s $N%c", attack, vp, punct );

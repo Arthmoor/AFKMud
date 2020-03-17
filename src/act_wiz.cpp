@@ -5641,9 +5641,9 @@ CMDF( do_cset )
       ch->pager( "-------------\r\n" );
       ch->pagerf( "&BMaxVnum&c: %d &BOverland Radius&c: %d &BReboot Count&c: %d &BAuction Seconds&c: %d\r\n",
                   sysdata->maxvnum, sysdata->mapsize, sysdata->rebootcount, sysdata->auctionseconds );
-      ch->pagerf( "&BMin Guild Level&c: %d &BMax Condition Value&c: %d &BMax Ignores&c: %zd &BMax Item Impact&c: %d &BInit Weapon Condition&c: %d\r\n",
+      ch->pagerf( "&BMin Guild Level&c: %d &BMax Condition Value&c: %d &BMax Ignores&c: %zu &BMax Item Impact&c: %d &BInit Weapon Condition&c: %d\r\n",
            sysdata->minguildlevel, sysdata->maxcondval, sysdata->maxign, sysdata->maximpact, sysdata->initcond );
-      ch->pagerf( "&BForce Players&c: %d &BPrivate Override&c: %d &BGet Notake&c: %d &BAutosave Freq&c: %d &BMax Holidays&c: %zd\r\n",
+      ch->pagerf( "&BForce Players&c: %d &BPrivate Override&c: %d &BGet Notake&c: %d &BAutosave Freq&c: %d &BMax Holidays&c: %zu\r\n",
            sysdata->level_forcepc, sysdata->level_override_private, sysdata->level_getobjnotake, sysdata->save_frequency, sysdata->maxholiday );
       ch->pagerf( "&BProto Mod&c: %d &B &BMset Player&c: %d &BBestow Diff&c: %d &BBuild Level&c: %d\r\n",
                   sysdata->level_modify_proto, sysdata->level_mset_player, sysdata->bestow_dif, sysdata->build_level );

@@ -502,7 +502,7 @@ void fwrite_variables( char_data * ch, FILE * fp )
       fprintf( fp, "Type      %d\n", vd->type );
       fprintf( fp, "Tag       %s~\n", vd->tag.c_str() );
       fprintf( fp, "Varstring %s~\n", vd->varstring.c_str() );      
-      fprintf( fp, "Flags     %ld\n", vd->varflags.to_ulong() );
+      fprintf( fp, "Flags     %lu\n", vd->varflags.to_ulong() );
       fprintf( fp, "Vardata   %ld\n", vd->vardata );
       fprintf( fp, "Ctime     %ld\n", vd->c_time );
       fprintf( fp, "Mtime     %ld\n", vd->m_time );

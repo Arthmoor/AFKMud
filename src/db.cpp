@@ -1019,9 +1019,9 @@ void save_sysdata( void )
       fprintf( fp, "Maxvnum        %d\n", sysdata->maxvnum );
       fprintf( fp, "Minguild       %d\n", sysdata->minguildlevel );
       fprintf( fp, "Maxcond        %d\n", sysdata->maxcondval );
-      fprintf( fp, "Maxignore      %zd\n", sysdata->maxign );
+      fprintf( fp, "Maxignore      %zu\n", sysdata->maxign );
       fprintf( fp, "Maximpact      %d\n", sysdata->maximpact );
-      fprintf( fp, "Maxholiday     %zd\n", sysdata->maxholiday );
+      fprintf( fp, "Maxholiday     %zu\n", sysdata->maxholiday );
       fprintf( fp, "Initcond       %d\n", sysdata->initcond );
       fprintf( fp, "Secpertick     %d\n", sysdata->secpertick );
       fprintf( fp, "Pulsepersec    %d\n", sysdata->pulsepersec );
@@ -2507,7 +2507,7 @@ void bug( const char *str, ... )
       size_t size = backtrace( array, 20 );
       char **strings = backtrace_symbols( array, size );
 
-      log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %zd stack frames.", size );
+      log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %zu stack frames.", size );
 
       // Intentionally starting from 1, because who cares about the bug() call itself.
       for( size_t i = 1; i < size; ++i )

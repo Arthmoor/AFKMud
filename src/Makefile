@@ -54,13 +54,13 @@ DEBUG_FLAG = -g2
 #MEM_FLAG = -fsanitize=address -fno-omit-frame-pointer
 
 ifneq ($(CC), clang++-4.0)
-   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security
+   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness
 else
-   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security
+   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness
 endif
 
 ifndef CYGWIN
-   W_FLAGS := $(W_FLAGS) #-Werror
+   W_FLAGS := $(W_FLAGS) -Werror
    ifeq ($(CC), g++)
       OPT_FLAG := -rdynamic $(OPT_FLAG)
    endif

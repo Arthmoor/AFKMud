@@ -2968,7 +2968,7 @@ CMDF( do_ignore )
       }
       else
       {
-         ch->printf( "&[ignore]You may only ignore %zd players.\r\n", sysdata->maxign );
+         ch->printf( "&[ignore]You may only ignore %zu players.\r\n", sysdata->maxign );
          return;
       }
    }

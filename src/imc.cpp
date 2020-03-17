@@ -861,7 +861,7 @@ void imc_write_buffer( const string & txt )
           * empty buffer 
           */
          this_imcmud->outtop = 0;
-         imcbug( "Buffer overflow: %ld. Purging.", this_imcmud->outsize );
+         imcbug( "Buffer overflow: %lu. Purging.", this_imcmud->outsize );
          return;
       }
       this_imcmud->outsize *= 2;
@@ -2315,7 +2315,7 @@ bool imc_write_socket( void )
    if( imcpacketdebug )
    {
       imclog( "Packet Sent: %s", this_imcmud->outbuf );
-      imclog( "Bytes sent: %zd", this_imcmud->outtop );
+      imclog( "Bytes sent: %zu", this_imcmud->outtop );
    }
    this_imcmud->outbuf[0] = '\0';
    this_imcmud->outtop = 0;
@@ -5843,7 +5843,7 @@ IMC_CMD( imcremoteadmin )
       char cryptpw[MSL];
       const char *hash;
 
-      snprintf( cryptpw, MSL, "%ld%s", imc_sequencenumber + 1, password.c_str(  ) );
+      snprintf( cryptpw, MSL, "%lu%s", imc_sequencenumber + 1, password.c_str(  ) );
       hash = sha256_crypt( cryptpw );
       p->data << " hash=" << hash;
    }
