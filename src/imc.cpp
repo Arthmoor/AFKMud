@@ -135,12 +135,12 @@ imc_siteinfo::imc_siteinfo(  )
 /* Generic log function which will route the log messages to the appropriate system logging function */
 void imclog( const char *format, ... )
 {
-   char buf[LGST];
+   char buf[MSL];
    char *strtime;
    va_list ap;
 
    va_start( ap, format );
-   vsnprintf( buf, LGST, format, ap );
+   vsnprintf( buf, MSL, format, ap );
    va_end( ap );
 
    strtime = c_time( imc_time, -1 );
@@ -152,11 +152,11 @@ void imclog( const char *format, ... )
 /* Generic bug logging function which will route the message to the appropriate function that handles bug logs */
 void imcbug( const char *format, ... )
 {
-   char buf[LGST];
+   char buf[MSL];
    va_list ap;
 
    va_start( ap, format );
-   vsnprintf( buf, LGST, format, ap );
+   vsnprintf( buf, MSL, format, ap );
    va_end( ap );
 
    bug( "IMC: %s", buf );
@@ -256,12 +256,12 @@ void imc_to_char( string txt, char_data * ch )
 /* Modified version of Smaug's ch_printf_color function */
 void imc_printf( char_data * ch, const char *fmt, ... )
 {
-   char buf[LGST];
+   char buf[MSL];
    string txt;
    va_list args;
 
    va_start( args, fmt );
-   vsnprintf( buf, LGST, fmt, args );
+   vsnprintf( buf, MSL, fmt, args );
    va_end( args );
 
    txt = buf;
@@ -277,12 +277,12 @@ void imc_to_pager( string txt, char_data * ch )
 /* Generic pager_printf type function */
 void imcpager_printf( char_data * ch, const char *fmt, ... )
 {
-   char buf[LGST];
+   char buf[MSL];
    string txt;
    va_list args;
 
    va_start( args, fmt );
-   vsnprintf( buf, LGST, fmt, args );
+   vsnprintf( buf, MSL, fmt, args );
    va_end( args );
 
    txt = buf;
@@ -1087,15 +1087,15 @@ void imc_display_channel( imc_channel * c, const string & from, const string & t
 {
    char_data *ch;
    list < descriptor_data * >::iterator ds;
-   char buf[LGST];
+   char buf[MSL];
 
    if( c->local_name.empty(  ) || !c->refreshed )
       return;
 
    if( emote < 2 )
-      snprintf( buf, LGST, emote ? c->emoteformat.c_str(  ) : c->regformat.c_str(  ), from.c_str(  ), txt.c_str(  ) );
+      snprintf( buf, MSL, emote ? c->emoteformat.c_str(  ) : c->regformat.c_str(  ), from.c_str(  ), txt.c_str(  ) );
    else
-      snprintf( buf, LGST, c->socformat.c_str(  ), txt.c_str(  ) );
+      snprintf( buf, MSL, c->socformat.c_str(  ), txt.c_str(  ) );
 
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
@@ -2344,7 +2344,7 @@ void imc_process_authentication( string & packet )
 
    if( command == "SHA256-AUTH-INIT" )
    {
-      char pwd[SMST];
+      char pwd[MIL];
       const char *cryptpwd;
       long auth_value = 0;
 
@@ -2359,7 +2359,7 @@ void imc_process_authentication( string & packet )
        * Lets encrypt this bastard now! 
        */
       auth_value = atol( pw.c_str(  ) );
-      snprintf( pwd, SMST, "%ld%s%s", auth_value, this_imcmud->clientpw.c_str(  ), this_imcmud->serverpw.c_str(  ) );
+      snprintf( pwd, MIL, "%ld%s%s", auth_value, this_imcmud->clientpw.c_str(  ), this_imcmud->serverpw.c_str(  ) );
       cryptpwd = sha256_crypt( pwd );
 
       response << "SHA256-AUTH-RESP " << this_imcmud->localname << " " << cryptpwd << " version=" << IMC_VERSION;
@@ -2857,9 +2857,9 @@ void imc_loadhistfile( const string & filename, imc_channel * channel )
          break;
       else
       {
-         char line[LGST];
+         char line[MSL];
 
-         stream.getline( line, LGST );
+         stream.getline( line, MSL );
          channel->history.push_back( line );
       }
    }
@@ -2972,7 +2972,7 @@ void imc_loadchannels( void )
    do
    {
       string key, value;
-      char buf[LGST];
+      char buf[MSL];
 
       stream >> key;
       strip_lspace( key );
@@ -2980,7 +2980,7 @@ void imc_loadchannels( void )
       if( key.empty(  ) )
          continue;
 
-      stream.getline( buf, LGST );
+      stream.getline( buf, MSL );
       value = buf;
 
       strip_lspace( value );
@@ -3194,7 +3194,7 @@ void imc_load_helps( void )
    do
    {
       string key, value;
-      char buf[LGST];
+      char buf[MSL];
 
       stream >> key;
       strip_lspace( key );
@@ -3207,7 +3207,7 @@ void imc_load_helps( void )
 
       else if( key == "Name" )
       {
-         stream.getline( buf, LGST );
+         stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
          help->hname = value;
@@ -3215,7 +3215,7 @@ void imc_load_helps( void )
 
       else if( key == "Perm" )
       {
-         stream.getline( buf, LGST );
+         stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
          int permvalue = get_imcpermvalue( value );
@@ -3231,7 +3231,7 @@ void imc_load_helps( void )
 
       else if( key == "Text" )
       {
-         stream.getline( buf, LGST, '\xa2' );
+         stream.getline( buf, MSL, '\xa2' );
          value = buf;
          strip_lspace( value );
          help->text = value;
@@ -3300,9 +3300,9 @@ bool imc_load_commands( void )
    do
    {
       string line, key, value;
-      char buf[SMST];
+      char buf[MIL];
 
-      stream.getline( buf, SMST );
+      stream.getline( buf, MIL );
       line = buf;
       if( line.empty(  ) )
          continue;
@@ -3375,9 +3375,9 @@ void imc_load_ucache( void )
    do
    {
       string line, key, value;
-      char buf[SMST];
+      char buf[MIL];
 
-      stream.getline( buf, SMST );
+      stream.getline( buf, MIL );
       line = buf;
       if( line.empty(  ) )
          continue;
@@ -3495,9 +3495,9 @@ bool imc_load_config( int desc )
    do
    {
       string line, key, value;
-      char buf[SMST];
+      char buf[MIL];
 
-      stream.getline( buf, SMST );
+      stream.getline( buf, MIL );
       line = buf;
       if( line[0] == '#' || line.empty(  ) )
          continue;
@@ -3671,14 +3671,14 @@ void imc_load_who_template( void )
    do
    {
       string key, value;
-      char buf[LGST];
+      char buf[MSL];
 
       stream >> key;
       strip_lspace( key );
 
       if( key == "Head:" )
       {
-         stream.getline( buf, LGST, '\xa2' );
+         stream.getline( buf, MSL, '\xa2' );
          value = buf;
          strip_lspace( value );
          parse_who_header( value );
@@ -3686,7 +3686,7 @@ void imc_load_who_template( void )
       }
       else if( key == "Tail:" )
       {
-         stream.getline( buf, LGST, '\xa2' );
+         stream.getline( buf, MSL, '\xa2' );
          value = buf;
          strip_lspace( value );
          parse_who_tail( value );
@@ -3694,35 +3694,35 @@ void imc_load_who_template( void )
       }
       else if( key == "Plrline:" )
       {
-         stream.getline( buf, LGST, '\xa2' );
+         stream.getline( buf, MSL, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->plrline = value;
       }
       else if( key == "Immline:" )
       {
-         stream.getline( buf, LGST, '\xa2' );
+         stream.getline( buf, MSL, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->immline = value;
       }
       else if( key == "Immheader:" )
       {
-         stream.getline( buf, LGST, '\xa2' );
+         stream.getline( buf, MSL, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->immheader = value;
       }
       else if( key == "Plrheader:" )
       {
-         stream.getline( buf, LGST, '\xa2' );
+         stream.getline( buf, MSL, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->plrheader = value;
       }
       else if( key == "Master:" )
       {
-         stream.getline( buf, LGST, '\xa2' );
+         stream.getline( buf, MSL, '\xa2' );
          value = buf;
          strip_lspace( value );
          whot->master = value;
@@ -3815,7 +3815,7 @@ bool imc_server_connect( void )
 {
 #if defined(IPV6)
    struct addrinfo hints, *ai_list, *ai;
-   char rport[SMST];
+   char rport[MIL];
    int n, r;
 #endif
    ostringstream buf;
@@ -3840,7 +3840,7 @@ bool imc_server_connect( void )
    }
 
 #if defined(IPV6)
-   snprintf( rport, SMST, "%hu", this_imcmud->rport );
+   snprintf( rport, MIL, "%hu", this_imcmud->rport );
    memset( &hints, 0, sizeof( struct addrinfo ) );
    hints.ai_family = AF_UNSPEC;
    hints.ai_socktype = SOCK_STREAM;
@@ -5840,10 +5840,10 @@ IMC_CMD( imcremoteadmin )
       p->data << " data=" << argument;
    if( this_imcmud->sha256pass )
    {
-      char cryptpw[LGST];
+      char cryptpw[MSL];
       const char *hash;
 
-      snprintf( cryptpw, LGST, "%ld%s", imc_sequencenumber + 1, password.c_str(  ) );
+      snprintf( cryptpw, MSL, "%ld%s", imc_sequencenumber + 1, password.c_str(  ) );
       hash = sha256_crypt( cryptpw );
       p->data << " hash=" << hash;
    }

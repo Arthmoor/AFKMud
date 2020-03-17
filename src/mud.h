@@ -48,8 +48,11 @@ using namespace std;
 #define CODEVERSION "2.2.3"
 #define COPYRIGHT "Copyright The Alsherok Team 1997-2019. All rights reserved."
 
-const int LGST = 4096;  /* Large String */
-const int SMST = 1024;  /* Small String */
+/*
+ * String and memory management parameters.
+ */
+const int MSL = 8192;   /* MAX_STRING_LENGTH */
+const int MIL = 2048;   /* MAX_INPUT_LENGTH */
 
 /*
  * Short scalar types.
@@ -131,12 +134,6 @@ const int BV29 = ( 1 << 29 );
 const int BV30 = ( 1 << 30 );
 const int BV31 = ( 1 << 31 );
 /* 32 USED! DO NOT ADD MORE! SB */
-
-/*
- * String and memory management parameters.
- */
-const int MSL = 8192;   /* MAX_STRING_LENGTH */
-const int MIL = 2048;   /* MAX_INPUT_LENGTH */
 
 /*
  * Command logging types.

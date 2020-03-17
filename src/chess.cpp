@@ -787,8 +787,8 @@ PFUN( imc_recv_chess )
       return;
    }
 
-   char txt[SMST];
-   mudstrlcpy( txt, keymap["text"].c_str(  ), SMST );
+   char txt[MIL];
+   mudstrlcpy( txt, keymap["text"].c_str(  ), MIL );
    if( !str_prefix( "move", txt ) )
    {
       char a, b;
