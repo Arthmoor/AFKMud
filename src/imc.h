@@ -45,7 +45,7 @@
  * This name was chosen to represent the ideals of not only the code, but of the
  * network which spawned it.
  */
-#define IMC_VERSION_STRING "IMC2 Freedom C++ CL-2.1a "
+#define IMC_VERSION_STRING "IMC2 Freedom C++ CL-2.3 "
 #define IMC_VERSION 2
 
 /* Number of entries to keep in the channel histories */
