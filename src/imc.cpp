@@ -135,7 +135,7 @@ imc_siteinfo::imc_siteinfo(  )
 /* Generic log function which will route the log messages to the appropriate system logging function */
 void imclog( const char *format, ... )
 {
-   char buf[LGST], buf2[LGST];
+   char buf[LGST];
    char *strtime;
    va_list ap;
 
@@ -143,10 +143,8 @@ void imclog( const char *format, ... )
    vsnprintf( buf, LGST, format, ap );
    va_end( ap );
 
-   snprintf( buf2, LGST, "IMC: %s", buf );
-
    strtime = c_time( imc_time, -1 );
-   fprintf( stderr, "%s :: %s\n", strtime, buf2 );
+   fprintf( stderr, "%s :: IMC: %s\n", strtime, buf );
 
    to_channel( buf, "ilog", LEVEL_ADMIN );
 }
@@ -154,16 +152,14 @@ void imclog( const char *format, ... )
 /* Generic bug logging function which will route the message to the appropriate function that handles bug logs */
 void imcbug( const char *format, ... )
 {
-   char buf[LGST], buf2[LGST];
+   char buf[LGST];
    va_list ap;
 
    va_start( ap, format );
    vsnprintf( buf, LGST, format, ap );
    va_end( ap );
 
-   snprintf( buf2, LGST, "IMC: %s", buf );
-
-   bug( "%s", buf2 );
+   bug( "IMC: %s", buf );
 }
 
 /********************************

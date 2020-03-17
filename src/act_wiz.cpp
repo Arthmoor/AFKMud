@@ -2732,38 +2732,51 @@ CMDF( do_purge )
 
 void destroy_immdata( char_data * ch, const char *vicname )
 {
-   char buf[MSL], buf2[MSL];
+   char godfile[256];
+   char areafile[256];
+   char buildfile[256];
+   char buildbackup[256];
+   char ebuf[MSL];
 
-   snprintf( buf, MSL, "%s%s", GOD_DIR, capitalize( vicname ) );
+   snprintf( godfile, 256, "%s%s", GOD_DIR, capitalize( vicname ) );
 
-   if( !remove( buf ) )
+   if( !remove( godfile ) )
       ch->print( "&RPlayer's immortal data destroyed.\r\n" );
    else if( errno != ENOENT )
    {
-      ch->printf( "&RUnknown error #%d - %s (immortal data).  Report to Samson\r\n", errno, strerror( errno ) );
-      snprintf( buf2, MSL, "%s balzhuring %s", ch->name, buf );
-      perror( buf2 );
+      ch->printf( "&RUnknown error #%d - %s (immortal data).  Report to the admins.\r\n", errno, strerror( errno ) );
+      snprintf( ebuf, MSL, "%s destroying %s", ch->name, godfile );
+      perror( ebuf );
    }
-   snprintf( buf2, MSL, "%s.are", vicname );
+
+   snprintf( areafile, 256, "%s.are", vicname );
 
    list < area_data * >::iterator iarea;
    for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
    {
       area_data *area = *iarea;
 
-      if( !str_cmp( area->filename, buf2 ) )
+      if( !str_cmp( area->filename, areafile ) )
       {
-         snprintf( buf, MSL, "%s%s", BUILD_DIR, buf2 );
-         area->fold( buf, false );
+         int bc = snprintf( buildfile, 256, "%s%s", BUILD_DIR, areafile );
+         if( bc < 0 )
+            bug( "%s: Output buffer error!", __func__ );
+
+         area->fold( buildfile, false );
          deleteptr( area );
-         snprintf( buf2, MSL, "%s.bak", buf );
-         if( !rename( buf, buf2 ) )
+
+         bc = snprintf( buildbackup, 256, "%s.bak", buildfile );
+         if( bc < 0 )
+            bug( "%s: Output buffer error!", __func__ );
+
+         if( !rename( buildfile, buildbackup ) )
             ch->print( "&RPlayer's area data destroyed. Area saved as backup.\r\n" );
+
          else if( errno != ENOENT )
          {
-            ch->printf( "&RUnknown error #%d - %s (area data).  Report to  Samson.\r\n", errno, strerror( errno ) );
-            snprintf( buf2, MSL, "%s destroying %s", ch->name, buf );
-            perror( buf2 );
+            ch->printf( "&RUnknown error #%d - %s (area data). Report to the admins.\r\n", errno, strerror( errno ) );
+            snprintf( ebuf, MSL, "%s destroying %s", ch->name, buildfile );
+            perror( ebuf );
          }
          break;
       }
@@ -8372,7 +8385,9 @@ CMDF( do_fixed )
    {
       FILE *fp = fopen( FIXED_FILE, "w" );
       if( fp )
+      {
          FCLOSE( fp );
+      }
       ch->print( "Fixed file cleared.\r\n" );
       return;
    }

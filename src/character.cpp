@@ -123,12 +123,6 @@ pc_data::pc_data(  )
  */
 char_data::~char_data(  )
 {
-   if( !this )
-   {
-      bug( "%s: nullptr ch!", __func__ );
-      return;
-   }
-
    // Hackish fix - if we forget, whoever reads this should remind us someday - Samson 3-28-05
    if( this->desc )
    {
@@ -652,14 +646,6 @@ bool char_data::can_see( char_data * victim, bool override )
    {
       bug( "%s: nullptr victim! CH %s tried to see it.", __func__, name );
       return false;
-   }
-
-   if( !this )
-   {
-      if( victim->has_aflag( AFF_INVISIBLE ) || victim->has_aflag( AFF_HIDE ) || victim->has_pcflag( PCFLAG_WIZINVIS ) )
-         return false;
-      else
-         return true;
    }
 
    if( !this->is_imp(  ) && victim == supermob )
@@ -2054,12 +2040,6 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
 void char_data::affect_to_char( affect_data * paf )
 {
    affect_data *paf_new;
-
-   if( !this )
-   {
-      bug( "%s: (nullptr, %d)", __func__, paf ? paf->type : 0 );
-      return;
-   }
 
    if( !paf )
    {

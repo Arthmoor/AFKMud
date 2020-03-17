@@ -628,23 +628,6 @@ void room_index::rprog_read_programs( FILE * fp )
  */
 bool room_index::is_dark( char_data * ch )
 {
-   if( !this )
-   {
-      char buf[MSL];
-
-      if( ch->isnpc(  ) )
-         snprintf( buf, MSL, "Mob #%d", ch->pIndexData->vnum );
-      else
-         snprintf( buf, MSL, "Player %s", ch->name );
-
-      bug( "%s: nullptr pRoomIndex. Occupant: %s", __func__, ch->name );
-
-      if( ch->char_died(  ) )
-         log_printf( "%s was probably dead when this happened.", buf );
-
-      return true;
-   }
-
    if( light > 0 )
       return false;
 
@@ -665,12 +648,6 @@ bool room_index::is_dark( char_data * ch )
  */
 bool room_index::is_private(  )
 {
-   if( !this )
-   {
-      bug( "%s: nullptr pRoomIndex", __func__ );
-      return false;
-   }
-
    int count = people.size(  );
 
    if( flags.test( ROOM_PRIVATE ) && count >= 2 )
@@ -1054,12 +1031,6 @@ obj_data *make_trap( int charges, int type, int level, int flags, int mindamage,
 reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11 )
 {
    reset_data *pReset;
-
-   if( !this )
-   {
-      bug( "%s: nullptr room!", __func__ );
-      return nullptr;
-   }
 
    letter = UPPER( letter );
    pReset = make_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11 );

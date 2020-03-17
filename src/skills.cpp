@@ -394,7 +394,7 @@ string_sort::string_sort( void )
 {
 }
 
-bool string_sort::operator(  ) ( const string & left, const string & right )
+bool string_sort::operator(  ) ( const string & left, const string & right ) const
 {
    return ( left.compare( right ) < 0 );
 }
@@ -723,12 +723,10 @@ int skill_comp( skill_type ** sk1, skill_type ** sk2 )
 
 void update_skill_index( skill_type * skill, int sn )
 {
-   string buf = skill->name;
-
-   // to LowerCase
-   strlower( buf );
+   string buf = strlower( skill->name );
 
    skill_table__index[buf] = sn;
+
    switch ( skill->type )
    {
       default:

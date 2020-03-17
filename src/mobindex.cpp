@@ -215,12 +215,6 @@ char_data *mob_index::create_mobile(  )
 {
    char_data *mob;
 
-   if( !this )
-   {
-      bug( "%s: nullptr pMobIndex.", __func__ );
-      exit( 1 );
-   }
-
    mob = new char_data;
 
    mob->pIndexData = this;

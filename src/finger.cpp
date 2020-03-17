@@ -122,7 +122,10 @@ void build_wizinfo( void )
 
       if( dentry->d_name[0] != '.' )
       {
-         snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
+         int bc = snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
+         if( bc < 0 )
+            bug( "%s: Output buffer error!", __func__ );
+
          stream.open( buf );
          if( stream.is_open(  ) )
          {

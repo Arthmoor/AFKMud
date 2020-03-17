@@ -929,7 +929,10 @@ void load_buildlist( void )
          {
             if( str_infix( ".bak", dentry->d_name ) )
             {
-               snprintf( buf, 256, "%s%s", BUILD_DIR, dentry->d_name );
+               int bc = snprintf( buf, 256, "%s%s", BUILD_DIR, dentry->d_name );
+               if( bc < 0 )
+                  bug( "%s: Output buffer error!", __func__ );
+
                mudstrlcpy( strArea, dentry->d_name, MIL );
                set_alarm( AREA_FILE_ALARM );
                alarm_section = "load_buildlist: read prototype area files";
@@ -1424,7 +1427,10 @@ void make_wizlist(  )
           */
          if( str_cmp( dentry->d_name, "CVS" ) )
          {
-            snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
+            int bc = snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
+            if( bc < 0 )
+               bug( "%s: Output buffer error!", __func__ );
+
             gfp = fopen( buf, "r" );
             if( gfp )
             {
@@ -1586,7 +1592,10 @@ void make_webwiz( void )
             continue;
          }
 
-         snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
+         int bc = snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
+         if( bc < 0 )
+            bug( "%s: Output buffer error!", __func__ );
+
          gfp = fopen( buf, "r" );
          if( gfp )
          {

@@ -236,12 +236,6 @@ obj_data *obj_index::create_object( int olevel )
 {
    obj_data *obj;
 
-   if( !this )
-   {
-      bug( "%s: nullptr pObjIndex.", __func__ );
-      return nullptr;
-   }
-
    obj = new obj_data;
    obj->pIndexData = this;
 

@@ -143,9 +143,9 @@ int web_colour( char type, char *string, bool & firsttag )
 
    if( !firsttag && validcolor )
    {
-      char newcode[50];
+      char newcode[70];
 
-      snprintf( newcode, 50, "</span>%s", code );
+      snprintf( newcode, 70, "</span>%s", code );
       mudstrlcpy( code, newcode, 50 );
    }
 

@@ -272,8 +272,14 @@ void delete_clan( char_data * ch, clan_data * clan )
    string clanname = clan->name;
 
    mudstrlcpy( filename, clan->filename.c_str(  ), 256 );
-   snprintf( storeroom, 256, "%s.vault", filename );
-   snprintf( record, 256, "%s.record", filename );
+
+   int bc = snprintf( storeroom, 256, "%s.vault", filename );
+   if( bc < 0 )
+      bug( "%s: Output buffer error!", __func__ );
+
+   bc = snprintf( record, 256, "%s.record", filename );
+   if( bc < 0 )
+      bug( "%s: Output buffer error!", __func__ );
 
    for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
@@ -2531,7 +2537,9 @@ CMDF( do_defeats )
       {
          FILE *fp = fopen( filename, "w" );
          if( fp )
+         {
             FCLOSE( fp );
+         }
          ch->print( "\r\nDefeats ledger has been cleared.\r\n" );
          return;
       }
@@ -2566,7 +2574,9 @@ CMDF( do_victories )
       {
          FILE *fp = fopen( filename, "w" );
          if( fp )
+         {
             FCLOSE( fp );
+         }
          ch->print( "\r\nVictories ledger has been cleared.\r\n" );
          return;
       }

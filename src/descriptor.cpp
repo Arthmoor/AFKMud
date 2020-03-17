@@ -614,7 +614,7 @@ bool descriptor_data::write( const char *txt )
    if( mccpsaved > length )
       mccpsaved = length;
 
-   if( this && mccp->out_compress )
+   if( mccp->out_compress )
    {
       mccp->out_compress->next_in = ( unsigned char * )txt;
       mccp->out_compress->avail_in = length;
@@ -1123,12 +1123,6 @@ void descriptor_data::read_from_buffer(  )
  */
 void descriptor_data::write_to_buffer( const string & txt )
 {
-   if( !this )
-   {
-      bug( "%s: nullptr descriptor", __func__ );
-      return;
-   }
-
    if( MPSilent )
       return;
 
@@ -1156,12 +1150,6 @@ void descriptor_data::buffer_printf( const char *fmt, ... )
 /* Writes to a descriptor, usually best used when there's no character to send to ( like logins ) */
 void descriptor_data::send_color( const string & txt )
 {
-   if( !this )
-   {
-      bug( "%s: nullptr *d", __func__ );
-      return;
-   }
-
    if( txt.empty(  ) || !this->descriptor )
       return;
 
@@ -1170,12 +1158,6 @@ void descriptor_data::send_color( const string & txt )
 
 void descriptor_data::pager( const string & txt )
 {
-   if( !this )
-   {
-      bug( "%s: nullptr *d", __func__ );
-      return;
-   }
-
    if( this->pagebuf.empty(  ) && !this->fcommand )
       this->pagebuf = "\r\n";
 
@@ -1197,7 +1179,7 @@ bool descriptor_data::pager_output(  )
    size_t start, end;
    bool ret;
 
-   if( !this || this->pagebuf.empty(  ) || this->pagecmd == -1 )
+   if( this->pagebuf.empty(  ) || this->pagecmd == -1 )
       return true;
 
    ch = this->original ? this->original : this->character;

@@ -63,6 +63,7 @@ void name_generator( string & argument )
    char tempstring[151], name[300];
    struct timeval starttime;
    time_t t;
+   char *shutupgcc;
    FILE *infile;
 
    tempstring[0] = '\0';
@@ -73,36 +74,40 @@ void name_generator( string & argument )
       return;
    }
 
-   fgets( tempstring, 150, infile );
+   shutupgcc = fgets( tempstring, 150, infile );
    tempstring[strlen( tempstring ) - 1] = '\0';
    while( str_cmp( tempstring, "[start]" ) != 0 )
    {
-      fgets( tempstring, 150, infile );
+      shutupgcc = fgets( tempstring, 150, infile );
       tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
    }
 
    while( str_cmp( tempstring, "[middle]" ) != 0 )
    {
-      fgets( tempstring, 150, infile );
+      shutupgcc = fgets( tempstring, 150, infile );
       tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
       if( tempstring[0] != '/' )
          mudstrlcpy( start_string[start_counter++], tempstring, 100 );
    }
    while( str_cmp( tempstring, "[end]" ) != 0 )
    {
-      fgets( tempstring, 150, infile );
+      shutupgcc = fgets( tempstring, 150, infile );
       tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
       if( tempstring[0] != '/' )
          mudstrlcpy( middle_string[middle_counter++], tempstring, 100 );
    }
    while( str_cmp( tempstring, "[finish]" ) != 0 )
    {
-      fgets( tempstring, 150, infile );
+      shutupgcc = fgets( tempstring, 150, infile );
       tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
       if( tempstring[0] != '/' )
          mudstrlcpy( end_string[end_counter++], tempstring, 100 );
    }
    FCLOSE( infile );
+
+   if( shutupgcc == NULL )
+      ; // We don't give a fuck GCC!
+
    gettimeofday( &starttime, nullptr );
    srand( ( unsigned )time( &t ) + starttime.tv_usec );
    --start_counter;
@@ -132,6 +137,7 @@ void pick_name( string & argument, const char *filename )
    char names[200][20];
    char name[200], tempstring[151];
    int counter = 0;
+   char *shutupgcc;
    time_t t;
 
    tempstring[0] = '\0';
@@ -143,21 +149,25 @@ void pick_name( string & argument, const char *filename )
       return;
    }
 
-   fgets( tempstring, 150, infile );
+   shutupgcc = fgets( tempstring, 150, infile );
    tempstring[strlen( tempstring ) - 1] = '\0';
    while( str_cmp( tempstring, "[start]" ) != 0 )
    {
-      fgets( tempstring, 100, infile );
+      shutupgcc = fgets( tempstring, 100, infile );
       tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
    }
    while( str_cmp( tempstring, "[finish]" ) != 0 )
    {
-      fgets( tempstring, 100, infile );
+      shutupgcc = fgets( tempstring, 100, infile );
       tempstring[strlen( tempstring ) - 1] = '\0';
       if( tempstring[0] != '/' )
          mudstrlcpy( names[counter++], tempstring, 200 );
    }
    FCLOSE( infile );
+
+   if( shutupgcc == NULL )
+      ; // We don't give a fuck GCC!
+
    gettimeofday( &starttime, nullptr );
    srand( ( unsigned )time( &t ) + starttime.tv_usec );
    --counter;

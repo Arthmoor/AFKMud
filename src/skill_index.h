@@ -32,7 +32,7 @@ class string_sort
 {
  public:
    string_sort(  );
-   bool operator(  ) ( const string &, const string & );
+   bool operator(  ) ( const string &, const string & ) const;
 };
 
 #if defined(__APPLE__)
@@ -41,7 +41,6 @@ typedef map < string, int > SKILL_INDEX;
 #else
 typedef map < string, int, string_sort > SKILL_INDEX;
 #endif
-
 
 extern SKILL_INDEX skill_table__index;
 extern SKILL_INDEX skill_table__spell;

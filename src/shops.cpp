@@ -124,7 +124,10 @@ void load_shopkeepers( void )
          FILE *fp;
          char filename[256];
 
-         snprintf( filename, 256, "%s%s", directory_name, dentry->d_name );
+         int bc = snprintf( filename, 256, "%s%s", directory_name, dentry->d_name );
+         if( bc < 0 )
+            bug( "%s: Output buffer error!", __func__ );
+
          if( ( fp = fopen( filename, "r" ) ) != nullptr )
          {
             char_data *mob = nullptr;

@@ -31,7 +31,6 @@ ifndef MACOSX
 	EXPORT_SYMBOLS = -export-dynamic
 endif
 
-
 #Math functions - uncomment if you get errors or warnings about math functions.
 MATH_LIB = -lm
 

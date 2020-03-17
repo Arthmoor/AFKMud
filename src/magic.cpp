@@ -247,7 +247,7 @@ void immune_casting( skill_type * skill, char_data * ch, char_data * victim, obj
  */
 void say_spell( char_data * ch, int sn )
 {
-   char buf[MSL], buf2[MSL];
+   char buf[MSL-30], buf2[MSL];
    char *pName;
    int iSyl, length;
    skill_type *skill = get_skilltype( sn );
@@ -310,13 +310,13 @@ void say_spell( char_data * ch, int sn )
    if( ch->Class == CLASS_BARD )
    {
       mudstrlcpy( buf2, "$n plays a song.", MSL );
-      snprintf( buf, MSL, "$n plays the song, '%s'.", skill->name );
+      snprintf( buf, MSL-30, "$n plays the song, '%s'.", skill->name );
    }
 
    else
    {
       snprintf( buf2, MSL, "$n utters the words, '%s'.", buf );
-      snprintf( buf, MSL, "$n utters the words, '%s'.", skill->name );
+      snprintf( buf, MSL-30, "$n utters the words, '%s'.", skill->name );
    }
 
    list < char_data * >::iterator ich;

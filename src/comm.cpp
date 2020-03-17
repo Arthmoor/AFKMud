@@ -229,7 +229,9 @@ void directory_check( void )
             if( chdir( dirname ) )
             {
                log_printf( "Creating required directory: %s", dirname );
-               snprintf( buf, 256, "mkdir %s", dirname );
+               int bc = snprintf( buf, 256, "mkdir %s", dirname );
+               if( bc < 0 )
+                  bug( "%s: Output buffer error!", __func__ );
 
                if( system( buf ) )
                {

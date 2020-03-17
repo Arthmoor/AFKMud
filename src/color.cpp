@@ -553,12 +553,6 @@ CMDF( do_color )
 
 const char *char_data::color_str( short AType )
 {
-   if( !this )
-   {
-      bug( "%s: nullptr ch!", __func__ );
-      return ( "" );
-   }
-
    if( !has_pcflag( PCFLAG_ANSI ) )
       return ( "" );
 

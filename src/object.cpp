@@ -1426,12 +1426,6 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
    char_data *ch = carried_by;
    bool movedsome = false;
 
-   if( !this )
-   {
-      bug( "%s: nullptr obj", __func__ );
-      return false;
-   }
-
    if( destobj || ( !destroom && !ch && ( destobj = in_obj ) != nullptr ) )
    {
       for( iobj = contents.begin(  ); iobj != contents.end(  ); )
@@ -1506,12 +1500,6 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
 void obj_data::remove_portal(  )
 {
    room_index *fromRoom, *toRoom;
-
-   if( !this )
-   {
-      bug( "%s: portal is nullptr", __func__ );
-      return;
-   }
 
    if( !( fromRoom = in_room ) )
    {

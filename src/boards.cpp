@@ -3517,7 +3517,9 @@ void load_projects( void ) /* Copied load_boards structure for simplicity */
 
    // Bugfix - CPPcheck flagged this. It's possible for it to be closed in fread_project before getting back here.
    if( fp )
+   {
       FCLOSE( fp );
+   }
 }
 
 project_data::project_data(  )

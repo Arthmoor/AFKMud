@@ -235,12 +235,6 @@ void area_data::sort_name(  )
 {
    list < area_data * >::iterator iarea;
 
-   if( !this )
-   {
-      bug( "%s: nullptr pArea", __func__ );
-      return;
-   }
-
    for( iarea = area_nsort.begin(  ); iarea != area_nsort.end(  ); ++iarea )
    {
       area_data *area = *iarea;
@@ -261,12 +255,6 @@ void area_data::sort_name(  )
 void area_data::sort_vnums(  )
 {
    list < area_data * >::iterator iarea;
-
-   if( !this )
-   {
-      bug( "%s: nullptr pArea", __func__ );
-      return;
-   }
 
    for( iarea = area_vsort.begin(  ); iarea != area_vsort.end(  ); ++iarea )
    {
@@ -1898,7 +1886,9 @@ void load_area_file( const string & filename, bool isproto )
                if( fBootDb )
                   exit( 1 );
                else
+               {
                   FCLOSE( fpArea );
+               }
             }
             return;
          }
@@ -3135,9 +3125,13 @@ CMDF( do_installarea )
       tarea->reset(  );
       tarea->nplayer = num;
       ch->print( "Removing author's building file.\r\n" );
-      snprintf( buf, 256, "%s%s", BUILD_DIR, oldfilename );
+      int bc = snprintf( buf, 256, "%s%s", BUILD_DIR, oldfilename );
+      if( bc < 0 )
+         bug( "%s: Output buffer error!", __func__ );
       unlink( buf );
-      snprintf( buf, 256, "%s%s.bak", BUILD_DIR, oldfilename );
+      bc = snprintf( buf, 256, "%s%s.bak", BUILD_DIR, oldfilename );
+      if( bc < 0 )
+         bug( "%s: Output buffer error!", __func__ );
       unlink( buf );
       ch->print( "Done.\r\n" );
       return;
