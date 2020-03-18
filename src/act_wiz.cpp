@@ -127,7 +127,7 @@ CMDF( do_newpassword )
 {
    string arg1;
    char_data *victim;
-   const char *pwdnew;
+   string pwdnew;
 
    if( ch->isnpc(  ) )
       return;
@@ -167,10 +167,9 @@ CMDF( do_newpassword )
       return;
    }
 
-   pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
+   pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
 
-   DISPOSE( victim->pcdata->pwd );
-   victim->pcdata->pwd = str_dup( pwdnew );
+   victim->pcdata->pwd = pwdnew;
    victim->save(  );
    ch->printf( "&R%s's password has been changed to: %s\r\n&w", victim->name, argument.c_str(  ) );
    victim->printf( "&R%s has changed your password to: %s\r\n&w", ch->name, argument.c_str(  ) );
@@ -5003,7 +5002,7 @@ CMDF( do_promote )
  */
 CMDF( do_form_password )
 {
-   const char *pwcheck;
+   string pwcheck;
 
    ch->set_color( AT_IMMORT );
 
@@ -5030,8 +5029,8 @@ CMDF( do_form_password )
       return;
    }
 
-   pwcheck = sha256_crypt( argument.c_str(  ) );
-   ch->printf( "%s results in the encrypted string: %s\r\n", argument.c_str(  ), pwcheck );
+   pwcheck = sha256_crypt( argument );
+   ch->printf( "%s results in the encrypted string: %s\r\n", argument.c_str(  ), pwcheck.c_str(  ) );
 }
 
 /*
@@ -5688,7 +5687,7 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "password" ) )
    {
-      const char *pwdnew;
+      string pwdnew;
 
       if( argument.length(  ) < 5 )
       {
@@ -5702,7 +5701,7 @@ CMDF( do_cset )
          return;
       }
 
-      pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
+      pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
       sysdata->password = pwdnew;
       ch->print( "Mud password changed.\r\n" );
       save_sysdata(  );

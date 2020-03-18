@@ -68,7 +68,6 @@ pc_data::~pc_data(  )
    STRFREE( this->filename );
    STRFREE( this->prompt );
    STRFREE( this->fprompt );
-   DISPOSE( this->pwd );   /* no hash */
    DISPOSE( this->bamfin );   /* no hash */
    DISPOSE( this->bamfout );  /* no hash */
    STRFREE( this->rank );

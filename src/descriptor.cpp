@@ -2386,8 +2386,7 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
 
          if( fConn == false )
          {
-            DISPOSE( character->pcdata->pwd );
-            character->pcdata->pwd = str_dup( ch->pcdata->pwd );
+            character->pcdata->pwd = ch->pcdata->pwd;
          }
          else
          {
@@ -2651,7 +2650,7 @@ void display_motd( char_data * ch )
 CMDF( do_shatest )
 {
    ch->printf( "%s\r\n", argument.c_str(  ) );
-   ch->printf( "%s\r\n", sha256_crypt( argument.c_str(  ) ) );
+   ch->printf( "%s\r\n", sha256_crypt( argument ).c_str(  ) );
 }
 
 /*
@@ -2663,7 +2662,7 @@ void descriptor_data::nanny( string & argument )
 {
    char buf[MSL];
    char_data *ch;
-   const char *pwdnew;
+   string pwdnew;
    bool fOld;
    short chk;
 
@@ -2911,7 +2910,7 @@ void descriptor_data::nanny( string & argument )
       case CON_GET_OLD_PASSWORD:
          write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
+         if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
          {
             write_to_buffer( "Wrong password, disconnecting.\r\n" );
             /*
@@ -2999,9 +2998,8 @@ void descriptor_data::nanny( string & argument )
             return;
          }
 
-         pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
-         DISPOSE( ch->pcdata->pwd );
-         ch->pcdata->pwd = str_dup( pwdnew );
+         pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
+         ch->pcdata->pwd = pwdnew;
          write_to_buffer( "\r\nPlease retype the password to confirm: " );
          connected = CON_CONFIRM_NEW_PASSWORD;
          break;
@@ -3009,7 +3007,7 @@ void descriptor_data::nanny( string & argument )
       case CON_CONFIRM_NEW_PASSWORD:
          write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
+         if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
          {
             write_to_buffer( "Passwords don't match.\r\nRetype password: " );
             connected = CON_GET_NEW_PASSWORD;
@@ -3038,7 +3036,7 @@ void descriptor_data::nanny( string & argument )
       case CON_GET_PORT_PASSWORD:
          write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument.c_str(  ) ), sysdata->password ) )
+         if( str_cmp( sha256_crypt( argument ), sysdata->password ) )
          {
             write_to_buffer( "Invalid access code.\r\n" );
             /*
@@ -3119,7 +3117,7 @@ void descriptor_data::nanny( string & argument )
       case CON_DELETE:
          write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument.c_str(  ) ), ch->pcdata->pwd ) )
+         if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
          {
             write_to_buffer( "Wrong password entered, deletion cancelled.\r\n" );
             write_to_buffer( (const char*)echo_on_str );

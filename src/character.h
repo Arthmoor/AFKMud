@@ -88,6 +88,7 @@ class pc_data
    string prevhost;  // Stores IP logged into prior to the lasthost field.
    string homepage;  // The person's homepage in the big bad world out there.
    string email;  // The person's email address.
+   string pwd; // The person's password
    string authed_by; // The immortal who authorized this player's name.
    area_data *area;  /* For the area a PC has been assigned to build */
    class clan_data *clan;
@@ -105,7 +106,6 @@ class pc_data
  public:
    void *spare_ptr;
    void *dest_buf;   /* This one is to assign to different things */
-   char *pwd;
    char *bamfin;
    char *bamfout;
    char *filename;   /* For the safe mset name -Shaddai */

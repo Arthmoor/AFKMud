@@ -212,7 +212,7 @@ void fwrite_char( char_data * ch, FILE * fp )
    fprintf( fp, "%s", "#PLAYER\n" );
    fprintf( fp, "Version      %d\n", SAVEVERSION );
    fprintf( fp, "Name         %s~\n", ch->name );
-   fprintf( fp, "Password     %s~\n", ch->pcdata->pwd );
+   fprintf( fp, "Password     %s~\n", ch->pcdata->pwd.c_str(  ) );
    if( ch->chardesc && ch->chardesc[0] != '\0' )
       fprintf( fp, "Description  %s~\n", strip_cr( ch->chardesc ) );
    fprintf( fp, "Sex          %s~\n", npc_sex[ch->sex] );

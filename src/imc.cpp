@@ -2344,8 +2344,8 @@ void imc_process_authentication( string & packet )
 
    if( command == "SHA256-AUTH-INIT" )
    {
-      char pwd[MIL];
-      const char *cryptpwd;
+      ostringstream pwd;
+      string cryptpwd;
       long auth_value = 0;
 
       if( pw.empty(  ) )
@@ -2359,8 +2359,8 @@ void imc_process_authentication( string & packet )
        * Lets encrypt this bastard now! 
        */
       auth_value = atol( pw.c_str(  ) );
-      snprintf( pwd, MIL, "%ld%s%s", auth_value, this_imcmud->clientpw.c_str(  ), this_imcmud->serverpw.c_str(  ) );
-      cryptpwd = sha256_crypt( pwd );
+      pwd << auth_value << this_imcmud->clientpw << this_imcmud->serverpw;
+      cryptpwd = sha256_crypt( pwd.str(  ) );
 
       response << "SHA256-AUTH-RESP " << this_imcmud->localname << " " << cryptpwd << " version=" << IMC_VERSION;
       imc_write_buffer( response.str(  ) );
@@ -3445,17 +3445,6 @@ void imc_save_config( void )
       stream << "SHA256Pwd   " << this_imcmud->sha256pass << endl;
    }
 
-/*
-   imc2_settings_t::iterator it=settingsMap.begin();
-	while(it != settingsMap.end()) {
-
-		if( (it->first)[0]=='$')
-			stream << it->second << std::endl;
-		else
-			stream << it->first << "\t\t" << it->second << std::endl;
-		++it;
-	}
-*/
    stream.close(  );
 }
 
@@ -5840,11 +5829,11 @@ IMC_CMD( imcremoteadmin )
       p->data << " data=" << argument;
    if( this_imcmud->sha256pass )
    {
-      char cryptpw[MSL];
-      const char *hash;
+      ostringstream cryptpw;
+      string hash;
 
-      snprintf( cryptpw, MSL, "%lu%s", imc_sequencenumber + 1, password.c_str(  ) );
-      hash = sha256_crypt( cryptpw );
+      cryptpw << imc_sequencenumber + 1 << password;
+      hash = sha256_crypt( cryptpw.str(  ) );
       p->data << " hash=" << hash;
    }
    p->send(  );

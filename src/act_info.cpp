@@ -2249,7 +2249,7 @@ CMDF( do_wimpy )
 CMDF( do_password )
 {
    string arg1;
-   const char *pwdnew;
+   string pwdnew;
 
    if( ch->isnpc(  ) )
       return;
@@ -2284,8 +2284,7 @@ CMDF( do_password )
    }
 
    pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
-   DISPOSE( ch->pcdata->pwd );
-   ch->pcdata->pwd = str_dup( pwdnew );
+   ch->pcdata->pwd = pwdnew;
    ch->save(  );
    ch->print( "Ok.\r\n" );
 }
