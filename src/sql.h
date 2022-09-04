@@ -29,7 +29,9 @@
 #ifndef __SQL_H__
 #define __SQL_H__
 
-#include <mysql/mysql.h>
+// Switch the comments as needed depending on whether the system is using MySQL or MariaDB.
+// #include <mysql/mysql.h>
+#include <mariadb/mysql.h>
 
 extern MYSQL myconn;
 

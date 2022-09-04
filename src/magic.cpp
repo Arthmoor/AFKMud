@@ -5018,7 +5018,10 @@ SPELLF( spell_create_mob )
          vnum = MOB_VNUM_CITYGUARD;
    }
 
-   if( !( mi = get_mob_index( vnum ) ) || ( mob = mi->create_mobile(  ) ) )
+   mi = get_mob_index( vnum );
+   if( mi )
+      mob = mi->create_mobile( );
+   else
    {
       failed_casting( skill, ch, nullptr, nullptr );
       return rNONE;

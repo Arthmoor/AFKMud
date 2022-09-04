@@ -43,7 +43,8 @@ IMC = 1
 #MySQL support. Need to specify the proper path for your system.
 #Uncomment this to enable SQL support.
 #DO NOT ENABLE if running in Cygwin. Cygwin has no library support!
-#LIB_MYSQL = -L/usr/lib/mysql/ -lmysqlclient
+#The link argument should be either -lmysqlclient or -lmariadb depending on which DB solution the server is using.
+#LIB_MYSQL = -lmariadb
 
 #Miscellaneous compiler options.
 OPT_FLAG = -pipe -Os
@@ -56,7 +57,7 @@ DEBUG_FLAG = -g2
 ifneq ($(CC), clang++-4.0)
    W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
 else
-   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits -fsanitize=address
 endif
 
 ifndef CYGWIN
@@ -190,5 +191,3 @@ o/%.o: %.cpp
 	@echo "  Compiling $@....";
 	$(CC) -c $(C_FLAGS) $< -o $@
 
-.cpp.o: mud.h
-	$(CC) -c $(C_FLAGS) $<

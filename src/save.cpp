@@ -2260,7 +2260,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
          if( !str_cmp( word, "EndMobile" ) || !str_cmp( word, "EndVendor" ) )
             break;
       }
-      mob->extract( true );
+
       bug( "%s: Vnum not found", __func__ );
       return nullptr;
    }

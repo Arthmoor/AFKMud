@@ -263,7 +263,7 @@ char_data *load_mobile( FILE * fp )
          if( !str_cmp( word, "EndMobile" ) )
             break;
       }
-      mob->extract( true );
+
       bug( "%s: Vnum not found", __func__ );
       return nullptr;
    }
