@@ -45,8 +45,8 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.2.3"
-#define COPYRIGHT "Copyright The Alsherok Team 1997-2020. All rights reserved."
+#define CODEVERSION "2.2.4"
+#define COPYRIGHT "Copyright The Alsherok Team 1997-2024. All rights reserved."
 
 /*
  * String and memory management parameters.
