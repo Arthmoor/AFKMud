@@ -3922,6 +3922,15 @@ SPELLF( spell_animate_dead )
 
    target_name = one_argument( target_name, arg );
 
+   if( !target_name.empty(  ) )
+   {
+      if( !( corpse = ch->get_obj_here( target_name ) ) )
+      {
+         ch->print( "You cannot find that here.\r\n" );
+         return rSPELL_FAILED;
+      }
+   }
+
    for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
       corpse = *iobj;
