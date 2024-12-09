@@ -2615,7 +2615,8 @@ CMDF( do_climb )
       return;
    }
 
-   if( ( pexit = find_door( ch, argument, true ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_xCLIMB ) )
+   if( ( pexit = find_door( ch, argument, true ) ) != nullptr
+      && ( IS_EXIT_FLAG( pexit, EX_xCLIMB ) || IS_EXIT_FLAG( pexit, EX_CLIMB ) ) )
    {
       move_char( ch, pexit, 0, pexit->vdir, false );
       return;
