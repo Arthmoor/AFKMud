@@ -29,6 +29,7 @@
  * Last Updated: 09/21/07                                                   *
  ****************************************************************************/
 
+#include <ctime>
 #include <sys/stat.h>
 #if defined(WIN32)
 #include <unistd.h>

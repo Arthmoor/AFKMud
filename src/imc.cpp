@@ -2572,7 +2572,7 @@ void imc_loop( void )
    {
       if( !imc_read_socket(  ) )
       {
-         if( this_imcmud->inbuf && this_imcmud->inbuf[0] != '\0' )
+         if( this_imcmud->inbuf[0] != '\0' )
          {
             if( imc_read_buffer(  ) )
             {

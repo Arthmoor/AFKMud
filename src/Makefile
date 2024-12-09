@@ -188,6 +188,6 @@ allclean:
 	$(MAKE) clean
 
 o/%.o: %.cpp
-	@echo "  Compiling $@....";
+	@echo "  Compiling $@...";
 	$(CC) -c $(C_FLAGS) $< -o $@
 

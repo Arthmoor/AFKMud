@@ -1327,17 +1327,17 @@ void fread_afk_object( FILE * fp, area_data * tarea )
                pObjIndex->limit = x4;
                pObjIndex->layers = x5;
 
-               if( !temp[0] || temp[0][0] == '\0' )
+               if( temp[0][0] == '\0' )
                   pObjIndex->socket[0] = STRALLOC( "None" );
                else
                   pObjIndex->socket[0] = STRALLOC( temp[0] );
 
-               if( !temp[1] || temp[1][0] == '\0' )
+               if( temp[1][0] == '\0' )
                   pObjIndex->socket[1] = STRALLOC( "None" );
                else
                   pObjIndex->socket[1] = STRALLOC( temp[1] );
 
-               if( !temp[2] || temp[2][0] == '\0' )
+               if( temp[2][0] == '\0' )
                   pObjIndex->socket[2] = STRALLOC( "None" );
                else
                   pObjIndex->socket[2] = STRALLOC( temp[2] );
