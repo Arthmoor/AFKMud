@@ -34,6 +34,7 @@
 #include "mudcfg.h"
 #include "fight.h"
 #include "mobindex.h"
+#include "mud_prog.h"
 #include "objindex.h"
 #include "overland.h"
 #include "polymorph.h"
@@ -4986,6 +4987,8 @@ void disarm( char_data * ch, char_data * victim )
 
    if( obj == victim->get_eq( WEAR_WIELD ) && ( tmpobj = victim->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
       tmpobj->wear_loc = WEAR_WIELD;
+
+   oprog_remove_trigger( victim, obj );
 
    obj->from_char(  );
    if( victim->isnpc(  ) || ( obj->extra_flags.test( ITEM_LOYAL ) && victim->IS_PKILL(  ) && !ch->isnpc(  ) ) )
