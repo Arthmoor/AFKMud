@@ -584,6 +584,11 @@ CMDF( do_tell )
    int position;
    char_data *switched_victim = nullptr;
    int speaking = -1, lang;
+   /*
+    * Hackish solution to stop that damned "someone chat" bug - Matarael 17.3.2002 
+    */
+   bool mapped = false;
+   int origmap = -1, origx = -1, origy = -1;
 
    for( lang = 0; lang < LANG_UNKNOWN; ++lang )
    {
@@ -726,6 +731,26 @@ CMDF( do_tell )
    if( switched_victim )
       victim = switched_victim;
 
+   /*
+    * Hackish solution to stop that damned "someone chat" bug - Matarael 17.3.2002 
+    */
+   if( ch->has_pcflag( PCFLAG_ONMAP ) )
+   {
+      mapped = true;
+      origx = ch->mx;
+      origy = ch->my;
+      origmap = ch->wmap;
+   }
+
+   if( ch->isnpc(  ) && ch->has_actflag( ACT_ONMAP ) )
+   {
+      mapped = true;
+      origx = ch->mx;
+      origy = ch->my;
+      origmap = ch->wmap;
+   }
+   fix_maps( victim, ch );
+
    MOBtrigger = false;  /* BUGFIX - do_tell: Tells were triggering act progs */
 
    act( AT_TELL, "You tell $N '$t'", ch, argument.c_str(  ), victim, TO_CHAR );
@@ -754,6 +779,30 @@ CMDF( do_tell )
    }
 
    MOBtrigger = true;   /* BUGFIX - do_tell: Tells were triggering act progs */
+
+   /*
+    * Hackish solution to stop that damned "someone chat" bug - Matarael 17.3.2002 
+    */
+   if( mapped )
+   {
+      ch->wmap = origmap;
+      ch->mx = origx;
+      ch->my = origy;
+      if( ch->isnpc(  ) )
+         ch->set_actflag( ACT_ONMAP );
+      else
+         ch->set_pcflag( PCFLAG_ONMAP );
+   }
+   else
+   {
+      if( ch->isnpc(  ) )
+         ch->unset_actflag( ACT_ONMAP );
+      else
+         ch->unset_pcflag( PCFLAG_ONMAP );
+      ch->wmap = -1;
+      ch->mx = -1;
+      ch->my = -1;
+   }
 
    victim->position = position;
    victim->reply = ch;
