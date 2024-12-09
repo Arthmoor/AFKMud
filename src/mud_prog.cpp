@@ -1411,7 +1411,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
             return false;
          if( !chkchar->morph->morph )
             return false;
-         return mprog_veval( chkchar->morph->morph->vnum, opr, rhsvl, mob );
+         return mprog_veval( chkchar->morph->morph->vnum, opr, atoi(rval), mob );
       }
 
       if( !str_cmp( chck, "clan" ) )
