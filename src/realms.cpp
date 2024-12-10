@@ -519,9 +519,11 @@ void load_realms( void )
    for( ;; )
    {
       filename = feof( fpList ) ? "$" : fread_word( fpList );
-      log_string( filename );
+
       if( filename[0] == '$' )
          break;
+
+      log_string( filename );
 
       if( !load_realm_file( filename ) )
          bug( "%s: Cannot load realm file: %s", __func__, filename );

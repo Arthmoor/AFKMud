@@ -186,8 +186,10 @@ void load_abits( void )
    ifstream stream;
    char filename[256];
 
+   log_string( "...abits" );
    snprintf( filename, 256, "%sabits.lst", SYSTEM_DIR );
    stream.open( filename );
+
    if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open abit file.", __func__ );
@@ -214,6 +216,7 @@ void load_qbits( void )
    ifstream stream;
    char filename[256];
 
+   log_string( "...qbits" );
    snprintf( filename, 256, "%sqbits.lst", SYSTEM_DIR );
    stream.open( filename );
    if( !stream.is_open(  ) )

@@ -891,11 +891,11 @@ void boot_log( const char *str, ... )
    FILE *fp;
    va_list param;
 
-   mudstrlcpy( buf, "[*****] BOOT: ", MSL );
    va_start( param, str );
-   vsnprintf( buf + strlen( buf ), MSL, str, param );
+   vsnprintf( buf, MSL, str, param );
    va_end( param );
-   log_string( buf );
+
+   log_printf( "[*****] BOOT: %s", buf );
 
    if( ( fp = fopen( BOOTLOG_FILE, "a" ) ) != nullptr )
    {
@@ -1771,7 +1771,7 @@ void boot_db( bool fCopyOver )
    fpArea = nullptr;
    show_hash( 32 );
    unlink( BOOTLOG_FILE );
-   boot_log( "%s", "---------------------[ Boot Log ]--------------------" );
+   boot_log( "%s", "---------------------[ Boot Log: Start ]--------------------" );
    log_string( "Database bootup starting." );
    fBootDb = true;   /* Supposed to help with EOF bugs, so it got moved up */
 
@@ -1933,9 +1933,10 @@ void boot_db( bool fCopyOver )
    /*
     * abit/qbit code 
     */
-   log_string( "Loading quest bit tables" );
+   log_string( "Loading quest bit tables..." );
    load_bits(  );
 
+   log_string( "Initalizing global lists" );
    nummobsloaded = 0;
    numobjsloaded = 0;
    physicalobjects = 0;
@@ -2207,6 +2208,7 @@ void boot_db( bool fCopyOver )
    add_event( 1, ev_dns_check, nullptr );
 
    log_string( "Database bootup completed." );
+   boot_log( "%s", "---------------------[ Boot Log: End ]--------------------" );
 }
 
 /* Removal of this function constitutes a license violation */
@@ -2469,15 +2471,13 @@ void bug( const char *str, ... )
 {
    char buf[MSL];
 
-   mudstrlcpy( buf, "[*****] BUG: ", MSL );
-   {
-      va_list param;
+   va_list param;
 
-      va_start( param, str );
-      vsnprintf( buf + strlen( buf ), MSL, str, param );
-      va_end( param );
-   }
-   log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, buf );
+   va_start( param, str );
+   vsnprintf( buf, MSL, str, param );
+   va_end( param );
+
+   log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "[*****] BUG: %s", buf );
 
    if( fpArea != nullptr )
    {
