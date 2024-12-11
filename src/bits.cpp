@@ -252,6 +252,14 @@ void load_bits( void )
    {
       load_oldbits(  );
       save_bits(  );
+
+      /*
+       * If we don't do this, the code will continue to see the old filename and keep reloading it and wiping out any changes made in the new ones.
+       * Should only be relevant for very old codebase installs as the old default files were removed in an earlier release.
+       */
+      unlink( filename );
+      snprintf( filename, 256, "%sqbit.lst", SYSTEM_DIR );
+      unlink( filename );
       return;
    }
 
