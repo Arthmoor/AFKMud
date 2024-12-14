@@ -895,7 +895,7 @@ CMDF( do_survey )
 
          if( ch->is_immortal(  ) )
          {
-            ch->printf( "Distance to landmark: %d\r\n", ( int )dist );
+            ch->printf( "Distance to landmark: %lf\r\n", dist );
             ch->printf( "Landmark coordinates: %dX %dY\r\n", landmark->mx, landmark->my );
          }
       }
