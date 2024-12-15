@@ -7,11 +7,6 @@
 CC      = g++
 #CC      = clang++-4.0
 
-#Type of machine to compile for. Athlon works just as well on Duron too.
-#The march option needs to match the general family of CPU.
-#If you don't know what to set for these options, and your system administrator doesn't either, comment this line out
-#MACHINE = -mtune=athlon64 -march=athlon64
-
 #Uncomment if compiling in Windows under Cygwin
 #CYGWIN = 1
 
@@ -52,12 +47,12 @@ DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
 #GCC 4.8+ memory checking option. https://code.google.com/p/address-sanitizer/
-#MEM_FLAG = -fsanitize=address -fno-omit-frame-pointer
+MEM_FLAG = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
 
 ifneq ($(CC), clang++-4.0)
    W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
 else
-   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits -fsanitize=address
+   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
 endif
 
 ifndef CYGWIN
@@ -67,12 +62,12 @@ ifndef CYGWIN
    endif
 endif
 
-C_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
+C_FLAGS = $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
 
 ifeq ($(CC), g++)
-   L_FLAGS = $(MACHINE) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL)
+   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL)
 else
-   L_FLAGS = $(MACHINE) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
+   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
 endif
 
 #D_FLAGS : For the DNS Resolver process. No need in linking all the extra libs for this.
@@ -125,7 +120,7 @@ else
 endif
 
 all:
-	@echo "Building AFKMud....";
+	@echo "Building AFKMud...";
 	$(MAKE) -j2 -s afkmud
 	@echo "Buidling DNS Resolver...";
 	$(MAKE) -s resolver
