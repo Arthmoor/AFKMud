@@ -43,8 +43,10 @@ OPT_FLAG = -pipe -Os
 DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
-#GCC 4.8+ memory checking option. https://code.google.com/p/address-sanitizer/
+#GCC 4.8+ memory checking option. https://code.google.com/p/address-sanitizer/ Does not work in Cygwin.
+ifndef CYGWIN
 MEM_FLAG = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
+endif
 
 ifneq ($(CC), clang++-4.0)
    W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
@@ -68,7 +70,7 @@ else
 endif
 
 #D_FLAGS : For the DNS Resolver process. No need in linking all the extra libs for this.
-D_FLAGS = $(MACHINE) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(SOLARIS_LINK)
+D_FLAGS = $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_LINK)
 
 C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           archery.cpp area.cpp areaconvert.cpp area_fussconvert.cpp area_oldafk.cpp \
@@ -113,6 +115,7 @@ endif
 
 all:
 	@echo "Building AFKMud...";
+	$(info    Using flags: $(C_FLAGS))
 	$(MAKE) -j2 -s afkmud
 	@echo "Buidling DNS Resolver...";
 	$(MAKE) -s resolver
