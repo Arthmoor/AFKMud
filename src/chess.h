@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                      Chess Module with IMC2 Support                      *
+ *                              Chess Module                                *
  ****************************************************************************/
 
 #ifndef __CHESS_H__
@@ -34,9 +34,6 @@ struct game_board_data
    ~game_board_data(  );
    game_board_data(  );
 
-#ifdef IMC
-   char_data *imc_player;
-#endif
    string player1;
    string player2;
    int board[8][8];
@@ -79,5 +76,4 @@ void free_game( game_board_data * );
 #define MOVE_INCHECK	10
 
 #define TYPE_LOCAL	1
-#define TYPE_IMC	2
 #endif

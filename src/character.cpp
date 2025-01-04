@@ -46,9 +46,6 @@
 list < char_data * >charlist;
 list < char_data * >pclist;
 
-#ifdef IMC
-void imc_freechardata( char_data * );
-#endif
 void clean_char_queue(  );
 void stop_hating( char_data * );
 void stop_hunting( char_data * );
@@ -175,9 +172,7 @@ char_data::~char_data(  )
    {
       if( this->pcdata->editor )
          this->stop_editing(  );
-#ifdef IMC
-      imc_freechardata( this );
-#endif
+
       deleteptr( this->pcdata );
    }
 

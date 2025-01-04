@@ -49,11 +49,6 @@ extern FILE *fpArea;
  */
 void reset_colors( char_data * );
 board_data *get_board( char_data *, const string & );
-#ifdef IMC
-void imc_initchar( char_data * );
-bool imc_loadchar( char_data *, FILE *, const char * );
-void imc_savechar( char_data *, FILE * );
-#endif
 void fwrite_morph_data( char_data *, FILE * );
 void fread_morph_data( char_data *, FILE * );
 void fread_variable( char_data *, FILE * );
@@ -444,9 +439,6 @@ void fwrite_char( char_data * ch, FILE * fp )
       for( bit = ch->pcdata->qbits.begin(  ); bit != ch->pcdata->qbits.end(  ); ++bit )
          fprintf( fp, "Qbit         %d %s~\n", bit->first, bit->second.c_str(  ) );
    }
-#ifdef IMC
-   imc_savechar( ch, fp );
-#endif
    fprintf( fp, "%s", "End\n\n" );
 }
 
@@ -1261,9 +1253,6 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                ch->pcdata->load_ignores( fp );
                break;
             }
-#ifdef IMC
-            imc_loadchar( ch, fp, word );
-#endif
             break;
 
          case 'K':
@@ -2485,9 +2474,6 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
    ch->speaking = LANG_COMMON;
    ch->abits.clear(  );
    ch->pcdata->qbits.clear(  );
-#ifdef IMC
-   imc_initchar( ch );
-#endif
 
    /*
     * Setup color values in case player has none set - Samson 

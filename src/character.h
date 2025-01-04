@@ -98,9 +98,6 @@ class pc_data
    class note_data *pnote;
    class board_data *board;
    struct game_board_data *game_board;
-#ifdef IMC
-   struct imc_chardata *imcchardata;
-#endif
  protected:
      bitset < MAX_PCFLAG > flags;   /* Whether the player is deadly and whatever else we add. Also covers the old PLR_FLAGS */
  public:

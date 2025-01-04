@@ -37,9 +37,6 @@
 #endif
 #include "mud.h"
 #include "descriptor.h"
-#ifdef IMC
-#include "imc.h"
-#endif
 #include "mobindex.h"
 #include "mud_prog.h"
 #include "roomindex.h"
@@ -722,10 +719,6 @@ CMDF( do_hotboot )
    log_string( "Saving world time...." );
    save_timedata(  );   /* Preserve that up to the second calendar value :) */
 
-#ifdef IMC
-   imc_hotboot(  );
-#endif
-
    if( !argument.empty(  ) && !str_cmp( argument, "debug" ) )
    {
       log_string( "Hotboot debug - Aborting before execl" );
@@ -741,14 +734,7 @@ CMDF( do_hotboot )
    char buf[100], buf2[100], buf3[100];
    snprintf( buf, 100, "%d", mud_port );
    snprintf( buf2, 100, "%d", control );
-#ifdef IMC
-   if( this_imcmud )
-      snprintf( buf3, 100, "%d", this_imcmud->desc );
-   else
-      mudstrlcpy( buf3, "-1", 100 );
-#else
    mudstrlcpy( buf3, "-1", 100 );
-#endif
 
    set_alarm( 0 );
 #if !defined(__CYGWIN__) && defined(SQL)

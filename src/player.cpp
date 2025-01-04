@@ -72,7 +72,7 @@ bool exists_player( const string & name )
    return false;
 }
 
-/* Rank buffer code for use in IMC2 ( and elsewhere if we see fit I suppose ) */
+/* Rank buffer code */
 string rankbuffer( char_data * ch )
 {
    ostringstream rbuf;

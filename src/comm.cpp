@@ -47,6 +47,7 @@ const int WAIT_ANY = -1;   /* This is not guaranteed to work! */
 #if defined(__APPLE__)
 #include <sys/socket.h>
 #endif
+#include <time.h>
 #include <sys/time.h>
 #include <fcntl.h>
 #include <cerrno>
@@ -56,9 +57,6 @@ const int WAIT_ANY = -1;   /* This is not guaranteed to work! */
 #include "auction.h"
 #include "clans.h"
 #include "connhist.h"
-#ifdef IMC
-#include "imc.h"
-#endif
 #include "mud_prog.h"
 #include "objindex.h"
 #include "pfiles.h"
@@ -95,11 +93,6 @@ extern int newdesc;
 extern bool compilelock;
 #endif
 extern time_t board_expire_time_t;
-
-#ifdef IMC
-void free_imcdata( bool );
-void imc_delete_info(  );
-#endif
 
 void game_loop(  );
 void cleanup_memory(  );
@@ -404,7 +397,7 @@ int init_socket( int mudport )
  * up before the game_loop is entered. If something needs to be added to the mud
  * startup proceedures it should be placed in here.
  */
-void init_mud( bool fCopyOver, int gameport, int wsocket, int imcsocket )
+void init_mud( bool fCopyOver, int gameport )
 {
    // Scan for and create necessary dirs if they don't exit.
    directory_check(  );
@@ -448,10 +441,6 @@ void init_mud( bool fCopyOver, int gameport, int wsocket, int imcsocket )
    }
 #else
    log_printf( "%s ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
-#endif
-
-#ifdef IMC
-   imc_startup( false, imcsocket, fCopyOver );
 #endif
 
    if( fCopyOver )
@@ -502,10 +491,6 @@ void close_mud( void )
    fflush( stderr ); /* make sure stderr is flushed */
 
    close( control );
-
-#ifdef IMC
-   imc_shutdown( false );
-#endif
 
 #if defined(WIN32)
    /*
@@ -954,9 +939,6 @@ void game_loop( void )
       mud_recv_message(  );
 #endif
 #endif
-#ifdef IMC
-      imc_loop(  );
-#endif
 
       // Autonomous game motion. Stops processing when there are no people at all online.
       if( !dlist.empty(  ) )
@@ -1031,12 +1013,6 @@ void game_loop( void )
 void cleanup_memory( void )
 {
    int hash;
-
-#ifdef IMC
-   fprintf( stdout, "%s", "IMC2 Data.\n" );
-   free_imcdata( true );
-   imc_delete_info(  );
-#endif
 
    fprintf( stdout, "%s", "Quote List.\n" );
    free_quotes(  );
@@ -1255,7 +1231,6 @@ int main( int argc, char **argv )
 #endif
 {
    struct timeval now_time;
-   int temp = -1, temp2 = -1;
    bool fCopyOver = false;
 
 #if !defined(WIN32)
@@ -1296,9 +1271,6 @@ int main( int argc, char **argv )
       {
          fCopyOver = true;
          control = atoi( argv[3] );
-#ifdef IMC
-         temp2 = atoi( argv[4] );
-#endif
       }
       else
          fCopyOver = false;
@@ -1332,7 +1304,7 @@ int main( int argc, char **argv )
 #endif /* WIN32 */
 
    // Initialize all startup functions of the mud. 
-   init_mud( fCopyOver, mud_port, temp, temp2 );
+   init_mud( fCopyOver, mud_port );
 
 #if !defined(WIN32)
    /*

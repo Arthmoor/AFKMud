@@ -150,7 +150,6 @@ void set_alarm( long );
 #ifdef MULTIPORT
 void load_shellcommands(  );
 #endif
-void load_modules(  );
 void web_arealist(  );
 bool load_timedata(  );
 void load_shopkeepers(  );
@@ -1856,9 +1855,6 @@ void boot_db( bool fCopyOver )
       shutdown_mud( "libdl failure" );
       exit( 1 );
    }
-
-   // Call up the module loader
-   load_modules(  );
 
 #if !defined(__CYGWIN__) && defined(SQL)
    log_string( "Initializing MySQL support..." );

@@ -91,7 +91,7 @@ const char *pc_displays[MAX_COLORS] = {
    "morph", "shout", "rflags", "stype",        // 88
    "aname", "auction", "score2", "score3",     // 92
    "score4", "who2", "who3", "who4",           // 96
-   "intermud", "helpfiles", "who5", "score5",  // 100
+   "UNUSED", "helpfiles", "who5", "score5",    // 100
    "who6", "who7", "prac", "prac2",            // 104
    "prac3", "prac4", "UNUSED", "guildtalk",    // 108
    "board", "board2", "board3"                 // 111

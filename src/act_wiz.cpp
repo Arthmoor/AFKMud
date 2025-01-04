@@ -51,9 +51,6 @@
 #include "variables.h"
 
 /* External functions */
-#ifdef IMC
-void imc_check_wizperms( char_data * );
-#endif
 void set_chandler(  );
 void unset_chandler(  );
 void build_wizinfo(  );
@@ -4873,9 +4870,6 @@ CMDF( do_demote )
    victim->save(  );
    make_wizlist(  );
    build_wizinfo(  );
-#ifdef IMC
-   imc_check_wizperms( victim );
-#endif
 }
 
 CMDF( do_promote )

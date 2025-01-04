@@ -488,8 +488,6 @@ Zone         The Catacombs~
 Zone         The Continent~
 Zone         The Great Void~
 Zone         The Radiant Tower~
-IMCPerm      5
-IMCFlag      imccolor
 End
 
 #OBJECT

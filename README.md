@@ -1,9 +1,9 @@
-AFKMud: Alsherok Game Code Release - Version 2.0: January 2007
-==============================================================
+AFKMud: Alsherok Game Code Release
+==================================
 
 Space. The final frontier.... no wait. That was someone else's 5 year mission.
 
-Sine our initial public release back in 2002, we've spent five long years developing this codebase into what you see today. Sure, it's not the prettiest code out there. But it does work, and we'd like to think it's better than most. The last 2-3 years were devoted to a C++ conversion which never seemed to get close to "finished". There was always something new to try. Something old to convert. Then there just wasn't enough time. We'd still like to think we did good though. Pushed things past expectations. Did things nobody else has. Hopefully we've left you with a nice, clean, stable, and reliable foundation for you to build your world upon.
+Sine our initial public release back in 2002, we've spent many years developing this codebase into what you see today. Sure, it's not the prettiest code out there. But it does work, and we'd like to think it's better than most. The last 2-3 years were devoted to a C++ conversion which never seemed to get close to "finished". There was always something new to try. Something old to convert. Then there just wasn't enough time. We'd still like to think we did good though. Pushed things past expectations. Did things nobody else has. Hopefully we've left you with a nice, clean, stable, and reliable foundation for you to build your world upon.
 
 This document should help explain some of the mundane details such as how much memory it eats. How much drive space does it need. What features can be compiled out during initial setup.
 
@@ -26,7 +26,7 @@ There are some things that you need to be aware of prior to installing the game.
 Release Frequency
 =================
 
-Codebase releases will not be following any kind of set schedule. This is usually done on the fly based on the number of bug reports received between releases. If there are a lot of them, then it could be a relatively short period. If there are none, then it will depend on how confident we feel about new features which might be added. If you absolutely cannot wait, there's always the Subversion repository linked from the main nav menu.
+Codebase releases will not be following any kind of set schedule. This is usually done on the fly based on the number of bug reports received between releases. If there are a lot of them, then it could be a relatively short period. If there are none, then it will depend on how confident we feel about new features which might be added. If you absolutely cannot wait, there's always the GitHub repository.
 
 Documentation
 =============
@@ -110,15 +110,6 @@ Overland, and libgd-devel
 =========================
 
 AFKMud comes with a wilderness ANSI map system we've dubbed "The overland". Basically it is an ANSI color representation of the surrounding terrain around your character when he's out in the wilderness, away from normal areas. This is meant to be used as a filler for what are ordinarily boring connector zones, like large forests, hills, mountains, etc. It lets your builders concentrate more on the interesting places like castles, cities, troll dens, etc. The maps are stored statically in memory after being loaded from png graphic files. Because of this, you will need to be sure your host has the GD development library installed. The compiler will alert you to this in the form of errors trying to compile overland.cpp if the library is not installed.
-
-IMC2
-====
-
-The code comes with IMC2 support installed. IMC2 is an intermud chat protocol which allows you to communicate with other people on other muds. The AFKMud team highly recommends connecting to the network as it is a valuable resource for new and old admins alike. Information is available at: http://lpmuds.net/intermud.html
-
-If your host does not allow outbound connections from your mud you can't use it.
-
-An option in the Makefile allows you to disable it from compiling.
 
 Multiple Port Support
 =====================

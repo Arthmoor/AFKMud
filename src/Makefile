@@ -29,9 +29,6 @@ endif
 #Math functions - uncomment if you get errors or warnings about math functions.
 MATH_LIB = -lm
 
-#IMC2 - Comment out to disable IMC2 support
-IMC = 1
-
 #Multiport support. Comment out to disable this feature.
 #MULTIPORT = 1
 
@@ -80,7 +77,7 @@ C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           connhist.cpp const.cpp db.cpp deity.cpp descriptor.cpp editor.cpp environment.cpp \
           event.cpp event_handler.cpp features.cpp fight.cpp finger.cpp handler.cpp \
           hashstr.cpp help.cpp hotboot.cpp imm_host.cpp liquids.cpp magic.cpp \
-          mapout.cpp mapper.cpp misc.cpp mobindex.cpp modules.cpp \
+          mapout.cpp mapper.cpp misc.cpp mobindex.cpp \
           mspecial.cpp mssp.cpp mudcfg.cpp mud_comm.cpp mud_prog.cpp new_auth.cpp \
           object.cpp objindex.cpp olcmob.cpp olcobj.cpp olcroom.cpp overland.cpp \
           pfiles.cpp player.cpp polymorph.cpp rare.cpp realms.cpp renumber.cpp reset.cpp \
@@ -91,11 +88,6 @@ C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
 ifdef LIB_MYSQL
    C_FILES := sql.cpp $(C_FILES)
    C_FLAGS := $(C_FLAGS) -DSQL
-endif
-
-ifdef IMC
-   C_FILES := imc.cpp $(C_FILES)
-   C_FLAGS := $(C_FLAGS) -DIMC
 endif
 
 ifdef MULTIPORT
@@ -124,8 +116,6 @@ all:
 	$(MAKE) -j2 -s afkmud
 	@echo "Buidling DNS Resolver...";
 	$(MAKE) -s resolver
-#	@echo "Building modules...";
-#	$(MAKE) -s -C modules
 
 # pull in dependency info for *existing* .o files
 -include dependencies.d
@@ -166,23 +156,9 @@ clean:
 	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o
 	$(MAKE) all
 
-modsclean:
-	$(MAKE) -C modules clean
-
 purge:
 	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o
-
-modules:
-	$(MAKE) -C modules
-
-modspurge:
-	$(MAKE) -C modules purge
-
-allclean:
-	$(MAKE) modsclean
-	$(MAKE) clean
 
 o/%.o: %.cpp
 	@echo "  Compiling $@...";
 	$(CC) -c $(C_FLAGS) $< -o $@
-

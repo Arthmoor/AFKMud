@@ -64,9 +64,6 @@
 #include "connhist.h"
 #include "descriptor.h"
 #include "fight.h"
-#ifdef IMC
-#include "imc.h"
-#endif
 #include "new_auth.h"
 #include "raceclass.h"
 #include "roomindex.h"
@@ -1067,10 +1064,6 @@ void descriptor_data::read_from_buffer(  )
          }
          else if( cmd->flags.test( CMD_NOSPAM ) && !str_cmp( this->incomm, this->inlast ) )
             ++this->repeat;
-#ifdef IMC
-         else if( imc_findchannel( arg ) != nullptr && !str_cmp( this->incomm, this->inlast ) )
-            ++this->repeat;
-#endif
 
          if( this->repeat == 3 && this->character && this->character->level < LEVEL_IMMORTAL )
             this->character->print( "}R\r\nYou have repeated the same command 3 times now.\r\nRepeating it 7 more will result in an autofreeze by the spamguard code.&D\r\n" );

@@ -66,9 +66,6 @@ bool check_skill( char_data *, const string &, const string & );
 bool shell_hook( char_data *, const string &, string & );
 void shellcommands( char_data *, short );
 #endif
-#ifdef IMC
-bool imc_command_hook( char_data *, string &, string & );
-#endif
 bool local_channel_hook( char_data *, const string &, string & );
 string extract_area_names( char_data * );
 bool can_use_mprog( char_data * );
@@ -741,9 +738,6 @@ void interpret( char_data * ch, string argument )
           && !check_ability( ch, command, argument )
           && !rprog_command_trigger( ch, origarg )
           && !mprog_command_trigger( ch, origarg ) && !oprog_command_trigger( ch, origarg ) && !check_alias( ch, command, argument ) && !check_social( ch, command, argument )
-#ifdef IMC
-          && !imc_command_hook( ch, command, argument )
-#endif
           )
       {
          exit_data *pexit;
