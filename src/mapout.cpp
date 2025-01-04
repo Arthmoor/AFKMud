@@ -237,7 +237,13 @@ CMDF( do_mapout )
       bug( "%s: no descriptor", __func__ );
       return;
    }
-   switch ( ch->substate )
+   if( !ch->pcdata->area )
+   {
+      ch->print( "You have no assigned area.\r\n" );
+      return;
+   }
+
+   switch( ch->substate )
    {
       default:
          break;
@@ -530,7 +536,11 @@ void map_to_rooms( char_data * ch, map_index * m_index )
       switch ( c )
       {
          default:
+            break;
+
          case '\n':
+            row++;
+            col = 0;
             break;
 
          case '\r':
