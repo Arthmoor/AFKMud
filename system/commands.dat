@@ -355,14 +355,6 @@ Flags       ghost
 End
 
 #COMMAND
-Name        busy
-Code        do_busy
-Position    dead
-Level       0
-Log         normal
-End
-
-#COMMAND
 Name        beacon
 Code        do_beacon
 Position    resting
