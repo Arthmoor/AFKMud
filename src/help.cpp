@@ -130,7 +130,7 @@ void save_helps( void )
       stream << "WebInvis " << hlp->webinvis << endl;
       stream << "Keywords " << hlp->keyword << endl;
       stream << "Related  " << hlp->related << endl;
-      stream << "Text     " << hlp->text << "¢" << endl;
+      stream << "Text     " << hlp->text << '\xa2' << endl;
       stream << "End" << endl << endl;
    }
    stream.close(  );

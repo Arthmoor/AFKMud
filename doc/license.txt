@@ -19,8 +19,8 @@
  *                                                                          *
  * Original MERC 2.1 code by Hatchet, Furey, and Kahn.                      *
  *                                                                          *
- * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
- * Michael Seifert, and Sebastian Hammer.                                   *
+ * Original DikuMUD code by: Hans Henrik Stærfeldt, Katja Nyboe,            *
+ * Tom Madsen, Michael Seifert, and Sebastian Hammer.                       *
  ****************************************************************************
  *                              Usage License                               *
  ****************************************************************************

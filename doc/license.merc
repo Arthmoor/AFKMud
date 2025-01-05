@@ -10,8 +10,8 @@ Kahn	michael@uclink.berkeley.edu
 === Copyright and License Terms
 
 Diku Mud is copyright (C) 1990, 1991 by Sebastian Hammer, Michael Seifert,
-Hans Henrik St{rfeldt, Tom Madsen, and Katja Nyboe.  Their license agreement
-is in the file 'license.doc'.
+Hans Henrik Stærfeldt, Tom Madsen, and Katja Nyboe.  Their license agreement
+is in the file 'license.diku'.
 
 Merc Diku Mud is a derivative of the original Diku Mud and is subject to their
 copyright and license agreement.  Merc Diku Mud contains substantial
@@ -19,7 +19,7 @@ enhancements to Diku Mud.  These enhancements are copyright 1992, 1993 by
 Michael Chastain, Michael Quan, and Mitchell Tse.
 
 In order to use Merc you must follow the Diku license and our license.  The
-exact terms of the Diku license are in the file 'license.doc'.  A summary of
+exact terms of the Diku license are in the file 'license.diku'.  A summary of
 these terms is:
 
 	-- No resale or operation for profit.

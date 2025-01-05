@@ -2,7 +2,7 @@
 Level    0
 WebInvis 0
 Keywords !
-Related  
+Related    
 Text     Syntax: !
 
 ! repeats the last command you typed.¢
@@ -217,7 +217,7 @@ End
 Level    106
 WebInvis 1
 Keywords 'IFCHECK DOINGQUEST'
-Related  mpedit, opedit, rpedit, ifchecks
+Related  MPEDIT, OPEDIT, RPEDIT, IFCHECKS
 Text     EXAMPLE:
 DESCRIPTION¢
 End
@@ -986,7 +986,7 @@ End
 Level    106
 WebInvis 1
 Keywords 'IFCHECK NORECALL'
-Related  mpedit, opedit, rpedit, ifchecks
+Related  MPEDIT, OPEDIT, RPEDIT, IFCHECKS
 Text     EXAMPLE:
 DESCRIPTION¢
 End
@@ -1011,7 +1011,7 @@ End
 Level    106
 WebInvis 1
 Keywords 'IFCHECK NUMBER'
-Related  mpedit, opedit, rpedit, ifchecks
+Related  MPEDIT, OPEDIT, RPEDIT, IFCHECKS
 Text     EXAMPLE:
 DESCRIPTION¢
 End
@@ -1150,7 +1150,7 @@ End
 Level    106
 WebInvis 1
 Keywords 'IFCHECK OTYPEHERE'
-Related  mpedit, opedit, rpedit, ifchecks
+Related  MPEDIT, OPEDIT, RPEDIT, IFCHECKS
 Text     EXAMPLE:
 
 DESCRIPTION
@@ -1162,7 +1162,7 @@ End
 Level    106
 WebInvis 1
 Keywords 'IFCHECK OTYPEINV'
-Related  mpedit, opedit, rpedit, ifchecks
+Related  MPEDIT, OPEDIT, RPEDIT, IFCHECKS
 Text     EXAMPLE:
 
 DESCRIPTION
@@ -1174,7 +1174,7 @@ End
 Level    106
 WebInvis 1
 Keywords 'IFCHECK OTYPEROOM'
-Related  mpedit, opedit, rpedit, ifchecks
+Related  MPEDIT, OPEDIT, RPEDIT, IFCHECKS
 Text     EXAMPLE:
 
 DESCRIPTION
@@ -1186,7 +1186,7 @@ End
 Level    106
 WebInvis 1
 Keywords 'IFCHECK OTYPEWEAR'
-Related  mpedit, opedit, rpedit, ifchecks
+Related  MPEDIT, OPEDIT, RPEDIT, IFCHECKS
 Text     EXAMPLE:
 
 DESCRIPTION
@@ -1466,7 +1466,7 @@ End
 Level    103
 WebInvis 1
 Keywords AASSIGN
-Related  
+Related    
 Text     Syntax: aassign <filename>.are  Example:  aassign edo.are
  
 AASSIGN temporarily assigns all rooms, objects, and mobiles in the area
@@ -1620,7 +1620,7 @@ End
 Level    0
 WebInvis 0
 Keywords AD ADS ADVERTISING
-Related  
+Related    
 Text     It is against the rules of this mud to advertise another mud either on
 public channels (say, chat, ask, answer, shout, yell, music, quest,
 newbiechat, any guild, order, clan or council channel, wartalk or racetalk),
@@ -1691,7 +1691,7 @@ End
 Level    103
 WebInvis 1
 Keywords ADVANCEDEXITS
-Related  
+Related    
 Text     SMAUG supports having more than one exit in the same direction, as well as
 the special direction 'somewhere', represented by a '?'.
  
@@ -1724,7 +1724,7 @@ End
 Level    0
 WebInvis 0
 Keywords ADVENTURE
-Related  
+Related    
 Text     In our efforts to give credit to everyone who deserves it, we almost
 forgot to give credit to one of the "grandfathers" of computer adventure
 games... David Platt, the author of the original "Adventure" (c)1979.
@@ -1737,7 +1737,7 @@ End
 Level    103
 WebInvis 1
 Keywords AEXIT
-Related  
+Related    
 Text     Usage : aexit <area filename>
 
 This command shows you all the exits to and from the specified area. If you
@@ -1761,7 +1761,7 @@ End
 Level    0
 WebInvis 0
 Keywords AFFECTED 'AFFECTED BY'
-Related  
+Related    
 Text     Usage:  affected       (abbrevation:  af)
 Usage:  affected by    (abbreviation: af by)
  
@@ -1887,7 +1887,7 @@ Level    0
 WebInvis 0
 Keywords AFKMUD
 Related  CREDITS,DIKU,MERC,SMAUG
-Text      ****************************************************************************
+Text     ****************************************************************************
  *                   ^     +----- |  / ^     ^ |     | +-\                  *
  *                  / \    |      | /  |\   /| |     | |  \                 *
  *                 /   \   +---   |<   | \ / | |     | |  |                 *
@@ -2025,7 +2025,7 @@ End
 Level    108
 WebInvis 1
 Keywords ALLOW BAN
-Related  
+Related    
 Text     Syntax: allow <address>
 Syntax: ban <address> <type> <duration>
 Syntax: ban show #<number>
@@ -2331,7 +2331,7 @@ End
 Level    113
 WebInvis 1
 Keywords AREACONVERT
-Related  
+Related    
 Text     Usage : areaconvert filename.are
 
 After dropping the stock Smaug area file in the 'areaconvert' directory, use this command to
@@ -2480,7 +2480,7 @@ End
 Level    0
 WebInvis 0
 Keywords ARMOR CLASS
-Related  
+Related    
 Text     Armor Class, or AC, is based on the AD&&D system whereby the lower one's
 AC is, the less often one gets hit. Armor Class ranges from "barely
 armored", an AC value of 100, to "armored like a tank", an AC value of
@@ -2658,7 +2658,7 @@ End
 Level    103
 WebInvis 1
 Keywords AT
-Related  
+Related    
 Text     Syntax: at <location> <command>
 
 AT executes the given command (which may have arguments) at the given
@@ -2902,8 +2902,8 @@ End
 Level    110
 WebInvis 1
 Keywords BALZHUR
-Related  
-Text                                            &R.                                  &D
+Related    
+Text     &R.                                  &D
                 &R ,                     |\      -,- ,  .'\ ._              &D
                 &R/|          \    ,     , ]       }  )/  / `-,',           &D
                &R[ ,          |\  /|     | |       /  \|  |/`  ,`           &D
@@ -2942,7 +2942,7 @@ End
 Level    101
 WebInvis 1
 Keywords BAMFIN BAMFOUT
-Related  
+Related    
 Text     Syntax: bamfin  <message>
 Syntax: bamfout <message>
 
@@ -2964,7 +2964,7 @@ End
 Level    0
 WebInvis 0
 Keywords BANDAGE
-Related  
+Related    
 Text     Usage        : bandage <character>
 Duration     : (user's level)*4 rounds
 Level        : 21 Warrior
@@ -3175,7 +3175,7 @@ End
 Level    114
 WebInvis 1
 Keywords BESTOW BESTOWMENTS
-Related  
+Related    
 Text     Syntax: bestow <victim> command [command] [command] etc
 Syntax: bestow <victim> list
 Syntax: bestow <victim> none
@@ -3190,7 +3190,7 @@ End
 Level    113
 WebInvis 1
 Keywords BESTOWAREA
-Related  
+Related    
 Text     Syntax: bestowarea <victim> <filename>.are
  
 This command allows members of the Area Council to bestow area names
@@ -3211,7 +3211,7 @@ End
 #HELP
 Level    103
 WebInvis 1
-Keywords BitVector
+Keywords BITVECTOR
 Related  OLC
 Text     A bitvector field is a type of integer value (a normal number) that is capable
 of being used to store multiple flag values in a single field. This helps
@@ -3644,7 +3644,7 @@ End
 Level    101
 WebInvis 1
 Keywords BREATH
-Related  
+Related    
 Text     Usage: cast 'acid breath'      <victim>
 Usage: cast 'fire breath'      <victim>
 Usage: cast 'frost breath'     <victim>
@@ -3676,7 +3676,7 @@ End
 Level    0
 WebInvis 0
 Keywords BUG EXPLOITATION
-Related  
+Related    
 Text     A bug is defined as anything standing outside the normal range of
 gameplay. This includes something which might give an unfair advantage,
 such as being able to gain an extra million experience points by using
@@ -3790,9 +3790,9 @@ End
 #HELP
 Level    0
 WebInvis 0
-Keywords Bywater
-Related  
-Text          &gMap of Bywater
+Keywords BYWATER
+Related    
+Text     &gMap of Bywater
 
             To Overland
                   |
@@ -3845,7 +3845,7 @@ End
 Level    113
 WebInvis 1
 Keywords CACHE
-Related  
+Related    
 Text     Usage : cache
 
 This command shows you a list of all cached IP picked up by the resolver. Beware
@@ -4364,7 +4364,7 @@ End
 Level    113
 WebInvis 1
 Keywords CHARMIES
-Related  
+Related    
 Text     This command will show you all pets currently in the world, along with their master.¢
 End
 
@@ -4468,7 +4468,7 @@ End
 Level    0
 WebInvis 0
 Keywords CIRKICK
-Related  
+Related    
 Text     Usage           : cirkick <victim>
 Level           : 13 Monk
 Damage          : ld2 up to a max of 60
@@ -4533,7 +4533,7 @@ End
 Level    106
 WebInvis 1
 Keywords CLIMATE
-Related  
+Related    
 Text     Syntax: climate
 Syntax: climate <field> <name>
  
@@ -4560,7 +4560,7 @@ End
 Level    0
 WebInvis 0
 Keywords CLIMB
-Related  
+Related    
 Text     Usage        : climb <direction>
 Level        : 9 Rogue, 12 Ranger, 12 Monk, 12 Bard 
  
@@ -4591,7 +4591,7 @@ End
 Level    115
 WebInvis 1
 Keywords CMDTABLE
-Related  
+Related    
 Text     Syntax: cmdtable
 
 Lists all of the commands in the game, and how many times they have been used
@@ -4622,7 +4622,7 @@ End
 Level    105
 WebInvis 1
 Keywords COINDUCT COOUTCAST COIN COOUT
-Related  
+Related    
 Text     Syntax: coinduct <playername>
         cooutcast <playername>
  
@@ -4667,7 +4667,7 @@ End
 Level    101
 WebInvis 1
 Keywords COLORS
-Related  
+Related    
 Text     The ability to color Help and other files is very useful. We ask
 that you try to stick to these guidelines for color usage so that
 we can have some consistency in their use:
@@ -4703,7 +4703,7 @@ End
 Level    0
 WebInvis 0
 Keywords COMBAT
-Related  
+Related    
 Text     You may choose a fight by finding a mob, and using LOOK, CONSIDER, and
 IDENTIFY to gauge the difficulty of the opponent. You can LOOK <mob>
 to get a look at its equipment and description, this will often help
@@ -4753,7 +4753,7 @@ End
 Level    108
 WebInvis 1
 Keywords COMMENT
-Related  
+Related    
 Text     Syntax: comment write
 Syntax: comment subject <subject>
 Syntax: comment post <player>
@@ -4940,7 +4940,7 @@ End
 Level    102
 WebInvis 1
 Keywords CONSTATES
-Related  
+Related    
 Text     State | Description
 -----------------------------------------------------------
     0 | Player is playing.
@@ -4970,7 +4970,7 @@ End
 Level    0
 WebInvis 0
 Keywords CONTAINER CONTAINERS
-Related  
+Related    
 Text     Containers are almost a necessity in the Lands.  They are used to carry
 items, food, and drinks.  They help allow you to sort things, by using two
 or more types of containers at once.  Corpses use many of the same commands
@@ -4995,7 +4995,7 @@ End
 Level    104
 WebInvis 1
 Keywords CONTAINERFLAGS
-Related  Bitvector
+Related  BITVECTOR
 Text     Usage: oset <container> flags <value>
 
 For items of type "container", the value1 field specifies the flags:
@@ -5092,7 +5092,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPY
-Related  
+Related    
 Text     Shortcut command to cacth copy commands which are not fully specified.¢
 End
 
@@ -5100,7 +5100,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPYBITS
-Related  
+Related    
 Text     Usage : copybits
 
 This command copies questbits over to the other ports.¢
@@ -5110,7 +5110,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPYCLASS
-Related  
+Related    
 Text     Syntax: copyclass all
 Syntax: copyclass skills
 Syntax: copyclass <filename>
@@ -5151,7 +5151,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPYDEITY
-Related  
+Related    
 Text     Syntax: copydeity all
 Syntax: copydeity <filename>
  
@@ -5172,7 +5172,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPYMAP
-Related  
+Related    
 Text     Syntax: copymap all
 Syntax: copymap <filename>
 
@@ -5189,7 +5189,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPYMORPH
-Related  
+Related    
 Text     Syntax: copymorph
 
 Copymorph allows you to copy the polymorph file from the Builders' port
@@ -5207,7 +5207,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPYRACE
-Related  
+Related    
 Text     Syntax: copyrace all
 Syntax: copyrace <filename>
  
@@ -5227,7 +5227,7 @@ End
 Level    0
 WebInvis 0
 Keywords COPYRIGHT
-Related  
+Related    
 Text     SMAUG (c)1995, 1996, 1997, 1998 D.S.D. Software.¢
 End
 
@@ -5259,7 +5259,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPYSOCIAL
-Related  
+Related    
 Text     Syntax: copysocial
  
 Copysocial allows you to copy the socials file from the Builders' port
@@ -5277,7 +5277,7 @@ End
 Level    113
 WebInvis 1
 Keywords COPYZONE
-Related  
+Related    
 Text     Syntax: copyzone all
 Syntax: copyzone <filename>
  
@@ -5298,7 +5298,7 @@ End
 Level    0
 WebInvis 0
 Keywords CORPSE RETRIEVAL
-Related  
+Related    
 Text     &GSome things to consider before asking for corpse retrieval:&z
  
     &R-&z Attempt to get your corpse yourself, &Rand&z
@@ -5465,15 +5465,15 @@ Text     /----------------------------------------------------------------------
 |   Nivek.                                                                |
 |                                                                         |
 | Portions adapted from DOTDII.                                           |
-| Copyright (c)1997, 1998 Jesse DeFer and Heath Leach                       |
+| Copyright (c)1997, 1998 Jesse DeFer and Heath Leach                     |
 |                                                                         |
-| Oasis OLC adaption for ResortMud Copyright (c)Evan Cortens(Tagith),       |
+| Oasis OLC adaption for ResortMud Copyright (c)Evan Cortens(Tagith),     |
 | which was originally derived from OasisOLC for CircleMUD3.0bpl9 written |
 | by Harvey Gilpin.                                                       |
 |                                                                         |
 | Merc 2.1: Hatchet, Furey and Kahn.                                      |
 |                                                                         |
-| DIKU: Hans Staerfeldt ( hhs@cbs.dtu.dk ),                               |
+| DIKU: Hans Henrik St√¶rfeldt ( hhs@cbs.dtu.dk ),                         |
 | Tom Madsen, Katja Nyboe, Michael Seifert ( Seifert@Dikumud.com )        |
 | and Sebastian Hammer.                                                   |
 |                                                                         |
@@ -5536,7 +5536,7 @@ End
 Level    113
 WebInvis 1
 Keywords CSET
-Related  
+Related    
 Text     Syntax: cset [option] [value]
 
 Type cset by itself to see everything that can be set, and it's current
@@ -5700,7 +5700,7 @@ End
 Level    105
 WebInvis 1
 Keywords DAMPLUS
-Related  
+Related    
 Text     For those unsure of what damplus is, it is part of the damage
 equation for a mob... ie:  10d6 + 10   (the +10 is the damplus)
 This "damplus" is always added, whether or not the mob is barehanded or
@@ -5720,7 +5720,7 @@ End
 Level    105
 WebInvis 1
 Keywords DAMTYPES ACTTYPES CLASSTYPES POWERTYPES
-Related  
+Related    
 Text     DAMAGE          ACTION       CLASS         POWER       SAVES
 none            none         none          none        none
 fire            create       lunar         minor       poison_death
@@ -5885,8 +5885,8 @@ End
 Level    101
 WebInvis 1
 Keywords DEBUG DEBUGGING BUGS THORIC CODING SOURCE CODE DEV
-Related  
-Text                                    @%#$%&&*!@#!?!?!
+Related    
+Text     @%#$%&&*!@#!?!?!
   .-------------=======[ Debugging / Coding Credits ]=======-------------.
   |                                                                      |
   |    Most of the extensive debugging and coding of Realms of Despair   |
@@ -5953,7 +5953,7 @@ End
 Level    0
 WebInvis 0
 Keywords DEITIES DEITY
-Related  
+Related    
 Text     Syntax: deities
 Syntax: deities <deity>
 
@@ -6028,7 +6028,7 @@ End
 Level    108
 WebInvis 1
 Keywords DELAY
-Related  
+Related    
 Text     Usage : delay <player> <# of rounds>
 
 This command will delay a player for however many rounds you decide is
@@ -6097,7 +6097,7 @@ End
 Level    108
 WebInvis 1
 Keywords DENY DISCONNECT FREEZE
-Related  
+Related    
 Text     Syntax: deny       <character>
 Syntax: disconnect <character>
 Syntax: freeze     <character>
@@ -6117,7 +6117,7 @@ End
 Level    0
 WebInvis 0
 Keywords DERIDE
-Related  
+Related    
 Text     Usage        : deride <victim>
 Duration     : (level)/2
 Level        : Rogue 23
@@ -6167,7 +6167,7 @@ End
 Level    114
 WebInvis 1
 Keywords DESTRO DESTROY
-Related  
+Related    
 Text     Usage : destroy <player>
 
 This command totally and utterly destroys a players pfile. This works
@@ -6378,7 +6378,7 @@ End
 Level    0
 WebInvis 0
 Keywords DIG DIGGING BURY BURYING
-Related  
+Related    
 Text     Usage        : dig
                dig <direction>
                bury <item>
@@ -6405,14 +6405,14 @@ Level    0
 WebInvis 0
 Keywords DIKU
 Related  CREDITS,MERC,SMAUG,AFKMUD
-Text              SMAUG was originally based on the Merc 2.1 code which was
+Text     SMAUG was originally based on the Merc 2.1 code which was
               based on the orignal DIKUMud code created by:
 
                        The Original DIKUMud Team:
 
           Katja Nyboe               [Superwoman] (katz@freja.diku.dk)
           Tom Madsen              [Stormbringer] (noop@freja.diku.dk)
-          Hans Henrik Staerfeldt           [God] (bombman@freja.diku.dk)
+          Hans Henrik St√¶rfeldt            [God] (bombman@freja.diku.dk)
           Michael Seifert                 [Papi] (seifert@freja.diku.dk)
           Sebastian Hammer               [Quinn] (quinn@freja.diku.dk)
 
@@ -6933,7 +6933,7 @@ End
 Level    113
 WebInvis 1
 Keywords DUMP
-Related  
+Related    
 Text     Usage : dump mobs
 Usage : dump objects
 
@@ -6971,7 +6971,7 @@ End
 Level    0
 WebInvis 0
 Keywords EAGLE CLAW
-Related  
+Related    
 Text     Usage           : eagle  <victim>
 Level           : 5 Monk
 Damage          : 3d10
@@ -7424,7 +7424,7 @@ End
 Level    108
 WebInvis 1
 Keywords ENV
-Related  
+Related    
 Text     Usage : env
 
 This command shows you all of the current environment effects in the world.¢
@@ -7871,7 +7871,7 @@ End
 Level    104
 WebInvis 1
 Keywords FIND
-Related  
+Related    
 Text     Syntax: find obj <keyword>
         find mob <keyword>
 
@@ -8014,7 +8014,7 @@ End
 Level    109
 WebInvis 1
 Keywords FIXCHAR
-Related  
+Related    
 Text     Usage : fixchar <playername>
 
 This will reset character info for the specified player. This is used only when
@@ -8025,7 +8025,7 @@ End
 Level    101
 WebInvis 1
 Keywords FIXED
-Related  
+Related    
 Text     Syntax: fixed <message>
         fixed list
  
@@ -8078,7 +8078,7 @@ End
 Level    0
 WebInvis 0
 Keywords FLEE RESCUE
-Related  
+Related    
 Text     Usage        : flee
                rescue <character>
 Level        : 6 Warrior, 6 Ranger, 5 Paladin, 6 Monk
@@ -8099,7 +8099,7 @@ End
 Level    0
 WebInvis 0
 Keywords FLETCH
-Related  
+Related    
 Text     Usage        : cast fletch flint
 Duration     : Permanent
 Level        : 17 Ranger
@@ -8239,7 +8239,7 @@ End
 Level    110
 WebInvis 1
 Keywords FOR
-Related  
+Related    
 Text     Syntax: for <argument> <command>
 Syntax: for <argument> <command> <target>
  
@@ -8273,7 +8273,7 @@ End
 Level    105
 WebInvis 1
 Keywords FORCE
-Related  
+Related    
 Text     Syntax: force <character> <command>
 Syntax: force all <command>
 
@@ -8399,7 +8399,7 @@ End
 Level    0
 WebInvis 0
 Keywords FURNITURE
-Related  
+Related    
 Text     Syntax: <action> <object>
 
 It is now possible to sit/stand/sleep/rest on/in/at properly
@@ -8414,8 +8414,8 @@ End
 #HELP
 Level    104
 WebInvis 1
-Keywords FurnitureFlags
-Related  Bitvector
+Keywords FURNITUREFLAGS
+Related  BITVECTOR
 Text     For items of type "furniture", the value2 field specifies the flags:
  
 Value2 | Type
@@ -8474,7 +8474,7 @@ End
 Level    105
 WebInvis 1
 Keywords GFIGHTING
-Related  
+Related    
 Text     Usage : gfighting
 
 This command will show you all players that are currently fighting along with
@@ -8506,7 +8506,7 @@ End
 #HELP
 Level    0
 WebInvis 0
-Keywords Gith
+Keywords GITH
 Text     The Gith are an ancient race descended from Humans. Once, long ago, they 
 were a peaceful civilization of Humans that were captured by Mindflayers 
 and tormented for centuries. They were used by the Mindflayers as 
@@ -8591,7 +8591,7 @@ End
 Level    0
 WebInvis 0
 Keywords GNOME GNOMES
-Related  
+Related    
 Text     The Gnomish race are without a doubt the among the most curious and 
 peculiar folk in the world. Quirky and easily excitable, they are also 
 remarkably friendly to those they encounter in their search for new 
@@ -8696,7 +8696,7 @@ End
 Level    115
 WebInvis 1
 Keywords GREP
-Related  
+Related    
 Text     Syntax: grep <whatever>
 Syntax: grep help
 
@@ -8928,7 +8928,7 @@ End
 Level    103
 WebInvis 1
 Keywords GUILDFLAGS
-Related  
+Related    
 Text     The following are guildarea related flags:
  
 guildinn - roomflag which denotes the guild's inn
@@ -8959,7 +8959,7 @@ End
 Level    0
 WebInvis 0
 Keywords GUILDTALK
-Related  
+Related    
 Text     Syntax: guildtalk <message>
 
 Provided that you are in a Guild, this command will send the message to
@@ -8986,7 +8986,7 @@ End
 Level    0
 WebInvis 0
 Keywords HALF-ELF HALFELF HALFELVES
-Related  
+Related    
 Text     A mixing of Human and Elven blood, these attractive creatures are neither 
 as intelligent as full-blood Elves, nor as hardy as full-blood Humans. 
 It would seem that this race has also inherited the behavioral 
@@ -9017,7 +9017,7 @@ End
 Level    0
 WebInvis 0
 Keywords HALF-OGRE HALFOGRE
-Related  
+Related    
 Text     Half-Ogres are the result of coupling between neanderthal-like Ogre with 
 other races. Half-Ogres combine the physical strength of pure Ogres with 
 the attributes of another race to form a ferocious and extremely war-like 
@@ -9051,7 +9051,7 @@ End
 Level    0
 WebInvis 0
 Keywords HALF-ORC HALF-ORCS HALFORC HALFORCS
-Related  
+Related    
 Text     With the mingling of Orcish and Human blood arising in the darker areas 
 of the land, members of this half-blooded race are steadily becoming more 
 common throughout the land. Conventionally, the Half-Orcs are assumed to 
@@ -9079,7 +9079,7 @@ End
 Level    0
 WebInvis 0
 Keywords HALF-TROLL HALFTROLL
-Related  
+Related    
 Text     Resulting from the mix of Trollish parenthood with that of another race, 
 the Half-Troll is as deadly and hideous as its origins. Though smaller 
 than full-blooded Trolls, the Half-Troll is no less cunning and 
@@ -9109,7 +9109,7 @@ End
 Level    0
 WebInvis 0
 Keywords HALFLING HALFLINGS
-Related  
+Related    
 Text     Short, chubby and very mischievous, the Halfling is among the most 
 fun-loving races in the land. The Halflings are known notoriously for 
 their light-fingered thieving abilities and their hearty appetites. No 
@@ -9275,7 +9275,7 @@ End
 Level    0
 WebInvis 0
 Keywords HEIGHTENED SENSES
-Related  
+Related    
 Text     Usage         : heightened senses
 Duration      : (caster's level)*3
 Level         : 62 Monk
@@ -9289,7 +9289,7 @@ End
 Level    104
 WebInvis 1
 Keywords HELL UNHELL
-Related  
+Related    
 Text     Syntax: hell <character> <number> <hours or days>
 Syntax: unhell <character>
  
@@ -9323,7 +9323,7 @@ End
 Level    101
 WebInvis 1
 Keywords HELPCHECK
-Related  
+Related    
 Text     Usage : helpcheck commands|skills|all
 
 This will show you commands/skills that need help files. If it is a command that
@@ -9365,7 +9365,7 @@ End
 Level    0
 WebInvis 0
 Keywords HIGH-ELF HIGH-ELVES
-Related  
+Related    
 Text     Tall, slender creatures with a spiritual affinity for nature and magic. 
 High Elves are distant cousins to the Pixies and share the intelligence 
 and dexterity of that winged race to a lesser degree. Most High Elves are
@@ -9395,7 +9395,7 @@ End
 Level    107
 WebInvis 1
 Keywords HIGHFIVE
-Related  
+Related    
 Text     Usage : highfive <player>
 
 Used just like a social, this command will let everyone in the game know
@@ -9466,7 +9466,7 @@ End
 Level    0
 WebInvis 0
 Keywords HOARDING
-Related  
+Related    
 Text     No hoarding, please. While it's nice to have equipment to show off,
 do remember that other players would like to have a chance at the
 "cool stuff" too. Hoarding is defined as holding a piece of equipment
@@ -9622,7 +9622,7 @@ End
 Level    101
 WebInvis 1
 Keywords HOUSES
-Related  
+Related    
 Text     Houses allow the character who owns it to rent for free. 
 The character enters the house, and types rent, and all the stuff is
 stored. No one else can rent in that room, just the owner. Multi-room
@@ -9682,7 +9682,7 @@ End
 Level    0
 WebInvis 0
 Keywords HUMAN HUMANS
-Related  
+Related    
 Text     Humans are the most common and numerous of the races. This however makes 
 them no less interesting. They possess no special abilities or bonuses, 
 but also have no penalties. Because of this, Humans are the most adaptable 
@@ -9918,7 +9918,7 @@ End
 Level    0
 WebInvis 0
 Keywords IGUANADON IGUANADONS
-Related  
+Related    
 Text     Well known throughout the free Lands for their fearsome visages and 
 ferocious savagery, the terrifying Iguanadons are also the most mysterious 
 of all races. Though they are rumored to have been descended from the 
@@ -9965,7 +9965,7 @@ End
 Level    114
 WebInvis 1
 Keywords IMMHOST
-Related  
+Related    
 Text     Syntax: immhost add    <name> <host>
 Syntax: immhost delete <name> <host>
 Syntax: immhost save
@@ -9987,7 +9987,7 @@ End
 Level    113
 WebInvis 1
 Keywords IMMORTALIZE
-Related  
+Related    
 Text     Syntax: immortalize <character>
  
 Used to advance a level 100 character (avatar) to level 101 (the first
@@ -10082,7 +10082,7 @@ End
 Level    101
 WebInvis 1
 Keywords IMOTD
-Related  
+Related    
 Text     Syntax: imotd
  
 Shows the current Immortal Message of the Day.¢
@@ -10260,8 +10260,8 @@ End
 #HELP
 Level    0
 WebInvis 0
-Keywords Insectoid
-Related  
+Keywords INSECTOID
+Related    
 Text     The Insectoid race lives in the arid wastelands of the Sarnen Isles to 
 the west of the Alatian continent. They live primarily in nomadic tribes
 subsisting from hunting and some farming, but a number of Insectoids
@@ -10298,7 +10298,7 @@ End
 Level    113
 WebInvis 1
 Keywords INSTALLAREA
-Related  
+Related    
 Text     Syntax: installarea <current filename> <new filename> <full area name/title>
 
 Installs a prototype area into the mud as a non-prototype area.
@@ -10390,7 +10390,7 @@ End
 Level    102
 WebInvis 1
 Keywords INVIS
-Related  
+Related    
 Text     Syntax: invis
         invis level
 
@@ -10563,7 +10563,7 @@ End
 Level    0
 WebInvis 0
 Keywords KILL MURDER MURDE
-Related  
+Related    
 Text     Syntax: kill     <character>
 Syntax: murder   <character>   -- must be level 5 or higher to murder
  
@@ -10660,7 +10660,7 @@ End
 Level    101
 WebInvis 1
 Keywords LANDMARKS
-Related  
+Related    
 Text     Usage : landmarks
 
 This will show you all landmarks currently set in the game, their coordinates, distance and a
@@ -10776,7 +10776,7 @@ End
 Level    0
 WebInvis 0
 Keywords LIFELIFT
-Related  
+Related    
 Text     Usage         : cast lifelift <target>
 Duration/Type : Restorative
 Level         : 85 Cleric
@@ -10909,7 +10909,7 @@ End
 Level    108
 WebInvis 1
 Keywords LITTERBUG
-Related  
+Related    
 Text     Syntax: litterbug <player>
 
 Places/removes the litterbug flag, allowing/prohibiting a player from
@@ -10920,7 +10920,7 @@ End
 Level    104
 WebInvis 1
 Keywords LOAD
-Related  
+Related    
 Text     Syntax: load obj <vnum or keyword>
         load mob <vnum or keyword>
  
@@ -10934,7 +10934,7 @@ End
 Level    113
 WebInvis 1
 Keywords LOADUP
-Related  
+Related    
 Text     Usage : loadup <player>
 
 This command will load a player up into a linkdead state. This is useful for
@@ -10993,7 +10993,7 @@ End
 Level    108
 WebInvis 1
 Keywords LOG SNOOP
-Related  
+Related    
 Text     Syntax: log   <character>
 Syntax: log   all
 Syntax: snoop <character>
@@ -11089,7 +11089,7 @@ End
 Level    101
 WebInvis 1
 Keywords LSITES
-Related  
+Related    
 Text     Usage : lsites
 
 This will show you all landing sites currently available for airships. It will also show you the
@@ -11333,7 +11333,7 @@ End
 Level    107
 WebInvis 1
 Keywords MAKEWIZLIST
-Related  
+Related    
 Text     Usage : makewizlist
 
 This manually recreates the wizlist. In most cases this will not need to be used, as the
@@ -11401,7 +11401,7 @@ Level    0
 WebInvis 0
 Keywords MAP
 Related  BYWATER
-Text              Map of Gwyn al'Fer
+Text     Map of Gwyn al'Fer
 
                          [1]-[2]-[3]-[4]-[5]
                           |               |
@@ -11468,7 +11468,7 @@ End
 Level    101
 WebInvis 1
 Keywords MAPOUT
-Related  
+Related    
 Text     Syntax: mapout <write/stat/clear/show/create>
 
 mapout write: create a map in edit buffer.
@@ -11614,7 +11614,7 @@ End
 Level    113
 WebInvis 1
 Keywords MEMBERS
-Related  
+Related    
 Text     Usage: members show <guild/clan>
 Usage: members show all
 Usage: members create <roster name>
@@ -11634,7 +11634,7 @@ End
 Level    113
 WebInvis 1
 Keywords MEMORY
-Related  
+Related    
 Text     So, your reading meaningless helpfiles again eh? That's pathetic. Really.
 But wait, the command isn't entirely obvious! ACK! Too bad, we REALLY wanted
 to put a useful hepfile here, honest!
@@ -11806,7 +11806,7 @@ End
 Level    0
 WebInvis 0
 Keywords MINOTAUR MINOTAURS
-Related  
+Related    
 Text     Tall, powerfully strong creatures who enjoy the life of the seafarer. 
 The Minotaurs are a race famed for their unyielding bravery and sense 
 of honor. Standing usually over six feet in height, the Minotaur is 
@@ -11932,8 +11932,8 @@ End
 Level    0
 WebInvis 0
 Keywords MOBPROG MOBPROGRAMS OBJPROG ROOMPROG MUDPROG
-Related  
-Text              The MOBprograms have been contributed by N'Atas-ha.
+Related    
+Text     The MOBprograms have been contributed by N'Atas-ha.
 
          Haus hacked together room && obj programs 'cause
           he got sick of failing to add lever bitvectors,
@@ -11969,8 +11969,8 @@ End
 #HELP
 Level    0
 WebInvis 0
-Keywords Monk
-Related  
+Keywords MONK
+Related    
 Text     A master of ancient hand-to-hand combat,the Monk stands without par.
 No other class has the ability to control and tone its physical form into
 such a deadly combination of spirit and fighting prowess.Because they
@@ -12090,7 +12090,7 @@ End
 Level    110
 WebInvis 1
 Keywords MOTDEDIT
-Related  
+Related    
 Text     Usage : motdedit <field>
 Usage : motdedit save <field>
 
@@ -12140,7 +12140,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPADVANCE
-Related  
+Related    
 Text     Syntax: MPADVANCE <name> <level>
 
 Advances the level of a player (not functional in prototype programs).¢
@@ -12150,7 +12150,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPAPPLY MPAPPLYB
-Related  
+Related    
 Text     Syntax: MPAPPLYB <victim>
  
 This command is used in the pre-auth area to signal a new character's
@@ -12192,7 +12192,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPASOUND
-Related  
+Related    
 Text     Syntax: MPASOUND <phrase>
 
 Displays a phrase to all surrounding rooms.¢
@@ -12202,7 +12202,7 @@ End
 Level    113
 WebInvis 1
 Keywords MPASUPRESS
-Related  
+Related    
 Text     Usage: mpasupress $n <# of rounds>
 
 This is one &Revil &gmob command. This basically acts as a combat delay
@@ -12213,7 +12213,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPAT
-Related  
+Related    
 Text     Syntax: MPAT <vnum> <command>
 
 Lets the mobile perform a command at another location.¢
@@ -12279,7 +12279,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPDAMAGE
-Related  
+Related    
 Text     Syntax: MPDAMAGE <victim> <amount>
  
 This command inflicts a specified amount of damage on the victim.
@@ -12293,7 +12293,7 @@ End
 Level    113
 WebInvis 1
 Keywords MPDELAY
-Related  
+Related    
 Text     Usage : mpdelay <victim> <# of rounds>
 
 This will delay a character for the specified number of rounds.¢
@@ -12303,7 +12303,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPDOPPLEGANGER
-Related  
+Related    
 Text     Syntax: mpdoppleganger <victim>
 
 Use sparingly. This program will create a mob duplicate of the person.
@@ -12317,7 +12317,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPDREAM
-Related  
+Related    
 Text     Syntax: MPDREAM <name> <phrase>
 
 Sends a message to a sleeping character.¢
@@ -12327,7 +12327,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPECHO
-Related  
+Related    
 Text     Syntax: MPECHO <phrase>
 
 Displays a phrase to the entire room.¢
@@ -12337,7 +12337,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPECHOAROUND MER
-Related  
+Related    
 Text     Syntax: MPECHOAROUND <name> <phrase>
 Syntax: MER <name> <phrase>
 
@@ -12349,7 +12349,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPECHOAT MEA
-Related  
+Related    
 Text     Syntax: MPECHOAT <name> <phrase>
 Syntax: MEA <name> <phrase>
 
@@ -12361,7 +12361,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPECHOZONE MEZ
-Related  
+Related    
 Text     Usage : mpechozone <message>
 Usage : mez <message>
 
@@ -12418,7 +12418,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPFORCE
-Related  
+Related    
 Text     Syntax: MPFORCE <name/all>
 
 Forces a player/mob to do a command (non-functional on immortals, all will
@@ -12429,7 +12429,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPGOTO
-Related  
+Related    
 Text     Syntax: MPGOTO <vnum>
 
 Goes to any room which is not private.¢
@@ -12439,7 +12439,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPINVIS
-Related  
+Related    
 Text     Syntax: MPINVIS
 Syntax: MPINVIS <level>
  
@@ -12465,7 +12465,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPJUNK
-Related  
+Related    
 Text     Syntax: MPJUNK <name>
 
 Destroys an object in inventory/being worn - can be used with all.object .¢
@@ -12475,7 +12475,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPKILL
-Related  
+Related    
 Text     Syntax: MPKILL <name>
 
 Kills a player without using murder.¢
@@ -12496,7 +12496,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPMLOAD MPOLOAD
-Related  
+Related    
 Text     Syntax: MPMLOAD <vnum>
         MPOLOAD <vnum> <level> <timer>
 
@@ -12571,7 +12571,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPOPENPASSAGE MPCLOSEPASSAGE
-Related  
+Related    
 Text     Syntax: MPOPENPASSAGE <origin> <destination> <direction>
 
 Opens a passage to a room (does not affect pre-existing doors)
@@ -12610,7 +12610,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPPRACTICE
-Related  
+Related    
 Text     Syntax: MPPRACTICE <victim> <skill/spell/language> <amount>
  
 This command will set the victim's percentage of proficiency in the
@@ -12626,7 +12626,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPPURGE
-Related  
+Related    
 Text     Syntax: MPPURGE <object/mobile>
 
 Purges the room, or a specified object/mobile.¢
@@ -12636,7 +12636,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPRESTORE
-Related  
+Related    
 Text     Syntax: MPRESTORE <victim> <amount>
  
 This command restores a specified number of hitpoints to the victim.¢
@@ -12728,7 +12728,7 @@ End
 Level    113
 WebInvis 1
 Keywords MPSTATREROLL MPRACESET MPARTHMOOR MPSINDHAE MPGWRA
-Related  
+Related    
 Text     Informational only. These are internal functions and are not to be used on any
 mobs besides those which they were intended for.¢
 End
@@ -12749,7 +12749,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPTRANSFER
-Related  
+Related    
 Text     Syntax: MPTRANSFER <name/all>
 
 Transfers one or all in the room to a specified location.¢
@@ -12759,7 +12759,7 @@ End
 Level    106
 WebInvis 1
 Keywords MPTRLOOK
-Related  
+Related    
 Text     Syntax: MPTRLOOK <name> <vnum>
 
 Transfers the target into a specified location, and then forces
@@ -12793,7 +12793,7 @@ End
 Level    101
 WebInvis 1
 Keywords M_ADVHERO_
-Related  
+Related    
 Text     You suddenly feel a strange surge of power flow through your veins!
  
 You have mastered yourself as far as mortally possible, and now
@@ -12805,7 +12805,7 @@ End
 Level    0
 WebInvis 1
 Keywords M_BALZHUR_
-Related  
+Related    
 Text     Suddenly, from seemingly nowhere, the dreaded Negative Magnetic Space
 Wedgy appears, bringing with it the horrible vacuum of the void!
 
@@ -12876,7 +12876,7 @@ End
 Level    0
 WebInvis 0
 Keywords NECROMANTIC TOUCH
-Related  
+Related    
 Text     Usage        : cast 'necromantic touch' <victim>
 Duration     : Instant
 Level        : 35 Necromancer
@@ -12997,7 +12997,7 @@ End
 Level    115
 WebInvis 1
 Keywords NORESOLVE
-Related  
+Related    
 Text     Toggles the resolving of IP addresses on or off.¢
 End
 
@@ -13033,7 +13033,7 @@ End
 Level    103
 WebInvis 1
 Keywords NOSUPPLICATE NOSUPP
-Related  
+Related    
 Text     Nosupplicate as a room flag is only for use in hell, jails and some immortal
 rooms. It should never be used in an area without fair warning given to mortals
 and after extensive consideration and approval by the Area council.¢
@@ -13043,7 +13043,7 @@ End
 Level    103
 WebInvis 1
 Keywords NOTELL NOEMOTE NOTITLE SILENCE UNSILENCE
-Related  
+Related    
 Text     Syntax: notitle <character>
 Syntax: noemote <character>
 Syntax: notell  <character>
@@ -13383,7 +13383,7 @@ End
 Level    103
 WebInvis 1
 Keywords OLC
-Related  
+Related    
 Text     OLC stands for Online Creation. It is the system by which various things
 in the game are edited without having to directly manipulate the data files.
 
@@ -13464,7 +13464,7 @@ End
 Level    0
 WebInvis 0
 Keywords OPEN CLOSE LOCK UNLOCK PICK
-Related  
+Related    
 Text     Syntax: open   <object|direction>
 Syntax: close  <object|direction>
 Syntax: lock   <object|direction>
@@ -13511,7 +13511,7 @@ End
 Level    0
 WebInvis 0
 Keywords ORDER
-Related  
+Related    
 Text     Syntax: order <character> command
 Syntax: order all command
 
@@ -13661,7 +13661,7 @@ End
 Level    0
 WebInvis 0
 Keywords PALADIN PALADINS
-Related  
+Related    
 Text     A Paladin is the fighter solely dedicated to vanquishing evil. Holy 
 warriors without equal, the Paladin strives to bring about justice
 and goodness to the land and also to defend the weak. Paladins are
@@ -13910,7 +13910,7 @@ End
 Level    113
 WebInvis 1
 Keywords PCRENAME
-Related  
+Related    
 Text     Syntax: pcrename <oldname> <newname>
  
 This command permanently changes a player's name and should be used
@@ -13922,7 +13922,7 @@ End
 Level    101
 WebInvis 1
 Keywords PEACE
-Related  
+Related    
 Text     Syntax: peace
 
 PEACE causes all characters in a room to stop fighting.¢
@@ -13957,7 +13957,7 @@ End
 Level    0
 WebInvis 0
 Keywords PETSAVE
-Related  
+Related    
 Text     Petsaving is automatic in AFKMud. When you purchase a pet, it is
 loyal to you until its death. Your pet will automatically save when
 you save and quit when you quit. If you die, your pet may still live
@@ -13974,7 +13974,7 @@ End
 Level    113
 WebInvis 1
 Keywords PFILES
-Related  
+Related    
 Text     Syntax: pfiles
  
 Forces the automated pfile cleanup to begin.¢
@@ -13995,7 +13995,7 @@ End
 Level    104
 WebInvis 1
 Keywords PIPEFLAG
-Related  
+Related    
 Text     The following flags may be used with the item type pipe in the v3 item
 value:
 
@@ -14023,7 +14023,7 @@ End
 Level    0
 WebInvis 0
 Keywords PIXIE PIXIES
-Related  
+Related    
 Text     Pixies resemble small Elfin creatures with thin gossamer wings. They are 
 well characterized with their tinkling laughter and their ability to fly 
 about like a dragonfly. Though they are much more intelligent than the 
@@ -14116,7 +14116,7 @@ End
 Level    0
 WebInvis 0
 Keywords POLICY
-Related  
+Related    
 Text     Just to keep things clear, and in light of recent discussions that have
 once again surfaced on Usenet and Mud Connector, here's a brief statement
 of our policy concerning area ownership:
@@ -14265,7 +14265,7 @@ End
 Level    0
 WebInvis 0
 Keywords PRACTICE
-Related  
+Related    
 Text     Syntax: practice
 Syntax: practice <skill|spell|weapon>
 
@@ -14366,7 +14366,7 @@ End
 Level    101
 WebInvis 1
 Keywords PROJECT
-Related  
+Related    
 Text     Syntax: project -- same as project list
         project save 
         project list [available]
@@ -14445,7 +14445,7 @@ End
 Level    113
 WebInvis 1
 Keywords PROMOTE DEMOTE
-Related  
+Related    
 Text     Syntax: promote <character>
 Syntax: demote <character>
 
@@ -14544,7 +14544,7 @@ End
 Level    103
 WebInvis 1
 Keywords PULLTYPES
-Related  
+Related    
 Text     Syntax: redit pushtype <direction> <type>
 Syntax: redit push <direction> <force>
 
@@ -14592,7 +14592,7 @@ End
 Level    104
 WebInvis 1
 Keywords PURGE
-Related  
+Related    
 Text     Syntax: purge
 Syntax: purge <mob or object>
 
@@ -14645,7 +14645,7 @@ Level    0
 WebInvis 0
 Keywords QUESTS QUESTING
 Related  QUEST
-Text       Quests are run at random times for different groups of players within the
+Text     Quests are run at random times for different groups of players within the
 realms. They may involve anything from a scavenger hunt, to solving riddles,
 to killing mobs that threaten the Lands. Quests are an excellent way to
 meet other players, and enhance roleplaying throughout the realm.
@@ -14777,7 +14777,7 @@ End
 Level    0
 WebInvis 0
 Keywords RACE RACES
-Related  
+Related    
 Text     There are currently 19 known races existing within these Realms.
 Type "help [race]" for specific information on the specified race:
  
@@ -14806,7 +14806,7 @@ End
 Level    101
 WebInvis 1
 Keywords RACES IMM
-Related  
+Related    
 Text     Keep in mind there are still changes to come, and that there's also
 a mort help file - 'race bonus' - listing the affects on basic stats.
  
@@ -14929,7 +14929,7 @@ End
 Level    0
 WebInvis 0
 Keywords RANGER RANGERS
-Related  
+Related    
 Text     A Ranger is the outdoors-man and adventuresome free spirit of the times. 
 Known best as a defender of nature and the animals, the Ranger is a force
 to be reckoned with. A self-sufficient adventurer, the Ranger is 
@@ -14953,7 +14953,7 @@ End
 Level    110
 WebInvis 1
 Keywords RANK
-Related  
+Related    
 Text     Usage : rank <string>
 
 This will allow you to set the rank people see for you on 'who'. (For those of
@@ -14966,7 +14966,7 @@ End
 Level    101
 WebInvis 1
 Keywords RAP
-Related  
+Related    
 Text     Syntax: rap <doorname>
         rap <direction>
 
@@ -14979,7 +14979,7 @@ End
 Level    103
 WebInvis 1
 Keywords RAT
-Related  
+Related    
 Text     Syntax: rat vnum1 vnum2 command [parameters]
  
 Rat, or 'range at' is the at command with the added parameters of two
@@ -15009,7 +15009,7 @@ End
 Level    103
 WebInvis 1
 Keywords RDELETE
-Related  
+Related    
 Text     Syntax: rdelete <vnum>
 
 Used for deleting rooms, where vnum stands for the vnum of the room to
@@ -15039,7 +15039,7 @@ End
 Level    113
 WebInvis 1
 Keywords REALMS
-Related  
+Related    
 Text     This is the list of realm values for the wizinfo chart:
  
 0  = None. Default value, usually only found on fresh immortals.
@@ -15056,7 +15056,7 @@ End
 Level    108
 WebInvis 1
 Keywords REBOOT REBOO
-Related  
+Related    
 Text     Syntax: reboot
 Syntax: reboot mud now
 Syntax: reboot nosave
@@ -15349,7 +15349,7 @@ End
 Level    114
 WebInvis 1
 Keywords RENUMBER
-Related  
+Related    
 Text     &YSyntax: renumber <area filename> <new vnum base> [flags]
 Flags: fillgaps verbose
 &pExample: renumber haon.are 6100 fillgaps verbose&w
@@ -15558,7 +15558,7 @@ End
 Level    113
 WebInvis 1
 Keywords RESOLVE
-Related  
+Related    
 Text     Usage : resolve <host name or IP>
 
 This allows you to resolve a host name to an IP and vice-versa. Try not to use
@@ -15634,7 +15634,7 @@ End
 Level    104
 WebInvis 1
 Keywords RESTORETIME
-Related  
+Related    
 Text     Syntax: restoretime
 
 Restoretime shows you how much time has passed since you last did a
@@ -15676,7 +15676,7 @@ End
 Level    0
 WebInvis 0
 Keywords RETIRED
-Related  
+Related    
 Text     Retired immortals are imms who are no longer very active.
 They keep their level but are limited in their commands and authority
 (equivalent to a level 101 immortal). Retired imms are not involved in
@@ -15763,7 +15763,7 @@ End
 Level    104
 WebInvis 1
 Keywords RISA RESISTANT IMMUNE SUSCEPTIBLE ABSORB
-Related  MSET,BitVector
+Related  MSET,BITVECTOR
 Text     Usage: mset <victim> resistant <flag> [flag] ...
 Usage: mset <victim> immune <flag> [flag] ...
 Usage: mset <victim> susceptible <flag> [flag] ...
@@ -15819,7 +15819,7 @@ End
 Level    0
 WebInvis 0
 Keywords ROGUE ROGUES
-Related  
+Related    
 Text     The Rogue is seen as a dark character which makes use of many skills 
 often deemed improper by the rest of society. The skills of the Rogue 
 reflect his way of life, namely sneaking in the dark, picking locks, 
@@ -16031,7 +16031,7 @@ End
 Level    0
 WebInvis 0
 Keywords RUNES SOCKET
-Related  
+Related    
 Text     Usage: socket <rune> <item>
 
 Where <rune> is the name of the rune you wish to use.
@@ -16105,7 +16105,7 @@ End
 Level    0
 WebInvis 0
 Keywords SAHUAGIN
-Related  
+Related    
 Text     Sahuagin are shark-like humanoid creatures that live far beneath the
 surface of the seas, although they emerge occasionally on raids along
 the coastlines.  They are sleek, quick, and cunningly intelligent,
@@ -16190,7 +16190,7 @@ End
 Level    103
 WebInvis 1
 Keywords SAVEAREA LOADAREA
-Related  
+Related    
 Text     Syntax: savearea
         loadarea
 
@@ -16201,7 +16201,7 @@ End
 Level    113
 WebInvis 1
 Keywords SAVEHOLIDAY
-Related  
+Related    
 Text     Usage : saveholiday
 
 This will save the holiday chart.¢
@@ -16235,7 +16235,7 @@ End
 Level    107
 WebInvis 1
 Keywords SCATTER
-Related  
+Related    
 Text     Syntax: scatter <victim>
 
 Instantly transports the victim to a random location in the game.
@@ -17040,7 +17040,7 @@ End
 Level    106
 WebInvis 1
 Keywords SETWEATHER
-Related  
+Related    
 Text     Right. Don't ask. This command is unclear in its intent. But most likely
 it messes with global weather factors. :)¢
 End
@@ -17078,7 +17078,7 @@ End
 Level    115
 WebInvis 1
 Keywords SHELL
-Related  
+Related    
 Text     Don't ask. If you don't already know, you have no business needing to.¢
 End
 
@@ -17171,7 +17171,7 @@ End
 Level    106
 WebInvis 1
 Keywords SHOPVALUES
-Related  
+Related    
 Text     Syntax: shopset <mobile vnum> buy# <value>
  
 1  - light               21 - pen                41 - rune
@@ -17218,7 +17218,7 @@ End
 Level    103
 WebInvis 1
 Keywords SHOW
-Related  
+Related    
 Text     Syntax: show room <lowvnum> <hivnum>
         show room <area filename>
         show obj <lowvnum> <hivnum>
@@ -17269,7 +17269,7 @@ End
 Level    102
 WebInvis 1
 Keywords SHOWCLAN SHOWGUILD
-Related  
+Related    
 Text     Syntax: showclan <clan name>
 
 Displays statistics on a clan.¢
@@ -17279,7 +17279,7 @@ End
 Level    101
 WebInvis 1
 Keywords SHOWCLASS
-Related  
+Related    
 Text     Syntax: showclass <class> [level range]
  
 Shows information on the specified class and level you specify.¢
@@ -17289,7 +17289,7 @@ End
 Level    102
 WebInvis 1
 Keywords SHOWDEITY
-Related  
+Related    
 Text     Syntax: showdeity <deity>
  
 This command will show you all the statistics of the chosen deity.¢
@@ -17390,7 +17390,7 @@ End
 Level    106
 WebInvis 1
 Keywords SHOWWEATHER
-Related  
+Related    
 Text     Usage : showweather
 Usage : showweather <area>
 
@@ -17402,7 +17402,7 @@ End
 Level    113
 WebInvis 1
 Keywords SHUTDOWN SHUTDOW
-Related  
+Related    
 Text     Syntax: shutdown <nosave>
 
 SHUTDOWN shuts down the server and prevents the normal 'startup' script
@@ -17653,7 +17653,7 @@ End
 Level    104
 WebInvis 1
 Keywords SLOOKUP
-Related  
+Related    
 Text     Syntax: slookup <skill-or-spell>
 Syntax: slookup all
 
@@ -17699,7 +17699,7 @@ Level    0
 WebInvis 0
 Keywords SMAUG
 Related  CREDITS,DIKU,MERC,AFKMUD
-Text                [S]imulated [M]edieval multi-[U]ser [A]dventure game
+Text     [S]imulated [M]edieval multi-[U]ser [A]dventure game
 
 SMAUG is an ongoing project headed up by Derek Snider (Thoric), who has
 taken on several assistants in expanding and improving the code.
@@ -17766,7 +17766,7 @@ End
 Level    102
 WebInvis 1
 Keywords SOBER
-Related  
+Related    
 Text     Syntax: sober <player>
 
 This command can be used to sober a player or your self when they/you
@@ -17904,7 +17904,7 @@ End
 Level    105
 WebInvis 1
 Keywords SPECFUNCS
-Related  
+Related    
 Text     These special functions are available to assign to mobiles.
 Use them sparingly:
 
@@ -17950,7 +17950,7 @@ End
 Level    105
 WebInvis 1
 Keywords SPELLCOMPONENTS
-Related  
+Related    
 Text     T###         check for item of type ###
 V#####       check for item of vnum #####
 Kword        check for item with keyword 'word'
@@ -17980,7 +17980,7 @@ End
 Level    105
 WebInvis 1
 Keywords SPELLFLAGS
-Related  
+Related    
 Text     water           water based (create water, ice spells)
 earth           interacts with nature (earthquake)
 air             involve the air or winds
@@ -18015,7 +18015,7 @@ End
 Level    105
 WebInvis 1
 Keywords SPELLSAVES
-Related  
+Related    
 Text     Here are the saving throws you can set for use in SMAUG spells:
 
 none            victim doesn't get a saving throw
@@ -18170,7 +18170,7 @@ End
 Level    101
 WebInvis 1
 Keywords STASH
-Related  
+Related    
 Text     Usage : stash <item> <person>
 
 This command is fairly straightforward. The only catch is, it doesn't give a
@@ -18182,7 +18182,7 @@ End
 Level    103
 WebInvis 1
 Keywords STAT
-Related  
+Related    
 Text     Syntax: stat obj <vnum or keyword>
         stat mob <vnum or keyword>
         stat room <vnum>
@@ -18299,7 +18299,7 @@ End
 Level    107
 WebInvis 1
 Keywords STREW
-Related  
+Related    
 Text     Usage: strew target coins/inventory
  
 When the coins parameter is used, it will wipe off all the gold
@@ -18329,7 +18329,7 @@ End
 Level    107
 WebInvis 1
 Keywords STRIP
-Related  
+Related    
 Text     Syntax: strip <victim>
  
 Silently transfers their entire inventory and clothing to yours.¢
@@ -18379,7 +18379,7 @@ End
 Level    0
 WebInvis 0
 Keywords SUDDEN STRIKE
-Related  Discern Scent, Orcish Vigour
+Related  DISCERN SCENT, ORCISH VIGOUR
 Text     Usage        : sudden
 Duration     : instant
 Level        : Half-orc 30
@@ -18540,7 +18540,7 @@ End
 Level    0
 WebInvis 0
 Keywords SWEARING
-Related  
+Related    
 Text     No usage of swear words in any language, please. We try to maintain
 civility on the public channels, at least. DO NOT make the mistake of
 assuming that just because you are not doing it in English, we don't
@@ -18582,7 +18582,7 @@ End
 Level    102
 WebInvis 1
 Keywords SWITCH RETURN
-Related  
+Related    
 Text     Syntax: switch <character>
 Syntax: return
 
@@ -18670,7 +18670,7 @@ End
 Level    105
 WebInvis 1
 Keywords TARGETTYPES
-Related  
+Related    
 Text     Target                Function
 --------------------------------------------------------------------
 ignore                Spell affect relies on the casting argument
@@ -18762,7 +18762,7 @@ End
 Level    115
 WebInvis 1
 Keywords TIMECMD
-Related  
+Related    
 Text     Syntax: timecmd <command>
 
 Does more or less what it implies: times how long a particular command
@@ -18836,7 +18836,7 @@ End
 Level    0
 WebInvis 0
 Keywords TOPICS
-Related  
+Related    
 Text     Additional topics you may want to look over:
 
 *TICK
@@ -18928,7 +18928,7 @@ End
 Level    104
 WebInvis 1
 Keywords TRANSFER
-Related  
+Related    
 Text     Syntax: transfer <character>
 Syntax: transfer all
 Syntax: transfer <character> <location>
@@ -18955,7 +18955,7 @@ End
 Level    105
 WebInvis 1
 Keywords TRAPFLAGS
-Related  RESET, TRAPTYPES, BitVector
+Related  RESET, TRAPTYPES, BITVECTOR
 Text     Usage: reset trap room <type> <charges> <mindamage> <maxdamage> [flags]
 Usage: reset trap obj <name> <type> <charges> <mindamage> <maxdamage> [flags]
 Usage: oset <trap> flags <flag> [flag] ...
@@ -19053,7 +19053,7 @@ End
 Level    104
 WebInvis 1
 Keywords TRIGFLAGS
-Related  OSET,CONTAINERFLAGS,BitVector
+Related  OSET,CONTAINERFLAGS,BITVECTOR
 Text     Usage: oset <trigger> flags <flag> [flag] ...
 
 For items of type "button", "lever", "pullchain", or "switch",
@@ -19203,7 +19203,7 @@ End
 Level    115
 WebInvis 1
 Keywords TRUST
-Related  
+Related    
 Text     Syntax: trust <character> <level>
 
 TRUST sets a character's trust to the specified level. This is similar to
@@ -19220,8 +19220,8 @@ End
 Level    0
 WebInvis 0
 Keywords TSR D&D AD&D
-Related  
-Text                    Dungeons && Dragons (tm) and TSR Hobbies Inc.
+Related    
+Text     Dungeons && Dragons (tm) and TSR Hobbies Inc.
 
   Here we'd like to duplicate the original credits from the Basic Rules,
 Dungeons && Dragons (tm), (c) 1974, 1977, 1978, 1981, 1983 TSR Hobbies Inc.
@@ -19327,7 +19327,7 @@ End
 Level    106
 WebInvis 1
 Keywords USEPROG
-Related  
+Related    
 Text     Syntax: opedit <object> <command> [number] [use_prog] [percentage]
 
 The use_prog is an objtrigger that can be used in object programs.  The
@@ -19432,7 +19432,7 @@ End
 Level    113
 WebInvis 1
 Keywords VASSIGN
-Related  
+Related    
 Text     Syntax: vassign <person> <low vnum> <hi vnum>
  
 Steps required to assign a new vnum range to a builder:
@@ -19579,7 +19579,7 @@ End
 Level    113
 WebInvis 1
 Keywords VNUMS
-Related  
+Related    
 Text     Syntax: vnums [low] [high]
 
 Lists the vnum range for rooms/mobs/objects in all prototype areas.¢
@@ -19589,7 +19589,7 @@ End
 Level    107
 WebInvis 1
 Keywords VOICE
-Related  
+Related    
 Text     Usage : voice <message>
 
 This will display your message to the entire mud with 'The Voice of God says:'
@@ -19600,7 +19600,7 @@ End
 Level    104
 WebInvis 1
 Keywords VSEARCH
-Related  
+Related    
 Text     Syntax: vsearch <vnum>
 
 This command will list all instances of an object with that vnum that
@@ -19642,7 +19642,7 @@ End
 Level    0
 WebInvis 0
 Keywords WARRIOR WARRIORS
-Related  
+Related    
 Text     Warriors are the epitome of fighters, able to use all basic weapons and 
 armors in exercise of their most lethal of combat skills. A Warrior
 must be strong in body to survive his dangerous lifestyle, and though he
@@ -19707,7 +19707,7 @@ End
 Level    0
 WebInvis 0
 Keywords WEAPONS
-Related  
+Related    
 Text     Weapons are the primary source of fighting power for most classes,
 especially at lower levels where other skills and spells remain
 unlearned. To use a weapon, simply 'wield <weapon name>'. You will
@@ -19812,7 +19812,7 @@ End
 Level    113
 WebInvis 1
 Keywords WEBROOM
-Related  
+Related    
 Text     Syntax: webroom
 
 Currently creates an HTML dump of the City of Bywater. Plans are to have
@@ -19826,7 +19826,7 @@ End
 Level    104
 WebInvis 1
 Keywords WHERE
-Related  
+Related    
 Text     Syntax: where obj <keyword>
         where mob <keyword>
         where player <name>
@@ -19884,7 +19884,7 @@ End
 Level    0
 WebInvis 0
 Keywords WILD-ELF WILD-ELVES
-Related  
+Related    
 Text     As their name implies, the Wild-Elves truly are a wild race. Fun-loving 
 thrill seekers, the Wild-Elves are an enigma to their High-Elven cousins. 
 Unlike the patient and contemplative High-Elves, the Wild-Elves are an 
@@ -20028,7 +20028,7 @@ End
 Level    101
 WebInvis 1
 Keywords WIZHELP
-Related  
+Related    
 Text     Syntax: wizhelp [level]
 
 WIZHELP with no argument provides a list of all the immortal commands up to 
@@ -20042,7 +20042,7 @@ End
 Level    101
 WebInvis 1
 Keywords WIZINFO
-Related  
+Related    
 Text     Syntax: wizinfo
 
 Displays the contact information for the Immortals.
@@ -20054,7 +20054,7 @@ End
 Level    0
 WebInvis 0
 Keywords WIZLIST
-Related  
+Related    
 Text     Syntax: wizlist
 
 Displays a list of the powerful beings who govern this realm!
@@ -20169,7 +20169,7 @@ End
 Level    103
 WebInvis 1
 Keywords ZONES
-Related  
+Related    
 Text     Syntax: zones [low] [high]
 
 Lists the name of the file, and room/mob/object vnum range for each
