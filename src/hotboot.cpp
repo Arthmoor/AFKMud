@@ -611,6 +611,7 @@ void load_world( void )
 CMDF( do_hotboot )
 {
    list < descriptor_data * >::iterator ds;
+   bool debugging = false;
 
 #ifdef MULTIPORT
    if( compilelock )
@@ -624,6 +625,19 @@ CMDF( do_hotboot )
    {
       ch->print( "Cannot initiate hotboot. A standard reboot is in progress.\r\n" );
       return;
+   }
+
+   if( !argument.empty(  ) )
+   {
+      if( str_cmp( argument, "debug" ) )
+      {
+         ch->printf( "'%s' is not a valid option.\r\n", argument.c_str( ) );
+         ch->print( "Acceptable Syntax:\r\n\r\n" );
+         ch->print( "Hotboot\r\n" );
+         ch->print( "Hotboot debug\r\n" );
+         return;
+      }
+      debugging = true;
    }
 
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
@@ -695,16 +709,16 @@ CMDF( do_hotboot )
                   d->descriptor, d->can_compress, d->is_compressing, d->msp_detected,
                   och->in_room->vnum, d->client_port, d->idle, och->name, d->hostname.c_str(  ), d->client.c_str(  ) );
 
-         /*
-          * One of two places this gets changed 
-          */
-         och->pcdata->hotboot = true;
-
-         och->reset_sound(  );
-         och->reset_music(  );
-         och->save(  );
-         if( !argument.empty(  ) && str_cmp( argument, "debug" ) )
+         if( !debugging )
          {
+            /*
+             * One of two places this gets changed 
+             */
+            och->pcdata->hotboot = true;
+            och->reset_sound(  );
+            och->reset_music(  );
+            och->save(  );
+
             d->write( "\r\nThe flow of time is halted momentarily as the world is reshaped!\r\n" );
             if( d->is_compressing )
                d->compressEnd(  );
@@ -719,7 +733,7 @@ CMDF( do_hotboot )
    log_string( "Saving world time...." );
    save_timedata(  );   /* Preserve that up to the second calendar value :) */
 
-   if( !argument.empty(  ) && !str_cmp( argument, "debug" ) )
+   if( debugging )
    {
       log_string( "Hotboot debug - Aborting before execl" );
       return;
@@ -880,7 +894,10 @@ void hotboot_recover( void )
           * @shrug, why not? :P 
           */
          if( d->character->has_pcflag( PCFLAG_ONMAP ) )
-            d->character->music( "wilderness.mid", 100, false );
+         {
+            if( !d->character->in_room->flags.test( ROOM_WATCHTOWER ) )
+               d->character->music( "wilderness.mid", 100, false );
+         }
 
          if( ++num_descriptors > sysdata->maxplayers )
             sysdata->maxplayers = num_descriptors;

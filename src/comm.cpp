@@ -1330,7 +1330,9 @@ int main( int argc, char **argv )
    if( sysdata->crashhandler == true )
       set_chandler(  );
 
-   log_string( "No people online yet. Suspending autonomous update handlers." );
+   // Descriptor list will be populated if this was a hotboot.
+   if( dlist.empty(  ) )
+      log_string( "No people online yet. Suspending autonomous update handlers." );
 
    // Sick isn't it? The whole game being run inside of one little statement..... :P 
    game_loop(  );

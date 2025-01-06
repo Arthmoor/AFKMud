@@ -2333,7 +2333,10 @@ void show_status( char_data * ch )
     * @shrug, why not? :P 
     */
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
-      ch->music( "wilderness.mid", 100, false );
+   {
+      if( !ch->in_room->flags.test( ROOM_WATCHTOWER ) )
+         ch->music( "wilderness.mid", 100, false );
+   }
 
    ch->print( "&R\r\n" );
    if( ch->has_pcflag( PCFLAG_CHECKBOARD ) )
@@ -2566,7 +2569,10 @@ void char_to_game( char_data * ch )
     * @shrug, why not? :P 
     */
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
-      ch->music( "wilderness.mid", 100, false );
+   {
+      if( !ch->in_room->flags.test( ROOM_WATCHTOWER ) )
+         ch->music( "wilderness.mid", 100, false );
+   }
 
    quotes( ch );
 
