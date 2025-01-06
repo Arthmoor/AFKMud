@@ -34,7 +34,7 @@
 /*
  * mccp.c - support functions for mccp (the Mud Client Compression Protocol)
  *
- * see https://smaugmuds.afkmods.com/mccp
+ * see https://smaugmuds.afkmods.com/mccp/
  *
  * Copyright (c) 1999, Oliver Jowett <oliver@randomly.org>.
  *
@@ -219,7 +219,7 @@ void descriptor_data::send_msp_startup(  )
  * "URL" is the optional download URL for the sound file
  * "ch" is the character to play the sound for
  *
- * More detailed information at http://www.zuggsoft.com/
+ * More detailed information at https://www.zuggsoft.com/zmud/msp.htm
 */
 void char_data::sound( const string & fname, int volume, bool toroom )
 {
@@ -271,7 +271,7 @@ void char_data::sound( const string & fname, int volume, bool toroom )
  * "URL" is the optional download URL for the sound file
  * "ch" is the character to play the music for 
  *
- * more detailed information at: http://www.zuggsoft.com/
+ * more detailed information at: https://www.zuggsoft.com/zmud/msp.htm
 */
 void char_data::music( const string & fname, int volume, bool toroom )
 {
