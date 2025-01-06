@@ -2560,7 +2560,7 @@ CMDF( do_brandish )
       }
    }
 
-   if( --staff->value[2] <= 0 )  /* Modified to prevent extraction when reaching zero - Samson */
+   if( --staff->value[2] < 0 )  /* Modified to prevent extraction when reaching zero - Samson */
    {
       staff->value[2] = 0; /* Added to prevent the damn things from getting negative values - Samson 4-21-98 */
       act( AT_MAGIC, "$p blazes brightly in $n's hands, but does nothing.", ch, staff, nullptr, TO_ROOM );
@@ -2640,7 +2640,7 @@ CMDF( do_zap )
       }
    }
 
-   if( --wand->value[2] <= 0 )   /* Modified to prevent extraction when reaching zero - Samson */
+   if( --wand->value[2] < 0 )   /* Modified to prevent extraction when reaching zero - Samson */
    {
       wand->value[2] = 0;  /* To prevent negative values - Samson */
       act( AT_MAGIC, "$p hums softly, but does nothing.", ch, wand, nullptr, TO_ROOM );
