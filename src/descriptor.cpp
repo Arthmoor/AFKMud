@@ -1255,14 +1255,14 @@ bool descriptor_data::pager_output(  )
 void descriptor_data::send_greeting(  )
 {
    FILE *rpfile;
-   int num = 0;
+   int num = 0, c = 0;
    char BUFF[MSL], filename[256];
 
    snprintf( filename, 256, "%sgreeting.dat", MOTD_DIR );
    if( ( rpfile = fopen( filename, "r" ) ) != nullptr )
    {
-      while( ( ( BUFF[num] = fgetc( rpfile ) ) != EOF ) && num < MSL - 2 )
-         ++num;
+      while( ( c = fgetc( rpfile ) ) != EOF && ( num < ( MSL - 1 ) ) )  // stop at BUFF size - 1
+         BUFF[num++] = c;
       FCLOSE( rpfile );
       BUFF[num] = '\0';
       send_color( BUFF );
