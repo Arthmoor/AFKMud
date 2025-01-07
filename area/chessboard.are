@@ -1,7 +1,7 @@
 #AFKAREA
 #AREADATA
 Version         1
-Name            Chessboard~
+Name            Fordwyn's Chessboard~
 Author          SillyMUD/Dwip~
 Vnums           6000 6069
 Continent       one~
@@ -10,6 +10,7 @@ Dates           754272000 1417996800
 Ranges          0 115 0 115
 ResetMsg        The pieces on the chessboard line up and prepare for another round.~
 ResetFreq       20
+Flags           nocamp noportal nosummon noteleport~
 Climate         2 2 2
 Treasure        20 74 85 93 20 50 60 75
 #ENDAREADATA
@@ -33,6 +34,7 @@ Stats2    5 15 5 15 2 4 0
 Speaks    common~
 Speaking  common~
 Actflags  npc nowander stayarea~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #ENDMOBILE
 
 #MOBILE
@@ -275,6 +277,7 @@ Speaks    common~
 Speaking  common~
 Actflags  npc scavenger stayarea~
 Affected  detect_invis~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #ENDMOBILE
 
 #MOBILE
@@ -372,6 +375,7 @@ Speaks    common~
 Speaking  common~
 Actflags  npc nowander stayarea~
 Affected  detect_invis~
+Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #ENDMOBILE
 
 #MOBILE
@@ -875,7 +879,7 @@ Stats     1 10 0 9999 0 None None None
 #ROOM
 Vnum      6000
 Name      A White Square~
-Sector    field~
+Sector    city~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
@@ -1180,7 +1184,6 @@ Desc      You see a wall sized mirror.
 ~
 #ENDEXIT
 
-Reset M 6008 1 6008 -1 -1 -1 100
 #EXDESC
 ExDescKey    mirror wall~
 ExDesc       You see your reflection, but superimposed on that is what looks like
@@ -1188,6 +1191,7 @@ a distant horizon.  Maybe you can enter this mirror?
 ~
 #ENDEXDESC
 
+Reset M 6008 1 6008 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -2084,14 +2088,14 @@ Desc      The plaza continues onward.
 ~
 #ENDEXIT
 
-Reset M 6022 1 6030 -1 -1 -1 100
-Reset M 6022 1 6030 -1 -1 -1 100
 #EXDESC
 ExDescKey    statue unicorn~
 ExDesc       The statue says "Come to Unicorn Mount!"
 ~
 #ENDEXDESC
 
+Reset M 6022 1 6030 -1 -1 -1 100
+Reset M 6022 1 6030 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -2500,7 +2504,7 @@ Desc      The plaza continues onward.
 #ENDEXIT
 
 Reset M 6020 1 6040 -1 -1 -1 100
-  Reset E 6001 100 17 100
+  Reset E 6001 1 17 100
 #ENDROOM
 
 #ROOM
@@ -2871,7 +2875,11 @@ Desc      The plaza continues onward.
 Reset M 6024 1 6049 -1 -1 -1 100
 Reset M 6046 1 6049 -1 -1 -1 100
   Reset E 6004 100 17 100
-Reset O 6009 5 6049 -1 -1 -1 100
+Reset O 6009 1 6049 -1 -1 -1 100
+Reset O 6009 1 6049 -1 -1 -1 100
+Reset O 6009 1 6049 -1 -1 -1 100
+Reset O 6009 1 6049 -1 -1 -1 100
+Reset O 6009 1 6049 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -3139,8 +3147,10 @@ Desc      The plaza continues onward.
 
 Reset M 6032 1 6056 -1 -1 -1 100
 Reset M 6046 1 6056 -1 -1 -1 100
-Reset O 6009 1 6056 -1 -1 -1 100
-  Reset P 0 6008 3 6009 100
+Reset O 6008 1 6056 -1 -1 -1 100
+  Reset P 0 6009 1 6008 100
+  Reset P 0 6009 1 6008 100
+  Reset P 0 6009 1 6008 100
 #ENDROOM
 
 #ROOM
@@ -3426,14 +3436,14 @@ Desc      You see the plaza.
 ~
 #ENDEXIT
 
-Reset M 6042 1 6065 -1 -1 -1 100
-  Reset G 6005 1 100
 #EXDESC
 ExDescKey    statues niches~
 ExDesc       The craftsmanship is almost beyond that of mortals.
 ~
 #ENDEXDESC
 
+Reset M 6042 1 6065 -1 -1 -1 100
+  Reset G 6005 1 100
 #ENDROOM
 
 #ROOM
@@ -3525,7 +3535,6 @@ Desc      Round and round she goes, where she stops....
 ~
 #ENDEXIT
 
-Reset D 6068 1 1 100 -2
 #EXDESC
 ExDescKey    writing wall~
 ExDesc       Adapted from the original SillyMUD area by Dwip, 12/2014.  In
@@ -3539,6 +3548,7 @@ come a long way since 1996.  We hope you will too.
 ~
 #ENDEXDESC
 
+Reset D 6068 1 1 100 -2
 #ENDROOM
 
 #ROOM
