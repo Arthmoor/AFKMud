@@ -1,0 +1,308 @@
+This document covers the #RESETS, #SHOPS, #REPAIRS, #SPECIALS and #$
+sections of the area file. This section is often referred to as the
+"tail section" of an area file. It more or less controls where things
+load in the area.
+
+=== The #RESETS section
+
+The syntax of this section is:
+
+      #RESETS
+     	* <comment:to_eol>
+
+      M <:number> <mob-vnum> <limit> <room-vnum>
+	
+	O <:number> <obj-vnum> <limit> <room-vnum>
+	
+	H <:number> <obj-vnum> <limit>
+	
+	P <:number> <obj-vnum> <amount> <container-vnum>
+	
+	G <:number> <obj-vnum> <limit>
+       
+	E <:number> <obj-vnum> <limit> <wear_loc>	
+	
+	D <:number> <room-vnum> <door> <state>
+	
+	R <:number> <room-vnum> <last-door>
+	
+      T <flags> <types> <charges> <vnum>
+	
+      S
+
+To reset an area, the server executes each command in the list of reset
+commands once. Each area is reset once when the server loads, and again
+periodically as it ages. An area is reset if it is at least 3 area-minutes 
+old and is empty of players, or if it is 15 area-minutes old. At the 14
+area-minute mark, each (awake) player in the area sees the area's reset
+message, if one exists.
+
+An 'area-minute' varies between 30 and 90 seconds of real time, with an
+average of 70 seconds. The variation defeats area timekeepers found in
+many of the major mud clients out these days.
+
+The reset commands are:
+
+    *	comment
+    M	read a mobile 
+    O	read an object
+    P	put object in object
+    G	give object to mobile
+    E	equip object to mobile
+    D	set state of door
+    R	randomize room exits
+    T	trap an object or room/door
+    H	hide an object
+    S	stop (end of list)
+
+The '*' lines contain comments.  The 'S' line is the last line of the section.
+
+Every other command contains four numbers (three for the 'G' command). The
+first number is ignored. The next three (or two) numbers are interpreted as
+follows:
+
+For the 'M' command, the second number is the vnum of a mobile to load. The
+third number is the limit of how many of this mobile may be present in the
+world. The fourth number is the vnum of the room where the mobile is loaded.
+
+For the 'O', 'P', 'G', and 'E' commands, the second number is the vnum of an
+object to load. The third number is now ignored. Item limits are now handled
+via the OLC on the object itself.
+
+For the 'O' command, the fourth number is the vnum of the room where the object
+is loaded.
+
+For the 'P' command, the fourth number is the vnum of a container object where
+the object will be loaded. ALWAYS specify a container vnum for the object
+to be loaded into, bad things happen if you don't. The object is not loaded 
+if no container object exists, or if someone is carrying it, or if it already 
+contains one of the to-be-loaded object.
+
+For the 'G' command, there is no fourth number. If the most recent 'M' command
+succeeded (e.g. the mobile limit wasn't exceeded), the object is given to that
+mobile. If the most recent 'M' command failed (due to hitting mobile limit),
+then the object is not loaded.
+
+For the 'E' command, the fourth number is an equipment location. If the most
+recent 'M' command succeeded, that mobile is equipped with the object. If the
+most recent 'M' command failed, then the object is not loaded.
+
+For the 'D' command, the second number is the vnum of a room. The third number
+is a door number from 0 to 5. The fourth number indicates how to set the door:
+0 for open and unlocked; 1 for closed and unlocked; 2 for closed and locked.
+
+For the 'R' command, the second number is the vnum of a room. The third number
+is a door number. When this command, the doors from 0 to the indicated door
+number are shuffled. The room will still have the same exits leading to the
+same other rooms as before, but the directions will be different. Thus, a door
+number of 4 makes a two-dimensional maze room; a door number of 6 makes a
+three-dimensional maze room.
+
+For the 'T' command, the first number is a the combination of all flags
+wanted on the trap.  The second number is the type of trap, the third number
+is the number of charges, and the fourth number is the VNUM of either the
+OBJECT the trap is on, or the ROOM the trap is in, (for room and door traps).
+ 
+(See listings in values.txt for trap flags and types.)
+
+Use of both the 'D' and 'R' commands on the same room will yield unpredicatable
+results.
+
+The 'S' is needed at the end of the resets section.
+
+Any line (except an 'S' line) may have a comment at the end.
+
+
+
+=== The #SHOPS section
+
+The syntax of this section is:
+
+        #SHOPS
+        <keeper> <trade-0> <trade-1> <trade-2> <trade-3> <trade-4>
+        <profit-buy> <profit-sell> <open-hour> <close-hour>
+        0
+
+Note: The values specified for shops are to be entered on a single line.
+
+Like the #RESETS section, the #SHOPS section has one command per line.
+
+The <keeper> is the vnum of the mobile who is the shopkeeper.  All mobiles
+with that vnum will be shopkeepers.
+
+The <trade-0> through <trade-5> numbers are item types which the shopkeeper
+will buy. Unused slots should have a '0' in them; for instance, a shopkeeper
+who doesn't buy anything would have five zeroes.
+
+The <profit-buy> number is a markup for players buying the item, in percentage
+points. 100 is nominal price; 150 is 50% markup, and so on. The <profit-sell>
+number is a markdown for players selling the item, in percentage points.
+100 is nominal price; 75 is a 25% markdown, and so on. The buying markup
+should be at least 100, and the selling markdown should be at most 100.
+
+The <open-hour> and <close-hour> numbers define the hours when the shopkeeper
+will do business. For a 28-hour shop, these numbers would be 0 and 27.
+
+Everything beyond <close-hour> to the end of the line is taken to be a comment.
+
+Note that there is no room number for a shop. Just load the shopkeeper mobile
+into the room of your choice, and make it a sentinel. Or, for a roving
+shopkeeper, just make it non-sentinel. It is also extremely advisable to make
+your shopkeepers immortal, and pacifist. This way palyers can't come up with
+interesting ways to kill the shop owners and steal the items.
+
+The objects a shopkeeper sells are exactly those loaded by 'G' reset commands
+for that shopkeeper. These items replenish automatically. If a player sells
+an object to a shopkeeper, the shopkeeper will keep it for resale if he, she,
+or it doesn't already have an identical object. These items do not replenish.
+
+A '0' is required at the end of the shops section.
+
+=== The #REPAIRS section
+
+The syntax of this section is:
+
+     #REPAIRS
+     <keeper> <type0> <type1> <type2> <profit> <fixtype> <open-hour> <close-hour>
+     0
+
+What the syntax means:
+
+This is much the same as a regular shop, but in this case the keeper repairs
+items instead of buying or selling them.
+
+<keeper>
+
+The mob vnum that the repair shop will be run by.
+
+<type0> through <type2> define the kinds of items the shop can repair.
+   (see the item type chart in objects.txt.)
+
+<profit> defines the overall cost of fixing the item, based on how damaged it
+is, and what level it is.
+
+<fixtype> determines weather the shop fixes items, or recharges them.
+use 1 for repair, or 2 to recharge.
+
+<open-hour> is when the shop opens (0-27), and <close-hour> is when the shop closes
+(0-23). For a shop which is open 28 hrs, it would be 0 27
+
+0
+
+A '0' is required at the end of the #REPAIRS section.
+
+=== The #SPECIALS section
+
+The syntax of this section is:
+
+        #SPECIALS
+        M <mob-vnum> <spec-fun>
+        S
+
+Like the #RESETS section, the #SPECIALS section has one command per line.
+
+This section defines special functions (spec-fun's) for mobiles. A spec-fun
+is a C function which gives additional behavior to all mobiles with a given
+vnum, such as the peripatetic mayor or the beholder casting spells in combat.
+
+The 'M' command assigns <spec-fun> to all mobiles of with virtual number
+<mob-vnum>. All spec-fun's are assigned by name. An 'M' line may have a
+comment at the end.
+
+Refer to the file Specproc.txt for available spec-fun's to use.
+
+An 'S' is required at the end of the specials section.
+
+=== The #$ section
+
+The syntax of this section is:
+
+    #$
+
+This section marks the end of an area file. It is not optional.
+
+
+The following is an example of a completed tail section:
+
+#RESETS
+O 0 1200 1 1200
+M 0 1203 1 1401
+M 0 1210 1 1210
+M 0 1402 1 1402
+D 0 1202 0 1
+D 0 1202 1 1
+D 0 1202 3 1
+O 1 1203 1 1296
+D 0 1296 2 1
+O 1 1204 1 1297
+D 0 1297 1 1
+O 1 1205 1 1295
+D 0 1295 3 1
+M 0 1221 1 1221
+O 0 1221 0 1221
+M 1 1302 1 1358
+M 1 1300 1 1359
+D 0 1359 0 1
+O 1 1201 1 1201
+D 0 1201 0 1
+D 0 1201 1 1
+D 0 1201 2 1
+D 0 1201 3 1
+D 0 1203 2 1
+D 0 1203 5 1
+D 0 1343 0 1
+D 0 1343 1 1
+D 0 1343 2 1
+M 1 1204 1 1204
+D 0 1204 2 1
+D 0 1204 3 1
+D 0 1205 0 1
+D 0 1342 0 1
+D 0 1341 0 1
+D 0 1341 2 1
+D 0 1209 2 1
+D 0 1208 0 1
+D 0 1340 2 1
+D 0 1340 5 1
+D 0 1217 4 1
+D 0 1215 1 1
+D 0 1215 3 1
+D 0 1215 5 1
+D 0 1212 0 1
+D 0 1212 2 1
+D 0 1353 0 1
+D 0 1216 2 2
+D 0 1349 0 2
+M 0 1403 1 1224
+M 1 1239 1 1239
+M 1 1226 1 1226
+M 1 1404 1 1226
+O 0 1210 1 1204
+M 1 1403 2 1214
+D 0 1214 1 1
+D 0 1214 2 1
+D 0 1214 3 1
+D 0 1214 6 1
+D 0 1214 7 1
+M 1 1240 1 1240
+S
+
+
+#SHOPS
+0
+
+
+#REPAIRS
+0
+
+
+#SPECIALS
+M  1226 spec_cast_mage
+S
+
+
+#$
+
+
+And thus concludes the area file. For a listing of the values used in
+various sections, refer to Values.txt.
