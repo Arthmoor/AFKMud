@@ -2007,7 +2007,7 @@ morph_data *fread_morph( FILE * fp )
  */
 void load_morphs( void )
 {
-   FILE *fp;
+   FILE *fp = nullptr;
    bool my_continue = true;
 
    if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "r" ) ) )

@@ -464,21 +464,6 @@ CMDF( do_hedit )
    ch->start_editing( pHelp->text );
 }
 
-/*
- * Stupid leading space muncher fix - Thoric
- */
-const char *help_fix( char *text )
-{
-   string fixed;
-
-   if( !text )
-      return "";
-   fixed = strip_cr( text );
-   if( fixed[0] == ' ' )
-      fixed[0] = '.';
-   return fixed.c_str(  );
-}
-
 CMDF( do_hset )
 {
    help_data *pHelp;

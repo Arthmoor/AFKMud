@@ -47,11 +47,17 @@ bool check_area_conflict( area_data *, int, int );
 void fread_afk_exit( FILE *, room_index * );
 extra_descr_data *fread_afk_exdesc( FILE * );
 
-// Don't fill in the unused slots unless SmaugFUSS plops a new value into one of them.
+/*
+ * There should be 34 entries here to match the size of the sector_types list in olc.h.
+ * They should be listed in the same order they appear in sec_flags in build.c for SmaugFUSS.
+ * Don't fill in the unused slots unless SmaugFUSS plops a new value into one of them. [Last checked: January 2025]
+ */
 const char *fuss_sec_flags[] = {
-   "inside", "city", "field", "forest", "hills", "mountain", "water_swim",
-   "water_noswim", "air", "underwater", "desert", "dunno", "oceanfloor",
-   "underground", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "lava"
+   "inside", "city", "field", "forest", "hills", "mountain", "water_swim",           // 6
+   "water_noswim", "underwater", "air", "desert", "dunno", "oceanfloor",             // 12
+   "underground", "lava", "swamp", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", // 20
+   "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",   // 28
+   "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED"                        // 34
 };
 
 // This table needs to stay in sync with SmaugFUSS to remain effective.

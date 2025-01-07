@@ -751,7 +751,7 @@ static void CmdDisplayFormat( void )
 
 static char *convert_error( DWORD error )
 {
-   char *formattedmsg;
+   char *formattedmsg = nullptr;
 
    if( !FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM |
                        FORMAT_MESSAGE_ALLOCATE_BUFFER |

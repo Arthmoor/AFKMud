@@ -735,7 +735,7 @@ CMDF( do_holidays )
 /* Load the holiday file */
 void load_holidays( void )
 {
-   holiday_data *day;
+   holiday_data *day = nullptr;
    ifstream stream;
 
    daylist.clear(  );

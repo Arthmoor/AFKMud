@@ -220,15 +220,16 @@ void check_clan_storeroom( char_data * ch )
 void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
 {
    list < clan_data * >::iterator cl;
-
+   clan_data *clan = nullptr;
    bool cfound = false;
 
    if( ch->isnpc(  ) )
       return;
 
-   clan_data *clan = nullptr;
    for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
+      clan = *cl;
+
       if( victim->pIndexData->vnum == clan->shopkeeper )
       {
          cfound = true;
