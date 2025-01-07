@@ -632,7 +632,7 @@ CMDF( do_setliquid )
    if( arg.empty(  ) )
    {
       ch->print( "Syntax: setliquid <vnum> <field> <value>\r\n" "        setliquid create <name>\r\n" "        setliquid delete <vnum>\r\n" );
-      ch->print( " Fields being one of the following:\r\n" " name color type shortdesc drunk thrist blood full\r\n" );
+      ch->print( " Fields being one of the following:\r\n" " name color type shortdesc drunk thirst blood full\r\n" );
       return;
    }
 
@@ -708,7 +708,7 @@ CMDF( do_setliquid )
       if( arg2.empty(  ) )
       {
          ch->print( "Syntax: setliquid <vnum> <field> <value>\r\n" );
-         ch->print( " Fields being one of the following:\r\n" " name color shortdesc drunk thrist blood full\r\n" );
+         ch->print( " Fields being one of the following:\r\n" " name color shortdesc drunk thirst blood full\r\n" );
          return;
       }
 
@@ -777,7 +777,7 @@ CMDF( do_setliquid )
          if( argument.empty(  ) )
          {
             ch->print( "Syntax: setliquid <vnum> <field> <value>\r\n" );
-            ch->print( " Fields being one of the following:\r\n" " name color shortdesc drunk thrist blood full\r\n" );
+            ch->print( " Fields being one of the following:\r\n" " name color shortdesc drunk thirst blood full\r\n" );
             return;
          }
 
