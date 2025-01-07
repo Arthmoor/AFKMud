@@ -665,8 +665,8 @@ renumber_data *gather_one_list( short type, int low, int high, int new_base, boo
    return root.next;
 }
 
-renumber_areas *gather_renumber_data( area_data * area, int new_base, bool fill_gaps )
 /* this function actualy gathers all the renumber data for an area */
+renumber_areas *gather_renumber_data( area_data * area, int new_base, bool fill_gaps )
 {
    renumber_areas *r_area;
    int max;

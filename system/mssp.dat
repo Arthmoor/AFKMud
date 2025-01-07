@@ -20,7 +20,7 @@ MCCP              1
 MCP               0
 MSP               1
 SSL               0
-MXP               0
+MXP               1
 Pueblo            0
 Vt100             0
 Xterm256          0
@@ -30,7 +30,7 @@ HiringBuilders    0
 HiringCoders      0
 AdultMaterial     0
 Multiclassing     0
-NewbieFriendly    0
+NewbieFriendly    1
 PlayerCities      0
 PlayerClans       1
 PlayerCrafting    1

@@ -455,7 +455,7 @@ CMDF( do_homepage )
    if( strstr( argument.c_str(  ), "://" ) )
       buf = argument;
    else
-      buf = "http://" + argument;
+      buf = "https://" + argument;
    buf = buf.substr( 0, 75 );
 
    hide_tilde( buf );

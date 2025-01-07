@@ -57,9 +57,8 @@ const int MIL = 2048;   /* MAX_INPUT_LENGTH */
 /*
  * Short scalar types.
  */
-#if !defined(BERR)
-#define BERR 255
-#endif
+// No idea what the purpose in doing this is, but BERR appears to be something Smaug made up and it's better defined this way.
+const short BERR = 255;
 
 typedef int ch_ret;
 
@@ -93,7 +92,8 @@ typedef bool SPEC_FUN( char_data * ch );
 #define SPELLF( name ) extern "C" ch_ret (name)( int sn, int level, char_data *ch, void *vo )
 #define SPECF( name ) extern "C" bool (name)( char_data *ch )
 
-#define DUR_CONV	93.333333333333333333333333   /* Original value: 23.3333... - Quadrupled for time changes */
+// This is another one of those things that doesn't make sense, but is used in several places. It also has no need to be a define vs a proper constant value.
+const float DUR_CONV = 93.333333333333333333333333; /* Original value: 23.333333333333333333333333... - Quadrupled for time changes */
 
 /* Hidden tilde char generated with alt155 on the number pad.
  * The code blocks the use of these symbols by default, so this should be quite safe. Samson 3-14-04
@@ -297,13 +297,13 @@ extern short gsn_dragon_ride;
  */
 struct extra_descr_data
 {
-   string keyword;   /* Keyword in look/examine */
-   string desc;   /* What to see */
+   string keyword; /* Keyword in look/examine */
+   string desc;    /* What to see */
 };
 
-#include "mudcfg.h"  /* Contains definitions specific to your mud - will not be covered by patches. Samson 3-14-04 */
-#include "color.h"   /* Custom color stuff */
-#include "olc.h"  /* Oasis OLC code and global definitions */
+#include "mudcfg.h" /* Contains definitions specific to your mud - will not be covered by patches. Samson 3-14-04 */
+#include "color.h"  /* Custom color stuff */
+#include "olc.h"    /* Oasis OLC code and global definitions */
 
 /*
  * Time and weather stuff.
@@ -668,8 +668,8 @@ do                                                                      \
 {                                                                       \
    if (!((result) = (type *) calloc ((number), sizeof(type))))          \
    {                                                                    \
-      perror("malloc failure");                                         \
-      fprintf(stderr, "Malloc failure @ %s:%d\n", __FILE__, __LINE__ ); \
+      perror("calloc failure");                                         \
+      fprintf(stderr, "Calloc failure @ %s:%d\n", __FILE__, __LINE__ ); \
       abort();                                                          \
    }                                                                    \
 } while(0)
@@ -852,7 +852,7 @@ class system_data
     ~system_data(  );
 
    void *dlHandle;   // libdl System Handle - Trax
-     bitset < SV_MAX > save_flags;  // Toggles for saving conditions
+   bitset < SV_MAX > save_flags;  // Toggles for saving conditions
    string time_of_max;  // Time of max ever
    string mud_name;  // Name of mud
    string admin_email;  // Email address for admin - Samson 10-17-98
@@ -1416,7 +1416,7 @@ template < size_t N > const char *bitset_string( bitset < N > bits, const char *
 }
 
 // This temlate is used during file reading to set flags based on the string names.
-// Loosely resembled Remcon's WEXTKEY macro from his LoP codebase.
+// Loosely resembles Remcon's WEXTKEY macro from his LoP codebase.
 template < size_t N > void flag_set( FILE * fp, bitset < N > &field, const char *flagarray[] )
 {
    string flags, flag;
