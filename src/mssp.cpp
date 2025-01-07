@@ -126,6 +126,7 @@ void save_mssp_info( void )
       stream << "Genre             " << mssp_info->genre << endl;
       stream << "GamePlay          " << mssp_info->gamePlay << endl;
       stream << "GameSystem        " << mssp_info->gameSystem << endl;
+      stream << "Intermud          " << mssp_info->intermud << endl;
       stream << "Status            " << mssp_info->status << endl;
       stream << "SubGenre          " << mssp_info->subgenre << endl;
       stream << "Created           " << mssp_info->created << endl;
@@ -296,6 +297,14 @@ void load_mssp_data( void )
          strip_lspace( value );
 
          mssp_info->icon = value;
+      }
+      else if( key == "Intermud" )
+      {
+         stream.getline( buf, MSL );
+         value = buf;
+         strip_lspace( value );
+
+         mssp_info->intermud = value;
       }
       else if( key == "Language" )
       {
@@ -565,6 +574,7 @@ void show_mssp( char_data * ch )
    ch->printf( "&zGamePlay          &W%s\r\n", mssp_info->gamePlay.c_str() );
    ch->printf( "&zGameSystem        &W" );
    ch->desc->buffer_printf( "%s\r\n", mssp_info->gameSystem.c_str() ); // Because D&D is a valid option and color tags mess this up.
+   ch->printf( "&zIntermud          &W%s\r\n", mssp_info->intermud.c_str() );
    ch->printf( "&zStatus            &W%s\r\n", mssp_info->status.c_str() );
    ch->printf( "&zSubGenre          &W%s\r\n", mssp_info->subgenre.c_str() );
    ch->printf( "&zCreated           &W%d\r\n", mssp_info->created );
@@ -612,7 +622,7 @@ CMDF( do_setmssp )
       ch->print( "Field being one of:\r\n" );
       ch->print( "hostname       ip                contact            icon             lanuage          location\r\n" );
       ch->print( "website        family            genre              gameplay         game_system\r\n" );
-      ch->print( "status         subgenre          created            min_age\r\n" );
+      ch->print( "status         subgenre          intermud           created          min_age\r\n" );
       ch->print( "worlds         ansi              mccp               mcp              msp\r\n" );
       ch->print( "ssl            mxp               pueblo             vt100            xterm256\r\n" );
       ch->print( "pay2play       pay4perks         hiring_builders    hiring_coders    adult_material\r\n" );
@@ -651,6 +661,8 @@ CMDF( do_setmssp )
       strptr = &mssp_info->gamePlay;
    else if( !str_cmp( arg1, "game_system" ) )
       strptr = &mssp_info->gameSystem;
+   else if( !str_cmp( arg1, "intermud" ) )
+      strptr = &mssp_info->intermud;
    else if( !str_cmp( arg1, "status" ) )
       strptr = &mssp_info->status;
    else if( !str_cmp( arg1, "subgenre" ) )
@@ -930,6 +942,7 @@ void send_mssp_data( descriptor_data * d )
    mssp_reply( d, "GENRE", "%s", mssp_info->genre.c_str(  ) );
    mssp_reply( d, "GAMEPLAY", "%s", mssp_info->gamePlay.c_str(  ) );
    mssp_reply( d, "GAMESYSTEM", "%s", mssp_info->gameSystem.c_str(  ) );
+   mssp_reply( d, "INTERMUD", "%s", mssp_info->intermud.c_str(  ) );
    mssp_reply( d, "STATUS", "%s", mssp_info->status.c_str(  ) );
    mssp_reply( d, "SUBGENRE", "%s", mssp_info->subgenre.c_str(  ) );
    mssp_reply( d, "WORLDS", "%d", mssp_info->worlds );

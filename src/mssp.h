@@ -73,6 +73,7 @@ struct msspinfo
    string genre;
    string gamePlay;
    string gameSystem;
+   string intermud;
    string status;
    string subgenre;
    string equipmentSystem;

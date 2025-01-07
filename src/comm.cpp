@@ -408,7 +408,7 @@ void init_mud( bool fCopyOver, int gameport )
    if( fCopyOver )
    {
       open_mud_log(  );
-      log_string( "Hotboot: Spawning new log file" );
+      log_string( "Hotboot: Spawning new log file." );
    }
 
    log_string( "Booting Database" );
@@ -416,9 +416,9 @@ void init_mud( bool fCopyOver, int gameport )
 
    if( !fCopyOver )  /* We have already the port if copyover'ed */
    {
-      log_string( "Initializing main socket" );
+      log_string( "Initializing main socket..." );
       control = init_socket( gameport );
-      log_string( "Main socket initialized" );
+      log_string( "Main socket initialized." );
    }
 
    clear_trdata(  ); // Begin the transfer data tracking
