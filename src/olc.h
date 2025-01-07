@@ -535,14 +535,6 @@ class olc_data
 #define OLC_CHANGE(d)	((d)->olc->changed)  /* Changed flag      */
 #define OLC_EXIT(d)     ((d)->olc->xit)   /* An Exit     */
 
-#ifdef OLD_CIRCLE_STYLE
-# define OLC_ROOM(d)    ((d)->olc->room)  /* Room structure       */
-# define OLC_OBJ(d)     ((d)->olc->obj)   /* Object structure     */
-# define OLC_MOB(d)     ((d)->olc->mob)   /* Mob structure        */
-# define OLC_SHOP(d)    ((d)->olc->shop)  /* Shop structure       */
-# define OLC_EXIT(d)	(OLC_ROOM(d)->dir_option[OLC_VAL(d)])
-#endif
-
 /*. Add/Remove save list types	.*/
 const int OLC_SAVE_ROOM = 0;
 const int OLC_SAVE_OBJ = 1;

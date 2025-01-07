@@ -991,8 +991,8 @@ class skill_type
      skill_type(  );
     ~skill_type(  );
 
-     list < class smaug_affect * >affects;   /* Spell affects, if any */
-     bitset < MAX_SF_FLAG > flags;  /* Flags */
+   list < class smaug_affect * >affects;   /* Spell affects, if any */
+   bitset < MAX_SF_FLAG > flags;  /* Flags */
    SPELL_FUN *spell_fun;   /* Spell pointer (for spells) */
    DO_FUN *skill_fun;   /* Skill pointer (for skills) */
    char *name; /* Name of skill */
