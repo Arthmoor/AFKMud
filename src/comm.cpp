@@ -241,19 +241,20 @@ void directory_check( void )
       }
    }
 
-   // Made it? Sweet. Drop the check file so we don't do this on every last reboot.
-   log_string( "Directory check passed." );
    if( chdir( "../area" ) == -1 )
    {
       fprintf( stderr, "FATAL ERROR :: Unable to change directories during directory check! Cannot continue." );
       exit( 1 );
    }
 
+   // Made it? Sweet. Drop the check file so we don't do this on every last reboot.
    if( system( "touch DIR_CHECK_PASSED" ) == -1 )
    {
       fprintf( stderr, "FATAL ERROR :: Unable to generate DIR_CHECK_PASSED" );
       exit( 1 );
    }
+
+   log_string( "Directory check passed." );
 }
 
 #if defined(WIN32)   /* NJG */
