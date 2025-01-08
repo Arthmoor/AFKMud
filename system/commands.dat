@@ -465,6 +465,14 @@ Log         normal
 End
 
 #COMMAND
+Name        chess~
+Code        do_chess
+Position    resting
+Level       5
+Log         normal
+End
+
+#COMMAND
 Name        cedit
 Code        do_cedit
 Position    dead
