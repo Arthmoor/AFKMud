@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2020 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2025 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -376,7 +376,6 @@ int init_socket( int mudport )
 #else
    if( bind( fd, ( struct sockaddr * )&sa, sizeof( sa ) ) == -1 )
 #endif
-   
    {
       perror( "Init_socket: bind" );
       close( fd );

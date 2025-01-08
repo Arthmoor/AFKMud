@@ -117,6 +117,7 @@ ChanName      log
 ChanColorname log
 ChanLevel     101
 ChanType      5
+ChanFlags     keephistory
 End
 
 #CHANNEL

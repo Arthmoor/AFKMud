@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2020 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2025 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -266,6 +266,14 @@ void load_mssp_data( void )
 
          mssp_info->gameSystem = value;
       }
+      else if( key == "Intermud" )
+      {
+         stream.getline( buf, MSL );
+         value = buf;
+         strip_lspace( value );
+
+         mssp_info->intermud = value;
+      }
       else if( key == "Hostname" )
       {
          stream.getline( buf, MSL );
@@ -297,14 +305,6 @@ void load_mssp_data( void )
          strip_lspace( value );
 
          mssp_info->icon = value;
-      }
-      else if( key == "Intermud" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->intermud = value;
       }
       else if( key == "Language" )
       {

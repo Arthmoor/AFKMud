@@ -5,7 +5,7 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2020 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2025 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine,                *
  * Xorith, and Adjani.                                                      *
@@ -1150,9 +1150,11 @@ void load_clans( void )
    for( ;; )
    {
       filename = feof( fpList ) ? "$" : fread_word( fpList );
-      log_string( filename );
+
       if( filename[0] == '$' )
          break;
+
+      log_string( filename );
 
       if( !load_clan_file( filename ) )
          bug( "%s: Cannot load clan file: %s", __func__, filename );
