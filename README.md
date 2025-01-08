@@ -130,7 +130,7 @@ MSP - Mud Sound Protocol
 
 AFKMud includes support for the MUD Sound Protocol, a system which allows the mud to generate sound for players with clients that support it. For now this seems largely restricted to Zmud users.
 
-Further information on the protocol can be found at: http://www.zuggsoft.com/zmud/mspzmud.htm
+Further information on the protocol can be found at: https://www.zuggsoft.com/zmud/msp.htm
 
 MXP - Mud eXtension Protocol
 ============================
