@@ -534,7 +534,7 @@ static void SegVio( int signum )
 
    // That's all, folks.
    log_string( "Normal termination of game." );
-   log_string( "Cleaning up Memory.&d" );
+   log_string( "Cleaning up Memory.\033[0m" );
    cleanup_memory(  );
    exit( 0 );
 }
@@ -651,7 +651,7 @@ static void caught_alarm( int signum )
     * That's all, folks.
     */
    log_string( "Normal termination of game." );
-   log_string( "Cleaning up Memory.&d" );
+   log_string( "Cleaning up Memory.\033[0m" );
    cleanup_memory(  );
    exit( 0 );
 }
@@ -1342,7 +1342,7 @@ int main( int argc, char **argv )
 
    // That's all, folks.
    log_string( "Normal termination of game." );
-   log_string( "Cleaning up Memory.&d" );
+   log_string( "Cleaning up Memory.\033[0m" );
    cleanup_memory(  );
    exit( 0 );
 }
