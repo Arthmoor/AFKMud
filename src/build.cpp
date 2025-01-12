@@ -7186,7 +7186,6 @@ CMDF( do_vassign )
    victim->pcdata->hi_vnum = hi;
    assign_area( victim );
    ch->print( "Done.\r\n" );
-   assign_area( victim );  /* Put back by Thoric on 02/07/96 */
    victim->printf( "&Y%s has assigned you the vnum range %d - %d.\r\n", ch->name, lo, hi );
 
    if( !victim->pcdata->area )
