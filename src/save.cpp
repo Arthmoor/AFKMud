@@ -1337,7 +1337,11 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             break;
 
          case 'P':
-            KEY( "Password", ch->pcdata->pwd, fread_string_nohash( fp ) );
+            if( !str_cmp( word, "Password" ) )
+            {
+               fread_string( ch->pcdata->pwd, fp );
+               break;
+            }
 
             if( !str_cmp( word, "PCFlags" ) )
             {
