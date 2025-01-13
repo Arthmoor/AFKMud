@@ -1390,7 +1390,7 @@ CMDF( do_setexit )
          return;
       }
 
-      modify_mapexit( mexit, map, ch->wmap, ch->mx, ch->my, x, y, -1, nullptr );
+      modify_mapexit( mexit, map, ch->wmap, ch->mx, ch->my, x, y, -1, "" );
       putterr( ch->wmap, ch->mx, ch->my, SECT_EXIT );
       ch->printf( "Exit set to map of %s, at %dX, %dY.\r\n", arg2.c_str(  ), x, y );
       return;
