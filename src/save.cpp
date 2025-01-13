@@ -265,6 +265,10 @@ void fwrite_char( char_data * ch, FILE * fp )
    if( pos > POS_SITTING && pos < POS_STANDING )
       pos = POS_STANDING;
    fprintf( fp, "Position     %s~\n", npc_position[pos] );
+
+   // What room vnum are we in?
+   fprintf( fp, "Room         %d\n", ( ch->in_room == get_room_index( ROOM_VNUM_LIMBO ) && ch->was_in_room ) ? ch->was_in_room->vnum : ch->in_room->vnum );
+
    /*
     * Overland Map - Samson 7-31-99 
     */
