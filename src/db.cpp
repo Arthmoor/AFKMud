@@ -42,6 +42,8 @@
 #endif
 #include <cstdarg>
 #include <cmath>
+#include <sstream>
+#include <stacktrace>
 #include "mud.h"
 #include "area.h"
 #include "auction.h"
@@ -1972,9 +1974,6 @@ void boot_db( bool fCopyOver )
    log_string( "Initializing random number generator" );
    srand( current_time );
 
-   log_string( "Setting Astral Walk target room" );
-   astral_target = number_range( 4350, 4449 );  /* Added by Samson for Astral Walk spell */
-
    /*
     * Set time and weather.
     */
@@ -2059,9 +2058,22 @@ void boot_db( bool fCopyOver )
          set_alarm( 0 );
       }
       FCLOSE( fpList );
+      log_string( "...done reading in area files." );
    }
 
    mudstrlcpy( strArea, "NO FILE", MIL );
+
+   log_string( "Setting Astral Walk target room." );
+   if( !find_area( "astral.are" ) )
+   {
+      log_string( "Astral Plane zone not found. Spell will be disabled." );
+      astral_target = -1;
+   }
+   else
+   {
+      astral_target = number_range( 4350, 4449 );  /* Added by Samson for Astral Walk spell. Chooses a random target room. */
+      log_printf( "Astral Walk target room for this boot is: %d", astral_target );
+   }
 
    log_string( "Loading ships..." );
    load_ships(  );
@@ -2430,6 +2442,7 @@ void append_to_file( const string & file, const char *fmt, ... )
    }
 }
 
+#if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32) && defined(C1Z)
 /*
  * This very slick beauty was found here: http://mykospark.net/2009/09/runtime-backtrace-in-c-with-name-demangling/
  * At least now the symbols are readable :P
@@ -2461,8 +2474,69 @@ const char *demangle( const char *symbol )
    return symbol;
 }
 
-/* Reports a bug. */
-/* Now includes backtrace data for that supernifty bug report! - Samson 10-11-03 */
+void generate_backtrace( void )
+{
+   void *array[20];
+
+   size_t size = backtrace( array, 20 );
+   char **strings = backtrace_symbols( array, size );
+
+   log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %zu stack frames.", size );
+
+   // Intentionally starting from 1, because who cares about the bug() call itself.
+   for( size_t i = 1; i < size; ++i )
+      log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, demangle( strings[i] ) );
+
+   free( strings );
+}
+#endif
+
+/*
+ * Believe it or not, this little gem originated as a code example in a Google search.
+ * I've modified what Google AI provided to cut the filename down to the actual source code file.
+ * Output of the results gets sent to the standard game log. - Samson 1/11/2025
+ *
+ * Note: This requires compiling with C++23 support. Currently C++23 is available with GCC 13 and later.
+ */
+#if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32) && !defined(C1Z)
+void generate_backtrace( void )
+{
+   std::stacktrace trace = std::stacktrace::current();
+   ostringstream lines;
+
+   lines << endl << "Obtained " << trace.size() << " stack frames:" << endl << endl;
+
+   for( const auto& frame : trace )
+   {
+      string::size_type pos = frame.source_file().find_last_of( "/", frame.source_file().length() );
+      string file_name;
+
+      if( pos != string::npos )
+         file_name = frame.source_file().substr( pos + 1 );
+      else
+         file_name = frame.source_file();
+
+      lines << frame.description() << " -> " << file_name << ":" << frame.source_line() << endl;
+   }
+   log_string( lines.str( ) );
+}
+#endif
+
+/* Reports a bug.
+ *
+ * In the function call for this, you can specify the following:
+ *
+ * __func__ The function name where "bug" was called from.    Type = *char, uses %s formatting.
+ * __FILE__ The source code file where "bug" was called from. Type = *char, uses %s formatting.
+ * __LINE__ The line of the file where "bug" was called from. Type = int,   uses %d formatting.
+ *
+ * Example:
+ *
+ * bug( "%s -> %s:%d: Backtrace test.", __func__, __FILE__, __LINE__ );
+ *
+ * Due to the formatting attributes, at least __func__ is required.
+ * It's helpful to include the file and line tags since for some odd reason the backtrace code won't include the function that called "bug".
+ */
 void bug( const char *str, ... )
 {
    char buf[MSL];
@@ -2498,18 +2572,7 @@ void bug( const char *str, ... )
 #if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
    if( !fBootDb )
    {
-      void *array[20];
-
-      size_t size = backtrace( array, 20 );
-      char **strings = backtrace_symbols( array, size );
-
-      log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %zu stack frames.", size );
-
-      // Intentionally starting from 1, because who cares about the bug() call itself.
-      for( size_t i = 1; i < size; ++i )
-         log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, demangle( strings[i] ) );
-
-      free( strings );
+      generate_backtrace();
    }
 #endif
 }

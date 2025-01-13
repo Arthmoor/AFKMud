@@ -1032,6 +1032,8 @@ void load_shellcommands( void )
          if( scmd->get_level(  ) >= LEVEL_IMMORTAL )
             scmd->flags.set( CMD_GHOST );
       }
+      else if( key == "#END" )
+         return;
       else
          bug( "%s: Bad line in shell commands file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
@@ -1250,7 +1252,7 @@ CMDF( do_shelledit )
    /*
     * display usage message 
     */
-   do_shelledit( ch, nullptr );
+   do_shelledit( ch, "" );
 }
 
 bool shell_hook( char_data * ch, const string & command, string & argument )

@@ -284,11 +284,11 @@ void assign_gsn_data( void )
  * Race table.
  */
 const char *npc_race[MAX_NPC_RACE] = {
-   // Playable Races - MAX_RACE in mudcfg.h must be raised before more can be added after r9.
+   // Playable Races - MAX_RACE in mudcfg.h must be raised before more can be added after r19.
    // The race_types enum also needs to be syncd with this.
-   "human", "high-elf", "dwarf", "halfling", "pixie", "half-ogre", "half-orc",     // 6 (starts from 0)
-   "half-troll", "half-elf", "gith", "minotaur", "duergar", "centaur",             // 12
-   "iguanadon", "gnome", "drow", "wild-elf", "insectoid", "sahuagin", "r9",        // 19
+   "Human", "High-Elf", "Dwarf", "Halfling", "Pixie", "Half-Ogre", "Half-Orc",     // 6 (starts from 0)
+   "Half-Troll", "Half-Elf", "Gith", "Minotaur", "Duergar", "Centaur",             // 12
+   "Iguanadon", "Gnome", "Drow", "Wild-Elf", "Insectoid", "Sahuagin", "r19",       // 19
 
    // NPCs only
    "halfbreed", "reptile", "Mysterion", "lycanthrope", "dragon", "undead",         // 25
@@ -326,7 +326,7 @@ const char *npc_class[MAX_NPC_CLASS] = {
    "pc14", "pc15", "pc16", "pc17", "pc18", "pc19",
 
    // NPCs only
-   "baker", "butcher", "blacksmith", "mayor", "king", "queen"
+   "Baker", "Butcher", "Blacksmith", "Mayor", "King", "Queen"
 };
 
 /*

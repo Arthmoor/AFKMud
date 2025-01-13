@@ -328,8 +328,10 @@ area_data *create_area( void )
    pArea->tg_potion = 50;
    pArea->tg_wand = 60;
    pArea->tg_armor = 75;
+
    arealist.push_back( pArea );
    ++top_area;
+
    return pArea;
 }
 
@@ -655,10 +657,10 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
             if( !str_cmp( word, "Coordinates" ) )
             {
-               int x, y;
+               short x, y;
 
-               x = fread_number( fp );
-               y = fread_number( fp );
+               x = fread_short( fp );
+               y = fread_short( fp );
 
                if( x < 0 || x >= MAX_X )
                {
@@ -1474,6 +1476,9 @@ void fread_afk_room( FILE * fp, area_data * tarea )
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __func__ );
+         if( fBootDb )
+            exit( 1 );
+
          word = "#ENDROOM";
       }
 
@@ -3006,7 +3011,7 @@ CMDF( do_aassign )
    if( argument.empty(  ) )
    {
       ch->print( "Syntax: aassign <filename.are>  - Assigns you an area for building.\r\n" );
-      ch->print( "        aassign none/null/clear - Clears your assigned area and restores your " "building area (if any).\r\n" );
+      ch->print( "        aassign none/null/clear - Clears your assigned area and restores your building area (if any).\r\n" );
       if( ch->get_trust(  ) < LEVEL_GOD )
          ch->print( "Note: You can only aassign areas bestowed upon you.\r\n" );
       if( ch->get_trust(  ) < sysdata->level_modify_proto )

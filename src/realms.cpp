@@ -337,7 +337,12 @@ void fread_realm( realm_data * realm, FILE * fp )
 
          case 'E':
             if( !str_cmp( word, "End" ) )
+            {
+               if( file_ver == 0 )
+                  ; // Do Nothing. This is just to shut the compiler up about file_ver not yet being used.
+
                return;
+            }
             break;
 
          case 'F':

@@ -2926,7 +2926,14 @@ SPELLF( spell_summon )
 /* Modified by Samson, arrives in Astral Plane area at randomly chosen location */
 SPELLF( spell_astral_walk )
 {
+   list < char_data * >::iterator ich;
    room_index *location;
+
+   if( astral_target == -1 )
+   {
+      ch->print( "&[magic]Astral Walk is currently unavailable due to a technical issue with the game.\r\n" );
+      return rSPELL_FAILED;
+   }
 
    if( !( location = get_room_index( astral_target ) ) || ch->in_room->flags.test( ROOM_NO_ASTRAL ) || ch->in_room->area->flags.test( AFLAG_NOASTRAL ) )
    {
@@ -2942,7 +2949,6 @@ SPELLF( spell_astral_walk )
    act( AT_MAGIC, "You open a gateway onto another plane!", ch, nullptr, nullptr, TO_CHAR );
    act( AT_MAGIC, "$n appears from a gateway in thin air!", ch, nullptr, nullptr, TO_ROOM );
 
-   list < char_data * >::iterator ich;
    for( ich = original->people.begin(  ); ich != original->people.end(  ); )
    {
       char_data *vch = ( *ich );

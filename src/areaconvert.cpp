@@ -41,6 +41,8 @@
 bool area_failed;
 int dotdcheck;
 
+bool check_area_conflict( area_data *, int, int );
+
 const char *stock_act[] = {
    "npc", "sentinel", "scavenger", "r1", "r2", "aggressive", "stayarea",
    "wimpy", "pet", "train", "practice", "immortal", "deadly", "polyself",
@@ -217,38 +219,6 @@ char *ext_flag_string( EXT_BV * bitvector, const char *flagarray[] )
       buf[--x] = '\0';
 
    return buf;
-}
-
-bool check_area_conflict( area_data * area, int low_range, int hi_range )
-{
-   if( low_range < area->low_vnum && area->low_vnum < hi_range )
-      return true;
-
-   if( low_range < area->hi_vnum && area->hi_vnum < hi_range )
-      return true;
-
-   if( ( low_range >= area->low_vnum ) && ( low_range <= area->hi_vnum ) )
-      return true;
-
-   if( ( hi_range <= area->hi_vnum ) && ( hi_range >= area->low_vnum ) )
-      return true;
-
-   return false;
-}
-
-// Runs the entire list, easier to call in places that have to check them all
-bool check_area_conflicts( int lo, int hi )
-{
-   list < area_data * >::iterator iarea;
-
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
-   {
-      area_data *area = *iarea;
-
-      if( check_area_conflict( area, lo, hi ) )
-         return true;
-   }
-   return false;
 }
 
 void load_stmobiles( area_data * tarea, FILE * fp, bool manual )

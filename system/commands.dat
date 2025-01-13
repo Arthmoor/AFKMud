@@ -701,7 +701,7 @@ End
 Name        donate
 Code        do_donate
 Position    resting
-Level       10
+Level       5
 Log         normal
 End
 

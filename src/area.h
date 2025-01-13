@@ -104,19 +104,19 @@ class area_data
    void fold( const char *, bool );
    void wipe_resets(  );
 
-     list < room_index * >rooms; // The list of room indexes for this area
-     list < mob_index * >mobs;   // The list of mob indexes for this area
+     list < room_index * >rooms;    // The list of room indexes for this area
+     list < mob_index * >mobs;      // The list of mob indexes for this area
      list < obj_index * >objects;   // The list of object indexes for this area
-   weather_data *weather;  /* FB */
+   weather_data *weather;           /* FB */
      bitset < AFLAG_MAX > flags;
    char *name;
    char *filename;
-   char *author;  /* Scryn */
+   char *author;                    /* Scryn */
    char *credits;
-   char *resetmsg;   /* Rennard */
-   time_t creation_date;   // Timestamp for when this area was first created. Samson 1/20/07
-   time_t install_date; // Timestamp for when this area was "live" installed. Samson 1/20/07
-   time_t last_resettime; // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
+   char *resetmsg;                  /* Rennard */
+   time_t creation_date;            // Timestamp for when this area was first created. Samson 1/20/07
+   time_t install_date;             // Timestamp for when this area was "live" installed. Samson 1/20/07
+   time_t last_resettime;           // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
    int low_vnum;
    int hi_vnum;
    int low_soft_range;
@@ -133,11 +133,11 @@ class area_data
    unsigned short tg_nothing; // TG Values are for area-specific random treasure chances - Samson 11-25-04
    unsigned short tg_gold;
    unsigned short tg_item;
-   unsigned short tg_gem;  // Runes come after gems and go up to 100%
-   unsigned short tg_scroll;  // These are for specific chances of a particular item type - Samson 11-25-04
+   unsigned short tg_gem;           // Runes come after gems and go up to 100%
+   unsigned short tg_scroll;        // These are for specific chances of a particular item type - Samson 11-25-04
    unsigned short tg_potion;
    unsigned short tg_wand;
-   unsigned short tg_armor;   // Weapons come after armors and go up to 100%
+   unsigned short tg_armor;         // Weapons come after armors and go up to 100%
 };
 
 area_data *create_area(  );

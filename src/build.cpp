@@ -50,7 +50,6 @@ bool validate_spec_fun( const string & );
 int mob_xp( char_data * );
 char *sprint_reset( reset_data *, short & );
 void assign_area( char_data * );
-bool check_area_conflicts( int, int );
 
 /*
  * Exit Pull/push types
@@ -69,7 +68,7 @@ const char *ex_pfire[] = { "lava", "hotair" };
 /* Stuff that isn't from stock Smaug */
 
 const char *npc_sex[SEX_MAX] = {
-   "neuter", "male", "female", "hermaphrodite"
+   "Neuter", "Male", "Female", "Hermaphrodite"
 };
 
 const char *npc_position[POS_MAX] = {
@@ -7091,6 +7090,38 @@ CMDF( do_makerooms )
       ++vnum;
    }
    ch->printf( "%d rooms created.\r\n", room_count );
+}
+
+bool check_area_conflict( area_data * area, int low_range, int hi_range )
+{
+   if( low_range < area->low_vnum && area->low_vnum < hi_range )
+      return true;
+
+   if( low_range < area->hi_vnum && area->hi_vnum < hi_range )
+      return true;
+
+   if( ( low_range >= area->low_vnum ) && ( low_range <= area->hi_vnum ) )
+      return true;
+
+   if( ( hi_range <= area->hi_vnum ) && ( hi_range >= area->low_vnum ) )
+      return true;
+
+   return false;
+}
+
+// Runs the entire list, easier to call in places that have to check them all
+bool check_area_conflicts( int lo, int hi )
+{
+   list < area_data * >::iterator iarea;
+
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   {
+      area_data *area = *iarea;
+
+      if( check_area_conflict( area, lo, hi ) )
+         return true;
+   }
+   return false;
 }
 
 /* Consolidated *assign function. 

@@ -507,7 +507,7 @@ bool survey_environment( char_data * ch )
       if( ch->wmap != en->wmap )
          continue;
 
-      dist = ( int )distance( ch->mx, ch->my, en->mx, en->my );
+      dist = distance( ch->mx, ch->my, en->mx, en->my );
 
       if( dist > 300 )
          continue;

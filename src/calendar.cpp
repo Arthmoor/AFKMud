@@ -236,7 +236,6 @@ const char *season_name[] = {
  *
  *   printf( "Duration is %s\n", duration( tsecs, buff ) );
  */
-
 const int DUR_SCMN = 60;
 const int DUR_MNHR = 60;
 const int DUR_HRDY = 24;

@@ -927,6 +927,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
 
 void to_channel( const string & argument, const string & xchannel, int level )
 {
+   list < descriptor_data * >::iterator ds;
    mud_channel *channel;
 
    if( dlist.empty(  ) || argument.empty(  ) )
@@ -941,7 +942,6 @@ void to_channel( const string & argument, const string & xchannel, int level )
    if( channel->flags.test( CHAN_KEEPHISTORY ) )
       update_channel_history( nullptr, channel, argument, false );
 
-   list < descriptor_data * >::iterator ds;
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
       descriptor_data *d = *ds;

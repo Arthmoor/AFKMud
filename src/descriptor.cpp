@@ -2607,6 +2607,7 @@ void display_motd( char_data * ch )
       ch->desc->connected = CON_READ_MOTD;
       return;
    }
+
    if( ch->level < LEVEL_IMMORTAL && ch->level > 0 && ch->pcdata->motd < sysdata->motd )
    {
       if( ch->has_pcflag( PCFLAG_ANSI ) )
@@ -2620,6 +2621,7 @@ void display_motd( char_data * ch )
       ch->desc->connected = CON_READ_MOTD;
       return;
    }
+
    if( ch->level == 0 )
    {
       if( ch->has_pcflag( PCFLAG_ANSI ) )

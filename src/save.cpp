@@ -63,7 +63,7 @@ bool is_valid_wear_loc( char_data *, int );
 /*
  * Increment with every major format change.
  */
-const int SAVEVERSION = 23;
+const int SAVEVERSION = 24;
 /* Updated to version 4 after addition of alias code - Samson 3-23-98 */
 /* Updated to version 5 after installation of color code - Samson */
 /* Updated to version 6 for rare item tracking support - Samson */
@@ -208,6 +208,13 @@ void fwrite_char( char_data * ch, FILE * fp )
    fprintf( fp, "Version      %d\n", SAVEVERSION );
    fprintf( fp, "Name         %s~\n", ch->name );
    fprintf( fp, "Password     %s~\n", ch->pcdata->pwd.c_str(  ) );
+   fprintf( fp, "Site         %s~\n", ch->pcdata->lasthost.c_str(  ) );
+   if( !ch->pcdata->email.empty(  ) )  /* Samson 4-19-98 */
+      fprintf( fp, "Email        %s~\n", ch->pcdata->email.c_str(  ) );
+   if( !ch->pcdata->homepage.empty(  ) )
+      fprintf( fp, "Homepage     %s~\n", ch->pcdata->homepage.c_str(  ) );
+   if( ch->pcdata->bio && ch->pcdata->bio[0] != '\0' )
+      fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ) );
    if( ch->chardesc && ch->chardesc[0] != '\0' )
       fprintf( fp, "Description  %s~\n", strip_cr( ch->chardesc ) );
    fprintf( fp, "Sex          %s~\n", npc_sex[ch->sex] );
@@ -219,13 +226,6 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, "Rank         %s~\n", ch->pcdata->rank );
    if( !ch->pcdata->bestowments.empty(  ) )
       fprintf( fp, "Bestowments  %s~\n", ch->pcdata->bestowments.c_str(  ) );
-   if( !ch->pcdata->homepage.empty(  ) )
-      fprintf( fp, "Homepage     %s~\n", ch->pcdata->homepage.c_str(  ) );
-   if( !ch->pcdata->email.empty(  ) )  /* Samson 4-19-98 */
-      fprintf( fp, "Email        %s~\n", ch->pcdata->email.c_str(  ) );
-   fprintf( fp, "Site         %s~\n", ch->pcdata->lasthost.c_str(  ) );
-   if( ch->pcdata->bio && ch->pcdata->bio[0] != '\0' )
-      fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ) );
    if( !ch->pcdata->authed_by.empty(  ) )
       fprintf( fp, "AuthedBy     %s~\n", ch->pcdata->authed_by.c_str(  ) );
    if( ch->pcdata->prompt && ch->pcdata->prompt[0] != '\0' )
@@ -248,8 +248,7 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, "Helled       %ld %s~\n", ch->pcdata->release_date, ch->pcdata->helled_by );
    fprintf( fp, "Status       %d %d %d %d %d %d %d\n", ch->level, ch->gold, ch->exp, ch->height, ch->weight, ch->spellfail, ch->mental_state );
    fprintf( fp, "Status2      %d %d %d %d %d %d %d %d\n", ch->style, ch->pcdata->practice, ch->alignment, ch->pcdata->favor, ch->hitroll, ch->damroll, ch->armor, ch->wimpy );
-   fprintf( fp, "Configs      %d %d %d %d %d %d 0 %d\n", ch->pcdata->pagerlen, -1, -1, -1, ch->pcdata->timezone, ch->wait,
-            ( ch->in_room == get_room_index( ROOM_VNUM_LIMBO ) && ch->was_in_room ) ? ch->was_in_room->vnum : ch->in_room->vnum );
+   fprintf( fp, "Configs      %d %d %d\n", ch->pcdata->pagerlen, ch->pcdata->timezone, ch->wait );
 
    /*
     * MOTD times - Samson 12-31-00 
@@ -447,13 +446,14 @@ void fwrite_char( char_data * ch, FILE * fp )
  */
 void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FILE * fp, int iNest, bool hotboot )
 {
+   list < obj_data * >::iterator iobj;
+
    if( iNest >= MAX_NEST )
    {
       bug( "%s: iNest hit MAX_NEST %d", __func__, iNest );
       return;
    }
 
-   list < obj_data * >::iterator iobj;
    for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
       obj_data *obj = *iobj;
@@ -671,6 +671,8 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
 */
 void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
 {
+   list < affect_data * >::iterator paf;
+
    if( !mob->isnpc(  ) || !fp )
       return;
 
@@ -699,7 +701,6 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
    if( mob->has_aflags(  ) )
       fprintf( fp, "AffectedBy   %s~\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
 
-   list < affect_data * >::iterator paf;
    for( paf = mob->affects.begin(  ); paf != mob->affects.end(  ); ++paf )
    {
       affect_data *af = *paf;
@@ -713,8 +714,10 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
       else
          fprintf( fp, "Affect       %3d %3d %3d %3d %d\n", af->type, af->duration, af->modifier, af->location, af->bit );
    }
+
    fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move, mob->max_move );
    fprintf( fp, "Exp          %d\n", mob->exp );
+
    if( !mob->carrying.empty(  ) )
    {
       list < obj_data * >::iterator iobj;
@@ -1134,38 +1137,52 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                break;
             }
 
+            // Oh God, why did you ever put the player's occupied room vnum into this mess?
             if( !str_cmp( word, "Configs" ) )
             {
                line = fread_line( fp );
                x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = 0;
-               sscanf( line, "%d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8 );
-               ch->pcdata->pagerlen = x1;
-               ch->pcdata->timezone = x5;
-               ch->wait = x6;
 
-               room_index *temp = get_room_index( x8 );
-
-               if( !temp )
-                  temp = get_room_index( ROOM_VNUM_TEMPLE );
-
-               if( !temp )
-                  temp = get_room_index( ROOM_VNUM_LIMBO );
-
-               /*
-                * Um, yeah. If this happens you're shit out of luck! 
-                */
-               if( !temp )
+               if( file_ver < 24 )
                {
-                  bug( "%s", "FATAL: No valid fallback rooms. Program terminating!" );
-                  exit( 1 );
+                  sscanf( line, "%d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8 );
+                  ch->pcdata->pagerlen = x1;
+                  ch->pcdata->timezone = x5;
+                  ch->wait = x6;
+
+                  room_index *temp = get_room_index( x8 );
+
+                  if( !temp )
+                     temp = get_room_index( ROOM_VNUM_TEMPLE );
+
+                  if( !temp )
+                     temp = get_room_index( ROOM_VNUM_LIMBO );
+
+                  /*
+                  * Um, yeah. If this happens you're shit out of luck! 
+                  */
+                  if( !temp )
+                  {
+                     bug( "%s", "FATAL: No valid fallback rooms. Program terminating!" );
+                     exit( 1 );
+                  }
+
+                  /*
+                  * And you're going to crash if the above check failed, because you're an idiot if you remove this Vnum 
+                  */
+                  if( temp->flags.test( ROOM_ISOLATED ) )
+                     ch->in_room = get_room_index( ROOM_VNUM_TEMPLE );
+                  else
+                     ch->in_room = temp;
                }
-               /*
-                * And you're going to crash if the above check failed, because you're an idiot if you remove this Vnum 
-                */
-               if( temp->flags.test( ROOM_ISOLATED ) )
-                  ch->in_room = get_room_index( ROOM_VNUM_TEMPLE );
                else
-                  ch->in_room = temp;
+               {
+                  // 2, 3, 4, and 7 from the above were also never set to anything so the dummy values are no longer written anymore.
+                  sscanf( line, "%d %d %d", &x1, &x2, &x3 );
+                  ch->pcdata->pagerlen = x1;
+                  ch->pcdata->timezone = x2;
+                  ch->wait = x3;
+               }
                break;
             }
 
@@ -1451,6 +1468,35 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             {
                ch->set_file_resists( fp );
                break;
+            }
+
+            // Section added in version 24.
+            if( !str_cmp( word, "Room" ) )
+            {
+               room_index *temp = get_room_index( fread_number( fp ) );
+
+               if( !temp )
+                  temp = get_room_index( ROOM_VNUM_TEMPLE );
+
+               if( !temp )
+                  temp = get_room_index( ROOM_VNUM_LIMBO );
+
+               /*
+               * Um, yeah. If this happens you're shit out of luck! 
+               */
+               if( !temp )
+               {
+                  bug( "%s", "FATAL: No valid fallback rooms. Program terminating!" );
+                  exit( 1 );
+               }
+
+               /*
+               * And you're going to crash if the above check failed, because you're an idiot if you remove this Vnum 
+               */
+               if( temp->flags.test( ROOM_ISOLATED ) )
+                  ch->in_room = get_room_index( ROOM_VNUM_TEMPLE );
+               else
+                  ch->in_room = temp;
             }
             break;
 
@@ -1765,7 +1811,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 void fread_obj( char_data * ch, FILE * fp, short os_type )
 {
    obj_data *obj;
-   int iNest, obj_file_ver;
+   int iNest, obj_file_ver = 0;
    bool fNest, fVnum;
    room_index *room = nullptr;
 
@@ -1775,11 +1821,6 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
       if( ch->tempnum == -9999 )
          file_ver = 0;
    }
-
-   /*
-    * Jesus Christ, how the hell did Smaug get away without versioning the object format for so long!!! 
-    */
-   obj_file_ver = 0;
 
    obj = new obj_data;
    obj->count = 1;
@@ -2209,6 +2250,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
    int inroom = 0;
    room_index *pRoomIndex = nullptr;
    mob_index *pMobIndex = nullptr;
+   int mob_file_ver = 0;
 
    if( !shopmob )
       word = feof( fp ) ? "EndMobile" : fread_word( fp );
@@ -2421,6 +2463,10 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                mob->short_descr = fread_string( fp );
                break;
             }
+            break;
+
+         case 'V':
+            KEY( "Version", mob_file_ver, fread_number( fp ) );
             break;
       }
       if( !str_cmp( word, "#OBJECT" ) )

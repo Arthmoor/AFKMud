@@ -5,7 +5,7 @@
 
 #Change this to reflect whichever compiler you want to use.
 CC      = g++
-#CC      = clang++-4.0
+#CC      = clang++
 
 #Uncomment if compiling in Windows under Cygwin
 #CYGWIN = 1
@@ -43,15 +43,26 @@ OPT_FLAG = -pipe -Os
 DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
-#GCC 4.8+ memory checking option. https://code.google.com/p/address-sanitizer/ Does not work in Cygwin.
+#GCC 4.8+ memory checking option. https://github.com/google/sanitizers Does not work in Cygwin.
 ifndef CYGWIN
-MEM_FLAG = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
+   MEM_FLAG = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
 endif
 
-ifneq ($(CC), clang++-4.0)
-   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+#Uncomment the option below if you get compiler errors about C++23 not being available.
+#C1Z = 1
+
+ifneq ($(CC), clang++)
+   ifdef C1Z
+      W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+   else
+      W_FLAGS = -std=c++23 -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+   endif
 else
-   W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+   ifdef C1Z
+      W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+   else
+      W_FLAGS = -std=c++23 -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+   endif
 endif
 
 ifndef CYGWIN
@@ -64,7 +75,7 @@ endif
 C_FLAGS = $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
 
 ifeq ($(CC), g++)
-   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL)
+   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd -lstdc++_libbacktrace $(LIB_MYSQL) $(NEED_DL)
 else
    L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
 endif
@@ -115,7 +126,8 @@ endif
 
 all:
 	@echo "Building AFKMud...";
-	$(info    Using flags: $(C_FLAGS))
+	$(info    Using C-Flags: $(C_FLAGS))
+	$(info    Using L-Flags: $(L_FLAGS))
 	$(MAKE) -j2 -s afkmud
 	@echo "Buidling DNS Resolver...";
 	$(MAKE) -s resolver

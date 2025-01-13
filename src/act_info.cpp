@@ -2749,7 +2749,7 @@ CMDF( do_motdedit )
          save_sysdata(  );
          return;
       }
-      do_motdedit( ch, nullptr );
+      do_motdedit( ch, "" );
       return;
    }
 
@@ -2771,7 +2771,7 @@ CMDF( do_motdedit )
       ch->set_editor_desc( "An MOTD." );
       return;
    }
-   do_motdedit( ch, nullptr );
+   do_motdedit( ch, "" );
 }
 
 void pc_data::save_ignores( FILE * fp )

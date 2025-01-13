@@ -81,10 +81,10 @@ class obj_data
    void armorgen(  );
    void weapongen(  );
 
-     list < obj_data * >contents;   /* Objects this object contains */
-     list < affect_data * >affects;
-     list < extra_descr_data * >extradesc;
-     list < class mprog_act_list *>mpact;   /* Mudprogs */
+   list < obj_data * >contents;   /* Objects this object contains */
+   list < affect_data * >affects;
+   list < extra_descr_data * >extradesc;
+   list < class mprog_act_list *>mpact;   /* Mudprogs */
    obj_data *in_obj;
    obj_index *pIndexData;
    room_index *in_room;

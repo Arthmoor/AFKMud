@@ -4636,15 +4636,15 @@ string extract_area_names( char_data * ch )
    string tbuf, tarea, area_names;
 
    if( !ch || ch->isnpc(  ) )
-      return nullptr;
+      return "";
 
    if( ch->pcdata->bestowments.empty(  ) )
-      return nullptr;
+      return "";
 
    tbuf = ch->pcdata->bestowments;
    tbuf = one_argument( tbuf, tarea );
    if( tarea.empty(  ) )
-      return nullptr;
+      return "";
 
    while( !tbuf.empty(  ) )
    {

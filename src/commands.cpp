@@ -2017,6 +2017,8 @@ social_type *find_social( const string & command )
 map < string, social_type * >social_table;
 social_type::social_type(  )
 {
+   init_memory( &minposition, &minposition, sizeof( minposition ) );
+
    minposition = POS_RESTING; // Most socials should default to this.
 }
 
