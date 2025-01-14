@@ -32,34 +32,34 @@
 #define SHELL_COMMAND_FILE "../system/shellcommands.dat"
 
 /* Change this line to the home directory for the server - Samson */
-#define HOST_DIR 	"/home/alsherok/"
+#define HOST_DIR 	"/home/afkmud/"
 
 /* Change this line to the name of your compiled binary - Samson */
 #define BINARYFILE "afkmud"
 
 /* Change each of these to reflect your directory structure - Samson */
 
-#define CODEZONEDIR	HOST_DIR "Alsherok/area/"  /* Used in do_copyzone - Samson 8-22-98 */
+#define CODEZONEDIR	HOST_DIR "afkmud/area/"  /* Used in do_copyzone - Samson 8-22-98 */
 #define BUILDZONEDIR	HOST_DIR "dist2/area/"  /* Used in do_copyzone - Samson 4-7-98 */
 #define MAINZONEDIR	HOST_DIR "dist/area/"   /* Used in do_copyzone - Samson 4-7-98 */
-#define TESTCODEDIR     HOST_DIR "Alsherok/src/"   /* Used in do_copycode - Samson 4-7-98 */
+#define TESTCODEDIR     HOST_DIR "afkmud/src/"   /* Used in do_copycode - Samson 4-7-98 */
 #define BUILDCODEDIR    HOST_DIR "dist2/src/"   /* Used in do_copycode - Samson 8-22-98 */
 #define MAINCODEDIR	HOST_DIR "dist/src/" /* Used in do_copycode - Samson 4-7-98 */
-#define CODESYSTEMDIR   HOST_DIR "Alsherok/system/"   /* Used in do_copysocial - Samson 5-2-98 */
+#define CODESYSTEMDIR   HOST_DIR "afkmud/system/"   /* Used in do_copysocial - Samson 5-2-98 */
 #define BUILDSYSTEMDIR  HOST_DIR "dist2/system/"   /* Used in do_copysocial - Samson 5-2-98 */
 #define MAINSYSTEMDIR   HOST_DIR "dist/system/" /* Used in do_copysocial - Samson 5-2-98 */
-#define CODECLASSDIR	HOST_DIR "Alsherok/classes/"  /* Used in do_copyclass - Samson 9-17-98 */
+#define CODECLASSDIR	HOST_DIR "afkmud/classes/"  /* Used in do_copyclass - Samson 9-17-98 */
 #define BUILDCLASSDIR	HOST_DIR "dist2/classes/"  /* Used in do_copyclass - Samson 9-17-98 */
 #define MAINCLASSDIR	HOST_DIR "dist/classes/"   /* Used in do_copyclass - Samson 9-17-98 */
-#define CODERACEDIR	HOST_DIR "Alsherok/races/" /* Used in do_copyrace - Samson 10-13-98 */
+#define CODERACEDIR	HOST_DIR "afkmud/races/" /* Used in do_copyrace - Samson 10-13-98 */
 #define BUILDRACEDIR	HOST_DIR "dist2/races/" /* Used in do_copyrace - Samson 10-13-98 */
 #define MAINRACEDIR	HOST_DIR "dist/races/"  /* Used in do_copyrace - Samson 10-13-98 */
-#define CODEDEITYDIR	HOST_DIR "Alsherok/deity/" /* Used in do_copydeity - Samson 10-13-98 */
+#define CODEDEITYDIR	HOST_DIR "afkmud/deity/" /* Used in do_copydeity - Samson 10-13-98 */
 #define BUILDDEITYDIR	HOST_DIR "dist2/deity/" /* Used in do_copydeity - Samson 10-13-98 */
 #define MAINDEITYDIR	HOST_DIR "dist/deity/"  /* Used in do_copydeity - Samson 10-13-98 */
 #define MAINMAPDIR	HOST_DIR "dist/maps/"   /* Used in do_copymap - Samson 8-2-99 */
 #define BUILDMAPDIR	HOST_DIR "dist2/maps/"  /* Used in do_copymap - Samson 8-2-99 */
-#define CODEMAPDIR	HOST_DIR "Alsherok/maps/"  /* Used in do_copymap - Samson 8-2-99 */
+#define CODEMAPDIR	HOST_DIR "afkmud/maps/"  /* Used in do_copymap - Samson 8-2-99 */
 
 class shell_cmd
 {

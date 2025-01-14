@@ -392,7 +392,7 @@ void room_index::randomize_exits( short maxdir )
 
 exit_data::exit_data(  )
 {
-   init_memory( &rexit, &my, sizeof( my ) );
+   init_memory( &rexit, &map_y, sizeof( map_y ) );
 }
 
 exit_data::~exit_data(  )
@@ -416,8 +416,8 @@ exit_data *room_index::make_exit( room_index * to_room, short door )
    pexit->to_room = to_room;
    pexit->flags.reset(  );
    pexit->key = -1;
-   pexit->mx = 0;
-   pexit->my = 0;
+   pexit->map_x = -1;
+   pexit->map_y = -1;
 
    if( to_room )
    {
@@ -509,7 +509,7 @@ void room_index::extract_exit( exit_data * pexit )
    deleteptr( pexit );
 }
 
-void room_index::wipe_coord_resets( short wmap, short x, short y )
+void room_index::wipe_coord_resets( short x, short y )
 {
    reset_data *pReset;
    list < reset_data * >::iterator rst;
@@ -519,10 +519,10 @@ void room_index::wipe_coord_resets( short wmap, short x, short y )
       pReset = *rst;
       ++rst;
 
-      if( ( pReset->arg4 == wmap ) && ( pReset->arg5 == x ) && ( pReset->arg6 == y ) )
+      if( pReset->arg5 == x && pReset->arg6 == y )
       {
-          resets.remove( pReset );
-          delete_reset( pReset );
+         resets.remove( pReset );
+         delete_reset( pReset );
       }
    }
 }
@@ -958,7 +958,7 @@ int count_obj_list( reset_data * pReset, obj_index * pObjIndex, list < obj_data 
       {
          if( pReset->command == 'M' || pReset->command == 'O' )
          {
-            if( pReset->arg4 == obj->wmap && pReset->arg5 == obj->mx && pReset->arg6 == obj->my )
+            if( pReset->arg5 == obj->map_x && pReset->arg6 == obj->map_y )
                nMatch += obj->count;
          }
          else
@@ -1197,9 +1197,9 @@ void room_index::reset(  )
             if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
             {
                mob->set_actflag( ACT_ONMAP );
-               mob->wmap = pReset->arg4;
-               mob->mx = pReset->arg5;
-               mob->my = pReset->arg6;
+               mob->continent = pRoomIndex->area->continent;
+               mob->map_x = pReset->arg5;
+               mob->map_y = pReset->arg6;
             }
 
             room_index *pRoomPrev = get_room_index( pReset->arg3 - 1 );
@@ -1576,9 +1576,9 @@ void room_index::reset(  )
                if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
                {
                   obj->extra_flags.set( ITEM_ONMAP );
-                  obj->wmap = pReset->arg4;
-                  obj->mx = pReset->arg5;
-                  obj->my = pReset->arg6;
+                  obj->continent = pRoomIndex->area->continent;
+                  obj->map_x = pReset->arg5;
+                  obj->map_y = pReset->arg6;
                }
                obj->to_room( pRoomIndex, nullptr );
             }
@@ -1594,9 +1594,9 @@ void room_index::reset(  )
                if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
                {
                   obj->extra_flags.set( ITEM_ONMAP );
-                  obj->wmap = pReset->arg4;
-                  obj->mx = pReset->arg5;
-                  obj->my = pReset->arg6;
+                  obj->continent = pRoomIndex->area->continent;
+                  obj->map_x = pReset->arg5;
+                  obj->map_y = pReset->arg6;
                }
                for( int x = 0; x < 11; ++x )
                   obj->value[x] = pObjIndex->value[x];
@@ -1867,6 +1867,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
    extra = arg1 = arg2 = arg3 = arg7 = arg8 = arg9 = arg10 = arg11 = -2;
    arg4 = arg5 = arg6 = -1; // Overland uses -1 for stuff that's not on maps.
 
+   // Set to default of 100% chance to reset. Only of value for areas being converted from other formats.
    switch ( letter )
    {
       default:
@@ -1937,24 +1938,27 @@ void room_index::load_reset( FILE * fp, bool newformat )
 
       case 'M':
          // Resets will have a 1-100 chance. Anything out of range is fixed.
-         if( arg7 < 0 )
+         if( arg7 < 1 )
             arg7 = 1;
          if( arg7 > 100 )
             arg7 = 100;
 
          if( get_mob_index( arg1 ) == nullptr && fBootDb )
             boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __func__, area->filename, count, arg1 );
-         if( arg4 != -1 && ( arg4 < 0 || arg4 >= MAP_MAX ) )
+         if( arg4 != -1 && arg4 != 0 )
          {
-            boot_log( "%s: %s (%d) 'M': Map %d does not exist.", __func__, area->filename, count, arg4 );
-            arg4 = -1;
+            boot_log( "%s: %s (%d) 'M': %d is an invalid overland flag. Correcting.", __func__, area->filename, count, arg4 );
+            if( arg5 == -1 || arg6 == -1 )
+               arg4 = -1;
+            else
+               arg4 = 0;
          }
-         if( arg5 != -1 && ( arg5 < 0 || arg5 >= MAX_X ) )
+         if( arg5 != -1 && !is_valid_x( arg5 ) )
          {
             boot_log( "%s: %s (%d) 'M': X coordinate %d is out of range.", __func__, area->filename, count, arg5 );
             arg5 = -1;
          }
-         if( arg6 != -1 && ( arg6 < 0 || arg6 >= MAX_Y ) )
+         if( arg6 != -1 && !is_valid_y( arg6 ) )
          {
             boot_log( "%s: %s (%d) 'M': Y coordinate %d is out of range.", __func__, area->filename, count, arg6 );
             arg6 = -1;
@@ -1962,24 +1966,27 @@ void room_index::load_reset( FILE * fp, bool newformat )
          break;
 
       case 'O':
-         if( arg7 < 0 )
+         if( arg7 < 1 )
             arg7 = 1;
          if( arg7 > 100 )
             arg7 = 100;
 
          if( get_obj_index( arg1 ) == nullptr && fBootDb )
             boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg1 );
-         if( arg4 != -1 && ( arg4 < 0 || arg4 >= MAP_MAX ) )
+         if( arg4 != -1 && arg4 != 0 )
          {
-            boot_log( "%s: %s (%d) 'O': Map %d does not exist.", __func__, area->filename, count, arg4 );
-            arg4 = -1;
+            boot_log( "%s: %s (%d) 'O': %d is an invalid overland flag. Correcting.", __func__, area->filename, count, arg4 );
+            if( arg5 == -1 || arg6 == -1 )
+               arg4 = -1;
+            else
+               arg4 = 0;
          }
-         if( arg5 != -1 && ( arg5 < 0 || arg5 >= MAX_X ) )
+         if( arg5 != -1 && !is_valid_x( arg5 ) )
          {
             boot_log( "%s: %s (%d) 'O': X coordinate %d is out of range.", __func__, area->filename, count, arg5 );
             arg5 = -1;
          }
-         if( arg6 != -1 && ( arg6 < 0 || arg6 >= MAX_Y ) )
+         if( arg6 != -1 && !is_valid_y( arg6 ) )
          {
             boot_log( "%s: %s (%d) 'O': Y coordinate %d is out of range.", __func__, area->filename, count, arg6 );
             arg6 = -1;
@@ -1987,22 +1994,24 @@ void room_index::load_reset( FILE * fp, bool newformat )
          break;
 
       case 'Z':
-         if( arg11 < 0 )
+         if( arg11 < 1 )
             arg11 = 1;
          if( arg11 > 100 )
             arg11 = 100;
-
-         if( arg8 != -1 && ( arg8 < 0 || arg8 >= MAP_MAX ) )
+         if( arg8 != -1 && arg8 != 0 )
          {
-            boot_log( "%s: %s (%d) 'Z': Map %d does not exist.", __func__, area->filename, count, arg8 );
-            arg8 = -1;
+            boot_log( "%s: %s (%d) 'Z': %d is an invalid overland flag. Correcting.", __func__, area->filename, count, arg8 );
+            if( arg9 == -1 || arg10 == -1 )
+               arg8 = -1;
+            else
+               arg8 = 0;
          }
-         if( arg9 != -1 && ( arg9 < 0 || arg9 >= MAX_X ) )
+         if( arg9 != -1 && !is_valid_x( arg9 ) )
          {
             boot_log( "%s: %s (%d) 'Z': X coordinate %d is out of range.", __func__, area->filename, count, arg9 );
             arg9 = -1;
          }
-         if( arg10 != -1 && ( arg10 < 0 || arg10 >= MAX_Y ) )
+         if( arg10 != -1 && !is_valid_y( arg10 ) )
          {
             boot_log( "%s: %s (%d) 'Z': Y coordinate %d is out of range.", __func__, area->filename, count, arg10 );
             arg10 = -1;
@@ -2010,7 +2019,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          break;
 
       case 'P':
-         if( arg5 < 0 )
+         if( arg5 < 1 )
             arg5 = 1;
          if( arg5 > 100 )
             arg5 = 100;
@@ -2035,7 +2044,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          break;
 
       case 'G':
-         if( arg3 < 0 )
+         if( arg3 < 1 )
             arg3 = 1;
          if( arg3 > 100 )
             arg3 = 100;
@@ -2044,7 +2053,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          break;
 
       case 'E':
-         if( arg4 < 0 )
+         if( arg4 < 1 )
             arg4 = 1;
          if( arg4 > 100 )
             arg4 = 100;
@@ -2054,42 +2063,42 @@ void room_index::load_reset( FILE * fp, bool newformat )
          break;
 
       case 'X':
-         if( arg8 < 0 )
+         if( arg8 < 1 )
             arg8 = 1;
          if( arg8 > 100 )
             arg8 = 100;
          break;
 
       case 'W':
-         if( arg9 < 0 )
+         if( arg9 < 1 )
             arg9 = 1;
          if( arg9 > 100 )
             arg9 = 100;
          break;
 
       case 'Y':
-         if( arg7 < 0 )
+         if( arg7 < 1 )
             arg7 = 1;
          if( arg7 > 100 )
             arg7 = 100;
          break;
 
       case 'T':
-         if( arg5 < 0 )
+         if( arg5 < 1 )
             arg5 = 1;
          if( arg5 > 100 )
             arg5 = 100;
          break;
 
       case 'H':
-         if( arg1 < 0 )
+         if( arg1 < 1 )
             arg1 = 1;
          if( arg1 > 100 )
             arg1 = 100;
          break;
 
       case 'D':
-         if( arg4 < 0 )
+         if( arg4 < 1 )
             arg4 = 1;
          if( arg4 > 100 )
             arg4 = 100;
@@ -2111,7 +2120,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          break;
 
       case 'R':
-         if( arg3 < 0 )
+         if( arg3 < 1 )
             arg3 = 1;
          if( arg3 > 100 )
             arg3 = 100;

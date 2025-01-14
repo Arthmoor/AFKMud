@@ -39,6 +39,8 @@
 
 void check_sneaks( char_data * );
 
+const int SHIPFILEVERSION = 1;
+
 const char *ship_type[] = {
    "None", "Skiff", "Coaster", "Caravel", "Galleon", "Warship"
 };
@@ -131,8 +133,8 @@ CMDF( do_shipstat )
    ch->printf( "Vnum:  %d\r\n", ship->vnum );
    if( ship->flags.test( SHIP_ONMAP ) )
    {
-      ch->printf( "On map: %s\r\n", map_names[ship->wmap] );
-      ch->printf( "Coords: %4dX %4dY\r\n", ship->mx, ship->my );
+      ch->printf( "On map: %s\r\n", ship->continent->name.c_str( ) );
+      ch->printf( "Coords: %4dX %4dY\r\n", ship->map_x, ship->map_y );
    }
    else
       ch->printf( "In room: %d\r\n", ship->room );
@@ -144,7 +146,7 @@ CMDF( do_shipstat )
 
 ship_data::ship_data(  )
 {
-   init_memory( &flags, &wmap, sizeof( wmap ) );
+   init_memory( &flags, &map_y, sizeof( map_y ) );
 }
 
 ship_data::~ship_data(  )
@@ -170,6 +172,7 @@ void save_ships( void )
       ship_data *ship = *iship;
 
       stream << "#SHIP" << endl;
+      stream << "Version   " << SHIPFILEVERSION << endl;
       stream << "Name      " << ship->name << endl;
       stream << "Owner     " << ship->owner << endl;
       stream << "Flags     " << bitset_string( ship->flags, ship_flags ) << endl;
@@ -180,7 +183,7 @@ void save_ships( void )
       stream << "Max_hull  " << ship->max_hull << endl;
       stream << "Fuel      " << ship->fuel << endl;
       stream << "Max_fuel  " << ship->max_fuel << endl;
-      stream << "Coordinates " << ship->wmap << " " << ship->mx << " " << ship->my << endl;
+      stream << "Coordinates " << ship->map_x << " " << ship->map_y << endl;
       stream << "End" << endl << endl;
    }
    stream.close(  );
@@ -190,6 +193,7 @@ void load_ships( void )
 {
    ifstream stream;
    ship_data *ship;
+   int file_ver = 0;
 
    shiplist.clear(  );
 
@@ -218,6 +222,8 @@ void load_ships( void )
 
       if( key == "#SHIP" )
          ship = new ship_data;
+      else if( key == "Version" )
+         file_ver = atoi( value.c_str(  ) );
       else if( key == "Name" )
          ship->name = value;
       else if( key == "Owner" )
@@ -242,17 +248,26 @@ void load_ships( void )
          ship->fuel = atoi( value.c_str(  ) );
       else if( key == "Max_fuel" )
          ship->max_fuel = atoi( value.c_str(  ) );
-      else if( key == "Coordinates" )
+      else if( key == "Coordinates" && file_ver < 1 )
+      {
+         string coord;
+
+         // Eat this first one.
+         value = one_argument( value, coord );
+
+         value = one_argument( value, coord );
+         ship->map_x = atoi( coord.c_str(  ) );
+
+         ship->map_y = atoi( value.c_str(  ) );
+      }
+      else if( key == "Coordinates" && file_ver >= 1 )
       {
          string coord;
 
          value = one_argument( value, coord );
-         ship->wmap = atoi( coord.c_str(  ) );
+         ship->map_x = atoi( coord.c_str(  ) );
 
-         value = one_argument( value, coord );
-         ship->mx = atoi( coord.c_str(  ) );
-
-         ship->my = atoi( value.c_str(  ) );
+         ship->map_y = atoi( value.c_str(  ) );
       }
       else if( key == "End" )
          shiplist.push_back( ship );
@@ -274,6 +289,7 @@ void free_ships( void )
 
       deleteptr( ship );
    }
+   shiplist.clear();
 }
 
 CMDF( do_shipset )
@@ -304,9 +320,9 @@ CMDF( do_shipset )
          return;
       }
       ship = new ship_data;
-      ship->wmap = -1;
-      ship->mx = -1;
-      ship->my = -1;
+      ship->continent = nullptr;
+      ship->map_x = -1;
+      ship->map_y = -1;
       ship->name = arg;
       shiplist.push_back( ship );
       save_ships(  );
@@ -417,8 +433,8 @@ CMDF( do_shipset )
          return;
       }
 
-      ship->mx = atoi( arg3.c_str(  ) );
-      ship->my = atoi( argument.c_str(  ) );
+      ship->map_x = atoi( arg3.c_str(  ) );
+      ship->map_y = atoi( argument.c_str(  ) );
       save_ships(  );
       ch->print( "Coordinates changed.\r\n" );
       return;
@@ -491,18 +507,19 @@ bool can_move_ship( char_data * ch, int sector )
 }
 
 /* Cheap hack of process_exit from overland.c for ships */
-ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
+ch_ret process_shipexit( char_data * ch, short x, short y, int dir )
 {
-   int sector = get_terrain( map, x, y ), move;
+   int sector = ch->continent->get_terrain( x, y ), move;
    room_index *from_room;
    ship_data *ship = ch->on_ship;
    ch_ret retcode;
-   short fx, fy, fmap;
+   continent_data *from_cont;
+   short fx, fy;
 
    from_room = ch->in_room;
-   fx = ch->mx;
-   fy = ch->my;
-   fmap = ch->wmap;
+   fx = ch->map_x;
+   fy = ch->map_y;
+   from_cont = ch->continent;
 
    retcode = rNONE;
    if( ch->has_pcflag( PCFLAG_MAPEDIT ) )
@@ -516,13 +533,15 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
       mapexit_data *mexit;
       room_index *toroom = nullptr;
 
-      mexit = check_mapexit( map, x, y );
+      mexit = ch->continent->check_mapexit( x, y );
 
       if( mexit != nullptr )
       {
-         if( mexit->tomap != -1 )   /* Means exit goes to another map */
+         if( !str_cmp( mexit->tomap, "-1" ) )  /* Means exit goes to another map */
          {
-            if( !can_move_ship( ch, get_terrain( mexit->tomap, mexit->therex, mexit->therey ) ) )
+            continent_data *dest_cont = find_continent_by_name( mexit->tomap );
+
+            if( !can_move_ship( ch, dest_cont->get_terrain( mexit->therex, mexit->therey ) ) )
                return rSTOP;
 
             enter_map( ch, nullptr, mexit->therex, mexit->therey, mexit->tomap );
@@ -538,12 +557,12 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
                ++count;
 
                if( fch != ch  /* loop room bug fix here by Thoric */
-                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy && fch->wmap == fmap )
+                   && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->map_x == fx && fch->map_y == fy && fch->continent == from_cont )
                {
                   if( !fch->isnpc(  ) )
                   {
                      act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[dir], TO_CHAR );
-                     process_exit( fch, fch->wmap, x, y, dir, false );
+                     process_exit( fch, x, y, dir, false );
                   }
                   else
                      enter_map( fch, nullptr, mexit->therex, mexit->therey, mexit->tomap );
@@ -578,12 +597,12 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
             ++count;
 
             if( fch != ch  /* loop room bug fix here by Thoric */
-                && fch->master == ch && fch->position == POS_STANDING && fch->mx == fx && fch->my == fy && fch->wmap == fmap )
+                && fch->master == ch && fch->position == POS_STANDING && fch->map_x == fx && fch->map_y == fy && fch->continent == from_cont )
             {
                if( !fch->isnpc(  ) )
                {
                   act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[dir], TO_CHAR );
-                  process_shipexit( fch, fch->wmap, x, y, dir );
+                  process_shipexit( fch, x, y, dir );
                }
                else
                   leave_map( fch, ch, toroom );
@@ -681,10 +700,10 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
    if( !str_cmp( ch->name, ship->owner ) )
       act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
 
-   ch->mx = x;
-   ch->my = y;
-   ship->mx = x;
-   ship->my = y;
+   ch->map_x = x;
+   ch->map_y = y;
+   ship->map_x = x;
+   ship->map_y = y;
 
    if( !str_cmp( ch->name, ship->owner ) )
    {
@@ -701,17 +720,17 @@ ch_ret process_shipexit( char_data * ch, short map, short x, short y, int dir )
       ++count;
 
       if( fch != ch  /* loop room bug fix here by Thoric */
-          && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->mx == fx && fch->my == fy )
+          && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) && fch->map_x == fx && fch->map_y == fy )
       {
          if( !fch->isnpc(  ) )
          {
             act( AT_ACTION, "The ship sails $T.", fch, nullptr, dir_name[dir], TO_CHAR );
-            process_exit( fch, fch->wmap, x, y, dir, false );
+            process_exit( fch, x, y, dir, false );
          }
          else
          {
-            fch->mx = x;
-            fch->my = y;
+            fch->map_x = x;
+            fch->map_y = y;
          }
       }
    }
@@ -732,46 +751,46 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
    {
-      newx = ch->mx;
-      newy = ch->my;
+      newx = ch->map_x;
+      newy = ch->map_y;
 
       switch ( direction )
       {
          default:
             break;
          case DIR_NORTH:
-            newy = ch->my - 1;
+            newy = ch->map_y - 1;
             break;
          case DIR_EAST:
-            newx = ch->mx + 1;
+            newx = ch->map_x + 1;
             break;
          case DIR_SOUTH:
-            newy = ch->my + 1;
+            newy = ch->map_y + 1;
             break;
          case DIR_WEST:
-            newx = ch->mx - 1;
+            newx = ch->map_x - 1;
             break;
          case DIR_NORTHEAST:
-            newx = ch->mx + 1;
-            newy = ch->my - 1;
+            newx = ch->map_x + 1;
+            newy = ch->map_y - 1;
             break;
          case DIR_NORTHWEST:
-            newx = ch->mx - 1;
-            newy = ch->my - 1;
+            newx = ch->map_x - 1;
+            newy = ch->map_y - 1;
             break;
          case DIR_SOUTHEAST:
-            newx = ch->mx + 1;
-            newy = ch->my + 1;
+            newx = ch->map_x + 1;
+            newy = ch->map_y + 1;
             break;
          case DIR_SOUTHWEST:
-            newx = ch->mx - 1;
-            newy = ch->my + 1;
+            newx = ch->map_x - 1;
+            newy = ch->map_y + 1;
             break;
       }
-      if( newx == ch->mx && newy == ch->my )
+      if( newx == ch->map_x && newy == ch->map_y )
          return rSTOP;
 
-      retcode = process_shipexit( ch, ch->wmap, newx, newy, direction );
+      retcode = process_shipexit( ch, newx, newy, direction );
       return retcode;
    }
 
@@ -789,15 +808,13 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
 
    /*
     * Overland Map stuff - Samson 7-31-99 
-    */
-   /*
     * Upgraded 4-28-00 to allow mounts and charmies to follow PC - Samson 
     */
    if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
    {
-      if( pexit->mx < 0 || pexit->mx >= MAX_X || pexit->my < 0 || pexit->my >= MAX_Y )
+      if( !valid_coordinates( pexit->map_x, pexit->map_y ) )
       {
-         bug( "%s: Room #%d - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->mx, pexit->my );
+         bug( "%s: Room #%d - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->map_x, pexit->map_y );
          ch->print( "Oops. Something is wrong with this map exit - notify the immortals.\r\n" );
          check_sneaks( ch );
          return rSTOP;
@@ -805,9 +822,9 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
 
       if( !ch->isnpc(  ) )
       {
-         enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
+         enter_map( ch, pexit, pexit->map_x, pexit->map_y, "-1" );
          if( ch->mount )
-            enter_map( ch->mount, pexit, pexit->mx, pexit->my, -1 );
+            enter_map( ch->mount, pexit, pexit->map_x, pexit->map_y, "-1" );
 
          size_t chars = from_room->people.size(  );
          size_t count = 0;
@@ -826,7 +843,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
                   move_char( fch, pexit, 0, direction, false );
                }
                else
-                  enter_map( fch, pexit, pexit->mx, pexit->my, -1 );
+                  enter_map( fch, pexit, pexit->map_x, pexit->map_y, "-1" );
             }
          }
       }
@@ -834,9 +851,9 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       {
          if( !IS_EXIT_FLAG( pexit, EX_NOMOB ) )
          {
-            enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
+            enter_map( ch, pexit, pexit->map_x, pexit->map_y, "-1" );
             if( ch->mount )
-               enter_map( ch->mount, pexit, pexit->mx, pexit->my, -1 );
+               enter_map( ch->mount, pexit, pexit->map_x, pexit->map_y, "-1" );
 
             size_t chars = from_room->people.size(  );
             size_t count = 0;
@@ -855,7 +872,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
                      move_char( fch, pexit, 0, direction, false );
                   }
                   else
-                     enter_map( fch, pexit, pexit->mx, pexit->my, -1 );
+                     enter_map( fch, pexit, pexit->map_x, pexit->map_y, "-1" );
                }
             }
          }

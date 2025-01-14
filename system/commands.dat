@@ -449,6 +449,15 @@ Log         normal
 End
 
 #COMMAND
+Name        continents
+Code        do_continents
+Position    dead
+Level       101
+Log         normal
+Flags       ghost
+End
+
+#COMMAND
 Name        channels
 Code        do_channels
 Position    sleeping
@@ -2345,6 +2354,15 @@ End
 #COMMAND
 Name        mapedit
 Code        do_mapedit
+Position    dead
+Level       113
+Log         normal
+Flags       ghost
+End
+
+#COMMAND
+Name        mapcreate
+Code        do_mapcreate
 Position    dead
 Level       113
 Log         normal

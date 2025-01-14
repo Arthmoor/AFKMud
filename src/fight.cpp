@@ -3921,9 +3921,10 @@ CMDF( do_kill )
 
 CMDF( do_flee )
 {
+   continent_data *old_cont = ch->continent;
    room_index *was_in, *now_in;
    double los;
-   int attempt, oldmap = ch->wmap, oldx = ch->mx, oldy = ch->my;
+   int attempt, oldx = ch->map_x, oldy = ch->map_y;
    short door;
    exit_data *pexit;
 
@@ -3992,7 +3993,7 @@ CMDF( do_flee )
       if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
       {
          now_in = ch->in_room;
-         if( ch->wmap == oldmap && ch->mx == oldx && ch->my == oldy )
+         if( ch->continent == old_cont && ch->map_x == oldx && ch->map_y == oldy )
             continue;
       }
       else

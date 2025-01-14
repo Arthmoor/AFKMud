@@ -583,12 +583,13 @@ CMDF( do_tell )
    char_data *victim;
    int position;
    char_data *switched_victim = nullptr;
+   continent_data *orig_continent;
    int speaking = -1, lang;
    /*
     * Hackish solution to stop that damned "someone chat" bug - Matarael 17.3.2002 
     */
    bool mapped = false;
-   int origmap = -1, origx = -1, origy = -1;
+   int origx = -1, origy = -1;
 
    for( lang = 0; lang < LANG_UNKNOWN; ++lang )
    {
@@ -737,17 +738,17 @@ CMDF( do_tell )
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       mapped = true;
-      origx = ch->mx;
-      origy = ch->my;
-      origmap = ch->wmap;
+      origx = ch->map_x;
+      origy = ch->map_y;
+      orig_continent = ch->continent;
    }
 
    if( ch->isnpc(  ) && ch->has_actflag( ACT_ONMAP ) )
    {
       mapped = true;
-      origx = ch->mx;
-      origy = ch->my;
-      origmap = ch->wmap;
+      origx = ch->map_x;
+      origy = ch->map_y;
+      orig_continent = ch->continent;
    }
    fix_maps( victim, ch );
 
@@ -785,9 +786,9 @@ CMDF( do_tell )
     */
    if( mapped )
    {
-      ch->wmap = origmap;
-      ch->mx = origx;
-      ch->my = origy;
+      ch->continent = orig_continent;
+      ch->map_x = origx;
+      ch->map_y = origy;
       if( ch->isnpc(  ) )
          ch->set_actflag( ACT_ONMAP );
       else
@@ -799,9 +800,9 @@ CMDF( do_tell )
          ch->unset_actflag( ACT_ONMAP );
       else
          ch->unset_pcflag( PCFLAG_ONMAP );
-      ch->wmap = -1;
-      ch->mx = -1;
-      ch->my = -1;
+      ch->continent = nullptr;
+      ch->map_x = -1;
+      ch->map_y = -1;
    }
 
    victim->position = position;

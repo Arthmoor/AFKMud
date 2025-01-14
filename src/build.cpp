@@ -107,11 +107,6 @@ const char *projectiles[PROJ_MAX] = {
    "Bolt", "Arrow", "Dart", "Stone"
 };
 
-/* Area continent table for continent/plane system */
-const char *continents[] = {
-   "one", "astral", "immortal"
-};
-
 const char *log_flag[] = {
    "normal", "always", "never", "build", "high", "comm", "warn", "info", "auth", "debug", "all"
 };
@@ -610,14 +605,6 @@ int get_npc_class( const string & Class )
    return -1;
 }
 
-int get_continent( const string & continent )
-{
-   for( int x = 0; x < ACON_MAX; ++x )
-      if( !str_cmp( continent, continents[x] ) )
-         return x;
-   return -1;
-}
-
 int get_pc_race( const string & type )
 {
    for( int i = 0; i < MAX_PC_RACE; ++i )
@@ -985,8 +972,9 @@ CMDF( do_goto )
     */
    if( !str_cmp( arg, "map" ) )
    {
+      continent_data *continent;
       string arg1, arg2;
-      int x, y, map = -1;
+      short x, y;
 
       argument = one_argument( argument, arg1 );
       argument = one_argument( argument, arg2 );
@@ -997,10 +985,9 @@ CMDF( do_goto )
          return;
       }
 
-      if( !str_cmp( arg1, "one" ) )
-         map = ACON_ONE;
+      continent = find_continent_by_name( arg1 );
 
-      if( map == -1 )
+      if( !continent )
       {
          ch->printf( "There isn't a map for '%s'.\r\n", arg1.c_str(  ) );
          return;
@@ -1008,7 +995,7 @@ CMDF( do_goto )
 
       if( arg2.empty(  ) && argument.empty(  ) )
       {
-         enter_map( ch, nullptr, 499, 499, map );
+         enter_map( ch, nullptr, 499, 499, arg1 );
          return;
       }
 
@@ -1021,19 +1008,19 @@ CMDF( do_goto )
       x = atoi( arg2.c_str(  ) );
       y = atoi( argument.c_str(  ) );
 
-      if( x < 0 || x >= MAX_X )
+      if( !is_valid_x( x ) )
       {
          ch->printf( "Valid x coordinates are 0 to %d.\r\n", MAX_X - 1 );
          return;
       }
 
-      if( y < 0 || y >= MAX_Y )
+      if( !is_valid_y( y ) )
       {
          ch->printf( "Valid y coordinates are 0 to %d.\r\n", MAX_Y - 1 );
          return;
       }
 
-      enter_map( ch, nullptr, x, y, map );
+      enter_map( ch, nullptr, x, y, arg1 );
       return;
    }
    /*
@@ -4706,13 +4693,13 @@ CMDF( do_redit )
       x = atoi( arg3.c_str(  ) );
       y = atoi( argument.c_str(  ) );
 
-      if( x < 0 || x >= MAX_X )
+      if( !is_valid_x( x ) )
       {
          ch->printf( "Valid X coordinates are 0 to %d.\r\n", MAX_X - 1 );
          return;
       }
 
-      if( y < 0 || y >= MAX_Y )
+      if( !is_valid_y( y ) )
       {
          ch->printf( "Valid Y coordinates are 0 to %d.\r\n", MAX_Y - 1 );
          return;
@@ -4723,8 +4710,8 @@ CMDF( do_redit )
          ch->print( "No exit in that direction.  Use 'redit exit ...' first.\r\n" );
          return;
       }
-      xit->mx = x;
-      xit->my = y;
+      xit->map_x = x;
+      xit->map_y = y;
       ch->print( "Exit coordinates set.\r\n" );
       return;
    }

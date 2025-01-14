@@ -38,6 +38,7 @@
 #include "finger.h"
 #include "mobindex.h"
 #include "objindex.h"
+#include "overland.h"
 #include "raceclass.h"
 #include "realms.h"
 #include "roomindex.h"
@@ -84,6 +85,7 @@ const int SAVEVERSION = 24;
 /* Updated to 21 because Samson was stupid and acted hastily before finalizing the bitset conversions 7-8-04 */
 /* Updated to 22 for sha256 password conversion */
 // Updated to 23 - Site data in the save requires the tilde now which pfiles won't have yet.
+// Updated to 24 - Map coordinates now only store the X and Y. Which map the player is on is determined by the room they're in.
 
 /*
  * Array to keep track of equipment temporarily. - Thoric
@@ -266,15 +268,17 @@ void fwrite_char( char_data * ch, FILE * fp )
       pos = POS_STANDING;
    fprintf( fp, "Position     %s~\n", npc_position[pos] );
 
-   // What room vnum are we in?
+   // What room vnum are we in? Need this to be able to handle continent assignment on load.
    fprintf( fp, "Room         %d\n", ( ch->in_room == get_room_index( ROOM_VNUM_LIMBO ) && ch->was_in_room ) ? ch->was_in_room->vnum : ch->in_room->vnum );
 
    /*
     * Overland Map - Samson 7-31-99 
     */
-   fprintf( fp, "Coordinates  %d %d %d\n", ch->mx, ch->my, ch->wmap );
+   fprintf( fp, "Coordinates  %d %d\n", ch->map_x, ch->map_y );
+
    fprintf( fp, "SavingThrows %d %d %d %d %d\n", ch->saving_poison_death, ch->saving_wand, ch->saving_para_petri, ch->saving_breath, ch->saving_spell_staff );
    fprintf( fp, "RentData     %d %d 0 0 %d\n", ch->pcdata->balance, ch->pcdata->daysidle, ch->pcdata->camp );
+
    /*
     * Recall code update to recall to last inn rented at - Samson 12-20-00 
     */
@@ -586,7 +590,7 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
       fprintf( fp, "Oday         %d\n", obj->day );
       fprintf( fp, "Omonth       %d\n", obj->month );
       fprintf( fp, "Oyear        %d\n", obj->year );
-      fprintf( fp, "Coords       %d %d %d\n", obj->mx, obj->my, obj->wmap );
+      fprintf( fp, "Coords       %d %d\n", obj->map_x, obj->map_y );
       fprintf( fp, "%s", "Values      " );
       for( x = 0; x < MAX_OBJ_VALUE; ++x )
          fprintf( fp, " %d", obj->value[x] );
@@ -682,13 +686,14 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
 
    fprintf( fp, "%s", shopmob ? "#SHOP\n" : "#MOBILE\n" );
    fprintf( fp, "Vnum    %d\n", mob->pIndexData->vnum );
+   fprintf( fp, "Version %d\n", SAVEVERSION );
    fprintf( fp, "Level   %d\n", mob->level );
    fprintf( fp, "Gold	 %d\n", mob->gold );
    if( mob->in_room )
       fprintf( fp, "Room      %d\n", mob->in_room->vnum );
    else
       fprintf( fp, "Room      %d\n", ROOM_VNUM_ALTAR );
-   fprintf( fp, "Coordinates  %d %d %d\n", mob->mx, mob->my, mob->wmap );
+   fprintf( fp, "Coordinates  %d %d\n", mob->map_x, mob->map_y );
    if( mob->name && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
       fprintf( fp, "Name     %s~\n", mob->name );
    if( mob->short_descr && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
@@ -1192,15 +1197,17 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "Coordinates" ) )
             {
-               ch->mx = fread_short( fp );
-               ch->my = fread_short( fp );
-               ch->wmap = fread_short( fp );
+               ch->map_x = fread_short( fp );
+               ch->map_y = fread_short( fp );
+
+               if( file_ver < 24 )
+                  fread_short( fp );
 
                if( !ch->has_pcflag( PCFLAG_ONMAP ) )
                {
-                  ch->mx = -1;
-                  ch->my = -1;
-                  ch->wmap = -1;
+                  ch->map_x = -1;
+                  ch->map_y = -1;
+                  ch->continent = nullptr;
                }
                break;
             }
@@ -1753,6 +1760,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   ch->pcdata->realm_name.clear(  );
                }
 
+               if( ch->has_pcflag( PCFLAG_ONMAP ) )
+                  ch->continent = find_continent_by_room_vnum( ch->in_room->vnum );
                return;
             }
             STDSKEY( "Email", ch->pcdata->email );
@@ -1830,9 +1839,9 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
    obj->count = 1;
    obj->wear_loc = -1;
    obj->weight = 1;
-   obj->wmap = -1;
-   obj->mx = -1;
-   obj->my = -1;
+   obj->continent = nullptr;
+   obj->map_x = -1;
+   obj->map_y = -1;
 
    fNest = true;  /* Requiring a Nest 0 is a waste */
    fVnum = false; // We can't assume this - what if Vnum isn't written to the file? Crashy crashy is what. - Pulled from Smaug 1.8
@@ -1902,9 +1911,11 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
          case 'C':
             if( !str_cmp( word, "Coords" ) )
             {
-               obj->mx = fread_short( fp );
-               obj->my = fread_short( fp );
-               obj->wmap = fread_short( fp );
+               obj->map_x = fread_short( fp );
+               obj->map_y = fread_short( fp );
+
+               if( obj_file_ver < 24 )
+                  fread_short( fp );
                break;
             }
             KEY( "Cost", obj->cost, fread_number( fp ) );
@@ -2011,6 +2022,8 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                      if( obj->timer < 1 )
                         obj->timer = 80;
                      obj->to_room( room, nullptr );
+                     if( obj->extra_flags.test( ITEM_ONMAP ) )
+                        obj->continent = find_continent_by_room_vnum( obj->in_room->vnum );
                   }
                   else if( iNest == 0 || rgObjNest[iNest] == nullptr )
                   {
@@ -2372,9 +2385,11 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
          case 'C':
             if( !str_cmp( word, "Coordinates" ) )
             {
-               mob->mx = fread_short( fp );
-               mob->my = fread_short( fp );
-               mob->wmap = fread_short( fp );
+               mob->map_x = fread_short( fp );
+               mob->map_y = fread_short( fp );
+
+               if( mob_file_ver < 24 )
+                  fread_short( fp );
                break;
             }
             break;
@@ -2708,7 +2723,7 @@ void write_corpse( obj_data * corpse, const string & name )
       fprintf( fp, "Timer        %d\n", corpse->timer );
    if( corpse->cost != corpse->pIndexData->cost )
       fprintf( fp, "Cost         %d\n", corpse->cost );
-   fprintf( fp, "Coords       %d %d %d\n", corpse->mx, corpse->my, corpse->wmap );
+   fprintf( fp, "Coords       %d %d\n", corpse->map_x, corpse->map_y );
    fprintf( fp, "Values      " );
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
       fprintf( fp, " %d", corpse->value[x] );

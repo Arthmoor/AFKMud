@@ -108,9 +108,10 @@ bool will_fall( char_data * ch, int fall )
 CMDF( do_run )
 {
    string arg;
+   continent_data *from_cont;
    room_index *from_room;
    exit_data *pexit;
-   int amount = 0, x, fromx, fromy, frommap;
+   int amount = 0, x, fromx, fromy;
    bool limited = false;
 
    argument = one_argument( argument, arg );
@@ -137,9 +138,9 @@ CMDF( do_run )
    }
 
    from_room = ch->in_room;
-   frommap = ch->wmap;
-   fromx = ch->mx;
-   fromy = ch->my;
+   from_cont = ch->continent;
+   fromx = ch->map_x;
+   fromy = ch->map_y;
 
    if( limited )
    {
@@ -189,7 +190,7 @@ CMDF( do_run )
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
    {
-      if( ch->mx == fromx && ch->my == fromy && ch->wmap == frommap )
+      if( ch->map_x == fromx && ch->map_y == fromy && ch->continent == from_cont )
       {
          ch->print( "You try to run but don't get anywhere.\r\n" );
          act( AT_ACTION, "$n tries to run but doesn't get anywhere.", ch, nullptr, nullptr, TO_ROOM );
@@ -231,8 +232,8 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
    {
-      int newx = ch->mx;
-      int newy = ch->my;
+      int newx = ch->map_x;
+      int newy = ch->map_y;
 
       if( ch->inflight )
       {
@@ -266,38 +267,38 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          default:
             break;
          case DIR_NORTH:
-            newy = ch->my - 1;
+            newy = ch->map_y - 1;
             break;
          case DIR_EAST:
-            newx = ch->mx + 1;
+            newx = ch->map_x + 1;
             break;
          case DIR_SOUTH:
-            newy = ch->my + 1;
+            newy = ch->map_y + 1;
             break;
          case DIR_WEST:
-            newx = ch->mx - 1;
+            newx = ch->map_x - 1;
             break;
          case DIR_NORTHEAST:
-            newx = ch->mx + 1;
-            newy = ch->my - 1;
+            newx = ch->map_x + 1;
+            newy = ch->map_y - 1;
             break;
          case DIR_NORTHWEST:
-            newx = ch->mx - 1;
-            newy = ch->my - 1;
+            newx = ch->map_x - 1;
+            newy = ch->map_y - 1;
             break;
          case DIR_SOUTHEAST:
-            newx = ch->mx + 1;
-            newy = ch->my + 1;
+            newx = ch->map_x + 1;
+            newy = ch->map_y + 1;
             break;
          case DIR_SOUTHWEST:
-            newx = ch->mx - 1;
-            newy = ch->my + 1;
+            newx = ch->map_x - 1;
+            newy = ch->map_y + 1;
             break;
       }
-      if( newx == ch->mx && newy == ch->my )
+      if( newx == ch->map_x && newy == ch->map_y )
          return rSTOP;
 
-      retcode = process_exit( ch, ch->wmap, newx, newy, direction, running );
+      retcode = process_exit( ch, newx, newy, direction, running );
       return retcode;
    }
 
@@ -396,9 +397,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
     */
    if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
    {
-      if( pexit->mx < 0 || pexit->mx >= MAX_X || pexit->my < 0 || pexit->my >= MAX_Y )
+      if( !valid_coordinates( pexit->map_x, pexit->map_y ) )
       {
-         log_printf( "%s: Room #%d - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->mx, pexit->my );
+         log_printf( "%s: Room #%d - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->map_x, pexit->map_y );
          ch->print( "Oops. Something is wrong with this map exit - notify the immortals.\r\n" );
          check_sneaks( ch );
          return rSTOP;
@@ -406,7 +407,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
       if( !ch->isnpc(  ) )
       {
-         enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
+         enter_map( ch, pexit, pexit->map_x, pexit->map_y, "-1" );
 
          size_t chars = from_room->people.size(  );
          size_t count = 0;
@@ -439,7 +440,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                   }
                }
                else
-                  enter_map( fch, pexit, pexit->mx, pexit->my, -1 );
+                  enter_map( fch, pexit, pexit->map_x, pexit->map_y, "-1" );
             }
          }
       }
@@ -447,7 +448,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       {
          if( !IS_EXIT_FLAG( pexit, EX_NOMOB ) )
          {
-            enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
+            enter_map( ch, pexit, pexit->map_x, pexit->map_y, "-1" );
 
             size_t chars = from_room->people.size(  );
             size_t count = 0;
@@ -480,7 +481,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                      }
                   }
                   else
-                     enter_map( fch, pexit, pexit->mx, pexit->my, -1 );
+                     enter_map( fch, pexit, pexit->map_x, pexit->map_y, "-1" );
                }
             }
          }

@@ -96,7 +96,7 @@ void free_zonedata( char_data * );
  * to use this can reach. So if you have muds in different home directories don't
  * bother unless you happen to own the whole system.
  */
-#define IPC_KEY_FILE "/home/alsherok/mudmsgkeyDONTDELETEME"
+#define IPC_KEY_FILE "/home/afkmud/mudmsgkeyDONTDELETEME"
 
 /* the ports the other muds run on, you can include this port too if you want
  * and the code will skip it automatically, terminate with -1

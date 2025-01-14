@@ -771,7 +771,8 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
        * Hackish solution to stop that damned "someone chat" bug - Matarael 17.3.2002 
        */
       bool mapped = false;
-      int origmap = -1, origx = -1, origy = -1;
+      int origx = -1, origy = -1;
+      continent_data *orig_cont;
 
       if( vch == ch || !vch->desc )
          continue;
@@ -854,17 +855,17 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          if( ch->has_pcflag( PCFLAG_ONMAP ) )
          {
             mapped = true;
-            origx = ch->mx;
-            origy = ch->my;
-            origmap = ch->wmap;
+            origx = ch->map_x;
+            origy = ch->map_y;
+            orig_cont = ch->continent;
          }
 
          if( ch->isnpc(  ) && ch->has_actflag( ACT_ONMAP ) )
          {
             mapped = true;
-            origx = ch->mx;
-            origy = ch->my;
-            origmap = ch->wmap;
+            origx = ch->map_x;
+            origy = ch->map_y;
+            orig_cont = ch->continent;
          }
          fix_maps( vch, ch );
 
@@ -903,9 +904,9 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
           */
          if( mapped )
          {
-            ch->wmap = origmap;
-            ch->mx = origx;
-            ch->my = origy;
+            ch->continent = orig_cont;
+            ch->map_x = origx;
+            ch->map_y = origy;
             if( ch->isnpc(  ) )
                ch->set_actflag( ACT_ONMAP );
             else
@@ -917,9 +918,9 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
                ch->unset_actflag( ACT_ONMAP );
             else
                ch->unset_pcflag( PCFLAG_ONMAP );
-            ch->wmap = -1;
-            ch->mx = -1;
-            ch->my = -1;
+            ch->continent = nullptr;
+            ch->map_x = -1;
+            ch->map_y = -1;
          }
       }
    }

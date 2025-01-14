@@ -29,7 +29,7 @@
 #ifndef __AREACONVERT_H__
 #define __AREACONVERT_H__
 
-const int AREA_STOCK_VERSION = 3;       // The current top version for stock Smaug files
+const int AREA_STOCK_VERSION = 3;       // The current top version for stock Smaug 1.8b files
 const int AREA_SMAUGWIZ_VERSION = 1000; // The current top version for SmaugWiz files
 const int AREA_FUSS_VERSION = 1;        // The current top version for SmaugFUSS files
 

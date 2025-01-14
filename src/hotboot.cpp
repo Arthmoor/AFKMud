@@ -39,6 +39,7 @@
 #include "descriptor.h"
 #include "mobindex.h"
 #include "mud_prog.h"
+#include "overland.h"
 #include "roomindex.h"
 
 #ifdef MULTIPORT
@@ -97,7 +98,11 @@ void save_mobile( FILE * fp, char_data * mob )
    }
    else
       fprintf( fp, "Room	%d\n", ROOM_VNUM_LIMBO );
-   fprintf( fp, "Coordinates  %d %d %d\n", mob->mx, mob->my, mob->wmap );
+   if( mob->continent )
+   {
+      fprintf( fp, "Continent    %s\n", mob->continent->name.c_str( ) );
+      fprintf( fp, "Coordinates  %d %d\n", mob->map_x, mob->map_y );
+   }
    if( mob->name && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
       fprintf( fp, "Name     %s~\n", mob->name );
    if( mob->short_descr && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
@@ -341,11 +346,19 @@ char_data *load_mobile( FILE * fp )
             break;
 
          case 'C':
+            if( !str_cmp( word, "Continent" ) )
+            {
+               continent_data *continent = find_continent_by_name( fread_string( fp ) );
+
+               if( continent )
+                  mob->continent = continent;
+               break;
+            }
+
             if( !str_cmp( word, "Coordinates" ) )
             {
-               mob->mx = fread_short( fp );
-               mob->my = fread_short( fp );
-               mob->wmap = fread_short( fp );
+               mob->map_x = fread_short( fp );
+               mob->map_y = fread_short( fp );
                break;
             }
             break;
@@ -514,16 +527,16 @@ void read_obj_file( const char *dirname, const char *filename )
          if( tobj->extra_flags.test( ITEM_ONMAP ) )
          {
             supermob->set_actflag( ACT_ONMAP );
-            supermob->wmap = tobj->wmap;
-            supermob->mx = tobj->mx;
-            supermob->my = tobj->my;
+            supermob->continent = tobj->continent;
+            supermob->map_x = tobj->map_x;
+            supermob->map_y = tobj->map_y;
          }
          tobj->from_char(  );
          tobj = tobj->to_room( room, supermob );
          supermob->unset_actflag( ACT_ONMAP );
-         supermob->wmap = -1;
-         supermob->mx = -1;
-         supermob->my = -1;
+         supermob->continent = nullptr;
+         supermob->map_x = -1;
+         supermob->map_y = -1;
       }
       release_supermob(  );
    }

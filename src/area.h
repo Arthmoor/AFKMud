@@ -109,6 +109,8 @@ class area_data
      list < obj_index * >objects;   // The list of object indexes for this area
    weather_data *weather;           /* FB */
      bitset < AFLAG_MAX > flags;
+
+   class continent_data *continent; // Continent data structure this area is associated with.
    char *name;
    char *filename;
    char *author;                    /* Scryn */
@@ -126,11 +128,10 @@ class area_data
    short age;
    short nplayer;
    short reset_frequency;
-   short continent; // Added for Overland support - Samson 9-16-00
-   short mx;   // Coordinates of a zone on the overland, for recall/death purposes - Samson 12-25-00
-   short my;
-   unsigned short version; // Replaces the file_ver method of tracking - Samson 12-23-02
-   unsigned short tg_nothing; // TG Values are for area-specific random treasure chances - Samson 11-25-04
+   short map_x;                     // Coordinates of a zone on the overland, for recall/death purposes - Samson 12-25-00
+   short map_y;
+   unsigned short version;          // Replaces the file_ver method of tracking - Samson 12-23-02
+   unsigned short tg_nothing;       // TG Values are for area-specific random treasure chances - Samson 11-25-04
    unsigned short tg_gold;
    unsigned short tg_item;
    unsigned short tg_gem;           // Runes come after gems and go up to 100%

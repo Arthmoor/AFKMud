@@ -34,7 +34,7 @@ Desc      &W&wTall, thin, and &ppurple&w, this &Pillithid &wtraveller is making 
 ~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
-Stats2    40 -20 -100 100 4 5 0
+Stats2    40 -20 -100 100 4 5 10
 Speaks    common~
 Speaking  common~
 Actflags  npc scavenger aggressive stayarea meta_aggr~
@@ -62,7 +62,7 @@ bred by illithids, this being could easily pass for his ancestors. The
 ~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
-Stats2    30 -20 -100 150 5 6 0
+Stats2    30 -20 -100 150 5 6 10
 Speaks    common gith~
 Speaking  gith~
 Actflags  npc aggressive stayarea meta_aggr~
@@ -91,7 +91,7 @@ Desc      &W&wBefore you stands the biggest dragon you have ever seen. Looming o
 ~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
-Stats2    100 -50 -300 10000 10 10 0
+Stats2    100 -50 -300 10000 10 10 100
 Speaks    common pixie ogre orcish trollese insectoid dragon magical goblin ancient clan centaur gnomish~
 Speaking  pixie~
 Actflags  npc sentinel stayarea~

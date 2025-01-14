@@ -274,9 +274,9 @@ obj_data *obj_index::create_object( int olevel )
    else
       obj->ego = ego;
 
-   obj->mx = -1;
-   obj->my = -1;
-   obj->wmap = -1;
+   obj->map_x = -1;
+   obj->map_y = -1;
+   obj->continent = nullptr;
    obj->day = 0;
    obj->month = 0;
    obj->year = 0;

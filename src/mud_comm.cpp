@@ -2795,27 +2795,37 @@ CMDF( do_mpscatter )
 
    if( schance == 1 )
    {
-      int map, x, y;
+      continent_data *continent;
+      int x, y;
       short sector;
 
       for( ;; )
       {
-         map = ( number_range( 1, 3 ) - 1 );
+         continent = pick_random_continent( );
          x = number_range( 0, MAX_X - 1 );
          y = number_range( 0, MAX_Y - 1 );
 
-         sector = get_terrain( map, x, y );
-         if( sector == -1 )
-            continue;
-         if( sect_show[sector].canpass )
-            break;
+         if( continent )
+         {
+            sector = continent->get_terrain( x, y );
+            if( sector == -1 )
+               continue;
+            if( sect_show[sector].canpass )
+               break;
+         }
       }
-      act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, nullptr, victim, TO_NOTVICT );
-      act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, nullptr, victim, TO_VICT );
-      act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, nullptr, victim, TO_CHAR );
-      enter_map( victim, nullptr, x, y, map );
-      victim->position = POS_STANDING;
-      act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, nullptr, nullptr, TO_ROOM );
+
+      if( continent )
+      {
+         act( AT_MAGIC, "With the sweep of an arm, $n flings $N to the astral winds.", ch, nullptr, victim, TO_NOTVICT );
+         act( AT_MAGIC, "With the sweep of an arm, $n flings you to the astral winds.", ch, nullptr, victim, TO_VICT );
+         act( AT_MAGIC, "With the sweep of an arm, you fling $N to the astral winds.", ch, nullptr, victim, TO_CHAR );
+         enter_map( victim, nullptr, x, y, continent->name );
+         victim->position = POS_STANDING;
+         act( AT_MAGIC, "$n is deposited in a heap by the astral winds.", victim, nullptr, nullptr, TO_ROOM );
+      }
+      else
+         return;
    }
    else
    {
@@ -3740,9 +3750,9 @@ char_data *make_doppleganger( char_data * ch )
    mob->level = ch->level;
    mob->set_actflags( pMobIndex->actflags );
    mob->set_actflag( ACT_AGGRESSIVE );
-   mob->wmap = ch->wmap;
-   mob->mx = ch->mx;
-   mob->my = ch->my;
+   mob->continent = ch->continent;
+   mob->map_x = ch->map_x;
+   mob->map_y = ch->map_y;
 
    if( mob->has_actflag( ACT_MOBINVIS ) )
       mob->mobinvis = mob->level;

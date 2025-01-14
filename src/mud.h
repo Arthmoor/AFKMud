@@ -45,7 +45,7 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.2.6"
+#define CODEVERSION "2.5.0"
 #define COPYRIGHT "Copyright The Alsherok Team 1997-2025. All rights reserved."
 
 /*
@@ -1360,7 +1360,7 @@ void release_supermob( void );
 bool is_same_char_map( char_data *, char_data * );
 bool is_same_obj_map( char_data *, obj_data * );
 void fix_maps( char_data *, char_data * );
-void enter_map( char_data *, exit_data *, int, int, int );
+void enter_map( char_data *, exit_data *, int, int, const string & );
 void leave_map( char_data *, char_data *, room_index * );
 void collect_followers( char_data *, room_index *, room_index * );
 

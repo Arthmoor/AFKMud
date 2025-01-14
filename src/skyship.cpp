@@ -32,9 +32,53 @@
 #include "event.h"
 #include "mobindex.h"
 #include "overland.h"
-#include "skyship.h"
 
-list < landing_data * >landinglist;
+void continent_data::fread_landing_site( ifstream & stream )
+{
+   landing_data *landing_site = new landing_data;
+
+   do
+   {
+      string key, value;
+      char buf[MIL];
+
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "Coordinates" )
+      {
+         string coord;
+
+         value = one_argument( value, coord );
+         landing_site->map_x = atoi( coord.c_str(  ) );
+
+         landing_site->map_y = atoi( value.c_str(  ) );
+      }
+      else if( key == "Area" )
+         landing_site->area = value;
+      else if( key == "Cost" )
+         landing_site->cost = atoi( value.c_str(  ) );
+      else if( key == "End" )
+      {
+         this->landing_sites.push_back( landing_site );
+         return;
+      }
+      else
+         log_printf( "%s: %s - Bad line reading landing sites: %s %s", __func__, this->name.c_str(  ), key.c_str(  ), value.c_str(  ) );
+   }
+   while( !stream.eof(  ) );
+
+   bug( "%s: Filestream reached premature EOF reading landing sites for continent %s - FATAL ERROR: Aborting file read.", __func__, this->name.c_str(  ) );
+   shutdown_mud( "Corrupt continent file." );
+}
 
 /*
  * Remove a skyship when it is no longer needed
@@ -42,8 +86,8 @@ list < landing_data * >landinglist;
 void purge_skyship( char_data * ch, char_data * skyship )
 {
    ch->print_room( "The skyship pilot ascends and takes to the wind.\r\n" );
-   skyship->mx = 0;
-   skyship->my = 0;
+   skyship->map_x = 0;
+   skyship->map_y = 0;
 
    /*
     * Release the player from the skyship 
@@ -66,15 +110,15 @@ void land_skyship( char_data * ch, char_data * skyship, bool arrived )
 {
    if( !ch->isnpc(  ) && arrived )
    {
-      ch->mx = skyship->dcoordx;
-      ch->my = skyship->dcoordy;
+      ch->map_x = skyship->dcoordx;
+      ch->map_y = skyship->dcoordy;
       ch->inflight = false;
       cancel_event( ev_skyship, ch );
    }
 
-   skyship->wmap = skyship->my_rider->wmap;
-   skyship->mx = skyship->my_rider->mx;
-   skyship->my = skyship->my_rider->my;
+   skyship->continent = skyship->my_rider->continent;
+   skyship->map_x = skyship->my_rider->map_x;
+   skyship->map_y = skyship->my_rider->map_y;
    skyship->backtracking = false;
    skyship->inflight = false;
 
@@ -114,8 +158,8 @@ void fly_skyship( char_data * ch, char_data * skyship )
    /*
     * If skyship is close to the landing site... 
     */
-   if( ( ( skyship->my - skyship->dcoordy ) <= speed )
-       && ( skyship->my - skyship->dcoordy ) >= -speed && ( ( skyship->mx - skyship->dcoordx ) <= speed ) && ( skyship->mx - skyship->dcoordx ) >= -speed )
+   if( ( ( skyship->map_y - skyship->dcoordy ) <= speed )
+       && ( skyship->map_y - skyship->dcoordy ) >= -speed && ( ( skyship->map_x - skyship->dcoordx ) <= speed ) && ( skyship->map_x - skyship->dcoordx ) >= -speed )
    {
       land_skyship( pair, skyship, true );
       return;
@@ -124,8 +168,8 @@ void fly_skyship( char_data * ch, char_data * skyship )
    /*
     * up up and away 
     */
-   dist = distance( skyship->mx, skyship->my, skyship->dcoordx, skyship->dcoordy );
-   angle = calc_angle( skyship->mx, skyship->my, skyship->dcoordx, skyship->dcoordy, &dist );
+   dist = distance( skyship->map_x, skyship->map_y, skyship->dcoordx, skyship->dcoordy );
+   angle = calc_angle( skyship->map_x, skyship->map_y, skyship->dcoordx, skyship->dcoordy, &dist );
 
    if( angle == -1 )
       skyship->heading = -1;
@@ -154,66 +198,66 @@ void fly_skyship( char_data * ch, char_data * skyship )
    switch ( skyship->heading )
    {
       case DIR_NORTH:
-         pair->my = pair->my - speed;
+         pair->map_y = pair->map_y - speed;
          if( pair == ch )
-            skyship->my = skyship->my - speed;
+            skyship->map_y = skyship->map_y - speed;
          break;
 
       case DIR_EAST:
-         pair->mx = pair->mx + speed;
+         pair->map_x = pair->map_x + speed;
          if( pair == ch )
-            skyship->mx = skyship->mx + speed;
+            skyship->map_x = skyship->map_x + speed;
          break;
 
       case DIR_SOUTH:
-         pair->my = pair->my + speed;
+         pair->map_y = pair->map_y + speed;
          if( pair == ch )
-            skyship->my = skyship->my + speed;
+            skyship->map_y = skyship->map_y + speed;
          break;
 
       case DIR_WEST:
-         pair->mx = pair->mx - speed;
+         pair->map_x = pair->map_x - speed;
          if( pair == ch )
-            skyship->mx = skyship->mx - speed;
+            skyship->map_x = skyship->map_x - speed;
          break;
 
       case DIR_NORTHEAST:
-         pair->mx = pair->mx + speed;
-         pair->my = pair->my - speed;
+         pair->map_x = pair->map_x + speed;
+         pair->map_y = pair->map_y - speed;
          if( pair == ch )
          {
-            skyship->mx = skyship->mx + speed;
-            skyship->my = skyship->my - speed;
+            skyship->map_x = skyship->map_x + speed;
+            skyship->map_y = skyship->map_y - speed;
          }
          break;
 
       case DIR_NORTHWEST:
-         pair->mx = pair->mx - speed;
-         pair->my = pair->my - speed;
+         pair->map_x = pair->map_x - speed;
+         pair->map_y = pair->map_y - speed;
          if( pair == ch )
          {
-            skyship->mx = skyship->mx - speed;
-            skyship->my = skyship->my - speed;
+            skyship->map_x = skyship->map_x - speed;
+            skyship->map_y = skyship->map_y - speed;
          }
          break;
 
       case DIR_SOUTHEAST:
-         pair->mx = pair->mx + speed;
-         pair->my = pair->my + speed;
+         pair->map_x = pair->map_x + speed;
+         pair->map_y = pair->map_y + speed;
          if( pair == ch )
          {
-            skyship->mx = skyship->mx + speed;
-            skyship->my = skyship->my + speed;
+            skyship->map_x = skyship->map_x + speed;
+            skyship->map_y = skyship->map_y + speed;
          }
          break;
 
       case DIR_SOUTHWEST:
-         pair->mx = pair->mx - speed;
-         pair->my = pair->my + speed;
+         pair->map_x = pair->map_x - speed;
+         pair->map_y = pair->map_y + speed;
          if( pair == ch )
          {
-            skyship->mx = skyship->mx - speed;
-            skyship->my = skyship->my + speed;
+            skyship->map_x = skyship->map_x - speed;
+            skyship->map_y = skyship->map_y + speed;
          }
          break;
 
@@ -266,9 +310,9 @@ void create_skyship( char_data * ch )
    skyship->set_actflag( ACT_ONMAP );
    skyship->inflight = true;
    skyship->heading = -1;
-   skyship->wmap = ch->wmap;
-   skyship->mx = ch->mx;
-   skyship->my = ch->my;
+   skyship->continent = ch->continent;
+   skyship->map_x = ch->map_x;
+   skyship->map_y = ch->map_y;
 
    /*
     * Bond the player and skyship together 
@@ -279,14 +323,14 @@ void create_skyship( char_data * ch )
    /*
     * Set the launch coords for backtracking, if needed later 
     */
-   skyship->lcoordx = ch->mx;
-   skyship->lcoordy = ch->my;
+   skyship->lcoordx = ch->map_x;
+   skyship->lcoordy = ch->map_y;
 
    /*
     * fly skyship to player location 
     */
-   skyship->dcoordx = ch->mx;
-   skyship->dcoordy = ch->my;
+   skyship->dcoordx = ch->map_x;
+   skyship->dcoordy = ch->map_y;
 
    add_event( 3, ev_skyship, skyship );
    fly_skyship( nullptr, skyship );
@@ -297,7 +341,7 @@ void create_skyship( char_data * ch )
  */
 CMDF( do_call )
 {
-   short terrain = get_terrain( ch->wmap, ch->mx, ch->my );
+   short sector; 
 
    /*
     * Sanity checks Reasons why a skyship wouldn't want to answer.
@@ -327,7 +371,8 @@ CMDF( do_call )
       return;
    }
 
-   if( terrain != SECT_LANDING )
+   sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
+   if( sector != SECT_LANDING )
    {
       ch->print( "A skyship will not land except at a designated landing site.\r\n" );
       return;
@@ -337,19 +382,16 @@ CMDF( do_call )
    create_skyship( ch );
 }
 
-landing_data *check_landing_site( short wmap, short x, short y )
+landing_data *continent_data::check_landing_site( short x, short y )
 {
    list < landing_data * >::iterator ilanding;
 
-   for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
+   for( ilanding = this->landing_sites.begin(  ); ilanding != landing_sites.end(  ); ++ilanding )
    {
       landing_data *landing = *ilanding;
 
-      if( landing->wmap == wmap )
-      {
-         if( landing->mx == x && landing->my == y )
-            return landing;
-      }
+      if( landing->map_x == x && landing->map_y == y )
+         return landing;
    }
    return nullptr;
 }
@@ -359,6 +401,7 @@ landing_data *check_landing_site( short wmap, short x, short y )
  */
 CMDF( do_fly )
 {
+   list < landing_data * >::iterator ilanding;
    char_data *skyship = nullptr;
    landing_data *lsite = nullptr;
    int cost = 0;
@@ -395,10 +438,9 @@ CMDF( do_fly )
       return;
    }
 
-   lsite = check_landing_site( ch->wmap, ch->mx, ch->my );
+   lsite = ch->continent->check_landing_site( ch->map_x, ch->map_y );
 
-   list < landing_data * >::iterator ilanding;
-   for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
+   for( ilanding = ch->continent->landing_sites.begin(  ); ilanding != ch->continent->landing_sites.end(  ); ++ilanding )
    {
       landing_data *landing = *ilanding;
 
@@ -410,14 +452,6 @@ CMDF( do_fly )
             return;
          }
 
-         if( landing->wmap != ch->wmap )
-         {
-            /*
-             * Simplifies things. Especially since it would look funny to see alien terrain below you - Samson 
-             */
-            ch->print( "The skyship pilot refuses to fly you to another continent.\r\n" );
-            return;
-         }
          cost = landing->cost;
 
          if( ch->gold < cost )
@@ -428,8 +462,8 @@ CMDF( do_fly )
          ch->gold -= cost;
 
          ch->printf( "The skyship pilot takes your gold and charts a course to %s.\r\n", landing->area.c_str(  ) );
-         skyship->dcoordx = landing->mx;
-         skyship->dcoordy = landing->my;
+         skyship->dcoordx = landing->map_x;
+         skyship->dcoordy = landing->map_y;
          skyship->backtracking = false;
          ch->inflight = true;
          add_event( 3, ev_skyship, ch );
@@ -438,8 +472,8 @@ CMDF( do_fly )
       }
    }
    ch->printf( "There is no landing site in the vicinity of %s.\r\n", argument.c_str(  ) );
-   skyship->dcoordx = ch->mx;
-   skyship->dcoordy = ch->my;
+   skyship->dcoordx = ch->map_x;
+   skyship->dcoordy = ch->map_y;
 }
 
 CMDF( do_board )
@@ -481,158 +515,62 @@ CMDF( do_board )
  */
 landing_data::landing_data(  )
 {
-   init_memory( &cost, &my, sizeof( my ) );
+   init_memory( &cost, &map_y, sizeof( map_y ) );
 }
 
 landing_data::~landing_data(  )
 {
-   landinglist.remove( this );
 }
 
-void load_landing_sites( void )
-{
-   landing_data *landing = nullptr;
-   ifstream stream;
-
-   landinglist.clear(  );
-
-   stream.open( LANDING_SITE_FILE );
-   if( !stream.is_open(  ) )
-   {
-      bug( "%s: Landing site file cannot be found.", __func__ );
-      return;
-   }
-
-   do
-   {
-      string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
-
-      if( key.empty(  ) )
-         continue;
-
-      if( key == "#LANDING_SITE" )
-         landing = new landing_data;
-      else if( key == "Coordinates" )
-      {
-         string coord;
-
-         value = one_argument( value, coord );
-         landing->wmap = atoi( coord.c_str(  ) );
-
-         value = one_argument( value, coord );
-         landing->mx = atoi( coord.c_str(  ) );
-
-         landing->my = atoi( value.c_str(  ) );
-      }
-      else if( key == "Area" )
-         landing->area = value;
-      else if( key == "Cost" )
-         landing->cost = atoi( value.c_str(  ) );
-      else if( key == "End" )
-         landinglist.push_back( landing );
-      else
-         log_printf( "%s: Bad line in landing sites file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
-   }
-   while( !stream.eof(  ) );
-   stream.close(  );
-}
-
-void save_landing_sites( void )
-{
-   ofstream stream;
-
-   stream.open( LANDING_SITE_FILE );
-   if( !stream.is_open(  ) )
-   {
-      bug( "%s: fopen", __func__ );
-      perror( LANDING_SITE_FILE );
-   }
-   else
-   {
-      list < landing_data * >::iterator ilanding;
-      for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
-      {
-         landing_data *landing = *ilanding;
-
-         stream << "#LANDING_SITE" << endl;
-         stream << "Coordinates     " << landing->wmap << " " << landing->mx << " " << landing->my << endl;
-         if( !landing->area.empty(  ) )
-            stream << "Area            " << landing->area << endl;
-         stream << "Cost            " << landing->cost << endl;
-         stream << "End" << endl << endl;
-      }
-      stream.close(  );
-   }
-}
-
-void add_landing( short wmap, short x, short y )
+void continent_data::add_landing_site( short x, short y )
 {
    landing_data *landing;
 
    landing = new landing_data;
-   landing->wmap = wmap;
-   landing->mx = x;
-   landing->my = y;
+   landing->map_x = x;
+   landing->map_y = y;
    landing->cost = 50000;
-   landinglist.push_back( landing );
-   save_landing_sites(  );
+
+   this->landing_sites.push_back( landing );
+   this->save( );
+   this->save_png_file( );
 }
 
-void delete_landing_site( landing_data * landing )
+void continent_data::delete_landing_site( landing_data * landing )
 {
-   if( !landing )
-   {
-      bug( "%s: Trying to delete nullptr landing site.", __func__ );
-      return;
-   }
+   this->landing_sites.remove( landing );
 
    deleteptr( landing );
 
-   if( !mud_down )
-      save_landing_sites(  );
-}
-
-void free_landings( void )
-{
-   list < landing_data * >::iterator lands;
-
-   for( lands = landinglist.begin(  ); lands != landinglist.end(  ); )
-   {
-      landing_data *landing = *lands;
-      ++lands;
-
-      delete_landing_site( landing );
-   }
+   this->save(  );
+   this->save_png_file(  );
 }
 
 /* Support command to list all landing sites currently loaded */
 CMDF( do_landing_sites )
 {
+   list < continent_data * >::iterator cont;
    list < landing_data * >::iterator ilanding;
-
-   if( landinglist.empty(  ) )
-   {
-      ch->print( "No landing sites defined.\r\n" );
-      return;
-   }
 
    ch->pager( "Continent | Coordinates | Area             | Cost     \r\n" );
    ch->pager( "------------------------------------------------------\r\n" );
 
-   for( ilanding = landinglist.begin(  ); ilanding != landinglist.end(  ); ++ilanding )
+   for( cont = continent_list.begin(  ); cont != continent_list.end(  ); ++cont )
    {
-      landing_data *landing = *ilanding;
+      continent_data *continent = *cont;
 
-      ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", map_names[landing->wmap], landing->mx, landing->my, landing->area.c_str(  ), landing->cost );
+      if( continent->landing_sites.empty(  ) && continent->nogrid == false )
+      {
+         ch->pagerf( "%s: No landing sites defined.\r\n", continent->name.c_str( ) );
+         continue;
+      }
+
+      for( ilanding = continent->landing_sites.begin(  ); ilanding != continent->landing_sites.end(  ); ++ilanding )
+      {
+         landing_data *landing = *ilanding;
+
+         ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", continent->name.c_str(  ), landing->map_x, landing->map_y, landing->area.c_str(  ), landing->cost );
+      }
    }
 }
 
@@ -665,7 +603,7 @@ CMDF( do_setlanding )
       return;
    }
 
-   landing = check_landing_site( ch->wmap, ch->mx, ch->my );
+   landing = ch->continent->check_landing_site( ch->map_x, ch->map_y );
 
    if( !str_cmp( arg, "add" ) )
    {
@@ -674,8 +612,8 @@ CMDF( do_setlanding )
          ch->print( "There's already a landing site at this location.\r\n" );
          return;
       }
-      add_landing( ch->wmap, ch->mx, ch->my );
-      putterr( ch->wmap, ch->mx, ch->my, SECT_LANDING );
+      ch->continent->add_landing_site( ch->map_x, ch->map_y );
+      ch->continent->putterr( ch->map_x, ch->map_y, SECT_LANDING );
       ch->print( "Landing site added.\r\n" );
       return;
    }
@@ -688,8 +626,8 @@ CMDF( do_setlanding )
 
    if( !str_cmp( arg, "delete" ) )
    {
-      delete_landing_site( landing );
-      putterr( ch->wmap, ch->mx, ch->my, SECT_OCEAN );
+      ch->continent->delete_landing_site( landing );
+      ch->continent->putterr( ch->map_x, ch->map_y, SECT_OCEAN );
       ch->print( "Landing site deleted.\r\n" );
       return;
    }
@@ -697,7 +635,7 @@ CMDF( do_setlanding )
    if( !str_cmp( arg, "area" ) )
    {
       landing->area = argument;
-      save_landing_sites(  );
+      ch->continent->save(  );
       ch->printf( "Area set to %s.\r\n", argument.c_str(  ) );
       return;
    }
@@ -705,7 +643,7 @@ CMDF( do_setlanding )
    if( !str_cmp( arg, "cost" ) )
    {
       landing->cost = atoi( argument.c_str(  ) );
-      save_landing_sites(  );
+      ch->continent->save(  );
       ch->printf( "Landing site cost set to %d\r\n", landing->cost );
       return;
    }

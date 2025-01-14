@@ -131,10 +131,7 @@ void free_all_auths(  );
 void free_runedata(  );
 void free_slays(  );
 void free_holidays(  );
-void free_landings(  );
 void free_ships(  );
-void free_mapexits(  );
-void free_landmarks(  );
 void free_liquiddata(  );
 void free_mudchannels(  );
 void free_commands(  );
@@ -161,6 +158,7 @@ void free_all_classes(  );
 void free_all_races(  );
 void free_all_titles(  );
 void free_all_chess_games(  );
+void free_continents(  );
 void free_helps(  );
 #if !defined(__CYGWIN__) && defined(SQL)
  void close_db(  );
@@ -1056,17 +1054,11 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Wizinfo Data.\n" );
    clear_wizinfo(  );
 
-   fprintf( stdout, "%s", "Skyship landings.\n" );
-   free_landings(  );
-
    fprintf( stdout, "%s", "Ships.\n" );
    free_ships(  );
 
-   fprintf( stdout, "%s", "Overland Landmarks.\n" );
-   free_landmarks(  );
-
-   fprintf( stdout, "%s", "Overland Exits.\n" );
-   free_mapexits(  );
+   fprintf( stdout, "%s", "Overland Data.\n" );
+   free_continents(  );
 
    fprintf( stdout, "%s", "Mixtures and Liquids.\n" );
    free_liquiddata(  );

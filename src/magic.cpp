@@ -3002,24 +3002,34 @@ SPELLF( spell_teleport )
 
    if( schance == 1 )
    {
-      short map, x, y, sector;
+      continent_data *cont = nullptr;
+      short x, y, sector;
 
       for( ;; )
       {
-         map = number_range( 0, MAP_MAX - 1 );
+         cont = pick_random_continent( );
          x = number_range( 0, MAX_X - 1 );
          y = number_range( 0, MAX_Y - 1 );
 
-         sector = get_terrain( map, x, y );
-         if( sector == -1 )
-            continue;
-         if( sect_show[sector].canpass )
-            break;
+         if( cont )
+         {
+            sector = cont->get_terrain( x, y );
+            if( sector == -1 )
+               continue;
+            if( sect_show[sector].canpass )
+               break;
+         }
       }
-      act( AT_MAGIC, "$n slowly fades out of view.", victim, nullptr, nullptr, TO_ROOM );
-      enter_map( victim, nullptr, x, y, map );
-      if( !victim->isnpc(  ) )
-         act( AT_MAGIC, "$n slowly fades into view.", victim, nullptr, nullptr, TO_ROOM );
+
+      if( cont )
+      {
+         act( AT_MAGIC, "$n slowly fades out of view.", victim, nullptr, nullptr, TO_ROOM );
+         enter_map( victim, nullptr, x, y, cont->name );
+         if( !victim->isnpc(  ) )
+            act( AT_MAGIC, "$n slowly fades into view.", victim, nullptr, nullptr, TO_ROOM );
+      }
+      else
+         return rSPELL_FAILED;
    }
    else
    {
@@ -3606,10 +3616,11 @@ SPELLF( spell_portal )
 
 SPELLF( spell_farsight )
 {
+   continent_data *orig_cont;
    room_index *location, *original;
    char_data *victim;
    skill_type *skill = get_skilltype( sn );
-   int origmap, origx, origy;
+   int origx, origy;
    bool visited;
 
    /*
@@ -3652,9 +3663,9 @@ SPELLF( spell_farsight )
    successful_casting( skill, ch, victim, nullptr );
 
    original = ch->in_room;
-   origmap = ch->wmap;
-   origx = ch->mx;
-   origy = ch->my;
+   orig_cont = ch->continent;
+   origx = ch->map_x;
+   origy = ch->map_y;
 
    /*
     * Bunch of checks to make sure the caster is on the same grid as the target - Samson 
@@ -3662,22 +3673,22 @@ SPELLF( spell_farsight )
    if( location->flags.test( ROOM_MAP ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->set_pcflag( PCFLAG_ONMAP );
-      ch->wmap = victim->wmap;
-      ch->mx = victim->mx;
-      ch->my = victim->my;
+      ch->continent = victim->continent;
+      ch->map_x = victim->map_x;
+      ch->map_y = victim->map_y;
    }
    else if( location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
-      ch->wmap = victim->wmap;
-      ch->mx = victim->mx;
-      ch->my = victim->my;
+      ch->continent = victim->continent;
+      ch->map_x = victim->map_x;
+      ch->map_y = victim->map_y;
    }
    else if( !location->flags.test( ROOM_MAP ) && ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->unset_pcflag( PCFLAG_ONMAP );
-      ch->wmap = -1;
-      ch->mx = -1;
-      ch->my = -1;
+      ch->continent = nullptr;
+      ch->map_x = -1;
+      ch->map_y = -1;
    }
 
    visited = ch->has_visited( location->area );
@@ -3697,9 +3708,9 @@ SPELLF( spell_farsight )
    else if( !ch->has_pcflag( PCFLAG_ONMAP ) && original->flags.test( ROOM_MAP ) )
       ch->set_pcflag( PCFLAG_ONMAP );
 
-   ch->wmap = origmap;
-   ch->mx = origx;
-   ch->my = origy;
+   ch->continent = orig_cont;
+   ch->map_x = origx;
+   ch->map_y = origy;
    return rNONE;
 }
 
@@ -5278,9 +5289,9 @@ SPELLF( spell_tree_transport )
     * Need to explicitly set coordinates and map information with objects 
     */
    leave_map( ch, nullptr, target );
-   ch->wmap = obj->wmap;
-   ch->mx = obj->mx;
-   ch->my = obj->my;
+   ch->continent = obj->continent;
+   ch->map_x = obj->map_x;
+   ch->map_y = obj->map_y;
 
    act( AT_MAGIC, "$p rustles slightly, and $n magically steps from within!", ch, obj, nullptr, TO_ROOM );
    act( AT_MAGIC, "You are instantly transported to $p!", ch, obj, nullptr, TO_CHAR );

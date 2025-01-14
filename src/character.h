@@ -507,6 +507,7 @@ class char_data
    struct hunt_hate_fear *fearing;
    struct hunt_hate_fear *hating;
    class char_morph *morph;
+   class continent_data *continent;  /* Which map are they on? - Samson 8-3-99 */
    DO_FUN *last_cmd;
    DO_FUN *prev_cmd; /* mapping */
    SPEC_FUN *spec_fun;
@@ -604,9 +605,8 @@ class char_data
    short mod_lck;
    short mental_state;  /* simplified */
    short mobinvis;   /* Mobinvis level SB */
-   short mx;   /* Coordinates on the overland map - Samson 7-31-99 */
-   short my;
-   short wmap;  /* Which map are they on? - Samson 8-3-99 */
+   short map_x;   /* Coordinates on the overland map - Samson 7-31-99 */
+   short map_y;
    short sector;  /* Type of terrain to restrict a wandering mob to on overland - Samson 7-27-00 */
    unsigned short mpscriptpos;
    bool has_skyship; /* Identifies has skyship */

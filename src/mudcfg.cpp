@@ -35,9 +35,9 @@
 #include "deity.h"
 #include "mobindex.h"
 #include "objindex.h"
+#include "overland.h"
 #include "roomindex.h"
 
-double distance( short, short, short, short );  /* For check_room */
 bool can_use_mprog( char_data * );
 
 const char *SPELL_SILENT_MARKER = "silent";  /* No OK. or Failed. */
@@ -50,7 +50,7 @@ room_index *check_room( char_data * ch, room_index * dieroom )
 {
    room_index *location = nullptr;
 
-   if( dieroom->area->continent == ACON_ONE )
+   if( !str_cmp( dieroom->area->continent->name, "One" ) )
       location = get_room_index( ROOM_VNUM_ALTAR );
 
    if( !location )
@@ -78,7 +78,7 @@ room_index *recall_room( char_data * ch )
 
    if( !location )
    {
-      if( ch->in_room->area->continent == ACON_ONE )
+      if( !str_cmp( ch->in_room->area->continent->name, "One" ) )
       {
          location = get_room_index( ch->pcdata->one );
 
@@ -86,9 +86,10 @@ room_index *recall_room( char_data * ch )
             location = get_room_index( ROOM_VNUM_TEMPLE );
       }
 
-      if( ch->in_room->area->continent == ACON_ASTRAL )
+      if( !str_cmp( ch->in_room->area->continent->name, "Astral" ) && astral_target != -1 )
          location = get_room_index( astral_target );
    }
+
    if( !location && ch->pcdata->deity && ch->pcdata->deity->recallroom )
       location = get_room_index( ch->pcdata->deity->recallroom );
 

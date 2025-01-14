@@ -43,7 +43,7 @@ primary purpose for this document.
 ----------------------------------
 
 A note on balance. The automatic system described here is essentially the
-same one that has been used successfully by Alsherok for 6 years now. It is
+same one that has been used successfully by Alsherok since about 2001. It is
 also based on the same system which worked successfully at Crystal Shard for
 5+ years before that. So it's been tried and true for nearly 11 years. Thus
 it should work in most cases. However, there are still times when manual

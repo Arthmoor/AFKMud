@@ -54,7 +54,6 @@ list < area_data * >area_vsort;
 
 int recall( char_data *, int );
 void save_sysdata(  );
-int get_continent( const string & );
 bool check_area_conflict( area_data *, int, int );
 void web_arealist(  );
 area_data *fread_smaugfuss_area( FILE * );
@@ -480,8 +479,8 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
             KEY( "ToRoom", pexit->vnum, fread_number( fp ) );
             if( !str_cmp( word, "ToCoords" ) )
             {
-               pexit->mx = fread_number( fp );
-               pexit->my = fread_number( fp );
+               pexit->map_x = fread_number( fp );
+               pexit->map_y = fread_number( fp );
                break;
             }
             break;
@@ -641,17 +640,20 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
             if( !str_cmp( word, "Continent" ) )
             {
-               int value;
+               continent_data *continent = nullptr;
+               string value;
 
-               value = get_continent( fread_flagstring( fp ) );
+               fread_string( value, fp );
 
-               if( value < 0 || value > ACON_MAX )
+               if( !( continent = find_continent_by_name( value ) ) )
                {
-                  tarea->continent = 0;
-                  bug( "%s: Invalid area continent, set to 'Alsherok' by default.", __func__ );
+                  bug( "%s: Invalid area continent '%s' - Needs to be manually corrected.", __func__, value.c_str( ) );
+                  tarea->continent = nullptr;
                }
                else
-                  tarea->continent = value;
+               {
+                  tarea->continent = continent;
+               }
                break;
             }
 
@@ -662,20 +664,20 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
                x = fread_short( fp );
                y = fread_short( fp );
 
-               if( x < 0 || x >= MAX_X )
+               if( !is_valid_x( x ) )
                {
                   bug( "%s: Area has bad x coord - setting X to 0", __func__ );
                   x = 0;
                }
 
-               if( y < 0 || y >= MAX_Y )
+               if( !is_valid_y( y ) )
                {
                   bug( "%s: Area has bad y coord - setting Y to 0", __func__ );
                   y = 0;
                }
 
-               tarea->mx = x;
-               tarea->my = y;
+               tarea->map_x = x;
+               tarea->map_y = y;
                break;
             }
 
@@ -1740,7 +1742,7 @@ void process_sorting( area_data * tarea, bool isproto )
    if( tarea->low_vnum < 0 || tarea->hi_vnum < 0 )
       log_printf( "%-20s: Bad Vnum Range", tarea->filename );
    if( !tarea->author )
-      tarea->author = STRALLOC( "Alsherok" );
+      tarea->author = STRALLOC( "AFKMud" );
 }
 
 void load_area_file( const string & filename, bool isproto )
@@ -1958,8 +1960,8 @@ void fwrite_afk_exit( FILE * fpout, exit_data * pexit )
    fprintf( fpout, "ToRoom    %d\n", pexit->vnum );
    if( pexit->key > 0 )
       fprintf( fpout, "Key       %d\n", pexit->key );
-   if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) && pexit->mx != 0 && pexit->my != 0 )
-      fprintf( fpout, "ToCoords  %d %d\n", pexit->mx, pexit->my );
+   if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) && pexit->map_x != -1 && pexit->map_y != -1 )
+      fprintf( fpout, "ToCoords  %d %d\n", pexit->map_x, pexit->map_y );
    if( pexit->pull )
       fprintf( fpout, "Pull      %d %d\n", pexit->pulltype, pexit->pull );
    if( pexit->exitdesc && pexit->exitdesc[0] != '\0' )
@@ -2068,8 +2070,9 @@ void fwrite_area_header( area_data * area, FILE * fpout )
    if( area->credits )
       fprintf( fpout, "Credits         %s~\n", area->credits );
    fprintf( fpout, "Vnums           %d %d\n", area->low_vnum, area->hi_vnum );
-   fprintf( fpout, "Continent       %s~\n", continents[area->continent] );
-   fprintf( fpout, "Coordinates     %d %d\n", area->mx, area->my );
+   if( area->continent )
+      fprintf( fpout, "Continent       %s~\n", area->continent->name.c_str( ) );
+   fprintf( fpout, "Coordinates     %d %d\n", area->map_x, area->map_y );
    fprintf( fpout, "Dates           %ld %ld\n", area->creation_date, area->install_date );
    fprintf( fpout, "Ranges          %d %d %d %d\n", area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    if( area->resetmsg ) /* Rennard */
@@ -3175,9 +3178,12 @@ CMDF( do_astat )
    ch->printf( "&wNothing: &W%-3hu &wGold:   &W%-3hu &wItem: &W%-3hu &wGem:   &W%-3hu\r\n", tarea->tg_nothing, tarea->tg_gold, tarea->tg_item, tarea->tg_gem );
    ch->printf( "&wScroll:  &W%-3hu &wPotion: &W%-3hu &wWand: &W%-3hu &wArmor: &W%-3hu\r\n", tarea->tg_scroll, tarea->tg_potion, tarea->tg_wand, tarea->tg_armor );
 
-   ch->printf( "&wContinent or Plane: &W%s\r\n", continents[tarea->continent] );
+   if( tarea->continent )
+      ch->printf( "&wContinent or Plane: &W%s\r\n", tarea->continent->name.c_str( ) );
+   else
+      ch->print( "&wContinent or Plane: &W<NOT SET>\r\n" );
 
-   ch->printf( "&wCoordinates: &W%d %d\r\n", tarea->mx, tarea->my );
+   ch->printf( "&wCoordinates: &W%d %d\r\n", tarea->map_x, tarea->map_y );
 
    ch->printf( "&wResetmsg: &W%s\r\n", tarea->resetmsg ? tarea->resetmsg : "(default)" ); /* Rennard */
    ch->printf( "&wReset frequency: &W%d &wminutes.\r\n", tarea->reset_frequency ? tarea->reset_frequency : 15 );
@@ -3268,6 +3274,8 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "continent" ) )
    {
+      continent_data *continent;
+
       /*
        * Area continent editing - Samson 8-8-98 
        */
@@ -3278,15 +3286,14 @@ CMDF( do_aset )
          return;
       }
       argument = one_argument( argument, arg2 );
-      value = get_continent( arg2 );
-      if( value < 0 || value >= ACON_MAX )
+      continent = find_continent_by_name( arg2 );
+      if( !continent )
       {
-         tarea->continent = 0;
-         ch->print( "Invalid area continent, set to 'alsherok' by default.\r\n" );
+         ch->printf( "Invalid area continent: %s does not exist.\r\n", arg2.c_str(  ) );
       }
       else
       {
-         tarea->continent = value;
+         tarea->continent = continent;
          ch->printf( "Area continent set to %s.\r\n", arg2.c_str(  ) );
       }
       return;
@@ -3341,20 +3348,20 @@ CMDF( do_aset )
       x = atoi( arg3.c_str(  ) );
       y = atoi( argument.c_str(  ) );
 
-      if( x < 0 || x >= MAX_X )
+      if( !is_valid_x( x ) )
       {
-         ch->printf( "Valid X coordinates are from 0 to %d.\r\n", MAX_X );
+         ch->printf( "Valid X coordinates are from 0 to %d.\r\n", MAX_X - 1 );
          return;
       }
 
-      if( y < 0 || y >= MAX_Y )
+      if( !is_valid_y( y ) )
       {
-         ch->printf( "Valid Y coordinates are from 0 to %d.\r\n", MAX_Y );
+         ch->printf( "Valid Y coordinates are from 0 to %d.\r\n", MAX_Y - 1 );
          return;
       }
 
-      tarea->mx = x;
-      tarea->my = y;
+      tarea->map_x = x;
+      tarea->map_y = y;
 
       ch->print( "Area coordinates set.\r\n" );
       return;
@@ -3793,6 +3800,8 @@ CMDF( do_check_vnums )
 CMDF( do_aexit )
 {
    area_data *tarea;
+   list < mapexit_data * >::iterator imexit;
+   list < continent_data * >::iterator c;
 
    if( argument.empty(  ) )
       tarea = ch->in_room->area;
@@ -3824,7 +3833,7 @@ CMDF( do_aexit )
 
          if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
          {
-            ch->pagerf( "To: Overland %4dX %4dY From: %20.20s Room: %5d (%s)\r\n", pexit->mx, pexit->my, tarea->filename, room->vnum, dir_name[i] );
+            ch->pagerf( "To: Overland %4dX %4dY From: %20.20s Room: %5d (%s)\r\n", pexit->map_x, pexit->map_y, tarea->filename, room->vnum, dir_name[i] );
             continue;
          }
          if( pexit->to_room->area != tarea )
@@ -3871,13 +3880,17 @@ CMDF( do_aexit )
       }
    }
 
-   list < mapexit_data * >::iterator imexit;
-   for( imexit = mapexitlist.begin(  ); imexit != mapexitlist.end(  ); ++imexit )
+   for( c = continent_list.begin(  ); c != continent_list.end(  ); ++c )    
    {
-      mapexit_data *mexit = *imexit;
+      continent_data *continent = *c;
 
-      if( mexit->vnum >= tarea->low_vnum && mexit->vnum <= tarea->hi_vnum )
-         ch->pagerf( "From: Overland %4dX %4dY To: Room: %5d\r\n", mexit->herex, mexit->herey, mexit->vnum );
+      for( imexit = continent->exits.begin(  ); imexit != continent->exits.end(  ); ++imexit )
+      {
+         mapexit_data *mexit = *imexit;
+
+         if( mexit->vnum >= tarea->low_vnum && mexit->vnum <= tarea->hi_vnum )
+            ch->pagerf( "From Continent %s: %4dX %4dY To: Room: %5d\r\n", continent->name.c_str( ), mexit->herex, mexit->herey, mexit->vnum );
+      }
    }
 }
 

@@ -491,8 +491,8 @@ bool is_same_obj( obj_data * src, obj_data * dest )
        && src->value[10] == dest->value[10]
        && src->contents == dest->contents
        && src->count + dest->count > 0
-       && src->wmap == dest->wmap
-       && src->mx == dest->mx && src->my == dest->my && !str_cmp( src->seller, dest->seller ) && !str_cmp( src->buyer, dest->buyer ) && src->bid == dest->bid )
+       && src->continent == dest->continent
+       && src->map_x == dest->map_x && src->map_y == dest->map_y && !str_cmp( src->seller, dest->seller ) && !str_cmp( src->buyer, dest->buyer ) && src->bid == dest->bid )
       return true;
 
    return false;
@@ -778,9 +778,9 @@ obj_data *obj_data::to_char( char_data * ch )
          if( ch != supermob )
          {
             extra_flags.reset( ITEM_ONMAP );
-            wmap = -1;
-            mx = -1;
-            my = -1;
+            continent = nullptr;
+            map_x = -1;
+            map_y = -1;
          }
       }
       else
@@ -815,9 +815,9 @@ obj_data *obj_data::to_char( char_data * ch )
          if( ch != supermob )
          {
             extra_flags.reset( ITEM_ONMAP );
-            wmap = -1;
-            mx = -1;
-            my = -1;
+            continent = nullptr;
+            map_x = -1;
+            map_y = -1;
          }
       }
    }
@@ -923,9 +923,9 @@ void obj_data::from_room(  )
     * Should handle all cases of picking stuff up from maps - Samson 
     */
    extra_flags.reset( ITEM_ONMAP );
-   mx = -1;
-   my = -1;
-   wmap = -1;
+   map_x = -1;
+   map_y = -1;
+   continent = nullptr;
 
    list < affect_data * >::iterator paf;
    for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
@@ -1017,16 +1017,16 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
       if( ch->has_actflag( ACT_ONMAP ) || ch->has_pcflag( PCFLAG_ONMAP ) )
       {
          extra_flags.set( ITEM_ONMAP );
-         wmap = ch->wmap;
-         mx = ch->mx;
-         my = ch->my;
+         continent = ch->continent;
+         map_x = ch->map_x;
+         map_y = ch->map_y;
       }
       else
       {
          extra_flags.reset( ITEM_ONMAP );
-         wmap = -1;
-         mx = -1;
-         my = -1;
+         continent = nullptr;
+         map_x = -1;
+         map_y = -1;
       }
    }
 
@@ -1105,9 +1105,9 @@ void obj_data::from_obj(  )
    if( obj_from->extra_flags.test( ITEM_ONMAP ) )
    {
       extra_flags.set( ITEM_ONMAP );
-      wmap = obj_from->wmap;
-      mx = obj_from->mx;
-      my = obj_from->my;
+      continent = obj_from->continent;
+      map_x = obj_from->map_x;
+      map_y = obj_from->map_y;
    }
 
    if( !magic )
@@ -1291,9 +1291,9 @@ obj_data *obj_data::clone(  )
    oclone->cost = cost;
    oclone->level = level;
    oclone->timer = timer;
-   oclone->wmap = wmap;
-   oclone->mx = mx;
-   oclone->my = my;
+   oclone->continent = continent;
+   oclone->map_x = map_x;
+   oclone->map_y = map_y;
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
       oclone->value[x] = value[x];
    oclone->count = 1;
@@ -1353,9 +1353,9 @@ obj_data *group_obj( obj_data * obj, obj_data * obj2 )
     && obj->extradesc.empty(  ) && obj2->extradesc.empty(  )
     && obj->affects.empty(  ) && obj2->affects.empty(  )
     && obj->contents.empty(  ) && obj2->contents.empty(  )
-    && obj->wmap == obj2->wmap
-    && obj->mx == obj2->mx
-    && obj->my == obj2->my
+    && obj->continent == obj2->continent
+    && obj->map_x == obj2->map_x
+    && obj->map_y == obj2->map_y
     && !str_cmp( obj->seller, obj2->seller )
     && !str_cmp( obj->buyer, obj2->buyer )
     && obj->bid == obj2->bid
@@ -1577,9 +1577,9 @@ void obj_data::make_scraps(  )
    if( extra_flags.test( ITEM_ONMAP ) )
    {
       scraps->extra_flags.set( ITEM_ONMAP );
-      scraps->wmap = wmap;
-      scraps->mx = mx;
-      scraps->my = my;
+      scraps->continent = continent;
+      scraps->map_x = map_x;
+      scraps->map_y = map_y;
    }
 
    /*

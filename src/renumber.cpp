@@ -85,6 +85,7 @@ int find_translation( int vnum, renumber_data * r_data )
 
 void translate_exits( char_data * ch, area_data * area, renumber_areas * r_area )
 {
+   list < mapexit_data * >::iterator imexit;
    int new_vnum;
    room_index *room;
    int old_vnum;
@@ -138,16 +139,18 @@ void translate_exits( char_data * ch, area_data * area, renumber_areas * r_area 
          }
       }
 
-      list < mapexit_data * >::iterator imexit;
-      for( imexit = mapexitlist.begin(  ); imexit != mapexitlist.end(  ); ++imexit )
+      if( area->continent )
       {
-         mapexit_data *mexit = ( *imexit );
-
-         new_vnum = find_translation( mexit->vnum, r_area->r_room );
-         if( new_vnum != NOT_FOUND )
+         for( imexit = area->continent->exits.begin(  ); imexit != area->continent->exits.end(  ); ++imexit )
          {
-            mexit->vnum = new_vnum;
-            ch->pager( "...    fixing overland exit to area.\r\n" );
+            mapexit_data *mexit = ( *imexit );
+
+            new_vnum = find_translation( mexit->vnum, r_area->r_room );
+            if( new_vnum != NOT_FOUND )
+            {
+               mexit->vnum = new_vnum;
+               ch->pager( "...    fixing overland exit to area.\r\n" );
+            }
          }
       }
    }

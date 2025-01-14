@@ -4,23 +4,23 @@ Version         1
 Name            The Continent~
 Author          Samson~
 Vnums           50000 50499
-Continent       one~
+Continent       One~
 Coordinates     0 0
 Dates           976000000 976000000
 Ranges          0 115 0 115
 ResetMsg        A light breeze stirs up the air around you.~
 ResetFreq       999
 Flags           nobeacon~
-Climate         2 2 2
 Treasure        20 74 85 93 20 50 60 75
+Climate         2 2 2
 #ENDAREADATA
 
 #MOBILE
 Vnum      50000
 Keywords  top placeholder~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created top placeholder~
@@ -38,9 +38,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      50499
 Keywords  continent portal guardian~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The guardian~
@@ -82,7 +82,7 @@ Vnum      50000
 Name      Somewhere on the Continent~
 Sector    indoors~
 Flags     indoors map~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      If you can read this description online, then something REALLY
 bad has happened, contact the immortals at once.
 You should be seeing the ASCII color map of the continent instead
@@ -137,11 +137,18 @@ Vnum      50499
 Name      The Continental Portal~
 Sector    indoors~
 Flags     indoors nocamp nosummon norecall noportal noastral noteleport noscry~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The shimmering green light of the portal is almost blinding, yet below
 you the view of the continent is completely unobstructed and breathtaking to
 behold.
 ~
+#EXIT
+Direction down~
+ToRoom    50000
+ToCoords  101 676
+Flags     overland~
+#ENDEXIT
+
 Reset M 50499 1 50499 -1 -1 -1 100
 #ENDROOM
 

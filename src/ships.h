@@ -47,7 +47,8 @@ class ship_data
 
    string name;
    string owner;
-     bitset < MAX_SHIP_FLAG > flags;
+   class continent_data *continent;
+   bitset < MAX_SHIP_FLAG > flags;
    int fuel;
    int max_fuel;
    int hull;
@@ -55,9 +56,8 @@ class ship_data
    int type;
    int vnum;
    int room;
-   short mx;
-   short my;
-   short wmap;
+   short map_x;
+   short map_y;
 };
 
 enum ship_types

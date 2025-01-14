@@ -3750,10 +3750,10 @@ CMDF( do_dig )
          }
          else
          {
-            int sector;
+            short sector;
 
             if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
-               sector = map_sector[ch->wmap][ch->mx][ch->my];
+               sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
             else
                sector = ch->in_room->sector_type;
 
@@ -7194,8 +7194,8 @@ CMDF( do_forage )
 {
    obj_index *herb;
    obj_data *obj;
-   int vnum = OBJ_VNUM_FORAGE, sector;
-   short range;
+   int vnum = OBJ_VNUM_FORAGE;
+   short sector, range;
 
    if( ch->isnpc(  ) )
    {
@@ -7216,7 +7216,7 @@ CMDF( do_forage )
    }
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
-      sector = map_sector[ch->wmap][ch->mx][ch->my];
+      sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
    else
       sector = ch->in_room->sector_type;
 
@@ -7297,8 +7297,7 @@ CMDF( do_woodcall )
    mob_index *call;
    char_data *mob;
    int vnum = MOB_VNUM_WOODCALL1;
-   int sector;
-   short range;
+   short sector, range;
 
    if( ch->isnpc(  ) )
    {
@@ -7319,7 +7318,7 @@ CMDF( do_woodcall )
    }
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
-      sector = map_sector[ch->wmap][ch->mx][ch->my];
+      sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
    else
       sector = ch->in_room->sector_type;
 
@@ -7402,7 +7401,7 @@ CMDF( do_mining )
    obj_index *ore;
    obj_data *obj;
    int vnum = OBJ_VNUM_MINING;
-   short range;
+   short range, sector;
 
    if( ch->isnpc(  ) )
    {
@@ -7416,7 +7415,8 @@ CMDF( do_mining )
       return;
    }
 
-   if( ch->has_pcflag( PCFLAG_ONMAP ) && map_sector[ch->wmap][ch->mx][ch->my] != SECT_MOUNTAIN )
+   sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
+   if( ch->has_pcflag( PCFLAG_ONMAP ) && sector != SECT_MOUNTAIN )
    {
       ch->print( "You must be in the mountains to do mining.\r\n" );
       return;

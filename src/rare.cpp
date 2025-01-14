@@ -131,14 +131,8 @@ void char_leaving( char_data * ch, int howleft )
 
    if( howleft == 0 )   /* Rented at an inn */
    {
-      switch ( ch->in_room->area->continent )
-      {
-         case ACON_ONE:
-            ch->pcdata->one = ch->in_room->vnum;
-            break;
-         default:
-            break;
-      }
+      if( !str_cmp( ch->in_room->area->continent->name, "One" ) )
+         ch->pcdata->one = ch->in_room->vnum;
    }
 
    /*
@@ -440,7 +434,7 @@ CMDF( do_camp )
    }
    else
    {
-      short sector = map_sector[ch->wmap][ch->mx][ch->my];
+      short sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
 
       switch ( sector )
       {

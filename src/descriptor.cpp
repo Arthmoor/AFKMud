@@ -594,10 +594,8 @@ bool check_bad_desc( int desc )
 }
 
 /*
-* This is the MCCP version. Use write_to_descriptor_old to send non-compressed
-* text.
-* Updated to run with the block checks by Orion... if it doesn't work, blame
-* him.;P -Orion
+* This is the MCCP version. Use write_to_descriptor_old to send non-compressed text.
+* Updated to run with the block checks by Orion... if it doesn't work, blame him.;P -Orion
 */
 bool descriptor_data::write( const char *txt )
 {

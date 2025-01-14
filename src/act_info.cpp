@@ -1138,7 +1138,10 @@ void print_infoflags( char_data * ch )
     */
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_SECTORD ) )
    {
-      ch->printf( "&[stype][Sector Type: %s] [Continent or Plane: %s]\r\n", sect_types[ch->in_room->sector_type], continents[tarea->continent] );
+      if( tarea->continent )
+         ch->printf( "&[stype][Sector Type: %s] [Continent or Plane: %s]\r\n", sect_types[ch->in_room->sector_type], tarea->continent->name.c_str( ) );
+      else
+         ch->printf( "&[stype][Sector Type: %s] [Continent or Plane: <NOT SET>]\r\n", sect_types[ch->in_room->sector_type] );
    }
 
    /*
@@ -1410,7 +1413,7 @@ CMDF( do_look )
                   if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
                   {
                      original = ch->in_room;
-                     enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
+                     enter_map( ch, pexit, pexit->map_x, pexit->map_y, "-1" );
                      leave_map( ch, nullptr, original );
                   }
                   else
@@ -1660,7 +1663,7 @@ CMDF( do_look )
          if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
          {
             original = ch->in_room;
-            enter_map( ch, pexit, pexit->mx, pexit->my, -1 );
+            enter_map( ch, pexit, pexit->map_x, pexit->map_y, "-1" );
             leave_map( ch, nullptr, original );
          }
          else

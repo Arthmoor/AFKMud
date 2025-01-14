@@ -8573,11 +8573,11 @@ End
 
 #SOCIAL
 Name        tax
-CharNoArg   You fill out piles of papers. Those damn Alsherok Taxcollectors!
-OthersNoArg $n fills out piles of papers. Those damn Alsherok Taxcollectors!
-CharFound   You drop piles of papers next to $N. $N curses the Alsherok Taxcollectors!
-OthersFound $n drops piles of papers next to $N. $N curses the Alsherok Taxcollectors!
-VictFound   $n drops piles of papers next to you. You curse the Alsherok Taxcollectors!
+CharNoArg   You fill out piles of papers. Those damn taxcollectors!
+OthersNoArg $n fills out piles of papers. Those damn taxcollectors!
+CharFound   You drop piles of papers next to $N. $N curses the taxcollectors!
+OthersFound $n drops piles of papers next to $N. $N curses the taxcollectors!
+VictFound   $n drops piles of papers next to you. You curse the taxcollectors!
 End
 
 #SOCIAL

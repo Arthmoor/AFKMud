@@ -4016,9 +4016,9 @@ void set_supermob( obj_data * obj )
       if( obj->extra_flags.test( ITEM_ONMAP ) )
       {
          supermob->set_actflag( ACT_ONMAP );
-         supermob->wmap = obj->wmap;
-         supermob->mx = obj->mx;
-         supermob->my = obj->my;
+         supermob->continent = obj->continent;
+         supermob->map_x = obj->map_x;
+         supermob->map_y = obj->map_y;
       }
    }
 }
@@ -4032,9 +4032,9 @@ void release_supermob(  )
    if( supermob->has_actflag( ACT_ONMAP ) )
    {
       supermob->unset_actflag( ACT_ONMAP );
-      supermob->wmap = -1;
-      supermob->mx = -1;
-      supermob->my = -1;
+      supermob->continent = nullptr;
+      supermob->map_x = -1;
+      supermob->map_y = -1;
    }
 }
 

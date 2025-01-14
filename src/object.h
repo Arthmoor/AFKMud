@@ -89,8 +89,9 @@ class obj_data
    obj_index *pIndexData;
    room_index *in_room;
    char_data *carried_by;
-     bitset < MAX_ITEM_FLAG > extra_flags;
-     bitset < MAX_WEAR_FLAG > wear_flags;
+   bitset < MAX_ITEM_FLAG > extra_flags;
+   bitset < MAX_WEAR_FLAG > wear_flags;
+   class continent_data *continent;  /* Which map is it on? - Samson 8-21-99 */
    char *name;
    char *short_descr;
    char *objdesc;
@@ -110,9 +111,8 @@ class obj_data
    short level;
    short timer;
    short count;   /* support for object grouping */
-   short mx;   /* Object coordinates on overland maps - Samson 8-21-99 */
-   short my;
-   short wmap;  /* Which map is it on? - Samson 8-21-99 */
+   short map_x;   /* Object coordinates on overland maps - Samson 8-21-99 */
+   short map_y;
    short day;  /* What day of the week was it offered or sold? */
    short month;   /* What month? */
    short year; /* What year? */

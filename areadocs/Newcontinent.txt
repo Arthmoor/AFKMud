@@ -1,6 +1,7 @@
-How to add a new continent to the Overland - Version 3.02
----------------------------------------------------------
+How to add a new continent to the Overland - Version 4.0
+--------------------------------------------------------
 
+Version 4.0 - Samson: Completely rewritten now that maps can be added via OLC. [1-13-2025]
 Version 3.02 - Samson: Updated for current codebase standards on Nov. 26, 2014.
 Further typo and logic fixes provided by RazorZero 9/23/03
 Modified by Kilroy of The Obsidian Palace 6/13/2003
@@ -11,176 +12,62 @@ Keep in mind that adding an additional continent will increase your
 RAM and disk usage. You should check to see that your site quotas
 will allow you to do this before beginning.
 
-1. Perhaps the most time consuming step - create a graphic image of
-the new continent using colors for terrain that conform to the table
-in RGB.txt. This will no doubt require ALOT of time, patience, and
-effort. The file should be saved as a png graphic.
+Pick a one word name to use for your new map. This one word name will be referenced
+throughout the creation. Where you see "MAPNAME" referenced, substitute the name you've chosen
 
-2. In overland.h 
+1. Perhaps the most time consuming step - create a graphic image of the new map using
+colors for terrain that conform to the table in RGB.txt.
 
-2.1 In the Definitions at the Top add
-const int OVERLAND_XXX = VNUM;
-under the other constant values. XXX is the name of the Continent,
-and VNUM is the 1st VNUM assigned into your continent.are file.
+This will no doubt require ALOT of time, patience, and effort.
+The file should be saved as a png graphic named MAPNAME.png.
 
-2.2 Then just below that, in this enum:
+The dimensions of the image file MUST NOT exceed 1000x1000. Anything larger than that
+will not work. At the very least, the game will simply crop to 1000x1000 when loading the file.
+At worst, it will crash the game.
 
-enum map_types
-{
-   MAP_ONE, MAP_MAX
-};
+It may be easier to allow the game to generate the file and then use that file to edit from.
 
-Add MAP_something to the listing, before MAP_MAX.
+Note: This step can be skipped initially if you want to make the png file later. (See Step 5)
 
-"something" should be a code identifier that you will be able to remember.
+2. Generate an area file to associate with the new map, with filename MAPNAME.are.
+When the map is created, this file will be required to house the room it needs to function.
 
-3. In overland.cpp
+3. In the game, issue the command:
 
-3.1 In this list, add the filename you generated in step 1.
+mapcreate MAPNAME
 
-char *const map_filenames[] = {
-   "one.png"
-};
+This will initialize the basic data for the new map and automatically associate to the area file
+you generated in step 2. If that area isn't yet in the game, the command will fail.
 
-3.2: In these lists:
+4. In the game, issue the command:
 
-char *const map_names[] = {
-   "One"
-};
+mapedit vnum MAPNAME <some number>
 
-char *const map_name[] = {
-   "one"
-};
+The number specified must be a room contained within MAPNAME.are and will be rejected if it doesn't
+exist there. This room is what will be used by the game to store all the players, mobs, and objects
+present on the graphical map.
 
-Add your new continent's name to them.
+Make sure that in the area file, this room has exits in all 8 movement directions, or people are
+not going to be able to navigate your map properly.
 
-3.3: In void enter_map
+5. In the game, issue the command:
 
-Find:
-void enter_map( char_data * ch, exit_data * pexit, int x, int y, int continent )
-{
-   room_index *maproom = NULL, *original;
+mapedit png MAPNAME
 
-   if( continent < 0 )  /* -1 means you came in from a regular area exit */
-      maproom = find_continent( ch, ch->in_room );
+This will initialize the map grid to ocean sectors.
+If the file exists on disk, it will be read from there.
+If not, a new file is saved with nothing but ocean sectors to start with.
 
-   else  /* Means you are either an immortal using the goto command, or a mortal who teleported */
-   {
-      switch ( continent )
-      {
-         case ACON_ONE:
-            maproom = get_room_index( OVERLAND_ONE );
-            ch->map = MAP_ONE;
-            break;
-         default:
-            bug( "%s: Invalid target map specified: %d", __FUNCTION__, continent );
-            return;
-      }
-   }
+6. To verify that the map is working, issue the following command in the game:
 
-And Change it to look like:
+goto map MAPNAME X Y
 
-void enter_map( char_data * ch, exit_data * pexit, int x, int y, int continent )
-{
-   room_index *maproom = NULL, *original;
-
-   if( continent < 0 )  /* -1 means you came in from a regular area exit */
-      maproom = find_continent( ch, ch->in_room );
-
-   else  /* Means you are either an immortal using the goto command, or a mortal who teleported */
-   {
-      switch ( continent )
-      {
-         case ACON_ONE:
-            maproom = get_room_index( OVERLAND_ONE );
-            ch->map = MAP_ONE;
-            break;
-         case ACON_XXXXX:
-            maproom = get_room_index( OVERLAND_XXXXXX );
-            ch->map = MAP_XXXXXX;
-            break;
-         default:
-            bug( "%s: Invalid target map specified: %d", __FUNCTION__, continent );
-            return;
-      }
-   }
-
-Where XXXXXX is the name of your new Continent.
-
-3.4: In find_continent
-Find:
-   if( maproom->area->continent == ACON_ONE )
-   {
-      location = get_room_index( OVERLAND_ONE );
-      ch->map = MAP_ONE;
-   }
-
-And add below that:
-   if( maproom->area->continent == ACON_XXX )
-   {
-      location = get_room_index( OVERLAND_XXX );
-      ch->map = MAP_XXX;
-   }
-
-Where XXX is the designation for your new continent.
-
-3.5: In do_mapedit
-Find:
-      if( !str_cmp( argument, "one" ) )
-         map = MAP_ONE;
-
-And add below that:
-      if( !str_cmp( argument, "xxxxxxx" ) )
-         map = MAP_XXXXXX;
-
-Where xxxxxx = your continent name & XXXXXX = the MAP that you defined in overland.h
-
-3.6 In void do_setexit
-
-Find the Following:
-      if( !str_cmp( arg2, "one" ) )
-         map = ACON_ONE;
-
-And add below that 
-      if( !str_cmp( arg2, "xxxxxxx" ) )
-         map = ACON_XXXXXX;
-
-Where xxxxxx = your continent name & XXXXXX = the ACON that you will define in step 5.
-
-4. In build.cpp:
-
-4.1 Beneath this section:
-
-      if( !str_cmp( arg1, "one" ) )
-         map = ACON_ONE;
-
-Add another check for your new continent's values.
-
-5. In mudcfg.h, in this section:
-
-/* New continent and plane support - Samson 3-28-98
- * Name of continent or plane is followed by the recall and death zone.
- * Area continent flags for continent and plane system, revised format - Samson 8-8-98
- */
-enum acon_types
-{
-   ACON_ONE, ACON_ASTRAL, ACON_IMMORTAL, ACON_MAX
-};
-
-Add your new continent between ACON_IMMORTAL and ACON_MAX.
-
-6. In build.cpp, in this section:
-
-/* Area continent table for continent/plane system */
-char *const continents[] = {
-   "one", "astral", "immortal"
-};
-
-Add your new continent plane in the appropriate place in the list.
+X and Y can be anywhere from 0 to 999 on the map. You should see an ANSI representation
+of your map.
 
 7. In mudcfg.cpp, check_room, find:
 
-   if( dieroom->area->continent == ACON_ONE )
+   if( !str_cmp( dieroom->area->continent->name, "One" ) )
       location = get_room_index( ROOM_VNUM_ALTAR );
 
 Add a new section to reflect your new continent, if you wish for it to send
@@ -190,6 +77,3 @@ rooms section.
 
 Similar changes should be made in the recall_room function, as well as adding to the
 pc_data class to support additional locations for recalls.
-
-8. Make clean, recompile. With any luck you should now have yourself
-a nice shiny new continent :)

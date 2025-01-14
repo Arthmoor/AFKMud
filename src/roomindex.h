@@ -49,7 +49,9 @@ class reset_data
    int arg1;
    int arg2;
    int arg3;
-   int arg4; /* arg4 - arg6 used for overland coordinates */
+
+   // Values from here onward added by AFKMud.
+   int arg4;
    int arg5;
    int arg6;
    int arg7;
@@ -84,8 +86,8 @@ class exit_data
    short vdir; // Physical "direction"
    short pull; // pull of direction (current)
    short pulltype;   // type of pull (current, wind)
-   short mx;   // Coordinates to Overland Map - Samson 7-31-99
-   short my;
+   short map_x;   // Coordinates to Overland Map - Samson 7-31-99
+   short map_y;
 };
 
 /*
@@ -117,7 +119,7 @@ class room_index
    void room_affect( affect_data *, bool );
    reset_data *add_reset( char, int, int, int, int, int, int, int, int, int, int, int );
    void reset(  );
-   void wipe_coord_resets( short, short, short );
+   void wipe_coord_resets( short, short );
    void wipe_resets(  );
    void clean_resets(  );
    void renumber_put_resets(  );

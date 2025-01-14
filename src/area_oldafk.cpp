@@ -719,11 +719,11 @@ void load_resets( area_data * tarea, FILE * fp )
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
 
-            if( arg4 != -1 && ( arg4 < 0 || arg4 >= MAP_MAX ) )
-               boot_log( "%s: %s (%d) 'M': Map %d does not exist.", __func__, tarea->filename, count, arg4 );
-            if( arg5 != -1 && ( arg5 < 0 || arg5 >= MAX_X ) )
+            if( arg4 != -1 )
+               boot_log( "%s: %s (%d) 'M': arg4 is now ignored.", __func__, tarea->filename, count );
+            if( arg5 != -1 && !is_valid_x( arg5 ) )
                boot_log( "%s: %s (%d) 'M': X coordinate %d is out of range.", __func__, tarea->filename, count, arg5 );
-            if( arg6 != -1 && ( arg6 < 0 || arg6 >= MAX_Y ) )
+            if( arg6 != -1 && !is_valid_y( arg6 ) )
                boot_log( "%s: %s (%d) 'M': Y coordinate %d is out of range.", __func__, tarea->filename, count, arg6 );
             break;
 
@@ -740,12 +740,12 @@ void load_resets( area_data * tarea, FILE * fp )
                else
                   pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
             }
-            if( arg4 != -1 && ( arg4 < 0 || arg4 >= MAP_MAX ) )
-               boot_log( "%s: %s (%d) 'M': Map %d does not exist.", __func__, tarea->filename, count, arg4 );
-            if( arg5 != -1 && ( arg5 < 0 || arg5 >= MAX_X ) )
-               boot_log( "%s: %s (%d) 'M': X coordinate %d is out of range.", __func__, tarea->filename, count, arg5 );
-            if( arg6 != -1 && ( arg6 < 0 || arg6 >= MAX_Y ) )
-               boot_log( "%s: %s (%d) 'M': Y coordinate %d is out of range.", __func__, tarea->filename, count, arg6 );
+            if( arg4 != -1 )
+               boot_log( "%s: %s (%d) 'O': arg4 is now ignored.", __func__, tarea->filename, count );
+            if( arg5 != -1 && !is_valid_x( arg5 ) )
+               boot_log( "%s: %s (%d) 'O': X coordinate %d is out of range.", __func__, tarea->filename, count, arg5 );
+            if( arg6 != -1 && !is_valid_y( arg6 ) )
+               boot_log( "%s: %s (%d) 'O': Y coordinate %d is out of range.", __func__, tarea->filename, count, arg6 );
             break;
 
          case 'P':
@@ -1078,15 +1078,15 @@ void load_rooms( area_data * tarea, FILE * fp )
                pexit->key = x1;
                pexit->vnum = x2;
                pexit->vdir = door;
-               pexit->mx = x3;
-               pexit->my = x4;
+               pexit->map_x = x3;
+               pexit->map_y = x4;
                pexit->pulltype = x5;
                pexit->pull = x6;
 
                if( tarea->version < 13 )
                {
-                  pexit->mx -= 1;
-                  pexit->my -= 1;
+                  pexit->map_x -= 1;
+                  pexit->map_y -= 1;
                }
             }
          }
@@ -1281,17 +1281,19 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       }
       else if( !str_cmp( word, "CONTINENT" ) )
       {
-         int value;
+         continent_data *continent = nullptr;
+         string value = fread_string( fpArea );
 
-         value = get_continent( fread_flagstring( fpArea ) );
-
-         if( value < 0 || value > ACON_MAX )
+         if( !( continent = find_continent_by_name( value ) ) )
          {
-            tarea->continent = 0;
-            bug( "%s: Invalid area continent, set to 'alsherok' by default.", __func__ );
+            bug( "%s: Invalid area continent '%s' - Needs to be manually corrected.", __func__, value.c_str( ) );
+            tarea->continent = nullptr;
          }
          else
-            tarea->continent = value;
+         {
+            tarea->continent = continent;
+         }
+         break;
       }
       else if( !str_cmp( word, "COORDS" ) )
       {
@@ -1300,19 +1302,19 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
          x = fread_short( fpArea );
          y = fread_short( fpArea );
 
-         if( x < 0 || x >= MAX_X )
+         if( !is_valid_x( x ) )
          {
             bug( "%s: Area has bad x coord - setting X to 0", __func__ );
             x = 0;
          }
 
-         if( y < 0 || y >= MAX_Y )
+         if( !is_valid_y( y ) )
          {
             bug( "%s: Area has bad y coord - setting Y to 0", __func__ );
             y = 0;
          }
-         tarea->mx = x;
-         tarea->my = y;
+         tarea->map_x = x;
+         tarea->map_y = y;
       }
       else if( !str_cmp( word, "CLIMATE" ) )
       {

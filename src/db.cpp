@@ -158,7 +158,6 @@ void load_shopkeepers(  );
 void load_auth_list(  );   /* New Auth Code */
 void save_auth_list(  );
 void build_wizinfo(  );
-void load_maps(  );  /* Load in Overland Maps - Samson 8-1-99 */
 void load_ships(  ); /* Load ships - Samson 1-6-01 */
 void load_world(  );
 void load_morphs(  );
@@ -204,6 +203,8 @@ void load_tongues(  );
 void load_helps(  );
 void load_loginmsg(  );
 void init_chess(  );
+void load_continents( const int );
+void validate_overland_data(  );
 
 affect_data::affect_data(  )
 {
@@ -1892,9 +1893,6 @@ void boot_db( bool fCopyOver )
 
    load_mudchannels(  );
 
-   log_string( "Loading overland maps..." );
-   load_maps(  );
-
    log_string( "Loading socials..." );
    load_socials(  );
 
@@ -2021,6 +2019,10 @@ void boot_db( bool fCopyOver )
    log_string( "Loading slay table..." ); /* Online slay table - Samson 8-3-98 */
    load_slays(  );
 
+   log_string( "Loading overland map data..." );
+   load_continents( AREA_FILE_ALARM );
+   log_string( "...done loading overland data." );
+
    /*
     * Read in all the area files.
     */
@@ -2062,6 +2064,9 @@ void boot_db( bool fCopyOver )
    }
 
    mudstrlcpy( strArea, "NO FILE", MIL );
+
+   log_string( "Validating overland data with areas..." );
+   validate_overland_data(  );
 
    log_string( "Setting Astral Walk target room." );
    if( !find_area( "astral.are" ) )
@@ -2224,7 +2229,7 @@ CMDF( do_basereport )
 {
    ch->printf( "&RCodebase revision: %s %s - %s\r\n", CODENAME, CODEVERSION, COPYRIGHT );
    ch->print( "&YContributors: Samson, Dwip, Whir, Cyberfox, Karangi, Rathian, Cam, Raine, and Tarl.\r\n" );
-   ch->print( "&BDevelopment site: www.alsherok.net\r\n" );
+   ch->print( "&BDevelopment site: smaugmuds.afkmods.com\r\n" );
    ch->print( "&GThis function is included as a means to verify license compliance.\r\n" );
    ch->print( "Removal is a violation of your license.\r\n" );
    ch->print( "Copies of AFKMud beginning with 1.4 as of December 28, 2002 include this.\r\n" );

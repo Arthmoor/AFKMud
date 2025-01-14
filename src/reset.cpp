@@ -75,7 +75,7 @@ char *sprint_reset( reset_data * pReset, short &num )
             mudstrlcpy( roomname, "Room: *BAD VNUM*", MIL );
          if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
             snprintf( buf, MSL, "%2d) %s (%d) (%d%%) -> Overland: %s %d %d [%d]\r\n", num, mobname, pReset->arg1,
-                      pReset->arg7, map_names[pReset->arg4], pReset->arg5, pReset->arg6, pReset->arg2 );
+                      pReset->arg7, room->area->continent->name.c_str( ), pReset->arg5, pReset->arg6, pReset->arg2 );
          else
             snprintf( buf, MSL, "%2d) %s (%d) (%d%%) -> %s Room: %d [%d]\r\n", num, mobname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
 
@@ -168,7 +168,7 @@ char *sprint_reset( reset_data * pReset, short &num )
          else
             mudstrlcpy( roomname, room->name, MIL );
          if( pReset->arg8 != -1 && pReset->arg9 != -1 && pReset->arg10 != -1 )
-            snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> Overland: %s %d %d\r\n", num, objname, pReset->arg11, map_names[pReset->arg8], pReset->arg9, pReset->arg10 );
+            snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> Overland: %s %d %d\r\n", num, objname, pReset->arg11, room->area->continent->name.c_str( ), pReset->arg9, pReset->arg10 );
          else
             snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> %s Room: %d\r\n", num, objname, pReset->arg11, roomname, pReset->arg7 );
          break;
@@ -185,7 +185,7 @@ char *sprint_reset( reset_data * pReset, short &num )
             mudstrlcpy( roomname, room->name, MIL );
          if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
             snprintf( buf, MSL, "%2d) (object) %s (%d) (%d%%) -> Overland: %s %d %d [%d]\r\n", num, objname, pReset->arg1,
-                      pReset->arg7, map_names[pReset->arg4], pReset->arg5, pReset->arg6, pReset->arg2 );
+                      pReset->arg7, room->area->continent->name.c_str( ), pReset->arg5, pReset->arg6, pReset->arg2 );
          else
             snprintf( buf, MSL, "%2d) (object) %s (%d) (%d%%) -> %s Room: %d [%d]\r\n", num, objname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
 
@@ -326,7 +326,8 @@ void add_obj_reset( room_index * room, char cm, obj_data * obj, int v2, int v3 )
    }
    if( cm == 'O' )
    {
-      room->add_reset( cm, obj->pIndexData->vnum, v2, v3, obj->wmap, obj->mx, obj->my, 100, -2, -2, -2, -2 );
+      // The old obj->map number is no longer relevant so just set it to 0 [value after the v3 argument].
+      room->add_reset( cm, obj->pIndexData->vnum, v2, v3, 0, obj->map_x, obj->map_y, 100, -2, -2, -2, -2 );
       if( obj->extra_flags.test( ITEM_HIDDEN ) && !obj->wear_flags.test( ITEM_TAKE ) )
          room->add_reset( 'H', 0, 0, 100, -2, -2, -2, -2, -2, -2, -2, -2 );
    }
@@ -385,7 +386,8 @@ void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
       bool added = false;
       if( pRoom->flags.test( ROOM_MAP ) && is_same_char_map( ch, rch ) )
       {
-         pRoom->add_reset( 'M', rch->pIndexData->vnum, rch->pIndexData->count, pRoom->vnum, ch->wmap, ch->mx, ch->my, 100, -2, -2, -2, -2 );
+         // The old ch->map number is no longer relevant so just set it to 0 [value after the pRoom->vnum argument].
+         pRoom->add_reset( 'M', rch->pIndexData->vnum, rch->pIndexData->count, pRoom->vnum, 0, ch->map_x, ch->map_y, 100, -2, -2, -2, -2 );
          added = true;
       }
       else if( !pRoom->flags.test( ROOM_MAP ) )
@@ -474,7 +476,7 @@ CMDF( do_instaroom )
       return;
    }
    if( !ch->in_room->resets.empty() && ch->has_pcflag( PCFLAG_ONMAP ) )
-      ch->in_room->wipe_coord_resets( ch->wmap, ch->mx, ch->my );
+      ch->in_room->wipe_coord_resets( ch->map_x, ch->map_y );
    else if( !ch->in_room->resets.empty() )
       ch->in_room->wipe_resets();
    if( !ch->in_room->resets.empty(  ) )

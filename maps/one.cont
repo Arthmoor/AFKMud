@@ -1,0 +1,98 @@
+#CONTINENT
+Version   1
+Name      One
+Vnum      50000
+Mapfile   one.png
+Areafile  one.are
+
+#ENTRANCE
+ToMap      -1
+Vnum       7798
+Here       911 927
+There      -1 -1
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+Vnum       2916
+Here       925 931
+There      -1 -1
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+Vnum       6069
+Here       915 939
+There      -1 -1
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+Vnum       2918
+Here       899 937
+There      -1 -1
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+Vnum       2925
+Here       902 930
+There      -1 -1
+Prevsector 18
+End
+
+#ENTRANCE
+ToMap      -1
+Vnum       50499
+Here       101 675
+There      -1 -1
+Prevsector 26
+End
+
+#LANDMARK
+Coordinates 911 927 15
+Description a white marble tower stands on top of the mountain range
+Isdesc      0
+End
+
+#LANDMARK
+Coordinates 915 939 15
+Description a gleaming ivory tower rises toward the sky at the edge of the swamp
+Isdesc      0
+End
+
+#LANDMARK
+Coordinates 925 931 10
+Description a flag with the symbol of the Abecedarium flies high overhead
+Isdesc      0
+End
+
+#LANDMARK
+Coordinates 899 937 10
+Description a flag with the symbol of the Abecedarium flies high overhead
+Isdesc      0
+End
+
+#LANDMARK
+Coordinates 902 930 2
+Description a narrow trail through the forest is barely visible
+Isdesc      0
+End
+
+#LANDING_SITE
+Coordinates 102 677
+Area        Portals
+Cost        50000
+End
+
+#LANDING_SITE
+Coordinates 500 500
+Area        Center
+Cost        50000
+End
+
+#END

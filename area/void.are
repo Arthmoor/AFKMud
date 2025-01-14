@@ -2,7 +2,7 @@
 #AREADATA
 Version         1
 Name            The Great Void~
-Author          Alsherok~
+Author          AFKMud~
 Vnums           11000 11999
 Continent       immortal~
 Coordinates     0 0
@@ -37,7 +37,7 @@ Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
 Speaks    common~
 Speaking  common~
-Actflags  npc proto~
+Actflags  npc sentinel~
 Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 ShopData   1 0 0 0 0 120 90 0 28
 #ENDMOBILE
@@ -338,6 +338,76 @@ mpdamage 0.$n 40
 mea 0.$n &RYou are caught in the blast and take damage!&z
 mpecho The machine is destroyed and no trace of it is left behind!
 mpgoto 11001
+endif
+~
+#ENDPROG
+
+#ENDMOBILE
+
+#MOBILE
+Vnum      11011
+Keywords  negative magnetic space wedgy~
+Race      shadow~
+Class     Warrior~
+Gender    male~
+Position  standing~
+DefPos    standing~
+Short     The Negative Magnetic Space Wedgy~
+Long      The negative magnetic space wedgy wanders aimlessly through the void.
+~
+Desc      The negative magnetic space wedgy is an interdimensional creature
+made from the void itself. The wedgy is nearly indistinguishable from
+the blackness of space. The wedgy possesses the ability to open rifts
+in both the ether and the fabric of the void itself, and can freely
+travel to all corners of the multiverse with little effort.
+Conjured from the very minds of the Gods themselves, the wedgy enjoys
+all of the benifits of immortality, and is impossible to destroy. It 
+spends a great deal of time doing nothing more than sucking things into 
+oblivion. Some would consider the wedgy the embodiment of all that is 
+evil, an evil that has now focused its attention on you.....
+~
+Nattacks  0.000000
+Stats1    -1000 -1 0 0 150 100
+Stats2    100 21 -10 30000 100 100 1000
+Speaks    common elvish dwarven pixie ogre orcish trollese rodent insectoid mammal reptile dragon spiritual magical goblin god ancient halfling~
+Speaking  common~
+Actflags  npc sentinel~
+Affected  detect_hidden sanctuary flying truesight fireshield~
+Bodyparts head arms legs heart guts hands feet~
+Immune    energy sleep charm hold nonmagic plus1 plus2 plus3 magic paralysis~
+#MUDPROG
+Progtype  death_prog~
+Arglist   100~
+Comlist   mpat 11999 mpmload 11011
+chat Foolish infidel! I cannot be destroyed! Muahahahahahahahahahaha!
+if name($n) == Gormican
+chat Pitiful pixie fool! Your life ends here!
+mpat gormican mpslay gormican
+endif
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p has sent a swirling vortex to transport you.~
+Comlist   if name($n) == Gormican
+chat Insolent pixie bug! For that you shall pay!
+mpat gormican mpslay gormican
+else
+chat I grow weary of these games $n. Do not test my will further.
+endif
+mpgoto 11999
+~
+#ENDPROG
+
+#MUDPROG
+Progtype  act_prog~
+Arglist   p flings you to the astral winds.~
+Comlist   mpgoto 11999
+chat $n, did you think you could be rid of me so easily?
+if name($n) == Gormican
+chat Such insolence deserves the same - take that you foul pixie!
+mpat gormican mpscatter gormican
 endif
 ~
 #ENDPROG
@@ -3830,6 +3900,16 @@ Stats     0 0 0 0
 Desc      The parlor room where all immortals come to meet and plan their
 activities. Build to suit, etc.
 ~
+#EXIT
+Direction west~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction north~
+ToRoom    11998
+#ENDEXIT
+
 Reset M 11000 10 11406 -1 -1 -1 100
 #ENDROOM
 
@@ -3880,11 +3960,97 @@ automated prize redemption.
 #ENDROOM
 
 #ROOM
+Vnum      11998
+Name      The Great Link~
+Sector    indoors~
+Flags     indoors~
+Stats     0 0 0 0
+Desc      This room is one of the strangest yet. Behind a panel of odd box
+shaped devices is a huge bundle of blue cables interconnecting with
+each other. The whole mass converges into a single device about the
+size of a pillbox. the pillbox device has several odd blinking lights
+on it, and out of it's back side emerges a single green cable which
+then connects to an odd port on the back wall of the room.
+Strangely enough, it appears as though the cable leads out into the
+inky blackness of the void itself!
+~
+#EXIT
+Direction south~
+ToRoom    11406
+#ENDEXIT
+
+#EXDESC
+ExDescKey    box~
+ExDesc       The box is labeled: [REDACTED]
+It is large enough to fit a human sized object in, and in fact upon
+closer inspection it appears to be the container Samson uses to store
+his other self, [REDACTED].
+~
+#ENDEXDESC
+
+#ENDROOM
+
+#ROOM
 Vnum      11999
-Name      Standing in Pure Nothingness~
+Name      The Great Void~
 Sector    indoors~
 Flags     nomob indoors~
 Stats     0 0 0 0
+Desc      All around you is nothing but the vast blackness of the void. There
+isn't a lot to see aside from the billions and billions of stars and
+galaxies. The void stretches infinitely in all directions.
+~
+#EXIT
+Direction north~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction east~
+ToRoom    11406
+#ENDEXIT
+
+#EXIT
+Direction south~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction west~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction up~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction down~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction northeast~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction northwest~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction southeast~
+ToRoom    11999
+#ENDEXIT
+
+#EXIT
+Direction southwest~
+ToRoom    11999
+#ENDEXIT
+
+Reset M 11011 1 11999 -1 -1 -1 100
 #ENDROOM
 
 #ENDAREA

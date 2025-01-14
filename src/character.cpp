@@ -238,9 +238,8 @@ char_data::char_data(  )
    this->perm_cha = 13;
    this->perm_con = 13;
    this->perm_lck = 13;
-   this->mx = -1; /* Overland Map - Samson 7-31-99 */
-   this->my = -1;
-   this->wmap = -1;
+   this->map_x = -1; /* Overland Map - Samson 7-31-99 */
+   this->map_y = -1;
    this->wait = 0;
    this->variables.clear(  );
 }
@@ -3608,9 +3607,9 @@ void char_data::extract( bool fPull )
          this->unset_pcflag( PCFLAG_ONMAP );
          this->unset_pcflag( PCFLAG_MAPEDIT );  /* Just in case they were editing */
 
-         this->mx = -1;
-         this->my = -1;
-         this->wmap = -1;
+         this->map_x = -1;
+         this->map_y = -1;
+         this->continent = nullptr;
       }
 
       /*

@@ -40,10 +40,10 @@ struct environment_data
     * No destructor needed 
     */
 
+   class continent_data *cont;
    short direction;
-   short mx;
-   short my;
-   short wmap;
+   short map_x;
+   short map_y;
    short type;
    short damage_per_shake;
    short radius;
@@ -129,40 +129,40 @@ void environment_pulse_update( void )
             switch ( env->direction )
             {
                case DIR_NORTH:
-                  --env->my;
+                  --env->map_y;
                   break;
                case DIR_EAST:
-                  ++env->mx;
+                  ++env->map_x;
                   break;
                case DIR_SOUTH:
-                  ++env->my;
+                  ++env->map_y;
                   break;
                case DIR_WEST:
-                  --env->mx;
+                  --env->map_x;
                   break;
                case DIR_SOUTHWEST:
-                  ++env->my;
-                  --env->mx;
+                  ++env->map_y;
+                  --env->map_x;
                   break;
                case DIR_NORTHWEST:
-                  --env->my;
-                  --env->mx;
+                  --env->map_y;
+                  --env->map_x;
                   break;
                case DIR_NORTHEAST:
-                  --env->my;
-                  ++env->mx;
+                  --env->map_y;
+                  ++env->map_x;
                   break;
                case DIR_SOUTHEAST:
-                  ++env->my;
-                  ++env->mx;
+                  ++env->map_y;
+                  ++env->map_x;
                   break;
                default:
                   break;
             }
             break;
          case ENV_QUAKE:
-            env->mx += 1;
-            env->my += 1;
+            env->map_x += 1;
+            env->map_y += 1;
             break;
       }
       --env->time_left;
@@ -192,14 +192,14 @@ void environment_actual_update( void )
       if( !ch->has_pcflag( PCFLAG_ONMAP ) )
          continue;
 
-      atx = ch->mx;
-      aty = ch->my;
+      atx = ch->map_x;
+      aty = ch->map_y;
 
       for( ev = envlist.begin(  ); ev != envlist.end(  ); ++ev )
       {
          environment_data *en = *ev;
 
-         if( distance( atx, aty, en->mx, en->my ) > en->radius )
+         if( distance( atx, aty, en->map_x, en->map_y ) > en->radius )
             continue;
 
          switch ( en->type )
@@ -269,8 +269,8 @@ void environment_actual_update( void )
                break;
             case ENV_TORNADO:
                ch->print( "&cThe roar of the tornado hurts your ears!\r\n" );
-               ch->mx = ( atx + number_range( 5, 10 ) + en->radius / 2 );
-               ch->my = ( aty + number_range( 5, 15 ) + en->radius / 2 );
+               ch->map_x = ( atx + number_range( 5, 10 ) + en->radius / 2 );
+               ch->map_y = ( aty + number_range( 5, 15 ) + en->radius / 2 );
                ch->print( "&RThe force of the tornado TOSSES you around!\r\n" );
                interpret( ch, "look" );
                break;
@@ -289,9 +289,9 @@ void generate_random_environment( int type )
    q = new environment_data;
    envlist.push_back( q );
    q->type = type;
-   q->mx = number_range( 0, MAX_X );
-   q->my = number_range( 0, MAX_Y );
-   q->wmap = number_range( MAP_ONE, MAP_MAX - 1 );
+   q->map_x = number_range( 0, MAX_X - 1 );
+   q->map_y = number_range( 0, MAX_Y - 1 );
+   q->cont = pick_random_continent( );
 
    switch ( type )
    {
@@ -367,7 +367,7 @@ CMDF( do_makeenv )
    string etype, arg2, arg;
    int chosenradius;
    int door, atype, intensity = 0;
-   int atx = -1, aty = -1, atmap = -1;
+   int atx = -1, aty = -1;
    environment_data *t;
 
    if( ch->isnpc(  ) )
@@ -401,9 +401,8 @@ CMDF( do_makeenv )
       return;
    }
 
-   atx = ch->mx;
-   aty = ch->my;
-   atmap = ch->wmap;
+   atx = ch->map_x;
+   aty = ch->map_y;
 
    if( arg.empty(  ) )
    {
@@ -446,16 +445,19 @@ CMDF( do_makeenv )
       else
          ch->printf( "You create a non-moving %s!\r\n", etype.c_str(  ) );
    }
+
    t = new environment_data;
-   t->mx = atx;
-   t->my = aty;
-   t->wmap = atmap;
+
+   t->map_x = atx;
+   t->map_y = aty;
+   t->cont = ch->continent;
    t->type = atype;
    t->direction = door;
    t->radius = chosenradius;
    t->damage_per_shake = ( ch->level / 4 );
    t->time_left = number_range( 10, 50 );
    t->intensity = intensity;
+
    envlist.push_back( t );
 }
 
@@ -471,12 +473,12 @@ CMDF( do_env )
       ++count;
       if( en->type == ENV_QUAKE )
       {
-         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n", en->radius, en->radius, en->intensity, en->mx, en->my, map_names[en->wmap] );
+         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n", en->radius, en->radius, en->intensity, en->map_x, en->map_y, en->cont->name.c_str( ) );
       }
       else
       {
          ch->printf( "&GA %d by %d %s bound %s at coordinates %d,%d on %s.\r\n",
-                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->mx, en->my, map_names[en->wmap] );
+                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->map_x, en->map_y, en->cont->name.c_str( ) );
       }
    }
 
@@ -504,17 +506,17 @@ bool survey_environment( char_data * ch )
    {
       environment_data *en = *env;
 
-      if( ch->wmap != en->wmap )
+      if( ch->continent != en->cont )
          continue;
 
-      dist = distance( ch->mx, ch->my, en->mx, en->my );
+      dist = distance( ch->map_x, ch->map_y, en->map_x, en->map_y );
 
       if( dist > 300 )
          continue;
 
       found = true;
 
-      angle = calc_angle( ch->mx, ch->my, en->mx, en->my, &dist );
+      angle = calc_angle( ch->map_x, ch->map_y, en->map_x, en->map_y, &dist );
 
       if( angle == -1 )
          dir = -1;

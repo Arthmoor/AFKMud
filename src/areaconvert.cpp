@@ -1474,8 +1474,8 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                pexit->key = x2;
                pexit->vnum = x3;
                pexit->vdir = door;
-               pexit->mx = -1;
-               pexit->my = -1;
+               pexit->map_x = -1;
+               pexit->map_y = -1;
                pexit->pulltype = x5;
                pexit->pull = x6;
 

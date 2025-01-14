@@ -36,6 +36,7 @@
 #include "mud_prog.h"
 #include "new_auth.h"
 #include "objindex.h"
+#include "overland.h"
 #include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
@@ -61,7 +62,7 @@ void raw_kill( char_data *, char_data * );
 bool is_hating( char_data *, char_data * );
 void check_attacker( char_data *, char_data * );
 int get_terrain( short, short, short );
-bool map_wander( char_data *, short, short, short, short );
+bool map_wander( char_data *, short, short, short );
 void clean_auctions(  );
 void set_supermob( obj_data * );
 bool check_social( char_data *, const string &, const string & );
@@ -815,10 +816,9 @@ void mobile_update( void )
        */
       if( ch->has_actflag( ACT_ONMAP ) )
       {
-         short sector = get_terrain( ch->wmap, ch->mx, ch->my );
-         short wmap = ch->wmap;
-         short x = ch->mx;
-         short y = ch->my;
+         short sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
+         short x = ch->map_x;
+         short y = ch->map_y;
          short dir = number_bits( 5 );
 
          if( dir < DIR_SOMEWHERE && dir != DIR_UP && dir != DIR_DOWN )
@@ -828,35 +828,35 @@ void mobile_update( void )
                default:
                   break;
                case DIR_NORTH:
-                  if( map_wander( ch, wmap, x, y - 1, sector ) )
+                  if( map_wander( ch, x, y - 1, sector ) )
                      move_char( ch, nullptr, 0, DIR_NORTH, false );
                   break;
                case DIR_NORTHEAST:
-                  if( map_wander( ch, wmap, x + 1, y - 1, sector ) )
+                  if( map_wander( ch, x + 1, y - 1, sector ) )
                      move_char( ch, nullptr, 0, DIR_NORTHEAST, false );
                   break;
                case DIR_EAST:
-                  if( map_wander( ch, wmap, x + 1, y, sector ) )
+                  if( map_wander( ch, x + 1, y, sector ) )
                      move_char( ch, nullptr, 0, DIR_EAST, false );
                   break;
                case DIR_SOUTHEAST:
-                  if( map_wander( ch, wmap, x + 1, y + 1, sector ) )
+                  if( map_wander( ch, x + 1, y + 1, sector ) )
                      move_char( ch, nullptr, 0, DIR_SOUTHEAST, false );
                   break;
                case DIR_SOUTH:
-                  if( map_wander( ch, wmap, x, y + 1, sector ) )
+                  if( map_wander( ch, x, y + 1, sector ) )
                      move_char( ch, nullptr, 0, DIR_SOUTH, false );
                   break;
                case DIR_SOUTHWEST:
-                  if( map_wander( ch, wmap, x - 1, y + 1, sector ) )
+                  if( map_wander( ch, x - 1, y + 1, sector ) )
                      move_char( ch, nullptr, 0, DIR_SOUTHWEST, false );
                   break;
                case DIR_WEST:
-                  if( map_wander( ch, wmap, x - 1, y, sector ) )
+                  if( map_wander( ch, x - 1, y, sector ) )
                      move_char( ch, nullptr, 0, DIR_WEST, false );
                   break;
                case DIR_NORTHWEST:
-                  if( map_wander( ch, wmap, x - 1, y - 1, sector ) )
+                  if( map_wander( ch, x - 1, y - 1, sector ) )
                      move_char( ch, nullptr, 0, DIR_NORTHWEST, false );
                   break;
             }
@@ -1004,7 +1004,7 @@ void char_calendar_update( void )
             int sector;
 
             if( ch->has_pcflag( PCFLAG_ONMAP ) )
-               sector = get_terrain( ch->wmap, ch->mx, ch->my );
+               sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
             else
                sector = ch->in_room->sector_type;
 
@@ -1773,9 +1773,9 @@ void obj_update( void )
             log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          else
          {
-            firepit->wmap = obj->wmap;
-            firepit->mx = obj->mx;
-            firepit->my = obj->my;
+            firepit->continent = obj->continent;
+            firepit->map_x = obj->map_x;
+            firepit->map_y = obj->map_y;
             set_supermob( obj );
             firepit->to_room( obj->in_room, supermob );
             release_supermob(  );

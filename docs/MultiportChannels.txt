@@ -7,7 +7,7 @@ that part first.
 
 1. In the mudmsg.cpp file, there is a line like this:
 
-#define IPC_KEY_FILE "/home/alsherok/mudmsgkeyDONTDELETEME"
+#define IPC_KEY_FILE "/home/afkmud/mudmsgkeyDONTDELETEME"
 
 You'll need to change the file path specified to something you own, or
 that you can access that the server itself owns. If you plan to try and
