@@ -167,6 +167,13 @@ short num_sorted_skills;
 short gsn_tan;
 short gsn_dragon_ride;
 
+/* Global Skill Numbers */
+void ASSIGN_GSN( short gsn, const string & name )
+{
+   if( ( gsn = skill_lookup( name ) ) == -1 )
+      log_printf( "%s: Skill %s not found.\n", __func__, name.c_str( ) );
+}
+
 void assign_gsn_data( void )
 {
    ASSIGN_GSN( gsn_style_evasive, "evasive style" );

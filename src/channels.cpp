@@ -167,9 +167,10 @@ void load_mudchannels( void )
    stream.close(  );
 }
 
-#define CHANNEL_VERSION 1
+const int CHANNEL_VERSION = 1;
 void save_mudchannels( void )
 {
+   list < mud_channel * >::iterator chan;
    ofstream stream;
 
    stream.open( CHANNEL_FILE );
@@ -181,7 +182,7 @@ void save_mudchannels( void )
    else
    {
       stream << "#VERSION " << CHANNEL_VERSION << endl;
-      list < mud_channel * >::iterator chan;
+
       for( chan = chanlist.begin(  ); chan != chanlist.end(  ); ++chan )
       {
          mud_channel *channel = *chan;

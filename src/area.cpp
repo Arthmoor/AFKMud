@@ -2421,6 +2421,8 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
  * This new format is far more flexible and does not require all settings to be written to the file.
  * It behaves in much the same way as the pfile read/write code in save.cpp.
  * As a result, it is very fault tolerant to formatting errors when edited offline.
+ * It can also quite often tolerate the addition of new fields without breaking things.
+ * Removing existing ones wil require updated version handling unless you like dirty logs.
  *
  * Version 1: Initial construction of new format -- Samson 10/28/06
  */

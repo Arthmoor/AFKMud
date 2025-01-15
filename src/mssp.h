@@ -110,12 +110,12 @@ struct msspinfo
 
 #define MSSP_FILE SYSTEM_DIR "mssp.dat"
 
-#define MSSP_MINAGE  0
-#define MSSP_MAXAGE  21
+const int MSSP_MINAGE = 0;
+const int MSSP_MAXAGE = 21;
 
-#define MSSP_MINCREATED 2001
-#define MSSP_MAXCREATED 2100
+const int MSSP_MINCREATED = 2001;
+const int MSSP_MAXCREATED = 2100;
 
-#define MSSP_MAXVAL 20000
-#define MAX_MSSP_VAR1 4
-#define MAX_MSSP_VAR2 3
+const int MSSP_MAXVAL = 20000;
+const int MAX_MSSP_VAR1 = 4;
+const int MAX_MSSP_VAR2 = 3;

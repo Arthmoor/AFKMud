@@ -45,7 +45,7 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.5.0"
+#define CODEVERSION "2.5.1"
 #define COPYRIGHT "Copyright The Alsherok Team 1997-2025. All rights reserved."
 
 /*
@@ -138,7 +138,7 @@ const int BV31 = ( 1 << 31 );
 /*
  * Command logging types.
  */
-// DON'T FORGET TO ADD THESE TO BUILD.C !!!
+// DON'T FORGET TO ADD THESE TO BUILD.CPP !!!
 enum log_types
 {
    LOG_NORMAL, LOG_ALWAYS, LOG_NEVER, LOG_BUILD, LOG_HIGH, LOG_COMM, LOG_WARN, LOG_INFO, LOG_AUTH, LOG_DEBUG, LOG_ALL
@@ -158,14 +158,6 @@ enum echo_types
 {
    ECHOTAR_ALL, ECHOTAR_PC, ECHOTAR_PK, ECHOTAR_IMM
 };
-
-/* Global Skill Numbers */
-#define ASSIGN_GSN(gsn, skill) \
-do                             \
-{                              \
-   if( ( (gsn) = skill_lookup( (skill) ) ) == -1 ) \
-      log_printf( "ASSIGN_GSN: Skill %s not found.\n", (skill) ); \
-} while(0)
 
 /*
  * These are skill_lookup return values for common skills and spells.
@@ -851,25 +843,25 @@ class system_data
      system_data(  );
     ~system_data(  );
 
-   void *dlHandle;   // libdl System Handle - Trax
-   bitset < SV_MAX > save_flags;  // Toggles for saving conditions
-   string time_of_max;  // Time of max ever
-   string mud_name;  // Name of mud
-   string admin_email;  // Email address for admin - Samson 10-17-98
-   string password;  // Port access code
-   string telnet; // Store telnet address for who/webwho
-   string http;   // Store web address for who/webwho
-   string dbserver;  // Database server address for SQL support, usually localhost
-   string dbname; // Database name for SQL support
-   string dbuser; // Database username for SQL support
-   string dbpass; // Database password for SQL support
-   time_t motd;   // Last time MOTD was edited
-   time_t imotd;  // Last time IMOTD was edited
+   void *dlHandle;               // libdl System Handle - Trax
+   bitset < SV_MAX > save_flags; // Toggles for saving conditions
+   string time_of_max;           // Time of max ever
+   string mud_name;              // Name of mud
+   string admin_email;           // Email address for admin - Samson 10-17-98
+   string password;              // Port access code
+   string telnet;                // Store telnet address for who/webwho
+   string http;                  // Store web address for who/webwho
+   string dbserver;              // Database server address for SQL support, usually localhost
+   string dbname;                // Database name for SQL support
+   string dbuser;                // Database username for SQL support
+   string dbpass;                // Database password for SQL support
+   time_t motd;                  // Last time MOTD was edited
+   time_t imotd;                 // Last time IMOTD was edited
    size_t maxign;
    size_t maxholiday;
-   int maxplayers;   // Maximum players this boot
-   int alltimemax;   // Maximum players ever
-   int auctionseconds;  // Seconds between auction events
+   int maxplayers;               // Maximum players this boot
+   int alltimemax;               // Maximum players ever
+   int auctionseconds;           // Seconds between auction events
    int maxvnum;
    int minguildlevel;
    int maxcondval;
@@ -895,49 +887,49 @@ class system_data
    int hoursunset;
    int hournightbegin;
    int hourmidnight;
-   int rebootcount;  /* How many minutes to count down for a reboot - Samson 4-22-03 */
-   int gameloopalarm;   /* Number of seconds before game_loop() triggers an alarm due to being hung up - Samson 1-24-05 */
-   short webwho;  // Number of seconds between webwho refreshes, 0 for no refresh - Samson 5-13-06
-   short read_all_mail; /* Read all player mail(was 54) */
-   short read_mail_free;   /* Read mail for free (was 51) */
-   short write_mail_free;  /* Write mail for free(was 51) */
-   short take_others_mail; /* Take others mail (was 54)   */
-   short build_level;   /* Level of build channel LEVEL_BUILD */
-   short level_modify_proto;  /* Level to modify prototype stuff LEVEL_LESSER */
-   short level_override_private; /* override private flag */
-   short level_mset_player;   /* Level to mset a player */
-   short bash_plr_vs_plr;  /* Bash mod player vs. player */
-   short bash_nontank;  /* Bash mod basher != primary attacker */
-   short gouge_plr_vs_plr; /* Gouge mod player vs. player */
-   short gouge_nontank; /* Gouge mod player != primary attacker */
-   short stun_plr_vs_plr;  /* Stun mod player vs. player */
-   short stun_regular;  /* Stun difficult */
-   short dodge_mod;  /* Divide dodge chance by */
-   short parry_mod;  /* Divide parry chance by */
-   short tumble_mod; /* Divide tumble chance by */
-   short dam_plr_vs_plr;   /* Damage mod player vs. player */
-   short dam_plr_vs_mob;   /* Damage mod player vs. mobile */
-   short dam_mob_vs_plr;   /* Damage mod mobile vs. player */
-   short dam_mob_vs_mob;   /* Damage mod mobile vs. mobile */
-   short level_getobjnotake;  /* Get objects without take flag */
-   short level_forcepc; /* The level at which you can use force on players. */
-   short bestow_dif; /* Max # of levels between trust and command level for a bestow to work --Blodkai */
-   short save_frequency;   /* How often to autosave someone */
-   short newbie_purge;  /* Level to auto-purge newbies at - Samson 12-27-98 */
-   short regular_purge; /* Level to purge normal players at - Samson 12-27-98 */
-   short mapsize; /* Laziness feature mostly. Changes the overland map visibility radius */
+   int rebootcount;              // How many minutes to count down for a reboot - Samson 4-22-03
+   int gameloopalarm;            // Number of seconds before game_loop() triggers an alarm due to being hung up - Samson 1-24-05
+   short webwho;                 // Number of seconds between webwho refreshes, 0 for no refresh - Samson 5-13-06
+   short read_all_mail;          // Read all player mail (was 54)
+   short read_mail_free;         // Read mail for free (was 51)
+   short write_mail_free;        // Write mail for free(was 51)
+   short take_others_mail;       // Take others mail (was 54)
+   short build_level;            // Level of build channel LEVEL_BUILD
+   short level_modify_proto;     // Level to modify prototype stuff LEVEL_LESSER
+   short level_override_private; // override private flag
+   short level_mset_player;      // Level to mset a player
+   short bash_plr_vs_plr;        // Bash mod player vs. player
+   short bash_nontank;           // Bash mod basher != primary attacker
+   short gouge_plr_vs_plr;       // Gouge mod player vs. player
+   short gouge_nontank;          // Gouge mod player != primary attacker
+   short stun_plr_vs_plr;        // Stun mod player vs. player
+   short stun_regular;           // Stun difficult
+   short dodge_mod;              // Divide dodge chance by
+   short parry_mod;              // Divide parry chance by
+   short tumble_mod;             // Divide tumble chance by
+   short dam_plr_vs_plr;         // Damage mod player vs. player
+   short dam_plr_vs_mob;         // Damage mod player vs. mobile
+   short dam_mob_vs_plr;         // Damage mod mobile vs. player
+   short dam_mob_vs_mob;         // Damage mod mobile vs. mobile
+   short level_getobjnotake;     // Get objects without take flag
+   short level_forcepc;          // The level at which you can use force on players.
+   short bestow_dif;             // Max # of levels between trust and command level for a bestow to work --Blodkai
+   short save_frequency;         // How often to autosave someone
+   short newbie_purge;           // Level to auto-purge newbies at - Samson 12-27-98
+   short regular_purge;          // Level to purge normal players at - Samson 12-27-98
+   short mapsize;                // Laziness feature mostly. Changes the overland map visibility radius
    short playersonline;
-   bool NO_NAME_RESOLVING; /* Hostnames are not resolved  */
-   bool DENY_NEW_PLAYERS;  /* New players cannot connect  */
-   bool WAIT_FOR_AUTH;  /* New players must be auth'ed */
-   bool check_imm_host; /* Do we check immortal's hosts? */
-   bool save_pets;   /* Do pets save? */
-   bool WIZLOCK;  /* Is the game wizlocked? - Samson 8-2-98 */
-   bool IMPLOCK;  /* Is the game implocked? - Samson 8-2-98 */
-   bool LOCKDOWN; /* Is the game locked down? - Samson 8-23-98 */
-   bool CLEANPFILES; /* Should the mud clean up pfiles daily? - Samson 12-27-98 */
-   bool TESTINGMODE; /* Blocks file copies to main port when active - Samson 1-31-99 */
-   bool crashhandler;   /* Do we intercept SIGSEGV - Samson 3-11-04 */
+   bool NO_NAME_RESOLVING;       // Hostnames are not resolved
+   bool DENY_NEW_PLAYERS;        // New players cannot connect
+   bool WAIT_FOR_AUTH;           // New players must be auth'ed
+   bool check_imm_host;          // Do we check immortal's hosts?
+   bool save_pets;               // Do pets save?
+   bool WIZLOCK;                 // Is the game wizlocked? - Samson 8-2-98
+   bool IMPLOCK;                 // Is the game implocked? - Samson 8-2-98
+   bool LOCKDOWN;                // Is the game locked down? - Samson 8-23-98
+   bool CLEANPFILES;             // Should the mud clean up pfiles daily? - Samson 12-27-98
+   bool TESTINGMODE;             // Blocks file copies to main port when active - Samson 1-31-99
+   bool crashhandler;            // Do we intercept SIGSEGV - Samson 3-11-04
 };
 
 /*
@@ -946,10 +938,10 @@ class system_data
  * but may be arbitrary beyond that.
  */
 const int TYPE_UNDEFINED = -1;
-const int TYPE_HIT = 1000; /* allows for 1000 skills/spells */
-const int TYPE_HERB = 2000;   /* allows for 1000 attack types  */
+const int TYPE_HIT = 1000;       /* allows for 1000 skills/spells */
+const int TYPE_HERB = 2000;      /* allows for 1000 attack types  */
 const int TYPE_PERSONAL = 3000;  /* allows for 1000 herb types    */
-const int TYPE_RACIAL = 4000; /* allows for 1000 personal types */
+const int TYPE_RACIAL = 4000;    /* allows for 1000 personal types */
 const int TYPE_DISEASE = 5000;   /* allows for 1000 racial types  */
 
 /*

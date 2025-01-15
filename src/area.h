@@ -54,7 +54,7 @@ class neighbor_data
 };
 
 /* Define maximum number of climate settings - FB */
-#define MAX_CLIMATE 5
+const int MAX_CLIMATE = 5;
 
 class weather_data
 {
@@ -104,11 +104,11 @@ class area_data
    void fold( const char *, bool );
    void wipe_resets(  );
 
-     list < room_index * >rooms;    // The list of room indexes for this area
-     list < mob_index * >mobs;      // The list of mob indexes for this area
-     list < obj_index * >objects;   // The list of object indexes for this area
+   list < room_index * >rooms;    // The list of room indexes for this area
+   list < mob_index * >mobs;      // The list of mob indexes for this area
+   list < obj_index * >objects;   // The list of object indexes for this area
    weather_data *weather;           /* FB */
-     bitset < AFLAG_MAX > flags;
+   bitset < AFLAG_MAX > flags;
 
    class continent_data *continent; // Continent data structure this area is associated with.
    char *name;

@@ -26,14 +26,12 @@
  *                           Room Mapper Module                             *
  ****************************************************************************/
 
-/* Defines for ASCII Automapper */
-#define MAPX     10
-#define MAPY      8
+/* Defines for ASCII Room Automapper */
+const int MAPX = 10;
+const int MAPY = 8;
 
 /* You can change MAXDEPTH to 1 if the diagonal directions are confusing */
-#define MAXDEPTH  2
-
-#define BOUNDARY(x, y) ( ( (x) < 0) || ((y) < 0 ) || ( (x) > MAPX ) || ( (y) > MAPY ) )
+const int MAXDEPTH = 2;
 
 /* Structure for the map itself */
 struct map_type

@@ -74,6 +74,14 @@ bool check_blind( char_data * );
 /* The map itself */
 map_type dmap[MAPX + 1][MAPY + 1];
 
+// Defines the boundary of the map box.
+bool BOUNDARY( int x, int y )
+{
+   if( x < 0 || y < 0 || x > MAPX || y > MAPY )
+      return true;
+   return false;
+}
+
 /* Take care of some repetitive code for later */
 void get_exit_dir( int dir, int &x, int &y, int xorig, int yorig )
 {

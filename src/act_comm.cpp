@@ -1531,17 +1531,16 @@ void act_printf( short AType, char_data * ch, const void *arg1, const void *arg2
 
 void act( short AType, const string & format, char_data * ch, const void *arg1, const void *arg2, int type )
 {
-#define ACTF_NONE 0
-#define ACTF_TXT  BV00
-#define ACTF_CH   BV01
-#define ACTF_OBJ  BV02
-
    string txt;
    char_data *to;
    char_data *third = ( char_data * ) arg1;
    char_data *vch = ( char_data * ) arg2;
    obj_data *obj1 = ( obj_data * ) arg1;
    obj_data *obj2 = ( obj_data * ) arg2;
+   const int ACTF_NONE = 0;
+   const int ACTF_TXT  = BV00;
+   const int ACTF_CH   = BV01;
+   const int ACTF_OBJ  = BV02;
    int flags1 = ACTF_NONE, flags2 = ACTF_NONE;
 
    // Discard null and zero-length messages.
