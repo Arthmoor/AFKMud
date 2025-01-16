@@ -1223,7 +1223,10 @@ void fread_afk_object( FILE * fp, area_data * tarea )
             {
                extra_descr_data *ed = fread_afk_exdesc( fp );
                if( ed )
+               {
                   pObjIndex->extradesc.push_back( ed );
+                  ++top_ed;
+               }
                break;
             }
 
