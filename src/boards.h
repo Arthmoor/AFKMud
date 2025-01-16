@@ -36,8 +36,6 @@
 #define BOARD_FILE "boards.lst"  /* New board file */
 #define OLD_BOARD_FILE "boards.txt" /* Old board file */
 #define PROJECTS_FILE SYSTEM_DIR "projects.txt" /* For projects    */
-#define MAX_REPLY 10 /* How many messages in each level? */
-#define MAX_BOARD_EXPIRE 180  /* Max days notes have to live. */
 
 #define IS_BOARD_FLAG( board, flag )     (board)->flags.test((flag))
 #define TOGGLE_BOARD_FLAG( board, flag ) (board)->flags.flip((flag))
@@ -45,6 +43,8 @@
 #define IS_NOTE_FLAG( note, flag )     (note)->flags.test((flag))
 #define TOGGLE_NOTE_FLAG( note, flag ) (note)->flags.flip((flag))
 
+const int MAX_REPLY = 10;         // How many messages in each level?
+const int MAX_BOARD_EXPIRE = 180; // Max days notes have to live.
 const int BD_IGNORE = 2;
 const int BD_ANNOUNCE = 1;
 

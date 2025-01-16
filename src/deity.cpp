@@ -79,6 +79,13 @@ deity_data *get_deity( const string & name )
    return nullptr;
 }
 
+bool IS_DEVOTED( char_data *ch )
+{
+   if( !ch->isnpc() && ch->pcdata->deity != nullptr )
+      return true;
+   return false;
+}
+
 void write_deity_list( void )
 {
    list < deity_data * >::iterator ideity;

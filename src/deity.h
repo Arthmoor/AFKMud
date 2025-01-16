@@ -31,8 +31,6 @@
 
 #define DEITY_LIST "deity.lst"   /* List of deities     */
 
-#define IS_DEVOTED(ch) ( !(ch)->isnpc() && (ch)->pcdata->deity )
-
 class deity_data
 {
  private:
@@ -46,8 +44,8 @@ class deity_data
    string filename;
    string name;
    string deitydesc;
-     bitset < MAX_RACE > race_allowed; /* Samson 5-17-04 */
-     bitset < MAX_CLASS > class_allowed;  /* Samson 5-17-04 */
+   bitset < MAX_RACE > race_allowed; /* Samson 5-17-04 */
+   bitset < MAX_CLASS > class_allowed;  /* Samson 5-17-04 */
    int element[3];   /* Elements 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
    int suscept[3];   /* Suscept 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
    int affected[3];  /* Affects 1 and 2 added by Tarl 2/24/02 - Consolidated by Samson 12/19/04 */
@@ -98,4 +96,5 @@ class deity_data
 extern list < deity_data * >deitylist;
 void save_deity( deity_data * );
 deity_data *get_deity( const string & );
+bool IS_DEVOTED( char_data * );
 #endif
