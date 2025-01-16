@@ -39,6 +39,7 @@
 #include "raceclass.h"
 #include "roomindex.h"
 #include "smaugaffect.h"
+#include "weather.h"
 
 int astral_target;   /* Added for Astral Walk spell - Samson */
 
@@ -1888,7 +1889,7 @@ SPELLF( spell_call_lightning )
 {
    bool ch_died = false;
    list < char_data * >::iterator ich;
-
+   WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
    if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) && !ch->has_actflag( ACT_ONMAP ) )
    {
@@ -1896,7 +1897,7 @@ SPELLF( spell_call_lightning )
       return rSPELL_FAILED;
    }
 
-   if( ch->in_room->area->weather->precip <= 0 )
+   if( getPrecip( cell ) < 40 && getEnergy( cell ) < 30 )
    {
       ch->print( "You need bad weather.\r\n" );
       return rSPELL_FAILED;
@@ -2035,36 +2036,29 @@ SPELLF( spell_charm_person )
 SPELLF( spell_control_weather )
 {
    skill_type *skill = get_skilltype( sn );
-   weather_data *weath;
    int change;
-   weath = ch->in_room->area->weather;
+   WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
-   change = number_range( -rand_factor, rand_factor ) + ( ch->level * 3 ) / ( 2 * max_vector );
+   change = URANGE( 5, number_range( 5, 15 ) + ( ch->level / 10 ), 15 );
 
    if( !str_cmp( target_name, "warmer" ) )
-      weath->temp_vector += change;
+      IncreaseTemp( cell, change );
    else if( !str_cmp( target_name, "colder" ) )
-      weath->temp_vector -= change;
+      DecreaseTemp( cell, change );
    else if( !str_cmp( target_name, "wetter" ) )
-      weath->precip_vector += change;
+      IncreasePrecip( cell, change );
    else if( !str_cmp( target_name, "drier" ) )
-      weath->precip_vector -= change;
-   else if( !str_cmp( target_name, "windier" ) )
-      weath->wind_vector += change;
+      DecreasePrecip( cell, change );
+   else if( !str_cmp( target_name, "stormier" ) )
+      IncreaseEnergy( cell, change );
    else if( !str_cmp( target_name, "calmer" ) )
-      weath->wind_vector -= change;
+      DecreaseEnergy( cell, change );
    else
    {
-      ch->print( "Do you want it to get warmer, colder, wetter, drier, windier, or calmer?\r\n" );
+      ch->print( "Do you want it to get warmer, colder, wetter, drier, stormier, or calmer?\r\n" );
       return rSPELL_FAILED;
    }
-
-   weath->temp_vector = URANGE( -max_vector, weath->temp_vector, max_vector );
-   weath->precip_vector = URANGE( -max_vector, weath->precip_vector, max_vector );
-   weath->wind_vector = URANGE( -max_vector, weath->wind_vector, max_vector );
-
-   weather_update(  );
-   successful_casting( skill, ch, nullptr, nullptr );
+   successful_casting( skill, ch, NULL, NULL );
    return rNONE;
 }
 
@@ -2072,7 +2066,7 @@ SPELLF( spell_create_water )
 {
    obj_data *obj = ( obj_data * ) vo;
    liquid_data *liq = nullptr;
-   weather_data *weath;
+   WeatherCell *cell = getWeatherCell( ch->in_room->area );
    int water;
 
    if( obj->item_type != ITEM_DRINK_CON )
@@ -2094,9 +2088,7 @@ SPELLF( spell_create_water )
       return rSPELL_FAILED;
    }
 
-   weath = ch->in_room->area->weather;
-
-   water = UMIN( level * ( weath->precip >= 0 ? 4 : 2 ), obj->value[0] - obj->value[1] );
+   water = UMIN( level * ( getPrecip( cell ) >= 0 ? 4 : 2 ), obj->value[0] - obj->value[1] );
 
    if( water > 0 )
    {
@@ -4802,7 +4794,7 @@ SPELLF( spell_obj_inv )
          if( SPELL_FLAG( skill, SF_WATER ) ) /* create water */
          {
             int water;
-            weather_data *weath = ch->in_room->area->weather;
+            WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( obj->item_type != ITEM_DRINK_CON )
             {
@@ -4823,7 +4815,7 @@ SPELLF( spell_obj_inv )
                return rSPELL_FAILED;
             }
 
-            water = UMIN( ( skill->dice ? dice_parse( ch, level, skill->dice ) : level ) * ( weath->precip >= 0 ? 2 : 1 ), obj->value[0] - obj->value[1] );
+            water = UMIN( ( skill->dice ? dice_parse( ch, level, skill->dice ) : level ) * ( getPrecip( cell ) >= 0 ? 2 : 1 ), obj->value[0] - obj->value[1] );
 
             if( water > 0 )
             {

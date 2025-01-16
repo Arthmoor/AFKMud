@@ -2080,9 +2080,6 @@ void load_stock_area_file( const string & filename, bool manual )
       }
       else if( !str_cmp( word, "CLIMATE" ) )
       {
-         const char *ln;
-         int x1, x2, x3, x4;
-
          if( dotdcheck > 0 && dotdcheck < 4 )
          {
             bug( "DOTDII area encountered with invalid header format, check value %d", dotdcheck );
@@ -2090,22 +2087,15 @@ void load_stock_area_file( const string & filename, bool manual )
             exit( 1 );
          }
 
-         ln = fread_line( fpArea );
-         x1 = x2 = x3 = x4 = 0;
-         sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
+         fread_line( fpArea );
 
-         tarea->weather->climate_temp = x1;
-         tarea->weather->climate_precip = x2;
-         tarea->weather->climate_wind = x3;
+         // Climate values are no longer used with the new weather code.
       }
       else if( !str_cmp( word, "NEIGHBOR" ) )
       {
-         neighbor_data *anew;
+         fread_line( fpArea );
 
-         anew = new neighbor_data;
-         anew->address = nullptr;
-         anew->name = fread_string( fpArea );
-         tarea->weather->neighborlist.push_back( anew );
+         // This section is no longer used with the new weather code.
       }
       else if( !str_cmp( word, "MOBILES" ) )
          load_stmobiles( tarea, fpArea, manual );

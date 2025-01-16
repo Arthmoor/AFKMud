@@ -1,0 +1,186 @@
+This is a little something I threw together to explain how to make the weather system work.
+Also included are the helpfiles for the different commands and other things needing an
+explanation. - Kayle
+
+First off, You're going to need a bit of a plan. The release version of the weather map is
+set up to be a 3 by 3 square map, giving it 9 cells. Modify WEATHER_SIZE_X and 
+WEATHER_SIZE_Y in weather.h to accomodate the size you want your map to be. 
+
+Then, Each Cell that will be assigned an area is going to need to be set up. You do this by 
+cycling through each cell (preferrably after you've figured out how you want your worlds 
+weather and climates laid out), and assign each cell a climate and a hemisphere. You do this
+with the setweather command. 
+
+EX: setweather 0 1 climate rainforest  --This would assign the rainforest climate controller
+to cell (0,1) which would then have any areas assigned to that cell an abundant amount of rainfall,
+a rather high level of humidity, and normally high temperatures.
+EX2: setweather 0 1 hemisphere southern  --This would assign this cell to the southern hemisphere
+which basically causes it's seasons to reverse. Snow would fall in summer rather than winter, and
+winters would be rather hot.
+
+Now, the reason I state each cell that will be assigned an area will need to be set, is because 
+it's alright to leave cells that will not have anything in them to be set to the default 
+climate/hemisphere. The point of the climate controllers and hemispheres is to prevent the cell
+from reaching a state that it should never ever reach. Equilibrium. Equilibrium is a state of 
+utmost balance. If the system achieves balance, and that is what it's going to actively try and 
+find. There will be no more changes. So if you don't change at least a couple cells, then you 
+will have a problem when the system reaches balance, and there is no more changing weather. 
+Earth is dynamic like that, the different climates prevent the worlds weather systems from reaching
+balance because deserts always suck all humidity out of the atmosphere, and rainforests always
+produce a lot of extra, its the same in this system. And that's what the climate controllers do.
+A detailed explanation of what each climate is, and does will be included in the helpfiles at the
+end of this document.
+
+Once you've assigned climates and hemispheres to each cell, You'll then be able to assign areas to
+cells. This is rather simple, With your plan in hand, begin going through your areas and assigning
+them cells with the aset command. Initial release limits this command to immortals of level 60 or
+higher. This can be adjusted in the aset command located in build.c. It would look something like:
+
+aset newdark.are weatherx 0
+aset newdark.are weathery 1
+
+And you would then proceed to do this for each individual area your mud currently has. Now, you
+are probably thinking, "Wow, this all seems rather tedious." And yes, you wold be correct in
+thinking that it is tedious. It is honestly insanely tedious, and for already established MUDs
+with a playerbase, it might honestly be a nightmare. But to have a fully functioning weather system
+based off of Real weather, and that produces relatively real weather patterns, I think it's worth it.
+When I undertook this project, I figured it would be something real simple, like adding a few things
+here and there to the existing weather code. I was very, very, very wrong. No offense to Fireblade,
+but that system was seriously lacking in a lot of places. There are a lot of things addressed in this
+system, and while it's tedious as hell to install, I will admit, I think most people will find the
+Pros, far outweigh the Cons.
+
+PROS
+# Real seasons calculated from the calendar settings.
+# Climate regions which impact other climate regions nearby.
+# Sensible weather events based on season. No snowstorms in summer. No scorching heatwaves in winter. 
+Stuff like that. -This one is actually a little bit touchy. It will depend entirely on which hemisphere
+the cell is assigned to as to which will occur in which season.
+# Terrain changes based on season. ex: lakes which freeze in winter, and that sort of thing.
+# Settable number of hours in a day, days in a month, and months in a year.
+# Holidays which can be created and set to the desired date.
+# Allows for Weather to persist over reboots/shutdowns/hotboots.
+# Allow for full influence over all surrounding cells, and surrounding cells influence cell.
+# Dynamic messages that will notify players of changes in weather for example:
+"The pouring rain lessens a bit and changes over to a steady snow."
+# Easily inegrate weather into other systems via the use or prewritten interaction functions. These functions
+are used to prevent corruption of the map, and to emulate encapsulation.
+
+CONS
+# Tedious Installation and initial setup.
+# Control Weather still a cheesy spell, just modified to fit the new implementation. Hopefully
+I'll be capable of writing a better version of control weather for a later, updated release.
+
+
+
+HELPFILES!
+
+#HELP
+Level    106
+WebInvis 1
+Keywords CLIMATE
+Related  CLIMATE2, SETWEATHER, SHOWWEATHER, WEATHER
+Text     With the new implementation of Weather. Comes a new meaning for Climates.
+Climates are no longer what each area has, but now are a flag applied to
+the weather cells across the weather "map". The following are available:
+ 
+rainforest, savanna, desert, steppe, chapparal, grasslands, deciduous_forest, 
+taiga, tundra, alpine, and arctic.
+ 
+Now, a brief explanation will follow for each, but these flags cause the
+system to force changes into cells with each update, to keep weather consistant
+with what is supposed to be within that cell.
+ 
+Rain Forest - This climate will produce a lot of rain and high heats, not quite
+as hot as a desert, but hot none the less. An earth example would be the Amazon
+region in South America.
+ 
+Savanna - This is a climate that produces a two season year, one being wet, the
+other being dry. And the temperature varies between but maintaining equatorial
+area temperatures for earth. An example would be the Serengeti of Africa. 
+Desert - Hot, Dry, Arid. This climate is home to cacti, camels, and other such
+Desert creatures and plants. A prime example is the Sahara Desert.
+ 
+Steppe - Characterized by grasslands, this is a semiarid climate. It can be
+found normally between the desert climate and more humid climates. An example
+of this climate would be the Mongolian Steppes in Eurasia.
+ 
+Chapparal - This is another semiarid climate, with long dry summers and shorter
+wet winters. The primary example of this is the Mediterranean Coast, or a bit
+of Southern California.¢
+End
+
+#HELP
+Level    106
+WebInvis 1
+Keywords CLIMATE2
+Related  CLIMATE, SETWEATHER, SHOWWEATHER, WEATHER
+Text     Grasslands - These are large climates of grassy plains and varying weather. The
+rainfall in these climates is enough to support the growth of grass, but not
+much else. An example would be the Great Plains of the Central United States.
+
+Deciduous Forest - This is a "perfect" climate. This is one of the few climates
+that really experiences all four seasons, with changes in each. It is normally
+characterized by the lush forests that grow within it, and the varied plant
+and wildlife that live within. The Eastern United States all falls under this
+climate.
+
+Taiga - The Taiga is also know as the Boreal Forest Climate, because it is
+mostly only needleleafed trees that grow within this ravaging climate. The
+wind in this type of climate is very unforgiving, and trees are known to 
+only grow in clumps because of this. The best example of this climate
+would be the interior of Alaska, or North-Central Canada.
+
+Tundra - The tundra climate is found along arctic coastal areas. The winter
+season is long and severe, and a short, mild summer exists but it barely
+noticeable. The best example of the tundra would be Coastal Alaska, or
+Iceland.
+
+Alpine - These are the mountain climates found mostly (on Earth) in Eurasia.
+The Himalayan Mountains are the best example. These climates produce colder
+temperatures than the climates around them, merely because of altitude
+difference.
+ 
+Arctic - Cold. Always Frozen. Almost the exact opposite of a desert. Could
+technically be considered a desert by the definition of the word. These
+climates produce below freezing temperatures almost year round. Antarctica
+would be the best example of an Arctic climate.¢
+End
+
+#HELP
+Level    106
+WebInvis 1
+Keywords SETWEATHER
+Related  SHOWWEATHER, WEATHER, CLIMATE, CLIMATE2
+Text     Syntax: setweather <x> <y> <field> <value>
+ 
+Field being one of:
+  climate hemisphere
+Climate value being:
+  rainforest savanna desert steppe chapparal arctic
+  grasslands deciduous_forest taiga tundra alpine
+ See Help Climate or Climate2 for information on each.
+Hemisphere value being:
+  northern southern
+ 
+SETWEATHER is used to set the climate and hemisphere flags on
+a given cell, based on x and y. These two values should always
+be numbers.
+ 
+Max for both values are stored in the code, and are unchangeable
+from within the game world.¢
+End
+
+#HELP
+Level    106
+WebInvis 1
+Keywords SHOWWEATHER
+Related  SETWEATHER, CLIMATE, CLIMATE2, WEATHER
+Text     Syntax: showweather <x> <y>
+ 
+This code will display the current state of the specified weather cell.
+X and Y should always be numbers. The max for both values is stored in
+the code, and are unchangeable from within the game world.¢
+End
+
+

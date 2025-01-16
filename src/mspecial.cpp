@@ -49,6 +49,7 @@
 #include "mspecial.h"
 #include "objindex.h"
 #include "roomindex.h"
+#include "weather.h"
 
 SPELLF( spell_smaug );
 SPELLF( spell_cure_blindness );
@@ -868,6 +869,7 @@ void sayhello( char_data * ch, char_data * t )
          case 10:
          {
             char buf2[80];
+            WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( time_info.hour < sysdata->hoursunrise )
                mudstrlcpy( buf2, "evening", 80 );
@@ -878,12 +880,15 @@ void sayhello( char_data * ch, char_data * t )
             else
                mudstrlcpy( buf2, "evening", 80 );
 
-            if( IS_CLOUDY( ch->in_room->area->weather ) )
+            if( getCloudCover( cell ) > 0 )
                cmdf( ch, "say Nice %s to go for a walk, %s, I hate it.", buf2, t->name );
-            else if( IS_RAINING( ch->in_room->area->weather ) )
-               cmdf( ch, "say I hope %s's rain never clears up.. don't you %s?", buf2, t->name );
-            else if( IS_SNOWING( ch->in_room->area->weather ) )
-               cmdf( ch, "say What a wonderful miserable %s, %s!", buf2, t->name );
+            else if( isRaining( getPrecip( cell ) ) || isRainingSteadily( getPrecip( cell ) ) || isDownpour( getPrecip( cell ) ) || isRaingingHeavily( getPrecip( cell ) ) || isPouring( getPrecip( cell ) ) || isRainingCatsAndDogs( getPrecip( cell ) ) || isTorrentialDownpour( getPrecip( cell ) ) )
+            {
+               if( getTemp( cell ) <= 32 )
+                  cmdf( ch, "say What a wonderful miserable %s, %s!", buf2, t->name );
+               else
+                  cmdf( ch, "say I hope %s's rain never clears up.. don't you %s?", buf2, t->name );
+            }
             else
                cmdf( ch, "say Such a terrible %s, don't you think?", buf2 );
             break;
@@ -941,6 +946,7 @@ void sayhello( char_data * ch, char_data * t )
          case 10:
          {
             char buf2[80];
+            WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( time_info.hour < sysdata->hoursunrise )
                mudstrlcpy( buf2, "evening", 80 );
@@ -950,12 +956,15 @@ void sayhello( char_data * ch, char_data * t )
                mudstrlcpy( buf2, "afternoon", 80 );
             else
                mudstrlcpy( buf2, "evening", 80 );
-            if( IS_CLOUDY( ch->in_room->area->weather ) )
+            if( getCloudCover( cell ) > 0 )
                cmdf( ch, "say Nice %s to go for a walk, %s.", buf2, t->name );
-            else if( IS_RAINING( ch->in_room->area->weather ) )
-               cmdf( ch, "say I hope %s's rain clears up.. don't you %s?", buf2, t->name );
-            else if( IS_SNOWING( ch->in_room->area->weather ) )
-               cmdf( ch, "say How can you be out on such a miserable %s, %s!", buf2, t->name );
+            else if( isRaining( getPrecip( cell ) ) || isRainingSteadily( getPrecip( cell ) ) || isDownpour( getPrecip( cell ) ) || isRaingingHeavily( getPrecip( cell ) ) || isPouring( getPrecip( cell ) ) || isRainingCatsAndDogs( getPrecip( cell ) ) || isTorrentialDownpour( getPrecip( cell ) ) )
+            {
+               if( getTemp( cell ) <= 32 )
+                  cmdf( ch, "say How can you be out on such a miserable %s, %s!", buf2, t->name );
+               else
+                  cmdf( ch, "say I hope %s's rain clears up.. don't you %s?", buf2, t->name );
+            }
             else
                cmdf( ch, "say Such a pleasant %s, don't you think?", buf2 );
             break;

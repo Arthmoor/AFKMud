@@ -39,6 +39,7 @@
 #include "overland.h"
 #include "roomindex.h"
 #include "shops.h"
+#include "weather.h"
 
 int top_area;
 
@@ -59,35 +60,6 @@ void web_arealist(  );
 area_data *fread_smaugfuss_area( FILE * );
 bool load_oldafk_area( FILE *, area_data *, int );
 CMDF( do_areaconvert );
-
-neighbor_data::neighbor_data(  )
-{
-   address = nullptr;
-}
-
-neighbor_data::~neighbor_data(  )
-{
-}
-
-weather_data::weather_data(  )
-{
-   init_memory( &temp, &echo_color, sizeof( echo_color ) );
-   neighborlist.clear(  );
-}
-
-weather_data::~weather_data(  )
-{
-   list < neighbor_data * >::iterator neigh;
-
-   for( neigh = neighborlist.begin(  ); neigh != neighborlist.end(  ); )
-   {
-      neighbor_data *neighbor = *neigh;
-      ++neigh;
-
-      neighborlist.remove( neighbor );
-      deleteptr( neighbor );
-   }
-}
 
 area_data::~area_data(  )
 {
@@ -167,8 +139,6 @@ area_data::~area_data(  )
    }
    objects.clear(  );
 
-   if( weather )
-      deleteptr( weather );
    DISPOSE( name );
    DISPOSE( filename );
    DISPOSE( resetmsg );
@@ -180,7 +150,7 @@ area_data::~area_data(  )
 
 area_data::area_data(  )
 {
-   init_memory( &weather, &tg_armor, sizeof( tg_armor ) );
+   init_memory( &continent, &tg_armor, sizeof( tg_armor ) );
 }
 
 void area_data::fix_exits(  )
@@ -310,15 +280,6 @@ area_data *create_area( void )
    pArea->reset_frequency = 15;
    pArea->hi_soft_range = MAX_LEVEL;
    pArea->hi_hard_range = MAX_LEVEL;
-
-   /*
-    * initialize weather data - FB 
-    */
-   pArea->weather = new weather_data;
-   pArea->weather->climate_temp = 2;
-   pArea->weather->climate_precip = 2;
-   pArea->weather->climate_wind = 2;
-   pArea->weather->echo_color = AT_GREY;
    pArea->tg_nothing = 20;
    pArea->tg_gold = 74;
    pArea->tg_item = 85;
@@ -327,6 +288,8 @@ area_data *create_area( void )
    pArea->tg_potion = 50;
    pArea->tg_wand = 60;
    pArea->tg_armor = 75;
+   pArea->weatherx = 0;
+   pArea->weathery = 0;
 
    arealist.push_back( pArea );
    ++top_area;
@@ -632,9 +595,8 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
             if( !str_cmp( word, "Climate" ) )
             {
-               tarea->weather->climate_temp = fread_number( fp );
-               tarea->weather->climate_precip = fread_number( fp );
-               tarea->weather->climate_wind = fread_number( fp );
+               // These values are no longer used with the new weather code.
+               fread_to_eol( fp );
                break;
             }
 
@@ -702,12 +664,8 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
             KEY( "Name", tarea->name, fread_string_nohash( fp ) );
             if( !str_cmp( word, "Neighbor" ) )
             {
-               neighbor_data *anew;
-
-               anew = new neighbor_data;
-               anew->address = nullptr;
-               fread_string( anew->name, fp );
-               tarea->weather->neighborlist.push_back( anew );
+               // This section is no longer used with the new weather code.
+               fread_to_eol( fp );
                break;
             }
             break;
@@ -1675,6 +1633,14 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                break;
             }
             break;
+
+         case 'W':
+            if( !str_cmp( word, "WeatherCoords" ) )
+            {
+               tarea->weatherx = fread_number( fp );
+               tarea->weathery = fread_number( fp );
+            }
+            break;
       }
    }
 }
@@ -2086,17 +2052,7 @@ void fwrite_area_header( area_data * area, FILE * fpout )
       fprintf( fpout, "Flags           %s~\n", bitset_string( area->flags, area_flags ) );
    fprintf( fpout, "Treasure        %d %d %d %d %d %d %d %d\n",
             area->tg_nothing, area->tg_gold, area->tg_item, area->tg_gem, area->tg_scroll, area->tg_potion, area->tg_wand, area->tg_armor );
-   fprintf( fpout, "Climate         %d %d %d\n", area->weather->climate_temp, area->weather->climate_precip, area->weather->climate_wind );
-
-   /*
-    * neighboring weather systems - FB 
-    */
-   list < neighbor_data * >::iterator neigh;
-   for( neigh = area->weather->neighborlist.begin(  ); neigh != area->weather->neighborlist.end(  ); ++neigh )
-   {
-      neighbor_data *nb = *neigh;
-      fprintf( fpout, "Neighbor           %s~\n", nb->name.c_str(  ) );
-   }
+   fprintf( fpout, "WeatherCoords   %d %d\n\n", area->weatherx, area->weathery );
 
    fprintf( fpout, "%s", "#ENDAREADATA\n\n" );
 }
@@ -2653,261 +2609,6 @@ area_data *find_area( const string & filename )
    return get_area( filename );
 }
 
-/*
- * Initialize the weather for all the areas
- * Last Modified: July 21, 1997
- * Fireblade
- */
-void init_area_weather( void )
-{
-   list < area_data * >::iterator iarea;
-
-   log_string( "Initializing area weather data..." );
-
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
-   {
-      area_data *area = *iarea;
-
-      /*
-       * init temp and temp vector 
-       */
-      int cf = area->weather->climate_temp - 2;
-      area->weather->temp = number_range( -weath_unit, weath_unit ) + cf * number_range( 0, weath_unit );
-      area->weather->temp_vector = cf + number_range( -rand_factor, rand_factor );
-
-      /*
-       * init precip and precip vector 
-       */
-      cf = area->weather->climate_precip - 2;
-      area->weather->precip = number_range( -weath_unit, weath_unit ) + cf * number_range( 0, weath_unit );
-      area->weather->precip_vector = cf + number_range( -rand_factor, rand_factor );
-
-      /*
-       * init wind and wind vector 
-       */
-      cf = area->weather->climate_wind - 2;
-      area->weather->wind = number_range( -weath_unit, weath_unit ) + cf * number_range( 0, weath_unit );
-      area->weather->wind_vector = cf + number_range( -rand_factor, rand_factor );
-   }
-   log_string( "Area weather data initialized." );
-}
-
-/*
- * Load weather data from appropriate file in system dir
- * Last Modified: July 24, 1997
- * Fireblade
- */
-void load_weatherdata( void )
-{
-   char filename[256];
-   FILE *fp;
-
-   log_string( "Loading weather vector data..." );
-
-   snprintf( filename, 256, "%sweather.dat", SYSTEM_DIR );
-
-   if( ( fp = fopen( filename, "r" ) ) != nullptr )
-   {
-      for( ;; )
-      {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found", __func__ );
-            return;
-         }
-         word = fread_word( fp );
-
-         if( !str_cmp( word, "RANDOM" ) )
-            rand_factor = fread_number( fp );
-         else if( !str_cmp( word, "CLIMATE" ) )
-            climate_factor = fread_number( fp );
-         else if( !str_cmp( word, "NEIGHBOR" ) )
-            neigh_factor = fread_number( fp );
-         else if( !str_cmp( word, "UNIT" ) )
-         {
-            int unit = fread_number( fp );
-
-            if( unit == 0 )
-               unit = 1;
-
-            weath_unit = unit;
-         }
-         else if( !str_cmp( word, "MAXVECTOR" ) )
-            max_vector = fread_number( fp );
-         else if( !str_cmp( word, "END" ) )
-         {
-            FCLOSE( fp );
-            break;
-         }
-         else
-         {
-            bug( "%s: unknown field", __func__ );
-            FCLOSE( fp );
-            break;
-         }
-      }
-   }
-}
-
-/*
- * Write data for global weather parameters
- * Last Modified: July 24, 1997
- * Fireblade
- */
-void save_weatherdata( void )
-{
-   char filename[256];
-   FILE *fp;
-
-   snprintf( filename, 256, "%sweather.dat", SYSTEM_DIR );
-
-   if( ( fp = fopen( filename, "w" ) ) != nullptr )
-   {
-      fprintf( fp, "#RANDOM %d\n", rand_factor );
-      fprintf( fp, "#CLIMATE %d\n", climate_factor );
-      fprintf( fp, "#NEIGHBOR %d\n", neigh_factor );
-      fprintf( fp, "#UNIT %d\n", weath_unit );
-      fprintf( fp, "#MAXVECTOR %d\n", max_vector );
-      fprintf( fp, "%s", "#END\n" );
-      FCLOSE( fp );
-   }
-   else
-      bug( "%s: could not open file", __func__ );
-}
-
-/*
- * Command to control global weather variables and to reset weather
- * Last Modified: July 23, 1997
- * Fireblade
- */
-CMDF( do_setweather )
-{
-   string arg;
-
-   ch->set_color( AT_BLUE );
-
-   argument = one_argument( argument, arg );
-
-   if( arg.empty(  ) )
-   {
-      ch->printf( "%-15s%-6s\r\n", "Parameters:", "Value:" );
-      ch->printf( "%-15s%-6d\r\n", "random", rand_factor );
-      ch->printf( "%-15s%-6d\r\n", "climate", climate_factor );
-      ch->printf( "%-15s%-6d\r\n", "neighbor", neigh_factor );
-      ch->printf( "%-15s%-6d\r\n", "unit", weath_unit );
-      ch->printf( "%-15s%-6d\r\n", "maxvector", max_vector );
-
-      ch->print( "\r\nResulting values:\r\n" );
-      ch->printf( "Weather variables range from %d to %d.\r\n", -3 * weath_unit, 3 * weath_unit );
-      ch->printf( "Weather vectors range from %d to %d.\r\n", -1 * max_vector, max_vector );
-      ch->printf( "The maximum a vector can change in one update is %d.\r\n", rand_factor + 2 * climate_factor + ( 6 * weath_unit / neigh_factor ) );
-   }
-
-   else if( !str_cmp( arg, "random" ) )
-   {
-      if( !is_number( argument ) )
-         ch->print( "Set maximum random change in vectors to what?\r\n" );
-      else
-      {
-         rand_factor = atoi( argument.c_str(  ) );
-         ch->printf( "Maximum random change in vectors now equals %d.\r\n", rand_factor );
-         save_weatherdata(  );
-      }
-   }
-
-   else if( !str_cmp( arg, "climate" ) )
-   {
-      if( !is_number( argument ) )
-         ch->print( "Set climate effect coefficient to what?\r\n" );
-      else
-      {
-         climate_factor = atoi( argument.c_str(  ) );
-         ch->printf( "Climate effect coefficient now equals %d.\r\n", climate_factor );
-         save_weatherdata(  );
-      }
-   }
-
-   else if( !str_cmp( arg, "neighbor" ) )
-   {
-      if( !is_number( argument ) )
-         ch->print( "Set neighbor effect divisor to what?\r\n" );
-      else
-      {
-         neigh_factor = atoi( argument.c_str(  ) );
-
-         if( neigh_factor <= 0 )
-            neigh_factor = 1;
-
-         ch->printf( "Neighbor effect coefficient now equals 1/%d.\r\n", neigh_factor );
-         save_weatherdata(  );
-      }
-   }
-
-   else if( !str_cmp( arg, "unit" ) )
-   {
-      if( !is_number( argument ) )
-         ch->print( "Set weather unit size to what?\r\n" );
-      else
-      {
-         int unit = atoi( argument.c_str(  ) );
-
-         if( unit == 0 )
-         {
-            ch->print( "Weather unit size cannot be zero.\r\n" );
-            return;
-         }
-         weath_unit = unit;
-         ch->printf( "Weather unit size now equals %d.\r\n", weath_unit );
-         save_weatherdata(  );
-      }
-   }
-
-   else if( !str_cmp( arg, "maxvector" ) )
-   {
-      if( !is_number( argument ) )
-         ch->print( "Set maximum vector size to what?\r\n" );
-      else
-      {
-         max_vector = atoi( argument.c_str(  ) );
-         ch->printf( "Maximum vector size now equals %d.\r\n", max_vector );
-         save_weatherdata(  );
-      }
-   }
-
-   else if( !str_cmp( arg, "reset" ) )
-   {
-      init_area_weather(  );
-      ch->print( "Weather system reinitialized.\r\n" );
-   }
-
-   else if( !str_cmp( arg, "update" ) )
-   {
-      int i, number;
-
-      number = atoi( argument.c_str(  ) );
-
-      if( number < 1 )
-         number = 1;
-
-      for( i = 0; i < number; ++i )
-         weather_update(  );
-
-      ch->print( "Weather system updated.\r\n" );
-   }
-
-   else
-   {
-      ch->print( "You may only use one of the following fields:\r\n" );
-      ch->print( "\trandom\r\n\tclimate\r\n\tneighbor\r\n\tunit\r\n\tmaxvector\r\n" );
-      ch->print( "You may also reset or update the system using the fields 'reset' and 'update' respectively.\r\n" );
-   }
-}
-
 CMDF( do_adelete )
 {
    area_data *tarea;
@@ -2943,33 +2644,6 @@ CMDF( do_adelete )
    write_area_list(  );
    web_arealist(  );
    ch->printf( "&W%s&R has been destroyed.&D\r\n", arg.c_str(  ) );
-}
-
-/*
- * Command to display the weather status of all the areas
- * Last Modified: July 21, 1997
- * Fireblade
- *
- * EGAD! This thing was one UGLY function before! This is much nicer to look at, yes?
- * Samson 9-18-03
- */
-CMDF( do_showweather )
-{
-   list < area_data * >::iterator iarea;
-
-   ch->printf( "&B%-40s %-8s %-8s %-8s\r\n", "Area Name:", "Temp:", "Precip:", "Wind:" );
-
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
-   {
-      area_data *area = *iarea;
-
-      if( argument.empty(  ) || nifty_is_name_prefix( argument, area->name ) )
-      {
-         ch->printf( "&B%-40s &W%3d &B(&C%3d&B) &W%3d &B(&C%3d&B) &W%3d &B(&C%3d&B)\r\n",
-                     area->name, area->weather->temp, area->weather->temp_vector, area->weather->precip,
-                     area->weather->precip_vector, area->weather->wind, area->weather->wind_vector );
-      }
-   }
 }
 
 void assign_area( char_data * ch )
@@ -3189,6 +2863,7 @@ CMDF( do_astat )
       ch->print( "&wContinent or Plane: &W<NOT SET>\r\n" );
 
    ch->printf( "&wCoordinates: &W%d %d\r\n", tarea->map_x, tarea->map_y );
+   ch->printf( "&wWeather: X Coord: &W%-3d  &w Y Coord: &W%-3d\r\n", tarea->weatherx, tarea->weathery );
 
    ch->printf( "&wResetmsg: &W%s\r\n", tarea->resetmsg ? tarea->resetmsg : "(default)" ); /* Rennard */
    ch->printf( "&wReset frequency: &W%d &wminutes.\r\n", tarea->reset_frequency ? tarea->reset_frequency : 15 );
@@ -3228,6 +2903,7 @@ CMDF( do_aset )
       ch->print( "  low_vnum hi_vnum coords\r\n" );
       ch->print( "  name filename low_soft hi_soft low_hard hi_hard\r\n" );
       ch->print( "  author credits resetmsg resetfreq flags\r\n" );
+      ch->print( "  weatherx weathery\r\n" );
       ch->print( "  nothing gold item gem\r\n" );
       ch->print( "  scroll potion wand armor\r\n" );
       return;
@@ -3369,6 +3045,20 @@ CMDF( do_aset )
       tarea->map_y = y;
 
       ch->print( "Area coordinates set.\r\n" );
+      return;
+   }
+
+   if( !str_cmp( arg2, "weatherx" ) )
+   {
+      tarea->weatherx = vnum;
+      ch->print( "Weather X Coordinate set.\r\n" );
+      return;
+   }
+
+   if( !str_cmp( arg2, "weathery" ) )
+   {
+      tarea->weathery = vnum;
+      ch->print( "Weather Y Coordinate set.\r\n" );
       return;
    }
 
@@ -4010,264 +3700,4 @@ CMDF( do_areas )
             break;
       }
    }
-}
-
-/*
- * function to allow modification of an area's climate
- * Last modified: July 15, 1997
- * Fireblade
- */
-CMDF( do_climate )
-{
-   string arg;
-   area_data *area;
-
-   /*
-    * Little error checking 
-    */
-   if( !ch )
-   {
-      bug( "%s: nullptr character.", __func__ );
-      return;
-   }
-   else if( !ch->in_room )
-   {
-      bug( "%s: %s not in a room.", __func__, ch->name );
-      return;
-   }
-   else if( !ch->in_room->area )
-   {
-      bug( "%s: %s not in an area.", __func__, ch->name );
-      return;
-   }
-   else if( !ch->in_room->area->weather )
-   {
-      bug( "%s: %s with nullptr weather data.", __func__, ch->in_room->area->name );
-      return;
-   }
-
-   ch->set_color( AT_BLUE );
-
-   area = ch->in_room->area;
-
-   argument = one_argument( argument, arg );
-
-   /*
-    * Display current climate settings 
-    */
-   if( arg.empty(  ) )
-   {
-      ch->printf( "%s:\r\n", area->name );
-      ch->printf( "\tTemperature:\t%s\r\n", temp_settings[area->weather->climate_temp] );
-      ch->printf( "\tPrecipitation:\t%s\r\n", precip_settings[area->weather->climate_precip] );
-      ch->printf( "\tWind:\t\t%s\r\n", wind_settings[area->weather->climate_wind] );
-
-      if( !area->weather->neighborlist.empty(  ) )
-         ch->print( "\r\nNeighboring weather systems:\r\n" );
-
-      list < neighbor_data * >::iterator neigh;
-      for( neigh = area->weather->neighborlist.begin(  ); neigh != area->weather->neighborlist.end(  ); ++neigh )
-      {
-         neighbor_data *nb = *neigh;
-
-         ch->printf( "\t%s\r\n", nb->name.c_str(  ) );
-      }
-      return;
-   }
-
-   /*
-    * set climate temperature 
-    */
-   if( !str_cmp( arg, "temp" ) )
-   {
-      int i;
-      argument = one_argument( argument, arg );
-
-      for( i = 0; i < MAX_CLIMATE; ++i )
-      {
-         if( str_cmp( arg, temp_settings[i] ) )
-            continue;
-
-         area->weather->climate_temp = i;
-         ch->printf( "The climate temperature for %s is now %s.\r\n", area->name, temp_settings[i] );
-         break;
-      }
-
-      if( i == MAX_CLIMATE )
-      {
-         ch->printf( "Possible temperature settings:\r\n" );
-         for( i = 0; i < MAX_CLIMATE; ++i )
-            ch->printf( "\t%s\r\n", temp_settings[i] );
-      }
-      return;
-   }
-
-   /*
-    * set climate precipitation 
-    */
-   if( !str_cmp( arg, "precip" ) )
-   {
-      int i;
-      argument = one_argument( argument, arg );
-
-      for( i = 0; i < MAX_CLIMATE; ++i )
-      {
-         if( str_cmp( arg, precip_settings[i] ) )
-            continue;
-
-         area->weather->climate_precip = i;
-         ch->printf( "The climate precipitation for %s is now %s.\r\n", area->name, precip_settings[i] );
-         break;
-      }
-
-      if( i == MAX_CLIMATE )
-      {
-         ch->print( "Possible precipitation settings:\r\n" );
-         for( i = 0; i < MAX_CLIMATE; ++i )
-            ch->printf( "\t%s\r\n", precip_settings[i] );
-      }
-      return;
-   }
-
-   /*
-    * set climate wind 
-    */
-   if( !str_cmp( arg, "wind" ) )
-   {
-      int i;
-      argument = one_argument( argument, arg );
-
-      for( i = 0; i < MAX_CLIMATE; ++i )
-      {
-         if( str_cmp( arg, wind_settings[i] ) )
-            continue;
-
-         area->weather->climate_wind = i;
-         ch->printf( "The climate wind for %s is now %s.\r\n", area->name, wind_settings[i] );
-         break;
-      }
-
-      if( i == MAX_CLIMATE )
-      {
-         ch->print( "Possible wind settings:\r\n" );
-         for( i = 0; i < MAX_CLIMATE; ++i )
-            ch->printf( "\t%s\r\n", wind_settings[i] );
-      }
-      return;
-   }
-
-   /*
-    * add or remove neighboring weather systems 
-    */
-   if( !str_cmp( arg, "neighbor" ) )
-   {
-      list < neighbor_data * >::iterator neigh;
-      area_data *tarea;
-
-      if( argument.empty(  ) )
-      {
-         ch->print( "Add or remove which area?\r\n" );
-         return;
-      }
-
-      /*
-       * look for a matching list item 
-       */
-      neighbor_data *nb;
-      bool found = false;
-      for( neigh = area->weather->neighborlist.begin(  ); neigh != area->weather->neighborlist.end(  ); ++neigh )
-      {
-         nb = *neigh;
-         if( hasname( nb->name, argument ) )
-         {
-            found = true;
-            break;
-         }
-      }
-
-      /*
-       * if the a matching list entry is found, remove it 
-       */
-      if( found )
-      {
-         /*
-          * look for the neighbor area in question 
-          */
-         if( !( tarea = nb->address ) )
-            tarea = get_area( nb->name );
-
-         /*
-          * if there is an actual neighbor area remove its entry to this area 
-          */
-         if( tarea )
-         {
-            list < neighbor_data * >::iterator tneigh;
-            neighbor_data *tnb;
-
-            tarea = nb->address;
-            bool found2 = false;
-            for( tneigh = tarea->weather->neighborlist.begin(  ); tneigh != tarea->weather->neighborlist.end(  ); ++tneigh )
-            {
-               tnb = *tneigh;
-
-               if( !str_cmp( area->name, tnb->name ) )
-               {
-                  found2 = true;
-                  break;
-               }
-            }
-
-            if( found2 )
-            {
-               tarea->weather->neighborlist.remove( tnb );
-               deleteptr( tnb );
-            }
-         }
-         ch->printf( "The weather in %s and %s no longer affect each other.\r\n", nb->name.c_str(  ), area->name );
-         area->weather->neighborlist.remove( nb );
-         deleteptr( nb );
-      }
-
-      /*
-       * otherwise add an entry 
-       */
-      else
-      {
-         neighbor_data *newneigh;
-
-         tarea = get_area( argument );
-
-         if( !tarea )
-         {
-            ch->print( "No such area exists.\r\n" );
-            return;
-         }
-
-         if( tarea == area )
-         {
-            ch->printf( "%s already affects its own weather.\r\n", area->name );
-            return;
-         }
-
-         /*
-          * add the entry 
-          */
-         newneigh = new neighbor_data;
-         newneigh->name = STRALLOC( tarea->name );
-         newneigh->address = tarea;
-         area->weather->neighborlist.push_back( newneigh );
-
-         /*
-          * add an entry to the neighbor's list 
-          */
-         newneigh = new neighbor_data;
-         newneigh->name = STRALLOC( area->name );
-         newneigh->address = area;
-         tarea->weather->neighborlist.push_back( newneigh );
-         ch->printf( "The weather in %s and %s now affect one another.\r\n", tarea->name, area->name );
-      }
-      return;
-   }
-   ch->print( "Climate may only be followed by one of the following fields:\r\n" );
-   ch->print( "temp precip wind tneighbor\r\n" );
 }

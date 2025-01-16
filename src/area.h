@@ -39,51 +39,6 @@ enum area_flags
    AFLAG_NOWHERE, AFLAG_MAX
 };
 
-class neighbor_data
-{
- private:
-   neighbor_data( const neighbor_data & n );
-     neighbor_data & operator=( const neighbor_data & );
-
- public:
-     neighbor_data(  );
-    ~neighbor_data(  );
-
-   area_data *address;
-   string name;
-};
-
-/* Define maximum number of climate settings - FB */
-const int MAX_CLIMATE = 5;
-
-class weather_data
-{
- private:
-   weather_data( const weather_data & w );
-     weather_data & operator=( const weather_data & );
-
- public:
-     weather_data(  );
-    ~weather_data(  );
-
-     list < neighbor_data * >neighborlist;   /* areas which affect weather sys */
-   string echo;   /* echo string */
-/*   int mmhg;
-   int change;
-   int sky;
-   int sunlight; */
-   int temp;   /* temperature */
-   int precip; /* precipitation */
-   int wind;   /* umm... wind */
-   int temp_vector;  /* vectors controlling */
-   int precip_vector;   /* rate of change */
-   int wind_vector;
-   int climate_temp; /* climate of the area */
-   int climate_precip;
-   int climate_wind;
-   int echo_color;   /* color for the echo */
-};
-
 /*
  * Area definition.
  */
@@ -107,7 +62,6 @@ class area_data
    list < room_index * >rooms;    // The list of room indexes for this area
    list < mob_index * >mobs;      // The list of mob indexes for this area
    list < obj_index * >objects;   // The list of object indexes for this area
-   weather_data *weather;           /* FB */
    bitset < AFLAG_MAX > flags;
 
    class continent_data *continent; // Continent data structure this area is associated with.
@@ -125,6 +79,8 @@ class area_data
    int hi_soft_range;
    int low_hard_range;
    int hi_hard_range;
+   short weatherx;                  // X Coordinate for this area's weather data.
+   short weathery;                  // Y Coodrinate for this area'a weather data.
    short age;
    short nplayer;
    short reset_frequency;

@@ -38,6 +38,7 @@
 #include "overland.h"
 #include "roomindex.h"
 #include "ships.h"
+#include "weather.h"
 
 list < continent_data *>continent_list;
 
@@ -2059,6 +2060,7 @@ void display_map( char_data * ch )
    }
 
    sector = ch->continent->get_terrain( ch->map_x, ch->map_y );
+   WeatherCell *cell = getWeatherCell( ch->continent->area );
 
    if( ch->has_pcflag( PCFLAG_HOLYLIGHT ) || ch->in_room->flags.test( ROOM_WATCHTOWER ) || ch->inflight )
    {
@@ -2076,8 +2078,13 @@ void display_map( char_data * ch )
       if( time_info.hour == sysdata->hoursunrise || time_info.hour == sysdata->hoursunset )
          mod = 4;
 
-      if( ( ch->in_room->area->weather->precip + 3 * weath_unit - 1 ) / weath_unit > 1 && mod != 1 )
-         mod -= 1;
+      if( getCloudCover( cell ) > 0 )
+      {
+         if( isExtremelyCloudy( getCloudCover( cell ) ) || isModeratelyCloudy( getCloudCover( cell ) ) )
+            mod -= 2;
+         else if( isPartlyCloudy( getCloudCover( cell ) ) || isCloudy( getCloudCover( cell ) ) )
+            mod -= 1;
+      }
 
       if( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise )
          mod = 2;
@@ -2258,12 +2265,18 @@ void map_scan( char_data * ch )
       return;
 
    obj_data *light = ch->get_eq( WEAR_LIGHT );
+   WeatherCell *cell = getWeatherCell( ch->continent->area );
 
    if( time_info.hour == sysdata->hoursunrise || time_info.hour == sysdata->hoursunset )
       mod = 4;
 
-   if( ( ch->in_room->area->weather->precip + 3 * weath_unit - 1 ) / weath_unit > 1 && mod != 1 )
-      mod -= 1;
+   if( getCloudCover( cell ) > 0 )
+   {
+      if( isExtremelyCloudy( getCloudCover( cell ) ) || isModeratelyCloudy( getCloudCover( cell ) ) )
+         mod -= 2;
+      else if( isPartlyCloudy( getCloudCover( cell ) ) || isCloudy( getCloudCover( cell ) ) )
+         mod -= 1;
+   }
 
    if( time_info.hour > sysdata->hoursunset || time_info.hour < sysdata->hoursunrise )
       mod = 1;

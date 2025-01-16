@@ -1318,9 +1318,8 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       }
       else if( !str_cmp( word, "CLIMATE" ) )
       {
-         tarea->weather->climate_temp = fread_number( fpArea );
-         tarea->weather->climate_precip = fread_number( fpArea );
-         tarea->weather->climate_wind = fread_number( fpArea );
+         // These values are ignored with the new weather code.
+         fread_to_eol( fpArea );
       }
       else if( !str_cmp( word, "TREASURE" ) )
       {
@@ -1355,12 +1354,8 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       }
       else if( !str_cmp( word, "NEIGHBOR" ) )
       {
-         neighbor_data *anew;
-
-         anew = new neighbor_data;
-         anew->address = nullptr;
-         anew->name = fread_string( fpArea );
-         tarea->weather->neighborlist.push_back( anew );
+         // This section is no longer used with the new weather code.
+         fread_to_eol( fpArea );
       }
       else if( !str_cmp( word, "MOBILES" ) )
          load_mobiles( tarea, fpArea );

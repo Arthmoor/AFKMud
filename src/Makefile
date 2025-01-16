@@ -96,7 +96,7 @@ C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           pfiles.cpp player.cpp polymorph.cpp rare.cpp realms.cpp renumber.cpp reset.cpp \
           roomindex.cpp save.cpp sha256.cpp ships.cpp shops.cpp \
           skills.cpp skyship.cpp slay.cpp tables.cpp track.cpp treasure.cpp \
-          update.cpp variables.cpp web.cpp
+          update.cpp variables.cpp weather.cpp web.cpp
 
 ifdef LIB_MYSQL
    C_FILES := sql.cpp $(C_FILES)

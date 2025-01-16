@@ -4533,27 +4533,72 @@ End
 Level    106
 WebInvis 1
 Keywords CLIMATE
-Related    
-Text     Syntax: climate
-Syntax: climate <field> <name>
+Related  CLIMATE2, SETWEATHER, SHOWWEATHER, WEATHER
+Text     With the new implementation of Weather. Comes a new meaning for Climates.
+Climates are no longer what each area has, but now are a flag applied to
+the weather cells across the weather "map". The following are available:
  
-This command allows you to view or modify the climate
-settings for an area. There are settings for temperature,
-precipitation, and wind. In addition, you may specify
-neighboring areas who will affect changes in the current
-areas weather. Therefore there are four fields to choose
-from. Each field has a different range of values available.
+rainforest, savanna, desert, steppe, chapparal, grasslands, deciduous_forest, 
+taiga, tundra, alpine, and arctic.
  
-Field name:           Values:
-temp                  cold, cool, normal, warm, hot
-precip                arid, dry, normal, damp, wet
-wind                  still, calm, normal, breezy, windy
-neighbor              <area name>
+Now, a brief explanation will follow for each, but these flags cause the
+system to force changes into cells with each update, to keep weather consistant
+with what is supposed to be within that cell.
  
-Specifying an area name with neighbor which is already on
-the list will remove it. Using climate without any arguments
-will display the area's current setting. Note that this
-command always refers to the area which you are currently in.¢
+Rain Forest - This climate will produce a lot of rain and high heats, not quite
+as hot as a desert, but hot none the less. An earth example would be the Amazon
+region in South America.
+ 
+Savanna - This is a climate that produces a two season year, one being wet, the
+other being dry. And the temperature varies between but maintaining equatorial
+area temperatures for earth. An example would be the Serengeti of Africa. 
+Desert - Hot, Dry, Arid. This climate is home to cacti, camels, and other such
+Desert creatures and plants. A prime example is the Sahara Desert.
+ 
+Steppe - Characterized by grasslands, this is a semiarid climate. It can be
+found normally between the desert climate and more humid climates. An example
+of this climate would be the Mongolian Steppes in Eurasia.
+ 
+Chapparal - This is another semiarid climate, with long dry summers and shorter
+wet winters. The primary example of this is the Mediterranean Coast, or a bit
+of Southern California.¢
+End
+
+#HELP
+Level    106
+WebInvis 1
+Keywords CLIMATE2
+Related  CLIMATE, SETWEATHER, SHOWWEATHER, WEATHER
+Text     Grasslands - These are large climates of grassy plains and varying weather. The
+rainfall in these climates is enough to support the growth of grass, but not
+much else. An example would be the Great Plains of the Central United States.
+
+Deciduous Forest - This is a "perfect" climate. This is one of the few climates
+that really experiences all four seasons, with changes in each. It is normally
+characterized by the lush forests that grow within it, and the varied plant
+and wildlife that live within. The Eastern United States all falls under this
+climate.
+
+Taiga - The Taiga is also know as the Boreal Forest Climate, because it is
+mostly only needleleafed trees that grow within this ravaging climate. The
+wind in this type of climate is very unforgiving, and trees are known to 
+only grow in clumps because of this. The best example of this climate
+would be the interior of Alaska, or North-Central Canada.
+
+Tundra - The tundra climate is found along arctic coastal areas. The winter
+season is long and severe, and a short, mild summer exists but it barely
+noticeable. The best example of the tundra would be Coastal Alaska, or
+Iceland.
+
+Alpine - These are the mountain climates found mostly (on Earth) in Eurasia.
+The Himalayan Mountains are the best example. These climates produce colder
+temperatures than the climates around them, merely because of altitude
+difference.
+ 
+Arctic - Cold. Always Frozen. Almost the exact opposite of a desert. Could
+technically be considered a desert by the definition of the word. These
+climates produce below freezing temperatures almost year round. Antarctica
+would be the best example of an Arctic climate.¢
 End
 
 #HELP
@@ -17040,9 +17085,24 @@ End
 Level    106
 WebInvis 1
 Keywords SETWEATHER
-Related    
-Text     Right. Don't ask. This command is unclear in its intent. But most likely
-it messes with global weather factors. :)¢
+Related  SHOWWEATHER, WEATHER, CLIMATE, CLIMATE2
+Text     Syntax: setweather <x> <y> <field> <value>
+ 
+Field being one of:
+  climate hemisphere
+Climate value being:
+  rainforest savanna desert steppe chapparal arctic
+  grasslands deciduous_forest taiga tundra alpine
+ See Help Climate or Climate2 for information on each.
+Hemisphere value being:
+  northern southern
+ 
+SETWEATHER is used to set the climate and hemisphere flags on
+a given cell, based on x and y. These two values should always
+be numbers.
+ 
+Max for both values are stored in the code, and are unchangeable
+from within the game world.¢
 End
 
 #HELP
@@ -17390,12 +17450,12 @@ End
 Level    106
 WebInvis 1
 Keywords SHOWWEATHER
-Related    
-Text     Usage : showweather
-Usage : showweather <area>
-
-Without an argument, this will show you &WALL&D of the areas current weather.
-With an area name, it will just show that area.¢
+Related  SETWEATHER, CLIMATE, CLIMATE2, WEATHER
+Text     Syntax: showweather <x> <y>
+ 
+This code will display the current state of the specified weather cell.
+X and Y should always be numbers. The max for both values is stored in
+the code, and are unchangeable from within the game world.¢
 End
 
 #HELP

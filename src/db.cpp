@@ -60,6 +60,7 @@
 #if !defined(__CYGWIN__) && defined(SQL)
  #include "sql.h"
 #endif
+#include "weather.h"
 
 #if defined(WIN32)
 void gettimeofday( struct timeval *, struct timezone * );
@@ -108,11 +109,6 @@ extern const char *alarm_section;
 extern obj_data *extracted_obj_queue;
 extern struct extracted_char_data *extracted_char_queue;
 
-int weath_unit;   /* global weather param */
-int rand_factor;
-int climate_factor;
-int neigh_factor;
-int max_vector;
 int cur_qobjs;
 int cur_qchars;
 int nummobsloaded;
@@ -193,8 +189,6 @@ void load_projects(  );
 void assign_gsn_data(  );
 int mob_xp( char_data * );
 void load_connhistory(  );
-void init_area_weather(  );
-void load_weatherdata(  );
 void sort_skill_table(  );
 void load_classes(  );
 void load_races(  );
@@ -1956,12 +1950,6 @@ void boot_db( bool fCopyOver )
    auction = new auction_data;
    auction->item = nullptr;
 
-   weath_unit = 10;
-   rand_factor = 2;
-   climate_factor = 1;
-   neigh_factor = 3;
-   max_vector = weath_unit * 3;
-
    for( wear = 0; wear < MAX_WEAR; ++wear )
       for( x = 0; x < MAX_LAYERS; ++x )
          save_equipment[wear][x] = nullptr;
@@ -2003,6 +1991,14 @@ void boot_db( bool fCopyOver )
       else
          time_info.sunlight = SUN_DARK;
    }
+
+   if( !load_weathermap(  ) )
+   {
+      log_string( "Initializing new weather map." );
+      InitializeWeatherMap(  );
+   }
+   else
+      log_string( "Weather map data loaded." );
 
    log_string( "Loading holiday chart..." ); /* Samson 5-13-99 */
    load_holidays(  );
@@ -2192,12 +2188,6 @@ void boot_db( bool fCopyOver )
 
    MPSilent = false;
    MOBtrigger = true;
-
-   /*
-    * Initialize area weather data 
-    */
-   load_weatherdata(  );
-   init_area_weather(  );
 
    /*
     * Initialize chess board stuff 

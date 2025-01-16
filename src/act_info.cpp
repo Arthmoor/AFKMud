@@ -42,6 +42,7 @@
 #include "raceclass.h"
 #include "roomindex.h"
 #include "sha256.h"
+#include "weather.h"
 
 #define HISTORY_FILE SYSTEM_DIR "history.txt"   /* Used in do_history - Samson 2-12-98 */
 
@@ -148,14 +149,14 @@ void look_sky( char_data * ch )
 {
    char buf[MSL];
    char buf2[4];
-   int starpos, sunpos, moonpos, moonphase, i, linenum, precip;
+   int starpos, sunpos, moonpos, moonphase, i, linenum;
+   WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
    ch->pager( "You gaze up towards the heavens and see:\r\n" );
 
-   precip = ( ch->in_room->area->weather->precip + 3 * weath_unit - 1 ) / weath_unit;
-   if( precip > 1 )
+   if( isModeratelyCloudy( getCloudCover( cell ) ) )
    {
-      ch->print( "There are some clouds in the sky so you cannot see anything else.\r\n" );
+      ch->print( "There are too many clouds in the sky so you cannot see anything else.\r\n" );
       return;
    }
 
@@ -1968,38 +1969,6 @@ CMDF( do_examine )
          return;
       check_for_trap( ch, obj, TRAP_EXAMINE );
    }
-}
-
-/*
- * Produce a description of the weather based on area weather using
- * the following sentence format:
- * <combo-phrase> and <single-phrase>.
- * Where the combo-phrase describes either the precipitation and
- * temperature or the wind and temperature. The single-phrase
- * describes either the wind or precipitation depending upon the
- * combo-phrase.
- * Last Modified: July 31, 1997
- * Fireblade - Under Construction
- * Yeah. Big comment. Wasteful function. Eliminated unneeded strings -- Xorith
- */
-CMDF( do_weather )
-{
-   int temp, precip, wind;
-
-   if( !ch->has_pcflag( PCFLAG_ONMAP ) && ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) )
-   {
-      ch->print( "You can't see the sky from here.\r\n" );
-      return;
-   }
-
-   temp = ( ch->in_room->area->weather->temp + 3 * weath_unit - 1 ) / weath_unit;
-   precip = ( ch->in_room->area->weather->precip + 3 * weath_unit - 1 ) / weath_unit;
-   wind = ( ch->in_room->area->weather->wind + 3 * weath_unit - 1 ) / weath_unit;
-
-   if( precip >= 3 )
-      ch->printf( "&B%s and %s.\r\n", preciptemp_msg[precip][temp], wind_msg[wind] );
-   else
-      ch->printf( "&B%s and %s.\r\n", windtemp_msg[wind][temp], precip_msg[precip] );
 }
 
 CMDF( do_compare )

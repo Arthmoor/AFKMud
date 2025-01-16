@@ -114,6 +114,7 @@ void mud_recv_message(  );
 #endif
 void save_ships(  );
 void save_timedata(  );
+void save_weathermap(  );
 void save_morphs(  );
 void hotboot_recover(  );
 void update_connhistory( descriptor_data *, int ); /* connhist.c */
@@ -482,6 +483,9 @@ void close_mud( void )
    // Save game world time - Samson 1-21-99 
    log_string( "Saving game world time...." );
    save_timedata(  );
+
+   log_string( "Saving weather map data..." );
+   save_weathermap(  );
 
    // Save ship information - Samson 1-8-01 
    save_ships(  );

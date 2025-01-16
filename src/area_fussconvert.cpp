@@ -1257,11 +1257,10 @@ void fread_fuss_areadata( FILE * fp, area_data * tarea )
             KEY( "Version", tarea->version, fread_number( fp ) );
             break;
 
-         // FIXME: Uncomment this when we've converted Kayle's weather code.
-         //case 'W':
-         //   KEY( "WeatherX", tarea->weatherx, fread_number( fp ) );
-         //   KEY( "WeatherY", tarea->weathery, fread_number( fp ) );
-         //   break;
+         case 'W':
+            KEY( "WeatherX", tarea->weatherx, fread_number( fp ) );
+            KEY( "WeatherY", tarea->weathery, fread_number( fp ) );
+            break;
       }
    }
 }
