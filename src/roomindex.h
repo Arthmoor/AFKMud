@@ -164,7 +164,7 @@ room_index *make_room( int, area_data * );
 int get_dirnum( const string & );
 const char *rev_exit( short );
 
-#define EXIT( x, door)  ( (x)->in_room->get_exit( door ) )
+#define EXIT(x, door)   ( (x)->in_room->get_exit( door ) )
 #define CAN_GO(x, door) ( EXIT((x),(door)) && (EXIT((x),(door))->to_room != nullptr )  \
                           && !IS_EXIT_FLAG( EXIT((x), (door)), EX_CLOSED ) )
 

@@ -78,6 +78,7 @@ game_board_data::game_board_data(  )
    for( x = 0; x < 8; ++x )
       for( y = 0; y < 8; ++y )
          this->board[x][y] = 0;
+
    this->board[0][0] = WHITE_ROOK;
    this->board[0][1] = WHITE_KNIGHT;
    this->board[0][2] = WHITE_BISHOP;
@@ -86,10 +87,13 @@ game_board_data::game_board_data(  )
    this->board[0][5] = WHITE_BISHOP;
    this->board[0][6] = WHITE_KNIGHT;
    this->board[0][7] = WHITE_ROOK;
+
    for( x = 0; x < 8; ++x )
       this->board[1][x] = WHITE_PAWN;
+
    for( x = 0; x < 8; ++x )
       this->board[6][x] = BLACK_PAWN;
+
    this->board[7][0] = BLACK_ROOK;
    this->board[7][1] = BLACK_KNIGHT;
    this->board[7][2] = BLACK_BISHOP;

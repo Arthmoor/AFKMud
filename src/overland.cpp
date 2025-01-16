@@ -2250,12 +2250,15 @@ void check_random_mobs( char_data * ch )
  */
 void map_scan( char_data * ch )
 {
+   int mod = sysdata->mapsize;
+   bool found = false;
+   list < char_data * >::iterator ich;
+
    if( !ch )
       return;
 
    obj_data *light = ch->get_eq( WEAR_LIGHT );
 
-   int mod = sysdata->mapsize;
    if( time_info.hour == sysdata->hoursunrise || time_info.hour == sysdata->hoursunset )
       mod = 4;
 
@@ -2279,8 +2282,6 @@ void map_scan( char_data * ch )
     */
    interpret( ch, "look" );
 
-   bool found = false;
-   list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
       char_data *gch = *ich;

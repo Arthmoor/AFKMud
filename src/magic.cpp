@@ -1886,6 +1886,10 @@ SPELLF( spell_cure_blindness )
 /* Must keep */
 SPELLF( spell_call_lightning )
 {
+   bool ch_died = false;
+   list < char_data * >::iterator ich;
+
+
    if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) && !ch->has_actflag( ACT_ONMAP ) )
    {
       ch->print( "You must be outdoors to cast this spell.\r\n" );
@@ -1904,8 +1908,6 @@ SPELLF( spell_call_lightning )
    ch->print( "God's lightning strikes your foes!\r\n" );
    act( AT_MAGIC, "$n calls God's lightning to strike $s foes!", ch, nullptr, nullptr, TO_ROOM );
 
-   bool ch_died = false;
-   list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
       ch_ret retcode = rNONE;

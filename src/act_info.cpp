@@ -158,15 +158,17 @@ void look_sky( char_data * ch )
       ch->print( "There are some clouds in the sky so you cannot see anything else.\r\n" );
       return;
    }
+
    sunpos = ( MAP_WIDTH * ( sysdata->hoursperday - time_info.hour ) / sysdata->hoursperday );
    moonpos = ( sunpos + time_info.day * MAP_WIDTH / NUM_DAYS ) % MAP_WIDTH;
+
    if( ( moonphase = ( ( ( ( MAP_WIDTH + moonpos - sunpos ) % MAP_WIDTH ) + ( MAP_WIDTH / 16 ) ) * 8 ) / MAP_WIDTH ) > 4 )
       moonphase -= 8;
    starpos = ( sunpos + MAP_WIDTH * time_info.month / NUM_MONTHS ) % MAP_WIDTH;
+
    /*
     * The left end of the star_map will be straight overhead at midnight during month 0 
     */
-
    for( linenum = 0; linenum < MAP_HEIGHT; ++linenum )
    {
       if( ( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset ) && ( linenum < 3 || linenum >= 6 ) )
