@@ -26,6 +26,7 @@
  *                             Hotboot module                               *
  ****************************************************************************/
 
+#include <fstream>
 #include <dirent.h>
 #if !defined(WIN32)
 #include <dlfcn.h>   /* Required for libdl - Trax */
@@ -57,6 +58,7 @@ void music_to_char( const string &, int, char_data *, bool );
 void reset_sound( char_data * );
 void reset_music( char_data * );
 void save_timedata(  );
+void save_weathermap(  );
 void check_auth_state( char_data * );
 affect_data *fread_afk_affect( FILE * );
 void fwrite_afk_affect( FILE *, affect_data * );
@@ -70,6 +72,7 @@ void fwrite_afk_affect( FILE *, affect_data * );
  */
 void save_mobile( FILE * fp, char_data * mob )
 {
+   list < affect_data * >::iterator paf;
    skill_type *skill = nullptr;
 
    if( !mob->isnpc(  ) || !fp )
@@ -118,7 +121,6 @@ void save_mobile( FILE * fp, char_data * mob )
    if( mob->has_aflags(  ) )
       fprintf( fp, "AffectedBy   %s~\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
 
-   list < affect_data * >::iterator paf;
    for( paf = mob->affects.begin(  ); paf != mob->affects.end(  ); ++paf )
    {
       affect_data *af = *paf;
@@ -132,6 +134,8 @@ void save_mobile( FILE * fp, char_data * mob )
          fwrite_afk_affect( fp, af );
    }
    mob->de_equip(  );
+
+   fprintf( fp, "\n" );
 
    if( !mob->carrying.empty(  ) )
       fwrite_obj( mob, mob->carrying, nullptr, fp, 0, true );
@@ -625,6 +629,7 @@ CMDF( do_hotboot )
 {
    list < descriptor_data * >::iterator ds;
    bool debugging = false;
+   ofstream stream;
 
 #ifdef MULTIPORT
    if( compilelock )
@@ -681,9 +686,9 @@ CMDF( do_hotboot )
 
    log_printf( "Hotboot initiated by %s.", ch->name );
 
-   FILE *fp = fopen( HOTBOOT_FILE, "w" );
+   stream.open( HOTBOOT_FILE );
 
-   if( !fp )
+   if( !stream.is_open(  ) )
    {
       ch->print( "Hotboot file not writeable, aborted.\r\n" );
       bug( "%s: Could not write to hotboot file: %s. Hotboot aborted.", __func__, HOTBOOT_FILE );
@@ -718,9 +723,18 @@ CMDF( do_hotboot )
       }
       else
       {
-         fprintf( fp, "%d %d %d %d %d %d %d %s %s %s\n",
-                  d->descriptor, d->can_compress, d->is_compressing, d->msp_detected,
-                  och->in_room->vnum, d->client_port, d->idle, och->name, d->hostname.c_str(  ), d->client.c_str(  ) );
+         stream << "#DESCRIPTOR" << endl;
+         stream << "PlayerName    " << och->name << endl;
+         stream << "DescNumber    " << d->descriptor << endl;
+         stream << "CanCompress   " << d->can_compress << endl;
+         stream << "IsCompressing " << d->is_compressing << endl;
+         stream << "MSSPDetected  " << d->msp_detected << endl;
+         stream << "InRoomVnum    " << och->in_room->vnum << endl;
+         stream << "ClientPort    " << d->client_port << endl;
+         stream << "Idle          " << d->idle << endl;
+         stream << "HostName      " << d->hostname << endl;
+         stream << "ClientName    " << d->client << endl; 
+         stream << "End" << endl << endl;
 
          if( !debugging )
          {
@@ -739,12 +753,13 @@ CMDF( do_hotboot )
       }
    }
 
-   fprintf( fp, "0 0 0 0 0 0 %d maxp maxp maxp\n", sysdata->maxplayers );
-   fprintf( fp, "%s", "-1\n" );
-   FCLOSE( fp );
+   stream << "#MAXPLAYERS " << sysdata->maxplayers << endl << endl;
+   stream << "#END" << endl << endl;
+   stream.close();
 
    log_string( "Saving world time...." );
    save_timedata(  );   /* Preserve that up to the second calendar value :) */
+   save_weathermap(  ); /* Same for the weather */
 
    if( debugging )
    {
@@ -791,13 +806,14 @@ CMDF( do_hotboot )
 /* Recover from a hotboot - load players */
 void hotboot_recover( void )
 {
-   FILE *fp;
-   char name[100], host[MSL], client[MSL];
-   int desc, dcompress, discompressing, room, dport, idle, dmsp, maxp = 0;
+   ifstream stream;
+   string playername;
+   descriptor_data *d;
    bool fOld;
-   int iError;
+   int rvnum = 0;
 
-   if( !( fp = fopen( HOTBOOT_FILE, "r" ) ) )   /* there are some descriptors open which will hang forever then ? */
+   stream.open( HOTBOOT_FILE );
+   if( !stream.is_open(  ) )   /* there are some descriptors open which will hang forever then ? */
    {
       perror( "hotboot_recover: fopen" );
       bug( "%s: Hotboot file not found. Exitting.", __func__ );
@@ -805,125 +821,176 @@ void hotboot_recover( void )
    }
 
    unlink( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
-   for( ;; )
+   do
    {
-      iError = fscanf( fp, "%d %d %d %d %d %d %d %s %s %s\n", &desc, &dcompress, &discompressing, &dmsp, &room, &dport, &idle, name, host, client );
+      string key, value;
+      char buf[MIL];
 
-      if( desc == -1 || feof( fp ) )
+      stream >> key;
+      stream.getline( buf, MIL );
+      value = buf;
+
+      strip_lspace( key );
+      strip_lspace( value );
+      strip_tilde( value );
+
+      if( key.empty(  ) )
+         continue;
+
+      if( key == "#DESCRIPTOR" )
+      {
+         d = new descriptor_data;
+
+         d->init(  );
+         d->connected = CON_PLOADED;
+      }
+      else if( key == "#END" )
          break;
-
-      // Anything less than a full match gets tossed.
-      if( iError < 10 )
-         continue;
-
-      if( !str_cmp( name, "maxp" ) || !str_cmp( host, "maxp" ) )
+      else if( key == "#MAXPLAYERS" )
       {
-         maxp = idle;
-         continue;
+         int maxp = atoi( value.c_str() );
+
+         if( maxp > sysdata->maxplayers )
+            sysdata->maxplayers = maxp;
+         num_logins = maxp;
       }
-
-      if( desc == 0 )
-         continue;
-
-      /*
-       * Write something, and check if it goes error-free 
-       */
-      if( !dcompress && !write_to_descriptor_old( desc, "\r\nThe ether swirls in chaos.\r\n" ) )
+      else if( key == "PlayerName" )
+         playername = value;
+      else if( key == "DescNumber" )
       {
-         close( desc ); /* nope */
-         continue;
+         int desc = atoi( value.c_str() );
+
+         d->descriptor = desc;
       }
-
-      if( desc == 0 )
+      else if( key == "CanCompress" )
       {
-         bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Name: %s Host: %s", __func__, name, host );
-         continue;
+         bool dcompress = atoi( value.c_str() );
+
+         d->can_compress = dcompress;
       }
-
-      descriptor_data *d = new descriptor_data;
-      d->init(  );
-      d->connected = CON_PLOADED;
-      d->descriptor = desc;
-
-      d->hostname = host;
-      d->client = client;
-      d->client_port = dport;
-      d->idle = idle;
-      d->can_compress = dcompress;
-      d->is_compressing = false;
-      d->msp_detected = dmsp;
-
-      dlist.push_back( d );
-      d->connected = CON_COPYOVER_RECOVER;   /* negative so close_socket will cut them off */
-
-      /*
-       * Now, find the pfile 
-       */
-      fOld = load_char_obj( d, name, false, true );
-
-      if( !fOld ) /* Player file not found?! */
+      else if( key == "IsCompressing" )
       {
-         d->write( "\r\nSomehow, your character was lost during hotboot. Contact the immortals ASAP.\r\n" );
-         close_socket( d, false );
+         bool is_compressing = atoi( value.c_str() );
+
+         d->is_compressing = is_compressing;
       }
-      else  /* ok! */
+      else if( key == "MSSPDetected" )
       {
-         d->write( "\r\nTime resumes its normal flow.\r\n" );
-         d->character->in_room = get_room_index( room );
-         if( !d->character->in_room )
-            d->character->in_room = get_room_index( ROOM_VNUM_TEMPLE );
+         bool dmsp = atoi( value.c_str() );
+
+         d->msp_detected = dmsp;
+      }
+      else if( key == "InRoomVnum" )
+         rvnum = atoi( value.c_str() );
+      else if( key == "ClientPort" )
+      {
+         int dport = atoi( value.c_str() );
+
+         d->client_port = dport;
+      }
+      else if( key == "Idle" )
+      {
+         int idle = atoi( value.c_str() );
+
+         d->idle = idle;
+      }
+      else if( key == "HostName" )
+         d->hostname = value;
+      else if( key == "ClientName" )
+         d->client = value;
+      else if( key == "End" )
+      {
+         if( d->descriptor == 0 )
+         { 
+            bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Name: %s Host: %s", __func__, playername.c_str(), d->hostname.c_str() );
+            deleteptr( d );
+            continue;
+         }
 
          /*
-          * Insert in the char_list 
-          */
-         charlist.push_back( d->character );
-         pclist.push_back( d->character );
-
-         if( !d->character->to_room( d->character->in_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-         act( AT_MAGIC, "A puff of ethereal smoke dissipates around you!", d->character, nullptr, nullptr, TO_CHAR );
-         act( AT_MAGIC, "$n appears in a puff of ethereal smoke!", d->character, nullptr, nullptr, TO_ROOM );
-         d->connected = CON_PLAYING;
-
-         d->character->pcdata->lasthost = d->hostname;
-
-         if( d->can_compress )
+         * Write something, and check if it goes error-free 
+         */
+         if( !d->can_compress && !write_to_descriptor_old( d->descriptor, "\r\nThe ether swirls in chaos.\r\n" ) )
          {
-            if( !d->compressStart(  ) )
+            close( d->descriptor ); /* nope */
+            deleteptr( d );
+            continue;
+         }
+
+         dlist.push_back( d );
+         d->connected = CON_COPYOVER_RECOVER;   /* negative so close_socket will cut them off */
+
+         /*
+         * Now, find the pfile 
+         */
+         fOld = load_char_obj( d, playername, false, true );
+
+         if( !fOld ) /* Player file not found?! */
+         {
+            d->write( "\r\nSomehow, your character was lost during hotboot. Contact the immortals ASAP.\r\n" );
+            close_socket( d, false );
+         }
+         else  /* ok! */
+         {
+            d->write( "\r\nTime resumes its normal flow.\r\n" );
+            d->character->in_room = get_room_index( rvnum );
+
+            if( !d->character->in_room )
+               d->character->in_room = get_room_index( ROOM_VNUM_TEMPLE );
+
+            /*
+            * Insert in the char_list 
+            */
+            charlist.push_back( d->character );
+            pclist.push_back( d->character );
+
+            if( !d->character->to_room( d->character->in_room ) )
+               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            act( AT_MAGIC, "A puff of ethereal smoke dissipates around you!", d->character, nullptr, nullptr, TO_CHAR );
+            act( AT_MAGIC, "$n appears in a puff of ethereal smoke!", d->character, nullptr, nullptr, TO_ROOM );
+            d->connected = CON_PLAYING;
+
+            d->character->pcdata->lasthost = d->hostname;
+
+            if( d->can_compress )
             {
-               log_printf( "%s: Error restarting compression for %s on desc %d", __func__, name, desc );
-               d->can_compress = false;
-               d->is_compressing = false;
+               if( !d->compressStart(  ) )
+               {
+                  log_printf( "%s: Error restarting compression for %s on desc %d", __func__, playername.c_str(), d->descriptor );
+                  d->can_compress = false;
+                  d->is_compressing = false;
+               }
             }
+
+            /*
+            * Mud Sound Protocol 
+            */
+            if( d->msp_detected )
+               d->send_msp_startup(  );
+
+            /*
+            * @shrug, why not? :P 
+            */
+            if( d->character->has_pcflag( PCFLAG_ONMAP ) )
+            {
+               if( !d->character->in_room->flags.test( ROOM_WATCHTOWER ) )
+                  d->character->music( "wilderness.mid", 100, false );
+            }
+
+            if( ++num_descriptors > sysdata->maxplayers )
+               sysdata->maxplayers = num_descriptors;
+
+            if( d->character->level < LEVEL_IMMORTAL )
+               ++sysdata->playersonline;
+            quotes( d->character );
+            check_auth_state( d->character );   /* new auth */
          }
-
-         /*
-          * Mud Sound Protocol 
-          */
-         if( d->msp_detected )
-            d->send_msp_startup(  );
-
-         /*
-          * @shrug, why not? :P 
-          */
-         if( d->character->has_pcflag( PCFLAG_ONMAP ) )
-         {
-            if( !d->character->in_room->flags.test( ROOM_WATCHTOWER ) )
-               d->character->music( "wilderness.mid", 100, false );
-         }
-
-         if( ++num_descriptors > sysdata->maxplayers )
-            sysdata->maxplayers = num_descriptors;
-
-         if( d->character->level < LEVEL_IMMORTAL )
-            ++sysdata->playersonline;
-         quotes( d->character );
-         check_auth_state( d->character );   /* new auth */
-      }
+      } // key == "End"
+      else
+         log_printf( "%s: Bad line in hotboot file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
-   FCLOSE( fp );
-   if( maxp > sysdata->maxplayers )
-      sysdata->maxplayers = maxp;
-   num_logins = maxp;
+   while( !stream.eof() );
+   stream.close(  );
+
    log_string( "Hotboot recovery complete." );
 }
