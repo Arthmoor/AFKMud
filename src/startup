@@ -11,7 +11,6 @@ cd ../area
 nohup
 if ( -e shutdown.txt ) rm -f shutdown.txt
 limit coredumpsize unlimited
-limit stacksize unlimited
 
 while ( 1 )
     # If you want to have logs in a different directory,
@@ -38,13 +37,13 @@ while ( 1 )
     ../src/afkmud $port >&! $logfile
 
     if ( -e core ) then
-      \mv core ../src     
-      cd ../src     
+      \mv core ../src
+      cd ../src
       date > ../crash/$index.crash
       gdb -batch -x commands afkmud core >> ../crash/$index.crash
       #rm -f core
-      cd ../area   
-    endif 
+      cd ../area
+    endif
 
     # Restart, giving old connections a chance to die.
     if ( -e shutdown.txt ) then
