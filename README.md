@@ -37,7 +37,7 @@ Overland editing is covered by Newcontinent.txt and RGB.txt.
 
 We know the existing documentation is sparse. Hopefully it won't stay that way forever, but it's been given very low priority. User submitted docs are always welcome though.
 
-Older SMAUG and Merc documentation can be found in the /doc directory. Most of these older docs have been superseded by newer AFK docs, but  there may still be useful elements in them. One that you should most likely read anyway is hacker.txt - it offers some basic thoughts on how to be a mud admin.
+Older SMAUG and Merc documentation can be found in the /doc/OLD directory. Most of these older docs have been superseded by newer AFK docs, but there may still be useful elements in them. One that you should most likely read anyway is hacker.txt - it offers some basic thoughts on how to be a mud admin.
 
 If anything seems lacking or there is a feature you want to know about that isn't documented here, please let us know.
 
@@ -66,11 +66,13 @@ Comment out the NEED_DL define, and the EXPORT_SYMBOLS define in the Makefile to
 CPU, Memory, and Hard Drive Requirements
 ========================================
 
-AFKMud is on the large side due to the sheer number of features included. You will need to take this into consideration first, before ever even thinking about where to host it. Count on somewhere around 30MB in drive space usage once the code is compiled. Preliminary results for 64bit systems suggests you'll need almost twice that. Don't ask us why because we don't know. It's probably one of those weird gcc things only GNU knows about.
+AFKMud is on the large side due to the sheer number of features included. You will need to take this into consideration first, before ever even thinking about where to host it. Count on somewhere around 30MB in drive space usage once the code is compiled. Preliminary results for 64 bit systems suggests you'll need almost twice that. Don't ask us why because we don't know. It's probably one of those weird gcc things only GNU knows about.
 
 RAM usage should expect to hover around 30MB on a moderately sized world. This is assuming approximately 9,000 rooms and 3 1000x1000 overland maps.
 
 CPU usage should hover at or near 0.0% during idle, and around 0.5% during moderate load. We don't have any high stress usage figures to offer, but it shouldn't cause you any grief.
+
+[Note: This was a concern back in 2002, but in 2025, any halfway decent VPS or other server won't even notice these levels of resource use. MUDs just aren't that demanding.]
 
 First Immortal
 ==============
@@ -85,15 +87,15 @@ The Makefile has some suggestions on what to comment out if you get certain erro
 Stock Areas
 ===========
 
-First of all: No. There are no stock areas included, other than our rendition of the Astral Plane. The purpose of releasing AFKMud was not to provide people with cookie-cutter ready made worlds. It was to provide people the tools to create their own unique worlds for people to enjoy. Sure, this means we don't have 500 muds using the code, but those who do use it end up creating some great stuff with it.
+First of all: No. There are no stock areas included, other than our rendition of the Astral Plane and some newbie stuff on the island of Reonn. The purpose of releasing AFKMud was not to provide people with cookie-cutter ready made worlds. It was to provide people the tools to create their own unique worlds for people to enjoy. Sure, this means we don't have 500 muds using the code, but those who do use it end up creating some great stuff with it.
 
 Not satisfied with that? All is not lost. Though the AFKMud area file format has been significantly altered from Smaug, we included a conversion routine to allow loading of stock Smaug material. It's not perfect, but if you want your ready made stuff, you've got to work for it. This can be accomplished one of two ways:
 
 1. Leave your areas and area.lst file alone and try to boot the mud with them as is. Your logs will look like a train wreck, but if you're lucky they'll load and you can then execute a "fold all" command once you've logged in. This would be advisable ASAP after an event of this magnitude. If any of the zones crash the mud, you'll need to take them out of the area.lst file and hold them over for method 2 below. 
 
-2. If you come across a stock zone that won't convert and you need to try it again later, or if you decide to load one you've downloaded at some point, drop it into your area directory and type "areaconvert filename.are". If it fails to load, your mud has probably crashed. Examine the logs, core dumps, etc to find out why, correct it, and try again.
+2. If you come across a stock zone that won't convert and you need to try it again later, or if you decide to load one you've downloaded at some point, drop it into your areaconvert directory and type "areaconvert filename.are". If it fails to load, your mud has probably crashed. Examine the logs, core dumps, etc to find out why, correct it, and try again.
 
-This functionality allows you to load Smaug 1.02a, 1.4a, SmaugWiz, ResortMUD, CalareyMUD, Chronicles, Dark Rifts, DOTDII, and SWR areas. Other formats are considered non-standard and will not be supported.
+This functionality should allow you to load Smaug 1.02a, 1.4a, 1.8b, SmaugWiz, ResortMUD, CalareyMUD, Chronicles, Dark Rifts, DOTDII, and SWR areas. Other formats are considered non-standard and will not be supported.
 
 Keep in mind that you may also need to do some fine tuning once the area is converted - subtle differences in each version may produce unpredictable stats on the areas.
 
@@ -109,12 +111,12 @@ In the unlikely event your system does not have the right library support, you'l
 Overland, and libgd-devel
 =========================
 
-AFKMud comes with a wilderness ANSI map system we've dubbed "The overland". Basically it is an ANSI color representation of the surrounding terrain around your character when he's out in the wilderness, away from normal areas. This is meant to be used as a filler for what are ordinarily boring connector zones, like large forests, hills, mountains, etc. It lets your builders concentrate more on the interesting places like castles, cities, troll dens, etc. The maps are stored statically in memory after being loaded from png graphic files. Because of this, you will need to be sure your host has the GD development library installed. The compiler will alert you to this in the form of errors trying to compile overland.cpp if the library is not installed.
+AFKMud comes with a wilderness ANSI map system we've dubbed "The Overland". Basically it is an ANSI color representation of the surrounding terrain around your character when he's out in the wilderness, away from normal areas. This is meant to be used as a filler for what are ordinarily boring connector zones, like large forests, hills, mountains, etc. It lets your builders concentrate more on the interesting places like castles, cities, troll dens, etc. The maps are stored statically in memory after being loaded from png graphic files. Because of this, you will need to be sure your host has the GD development library installed. The compiler will alert you to this in the form of errors trying to compile overland.cpp if the library is not installed.
 
 Multiple Port Support
 =====================
 
-The code now has ways to check which port the mud is running on. This allows for things to behave differently based on which port the game is running on. This requires that some defines be set prior to startup or things will not behave properly. The defines are located in mud.h and are called MAINPORT, BUILDPORT, and CODEPORT. These values MUST be different from each other or the mud will not compile. Change them to fit your hosting situation. These should only be used for additional testing ports and will require an additional password for newly created characters to enter. This password can be set using cset, and ships with the default password of "blocked". Change this ASAP if you intend to use it.
+The code now has ways to check which port the mud is running on. This allows for things to behave differently based on which port the game is running on. This requires that some defines be set prior to startup or things will not behave properly. The defines are located in mudcfg.h and are called MAINPORT, BUILDPORT, and CODEPORT. These values MUST be different from each other or the mud will not compile. Change them to fit your hosting situation. These should only be used for additional testing ports and will require an additional password for newly created characters to enter. This password can be set using cset, and ships with the default password of "blocked". Change this ASAP if you intend to use it.
 
 This feature is disabled by default in the Makefile.
 
