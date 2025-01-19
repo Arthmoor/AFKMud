@@ -441,7 +441,7 @@ static VOID worker_thread( VOID * notused )
    if( p )
       *p = 0;
 
-   mudstrlcat( directory, "\\area", MAX_PATH );
+   strlcat( directory, "\\area", MAX_PATH );
 
 // make sure we are running in the "area" subdirectory
 

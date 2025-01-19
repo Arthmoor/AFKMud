@@ -66,13 +66,13 @@ char *sprint_reset( reset_data * pReset, short &num )
          mob = get_mob_index( pReset->arg1 );
          room = get_room_index( pReset->arg3 );
          if( mob )
-            mudstrlcpy( mobname, mob->player_name, MIL );
+            strlcpy( mobname, mob->player_name, MIL );
          else
-            mudstrlcpy( mobname, "Mobile: *BAD VNUM*", MIL );
+            strlcpy( mobname, "Mobile: *BAD VNUM*", MIL );
          if( room )
-            mudstrlcpy( roomname, room->name, MIL );
+            strlcpy( roomname, room->name, MIL );
          else
-            mudstrlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
          if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
             snprintf( buf, MSL, "%2d) %s (%d) (%d%%) -> Overland: %s %d %d [%d]\r\n", num, mobname, pReset->arg1,
                       pReset->arg7, room->area->continent->name.c_str( ), pReset->arg5, pReset->arg6, pReset->arg2 );
@@ -92,34 +92,34 @@ char *sprint_reset( reset_data * pReset, short &num )
 
                case 'X':
                   if( !mob )
-                     mudstrlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
+                     strlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (equip) <RT> (%d%%) -> %s (%s)\r\n", num, tReset->arg8, mobname, wear_locs[tReset->arg7] );
                   break;
 
                case 'Y':
                   if( !mob )
-                     mudstrlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
+                     strlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (carry) <RT> (%d%%) -> %s\r\n", num, tReset->arg7, mobname );
                   break;
 
                case 'E':
                   if( !mob )
-                     mudstrlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
+                     strlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
                   if( !( obj = get_obj_index( tReset->arg1 ) ) )
-                     mudstrlcpy( objname, "Object: *BAD VNUM*", MIL );
+                     strlcpy( objname, "Object: *BAD VNUM*", MIL );
                   else
-                     mudstrlcpy( objname, obj->name, MIL );
+                     strlcpy( objname, obj->name, MIL );
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (equip) %s (%d) (%d%%) -> %s (%s) [%d]\r\n",
                             num, objname, tReset->arg1, tReset->arg4, mobname, wear_locs[tReset->arg3], tReset->arg2 );
                   break;
 
                case 'G':
                   if( !mob )
-                     mudstrlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
+                     strlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
                   if( !( obj = get_obj_index( tReset->arg1 ) ) )
-                     mudstrlcpy( objname, "Object: *BAD VNUM*", MIL );
+                     strlcpy( objname, "Object: *BAD VNUM*", MIL );
                   else
-                     mudstrlcpy( objname, obj->name, MIL );
+                     strlcpy( objname, obj->name, MIL );
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (carry) %s (%d) (%d%%) -> %s [%d]\r\n",
                             num, objname, tReset->arg1, tReset->arg3, mobname, tReset->arg2 );
                   break;
@@ -142,15 +142,15 @@ char *sprint_reset( reset_data * pReset, short &num )
 
                      case 'P':
                         if( !( obj2 = get_obj_index( gReset->arg2 ) ) )
-                           mudstrlcpy( objname, "Object1: *BAD VNUM*", MIL );
+                           strlcpy( objname, "Object1: *BAD VNUM*", MIL );
                         else
-                           mudstrlcpy( objname, obj2->name, MIL );
+                           strlcpy( objname, obj2->name, MIL );
                         if( gReset->arg4 > 0 && ( obj = get_obj_index( gReset->arg4 ) ) == nullptr )
-                           mudstrlcpy( roomname, "Object2: *BAD VNUM*", MIL );
+                           strlcpy( roomname, "Object2: *BAD VNUM*", MIL );
                         else if( !obj )
-                           mudstrlcpy( roomname, "Object2: *nullptr obj*", MIL );
+                           strlcpy( roomname, "Object2: *nullptr obj*", MIL );
                         else
-                           mudstrlcpy( roomname, obj->name, MIL );
+                           strlcpy( roomname, obj->name, MIL );
                         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
                                   num, objname, gReset->arg2, gReset->arg5, roomname, obj ? obj->vnum : gReset->arg4, gReset->arg3 );
                         break;
@@ -161,12 +161,12 @@ char *sprint_reset( reset_data * pReset, short &num )
          break;
 
       case 'Z':
-         mudstrlcpy( objname, "<RT>", MIL );
+         strlcpy( objname, "<RT>", MIL );
          room = get_room_index( pReset->arg7 );
          if( !room )
-            mudstrlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
          else
-            mudstrlcpy( roomname, room->name, MIL );
+            strlcpy( roomname, room->name, MIL );
          if( pReset->arg8 != -1 && pReset->arg9 != -1 && pReset->arg10 != -1 )
             snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> Overland: %s %d %d\r\n", num, objname, pReset->arg11, room->area->continent->name.c_str( ), pReset->arg9, pReset->arg10 );
          else
@@ -175,14 +175,14 @@ char *sprint_reset( reset_data * pReset, short &num )
 
       case 'O':
          if( !( obj = get_obj_index( pReset->arg1 ) ) )
-            mudstrlcpy( objname, "Object: *BAD VNUM*", MIL );
+            strlcpy( objname, "Object: *BAD VNUM*", MIL );
          else
-            mudstrlcpy( objname, obj->name, MIL );
+            strlcpy( objname, obj->name, MIL );
          room = get_room_index( pReset->arg3 );
          if( !room )
-            mudstrlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
          else
-            mudstrlcpy( roomname, room->name, MIL );
+            strlcpy( roomname, room->name, MIL );
          if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
             snprintf( buf, MSL, "%2d) (object) %s (%d) (%d%%) -> Overland: %s %d %d [%d]\r\n", num, objname, pReset->arg1,
                       pReset->arg7, room->area->continent->name.c_str( ), pReset->arg5, pReset->arg6, pReset->arg2 );
@@ -202,27 +202,27 @@ char *sprint_reset( reset_data * pReset, short &num )
 
                case 'P':
                   if( !( obj2 = get_obj_index( tReset->arg2 ) ) )
-                     mudstrlcpy( objname, "Object1: *BAD VNUM*", MIL );
+                     strlcpy( objname, "Object1: *BAD VNUM*", MIL );
                   else
-                     mudstrlcpy( objname, obj2->name, MIL );
+                     strlcpy( objname, obj2->name, MIL );
                   if( tReset->arg4 > 0 && ( obj = get_obj_index( tReset->arg4 ) ) == nullptr )
-                     mudstrlcpy( roomname, "Object2: *BAD VNUM*", MIL );
+                     strlcpy( roomname, "Object2: *BAD VNUM*", MIL );
                   else if( !obj )
-                     mudstrlcpy( roomname, "Object2: *nullptr obj*", MIL );
+                     strlcpy( roomname, "Object2: *nullptr obj*", MIL );
                   else
-                     mudstrlcpy( roomname, obj->name, MIL );
+                     strlcpy( roomname, obj->name, MIL );
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
                             num, objname, tReset->arg2, tReset->arg5, roomname, obj ? obj->vnum : tReset->arg4, tReset->arg3 );
                   break;
 
                case 'W':
-                  mudstrlcpy( objname, "<RT>", MIL );
+                  strlcpy( objname, "<RT>", MIL );
                   if( tReset->arg8 > 0 && ( obj = get_obj_index( tReset->arg8 ) ) == nullptr )
-                     mudstrlcpy( roomname, "Object2: *BAD VNUM*", MIL );
+                     strlcpy( roomname, "Object2: *BAD VNUM*", MIL );
                   else if( !obj )
-                     mudstrlcpy( roomname, "Object2: *nullptr obj*", MIL );
+                     strlcpy( roomname, "Object2: *nullptr obj*", MIL );
                   else
-                     mudstrlcpy( roomname, obj->name, MIL );
+                     strlcpy( roomname, obj->name, MIL );
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (RT put) %s (%d%%) -> %s (%d)\r\n",
                             num, objname, tReset->arg9, roomname, obj ? obj->vnum : tReset->arg8 );
                   break;
@@ -244,27 +244,27 @@ char *sprint_reset( reset_data * pReset, short &num )
             pReset->arg2 = 0;
          if( !( room = get_room_index( pReset->arg1 ) ) )
          {
-            mudstrlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
             snprintf( objname, MIL, "%s (no exit)", dir_name[pReset->arg2] );
          }
          else
          {
-            mudstrlcpy( roomname, room->name, MIL );
+            strlcpy( roomname, room->name, MIL );
             snprintf( objname, MIL, "%s%s", dir_name[pReset->arg2], room->get_exit( pReset->arg2 ) ? "" : " (NO EXIT!)" );
          }
          switch ( pReset->arg3 )
          {
             default:
-               mudstrlcpy( mobname, "(* ERROR *)", MIL );
+               strlcpy( mobname, "(* ERROR *)", MIL );
                break;
             case 0:
-               mudstrlcpy( mobname, "Open", MIL );
+               strlcpy( mobname, "Open", MIL );
                break;
             case 1:
-               mudstrlcpy( mobname, "Close", MIL );
+               strlcpy( mobname, "Close", MIL );
                break;
             case 2:
-               mudstrlcpy( mobname, "Close and lock", MIL );
+               strlcpy( mobname, "Close and lock", MIL );
                break;
          }
          snprintf( buf, MSL, "%2d) %s [%d] the %s [%d] door %s (%d) (%d%%)\r\n", num, mobname, pReset->arg3, objname, pReset->arg2, roomname, pReset->arg1, pReset->arg4 );
@@ -272,17 +272,17 @@ char *sprint_reset( reset_data * pReset, short &num )
 
       case 'R':
          if( !( room = get_room_index( pReset->arg1 ) ) )
-            mudstrlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
          else
-            mudstrlcpy( roomname, room->name, MIL );
+            strlcpy( roomname, room->name, MIL );
          snprintf( buf, MSL, "%2d) Randomize exits 0 to %d -> %s (%d)\r\n", num, pReset->arg2, roomname, pReset->arg1 );
          break;
 
       case 'T':
          if( !( room = get_room_index( pReset->arg4 ) ) )
-            mudstrlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
          else
-            mudstrlcpy( roomname, room->name, MIL );
+            strlcpy( roomname, room->name, MIL );
          snprintf( buf, MSL, "%2d) Trap: %d %d %d %d (%s) (%d%%) -> %s (%d)\r\n",
                    num, pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, flag_string( pReset->arg1, trap_flags ), pReset->arg5, roomname, room ? room->vnum : 0 );
          break;

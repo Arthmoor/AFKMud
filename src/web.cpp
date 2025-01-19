@@ -50,88 +50,88 @@ int web_colour( char type, char *string, bool & firsttag )
       default:
          break;
       case '&':
-         mudstrlcpy( code, "&amp;", 50 );
+         strlcpy( code, "&amp;", 50 );
          break;
       case 'x':
-         mudstrlcpy( code, "<span class=\"black\">", 50 );
+         strlcpy( code, "<span class=\"black\">", 50 );
          validcolor = true;
          break;
       case 'b':
-         mudstrlcpy( code, "<span class=\"dblue\">", 50 );
+         strlcpy( code, "<span class=\"dblue\">", 50 );
          validcolor = true;
          break;
       case 'c':
-         mudstrlcpy( code, "<span class=\"cyan\">", 50 );
+         strlcpy( code, "<span class=\"cyan\">", 50 );
          validcolor = true;
          break;
       case 'g':
-         mudstrlcpy( code, "<span class=\"dgreen\">", 50 );
+         strlcpy( code, "<span class=\"dgreen\">", 50 );
          validcolor = true;
          break;
       case 'r':
-         mudstrlcpy( code, "<span class=\"dred\">", 50 );
+         strlcpy( code, "<span class=\"dred\">", 50 );
          validcolor = true;
          break;
       case 'w':
-         mudstrlcpy( code, "<span class=\"grey\">", 50 );
+         strlcpy( code, "<span class=\"grey\">", 50 );
          validcolor = true;
          break;
       case 'y':
-         mudstrlcpy( code, "<span class=\"yellow\">", 50 );
+         strlcpy( code, "<span class=\"yellow\">", 50 );
          validcolor = true;
          break;
       case 'Y':
-         mudstrlcpy( code, "<span class=\"yellow\">", 50 );
+         strlcpy( code, "<span class=\"yellow\">", 50 );
          validcolor = true;
          break;
       case 'B':
-         mudstrlcpy( code, "<span class=\"blue\">", 50 );
+         strlcpy( code, "<span class=\"blue\">", 50 );
          validcolor = true;
          break;
       case 'C':
-         mudstrlcpy( code, "<span class=\"lblue\">", 50 );
+         strlcpy( code, "<span class=\"lblue\">", 50 );
          validcolor = true;
          break;
       case 'G':
-         mudstrlcpy( code, "<span class=\"green\">", 50 );
+         strlcpy( code, "<span class=\"green\">", 50 );
          validcolor = true;
          break;
       case 'R':
-         mudstrlcpy( code, "<span class=\"red\">", 50 );
+         strlcpy( code, "<span class=\"red\">", 50 );
          validcolor = true;
          break;
       case 'W':
-         mudstrlcpy( code, "<span class=\"white\">", 50 );
+         strlcpy( code, "<span class=\"white\">", 50 );
          validcolor = true;
          break;
       case 'z':
-         mudstrlcpy( code, "<span class=\"dgrey\">", 50 );
+         strlcpy( code, "<span class=\"dgrey\">", 50 );
          validcolor = true;
          break;
       case 'o':
-         mudstrlcpy( code, "<span class=\"yellow\">", 50 );
+         strlcpy( code, "<span class=\"yellow\">", 50 );
          validcolor = true;
          break;
       case 'O':
-         mudstrlcpy( code, "<span class=\"orange\">", 50 );
+         strlcpy( code, "<span class=\"orange\">", 50 );
          validcolor = true;
          break;
       case 'p':
-         mudstrlcpy( code, "<span class=\"purple\">", 50 );
+         strlcpy( code, "<span class=\"purple\">", 50 );
          validcolor = true;
          break;
       case 'P':
-         mudstrlcpy( code, "<span class=\"pink\">", 50 );
+         strlcpy( code, "<span class=\"pink\">", 50 );
          validcolor = true;
          break;
       case '<':
-         mudstrlcpy( code, "&lt;", 50 );
+         strlcpy( code, "&lt;", 50 );
          break;
       case '>':
-         mudstrlcpy( code, "&gt;", 50 );
+         strlcpy( code, "&gt;", 50 );
          break;
       case '/':
-         mudstrlcpy( code, "<br />", 50 );
+         strlcpy( code, "<br />", 50 );
          break;
       case '{':
          snprintf( code, 50, "%c", '{' );
@@ -146,7 +146,7 @@ int web_colour( char type, char *string, bool & firsttag )
       char newcode[70];
 
       snprintf( newcode, 70, "</span>%s", code );
-      mudstrlcpy( code, newcode, 50 );
+      strlcpy( code, newcode, 50 );
    }
 
    if( firsttag && validcolor )
@@ -186,7 +186,7 @@ void web_colourconv( char *buffer, const char *txt )
       *buffer = '\0';
    }
    if( !firsttag )
-      mudstrlcat( buffer, "</span>", 64000 );
+      strlcat( buffer, "</span>", 64000 );
 }
 
 void web_who(  )

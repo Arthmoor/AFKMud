@@ -796,7 +796,7 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
 
             case 'Z':  /* Random Ansi Foreground */
                if( ansi )
-                  mudstrlcpy( dst, random_ansi( 1 ), dstlen );
+                  strlcpy( dst, random_ansi( 1 ), dstlen );
                break;
 
             case '[':  /* Symbolic color name */
@@ -816,7 +816,7 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
                             * These can only be used with a logged in char 
                             */
                            if( ansi && ch )
-                              mudstrlcpy( dst, ch->color_str( subcnt ), dstlen );
+                              strlcpy( dst, ch->color_str( subcnt ), dstlen );
                            if( vislen )
                               *vislen = 0;
                            return sublen + 3;
@@ -838,30 +838,30 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
             case 'i':  /* Italic text */
             case 'I':
                if( ansi )
-                  mudstrlcpy( dst, ANSI_ITALIC, dstlen );
+                  strlcpy( dst, ANSI_ITALIC, dstlen );
                break;
 
             case 'v':  /* Reverse colors */
             case 'V':
                if( ansi )
-                  mudstrlcpy( dst, ANSI_REVERSE, dstlen );
+                  strlcpy( dst, ANSI_REVERSE, dstlen );
                break;
 
             case 'u':  /* Underline */
             case 'U':
                if( ansi )
-                  mudstrlcpy( dst, ANSI_UNDERLINE, dstlen );
+                  strlcpy( dst, ANSI_UNDERLINE, dstlen );
                break;
 
             case 's':  /* Strikeover */
             case 'S':
                if( ansi )
-                  mudstrlcpy( dst, ANSI_STRIKEOUT, dstlen );
+                  strlcpy( dst, ANSI_STRIKEOUT, dstlen );
                break;
 
             case 'd':  /* Player's client default color */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_RESET, dstlen );
+                  strlcpy( dst, ANSI_RESET, dstlen );
                break;
 
             case 'D':  /* Reset to custom color for whatever is being displayed */
@@ -870,90 +870,90 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
                   /*
                    * Yes, this reset here is quite necessary to cancel out other things 
                    */
-                  mudstrlcpy( dst, ANSI_RESET, dstlen );
+                  strlcpy( dst, ANSI_RESET, dstlen );
                   if( ch && ch->desc )
-                     mudstrlcat( dst, ch->color_str( ch->desc->pagecolor ), dstlen );
+                     strlcat( dst, ch->color_str( ch->desc->pagecolor ), dstlen );
                }
                break;
 
             case 'x':  /* Black */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_BLACK, dstlen );
+                  strlcpy( dst, ANSI_BLACK, dstlen );
                break;
 
             case 'O':  /* Orange/Brown */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_ORANGE, dstlen );
+                  strlcpy( dst, ANSI_ORANGE, dstlen );
                break;
 
             case 'c':  /* Cyan */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_CYAN, dstlen );
+                  strlcpy( dst, ANSI_CYAN, dstlen );
                break;
 
             case 'z':  /* Dark Grey */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_DGREY, dstlen );
+                  strlcpy( dst, ANSI_DGREY, dstlen );
                break;
 
             case 'g':  /* Dark Green */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_DGREEN, dstlen );
+                  strlcpy( dst, ANSI_DGREEN, dstlen );
                break;
 
             case 'G':  /* Light Green */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_GREEN, dstlen );
+                  strlcpy( dst, ANSI_GREEN, dstlen );
                break;
 
             case 'P':  /* Pink/Light Purple */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_PINK, dstlen );
+                  strlcpy( dst, ANSI_PINK, dstlen );
                break;
 
             case 'r':  /* Dark Red */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_DRED, dstlen );
+                  strlcpy( dst, ANSI_DRED, dstlen );
                break;
 
             case 'b':  /* Dark Blue */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_DBLUE, dstlen );
+                  strlcpy( dst, ANSI_DBLUE, dstlen );
                break;
 
             case 'w':  /* Grey */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_GREY, dstlen );
+                  strlcpy( dst, ANSI_GREY, dstlen );
                break;
 
             case 'Y':  /* Yellow */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_YELLOW, dstlen );
+                  strlcpy( dst, ANSI_YELLOW, dstlen );
                break;
 
             case 'C':  /* Light Blue */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_LBLUE, dstlen );
+                  strlcpy( dst, ANSI_LBLUE, dstlen );
                break;
 
             case 'p':  /* Purple */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_PURPLE, dstlen );
+                  strlcpy( dst, ANSI_PURPLE, dstlen );
                break;
 
             case 'R':  /* Red */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_RED, dstlen );
+                  strlcpy( dst, ANSI_RED, dstlen );
                break;
 
             case 'B':  /* Blue */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_BLUE, dstlen );
+                  strlcpy( dst, ANSI_BLUE, dstlen );
                break;
 
             case 'W':  /* White */
                if( ansi )
-                  mudstrlcpy( dst, ANSI_WHITE, dstlen );
+                  strlcpy( dst, ANSI_WHITE, dstlen );
                break;
 
             default:   /* Unknown sequence, return all the chars */
@@ -978,47 +978,47 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
 
             case 'Z':  /* Random Ansi Background */
                if( ansi )
-                  mudstrlcpy( dst, random_ansi( 3 ), dstlen );
+                  strlcpy( dst, random_ansi( 3 ), dstlen );
                break;
 
             case 'x':  /* Black */
                if( ansi )
-                  mudstrlcpy( dst, BACK_BLACK, dstlen );
+                  strlcpy( dst, BACK_BLACK, dstlen );
                break;
 
             case 'r':  /* Dark Red */
                if( ansi )
-                  mudstrlcpy( dst, BACK_DRED, dstlen );
+                  strlcpy( dst, BACK_DRED, dstlen );
                break;
 
             case 'g':  /* Dark Green */
                if( ansi )
-                  mudstrlcpy( dst, BACK_DGREEN, dstlen );
+                  strlcpy( dst, BACK_DGREEN, dstlen );
                break;
 
             case 'O':  /* Orange/Brown */
                if( ansi )
-                  mudstrlcpy( dst, BACK_ORANGE, dstlen );
+                  strlcpy( dst, BACK_ORANGE, dstlen );
                break;
 
             case 'b':  /* Dark Blue */
                if( ansi )
-                  mudstrlcpy( dst, BACK_DBLUE, dstlen );
+                  strlcpy( dst, BACK_DBLUE, dstlen );
                break;
 
             case 'p':  /* Purple */
                if( ansi )
-                  mudstrlcpy( dst, BACK_PURPLE, dstlen );
+                  strlcpy( dst, BACK_PURPLE, dstlen );
                break;
 
             case 'c':  /* Cyan */
                if( ansi )
-                  mudstrlcpy( dst, BACK_CYAN, dstlen );
+                  strlcpy( dst, BACK_CYAN, dstlen );
                break;
 
             case 'w':  /* Grey */
                if( ansi )
-                  mudstrlcpy( dst, BACK_GREY, dstlen );
+                  strlcpy( dst, BACK_GREY, dstlen );
                break;
 
             default:   /* Unknown sequence, return all the chars */
@@ -1043,87 +1043,87 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
 
             case 'Z':  /* Random Ansi Blink */
                if( ansi )
-                  mudstrlcpy( dst, random_ansi( 2 ), dstlen );
+                  strlcpy( dst, random_ansi( 2 ), dstlen );
                break;
 
             case 'x':  /* Black */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_BLACK, dstlen );
+                  strlcpy( dst, BLINK_BLACK, dstlen );
                break;
 
             case 'O':  /* Orange/Brown */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_ORANGE, dstlen );
+                  strlcpy( dst, BLINK_ORANGE, dstlen );
                break;
 
             case 'c':  /* Cyan */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_CYAN, dstlen );
+                  strlcpy( dst, BLINK_CYAN, dstlen );
                break;
 
             case 'z':  /* Dark Grey */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_DGREY, dstlen );
+                  strlcpy( dst, BLINK_DGREY, dstlen );
                break;
 
             case 'g':  /* Dark Green */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_DGREEN, dstlen );
+                  strlcpy( dst, BLINK_DGREEN, dstlen );
                break;
 
             case 'G':  /* Light Green */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_GREEN, dstlen );
+                  strlcpy( dst, BLINK_GREEN, dstlen );
                break;
 
             case 'P':  /* Pink/Light Purple */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_PINK, dstlen );
+                  strlcpy( dst, BLINK_PINK, dstlen );
                break;
 
             case 'r':  /* Dark Red */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_DRED, dstlen );
+                  strlcpy( dst, BLINK_DRED, dstlen );
                break;
 
             case 'b':  /* Dark Blue */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_DBLUE, dstlen );
+                  strlcpy( dst, BLINK_DBLUE, dstlen );
                break;
 
             case 'w':  /* Grey */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_GREY, dstlen );
+                  strlcpy( dst, BLINK_GREY, dstlen );
                break;
 
             case 'Y':  /* Yellow */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_YELLOW, dstlen );
+                  strlcpy( dst, BLINK_YELLOW, dstlen );
                break;
 
             case 'C':  /* Light Blue */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_LBLUE, dstlen );
+                  strlcpy( dst, BLINK_LBLUE, dstlen );
                break;
 
             case 'p':  /* Purple */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_PURPLE, dstlen );
+                  strlcpy( dst, BLINK_PURPLE, dstlen );
                break;
 
             case 'R':  /* Red */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_RED, dstlen );
+                  strlcpy( dst, BLINK_RED, dstlen );
                break;
 
             case 'B':  /* Blue */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_BLUE, dstlen );
+                  strlcpy( dst, BLINK_BLUE, dstlen );
                break;
 
             case 'W':  /* White */
                if( ansi )
-                  mudstrlcpy( dst, BLINK_WHITE, dstlen );
+                  strlcpy( dst, BLINK_WHITE, dstlen );
                break;
 
             default:   /* Unknown sequence, return all the chars */
@@ -1253,7 +1253,7 @@ const char *colorize( const string & txt, descriptor_data * d )
                      char http[MIL];
 
                      one_argument( colstr, http );
-                     mudstrlcat( result, http, sizeof( result ) );
+                     strlcat( result, http, sizeof( result ) );
                      ln = strlen( http );
                      prevstr = colstr + ln;
                      continue;
@@ -1261,14 +1261,14 @@ const char *colorize( const string & txt, descriptor_data * d )
 
          if( ln > 0 )
          {
-            mudstrlcat( result, colbuf, MSL );
+            strlcat( result, colbuf, MSL );
             prevstr = colstr + ln;
          }
          else
             prevstr = colstr + 1;
       }
       if( *prevstr )
-         mudstrlcat( result, prevstr, MSL );
+         strlcat( result, prevstr, MSL );
    }
    return result;
 }

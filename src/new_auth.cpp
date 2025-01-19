@@ -87,21 +87,21 @@ void name_generator( string & argument )
       shutupgcc = fgets( tempstring, 150, infile );
       tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
       if( tempstring[0] != '/' )
-         mudstrlcpy( start_string[start_counter++], tempstring, 100 );
+         strlcpy( start_string[start_counter++], tempstring, 100 );
    }
    while( str_cmp( tempstring, "[end]" ) != 0 )
    {
       shutupgcc = fgets( tempstring, 150, infile );
       tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
       if( tempstring[0] != '/' )
-         mudstrlcpy( middle_string[middle_counter++], tempstring, 100 );
+         strlcpy( middle_string[middle_counter++], tempstring, 100 );
    }
    while( str_cmp( tempstring, "[finish]" ) != 0 )
    {
       shutupgcc = fgets( tempstring, 150, infile );
       tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
       if( tempstring[0] != '/' )
-         mudstrlcpy( end_string[end_counter++], tempstring, 100 );
+         strlcpy( end_string[end_counter++], tempstring, 100 );
    }
    FCLOSE( infile );
 
@@ -114,9 +114,9 @@ void name_generator( string & argument )
    --middle_counter;
    --end_counter;
 
-   mudstrlcpy( name, start_string[rand(  ) % start_counter], 300 );  /* get a start */
-   mudstrlcat( name, middle_string[rand(  ) % middle_counter], 300 );   /* get a middle */
-   mudstrlcat( name, end_string[rand(  ) % end_counter], 300 );   /* get an ending */
+   strlcpy( name, start_string[rand(  ) % start_counter], 300 );  /* get a start */
+   strlcat( name, middle_string[rand(  ) % middle_counter], 300 );   /* get a middle */
+   strlcat( name, end_string[rand(  ) % end_counter], 300 );   /* get an ending */
    argument.append( name );
 }
 
@@ -160,7 +160,7 @@ void pick_name( string & argument, const char *filename )
       shutupgcc = fgets( tempstring, 100, infile );
       tempstring[strlen( tempstring ) - 1] = '\0';
       if( tempstring[0] != '/' )
-         mudstrlcpy( names[counter++], tempstring, 200 );
+         strlcpy( names[counter++], tempstring, 200 );
    }
    FCLOSE( infile );
 
@@ -171,7 +171,7 @@ void pick_name( string & argument, const char *filename )
    srand( ( unsigned )time( &t ) + starttime.tv_usec );
    --counter;
 
-   mudstrlcpy( name, names[rand(  ) % counter], 200 );
+   strlcpy( name, names[rand(  ) % counter], 200 );
    argument.append( name );
 }
 
@@ -806,7 +806,7 @@ void auth_update( void )
    if( ( level = check_command_level( "authorize", MAX_LEVEL ) ) == -1 )
       level = LEVEL_IMMORTAL;
 
-   mudstrlcpy( lbuf, "--- Characters awaiting approval ---\r\n", MSL );
+   strlcpy( lbuf, "--- Characters awaiting approval ---\r\n", MSL );
    for( auth = authlist.begin(  ); auth != authlist.end(  ); ++auth )
    {
       auth_data *au = *auth;
@@ -815,7 +815,7 @@ void auth_update( void )
       {
          found_hit = true;
          snprintf( buf, MIL, "Name: %s      Status: %s\r\n", au->name.c_str(  ), ( au->state == AUTH_ONLINE ) ? "Online" : "Offline" );
-         mudstrlcat( lbuf, buf, MSL );
+         strlcat( lbuf, buf, MSL );
       }
    }
 

@@ -2016,13 +2016,13 @@ CMDF( do_fill )
             liquid_data *liq = get_liq_vnum( source->value[2] );
 
             if( source->value[1] > 15 )
-               mudstrlcpy( buf, "large", 20 );
+               strlcpy( buf, "large", 20 );
             else if( source->value[1] > 10 )
-               mudstrlcpy( buf, "rather large", 20 );
+               strlcpy( buf, "rather large", 20 );
             else if( source->value[1] > 5 )
-               mudstrlcpy( buf, "rather small", 20 );
+               strlcpy( buf, "rather small", 20 );
             else
-               mudstrlcpy( buf, "small", 20 );
+               strlcpy( buf, "small", 20 );
             stralloc_printf( &source->objdesc, "There is a %s puddle of %s.", buf, ( liq == nullptr ? "water" : liq->name.c_str() ) );
          }
          act( AT_ACTION, "You fill $p from $P.", ch, obj, source, TO_CHAR );
@@ -2076,13 +2076,13 @@ void make_puddle( char_data * ch, obj_data * cont )
    liq = get_liq_vnum( obj->value[2] );
 
    if( obj->value[1] > 15 )
-      mudstrlcpy( buf, "large", 20 );
+      strlcpy( buf, "large", 20 );
    else if( obj->value[1] > 10 )
-      mudstrlcpy( buf, "rather large", 20 );
+      strlcpy( buf, "rather large", 20 );
    else if( obj->value[1] > 5 )
-      mudstrlcpy( buf, "rather small", 20 );
+      strlcpy( buf, "rather small", 20 );
    else
-      mudstrlcpy( buf, "small", 20 );
+      strlcpy( buf, "small", 20 );
    stralloc_printf( &obj->name, "puddle %s", ( liq == nullptr ? "water" : liq->name.c_str() ) );
    stralloc_printf( &obj->short_descr, "A puddle of %s", ( liq == nullptr ? "water" : liq->name.c_str() ) );
    stralloc_printf( &obj->objdesc, "This is a %s puddle of %s.", buf, ( liq == nullptr ? "water" : liq->name.c_str() ) );

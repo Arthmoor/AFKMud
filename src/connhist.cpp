@@ -321,7 +321,7 @@ CMDF( do_logins )
          if( conn->invis_lvl > 0 && ch->is_immortal(  ) )
             snprintf( user, MSL, "(&cInvis &p%d&w) %s", conn->invis_lvl, conn->user.c_str(  ) );
          else
-            mudstrlcpy( user, conn->user.c_str(  ), MSL );
+            strlcpy( user, conn->user.c_str(  ), MSL );
 
          /*
           * The format for the history are these two lines below. First is for Immortals, second for players. 

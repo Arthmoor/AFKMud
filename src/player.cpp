@@ -674,9 +674,9 @@ CMDF( do_affected )
          ++affnum;
 
          if( paf->location == APPLY_AFFECT || paf->location == APPLY_EXT_AFFECT )
-            mudstrlcpy( mod, aff_flags[paf->modifier], MIL );
+            strlcpy( mod, aff_flags[paf->modifier], MIL );
          else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_ABSORB || paf->location == APPLY_SUSCEPTIBLE )
-            mudstrlcpy( mod, ris_flags[paf->modifier], MIL );
+            strlcpy( mod, ris_flags[paf->modifier], MIL );
          else
             snprintf( mod, MIL, "%d", paf->modifier );
 
@@ -1385,9 +1385,9 @@ CMDF( do_who )
    amount = amount / 2;
 
    for( xx = 0; xx < amount; ++xx )
-      mudstrlcat( outbuf, " ", MSL );
+      strlcat( outbuf, " ", MSL );
 
-   mudstrlcat( outbuf, buf, MSL );
+   strlcat( outbuf, buf, MSL );
    ch->pagerf( "%s\r\n", outbuf );
 
    pcount = afk_who( ch );

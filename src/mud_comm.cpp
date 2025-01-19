@@ -3645,7 +3645,7 @@ CMDF( do_mpsindhae )
 
    snprintf( prizebuf, MSL, "%s-", argument.c_str(  ) );
    const char *Class = npc_class[victim->Class];
-   mudstrlcat( prizebuf, Class, MSL );
+   strlcat( prizebuf, Class, MSL );
 
    bool found = false;
    map < int, obj_index * >::iterator mobj = obj_index_table.begin(  );

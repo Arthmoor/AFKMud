@@ -107,6 +107,8 @@ static obj_data *rgObjNest[MAX_NEST];
  */
 void char_data::de_equip(  )
 {
+   list < obj_data * >::iterator iobj;
+
    for( int x = 0; x < MAX_WEAR; ++x )
    {
       for( int y = 0; y < MAX_LAYERS; ++y )
@@ -118,7 +120,6 @@ void char_data::de_equip(  )
       }
    }
 
-   list < obj_data * >::iterator iobj;
    for( iobj = carrying.begin(  ); iobj != carrying.end(  ); ++iobj )
    {
       obj_data *obj = *iobj;
@@ -2571,7 +2572,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
        * Cheat so that bug will show line #'s -- Altrag 
        */
       fpArea = fp;
-      mudstrlcpy( strArea, strsave, MIL );
+      strlcpy( strArea, strsave, MIL );
       for( ;; )
       {
          char letter;
@@ -2632,7 +2633,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
       }
       FCLOSE( fp );
       fpArea = nullptr;
-      mudstrlcpy( strArea, "$", MIL );
+      strlcpy( strArea, "$", MIL );
    }
 
    if( !found )
@@ -2795,7 +2796,7 @@ void load_corpses( void )
          FCLOSE( fpArea );
       }
    }
-   mudstrlcpy( strArea, "$", MIL );
+   strlcpy( strArea, "$", MIL );
    closedir( dp );
    falling = 0;
 }

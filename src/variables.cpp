@@ -221,7 +221,7 @@ CMDF( do_mptag )
 
    if( ( p = strchr( arg2.c_str(  ), ':' ) ) != nullptr ) 
    {
-      mudstrlcpy( tmp, p, MSL );
+      strlcpy( tmp, p, MSL );
       vnum = atoi( tmp );
    }
    else
@@ -291,7 +291,7 @@ CMDF( do_mprmtag )
 
    if( ( p = strchr( arg2.c_str(  ), ':' ) ) != nullptr ) 
    {
-      mudstrlcpy( tmp, p, MSL );
+      strlcpy( tmp, p, MSL );
       vnum = atoi( tmp );
    }
    else

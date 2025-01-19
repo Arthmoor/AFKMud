@@ -207,12 +207,12 @@ char *ext_flag_string( EXT_BV * bitvector, const char *flagarray[] )
    for( x = 0; x < MAX_BITS; ++x )
       if( xIS_SET( *bitvector, x ) )
       {
-         mudstrlcat( buf, flagarray[x], MSL );
+         strlcat( buf, flagarray[x], MSL );
          /*
           * don't catenate a blank if the last char is blank  --Gorog 
           */
          if( buf[0] != '\0' && ' ' != buf[strlen( buf ) - 1] )
-            mudstrlcat( buf, " ", MSL );
+            strlcat( buf, " ", MSL );
       }
 
    if( ( x = strlen( buf ) ) > 0 )
@@ -2259,7 +2259,7 @@ CMDF( do_areaconvert )
 
    area_failed = false;
 
-   mudstrlcpy( strArea, arg.c_str(  ), MIL );
+   strlcpy( strArea, arg.c_str(  ), MIL );
 
    if( ch )
    {

@@ -1744,7 +1744,7 @@ void obj_update( void )
             bufptr = one_argument( obj->short_descr, name );
             bufptr = one_argument( bufptr, name );
             bufptr = one_argument( bufptr, name );
-            mudstrlcpy( name2, bufptr, MSL );   /* Dunno why, but it's corrupting if I don't do this - Samson */
+            strlcpy( name2, bufptr, MSL );   /* Dunno why, but it's corrupting if I don't do this - Samson */
 
             obj->timer = 250; /* Corpse is now a skeleton */
             obj->value[3] = 0;

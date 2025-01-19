@@ -1029,7 +1029,7 @@ skill_type *fread_skill( FILE * fp, int version )
                aff = new smaug_affect;
                aff->duration = str_dup( fread_word( fp ) );
                aff->location = fread_number( fp );
-               mudstrlcpy( mod, fread_word( fp ), MIL );
+               strlcpy( mod, fread_word( fp ), MIL );
 
                // Conversion needed because Samson was stupid and didn't think. Again. *sigh*
                if( version < 5 )
@@ -1058,13 +1058,13 @@ skill_type *fread_skill( FILE * fp, int version )
                      {
                         int mvalue = atoi( mod );
 
-                        mudstrlcpy( mod, aff_flags[mvalue], MIL );
+                        strlcpy( mod, aff_flags[mvalue], MIL );
                      }
                      if( aff->location == APPLY_RESISTANT || aff->location == APPLY_IMMUNE || aff->location == APPLY_ABSORB || aff->location == APPLY_SUSCEPTIBLE )
                      {
                         int mvalue = atoi( mod );
 
-                        mudstrlcpy( mod, flag_string( mvalue, old_ris_flags ), MIL );
+                        strlcpy( mod, flag_string( mvalue, old_ris_flags ), MIL );
                      }
                   }
                   else
@@ -1075,7 +1075,7 @@ skill_type *fread_skill( FILE * fp, int version )
                      {
                         int mvalue = atoi( mod );
 
-                        mudstrlcpy( mod, flag_string( mvalue, old_ris_flags ), MIL );
+                        strlcpy( mod, flag_string( mvalue, old_ris_flags ), MIL );
                      }
                   }
                }
@@ -1684,15 +1684,15 @@ bool get_skill_help( char_data * ch, const string & argument )
          break;
 
       case TAR_CHAR_OFFENSIVE:
-         mudstrlcpy( target, "<victim>", MSL );
+         strlcpy( target, "<victim>", MSL );
          break;
 
       case TAR_CHAR_SELF:
-         mudstrlcpy( target, "<self>", MSL );
+         strlcpy( target, "<self>", MSL );
          break;
 
       case TAR_OBJ_INV:
-         mudstrlcpy( target, "<object>", MSL );
+         strlcpy( target, "<object>", MSL );
          break;
    }
 
@@ -2359,7 +2359,7 @@ CMDF( do_slist )
    for( i = lowlev; i <= hilev; ++i )
    {
       lFound = 0;
-      mudstrlcpy( skn, "Spell", MIL );
+      strlcpy( skn, "Spell", MIL );
       for( sn = 0; sn < num_skills; ++sn )
       {
          if( !skill_table[sn]->name )
@@ -2368,7 +2368,7 @@ CMDF( do_slist )
          if( skill_table[sn]->type != lasttype )
          {
             lasttype = skill_table[sn]->type;
-            mudstrlcpy( skn, skill_tname[lasttype], MIL );
+            strlcpy( skn, skill_tname[lasttype], MIL );
          }
 
          if( ch->pcdata->learned[sn] <= 0 && SPELL_FLAG( skill_table[sn], SF_SECRETSKILL ) )
@@ -2543,29 +2543,29 @@ CMDF( do_slookup )
          snprintf( buf, MSL, "Affect %d", ++cnt );
          if( af->location )
          {
-            mudstrlcat( buf, " modifies ", MSL );
-            mudstrlcat( buf, a_types[af->location % REVERSE_APPLY], MSL );
-            mudstrlcat( buf, " by '", MSL );
-            mudstrlcat( buf, af->modifier, MSL );
+            strlcat( buf, " modifies ", MSL );
+            strlcat( buf, a_types[af->location % REVERSE_APPLY], MSL );
+            strlcat( buf, " by '", MSL );
+            strlcat( buf, af->modifier, MSL );
             if( af->bit != -1 )
-               mudstrlcat( buf, "' and", MSL );
+               strlcat( buf, "' and", MSL );
             else
-               mudstrlcat( buf, "'", MSL );
+               strlcat( buf, "'", MSL );
          }
          if( af->bit != -1 )
          {
-            mudstrlcat( buf, " applies ", MSL );
-            mudstrlcat( buf, aff_flags[af->bit], MSL );
+            strlcat( buf, " applies ", MSL );
+            strlcat( buf, aff_flags[af->bit], MSL );
          }
          if( af->duration[0] != '\0' && af->duration[0] != '0' )
          {
-            mudstrlcat( buf, " for '", MSL );
-            mudstrlcat( buf, af->duration, MSL );
-            mudstrlcat( buf, "' rounds", MSL );
+            strlcat( buf, " for '", MSL );
+            strlcat( buf, af->duration, MSL );
+            strlcat( buf, "' rounds", MSL );
          }
          if( af->location >= REVERSE_APPLY )
-            mudstrlcat( buf, " (affects caster only)", MSL );
-         mudstrlcat( buf, "\r\n", MSL );
+            strlcat( buf, " (affects caster only)", MSL );
+         strlcat( buf, "\r\n", MSL );
          ch->print( buf );
          if( ++aff == skill->affects.end(  ) )
             ch->print( "\r\n" );
@@ -2616,12 +2616,12 @@ CMDF( do_slookup )
             ch->print( "--------------------------[CLASS USE]--------------------------\r\n" );
             for( iClass = 0; iClass < MAX_PC_CLASS; ++iClass )
             {
-               mudstrlcpy( buf, class_table[iClass]->who_name, MSL );
+               strlcpy( buf, class_table[iClass]->who_name, MSL );
                snprintf( buf + 3, MSL - 3, " ) lvl: %3d max: %2d%%", skill->skill_level[iClass], skill->skill_adept[iClass] );
                if( iClass % 3 == 2 )
-                  mudstrlcat( buf, "\r\n", MSL );
+                  strlcat( buf, "\r\n", MSL );
                else
-                  mudstrlcat( buf, "  ", MSL );
+                  strlcat( buf, "  ", MSL );
                ch->print( buf );
             }
          }
@@ -2632,11 +2632,11 @@ CMDF( do_slookup )
             {
                snprintf( buf, MSL, "%8.8s ) lvl: %3d max: %2d%%", race_table[iRace]->race_name, skill->race_level[iRace], skill->race_adept[iRace] );
                if( !str_cmp( race_table[iRace]->race_name, "unused" ) )
-                  mudstrlcpy( buf, "                           ", MSL );
+                  strlcpy( buf, "                           ", MSL );
                if( ( iRace > 0 ) && ( iRace % 2 == 1 ) )
-                  mudstrlcat( buf, "\r\n", MSL );
+                  strlcat( buf, "\r\n", MSL );
                else
-                  mudstrlcat( buf, "  ", MSL );
+                  strlcat( buf, "  ", MSL );
                ch->print( buf );
             }
          }

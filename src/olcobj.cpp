@@ -200,42 +200,42 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          else
             dam = 10;
          if( dam >= 10 )
-            mudstrlcpy( buf, "It is fresh.", MSL );
+            strlcpy( buf, "It is fresh.", MSL );
          else if( dam == 9 )
-            mudstrlcpy( buf, "It is nearly fresh.", MSL );
+            strlcpy( buf, "It is nearly fresh.", MSL );
          else if( dam == 8 )
-            mudstrlcpy( buf, "It is perfectly fine.", MSL );
+            strlcpy( buf, "It is perfectly fine.", MSL );
          else if( dam == 7 )
-            mudstrlcpy( buf, "It looks good.", MSL );
+            strlcpy( buf, "It looks good.", MSL );
          else if( dam == 6 )
-            mudstrlcpy( buf, "It looks ok.", MSL );
+            strlcpy( buf, "It looks ok.", MSL );
          else if( dam == 5 )
-            mudstrlcpy( buf, "It is a little stale.", MSL );
+            strlcpy( buf, "It is a little stale.", MSL );
          else if( dam == 4 )
-            mudstrlcpy( buf, "It is a bit stale.", MSL );
+            strlcpy( buf, "It is a bit stale.", MSL );
          else if( dam == 3 )
-            mudstrlcpy( buf, "It smells slightly off.", MSL );
+            strlcpy( buf, "It smells slightly off.", MSL );
          else if( dam == 2 )
-            mudstrlcpy( buf, "It smells quite rank.", MSL );
+            strlcpy( buf, "It smells quite rank.", MSL );
          else if( dam == 1 )
-            mudstrlcpy( buf, "It smells revolting!", MSL );
+            strlcpy( buf, "It smells revolting!", MSL );
          else if( dam <= 0 )
-            mudstrlcpy( buf, "It is crawling with maggots!", MSL );
-         mudstrlcat( buf, "\r\n", MSL );
+            strlcpy( buf, "It is crawling with maggots!", MSL );
+         strlcat( buf, "\r\n", MSL );
          ch->print( buf );
          if( obj->item_type == ITEM_COOK )
          {
             ch->printf( "%sValue[2] - Condition (%d): &c", olc ? "&gG&w) " : "&w", obj->value[2] );
             dam = obj->value[2];
             if( dam >= 3 )
-               mudstrlcpy( buf, "It is burned to a crisp.", MSL );
+               strlcpy( buf, "It is burned to a crisp.", MSL );
             else if( dam == 2 )
-               mudstrlcpy( buf, "It is a little over cooked.", MSL );
+               strlcpy( buf, "It is a little over cooked.", MSL );
             else if( dam == 1 )
-               mudstrlcpy( buf, "It is perfectly roasted.", MSL );
+               strlcpy( buf, "It is perfectly roasted.", MSL );
             else
-               mudstrlcpy( buf, "It is raw.", MSL );
-            mudstrlcat( buf, "\r\n", MSL );
+               strlcpy( buf, "It is raw.", MSL );
+            strlcat( buf, "\r\n", MSL );
             ch->print( buf );
          }
          if( obj->value[3] != 0 )
@@ -350,63 +350,63 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          switch ( obj->value[1] )
          {
             default:
-               mudstrlcpy( buf, "Hit by a trap", MSL );
+               strlcpy( buf, "Hit by a trap", MSL );
                ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_POISON_GAS:
-               mudstrlcpy( buf, "Surrounded by a green cloud of gas", MSL );
+               strlcpy( buf, "Surrounded by a green cloud of gas", MSL );
                ch->print( "Casts spell: Poison\r\n" );
                break;
             case TRAP_TYPE_POISON_DART:
-               mudstrlcpy( buf, "Hit by a dart", MSL );
+               strlcpy( buf, "Hit by a dart", MSL );
                ch->print( "Casts spell: Poison\r\n" );
                ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_POISON_NEEDLE:
-               mudstrlcpy( buf, "Pricked by a needle", MSL );
+               strlcpy( buf, "Pricked by a needle", MSL );
                ch->print( "Casts spell: Poison\r\n" );
                ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_POISON_DAGGER:
-               mudstrlcpy( buf, "Stabbed by a dagger", MSL );
+               strlcpy( buf, "Stabbed by a dagger", MSL );
                ch->print( "Casts spell: Poison\r\n" );
                ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_POISON_ARROW:
-               mudstrlcpy( buf, "Struck with an arrow", MSL );
+               strlcpy( buf, "Struck with an arrow", MSL );
                ch->print( "Casts spell: Poison\r\n" );
                ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_BLINDNESS_GAS:
-               mudstrlcpy( buf, "Surrounded by a red cloud of gas", MSL );
+               strlcpy( buf, "Surrounded by a red cloud of gas", MSL );
                ch->print( "Casts spell: Blind\r\n" );
                break;
             case TRAP_TYPE_SLEEPING_GAS:
-               mudstrlcpy( buf, "Surrounded by a yellow cloud of gas", MSL );
+               strlcpy( buf, "Surrounded by a yellow cloud of gas", MSL );
                ch->print( "Casts spell: Sleep\r\n" );
                break;
             case TRAP_TYPE_FLAME:
-               mudstrlcpy( buf, "Struck by a burst of flame", MSL );
+               strlcpy( buf, "Struck by a burst of flame", MSL );
                ch->print( "Casts spell: Flamestrike\r\n" );
                break;
             case TRAP_TYPE_EXPLOSION:
-               mudstrlcpy( buf, "Hit by an explosion", MSL );
+               strlcpy( buf, "Hit by an explosion", MSL );
                ch->print( "Casts spell: Fireball\r\n" );
                break;
             case TRAP_TYPE_ACID_SPRAY:
-               mudstrlcpy( buf, "Covered by a spray of acid", MSL );
+               strlcpy( buf, "Covered by a spray of acid", MSL );
                ch->print( "Casts spell: Acid Blast\r\n" );
                break;
             case TRAP_TYPE_ELECTRIC_SHOCK:
-               mudstrlcpy( buf, "Suddenly shocked", MSL );
+               strlcpy( buf, "Suddenly shocked", MSL );
                ch->print( "Casts spell: Lightning Bolt\r\n" );
                break;
             case TRAP_TYPE_BLADE:
-               mudstrlcpy( buf, "Sliced by a razor sharp blade", MSL );
+               strlcpy( buf, "Sliced by a razor sharp blade", MSL );
                ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_SEX_CHANGE:
-               mudstrlcpy( buf, "Surrounded by a mysterious aura", MSL );
+               strlcpy( buf, "Surrounded by a mysterious aura", MSL );
                ch->print( "Casts spell: Change Sex\r\n" );
                break;
          }

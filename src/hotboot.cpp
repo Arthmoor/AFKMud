@@ -776,7 +776,7 @@ CMDF( do_hotboot )
    char buf[100], buf2[100], buf3[100];
    snprintf( buf, 100, "%d", mud_port );
    snprintf( buf2, 100, "%d", control );
-   mudstrlcpy( buf3, "-1", 100 );
+   strlcpy( buf3, "-1", 100 );
 
    set_alarm( 0 );
 #if !defined(__CYGWIN__) && defined(SQL)

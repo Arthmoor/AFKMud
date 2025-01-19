@@ -2638,7 +2638,7 @@ CMDF( do_adelete )
    if( tarea->flags.test( AFLAG_PROTOTYPE ) )
       snprintf( filename, 256, "%s%s", BUILD_DIR, tarea->filename );
    else
-      mudstrlcpy( filename, tarea->filename, 256 );
+      strlcpy( filename, tarea->filename, 256 );
    deleteptr( tarea );
    unlink( filename );
    write_area_list(  );
@@ -2768,7 +2768,7 @@ CMDF( do_installarea )
       DISPOSE( tarea->name );
       tarea->name = str_dup( argument.c_str(  ) );
 
-      mudstrlcpy( oldfilename, tarea->filename, 256 );
+      strlcpy( oldfilename, tarea->filename, 256 );
       DISPOSE( tarea->filename );
       tarea->filename = str_dup( arg2.c_str(  ) );
 
@@ -2944,7 +2944,7 @@ CMDF( do_aset )
       if( !is_valid_filename( ch, "", argument ) )
          return;
 
-      mudstrlcpy( filename, tarea->filename, 256 );
+      strlcpy( filename, tarea->filename, 256 );
       DISPOSE( tarea->filename );
       tarea->filename = str_dup( argument.c_str(  ) );
       rename( filename, tarea->filename );

@@ -154,7 +154,7 @@ char *get_exits( char_data * ch )
 
    ch->set_color( AT_EXITS );
 
-   mudstrlcpy( buf, "[Exits:", MSL );
+   strlcpy( buf, "[Exits:", MSL );
 
    bool found = false;
    list < exit_data * >::iterator iexit;
@@ -170,27 +170,27 @@ char *get_exits( char_data * ch )
          if( pexit->to_room )
          {
             found = true;
-            mudstrlcat( buf, " ", MSL );
+            strlcat( buf, " ", MSL );
 
-            mudstrlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
+            strlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
 
             if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
-               mudstrlcat( buf, "->(Overland)", MSL );
+               strlcat( buf, "->(Overland)", MSL );
 
             /*
              * New code added to display closed, or otherwise invisible exits to immortals 
              * Installed by Samson 1-25-98 
              */
             if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-               mudstrlcat( buf, "->(Closed)", MSL );
+               strlcat( buf, "->(Closed)", MSL );
             if( IS_EXIT_FLAG( pexit, EX_DIG ) )
-               mudstrlcat( buf, "->(Dig)", MSL );
+               strlcat( buf, "->(Dig)", MSL );
             if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )
-               mudstrlcat( buf, "->(Window)", MSL );
+               strlcat( buf, "->(Window)", MSL );
             if( IS_EXIT_FLAG( pexit, EX_HIDDEN ) )
-               mudstrlcat( buf, "->(Hidden)", MSL );
+               strlcat( buf, "->(Hidden)", MSL );
             if( pexit->to_room->flags.test( ROOM_DEATH ) )
-               mudstrlcat( buf, "->(Deathtrap)", MSL );
+               strlcat( buf, "->(Deathtrap)", MSL );
          }
       }
       else
@@ -199,23 +199,23 @@ char *get_exits( char_data * ch )
              && !IS_EXIT_FLAG( pexit, EX_HEAVY ) && !IS_EXIT_FLAG( pexit, EX_MEDIUM ) && !IS_EXIT_FLAG( pexit, EX_LIGHT ) && !IS_EXIT_FLAG( pexit, EX_CRUMBLING ) )
          {
             found = true;
-            mudstrlcat( buf, " ", MSL );
+            strlcat( buf, " ", MSL );
 
-            mudstrlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
+            strlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
 
             if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-               mudstrlcat( buf, "->(Closed)", MSL );
+               strlcat( buf, "->(Closed)", MSL );
             if( ch->has_aflag( AFF_DETECTTRAPS ) && pexit->to_room->flags.test( ROOM_DEATH ) )
-               mudstrlcat( buf, "->(Deathtrap)", MSL );
+               strlcat( buf, "->(Deathtrap)", MSL );
          }
       }
    }
 
    if( !found )
-      mudstrlcat( buf, " none]", MSL );
+      strlcat( buf, " none]", MSL );
    else
-      mudstrlcat( buf, "]", MSL );
-   mudstrlcat( buf, "\r\n", MSL );
+      strlcat( buf, "]", MSL );
+   strlcat( buf, "\r\n", MSL );
    return buf;
 }
 
@@ -436,7 +436,7 @@ void reformat_desc( char *desc )
    /*
     * Copy to desc 
     */
-   mudstrlcpy( desc, buf, MSL );
+   strlcpy( desc, buf, MSL );
 }
 
 int get_line( const char *desc, size_t max_len )
@@ -538,36 +538,36 @@ void show_map( char_data * ch, char *text )
    if( ch->has_pcflag( PCFLAG_AUTOEXIT ) )
       snprintf( buf, MSL * 2, "%s%s", ch->color_str( AT_EXITS ), get_exits( ch ) );
    else
-      mudstrlcpy( buf, "", MSL * 2 );
+      strlcpy( buf, "", MSL * 2 );
 
    /*
     * Top of map frame 
     */
-   mudstrlcat( buf, "&z+-----------+&w ", MSL * 2 );
+   strlcat( buf, "&z+-----------+&w ", MSL * 2 );
    if( !alldesc )
    {
       pos = get_line( p, 63 );
       if( pos > 0 )
       {
-         mudstrlcat( buf, ch->color_str( AT_RMDESC ), MSL * 2 );
+         strlcat( buf, ch->color_str( AT_RMDESC ), MSL * 2 );
          strncat( buf, p, pos );
          p += pos;
       }
       else
       {
-         mudstrlcat( buf, ch->color_str( AT_RMDESC ), MSL * 2 );
-         mudstrlcat( buf, p, MSL * 2 );
+         strlcat( buf, ch->color_str( AT_RMDESC ), MSL * 2 );
+         strlcat( buf, p, MSL * 2 );
          alldesc = true;
       }
    }
-   mudstrlcat( buf, "\r\n", MSL * 2 );
+   strlcat( buf, "\r\n", MSL * 2 );
 
    /*
     * Write out the main map area with text 
     */
    for( y = 0; y <= MAPY; ++y )
    {
-      mudstrlcat( buf, "&z|&D", MSL * 2 );
+      strlcat( buf, "&z|&D", MSL * 2 );
 
       for( x = 0; x <= MAPX; ++x )
       {
@@ -602,7 +602,7 @@ void show_map( char_data * ch, char *text )
             snprintf( buf + strlen( buf ), ( MSL * 2 ) - strlen( buf ), "%s%s&d", sect_show[sect].color, sect_show[sect].symbol );
          }
       }
-      mudstrlcat( buf, "&z|&D ", MSL * 2 );
+      strlcat( buf, "&z|&D ", MSL * 2 );
 
       /*
        * Add the text, if necessary 
@@ -614,30 +614,30 @@ void show_map( char_data * ch, char *text )
 
          strcpy( c, whatColor( text, p ) );
          if( c[0] == '\0' )
-            mudstrlcpy( col, ch->color_str( AT_RMDESC ), 10 );
+            strlcpy( col, ch->color_str( AT_RMDESC ), 10 );
          else
             snprintf( col, 10, "%s", c );
 
          if( pos > 0 )
          {
-            mudstrlcat( buf, col, MSL * 2 );
+            strlcat( buf, col, MSL * 2 );
             strncat( buf, p, pos );
             p += pos;
          }
          else
          {
-            mudstrlcat( buf, col, MSL * 2 );
-            mudstrlcat( buf, p, MSL * 2 );
+            strlcat( buf, col, MSL * 2 );
+            strlcat( buf, p, MSL * 2 );
             alldesc = true;
          }
       }
-      mudstrlcat( buf, "\r\n", MSL * 2 );
+      strlcat( buf, "\r\n", MSL * 2 );
    }
 
    /*
     * Finish off map area 
     */
-   mudstrlcat( buf, "&z+-----------+&D ", MSL * 2 );
+   strlcat( buf, "&z+-----------+&D ", MSL * 2 );
    if( !alldesc )
    {
       char col[10], c[3];
@@ -645,21 +645,21 @@ void show_map( char_data * ch, char *text )
 
       strcpy( c, whatColor( text, p ) );
       if( c[0] == '\0' )
-         mudstrlcpy( col, ch->color_str( AT_RMDESC ), 10 );
+         strlcpy( col, ch->color_str( AT_RMDESC ), 10 );
       else
          snprintf( col, 10, "%s", c );
 
       if( pos > 0 )
       {
-         mudstrlcat( buf, col, MSL * 2 );
+         strlcat( buf, col, MSL * 2 );
          strncat( buf, p, pos );
          p += pos;
-         mudstrlcat( buf, "\r\n", MSL * 2 );
+         strlcat( buf, "\r\n", MSL * 2 );
       }
       else
       {
-         mudstrlcat( buf, col, MSL * 2 );
-         mudstrlcat( buf, p, MSL * 2 );
+         strlcat( buf, col, MSL * 2 );
+         strlcat( buf, p, MSL * 2 );
          alldesc = true;
       }
    }
@@ -680,27 +680,27 @@ void show_map( char_data * ch, char *text )
 
          strcpy( c, whatColor( text, p ) );
          if( c[0] == '\0' )
-            mudstrlcpy( col, ch->color_str( AT_RMDESC ), 10 );
+            strlcpy( col, ch->color_str( AT_RMDESC ), 10 );
          else
             snprintf( col, 10, "%s", c );
 
          if( pos > 0 )
          {
-            mudstrlcat( buf, col, MSL * 2 );
+            strlcat( buf, col, MSL * 2 );
             strncat( buf, p, pos );
             p += pos;
-            mudstrlcat( buf, "\r\n", MSL * 2 );
+            strlcat( buf, "\r\n", MSL * 2 );
          }
          else
          {
-            mudstrlcat( buf, col, MSL * 2 );
-            mudstrlcat( buf, p, MSL * 2 );
+            strlcat( buf, col, MSL * 2 );
+            strlcat( buf, p, MSL * 2 );
             alldesc = true;
          }
       }
       while( !alldesc );
    }
-   mudstrlcat( buf, "&D\r\n", MSL * 2 );
+   strlcat( buf, "&D\r\n", MSL * 2 );
    ch->print( buf );
 }
 
@@ -710,7 +710,7 @@ void draw_map( char_data * ch, const char *desc )
    int x, y;
    static char buf[MSL];
 
-   mudstrlcpy( buf, desc, MSL );
+   strlcpy( buf, desc, MSL );
    /*
     * Remove undesirable characters 
     */

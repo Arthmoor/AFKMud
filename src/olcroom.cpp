@@ -391,8 +391,8 @@ void redit_disp_exit_edit( descriptor_data * d )
    {
       if( IS_EXIT_FLAG( pexit, i ) )
       {
-         mudstrlcat( flags, ex_flags[i], MSL );
-         mudstrlcat( flags, " ", MSL );
+         strlcat( flags, ex_flags[i], MSL );
+         strlcat( flags, " ", MSL );
       }
    }
 
@@ -435,8 +435,8 @@ void redit_disp_exit_flag_menu( descriptor_data * d )
    for( i = 0; i < MAX_EXFLAG; ++i )
       if( IS_EXIT_FLAG( pexit, i ) )
       {
-         mudstrlcat( buf1, ex_flags[i], MSL );
-         mudstrlcat( buf1, " ", MSL );
+         strlcat( buf1, ex_flags[i], MSL );
+         strlcat( buf1, " ", MSL );
       }
 
    d->character->printf( "\r\nExit flags: &c%s&w\r\nEnter room flags, 0 to quit: ", buf1 );

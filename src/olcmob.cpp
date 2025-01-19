@@ -382,8 +382,8 @@ void medit_disp_aff_flags( descriptor_data * d )
       for( i = 0; i < 32; ++i )
          if( IS_SET( d->character->tempnum, 1 << i ) )
          {
-            mudstrlcat( buf, " ", MSL );
-            mudstrlcat( buf, aff_flags[i], MSL );
+            strlcat( buf, " ", MSL );
+            strlcat( buf, aff_flags[i], MSL );
          }
       d->character->printf( "\r\nCurrent flags   : &c%s&w\r\n", buf );
    }

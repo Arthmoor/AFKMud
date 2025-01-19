@@ -139,7 +139,7 @@ char *c_time( time_t curtime, int tz )
 
    if( tz > -1 && tz < MAX_TZONE )
    {
-      mudstrlcpy( tzonename, tzone_table[tz].zone, 50 );
+      strlcpy( tzonename, tzone_table[tz].zone, 50 );
 #if defined(__CYGWIN__)
       curtime += ( time_t ) timezone;
 #elif defined(__FreeBSD__) || defined(__OpenBSD__)
@@ -157,9 +157,9 @@ char *c_time( time_t curtime, int tz )
    ptime = localtime( &curtime );
    if( tz < 0 || tz >= MAX_TZONE )
 #if defined(__CYGWIN__) || defined(WIN32)
-      mudstrlcpy( tzonename, tzname[ptime->tm_isdst], 50 );
+      strlcpy( tzonename, tzname[ptime->tm_isdst], 50 );
 #else
-      mudstrlcpy( tzonename, ptime->tm_zone, 50 );
+      strlcpy( tzonename, ptime->tm_zone, 50 );
 #endif
 
    snprintf( strtime, 128, "%3s %3s %d, %d %d:%02d:%02d %cM %s",
@@ -180,7 +180,7 @@ char *mini_c_time( time_t curtime, int tz )
 
    if( tz > -1 && tz < MAX_TZONE )
    {
-      mudstrlcpy( tzonename, tzone_table[tz].zone, 50 );
+      strlcpy( tzonename, tzone_table[tz].zone, 50 );
 #if defined(__CYGWIN__)
       curtime += ( time_t ) timezone;
 #elif defined(__FreeBSD__) || defined(__OpenBSD__)
@@ -198,9 +198,9 @@ char *mini_c_time( time_t curtime, int tz )
    ptime = localtime( &curtime );
    if( tz < 0 || tz >= MAX_TZONE )
 #if defined(__CYGWIN__) || defined(WIN32)
-      mudstrlcpy( tzonename, tzname[ptime->tm_isdst], 50 );
+      strlcpy( tzonename, tzname[ptime->tm_isdst], 50 );
 #else
-      mudstrlcpy( tzonename, ptime->tm_zone, 50 );
+      strlcpy( tzonename, ptime->tm_zone, 50 );
 #endif
 
    int year = ptime->tm_year - 100;
@@ -251,7 +251,7 @@ char *sec_to_hms( time_t loctime, char *tstr )
 
    if( loctime < 1 )
    {
-      mudstrlcat( tstr, "no time at all", MSL );
+      strlcat( tstr, "no time at all", MSL );
       return ( tstr );
    }
 
@@ -284,42 +284,42 @@ char *sec_to_hms( time_t loctime, char *tstr )
                {
                   sflg = 1;
                   snprintf( buff, MSL, "%d week%c", wk, DUR_ADDS( wk ) );
-                  mudstrlcat( tstr, buff, MSL );
+                  strlcat( tstr, buff, MSL );
                }
             }
             if( dy )
             {
                if( sflg == 1 )
-                  mudstrlcat( tstr, " ", MSL );
+                  strlcat( tstr, " ", MSL );
                sflg = 1;
                snprintf( buff, MSL, "%d day%c", dy, DUR_ADDS( dy ) );
-               mudstrlcat( tstr, buff, MSL );
+               strlcat( tstr, buff, MSL );
             }
          }
          if( hr )
          {
             if( sflg == 1 )
-               mudstrlcat( tstr, " ", MSL );
+               strlcat( tstr, " ", MSL );
             sflg = 1;
             snprintf( buff, MSL, "%d hour%c", hr, DUR_ADDS( hr ) );
-            mudstrlcat( tstr, buff, MSL );
+            strlcat( tstr, buff, MSL );
          }
       }
       if( mn )
       {
          if( sflg == 1 )
-            mudstrlcat( tstr, " ", MSL );
+            strlcat( tstr, " ", MSL );
          sflg = 1;
          snprintf( buff, MSL, "%d minute%c", mn, DUR_ADDS( mn ) );
-         mudstrlcat( tstr, buff, MSL );
+         strlcat( tstr, buff, MSL );
       }
    }
    if( sc )
    {
       if( sflg == 1 )
-         mudstrlcat( tstr, " ", MSL );
+         strlcat( tstr, " ", MSL );
       snprintf( buff, MSL, "%d second%c", sc, DUR_ADDS( sc ) );
-      mudstrlcat( tstr, buff, MSL );
+      strlcat( tstr, buff, MSL );
    }
    return ( tstr );
 }

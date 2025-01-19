@@ -1503,7 +1503,7 @@ CMDF( do_note_set )
       bool fMatch = false, fUnknown = false;
 
       ch->print( "&[board]Setting flags: &[board2]" );
-      mudstrlcpy( buf, "\r\n&[board]Unknown Flags: &[board2]", MSL );
+      strlcpy( buf, "\r\n&[board]Unknown Flags: &[board2]", MSL );
       while( !argument.empty(  ) )
       {
          argument = one_argument( argument, arg );
@@ -2427,18 +2427,18 @@ CMDF( do_note_list )
 
       ++count;
 
-      mudstrlcpy( unread, " ", 4 );
+      strlcpy( unread, " ", 4 );
       if( !chboard || chboard->last_read < note->date_stamp )
-         mudstrlcpy( unread, "&C*", 4 );
+         strlcpy( unread, "&C*", 4 );
 
       if( IS_NOTE_FLAG( note, NOTE_HIDDEN ) && !can_remove( ch, board ) )
          continue;
 
       if( IS_NOTE_FLAG( note, NOTE_CLOSED ) )
-         mudstrlcpy( unread, "&Y-", 4 );
+         strlcpy( unread, "&Y-", 4 );
 
       if( IS_NOTE_FLAG( note, NOTE_HIDDEN ) )
-         mudstrlcpy( unread, "&R#", 4 );
+         strlcpy( unread, "&R#", 4 );
 
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
@@ -3107,7 +3107,7 @@ CMDF( do_board_set )
       }
       snprintf( filename, 256, "%s%s.board", BOARD_DIR, board->filename );
       unlink( filename );
-      mudstrlcpy( filename, board->filename, 256 );
+      strlcpy( filename, board->filename, 256 );
       DISPOSE( board->filename );
       board->filename = str_dup( argument.c_str(  ) );
       write_boards(  );

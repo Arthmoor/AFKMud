@@ -31,100 +31,6 @@
 #include "mud.h"
 #include "descriptor.h"
 
-// The following 2 functions are taken from FreeBSD under the following license terms:
-
-/*
- * Copyright (c) 1998, 2015 Todd C. Miller <Todd.Miller@courtesan.com>
- *
- * Permission to use, copy, modify, and distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
- 
-/*
- * Copy string src to buffer dst of size dsize.  At most dsize-1
- * chars will be copied.  Always NUL terminates (unless dsize == 0).
- * Returns strlen(src); if retval >= dsize, truncation occurred.
- *
- * Renamed so it can play itself system independent.
- * Samson 10-12-03
- */
-size_t mudstrlcpy( char * __restrict dst, const char * __restrict src, size_t dsize )
-{
-   const char *osrc = src;
-   size_t nleft = dsize;
-
-   /* Copy as many bytes as will fit. */
-   if( nleft != 0 )
-   {
-      while( --nleft != 0 )
-      {
-         if( ( *dst++ = *src++ ) == '\0' )
-            break;
-      }
-   }
-
-   /* Not enough room in dst, add NUL and traverse rest of src. */
-   if( nleft == 0 ) 
-   {
-      if( dsize != 0 )
-         *dst = '\0'; /* NUL-terminate dst */
-      while( *src++ )
-         ;
-   }
-
-   return( src - osrc - 1 ); /* count does not include NUL */
-}
-
-/*
- * Appends src to string dst of size dsize (unlike strncat, dsize is the
- * full size of dst, not space left).  At most dsize-1 characters
- * will be copied.  Always NUL terminates (unless dsize <= strlen(dst)).
- * Returns strlen(src) + MIN(dsize, strlen(initial dst)).
- * If retval >= dsize, truncation occurred.
- *
- * Renamed so it can play itself system independent.
- * Samson 10-12-03
- */
-size_t mudstrlcat( char * __restrict dst, const char * __restrict src, size_t dsize )
-{
-   const char *odst = dst;
-   const char *osrc = src;
-   size_t n = dsize;
-   size_t dlen;
-
-   /* Find the end of dst and adjust bytes left but don't go past end. */
-   while( n-- != 0 && *dst != '\0' )
-      dst++;
-
-   dlen = dst - odst;
-   n = dsize - dlen;
-
-   if( n-- == 0 )
-      return( dlen + strlen(src) );
-
-   while( *src != '\0' )
-   {
-      if(n != 0 )
-      {
-         *dst++ = *src;
-         n--;
-      }
-      src++;
-   }
-   *dst = '\0';
-
-   return( dlen + (src - osrc) ); /* count does not include NUL */
-}
-
 void stralloc_printf( char **pointer, const char *fmt, ... )
 {
    char buf[MSL * 4];
@@ -170,7 +76,7 @@ char *str_dup( const char *str )
     * ret = (char *)calloc( len, sizeof(char) ); 
     */
    CREATE( ret, char, len );
-   mudstrlcpy( ret, str, len );
+   strlcpy( ret, str, len );
    return ret;
 }
 #else
@@ -183,7 +89,7 @@ char *str_dup( const char *str )
       return nullptr;
 
    ret = new char[strlen( str ) + 1];
-   mudstrlcpy( ret, str, strlen( str ) + 1 );
+   strlcpy( ret, str, strlen( str ) + 1 );
    return ret;
 }
 #endif
@@ -828,10 +734,10 @@ const char *aoran( const string & str )
    }
 
    if( isavowel( str[0] ) || ( str.length(  ) > 1 && tolower( str[0] ) == 'y' && !isavowel( str[1] ) ) )
-      mudstrlcpy( temp, "an ", MSL );
+      strlcpy( temp, "an ", MSL );
    else
-      mudstrlcpy( temp, "a ", MSL );
-   mudstrlcat( temp, str.c_str(  ), MSL );
+      strlcpy( temp, "a ", MSL );
+   strlcat( temp, str.c_str(  ), MSL );
    return temp;
 }
 
@@ -880,7 +786,7 @@ const char *show_tilde( const char *str )
    string src = str, newstr;
 
    newstr = show_tilde( src );
-   mudstrlcpy( buf, newstr.c_str(  ), MSL );
+   strlcpy( buf, newstr.c_str(  ), MSL );
 
    return buf;
 }
@@ -1260,14 +1166,14 @@ string char_data::copy_buffer(  )
    buf[0] = '\0';
    for( i = 0; i < pcdata->editor->numlines; ++i )
    {
-      mudstrlcpy( tmp, pcdata->editor->line[i], 100 );
+      strlcpy( tmp, pcdata->editor->line[i], 100 );
       len = strlen( tmp );
       if( len > 0 && tmp[len - 1] == '~' )
          tmp[len - 1] = '\0';
       else
-         mudstrlcat( tmp, "\n", 100 );
+         strlcat( tmp, "\n", 100 );
       smash_tilde( tmp );
-      mudstrlcat( buf, tmp, MSL );
+      strlcat( buf, tmp, MSL );
    }
    string newbuf = buf;
    return newbuf;
@@ -1289,14 +1195,14 @@ char *char_data::copy_buffer( bool hash )
    buf[0] = '\0';
    for( i = 0; i < pcdata->editor->numlines; ++i )
    {
-      mudstrlcpy( tmp, pcdata->editor->line[i], 100 );
+      strlcpy( tmp, pcdata->editor->line[i], 100 );
       len = strlen( tmp );
       if( len > 0 && tmp[len - 1] == '~' )
          tmp[len - 1] = '\0';
       else
-         mudstrlcat( tmp, "\n", 100 );
+         strlcat( tmp, "\n", 100 );
       smash_tilde( tmp );
-      mudstrlcat( buf, tmp, MSL );
+      strlcat( buf, tmp, MSL );
    }
    if( hash )
    {
@@ -1412,11 +1318,11 @@ void char_data::edit_buffer( string & argument )
             lwptr = edit->line[x];
             string_replace( lwptr, word1, word2 );
 
-            lineln = mudstrlcpy( buf, lwptr.c_str(  ), MIL );
+            lineln = strlcpy( buf, lwptr.c_str(  ), MIL );
             if( lineln > 79 )
                buf[80] = '\0';
 
-            mudstrlcpy( edit->line[x], buf, 81 );
+            strlcpy( edit->line[x], buf, 81 );
          }
          printf( "Found and replaced \"%s\" with \"%s\".\r\n> ", word1.c_str(  ), word2.c_str(  ) );
          return;
@@ -1439,7 +1345,7 @@ void char_data::edit_buffer( string & argument )
 
          for( x = 0; x < edit->numlines; ++x )
          {
-            mudstrlcpy( temp_buf + p, edit->line[x], MSL + max_buf_lines - p );
+            strlcpy( temp_buf + p, edit->line[x], MSL + max_buf_lines - p );
             p += strlen( edit->line[x] );
             temp_buf[p] = ' ';
             ++p;
@@ -1504,8 +1410,8 @@ void char_data::edit_buffer( string & argument )
             else
             {
                for( x = ++edit->numlines; x > line; --x )
-                  mudstrlcpy( edit->line[x], edit->line[x - 1], 81 );
-               mudstrlcpy( edit->line[line], "", 81 );
+                  strlcpy( edit->line[x], edit->line[x - 1], 81 );
+               strlcpy( edit->line[line], "", 81 );
                print( "Line inserted.\r\n> " );
             }
          }
@@ -1537,8 +1443,8 @@ void char_data::edit_buffer( string & argument )
                   return;
                }
                for( x = line; x < ( edit->numlines - 1 ); ++x )
-                  mudstrlcpy( edit->line[x], edit->line[x + 1], 81 );
-               mudstrlcpy( edit->line[edit->numlines--], "", 81 );
+                  strlcpy( edit->line[x], edit->line[x + 1], 81 );
+               strlcpy( edit->line[edit->numlines--], "", 81 );
                if( edit->on_line > edit->numlines )
                   edit->on_line = edit->numlines;
                print( "Line deleted.\r\n> " );
@@ -1646,12 +1552,12 @@ void char_data::edit_buffer( string & argument )
    {
       if( argument.length(  ) > 80 )
       {
-         mudstrlcpy( buf, argument.c_str(  ), 80 );
+         strlcpy( buf, argument.c_str(  ), 80 );
          print( "(Long line trimmed)\r\n> " );
       }
       else
-         mudstrlcpy( buf, argument.c_str(  ), 80 );
-      mudstrlcpy( edit->line[edit->on_line++], buf, 81 );
+         strlcpy( buf, argument.c_str(  ), 80 );
+      strlcpy( edit->line[edit->on_line++], buf, 81 );
       while( edit->on_line > edit->numlines )
          ++edit->numlines;
       if( edit->numlines >= max_buf_lines )

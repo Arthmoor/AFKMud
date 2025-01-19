@@ -326,7 +326,7 @@ void found_prey( char_data * ch, char_data * victim )
       return;
    }
 
-   mudstrlcpy( victname, victim->name, MSL );
+   strlcpy( victname, victim->name, MSL );
 
    if( !ch->can_see( victim, false ) )
    {

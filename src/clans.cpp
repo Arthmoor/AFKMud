@@ -272,7 +272,7 @@ void delete_clan( char_data * ch, clan_data * clan )
    char filename[256], storeroom[256], record[256];
    string clanname = clan->name;
 
-   mudstrlcpy( filename, clan->filename.c_str(  ), 256 );
+   strlcpy( filename, clan->filename.c_str(  ), 256 );
 
    int bc = snprintf( storeroom, 256, "%s.vault", filename );
    if( bc < 0 )

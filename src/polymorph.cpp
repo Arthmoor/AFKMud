@@ -1131,7 +1131,7 @@ CMDF( do_morphset )
          return;
       }
       if( !morph->skills )
-         mudstrlcpy( buf, arg3.c_str(  ), MSL );
+         strlcpy( buf, arg3.c_str(  ), MSL );
       else
          snprintf( buf, MSL, "%s %s", morph->skills, arg3.c_str(  ) );
       DISPOSE( morph->skills );
@@ -1145,7 +1145,7 @@ CMDF( do_morphset )
          return;
       }
       if( !morph->no_skills )
-         mudstrlcpy( buf, arg3.c_str(  ), MSL );
+         strlcpy( buf, arg3.c_str(  ), MSL );
       else
          snprintf( buf, MSL, "%s %s", morph->no_skills, arg3.c_str(  ) );
       DISPOSE( morph->no_skills );

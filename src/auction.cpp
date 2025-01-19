@@ -349,7 +349,7 @@ void load_aucvaults( void )
    struct dirent *dentry;
    char directory_name[100];
 
-   mudstrlcpy( directory_name, AUC_DIR, 100 );
+   strlcpy( directory_name, AUC_DIR, 100 );
    dp = opendir( directory_name );
    dentry = readdir( dp );
    while( dentry )

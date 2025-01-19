@@ -143,7 +143,7 @@ void delete_realm( char_data * ch, realm_data * realm )
    char filename[256];
    string realmname = realm->name;
 
-   mudstrlcpy( filename, realm->filename.c_str(  ), 256 );
+   strlcpy( filename, realm->filename.c_str(  ), 256 );
 
    for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {

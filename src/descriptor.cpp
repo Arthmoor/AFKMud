@@ -559,12 +559,12 @@ char *default_fprompt( char_data * ch )
 {
    static char buf[60];
 
-   mudstrlcpy( buf, "&z[&W%h&whp ", 60 );
-   mudstrlcat( buf, "&W%m&wm", 60 );
-   mudstrlcat( buf, " &W%v&wmv&z] ", 60 );
-   mudstrlcat( buf, " [&R%c&z] ", 60 );
+   strlcpy( buf, "&z[&W%h&whp ", 60 );
+   strlcat( buf, "&W%m&wm", 60 );
+   strlcat( buf, " &W%v&wmv&z] ", 60 );
+   strlcat( buf, " [&R%c&z] ", 60 );
    if( ch->isnpc(  ) || ch->is_immortal(  ) )
-      mudstrlcat( buf, "&W%i%R&D", 60 );
+      strlcat( buf, "&W%i%R&D", 60 );
    return buf;
 }
 
@@ -572,12 +572,12 @@ char *default_prompt( char_data * ch )
 {
    static char buf[60];
 
-   mudstrlcpy( buf, "&z[&W%h&whp ", 60 );
-   mudstrlcat( buf, "&W%m&wm", 60 );
-   mudstrlcat( buf, " &W%v&wmv&z] ", 60 );
-   mudstrlcat( buf, " [&c%X&wexp&z]&D ", 60 );
+   strlcpy( buf, "&z[&W%h&whp ", 60 );
+   strlcat( buf, "&W%m&wm", 60 );
+   strlcat( buf, " &W%v&wmv&z] ", 60 );
+   strlcat( buf, " [&c%X&wexp&z]&D ", 60 );
    if( ch->isnpc(  ) || ch->is_immortal(  ) )
-      mudstrlcat( buf, "&W%i%R&D", 60 );
+      strlcat( buf, "&W%i%R&D", 60 );
    return buf;
 }
 
@@ -1865,7 +1865,7 @@ void descriptor_data::prompt(  )
 
    if( ansi )
    {
-      mudstrlcpy( pbuf, ANSI_RESET, MSL - ( pbuf - buf ) );
+      strlcpy( pbuf, ANSI_RESET, MSL - ( pbuf - buf ) );
       prevcolor = 0x08;
       pbuf += 4;
    }
@@ -1911,11 +1911,11 @@ void descriptor_data::prompt(  )
                   if( ch->level >= 10 )
                      pstat = ch->alignment;
                   else if( ch->IS_GOOD(  ) )
-                     mudstrlcpy( pbuf, "good", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "good", MSL - ( pbuf - buf ) );
                   else if( ch->IS_EVIL(  ) )
-                     mudstrlcpy( pbuf, "evil", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "evil", MSL - ( pbuf - buf ) );
                   else
-                     mudstrlcpy( pbuf, "neutral", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "neutral", MSL - ( pbuf - buf ) );
                   break;
 
                case 'A':
@@ -1925,9 +1925,9 @@ void descriptor_data::prompt(  )
 
                case 'C':  /* Tank */
                   if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
-                     mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else if( !victim->fighting || ( victim = victim->fighting->who ) == nullptr )
-                     mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else
                   {
                      if( victim->max_hit > 0 )
@@ -1935,33 +1935,33 @@ void descriptor_data::prompt(  )
                      else
                         percent = -1;
                      if( percent >= 100 )
-                        mudstrlcpy( pbuf, "perfect health", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "perfect health", MSL - ( pbuf - buf ) );
                      else if( percent >= 90 )
-                        mudstrlcpy( pbuf, "slightly scratched", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "slightly scratched", MSL - ( pbuf - buf ) );
                      else if( percent >= 80 )
-                        mudstrlcpy( pbuf, "few bruises", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "few bruises", MSL - ( pbuf - buf ) );
                      else if( percent >= 70 )
-                        mudstrlcpy( pbuf, "some cuts", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "some cuts", MSL - ( pbuf - buf ) );
                      else if( percent >= 60 )
-                        mudstrlcpy( pbuf, "several wounds", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "several wounds", MSL - ( pbuf - buf ) );
                      else if( percent >= 50 )
-                        mudstrlcpy( pbuf, "nasty wounds", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "nasty wounds", MSL - ( pbuf - buf ) );
                      else if( percent >= 40 )
-                        mudstrlcpy( pbuf, "bleeding freely", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "bleeding freely", MSL - ( pbuf - buf ) );
                      else if( percent >= 30 )
-                        mudstrlcpy( pbuf, "covered in blood", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "covered in blood", MSL - ( pbuf - buf ) );
                      else if( percent >= 20 )
-                        mudstrlcpy( pbuf, "leaking guts", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "leaking guts", MSL - ( pbuf - buf ) );
                      else if( percent >= 10 )
-                        mudstrlcpy( pbuf, "almost dead", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "almost dead", MSL - ( pbuf - buf ) );
                      else
-                        mudstrlcpy( pbuf, "DYING", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "DYING", MSL - ( pbuf - buf ) );
                   }
                   break;
 
                case 'c':
                   if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
-                     mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else
                   {
                      if( victim->max_hit > 0 )
@@ -1969,27 +1969,27 @@ void descriptor_data::prompt(  )
                      else
                         percent = -1;
                      if( percent >= 100 )
-                        mudstrlcpy( pbuf, "perfect health", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "perfect health", MSL - ( pbuf - buf ) );
                      else if( percent >= 90 )
-                        mudstrlcpy( pbuf, "slightly scratched", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "slightly scratched", MSL - ( pbuf - buf ) );
                      else if( percent >= 80 )
-                        mudstrlcpy( pbuf, "few bruises", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "few bruises", MSL - ( pbuf - buf ) );
                      else if( percent >= 70 )
-                        mudstrlcpy( pbuf, "some cuts", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "some cuts", MSL - ( pbuf - buf ) );
                      else if( percent >= 60 )
-                        mudstrlcpy( pbuf, "several wounds", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "several wounds", MSL - ( pbuf - buf ) );
                      else if( percent >= 50 )
-                        mudstrlcpy( pbuf, "nasty wounds", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "nasty wounds", MSL - ( pbuf - buf ) );
                      else if( percent >= 40 )
-                        mudstrlcpy( pbuf, "bleeding freely", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "bleeding freely", MSL - ( pbuf - buf ) );
                      else if( percent >= 30 )
-                        mudstrlcpy( pbuf, "covered in blood", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "covered in blood", MSL - ( pbuf - buf ) );
                      else if( percent >= 20 )
-                        mudstrlcpy( pbuf, "leaking guts", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "leaking guts", MSL - ( pbuf - buf ) );
                      else if( percent >= 10 )
-                        mudstrlcpy( pbuf, "almost dead", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "almost dead", MSL - ( pbuf - buf ) );
                      else
-                        mudstrlcpy( pbuf, "DYING", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "DYING", MSL - ( pbuf - buf ) );
                   }
                   break;
 
@@ -2011,47 +2011,47 @@ void descriptor_data::prompt(  )
 
                case 'N':  /* Tank */
                   if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
-                     mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else if( !victim->fighting || ( victim = victim->fighting->who ) == nullptr )
-                     mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else
                   {
                      if( ch == victim )
-                        mudstrlcpy( pbuf, "You", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "You", MSL - ( pbuf - buf ) );
                      else if( victim->isnpc(  ) )
-                        mudstrlcpy( pbuf, victim->short_descr, MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, victim->short_descr, MSL - ( pbuf - buf ) );
                      else
-                        mudstrlcpy( pbuf, victim->name, MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, victim->name, MSL - ( pbuf - buf ) );
                      pbuf[0] = UPPER( pbuf[0] );
                   }
                   break;
 
                case 'n':
                   if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
-                     mudstrlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
                   else
                   {
                      if( ch == victim )
-                        mudstrlcpy( pbuf, "You", MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, "You", MSL - ( pbuf - buf ) );
                      else if( victim->isnpc(  ) )
-                        mudstrlcpy( pbuf, victim->short_descr, MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, victim->short_descr, MSL - ( pbuf - buf ) );
                      else
-                        mudstrlcpy( pbuf, victim->name, MSL - ( pbuf - buf ) );
+                        strlcpy( pbuf, victim->name, MSL - ( pbuf - buf ) );
                      pbuf[0] = UPPER( pbuf[0] );
                   }
                   break;
 
                case 'T':
                   if( time_info.hour < sysdata->hoursunrise )
-                     mudstrlcpy( pbuf, "night", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "night", MSL - ( pbuf - buf ) );
                   else if( time_info.hour < sysdata->hourdaybegin )
-                     mudstrlcpy( pbuf, "dawn", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "dawn", MSL - ( pbuf - buf ) );
                   else if( time_info.hour < sysdata->hoursunset )
-                     mudstrlcpy( pbuf, "day", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "day", MSL - ( pbuf - buf ) );
                   else if( time_info.hour < sysdata->hournightbegin )
-                     mudstrlcpy( pbuf, "dusk", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "dusk", MSL - ( pbuf - buf ) );
                   else
-                     mudstrlcpy( pbuf, "night", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "night", MSL - ( pbuf - buf ) );
                   break;
 
                case 'u':
@@ -2081,7 +2081,7 @@ void descriptor_data::prompt(  )
 
                case 'F':
                   if( och->is_immortal(  ) )
-                     mudstrlcpy( pbuf, bitset_string( ch->in_room->flags, r_flags ), MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, bitset_string( ch->in_room->flags, r_flags ), MSL - ( pbuf - buf ) );
                   break;
 
                case 'R':
@@ -2107,27 +2107,27 @@ void descriptor_data::prompt(  )
 
                case 'o':  /* display name of object on auction */
                   if( auction->item )
-                     mudstrlcpy( pbuf, auction->item->name, MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, auction->item->name, MSL - ( pbuf - buf ) );
                   break;
 
                case 'S':
                   if( ch->style == STYLE_BERSERK )
-                     mudstrlcpy( pbuf, "B", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "B", MSL - ( pbuf - buf ) );
                   else if( ch->style == STYLE_AGGRESSIVE )
-                     mudstrlcpy( pbuf, "A", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "A", MSL - ( pbuf - buf ) );
                   else if( ch->style == STYLE_DEFENSIVE )
-                     mudstrlcpy( pbuf, "D", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "D", MSL - ( pbuf - buf ) );
                   else if( ch->style == STYLE_EVASIVE )
-                     mudstrlcpy( pbuf, "E", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "E", MSL - ( pbuf - buf ) );
                   else
-                     mudstrlcpy( pbuf, "S", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "S", MSL - ( pbuf - buf ) );
                   break;
 
                case 'i':
                   if( ch->has_pcflag( PCFLAG_WIZINVIS ) || ch->has_actflag( ACT_MOBINVIS ) )
                      snprintf( pbuf, MSL - ( pbuf - buf ), "(Invis %d) ", ( ch->isnpc(  )? ch->mobinvis : ch->pcdata->wizinvis ) );
                   else if( ch->has_aflag( AFF_INVISIBLE ) )
-                     mudstrlcpy( pbuf, "(Invis) ", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "(Invis) ", MSL - ( pbuf - buf ) );
                   break;
 
                case 'I':
@@ -2141,13 +2141,13 @@ void descriptor_data::prompt(  )
 
                case 'Z':
                   if( sysdata->WIZLOCK )
-                     mudstrlcpy( pbuf, "[Wizlock]", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "[Wizlock]", MSL - ( pbuf - buf ) );
                   if( sysdata->IMPLOCK )
-                     mudstrlcpy( pbuf, "[Implock]", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "[Implock]", MSL - ( pbuf - buf ) );
                   if( sysdata->LOCKDOWN )
-                     mudstrlcpy( pbuf, "[Lockdown]", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "[Lockdown]", MSL - ( pbuf - buf ) );
                   if( bootlock )
-                     mudstrlcpy( pbuf, "[Rebooting]", MSL - ( pbuf - buf ) );
+                     strlcpy( pbuf, "[Rebooting]", MSL - ( pbuf - buf ) );
                   break;
             }
             if( pstat != 0x80000000 )
@@ -2936,7 +2936,7 @@ void descriptor_data::nanny( string & argument )
          if( chk == 1 )
             return;
 
-         mudstrlcpy( buf, ch->pcdata->filename, MSL );
+         strlcpy( buf, ch->pcdata->filename, MSL );
          character->desc = nullptr;
          deleteptr( character );
          fOld = load_char_obj( this, buf, false, false );

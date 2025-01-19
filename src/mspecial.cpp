@@ -872,13 +872,13 @@ void sayhello( char_data * ch, char_data * t )
             WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( time_info.hour < sysdata->hoursunrise )
-               mudstrlcpy( buf2, "evening", 80 );
+               strlcpy( buf2, "evening", 80 );
             else if( time_info.hour < sysdata->hournoon )
-               mudstrlcpy( buf2, "morning", 80 );
+               strlcpy( buf2, "morning", 80 );
             else if( time_info.hour < sysdata->hoursunset )
-               mudstrlcpy( buf2, "afternoon", 80 );
+               strlcpy( buf2, "afternoon", 80 );
             else
-               mudstrlcpy( buf2, "evening", 80 );
+               strlcpy( buf2, "evening", 80 );
 
             if( getCloudCover( cell ) > 0 )
                cmdf( ch, "say Nice %s to go for a walk, %s, I hate it.", buf2, t->name );
@@ -949,13 +949,13 @@ void sayhello( char_data * ch, char_data * t )
             WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( time_info.hour < sysdata->hoursunrise )
-               mudstrlcpy( buf2, "evening", 80 );
+               strlcpy( buf2, "evening", 80 );
             else if( time_info.hour < sysdata->hournoon )
-               mudstrlcpy( buf2, "morning", 80 );
+               strlcpy( buf2, "morning", 80 );
             else if( time_info.hour < sysdata->hoursunset )
-               mudstrlcpy( buf2, "afternoon", 80 );
+               strlcpy( buf2, "afternoon", 80 );
             else
-               mudstrlcpy( buf2, "evening", 80 );
+               strlcpy( buf2, "evening", 80 );
             if( getCloudCover( cell ) > 0 )
                cmdf( ch, "say Nice %s to go for a walk, %s.", buf2, t->name );
             else if( isRaining( getPrecip( cell ) ) || isRainingSteadily( getPrecip( cell ) ) || isDownpour( getPrecip( cell ) ) || isRaingingHeavily( getPrecip( cell ) ) || isPouring( getPrecip( cell ) ) || isRainingCatsAndDogs( getPrecip( cell ) ) || isTorrentialDownpour( getPrecip( cell ) ) )

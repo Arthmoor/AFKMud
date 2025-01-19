@@ -120,7 +120,7 @@ char *print_big_board( game_board_data * board )
 
    for( x = 0; x < 8; ++x )
    {
-      mudstrlcat( retbuf, "  ", MSL * 2 );
+      strlcat( retbuf, "  ", MSL * 2 );
       for( y = 0; y < 8; ++y )
       {
          snprintf( buf, MSL, "%s%s",
@@ -129,19 +129,19 @@ char *print_big_board( game_board_data * board )
          snprintf( buf2, MSL, buf, IS_WHITE( board->board[x][y] ) ? s1 : s2 );
          strcat( retbuf, buf2 );
       }
-      mudstrlcat( retbuf, BLACK_BACKGROUND "\r\n", MSL * 2 );
+      strlcat( retbuf, BLACK_BACKGROUND "\r\n", MSL * 2 );
 
       snprintf( buf, MSL, WHITE_FOREGROUND "&g%c ", 'A' + x );
-      mudstrlcat( retbuf, buf, MSL * 2 );
+      strlcat( retbuf, buf, MSL * 2 );
       for( y = 0; y < 8; ++y )
       {
          snprintf( buf, MSL, "%s%s",
                    x % 2 == 0 ? ( y % 2 == 0 ? BLACK_BACKGROUND : WHITE_BACKGROUND ) :
                    ( y % 2 == 0 ? WHITE_BACKGROUND : BLACK_BACKGROUND ), big_pieces[board->board[x][y]][1] );
          snprintf( buf2, MSL, buf, IS_WHITE( board->board[x][y] ) ? s1 : s2 );
-         mudstrlcat( retbuf, buf2, MSL * 2 );
+         strlcat( retbuf, buf2, MSL * 2 );
       }
-      mudstrlcat( retbuf, BLACK_BACKGROUND "\r\n", MSL * 2 );
+      strlcat( retbuf, BLACK_BACKGROUND "\r\n", MSL * 2 );
    }
 
    return retbuf;

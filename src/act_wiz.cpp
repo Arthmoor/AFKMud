@@ -1253,11 +1253,11 @@ CMDF( do_mstat )
       ch->printf( "|CHA   : &G%10d &w|BseAge: &G%10d &w|Agemod: &G%10d &w|\r\n", victim->get_curr_cha(  ), victim->pcdata->age, victim->pcdata->age_bonus );
 
       if( victim->pcdata->condition[COND_THIRST] == -1 )
-         mudstrlcpy( lbuf, "|Thirst: &G    Immune &w", 256 );
+         strlcpy( lbuf, "|Thirst: &G    Immune &w", 256 );
       else
          snprintf( lbuf, 256, "|Thirst: &G%10d &w", victim->pcdata->condition[COND_THIRST] );
       if( victim->pcdata->condition[COND_FULL] == -1 )
-         mudstrlcat( lbuf, "|Hunger: &G    Immune &w", 256 );
+         strlcat( lbuf, "|Hunger: &G    Immune &w", 256 );
       else
          snprintf( lbuf + strlen( lbuf ), 256 - strlen( lbuf ), "|Hunger: &G%10d &w", victim->pcdata->condition[COND_FULL] );
       ch->printf( "|LCK   : &G%10d &w%s|Drunk : &G%d &w\r\n", victim->get_curr_lck(  ), lbuf, victim->pcdata->condition[COND_DRUNK] );
@@ -1324,9 +1324,9 @@ CMDF( do_mstat )
             char mod[MIL];
 
             if( aff->location == APPLY_AFFECT || aff->location == APPLY_EXT_AFFECT )
-               mudstrlcpy( mod, aff_flags[aff->modifier], MIL );
+               strlcpy( mod, aff_flags[aff->modifier], MIL );
             else if( aff->location == APPLY_RESISTANT || aff->location == APPLY_IMMUNE || aff->location == APPLY_ABSORB || aff->location == APPLY_SUSCEPTIBLE )
-               mudstrlcpy( mod, ris_flags[aff->modifier], MIL );
+               strlcpy( mod, ris_flags[aff->modifier], MIL );
             else
                snprintf( mod, MIL, "%d", aff->modifier );
 
@@ -1474,7 +1474,7 @@ CMDF( do_mstat )
 
             if( af->location == APPLY_AFFECT
                 || af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_ABSORB || af->location == APPLY_SUSCEPTIBLE )
-               mudstrlcpy( mod, aff_flags[af->modifier], MIL );
+               strlcpy( mod, aff_flags[af->modifier], MIL );
             else
                snprintf( mod, MIL, "%d", af->modifier );
             ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds", skill_tname[skill->type], skill->name, a_types[af->location], mod, af->duration );
@@ -1686,7 +1686,7 @@ CMDF( do_bodybag )
       return;
    }
 
-   mudstrlcpy( buf3, " ", MSL );
+   strlcpy( buf3, " ", MSL );
    snprintf( buf2, MSL, "the corpse of %s", arg1.c_str(  ) );
    argument = one_argument( argument, arg2 );
 
@@ -1799,12 +1799,12 @@ CMDF( do_owhere )
       else if( obj->in_obj )
       {
          bug( "%s: obj->in_obj after nullptr!", __func__ );
-         mudstrlcat( buf, "object??\r\n", MSL );
+         strlcat( buf, "object??\r\n", MSL );
       }
       else
       {
          bug( "%s: object doesnt have location!", __func__ );
-         mudstrlcat( buf, "nowhere??\r\n", MSL );
+         strlcat( buf, "nowhere??\r\n", MSL );
       }
       ch->pager( buf );
       ++icnt;
@@ -1838,7 +1838,7 @@ CMDF( do_owhere )
       else
       {
          bug( "%s: object doesnt have location!", __func__ );
-         mudstrlcat( buf, "nowhere??\r\n", MSL );
+         strlcat( buf, "nowhere??\r\n", MSL );
       }
       ch->pager( buf );
    }
@@ -2015,7 +2015,7 @@ CMDF( do_where )
          else
          {
             bug( "%s: object '%s' doesn't have location!", __func__, obj->short_descr );
-            mudstrlcat( buf, "nowhere??\r\n", MSL );
+            strlcat( buf, "nowhere??\r\n", MSL );
          }
          ch->pager( buf );
       }
@@ -6056,7 +6056,7 @@ CMDF( do_cset )
          area_data *area = *iarea;
          if( area->hi_vnum > vnum )
          {
-            mudstrlcpy( lbuf, area->name, MSL );
+            strlcpy( lbuf, area->name, MSL );
             vnum = area->hi_vnum;
          }
       }

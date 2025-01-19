@@ -300,7 +300,7 @@ void say_spell( char_data * ch, int sn )
       {
          if( !str_prefix( syl_table[iSyl].old, pName ) )
          {
-            mudstrlcat( buf, syl_table[iSyl].snew, MSL-30 );
+            strlcat( buf, syl_table[iSyl].snew, MSL-30 );
             break;
          }
       }
@@ -310,7 +310,7 @@ void say_spell( char_data * ch, int sn )
 
    if( ch->Class == CLASS_BARD )
    {
-      mudstrlcpy( buf2, "$n plays a song.", MSL );
+      strlcpy( buf2, "$n plays a song.", MSL );
       snprintf( buf, MSL-30, "$n plays the song, '%s'.", skill->name );
    }
 
@@ -559,7 +559,7 @@ int dice_parse( char_data * ch, int level, const string & xexp )
 {
    char buf[MIL];
 
-   mudstrlcpy( buf, xexp.c_str(  ), MIL );
+   strlcpy( buf, xexp.c_str(  ), MIL );
    return rd_parse( ch, level, buf );
 }
 

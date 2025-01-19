@@ -420,10 +420,10 @@ void char_data::set_title( const string & title )
    if( isalpha( title[0] ) || isdigit( title[0] ) )
    {
       buf[0] = ' ';
-      mudstrlcpy( buf + 1, title.c_str(  ), 75 );
+      strlcpy( buf + 1, title.c_str(  ), 74 );
    }
    else
-      mudstrlcpy( buf, title.c_str(  ), 75 );
+      strlcpy( buf, title.c_str(  ), 75 );
 
    STRFREE( this->pcdata->title );
    this->pcdata->title = STRALLOC( buf );
@@ -2171,10 +2171,10 @@ void char_data::showaffect( affect_data * paf )
             for( i = 0; i < MAX_RIS_FLAG; ++i )
                if( paf->rismod.test( i ) )
                {
-                  mudstrlcat( buf, " ", MSL );
-                  mudstrlcat( buf, ris_flags[i], MSL );
+                  strlcat( buf, " ", MSL );
+                  strlcat( buf, ris_flags[i], MSL );
                }
-            mudstrlcat( buf, "&w\r\n", MSL );
+            strlcat( buf, "&w\r\n", MSL );
             break;
       }
       this->print( buf );

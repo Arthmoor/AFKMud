@@ -874,14 +874,14 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          if( !social && !emote )
          {
             snprintf( buf, MSL, "&[%s]$n %ss '$t&[%s]'", channel->colorname.c_str(  ), channel->name.c_str(  ), channel->colorname.c_str(  ) );
-            mudstrlcat( lbuf, buf, MIL + 4 );
+            strlcat( lbuf, buf, MIL + 4 );
             act( AT_PLAIN, lbuf, ch, sbuf.c_str(  ), vch, TO_VICT );
          }
 
          if( emote )
          {
             snprintf( buf, MSL, "&W[&[%s]%s&W] &[%s]$n $t", channel->colorname.c_str(  ), capitalize( channel->name ).c_str(  ), channel->colorname.c_str(  ) );
-            mudstrlcat( lbuf, buf, MIL + 4 );
+            strlcat( lbuf, buf, MIL + 4 );
             act( AT_PLAIN, lbuf, ch, sbuf.c_str(  ), vch, TO_VICT );
          }
 

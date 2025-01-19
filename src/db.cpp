@@ -683,7 +683,7 @@ char *fread_string( FILE * fp )
 {
    char buf[MSL];
 
-   mudstrlcpy( buf, fread_flagstring( fp ), MSL );
+   strlcpy( buf, fread_flagstring( fp ), MSL );
 
    if( !str_cmp( buf, "" ) )
       return nullptr;
@@ -695,7 +695,7 @@ void fread_string( string & newstring, FILE * fp )
 {
    char buf[MSL];
 
-   mudstrlcpy( buf, fread_flagstring( fp ), MSL );
+   strlcpy( buf, fread_flagstring( fp ), MSL );
    newstring = buf;
 }
 
@@ -706,7 +706,7 @@ char *fread_string_nohash( FILE * fp )
 {
    char buf[MSL];
 
-   mudstrlcpy( buf, fread_flagstring( fp ), MSL );
+   strlcpy( buf, fread_flagstring( fp ), MSL );
    return str_dup( buf );
 }
 
@@ -813,7 +813,7 @@ void fread_line( string & newstring, FILE * fp )
 {
    char buf[MSL];
 
-   mudstrlcpy( buf, fread_line( fp ), MSL );
+   strlcpy( buf, fread_line( fp ), MSL );
    if( buf[strlen( buf ) - 1] == '\n' || buf[strlen( buf ) - 1] == '\r' )
       buf[strlen( buf ) - 1] = '\0';
    newstring = buf;
@@ -929,7 +929,7 @@ void load_buildlist( void )
                if( bc < 0 )
                   bug( "%s: Output buffer error!", __func__ );
 
-               mudstrlcpy( strArea, dentry->d_name, MIL );
+               strlcpy( strArea, dentry->d_name, MIL );
                set_alarm( AREA_FILE_ALARM );
                alarm_section = "load_buildlist: read prototype area files";
                load_area_file( buf, true );
@@ -1335,10 +1335,10 @@ void towizfile( const char *line )
          filler = 1;
       filler /= 2;
       for( xx = 0; xx < filler; ++xx )
-         mudstrlcat( outline, " ", MSL );
-      mudstrlcat( outline, line, MSL );
+         strlcat( outline, " ", MSL );
+      strlcat( outline, line, MSL );
    }
-   mudstrlcat( outline, "\r\n", MSL );
+   strlcat( outline, "\r\n", MSL );
    wfp = fopen( WIZLIST_FILE, "a" );
    if( wfp )
    {
@@ -1354,9 +1354,9 @@ void towebwiz( const char *line )
 
    outline[0] = '\0';
 
-   mudstrlcat( outline, " ", MSL );
-   mudstrlcat( outline, line, MSL );
-   mudstrlcat( outline, "\r\n", MSL );
+   strlcat( outline, " ", MSL );
+   strlcat( outline, line, MSL );
+   strlcat( outline, "\r\n", MSL );
    wfp = fopen( WEBWIZ_FILE, "a" );
    if( wfp )
    {
@@ -1531,8 +1531,8 @@ void make_wizlist(  )
          towizfile( buf );
          buf[0] = '\0';
       }
-      mudstrlcat( buf, " ", 256 );
-      mudstrlcat( buf, wiz->name.c_str(  ), 256 );
+      strlcat( buf, " ", 256 );
+      strlcat( buf, wiz->name.c_str(  ), 256 );
       if( strlen( buf ) > 70 )
       {
          towizfile( buf );
@@ -1561,7 +1561,7 @@ void make_webwiz( void )
    struct dirent *dentry;
    FILE *gfp;
    const char *word;
-   char buf[256];
+   char buf[MSL];
    string http;
 
    wizlist.clear(  );
@@ -1701,20 +1701,20 @@ void make_webwiz( void )
          buf[0] = '\0';
       }
 
-      mudstrlcat( buf, " ", MSL );
+      strlcat( buf, " ", MSL );
       if( !wiz->http.empty(  ) )
       {
          char lbuf[MSL];
 
          snprintf( lbuf, MSL, "<a href=\"%s\" target=\"_blank\">%s</a>", wiz->http.c_str(  ), wiz->name.c_str(  ) );
-         mudstrlcat( buf, lbuf, MSL );
+         strlcat( buf, lbuf, MSL );
       }
       else
       {
          char lbuf[MSL];
 
          snprintf( lbuf, MSL, "<span style=\"font-size:14px;\">%s</span>", wiz->name.c_str(  ) );
-         mudstrlcat( buf, lbuf, MSL );
+         strlcat( buf, lbuf, MSL );
       }
 
       if( strlen( buf ) > 999 )
@@ -1726,7 +1726,7 @@ void make_webwiz( void )
 
    if( buf[0] )
    {
-      mudstrlcat( buf, "</div>\n", MSL );
+      strlcat( buf, "</div>\n", MSL );
       towebwiz( buf );
    }
 
@@ -2046,7 +2046,7 @@ void boot_db( bool fCopyOver )
             bug( "%s: EOF encountered reading area list - no $ found at end of file.", __func__ );
             break;
          }
-         mudstrlcpy( strArea, fread_word( fpList ), MIL );
+         strlcpy( strArea, fread_word( fpList ), MIL );
          if( strArea[0] == '$' )
             break;
 
@@ -2059,7 +2059,7 @@ void boot_db( bool fCopyOver )
       log_string( "...done reading in area files." );
    }
 
-   mudstrlcpy( strArea, "NO FILE", MIL );
+   strlcpy( strArea, "NO FILE", MIL );
 
    log_string( "Validating overland data with areas..." );
    validate_overland_data(  );
@@ -2099,7 +2099,7 @@ void boot_db( bool fCopyOver )
    log_string( "Loading prototype area files..." );
    load_buildlist(  );
 
-   mudstrlcpy( strArea, "NO FILE", MIL );
+   strlcpy( strArea, "NO FILE", MIL );
 
    log_string( "Fixing prototype zone exits..." );
    fix_exits(  );
@@ -2395,7 +2395,7 @@ void append_file( char_data * ch, const string & file, const char *fmt, ... )
       return;
 
    if( strlen( str ) < 1 || str[strlen( str ) - 1] != '\n' )
-      mudstrlcat( str, "\n", MSL );
+      strlcat( str, "\n", MSL );
 
    if( !( fp = fopen( file.c_str(  ), "a" ) ) )
    {
@@ -2426,7 +2426,7 @@ void append_to_file( const string & file, const char *fmt, ... )
       return;
 
    if( strlen( str ) < 1 || str[strlen( str ) - 1] != '\n' )
-      mudstrlcat( str, "\n", MSL );
+      strlcat( str, "\n", MSL );
 
    if( !( fp = fopen( file.c_str(  ), "a" ) ) )
       perror( file.c_str(  ) );
@@ -2454,7 +2454,7 @@ const char *demangle( const char *symbol )
    {
       if( ( demangled = abi::__cxa_demangle( temp, nullptr, &size, &status ) ) != nullptr )
       {
-         mudstrlcpy( temp, demangled, 128 );
+         strlcpy( temp, demangled, 128 );
          free( demangled );
 
          return temp;

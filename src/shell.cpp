@@ -117,7 +117,7 @@ CMDF( do_mudexec )
       char *p;
       char *arg = pl;
 
-      mudstrlcpy( arg, argument.c_str(  ), MIL );
+      strlcpy( arg, argument.c_str(  ), MIL );
 #ifdef USEGLOB
       glob_t g;
 #else
@@ -134,13 +134,13 @@ CMDF( do_mudexec )
       dup2( desc, STDOUT_FILENO );
       dup2( desc, STDERR_FILENO );
 
-      mudstrlcpy( term, "TERM=vt100", 15 );
+      strlcpy( term, "TERM=vt100", 15 );
       putenv( term );
 
-      mudstrlcpy( col, "COLUMNS=80", 15 );
+      strlcpy( col, "COLUMNS=80", 15 );
       putenv( col );
 
-      mudstrlcpy( lines, "LINES=24", 15 );
+      strlcpy( lines, "LINES=24", 15 );
       putenv( lines );
 
 #ifdef USEGLOB
@@ -836,7 +836,7 @@ CMDF( do_grep )
    ch->set_color( AT_PLAIN );
 
    if( argument.empty(  ) )
-      mudstrlcpy( buf, "grep --help", MSL ); /* Will cause it to forward grep's help options to you */
+      strlcpy( buf, "grep --help", MSL ); /* Will cause it to forward grep's help options to you */
    else
       snprintf( buf, MSL, "grep -n %s", argument.c_str(  ) );  /* Line numbers are somewhat important */
 
@@ -1289,7 +1289,7 @@ bool shell_hook( char_data * ch, const string & command, string & argument )
    snprintf( lastplayercmd, MIL * 2, "%s used command: %s", ch->name, logline );
 
    if( cmd->get_log(  ) == LOG_NEVER )
-      mudstrlcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX", MIL );
+      strlcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX", MIL );
 
    int loglvl = cmd->get_log(  );
 

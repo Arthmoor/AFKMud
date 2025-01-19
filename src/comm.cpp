@@ -1237,13 +1237,13 @@ int main( int argc, char **argv )
    num_descriptors = 0;
    num_logins = 0;
    dlist.clear(  );
-   mudstrlcpy( lastplayercmd, "No commands issued yet", MIL * 2 );
+   strlcpy( lastplayercmd, "No commands issued yet", MIL * 2 );
 
    // Init time.
    tzset(  );
    gettimeofday( &now_time, nullptr );
    current_time = now_time.tv_sec;
-   mudstrlcpy( str_boot_time, c_time( current_time, -1 ), MIL );  /* Records when the mud was last rebooted */
+   strlcpy( str_boot_time, c_time( current_time, -1 ), MIL );  /* Records when the mud was last rebooted */
 
    new_pfile_time_t = current_time + 86400;
    mud_start_time = current_time;

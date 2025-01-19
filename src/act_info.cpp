@@ -175,7 +175,7 @@ void look_sky( char_data * ch )
       if( ( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset ) && ( linenum < 3 || linenum >= 6 ) )
          continue;
 
-      mudstrlcpy( buf, " ", MSL );
+      strlcpy( buf, " ", MSL );
 
       /*
        * for ( i = MAP_WIDTH/4; i <= 3*MAP_WIDTH/4; ++i )
@@ -192,9 +192,9 @@ void look_sky( char_data * ch )
              && ( moon_map[linenum - 3][i + 2 - moonpos] == '@' ) )
          {
             if( ( moonphase < 0 && i - 2 - moonpos >= moonphase ) || ( moonphase > 0 && i + 2 - moonpos <= moonphase ) )
-               mudstrlcat( buf, "&W@", MSL );
+               strlcat( buf, "&W@", MSL );
             else
-               mudstrlcat( buf, " ", MSL );
+               strlcat( buf, " ", MSL );
          }
          else if( ( linenum >= 3 ) && ( linenum < 6 ) && /* nighttime */
                   ( moonpos >= MAP_WIDTH / 4 - 2 ) && ( moonpos <= 3 * MAP_WIDTH / 4 + 2 )   /* in sky? */
@@ -202,9 +202,9 @@ void look_sky( char_data * ch )
                   && ( moon_map[linenum - 3][i + 2 - moonpos] == '@' ) )
          {
             if( ( moonphase < 0 && i - 2 - moonpos >= moonphase ) || ( moonphase > 0 && i + 2 - moonpos <= moonphase ) )
-               mudstrlcat( buf, "&W@", MSL );
+               strlcat( buf, "&W@", MSL );
             else
-               mudstrlcat( buf, " ", MSL );
+               strlcat( buf, " ", MSL );
          }
          else  /* plot sun or stars */
          {
@@ -213,71 +213,71 @@ void look_sky( char_data * ch )
                if( i >= sunpos - 2 && i <= sunpos + 2 )
                {
                   snprintf( buf2, 4, "&Y%c", sun_map[linenum - 3][i + 2 - sunpos] );
-                  mudstrlcat( buf, buf2, MSL );
+                  strlcat( buf, buf2, MSL );
                }
                else
-                  mudstrlcat( buf, " ", MSL );
+                  strlcat( buf, " ", MSL );
             }
             else
             {
                switch ( star_map[linenum][( MAP_WIDTH + i - starpos ) % MAP_WIDTH] )
                {
                   default:
-                     mudstrlcat( buf, " ", MSL );
+                     strlcat( buf, " ", MSL );
                      break;
                   case ':':
-                     mudstrlcat( buf, ":", MSL );
+                     strlcat( buf, ":", MSL );
                      break;
                   case '.':
-                     mudstrlcat( buf, ".", MSL );
+                     strlcat( buf, ".", MSL );
                      break;
                   case '*':
-                     mudstrlcat( buf, "*", MSL );
+                     strlcat( buf, "*", MSL );
                      break;
                   case 'G':
-                     mudstrlcat( buf, "&G ", MSL );
+                     strlcat( buf, "&G ", MSL );
                      break;
                   case 'g':
-                     mudstrlcat( buf, "&g ", MSL );
+                     strlcat( buf, "&g ", MSL );
                      break;
                   case 'R':
-                     mudstrlcat( buf, "&R ", MSL );
+                     strlcat( buf, "&R ", MSL );
                      break;
                   case 'r':
-                     mudstrlcat( buf, "&r ", MSL );
+                     strlcat( buf, "&r ", MSL );
                      break;
                   case 'C':
-                     mudstrlcat( buf, "&C ", MSL );
+                     strlcat( buf, "&C ", MSL );
                      break;
                   case 'O':
-                     mudstrlcat( buf, "&O ", MSL );
+                     strlcat( buf, "&O ", MSL );
                      break;
                   case 'B':
-                     mudstrlcat( buf, "&B ", MSL );
+                     strlcat( buf, "&B ", MSL );
                      break;
                   case 'P':
-                     mudstrlcat( buf, "&P ", MSL );
+                     strlcat( buf, "&P ", MSL );
                      break;
                   case 'W':
-                     mudstrlcat( buf, "&W ", MSL );
+                     strlcat( buf, "&W ", MSL );
                      break;
                   case 'b':
-                     mudstrlcat( buf, "&b ", MSL );
+                     strlcat( buf, "&b ", MSL );
                      break;
                   case 'p':
-                     mudstrlcat( buf, "&p ", MSL );
+                     strlcat( buf, "&p ", MSL );
                      break;
                   case 'Y':
-                     mudstrlcat( buf, "&Y ", MSL );
+                     strlcat( buf, "&Y ", MSL );
                      break;
                   case 'c':
-                     mudstrlcat( buf, "&c ", MSL );
+                     strlcat( buf, "&c ", MSL );
                      break;
                }
             }
          }
       }
-      mudstrlcat( buf, "\r\n", MSL );
+      strlcat( buf, "\r\n", MSL );
       ch->pager( buf );
    }
 }
@@ -290,9 +290,9 @@ void show_visible_affects_to_char( char_data * victim, char_data * ch )
    char name[MSL];
 
    if( victim->isnpc(  ) )
-      mudstrlcpy( name, victim->short_descr, MSL );
+      strlcpy( name, victim->short_descr, MSL );
    else
-      mudstrlcpy( name, victim->name, MSL );
+      strlcpy( name, victim->name, MSL );
    name[0] = toupper( name[0] );
 
    if( victim->has_aflag( AFF_SANCTUARY ) )
@@ -341,55 +341,55 @@ void show_condition( char_data * ch, char_data * victim )
 
    if( victim != ch )
    {
-      mudstrlcpy( buf, PERS( victim, ch, false ), MSL );
+      strlcpy( buf, PERS( victim, ch, false ), MSL );
       if( percent >= 100 )
-         mudstrlcat( buf, " is in perfect health.\r\n", MSL );
+         strlcat( buf, " is in perfect health.\r\n", MSL );
       else if( percent >= 90 )
-         mudstrlcat( buf, " is slightly scratched.\r\n", MSL );
+         strlcat( buf, " is slightly scratched.\r\n", MSL );
       else if( percent >= 80 )
-         mudstrlcat( buf, " has a few bruises.\r\n", MSL );
+         strlcat( buf, " has a few bruises.\r\n", MSL );
       else if( percent >= 70 )
-         mudstrlcat( buf, " has some cuts.\r\n", MSL );
+         strlcat( buf, " has some cuts.\r\n", MSL );
       else if( percent >= 60 )
-         mudstrlcat( buf, " has several wounds.\r\n", MSL );
+         strlcat( buf, " has several wounds.\r\n", MSL );
       else if( percent >= 50 )
-         mudstrlcat( buf, " has many nasty wounds.\r\n", MSL );
+         strlcat( buf, " has many nasty wounds.\r\n", MSL );
       else if( percent >= 40 )
-         mudstrlcat( buf, " is bleeding freely.\r\n", MSL );
+         strlcat( buf, " is bleeding freely.\r\n", MSL );
       else if( percent >= 30 )
-         mudstrlcat( buf, " is covered in blood.\r\n", MSL );
+         strlcat( buf, " is covered in blood.\r\n", MSL );
       else if( percent >= 20 )
-         mudstrlcat( buf, " is leaking guts.\r\n", MSL );
+         strlcat( buf, " is leaking guts.\r\n", MSL );
       else if( percent >= 10 )
-         mudstrlcat( buf, " is almost dead.\r\n", MSL );
+         strlcat( buf, " is almost dead.\r\n", MSL );
       else
-         mudstrlcat( buf, " is DYING.\r\n", MSL );
+         strlcat( buf, " is DYING.\r\n", MSL );
    }
    else
    {
-      mudstrlcpy( buf, "You", MSL );
+      strlcpy( buf, "You", MSL );
       if( percent >= 100 )
-         mudstrlcat( buf, " are in perfect health.\r\n", MSL );
+         strlcat( buf, " are in perfect health.\r\n", MSL );
       else if( percent >= 90 )
-         mudstrlcat( buf, " are slightly scratched.\r\n", MSL );
+         strlcat( buf, " are slightly scratched.\r\n", MSL );
       else if( percent >= 80 )
-         mudstrlcat( buf, " have a few bruises.\r\n", MSL );
+         strlcat( buf, " have a few bruises.\r\n", MSL );
       else if( percent >= 70 )
-         mudstrlcat( buf, " have some cuts.\r\n", MSL );
+         strlcat( buf, " have some cuts.\r\n", MSL );
       else if( percent >= 60 )
-         mudstrlcat( buf, " have several wounds.\r\n", MSL );
+         strlcat( buf, " have several wounds.\r\n", MSL );
       else if( percent >= 50 )
-         mudstrlcat( buf, " have many nasty wounds.\r\n", MSL );
+         strlcat( buf, " have many nasty wounds.\r\n", MSL );
       else if( percent >= 40 )
-         mudstrlcat( buf, " are bleeding freely.\r\n", MSL );
+         strlcat( buf, " are bleeding freely.\r\n", MSL );
       else if( percent >= 30 )
-         mudstrlcat( buf, " are covered in blood.\r\n", MSL );
+         strlcat( buf, " are covered in blood.\r\n", MSL );
       else if( percent >= 20 )
-         mudstrlcat( buf, " are leaking guts.\r\n", MSL );
+         strlcat( buf, " are leaking guts.\r\n", MSL );
       else if( percent >= 10 )
-         mudstrlcat( buf, " are almost dead.\r\n", MSL );
+         strlcat( buf, " are almost dead.\r\n", MSL );
       else
-         mudstrlcat( buf, " are DYING.\r\n", MSL );
+         strlcat( buf, " are DYING.\r\n", MSL );
    }
 
    buf[0] = UPPER( buf[0] );
@@ -410,9 +410,9 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    if( !victim->isnpc(  ) && !victim->desc )
    {
       if( !victim->switched )
-         mudstrlcat( buf, "[(Link Dead)] ", MSL );
+         strlcat( buf, "[(Link Dead)] ", MSL );
       else if( !victim->has_aflag( AFF_POSSESS ) )
-         mudstrlcat( buf, "(Switched) ", MSL );
+         strlcat( buf, "(Switched) ", MSL );
    }
    if( victim->isnpc(  ) && victim->has_aflag( AFF_POSSESS ) && ch->is_immortal(  ) && victim->desc )
       snprintf( buf + strlen( buf ), MSL - strlen( buf ), "(%s)", victim->desc->original->name );
@@ -421,7 +421,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
       if( victim->pcdata->afkbuf && victim->pcdata->afkbuf[0] != '\0' )
          snprintf( buf + strlen( buf ), MSL - strlen( buf ), "[AFK %s] ", victim->pcdata->afkbuf );
       else
-         mudstrlcat( buf, "[AFK] ", MSL );
+         strlcat( buf, "[AFK] ", MSL );
    }
 
    if( victim->has_pcflag( PCFLAG_WIZINVIS ) || victim->has_actflag( ACT_MOBINVIS ) )
@@ -438,29 +438,29 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
       ch->set_color( AT_PERSON );
 
    if( victim->has_aflag( AFF_INVISIBLE ) )
-      mudstrlcat( buf, "(Invis) ", MSL );
+      strlcat( buf, "(Invis) ", MSL );
    if( victim->has_aflag( AFF_HIDE ) )
-      mudstrlcat( buf, "(Hiding) ", MSL );
+      strlcat( buf, "(Hiding) ", MSL );
    if( victim->has_aflag( AFF_PASS_DOOR ) )
-      mudstrlcat( buf, "(Translucent) ", MSL );
+      strlcat( buf, "(Translucent) ", MSL );
    if( victim->has_aflag( AFF_FAERIE_FIRE ) )
-      mudstrlcat( buf, "(Pink Aura) ", MSL );
+      strlcat( buf, "(Pink Aura) ", MSL );
    if( victim->IS_EVIL(  ) && ( ch->has_aflag( AFF_DETECT_EVIL ) || ch->Class == CLASS_PALADIN ) )
-      mudstrlcat( buf, "(Red Aura) ", MSL );
+      strlcat( buf, "(Red Aura) ", MSL );
    if( victim->IS_NEUTRAL(  ) && ch->Class == CLASS_PALADIN )
-      mudstrlcat( buf, "(Grey Aura) ", MSL );
+      strlcat( buf, "(Grey Aura) ", MSL );
    if( victim->IS_GOOD(  ) && ch->Class == CLASS_PALADIN )
-      mudstrlcat( buf, "(White Aura) ", MSL );
+      strlcat( buf, "(White Aura) ", MSL );
    if( victim->has_aflag( AFF_BERSERK ) )
-      mudstrlcat( buf, "(Wild-eyed) ", MSL );
+      strlcat( buf, "(Wild-eyed) ", MSL );
    if( victim->has_pcflag( PCFLAG_LITTERBUG ) )
-      mudstrlcat( buf, "(LITTERBUG) ", MSL );
+      strlcat( buf, "(LITTERBUG) ", MSL );
    if( ch->is_immortal(  ) && victim->has_actflag( ACT_PROTOTYPE ) )
-      mudstrlcat( buf, "(PROTO) ", MSL );
+      strlcat( buf, "(PROTO) ", MSL );
    if( victim->isnpc(  ) && ch->mount && ch->mount == victim && ch->in_room == ch->mount->in_room )
-      mudstrlcat( buf, "(Mount) ", MSL );
+      strlcat( buf, "(Mount) ", MSL );
    if( victim->desc && victim->desc->connected == CON_EDITING )
-      mudstrlcat( buf, "(Writing) ", MSL );
+      strlcat( buf, "(Writing) ", MSL );
 
    ch->set_color( AT_PERSON );
    if( ( victim->position == victim->defposition && victim->long_descr && victim->long_descr[0] != '\0' )
@@ -471,24 +471,24 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
          if( !ch->is_immortal(  ) )
          {
             if( victim->morph->morph != nullptr )
-               mudstrlcat( buf, victim->morph->morph->long_desc, MSL );
+               strlcat( buf, victim->morph->morph->long_desc, MSL );
             else
-               mudstrlcat( buf, strip_crlf( victim->long_descr ), MSL );
+               strlcat( buf, strip_crlf( victim->long_descr ), MSL );
          }
          else
          {
-            mudstrlcat( buf, PERS( victim, ch, false ), MSL );
+            strlcat( buf, PERS( victim, ch, false ), MSL );
             if( !ch->has_pcflag( PCFLAG_BRIEF ) && !victim->isnpc(  ) )
-               mudstrlcat( buf, victim->pcdata->title, MSL );
-            mudstrlcat( buf, ".", MSL );
+               strlcat( buf, victim->pcdata->title, MSL );
+            strlcat( buf, ".", MSL );
          }
       }
       else
-         mudstrlcat( buf, strip_crlf( victim->long_descr ), MSL );
+         strlcat( buf, strip_crlf( victim->long_descr ), MSL );
 
       if( num > 1 && victim->isnpc(  ) )
          snprintf( buf + strlen( buf ), MSL - strlen( buf ), " (%d)", num );
-      mudstrlcat( buf, "\r\n", MSL );
+      strlcat( buf, "\r\n", MSL );
       ch->print( buf );
       show_visible_affects_to_char( victim, ch );
       return;
@@ -496,29 +496,29 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    else
    {
       if( victim->morph != nullptr && victim->morph->morph != nullptr && !ch->is_immortal(  ) )
-         mudstrlcat( buf, MORPHPERS( victim, ch, false ), MSL );
+         strlcat( buf, MORPHPERS( victim, ch, false ), MSL );
       else
-         mudstrlcat( buf, PERS( victim, ch, false ), MSL );
+         strlcat( buf, PERS( victim, ch, false ), MSL );
    }
 
    if( !ch->has_pcflag( PCFLAG_BRIEF ) && !victim->isnpc(  ) )
-      mudstrlcat( buf, victim->pcdata->title, MSL );
+      strlcat( buf, victim->pcdata->title, MSL );
 
-   mudstrlcat( buf, ch->color_str( AT_PERSON ), MSL );
+   strlcat( buf, ch->color_str( AT_PERSON ), MSL );
 
    timer_data *timer;
    if( ( timer = victim->get_timerptr( TIMER_DO_FUN ) ) != nullptr )
    {
       if( timer->do_fun == do_cast )
-         mudstrlcat( buf, " is here chanting.", MSL );
+         strlcat( buf, " is here chanting.", MSL );
       else if( timer->do_fun == do_dig )
-         mudstrlcat( buf, " is here digging.", MSL );
+         strlcat( buf, " is here digging.", MSL );
       else if( timer->do_fun == do_search )
-         mudstrlcat( buf, " is searching the area for something.", MSL );
+         strlcat( buf, " is searching the area for something.", MSL );
       else if( timer->do_fun == do_detrap )
-         mudstrlcat( buf, " is working with the trap here.", MSL );
+         strlcat( buf, " is working with the trap here.", MSL );
       else
-         mudstrlcat( buf, " is looking rather lost.", MSL );
+         strlcat( buf, " is looking rather lost.", MSL );
    }
    else
    {
@@ -529,23 +529,23 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
       switch ( victim->position )
       {
          default:
-            mudstrlcat( buf, " is... wait... WTF?", MSL );
+            strlcat( buf, " is... wait... WTF?", MSL );
             break;
 
          case POS_DEAD:
-            mudstrlcat( buf, " is DEAD!!", MSL );
+            strlcat( buf, " is DEAD!!", MSL );
             break;
 
          case POS_MORTAL:
-            mudstrlcat( buf, " is mortally wounded.", MSL );
+            strlcat( buf, " is mortally wounded.", MSL );
             break;
 
          case POS_INCAP:
-            mudstrlcat( buf, " is incapacitated.", MSL );
+            strlcat( buf, " is incapacitated.", MSL );
             break;
 
          case POS_STUNNED:
-            mudstrlcat( buf, " is lying here stunned.", MSL );
+            strlcat( buf, " is lying here stunned.", MSL );
             break;
 
          case POS_SLEEPING:
@@ -561,9 +561,9 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             else
             {
                if( ch->position == POS_SITTING || ch->position == POS_RESTING )
-                  mudstrlcat( buf, " is sleeping nearby.", MSL );
+                  strlcat( buf, " is sleeping nearby.", MSL );
                else
-                  mudstrlcat( buf, " is deep in slumber here.", MSL );
+                  strlcat( buf, " is deep in slumber here.", MSL );
             }
             break;
 
@@ -580,11 +580,11 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             else
             {
                if( ch->position == POS_RESTING )
-                  mudstrlcat( buf, " is sprawled out alongside you.", MSL );
+                  strlcat( buf, " is sprawled out alongside you.", MSL );
                else if( ch->position == POS_MOUNTED )
-                  mudstrlcat( buf, " is sprawled out at the foot of your mount.", MSL );
+                  strlcat( buf, " is sprawled out at the foot of your mount.", MSL );
                else
-                  mudstrlcat( buf, " is sprawled out here.", MSL );
+                  strlcat( buf, " is sprawled out here.", MSL );
             }
             break;
 
@@ -599,7 +599,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting in %s.", victim->on->short_descr );
             }
             else
-               mudstrlcat( buf, " is sitting here.", MSL );
+               strlcat( buf, " is sitting here.", MSL );
             break;
 
          case POS_STANDING:
@@ -613,42 +613,42 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
                   snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing in %s.", victim->on->short_descr );
             }
             else if( victim->is_immortal(  ) )
-               mudstrlcat( buf, " radiates with a godly light.", MSL );
+               strlcat( buf, " radiates with a godly light.", MSL );
             else if( ( victim->in_room->sector_type == SECT_UNDERWATER ) && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
-               mudstrlcat( buf, " is drowning here.", MSL );
+               strlcat( buf, " is drowning here.", MSL );
             else if( victim->in_room->sector_type == SECT_UNDERWATER )
-               mudstrlcat( buf, " is here in the water.", MSL );
+               strlcat( buf, " is here in the water.", MSL );
             else if( ( victim->in_room->sector_type == SECT_OCEANFLOOR ) && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
-               mudstrlcat( buf, " is drowning here.", MSL );
+               strlcat( buf, " is drowning here.", MSL );
             else if( victim->in_room->sector_type == SECT_OCEANFLOOR )
-               mudstrlcat( buf, " is standing here in the water.", MSL );
+               strlcat( buf, " is standing here in the water.", MSL );
             else if( victim->has_aflag( AFF_FLOATING ) || victim->has_aflag( AFF_FLYING ) )
-               mudstrlcat( buf, " is hovering here.", MSL );
+               strlcat( buf, " is hovering here.", MSL );
             else
-               mudstrlcat( buf, " is standing here.", MSL );
+               strlcat( buf, " is standing here.", MSL );
             break;
 
          case POS_SHOVE:
-            mudstrlcat( buf, " is being shoved around.", MSL );
+            strlcat( buf, " is being shoved around.", MSL );
             break;
 
          case POS_DRAG:
-            mudstrlcat( buf, " is being dragged around.", MSL );
+            strlcat( buf, " is being dragged around.", MSL );
             break;
 
          case POS_MOUNTED:
-            mudstrlcat( buf, " is here, upon ", MSL );
+            strlcat( buf, " is here, upon ", MSL );
             if( !victim->mount )
-               mudstrlcat( buf, "thin air???", MSL );
+               strlcat( buf, "thin air???", MSL );
             else if( victim->mount == ch )
-               mudstrlcat( buf, "your back.", MSL );
+               strlcat( buf, "your back.", MSL );
             else if( victim->in_room == victim->mount->in_room )
             {
-               mudstrlcat( buf, PERS( victim->mount, ch, false ), MSL );
-               mudstrlcat( buf, ".", MSL );
+               strlcat( buf, PERS( victim->mount, ch, false ), MSL );
+               strlcat( buf, ".", MSL );
             }
             else
-               mudstrlcat( buf, "someone who left??", MSL );
+               strlcat( buf, "someone who left??", MSL );
             break;
 
          case POS_FIGHTING:
@@ -656,10 +656,10 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
          case POS_DEFENSIVE:
          case POS_AGGRESSIVE:
          case POS_BERSERK:
-            mudstrlcat( buf, " is here, fighting ", MSL );
+            strlcat( buf, " is here, fighting ", MSL );
             if( !victim->fighting )
             {
-               mudstrlcat( buf, "thin air???", MSL );
+               strlcat( buf, "thin air???", MSL );
 
                /*
                 * some bug somewhere.... kinda hackey fix -h 
@@ -670,14 +670,14 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
                   victim->position = POS_MOUNTED;
             }
             else if( victim->who_fighting(  ) == ch )
-               mudstrlcat( buf, "YOU!", MSL );
+               strlcat( buf, "YOU!", MSL );
             else if( victim->in_room == victim->fighting->who->in_room )
             {
-               mudstrlcat( buf, PERS( victim->fighting->who, ch, false ), MSL );
-               mudstrlcat( buf, ".", MSL );
+               strlcat( buf, PERS( victim->fighting->who, ch, false ), MSL );
+               strlcat( buf, ".", MSL );
             }
             else
-               mudstrlcat( buf, "someone who left??", MSL );
+               strlcat( buf, "someone who left??", MSL );
             break;
       }
    }
@@ -685,7 +685,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    if( num > 1 && victim->isnpc(  ) )
       snprintf( buf + strlen( buf ), MSL - strlen( buf ), " (%d)", num );
 
-   mudstrlcat( buf, "\r\n", MSL );
+   strlcat( buf, "\r\n", MSL );
    buf[0] = UPPER( buf[0] );
 
    ch->print( buf );
@@ -949,7 +949,7 @@ CMDF( do_exits )
 
    ch->set_color( AT_EXITS );
 
-   mudstrlcpy( buf, fAuto ? "[Exits:" : "Obvious exits:\r\n", MSL );
+   strlcpy( buf, fAuto ? "[Exits:" : "Obvious exits:\r\n", MSL );
 
    bool found = false;
    list < exit_data * >::iterator iexit;
@@ -967,27 +967,27 @@ CMDF( do_exits )
             found = true;
             if( fAuto )
             {
-               mudstrlcat( buf, " ", MSL );
+               strlcat( buf, " ", MSL );
 
-               mudstrlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
+               strlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
 
                if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
-                  mudstrlcat( buf, "->(Overland)", MSL );
+                  strlcat( buf, "->(Overland)", MSL );
 
                /*
                 * New code added to display closed, or otherwise invisible exits to immortals 
                 * Installed by Samson 1-25-98 
                 */
                if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-                  mudstrlcat( buf, "->(Closed)", MSL );
+                  strlcat( buf, "->(Closed)", MSL );
                if( IS_EXIT_FLAG( pexit, EX_DIG ) )
-                  mudstrlcat( buf, "->(Dig)", MSL );
+                  strlcat( buf, "->(Dig)", MSL );
                if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )
-                  mudstrlcat( buf, "->(Window)", MSL );
+                  strlcat( buf, "->(Window)", MSL );
                if( IS_EXIT_FLAG( pexit, EX_HIDDEN ) )
-                  mudstrlcat( buf, "->(Hidden)", MSL );
+                  strlcat( buf, "->(Hidden)", MSL );
                if( pexit->to_room->flags.test( ROOM_DEATH ) )
-                  mudstrlcat( buf, "->(Deathtrap)", MSL );
+                  strlcat( buf, "->(Deathtrap)", MSL );
             }
             else
             {
@@ -998,18 +998,18 @@ CMDF( do_exits )
                 * Installed by Samson 1-25-98 
                 */
                if( pexit->to_room->is_dark( ch ) )
-                  mudstrlcat( buf, " (Dark)", MSL );
+                  strlcat( buf, " (Dark)", MSL );
                if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-                  mudstrlcat( buf, " (Closed)", MSL );
+                  strlcat( buf, " (Closed)", MSL );
                if( IS_EXIT_FLAG( pexit, EX_DIG ) )
-                  mudstrlcat( buf, " (Dig)", MSL );
+                  strlcat( buf, " (Dig)", MSL );
                if( IS_EXIT_FLAG( pexit, EX_HIDDEN ) )
-                  mudstrlcat( buf, " (Hidden)", MSL );
+                  strlcat( buf, " (Hidden)", MSL );
                if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )
-                  mudstrlcat( buf, " (Window)", MSL );
+                  strlcat( buf, " (Window)", MSL );
                if( pexit->to_room->flags.test( ROOM_DEATH ) )
-                  mudstrlcat( buf, " (Deathtrap)", MSL );
-               mudstrlcat( buf, "\r\n", MSL );
+                  strlcat( buf, " (Deathtrap)", MSL );
+               strlcat( buf, "\r\n", MSL );
             }
          }
       }
@@ -1021,14 +1021,14 @@ CMDF( do_exits )
             found = true;
             if( fAuto )
             {
-               mudstrlcat( buf, " ", MSL );
+               strlcat( buf, " ", MSL );
 
-               mudstrlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
+               strlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
 
                if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !IS_EXIT_FLAG( pexit, EX_DIG ) )
-                  mudstrlcat( buf, "->(Closed)", MSL );
+                  strlcat( buf, "->(Closed)", MSL );
                if( ch->has_aflag( AFF_DETECTTRAPS ) && pexit->to_room->flags.test( ROOM_DEATH ) )
-                  mudstrlcat( buf, "->(Deathtrap)", MSL );
+                  strlcat( buf, "->(Deathtrap)", MSL );
             }
             else
             {
@@ -1040,14 +1040,14 @@ CMDF( do_exits )
    }
 
    if( !found )
-      mudstrlcat( buf, fAuto ? " none]" : "None]", MSL );
+      strlcat( buf, fAuto ? " none]" : "None]", MSL );
    else
    {
       if( fAuto )
-         mudstrlcat( buf, "]", MSL );
+         strlcat( buf, "]", MSL );
    }
 
-   mudstrlcat( buf, "\r\n", MSL );
+   strlcat( buf, "\r\n", MSL );
    ch->print( buf );
 }
 
@@ -1104,18 +1104,18 @@ char *roomdesc( char_data * ch )
       if( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset )
       {
          if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
-            mudstrlcat( rdesc, ch->in_room->roomdesc, MSL );
+            strlcat( rdesc, ch->in_room->roomdesc, MSL );
       }
       else
       {
          if( ch->in_room->nitedesc && ch->in_room->nitedesc[0] != '\0' )
-            mudstrlcat( rdesc, ch->in_room->nitedesc, MSL );
+            strlcat( rdesc, ch->in_room->nitedesc, MSL );
          else if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
-            mudstrlcat( rdesc, ch->in_room->roomdesc, MSL );
+            strlcat( rdesc, ch->in_room->roomdesc, MSL );
       }
    }
    if( rdesc[0] == '\0' )
-      mudstrlcpy( rdesc, "(Not set)", MSL );
+      strlcpy( rdesc, "(Not set)", MSL );
    return rdesc;
 }
 
@@ -1841,17 +1841,17 @@ CMDF( do_examine )
             break;
 
          case ITEM_COOK:
-            mudstrlcpy( buf, "As you examine it carefully you notice that it ", MSL );
+            strlcpy( buf, "As you examine it carefully you notice that it ", MSL );
             dam = obj->value[2];
             if( dam >= 3 )
-               mudstrlcat( buf, "is burned to a crisp.", MSL );
+               strlcat( buf, "is burned to a crisp.", MSL );
             else if( dam == 2 )
-               mudstrlcat( buf, "is a little over cooked.", MSL );   /* Bugfix 5-18-99 */
+               strlcat( buf, "is a little over cooked.", MSL );   /* Bugfix 5-18-99 */
             else if( dam == 1 )
-               mudstrlcat( buf, "is perfectly roasted.", MSL );
+               strlcat( buf, "is perfectly roasted.", MSL );
             else
-               mudstrlcat( buf, "is raw.", MSL );
-            mudstrlcat( buf, "\r\n", MSL );
+               strlcat( buf, "is raw.", MSL );
+            strlcat( buf, "\r\n", MSL );
             ch->print( buf );
 
          case ITEM_FOOD:
@@ -1860,32 +1860,32 @@ CMDF( do_examine )
             else
                dam = 10;
             if( obj->item_type == ITEM_FOOD )
-               mudstrlcpy( buf, "As you examine it carefully you notice that it ", MSL );
+               strlcpy( buf, "As you examine it carefully you notice that it ", MSL );
             else
-               mudstrlcpy( buf, "Also it ", MSL );
+               strlcpy( buf, "Also it ", MSL );
             if( dam >= 10 )
-               mudstrlcat( buf, "is fresh.", MSL );
+               strlcat( buf, "is fresh.", MSL );
             else if( dam == 9 )
-               mudstrlcat( buf, "is nearly fresh.", MSL );
+               strlcat( buf, "is nearly fresh.", MSL );
             else if( dam == 8 )
-               mudstrlcat( buf, "is perfectly fine.", MSL );
+               strlcat( buf, "is perfectly fine.", MSL );
             else if( dam == 7 )
-               mudstrlcat( buf, "looks good.", MSL );
+               strlcat( buf, "looks good.", MSL );
             else if( dam == 6 )
-               mudstrlcat( buf, "looks ok.", MSL );
+               strlcat( buf, "looks ok.", MSL );
             else if( dam == 5 )
-               mudstrlcat( buf, "is a little stale.", MSL );
+               strlcat( buf, "is a little stale.", MSL );
             else if( dam == 4 )
-               mudstrlcat( buf, "is a bit stale.", MSL );
+               strlcat( buf, "is a bit stale.", MSL );
             else if( dam == 3 )
-               mudstrlcat( buf, "smells slightly off.", MSL );
+               strlcat( buf, "smells slightly off.", MSL );
             else if( dam == 2 )
-               mudstrlcat( buf, "smells quite rank.", MSL );
+               strlcat( buf, "smells quite rank.", MSL );
             else if( dam == 1 )
-               mudstrlcat( buf, "smells revolting!", MSL );
+               strlcat( buf, "smells revolting!", MSL );
             else if( dam <= 0 )
-               mudstrlcat( buf, "is crawling with maggots!", MSL );
-            mudstrlcat( buf, "\r\n", MSL );
+               strlcat( buf, "is crawling with maggots!", MSL );
+            strlcat( buf, "\r\n", MSL );
             ch->print( buf );
             break;
 

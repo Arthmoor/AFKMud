@@ -423,12 +423,12 @@ char *flag_string( int bitvector, const char *flagarray[] )
    for( x = 0; x < 32; ++x )
       if( IS_SET( bitvector, 1 << x ) )
       {
-         mudstrlcat( buf, flagarray[x], MSL );
+         strlcat( buf, flagarray[x], MSL );
          /*
           * don't catenate a blank if the last char is blank  --Gorog 
           */
          if( buf[0] != '\0' && ' ' != buf[strlen( buf ) - 1] )
-            mudstrlcat( buf, " ", MSL );
+            strlcat( buf, " ", MSL );
       }
 
    if( ( x = strlen( buf ) ) > 0 )

@@ -334,7 +334,7 @@ void send_ban_notice( descriptor_data *d, ban_data *ban )
       else if( duration >= 0 && duration <= 86400 )
          snprintf( buf, MSL, "Your site has been banned from this MUD for %ld hours.\r\n", (duration / 3600) );
       else
-         mudstrlcpy( buf, "Your site has been permanently banned from this MUD.\r\n", MSL );
+         strlcpy( buf, "Your site has been permanently banned from this MUD.\r\n", MSL );
 
       d->write( buf );
    }

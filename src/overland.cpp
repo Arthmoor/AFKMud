@@ -484,7 +484,7 @@ void load_continents( const int AREA_FILE_ALARM )
          break;
       }
 
-      mudstrlcpy( continent_file, fread_word( fpList ), 256 );
+      strlcpy( continent_file, fread_word( fpList ), 256 );
 
       if( continent_file[0] == '$' )
          break;
@@ -3371,7 +3371,7 @@ CMDF( do_mapedit )
       ch->printf( "&RHold on to your butts! Deletion of '%s' has begun!&D\r\n", continent->name.c_str( ) );
 
       snprintf( file_name, 256, "%s%s", MAP_DIR, continent->filename.c_str( ) );
-      mudstrlcpy( area_file, continent->areafile.c_str( ), 256 );
+      strlcpy( area_file, continent->areafile.c_str( ), 256 );
 
       // Ordinarily not a good idea to destroy an area file like this but the file should only ever be used for the map's purposes.
       unlink( area_file );

@@ -2281,7 +2281,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
       }
    }
 
-   mudstrlcpy( tmpcmndlst, com_list, MSL );
+   strlcpy( tmpcmndlst, com_list, MSL );
    command_list = tmpcmndlst;
 
    /*

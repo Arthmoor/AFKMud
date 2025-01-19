@@ -567,7 +567,7 @@ void interpret( char_data * ch, string argument )
        * Grab the command word.
        * Special parsing so ' can be a command, also no spaces needed after punctuation.
        */
-      mudstrlcpy( logline, argument.c_str(  ), MIL );
+      strlcpy( logline, argument.c_str(  ), MIL );
       if( !isalpha( argument[0] ) && !isdigit( argument[0] ) )
       {
          command = argument[0];
@@ -651,7 +651,7 @@ void interpret( char_data * ch, string argument )
    snprintf( lastplayercmd, MIL * 2, "%s used command: %s", ch->name, logline );
 
    if( found && cmd->log == LOG_NEVER )
-      mudstrlcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX", MIL );
+      strlcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX", MIL );
 
    loglvl = found ? cmd->log : LOG_NORMAL;
 
@@ -834,7 +834,7 @@ void interpret( char_data * ch, string argument )
       log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: %s: %s %s (R:%d S:%ld.%06ld)", ch->name,
                        cmd->name.c_str(  ), ( cmd->log == LOG_NEVER ? "XXX" : argument.c_str(  ) ), ch->in_room ? ch->in_room->vnum : 0, time_used.tv_sec, time_used.tv_usec );
    }
-   mudstrlcpy( lastplayercmd, "No commands pending", MIL * 2 );
+   strlcpy( lastplayercmd, "No commands pending", MIL * 2 );
 }
 
 void cmdf( char_data * ch, const char *fmt, ... )

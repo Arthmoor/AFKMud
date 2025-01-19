@@ -187,7 +187,7 @@ room_index::~room_index(  )
                char filename[256];
 
                if( !pArea->flags.test( AFLAG_PROTOTYPE ) )
-                  mudstrlcpy( filename, pArea->filename, 256 );
+                  strlcpy( filename, pArea->filename, 256 );
                else
                   snprintf( filename, 256, "%s%s", BUILD_DIR, pArea->filename );
                pArea->fold( filename, false );
@@ -1280,9 +1280,9 @@ void room_index::reset(  )
 
                STRFREE( mob->name );
                STRFREE( mob->short_descr );
-               mudstrlcpy( mob_keywords, namegenCheckString.c_str(  ), MSL );
-               mudstrlcat( mob_keywords, " ", MSL );
-               mudstrlcat( mob_keywords, nameg.c_str(  ), MSL );
+               strlcpy( mob_keywords, namegenCheckString.c_str(  ), MSL );
+               strlcat( mob_keywords, " ", MSL );
+               strlcat( mob_keywords, nameg.c_str(  ), MSL );
                mob->name = STRALLOC( mob_keywords );
                mob->short_descr = STRALLOC( nameg.c_str(  ) );
 
