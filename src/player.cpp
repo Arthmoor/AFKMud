@@ -1064,7 +1064,7 @@ CMDF( do_bio )
          ch->substate = SUB_PERSONAL_BIO;
          ch->pcdata->dest_buf = ch;
          if( !ch->pcdata->bio || ch->pcdata->bio[0] == '\0' )
-            ch->pcdata->bio = str_dup( "" );
+            ch->pcdata->bio = strdup( "" );
          ch->editor_desc_printf( "Your bio (%s).", ch->name );
          ch->start_editing( ch->pcdata->bio );
          return;

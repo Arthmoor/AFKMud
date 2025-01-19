@@ -1294,7 +1294,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
       const char *desc = fread_flagstring( fp );
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-         pRoomIndex->roomdesc = str_dup( desc );
+         pRoomIndex->roomdesc = strdup( desc );
 
       /*
        * Area number         fread_number( fp ); 
@@ -1919,7 +1919,7 @@ void load_stock_area_file( const string & filename, bool manual )
       tarea = create_area(  );
       tarea->name = fread_string_nohash( fpArea );
       tarea->author = STRALLOC( "unknown" );
-      tarea->filename = str_dup( strArea );
+      tarea->filename = strdup( strArea );
       tarea->version = 0;
    }
    else if( !str_cmp( word, "VERSION" ) )
@@ -1934,7 +1934,7 @@ void load_stock_area_file( const string & filename, bool manual )
             tarea = create_area(  );
             tarea->name = fread_string_nohash( fpArea );
             tarea->author = STRALLOC( "unknown" );
-            tarea->filename = str_dup( strArea );
+            tarea->filename = strdup( strArea );
             tarea->version = temp;
          }
          else

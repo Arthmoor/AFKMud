@@ -1027,7 +1027,7 @@ skill_type *fread_skill( FILE * fp, int version )
                char mod[MIL];
 
                aff = new smaug_affect;
-               aff->duration = str_dup( fread_word( fp ) );
+               aff->duration = strdup( fread_word( fp ) );
                aff->location = fread_number( fp );
                strlcpy( mod, fread_word( fp ), MIL );
 
@@ -1082,7 +1082,7 @@ skill_type *fread_skill( FILE * fp, int version )
 
                if( aff->location == APPLY_AFFECT )
                   aff->location = APPLY_EXT_AFFECT;
-               aff->modifier = str_dup( mod );
+               aff->modifier = strdup( mod );
                aff->bit = fread_number( fp );
                if( version < 3 && aff->bit > -1 )
                   ++aff->bit;
@@ -1116,13 +1116,13 @@ skill_type *fread_skill( FILE * fp, int version )
                {
                   skill->skill_fun = dofun;
                   skill->spell_fun = nullptr;
-                  skill->skill_fun_name = str_dup( w );
+                  skill->skill_fun_name = strdup( w );
                }
                else if( str_prefix( "do_", w ) && ( spellfun = spell_function( w ) ) != spell_notfound )
                {
                   skill->spell_fun = spellfun;
                   skill->skill_fun = nullptr;
-                  skill->spell_fun_name = str_dup( w );
+                  skill->spell_fun_name = strdup( w );
                }
                else
                {
@@ -2741,7 +2741,7 @@ CMDF( do_sset )
       else
          skill_table[num_skills++] = skill;
       skill->min_mana = 0;
-      skill->name = str_dup( argument.c_str(  ) );
+      skill->name = strdup( argument.c_str(  ) );
       skill->spell_fun = spell_smaug;
       skill->guild = -1;
       skill->type = type;
@@ -2922,14 +2922,14 @@ CMDF( do_sset )
             skill->skill_fun = skillfun;
             skill->spell_fun = nullptr;
             DISPOSE( skill->skill_fun_name );
-            skill->skill_fun_name = str_dup( argument.c_str(  ) );
+            skill->skill_fun_name = strdup( argument.c_str(  ) );
          }
          else if( ( spellfun = spell_function( argument ) ) != spell_notfound )
          {
             skill->spell_fun = spellfun;
             skill->skill_fun = nullptr;
             DISPOSE( skill->skill_fun_name );
-            skill->spell_fun_name = str_dup( argument.c_str(  ) );
+            skill->spell_fun_name = strdup( argument.c_str(  ) );
          }
          else
          {
@@ -3078,7 +3078,7 @@ CMDF( do_sset )
             duration.clear(  );
          if( !str_cmp( modifier, "0" ) )
             modifier.clear(  );
-         aff->duration = str_dup( duration.c_str(  ) );
+         aff->duration = strdup( duration.c_str(  ) );
          aff->location = loc;
          if( loc == APPLY_AFFECT || loc == APPLY_EXT_AFFECT )
          {
@@ -3107,7 +3107,7 @@ CMDF( do_sset )
                modval = 0;
             modifier = ris_flags[modval];
          }
-         aff->modifier = str_dup( modifier.c_str(  ) );
+         aff->modifier = strdup( modifier.c_str(  ) );
          aff->bit = bit;
          skill->affects.push_back( aff );
          ch->print( "Ok.\r\n" );
@@ -3177,7 +3177,7 @@ CMDF( do_sset )
       if( !str_cmp( arg2, "name" ) )
       {
          DISPOSE( skill->name );
-         skill->name = str_dup( argument.c_str(  ) );
+         skill->name = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3197,7 +3197,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->noun_damage );
          if( str_cmp( argument, "clear" ) )
-            skill->noun_damage = str_dup( argument.c_str(  ) );
+            skill->noun_damage = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3205,7 +3205,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->msg_off );
          if( str_cmp( argument, "clear" ) )
-            skill->msg_off = str_dup( argument.c_str(  ) );
+            skill->msg_off = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3213,7 +3213,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->hit_char );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_char = str_dup( argument.c_str(  ) );
+            skill->hit_char = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3221,7 +3221,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->hit_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_vict = str_dup( argument.c_str(  ) );
+            skill->hit_vict = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3229,7 +3229,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->hit_room );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_room = str_dup( argument.c_str(  ) );
+            skill->hit_room = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3237,7 +3237,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->hit_dest );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_dest = str_dup( argument.c_str(  ) );
+            skill->hit_dest = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3245,7 +3245,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->miss_char );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_char = str_dup( argument.c_str(  ) );
+            skill->miss_char = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3253,7 +3253,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->miss_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_vict = str_dup( argument.c_str(  ) );
+            skill->miss_vict = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3261,7 +3261,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->miss_room );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_room = str_dup( argument.c_str(  ) );
+            skill->miss_room = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3269,7 +3269,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->die_char );
          if( str_cmp( argument, "clear" ) )
-            skill->die_char = str_dup( argument.c_str(  ) );
+            skill->die_char = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3277,7 +3277,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->die_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->die_vict = str_dup( argument.c_str(  ) );
+            skill->die_vict = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3285,7 +3285,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->die_room );
          if( str_cmp( argument, "clear" ) )
-            skill->die_room = str_dup( argument.c_str(  ) );
+            skill->die_room = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3293,7 +3293,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->imm_char );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_char = str_dup( argument.c_str(  ) );
+            skill->imm_char = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3301,7 +3301,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->imm_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_vict = str_dup( argument.c_str(  ) );
+            skill->imm_vict = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3309,7 +3309,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->imm_room );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_room = str_dup( argument.c_str(  ) );
+            skill->imm_room = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3317,7 +3317,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->dice );
          if( str_cmp( argument, "clear" ) )
-            skill->dice = str_dup( argument.c_str(  ) );
+            skill->dice = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3325,7 +3325,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->components );
          if( str_cmp( argument, "clear" ) )
-            skill->components = str_dup( argument.c_str(  ) );
+            skill->components = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3333,7 +3333,7 @@ CMDF( do_sset )
       {
          DISPOSE( skill->teachers );
          if( str_cmp( argument, "clear" ) )
-            skill->teachers = str_dup( argument.c_str(  ) );
+            skill->teachers = strdup( argument.c_str(  ) );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3649,7 +3649,7 @@ CMDF( do_detrap )
          }
          act( AT_ACTION, "You carefully begin your attempt to remove a trap from $p...", ch, obj, nullptr, TO_CHAR );
          act( AT_ACTION, "$n carefully attempts to remove a trap from $p...", ch, obj, nullptr, TO_ROOM );
-         ch->alloc_ptr = str_dup( obj->name );
+         ch->alloc_ptr = strdup( obj->name );
          ch->add_timer( TIMER_DO_FUN, 3, do_detrap, 1 );
 /*	    ch->WAIT_STATE( skill_table[gsn_detrap]->beats ); */
          return;
@@ -3785,7 +3785,7 @@ CMDF( do_dig )
             }
          }
          ch->add_timer( TIMER_DO_FUN, UMIN( skill_table[gsn_dig]->beats / 10, 3 ), do_dig, 1 );
-         ch->alloc_ptr = str_dup( arg.c_str(  ) );
+         ch->alloc_ptr = strdup( arg.c_str(  ) );
          ch->print( "You begin digging...\r\n" );
          act( AT_PLAIN, "$n begins digging...", ch, nullptr, nullptr, TO_ROOM );
          return;
@@ -3931,7 +3931,7 @@ CMDF( do_search )
          ch->add_timer( TIMER_DO_FUN, UMIN( skill_table[gsn_search]->beats / 10, 3 ), do_search, 1 );
          ch->print( "You begin your search...\r\n" );
          act( AT_MAGIC, "$n begins searching the room.....", ch, nullptr, nullptr, TO_ROOM );
-         ch->alloc_ptr = str_dup( arg.c_str(  ) );
+         ch->alloc_ptr = strdup( arg.c_str(  ) );
          return;
 
       case 1:

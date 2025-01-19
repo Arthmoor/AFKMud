@@ -190,8 +190,8 @@ CMDF( do_rcopy )
    copy->area = ( ch->pcdata->area ) ? ch->pcdata->area : orig->area;
    copy->vnum = cvnum;
    copy->name = QUICKLINK( orig->name );
-   copy->roomdesc = str_dup( orig->roomdesc );
-   copy->nitedesc = str_dup( orig->nitedesc );
+   copy->roomdesc = strdup( orig->roomdesc );
+   copy->nitedesc = strdup( orig->nitedesc );
    copy->flags = orig->flags;
    copy->sector_type = orig->sector_type;
    copy->baselight = orig->baselight;
@@ -627,7 +627,7 @@ void redit_parse( descriptor_data * d, string & arg )
 
                d->character->print( "Enter room description:-\r\n" );
                if( !room->roomdesc )
-                  room->roomdesc = str_dup( "" );
+                  room->roomdesc = strdup( "" );
                d->character->editor_desc_printf( "Room description for vnum %d", room->vnum );
                d->character->start_editing( room->roomdesc );
                break;
@@ -639,7 +639,7 @@ void redit_parse( descriptor_data * d, string & arg )
 
                d->character->print( "Enter room night description:-\r\n" );
                if( !room->nitedesc )
-                  room->nitedesc = str_dup( "" );
+                  room->nitedesc = strdup( "" );
                d->character->editor_desc_printf( "Night description for vnum %d", room->vnum );
                d->character->start_editing( room->nitedesc );
                break;

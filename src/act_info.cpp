@@ -2556,7 +2556,7 @@ CMDF( do_afk )
       ch->print( "You are now afk.\r\n" );
       DISPOSE( ch->pcdata->afkbuf );
       if( argument.empty(  ) )
-         ch->pcdata->afkbuf = str_dup( argument.c_str(  ) );
+         ch->pcdata->afkbuf = strdup( argument.c_str(  ) );
       act( AT_GREY, "$n is now afk.", ch, nullptr, nullptr, TO_ROOM );
    }
 }
@@ -2646,7 +2646,7 @@ void load_motd( char_data * ch, const char *name )
    }
    FCLOSE( fp );
    DISPOSE( ch->pcdata->motd_buf );
-   ch->pcdata->motd_buf = str_dup( buf );
+   ch->pcdata->motd_buf = strdup( buf );
 }
 
 /* Handles editing the MOTDs on the server, independent of helpfiles now - Samson 12-31-00 */
@@ -2740,7 +2740,7 @@ CMDF( do_motdedit )
       ch->substate = SUB_EDMOTD;
       ch->pcdata->dest_buf = ch;
       if( !ch->pcdata->motd_buf || ch->pcdata->motd_buf[0] == '\0' )
-         ch->pcdata->motd_buf = str_dup( "" );
+         ch->pcdata->motd_buf = strdup( "" );
       ch->start_editing( ch->pcdata->motd_buf );
       ch->set_editor_desc( "An MOTD." );
       return;

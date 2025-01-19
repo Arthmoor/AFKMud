@@ -45,8 +45,13 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.5.1"
+#define CODEVERSION "2.5.2"
 #define COPYRIGHT "Copyright The Alsherok Team 1997-2025. All rights reserved."
+
+// Backward compatibility for snippets and such.
+#define mudstrlcpy strlcpy
+#define mudstrlcat strlcat
+#define str_dup strdup
 
 /*
  * String and memory management parameters.
@@ -713,7 +718,7 @@ do                                             \
                log_printf( "&RSTRFREEing bad pointer: %s, line %d\n", __FILE__, __LINE__ ); \
          }                                     \
          else                                  \
-            delete[] (point);                  \
+            free( (point) );                   \
       }                                        \
       else                                     \
          free( (point) );                      \
@@ -745,11 +750,11 @@ do                                               \
    {                                             \
       if( !in_hash_table( (point) ) )            \
       {                                          \
-         log_printf( "&RSTRFREE called on str_dup pointer: %s, line %d\n", __FILE__, __LINE__ ); \
+         log_printf( "&RSTRFREE called on strdup pointer: %s, line %d\n", __FILE__, __LINE__ ); \
          log_string( "Attempting to correct." ); \
          free( (point) );                        \
       }                                          \
-      else if( str_free((point)) == -1 )         \
+      else if( str_free( (point) ) == -1 )       \
          log_printf( "&RSTRFREEing bad pointer: %s, line %d\n", __FILE__, __LINE__ ); \
       (point) = nullptr;                         \
    }                                             \
@@ -1253,7 +1258,6 @@ void make_wizlist( void );
 bool hasname( const string &, const string & );
 void removename( string &, const string & );
 void addname( string &, const string & );
-char *str_dup( const char * );
 void stralloc_printf( char **, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void strdup_printf( char **, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void smash_tilde( char * );

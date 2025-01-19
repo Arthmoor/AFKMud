@@ -1300,7 +1300,7 @@ area_data *fread_smaugfuss_area( FILE * fp )
       if( !str_cmp( word, "AREADATA" ) )
       {
          tarea = create_area(  );
-         tarea->filename = str_dup( strArea );
+         tarea->filename = strdup( strArea );
          fread_fuss_areadata( fp, tarea );
       }
       else if( !str_cmp( word, "MOBILE" ) )

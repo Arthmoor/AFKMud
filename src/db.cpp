@@ -699,7 +699,7 @@ void fread_string( string & newstring, FILE * fp )
    newstring = buf;
 }
 
-/* Read a string from file fp using str_dup (ie: no string hashing)
+/* Read a string from file fp using strdup (ie: no string hashing)
  * This will probably become obsolete after the std::string conversions are done.
  */
 char *fread_string_nohash( FILE * fp )
@@ -707,7 +707,7 @@ char *fread_string_nohash( FILE * fp )
    char buf[MSL];
 
    strlcpy( buf, fread_flagstring( fp ), MSL );
-   return str_dup( buf );
+   return strdup( buf );
 }
 
 /*

@@ -247,7 +247,7 @@ CMDF( do_comment )
       ch->substate = SUB_WRITING_NOTE;
       ch->pcdata->dest_buf = ch->pcdata->pnote;
       if( !ch->pcdata->pnote->text || ch->pcdata->pnote->text[0] == '\0' )
-         ch->pcdata->pnote->text = str_dup( "" );
+         ch->pcdata->pnote->text = strdup( "" );
       ch->set_editor_desc( "A player comment." );
       ch->start_editing( ch->pcdata->pnote->text );
       return;
@@ -258,7 +258,7 @@ CMDF( do_comment )
       if( !ch->pcdata->pnote )
          ch->note_attach(  );
       DISPOSE( ch->pcdata->pnote->subject );
-      ch->pcdata->pnote->subject = str_dup( argument.c_str(  ) );
+      ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
       ch->print( "Ok.\r\n" );
       return;
    }
@@ -446,10 +446,10 @@ void pc_data::fread_old_comment( FILE * fp )
          pcnote->sender = STRALLOC( "None" );
 
       if( !pnote->subject )
-         pcnote->subject = str_dup( "Error: Subject not found" );
+         pcnote->subject = strdup( "Error: Subject not found" );
 
       if( !pnote->text )
-         pcnote->text = str_dup( "Error: Comment text not found." );
+         pcnote->text = strdup( "Error: Comment text not found." );
 
       pcnote->date_stamp = current_time;
       comments.push_back( pcnote );

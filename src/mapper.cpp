@@ -45,7 +45,6 @@
 *  around, comes around.                                                  *
 ***************************************************************************
 *  Converted for AFKMud 1.64 by Zarius (jeff@mindcloud.com)               *
-*  Downloaded from http://www.mindcloud.com                               *
 *  If you like the snippet let me know                                    *
 ***************************************************************************/
 /**************************************************************************
@@ -550,7 +549,7 @@ void show_map( char_data * ch, char *text )
       if( pos > 0 )
       {
          strlcat( buf, ch->color_str( AT_RMDESC ), MSL * 2 );
-         strncat( buf, p, pos );
+         strncat( buf, p, pos ); /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
          p += pos;
       }
       else
@@ -621,7 +620,7 @@ void show_map( char_data * ch, char *text )
          if( pos > 0 )
          {
             strlcat( buf, col, MSL * 2 );
-            strncat( buf, p, pos );
+            strncat( buf, p, pos ); /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
             p += pos;
          }
          else
@@ -652,7 +651,7 @@ void show_map( char_data * ch, char *text )
       if( pos > 0 )
       {
          strlcat( buf, col, MSL * 2 );
-         strncat( buf, p, pos );
+         strncat( buf, p, pos ); /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
          p += pos;
          strlcat( buf, "\r\n", MSL * 2 );
       }
@@ -687,7 +686,7 @@ void show_map( char_data * ch, char *text )
          if( pos > 0 )
          {
             strlcat( buf, col, MSL * 2 );
-            strncat( buf, p, pos );
+            strncat( buf, p, pos ); /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
             p += pos;
             strlcat( buf, "\r\n", MSL * 2 );
          }

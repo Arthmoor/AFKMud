@@ -1681,7 +1681,7 @@ area_data *fread_afk_area( FILE * fp )
       if( !str_cmp( word, "AREADATA" ) )
       {
          tarea = create_area(  );
-         tarea->filename = str_dup( strArea );
+         tarea->filename = strdup( strArea );
          fread_afk_areadata( fp, tarea );
       }
       else if( !str_cmp( word, "MOBILE" ) )
@@ -1774,7 +1774,7 @@ void load_area_file( const string & filename, bool isproto )
    {
       tarea = create_area();
 
-      tarea->filename = str_dup( strArea );
+      tarea->filename = strdup( strArea );
       tarea->name = fread_string_nohash( fpArea );
    }
    else
@@ -2666,7 +2666,7 @@ void assign_area( char_data * ch )
 
          tarea = create_area(  );
          strdup_printf( &tarea->name, "[PROTO] %s's area in progress", ch->name );
-         tarea->filename = str_dup( taf );
+         tarea->filename = strdup( taf );
          stralloc_printf( &tarea->author, "%s", ch->name );
          tarea->sort_name(  );
          tarea->sort_vnums(  );
@@ -2766,11 +2766,11 @@ CMDF( do_installarea )
       }
 
       DISPOSE( tarea->name );
-      tarea->name = str_dup( argument.c_str(  ) );
+      tarea->name = strdup( argument.c_str(  ) );
 
       strlcpy( oldfilename, tarea->filename, 256 );
       DISPOSE( tarea->filename );
-      tarea->filename = str_dup( arg2.c_str(  ) );
+      tarea->filename = strdup( arg2.c_str(  ) );
 
       /*
        * Fold area with install flag -- auto-removes prototype flags 
@@ -2932,7 +2932,7 @@ CMDF( do_aset )
       }
 
       DISPOSE( tarea->name );
-      tarea->name = str_dup( argument.c_str(  ) );
+      tarea->name = strdup( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       return;
    }
@@ -2946,7 +2946,7 @@ CMDF( do_aset )
 
       strlcpy( filename, tarea->filename, 256 );
       DISPOSE( tarea->filename );
-      tarea->filename = str_dup( argument.c_str(  ) );
+      tarea->filename = strdup( argument.c_str(  ) );
       rename( filename, tarea->filename );
       write_area_list(  );
       ch->print( "Done.\r\n" );
@@ -3140,7 +3140,7 @@ CMDF( do_aset )
    {
       DISPOSE( tarea->resetmsg );
       if( str_cmp( argument, "clear" ) )
-         tarea->resetmsg = str_dup( argument.c_str(  ) );
+         tarea->resetmsg = strdup( argument.c_str(  ) );
       ch->print( "Done.\r\n" );
       return;
    }  /* Rennard */

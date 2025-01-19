@@ -947,7 +947,7 @@ void load_rooms( area_data * tarea, FILE * fp )
 
       const char *desc = fread_flagstring( fp );
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-         pRoomIndex->roomdesc = str_dup( desc );
+         pRoomIndex->roomdesc = strdup( desc );
 
       /*
        * Check for NiteDesc's  -- Dracones 
@@ -956,7 +956,7 @@ void load_rooms( area_data * tarea, FILE * fp )
       {
          const char *ndesc = fread_flagstring( fp );
          if( ndesc && ndesc[0] != '\0' && str_cmp( ndesc, "(null)" ) )
-            pRoomIndex->nitedesc = str_dup( ndesc );
+            pRoomIndex->nitedesc = strdup( ndesc );
       }
 
       int sector = get_sectypes( fread_flagstring( fp ) );

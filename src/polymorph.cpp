@@ -749,21 +749,21 @@ CMDF( do_morphset )
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->hit );
       if( str_cmp( arg3, "0" ) )
-         morph->hit = str_dup( arg3.c_str(  ) );
+         morph->hit = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "mana" ) )
    {
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->mana );
       if( str_cmp( arg3, "0" ) )
-         morph->mana = str_dup( arg3.c_str(  ) );
+         morph->mana = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "move" ) )
    {
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->move );
       if( str_cmp( arg3, "0" ) )
-         morph->move = str_dup( arg3.c_str(  ) );
+         morph->move = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "ac" ) )
    {
@@ -779,14 +779,14 @@ CMDF( do_morphset )
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->hitroll );
       if( str_cmp( arg3, "0" ) )
-         morph->hitroll = str_dup( arg3.c_str(  ) );
+         morph->hitroll = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "damroll" ) )
    {
       argument = one_argument( argument, arg3 );
       DISPOSE( morph->damroll );
       if( str_cmp( arg3, "0" ) )
-         morph->damroll = str_dup( arg3.c_str(  ) );
+         morph->damroll = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "dodge" ) )
    {
@@ -1049,32 +1049,32 @@ CMDF( do_morphset )
    else if( !str_cmp( arg2, "short" ) )
    {
       DISPOSE( morph->short_desc );
-      morph->short_desc = str_dup( arg3.c_str(  ) );
+      morph->short_desc = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "morphother" ) )
    {
       DISPOSE( morph->morph_other );
-      morph->morph_other = str_dup( arg3.c_str(  ) );
+      morph->morph_other = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "morphself" ) )
    {
       DISPOSE( morph->morph_self );
-      morph->morph_self = str_dup( arg3.c_str(  ) );
+      morph->morph_self = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "unmorphother" ) )
    {
       DISPOSE( morph->unmorph_other );
-      morph->unmorph_other = str_dup( arg3.c_str(  ) );
+      morph->unmorph_other = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "unmorphself" ) )
    {
       DISPOSE( morph->unmorph_self );
-      morph->unmorph_self = str_dup( arg3.c_str(  ) );
+      morph->unmorph_self = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "keyword" ) )
    {
       DISPOSE( morph->key_words );
-      morph->key_words = str_dup( arg3.c_str(  ) );
+      morph->key_words = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "long" ) )
       strdup_printf( &morph->long_desc, "%s\r\n", arg3.c_str(  ) );
@@ -1083,7 +1083,7 @@ CMDF( do_morphset )
       if( !arg3.empty(  ) )
       {
          DISPOSE( morph->description );
-         morph->description = str_dup( arg3.c_str(  ) );
+         morph->description = strdup( arg3.c_str(  ) );
       }
       ch->CHECK_SUBRESTRICTED(  );
       if( ch->substate == SUB_REPEATCMD )
@@ -1093,7 +1093,7 @@ CMDF( do_morphset )
       ch->substate = SUB_MORPH_DESC;
       ch->pcdata->dest_buf = morph;
       if( !morph->description || morph->description[0] == '\0' )
-         morph->description = str_dup( "" );
+         morph->description = strdup( "" );
       ch->set_editor_desc( "A morph description." );
       ch->start_editing( morph->description );
       return;
@@ -1101,14 +1101,14 @@ CMDF( do_morphset )
    else if( !str_cmp( arg2, "name" ) )
    {
       DISPOSE( morph->name );
-      morph->name = str_dup( arg3.c_str(  ) );
+      morph->name = strdup( arg3.c_str(  ) );
    }
    else if( !str_cmp( arg2, "help" ) )
    {
       if( !arg3.empty(  ) )
       {
          DISPOSE( morph->help );
-         morph->help = str_dup( arg3.c_str(  ) );
+         morph->help = strdup( arg3.c_str(  ) );
       }
       ch->CHECK_SUBRESTRICTED(  );
       if( ch->substate == SUB_REPEATCMD )
@@ -1118,7 +1118,7 @@ CMDF( do_morphset )
       ch->substate = SUB_MORPH_HELP;
       ch->pcdata->dest_buf = morph;
       if( !morph->help || morph->help[0] == '\0' )
-         morph->help = str_dup( "" );
+         morph->help = strdup( "" );
       ch->set_editor_desc( "A morph help file." );
       ch->start_editing( morph->help );
       return;
@@ -1135,7 +1135,7 @@ CMDF( do_morphset )
       else
          snprintf( buf, MSL, "%s %s", morph->skills, arg3.c_str(  ) );
       DISPOSE( morph->skills );
-      morph->skills = str_dup( buf );
+      morph->skills = strdup( buf );
    }
    else if( !str_cmp( arg2, "noskills" ) )
    {
@@ -1149,7 +1149,7 @@ CMDF( do_morphset )
       else
          snprintf( buf, MSL, "%s %s", morph->no_skills, arg3.c_str(  ) );
       DISPOSE( morph->no_skills );
-      morph->no_skills = str_dup( buf );
+      morph->no_skills = strdup( buf );
    }
    else if( !str_cmp( arg2, "Class" ) )
    {
@@ -1728,7 +1728,7 @@ morph_data *fread_morph( FILE * fp )
 
    morph = new morph_data;
    morph_defaults( morph );
-   morph->name = str_dup( word );
+   morph->name = strdup( word );
 
    for( ;; )
    {
@@ -2053,23 +2053,23 @@ void load_morphs( void )
  */
 void copy_morph( morph_data * morph, morph_data * temp )
 {
-   morph->damroll = str_dup( temp->damroll );
-   morph->description = str_dup( temp->description );
-   morph->help = str_dup( temp->help );
-   morph->hit = str_dup( temp->hit );
-   morph->hitroll = str_dup( temp->hitroll );
-   morph->key_words = str_dup( temp->key_words );
-   morph->long_desc = str_dup( temp->long_desc );
-   morph->mana = str_dup( temp->mana );
-   morph->morph_other = str_dup( temp->morph_other );
-   morph->morph_self = str_dup( temp->morph_self );
-   morph->move = str_dup( temp->move );
-   morph->name = str_dup( temp->name );
-   morph->short_desc = str_dup( temp->short_desc );
-   morph->skills = str_dup( temp->skills );
-   morph->no_skills = str_dup( temp->no_skills );
-   morph->unmorph_other = str_dup( temp->unmorph_other );
-   morph->unmorph_self = str_dup( temp->unmorph_self );
+   morph->damroll = strdup( temp->damroll );
+   morph->description = strdup( temp->description );
+   morph->help = strdup( temp->help );
+   morph->hit = strdup( temp->hit );
+   morph->hitroll = strdup( temp->hitroll );
+   morph->key_words = strdup( temp->key_words );
+   morph->long_desc = strdup( temp->long_desc );
+   morph->mana = strdup( temp->mana );
+   morph->morph_other = strdup( temp->morph_other );
+   morph->morph_self = strdup( temp->morph_self );
+   morph->move = strdup( temp->move );
+   morph->name = strdup( temp->name );
+   morph->short_desc = strdup( temp->short_desc );
+   morph->skills = strdup( temp->skills );
+   morph->no_skills = strdup( temp->no_skills );
+   morph->unmorph_other = strdup( temp->unmorph_other );
+   morph->unmorph_self = strdup( temp->unmorph_self );
    morph->affected_by = temp->affected_by;
    morph->Class = temp->Class;
    morph->sex = temp->sex;
@@ -2160,9 +2160,9 @@ CMDF( do_morphcreate )
    if( !argument.empty(  ) && !str_cmp( argument, "copy" ) && temp )
       copy_morph( morph, temp );
    else
-      morph->name = str_dup( arg1.c_str(  ) );
+      morph->name = strdup( arg1.c_str(  ) );
    if( !morph->short_desc || morph->short_desc[0] == '\0' )
-      morph->short_desc = str_dup( arg1.c_str(  ) );
+      morph->short_desc = strdup( arg1.c_str(  ) );
    morph->vnum = morph_vnum;
    ++morph_vnum;
    morphlist.push_back( morph );

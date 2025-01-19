@@ -239,7 +239,7 @@ CMDF( do_bamfin )
    {
       smash_tilde( argument );
       DISPOSE( ch->pcdata->bamfin );
-      ch->pcdata->bamfin = str_dup( argument.c_str(  ) );
+      ch->pcdata->bamfin = strdup( argument.c_str(  ) );
       ch->print( "&YBamfin set.\r\n" );
    }
 }
@@ -250,7 +250,7 @@ CMDF( do_bamfout )
    {
       smash_tilde( argument );
       DISPOSE( ch->pcdata->bamfout );
-      ch->pcdata->bamfout = str_dup( argument.c_str(  ) );
+      ch->pcdata->bamfout = strdup( argument.c_str(  ) );
       ch->print( "&YBamfout set.\r\n" );
    }
 }

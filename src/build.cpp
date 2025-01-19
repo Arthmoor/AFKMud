@@ -4388,7 +4388,7 @@ CMDF( do_redit )
       ch->substate = SUB_ROOM_DESC;
       ch->pcdata->dest_buf = location;
       if( !location->roomdesc || location->roomdesc[0] == '\0' )
-         location->roomdesc = str_dup( "" );
+         location->roomdesc = strdup( "" );
       ch->editor_desc_printf( "Description of room vnum %d (%s).", location->vnum, location->name );
       ch->start_editing( location->roomdesc );
       return;
@@ -4406,7 +4406,7 @@ CMDF( do_redit )
       ch->substate = SUB_ROOM_DESC_NITE;
       ch->pcdata->dest_buf = location;
       if( !location->nitedesc || location->nitedesc[0] == '\0' )
-         location->nitedesc = str_dup( "" );
+         location->nitedesc = strdup( "" );
       ch->editor_desc_printf( "Night description of room vnum %d (%s).", location->vnum, location->name );
       ch->start_editing( location->nitedesc );
       return;

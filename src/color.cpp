@@ -1237,7 +1237,7 @@ const char *colorize( const string & txt, descriptor_data * d )
          {
             if( ( MSL - ( reslen = strlen( result ) ) ) <= ( colstr - prevstr ) )
             {
-               bug( "%s: OVERFLOW in internal MSL buffer!", __PRETTY_FUNCTION__ );
+               bug( "%s -> %s:%d: OVERFLOW in internal MSL buffer!", __func__, __FILE__, __LINE__ );
                break;
             }
             strncat( result, prevstr, ( colstr - prevstr ) );  /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */

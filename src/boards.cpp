@@ -743,9 +743,9 @@ board_data *read_old_board( FILE * fp )
                board->nlist.clear(  );
                if( !board->objvnum )
                   board->objvnum = 0;  /* default to global */
-               board->desc = str_dup( "Newly converted board!" );
+               board->desc = strdup( "Newly converted board!" );
                board->expire = MAX_BOARD_EXPIRE;
-               board->filename = str_dup( board->name );
+               board->filename = strdup( board->name );
                if( board->posters[0] == '\0' )
                   STRFREE( board->posters );
                if( board->readers[0] == '\0' )
@@ -1018,7 +1018,7 @@ note_data *read_old_note( FILE * fp )
 
                if( !pnote->text )
                {
-                  pnote->text = str_dup( "---- Delete this post! ----" );
+                  pnote->text = strdup( "---- Delete this post! ----" );
                   pnote->expire = 1;   /* Or we'll do it for you! */
                   bug( "%s: No text on note! Setting to '%s' and expiration to 1 day", __func__, pnote->text );
                }
@@ -1039,7 +1039,7 @@ note_data *read_old_note( FILE * fp )
                }
                if( !pnote->subject )
                {
-                  pnote->subject = str_dup( "Converted Msg" );
+                  pnote->subject = strdup( "Converted Msg" );
                   bug( "%s: No subject on converted note! Setting to '%s'", __func__, pnote->subject );
                }
                if( !pnote->to_list )
@@ -1067,7 +1067,7 @@ note_data *read_old_note( FILE * fp )
                pnote->expire = 0;
                if( !pnote->text )
                {
-                  pnote->text = str_dup( "---- Delete this post! ----" );
+                  pnote->text = strdup( "---- Delete this post! ----" );
                   pnote->expire = 1;   /* Or we'll do it for you! */
                   bug( "%s: No text on note! Setting to '%s' and expiration to 1 day", __func__, pnote->text );
                }
@@ -1088,7 +1088,7 @@ note_data *read_old_note( FILE * fp )
                }
                if( !pnote->subject )
                {
-                  pnote->subject = str_dup( "Converted Msg" );
+                  pnote->subject = strdup( "Converted Msg" );
                   bug( "%s: No subject on converted note! Setting to '%s'", __func__, pnote->subject );
                }
                if( !pnote->to_list )
@@ -1551,7 +1551,7 @@ CMDF( do_note_set )
       }
       ch->printf( "&[board]Set the subject for '&[board2]%s&[board]' to &[board2]%s&D\r\n", pnote->subject, argument.c_str(  ) );
       DISPOSE( pnote->subject );
-      pnote->subject = str_dup( argument.c_str(  ) );
+      pnote->subject = strdup( argument.c_str(  ) );
       write_board( board );
       return;
    }
@@ -1686,7 +1686,7 @@ void board_parse( descriptor_data * d, const string & argument )
             ch->substate = SUB_BOARD_TEXT;
             ch->printf( "%sPlease enter the text for your message:&D\r\n", s1 );
             if( !ch->pcdata->pnote->text )
-               ch->pcdata->pnote->text = str_dup( "" );
+               ch->pcdata->pnote->text = strdup( "" );
             ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
@@ -1704,7 +1704,7 @@ void board_parse( descriptor_data * d, const string & argument )
          else
          {
             DISPOSE( ch->pcdata->pnote->subject );
-            ch->pcdata->pnote->subject = str_dup( argument.c_str(  ) );
+            ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
          }
 
          ch->substate = SUB_BOARD_TEXT;
@@ -1712,7 +1712,7 @@ void board_parse( descriptor_data * d, const string & argument )
          ch->printf( "%sSubject: %s%s&D\r\n", s1, s2, ch->pcdata->pnote->subject );
          ch->printf( "%sPlease enter the text for your message:&D\r\n", s1 );
          if( !ch->pcdata->pnote->text )
-            ch->pcdata->pnote->text = str_dup( "" );
+            ch->pcdata->pnote->text = strdup( "" );
          ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list );
          ch->start_editing( ch->pcdata->pnote->text );
          return;
@@ -1822,7 +1822,7 @@ void board_parse( descriptor_data * d, const string & argument )
             ch->substate = SUB_BOARD_TEXT;
             ch->printf( "%sPlease enter the text for your message:&D\r\n", s1 );
             if( !ch->pcdata->pnote->text )
-               ch->pcdata->pnote->text = str_dup( "" );
+               ch->pcdata->pnote->text = strdup( "" );
             ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
@@ -2057,7 +2057,7 @@ CMDF( do_note_write )
             ch->print( "You must enter some text in the body of the note!\r\n" );
             ch->substate = SUB_BOARD_TEXT;
             if( !ch->pcdata->pnote->text )
-               ch->pcdata->pnote->text = str_dup( "" );
+               ch->pcdata->pnote->text = strdup( "" );
             ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
@@ -2166,7 +2166,7 @@ CMDF( do_note_write )
          ch->printf( "%sSubject: %s%s&D\r\n", s1, s2, ch->pcdata->pnote->subject );
          ch->printf( "%sPlease enter the text for your message:&D\r\n", s1 );
          if( !ch->pcdata->pnote->text )
-            ch->pcdata->pnote->text = str_dup( "" );
+            ch->pcdata->pnote->text = strdup( "" );
          ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject );
          ch->start_editing( ch->pcdata->pnote->text );
       }
@@ -2186,7 +2186,7 @@ CMDF( do_note_write )
    if( !argument.empty(  ) )
    {
       DISPOSE( ch->pcdata->pnote->subject );
-      ch->pcdata->pnote->subject = str_dup( argument.c_str(  ) );
+      ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
       ch->printf( "%sYou begin to write a new note for the %s%s%s board, titled '%s%s%s'.&D\r\n", s1, s2, board->name, s1, s2, ch->pcdata->pnote->subject, s1 );
    }
    else
@@ -2928,8 +2928,8 @@ CMDF( do_board_make )
    board = new board_data;
 
    board->name = STRALLOC( argument.c_str(  ) );
-   board->filename = str_dup( arg.c_str(  ) );
-   board->desc = str_dup( "This is a new board!" );
+   board->filename = strdup( arg.c_str(  ) );
+   board->desc = strdup( "This is a new board!" );
    board->objvnum = 0;
    board->expire = MAX_BOARD_EXPIRE;
    board->read_level = ch->level;
@@ -3109,7 +3109,7 @@ CMDF( do_board_set )
       unlink( filename );
       strlcpy( filename, board->filename, 256 );
       DISPOSE( board->filename );
-      board->filename = str_dup( argument.c_str(  ) );
+      board->filename = strdup( argument.c_str(  ) );
       write_boards(  );
       write_board( board );
       ch->printf( "%sThe filename for '%s%s%s' has been changed to '%s%s%s'.\n\r", s1, s2, filename, s1, s2, board->filename, s1 );
@@ -3189,7 +3189,7 @@ CMDF( do_board_set )
          return;
       }
       DISPOSE( board->desc );
-      board->desc = str_dup( argument.c_str(  ) );
+      board->desc = strdup( argument.c_str(  ) );
       write_boards(  );
       ch->printf( "%sThe desc for %s%s%s has been set to '%s%s%s'.&D\r\n", s1, s2, board->name, s1, s2, board->desc, s1 );
       return;
@@ -3769,7 +3769,7 @@ CMDF( do_project )
       }
 
       project_data *new_project = new project_data;
-      new_project->name = str_dup( argument.c_str(  ) );
+      new_project->name = strdup( argument.c_str(  ) );
       new_project->coder = nullptr;
       new_project->taken = false;
       new_project->description = nullptr;
@@ -3805,7 +3805,7 @@ CMDF( do_project )
       ch->substate = SUB_PROJ_DESC;
       ch->pcdata->dest_buf = pproject;
       if( !pproject->description )
-         pproject->description = str_dup( "" );
+         pproject->description = strdup( "" );
       ch->editor_desc_printf( "Project description for project '%s'.", pproject->name ? pproject->name : "(No name)" );
       ch->start_editing( pproject->description );
       return;
@@ -3888,7 +3888,7 @@ CMDF( do_project )
          return;
       }
       DISPOSE( pproject->status );
-      pproject->status = str_dup( argument.c_str(  ) );
+      pproject->status = strdup( argument.c_str(  ) );
       write_projects(  );
       ch->printf( "Project Status set to: %s\r\n", pproject->status );
       return;
@@ -3914,7 +3914,7 @@ CMDF( do_project )
          ch->substate = SUB_WRITING_NOTE;
          ch->pcdata->dest_buf = ch->pcdata->pnote;
          if( !ch->pcdata->pnote->text )
-            ch->pcdata->pnote->text = str_dup( "" );
+            ch->pcdata->pnote->text = strdup( "" );
          ch->editor_desc_printf( "A log note in project '%s', entitled '%s'.",
                                  pproject->name ? pproject->name : "(No name)", ch->pcdata->pnote->subject ? ch->pcdata->pnote->subject : "(No subject)" );
          ch->start_editing( ch->pcdata->pnote->text );
@@ -3928,7 +3928,7 @@ CMDF( do_project )
          if( !ch->pcdata->pnote )
             ch->note_attach(  );
          DISPOSE( ch->pcdata->pnote->subject );
-         ch->pcdata->pnote->subject = str_dup( argument.c_str(  ) );
+         ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
          ch->printf( "Log Subject set to: %s\r\n", ch->pcdata->pnote->subject );
          return;
       }

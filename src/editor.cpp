@@ -54,45 +54,8 @@ void strdup_printf( char **pointer, const char *fmt, ... )
    va_end( args );
 
    DISPOSE( *pointer );
-   *pointer = str_dup( buf );
+   *pointer = strdup( buf );
 }
-
-#if defined(__FreeBSD__)
-/*
- * custom str_dup using create - Thoric
- */
-char *str_dup( const char *str )
-{
-   static char *ret;
-   int len;
-
-   if( !str )
-      return nullptr;
-
-   len = strlen( str ) + 1;
-
-   /*
-    * Is this RIGHT?!? Or am I reading this WAY wrong?
-    * ret = (char *)calloc( len, sizeof(char) ); 
-    */
-   CREATE( ret, char, len );
-   strlcpy( ret, str, len );
-   return ret;
-}
-#else
-// A more streamlined C++ish approach to str_dup. FreeBSD doesn't like it's counterpart DISPOSE macro in mud.h though.
-char *str_dup( const char *str )
-{
-   static char *ret;
-
-   if( !str )
-      return nullptr;
-
-   ret = new char[strlen( str ) + 1];
-   strlcpy( ret, str, strlen( str ) + 1 );
-   return ret;
-}
-#endif
 
 /* Does the list have the member in it?
  *
@@ -1189,7 +1152,7 @@ char *char_data::copy_buffer( bool hash )
       bug( "%s: null editor", __func__ );
       if( hash )
          return STRALLOC( "" );
-      return str_dup( "" );
+      return strdup( "" );
    }
 
    buf[0] = '\0';
@@ -1210,7 +1173,7 @@ char *char_data::copy_buffer( bool hash )
          return STRALLOC( buf );
       return nullptr;
    }
-   return str_dup( buf );
+   return strdup( buf );
 }
 
 /*
