@@ -32,14 +32,6 @@
 #include "polymorph.h"
 #include "raceclass.h"
 
-#define MKEY( literal, field, value ) \
-if( !str_cmp( word, (literal) ) )     \
-{                                     \
-   DISPOSE( (field) );                \
-   (field) = (value);                 \
-   break;                             \
-}
-
 list < morph_data * >morphlist;
 int morph_vnum = 0;
 
@@ -1809,11 +1801,11 @@ morph_data *fread_morph( FILE * fp )
             break;
 
          case 'D':
-            MKEY( "Damroll", morph->damroll, fread_string_nohash( fp ) );
+            KEY( "Damroll", morph->damroll, fread_string_nohash( fp ) );
             KEY( "DayFrom", morph->dayfrom, fread_number( fp ) );
             KEY( "DayTo", morph->dayto, fread_number( fp ) );
             KEY( "Defpos", morph->defpos, fread_number( fp ) );
-            MKEY( "Description", morph->description, fread_string_nohash( fp ) );
+            KEY( "Description", morph->description, fread_string_nohash( fp ) );
             KEY( "Dexterity", morph->dex, fread_number( fp ) );
             KEY( "Dodge", morph->dodge, fread_number( fp ) );
             break;
@@ -1828,9 +1820,9 @@ morph_data *fread_morph( FILE * fp )
             break;
 
          case 'H':
-            MKEY( "Help", morph->help, fread_string_nohash( fp ) );
-            MKEY( "Hit", morph->hit, fread_string_nohash( fp ) );
-            MKEY( "Hitroll", morph->hitroll, fread_string_nohash( fp ) );
+            KEY( "Help", morph->help, fread_string_nohash( fp ) );
+            KEY( "Hit", morph->hit, fread_string_nohash( fp ) );
+            KEY( "Hitroll", morph->hitroll, fread_string_nohash( fp ) );
             KEY( "HpUsed", morph->hpused, fread_number( fp ) );
             break;
 
@@ -1847,26 +1839,26 @@ morph_data *fread_morph( FILE * fp )
             break;
 
          case 'K':
-            MKEY( "Keywords", morph->key_words, fread_string_nohash( fp ) );
+            KEY( "Keywords", morph->key_words, fread_string_nohash( fp ) );
             break;
 
          case 'L':
             KEY( "Level", morph->level, fread_number( fp ) );
-            MKEY( "Longdesc", morph->long_desc, fread_string_nohash( fp ) );
+            KEY( "Longdesc", morph->long_desc, fread_string_nohash( fp ) );
             KEY( "Luck", morph->lck, fread_number( fp ) );
             break;
 
          case 'M':
-            MKEY( "Mana", morph->mana, fread_string_nohash( fp ) );
+            KEY( "Mana", morph->mana, fread_string_nohash( fp ) );
             KEY( "ManaUsed", morph->manaused, fread_number( fp ) );
-            MKEY( "MorphOther", morph->morph_other, fread_string_nohash( fp ) );
-            MKEY( "MorphSelf", morph->morph_self, fread_string_nohash( fp ) );
-            MKEY( "Move", morph->move, fread_string_nohash( fp ) );  /* EEK! This was set wrong! Caught by Matteo 2303 */
+            KEY( "MorphOther", morph->morph_other, fread_string_nohash( fp ) );
+            KEY( "MorphSelf", morph->morph_self, fread_string_nohash( fp ) );
+            KEY( "Move", morph->move, fread_string_nohash( fp ) );  /* EEK! This was set wrong! Caught by Matteo 2303 */
             KEY( "MoveUsed", morph->moveused, fread_number( fp ) );
             break;
 
          case 'N':
-            MKEY( "NoSkills", morph->no_skills, fread_string_nohash( fp ) );
+            KEY( "NoSkills", morph->no_skills, fread_string_nohash( fp ) );
             if( !str_cmp( word, "NoAffected" ) )
             {
                if( file_ver < 1 )
@@ -1961,8 +1953,8 @@ morph_data *fread_morph( FILE * fp )
             KEY( "SaveSpell", morph->saving_spell_staff, fread_number( fp ) );
             KEY( "SaveWand", morph->saving_wand, fread_number( fp ) );
             KEY( "Sex", morph->sex, fread_number( fp ) );
-            MKEY( "ShortDesc", morph->short_desc, fread_string_nohash( fp ) );
-            MKEY( "Skills", morph->skills, fread_string_nohash( fp ) );
+            KEY( "ShortDesc", morph->short_desc, fread_string_nohash( fp ) );
+            KEY( "Skills", morph->skills, fread_string_nohash( fp ) );
             KEY( "Strength", morph->str, fread_number( fp ) );
 
             if( !str_cmp( word, "Suscept" ) )
@@ -1983,8 +1975,8 @@ morph_data *fread_morph( FILE * fp )
             break;
 
          case 'U':
-            MKEY( "UnmorphOther", morph->unmorph_other, fread_string_nohash( fp ) );
-            MKEY( "UnmorphSelf", morph->unmorph_self, fread_string_nohash( fp ) );
+            KEY( "UnmorphOther", morph->unmorph_other, fread_string_nohash( fp ) );
+            KEY( "UnmorphSelf", morph->unmorph_self, fread_string_nohash( fp ) );
             KEY( "Used", morph->used, fread_number( fp ) );
             break;
 
@@ -2222,7 +2214,6 @@ morph_data::~morph_data(  )
    DISPOSE( no_skills );
    DISPOSE( unmorph_other );
    DISPOSE( unmorph_self );
-   morphlist.remove( this );
 }
 
 void free_morphs( void )
@@ -2236,6 +2227,7 @@ void free_morphs( void )
 
       deleteptr( poly );
    }
+   morphlist.clear( );
 }
 
 /*
