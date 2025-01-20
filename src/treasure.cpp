@@ -435,7 +435,7 @@ void load_runewords( void )
 void load_runes( void )
 {
    ifstream stream;
-   rune_data *rune;
+   rune_data *rune = nullptr;
 
    runelist.clear(  );
 

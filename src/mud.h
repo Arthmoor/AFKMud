@@ -59,9 +59,6 @@ using namespace std;
 const int MSL = 8192;   /* MAX_STRING_LENGTH */
 const int MIL = 2048;   /* MAX_INPUT_LENGTH */
 
-/*
- * Short scalar types.
- */
 // No idea what the purpose in doing this is, but BERR appears to be something Smaug made up and it's better defined this way.
 const short BERR = 255;
 
@@ -100,10 +97,11 @@ typedef bool SPEC_FUN( char_data * ch );
 // This is another one of those things that doesn't make sense, but is used in several places. It also has no need to be a define vs a proper constant value.
 const float DUR_CONV = 93.333333333333333333333333; /* Original value: 23.333333333333333333333333... - Quadrupled for time changes */
 
-/* Hidden tilde char generated with alt155 on the number pad.
+/*
+ * Hidden tilde char generated with alt155 on the number pad.
  * The code blocks the use of these symbols by default, so this should be quite safe. Samson 3-14-04
  */
-#define HIDDEN_TILDE	'\xa2'
+const char HIDDEN_TILDE = '\xa2';
 
 /* 32bit bitvector defines */
 const int BV00 = ( 1 << 0 );

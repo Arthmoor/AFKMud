@@ -138,7 +138,7 @@ void save_helps( void )
 
 void load_helps( void )
 {
-   help_data *help;
+   help_data *help = nullptr;
    ifstream stream;
 
    helplist.clear(  );

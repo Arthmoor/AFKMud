@@ -39,7 +39,7 @@ MATH_LIB = -lm
 #LIB_MYSQL = -lmariadb
 
 #Miscellaneous compiler options.
-OPT_FLAG = -pipe -Os
+OPT_FLAG = -pipe -O3
 DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
@@ -48,21 +48,16 @@ ifndef CYGWIN
    MEM_FLAG = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
 endif
 
-#Uncomment the option below if you get compiler errors about C++23 not being available.
-#C1Z = 1
+#For Cygwin, comment this out. For any other system, if it complains that C++23 is not available, change it to -std=c++1z
+C_STD = -std=c++23
+
+#Comment out for Cygwin, or any other syste it complains this isn't available on.
+LIB_TRACE = -lstdc++_libbacktrace
 
 ifneq ($(CC), clang++)
-   ifdef C1Z
-      W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
-   else
-      W_FLAGS = -std=c++23 -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
-   endif
+   W_FLAGS = -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
 else
-   ifdef C1Z
-      W_FLAGS = -std=c++1z -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
-   else
-      W_FLAGS = -std=c++23 -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
-   endif
+   W_FLAGS = -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
 endif
 
 ifndef CYGWIN
@@ -72,16 +67,16 @@ ifndef CYGWIN
    endif
 endif
 
-C_FLAGS = $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
+C_FLAGS = $(C_STD) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
 
 ifeq ($(CC), g++)
-   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd -lstdc++_libbacktrace $(LIB_MYSQL) $(NEED_DL)
+   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_TRACE) $(LIB_MYSQL) $(NEED_DL)
 else
    L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
 endif
 
 #D_FLAGS : For the DNS Resolver process. No need in linking all the extra libs for this.
-D_FLAGS = $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_LINK)
+D_FLAGS = $(C_STD) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_LINK)
 
 C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           archery.cpp area.cpp areaconvert.cpp area_fussconvert.cpp area_oldafk.cpp \

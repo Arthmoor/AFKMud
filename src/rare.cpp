@@ -28,6 +28,7 @@
 
 #include <sys/stat.h>
 #include <dirent.h>
+#include <sstream>
 #include "mud.h"
 #include "area.h"
 #include "auction.h"
@@ -718,16 +719,14 @@ void adjust_pfile( const string & name )
 int scan_pfiles( const char *dirname, const char *filename, bool updating )
 {
    FILE *fpChar;
-   char fname[256];
+   ostringstream path;
    int adjust = 0;
 
-   snprintf( fname, 256, "%s/%s", dirname, filename );
+   path << dirname << "/" << filename;
 
-   // log_string( fname );
-
-   if( !( fpChar = fopen( fname, "r" ) ) )
+   if( !( fpChar = fopen( path.str().c_str(), "r" ) ) )
    {
-      perror( fname );
+      perror( path.str().c_str() );
       return 0;
    }
 

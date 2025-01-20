@@ -293,6 +293,12 @@ void gain_condition( char_data * ch, int iCond, int value )
    if( ch->has_pcflag( PCFLAG_GHOST ) )
       return;
 
+   if( iCond < 0 || iCond >= MAX_CONDS )
+   {
+      bug( "%s -> %s:%d: Player condition is outside valid array range [0-%d]: %d", __func__, __FILE__, __LINE__, MAX_CONDS - 1, iCond );
+      return;
+   }
+
    condition = ch->pcdata->condition[iCond];
 
    /*

@@ -192,7 +192,7 @@ void save_ships( void )
 void load_ships( void )
 {
    ifstream stream;
-   ship_data *ship;
+   ship_data *ship = nullptr;
    int file_ver = 0;
 
    shiplist.clear(  );

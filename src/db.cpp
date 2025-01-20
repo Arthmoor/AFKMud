@@ -874,7 +874,7 @@ char *fread_word( FILE * fp )
       }
    }
    bug( "%s: word too long", __func__ );
-   *pword = '\0';
+   *--pword = '\0';
    return word;
 }
 

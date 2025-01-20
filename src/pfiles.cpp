@@ -512,7 +512,7 @@ void search_pfiles( char_data * ch, const char *dirname, const char *filename, i
                      else
                      {
                         if( vnum == cvnum )
-                           ch->pagerf( "Player %s: Counted %d of Vnum %d.\r\n", filename, counter, cvnum );
+                           ch->pagerf( "Player %s: Counted %d of Vnum %d.\r\n", filename ? filename : "<NO PFILE?!?>", counter, cvnum );
                      }
                   }
                   break;

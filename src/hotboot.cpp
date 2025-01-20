@@ -808,7 +808,7 @@ void hotboot_recover( void )
 {
    ifstream stream;
    string playername;
-   descriptor_data *d;
+   descriptor_data *d = nullptr;
    bool fOld;
    int rvnum = 0;
 
