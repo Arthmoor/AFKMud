@@ -1952,7 +1952,7 @@ CMDF( do_timecmd )
 /******************************************************
       Desolation of the Dragon MUD II - Alias Code
       (C) 1997, 1998  Jesse DeFer and Heath Leach
- http://dotd.mudservices.com  dotd@dotd.mudservices.com 
+ https://dotd.mudservices.com  dotd@dotd.mudservices.com 
  ******************************************************/
 
 CMDF( do_alias )

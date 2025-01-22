@@ -2439,7 +2439,7 @@ void append_to_file( const string & file, const char *fmt, ... )
 
 #if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32) && defined(C1Z)
 /*
- * This very slick beauty was found here: http://mykospark.net/2009/09/runtime-backtrace-in-c-with-name-demangling/
+ * This very slick beauty was found at Myospark.net [website is defunct]
  * At least now the symbols are readable :P
  */
 const char *demangle( const char *symbol )

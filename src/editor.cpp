@@ -326,7 +326,7 @@ bool str_cmp( const char *astr, const char *bstr )
 // Returns true if astr isn't a prefix of bstr.
 // Returns false if it is.
 // If that's confusing, that's how this function's traditional usage has always been.
-// Thanks to Justice for providing this. http://www.mudbytes.net/index.php?a=topic&t=480&p=5314#p5314
+// Thanks to Justice for providing this.
 bool str_prefix( const string & astr, const string & bstr )
 {
    string::const_iterator a1, a2, b1, b2;

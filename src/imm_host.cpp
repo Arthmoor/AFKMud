@@ -29,7 +29,6 @@
 /*******************************************************
 		Crimson Blade Codebase
 	Copyright 2000-2002 Noplex (John Bellone)
-	      http://www.crimsonblade.org
 		admin@crimsonblade.org
 		Coders: Noplex, Krowe
 		 Based on Smaug 1.4a

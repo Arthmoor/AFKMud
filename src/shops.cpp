@@ -41,7 +41,7 @@ Tested and Created on the Smaug1.4a code base.
 
 ----------------------------------------
 Northwind: home of Legends             +
-http://www.kilnar.com/~northwind/      +
+https://www.kilnar.com/~northwind/     +
 telnet://northwind.kilnar.com:5555/    +
 ----------------------------------------
 

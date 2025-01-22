@@ -29,7 +29,7 @@
 /******************************************************
             Desolation of the Dragon MUD II
       (C) 1997, 1998  Jesse DeFer and Heath Leach
- http://dotd.mudservices.com  dotd@dotd.mudservices.com 
+ https://dotd.mudservices.com  dotd@dotd.mudservices.com 
  ******************************************************/
 
 /* Any spec_fun added here needs to be added to specfuns.dat as well.

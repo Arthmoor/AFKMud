@@ -35,8 +35,8 @@ actually work. ;)  In any case, all I ask is that you credit this code
 properly, and perhaps drop me a line letting me know it's being used.
 
 from: gary@dharvest.com
-website: http://www.dharvest.com
-or http://www.dharvest.com/resource.html (rom related)
+website: https://www.dharvest.com
+or https://www.dharvest.com/resource.html (rom related)
 
 Ported to Smaug 1.02a code by Samson
 Updated to Smaug 1.4a code by Samson
