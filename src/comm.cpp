@@ -41,7 +41,6 @@ void bailout( int );
 #include <sys/socket.h>
 #endif
 #if defined(__CYGWIN__)
-const int WAIT_ANY = -1;   /* This is not guaranteed to work! */
 #include <sys/socket.h>
 #endif
 #if defined(__APPLE__)
@@ -318,29 +317,42 @@ void open_mud_log( void )
    FCLOSE( error_log );
 }
 
+/*
+ * This function supports connections for both IPv6 and IPv4.
+ * On a server which only has one type of address, it will still bind to both.
+ * Every major operating system these days supports both, even if they only have one type of address.
+ */
 int init_socket( int mudport )
 {
-   struct sockaddr_in sa;
-   int x = 1;
+   struct sockaddr_in6 serv_addr6;
+   int x = 1, ipv6only = 0;
    int fd;
 
-   if( ( fd = socket( AF_INET, SOCK_STREAM, 0 ) ) < 0 )
+   if( ( fd = socket( AF_INET6, SOCK_STREAM, 0 ) ) < 0 )
    {
       perror( "Init_socket: socket" );
       exit( 1 );
    }
 
 #if defined(WIN32)
-   if( setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, ( const char * )&x, sizeof( x ) ) < 0 )
+   if( setsockopt( fd, IPPROTO_IPV6, IPV6_V6ONLY, ( const char * )&ipv6only, sizeof( ipv6only ) ) < 0 )
 #else
-   if( setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, ( void * )&x, sizeof( x ) ) < 0 )
+   if( setsockopt( fd, IPPROTO_IPV6, IPV6_V6ONLY, ( void * )&ipv6only, sizeof( ipv6only ) ) < 0 )
 #endif
    {
-      perror( "Init_socket: SO_REUSEADDR" );
+      perror( "Init_socket: IPPROTO_IPV6" );
       close( fd );
       exit( 1 );
    }
 
+/*
+ * SO_DONTLINGER no longer appears to be necessary so I've commented it out.
+ * If for some reason you find that the socket won't work correctly without it, uncomment it.
+ * Please let us know at smaugmuds.agkmods.com as well, describing what failed to work properly without it.
+ * I'm not even sure if the SYSV part is relevant these days as the only information that keeps coming
+ * up on Google is 15+ years old. -- Samson 1/22/2025.
+ */
+/*
 #if defined(SO_DONTLINGER) && !defined(SYSV)
    {
       struct linger ld;
@@ -360,21 +372,41 @@ int init_socket( int mudport )
       }
    }
 #endif
+*/
 
-   memset( &sa, '\0', sizeof( sa ) );
-   sa.sin_family = AF_INET;
-   sa.sin_port = htons( mudport );
+/* 
+ * SO_REUSEADDR, however, is still necessary or the socket will only be able to bind to one
+ * protocol. The MUD will fail to start, saying the address is already in use when the second
+ * attempt to bind is made by the operating system. -- Samson 1/22/2025.
+ */
+#if defined(WIN32)
+   if( setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, ( const char * )&x, sizeof( x ) ) < 0 )
+#else
+   if( setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, ( void * )&x, sizeof( x ) ) < 0 )
+#endif
+   {
+      perror( "Init_socket: SO_REUSEADDR" );
+      close( fd );
+      exit( 1 );
+   }
+
+   memset( &serv_addr6, '\0', sizeof( serv_addr6 ) );
+   serv_addr6.sin6_family = AF_INET6;
+   serv_addr6.sin6_addr = in6addr_any;
+   serv_addr6.sin6_port = htons( mudport );
 
    /*
-    * IP binding: uncomment if server requires it, and set x.x.x.x to proper IP - Samson 
-    */
-   /*
+    * It is highly unlikely that a server will call for this, but just in case it does, you would need
+    * to uncomment the statement and specify the IP address of your server. Currently this only works
+    * for IPv4. I have not been able to find information on how to call this for the IPV6 side, so it's
+    * entirely possible that it was not seen as a thing to do with IPv6. -- Samson 1/22/2025.
+    *
     * sa.sin_addr.s_addr = inet_addr( "x.x.x.x" ); 
     */
 #if defined(__APPLE__)
-   if( bind( fd, ( const struct sockaddr * )&sa, (socklen_t)sizeof( sa ) ) == -1 )
+   if( bind( fd, ( const struct sockaddr * )&serv_addr6, (socklen_t)sizeof( serv_addr6 ) ) == -1 )
 #else
-   if( bind( fd, ( struct sockaddr * )&sa, sizeof( sa ) ) == -1 )
+   if( bind( fd, ( struct sockaddr * )&serv_addr6, sizeof( serv_addr6 ) ) == -1 )
 #endif
    {
       perror( "Init_socket: bind" );

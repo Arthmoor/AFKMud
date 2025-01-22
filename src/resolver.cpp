@@ -40,45 +40,88 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #if defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__CYGWIN__)
 #include <sys/types.h>
 #include <sys/socket.h>
 #endif
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
-char *resolve_address( int address )
+using namespace std;
+
+char *resolve_address( const string & address )
 {
+   struct in6_addr addr6;
+   struct in_addr addr4;
    static char addr_str[256];
    struct hostent *from;
 
-   if( ( from = gethostbyaddr( ( char * )&address, sizeof( address ), AF_INET ) ) != nullptr )
+   // ::1 is localhost, so if they're not connecting from that, check both cases to be sure they'll work.
+   if( address != "::1" )
    {
-      strlcpy( addr_str, strcmp( from->h_name, "localhost" ) ? from->h_name : "local-host", 256 );
+      if( inet_pton( AF_INET6, address.c_str(), &addr6 ) == 0 )
+      {
+         if( inet_aton( address.c_str(), &addr4 ) == 0 )
+         {
+            // In theory this should only happen if the connection doesn't even show a valid IP.
+            printf( "somehow.has.no.ip?\r\n" );
+            exit( 0 );
+         }
+      }
    }
+
+   // Skip all of the below if IPv6 is localhost. That doesn't resolve to a useful result for whatever reason.
+   if( address == "::1" )
+      strlcpy( addr_str, "localhost", 256 );
    else
    {
-      int addr = ntohl( address );
-      snprintf( addr_str, 256, "%d.%d.%d.%d", ( addr >> 24 ) & 0xFF, ( addr >> 16 ) & 0xFF, ( addr >> 8 ) & 0xFF, ( addr ) & 0xFF );
+      if( ( from = gethostbyaddr( &addr6, sizeof( addr6 ), AF_INET6 ) ) != nullptr )
+      {
+         strlcpy( addr_str, strcmp( from->h_name, "localhost" ) ? from->h_name : "localhost", 256 );
+      }
+      else
+      {
+         string::size_type pos = address.find_last_of( ":", address.length() );
+
+         if( pos != string::npos )
+         {
+            strlcpy( addr_str, address.c_str(), 256 );
+         }
+         else
+         {
+            inet_aton( address.c_str(), &addr4 );
+
+            if( ( from = gethostbyaddr( &addr4, sizeof( addr4 ), AF_INET ) ) )
+               strlcpy( addr_str, strcmp( from->h_name, "localhost" ) ? from->h_name : "localhost", 256 );
+            else // If the above fails, just copy the original IP address. We don't care why. They may not have a reverse lookup.
+            {
+               strlcpy( addr_str, address.c_str(), 256 );
+            }
+         }
+      }
    }
+
    return addr_str;
 }
 
 int main( int argc, char *argv[] )
 {
    int ip;
+   string input = argv[1]; // Ordinarily this unsafe to just accept, but the only way this gets called is through the MUD anyway.
    char *address;
 
    if( argc != 2 )
    {
-      printf( "unknown.host\r\n" );
+      // No idea what could cause this, but the SMC guys thought it was necessary, so return an error.
+      printf( "bad.resolver.call\r\n" );
       exit( 0 );
    }
 
-   ip = atoi( argv[1] );
+   address = resolve_address( input );
 
-   address = resolve_address( ip );
-
+   // If we've made it this far, then either the resolution succeeded or the IP address is being passed through. So let's pass this along now.
    printf( "%s\r\n", address );
    exit( 0 );
 }

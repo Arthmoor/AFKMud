@@ -1542,10 +1542,18 @@ void descriptor_data::process_dns(  )
 
    if( address[0] != '\0' )
    {
-      add_dns( hostname, address );  /* Add entry to DNS cache */
-      hostname = address;
-      if( character && character->pcdata )
-         character->pcdata->lasthost = address;
+      /*
+       * The resolver will only return 2 error states, described in the string comparisons here.
+       * If either of these come back from it, do not add it to the cache, and do not set the host on the descriptior to it either.
+       * The descriptor's IP will have alredy been set by default before the resolver was called.
+       */
+      if( str_cmp( address, "bad.resolver.call" ) && str_cmp( address, "somehow.has.no.ip?" ) )
+      {
+         add_dns( hostname, address );
+         hostname = address;
+         if( character && character->pcdata )
+            character->pcdata->lasthost = address;
+      }
    }
 
    /*
@@ -1573,7 +1581,7 @@ void descriptor_data::process_dns(  )
 }
 
 /* DNS Resolver hook. Code written by Trax of Forever's End */
-void descriptor_data::resolve_dns( long ip )
+void descriptor_data::resolve_dns( const string & ip )
 {
    int fds[2];
    pid_t pid;
@@ -1607,7 +1615,6 @@ void descriptor_data::resolve_dns( long ip )
       /*
        * child process 
        */
-      char str_ip[64];
       int i;
 
       ifd = fds[0];
@@ -1616,11 +1623,10 @@ void descriptor_data::resolve_dns( long ip )
       for( i = 2; i < 255; ++i )
          close( i );
 
-      snprintf( str_ip, 64, "%ld", ip );
 #if defined(__CYGWIN__)
-      execl( "../src/resolver.exe", "AFKMud Resolver", str_ip, ( char * )nullptr );
+      execl( "../src/resolver.exe", "AFKMud Resolver", ip.c_str(), ( char * )nullptr );
 #else
-      execl( "../src/resolver", "AFKMud Resolver", str_ip, ( char * )nullptr );
+      execl( "../src/resolver", "AFKMud Resolver", ip.c_str(), ( char * )nullptr );
 #endif
       /*
        * Still here --> hmm. An error. 
@@ -1645,8 +1651,10 @@ void descriptor_data::resolve_dns( long ip )
 void new_descriptor( int new_desc )
 {
    descriptor_data *dnew;
-   struct sockaddr_in sock;
+   struct sockaddr_in6 sock;
    int desc;
+   char ip[INET6_ADDRSTRLEN];
+   string newip;
 #if defined(WIN32)
    ULONG r;
    int size;
@@ -1699,19 +1707,35 @@ void new_descriptor( int new_desc )
    if( check_bad_desc( new_desc ) )
       return;
 
+   inet_ntop( AF_INET6, &sock.sin6_addr, ip, INET6_ADDRSTRLEN );
+   newip = ip;
+
+   if( newip != "::1" )
+   {
+      string::size_type pos = newip.find_last_of( ":", newip.length() );
+      string::size_type pos2 = newip.find_last_of( ".", newip.length() );
+
+      if( pos2 != string::npos )
+      {
+         if( pos != string::npos )
+         {
+            newip = newip.substr( pos + 1 );
+         }
+      }
+   }
+
    dnew = new descriptor_data;
    dnew->init(  );
    if( desc == 0 )
    {
-      bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Host: %s", __func__, inet_ntoa( sock.sin_addr ) );
+      bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Host: %s", __func__, ip );
       deleteptr( dnew );
       set_alarm( 0 );
       return;
    }
    dnew->descriptor = desc;
-   dnew->client_port = ntohs( sock.sin_port );
-
-   dnew->ipaddress = inet_ntoa( sock.sin_addr );
+   dnew->client_port = ntohs( sock.sin6_port );
+   dnew->ipaddress = newip;
    dnew->hostname = dnew->ipaddress;
 
 #if !defined(WIN32)
@@ -1720,7 +1744,7 @@ void new_descriptor( int new_desc )
       string buf = in_dns_cache( dnew->ipaddress );
 
       if( buf.empty(  ) )
-         dnew->resolve_dns( sock.sin_addr.s_addr );
+         dnew->resolve_dns( dnew->ipaddress );
       else
          dnew->hostname = buf;
    }

@@ -80,7 +80,7 @@ class descriptor_data
    void send_greeting(  );
    void show_title(  );
    void process_dns(  );
-   void resolve_dns( long );
+   void resolve_dns( const string & );
    void prompt(  );
    void set_pager_input( const string & );
    bool pager_output(  );
