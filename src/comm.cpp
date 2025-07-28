@@ -348,7 +348,7 @@ int init_socket( int mudport )
 /*
  * SO_DONTLINGER no longer appears to be necessary so I've commented it out.
  * If for some reason you find that the socket won't work correctly without it, uncomment it.
- * Please let us know at smaugmuds.agkmods.com as well, describing what failed to work properly without it.
+ * Please let us know at smaugmuds.afkmods.com as well, describing what failed to work properly without it.
  * I'm not even sure if the SYSV part is relevant these days as the only information that keeps coming
  * up on Google is 15+ years old. -- Samson 1/22/2025.
  */
