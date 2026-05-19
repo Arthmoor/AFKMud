@@ -1185,7 +1185,7 @@ void char_data::edit_buffer( string & argument )
    editor_data *edit;
    string cmd;
    char buf[MIL];
-   short x, line;
+   int x, line;
    bool esave = false;
 
    if( !( d = desc ) )
