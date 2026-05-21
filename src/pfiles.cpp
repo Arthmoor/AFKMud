@@ -723,45 +723,48 @@ void read_pfile( const char *dirname, const char *filename, bool count )
    struct stat fst;
    time_t tdiff;
 
+   // Prevent directory traversal.
+   if( strpbrk( filename, "/\\." ) )
+   {
+      bug( "%s: Attempted path traversal with file: %s", __func__, filename );
+      return;
+   }
+
    now_time = time( 0 );
 
-   snprintf( fname, 256, "%s/%s", dirname, filename );
-
-   if( stat( fname, &fst ) != -1 )
+   // Bounds Check
+   if( snprintf( fname, sizeof(fname), "%s/%s", dirname, filename ) >= (int)sizeof(fname) )
    {
-      tdiff = ( now_time - fst.st_mtime ) / 86400;
-
-      if( ( fp = fopen( fname, "r" ) ) != nullptr )
-      {
-         for( ;; )
-         {
-            char letter;
-            const char *word;
-
-            letter = fread_letter( fp );
-
-            if( ( letter != '#' ) && ( !feof( fp ) ) )
-               continue;
-
-            word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-            if( word[0] == '\0' )
-            {
-               bug( "%s: EOF encountered reading file!", __func__ );
-               word = "End";
-            }
-
-            if( !str_cmp( word, "End" ) )
-               break;
-
-            if( !str_cmp( word, "PLAYER" ) )
-               fread_pfile( fp, tdiff, fname, count );
-            else if( !str_cmp( word, "END" ) )  /* Done */
-               break;
-         }
-         FCLOSE( fp );
-      }
+      bug( "%s: Filename too long: %s/%s", __func__, dirname, filename );
+      return;
    }
+
+   if( stat( fname, &fst ) == -1 )
+      return;
+
+   tdiff = ( now_time - fst.st_mtime ) / 86400;
+
+   if( ( fp = fopen( fname, "r" ) ) == nullptr )
+      return;
+
+   for( ;; )
+   {
+      char letter = fread_letter( fp );
+
+      if( feof( fp ) || letter == EOF )
+         break;
+
+      if( letter != '#' )
+         continue;
+
+      const char *word = fread_word( fp );
+      if( !str_cmp( word, "End" ) || !str_cmp( word, "END" ) )
+         break;
+
+      if( !str_cmp( word, "PLAYER" ) )
+         fread_pfile( fp, tdiff, fname, count );
+   }
+   FCLOSE( fp );
 }
 
 void pfile_scan( bool count )
