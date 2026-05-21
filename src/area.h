@@ -80,7 +80,7 @@ class area_data
    int low_hard_range;
    int hi_hard_range;
    short weatherx;                  // X Coordinate for this area's weather data.
-   short weathery;                  // Y Coodrinate for this area'a weather data.
+   short weathery;                  // Y Coordinate for this area'a weather data.
    short age;
    short nplayer;
    short reset_frequency;
