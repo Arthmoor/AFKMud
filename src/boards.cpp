@@ -566,10 +566,31 @@ void write_board( board_data * board )
 
 void note_remove( board_data * board, note_data * pnote )
 {
+   list < descriptor_data * >::iterator ds;
+
    if( !board || !pnote )
    {
       bug( "%s: null %s variable.", __func__, board ? "pnote" : "board" );
       return;
+   }
+
+   // Memory safety check in case a note being replied to by someone is being removed.
+   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
+   {
+      descriptor_data *d = *ds;
+      ++ds;
+
+      char_data *ch = d->original ? d->original : d->character;
+
+      if( ch && ch->pcdata && ch->pcdata->pnote )
+      {
+         // If a player is replying to the note we are removing, disconnect the link
+         if( ch->pcdata->pnote->parent == pnote )
+         {
+            ch->print( "&RThe note you were replying to has been removed.&D\r\n" );
+            ch->pcdata->pnote->parent = nullptr;
+         }
+      }
    }
 
    if( pnote->parent )
@@ -953,6 +974,8 @@ note_data *read_note( FILE * fp )
             else
             {
                bug( "%s: Bad section: %s", __func__, word );
+               if( reply ) // In case a half-constructed reply exists.
+                  deleteptr( reply );
                deleteptr( pnote );
                return nullptr;
             }
