@@ -202,16 +202,15 @@ const char *one_argument( const char *argument, char *arg_first )
    if( *argument == '\'' || *argument == '"' )
       cEnd = *argument++;
 
-   while( *argument != '\0' || ++count >= 255 )
+   while( *argument != '\0' && count < 255 )
    {
       if( *argument == cEnd )
       {
          ++argument;
          break;
       }
-      *arg_first = ( *argument );
-      ++arg_first;
-      ++argument;
+      *arg_first++ = *argument++;
+      count++;
    }
    *arg_first = '\0';
 
