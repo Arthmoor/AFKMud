@@ -44,9 +44,14 @@ DEBUG_FLAG = -g2
 #PROF_FLAG = -pg
 
 #GCC 4.8+ memory checking option. https://github.com/google/sanitizers Does not work in Cygwin.
+#These should only be enabled for testing environments. Disable for a live environment.
 ifndef CYGWIN
    MEM_FLAG = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
 endif
+
+# These protect against stack smashing and buffer overflows in production.
+# We add -D_FORTIFY_SOURCE=2 to perform runtime checks on string/memory functions.
+HARDENING_FLAGS = -fstack-protector-strong -D_FORTIFY_SOURCE=2
 
 #For Cygwin, comment this out. For any other system, if it complains that C++23 is not available, change it to -std=c++1z
 C_STD = -std=c++23
@@ -67,7 +72,7 @@ ifndef CYGWIN
    endif
 endif
 
-C_FLAGS = $(C_STD) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
+C_FLAGS = $(C_STD) $(W_FLAGS) $(HARDENING_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
 
 ifeq ($(CC), g++)
    L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_TRACE) $(LIB_MYSQL) $(NEED_DL)
