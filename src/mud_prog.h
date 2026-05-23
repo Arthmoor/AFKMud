@@ -115,7 +115,7 @@ const int ERROR_PROG = -1;
 const int IN_FILE_PROG = -2;
 
 /*
- * For backwards compatability
+ * For backwards compatibility
  */
 const int RDEATH_PROG = DEATH_PROG;
 const int ENTER_PROG = ENTRY_PROG;

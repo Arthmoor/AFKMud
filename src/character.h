@@ -524,7 +524,7 @@ class char_data
    bitset < MAX_RIS_FLAG > no_immune;
    bitset < MAX_RIS_FLAG > susceptible;
    bitset < MAX_RIS_FLAG > no_susceptible;
-   bitset < MAX_RIS_FLAG > absorb;  /* Absorbtion flag for RIS data - Samson 3-16-00 */
+   bitset < MAX_RIS_FLAG > absorb;  /* Absorption flag for RIS data - Samson 3-16-00 */
    bitset < LANG_UNKNOWN > speaks;
  public:
    char *name;

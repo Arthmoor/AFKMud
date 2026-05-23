@@ -579,7 +579,7 @@ enum pc_flags
 #define CLASS_LIST	"class.lst" /* List of classes   */
 #define RACE_LIST		"race.lst"  /* List of races     */
 #define SHUTDOWN_FILE	"shutdown.txt" /* For 'shutdown' */
-#define IMM_HOST_FILE   SYSTEM_DIR "immortal.host" /* For stoping hackers */
+#define IMM_HOST_FILE   SYSTEM_DIR "immortal.host" /* For stopping hackers */
 #define ANSITITLE_FILE	SYSTEM_DIR "mudtitle.ans"
 #define BOOTLOG_FILE	SYSTEM_DIR "boot.txt"   /* Boot up error file  */
 #define PBUG_FILE		SYSTEM_DIR "pbugs.txt"  /* For 'bug' command   */
@@ -619,7 +619,7 @@ if( !str_cmp( word, (literal) ) ) \
    break;                         \
 }
 
-// This reads a string value into a C++ string variable using the tilde as a delimeter - Samson 10-3-04
+// This reads a string value into a C++ string variable using the tilde as a delimiter - Samson 10-3-04
 #define STDSKEY( literal, field )      \
 if( !strcasecmp( word, (literal) ) )   \
 {                                      \
@@ -628,7 +628,7 @@ if( !strcasecmp( word, (literal) ) )   \
    break;                              \
 }
 
-// This reads a string value into a C++ string variable using line-feed as a delimeter - Samson 10-3-04
+// This reads a string value into a C++ string variable using line-feed as a delimiter - Samson 10-3-04
 #define STDSLINE( literal, field )     \
 if( !strcasecmp( word, (literal) ) )   \
 {                                      \
@@ -1407,7 +1407,7 @@ template < size_t N > const char *bitset_string( bitset < N > bits, const char *
    return s.c_str();
 }
 
-// This temlate is used during file reading to set flags based on the string names.
+// This template is used during file reading to set flags based on the string names.
 // Loosely resembles Remcon's WEXTKEY macro from his LoP codebase.
 template < size_t N > void flag_set( FILE * fp, bitset < N > &field, const char *flagarray[] )
 {

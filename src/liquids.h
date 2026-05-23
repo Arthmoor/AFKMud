@@ -38,12 +38,12 @@
  *  (v2.2) - Liquid statistics command added (liquids) shows all information*
  *           about the given liquid.                                        *
  *  (v2.3) - OLC addition for mixtures.                                     *
- *  (v2.4) - Mixtures are now saved into a seperate file and one linked list*
+ *  (v2.4) - Mixtures are now saved into a separate file and one linked list*
  *           because of some saving and loading issues. All the code has    *
  *           been modified to accept the new format. "liq_can_mix" function *
  *           introduced. "mix" command introduced to mix liquids.           *
  *  (v2.5) - Thanks to Samson for some polishing and bugfixing, we now have *
- *           a (hopefully) fully funcitonal copy =).                        *
+ *           a (hopefully) fully functional copy =).                        *
  *  (v2.6) - "Fill" and "Empty" functions have been fixed to allow for the  *
  *           new liquidsystem.                                              *
  *  (v2.7) - Forgot to fix blood support... fixed.                          *
@@ -59,7 +59,7 @@
  * Name: Liquidtable Module (3.0b)
  * Author: John 'Noplex' Bellone (jbellone@comcast.net)
  * Terms:
- * If this file is to be re-disributed; you must send an email
+ * If this file is to be re-distributed; you must send an email
  * to the author. All headers above the #include calls must be
  * kept intact. All license requirements must be met. License
  * can be found in the included license.txt document or on the
@@ -76,7 +76,7 @@
  * This newest version offers a cleaner running code; smaller; and faster in
  * all ways around. Hopefully it'll knock out the old one ten fold ;)
  * Also in the upcoming 'testing' phase of this code; new additions will be added
- * including a better alchemey system for creating poitions as immortals; and as
+ * including a better alchemy system for creating potions as immortals; and as
  * mortals.
  */
 

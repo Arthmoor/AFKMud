@@ -211,7 +211,7 @@ enum item_wear_flags
 };
 
 /*
- * Equpiment wear locations.
+ * Equipment wear locations.
  * Used in #RESETS.
  */
 enum wear_locations

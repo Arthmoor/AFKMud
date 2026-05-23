@@ -33,8 +33,8 @@
 *  www.t-n-k-games.com                                            *
 *                                                                 *
 * Description:                                                    *
-*  This program will allow admin to view and set thier MSSP       *
-*  variables in game, and allows thier game to respond to a MSSP  *
+*  This program will allow admin to view and set their MSSP       *
+*  variables in game, and allows their game to respond to a MSSP  *
 *  Server with the MSSP-Plaintext protocol                        *
 *******************************************************************
 * What it does:                                                   *

@@ -35,7 +35,7 @@ enum variable_types
 
 /*
  * Variable structure used for putting variable tags on players, mobs
- * or anything else.  Will be persistant (save) for players.
+ * or anything else.  Will be persistent (save) for players.
  */
 struct variable_data
 {

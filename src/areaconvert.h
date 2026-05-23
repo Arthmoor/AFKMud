@@ -33,7 +33,7 @@ const int AREA_STOCK_VERSION = 3;       // The current top version for stock Sma
 const int AREA_SMAUGWIZ_VERSION = 1000; // The current top version for SmaugWiz files
 const int AREA_FUSS_VERSION = 1;        // The current top version for SmaugFUSS files
 
-/* Extended bitvector matierial is now kept only for legacy purposes to convert old areas. */
+/* Extended bitvector material is now kept only for legacy purposes to convert old areas. */
 typedef struct extended_bitvector EXT_BV;
 
 /*
