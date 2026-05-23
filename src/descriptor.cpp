@@ -43,6 +43,7 @@
 #define EWOULDBLOCK WSAEWOULDBLOCK
 #else
 #include <sys/socket.h>
+#include <netdb.h>
 #include <sys/wait.h>
 #include <arpa/inet.h>
 #include <arpa/telnet.h>
@@ -1653,8 +1654,7 @@ void new_descriptor( int new_desc )
    descriptor_data *dnew;
    struct sockaddr_in6 sock;
    int desc;
-   char ip[INET6_ADDRSTRLEN];
-   string newip;
+   char host_buf[NI_MAXHOST];
 #if defined(WIN32)
    ULONG r;
    int size;
@@ -1707,35 +1707,40 @@ void new_descriptor( int new_desc )
    if( check_bad_desc( new_desc ) )
       return;
 
-   inet_ntop( AF_INET6, &sock.sin6_addr, ip, INET6_ADDRSTRLEN );
-   newip = ip;
-
-   if( newip != "::1" )
-   {
-      string::size_type pos = newip.find_last_of( ":", newip.length() );
-      string::size_type pos2 = newip.find_last_of( ".", newip.length() );
-
-      if( pos2 != string::npos )
-      {
-         if( pos != string::npos )
-         {
-            newip = newip.substr( pos + 1 );
-         }
-      }
-   }
-
    dnew = new descriptor_data;
    dnew->init(  );
+
+   if( getnameinfo( ( struct sockaddr * )&sock, size, host_buf, sizeof( host_buf ), NULL, 0, NI_NUMERICHOST ) == 0 )
+   {
+      /*
+       * If using a dual-stack socket, IPv4 addresses often appear as
+       * ::ffff:192.168.1.1. We can strip the prefix if desired,
+       * but getnameinfo provides the clean format by default.
+       */
+      char *final_ip = host_buf;
+
+      // Optional: Strip "::ffff:" prefix if you strictly want IPv4 notation
+      if( strncmp( host_buf, "::ffff:", 7 ) == 0 )
+      {
+         final_ip = host_buf + 7;
+      }
+
+      dnew->ipaddress = final_ip;
+   }
+   else
+   {
+      dnew->ipaddress = "unknown";
+   }
+
    if( desc == 0 )
    {
-      bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Host: %s", __func__, ip );
+      bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Host: %s", __func__, dnew->ipaddress.c_str( ) );
       deleteptr( dnew );
       set_alarm( 0 );
       return;
    }
    dnew->descriptor = desc;
    dnew->client_port = ntohs( sock.sin6_port );
-   dnew->ipaddress = newip;
    dnew->hostname = dnew->ipaddress;
 
 #if !defined(WIN32)
