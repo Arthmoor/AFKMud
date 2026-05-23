@@ -21,7 +21,7 @@ See the file 'license.txt' in your afkmud/doc directory. Read, obey. Downloading
 Installation Notes
 ==================
 
-There are some things that you need to be aware of prior to installing the game. Please read this stuff BEFORE you try and run the game. You'll avoid alot of hassle, and we'll be asking if you checked this stuff anyway.
+There are some things that you need to be aware of prior to installing the game. Please read this stuff BEFORE you try and run the game. You'll avoid a lot of hassle, and we'll be asking if you checked this stuff anyway.
 
 Release Frequency
 =================
@@ -46,33 +46,29 @@ Cygwin Support
 
 Cygwin support is largely touch and go. The C++ conversion leaves it somewhat up in the air as to whether it will decide to work properly or not. It has not been heavily tested, so don't be too surprised if after it's compiled it just refuses to behave.
 
-SQL, Multiport, and interport channels are not available in Cygwin. It simply lacks the proper tools to handle it. You also need to make sure the NEED_DL line in the Makefile is commented out.
+SQL, Multiport, and interport channels are not available in Cygwin. It simply lacks the proper tools to handle it.
 
 FreeBSD Support
 ===============
 
-There should be no real reason why AFKMud 2.0 should not work in FreeBSD. It might require some tweaking of the Makefile, and you'll need to be sure to use the gmake compiler, but aside from that the code itself should compile hassle free.
-
-Comment out the NEED_DL define in the Makefile to compile.
+There should be no real reason why AFKMud 2.0+ should not work in FreeBSD. It might require some tweaking of the Makefile, and you'll need to be sure to use the gmake compiler, but aside from that the code itself should compile hassle free.
 
 OpenBSD Support
 ===============
 
-OpenBSD support has not been verified with 2.0. It was shaky at best in 1.x. If you have any luck getting it to work, let us know. If it needed special attention,
+OpenBSD support has not been verified with 2.0+. It was shaky at best in 1.x. If you have any luck getting it to work, let us know. If it needed special attention,
 let us know what changes to include and we'll try and see to it they show up in a future maintenance release.
-
-Comment out the NEED_DL define, and the EXPORT_SYMBOLS define in the Makefile to compile.
 
 CPU, Memory, and Hard Drive Requirements
 ========================================
 
-AFKMud is on the large side due to the sheer number of features included. You will need to take this into consideration first, before ever even thinking about where to host it. Count on somewhere around 30MB in drive space usage once the code is compiled. Preliminary results for 64 bit systems suggests you'll need almost twice that. Don't ask us why because we don't know. It's probably one of those weird gcc things only GNU knows about.
+AFKMud is on the large side due to the sheer number of features included. You will need to take this into consideration first, before ever even thinking about where to host it. Count on somewhere around 100 MB in drive space usage once the code is compiled. This will obviously get larger as you build content for your world.
 
-RAM usage should expect to hover around 30MB on a moderately sized world. This is assuming approximately 9,000 rooms and 3 1000x1000 overland maps.
+RAM usage should expect to hover around 30 MB on a moderately sized world. This is assuming approximately 9,000 rooms and 3 1000x1000 overland maps.
 
 CPU usage should hover at or near 0.0% during idle, and around 0.5% during moderate load. We don't have any high stress usage figures to offer, but it shouldn't cause you any grief.
 
-[Note: This was a concern back in 2002, but in 2025, any halfway decent VPS or other server won't even notice these levels of resource use. MUDs just aren't that demanding.]
+[Note: This was a concern back in 2002, but in 2026, any halfway decent VPS or other server won't even notice these levels of resource use. MUDs just aren't that demanding.]
 
 First Immortal
 ==============
@@ -93,7 +89,7 @@ Not satisfied with that? All is not lost. Though the AFKMud area file format has
 
 1. Leave your areas and area.lst file alone and try to boot the mud with them as is. Your logs will look like a train wreck, but if you're lucky they'll load and you can then execute a "fold all" command once you've logged in. This would be advisable ASAP after an event of this magnitude. If any of the zones crash the mud, you'll need to take them out of the area.lst file and hold them over for method 2 below. 
 
-2. If you come across a stock zone that won't convert and you need to try it again later, or if you decide to load one you've downloaded at some point, drop it into your areaconvert directory and type "areaconvert filename.are". If it fails to load, your mud has probably crashed. Examine the logs, core dumps, etc to find out why, correct it, and try again.
+2. If you come across a stock zone that won't convert and you need to try it again later, or if you decide to load one you've downloaded at some point, drop it into your areaconvert directory and type "areaconvert filename.are" while in the MUD. If it fails to load, your MUD has probably crashed. Examine the logs, core dumps, etc to find out why, correct it, and try again.
 
 This functionality should allow you to load Smaug 1.02a, 1.4a, 1.8b, SmaugWiz, ResortMUD, CalareyMUD, Chronicles, Dark Rifts, DOTDII, and SWR areas. Other formats are considered non-standard and will not be supported.
 
@@ -139,4 +135,4 @@ MXP - Mud eXtension Protocol
 
 MXP is one of those things that sounds good on paper, looks good when the specs are written, but end up being badly implemented by the people who cooked it up. Still, we have basic support included. It probably doesn't work 100% right, and definitely won't work right in Zmud, ironically enough. But when the spec author disobeys his own standards, that happens.
 
-This feature is being considered for removal. If you want to save it, there's a poll pinned to the forum. Go vote. If you want to guarantee that we don't remove it anyway, despite the poll, then send us a patch to fix it.
+This feature has been removed from the codebase.
