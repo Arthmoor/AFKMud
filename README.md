@@ -70,11 +70,6 @@ CPU usage should hover at or near 0.0% during idle, and around 0.5% during moder
 
 [Note: This was a concern back in 2002, but in 2026, any halfway decent VPS or other server won't even notice these levels of resource use. MUDs just aren't that demanding.]
 
-First Immortal
-==============
-
-A pfile named "Admin" is included, with password "admin". Use this to get your first immortal advanced. Then promptly delete him!
-
 The Makefile
 ============
 
@@ -136,3 +131,29 @@ MXP - Mud eXtension Protocol
 MXP is one of those things that sounds good on paper, looks good when the specs are written, but end up being badly implemented by the people who cooked it up. Still, we have basic support included. It probably doesn't work 100% right, and definitely won't work right in Zmud, ironically enough. But when the spec author disobeys his own standards, that happens.
 
 This feature has been removed from the codebase.
+
+Starting the MUD After Compiling
+================================
+
+Once you have everything compiled, you're likely anxious to start things up.
+
+In your terminal, from the src directory, type in:
+
+./startup.sh &
+
+The MUD should be booted up within a few seconds. To connect and verify that it's up and running, type:
+
+telnet localhost 7500
+
+You should be presented with the MUDs login screen.
+
+Please note that the older "startup" script is no longer being distributed with the package as it required an extra shell scripting package to be installed on the server. Pretty much any Linux or Linux-like system should have /bin/bash available by default.
+
+You can change the default port the MUD operates on by editing the startup.sh script and changing "7500" to the port number you want.
+
+First Immortal
+==============
+
+A pfile named "Admin" is included, with password "admin". Use this account to log in for the first time. You should then rename this player to something else and CHANGE THE PASSWORD.
+
+Alternatively, connect a new player and use the Admin player to advance the new one. When this is done, be sure to DELETE the Admin player.

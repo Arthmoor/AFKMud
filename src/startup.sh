@@ -1,49 +1,52 @@
-#! /bin/bash
+#!/bin/bash
+
 # Set the port number.
-
-if [ -n $1 ]
- then port=$1
-    echo "I am now listening on port $port as you specified."
-else
- port=9500
-    echo "You did not specify a port to run on. I have set it to $port. To specify a port number, port 9500 for example, please use nohup ./startup 9500"
-fi
-
-echo listening on port $port
+PORT=${1:-7500}
 
 # Change to area directory.
-cd ../area
+cd ../area || exit 1
 
-# Initial shutdown.txt file check and removal.
-if [ -e shutdown.txt ]  # Start Clean.
- then
-  rm -f shutdown.txt
-  echo "Initial shutdown file removal machine"
- else
-  echo "No shutdown file found. Continuing..."
-fi
+# Set limits
+ulimit -c unlimited
+rm -f shutdown.txt
 
-# Check if port specified is available.
-echo checking port $port
-mandible=$(netstat -an | grep :$port | grep -c LISTEN)
+while true; do
+    # Find the next available log index
+    INDEX=1000
+    while [ -e "../log/$INDEX.log" ]; do
+        ((INDEX++))
+    done
+    LOGFILE="../log/$INDEX.log"
 
-    if [ $mandible -gt 0 ]
-      then
-    echo Port $port is already in use.
+    # Record starting time
+    date > "$LOGFILE"
+    date > boot.txt
+
+    # Check if already running using ss (or netstat if preferred)
+    if ss -tuln | grep -q ":$PORT "; then
+        echo "Port $PORT is already in use."
         exit 0
-      else
-    echo "Port check success! $port is not already in use"
     fi
 
-while [ 1 ]
-do
-    # Run AFKMud.
-    ../src/afkmud "$port"
+    # Run AFKMud
+    ../src/afkmud "$PORT" >> "$LOGFILE" 2>&1
 
-    # Restart, giving old connections a chance to die.
-    if [ -e shutdown.txt ]
-     then
-    exit 0
+    # Crash handling and GDB analysis
+    if [ -f "core" ]; then
+        mv core ../src
+        cd ../src
+        date > "../crash/$INDEX.crash"
+        # Assuming you have a 'commands' file for gdb as per original script
+        gdb -batch -x commands afkmud core >> "../crash/$INDEX.crash"
+        cd ../area
     fi
-sleep 5
+
+    # Check for clean shutdown
+    if [ -f "shutdown.txt" ]; then
+        rm -f shutdown.txt
+        exit 0
+    fi
+
+    # Wait before restarting
+    sleep 5
 done
