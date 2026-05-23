@@ -101,15 +101,6 @@ Flags       ghost noforce
 End
 
 #COMMAND
-Name        allow
-Code        do_allow
-Position    dead
-Level       108
-Log         always
-Flags       ghost
-End
-
-#COMMAND
 Name        appraise
 Code        do_appraise
 Position    resting
@@ -537,15 +528,6 @@ Code        do_cset
 Position    dead
 Level       113
 Log         always
-Flags       ghost
-End
-
-#COMMAND
-Name        climate
-Code        do_climate
-Position    dead
-Level       106
-Log         normal
 Flags       ghost
 End
 
@@ -2271,15 +2253,6 @@ Flags       ghost
 End
 
 #COMMAND
-Name        mparthmoor
-Code        do_mparthmoor
-Position    dead
-Level       90
-Log         normal
-Flags       mudprog
-End
-
-#COMMAND
 Name        morph
 Code        do_imm_morph
 Position    dead
@@ -2343,15 +2316,6 @@ Flags       mudprog
 End
 
 #COMMAND
-Name        map
-Code        do_map
-Position    dead
-Level       0
-Log         normal
-Flags       ghost
-End
-
-#COMMAND
 Name        mapedit
 Code        do_mapedit
 Position    dead
@@ -2372,15 +2336,6 @@ End
 #COMMAND
 Name        mpdoppleganger
 Code        do_mpdoppleganger
-Position    dead
-Level       0
-Log         normal
-Flags       mudprog
-End
-
-#COMMAND
-Name        mpgwraggedd
-Code        do_mpgwraggedd
 Position    dead
 Level       0
 Log         normal
@@ -2950,14 +2905,6 @@ Name        privacy
 Code        do_privacy
 Position    sleeping
 Level       2
-Log         normal
-End
-
-#COMMAND
-Name        pclist
-Code        do_pclist
-Position    dead
-Level       115
 Log         normal
 End
 
@@ -4028,15 +3975,6 @@ Flags       ghost
 End
 
 #COMMAND
-Name        scan2
-Code        do_scan2
-Position    dead
-Level       115
-Log         normal
-Flags       ghost
-End
-
-#COMMAND
 Name        setmssp
 Code        do_setmssp
 Position    dead
@@ -4390,30 +4328,12 @@ Flags       ghost
 End
 
 #COMMAND
-Name        warn
-Code        do_warn
-Position    dead
-Level       108
-Log         normal
-Flags       ghost
-End
-
-#COMMAND
 Name        whisper
 Code        do_whisper
 Position    resting
 Level       0
 Log         normal
 Flags       possessed
-End
-
-#COMMAND
-Name        web
-Code        do_web
-Position    dead
-Level       115
-Log         normal
-Flags       ghost
 End
 
 #COMMAND
