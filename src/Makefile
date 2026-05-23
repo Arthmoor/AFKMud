@@ -29,9 +29,6 @@ ifneq ($(UNAME_S), Darwin)
     EXPORT_SYMBOLS = -export-dynamic
 endif
 
-#Math functions - uncomment if you get errors or warnings about math functions.
-MATH_LIB = -lm
-
 #Multiport support. Comment out to disable this feature.
 #MULTIPORT = 1
 
@@ -82,9 +79,9 @@ endif
 C_FLAGS = $(C_STD) $(W_FLAGS) $(HARDENING_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS)
 
 ifeq ($(CC), g++)
-   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(MATH_LIB) -lz -lgd $(LIB_TRACE) $(LIB_MYSQL) $(NEED_DL)
+   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) -lz -lgd $(LIB_TRACE) $(LIB_MYSQL) $(NEED_DL)
 else
-   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
+   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
 endif
 
 #D_FLAGS : For the DNS Resolver process. No need in linking all the extra libs for this.
