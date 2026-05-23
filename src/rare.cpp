@@ -309,7 +309,7 @@ void scan_rares( char_data * ch )
 
 CMDF( do_rent )
 {
-   char_data *innkeeper, *victim;
+   char_data *innkeeper;
    int level = ch->get_trust(  );
 
    if( !( innkeeper = find_innkeeper( ch ) ) )
@@ -317,8 +317,6 @@ CMDF( do_rent )
       ch->print( "You can only rent at an inn.\r\n" );
       return;
    }
-
-   victim = innkeeper;
 
    if( ch->isnpc(  ) )
    {
@@ -332,10 +330,10 @@ CMDF( do_rent )
       return;
    }
 
-   act( AT_WHITE, "$n takes your equipment into storage, and shows you to your room.", victim, nullptr, ch, TO_VICT );
+   act( AT_WHITE, "$n takes your equipment into storage, and shows you to your room.", innkeeper, nullptr, ch, TO_VICT );
    act( AT_SAY, "A strange voice says, 'We await your return, $n...'", ch, nullptr, nullptr, TO_CHAR );
    ch->print( "&d\r\n" );
-   act( AT_BYE, "$n shows $N to $S room, and stores $S equipment.", victim, nullptr, ch, TO_NOTVICT );
+   act( AT_BYE, "$n shows $N to $S room, and stores $S equipment.", innkeeper, nullptr, ch, TO_NOTVICT );
 
    log_printf_plus( LOG_COMM, level, "%s rented in: %s, %s", ch->name, ch->in_room->name, ch->in_room->area->name );
 
@@ -714,7 +712,7 @@ void adjust_pfile( const string & name )
 }
 
 /* Rare item counting function taken from the Tartarus codebase, a
- * ROM 2.4b derivitive by Ceran. Modified for Smaug compatibility by Samson
+ * ROM 2.4b derivative by Ceran. Modified for Smaug compatibility by Samson
  */
 int scan_pfiles( const char *dirname, const char *filename, bool updating )
 {
