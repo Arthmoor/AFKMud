@@ -7,23 +7,26 @@
 CC      = g++
 #CC      = clang++
 
-#Uncomment if compiling in Windows under Cygwin
-#CYGWIN = 1
+# Automatically detect if we are running in a Cygwin environment
+ifeq ($(findstring CYGWIN, $(shell uname -s)), CYGWIN)
+    IS_CYGWIN = 1
+endif
 
-#Uncomment if compiling in Mac OSX Sierra
-#MACOSX = 1
+# Check if libdl is available on the system
+HAS_DL := $(shell ld -ldl --verbose >/dev/null 2>&1 && echo yes)
 
-# Uncomment the two lines below if compiling on a Solaris box
-#SOLARIS_FLAG = -Dsun -DSYSV -Wno-char-subscripts
-#SOLARIS_LINK = -lnsl -lsocket -lresolv
+ifeq ($(HAS_DL),yes)
+    NEED_DL = -ldl
+else
+    NEED_DL =
+endif
 
-#Uncomment the line below if you are getting undefined references to dlsym, dlopen, and dlclose.
-#Comment it out if you get errors about ldl not being found.
-NEED_DL = -ldl
+#OS Detection. Used to check for MacOS below.
+UNAME_S := $(shell uname -s)
 
-#Some systems need this for dynamic linking to work.
-ifndef MACOSX
-	EXPORT_SYMBOLS = -export-dynamic
+# Set EXPORT_SYMBOLS only if not on Darwin (MacOS)
+ifneq ($(UNAME_S), Darwin)
+    EXPORT_SYMBOLS = -export-dynamic
 endif
 
 #Math functions - uncomment if you get errors or warnings about math functions.
@@ -41,11 +44,10 @@ MATH_LIB = -lm
 #Miscellaneous compiler options.
 OPT_FLAG = -pipe -O3
 DEBUG_FLAG = -g2
-#PROF_FLAG = -pg
 
 #GCC 4.8+ memory checking option. https://github.com/google/sanitizers Does not work in Cygwin.
 #These should only be enabled for testing environments. Disable for a live environment.
-ifndef CYGWIN
+ifndef IS_CYGWIN
    MEM_FLAG = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
 endif
 
@@ -53,11 +55,16 @@ endif
 # We add -D_FORTIFY_SOURCE=2 to perform runtime checks on string/memory functions.
 HARDENING_FLAGS = -fstack-protector-strong -D_FORTIFY_SOURCE=2
 
-#For Cygwin, comment this out. For any other system, if it complains that C++23 is not available, change it to -std=c++1z
-C_STD = -std=c++23
+#If this complains that C++23 is not available, change it to -std=c++20
+#If you are on GCC 13 or above this should not be an issue.
+ifndef IS_CYGWIN
+   C_STD = -std=c++23
+endif
 
-#Comment out for Cygwin, or any other syste it complains this isn't available on.
-LIB_TRACE = -lstdc++_libbacktrace
+#Comment out for any system it complains this isn't available on. It will never work in Cygwin.
+ifndef IS_CYGWIN
+   LIB_TRACE = -lstdc++_libbacktrace
+endif
 
 ifneq ($(CC), clang++)
    W_FLAGS = -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
@@ -65,23 +72,23 @@ else
    W_FLAGS = -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
 endif
 
-ifndef CYGWIN
+ifndef IS_CYGWIN
    W_FLAGS := $(W_FLAGS) #-Werror
    ifeq ($(CC), g++)
       OPT_FLAG := -rdynamic $(OPT_FLAG)
    endif
 endif
 
-C_FLAGS = $(C_STD) $(W_FLAGS) $(HARDENING_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_FLAG) $(EXPORT_SYMBOLS)
+C_FLAGS = $(C_STD) $(W_FLAGS) $(HARDENING_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS)
 
 ifeq ($(CC), g++)
-   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_TRACE) $(LIB_MYSQL) $(NEED_DL)
+   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(MATH_LIB) -lz -lgd $(LIB_TRACE) $(LIB_MYSQL) $(NEED_DL)
 else
-   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(SOLARIS_LINK) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
+   L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) $(MATH_LIB) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
 endif
 
 #D_FLAGS : For the DNS Resolver process. No need in linking all the extra libs for this.
-D_FLAGS = $(C_STD) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(PROF_FLAG) $(MEM_FLAG) $(SOLARIS_LINK)
+D_FLAGS = $(C_STD) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(HARDENING_FLAGS)
 
 C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           archery.cpp area.cpp areaconvert.cpp area_fussconvert.cpp area_oldafk.cpp \
@@ -107,7 +114,7 @@ ifdef MULTIPORT
    C_FILES := shell.cpp $(C_FILES)
    C_FLAGS := $(C_FLAGS) -DMULTIPORT
    #Sorry folks, this doesn't work in Cygwin
-   ifndef CYGWIN
+   ifndef IS_CYGWIN
       C_FILES := mudmsg.cpp $(C_FILES)
    endif
 endif
@@ -116,7 +123,7 @@ O_FILES := $(patsubst %.cpp,o/%.o,$(C_FILES))
 
 H_FILES = $(wildcard *.h) 
 
-ifdef CYGWIN
+ifdef IS_CYGWIN
    AFKMUD = afkmud.exe
    RESOLVER = resolver.exe
 else
@@ -137,7 +144,7 @@ all:
 
 afkmud: $(O_FILES)
 	@rm -f $(AFKMUD)
-ifdef CYGWIN
+ifdef IS_CYGWIN
 	@dlltool --export-all --output-def afkmud.def $(O_FILES)
 	@dlltool --dllname $(AFKMUD) --output-exp afkmud.exp --def afkmud.def
 	$(CC) -o $(AFKMUD) $(O_FILES) afkmud.exp $(L_FLAGS)
