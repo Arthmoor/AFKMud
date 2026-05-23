@@ -36,6 +36,7 @@
 #define dlopen( libname, flags ) LoadLibrary( (libname) )
 #define dlclose( libname ) FreeLibrary( (HINSTANCE) (libname) )
 #endif
+#include <cassert>
 #include "mud.h"
 #include "descriptor.h"
 #include "mobindex.h"
@@ -485,6 +486,9 @@ void read_obj_file( const char *dirname, const char *filename )
 
    if( ( fp = fopen( fname, "r" ) ) != nullptr )
    {
+      // If the supermob still has objects in its possession, this means that a previous room dump failed.
+      assert( supermob->carrying.empty( ) );
+
       rset_supermob( room );
 
       for( ;; )
