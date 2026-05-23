@@ -94,7 +94,6 @@ extern bool compilelock;
 extern time_t board_expire_time_t;
 
 void game_loop(  );
-void cleanup_memory(  );
 void clear_trdata(  );
 void run_events( time_t );
 
@@ -190,7 +189,7 @@ void directory_check( void )
 
       if( system( buf ) )
       {
-         fprintf( stderr, "FATAL ERROR :: Unable to create required directrory: ../log\n" );
+         fprintf( stderr, "FATAL ERROR :: Unable to create required directory: ../log\n" );
          exit( 1 );
       }
    }
@@ -345,35 +344,6 @@ int init_socket( int mudport )
       exit( 1 );
    }
 
-/*
- * SO_DONTLINGER no longer appears to be necessary so I've commented it out.
- * If for some reason you find that the socket won't work correctly without it, uncomment it.
- * Please let us know at smaugmuds.afkmods.com as well, describing what failed to work properly without it.
- * I'm not even sure if the SYSV part is relevant these days as the only information that keeps coming
- * up on Google is 15+ years old. -- Samson 1/22/2025.
- */
-/*
-#if defined(SO_DONTLINGER) && !defined(SYSV)
-   {
-      struct linger ld;
-
-      ld.l_onoff = 1;
-      ld.l_linger = 1000;
-
-#if defined(WIN32)
-      if( setsockopt( fd, SOL_SOCKET, SO_DONTLINGER, ( const char * )&ld, sizeof( ld ) ) < 0 )
-#else
-      if( setsockopt( fd, SOL_SOCKET, SO_DONTLINGER, ( void * )&ld, sizeof( ld ) ) < 0 )
-#endif
-      {
-         perror( "Init_socket: SO_DONTLINGER" );
-         close( fd );
-         exit( 1 );
-      }
-   }
-#endif
-*/
-
 /* 
  * SO_REUSEADDR, however, is still necessary or the socket will only be able to bind to one
  * protocol. The MUD will fail to start, saying the address is already in use when the second
@@ -426,7 +396,7 @@ int init_socket( int mudport )
 
 /* This functions purpose is to open up all of the various things the mud needs to have
  * up before the game_loop is entered. If something needs to be added to the mud
- * startup proceedures it should be placed in here.
+ * startup procedures it should be placed in here.
  */
 void init_mud( bool fCopyOver, int gameport )
 {
@@ -483,7 +453,7 @@ void init_mud( bool fCopyOver, int gameport )
 
 /* This function is called from 'main' or 'SigTerm'. Its purpose is to clean up
  * the various loose ends the mud will have running before it shuts down. Put anything
- * which needs to be added to the shutdown proceedures in here.
+ * which needs to be added to the shutdown procedures in here.
  */
 void close_mud( void )
 {
@@ -568,8 +538,6 @@ static void SegVio( int signum )
 
    // That's all, folks.
    log_string( "Normal termination of game." );
-   log_string( "Cleaning up Memory.\033[0m" );
-   cleanup_memory(  );
    exit( 0 );
 }
 
@@ -625,8 +593,8 @@ static void SigTerm( int signum )
    list < char_data * >::iterator ich;
 
    echo_to_all( "&RATTENTION!! Message from game server: &YEmergency shutdown called.\a", ECHOTAR_ALL );
-   echo_to_all( "&YExecuting emergency shutdown proceedure.", ECHOTAR_ALL );
-   log_string( "Message from server: Executing emergency shutdown proceedure." );
+   echo_to_all( "&YExecuting emergency shutdown procedure.", ECHOTAR_ALL );
+   log_string( "Message from server: Executing emergency shutdown procedure." );
    shutdown_mud( "Emergency Shutdown" );
 
    for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
@@ -654,7 +622,7 @@ static void SigTerm( int signum )
  */
 static void caught_alarm( int signum )
 {
-   echo_to_all( "&[immortal]Alas, the hideous malevalent entity known only as 'Lag' rises once more!", ECHOTAR_ALL );
+   echo_to_all( "&[immortal]Alas, the hideous malevolent entity known only as 'Lag' rises once more!", ECHOTAR_ALL );
    bug( "&RALARM CLOCK! In section %s", alarm_section );
 
    if( newdesc )
@@ -685,8 +653,6 @@ static void caught_alarm( int signum )
     * That's all, folks.
     */
    log_string( "Normal termination of game." );
-   log_string( "Cleaning up Memory.\033[0m" );
-   cleanup_memory(  );
    exit( 0 );
 }
 #endif
@@ -737,8 +703,8 @@ bool check_parse_name( const string & name, bool newchar )
 
    /*
     * This grep idea was borrowed from SunderMud.
-    * * Reserved names list was getting much too large to load into memory.
-    * * Placed last so as to avoid problems from any of the previous conditions causing a problem in shell.
+    * Reserved names list was getting much too large to load into memory.
+    * Placed last so as to avoid problems from any of the previous conditions causing a problem in shell.
     */
    char buf[MSL];
    snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", name.c_str(  ) );
@@ -1039,195 +1005,6 @@ void game_loop( void )
    // Returns back to 'main', and will result in mud shutdown
 }
 
-/*
- * Clean all memory on exit to help find leaks
- * Yeah I know, one big ugly function -Druid
- * Added to AFKMud by Samson on 5-8-03.
- */
-void cleanup_memory( void )
-{
-   int hash;
-
-   fprintf( stdout, "%s", "Quote List.\n" );
-   free_quotes(  );
-
-   fprintf( stdout, "%s", "Random Environment Data.\n" );
-   free_envs(  );
-
-   fprintf( stdout, "%s", "Auction Sale Data.\n" );
-   free_sales(  );
-
-   fprintf( stdout, "%s", "Project Data.\n" );
-   free_projects(  );
-
-   fprintf( stdout, "%s", "Ban Data.\n" );
-   free_bans(  );
-
-   fprintf( stdout, "%s", "Auth List.\n" );
-   free_all_auths(  );
-
-   fprintf( stdout, "%s", "Morph Data.\n" );
-   free_morphs(  );
-
-   fprintf( stdout, "%s", "Rune Data.\n" );
-   free_runedata(  );
-
-   fprintf( stdout, "%s", "Immortal Hosts Data.\n" );
-   free_immhosts();
-
-   fprintf( stdout, "%s", "Connection History Data.\n" );
-   free_connhistory( 0 );
-
-   fprintf( stdout, "%s", "Slay Table.\n" );
-   free_slays(  );
-
-   fprintf( stdout, "%s", "Holidays.\n" );
-   free_holidays(  );
-
-   fprintf( stdout, "%s", "Specfun List.\n" );
-   free_specfuns(  );
-
-   fprintf( stdout, "%s", "Wizinfo Data.\n" );
-   clear_wizinfo(  );
-
-   fprintf( stdout, "%s", "Ships.\n" );
-   free_ships(  );
-
-   fprintf( stdout, "%s", "Overland Data.\n" );
-   free_continents(  );
-
-   fprintf( stdout, "%s", "Mixtures and Liquids.\n" );
-   free_liquiddata(  );
-
-   fprintf( stdout, "%s", "DNS Cache data.\n" );
-   free_dns_list(  );
-
-   fprintf( stdout, "%s", "Local Channels.\n" );
-   free_mudchannels(  );
-
-   // Helps
-   fprintf( stdout, "%s", "Helps.\n" );
-   free_helps(  );
-
-   // Commands
-   fprintf( stdout, "%s", "Commands.\n" );
-   free_commands(  );
-
-#ifdef MULTIPORT
-   // Shell Commands
-   fprintf( stdout, "%s", "Shell Commands.\n" );
-   free_shellcommands(  );
-#endif
-
-   // Socials
-   fprintf( stdout, "%s", "Socials.\n" );
-   free_socials(  );
-
-   // Languages
-   fprintf( stdout, "%s", "Languages.\n" );
-   free_tongues(  );
-
-   // Boards
-   fprintf( stdout, "%s", "Boards.\n" );
-   free_boards(  );
-
-   // Events
-   fprintf( stdout, "%s", "Events.\n" );
-   free_all_events(  );
-
-   // Find and eliminate all running chess games
-   fprintf( stdout, "%s", "Ending chess games.\n" );
-   free_all_chess_games(  );
-
-   // Whack supermob
-   fprintf( stdout, "%s", "Whacking supermob.\n" );
-   if( supermob )
-   {
-      supermob->from_room(  );
-      charlist.remove( supermob );
-      deleteptr( supermob );
-   }
-
-   // Free Characters
-   fprintf( stdout, "%s", "Characters.\n" );
-   extract_all_chars(  );
-
-   // Free Objects
-   fprintf( stdout, "%s", "Objects.\n" );
-   extract_all_objs(  );
-
-   // Descriptors
-   fprintf( stdout, "%s", "Descriptors.\n" );
-   free_all_descs(  );
-
-   // Deities
-   fprintf( stdout, "%s", "Deities.\n" );
-   free_deities(  );
-
-   // Clans
-   fprintf( stdout, "%s", "Clans.\n" );
-   free_clans(  );
-
-   // Realms
-   fprintf( stdout, "%s", "Realms.\n" );
-   free_realms(  );
-
-   // Races
-   fprintf( stdout, "%s", "Races.\n" );
-   free_all_races(  );
-
-   // Classes
-   fprintf( stdout, "%s", "Classes.\n" );
-   free_all_classes(  );
-
-   // Teleport lists
-   fprintf( stdout, "%s", "Teleport Data.\n" );
-   free_teleports(  );
-
-   // Areas - this includes killing off the hash tables and such
-   fprintf( stdout, "%s", "Area Data Tables.\n" );
-   close_all_areas(  );
-
-   // Get rid of auction pointer MUST BE AFTER OBJECTS DESTROYED
-   fprintf( stdout, "%s", "Auction.\n" );
-   deleteptr( auction );
-
-   // Title table
-   fprintf( stdout, "%s", "Title table.\n" );
-   free_all_titles(  );
-
-   // Skills
-   fprintf( stdout, "%s", "Skills and Herbs.\n" );
-   free_skills(  );
-
-   // Prog Act lists
-   fprintf( stdout, "%s", "Mudprog act lists.\n" );
-   free_prog_actlists(  );
-
-   // Questbit data
-   fprintf( stdout, "%s", "Abit/Qbit Data.\n" );
-   free_questbits(  );
-
-   free_mssp_info();
-
-   fprintf( stdout, "%s", "Checking string hash for leftovers.\n" );
-   {
-      for( hash = 0; hash < 1024; ++hash )
-         hash_dump( hash );
-   }
-
-#if !defined(__CYGWIN__) && defined(SQL)
-   fprintf( stdout, "%s", "Closing database connection.\n" );
-   close_db(  );
-#endif
-
-   // Last but not least, close the libdl and dispose of sysdata - Samson
-   fprintf( stdout, "%s", "System data.\n" );
-   dlclose( sysdata->dlHandle );
-   deleteptr( sysdata );
-   fprintf( stdout, "%s", "Memory cleanup complete, exiting.\n" );
-}
-
 // Heh, nice one Darien :)
 #if !defined(WIN32)
 void moron_check( void )
@@ -1370,7 +1147,5 @@ int main( int argc, char **argv )
 
    // That's all, folks.
    log_string( "Normal termination of game." );
-   log_string( "Cleaning up Memory.\033[0m" );
-   cleanup_memory(  );
    exit( 0 );
 }
