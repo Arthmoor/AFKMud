@@ -3748,9 +3748,10 @@ void mprog_greet_trigger( char_data * ch )
       if( ch == vmob )
          continue;
 
-      // Band-aid fix to stop unknown crash
-      if( ch->in_room != vmob->in_room )
-         break;
+      // Check if vmob is still valid and in the same room
+      // GitHub Issue #25 - solution provided by windu-ant
+      if( !vmob || !vmob->in_room || ch->in_room != vmob->in_room )
+         continue;
 
       /*
        * Don't let a mob trigger itself, nor one instance of a mob
