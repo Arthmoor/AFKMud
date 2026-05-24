@@ -1,19 +1,15 @@
-bt
-frame 0
-list
-info locals
-frame 1
-list
-info locals
-frame 2
-list
-info locals
-frame 3
-list
-info locals
-frame 4
-list
-info locals
-frame 5
-list
-info locals
+bt full
+
+info registers
+
+# Loop the first 10 frames, which ought to be enough.
+# If not, simply raise it to something higher.
+set $i = 0
+while $i < 10
+  frame $i
+  list
+  info locals
+  set $i = $i + 1
+end
+
+quit
