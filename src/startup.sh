@@ -4,7 +4,7 @@
 PORT=${1:-7500}
 
 # Change to area directory.
-cd ../area || exit 1
+cd ../area || { echo "Directory ../area not found!"; exit 1; }
 
 # Set limits
 ulimit -c unlimited
@@ -36,7 +36,6 @@ while true; do
         mv core ../src
         cd ../src
         date > "../crash/$INDEX.crash"
-        # Assuming you have a 'commands' file for gdb as per original script
         gdb -batch -x commands afkmud core >> "../crash/$INDEX.crash"
         cd ../area
     fi

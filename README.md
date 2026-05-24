@@ -37,7 +37,7 @@ Overland editing is covered by Newcontinent.txt and RGB.txt.
 
 We know the existing documentation is sparse. Hopefully it won't stay that way forever, but it's been given very low priority. User submitted docs are always welcome though.
 
-Older SMAUG and Merc documentation can be found in the /doc/OLD directory. Most of these older docs have been superseded by newer AFK docs, but there may still be useful elements in them. One that you should most likely read anyway is hacker.txt - it offers some basic thoughts on how to be a mud admin.
+Older SMAUG and Merc documentation can be found in the /doc/OLD directory. Most of these older docs have been superseded by newer AFK docs, but there may still be useful elements in them. One that you should most likely read anyway is hacker.txt - it offers some basic thoughts on how to be a MUD admin.
 
 If anything seems lacking or there is a feature you want to know about that isn't documented here, please let us know.
 
@@ -59,8 +59,8 @@ OpenBSD Support
 OpenBSD support has not been verified with 2.0+. It was shaky at best in 1.x. If you have any luck getting it to work, let us know. If it needed special attention,
 let us know what changes to include and we'll try and see to it they show up in a future maintenance release.
 
-CPU, Memory, and Hard Drive Requirements
-========================================
+CPU, Memory, and Storage Requirements
+=====================================
 
 AFKMud is on the large side due to the sheer number of features included. You will need to take this into consideration first, before ever even thinking about where to host it. Count on somewhere around 100 MB in drive space usage once the code is compiled. This will obviously get larger as you build content for your world.
 
@@ -78,11 +78,11 @@ The Makefile has some suggestions on what to comment out if you get certain erro
 Stock Areas
 ===========
 
-First of all: No. There are no stock areas included, other than our rendition of the Astral Plane and some newbie stuff on the island of Reonn. The purpose of releasing AFKMud was not to provide people with cookie-cutter ready made worlds. It was to provide people the tools to create their own unique worlds for people to enjoy. Sure, this means we don't have 500 muds using the code, but those who do use it end up creating some great stuff with it.
+First of all: No. There are no stock areas included, other than our rendition of the Astral Plane and some newbie stuff on the island of Reonn. The purpose of releasing AFKMud was not to provide people with cookie-cutter ready made worlds. It was to provide people the tools to create their own unique worlds for people to enjoy. Sure, this means we don't have 500 MUDs using the code, but those who do use it end up creating some great stuff with it.
 
 Not satisfied with that? All is not lost. Though the AFKMud area file format has been significantly altered from Smaug, we included a conversion routine to allow loading of stock Smaug material. It's not perfect, but if you want your ready made stuff, you've got to work for it. This can be accomplished one of two ways:
 
-1. Leave your areas and area.lst file alone and try to boot the mud with them as is. Your logs will look like a train wreck, but if you're lucky they'll load and you can then execute a "fold all" command once you've logged in. This would be advisable ASAP after an event of this magnitude. If any of the zones crash the mud, you'll need to take them out of the area.lst file and hold them over for method 2 below. 
+1. Leave your areas and area.lst file alone and try to boot the MUD with them as is. Your logs will look like a train wreck, but if you're lucky they'll load and you can then execute a "fold all" command once you've logged in. This would be advisable ASAP after an event of this magnitude. If any of the zones crash the MUD, you'll need to take them out of the area.lst file and hold them over for method 2 below. 
 
 2. If you come across a stock zone that won't convert and you need to try it again later, or if you decide to load one you've downloaded at some point, drop it into your areaconvert directory and type "areaconvert filename.are" while in the MUD. If it fails to load, your MUD has probably crashed. Examine the logs, core dumps, etc to find out why, correct it, and try again.
 
@@ -97,7 +97,7 @@ When you find yourself wanting to add a new command to the code, either from a s
 
 With AFKMud, you no longer need to worry about that. The code used the dlsym functionality to handle the required lookups. It isn't even necessary to have DECLARE_DO_FUN statements anywhere. Just insert, compile, and create the command online. It's that easy now.
 
-In the unlikely event your system does not have the right library support, you'll need to have that fixed by your sysadmin. Most linux installs have this natively.
+In the unlikely event your system does not have the right library support, you'll need to have that fixed by your sysadmin. Most Linux installs have this natively.
 
 Overland, and libgd-devel
 =========================
@@ -107,21 +107,21 @@ AFKMud comes with a wilderness ANSI map system we've dubbed "The Overland". Basi
 Multiple Port Support
 =====================
 
-The code now has ways to check which port the mud is running on. This allows for things to behave differently based on which port the game is running on. This requires that some defines be set prior to startup or things will not behave properly. The defines are located in mudcfg.h and are called MAINPORT, BUILDPORT, and CODEPORT. These values MUST be different from each other or the mud will not compile. Change them to fit your hosting situation. These should only be used for additional testing ports and will require an additional password for newly created characters to enter. This password can be set using cset, and ships with the default password of "blocked". Change this ASAP if you intend to use it.
+The code now has ways to check which port the MUD is running on. This allows for things to behave differently based on which port the game is running on. This requires that some defines be set prior to startup or things will not behave properly. The defines are located in mudcfg.h and are called MAINPORT, BUILDPORT, and CODEPORT. These values MUST be different from each other or the MUD will not compile. Change them to fit your hosting situation. These should only be used for additional testing ports and will require an additional password for newly created characters to enter. This password can be set using cset, and ships with the default password of "blocked". Change this ASAP if you intend to use it.
 
 This feature is disabled by default in the Makefile.
 
 Shell Code
 ==========
 
-The mud has an internal shell processor that will allow some limited functions to make life easier. It is not recommended that these commands be given to anyone but administrators. Also, some mud hosts may not allow this kind of access, check with them first if you have any doubts.
+The MUD has an internal shell processor that will allow some limited functions to make life easier. It is not recommended that these commands be given to anyone but administrators. Also, some MUD hosts may not allow this kind of access, check with them first if you have any doubts.
 
 This feature will not be available if Multiport support has been disabled in the Makefile. Command entries will need to be created for this code if the support is activated. Help for this will not be given. Expect to be ignored if you ask, this is dangerous code in the wrong hands and we refuse to be responsible for any damage that could be done.
 
 MSP - Mud Sound Protocol
 ========================
 
-AFKMud includes support for the MUD Sound Protocol, a system which allows the mud to generate sound for players with clients that support it. For now this seems largely restricted to Zmud users.
+AFKMud includes support for the MUD Sound Protocol, a system which allows the MUD to generate sound for players with clients that support it. For now this seems largely restricted to Zmud users.
 
 Further information on the protocol can be found at: https://www.zuggsoft.com/zmud/msp.htm
 
@@ -131,6 +131,24 @@ MXP - Mud eXtension Protocol
 MXP is one of those things that sounds good on paper, looks good when the specs are written, but end up being badly implemented by the people who cooked it up. Still, we have basic support included. It probably doesn't work 100% right, and definitely won't work right in Zmud, ironically enough. But when the spec author disobeys his own standards, that happens.
 
 This feature has been removed from the codebase.
+
+Installing and Using the Code
+=============================
+
+It should be fairly a straightforward process to install the MUD. It is assumed you already know enough about unpacking files and working with Linux/CYGWIN.
+
+1. Unpack the archive in whatever folder you will be working in. It will default to creating an "afkmud" directory. Change the name of this as you see fit.
+
+2. Compiling
+
+On a Linux or CYGWIN based system:
+
+Change to the afkmud/src directory and type: make
+
+On FreeBSD or OpenBSD:
+
+Change to the afkmud/src directory and type: gmake
+BSD compiling is probably not compatible with pmake.
 
 Starting the MUD After Compiling
 ================================
