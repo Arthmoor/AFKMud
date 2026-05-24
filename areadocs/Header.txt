@@ -52,7 +52,7 @@ Dates       <time> <time>
 -------------------------
 Numerical values representing the number of seconds since January 1, 1970.
 Commonly known as "unix time". Generally these values will be set up automatically in the code.
-You can use the conversion tool at http://www.onlineconversion.com/unix_time.htm to get the numbers.
+You can use the conversion tool at https://www.unixtimestamp.com/index.php to get the numbers.
 The first one is the date the area file was first created.
 The second one is the date the area file was installed into the live player port.
 If left as zeros, they will work, but will report both dates as being the current date and time.

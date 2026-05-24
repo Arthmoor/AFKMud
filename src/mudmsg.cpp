@@ -29,7 +29,7 @@
 /******************************************************
             Desolation of the Dragon MUD II
       (C) 2000-2003  Jesse DeFer
-          http://www.dotd.com  dotd@dotd.com
+          https://www.dotd.com  dotd@dotd.com
  ******************************************************/
 
 #include <sys/ipc.h>

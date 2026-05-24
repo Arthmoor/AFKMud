@@ -21,7 +21,7 @@ and grape.ecs.clarkson.edu.
 
 The automated auction code, and the "FOR" command came from Erwin S.
 Andreasen, erwin@pip.dknet.dk.  He has many code snippets available from:
-http://pip.dknet.dk/~pip1773/ and ftp://ftp.game.org/pub/mud/snippets/Erwin/
+https://pip.dknet.dk/~pip1773/ and ftp://ftp.game.org/pub/mud/snippets/Erwin/
 
 Coders Altrag, Swordbearer and Tricops have their roots in "The Abyss",
 and likely some of their contributions/ideas have come from their work on
