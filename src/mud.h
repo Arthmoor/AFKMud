@@ -29,8 +29,6 @@
 #ifndef __MUD_H__
 #define __MUD_H__
 
-#include <cstdlib>
-#include <cstdio>
 #include <cstring>
 #include <vector>
 #include <list>
