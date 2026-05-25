@@ -89,7 +89,7 @@ const int ALIGN_RIGHT = 3;
 #define BACK_CYAN    "\033[46m"
 #define BACK_GREY    "\033[47m"
 
-/* Other miscelaneous ANSI tags that can be used */
+/* Other miscellaneous ANSI tags that can be used */
 #define ANSI_RESET      "\033[0m"   /* Reset to terminal default */
 #define ANSI_BOLD       "\033[1m"   /* For bright color stuff */
 #define ANSI_ITALIC     "\033[3m"   /* Italic text */

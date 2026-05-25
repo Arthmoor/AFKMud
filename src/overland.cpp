@@ -450,6 +450,7 @@ void load_continent( const char *continent_file )
          // Only loads a png file if the continent should have one. Otherwise the game is only tracking it as a plane instead of an overland map.
          if( !continent->nogrid )
             continent->load_png_file( );
+
          continent_list.push_back( continent );
       }
       else
@@ -497,6 +498,7 @@ void load_continents( const int AREA_FILE_ALARM )
    FCLOSE( fpList );
 }
 
+// This is called in db.cpp during startup after the area files have been loaded.
 void validate_overland_data( void )
 {
    list < continent_data * >::iterator cont;
@@ -514,12 +516,16 @@ void validate_overland_data( void )
             bug( "%s -> %s:%d: Continent %s had an invalid room vnum assigned: %d", __func__, __FILE__, __LINE__, continent->name.c_str( ), continent->vnum );
             error_count++;
          }
-      }
 
-      if( !find_area( continent->areafile ) && continent->nogrid == false )
-      {
-         bug( "%s -> %s:%d: Continent %s had an invalid area filename assigned: %s", __func__, __FILE__, __LINE__, continent->name.c_str( ), continent->areafile.c_str( ) );
-         error_count++;
+         area_data *area = find_area( continent->areafile );
+
+         if( !area )
+         {
+            bug( "%s -> %s:%d: Continent %s had an invalid area filename assigned: %s", __func__, __FILE__, __LINE__, continent->name.c_str( ), continent->areafile.c_str( ) );
+            error_count++;
+         }
+         else
+            continent->area = area;
       }
    }
 

@@ -124,7 +124,7 @@ class continent_data
    list < class mapexit_data *>exits;         // List of exists for this map.
    list < class landmark_data *>landmarks;    // List of landmarks for this map.
    list < class landing_data *>landing_sites; // List of landing sites for this map.
-   class area_data *area;                     // The area associated with this map. This is set during area load based on the areafile string.
+   class area_data *area;                     // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
 
    string name;                               // The name of the continent. Used for lookups and to associate the continent with an area file.
    string mapfile;                            // .png file where the map data will be loaded from.

@@ -106,7 +106,7 @@ WeatherCell weatherMap[WEATHER_SIZE_X][WEATHER_SIZE_Y];
 */
 WeatherCell weatherDelta[WEATHER_SIZE_X][WEATHER_SIZE_Y];
 
-//	Set everything up with random non-equal values to prevent equalibrium
+//	Set everything up with random non-equal values to prevent equilibrium
 void InitializeWeatherMap( void )
 {
    int x, y;
@@ -3100,14 +3100,14 @@ CMDF( do_setweather )
    x = atoi( arg.c_str() );
    y = atoi( arg2.c_str() );
 
-   // Array overrun corrected here corrected on 12/13/2024 - https://github.com/Arthmoor/SmaugFUSS/issues/5
+   // Array overrun corrected here on 12/13/2024 - https://github.com/Arthmoor/SmaugFUSS/issues/5
    if( x < 0 || x >= WEATHER_SIZE_X )
    {
       ch->printf( "X value must be between 0 and %d.\r\n", WEATHER_SIZE_X - 1 );
       return;
    }
 
-   // Array overrun corrected here corrected on 12/13/2024 - https://github.com/Arthmoor/SmaugFUSS/issues/5
+   // Array overrun corrected here on 12/13/2024 - https://github.com/Arthmoor/SmaugFUSS/issues/5
    if( y < 0 || y >= WEATHER_SIZE_Y )
    {
       ch->printf( "Y value must be between 0 and %d.\r\n", WEATHER_SIZE_Y - 1 );
