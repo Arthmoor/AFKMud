@@ -127,20 +127,6 @@ continent_data::~continent_data(  )
    landing_sites.clear();
 }
 
-void free_continents( void )
-{
-   list < continent_data * >::iterator cont;
-
-   for( cont = continent_list.begin(  ); cont != continent_list.end(  ); )
-   {
-      continent_data *continent = *cont;
-      ++cont;
-
-      deleteptr( continent );
-   }
-   continent_list.clear();
-}
-
 bool pixel_colour( gdImagePtr im, int pixel, short red, short green, short blue )
 {
    if( gdImageGreen( im, pixel ) == green && gdImageRed( im, pixel ) == red && gdImageBlue( im, pixel ) == blue )

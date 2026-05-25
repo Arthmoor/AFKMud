@@ -2378,7 +2378,7 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
  * It behaves in much the same way as the pfile read/write code in save.cpp.
  * As a result, it is very fault tolerant to formatting errors when edited offline.
  * It can also quite often tolerate the addition of new fields without breaking things.
- * Removing existing ones wil require updated version handling unless you like dirty logs.
+ * Removing existing ones will require updated version handling unless you like dirty logs.
  *
  * Version 1: Initial construction of new format -- Samson 10/28/06
  */
@@ -2429,19 +2429,6 @@ void area_data::fold( const char *fname, bool install )
 
    fprintf( fpout, "%s", "#ENDAREA\n" );
    FCLOSE( fpout );
-}
-
-void close_all_areas( void )
-{
-   list < area_data * >::iterator iarea;
-
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); )
-   {
-      area_data *pArea = *iarea;
-      ++iarea;
-
-      deleteptr( pArea );
-   }
 }
 
 CMDF( do_savearea )

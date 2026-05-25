@@ -43,8 +43,8 @@ using namespace std;
  * Removing this is a violation of your license agreement.
  */
 #define CODENAME "AFKMud"
-#define CODEVERSION "2.5.2"
-#define COPYRIGHT "Copyright The Alsherok Team 1997-2025. All rights reserved."
+#define CODEVERSION "2.6.0"
+#define COPYRIGHT "Copyright The Alsherok Team 1997-2026. All rights reserved."
 
 // Backward compatibility for snippets and such.
 #define mudstrlcpy strlcpy

@@ -278,20 +278,6 @@ void load_ships( void )
    stream.close(  );
 }
 
-void free_ships( void )
-{
-   list < ship_data * >::iterator sh;
-
-   for( sh = shiplist.begin(  ); sh != shiplist.end(  ); )
-   {
-      ship_data *ship = *sh;
-      ++sh;
-
-      deleteptr( ship );
-   }
-   shiplist.clear();
-}
-
 CMDF( do_shipset )
 {
    ship_data *ship;

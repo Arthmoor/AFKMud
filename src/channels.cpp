@@ -369,19 +369,6 @@ CMDF( do_setchannel )
    do_setchannel( ch, "" );
 }
 
-void free_mudchannels( void )
-{
-   list < mud_channel * >::iterator chan;
-
-   for( chan = chanlist.begin(  ); chan != chanlist.end(  ); )
-   {
-      mud_channel *channel = *chan;
-      ++chan;
-
-      deleteptr( channel );
-   }
-}
-
 CMDF( do_destroychannel )
 {
    mud_channel *channel;

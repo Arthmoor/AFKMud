@@ -41,19 +41,6 @@ void free_event( event_info * e )
    deleteptr( e );
 }
 
-void free_all_events( void )
-{
-   list < event_info * >::iterator e;
-
-   for( e = eventlist.begin(  ); e != eventlist.end(  ); )
-   {
-      event_info *ev = *e;
-      ++e;
-
-      free_event( ev );
-   }
-}
-
 void add_event( time_t when, void ( *callback ) ( void * ), void *data )
 {
    event_info *e;

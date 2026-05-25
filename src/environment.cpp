@@ -87,19 +87,6 @@ void free_env( environment_data * env )
    deleteptr( env );
 }
 
-void free_envs( void )
-{
-   list < environment_data * >::iterator en;
-
-   for( en = envlist.begin(  ); en != envlist.end(  ); )
-   {
-      environment_data *env = *en;
-      ++en;
-
-      free_env( env );
-   }
-}
-
 int get_env_type( const string & type )
 {
    for( int x = 0; x < ENV_MAX; ++x )

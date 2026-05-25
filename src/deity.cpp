@@ -51,19 +51,6 @@ deity_data::~deity_data(  )
    deitylist.remove( this );
 }
 
-void free_deities( void )
-{
-   list < deity_data * >::iterator dt;
-
-   for( dt = deitylist.begin(  ); dt != deitylist.end(  ); )
-   {
-      deity_data *deity = *dt;
-      ++dt;
-
-      deleteptr( deity );
-   }
-}
-
 /* Get pointer to deity structure from deity name */
 deity_data *get_deity( const string & name )
 {

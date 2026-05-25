@@ -311,7 +311,7 @@ void fwrite_morph( FILE * fp, morph_data * morph )
 
 /*
  * This function saves the morph data.  Should be put in on reboot or shutdown
- * to make use of the sort algorithim. --Shaddai
+ * to make use of the sort algorithm. --Shaddai
  */
 void save_morphs( void )
 {
@@ -338,7 +338,7 @@ void save_morphs( void )
  *  Command used to set all the morphing information.
  *  Must use the morphset save command, to write the commands to file.
  *  Hp/Mana/Move/Hitroll/Damroll can be set using variables such
- *  as 1d2+10.  No boundry checks are in place yet on those, so care must
+ *  as 1d2+10.  No boundary checks are in place yet on those, so care must
  *  be taken when using these.  --Shaddai
  */
 CMDF( do_morphset )
@@ -2189,7 +2189,7 @@ morph_data::morph_data(  )
 }
 
 /* 
- * Function that releases all the memory for a morph struct.  Carefull not
+ * Function that releases all the memory for a morph struct.  Careful not
  * to use the memory afterwards as it doesn't exist.
  * --Shaddai 
  */
@@ -2216,23 +2216,9 @@ morph_data::~morph_data(  )
    DISPOSE( unmorph_self );
 }
 
-void free_morphs( void )
-{
-   list < morph_data * >::iterator morph;
-
-   for( morph = morphlist.begin(  ); morph != morphlist.end(  ); )
-   {
-      morph_data *poly = *morph;
-      ++morph;
-
-      deleteptr( poly );
-   }
-   morphlist.clear( );
-}
-
 /*
  * Player function to delete a morph. --Shaddai
- * NOTE Need to check all players and force them to unmorph first
+ * FIXME: Need to check all players and force them to unmorph first
  */
 CMDF( do_morphdestroy )
 {

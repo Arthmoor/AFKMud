@@ -161,19 +161,6 @@ lang_data::~lang_data(  )
    langlist.remove( this );
 }
 
-void free_tongues( void )
-{
-   list < lang_data * >::iterator ln;
-
-   for( ln = langlist.begin(  ); ln != langlist.end(  ); )
-   {
-      lang_data *lang = *ln;
-      ++ln;
-
-      deleteptr( lang );
-   }
-}
-
 /*
  * Tongues / Languages loading/saving functions - Altrag
  */

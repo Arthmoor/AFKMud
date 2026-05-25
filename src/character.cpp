@@ -45,7 +45,6 @@
 list < char_data * >charlist;
 list < char_data * >pclist;
 
-void clean_char_queue(  );
 void stop_hating( char_data * );
 void stop_hunting( char_data * );
 void stop_fearing( char_data * );
@@ -241,21 +240,6 @@ char_data::char_data(  )
    this->map_y = -1;
    this->wait = 0;
    this->variables.clear(  );
-}
-
-void extract_all_chars( void )
-{
-   clean_char_queue(  );
-
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
-   {
-      char_data *character = *ich;
-      ++ich;
-
-      character->extract( true );
-   }
-   clean_char_queue(  );
 }
 
 bool char_data::MSP_ON(  )

@@ -542,26 +542,6 @@ mixture_data *get_mix( const string & str )
    return nullptr;
 }
 
-void free_liquiddata( void )
-{
-   list < mixture_data * >::iterator mx;
-
-   for( mx = mixlist.begin(  ); mx != mixlist.end(  ); )
-   {
-      mixture_data *mix = *mx;
-      ++mx;
-
-      deleteptr( mix );
-   }
-
-   for( int loopa = 0; loopa <= top_liquid; ++loopa )
-   {
-      liquid_data *liq = get_liq_vnum( loopa );
-
-      deleteptr( liq );
-   }
-}
-
 /* Function to display liquid list. - Tarl 9 Jan 03 */
 CMDF( do_showliquid )
 {

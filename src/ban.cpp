@@ -112,19 +112,6 @@ ban_data::~ban_data(  )
    banlist.remove( this );
 }
 
-void free_bans( void )
-{
-   list < ban_data * >::iterator ban;
-
-   for( ban = banlist.begin(  ); ban != banlist.end(  ); )
-   {
-      ban_data *pban = *ban;
-      ++ban;
-
-      deleteptr( pban );
-   }
-}
-
 void load_banlist( void )
 {
    ban_data *ban = nullptr;

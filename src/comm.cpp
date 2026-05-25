@@ -87,7 +87,6 @@ extern int newdesc;
 #ifdef MULTIPORT
 extern bool compilelock;
 #endif
-extern time_t board_expire_time_t;
 
 void game_loop(  );
 void clear_trdata(  );
@@ -99,7 +98,6 @@ void run_events( time_t );
 void boot_db( bool );
 void accept_new( int );
 void bid( char_data *, char_data *, const string & );
-void check_auth_state( char_data * );
 
 #ifdef MULTIPORT
 #if !defined(__CYGWIN__)
@@ -109,55 +107,8 @@ void mud_recv_message(  );
 void save_ships(  );
 void save_timedata(  );
 void save_weathermap(  );
-void save_morphs(  );
 void hotboot_recover(  );
 void update_connhistory( descriptor_data *, int ); /* connhist.c */
-void free_connhistory( int ); /* connhist.c */
-
-/* Used during memory cleanup */
-void free_immhosts();
-void free_mssp_info( void );
-void free_morphs(  );
-void free_quotes(  );
-void free_envs(  );
-void free_sales(  );
-void free_bans(  );
-void free_all_auths(  );
-void free_runedata(  );
-void free_slays(  );
-void free_holidays(  );
-void free_ships(  );
-void free_liquiddata(  );
-void free_mudchannels(  );
-void free_commands(  );
-void free_deities(  );
-void free_socials(  );
-void free_boards(  );
-void free_teleports(  );
-void close_all_areas(  );
-void free_prog_actlists(  );
-void free_questbits(  );
-void free_projects(  );
-void free_specfuns(  );
-void clear_wizinfo(  );
-void free_tongues(  );
-void free_skills(  );
-void free_all_events(  );
-#ifdef MULTIPORT
-void free_shellcommands(  );
-#endif
-void free_dns_list(  );
-void extract_all_chars(  );
-void extract_all_objs(  );
-void free_all_classes(  );
-void free_all_races(  );
-void free_all_titles(  );
-void free_all_chess_games(  );
-void free_continents(  );
-void free_helps(  );
-#if !defined(__CYGWIN__) && defined(SQL)
- void close_db(  );
-#endif
 
 const char *directory_table[] = {
    AREA_CONVERT_DIR, PLAYER_DIR, GOD_DIR, BUILD_DIR, SYSTEM_DIR,
