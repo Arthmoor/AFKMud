@@ -76,7 +76,7 @@
  * This newest version offers a cleaner running code; smaller; and faster in
  * all ways around. Hopefully it'll knock out the old one ten fold ;)
  * Also in the upcoming 'testing' phase of this code; new additions will be added
- * including a better alchemey system for creating poitions as immortals; and as
+ * including a better alchemy system for creating potions as immortals; and as
  * mortals.
  */
 

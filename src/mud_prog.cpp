@@ -37,7 +37,6 @@
  *  Full support for nested ifs is in.                                      *
  ****************************************************************************/
 
-#include <cstdarg>
 #include "mud.h"
 #include "area.h"
 #include "bits.h"

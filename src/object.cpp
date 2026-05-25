@@ -26,7 +26,7 @@
  *                           Object Support Functions                       *
  ****************************************************************************/
 
-#include <limits.h>
+#include <climits>
 #include "mud.h"
 #include "mobindex.h"
 #include "mud_prog.h"

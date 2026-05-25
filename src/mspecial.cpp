@@ -35,14 +35,6 @@
 /* Any spec_fun added here needs to be added to specfuns.dat as well.
  * If you don't know what that means, ask Samson to take care of it.
  */
-
-#if !defined(WIN32)
-#include <dlfcn.h>
-#else
-#include <windows.h>
-#define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
-#define dlerror() GetLastError()
-#endif
 #include "mud.h"
 #include "area.h"
 #include "fight.h"
@@ -120,27 +112,6 @@ bool validate_spec_fun( const string & name )
          return true;
    }
    return false;
-}
-
-/*
- * Given a name, return the appropriate spec_fun.
- */
-SPEC_FUN *m_spec_lookup( const string & name )
-{
-   void *funHandle;
-#if !defined(WIN32)
-   const char *error;
-#else
-   DWORD error;
-#endif
-
-   funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
-   if( ( error = dlerror(  ) ) )
-   {
-      bug( "%s: %s", __func__, error );
-      return nullptr;
-   }
-   return ( SPEC_FUN * ) funHandle;
 }
 
 char_data *spec_find_victim( char_data * ch, bool combat )

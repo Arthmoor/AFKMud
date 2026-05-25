@@ -55,7 +55,7 @@
  *                                                                        *
 \**************************************************************************/
 
-#include <cstdarg>
+// #include <cstdarg>
 #include "mud.h"
 #include "area.h"
 #include "descriptor.h"

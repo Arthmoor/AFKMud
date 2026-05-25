@@ -26,7 +26,6 @@
  *                          Auction House module                            *
  ****************************************************************************/
 
-#include <cstdarg>
 #include <fstream>
 #include <sstream>
 #include <dirent.h>

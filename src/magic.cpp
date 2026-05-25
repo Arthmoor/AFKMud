@@ -26,7 +26,6 @@
  *                          Spell handling module                           *
  ****************************************************************************/
 
-#include <sys/time.h>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"

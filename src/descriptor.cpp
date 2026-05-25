@@ -55,8 +55,6 @@
 #if defined(__APPLE__)
 #include <signal.h>
 #endif
-#include <cstdarg>
-#include <cerrno>
 #include "mud.h"
 #include "auction.h"
 #include "ban.h"

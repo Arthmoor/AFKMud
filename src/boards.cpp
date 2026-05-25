@@ -31,9 +31,6 @@
 
 #include <ctime>
 #include <sys/stat.h>
-#if defined(WIN32)
-#include <unistd.h>
-#endif
 #include "mud.h"
 #include "boards.h"
 #include "clans.h"

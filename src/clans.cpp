@@ -26,7 +26,6 @@
  *                           Special clan module                            *
  ****************************************************************************/
 
-#include <sstream>
 #include "mud.h"
 #include "clans.h"
 #include "descriptor.h"

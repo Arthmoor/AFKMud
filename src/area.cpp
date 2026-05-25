@@ -26,9 +26,6 @@
  *                           Area Support Functions                         *
  ****************************************************************************/
 
-#if defined(WIN32)
-#include <unistd.h>
-#endif
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"

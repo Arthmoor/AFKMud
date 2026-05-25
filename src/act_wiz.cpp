@@ -26,10 +26,7 @@
  *                        Wizard/god command module                         *
  ****************************************************************************/
 
-#include <unistd.h>
 #include <sys/stat.h>
-#include <cstdarg>
-#include <cerrno>
 #include <sstream>
 #include "mud.h"
 #include "area.h"

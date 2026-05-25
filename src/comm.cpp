@@ -29,7 +29,6 @@
 #if !defined(WIN32)
 #include <netinet/in.h>
 #include <sys/wait.h>
-#include <dlfcn.h>
 #else
 #include <winsock2.h>
 #define dlclose( path )		( (void *)FreeLibrary( (HMODULE)(path)) )
@@ -48,9 +47,6 @@ void bailout( int );
 #endif
 #include <time.h>
 #include <sys/time.h>
-#include <fcntl.h>
-#include <cerrno>
-#include <csignal>
 #include "mud.h"
 #include "descriptor.h"
 #include "auction.h"

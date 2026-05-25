@@ -26,7 +26,6 @@
  *                            Web Support Code                              *
  ****************************************************************************/
 
-#include <cstdio>
 #include <sstream>
 #include "mud.h"
 #include "area.h"

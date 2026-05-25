@@ -42,7 +42,6 @@
 #endif
 #include <cstdarg>
 #include <cmath>
-#include <sstream>
 #include <stacktrace>
 #include "mud.h"
 #include "area.h"
@@ -878,6 +877,7 @@ char *fread_word( FILE * fp )
    return word;
 }
 
+// FIXME: Tagging this for upgrade to std::format. Many places call this.
 /*
  * Add a string to the boot-up log - Thoric
  */

@@ -28,7 +28,6 @@
 
 #include <fstream>
 #include <sys/time.h>
-#include <cstdarg>
 #if !defined(WIN32)
 #include <dlfcn.h>
 #else

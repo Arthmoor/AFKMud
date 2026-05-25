@@ -26,9 +26,6 @@
  *                  Area Conversion Support for AFKMud 1.x                  *
  ****************************************************************************/
 
-#if defined(WIN32)
-#include <unistd.h>
-#endif
 #include "mud.h"
 #include "area.h"
 #include "mobindex.h"

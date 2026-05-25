@@ -42,7 +42,6 @@
  * retained intact.
  */
 
-#include <cerrno>
 #if !defined(WIN32)
 #include <arpa/telnet.h>
 #include <sys/socket.h>

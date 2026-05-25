@@ -36,9 +36,6 @@
  */
 
 #include <fstream>
-#if defined(WIN32)
-#include <unistd.h>
-#endif
 #include "mud.h"
 #include "descriptor.h"
 #include "connhist.h"

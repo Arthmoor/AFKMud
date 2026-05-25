@@ -28,7 +28,6 @@
 
 // Converts SmaugFUSS version 1+ areas into AFKMud format.
 
-#include <sys/stat.h>
 #include "mud.h"
 #include "area.h"
 #include "areaconvert.h"

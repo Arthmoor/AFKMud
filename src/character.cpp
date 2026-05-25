@@ -26,7 +26,6 @@
  *                        Character Support Functions                       *
  ****************************************************************************/
 
-#include <cstdarg>
 #include "mud.h"
 #include "area.h"
 #include "bits.h"

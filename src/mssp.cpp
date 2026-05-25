@@ -59,9 +59,6 @@
   Thats All....
  */
 
-#include <cstdio>
-#include <cstdarg>
-#include <cstring>
 #include <fstream>
 #include "mud.h"
 #include "descriptor.h"

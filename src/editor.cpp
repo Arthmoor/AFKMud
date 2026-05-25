@@ -26,7 +26,6 @@
  *                     Line Editor and String Functions                     *
  ****************************************************************************/
 
-#include <cstdarg>
 #include <algorithm>
 #include "mud.h"
 #include "descriptor.h"

@@ -37,8 +37,6 @@
  *          shadow@www.dma.be                                              *
  ***************************************************************************/
 
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <string>
 #if defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__CYGWIN__)
