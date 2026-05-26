@@ -26,8 +26,10 @@
  *                        Wizard/god command module                         *
  ****************************************************************************/
 
-#include <sys/stat.h>
 #include <sstream>
+#include <format>
+#include <filesystem>
+#include <system_error>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -46,6 +48,8 @@
 #include "roomindex.h"
 #include "sha256.h"
 #include "variables.h"
+
+namespace fs = std::filesystem;
 
 /* External functions */
 void set_chandler(  );
@@ -1218,7 +1222,7 @@ CMDF( do_mstat )
    char_data *victim;
    skill_type *skill;
    int iLang = 0;
-   char lbuf[256];
+   string lbuf;
 
    if( !( victim = ch->get_char_world( argument ) ) )
    {
@@ -1250,14 +1254,14 @@ CMDF( do_mstat )
       ch->printf( "|CHA   : &G%10d &w|BseAge: &G%10d &w|Agemod: &G%10d &w|\r\n", victim->get_curr_cha(  ), victim->pcdata->age, victim->pcdata->age_bonus );
 
       if( victim->pcdata->condition[COND_THIRST] == -1 )
-         strlcpy( lbuf, "|Thirst: &G    Immune &w", 256 );
+         lbuf = "|Thirst: &G    Immune &w";
       else
-         snprintf( lbuf, 256, "|Thirst: &G%10d &w", victim->pcdata->condition[COND_THIRST] );
+         lbuf = std::format( "|Thirst: &G{:10} &w", victim->pcdata->condition[COND_THIRST] );
       if( victim->pcdata->condition[COND_FULL] == -1 )
-         strlcat( lbuf, "|Hunger: &G    Immune &w", 256 );
+         lbuf.append( "|Hunger: &G    Immune &w" );
       else
-         snprintf( lbuf + strlen( lbuf ), 256 - strlen( lbuf ), "|Hunger: &G%10d &w", victim->pcdata->condition[COND_FULL] );
-      ch->printf( "|LCK   : &G%10d &w%s|Drunk : &G%d &w\r\n", victim->get_curr_lck(  ), lbuf, victim->pcdata->condition[COND_DRUNK] );
+         lbuf.append( std::format( "|Hunger: &G{:10} &w", victim->pcdata->condition[COND_FULL] ) );
+      ch->printf( "|LCK   : &G%10d &w%s|Drunk : &G%d &w\r\n", victim->get_curr_lck(  ), lbuf.c_str(), victim->pcdata->condition[COND_DRUNK] );
 
       ch->printf( "|Class :&G%11s &w|Mental: &G%10d &w|#Attks: &G%10f&w |Barehand: &G%d&wd&G%d&w+&G%d&w\r\n",
          capitalize( victim->get_class(  ) ), victim->mental_state, victim->numattacks, victim->barenumdie, victim->baresizedie, victim->GET_DAMROLL(  ) );
@@ -1318,16 +1322,16 @@ CMDF( do_mstat )
 
          if( ( skill = get_skilltype( aff->type ) ) != nullptr )
          {
-            char mod[MIL];
+            string mod;
 
             if( aff->location == APPLY_AFFECT || aff->location == APPLY_EXT_AFFECT )
-               strlcpy( mod, aff_flags[aff->modifier], MIL );
+               mod = aff_flags[aff->modifier];
             else if( aff->location == APPLY_RESISTANT || aff->location == APPLY_IMMUNE || aff->location == APPLY_ABSORB || aff->location == APPLY_SUSCEPTIBLE )
-               strlcpy( mod, ris_flags[aff->modifier], MIL );
+               mod = ris_flags[aff->modifier];
             else
-               snprintf( mod, MIL, "%d", aff->modifier );
+               mod = std::format( "{}", aff->modifier );
 
-            ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds", skill_tname[skill->type], skill->name, a_types[aff->location], mod, aff->duration );
+            ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds", skill_tname[skill->type], skill->name, a_types[aff->location], mod.c_str(), aff->duration );
             if( aff->bit > 0 )
                ch->printf( " with bits &G%s&w.\r\n", aff_flags[aff->bit] );
             else
@@ -1467,14 +1471,14 @@ CMDF( do_mstat )
 
          if( ( skill = get_skilltype( af->type ) ) != nullptr )
          {
-            char mod[MIL];
+            string mod;
 
             if( af->location == APPLY_AFFECT
                 || af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_ABSORB || af->location == APPLY_SUSCEPTIBLE )
-               strlcpy( mod, aff_flags[af->modifier], MIL );
+               mod = aff_flags[af->modifier];
             else
-               snprintf( mod, MIL, "%d", af->modifier );
-            ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds", skill_tname[skill->type], skill->name, a_types[af->location], mod, af->duration );
+               mod = std::format( "{}", af->modifier );
+            ch->printf( "|%s: '&G%s&w' modifies &G%s&w by &G%s&w for &G%d&w rounds", skill_tname[skill->type], skill->name, a_types[af->location], mod.c_str(), af->duration );
             if( af->bit > 0 )
                ch->printf( " with bits &G%s&w.\r\n", aff_flags[af->bit] );
             else
@@ -1672,8 +1676,7 @@ CMDF( do_mwhere )
 /* Trimmed size, added vict info, put lipstick on the pig -- Blod */
 CMDF( do_bodybag )
 {
-   char buf2[MSL], buf3[MSL];
-   string arg1, arg2;
+   string arg1, arg2, buf2;
    bool found = false, bag = false;
 
    argument = one_argument( argument, arg1 );
@@ -1683,8 +1686,7 @@ CMDF( do_bodybag )
       return;
    }
 
-   strlcpy( buf3, " ", MSL );
-   snprintf( buf2, MSL, "the corpse of %s", arg1.c_str(  ) );
+   buf2 = std::format( "the corpse of {}", arg1 );
    argument = one_argument( argument, arg2 );
 
    if( !arg2.empty(  ) && ( str_cmp( arg2, "yes" ) && str_cmp( arg2, "bag" ) && str_cmp( arg2, "now" ) ) )
@@ -1755,8 +1757,7 @@ CMDF( do_bodybag )
 /* New owhere by Altrag, 03/14/96 */
 CMDF( do_owhere )
 {
-   char buf[MSL];
-   string arg, arg1;
+   string arg, arg1, buf;
    obj_data *obj;
    bool found;
    int icnt = 0;
@@ -1782,26 +1783,26 @@ CMDF( do_owhere )
                      obj->pIndexData->vnum, obj->oshort(  ).c_str(  ), obj->in_obj->pIndexData->vnum, obj->in_obj->short_descr );
          ++icnt;
       }
-      snprintf( buf, MSL, "&Y[&W%5d&Y] &G%-28s ", obj->pIndexData->vnum, obj->oshort(  ).c_str(  ) );
+      buf = std::format( "&Y[&W{:5}&Y] &G{:<28} ", obj->pIndexData->vnum, obj->oshort(  ) );
       if( obj->carried_by )
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Cinvent   &Y[&W%5d&Y] &C%s\r\n",
-                   ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, true ) );
+         buf.append( std::format( "&Cinvent   &Y[&W{:5}d&Y] &C{}\r\n",
+                   ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, true ) ) );
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", obj->continent->name.c_str( ), obj->map_x, obj->map_y );
+            buf.append( std::format( "&Coverland &Y[&W{}&Y] &C{} {}\r\n", obj->continent->name.c_str( ), obj->map_x, obj->map_y ) );
          else
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n", obj->in_room->vnum, obj->in_room->name );
+            buf.append( std::format( "&Croom     &Y[&W{:5}&Y] &C{}\r\n", obj->in_room->vnum, obj->in_room->name ) );
       }
       else if( obj->in_obj )
       {
          bug( "%s: obj->in_obj after nullptr!", __func__ );
-         strlcat( buf, "object??\r\n", MSL );
+         buf.append( "object??\r\n" );
       }
       else
       {
          bug( "%s: object doesnt have location!", __func__ );
-         strlcat( buf, "nowhere??\r\n", MSL );
+         buf.append( "nowhere??\r\n" );
       }
       ch->pager( buf );
       ++icnt;
@@ -1819,23 +1820,23 @@ CMDF( do_owhere )
          continue;
       found = true;
 
-      snprintf( buf, MSL, "&Y(&W%3d&Y) [&W%5d&Y] &G%-28s ", ++icnt, obj->pIndexData->vnum, obj->oshort(  ).c_str(  ) );
+      buf = std::format( "&Y(&W{:3}&Y) [&W{:5}&Y] &G{:<28} ", ++icnt, obj->pIndexData->vnum, obj->oshort(  ) );
       if( obj->carried_by )
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Cinvent   &Y[&W%5d&Y] &C%s\r\n",
-                   ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, true ) );
+         buf.append( std::format( "&Cinvent   &Y[&W{:5}&Y] &C{}\r\n",
+                   ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, true ) ) );
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Coverland &Y[&W%s&Y] &C%d %d\r\n", obj->continent->name.c_str( ), obj->map_x, obj->map_y );
+            buf.append( std::format( "&Coverland &Y[&W{}&Y] &C{} {}\r\n", obj->continent->name.c_str( ), obj->map_x, obj->map_y ) );
          else
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Croom     &Y[&W%5d&Y] &C%s\r\n", obj->in_room->vnum, obj->in_room->name );
+            buf.append( std::format( "&Croom     &Y[&W{:5}&Y] &C{}\r\n", obj->in_room->vnum, obj->in_room->name ) );
       }
       else if( obj->in_obj )
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "&Cobject &Y[&W%5d&Y] &C%s\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ).c_str(  ) );
+         buf.append( std::format( "&Cobject &Y[&W{:5}&Y] &C{}\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ) ) );
       else
       {
          bug( "%s: object doesnt have location!", __func__ );
-         strlcat( buf, "nowhere??\r\n", MSL );
+         buf.append( "nowhere??\r\n" );
       }
       ch->pager( buf );
    }
@@ -1971,7 +1972,7 @@ CMDF( do_where )
 
    if( !str_cmp( arg, "obj" ) || !str_cmp( arg, "o" ) )
    {
-      char buf[MSL];
+      string buf;
       obj_index *pObjIndex;
       int icnt = 0;
       bool found = false;
@@ -2001,18 +2002,18 @@ CMDF( do_where )
             continue;
          found = true;
 
-         snprintf( buf, MSL, "(%3d) [%5d] %-28s in ", ++icnt, obj->pIndexData->vnum, obj->oshort(  ).c_str(  ) );
+         buf = std::format( "({:3}) [{:5}] {:<28} in ", ++icnt, obj->pIndexData->vnum, obj->oshort(  ) );
          if( obj->carried_by )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "invent [%5d] %s\r\n",
-                      ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, false ) );
+            buf.append( std::format( "invent [{:5}] {}\r\n",
+                      ( obj->carried_by->isnpc(  )? obj->carried_by->pIndexData->vnum : 0 ), PERS( obj->carried_by, ch, false ) ) );
          else if( obj->in_room )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "room   [%5d] %s\r\n", obj->in_room->vnum, obj->in_room->name );
+            buf.append( std::format( "room   [{:5}] {}\r\n", obj->in_room->vnum, obj->in_room->name ) );
          else if( obj->in_obj )
-            snprintf( buf + strlen( buf ), MSL - strlen( buf ), "object [%5d] %s\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ).c_str(  ) );
+            buf.append( std::format( "object [{:5}] {}\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ) ) );
          else
          {
             bug( "%s: object '%s' doesn't have location!", __func__, obj->short_descr );
-            strlcat( buf, "nowhere??\r\n", MSL );
+            buf.append( "nowhere??\r\n" );
          }
          ch->pager( buf );
       }
@@ -2725,24 +2726,20 @@ CMDF( do_purge )
 
 void destroy_immdata( char_data * ch, const char *vicname )
 {
-   char godfile[256];
-   char areafile[256];
-   char buildfile[256];
-   char buildbackup[256];
-   char ebuf[MSL];
+   std::error_code ec;
+   string areafile;
 
-   snprintf( godfile, 256, "%s%s", GOD_DIR, capitalize( vicname ) );
+   fs::path godfile = std::format( "{}{}", GOD_DIR, capitalize( vicname ) );
 
-   if( !remove( godfile ) )
+   if( fs::remove( godfile, ec ) )
       ch->print( "&RPlayer's immortal data destroyed.\r\n" );
-   else if( errno != ENOENT )
+   else if( ec && ec != std::errc::no_such_file_or_directory )
    {
-      ch->printf( "&RUnknown error #%d - %s (immortal data).  Report to the admins.\r\n", errno, strerror( errno ) );
-      snprintf( ebuf, MSL, "%s destroying %s", ch->name, godfile );
-      perror( ebuf );
+      ch->printf( "&RUnknown error - %s (immortal data). Report to the admins.\r\n", ec.message().c_str() );
+      log_printf( "Error destroying %s: %s", godfile.c_str(), ec.message().c_str() );
    }
 
-   snprintf( areafile, 256, "%s.are", vicname );
+   areafile = std::format( "{}.are", vicname );
 
    list < area_data * >::iterator iarea;
    for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
@@ -2751,25 +2748,21 @@ void destroy_immdata( char_data * ch, const char *vicname )
 
       if( !str_cmp( area->filename, areafile ) )
       {
-         int bc = snprintf( buildfile, 256, "%s%s", BUILD_DIR, areafile );
-         if( bc < 0 )
-            bug( "%s: Output buffer error!", __func__ );
+         fs::path buildfile = std::format( "{}{}", BUILD_DIR, areafile );
+         fs::path buildbackup = std::format( "{}{}.bak", BUILD_DIR, areafile );
 
-         area->fold( buildfile, false );
+         area->fold( buildfile.string().c_str(), false );
          deleteptr( area );
 
-         bc = snprintf( buildbackup, 256, "%s.bak", buildfile );
-         if( bc < 0 )
-            bug( "%s: Output buffer error!", __func__ );
+         ec.clear();
+         fs::rename( buildfile, buildbackup, ec );
 
-         if( !rename( buildfile, buildbackup ) )
+         if( !ec )
             ch->print( "&RPlayer's area data destroyed. Area saved as backup.\r\n" );
-
-         else if( errno != ENOENT )
+         else if( ec != std::errc::no_such_file_or_directory )
          {
-            ch->printf( "&RUnknown error #%d - %s (area data). Report to the admins.\r\n", errno, strerror( errno ) );
-            snprintf( ebuf, MSL, "%s destroying %s", ch->name, buildfile );
-            perror( ebuf );
+            ch->printf( "&RUnknown error - %s (area data). Report to the admins.\r\n", ec.message().c_str() );
+            log_printf( "Error renaming %s to %s: %s", buildfile.c_str(), buildbackup.c_str(), ec.message().c_str() );
          }
          break;
       }
@@ -4112,7 +4105,7 @@ CMDF( do_notell )
 CMDF( do_notitle )
 {
    char_data *victim;
-   char buf[MSL];
+   string buf;
 
    ch->set_color( AT_IMMORT );
 
@@ -4134,7 +4127,7 @@ CMDF( do_notitle )
    else
    {
       victim->set_pcflag( PCFLAG_NOTITLE );
-      snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex] );
+      buf = std::format( "the {}", title_table[victim->Class][victim->level][victim->sex] );
       victim->set_title( buf );
       if( !victim->desc )
          add_loginmsg( victim->name, 8, nullptr );
@@ -4564,8 +4557,7 @@ CMDF( do_holylight )
 CMDF( do_loadup )
 {
    descriptor_data *d;
-   char fname[256];
-   struct stat fst;
+   fs::path fname;
    int old_room_vnum;
 
    ch->set_color( AT_IMMORT );
@@ -4590,47 +4582,43 @@ CMDF( do_loadup )
    }
    d = nullptr;
    argument[0] = UPPER( argument[0] );
-   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
+   fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
 
-   if( stat( fname, &fst ) == -1 || !check_parse_name( capitalize( argument ).c_str(  ), false ) )
+   if( !fs::exists( fname ) || !fs::is_regular_file( fname ) || !check_parse_name( capitalize( argument ).c_str(  ), false ) )
    {
       ch->print( "&YNo such player exists.\r\n" );
       return;
    }
 
-   if( stat( fname, &fst ) != -1 )
-   {
-      d = new descriptor_data;
-      d->init(  );
-      d->connected = CON_PLOADED;
+   d = new descriptor_data;
+   d->init(  );
+   d->connected = CON_PLOADED;
 
-      load_char_obj( d, argument, false, false );
-      charlist.push_back( d->character );
-      pclist.push_back( d->character );
-      if( !d->character->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-      old_room_vnum = d->character->in_room->vnum;
-      if( d->character->get_trust(  ) >= ch->get_trust(  ) )
-      {
-         interpret( d->character, "say How dare you load my Pfile!" );
-         cmdf( d->character, "dino %s", ch->name );
-         ch->printf( "I think you'd better leave %s alone!\r\n", argument.c_str(  ) );
-         d->character->desc = nullptr;
-         interpret( d->character, "quit auto" );
-         return;
-      }
+   load_char_obj( d, argument, false, false );
+   charlist.push_back( d->character );
+   pclist.push_back( d->character );
+
+   if( !d->character->to_room( ch->in_room ) )
+      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+
+   old_room_vnum = d->character->in_room->vnum;
+   if( d->character->get_trust(  ) >= ch->get_trust(  ) )
+   {
+      interpret( d->character, "say How dare you load my Pfile!" );
+      cmdf( d->character, "dino %s", ch->name );
+      ch->printf( "I think you'd better leave %s alone!\r\n", argument.c_str(  ) );
       d->character->desc = nullptr;
-      d->character = nullptr;
-      deleteptr( d );
-      ch->printf( "&R%s loaded from room %d.\r\n", capitalize( argument ).c_str(  ), old_room_vnum );
-      act_printf( AT_IMMORT, ch, nullptr, nullptr, TO_ROOM, "%s appears from nowhere, eyes glazed over.", capitalize( argument ).c_str(  ) );
-      ch->print( "Done.\r\n" );
+      interpret( d->character, "quit auto" );
       return;
    }
-   /*
-    * else no player file 
-    */
-   ch->print( "No such player.\r\n" );
+
+   d->character->desc = nullptr;
+   d->character = nullptr;
+   deleteptr( d );
+
+   ch->printf( "&R%s loaded from room %d.\r\n", capitalize( argument ).c_str(  ), old_room_vnum );
+   act_printf( AT_IMMORT, ch, nullptr, nullptr, TO_ROOM, "%s appears from nowhere, eyes glazed over.", capitalize( argument ).c_str(  ) );
+   ch->print( "Done.\r\n" );
 }
 
 /*
@@ -4851,8 +4839,8 @@ CMDF( do_demote )
    victim->trust = 0;
 
    /*
-    * Stuff added to make sure players wizinvis level doesnt stay higher 
-    * * than their actual level and to take wizinvis away from advance below 100
+    * Stuff added to make sure players wizinvis level doesn't stay higher
+    * than their actual level and to take wizinvis away from advance below 100
     */
    if( victim->has_pcflag( PCFLAG_WIZINVIS ) )
    {
@@ -4862,15 +4850,13 @@ CMDF( do_demote )
 
    if( victim->level == LEVEL_AVATAR )
    {
-      char buf[256], buf2[256];
-      char *die;
+      fs::path buf;
+      std::error_code ec;
 
       victim->unset_pcflag( PCFLAG_HOLYLIGHT );
-      die = victim->name;
-      snprintf( buf, 256, "%s%s", GOD_DIR, capitalize( die ) );
-      if( !remove( buf ) )
+      buf = std::format( "{}{}", GOD_DIR, capitalize( victim->name ) );
+      if( fs::remove( buf, ec ) )
          ch->print( "Player's immortal data destroyed.\r\n" );
-      snprintf( buf2, 256, "%s.are", capitalize( die ) );
       victim->print( "You have been thrown from the heavens by the Gods!\r\nYou are no longer immortal!\r\n" );
       victim->unset_pcflag( PCFLAG_PASSDOOR );
       victim->pcdata->realm = nullptr;
@@ -5048,8 +5034,8 @@ CMDF( do_destro )
 CMDF( do_destroy )
 {
    char_data *victim = nullptr;
-   char buf[256];
-   const char *name;
+   fs::path buf;
+   std::error_code ec;
    bool found = false;
 
    ch->set_color( AT_IMMORT );
@@ -5137,22 +5123,15 @@ CMDF( do_destroy )
          for( int y = 0; y < MAX_LAYERS; ++y )
             save_equipment[x][y] = nullptr;
    }
-   name = argument.c_str(  );
-   snprintf( buf, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( name ) );
-   if( !remove( buf ) )
-   {
-      ch->printf( "&RPlayer %s destroyed.\r\n", name );
-      num_pfiles -= 1;
 
-      destroy_immdata( ch, name );
-   }
-   else if( errno == ENOENT )
-      ch->print( "Player does not exist.\r\n" );
-   else
+   buf = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
+
+   if( fs::remove( buf, ec ) )
+      ch->printf( "&RPlayer %s destroyed.\r\n", argument.c_str() );
+   else if( ec && ec != std::errc::no_such_file_or_directory )
    {
-      ch->printf( "&RUnknown error #%d - %s.  Report to Samson.\r\n", errno, strerror( errno ) );
-      snprintf( buf, 256, "%s destroying %s", ch->name, argument.c_str(  ) );
-      perror( buf );
+      ch->printf( "&RUnknown error: %s. Report to Samson.\r\n", ec.message().c_str() );
+      log_printf( "Error destroying %s: %s", buf.c_str(), ec.message().c_str() );
    }
 }
 
@@ -5170,7 +5149,7 @@ L_HERO), MOBS (Not recommended) or every room (not recommended either!)
 If you insert a # in the action, it will be replaced by the name of the target.
 
 If # is a part of the action, the action will be executed for every target
-in game. If there is no #, the action will be executed for every room containg
+in game. If there is no #, the action will be executed for every room containing
 at least one target, but only once per room. # cannot be used with FOR EVERY-
 WHERE. # can be anywhere in the action.
 
@@ -6355,22 +6334,6 @@ CMDF( do_cset )
    do_cset( ch, "help" );
 }
 
-void free_all_titles( void )
-{
-   int hash, loopa;
-
-   for( hash = 0; hash < MAX_CLASS; ++hash )
-   {
-      for( loopa = 0; loopa < MAX_LEVEL + 1; ++loopa )
-      {
-         STRFREE( title_table[hash][loopa][SEX_NEUTRAL] );
-         STRFREE( title_table[hash][loopa][SEX_MALE] );
-         STRFREE( title_table[hash][loopa][SEX_FEMALE] );
-         STRFREE( title_table[hash][loopa][SEX_HERMAPHRODYTE] );
-      }
-   }
-}
-
 class_type::class_type(  )
 {
    init_memory( &affected, &fMana, sizeof( fMana ) );
@@ -6381,28 +6344,17 @@ class_type::~class_type(  )
    STRFREE( who_name );
 }
 
-void free_all_classes( void )
-{
-   int cl;
-
-   for( cl = 0; cl < MAX_CLASS; ++cl )
-   {
-      class_type *Class = class_table[cl];
-      deleteptr( Class );
-   }
-}
-
 bool load_class_file( const char *fname )
 {
-   char buf[256];
+   string buf;
    class_type *Class;
    int cl = -1, tlev = 0, file_ver = 0;
    FILE *fp;
 
-   snprintf( buf, 256, "%s%s", CLASS_DIR, fname );
-   if( !( fp = fopen( buf, "r" ) ) )
+   buf = std::format( "{}{}", CLASS_DIR, fname );
+   if( !( fp = fopen( buf.c_str(), "r" ) ) )
    {
-      perror( buf );
+      perror( buf.c_str() );
       return false;
    }
 
@@ -6637,13 +6589,13 @@ void load_classes(  )
 void write_class_file( int cl )
 {
    FILE *fpout;
-   char filename[256];
+   string filename;
    class_type *Class = class_table[cl];
 
-   snprintf( filename, 256, "%s%s.class", CLASS_DIR, Class->who_name );
-   if( !( fpout = fopen( filename, "w" ) ) )
+   filename = std::format( "{}{}.class", CLASS_DIR, Class->who_name );
+   if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: Cannot open: %s for writing", __func__, filename );
+      bug( "%s: Cannot open: %s for writing", __func__, filename.c_str() );
       return;
    }
 
@@ -6698,10 +6650,10 @@ void save_classes(  )
 void write_class_list(  )
 {
    FILE *fpList;
-   char classlist[256];
+   string classlist;
 
-   snprintf( classlist, 256, "%s%s", CLASS_DIR, CLASS_LIST );
-   if( !( fpList = fopen( classlist, "w" ) ) )
+   classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
+   if( !( fpList = fopen( classlist.c_str(), "w" ) ) )
    {
       bug( "%s: Can't open class list for writing.", __func__ );
       return;
@@ -6870,7 +6822,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "create" ) )
    {
-      char filename[256];
+      string filename;
 
       if( MAX_PC_CLASS >= MAX_CLASS )
       {
@@ -6878,7 +6830,7 @@ CMDF( do_setclass )
          return;
       }
 
-      snprintf( filename, sizeof( filename ), "%s.class", arg1.c_str(  ) );
+      filename = std::format( "{}.class", arg1 );
       if( !is_valid_filename( ch, CLASS_DIR, filename ) )
          return;
 
@@ -6925,7 +6877,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "name" ) )
    {
-      char buf[256];
+      fs::path buf;
       class_type *ccheck = nullptr;
 
       one_argument( argument, arg1 );
@@ -6935,7 +6887,7 @@ CMDF( do_setclass )
          return;
       }
 
-      snprintf( buf, sizeof( buf ), "%s.class", arg1.c_str(  ) );
+      buf = std::format( "{}.class", arg1 );
       if( !is_valid_filename( ch, CLASS_DIR, buf ) )
          return;
 
@@ -6956,8 +6908,8 @@ CMDF( do_setclass )
          return;
       }
 
-      snprintf( buf, sizeof( buf ), "%s%s.class", CLASS_DIR, Class->who_name );
-      unlink( buf );
+      buf = std::format( "{}{}.class", CLASS_DIR, Class->who_name );
+      std::filesystem::remove( buf );
       STRFREE( Class->who_name );
       Class->who_name = STRALLOC( capitalize( argument ).c_str(  ) );
       ch->printf( "Class renamed to %s.\r\n", arg1.c_str(  ) );
@@ -7256,17 +7208,6 @@ race_type::race_type(  )
 race_type::~race_type(  )
 {
    STRFREE( race_name );
-}
-
-void free_all_races( void )
-{
-   int rc;
-
-   for( rc = 0; rc < MAX_RACE; ++rc )
-   {
-      race_type *race = race_table[rc];
-      deleteptr( race );
-   }
 }
 
 void set_bodypart_where_names( race_type *race )

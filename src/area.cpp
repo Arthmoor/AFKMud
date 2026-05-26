@@ -26,6 +26,8 @@
  *                           Area Support Functions                         *
  ****************************************************************************/
 
+#include <format>
+#include <filesystem>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -37,6 +39,8 @@
 #include "roomindex.h"
 #include "shops.h"
 #include "weather.h"
+
+namespace fs = std::filesystem;
 
 int top_area;
 
@@ -2386,7 +2390,7 @@ const int AREA_VERSION_WRITE = 1;
 
 void area_data::fold( const char *fname, bool install )
 {
-   char buf[256];
+   string buf;
    FILE *fpout;
    list < mob_index * >::iterator mindex;
    list < obj_index * >::iterator oindex;
@@ -2394,8 +2398,8 @@ void area_data::fold( const char *fname, bool install )
 
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving %s...", this->filename );
 
-   snprintf( buf, 256, "%s.bak", fname );
-   rename( fname, buf );
+   buf = std::format( "{}.bak", fname );
+   rename( fname, buf.c_str() );
    if( !( fpout = fopen( fname, "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
@@ -2431,6 +2435,7 @@ void area_data::fold( const char *fname, bool install )
    FCLOSE( fpout );
 }
 
+// FIXME: Update to std::format once ::fold accepts std::string as an argument.
 CMDF( do_savearea )
 {
    area_data *tarea;
@@ -2597,7 +2602,7 @@ CMDF( do_adelete )
 {
    area_data *tarea;
    string arg;
-   char filename[256];
+   fs::path filename;
 
    if( argument.empty(  ) )
    {
@@ -2615,16 +2620,16 @@ CMDF( do_adelete )
 
    if( argument.empty(  ) || str_cmp( argument, "yes" ) )
    {
-      ch->print( "&RThis action must be confirmed before executing. It is not reversable.\r\n" );
+      ch->print( "&RThis action must be confirmed before executing. It is not reversible.\r\n" );
       ch->printf( "&RTo delete this area, type: &Wadelete %s yes&D", arg.c_str(  ) );
       return;
    }
    if( tarea->flags.test( AFLAG_PROTOTYPE ) )
-      snprintf( filename, 256, "%s%s", BUILD_DIR, tarea->filename );
+      filename = std::format( "{}{}", BUILD_DIR, tarea->filename );
    else
-      strlcpy( filename, tarea->filename, 256 );
+      filename = tarea->filename;
    deleteptr( tarea );
-   unlink( filename );
+   fs::remove( filename );
    write_area_list(  );
    web_arealist(  );
    ch->printf( "&W%s&R has been destroyed.&D\r\n", arg.c_str(  ) );
@@ -2632,7 +2637,7 @@ CMDF( do_adelete )
 
 void assign_area( char_data * ch )
 {
-   char taf[256];
+   string taf;
    area_data *tarea;
 
    if( ch->isnpc(  ) )
@@ -2641,7 +2646,7 @@ void assign_area( char_data * ch )
    if( ch->get_trust(  ) > LEVEL_IMMORTAL && ch->pcdata->low_vnum && ch->pcdata->hi_vnum )
    {
       tarea = ch->pcdata->area;
-      snprintf( taf, 256, "%s.are", capitalize( ch->name ) );
+      taf = std::format( "{}.are", capitalize( ch->name ) );
       if( !tarea )
          tarea = find_area( taf );
       if( !tarea )
@@ -2650,7 +2655,7 @@ void assign_area( char_data * ch )
 
          tarea = create_area(  );
          strdup_printf( &tarea->name, "[PROTO] %s's area in progress", ch->name );
-         tarea->filename = strdup( taf );
+         tarea->filename = strdup( taf.c_str() );
          stralloc_printf( &tarea->author, "%s", ch->name );
          tarea->sort_name(  );
          tarea->sort_vnums(  );
@@ -2727,7 +2732,7 @@ CMDF( do_installarea )
 {
    area_data *tarea;
    string arg1, arg2;
-   char oldfilename[256], buf[256];
+   fs::path oldfilename, buf;
    int num;
 
    ch->set_color( AT_IMMORT );
@@ -2752,7 +2757,7 @@ CMDF( do_installarea )
       DISPOSE( tarea->name );
       tarea->name = strdup( argument.c_str(  ) );
 
-      strlcpy( oldfilename, tarea->filename, 256 );
+      oldfilename = tarea->filename;
       DISPOSE( tarea->filename );
       tarea->filename = strdup( arg2.c_str(  ) );
 
@@ -2796,14 +2801,10 @@ CMDF( do_installarea )
       tarea->reset(  );
       tarea->nplayer = num;
       ch->print( "Removing author's building file.\r\n" );
-      int bc = snprintf( buf, 256, "%s%s", BUILD_DIR, oldfilename );
-      if( bc < 0 )
-         bug( "%s: Output buffer error!", __func__ );
-      unlink( buf );
-      bc = snprintf( buf, 256, "%s%s.bak", BUILD_DIR, oldfilename );
-      if( bc < 0 )
-         bug( "%s: Output buffer error!", __func__ );
-      unlink( buf );
+      buf = std::format( "{}{}", BUILD_DIR, oldfilename.string() );
+      fs::remove( buf );
+      buf = std::format( "{}{}.bak", BUILD_DIR, oldfilename.string() );
+      fs::remove( buf );
       ch->print( "Done.\r\n" );
       return;
    }

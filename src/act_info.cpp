@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <sys/stat.h>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -147,8 +148,7 @@ const char *moon_map[] = {
 
 void look_sky( char_data * ch )
 {
-   char buf[MSL];
-   char buf2[4];
+   string buf;
    int starpos, sunpos, moonpos, moonphase, i, linenum;
    WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
@@ -175,7 +175,7 @@ void look_sky( char_data * ch )
       if( ( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset ) && ( linenum < 3 || linenum >= 6 ) )
          continue;
 
-      strlcpy( buf, " ", MSL );
+      buf = " ";
 
       /*
        * for ( i = MAP_WIDTH/4; i <= 3*MAP_WIDTH/4; ++i )
@@ -192,9 +192,9 @@ void look_sky( char_data * ch )
              && ( moon_map[linenum - 3][i + 2 - moonpos] == '@' ) )
          {
             if( ( moonphase < 0 && i - 2 - moonpos >= moonphase ) || ( moonphase > 0 && i + 2 - moonpos <= moonphase ) )
-               strlcat( buf, "&W@", MSL );
+               buf.append( "&W@" );
             else
-               strlcat( buf, " ", MSL );
+               buf.append( " " );
          }
          else if( ( linenum >= 3 ) && ( linenum < 6 ) && /* nighttime */
                   ( moonpos >= MAP_WIDTH / 4 - 2 ) && ( moonpos <= 3 * MAP_WIDTH / 4 + 2 )   /* in sky? */
@@ -202,9 +202,9 @@ void look_sky( char_data * ch )
                   && ( moon_map[linenum - 3][i + 2 - moonpos] == '@' ) )
          {
             if( ( moonphase < 0 && i - 2 - moonpos >= moonphase ) || ( moonphase > 0 && i + 2 - moonpos <= moonphase ) )
-               strlcat( buf, "&W@", MSL );
+               buf.append( "&W@" );
             else
-               strlcat( buf, " ", MSL );
+               buf.append( " " );
          }
          else  /* plot sun or stars */
          {
@@ -212,72 +212,71 @@ void look_sky( char_data * ch )
             {
                if( i >= sunpos - 2 && i <= sunpos + 2 )
                {
-                  snprintf( buf2, 4, "&Y%c", sun_map[linenum - 3][i + 2 - sunpos] );
-                  strlcat( buf, buf2, MSL );
+                  buf.append( std::format( "&Y{}", sun_map[linenum - 3][i + 2 - sunpos] ) );
                }
                else
-                  strlcat( buf, " ", MSL );
+                  buf.append( " " );
             }
             else
             {
                switch ( star_map[linenum][( MAP_WIDTH + i - starpos ) % MAP_WIDTH] )
                {
                   default:
-                     strlcat( buf, " ", MSL );
+                     buf.append( " " );
                      break;
                   case ':':
-                     strlcat( buf, ":", MSL );
+                     buf.append( ":" );
                      break;
                   case '.':
-                     strlcat( buf, ".", MSL );
+                     buf.append( "." );
                      break;
                   case '*':
-                     strlcat( buf, "*", MSL );
+                     buf.append( "*" );
                      break;
                   case 'G':
-                     strlcat( buf, "&G ", MSL );
+                     buf.append( "&G " );
                      break;
                   case 'g':
-                     strlcat( buf, "&g ", MSL );
+                     buf.append( "&g " );
                      break;
                   case 'R':
-                     strlcat( buf, "&R ", MSL );
+                     buf.append( "&R " );
                      break;
                   case 'r':
-                     strlcat( buf, "&r ", MSL );
+                     buf.append( "&r " );
                      break;
                   case 'C':
-                     strlcat( buf, "&C ", MSL );
+                     buf.append( "&C " );
                      break;
                   case 'O':
-                     strlcat( buf, "&O ", MSL );
+                     buf.append( "&O " );
                      break;
                   case 'B':
-                     strlcat( buf, "&B ", MSL );
+                     buf.append( "&B " );
                      break;
                   case 'P':
-                     strlcat( buf, "&P ", MSL );
+                     buf.append( "&P " );
                      break;
                   case 'W':
-                     strlcat( buf, "&W ", MSL );
+                     buf.append( "&W " );
                      break;
                   case 'b':
-                     strlcat( buf, "&b ", MSL );
+                     buf.append( "&b " );
                      break;
                   case 'p':
-                     strlcat( buf, "&p ", MSL );
+                     buf.append( "&p " );
                      break;
                   case 'Y':
-                     strlcat( buf, "&Y ", MSL );
+                     buf.append( "&Y " );
                      break;
                   case 'c':
-                     strlcat( buf, "&c ", MSL );
+                     buf.append( "&c " );
                      break;
                }
             }
          }
       }
-      strlcat( buf, "\r\n", MSL );
+      buf.append( "&D\r\n" );
       ch->pager( buf );
    }
 }
@@ -399,9 +398,7 @@ void show_condition( char_data * ch, char_data * victim )
 /* Gave a reason buffer to PCFLAG_AFK -Whir - 8/31/98 */
 void show_char_to_char_0( char_data * victim, char_data * ch, int num )
 {
-   char buf[MSL];
-
-   buf[0] = '\0';
+   string buf = "";
 
    if( !ch->can_see( victim, true ) )
       return;
@@ -410,26 +407,26 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    if( !victim->isnpc(  ) && !victim->desc )
    {
       if( !victim->switched )
-         strlcat( buf, "[(Link Dead)] ", MSL );
+         buf.append( "[(Link Dead)] " );
       else if( !victim->has_aflag( AFF_POSSESS ) )
-         strlcat( buf, "(Switched) ", MSL );
+         buf.append( "(Switched) " );
    }
    if( victim->isnpc(  ) && victim->has_aflag( AFF_POSSESS ) && ch->is_immortal(  ) && victim->desc )
-      snprintf( buf + strlen( buf ), MSL - strlen( buf ), "(%s)", victim->desc->original->name );
+      buf.append( std::format( "({})", victim->desc->original->name ) );
    if( victim->has_pcflag( PCFLAG_AFK ) )
    {
       if( victim->pcdata->afkbuf && victim->pcdata->afkbuf[0] != '\0' )
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "[AFK %s] ", victim->pcdata->afkbuf );
+         buf.append( std::format( "[AFK {}] ", victim->pcdata->afkbuf ) );
       else
-         strlcat( buf, "[AFK] ", MSL );
+         buf.append( "[AFK] " );
    }
 
    if( victim->has_pcflag( PCFLAG_WIZINVIS ) || victim->has_actflag( ACT_MOBINVIS ) )
    {
       if( !victim->isnpc(  ) )
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "(Invis %d) ", victim->pcdata->wizinvis );
+         buf.append( std::format( "(Invis {}) ", victim->pcdata->wizinvis ) );
       else
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "(Mobinvis %d) ", victim->mobinvis );
+         buf.append( std::format( "(Mobinvis {}) ", victim->mobinvis ) );
    }
 
    if( !victim->isnpc(  ) && victim->pcdata->clan && !victim->pcdata->clan->badge.empty(  ) && ( victim->pcdata->clan->clan_type != CLAN_GUILD ) )
@@ -438,29 +435,29 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
       ch->set_color( AT_PERSON );
 
    if( victim->has_aflag( AFF_INVISIBLE ) )
-      strlcat( buf, "(Invis) ", MSL );
+      buf.append( "(Invis) " );
    if( victim->has_aflag( AFF_HIDE ) )
-      strlcat( buf, "(Hiding) ", MSL );
+      buf.append( "(Hiding) " );
    if( victim->has_aflag( AFF_PASS_DOOR ) )
-      strlcat( buf, "(Translucent) ", MSL );
+      buf.append( "(Translucent) " );
    if( victim->has_aflag( AFF_FAERIE_FIRE ) )
-      strlcat( buf, "(Pink Aura) ", MSL );
+      buf.append( "(Pink Aura) " );
    if( victim->IS_EVIL(  ) && ( ch->has_aflag( AFF_DETECT_EVIL ) || ch->Class == CLASS_PALADIN ) )
-      strlcat( buf, "(Red Aura) ", MSL );
+      buf.append( "(Red Aura) " );
    if( victim->IS_NEUTRAL(  ) && ch->Class == CLASS_PALADIN )
-      strlcat( buf, "(Grey Aura) ", MSL );
+      buf.append( "(Grey Aura) " );
    if( victim->IS_GOOD(  ) && ch->Class == CLASS_PALADIN )
-      strlcat( buf, "(White Aura) ", MSL );
+      buf.append( "(White Aura) " );
    if( victim->has_aflag( AFF_BERSERK ) )
-      strlcat( buf, "(Wild-eyed) ", MSL );
+      buf.append( "(Wild-eyed) " );
    if( victim->has_pcflag( PCFLAG_LITTERBUG ) )
-      strlcat( buf, "(LITTERBUG) ", MSL );
+      buf.append( "(LITTERBUG) " );
    if( ch->is_immortal(  ) && victim->has_actflag( ACT_PROTOTYPE ) )
-      strlcat( buf, "(PROTO) ", MSL );
+      buf.append( "(PROTO) " );
    if( victim->isnpc(  ) && ch->mount && ch->mount == victim && ch->in_room == ch->mount->in_room )
-      strlcat( buf, "(Mount) ", MSL );
+      buf.append( "(Mount) " );
    if( victim->desc && victim->desc->connected == CON_EDITING )
-      strlcat( buf, "(Writing) ", MSL );
+      buf.append( "(Writing) " );
 
    ch->set_color( AT_PERSON );
    if( ( victim->position == victim->defposition && victim->long_descr && victim->long_descr[0] != '\0' )
@@ -471,24 +468,24 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
          if( !ch->is_immortal(  ) )
          {
             if( victim->morph->morph != nullptr )
-               strlcat( buf, victim->morph->morph->long_desc, MSL );
+               buf.append( victim->morph->morph->long_desc );
             else
-               strlcat( buf, strip_crlf( victim->long_descr ), MSL );
+               buf.append( strip_crlf( victim->long_descr ) );
          }
          else
          {
-            strlcat( buf, PERS( victim, ch, false ), MSL );
+            buf.append( PERS( victim, ch, false ) );
             if( !ch->has_pcflag( PCFLAG_BRIEF ) && !victim->isnpc(  ) )
-               strlcat( buf, victim->pcdata->title, MSL );
-            strlcat( buf, ".", MSL );
+               buf.append( victim->pcdata->title );
+            buf.append( "." );
          }
       }
       else
-         strlcat( buf, strip_crlf( victim->long_descr ), MSL );
+         buf.append( strip_crlf( victim->long_descr ) );
 
       if( num > 1 && victim->isnpc(  ) )
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), " (%d)", num );
-      strlcat( buf, "\r\n", MSL );
+         buf.append( std::format( " ({})", num ) );
+      buf.append( "\r\n" );
       ch->print( buf );
       show_visible_affects_to_char( victim, ch );
       return;
@@ -496,29 +493,29 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    else
    {
       if( victim->morph != nullptr && victim->morph->morph != nullptr && !ch->is_immortal(  ) )
-         strlcat( buf, MORPHPERS( victim, ch, false ), MSL );
+         buf.append( MORPHPERS( victim, ch, false ) );
       else
-         strlcat( buf, PERS( victim, ch, false ), MSL );
+         buf.append( PERS( victim, ch, false ) );
    }
 
    if( !ch->has_pcflag( PCFLAG_BRIEF ) && !victim->isnpc(  ) )
-      strlcat( buf, victim->pcdata->title, MSL );
+      buf.append( victim->pcdata->title );
 
-   strlcat( buf, ch->color_str( AT_PERSON ), MSL );
+   buf.append( ch->color_str( AT_PERSON ) );
 
    timer_data *timer;
    if( ( timer = victim->get_timerptr( TIMER_DO_FUN ) ) != nullptr )
    {
       if( timer->do_fun == do_cast )
-         strlcat( buf, " is here chanting.", MSL );
+         buf.append( " is here chanting." );
       else if( timer->do_fun == do_dig )
-         strlcat( buf, " is here digging.", MSL );
+         buf.append( " is here digging." );
       else if( timer->do_fun == do_search )
-         strlcat( buf, " is searching the area for something.", MSL );
+         buf.append( " is searching the area for something." );
       else if( timer->do_fun == do_detrap )
-         strlcat( buf, " is working with the trap here.", MSL );
+         buf.append( " is working with the trap here." );
       else
-         strlcat( buf, " is looking rather lost.", MSL );
+         buf.append( " is looking rather lost." );
    }
    else
    {
@@ -529,41 +526,41 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
       switch ( victim->position )
       {
          default:
-            strlcat( buf, " is... wait... WTF?", MSL );
+            buf.append( " is... wait... WTF?" );
             break;
 
          case POS_DEAD:
-            strlcat( buf, " is DEAD!!", MSL );
+            buf.append( " is DEAD!!" );
             break;
 
          case POS_MORTAL:
-            strlcat( buf, " is mortally wounded.", MSL );
+            buf.append( " is mortally wounded." );
             break;
 
          case POS_INCAP:
-            strlcat( buf, " is incapacitated.", MSL );
+            buf.append( " is incapacitated." );
             break;
 
          case POS_STUNNED:
-            strlcat( buf, " is lying here stunned.", MSL );
+            buf.append( " is lying here stunned." );
             break;
 
          case POS_SLEEPING:
             if( victim->on != nullptr )
             {
                if( IS_SET( victim->on->value[2], SLEEP_AT ) )
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping at %s.", victim->on->short_descr );
+                  buf.append( std::format( " is sleeping at {}.", victim->on->short_descr ) );
                else if( IS_SET( victim->on->value[2], SLEEP_ON ) )
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping on %s.", victim->on->short_descr );
+                  buf.append( std::format( " is sleeping on {}.", victim->on->short_descr ) );
                else
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sleeping in %s.", victim->on->short_descr );
+                  buf.append( std::format( " is sleeping in {}.", victim->on->short_descr ) );
             }
             else
             {
                if( ch->position == POS_SITTING || ch->position == POS_RESTING )
-                  strlcat( buf, " is sleeping nearby.", MSL );
+                  buf.append( " is sleeping nearby." );
                else
-                  strlcat( buf, " is deep in slumber here.", MSL );
+                  buf.append( " is deep in slumber here." );
             }
             break;
 
@@ -571,20 +568,20 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             if( victim->on != nullptr )
             {
                if( IS_SET( victim->on->value[2], REST_AT ) )
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting at %s.", victim->on->short_descr );
+                  buf.append( std::format( " is resting at {}.", victim->on->short_descr ) );
                else if( IS_SET( victim->on->value[2], REST_ON ) )
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting on %s.", victim->on->short_descr );
+                  buf.append( std::format( " is resting on {}.", victim->on->short_descr ) );
                else
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is resting in %s.", victim->on->short_descr );
+                  buf.append( std::format( " is resting in %s.", victim->on->short_descr ) );
             }
             else
             {
                if( ch->position == POS_RESTING )
-                  strlcat( buf, " is sprawled out alongside you.", MSL );
+                  buf.append( " is sprawled out alongside you." );
                else if( ch->position == POS_MOUNTED )
-                  strlcat( buf, " is sprawled out at the foot of your mount.", MSL );
+                  buf.append( " is sprawled out at the foot of your mount." );
                else
-                  strlcat( buf, " is sprawled out here.", MSL );
+                  buf.append( " is sprawled out here." );
             }
             break;
 
@@ -592,63 +589,63 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
             if( victim->on != nullptr )
             {
                if( IS_SET( victim->on->value[2], SIT_AT ) )
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting at %s.", victim->on->short_descr );
+                  buf.append( std::format( " is sitting at {}.", victim->on->short_descr ) );
                else if( IS_SET( victim->on->value[2], SIT_ON ) )
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting on %s.", victim->on->short_descr );
+                  buf.append( std::format( " is sitting on {}.", victim->on->short_descr ) );
                else
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is sitting in %s.", victim->on->short_descr );
+                  buf.append( std::format( " is sitting in {}.", victim->on->short_descr ) );
             }
             else
-               strlcat( buf, " is sitting here.", MSL );
+               buf.append( " is sitting here." );
             break;
 
          case POS_STANDING:
             if( victim->on != nullptr )
             {
                if( IS_SET( victim->on->value[2], STAND_AT ) )
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing at %s.", victim->on->short_descr );
+                  buf.append( std::format( " is standing at {}.", victim->on->short_descr ) );
                else if( IS_SET( victim->on->value[2], STAND_ON ) )
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing on %s.", victim->on->short_descr );
+                  buf.append( std::format( " is standing on {}.", victim->on->short_descr ) );
                else
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), " is standing in %s.", victim->on->short_descr );
+                  buf.append( std::format( " is standing in {}.", victim->on->short_descr ) );
             }
             else if( victim->is_immortal(  ) )
-               strlcat( buf, " radiates with a godly light.", MSL );
+               buf.append( " radiates with a godly light." );
             else if( ( victim->in_room->sector_type == SECT_UNDERWATER ) && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
-               strlcat( buf, " is drowning here.", MSL );
+               buf.append( " is drowning here." );
             else if( victim->in_room->sector_type == SECT_UNDERWATER )
-               strlcat( buf, " is here in the water.", MSL );
+               buf.append( " is here in the water." );
             else if( ( victim->in_room->sector_type == SECT_OCEANFLOOR ) && !victim->has_aflag( AFF_AQUA_BREATH ) && !victim->isnpc(  ) )
-               strlcat( buf, " is drowning here.", MSL );
+               buf.append( " is drowning here." );
             else if( victim->in_room->sector_type == SECT_OCEANFLOOR )
-               strlcat( buf, " is standing here in the water.", MSL );
+               buf.append( " is standing here in the water." );
             else if( victim->has_aflag( AFF_FLOATING ) || victim->has_aflag( AFF_FLYING ) )
-               strlcat( buf, " is hovering here.", MSL );
+               buf.append( " is hovering here." );
             else
-               strlcat( buf, " is standing here.", MSL );
+               buf.append( " is standing here." );
             break;
 
          case POS_SHOVE:
-            strlcat( buf, " is being shoved around.", MSL );
+            buf.append( " is being shoved around." );
             break;
 
          case POS_DRAG:
-            strlcat( buf, " is being dragged around.", MSL );
+            buf.append( " is being dragged around." );
             break;
 
          case POS_MOUNTED:
-            strlcat( buf, " is here, upon ", MSL );
+            buf.append( " is here, upon " );
             if( !victim->mount )
-               strlcat( buf, "thin air???", MSL );
+               buf.append( "thin air???" );
             else if( victim->mount == ch )
-               strlcat( buf, "your back.", MSL );
+               buf.append( "your back." );
             else if( victim->in_room == victim->mount->in_room )
             {
-               strlcat( buf, PERS( victim->mount, ch, false ), MSL );
-               strlcat( buf, ".", MSL );
+               buf.append( PERS( victim->mount, ch, false ) );
+               buf.append( "." );
             }
             else
-               strlcat( buf, "someone who left??", MSL );
+               buf.append( "someone who left??" );
             break;
 
          case POS_FIGHTING:
@@ -656,10 +653,10 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
          case POS_DEFENSIVE:
          case POS_AGGRESSIVE:
          case POS_BERSERK:
-            strlcat( buf, " is here, fighting ", MSL );
+            buf.append( " is here, fighting " );
             if( !victim->fighting )
             {
-               strlcat( buf, "thin air???", MSL );
+               buf.append( "thin air???" );
 
                /*
                 * some bug somewhere.... kinda hackey fix -h 
@@ -670,23 +667,23 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
                   victim->position = POS_MOUNTED;
             }
             else if( victim->who_fighting(  ) == ch )
-               strlcat( buf, "YOU!", MSL );
+               buf.append( "YOU!" );
             else if( victim->in_room == victim->fighting->who->in_room )
             {
-               strlcat( buf, PERS( victim->fighting->who, ch, false ), MSL );
-               strlcat( buf, ".", MSL );
+               buf.append( PERS( victim->fighting->who, ch, false ) );
+               buf.append( "." );
             }
             else
-               strlcat( buf, "someone who left??", MSL );
+               buf.append( "someone who left??" );
             break;
       }
    }
 
    if( num > 1 && victim->isnpc(  ) )
-      snprintf( buf + strlen( buf ), MSL - strlen( buf ), " (%d)", num );
+      buf.append( std::format( " ({})", num ) );
 
-   strlcat( buf, "\r\n", MSL );
-   buf[0] = UPPER( buf[0] );
+   buf.append( "\r\n" );
+   buf = capitalize( buf );
 
    ch->print( buf );
    show_visible_affects_to_char( victim, ch );
@@ -933,9 +930,8 @@ int get_door( const string & arg )
 
 CMDF( do_exits )
 {
-   char buf[MSL];
+   string buf;
 
-   buf[0] = '\0';
    bool fAuto = !str_cmp( argument, "auto" );
 
    if( !check_blind( ch ) )
@@ -949,7 +945,7 @@ CMDF( do_exits )
 
    ch->set_color( AT_EXITS );
 
-   strlcpy( buf, fAuto ? "[Exits:" : "Obvious exits:\r\n", MSL );
+   buf = ( fAuto ? "[Exits:" : "Obvious exits:\r\n" );
 
    bool found = false;
    list < exit_data * >::iterator iexit;
@@ -967,49 +963,49 @@ CMDF( do_exits )
             found = true;
             if( fAuto )
             {
-               strlcat( buf, " ", MSL );
+               buf.append( " " );
 
-               strlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
+               buf.append( capitalize( dir_name[pexit->vdir] ) );
 
                if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
-                  strlcat( buf, "->(Overland)", MSL );
+                  buf.append( "->(Overland)" );
 
                /*
                 * New code added to display closed, or otherwise invisible exits to immortals 
                 * Installed by Samson 1-25-98 
                 */
                if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-                  strlcat( buf, "->(Closed)", MSL );
+                  buf.append( "->(Closed)" );
                if( IS_EXIT_FLAG( pexit, EX_DIG ) )
-                  strlcat( buf, "->(Dig)", MSL );
+                  buf.append( "->(Dig)" );
                if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )
-                  strlcat( buf, "->(Window)", MSL );
+                  buf.append( "->(Window)" );
                if( IS_EXIT_FLAG( pexit, EX_HIDDEN ) )
-                  strlcat( buf, "->(Hidden)", MSL );
+                  buf.append( "->(Hidden)" );
                if( pexit->to_room->flags.test( ROOM_DEATH ) )
-                  strlcat( buf, "->(Deathtrap)", MSL );
+                  buf.append( "->(Deathtrap)" );
             }
             else
             {
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%s - %s\r\n", capitalize( dir_name[pexit->vdir] ), pexit->to_room->name );
+               buf.append( std::format( "{} - {}\r\n", capitalize( dir_name[pexit->vdir] ), pexit->to_room->name ) );
 
                /*
                 * More new code added to display closed, or otherwise invisible exits to immortals 
                 * Installed by Samson 1-25-98 
                 */
                if( pexit->to_room->is_dark( ch ) )
-                  strlcat( buf, " (Dark)", MSL );
+                  buf.append( " (Dark)" );
                if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-                  strlcat( buf, " (Closed)", MSL );
+                  buf.append( " (Closed)" );
                if( IS_EXIT_FLAG( pexit, EX_DIG ) )
-                  strlcat( buf, " (Dig)", MSL );
+                  buf.append( " (Dig)" );
                if( IS_EXIT_FLAG( pexit, EX_HIDDEN ) )
-                  strlcat( buf, " (Hidden)", MSL );
+                  buf.append( " (Hidden)" );
                if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )
-                  strlcat( buf, " (Window)", MSL );
+                  buf.append( " (Window)" );
                if( pexit->to_room->flags.test( ROOM_DEATH ) )
-                  strlcat( buf, " (Deathtrap)", MSL );
-               strlcat( buf, "\r\n", MSL );
+                  buf.append( " (Deathtrap)" );
+               buf.append( "\r\n" );
             }
          }
       }
@@ -1021,33 +1017,33 @@ CMDF( do_exits )
             found = true;
             if( fAuto )
             {
-               strlcat( buf, " ", MSL );
+               buf.append( " " );
 
-               strlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
+               buf.append( capitalize( dir_name[pexit->vdir] ) );
 
                if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && !IS_EXIT_FLAG( pexit, EX_DIG ) )
-                  strlcat( buf, "->(Closed)", MSL );
+                  buf.append( "->(Closed)" );
                if( ch->has_aflag( AFF_DETECTTRAPS ) && pexit->to_room->flags.test( ROOM_DEATH ) )
-                  strlcat( buf, "->(Deathtrap)", MSL );
+                  buf.append( "->(Deathtrap)" );
             }
             else
             {
-               snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%s - %s\r\n", capitalize( dir_name[pexit->vdir] ),
-                         pexit->to_room->is_dark( ch ) ? "Too dark to tell" : pexit->to_room->name );
+               buf.append( std::format( "{} - {}\r\n", capitalize( dir_name[pexit->vdir] ),
+                         pexit->to_room->is_dark( ch ) ? "Too dark to tell" : pexit->to_room->name ) );
             }
          }
       }
    }
 
    if( !found )
-      strlcat( buf, fAuto ? " none]" : "None]", MSL );
+      buf.append( fAuto ? " none]" : "None]" );
    else
    {
       if( fAuto )
-         strlcat( buf, "]", MSL );
+         buf.append( "]" );
    }
 
-   strlcat( buf, "\r\n", MSL );
+   buf.append( "\r\n" );
    ch->print( buf );
 }
 
@@ -2862,12 +2858,12 @@ CMDF( do_ignore )
 
    else
    {
-      char fname[256], fname2[256];
+      string fname, fname2;
       struct stat fst;
       size_t i;
 
-      snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
-      snprintf( fname2, 256, "%s/%s", GOD_DIR, capitalize( argument ).c_str(  ) );
+      fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
+      fname2 = std::format( "{}/{}", GOD_DIR, capitalize( argument ) );
 
       victim = nullptr;
 
@@ -2908,7 +2904,7 @@ CMDF( do_ignore )
        * * This if-statement may seem like overkill but it is intended to prevent people from doing the
        * * spam and log thing while still allowing ya to ignore new chars without pfiles yet... 
        */
-      if( stat( fname, &fst ) == -1 && ( !( victim = ch->get_char_world( argument ) ) || victim->isnpc(  ) || str_cmp( capitalize( argument ), victim->name ) != 0 ) )
+      if( stat( fname.c_str(), &fst ) == -1 && ( !( victim = ch->get_char_world( argument ) ) || victim->isnpc(  ) || str_cmp( capitalize( argument ), victim->name ) != 0 ) )
       {
          ch->printf( "&[ignore]No player exists by the name %s.\r\n", argument.c_str(  ) );
          return;
@@ -2920,7 +2916,7 @@ CMDF( do_ignore )
          return;
       }
 
-      if( stat( fname2, &fst ) != -1 )
+      if( stat( fname2.c_str(), &fst ) != -1 )
       {
          ch->print( "&[ignore]You cannot ignore an immortal.\r\n" );
          return;

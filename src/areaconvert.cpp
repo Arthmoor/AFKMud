@@ -30,6 +30,7 @@
 /* Converts SmaugWiz version 1000 files into AFKMud format - Samson 4-24-03 */
 
 #include <sys/stat.h>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "areaconvert.h"
@@ -1878,16 +1879,16 @@ void load_stock_area_file( const string & filename, bool manual )
 
    if( manual )
    {
-      char fname[256];
+      string fname;
 
-      snprintf( fname, 256, "%s%s", AREA_CONVERT_DIR, filename.c_str(  ) );
-      if( !( fpArea = fopen( fname, "r" ) ) )
+      fname = std::format( "{}{}", AREA_CONVERT_DIR, filename );
+      if( !( fpArea = fopen( fname.c_str(), "r" ) ) )
       {
-         perror( fname );
+         perror( fname.c_str() );
          bug( "%s: Error locating area file for conversion. Not present in conversion directory.", __func__ );
          return;
       }
-      if( stat( fname, &fst ) != -1 )
+      if( stat( fname.c_str(), &fst ) != -1 )
          umod = fst.st_mtime;
    }
    else if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
@@ -1997,7 +1998,7 @@ void load_stock_area_file( const string & filename, bool manual )
 
          log_printf( "&Y%s: Format version %d detected.", tarea->filename, tarea->version );
       }
-      // Skip the helps as we no longer support them imbedded in area files
+      // Skip the helps as we no longer support them embedded in area files
       else if( !str_cmp( word, "HELPS" ) )
       {
          const char *key, *text;

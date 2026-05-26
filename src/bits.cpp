@@ -41,8 +41,12 @@
 
 #include <unistd.h>
 #include <fstream>
+#include <format>
+#include <filesystem>
 #include "mud.h"
 #include "bits.h"
+
+namespace fs = std::filesystem;
 
 /* These are the ends of the linked lists that store the mud's library of valid bits. */
 map < int, string > abits;
@@ -61,7 +65,7 @@ void save_bits( void )
    map < int, string > start_bit;
    map < int, string >::iterator bit;
    ofstream stream;
-   char filename[256];
+   fs::path filename;
 
    /*
     * Print 2 files 
@@ -70,12 +74,12 @@ void save_bits( void )
    {
       if( mode == 0 )
       {
-         snprintf( filename, 256, "%sabits.lst", SYSTEM_DIR );
+         filename = std::format( "{}abits.lst", SYSTEM_DIR );
          start_bit = abits;
       }
       else
       {
-         snprintf( filename, 256, "%sqbits.lst", SYSTEM_DIR );
+         filename = std::format( "{}qbits.lst", SYSTEM_DIR );
          start_bit = qbits;
       }
 
@@ -95,7 +99,7 @@ void save_bits( void )
 /* Load the abits and qbits */
 void load_oldbits( void )
 {
-   char buf[256];
+   string buf;
    int mode = 0, number = -1;
    string desc;
    FILE *fp;
@@ -103,10 +107,10 @@ void load_oldbits( void )
    abits.clear(  );
    qbits.clear(  );
 
-   snprintf( buf, 256, "%sabit.lst", SYSTEM_DIR );
-   if( !( fp = fopen( buf, "r" ) ) )
+   buf = std::format( "{}abit.lst", SYSTEM_DIR );
+   if( !( fp = fopen( buf.c_str(), "r" ) ) )
    {
-      perror( buf );
+      perror( buf.c_str() );
       return;
    }
 
@@ -135,14 +139,14 @@ void load_oldbits( void )
             if( !str_cmp( word, "#END" ) )
             {
                FCLOSE( fp );
-               unlink( buf );
+               unlink( buf.c_str() );
                if( mode == 0 )
                {
                   mode = 1;   /* We have two files to read, I reused the same code to read both */
-                  snprintf( buf, 256, "%sqbit.lst", SYSTEM_DIR );
-                  if( !( fp = fopen( buf, "r" ) ) )
+                  buf = std::format( "{}qbit.lst", SYSTEM_DIR );
+                  if( !( fp = fopen( buf.c_str(), "r" ) ) )
                   {
-                     perror( buf );
+                     perror( buf.c_str() );
                      return;
                   }
                }
@@ -179,10 +183,10 @@ void load_oldbits( void )
 void load_abits( void )
 {
    ifstream stream;
-   char filename[256];
+   fs::path filename;
 
    log_string( "...abits" );
-   snprintf( filename, 256, "%sabits.lst", SYSTEM_DIR );
+   filename = std::format( "{}abits.lst", SYSTEM_DIR );
    stream.open( filename );
 
    if( !stream.is_open(  ) )
@@ -209,10 +213,10 @@ void load_abits( void )
 void load_qbits( void )
 {
    ifstream stream;
-   char filename[256];
+   fs::path filename;
 
    log_string( "...qbits" );
-   snprintf( filename, 256, "%sqbits.lst", SYSTEM_DIR );
+   filename = std::format( "{}qbits.lst", SYSTEM_DIR );
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
@@ -237,13 +241,13 @@ void load_qbits( void )
 
 void load_bits( void )
 {
-   char filename[256];
+   fs::path filename;
 
    abits.clear(  );
    qbits.clear(  );
 
-   snprintf( filename, 256, "%sabit.lst", SYSTEM_DIR );
-   if( exists_file( filename ) )
+   filename = std::format( "{}abit.lst", SYSTEM_DIR );
+   if( fs::exists( filename ) )
    {
       load_oldbits(  );
       save_bits(  );
@@ -252,9 +256,9 @@ void load_bits( void )
        * If we don't do this, the code will continue to see the old filename and keep reloading it and wiping out any changes made in the new ones.
        * Should only be relevant for very old codebase installs as the old default files were removed in an earlier release.
        */
-      unlink( filename );
-      snprintf( filename, 256, "%sqbit.lst", SYSTEM_DIR );
-      unlink( filename );
+      fs::remove( filename );
+      filename = std::format( "{}qbit.lst", SYSTEM_DIR );
+      fs::remove( filename );
       return;
    }
 

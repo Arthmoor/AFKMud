@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <fstream>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "channels.h"
@@ -768,7 +769,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
       if( vch->desc->connected == CON_PLAYING && hasname( vch->pcdata->chan_listen, channel->name ) )
       {
          string sbuf = argument;
-         char lbuf[MIL + 4];  /* invis level string + buf */
+         string lbuf;  /* invis level string + buf */
 
          if( vch->level < channel->level )
             continue;
@@ -806,9 +807,9 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          vch->position = POS_STANDING;
 
          if( ch->has_pcflag( PCFLAG_WIZINVIS ) && vch->can_see( ch, false ) && vch->is_immortal(  ) )
-            snprintf( lbuf, MIL + 4, "&[%s](%d) ", channel->colorname.c_str(  ), ( !ch->isnpc(  ) ) ? ch->pcdata->wizinvis : ch->mobinvis );
+            lbuf = std::format( "&[{}]({}) ", channel->colorname, ( !ch->isnpc(  ) ) ? ch->pcdata->wizinvis : ch->mobinvis );
          else
-            lbuf[0] = '\0';
+            lbuf = "";
 
          if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
          {
@@ -857,19 +858,19 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          }
          fix_maps( vch, ch );
 
-         char buf[MSL];
+         string buf;
          if( !social && !emote )
          {
-            snprintf( buf, MSL, "&[%s]$n %ss '$t&[%s]'", channel->colorname.c_str(  ), channel->name.c_str(  ), channel->colorname.c_str(  ) );
-            strlcat( lbuf, buf, MIL + 4 );
-            act( AT_PLAIN, lbuf, ch, sbuf.c_str(  ), vch, TO_VICT );
+            buf = std::format( "&[{}]$n {}s '$t&[{}]'", channel->colorname, channel->name, channel->colorname );
+            lbuf.append( buf );
+            act( AT_PLAIN, lbuf.c_str(), ch, sbuf.c_str(  ), vch, TO_VICT );
          }
 
          if( emote )
          {
-            snprintf( buf, MSL, "&W[&[%s]%s&W] &[%s]$n $t", channel->colorname.c_str(  ), capitalize( channel->name ).c_str(  ), channel->colorname.c_str(  ) );
-            strlcat( lbuf, buf, MIL + 4 );
-            act( AT_PLAIN, lbuf, ch, sbuf.c_str(  ), vch, TO_VICT );
+            buf = std::format( "&W[&[{}]{}&W] &[{}]$n $t", channel->colorname, capitalize( channel->name ), channel->colorname );
+            lbuf.append( buf );
+            act( AT_PLAIN, lbuf.c_str(), ch, sbuf.c_str(  ), vch, TO_VICT );
          }
 
          if( social )
@@ -950,9 +951,9 @@ void to_channel( const string & argument, const string & xchannel, int level )
 
       if( d->connected == CON_PLAYING && vch->level >= channel->level && hasname( vch->pcdata->chan_listen, channel->name ) )
       {
-         char buf[MSL];
+         string buf;
 
-         snprintf( buf, MSL, "%s: %s\r\n", capitalize( channel->name ).c_str(  ), argument.c_str(  ) );
+         buf = std::format( "{}: {}\r\n", capitalize( channel->name ), argument );
          vch->set_color( AT_LOG );
          vch->print( buf );
       }

@@ -63,8 +63,12 @@
  */
 
 #include <dirent.h>
+#include <format>
+#include <filesystem>
 #include "mud.h"
 #include "descriptor.h"
+
+namespace fs = std::filesystem;
 
 const char *pc_displays[MAX_COLORS] = {
    "black", "dred", "dgreen", "orange",        // 3
@@ -217,15 +221,15 @@ void reset_colors( char_data * ch )
 {
    if( !ch->isnpc(  ) )
    {
-      char filename[256];
+      fs::path filename;
 
-      snprintf( filename, 256, "%s%s", COLOR_DIR, "default" );
-      if( exists_file( filename ) )
+      filename = std::format( "{}{}", COLOR_DIR, "default" );
+      if( fs::exists( filename ) )
       {
          FILE *fp;
          int max_colors = 0;
 
-         if( !( fp = fopen( filename, "r" ) ) )
+         if( !( fp = fopen( filename.c_str(), "r" ) ) )
          {
             memcpy( &ch->pcdata->colors, &default_set, sizeof( default_set ) );
             return;
@@ -290,7 +294,7 @@ CMDF( do_color )
    if( !str_cmp( arg, "savetheme" ) && ch->is_imp(  ) )
    {
       FILE *fp;
-      char filename[256];
+      fs::path filename;
 
       if( argument.empty(  ) )
       {
@@ -304,10 +308,10 @@ CMDF( do_color )
          return;
       }
 
-      snprintf( filename, 256, "%s%s", COLOR_DIR, argument.c_str(  ) );
-      if( !( fp = fopen( filename, "w" ) ) )
+      filename = std::format( "{}{}", COLOR_DIR, argument );
+      if( !( fp = fopen( filename.c_str(), "w" ) ) )
       {
-         ch->printf( "Unable to write to color file %s\n\r", filename );
+         ch->printf( "Unable to write to color file %s\n\r", filename.c_str() );
          return;
       }
       fprintf( fp, "%s", "#COLORTHEME\n" );
@@ -325,7 +329,7 @@ CMDF( do_color )
    if( !str_cmp( arg, "theme" ) )
    {
       FILE *fp;
-      char filename[256];
+      fs::path filename;
       int max_colors = 0;
 
       if( argument.empty(  ) )
@@ -340,10 +344,10 @@ CMDF( do_color )
          return;
       }
 
-      snprintf( filename, 256, "%s%s", COLOR_DIR, argument.c_str(  ) );
-      if( !( fp = fopen( filename, "r" ) ) )
+      filename = std::format( "{}{}", COLOR_DIR, argument );
+      if( !( fp = fopen( filename.c_str(), "r" ) ) )
       {
-         ch->printf( "There is no theme called %s.\r\n", argument.c_str(  ) );
+         ch->printf( "There is no theme called %s.\r\n", filename.c_str(  ) );
          return;
       }
 
@@ -1157,6 +1161,7 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
  * color codes embedded in it.  It does this by stripping the codes out
  * entirely (A nullptr descriptor means ANSI will be false).
  */
+// FIXME: This needs to be updated to take std::string
 int color_strlen( const char *src )
 {
    unsigned int i = 0;
@@ -1193,6 +1198,7 @@ int color_strlen( const char *src )
 /*
  * Quixadhal - And this one needs to use the new version too.
  */
+// FIXME: This needs to be updated to take and return std::string
 char *color_align( const char *argument, int size, int align )
 {
    int space = 0;
@@ -1216,59 +1222,46 @@ char *color_align( const char *argument, int size, int align )
  * in it to the desired output tokens, using the provided character's
  * preferences.
  */
-const char *colorize( const string & txt, descriptor_data * d )
+string colorize( const string & txt, descriptor_data *d )
 {
-   static char result[MSL];
+   string result;
+   size_t last_pos = 0;
+   size_t found_pos = 0;
 
-   *result = '\0';
+   if( txt.empty() || !d )
+      return txt;
 
-   if( !txt.empty(  ) && d )
+   while( ( found_pos = txt.find_first_of( "&{}hH", last_pos ) ) != string::npos )
    {
-      const char *colstr;
-      const char *prevstr = txt.c_str(  );
+      result.append( txt, last_pos, found_pos - last_pos );
+
+      const char *colstr = txt.c_str() + found_pos;
       char colbuf[20];
-      int ln;
+      int ln = 0;
 
-      while( ( colstr = strpbrk( prevstr, "&{}hH" ) ) != nullptr )
+      if( ( colstr[0] == 'h' || colstr[0] == 'H' ) &&
+          ( colstr[1] == 't' || colstr[1] == 'T' ) &&
+          ( colstr[2] == 't' || colstr[2] == 'T' ) &&
+          ( colstr[3] == 'p' || colstr[3] == 'P' ) )
       {
-         int reslen = 0;
+         char http[MIL];
 
-         if( colstr > prevstr )
-         {
-            if( ( MSL - ( reslen = strlen( result ) ) ) <= ( colstr - prevstr ) )
-            {
-               bug( "%s -> %s:%d: OVERFLOW in internal MSL buffer!", __func__, __FILE__, __LINE__ );
-               break;
-            }
-            strncat( result, prevstr, ( colstr - prevstr ) );  /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
-            result[reslen + ( colstr - prevstr )] = '\0';   /* strncat will NOT nullptr terminate this! */
-         }
+         one_argument( colstr, http );
+         result.append( http );
+         ln = strlen( http );
+      }
+      else
+      {
          ln = colorcode( colstr, colbuf, d, 20, nullptr );
 
-         if( colstr[0] == 'h' || colstr[0] == 'H' )
-            if( colstr[1] == 't' || colstr[1] == 'T' )
-               if( colstr[2] == 't' || colstr[2] == 'T' )
-                  if( colstr[3] == 'p' || colstr[3] == 'P' )
-                  {
-                     char http[MIL];
-
-                     one_argument( colstr, http );
-                     strlcat( result, http, sizeof( result ) );
-                     ln = strlen( http );
-                     prevstr = colstr + ln;
-                     continue;
-                  }
-
          if( ln > 0 )
-         {
-            strlcat( result, colbuf, MSL );
-            prevstr = colstr + ln;
-         }
-         else
-            prevstr = colstr + 1;
+            result.append( colbuf );
       }
-      if( *prevstr )
-         strlcat( result, prevstr, MSL );
+
+      last_pos = found_pos + ( ln > 0 ? ln : 1 );
    }
+
+   result.append( txt, last_pos, std::string::npos );
+
    return result;
 }

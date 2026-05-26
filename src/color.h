@@ -33,8 +33,8 @@
 
 char *color_align( const char *, int, int );
 int color_strlen( const char * );
-const char *colorize( const string &, descriptor_data * );
-int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int *vislen );
+string colorize( const string &, descriptor_data * );
+int colorcode( const char *, char *, descriptor_data *, int, int * );
 
 /*
  * Color Alignment Parameters

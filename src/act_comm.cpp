@@ -26,8 +26,7 @@
  *                      Player communication module                         *
  ****************************************************************************/
 
-#include <cstdarg>
-#include <locale>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "boards.h"
@@ -220,15 +219,13 @@ CMDF( do_ask )
 
 void update_sayhistory( char_data * ch, char_data * vch, const string & msg )
 {
-   char new_msg[MSL];
    string message;
 
    if( vch->isnpc() )
       return;
 
-   snprintf( new_msg, MSL, "&R[%s] %s%s said '%s'", mini_c_time( current_time, vch->pcdata->timezone ),
-             ( vch == ch ? ch->color_str( AT_SAY ) : vch->color_str( AT_SAY ) ), vch == ch ? "You" : PERS( ch, vch, false ), msg.c_str(  ) );
-   message = new_msg;
+   message = std::format( "&R[{}] {}{} said '{}'", mini_c_time( current_time, vch->pcdata->timezone ),
+         ( vch == ch ? ch->color_str( AT_SAY ) : vch->color_str( AT_SAY ) ), vch == ch ? "You" : PERS( ch, vch, false ), msg );
 
    vch->pcdata->say_history.push_back( message );
 
@@ -548,28 +545,25 @@ CMDF( do_beep )
 void update_tellhistory( char_data * vch, char_data * ch, const string & msg, bool self )
 {
    char_data *tch;
-   char new_msg[MSL];
    string message;
 
    if( self )
    {
-      snprintf( new_msg, MSL, "&R[%s] %sYou told %s '%s'",
+      message = std::format( "&R[{}] {}You told {} '{}'",
          ch->isnpc() ? ( mini_c_time( current_time, -1 ) ) : ( mini_c_time( current_time, ch->pcdata->timezone ) ),
-         ch->color_str( AT_TELL ), PERS( vch, ch, false ), msg.c_str(  ) );
+         ch->color_str( AT_TELL ), PERS( vch, ch, false ), msg );
       tch = ch;
    }
    else
    {
-      snprintf( new_msg, MSL, "&R[%s] %s%s told you '%s'",
+      message = std::format( "&R[{}] {}{} told you '{}'",
          vch->isnpc() ? ( mini_c_time( current_time, -1 ) ) : ( mini_c_time( current_time, vch->pcdata->timezone ) ),
-         vch->color_str( AT_TELL ), PERS( ch, vch, false ), msg.c_str(  ) );
+         vch->color_str( AT_TELL ), PERS( ch, vch, false ), msg );
       tch = vch;
    }
 
    if( tch->isnpc(  ) )
       return;
-
-   message = new_msg;
 
    tch->pcdata->tell_history.push_back( message );
 
@@ -1392,10 +1386,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                   buf.append( ( to ? MORPHPERS( ch, to, false ) : MORPHNAME( ch ) ) );
                else
                {
-                  char temp[MSL];
-
-                  snprintf( temp, MSL, "(%s) %s", ( to ? PERS( ch, to, false ) : NAME( ch ) ), ( to ? MORPHPERS( ch, to, false ) : MORPHNAME( ch ) ) );
-                  buf.append( temp );
+                  buf.append( std::format( "({}) {}", ( to ? PERS( ch, to, false ) : NAME( ch ) ), ( to ? MORPHPERS( ch, to, false ) : MORPHNAME( ch ) ) ) );
                }
                break;
 
@@ -1406,10 +1397,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
                   buf.append( ( to ? MORPHPERS( vch, to, false ) : MORPHNAME( vch ) ) );
                else
                {
-                  char temp[MSL];
-
-                  snprintf( temp, MSL, "(%s) %s", ( to ? PERS( vch, to, false ) : NAME( vch ) ), ( to ? MORPHPERS( vch, to, false ) : MORPHNAME( vch ) ) );
-                  buf.append( temp );
+                  buf.append( std::format( "({}) {}", ( to ? PERS( vch, to, false ) : NAME( vch ) ), ( to ? MORPHPERS( vch, to, false ) : MORPHNAME( vch ) ) ) );
                }
                break;
 

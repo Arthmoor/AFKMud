@@ -27,10 +27,14 @@
  ****************************************************************************/
 
 #include <fstream>
+#include <format>
+#include <filesystem>
 #include "mud.h"
 #include "calendar.h"
 #include "pfiles.h"
 #include "roomindex.h"
+
+namespace fs = std::filesystem;
 
 list < holiday_data * >daylist;
 
@@ -38,6 +42,7 @@ const int MAX_TZONE = 25;
 
 extern time_t board_expire_time_t;
 
+// FIXME: All of this timezone stuff needs a major overhaul to bring it up to modern standards.
 struct tzone_type
 {
    const char *name; /* Name of the time zone */
@@ -374,17 +379,17 @@ void fread_timedata( FILE * fp )
 /* Load time information from saved file - Samson 1-21-99 */
 bool load_timedata( void )
 {
-   char filename[256];
+   fs::path filename;
    FILE *fp;
    bool found;
 
    found = false;
-   snprintf( filename, 256, "%stime.dat", SYSTEM_DIR );
+   filename = std::format( "{}time.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename, "r" ) ) != nullptr )
+   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
-
       found = true;
+
       for( ;; )
       {
          char letter = '\0';
@@ -426,14 +431,14 @@ bool load_timedata( void )
 void save_timedata( void )
 {
    FILE *fp;
-   char filename[256];
+   fs::path filename;
 
-   snprintf( filename, 256, "%stime.dat", SYSTEM_DIR );
+   filename = std::format( "{}time.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename, "w" ) ) == nullptr )
+   if( ( fp = fopen( filename.c_str(), "w" ) ) == nullptr )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    else
    {

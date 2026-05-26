@@ -26,6 +26,7 @@
  *                   Online Building and Editing Module                     *
  ****************************************************************************/
 
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -4951,7 +4952,7 @@ CMDF( do_redit )
       exit_data *bxit, *rxit;
       room_index *tmploc;
       int vnum, exnum;
-      char rvnum[MIL];
+      string rvnum;
       bool numnotdir;
 
       argument = one_argument( argument, arg2 );
@@ -4990,12 +4991,12 @@ CMDF( do_redit )
 
       rxit = nullptr;
       vnum = 0;
-      rvnum[0] = '\0';
+
       if( bxit )
       {
          vnum = bxit->vnum;
          if( !arg3.empty(  ) )
-            snprintf( rvnum, MIL, "%d", tmploc->vnum );
+            rvnum = std::format( "{}", tmploc->vnum );
          if( bxit->to_room )
             rxit = bxit->to_room->get_exit( rev_dir[edir] );
          else
@@ -5011,14 +5012,14 @@ CMDF( do_redit )
       {
          vnum = bxit->vnum;
          if( !arg3.empty(  ) )
-            snprintf( rvnum, MIL, "%d", tmploc->vnum );
+            rvnum = std::format( "{}", tmploc->vnum );
          if( bxit->to_room )
             rxit = bxit->to_room->get_exit( rev_dir[edir] );
          else
             rxit = nullptr;
       }
       if( vnum )
-         cmdf( ch, "at %d redit exit %d %s %s", vnum, rev_dir[edir], rvnum, argument.c_str(  ) );
+         cmdf( ch, "at %d redit exit %d %s %s", vnum, rev_dir[edir], rvnum.c_str(), argument.c_str(  ) );
       return;
    }
 
@@ -7116,7 +7117,7 @@ bool check_area_conflicts( int lo, int hi )
  */
 CMDF( do_vassign )
 {
-   string arg1, arg2, arg3;
+   string arg1, arg2, arg3, filename;
    int lo, hi;
    char_data *victim, *mob;
    room_index *room;
@@ -7124,7 +7125,6 @@ CMDF( do_vassign )
    obj_index *pObjIndex;
    obj_data *obj;
    area_data *tarea;
-   char filename[256];
 
    ch->set_color( AT_IMMORT );
 
@@ -7288,11 +7288,11 @@ CMDF( do_vassign )
     */
    victim->save(  );
 
-   tarea->creation_date = current_time;
-   snprintf( filename, 256, "%s%s", BUILD_DIR, tarea->filename );
-   tarea->fold( filename, false );
-
    tarea->flags.set( AFLAG_PROTOTYPE );
+   tarea->creation_date = current_time;
+   filename = std::format( "{}{}", BUILD_DIR, tarea->filename );
+   tarea->fold( filename.c_str(), false );
+
    ch->set_color( AT_IMMORT );
    ch->printf( "Vnum range set for %s and initialized.\r\n", victim->name );
 }

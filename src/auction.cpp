@@ -26,9 +26,10 @@
  *                          Auction House module                            *
  ****************************************************************************/
 
+#include <dirent.h>
 #include <fstream>
 #include <sstream>
-#include <dirent.h>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "auction.h"
@@ -252,7 +253,7 @@ void read_aucvault( const char *dirname, const char *filename )
    room_index *aucvault;
    char_data *aucmob;
    FILE *fp;
-   char fname[256];
+   string fname;
 
    if( !( aucmob = supermob->get_char_world( filename ) ) )
    {
@@ -268,8 +269,8 @@ void read_aucvault( const char *dirname, const char *filename )
       return;
    }
 
-   snprintf( fname, 256, "%s%s", dirname, filename );
-   if( ( fp = fopen( fname, "r" ) ) != nullptr )
+   fname = std::format( "{}{}", dirname, filename );
+   if( ( fp = fopen( fname.c_str(), "r" ) ) != nullptr )
    {
       log_printf( "Loading auction house vault: %s", filename );
       rset_supermob( aucvault );
@@ -360,7 +361,7 @@ void save_aucvault( char_data * ch, const string & aucmob )
 {
    room_index *aucvault;
    FILE *fp;
-   char filename[256];
+   string filename;
 
    if( !ch )
    {
@@ -370,11 +371,11 @@ void save_aucvault( char_data * ch, const string & aucmob )
 
    aucvault = get_room_index( ch->in_room->vnum + 1 );
 
-   snprintf( filename, 256, "%s%s", AUC_DIR, aucmob.c_str(  ) );
-   if( !( fp = fopen( filename, "w" ) ) )
+   filename = std::format( "{}{}", AUC_DIR, aucmob );
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    else
    {

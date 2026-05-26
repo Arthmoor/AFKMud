@@ -26,6 +26,7 @@
  *                        Character Support Functions                       *
  ****************************************************************************/
 
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "bits.h"
@@ -331,6 +332,16 @@ void char_data::pager( const string & txt )
       }
    }
 }
+
+// This is a fully std::string implementation of the older ::printf function. No more faffing about with char buffers.
+// Samson 5-24-2026
+/*
+template<typename... Args>
+void char_data::printf( std::format_string<Args...> fmt, Args&&... args )
+{
+   this->print( std::format( fmt, std::forward<Args>(args)... ) );
+}
+*/
 
 void char_data::printf( const char *fmt, ... )
 {
@@ -2118,7 +2129,7 @@ void char_data::affect_join( affect_data * paf )
  */
 void char_data::showaffect( affect_data * paf )
 {
-   char buf[MSL];
+   string buf;
    int i;
 
    if( !paf )
@@ -2132,32 +2143,32 @@ void char_data::showaffect( affect_data * paf )
       switch ( paf->location )
       {
          default:
-            snprintf( buf, MSL, "&wAffects: &B%15s&w by &B%3d&w.\r\n", a_types[paf->location], paf->modifier );
+            buf = std::format( "&wAffects: &B{:15}&w by &B{:3}&w.\r\n", a_types[paf->location], paf->modifier );
             break;
 
          case APPLY_AFFECT:
-            snprintf( buf, MSL, "&wAffects: &B%15s&w by &B%s&w\r\n", a_types[paf->location], aff_flags[paf->modifier] );
+            buf = std::format( "&wAffects: &B{:15}&w by &B{}&w\r\n", a_types[paf->location], aff_flags[paf->modifier] );
             break;
 
          case APPLY_WEAPONSPELL:
          case APPLY_WEARSPELL:
          case APPLY_REMOVESPELL:
          case APPLY_EAT_SPELL:
-            snprintf( buf, MSL, "&wCasts spell: &B'%s'&w\r\n", IS_VALID_SN( paf->modifier ) ? skill_table[paf->modifier]->name : "unknown" );
+            buf = std::format( "&wCasts spell: &B'{}'&w\r\n", IS_VALID_SN( paf->modifier ) ? skill_table[paf->modifier]->name : "unknown" );
             break;
 
          case APPLY_RESISTANT:
          case APPLY_IMMUNE:
          case APPLY_SUSCEPTIBLE:
          case APPLY_ABSORB:
-            snprintf( buf, MSL, "&wAffects: &B%15s&w by &B", a_types[paf->location] );
+            buf = std::format( "&wAffects: &B{:15}&w by &B", a_types[paf->location] );
             for( i = 0; i < MAX_RIS_FLAG; ++i )
                if( paf->rismod.test( i ) )
                {
-                  strlcat( buf, " ", MSL );
-                  strlcat( buf, ris_flags[i], MSL );
+                  buf.append( " " );
+                  buf.append( ris_flags[i] );
                }
-            strlcat( buf, "&w\r\n", MSL );
+            buf.append( "&w\r\n" );
             break;
       }
       this->print( buf );
@@ -3359,7 +3370,7 @@ void check_mount_objs( char_data * ch, bool fell )
  */
 void retrieve_corpse( char_data * ch, char_data * healer )
 {
-   char buf[MSL];
+   string buf;
    list < obj_data * >::iterator iobj;
    bool found = false;
 
@@ -3369,7 +3380,7 @@ void retrieve_corpse( char_data * ch, char_data * healer )
    if( ch->isnpc(  ) )
       return;
 
-   snprintf( buf, MSL, "the corpse of %s", ch->name );
+   buf = std::format( "the corpse of {}", ch->name );
 
    for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
@@ -3401,10 +3412,10 @@ void retrieve_corpse( char_data * ch, char_data * healer )
       if( healer )
       {
          act( AT_MAGIC, "$n closes $s eyes in deep prayer....", healer, nullptr, nullptr, TO_ROOM );
-         act( AT_MAGIC, "A moment later $T appears in the room!", healer, nullptr, buf, TO_ROOM );
+         act( AT_MAGIC, "A moment later $T appears in the room!", healer, nullptr, buf.c_str(), TO_ROOM );
       }
       else
-         act( AT_MAGIC, "From out of nowhere, $T appears in a bright flash!", ch, nullptr, buf, TO_ROOM );
+         act( AT_MAGIC, "From out of nowhere, $T appears in a bright flash!", ch, nullptr, buf.c_str(), TO_ROOM );
 
       if( ch->level > 7 )
       {
@@ -3755,10 +3766,10 @@ void stop_fearing( char_data * ch )
  */
 void advance_level( char_data * ch )
 {
-   char buf[MSL];
+   string buf;
    int add_hp, add_mana, add_prac, manamod = 0, manahighdie, manaroll;
 
-   snprintf( buf, MSL, "the %s", title_table[ch->Class][ch->level][ch->sex] );
+   buf = std::format( "the {}", title_table[ch->Class][ch->level][ch->sex] );
    ch->set_title( buf );
 
    /*

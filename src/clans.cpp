@@ -26,6 +26,8 @@
  *                           Special clan module                            *
  ****************************************************************************/
 
+#include <format>
+#include <filesystem>
 #include "mud.h"
 #include "clans.h"
 #include "descriptor.h"
@@ -35,6 +37,8 @@
 #include "raceclass.h"
 #include "roomindex.h"
 #include "shops.h"
+
+namespace fs = std::filesystem;
 
 list < clan_data * >clanlist;
 
@@ -170,7 +174,7 @@ clan_data *get_clan( const string & name )
 void save_clan_storeroom( char_data * ch, clan_data * clan )
 {
    FILE *fp;
-   char filename[256];
+   fs::path filename;
    short templvl;
 
    if( !clan )
@@ -185,11 +189,11 @@ void save_clan_storeroom( char_data * ch, clan_data * clan )
       return;
    }
 
-   snprintf( filename, 256, "%s%s.vault", CLAN_DIR, clan->filename.c_str(  ) );
-   if( !( fp = fopen( filename, "w" ) ) )
+   filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    else
    {
@@ -268,18 +272,12 @@ void delete_clan( char_data * ch, clan_data * clan )
    list < char_data * >::iterator ich;
    room_index *room = nullptr;
    mob_index *mob = nullptr;
-   char filename[256], storeroom[256], record[256];
+   fs::path filename, storeroom, record;
    string clanname = clan->name;
 
-   strlcpy( filename, clan->filename.c_str(  ), 256 );
-
-   int bc = snprintf( storeroom, 256, "%s.vault", filename );
-   if( bc < 0 )
-      bug( "%s: Output buffer error!", __func__ );
-
-   bc = snprintf( record, 256, "%s.record", filename );
-   if( bc < 0 )
-      bug( "%s: Output buffer error!", __func__ );
+   filename = clan->filename;
+   storeroom = std::format( "{}.vault", clan->filename );
+   record = std::format( "{}.record", clan->filename );
 
    for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
@@ -296,7 +294,7 @@ void delete_clan( char_data * ch, clan_data * clan )
       }
    }
 
-   if( !remove( record ) )
+   if( fs::remove( record ) )
    {
       if( !ch )
          log_string( "Clan Pkill record file destroyed." );
@@ -311,7 +309,7 @@ void delete_clan( char_data * ch, clan_data * clan )
       if( room )
       {
          room->flags.reset( ROOM_CLANSTOREROOM );
-         if( !remove( storeroom ) )
+         if( fs::remove( storeroom ) )
          {
             if( !ch )
                log_string( "Clan storeroom file destroyed." );
@@ -345,7 +343,7 @@ void delete_clan( char_data * ch, clan_data * clan )
 
       if( mob )
       {
-         char aucfile[256];
+         fs::path aucfile;
 
          mob->actflags.reset( ACT_GUILDAUC );
 
@@ -359,8 +357,8 @@ void delete_clan( char_data * ch, clan_data * clan )
                vch->in_room->flags.reset( ROOM_AUCTION );
             }
          }
-         snprintf( aucfile, 256, "%s%s", AUC_DIR, mob->short_descr );
-         if( !remove( aucfile ) )
+         aucfile = std::format( "{}{}", AUC_DIR, mob->short_descr );
+         if( fs::remove( aucfile ) )
          {
             if( !ch )
                log_string( "Clan auction house file destroyed." );
@@ -376,7 +374,7 @@ void delete_clan( char_data * ch, clan_data * clan )
 
       if( mob )
       {
-         char shopfile[256];
+         fs::path shopfile;
 
          mob->actflags.reset( ACT_GUILDVENDOR );
 
@@ -387,8 +385,8 @@ void delete_clan( char_data * ch, clan_data * clan )
             if( vch->isnpc(  ) && vch->pIndexData == mob )
                vch->unset_actflag( ACT_GUILDVENDOR );
          }
-         snprintf( shopfile, 256, "%s%s", SHOP_DIR, mob->short_descr );
-         if( !remove( shopfile ) )
+         shopfile = std::format( "{}{}", SHOP_DIR, mob->short_descr );
+         if( fs::remove( shopfile ) )
          {
             if( !ch )
                log_string( "Clan shop file destroyed." );
@@ -403,12 +401,12 @@ void delete_clan( char_data * ch, clan_data * clan )
 
    if( !ch )
    {
-      if( !remove( filename ) )
+      if( fs::remove( filename ) )
          log_printf( "Clan data for %s destroyed - no members left.", clanname.c_str(  ) );
       return;
    }
 
-   if( !remove( filename ) )
+   if( fs::remove( filename ) )
    {
       ch->printf( "&RClan data for %s has been destroyed.\r\n", clanname.c_str(  ) );
       log_printf( "Clan data for %s has been destroyed by %s.", clanname.c_str(  ), ch->name );
@@ -419,15 +417,16 @@ void write_clan_list( void )
 {
    list < clan_data * >::iterator cl;
    FILE *fpout;
-   char filename[256];
+   fs::path filename;
 
-   snprintf( filename, 256, "%s%s", CLAN_DIR, CLAN_LIST );
-   fpout = fopen( filename, "w" );
+   filename = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
+   fpout = fopen( filename.c_str(), "w" );
    if( !fpout )
    {
       bug( "%s: FATAL: cannot open clan.lst for writing!", __func__ );
       return;
    }
+
    for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
       clan_data *clan = *cl;
@@ -534,7 +533,7 @@ const int CLAN_VERSION = 1;
 void save_clan( clan_data * clan )
 {
    FILE *fp;
-   char filename[256];
+   fs::path filename;
 
    if( !clan )
    {
@@ -548,12 +547,12 @@ void save_clan( clan_data * clan )
       return;
    }
 
-   snprintf( filename, 256, "%s%s", CLAN_DIR, clan->filename.c_str(  ) );
+   filename = std::format( "{}{}", CLAN_DIR, clan->filename );
 
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    else
    {
@@ -854,7 +853,7 @@ void clean_clan( clan_data * clan )
  */
 bool load_clan_file( const char *clanfile )
 {
-   char filename[256];
+   fs::path filename;
    clan_data *clan;
    FILE *fp;
    bool found;
@@ -864,9 +863,9 @@ bool load_clan_file( const char *clanfile )
    clean_clan( clan );  /* Default settings so we don't get wierd ass stuff */
 
    found = false;
-   snprintf( filename, 256, "%s%s", CLAN_DIR, clanfile );
+   filename = std::format( "{}{}", CLAN_DIR, clanfile );
 
-   if( ( fp = fopen( filename, "r" ) ) != nullptr )
+   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
       found = true;
       for( ;; )
@@ -914,8 +913,8 @@ bool load_clan_file( const char *clanfile )
          log_string( "Storeroom not found" );
          return found;
       }
-      snprintf( filename, 256, "%s%s.vault", CLAN_DIR, clan->filename.c_str(  ) );
-      if( ( fp = fopen( filename, "r" ) ) != nullptr )
+      filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
+      if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
       {
          log_string( "Loading clan storage room" );
          rset_supermob( storeroom );
@@ -1132,17 +1131,17 @@ void load_clans( void )
 {
    FILE *fpList;
    const char *filename;
-   char clanlistfile[256];
+   fs::path clanlistfile;
 
    clanlist.clear(  );
 
    log_string( "Loading clans..." );
 
-   snprintf( clanlistfile, 256, "%s%s", CLAN_DIR, CLAN_LIST );
+   clanlistfile = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
 
-   if( !( fpList = fopen( clanlistfile, "r" ) ) )
+   if( !( fpList = fopen( clanlistfile.c_str(), "r" ) ) )
    {
-      perror( clanlistfile );
+      perror( clanlistfile.c_str() );
       exit( 1 );
    }
 
@@ -2161,13 +2160,13 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "filename" ) )
    {
-      char filename[256];
+      fs::path filename;
 
       if( !is_valid_filename( ch, CLAN_DIR, argument ) )
          return;
 
-      snprintf( filename, sizeof( filename ), "%s%s", CLAN_DIR, clan->filename.c_str(  ) );
-      if( !remove( filename ) )
+      filename = std::format( "{}{}", CLAN_DIR, clan->filename );
+      if( fs::remove( filename ) )
          ch->print( "Old clan file deleted.\r\n" );
 
       clan->filename = argument;
@@ -2299,7 +2298,7 @@ CMDF( do_showclan )
 CMDF( do_makeclan )
 {
    string arg, arg2;
-   char filename[256];
+   fs::path filename;
    clan_data *clan;
    roster_data *member;
    char_data *victim;
@@ -2336,13 +2335,14 @@ CMDF( do_makeclan )
       return;
    }
 
-   snprintf( filename, 256, "%s%s", CLAN_DIR, strlower( arg.c_str(  ) ) );
+   strlower( arg );
+   filename = std::format( "{}{}", CLAN_DIR, arg );
 
    clan = new clan_data;
    clean_clan( clan );  /* Setup default values - Samson 7-16-00 */
 
    clan->name = argument;
-   clan->filename = filename; /* Bug fix - Samson 5-31-99 */
+   clan->filename = filename.string(); /* Bug fix - Samson 5-31-99 */
    clan->leader = victim->name;
 
    member = new roster_data;
@@ -2523,7 +2523,7 @@ CMDF( do_guilds )
 
 CMDF( do_defeats )
 {
-   char filename[256];
+   fs::path filename;
 
    if( ch->isnpc() || !ch->pcdata->clan )
    {
@@ -2533,11 +2533,11 @@ CMDF( do_defeats )
 
    if( ch->pcdata->clan->clan_type == CLAN_CLAN )
    {
-      snprintf( filename, 256, "%s%s.defeats", CLAN_DIR, ch->pcdata->clan->name.c_str() );
+      filename = std::format( "{}{}.defeats", CLAN_DIR, ch->pcdata->clan->name );
       ch->set_pager_color( AT_PURPLE );
       if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
       {
-         FILE *fp = fopen( filename, "w" );
+         FILE *fp = fopen( filename.c_str(), "w" );
          if( fp )
          {
             FCLOSE( fp );
@@ -2548,7 +2548,7 @@ CMDF( do_defeats )
       else
       {
          ch->pager( "\r\nLVL  Character                LVL  Character\r\n" );
-         show_file( ch, filename );
+         show_file( ch, filename.c_str() );
          return;
       }
    }
@@ -2561,7 +2561,7 @@ CMDF( do_defeats )
 
 CMDF( do_victories )
 {
-   char filename[256];
+   fs::path filename;
 
    if( ch->isnpc(  ) || !ch->pcdata->clan )
    {
@@ -2571,10 +2571,10 @@ CMDF( do_victories )
 
    if( ch->pcdata->clan->clan_type == CLAN_CLAN )
    {
-      snprintf( filename, 256, "%s%s.record", CLAN_DIR, ch->pcdata->clan->name.c_str(  ) );
+      filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
       if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
       {
-         FILE *fp = fopen( filename, "w" );
+         FILE *fp = fopen( filename.c_str(), "w" );
          if( fp )
          {
             FCLOSE( fp );
@@ -2585,7 +2585,7 @@ CMDF( do_victories )
       else
       {
          ch->pager( "\r\nLVL  Character       LVL  Character\r\n" );
-         show_file( ch, filename );
+         show_file( ch, filename.c_str() );
          return;
       }
    }

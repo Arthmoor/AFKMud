@@ -171,10 +171,12 @@ class char_data
     ~char_data(  );
 
    /*
-    * Internal to character.c 
+    * Internal to character.cpp
     */
    void print( const string & );
-   void printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
+   // template<typename... Args>
+   // void printf( std::format_string<Args...> fmt, Args&&... args );                // Updated std::string style formatting.
+   void printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) ); // Legacy C style formatting.
    void pager( const string & );
    void pagerf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void print_room( const string & );
@@ -531,7 +533,7 @@ class char_data
    char *short_descr;
    char *long_descr;
    char *chardesc;
-   char *alloc_ptr;  /* Must str_dup and free this one */
+   char *alloc_ptr;  /* Must strdup and free this one */
    float numattacks;
    int speaking;  /* Don't bitset this - it should only be a single language at a time */
    int mpactnum;

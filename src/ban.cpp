@@ -35,6 +35,7 @@
 #include <arpa/inet.h>
 #include <cmath>
 #include <fstream>
+#include <format>
 #include "mud.h"
 #include "ban.h"
 #include "descriptor.h"
@@ -314,16 +315,17 @@ void send_ban_notice( descriptor_data *d, ban_data *ban )
    }
    else
    {
-      char buf[MSL];
+      string buf;
 
       if( duration > 86400 )
-         snprintf( buf, MSL, "Your site has been banned from this MUD for %ld days.\r\n", (duration / 86400) );
+         buf = std::format( "Your site has been banned from this MUD for {} days.\r\n", (duration / 86400) );
       else if( duration >= 0 && duration <= 86400 )
-         snprintf( buf, MSL, "Your site has been banned from this MUD for %ld hours.\r\n", (duration / 3600) );
+         buf = std::format( "Your site has been banned from this MUD for {} hours.\r\n", (duration / 3600) );
       else
-         strlcpy( buf, "Your site has been permanently banned from this MUD.\r\n", MSL );
+         buf = "Your site has been permanently banned from this MUD.\r\n";
 
-      d->write( buf );
+      // FIXME: Potential gotcha point if the MUD is ever updated to use epoll()
+      d->write( buf.c_str() );
    }
 }
 
