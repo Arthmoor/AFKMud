@@ -6334,6 +6334,22 @@ CMDF( do_cset )
    do_cset( ch, "help" );
 }
 
+void free_all_titles( void )
+{
+   int hash, loopa;
+
+   for( hash = 0; hash < MAX_CLASS; ++hash )
+   {
+      for( loopa = 0; loopa < MAX_LEVEL + 1; ++loopa )
+      {
+         STRFREE( title_table[hash][loopa][SEX_NEUTRAL] );
+         STRFREE( title_table[hash][loopa][SEX_MALE] );
+         STRFREE( title_table[hash][loopa][SEX_FEMALE] );
+         STRFREE( title_table[hash][loopa][SEX_HERMAPHRODYTE] );
+      }
+   }
+}
+
 class_type::class_type(  )
 {
    init_memory( &affected, &fMana, sizeof( fMana ) );
@@ -6342,6 +6358,17 @@ class_type::class_type(  )
 class_type::~class_type(  )
 {
    STRFREE( who_name );
+}
+
+void free_all_classes( void )
+{
+   int cl;
+
+   for( cl = 0; cl < MAX_CLASS; ++cl )
+   {
+      class_type *Class = class_table[cl];
+      deleteptr( Class );
+   }
 }
 
 bool load_class_file( const char *fname )
@@ -7208,6 +7235,17 @@ race_type::race_type(  )
 race_type::~race_type(  )
 {
    STRFREE( race_name );
+}
+
+void free_all_races( void )
+{
+   int rc;
+
+   for( rc = 0; rc < MAX_RACE; ++rc )
+   {
+      race_type *race = race_table[rc];
+      deleteptr( race );
+   }
 }
 
 void set_bodypart_where_names( race_type *race )

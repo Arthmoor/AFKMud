@@ -29,6 +29,7 @@
 #if !defined(WIN32)
 #include <netinet/in.h>
 #include <sys/wait.h>
+#include <dlfcn.h>
 #else
 #include <winsock2.h>
 #define dlclose( path )		( (void *)FreeLibrary( (HMODULE)(path)) )
@@ -90,6 +91,7 @@ extern bool compilelock;
 extern time_t board_expire_time_t;
 
 void game_loop(  );
+void cleanup_memory(  );
 void clear_trdata(  );
 void run_events( time_t );
 
@@ -534,6 +536,8 @@ static void SegVio( int signum )
 
    // That's all, folks.
    log_string( "Normal termination of game." );
+   log_string( "Cleaning up Memory.\033[0m" );
+   cleanup_memory(  );
    exit( 0 );
 }
 
@@ -649,6 +653,8 @@ static void caught_alarm( int signum )
     * That's all, folks.
     */
    log_string( "Normal termination of game." );
+   log_string( "Cleaning up Memory.\033[0m" );
+   cleanup_memory(  );
    exit( 0 );
 }
 #endif
@@ -1009,6 +1015,196 @@ void game_loop( void )
    // Returns back to 'main', and will result in mud shutdown
 }
 
+/*
+ * Clean all memory on exit to help find leaks
+ * Yeah I know, one big ugly function -Druid
+ * Added to AFKMud by Samson on 5-8-03.
+ * Do not remove this function again lizard! ASan needs it or you get spam on a controlled shutdown.
+ */
+void cleanup_memory( void )
+{
+   int hash;
+
+   fprintf( stdout, "%s", "Quote List.\n" );
+   free_quotes(  );
+
+   fprintf( stdout, "%s", "Random Environment Data.\n" );
+   free_envs(  );
+
+   fprintf( stdout, "%s", "Auction Sale Data.\n" );
+   free_sales(  );
+
+   fprintf( stdout, "%s", "Project Data.\n" );
+   free_projects(  );
+
+   fprintf( stdout, "%s", "Ban Data.\n" );
+   free_bans(  );
+
+   fprintf( stdout, "%s", "Auth List.\n" );
+   free_all_auths(  );
+
+   fprintf( stdout, "%s", "Morph Data.\n" );
+   free_morphs(  );
+
+   fprintf( stdout, "%s", "Rune Data.\n" );
+   free_runedata(  );
+
+   fprintf( stdout, "%s", "Immortal Hosts Data.\n" );
+   free_immhosts();
+
+   fprintf( stdout, "%s", "Connection History Data.\n" );
+   free_connhistory( 0 );
+
+   fprintf( stdout, "%s", "Slay Table.\n" );
+   free_slays(  );
+
+   fprintf( stdout, "%s", "Holidays.\n" );
+   free_holidays(  );
+
+   fprintf( stdout, "%s", "Specfun List.\n" );
+   free_specfuns(  );
+
+   fprintf( stdout, "%s", "Wizinfo Data.\n" );
+   clear_wizinfo(  );
+
+   fprintf( stdout, "%s", "Ships.\n" );
+   free_ships(  );
+
+   fprintf( stdout, "%s", "Overland Data.\n" );
+   free_continents(  );
+
+   fprintf( stdout, "%s", "Mixtures and Liquids.\n" );
+   free_liquiddata(  );
+
+   fprintf( stdout, "%s", "DNS Cache data.\n" );
+   free_dns_list(  );
+
+   fprintf( stdout, "%s", "Local Channels.\n" );
+   free_mudchannels(  );
+
+   // Helps
+   fprintf( stdout, "%s", "Helps.\n" );
+   free_helps(  );
+
+   // Commands
+   fprintf( stdout, "%s", "Commands.\n" );
+   free_commands(  );
+
+   #ifdef MULTIPORT
+   // Shell Commands
+   fprintf( stdout, "%s", "Shell Commands.\n" );
+   free_shellcommands(  );
+   #endif
+
+   // Socials
+   fprintf( stdout, "%s", "Socials.\n" );
+   free_socials(  );
+
+   // Languages
+   fprintf( stdout, "%s", "Languages.\n" );
+   free_tongues(  );
+
+   // Boards
+   fprintf( stdout, "%s", "Boards.\n" );
+   free_boards(  );
+
+   // Events
+   fprintf( stdout, "%s", "Events.\n" );
+   free_all_events(  );
+
+   // Find and eliminate all running chess games
+   fprintf( stdout, "%s", "Ending chess games.\n" );
+   free_all_chess_games(  );
+
+   // Whack supermob
+   fprintf( stdout, "%s", "Whacking supermob.\n" );
+   if( supermob )
+   {
+      supermob->from_room(  );
+      charlist.remove( supermob );
+      deleteptr( supermob );
+   }
+
+   // Free Characters
+   fprintf( stdout, "%s", "Characters.\n" );
+   extract_all_chars(  );
+
+   // Free Objects
+   fprintf( stdout, "%s", "Objects.\n" );
+   extract_all_objs(  );
+
+   // Descriptors
+   fprintf( stdout, "%s", "Descriptors.\n" );
+   free_all_descs(  );
+
+   // Deities
+   fprintf( stdout, "%s", "Deities.\n" );
+   free_deities(  );
+
+   // Clans
+   fprintf( stdout, "%s", "Clans.\n" );
+   free_clans(  );
+
+   // Realms
+   fprintf( stdout, "%s", "Realms.\n" );
+   free_realms(  );
+
+   // Races
+   fprintf( stdout, "%s", "Races.\n" );
+   free_all_races(  );
+
+   // Classes
+   fprintf( stdout, "%s", "Classes.\n" );
+   free_all_classes(  );
+
+   // Teleport lists
+   fprintf( stdout, "%s", "Teleport Data.\n" );
+   free_teleports(  );
+
+   // Areas - this includes killing off the hash tables and such
+   fprintf( stdout, "%s", "Area Data Tables.\n" );
+   close_all_areas(  );
+
+   // Get rid of auction pointer MUST BE AFTER OBJECTS DESTROYED
+   fprintf( stdout, "%s", "Auction.\n" );
+   deleteptr( auction );
+
+   // Title table
+   fprintf( stdout, "%s", "Title table.\n" );
+   free_all_titles(  );
+
+   // Skills
+   fprintf( stdout, "%s", "Skills and Herbs.\n" );
+   free_skills(  );
+
+   // Prog Act lists
+   fprintf( stdout, "%s", "Mudprog act lists.\n" );
+   free_prog_actlists(  );
+
+   // Questbit data
+   fprintf( stdout, "%s", "Abit/Qbit Data.\n" );
+   free_questbits(  );
+
+   free_mssp_info();
+
+   fprintf( stdout, "%s", "Checking string hash for leftovers.\n" );
+   {
+      for( hash = 0; hash < 1024; ++hash )
+         hash_dump( hash );
+   }
+
+   #if !defined(__CYGWIN__) && defined(SQL)
+   fprintf( stdout, "%s", "Closing database connection.\n" );
+   close_db(  );
+   #endif
+
+   // Last but not least, close the libdl and dispose of sysdata - Samson
+   fprintf( stdout, "%s", "System data.\n" );
+   dlclose( sysdata->dlHandle );
+   deleteptr( sysdata );
+   fprintf( stdout, "%s", "Memory cleanup complete, exiting.\n" );
+}
+
 // Heh, nice one Darien :)
 #if !defined(WIN32)
 void moron_check( void )
@@ -1151,5 +1347,7 @@ int main( int argc, char **argv )
 
    // That's all, folks.
    log_string( "Normal termination of game." );
+   log_string( "Cleaning up Memory.\033[0m" );
+   cleanup_memory(  );
    exit( 0 );
 }
