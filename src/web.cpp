@@ -203,10 +203,10 @@ void web_who(  )
    }
 
    buf1 << "&R-=[ &WPlayers on " << sysdata->mud_name << "&R]=-&d";
-   webbuf << color_align( buf1.str(  ).c_str(  ), 80, ALIGN_CENTER ) << "\n";
+   webbuf << color_align( buf1.str(  ), 80, ALIGN_CENTER ) << "\n";
 
    buf2 << "&Y-=[&d &Wtelnet://" << sysdata->telnet << ":" << mud_port << "&d &Y]=-&d";
-   amount = 78 - color_strlen( buf2.str(  ).c_str(  ) );  /* Determine amount to put in front of line */
+   amount = 78 - color_strlen( buf2.str(  ) );  /* Determine amount to put in front of line */
 
    if( amount < 1 )
       amount = 1;
@@ -241,7 +241,7 @@ void web_who(  )
          ++pcount;
 
          rank = rankbuffer( person );
-         outbuf = color_align( rank.c_str(  ), 20, ALIGN_CENTER );
+         outbuf = color_align( rank, 20, ALIGN_CENTER );
 
          webbuf << outbuf;
 
@@ -295,7 +295,7 @@ void web_who(  )
          ++pcount;
 
          rank = rankbuffer( person );
-         outbuf = color_align( rank.c_str(  ), 20, ALIGN_CENTER );
+         outbuf = color_align( rank, 20, ALIGN_CENTER );
 
          webbuf << outbuf;
 

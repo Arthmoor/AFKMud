@@ -65,6 +65,7 @@
 #include <dirent.h>
 #include <format>
 #include <filesystem>
+#include <string_view>
 #include "mud.h"
 #include "descriptor.h"
 
@@ -742,414 +743,119 @@ const char *random_ansi( short type )
  * the DESTINATION string with a valid translation (even if that is itself,
  * or an empty string), and the default for ANSI is false, since mobs and
  * logfiles shouldn't need colour.
- *
- * NOTE:  dstlen is the length of your pre-allocated buffer that you passed
- * in.  It must be at least 3 bytes, but should be long enough to hold the
- * longest translation sequence (probably around 16-32).
- *
- * NOTE:  vislen is the "visible" length of the translation token.  This is
- * used by color_strlen to properly figure the visual length of a string.
- * If you need the number of bytes (such as for output buffering), use the
- * normal strlen function.
  */
-int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int *vislen )
+std::string colorcode( std::string_view src, descriptor_data * d, size_t & consumed )
 {
-   char_data *ch = nullptr;
-   bool ansi = false;
-   const char *sympos = nullptr;
+   consumed = 0;
 
-   /*
-    * No descriptor, assume ANSI conversion can't be done. 
-    */
-   if( !d )
-      ansi = false;
-   /*
-    * But, if we have one, check for a PC and set accordingly. If no PC, assume ANSI can be done. For color logins. 
-    */
-   else
+   if( src.size() < 2 )
+      return ""; // Need at least 2 chars for a token
+
+   char type = src[0];
+   char code = src[1];
+
+   // Handle Escaped characters (&&, {{, }})
+   if( code == type )
+   {
+      consumed = 2;
+      return std::string( 1, type );
+   }
+
+   // Determine ANSI support
+   bool ansi = false;
+   char_data* ch = nullptr;
+
+   if( d )
    {
       ch = d->original ? d->original : d->character;
-      if( ch )
-         ansi = ( ch->has_pcflag( PCFLAG_ANSI ) );
-      else
-         ansi = true;
+      ansi = ch ? ch->has_pcflag( PCFLAG_ANSI ) : true;
    }
 
-   if( !dst )
-      return 0;   /* HEY, I said at least 3 BYTES! */
-
-   dst[0] = '\0'; /* Initialize the the default NOTHING */
-
-   /*
-    * Move along, nothing to see here 
-    */
-   if( !src || !*src )
-      return 0;
-
-   switch ( *src )
+   if( !ansi )
    {
-      case '&':  /* NORMAL, Foreground colour */
-         switch ( src[1] )
-         {
-            case '&':  /* Escaped self, return one of us */
-               dst[0] = src[0];
-               dst[1] = '\0';
-               if( vislen )
-                  *vislen = 1;
-               return 2;
-
-            case 'Z':  /* Random Ansi Foreground */
-               if( ansi )
-                  strlcpy( dst, random_ansi( 1 ), dstlen );
-               break;
-
-            case '[':  /* Symbolic color name */
-               if( ( sympos = strchr( src + 2, ']' ) ) )
-               {
-                  int subcnt = 0;
-                  unsigned int sublen = 0;
-
-                  sublen = sympos - src - 2;
-                  for( subcnt = 0; subcnt < MAX_COLORS; ++subcnt )
-                  {
-                     if( !strncmp( src + 2, pc_displays[subcnt], sublen ) )
-                     {
-                        if( strlen( pc_displays[subcnt] ) == sublen )
-                        {
-                           /*
-                            * These can only be used with a logged in char 
-                            */
-                           if( ansi && ch )
-                              strlcpy( dst, ch->color_str( subcnt ), dstlen );
-                           if( vislen )
-                              *vislen = 0;
-                           return sublen + 3;
-                        }
-                     }
-                  }
-               }  /* found matching ] */
-
-               /*
-                * Unknown symbolic name, return just the sequence  
-                */
-               dst[0] = src[0];
-               dst[1] = src[1];
-               dst[2] = '\0';
-               if( vislen )
-                  *vislen = 2;
-               return 2;
-
-            case 'i':  /* Italic text */
-            case 'I':
-               if( ansi )
-                  strlcpy( dst, ANSI_ITALIC, dstlen );
-               break;
-
-            case 'v':  /* Reverse colors */
-            case 'V':
-               if( ansi )
-                  strlcpy( dst, ANSI_REVERSE, dstlen );
-               break;
-
-            case 'u':  /* Underline */
-            case 'U':
-               if( ansi )
-                  strlcpy( dst, ANSI_UNDERLINE, dstlen );
-               break;
-
-            case 's':  /* Strikeover */
-            case 'S':
-               if( ansi )
-                  strlcpy( dst, ANSI_STRIKEOUT, dstlen );
-               break;
-
-            case 'd':  /* Player's client default color */
-               if( ansi )
-                  strlcpy( dst, ANSI_RESET, dstlen );
-               break;
-
-            case 'D':  /* Reset to custom color for whatever is being displayed */
-               if( ansi )
-               {
-                  /*
-                   * Yes, this reset here is quite necessary to cancel out other things 
-                   */
-                  strlcpy( dst, ANSI_RESET, dstlen );
-                  if( ch && ch->desc )
-                     strlcat( dst, ch->color_str( ch->desc->pagecolor ), dstlen );
-               }
-               break;
-
-            case 'x':  /* Black */
-               if( ansi )
-                  strlcpy( dst, ANSI_BLACK, dstlen );
-               break;
-
-            case 'O':  /* Orange/Brown */
-               if( ansi )
-                  strlcpy( dst, ANSI_ORANGE, dstlen );
-               break;
-
-            case 'c':  /* Cyan */
-               if( ansi )
-                  strlcpy( dst, ANSI_CYAN, dstlen );
-               break;
-
-            case 'z':  /* Dark Grey */
-               if( ansi )
-                  strlcpy( dst, ANSI_DGREY, dstlen );
-               break;
-
-            case 'g':  /* Dark Green */
-               if( ansi )
-                  strlcpy( dst, ANSI_DGREEN, dstlen );
-               break;
-
-            case 'G':  /* Light Green */
-               if( ansi )
-                  strlcpy( dst, ANSI_GREEN, dstlen );
-               break;
-
-            case 'P':  /* Pink/Light Purple */
-               if( ansi )
-                  strlcpy( dst, ANSI_PINK, dstlen );
-               break;
-
-            case 'r':  /* Dark Red */
-               if( ansi )
-                  strlcpy( dst, ANSI_DRED, dstlen );
-               break;
-
-            case 'b':  /* Dark Blue */
-               if( ansi )
-                  strlcpy( dst, ANSI_DBLUE, dstlen );
-               break;
-
-            case 'w':  /* Grey */
-               if( ansi )
-                  strlcpy( dst, ANSI_GREY, dstlen );
-               break;
-
-            case 'Y':  /* Yellow */
-               if( ansi )
-                  strlcpy( dst, ANSI_YELLOW, dstlen );
-               break;
-
-            case 'C':  /* Light Blue */
-               if( ansi )
-                  strlcpy( dst, ANSI_LBLUE, dstlen );
-               break;
-
-            case 'p':  /* Purple */
-               if( ansi )
-                  strlcpy( dst, ANSI_PURPLE, dstlen );
-               break;
-
-            case 'R':  /* Red */
-               if( ansi )
-                  strlcpy( dst, ANSI_RED, dstlen );
-               break;
-
-            case 'B':  /* Blue */
-               if( ansi )
-                  strlcpy( dst, ANSI_BLUE, dstlen );
-               break;
-
-            case 'W':  /* White */
-               if( ansi )
-                  strlcpy( dst, ANSI_WHITE, dstlen );
-               break;
-
-            default:   /* Unknown sequence, return all the chars */
-               dst[0] = src[0];
-               dst[1] = src[1];
-               dst[2] = '\0';
-               if( vislen )
-                  *vislen = 2;
-               return 2;
-         }
-         break;
-
-      case '{':  /* BACKGROUND colour */
-         switch ( src[1] )
-         {
-            case '{':  /* Escaped self, return one of us */
-               dst[0] = src[0];
-               dst[1] = '\0';
-               if( vislen )
-                  *vislen = 1;
-               return 2;
-
-            case 'Z':  /* Random Ansi Background */
-               if( ansi )
-                  strlcpy( dst, random_ansi( 3 ), dstlen );
-               break;
-
-            case 'x':  /* Black */
-               if( ansi )
-                  strlcpy( dst, BACK_BLACK, dstlen );
-               break;
-
-            case 'r':  /* Dark Red */
-               if( ansi )
-                  strlcpy( dst, BACK_DRED, dstlen );
-               break;
-
-            case 'g':  /* Dark Green */
-               if( ansi )
-                  strlcpy( dst, BACK_DGREEN, dstlen );
-               break;
-
-            case 'O':  /* Orange/Brown */
-               if( ansi )
-                  strlcpy( dst, BACK_ORANGE, dstlen );
-               break;
-
-            case 'b':  /* Dark Blue */
-               if( ansi )
-                  strlcpy( dst, BACK_DBLUE, dstlen );
-               break;
-
-            case 'p':  /* Purple */
-               if( ansi )
-                  strlcpy( dst, BACK_PURPLE, dstlen );
-               break;
-
-            case 'c':  /* Cyan */
-               if( ansi )
-                  strlcpy( dst, BACK_CYAN, dstlen );
-               break;
-
-            case 'w':  /* Grey */
-               if( ansi )
-                  strlcpy( dst, BACK_GREY, dstlen );
-               break;
-
-            default:   /* Unknown sequence, return all the chars */
-               dst[0] = src[0];
-               dst[1] = src[1];
-               dst[2] = '\0';
-               if( vislen )
-                  *vislen = 2;
-               return 2;
-         }
-         break;
-
-      case '}':  /* BLINK Foreground colour */
-         switch ( src[1] )
-         {
-            case '}':  /* Escaped self, return one of us */
-               dst[0] = src[0];
-               dst[1] = '\0';
-               if( vislen )
-                  *vislen = 1;
-               return 2;
-
-            case 'Z':  /* Random Ansi Blink */
-               if( ansi )
-                  strlcpy( dst, random_ansi( 2 ), dstlen );
-               break;
-
-            case 'x':  /* Black */
-               if( ansi )
-                  strlcpy( dst, BLINK_BLACK, dstlen );
-               break;
-
-            case 'O':  /* Orange/Brown */
-               if( ansi )
-                  strlcpy( dst, BLINK_ORANGE, dstlen );
-               break;
-
-            case 'c':  /* Cyan */
-               if( ansi )
-                  strlcpy( dst, BLINK_CYAN, dstlen );
-               break;
-
-            case 'z':  /* Dark Grey */
-               if( ansi )
-                  strlcpy( dst, BLINK_DGREY, dstlen );
-               break;
-
-            case 'g':  /* Dark Green */
-               if( ansi )
-                  strlcpy( dst, BLINK_DGREEN, dstlen );
-               break;
-
-            case 'G':  /* Light Green */
-               if( ansi )
-                  strlcpy( dst, BLINK_GREEN, dstlen );
-               break;
-
-            case 'P':  /* Pink/Light Purple */
-               if( ansi )
-                  strlcpy( dst, BLINK_PINK, dstlen );
-               break;
-
-            case 'r':  /* Dark Red */
-               if( ansi )
-                  strlcpy( dst, BLINK_DRED, dstlen );
-               break;
-
-            case 'b':  /* Dark Blue */
-               if( ansi )
-                  strlcpy( dst, BLINK_DBLUE, dstlen );
-               break;
-
-            case 'w':  /* Grey */
-               if( ansi )
-                  strlcpy( dst, BLINK_GREY, dstlen );
-               break;
-
-            case 'Y':  /* Yellow */
-               if( ansi )
-                  strlcpy( dst, BLINK_YELLOW, dstlen );
-               break;
-
-            case 'C':  /* Light Blue */
-               if( ansi )
-                  strlcpy( dst, BLINK_LBLUE, dstlen );
-               break;
-
-            case 'p':  /* Purple */
-               if( ansi )
-                  strlcpy( dst, BLINK_PURPLE, dstlen );
-               break;
-
-            case 'R':  /* Red */
-               if( ansi )
-                  strlcpy( dst, BLINK_RED, dstlen );
-               break;
-
-            case 'B':  /* Blue */
-               if( ansi )
-                  strlcpy( dst, BLINK_BLUE, dstlen );
-               break;
-
-            case 'W':  /* White */
-               if( ansi )
-                  strlcpy( dst, BLINK_WHITE, dstlen );
-               break;
-
-            default:   /* Unknown sequence, return all the chars */
-               dst[0] = src[0];
-               dst[1] = src[1];
-               dst[2] = '\0';
-               if( vislen )
-                  *vislen = 2;
-               return 2;
-         }
-         break;
-
-      default:   /* Just a normal character */
-         dst[0] = *src;
-         dst[1] = '\0';
-         if( vislen )
-            *vislen = 1;
-         return 1;
+      consumed = 2;
+      return "";
    }
-   if( vislen )
-      *vislen = 0;
-   return 2;
+
+   if( type == '&' && code == '[' )
+   {
+      size_t close_pos = src.find( ']' );
+
+      if( close_pos != std::string_view::npos )
+      {
+         std::string key( src.substr( 2, close_pos - 2 ) );
+
+         consumed = close_pos + 1;
+
+         for( int i = 0; i < MAX_COLORS; ++i )
+         {
+            if( key == pc_displays[i] && ch && ch->desc )
+            {
+               return ch->color_str( i );
+            }
+         }
+         return "";
+      }
+   }
+
+   consumed = 2;
+   switch( type )
+   {
+      case '&': // Foreground
+         switch( code )
+         {
+            case 'Z': return random_ansi( 1 );
+            case 'i': case 'I': return ANSI_ITALIC;
+            case 'v': case 'V': return ANSI_REVERSE;
+            case 'u': case 'U': return ANSI_UNDERLINE;
+            case 's': case 'S': return ANSI_STRIKEOUT;
+            case 'd': return ANSI_RESET;
+            case 'D': return std::string( ANSI_RESET ) + ( ch && ch->desc ? ch->color_str( ch->desc->pagecolor ) : "" );
+            case 'x': return ANSI_BLACK;    case 'O': return ANSI_ORANGE;
+            case 'c': return ANSI_CYAN;     case 'z': return ANSI_DGREY;
+            case 'g': return ANSI_DGREEN;   case 'G': return ANSI_GREEN;
+            case 'P': return ANSI_PINK;     case 'r': return ANSI_DRED;
+            case 'b': return ANSI_DBLUE;    case 'w': return ANSI_GREY;
+            case 'Y': return ANSI_YELLOW;   case 'C': return ANSI_LBLUE;
+            case 'p': return ANSI_PURPLE;   case 'R': return ANSI_RED;
+            case 'B': return ANSI_BLUE;     case 'W': return ANSI_WHITE;
+            default: break;
+         }
+         break;
+
+      case '{': // Background
+         switch( code )
+         {
+            case 'Z': return random_ansi( 3 );
+            case 'x': return BACK_BLACK;   case 'r': return BACK_DRED;
+            case 'g': return BACK_DGREEN;  case 'O': return BACK_ORANGE;
+            case 'b': return BACK_DBLUE;   case 'p': return BACK_PURPLE;
+            case 'c': return BACK_CYAN;    case 'w': return BACK_GREY;
+            default: break;
+         }
+         break;
+
+      case '}': // Blink
+         switch( code )
+         {
+            case 'Z': return random_ansi( 2 );
+            case 'x': return BLINK_BLACK;   case 'O': return BLINK_ORANGE;
+            case 'c': return BLINK_CYAN;    case 'z': return BLINK_DGREY;
+            case 'g': return BLINK_DGREEN;  case 'G': return BLINK_GREEN;
+            case 'P': return BLINK_PINK;    case 'r': return BLINK_DRED;
+            case 'b': return BLINK_DBLUE;   case 'w': return BLINK_GREY;
+            case 'Y': return BLINK_YELLOW;  case 'C': return BLINK_LBLUE;
+            case 'p': return BLINK_PURPLE;  case 'R': return BLINK_RED;
+            case 'B': return BLINK_BLUE;    case 'W': return BLINK_WHITE;
+            default: break;
+         }
+         break;
+
+      default: break;
+   }
+
+   // Default: return the original sequence as a string
+   return std::string( src.substr( 0, 2 ) );
 }
 
 /*
@@ -1161,60 +867,67 @@ int colorcode( const char *src, char *dst, descriptor_data * d, int dstlen, int 
  * color codes embedded in it.  It does this by stripping the codes out
  * entirely (A nullptr descriptor means ANSI will be false).
  */
-// FIXME: This needs to be updated to take std::string
-int color_strlen( const char *src )
+int color_strlen( std::string_view src )
 {
-   unsigned int i = 0;
-   int len = 0;
+   int visual_len = 0;
+   size_t i = 0;
 
-   if( !src || !*src )  /* Move along, nothing to see here */
-      return 0;
-
-   for( i = 0; i < strlen( src ); )
+   while( i < src.length() )
    {
-      char dst[20];
-      int vislen;
-
-      switch ( src[i] )
+      if( src[i] == '&' || src[i] == '{' || src[i] == '}' )
       {
-         case '&':  /* NORMAL, Foreground colour */
-         case '{':  /* BACKGROUND colour */
-         case '}':  /* BLINK Foreground colour */
-            *dst = '\0';
-            vislen = 0;
-            i += colorcode( &src[i], dst, nullptr, 20, &vislen ); /* Skip input token */
-            len += vislen; /* Count output token length */
-            break;   /* this was missing - if you have issues, remove it */
+         size_t consumed = 0;
 
-         default:   /* No conversion, just count */
-            ++len;
-            ++i;
-            break;
+         // We don't need a buffer, just the skip count
+         // You can adjust colorcode to return just the skip count if needed
+         std::string translation = colorcode( src.substr(i), nullptr, consumed );
+
+         if( consumed > 0 )
+         {
+            i += consumed;
+         }
+         else
+         {
+            visual_len++;
+            i++;
+         }
+      }
+      else
+      {
+         visual_len++;
+         i++;
       }
    }
-   return len;
+   return visual_len;
 }
 
 /*
  * Quixadhal - And this one needs to use the new version too.
  */
-// FIXME: This needs to be updated to take and return std::string
-char *color_align( const char *argument, int size, int align )
+std::string color_align( const std::string & argument, int size, int align )
 {
-   int space = 0;
-   int len = 0;
-   static char buf[MSL];
+   int len = color_strlen( argument );
+   int space = size - len;
 
-   len = color_strlen( argument );
-   space = ( size - len );
-   if( align == ALIGN_RIGHT || len >= size )
-      snprintf( buf, MSL, "%*.*s", len, len, argument );
-   else if( align == ALIGN_CENTER )
-      snprintf( buf, MSL, "%*s%s%*s", ( space / 2 ), "", argument, ( ( space / 2 ) * 2 ) == space ? ( space / 2 ) : ( ( space / 2 ) + 1 ), "" );
-   else if( align == ALIGN_LEFT )
-      snprintf( buf, MSL, "%s%*s", argument, space, "" );
+   if( len >= size )
+      return argument;
 
-   return buf;
+   switch( align )
+   {
+      case ALIGN_RIGHT:
+         return std::format( "{:>{}}", argument, argument.length() + space );
+      case ALIGN_LEFT:
+         return std::format( "{:<{}}", argument, argument.length() + space );
+      case ALIGN_CENTER:
+      {
+         int left = space / 2;
+         int right = space - left;
+
+         return std::format( "{:>{}}{:>{}}", "", left, argument, "", right );
+      }
+      default:
+         return argument;
+   }
 }
 
 /*
@@ -1222,46 +935,50 @@ char *color_align( const char *argument, int size, int align )
  * in it to the desired output tokens, using the provided character's
  * preferences.
  */
-string colorize( const string & txt, descriptor_data *d )
+std::string colorize( const std::string & txt, descriptor_data * d )
 {
-   string result;
-   size_t last_pos = 0;
-   size_t found_pos = 0;
+   std::string result;
 
    if( txt.empty() || !d )
       return txt;
 
-   while( ( found_pos = txt.find_first_of( "&{}hH", last_pos ) ) != string::npos )
+   result.reserve( txt.length() );
+
+   for( size_t i = 0; i < txt.length(); )
    {
-      result.append( txt, last_pos, found_pos - last_pos );
-
-      const char *colstr = txt.c_str() + found_pos;
-      char colbuf[20];
-      int ln = 0;
-
-      if( ( colstr[0] == 'h' || colstr[0] == 'H' ) &&
-          ( colstr[1] == 't' || colstr[1] == 'T' ) &&
-          ( colstr[2] == 't' || colstr[2] == 'T' ) &&
-          ( colstr[3] == 'p' || colstr[3] == 'P' ) )
+      if( txt[i] == '&' || txt[i] == '{' || txt[i] == '}' || ( txt.compare( i, 4, "http" ) == 0 || txt.compare( i, 5, "https" ) == 0 ) )
       {
-         char http[MIL];
+         // Handle HTTP/HTTPS link: find the next space or end of string
+         if( txt.compare( i, 4, "http" ) == 0 || txt.compare( i, 5, "https" ) == 0 )
+         {
+            size_t end = txt.find_first_of(" \t\n\r", i);
 
-         one_argument( colstr, http );
-         result.append( http );
-         ln = strlen( http );
+            if( end == std::string::npos )
+               end = txt.length();
+
+            result.append( txt, i, end - i );
+            i = end;
+            continue;
+         }
+
+         // Handle color tokens
+         size_t consumed = 0;
+         std::string translation = colorcode( std::string_view( txt ).substr( i ), d, consumed );
+
+         if( consumed > 0 )
+         {
+            result += translation;
+            i += consumed;
+         }
+         else
+         {
+            result += txt[i++];
+         }
       }
       else
       {
-         ln = colorcode( colstr, colbuf, d, 20, nullptr );
-
-         if( ln > 0 )
-            result.append( colbuf );
+         result += txt[i++];
       }
-
-      last_pos = found_pos + ( ln > 0 ? ln : 1 );
    }
-
-   result.append( txt, last_pos, std::string::npos );
-
    return result;
 }

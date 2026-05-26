@@ -2422,7 +2422,7 @@ CMDF( do_note_list )
    chboard = get_chboard( ch, board->name );
 
    buf = std::format( "{}--[ {}Notes on {}{}{} ]--", s3, s1, s2, board->name, s3 );
-   ch->printf( "\r\n%s\r\n", color_align( buf.c_str(), 80, ALIGN_CENTER ) );
+   ch->printf( "\r\n%s\r\n", color_align( buf, 80, ALIGN_CENTER ).c_str() );
    act_printf( AT_GREY, ch, nullptr, nullptr, TO_ROOM, "&w$n reviews the notes on the &W%s&w board.", board->name );
 
    if( total_notes( ch, board ) == 0 )

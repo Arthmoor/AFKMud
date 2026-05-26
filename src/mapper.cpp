@@ -439,36 +439,44 @@ void reformat_desc( char *desc )
 
 int get_line( const char *desc, size_t max_len )
 {
-   size_t i, j = 0;
-
-   /*
-    * Return if it's short enough for one line 
-    */
-   if( strlen( desc ) <= max_len )
+   if( !desc || strlen( desc ) <= max_len )
       return 0;
 
+   size_t i = 0;
+   size_t j = 0; // Current visual length counter
+   std::string_view sv( desc );
+
    /*
-    * Calculate end point in string without color 
+    * Calculate end point in string without color
     */
-   for( i = 0; i <= strlen( desc ); ++i )
+   while( i < sv.length() )
    {
-      char dst[20];
-      int vislen;
-
-      switch ( desc[i] )
+      if( sv[i] == '&' || sv[i] == '{' || sv[i] == '}' )
       {
-         case '&':  /* NORMAL, Foreground colour */
-         case '{':  /* BACKGROUND colour */
-         case '}':  /* BLINK Foreground colour */
-            *dst = '\0';
-            vislen = 0;
-            i += colorcode( &desc[i], dst, nullptr, 20, &vislen ); /* Skip input token */
-            j += vislen; /* Count output token length */
-            break;   /* this was missing - if you have issues, remove it */
+         size_t consumed = 0;
 
-         default:   /* No conversion, just count */
+         // We call colorcode with nullptr for descriptor because we
+         // only care about the length consumed, not the actual ANSI translation.
+         colorcode( sv.substr( i ), nullptr, consumed );
+
+         if( consumed > 0 )
+         {
+            i += consumed;
+            // Tokens (like color codes) have a visual length of 0
+            // so we don't add to j.
+         }
+         else
+         {
+            // Not a valid color token, treat as normal char
             ++j;
-            break;
+            ++i;
+         }
+      }
+      else
+      {
+         /* No conversion, just count */
+         ++j;
+         ++i;
       }
 
       if( j > max_len )
@@ -476,18 +484,19 @@ int get_line( const char *desc, size_t max_len )
    }
 
    /*
-    * End point is now in i, find the nearest space 
+    * End point is now in i, find the nearest space
     */
-   for( j = i; j > 0; --j )
+   size_t k = i;
+   for( ; k > 0; --k )
    {
-      if( desc[j] == ' ' )
+      if( desc[k] == ' ' )
          break;
    }
 
    /*
-    * There could be a problem if there are no spaces on the line 
+    * There could be a problem if there are no spaces on the line
     */
-   return j + 1;
+   return k + 1;
 }
 
 char *whatColor( const char *str, const char *pos )

@@ -31,10 +31,10 @@
 #ifndef __COLOR_H__
 #define __COLOR_H__
 
-char *color_align( const char *, int, int );
-int color_strlen( const char * );
-string colorize( const string &, descriptor_data * );
-int colorcode( const char *, char *, descriptor_data *, int, int * );
+std::string color_align( const std::string &, int, int );
+int color_strlen( std::string_view );
+std::string colorize( const std::string &, descriptor_data * );
+std::string colorcode( std::string_view, descriptor_data *, size_t & );
 
 /*
  * Color Alignment Parameters

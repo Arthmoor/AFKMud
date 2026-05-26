@@ -1247,7 +1247,7 @@ const string output_person( char_data * ch, char_data * player )
    ostringstream stats, clan_name, outbuf;
 
    rank = rankbuffer( player );
-   outbuf << color_align( rank.c_str(  ), 20, ALIGN_CENTER );
+   outbuf << color_align( rank, 20, ALIGN_CENTER );
 
    stats << ch->color_str( AT_WHO3 ) << "[";
 
