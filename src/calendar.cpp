@@ -667,6 +667,19 @@ holiday_data::~holiday_data(  )
    daylist.remove( this );
 }
 
+void free_holidays( void )
+{
+   list < holiday_data * >::iterator day;
+
+   for( day = daylist.begin(  ); day != daylist.end(  ); )
+   {
+      holiday_data *holiday = *day;
+      ++day;
+
+      deleteptr( holiday );
+   }
+}
+
 void check_holiday( char_data * ch )
 {
    holiday_data *day;   /* To inform incoming players of holidays - Samson 6-3-99 */

@@ -69,6 +69,20 @@ const short rev_dir[] = {
    2, 3, 0, 1, 5, 4, 9, 8, 7, 6, 10
 };
 
+void free_teleports( void )
+{
+   list < teleport_data * >::iterator tele;
+
+   for( tele = teleportlist.begin(  ); tele != teleportlist.end(  ); )
+   {
+      teleport_data *teleport = *tele;
+      ++tele;
+
+      teleportlist.remove( teleport );
+      deleteptr( teleport );
+   }
+}
+
 reset_data::reset_data(  )
 {
    init_memory( &resetobj, &sreset, sizeof( sreset ) );

@@ -1430,6 +1430,20 @@ void load_herb_table(  )
    }
 }
 
+void free_skills( void )
+{
+   int hash = 0;
+
+   for( hash = 0; hash < num_skills; ++hash )
+      deleteptr( skill_table[hash] );
+
+   for( hash = 0; hash < top_herb; ++hash )
+      deleteptr( herb_table[hash] );
+
+   for( hash = 0; hash < top_disease; ++hash )
+      deleteptr( disease_table[hash] );
+}
+
 /*
  * Dummy function - Unused parameter should be left alone, as-is.
  */

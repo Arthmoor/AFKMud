@@ -185,6 +185,19 @@ auth_data::~auth_data(  )
    authlist.remove( this );
 }
 
+void free_all_auths( void )
+{
+   list < auth_data * >::iterator au;
+
+   for( au = authlist.begin(  ); au != authlist.end(  ); )
+   {
+      auth_data *auth = *au;
+      ++au;
+
+      deleteptr( auth );
+   }
+}
+
 void clean_auth_list( void )
 {
    list < auth_data * >::iterator auth;

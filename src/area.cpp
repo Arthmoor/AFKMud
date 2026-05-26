@@ -2435,6 +2435,19 @@ void area_data::fold( const char *fname, bool install )
    FCLOSE( fpout );
 }
 
+void close_all_areas( void )
+{
+   list < area_data * >::iterator iarea;
+
+   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); )
+   {
+      area_data *pArea = *iarea;
+      ++iarea;
+
+      deleteptr( pArea );
+   }
+}
+
 // FIXME: Update to std::format once ::fold accepts std::string as an argument.
 CMDF( do_savearea )
 {

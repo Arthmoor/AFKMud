@@ -221,6 +221,13 @@ static bool carryingvnum_visit( char_data * ch, list < obj_data * >source, int v
    return false;
 }
 
+void free_prog_actlists( void )
+{
+   room_act_list.clear(  );
+   obj_act_list.clear(  );
+   mob_act_list.clear(  );
+}
+
 /* This routine reads in scripts of MUDprograms from a file */
 int mprog_name_to_type( const string & name )
 {

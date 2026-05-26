@@ -58,6 +58,11 @@ map < int, string > qbits;
    player X has done this and this and this.. think of them like a huge array
    of boolean variables you can put on a player or mob with a mob prog. -- Scion
 */
+void free_questbits( void )
+{
+   qbits.clear(  );
+   abits.clear(  );
+}
 
 /* Write out the abit and qbit files */
 void save_bits( void )

@@ -75,6 +75,19 @@ quote_data::~quote_data(  )
    quotelist.remove( this );
 }
 
+void free_quotes( void )
+{
+   list < quote_data * >::iterator qt;
+
+   for( qt = quotelist.begin(  ); qt != quotelist.end(  ); )
+   {
+      quote_data *quote = *qt;
+      ++qt;
+
+      deleteptr( quote );
+   }
+}
+
 quote_data *get_quote( int q )
 {
    list < quote_data * >::iterator iquote;

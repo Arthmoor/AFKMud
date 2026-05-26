@@ -511,6 +511,19 @@ slay_data::~slay_data(  )
    slaylist.remove( this );
 }
 
+void free_slays( void )
+{
+   list < slay_data * >::iterator dslay;
+
+   for( dslay = slaylist.begin(  ); dslay != slaylist.end(  ); )
+   {
+      slay_data *slay = *dslay;
+      ++dslay;
+
+      deleteptr( slay );
+   }
+}
+
 /* Of course, to create means you need to be able to destroy as well :P - Samson 8-3-98 */
 CMDF( do_destroyslay )
 {

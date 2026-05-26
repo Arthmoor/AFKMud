@@ -411,6 +411,19 @@ void char_data::note_attach(  )
    pcdata->pnote = pcnote;
 }
 
+void free_boards( void )
+{
+   list < board_data * >::iterator bd;
+
+   for( bd = bdlist.begin(  ); bd != bdlist.end(  ); )
+   {
+      board_data *board = *bd;
+      ++bd;
+
+      deleteptr( board );
+   }
+}
+
 const int BOARDFILEVER = 1;
 void write_boards( void )
 {
@@ -3554,6 +3567,20 @@ project_data::~project_data(  )
    STRFREE( owner );
    DISPOSE( status );
    projlist.remove( this );
+}
+
+void free_projects( void )
+{
+   list < project_data * >::iterator proj;
+
+   for( proj = projlist.begin(  ); proj != projlist.end(  ); )
+   {
+      project_data *project = *proj;
+      ++proj;
+
+      deleteptr( project );
+   }
+   return;
 }
 
 // Hacky looking ugly define, but fuck having to type all this out all the time.

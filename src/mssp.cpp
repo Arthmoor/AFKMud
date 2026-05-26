@@ -66,6 +66,11 @@
 
 struct msspinfo *mssp_info;
 
+void free_mssp_info( void )
+{
+   deleteptr( mssp_info );
+}
+
 msspinfo::msspinfo()
 {
    init_memory( &this->created, &this->playerGuilds, sizeof( this->playerGuilds ) );

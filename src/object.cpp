@@ -39,6 +39,7 @@ list < obj_data * >objlist;
 extern list < rel_data * >relationlist;
 extern int top_affect;
 
+void clean_obj_queue(  );
 void queue_extracted_obj( obj_data * );
 
 /* Deallocates the memory used by a single object after it's been extracted. */
@@ -116,6 +117,23 @@ obj_data::~obj_data(  )
 obj_data::obj_data(  )
 {
    init_memory( &in_obj, &mpscriptpos, sizeof( mpscriptpos ) );
+}
+
+void extract_all_objs(  )
+{
+   list < obj_data * >::iterator iobj;
+
+   clean_obj_queue(  );
+   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
+   {
+      obj_data *object = *iobj;
+      ++iobj;
+
+      if( object->in_room )
+         object->from_room(  );
+      objlist.remove( object );
+      deleteptr( object );
+   }
 }
 
 /* Make objects in rooms that are nofloor fall - Scryn 1/23/96 */

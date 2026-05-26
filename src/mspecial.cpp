@@ -56,6 +56,11 @@ void damage_obj( obj_data * );
 
 list < string > speclist;
 
+void free_specfuns( void )
+{
+   speclist.clear(  );
+}
+
 /* Simple load function - no OLC support for now.
  * This is probably something you DONT want builders playing with.
  */

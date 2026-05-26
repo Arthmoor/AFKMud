@@ -2216,6 +2216,20 @@ morph_data::~morph_data(  )
    DISPOSE( unmorph_self );
 }
 
+void free_morphs( void )
+{
+   list < morph_data * >::iterator morph;
+
+   for( morph = morphlist.begin(  ); morph != morphlist.end(  ); )
+   {
+      morph_data *poly = *morph;
+      ++morph;
+
+      deleteptr( poly );
+   }
+   morphlist.clear( );
+}
+
 /*
  * Player function to delete a morph. --Shaddai
  * FIXME: Need to check all players and force them to unmorph first

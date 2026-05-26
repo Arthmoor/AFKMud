@@ -282,6 +282,27 @@ runeword_data::~runeword_data(  )
    rwordlist.remove( this );
 }
 
+void free_runedata( void )
+{
+   list < rune_data * >::iterator rn;
+   for( rn = runelist.begin(  ); rn != runelist.end(  ); )
+   {
+      rune_data *rune = *rn;
+      ++rn;
+
+      deleteptr( rune );
+   }
+
+   list < runeword_data * >::iterator rw;
+   for( rw = rwordlist.begin(  ); rw != rwordlist.end(  ); )
+   {
+      runeword_data *rword = *rw;
+      ++rw;
+
+      deleteptr( rword );
+   }
+}
+
 short get_rarity( const string & name )
 {
    for( unsigned int x = 0; x < sizeof( rarity ) / sizeof( rarity[0] ); ++x )

@@ -720,6 +720,18 @@ void free_game( game_board_data * board )
    deleteptr( board );
 }
 
+void free_all_chess_games( void )
+{
+   list < char_data * >::iterator ich;
+
+   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   {
+      char_data *ch = *ich;
+
+      free_game( ch->pcdata->game_board );
+   }
+}
+
 CMDF( do_chess )
 {
    string arg;

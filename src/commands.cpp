@@ -880,6 +880,24 @@ cmd_type::~cmd_type(  )
    do_fun = nullptr;
 }
 
+void free_commands( void )
+{
+   for( char x = 0; x < 126; ++x )
+   {
+      vector < cmd_type * >&cmd_list = command_table[x];
+      vector < cmd_type * >::iterator icmd;
+
+      for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
+      {
+         cmd_type *cmd = *icmd;
+
+         deleteptr( cmd );
+      }
+      cmd_list.clear(  );
+   }
+   command_table.clear(  );
+}
+
 /*
  * Remove a command from it's hash index - Thoric
  */
@@ -2008,6 +2026,19 @@ social_type::social_type(  )
  */
 social_type::~social_type(  )
 {
+}
+
+void free_socials( void )
+{
+   map < string, social_type * >::iterator isoc;
+
+   for( isoc = social_table.begin(  ); isoc != social_table.end(  ); ++isoc )
+   {
+      social_type *soc = isoc->second;
+
+      deleteptr( soc );
+   }
+   social_table.clear(  );
 }
 
 /*

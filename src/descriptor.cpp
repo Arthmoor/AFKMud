@@ -1303,6 +1303,19 @@ dns_data::~dns_data(  )
    dnslist.remove( this );
 }
 
+void free_dns_list( void )
+{
+   list < dns_data * >::iterator dns;
+
+   for( dns = dnslist.begin(  ); dns != dnslist.end(  ); )
+   {
+      dns_data *ip = *dns;
+      ++dns;
+
+      deleteptr( ip );
+   }
+}
+
 void save_dns( void )
 {
    list < dns_data * >::iterator dns;

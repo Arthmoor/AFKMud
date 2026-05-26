@@ -103,6 +103,19 @@ void add_sale( const string & aucmob, const string & seller, const string & buye
    save_sales(  );
 }
 
+void free_sales( void )
+{
+   list < sale_data * >::iterator sl;
+
+   for( sl = salelist.begin(  ); sl != salelist.end(  ); )
+   {
+      sale_data *sale = *sl;
+      ++sl;
+
+      deleteptr( sale );
+   }
+}
+
 sale_data *check_sale( const string & aucmob, const string & pcname, const string & objname )
 {
    list < sale_data * >::iterator sl;

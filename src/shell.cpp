@@ -868,6 +868,21 @@ shell_cmd::~shell_cmd(  )
 {
 }
 
+void free_shellcommands( void )
+{
+   list < shell_cmd * >::iterator scmd;
+
+   for( scmd = shellcmdlist.begin(  ); scmd != shellcmdlist.end(  ); )
+   {
+      shell_cmd *scommand = *scmd;
+      ++scmd;
+
+      shellcmdlist.remove( scommand );
+      deleteptr( scommand );
+   }
+   shellcmdlist.clear(  );
+}
+
 void add_shellcommand( shell_cmd * command )
 {
    string buf;
