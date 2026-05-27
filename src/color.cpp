@@ -906,24 +906,35 @@ int color_strlen( std::string_view src )
  */
 std::string color_align( const std::string & argument, int size, int align )
 {
-   int len = color_strlen( argument );
-   int space = size - len;
+   int visual_len = color_strlen( argument );
 
-   if( len >= size )
+   // If the string is already long enough, return it immediately.
+   if( visual_len >= size )
+   {
       return argument;
+   }
+
+   int space = size - visual_len;
 
    switch( align )
    {
       case ALIGN_RIGHT:
-         return std::format( "{:>{}}", argument, argument.length() + space );
+      {
+         std::string pad( space, ' ' );
+         return pad + argument;
+      }
       case ALIGN_LEFT:
-         return std::format( "{:<{}}", argument, argument.length() + space );
+      {
+         std::string pad( space, ' ' );
+         return argument + pad;
+      }
       case ALIGN_CENTER:
       {
          int left = space / 2;
          int right = space - left;
-
-         return std::format( "{:>{}}{:>{}}", "", left, argument, "", right );
+         std::string pad_left(left, ' ');
+         std::string pad_right(right, ' ');
+         return pad_left + argument + pad_right;
       }
       default:
          return argument;
