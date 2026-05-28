@@ -42,6 +42,7 @@
 #endif
 #include <cstdarg>
 #include <cmath>
+#include <fstream>
 #include <stacktrace>
 #include "mud.h"
 #include "area.h"
@@ -2347,34 +2348,20 @@ CMDF( do_randtest )
 /*
  * Dump a text file to a player, a line at a time		-Thoric
  */
-void show_file( char_data * ch, const string & filename )
+void show_file( char_data * ch, const std::string & filename )
 {
-   FILE *fp;
-   char buf[MSL];
-   int num = 0;
+   std::ifstream fp{ filename };
 
-   if( ( fp = fopen( filename.c_str(  ), "r" ) ) != nullptr )
+   if( !fp.is_open() )
+      return;
+
+   ch->pager("\r\n");
+
+   std::string line;
+   while( std::getline( fp, line ) )
    {
-      ch->pager( "\r\n" );
-      while( !feof( fp ) )
-      {
-         while( num < ( MSL - 4 ) && ( buf[num] = fgetc( fp ) ) != EOF && buf[num] != '\n' && buf[num] != '\r' )
-            ++num;
-
-         int c = fgetc( fp );
-         if( ( c != '\n' && c != '\r' ) || c == buf[num] )
-            ungetc( c, fp );
-
-         buf[num++] = '\r';
-         buf[num++] = '\n';
-         buf[num] = '\0';
-         ch->pager( buf );
-         num = 0;
-      }
-      /*
-       * Thanks to stu <sprice@ihug.co.nz> from the mailing list in pointing This out. 
-       */
-      FCLOSE( fp );
+      line += "\r\n";
+      ch->pager( line );
    }
 }
 

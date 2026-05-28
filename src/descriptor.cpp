@@ -26,10 +26,8 @@
  *                       Descriptor Support Functions                       *
  ****************************************************************************/
 
-#include <fstream>
 #include <fcntl.h>
 #if defined(WIN32)
-#include <unistd.h>
 #include <winsock2.h>
 #define  TELOPT_ECHO        '\x01'
 #define  GA                 '\xF9'
@@ -42,19 +40,13 @@
 #define  IAC                '\xFF'
 #define EWOULDBLOCK WSAEWOULDBLOCK
 #else
-#include <sys/socket.h>
 #include <netdb.h>
 #include <sys/wait.h>
-#include <arpa/inet.h>
 #include <arpa/telnet.h>
 #endif
-#if defined(__FreeBSD__)
-#include <sys/types.h>
-#include <csignal>
-#endif
-#if defined(__APPLE__)
-#include <signal.h>
-#endif
+#include <fstream>
+#include <format>
+#include <filesystem>
 #include "mud.h"
 #include "auction.h"
 #include "ban.h"
@@ -70,6 +62,8 @@
 #ifdef MULTIPORT
 #include "shell.h"
 #endif
+
+namespace fs = std::filesystem;
 
 int maxdesc, newdesc;
 list < descriptor_data * >dlist;
@@ -270,6 +264,35 @@ void descriptor_data::init(  )
    mccp = new mccp_data;
 }
 
+bool descriptor_data::is_idle_timeout( )
+{
+   ++idle;
+
+   // Define limits
+   int limit = 0;
+
+   if( !character )
+      limit = 360;      // 2 mins
+   else if( connected != CON_PLAYING )
+      limit = 2400; // 10 mins
+   else if( character->level < LEVEL_IMMORTAL )
+      limit = 14400; // 1 hr
+   else
+      limit = 32000; // Immortals
+
+   if( idle > limit )
+   {
+      if( character && character->level >= LEVEL_IMMORTAL )
+      {
+         idle = 0;
+         return false; // Don't kick immortals
+      }
+      write( "Idle timeout... disconnecting.\r\n" );
+      return true; // Kick
+   }
+   return false;
+}
+
 const char *const login_msg[] = {
 /*0*/ "",
 /*1*/ "\r\n&GYou did not have enough money for the residence you bid on.\r\n"
@@ -378,12 +401,12 @@ void fread_loginmsg( FILE * fp )
 void load_loginmsg(  )
 {
    FILE *fp;
-   char filename[256];
+   fs::path filename;
 
    login_messages.clear();
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
-   if( ( fp = fopen( filename, "r" ) ) == nullptr )
+   filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
+   if( ( fp = fopen( filename.c_str(), "r" ) ) == nullptr )
    {
       bug( "%s: Cannot open login message file.", __func__ );
       return;
@@ -430,11 +453,11 @@ void load_loginmsg(  )
 void save_loginmsg(  )
 {
    FILE *fp;
-   char filename[256];
+   fs::path filename;
    list < lmsg_data * >::iterator imsg;
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
-   if( ( fp = fopen( filename, "w" ) ) == nullptr )
+   filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
+   if( ( fp = fopen( filename.c_str(), "w" ) ) == nullptr )
    {
       bug( "%s: Cannot open login message file.", __func__ );
       return;
@@ -593,78 +616,136 @@ bool check_bad_desc( int desc )
 }
 
 /*
-* This is the MCCP version. Use write_to_descriptor_old to send non-compressed text.
-* Updated to run with the block checks by Orion... if it doesn't work, blame him.;P -Orion
-*/
-bool descriptor_data::write( const char *txt )
+ *
+ * Added block checking to prevent random booting of the descriptor. Thanks go
+ * out to Rustry for his suggestions. -Orion
+ */
+bool write_to_descriptor_old( int desc, const char* txt )
 {
-   int nWrite = 0, nBlock, iErr;
-   size_t iStart = 0, len, mccpsaved, length = strlen( txt );
+   if( !txt || *txt == '\0' )
+      return true;
 
-   mccpsaved = length;
-   /*
-    * Won't send more then it has to so make sure we check if its under length 
-    */
+   std::string_view text{txt};
+   size_t offset = 0;
+
+   while( offset < text.size() )
+   {
+      size_t nBlock = std::min( text.size() - offset, size_t{4096} );
+
+      int nWrite = send( desc, text.data() + offset, static_cast<int>( nBlock ), 0 );
+
+      if( nWrite > 0 )
+      {
+         update_trdata(2, nWrite);
+         offset += nWrite;
+      }
+      else if( nWrite == -1 )
+      {
+         int iErr = errno;
+
+         if( iErr == EWOULDBLOCK || iErr == EAGAIN )
+         {
+            // Non-blocking: continue loop to try again later
+            continue;
+         }
+         else
+         {
+            perror( "write_to_descriptor_old" );
+            return false;
+         }
+      }
+      else if( nWrite == 0 )
+      {
+         // Socket closed by peer
+         return false;
+      }
+   }
+   return true;
+}
+
+/*
+ * This function handles both compressed and uncompressed sending.
+ * Updated to run with the block checks by Orion... if it doesn't work, blame him.;P -Orion
+ */
+bool descriptor_data::write( const char* txt )
+{
+   if( !txt || *txt == '\0')
+      return true;
+
+   std::string_view text_to_send{txt};
+
+   size_t length = strlen( txt );
+   size_t mccpsaved = length;
+
+   // Won't send more then it has to so make sure we check if its under length.
    if( mccpsaved > length )
       mccpsaved = length;
 
+   // Lambda to encapsulate the repetitive non-blocking send logic
+   auto send_chunk = [this]( const char* data, size_t len ) -> int
+   {
+      int nWrite = send( this->descriptor, data, static_cast<int>(len), 0 );
+
+      if( nWrite > 0 )
+      {
+         update_trdata( 2, nWrite );
+      }
+      else if( nWrite == -1 && ( errno == EWOULDBLOCK || errno == EAGAIN ) )
+      {
+         return 0; // Would block, try again later
+      }
+      else
+      {
+         perror( "Write_to_descriptor" );
+         return -1; // Fatal error
+      }
+      return nWrite;
+   };
+
+   // Use this if MCCP compression is enabled for the descriptor.
    if( mccp->out_compress )
    {
-      mccp->out_compress->next_in = ( unsigned char * )txt;
-      mccp->out_compress->avail_in = length;
+      auto& z = *mccp->out_compress;
+      z.next_in = reinterpret_cast<unsigned char*>( const_cast<char*>( text_to_send.data() ) );
+      z.avail_in = static_cast<uInt>( text_to_send.size() );
 
-      while( mccp->out_compress->avail_in )
+      while( z.avail_in > 0 )
       {
-         mccp->out_compress->avail_out = COMPRESS_BUF_SIZE - ( mccp->out_compress->next_out - mccp->out_compress_buf );
+         z.avail_out = static_cast<uInt>( COMPRESS_BUF_SIZE - ( z.next_out - mccp->out_compress_buf ) );
 
-         if( mccp->out_compress->avail_out )
+         if( z.avail_out > 0 )
          {
-            int status = deflate( mccp->out_compress, Z_SYNC_FLUSH );
-
-            if( status != Z_OK )
+            if( deflate( &z, Z_SYNC_FLUSH ) != Z_OK )
                return false;
          }
 
-         len = mccp->out_compress->next_out - mccp->out_compress_buf;
-         if( len > 0 )
+         size_t buffered_len = z.next_out - mccp->out_compress_buf;
+         size_t bytes_sent_total = 0;
+
+         while( bytes_sent_total < buffered_len )
          {
-            for( iStart = 0; iStart < len; iStart += nWrite )
-            {
-               nBlock = UMIN( len - iStart, 4096 );
-#if defined(WIN32)
-               nWrite = send( descriptor, ( const char * )( mccp->out_compress_buf + iStart ), nBlock, 0 );
-#else
-               nWrite = send( descriptor, mccp->out_compress_buf + iStart, nBlock, 0 );
-#endif
-               if( nWrite > 0 )
-               {
-                  update_trdata( 2, nWrite );
-                  mccpsaved -= nWrite;
-               }
-               if( nWrite == -1 )
-               {
-                  iErr = errno;
-                  if( iErr == EWOULDBLOCK )
-                  {
-                     nWrite = 0;
-                     continue;
-                  }
-                  else
-                  {
-                     perror( "Write_to_descriptor" );
-                     return false;
-                  }
-               }
-               if( !nWrite )
-                  break;
-            }
-            if( !iStart )
+            size_t nBlock = std::min( buffered_len - bytes_sent_total, size_t{4096} );
+            int nWrite = send_chunk( reinterpret_cast<char*>(mccp->out_compress_buf + bytes_sent_total), nBlock );
+
+            if( nWrite == -1 )
+               return false;
+            if( nWrite == 0 )
                break;
 
-            if( iStart < len )
-               memmove( mccp->out_compress_buf, mccp->out_compress_buf + iStart, len - iStart );
+            bytes_sent_total += nWrite;
+            mccpsaved -= nWrite;
+         }
 
-            mccp->out_compress->next_out = mccp->out_compress_buf + len - iStart;
+         if( bytes_sent_total > 0 )
+         {
+            size_t remaining = buffered_len - bytes_sent_total;
+
+            std::memmove( mccp->out_compress_buf, mccp->out_compress_buf + bytes_sent_total, remaining );
+            z.next_out = mccp->out_compress_buf + remaining;
+         }
+         else
+         {
+            break; // Could not send anything, exit compression loop to wait
          }
       }
       if( mccpsaved > 0 )
@@ -672,119 +753,76 @@ bool descriptor_data::write( const char *txt )
       return true;
    }
 
-   for( iStart = 0; iStart < length; iStart += nWrite )
+   // If you end up down here, then text is being sent uncompressed.
+   size_t offset = 0;
+   while( offset < text_to_send.size() )
    {
-      nBlock = UMIN( length - iStart, 4096 );
-      nWrite = send( descriptor, txt + iStart, nBlock, 0 );
-
-      if( nWrite > 0 )
-         update_trdata( 2, nWrite );
+      size_t nBlock = std::min( text_to_send.size() - offset, size_t{4096} );
+      int nWrite = send_chunk( text_to_send.data() + offset, nBlock );
 
       if( nWrite == -1 )
-      {
-         iErr = errno;
-         if( iErr == EWOULDBLOCK )
-         {
-            nWrite = 0;
-            continue;
-         }
-         else
-         {
-            perror( "Write_to_descriptor" );
-            return false;
-         }
-      }
+         return false;
+      offset += nWrite;
    }
    return true;
 }
 
-/*
- *
- * Added block checking to prevent random booting of the descriptor. Thanks go
- * out to Rustry for his suggestions. -Orion
- */
-bool write_to_descriptor_old( int desc, const char *txt )
+bool descriptor_data::read( )
 {
-   size_t iStart = 0, length = strlen( txt );
-   int nWrite = 0, nBlock = 0, iErr = 0;
-
-   for( iStart = 0; iStart < length; iStart += nWrite )
-   {
-      nBlock = UMIN( length - iStart, 4096 );
-      nWrite = send( desc, txt + iStart, nBlock, 0 );
-
-      if( nWrite > 0 )
-         update_trdata( 2, nWrite );
-
-      if( nWrite == -1 )
-      {
-         iErr = errno;
-         if( iErr == EWOULDBLOCK )
-         {
-            nWrite = 0;
-            continue;
-         }
-         else
-         {
-            perror( "Write_to_descriptor" );
-            return false;
-         }
-      }
-   }
-   return true;
-}
-
-bool descriptor_data::read(  )
-{
-   size_t iStart, iErr;
-
    /*
-    * Hold horses if pending command already. 
+    * Hold horses if pending command already.
     */
-   if( !this->incomm.empty(  ) )
+   if( !this->incomm.empty() )
       return true;
 
-   /*
-    * Check for overflow. 
-    */
-   iStart = strlen( this->inbuf );
-   if( iStart >= sizeof( this->inbuf ) - 10 )
+   size_t iStart = std::strlen( this->inbuf );
+   const size_t buffer_limit = sizeof( this->inbuf ) - 10;
+
+   if( iStart >= buffer_limit )
    {
-      log_printf( "%s input overflow!", this->hostname.c_str(  ) );
+      log_printf( "%s input overflow!", this->hostname.c_str() );
       this->write( "\r\n*** PUT A LID ON IT!!! ***\r\n" );
       return false;
    }
 
-   for( ;; )
+   while( true )
    {
-      int nRead;
+      ssize_t nRead = recv( this->descriptor, this->inbuf + iStart, buffer_limit - iStart, 0 );
 
-      nRead = recv( this->descriptor, this->inbuf + iStart, sizeof( this->inbuf ) - 10 - iStart, 0 );
-      iErr = errno;
       if( nRead > 0 )
       {
          iStart += nRead;
+         this->inbuf[iStart] = '\0';
 
-         update_trdata( 1, nRead );
+         update_trdata( 1, static_cast<size_t>( nRead ) );
+
          if( this->inbuf[iStart - 1] == '\n' || this->inbuf[iStart - 1] == '\r' )
             break;
+
+         continue;
       }
-      else if( nRead == 0 && this->connected >= CON_PLAYING )
+      else if( nRead == 0 )
       {
-         log_string_plus( LOG_COMM, LEVEL_IMMORTAL, "EOF encountered on read." );
-         return false;
-      }
-      else if( iErr == EWOULDBLOCK )
+         if( this->connected >= CON_PLAYING )
+         {
+            log_string_plus( LOG_COMM, LEVEL_IMMORTAL, "EOF encountered on read." );
+            return false;
+         }
          break;
-      else
+      }
+      else // nRead < 0
       {
+         int iErr = errno;
+
+         if( iErr == EWOULDBLOCK || iErr == EAGAIN )
+            break; // Kernel buffer empty
+
          log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __func__, this->descriptor );
          log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( this->character && this->character->name ) ? this->character->name : this->hostname.c_str(  ) );
          perror( __func__ );
          return false;
       }
    }
-   this->inbuf[iStart] = '\0';
    return true;
 }
 
@@ -804,9 +842,11 @@ bool descriptor_data::flush_buffer( bool fPrompt )
 
       memcpy( buf, this->outbuf.c_str(  ), 4095 );
       this->outbuf = this->outbuf.substr( 4096, this->outbuf.length(  ) - 4096 );
+
       if( snoop_by )
       {
          buf[4095] = '\0'; // Holds the record for the longest standing bug that never got spotted. Because GCC should have had ways to see this sooner!
+
          if( character && character->name )
          {
             if( original && original->name )
@@ -885,12 +925,8 @@ bool descriptor_data::flush_buffer( bool fPrompt )
 /*
  * Transfer one line from input buffer to input line.
  */
-void descriptor_data::read_from_buffer(  )
+void descriptor_data::read_from_buffer( )
 {
-   affect_data af;   /* Spamguard abusers beware! Muahahahahah! */
-   int i, j, k, iac = 0;
-   unsigned char *p;
-
    /*
     * Hold horses if pending command already.
     */
@@ -898,115 +934,114 @@ void descriptor_data::read_from_buffer(  )
       return;
 
    /*
-    * Thanks Nick!
+    * Thanks Nick! [Even though this has been refactored :P]
     */
-   for( p = ( unsigned char * )inbuf; *p; ++p )
+   for( size_t i = 0; i < MAX_INBUF_SIZE && inbuf[i] != '\0'; ++i )
    {
-      if( *p == IAC )
+      if( static_cast<unsigned char>( inbuf[i] ) == IAC )
       {
-         if( memcmp( p, term_call_back_str, sizeof( term_call_back_str ) ) == 0 )
+         if( std::memcmp( &inbuf[i], term_call_back_str, sizeof( term_call_back_str ) ) == 0 )
          {
-            int pos = ( char * )p - inbuf;   /* where we are in buffer */
-            int len = sizeof( inbuf ) - pos - sizeof( term_call_back_str );   /* how much to go */
-            char tmp[100];
+            char tmp[100]{};
+            size_t pos = i;
+            size_t p_idx = i + sizeof( term_call_back_str );
             size_t x = 0;
-            unsigned char *oldp = p;
 
-            p += sizeof( term_call_back_str );  /* skip TERMINAL_TYPE / IS characters */
-
-            for( x = 0; x < ( sizeof( tmp ) - 1 ) && *p != 0   /* null marks end of buffer */
-                 && *p != IAC;   /* should terminate with IAC */
-                 ++x, ++p )
-               tmp[x] = *p;
+            while( x < ( sizeof(tmp) - 1 ) && inbuf[p_idx] != '\0' && static_cast<unsigned char>( inbuf[p_idx] ) != IAC )
+               tmp[x++] = inbuf[p_idx++];
 
             tmp[x] = '\0';
             if( tmp[0] != '\0' )
                this->client = tmp;
 
-            p += 2;  /* skip IAC and SE */
-            len -= strlen( tmp ) + 2;
-            if( len < 0 )
-               len = 0;
-
-            /*
-             * remove string from input buffer 
-             */
-            memmove( oldp, p, len );
-         }  /* end of getting terminal type */
-      }  /* end of finding an IAC */
+            p_idx += 2; // Skip IAC and SE
+            size_t len = ( MAX_INBUF_SIZE - p_idx );
+            std::memmove( &inbuf[pos], &inbuf[p_idx], len );
+            std::memset (&inbuf[MAX_INBUF_SIZE - ( p_idx - pos )], 0, ( p_idx - pos ) );
+         }
+      }
    }
 
    /*
     * Look for at least one new line.
     */
-   for( i = 0; i < MAX_INBUF_SIZE && this->inbuf[i] != '\n' && this->inbuf[i] != '\r'; ++i )
-   {
-      if( this->inbuf[i] == '\0' )
-         return;
-   }
+   size_t i = 0;
+   while( i < MAX_INBUF_SIZE && inbuf[i] != '\n' && inbuf[i] != '\r' && inbuf[i] != '\0' )
+      ++i;
+
+   if( i >= MAX_INBUF_SIZE || inbuf[i] == '\0' )
+      return;
 
    /*
     * Canonical input processing.
     */
-   for( i = 0, k = 0; this->inbuf[i] != '\n' && this->inbuf[i] != '\r'; ++i )
+   int k = 0;
+   int iac = 0;
+   for( size_t idx = 0; idx < i; ++idx )
    {
-      if( k >= MIL / 2 )   /* Reasonable enough to allow unless someone floods it with color tags */
+      if( k >= MIL / 2 )
       {
          this->write( "Line too long.\r\n" );
-         this->inbuf[i] = '\n';
-         this->inbuf[i + 1] = '\0';
+         inbuf[idx] = '\n';
+         inbuf[idx + 1] = '\0';
          break;
       }
 
       if( this->can_compress && !this->is_compressing )
-         this->compressStart(  );
+         this->compressStart();
 
-      if( this->inbuf[i] == ( signed char )IAC )
+      unsigned char c = static_cast<unsigned char>( inbuf[idx]) ;
+
+      if( c == IAC )
          iac = 1;
-      else if( iac == 1 && ( this->inbuf[i] == ( signed char )DO || this->inbuf[i] == ( signed char )DONT || this->inbuf[i] == ( signed char )WILL ) )
+      else if( iac == 1 && ( c == DO || c == DONT || c == WILL ) )
          iac = 2;
       else if( iac == 2 )
       {
          iac = 0;
-         if( this->inbuf[i] == ( signed char )TELOPT_COMPRESS2 )
+
+         if( c == TELOPT_COMPRESS2 )
          {
-            if( this->inbuf[i - 1] == ( signed char )DO )
+            if( static_cast<unsigned char>( inbuf[idx - 1] ) == DO )
             {
-               if( this->compressStart(  ) )
+               if( this->compressStart() )
                   this->can_compress = true;
             }
-            else if( this->inbuf[i - 1] == ( signed char )DONT )
+            else if( static_cast<unsigned char>( inbuf[idx - 1] ) == DONT )
             {
-               if( this->compressEnd(  ) )
+               if( this->compressEnd() )
                   this->can_compress = false;
             }
          }
-         else if( this->inbuf[i] == ( signed char )TELOPT_MSP )
+         else if( c == TELOPT_MSP )
          {
-            if( this->inbuf[i - 1] == ( signed char )DO )
+            if( static_cast<unsigned char>( inbuf[idx - 1] ) == DO )
             {
                this->msp_detected = true;
-               this->send_msp_startup(  );
+               this->send_msp_startup();
             }
-            else if( this->inbuf[i - 1] == ( signed char )DONT )
+            else if( static_cast<unsigned char>( inbuf[idx - 1] ) == DONT )
                this->msp_detected = false;
          }
-         else if( this->inbuf[i] == ( signed char )TERMINAL_TYPE )
+         else if( c == TERMINAL_TYPE )
          {
-            if( this->inbuf[i - 1] == ( signed char )WILL )
+            if( static_cast<unsigned char>( inbuf[idx - 1] ) == WILL )
                this->write_to_buffer( (const char*)req_termtype_str );
          }
       }
-      else if( this->inbuf[i] == '\b' && k > 0 )
+      else if( c == '\b' && k > 0 )
+      {
          --k;
+         this->incomm.pop_back();
+      }
       /*
        * Note to the future curious: Leave this alone. Extended ascii isn't standardized yet.
        * * You'd think being the 21st century and all that this wouldn't be the case, but you can
        * * thank the bastards in Redmond for this.
        */
-      else if( isascii( this->inbuf[i] ) && isprint( this->inbuf[i] ) )
+      else if( isascii(c) && isprint(c) )
       {
-         this->incomm.append( 1, this->inbuf[i] );
+         this->incomm += static_cast<char>(c);
          ++k;
       }
    }
@@ -1016,7 +1051,7 @@ void descriptor_data::read_from_buffer(  )
     */
    if( k == 0 )
    {
-      this->incomm.append( 1, ' ' );
+      this->incomm += ' ';
       ++k;
    }
 
@@ -1031,24 +1066,21 @@ void descriptor_data::read_from_buffer(  )
       {
          /*
           * What this is SUPPOSED to do is make sure the command or alias being used isn't a public channel.
-          * * As we know, code rarely does what we expect, and there could still be problems here.
-          * * The only other solution seen as viable beyond this is to remove the spamguard entirely.
+          * As we know, code rarely does what we expect, and there could still be problems here.
+          * The only other solution seen as viable beyond this is to remove the spamguard entirely.
           */
-         cmd_type *cmd = nullptr;
-         map < string, string >::iterator al;
-         string c = this->incomm, arg;
+         cmd_type* cmd = nullptr;
+         std::string c_str = this->incomm, arg;
 
-         c = one_argument( c, arg );
+         c_str = one_argument( c_str, arg );
          cmd = find_command( arg );
-         if( this->character )
-            al = character->pcdata->alias_map.find( arg );
 
-         if( !cmd && this->character && al != this->character->pcdata->alias_map.end(  ) )
+         if( !cmd && this->character && this->character->pcdata->alias_map.contains( arg ) )
          {
-            if( !al->second.empty(  ) )
+            auto al = this->character->pcdata->alias_map.find( arg );
+            if( !al->second.empty() )
             {
-               string d = al->second, arg2;
-
+               std::string d = al->second, arg2;
                d = one_argument( d, arg2 );
                cmd = find_command( arg2 );
             }
@@ -1059,18 +1091,24 @@ void descriptor_data::read_from_buffer(  )
             if( find_channel( arg ) != nullptr && !str_cmp( this->incomm, this->inlast ) )
                ++this->repeat;
          }
-         else if( cmd->flags.test( CMD_NOSPAM ) && !str_cmp( this->incomm, this->inlast ) )
+         else if( cmd->flags.test(CMD_NOSPAM) && !str_cmp( this->incomm, this->inlast ) )
             ++this->repeat;
 
+         // Your first warning...
          if( this->repeat == 3 && this->character && this->character->level < LEVEL_IMMORTAL )
             this->character->print( "}R\r\nYou have repeated the same command 3 times now.\r\nRepeating it 7 more will result in an autofreeze by the spamguard code.&D\r\n" );
 
+         // Second warning...
          if( this->repeat == 6 && this->character && this->character->level < LEVEL_IMMORTAL )
             this->character->print( "}R\r\nYou have repeated the same command 6 times now.\r\nRepeating it 4 more will result in an autofreeze by the spamguard code.&D\r\n" );
 
+         // You can't say we didn't warn you!
          if( this->repeat >= 10 && this->character && this->character->level < LEVEL_IMMORTAL )
          {
+            affect_data af;
+
             ++this->character->pcdata->spam;
+
             log_printf( "%s was autofrozen by the spamguard - spamming: %s", this->character->name, this->incomm.c_str(  ) );
             log_printf( "%s has spammed %d times this login.", this->character->name, this->character->pcdata->spam );
 
@@ -1080,13 +1118,14 @@ void descriptor_data::read_from_buffer(  )
             this->incomm = "spam";
 
             af.type = skill_lookup( "spamguard" );
-            af.duration = 115 * this->character->pcdata->spam; /* One game hour per offense, this can get ugly FAST */
+            af.duration = 115 * this->character->pcdata->spam; // One game hour per offense, this can get ugly FAST
             af.modifier = 0;
             af.location = APPLY_NONE;
             af.bit = AFF_SPAMGUARD;
+
             this->character->affect_to_char( &af );
-            this->character->set_pcflag( PCFLAG_IDLING );
-            this->repeat = 0; /* Just so it doesn't get haywire */
+            this->character->set_pcflag(PCFLAG_IDLING);
+            this->repeat = 0; // Just so it doesn't get haywire
          }
       }
    }
@@ -1099,13 +1138,14 @@ void descriptor_data::read_from_buffer(  )
    else
       this->inlast = this->incomm;
 
-   /*
-    * Shift the input buffer.
-    */
-   while( this->inbuf[i] == '\n' || this->inbuf[i] == '\r' )
-      ++i;
-   for( j = 0; ( this->inbuf[j] = this->inbuf[i + j] ) != '\0'; ++j )
-      ;
+   size_t shift_i = i;
+
+   while( inbuf[shift_i] == '\n' || inbuf[shift_i] == '\r' )
+      ++shift_i;
+
+   size_t move_len = MAX_INBUF_SIZE - shift_i;
+   std::memmove( inbuf, &inbuf[shift_i], move_len );
+   std::memset( &inbuf[move_len], 0, shift_i );
 }
 
 /*
@@ -1241,28 +1281,27 @@ bool descriptor_data::pager_output(  )
       this->write_to_buffer( (const char*)go_ahead_str );
    if( ch->has_pcflag( PCFLAG_ANSI ) )
    {
-      char buf[32];
-
-      snprintf( buf, 32, "%s", ch->color_str( this->pagecolor ) );
-      ret = this->write( buf );
+      ret = this->write( ch->color_str( this->pagecolor ) );
    }
    return ret;
 }
 
 void descriptor_data::send_greeting(  )
 {
-   FILE *rpfile;
-   int num = 0, c = 0;
-   char BUFF[MSL], filename[256];
+   fs::path filename = std::format( "{}greeting.dat", MOTD_DIR );
 
-   snprintf( filename, 256, "%sgreeting.dat", MOTD_DIR );
-   if( ( rpfile = fopen( filename, "r" ) ) != nullptr )
+   // Read the file directly into a std::string
+   if( std::ifstream in{ filename, std::ios::in | std::ios::binary } )
    {
-      while( ( c = fgetc( rpfile ) ) != EOF && ( num < ( MSL - 1 ) ) )  // stop at BUFF size - 1
-         BUFF[num++] = c;
-      FCLOSE( rpfile );
-      BUFF[num] = '\0';
-      send_color( BUFF );
+      std::string content;
+
+      // Efficiently read the entire file into the string
+      content.assign( std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>() );
+
+      if( !content.empty() )
+      {
+         send_color( content.c_str() );
+      }
    }
 }
 
@@ -1852,6 +1891,7 @@ void accept_new( int ctrl )
    }
 }
 
+// FIXME: This needs a major C++23 overhaul.
 void descriptor_data::prompt(  )
 {
    char_data *ch = character;
@@ -2681,9 +2721,9 @@ CMDF( do_shatest )
 
 /*
  * Deal with sockets that haven't logged in yet.
+ * Function modified from original form on varying dates - Samson
+ * Password encryption sections upgraded to use SHA-256 Encryption - Samson 7-10-00
  */
-/* Function modified from original form on varying dates - Samson */
-/* Password encryption sections upgraded to use SHA-256 Encryption - Samson 7-10-00 */
 void descriptor_data::nanny( string & argument )
 {
    char buf[MSL];

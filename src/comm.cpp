@@ -27,27 +27,19 @@
  ****************************************************************************/
 
 #if !defined(WIN32)
-#include <netinet/in.h>
 #include <sys/wait.h>
 #include <dlfcn.h>
 #else
 #include <winsock2.h>
 #define dlclose( path )		( (void *)FreeLibrary( (HMODULE)(path)) )
 void gettimeofday( struct timeval *tv, struct timezone *tz );
-void bailout( int );
 #endif
-#if defined(__FreeBSD__)
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
-#if defined(__CYGWIN__)
-#include <sys/socket.h>
-#endif
-#if defined(__APPLE__)
-#include <sys/socket.h>
-#endif
-#include <time.h>
+
 #include <sys/time.h>
+#include <netdb.h>
+#include <format>
+#include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "descriptor.h"
 #include "auction.h"
@@ -60,6 +52,8 @@ void bailout( int );
 #include "realms.h"
 #include "roomindex.h"
 #include "shops.h"
+
+namespace fs = std::filesystem;
 
 /*
  * Global variables.
@@ -170,22 +164,22 @@ const char *directory_table[] = {
 
 void directory_check( void )
 {
-   char buf[256];
+   fs::path buf;
    size_t x;
 
    // Successful directory check will drop this file in the area dir once done.
    if( exists_file( "DIR_CHECK_PASSED" ) )
       return;
 
-   fprintf( stderr, "Checking for required directories...\n" );
+   log_string( "Checking for required directories...\n" );
 
    // This should really never happen but you never know.
-   if( chdir( "../log" ) )
+   if( !fs::exists( "../log" ) )
    {
       fprintf( stderr, "Creating required directory: ../log\n" );
-      snprintf( buf, 256, "mkdir ../log" );
+      buf = "../log";
 
-      if( system( buf ) )
+      if( !fs::create_directory( buf ) )
       {
          fprintf( stderr, "FATAL ERROR :: Unable to create required directory: ../log\n" );
          exit( 1 );
@@ -194,12 +188,12 @@ void directory_check( void )
 
    for( x = 0; x < sizeof( directory_table ) / sizeof( directory_table[0] ); ++x )
    {
-      if( chdir( directory_table[x] ) )
+      if( !fs::exists( directory_table[x] ) )
       {
-         snprintf( buf, 256, "mkdir %s", directory_table[x] );
+         buf = directory_table[x];
          log_printf( "Creating required directory: %s", directory_table[x] );
 
-         if( system( buf ) )
+         if( !fs::create_directory( buf ) )
          {
             log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", directory_table[x] );
             exit( 1 );
@@ -209,28 +203,20 @@ void directory_check( void )
       if( !str_cmp( directory_table[x], PLAYER_DIR ) )
       {
          short alpha_loop;
-         char dirname[256];
+         fs::path dirname;
 
          for( alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
          {
-            snprintf( dirname, 256, "%s%c", PLAYER_DIR, 'a' + alpha_loop );
-            if( chdir( dirname ) )
+            dirname = std::format( "{}{}", PLAYER_DIR, static_cast<char>( 'a' + alpha_loop ) );
+            if( !fs::exists( dirname ) )
             {
-               log_printf( "Creating required directory: %s", dirname );
-               int bc = snprintf( buf, 256, "mkdir %s", dirname );
-               if( bc < 0 )
-                  bug( "%s: Output buffer error!", __func__ );
+               log_printf( "Creating required directory: %s", dirname.c_str() );
 
-               if( system( buf ) )
+               if( !fs::create_directory( dirname ) )
                {
-                  log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", dirname );
+                  log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", dirname.c_str() );
                   exit( 1 );
                }
-            }
-            else if( chdir( ".." ) == -1 )
-            {
-               fprintf( stderr, "FATAL ERROR :: Unable to change directories during directory check! Cannot continue." );
-               exit( 1 );
             }
          }
       }
@@ -243,11 +229,13 @@ void directory_check( void )
    }
 
    // Made it? Sweet. Drop the check file so we don't do this on every last reboot.
-   if( system( "touch DIR_CHECK_PASSED" ) == -1 )
+   std::ofstream outfile( "DIR_CHECK_PASSED" );
+   if( !outfile )
    {
-      fprintf( stderr, "FATAL ERROR :: Unable to generate DIR_CHECK_PASSED" );
+      fprintf( stderr, "FATAL ERROR :: Unable to generate DIR_CHECK_PASSED\n" );
       exit( 1 );
    }
+   outfile.close();
 
    log_string( "Directory check passed." );
 }
@@ -283,36 +271,64 @@ void set_alarm( long seconds )
 #endif
 }
 
-void open_mud_log( void )
+void open_mud_log()
 {
-   FILE *error_log;
-   char buf[256];
-   int logindex;
+   const fs::path log_dir = "../log";
+   fs::path log_path;
+   bool found = false;
 
-   // Stop trying after 100K log files. If you have this many it's not good anyway.
-   for( logindex = 1000; logindex < 100000; ++logindex )
+   // Use filesystem iterator or simple loop to find the next available file
+   for( int logindex = 1000; logindex < 100000; ++logindex )
    {
-      snprintf( buf, 256, "../log/%d.log", logindex );
-      if( exists_file( buf ) )
-         continue;
-      else if( logindex < 100000 )
-         break;
-      else
+      log_path = log_dir / ( std::to_string( logindex ) + ".log" );
+
+      if( !fs::exists( log_path ) )
       {
-         fprintf( stderr, "%s", "You have too damn many log files! Clean them up!" );
-         exit( 1 );
+         found = true;
+         break;
       }
    }
 
-   if( !( error_log = fopen( buf, "a" ) ) )
+   if( !found )
    {
-      fprintf( stderr, "Unable to append to %s.", buf );
+      fprintf( stderr, "You have too damn many log files! Clean them up!\n" );
       exit( 1 );
    }
 
+   // Open file using the path object
+   FILE* error_log = fopen( log_path.c_str(), "a" );
+   if( !error_log )
+   {
+      fprintf( stderr, "Unable to append to %s.\n", log_path.c_str() );
+      exit( 1 );
+   }
+
+   // Redirect stderr
    dup2( fileno( error_log ), STDERR_FILENO );
    FCLOSE( error_log );
 }
+
+struct SocketGuard
+{
+   int fd = -1;
+
+   SocketGuard( int f ) : fd( f ) {}
+   ~SocketGuard()
+   {
+      if( fd != -1 )
+         close( fd );
+   }
+
+   // Release ownership so it doesn't close when returning
+   int release()
+   {
+      int temp = fd;
+
+      fd = -1;
+
+      return temp;
+   }
+};
 
 /*
  * This function supports connections for both IPv6 and IPv4.
@@ -321,75 +337,43 @@ void open_mud_log( void )
  */
 int init_socket( int mudport )
 {
-   struct sockaddr_in6 serv_addr6;
-   int x = 1, ipv6only = 0;
-   int fd;
+   std::string port_str = std::to_string( mudport );
+   struct addrinfo hints{}, *res;
 
-   if( ( fd = socket( AF_INET6, SOCK_STREAM, 0 ) ) < 0 )
+   hints.ai_family = AF_INET6;       // IPv6
+   hints.ai_socktype = SOCK_STREAM;  // TCP
+   hints.ai_flags = AI_PASSIVE;      // For bind()
+
+   if( int err = getaddrinfo( nullptr, port_str.c_str(), &hints, &res ) )
    {
-      perror( "Init_socket: socket" );
-      exit( 1 );
+      throw std::runtime_error( gai_strerror( err ) );
    }
 
-#if defined(WIN32)
-   if( setsockopt( fd, IPPROTO_IPV6, IPV6_V6ONLY, ( const char * )&ipv6only, sizeof( ipv6only ) ) < 0 )
-#else
-   if( setsockopt( fd, IPPROTO_IPV6, IPV6_V6ONLY, ( void * )&ipv6only, sizeof( ipv6only ) ) < 0 )
-#endif
+   SocketGuard guard( socket( res->ai_family, res->ai_socktype, res->ai_protocol ) );
+   if( guard.fd < 0 )
+      throw std::system_error( errno, std::generic_category(), "socket" );
+
+   int opt = 1;
+
+   // Set V6ONLY to 0 to allow dual-stack (IPv4 and IPv6)
+   int v6only = 0;
+   setsockopt( guard.fd, IPPROTO_IPV6, IPV6_V6ONLY, &v6only, sizeof( v6only ) );
+   setsockopt( guard.fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt) );
+
+   if( bind( guard.fd, res->ai_addr, res->ai_addrlen ) < 0 )
    {
-      perror( "Init_socket: IPPROTO_IPV6" );
-      close( fd );
-      exit( 1 );
+      freeaddrinfo( res );
+      throw std::system_error( errno, std::generic_category(), "bind" );
    }
 
-/* 
- * SO_REUSEADDR, however, is still necessary or the socket will only be able to bind to one
- * protocol. The MUD will fail to start, saying the address is already in use when the second
- * attempt to bind is made by the operating system. -- Samson 1/22/2025.
- */
-#if defined(WIN32)
-   if( setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, ( const char * )&x, sizeof( x ) ) < 0 )
-#else
-   if( setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, ( void * )&x, sizeof( x ) ) < 0 )
-#endif
+   freeaddrinfo( res );
+
+   if( listen( guard.fd, 50 ) < 0 )
    {
-      perror( "Init_socket: SO_REUSEADDR" );
-      close( fd );
-      exit( 1 );
+      throw std::system_error( errno, std::generic_category(), "listen" );
    }
 
-   memset( &serv_addr6, '\0', sizeof( serv_addr6 ) );
-   serv_addr6.sin6_family = AF_INET6;
-   serv_addr6.sin6_addr = in6addr_any;
-   serv_addr6.sin6_port = htons( mudport );
-
-   /*
-    * It is highly unlikely that a server will call for this, but just in case it does, you would need
-    * to uncomment the statement and specify the IP address of your server. Currently this only works
-    * for IPv4. I have not been able to find information on how to call this for the IPV6 side, so it's
-    * entirely possible that it was not seen as a thing to do with IPv6. -- Samson 1/22/2025.
-    *
-    * sa.sin_addr.s_addr = inet_addr( "x.x.x.x" ); 
-    */
-#if defined(__APPLE__)
-   if( bind( fd, ( const struct sockaddr * )&serv_addr6, (socklen_t)sizeof( serv_addr6 ) ) == -1 )
-#else
-   if( bind( fd, ( struct sockaddr * )&serv_addr6, sizeof( serv_addr6 ) ) == -1 )
-#endif
-   {
-      perror( "Init_socket: bind" );
-      close( fd );
-      exit( 1 );
-   }
-
-   if( listen( fd, 50 ) < 0 )
-   {
-      perror( "Init_socket: listen" );
-      close( fd );
-      exit( 1 );
-   }
-
-   return fd;
+   return guard.release();
 }
 
 /* This functions purpose is to open up all of the various things the mud needs to have
@@ -498,7 +482,6 @@ void close_mud( void )
    /*
     * Shut down Windows sockets 
     */
-
    WSACleanup(  );   /* clean up */
    kill_timer(  );   /* stop timer thread */
 #endif
@@ -662,6 +645,7 @@ static void caught_alarm( int signum )
 /*
  * Parse a name for acceptability.
  */
+// FIXME: This desperately needs to be brought up to safer modern handling of the reserved names list.
 bool check_parse_name( const string & name, bool newchar )
 {
    /*
@@ -726,9 +710,36 @@ bool check_parse_name( const string & name, bool newchar )
    return true;
 }
 
+#ifdef MULTIPORT
+bool process_forked( descriptor_data * d )
+{
+   if( !d->process )
+   {
+      d->connected = CON_PLAYING;
+      return false;
+   }
+
+   int status;
+   int result = waitpid( d->process, &status, WNOHANG );
+
+   if( result == -1 || status > 0 )
+   {
+      d->connected = CON_PLAYING;
+      d->process = 0;
+
+      if( result > 0 )
+      {
+         auto* ch = d->original ? d->original : d->character;
+         if( ch )
+            ch->printf( "Process exited with status code %d.\r\n", status );
+      }
+   }
+   return ( d->connected == CON_FORKED ); // Return true if still forked (continue loop)
+}
+#endif
+
 void process_input( void )
 {
-   string cmdline;
    list < descriptor_data * >::iterator ds;
 
    /*
@@ -741,77 +752,44 @@ void process_input( void )
       ++ds;
 
 #ifdef MULTIPORT
-      // Shell code - checks for forked descriptors 
       if( d->connected == CON_FORKED )
       {
-         int status;
-         if( !d->process )
-            d->connected = CON_PLAYING;
-
-         if( ( waitpid( d->process, &status, WNOHANG ) ) == -1 )
-         {
-            d->connected = CON_PLAYING;
-            d->process = 0;
-         }
-         else if( status > 0 )
-         {
-            char_data *ch = d->original ? d->original : d->character;
-            d->connected = CON_PLAYING;
-            d->process = 0;
-
-            if( ch )
-               ch->printf( "Process exited with status code %d.\r\n", status );
-         }
-         if( d->connected == CON_FORKED )
+         if( process_forked( d ) )
             continue;
       }
 #endif
 
-      // True if the disconnect flag is set. Hasta la vista baby!
-      if( d->disconnect )
+      // Check for disconnect, or an exception. Hasta la vista baby!
+      if( d->disconnect || FD_ISSET( d->descriptor, &exc_set ) )
       {
-         d->outbuf.clear(  );
-         close_socket( d, true );
-         continue;
-      }
-
-      ++d->idle;  /* make it so a descriptor can idle out */
-      if( FD_ISSET( d->descriptor, &exc_set ) )
-      {
-         FD_CLR( d->descriptor, &in_set );
-         FD_CLR( d->descriptor, &out_set );
          if( d->character && d->connected >= CON_PLAYING )
             d->character->save(  );
          d->outbuf.clear(  );
          close_socket( d, true );
          continue;
       }
-      else if( ( !d->character && d->idle > 360 )  /* 2 mins */
-               || ( d->connected != CON_PLAYING && d->idle > 2400 )  /* 10 mins */
-               || ( ( d->idle > 14400 ) && ( d->character->level < LEVEL_IMMORTAL ) )  /* 1hr */
-               || ( ( d->idle > 32000 ) && ( d->character->level >= LEVEL_IMMORTAL ) ) )
-         // imms idle off after 32000 to prevent rollover crashes 
+
+      // Check to see if they idled out.
+      if( d->is_idle_timeout() )
       {
-         if( d->character && d->character->level >= LEVEL_IMMORTAL )
-            d->idle = 0;
-         else
-         {
-            d->write( "Idle timeout... disconnecting.\r\n" );
-            update_connhistory( d, CONNTYPE_IDLE );
-            d->outbuf.clear(  );
-            close_socket( d, true );
-         }
+         update_connhistory( d, CONNTYPE_IDLE );
+         d->outbuf.clear( );
+         close_socket( d, true );
          continue;
       }
       else
       {
          d->fcommand = false;
 
+         // Check to see if they have input ready.
          if( FD_ISSET( d->descriptor, &in_set ) )
          {
             d->idle = 0;
+
             if( d->character )
                d->character->timer = 0;
+
+            // Something bad must have happened while attempting to read. Clear the output flags and disconnect them.
             if( !d->read(  ) )
             {
                FD_CLR( d->descriptor, &out_set );
@@ -826,48 +804,54 @@ void process_input( void )
 
 #if !defined(WIN32)
          // Check for input from the dns 
-         if( ( d->connected == CON_PLAYING || d->character != nullptr ) && d->ifd != -1 && FD_ISSET( d->ifd, &in_set ) )
+         if( ( d->connected == CON_PLAYING || d->character ) && d->ifd != -1 && FD_ISSET( d->ifd, &in_set ) )
             d->process_dns(  );
 #endif
 
+         // If they're waiting on a cooldown to finish, decrement and process them again in the next loop.
          if( d->character && d->character->wait > 0 )
          {
             --d->character->wait;
             continue;
          }
 
+         // WOO! Time to finally read in what they typed!
          d->read_from_buffer(  );
 
+         // If it wasn't just a blank line, it's time to process that.
          if( !d->incomm.empty(  ) )
          {
             d->fcommand = true;
+
             if( d->character && !d->character->has_aflag( AFF_SPAMGUARD ) )
                d->character->stop_idling(  );
 
-            cmdline = d->incomm;
+            std::string cmdline = std::move( d->incomm );
             d->incomm.clear(  );
 
             if( !d->pagebuf.empty(  ) )
                d->set_pager_input( cmdline );
             else
+            {
                switch ( d->connected )
                {
                   default:
                      d->nanny( cmdline );
                      break;
 
-                  case CON_PLAYING:
-                     if( d->original )
-                        d->original->pcdata->cmd_recurse = 0;
-                     else
-                        d->character->pcdata->cmd_recurse = 0;
-                     interpret( d->character, cmdline );
-                     break;
-
                   case CON_EDITING:
                      d->character->edit_buffer( cmdline );
                      break;
+
+                  case CON_PLAYING:
+                     auto& ch = d->original ? d->original : d->character;
+
+                     ch->pcdata->cmd_recurse = 0;
+
+                     interpret( d->character, cmdline );
+                     break;
                }
+            }
          }
       }
    }
@@ -897,6 +881,7 @@ void process_output( void )
       {
          if( !d->pagebuf.empty(  ) )
          {
+            // Something bad must have happened here if no output went through.
             if( !d->pager_output(  ) )
             {
                if( d->character && d->connected >= CON_PLAYING )
@@ -905,6 +890,7 @@ void process_output( void )
                close_socket( d, false );
             }
          }
+         // Something bad must have happened here if no output went through.
          else if( !d->flush_buffer( true ) )
          {
             if( d->character && d->connected >= CON_PLAYING )
@@ -1193,10 +1179,10 @@ void cleanup_memory( void )
          hash_dump( hash );
    }
 
-   #if !defined(__CYGWIN__) && defined(SQL)
+#if !defined(__CYGWIN__) && defined(SQL)
    fprintf( stdout, "%s", "Closing database connection.\n" );
    close_db(  );
-   #endif
+#endif
 
    // Last but not least, close the libdl and dispose of sysdata - Samson
    fprintf( stdout, "%s", "System data.\n" );
@@ -1230,13 +1216,52 @@ void unset_chandler( void )
 }
 
 #if defined(WIN32)
-int mainthread( int argc, char **argv )
-#else
-int main( int argc, char **argv )
+class WinsockGuard
+{
+   public:
+      WinsockGuard()
+      {
+         WSADATA wsaData;
+
+         // Request version 2.2 - the old 1,1 call is 25+ years out of date.
+         if( WSAStartup( MAKEWORD( 2, 2 ), &wsaData ) != 0 )
+         {
+            throw std::runtime_error( "WSAStartup failed" );
+         }
+      }
+
+      ~WinsockGuard()
+      {
+         WSACleanup();
+      }
+};
 #endif
+
+void bailout( int sig )
+{
+   log_string( "Bailout signal received. Shutting down gracefully..." );
+
+   mud_down = true;
+
+   // Perform universal cleanup
+   close_mud();
+   cleanup_memory();
+
+#if defined(_WIN32)
+   WSACleanup();
+#endif
+
+   exit( 0 );
+}
+
+int main( int argc, char **argv )
 {
    struct timeval now_time;
    bool fCopyOver = false;
+
+#if defined(WIN32)
+   WinsockGuard wsa_guard;
+#endif /* WIN32 */
 
 #if !defined(WIN32)
    moron_check(  );  // Debatable weather or not this is true in WIN32 anyway :)
@@ -1281,35 +1306,13 @@ int main( int argc, char **argv )
          fCopyOver = false;
    }
 
-#if defined(WIN32)
-   {
-      /*
-       * Initialise Windows sockets library 
-       */
-      unsigned short wVersionRequested = MAKEWORD( 1, 1 );
-      WSADATA wsadata;
-      int err;
-
-      /*
-       * Need to include library: wsock32.lib for Windows Sockets 
-       */
-      err = WSAStartup( wVersionRequested, &wsadata );
-      if( err )
-      {
-         fprintf( stderr, "Error %i on WSAStartup\n", err );
-         exit( 1 );
-      }
-
-      /*
-       * standard termination signals 
-       */
-      signal( SIGINT, bailout );
-      signal( SIGTERM, bailout );
-   }
-#endif /* WIN32 */
-
    // Initialize all startup functions of the mud. 
    init_mud( fCopyOver, mud_port );
+
+   /*
+    * standard termination signals
+    */
+   signal( SIGINT, bailout );
 
 #if !defined(WIN32)
    /*
@@ -1322,6 +1325,7 @@ int main( int argc, char **argv )
    signal( SIGUSR1, SigUser1 );  /* Catch user defined signals */
    signal( SIGUSR2, SigUser2 );
 #endif
+
 #ifdef MULTIPORT
    signal( SIGCHLD, SigChld );
 #endif

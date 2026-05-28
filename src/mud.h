@@ -75,7 +75,7 @@ class pc_data;
 class obj_data;
 
 /* Used in class headers - needs to be declared early */
-void init_memory( void *start, void *end, unsigned int size );
+void init_memory( void *, void *, unsigned int );
 void bug( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
 /*
@@ -769,13 +769,14 @@ do                                               \
 #define IS_VALID_DISEASE(sn)	( (sn) >=0 && (sn) < MAX_DISEASE && disease_table[(sn)] && disease_table[(sn)]->name )
 
 /*
- * Description macros.
+ * Description macro.
  */
 #define PERS(ch, looker, from) ( (looker)->can_see( (ch), (from) ) ? \
       ( (ch)->isnpc() ? (ch)->short_descr : (ch)->name ) : "Someone" )
 
 #define log_string(txt)		( log_string_plus( LOG_NORMAL, LEVEL_LOG, (txt) ) )
 
+// FIXME: These 3 functions (in handler.c) and the 3 macros below should eventually be replaced with std::min, std::max, and std::clamp [This refactor will be painful, these macros are called all over the place]
 // Utility macros.
 int umin( int, int );
 int umax( int, int );
@@ -784,13 +785,16 @@ int urange( int, int, int );
 #define UMIN( a, b )      ( umin( (a), (b) ) )
 #define UMAX( a, b )      ( umax( (a), (b) ) )
 #define URANGE(a, b, c )  ( urange( (a), (b), (c) ) )
+
+// These 2 macros are used for case changes on a particular character somewhere in a string.
 #define LOWER( c )        ( (c) >= 'A' && (c) <= 'Z' ? (c) + 'a' - 'A' : (c) )
 #define UPPER( c )        ( (c) >= 'a' && (c) <= 'z' ? (c) + 'A' - 'a' : (c) )
 
-/* Safe fclose macro adopted from DOTD Codebase */
+// Safe fclose macro adopted from DOTD Codebase
 #define FCLOSE(fp) fclose((fp)); (fp)=nullptr;
 
-/* Character data is used in pretty much everything. May as well globally include it here.
+/*
+ * Character data is used in pretty much everything. May as well globally include it here.
  * This includes the pc_data information as well.
  */
 #include "character.h"

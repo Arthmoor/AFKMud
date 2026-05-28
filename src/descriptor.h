@@ -87,6 +87,7 @@ class descriptor_data
    short check_reconnect( const string &, bool );
    short check_playing( const string &, bool );
    void nanny( string & );
+   bool is_idle_timeout( );
 
    /*
     * Functions located in other files 
