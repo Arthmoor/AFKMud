@@ -135,6 +135,7 @@ all:
 	$(MAKE) -j2 -s afkmud
 	@echo "Buidling DNS Resolver...";
 	$(MAKE) -s resolver
+	@rm -f a.out
 
 # pull in dependency info for *existing* .o files
 -include dependencies.d
@@ -172,11 +173,11 @@ resolver: resolver.o
 	@chmod g+w resolver.o
 
 clean:
-	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o
+	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o a.out
 	$(MAKE) all
 
 purge:
-	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o
+	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o a.out
 
 o/%.o: %.cpp
 	@echo "  Compiling $@...";
