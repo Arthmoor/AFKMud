@@ -55,12 +55,13 @@
  **************************************************************************/
 
 /*
-   TO DO
+   TODO:
    -----
 
    1. Add a way of displaying up and down directions effectively
  */
-
+#include <algorithm>
+#include <format>
 #include "mud.h"
 #include "descriptor.h"
 #include "mapper.h"
@@ -141,82 +142,6 @@ void get_exit_dir( int dir, int &x, int &y, int xorig, int yorig )
    }
 }
 
-char *get_exits( char_data * ch )
-{
-   static char buf[MSL];
-
-   buf[0] = '\0';
-
-   if( !check_blind( ch ) )
-      return buf;
-
-   ch->set_color( AT_EXITS );
-
-   strlcpy( buf, "[Exits:", MSL );
-
-   bool found = false;
-   list < exit_data * >::iterator iexit;
-   for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
-   {
-      exit_data *pexit = *iexit;
-
-      if( ch->is_immortal(  ) )
-         /*
-          * Immortals see all exits, even secret ones 
-          */
-      {
-         if( pexit->to_room )
-         {
-            found = true;
-            strlcat( buf, " ", MSL );
-
-            strlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
-
-            if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
-               strlcat( buf, "->(Overland)", MSL );
-
-            /*
-             * New code added to display closed, or otherwise invisible exits to immortals 
-             * Installed by Samson 1-25-98 
-             */
-            if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-               strlcat( buf, "->(Closed)", MSL );
-            if( IS_EXIT_FLAG( pexit, EX_DIG ) )
-               strlcat( buf, "->(Dig)", MSL );
-            if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )
-               strlcat( buf, "->(Window)", MSL );
-            if( IS_EXIT_FLAG( pexit, EX_HIDDEN ) )
-               strlcat( buf, "->(Hidden)", MSL );
-            if( pexit->to_room->flags.test( ROOM_DEATH ) )
-               strlcat( buf, "->(Deathtrap)", MSL );
-         }
-      }
-      else
-      {
-         if( pexit->to_room && !IS_EXIT_FLAG( pexit, EX_SECRET ) && ( !IS_EXIT_FLAG( pexit, EX_WINDOW ) || IS_EXIT_FLAG( pexit, EX_ISDOOR ) ) && !IS_EXIT_FLAG( pexit, EX_HIDDEN ) && !IS_EXIT_FLAG( pexit, EX_FORTIFIED ) /* Checks for walls, Marcus */
-             && !IS_EXIT_FLAG( pexit, EX_HEAVY ) && !IS_EXIT_FLAG( pexit, EX_MEDIUM ) && !IS_EXIT_FLAG( pexit, EX_LIGHT ) && !IS_EXIT_FLAG( pexit, EX_CRUMBLING ) )
-         {
-            found = true;
-            strlcat( buf, " ", MSL );
-
-            strlcat( buf, capitalize( dir_name[pexit->vdir] ), MSL );
-
-            if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
-               strlcat( buf, "->(Closed)", MSL );
-            if( ch->has_aflag( AFF_DETECTTRAPS ) && pexit->to_room->flags.test( ROOM_DEATH ) )
-               strlcat( buf, "->(Deathtrap)", MSL );
-         }
-      }
-   }
-
-   if( !found )
-      strlcat( buf, " none]", MSL );
-   else
-      strlcat( buf, "]", MSL );
-   strlcat( buf, "\r\n", MSL );
-   return buf;
-}
-
 /* Clear one map coord */
 void clear_coord( int x, int y )
 {
@@ -251,511 +176,371 @@ void clear_room( int x, int y )
    }
 }
 
-/* This function is recursive, ie it calls itself */
-void map_exits( char_data * ch, room_index * pRoom, int x, int y, int depth )
+std::string get_exits( char_data* ch )
 {
-   static char map_chars[11] = "|-|-UD/\\\\/";
-   int door;
+   if( !ch || !check_blind( ch ) )
+      return "";
+
+   std::string result = "[Exits:";
+   bool found = false;
+
+   for( const auto* pexit : ch->in_room->exits )
+   {
+      bool is_immort = ch->is_immortal();
+
+      // Mortal visibility logic
+      bool is_hidden = IS_EXIT_FLAG( pexit, EX_SECRET ) ||
+         IS_EXIT_FLAG( pexit, EX_HIDDEN ) ||
+         IS_EXIT_FLAG( pexit, EX_FORTIFIED ) ||
+         IS_EXIT_FLAG( pexit, EX_HEAVY ) ||
+         IS_EXIT_FLAG( pexit, EX_MEDIUM ) ||
+         IS_EXIT_FLAG( pexit, EX_LIGHT ) ||
+         IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ||
+         ( IS_EXIT_FLAG( pexit, EX_WINDOW ) && !IS_EXIT_FLAG( pexit, EX_ISDOOR ) );
+
+      if( !pexit->to_room )
+         continue;
+
+      if( !is_immort && is_hidden )
+         continue;
+
+      found = true;
+      result += std::format( " {}", capitalize( dir_name[pexit->vdir] ) );
+
+      /*
+       * Immortals see all exits, even secret ones
+       */
+      if( is_immort )
+      {
+         if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) ) result += "->(Overland)";
+         if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )   result += "->(Closed)";
+         if( IS_EXIT_FLAG( pexit, EX_DIG ) )      result += "->(Dig)";
+         if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )   result += "->(Window)";
+         if( IS_EXIT_FLAG( pexit, EX_HIDDEN ) )   result += "->(Hidden)";
+         if( pexit->to_room->flags.test( ROOM_DEATH ) ) result += "->(Deathtrap)";
+      }
+      else
+      {
+         if( IS_EXIT_FLAG( pexit, EX_CLOSED ) ) result += "->(Closed)";
+         if( ch->has_aflag( AFF_DETECTTRAPS ) && pexit->to_room->flags.test( ROOM_DEATH ) )
+            result += "->(Deathtrap)";
+      }
+   }
+
+   result += found ? "]\r\n" : " none]\r\n";
+
+   return std::format( "{}{}", ch->color_str( AT_EXITS ), result );
+}
+
+/* This function is recursive, ie it calls itself */
+void map_exits( char_data* ch, room_index* pRoom, int x, int y, int depth )
+{
+   static constexpr std::array<char, 10> map_chars = {'|', '-', '|', '-', 'U', 'D', '/', '\\', '\\', '/'};
+   exit_data *pExit;
    int exitx = 0, exity = 0;
    int roomx = 0, roomy = 0;
-   exit_data *pExit;
 
-   /*
-    * Setup this coord as a room - Change any symbols that can't be displayed here 
-    */
-   switch ( pRoom->sector_type )
+   switch( pRoom->sector_type )
    {
       case SECT_INDOORS:
          dmap[x][y].tegn = 'O';
          dmap[x][y].sector = -1;
          break;
-
       default:
          dmap[x][y].sector = pRoom->sector_type;
          break;
    }
 
-   /*
-    * An exit out to the overland should display as such 
-    */
    if( pRoom->flags.test( ROOM_MAP ) )
       dmap[x][y].sector = SECT_EXIT;
 
    dmap[x][y].vnum = pRoom->vnum;
    dmap[x][y].depth = depth;
-//   dmap[x][y].info = pRoom->room_flags;
+   //   dmap[x][y].info = pRoom->room_flags;
    dmap[x][y].can_see = pRoom->is_dark( ch );
 
-   /*
-    * Limit recursion 
-    */
-   if( depth > MAXDEPTH )
+   if( depth > MAXDEPTH || pRoom->flags.test( ROOM_MAP ) )
       return;
 
-   /*
-    * No exits for overland sectors 
-    */
-   if( pRoom->flags.test( ROOM_MAP ) )
-      return;
-
-   /*
-    * This room is done, deal with it's exits 
-    */
-   for( door = 0; door < 10; ++door )
+   for( int door = 0; door < 10; ++door )
    {
       /*
-       * Skip if there is no exit in this direction 
+       * Skip if there is no exit in this direction
        */
       if( !( pExit = pRoom->get_exit( door ) ) )
          continue;
 
-      /*
-       * Skip up and down until I can figure out a good way to display it 
-       */
       if( door == 4 || door == 5 )
          continue;
 
+      pExit = pRoom->get_exit( door );
+      if( !pExit || !pExit->to_room )
+         continue;
+
       /*
-       * Get the coords for the next exit and room in this direction 
+       * Get the coords for the next exit and room in this direction
        */
       get_exit_dir( door, exitx, exity, x, y );
       get_exit_dir( door, roomx, roomy, exitx, exity );
 
       /*
-       * Skip if coords fall outside map 
+       * Skip if coords fall outside map
        */
       if( BOUNDARY( exitx, exity ) || BOUNDARY( roomx, roomy ) )
          continue;
 
       /*
-       * Skip if there is no room beyond this exit 
+       * Skip if there is no room beyond this exit
        */
       if( !pExit->to_room )
          continue;
 
       /*
-       * Ensure there are no clashes with previously defined rooms 
+       * Ensure there are no clashes with previously defined rooms
        */
-      if( ( dmap[roomx][roomy].vnum != 0 ) && ( dmap[roomx][roomy].vnum != pExit->to_room->vnum ) )
+      if( dmap[roomx][roomy].vnum != 0 && dmap[roomx][roomy].vnum != pExit->to_room->vnum )
       {
          /*
-          * Use the new room if the depth is higher 
+          * Use the new room if the depth is higher
           */
          if( dmap[roomx][roomy].depth <= depth )
             continue;
 
          /*
-          * It is so clear the old room 
+          * It is so clear the old room
           */
          clear_room( roomx, roomy );
       }
 
       /*
-       * No exits at MAXDEPTH 
+       * No exits at MAXDEPTH
        */
       if( depth == MAXDEPTH )
          continue;
 
       /*
-       * No need for exits that are already mapped 
+       * No need for exits that are already mapped
        */
       if( dmap[exitx][exity].depth > 0 )
          continue;
 
       /*
-       * Fill in exit 
+       * Fill in exit
        */
       dmap[exitx][exity].depth = depth;
       dmap[exitx][exity].vnum = pExit->to_room->vnum;
-//      dmap[exitx][exity].info = pExit->exit_info;
+      //      dmap[exitx][exity].info = pExit->exit_info;
       dmap[exitx][exity].tegn = map_chars[door];
       dmap[exitx][exity].sector = -1;
 
       /*
-       * More to do? If so we recurse 
+       * More to do? If so we recurse
        */
-      if( depth < MAXDEPTH && !pRoom->flags.test( ROOM_MAP ) && ( ( dmap[roomx][roomy].vnum == pExit->to_room->vnum ) || ( dmap[roomx][roomy].vnum == 0 ) ) )
+      if( depth < MAXDEPTH && ( dmap[roomx][roomy].vnum == pExit->to_room->vnum || dmap[roomx][roomy].vnum == 0 ) )
       {
-         /*
-          * Depth increases by one each time 
-          */
-         map_exits( ch, pExit->to_room, roomx, roomy, depth + 1 );
+         map_exits(ch, pExit->to_room, roomx, roomy, depth + 1);
       }
    }
 }
 
 /* Reformat room descriptions to exclude undesirable characters */
-void reformat_desc( char *desc )
+void reformat_desc( std::string & desc )
 {
-   /*
-    * Index variables to keep track of array/pointer elements 
-    */
-   size_t i = 0;
-   int j = 0;
-   char buf[MSL], *p;
-
-   buf[0] = '\0';
-
-   if( !desc )
-      return;
-
-   /*
-    * Replace all "\n" and "\r" with spaces 
-    */
-   for( i = 0; i <= strlen( desc ); ++i )
+   // Replace all returns/newlines/tabs with spaces.
+   std::replace_if( desc.begin(), desc.end(), []( char c )
    {
-      if( ( desc[i] == '\r' ) || ( desc[i] == '\n' ) )
-         desc[i] = ' ';
-   }
+      return c == '\r' || c == '\n' || c == '\t';
+   }, ' ' );
 
    /*
-    * Remove multiple spaces 
+    * Two or more consecutive spaces?
     */
-   for( p = desc; *p != '\0'; ++p )
+   auto new_end = std::unique( desc.begin(), desc.end(), []( char a, char b )
    {
-      buf[j] = *p;
-      ++j;
+      return a == ' ' && b == ' ';
+   } );
 
-      /*
-       * Two or more consecutive spaces? 
-       */
-      if( ( *p == ' ' ) && ( *( p + 1 ) == ' ' ) )
-      {
-         do
-         {
-            ++p;
-         }
-         while( *( p + 1 ) == ' ' );
-      }
-   }
-
-   buf[j] = '\0';
-
-   /*
-    * Copy to desc 
-    */
-   strlcpy( desc, buf, MSL );
+   desc.erase( new_end, desc.end() );
 }
 
-int get_line( const char *desc, size_t max_len )
+std::string whatColor( std::string_view str, std::string_view pos )
 {
-   if( !desc || strlen( desc ) <= max_len )
-      return 0;
+   std::string col;
+
+   std::string_view segment = str.substr( 0, str.find (pos ) );
 
    size_t i = 0;
-   size_t j = 0; // Current visual length counter
-   std::string_view sv( desc );
+   while( i < segment.length() )
+   {
+      if( segment[i] == '&' || segment[i] == '{' || segment[i] == '}' )
+      {
+         if(i + 1 < segment.length() )
+         {
+            col = std::string( segment.substr( i, 2 ) );
+         }
+      }
+      ++i;
+   }
+
+   return col;
+}
+
+size_t get_line( std::string_view desc, size_t max_len )
+{
+   if( desc.length() <= max_len )
+      return 0;
+
+   size_t visual_len = 0;
+   size_t byte_idx = 0;
 
    /*
     * Calculate end point in string without color
     */
-   while( i < sv.length() )
+   while( byte_idx < desc.length() && visual_len <= max_len )
    {
-      if( sv[i] == '&' || sv[i] == '{' || sv[i] == '}' )
+      if( desc[byte_idx] == '&' || desc[byte_idx] == '{' || desc[byte_idx] == '}' )
       {
          size_t consumed = 0;
 
          // We call colorcode with nullptr for descriptor because we
          // only care about the length consumed, not the actual ANSI translation.
-         colorcode( sv.substr( i ), nullptr, consumed );
+         colorcode( desc.substr( byte_idx ), nullptr, consumed );
 
          if( consumed > 0 )
-         {
-            i += consumed;
-            // Tokens (like color codes) have a visual length of 0
-            // so we don't add to j.
-         }
+            byte_idx += consumed; // Tokens (like color codes) have a visual length of 0 so we don't add to byte_idx.
          else
          {
             // Not a valid color token, treat as normal char
-            ++j;
-            ++i;
+            ++visual_len;
+            ++byte_idx;
          }
       }
       else
       {
-         /* No conversion, just count */
-         ++j;
-         ++i;
+         // No conversion, just count
+         ++visual_len;
+         ++byte_idx;
       }
-
-      if( j > max_len )
-         break;
    }
 
-   /*
-    * End point is now in i, find the nearest space
-    */
-   size_t k = i;
-   for( ; k > 0; --k )
-   {
-      if( desc[k] == ' ' )
-         break;
-   }
+   if( byte_idx >= desc.length() )
+      return 0;
 
-   /*
-    * There could be a problem if there are no spaces on the line
-    */
-   return k + 1;
+   // Find the nearest space.
+   size_t break_idx = desc.find_last_of( ' ', byte_idx );
+
+   // There could be a problem if there are no spaces on the line.
+   return ( break_idx == std::string_view::npos ) ? byte_idx : break_idx + 1;
 }
 
-char *whatColor( const char *str, const char *pos )
+std::string get_next_line_for_map( std::string_view & remaining, size_t width, char_data * ch, const char * original_text, bool & alldesc )
 {
-   static char col[3];
+   int len = get_line( remaining.data(), width );
+   std::string_view line = ( len > 0 ) ? remaining.substr( 0, len ) : remaining;
 
-   col[0] = '\0';
-   while( str != pos )
-   {
-      if( *str == '&' || *str == '{' || *str == '}' )
-      {
-         col[0] = *str;
+   std::string_view color = whatColor( original_text, line.data() );
+   std::string result = ( color.empty() ? ch->color_str( AT_RMDESC ) : std::string( color ) );
+   result += line;
 
-         ++str;
-         if( !str )
-         {
-            col[1] = '\0';
-            break;
-         }
-         col[1] = *str;
-      }
-      ++str;
-   }
-   col[2] = '\0';
-   return col;
+   if( len <= 0 )
+      alldesc = true;
+   else remaining.remove_prefix( len );
+
+   return result;
 }
 
 /* Display the map to the player */
-void show_map( char_data * ch, char *text )
+void show_map( char_data* ch, char* text )
 {
-   char buf[MSL * 2];
-   int x, y, pos;
-   char *p;
-   bool alldesc = false;   /* Has desc been fully displayed? */
+   if( !ch )
+      return;
 
-   if( !text )
-      alldesc = true;
+   std::string output;
+   std::string_view remaining_text{text ? text : ""};
+   bool alldesc = remaining_text.empty();
 
-   pos = 0;
-   p = text;
-   buf[0] = '\0';
-
-   /*
-    * Show exits 
-    */
    if( ch->has_pcflag( PCFLAG_AUTOEXIT ) )
-      snprintf( buf, MSL * 2, "%s%s", ch->color_str( AT_EXITS ), get_exits( ch ) );
-   else
-      strlcpy( buf, "", MSL * 2 );
-
-   /*
-    * Top of map frame 
-    */
-   strlcat( buf, "&z+-----------+&w ", MSL * 2 );
-   if( !alldesc )
    {
-      pos = get_line( p, 63 );
-      if( pos > 0 )
-      {
-         strlcat( buf, ch->color_str( AT_RMDESC ), MSL * 2 );
-         strncat( buf, p, pos ); /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
-         p += pos;
-      }
-      else
-      {
-         strlcat( buf, ch->color_str( AT_RMDESC ), MSL * 2 );
-         strlcat( buf, p, MSL * 2 );
-         alldesc = true;
-      }
+      output += std::format( "{}{}\r\n", ch->color_str( AT_EXITS ), get_exits( ch ) );
    }
-   strlcat( buf, "\r\n", MSL * 2 );
 
-   /*
-    * Write out the main map area with text 
-    */
-   for( y = 0; y <= MAPY; ++y )
+   output += std::format( "&z+-----------+&w {}\r\n", ( alldesc ? "" : get_next_line_for_map( remaining_text, 63, ch, text, alldesc ) ) );
+
+   for( int y = 0; y <= MAPY; ++y )
    {
-      strlcat( buf, "&z|&D", MSL * 2 );
+      std::string row = "&z|&D";
 
-      for( x = 0; x <= MAPX; ++x )
+      for( int x = 0; x <= MAPX; ++x )
       {
-         int sect = dmap[x][y].sector;
+         auto& cell = dmap[x][y];
 
-         if( sect < 0 )
+         if( cell.sector < 0 )
          {
-            switch ( dmap[x][y].tegn )
+            switch ( cell.tegn )
             {
-               case '-':
-               case '|':
-               case '\\':
-               case '/':
-                  snprintf( buf + strlen( buf ), ( MSL * 2 ) - strlen( buf ), "&O%c&d", dmap[x][y].tegn );
-                  break;
-
-               case '@':  // Character is standing here
-                  snprintf( buf + strlen( buf ), ( MSL * 2 ) - strlen( buf ), "&R%c&d", dmap[x][y].tegn );
-                  break;
-
-               case 'O':  // Indoors
-                  snprintf( buf + strlen( buf ), ( MSL * 2 ) - strlen( buf ), "&w%c&d", dmap[x][y].tegn );
-                  break;
-
-               default:   // Empty space
-                  snprintf( buf + strlen( buf ), ( MSL * 2 ) - strlen( buf ), "%c", dmap[x][y].tegn );
-                  break;
+               case '-': case '|': case '\\': case '/': row += std::format( "&O{}&d", cell.tegn ); break;
+               case '@': row += std::format( "&R{}&d", cell.tegn ); break;
+               case 'O': row += std::format( "&w{}&d", cell.tegn ); break;
+               default:  row += cell.tegn; break;
             }
          }
          else
          {
-            snprintf( buf + strlen( buf ), ( MSL * 2 ) - strlen( buf ), "%s%s&d", sect_show[sect].color, sect_show[sect].symbol );
+            row += std::format( "{}{}&d", sect_show[cell.sector].color, sect_show[cell.sector].symbol );
          }
       }
-      strlcat( buf, "&z|&D ", MSL * 2 );
 
-      /*
-       * Add the text, if necessary 
-       */
+      row += "&z|&D ";
+
       if( !alldesc )
       {
-         pos = get_line( p, 63 );
-         char col[10], c[3];
-
-         strcpy( c, whatColor( text, p ) );
-         if( c[0] == '\0' )
-            strlcpy( col, ch->color_str( AT_RMDESC ), 10 );
-         else
-            snprintf( col, 10, "%s", c );
-
-         if( pos > 0 )
-         {
-            strlcat( buf, col, MSL * 2 );
-            strncat( buf, p, pos ); /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
-            p += pos;
-         }
-         else
-         {
-            strlcat( buf, col, MSL * 2 );
-            strlcat( buf, p, MSL * 2 );
-            alldesc = true;
-         }
+         row += get_next_line_for_map( remaining_text, 63, ch, text, alldesc );
       }
-      strlcat( buf, "\r\n", MSL * 2 );
+
+      output += row + "\r\n";
    }
 
-   /*
-    * Finish off map area 
-    */
-   strlcat( buf, "&z+-----------+&D ", MSL * 2 );
+   output += "&z+-----------+&D ";
+
    if( !alldesc )
+      output += get_next_line_for_map( remaining_text, 63, ch, text, alldesc );
+   output += "\r\n";
+
+   while( !alldesc )
    {
-      char col[10], c[3];
-      pos = get_line( p, 63 );
-
-      strcpy( c, whatColor( text, p ) );
-      if( c[0] == '\0' )
-         strlcpy( col, ch->color_str( AT_RMDESC ), 10 );
-      else
-         snprintf( col, 10, "%s", c );
-
-      if( pos > 0 )
-      {
-         strlcat( buf, col, MSL * 2 );
-         strncat( buf, p, pos ); /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
-         p += pos;
-         strlcat( buf, "\r\n", MSL * 2 );
-      }
-      else
-      {
-         strlcat( buf, col, MSL * 2 );
-         strlcat( buf, p, MSL * 2 );
-         alldesc = true;
-      }
+      output += get_next_line_for_map( remaining_text, 78, ch, text, alldesc ) + "\r\n";
    }
 
-   /*
-    * Deal with any leftover text 
-    */
-   if( !alldesc )
-   {
-      char col[10], c[3];
-
-      do
-      {
-         /*
-          * Note the number - no map to detract from width 
-          */
-         pos = get_line( p, 78 );
-
-         strcpy( c, whatColor( text, p ) );
-         if( c[0] == '\0' )
-            strlcpy( col, ch->color_str( AT_RMDESC ), 10 );
-         else
-            snprintf( col, 10, "%s", c );
-
-         if( pos > 0 )
-         {
-            strlcat( buf, col, MSL * 2 );
-            strncat( buf, p, pos ); /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
-            p += pos;
-            strlcat( buf, "\r\n", MSL * 2 );
-         }
-         else
-         {
-            strlcat( buf, col, MSL * 2 );
-            strlcat( buf, p, MSL * 2 );
-            alldesc = true;
-         }
-      }
-      while( !alldesc );
-   }
-   strlcat( buf, "&D\r\n", MSL * 2 );
-   ch->print( buf );
+   ch->print( output );
 }
 
 /* Clear, generate and display the map */
-void draw_map( char_data * ch, const char *desc )
+void draw_map( char_data* ch, std::string_view desc )
 {
-   int x, y;
-   static char buf[MSL];
+   if( !ch || !ch->in_room )
+      return;
 
-   strlcpy( buf, desc, MSL );
-   /*
-    * Remove undesirable characters 
-    */
-   reformat_desc( buf );
+   std::string formatted_desc{ desc };
+   reformat_desc( formatted_desc );
 
-   /*
-    * Clear map 
-    */
-   for( y = 0; y <= MAPY; ++y )
+   for( int y = 0; y <= MAPY; ++y )
    {
-      for( x = 0; x <= MAPX; ++x )
+      for( int x = 0; x <= MAPX; ++x )
       {
-         clear_coord( x, y );
+         clear_coord(x, y);
       }
    }
 
-   /*
-    * Start with players pos at centre of map 
-    */
-   x = MAPX / 2;
-   y = MAPY / 2;
+   int x = MAPX / 2;
+   int y = MAPY / 2;
 
    dmap[x][y].vnum = ch->in_room->vnum;
    dmap[x][y].depth = 0;
 
-   /*
-    * Generate the map 
-    */
    map_exits( ch, ch->in_room, x, y, 0 );
 
-   /*
-    * Current position should be a "X" 
-    */
    dmap[x][y].tegn = '@';
    dmap[x][y].sector = -1;
 
-   /*
-    * Send the map 
-    */
-   show_map( ch, buf );
+   show_map( ch, formatted_desc.data() );
 }
