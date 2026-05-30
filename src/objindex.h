@@ -26,8 +26,7 @@
  *                          Object Index Class Info                         *
  ****************************************************************************/
 
-#ifndef __OBJINDEX_H__
-#define __OBJINDEX_H__
+#pragma once
 
 const int MAX_OBJ_VALUE = 11; // This should always be one more than you actually have
 
@@ -77,4 +76,3 @@ class obj_index
 extern map < int, obj_index * >obj_index_table;
 obj_index *get_obj_index( int );
 obj_index *make_object( int, int, const string &, area_data * );
-#endif

@@ -26,6 +26,8 @@
  *                           Room Mapper Module                             *
  ****************************************************************************/
 
+#pragma once
+
 /* Defines for ASCII Room Automapper */
 const int MAPX = 10;
 const int MAPY = 8;

@@ -26,8 +26,7 @@
  *                          Shaddai's Polymorph                             *
  ****************************************************************************/
 
-#ifndef __POLYMORPH_H__
-#define __POLYMORPH_H__
+#pragma once
 
 const int MORPHFILEVER = 1;
 #define MORPH_FILE "morph.dat"   /* For morph data */
@@ -167,4 +166,3 @@ int do_morph_char( char_data *, morph_data * );
 void do_unmorph_char( char_data * );
 
 #define MORPHPERS(ch, looker, from) ( (looker)->can_see( (ch), (from) ) ? (ch)->morph->morph->short_desc : "Someone" )
-#endif

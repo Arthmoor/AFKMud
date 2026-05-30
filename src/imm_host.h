@@ -41,8 +41,7 @@ Advanced Immortal Host
 By Noplex with help from Senir and Samson
 */
 
-#ifndef __IMMHOST_H__
-#define __IMMHOST_H__
+#pragma once
 
 const int MAX_DOMAIN = 10;
 
@@ -74,4 +73,3 @@ class immortal_host
    string domain[MAX_DOMAIN];
    string name;
 };
-#endif

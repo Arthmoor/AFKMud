@@ -63,8 +63,7 @@
  * SUCH DAMAGE.
  */
  
-#ifndef SHA256_H
-#define SHA256_H
+#pragma once
 
 #include <string>
 
@@ -118,5 +117,3 @@ std::string sha256_crypt( std::string input );
            | ((uint32) *((str) + 1) << 16)    \
            | ((uint32) *((str) + 0) << 24);   \
 }
-
-#endif // SHA256_H

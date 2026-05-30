@@ -26,8 +26,7 @@
  *                             Command Header                               *
  ****************************************************************************/
 
-#ifndef __COMMANDS_H__
-#define __COMMANDS_H__
+#pragma once
 
 /*
  *  Defines for the command flags. --Shaddai
@@ -97,5 +96,3 @@ extern map < string, social_type * >social_table;
 cmd_type *find_command( const string & );
 social_type *find_social( const string & );
 int get_cmdflag( const string & );
-
-#endif

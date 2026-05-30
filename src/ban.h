@@ -31,8 +31,7 @@
  * CIDR handling code is part of his libemail library. https://github.com/petermblair/libemail
  * Permission was granted to use the code in AFKMud and other projects as needed.
  */
-#ifndef __BAN_H__
-#define __BAN_H__
+#pragma once
 
 #define BAN_LIST SYSTEM_DIR "ban.lst" // List of bans
 
@@ -120,5 +119,3 @@ class ban_data
 };
 
 bool is_banned( descriptor_data * );
-
-#endif

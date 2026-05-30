@@ -26,8 +26,7 @@
  *                      Player communication module                         *
  ****************************************************************************/
 
-#ifndef __LANGUAGE_H__
-#define __LANGUAGE_H__
+#pragma once
 
 /*
  * Tongues / Languages structures
@@ -62,4 +61,3 @@ class lang_data
 };
 
 extern list < lang_data * >langlist;
-#endif

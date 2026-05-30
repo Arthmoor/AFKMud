@@ -30,8 +30,7 @@
  * New Functionality added: 9/23/07 - Xorith                                *
  ****************************************************************************/
 
-#ifndef __BOARDS_H__
-#define __BOARDS_H__
+#pragma once
 
 #define BOARD_FILE "boards.lst"  /* New board file */
 #define OLD_BOARD_FILE "boards.txt" /* Old board file */
@@ -147,4 +146,3 @@ class board_chardata
    time_t last_read;
    short alert;
 };
-#endif

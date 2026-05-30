@@ -26,6 +26,7 @@
  *                              Command Code                                *
  ****************************************************************************/
 
+#include <format>
 #include <fstream>
 #include <sys/time.h>
 #if !defined(WIN32)
@@ -45,7 +46,7 @@
 
 vector < vector < cmd_type * > >command_table;
 
-extern char lastplayercmd[MIL * 2];
+extern std::string lastplayercmd;
 #if defined(WIN32)
 void gettimeofday( struct timeval *, struct timezone * );
 #endif
@@ -153,16 +154,16 @@ int check_command_level( const string & arg, int check )
  */
 
 /* Needed a global here */
-char cmd_flag_buf[MSL];
+std::string cmd_flag_buf;
 
-char *check_cmd_flags( char_data * ch, cmd_type * cmd )
+std::string check_cmd_flags( char_data * ch, cmd_type * cmd )
 {
    if( ch->has_aflag( AFF_POSSESS ) && cmd->flags.test( CMD_POSSESS ) )
-      snprintf( cmd_flag_buf, MSL, "You can't %s while you are possessing someone!\r\n", cmd->name.c_str(  ) );
+      cmd_flag_buf = std::format( "You can't {} while you are possessing someone!\r\n", cmd->name );
    else if( ch->morph != nullptr && cmd->flags.test( CMD_POLYMORPHED ) )
-      snprintf( cmd_flag_buf, MSL, "You can't %s while you are polymorphed!\r\n", cmd->name.c_str(  ) );
+      cmd_flag_buf = std::format( "You can't {} while you are polymorphed!\r\n", cmd->name );
    else
-      cmd_flag_buf[0] = '\0';
+      cmd_flag_buf.clear();
    return cmd_flag_buf;
 }
 
@@ -446,8 +447,7 @@ void interpret( char_data * ch, string argument )
 {
    string command;
    string origarg = argument;
-   char logline[MIL];
-   char *buf;
+   std::string logline, buf;
    timer_data *chtimer = nullptr;
    cmd_type *cmd = nullptr;
    int trust, loglvl;
@@ -508,7 +508,7 @@ void interpret( char_data * ch, string argument )
             bug( "%s: SUB_REPEATCMD: last_cmd invalid", __func__ );
             return;
          }
-         snprintf( logline, MIL, "(%s) %s", cmd->name.c_str(  ), argument.c_str(  ) );
+         logline = std::format( "({}) {}", cmd->name, argument );
       }
    }
 
@@ -566,7 +566,7 @@ void interpret( char_data * ch, string argument )
        * Grab the command word.
        * Special parsing so ' can be a command, also no spaces needed after punctuation.
        */
-      strlcpy( logline, argument.c_str(  ), MIL );
+      logline = argument;
       if( !isalpha( argument[0] ) && !isdigit( argument[0] ) )
       {
          command = argument[0];
@@ -647,10 +647,10 @@ void interpret( char_data * ch, string argument )
    /*
     * Log and snoop.
     */
-   snprintf( lastplayercmd, MIL * 2, "%s used command: %s", ch->name, logline );
+   lastplayercmd = std::format( "{} used command: {}", ch->name, logline );
 
    if( found && cmd->log == LOG_NEVER )
-      strlcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX", MIL );
+      logline = "XXXXXXXX XXXXXXXX XXXXXXXX";
 
    loglvl = found ? cmd->log : LOG_NORMAL;
 
@@ -685,9 +685,9 @@ void interpret( char_data * ch, string argument )
       if( !ch->isnpc(  ) )
       {
          if( ch->desc && ch->desc->original )
-            log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name, ch->desc->original->name, logline );
+            log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name, ch->desc->original->name, logline.c_str() );
          else
-            log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name, logline );
+            log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name, logline.c_str() );
       }
    }
 
@@ -783,7 +783,7 @@ void interpret( char_data * ch, string argument )
     */
    buf = check_cmd_flags( ch, cmd );
 
-   if( buf[0] != '\0' )
+   if( !buf.empty() )
    {
       ch->print( buf );
       return;
@@ -833,9 +833,10 @@ void interpret( char_data * ch, string argument )
       log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: %s: %s %s (R:%d S:%ld.%06ld)", ch->name,
                        cmd->name.c_str(  ), ( cmd->log == LOG_NEVER ? "XXX" : argument.c_str(  ) ), ch->in_room ? ch->in_room->vnum : 0, time_used.tv_sec, time_used.tv_usec );
    }
-   strlcpy( lastplayercmd, "No commands pending", MIL * 2 );
+   lastplayercmd = "No commands pending";
 }
 
+// FIXME: Update to C++23 - follow example in character.cpp
 void cmdf( char_data * ch, const char *fmt, ... )
 {
    char buf[MSL * 2];
@@ -849,6 +850,7 @@ void cmdf( char_data * ch, const char *fmt, ... )
 }
 
 /* Be damn sure the function you pass here is valid, or Bad Things(tm) will happen. */
+// FIXME: Update to C++23 - follow example in character.cpp
 void funcf( char_data * ch, DO_FUN * cmd, const char *fmt, ... )
 {
    char buf[MSL * 2];

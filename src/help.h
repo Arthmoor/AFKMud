@@ -26,8 +26,7 @@
  *                           Help System Module                             *
  ****************************************************************************/
 
-#ifndef __HELP_H__
-#define __HELP_H__
+#pragma once
 
 #define HELP_FILE SYSTEM_DIR "helps.dat"  // Data file where helps are stored now.
 
@@ -45,5 +44,3 @@ struct help_data
    short level;
    short webinvis;
 };
-
-#endif

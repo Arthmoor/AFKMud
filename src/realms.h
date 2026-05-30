@@ -26,8 +26,7 @@
  *                         Immortal Realms Module                           *
  ****************************************************************************/
 
-#ifndef __REALMS_H__
-#define __REALMS_H__
+#pragma once
 
 #define REALM_DIR  "../realms/" // Realm data dir
 #define REALM_LIST "realm.lst"  // List of realms
@@ -88,5 +87,3 @@ void delete_realm( char_data *, realm_data * );
 void verify_realms(  );
 void free_realms( );
 realm_data *get_realm( const string & );
-
-#endif

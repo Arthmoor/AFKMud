@@ -24,8 +24,7 @@
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************/
 
-#ifndef __BITS_H__
-#define __BITS_H__
+#pragma once
 
 /* bits.h -- Abits and Qbits for the Rogue Winds by Scion
    Copyright 2000 by Peter Keeler, All Rights Reserved. The content
@@ -48,4 +47,3 @@ extern map < int, string > abits;
 extern map < int, string > qbits;
 
 void remove_qbit( char_data *, int );
-#endif

@@ -26,8 +26,7 @@
  *                      Calendar Handler/Seasonal Updates                   *
  ****************************************************************************/
 
-#ifndef __CALENDAR_H__
-#define __CALENDAR_H__
+#pragma once
 
 /* Well, ok, so it didn't turn out the way I wanted, but that's life - Samson */
 /* Ever write a comment like the one above this one and completely forget what it means? */
@@ -109,4 +108,3 @@ class holiday_data
 
 void check_holiday( char_data * );
 holiday_data *get_holiday( short, short );
-#endif

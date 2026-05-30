@@ -26,8 +26,7 @@
  *                  Internal server shell command module                    *
  ****************************************************************************/
 
-#ifndef __SHELL_H__
-#define __SHELL_H__
+#pragma once
 
 #define SHELL_COMMAND_FILE "../system/shellcommands.dat"
 
@@ -157,4 +156,3 @@ class shell_cmd
 
 extern list < shell_cmd * >shellcmdlist;
 shell_cmd *find_shellcommand( const string & );
-#endif

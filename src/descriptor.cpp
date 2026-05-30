@@ -44,9 +44,9 @@
 #include <sys/wait.h>
 #include <arpa/telnet.h>
 #endif
-#include <fstream>
 #include <format>
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "auction.h"
 #include "ban.h"
@@ -667,14 +667,14 @@ bool write_to_descriptor_old( int desc, const char* txt )
  * This function handles both compressed and uncompressed sending.
  * Updated to run with the block checks by Orion... if it doesn't work, blame him.;P -Orion
  */
-bool descriptor_data::write( const char* txt )
+bool descriptor_data::write( const string & txt )
 {
-   if( !txt || *txt == '\0')
+   if( txt.empty() )
       return true;
 
    std::string_view text_to_send{txt};
 
-   size_t length = strlen( txt );
+   size_t length = txt.length();
    size_t mccpsaved = length;
 
    // Won't send more then it has to so make sure we check if its under length.
@@ -838,15 +838,11 @@ bool descriptor_data::flush_buffer( bool fPrompt )
     */
    if( !mud_down && this->outbuf.length(  ) > 4096 )
    {
-      char buf[4096];
-
-      memcpy( buf, this->outbuf.c_str(  ), 4095 );
-      this->outbuf = this->outbuf.substr( 4096, this->outbuf.length(  ) - 4096 );
+      std::string_view sv( this->outbuf );
+      std::string_view chunk = sv.substr( 0, 4096 );
 
       if( snoop_by )
       {
-         buf[4095] = '\0'; // Holds the record for the longest standing bug that never got spotted. Because GCC should have had ways to see this sooner!
-
          if( character && character->name )
          {
             if( original && original->name )
@@ -855,9 +851,12 @@ bool descriptor_data::flush_buffer( bool fPrompt )
                snoop_by->write_to_buffer( character->name );
          }
          snoop_by->write_to_buffer( "% " );
-         snoop_by->write_to_buffer( buf );
+         snoop_by->write_to_buffer( std::string( chunk ) );
       }
-      if( !this->write( buf ) )
+
+      this->outbuf.erase( 0, 4096 );
+
+      if( !this->write( std::string( chunk ) ) )
          return false;
       return true;
    }
@@ -913,7 +912,7 @@ bool descriptor_data::flush_buffer( bool fPrompt )
    /*
     * OS-dependent output.
     */
-   if( !this->write( this->outbuf.c_str(  ) ) )
+   if( !this->write( this->outbuf ) )
    {
       this->outbuf.erase(  );
       return false;
@@ -1165,6 +1164,7 @@ void descriptor_data::write_to_buffer( const string & txt )
    this->outbuf.append( txt );
 }
 
+// FIXME: Switch to std::format logic. Use character.cpp as an example.
 void descriptor_data::buffer_printf( const char *fmt, ... )
 {
    char buf[MSL * 4];
@@ -1891,341 +1891,198 @@ void accept_new( int ctrl )
    }
 }
 
-// FIXME: This needs a major C++23 overhaul.
 void descriptor_data::prompt(  )
 {
-   char_data *ch = character;
-   char_data *och = ( original ? original : character );
-   char_data *victim;
-   bool ansi = ( och->has_pcflag( PCFLAG_ANSI ) );
-   const char *cprompt;
-   const char *helpstart = "&w[Type HELP START]";
-   char buf[MSL];
-   char *pbuf = buf;
-   size_t pstat;
-   int percent;
-
-   if( !ch )
+   if( !character )
    {
-      bug( "%s: nullptr ch", __func__ );
+      bug( "%s: nullptr character", __func__ );
       return;
    }
 
+   auto* ch = character;
+   auto* och = original ? original : character;
+
+   std::string_view cprompt;
+
    if( !ch->has_pcflag( PCFLAG_HELPSTART ) )
-      cprompt = helpstart;
-
-   else if( !ch->isnpc(  ) && ch->substate != SUB_NONE && ch->pcdata->subprompt && ch->pcdata->subprompt[0] != '\0' )
+      cprompt = "&w[Type HELP START]";
+   else if( !ch->isnpc() && ch->substate != SUB_NONE && ch->pcdata->subprompt && *ch->pcdata->subprompt )
       cprompt = ch->pcdata->subprompt;
-
-   else if( ch->isnpc(  ) || ( !ch->fighting && ( !ch->pcdata->prompt || !*ch->pcdata->prompt ) ) )
+   else if( ch->isnpc() || ( !ch->fighting && ( !ch->pcdata->prompt || !*ch->pcdata->prompt ) ) )
       cprompt = default_prompt( ch );
-
    else if( ch->fighting )
-   {
-      if( !ch->pcdata->fprompt || !*ch->pcdata->fprompt )
-         cprompt = default_fprompt( ch );
-      else
-         cprompt = ch->pcdata->fprompt;
-   }
+      cprompt = ( ch->pcdata->fprompt && *ch->pcdata->fprompt) ? ch->pcdata->fprompt : default_fprompt( ch );
    else
       cprompt = ch->pcdata->prompt;
 
-   if( ansi )
+   std::string output;
+   if( och->has_pcflag( PCFLAG_ANSI ) )
    {
-      strlcpy( pbuf, ANSI_RESET, MSL - ( pbuf - buf ) );
+      output += ANSI_RESET;
       prevcolor = 0x08;
-      pbuf += 4;
    }
 
-   for( ; *cprompt; ++cprompt )
+   auto get_health_string = [](int hit, int max_hit) -> std::string_view
    {
-      /*
-       * '%' = prompt commands
-       * Note: foreground changes will revert background to 0 (black)
-       */
-      if( *cprompt != '%' )
+      int percent = ( 100 * hit ) / max_hit;
+
+      if( max_hit <= 0 )
+         return "DYING";
+
+      if( percent >= 100 )
+         return "perfect health";
+      if( percent >= 90 )
+         return "slightly scratched";
+      if( percent >= 80 )
+         return "few bruises";
+      if( percent >= 70 )
+         return "some cuts";
+      if( percent >= 60 )
+         return "several wounds";
+      if( percent >= 50 )
+         return "nasty wounds";
+      if( percent >= 40 )
+         return "bleeding freely";
+      if( percent >= 30 )
+         return "covered in blood";
+      if( percent >= 20 )
+         return "leaking guts";
+      if( percent >= 10 )
+         return "almost dead";
+      return "DYING";
+   };
+
+   for( size_t i = 0; i < cprompt.length(); ++i )
+   {
+      if( cprompt[i] != '%' || ( i + 1 >= cprompt.length() ) )
       {
-         *( pbuf++ ) = *cprompt;
+         output += cprompt[i];
          continue;
       }
 
-      ++cprompt;
-      if( !*cprompt )
-         break;
-      if( *cprompt == *( cprompt - 1 ) )
+      char cmd = cprompt[++i];
+      if( cmd == '%')
       {
-         *( pbuf++ ) = *cprompt;
+         output += '%';
          continue;
       }
-      switch ( *( cprompt - 1 ) )
+
+      switch( cmd )
       {
-         default:
-            bug( "%s: bad command char '%c'.", __func__, *( cprompt - 1 ) );
+         case 'h': output += std::to_string( ch->hit ); break;
+         case 'H': output += std::to_string( ch->max_hit ); break;
+         case 'm': output += std::to_string( ch->mana ); break;
+         case 'M': output += std::to_string( ch->max_mana ); break;
+         case 'v': output += std::to_string( ch->move ); break;
+         case 'V': output += std::to_string( ch->max_move ); break;
+         case 'g': output += std::to_string( ch->gold ); break;
+         case 'u': output += std::to_string( num_descriptors ); break;
+         case 'U': output += std::to_string( sysdata->maxplayers ); break;
+         case 'x': output += std::to_string( ch->exp ); break;
+         case 'X': output += std::to_string( exp_level( ch->level + 1 ) - ch->exp ); break;
+         case 'w': output += std::to_string( ch->carry_weight ); break;
+         case 'W': output += std::to_string( ch->can_carry_w() ); break;
+         case 'a':
+            if( ch->level >= 10 )
+               output += std::to_string( ch->alignment );
+            else
+               output += ( ch->IS_GOOD() ? "good" : ( ch->IS_EVIL() ? "evil" : "neutral" ) );
             break;
-
-         case '%':
-            *pbuf = '\0';
-            pstat = 0x80000000;
-            switch ( *cprompt )
+         case 'A':
+            if( ch->has_aflag( AFF_INVISIBLE ) )
+               output += 'I';
+            if( ch->has_aflag( AFF_HIDE ) )
+               output += 'H';
+            if( ch->has_aflag( AFF_SNEAK ) )
+               output += 'S';
+            break;
+         case 'C': // Tank
+         case 'c':
+         {
+            auto* v = ( ch->fighting && ch->fighting->who ) ? ( cmd == 'C' ? ch->fighting->who->fighting ? ch->fighting->who->fighting->who : nullptr : ch->fighting->who ) : nullptr;
+            output += v ? get_health_string( v->hit, v->max_hit ) : "N/A";
+            break;
+         }
+         case 'N': // Tank Name
+         case 'n':
+         {
+            auto* v = ( ch->fighting && ch->fighting->who ) ? ( cmd == 'N' ? ch->fighting->who->fighting ? ch->fighting->who->fighting->who : nullptr : ch->fighting->who ) : nullptr;
+            if( !v )
+               output += "N/A";
+            else
             {
-               default:
-               case '%':
-                  *pbuf++ = '%';
-                  *pbuf = '\0';
-                  break;
+               std::string name = ( ch == v ) ? "You" : ( v->isnpc() ? v->short_descr : v->name );
 
-               case 'a':
-                  if( ch->level >= 10 )
-                     pstat = ch->alignment;
-                  else if( ch->IS_GOOD(  ) )
-                     strlcpy( pbuf, "good", MSL - ( pbuf - buf ) );
-                  else if( ch->IS_EVIL(  ) )
-                     strlcpy( pbuf, "evil", MSL - ( pbuf - buf ) );
-                  else
-                     strlcpy( pbuf, "neutral", MSL - ( pbuf - buf ) );
-                  break;
-
-               case 'A':
-                  snprintf( pbuf, MSL - ( pbuf - buf ), "%s%s%s", ch->has_aflag( AFF_INVISIBLE ) ? "I" : "",
-                            ch->has_aflag( AFF_HIDE ) ? "H" : "", ch->has_aflag( AFF_SNEAK ) ? "S" : "" );
-                  break;
-
-               case 'C':  /* Tank */
-                  if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
-                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
-                  else if( !victim->fighting || ( victim = victim->fighting->who ) == nullptr )
-                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
-                  else
-                  {
-                     if( victim->max_hit > 0 )
-                        percent = ( 100 * victim->hit ) / victim->max_hit;
-                     else
-                        percent = -1;
-                     if( percent >= 100 )
-                        strlcpy( pbuf, "perfect health", MSL - ( pbuf - buf ) );
-                     else if( percent >= 90 )
-                        strlcpy( pbuf, "slightly scratched", MSL - ( pbuf - buf ) );
-                     else if( percent >= 80 )
-                        strlcpy( pbuf, "few bruises", MSL - ( pbuf - buf ) );
-                     else if( percent >= 70 )
-                        strlcpy( pbuf, "some cuts", MSL - ( pbuf - buf ) );
-                     else if( percent >= 60 )
-                        strlcpy( pbuf, "several wounds", MSL - ( pbuf - buf ) );
-                     else if( percent >= 50 )
-                        strlcpy( pbuf, "nasty wounds", MSL - ( pbuf - buf ) );
-                     else if( percent >= 40 )
-                        strlcpy( pbuf, "bleeding freely", MSL - ( pbuf - buf ) );
-                     else if( percent >= 30 )
-                        strlcpy( pbuf, "covered in blood", MSL - ( pbuf - buf ) );
-                     else if( percent >= 20 )
-                        strlcpy( pbuf, "leaking guts", MSL - ( pbuf - buf ) );
-                     else if( percent >= 10 )
-                        strlcpy( pbuf, "almost dead", MSL - ( pbuf - buf ) );
-                     else
-                        strlcpy( pbuf, "DYING", MSL - ( pbuf - buf ) );
-                  }
-                  break;
-
-               case 'c':
-                  if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
-                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
-                  else
-                  {
-                     if( victim->max_hit > 0 )
-                        percent = ( 100 * victim->hit ) / victim->max_hit;
-                     else
-                        percent = -1;
-                     if( percent >= 100 )
-                        strlcpy( pbuf, "perfect health", MSL - ( pbuf - buf ) );
-                     else if( percent >= 90 )
-                        strlcpy( pbuf, "slightly scratched", MSL - ( pbuf - buf ) );
-                     else if( percent >= 80 )
-                        strlcpy( pbuf, "few bruises", MSL - ( pbuf - buf ) );
-                     else if( percent >= 70 )
-                        strlcpy( pbuf, "some cuts", MSL - ( pbuf - buf ) );
-                     else if( percent >= 60 )
-                        strlcpy( pbuf, "several wounds", MSL - ( pbuf - buf ) );
-                     else if( percent >= 50 )
-                        strlcpy( pbuf, "nasty wounds", MSL - ( pbuf - buf ) );
-                     else if( percent >= 40 )
-                        strlcpy( pbuf, "bleeding freely", MSL - ( pbuf - buf ) );
-                     else if( percent >= 30 )
-                        strlcpy( pbuf, "covered in blood", MSL - ( pbuf - buf ) );
-                     else if( percent >= 20 )
-                        strlcpy( pbuf, "leaking guts", MSL - ( pbuf - buf ) );
-                     else if( percent >= 10 )
-                        strlcpy( pbuf, "almost dead", MSL - ( pbuf - buf ) );
-                     else
-                        strlcpy( pbuf, "DYING", MSL - ( pbuf - buf ) );
-                  }
-                  break;
-
-               case 'h':
-                  pstat = ch->hit;
-                  break;
-
-               case 'H':
-                  pstat = ch->max_hit;
-                  break;
-
-               case 'm':
-                  pstat = ch->mana;
-                  break;
-
-               case 'M':
-                  pstat = ch->max_mana;
-                  break;
-
-               case 'N':  /* Tank */
-                  if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
-                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
-                  else if( !victim->fighting || ( victim = victim->fighting->who ) == nullptr )
-                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
-                  else
-                  {
-                     if( ch == victim )
-                        strlcpy( pbuf, "You", MSL - ( pbuf - buf ) );
-                     else if( victim->isnpc(  ) )
-                        strlcpy( pbuf, victim->short_descr, MSL - ( pbuf - buf ) );
-                     else
-                        strlcpy( pbuf, victim->name, MSL - ( pbuf - buf ) );
-                     pbuf[0] = UPPER( pbuf[0] );
-                  }
-                  break;
-
-               case 'n':
-                  if( !ch->fighting || ( victim = ch->fighting->who ) == nullptr )
-                     strlcpy( pbuf, "N/A", MSL - ( pbuf - buf ) );
-                  else
-                  {
-                     if( ch == victim )
-                        strlcpy( pbuf, "You", MSL - ( pbuf - buf ) );
-                     else if( victim->isnpc(  ) )
-                        strlcpy( pbuf, victim->short_descr, MSL - ( pbuf - buf ) );
-                     else
-                        strlcpy( pbuf, victim->name, MSL - ( pbuf - buf ) );
-                     pbuf[0] = UPPER( pbuf[0] );
-                  }
-                  break;
-
-               case 'T':
-                  if( time_info.hour < sysdata->hoursunrise )
-                     strlcpy( pbuf, "night", MSL - ( pbuf - buf ) );
-                  else if( time_info.hour < sysdata->hourdaybegin )
-                     strlcpy( pbuf, "dawn", MSL - ( pbuf - buf ) );
-                  else if( time_info.hour < sysdata->hoursunset )
-                     strlcpy( pbuf, "day", MSL - ( pbuf - buf ) );
-                  else if( time_info.hour < sysdata->hournightbegin )
-                     strlcpy( pbuf, "dusk", MSL - ( pbuf - buf ) );
-                  else
-                     strlcpy( pbuf, "night", MSL - ( pbuf - buf ) );
-                  break;
-
-               case 'u':
-                  pstat = num_descriptors;
-                  break;
-
-               case 'U':
-                  pstat = sysdata->maxplayers;
-                  break;
-
-               case 'v':
-                  pstat = ch->move;
-                  break;
-
-               case 'V':
-                  pstat = ch->max_move;
-                  break;
-
-               case 'g':
-                  pstat = ch->gold;
-                  break;
-
-               case 'r':
-                  if( och->is_immortal(  ) )
-                     pstat = ch->in_room->vnum;
-                  break;
-
-               case 'F':
-                  if( och->is_immortal(  ) )
-                     strlcpy( pbuf, bitset_string( ch->in_room->flags, r_flags ), MSL - ( pbuf - buf ) );
-                  break;
-
-               case 'R':
-                  if( och->has_pcflag( PCFLAG_ROOMVNUM ) )
-                     snprintf( pbuf, MSL - ( pbuf - buf ), "<#%d> ", ch->in_room->vnum );
-                  break;
-
-               case 'x':
-                  pstat = ch->exp;
-                  break;
-
-               case 'X':
-                  pstat = exp_level( ch->level + 1 ) - ch->exp;
-                  break;
-
-               case 'w':
-                  pstat = ch->carry_weight;
-                  break;
-
-               case 'W':
-                  pstat = ch->can_carry_w();
-                  break;
-
-               case 'o':  /* display name of object on auction */
-                  if( auction->item )
-                     strlcpy( pbuf, auction->item->name, MSL - ( pbuf - buf ) );
-                  break;
-
-               case 'S':
-                  if( ch->style == STYLE_BERSERK )
-                     strlcpy( pbuf, "B", MSL - ( pbuf - buf ) );
-                  else if( ch->style == STYLE_AGGRESSIVE )
-                     strlcpy( pbuf, "A", MSL - ( pbuf - buf ) );
-                  else if( ch->style == STYLE_DEFENSIVE )
-                     strlcpy( pbuf, "D", MSL - ( pbuf - buf ) );
-                  else if( ch->style == STYLE_EVASIVE )
-                     strlcpy( pbuf, "E", MSL - ( pbuf - buf ) );
-                  else
-                     strlcpy( pbuf, "S", MSL - ( pbuf - buf ) );
-                  break;
-
-               case 'i':
-                  if( ch->has_pcflag( PCFLAG_WIZINVIS ) || ch->has_actflag( ACT_MOBINVIS ) )
-                     snprintf( pbuf, MSL - ( pbuf - buf ), "(Invis %d) ", ( ch->isnpc(  )? ch->mobinvis : ch->pcdata->wizinvis ) );
-                  else if( ch->has_aflag( AFF_INVISIBLE ) )
-                     strlcpy( pbuf, "(Invis) ", MSL - ( pbuf - buf ) );
-                  break;
-
-               case 'I':
-                  if( ch->has_actflag( ACT_MOBINVIS ) )
-                     pstat = ch->mobinvis;
-                  else if( ch->has_pcflag( PCFLAG_WIZINVIS ) )
-                     pstat = ch->pcdata->wizinvis;
-                  else
-                     pstat = 0;
-                  break;
-
-               case 'Z':
-                  if( sysdata->WIZLOCK )
-                     strlcpy( pbuf, "[Wizlock]", MSL - ( pbuf - buf ) );
-                  if( sysdata->IMPLOCK )
-                     strlcpy( pbuf, "[Implock]", MSL - ( pbuf - buf ) );
-                  if( sysdata->LOCKDOWN )
-                     strlcpy( pbuf, "[Lockdown]", MSL - ( pbuf - buf ) );
-                  if( bootlock )
-                     strlcpy( pbuf, "[Rebooting]", MSL - ( pbuf - buf ) );
-                  break;
+               if( !name.empty() )
+                  name[0] = toupper( name[0] );
+               output += name;
             }
-            if( pstat != 0x80000000 )
-               snprintf( pbuf, MSL - ( pbuf - buf ), "%zu", pstat );
-            pbuf += strlen( pbuf );
+            break;
+         }
+         case 'T':
+            if( time_info.hour < sysdata->hoursunrise || time_info.hour >= sysdata->hournightbegin )
+               output += "night";
+            else if( time_info.hour < sysdata->hourdaybegin )
+               output += "dawn";
+            else if( time_info.hour < sysdata->hoursunset )
+               output += "day";
+            else
+               output += "dusk";
+            break;
+         case 'r':
+            if( och->is_immortal() )
+               output += std::to_string( ch->in_room->vnum );
+            break;
+         case 'F':
+            if( och->is_immortal() )
+               output += bitset_string( ch->in_room->flags, r_flags );
+            break;
+         case 'R':
+            if( och->has_pcflag( PCFLAG_ROOMVNUM ) )
+               output += std::format( "<#{}> ", ch->in_room->vnum );
+            break;
+         case 'o':
+            if( auction && auction->item )
+               output += auction->item->name;
+            break; // display name of object on auction
+         case 'S':
+            if( ch->style == STYLE_BERSERK )
+               output += 'B';
+            else if( ch->style == STYLE_AGGRESSIVE )
+               output += 'A';
+            else if( ch->style == STYLE_DEFENSIVE )
+               output += 'D';
+            else if( ch->style == STYLE_EVASIVE )
+               output += 'E';
+            else
+               output += 'S';
+            break;
+         case 'i':
+            if( ch->has_pcflag( PCFLAG_WIZINVIS ) || ch->has_actflag( ACT_MOBINVIS ) )
+               output += std::format( "(Invis {}) ", ( ch->isnpc() ? ch->mobinvis : ch->pcdata->wizinvis ) );
+            else if( ch->has_aflag(AFF_INVISIBLE ) )
+               output += "(Invis) ";
+            break;
+         case 'I':
+            output += std::to_string( ch->has_actflag( ACT_MOBINVIS ) ? ch->mobinvis : ( ch->has_pcflag( PCFLAG_WIZINVIS ) ? ch->pcdata->wizinvis : 0 ) );
+            break;
+         case 'Z':
+            if( sysdata->WIZLOCK )
+               output += "[Wizlock]";
+            if( sysdata->IMPLOCK )
+               output += "[Implock]";
+            if( sysdata->LOCKDOWN )
+               output += "[Lockdown]";
+            if( bootlock )
+               output += "[Rebooting]";
+            break;
+         default:
+            bug( "%s: bad command char '%c'.", __func__, cmd );
             break;
       }
    }
-   *pbuf = '\0';
 
-   ch->print( buf );
+   ch->print( output );
 
    /*
     * The miracle cure for color bleeding? 

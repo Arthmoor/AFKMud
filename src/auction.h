@@ -26,8 +26,7 @@
  *                           Auction House module                           *
  ****************************************************************************/
 
-#ifndef __AUCTION_H__
-#define __AUCTION_H__
+#pragma once
 
 #define SALES_FILE AUC_DIR "sales.dat"
 
@@ -115,4 +114,3 @@ class sale_data
 };
 
 extern auction_data *auction;
-#endif

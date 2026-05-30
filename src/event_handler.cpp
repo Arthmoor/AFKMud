@@ -662,7 +662,7 @@ void ev_ban_check( void *data )
 #if !defined(__CYGWIN__) && defined(SQL)
 void ev_mysql_ping( void *data )
 {
-   mysql_ping( &myconn );
+   db->ping();
    add_event( 1800, ev_mysql_ping, nullptr );
 }
 #endif

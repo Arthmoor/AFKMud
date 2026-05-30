@@ -26,8 +26,7 @@
  *                           Deity handling module                          *
  ****************************************************************************/
 
-#ifndef __DEITY_H__
-#define __DEITY_H__
+#pragma once
 
 #define DEITY_LIST "deity.lst"   /* List of deities     */
 
@@ -97,4 +96,3 @@ extern list < deity_data * >deitylist;
 void save_deity( deity_data * );
 deity_data *get_deity( const string & );
 bool IS_DEVOTED( char_data * );
-#endif

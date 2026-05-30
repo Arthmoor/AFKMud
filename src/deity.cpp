@@ -28,12 +28,16 @@
 
 /* Put together by Rennard for Realms of Despair.  Brap on... */
 
+#include <filesystem>
+#include <format>
 #include "mud.h"
 #include "deity.h"
 #include "mobindex.h"
 #include "objindex.h"
 #include "raceclass.h"
 #include "roomindex.h"
+
+namespace fs = std::filesystem;
 
 bool check_pets( char_data *, mob_index * );
 room_index *recall_room( char_data * );
@@ -90,10 +94,10 @@ void write_deity_list( void )
 {
    list < deity_data * >::iterator ideity;
    FILE *fpout;
-   char filename[256];
+   fs::path filename;
 
-   snprintf( filename, 256, "%s%s", DEITY_DIR, DEITY_LIST );
-   fpout = fopen( filename, "w" );
+   filename = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
+   fpout = fopen( filename.c_str(), "w" );
    if( !fpout )
       bug( "%s: FATAL: cannot open deity.lst for writing!", __func__ );
    else
@@ -113,11 +117,11 @@ void write_deity_list( void )
 const int DEITY_VERSION = 3;
 /* Added for deity file compatibility. Adjani, 1-31-04 */
 /* Raised to 2 by Samson to support multiple class/race settings - 5-17-04 */
-/* Raised to 3 by Samson to accomadate RISA flag changes - 7-12-04 */
+/* Raised to 3 by Samson to accommodate RISA flag changes - 7-12-04 */
 void save_deity( deity_data * deity )
 {
    FILE *fp;
-   char filename[256];
+   fs::path filename;
 
    if( !deity )
    {
@@ -131,12 +135,12 @@ void save_deity( deity_data * deity )
       return;
    }
 
-   snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename.c_str(  ) );
+   filename = std::format( "{}{}", DEITY_DIR, deity->filename.c_str(  ) );
 
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    else
    {
@@ -977,16 +981,16 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 /* Load a deity file */
 bool load_deity_file( const char *deityfile )
 {
-   char filename[256];
+   fs::path filename;
    deity_data *deity;
    FILE *fp;
    bool found;
    int filever = 0;
 
    found = false;
-   snprintf( filename, 256, "%s%s", DEITY_DIR, deityfile );
+   filename = std::format( "{}{}", DEITY_DIR, deityfile );
 
-   if( ( fp = fopen( filename, "r" ) ) != nullptr )
+   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
       for( ;; )
       {
@@ -1042,16 +1046,16 @@ void load_deity( void )
 {
    FILE *fpList;
    const char *filename;
-   char deitylistfile[256];
+   fs::path deitylistfile;
 
    deitylist.clear(  );
 
    log_string( "Loading deities..." );
 
-   snprintf( deitylistfile, 256, "%s%s", DEITY_DIR, DEITY_LIST );
-   if( !( fpList = fopen( deitylistfile, "r" ) ) )
+   deitylistfile = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
+   if( !( fpList = fopen( deitylistfile.c_str(), "r" ) ) )
    {
-      perror( deitylistfile );
+      perror( deitylistfile.c_str() );
       exit( 1 );
    }
 
@@ -1146,7 +1150,7 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "delete" ) )
    {
-      char filename[256];
+      fs::path filename;
 
       list < char_data * >::iterator ich;
       for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
@@ -1155,11 +1159,9 @@ CMDF( do_setdeity )
 
          if( vch->pcdata->deity == deity )
          {
-            char buf[MSL];
-
-            snprintf( buf, MSL, "&R\r\nYour deity, %s, has met its demise!\r\n", vch->pcdata->deity_name.c_str() );
+            std::string buf = std::format( "&R\r\nYour deity, {}, has met its demise!\r\n", vch->pcdata->deity_name );
             if( !vch->desc )
-               add_loginmsg( vch->name, 18, buf );
+               add_loginmsg( vch->name, 18, buf.c_str() );
             else
                vch->print( buf );
 
@@ -1179,11 +1181,11 @@ CMDF( do_setdeity )
          }
       }
 
-      snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename.c_str(  ) );
+      filename = std::format( "{}{}", DEITY_DIR, deity->filename.c_str(  ) );
       deleteptr( deity );
       ch->printf( "&YDeity information for %s deleted.\r\n", arg1.c_str(  ) );
 
-      if( !remove( filename ) )
+      if( fs::remove( filename ) )
          ch->printf( "&RDeity file for %s destroyed.\r\n", arg1.c_str(  ) );
 
       write_deity_list(  );
@@ -1266,13 +1268,13 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "filename" ) )
    {
-      char filename[256];
+      fs::path filename;
 
       if( !is_valid_filename( ch, DEITY_DIR, argument ) )
          return;
 
-      snprintf( filename, 256, "%s%s", DEITY_DIR, deity->filename.c_str(  ) );
-      if( !remove( filename ) )
+      filename = std::format( "{}{}", DEITY_DIR, deity->filename );
+      if( fs::remove( filename ) )
          ch->print( "Old deity file deleted.\r\n" );
       deity->filename = argument;
       ch->print( "Done.\r\n" );

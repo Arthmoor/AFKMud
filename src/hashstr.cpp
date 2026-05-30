@@ -26,26 +26,27 @@
  *                            String Hash Module                            *
  ****************************************************************************/
 
-/****************************************************************************
- * Advanced string hashing functions (c)1996 D.S.D. Software, written by    *
- * Derek Snider for use in SMAUG.                                           *
- *                                                                          *
- * These functions keep track of how many "links" are pointing to the	    *
- * memory allocated, and will free the memory if all the links are removed. *
- * Make absolutely sure you do not mix use of strdup and free with these    *
- * functions, or nasty stuff will happen!                                   *
- *                                                                          *
- * Most occurances of strdup/str_dup should be replaced with str_alloc, and *
- * any free/DISPOSE used on the same pointer should be replaced with	    *
- * str_free.  If a function uses strdup for temporary use... it is best if  *
- * it is left as is.  Just don't get usage mixed up between conventions.    *
- * The hashstr_data size is 8 bytes of overhead.  Don't be concerned about  *
- * this as you still save lots of space on duplicate strings.     -Thoric   *
+/*****************************************************************************
+ * Advanced string hashing functions (c)1996 D.S.D. Software, written by     *
+ * Derek Snider for use in SMAUG.                                            *
+ *                                                                           *
+ * These functions keep track of how many "links" are pointing to the	     *
+ * memory allocated, and will free the memory if all the links are removed.  *
+ * Make absolutely sure you do not mix use of strdup and free with these     *
+ * functions, or nasty stuff will happen!                                    *
+ *                                                                           *
+ * Most occurrences of strdup/str_dup should be replaced with str_alloc, and *
+ * any free/DISPOSE used on the same pointer should be replaced with         *
+ * str_free.  If a function uses strdup for temporary use... it is best if   *
+ * it is left as is.  Just don't get usage mixed up between conventions.     *
+ * The hashstr_data size is 8 bytes of overhead.  Don't be concerned about   *
+ * this as you still save lots of space on duplicate strings.     -Thoric    *
  ****************************************************************************/
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <format>
 
 void bug( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
@@ -63,7 +64,7 @@ struct hashstr_data
 struct hashstr_data *string_hash[STR_HASH_SIZE];
 
 /*
- * Check hash table for existing occurance of string.
+ * Check hash table for existing occurrence of string.
  * If found, increase link count, and return pointer,
  * otherwise add new string to hash table, and return pointer.
  */
@@ -199,13 +200,12 @@ void hash_dump( int hash )
       fprintf( stderr, "Total strings in hash %d: %d\r\n", hash, c );
 }
 
-char *check_hash( const char *str )
+std::string check_hash( const char *str )
 {
-   static char buf[1024];
+   std::string buf;
    int len, hash, psize, p = 0, c;
    struct hashstr_data *ptr, *fnd;
 
-   buf[0] = '\0';
    len = strlen( str );
    psize = sizeof( struct hashstr_data );
    hash = len % STR_HASH_SIZE;
@@ -216,15 +216,14 @@ char *check_hash( const char *str )
          p = c + 1;
       }
    if( fnd )
-      snprintf( buf, 1024, "Hash info on string: %s\r\nLinks: %d  Position: %d/%d  Hash: %d  Length: %d\r\n", str, fnd->links, p, c, hash, fnd->length );
+      buf = std::format( "Hash info on string: {}\r\nLinks: {}  Position: {}/{}  Hash: {}  Length: {}\r\n", str, fnd->links, p, c, hash, fnd->length );
    else
-      snprintf( buf, 1024, "%s not found.\r\n", str );
+      buf = std::format( "{} not found.\r\n", str );
    return buf;
 }
 
-char *hash_stats( void )
+std::string hash_stats( void )
 {
-   static char buf[1024];
    struct hashstr_data *ptr;
    int x, c, total, totlinks, unique, bytesused, wouldhave, hilink;
 
@@ -243,8 +242,9 @@ char *hash_stats( void )
          wouldhave += ( ( ptr->links * sizeof( struct hashstr_data ) ) + ( ptr->links * ( ptr->length + 1 ) ) );
       }
    }
-   snprintf( buf, 1024,
-             "Hash strings allocated:%8d  Total links  : %d\r\nString bytes allocated:%8d  Bytes saved  : %d\r\nUnique (wasted) links :%8d  Hi-Link count: %d\r\n",
+
+   std::string buf = std::format(
+             "Hash strings allocated:{:8}  Total links  : {}\r\nString bytes allocated:{:8}  Bytes saved  : {}\r\nUnique (wasted) links :{:8}  Hi-Link count: {}\r\n",
              total, totlinks, bytesused, wouldhave - bytesused, unique, hilink );
    return buf;
 }

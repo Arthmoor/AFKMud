@@ -26,9 +26,6 @@
  *                           Descriptor Class Info                          *
  ****************************************************************************/
 
-#ifndef __DESCRIPTOR_H__
-#define __DESCRIPTOR_H__
-
 #include <zlib.h>
 
 const int MAX_INBUF_SIZE = 4096;
@@ -68,7 +65,7 @@ class descriptor_data
     * Internal to descriptor.cpp 
     */
    void init(  );
-   bool write( const char * );
+   bool write( const string & );
    bool read(  );
    bool flush_buffer( bool );
    void read_from_buffer(  );
@@ -137,4 +134,3 @@ extern list < descriptor_data * >dlist;
 void free_all_descs(  );
 bool load_char_obj( descriptor_data *, const string &, bool, bool );
 void close_socket( descriptor_data *, bool );
-#endif

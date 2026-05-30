@@ -41,8 +41,7 @@
  *           Base Weather Model Copyright (c) 2007 Chris Jacobson           *
  ****************************************************************************/
 
-#ifndef __WEATHER_H__
-#define __WEATHER_H__
+#pragma once
 
 /*
  * This might not have all the bells and whistles I'd intended, and it might be 
@@ -208,4 +207,3 @@ bool isBlusteryWindS( int windy );
 bool isWindyWindS( int windy );
 bool isGustyWindS( int windy );
 bool isGaleForceWindS( int windy );
-#endif

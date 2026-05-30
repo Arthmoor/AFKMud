@@ -58,6 +58,7 @@
 #define  IAC                '\xFF'
 const int ENOSR = 63;
 #endif
+#include <format>
 #include "mud.h"
 #include "descriptor.h"
 #include "roomindex.h"
@@ -224,12 +225,12 @@ void char_data::sound( const string & fname, int volume, bool toroom )
 {
    const char *type = "mud";
    int repeats = 1, priority = 50;
-   char url[MSL];
+   std::string url;
 
    if( sysdata->http.empty(  ) )
       return;
 
-   snprintf( url, MSL, "%s/sounds/", sysdata->http.c_str(  ) );
+   url = std::format( "{}/sounds/", sysdata->http );
 
    if( !toroom )
    {
@@ -237,7 +238,7 @@ void char_data::sound( const string & fname, int volume, bool toroom )
          return;
 
       if( url[0] != '\0' )
-         printf( "!!SOUND(%s V=%d L=%d P=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type, url );
+         printf( "!!SOUND(%s V=%d L=%d P=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type, url.c_str() );
       else
          printf( "!!SOUND(%s V=%d L=%d P=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type );
    }
@@ -253,7 +254,7 @@ void char_data::sound( const string & fname, int volume, bool toroom )
             continue;
 
          if( url[0] != '\0' )
-            vch->printf( "!!SOUND(%s V=%d L=%d P=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type, url );
+            vch->printf( "!!SOUND(%s V=%d L=%d P=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type, url.c_str() );
          else
             vch->printf( "!!SOUND(%s V=%d L=%d P=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type );
       }
@@ -276,12 +277,11 @@ void char_data::music( const string & fname, int volume, bool toroom )
 {
    const char *type = "mud";
    int repeats = 1, continu = 1;
-   char url[MSL];
 
    if( sysdata->http.empty(  ) )
       return;
 
-   snprintf( url, MSL, "%s/sounds/%s", sysdata->http.c_str(  ), fname.c_str(  ) );
+   std::string url = std::format( "{}/sounds/{}", sysdata->http, fname );
 
    if( !toroom )
    {
@@ -289,7 +289,7 @@ void char_data::music( const string & fname, int volume, bool toroom )
          return;
 
       if( url[0] != '\0' )
-         printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type, url );
+         printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type, url.c_str() );
       else
          printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type );
    }
@@ -305,7 +305,7 @@ void char_data::music( const string & fname, int volume, bool toroom )
             return;
 
          if( url[0] != '\0' )
-            vch->printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type, url );
+            vch->printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type, url.c_str() );
          else
             vch->printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type );
       }

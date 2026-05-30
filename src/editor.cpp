@@ -27,9 +27,11 @@
  ****************************************************************************/
 
 #include <algorithm>
+#include <format>
 #include "mud.h"
 #include "descriptor.h"
 
+// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
 void stralloc_printf( char **pointer, const char *fmt, ... )
 {
    char buf[MSL * 4];
@@ -43,6 +45,7 @@ void stralloc_printf( char **pointer, const char *fmt, ... )
    *pointer = STRALLOC( buf );
 }
 
+// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
 void strdup_printf( char **pointer, const char *fmt, ... )
 {
    char buf[MSL * 4];
@@ -1453,9 +1456,7 @@ void char_data::edit_buffer( string & argument )
                 * Quixadhal - We cannot use ch_printf here, or we can't see
                 * * what color codes exist in the strings!
                 */
-               char tmpline[MSL];
-
-               snprintf( tmpline, MSL, "%2d> %s\r\n", x + 1, edit->line[x] );
+               std::string tmpline = std::format( "{:2}> {}\r\n", x + 1, edit->line[x] );
                desc->write_to_buffer( tmpline );
             }
             print( "------------------\r\n> " );

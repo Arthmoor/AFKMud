@@ -26,8 +26,7 @@
  *         Slay V2.0 - Online editable configurable slay options            *
  ****************************************************************************/
 
-#ifndef __SLAY_H__
-#define __SLAY_H__
+#pragma once
 
 /* Capability to create, edit and delete slaytypes added to original code by Samson 8-3-98 */
 
@@ -36,13 +35,10 @@
 /* Improved data structure for online slay editing - Samson 8-3-98 */
 class slay_data
 {
- private:
-   slay_data( const slay_data & s );
-     slay_data & operator=( const slay_data & );
-
  public:
-     slay_data(  );
-    ~slay_data(  );
+    slay_data( const slay_data & ) = delete;
+    slay_data & operator=( const slay_data & ) = delete;
+    slay_data(  );
 
    void set_owner( const string & name )
    {
@@ -106,4 +102,3 @@ class slay_data
    string rmsg;
    int color;
 };
-#endif

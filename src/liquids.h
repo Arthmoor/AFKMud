@@ -80,8 +80,7 @@
  * mortals.
  */
 
-#ifndef __LIQUIDS_H__
-#define __LIQUIDS_H__
+#pragma once
 
 /* hard-coded max liquids */
 const int MAX_LIQUIDS = 100;
@@ -131,5 +130,3 @@ extern liquid_data *liquid_table[MAX_LIQUIDS];
 
 liquid_data *get_liq_vnum( int );
 liquid_data *get_liq( const string & );
-
-#endif

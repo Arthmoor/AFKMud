@@ -45,144 +45,117 @@ Send any comments, flames, bug-reports, suggestions, requests, etc...
 to the above email address.
 ----------------------------------------------------------------------- */
 
+#include <format>
 #include <fstream>
+#include <memory>
 #include "mud.h"
 #include "slay.h"
 
 void raw_kill( char_data *, char_data * );
 
-list < slay_data * >slaylist;
+std::list<std::unique_ptr<slay_data>> slaylist;
+
+slay_data::slay_data(  )
+{
+   set_color( AT_IMMORT );
+}
+
+void free_slays( void )
+{
+   slaylist.clear();
+}
 
 /* Load the slay file */
-void load_slays( void )
+void load_slays( )
 {
-   slay_data *slay = nullptr;
-   ifstream stream;
-   int file_ver = 0;
+   std::ifstream stream( SLAY_FILE );
 
-   slaylist.clear(  );
-
-   stream.open( SLAY_FILE );
-   if( !stream.is_open(  ) )
+   if( !stream )
    {
-      log_string( "No slay file found." );
+      log_printf( "No slay file found: %s", SLAY_FILE );
       return;
    }
 
-   do
+   slaylist.clear();
+   int file_ver = 0;
+   std::unique_ptr<slay_data> current_slay = nullptr;
+
+   auto read_line = [&]( char delimiter = '\n' ) -> std::string
    {
-      string key, value;
-      char buf[MIL];
+      std::string line;
+      std::getline( stream, line, delimiter );
+      strip_spaces( line );
 
-      stream >> key;
-      strip_lspace( key );
+      return line;
+   };
 
-      if( key.empty(  ) )
-         continue;
+   std::string key;
+   while( stream >> key )
+   {
+      std::string_view sv = key;
 
-      if( key == "#VERSION" )
+      if( sv == "#VERSION" )
       {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_lspace( value );
-         file_ver = atoi( value.c_str(  ) );
+         file_ver = std::stoi( read_line() );
       }
-      else if( key == "#SLAY" )
-         slay = new slay_data;
-      else if( key == "Type" )
+      else if( sv == "#SLAY" )
       {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_lspace( value );
-         if( file_ver < 1 )
-            strip_tilde( value );
-         slay->set_type( value );
+         current_slay = std::make_unique<slay_data>();
       }
-      else if( key == "Owner" )
+      else if( sv == "End" )
       {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_lspace( value );
-         if( file_ver < 1 )
-            strip_tilde( value );
-         slay->set_owner( value );
+         if( current_slay )
+            slaylist.push_back( std::move( current_slay ) );
       }
-      else if( key == "Color" )
+      else if( current_slay )
       {
-         stream.getline( buf, MIL );
-         value = buf;
-         strip_lspace( value );
-         slay->set_color( atoi( value.c_str(  ) ) );
+         char delim = '~';
+
+         if( file_ver == 1 )
+            delim = '\xa2'; // This was a stupid idea and it needs to be undone now.
+
+         if( sv == "Type" ) current_slay->set_type( read_line() );
+         else if( sv == "Owner" ) current_slay->set_owner(read_line() );
+         else if( sv == "Color" ) current_slay->set_color( std::stoi( read_line() ) );
+         else if( sv == "Cmessage" ) current_slay->set_cmsg( read_line( delim ) );
+         else if( sv == "Vmessage" ) current_slay->set_vmsg( read_line( delim ) );
+         else if( sv == "Rmessage" ) current_slay->set_rmsg( read_line( delim ) );
+         else log_printf( "%s: Bad line: %s", __func__, key.c_str() );
       }
-      else if( key == "Cmessage" )
-      {
-         if( file_ver < 1 )
-            stream.getline( buf, MIL, '~' );
-         else
-            stream.getline( buf, MIL, '\xa2' );
-         value = buf;
-         strip_lspace( value );
-         slay->set_cmsg( value );
-      }
-      else if( key == "Vmessage" )
-      {
-         if( file_ver < 1 )
-            stream.getline( buf, MIL, '~' );
-         else
-            stream.getline( buf, MIL, '\xa2' );
-         value = buf;
-         strip_lspace( value );
-         slay->set_vmsg( value );
-      }
-      else if( key == "Rmessage" )
-      {
-         if( file_ver < 1 )
-            stream.getline( buf, MIL, '~' );
-         else
-            stream.getline( buf, MIL, '\xa2' );
-         value = buf;
-         strip_lspace( value );
-         slay->set_rmsg( value );
-      }
-      else if( key == "End" )
-         slaylist.push_back( slay );
-      else
-         log_printf( "%s: Bad line in slay file: %s", __func__, key.c_str(  ) );
    }
-   while( !stream.eof(  ) );
-   stream.close(  );
 }
 
 /* Online slay editing, save the slay table to disk - Samson 8-3-98 */
-void save_slays( void )
+void save_slays( )
 {
-   ofstream stream;
+   std::ofstream stream( SLAY_FILE );
 
-   stream.open( SLAY_FILE );
-   if( !stream.is_open(  ) )
+   if( !stream )
    {
-      bug( "%s: fopen", __func__ );
-      perror( SLAY_FILE );
+      bug( "%s: Could not open file for writing.", __func__ );
+      return;
    }
-   else
+
+   stream << "#VERSION 2\n";
+
+   for( const auto& slay : slaylist )
    {
-      list < slay_data * >::iterator sl;
-
-      stream << "#VERSION 1" << endl;
-      for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
-      {
-         slay_data *slay = *sl;
-
-         stream << "#SLAY" << endl;
-         stream << "Type      " << slay->get_type(  ) << endl;
-         stream << "Owner     " << slay->get_owner(  ) << endl;
-         stream << "Color     " << slay->get_color(  ) << endl;
-         stream << "Cmessage  " << slay->get_cmsg(  ) << '\xa2' << endl;
-         stream << "Vmessage  " << slay->get_vmsg(  ) << '\xa2' << endl;
-         stream << "Rmessage  " << slay->get_rmsg(  ) << '\xa2' << endl;
-         stream << "End" << endl << endl;
-      }
-      stream.close(  );
+      stream << std::format(
+         "#SLAY\n"
+         "Type      {}\n"
+         "Owner     {}\n"
+         "Color     {}\n"
+         "Cmessage  {}~\n"
+         "Vmessage  {}~\n"
+         "Rmessage  {}~\n"
+         "End\n\n",
+         slay->get_type(),
+         slay->get_owner(),
+         slay->get_color(),
+         slay->get_cmsg(),
+         slay->get_vmsg(),
+         slay->get_rmsg()
+      );
    }
 }
 
@@ -218,11 +191,8 @@ CMDF( do_slay )
       ch->pager( "&GSlay                      &ROwner\r\n" );
       ch->pager( "&g-------------------------+---------------\r\n" );
 
-      list < slay_data * >::iterator sl;
-      for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
+      for( const auto& slay : slaylist )
       {
-         slay_data *slay = *sl;
-
          ch->pagerf( "&G%-27s &g%s\r\n", slay->get_type(  ).c_str(  ), slay->get_owner(  ).c_str(  ) );
       }
       ch->print( "\r\n&gTyping just 'slay <player>' will work too...\r\n" );
@@ -257,11 +227,8 @@ CMDF( do_slay )
    }
    else
    {
-      list < slay_data * >::iterator sl;
-      for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
+      for( const auto& slay : slaylist )
       {
-         slay_data *slay = *sl;
-
          if( ( !str_cmp( argument, slay->get_type(  ) ) && !str_cmp( "Any", slay->get_owner(  ) ) )
              || ( !str_cmp( slay->get_owner(  ), ch->name ) && !str_cmp( argument, slay->get_type(  ) ) ) )
          {
@@ -284,14 +251,10 @@ CMDF( do_slay )
 
 slay_data *get_slay( const string & name )
 {
-   list < slay_data * >::iterator sl;
-
-   for( sl = slaylist.begin(  ); sl != slaylist.end(  ); ++sl )
+   for( const auto& slay : slaylist )
    {
-      slay_data *slay = *sl;
-
       if( !str_cmp( name, slay->get_type(  ) ) )
-         return slay;
+         return slay.get();
    }
    return nullptr;
 }
@@ -299,8 +262,6 @@ slay_data *get_slay( const string & name )
 /* Create a slaytype online - Samson 8-3-98 */
 CMDF( do_makeslay )
 {
-   slay_data *slay;
-
    if( ch->isnpc(  ) )
    {
       ch->print( "Huh?\r\n" );
@@ -316,20 +277,20 @@ CMDF( do_makeslay )
    /*
     * Glaring oversight just noticed - Samson 7-5-99 
     */
-   if( ( slay = get_slay( argument ) ) != nullptr )
+   if( get_slay( argument ) != nullptr )
    {
       ch->print( "That slay type already exists.\r\n" );
       return;
    }
 
-   slay = new slay_data;
+   auto slay = std::make_unique<slay_data>();
    slay->set_type( argument );
    slay->set_owner( "Any" );
    slay->set_color( AT_IMMORT );
    slay->set_cmsg( "You brutally slay $N!" );
    slay->set_vmsg( "$n chops you up into little pieces!" );
    slay->set_rmsg( "$n brutally slays $N!" );
-   slaylist.push_back( slay );
+   slaylist.push_back( std::move( slay ) );
    ch->printf( "New slaytype %s added. Set to default values.\r\n", argument.c_str(  ) );
    save_slays(  );
 }
@@ -499,29 +460,6 @@ CMDF( do_showslay )
    ch->printf( "&RCmessage: \r\n%s", slay->get_cmsg(  ).c_str(  ) );
    ch->printf( "\r\n&YVmessage: \r\n%s", slay->get_vmsg(  ).c_str(  ) );
    ch->printf( "\r\n&GRmessage: \r\n%s", slay->get_rmsg(  ).c_str(  ) );
-}
-
-slay_data::slay_data(  )
-{
-   set_color( AT_IMMORT );
-}
-
-slay_data::~slay_data(  )
-{
-   slaylist.remove( this );
-}
-
-void free_slays( void )
-{
-   list < slay_data * >::iterator dslay;
-
-   for( dslay = slaylist.begin(  ); dslay != slaylist.end(  ); )
-   {
-      slay_data *slay = *dslay;
-      ++dslay;
-
-      deleteptr( slay );
-   }
 }
 
 /* Of course, to create means you need to be able to destroy as well :P - Samson 8-3-98 */

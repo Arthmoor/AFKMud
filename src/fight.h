@@ -26,8 +26,7 @@
  *                         Battle & Death module                            *
  ****************************************************************************/
 
-#ifndef __FIGHT_H__
-#define __FIGHT_H__
+#pragma once
 
 struct fighting_data
 {
@@ -40,4 +39,3 @@ struct hunt_hate_fear
    char_data *who;
    char *name;
 };
-#endif

@@ -26,8 +26,7 @@
  *                            Character Class Info                          *
  ****************************************************************************/
 
-#ifndef __CHARACTER_H__
-#define __CHARACTER_H__
+#pragma once
 
 enum timer_types
 {
@@ -621,5 +620,3 @@ extern list < char_data * >pclist;
 extern char_data *quitting_char;
 extern char_data *loading_char;
 extern char_data *saving_char;
-
-#endif

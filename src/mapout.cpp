@@ -26,6 +26,7 @@
  *                             Map reading module                           *
  ****************************************************************************/
 
+#include <format>
 #include "mud.h"
 #include "boards.h"
 #include "objindex.h"
@@ -43,7 +44,7 @@ struct map_index
 {
    map_index *next;
    int vnum;   /* vnum of the map */
-   int map_of_vnums[49][81];  /* room vnums aranged as a map */
+   int map_of_vnums[49][81];  /* room vnums arranged as a map */
 };
 
 map_index *get_map_index( int vnum );
@@ -119,17 +120,21 @@ map_index *make_new_map_index( int vnum )
 char count_lines( char *txt )
 {
    int i;
-   char *c, buf[MSL];
+   char *c;
+   std::string buf;
 
    if( !txt )
       return '0';
+
    i = 1;
    for( c = txt; *c != '\0'; ++c )
       if( *c == '\n' )
          ++i;
+
    if( i > 9 )
       return '+';
-   snprintf( buf, MSL, "%d", i );
+
+   buf = std::format( "{}", i );
    return ( buf[0] );
 }
 

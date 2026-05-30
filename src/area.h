@@ -26,8 +26,7 @@
  *                              Area Class Info                             *
  ****************************************************************************/
 
-#ifndef __AREA_H__
-#define __AREA_H__
+#pragma once
 
 /* Area flags - Narn Mar/96 */
 /* Don't forget to update build.cpp!!! */
@@ -112,4 +111,3 @@ extern int rand_factor;
 extern int climate_factor;
 extern int neigh_factor;
 extern int max_vector;
-#endif

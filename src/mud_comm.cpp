@@ -27,7 +27,7 @@
  *                       was written by N'Atas-ha.                          *
  ****************************************************************************/
 
-#include <ctime>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "bits.h"
@@ -300,8 +300,6 @@ CMDF( do_mpmset )
 
       if( !victim->isnpc(  ) )
       {
-         char tbuf[MIL];
-
          if( value < 0 || value >= MAX_PC_CLASS )
          {
             progbugf( ch, "%s", "MpMset: Attempting to set invalid player Class!" );
@@ -309,7 +307,7 @@ CMDF( do_mpmset )
          }
          victim->Class = value;
 
-         snprintf( tbuf, MIL, "the %s", title_table[value][victim->level][victim->sex] );
+         std::string tbuf = std::format( "the {}", title_table[value][victim->level][victim->sex] );
          victim->set_title( tbuf );
          return;
       }
@@ -2457,7 +2455,6 @@ CMDF( do_mptransfer )
 CMDF( do_mpbodybag )
 {
    string arg;
-   char buf[MSL];
    char_data *victim;
 
    if( !can_use_mprog( ch ) )
@@ -2483,7 +2480,7 @@ CMDF( do_mpbodybag )
       return;
    }
 
-   snprintf( buf, MSL, "the corpse of %s", arg.c_str(  ) );
+   std::string buf = std::format( "the corpse of {}", arg );
 
    list < obj_data * >::iterator iobj;
    for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
@@ -2502,7 +2499,7 @@ CMDF( do_mpbodybag )
     * Maybe should just make the command logged... Shrug I am not sure
     * * --Shaddai
     */
-   progbugf( ch, "Mpbodybag: Grabbed %s", buf );
+   progbugf( ch, "Mpbodybag: Grabbed %s", buf.c_str() );
 }
 
 /*
@@ -3567,7 +3564,6 @@ CMDF( do_mppeace )
 CMDF( do_mpsindhae )
 {
    string arg;
-   char prizebuf[MSL];
    obj_index *pObjIndex, *prizeindex = nullptr;
    char_data *victim;
 
@@ -3643,9 +3639,9 @@ CMDF( do_mpsindhae )
       return;
    }
 
-   snprintf( prizebuf, MSL, "%s-", argument.c_str(  ) );
+   std::string prizebuf = std::format(  "{}-", argument );
    const char *Class = npc_class[victim->Class];
-   strlcat( prizebuf, Class, MSL );
+   prizebuf.append( Class );
 
    bool found = false;
    map < int, obj_index * >::iterator mobj = obj_index_table.begin(  );
@@ -3663,7 +3659,7 @@ CMDF( do_mpsindhae )
 
    if( !found || !prizeindex )
    {
-      progbugf( ch, "%s: Unable to resolve prize index for %s", __func__, prizebuf );
+      progbugf( ch, "%s: Unable to resolve prize index for %s", __func__, prizebuf.c_str() );
       victim->from_room(  );
       if( !victim->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -4106,7 +4102,6 @@ CMDF( do_mpraceset )
 {
    char_data *victim;
    string arg1;
-   char buf[MSL];
    race_type *race;
    class_type *Class;
    char *classname;
@@ -4188,7 +4183,7 @@ CMDF( do_mpraceset )
    victim->max_mana = 100 + race->mana;
    victim->mana = victim->max_mana;
 
-   snprintf( buf, MSL, "the %s", title_table[victim->Class][victim->level][victim->sex] );
+   std::string buf = std::format( "the {}", title_table[victim->Class][victim->level][victim->sex] );
    victim->set_title( buf );
 
    if( Class->weapon != -1 )

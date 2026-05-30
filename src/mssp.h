@@ -59,6 +59,8 @@
   Thats All....
  */
 
+#pragma once
+
 struct msspinfo
 {
    msspinfo();

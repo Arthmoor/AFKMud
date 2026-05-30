@@ -40,6 +40,7 @@ void gettimeofday( struct timeval *tv, struct timezone *tz );
 #include <format>
 #include <filesystem>
 #include <fstream>
+#include <thread>
 #include "mud.h"
 #include "descriptor.h"
 #include "auction.h"
@@ -62,7 +63,7 @@ int num_descriptors;
 int num_logins;
 bool mud_down; /* Shutdown       */
 char str_boot_time[MIL];
-char lastplayercmd[MIL * 2];
+std::string lastplayercmd;
 time_t current_time; /* Time of this pulse      */
 time_t mud_start_time; // Used only by MSSP for now
 int control;   /* Controlling descriptor  */
@@ -151,6 +152,8 @@ void free_all_titles(  );
 void free_all_chess_games(  );
 void free_continents(  );
 void free_helps(  );
+void free_wizlist_data( );
+void free_wizlist_web_data( );
 #if !defined(__CYGWIN__) && defined(SQL)
  void close_db(  );
 #endif
@@ -165,10 +168,9 @@ const char *directory_table[] = {
 void directory_check( void )
 {
    fs::path buf;
-   size_t x;
 
    // Successful directory check will drop this file in the area dir once done.
-   if( exists_file( "DIR_CHECK_PASSED" ) )
+   if( fs::exists( "DIR_CHECK_PASSED" ) )
       return;
 
    log_string( "Checking for required directories...\n" );
@@ -186,7 +188,7 @@ void directory_check( void )
       }
    }
 
-   for( x = 0; x < sizeof( directory_table ) / sizeof( directory_table[0] ); ++x )
+   for( size_t x = 0; x < sizeof( directory_table ) / sizeof( directory_table[0] ); ++x )
    {
       if( !fs::exists( directory_table[x] ) )
       {
@@ -202,12 +204,9 @@ void directory_check( void )
 
       if( !str_cmp( directory_table[x], PLAYER_DIR ) )
       {
-         short alpha_loop;
-         fs::path dirname;
-
-         for( alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
+         for( short alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
          {
-            dirname = std::format( "{}{}", PLAYER_DIR, static_cast<char>( 'a' + alpha_loop ) );
+            fs::path dirname = std::format( "{}{}", PLAYER_DIR, static_cast<char>( 'a' + alpha_loop ) );
             if( !fs::exists( dirname ) )
             {
                log_printf( "Creating required directory: %s", dirname.c_str() );
@@ -905,51 +904,22 @@ void process_output( void )
 // Synchronize to a clock. This is the beating heart of the MUD.
 void pulse_sync( )
 {
-   struct timeval last_time;
-   struct timeval now_time;
-   long secDelta;
-   long usecDelta;
+   using namespace std::chrono_literals;
 
-   gettimeofday( &last_time, nullptr );
-   current_time = last_time.tv_sec;
+   // Use steady_clock to ensure timing is monotonic and unaffected by NTP syncs
+   static auto next_pulse = std::chrono::steady_clock::now();
 
-   /*
-    * Synchronize to a clock.
-    * Sleep( last_time + 1 / sysdata->pulsepersec - now ).
-    * Careful here of signed versus unsigned arithmetic.
-    * Since sysdata->pulsepersec is editable during runtime, be VERY careful with the values.
-    * The default for it is 4, which does 4 pulse beats per second. Setting this too high could result in severe performance issues.
-    */
-   gettimeofday( &now_time, nullptr );
-   usecDelta = ( last_time.tv_usec ) - ( now_time.tv_usec ) + 1000000 / sysdata->pulsepersec;
-   secDelta = ( last_time.tv_sec ) - ( now_time.tv_sec );
-   while( usecDelta < 0 )
-   {
-      usecDelta += 1000000;
-      secDelta -= 1;
-   }
+   // Calculate the duration of one pulse based on pulses per second. Defaults to 4 per second.
+   // Since sysdata->pulsepersec is editable during runtime, be VERY careful with the values.
+   auto pulse_duration = std::chrono::nanoseconds( 1'000'000'000 / sysdata->pulsepersec );
+   next_pulse += pulse_duration;
 
-   while( usecDelta >= 1000000 )
-   {
-      usecDelta -= 1000000;
-      secDelta += 1;
-   }
+   // Sleep until the exact time the next pulse should occur
+   // If the system is running behind, this will return immediately
+   std::this_thread::sleep_until( next_pulse );
 
-   if( secDelta > 0 || ( secDelta == 0 && usecDelta > 0 ) )
-   {
-      struct timeval stall_time;
-
-      stall_time.tv_usec = usecDelta;
-      stall_time.tv_sec = secDelta;
-      if( select( 0, nullptr, nullptr, nullptr, &stall_time ) < 0 && errno != EINTR )
-      {
-         perror( "game_loop: select: stall" );
-         exit( 1 );
-      }
-   }
-
-   gettimeofday( &last_time, nullptr );
-   current_time = last_time.tv_sec;
+   // Update global time
+   current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
 // It all looks so simple from here, doesn't it?
@@ -1173,6 +1143,14 @@ void cleanup_memory( void )
 
    free_mssp_info();
 
+   // Wizlist
+   fprintf( stdout, "%s", "Wizlist Data\n" );
+   free_wizlist_data( );
+
+   // Web version
+   fprintf( stdout, "%s", "Web Wizlist Data\n" );
+   free_wizlist_web_data( );
+
    fprintf( stdout, "%s", "Checking string hash for leftovers.\n" );
    {
       for( hash = 0; hash < 1024; ++hash )
@@ -1271,7 +1249,7 @@ int main( int argc, char **argv )
    num_descriptors = 0;
    num_logins = 0;
    dlist.clear(  );
-   strlcpy( lastplayercmd, "No commands issued yet", MIL * 2 );
+   lastplayercmd = "No commands issued yet";
 
    // Init time.
    tzset(  );

@@ -26,8 +26,7 @@
  *                       Xorith's Connection History                        *
  ****************************************************************************/
 
-#ifndef __CONNHIST_H__
-#define __CONNHIST_H__
+#pragma once
 
 /* ConnHistory Feature (header)
  *
@@ -79,4 +78,3 @@ class conn_data
    int level;
    int invis_lvl;
 };
-#endif

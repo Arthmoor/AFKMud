@@ -26,8 +26,7 @@
  *                             Object Class Info                            *
  ****************************************************************************/
 
-#ifndef __OBJECT_H__
-#define __OBJECT_H__
+#pragma once
 
 /*
  * One object.
@@ -130,5 +129,3 @@ obj_data *group_obj( obj_data * obj, obj_data * obj2 );
 extern list < obj_data * >objlist;
 extern obj_data *save_equipment[MAX_WEAR][MAX_LAYERS];
 extern obj_data *mob_save_equipment[MAX_WEAR][MAX_LAYERS];
-
-#endif

@@ -47,7 +47,6 @@
  * Global Variables
  */
 char_data *timechar;
-extern char lastplayercmd[MIL * 2];
 static bool update_month_trigger;
 extern bool bootlock;
 

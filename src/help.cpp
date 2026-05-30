@@ -26,8 +26,8 @@
  *                           Help System Module                             *
  ****************************************************************************/
 
-#include <fstream>
 #include <algorithm>
+#include <fstream>
 #include "mud.h"
 #include "commands.h"
 #include "help.h"

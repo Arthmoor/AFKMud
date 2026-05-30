@@ -26,23 +26,26 @@
  *                       Database management module                         *
  ****************************************************************************/
 
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <unistd.h>
+// For libdl - Trax
 #if !defined(WIN32)
-#include <dlfcn.h>   /* Required for libdl - Trax */
+#include <dlfcn.h>
 #else
 #include <windows.h>
 #define dlopen( libname, flags ) LoadLibrary( (libname) )
 #endif
+
+// For backtrace info in logging functions.
 #if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
-#include <execinfo.h>
 #include <cxxabi.h>
 #endif
-#include <cstdarg>
+
+#include <chrono>
 #include <cmath>
+#include <cstdarg>
+#include <filesystem>
+#include <format>
 #include <fstream>
+#include <iostream>
 #include <stacktrace>
 #include "mud.h"
 #include "area.h"
@@ -57,17 +60,16 @@
 #include "pfiles.h"
 #include "roomindex.h"
 #include "shops.h"
+#include "weather.h"
+
 #if !defined(__CYGWIN__) && defined(SQL)
  #include "sql.h"
 #endif
-#include "weather.h"
 
-#if defined(WIN32)
-void gettimeofday( struct timeval *, struct timezone * );
-#endif
+namespace fs = std::filesystem;
 
-/* Change this alarm timer to whatever you think is appropriate.
- * 45 seconds allows plenty of time for Valgrind to run on an AMD 2800+ CPU.
+/*
+ * Change this alarm timer to whatever you think is appropriate.
  * Adjust if you are getting infinite loop warnings that are shutting down bootup.
  */
 const int AREA_FILE_ALARM = 45;
@@ -75,28 +77,22 @@ const int AREA_FILE_ALARM = 45;
 system_data *sysdata;
 
 /*
- * Structure used to build wizlist
+ * Structure used to build wizlist. No destructor needed as it uses std::unique_ptr
  */
-struct wizent
+class wizent
 {
-   wizent(  );
-   ~wizent(  );
+ public:
+   wizent( ) : level( 0 ) {}
 
    string name;
-   string http;
    short level;
 };
 
-list < wizent * >wizlist;
+std::list<std::unique_ptr<wizent>> wizlist;
 
-wizent::wizent(  )
+void free_wizlist_data()
 {
-   level = 0;
-}
-
-wizent::~wizent(  )
-{
-   wizlist.remove( this );
+   wizlist.clear();
 }
 
 void init_supermob( void );
@@ -199,6 +195,9 @@ void load_loginmsg(  );
 void init_chess(  );
 void load_continents( const int );
 void validate_overland_data(  );
+void make_webwiz(  );
+std::string check_hash( const char * );
+std::string hash_stats( );
 
 affect_data::affect_data(  )
 {
@@ -216,9 +215,10 @@ void shutdown_mud( const string & reason )
    }
 }
 
+// FIXME: Remove this when all uses are using std::filesystem instead.
 bool exists_file( const string & name )
 {
-   struct stat fst;
+   fs::path filename = name;
 
    /*
     * Stands to reason that if there ain't a name to look at, it damn well don't exist! 
@@ -226,7 +226,7 @@ bool exists_file( const string & name )
    if( name.empty(  ) )
       return false;
 
-   if( stat( name.c_str(  ), &fst ) != -1 )
+   if( fs::exists( filename ) )
       return true;
    else
       return false;
@@ -234,8 +234,7 @@ bool exists_file( const string & name )
 
 bool is_valid_filename( char_data * ch, const string & direct, const string & filename )
 {
-   char newfilename[256];
-   struct stat fst;
+   fs::path newfilename;
 
    /*
     * Length restrictions 
@@ -261,10 +260,10 @@ bool is_valid_filename( char_data * ch, const string & direct, const string & fi
    /*
     * If that filename is already being used lets not allow it now to be on the safe side 
     */
-   snprintf( newfilename, sizeof( newfilename ), "%s%s", direct.c_str(  ), filename.c_str(  ) );
-   if( stat( newfilename, &fst ) != -1 )
+   newfilename = std::format( "{}{}", direct, filename );
+   if( fs::exists( newfilename ) )
    {
-      ch->printf( "%s is already an existing filename.\r\n", newfilename );
+      ch->printf( "%s is already an existing filename.\r\n", newfilename.c_str() );
       return false;
    }
 
@@ -878,7 +877,7 @@ char *fread_word( FILE * fp )
    return word;
 }
 
-// FIXME: Tagging this for upgrade to std::format. Many places call this.
+// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
 /*
  * Add a string to the boot-up log - Thoric
  */
@@ -901,7 +900,7 @@ void boot_log( const char *str, ... )
    }
 }
 
-/* Build list of in_progress areas. Do not load areas.
+/* Build list of in progress areas. Do not load areas.
  * define AREA_READ if you want it to build area names rather than reading
  * them out of the area files. -- Altrag */
 /* The above info is obsolete - this will now simply load whatever is in the
@@ -909,37 +908,32 @@ void boot_log( const char *str, ... )
  */
 void load_buildlist( void )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   char buf[256];
-
-   dp = opendir( BUILD_DIR );
-   dentry = readdir( dp );
-   while( dentry )
+   if( !fs::exists( BUILD_DIR ) || !fs::is_directory( BUILD_DIR ) )
    {
-      if( dentry->d_name[0] != '.' )
-      {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( str_cmp( dentry->d_name, "CVS" ) && !str_infix( ".are", dentry->d_name ) )
-         {
-            if( str_infix( ".bak", dentry->d_name ) )
-            {
-               int bc = snprintf( buf, 256, "%s%s", BUILD_DIR, dentry->d_name );
-               if( bc < 0 )
-                  bug( "%s: Output buffer error!", __func__ );
-
-               strlcpy( strArea, dentry->d_name, MIL );
-               set_alarm( AREA_FILE_ALARM );
-               alarm_section = "load_buildlist: read prototype area files";
-               load_area_file( buf, true );
-            }
-         }
-      }
-      dentry = readdir( dp );
+      // This should be treated as fatal.
+      bug( "%s: Builder directory is missing!", __func__ );
+      exit( 1 );
    }
-   closedir( dp );
+
+   for( const auto& entry : fs::directory_iterator( BUILD_DIR ) )
+   {
+      std::string filename = entry.path().filename().string();
+
+      if( filename.empty() || filename[0] == '.' )
+         continue;
+      if( filename.find( ".are" ) == std::string::npos )
+         continue;
+      if( filename.find( ".bak" ) != std::string::npos )
+         continue;
+
+      fs::path full_path = fs::path( BUILD_DIR ) / filename;
+
+      strlcpy( strArea, filename.c_str(), MIL );
+      set_alarm( AREA_FILE_ALARM );
+      alarm_section = "load_buildlist: read prototype area files";
+
+      load_area_file( full_path.string().c_str(), true );
+   }
 }
 
 const int SYSFILEVER = 1;
@@ -949,14 +943,14 @@ const int SYSFILEVER = 1;
 void save_sysdata( void )
 {
    FILE *fp;
-   char filename[256];
+   fs::path filename;
 
-   snprintf( filename, 256, "%ssysdata.dat", SYSTEM_DIR );
+   filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
 
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    else
    {
@@ -1212,14 +1206,14 @@ void fread_sysdata( FILE * fp )
  */
 bool load_systemdata( void )
 {
-   char filename[256];
+   fs::path filename;
    FILE *fp;
    bool found;
 
    found = false;
-   snprintf( filename, 256, "%ssysdata.dat", SYSTEM_DIR );
+   filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename, "r" ) ) != nullptr )
+   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
       found = true;
       for( ;; )
@@ -1319,426 +1313,109 @@ void fix_exits( void )
 }
 
 /*
- * wizlist builder! - Thoric
- */
-void towizfile( const char *line )
-{
-   int filler, xx;
-   char outline[MSL];
-   FILE *wfp;
-
-   outline[0] = '\0';
-
-   if( line && line[0] != '\0' )
-   {
-      filler = ( 78 - strlen( line ) );
-      if( filler < 1 )
-         filler = 1;
-      filler /= 2;
-      for( xx = 0; xx < filler; ++xx )
-         strlcat( outline, " ", MSL );
-      strlcat( outline, line, MSL );
-   }
-   strlcat( outline, "\r\n", MSL );
-   wfp = fopen( WIZLIST_FILE, "a" );
-   if( wfp )
-   {
-      fputs( outline, wfp );
-      FCLOSE( wfp );
-   }
-}
-
-void towebwiz( const char *line )
-{
-   char outline[MSL];
-   FILE *wfp;
-
-   outline[0] = '\0';
-
-   strlcat( outline, " ", MSL );
-   strlcat( outline, line, MSL );
-   strlcat( outline, "\r\n", MSL );
-   wfp = fopen( WEBWIZ_FILE, "a" );
-   if( wfp )
-   {
-      fputs( outline, wfp );
-      FCLOSE( wfp );
-   }
-}
-
-void add_to_wizlist( const string & name, const string & http, int level )
-{
-   wizent *wiz = new wizent;
-
-   wiz->name = name;
-   if( !http.empty(  ) )
-      wiz->http = http;
-   wiz->level = level;
-
-   if( wizlist.empty(  ) )
-   {
-      wizlist.push_back( wiz );
-      return;
-   }
-
-   /*
-    * insert sort, of sorts 
-    */
-   list < wizent * >::iterator tmp;
-   for( tmp = wizlist.begin(  ); tmp != wizlist.end(  ); ++tmp )
-   {
-      wizent *wt = *tmp;
-
-      if( level > wt->level )
-      {
-         wizlist.insert( tmp, wiz );
-         return;
-      }
-   }
-   wizlist.push_back( wiz );
-}
-
-/*
  * Wizlist builder - Thoric
  */
-void make_wizlist(  )
+void add_to_wizlist( const string & name, int level )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   FILE *gfp;
-   const char *word;
-   char buf[256];
+   auto wiz = std::make_unique<wizent>();
 
-   wizlist.clear(  );
+   wiz->name = name;
+   wiz->level = level;
 
-   dp = opendir( GOD_DIR );
-
-   int ilevel = 0;
-   dentry = readdir( dp );
-   while( dentry )
-   {
-      if( dentry->d_name[0] != '.' )
-      {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( str_cmp( dentry->d_name, "CVS" ) )
-         {
-            int bc = snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
-            if( bc < 0 )
-               bug( "%s: Output buffer error!", __func__ );
-
-            gfp = fopen( buf, "r" );
-            if( gfp )
-            {
-               bitset < MAX_PCFLAG > iflags;
-               iflags.reset(  );
-
-               word = feof( gfp ) ? "End" : fread_word( gfp );
-               ilevel = fread_number( gfp );
-               fread_to_eol( gfp );
-               word = feof( gfp ) ? "End" : fread_word( gfp );
-               if( !str_cmp( word, "Pcflags" ) )
-                  flag_set( gfp, iflags, pc_flags );
-               FCLOSE( gfp );
-               add_to_wizlist( dentry->d_name, "", ilevel );
-            }
-         }
-      }
-      dentry = readdir( dp );
-   }
-   closedir( dp );
-
-   unlink( WIZLIST_FILE );
-   snprintf( buf, 256, "The Immortal Masters of %s", sysdata->mud_name.c_str(  ) );
-   towizfile( buf );
-
-   buf[0] = '\0';
-   ilevel = 65535;
-   list < wizent * >::iterator went;
-   for( went = wizlist.begin(  ); went != wizlist.end(  ); ++went )
-   {
-      wizent *wiz = *went;
-
-      if( wiz->level < ilevel )
-      {
-         if( buf[0] )
-         {
-            towizfile( buf );
-            buf[0] = '\0';
-         }
-         towizfile( "" );
-         ilevel = wiz->level;
-         switch ( ilevel )
-         {
-            case MAX_LEVEL - 0:
-               towizfile( " Supreme Entity" );
-               break;
-            case MAX_LEVEL - 1:
-               towizfile( " Realm Lords" );
-               break;
-            case MAX_LEVEL - 2:
-               towizfile( " Eternals" );
-               break;
-            case MAX_LEVEL - 3:
-               towizfile( " Ancients" );
-               break;
-            case MAX_LEVEL - 4:
-               towizfile( " Astral Gods" );
-               break;
-            case MAX_LEVEL - 5:
-               towizfile( " Elemental Gods" );
-               break;
-            case MAX_LEVEL - 6:
-               towizfile( " Dream Gods" );
-               break;
-            case MAX_LEVEL - 7:
-               towizfile( " Greater Gods" );
-               break;
-            case MAX_LEVEL - 8:
-               towizfile( " Gods" );
-               break;
-            case MAX_LEVEL - 9:
-               towizfile( " Demi Gods" );
-               break;
-            case MAX_LEVEL - 10:
-               towizfile( " Deities" );
-               break;
-            case MAX_LEVEL - 11:
-               towizfile( " Saviors" );
-               break;
-            case MAX_LEVEL - 12:
-               towizfile( " Creators" );
-               break;
-            case MAX_LEVEL - 13:
-               towizfile( " Acolytes" );
-               break;
-            case MAX_LEVEL - 14:
-               towizfile( " Angels" );
-               break;
-            case MAX_LEVEL - 15:
-               towizfile( " Retired" );
-               break;
-            case MAX_LEVEL - 16:
-               towizfile( " Guests" );
-               break;
-            default:
-               towizfile( " Servants" );
-               break;
-         }
-      }
-      if( strlen( buf ) + wiz->name.length(  ) > 76 )
-      {
-         towizfile( buf );
-         buf[0] = '\0';
-      }
-      strlcat( buf, " ", 256 );
-      strlcat( buf, wiz->name.c_str(  ), 256 );
-      if( strlen( buf ) > 70 )
-      {
-         towizfile( buf );
-         buf[0] = '\0';
-      }
-   }
-   if( buf[0] )
-      towizfile( buf );
-
-   for( went = wizlist.begin(  ); went != wizlist.end(  ); )
-   {
-      wizent *wiz = *went;
-      ++went;
-
-      deleteptr( wiz );
-   }
-   wizlist.clear(  );
+   wizlist.push_back( std::move( wiz ) );
 }
 
-/*
- *	Makes a wizlist for showing on the Telnet Interface WWW Site -- KCAH
- */
-void make_webwiz( void )
+std::string get_title( int level )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   FILE *gfp;
-   const char *word;
-   char buf[MSL];
-   string http;
+   int offset = MAX_LEVEL - level;
 
-   wizlist.clear(  );
-
-   dp = opendir( GOD_DIR );
-
-   int ilevel = 0;
-   dentry = readdir( dp );
-   while( dentry )
+   switch( offset )
    {
-      if( dentry->d_name[0] != '.' )
-      {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( !str_cmp( dentry->d_name, "CVS" ) )
-         {
-            dentry = readdir( dp );
-            continue;
-         }
-         if( strstr( dentry->d_name, "immlist" ) )
-         {
-            dentry = readdir( dp );
-            continue;
-         }
-
-         int bc = snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
-         if( bc < 0 )
-            bug( "%s: Output buffer error!", __func__ );
-
-         gfp = fopen( buf, "r" );
-         if( gfp )
-         {
-            bitset < MAX_PCFLAG > iflags;
-            iflags.reset(  );
-            http.clear();
-
-            word = feof( gfp ) ? "End" : fread_word( gfp );
-            ilevel = fread_number( gfp );
-            fread_to_eol( gfp );
-            word = feof( gfp ) ? "End" : fread_word( gfp );
-            if( !str_cmp( word, "Pcflags" ) )
-               flag_set( gfp, iflags, pc_flags );
-            word = feof( gfp ) ? "End" : fread_word( gfp );
-            if( !str_cmp( word, "Homepage" ) )
-               fread_string( http, gfp );
-            FCLOSE( gfp );
-            add_to_wizlist( dentry->d_name, http, ilevel );
-         }
-      }
-      dentry = readdir( dp );
+      case 0:  return "Supreme Entity";
+      case 1:  return "Realm Lords";
+      case 2:  return "Eternals";
+      case 3:  return "Ancients";
+      case 4:  return "Astral Gods";
+      case 5:  return "Elemental Gods";
+      case 6:  return "Dream Gods";
+      case 7:  return "Greater Gods";
+      case 8:  return "Gods";
+      case 9:  return "Demi Gods";
+      case 10: return "Deities";
+      case 11: return "Saviors";
+      case 12: return "Creators";
+      case 13: return "Acolytes";
+      case 14: return "Angels";
+      case 15: return "Retired";
+      case 16: return "Guests";
+      default: return "Servants";
    }
-   closedir( dp );
+}
 
-   unlink( WEBWIZ_FILE );
+void make_wizlist( )
+{
+   // Always start with an empty list.
+   wizlist.clear();
 
-   buf[0] = '\0';
-   ilevel = 65535;
-
-   list < wizent * >::iterator went;
-   for( went = wizlist.begin(  ); went != wizlist.end(  ); ++went )
+   // Walk the file list in GOD_DIR.
+   for( const auto& entry : fs::directory_iterator( GOD_DIR ) )
    {
-      wizent *wiz = *went;
-
-      if( wiz->level < ilevel )
+      // An actual file entry and not another folder.
+      if( entry.is_regular_file( ) )
       {
-         if( buf[0] )
+         std::ifstream file( entry.path( ) );
+         std::string word;
+         int ilevel = 0;
+
+         while( file >> word )
          {
-            towebwiz( buf );
-            buf[0] = '\0';
+            if( word == "Level" )
+            {
+               file >> ilevel;
+               break;
+            }
          }
-         towebwiz( "" );
-         ilevel = wiz->level;
-
-         switch ( ilevel )
-         {
-            case MAX_LEVEL - 0:
-               towebwiz( "<div style=\"text-align:center; font-weight:bold\">The Supreme Entity and Implementor</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 1:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Realm Lords</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 2:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Eternals</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 3:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Ancients</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 4:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Astral Gods</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 5:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Elemental Gods</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 6:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Dream Gods</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 7:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Greater Gods</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 8:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Gods</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 9:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Demi Gods</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 10:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Deities</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 11:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Saviors</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 12:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Creators</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 13:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Acolytes</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 14:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">The Angels</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 15:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">Retired</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            case MAX_LEVEL - 16:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">Guests</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-            default:
-               towebwiz( "</div>\n<br /><div style=\"text-align:center; font-weight:bold\">Servants</div>\n<br /><div style=\"text-align:center\">" );
-               break;
-         }
-      }
-
-      if( strlen( buf ) + wiz->name.length(  ) > 999 )
-      {
-         towebwiz( buf );
-         buf[0] = '\0';
-      }
-
-      strlcat( buf, " ", MSL );
-      if( !wiz->http.empty(  ) )
-      {
-         char lbuf[MSL];
-
-         snprintf( lbuf, MSL, "<a href=\"%s\" target=\"_blank\">%s</a>", wiz->http.c_str(  ), wiz->name.c_str(  ) );
-         strlcat( buf, lbuf, MSL );
-      }
-      else
-      {
-         char lbuf[MSL];
-
-         snprintf( lbuf, MSL, "<span style=\"font-size:14px;\">%s</span>", wiz->name.c_str(  ) );
-         strlcat( buf, lbuf, MSL );
-      }
-
-      if( strlen( buf ) > 999 )
-      {
-         towebwiz( buf );
-         buf[0] = '\0';
+         add_to_wizlist( entry.path( ).filename( ).string( ), ilevel );
       }
    }
 
-   if( buf[0] )
+   // Sort the list by level.
+   wizlist.sort( []( const std::unique_ptr<wizent>& a, const std::unique_ptr<wizent>& b ) { return a->level > b->level; } );
+
+   // Open WIZLIST_FILE file for writing.
+   std::ofstream out( WIZLIST_FILE, std::ios::trunc );
+
+   // Center the top banner with the MUD's name.
+   out << std::format( "{:^78}\n", std::format( "The Immortal Masters of {}", sysdata->mud_name ) );
+
+   int current_level = -1;
+   std::string line_buffer;
+
+   // Add each of the entries to the output file.
+   for( const auto& wiz : wizlist )
    {
-      strlcat( buf, "</div>\n", MSL );
-      towebwiz( buf );
+      if( wiz->level != current_level )
+      {
+         if( !line_buffer.empty() )
+            out << std::format( "{:^78}\n ", line_buffer );
+
+         out << std::format( "\n{:^78}\n ", get_title( wiz->level ) );
+         line_buffer.clear();
+         current_level = wiz->level;
+      }
+
+      if( line_buffer.length() + wiz->name.length() > 70 )
+      {
+         out << std::format( "{:^78}\n", line_buffer );
+         line_buffer.clear();
+      }
+      line_buffer += ( line_buffer.empty() ? "" : " " ) + wiz->name;
    }
 
-   for( went = wizlist.begin(  ); went != wizlist.end(  ); )
-   {
-      wizent *wiz = *went;
-      ++went;
+   if( !line_buffer.empty() )
+      out << std::format( "{:^78}\n", line_buffer );
 
-      deleteptr( wiz );
-   }
-   wizlist.clear(  );
+   // File stream will close automatically when function goes out of scope.
 }
 
 CMDF( do_makewizlist )
@@ -1766,8 +1443,7 @@ void boot_db( bool fCopyOver )
    short x;
 
    fpArea = nullptr;
-   show_hash( 32 );
-   unlink( BOOTLOG_FILE );
+   fs::remove( BOOTLOG_FILE );
    boot_log( "%s", "---------------------[ Boot Log: Start ]--------------------" );
    log_string( "Database bootup starting." );
    fBootDb = true;   /* Supposed to help with EOF bugs, so it got moved up */
@@ -1860,10 +1536,9 @@ void boot_db( bool fCopyOver )
    add_event( 1800, ev_mysql_ping, nullptr );
 #endif
 
-   char lbuf[MSL];
    log_string( "Verifying existence of login greeting..." );
-   snprintf( lbuf, MSL, "%sgreeting.dat", MOTD_DIR );
-   if( !exists_file( lbuf ) )
+   fs::path lbuf = std::format( "{}greeting.dat", MOTD_DIR );
+   if( !fs::exists( lbuf ) )
    {
       bug( "%s: Login greeting not found!", __func__ );
       shutdown_mud( "Missing login greeting" );
@@ -2247,12 +1922,12 @@ CMDF( do_memory )
    ch->printf( "&wMaxEver: &W%5d\t\t\t&wTopsn:   &W%5d(%5d)\r\n", sysdata->alltimemax, num_skills, MAX_SKILL );
    ch->printf( "&wMaxEver was recorded on:  &W%s\r\n\r\n", sysdata->time_of_max.c_str(  ) );
 #if !defined(__CYGWIN__) && defined(SQL)
-   ch->printf( "&wMySQL Connection Active:  &W%s\r\n\r\n", mysql_ping( &myconn ) == 0 ? "YES" : mysql_error( &myconn ) );
+   ch->printf( "&wMySQL Connection Active:  &W%s\r\n\r\n", ( db && db->ping() ) ? "YES" : ( db ? db->get_error().c_str() : "NO" ) );
 #endif
 
    if( !str_cmp( arg, "check" ) )
    {
-      ch->print( check_hash( argument.c_str(  ) ) );
+      ch->print( check_hash( argument.c_str(  ) ).c_str() );
       return;
    }
    if( !str_cmp( arg, "showhigh" ) )
@@ -2266,7 +1941,7 @@ CMDF( do_memory )
       hash = -1;
    if( !str_cmp( arg, "hash" ) )
    {
-      ch->printf( "Hash statistics:\r\n%s", hash_stats(  ) );
+      ch->printf( "Hash statistics:\r\n%s", hash_stats(  ).c_str() );
       if( hash != -1 )
          hash_dump( hash );
    }
@@ -2368,6 +2043,7 @@ void show_file( char_data * ch, const std::string & filename )
 /*
  * Append a string to a file.
  */
+// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
 void append_file( char_data * ch, const string & file, const char *fmt, ... )
 {
    FILE *fp;
@@ -2399,6 +2075,7 @@ void append_file( char_data * ch, const string & file, const char *fmt, ... )
 /*
  * Append a string to a file.
  */
+// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
 void append_to_file( const string & file, const char *fmt, ... )
 {
    FILE *fp;
@@ -2424,55 +2101,6 @@ void append_to_file( const string & file, const char *fmt, ... )
    }
 }
 
-#if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32) && defined(C1Z)
-/*
- * This very slick beauty was found at Myospark.net [website is defunct]
- * At least now the symbols are readable :P
- */
-const char *demangle( const char *symbol )
-{
-   size_t size;
-   int status;
-   static char temp[128];
-   char* demangled;
-
-   // First, try to demangle a c++ name
-   if( sscanf( symbol, "%*[^(]%*[^_]%127[^)+]", temp ) == 1 )
-   {
-      if( ( demangled = abi::__cxa_demangle( temp, nullptr, &size, &status ) ) != nullptr )
-      {
-         strlcpy( temp, demangled, 128 );
-         free( demangled );
-
-         return temp;
-      }
-   }
-
-   // If that didn't work, try to get a regular c symbol
-   if( sscanf( symbol, "%127s", temp ) == 1 )
-      return temp;
-
-   // If all else fails, just return the symbol
-   return symbol;
-}
-
-void generate_backtrace( void )
-{
-   void *array[20];
-
-   size_t size = backtrace( array, 20 );
-   char **strings = backtrace_symbols( array, size );
-
-   log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "Obtained %zu stack frames.", size );
-
-   // Intentionally starting from 1, because who cares about the bug() call itself.
-   for( size_t i = 1; i < size; ++i )
-      log_string_plus( LOG_DEBUG, LEVEL_IMMORTAL, demangle( strings[i] ) );
-
-   free( strings );
-}
-#endif
-
 /*
  * Believe it or not, this little gem originated as a code example in a Google search.
  * I've modified what Google AI provided to cut the filename down to the actual source code file.
@@ -2480,7 +2108,18 @@ void generate_backtrace( void )
  *
  * Note: This requires compiling with C++23 support. Currently C++23 is available with GCC 13 and later.
  */
-#if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32) && !defined(C1Z)
+#if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
+std::string demangle( const std::string& name )
+{
+   int status = -1;
+
+   std::unique_ptr<char, void(*)(void*)> res
+   {
+      abi::__cxa_demangle( name.c_str(), nullptr, nullptr, &status ), std::free
+   };
+   return ( status == 0 ) ? res.get() : name;
+}
+
 void generate_backtrace( void )
 {
    std::stacktrace trace = std::stacktrace::current();
@@ -2498,6 +2137,7 @@ void generate_backtrace( void )
       else
          file_name = frame.source_file();
 
+      std::string func_name = demangle( frame.description() );
       lines << frame.description() << " -> " << file_name << ":" << frame.source_line() << endl;
    }
    log_string( lines.str( ) );
@@ -2519,6 +2159,7 @@ void generate_backtrace( void )
  * Due to the formatting attributes, at least __func__ is required.
  * It's helpful to include the file and line tags since for some odd reason the backtrace code won't include the function that called "bug".
  */
+// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
 void bug( const char *str, ... )
 {
    char buf[MSL];
@@ -2564,19 +2205,19 @@ void bug( const char *str, ... )
  */
 void log_string_plus( short log_type, short level, const string & str )
 {
-   struct timeval last_time;
-   time_t curtime;
-   char *strtime;
-   string newstr = str;
+   auto now = std::chrono::system_clock::now();
+   auto seconds_only = std::chrono::floor<std::chrono::seconds>(now);
+   auto local_time = std::chrono::zoned_time{ std::chrono::current_zone(), seconds_only };
 
-   gettimeofday( &last_time, nullptr );
-   curtime = last_time.tv_sec;
+   std::string timestamp = std::format( "{0:%F %T}", local_time );
+   std::cerr << std::format( "{} :: {}\n", timestamp, str );
 
-   strtime = c_time( curtime, -1 );
-   fprintf( stderr, "%s :: %s\n", strtime, newstr.c_str(  ) );
+   std::string newstr = str;
+   if( newstr.starts_with( "Log " ) )
+   {
+      newstr = newstr.substr( 4 );
+   }
 
-   if( !str_prefix( "Log ", newstr ) )
-      newstr = newstr.substr( 4, newstr.length(  ) );
    switch ( log_type )
    {
       default:
@@ -2605,6 +2246,7 @@ void log_string_plus( short log_type, short level, const string & str )
    }
 }
 
+// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
 void log_printf_plus( short log_type, short level, const char *fmt, ... )
 {
    char buf[MSL * 2];
@@ -2617,6 +2259,7 @@ void log_printf_plus( short log_type, short level, const char *fmt, ... )
    log_string_plus( log_type, level, buf );
 }
 
+// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
 void log_printf( const char *fmt, ... )
 {
    char buf[MSL * 2];

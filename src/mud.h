@@ -26,8 +26,7 @@
  *                          Main mud header file                            *
  ****************************************************************************/
 
-#ifndef __MUD_H__
-#define __MUD_H__
+#pragma once
 
 #include <cstring>
 #include <vector>
@@ -1323,8 +1322,6 @@ char *str_alloc( const char *, const char *, const char *, int );
 char *quick_link( char * );
 int str_free( const char * );
 void show_hash( int );
-char *hash_stats( void );
-char *check_hash( const char * );
 void hash_dump( int );
 void show_high_hash( int );
 bool in_hash_table( const char * );
@@ -1496,4 +1493,3 @@ template < typename T > void deleteptr( T * &ptr )
    delete ptr;
    ptr = nullptr;
 }
-#endif

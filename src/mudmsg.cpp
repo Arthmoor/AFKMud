@@ -160,6 +160,7 @@ void mud_send_message( const char *arg )
    if( open_queue(  ) < 0 )
       return;
 
+   // This one needs to stay here.
    snprintf( qbuf.mtext, MAX_MSGBUF_LENGTH, "%s", arg );
    for( x = 0; other_ports[x] != -1; ++x )
    {
@@ -175,16 +176,15 @@ void mud_send_message( const char *arg )
 
 void mud_message( char_data * ch, mud_channel * channel, const string & arg )
 {
-   char tbuf[MAX_MSGBUF_LENGTH + 1];
    int invis;
    bool isinvis = ch->isnpc(  )? ch->has_actflag( ACT_MOBINVIS ) : ch->has_pcflag( PCFLAG_WIZINVIS );
    bool isnpc = ch->isnpc(  );
 
    invis = isnpc ? ch->mobinvis : ch->pcdata->wizinvis;
 
-   snprintf( tbuf, MAX_MSGBUF_LENGTH, "%s %d %d %d %d \"%s@%d\" %s", channel->name.c_str(  ), invis, ch->level, isnpc, isinvis, ch->name, mud_port, arg.c_str(  ) );
+   std::string tbuf = std::format( "{} {} {} {} {} \"{}@{}\" {}", channel->name, invis, ch->level, isnpc, isinvis, ch->name, mud_port, arg );
 
-   mud_send_message( tbuf );
+   mud_send_message( tbuf.c_str() );
 }
 
 void recv_text_handler( string & str )

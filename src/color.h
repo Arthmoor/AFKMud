@@ -28,8 +28,7 @@
  *                      Enhanced ANSI parser by Samson                      *
  ****************************************************************************/
 
-#ifndef __COLOR_H__
-#define __COLOR_H__
+#pragma once
 
 std::string color_align( const std::string &, int, int );
 int color_strlen( std::string_view );
@@ -218,4 +217,3 @@ const int AT_BOARD3 = 111; /* Samson 10-14-03 */
 const int MAX_COLORS = 112;
 
 extern const short default_set[MAX_COLORS];
-#endif

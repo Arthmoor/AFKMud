@@ -26,17 +26,18 @@
  *                             Hotboot module                               *
  ****************************************************************************/
 
-#include <fstream>
-#include <dirent.h>
 #if !defined(WIN32)
 #include <dlfcn.h>   /* Required for libdl - Trax */
 #else
-#include <unistd.h>
 #include <windows.h>
 #define dlopen( libname, flags ) LoadLibrary( (libname) )
-#define dlclose( libname ) FreeLibrary( (HINSTANCE) (libname) )
+#define dlclose( libname )		( (void *)FreeLibrary( (HMODULE)(libname)) )
 #endif
+
 #include <cassert>
+#include <filesystem>
+#include <format>
+#include <fstream>
 #include "mud.h"
 #include "descriptor.h"
 #include "mobindex.h"
@@ -44,9 +45,12 @@
 #include "overland.h"
 #include "roomindex.h"
 
+namespace fs = std::filesystem;
+
 #ifdef MULTIPORT
 extern bool compilelock;
 #endif
+
 extern bool bootlock;
 extern int control;
 extern int num_logins;
@@ -149,6 +153,7 @@ void save_mobile( FILE * fp, char_data * mob )
 void save_world( void )
 {
    map < int, room_index * >::iterator iroom;
+   fs::path filename;
 
    log_string( "Preserving world state...." );
 
@@ -165,12 +170,12 @@ void save_world( void )
             continue;
 
          FILE *objfp;
-         char filename[256];
-         snprintf( filename, 256, "%s%d", HOTBOOT_DIR, pRoomIndex->vnum );
-         if( !( objfp = fopen( filename, "w" ) ) )
+
+         filename = std::format( "{}{}", HOTBOOT_DIR, pRoomIndex->vnum );
+         if( !( objfp = fopen( filename.c_str(), "w" ) ) )
          {
             bug( "%s: fopen %d", __func__, pRoomIndex->vnum );
-            perror( filename );
+            perror( filename.c_str() );
             continue;
          }
          fwrite_obj( nullptr, pRoomIndex->objects, nullptr, objfp, 0, true );
@@ -180,12 +185,12 @@ void save_world( void )
    }
 
    FILE *mobfp;
-   char filename[256];
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, MOB_FILE );
-   if( !( mobfp = fopen( filename, "w" ) ) )
+
+   filename = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
+   if( !( mobfp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen mob file", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    else
    {
@@ -471,20 +476,20 @@ char_data *load_mobile( FILE * fp )
 void read_obj_file( const char *dirname, const char *filename )
 {
    FILE *fp;
-   char fname[256];
+   fs::path fname;
    room_index *room;
 
    int vnum = atoi( filename );
-   snprintf( fname, 256, "%s%s", dirname, filename );
+   fname = std::format( "{}{}", dirname, filename );
 
    if( !( room = get_room_index( vnum ) ) )
    {
       bug( "%s: ARGH! Missing room index for %d!", __func__, vnum );
-      unlink( fname );
+      fs::remove( fname );
       return;
    }
 
-   if( ( fp = fopen( fname, "r" ) ) != nullptr )
+   if( ( fp = fopen( fname.c_str(), "r" ) ) != nullptr )
    {
       // If the supermob still has objects in its possession, this means that a previous room dump failed.
       assert( supermob->carrying.empty( ) );
@@ -524,7 +529,7 @@ void read_obj_file( const char *dirname, const char *filename )
          }
       }
       FCLOSE( fp );
-      unlink( fname );
+      fs::remove( fname );
 
       list < obj_data * >::iterator iobj;
       for( iobj = supermob->carrying.begin(  ); iobj != supermob->carrying.end(  ); )
@@ -552,48 +557,38 @@ void read_obj_file( const char *dirname, const char *filename )
       log_string( "Cannot open obj file" );
 }
 
-void load_obj_files( void )
+void load_obj_files( )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   char directory_name[100];
-
    set_alarm( 30 );
    log_string( "World state: loading objs" );
-   snprintf( directory_name, 100, "%s", HOTBOOT_DIR );
-   dp = opendir( directory_name );
-   dentry = readdir( dp );
-   while( dentry )
+
+   fs::path hotboot_dir{ HOTBOOT_DIR };
+
+   if( fs::exists( hotboot_dir ) && fs::is_directory( hotboot_dir ) )
    {
-      /*
-       * Added by Tarl 3 Dec 02 because we are now using CVS 
-       */
-      if( !str_cmp( dentry->d_name, "CVS" ) )
+      for( const auto& entry : fs::directory_iterator( hotboot_dir ) )
       {
-         dentry = readdir( dp );
-         continue;
+         const std::string filename = entry.path().filename().string();
+
+         read_obj_file( HOTBOOT_DIR, filename.c_str() );
       }
-      if( dentry->d_name[0] != '.' )
-         read_obj_file( directory_name, dentry->d_name );
-      dentry = readdir( dp );
    }
-   closedir( dp );
    set_alarm( 0 );
 }
 
 void load_world( void )
 {
    FILE *mobfp;
-   char file1[256];
+   fs::path file1;
    char *word;
    int done = 0;
    bool mobfile = false;
 
-   snprintf( file1, 256, "%s%s", SYSTEM_DIR, MOB_FILE );
-   if( !( mobfp = fopen( file1, "r" ) ) )
+   file1 = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
+   if( !( mobfp = fopen( file1.c_str(), "r" ) ) )
    {
       bug( "%s: fopen mob file", __func__ );
-      perror( file1 );
+      perror( file1.c_str() );
    }
    else
       mobfile = true;
@@ -625,7 +620,7 @@ void load_world( void )
    /*
     * Once loaded, the data needs to be purged in the event it causes a crash so that it won't try to reload 
     */
-   unlink( file1 );
+   fs::remove( file1 );
 }
 
 /* Warm reboot stuff, gotta make sure to thank Erwin for this :) */
@@ -824,7 +819,7 @@ void hotboot_recover( void )
       exit( 1 );
    }
 
-   unlink( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
+   fs::remove( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
    do
    {
       string key, value;

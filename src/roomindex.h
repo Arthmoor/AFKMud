@@ -26,8 +26,7 @@
  *                           Room Index Class Info                          *
  ****************************************************************************/
 
-#ifndef __ROOMINDEX_H__
-#define __ROOMINDEX_H__
+#pragma once
 
 /*
  * Reset definition.
@@ -178,4 +177,3 @@ struct teleport_data
 };
 
 extern list < teleport_data * >teleportlist;
-#endif

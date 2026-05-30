@@ -35,6 +35,8 @@
 /* Any spec_fun added here needs to be added to specfuns.dat as well.
  * If you don't know what that means, ask Samson to take care of it.
  */
+#include <filesystem>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "fight.h"
@@ -42,6 +44,8 @@
 #include "objindex.h"
 #include "roomindex.h"
 #include "weather.h"
+
+namespace fs = std::filesystem;
 
 SPELLF( spell_smaug );
 SPELLF( spell_cure_blindness );
@@ -67,16 +71,16 @@ void free_specfuns( void )
 void load_specfuns( void )
 {
    FILE *fp;
-   char filename[256];
+   fs::path filename;
    string sfun;
 
    speclist.clear(  );
 
-   snprintf( filename, 256, "%sspecfuns.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "r" ) ) )
+   filename = std::format( "{}specfuns.dat", SYSTEM_DIR );
+   if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
       bug( "%s: FATAL - cannot load specfuns.dat, exiting.", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
       exit( 1 );
    }
    else

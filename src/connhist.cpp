@@ -34,7 +34,8 @@
  * Stores connection data in an array so that it can be reviewed later.
  *
  */
-
+#include <chrono>
+#include <format>
 #include <fstream>
 #include "mud.h"
 #include "descriptor.h"
@@ -105,7 +106,7 @@ void load_connhistory( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -200,9 +201,6 @@ void update_connhistory( descriptor_data * d, int type )
 {
    conn_data *con;
    char_data *vch;
-   struct tm *local;
-   time_t t;
-   char when[MIL];
 
    if( !d )
    {
@@ -211,51 +209,41 @@ void update_connhistory( descriptor_data * d, int type )
    }
 
    vch = d->original ? d->original : d->character;
-   if( !vch )
+   if( !vch || vch->isnpc() )
       return;
 
-   if( vch->isnpc(  ) )
-      return;
-
-   /*
-    * Count current histories, if more than the defined MAX, then remove the first one. -- X 
-    */
-   if( connlist.size(  ) >= MAX_CONNHISTORY )
+   if( connlist.size() >= MAX_CONNHISTORY )
    {
-      con = *connlist.begin(  );
-      connlist.erase( connlist.begin(  ) );
+      con = *connlist.begin();
+      connlist.erase( connlist.begin() );
       deleteptr( con );
    }
 
-   /*
-    * Build our time string... 
-    */
-   t = time( nullptr );
-   local = localtime( &t );
+   auto now = std::chrono::system_clock::now();
+   auto local_now = std::chrono::zoned_time{ std::chrono::current_zone(), now };
 
-   /*
-    * Create our entry and fill the fields! 
-    */
    con = new conn_data;
    con->user = vch->name ? vch->name : "NoName";
-   snprintf( when, MIL, "%-2.2d/%-2.2d %-2.2d:%-2.2d", local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min );
-   con->when = when;
-   con->host = !d->hostname.empty(  ) ? d->hostname : d->ipaddress;
+
+   con->when = std::format( "{:%m/%d %H:%M}", local_now );
+
+   con->host = !d->hostname.empty() ? d->hostname : d->ipaddress;
    con->type = type;
    con->level = vch->level;
    con->invis_lvl = vch->has_pcflag( PCFLAG_WIZINVIS ) ? vch->pcdata->wizinvis : 0;
+
    connlist.push_back( con );
-   save_connhistory(  );
+   save_connhistory();
 }
 
 /* The logins command */
-/* Those who are equal or greather than the CH_LVL_ADMIN defined in connhist.h
+/* Those who are equal or greater than the CH_LVL_ADMIN defined in connhist.h
  * can also prompt a complete purging of the histories and the conn.hist file. */
 CMDF( do_logins )
 {
    int conn_count = 0;
    list < conn_data * >::iterator iconn;
-   char user[MSL];
+   std::string user;
    string typebuf;
 
    if( !argument.empty(  ) && ( !str_cmp( argument, "clear" ) && ch->level >= CH_LVL_ADMIN ) )
@@ -316,18 +304,18 @@ CMDF( do_logins )
           * * what invis level they were. Note: change color for the Invis tag here.
           */
          if( conn->invis_lvl > 0 && ch->is_immortal(  ) )
-            snprintf( user, MSL, "(&cInvis &p%d&w) %s", conn->invis_lvl, conn->user.c_str(  ) );
+            user = std::format( "(&cInvis &p{}&w) %s", conn->invis_lvl, conn->user );
          else
-            strlcpy( user, conn->user.c_str(  ), MSL );
+            user = conn->user;
 
          /*
           * The format for the history are these two lines below. First is for Immortals, second for players. 
           * If you know what you're doing, than you can modify the output here 
           */
          if( ch->is_immortal(  ) )
-            ch->printf( "&c[&O%s&c] &w%s&g@&w%s&c%s&w\r\n", conn->when.c_str(  ), user, conn->host.c_str(  ), typebuf.c_str(  ) );
+            ch->printf( "&c[&O%s&c] &w%s&g@&w%s&c%s&w\r\n", conn->when.c_str(  ), user.c_str(), conn->host.c_str(  ), typebuf.c_str(  ) );
          else
-            ch->printf( "&c[&O%s&c] &w%s&c%s&w\r\n", conn->when.c_str(  ), user, typebuf.c_str(  ) );
+            ch->printf( "&c[&O%s&c] &w%s&c%s&w\r\n", conn->when.c_str(  ), user.c_str(), typebuf.c_str(  ) );
       }
    }
 

@@ -27,8 +27,7 @@
  *                   Brought over from Lands of Altanos                     *
  ***************************************************************************/
 
-#ifndef __SHIPS_H__
-#define __SHIPS_H__
+#pragma once
 
 enum ship_flag_settings
 {
@@ -68,4 +67,3 @@ enum ship_types
 extern list < ship_data * >shiplist;
 
 #define SHIP_FILE SYSTEM_DIR "ships.dat"  /* For ships */
-#endif

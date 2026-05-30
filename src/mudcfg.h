@@ -26,8 +26,7 @@
  *                         MUD Specific Definitions                         *
  ****************************************************************************/
 
-#ifndef __MUDCFG_H__
-#define __MUDCFG_H__
+#pragma once
 
 /* These definitions can be safely changed without fear of being overwritten by future patches.
  * This does not guarantee however that compatibility will be maintained if you change
@@ -493,4 +492,3 @@ enum lang_array
 		       | LANG_OGRE | LANG_ORCISH | LANG_TROLLISH | LANG_GOBLIN \
 		       | LANG_HALFLING | LANG_GITH | LANG_MINOTAUR | LANG_CENTAUR | LANG_GNOME \
 			 | LANG_REPTILE | LANG_INSECTOID | LANG_SAHUAGIN )
-#endif

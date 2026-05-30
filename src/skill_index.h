@@ -26,6 +26,8 @@
  *                     Skill Search Index Definitions                       *
  ****************************************************************************/
 
+#pragma once
+
 // This probably isn't necessary, but prefer to sort by the contents of the
 // string rather than the binary value that std::less uses.
 class string_sort

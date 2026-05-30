@@ -26,6 +26,7 @@
  *                          Spell handling module                           *
  ****************************************************************************/
 
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -247,7 +248,7 @@ void immune_casting( skill_type * skill, char_data * ch, char_data * victim, obj
  */
 void say_spell( char_data * ch, int sn )
 {
-   char buf[MSL-30], buf2[MSL];
+   std::string buf, buf2;
    char *pName;
    int iSyl, length;
    skill_type *skill = get_skilltype( sn );
@@ -292,14 +293,14 @@ void say_spell( char_data * ch, int sn )
       {"", ""}
    };
 
-   buf[0] = '\0';
+   buf = "";
    for( pName = skill->name; *pName != '\0'; pName += length )
    {
       for( iSyl = 0; ( length = strlen( syl_table[iSyl].old ) ) != 0; ++iSyl )
       {
          if( !str_prefix( syl_table[iSyl].old, pName ) )
          {
-            strlcat( buf, syl_table[iSyl].snew, MSL-30 );
+            buf.append( syl_table[iSyl].snew );
             break;
          }
       }
@@ -309,14 +310,14 @@ void say_spell( char_data * ch, int sn )
 
    if( ch->Class == CLASS_BARD )
    {
-      strlcpy( buf2, "$n plays a song.", MSL );
-      snprintf( buf, MSL-30, "$n plays the song, '%s'.", skill->name );
+      buf2 = "$n plays a song.";
+      buf = std::format( "$n plays the song, '{}'.", skill->name );
    }
 
    else
    {
-      snprintf( buf2, MSL, "$n utters the words, '%s'.", buf );
-      snprintf( buf, MSL-30, "$n utters the words, '%s'.", skill->name );
+      buf2 = std::format( "$n utters the words, '{}'.", buf );
+      buf = std::format( "$n utters the words, '{}'.", skill->name );
    }
 
    list < char_data * >::iterator ich;
@@ -3044,14 +3045,13 @@ SPELLF( spell_teleport )
 
 SPELLF( spell_ventriloquate )
 {
-   char buf1[MSL], buf2[MSL];
-   string speaker;
+   std::string buf1, buf2, speaker;
 
    target_name = one_argument( target_name, speaker );
 
-   snprintf( buf1, MSL, "%s says '%s'.\r\n", speaker.c_str(  ), target_name.c_str(  ) );
-   snprintf( buf2, MSL, "Someone makes %s say '%s'.\r\n", speaker.c_str(  ), target_name.c_str(  ) );
-   buf1[0] = UPPER( buf1[0] );
+   buf1 = std::format( "{} says '{}'.\r\n", speaker, target_name );
+   buf2 = std::format( "Someone makes {} say '{}'.\r\n", speaker, target_name );
+   buf1 = capitalize( buf1 );
 
    list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
@@ -3059,7 +3059,7 @@ SPELLF( spell_ventriloquate )
       char_data *vch = *ich;
 
       if( !hasname( vch->name, speaker ) && is_same_char_map( ch, vch ) )
-         vch->printf( "&[say]%s\r\n", saves_spell_staff( level, vch ) ? buf2 : buf1 );
+         vch->printf( "&[say]%s\r\n", saves_spell_staff( level, vch ) ? buf2.c_str() : buf1.c_str() );
    }
    return rNONE;
 }

@@ -26,6 +26,8 @@
  *                         MUDprog Quest Variables                          *
  ****************************************************************************/
 
+#pragma once
+
 const int MAX_VAR_BITS = 128;
 
 enum variable_types

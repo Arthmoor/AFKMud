@@ -80,11 +80,15 @@
  * mortals.
  */
 
+#include <filesystem>
+#include <format>
 #include "mud.h"
 #include "liquids.h"
 #include "mud_prog.h"
 #include "objindex.h"
 #include "roomindex.h"
+
+namespace fs = std::filesystem;
 
 /* globals */
 liquid_data *liquid_table[MAX_LIQUIDS];
@@ -138,13 +142,13 @@ void save_liquids( void )
 {
    FILE *fp = nullptr;
    liquid_data *liq = nullptr;
-   char filename[256];
+   fs::path filename;
    int i;
 
-   snprintf( filename, 256, "%sliquids.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "w" ) ) )
+   filename = std::format( "{}liquids.dat", SYSTEM_DIR );
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: cannot open %s for writing", __func__, filename );
+      bug( "%s: cannot open %s for writing", __func__, filename.c_str() );
       return;
    }
 
@@ -247,14 +251,14 @@ liquid_data *fread_liquid( FILE * fp )
 void load_liquids( void )
 {
    FILE *fp = nullptr;
-   char filename[256];
+   fs::path filename;
    int x;
 
    file_version = 0;
-   snprintf( filename, 256, "%sliquids.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "r" ) ) )
+   filename = std::format( "{}liquids.dat", SYSTEM_DIR );
+   if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
-      bug( "%s: cannot open %s for reading", __func__, filename );
+      bug( "%s: cannot open %s for reading", __func__, filename.c_str() );
       return;
    }
 
@@ -318,12 +322,11 @@ void save_mixtures( void )
 {
    list < mixture_data * >::iterator imix;
    FILE *fp = nullptr;
-   char filename[256];
 
-   snprintf( filename, 256, "%smixtures.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "w" ) ) )
+   fs::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: cannot open %s for writing", __func__, filename );
+      bug( "%s: cannot open %s for writing", __func__, filename.c_str() );
       return;
    }
 
@@ -416,15 +419,14 @@ mixture_data *fread_mixture( FILE * fp )
 void load_mixtures( void )
 {
    FILE *fp = nullptr;
-   char filename[256];
 
    mixlist.clear(  );
    file_version = 0;
 
-   snprintf( filename, 256, "%smixtures.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "r" ) ) )
+   fs::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
+   if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
-      bug( "%s: cannot open %s for reading", __func__, filename );
+      bug( "%s: cannot open %s for reading", __func__, filename.c_str() );
       return;
    }
 

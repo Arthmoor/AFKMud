@@ -50,8 +50,7 @@
  *                         Defines, structs, etc.. v1.0                   *
 \**************************************************************************/
 
-#ifndef __OLC_H__
-#define __OLC_H__
+#pragma once
 
 enum weapon_types
 {
@@ -649,4 +648,3 @@ const int MEDIT_MANA = 34;
 const int MEDIT_MOVE = 35;
 const int MEDIT_CLASS = 36;
 const int MEDIT_RACE = 37;
-#endif

@@ -28,8 +28,7 @@
  *             Also contains the random treasure creation code              *
  ****************************************************************************/
 
-#ifndef __TREASURE_H__
-#define __TREASURE_H__
+#pragma once
 
 #define RUNE_FILE SYSTEM_DIR "runes.dat"
 #define RUNEWORD_FILE SYSTEM_DIR "runeword.dat"
@@ -231,4 +230,3 @@ const int TMAT_MAX = 14;
 const int TATP_MAX = 17;
 const int TWTP_MAX = 14;
 const int TQUAL_MAX = 5;
-#endif

@@ -26,8 +26,7 @@
  *                       Smaug Zone Conversion Support                      *
  ****************************************************************************/
 
-#ifndef __AREACONVERT_H__
-#define __AREACONVERT_H__
+#pragma once
 
 const int AREA_STOCK_VERSION = 3;       // The current top version for stock Smaug 1.8b files
 const int AREA_SMAUGWIZ_VERSION = 1000; // The current top version for SmaugWiz files
@@ -66,5 +65,3 @@ extern int top_reset;
 extern int top_shop;
 extern int top_repair;
 extern FILE *fpArea;
-
-#endif

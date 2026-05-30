@@ -49,7 +49,7 @@ void unlink_command( cmd_type * );
 bool compilelock = false;  /* Reboot/shutdown commands locked during compiles */
 list < shell_cmd * >shellcmdlist;
 
-extern char lastplayercmd[MIL * 2];
+extern std::string lastplayercmd;
 extern bool bootlock;
 
 #ifndef USEGLOB
@@ -1259,7 +1259,7 @@ bool shell_hook( char_data * ch, const string & command, string & argument )
 {
    list < shell_cmd * >::iterator icmd;
    shell_cmd *cmd = nullptr;
-   char logline[MIL];
+   std::string logline;
    bool found = false;
 
    int trust = ch->get_trust(  );
@@ -1281,15 +1281,15 @@ bool shell_hook( char_data * ch, const string & command, string & argument )
    if( !found )
       return false;
 
-   snprintf( logline, MIL, "%s %s", command.c_str(  ), argument.c_str(  ) );
+   logline = std::format( "{} {}", command, argument );
 
    /*
     * Log and snoop.
     */
-   snprintf( lastplayercmd, MIL * 2, "%s used command: %s", ch->name, logline );
+   lastplayercmd = std::format( "{} used command: {}", ch->name, logline );
 
    if( cmd->get_log(  ) == LOG_NEVER )
-      strlcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX", MIL );
+      logline = "XXXXXXXX XXXXXXXX XXXXXXXX";
 
    int loglvl = cmd->get_log(  );
 
@@ -1313,9 +1313,9 @@ bool shell_hook( char_data * ch, const string & command, string & argument )
        * a logged command.  Check for descriptor in case force is used. 
        */
       if( ch->desc && ch->desc->original )
-         log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name, ch->desc->original->name, logline );
+         log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name, ch->desc->original->name, logline.c_str() );
       else
-         log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name, logline );
+         log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name, logline.c_str() );
    }
 
    if( ch->desc && ch->desc->snoop_by )

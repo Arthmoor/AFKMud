@@ -26,6 +26,8 @@
  *                         Battle & Death module                            *
  ****************************************************************************/
 
+#include <filesystem>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -40,7 +42,9 @@
 #include "roomindex.h"
 #include "smaugaffect.h"
 
-extern char lastplayercmd[MIL * 2];
+namespace fs = std::filesystem;
+
+extern std::string lastplayercmd;
 obj_data *used_weapon;  /* Used to figure out which weapon later */
 bool dual_flip = false;
 bool alreadyUsedSkill = false;
@@ -659,7 +663,7 @@ bool check_illegal_pk( char_data * ch, char_data * victim )
           && !in_arena( ch ) && ch != victim && !( ch->is_immortal(  ) && victim->is_immortal(  ) ) )
       {
          log_printf( "&p%s on %s%s in &W***&rILLEGAL PKILL&W*** &pattempt at %d",
-                     ( lastplayercmd ), ( victim->isnpc(  )? victim->short_descr : victim->name ), ( victim->isnpc(  )? victim->name : "" ), victim->in_room->vnum );
+                     ( lastplayercmd.c_str() ), ( victim->isnpc(  )? victim->short_descr : victim->name ), ( victim->isnpc(  )? victim->name : "" ), victim->in_room->vnum );
          last_pkroom = victim->in_room->vnum;
          return true;
       }
@@ -1530,7 +1534,7 @@ void group_gain( char_data * ch, char_data * victim )
  */
 void dam_message( char_data * ch, char_data * victim, double dam, unsigned int dt, obj_data * obj )
 {
-   char buf1[256], buf2[256], buf3[256];
+   std::string buf1, buf2, buf3;
    const char *vs;
    const char *vp;
    const char *attack;
@@ -1605,9 +1609,9 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       skill = skill_table[dt];
    if( dt == ( unsigned int )TYPE_HIT )
    {
-      snprintf( buf1, 256, "$n %s $N%c", vp, punct );
-      snprintf( buf2, 256, "You %s $N%c", vs, punct );
-      snprintf( buf3, 256, "$n %s you%c", vp, punct );
+      buf1 = std::format( "$n {} $N{}", vp, punct );
+      buf2 = std::format( "You {} $N{}", vs, punct );
+      buf3 = std::format( "$n {} you{}", vp, punct );
    }
    else if( dt > ( unsigned int )TYPE_HIT && is_wielding_poisoned( ch ) )
    {
@@ -1619,9 +1623,9 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          dt = TYPE_HIT;
          attack = attack_table[0];
       }
-      snprintf( buf1, 256, "$n's poisoned %s %s $N%c", attack, vp, punct );
-      snprintf( buf2, 256, "Your poisoned %s %s $N%c", attack, vp, punct );
-      snprintf( buf3, 256, "$n's poisoned %s %s you%c", attack, vp, punct );
+      buf1 = std::format( "$n's poisoned {} {} $N{}", attack, vp, punct );
+      buf2 = std::format( "Your poisoned {} {} $N{}", attack, vp, punct );
+      buf3 = std::format( "$n's poisoned {} {} you{}", attack, vp, punct );
    }
    else
    {
@@ -1681,9 +1685,9 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
          attack = attack_table[0];
       }
-      snprintf( buf1, 256, "$n's %s %s $N%c", attack, vp, punct );
-      snprintf( buf2, 256, "Your %s %s $N%c", attack, vp, punct );
-      snprintf( buf3, 256, "$n's %s %s you%c", attack, vp, punct );
+      buf1 = std::format( "$n's {} {} $N{}", attack, vp, punct );
+      buf2 = std::format( "Your {} {} $N{}", attack, vp, punct );
+      buf3 = std::format( "$n's {} {} you{}", attack, vp, punct );
    }
 
    act( AT_ACTION, buf1, ch, nullptr, victim, TO_NOTVICT );
@@ -1706,7 +1710,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
 void check_attacker( char_data * ch, char_data * victim )
 {
    /*
-    * Made some changes to this function Apr 6/96 to reduce the prolifiration
+    * Made some changes to this function Apr 6/96 to reduce the proliferation
     * of attacker flags in the realms. -Narn
     */
    /*
@@ -3072,10 +3076,9 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
                ;
             else
             {
-               char filename[256];
+               fs::path filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
 
-               snprintf( filename, 256, "%s%s.record", CLAN_DIR, ch->pcdata->clan->name.c_str(  ) );
-               append_to_file( filename, "&P(%2d) %-12s &wvs &P(%2d) %s &P%s ... &w%s",
+               append_to_file( filename.c_str(), "&P(%2d) %-12s &wvs &P(%2d) %s &P%s ... &w%s",
                                ch->level, ch->name, victim->level, !victim->CAN_PKILL(  )? "&W<Peaceful>" :
                                victim->pcdata->clan ? victim->pcdata->clan->badge.c_str(  ) : "&P(&WUnclanned&P)", victim->name, ch->in_room->area->name );
             }
@@ -3084,14 +3087,12 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          if( !victim->isnpc() && !victim->is_immortal() && victim->pcdata->clan
              && victim->pcdata->clan->clan_type == CLAN_CLAN && ch != victim && !ch->isnpc() )
          {
-            char filename[256];
-
-            snprintf( filename, 256, "%s%s.defeats", CLAN_DIR, victim->pcdata->clan->name.c_str() );
+            fs::path filename = std::format( "{}{}.defeats", CLAN_DIR, victim->pcdata->clan->name );
 
             if( ch->pcdata && ch->pcdata->clan && ch->pcdata->clan->name == victim->pcdata->clan->name )
                ;
             else
-               append_to_file( filename, "&P(%2d) %-12s &wdefeated by &P(%2d) %s &P%s ... &w%s",
+               append_to_file( filename.c_str(), "&P(%2d) %-12s &wdefeated by &P(%2d) %s &P%s ... &w%s",
                      victim->level, victim->name, ch->level, !ch->CAN_PKILL( ) ? "&W<Peaceful>" :
                      ch->pcdata->clan ? ch->pcdata->clan->badge.c_str() : "&P(&WUnclanned&P)", ch->name, victim->in_room->area->name );
          }

@@ -26,8 +26,7 @@
  *                           Smaug Affect Header                            *
  ****************************************************************************/
 
-#ifndef __SMAUG_AFFECT_H__
-#define __SMAUG_AFFECT_H__
+#pragma once
 
 #include <climits>
 
@@ -112,4 +111,3 @@ enum spell_save_effects
 };
 
 extern list<smaug_affect*> saflist;
-#endif

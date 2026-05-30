@@ -26,8 +26,7 @@
  *                        Finger and Wizinfo Module                         *
  ****************************************************************************/
 
-#ifndef __FINGER_H__
-#define __FINGER_H__
+#pragma once
 
 class wizinfo_data
 {
@@ -44,4 +43,3 @@ class wizinfo_data
    string realm;
    short level;
 };
-#endif

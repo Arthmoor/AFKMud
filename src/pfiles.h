@@ -26,9 +26,7 @@
  *                          Pfile Pruning Module                            *
  ****************************************************************************/
 
-#ifndef __PFILES_H__
-#define __PFILES_H__
+#pragma once
 
 extern time_t new_pfile_time_t;
 extern short num_pfiles;
-#endif

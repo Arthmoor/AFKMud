@@ -27,6 +27,7 @@
  *                               getting big.                               *
  ****************************************************************************/
 
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "liquids.h"
@@ -211,16 +212,14 @@ CMDF( do_eat )
    }
    if( ch->fighting && number_percent(  ) > ( ch->get_curr_dex(  ) * 2 + 47 ) )
    {
-      char buf[MSL];
-
-      snprintf( buf, MSL, "%s",
+      std::string buf = std::format( "{}",
                 ( ch->in_room->sector_type == SECT_UNDERWATER ||
                   ch->in_room->sector_type == SECT_WATER_SWIM ||
                   ch->in_room->sector_type == SECT_WATER_NOSWIM ||
                   ch->in_room->sector_type == SECT_RIVER ) ? "dissolves in the water" :
                 ( ch->in_room->sector_type == SECT_AIR || ch->in_room->flags.test( ROOM_NOFLOOR ) ) ? "falls far below" : "is trampled underfoot" );
-      act( AT_MAGIC, "$n drops $p, and it $T.", ch, obj, buf, TO_ROOM );
-      act( AT_MAGIC, "Oops, $p slips from your hand and $T!", ch, obj, buf, TO_CHAR );
+      act( AT_MAGIC, "$n drops $p, and it $T.", ch, obj, buf.c_str(), TO_ROOM );
+      act( AT_MAGIC, "Oops, $p slips from your hand and $T!", ch, obj, buf.c_str(), TO_CHAR );
    }
    else
    {

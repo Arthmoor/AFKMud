@@ -26,19 +26,36 @@
  *                      MySQL Database management module                    *
  ****************************************************************************/
 
-#ifndef __SQL_H__
-#define __SQL_H__
+#pragma once
 
+#include <memory>
 // Switch the comments as needed depending on whether the system is using MySQL or MariaDB.
 // #include <mysql/mysql.h>
 #include <mariadb/mysql.h>
 
-extern MYSQL myconn;
+class MySQLDatabase
+{
+ private:
+   MYSQL conn;
+
+ public:
+   MySQLDatabase( const std::string &, const std::string &, const std::string &, const std::string & );
+   ~MySQLDatabase();
+
+   // Copying is not allowed
+   MySQLDatabase( const MySQLDatabase & ) = delete;
+   MySQLDatabase & operator=( const MySQLDatabase & ) = delete;
+
+   std::string escape( std::string_view );
+   int execute( std::string_view );
+   bool ping();
+   std::string get_error();
+};
+
+extern std::unique_ptr<MySQLDatabase> db;
 
 /* mudsql.c */
 void init_mysql(  );
 void close_db(  );
-int mysql_safe_query( const char *, ... );
+int mysql_safe_query( std::string_view, auto&&... );
 void login_log( char_data *, int );
-
-#endif

@@ -27,8 +27,7 @@
  *                      Created by Samson of Alsherok                       *
  ****************************************************************************/
 
-#ifndef __OVERLAND_H__
-#define __OVERLAND_H__
+#pragma once
 
 const int MAX_X = 1000;
 const int MAX_Y = 1000;
@@ -163,4 +162,3 @@ double calc_angle( short, short, short, short, double * );
 bool is_valid_x( short );
 bool is_valid_y( short );
 bool valid_coordinates( short, short );
-#endif

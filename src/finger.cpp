@@ -33,14 +33,17 @@
            E-mail: nevesfirestar2002@yahoo.com
  ******************************************************/
 
-#include <dirent.h>
-#include <sys/stat.h>
+#include <chrono>
+#include <filesystem>
+#include <format>
 #include <fstream>
 #include "mud.h"
 #include "calendar.h"
 #include "descriptor.h"
 #include "finger.h"
 #include "roomindex.h"
+
+namespace fs = std::filesystem;
 
 /* Begin wizinfo stuff - Samson 6-6-99 */
 
@@ -97,67 +100,34 @@ void clear_wizinfo( void )
 
 void build_wizinfo( void )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   ifstream stream;
-   wizinfo_data *wiz;
-   char buf[256];
+   // Always start with an empty list.
+   clear_wizinfo(  );
 
-   clear_wizinfo(  );   /* Clear out the table before rebuilding a new one */
-
-   dp = opendir( GOD_DIR );
-
-   dentry = readdir( dp );
-
-   while( dentry )
+   // Walk the file list in GOD_DIR.
+   for( const auto& entry : fs::directory_iterator( GOD_DIR ) )
    {
-      /*
-       * Added by Tarl 3 Dec 02 because we are now using CVS 
-       */
-      if( !str_cmp( dentry->d_name, "CVS" ) )
+      // An actual file entry and not another folder.
+      if( entry.is_regular_file( ) )
       {
-         dentry = readdir( dp );
-         continue;
-      }
+         std::ifstream file( entry.path( ) );
+         std::string word;
+         std::string irealm, iemail;
 
-      if( dentry->d_name[0] != '.' )
-      {
-         int bc = snprintf( buf, 256, "%s%s", GOD_DIR, dentry->d_name );
-         if( bc < 0 )
-            bug( "%s: Output buffer error!", __func__ );
+         wizinfo_data *wiz = new wizinfo_data;
+         int ilevel = 0;
 
-         stream.open( buf );
-         if( stream.is_open(  ) )
+         while( file >> word )
          {
-            wiz = new wizinfo_data;
-            do
-            {
-               string key, value;
-               char buf2[MIL];
-
-               stream >> key;
-               stream.getline( buf2, MIL );
-               value = buf2;
-
-               strip_lspace( key );
-               strip_tilde( value );
-               strip_lspace( value );
-
-               if( key == "Level" )
-                  wiz->level = atoi( value.c_str(  ) );
-               else if( key == "ImmRealm" )
-                  wiz->realm = value;
-               else if( key == "Email" )
-                  wiz->email = value;
-            }
-            while( !stream.eof(  ) );
-            add_to_wizinfo( dentry->d_name, wiz );
-            stream.close(  );
+            if( word == "Level" )
+               file >> ilevel;
+            if( word == "ImmRealm" )
+               file >> irealm;
+            if( word == "Email" )
+               file >> iemail;
          }
+         add_to_wizinfo( entry.path( ).filename( ).string( ), wiz );
       }
-      dentry = readdir( dp );
    }
-   closedir( dp );
 }
 
 /* 
@@ -198,11 +168,10 @@ CMDF( do_finger )
    char_data *victim = nullptr;
    room_index *temproom, *original = nullptr;
    int level = LEVEL_IMMORTAL;
-   char buf[MIL], fingload[256];
-   const char *suf, *laston = nullptr;
-   struct stat fst;
+   const char *suf;
    short day = 0;
    bool loaded = false, skip = false;
+   std::string time_str;
 
    if( ch->isnpc(  ) )
    {
@@ -216,7 +185,7 @@ CMDF( do_finger )
       return;
    }
 
-   snprintf( buf, MIL, "0.%s", argument.c_str(  ) );
+   std::string buf = std::format( "0.{}", argument );
 
    /*
     * If player is online, check for fingerability (yeah, I coined that one)  -Edge 
@@ -243,17 +212,19 @@ CMDF( do_finger )
    {
       descriptor_data *d;
 
-      snprintf( fingload, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
+      fs::path fingload = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
       /*
        * Bug fix here provided by Senir to stop /dev/null crash 
        */
-      if( stat( fingload, &fst ) == -1 || !check_parse_name( capitalize( argument ), false ) )
+      if( !fs::exists( fingload ) || !check_parse_name( capitalize( argument ), false ) )
       {
          ch->printf( "&YNo such player named '%s'.\r\n", argument.c_str(  ) );
          return;
       }
 
-      laston = ctime( &fst.st_mtime );
+      auto laston = fs::last_write_time( fingload );
+      time_str = std::format( "{:%Y-%m-%d %H:%M:%S}", laston );
+
       temproom = get_room_index( ROOM_VNUM_LIMBO );
       if( !temproom )
       {
@@ -323,7 +294,7 @@ CMDF( do_finger )
       if( !loaded )
          ch->printf( "&wLast on : &G%s\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone ) );
       else
-         ch->printf( "&wLast on : &G%s\r\n", laston );
+         ch->printf( "&wLast on : &G%s\r\n", time_str.c_str() );
       if( ch->is_immortal(  ) )
       {
          ch->print( "&wImmortal Information\r\n" );

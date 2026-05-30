@@ -26,8 +26,7 @@
  *                          Race and Class Header                           *
  ****************************************************************************/
 
-#ifndef __RACE_CLASS_H__
-#define __RACE_CLASS_H__
+#pragma once
 
 const int CLASSFILEVER = 2;
 const int RACEFILEVER = 1;
@@ -116,5 +115,3 @@ class class_type
 
 extern race_type *race_table[MAX_RACE];
 extern class_type *class_table[MAX_CLASS];
-
-#endif

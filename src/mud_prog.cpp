@@ -4629,6 +4629,7 @@ void oprog_month_trigger( obj_data * obj )
    }
 }
 
+// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
 void progbugf( char_data * mob, const char *fmt, ... )
 {
    char buf[MSL * 2];

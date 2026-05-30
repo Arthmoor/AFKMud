@@ -26,6 +26,10 @@
  *                            Web Support Code                              *
  ****************************************************************************/
 
+#include <filesystem>
+#include <format>
+#include <fstream>
+#include <memory>
 #include <sstream>
 #include "mud.h"
 #include "area.h"
@@ -34,6 +38,28 @@
 #include "roomindex.h"
 
 #define WEB_ROOMS "../public_html/"
+
+namespace fs = std::filesystem;
+
+/*
+ * Structure used to build wizlist
+ */
+class wizentweb
+{
+public:
+   wizentweb( ) : level( 0 ) {}
+
+   string name;
+   string http;
+   short level;
+};
+
+std::list<std::unique_ptr<wizentweb>> wizlistweb;
+
+void free_wizlist_web_data()
+{
+   wizlistweb.clear();
+}
 
 string rankbuffer( char_data * );
 extern int num_logins;
@@ -359,6 +385,141 @@ void web_arealist(  )
    }
    fprintf( fp, "%s", "</table>\n" );
    FCLOSE( fp );
+}
+
+/*
+ * Wizlist builder! - Thoric [Web version]
+ */
+void add_to_webwizlist( const string & name, const string & http, int level )
+{
+   auto wiz = std::make_unique<wizentweb>();
+
+   wiz->name = name;
+   if( !http.empty(  ) )
+      wiz->http = http;
+   wiz->level = level;
+
+   wizlistweb.push_back( std::move( wiz ) );
+}
+
+std::string get_formatted_web_title( int level, bool is_first )
+{
+   int offset = MAX_LEVEL - level;
+   std::string title;
+
+   if( offset < 0 )
+      offset = 17;
+
+   if( !is_first )
+   {
+      title = "</div>\n<br />";
+   }
+
+   title += "<div style=\"text-align:center; font-weight:bold\">";
+
+   switch( offset )
+   {
+      case 0:  title += "The Supreme Entity and Implementor"; break;
+      case 1:  title += "The Realm Lords"; break;
+      case 2:  title += "The Eternals"; break;
+      case 3:  title += "The Ancients"; break;
+      case 4:  title += "The Astral Gods"; break;
+      case 5:  title += "The Elemental Gods"; break;
+      case 6:  title += "The Dream Gods"; break;
+      case 7:  title += "The Greater Gods"; break;
+      case 8:  title += "The Gods"; break;
+      case 9:  title += "The Demi Gods"; break;
+      case 10: title += "The Deities"; break;
+      case 11: title += "The Saviors"; break;
+      case 12: title += "The Creators"; break;
+      case 13: title += "The Acolytes"; break;
+      case 14: title += "The Angels"; break;
+      case 15: title += "Retired"; break;
+      case 16: title += "Guests"; break;
+      default: title += "Servants"; break;
+   }
+
+   title += "</div>\n<br /><div style=\"text-align:center\">";
+   return title;
+}
+
+void make_webwiz( )
+{
+   // Always start with an empty list.
+   wizlistweb.clear();
+
+   // Walk the file list in GOD_DIR.
+   for( const auto& entry : fs::directory_iterator( GOD_DIR ) )
+   {
+      // An actual file entry and not another folder.
+      if( entry.is_regular_file( ) )
+      {
+         std::ifstream file( entry.path( ) );
+         std::string word, http;
+         int ilevel = 0;
+
+         http.clear();
+         while( file >> word )
+         {
+            if( word == "Level" )
+            {
+               file >> ilevel;
+            }
+            if( word == "Homepage" )
+            {
+               file >> http;
+            }
+         }
+         add_to_webwizlist( entry.path( ).filename( ).string( ), http, ilevel );
+      }
+   }
+
+   // Sort the list by level.
+   wizlistweb.sort( []( const std::unique_ptr<wizentweb>& a, const std::unique_ptr<wizentweb>& b ) { return a->level > b->level; } );
+
+   // Open WEBWIZ_FILE file for writing.
+   std::ofstream out( WEBWIZ_FILE, std::ios::trunc );
+
+   // Center the top banner with the MUD's name.
+   out << std::format( "{:^78}\n", std::format( "The Immortal Masters of {}", sysdata->mud_name ) );
+
+   int current_level = -1;
+   std::string line_buffer;
+   bool is_first = true;
+
+   // Add each of the entries to the output file.
+   for( const auto& wiz : wizlistweb )
+   {
+      if( wiz->level != current_level )
+      {
+         if( !line_buffer.empty() )
+            out << std::format( "{:^78}\n ", line_buffer );
+
+         out << std::format( "\n{:^78}\n ", get_formatted_web_title( wiz->level, is_first ) );
+         line_buffer.clear();
+         current_level = wiz->level;
+         is_first = false;
+      }
+
+      std::string entry = wiz->http.empty()
+         ? std::format( "<span style=\"font-size:14px;\">{}</span>", wiz->name )
+         : std::format( "<a href=\"{}\" target=\"_blank\">{}</a>", wiz->http, wiz->name );
+
+      if( line_buffer.length() + wiz->name.length() > 70 )
+      {
+         out << std::format( "{:^78}\n", line_buffer );
+         line_buffer.clear();
+      }
+
+      line_buffer += ( line_buffer.empty() ? "" : " " ) + entry;
+   }
+
+   if( !line_buffer.empty() )
+      out << std::format( "{:^78}\n", line_buffer );
+
+   out << "</div>\n";
+
+   // File stream will close automatically when function goes out of scope.
 }
 
 /* Aurora's room-to-web toy - this could be quite fun to mess with */

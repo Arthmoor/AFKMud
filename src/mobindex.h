@@ -26,8 +26,7 @@
  *                          Mobile Index Class Info                         *
  ****************************************************************************/
 
-#ifndef __MOBINDEX_H__
-#define __MOBINDEX_H__
+#pragma once
 
 /*
  * Prototype for a mob.
@@ -114,4 +113,3 @@ extern map < int, mob_index * >mob_index_table;
 mob_index *get_mob_index( int );
 mob_index *make_mobile( int, int, const string &, area_data * );
 int interpolate( int, int, int );
-#endif

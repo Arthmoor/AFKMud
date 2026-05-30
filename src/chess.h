@@ -26,8 +26,7 @@
  *                              Chess Module                                *
  ****************************************************************************/
 
-#ifndef __CHESS_H__
-#define __CHESS_H__
+#pragma once
 
 struct game_board_data
 {
@@ -76,4 +75,3 @@ void free_game( game_board_data * );
 #define MOVE_INCHECK	10
 
 #define TYPE_LOCAL	1
-#endif

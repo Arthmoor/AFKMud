@@ -26,8 +26,7 @@
  *                       Shop and repair shop module                        *
  ****************************************************************************/
 
-#ifndef __SHOPS_H__
-#define __SHOPS_H__
+#pragma once
 
 #define SHOP_DIR "../shops/"  /* Clan/PC shopkeepers - Samson 7-16-00 */
 
@@ -62,4 +61,3 @@ struct repair_data
 
 extern list < shop_data * >shoplist;
 extern list < repair_data * >repairlist;
-#endif

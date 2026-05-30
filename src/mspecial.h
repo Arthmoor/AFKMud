@@ -32,8 +32,7 @@
  https://dotd.mudservices.com  dotd@dotd.mudservices.com 
  ******************************************************/
 
-#ifndef __MSPECIALS_H__
-#define __MSPECIALS_H__
+#pragma once
 
 extern list < string > speclist;
 
@@ -76,4 +75,3 @@ SPECF( spec_breath_fire );
 SPECF( spec_breath_frost );
 SPECF( spec_breath_gas );
 SPECF( spec_breath_lightning );
-#endif

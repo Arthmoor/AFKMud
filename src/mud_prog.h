@@ -37,8 +37,7 @@
  *  Full support for nested ifs is in.                                      *
  ****************************************************************************/
 
-#ifndef __MUDPROG_H__
-#define __MUDPROG_H__
+#pragma once
 
 extern char_data *supermob;
 extern obj_data *supermob_obj;
@@ -319,4 +318,3 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 extern list < room_index * >room_act_list;
 extern list < obj_data * >obj_act_list;
 extern list < char_data * >mob_act_list;
-#endif

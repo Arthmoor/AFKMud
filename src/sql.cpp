@@ -27,103 +27,108 @@
  ****************************************************************************/
 #if !defined(__CYGWIN__)
 
-#include <cstdarg>
+#include <format>
+#include <stdexcept>
 #include "mud.h"
 #include "sql.h"
 
-MYSQL myconn;
-
-void init_mysql(  )
+/*
+ * Internal Database Manager class to encapsulate the C API
+ */
+MySQLDatabase::MySQLDatabase( const std::string & host, const std::string & user, const std::string & pass, const std::string & dbname )
 {
-   if( !mysql_init( &myconn ) )
-   {
-      mysql_close( &myconn );
-      bug( "%s: mysql_init() failed.", __func__ );
-      log_printf( "Error: %s.", mysql_error( &myconn ) );
-      return;
-   }
+   if( !mysql_init( &conn ) )
+      throw std::runtime_error( "mysql_init() failed" );
 
-   if( !mysql_real_connect( &myconn, sysdata->dbserver.c_str(  ), sysdata->dbuser.c_str(  ), sysdata->dbpass.c_str(  ), sysdata->dbname.c_str(  ), 0, nullptr, 0 ) )
+   if( !mysql_real_connect( &conn, host.c_str(), user.c_str(), pass.c_str(), dbname.c_str(), 0, nullptr, 0 ) )
    {
-      mysql_close( &myconn );
-      bug( "%s: mysql_real_connect() failed.", __func__ );
-      log_printf( "Error: %s.", mysql_error( &myconn ) );
-      return;
+      std::string err = mysql_error( &conn );
+      mysql_close( &conn );
+
+      throw std::runtime_error( err );
    }
-   mysql_options( &myconn, MYSQL_OPT_RECONNECT, "1" );
-   log_string( "Connection to mysql database established." );
+   mysql_options( &conn, MYSQL_OPT_RECONNECT, "1" );
 }
 
-void close_db( void )
+MySQLDatabase::~MySQLDatabase()
 {
-   mysql_close( &myconn );
+   mysql_close( &conn );
 }
 
-int mysql_safe_query( const char *fmt, ... )
+bool MySQLDatabase::ping()
 {
-   va_list argp;
-   int i = 0;
-   double j = 0;
-   char *s = 0, *out = 0;
-   const char *p = 0;
-   char safe[MSL], query[MSL];
+   return mysql_ping( &conn ) == 0;
+}
 
-   *query = '\0';
-   *safe = '\0';
+std::string MySQLDatabase::get_error()
+{
+   return mysql_error( &conn );
+}
 
-   va_start( argp, fmt );
+std::string MySQLDatabase::escape( std::string_view input )
+{
+   std::vector<char> buffer( input.length() * 2 + 1 );
+   auto size = mysql_real_escape_string( &conn, buffer.data(), input.data(), input.length() );
 
-   for( p = fmt, out = query; *p != '\0'; p++ )
+   return std::string( buffer.data(), size );
+}
+
+int MySQLDatabase::execute( std::string_view sql )
+{
+   return mysql_real_query( &conn, sql.data(), sql.length() );
+}
+
+// Global instance management
+std::unique_ptr<MySQLDatabase> db = nullptr;
+
+/*
+ * Initialize the MySQL connection
+ */
+void init_mysql( )
+{
+   try
    {
-      if( *p != '%' )
-      {
-         *out++ = *p;
-         continue;
-      }
+      db = std::make_unique<MySQLDatabase>( sysdata->dbserver, sysdata->dbuser, sysdata->dbpass, sysdata->dbname );
 
-      switch ( *++p )
-      {
-         default:
-            break;
+      log_string( "Connection to mysql database established." );
+   }
+   catch( const std::exception & e )
+   {
+      bug( "%s: Connection failed: %s", __func__, e.what() );
+   }
+}
 
-         case 'c':
-            i = va_arg( argp, int );
-            out += sprintf( out, "%c", i );
-            break;
+/*
+ * Terminate the MySQL connection
+ */
+void close_db( )
+{
+   db.reset( );
+}
 
-         case 's':
-            s = va_arg( argp, char * );
-            if( !s )
-            {
-               out += sprintf( out, " " );
-               break;
-            }
-            mysql_real_escape_string( &myconn, safe, s, strlen( s ) );
-            out += sprintf( out, "%s", safe );
-            *safe = '\0';
-            break;
-
-         case 'd':
-            i = va_arg( argp, int );
-            out += sprintf( out, "%d", i );
-            break;
-
-         case 'f':
-            j = va_arg( argp, double );
-            out += sprintf( out, "%f", j );
-            break;
-
-         case '%':
-            out += sprintf( out, "%%" );
-            break;
-      }
+/*
+ * Modernized safe query.
+ * Replaces the legacy va_list/sprintf implementation.
+ */
+int mysql_safe_query( std::string_view fmt, auto&&... args )
+{
+   if( !db )
+   {
+      bug( "%s: DB not initialized.", __func__ );
+      return -1;
    }
 
-   *out = '\0';
-   va_end( argp );
-   // log_string( query );
+   try
+   {
+      std::string query = std::vformat( fmt, std::make_format_args( args... ) );
 
-   return ( mysql_real_query( &myconn, query, strlen( query ) ) );
+      return db->execute( query );
+   }
+   catch( const std::exception & e )
+   {
+      bug( "%s: Formatting error: %s", __func__, e.what() );
+      return -1;
+   }
 }
 
 #endif

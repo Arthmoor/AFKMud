@@ -60,7 +60,7 @@ CMDF( do_search );
 CMDF( do_detrap );
 void save_sysdata(  );
 void display_map( char_data * );
-void draw_map( char_data *, const char * );
+void draw_map( char_data *, std::string_view );
 
 bool is_valid_wear_loc( char_data *, int );
 

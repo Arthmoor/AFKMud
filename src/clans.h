@@ -26,8 +26,7 @@
  *                           Special clan module                            *
  ****************************************************************************/
 
-#ifndef __CLANS_H__
-#define __CLANS_H__
+#pragma once
 
 #define CLAN_DIR "../clans/"  /* Clan data dir     */
 #define CLAN_LIST "clan.lst"  /* List of clans     */
@@ -130,4 +129,3 @@ void delete_clan( char_data *, clan_data * );
 void verify_clans(  );
 void free_clans(  );
 clan_data *get_clan( const string & );
-#endif

@@ -26,8 +26,7 @@
  *                          Dynamic Channel System                          *
  ****************************************************************************/
 
-#ifndef __CHANNELS_H__
-#define __CHANNELS_H__
+#pragma once
 
 const int MAX_CHANHISTORY = 20;
 #define CHANNEL_FILE SYSTEM_DIR "channels.dat"
@@ -79,5 +78,3 @@ class mud_channel
 };
 
 mud_channel *find_channel( const string & );
-
-#endif

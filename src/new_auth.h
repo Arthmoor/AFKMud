@@ -26,8 +26,7 @@
  *                      New Name Authorization module                       *
  ****************************************************************************/
 
-#ifndef __NEWAUTH_H__
-#define __NEWAUTH_H__
+#pragma once
 
 #define AUTH_FILE SYSTEM_DIR "auth.dat"
 #define RESERVED_LIST SYSTEM_DIR "reserved.lst" /* List of reserved names  */
@@ -59,4 +58,3 @@ class auth_data
    string change_by; // Name of immortal requesting name change
    short state;   // Current state of authed
 };
-#endif
