@@ -55,7 +55,6 @@
  *                                                                        *
 \**************************************************************************/
 
-// #include <cstdarg>
 #include "mud.h"
 #include "area.h"
 #include "descriptor.h"
@@ -264,6 +263,7 @@ bool is_inolc( descriptor_data * d )
    return false;
 }
 
+// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
 /*
  * Log all changes to catch those sneaky bastards =)
  */

@@ -27,10 +27,11 @@
  *                      Created by Samson of Alsherok                       *
  ****************************************************************************/
 
-#include <fstream>
 #include <gd.h>
 #include <cmath>
-#include <unistd.h>
+#include <filesystem>
+#include <format>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "mobindex.h"
@@ -161,14 +162,13 @@ short get_sector_colour( gdImagePtr im, int pixel )
 void continent_data::load_png_file( void )
 {
    FILE *jpgin;
-   char file_name[256];
    gdImagePtr im;
 
    log_printf( "Loading png file for %s...", this->name.c_str( ) );
 
-   snprintf( file_name, 256, "%s%s", MAP_DIR, this->mapfile.c_str( ) );
+   std::filesystem::path file_name = std::format( "{}{}", MAP_DIR, this->mapfile );
 
-   if( !( jpgin = fopen( file_name, "r" ) ) )
+   if( !( jpgin = fopen( file_name.c_str(), "r" ) ) )
    {
       bug( "%s -> %s:%d: Missing graphical map file '%s' for continent '%s'!", __func__, __FILE__, __LINE__, this->mapfile.c_str( ), this->name.c_str( ) );
       if( fBootDb )
@@ -213,7 +213,6 @@ void continent_data::save_png_file( )
 {
    gdImagePtr im;
    FILE *PngOut;
-   char graphicname[256];
    short x, y, terr;
    int image[SECT_MAX];
 
@@ -234,12 +233,12 @@ void continent_data::save_png_file( )
       }
    }
 
-   snprintf( graphicname, 256, "%s%s", MAP_DIR, this->mapfile.c_str( ) );
+   std::filesystem::path graphicname = std::format( "{}{}", MAP_DIR, this->mapfile );
 
-   if( ( PngOut = fopen( graphicname, "w" ) ) == nullptr )
+   if( ( PngOut = fopen( graphicname.c_str(), "w" ) ) == nullptr )
    {
       bug( "%s -> %s:%d: fopen", __func__, __FILE__, __LINE__ );
-      perror( graphicname );
+      perror( graphicname.c_str() );
    }
 
    /*
@@ -388,20 +387,19 @@ void continent_data::fread_mapexit( ifstream & stream )
    shutdown_mud( "Corrupt continent file." );
 }
 
-void load_continent( const char *continent_file )
+void load_continent( const string & continent_file )
 {
    ifstream stream;
    continent_data *continent = nullptr;
-   char file_name[256];
    int file_version = 0;
 
-   snprintf( file_name, 256, "%s%s", MAP_DIR, continent_file );
+   std::filesystem::path file_name = std::format( "{}{}", MAP_DIR, continent_file );
    stream.open( file_name );
 
    if( !stream.is_open(  ) )
    {
-      perror( file_name );
-      bug( "%s -> %s:%d: error loading file (can't open) %s", __func__, __FILE__, __LINE__, file_name );
+      perror( file_name.c_str() );
+      bug( "%s -> %s:%d: error loading file (can't open) %s", __func__, __FILE__, __LINE__, file_name.c_str() );
       return;
    }
 
@@ -463,12 +461,10 @@ void load_continent( const char *continent_file )
 void load_continents( const int AREA_FILE_ALARM )
 {
    FILE *fpList;
-   char list_file[256];
-   char continent_file[256];
 
-   snprintf( list_file, 256, "%s%s", MAP_DIR, CONT_LIST );
+   std::filesystem::path list_file = std::format( "{}{}", MAP_DIR, CONT_LIST );
 
-   if( !( fpList = fopen( list_file, "r" ) ) )
+   if( !( fpList = fopen( list_file.c_str(), "r" ) ) )
    {
       perror( CONT_LIST );
       shutdown_mud( "Boot_db: Unable to open continent list" );
@@ -485,9 +481,9 @@ void load_continents( const int AREA_FILE_ALARM )
          break;
       }
 
-      strlcpy( continent_file, fread_word( fpList ), 256 );
+      std::filesystem::path continent_file = fread_word( fpList );
 
-      if( continent_file[0] == '$' )
+      if( !continent_file.empty() && continent_file.string()[0] == '$' )
          break;
 
       set_alarm( AREA_FILE_ALARM );
@@ -537,8 +533,6 @@ void validate_overland_data( void )
 
 void continent_data::save( )
 {
-   char buf[256];
-   char fname[256];
    ofstream stream;
    list < mapexit_data * >::iterator ex;
    list < landmark_data * >::iterator lm;
@@ -546,10 +540,10 @@ void continent_data::save( )
 
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving continent data for %s...", this->filename.c_str( ) );
 
-   snprintf( buf, 256, "%s%s.bak", MAP_DIR, this->filename.c_str( ) );
-   rename( this->filename.c_str( ), buf );
+   std::filesystem::path buf = std::format( "{}{}.bak", MAP_DIR, this->filename );
+   std::filesystem::rename( this->filename, buf );
 
-   snprintf( fname, 256, "%s%s", MAP_DIR, this->filename.c_str( ) );
+   std::filesystem::path fname = std::format( "{}{}", MAP_DIR, this->filename );
    stream.open( fname );
    if( !stream.is_open(  ) )
    {
@@ -616,7 +610,8 @@ void continent_data::save( )
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Data for %s saved.", this->filename.c_str( ) );
 }
 
-/* The names of varous sector types. Used in the OLC code in addition to
+/*
+ * The names of various sector types. Used in the OLC code in addition to
  * the display_map function and probably some other places I've long
  * since forgotten by now.
  */
@@ -3199,9 +3194,6 @@ void reload_map( char_data * ch )
 
 CMDF( do_mapcreate )
 {
-   char area_file[256];
-   char cont_file[256];
-
 #ifdef MULTIPORT
    if( mud_port == MAINPORT )
    {
@@ -3232,10 +3224,10 @@ CMDF( do_mapcreate )
       return;
    }
 
-   snprintf( area_file, 256, "%s.are", argument.c_str( ) );
+   std::filesystem::path area_file = std::format( "{}.are", argument );
    if( !find_area( argument ) )
    {
-      ch->printf( "&YNo area file named '%s' exists. You must create this before setting up the map.&D\r\n", area_file );
+      ch->printf( "&YNo area file named '%s' exists. You must create this before setting up the map.&D\r\n", area_file.c_str() );
       return;
    }
 
@@ -3244,7 +3236,7 @@ CMDF( do_mapcreate )
    continent->name = argument;
    continent->areafile = area_file;
 
-   snprintf( cont_file, 256, "%s.cont", argument.c_str( ) );
+   std::filesystem::path cont_file = std::format( "{}.cont", argument );
    continent->filename = cont_file;
 
    continent->vnum = -1;
@@ -3254,7 +3246,7 @@ CMDF( do_mapcreate )
    continent_list.push_back( continent );
    write_continent_list( );
 
-   ch->printf( "&YMap '%s' created. Associated area file '%s'. Filename '%s'.&D\r\n", argument.c_str( ), area_file, cont_file );
+   ch->printf( "&YMap '%s' created. Associated area file '%s'. Filename '%s'.&D\r\n", argument.c_str( ), area_file.c_str(), cont_file.c_str() );
 }
 
 /*
@@ -3323,9 +3315,6 @@ CMDF( do_mapedit )
    {
       continent_data *continent;
       string arg2;
-      char file_name[256];
-      char area_file[256];
-      char map_file[256];
 
       argument = one_argument( argument, arg2 );
       
@@ -3376,19 +3365,19 @@ CMDF( do_mapedit )
 
       ch->printf( "&RHold on to your butts! Deletion of '%s' has begun!&D\r\n", continent->name.c_str( ) );
 
-      snprintf( file_name, 256, "%s%s", MAP_DIR, continent->filename.c_str( ) );
-      strlcpy( area_file, continent->areafile.c_str( ), 256 );
+      std::filesystem::path file_name = std::format( "{}{}", MAP_DIR, continent->filename );
+      std::filesystem::path area_file = continent->areafile;
 
       // Ordinarily not a good idea to destroy an area file like this but the file should only ever be used for the map's purposes.
-      unlink( area_file );
+      std::filesystem::remove( area_file );
       write_area_list();
       web_arealist();
 
-      unlink( file_name );
+      std::filesystem::remove( file_name );
       if( continent->nogrid == false )
       {
-         snprintf( map_file, 256, "%s%s", MAP_DIR, continent->mapfile.c_str( ) );
-         unlink( map_file );
+         std::filesystem::path map_file = std::format( "{}{}", MAP_DIR, continent->mapfile );
+         std::filesystem::remove( map_file );
       }
 
       /*
@@ -3454,7 +3443,6 @@ CMDF( do_mapedit )
    if( !str_cmp( arg1, "png" ) )
    {
       string arg2;
-      char file_name[256];
 
       argument = one_argument( argument, arg2 );
       continent_data *continent = find_continent_by_name( arg2 );
@@ -3483,9 +3471,9 @@ CMDF( do_mapedit )
          return;
       }
 
-      snprintf( file_name, 256, "%s%s", MAP_DIR, argument.c_str( ) );
+      std::filesystem::path file_name = std::format( "{}{}", MAP_DIR, argument );
 
-      if( exists_file( file_name ) )
+      if( std::filesystem::exists( file_name ) )
       {
          continent_data *con_check = find_continent_by_pngfile( argument );
 

@@ -26,7 +26,7 @@
  *                           Object Support Functions                       *
  ****************************************************************************/
 
-#include <climits>
+#include <format>
 #include "mud.h"
 #include "mobindex.h"
 #include "mud_prog.h"
@@ -320,23 +320,19 @@ short obj_data::get_resistance(  )
    return URANGE( 10, resist, 99 );
 }
 
-const string obj_data::oshort(  )
+const std::string obj_data::oshort(  )
 {
-   string desc = short_descr;
+   std::string desc = short_descr;
 
    if( count > 1 )
-   {
-      char buf[MSL];
+      desc = std::format( "{} ({})", short_descr, count );
 
-      snprintf( buf, MSL, "%s (%d)", short_descr, count );
-      desc = buf;
-   }
    return desc;
 }
 
-const string obj_data::format_to_char( char_data * ch, bool fShort, int num )
+const std::string obj_data::format_to_char( char_data * ch, bool fShort, int num )
 {
-   string buf;
+   std::string buf;
    bool glowsee = false;
 
    /*
@@ -385,13 +381,7 @@ const string obj_data::format_to_char( char_data * ch, bool fShort, int num )
       {
          buf.append( short_descr );
          if( num > 1 )
-         {
-            char v[MIL];
-
-            snprintf( v, MIL, " (%d)", num );
-
-            buf.append( v );
-         }
+            buf.append( std::format( " ({})", num ) );
 
          if( !contents.empty(  ) )
          {
@@ -421,13 +411,8 @@ const string obj_data::format_to_char( char_data * ch, bool fShort, int num )
       {
          buf.append( objdesc );
          if( num > 1 )
-         {
-            char v[MIL];
+            buf.append( std::format( " ({})", num ) );
 
-            snprintf( v, MIL, " (%d)", num );
-
-            buf.append( v );
-         }
          if( !contents.empty(  ) )
          {
             list < obj_data * >::iterator iobj;
@@ -502,7 +487,7 @@ bool is_same_obj( obj_data * src, obj_data * dest )
  * Some increasingly freaky hallucinated objects - Thoric
  * (Hats off to Albert Hoffman's "problem child")
  */
-const char *hallucinated_object( int ms, bool fShort )
+const std::string hallucinated_object( int ms, bool fShort )
 {
    int sms = URANGE( 1, ( ms + 10 ) / 5, 20 );
 
@@ -1359,7 +1344,7 @@ obj_data *group_obj( obj_data * obj, obj_data * obj2 )
     && !str_cmp( obj->seller, obj2->seller )
     && !str_cmp( obj->buyer, obj2->buyer )
     && obj->bid == obj2->bid
-    && obj->count + obj2->count <= SHRT_MAX )   /* prevent count overflow */
+    && obj->count + obj2->count <= 32000 )   /* prevent count overflow */
    {
       obj->count += obj2->count;
       obj->pIndexData->count += obj2->count; /* to be decremented in */

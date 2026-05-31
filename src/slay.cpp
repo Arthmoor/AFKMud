@@ -115,7 +115,7 @@ void load_slays( )
             delim = '\xa2'; // This was a stupid idea and it needs to be undone now.
 
          if( sv == "Type" ) current_slay->set_type( read_line() );
-         else if( sv == "Owner" ) current_slay->set_owner(read_line() );
+         else if( sv == "Owner" ) current_slay->set_owner( read_line() );
          else if( sv == "Color" ) current_slay->set_color( std::stoi( read_line() ) );
          else if( sv == "Cmessage" ) current_slay->set_cmsg( read_line( delim ) );
          else if( sv == "Vmessage" ) current_slay->set_vmsg( read_line( delim ) );
