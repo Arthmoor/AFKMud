@@ -465,7 +465,7 @@ Log         normal
 End
 
 #COMMAND
-Name        chess~
+Name        chess
 Code        do_chess
 Position    resting
 Level       5
@@ -1746,7 +1746,7 @@ Name        message
 Code        do_message
 Position    dead
 Level       101
-Log         Normal
+Log         normal
 End
 
 #COMMAND
@@ -3291,6 +3291,14 @@ Name        realms
 Code        do_realms
 Position    dead
 Level       101
+Log         normal
+End
+
+#COMMAND
+Name        randtest
+Code        do_randtest
+Position    dead
+Level       113
 Log         normal
 End
 
