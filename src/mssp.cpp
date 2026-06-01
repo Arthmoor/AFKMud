@@ -904,7 +904,7 @@ short player_count( void )
 #if !defined(__CYGWIN__) && defined(SQL)
  int db_help_count();
 #endif
-extern time_t mud_start_time;
+extern std::chrono::system_clock::time_point mud_start_time;
 extern int mud_port;
 extern int top_prog;
 extern int top_help;
@@ -919,12 +919,14 @@ void send_mssp_data( descriptor_data * d )
       return;
    }
 
+   auto start_time = std::chrono::system_clock::to_time_t( mud_start_time );
+
    d->write( "\r\nMSSP-REPLY-START\r\n" );
 
    mssp_reply( d, "HOSTNAME", "%s", mssp_info->hostname.c_str() );
    mssp_reply( d, "IP", "%s", mssp_info->ip.c_str() );
    mssp_reply( d, "PORT", "%d", mud_port );
-   mssp_reply( d, "UPTIME", "%d", (int)mud_start_time );
+   mssp_reply( d, "UPTIME", "%d", (int)start_time );
    mssp_reply( d, "PLAYERS", "%d", player_count( ) );
    mssp_reply( d, "CODEBASE", "%s %s", CODENAME, CODEVERSION );
    mssp_reply( d, "CONTACT", "%s", mssp_info->contact.c_str() );

@@ -34,8 +34,8 @@
 
 #include <arpa/inet.h>
 #include <cmath>
-#include <fstream>
 #include <format>
+#include <fstream>
 #include "mud.h"
 #include "ban.h"
 #include "descriptor.h"
@@ -166,7 +166,10 @@ void load_banlist( void )
       else if( key == "IP" )
          ban->ipaddress = value;
       else if( key == "Expires" )
-         ban->expires = atol( value.c_str() );
+      {
+         time_t exp_time = atol( value.c_str() );
+         ban->expires = std::chrono::system_clock::from_time_t( exp_time );
+      }
       else if( key == "Type" )
         ban->type = atoi( value.c_str() );
       else if( key == "End" )
@@ -193,15 +196,14 @@ void save_banlist( void )
       return;
    }
 
-   list < ban_data * >::iterator bn;
-   for( bn = banlist.begin(  ); bn != banlist.end(  ); ++bn )
+   for( auto* ban : banlist )
    {
-      ban_data *ban = *bn;
+      auto exp_time = std::chrono::system_clock::to_time_t( ban->expires );
 
       stream << "#BAN" << endl;
       stream << "Name       " << ban->name << endl;
       stream << "IP         " << ban->ipaddress << endl;
-      stream << "Expires    " << ban->expires << endl;
+      stream << "Expires    " << exp_time << endl;
       stream << "Type       " << ban->type << endl;
       stream << "End" << endl << endl;
    }
@@ -212,17 +214,19 @@ void check_ban_expirations( void )
 {
    bool some_expired = false;
 
-   list < ban_data * >::iterator bn;
-   for( bn = banlist.begin(  ); bn != banlist.end(  ); )
+   for( auto it = banlist.begin(); it != banlist.end(); )
    {
-      ban_data *ban = *bn;
-      ++bn;
+      ban_data *ban = *it;
 
-      if( current_time > ban->expires && ban->expires != -1 )
+      // Check if the ban is NOT permanent AND has passed the current time
+      if( ban->expires != PERMANENT_BAN && current_time > ban->expires )
       {
          deleteptr( ban );
+         it = banlist.erase( it );
          some_expired = true;
       }
+      else
+         ++it;
    }
 
    if( some_expired )
@@ -315,41 +319,45 @@ bool is_ip_match( const string& ipaddress, const string& stored_ip )
 
 void send_ban_notice( descriptor_data *d, ban_data *ban )
 {
-   long duration = ban->expires - current_time;
-
-   if( ban->type == BAN_NAME )
+   // Permanent check
+   if( ban->expires == PERMANENT_BAN )
    {
-      if( duration > 86400 )
-         d->buffer_printf( "You are banned from this MUD for %ld days.\r\n", (duration / 86400) );
-      else if( duration >= 0 && duration <= 86400 )
-         d->buffer_printf( "You are banned from this MUD for %ld hours.\r\n", (duration / 3600) );
-      else
+      if( ban->type == BAN_NAME )
          d->write_to_buffer( "You have been permanently banned from this MUD.\r\n" );
-   }
-   else
-   {
-      string buf;
-
-      if( duration > 86400 )
-         buf = std::format( "Your site has been banned from this MUD for {} days.\r\n", (duration / 86400) );
-      else if( duration >= 0 && duration <= 86400 )
-         buf = std::format( "Your site has been banned from this MUD for {} hours.\r\n", (duration / 3600) );
       else
-         buf = "Your site has been permanently banned from this MUD.\r\n";
+         d->write( "Your site has been permanently banned from this MUD.\r\n" );
+      return;
+   }
 
-      // FIXME: Potential gotcha point if the MUD is ever updated to use epoll()
-      d->write( buf.c_str() );
+   // Calculate duration
+   auto duration = ban->expires - current_time;
+
+   // Convert to units for display
+   auto days = std::chrono::duration_cast<std::chrono::days>( duration );
+   auto hours = std::chrono::duration_cast<std::chrono::hours>( duration );
+
+   bool is_name_ban = ( ban->type == BAN_NAME );
+
+   if( duration > std::chrono::days(1) )
+   {
+      if( is_name_ban )
+         d->buffer_printf( "You are banned from this MUD for %ld days.\r\n", days.count() );
+      else
+         d->write( std::format( "Your site has been banned from this MUD for {} days.\r\n", days.count() ) );
+   }
+   else if( duration > std::chrono::seconds(0) )
+   {
+      if( is_name_ban )
+         d->buffer_printf( "You are banned from this MUD for %ld hours.\r\n", hours.count() );
+      else
+         d->write( std::format( "Your site has been banned from this MUD for {} hours.\r\n", hours.count() ) );
    }
 }
 
 bool is_banned( descriptor_data *d )
 {
-   list < ban_data * >::iterator bn;
-
-   for( bn = banlist.begin(  ); bn != banlist.end(  ); ++bn )
+   for( auto* ban : banlist )
    {
-      ban_data *ban = *bn;
-
       // Check name bans first
       if( ban->type == BAN_NAME && !str_cmp( d->character->name, ban->name ) )
       {
@@ -374,14 +382,10 @@ bool is_banned( descriptor_data *d )
    return false;
 }
 
-ban_data *get_ban( const string& name )
+ban_data *get_ban( const string & name )
 {
-   list < ban_data * >::iterator bn;
-
-   for( bn = banlist.begin(  ); bn != banlist.end(  ); ++bn )
+   for( auto* ban : banlist )
    {
-      ban_data *ban = *bn;
-
       if( !str_cmp( ban->name, name ) )
          return ban;
 
@@ -411,24 +415,34 @@ CMDF( do_ban )
 
    if( !str_cmp( argument, "list" ) )
    {
-      list < ban_data * >::iterator bn;
-
       ch->print( "&w   Player    |   Address or CIDR   | Duration\r\n" );
       ch->print( "-------------+---------------------+-----------------\r\n" );
 
-      for( bn = banlist.begin(  ); bn != banlist.end(  ); ++bn )
+      for( auto* pban : banlist )
       {
-         ban = *bn;
-         long duration = ban->expires - current_time;
+         ch->printf( "%-14s %-20s ", pban->name.c_str(), pban->ipaddress.c_str() );
 
-         ch->printf( "%-14s %-20s ", ban->name.c_str(), ban->ipaddress.c_str() );
-
-         if( duration > 86400 )
-            ch->printf( "%ld days\r\n", (duration / 86400) );
-         else if( duration >= 0 && duration <= 86400 )
-            ch->printf( "%ld hours\r\n", (duration / 3600) );
-         else
+         if( pban->expires == PERMANENT_BAN )
+         {
             ch->print( "Permanent\r\n" );
+         }
+         else
+         {
+            auto duration = pban->expires - current_time;
+
+            if( duration > std::chrono::days(1) )
+            {
+               auto days = std::chrono::duration_cast<std::chrono::days>( duration );
+               ch->printf( "%ld days\r\n", days.count() );
+            }
+            else if( duration > std::chrono::seconds(0) )
+            {
+               auto hours = std::chrono::duration_cast<std::chrono::hours>( duration );
+               ch->printf( "%ld hours\r\n", hours.count() );
+            }
+            else
+               ch->print( "Expired\r\n" );
+         }
       }
       return;
    }
@@ -472,8 +486,9 @@ CMDF( do_ban )
 
    if( ( victim = ch->get_char_world( arg1 ) ) || exists_player( arg1 ) )
    {
-      long duration;
+      std::chrono::system_clock::duration duration;
       bool inlist = false;
+      bool is_permanent = false;
 
       if( victim )
       {
@@ -491,7 +506,7 @@ CMDF( do_ban )
       }
 
       if( !str_cmp( argument, "permanent" ) )
-         duration = -1;
+         is_permanent = true;
       else
       {
          if( !is_number( argument ) )
@@ -499,8 +514,7 @@ CMDF( do_ban )
             ch->print( "&wYou must specify a numerical duration, or the word \"permanent\".\r\n" );
             return;
          }
-         duration = atol( argument.c_str() );
-         duration = duration * 86400;
+         duration = std::chrono::days( atol( argument.c_str() ) );
       }
 
       if( ( ban = get_ban( arg1 ) ) )
@@ -511,7 +525,10 @@ CMDF( do_ban )
       ban->name = arg1;
       ban->ipaddress = "0.0.0.0";
       ban->type = BAN_NAME;
-      ban->expires = duration == -1 ? -1 : (current_time + duration);
+      if( is_permanent )
+         ban->expires = PERMANENT_BAN;
+      else
+         ban->expires = current_time + duration;
 
       if( !inlist )
          banlist.push_back( ban );
@@ -532,8 +549,9 @@ CMDF( do_ban )
    else
    {
       short type;
-      long duration;
+      std::chrono::system_clock::duration duration;
       bool inlist = false;
+      bool is_permanent = false;
       bool validip = is_valid_ip( arg1 );
       bool validcidr = is_valid_cidr( arg1 );
 
@@ -548,7 +566,7 @@ CMDF( do_ban )
       }
 
       if( !str_cmp( argument, "permanent" ) )
-         duration = -1;
+         is_permanent = true;
       else
       {
          if( !is_number( argument ) )
@@ -556,8 +574,7 @@ CMDF( do_ban )
             ch->print( "&wYou must specify a numerical duration, or the word \"permanent\".\r\n" );
             return;
          }
-         duration = atol( argument.c_str() );
-         duration = duration * 86400;
+         duration = std::chrono::days( atol( argument.c_str() ) );
       }
 
       if( ( ban = get_ban( arg1 ) ) )
@@ -568,7 +585,10 @@ CMDF( do_ban )
       ban->name = "All";
       ban->type = type;
       ban->ipaddress = arg1;
-      ban->expires = duration == -1 ? -1 : (current_time + duration);
+      if( is_permanent )
+         ban->expires = PERMANENT_BAN;
+      else
+         ban->expires = current_time + duration;
 
       if( !inlist )
          banlist.push_back( ban );
@@ -576,10 +596,8 @@ CMDF( do_ban )
 
       // Boot off any players matching the IP or range that was just banned
       list < char_data * >::iterator ich;
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+      for( auto* vch : pclist )
       {
-         char_data *vch = *ich;
-
          if( vch->desc && is_banned( vch->desc ) )
          {
             send_ban_notice( vch->desc, ban );

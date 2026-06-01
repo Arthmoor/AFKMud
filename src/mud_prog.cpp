@@ -1314,7 +1314,10 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
          return mprog_veval( chkchar->position, opr, atoi( rval ), mob );
 
       if( !str_cmp( chck, "ishelled" ) )
-         return chkchar->isnpc(  )? false : mprog_veval( chkchar->pcdata->release_date, opr, atoi( rval ), mob );
+      {
+         auto release_date = std::chrono::system_clock::to_time_t( chkchar->pcdata->release_date );
+         return chkchar->isnpc(  )? false : mprog_veval( release_date, opr, atoi( rval ), mob );
+      }
 
       /*
        * Ifcheck provided by Moonwolf@Wolfs Lair 

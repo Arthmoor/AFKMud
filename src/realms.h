@@ -53,7 +53,7 @@ class realm_roster_data
     ~realm_roster_data(  );
 
    string name;
-   time_t joined;
+   std::chrono::system_clock::time_point joined;
 };
 
 class realm_data

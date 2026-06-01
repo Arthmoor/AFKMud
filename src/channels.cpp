@@ -36,8 +36,7 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-char *translate( int, const string &, const string & );
-char *mini_c_time( time_t, int );
+std::string translate( int, const std::string &, const std::string & );
 #if !defined(__CYGWIN__)
 #ifdef MULTIPORT
 void mud_message( char_data *, mud_channel *, const string & );
@@ -564,7 +563,7 @@ void show_channel_history( char_data * ch, mud_channel * channel )
          default:
             name = "Someone";
       }
-      ch->printf( entry->format, mini_c_time( entry->timestamp, ch->pcdata->timezone ), name );
+      ch->printf( entry->format, mini_c_time( entry->timestamp, ch->pcdata->timezone ).c_str(), name );
    }
 }
 

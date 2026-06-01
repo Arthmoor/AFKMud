@@ -1082,7 +1082,7 @@ void char_update( void )
       /*
        * See if player should be auto-saved.
        */
-      if( !ch->isnpc(  ) && ( !ch->desc || ch->desc->connected == CON_PLAYING ) && current_time - ch->pcdata->save_time > ( sysdata->save_frequency * 60 ) )
+      if( !ch->isnpc(  ) && ( !ch->desc || ch->desc->connected == CON_PLAYING ) && current_time - ch->pcdata->save_time > std::chrono::minutes( sysdata->save_frequency ) )
          ch_save = ch;
       else
          ch_save = nullptr;
@@ -1256,7 +1256,7 @@ void char_update( void )
          }
       }
 
-      if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->pcdata->release_date > 0 && ch->pcdata->release_date <= current_time )
+      if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->pcdata->release_date > std::chrono::system_clock::time_point{} && ch->pcdata->release_date <= current_time )
       {
          room_index *location;
 
@@ -1278,7 +1278,7 @@ void char_update( void )
          interpret( ch, "look" );
          STRFREE( ch->pcdata->helled_by );
          ch->pcdata->helled_by = nullptr;
-         ch->pcdata->release_date = 0;
+         ch->pcdata->release_date = std::chrono::system_clock::time_point{};
          ch->save(  );
       }
 
@@ -1484,12 +1484,10 @@ void char_update( void )
  */
 void obj_update( void )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
+   for( auto it = objlist.begin(); it != objlist.end(); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       // Due to nature of std::list, DO NOT remove this check - objects are not deallocated until this loop is done!
       if( obj->extracted(  ) )
@@ -1805,15 +1803,14 @@ void obj_update( void )
  */
 void char_check( void )
 {
-   list < char_data * >::iterator ich;
    static int pulse = 0;
 
    pulse = ( pulse + 1 ) % 100;
 
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); )
+   for( auto it = pclist.begin(); it != pclist.end(); )
    {
-      char_data *ch = *ich;
-      ++ich;
+      char_data *ch = *it;
+      ++it;
 
       if( ch->char_died(  ) )
          continue;
@@ -2134,17 +2131,15 @@ void char_check( void )
  */
 void aggr_update( void )
 {
-   list < descriptor_data * >::iterator ds;
-
    /*
     * Just check descriptors here for vics to aggressive mobs
     * We can check for linkdead vics in char_check -Thoric
     */
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
+   for( auto it = dlist.begin(); it != dlist.end(); )
    {
       char_data *wch = nullptr;
-      descriptor_data *d = *ds;
-      ++ds;
+      descriptor_data *d = *it;
+      ++it;
 
       if( ( d->connected != CON_PLAYING && d->connected != CON_EDITING ) || !( wch = d->character ) )
          continue;

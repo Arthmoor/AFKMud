@@ -114,8 +114,9 @@ class ban_data
 
    string name;      // Name of the person being banned.
    string ipaddress; // Single IP x.x.x.x or CIDR in the form of x.x.x.x/y
-   time_t expires;   // Time this ban expires. -1 indicates it won't.
+   std::chrono::system_clock::time_point expires;   // Time this ban expires. -1 indicates it won't.
    short type;       // The ban type.
 };
 
 bool is_banned( descriptor_data * );
+inline constexpr std::chrono::system_clock::time_point PERMANENT_BAN = std::chrono::system_clock::time_point::min();

@@ -59,14 +59,15 @@ void strdup_printf( char **pointer, const char *fmt, ... )
    *pointer = strdup( buf );
 }
 
-/* Does the list have the member in it?
+/*
+ * Does the list have the member in it?
  *
  * Holy Christ this was the DUMBEST IDEA EVER.
  * "not a" -> Log: Samson: not a -> You can't send tells! NOTELL applied to Samson.
  * So... yeah. U dun goof'd.
  * Fixing it by turning this into a wrapper for is_name2_prefix cause there's a mountain of code using this.
  */
-bool hasname( const string & list, const string & member )
+bool hasname( const std::string & list, const std::string & member )
 {
    if( is_name2_prefix( member, list ) )
       return true;
@@ -75,7 +76,7 @@ bool hasname( const string & list, const string & member )
 }
 
 /* Add a new member to the list, provided it's not already there */
-void addname( string & list, const string & member )
+void addname( std::string & list, const std::string & member )
 {
    if( hasname( list, member ) )
       return;
@@ -88,7 +89,7 @@ void addname( string & list, const string & member )
 }
 
 /* Remove a member from a list, provided it's there. */
-void removename( string & list, const string & member )
+void removename( std::string & list, const std::string & member )
 {
    if( !hasname( list, member ) )
       return;
@@ -96,8 +97,8 @@ void removename( string & list, const string & member )
    // Implies the list has more than just this name.
    if( list.length(  ) > member.length(  ) )
    {
-      string die = " " + member;
-      string::size_type pos = list.find( die );
+      std::string die = " " + member;
+      std::string::size_type pos = list.find( die );
 
       if( pos != string::npos )
          list.erase( pos, die.length( ) );
@@ -115,9 +116,9 @@ void removename( string & list, const string & member )
 }
 
 // Pick off one argument from a string and return the rest.
-string one_argument( const string & argument, string & first )
+std::string one_argument( const std::string & argument, std::string & first )
 {
-   string::size_type start, stop, stop2;
+   std::string::size_type start, stop, stop2;
    char find;
 
    // Init
@@ -272,9 +273,9 @@ int number_argument( char *argument, char *arg )
 // >0 = astr > bstr
 // Case insensitive.
 // -- Justice
-int str_cmp( const string & astr, const string & bstr )
+int str_cmp( const std::string & astr, const std::string & bstr )
 {
-   string::const_iterator a1, a2, b1, b2;
+   std::string::const_iterator a1, a2, b1, b2;
 
    a1 = astr.begin(  );
    a2 = astr.end(  );

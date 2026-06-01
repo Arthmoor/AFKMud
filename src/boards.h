@@ -78,9 +78,9 @@ class note_data
    char *to_list;
    char *subject;
    char *text;
-   time_t date_stamp;   /* Global Board Use */
+   std::chrono::system_clock::time_point date_stamp;   /* Global Board Use */
+   std::chrono::system_clock::time_point expire;  /* Global Board Use */
    short reply_count;   /* Keep a count of our replies */
-   short expire;  /* Global Board Use */
 };
 
 class board_data
@@ -102,12 +102,12 @@ class board_data
    char *posters; /* Posers */
    char *moderators; /* Moderators of this board */
    char *group;   /* In-Game organization that 'owns' the board */
+   std::chrono::system_clock::time_point expire;  /* The time when the note will expire. */
    int objvnum;   /* Object Vnum of a physical board */
    short read_level; /* Minimum Level to read this board */
    short post_level; /* Minimum Level to post this board */
    short remove_level;  /* Minimum Level to remove a post */
    short msg_count;  /* Quick count of messages */
-   short expire;  /* Days until notes are archived. */
 };
 
 /* Project Data */
@@ -128,7 +128,7 @@ class project_data
    char *coder;
    char *status;
    char *description;
-   time_t date_stamp;
+   std::chrono::system_clock::time_point date_stamp;
    bool taken;        // Has someone taken project?
 };
 
@@ -143,6 +143,6 @@ class board_chardata
    ~board_chardata();
 
    string board_name;
-   time_t last_read;
+   std::chrono::system_clock::time_point last_read;
    short alert;
 };

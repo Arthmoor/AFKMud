@@ -369,11 +369,10 @@ void ev_violence( void *data )
    /*
     * Fun for the whole family!
     */
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+   for( auto it = ch->in_room->people.begin(  ); it != ch->in_room->people.end(  ); )
    {
-      char_data *rch = *ich;
-      ++ich;
+      char_data *rch = *it;
+      ++it;
 
       if( ch->in_room != rch->in_room )
          break;
@@ -410,14 +409,11 @@ void ev_violence( void *data )
                break;
             if( rch->pIndexData == ch->pIndexData || number_bits( 3 ) == 0 )
             {
-               list < char_data * >::iterator ich2;
                char_data *target = nullptr;
                int number = 0;
 
-               for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
+               for( auto* vch : ch->in_room->people )
                {
-                  char_data *vch = *ich2;
-
                   if( rch->can_see( vch, false ) && is_same_group( vch, victim ) && number_range( 0, number ) == 0 )
                   {
                      if( vch->mount && vch->mount == rch )
@@ -452,11 +448,8 @@ void ev_area_reset( void *data )
 
    if( area->resetmsg && str_cmp( area->resetmsg, "" ) )
    {
-      list < descriptor_data * >::iterator ds;
-
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
          char_data *ch = d->original ? d->original : d->character;
 
          if( !ch )
@@ -548,7 +541,7 @@ void ev_auction( void *data )
    }  /* switch */
 }
 
-/* Replaces reboot_check from update.c */
+/* Replaces reboot_check from update.cpp */
 void ev_reboot_count( void *data )
 {
    if( reboot_counter == -5 )

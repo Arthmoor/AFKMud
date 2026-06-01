@@ -247,8 +247,11 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, "Speaks       %s~\n", bitset_string( ch->get_langs(  ), lang_names ) );
    if( ch->speaking )
       fprintf( fp, "Speaking     %s~\n", lang_names[ch->speaking] );
-   if( ch->pcdata->release_date )
-      fprintf( fp, "Helled       %ld %s~\n", ch->pcdata->release_date, ch->pcdata->helled_by );
+   if( ch->pcdata->release_date > std::chrono::system_clock::time_point{} )
+   {
+      auto release_date = std::chrono::system_clock::to_time_t( ch->pcdata->release_date );
+      fprintf( fp, "Helled       %ld %s~\n", release_date, ch->pcdata->helled_by );
+   }
    fprintf( fp, "Status       %d %d %d %d %d %d %d\n", ch->level, ch->gold, ch->exp, ch->height, ch->weight, ch->spellfail, ch->mental_state );
    fprintf( fp, "Status2      %d %d %d %d %d %d %d %d\n", ch->style, ch->pcdata->practice, ch->alignment, ch->pcdata->favor, ch->hitroll, ch->damroll, ch->armor, ch->wimpy );
    fprintf( fp, "Configs      %d %d %d\n", ch->pcdata->pagerlen, ch->pcdata->timezone, ch->wait );
@@ -256,10 +259,14 @@ void fwrite_char( char_data * ch, FILE * fp )
    /*
     * MOTD times - Samson 12-31-00 
     */
-   fprintf( fp, "Motd         %ld %ld\n", ch->pcdata->motd, ch->pcdata->imotd );
+   auto motd = std::chrono::system_clock::to_time_t( ch->pcdata->motd );
+   auto imotd = std::chrono::system_clock::to_time_t( ch->pcdata->imotd );
 
+   fprintf( fp, "Motd         %ld %ld\n", motd, imotd );
+
+   auto played = std::chrono::duration_cast<std::chrono::seconds>( ch->pcdata->played + ( current_time - ch->pcdata->logon ) ).count();
    fprintf( fp, "Age          %d %d %d %d %ld\n",
-            ch->pcdata->age_bonus, ch->pcdata->day, ch->pcdata->month, ch->pcdata->year, ch->pcdata->played + ( current_time - ch->pcdata->logon ) );
+            ch->pcdata->age_bonus, ch->pcdata->day, ch->pcdata->month, ch->pcdata->year, played );
 
    fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", ch->hit, ch->max_hit, ch->mana, ch->max_mana, ch->move, ch->max_move );
    fprintf( fp, "Regens       %d %d %d\n", ch->hit_regen, ch->mana_regen, ch->move_regen );
@@ -325,8 +332,10 @@ void fwrite_char( char_data * ch, FILE * fp )
          fprintf( fp, "Bamfin       %s~\n", ch->pcdata->bamfin );
       if( ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
          fprintf( fp, "Bamfout      %s~\n", ch->pcdata->bamfout );
+
+      auto restore_time = std::chrono::system_clock::to_time_t( ch->pcdata->restore_time );
       fprintf( fp, "ImmData      %d %ld %d %d %d\n",
-               ch->trust, ch->pcdata->restore_time, ch->pcdata->wizinvis, ch->pcdata->low_vnum, ch->pcdata->hi_vnum );
+               ch->trust, restore_time, ch->pcdata->wizinvis, ch->pcdata->low_vnum, ch->pcdata->hi_vnum );
    }
 
    for( int sn = 1; sn < num_skills; ++sn )
@@ -433,7 +442,8 @@ void fwrite_char( char_data * ch, FILE * fp )
             deleteptr( chbd );
             continue;
          }
-         fprintf( fp, "Board_Data   %s~ %ld %d\n", chbd->board_name.c_str(  ), chbd->last_read, chbd->alert );
+         auto last_read = std::chrono::system_clock::to_time_t( chbd->last_read );
+         fprintf( fp, "Board_Data   %s~ %ld %d\n", chbd->board_name.c_str(  ), last_read, chbd->alert );
       }
    }
 
@@ -857,7 +867,8 @@ short find_old_age( char_data * ch )
    if( ch->isnpc(  ) )
       return -1;
 
-   age = ch->pcdata->played / 86400;   /* Calculate realtime number of days played */
+   auto played = std::chrono::duration_cast<std::chrono::seconds>( ch->pcdata->played ).count();
+   age = played / 86400;   /* Calculate realtime number of days played */
 
    age = age / 7; /* Calculates rough estimate on number of mud years played */
 
@@ -949,7 +960,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                ch->pcdata->day = x2;
                ch->pcdata->month = x3;
                ch->pcdata->year = x4;
-               ch->pcdata->played = xx5;
+               ch->pcdata->played = std::chrono::hours{xx5};
                break;
             }
 
@@ -1074,7 +1085,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                }
                pboard = new board_chardata;
                pboard->board_name = board->name;
-               pboard->last_read = fread_long( fp );
+
+               time_t last_read = fread_long( fp );
+               pboard->last_read = std::chrono::system_clock::from_time_t( last_read );
+
                pboard->alert = fread_number( fp );
                ch->pcdata->boarddata.push_back( pboard );
                break;
@@ -1234,7 +1248,9 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'H':
             if( !str_cmp( word, "Helled" ) )
             {
-               ch->pcdata->release_date = fread_long( fp );
+               time_t loaded_time = fread_long( fp );
+               ch->pcdata->release_date = std::chrono::system_clock::from_time_t( loaded_time );
+
                ch->pcdata->helled_by = fread_string( fp );
                break;
             }
@@ -1263,7 +1279,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                x1 = x3 = x4 = x5 = 0;
                sscanf( line, "%d %ld %d %d %d", &x1, &xx2, &x3, &x4, &x5 );
                ch->trust = x1;
-               ch->pcdata->restore_time = xx2;
+               ch->pcdata->restore_time = std::chrono::system_clock::from_time_t( xx2 );
                ch->pcdata->wizinvis = x3;
                ch->pcdata->low_vnum = x4;
                ch->pcdata->hi_vnum = x5;
@@ -1332,8 +1348,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                line = fread_line( fp );
                time_t xx1 = 0, xx2 = 0;
                sscanf( line, "%ld %ld", &xx1, &xx2 );
-               ch->pcdata->motd = xx1;
-               ch->pcdata->imotd = xx2;
+               ch->pcdata->motd = std::chrono::system_clock::from_time_t( xx1 );
+               ch->pcdata->imotd = std::chrono::system_clock::from_time_t( xx2 );
                break;
             }
             break;
@@ -1680,8 +1696,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                 */
                ch->trust = UMIN( ch->trust, MAX_LEVEL - 1 );
 
-               if( ch->pcdata->played < 0 )
-                  ch->pcdata->played = 0;
+               if( ch->pcdata->played < std::chrono::hours::zero() )
+                  ch->pcdata->played = std::chrono::hours::zero();
 
                if( !ch->pcdata->chan_listen.empty(  ) )
                {

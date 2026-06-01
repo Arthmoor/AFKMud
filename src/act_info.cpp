@@ -2520,9 +2520,9 @@ CMDF( do_world )
    ch->print( "&cBase source code: Smaug 1.4a\r\n" );
    ch->printf( "Current source revision: %s %s\r\n", CODENAME, CODEVERSION );
    ch->print( "The MUD first came online on: Thu Sep 4 1997\r\n" );
-   ch->printf( "The MUD last rebooted on: %s\r\n", str_boot_time );
-   ch->printf( "The system time is      : %s\r\n", c_time( current_time, -1 ) );
-   ch->printf( "Your local time is      : %s\r\n", c_time( current_time, ch->pcdata->timezone ) );
+   ch->printf( "The MUD last rebooted on: %s\r\n", str_boot_time.c_str() );
+   ch->printf( "The system time is      : %s\r\n", c_time( current_time, -1 ).c_str() );
+   ch->printf( "Your local time is      : %s\r\n", c_time( current_time, ch->pcdata->timezone ).c_str() );
    ch->printf( "\r\nTotal number of zones in the world: %d\r\n", top_area );
    ch->printf( "Total number of rooms in the world: %d\r\n", top_room );
    ch->printf( "\r\nNumber of distinct mobs in the world: %d\r\n", top_mob_index );

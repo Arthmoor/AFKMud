@@ -190,9 +190,9 @@ struct dns_data
    dns_data(  );
    ~dns_data(  );
 
-   string ip;
-   string name;
-   time_t time;
+   std::string ip;
+   std::string name;
+   std::chrono::system_clock::time_point time;
 };
 
 list < dns_data * >dnslist;
@@ -1334,7 +1334,7 @@ void descriptor_data::show_stats( char_data * ch )
 
 dns_data::dns_data(  )
 {
-   time = 0;
+   time = std::chrono::system_clock::time_point{};
 }
 
 dns_data::~dns_data(  )
@@ -1346,10 +1346,10 @@ void free_dns_list( void )
 {
    list < dns_data * >::iterator dns;
 
-   for( dns = dnslist.begin(  ); dns != dnslist.end(  ); )
+   for( auto it = dnslist.begin(  ); it != dnslist.end(  ); )
    {
-      dns_data *ip = *dns;
-      ++dns;
+      dns_data *ip = *it;
+      ++it;
 
       deleteptr( ip );
    }
@@ -1357,7 +1357,6 @@ void free_dns_list( void )
 
 void save_dns( void )
 {
-   list < dns_data * >::iterator dns;
    ofstream stream;
 
    stream.open( DNS_FILE );
@@ -1368,10 +1367,8 @@ void save_dns( void )
    }
    else
    {
-      for( dns = dnslist.begin(  ); dns != dnslist.end(  ); ++dns )
+      for( auto* ip : dnslist )
       {
-         dns_data *ip = *dns;
-
          stream << "#CACHE" << endl;
          stream << "IP   " << ip->ip << endl;
          stream << "Name " << ip->name << endl;
@@ -1384,17 +1381,17 @@ void save_dns( void )
 
 void prune_dns( void )
 {
-   list < dns_data * >::iterator dns;
+   constexpr auto CACHE_DURATION = std::chrono::days{14};
 
-   for( dns = dnslist.begin(  ); dns != dnslist.end(  ); )
+   for( auto it = dnslist.begin(  ); it != dnslist.end(  ); )
    {
-      dns_data *cache = *dns;
-      ++dns;
+      dns_data *cache = *it;
+      ++it;
 
       /*
        * Stay in cache for 14 days 
        */
-      if( current_time - cache->time >= 1209600 || !str_cmp( cache->ip, "Unknown??" ) || !str_cmp( cache->name, "Unknown??" ) )
+      if( current_time - cache->time >= CACHE_DURATION || !str_cmp( cache->ip, "Unknown??" ) || !str_cmp( cache->name, "Unknown??" ) )
          deleteptr( cache );
    }
    save_dns(  );
@@ -1413,14 +1410,10 @@ void add_dns( const string & dhost, const string & address )
    save_dns(  );
 }
 
-string in_dns_cache( const string & ip )
+std::string in_dns_cache( const string & ip )
 {
-   list < dns_data * >::iterator idns;
-
-   for( idns = dnslist.begin(  ); idns != dnslist.end(  ); ++idns )
+   for( auto* dns : dnslist )
    {
-      dns_data *dns = *idns;
-
       if( !str_cmp( ip, dns->ip ) )
          return dns->name;
    }
@@ -1460,7 +1453,10 @@ void load_dns( void )
          else if( key == "Name" )
             cache->name = value;
          else if( key == "Time" )
-            cache->time = atoi( value.c_str(  ) );
+         {
+            time_t loaded_time = std::stol( value );
+            cache->time = std::chrono::system_clock::from_time_t( loaded_time );
+         }
          else if( key == "End" )
          {
             if( cache->ip.empty(  ) )
@@ -2421,7 +2417,7 @@ void char_to_game( char_data * ch )
    if( ch->level == 0 )
       setup_newbie( ch, true );
 
-   else if( !ch->is_immortal(  ) && ch->pcdata->release_date > 0 && ch->pcdata->release_date > current_time )
+   else if( !ch->is_immortal(  ) && ch->pcdata->release_date > std::chrono::system_clock::time_point{} && ch->pcdata->release_date > current_time )
    {
       if( !ch->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );

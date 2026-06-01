@@ -34,7 +34,6 @@
 void fwrite_note( note_data *, FILE * );
 note_data *read_note( FILE * );
 void note_to_char( char_data *, note_data *, board_data *, short );
-char *mini_c_time( time_t, int );
 
 void pc_data::free_comments(  )
 {
@@ -176,7 +175,7 @@ CMDF( do_comment )
 
          ++vnum;
          ch->printf( "%2d) %-10s [%s] %s\r\n", vnum, note->sender ? note->sender : "--Error--",
-                     mini_c_time( note->date_stamp, -1 ), note->subject ? note->subject : "--Error--" );
+                     mini_c_time( note->date_stamp, -1 ).c_str(), note->subject ? note->subject : "--Error--" );
          /*
           * Brittany added date to comment list and whois with above change 
           */

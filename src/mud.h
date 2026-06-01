@@ -28,12 +28,14 @@
 
 #pragma once
 
+#include <bitset>
+#include <chrono>
 #include <cstring>
-#include <vector>
 #include <list>
 #include <map>
-#include <bitset>
+#include <random>
 #include <typeinfo>
+#include <vector>
 
 using namespace std;
 
@@ -555,6 +557,7 @@ enum pc_flags
 #define MAP_DIR          "../maps/" /* Overland maps */
 #define PLAYER_DIR       "../player/"  /* Player files      */
 #define GOD_DIR          "../gods/" /* God Info Dir      */
+#define BACKUP_DIR       "../backups"  /* Backup folder for pfiles when the pfile pruning is active. */
 #define BUILD_DIR        "../building/"   /* Online building save dir */
 #define SYSTEM_DIR       "../system/"  /* Main system files */
 #define PROG_DIR         "../mudprogs/"   /* MUDProg files     */
@@ -859,8 +862,9 @@ class system_data
    string dbname;                // Database name for SQL support
    string dbuser;                // Database username for SQL support
    string dbpass;                // Database password for SQL support
-   time_t motd;                  // Last time MOTD was edited
-   time_t imotd;                 // Last time IMOTD was edited
+   std::chrono::system_clock::time_point motd;                  // Last time MOTD was edited
+   std::chrono::system_clock::time_point imotd;                 // Last time IMOTD was edited
+   std::chrono::minutes save_frequency; // How often to autosave someone.
    size_t maxign;
    size_t maxholiday;
    int maxplayers;               // Maximum players this boot
@@ -918,7 +922,6 @@ class system_data
    short level_getobjnotake;     // Get objects without take flag
    short level_forcepc;          // The level at which you can use force on players.
    short bestow_dif;             // Max # of levels between trust and command level for a bestow to work --Blodkai
-   short save_frequency;         // How often to autosave someone
    short newbie_purge;           // Level to auto-purge newbies at - Samson 12-27-98
    short regular_purge;          // Level to purge normal players at - Samson 12-27-98
    short mapsize;                // Laziness feature mostly. Changes the overland map visibility radius
@@ -1119,7 +1122,7 @@ extern int top_area;
 extern int top_mob_index;
 extern int top_obj_index;
 extern int top_room;
-extern char str_boot_time[];
+extern std::string str_boot_time;
 extern char_data *timechar;
 extern bool fBootDb;
 extern char strArea[MIL];
@@ -1141,7 +1144,7 @@ extern char *title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
 extern skill_type *skill_table[MAX_SKILL];
 extern skill_type *herb_table[MAX_HERB];
 extern skill_type *disease_table[MAX_DISEASE];
-extern time_t current_time;
+extern std::chrono::system_clock::time_point current_time;
 extern bool fLogAll;
 extern time_info_data time_info;
 
@@ -1209,7 +1212,8 @@ int get_dir( const string & );
 char *flag_string( int, const char *flagarray[] );
 
 /* calendar.c */
-char *c_time( time_t, int );
+std::string c_time( std::chrono::system_clock::time_point, int );
+std::string mini_c_time( std::chrono::system_clock::time_point, int );
 
 /* comm.c */
 bool check_parse_name( const string &, bool );
@@ -1223,7 +1227,8 @@ void interpret( char_data *, string );
 void check_switches(  );
 void check_switch( char_data * );
 
-/* db.c */
+/* db.cpp */
+extern std::mt19937 global_rng;
 bool is_valid_filename( char_data *, const string &, const string & );
 void shutdown_mud( const string & );
 bool exists_file( const string & );
@@ -1305,7 +1310,7 @@ const char *print_array_string( const char *flagarray[], size_t arraySize );
 ch_ret multi_hit( char_data *, char_data *, int );
 ch_ret damage( char_data *, char_data *, double, int );
 
-/* handler.c */
+/* handler.cpp */
 long exp_level( int );
 bool nifty_is_name_prefix( string, string );
 bool nifty_is_name_prefix( char *, char * );
@@ -1387,7 +1392,7 @@ void update_handler( void );
 void weather_update( void );
 
 // This used to be the old ext_flagstring converted to C++ and using strings so it can't overflow the temporary buffer.
-template < size_t N > const char *bitset_string( bitset < N > bits, const char *flagarray[] )
+template < size_t N > const char *bitset_string( std::bitset < N > bits, const char *flagarray[] )
 {
    static string s;
 
@@ -1408,7 +1413,7 @@ template < size_t N > const char *bitset_string( bitset < N > bits, const char *
 
 // This template is used during file reading to set flags based on the string names.
 // Loosely resembles Remcon's WEXTKEY macro from his LoP codebase.
-template < size_t N > void flag_set( FILE * fp, bitset < N > &field, const char *flagarray[] )
+template < size_t N > void flag_set( FILE * fp, std::bitset < N > &field, const char *flagarray[] )
 {
    string flags, flag;
 
@@ -1427,7 +1432,7 @@ template < size_t N > void flag_set( FILE * fp, bitset < N > &field, const char 
 }
 
 // Just like the above, only doesn't read from a file. Just sets the flags from the specified string.
-template < size_t N > void flag_string_set( string & original, bitset < N > &field, const char *flagarray[] )
+template < size_t N > void flag_string_set( std::string & original, std::bitset < N > &field, const char *flagarray[] )
 {
    string flag;
 
@@ -1444,7 +1449,7 @@ template < size_t N > void flag_string_set( string & original, bitset < N > &fie
    }
 }
 
-template < class N > extra_descr_data * get_extra_descr( const string & name, N * target )
+template < class N > extra_descr_data * get_extra_descr( const std::string & name, N * target )
 {
    list < extra_descr_data * >::iterator ied;
 
@@ -1461,7 +1466,7 @@ template < class N > extra_descr_data * get_extra_descr( const string & name, N 
    return nullptr;
 }
 
-template < class N > extra_descr_data * set_extra_descr( N * target, const string & name )
+template < class N > extra_descr_data * set_extra_descr( N * target, const std::string & name )
 {
    extra_descr_data *desc = nullptr;
    list < extra_descr_data * >::iterator ied;

@@ -5166,12 +5166,17 @@ void char_data::set_file_langs( FILE * fp )
    }
 }
 
-time_t char_data::time_played( )
+std::chrono::hours char_data::time_played( )
 {
    if( this->isnpc() )
-      return -1;
+   {
+      return std::chrono::hours( 0 );
+   }
 
-   return ( ( this->pcdata->played + ( current_time - this->pcdata->logon ) ) / 3600 );
+   auto session_duration = current_time - this->pcdata->logon;
+   auto total_played = this->pcdata->played + session_duration;
+
+   return std::chrono::duration_cast<std::chrono::hours>( total_played );
 }
 
 CMDF( do_dismiss )

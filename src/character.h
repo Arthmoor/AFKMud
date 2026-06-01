@@ -114,13 +114,13 @@ class pc_data
    char *subprompt;  /* Substate prompt */
    char *afkbuf;  /* afk reason buffer - Samson 8-31-98 */
    char *motd_buf;   /* A temp buffer for editing MOTDs - 12-31-00 */
-   time_t release_date; /* Auto-helling.. Altrag */
-   time_t motd;   /* Last time they read an MOTD - Samson 12-31-00 */
-   time_t imotd;  /* Last time they read an IMOTD for immortals - 12-31-00 */
-   time_t logon;
-   time_t played;
-   time_t save_time;
-   time_t restore_time;   /* The last time the char did a restore all */
+   std::chrono::system_clock::time_point release_date; /* Auto-helling.. Altrag */
+   std::chrono::system_clock::time_point motd;   /* Last time they read an MOTD - Samson 12-31-00 */
+   std::chrono::system_clock::time_point imotd;  /* Last time they read an IMOTD for immortals - 12-31-00 */
+   std::chrono::system_clock::time_point logon;  /* When they last logged on */
+   std::chrono::hours played;                    /* Total hours they have in the game so far */
+   std::chrono::system_clock::time_point save_time;
+   std::chrono::system_clock::time_point restore_time;   /* The last time the char did a restore all */
    int pkills; /* Number of pkills on behalf of clan */
    int pdeaths;   /* Number of times pkilled (legally)  */
    int mkills; /* Number of mobs killed        */
@@ -280,7 +280,7 @@ class char_data
    void update_visits( room_index * );
    void remove_visit( room_index * );
    void adjust_favor( int, int );
-   time_t time_played( );
+   std::chrono::hours time_played( );
 
    void set_actflag( int );
    void unset_actflag( int );

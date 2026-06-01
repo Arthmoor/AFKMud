@@ -215,7 +215,7 @@ char *one_argument2( char *argument, char *arg_first )
 }
 
 // Son, you just got promoted. You are now what hasname in editor.cpp is calling.
-bool is_name2_prefix( const string & str, string namelist )
+bool is_name2_prefix( const std::string & str, std::string namelist )
 {
    string name;
 
@@ -231,7 +231,7 @@ bool is_name2_prefix( const string & str, string namelist )
    }
 }
 
-bool nifty_is_name_prefix( string str, string namelist )
+bool nifty_is_name_prefix( std::string str, std::string namelist )
 {
    string name;
    bool valid = false;

@@ -26,10 +26,9 @@
  *                          Pfile Pruning Module                            *
  ****************************************************************************/
 
+#include <filesystem>
+#include <format>
 #include <fstream>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include "mud.h"
 #include "clans.h"
 #include "deity.h"
@@ -47,12 +46,10 @@ void save_timedata(  );
 void adjust_pfile( const string & );
 
 /* Globals */
-time_t new_pfile_time_t;
+std::chrono::system_clock::time_point new_pfile_time_t;
 short num_pfiles; /* Count up number of pfiles */
-time_t now_time;
 short deleted = 0;
 short pexempt = 0;
-short days = 0;
 
 struct quote_data
 {
@@ -105,15 +102,14 @@ quote_data *get_quote( int q )
 void save_quotes( void )
 {
    ofstream stream;
-   char filename[256];
    int q = 0;
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, QUOTE_FILE );
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, QUOTE_FILE );
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
+      perror( filename.c_str() );
       bug( "%s: Unable to open quote file for writing!", __func__ );
-      perror( filename );
       return;
    }
 
@@ -122,7 +118,7 @@ void save_quotes( void )
    {
       quote_data *quote = *iquote;
 
-      stream << "Quote: " << quote->quote << '\xa2' << endl;
+      stream << "Quote: " << quote->quote << '~' << endl;
       quote->number = ++q;
    }
    stream.close(  );
@@ -141,18 +137,17 @@ void save_quotes( void )
   */
 void load_quotes( void )
 {
-   char filename[256];
    quote_data *quote;
    ifstream stream;
 
    quotelist.clear(  );
    num_quotes = 0;
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, QUOTE_FILE );
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, QUOTE_FILE );
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
-      perror( filename );
+      perror( filename.c_str() );
       return;
    }
 
@@ -317,7 +312,6 @@ CMDF( do_pcrename )
 {
    char_data *victim;
    string arg1;
-   char newname[256], oldname[256];
 
    argument = one_argument( argument, arg1 );
    smash_tilde( argument );
@@ -356,10 +350,10 @@ CMDF( do_pcrename )
       ch->print( "I don't think they would like that!\r\n" );
       return;
    }
-   snprintf( newname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
-   snprintf( oldname, 256, "%s%c/%s", PLAYER_DIR, tolower( victim->pcdata->filename[0] ), capitalize( victim->pcdata->filename ) );
+   std::filesystem::path newname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
+   std::filesystem::path oldname = std::format( "{}{}/{}", PLAYER_DIR, tolower( victim->pcdata->filename[0] ), capitalize( victim->pcdata->filename ) );
 
-   if( access( newname, F_OK ) == 0 )
+   if( std::filesystem::exists( newname ) )
    {
       ch->print( "That name already exists.\r\n" );
       return;
@@ -370,9 +364,8 @@ CMDF( do_pcrename )
     */
    if( victim->is_immortal(  ) )
    {
-      char godname[256];
-      snprintf( godname, 256, "%s%s", GOD_DIR, capitalize( victim->pcdata->filename ) );
-      remove( godname );
+      std::filesystem::path godname = std::format( "{}{}", GOD_DIR, capitalize( victim->pcdata->filename ) );
+      std::filesystem::remove( godname );
    }
 
    /*
@@ -380,14 +373,13 @@ CMDF( do_pcrename )
     */
    if( victim->pcdata->area )
    {
-      char filename[256], newfilename[256];
+      std::filesystem::path filename = std::format( "{}{}.are", BUILD_DIR, victim->name );
+      std::filesystem::path newfilename = std::format( "{}{}.are", BUILD_DIR, capitalize( argument ) );
+      std::filesystem::rename( filename, newfilename );
 
-      snprintf( filename, 256, "%s%s.are", BUILD_DIR, victim->name );
-      snprintf( newfilename, 256, "%s%s.are", BUILD_DIR, capitalize( argument ).c_str(  ) );
-      rename( filename, newfilename );
-      snprintf( filename, 256, "%s%s.are.bak", BUILD_DIR, victim->name );
-      snprintf( newfilename, 256, "%s%s.are.bak", BUILD_DIR, capitalize( argument ).c_str(  ) );
-      rename( filename, newfilename );
+      filename = std::format( "{}{}.are.bak", BUILD_DIR, victim->name );
+      newfilename = std::format( "{}{}.are.bak", BUILD_DIR, capitalize( argument ) );
+      std::filesystem::rename( filename, newfilename );
    }
 
    /*
@@ -400,9 +392,9 @@ CMDF( do_pcrename )
    victim->name = STRALLOC( capitalize( argument ).c_str(  ) );
    STRFREE( victim->pcdata->filename );
    victim->pcdata->filename = STRALLOC( capitalize( argument ).c_str(  ) );
-   if( remove( oldname ) )
+   if( !std::filesystem::remove( oldname ) )
    {
-      log_printf( "Error: Couldn't delete file %s in do_rename.", oldname );
+      log_printf( "Error: Couldn't delete file %s in do_rename.", oldname.c_str() );
       ch->print( "Couldn't delete the old file!\r\n" );
    }
 
@@ -424,429 +416,249 @@ CMDF( do_pcrename )
    ch->print( "Character was renamed.\r\n" );
 }
 
-void search_pfiles( char_data * ch, const char *dirname, const char *filename, int cvnum )
+void search_pfiles( char_data* ch, const std::string & dirname, const std::string & filename, int cvnum )
 {
-   FILE *fpChar;
-   char fname[256];
+   std::filesystem::path fname = std::filesystem::path( dirname ) / filename;
+   std::ifstream is( fname, std::ios::in );
 
-   snprintf( fname, 256, "%s/%s", dirname, filename );
-   if( !( fpChar = fopen( fname, "r" ) ) )
+   if( !is.is_open() )
    {
-      perror( fname );
+      perror( fname.string().c_str() );
       return;
    }
 
-   for( ;; )
+   // Using a simple loop to process the stream
+   std::string word;
+   while( is >> word )
    {
-      int vnum, counter = 1;
-      bool done = false;
-
-      char letter = fread_letter( fpChar );
-
-      if( letter == '\0' )
+      if( word == "#OBJECT" )
       {
-         log_printf( "%s: EOF encountered reading file: %s!", __func__, fname );
-         break;
-      }
+         int vnum = 0, counter = 1;
+         bool done = false;
 
-      if( letter != '#' )
-         continue;
-
-      const char *word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
-
-      if( word[0] == '\0' )
-      {
-         log_printf( "%s: EOF encountered reading file: %s!", __func__, fname );
-         word = "End";
-      }
-
-      if( !str_cmp( word, "End" ) )
-         break;
-
-      if( !str_cmp( word, "OBJECT" ) )
-      {
-         while( !done )
+         while( !done && ( is >> word ) )
          {
-            word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
-
-            if( word[0] == '\0' )
+            switch( toupper( word[0] ) )
             {
-               log_printf( "%s: EOF encountered reading file: %s!", __func__, fname );
-               word = "End";
-            }
-
-            switch ( UPPER( word[0] ) )
-            {
-               default:
-                  fread_to_eol( fpChar );
-                  break;
-
                case 'C':
-                  KEY( "Count", counter, fread_number( fpChar ) );
+                  if( word == "Count" )
+                     is >> counter;
                   break;
-
                case 'E':
-                  if( !str_cmp( word, "End" ) )
-                  {
+                  if( word == "End" )
                      done = true;
-                     break;
-                  }
-
+                  break;
                case 'N':
-                  if( !str_cmp( word, "Nest" ) )
+                  if( word == "Nest" )
                   {
-                     fread_number( fpChar );
-                     break;
+                     int n;
+                     is >> n;
                   }
                   break;
-
                case 'O':
-                  if( !str_cmp( word, "Ovnum" ) )
+                  if( word == "Ovnum" )
                   {
-                     vnum = fread_number( fpChar );
-                     if( !( get_obj_index( vnum ) ) )
+                     is >> vnum;
+                     if( !get_obj_index( vnum ) )
                      {
-                        bug( "Bad obj vnum in %s: %d", __func__, vnum );
+                        bug( "%s: Bad obj vnum: %d", __func__, vnum );
                         adjust_pfile( filename );
                      }
-                     else
+                     else if( vnum == cvnum )
                      {
-                        if( vnum == cvnum )
-                           ch->pagerf( "Player %s: Counted %d of Vnum %d.\r\n", filename ? filename : "<NO PFILE?!?>", counter, cvnum );
+                        ch->pagerf( "Player %s: Counted %d of Vnum %d.\r\n",  filename.empty() ? "<NO PFILE?!?>" : filename.c_str(), counter, cvnum );
                      }
                   }
+                  break;
+               default:
+                  is.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
                   break;
             }
          }
       }
+      else if( word == "#End" || word == "End" )
+         break;
    }
-   FCLOSE( fpChar );
 }
 
 /* Scans the pfiles to count the number of copies of a vnum being stored - Samson 1-3-99 */
 void check_stored_objects( char_data * ch, int cvnum )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   char directory_name[100];
-   int alpha_loop;
-
-   for( alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
+   for( char c = 'a'; c <= 'z'; ++c )
    {
-      snprintf( directory_name, 100, "%s%c", PLAYER_DIR, 'a' + alpha_loop );
-      dp = opendir( directory_name );
-      dentry = readdir( dp );
-      while( dentry )
+      std::filesystem::path directory_path = std::format ("{}{}", PLAYER_DIR, c );
+
+      if( !std::filesystem::exists( directory_path ) || !std::filesystem::is_directory( directory_path ) )
+         continue;
+
+      for( const auto& entry : std::filesystem::directory_iterator( directory_path ) )
       {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( !str_cmp( dentry->d_name, "CVS" ) )
-         {
-            dentry = readdir( dp );
+         // Skip entries starting with '.'
+         if( entry.path().filename().string().starts_with( '.' ) )
             continue;
-         }
-         if( dentry->d_name[0] != '.' )
-            search_pfiles( ch, directory_name, dentry->d_name, cvnum );
-         dentry = readdir( dp );
+
+         search_pfiles( ch, directory_path, entry.path().filename(), cvnum );
       }
-      closedir( dp );
    }
 }
 
-void fread_pfile( FILE * fp, time_t tdiff, const char *fname, bool count )
+void delete_pfile( const std::filesystem::path & path, std::string_view name, std::string_view clan_name, int days )
 {
-   char *name = nullptr;
-   char *clan = nullptr;
-   char *realm = nullptr;
-   char *deity = nullptr;
-   short level = 0;
-   bitset < MAX_PCFLAG > pact;
-
-   pact.reset(  );
-
-   for( ;; )
+   if( std::filesystem::remove( path ) )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      log_printf( "Player %s was deleted. Exceeded time limit of %d days.", name.data(), days );
+      remove_from_auth( name.data() );
+      if( auto* pclan = get_clan( clan_name.data() ) )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
-         word = "End";
+         remove_roster( pclan, name.data() );
+      }
+      ++deleted;
+   }
+   else
+      perror( "Unlink" );
+}
+
+void fread_pfile( std::ifstream & is, time_t tdiff, const std::filesystem::path & filepath, bool count )
+{
+   std::string name, clan, realm, deity;
+   short level = 0;
+   std::bitset<MAX_PCFLAG> pact;
+
+   pact.reset();
+
+   std::string word;
+   char delim = '~';
+
+   auto read_line = [&]( char delimiter = '\n' ) -> std::string
+   {
+      std::string line;
+      std::getline( is, line, delimiter );
+      strip_spaces( line );
+
+      return line;
+   };
+
+   while( is >> word && word != "End" )
+   {
+      if( word == "*" )
+      {
+         is.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+         continue;
       }
 
-      if( !str_cmp( word, "End" ) )
-         break;
-
-      switch ( UPPER( word[0] ) )
+      if( word == "Clan" )
+         clan = read_line( delim );
+      else if( word == "Deity" )
+         deity = read_line( delim );
+      else if( word == "ImmRealm" )
+         realm = read_line( delim );
+      else if( word == "Name" )
+         name = read_line( delim );
+      else if( word == "PCFlags" )
       {
-         default:   // Deliberately this way - the bug spam will kill you!
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            KEY( "Clan", clan, fread_string( fp ) );
-            break;
-
-         case 'D':
-            KEY( "Deity", deity, fread_string( fp ) );
-            break;
-
-         case 'I':
-            KEY( "ImmRealm", realm, fread_string( fp ) );
-            break;
-
-         case 'N':
-            KEY( "Name", name, fread_string( fp ) );
-            break;
-
-         case 'P':
-            if( !str_cmp( word, "PCFlags" ) )
-            {
-               flag_set( fp, pact, pc_flags );
-               break;
-            }
-            break;
-
-         case 'S':
-            if( !str_cmp( word, "Status" ) )
-            {
-               level = fread_number( fp );
-               fread_to_eol( fp );
-               break;
-            }
-            break;
-
-         case 'V':
-            if( !str_cmp( word, "Version" ) )
-            {
-               fread_number( fp );
-               break;
-            }
-            break;
+         std::string flags = read_line( delim );
+         flag_string_set( flags, pact, pc_flags );
+      }
+      else if( word == "Status" )
+      {
+         is >> level;
+         is.ignore( 256, '\n' );
+      }
+      else if( word == "Version" )
+      {
+         is >> word;
       }
    }
 
-   if( count == false && !pact.test( PCFLAG_EXEMPT ) )
+   if( !count && !pact.test( PCFLAG_EXEMPT ) )
    {
-      if( level < 10 && tdiff > sysdata->newbie_purge )
+      if( ( level < 10 && tdiff > sysdata->newbie_purge ) || ( level < LEVEL_IMMORTAL && tdiff > sysdata->regular_purge ) )
       {
-         if( unlink( fname ) == -1 )
-            perror( "Unlink" );
-         else
-         {
-            days = sysdata->newbie_purge;
-            log_printf( "Player %s was deleted. Exceeded time limit of %d days.", name, days );
-            remove_from_auth( name );
-            if( clan != nullptr )
-            {
-               clan_data *pclan = get_clan( clan );
-
-               if( pclan ) // Check, cause there may be nothing there for some reason.
-                  remove_roster( pclan, name );
-            }
-            ++deleted;
-            STRFREE( clan );
-            STRFREE( realm );
-            STRFREE( deity );
-            STRFREE( name );
-            return;
-         }
-      }
-
-      if( level < LEVEL_IMMORTAL && tdiff > sysdata->regular_purge )
-      {
-         if( level < LEVEL_IMMORTAL )
-         {
-            if( unlink( fname ) == -1 )
-               perror( "Unlink" );
-            else
-            {
-               days = sysdata->regular_purge;
-               log_printf( "Player %s was deleted. Exceeded time limit of %d days.", name, days );
-               remove_from_auth( name );
-               if( clan != nullptr )
-               {
-                  clan_data *pclan = get_clan( clan );
-
-                  if( pclan ) // Check, cause there may be nothing there for some reason.
-                     remove_roster( pclan, name );
-               }
-               ++deleted;
-               STRFREE( clan );
-               STRFREE( realm );
-               STRFREE( deity );
-               STRFREE( name );
-               return;
-            }
-         }
+         delete_pfile( filepath, name, clan, ( level < 10 ? sysdata->newbie_purge : sysdata->regular_purge ) );
+         return;
       }
    }
 
    if( pact.test( PCFLAG_EXEMPT ) || level >= LEVEL_IMMORTAL )
       ++pexempt;
 
-   if( clan != nullptr )
-   {
-      clan_data *guild = get_clan( clan );
-
-      if( guild )
-         ++guild->members;
-   }
-
-   if( realm != nullptr )
-   {
-      realm_data *rl = get_realm( realm );
-
-      if( rl )
-         ++rl->members;
-   }
-
-   if( deity != nullptr )
-   {
-      deity_data *god = get_deity( deity );
-
-      if( god )
-         ++god->worshippers;
-   }
-   STRFREE( clan );
-   STRFREE( realm );
-   STRFREE( deity );
-   STRFREE( name );
+   if( auto* guild = get_clan( clan.c_str() ) )
+      ++guild->members;
+   if( auto* rl = get_realm( realm.c_str() ) )
+      ++rl->members;
+   if( auto* god = get_deity( deity.c_str() ) )
+      ++god->worshippers;
 }
 
-void read_pfile( const char *dirname, const char *filename, bool count )
+void read_pfile( const std::filesystem::path & dirname, const std::string & filename, bool count )
 {
-   FILE *fp;
-   char fname[256];
-   struct stat fst;
-   time_t tdiff;
-
-   // Prevent directory traversal.
-   if( strpbrk( filename, "/\\." ) )
+   // Prevent directory traversal
+   if( filename.find_first_of( "/\\." ) != std::string::npos )
    {
-      bug( "%s: Attempted path traversal with file: %s", __func__, filename );
       return;
    }
 
-   now_time = time( 0 );
+   std::filesystem::path full_path = dirname / filename;
 
-   // Bounds Check
-   if( snprintf( fname, sizeof(fname), "%s/%s", dirname, filename ) >= (int)sizeof(fname) )
+   if( !std::filesystem::exists( full_path ) )
+      return;
+
+   auto ftime = std::filesystem::last_write_time( full_path );
+   auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>( ftime - std::filesystem::file_time_type::clock::now() + current_time );
+   time_t tdiff = ( std::chrono::system_clock::to_time_t( current_time ) - std::chrono::system_clock::to_time_t( sctp ) ) / 86400;
+
+   std::ifstream is( full_path );
+   if( !is.is_open() )
+      return;
+
+   std::string line;
+   while( is >> line )
    {
-      bug( "%s: Filename too long: %s/%s", __func__, dirname, filename );
-      return;
+      if( line == "#PLAYER" )
+      {
+         fread_pfile( is, tdiff, full_path, count );
+      }
    }
-
-   if( stat( fname, &fst ) == -1 )
-      return;
-
-   tdiff = ( now_time - fst.st_mtime ) / 86400;
-
-   if( ( fp = fopen( fname, "r" ) ) == nullptr )
-      return;
-
-   for( ;; )
-   {
-      char letter = fread_letter( fp );
-
-      if( feof( fp ) || letter == EOF )
-         break;
-
-      if( letter != '#' )
-         continue;
-
-      const char *word = fread_word( fp );
-      if( !str_cmp( word, "End" ) || !str_cmp( word, "END" ) )
-         break;
-
-      if( !str_cmp( word, "PLAYER" ) )
-         fread_pfile( fp, tdiff, fname, count );
-   }
-   FCLOSE( fp );
 }
 
 void pfile_scan( bool count )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   char directory_name[100];
    deleted = 0;
    pexempt = 0;
 
-   now_time = time( 0 );
-
-   /*
-    * Reset all clans to 0 members prior to scan - Samson 7-26-00 
-    */
-   list < clan_data * >::iterator cl;
    if( !count )
    {
-      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
-      {
-         clan_data *clan = *cl;
-
+      // Reset all clans
+      for( auto* clan : clanlist )
          clan->members = 0;
-      }
-   }
 
-   /*
-    * Reset all realms to 0 members prior to scan - Samson 11-08-2014
-    */
-   list < realm_data * >::iterator rl;
-   if( !count )
-   {
-      for( rl = realmlist.begin(  ); rl != realmlist.end(  ); ++rl )
-      {
-         realm_data *realm = *rl;
-
+      // Reset all realms
+      for( auto* realm : realmlist )
          realm->members = 0;
-      }
-   }
 
-   /*
-    * Reset all deities to 0 worshippers prior to scan - Samson 7-26-00 
-    */
-   list < deity_data * >::iterator ideity;
-   if( !count )
-   {
-      for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
-      {
-         deity_data *deity = *ideity;
-
+      // Reset all deities
+      for( auto* deity : deitylist )
          deity->worshippers = 0;
-      }
    }
 
    short cou = 0;
-   for( short alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
+   for( char c = 'a'; c <= 'z'; ++c )
    {
-      snprintf( directory_name, 100, "%s%c", PLAYER_DIR, 'a' + alpha_loop );
+      std::filesystem::path directory_path = std::format ("{}{}", PLAYER_DIR, c );
 
-      // log_string( directory_name ); 
+      if( !std::filesystem::exists( directory_path ) || !std::filesystem::is_directory( directory_path ) )
+         continue;
 
-      dp = opendir( directory_name );
-      dentry = readdir( dp );
-      while( dentry )
+      for( const auto& entry : std::filesystem::directory_iterator( directory_path ) )
       {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( !str_cmp( dentry->d_name, "CVS" ) )
-         {
-            dentry = readdir( dp );
+         // Skip entries starting with '.'
+         if( entry.path().filename().string().starts_with( '.' ) )
             continue;
-         }
-         if( dentry->d_name[0] != '.' )
-         {
-            if( !count )
-               read_pfile( directory_name, dentry->d_name, count );
-            ++cou;
-         }
-         dentry = readdir( dp );
+
+         if( !count )
+            read_pfile( directory_path, entry.path().filename(), count );
+         ++cou;
       }
-      closedir( dp );
    }
 
    if( !count )
@@ -868,23 +680,14 @@ void pfile_scan( bool count )
 
    if( !count )
    {
-      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
-      {
-         clan_data *clan = *cl;
+      for( auto* clan : clanlist )
          save_clan( clan );
-      }
 
-      for( rl = realmlist.begin(  ); rl != realmlist.end(  ); ++rl )
-      {
-         realm_data *realm = *rl;
+      for( auto* realm : realmlist )
          save_realm( realm );
-      }
 
-      for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
-      {
-         deity_data *deity = *ideity;
+      for( auto* deity : deitylist )
          save_deity( deity );
-      }
 
       verify_clans(  );
       verify_realms( );
@@ -892,10 +695,113 @@ void pfile_scan( bool count )
    }
 }
 
+bool is_safe_target( const std::filesystem::path & target_dir )
+{
+   std::error_code ec;
+   std::filesystem::path base = std::filesystem::weakly_canonical( PLAYER_DIR, ec );
+   std::filesystem::path target = std::filesystem::weakly_canonical( target_dir, ec );
+
+   if( ec )
+      return false;
+
+   auto [mismatch_base, mismatch_target] = std::mismatch( base.begin(), base.end(), target.begin() );
+
+   return mismatch_base == base.end();
+}
+
+// This should enforce using a specific filename found in BACKUP_DIR so that the admin has to input that to the do_pfiles() command.
+bool restore_pfiles( const std::string & archive_filename, const std::filesystem::path & target_dir )
+{
+   // Construct the path and ensure it's inside BACKUP_DIR
+   std::filesystem::path archive_path = std::filesystem::path( BACKUP_DIR ) / archive_filename;
+
+   // Ensure the file exists and is indeed a .bak file
+   if( !std::filesystem::exists( archive_path ) || archive_path.extension() != ".bak" )
+   {
+      return false;
+   }
+
+   // Ensure the target is the authorized PLAYER_DIR
+   if( !is_safe_target( target_dir ) )
+   {
+      return false;
+   }
+
+   std::ifstream archive( archive_path, std::ios::binary );
+   if( !archive.is_open() )
+      return false;
+
+   std::string line;
+   std::ofstream current_file;
+
+   while( std::getline( archive, line ) )
+   {
+      if( line.starts_with( "FILE_START:" ) )
+      {
+         std::filesystem::path rel_path = line.substr( 11 );
+         std::filesystem::path full_path = target_dir / rel_path;
+
+         std::filesystem::create_directories( full_path.parent_path() );
+         current_file.open( full_path, std::ios::binary );
+      }
+      else if( line == "FILE_END" )
+      {
+         current_file.close();
+      }
+      else if( current_file.is_open() )
+      {
+         current_file << line << "\n";
+      }
+   }
+   return true;
+}
+
+// Old backups will accumulate daily. So let's clean those up.
+void cleanup_old_backups( const std::filesystem::path & backup_dir, int days_to_keep )
+{
+   for( const auto& entry : std::filesystem::directory_iterator( backup_dir ) )
+   {
+      auto ftime = std::filesystem::last_write_time( entry );
+      auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>( ftime - std::filesystem::file_time_type::clock::now() + current_time );
+
+      if( current_time - sctp > std::chrono::hours( 24 * days_to_keep ) )
+      {
+         std::filesystem::remove( entry );
+      }
+   }
+}
+
+// Generate a backup file whenever the pfiles are being pruned.
+void create_backup_archive( const std::filesystem::path & player_dir, const std::filesystem::path & backup_dir )
+{
+   std::string timestamp = std::format( "{:%Y%m%d_%H%M%S}", std::chrono::floor<std::chrono::seconds>( current_time ) );
+
+   std::filesystem::create_directories( backup_dir );
+   std::filesystem::path archive_path = backup_dir / std::format( "pfiles_{}.bak", timestamp );
+
+   std::ofstream archive( archive_path, std::ios::binary );
+   if( !archive.is_open() )
+      return;
+
+   for( const auto& entry : std::filesystem::recursive_directory_iterator( player_dir ) )
+   {
+      if( entry.is_regular_file() )
+      {
+         std::filesystem::path rel_path = std::filesystem::relative( entry.path(), player_dir );
+         std::ifstream source( entry.path(), std::ios::binary );
+
+         if( source.is_open() )
+         {
+            archive << "FILE_START:" << rel_path.string() << "\n";
+            archive << source.rdbuf();
+            archive << "\nFILE_END\n";
+         }
+      }
+   }
+}
+
 CMDF( do_pfiles )
 {
-   char buf[512];
-
    if( ch->isnpc(  ) )
    {
       ch->print( "Mobs cannot use this command!\r\n" );
@@ -904,22 +810,17 @@ CMDF( do_pfiles )
 
    if( argument.empty(  ) )
    {
-      /*
-       * Makes a backup copy of existing pfiles just in case - Samson 
-       */
-      snprintf( buf, 512, "tar -cf %spfiles.tar %s*", PLAYER_DIR, PLAYER_DIR );
-
-      /*
-       * GAH, the shell pipe won't process the command that gets pieced
-       * together in the preceeding lines! God only knows why. - Samson 
-       */
-      if( ( system( buf ) ) )
-      {
-         ch->print( "An error occured while processing the system command for pfile backups. The cleanup was aborted.\r\n" );
-         return;
-      }
-
       log_printf( "Manual pfile cleanup started by %s.", ch->name );
+
+      /*
+       * Makes a backup copy of existing pfiles just in case - Samson
+       */
+      // Clears out any backup archives that are older than 30 days. Which should be more than enough time.
+      cleanup_old_backups( BACKUP_DIR, 30 ); // FIXME: Make this a sysdata setting once testing is complete.
+
+      // Generate the archive for this operation.
+      create_backup_archive( PLAYER_DIR, BACKUP_DIR );
+
       pfile_scan( false );
       rare_update(  );
       return;
@@ -927,7 +828,7 @@ CMDF( do_pfiles )
 
    if( !str_cmp( argument, "settime" ) )
    {
-      new_pfile_time_t = current_time + 86400;
+      new_pfile_time_t = current_time + std::chrono::hours( 24 );
       save_timedata(  );
       ch->print( "New cleanup time set for 24 hrs from now.\r\n" );
       return;
@@ -939,6 +840,35 @@ CMDF( do_pfiles )
       pfile_scan( true );
       return;
    }
+
+   std::string arg1 = one_argument( argument, arg1 );
+   if( !str_cmp( arg1, "restore" ) )
+   {
+      std::string arg2 = one_argument( argument, arg2 );
+
+      if( !sysdata->LOCKDOWN )
+      {
+         ch->print( "Pfile restoration can only take place if the MUD is in lockdown.\r\nThis is to protect against active users overwriting the restored files.\r\n" );
+         return;
+      }
+
+      if( arg2.empty() )
+      {
+         ch->print( "Syntax: pfiles restore <archive name>\r\n" );
+         return;
+      }
+
+      if( restore_pfiles( arg2, PLAYER_DIR ) )
+      {
+         ch->printf( "Successfully restored from %s.\r\n", arg2.c_str() );
+      }
+      else
+      {
+         ch->printf( "Error: Could not restore. Check if the filename is correct and exists in %s.\r\n", BACKUP_DIR );
+      }
+      return;
+   }
+
    ch->print( "Invalid argument.\r\n" );
 }
 
@@ -955,40 +885,29 @@ void check_pfiles( time_t reset )
       return;
    }
 
-   if( new_pfile_time_t <= current_time )
+   if( current_time >= new_pfile_time_t )
    {
       if( sysdata->CLEANPFILES == true )
       {
-         char buf[512];
-
          /*
           * Makes a backup copy of existing pfiles just in case - Samson 
           */
-         snprintf( buf, 512, "tar -cf %spfiles.tar %s*", PLAYER_DIR, PLAYER_DIR );
+         // Clears out any backup archives that are older than 30 days. Which should be more than enough time.
+         cleanup_old_backups( BACKUP_DIR, 30 ); // FIXME: Make this a sysdata setting once testing is complete.
 
-         /*
-          * Would use the shell pipe for this, but alas, it requires a ch in order
-          * to work, this also gets called during boot_db before the rare item checks - Samson 
-          */
-         if( ( system( buf ) ) )
-         {
-            log_string( "Error during Pfile backup. Cleanup code aborted. Skipping to rare items update." );
-            if( reset == 0 )
-               rare_update(  );
-         }
-         else
-         {
-            new_pfile_time_t = current_time + 86400;
-            save_timedata(  );
-            log_string( "Automated pfile cleanup beginning...." );
-            pfile_scan( false );
-            if( reset == 0 )
-               rare_update(  );
-         }
+         // Generate the archive for this operation.
+         create_backup_archive( PLAYER_DIR, BACKUP_DIR );
+
+         new_pfile_time_t = current_time + std::chrono::hours( 24 );
+         save_timedata(  );
+         log_string( "Automated pfile cleanup beginning...." );
+         pfile_scan( false );
+         if( reset == 0 )
+            rare_update(  );
       }
       else
       {
-         new_pfile_time_t = current_time + 86400;
+         new_pfile_time_t = current_time + std::chrono::hours( 24 );
          save_timedata(  );
          log_string( "Counting pfiles....." );
          pfile_scan( true );

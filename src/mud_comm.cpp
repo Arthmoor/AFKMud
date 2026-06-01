@@ -3148,8 +3148,6 @@ CMDF( do_mp_damage )
 
 CMDF( do_mp_log )
 {
-   struct tm *t = localtime( &current_time );
-
    if( !can_use_mprog( ch ) )
       return;
 
@@ -3158,7 +3156,7 @@ CMDF( do_mp_log )
       progbugf( ch, "%s", "Mp_log:  non-existent entry" );
       return;
    }
-   append_to_file( MOBLOG_FILE, "&p%-2.2d/%-2.2d | %-2.2d:%-2.2d  &P%s:  &p%s", t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch->short_descr, argument.c_str(  ) );
+   append_to_file( MOBLOG_FILE, "&p%s: &P%s:  &p%s", mini_c_time( current_time, -1 ).c_str(), ch->short_descr, argument.c_str(  ) );
 }
 
 /*
@@ -4415,7 +4413,7 @@ CMDF( do_mptrlook )
       return;
    }
 
-   if( !victim->isnpc(  ) && victim->pcdata->release_date != 0 )
+   if( !victim->isnpc(  ) && victim->pcdata->release_date != std::chrono::system_clock::time_point{} )
       progbugf( ch, "Mptrlook - helled character (%s)", victim->name );
 
    /*

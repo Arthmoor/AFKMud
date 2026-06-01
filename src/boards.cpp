@@ -41,16 +41,13 @@
 #include "realms.h"
 #include "roomindex.h"
 
-namespace fs = std::filesystem;
-
 list < board_data * >bdlist;
 list < project_data * >projlist;
 
-char *mini_c_time( time_t, int );
 void check_boards(  );
 
 /* Global */
-time_t board_expire_time_t;
+std::chrono::system_clock::time_point board_expire_time_t;
 
 // Changed 'backup_pruned' to 'backup', to be more sane. --Xorith (9/21/07)
 // There's no conversion code, so if you want backups - set the flag again. -X
@@ -111,20 +108,18 @@ note_data::note_data(  )
 
 note_data::~note_data(  )
 {
-   list < note_data * >::iterator rp;
-
    DISPOSE( text );
    DISPOSE( subject );
    STRFREE( to_list );
    STRFREE( sender );
 
-   for( rp = rlist.begin(  ); rp != rlist.end(  ); )
+   for( auto it = rlist.begin(); it != rlist.end(); )
    {
-      note_data *reply = *rp;
-      ++rp;
+      note_data *reply = *it;
 
       rlist.remove( reply );
       deleteptr( reply );
+      it = rlist.erase( it );
    }
 }
 
@@ -136,8 +131,6 @@ board_data::board_data(  )
 
 board_data::~board_data(  )
 {
-   list < note_data * >::iterator note;
-
    STRFREE( name );
    STRFREE( readers );
    STRFREE( posters );
@@ -146,28 +139,35 @@ board_data::~board_data(  )
    STRFREE( group );
    DISPOSE( filename );
 
-   for( note = nlist.begin(  ); note != nlist.end(  ); )
+   for( auto it = nlist.begin(); it != nlist.end(); )
    {
-      note_data *pnote = *note;
-      ++note;
+      note_data *pnote = *it;
 
-      nlist.remove( pnote );
       deleteptr( pnote );
+      it = nlist.erase( it );
    }
    bdlist.remove( this );
 }
 
 void pc_data::free_pcboards(  )
 {
-   list < board_chardata * >::iterator bd;
-
-   for( bd = boarddata.begin(  ); bd != boarddata.end(  ); )
+   for( auto it = boarddata.begin(); it != boarddata.end(); )
    {
-      board_chardata *chbd = *bd;
-      ++bd;
+      board_chardata *chbd = *it;
 
-      boarddata.remove( chbd );
       deleteptr( chbd );
+      it = boarddata.erase( it );
+   }
+}
+
+void free_boards( void )
+{
+   for( auto it = bdlist.begin(  ); it != bdlist.end(  ); )
+   {
+      board_data *board = *it;
+
+      deleteptr( board );
+      it = bdlist.erase( it );
    }
 }
 
@@ -311,12 +311,8 @@ bool is_note_to( char_data * ch, note_data * pnote )
    as global boards are noted with a 0 objvnum */
 board_data *get_board_by_obj( obj_data * obj )
 {
-   list < board_data * >::iterator bd;
-
-   for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
+   for( auto* board : bdlist )
    {
-      board_data *board = *bd;
-
       if( board->objvnum == obj->pIndexData->vnum )
          return board;
    }
@@ -328,13 +324,10 @@ board_data *get_board_by_obj( obj_data * obj )
    search and weed out boards that the ch can't view remotely. */
 board_data *get_board( char_data * ch, const string & name )
 {
-   list < board_data * >::iterator bd;
    int count = 1;
 
-   for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
+   for( auto* board : bdlist )
    {
-      board_data *board = *bd;
-
       if( ch != nullptr )
       {
          if( !can_read( ch, board ) )
@@ -354,11 +347,8 @@ board_data *get_board( char_data * ch, const string & name )
 /* This will find a board on an object in the character's current room */
 board_data *find_board( char_data * ch )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
+   for( auto* obj : ch->in_room->objects )
    {
-      obj_data *obj = *iobj;
       board_data *board;
 
       if( ( board = get_board_by_obj( obj ) ) != nullptr )
@@ -369,12 +359,8 @@ board_data *find_board( char_data * ch )
 
 board_chardata *get_chboard( char_data * ch, const string & board_name )
 {
-   list < board_chardata * >::iterator bd;
-
-   for( bd = ch->pcdata->boarddata.begin(  ); bd != ch->pcdata->boarddata.end(  ); ++bd )
+   for( auto* board : ch->pcdata->boarddata )
    {
-      board_chardata *board = *bd;
-
       if( !str_cmp( board->board_name, board_name ) )
          return board;
    }
@@ -390,7 +376,7 @@ board_chardata *create_chboard( char_data * ch, const string & board_name )
 
    chboard = new board_chardata;
    chboard->board_name = board_name;
-   chboard->last_read = 0;
+   chboard->last_read = std::chrono::system_clock::time_point{};
    chboard->alert = false;
    ch->pcdata->boarddata.push_back( chboard );
    return chboard;
@@ -402,7 +388,7 @@ void char_data::note_attach(  )
 
    if( pcdata->pnote )
    {
-      bug( "%s: ch->pcdata->pnote already exsists!", __func__ );
+      bug( "%s: ch->pcdata->pnote already exists!", __func__ );
       return;
    }
 
@@ -411,23 +397,9 @@ void char_data::note_attach(  )
    pcdata->pnote = pcnote;
 }
 
-void free_boards( void )
-{
-   list < board_data * >::iterator bd;
-
-   for( bd = bdlist.begin(  ); bd != bdlist.end(  ); )
-   {
-      board_data *board = *bd;
-      ++bd;
-
-      deleteptr( board );
-   }
-}
-
 const int BOARDFILEVER = 1;
 void write_boards( void )
 {
-   list < board_data * >::iterator bd;
    FILE *fpout;
 
    if( !( fpout = fopen( BOARD_DIR BOARD_FILE, "w" ) ) )
@@ -437,24 +409,23 @@ void write_boards( void )
       return;
    }
 
-   for( bd = bdlist.begin(  ); bd != bdlist.end(  ); )
+   for( auto* board : bdlist )
    {
-      board_data *board = *bd;
-      ++bd;
-
       if( !board->name )
       {
-         bug( "%s: Board with a null name! Destroying...", __func__ );
-         deleteptr( board );
+         bug( "%s: Board with a null name! Skipping...", __func__ );
          continue;
       }
+
+      auto expire = std::chrono::system_clock::to_time_t( board->expire );
+
       fprintf( fpout, "FileVer     %d\n", BOARDFILEVER );
       fprintf( fpout, "Name        %s~\n", board->name );
       fprintf( fpout, "Filename    %s~\n", board->filename );
       if( board->desc )
          fprintf( fpout, "Desc        %s~\n", board->desc );
       fprintf( fpout, "ObjVnum     %d\n", board->objvnum );
-      fprintf( fpout, "Expire      %d\n", board->expire );
+      fprintf( fpout, "Expire      %ld\n", expire );
       fprintf( fpout, "Flags       %s~\n", bitset_string( board->flags, board_flags ) );
       if( board->readers )
          fprintf( fpout, "Readers     %s~\n", board->readers );
@@ -474,10 +445,12 @@ void write_boards( void )
 
 void fwrite_reply( note_data * pnote, FILE * fpout )
 {
+   auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
+
    fprintf( fpout, "Reply-Sender         %s~\n", pnote->sender );
    fprintf( fpout, "Reply-To             %s~\n", pnote->to_list );
    fprintf( fpout, "Reply-Subject        %s~\n", pnote->subject );
-   fprintf( fpout, "Reply-DateStamp      %ld\n", pnote->date_stamp );
+   fprintf( fpout, "Reply-DateStamp      %ld\n", date_stamp );
    fprintf( fpout, "Reply-Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
    fprintf( fpout, "Reply-Text           %s~\n", pnote->text );
    fprintf( fpout, "%s\n", "Reply-End" );
@@ -494,32 +467,34 @@ void fwrite_note( note_data * pnote, FILE * fpout )
       return;
    }
 
+   auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
+   auto expire = std::chrono::system_clock::to_time_t( pnote->expire );
+
    fprintf( fpout, "Sender         %s~\n", pnote->sender );
    if( pnote->to_list )
       fprintf( fpout, "To             %s~\n", pnote->to_list );
    if( pnote->subject )
       fprintf( fpout, "Subject        %s~\n", pnote->subject );
-   fprintf( fpout, "DateStamp      %ld\n", pnote->date_stamp );
+   fprintf( fpout, "DateStamp      %ld\n", date_stamp );
    fprintf( fpout, "Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
    if( pnote->to_list ) /* Comments and Project Logs do not use to_list or Expire */
-      fprintf( fpout, "Expire         %d\n", pnote->expire );
+      fprintf( fpout, "Expire         %ld\n", expire );
    if( pnote->text )
       fprintf( fpout, "Text           %s~\n", pnote->text );
    if( pnote->to_list ) /* comments and projects should not have replies */
    {
       int count = 0;
-      list < note_data * >::iterator rp;
-      for( rp = pnote->rlist.begin(  ); rp != pnote->rlist.end(  ); )
+
+      for( auto it = pnote->rlist.begin(  ); it != pnote->rlist.end(  ); )
       {
-         note_data *reply = *rp;
-         ++rp;
+         note_data *reply = *it;
 
          if( !reply->sender || !reply->to_list || !reply->subject || !reply->text )
          {
             bug( "%s: Destroying a buggy reply on note '%s'!", __func__, pnote->subject );
-            pnote->rlist.remove( reply );
             --pnote->reply_count;
             deleteptr( reply );
+            it = pnote->rlist.erase( it );
             continue;
          }
          if( count == MAX_REPLY )
@@ -535,9 +510,8 @@ void fwrite_note( note_data * pnote, FILE * fpout )
 void write_board( board_data * board )
 {
    FILE *fp;
-   string filename;
 
-   filename = std::format( "{}{}.board", BOARD_DIR, board->filename );
+   std::filesystem::path filename = std::format( "{}{}.board", BOARD_DIR, board->filename );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       perror( filename.c_str() );
@@ -545,18 +519,16 @@ void write_board( board_data * board )
       return;
    }
 
-   list < note_data * >::iterator note;
-   for( note = board->nlist.begin(  ); note != board->nlist.end(  ); )
+   for( auto it = board->nlist.begin(  ); it != board->nlist.end(  ); )
    {
-      note_data *pnote = *note;
-      ++note;
+      note_data *pnote = *it;
 
       if( !pnote->sender || !pnote->to_list || !pnote->subject || !pnote->text )
       {
          bug( "%s: Destroying a buggy note on the %s board!", __func__, board->name );
-         board->nlist.remove( pnote );
          --board->msg_count;
          deleteptr( pnote );
+         board->nlist.erase( it );
          continue;
       }
       fwrite_note( pnote, fp );
@@ -566,8 +538,6 @@ void write_board( board_data * board )
 
 void note_remove( board_data * board, note_data * pnote )
 {
-   list < descriptor_data * >::iterator ds;
-
    if( !board || !pnote )
    {
       bug( "%s: null %s variable.", __func__, board ? "pnote" : "board" );
@@ -575,11 +545,8 @@ void note_remove( board_data * board, note_data * pnote )
    }
 
    // Memory safety check in case a note being replied to by someone is being removed.
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-      ++ds;
-
       char_data *ch = d->original ? d->original : d->character;
 
       if( ch && ch->pcdata && ch->pcdata->pnote )
@@ -654,7 +621,11 @@ board_data *read_board( FILE * fp )
             break;
 
          case 'E':
-            KEY( "Expire", board->expire, fread_number( fp ) );
+            if( !str_cmp( word, "Expire " ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               board->expire = std::chrono::system_clock::from_time_t( loaded_time );
+            }
             break;
 
          case 'F':
@@ -765,7 +736,10 @@ board_data *read_old_board( FILE * fp )
                if( !board->objvnum )
                   board->objvnum = 0;  /* default to global */
                board->desc = strdup( "Newly converted board!" );
-               board->expire = MAX_BOARD_EXPIRE;
+
+               auto expiry_time = current_time + std::chrono::days( MAX_BOARD_EXPIRE );
+               board->expire = expiry_time;
+
                board->filename = strdup( board->name );
                if( board->posters[0] == '\0' )
                   STRFREE( board->posters );
@@ -872,7 +846,12 @@ note_data *read_note( FILE * fp )
                fread_to_eol( fp );
                break;
             }
-            KEY( "DateStamp", pnote->date_stamp, fread_number( fp ) );
+            if( !str_cmp( word, "DateStamp" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               pnote->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             break;
 
          case 'S':
@@ -886,7 +865,11 @@ note_data *read_note( FILE * fp )
             break;
 
          case 'E':
-            KEY( "Expire", pnote->expire, fread_number( fp ) );
+            if( !str_cmp( word, "Expire" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               pnote->expire = std::chrono::system_clock::from_time_t( loaded_time );
+            }
             break;
 
          case 'R':
@@ -920,7 +903,8 @@ note_data *read_note( FILE * fp )
 
             if( !str_cmp( word, "Reply-DateStamp" ) && reply != nullptr )
             {
-               reply->date_stamp = fread_number( fp );
+               time_t loaded_time = fread_long( fp );
+               reply->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
                break;
             }
 
@@ -950,8 +934,9 @@ note_data *read_note( FILE * fp )
 
             if( !str_cmp( word, "Reply-End" ) && reply != nullptr )
             {
-               reply->expire = 0;
-               if( !reply->date_stamp )
+
+               reply->expire = std::chrono::system_clock::time_point{};
+               if( reply->date_stamp == std::chrono::system_clock::time_point{} )
                   reply->date_stamp = current_time;
                reply->parent = pnote;
                pnote->rlist.push_back( reply );
@@ -964,10 +949,10 @@ note_data *read_note( FILE * fp )
             if( !str_cmp( word, "#END" ) )
             {
                // Use the new sticky flag :)
-               if( pnote->expire == 0 )
+               if( pnote->expire == std::chrono::system_clock::time_point{} )
                   TOGGLE_NOTE_FLAG( pnote, NOTE_STICKY );
 
-               if( !pnote->date_stamp )
+               if( pnote->date_stamp == std::chrono::system_clock::time_point{} )
                   pnote->date_stamp = current_time;
                return pnote;
             }
@@ -1036,20 +1021,19 @@ note_data *read_old_note( FILE * fp )
             // Since this confused me too, Ctime happens to be the last field in the old note file :) --X
             if( !str_cmp( word, "Ctime" ) )
             {
-               pnote->date_stamp = fread_number( fp );
-               pnote->expire = MAX_BOARD_EXPIRE;   // Going to default to the max expire time -X
+               time_t loaded_time = fread_long( fp );
+               pnote->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
+
+               auto pnote_expire = current_time + std::chrono::days( MAX_BOARD_EXPIRE ); // Going to default to the max expire time -X
+               pnote->expire = pnote_expire;
 
                if( !pnote->text )
                {
                   pnote->text = strdup( "---- Delete this post! ----" );
-                  pnote->expire = 1;   /* Or we'll do it for you! */
-                  bug( "%s: No text on note! Setting to '%s' and expiration to 1 day", __func__, pnote->text );
-               }
 
-               if( !pnote->date_stamp )
-               {
-                  bug( "%s: No date_stamp on note -- setting to current time!", __func__ );
-                  pnote->date_stamp = current_time;
+                  pnote_expire = current_time + std::chrono::days( 1 );
+                  pnote->expire = pnote_expire;   /* Or we'll do it for you! */
+                  bug( "%s: No text on note! Setting to '%s' and expiration to 1 day", __func__, pnote->text );
                }
 
                /*
@@ -1087,18 +1071,14 @@ note_data *read_old_note( FILE * fp )
          case 'E':
             if( !str_cmp( word, "End" ) )
             {
-               pnote->expire = 0;
+               pnote->expire = std::chrono::system_clock::time_point{};
                if( !pnote->text )
                {
                   pnote->text = strdup( "---- Delete this post! ----" );
-                  pnote->expire = 1;   /* Or we'll do it for you! */
-                  bug( "%s: No text on note! Setting to '%s' and expiration to 1 day", __func__, pnote->text );
-               }
 
-               if( !pnote->date_stamp )
-               {
-                  bug( "%s: No date_stamp on note -- setting to current time!", __func__ );
-                  pnote->date_stamp = current_time;
+                  auto pnote_expire = current_time + std::chrono::days( 1 );
+                  pnote->expire = pnote_expire;   /* Or we'll do it for you! */
+                  bug( "%s: No text on note! Setting to '%s' and expiration to 1 day", __func__, pnote->text );
                }
 
                /*
@@ -1132,7 +1112,7 @@ void load_boards( void )
    FILE *board_fp, *note_fp;
    board_data *board;
    note_data *pnote;
-   fs::path notefile, backupfile;
+   std::filesystem::path notefile, backupfile;
    bool oldboards = false;
 
    bdlist.clear(  );
@@ -1154,7 +1134,7 @@ void load_boards( void )
          backupfile = std::format( "{}{}.old", BOARD_DIR, board->filename );
 
          // Xorith wanted to back up old boards, but using a system command was a bad idea.
-         fs::copy( notefile, backupfile );
+         std::filesystem::copy( notefile, backupfile );
 
          if( ( note_fp = fopen( notefile.c_str(), "r" ) ) != nullptr )
          {
@@ -1206,21 +1186,18 @@ void load_boards( void )
 
 int unread_notes( char_data * ch, board_data * board )
 {
-   list < note_data * >::iterator note;
    board_chardata *chboard;
    int count = 0;
 
    chboard = get_chboard( ch, board->name );
 
-   for( note = board->nlist.begin(  ); note != board->nlist.end(  ); ++note )
+   for( auto* note : board->nlist )
    {
-      note_data *pnote = *note;
-
-      if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, pnote ) )
+      if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, note ) )
          continue;
       if( !chboard )
          ++count;
-      else if( pnote->date_stamp > chboard->last_read )
+      else if( note->date_stamp > chboard->last_read )
          ++count;
    }
    return count;
@@ -1228,14 +1205,11 @@ int unread_notes( char_data * ch, board_data * board )
 
 int total_replies( board_data * board )
 {
-   list < note_data * >::iterator note;
    int count = 0;
 
-   for( note = board->nlist.begin(  ); note != board->nlist.end(  ); ++note )
+   for( auto* note : board->nlist )
    {
-      note_data *pnote = *note;
-
-      count += pnote->reply_count;
+      count += note->reply_count;
    }
    return count;
 }
@@ -1243,14 +1217,11 @@ int total_replies( board_data * board )
 /* This is because private boards don't function right with board->msg_count...  :P */
 int total_notes( char_data * ch, board_data * board )
 {
-   list < note_data * >::iterator note;
    int count = 0;
 
-   for( note = board->nlist.begin(  ); note != board->nlist.end(  ); ++note )
+   for( auto* note : board->nlist )
    {
-      note_data *pnote = *note;
-
-      if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, pnote ) && !can_remove( ch, board ) )
+      if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, note ) && !can_remove( ch, board ) )
          continue;
       else
          ++count;
@@ -1261,26 +1232,26 @@ int total_notes( char_data * ch, board_data * board )
 /* Only expire root messages. Replies are pointless to expire. */
 void board_check_expire( board_data * board )
 {
-   list < note_data * >::iterator note;
    FILE *fp;
-   fs::path filename;
+   std::filesystem::path filename;
 
    // This defaults everything to sticky anyway...
-   if( board->expire == 0 )
+   if( board->expire == std::chrono::system_clock::time_point{} )
       return;
 
-   time_t now_time = time( 0 );
-
-   for( note = board->nlist.begin(  ); note != board->nlist.end(  ); )
+   for( auto it = board->nlist.begin(  ); it != board->nlist.end(  ); )
    {
-      note_data *pnote = *note;
-      ++note;
+      note_data *pnote = *it;
+      ++it;
 
       if( IS_NOTE_FLAG( pnote, NOTE_STICKY ) )
          continue;
 
-      time_t time_diff = ( now_time - pnote->date_stamp ) / 86400;
-      if( time_diff >= pnote->expire )
+      // The note has no expiration date.
+      if( pnote->expire == std::chrono::system_clock::time_point{} )
+         continue;
+
+      if( current_time >= pnote->expire )
       {
          if( IS_BOARD_FLAG( board, BOARD_BU_PRUNED ) )
          {
@@ -1304,26 +1275,18 @@ void board_check_expire( board_data * board )
 
 void check_boards( void )
 {
-   list < board_data * >::iterator bd;
-
    log_string( "Starting board pruning..." );
-   for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
-   {
-      board_data *board = *bd;
 
+   for( auto* board : bdlist )
       board_check_expire( board );
-   }
 }
 
 void board_announce( char_data * ch, board_data * board, note_data * pnote )
 {
    board_chardata *chboard;
-   list < descriptor_data * >::iterator ds;
 
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-
       if( d->connected != CON_PLAYING )
          continue;
 
@@ -1376,8 +1339,8 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
    if( pnote->to_list )
       ch->printf( " &[board]To:     &[board2]%-15s", pnote->to_list );
    ch->print( "&D\r\n" );
-   if( pnote->date_stamp != 0 )
-      ch->printf( "&[board]Date:    &[board2]%s&D\r\n", c_time( pnote->date_stamp, ch->pcdata->timezone ) );
+   if( pnote->date_stamp != std::chrono::system_clock::time_point{} )
+      ch->printf( "&[board]Date:    &[board2]%s&D\r\n", c_time( pnote->date_stamp, ch->pcdata->timezone ).c_str() );
 
    if( board && can_remove( ch, board ) )
    {
@@ -1385,9 +1348,10 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
          ch->print( "&[board]This note is sticky and will not expire.&D\r\n" );
       else
       {
-         int n_life;
-         n_life = pnote->expire - ( ( current_time - pnote->date_stamp ) / 86400 );
-         ch->printf( "&[board]This note will expire in &[board2]%d&[board] day%s.&D\r\n", n_life, n_life == 1 ? "" : "s" );
+         auto duration_elapsed = current_time - pnote->date_stamp;
+         auto days_elapsed = std::chrono::floor<std::chrono::days>( duration_elapsed );
+
+         ch->printf( "&[board]This note will expire in &[board2]%ld&[board] day%s.&D\r\n", days_elapsed.count(), days_elapsed.count() == 1 ? "" : "s" );
       }
    }
 
@@ -1403,7 +1367,7 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
          note_data *reply = *rp;
 
          ch->print( "\r\n&[board]------------------------------------------------------------------------------&D\r\n" );
-         ch->printf( "&[board3][&[board]Reply #&[board2]%d&[board3]] [&[board2]%s&[board3]]&D\r\n", count, c_time( reply->date_stamp, ch->pcdata->timezone ) );
+         ch->printf( "&[board3][&[board]Reply #&[board2]%d&[board3]] [&[board2]%s&[board3]]&D\r\n", count, mini_c_time( reply->date_stamp, ch->pcdata->timezone ).c_str() );
          ch->printf( "&[board]From:    &[board2]%-15s", reply->sender ? reply->sender : "--Error--" );
          if( reply->to_list )
             ch->printf( "   &[board]To:     &[board2]%-15s", reply->to_list );
@@ -1470,11 +1434,9 @@ CMDF( do_note_set )
 
    i = 1;
    note_data *pnote = nullptr;
-   list < note_data * >::iterator inote;
-   for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
-   {
-      note_data *note = *inote;
 
+   for( auto* note : board->nlist )
+   {
       if( i == n_num )
       {
          pnote = note;
@@ -1498,8 +1460,12 @@ CMDF( do_note_set )
          ch->printf( "&[board]Expiration days must be a value between &[board2]0&[board] and &[board2]%d&[board].&D\r\n", MAX_BOARD_EXPIRE );
          return;
       }
-      pnote->expire = atoi( argument.c_str(  ) );
-      ch->printf( "&[board]Set the expiration time for '&[board2]%s&[board]' to &[board2]%d&D\r\n", pnote->subject, pnote->expire );
+
+      value = atoi( argument.c_str() );
+      auto expiry_time = current_time + std::chrono::days( value );
+      pnote->expire = expiry_time;
+
+      ch->printf( "&[board]Set the expiration time for '&[board2]%s&[board]' to &[board2]%d&D\r\n", pnote->subject, value );
       write_board( board );
       return;
    }
@@ -1649,14 +1615,15 @@ void board_parse( descriptor_data * d, const string & argument )
       case SUB_BOARD_STICKY:
          if( !str_cmp( argument, "yes" ) || !str_cmp( argument, "y" ) )
          {
-            ch->pcdata->pnote->expire = 0;
+            ch->pcdata->pnote->expire = std::chrono::system_clock::time_point{};
             TOGGLE_NOTE_FLAG( ch->pcdata->pnote, NOTE_STICKY );
             ch->printf( "%sThis note will not expire during pruning.&D\r\n", s1.c_str() );
          }
          else
          {
+            time_t legacy_time = std::chrono::system_clock::to_time_t( ch->pcdata->pnote->expire );
             ch->pcdata->pnote->expire = ch->pcdata->board->expire;
-            ch->printf( "%sNote set to expire after the default of %s%d%s day%s.&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->expire, s1.c_str(), ch->pcdata->pnote->expire == 1 ? "" : "s" );
+            ch->printf( "%sNote set to expire after the default of %s%ld%s day%s.&D\r\n", s1.c_str(), s2.c_str(), legacy_time, s1.c_str(), legacy_time == 1 ? "" : "s" );
          }
 
          if( ch->pcdata->pnote->parent )
@@ -1687,10 +1654,10 @@ void board_parse( descriptor_data * d, const string & argument )
          }
          else
          {
-            fs::path buf;
+            std::filesystem::path buf;
 
             buf = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
-            if( !fs::exists( buf ) || !check_parse_name( capitalize( argument ), false ) )
+            if( !std::filesystem::exists( buf ) || !check_parse_name( capitalize( argument ), false ) )
             {
                ch->printf( "%sNo such player named '%s%s%s'.\r\nTo whom is this note addressed?   &D", s1.c_str(), s2.c_str(), argument.c_str(  ), s1.c_str() );
                return;
@@ -1913,11 +1880,9 @@ CMDF( do_board_moderate )
 
    i = 1;
    note_data *pnote = nullptr;
-   list < note_data * >::iterator inote;
-   for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
-   {
-      note_data *note = *inote;
 
+   for( auto* note: board->nlist )
+   {
       if( i == n_num )
       {
          pnote = note;
@@ -1984,7 +1949,7 @@ CMDF( do_board_moderate )
 
    if( !str_cmp( arg, "sticky" ) )
    {
-      if( IS_NOTE_FLAG( pnote, NOTE_STICKY ) || board->expire == 0 )
+      if( IS_NOTE_FLAG( pnote, NOTE_STICKY ) || board->expire == std::chrono::system_clock::time_point{} )
          ch->print( "&[board]That note is already sticky.&D\r\n" );
       else
       {
@@ -1996,7 +1961,7 @@ CMDF( do_board_moderate )
 
    if( !str_cmp( arg, "unsticky" ) )
    {
-      if( board->expire == 0 )
+      if( board->expire == std::chrono::system_clock::time_point{} )
       {
          ch->printf( "&[board]This note cannot be made unsticky, as &[board2]%s&[board] is set to never expire notes.&D\r\n", board->name );
          return;
@@ -2137,13 +2102,10 @@ CMDF( do_note_write )
 
    if( n_num )
    {
-      list < note_data * >::iterator inote;
       note_data *pnote = nullptr;
       int i = 1;
-      for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
+      for( auto* note : board->nlist )
       {
-         note_data *note = *inote;
-
          if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, note ) )
             continue;
          if( i == n_num )
@@ -2211,14 +2173,14 @@ CMDF( do_note_write )
    else
       ch->printf( "%sYou begin to write a new note for the %s%s%s board.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str() );
 
-   if( can_remove( ch, board ) && !IS_BOARD_FLAG( board, BOARD_PRIVATE ) && ch->pcdata->board->expire > 0 )
+   if( can_remove( ch, board ) && !IS_BOARD_FLAG( board, BOARD_PRIVATE ) && ch->pcdata->board->expire > std::chrono::system_clock::time_point{} )
    {
       ch->printf( "%sIs this a sticky note? %s(%sY%s/%sN%s)  (%sDefault: %sN%s)&D   ", s1.c_str(), s3.c_str(), s2.c_str(), s3.c_str(), s2.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), s3.c_str() );
       ch->substate = SUB_BOARD_STICKY;
    }
    else
    {
-      if( ch->pcdata->board->expire == 0 )
+      if( ch->pcdata->board->expire == std::chrono::system_clock::time_point{} )
          TOGGLE_NOTE_FLAG( ch->pcdata->pnote, NOTE_STICKY );
       else
          ch->pcdata->pnote->expire = ch->pcdata->board->expire;
@@ -2260,24 +2222,27 @@ CMDF( do_note_read )
       if( !( board = find_board( ch ) ) )
       {
          board = ch->pcdata->board;
+         bool has_unread = false;
          if( !board )
          {
-            for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
+            for( auto* lboard : bdlist )
             {
-               board = *bd;   // Added to fix crashbug -- X (3-23-05)
-
                // Immortals and Moderators can read from anywhere as intended... -X (3-23-05)
-               if( ( !can_remove( ch, board ) || !ch->is_immortal(  ) ) && board->objvnum > 0 )
+               if( ( !can_remove( ch, lboard ) || !ch->is_immortal(  ) ) && lboard->objvnum > 0 )
                   continue;
-               if( !can_read( ch, board ) )
+               if( !can_read( ch, lboard ) )
                   continue;
-               pboard = get_chboard( ch, board->name );
+               pboard = get_chboard( ch, lboard->name );
                if( pboard && pboard->alert == BD_IGNORE )
                   continue;
-               if( unread_notes( ch, board ) > 0 )
+               if( unread_notes( ch, lboard ) > 0 )
+               {
+                  has_unread = true;
                   break;
+               }
             }
-            if( bd == bdlist.end(  ) )
+
+            if( !has_unread )
             {
                ch->printf( "%sThere are no boards with unread messages&D\r\n", s1.c_str() );
                return;
@@ -2287,10 +2252,8 @@ CMDF( do_note_read )
 
       pboard = create_chboard( ch, board->name );
 
-      for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
+      for( auto* note : board->nlist )
       {
-         note_data *note = *inote;
-
          if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, note ) )
             continue;
          ++n_num;
@@ -2352,10 +2315,8 @@ CMDF( do_note_read )
    }
 
    i = 1;
-   for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
+   for( auto* note : board->nlist )
    {
-      note_data *note = *inote;
-
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, note ) && !can_remove( ch, board ) )
          continue;
       if( i == n_num )
@@ -2434,42 +2395,40 @@ CMDF( do_note_list )
       ch->printf( "%sNum   %s%-17s %-11s %s&D\r\n", s1.c_str(), IS_BOARD_FLAG( board, BOARD_PRIVATE ) ? "" : "Replies ", "Date", "Author", "Subject" );
 
    count = 0;
-   list < note_data * >::iterator inote;
-   for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
+   for( auto* note : board->nlist )
    {
-      note_data *note = *inote;
-      char unread[4];
+      std::string unread;
 
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, note ) && !can_remove( ch, board ) )
          continue;
 
       ++count;
 
-      strlcpy( unread, " ", 4 );
+      unread = " ";
       if( !chboard || chboard->last_read < note->date_stamp )
-         strlcpy( unread, "&C*", 4 );
+         unread.append( "&C*" );
 
       if( IS_NOTE_FLAG( note, NOTE_HIDDEN ) && !can_remove( ch, board ) )
          continue;
 
       if( IS_NOTE_FLAG( note, NOTE_CLOSED ) )
-         strlcpy( unread, "&Y-", 4 );
+         unread.append( "&Y-" );
 
       if( IS_NOTE_FLAG( note, NOTE_HIDDEN ) )
-         strlcpy( unread, "&R#", 4 );
+         unread.append( "&R#" );
 
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
          ch->printf( "%s%2d%s) %s %s[%s%-15s%s] %s%-11s %s&D\r\n", s2.c_str(), count, s3.c_str(),
-                     unread, s3.c_str(), s2.c_str(),
-                     mini_c_time( note->date_stamp, ch->pcdata->timezone ), s3.c_str(), s2.c_str(),
+                     unread.c_str(), s3.c_str(), s2.c_str(),
+                     mini_c_time( note->date_stamp, ch->pcdata->timezone ).c_str(), s3.c_str(), s2.c_str(),
                      note->sender ? note->sender : "--Error--", note->subject ? print_lngstr( note->subject, 37 ).c_str(  ) : "" );
       }
       else
       {
          ch->printf( "%s%2d%s) %s %s[ %s%3d%s ] [%s%-15s%s] %s%-11s %-20s&D\r\n", s2.c_str(), count, s3.c_str(),
-                     unread, s3.c_str(), s2.c_str(),
-                     note->reply_count, s3.c_str(), s2.c_str(), mini_c_time( note->date_stamp, ch->pcdata->timezone ), s3.c_str(), s2.c_str(),
+                     unread.c_str(), s3.c_str(), s2.c_str(),
+                     note->reply_count, s3.c_str(), s2.c_str(), mini_c_time( note->date_stamp, ch->pcdata->timezone ).c_str(), s3.c_str(), s2.c_str(),
                      note->sender ? note->sender : "--Error--", note->subject ? print_lngstr( note->subject, 45 ).c_str(  ) : "" );
       }
    }
@@ -2544,11 +2503,8 @@ CMDF( do_note_remove )
    }
 
    i = 1;
-   list < note_data * >::iterator inote;
-   for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
+   for( auto* note : board->nlist )
    {
-      note_data *note = *inote;
-
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !is_note_to( ch, note ) && !can_remove( ch, board ) )
          continue;
       if( i == n_num )
@@ -2574,13 +2530,10 @@ CMDF( do_note_remove )
    if( r_num > 0 )
    {
       note_data *reply = nullptr;
-      list < note_data * >::iterator rp;
 
       i = 1;
-      for( rp = pnote->rlist.begin(  ); rp != pnote->rlist.end(  ); ++rp )
+      for( auto* rpy : pnote->rlist )
       {
-         note_data *rpy = *rp;
-
          if( i == r_num )
          {
             reply = rpy;
@@ -2636,11 +2589,8 @@ CMDF( do_board_list )
       ch->print( "&[board]Num  Name             Unread  Posts  Replies Description&D\r\n" );
    }
 
-   list < board_data * >::iterator bd;
-   for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
+   for( auto* board : bdlist )
    {
-      board_data *board = *bd;
-
       /*
        * If you can't read the board, you can't see it either. 
        */
@@ -2725,8 +2675,8 @@ CMDF( do_board_list )
 
 CMDF( do_board_alert )
 {
-   board_chardata *chboard;
    board_data *board = nullptr;
+   board_chardata *chboard;
    string arg;
    int bd_value = -1;
    string s1, s2, s3;
@@ -2739,15 +2689,12 @@ CMDF( do_board_alert )
    if( argument.empty(  ) )
    {
       // Fixed crash bug here - X (3-23-05)
-      list < board_data * >::iterator bd;
-      for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
+      for( auto* pboard : bdlist )
       {
-         board = *bd;
-
-         if( !can_read( ch, board ) )
+         if( !can_read( ch, pboard ) )
             continue;
-         chboard = get_chboard( ch, board->name );
-         ch->printf( "%s%-20s   %sAlert: %s%s&D\r\n", s2.c_str(), board->name, s1.c_str(), s2.c_str(), chboard ? bd_alert_string[chboard->alert] : bd_alert_string[0] );
+         chboard = get_chboard( ch, pboard->name );
+         ch->printf( "%s%-20s   %sAlert: %s%s&D\r\n", s2.c_str(), pboard->name, s1.c_str(), s2.c_str(), chboard ? bd_alert_string[chboard->alert] : bd_alert_string[0] );
       }
       ch->printf( "%sTo change an alert for a board, type: %salert <board> <none|announce|ignore>&D\r\n", s1.c_str(), s2.c_str() );
       return;
@@ -2782,7 +2729,6 @@ CMDF( do_board_alert )
 /* Much like do_board_list, but I cut out some of the details here for simplicity */
 CMDF( do_checkboards )
 {
-   list < board_data * >::iterator bd;
    board_chardata *chboard;
    obj_data *obj;
    int count = 0;
@@ -2794,10 +2740,8 @@ CMDF( do_checkboards )
 
    ch->printf( "%s Num  %-20s  Unread  %-40s&D\r\n", s1.c_str(), "Name", "Description" );
 
-   for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
+   for( auto* board : bdlist )
    {
-      board_data *board = *bd;
-
       /*
        * If you can't read the board, you can't see it either. 
        */
@@ -2874,7 +2818,7 @@ CMDF( do_board_stat )
    ch->printf( "%sReaders:    %s%-30s%s Read Level:   %s%d&D\r\n", s1.c_str(), s2.c_str(), board->readers ? board->readers : "none set", s1.c_str(), s2.c_str(), board->read_level );
    ch->printf( "%sPosters:    %s%-30s%s Post Level:   %s%d&D\r\n", s1.c_str(), s2.c_str(), board->posters ? board->posters : "none set", s1.c_str(), s2.c_str(), board->post_level );
    ch->printf( "%sModerators: %s%-30s%s Remove Level: %s%d&D\r\n", s1.c_str(), s2.c_str(), board->moderators ? board->moderators : "none set", s1.c_str(), s2.c_str(), board->remove_level );
-   ch->printf( "%sGroup:      %s%-30s%s Expiration:   %s%d&D\r\n", s1.c_str(), s2.c_str(), board->group ? board->group : "none set", s1.c_str(), s2.c_str(), board->expire );
+   ch->printf( "%sGroup:      %s%-30s%s Expiration:   %s%s&D\r\n", s1.c_str(), s2.c_str(), board->group ? board->group : "none set", s1.c_str(), s2.c_str(), mini_c_time( board->expire, ch->pcdata->timezone ).c_str() );
    ch->printf( "%sFlags: %s[%s%s%s]&D\r\n", s1.c_str(), s3.c_str(), s2.c_str(), board->flags.any(  )? bitset_string( board->flags, board_flags ) : "none set", s3.c_str() );
    ch->printf( "%sDescription: %s%-30s&D\r\n", s1.c_str(), s2.c_str(), board->desc ? board->desc : "none set" );
 }
@@ -2904,12 +2848,12 @@ CMDF( do_board_remove )
 
    if( !str_cmp( argument, "yes" ) )
    {
-      fs::path buf;
+      std::filesystem::path buf;
 
       ch->printf( "&RDeleting board '&W%s&R'.&D\r\n", board->name );
       ch->print( "&wDeleting note file...   " );
       buf = std::format( "{}{}.board", BOARD_DIR, board->filename );
-      fs::remove( buf );
+      std::filesystem::remove( buf );
       ch->print( "&RDeleted&D\r\n&wDeleting board...   " );
       deleteptr( board );
       ch->print( "&RDeleted&D\r\n&wSaving boards...   " );
@@ -2951,7 +2895,10 @@ CMDF( do_board_make )
    board->filename = strdup( arg.c_str(  ) );
    board->desc = strdup( "This is a new board!" );
    board->objvnum = 0;
-   board->expire = MAX_BOARD_EXPIRE;
+
+   auto expiry_time = current_time + std::chrono::days( MAX_BOARD_EXPIRE );
+   board->expire = expiry_time;
+
    board->read_level = ch->level;
    board->post_level = ch->level;
    board->remove_level = ch->level;
@@ -3115,7 +3062,7 @@ CMDF( do_board_set )
 
    if( !str_cmp( arg2, "filename" ) )
    {
-      fs::path filename;
+      std::filesystem::path filename;
 
       if( !is_valid_filename( ch, BOARD_DIR, argument ) )
          return;
@@ -3126,7 +3073,7 @@ CMDF( do_board_set )
          return;
       }
       filename = std::format( "{}{}.board", BOARD_DIR, board->filename );
-      fs::remove( filename );
+      std::filesystem::remove( filename );
       filename = board->filename;
       DISPOSE( board->filename );
       board->filename = strdup( argument.c_str(  ) );
@@ -3164,8 +3111,10 @@ CMDF( do_board_set )
          return;
       }
 
-      board->expire = value;
-      ch->printf( "%sFrom now on, notes on the %s%s%s board will expire after %s%d%s days.\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), board->expire, s1.c_str() );
+      auto expiry_time = current_time + std::chrono::days( value );
+      board->expire = expiry_time;
+
+      ch->printf( "%sFrom now on, notes on the %s%s%s board will expire after %s%d%s days.\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), value, s1.c_str() );
       ch->printf( "%sPlease note: This will not effect notes currently on the board. To effect %sALL%s notes, "
                   "type: %sbset <board> expireall <days>&D\r\n", s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str() );
       write_boards(  );
@@ -3174,22 +3123,20 @@ CMDF( do_board_set )
 
    if( !str_cmp( arg2, "expireall" ) )
    {
-      list < note_data * >::iterator inote;
-
       if( value < 0 || value > MAX_BOARD_EXPIRE )
       {
          ch->printf( "%sExpire time must be a value between %s0%s and %s%d%s.&D\r\n", s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), MAX_BOARD_EXPIRE, s1.c_str() );
          return;
       }
 
-      board->expire = value;
-      for( inote = board->nlist.begin(  ); inote != board->nlist.end(  ); ++inote )
-      {
-         note_data *note = *inote;
+      auto expiry_time = current_time + std::chrono::days( value );
+      board->expire = expiry_time;
 
-         note->expire = value;
+      for( auto* note : board->nlist )
+      {
+         note->expire = expiry_time;
       }
-      ch->printf( "%sAll notes on the %s%s%s board will expire after %s%d%s days.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), board->expire, s1.c_str() );
+      ch->printf( "%sAll notes on the %s%s%s board will expire after %s%d%s days.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), value, s1.c_str() );
       ch->print( "Performing board pruning now...\r\n" );
       board_check_expire( board );
       write_boards(  );
@@ -3294,13 +3241,10 @@ CMDF( do_board_set )
 /* Begin Project Code */
 project_data *get_project_by_number( int pnum )
 {
-   list < project_data * >::iterator pr;
    int pcount = 1;
 
-   for( pr = projlist.begin(  ); pr != projlist.end(  ); ++pr )
+   for( auto* proj : projlist )
    {
-      project_data *proj = *pr;
-
       if( pcount == pnum )
          return proj;
       else
@@ -3311,13 +3255,10 @@ project_data *get_project_by_number( int pnum )
 
 note_data *get_log_by_number( project_data * pproject, int pnum )
 {
-   list < note_data * >::iterator ilog;
    int pcount = 1;
 
-   for( ilog = pproject->nlist.begin(  ); ilog != pproject->nlist.end(  ); ++ilog )
+   for( auto* plog : pproject->nlist )
    {
-      note_data *plog = *ilog;
-
       if( pcount == pnum )
          return plog;
       else
@@ -3328,8 +3269,6 @@ note_data *get_log_by_number( project_data * pproject, int pnum )
 
 void write_projects( void )
 {
-   list < project_data * >::iterator pr;
-   list < note_data * >::iterator ilog;
    FILE *fpout;
 
    fpout = fopen( PROJECTS_FILE, "w" );
@@ -3338,9 +3277,10 @@ void write_projects( void )
       bug( "%s: FATAL: cannot open projects.txt for writing!", __func__ );
       return;
    }
-   for( pr = projlist.begin(  ); pr != projlist.end(  ); ++pr )
+
+   for( auto* proj : projlist )
    {
-      project_data *proj = *pr;
+      auto date_stamp = std::chrono::system_clock::to_time_t( proj->date_stamp );
 
       fprintf( fpout, "%s", "Version        2\n" );
       fprintf( fpout, "Name   %s~\n", proj->name );
@@ -3348,16 +3288,14 @@ void write_projects( void )
       if( proj->coder )
          fprintf( fpout, "Coder  %s~\n", proj->coder );
       fprintf( fpout, "Status %s~\n", ( proj->status ) ? proj->status : "No update." );
-      fprintf( fpout, "Date_stamp   %ld\n", proj->date_stamp );
+      fprintf( fpout, "Date_stamp   %ld\n", date_stamp );
       if( !proj->realm_name.empty() )
          fprintf( fpout, "Realm       %s~\n", proj->realm_name.c_str() );
       if( proj->description )
          fprintf( fpout, "Description %s~\n", proj->description );
 
-      for( ilog = proj->nlist.begin(  ); ilog != proj->nlist.end(  ); ++ilog )
+      for( auto* nlog : proj->nlist )
       {
-         note_data *nlog = *ilog;
-
          fprintf( fpout, "%s\n", "Log" );
          fwrite_note( nlog, fpout );
       }
@@ -3451,14 +3389,19 @@ project_data *read_project( FILE * fp )
                fread_to_eol( fp );
                break;
             }
-            KEY( "Date_stamp", project->date_stamp, fread_number( fp ) );
+            if( !str_cmp( word, "Date_stamp" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               project->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             KEY( "Description", project->description, fread_string_nohash( fp ) );
             break;
 
          case 'E':
             if( !str_cmp( word, "End" ) )
             {
-               if( project->date_stamp == 0 )
+               if( project->date_stamp == std::chrono::system_clock::time_point{} )
                   project->date_stamp = current_time;
                if( !project->status )
                   project->status = STRALLOC( "No update." );
@@ -3551,15 +3494,13 @@ project_data::project_data(  )
 
 project_data::~project_data(  )
 {
-   list < note_data * >::iterator ilog;
-
-   for( ilog = nlist.begin(  ); ilog != nlist.end(  ); )
+   for( auto it = nlist.begin(  ); it != nlist.end(  ); )
    {
-      note_data *note = *ilog;
-      ++ilog;
+      note_data *note = *it;
 
       nlist.remove( note );
       deleteptr( note );
+      it = nlist.erase( it );
    }
    STRFREE( coder );
    DISPOSE( description );
@@ -3571,14 +3512,12 @@ project_data::~project_data(  )
 
 void free_projects( void )
 {
-   list < project_data * >::iterator proj;
-
-   for( proj = projlist.begin(  ); proj != projlist.end(  ); )
+   for( auto it = projlist.begin(  ); it != projlist.end(  ); )
    {
-      project_data *project = *proj;
-      ++proj;
+      project_data *project = *it;
 
       deleteptr( project );
+      it = projlist.erase( it );
    }
    return;
 }
@@ -3686,14 +3625,14 @@ CMDF( do_project )
          {
             ch->pagerf( "%2d%s | %-11s | %-26s | %-15s | %-12s\r\n",
                         pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)",
-                        print_lngstr( proj->name, 26 ).c_str(  ), mini_c_time( proj->date_stamp, ch->pcdata->timezone ), proj->status ? proj->status : "(None)" );
+                        print_lngstr( proj->name, 26 ).c_str(  ), mini_c_time( proj->date_stamp, ch->pcdata->timezone ).c_str(), proj->status ? proj->status : "(None)" );
          }
          else if( !proj->taken )
          {
             if( !projects_available )
                projects_available = true;
             ch->pagerf( "%2d%s | %-30s | %s\r\n", pcount, proj->realm_name.c_str(),
-                        proj->name ? proj->name : "(None)", mini_c_time( proj->date_stamp, ch->pcdata->timezone ) );
+                        proj->name ? proj->name : "(None)", mini_c_time( proj->date_stamp, ch->pcdata->timezone ).c_str() );
          }
       }
       if( pcount == 0 )
@@ -3712,15 +3651,12 @@ CMDF( do_project )
 
    if( !str_cmp( arg, "code" ) )
    {
-      list < project_data * >::iterator pr;
-
       pcount = 0;
       ch->pager( " #  | Owner       | Project                    \r\n" );
       ch->pager( "----|-------------|----------------------------\r\n" );
-      for( pr = projlist.begin(  ); pr != projlist.end(  ); ++pr )
-      {
-         project_data *proj = ( *pr );
 
+      for( auto* proj : projlist )
+      {
          ++pcount;
          if( ( proj->status && str_cmp( proj->status, "approved" ) ) || proj->coder != nullptr )
             continue;
@@ -3731,8 +3667,6 @@ CMDF( do_project )
 
    if( !str_cmp( arg, "more" ) || !str_cmp( arg, "mine" ) )
    {
-      list < project_data * >::iterator pr;
-      list < note_data * >::iterator ilog;
       bool MINE = false;
 
       pcount = 0;
@@ -3743,10 +3677,9 @@ CMDF( do_project )
       ch->pager( "\r\n" );
       ch->pager( " #  | Owner       | Project                    | Coder       | Status     | Logs\r\n" );
       ch->pager( "----|-------------|----------------------------|-------------|------------|-----\r\n" );
-      for( pr = projlist.begin(  ); pr != projlist.end(  ); ++pr )
-      {
-         project_data *proj = *pr;
 
+      for( auto* proj : projlist )
+      {
          ++pcount;
          if( MINE && ( !proj->owner || str_cmp( ch->name, proj->owner ) ) && ( !proj->coder || str_cmp( ch->name, proj->coder ) ) )
             continue;
@@ -3925,8 +3858,6 @@ CMDF( do_project )
 
    if( !str_cmp( arg, "log" ) )
    {
-      note_data *plog;
-
       if( !str_cmp( argument, "write" ) )
       {
          if( !ch->pcdata->pnote )
@@ -3981,7 +3912,7 @@ CMDF( do_project )
          }
 
          ch->pcdata->pnote->date_stamp = current_time;
-         plog = ch->pcdata->pnote;
+         note_data *plog = ch->pcdata->pnote;
          ch->pcdata->pnote = nullptr;
 
          if( !argument.empty(  ) )
@@ -4013,8 +3944,6 @@ CMDF( do_project )
 
       if( !str_cmp( arg, "list" ) )
       {
-         list < note_data * >::iterator ilog;
-
          if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
              || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
          {
@@ -4025,10 +3954,8 @@ CMDF( do_project )
          pcount = 0;
          ch->pagerf( "Project: %-12s: %s\r\n", pproject->owner ? pproject->owner : "(None)", pproject->name );
 
-         for( ilog = pproject->nlist.begin(  ); ilog != pproject->nlist.end(  ); ++ilog )
+         for( auto* tlog : pproject->nlist )
          {
-            note_data *tlog = *ilog;
-
             ++pcount;
             ch->pagerf( "%2d) %-12s: %s\r\n", pcount, tlog->sender ? tlog->sender : "--Error--", tlog->subject ? tlog->subject : "" );
          }
@@ -4047,7 +3974,7 @@ CMDF( do_project )
 
       pnum = atoi( arg.c_str(  ) );
 
-      plog = get_log_by_number( pproject, pnum );
+      note_data *plog = get_log_by_number( pproject, pnum );
       if( !plog )
       {
          ch->print( "Invalid log.\r\n" );

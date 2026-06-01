@@ -69,9 +69,9 @@ class area_data
    char *author;                    /* Scryn */
    char *credits;
    char *resetmsg;                  /* Rennard */
-   time_t creation_date;            // Timestamp for when this area was first created. Samson 1/20/07
-   time_t install_date;             // Timestamp for when this area was "live" installed. Samson 1/20/07
-   time_t last_resettime;           // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
+   std::chrono::system_clock::time_point creation_date;            // Timestamp for when this area was first created. Samson 1/20/07
+   std::chrono::system_clock::time_point install_date;             // Timestamp for when this area was "live" installed. Samson 1/20/07
+   std::chrono::system_clock::time_point last_resettime;           // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
    int low_vnum;
    int hi_vnum;
    int low_soft_range;

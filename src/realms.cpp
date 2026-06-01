@@ -209,9 +209,11 @@ void fwrite_realm_memberlist( FILE * fp, realm_data * realm )
    {
       realm_roster_data *member = *mem;
 
+      auto joined = std::chrono::system_clock::to_time_t( member->joined );
+
       fprintf( fp, "%s", "#ROSTER\n" );
       fprintf( fp, "Name      %s~\n", member->name.c_str(  ) );
-      fprintf( fp, "Joined    %ld\n", member->joined );
+      fprintf( fp, "Joined    %ld\n", joined );
       fprintf( fp, "%s", "End\n\n" );
    }
 }
@@ -246,7 +248,11 @@ void fread_realm_memberlist( realm_data * realm, FILE * fp )
             break;
 
          case 'J':
-            KEY( "Joined", roster->joined, fread_long( fp ) );
+            if( !str_cmp( word, "Joined" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               roster->joined = std::chrono::system_clock::from_time_t( loaded_time );
+            }
             break;
 
          case 'N':
@@ -459,10 +465,10 @@ void verify_realms( void )
    list < realm_roster_data * >::iterator member;
 
    log_string( "Cleaning up realm data..." );
-   for( irealm = realmlist.begin(  ); irealm != realmlist.end(  ); )
+   for( auto it = realmlist.begin(); it != realmlist.end(); )
    {
-      realm_data *realm = *irealm;
-      ++irealm;
+      realm_data *realm = *it;
+      ++it;
 
       log_printf( "Checking data for %s.....", realm->name.c_str(  ) );
 
@@ -484,10 +490,10 @@ void verify_realms( void )
          continue;
       }
 
-      for( member = realm->memberlist.begin(  ); member != realm->memberlist.end(  ); )
+      for( auto it2 = realm->memberlist.begin(); it2 != realm->memberlist.end(); )
       {
-         realm_roster_data *roster = *member;
-         ++member;
+         realm_roster_data *roster = *it2;
+         ++it2;
 
          if( !exists_player( roster->name ) )
          {
@@ -863,7 +869,6 @@ CMDF( do_makerealm )
 CMDF( do_realmroster )
 {
    realm_data *realm;
-   list < realm_roster_data * >::iterator mem;
    string arg, arg2;
    int total = 0;
 
@@ -898,12 +903,9 @@ CMDF( do_realmroster )
       ch->printf( "Membership roster for %s\r\n\r\n", realm->name.c_str(  ) );
       ch->printf( "%-15.15s  %s\r\n", "Name", "Joined on" );
       ch->print( "---------------------------------------\r\n" );
-      for( mem = realm->memberlist.begin(  ); mem != realm->memberlist.end(  ); ++mem )
+      for( auto* member : realm->memberlist )
       {
-         realm_roster_data *member = *mem;
-
-         ch->printf( "%-15.15s  %s\r\n",
-                     member->name.c_str(  ), c_time( member->joined, ch->pcdata->timezone ) );
+         ch->printf( "%-15.15s  %s\r\n", member->name.c_str(  ), c_time( member->joined, ch->pcdata->timezone ).c_str() );
          ++total;
       }
       ch->printf( "\r\nThere are %d member%s in %s\r\n", total, total == 1 ? "" : "s", realm->name.c_str(  ) );
@@ -928,14 +930,11 @@ CMDF( do_realmroster )
 
 CMDF( do_realms )
 {
-   list < realm_data * >::iterator rl;
    int count = 0;
 
    ch->print( "\r\n&RRealm         Type          Leader        Description:\r\n_________________________________________________________________________\r\n\r\n" );
-   for( rl = realmlist.begin(  ); rl != realmlist.end(  ); ++rl )
+   for( auto* realm : realmlist )
    {
-      realm_data *realm = *rl;
-
       ch->printf( "&w%-13s %-13s %-13s %-13s\r\n", realm->name.c_str(  ), realm_type_names[realm->type], realm->leader.c_str(  ), realm->realmdesc.c_str(  ) );
       ++count;
    }

@@ -34,64 +34,57 @@
 #include "pfiles.h"
 #include "roomindex.h"
 
-namespace fs = std::filesystem;
-
 list < holiday_data * >daylist;
 
 const int MAX_TZONE = 25;
 
-extern time_t board_expire_time_t;
+extern std::chrono::system_clock::time_point board_expire_time_t;
 
-// FIXME: All of this timezone stuff needs a major overhaul to bring it up to modern standards.
 struct tzone_type
 {
-   const char *name; /* Name of the time zone */
-   const char *zone; /* Cities or Zones in zone crossing */
-   const int gmt_offset;   /* Difference in hours from Greenwich Mean Time */
-   const int dst_offset;   /* Day Light Savings Time offset, Not used but left it in anyway */
+   std::string_view display_label; // e.g., "Pacific US"
+   std::string_view iana_id;       // e.g., "America/Los_Angeles"
 };
 
-struct tzone_type tzone_table[MAX_TZONE] = {
-   {"GMT-12", "Eniwetok", -12, 0},
-   {"GMT-11", "Samoa", -11, 0},
-   {"GMT-10", "Hawaii", -10, 0},
-   {"GMT-9", "Alaska", -9, 0},
-   {"GMT-8", "Pacific US", -8, -7},
-   {"GMT-7", "Mountain US", -7, -6},
-   {"GMT-6", "Central US", -6, -5},
-   {"GMT-5", "Eastern US", -5, -4},
-   {"GMT-4", "Atlantic, Canada", -4, 0},
-   {"GMT-3", "Brazilia, Buenos Aries", -3, 0},
-   {"GMT-2", "Mid-Atlantic", -2, 0},
-   {"GMT-1", "Cape Verdes", -1, 0},
-   {"GMT", "Greenwich Mean Time, Greenwich", 0, 0},
-   {"GMT+1", "Berlin, Rome", 1, 0},
-   {"GMT+2", "Israel, Cairo", 2, 0},
-   {"GMT+3", "Moscow, Kuwait", 3, 0},
-   {"GMT+4", "Abu Dhabi, Muscat", 4, 0},
-   {"GMT+5", "Islamabad, Karachi", 5, 0},
-   {"GMT+6", "Almaty, Dhaka", 6, 0},
-   {"GMT+7", "Bangkok, Jakarta", 7, 0},
-   {"GMT+8", "Hong Kong, Beijing", 8, 0},
-   {"GMT+9", "Tokyo, Osaka", 9, 0},
-   {"GMT+10", "Sydney, Melbourne, Guam", 10, 0},
-   {"GMT+11", "Magadan, Soloman Is.", 11, 0},
-   {"GMT+12", "Fiji, Wellington, Auckland", 12, 0},
-};
+inline constexpr std::array<tzone_type, 25> tzone_table = {{
+   {"Eniwetok",             "Pacific/Kwajalein"},
+   {"Samoa",                "Pacific/Samoa"},
+   {"Hawaii",               "Pacific/Honolulu"},
+   {"Alaska",               "America/Anchorage"},
+   {"Pacific US",           "America/Los_Angeles"},
+   {"Mountain US",          "America/Denver"},
+   {"Central US",           "America/Chicago"},
+   {"Eastern US",           "America/New_York"},
+   {"Atlantic Canada",      "America/Halifax"},
+   {"Brazil/Argentina",     "America/Sao_Paulo"},
+   {"Mid-Atlantic",         "Atlantic/South_Georgia"},
+   {"Cape Verde",           "Atlantic/Cape_Verde"},
+   {"Greenwich Mean Time",  "Etc/GMT"},
+   {"Berlin, Rome",         "Europe/Berlin"},
+   {"Israel, Cairo",        "Africa/Cairo"},
+   {"Moscow, Kuwait",       "Europe/Moscow"},
+   {"Abu Dhabi, Muscat",    "Asia/Dubai"},
+   {"Islamabad, Karachi",   "Asia/Karachi"},
+   {"Almaty, Dhaka",        "Asia/Almaty"},
+   {"Bangkok, Jakarta",     "Asia/Bangkok"},
+   {"Hong Kong, Beijing",   "Asia/Shanghai"},
+   {"Tokyo, Osaka",         "Asia/Tokyo"},
+   {"Sydney, Melbourne",    "Australia/Sydney"},
+   {"Magadan, Solomon Is.", "Asia/Magadan"},
+   {"Fiji, Auckland",       "Pacific/Auckland"}
+}};
 
-int tzone_lookup( const string & arg )
+int tzone_lookup( const std::string & arg )
 {
-   int i;
-
-   for( i = 0; i < MAX_TZONE; ++i )
+   for( int i = 0; i < static_cast<int>( tzone_table.size() ); ++i )
    {
-      if( !str_cmp( arg, tzone_table[i].name ) )
+      if( !str_cmp( arg, tzone_table[i].display_label.data() ) )
          return i;
    }
 
-   for( i = 0; i < MAX_TZONE; ++i )
+   for( int i = 0; i < static_cast<int>( tzone_table.size() ); ++i )
    {
-      if( hasname( tzone_table[i].zone, arg ) )
+      if( hasname( tzone_table[i].iana_id.data(), arg ) )
          return i;
    }
    return -1;
@@ -106,11 +99,11 @@ CMDF( do_timezone )
 
    if( argument.empty(  ) )
    {
-      ch->printf( "%-6s %-30s (%s)\r\n", "Name", "City/Zone Crosses", "Time" );
+      ch->printf( "%-6s %-30s (%s)\r\n", "Name", "IANA Timezone Name", "Time" );
       ch->print( "-------------------------------------------------------------------------\r\n" );
-      for( i = 0; i < MAX_TZONE; ++i )
+      for( i = 0; i < static_cast<int>( tzone_table.size() ); ++i )
       {
-         ch->printf( "%-6s %-30s (%s)\r\n", tzone_table[i].name, tzone_table[i].zone, c_time( current_time, i ) );
+         ch->printf( "%-6s %-30s (%s)\r\n", tzone_table[i].display_label.data(), tzone_table[i].iana_id.data(), c_time( current_time, i ).c_str() );
       }
       ch->print( "-------------------------------------------------------------------------\r\n" );
       return;
@@ -125,96 +118,39 @@ CMDF( do_timezone )
    }
 
    ch->pcdata->timezone = i;
-   ch->printf( "Your time zone is now %s %s (%s)\r\n", tzone_table[i].name, tzone_table[i].zone, c_time( current_time, i ) );
+   ch->printf( "Your time zone is now %s %s (%s)\r\n", tzone_table[i].display_label.data(), tzone_table[i].iana_id.data(), c_time( current_time, i ).c_str() );
 }
 
-/* Ever so slightly modified version of "friendly_ctime" provided by Aurora.
+/*
+ * Ever so slightly modified version of "friendly_ctime" provided by Aurora.
  * Merged with the Timezone snippet by Ryan Jennings (Markanth) r-jenn@shaw.ca
  */
-char *c_time( time_t curtime, int tz )
+// Returns a localized time string based on an index from tzone_table.
+std::string c_time( std::chrono::system_clock::time_point curtime, int tz )
 {
-   static const char *day[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-   static const char *month[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-   static char strtime[128];
-   struct tm *ptime;
-   char tzonename[50];
+   // Select the time zone string.
+   auto zone_id = ( tz >= 0 && tz < static_cast<int>( tzone_table.size() ) ) ? tzone_table[tz].iana_id : "GMT";
 
-   if( curtime <= 0 )
-      curtime = current_time;
+   // Create a zoned_time object using the specified zone identifier
+   auto zt = std::chrono::zoned_time{ zone_id, curtime };
 
-   if( tz > -1 && tz < MAX_TZONE )
-   {
-      strlcpy( tzonename, tzone_table[tz].zone, 50 );
-#if defined(__CYGWIN__)
-      curtime += ( time_t ) timezone;
-#elif defined(__FreeBSD__) || defined(__OpenBSD__)
-      /*
-       * Hopefully this works 
-       */
-      ptime = localtime( &curtime );
-      curtime += ptime->tm_gmtoff;
-#else
-      curtime += timezone; /* timezone external variable in time.h holds the 
-                            * difference in seconds to GMT. */
-#endif
-      curtime += ( 60 * 60 * tzone_table[tz].gmt_offset );  /* Add the offset hours */
-   }
-   ptime = localtime( &curtime );
-   if( tz < 0 || tz >= MAX_TZONE )
-#if defined(__CYGWIN__) || defined(WIN32)
-      strlcpy( tzonename, tzname[ptime->tm_isdst], 50 );
-#else
-      strlcpy( tzonename, ptime->tm_zone, 50 );
-#endif
-
-   snprintf( strtime, 128, "%3s %3s %d, %d %d:%02d:%02d %cM %s",
-             day[ptime->tm_wday], month[ptime->tm_mon], ptime->tm_mday, ptime->tm_year + 1900,
-             ptime->tm_hour == 0 ? 12 : ptime->tm_hour > 12 ? ptime->tm_hour - 12 : ptime->tm_hour, ptime->tm_min, ptime->tm_sec, ptime->tm_hour < 12 ? 'A' : 'P', tzonename );
-   return strtime;
+   // Format: Sun Jan 01, 2026 12:00:00 PM UTC
+   // %I is 12-hour clock, %p is AM/PM, %Z is zone name.
+   return std::format( "{:%a %b %d, %Y %I:%M:%S %p} {}", zt, zone_id );
 }
 
-/* timeZone is not shown as it's a bit .. long.. but it is respected -- Xorith */
-char *mini_c_time( time_t curtime, int tz )
+// Returns a compact localized time string.
+std::string mini_c_time( std::chrono::system_clock::time_point curtime, int tz )
 {
-   static char strtime[128];
-   struct tm *ptime;
-   char tzonename[50];
+   // Select the time zone string.
+   auto zone_id = ( tz >= 0 && tz < static_cast<int>( tzone_table.size() ) ) ? tzone_table[tz].iana_id : "GMT";
 
-   if( curtime <= 0 )
-      curtime = current_time;
+   // Create a zoned_time object using the specified zone identifier
+   auto zt = std::chrono::zoned_time{ zone_id, curtime };
 
-   if( tz > -1 && tz < MAX_TZONE )
-   {
-      strlcpy( tzonename, tzone_table[tz].zone, 50 );
-#if defined(__CYGWIN__)
-      curtime += ( time_t ) timezone;
-#elif defined(__FreeBSD__) || defined(__OpenBSD__)
-      /*
-       * Hopefully this works 
-       */
-      ptime = localtime( &curtime );
-      curtime += ptime->tm_gmtoff;
-#else
-      curtime += timezone; /* timezone external variable in time.h holds the
-                            * difference in seconds to GMT. */
-#endif
-      curtime += ( 60 * 60 * tzone_table[tz].gmt_offset );  /* Add the offset hours */
-   }
-   ptime = localtime( &curtime );
-   if( tz < 0 || tz >= MAX_TZONE )
-#if defined(__CYGWIN__) || defined(WIN32)
-      strlcpy( tzonename, tzname[ptime->tm_isdst], 50 );
-#else
-      strlcpy( tzonename, ptime->tm_zone, 50 );
-#endif
-
-   int year = ptime->tm_year - 100;
-   if( year < 0 )
-      year = 100 + year;   // Fix negative years for < Y2K
-
-   snprintf( strtime, 128, "%02d/%02d/%02d %02d:%02d%c", ptime->tm_mon + 1, ptime->tm_mday, year,
-             ptime->tm_hour == 0 ? 12 : ptime->tm_hour > 12 ? ptime->tm_hour - 12 : ptime->tm_hour, ptime->tm_min, ptime->tm_hour < 12 ? 'A' : 'P' );
-   return strtime;
+   // Format: 05/30/26 12:00PM
+   // %m/%d/%y for date, %I:%M%p for 12hr time.
+   return std::format( "{:%a %b %d, %Y %I:%M:%S %p} %Z", zt );
 }
 
 /* Time values modified to Alsherok calendar - Samson 5-6-99 */
@@ -232,102 +168,6 @@ const char *month_name[] = {
 const char *season_name[] = {
    "spring", "summer", "fall", "winter"
 };
-
-/* Calling function must insure tstr buffer is large enough.
- * Returns the address of the buffer passed, allowing things like
- * this printf example: 123456secs = 1day 10hrs 17mins 36secs
- *   time_t tsecs = 123456;
- *   char   buff[ MSL ];
- *
- *   printf( "Duration is %s\n", duration( tsecs, buff ) );
- */
-const int DUR_SCMN = 60;
-const int DUR_MNHR = 60;
-const int DUR_HRDY = 24;
-const int DUR_DYWK = 7;
-#define DUR_ADDS( t )  ( (t) == 1 ? '\0' : 's' )
-
-char *sec_to_hms( time_t loctime, char *tstr )
-{
-   time_t t_rem;
-   int sc, mn, hr, dy, wk;
-   int sflg = 0;
-   char buff[MSL];
-
-   if( loctime < 1 )
-   {
-      strlcat( tstr, "no time at all", MSL );
-      return ( tstr );
-   }
-
-   sc = loctime % DUR_SCMN;
-   t_rem = loctime - sc;
-
-   if( t_rem > 0 )
-   {
-      t_rem /= DUR_SCMN;
-      mn = t_rem % DUR_MNHR;
-      t_rem -= mn;
-
-      if( t_rem > 0 )
-      {
-         t_rem /= DUR_MNHR;
-         hr = t_rem % DUR_HRDY;
-         t_rem -= hr;
-
-         if( t_rem > 0 )
-         {
-            t_rem /= DUR_HRDY;
-            dy = t_rem % DUR_DYWK;
-            t_rem -= dy;
-
-            if( t_rem > 0 )
-            {
-               wk = t_rem / DUR_DYWK;
-
-               if( wk )
-               {
-                  sflg = 1;
-                  snprintf( buff, MSL, "%d week%c", wk, DUR_ADDS( wk ) );
-                  strlcat( tstr, buff, MSL );
-               }
-            }
-            if( dy )
-            {
-               if( sflg == 1 )
-                  strlcat( tstr, " ", MSL );
-               sflg = 1;
-               snprintf( buff, MSL, "%d day%c", dy, DUR_ADDS( dy ) );
-               strlcat( tstr, buff, MSL );
-            }
-         }
-         if( hr )
-         {
-            if( sflg == 1 )
-               strlcat( tstr, " ", MSL );
-            sflg = 1;
-            snprintf( buff, MSL, "%d hour%c", hr, DUR_ADDS( hr ) );
-            strlcat( tstr, buff, MSL );
-         }
-      }
-      if( mn )
-      {
-         if( sflg == 1 )
-            strlcat( tstr, " ", MSL );
-         sflg = 1;
-         snprintf( buff, MSL, "%d minute%c", mn, DUR_ADDS( mn ) );
-         strlcat( tstr, buff, MSL );
-      }
-   }
-   if( sc )
-   {
-      if( sflg == 1 )
-         strlcat( tstr, " ", MSL );
-      snprintf( buff, MSL, "%d second%c", sc, DUR_ADDS( sc ) );
-      strlcat( tstr, buff, MSL );
-   }
-   return ( tstr );
-}
 
 /* Reads the actual time file from disk - Samson 1-21-99 */
 void fread_timedata( FILE * fp )
@@ -354,7 +194,11 @@ void fread_timedata( FILE * fp )
             break;
 
          case 'B':
-            KEY( "Boardtime", board_expire_time_t, fread_number( fp ) );
+            if( !str_cmp( word, "Boardtime" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               board_expire_time_t = std::chrono::system_clock::from_time_t( loaded_time );
+            }
             break;
 
          case 'E':
@@ -363,14 +207,19 @@ void fread_timedata( FILE * fp )
             break;
 
          case 'M':
-            KEY( "Mhour", time_info.hour, fread_number( fp ) );
-            KEY( "Mday", time_info.day, fread_number( fp ) );
-            KEY( "Mmonth", time_info.month, fread_number( fp ) );
-            KEY( "Myear", time_info.year, fread_number( fp ) );
+            KEY( "Mhour", time_info.hour, fread_long( fp ) );
+            KEY( "Mday", time_info.day, fread_long( fp ) );
+            KEY( "Mmonth", time_info.month, fread_long( fp ) );
+            KEY( "Myear", time_info.year, fread_long( fp ) );
             break;
 
          case 'P':
-            KEY( "Purgetime", new_pfile_time_t, fread_number( fp ) );
+            if( !str_cmp( word, "Purgetime") )
+            {
+               time_t loaded_time = fread_long( fp );
+               new_pfile_time_t = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             break;
       }
    }
@@ -379,7 +228,7 @@ void fread_timedata( FILE * fp )
 /* Load time information from saved file - Samson 1-21-99 */
 bool load_timedata( void )
 {
-   fs::path filename;
+   std::filesystem::path filename;
    FILE *fp;
    bool found;
 
@@ -431,7 +280,7 @@ bool load_timedata( void )
 void save_timedata( void )
 {
    FILE *fp;
-   fs::path filename;
+   std::filesystem::path filename;
 
    filename = std::format( "{}time.dat", SYSTEM_DIR );
 
@@ -442,13 +291,16 @@ void save_timedata( void )
    }
    else
    {
+      auto purgetime = std::chrono::system_clock::to_time_t( new_pfile_time_t );
+      auto boardtime = std::chrono::system_clock::to_time_t( board_expire_time_t );
+
       fprintf( fp, "%s", "#TIME\n" );
       fprintf( fp, "Mhour	%d\n", time_info.hour );
       fprintf( fp, "Mday	%d\n", time_info.day );
       fprintf( fp, "Mmonth	%d\n", time_info.month );
       fprintf( fp, "Myear	%d\n", time_info.year );
-      fprintf( fp, "Purgetime %ld\n", new_pfile_time_t );
-      fprintf( fp, "Boardtime %ld\n", board_expire_time_t );
+      fprintf( fp, "Purgetime %ld\n", purgetime );
+      fprintf( fp, "Boardtime %ld\n", boardtime );
       fprintf( fp, "%s", "End\n\n" );
       fprintf( fp, "%s", "#END\n" );
    }
@@ -458,7 +310,6 @@ void save_timedata( void )
 CMDF( do_time )
 {
    holiday_data *holiday;
-   char buf[MSL];
    const char *suf;
    short day;
 
@@ -466,7 +317,9 @@ CMDF( do_time )
    {
       time_t intime = atol( argument.c_str(  ) );
 
-      ch->printf( "&w%ld = &g%s\r\n", intime, mini_c_time( intime, ch->pcdata->timezone ) );
+      std::chrono::system_clock::time_point str_time = std::chrono::system_clock::from_time_t( intime );
+
+      ch->printf( "&w%ld = &g%s\r\n", intime, mini_c_time( str_time, ch->pcdata->timezone ).c_str() );
       return;
    }
 
@@ -489,9 +342,9 @@ CMDF( do_time )
                "The system time      : %s\r\n",
                ( time_info.hour % sysdata->hournoon == 0 ) ? sysdata->hournoon : time_info.hour % sysdata->hournoon,
                time_info.hour >= sysdata->hournoon ? "pm" : "am", day_name[( time_info.day ) % sysdata->daysperweek], day,
-               suf, month_name[time_info.month], season_name[time_info.season], time_info.year, str_boot_time, c_time( current_time, -1 ) );
+               suf, month_name[time_info.month], season_name[time_info.season], time_info.year, str_boot_time.c_str(), c_time( current_time, -1 ).c_str() );
 
-   ch->printf( "Your local time      : %s\r\n\r\n", c_time( current_time, ch->pcdata->timezone ) );
+   ch->printf( "Your local time      : %s\r\n\r\n", c_time( current_time, ch->pcdata->timezone ).c_str() );
    holiday = get_holiday( time_info.month, day - 1 );
 
    if( holiday != nullptr )
@@ -505,18 +358,16 @@ CMDF( do_time )
 
    if( ch->is_immortal(  ) && sysdata->CLEANPFILES == true )
    {
-      buf[0] = '\0';
+      std::string buf = std::format( "Next Pfile cleanup: {:%Y-%m-%d %H:%M:%S}\r\n", new_pfile_time_t );
 
-      sec_to_hms( new_pfile_time_t - current_time, buf );
-      ch->printf( "The next pfile cleanup is in %s.\r\n", buf );
+      ch->print( buf );
    }
 
    if( ch->is_immortal(  ) )
    {
-      buf[0] = '\0';
+      std::string buf = std::format( "Next rare items cleanup: {:%Y-%m-%d %H:%M:%S}\r\n", new_pfile_time_t );
 
-      sec_to_hms( new_pfile_time_t - current_time, buf );
-      ch->printf( "The next rare item update is in %s.\r\n", buf );
+      ch->print( buf );
    }
 }
 

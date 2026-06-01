@@ -35,10 +35,10 @@ struct event_info
 {
    void ( *callback ) ( void *data );
    void *data;
-   time_t when;
+   std::chrono::system_clock::time_point when;
 };
 
-void add_event( time_t, void ( *callback ) ( void * ), void * );
+void add_event( time_t when, void ( *callback ) ( void * ), void *data );
 void cancel_event( void ( *callback ) ( void * ), void * );
 event_info *find_event( void ( *callback ) ( void * ), void * );
 void ev_violence( void * );

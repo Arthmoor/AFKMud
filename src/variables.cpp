@@ -42,7 +42,7 @@ variable_data::variable_data( int vtype, int vvnum, const string& vtag )
    this->tag = vtag;
    this->c_time = current_time;
    this->m_time = current_time;
-   this->r_time = 0;
+   this->r_time = std::chrono::system_clock::time_point{};
    this->timer = 0;
    this->vardata = 0;
 }
@@ -498,16 +498,21 @@ void fwrite_variables( char_data * ch, FILE * fp )
    {
       variable_data *vd = *ivd;
 
+      auto vc_time = std::chrono::system_clock::to_time_t( vd->c_time );
+      auto vm_time = std::chrono::system_clock::to_time_t( vd->m_time );
+      auto vr_time = std::chrono::system_clock::to_time_t( vd->r_time );
+      auto expires = std::chrono::system_clock::to_time_t( vd->expires );
+
       fprintf( fp, "#VARIABLE\n" );
       fprintf( fp, "Type      %d\n", vd->type );
       fprintf( fp, "Tag       %s~\n", vd->tag.c_str() );
       fprintf( fp, "Varstring %s~\n", vd->varstring.c_str() );      
       fprintf( fp, "Flags     %lu\n", vd->varflags.to_ulong() );
       fprintf( fp, "Vardata   %ld\n", vd->vardata );
-      fprintf( fp, "Ctime     %ld\n", vd->c_time );
-      fprintf( fp, "Mtime     %ld\n", vd->m_time );
-      fprintf( fp, "Rtime     %ld\n", vd->r_time );
-      fprintf( fp, "Expires   %ld\n", vd->expires );
+      fprintf( fp, "Ctime     %ld\n", vc_time );
+      fprintf( fp, "Mtime     %ld\n", vm_time );
+      fprintf( fp, "Rtime     %ld\n", vr_time );
+      fprintf( fp, "Expires   %ld\n", expires );
       fprintf( fp, "Vnum      %d\n", vd->vnum );
       fprintf( fp, "Timer     %d\n", vd->timer );
       fprintf( fp, "%s", "End\n\n" );
@@ -540,11 +545,21 @@ void fread_variable( char_data * ch, FILE * fp )
             break;
 
          case 'C':
-            KEY( "Ctime", pvd->c_time, fread_long( fp ) );
+            if( !str_cmp( word, "Ctime") )
+            {
+               time_t loaded_time = fread_long( fp );
+               pvd->c_time = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             break;
 
          case 'E':
-            KEY( "Expires", pvd->expires, fread_long( fp ) );
+            if( !str_cmp( word, "Expires") )
+            {
+               time_t loaded_time = fread_long( fp );
+               pvd->expires = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             if( !str_cmp( word, "End" ) )
             {
                switch( pvd->type )
@@ -600,11 +615,21 @@ void fread_variable( char_data * ch, FILE * fp )
             break;
 
          case 'M':
-            KEY( "Mtime", pvd->m_time, fread_long( fp ) );
+            if( !str_cmp( word, "Mtime") )
+            {
+               time_t loaded_time = fread_long( fp );
+               pvd->m_time = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             break;
 
          case 'R':
-            KEY( "Rtime", pvd->r_time, fread_long( fp ) );
+            if( !str_cmp( word, "Rtime") )
+            {
+               time_t loaded_time = fread_long( fp );
+               pvd->r_time = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             break;
 
          case 'S':

@@ -39,7 +39,6 @@
 #include <cxxabi.h>
 #endif
 
-#include <chrono>
 #include <cmath>
 #include <cstdarg>
 #include <filesystem>
@@ -66,7 +65,8 @@
  #include "sql.h"
 #endif
 
-namespace fs = std::filesystem;
+// This will seed the random number generator once during startup. I guess it's magic code :P
+std::mt19937 global_rng( static_cast<unsigned int>( current_time.time_since_epoch().count() ) );
 
 /*
  * Change this alarm timer to whatever you think is appropriate.
@@ -215,10 +215,9 @@ void shutdown_mud( const string & reason )
    }
 }
 
-// FIXME: Remove this when all uses are using std::filesystem instead.
 bool exists_file( const string & name )
 {
-   fs::path filename = name;
+   std::filesystem::path filename = name;
 
    /*
     * Stands to reason that if there ain't a name to look at, it damn well don't exist! 
@@ -226,7 +225,7 @@ bool exists_file( const string & name )
    if( name.empty(  ) )
       return false;
 
-   if( fs::exists( filename ) )
+   if( std::filesystem::exists( filename ) )
       return true;
    else
       return false;
@@ -234,7 +233,7 @@ bool exists_file( const string & name )
 
 bool is_valid_filename( char_data * ch, const string & direct, const string & filename )
 {
-   fs::path newfilename;
+   std::filesystem::path newfilename;
 
    /*
     * Length restrictions 
@@ -261,7 +260,7 @@ bool is_valid_filename( char_data * ch, const string & direct, const string & fi
     * If that filename is already being used lets not allow it now to be on the safe side 
     */
    newfilename = std::format( "{}{}", direct, filename );
-   if( fs::exists( newfilename ) )
+   if( std::filesystem::exists( newfilename ) )
    {
       ch->printf( "%s is already an existing filename.\r\n", newfilename.c_str() );
       return false;
@@ -908,14 +907,14 @@ void boot_log( const char *str, ... )
  */
 void load_buildlist( void )
 {
-   if( !fs::exists( BUILD_DIR ) || !fs::is_directory( BUILD_DIR ) )
+   if( !std::filesystem::exists( BUILD_DIR ) || !std::filesystem::is_directory( BUILD_DIR ) )
    {
       // This should be treated as fatal.
       bug( "%s: Builder directory is missing!", __func__ );
       exit( 1 );
    }
 
-   for( const auto& entry : fs::directory_iterator( BUILD_DIR ) )
+   for( const auto& entry : std::filesystem::directory_iterator( BUILD_DIR ) )
    {
       std::string filename = entry.path().filename().string();
 
@@ -926,7 +925,7 @@ void load_buildlist( void )
       if( filename.find( ".bak" ) != std::string::npos )
          continue;
 
-      fs::path full_path = fs::path( BUILD_DIR ) / filename;
+      std::filesystem::path full_path = std::filesystem::path( BUILD_DIR ) / filename;
 
       strlcpy( strArea, filename.c_str(), MIL );
       set_alarm( AREA_FILE_ALARM );
@@ -943,7 +942,7 @@ const int SYSFILEVER = 1;
 void save_sysdata( void )
 {
    FILE *fp;
-   fs::path filename;
+   std::filesystem::path filename;
 
    filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
 
@@ -954,6 +953,9 @@ void save_sysdata( void )
    }
    else
    {
+      auto motd = std::chrono::system_clock::to_time_t( sysdata->motd );
+      auto imotd = std::chrono::system_clock::to_time_t( sysdata->imotd );
+
       fprintf( fp, "%s", "#SYSTEM\n" );
       fprintf( fp, "Version        %d\n", SYSFILEVER );
       fprintf( fp, "MudName        %s~\n", sysdata->mud_name.c_str(  ) );
@@ -991,7 +993,7 @@ void save_sysdata( void )
       fprintf( fp, "Dammobvsmob    %d\n", sysdata->dam_mob_vs_mob );
       fprintf( fp, "Forcepc        %d\n", sysdata->level_forcepc );
       fprintf( fp, "Saveflags      %s~\n", bitset_string( sysdata->save_flags, save_flag ) );
-      fprintf( fp, "Savefreq       %d\n", sysdata->save_frequency );
+      fprintf( fp, "Savefreq       %ld\n", sysdata->save_frequency.count() );
       fprintf( fp, "Bestowdif      %d\n", sysdata->bestow_dif );
       fprintf( fp, "PetSave        %d\n", sysdata->save_pets );
       fprintf( fp, "Wizlock        %d\n", sysdata->WIZLOCK );
@@ -1003,8 +1005,8 @@ void save_sysdata( void )
       fprintf( fp, "Autopurge      %d\n", sysdata->CLEANPFILES );
       fprintf( fp, "Testmode       %d\n", sysdata->TESTINGMODE );
       fprintf( fp, "Mapsize        %d\n", sysdata->mapsize );
-      fprintf( fp, "Motd           %ld\n", sysdata->motd );
-      fprintf( fp, "Imotd          %ld\n", sysdata->imotd );
+      fprintf( fp, "Motd           %ld\n", motd );
+      fprintf( fp, "Imotd          %ld\n", imotd );
       fprintf( fp, "Telnet         %s~\n", sysdata->telnet.c_str(  ) );
       fprintf( fp, "HTTP           %s~\n", sysdata->http.c_str(  ) );
       fprintf( fp, "Maxvnum        %d\n", sysdata->maxvnum );
@@ -1117,7 +1119,12 @@ void fread_sysdata( FILE * fp )
             break;
 
          case 'I':
-            KEY( "Imotd", sysdata->imotd, fread_number( fp ) );
+            if( !str_cmp( word, "Imotd" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               sysdata->imotd = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             KEY( "Implock", sysdata->IMPLOCK, fread_number( fp ) );
             KEY( "Initcond", sysdata->initcond, fread_number( fp ) );
             break;
@@ -1128,7 +1135,12 @@ void fread_sysdata( FILE * fp )
 
          case 'M':
             KEY( "Mapsize", sysdata->mapsize, fread_number( fp ) );
-            KEY( "Motd", sysdata->motd, fread_number( fp ) );
+            if( !str_cmp( word, "Motd" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               sysdata->motd = std::chrono::system_clock::from_time_t( loaded_time );
+               break;
+            }
             KEY( "Msetplayer", sysdata->level_mset_player, fread_number( fp ) );
             STDSKEY( "MudName", sysdata->mud_name );
             KEY( "Maxvnum", sysdata->maxvnum, fread_number( fp ) );
@@ -1176,7 +1188,12 @@ void fread_sysdata( FILE * fp )
                   flag_set( fp, sysdata->save_flags, save_flag );
                break;
             }
-            KEY( "Savefreq", sysdata->save_frequency, fread_number( fp ) );
+            if( !str_cmp( word, "Savefreq" ) )
+            {
+               int freq = fread_long( fp );
+               sysdata->save_frequency = std::chrono::minutes( freq );
+               break;
+            }
             KEY( "Secpertick", sysdata->secpertick, fread_number( fp ) );
             break;
 
@@ -1206,7 +1223,7 @@ void fread_sysdata( FILE * fp )
  */
 bool load_systemdata( void )
 {
-   fs::path filename;
+   std::filesystem::path filename;
    FILE *fp;
    bool found;
 
@@ -1358,7 +1375,7 @@ void make_wizlist( )
    wizlist.clear();
 
    // Walk the file list in GOD_DIR.
-   for( const auto& entry : fs::directory_iterator( GOD_DIR ) )
+   for( const auto& entry : std::filesystem::directory_iterator( GOD_DIR ) )
    {
       // An actual file entry and not another folder.
       if( entry.is_regular_file( ) )
@@ -1443,10 +1460,13 @@ void boot_db( bool fCopyOver )
    short x;
 
    fpArea = nullptr;
-   fs::remove( BOOTLOG_FILE );
+   std::filesystem::remove( BOOTLOG_FILE );
    boot_log( "%s", "---------------------[ Boot Log: Start ]--------------------" );
    log_string( "Database bootup starting." );
    fBootDb = true;   /* Supposed to help with EOF bugs, so it got moved up */
+
+   // This is purely informational with the global definition at the top of the file. It initialize before getting this far.
+   log_string( "Initializing random number generator." );
 
    log_string( "Loading sysdata configuration..." );
 
@@ -1475,7 +1495,7 @@ void boot_db( bool fCopyOver )
    sysdata->dam_mob_vs_plr = 100;
    sysdata->dam_mob_vs_mob = 100;
    sysdata->level_getobjnotake = LEVEL_GREATER;
-   sysdata->save_frequency = 20; /* minutes */
+   sysdata->save_frequency = std::chrono::minutes( 20 );
    sysdata->bestow_dif = 5;
    sysdata->check_imm_host = 1;
    sysdata->save_pets = 1;
@@ -1537,8 +1557,8 @@ void boot_db( bool fCopyOver )
 #endif
 
    log_string( "Verifying existence of login greeting..." );
-   fs::path lbuf = std::format( "{}greeting.dat", MOTD_DIR );
-   if( !fs::exists( lbuf ) )
+   std::filesystem::path lbuf = std::format( "{}greeting.dat", MOTD_DIR );
+   if( !std::filesystem::exists( lbuf ) )
    {
       bug( "%s: Login greeting not found!", __func__ );
       shutdown_mud( "Missing login greeting" );
@@ -1631,27 +1651,26 @@ void boot_db( bool fCopyOver )
          save_equipment[wear][x] = nullptr;
 
    /*
-    * Init random number generator.
-    */
-   log_string( "Initializing random number generator" );
-   srand( current_time );
-
-   /*
     * Set time and weather.
     */
    {
-      long lhour, lday, lmonth;
-
-      log_string( "Setting time and weather" );
+      log_string( "Setting time and weather." );
 
       if( !load_timedata(  ) )   /* Loads time from stored file if true - Samson 1-21-99 */
       {
          boot_log( "%s", "Resetting mud time based on current system time." );
-         lhour = ( current_time - 650336715 ) / ( sysdata->pulsetick / sysdata->pulsepersec );
+
+         auto duration = current_time.time_since_epoch();
+         long long total_seconds = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+
+         const long long MUD_EPOCH_OFFSET = 650336715;
+         long long tick_duration = sysdata->pulsetick / sysdata->pulsepersec;
+         long long lhour = ( total_seconds - MUD_EPOCH_OFFSET ) / tick_duration;
+
          time_info.hour = lhour % sysdata->hoursperday;
-         lday = lhour / sysdata->hoursperday;
+         long long lday = lhour / sysdata->hoursperday;
          time_info.day = lday % sysdata->dayspermonth;
-         lmonth = lday / sysdata->dayspermonth;
+         long long lmonth = lday / sysdata->dayspermonth;
          time_info.month = lmonth % sysdata->monthsperyear;
          time_info.year = lmonth / sysdata->monthsperyear;
       }
@@ -1877,13 +1896,8 @@ void boot_db( bool fCopyOver )
    /*
     * Initialize pruning events 
     */
-   time_t ptime = new_pfile_time_t - current_time;
-   if( ptime < 1 )
-      ptime = 1;
-   add_event( ptime, ev_pfile_check, nullptr );
-
+   add_event( 86400, ev_pfile_check, nullptr );
    add_event( 86400, ev_board_check, nullptr );
-
    add_event( 1, ev_dns_check, nullptr );
 
    log_string( "Database bootup completed." );
@@ -1957,22 +1971,30 @@ int number_fuzzy( int number )
  * Generate a random number.
  * Ooops was (number_mm() % to) + from which doesn't work -Shaddai
  * Changed to use rand() directly, since the system random is just fine. - Samson
+ * Many years later, updated to use the new RNG system. - Samson 5/31/2026
  */
 int number_range( int from, int to )
 {
-   if( ( to - from ) < 1 )
+   if( from > to )
+      std::swap( from, to );
+   if( from == to )
       return from;
-   return ( ( rand(  ) % ( to - from + 1 ) ) + from );
+
+   static std::uniform_int_distribution<int> dist;
+   using param_t = std::uniform_int_distribution<int>::param_type;
+   return dist( global_rng, param_t( from, to ) );
 }
 
 /*
  * Generate a percentile roll.
  * number_mm() % 100 only does 0-99, changed to do 1-100 -Shaddai
  * Changed to use rand() directly, since the system random is just fine. - Samson
+ * Many years later, updated to use the new RNG system. - Samson 5/31/2026
  */
 int number_percent( void )
 {
-   return ( rand(  ) % 100 ) + 1;
+   static std::uniform_int_distribution<int> dist( 1, 100 );
+   return dist( global_rng );
 }
 
 /*
@@ -1980,17 +2002,15 @@ int number_percent( void )
  */
 int number_door( void )
 {
-   int door;
-
-   while( ( door = rand(  ) & ( 16 - 1 ) ) > 9 )
-      ;
-
-   return door;
+   // Replaces: rand() & (16 - 1) > 9
+   // This is effectively a 0-9 range
+   return number_range( 0, 9 );
 }
 
 int number_bits( int width )
 {
-   return rand(  ) & ( ( 1 << width ) - 1 );
+   // Generates a value in range [0, 2^width - 1]
+   return number_range( 0, (1 << width) - 1 );
 }
 
 /*
@@ -1998,21 +2018,21 @@ int number_bits( int width )
  */
 int dice( int number, int size )
 {
-   if( size == 0 )
+   if( size <= 0 )
       return 0;
+
    if( size == 1 )
       return number;
 
-   int idice, sum;
-   for( idice = 0, sum = 0; idice < number; ++idice )
+   int sum = 0;
+   for( int i = 0; i < number; ++i )
       sum += number_range( 1, size );
-
    return sum;
 }
 
 CMDF( do_randtest )
 {
-   ch->printf( "Uterly random number    : %d\r\n", rand(  ) );
+   ch->printf( "Uterly random number    : %lu\r\n", global_rng( ) );
    ch->printf( "number_range 4350 - 4449: %d\r\n", number_range( 4350, 4449 ) );
    ch->printf( "number_percent          : %d\r\n", number_percent(  ) );
    ch->printf( "number_door             : %d\r\n", number_door(  ) );
@@ -2205,8 +2225,7 @@ void bug( const char *str, ... )
  */
 void log_string_plus( short log_type, short level, const string & str )
 {
-   auto now = std::chrono::system_clock::now();
-   auto seconds_only = std::chrono::floor<std::chrono::seconds>(now);
+   auto seconds_only = std::chrono::floor<std::chrono::seconds>( current_time );
    auto local_time = std::chrono::zoned_time{ std::chrono::current_zone(), seconds_only };
 
    std::string timestamp = std::format( "{0:%F %T}", local_time );

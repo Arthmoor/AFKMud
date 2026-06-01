@@ -38,8 +38,6 @@
 #include "roomindex.h"
 #include "shops.h"
 
-namespace fs = std::filesystem;
-
 list < clan_data * >clanlist;
 
 void save_shop( char_data * );
@@ -174,7 +172,7 @@ clan_data *get_clan( const string & name )
 void save_clan_storeroom( char_data * ch, clan_data * clan )
 {
    FILE *fp;
-   fs::path filename;
+   std::filesystem::path filename;
    short templvl;
 
    if( !clan )
@@ -272,7 +270,7 @@ void delete_clan( char_data * ch, clan_data * clan )
    list < char_data * >::iterator ich;
    room_index *room = nullptr;
    mob_index *mob = nullptr;
-   fs::path filename, storeroom, record;
+   std::filesystem::path filename, storeroom, record;
    string clanname = clan->name;
 
    filename = clan->filename;
@@ -294,7 +292,7 @@ void delete_clan( char_data * ch, clan_data * clan )
       }
    }
 
-   if( fs::remove( record ) )
+   if( std::filesystem::remove( record ) )
    {
       if( !ch )
          log_string( "Clan Pkill record file destroyed." );
@@ -309,7 +307,7 @@ void delete_clan( char_data * ch, clan_data * clan )
       if( room )
       {
          room->flags.reset( ROOM_CLANSTOREROOM );
-         if( fs::remove( storeroom ) )
+         if( std::filesystem::remove( storeroom ) )
          {
             if( !ch )
                log_string( "Clan storeroom file destroyed." );
@@ -343,7 +341,7 @@ void delete_clan( char_data * ch, clan_data * clan )
 
       if( mob )
       {
-         fs::path aucfile;
+         std::filesystem::path aucfile;
 
          mob->actflags.reset( ACT_GUILDAUC );
 
@@ -358,7 +356,7 @@ void delete_clan( char_data * ch, clan_data * clan )
             }
          }
          aucfile = std::format( "{}{}", AUC_DIR, mob->short_descr );
-         if( fs::remove( aucfile ) )
+         if( std::filesystem::remove( aucfile ) )
          {
             if( !ch )
                log_string( "Clan auction house file destroyed." );
@@ -374,7 +372,7 @@ void delete_clan( char_data * ch, clan_data * clan )
 
       if( mob )
       {
-         fs::path shopfile;
+         std::filesystem::path shopfile;
 
          mob->actflags.reset( ACT_GUILDVENDOR );
 
@@ -386,7 +384,7 @@ void delete_clan( char_data * ch, clan_data * clan )
                vch->unset_actflag( ACT_GUILDVENDOR );
          }
          shopfile = std::format( "{}{}", SHOP_DIR, mob->short_descr );
-         if( fs::remove( shopfile ) )
+         if( std::filesystem::remove( shopfile ) )
          {
             if( !ch )
                log_string( "Clan shop file destroyed." );
@@ -401,12 +399,12 @@ void delete_clan( char_data * ch, clan_data * clan )
 
    if( !ch )
    {
-      if( fs::remove( filename ) )
+      if( std::filesystem::remove( filename ) )
          log_printf( "Clan data for %s destroyed - no members left.", clanname.c_str(  ) );
       return;
    }
 
-   if( fs::remove( filename ) )
+   if( std::filesystem::remove( filename ) )
    {
       ch->printf( "&RClan data for %s has been destroyed.\r\n", clanname.c_str(  ) );
       log_printf( "Clan data for %s has been destroyed by %s.", clanname.c_str(  ), ch->name );
@@ -417,7 +415,7 @@ void write_clan_list( void )
 {
    list < clan_data * >::iterator cl;
    FILE *fpout;
-   fs::path filename;
+   std::filesystem::path filename;
 
    filename = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
    fpout = fopen( filename.c_str(), "w" );
@@ -445,9 +443,11 @@ void fwrite_memberlist( FILE * fp, clan_data * clan )
    {
       roster_data *member = *mem;
 
+      auto joined = std::chrono::system_clock::to_time_t( member->joined );
+
       fprintf( fp, "%s", "#ROSTER\n" );
       fprintf( fp, "Name      %s~\n", member->name.c_str(  ) );
-      fprintf( fp, "Joined    %ld\n", member->joined );
+      fprintf( fp, "Joined    %ld\n", joined );
       fprintf( fp, "Class     %s~\n", npc_class[member->Class] );
       fprintf( fp, "Level     %d\n", member->level );
       fprintf( fp, "Kills     %d\n", member->kills );
@@ -505,7 +505,11 @@ void fread_memberlist( clan_data * clan, FILE * fp )
             break;
 
          case 'J':
-            KEY( "Joined", roster->joined, fread_long( fp ) );
+            if( !str_cmp( word, "Joined" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+               roster->joined = std::chrono::system_clock::from_time_t( loaded_time );
+            }
             break;
 
          case 'K':
@@ -533,7 +537,7 @@ const int CLAN_VERSION = 1;
 void save_clan( clan_data * clan )
 {
    FILE *fp;
-   fs::path filename;
+   std::filesystem::path filename;
 
    if( !clan )
    {
@@ -853,7 +857,7 @@ void clean_clan( clan_data * clan )
  */
 bool load_clan_file( const char *clanfile )
 {
-   fs::path filename;
+   std::filesystem::path filename;
    clan_data *clan;
    FILE *fp;
    bool found;
@@ -1131,7 +1135,7 @@ void load_clans( void )
 {
    FILE *fpList;
    const char *filename;
-   fs::path clanlistfile;
+   std::filesystem::path clanlistfile;
 
    clanlist.clear(  );
 
@@ -2160,13 +2164,13 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "filename" ) )
    {
-      fs::path filename;
+      std::filesystem::path filename;
 
       if( !is_valid_filename( ch, CLAN_DIR, argument ) )
          return;
 
       filename = std::format( "{}{}", CLAN_DIR, clan->filename );
-      if( fs::remove( filename ) )
+      if( std::filesystem::remove( filename ) )
          ch->print( "Old clan file deleted.\r\n" );
 
       clan->filename = argument;
@@ -2298,7 +2302,7 @@ CMDF( do_showclan )
 CMDF( do_makeclan )
 {
    string arg, arg2;
-   fs::path filename;
+   std::filesystem::path filename;
    clan_data *clan;
    roster_data *member;
    char_data *victim;
@@ -2405,7 +2409,7 @@ CMDF( do_roster )
 
          ch->printf( "%-15.15s  %-15.15s %-6d %-6d %-6d %s\r\n",
                      member->name.c_str(  ), capitalize( npc_class[member->Class] ), member->level, member->kills, member->deaths,
-                     c_time( member->joined, ch->pcdata->timezone ) );
+                     c_time( member->joined, ch->pcdata->timezone ).c_str() );
          ++total;
       }
       ch->printf( "\r\nThere are %d member%s in %s\r\n", total, total == 1 ? "" : "s", clan->name.c_str(  ) );
@@ -2523,7 +2527,7 @@ CMDF( do_guilds )
 
 CMDF( do_defeats )
 {
-   fs::path filename;
+   std::filesystem::path filename;
 
    if( ch->isnpc() || !ch->pcdata->clan )
    {
@@ -2561,7 +2565,7 @@ CMDF( do_defeats )
 
 CMDF( do_victories )
 {
-   fs::path filename;
+   std::filesystem::path filename;
 
    if( ch->isnpc(  ) || !ch->pcdata->clan )
    {

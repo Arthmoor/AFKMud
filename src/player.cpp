@@ -29,8 +29,8 @@
  *                      Created by Samson of Alsherok                       *
  ****************************************************************************/
 
+#include <filesystem>
 #include <sstream>
-#include <sys/stat.h>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -52,18 +52,15 @@ extern int num_logins;
 
 bool exists_player( const string & name )
 {
-   struct stat fst;
-   char buf[256];
-
    /*
     * Stands to reason that if there ain't a name to look at, they damn well don't exist! 
     */
    if( name.empty(  ) )
       return false;
 
-   snprintf( buf, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ).c_str(  ) );
+   std::filesystem::path buf = std::format( "{}{}/{}", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
 
-   if( stat( buf, &fst ) != -1 )
+   if( std::filesystem::exists( buf ) )
       return true;
 
    else if( supermob->get_char_world( name ) != nullptr )
@@ -1396,7 +1393,7 @@ CMDF( do_who )
 
    ch->pagerf( "%s[%sHomepage: %s%s] [%s%d Max since reboot%s]\r\n", s3, s2, sysdata->http.c_str(  ), s3, s2, sysdata->maxplayers, s3 );
 
-   ch->pagerf( "%s[%s%d login%s since last reboot on %s%s]\r\n", s3, s2, num_logins, num_logins == 1 ? "" : "s", str_boot_time, s3 );
+   ch->pagerf( "%s[%s%d login%s since last reboot on %s%s]\r\n", s3, s2, num_logins, num_logins == 1 ? "" : "s", str_boot_time.c_str(), s3 );
 }
 
 /*
@@ -1888,7 +1885,8 @@ CMDF( do_attrib )
       ch->printf( "%sYour birthday is: %sDay of %s, %d%s day in the Month of %s, in the year %d.\r\n",
                   s2, s1, day_name[ch->pcdata->day % sysdata->daysperweek], day, suf, month_name[ch->pcdata->month], ch->pcdata->year );
 
-   ch->printf( "%sYou have played for %s%ld %shours.\r\n", s2, s3, ch->time_played( ), s1 );
+   std::string time_played = std::format( "{}", ch->time_played( ) );
+   ch->printf( "%sYou have played for %s%s %shours.\r\n", s2, s3, time_played.c_str(), s1 );
 
    if( ch->pcdata->deity )
       ch->printf( "%sYou have devoted to %s%s.\r\n", s2, s3, ch->pcdata->deity->name.c_str(  ) );
@@ -1906,9 +1904,11 @@ CMDF( do_attrib )
    }
    ch->print( "\r\n\r\n" );
 
-   ch->printf( "%sLogin: %s%s\r\n", s2, s3, c_time( ch->pcdata->logon, ch->pcdata->timezone ) );
-   ch->printf( "%sSaved: %s%s\r\n", s2, s3, ch->pcdata->save_time ? c_time( ch->pcdata->save_time, ch->pcdata->timezone ) : "no save this session" );
-   ch->printf( "%sTime : %s%s\r", s2, s3, c_time( current_time, ch->pcdata->timezone ) );
+   ch->printf( "%sLogin: %s%s\r\n", s2, s3, c_time( ch->pcdata->logon, ch->pcdata->timezone ).c_str() );
+
+   std::string save_time = std::format( "{}", ch->pcdata->save_time );
+   ch->printf( "%sSaved: %s%s\r\n", s2, s3, !save_time.empty() ? c_time( ch->pcdata->save_time, ch->pcdata->timezone ).c_str() : "no save this session" );
+   ch->printf( "%sTime : %s%s\r", s2, s3, c_time( current_time, ch->pcdata->timezone ).c_str() );
 
    ch->printf( "\r\n%sMKills : %s%d\r\n", s2, s3, ch->pcdata->mkills );
    ch->printf( "%sMDeaths: %s%d\r\n\r\n", s2, s3, ch->pcdata->mdeaths );

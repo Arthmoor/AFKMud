@@ -49,10 +49,10 @@ struct variable_data
    string varstring; // String data
    bitset < MAX_VAR_BITS > varflags;
    long vardata;     // long int value
-   time_t c_time;    // Time created
-   time_t m_time;    // Time last modified
-   time_t r_time;    // Time last read
-   time_t expires;   // Expiry date
+   std::chrono::system_clock::time_point c_time;    // Time created
+   std::chrono::system_clock::time_point m_time;    // Time last modified
+   std::chrono::system_clock::time_point r_time;    // Time last read
+   std::chrono::system_clock::time_point expires;   // Expiry date
    int type;         // Variable type (string = 1, long int = 2, bits = 3)
    int vnum;         // Vnum of mob that set this
    int timer;        // Expiry timer

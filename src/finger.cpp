@@ -291,7 +291,7 @@ CMDF( do_finger )
       ch->printf( "&wHomepage: &G%s\r\n", !victim->pcdata->homepage.empty(  )? show_tilde( victim->pcdata->homepage ).c_str(  ) : "Not specified" );
       ch->printf( "&wEmail   : &G%s\r\n", !victim->pcdata->email.empty(  )? victim->pcdata->email.c_str(  ) : "Not specified" );
       if( !loaded )
-         ch->printf( "&wLast on : &G%s\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone ) );
+         ch->printf( "&wLast on : &G%s\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone ).c_str() );
       else
          ch->printf( "&wLast on : &G%s\r\n", time_str.c_str() );
       if( ch->is_immortal(  ) )
@@ -302,7 +302,10 @@ CMDF( do_finger )
          ch->printf( "&wHost Info     : &G%s\r\n", victim->pcdata->lasthost.c_str(  ) );
          ch->printf( "&wIP Info       : &G%s\r\n", victim->desc ? victim->desc->ipaddress.c_str() : "Unknown" );
          ch->printf( "&wPrev IP Info  : &G%s\r\n", victim->pcdata->prevhost.c_str(  ) );
-         ch->printf( "&wTime played   : &G%ld hours\r\n", victim->time_played( ) );
+
+         std::string time_played = std::format( "{}", victim->time_played( ) );
+         ch->printf( "&wTime played   : &G%s hours\r\n", time_played.c_str() );
+
          ch->printf( "&wAuthorized by : &G%s\r\n",
                      !victim->pcdata->authed_by.empty(  ) ? victim->pcdata->authed_by.c_str(  ) : ( sysdata->WAIT_FOR_AUTH ? "Not Authed" : "The Code" ) );
          ch->printf( "&wPrivacy Status: &G%s\r\n", victim->has_pcflag( PCFLAG_PRIVACY ) ? "Enabled" : "Disabled" );

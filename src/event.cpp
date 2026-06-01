@@ -43,12 +43,10 @@ void free_event( event_info * e )
 
 void free_all_events( void )
 {
-   list < event_info * >::iterator e;
-
-   for( e = eventlist.begin(  ); e != eventlist.end(  ); )
+   for( auto it = eventlist.begin(  ); it != eventlist.end(  ); )
    {
-      event_info *ev = *e;
-      ++e;
+      event_info *ev = *it;
+      ++it;
 
       free_event( ev );
    }
@@ -56,20 +54,19 @@ void free_all_events( void )
 
 void add_event( time_t when, void ( *callback ) ( void * ), void *data )
 {
-   event_info *e;
-   list < event_info * >::iterator cur;
+   event_info *e = new event_info;
 
-   e = new event_info;
-
-   e->when = current_time + when;
+   e->when = current_time + std::chrono::seconds( when );
    e->callback = callback;
    e->data = data;
 
-   for( cur = eventlist.begin(  ); cur != eventlist.end(  ); ++cur )
+   for( auto it = eventlist.begin(); it != eventlist.end(); ++it )
    {
-      if( ( *cur )->when > e->when )
+      event_info *cur = *it;
+
+      if( cur->when > e->when )
       {
-         eventlist.insert( cur, e );
+         eventlist.insert( it, e );
          return;
       }
    }
@@ -78,12 +75,10 @@ void add_event( time_t when, void ( *callback ) ( void * ), void *data )
 
 void cancel_event( void ( *callback ) ( void * ), void *data )
 {
-   list < event_info * >::iterator e;
-
-   for( e = eventlist.begin(  ); e != eventlist.end(  ); )
+   for( auto it = eventlist.begin(  ); it != eventlist.end(  ); )
    {
-      event_info *ev = *e;
-      ++e;
+      event_info *ev = *it;
+      ++it;
 
       if( ( !callback ) && ev->data == data )
          free_event( ev );
@@ -98,56 +93,38 @@ void cancel_event( void ( *callback ) ( void * ), void *data )
 
 event_info *find_event( void ( *callback ) ( void * ), void *data )
 {
-   list < event_info * >::iterator e;
-
-   for( e = eventlist.begin(  ); e != eventlist.end(  ); ++e )
+   for( auto* ev : eventlist )
    {
-      event_info *ev = *e;
-
       if( ev->callback == callback && ev->data == data )
          return ev;
    }
    return nullptr;
 }
 
-time_t next_event( void ( *callback ) ( void * ), void *data )
+void run_events( std::chrono::system_clock::time_point newtime )
 {
-   list < event_info * >::iterator e;
-
-   for( e = eventlist.begin(  ); e != eventlist.end(  ); ++e )
-   {
-      event_info *ev = *e;
-
-      if( ev->callback == callback && ev->data == data )
-         return ev->when - current_time;
-   }
-   return -1;
-}
-
-void run_events( time_t newtime )
-{
-   event_info *e;
-   void ( *callback ) ( void * );
-   void *data;
-
    while( !eventlist.empty(  ) )
    {
-      e = ( *eventlist.begin(  ) );
+      event_info *e = eventlist.front();
 
       if( e->when > newtime )
          break;
 
-      callback = e->callback;
-      data = e->data;
+      auto callback = e->callback;
+      void *data = e->data;
+
+      // Temporarily changed in case the callback function needs to know if the event matches current real world time.
       current_time = e->when;
 
-      free_event( e );
+      eventlist.pop_front();
       ++events_served;
 
       if( callback )
-         ( *callback ) ( data );
+         callback ( data );
       else
          bug( "%s: nullptr callback", __func__ );
+
+      deleteptr (e );
    }
    current_time = newtime;
 }

@@ -91,7 +91,7 @@ race_type *race_table[MAX_RACE];
 char *title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
 int MAX_PC_CLASS;
 int MAX_PC_RACE;
-time_t last_restore_all_time = 0;
+std::chrono::system_clock::time_point last_restore_all_time;
 
 /* Used to check and see if you should be using a command on a certain person - Samson 5-1-04 */
 char_data *get_wizvictim( char_data * ch, const string & argument, bool nonpc )
@@ -546,7 +546,7 @@ void transfer_char( char_data * ch, char_data * victim, room_index * location )
    if( !ch->can_see( victim, true ) )
       return;
 
-   if( ch->isnpc(  ) && !victim->isnpc(  ) && victim->pcdata->release_date != 0 )
+   if( ch->isnpc(  ) && !victim->isnpc(  ) && victim->pcdata->release_date != std::chrono::system_clock::time_point{} )
    {
       progbugf( ch, "Mptransfer - helled character (%s)", victim->name );
       return;
@@ -3704,7 +3704,7 @@ CMDF( do_strip )
       ch->pager( "&GNothing found to take.\r\n" );
 }
 
-const int RESTORE_INTERVAL = 21600;
+inline constexpr auto RESTORE_INTERVAL = std::chrono::hours(18);
 CMDF( do_restore )
 {
    deity_data *deity = nullptr;
@@ -3828,34 +3828,40 @@ CMDF( do_restore )
 
 CMDF( do_restoretime )
 {
-   long int time_passed;
-   int hour, minute;
-
    ch->set_color( AT_IMMORT );
 
-   if( !last_restore_all_time )
+   if( last_restore_all_time == std::chrono::system_clock::time_point{} )
+   {
       ch->print( "There has been no restore all since reboot.\r\n" );
+   }
    else
    {
-      time_passed = current_time - last_restore_all_time;
-      hour = ( int )( time_passed / 3600 );
-      minute = ( int )( ( time_passed - ( hour * 3600 ) ) / 60 );
-      ch->printf( "The  last restore all was %d hours and %d minutes ago.\r\n", hour, minute );
+      auto elapsed = current_time - last_restore_all_time;
+
+      // Break down the duration into hours and minutes
+      auto hours = std::chrono::duration_cast<std::chrono::hours>( elapsed );
+      auto minutes = std::chrono::duration_cast<std::chrono::minutes>( elapsed % std::chrono::hours(1) );
+
+      ch->printf("The last restore all was %ld hours and %ld minutes ago.\r\n", hours.count(), minutes.count() );
    }
 
    if( !ch->pcdata )
       return;
 
-   if( !ch->pcdata->restore_time )
+   // Check personal restore time
+   if( ch->pcdata->restore_time == std::chrono::system_clock::time_point{} )
    {
       ch->print( "You have never done a restore all.\r\n" );
-      return;
    }
+   else
+   {
+      auto elapsed = current_time - ch->pcdata->restore_time;
 
-   time_passed = current_time - ch->pcdata->restore_time;
-   hour = ( int )( time_passed / 3600 );
-   minute = ( int )( ( time_passed - ( hour * 3600 ) ) / 60 );
-   ch->printf( "Your last restore all was %d hours and %d minutes ago.\r\n", hour, minute );
+      auto hours = std::chrono::duration_cast<std::chrono::hours>( elapsed );
+      auto minutes = std::chrono::duration_cast<std::chrono::minutes>( elapsed % std::chrono::hours(1) );
+
+      ch->printf( "Your last restore all was %ld hours and %ld minutes ago.\r\n", hours.count(), minutes.count() );
+   }
 }
 
 CMDF( do_freeze )
@@ -5371,7 +5377,6 @@ CMDF( do_hell )
    string arg;
    short htime;
    bool h_d = false;
-   struct tm *tms;
 
    ch->set_color( AT_IMMORT );
 
@@ -5394,9 +5399,9 @@ CMDF( do_hell )
       return;
    }
 
-   if( victim->pcdata->release_date != 0 )
+   if( victim->pcdata->release_date != std::chrono::system_clock::time_point{} )
    {
-      ch->printf( "They are already in hell until %24.24s, by %s.\r\n", c_time( victim->pcdata->release_date, ch->pcdata->timezone ), victim->pcdata->helled_by );
+      ch->printf( "They are already in hell until %24.24s, by %s.\r\n", c_time( victim->pcdata->release_date, ch->pcdata->timezone ).c_str(), victim->pcdata->helled_by );
       return;
    }
 
@@ -5427,15 +5432,15 @@ CMDF( do_hell )
       ch->print( "You may not hell a person for more than 30 days at a time.\r\n" );
       return;
    }
-   tms = localtime( &current_time );
+   std::chrono::system_clock::time_point tms = current_time;
 
    if( h_d )
-      tms->tm_hour += htime;
+      tms += std::chrono::hours( htime );
    else
-      tms->tm_mday += htime;
-   victim->pcdata->release_date = mktime( tms );
+      tms += std::chrono::days( htime );
+   victim->pcdata->release_date = tms;
    victim->pcdata->helled_by = STRALLOC( ch->name );
-   ch->printf( "%s will be released from hell at %24.24s.\r\n", victim->name, c_time( victim->pcdata->release_date, ch->pcdata->timezone ) );
+   ch->printf( "%s will be released from hell at %24.24s.\r\n", victim->name, c_time( victim->pcdata->release_date, ch->pcdata->timezone ).c_str() );
    act( AT_MAGIC, "$n disappears in a cloud of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
@@ -5497,7 +5502,7 @@ CMDF( do_unhell )
    }
    MOBtrigger = false;
    act( AT_MAGIC, "$n appears in a cloud of godly light.", victim, nullptr, ch, TO_NOTVICT );
-   victim->pcdata->release_date = 0;
+   victim->pcdata->release_date = std::chrono::system_clock::time_point{};
    victim->save(  );
 }
 
@@ -5625,8 +5630,11 @@ CMDF( do_cset )
                   sysdata->maxvnum, sysdata->mapsize, sysdata->rebootcount, sysdata->auctionseconds );
       ch->pagerf( "&BMin Guild Level&c: %d &BMax Condition Value&c: %d &BMax Ignores&c: %zu &BMax Item Impact&c: %d &BInit Weapon Condition&c: %d\r\n",
            sysdata->minguildlevel, sysdata->maxcondval, sysdata->maxign, sysdata->maximpact, sysdata->initcond );
-      ch->pagerf( "&BForce Players&c: %d &BPrivate Override&c: %d &BGet Notake&c: %d &BAutosave Freq&c: %d &BMax Holidays&c: %zu\r\n",
-           sysdata->level_forcepc, sysdata->level_override_private, sysdata->level_getobjnotake, sysdata->save_frequency, sysdata->maxholiday );
+
+      int freq = sysdata->save_frequency.count();
+      ch->pagerf( "&BForce Players&c: %d &BPrivate Override&c: %d &BGet Notake&c: %d &BAutosave-Freq&c: %d &BMax Holidays&c: %zu\r\n",
+           sysdata->level_forcepc, sysdata->level_override_private, sysdata->level_getobjnotake, freq, sysdata->maxholiday );
+
       ch->pagerf( "&BProto Mod&c: %d &B &BMset Player&c: %d &BBestow Diff&c: %d &BBuild Level&c: %d\r\n",
                   sysdata->level_modify_proto, sysdata->level_mset_player, sysdata->bestow_dif, sysdata->build_level );
       ch->pagerf( "&BRead all mail&c: %d &BTake all mail&c: %d &BRead mail free&c: %d &BWrite mail free&c: %d\r\n",
@@ -6023,16 +6031,14 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "maxvnum" ) )
    {
-      list < area_data * >::iterator iarea;
-      char lbuf[MSL];
+      std::string lbuf;
       int vnum = 0;
 
-      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+      for( auto* area : arealist )
       {
-         area_data *area = *iarea;
          if( area->hi_vnum > vnum )
          {
-            strlcpy( lbuf, area->name, MSL );
+            lbuf = area->name;
             vnum = area->hi_vnum;
          }
       }
@@ -6046,7 +6052,7 @@ CMDF( do_cset )
       if( value - vnum < 1000 )
       {
          ch->printf( "Warning: Setting MaxVnum to %d leaves you with less than 1000 vnums beyond the highest area.\r\n", value );
-         ch->printf( "Highest area %s ends with vnum %d.\r\n", lbuf, vnum );
+         ch->printf( "Highest area %s ends with vnum %d.\r\n", lbuf.c_str(), vnum );
       }
 
       sysdata->maxvnum = value;
@@ -6156,11 +6162,11 @@ CMDF( do_cset )
    {
       if( value > 32767 )
       {
-         ch->print( "&RError: Cannot set Autosave Freq above 32767.\r\n" );
+         ch->print( "&RError: Cannot set Autosave Freq above 32767 minutes.\r\n" );
          return;
       }
-      sysdata->save_frequency = value;
-      ch->printf( "Autosave Freq set to %d.\r\n", value );
+      sysdata->save_frequency = std::chrono::minutes( value );
+      ch->printf( "Autosave Freq set to %d minutes.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -8351,8 +8357,6 @@ CMDF( do_showrace )
 /* Simple, small way to make keeping track of small mods easier - Blod */
 CMDF( do_fixed )
 {
-   struct tm *t = localtime( &current_time );
-
    ch->set_color( AT_OBJECT );
    if( argument.empty(  ) )
    {
@@ -8380,8 +8384,9 @@ CMDF( do_fixed )
    }
    else
    {
-      append_to_file( FIXED_FILE, "&g|&G%-2.2d/%-2.2d &g| &G%5d&g|  %s:  &G%s",
-                      t->tm_mon + 1, t->tm_mday, ch->in_room ? ch->in_room->vnum : 0, ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ) );
+      std::string t = std::format( "{:%a %b %d, %Y %I:%M:%S %p}", current_time );
+      append_to_file( FIXED_FILE, "&g|&G%s &g| &G%5d&g|  %s:  &G%s",
+                      t.c_str(), ch->in_room ? ch->in_room->vnum : 0, ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ) );
       ch->print( "Thanks, your modification has been logged.\r\n" );
    }
 }

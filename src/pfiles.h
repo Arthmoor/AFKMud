@@ -28,5 +28,5 @@
 
 #pragma once
 
-extern time_t new_pfile_time_t;
+extern std::chrono::system_clock::time_point new_pfile_time_t;
 extern short num_pfiles;

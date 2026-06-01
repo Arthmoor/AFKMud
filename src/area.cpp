@@ -647,8 +647,11 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
          case 'D':
             if( !str_cmp( word, "Dates" ) )
             {
-               tarea->creation_date = fread_long( fp );
-               tarea->install_date = fread_long( fp );
+               time_t cdate = fread_long( fp );
+               tarea->creation_date = std::chrono::system_clock::from_time_t( cdate );
+
+               time_t idate = fread_long( fp );
+               tarea->install_date = std::chrono::system_clock::from_time_t( idate );
                break;
             }
             break;
@@ -2043,7 +2046,11 @@ void fwrite_area_header( area_data * area, FILE * fpout )
    if( area->continent )
       fprintf( fpout, "Continent       %s~\n", area->continent->name.c_str( ) );
    fprintf( fpout, "Coordinates     %d %d\n", area->map_x, area->map_y );
-   fprintf( fpout, "Dates           %ld %ld\n", area->creation_date, area->install_date );
+
+   auto cdate = std::chrono::system_clock::to_time_t( area->creation_date );
+   auto idate = std::chrono::system_clock::to_time_t( area->install_date );
+
+   fprintf( fpout, "Dates           %ld %ld\n", cdate, idate );
    fprintf( fpout, "Ranges          %d %d %d %d\n", area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    if( area->resetmsg ) /* Rennard */
       fprintf( fpout, "ResetMsg        %s~\n", area->resetmsg );
@@ -2843,9 +2850,9 @@ CMDF( do_astat )
 
    ch->printf( "\r\n&wName:     &W%s\r\n&wFilename: &W%-20s  &wPrototype: &W%s\r\n&wAuthor:   &W%s\r\n",
                tarea->name, tarea->filename, tarea->flags.test( AFLAG_PROTOTYPE ) ? "yes" : "no", tarea->author );
-   ch->printf( "&wCreated on   : &W%s\r\n", c_time( tarea->creation_date, -1 ) );
-   ch->printf( "&wInstalled on : &W%s\r\n", c_time( tarea->install_date, -1 ) );
-   ch->printf( "&wLast reset on: &W%s\r\n", c_time( tarea->last_resettime, -1 ) );
+   ch->printf( "&wCreated on   : &W%s\r\n", c_time( tarea->creation_date, -1 ).c_str() );
+   ch->printf( "&wInstalled on : &W%s\r\n", c_time( tarea->install_date, -1 ).c_str() );
+   ch->printf( "&wLast reset on: &W%s\r\n", c_time( tarea->last_resettime, -1 ).c_str() );
    ch->printf( "&wVersion: &W%-3d &wAge: &W%-3d  &wCurrent number of players: &W%-3d\r\n", tarea->version, tarea->age, tarea->nplayer );
    ch->printf( "&wlow_vnum: &W%5d    &whi_vnum: &W%5d\r\n", tarea->low_vnum, tarea->hi_vnum );
    ch->printf( "&wSoft range: &W%d - %d    &wHard range: &W%d - %d\r\n", tarea->low_soft_range, tarea->hi_soft_range, tarea->low_hard_range, tarea->hi_hard_range );

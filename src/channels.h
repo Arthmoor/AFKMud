@@ -54,7 +54,7 @@ class chan_history
 
    string name;
    char *format;
-   time_t timestamp;
+   std::chrono::system_clock::time_point timestamp;
    int level;
    int invis;
 };

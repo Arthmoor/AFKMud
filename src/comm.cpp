@@ -32,13 +32,12 @@
 #else
 #include <winsock2.h>
 #define dlclose( path )		( (void *)FreeLibrary( (HMODULE)(path)) )
-void gettimeofday( struct timeval *tv, struct timezone *tz );
 #endif
 
-#include <sys/time.h>
+// #include <sys/time.h>
 #include <netdb.h>
-#include <format>
 #include <filesystem>
+#include <format>
 #include <fstream>
 #include <thread>
 #include "mud.h"
@@ -54,18 +53,16 @@ void gettimeofday( struct timeval *tv, struct timezone *tz );
 #include "roomindex.h"
 #include "shops.h"
 
-namespace fs = std::filesystem;
-
 /*
  * Global variables.
  */
 int num_descriptors;
 int num_logins;
 bool mud_down; /* Shutdown       */
-char str_boot_time[MIL];
+std::string str_boot_time;
 std::string lastplayercmd;
-time_t current_time; /* Time of this pulse      */
-time_t mud_start_time; // Used only by MSSP for now
+std::chrono::system_clock::time_point current_time;   // Time of this pulse
+std::chrono::system_clock::time_point mud_start_time; // Used only by MSSP for now
 int control;   /* Controlling descriptor  */
 fd_set in_set; /* Set of desc's for reading  */
 fd_set out_set;   /* Set of desc's for writing  */
@@ -83,12 +80,11 @@ extern int newdesc;
 #ifdef MULTIPORT
 extern bool compilelock;
 #endif
-extern time_t board_expire_time_t;
 
 void game_loop(  );
 void cleanup_memory(  );
 void clear_trdata(  );
-void run_events( time_t );
+void run_events( std::chrono::system_clock::time_point );
 
 /*
  * External functions
@@ -159,7 +155,7 @@ void free_wizlist_web_data( );
 #endif
 
 const char *directory_table[] = {
-   AREA_CONVERT_DIR, PLAYER_DIR, GOD_DIR, BUILD_DIR, SYSTEM_DIR,
+   AREA_CONVERT_DIR, PLAYER_DIR, GOD_DIR, BACKUP_DIR, BUILD_DIR, SYSTEM_DIR,
    PROG_DIR, CORPSE_DIR, CLASS_DIR, RACE_DIR, MOTD_DIR, HOTBOOT_DIR, AUC_DIR,
    BOARD_DIR, COLOR_DIR, MAP_DIR, DEITY_DIR, WEB_DIR, SHOP_DIR, CLAN_DIR,
    REALM_DIR
@@ -167,21 +163,21 @@ const char *directory_table[] = {
 
 void directory_check( void )
 {
-   fs::path buf;
+   std::filesystem::path buf;
 
    // Successful directory check will drop this file in the area dir once done.
-   if( fs::exists( "DIR_CHECK_PASSED" ) )
+   if( std::filesystem::exists( "DIR_CHECK_PASSED" ) )
       return;
 
    log_string( "Checking for required directories...\n" );
 
    // This should really never happen but you never know.
-   if( !fs::exists( "../log" ) )
+   if( !std::filesystem::exists( "../log" ) )
    {
       fprintf( stderr, "Creating required directory: ../log\n" );
       buf = "../log";
 
-      if( !fs::create_directory( buf ) )
+      if( !std::filesystem::create_directory( buf ) )
       {
          fprintf( stderr, "FATAL ERROR :: Unable to create required directory: ../log\n" );
          exit( 1 );
@@ -190,12 +186,12 @@ void directory_check( void )
 
    for( size_t x = 0; x < sizeof( directory_table ) / sizeof( directory_table[0] ); ++x )
    {
-      if( !fs::exists( directory_table[x] ) )
+      if( !std::filesystem::exists( directory_table[x] ) )
       {
          buf = directory_table[x];
          log_printf( "Creating required directory: %s", directory_table[x] );
 
-         if( !fs::create_directory( buf ) )
+         if( !std::filesystem::create_directory( buf ) )
          {
             log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", directory_table[x] );
             exit( 1 );
@@ -204,14 +200,14 @@ void directory_check( void )
 
       if( !str_cmp( directory_table[x], PLAYER_DIR ) )
       {
-         for( short alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
+         for( char c = 'a'; c <= 'z'; ++c )
          {
-            fs::path dirname = std::format( "{}{}", PLAYER_DIR, static_cast<char>( 'a' + alpha_loop ) );
-            if( !fs::exists( dirname ) )
+            std::filesystem::path dirname = std::format( "{}{}", PLAYER_DIR, c );
+            if( !std::filesystem::exists( dirname ) )
             {
                log_printf( "Creating required directory: %s", dirname.c_str() );
 
-               if( !fs::create_directory( dirname ) )
+               if( !std::filesystem::create_directory( dirname ) )
                {
                   log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", dirname.c_str() );
                   exit( 1 );
@@ -272,8 +268,8 @@ void set_alarm( long seconds )
 
 void open_mud_log()
 {
-   const fs::path log_dir = "../log";
-   fs::path log_path;
+   const std::filesystem::path log_dir = "../log";
+   std::filesystem::path log_path;
    bool found = false;
 
    // Use filesystem iterator or simple loop to find the next available file
@@ -281,7 +277,7 @@ void open_mud_log()
    {
       log_path = log_dir / ( std::to_string( logindex ) + ".log" );
 
-      if( !fs::exists( log_path ) )
+      if( !std::filesystem::exists( log_path ) )
       {
          found = true;
          break;
@@ -919,7 +915,7 @@ void pulse_sync( )
    std::this_thread::sleep_until( next_pulse );
 
    // Update global time
-   current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+   current_time = std::chrono::system_clock::now();
 }
 
 // It all looks so simple from here, doesn't it?
@@ -1234,7 +1230,6 @@ void bailout( int sig )
 
 int main( int argc, char **argv )
 {
-   struct timeval now_time;
    bool fCopyOver = false;
 
 #if defined(WIN32)
@@ -1252,12 +1247,10 @@ int main( int argc, char **argv )
    lastplayercmd = "No commands issued yet";
 
    // Init time.
-   tzset(  );
-   gettimeofday( &now_time, nullptr );
-   current_time = now_time.tv_sec;
-   strlcpy( str_boot_time, c_time( current_time, -1 ), MIL );  /* Records when the mud was last rebooted */
+   current_time = std::chrono::system_clock::now(); // This is used throughout the codebase to represent the current time. Saves on a whole lot of calls to std::chrono this way. Updated in pulse_sync().
+   str_boot_time = c_time( current_time, -1 );      // Records when the mud was last rebooted.
 
-   new_pfile_time_t = current_time + 86400;
+   new_pfile_time_t = current_time + std::chrono::hours( 24 ); // For the pfile cleanup. Starts 24 hours after bootup.
    mud_start_time = current_time;
 
    // Get the port number.

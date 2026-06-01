@@ -42,7 +42,6 @@
 bool is_inolc( descriptor_data * );
 board_data *find_board( char_data * );
 board_data *get_board( char_data *, const string & );
-char *mini_c_time( time_t, int );
 
 lang_data *get_lang( const string & name )
 {
@@ -59,65 +58,72 @@ lang_data *get_lang( const string & name )
 }
 
 // Rewritten by Xorith for more C++
-string translate( int percent, const string & in, const string & name )
+std::string translate( int percent, const std::string & in, const std::string & name )
 {
-   lang_data *lng = nullptr;
-   string retVal = "", inVal = in;
-   string::size_type inValIndex = 0;
-   bool lfound = false;
+   lang_data* lng = get_lang(name);
 
-   if( percent > 99 || !str_cmp( name, "common" ) || ( !( lng = get_lang( name ) ) && !( lng = get_lang( "default" ) ) ) )
+   if( percent > 99 || name == "common" || ( !lng && !( lng = get_lang( "default" ) ) ) )
    {
-      return inVal;
+      return in;
    }
 
-   for( inValIndex = 0; inValIndex < inVal.length(  ); ++inValIndex )
+   std::string retVal;
+   retVal.reserve( in.length() );
+
+   for( size_t i = 0; i < in.length(); )
    {
-      lfound = false;
+      bool found = false;
 
-      for( list < lcnv_data * >::iterator cnv = lng->prelist.begin(  ); cnv != lng->prelist.end(  ); ++cnv )
+      for( auto* conv : lng->prelist )
       {
-         lcnv_data *conv = *cnv;
-
-         if( !str_prefix( conv->old, inVal.substr( inValIndex ) ) )
+         if( in.substr(i).starts_with( conv->old ) )
          {
-            retVal += ( percent && ( rand(  ) % 100 ) < percent ) ? conv->old : conv->lnew;
-            inValIndex += conv->old.length(  );
-            lfound = true;
+            retVal += ( percent > 0 && number_percent() <= percent ) ? conv->old : conv->lnew;
+            i += conv->old.length();
+            found = true;
             break;
          }
       }
 
-      if( !lfound )
+      if( !found )
       {
-         if( isalpha( inVal[inValIndex] ) && ( !percent || ( rand(  ) % 100 ) > percent ) )
-            retVal += lng->alphabet[tolower( inVal[inValIndex], locale(  ) ) - 'a'];
+         char c = in[i];
+
+         if( std::isalpha( static_cast<unsigned char>(c) ) && ( percent == 0 || number_percent() > percent ) )
+         {
+            retVal += lng->alphabet[std::tolower( static_cast<unsigned char>(c) ) - 'a'];
+         }
          else
-            retVal += inVal[inValIndex];
+         {
+            retVal += c;
+         }
+         i++;
       }
    }
 
-   if( !lng->cnvlist.empty(  ) )
+   // Secondary conversion pass (if cnvlist exists)
+   if( !lng->cnvlist.empty() )
    {
-      for( lfound = false, inVal = retVal, retVal = "", inValIndex = 0; inValIndex < inVal.length(  ); ++inValIndex )
+      std::string pass2;
+
+      for( size_t i = 0; i < retVal.length(); )
       {
-         lfound = false;
+         bool found = false;
 
-         for( list < lcnv_data * >::iterator cnv = lng->cnvlist.begin(  ); cnv != lng->cnvlist.end(  ); ++cnv )
+         for( auto* conv : lng->cnvlist )
          {
-            lcnv_data *conv = *cnv;
-
-            if( !str_prefix( conv->old, inVal.substr( inValIndex ) ) )
+            if( retVal.substr(i).starts_with( conv->old ) )
             {
-               retVal += conv->lnew;
-               inValIndex += conv->old.length(  );
-               lfound = true;
+               pass2 += conv->lnew;
+               i += conv->old.length();
+               found = true;
                break;
             }
          }
-         if( !lfound )
-            retVal += inVal[inValIndex];
+         if( !found )
+            pass2 += retVal[i++];
       }
+      return pass2;
    }
    return retVal;
 }
@@ -502,7 +508,7 @@ CMDF( do_beep )
       return;
    }
 
-   if( ch->pcdata->release_date != 0 )
+   if( ch->pcdata->release_date != std::chrono::system_clock::time_point{} )
    {
       ch->print( "Nope, no beeping from hell.\r\n" );
       return;
@@ -938,7 +944,6 @@ CMDF( do_emote )
 /* 0 = bug 1 = idea 2 = typo */
 void tybuid( char_data * ch, const string & argument, int type )
 {
-   struct tm *t = localtime( &current_time );
    static const char *tybuid_name[] = { "bug", "idea", "typo" };
    static const char *tybuid_file[] = { PBUG_FILE, IDEA_FILE, TYPO_FILE };
 
@@ -974,7 +979,8 @@ void tybuid( char_data * ch, const string & argument, int type )
       return;
    }
 
-   append_file( ch, tybuid_file[type], "(%-2.2d/%-2.2d):  %s", t->tm_mon + 1, t->tm_mday, argument.c_str(  ) );
+   std::string t = std::format( "{:%a %b %d, %Y %I:%M:%S %p}", current_time );
+   append_file( ch, tybuid_file[type], "(%s:  %s", t.c_str(), argument.c_str(  ) );
    ch->printf( "Thank you! Your %s has been recorded.\r\n", tybuid_name[type] );
 }
 

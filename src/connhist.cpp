@@ -218,8 +218,7 @@ void update_connhistory( descriptor_data * d, int type )
       deleteptr( con );
    }
 
-   auto now = std::chrono::system_clock::now();
-   auto local_now = std::chrono::zoned_time{ std::chrono::current_zone(), now };
+   auto local_now = std::chrono::zoned_time{ std::chrono::current_zone(), current_time };
 
    con = new conn_data;
    con->user = vch->name ? vch->name : "NoName";

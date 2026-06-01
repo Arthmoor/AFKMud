@@ -29,7 +29,7 @@
 /* Converts stock Smaug version 0 thru 3 areas into AFKMud format - Samson 12-21-01 */
 /* Converts SmaugWiz version 1000 files into AFKMud format - Samson 4-24-03 */
 
-#include <sys/stat.h>
+#include <filesystem>
 #include <format>
 #include "mud.h"
 #include "area.h"
@@ -1874,32 +1874,19 @@ void load_stock_area_file( const string & filename, bool manual )
 {
    area_data *tarea = nullptr;
    char *word;
-   struct stat fst;
-   time_t umod = 0;
+   std::chrono::system_clock::time_point umod = std::chrono::system_clock::time_point::min();
+   std::filesystem::path target_path = manual ? std::filesystem::path( AREA_CONVERT_DIR ) / filename : std::filesystem::path( filename );
 
-   if( manual )
+   fpArea = fopen( target_path.c_str(), "r" );
+   if( !fpArea )
    {
-      string fname;
-
-      fname = std::format( "{}{}", AREA_CONVERT_DIR, filename );
-      if( !( fpArea = fopen( fname.c_str(), "r" ) ) )
-      {
-         perror( fname.c_str() );
-         bug( "%s: Error locating area file for conversion. Not present in conversion directory.", __func__ );
-         return;
-      }
-      if( stat( fname.c_str(), &fst ) != -1 )
-         umod = fst.st_mtime;
-   }
-   else if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
-   {
-      perror( filename.c_str(  ) );
-      bug( "%s: error loading file (can't open) %s", __func__, filename.c_str(  ) );
+      perror( target_path.c_str() );
+      bug( "%s: Error locating file: %s. Not present in conversion directory.", __func__, target_path.c_str() );
       return;
    }
 
-   if( umod == 0 && stat( filename.c_str(  ), &fst ) != -1 )
-      umod = fst.st_mtime;
+   auto ftime = std::filesystem::last_write_time( target_path );
+   umod = std::chrono::clock_cast<std::chrono::system_clock>( ftime );
 
    if( fread_letter( fpArea ) != '#' )
    {
@@ -2222,9 +2209,9 @@ void load_stock_area_file( const string & filename, bool manual )
          bug( "%-20s: Bad Vnum Range", tarea->filename );
       if( !tarea->author )
          tarea->author = STRALLOC( "Unknown" );
-      if( !tarea->creation_date )
+      if( tarea->creation_date == std::chrono::system_clock::time_point{} )
          tarea->creation_date = umod;
-      if( !tarea->install_date )
+      if( tarea->install_date == std::chrono::system_clock::time_point{} )
          tarea->install_date = umod;
    }
    else
@@ -2291,11 +2278,13 @@ CMDF( do_areaconvert )
 
       if( ( tarea = find_area( arg ) ) )
       {
-         struct stat fst;
-         time_t umod = 0;
+         std::chrono::system_clock::time_point umod = std::chrono::system_clock::time_point::min();
 
-         if( stat( tarea->filename, &fst ) != -1 )
-            umod = fst.st_mtime;
+         if( std::filesystem::exists( tarea->filename ) )
+         {
+            auto ftime = std::filesystem::last_write_time( tarea->filename );
+            umod = std::chrono::clock_cast<std::chrono::system_clock>( ftime );
+         }
 
          tarea->creation_date = umod;
          tarea->install_date = current_time;
