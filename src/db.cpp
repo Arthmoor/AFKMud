@@ -2032,7 +2032,7 @@ int dice( int number, int size )
 
 CMDF( do_randtest )
 {
-   ch->printf( "Uterly random number    : %lu\r\n", global_rng( ) );
+   ch->printf( "Utterly random number   : %lu\r\n", global_rng( ) );
    ch->printf( "number_range 4350 - 4449: %d\r\n", number_range( 4350, 4449 ) );
    ch->printf( "number_percent          : %d\r\n", number_percent(  ) );
    ch->printf( "number_door             : %d\r\n", number_door(  ) );

@@ -26,9 +26,6 @@
  *                         Player skills module                             *
  ****************************************************************************/
 
-#if defined(__CYGWIN__) || defined(WIN32)
-#include <sys/time.h>
-#endif
 #include <algorithm>
 #include "mud.h"
 #include "mudcfg.h"
@@ -55,8 +52,6 @@ bool check_illegal_pk( char_data *, char_data * );
 bool legal_loot( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
 void failed_casting( class skill_type *, char_data *, char_data *, obj_data * );
-void start_timer( struct timeval * );
-time_t end_timer( struct timeval * );
 void check_mount_objs( char_data *, bool );
 int get_door( const string & );
 void check_killer( char_data *, char_data * );
@@ -1815,7 +1810,6 @@ bool can_use_skill( char_data * ch, int percent, int gsn )
 bool check_ability( char_data * ch, const string & command, const string & argument )
 {
    int sn, mana;
-   struct timeval time_used;
 
    /*
     * bsearch for the ability
@@ -1994,9 +1988,7 @@ bool check_ability( char_data * ch, const string & command, const string & argum
       if( mana )
          ch->mana -= mana;
 
-      start_timer( &time_used );
       retcode = ( *skill_table[sn]->spell_fun ) ( sn, ch->level, ch, vo );
-      end_timer( &time_used );
 
       if( retcode == rCHAR_DIED || retcode == rERROR )
          return true;
@@ -2034,9 +2026,7 @@ bool check_ability( char_data * ch, const string & command, const string & argum
 
    ch->prev_cmd = ch->last_cmd;  /* haus, for automapping */
    ch->last_cmd = skill_table[sn]->skill_fun;
-   start_timer( &time_used );
    ( *skill_table[sn]->skill_fun ) ( ch, argument );
-   end_timer( &time_used );
 
    return true;
 }
@@ -2049,7 +2039,6 @@ bool check_ability( char_data * ch, const string & command, const string & argum
 bool check_skill( char_data * ch, const string & command, const string & argument )
 {
    int sn, mana;
-   struct timeval time_used;
 
    /*
     * bsearch for the skill
@@ -2226,9 +2215,7 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
       if( mana )
          ch->mana -= mana;
 
-      start_timer( &time_used );
       retcode = ( *skill_table[sn]->spell_fun ) ( sn, ch->level, ch, vo );
-      end_timer( &time_used );
 
       if( retcode == rCHAR_DIED || retcode == rERROR )
          return true;
@@ -2266,9 +2253,7 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
 
    ch->prev_cmd = ch->last_cmd;  /* haus, for automapping */
    ch->last_cmd = skill_table[sn]->skill_fun;
-   start_timer( &time_used );
    ( *skill_table[sn]->skill_fun ) ( ch, argument );
-   end_timer( &time_used );
 
    return true;
 }

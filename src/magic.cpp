@@ -50,8 +50,6 @@ bool check_illegal_pk( char_data *, char_data * );
 bool in_arena( char_data * );
 void start_hunting( char_data *, char_data * );
 void start_hating( char_data *, char_data * );
-void start_timer( struct timeval * );
-time_t end_timer( struct timeval * );
 int recall( char_data *, int );
 bool circle_follow( char_data *, char_data * );
 void add_follower( char_data *, char_data * );
@@ -1031,8 +1029,8 @@ void *locate_targets( char_data * ch, const string & arg, int sn )
 /*
  * The kludgy global is for spells who want more stuff from command line.
  */
-string target_name;
-string ranged_target_name;
+std::string target_name;
+std::string ranged_target_name;
 
 /*
  * Cast a spell.  Multi-caster and component support by Thoric
@@ -1047,7 +1045,6 @@ CMDF( do_cast )
    ch_ret retcode;
    bool dont_wait = false;
    skill_type *skill = nullptr;
-   struct timeval time_used;
 
    retcode = rNONE;
 
@@ -1516,11 +1513,7 @@ CMDF( do_cast )
          retcode = rSPELL_FAILED;
       }
       else
-      {
-         start_timer( &time_used );
          retcode = ( *skill->spell_fun ) ( sn, ch->level, ch, vo );
-         end_timer( &time_used );
-      }
    }
 
    if( retcode == rCHAR_DIED || retcode == rERROR || ch->char_died(  ) )
@@ -1606,7 +1599,6 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
    ch_ret retcode = rNONE;
    int levdiff = ch->level - level;
    skill_type *skill = get_skilltype( sn );
-   struct timeval time_used;
 
    if( sn == -1 )
       return retcode;
@@ -1733,9 +1725,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
          vo = ( void * )obj;
          break;
    }
-   start_timer( &time_used );
    retcode = ( *skill->spell_fun ) ( sn, level, ch, vo );
-   end_timer( &time_used );
 
    if( retcode == rSPELL_FAILED )
       retcode = rNONE;
