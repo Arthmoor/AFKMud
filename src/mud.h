@@ -591,7 +591,6 @@ enum pc_flags
 #define WIZLIST_FILE	SYSTEM_DIR "WIZLIST" /* Wizlist       */
 #define SKILL_FILE	SYSTEM_DIR "skills.dat" /* Skill table         */
 #define HERB_FILE		SYSTEM_DIR "herbs.dat"  /* Herb table       */
-#define NAMEGEN_FILE	SYSTEM_DIR "namegen.txt"   /* Used for the name generator */
 #define TONGUE_FILE	SYSTEM_DIR "tongues.dat"   /* Tongue tables    */
 #define SOCIAL_FILE	SYSTEM_DIR "socials.dat"   /* Socials       */
 #define COMMAND_FILE	SYSTEM_DIR "commands.dat"  /* Commands      */
@@ -1228,15 +1227,11 @@ void check_switches(  );
 void check_switch( char_data * );
 
 /* db.cpp */
-extern std::mt19937 global_rng;
+extern std::mt19937 global_rng; // Mersenne Twister algorithm for random numbers.
 bool is_valid_filename( char_data *, const string &, const string & );
 void shutdown_mud( const string & );
 bool exists_file( const string & );
 char fread_letter( FILE * );
-int fread_number( FILE * );
-short fread_short( FILE * );
-long fread_long( FILE * );
-float fread_float( FILE * );
 char *fread_string( FILE * );
 const char *fread_flagstring( FILE * );
 char *fread_string_nohash( FILE * );
@@ -1491,6 +1486,66 @@ template < class N > extra_descr_data * set_extra_descr( N * target, const std::
    }
    return desc;
 }
+
+/*
+ * Read a number from a file. Used to be several clones in db.cpp for each type. Now there is only one.
+ */
+template <typename T> T fread_numeric(FILE *fp)
+{
+   static_assert( std::is_arithmetic<T>::value, "fread_numeric requires an arithmetic type (int, float, etc)." );
+
+   int c;
+   do {
+      c = std::getc(fp);
+      if (c == EOF) return 0;
+   } while (std::isspace(c));
+
+      bool sign = false;
+      if (c == '+') {
+         c = std::getc(fp);
+      } else if (c == '-') {
+         sign = true;
+         c = std::getc(fp);
+      }
+
+      double number = 0.0;
+
+      // Parse integer part
+      while (std::isdigit(c)) {
+         number = (number * 10.0) + (c - '0');
+         c = std::getc(fp);
+      }
+
+      // Parse decimal part (if floating point type requested)
+      if constexpr (std::is_floating_point<T>::value) {
+         if (c == '.') {
+            double divisor = 10.0;
+            c = std::getc(fp);
+            while (std::isdigit(c)) {
+               number += (c - '0') / divisor;
+               divisor *= 10.0;
+               c = std::getc(fp);
+            }
+         }
+      }
+
+      if (sign) number = -number;
+
+      // Handle flags (pipe operator) - note: only logical for integer flags
+      if (c == '|') {
+         number += fread_numeric<double>(fp);
+      } else if (c != EOF && c != ' ') {
+         std::ungetc(c, fp);
+      }
+
+      return static_cast<T>(number);
+}
+
+// Add any new types as needed here.
+inline short fread_short( FILE *fp )  { return fread_numeric<short>( fp ); }
+inline int   fread_number( FILE *fp ) { return fread_numeric<int>( fp ); }
+inline long  fread_long( FILE *fp )   { return fread_numeric<long>( fp ); }
+inline float fread_float( FILE *fp )  { return fread_numeric<float>(fp); }
 
 // Thanks to David Haley for this little trick. A nifty little template that behaves like DISPOSE used to.
 template < typename T > void deleteptr( T * &ptr )

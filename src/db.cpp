@@ -52,6 +52,7 @@
 #include "bits.h"
 #include "connhist.h"
 #include "event.h"
+#include "new_auth.h"
 #include "mobindex.h"
 #include "mud_prog.h"
 #include "objindex.h"
@@ -65,8 +66,11 @@
  #include "sql.h"
 #endif
 
-// This will seed the random number generator once during startup. I guess it's magic code :P
-std::mt19937 global_rng( static_cast<unsigned int>( current_time.time_since_epoch().count() ) );
+/*
+ * This will seed the random number generator once during startup. I guess it's magic code :P
+ * Uses the Mersenne Twister algorithm. - Samson 6/1/2026.
+ */
+std::mt19937 global_rng( std::random_device{}() );
 
 /*
  * Change this alarm timer to whatever you think is appropriate.
@@ -306,298 +310,6 @@ char fread_letter( FILE * fp )
    while( isspace( c ) );
 
    return c;
-}
-
-/*
- * Read a float number from a file. Turn the result into a float value.
- */
-float fread_float( FILE * fp )
-{
-   float number;
-   bool sign, decimal;
-   char c;
-   double place = 0;
-
-   do
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-         {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
-         }
-         return 0;
-      }
-      c = getc( fp );
-   }
-   while( isspace( c ) );
-
-   number = 0;
-
-   sign = false;
-   decimal = false;
-
-   if( c == '+' )
-      c = getc( fp );
-   else if( c == '-' )
-   {
-      sign = true;
-      c = getc( fp );
-   }
-
-   if( !isdigit( c ) )
-   {
-      bug( "%s: bad format. (%c)", __func__, c );
-      if( fBootDb )
-         exit( 1 );
-      return 0;
-   }
-
-   while( 1 )
-   {
-      if( c == '.' || isdigit( c ) )
-      {
-         if( c == '.' )
-         {
-            decimal = true;
-            c = getc( fp );
-         }
-
-         if( feof( fp ) )
-         {
-            bug( "%s: EOF encountered on read.", __func__ );
-            if( fBootDb )
-               exit( 1 );
-            return number;
-         }
-         if( !decimal )
-            number = number * 10 + c - '0';
-         else
-         {
-            ++place;
-            number += pow( 10, ( -1 * place ) ) * ( c - '0' );
-         }
-         c = getc( fp );
-      }
-      else
-         break;
-   }
-
-   if( sign )
-      number = 0 - number;
-
-   if( c == '|' )
-      number += fread_float( fp );
-   else if( c != ' ' )
-      ungetc( c, fp );
-
-   return number;
-}
-
-/*
- * Read a number from a file. Convert to long integer.
- */
-long fread_long( FILE * fp )
-{
-   long number;
-   bool sign;
-   char c;
-
-   do
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-         {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
-         }
-         return 0;
-      }
-      c = getc( fp );
-   }
-   while( isspace( c ) );
-
-   number = 0;
-
-   sign = false;
-   if( c == '+' )
-      c = getc( fp );
-   else if( c == '-' )
-   {
-      sign = true;
-      c = getc( fp );
-   }
-
-   if( !isdigit( c ) )
-   {
-      bug( "%s: bad format. (%c)", __func__, c );
-      if( fBootDb )
-         exit( 1 );
-      return 0;
-   }
-
-   while( isdigit( c ) )
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-            exit( 1 );
-         return number;
-      }
-      number = number * 10 + c - '0';
-      c = getc( fp );
-   }
-
-   if( sign )
-      number = 0 - number;
-
-   if( c == '|' )
-      number += fread_long( fp );
-   else if( c != ' ' )
-      ungetc( c, fp );
-
-   return number;
-}
-
-/*
- * Read a number from a file. Convert to short integer.
- */
-short fread_short( FILE * fp )
-{
-   short number;
-   bool sign;
-   char c;
-
-   do
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-         {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
-         }
-         return 0;
-      }
-      c = getc( fp );
-   }
-   while( isspace( c ) );
-
-   number = 0;
-
-   sign = false;
-   if( c == '+' )
-      c = getc( fp );
-   else if( c == '-' )
-   {
-      sign = true;
-      c = getc( fp );
-   }
-
-   if( !isdigit( c ) )
-   {
-      bug( "%s: bad format. (%c)", __func__, c );
-      if( fBootDb )
-         exit( 1 );
-      return 0;
-   }
-
-   while( isdigit( c ) )
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-            exit( 1 );
-         return number;
-      }
-      number = number * 10 + c - '0';
-      c = getc( fp );
-   }
-
-   if( sign )
-      number = 0 - number;
-
-   if( c == '|' )
-      number += fread_short( fp );
-   else if( c != ' ' )
-      ungetc( c, fp );
-
-   return number;
-}
-
-/*
- * Read a number from a file.
- */
-int fread_number( FILE * fp )
-{
-   int number;
-   bool sign;
-   char c;
-
-   do
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-         {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
-         }
-         return 0;
-      }
-      c = getc( fp );
-   }
-   while( isspace( c ) );
-
-   number = 0;
-
-   sign = false;
-   if( c == '+' )
-      c = getc( fp );
-   else if( c == '-' )
-   {
-      sign = true;
-      c = getc( fp );
-   }
-
-   if( !isdigit( c ) )
-   {
-      bug( "%s: bad format. (%c)", __func__, c );
-      if( fBootDb )
-         exit( 1 );
-      return 0;
-   }
-
-   while( isdigit( c ) )
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-            exit( 1 );
-         return number;
-      }
-      number = number * 10 + c - '0';
-      c = getc( fp );
-   }
-
-   if( sign )
-      number = 0 - number;
-
-   if( c == '|' )
-      number += fread_number( fp );
-   else if( c != ' ' )
-      ungetc( c, fp );
-
-   return number;
 }
 
 /*
@@ -1465,7 +1177,8 @@ void boot_db( bool fCopyOver )
    log_string( "Database bootup starting." );
    fBootDb = true;   /* Supposed to help with EOF bugs, so it got moved up */
 
-   // This is purely informational with the global definition at the top of the file. It initialize before getting this far.
+   // This is purely informational with the global definition at the top of the file. It initializes before getting this far.
+   // Uses the Mersenne Twister algorithm. - Samson 6/1/2026.
    log_string( "Initializing random number generator." );
 
    log_string( "Loading sysdata configuration..." );
@@ -1713,6 +1426,9 @@ void boot_db( bool fCopyOver )
    log_string( "Loading overland map data..." );
    load_continents( AREA_FILE_ALARM );
    log_string( "...done loading overland data." );
+
+   log_string( "Loading name generator data..." );
+   NameManager::instance().load_generator( NAMEGEN_FILE );
 
    /*
     * Read in all the area files.

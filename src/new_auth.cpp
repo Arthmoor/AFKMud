@@ -37,14 +37,8 @@
  *  If you modify this code and use/distribute modified versions
  *  you must give credit to the original author(s).
  */
-
+#include <filesystem>
 #include <fstream>
-#include <sys/stat.h>
-#include <sys/time.h>
-#if defined(WIN32)
-#include <unistd.h>
-void gettimeofday( struct timeval *, struct timezone * );
-#endif
 #include "mud.h"
 #include "descriptor.h"
 #include "new_auth.h"
@@ -56,123 +50,129 @@ bool can_use_mprog( char_data * );
 
 list < auth_data * >authlist;
 
-void name_generator( string & argument )
+NameManager & NameManager::instance()
 {
-   int start_counter = 0, middle_counter = 0, end_counter = 0;
-   char start_string[100][10], middle_string[100][10], end_string[100][10];
-   char tempstring[151], name[300];
-   struct timeval starttime;
-   time_t t;
-   char *shutupgcc;
-   FILE *infile;
+   static NameManager instance;
+   return instance;
+}
 
-   tempstring[0] = '\0';
-
-   if( !( infile = fopen( NAMEGEN_FILE, "r" ) ) )
-   {
-      log_string( "Can't find NAMEGEN file." );
+void NameManager::load_list( const std::string & filename )
+{
+   if( list_cache.contains( filename ) )
       return;
-   }
 
-   shutupgcc = fgets( tempstring, 150, infile );
-   tempstring[strlen( tempstring ) - 1] = '\0';
-   while( str_cmp( tempstring, "[start]" ) != 0 )
+   std::ifstream infile( filename );
+   if( !infile.is_open() )
+      return;
+
+   std::vector<std::string> names;
+   std::string line;
+   bool collecting = false;
+
+   while( std::getline( infile, line ) )
    {
-      shutupgcc = fgets( tempstring, 150, infile );
-      tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
+      if( !line.empty() && line.back() == '\r' )
+         line.pop_back();
+      if( line == "[start]" )
+      {
+         collecting = true;
+         continue;
+      }
+      if( line == "[finish]" )
+         break;
+      if( collecting && !line.empty() && line[0] != '/' )
+         names.push_back( line );
    }
+   list_cache[filename] = std::move( names );
+}
 
-   while( str_cmp( tempstring, "[middle]" ) != 0 )
+std::string NameManager::get_random( const std::string & filename )
+{
+   if( list_cache[filename].empty() )
+      return "Unknown";
+
+   const auto& list = list_cache[filename];
+   std::uniform_int_distribution<size_t> dist( 0, list.size() - 1 );
+   return list[dist(global_rng)];
+}
+
+std::string NameManager::generate( const std::string & filename )
+{
+   if( !generator_cache.contains( filename ) )
+      return "Unknown";
+
+   const auto& p = generator_cache[filename];
+   if( p.starts.empty() || p.middles.empty() || p.ends.empty() )
+      return "Unknown";
+
+   std::uniform_int_distribution<size_t> d_s( 0, p.starts.size() - 1 );
+   std::uniform_int_distribution<size_t> d_m( 0, p.middles.size() - 1 );
+   std::uniform_int_distribution<size_t> d_e( 0, p.ends.size() - 1 );
+
+   return p.starts[d_s(global_rng)] + p.middles[d_m(global_rng)] + p.ends[d_e(global_rng)];
+}
+
+void NameManager::load_generator( const std::string & filename )
+{
+   if( generator_cache.contains( filename ) )
+      return;
+
+   std::ifstream infile( filename );
+   if( !infile.is_open() )
+      return;
+
+   std::string line;
+   std::vector<std::string>* current = nullptr;
+   NameParts parts;
+
+   while( std::getline( infile, line ) )
    {
-      shutupgcc = fgets( tempstring, 150, infile );
-      tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
-      if( tempstring[0] != '/' )
-         strlcpy( start_string[start_counter++], tempstring, 100 );
-   }
-   while( str_cmp( tempstring, "[end]" ) != 0 )
-   {
-      shutupgcc = fgets( tempstring, 150, infile );
-      tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
-      if( tempstring[0] != '/' )
-         strlcpy( middle_string[middle_counter++], tempstring, 100 );
-   }
-   while( str_cmp( tempstring, "[finish]" ) != 0 )
-   {
-      shutupgcc = fgets( tempstring, 150, infile );
-      tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
-      if( tempstring[0] != '/' )
-         strlcpy( end_string[end_counter++], tempstring, 100 );
-   }
-   FCLOSE( infile );
+      if( !line.empty() && line.back() == '\r' ) line.pop_back();
+      if( line.empty() || line[0] == '/' )
+         continue;
 
-   if( shutupgcc == NULL )
-      ; // We don't give a fuck GCC!
+      if( line == "[start]" )
+      {
+         current = &parts.starts;
+         continue;
+      }
+      if( line == "[middle]" )
+      {
+         current = &parts.middles;
+         continue;
+      }
+      if( line == "[end]" )
+      {
+         current = &parts.ends;
+         continue;
+      }
+      if( line == "[finish]" )
+         break;
 
-   gettimeofday( &starttime, nullptr );
-   srand( ( unsigned )time( &t ) + starttime.tv_usec );
-   --start_counter;
-   --middle_counter;
-   --end_counter;
+      if( current )
+         current->push_back( line );
+   }
+   generator_cache[filename] = std::move( parts );
+}
 
-   strlcpy( name, start_string[rand(  ) % start_counter], 300 );  /* get a start */
-   strlcat( name, middle_string[rand(  ) % middle_counter], 300 );   /* get a middle */
-   strlcat( name, end_string[rand(  ) % end_counter], 300 );   /* get an ending */
-   argument.append( name );
+void name_generator( std::string & argument )
+{
+   argument += NameManager::instance().generate( NAMEGEN_FILE );
+}
+
+/* Added by Tarl 5 Dec 02 to allow picking names from a file. Used for the namegen code in reset.cpp */
+// Tarl, your baby got a modernized update! - Samson 6/1/2026.
+void pick_name( std::string & argument, const std::string & filename )
+{
+   argument += NameManager::instance().get_random( filename );
 }
 
 CMDF( do_name_generator )
 {
-   string name;
+   std::string name;
 
    name_generator( name );
    ch->printf( "%s\r\n", name.c_str(  ) );
-}
-
-/* Added by Tarl 5 Dec 02 to allow picking names from a file. Used for the namegen code in reset.cpp */
-void pick_name( string & argument, const char *filename )
-{
-   FILE *infile;
-   struct timeval starttime;
-   char names[200][20];
-   char name[200], tempstring[151];
-   int counter = 0;
-   char *shutupgcc;
-   time_t t;
-
-   tempstring[0] = '\0';
-
-   infile = fopen( filename, "r" );
-   if( infile == nullptr )
-   {
-      log_printf( "Can't find %s", filename );
-      return;
-   }
-
-   shutupgcc = fgets( tempstring, 150, infile );
-   tempstring[strlen( tempstring ) - 1] = '\0';
-   while( str_cmp( tempstring, "[start]" ) != 0 )
-   {
-      shutupgcc = fgets( tempstring, 100, infile );
-      tempstring[strlen( tempstring ) - 1] = '\0'; /* remove linefeed */
-   }
-   while( str_cmp( tempstring, "[finish]" ) != 0 )
-   {
-      shutupgcc = fgets( tempstring, 100, infile );
-      tempstring[strlen( tempstring ) - 1] = '\0';
-      if( tempstring[0] != '/' )
-         strlcpy( names[counter++], tempstring, 200 );
-   }
-   FCLOSE( infile );
-
-   if( shutupgcc == NULL )
-      ; // We don't give a fuck GCC!
-
-   gettimeofday( &starttime, nullptr );
-   srand( ( unsigned )time( &t ) + starttime.tv_usec );
-   --counter;
-
-   strlcpy( name, names[rand(  ) % counter], 200 );
-   argument.append( name );
 }
 
 auth_data::auth_data(  )
@@ -187,49 +187,65 @@ auth_data::~auth_data(  )
 
 void free_all_auths( void )
 {
-   list < auth_data * >::iterator au;
-
-   for( au = authlist.begin(  ); au != authlist.end(  ); )
+   for( auto it = authlist.begin(  ); it != authlist.end(  ); )
    {
-      auth_data *auth = *au;
-      ++au;
+      auth_data *auth = *it;
 
       deleteptr( auth );
+      it = authlist.erase( it );
    }
 }
 
-void clean_auth_list( void )
+void clean_auth_list (void )
 {
-   list < auth_data * >::iterator auth;
+   // Capture current time at the start of the function
+   const auto now = std::chrono::system_clock::now();
+   const std::chrono::days max_auth_wait{7};
 
-   for( auth = authlist.begin(  ); auth != authlist.end(  ); )
+   for( auto it = authlist.begin(); it != authlist.end(); )
    {
-      auth_data *nauth = *auth;
-      ++auth;
+      auth_data* nauth = *it;
+      ++it;
 
       if( !exists_player( nauth->name ) )
+      {
          deleteptr( nauth );
+         continue;
+      }
+
+      std::filesystem::path file_path = std::format( "{}{}/{}", PLAYER_DIR, LOWER(nauth->name[0]), capitalize( nauth->name ) );
+
+      std::error_code ec;
+      // Get the last modification time of the file
+      auto ftime = std::filesystem::last_write_time( file_path, ec );
+
+      if( !ec )
+      {
+         // Convert the filesystem's time format into system_clock time
+         auto system_time = std::chrono::clock_cast<std::chrono::system_clock>( ftime );
+
+         // Calculate the difference and convert to days
+         auto age = std::chrono::duration_cast<std::chrono::days>( now - system_time );
+
+         if( age > max_auth_wait )
+         {
+            // Attempt to remove the file
+            bool success = std::filesystem::remove( file_path, ec );
+            if( success )
+            {
+               log_printf( "%s deleted for inactivity: %ld days", file_path.c_str(), age.count() );
+            }
+            else if( ec )
+            {
+               log_printf( "Failed to delete %s: %s", file_path.c_str(), ec.message().c_str() );
+            }
+         }
+      }
       else
       {
-         time_t tdiff = 0;
-         time_t curr_time = time( 0 );
-         struct stat fst;
-         char file[256];
-         int MAX_AUTH_WAIT = 7;
-
-         snprintf( file, 256, "%s%c/%s", PLAYER_DIR, LOWER( nauth->name[0] ), capitalize( nauth->name ).c_str(  ) );
-
-         if( stat( file, &fst ) != -1 )
-            tdiff = ( curr_time - fst.st_mtime ) / 86400;
-         else
-            bug( "%s: File %s does not exist!", __func__, file );
-
-         if( tdiff > MAX_AUTH_WAIT )
+         if( ec != std::errc::no_such_file_or_directory )
          {
-            if( unlink( file ) == -1 )
-               perror( "Unlink: do_auth: \"clean\"" );
-            else
-               log_printf( "%s deleted for inactivity: %ld days", file, tdiff );
+            bug( "%s: File %s error: %s", __func__, file_path.c_str(), ec.message().c_str() );
          }
       }
    }
@@ -238,7 +254,6 @@ void clean_auth_list( void )
 void save_auth_list( void )
 {
    ofstream stream;
-   list < auth_data * >::iterator alist;
 
    stream.open( AUTH_FILE );
    if( !stream.is_open(  ) )
@@ -248,10 +263,8 @@ void save_auth_list( void )
       return;
    }
 
-   for( alist = authlist.begin(  ); alist != authlist.end(  ); ++alist )
+   for( auto* auth: authlist )
    {
-      auth_data *auth = *alist;
-
       stream << "#AUTH" << endl;
       stream << "Name     " << auth->name << endl;
       stream << "State    " << auth->state << endl;
@@ -340,15 +353,10 @@ void load_auth_list( void )
 
 int get_auth_state( char_data * ch )
 {
-   list < auth_data * >::iterator namestate;
-   int state;
+   int state = AUTH_AUTHED;
 
-   state = AUTH_AUTHED;
-
-   for( namestate = authlist.begin(  ); namestate != authlist.end(  ); ++namestate )
+   for( auto* auth : authlist )
    {
-      auth_data *auth = *namestate;
-
       if( !str_cmp( auth->name, ch->name ) )
          return auth->state;
    }
@@ -357,12 +365,8 @@ int get_auth_state( char_data * ch )
 
 auth_data *get_auth_name( const string & name )
 {
-   list < auth_data * >::iterator mname;
-
-   for( mname = authlist.begin(  ); mname != authlist.end(  ); ++mname )
+   for( auto* auth : authlist )
    {
-      auth_data *auth = *mname;
-
       if( !str_cmp( auth->name, name ) )  /* If the name is already in the list, break */
          return auth;
    }
@@ -439,15 +443,12 @@ void check_auth_state( char_data * ch )
  */
 char_data *get_waiting_desc( char_data * ch, const string & name )
 {
-   list < descriptor_data * >::iterator ds;
    char_data *ret_char = nullptr;
    static size_t number_of_hits;
 
    number_of_hits = 0;
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-
       if( d->character && ( !str_prefix( name, d->character->name ) ) && IS_WAITING_FOR_AUTH( d->character ) )
       {
          if( ++number_of_hits > 1 )
@@ -714,11 +715,8 @@ CMDF( do_name )
       return;
    }
 
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* tmp : charlist )
    {
-      char_data *tmp = *ich;
-
       if( !str_cmp( argument, tmp->name ) )
       {
          ch->print( "That name is already taken. Please choose another.\r\n" );
@@ -726,16 +724,14 @@ CMDF( do_name )
       }
    }
 
-   char fname[256];
-   struct stat fst;
-   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ).c_str(  ) );
-   if( stat( fname, &fst ) != -1 )
+   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
+   if( std::filesystem::exists( fname ) )
    {
       ch->print( "That name is already taken. Please choose another.\r\n" );
       return;
    }
-   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( ch->name[0] ), capitalize( ch->name ) );
-   unlink( fname );  /* cronel, for auth */
+   fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( ch->name[0] ), capitalize( ch->name ) );
+   std::filesystem::remove( fname );  /* cronel, for auth */
 
    STRFREE( ch->name );
    ch->name = STRALLOC( argument.c_str(  ) );
@@ -797,8 +793,6 @@ CMDF( do_mpapplyb )
 /* changed for new auth */
 void auth_update( void )
 {
-   list < auth_data * >::iterator auth;
-   char buf[MIL], lbuf[MSL];
    int level;
    bool found_imm = false; /* Is at least 1 immortal on? */
    bool found_hit = false; /* was at least one found? */
@@ -806,27 +800,21 @@ void auth_update( void )
    if( ( level = check_command_level( "authorize", MAX_LEVEL ) ) == -1 )
       level = LEVEL_IMMORTAL;
 
-   strlcpy( lbuf, "--- Characters awaiting approval ---\r\n", MSL );
-   for( auth = authlist.begin(  ); auth != authlist.end(  ); ++auth )
+   std::string lbuf = "--- Characters awaiting approval ---\r\n";
+   for( auto* au : authlist )
    {
-      auth_data *au = *auth;
-
       if( au->state < AUTH_CHANGE_NAME )
       {
          found_hit = true;
-         snprintf( buf, MIL, "Name: %s      Status: %s\r\n", au->name.c_str(  ), ( au->state == AUTH_ONLINE ) ? "Online" : "Offline" );
-         strlcat( lbuf, buf, MSL );
+         std::string buf = std::format( "Name: {}      Status: {}\r\n", au->name, ( au->state == AUTH_ONLINE ) ? "Online" : "Offline" );
+         lbuf.append( buf );
       }
    }
 
    if( found_hit )
    {
-      list < descriptor_data * >::iterator ds;
-
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
-
          if( d->connected == CON_PLAYING && d->character && d->character->is_immortal(  ) && d->character->level >= level )
             found_imm = true;
       }
@@ -852,16 +840,15 @@ CMDF( do_reserve )
 
    if( !str_cmp( argument, "add" ) )
    {
-      char buf[MSL];
-
       /*
        * This grep idea was borrowed from SunderMud.
        * * Reserved names list was getting much too large to load into memory.
        * * Placed last so as to avoid problems from any of the previous conditions causing a problem in shell.
        */
-      snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", arg.c_str(  ) );
+      // FIXME: This may have been a good idea in the late 1990s, but not today.
+      std::string buf = std::format( "grep -i -x {} ../system/reserved.lst > /dev/null", arg );
 
-      if( system( buf ) == 0 )
+      if( system( buf.c_str() ) == 0 )
       {
          ch->printf( "%s is already a reserved name.\r\n", arg.c_str(  ) );
          return;

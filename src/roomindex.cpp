@@ -45,7 +45,7 @@ extern int top_affect;
 reset_data *make_reset( char, int, int, int, int, int, int, int, int, int, int, int );
 void delete_reset( reset_data * );
 void name_generator( string & );
-void pick_name( string & name, const char * );
+void pick_name( std::string &, const std::string & );
 void fix_exits(  );
 
 obj_data *generate_random( reset_data *, char_data * );
@@ -1222,84 +1222,80 @@ void room_index::reset(  )
             /*
              * Added by Tarl 4 Dec 02 so that if a mob is 'flagged' namegen in
              * his name, it will auto assign a random name to it. Similarly,
-             * occurances of namegen in the long_descr and description will be
+             * occurrences of namegen in the long_descr and description will be
              * replaced with the name.
              */
-            string namegenCheckString = mob->name;
+            std::string namegenCheckString = ( mob->name ? mob->name : "" );
 
             /*
              * Modified by Tarl 5 Dec 02 to add extra namegen options. ie, namegen_gr will pick a name
              * suitable for Graecian mobs.
-             * 
+             *
              * To add more, edit the line below this, and add an if-check similar to the one starting
              * with if( namegenCheckString.find( "namegen_gr" ) != string::npos )
              *
              * And then Samson shows up and cleans up the code, kills off the memory leaks, and life was good.
              * Or something like that anyway. Merry Christmas 2005!
+             *
+             * Samson shows up out of the blue 21 years later and overhauls the whole system to get rid of the icky C buffers. 6-1-2026.
              */
-            if( namegenCheckString.find( "namegen" ) != string::npos )
+            std::string namegen_tag = "";
+            std::string file = "";
+
+            if( namegenCheckString.find( "namegen_gr" ) != std::string::npos )
             {
-               string genstring = "namegen";
-               string nameg;
-               char mob_keywords[MSL];
-               char file[256];
-               bool namePicked = false;
+               namegen_tag = "namegen_gr";
+               file = SYSTEM_DIR + std::string( mob->sex == SEX_FEMALE ? "namegen_gr_female.txt" : "namegen_gr_other.txt" );
+            }
+            else if( namegenCheckString.find( "namegen_ven" ) != std::string::npos )
+            {
+               namegen_tag = "namegen_ven"; file = SYSTEM_DIR + std::string( mob->sex == SEX_FEMALE ? "namegen_ven_female.txt" : "namegen_ven_other.txt" );
+            }
+            else if( namegenCheckString.find( "namegen_orc" ) != std::string::npos )
+            {
+               namegen_tag = "namegen_orc"; file = SYSTEM_DIR + std::string ( mob->sex == SEX_FEMALE ? "namegen_orc_female.txt" : "namegen_orc_other.txt" );
+            }
+            else if( namegenCheckString.find( "namegen" ) != std::string::npos )
+            {
+               namegen_tag = "namegen";
+            }
 
-               if( namegenCheckString.find( "namegen_gr" ) != string::npos )
-               {
-                  genstring = "namegen_gr";
-                  namePicked = true;
-                  if( mob->sex == SEX_FEMALE )
-                     snprintf( file, 256, "%s%s", SYSTEM_DIR, "namegen_gr_female.txt" );
-                  else
-                     snprintf( file, 256, "%s%s", SYSTEM_DIR, "namegen_gr_other.txt" );
-               }
-               else if( namegenCheckString.find( "namegen_ven" ) != string::npos )
-               {
-                  genstring = "namegen_ven";
-                  namePicked = true;
-                  if( mob->sex == SEX_FEMALE )
-                     snprintf( file, 256, "%s%s", SYSTEM_DIR, "namegen_ven_female.txt" );
-                  else
-                     snprintf( file, 256, "%s%s", SYSTEM_DIR, "namegen_ven_other.txt" );
-               }
-               else if( namegenCheckString.find( "namegen_orc" ) != string::npos )
-               {
-                  genstring = "namegen_orc";
-                  namePicked = true;
-                  if( mob->sex == SEX_FEMALE )
-                     snprintf( file, 256, "%s%s", SYSTEM_DIR, "namegen_orc_female.txt" );
-                  else
-                     snprintf( file, 256, "%s%s", SYSTEM_DIR, "namegen_orc_other.txt" );
-               }
+            if( !namegen_tag.empty() )
+            {
+               std::string nameg = "";
 
-               if( !namePicked )
+               if( file.empty() )
+               {
                   name_generator( nameg );
+               }
                else
-                  pick_name( nameg, file );
+               {
+                  pick_name( nameg, file.c_str() );
+               }
 
                STRFREE( mob->name );
                STRFREE( mob->short_descr );
-               strlcpy( mob_keywords, namegenCheckString.c_str(  ), MSL );
-               strlcat( mob_keywords, " ", MSL );
-               strlcat( mob_keywords, nameg.c_str(  ), MSL );
-               mob->name = STRALLOC( mob_keywords );
-               mob->short_descr = STRALLOC( nameg.c_str(  ) );
 
-               string long_desc = mob->long_descr;
-               string_replace( long_desc, genstring, nameg );
-               STRFREE( mob->long_descr );
-               mob->long_descr = STRALLOC( long_desc.c_str(  ) );
+               std::string new_keywords = namegenCheckString + " " + nameg;
+               mob->name = STRALLOC( new_keywords.c_str() );
+               mob->short_descr = STRALLOC( nameg.c_str() );
+
+               if( mob->long_descr )
+               {
+                  std::string long_desc = mob->long_descr;
+                  string_replace( long_desc, namegen_tag, nameg );
+                  STRFREE( mob->long_descr );
+                  mob->long_descr = STRALLOC( long_desc.c_str() );
+               }
 
                if( mob->chardesc )
                {
-                  string char_desc = mob->chardesc;
-
-                  string_replace( char_desc, genstring, nameg );
+                  std::string char_desc = mob->chardesc;
+                  string_replace( char_desc, namegen_tag, nameg );
                   STRFREE( mob->chardesc );
-                  mob->chardesc = STRALLOC( char_desc.c_str(  ) );
+                  mob->chardesc = STRALLOC( char_desc.c_str() );
                }
-            }
+            } // End Namegen code.
 
             if( !pReset->resets.empty(  ) )
             {
