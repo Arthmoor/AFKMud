@@ -1453,88 +1453,30 @@ void load_dns( void )
    prune_dns(  ); /* Clean out entries beyond 14 days */
 }
 
-/* DNS Resolver code by Trax of Forever's End */
 /*
+ * DNS Resolver code by Trax of Forever's End
  * Almost the same as read_from_buffer...
  */
-bool read_from_dns( int fd, char *buffer )
+// LOL, well, not so much now I think... - Samson 6/3/2026
+bool read_from_dns( int fd, std::string & output )
 {
-   static char inbuf[MSL * 2];
-   size_t iStart, i, j, k;
+   std::vector<char> buffer(4096);
 
-   /*
-    * Check for overflow. 
-    */
-   iStart = strlen( inbuf );
-   if( iStart >= sizeof( inbuf ) - 10 )
+   ssize_t nRead = read( fd, buffer.data(), buffer.size() );
+
+   if( nRead > 0 )
    {
-      bug( "%s: DNS input overflow!!!", __func__ );
-      return false;
-   }
+      output.assign( buffer.data(), nRead );
 
-   /*
-    * Snarf input. 
-    */
-   for( ;; )
+      std::erase_if( output, [](char c ) { return c == '\r' || c == '\n'; } );
+
+      return !output.empty();
+   }
+   else if( nRead == -1 && errno != EWOULDBLOCK )
    {
-      int nRead;
-
-      nRead = read( fd, inbuf + iStart, sizeof( inbuf ) - 10 - iStart );
-      if( nRead > 0 )
-      {
-         iStart += nRead;
-         if( inbuf[iStart - 2] == '\n' || inbuf[iStart - 2] == '\r' )
-            break;
-      }
-      else if( nRead == 0 )
-         return false;
-      else if( errno == EWOULDBLOCK )
-         break;
-      else
-      {
-         perror( "Read_from_dns" );
-         return false;
-      }
+      perror( "Read_from_dns" );
    }
-
-   inbuf[iStart] = '\0';
-
-   /*
-    * Look for at least one new line.
-    */
-   for( i = 0; inbuf[i] != '\n' && inbuf[i] != '\r'; ++i )
-   {
-      if( inbuf[i] == '\0' )
-         return false;
-   }
-
-   /*
-    * Canonical input processing.
-    */
-   for( i = 0, k = 0; inbuf[i] != '\n' && inbuf[i] != '\r'; ++i )
-   {
-      if( inbuf[i] == '\b' && k > 0 )
-         --k;
-      else if( isascii( inbuf[i] ) && isprint( inbuf[i] ) )
-         buffer[k++] = inbuf[i];
-   }
-
-   /*
-    * Finish off the line.
-    */
-   if( k == 0 )
-      buffer[k++] = ' ';
-   buffer[k] = '\0';
-
-   /*
-    * Shift the input buffer.
-    */
-   while( inbuf[i] == '\n' || inbuf[i] == '\r' )
-      ++i;
-   for( j = 0; ( inbuf[j] = inbuf[i + j] ) != '\0'; ++j )
-      ;
-
-   return true;
+   return false;
 }
 
 /* DNS Resolver code by Trax of Forever's End */
@@ -1543,15 +1485,15 @@ bool read_from_dns( int fd, char *buffer )
  */
 void descriptor_data::process_dns(  )
 {
-   char address[MIL];
+   std::string address;
    int status;
 
-   address[0] = '\0';
+   address = "";
 
-   if( !read_from_dns( ifd, address ) || address[0] == '\0' )
+   if( !read_from_dns( ifd, address ) || address.empty() )
       return;
 
-   if( address[0] != '\0' )
+   if( !address.empty() )
    {
       /*
        * The resolver will only return 2 error states, described in the string comparisons here.
@@ -1605,6 +1547,8 @@ void descriptor_data::resolve_dns( const string & ip )
       perror( "resolve_dns: pipe: " );
       return;
    }
+
+   fcntl( fds[0], F_SETFL, O_NONBLOCK );
 
    if( dup2( fds[1], STDOUT_FILENO ) != STDOUT_FILENO )
    {

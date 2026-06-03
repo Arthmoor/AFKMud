@@ -37,89 +37,42 @@
  *          shadow@www.dma.be                                              *
  ***************************************************************************/
 
-#include <cstring>
-#include <string>
-#if defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__CYGWIN__)
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
-#include <arpa/inet.h>
-#include <netinet/in.h>
 #include <netdb.h>
+#include <iostream>
+#include <string>
 
-using namespace std;
+std::string resolve_address(std::string_view address) {
+   if (address == "::1" || address == "127.0.0.1") return "localhost";
 
-char *resolve_address( const string & address )
-{
-   struct in6_addr addr6;
-   struct in_addr addr4;
-   static char addr_str[256];
-   struct hostent *from;
+   addrinfo hints{}, *res = nullptr;
+   hints.ai_family = AF_UNSPEC;
+   hints.ai_socktype = SOCK_STREAM;
+   hints.ai_flags = AI_NUMERICHOST;
 
-   // ::1 is localhost, so if they're not connecting from that, check both cases to be sure they'll work.
-   if( address != "::1" )
-   {
-      if( inet_pton( AF_INET6, address.c_str(), &addr6 ) == 0 )
-      {
-         if( inet_aton( address.c_str(), &addr4 ) == 0 )
-         {
-            // In theory this should only happen if the connection doesn't even show a valid IP.
-            printf( "somehow.has.no.ip?\r\n" );
-            exit( 0 );
-         }
-      }
+   // Attempt to parse the address
+   if (getaddrinfo(address.data(), nullptr, &hints, &res) != 0) {
+      return std::string(address); // Fail: return original string
    }
 
-   // Skip all of the below if IPv6 is localhost. That doesn't resolve to a useful result for whatever reason.
-   if( address == "::1" )
-      strlcpy( addr_str, "localhost", 256 );
-   else
-   {
-      if( ( from = gethostbyaddr( &addr6, sizeof( addr6 ), AF_INET6 ) ) != nullptr )
-      {
-         strlcpy( addr_str, strcmp( from->h_name, "localhost" ) ? from->h_name : "localhost", 256 );
-      }
-      else
-      {
-         string::size_type pos = address.find_last_of( ":", address.length() );
+   char host[NI_MAXHOST];
+   // Attempt reverse lookup
+   int rc = getnameinfo(res->ai_addr, res->ai_addrlen,
+                        host, sizeof(host), nullptr, 0, NI_NAMEREQD);
 
-         if( pos != string::npos )
-         {
-            strlcpy( addr_str, address.c_str(), 256 );
-         }
-         else
-         {
-            inet_aton( address.c_str(), &addr4 );
+   freeaddrinfo(res);
 
-            if( ( from = gethostbyaddr( &addr4, sizeof( addr4 ), AF_INET ) ) )
-               strlcpy( addr_str, strcmp( from->h_name, "localhost" ) ? from->h_name : "localhost", 256 );
-            else // If the above fails, just copy the original IP address. We don't care why. They may not have a reverse lookup.
-            {
-               strlcpy( addr_str, address.c_str(), 256 );
-            }
-         }
-      }
-   }
-
-   return addr_str;
+   if (rc == 0) return std::string(host); // Success: return hostname
+   return std::string(address);          // Fail: return original IP
 }
-
-int main( int argc, char *argv[] )
-{
-   int ip;
-   string input = argv[1]; // Ordinarily this unsafe to just accept, but the only way this gets called is through the MUD anyway.
-   char *address;
-
-   if( argc != 2 )
-   {
-      // No idea what could cause this, but the SMC guys thought it was necessary, so return an error.
-      printf( "bad.resolver.call\r\n" );
-      exit( 0 );
+int main(int argc, char* argv[]) {
+   if (argc != 2) {
+      std::cerr << "bad.resolver.call" << std::endl;
+      return 1;
    }
 
-   address = resolve_address( input );
+   std::string result = resolve_address(argv[1]);
 
-   // If we've made it this far, then either the resolution succeeded or the IP address is being passed through. So let's pass this along now.
-   printf( "%s\r\n", address );
-   exit( 0 );
+   std::cout << result << std::endl;
+
+   return 0;
 }

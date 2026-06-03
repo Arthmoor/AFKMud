@@ -81,8 +81,8 @@ else
    L_FLAGS = $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(EXPORT_SYMBOLS) -lz -lgd $(LIB_MYSQL) $(NEED_DL) -Wl, --export-dynamic
 endif
 
-#D_FLAGS : For the DNS Resolver process. No need in linking all the extra libs for this.
-D_FLAGS = $(C_STD) $(W_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG) $(HARDENING_FLAGS)
+#D_FLAGS : For the DNS Resolver process.
+D_FLAGS = $(C_STD) $(W_FLAGS) $(HARDENING_FLAGS) $(DEBUG_FLAG) $(OPT_FLAG) $(MEM_FLAG)
 
 C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           archery.cpp area.cpp areaconvert.cpp area_fussconvert.cpp area_oldafk.cpp \
