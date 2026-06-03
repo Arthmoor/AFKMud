@@ -25,7 +25,6 @@
  ****************************************************************************
  *                      MySQL Database management module                    *
  ****************************************************************************/
-#if !defined(__CYGWIN__)
 
 #include <format>
 #include <stdexcept>
@@ -130,5 +129,3 @@ int mysql_safe_query( std::string_view fmt, auto&&... args )
       return -1;
    }
 }
-
-#endif

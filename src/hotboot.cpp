@@ -38,8 +38,6 @@
 #include "overland.h"
 #include "roomindex.h"
 
-namespace fs = std::filesystem;
-
 #ifdef MULTIPORT
 extern bool compilelock;
 #endif
@@ -60,7 +58,7 @@ void save_weathermap(  );
 void check_auth_state( char_data * );
 affect_data *fread_afk_affect( FILE * );
 void fwrite_afk_affect( FILE *, affect_data * );
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
  void close_db(  );
  void init_mysql(  );
 #endif
@@ -770,7 +768,7 @@ CMDF( do_hotboot )
    std::string buf3 = "-1";
 
    set_alarm( 0 );
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
    close_db(  );
 #endif
    dlclose( sysdata->dlHandle );
@@ -787,7 +785,7 @@ CMDF( do_hotboot )
       bug( "%s: FATAL ERROR: Unable to reopen system executable handle!", __func__ );
       exit( 1 );
    }
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
    init_mysql(  );
 #endif
    bug( "%s: Hotboot execution failed!!", __func__ );

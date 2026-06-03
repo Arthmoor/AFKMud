@@ -901,7 +901,7 @@ short player_count( void )
    return count;
 }
 
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
  int db_help_count();
 #endif
 extern std::chrono::system_clock::time_point mud_start_time;
@@ -952,7 +952,7 @@ void send_mssp_data( descriptor_data * d )
    mssp_reply( d, "MOBILES", "%d", top_mob_index );
    mssp_reply( d, "OBJECTS", "%d", top_obj_index );
    mssp_reply( d, "MUDPROGS", "%d", top_prog );
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
    mssp_reply( d, "HELPFILES", "%d", db_help_count() );
 #else
    mssp_reply( d, "HELPFILES", "%d", top_help );

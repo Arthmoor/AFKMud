@@ -55,7 +55,7 @@
 #include "shops.h"
 #include "weather.h"
 
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
  #include "sql.h"
 #endif
 
@@ -1253,7 +1253,7 @@ void boot_db( bool fCopyOver )
       exit( 1 );
    }
 
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
    log_string( "Initializing MySQL support..." );
    init_mysql(  );
    add_event( 1800, ev_mysql_ping, nullptr );
@@ -1641,7 +1641,7 @@ CMDF( do_memory )
    ch->printf( "&wPlayers: &W%5d\r\n", sysdata->playersonline );
    ch->printf( "&wMaxEver: &W%5d\t\t\t&wTopsn:   &W%5d(%5d)\r\n", sysdata->alltimemax, num_skills, MAX_SKILL );
    ch->printf( "&wMaxEver was recorded on:  &W%s\r\n\r\n", sysdata->time_of_max.c_str(  ) );
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
    ch->printf( "&wMySQL Connection Active:  &W%s\r\n\r\n", ( db && db->ping() ) ? "YES" : ( db ? db->get_error().c_str() : "NO" ) );
 #endif
 

@@ -131,6 +131,7 @@ all:
 	$(info    Using L-Flags: $(L_FLAGS))
 	$(MAKE) -j2 -s afkmud
 	@echo "Buidling DNS Resolver...";
+	$(info    Resolver using C-Flags: $(D_FLAGS))
 	$(MAKE) -s resolver
 	@rm -f a.out
 

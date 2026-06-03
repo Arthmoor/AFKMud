@@ -143,7 +143,7 @@ void free_continents(  );
 void free_helps(  );
 void free_wizlist_data( );
 void free_wizlist_web_data( );
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
  void close_db(  );
 #endif
 
@@ -1106,7 +1106,7 @@ void cleanup_memory( void )
          hash_dump( hash );
    }
 
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
    fprintf( stdout, "%s", "Closing database connection.\n" );
    close_db(  );
 #endif

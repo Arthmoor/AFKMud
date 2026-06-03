@@ -33,8 +33,8 @@
 #include "event.h"
 #include "mud_prog.h"
 #include "roomindex.h"
-#if !defined(__CYGWIN__) && defined(SQL)
- #include "sql.h"
+#if defined(SQL)
+#include "sql.h"
 #endif
 
 SPELLF( spell_smaug );
@@ -652,7 +652,7 @@ void ev_ban_check( void *data )
    add_event( 3600, ev_ban_check, nullptr );
 }
 
-#if !defined(__CYGWIN__) && defined(SQL)
+#if defined(SQL)
 void ev_mysql_ping( void *data )
 {
    db->ping();
