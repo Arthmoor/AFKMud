@@ -4587,7 +4587,7 @@ CMDF( do_loadup )
    }
    d = nullptr;
    argument[0] = UPPER( argument[0] );
-   fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
+   fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
 
    if( !std::filesystem::exists( fname ) || !std::filesystem::is_regular_file( fname ) || !check_parse_name( capitalize( argument ).c_str(  ), false ) )
    {
@@ -5129,7 +5129,7 @@ CMDF( do_destroy )
             save_equipment[x][y] = nullptr;
    }
 
-   buf = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
+   buf = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
 
    if( std::filesystem::remove( buf, ec ) )
       ch->printf( "&RPlayer %s destroyed.\r\n", argument.c_str() );
@@ -8405,7 +8405,7 @@ CMDF( do_forgefind )
 extern list < lmsg_data *> login_messages;
 CMDF( do_message )
 {
-   string name, arg1, arg2;
+   std::string name, arg1, arg2;
    short type = 0;
 
    if( argument.empty() )
@@ -8433,17 +8433,12 @@ CMDF( do_message )
       return;
    }
 
-   std::filesystem::path checkname = std::format( "{}{}/{}", PLAYER_DIR, tolower(name[0]), capitalize( name ) );
+   std::filesystem::path checkname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name.front() ) ), capitalize( name ) );
 
    if( exists_player( name ) )
    {
-      list < char_data * >::iterator ich;
-
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); )
+      for( auto* temp : pclist )
       {
-         char_data *temp = *ich;
-         ++ich;
-
          if( !str_cmp( name, temp->name ) && temp->desc )
          {
             ch->print( "They are online, wouldn't tells be just as easy?\r\n" );

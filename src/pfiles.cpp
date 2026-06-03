@@ -350,8 +350,8 @@ CMDF( do_pcrename )
       ch->print( "I don't think they would like that!\r\n" );
       return;
    }
-   std::filesystem::path newname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
-   std::filesystem::path oldname = std::format( "{}{}/{}", PLAYER_DIR, tolower( victim->pcdata->filename[0] ), capitalize( victim->pcdata->filename ) );
+   std::filesystem::path newname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
+   std::filesystem::path oldname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( victim->pcdata->filename[0] ) ), capitalize( victim->pcdata->filename ) );
 
    if( std::filesystem::exists( newname ) )
    {

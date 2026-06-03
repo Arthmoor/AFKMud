@@ -59,7 +59,7 @@ bool exists_player( const std::string & name )
    if( name.empty(  ) )
       return false;
 
-   std::filesystem::path buf = std::format( "{}{}/{}", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
+   std::filesystem::path buf = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name.front() ) ), capitalize( name ) );
 
    if( std::filesystem::exists( buf ) )
       return true;

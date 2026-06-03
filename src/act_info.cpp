@@ -2757,7 +2757,7 @@ void pc_data::load_ignores( FILE * fp )
     */
    const char* temp = fread_flagstring( fp );
 
-   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( temp[0] ), capitalize( temp ) );
+   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( temp[0] ) ), capitalize( temp ) );
 
    /*
     * If there isn't a pfile for the name then don't add it to the list
@@ -2852,7 +2852,7 @@ CMDF( do_ignore )
    {
       size_t i;
 
-      std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
+      std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
       std::filesystem::path fname2 = std::format( "{}/{}", GOD_DIR, capitalize( argument ) );
 
       victim = nullptr;

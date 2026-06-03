@@ -609,7 +609,7 @@ void break_camp( char_data * ch )
 /*
  * Bring up the pfile for rare item adjustments
  */
-void adjust_pfile( const string & name )
+void adjust_pfile( const std::string & name )
 {
    char_data *ch;
 
@@ -642,7 +642,7 @@ void adjust_pfile( const string & name )
       return;
    }
 
-   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
+   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name.front() ) ), capitalize( name ) );
 
    if( std::filesystem::exists( fname ) )
    {

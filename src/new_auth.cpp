@@ -213,7 +213,7 @@ void clean_auth_list (void )
          continue;
       }
 
-      std::filesystem::path file_path = std::format( "{}{}/{}", PLAYER_DIR, LOWER(nauth->name[0]), capitalize( nauth->name ) );
+      std::filesystem::path file_path = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( nauth->name.front() ) ), capitalize( nauth->name ) );
 
       std::error_code ec;
       // Get the last modification time of the file
@@ -724,13 +724,13 @@ CMDF( do_name )
       }
    }
 
-   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument[0] ), capitalize( argument ) );
+   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
    if( std::filesystem::exists( fname ) )
    {
       ch->print( "That name is already taken. Please choose another.\r\n" );
       return;
    }
-   fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( ch->name[0] ), capitalize( ch->name ) );
+   fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( ch->name[0] ) ), capitalize( ch->name ) );
    std::filesystem::remove( fname );  /* cronel, for auth */
 
    STRFREE( ch->name );

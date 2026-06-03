@@ -817,7 +817,7 @@ void char_data::save(  )
       }
    }
 
-   std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, tolower( pcdata->filename[0] ), capitalize( pcdata->filename ) );
+   std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name[0] ) ), capitalize( pcdata->filename ) );
    if( !( fp = fopen( strsave.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
@@ -2509,7 +2509,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
 /*
  * Load a char and inventory into a new ch structure.
  */
-bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool copyover )
+bool load_char_obj( descriptor_data * d, const std::string & name, bool preload, bool copyover )
 {
    FILE *fp;
    bool found = false;
@@ -2558,13 +2558,15 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
     */
    reset_colors( ch );
 
-   std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
+   std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name[0] ) ), capitalize( name ) );
+   log_string( ch->pcdata->filename );
+   log_string( strsave.c_str() );
    if( std::filesystem::exists( strsave ) && d->connected != CON_PLOADED )
    {
       if( preload )
          log_printf_plus( LOG_COMM, LEVEL_KL, "Preloading player data for: %s", ch->pcdata->filename );
       else
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%ldK)", ch->pcdata->filename, static_cast<long>( std::filesystem::file_size( ch->pcdata->filename ) / 1024 ) );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%ldK)", ch->pcdata->filename, static_cast<long>( std::filesystem::file_size( strsave ) / 1024 ) );
    }
    /*
     * else no player file 

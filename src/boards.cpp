@@ -1655,7 +1655,7 @@ void board_parse( descriptor_data * d, const string & argument )
          {
             std::filesystem::path buf;
 
-            buf = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
+            buf = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
             if( !std::filesystem::exists( buf ) || !check_parse_name( capitalize( argument ), false ) )
             {
                ch->printf( "%sNo such player named '%s%s%s'.\r\nTo whom is this note addressed?   &D", s1.c_str(), s2.c_str(), argument.c_str(  ), s1.c_str() );

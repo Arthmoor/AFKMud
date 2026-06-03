@@ -209,10 +209,8 @@ CMDF( do_finger )
    {
       descriptor_data *d;
 
-      std::filesystem::path fingload = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
-      /*
-       * Bug fix here provided by Senir to stop /dev/null crash 
-       */
+      std::filesystem::path fingload = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
+      // Bug fix here provided by Senir to stop /dev/null crash
       if( !std::filesystem::exists( fingload ) || !check_parse_name( capitalize( argument ), false ) )
       {
          ch->printf( "&YNo such player named '%s'.\r\n", argument.c_str(  ) );
