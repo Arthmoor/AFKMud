@@ -2462,7 +2462,6 @@ void update_handler( void )
 {
    static int pulse_environment;
    static int pulse_mobile;
-   static int pulse_violence;
    static int pulse_point;
    static int pulse_second;
    static int pulse_time;
@@ -2492,12 +2491,6 @@ void update_handler( void )
       }
    }
 
-   /*
-    * If this damn thing hadn't been used as a base value in about 50 other places..... 
-    */
-   if( --pulse_violence <= 0 )
-      pulse_violence = sysdata->pulseviolence;
-
    // Time and weather. Does not pass when no players are on.
    if( sysdata->playersonline > 0 )
    {
@@ -2507,7 +2500,7 @@ void update_handler( void )
 
          time_update(  );
          char_calendar_update(  );
-         UpdateWeather(  ); /* New Weather Updater -Kayle */
+         UpdateWeather(  ); // New Weather Updater -Kayle
       }
    }
 
