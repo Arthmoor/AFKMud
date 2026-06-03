@@ -26,7 +26,6 @@
  *                          Regular update module                           *
  ****************************************************************************/
 
-#include <sys/time.h>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -2462,14 +2461,15 @@ void update_handler( void )
    static int pulse_point;
    static int pulse_second;
    static int pulse_time;
-   struct timeval sttime;
-   struct timeval entime;
+
+   std::chrono::steady_clock::time_point sttime;
+   std::chrono::steady_clock::time_point entime;
 
    if( timechar )
    {
       timechar->set_color( AT_PLAIN );
       timechar->print( "Starting update timer.\r\n" );
-      gettimeofday( &sttime, nullptr );
+      sttime = std::chrono::steady_clock::now();
    }
 
    if( --pulse_mobile <= 0 )
@@ -2528,11 +2528,16 @@ void update_handler( void )
 
    if( timechar )
    {
-      gettimeofday( &entime, nullptr );
+      entime = std::chrono::steady_clock::now();
+      auto duration = std::chrono::duration_cast<std::chrono::microseconds>( entime - sttime );
+
+      // Calculate seconds and microseconds for the legacy output format
+      long seconds = duration.count() / 1000000;
+      long microseconds = duration.count() % 1000000;
+
       timechar->set_color( AT_PLAIN );
       timechar->print( "Update timing complete.\r\n" );
-      subtract_times( &entime, &sttime );
-      timechar->printf( "Timing took %ld.%ld seconds.\r\n", entime.tv_sec, entime.tv_usec );
+      timechar->printf( "Timing took %ld.%06ld seconds.\r\n", seconds, microseconds );
       timechar = nullptr;
    }
 }
