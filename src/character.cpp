@@ -303,22 +303,19 @@ bool char_data::IS_DRUNK( int drunk )
    return ( number_percent(  ) < ( this->pcdata->condition[COND_DRUNK] * 2 / drunk ) );
 }
 
-void char_data::print( const string & txt )
+void char_data::print( std::string_view txt )
 {
-   if( !txt.empty(  ) && this->desc )
+   if( !txt.empty() && this->desc )
       this->desc->send_color( txt );
 }
 
-void char_data::print_room( const string & txt )
+void char_data::print_room( std::string_view txt )
 {
    if( txt.empty(  ) || !this->in_room )
       return;
 
-   list < char_data * >::iterator ich;
-   for( ich = this->in_room->people.begin(  ); ich != this->in_room->people.end(  ); ++ich )
+   for( auto* rch : this->in_room->people )
    {
-      char_data *rch = *ich;
-
       if( !rch->char_died(  ) && rch->desc )
       {
          if( is_same_char_map( this, rch ) )
@@ -349,16 +346,7 @@ void char_data::pager( const string & txt )
    }
 }
 
-// This is a fully std::string implementation of the older ::printf function. No more faffing about with char buffers.
-// Samson 5-24-2026
-/*
-template<typename... Args>
-void char_data::printf( std::format_string<Args...> fmt, Args&&... args )
-{
-   this->print( std::format( fmt, std::forward<Args>(args)... ) );
-}
-*/
-
+// Legacy C-style printf calls.
 void char_data::printf( const char *fmt, ... )
 {
    char buf[MSL * 2];

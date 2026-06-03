@@ -172,13 +172,23 @@ class char_data
    /*
     * Internal to character.cpp
     */
-   void print( const string & );
-   // template<typename... Args>
-   // void printf( std::format_string<Args...> fmt, Args&&... args );                // Updated std::string style formatting.
+   void print( std::string_view );
+
+   /*
+    * This is a fully std::string implementation of the older ::printf function. No more faffing about with char buffers.
+    * GCC, you are a colossal asshole for not letting me just keep the same function name because of some stupid committee decision.
+    * Samson 5-24-2026.
+    */
+   template<typename... Args>
+   void print_fmt( std::format_string<Args...> fmt, Args&&... args )
+   {
+      this->print( std::format( fmt, std::forward<Args>(args)...) );
+   }
+
    void printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) ); // Legacy C style formatting.
    void pager( const string & );
    void pagerf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
-   void print_room( const string & );
+   void print_room( std::string_view );
    void set_color( short );
    void set_pager_color( short );
    void set_title( const string & );
