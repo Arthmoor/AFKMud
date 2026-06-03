@@ -26,13 +26,7 @@
  *                         Table load/save Module                           *
  ****************************************************************************/
 
-#if !defined(WIN32)
-#include <dlfcn.h>
-#else
-#include <windows.h>
-#define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
-#define dlerror() GetLastError()
-#endif
+#include <dlfcn.h> // For libdl - Trax
 #include "mud.h"
 #include "language.h"
 
@@ -43,11 +37,7 @@ list < lang_data * >langlist;
 SPEC_FUN *m_spec_lookup( const string & name )
 {
    void *funHandle;
-   #if !defined(WIN32)
    const char *error;
-   #else
-   DWORD error;
-   #endif
 
    // Perform the symbol lookup
    funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
@@ -72,11 +62,7 @@ SPEC_FUN *m_spec_lookup( const string & name )
 SPELL_FUN *spell_function( const string & name )
 {
    void *funHandle;
-#if !defined(WIN32)
    const char *error;
-#else
-   DWORD error;
-#endif
 
    // Perform the symbol lookup
    funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
@@ -101,11 +87,7 @@ SPELL_FUN *spell_function( const string & name )
 DO_FUN *skill_function( const string & name )
 {
    void *funHandle;
-#if !defined(WIN32)
    const char *error;
-#else
-   DWORD error;
-#endif
 
    // Perform the symbol lookup
    funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );

@@ -76,9 +76,6 @@ void clean_obj_queue(  );
 ch_ret pullcheck( char_data *, int );
 void teleport( char_data *, int, int );
 void found_prey( char_data *, char_data * );
-#if defined(WIN32)
-void gettimeofday( struct timeval *, struct timezone * );
-#endif
 
 const char *corpse_descs[] = {
    "A skeleton of %s lies here in a pile.",

@@ -26,14 +26,7 @@
  *                             Hotboot module                               *
  ****************************************************************************/
 
-#if !defined(WIN32)
 #include <dlfcn.h>   /* Required for libdl - Trax */
-#else
-#include <windows.h>
-#define dlopen( libname, flags ) LoadLibrary( (libname) )
-#define dlclose( libname )		( (void *)FreeLibrary( (HMODULE)(libname)) )
-#endif
-
 #include <cassert>
 #include <filesystem>
 #include <format>
@@ -153,7 +146,7 @@ void save_mobile( FILE * fp, char_data * mob )
 void save_world( void )
 {
    map < int, room_index * >::iterator iroom;
-   fs::path filename;
+   std::filesystem::path filename;
 
    log_string( "Preserving world state...." );
 
@@ -476,7 +469,7 @@ char_data *load_mobile( FILE * fp )
 void read_obj_file( const char *dirname, const char *filename )
 {
    FILE *fp;
-   fs::path fname;
+   std::filesystem::path fname;
    room_index *room;
 
    int vnum = atoi( filename );
@@ -485,7 +478,7 @@ void read_obj_file( const char *dirname, const char *filename )
    if( !( room = get_room_index( vnum ) ) )
    {
       bug( "%s: ARGH! Missing room index for %d!", __func__, vnum );
-      fs::remove( fname );
+      std::filesystem::remove( fname );
       return;
    }
 
@@ -529,7 +522,7 @@ void read_obj_file( const char *dirname, const char *filename )
          }
       }
       FCLOSE( fp );
-      fs::remove( fname );
+      std::filesystem::remove( fname );
 
       list < obj_data * >::iterator iobj;
       for( iobj = supermob->carrying.begin(  ); iobj != supermob->carrying.end(  ); )
@@ -562,11 +555,11 @@ void load_obj_files( )
    set_alarm( 30 );
    log_string( "World state: loading objs" );
 
-   fs::path hotboot_dir{ HOTBOOT_DIR };
+   std::filesystem::path hotboot_dir{ HOTBOOT_DIR };
 
-   if( fs::exists( hotboot_dir ) && fs::is_directory( hotboot_dir ) )
+   if( std::filesystem::exists( hotboot_dir ) && std::filesystem::is_directory( hotboot_dir ) )
    {
-      for( const auto& entry : fs::directory_iterator( hotboot_dir ) )
+      for( const auto& entry : std::filesystem::directory_iterator( hotboot_dir ) )
       {
          const std::string filename = entry.path().filename().string();
 
@@ -579,7 +572,7 @@ void load_obj_files( )
 void load_world( void )
 {
    FILE *mobfp;
-   fs::path file1;
+   std::filesystem::path file1;
    char *word;
    int done = 0;
    bool mobfile = false;
@@ -620,7 +613,7 @@ void load_world( void )
    /*
     * Once loaded, the data needs to be purged in the event it causes a crash so that it won't try to reload 
     */
-   fs::remove( file1 );
+   std::filesystem::remove( file1 );
 }
 
 /* Warm reboot stuff, gotta make sure to thank Erwin for this :) */
@@ -818,7 +811,7 @@ void hotboot_recover( void )
       exit( 1 );
    }
 
-   fs::remove( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
+   std::filesystem::remove( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
    do
    {
       string key, value;

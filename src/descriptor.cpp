@@ -26,23 +26,9 @@
  *                       Descriptor Support Functions                       *
  ****************************************************************************/
 
-#if defined(WIN32)
-#include <winsock2.h>
-#define  TELOPT_ECHO        '\x01'
-#define  GA                 '\xF9'
-#define  SB                 '\xFA'
-#define  SE                 '\xF0'
-#define  WILL               '\xFB'
-#define  WONT               '\xFC'
-#define  DO                 '\xFD'
-#define  DONT               '\xFE'
-#define  IAC                '\xFF'
-#define EWOULDBLOCK WSAEWOULDBLOCK
-#else
+#include <arpa/telnet.h>
 #include <netdb.h>
 #include <sys/wait.h>
-#include <arpa/telnet.h>
-#endif
 #include <fcntl.h>
 #include <filesystem>
 #include <format>
@@ -248,10 +234,8 @@ void descriptor_data::init(  )
    repeat = 0;
    connected = CON_GET_NAME;
    prevcolor = 0x08;
-#if !defined(WIN32)
    ifd = -1;   /* Descriptor pipes, used for DNS resolution and such */
    ipid = -1;
-#endif
    client = "Unidentified";   // Terminal detect
    msp_detected = false;
    can_compress = false;
@@ -1553,7 +1537,6 @@ bool read_from_dns( int fd, char *buffer )
    return true;
 }
 
-#if !defined(WIN32)
 /* DNS Resolver code by Trax of Forever's End */
 /*
  * Process input that we got from resolve_dns.
@@ -1674,7 +1657,6 @@ void descriptor_data::resolve_dns( const string & ip )
       close( fds[1] );
    }
 }
-#endif
 
 void new_descriptor( int new_desc )
 {
@@ -1682,13 +1664,8 @@ void new_descriptor( int new_desc )
    struct sockaddr_in6 sock;
    int desc;
    char host_buf[NI_MAXHOST];
-#if defined(WIN32)
-   ULONG r;
-   int size;
-#else
    int r;
    socklen_t size;
-#endif
 
    size = sizeof( sock );
    if( check_bad_desc( new_desc ) )
@@ -1713,15 +1690,6 @@ void new_descriptor( int new_desc )
    set_alarm( 20 );
    alarm_section = "new_descriptor: after accept";
 
-#if defined(WIN32)
-   r = 1;
-   if( ioctlsocket( desc, FIONBIO, &r ) == SOCKET_ERROR )
-   {
-      perror( "New_descriptor: fcntl: O_NONBLOCK" );
-      close( desc );
-      return;
-   }
-#else
    r = fcntl( desc, F_GETFL, 0 );
    if( r < 0 || fcntl( desc, F_SETFL, O_NONBLOCK | O_NDELAY | r ) < 0 )
    {
@@ -1729,7 +1697,6 @@ void new_descriptor( int new_desc )
       close( desc );
       return;
    }
-#endif
 
    if( check_bad_desc( new_desc ) )
       return;
@@ -1770,7 +1737,6 @@ void new_descriptor( int new_desc )
    dnew->client_port = ntohs( sock.sin6_port );
    dnew->hostname = dnew->ipaddress;
 
-#if !defined(WIN32)
    if( !sysdata->NO_NAME_RESOLVING )
    {
       string buf = in_dns_cache( dnew->ipaddress );
@@ -1780,7 +1746,6 @@ void new_descriptor( int new_desc )
       else
          dnew->hostname = buf;
    }
-#endif
 
    // Ban notice is given in the ban.cpp file
    if( is_banned( dnew ) )
@@ -1844,22 +1809,18 @@ void accept_new( int ctrl )
    maxdesc = ctrl;
    newdesc = 0;
 
-   list < descriptor_data * >::iterator ds;
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-
       maxdesc = UMAX( maxdesc, d->descriptor );
       FD_SET( d->descriptor, &in_set );
       FD_SET( d->descriptor, &out_set );
       FD_SET( d->descriptor, &exc_set );
-#if !defined(WIN32)
-      if( d->ifd != -1 && ( *ds )->ipid != -1 )
+
+      if( d->ifd != -1 && d->ipid != -1 )
       {
          maxdesc = UMAX( maxdesc, d->ifd );
          FD_SET( d->ifd, &in_set );
       }
-#endif
    }
 
    if( select( maxdesc + 1, &in_set, &out_set, &exc_set, &null_time ) < 0 )
@@ -2085,7 +2046,6 @@ void close_socket( descriptor_data * d, bool force )
    char_data *ch;
    auth_data *old_auth;
 
-#if !defined(WIN32)
    if( d->ipid != -1 )
    {
       int status;
@@ -2095,7 +2055,6 @@ void close_socket( descriptor_data * d, bool force )
    }
    if( d->ifd != -1 )
       close( d->ifd );
-#endif
 
    /*
     * flush outbuf 

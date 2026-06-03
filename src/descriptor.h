@@ -113,10 +113,8 @@ class descriptor_data
    int descriptor;
    int newstate;
    int repeat;
-#if !defined(WIN32)
    int ifd;
    pid_t ipid;
-#endif
    pid_t process; /* Samson 4-16-98 - For new command shell code */
    short connected;
    short idle;

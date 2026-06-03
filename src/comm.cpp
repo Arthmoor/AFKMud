@@ -26,15 +26,9 @@
  *                      Network Communication Module                        *
  ****************************************************************************/
 
-#if !defined(WIN32)
-#include <sys/wait.h>
 #include <dlfcn.h>
-#else
-#include <winsock2.h>
-#define dlclose( path )		( (void *)FreeLibrary( (HMODULE)(path)) )
-#endif
-
 #include <netdb.h>
+#include <sys/wait.h>
 #include <filesystem>
 #include <format>
 #include <fstream>
@@ -234,35 +228,9 @@ void directory_check( void )
    log_string( "Directory check passed." );
 }
 
-#if defined(WIN32)   /* NJG */
-UINT timer_code = 0; /* needed to kill the timer */
-/* Note: need to include: WINMM.LIB to link to timer functions */
-void caught_alarm(  );
-void CALLBACK alarm_handler( UINT IDEvent,   /* identifies timer event */
-                             UINT uReserved, /* not used */
-                             DWORD dwUser,   /* application-defined instance data */
-                             DWORD dwReserved1, /* not used */
-                             DWORD dwReserved2 )   /* not used */
-{
-   caught_alarm(  );
-}
-
-void kill_timer(  )
-{
-   if( timer_code )
-      timeKillEvent( timer_code );
-   timer_code = 0;
-}
-#endif
-
 void set_alarm( long seconds )
 {
-#if defined(WIN32)
-   kill_timer(  );   /* kill old timer */
-   timer_code = timeSetEvent( seconds * 1000L, 1000, alarm_handler, 0, TIME_PERIODIC );
-#else
    alarm( seconds );
-#endif
 }
 
 void open_mud_log()
@@ -471,14 +439,6 @@ void close_mud( void )
    fflush( stderr ); /* make sure stderr is flushed */
 
    close( control );
-
-#if defined(WIN32)
-   /*
-    * Shut down Windows sockets 
-    */
-   WSACleanup(  );   /* clean up */
-   kill_timer(  );   /* stop timer thread */
-#endif
 }
 
 static void SegVio( int signum )
@@ -593,7 +553,6 @@ static void SigTerm( int signum )
    exit( 0 );
 }
 
-#if !defined(WIN32)
 /*
  * LAG alarm!							-Thoric
  */
@@ -634,7 +593,6 @@ static void caught_alarm( int signum )
    cleanup_memory(  );
    exit( 0 );
 }
-#endif
 
 /*
  * Parse a name for acceptability.
@@ -794,11 +752,9 @@ void process_input( void )
             }
          }
 
-#if !defined(WIN32)
          // Check for input from the dns 
          if( ( d->connected == CON_PLAYING || d->character ) && d->ifd != -1 && FD_ISSET( d->ifd, &in_set ) )
             d->process_dns(  );
-#endif
 
          // If they're waiting on a cooldown to finish, decrement and process them again in the next loop.
          if( d->character && d->character->wait > 0 )
@@ -1162,20 +1118,6 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Memory cleanup complete, exiting.\n" );
 }
 
-// Heh, nice one Darien :)
-#if !defined(WIN32)
-void moron_check( void )
-{
-   uid_t uid;
-
-   if( ( uid = getuid(  ) ) == 0 )
-   {
-      log_string( "Warning, you are a moron. Do not run as root." );
-      exit( 1 );
-   }
-}
-#endif
-
 void set_chandler( void )
 {
    signal( SIGSEGV, SegVio );
@@ -1185,28 +1127,6 @@ void unset_chandler( void )
 {
    signal( SIGSEGV, SIG_DFL );
 }
-
-#if defined(WIN32)
-class WinsockGuard
-{
-   public:
-      WinsockGuard()
-      {
-         WSADATA wsaData;
-
-         // Request version 2.2 - the old 1,1 call is 25+ years out of date.
-         if( WSAStartup( MAKEWORD( 2, 2 ), &wsaData ) != 0 )
-         {
-            throw std::runtime_error( "WSAStartup failed" );
-         }
-      }
-
-      ~WinsockGuard()
-      {
-         WSACleanup();
-      }
-};
-#endif
 
 void bailout( int sig )
 {
@@ -1218,24 +1138,26 @@ void bailout( int sig )
    close_mud();
    cleanup_memory();
 
-#if defined(_WIN32)
-   WSACleanup();
-#endif
-
    exit( 0 );
+}
+
+// Heh, nice one Darien :)
+void moron_check( void )
+{
+   uid_t uid;
+
+   if( ( uid = getuid(  ) ) == 0 )
+   {
+      log_string( "Warning, you are a moron. Do not run as root." );
+      exit( 1 );
+   }
 }
 
 int main( int argc, char **argv )
 {
    bool fCopyOver = false;
 
-#if defined(WIN32)
-   WinsockGuard wsa_guard;
-#endif /* WIN32 */
-
-#if !defined(WIN32)
-   moron_check(  );  // Debatable weather or not this is true in WIN32 anyway :)
-#endif
+   moron_check(  ); // Don't let someone run as root, cause that's dumb.
 
    DONT_UPPER = false;
    num_descriptors = 0;
@@ -1282,7 +1204,6 @@ int main( int argc, char **argv )
     */
    signal( SIGINT, bailout );
 
-#if !defined(WIN32)
    /*
     * Set various signal traps, waiting until after completing all bootup operations
     * before doing so because crashes during bootup should not be intercepted. Samson 3-11-04
@@ -1292,7 +1213,6 @@ int main( int argc, char **argv )
    signal( SIGALRM, caught_alarm );
    signal( SIGUSR1, SigUser1 );  /* Catch user defined signals */
    signal( SIGUSR2, SigUser2 );
-#endif
 
 #ifdef MULTIPORT
    signal( SIGCHLD, SigChld );

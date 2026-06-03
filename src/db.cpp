@@ -26,19 +26,13 @@
  *                       Database management module                         *
  ****************************************************************************/
 
-// For libdl - Trax
-#if !defined(WIN32)
-#include <dlfcn.h>
-#else
-#include <windows.h>
-#define dlopen( libname, flags ) LoadLibrary( (libname) )
-#endif
-
 // For backtrace info in logging functions.
-#if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
+#if __has_include(<cxxabi.h>)
 #include <cxxabi.h>
+#define HAVE_CXXABI 1
 #endif
 
+#include <dlfcn.h> // For libdl - Trax
 #include <cstdarg>
 #include <filesystem>
 #include <format>
@@ -1839,8 +1833,9 @@ void append_to_file( const string & file, const char *fmt, ... )
  * Output of the results gets sent to the standard game log. - Samson 1/11/2025
  *
  * Note: This requires compiling with C++23 support. Currently C++23 is available with GCC 13 and later.
+ * If your OS does not have the appropriate library then bug() will still work, you just won't get the traces.
  */
-#if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
+#if defined(HAVE_CXXABI)
 std::string demangle( const std::string& name )
 {
    int status = -1;
@@ -1924,7 +1919,7 @@ void bug( const char *str, ... )
       log_printf( "[*****] FILE: %s LINE: %d", strArea, iLine );
    }
 
-#if !defined(__CYGWIN__) && !defined(__FreeBSD__) && !defined(WIN32)
+#if defined(HAVE_CXXABI)
    if( !fBootDb )
    {
       generate_backtrace();

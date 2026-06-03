@@ -34,7 +34,6 @@ endif
 
 #MySQL support. Need to specify the proper path for your system.
 #Uncomment this to enable SQL support.
-#DO NOT ENABLE if running in Cygwin. Cygwin has no library support!
 #The link argument should be either -lmysqlclient or -lmariadb depending on which DB solution the server is using.
 #LIB_MYSQL = -lmariadb
 
@@ -53,9 +52,8 @@ endif
 HARDENING_FLAGS = -fstack-protector-strong -D_FORTIFY_SOURCE=2
 
 #AFKMud now requires at least C++23 to be enabled. This will work in GCC 13.1 or later, which should be more than sufficient.
-ifndef IS_CYGWIN
-   C_STD = -std=c++23
-endif
+#You can try out any *later* standard, but not an earlier one since the code uses many C++23 features.
+C_STD = -std=c++23
 
 #Comment out for any system it complains this isn't available on. It will never work in Cygwin.
 ifndef IS_CYGWIN

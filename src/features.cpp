@@ -42,38 +42,19 @@
  * retained intact.
  */
 
-#if !defined(WIN32)
 #include <arpa/telnet.h>
 #include <sys/socket.h>
-#else
-#include <unistd.h>
-#define  TELOPT_ECHO        '\x01'
-#define  GA                 '\xF9'
-#define  SB                 '\xFA'
-#define  SE                 '\xF0'
-#define  WILL               '\xFB'
-#define  WONT               '\xFC'
-#define  DO                 '\xFD'
-#define  DONT               '\xFE'
-#define  IAC                '\xFF'
-const int ENOSR = 63;
-#endif
 #include <format>
 #include "mud.h"
 #include "descriptor.h"
 #include "roomindex.h"
-
-#if defined(__OpenBSD__) || defined(__FreeBSD__)
-const int ENOSR = 63;
-#endif
 
 const unsigned char will_compress2_str[] = { IAC, WILL, TELOPT_COMPRESS2, '\0' };
 const unsigned char start_compress2_str[] = { IAC, SB, TELOPT_COMPRESS2, IAC, SE, '\0' };
 const unsigned char will_msp_str[] = { IAC, WILL, TELOPT_MSP, '\0' };
 const unsigned char start_msp_str[] = { IAC, SB, TELOPT_MSP, IAC, SE, '\0' };
 
-/* Begin MCCP Information */
-
+// Begin MCCP Information
 bool descriptor_data::process_compressed(  )
 {
    int iStart = 0, nBlock, nWrite, len;

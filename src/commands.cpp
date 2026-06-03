@@ -26,16 +26,10 @@
  *                              Command Code                                *
  ****************************************************************************/
 
+#include <dlfcn.h> // For libdl -- Trax
 #include <filesystem>
 #include <format>
 #include <fstream>
-#if !defined(WIN32)
-#include <dlfcn.h>
-#else
-#include <windows.h>
-#define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
-#define dlerror() GetLastError()
-#endif
 #include "mud.h"
 #include "clans.h"
 #include "commands.h"
@@ -47,9 +41,6 @@
 vector < vector < cmd_type * > >command_table;
 
 extern std::string lastplayercmd;
-#if defined(WIN32)
-void gettimeofday( struct timeval *, struct timezone * );
-#endif
 
 /*
  * Log-all switch.
@@ -583,11 +574,7 @@ void interpret( char_data * ch, std::string argument )
 
       if( found && !cmd->do_fun )
       {
-#if !defined(WIN32)
          const char *error;
-#else
-         DWORD error;
-#endif
 
          std::filesystem::path filename = std::format( "../src/cmd/so/do_{}.so", cmd->name );
          cmd->fileHandle = dlopen( filename.c_str(), RTLD_NOW );
@@ -1178,11 +1165,7 @@ CMDF( do_cedit )
 
    if( !str_cmp( arg2, "load" ) )
    {
-#if !defined(WIN32)
       const char *error;
-#else
-      DWORD error;
-#endif
 
       if( command->flags.test( CMD_LOADED ) )
       {
