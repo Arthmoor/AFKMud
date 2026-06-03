@@ -26,9 +26,9 @@
  *                              Command Code                                *
  ****************************************************************************/
 
+#include <filesystem>
 #include <format>
 #include <fstream>
-#include <sys/time.h>
 #if !defined(WIN32)
 #include <dlfcn.h>
 #else
@@ -59,7 +59,6 @@ bool fLogAll = false;
 /*
  * Externals
  */
-void subtract_times( struct timeval *, struct timeval * );
 bool check_ability( char_data *, const string &, const string & );
 bool check_skill( char_data *, const string &, const string & );
 #ifdef MULTIPORT
@@ -150,7 +149,7 @@ int check_command_level( const string & arg, int check )
  *  edited online to allow or disallow certain situations.  May be an idea
  *  to rework this so we can edit the message sent back online, as well as
  *  maybe a crude parsing language so we can add in new checks online without
- *  haveing to hard-code them in.     -- Shaddai   August 25, 1997
+ *  having to hard-code them in.     -- Shaddai   August 25, 1997
  */
 
 /* Needed a global here */
@@ -167,36 +166,22 @@ std::string check_cmd_flags( char_data * ch, cmd_type * cmd )
    return cmd_flag_buf;
 }
 
-void start_timer( struct timeval *starttime )
+void start_timer( std::chrono::steady_clock::time_point & starttime )
 {
-   if( !starttime )
-   {
-      bug( "%s: nullptr stime.", __func__ );
-      return;
-   }
-   gettimeofday( starttime, nullptr );
-   return;
+   starttime = std::chrono::steady_clock::now();
 }
 
-time_t end_timer( struct timeval * starttime )
+std::chrono::microseconds end_timer( std::chrono::steady_clock::time_point & starttime )
 {
-   struct timeval etime;
+   auto etime = std::chrono::steady_clock::now();
 
-   /*
-    * Mark etime before checking stime, so that we get a better reading.. 
-    */
-   gettimeofday( &etime, nullptr );
-   if( !starttime || ( !starttime->tv_sec && !starttime->tv_usec ) )
-   {
-      bug( "%s: bad starttime.", __func__ );
-      return 0;
-   }
-   subtract_times( &etime, starttime );
-   /*
-    * stime becomes time used 
-    */
-   *starttime = etime;
-   return ( etime.tv_sec * 1000000 ) + etime.tv_usec;
+   // Calculate duration and convert to microseconds
+   auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>( etime - starttime );
+
+   // Update the reference so the caller can reuse it if needed
+   starttime = etime;
+
+   return elapsed;
 }
 
 bool check_social( char_data * ch, const string & command, const string & argument )
@@ -443,17 +428,15 @@ bool check_alias( char_data * ch, const string & command, const string & argumen
  * The main entry point for executing commands.
  * Can be recursively called from 'at', 'order', 'force'.
  */
-void interpret( char_data * ch, string argument )
+void interpret( char_data * ch, std::string argument )
 {
-   string command;
-   string origarg = argument;
+   std::string command;
+   std::string origarg = argument;
    std::string logline, buf;
    timer_data *chtimer = nullptr;
    cmd_type *cmd = nullptr;
    int trust, loglvl;
    bool found;
-   struct timeval time_used;
-   long tmptime;
 
    if( !ch )
    {
@@ -600,15 +583,14 @@ void interpret( char_data * ch, string argument )
 
       if( found && !cmd->do_fun )
       {
-         char filename[256];
 #if !defined(WIN32)
          const char *error;
 #else
          DWORD error;
 #endif
 
-         snprintf( filename, 256, "../src/cmd/so/do_%s.so", cmd->name.c_str(  ) );
-         cmd->fileHandle = dlopen( filename, RTLD_NOW );
+         std::filesystem::path filename = std::format( "../src/cmd/so/do_{}.so", cmd->name );
+         cmd->fileHandle = dlopen( filename.c_str(), RTLD_NOW );
          if( ( error = dlerror(  ) ) == nullptr )
          {
             cmd->do_fun = ( DO_FUN * ) ( dlsym( cmd->fileHandle, cmd->fun_name.c_str(  ) ) );
@@ -808,11 +790,13 @@ void interpret( char_data * ch, string argument )
       }
    }
 
+   std::chrono::steady_clock::time_point time_start;
+   std::chrono::microseconds time_used{0};
    try
    {
-      start_timer( &time_used );
+      start_timer( time_start );
       ( *cmd->do_fun ) ( ch, argument );
-      end_timer( &time_used );
+      time_used = end_timer( time_start );
    }
    catch( exception & e )
    {
@@ -823,15 +807,19 @@ void interpret( char_data * ch, string argument )
       bug( "&YUnknown command exception on command: %s %s&D", cmd->name.c_str(  ), argument.c_str(  ) );
    }
 
-   tmptime = UMIN( time_used.tv_sec, 19 ) * 1000000 + time_used.tv_usec;
+   // tmptime is in miliseconds, up to a cap of 19 seconds.
+   auto tmptime = std::min( static_cast<long long>( time_used.count() ), 19000000LL );
 
    /*
     * laggy command notice: command took longer than 3.0 seconds 
     */
    if( tmptime > 3000000 )
    {
-      log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: %s: %s %s (R:%d S:%ld.%06ld)", ch->name,
-                       cmd->name.c_str(  ), ( cmd->log == LOG_NEVER ? "XXX" : argument.c_str(  ) ), ch->in_room ? ch->in_room->vnum : 0, time_used.tv_sec, time_used.tv_usec );
+      long long seconds = tmptime / 1000000;
+      long long microseconds = tmptime % 1000000;
+
+      log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: %s: %s %s (R:%d S:%lld.%06lld)", ch->name,
+                       cmd->name.c_str(  ), ( cmd->log == LOG_NEVER ? "XXX" : argument.c_str(  ) ), ch->in_room ? ch->in_room->vnum : 0, seconds, microseconds );
    }
    lastplayercmd = "No commands pending";
 }
@@ -1190,7 +1178,6 @@ CMDF( do_cedit )
 
    if( !str_cmp( arg2, "load" ) )
    {
-      char filename[256];
 #if !defined(WIN32)
       const char *error;
 #else
@@ -1209,8 +1196,8 @@ CMDF( do_cedit )
          return;
       }
 
-      snprintf( filename, 256, "../src/cmd/so/do_%s.so", command->name.c_str(  ) );
-      command->fileHandle = dlopen( filename, RTLD_NOW );
+      std::filesystem::path filename = std::format( "../src/cmd/so/do_{}.so", command->name );
+      command->fileHandle = dlopen( filename.c_str(), RTLD_NOW );
       if( ( error = dlerror(  ) ) == nullptr )
       {
          command->do_fun = ( DO_FUN * ) ( dlsym( command->fileHandle, command->fun_name.c_str(  ) ) );
@@ -1913,12 +1900,11 @@ CMDF( do_wizhelp )
 
 CMDF( do_timecmd )
 {
-   struct timeval starttime;
-   struct timeval endtime;
-   static bool timing;
-   string arg;
+   static bool timing = false;
+   std::string arg;
 
    ch->print( "Timing\r\n" );
+
    if( timing )
       return;
 
@@ -1941,13 +1927,19 @@ CMDF( do_timecmd )
    }
    ch->print( "&[plain]Starting timer.\r\n" );
    timing = true;
-   gettimeofday( &starttime, nullptr );
+
+   auto starttime = std::chrono::steady_clock::now();
    interpret( ch, argument );
-   gettimeofday( &endtime, nullptr );
+   auto endtime = std::chrono::steady_clock::now();
    timing = false;
+
    ch->print( "&[plain]Timing complete.\r\n" );
-   subtract_times( &endtime, &starttime );
-   ch->printf( "Timing took %ld.%06ld seconds.\r\n", endtime.tv_sec, endtime.tv_usec );
+
+   auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>( endtime - starttime );
+   long long seconds = elapsed.count() / 1000000;
+   long long microseconds = elapsed.count() % 1000000;
+
+   ch->printf( "Timing took %lld.%06lld seconds.\r\n", seconds, microseconds );
 }
 
 /******************************************************
