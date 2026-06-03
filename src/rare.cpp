@@ -709,13 +709,13 @@ void adjust_pfile( const std::string & name )
 /* Rare item counting function taken from the Tartarus codebase, a
  * ROM 2.4b derivative by Ceran. Modified for Smaug compatibility by Samson
  */
-int scan_pfiles( const char *dirname, const char *filename, bool updating )
+int scan_pfiles( const std::string & dirname, const std::string & filename, bool updating )
 {
    FILE *fpChar;
    ostringstream path;
    int adjust = 0;
 
-   path << dirname << "/" << filename;
+   path << dirname << '/' << filename;
 
    if( !( fpChar = fopen( path.str().c_str(), "r" ) ) )
    {
@@ -802,7 +802,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
             vnum = fread_number( fpChar );
             if( ( pObjIndex = get_obj_index( vnum ) ) == nullptr )
             {
-               bug( "%s: %s has bad obj vnum.", __func__, filename );
+               bug( "%s: %s has bad obj vnum.", __func__, filename.c_str() );
                adjust = 1; /* So it can clean out the bad object - Samson 4-16-00 */
             }
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
@@ -816,7 +816,7 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
                if( !updating )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", filename, counter, vnum );
+                  log_printf( "%s: Counted %d of Vnum %d", filename.c_str(), counter, vnum );
                }
                else
                   adjust = 1;
@@ -1087,14 +1087,18 @@ void load_equipment_totals( bool fCopyOver )
    for( char c = 'a'; c <= 'z'; ++c )
    {
       std::filesystem::path dirname = std::format( "{}{}", PLAYER_DIR, c );
-      if( std::filesystem::exists( dirname ) )
+
+      for( const auto& entry : std::filesystem::directory_iterator( dirname ) )
       {
-         std::string filename = dirname.filename().string();
+         if( entry.is_regular_file() )
+         {
+            std::string filename = entry.path().filename().string();
 
-         if( filename.empty() || filename[0] == '.' )
-            continue;
+            if( filename.empty() || filename[0] == '.' )
+               continue;
 
-         scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
+            scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
+         }
       }
    }
 
@@ -1138,15 +1142,22 @@ void rare_update( void )
    for( char c = 'a'; c <= 'z'; ++c )
    {
       std::filesystem::path dirname = std::format( "{}{}", PLAYER_DIR, c );
-      if( std::filesystem::exists( dirname ) )
+
+      for( const auto& entry : std::filesystem::directory_iterator( dirname ) )
       {
-         std::string filename = dirname.filename().string();
+         if( entry.is_regular_file() )
+         {
+            std::string filename = entry.path().filename().string();
 
-         int adjust = scan_pfiles( dirname.string().c_str(), filename.c_str(), true );
-         if( adjust == 1 )
-            adjust_pfile( dirname.string().c_str() );
+            if( filename.empty() || filename[0] == '.' )
+               continue;
 
-         scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
+            int adjust = scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
+            if( adjust == 1 )
+               adjust_pfile( filename.c_str() );
+
+            scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
+         }
       }
    }
    log_string( "Daily rare item updates completed." );
