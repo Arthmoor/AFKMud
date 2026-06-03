@@ -39,7 +39,6 @@
 #include <cxxabi.h>
 #endif
 
-#include <cmath>
 #include <cstdarg>
 #include <filesystem>
 #include <format>
@@ -694,8 +693,6 @@ void save_sysdata( void )
       fprintf( fp, "Stunregular    %d\n", sysdata->stun_regular );
       fprintf( fp, "Gougepvp       %d\n", sysdata->gouge_plr_vs_plr );
       fprintf( fp, "Gougenontank   %d\n", sysdata->gouge_nontank );
-      fprintf( fp, "Bashpvp        %d\n", sysdata->bash_plr_vs_plr );
-      fprintf( fp, "Bashnontank    %d\n", sysdata->bash_nontank );
       fprintf( fp, "Dodgemod       %d\n", sysdata->dodge_mod );
       fprintf( fp, "Parrymod       %d\n", sysdata->parry_mod );
       fprintf( fp, "Tumblemod      %d\n", sysdata->tumble_mod );
@@ -772,8 +769,6 @@ void fread_sysdata( FILE * fp )
             break;
 
          case 'B':
-            KEY( "Bashpvp", sysdata->bash_plr_vs_plr, fread_number( fp ) );
-            KEY( "Bashnontank", sysdata->bash_nontank, fread_number( fp ) );
             KEY( "Bestowdif", sysdata->bestow_dif, fread_number( fp ) );
             KEY( "Build", sysdata->build_level, fread_number( fp ) );
             break;
@@ -1183,23 +1178,25 @@ void boot_db( bool fCopyOver )
 
    log_string( "Loading sysdata configuration..." );
 
+   // See class system_data in mud.h for details on each setting.
    sysdata = new system_data;
-   /*
-    * default values
-    */
-   sysdata->playersonline = 0;   // This one does not save
+
+   sysdata->playersonline = 0;
+   sysdata->newbie_purge =
    sysdata->NO_NAME_RESOLVING = true;
    sysdata->WAIT_FOR_AUTH = true;
-   sysdata->read_all_mail = LEVEL_DEMI;
+   sysdata->read_all_mail = LEVEL_SUPREME;
    sysdata->read_mail_free = LEVEL_IMMORTAL;
-   sysdata->write_mail_free = LEVEL_IMMORTAL;
-   sysdata->take_others_mail = LEVEL_DEMI;
+   sysdata->write_mail_free = 2;
+   sysdata->take_others_mail = LEVEL_SUPREME;
    sysdata->build_level = LEVEL_DEMI;
    sysdata->level_modify_proto = LEVEL_LESSER;
-   sysdata->level_override_private = LEVEL_GREATER;
-   sysdata->level_mset_player = LEVEL_LESSER;
-   sysdata->stun_plr_vs_plr = 65;
-   sysdata->stun_regular = 15;
+   sysdata->level_override_private = LEVEL_GOD;
+   sysdata->level_mset_player = LEVEL_ASCENDANT;
+   sysdata->level_getobjnotake = LEVEL_GREATER;
+   sysdata->level_forcepc = LEVEL_ASCENDANT;
+   sysdata->bestow_dif = 5;
+   sysdata->check_imm_host = true;
    sysdata->dodge_mod = 2;
    sysdata->parry_mod = 2;
    sysdata->tumble_mod = 4;
@@ -1207,20 +1204,19 @@ void boot_db( bool fCopyOver )
    sysdata->dam_plr_vs_mob = 100;
    sysdata->dam_mob_vs_plr = 100;
    sysdata->dam_mob_vs_mob = 100;
-   sysdata->level_getobjnotake = LEVEL_GREATER;
+   sysdata->stun_plr_vs_plr = 65;
+   sysdata->stun_regular = 15;
    sysdata->save_frequency = std::chrono::minutes( 20 );
-   sysdata->bestow_dif = 5;
-   sysdata->check_imm_host = 1;
-   sysdata->save_pets = 1;
+   sysdata->save_pets = true;
    sysdata->save_flags.reset(  );
-   sysdata->save_flags.set(  );  /* This defaults to turning on every save_flag */
+   sysdata->save_flags.set(  );  // This defaults to turning on every save_flag
    sysdata->motd = current_time;
    sysdata->imotd = current_time;
    sysdata->mapsize = 7;
-   sysdata->maxvnum = 60000;
+   sysdata->maxvnum = 100000;
    sysdata->minguildlevel = 10;
    sysdata->maxcondval = 100;
-   sysdata->maxign = 6;
+   sysdata->maxign = 10;
    sysdata->maximpact = 30;
    sysdata->maxholiday = 30;
    sysdata->initcond = 12;
