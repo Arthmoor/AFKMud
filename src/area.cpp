@@ -40,8 +40,6 @@
 #include "shops.h"
 #include "weather.h"
 
-namespace fs = std::filesystem;
-
 int top_area;
 
 extern int top_prog;
@@ -2455,11 +2453,11 @@ void close_all_areas( void )
    }
 }
 
-// FIXME: Update to std::format once ::fold accepts std::string as an argument.
+// FIXME: Update once ::fold accepts std::string as an argument.
 CMDF( do_savearea )
 {
    area_data *tarea;
-   char fname[256];
+   std::filesystem::path fname;
 
    if( ch->isnpc(  ) || ch->get_trust(  ) < LEVEL_CREATOR || !ch->pcdata || ( argument[0] == '\0' && !ch->pcdata->area ) )
    {
@@ -2479,8 +2477,8 @@ CMDF( do_savearea )
 
          if( !tarea->flags.test( AFLAG_PROTOTYPE ) )
             continue;
-         snprintf( fname, 256, "%s%s", BUILD_DIR, tarea->filename );
-         tarea->fold( fname, false );
+         fname = std::format( "{}{}", BUILD_DIR, tarea->filename );
+         tarea->fold( fname.c_str(), false );
       }
       ch->print( "&[immortal]Prototype areas saved.\r\n" );
       return;
@@ -2511,9 +2509,9 @@ CMDF( do_savearea )
       ch->printf( "&[immortal]Cannot savearea %s, use foldarea instead.\r\n", tarea->filename );
       return;
    }
-   snprintf( fname, 256, "%s%s", BUILD_DIR, tarea->filename );
+   fname = std::format( "{}{}", BUILD_DIR, tarea->filename );
    ch->print( "&[immortal]Saving area...\r\n" );
-   tarea->fold( fname, false );
+   tarea->fold( fname.c_str(), false );
    ch->print( "&[immortal]Done.\r\n" );
 }
 
@@ -2621,8 +2619,8 @@ area_data *find_area( const string & filename )
 CMDF( do_adelete )
 {
    area_data *tarea;
-   string arg;
-   fs::path filename;
+   std::string arg;
+   std::filesystem::path filename;
 
    if( argument.empty(  ) )
    {
@@ -2649,7 +2647,7 @@ CMDF( do_adelete )
    else
       filename = tarea->filename;
    deleteptr( tarea );
-   fs::remove( filename );
+   std::filesystem::remove( filename );
    write_area_list(  );
    web_arealist(  );
    ch->printf( "&W%s&R has been destroyed.&D\r\n", arg.c_str(  ) );
@@ -2752,7 +2750,7 @@ CMDF( do_installarea )
 {
    area_data *tarea;
    string arg1, arg2;
-   fs::path oldfilename, buf;
+   std::filesystem::path oldfilename, buf;
    int num;
 
    ch->set_color( AT_IMMORT );
@@ -2822,9 +2820,9 @@ CMDF( do_installarea )
       tarea->nplayer = num;
       ch->print( "Removing author's building file.\r\n" );
       buf = std::format( "{}{}", BUILD_DIR, oldfilename.string() );
-      fs::remove( buf );
+      std::filesystem::remove( buf );
       buf = std::format( "{}{}.bak", BUILD_DIR, oldfilename.string() );
-      fs::remove( buf );
+      std::filesystem::remove( buf );
       ch->print( "Done.\r\n" );
       return;
    }

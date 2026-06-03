@@ -772,20 +772,19 @@ CMDF( do_hotboot )
     * exec - descriptors are inherited 
     * Yes, this is ugly, I know - Samson 
     */
-   char buf[100], buf2[100], buf3[100];
-   snprintf( buf, 100, "%d", mud_port );
-   snprintf( buf2, 100, "%d", control );
-   strlcpy( buf3, "-1", 100 );
+   std::string buf = std::to_string( mud_port );
+   std::string buf2 = std::to_string( control );
+   std::string buf3 = "-1";
 
    set_alarm( 0 );
 #if !defined(__CYGWIN__) && defined(SQL)
    close_db(  );
 #endif
    dlclose( sysdata->dlHandle );
-   execl( EXE_FILE, "afkmud", buf, "hotboot", buf2, buf3, ( char * )nullptr );
+   execl( EXE_FILE, "afkmud", buf.c_str(), "hotboot", buf2.c_str(), buf3.c_str(), ( char * )nullptr );
 
    /*
-    * Failed - sucessful exec will not return 
+    * Failed - successful exec will not return
     */
    perror( "do_copyover: execl" );
 

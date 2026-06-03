@@ -62,10 +62,8 @@
  *     2.  Add the default color(s) to the end of the default_set array.
  */
 
-#include <dirent.h>
-#include <format>
 #include <filesystem>
-#include <string_view>
+#include <format>
 #include "mud.h"
 #include "descriptor.h"
 
@@ -142,34 +140,23 @@ const char *valid_color[] = {
 
 void show_colorthemes( char_data * ch )
 {
-   DIR *dp;
-   struct dirent *dentry;
    int count = 0, col = 0;
 
    ch->pager( "&YThe following themes are available:\r\n" );
 
-   dp = opendir( COLOR_DIR );
-   dentry = readdir( dp );
-   while( dentry )
+   for( const auto& entry : std::filesystem::directory_iterator( COLOR_DIR ) )
    {
-      /*
-       * Added by Tarl 3 Dec 02 because we are now using CVS 
-       */
-      if( !str_cmp( dentry->d_name, "CVS" ) )
-      {
-         dentry = readdir( dp );
+      const auto& path = entry.path();
+      const std::string filename = path.filename().string();
+
+      if( filename.empty() || filename[0] == '.' )
          continue;
-      }
-      if( dentry->d_name[0] != '.' )
-      {
-         ++count;
-         ch->pagerf( "%s%-15.15s", ch->color_str( AT_PLAIN ), dentry->d_name );
-         if( ++col % 6 == 0 )
-            ch->pager( "\r\n" );
-      }
-      dentry = readdir( dp );
+
+      ++count;
+      ch->pagerf( "%s%-15.15s", ch->color_str( AT_PLAIN ), filename.c_str() );
+      if( ++col % 6 == 0 )
+         ch->pager( "\r\n" );
    }
-   closedir( dp );
 
    if( count == 0 )
       ch->pager( "No themes defined yet.\r\n" );
@@ -946,12 +933,12 @@ std::string color_align( const std::string & argument, int size, int align )
  * in it to the desired output tokens, using the provided character's
  * preferences.
  */
-std::string colorize( const std::string & txt, descriptor_data * d )
+std::string colorize( std::string_view txt, descriptor_data * d )
 {
    std::string result;
 
    if( txt.empty() || !d )
-      return txt;
+      return txt.data();
 
    result.reserve( txt.length() );
 
@@ -962,7 +949,7 @@ std::string colorize( const std::string & txt, descriptor_data * d )
          // Handle HTTP/HTTPS link: find the next space or end of string
          if( txt.compare( i, 4, "http" ) == 0 || txt.compare( i, 5, "https" ) == 0 )
          {
-            size_t end = txt.find_first_of(" \t\n\r", i);
+            size_t end = txt.find_first_of( " \t\n\r", i );
 
             if( end == std::string::npos )
                end = txt.length();

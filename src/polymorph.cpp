@@ -26,6 +26,7 @@
  *                          Shaddai's Polymorph                             *
  ****************************************************************************/
 
+#include <format>
 #include "mud.h"
 #include "deity.h"
 #include "objindex.h"
@@ -54,17 +55,13 @@ char_morph::~char_morph(  )
  * Given the Morph's name, returns the pointer to the morph structure.
  * --Shaddai
  */
-morph_data *get_morph( const string & arg )
+morph_data *get_morph( const std::string & arg )
 {
-   list < morph_data * >::iterator imorph;
-
    if( arg.empty(  ) )
       return nullptr;
 
-   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
+   for( auto* morph : morphlist )
    {
-      morph_data *morph = *imorph;
-
       if( !str_cmp( morph->name, arg ) )
          return morph;
    }
@@ -77,15 +74,11 @@ morph_data *get_morph( const string & arg )
  */
 morph_data *get_morph_vnum( int vnum )
 {
-   list < morph_data * >::iterator imorph;
-
    if( vnum < 1 )
       return nullptr;
 
-   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
+   for( auto* morph : morphlist )
    {
-      morph_data *morph = *imorph;
-
       if( morph->vnum == vnum )
          return morph;
    }
@@ -154,15 +147,11 @@ bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
  */
 morph_data *find_morph( char_data * ch, const string & target, bool is_cast )
 {
-   list < morph_data * >::iterator imorph;
-
    if( target.empty(  ) )
       return nullptr;
 
-   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
+   for( auto* morph : morphlist )
    {
-      morph_data *morph = *imorph;
-
       if( str_cmp( morph->name, target ) )
          continue;
       if( can_morph( ch, morph, is_cast ) )
@@ -315,7 +304,6 @@ void fwrite_morph( FILE * fp, morph_data * morph )
  */
 void save_morphs( void )
 {
-   list < morph_data * >::iterator imorph;
    FILE *fp;
 
    if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "w" ) ) )
@@ -324,12 +312,10 @@ void save_morphs( void )
       perror( SYSTEM_DIR MORPH_FILE );
       return;
    }
-   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
-   {
-      morph_data *morph = *imorph;
 
+   for( auto* morph : morphlist )
       fwrite_morph( fp, morph );
-   }
+
    fprintf( fp, "%s", "#END\n" );
    FCLOSE( fp );
 }
@@ -343,9 +329,8 @@ void save_morphs( void )
  */
 CMDF( do_morphset )
 {
-   string arg1, arg2, arg3;
-   string origarg = argument;
-   char buf[MSL];
+   std::string arg1, arg2, arg3, buf;
+   std::string origarg = argument;
    int value;
    morph_data *morph = nullptr;
 
@@ -1131,11 +1116,11 @@ CMDF( do_morphset )
          return;
       }
       if( !morph->skills )
-         strlcpy( buf, arg3.c_str(  ), MSL );
+         buf = arg3;
       else
-         snprintf( buf, MSL, "%s %s", morph->skills, arg3.c_str(  ) );
+         buf = std::format( "{} {}", morph->skills, arg3 );
       DISPOSE( morph->skills );
-      morph->skills = strdup( buf );
+      morph->skills = strdup( buf.c_str() );
    }
    else if( !str_cmp( arg2, "noskills" ) )
    {
@@ -1145,11 +1130,11 @@ CMDF( do_morphset )
          return;
       }
       if( !morph->no_skills )
-         strlcpy( buf, arg3.c_str(  ), MSL );
+         buf = arg3;
       else
-         snprintf( buf, MSL, "%s %s", morph->no_skills, arg3.c_str(  ) );
+         buf = std::format( "{} {}", morph->no_skills, arg3 );
       DISPOSE( morph->no_skills );
-      morph->no_skills = strdup( buf );
+      morph->no_skills = strdup( buf.c_str() );
    }
    else if( !str_cmp( arg2, "Class" ) )
    {
@@ -1196,7 +1181,7 @@ CMDF( do_morphset )
 CMDF( do_morphstat )
 {
    morph_data *morph;
-   string arg;
+   std::string arg;
    int count = 1;
 
    ch->set_pager_color( AT_CYAN );
@@ -1216,17 +1201,14 @@ CMDF( do_morphstat )
 
    if( !str_cmp( arg, "list" ) )
    {
-      list < morph_data * >::iterator ipoly;
-
       if( morphlist.empty(  ) )
       {
          ch->print( "No morph's currently exist.\r\n" );
          return;
       }
-      for( ipoly = morphlist.begin(  ); ipoly != morphlist.end(  ); ++ipoly )
-      {
-         morph_data *poly = *ipoly;
 
+      for( auto* poly : morphlist )
+      {
          ch->pagerf( "&c[&C%2d&c]   Name:  &C%-13s    &cVnum:  &C%4d  &cUsed:  &C%3d\r\n", count, poly->name, poly->vnum, poly->used );
          ++count;
       }
@@ -1621,13 +1603,10 @@ CMDF( do_revert )
 
 void setup_morph_vnum( void )
 {
-   list < morph_data * >::iterator imorph;
    int vnum = morph_vnum;
 
-   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
+   for( auto* morph : morphlist )
    {
-      morph_data *morph = *imorph;
-
       if( morph->vnum > vnum )
          vnum = morph->vnum;
    }
@@ -1636,13 +1615,11 @@ void setup_morph_vnum( void )
    else
       ++vnum;
 
-   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
+   for( auto* imorph : morphlist )
    {
-      morph_data *morph = *imorph;
-
-      if( morph->vnum == 0 )
+      if( imorph->vnum == 0 )
       {
-         morph->vnum = vnum++;
+         imorph->vnum = vnum++;
       }
    }
    morph_vnum = vnum;
@@ -1712,7 +1689,7 @@ void morph_defaults( morph_data * morph )
 morph_data *fread_morph( FILE * fp )
 {
    morph_data *morph;
-   string arg, temp;
+   std::string arg, temp;
    int i, file_ver = 0;
 
    const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
@@ -2049,7 +2026,7 @@ void load_morphs( void )
 }
 
 /*
- * This function copys one morph structure to another
+ * This function copies one morph structure to another
  */
 void copy_morph( morph_data * morph, morph_data * temp )
 {
@@ -2127,7 +2104,7 @@ void copy_morph( morph_data * morph, morph_data * temp )
 CMDF( do_morphcreate )
 {
    morph_data *morph, *temp = nullptr;
-   string arg1;
+   std::string arg1;
 
    argument = one_argument( argument, arg1 );
 
@@ -2605,15 +2582,9 @@ CMDF( do_imm_unmorph )
 /* Added by Samson 6-13-99 - lists available polymorph forms */
 CMDF( do_morphlist )
 {
-   list < morph_data * >::iterator imorph;
-
    ch->pager( "&GVnum |&YPolymorph Name\r\n" );
    ch->pager( "&G-----+----------------------------------\r\n" );
 
-   for( imorph = morphlist.begin(  ); imorph != morphlist.end(  ); ++imorph )
-   {
-      morph_data *morph = *imorph;
-
+   for( auto* morph : morphlist )
       ch->pagerf( "&G%-5d  &Y%s\r\n", morph->vnum, morph->name );
-   }
 }

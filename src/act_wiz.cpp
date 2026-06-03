@@ -49,8 +49,6 @@
 #include "sha256.h"
 #include "variables.h"
 
-namespace fs = std::filesystem;
-
 /* External functions */
 void set_chandler(  );
 void unset_chandler(  );
@@ -431,6 +429,7 @@ CMDF( do_disconnect )
    ch->print( "Descriptor not found!\r\n" );
 }
 
+// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
 void echo_all_printf( short tar, const char *str, ... )
 {
    va_list arg;
@@ -2727,11 +2726,11 @@ CMDF( do_purge )
 void destroy_immdata( char_data * ch, const char *vicname )
 {
    std::error_code ec;
-   string areafile;
+   std::string areafile;
 
-   fs::path godfile = std::format( "{}{}", GOD_DIR, capitalize( vicname ) );
+   std::filesystem::path godfile = std::format( "{}{}", GOD_DIR, capitalize( vicname ) );
 
-   if( fs::remove( godfile, ec ) )
+   if( std::filesystem::remove( godfile, ec ) )
       ch->print( "&RPlayer's immortal data destroyed.\r\n" );
    else if( ec && ec != std::errc::no_such_file_or_directory )
    {
@@ -2748,14 +2747,14 @@ void destroy_immdata( char_data * ch, const char *vicname )
 
       if( !str_cmp( area->filename, areafile ) )
       {
-         fs::path buildfile = std::format( "{}{}", BUILD_DIR, areafile );
-         fs::path buildbackup = std::format( "{}{}.bak", BUILD_DIR, areafile );
+         std::filesystem::path buildfile = std::format( "{}{}", BUILD_DIR, areafile );
+         std::filesystem::path buildbackup = std::format( "{}{}.bak", BUILD_DIR, areafile );
 
          area->fold( buildfile.string().c_str(), false );
          deleteptr( area );
 
          ec.clear();
-         fs::rename( buildfile, buildbackup, ec );
+         std::filesystem::rename( buildfile, buildbackup, ec );
 
          if( !ec )
             ch->print( "&RPlayer's area data destroyed. Area saved as backup.\r\n" );
@@ -4563,7 +4562,7 @@ CMDF( do_holylight )
 CMDF( do_loadup )
 {
    descriptor_data *d;
-   fs::path fname;
+   std::filesystem::path fname;
    int old_room_vnum;
 
    ch->set_color( AT_IMMORT );
@@ -4590,7 +4589,7 @@ CMDF( do_loadup )
    argument[0] = UPPER( argument[0] );
    fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
 
-   if( !fs::exists( fname ) || !fs::is_regular_file( fname ) || !check_parse_name( capitalize( argument ).c_str(  ), false ) )
+   if( !std::filesystem::exists( fname ) || !std::filesystem::is_regular_file( fname ) || !check_parse_name( capitalize( argument ).c_str(  ), false ) )
    {
       ch->print( "&YNo such player exists.\r\n" );
       return;
@@ -4856,12 +4855,12 @@ CMDF( do_demote )
 
    if( victim->level == LEVEL_AVATAR )
    {
-      fs::path buf;
+      std::filesystem::path buf;
       std::error_code ec;
 
       victim->unset_pcflag( PCFLAG_HOLYLIGHT );
       buf = std::format( "{}{}", GOD_DIR, capitalize( victim->name ) );
-      if( fs::remove( buf, ec ) )
+      if( std::filesystem::remove( buf, ec ) )
          ch->print( "Player's immortal data destroyed.\r\n" );
       victim->print( "You have been thrown from the heavens by the Gods!\r\nYou are no longer immortal!\r\n" );
       victim->unset_pcflag( PCFLAG_PASSDOOR );
@@ -5040,7 +5039,7 @@ CMDF( do_destro )
 CMDF( do_destroy )
 {
    char_data *victim = nullptr;
-   fs::path buf;
+   std::filesystem::path buf;
    std::error_code ec;
    bool found = false;
 
@@ -5132,7 +5131,7 @@ CMDF( do_destroy )
 
    buf = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
 
-   if( fs::remove( buf, ec ) )
+   if( std::filesystem::remove( buf, ec ) )
       ch->printf( "&RPlayer %s destroyed.\r\n", argument.c_str() );
    else if( ec && ec != std::errc::no_such_file_or_directory )
    {
@@ -5592,7 +5591,6 @@ void update_timers( void )
    sysdata->pulsemobile = 4 * sysdata->pulsepersec;
    sysdata->pulsecalendar = 4 * sysdata->pulsetick;
    sysdata->pulseenvironment = 15 * sysdata->pulsepersec;
-   sysdata->pulseskyship = sysdata->pulsemobile;
 }
 
 /* Redone cset command, with more in-game changable parameters - Samson 2-19-02 */
@@ -5645,7 +5643,7 @@ CMDF( do_cset )
       ch->pagerf( "&BWebwho&c: %d &BGame Alarm&c: %d\r\n", sysdata->webwho, sysdata->gameloopalarm );
       ch->pagerf( "\r\n&BSeconds per tick&c: %d   &BPulse per second&c: %d\r\n", sysdata->secpertick, sysdata->pulsepersec );
       ch->pagerf( "   &RPULSE_TICK&W: %d &RPULSE_VIOLENCE&W: %d &RPULSE_MOBILE&W: %d\r\n", sysdata->pulsetick, sysdata->pulseviolence, sysdata->pulsemobile );
-      ch->pagerf( "   &RPULSE_CALENDAR&W: %d &RPULSE_ENVIRONMENT&W: %d &RPULSE_SKYSHIP&W: %d\r\n", sysdata->pulsecalendar, sysdata->pulseenvironment, sysdata->pulseskyship );
+      ch->pagerf( "   &RPULSE_CALENDAR&W: %d &RPULSE_ENVIRONMENT&W: %d\r\n", sysdata->pulsecalendar, sysdata->pulseenvironment );
       return;
    }
 
@@ -6571,7 +6569,6 @@ bool load_class_file( const char *fname )
 void load_classes(  )
 {
    FILE *fpList;
-   char classlist[256];
 
    MAX_PC_CLASS = 0;
    /*
@@ -6580,10 +6577,10 @@ void load_classes(  )
    for( int i = 0; i < MAX_CLASS; ++i )
       class_table[i] = nullptr;
 
-   snprintf( classlist, 256, "%s%s", CLASS_DIR, CLASS_LIST );
-   if( !( fpList = fopen( classlist, "r" ) ) )
+   std::filesystem::path classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
+   if( !( fpList = fopen( classlist.c_str(), "r" ) ) )
    {
-      perror( classlist );
+      perror( classlist.c_str() );
       exit( 1 );
    }
 
@@ -6622,10 +6619,9 @@ void load_classes(  )
 void write_class_file( int cl )
 {
    FILE *fpout;
-   string filename;
    class_type *Class = class_table[cl];
 
-   filename = std::format( "{}{}.class", CLASS_DIR, Class->who_name );
+   std::filesystem::path filename = std::format( "{}{}.class", CLASS_DIR, Class->who_name );
    if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: Cannot open: %s for writing", __func__, filename.c_str() );
@@ -6683,9 +6679,8 @@ void save_classes(  )
 void write_class_list(  )
 {
    FILE *fpList;
-   string classlist;
 
-   classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
+   std::filesystem::path classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
    if( !( fpList = fopen( classlist.c_str(), "w" ) ) )
    {
       bug( "%s: Can't open class list for writing.", __func__ );
@@ -6910,7 +6905,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "name" ) )
    {
-      fs::path buf;
+      std::filesystem::path buf;
       class_type *ccheck = nullptr;
 
       one_argument( argument, arg1 );
@@ -7377,15 +7372,14 @@ void set_bodypart_where_names( race_type *race )
 
 bool load_race_file( const char *fname )
 {
-   char buf[256];
    race_type *race;
    int ra = -1, file_ver = 0;
    FILE *fp;
 
-   snprintf( buf, 256, "%s%s", RACE_DIR, fname );
-   if( !( fp = fopen( buf, "r" ) ) )
+   std::filesystem::path buf = std::format( "{}{}", RACE_DIR, fname );
+   if( !( fp = fopen( buf.c_str(), "r" ) ) )
    {
-      perror( buf );
+      perror( buf.c_str() );
       return false;
    }
 
@@ -7603,7 +7597,6 @@ bool load_race_file( const char *fname )
 void load_races(  )
 {
    FILE *fpList;
-   char racelist[256];
 
    MAX_PC_RACE = 0;
    /*
@@ -7612,10 +7605,10 @@ void load_races(  )
    for( int i = 0; i < MAX_RACE; ++i )
       race_table[i] = nullptr;
 
-   snprintf( racelist, 256, "%s%s", RACE_DIR, RACE_LIST );
-   if( !( fpList = fopen( racelist, "r" ) ) )
+   std::filesystem::path racelist = std::format( "{}{}", RACE_DIR, RACE_LIST );
+   if( !( fpList = fopen( racelist.c_str(), "r" ) ) )
    {
-      perror( racelist );
+      perror( racelist.c_str() );
       exit( 1 );
    }
 
@@ -7653,7 +7646,6 @@ void load_races(  )
 void write_race_file( int ra )
 {
    FILE *fpout;
-   char filename[256];
    race_type *race = race_table[ra];
 
    if( !race->race_name )
@@ -7662,10 +7654,10 @@ void write_race_file( int ra )
       return;
    }
 
-   snprintf( filename, 256, "%s%s.race", RACE_DIR, race->race_name );
-   if( !( fpout = fopen( filename, "w" ) ) )
+   std::filesystem::path filename = std::format( "{}{}.race", RACE_DIR, race->race_name );
+   if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "Cannot open: %s for writing", filename );
+      bug( "Cannot open: %s for writing", filename.c_str() );
       return;
    }
    fprintf( fpout, "Version     %d\n", RACEFILEVER );
@@ -7729,10 +7721,9 @@ void save_races(  )
 void write_race_list(  )
 {
    FILE *fpList;
-   char racelist[256];
 
-   snprintf( racelist, 256, "%s%s", RACE_DIR, RACE_LIST );
-   if( !( fpList = fopen( racelist, "w" ) ) )
+   std::filesystem::path racelist = std::format( "{}{}", RACE_DIR, RACE_LIST );
+   if( !( fpList = fopen( racelist.c_str(), "w" ) ) )
    {
       bug( "%s: Error opening racelist.", __func__ );
       return;
@@ -7788,7 +7779,7 @@ bool create_new_race( int race, const string & argument )
 CMDF( do_setrace )
 {
    race_type *race;
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3;
    int value, ra = 0, i;
 
    ch->set_color( AT_IMMORT );
@@ -7844,15 +7835,13 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "create" ) )
    {
-      char filename[256];
-
       if( MAX_PC_RACE >= MAX_RACE )
       {
          ch->print( "You need to up MAX_RACE in mud.h and make clean.\r\n" );
          return;
       }
 
-      snprintf( filename, sizeof( filename ), "%s.race", arg1.c_str(  ) );
+      std::filesystem::path filename = std::format( "{}.race", arg1 );
       if( !is_valid_filename( ch, RACE_DIR, filename ) )
          return;
 
@@ -7876,7 +7865,6 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "name" ) )
    {
-      char buf[256];
       race_type *rcheck = nullptr;
 
       one_argument( argument, arg1 );
@@ -7887,7 +7875,7 @@ CMDF( do_setrace )
          return;
       }
 
-      snprintf( buf, sizeof( buf ), "%s.race", arg1.c_str(  ) );
+      std::filesystem::path buf = std::format( "{}.race", arg1 );
       if( !is_valid_filename( ch, RACE_DIR, buf ) )
          return;
 
@@ -7908,8 +7896,8 @@ CMDF( do_setrace )
          return;
       }
 
-      snprintf( buf, sizeof( buf ), "%s%s.race", RACE_DIR, race->race_name );
-      unlink( buf );
+      buf = std::format( "{}{}.race", RACE_DIR, race->race_name );
+      std::filesystem::remove( buf );
 
       STRFREE( race->race_name );
       race->race_name = STRALLOC( capitalize( argument ).c_str(  ) );
@@ -8418,10 +8406,9 @@ extern list < lmsg_data *> login_messages;
 CMDF( do_message )
 {
    string name, arg1, arg2;
-   char checkname[256];
    short type = 0;
 
-   if( argument[0] == '\0' )
+   if( argument.empty() )
    {
       ch->print( "Leave a login message for who?\r\n" );
       return;
@@ -8433,12 +8420,8 @@ CMDF( do_message )
 
    if( !str_cmp( name, "list" ) && ch->get_trust( ) >= LEVEL_GREATER )
    {
-      list < lmsg_data * >::iterator imsg;
-
-      for( imsg = login_messages.begin(  ); imsg != login_messages.end(  ); ++imsg )
+      for( auto* lmsg : login_messages )
       {
-         lmsg_data *lmsg = *imsg;
-
          ch->printf( "&CName: &c%-20s &CType: &c%d\r\n", capitalize(lmsg->name), lmsg->type );
 
          if( lmsg->text )
@@ -8450,7 +8433,7 @@ CMDF( do_message )
       return;
    }
 
-   snprintf( checkname, 256, "%s%c/%s", PLAYER_DIR, tolower(name[0]), capitalize( name ).c_str() );
+   std::filesystem::path checkname = std::format( "{}{}/{}", PLAYER_DIR, tolower(name[0]), capitalize( name ) );
 
    if( exists_player( name ) )
    {

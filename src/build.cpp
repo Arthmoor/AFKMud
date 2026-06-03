@@ -49,7 +49,7 @@ CMDF( do_mstat );
 CMDF( do_ostat );
 bool validate_spec_fun( const string & );
 int mob_xp( char_data * );
-char *sprint_reset( reset_data *, short & );
+std::string sprint_reset( reset_data *, short & );
 void assign_area( char_data * );
 
 /*
@@ -4524,8 +4524,7 @@ CMDF( do_redit )
 
    if( !str_cmp( arg, "rlist" ) )
    {
-      list < reset_data * >::iterator rst;
-      char *rbuf;
+      std::string rbuf;
 
       if( location->resets.empty(  ) )
       {
@@ -4534,12 +4533,11 @@ CMDF( do_redit )
       }
 
       short num = 0;
-      for( rst = location->resets.begin(  ); rst != location->resets.end(  ); ++rst )
+      for( auto* pReset : location->resets )
       {
-         reset_data *pReset = *rst;
-
          ++num;
-         if( !( rbuf = sprint_reset( pReset, num ) ) )
+         rbuf = sprint_reset( pReset, num );
+         if( rbuf.empty() )
             continue;
          ch->print( rbuf );
       }

@@ -35,6 +35,7 @@
  * pRoom->people, rch->carrying, obj->contains, and pArea->reset_first ..
  * pArea->reset_last.  -- Altrag
  */
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "mobindex.h"
@@ -47,11 +48,9 @@ extern int top_reset;
 
 bool can_rmodify( char_data *, room_index * );
 
-char *sprint_reset( reset_data * pReset, short &num )
+std::string sprint_reset( reset_data * pReset, short & num )
 {
-   list < reset_data * >::iterator rst;
-   static char buf[MSL];
-   char mobname[MIL], roomname[MIL], objname[MIL];
+   std::string buf, mobname, roomname, objname;
    static room_index *room;
    static obj_index *obj, *obj2;
    static mob_index *mob;
@@ -59,100 +58,91 @@ char *sprint_reset( reset_data * pReset, short &num )
    switch ( pReset->command )
    {
       default:
-         snprintf( buf, MSL, "%2d) *** BAD RESET: %c %d %d %d %d ***\r\n", num, pReset->command, pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
+         buf = std::format( "{:2}) *** BAD RESET: {} {} {} {} {} ***\r\n", num, pReset->command, pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
          break;
 
       case 'M':
          mob = get_mob_index( pReset->arg1 );
          room = get_room_index( pReset->arg3 );
          if( mob )
-            strlcpy( mobname, mob->player_name, MIL );
+            mobname = mob->player_name;
          else
-            strlcpy( mobname, "Mobile: *BAD VNUM*", MIL );
+            mobname = "Mobile: *BAD VNUM*";
          if( room )
-            strlcpy( roomname, room->name, MIL );
+            roomname = room->name;
          else
-            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            roomname = "Room: *BAD VNUM*";
          if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
-            snprintf( buf, MSL, "%2d) %s (%d) (%d%%) -> Overland: %s %d %d [%d]\r\n", num, mobname, pReset->arg1,
-                      pReset->arg7, room->area->continent->name.c_str( ), pReset->arg5, pReset->arg6, pReset->arg2 );
+            buf = std::format( "{:2}) {} ({}) ({}%) -> Overland: {} {} {} [{}]\r\n", num, mobname, pReset->arg1,
+                      pReset->arg7, room->area->continent->name, pReset->arg5, pReset->arg6, pReset->arg2 );
          else
-            snprintf( buf, MSL, "%2d) %s (%d) (%d%%) -> %s Room: %d [%d]\r\n", num, mobname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
+            buf = std::format( "{:2}) {} ({}) ({}%) -> {} Room: {} [{}]\r\n", num, mobname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
 
-         for( rst = pReset->resets.begin(  ); rst != pReset->resets.end(  ); ++rst )
+         for( auto* tReset : pReset->resets )
          {
-            reset_data *tReset = *rst;
-
             ++num;
             switch ( tReset->command )
             {
                default:
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "Bad Command: %c", tReset->command );
+                  buf.append( std::format( "Bad Command: {}", tReset->command ) );
                   break;
 
                case 'X':
                   if( !mob )
-                     strlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (equip) <RT> (%d%%) -> %s (%s)\r\n", num, tReset->arg8, mobname, wear_locs[tReset->arg7] );
+                     mobname = "* ERROR: NO MOBILE! *";
+                  buf.append( std::format( "{:2}) (equip) <RT> ({}%) -> {} ({})\r\n", num, tReset->arg8, mobname, wear_locs[tReset->arg7] ) );
                   break;
 
                case 'Y':
                   if( !mob )
-                     strlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (carry) <RT> (%d%%) -> %s\r\n", num, tReset->arg7, mobname );
+                     mobname = "* ERROR: NO MOBILE! *";
+                  buf.append( std::format( "{:2}) (carry) <RT> ({}%) -> {}\r\n", num, tReset->arg7, mobname ) );
                   break;
 
                case 'E':
                   if( !mob )
-                     strlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
+                     mobname = "* ERROR: NO MOBILE! *";
                   if( !( obj = get_obj_index( tReset->arg1 ) ) )
-                     strlcpy( objname, "Object: *BAD VNUM*", MIL );
+                     objname = "Object: *BAD VNUM*";
                   else
-                     strlcpy( objname, obj->name, MIL );
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (equip) %s (%d) (%d%%) -> %s (%s) [%d]\r\n",
-                            num, objname, tReset->arg1, tReset->arg4, mobname, wear_locs[tReset->arg3], tReset->arg2 );
+                     objname = obj->name;
+                  buf.append( std::format( "{:2}) (equip) {} ({}) ({}%) -> {} ({}) [{}]\r\n", num, objname, tReset->arg1, tReset->arg4, mobname, wear_locs[tReset->arg3], tReset->arg2 ) );
                   break;
 
                case 'G':
                   if( !mob )
-                     strlcpy( mobname, "* ERROR: NO MOBILE! *", MIL );
+                     mobname = "* ERROR: NO MOBILE! *";
                   if( !( obj = get_obj_index( tReset->arg1 ) ) )
-                     strlcpy( objname, "Object: *BAD VNUM*", MIL );
+                     objname = "Object: *BAD VNUM*";
                   else
-                     strlcpy( objname, obj->name, MIL );
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (carry) %s (%d) (%d%%) -> %s [%d]\r\n",
-                            num, objname, tReset->arg1, tReset->arg3, mobname, tReset->arg2 );
+                     objname = obj->name;
+                  buf.append( std::format( "{:2}) (carry) {} ({}) ({}%) -> {} [{}]\r\n", num, objname, tReset->arg1, tReset->arg3, mobname, tReset->arg2 ) );
                   break;
             }
 
             if( !tReset->resets.empty(  ) )
             {
-               list < reset_data * >::iterator gst;
-
-               for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); ++gst )
+               for( auto* gReset : tReset->resets )
                {
-                  reset_data *gReset = *gst;
-
                   ++num;
                   switch ( gReset->command )
                   {
                      default:
-                        snprintf( buf + strlen( buf ), MSL - strlen( buf ), "Bad Command: %c", tReset->command );
+                        buf.append( std::format( "Bad Command: {}", tReset->command ) );
                         break;
 
                      case 'P':
                         if( !( obj2 = get_obj_index( gReset->arg2 ) ) )
-                           strlcpy( objname, "Object1: *BAD VNUM*", MIL );
+                           objname = "Object1: *BAD VNUM*";
                         else
-                           strlcpy( objname, obj2->name, MIL );
+                           objname = obj2->name;
                         if( gReset->arg4 > 0 && ( obj = get_obj_index( gReset->arg4 ) ) == nullptr )
-                           strlcpy( roomname, "Object2: *BAD VNUM*", MIL );
+                           roomname = "Object2: *BAD VNUM*";
                         else if( !obj )
-                           strlcpy( roomname, "Object2: *nullptr obj*", MIL );
+                           roomname = "Object2: *nullptr obj*";
                         else
-                           strlcpy( roomname, obj->name, MIL );
-                        snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
-                                  num, objname, gReset->arg2, gReset->arg5, roomname, obj ? obj->vnum : gReset->arg4, gReset->arg3 );
+                           roomname = obj->name;
+                        buf.append( std::format( "{:2}) (put) {} ({}) ({}%) -> {} ({}) [{}]\r\n", num, objname, gReset->arg2, gReset->arg5, roomname, obj ? obj->vnum : gReset->arg4, gReset->arg3 ) );
                         break;
                   }
                }
@@ -161,79 +151,74 @@ char *sprint_reset( reset_data * pReset, short &num )
          break;
 
       case 'Z':
-         strlcpy( objname, "<RT>", MIL );
+         objname = "<RT>";
          room = get_room_index( pReset->arg7 );
          if( !room )
-            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            roomname = "Room: *BAD VNUM*";
          else
-            strlcpy( roomname, room->name, MIL );
+            roomname = room->name;
          if( pReset->arg8 != -1 && pReset->arg9 != -1 && pReset->arg10 != -1 )
-            snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> Overland: %s %d %d\r\n", num, objname, pReset->arg11, room->area->continent->name.c_str( ), pReset->arg9, pReset->arg10 );
+            buf = std::format( "{:2}) (RT object) {} ({}%) -> Overland: {} {} {}\r\n", num, objname, pReset->arg11, room->area->continent->name, pReset->arg9, pReset->arg10 );
          else
-            snprintf( buf, MSL, "%2d) (RT object) %s (%d%%) -> %s Room: %d\r\n", num, objname, pReset->arg11, roomname, pReset->arg7 );
+            buf = std::format( "{:2}) (RT object) {} ({}%) -> {} Room: {}\r\n", num, objname, pReset->arg11, roomname, pReset->arg7 );
          break;
 
       case 'O':
          if( !( obj = get_obj_index( pReset->arg1 ) ) )
-            strlcpy( objname, "Object: *BAD VNUM*", MIL );
+            objname = "Object: *BAD VNUM*";
          else
-            strlcpy( objname, obj->name, MIL );
+            objname = obj->name;
          room = get_room_index( pReset->arg3 );
          if( !room )
-            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            roomname = "Room: *BAD VNUM*";
          else
-            strlcpy( roomname, room->name, MIL );
+            roomname = room->name;
          if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
-            snprintf( buf, MSL, "%2d) (object) %s (%d) (%d%%) -> Overland: %s %d %d [%d]\r\n", num, objname, pReset->arg1,
-                      pReset->arg7, room->area->continent->name.c_str( ), pReset->arg5, pReset->arg6, pReset->arg2 );
+            buf = std::format( "{:2}) (object) {} ({}) ({}%) -> Overland: {} {} {} [{}]\r\n", num, objname, pReset->arg1, pReset->arg7, room->area->continent->name, pReset->arg5, pReset->arg6, pReset->arg2 );
          else
-            snprintf( buf, MSL, "%2d) (object) %s (%d) (%d%%) -> %s Room: %d [%d]\r\n", num, objname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
+            buf = std::format( "{:2}) (object) {} ({}) ({}%) -> {} Room: {} [{}]\r\n", num, objname, pReset->arg1, pReset->arg7, roomname, pReset->arg3, pReset->arg2 );
 
-         for( rst = pReset->resets.begin(  ); rst != pReset->resets.end(  ); ++rst )
+         for( auto* tReset : pReset->resets )
          {
-            reset_data *tReset = *rst;
-
             ++num;
             switch ( tReset->command )
             {
                default:
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "Bad Command: %c\r\n", tReset->command );
+                  buf.append( std::format( "Bad Command: {}\r\n", tReset->command ) );
                   break;
 
                case 'P':
                   if( !( obj2 = get_obj_index( tReset->arg2 ) ) )
-                     strlcpy( objname, "Object1: *BAD VNUM*", MIL );
+                     objname = "Object1: *BAD VNUM*";
                   else
-                     strlcpy( objname, obj2->name, MIL );
+                     objname = obj2->name;
                   if( tReset->arg4 > 0 && ( obj = get_obj_index( tReset->arg4 ) ) == nullptr )
-                     strlcpy( roomname, "Object2: *BAD VNUM*", MIL );
+                     roomname = "Object2: *BAD VNUM*";
                   else if( !obj )
-                     strlcpy( roomname, "Object2: *nullptr obj*", MIL );
+                     roomname = "Object2: *nullptr obj*";
                   else
-                     strlcpy( roomname, obj->name, MIL );
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (put) %s (%d) (%d%%) -> %s (%d) [%d]\r\n",
-                            num, objname, tReset->arg2, tReset->arg5, roomname, obj ? obj->vnum : tReset->arg4, tReset->arg3 );
+                     roomname = obj->name;
+                  buf.append( std::format( "{:2}) (put) {} ({}) ({}%) -> {} ({}) [{}]\r\n",  num, objname, tReset->arg2, tReset->arg5, roomname, obj ? obj->vnum : tReset->arg4, tReset->arg3 ) );
                   break;
 
                case 'W':
-                  strlcpy( objname, "<RT>", MIL );
+                  objname = "<RT>";
                   if( tReset->arg8 > 0 && ( obj = get_obj_index( tReset->arg8 ) ) == nullptr )
-                     strlcpy( roomname, "Object2: *BAD VNUM*", MIL );
+                     roomname ="Object2: *BAD VNUM*";
                   else if( !obj )
-                     strlcpy( roomname, "Object2: *nullptr obj*", MIL );
+                     roomname = "Object2: *nullptr obj*";
                   else
-                     strlcpy( roomname, obj->name, MIL );
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (RT put) %s (%d%%) -> %s (%d)\r\n",
-                            num, objname, tReset->arg9, roomname, obj ? obj->vnum : tReset->arg8 );
+                     roomname = obj->name;
+                  buf.append( std::format( "{:2}) (RT put) {} ({}%) -> {} (%d)\r\n", num, objname, tReset->arg9, roomname, obj ? obj->vnum : tReset->arg8 ) );
                   break;
 
                case 'T':
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (trap) %d %d %d %d (%s) (%d%%) -> %s (%d)\r\n",
-                            num, tReset->arg1, tReset->arg2, tReset->arg3, tReset->arg4, flag_string( tReset->arg1, trap_flags ), tReset->arg5, objname, obj ? obj->vnum : 0 );
+                  buf.append( std::format( "{:2}) (trap) {} {} {} {} ({}) ({}%) -> {} ({})\r\n",
+                            num, tReset->arg1, tReset->arg2, tReset->arg3, tReset->arg4, flag_string( tReset->arg1, trap_flags ), tReset->arg5, objname, obj ? obj->vnum : 0 ) );
                   break;
 
                case 'H':
-                  snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%2d) (hide) (%d%%) -> %s\r\n", num, tReset->arg3, objname );
+                  buf.append( std::format( "{:2}) (hide) ({}%) -> {}\r\n", num, tReset->arg3, objname ) );
                   break;
             }
          }
@@ -244,46 +229,46 @@ char *sprint_reset( reset_data * pReset, short &num )
             pReset->arg2 = 0;
          if( !( room = get_room_index( pReset->arg1 ) ) )
          {
-            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
-            snprintf( objname, MIL, "%s (no exit)", dir_name[pReset->arg2] );
+            roomname = "Room: *BAD VNUM*";
+            objname = std::format( "{} (no exit)", dir_name[pReset->arg2] );
          }
          else
          {
-            strlcpy( roomname, room->name, MIL );
-            snprintf( objname, MIL, "%s%s", dir_name[pReset->arg2], room->get_exit( pReset->arg2 ) ? "" : " (NO EXIT!)" );
+            roomname = room->name;
+            objname = std::format( "{}{}", dir_name[pReset->arg2], room->get_exit( pReset->arg2 ) ? "" : " (NO EXIT!)" );
          }
          switch ( pReset->arg3 )
          {
             default:
-               strlcpy( mobname, "(* ERROR *)", MIL );
+               mobname = "(* ERROR *)";
                break;
             case 0:
-               strlcpy( mobname, "Open", MIL );
+               mobname = "Open";
                break;
             case 1:
-               strlcpy( mobname, "Close", MIL );
+               mobname = "Close";
                break;
             case 2:
-               strlcpy( mobname, "Close and lock", MIL );
+               mobname = "Close and lock";
                break;
          }
-         snprintf( buf, MSL, "%2d) %s [%d] the %s [%d] door %s (%d) (%d%%)\r\n", num, mobname, pReset->arg3, objname, pReset->arg2, roomname, pReset->arg1, pReset->arg4 );
+         buf = std::format( "{:2}) {} [{}] the {} [{}] door {} ({}) ({}%)\r\n", num, mobname, pReset->arg3, objname, pReset->arg2, roomname, pReset->arg1, pReset->arg4 );
          break;
 
       case 'R':
          if( !( room = get_room_index( pReset->arg1 ) ) )
-            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            roomname = "Room: *BAD VNUM*";
          else
-            strlcpy( roomname, room->name, MIL );
-         snprintf( buf, MSL, "%2d) Randomize exits 0 to %d -> %s (%d)\r\n", num, pReset->arg2, roomname, pReset->arg1 );
+            roomname = room->name;
+         buf = std::format( "{:2}) Randomize exits 0 to {} -> {} ({})\r\n", num, pReset->arg2, roomname, pReset->arg1 );
          break;
 
       case 'T':
          if( !( room = get_room_index( pReset->arg4 ) ) )
-            strlcpy( roomname, "Room: *BAD VNUM*", MIL );
+            roomname = "Room: *BAD VNUM*";
          else
-            strlcpy( roomname, room->name, MIL );
-         snprintf( buf, MSL, "%2d) Trap: %d %d %d %d (%s) (%d%%) -> %s (%d)\r\n",
+            roomname = room->name;
+         buf = std::format( "{:2}) Trap: {} {} {} {} ({}) ({}%) -> {} ({})\r\n",
                    num, pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, flag_string( pReset->arg1, trap_flags ), pReset->arg5, roomname, room ? room->vnum : 0 );
          break;
    }
@@ -374,12 +359,8 @@ void delete_reset( reset_data * pReset )
 
 void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = pRoom->people.begin(  ); ich != pRoom->people.end(  ); ++ich )
+   for( auto* rch : pRoom->people )
    {
-      char_data *rch = *ich;
-
       if( !rch->isnpc(  ) )
          continue;
 
@@ -410,11 +391,8 @@ void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
       }
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = pRoom->objects.begin(  ); iobj != pRoom->objects.end(  ); ++iobj )
+   for( auto* obj : pRoom->objects )
    {
-      obj_data *obj = *iobj;
-
       if( pRoom->flags.test( ROOM_MAP ) && is_same_obj_map( ch, obj ) )
          add_obj_reset( pRoom, 'O', obj, obj->count, pRoom->vnum );
       else if( !pRoom->flags.test( ROOM_MAP ) )
@@ -423,11 +401,8 @@ void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
 
    if( dodoors )
    {
-      list < exit_data * >::iterator ex;
-
-      for( ex = pRoom->exits.begin(  ); ex != pRoom->exits.end(  ); ++ex )
+      for( auto* pexit : pRoom->exits )
       {
-         exit_data *pexit = *ex;
          int state = 0;
 
          if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) && !IS_EXIT_FLAG( pexit, EX_DIG ) )
@@ -510,27 +485,20 @@ CMDF( do_instazone )
    area_data *pArea = ch->pcdata->area;
    pArea->wipe_resets(  );
 
-   list < room_index * >::iterator iroom;
-   for( iroom = pArea->rooms.begin(  ); iroom != pArea->rooms.end(  ); ++iroom )
-   {
-      room_index *pRoom = *iroom;
-
+   for( auto* pRoom : pArea->rooms )
       instaroom( ch, pRoom, dodoors );
-   }
+
    ch->print( "Area resets installed.\r\n" );
 }
 
 reset_data *find_oreset( room_index * room, const string & oname )
 {
-   list < reset_data * >::iterator rst;
    obj_index *pobj;
-   string arg;
+   std::string arg;
    int cnt = 0, num = number_argument( oname, arg );
 
-   for( rst = room->resets.begin(  ); rst != room->resets.end(  ); ++rst )
+   for( auto* pReset : room->resets )
    {
-      reset_data *pReset = *rst;
-
       // Only going to allow traps/hides on room reset objects. Unless someone can come up with a better way to do this.
       if( pReset->command != 'O' )
          continue;
@@ -546,7 +514,7 @@ reset_data *find_oreset( room_index * room, const string & oname )
 
 CMDF( do_reset )
 {
-   string arg;
+   std::string arg;
 
    if( argument.empty(  ) )
    {
@@ -875,7 +843,6 @@ CMDF( do_reset )
 void update_room_reset( char_data * ch, bool setting )
 {
    room_index *room;
-   list < reset_data * >::iterator pst;
    int nfind = 0;
 
    if( !ch )
@@ -884,31 +851,24 @@ void update_room_reset( char_data * ch, bool setting )
    if( !( room = get_room_index( ch->resetvnum ) ) )
       return;
 
-   for( pst = room->resets.begin(  ); pst != room->resets.end(  ); ++pst )
+   for( auto* pReset: room->resets )
    {
-      list < reset_data * >::iterator tst;
-      reset_data *pReset = *pst;
-
       if( ++nfind == ch->resetnum )
       {
          pReset->sreset = setting;
          return;
       }
 
-      for( tst = pReset->resets.begin(  ); tst != pReset->resets.end(  ); ++tst )
+      for( auto* tReset : pReset->resets )
       {
-         list < reset_data * >::iterator gst;
-         reset_data *tReset = *tst;
-
          if( ++nfind == ch->resetnum )
          {
             tReset->sreset = setting;
             return;
          }
 
-         for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); ++gst )
+         for( auto* gReset : tReset->resets )
          {
-            reset_data *gReset = *gst;
 
             if( ++nfind == ch->resetnum )
             {

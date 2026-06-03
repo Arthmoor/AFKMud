@@ -69,9 +69,9 @@ class descriptor_data
    bool read(  );
    bool flush_buffer( bool );
    void read_from_buffer(  );
-   void write_to_buffer( const string & );
+   void write_to_buffer( std::string_view );
    void buffer_printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
-   void send_color( const string & );
+   void send_color( std::string_view );
    void pager( const string & );
    void show_stats( char_data * );
    void send_greeting(  );

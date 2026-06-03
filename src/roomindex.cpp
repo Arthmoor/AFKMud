@@ -26,6 +26,8 @@
  *                         Room Index Support Functions                     *
  ****************************************************************************/
 
+#include <filesystem>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "descriptor.h"
@@ -184,13 +186,13 @@ room_index::~room_index(  )
 
             if( pArea != area )
             {
-               char filename[256];
+               std::filesystem::path filename;
 
                if( !pArea->flags.test( AFLAG_PROTOTYPE ) )
-                  strlcpy( filename, pArea->filename, 256 );
+                  filename = pArea->filename;
                else
-                  snprintf( filename, 256, "%s%s", BUILD_DIR, pArea->filename );
-               pArea->fold( filename, false );
+                  filename = std::format( "{}{}", BUILD_DIR, pArea->filename );
+               pArea->fold( filename.c_str(), false );
             }
          }
       }
@@ -357,17 +359,12 @@ int exit_comp( exit_data ** xit1, exit_data ** xit2 )
 
 void room_index::randomize_exits( short maxdir )
 {
-   list < exit_data * >::iterator iexit;
    int nexits, /* maxd, */ d1, count, door;  /* Maxd unused */
    int vdirs[MAX_REXITS];
 
    nexits = 0;
-   for( iexit = exits.begin(  ); iexit != exits.end(  ); ++iexit )
-   {
-      exit_data *pexit = *iexit;
-
+   for( auto* pexit : exits )
       vdirs[nexits++] = pexit->vdir;
-   }
 
    for( int d0 = 0; d0 < nexits; ++d0 )
    {
@@ -381,13 +378,10 @@ void room_index::randomize_exits( short maxdir )
       vdirs[d0] = vdirs[d1];
       vdirs[d1] = door;
    }
-   count = 0;
-   for( iexit = exits.begin(  ); iexit != exits.end(  ); ++iexit )
-   {
-      exit_data *pexit = *iexit;
 
-      pexit->vdir = vdirs[count++];
-   }
+   count = 0;
+   for( auto* pexit2 : exits )
+      pexit2->vdir = vdirs[count++];
 }
 
 exit_data::exit_data(  )
@@ -448,17 +442,13 @@ exit_data *room_index::make_exit( room_index * to_room, short door )
 }
 
 /*
- * Function to get the equivelant exit of DIR 0-MAXDIR out of linked list.
+ * Function to get the equivalent exit of DIR 0-MAXDIR out of linked list.
  * Made to allow old-style diku-merc exit functions to work. - Thoric
  */
 exit_data *room_index::get_exit( short dir )
 {
-   list < exit_data * >::iterator xit;
-
-   for( xit = exits.begin(  ); xit != exits.end(  ); ++xit )
+   for( auto* pexit : exits )
    {
-      exit_data *pexit = *xit;
-
       if( pexit->vdir == dir )
          return pexit;
    }
@@ -470,13 +460,10 @@ exit_data *room_index::get_exit( short dir )
  */
 exit_data *room_index::get_exit_num( short count )
 {
-   list < exit_data * >::iterator xit;
-   int cnt;
+   int cnt = 0;
 
-   for( cnt = 0, xit = exits.begin(  ); xit != exits.end(  ); ++xit )
+   for( auto* pexit : exits )
    {
-      exit_data *pexit = *xit;
-
       if( ++cnt == count )
          return pexit;
    }
@@ -488,12 +475,8 @@ exit_data *room_index::get_exit_num( short count )
  */
 exit_data *room_index::get_exit_to( short dir, int evnum )
 {
-   list < exit_data * >::iterator xit;
-
-   for( xit = exits.begin(  ); xit != exits.end(  ); ++xit )
+   for( auto* pexit : exits )
    {
-      exit_data *pexit = *xit;
-
       if( pexit->vdir == dir && pexit->vnum == evnum )
          return pexit;
    }

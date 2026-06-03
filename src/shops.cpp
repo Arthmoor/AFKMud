@@ -47,7 +47,8 @@ telnet://northwind.kilnar.com:5555/    +
 
 */
 
-#include <dirent.h>
+#include <filesystem>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -83,17 +84,16 @@ int get_repaircost( char_data *, obj_data * );
 void save_shop( char_data * mob )
 {
    FILE *fp = nullptr;
-   char filename[256];
 
    if( !mob->isnpc(  ) )
       return;
 
-   snprintf( filename, 256, "%s%s", SHOP_DIR, capitalize( mob->short_descr ) );
+   std::filesystem::path filename = std::format( "{}{}", SHOP_DIR, capitalize( mob->short_descr ) );
 
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    fwrite_mobile( mob, fp, true );
    fprintf( fp, "%s", "#END\n" );
@@ -102,96 +102,75 @@ void save_shop( char_data * mob )
 
 void load_shopkeepers( void )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   char directory_name[100];
-
-   snprintf( directory_name, 100, "%s", SHOP_DIR );
-   dp = opendir( directory_name );
-   dentry = readdir( dp );
-   while( dentry )
+   for( const auto& entry : std::filesystem::directory_iterator( SHOP_DIR ) )
    {
-      /*
-       * Added by Tarl 3 Dec 02 because we are now using CVS 
-       */
-      if( !str_cmp( dentry->d_name, "CVS" ) )
-      {
-         dentry = readdir( dp );
+      const auto& path = entry.path();
+      const std::string filename = path.filename().string();
+
+      if( filename.empty() || filename[0] == '.' )
          continue;
-      }
-      if( dentry->d_name[0] != '.' )
+
+      FILE *fp;
+
+      std::filesystem::path shopfile = std::format( "{}{}", path.string(), filename );
+
+      if( ( fp = fopen( shopfile.c_str(), "r" ) ) != nullptr )
       {
-         FILE *fp;
-         char filename[256];
+         char_data *mob = nullptr;
 
-         int bc = snprintf( filename, 256, "%s%s", directory_name, dentry->d_name );
-         if( bc < 0 )
-            bug( "%s: Output buffer error!", __func__ );
-
-         if( ( fp = fopen( filename, "r" ) ) != nullptr )
+         for( ;; )
          {
-            char_data *mob = nullptr;
+            char letter;
+            char *word;
 
-            for( ;; )
+            letter = fread_letter( fp );
+            if( letter == '*' )
             {
-               char letter;
-               char *word;
-
-               letter = fread_letter( fp );
-               if( letter == '*' )
-               {
-                  fread_to_eol( fp );
-                  continue;
-               }
-
-               if( letter != '#' )
-               {
-                  bug( "%s: # not found.", __func__ );
-                  break;
-               }
-
-               word = fread_word( fp );
-               if( !strcmp( word, "SHOP" ) )
-                  mob = fread_mobile( fp, true );
-               else if( !strcmp( word, "OBJECT" ) )
-               {
-                  mob->tempnum = -9999;
-                  fread_obj( mob, fp, OS_CARRY );
-               }
-               else if( !strcmp( word, "END" ) )
-                  break;
+               fread_to_eol( fp );
+               continue;
             }
-            FCLOSE( fp );
 
-            if( mob )
+            if( letter != '#' )
             {
-               list < clan_data * >::iterator cl;
-               for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
-               {
-                  clan_data *clan = *cl;
+               bug( "%s: # not found.", __func__ );
+               break;
+            }
 
-                  if( clan->shopkeeper == mob->pIndexData->vnum && clan->bank )
-                  {
-                     clan->balance += mob->gold;
-                     mob->gold = 0;
-                     save_shop( mob );
-                  }
-               }
-               list < obj_data * >::iterator iobj;
-               for( iobj = mob->carrying.begin(  ); iobj != mob->carrying.end(  ); )
-               {
-                  obj_data *obj = *iobj;
-                  ++iobj;
+            word = fread_word( fp );
+            if( !strcmp( word, "SHOP" ) )
+               mob = fread_mobile( fp, true );
+            else if( !strcmp( word, "OBJECT" ) )
+            {
+               mob->tempnum = -9999;
+               fread_obj( mob, fp, OS_CARRY );
+            }
+            else if( !strcmp( word, "END" ) )
+               break;
+         }
+         FCLOSE( fp );
 
-                  if( obj->ego >= sysdata->minego )
-                     obj->extract(  );
+         if( mob )
+         {
+            for( auto* clan : clanlist )
+            {
+               if( clan->shopkeeper == mob->pIndexData->vnum && clan->bank )
+               {
+                  clan->balance += mob->gold;
+                  mob->gold = 0;
+                  save_shop( mob );
                }
+            }
+            for( auto it = mob->carrying.begin(  ); it != mob->carrying.end(  ); )
+            {
+               obj_data *obj = *it;
+               ++it;
+
+               if( obj->ego >= sysdata->minego )
+                  obj->extract(  );
             }
          }
       }
-      dentry = readdir( dp );
    }
-   closedir( dp );
 }
 
 /*
@@ -1004,11 +983,8 @@ CMDF( do_list )
       }
 
       bool found = false;
-      list < char_data * >::iterator ich;
-      for( ich = pRoomIndexNext->people.begin(  ); ich != pRoomIndexNext->people.end(  ); ++ich )
+      for( auto* pet : pRoomIndexNext->people )
       {
-         char_data *pet = *ich;
-
          if( pet->has_actflag( ACT_PET ) )
          {
             if( !found )
@@ -1031,10 +1007,8 @@ CMDF( do_list )
 
       ch->pager( "&w[Price] Item\r\n" );
 
-      list < obj_data * >::iterator iobj;
-      for( iobj = keeper->carrying.begin(  ); iobj != keeper->carrying.end(  ); ++iobj )
+      for( auto* obj: keeper->carrying )
       {
-         obj_data *obj = *iobj;
          int cost;
 
          if( obj->wear_loc == WEAR_NONE && ch->can_see_obj( obj, false ) && ( cost = get_cost( ch, keeper, obj, true ) ) > 0 )
@@ -1355,12 +1329,8 @@ CMDF( do_repair )
 
    if( !str_cmp( argument, "all" ) )
    {
-      list < obj_data * >::iterator iobj;
-
-      for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+      for( auto* obj : ch->carrying )
       {
-         obj_data *obj = *iobj;
-
          if( ch->can_see_obj( obj, false ) && keeper->can_see_obj( obj, false )
              && ( obj->item_type == ITEM_ARMOR || obj->item_type == ITEM_WEAPON || obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF ) )
             repair_one_obj( ch, keeper, obj, argument, fixstr, fixstr2 );
@@ -1380,13 +1350,10 @@ CMDF( do_repair )
 
 void appraise_all( char_data * ch, char_data * keeper, const string & fixstr )
 {
-   list < obj_data * >::iterator iobj;
    int cost = 0, total = 0;
 
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* obj: ch->carrying )
    {
-      obj_data *obj = *iobj;
-
       if( obj->wear_loc == WEAR_NONE && ch->can_see_obj( obj, false )
           && ( obj->item_type == ITEM_ARMOR || obj->item_type == ITEM_WEAPON || obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF ) )
       {
@@ -1791,7 +1758,6 @@ CMDF( do_shopstat )
 
 CMDF( do_shops )
 {
-   list < shop_data * >::iterator ishop;
    mob_index *mob;
 
    if( shoplist.empty(  ) )
@@ -1801,10 +1767,8 @@ CMDF( do_shops )
    }
 
    ch->pager( "&WFor details on each shopkeeper, use the shopstat command.\r\n" );
-   for( ishop = shoplist.begin(  ); ishop != shoplist.end(  ); ++ishop )
+   for( auto* shop : shoplist )
    {
-      shop_data *shop = *ishop;
-
       if( !( mob = get_mob_index( shop->keeper ) ) )
       {
          bug( "%s: Bad mob index on shopkeeper %d", __func__, shop->keeper );
@@ -2089,7 +2053,6 @@ CMDF( do_repairstat )
 
 CMDF( do_repairshops )
 {
-   list < repair_data * >::iterator irepair;
    mob_index *mob;
 
    if( repairlist.empty(  ) )
@@ -2099,10 +2062,8 @@ CMDF( do_repairshops )
    }
 
    ch->pager( "&WFor details on each repairsmith, use the repairstat command.\r\n" );
-   for( irepair = repairlist.begin(  ); irepair != repairlist.end(  ); ++irepair )
+   for( auto* repair : repairlist )
    {
-      repair_data *repair = *irepair;
-
       if( !( mob = get_mob_index( repair->keeper ) ) )
       {
          bug( "%s: Bad mob index on repairsmith %d", __func__, repair->keeper );
@@ -2134,12 +2095,8 @@ CMDF( do_repairshops )
 /* Finds banker mobs in a room. */
 char_data *find_banker( char_data * ch )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* banker : ch->in_room->people )
    {
-      char_data *banker = *ich;
-
       if( banker->has_actflag( ACT_BANKER ) || banker->has_actflag( ACT_GUILDBANK ) )
          return banker;
    }

@@ -39,14 +39,11 @@
    to get a note from you at scion@divineright.org. Thanks! -- Scion
 */
 
-#include <unistd.h>
-#include <fstream>
-#include <format>
 #include <filesystem>
+#include <format>
+#include <fstream>
 #include "mud.h"
 #include "bits.h"
-
-namespace fs = std::filesystem;
 
 /* These are the ends of the linked lists that store the mud's library of valid bits. */
 map < int, string > abits;
@@ -70,7 +67,7 @@ void save_bits( void )
    map < int, string > start_bit;
    map < int, string >::iterator bit;
    ofstream stream;
-   fs::path filename;
+   std::filesystem::path filename;
 
    /*
     * Print 2 files 
@@ -104,9 +101,9 @@ void save_bits( void )
 /* Load the abits and qbits */
 void load_oldbits( void )
 {
-   string buf;
+   std::filesystem::path buf;
    int mode = 0, number = -1;
-   string desc;
+   std::string desc;
    FILE *fp;
 
    abits.clear(  );
@@ -144,7 +141,7 @@ void load_oldbits( void )
             if( !str_cmp( word, "#END" ) )
             {
                FCLOSE( fp );
-               unlink( buf.c_str() );
+               std::filesystem::remove( buf );
                if( mode == 0 )
                {
                   mode = 1;   /* We have two files to read, I reused the same code to read both */
@@ -188,7 +185,7 @@ void load_oldbits( void )
 void load_abits( void )
 {
    ifstream stream;
-   fs::path filename;
+   std::filesystem::path filename;
 
    log_string( "...abits" );
    filename = std::format( "{}abits.lst", SYSTEM_DIR );
@@ -203,7 +200,7 @@ void load_abits( void )
    do
    {
       int number;
-      string desc;
+      std::string desc;
       char line[MSL];
 
       stream >> number;
@@ -218,7 +215,7 @@ void load_abits( void )
 void load_qbits( void )
 {
    ifstream stream;
-   fs::path filename;
+   std::filesystem::path filename;
 
    log_string( "...qbits" );
    filename = std::format( "{}qbits.lst", SYSTEM_DIR );
@@ -246,13 +243,13 @@ void load_qbits( void )
 
 void load_bits( void )
 {
-   fs::path filename;
+   std::filesystem::path filename;
 
    abits.clear(  );
    qbits.clear(  );
 
    filename = std::format( "{}abit.lst", SYSTEM_DIR );
-   if( fs::exists( filename ) )
+   if( std::filesystem::exists( filename ) )
    {
       load_oldbits(  );
       save_bits(  );
@@ -261,9 +258,9 @@ void load_bits( void )
        * If we don't do this, the code will continue to see the old filename and keep reloading it and wiping out any changes made in the new ones.
        * Should only be relevant for very old codebase installs as the old default files were removed in an earlier release.
        */
-      fs::remove( filename );
+      std::filesystem::remove( filename );
       filename = std::format( "{}qbit.lst", SYSTEM_DIR );
-      fs::remove( filename );
+      std::filesystem::remove( filename );
       return;
    }
 

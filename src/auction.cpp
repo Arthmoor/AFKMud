@@ -26,10 +26,10 @@
  *                          Auction House module                            *
  ****************************************************************************/
 
-#include <dirent.h>
+#include <filesystem>
+#include <format>
 #include <fstream>
 #include <sstream>
-#include <format>
 #include "mud.h"
 #include "area.h"
 #include "auction.h"
@@ -266,7 +266,6 @@ void read_aucvault( const char *dirname, const char *filename )
    room_index *aucvault;
    char_data *aucmob;
    FILE *fp;
-   string fname;
 
    if( !( aucmob = supermob->get_char_world( filename ) ) )
    {
@@ -282,7 +281,7 @@ void read_aucvault( const char *dirname, const char *filename )
       return;
    }
 
-   fname = std::format( "{}{}", dirname, filename );
+   std::filesystem::path fname = std::format( "{}{}", dirname, filename );
    if( ( fp = fopen( fname.c_str(), "r" ) ) != nullptr )
    {
       log_printf( "Loading auction house vault: %s", filename );
@@ -345,36 +344,25 @@ void read_aucvault( const char *dirname, const char *filename )
 
 void load_aucvaults( void )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   char directory_name[100];
+   if( !std::filesystem::exists( AUC_DIR ) || !std::filesystem::is_directory( AUC_DIR ) )
+      return;
 
-   strlcpy( directory_name, AUC_DIR, 100 );
-   dp = opendir( directory_name );
-   dentry = readdir( dp );
-   while( dentry )
+   for( const auto& entry : std::filesystem::directory_iterator( AUC_DIR ) )
    {
-      if( dentry->d_name[0] != '.' )
-      {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( str_cmp( dentry->d_name, "CVS" ) )
-         {
-            if( str_cmp( dentry->d_name, "sales.dat" ) )
-               read_aucvault( directory_name, dentry->d_name );
-         }
-      }
-      dentry = readdir( dp );
+      const auto& path = entry.path();
+      const std::string filename = path.filename().string();
+
+      if( filename.empty() || filename[0] == '.' || filename == "sales.dat" )
+         continue;
+
+      read_aucvault( AUC_DIR, filename.c_str() );
    }
-   closedir( dp );
 }
 
 void save_aucvault( char_data * ch, const string & aucmob )
 {
    room_index *aucvault;
    FILE *fp;
-   string filename;
 
    if( !ch )
    {
@@ -384,7 +372,7 @@ void save_aucvault( char_data * ch, const string & aucmob )
 
    aucvault = get_room_index( ch->in_room->vnum + 1 );
 
-   filename = std::format( "{}{}", AUC_DIR, aucmob );
+   std::filesystem::path filename = std::format( "{}{}", AUC_DIR, aucmob );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );

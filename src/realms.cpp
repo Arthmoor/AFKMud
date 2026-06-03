@@ -26,6 +26,8 @@
  *                         Immortal Realms Module                           *
  ****************************************************************************/
 
+#include <filesystem>
+#include <format>
 #include <sstream>
 #include "mud.h"
 #include "realms.h"
@@ -179,36 +181,27 @@ void delete_realm( char_data * ch, realm_data * realm )
 
 void write_realm_list( void )
 {
-   list < realm_data * >::iterator rl;
    FILE *fpout;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", REALM_DIR, REALM_LIST );
-   fpout = fopen( filename, "w" );
+   std::filesystem::path filename = std::format( "{}{}", REALM_DIR, REALM_LIST );
+   fpout = fopen( filename.c_str(), "w" );
    if( !fpout )
    {
-      bug( "%s: FATAL: cannot open %s for writing!", __func__, filename );
+      bug( "%s: FATAL: cannot open %s for writing!", __func__, filename.c_str() );
       return;
    }
 
-   for( rl = realmlist.begin(  ); rl != realmlist.end(  ); ++rl )
-   {
-      realm_data *realm = *rl;
-
+   for( auto* realm : realmlist )
       fprintf( fpout, "%s\n", realm->filename.c_str(  ) );
-   }
+
    fprintf( fpout, "%s", "$\n" );
    FCLOSE( fpout );
 }
 
 void fwrite_realm_memberlist( FILE * fp, realm_data * realm )
 {
-   list < realm_roster_data * >::iterator mem;
-
-   for( mem = realm->memberlist.begin(  ); mem != realm->memberlist.end(  ); ++mem )
+   for( auto* member : realm->memberlist )
    {
-      realm_roster_data *member = *mem;
-
       auto joined = std::chrono::system_clock::to_time_t( member->joined );
 
       fprintf( fp, "%s", "#ROSTER\n" );
@@ -269,7 +262,6 @@ const int REALM_VERSION = 1;
 void save_realm( realm_data * realm )
 {
    FILE *fp;
-   char filename[256];
 
    if( !realm )
    {
@@ -283,12 +275,12 @@ void save_realm( realm_data * realm )
       return;
    }
 
-   snprintf( filename, 256, "%s%s", REALM_DIR, realm->filename.c_str(  ) );
+   std::filesystem::path filename = std::format( "{}{}", REALM_DIR, realm->filename );
 
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
    }
    else
    {
@@ -400,21 +392,20 @@ void clean_realm( realm_data * realm )
 /*
  * Load a realm file
  */
-bool load_realm_file( const char *realmfile )
+bool load_realm_file( const std::string realmfile )
 {
-   char filename[256];
    realm_data *realm;
    FILE *fp;
    bool found;
 
    realm = new realm_data;
 
-   clean_realm( realm );  /* Default settings so we don't get wierd ass stuff */
+   clean_realm( realm );  /* Default settings so we don't get weird ass stuff */
 
    found = false;
-   snprintf( filename, 256, "%s%s", REALM_DIR, realmfile );
+   std::filesystem::path filename = std::format( "{}{}", REALM_DIR, realmfile );
 
-   if( ( fp = fopen( filename, "r" ) ) != nullptr )
+   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
       found = true;
       for( ;; )
@@ -512,32 +503,30 @@ void verify_realms( void )
 void load_realms( void )
 {
    FILE *fpList;
-   const char *filename;
-   char realmlistfile[256];
 
    realmlist.clear(  );
 
    log_string( "Loading realms..." );
 
-   snprintf( realmlistfile, 256, "%s%s", REALM_DIR, REALM_LIST );
+   std::filesystem::path realmlistfile = std::format( "{}{}", REALM_DIR, REALM_LIST );
 
-   if( !( fpList = fopen( realmlistfile, "r" ) ) )
+   if( !( fpList = fopen( realmlistfile.c_str(), "r" ) ) )
    {
-      perror( realmlistfile );
+      perror( realmlistfile.c_str() );
       exit( 1 );
    }
 
    for( ;; )
    {
-      filename = feof( fpList ) ? "$" : fread_word( fpList );
+      std::string filename = feof( fpList ) ? "$" : fread_word( fpList );
 
       if( filename[0] == '$' )
          break;
 
-      log_string( filename );
+      log_string( filename.c_str() );
 
       if( !load_realm_file( filename ) )
-         bug( "%s: Cannot load realm file: %s", __func__, filename );
+         bug( "%s: Cannot load realm file: %s", __func__, filename.c_str() );
    }
    FCLOSE( fpList );
    verify_realms(  ); /* Check against pfiles to see if realms should still exist */
@@ -727,13 +716,11 @@ CMDF( do_setrealm )
 
    if( !str_cmp( arg2, "filename" ) )
    {
-      char filename[256];
-
       if( !is_valid_filename( ch, REALM_DIR, argument ) )
          return;
 
-      snprintf( filename, sizeof( filename ), "%s%s", REALM_DIR, realm->filename.c_str(  ) );
-      if( !remove( filename ) )
+      std::filesystem::path filename = std::format( "{}{}", REALM_DIR, realm->filename );
+      if( std::filesystem::remove( filename ) )
          ch->print( "Old realm file deleted.\r\n" );
 
       realm->filename = argument;
@@ -792,8 +779,7 @@ CMDF( do_showrealm )
 
 CMDF( do_makerealm )
 {
-   string arg, arg2;
-   char filename[256];
+   std::string arg, arg2;
    realm_data *realm;
    realm_roster_data *member;
    char_data *victim;
@@ -841,7 +827,8 @@ CMDF( do_makerealm )
    if( !is_valid_filename( ch, REALM_DIR, arg ) )
       return;
 
-   snprintf( filename, 256, "%s%s", REALM_DIR, strlower( arg.c_str(  ) ) );
+   strlower( arg );
+   std::string filename = std::format( "{}{}", REALM_DIR, arg );
 
    realm = new realm_data;
    clean_realm( realm );
@@ -863,7 +850,7 @@ CMDF( do_makerealm )
    save_realm( victim->pcdata->realm );
    write_realm_list(  );
 
-   ch->printf( "Realm %s created with leader %s.\r\n", realm->name.c_str(  ), realm->leader.c_str(  ) );
+   ch->print_fmt( "Realm {} created with leader {}.\r\n", realm->name, realm->leader );
 }
 
 CMDF( do_realmroster )

@@ -35,6 +35,8 @@
 #ifdef USEGLOB /* Samson 4-16-98 - For new command pipe */
 #include <glob.h>
 #endif
+#include <filesystem>
+#include <format>
 #include <fstream>
 #include <sstream>
 #include "mud.h"
@@ -53,7 +55,8 @@ extern std::string lastplayercmd;
 extern bool bootlock;
 
 #ifndef USEGLOB
-/* OLD command shell provided by Ferris - ferris@FootPrints.net Installed by Samson 4-6-98
+/*
+ * OLD command shell provided by Ferris - ferris@FootPrints.net Installed by Samson 4-6-98
  * For safety reasons, this is only available if the USEGLOB define is commented out.
  */
 /*
@@ -209,13 +212,13 @@ CMDF( do_mudexec )
 /* End NEW shell command code */
 
 /* This function verifies filenames during copy operations - Samson 4-7-98 */
-bool copy_file( char_data * ch, const char *filename )
+bool copy_file( char_data * ch, const std::string & filename )
 {
    FILE *fp;
 
-   if( !( fp = fopen( filename, "r" ) ) )
+   if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
-      ch->printf( "&RThe file %s does not exist, or cannot be opened. Check your spelling.\r\n", filename );
+      ch->print_fmt( "&RThe file {} does not exist, or cannot be opened. Check your spelling.\r\n", filename );
       return false;
    }
    FCLOSE( fp );
@@ -274,8 +277,7 @@ CMDF( do_copy )
 /* This command copies Class files from build port to the others - Samson 9-17-98 */
 CMDF( do_copyclass )
 {
-   char buf[MSL];
-   string fname, fname2;
+   std::string fname, fname2;
 
    if( ch->isnpc(  ) )
    {
@@ -305,7 +307,8 @@ CMDF( do_copyclass )
    else
    {
       fname = argument;
-      snprintf( buf, MSL, "%s%s", BUILDCLASSDIR, fname.c_str(  ) );
+
+      std::string buf = std::format( "{}{}", BUILDCLASSDIR, fname );
       if( !copy_file( ch, buf ) )
          return;
    }
@@ -357,7 +360,7 @@ CMDF( do_copyclass )
 /* This command copies zones from build port to the others - Samson 4-7-98 */
 CMDF( do_copyzone )
 {
-   string fname, fname2;
+   std::string fname, fname2;
 
    if( ch->isnpc(  ) )
    {
@@ -383,7 +386,7 @@ CMDF( do_copyzone )
    {
       fname = argument;
 
-      if( !copy_file( ch, argument.c_str(  ) ) )
+      if( !copy_file( ch, argument ) )
          return;
 
       if( !str_cmp( argument, "entry.are" ) )
@@ -424,8 +427,7 @@ CMDF( do_copyzone )
 /* This command copies maps from build port to the others - Samson 8-2-99 */
 CMDF( do_copymap )
 {
-   char buf[MSL];
-   string fname;
+   std::string fname;
 
    if( ch->isnpc(  ) )
    {
@@ -450,7 +452,7 @@ CMDF( do_copymap )
    else
    {
       fname = argument;
-      snprintf( buf, MSL, "%s%s", BUILDMAPDIR, fname.c_str(  ) );
+      buf = std::format( "{}{}", BUILDMAPDIR, fname );
       if( !copy_file( ch, buf ) )
          return;
    }
@@ -710,8 +712,7 @@ CMDF( do_copycode )
 /* This command copies race files from build port to main port and code port - Samson 10-13-98 */
 CMDF( do_copyrace )
 {
-   char buf[MSL];
-   string fname;
+   std::string fname;
 
    if( ch->isnpc(  ) )
    {
@@ -736,7 +737,8 @@ CMDF( do_copyrace )
    else
    {
       fname = argument;
-      snprintf( buf, MSL, "%s%s", BUILDRACEDIR, fname.c_str(  ) );
+
+      buf = std::format( "{}{}", BUILDRACEDIR, fname );
       if( !copy_file( ch, buf ) )
          return;
    }
@@ -768,8 +770,7 @@ CMDF( do_copyrace )
 /* This command copies deity files from build port to main port and code port - Samson 10-13-98 */
 CMDF( do_copydeity )
 {
-   char buf[MSL];
-   string fname;
+   std::string fname;
 
    if( ch->isnpc(  ) )
    {
@@ -794,7 +795,8 @@ CMDF( do_copydeity )
    else
    {
       fname = argument;
-      snprintf( buf, MSL, "%s%s", BUILDDEITYDIR, fname.c_str(  ) );
+
+      std::string buf = std::format( "{}{}", BUILDDEITYDIR, fname );
       if( !copy_file( ch, buf ) )
          return;
    }
@@ -831,19 +833,19 @@ GREP In-Game command	-Nopey
 // Modified by Samson to be a bit less restrictive. So one can grep anywhere the account will allow.
 CMDF( do_grep )
 {
-   char buf[MSL];
+   std::string buf;
 
    ch->set_color( AT_PLAIN );
 
    if( argument.empty(  ) )
-      strlcpy( buf, "grep --help", MSL ); /* Will cause it to forward grep's help options to you */
+      buf = "grep --help"; /* Will cause it to forward grep's help options to you */
    else
-      snprintf( buf, MSL, "grep -n %s", argument.c_str(  ) );  /* Line numbers are somewhat important */
+      buf = std::format( "grep -n {}", argument );  /* Line numbers are somewhat important */
 
 #ifdef USEGLOB
-   do_mudexec( ch, buf );
+   do_mudexec( ch, buf.c_str() );
 #else
-   command_pipe( ch, buf );
+   command_pipe( ch, buf.c_str() );
 #endif
 }
 
@@ -885,7 +887,7 @@ void free_shellcommands( void )
 
 void add_shellcommand( shell_cmd * command )
 {
-   string buf;
+   std::string buf;
 
    if( !command )
    {
@@ -942,12 +944,8 @@ void add_shellcommand( shell_cmd * command )
 
 shell_cmd *find_shellcommand( const string & command )
 {
-   list < shell_cmd * >::iterator cmd;
-
-   for( cmd = shellcmdlist.begin(  ); cmd != shellcmdlist.end(  ); ++cmd )
+   for( auto* scmd : shellcmdlist )
    {
-      shell_cmd *scmd = *cmd;
-
       if( !str_prefix( command, scmd->get_name(  ) ) )
          return scmd;
    }
@@ -1085,14 +1083,11 @@ void save_shellcommands( void )
 
 void shellcommands( char_data * ch, short curr_lvl )
 {
-   list < shell_cmd * >::iterator icmd;
    int col = 1;
 
    ch->pager( "\r\n" );
-   for( icmd = shellcmdlist.begin(  ); icmd != shellcmdlist.end(  ); ++icmd )
+   for( auto* cmd : shellcmdlist )
    {
-      shell_cmd *cmd = *icmd;
-
       if( cmd->get_level(  ) == curr_lvl )
       {
          ch->pagerf( "%-12s", cmd->get_cname(  ) );
@@ -1108,7 +1103,7 @@ void shellcommands( char_data * ch, short curr_lvl )
 CMDF( do_shelledit )
 {
    shell_cmd *command;
-   string arg1, arg2;
+   std::string arg1, arg2;
 
    ch->set_color( AT_IMMORT );
 

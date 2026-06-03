@@ -34,7 +34,6 @@
 #define dlclose( path )		( (void *)FreeLibrary( (HMODULE)(path)) )
 #endif
 
-// #include <sys/time.h>
 #include <netdb.h>
 #include <filesystem>
 #include <format>
@@ -640,7 +639,6 @@ static void caught_alarm( int signum )
 /*
  * Parse a name for acceptability.
  */
-// FIXME: This desperately needs to be brought up to safer modern handling of the reserved names list.
 bool check_parse_name( const string & name, bool newchar )
 {
    /*
@@ -687,19 +685,20 @@ bool check_parse_name( const string & name, bool newchar )
     * Reserved names list was getting much too large to load into memory.
     * Placed last so as to avoid problems from any of the previous conditions causing a problem in shell.
     */
-   char buf[MSL];
-   snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", name.c_str(  ) );
+   // FIXME: This may have been a good idea in the late 1990s, but not today.
+   std::string buf = std::format( "grep -i -x {} ../system/reserved.lst > /dev/null", name );
 
-   if( system( buf ) == 0 && newchar )
+   if( system( buf.c_str() ) == 0 && newchar )
       return false;
 
    /*
     * Check for inverse naming as well 
     */
-   string invname = invert_string( name );
-   snprintf( buf, MSL, "grep -i -x %s ../system/reserved.lst > /dev/null", invname.c_str(  ) );
+   std::string invname = invert_string( name );
+   // FIXME: This may have been a good idea in the late 1990s, but not today.
+   buf = std::format( "grep -i -x {} ../system/reserved.lst > /dev/null", invname );
 
-   if( system( buf ) == 0 && newchar )
+   if( system( buf.c_str() ) == 0 && newchar )
       return false;
 
    return true;
@@ -735,16 +734,14 @@ bool process_forked( descriptor_data * d )
 
 void process_input( void )
 {
-   list < descriptor_data * >::iterator ds;
-
    /*
     * Kick out descriptors with raised exceptions
     * or have been idle, then check for input.
     */
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
+   for( auto it = dlist.begin(  ); it != dlist.end(  ); )
    {
-      descriptor_data *d = *ds;
-      ++ds;
+      descriptor_data *d = *it;
+      ++it;
 
 #ifdef MULTIPORT
       if( d->connected == CON_FORKED )

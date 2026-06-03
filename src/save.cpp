@@ -26,8 +26,8 @@
  *                   Character saving and loading module                    *
  ****************************************************************************/
 
-#include <dirent.h>
-#include <sys/stat.h>
+#include <filesystem>
+#include <format>
 #include "mud.h"
 #include "bits.h"
 #include "boards.h"
@@ -690,8 +690,6 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
 */
 void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
 {
-   list < affect_data * >::iterator paf;
-
    if( !mob->isnpc(  ) || !fp )
       return;
 
@@ -721,9 +719,8 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
    if( mob->has_aflags(  ) )
       fprintf( fp, "AffectedBy   %s~\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
 
-   for( paf = mob->affects.begin(  ); paf != mob->affects.end(  ); ++paf )
+   for( auto* af : mob->affects )
    {
-      affect_data *af = *paf;
       skill_type *skill = nullptr;
 
       if( af->type >= 0 && !( skill = get_skilltype( af->type ) ) )
@@ -770,7 +767,6 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
  */
 void char_data::save(  )
 {
-   char strsave[256], strback[256];
    FILE *fp;
 
    if( isnpc(  ) )
@@ -787,7 +783,6 @@ void char_data::save(  )
    de_equip(  );
 
    pcdata->save_time = current_time;
-   snprintf( strsave, 256, "%s%c/%s", PLAYER_DIR, tolower( pcdata->filename[0] ), capitalize( pcdata->filename ) );
 
    /*
     * Save immortal stats, level & vnums for wizlist     -Thoric
@@ -798,11 +793,11 @@ void char_data::save(  )
     */
    if( is_immortal(  ) )
    {
-      snprintf( strback, 256, "%s%s", GOD_DIR, capitalize( pcdata->filename ) );
+      std::filesystem::path strback = std::format( "{}{}", GOD_DIR, capitalize( pcdata->filename ) );
 
-      if( !( fp = fopen( strback, "w" ) ) )
+      if( !( fp = fopen( strback.c_str(), "w" ) ) )
       {
-         perror( strback );
+         perror( strback.c_str() );
          bug( "%s: fopen", __func__ );
       }
       else
@@ -822,10 +817,11 @@ void char_data::save(  )
       }
    }
 
-   if( !( fp = fopen( strsave, "w" ) ) )
+   std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, tolower( pcdata->filename[0] ), capitalize( pcdata->filename ) );
+   if( !( fp = fopen( strsave.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( strsave );
+      perror( strsave.c_str() );
    }
    else
    {
@@ -1686,7 +1682,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'E':
             if( !str_cmp( word, "End" ) )
             {
-               char buf[MSL];
+               std::string buf;
 
                if( preload )
                   return;
@@ -1750,8 +1746,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->deity_name.empty(  ) && !( ch->pcdata->deity = get_deity( ch->pcdata->deity_name ) ) )
                {
-                  snprintf( buf, MSL, "&R\r\nYour deity, %s, has met its demise!\r\n", ch->pcdata->deity_name.c_str() );
-                  add_loginmsg( ch->name, 18, buf );
+                  buf = std::format( "&R\r\nYour deity, {}, has met its demise!\r\n", ch->pcdata->deity_name );
+                  add_loginmsg( ch->name, 18, buf.c_str() );
                   ch->pcdata->deity_name.clear(  );
                }
 
@@ -1760,9 +1756,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->clan_name.empty(  ) && !( ch->pcdata->clan = get_clan( ch->pcdata->clan_name ) ) )
                {
-                  snprintf( buf, MSL, "&R\r\nWarning: The organization %s no longer exists, and therefore you no longer\r\nbelong to that organization.\r\n",
-                     ch->pcdata->clan_name.c_str() );
-                  add_loginmsg( ch->name, 18, buf );
+                  buf = std::format( "&R\r\nWarning: The organization {} no longer exists, and therefore you no longer belong to that organization.\r\n", ch->pcdata->clan_name );
+                  add_loginmsg( ch->name, 18, buf.c_str() );
                   ch->pcdata->clan_name.clear(  );
                }
 
@@ -1771,9 +1766,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->realm_name.empty(  ) && !( ch->pcdata->realm = get_realm( ch->pcdata->realm_name ) ) )
                {
-                  snprintf( buf, MSL, "&Y\r\nWarning: The realm %s no longer exists, and therefore you no longer\r\nbelong to a realm.\r\n",
-                     ch->pcdata->realm_name.c_str() );
-                  add_loginmsg( ch->name, 18, buf );
+                  buf = std::format( "&Y\r\nWarning: The realm {} no longer exists, and therefore you no longer belong to a realm.\r\n", ch->pcdata->realm_name );
+                  add_loginmsg( ch->name, 18, buf.c_str() );
                   ch->pcdata->realm_name.clear(  );
                }
 
@@ -2517,10 +2511,8 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
  */
 bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool copyover )
 {
-   char strsave[256];
    FILE *fp;
    bool found = false;
-   struct stat fst;
    int i, x;
 
    if( !d )
@@ -2566,19 +2558,19 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
     */
    reset_colors( ch );
 
-   snprintf( strsave, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ).c_str(  ) );
-   if( stat( strsave, &fst ) != -1 && d->connected != CON_PLOADED )
+   std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
+   if( std::filesystem::exists( strsave ) && d->connected != CON_PLOADED )
    {
       if( preload )
          log_printf_plus( LOG_COMM, LEVEL_KL, "Preloading player data for: %s", ch->pcdata->filename );
       else
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%dK)", ch->pcdata->filename, ( int )fst.st_size / 1024 );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%ldK)", ch->pcdata->filename, static_cast<long>( std::filesystem::file_size( ch->pcdata->filename ) / 1024 ) );
    }
    /*
     * else no player file 
     */
 
-   if( ( fp = fopen( strsave, "r" ) ) != nullptr )
+   if( ( fp = fopen( strsave.c_str(), "r" ) ) != nullptr )
    {
       for( int iNest = 0; iNest < MAX_NEST; ++iNest )
          rgObjNest[iNest] = nullptr;
@@ -2588,7 +2580,7 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
        * Cheat so that bug will show line #'s -- Altrag 
        */
       fpArea = fp;
-      strlcpy( strArea, strsave, MIL );
+      strlcpy( strArea, strsave.c_str(), MIL );
       for( ;; )
       {
          char letter;
@@ -2699,20 +2691,19 @@ bool load_char_obj( descriptor_data * d, const string & name, bool preload, bool
 void write_corpse( obj_data * corpse, const string & name )
 {
    FILE *fp;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", CORPSE_DIR, capitalize( name ).c_str(  ) );
+   std::filesystem::path filename = std::format( "{}{}", CORPSE_DIR, capitalize( name ) );
 
    // No no no no no! Timer of 0 means it should be GONE GONE GONE!
    if( corpse->timer < 1 )
    {
-      unlink( filename );
+      std::filesystem::remove( filename );
       return;
    }
 
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: Error opening corpse file for write: %s", __func__, filename );
+      bug( "%s: Error opening corpse file for write: %s", __func__, filename.c_str() );
       return;
    }
 
@@ -2756,64 +2747,55 @@ void write_corpse( obj_data * corpse, const string & name )
 
 void load_corpses( void )
 {
-   DIR *dp;
-   struct dirent *de;
-
-   if( !( dp = opendir( CORPSE_DIR ) ) )
-   {
-      bug( "%s: can't open %s", __func__, CORPSE_DIR );
-      perror( CORPSE_DIR );
-      return;
-   }
-
    falling = 1;   /* Arbitrary, must be >0 though. */
-   while( ( de = readdir( dp ) ) != nullptr )
+   for( const auto& entry : std::filesystem::directory_iterator( CORPSE_DIR ) )
    {
-      if( de->d_name[0] != '.' )
-      {
-         if( !str_cmp( de->d_name, "CVS" ) )
-            continue;
-         snprintf( strArea, MIL, "%s%s", CORPSE_DIR, de->d_name );
-         fprintf( stderr, "Corpse -> %s\n", strArea );
-         if( !( fpArea = fopen( strArea, "r" ) ) )
-         {
-            perror( strArea );
-            continue;
-         }
-         for( ;; )
-         {
-            char letter;
-            char *word;
+      const auto& path = entry.path();
+      const std::string filename = path.filename().string();
 
-            letter = fread_letter( fpArea );
-            if( letter == '*' )
-            {
-               fread_to_eol( fpArea );
-               continue;
-            }
-            if( letter != '#' )
-            {
-               bug( "%s: # not found.", __func__ );
-               break;
-            }
-            word = fread_word( fpArea );
-            if( !str_cmp( word, "CORPSE" ) )
-               fread_obj( nullptr, fpArea, OS_CORPSE );
-            else if( !str_cmp( word, "OBJECT" ) )
-               fread_obj( nullptr, fpArea, OS_CARRY );
-            else if( !str_cmp( word, "END" ) )
-               break;
-            else
-            {
-               bug( "%s: bad section: %s", __func__, word );
-               break;
-            }
-         }
-         FCLOSE( fpArea );
+      if( filename.empty() || filename[0] == '.' )
+         continue;
+
+      snprintf( strArea, MIL, "%s%s", CORPSE_DIR, filename.c_str() );
+      fprintf( stderr, "Corpse -> %s\n", strArea );
+      if( !( fpArea = fopen( strArea, "r" ) ) )
+      {
+         perror( strArea );
+         continue;
       }
+
+      for( ;; )
+      {
+         char letter;
+         char *word;
+
+         letter = fread_letter( fpArea );
+         if( letter == '*' )
+         {
+            fread_to_eol( fpArea );
+            continue;
+         }
+         if( letter != '#' )
+         {
+            bug( "%s: # not found.", __func__ );
+            break;
+         }
+         word = fread_word( fpArea );
+         if( !str_cmp( word, "CORPSE" ) )
+            fread_obj( nullptr, fpArea, OS_CORPSE );
+         else if( !str_cmp( word, "OBJECT" ) )
+            fread_obj( nullptr, fpArea, OS_CARRY );
+         else if( !str_cmp( word, "END" ) )
+            break;
+         else
+         {
+            bug( "%s: bad section: %s", __func__, word );
+            break;
+         }
+      }
+      FCLOSE( fpArea );
    }
    strlcpy( strArea, "$", MIL );
-   closedir( dp );
    falling = 0;
 }
 

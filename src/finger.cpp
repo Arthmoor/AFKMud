@@ -42,8 +42,6 @@
 #include "finger.h"
 #include "roomindex.h"
 
-namespace fs = std::filesystem;
-
 /* Begin wizinfo stuff - Samson 6-6-99 */
 
 list < wizinfo_data * >wizinfolist;
@@ -103,7 +101,7 @@ void build_wizinfo( void )
    clear_wizinfo(  );
 
    // Walk the file list in GOD_DIR.
-   for( const auto& entry : fs::directory_iterator( GOD_DIR ) )
+   for( const auto& entry : std::filesystem::directory_iterator( GOD_DIR ) )
    {
       // An actual file entry and not another folder.
       if( entry.is_regular_file( ) )
@@ -211,17 +209,17 @@ CMDF( do_finger )
    {
       descriptor_data *d;
 
-      fs::path fingload = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
+      std::filesystem::path fingload = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
       /*
        * Bug fix here provided by Senir to stop /dev/null crash 
        */
-      if( !fs::exists( fingload ) || !check_parse_name( capitalize( argument ), false ) )
+      if( !std::filesystem::exists( fingload ) || !check_parse_name( capitalize( argument ), false ) )
       {
          ch->printf( "&YNo such player named '%s'.\r\n", argument.c_str(  ) );
          return;
       }
 
-      auto laston = fs::last_write_time( fingload );
+      auto laston = std::filesystem::last_write_time( fingload );
       time_str = std::format( "{:%Y-%m-%d %H:%M:%S}", laston );
 
       temproom = get_room_index( ROOM_VNUM_LIMBO );

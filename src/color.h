@@ -32,7 +32,7 @@
 
 std::string color_align( const std::string &, int, int );
 int color_strlen( std::string_view );
-std::string colorize( const std::string &, descriptor_data * );
+std::string colorize( std::string_view, descriptor_data * );
 std::string colorcode( std::string_view, descriptor_data *, size_t & );
 
 /*

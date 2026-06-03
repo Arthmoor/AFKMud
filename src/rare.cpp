@@ -26,8 +26,8 @@
  *                            Rare Items Module                             *
  ****************************************************************************/
 
-#include <sys/stat.h>
-#include <dirent.h>
+#include <filesystem>
+#include <format>
 #include <sstream>
 #include "mud.h"
 #include "area.h"
@@ -612,14 +612,9 @@ void break_camp( char_data * ch )
 void adjust_pfile( const string & name )
 {
    char_data *ch;
-   char fname[256];
-   struct stat fst;
 
-   list < char_data * >::iterator ich;
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto* temp : pclist )
    {
-      char_data *temp = *ich;
-
       if( !str_cmp( name, temp->name ) )
       {
          log_printf( "Skipping rare item adjustments for %s, player is online.", temp->name );
@@ -647,9 +642,9 @@ void adjust_pfile( const string & name )
       return;
    }
 
-   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( name[0] ), capitalize( name ).c_str(  ) );
+   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( name[0] ), capitalize( name ) );
 
-   if( stat( fname, &fst ) != -1 )
+   if( std::filesystem::exists( fname ) )
    {
       descriptor_data *d = new descriptor_data;
       d->init(  );
@@ -833,16 +828,15 @@ int scan_pfiles( const char *dirname, const char *filename, bool updating )
    return adjust;
 }
 
-void corpse_scan( const char *dirname, const char *filename )
+void corpse_scan( const std::string & dirname, const std::string & filename )
 {
    FILE *fpChar;
-   char fname[256];
 
-   snprintf( fname, 256, "%s/%s", dirname, filename );
+   std::filesystem::path fname = std::format( "{}/{}", dirname, filename );
 
-   if( !( fpChar = fopen( fname, "r" ) ) )
+   if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
    {
-      perror( fname );
+      perror( fname.c_str() );
       return;
    }
 
@@ -898,7 +892,7 @@ void corpse_scan( const char *dirname, const char *filename )
          {
             vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == nullptr )
-               bug( "%s: %s's corpse has bad obj vnum.", __func__, filename );
+               bug( "%s: %s's corpse has bad obj vnum.", __func__, filename.c_str() );
             else
             {
                int ego = 0;
@@ -908,7 +902,7 @@ void corpse_scan( const char *dirname, const char *filename )
                if( ego >= sysdata->minego )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", filename, counter, vnum );
+                  log_printf( "%s: Counted %d of Vnum %d", filename.c_str(), counter, vnum );
                }
             }
          }
@@ -920,13 +914,12 @@ void corpse_scan( const char *dirname, const char *filename )
 void mobfile_scan( void )
 {
    FILE *fpChar;
-   char fname[256];
 
-   snprintf( fname, 256, "%s%s", SYSTEM_DIR, MOB_FILE );
+   std::filesystem::path fname = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
 
-   if( !( fpChar = fopen( fname, "r" ) ) )
+   if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
    {
-      perror( fname );
+      perror( fname.c_str() );
       return;
    }
 
@@ -992,7 +985,7 @@ void mobfile_scan( void )
                if( ego >= sysdata->minego )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", fname, counter, vnum );
+                  log_printf( "%s: Counted %d of Vnum %d", fname.c_str(), counter, vnum );
                }
             }
          }
@@ -1004,13 +997,12 @@ void mobfile_scan( void )
 void objfile_scan( const char *dirname, const char *filename )
 {
    FILE *fpChar;
-   char fname[256];
 
-   snprintf( fname, 256, "%s%s", dirname, filename );
+   std::filesystem::path fname = std::format( "{}{}", dirname, filename );
 
-   if( !( fpChar = fopen( fname, "r" ) ) )
+   if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
    {
-      perror( fname );
+      perror( fname.c_str() );
       return;
    }
 
@@ -1076,7 +1068,7 @@ void objfile_scan( const char *dirname, const char *filename )
                if( ego >= sysdata->minego )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", fname, counter, vnum );
+                  log_printf( "%s: Counted %d of Vnum %d", fname.c_str(), counter, vnum );
                }
             }
          }
@@ -1087,63 +1079,37 @@ void objfile_scan( const char *dirname, const char *filename )
 
 void load_equipment_totals( bool fCopyOver )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   char directory_name[100];
-   short alpha_loop;
-
    check_pfiles( 255 ); /* Clean up stragglers to get a better count - Samson 1-1-00 */
 
    log_string( "Updating rare item counts....." );
    log_string( "Checking player files...." );
 
-   for( alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
+   for( char c = 'a'; c <= 'z'; ++c )
    {
-      snprintf( directory_name, 100, "%s%c", PLAYER_DIR, 'a' + alpha_loop );
-
-      dp = opendir( directory_name );
-      dentry = readdir( dp );
-      while( dentry )
+      std::filesystem::path dirname = std::format( "{}{}", PLAYER_DIR, c );
+      if( std::filesystem::exists( dirname ) )
       {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( !str_cmp( dentry->d_name, "CVS" ) )
-         {
-            dentry = readdir( dp );
+         std::string filename = dirname.filename().string();
+
+         if( filename.empty() || filename[0] == '.' )
             continue;
-         }
-         if( dentry->d_name[0] != '.' )
-         {
-            scan_pfiles( directory_name, dentry->d_name, false );
-         }
-         dentry = readdir( dp );
+
+         scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
       }
-      closedir( dp );
    }
 
    log_string( "Checking corpses...." );
 
-   snprintf( directory_name, 100, "%s", CORPSE_DIR );
-   dp = opendir( directory_name );
-   dentry = readdir( dp );
-   while( dentry )
+   for( const auto& entry : std::filesystem::directory_iterator( CORPSE_DIR ) )
    {
-      /*
-       * Added by Tarl 3 Dec 02 because we are now using CVS 
-       */
-      if( !str_cmp( dentry->d_name, "CVS" ) )
-      {
-         dentry = readdir( dp );
+      const auto& path = entry.path();
+      const std::string filename = path.filename().string();
+
+      if( filename.empty() || filename[0] == '.' )
          continue;
-      }
-      if( dentry->d_name[0] != '.' )
-      {
-         corpse_scan( directory_name, dentry->d_name );
-      }
-      dentry = readdir( dp );
+
+      corpse_scan( CORPSE_DIR, filename.c_str() );
    }
-   closedir( dp );
 
    if( fCopyOver )
    {
@@ -1151,66 +1117,37 @@ void load_equipment_totals( bool fCopyOver )
       mobfile_scan(  );
 
       log_string( "Scanning world-state obj files...." );
-      snprintf( directory_name, 100, "%s", HOTBOOT_DIR );
-      dp = opendir( directory_name );
-      dentry = readdir( dp );
-      while( dentry )
+
+      for( const auto& entry : std::filesystem::directory_iterator( HOTBOOT_DIR ) )
       {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( !str_cmp( dentry->d_name, "CVS" ) )
-         {
-            dentry = readdir( dp );
+         const auto& path = entry.path();
+         std::string filename = path.filename().string();
+
+         if( filename.empty() || filename[0] == '.' )
             continue;
-         }
-         if( dentry->d_name[0] != '.' )
-         {
-            objfile_scan( directory_name, dentry->d_name );
-         }
-         dentry = readdir( dp );
+
+         objfile_scan( HOTBOOT_DIR, filename.c_str() );
       }
-      closedir( dp );
    }
 }
 
 void rare_update( void )
 {
-   DIR *dp;
-   struct dirent *dentry;
-   char directory_name[100];
-   int adjust = 0;
-   short alpha_loop;
-
    log_string( "Checking daily rare items for players...." );
 
-   for( alpha_loop = 0; alpha_loop <= 25; ++alpha_loop )
+   for( char c = 'a'; c <= 'z'; ++c )
    {
-      snprintf( directory_name, 100, "%s%c", PLAYER_DIR, 'a' + alpha_loop );
-      dp = opendir( directory_name );
-      dentry = readdir( dp );
-      while( dentry )
+      std::filesystem::path dirname = std::format( "{}{}", PLAYER_DIR, c );
+      if( std::filesystem::exists( dirname ) )
       {
-         /*
-          * Added by Tarl 3 Dec 02 because we are now using CVS 
-          */
-         if( !str_cmp( dentry->d_name, "CVS" ) )
-         {
-            dentry = readdir( dp );
-            continue;
-         }
-         if( dentry->d_name[0] != '.' )
-         {
-            adjust = scan_pfiles( directory_name, dentry->d_name, true );
-            if( adjust == 1 )
-            {
-               adjust_pfile( dentry->d_name );
-               adjust = 0;
-            }
-         }
-         dentry = readdir( dp );
+         std::string filename = dirname.filename().string();
+
+         int adjust = scan_pfiles( dirname.string().c_str(), filename.c_str(), true );
+         if( adjust == 1 )
+            adjust_pfile( dirname.string().c_str() );
+
+         scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
       }
-      closedir( dp );
    }
    log_string( "Daily rare item updates completed." );
 }

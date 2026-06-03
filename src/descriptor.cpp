@@ -26,7 +26,6 @@
  *                       Descriptor Support Functions                       *
  ****************************************************************************/
 
-#include <fcntl.h>
 #if defined(WIN32)
 #include <winsock2.h>
 #define  TELOPT_ECHO        '\x01'
@@ -44,8 +43,9 @@
 #include <sys/wait.h>
 #include <arpa/telnet.h>
 #endif
-#include <format>
+#include <fcntl.h>
 #include <filesystem>
+#include <format>
 #include <fstream>
 #include "mud.h"
 #include "auction.h"
@@ -62,8 +62,6 @@
 #ifdef MULTIPORT
 #include "shell.h"
 #endif
-
-namespace fs = std::filesystem;
 
 int maxdesc, newdesc;
 list < descriptor_data * >dlist;
@@ -397,11 +395,11 @@ void fread_loginmsg( FILE * fp )
 }
 
 /* load_loginmsg, check_loginmsg, fread_loginmsg, etc.. all support the do_message */
-/* command - hugely modified from the orginal housing module by Edmond June 02     */
+/* command - hugely modified from the original housing module by Edmond June 02     */
 void load_loginmsg(  )
 {
    FILE *fp;
-   fs::path filename;
+   std::filesystem::path filename;
 
    login_messages.clear();
 
@@ -453,20 +451,16 @@ void load_loginmsg(  )
 void save_loginmsg(  )
 {
    FILE *fp;
-   fs::path filename;
-   list < lmsg_data * >::iterator imsg;
 
-   filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
    if( ( fp = fopen( filename.c_str(), "w" ) ) == nullptr )
    {
       bug( "%s: Cannot open login message file.", __func__ );
       return;
    }
 
-   for( imsg = login_messages.begin(  ); imsg != login_messages.end(  ); ++imsg )
+   for( auto* lmsg : login_messages )
    {
-      lmsg_data *lmsg = *imsg;
-
       fprintf( fp, "%s", "#LOGINMSG\n" );
       fprintf( fp, "Name  %s~\n", lmsg->name );
       if( lmsg->text )
@@ -1150,7 +1144,7 @@ void descriptor_data::read_from_buffer( )
 /*
  * Append onto an output buffer.
  */
-void descriptor_data::write_to_buffer( const string & txt )
+void descriptor_data::write_to_buffer( std::string_view txt )
 {
    if( MPSilent )
       return;
@@ -1178,7 +1172,7 @@ void descriptor_data::buffer_printf( const char *fmt, ... )
 }
 
 /* Writes to a descriptor, usually best used when there's no character to send to ( like logins ) */
-void descriptor_data::send_color( const string & txt )
+void descriptor_data::send_color( std::string_view txt )
 {
    if( txt.empty(  ) || !this->descriptor )
       return;
@@ -1288,7 +1282,7 @@ bool descriptor_data::pager_output(  )
 
 void descriptor_data::send_greeting(  )
 {
-   fs::path filename = std::format( "{}greeting.dat", MOTD_DIR );
+   std::filesystem::path filename = std::format( "{}greeting.dat", MOTD_DIR );
 
    // Read the file directly into a std::string
    if( std::ifstream in{ filename, std::ios::in | std::ios::binary } )

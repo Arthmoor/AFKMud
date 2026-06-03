@@ -26,7 +26,7 @@
  *                          Informational module                            *
  ****************************************************************************/
 
-#include <sys/stat.h>
+#include <filesystem>
 #include <format>
 #include "mud.h"
 #include "area.h"
@@ -2746,34 +2746,26 @@ CMDF( do_motdedit )
 
 void pc_data::save_ignores( FILE * fp )
 {
-   list < string >::iterator ign;
-
-   for( ign = ignore.begin(  ); ign != ignore.end(  ); ++ign )
-   {
-      string temp = *ign;
-      fprintf( fp, "Ignored      %s~\n", temp.c_str(  ) );
-   }
+   for( const auto& name : ignore )
+      fprintf( fp, "Ignored      %s~\n", name.c_str(  ) );
 }
 
 void pc_data::load_ignores( FILE * fp )
 {
-   char fname[256];
-   struct stat fst;
-
    /*
     * Get the name 
     */
    const char* temp = fread_flagstring( fp );
 
-   snprintf( fname, 256, "%s%c/%s", PLAYER_DIR, tolower( temp[0] ), capitalize( temp ) );
+   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( temp[0] ), capitalize( temp ) );
 
    /*
     * If there isn't a pfile for the name then don't add it to the list
     */
-   if( stat( fname, &fst ) == -1 )
+   if( std::filesystem::exists( fname ) )
       return;
 
-   string ig = temp;
+   std::string ig = temp;
    /*
     * Add the name unless the limit has been reached 
     */
@@ -2858,12 +2850,10 @@ CMDF( do_ignore )
 
    else
    {
-      string fname, fname2;
-      struct stat fst;
       size_t i;
 
-      fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
-      fname2 = std::format( "{}/{}", GOD_DIR, capitalize( argument ) );
+      std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, tolower( argument.front() ), capitalize( argument ) );
+      std::filesystem::path fname2 = std::format( "{}/{}", GOD_DIR, capitalize( argument ) );
 
       victim = nullptr;
 
@@ -2904,7 +2894,7 @@ CMDF( do_ignore )
        * * This if-statement may seem like overkill but it is intended to prevent people from doing the
        * * spam and log thing while still allowing ya to ignore new chars without pfiles yet... 
        */
-      if( stat( fname.c_str(), &fst ) == -1 && ( !( victim = ch->get_char_world( argument ) ) || victim->isnpc(  ) || str_cmp( capitalize( argument ), victim->name ) != 0 ) )
+      if( !std::filesystem::exists( fname ) && ( !( victim = ch->get_char_world( argument ) ) || victim->isnpc(  ) || str_cmp( capitalize( argument ), victim->name ) != 0 ) )
       {
          ch->printf( "&[ignore]No player exists by the name %s.\r\n", argument.c_str(  ) );
          return;
@@ -2916,7 +2906,7 @@ CMDF( do_ignore )
          return;
       }
 
-      if( stat( fname2.c_str(), &fst ) != -1 )
+      if( std::filesystem::exists( fname2 ) )
       {
          ch->print( "&[ignore]You cannot ignore an immortal.\r\n" );
          return;
