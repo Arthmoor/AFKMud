@@ -41,6 +41,8 @@
  *           Base Weather Model Copyright (c) 2007 Chris Jacobson           *
  ****************************************************************************/
 
+#include <filesystem>
+#include <format>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -2271,14 +2273,13 @@ int version;
 void save_weathermap( void )
 {
    int x, y;
-   char filename[MIL];
    FILE *fp;
 
-   snprintf( filename, MIL, "%s%s", SYSTEM_DIR, WEATHER_FILE );
-   if( !( fp = fopen( filename, "w" ) ) )
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, WEATHER_FILE );
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( filename );
+      perror( filename.c_str() );
       return;
    }
 
@@ -2311,7 +2312,7 @@ void fread_cell( FILE * fp, int x, int y )
    for( ;; )
    {
       const char *word = feof( fp ) ? "End" : fread_word( fp );
-      string flag;
+      std::string flag;
       int value = 0;
 
       switch ( UPPER( word[0] ) )
@@ -2330,7 +2331,7 @@ void fread_cell( FILE * fp, int x, int y )
             {
                if( version >= 1 )
                {
-                  string climate;
+                  std::string climate;
 
                   fread_string( climate, fp );
 
@@ -2358,7 +2359,7 @@ void fread_cell( FILE * fp, int x, int y )
             {
                if( version >= 1 )
                {
-                  string hemisphere;
+                  std::string hemisphere;
 
                   fread_string( hemisphere, fp );
 
@@ -2405,15 +2406,14 @@ void fread_cell( FILE * fp, int x, int y )
 bool load_weathermap( void )
 {
    FILE *fp = NULL;
-   char filename[256];
    int x, y;
 
    version = 0;
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, WEATHER_FILE );
-   if( !( fp = fopen( filename, "r" ) ) )
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, WEATHER_FILE );
+   if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
-      bug( "%s: cannot open %s for reading", __func__, filename );
+      bug( "%s: cannot open %s for reading", __func__, filename.c_str() );
       return false;
    }
 
@@ -3063,7 +3063,7 @@ bool isGaleForceWindS( int windy )
 
 CMDF( do_setweather )
 {
-   string arg, arg2, arg3, arg4;
+   std::string arg, arg2, arg3, arg4;
    int value, x, y;
 
    argument = one_argument( argument, arg );
@@ -3161,7 +3161,7 @@ CMDF( do_setweather )
 
 CMDF( do_showweather )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    int x, y;
 
    argument = one_argument( argument, arg );

@@ -52,8 +52,7 @@ endif
 # We add -D_FORTIFY_SOURCE=2 to perform runtime checks on string/memory functions.
 HARDENING_FLAGS = -fstack-protector-strong -D_FORTIFY_SOURCE=2
 
-#If this complains that C++23 is not available, change it to -std=c++20
-#If you are on GCC 13 or above this should not be an issue.
+#AFKMud now requires at least C++23 to be enabled. This will work in GCC 13.1 or later, which should be more than sufficient.
 ifndef IS_CYGWIN
    C_STD = -std=c++23
 endif

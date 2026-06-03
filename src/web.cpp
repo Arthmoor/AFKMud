@@ -31,6 +31,7 @@
 #include <fstream>
 #include <memory>
 #include <sstream>
+#include <unordered_map>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -39,18 +40,14 @@
 
 #define WEB_ROOMS "../public_html/"
 
-namespace fs = std::filesystem;
-
-/*
- * Structure used to build wizlist
- */
+// Structure used to build wizlist
 class wizentweb
 {
 public:
    wizentweb( ) : level( 0 ) {}
 
-   string name;
-   string http;
+   std::string name;
+   std::string http;
    short level;
 };
 
@@ -61,157 +58,65 @@ void free_wizlist_web_data()
    wizlistweb.clear();
 }
 
-string rankbuffer( char_data * );
+std::string rankbuffer( char_data * );
 extern int num_logins;
 
-int web_colour( char type, char *string, bool & firsttag )
+std::string web_colourconv( std::string_view txt )
 {
-   char code[50];
-   char *p = nullptr;
-   bool validcolor = false;
+   std::string result;
+   result.reserve( txt.size() * 2 );
+   bool in_span = false;
 
-   switch ( type )
+   static const std::unordered_map<char, std::string_view> color_map = {
+      {'x', "black"}, {'b', "dblue"},  {'c', "cyan"},   {'g', "dgreen"}, {'r', "dred"},
+      {'w', "grey"},  {'y', "yellow"}, {'Y', "yellow"}, {'B', "blue"},   {'C', "lblue"},
+      {'G', "green"}, {'R', "red"},    {'W', "white"},  {'z', "dgrey"},  {'o', "yellow"},
+      {'O', "orange"},{'p', "purple"}, {'P', "pink"}
+   };
+
+   for( size_t i = 0; i < txt.size(); ++i )
    {
-      default:
-         break;
-      case '&':
-         strlcpy( code, "&amp;", 50 );
-         break;
-      case 'x':
-         strlcpy( code, "<span class=\"black\">", 50 );
-         validcolor = true;
-         break;
-      case 'b':
-         strlcpy( code, "<span class=\"dblue\">", 50 );
-         validcolor = true;
-         break;
-      case 'c':
-         strlcpy( code, "<span class=\"cyan\">", 50 );
-         validcolor = true;
-         break;
-      case 'g':
-         strlcpy( code, "<span class=\"dgreen\">", 50 );
-         validcolor = true;
-         break;
-      case 'r':
-         strlcpy( code, "<span class=\"dred\">", 50 );
-         validcolor = true;
-         break;
-      case 'w':
-         strlcpy( code, "<span class=\"grey\">", 50 );
-         validcolor = true;
-         break;
-      case 'y':
-         strlcpy( code, "<span class=\"yellow\">", 50 );
-         validcolor = true;
-         break;
-      case 'Y':
-         strlcpy( code, "<span class=\"yellow\">", 50 );
-         validcolor = true;
-         break;
-      case 'B':
-         strlcpy( code, "<span class=\"blue\">", 50 );
-         validcolor = true;
-         break;
-      case 'C':
-         strlcpy( code, "<span class=\"lblue\">", 50 );
-         validcolor = true;
-         break;
-      case 'G':
-         strlcpy( code, "<span class=\"green\">", 50 );
-         validcolor = true;
-         break;
-      case 'R':
-         strlcpy( code, "<span class=\"red\">", 50 );
-         validcolor = true;
-         break;
-      case 'W':
-         strlcpy( code, "<span class=\"white\">", 50 );
-         validcolor = true;
-         break;
-      case 'z':
-         strlcpy( code, "<span class=\"dgrey\">", 50 );
-         validcolor = true;
-         break;
-      case 'o':
-         strlcpy( code, "<span class=\"yellow\">", 50 );
-         validcolor = true;
-         break;
-      case 'O':
-         strlcpy( code, "<span class=\"orange\">", 50 );
-         validcolor = true;
-         break;
-      case 'p':
-         strlcpy( code, "<span class=\"purple\">", 50 );
-         validcolor = true;
-         break;
-      case 'P':
-         strlcpy( code, "<span class=\"pink\">", 50 );
-         validcolor = true;
-         break;
-      case '<':
-         strlcpy( code, "&lt;", 50 );
-         break;
-      case '>':
-         strlcpy( code, "&gt;", 50 );
-         break;
-      case '/':
-         strlcpy( code, "<br />", 50 );
-         break;
-      case '{':
-         snprintf( code, 50, "%c", '{' );
-         break;
-      case '-':
-         snprintf( code, 50, "%c", '~' );
-         break;
-   }
-
-   if( !firsttag && validcolor )
-   {
-      char newcode[70];
-
-      snprintf( newcode, 70, "</span>%s", code );
-      strlcpy( code, newcode, 50 );
-   }
-
-   if( firsttag && validcolor )
-      firsttag = false;
-
-   p = code;
-   while( *p != '\0' )
-   {
-      *string = *p++;
-      *++string = '\0';
-   }
-
-   return ( strlen( code ) );
-}
-
-void web_colourconv( char *buffer, const char *txt )
-{
-   const char *point;
-   int skip = 0;
-   bool firsttag = true;
-
-   if( txt )
-   {
-      for( point = txt; *point; ++point )
+      if( txt[i] == '&' && ( i + 1 < txt.size() ) )
       {
-         if( *point == '&' )
+         char code = txt[++i];
+
+         if( code == '&' )
+            result += "&amp;";
+         else if( code == '<' )
+            result += "&lt;";
+         else if( code == '>' )
+            result += "&gt;";
+         else if( code == '/' )
+            result += "<br />";
+         else if( code == '{' )
+            result += '{';
+         else if( code == '-' )
+            result += '~';
+
+         else if( auto it = color_map.find( code ); it != color_map.end() )
          {
-            ++point;
-            skip = web_colour( *point, buffer, firsttag );
-            while( skip-- > 0 )
-               ++buffer;
-            continue;
+            if( in_span )
+            {
+               result += "</span>";
+            }
+            result += "<span class=\"";
+            result += it->second;
+            result += "\">";
+            in_span = true;
          }
-         *buffer = *point;
-         *++buffer = '\0';
       }
-      *buffer = '\0';
+      else
+      {
+         result += txt[i];
+      }
    }
-   if( !firsttag )
-      strlcat( buffer, "</span>", 64000 );
+
+   if( in_span )
+   {
+      result += "</span>";
+   }
+
+   return result;
 }
 
 void web_who(  )
@@ -219,7 +124,7 @@ void web_who(  )
    FILE *webwho = nullptr;
    list < descriptor_data * >::iterator ds;
    ostringstream webbuf, buf1, buf2;
-   string rank, outbuf, stats, clan_name;
+   std::string rank, outbuf, stats, clan_name;
    int pcount = 0, amount, xx = 0, yy = 0;
 
    if( !( webwho = fopen( WEBWHO_FILE, "w" ) ) )
@@ -350,13 +255,12 @@ void web_who(  )
       }
    }
 
-   char col_buf[64000];
-
    webbuf << "\n&Y[&d&W" << pcount << " Player" << ( pcount == 1 ? "" : "s" ) << "&d&Y] ";
    webbuf << "[&d&WHomepage: <a href=\"" << sysdata->http << "\">" << sysdata->http << "</a>&d&Y] [&d&W" << sysdata->maxplayers << " Max Since Reboot&d&Y]&d\n";
    webbuf << "&Y[&d&W" << num_logins << " login" << ( num_logins == 1 ? "" : "s" ) << " since last reboot on " << str_boot_time << "&d&Y]&d\n";
-   web_colourconv( col_buf, webbuf.str(  ).c_str(  ) );
-   fprintf( webwho, "%s", col_buf );
+
+   std::string final_output = web_colourconv( webbuf.str() );
+   fprintf( webwho, "%s", final_output.c_str() );
    FCLOSE( webwho );
 }
 
@@ -390,7 +294,7 @@ void web_arealist(  )
 /*
  * Wizlist builder! - Thoric [Web version]
  */
-void add_to_webwizlist( const string & name, const string & http, int level )
+void add_to_webwizlist( const std::string & name, const std::string & http, int level )
 {
    auto wiz = std::make_unique<wizentweb>();
 
@@ -449,7 +353,7 @@ void make_webwiz( )
    wizlistweb.clear();
 
    // Walk the file list in GOD_DIR.
-   for( const auto& entry : fs::directory_iterator( GOD_DIR ) )
+   for( const auto& entry : std::filesystem::directory_iterator( GOD_DIR ) )
    {
       // An actual file entry and not another folder.
       if( entry.is_regular_file( ) )
@@ -526,18 +430,15 @@ void make_webwiz( )
 void room_to_html( room_index * room, bool complete )
 {
    FILE *fp = nullptr;
-   char filename[256];
    bool found = false;
 
    if( !room )
       return;
 
-   snprintf( filename, 256, "%s%d.html", WEB_ROOMS, room->vnum );
+   std::filesystem::path filename = std::format( "{}{}.html", WEB_ROOMS, room->vnum );
 
-   if( ( fp = fopen( filename, "w" ) ) != nullptr )
+   if( ( fp = fopen( filename.c_str(), "w" ) ) != nullptr )
    {
-      char roomdesc[MSL];
-
       fprintf( fp, "%s", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n" );
       fprintf( fp, "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n" );
       fprintf( fp, "<title>%s: %s</title>\n</head>\n\n<body bgcolor=\"#000000\">\n", room->area->name, room->name );
@@ -545,11 +446,8 @@ void room_to_html( room_index * room, bool complete )
       fprintf( fp, "<font color=\"#FF0000\">%s</font><br />\n", room->name );
       fprintf( fp, "%s", "<font color=\"#33FF33\">[Exits:" );
 
-      list < exit_data * >::iterator iexit;
-      for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
+      for( auto* pexit : room->exits )
       {
-         exit_data *pexit = *iexit;
-
          if( pexit->to_room ) /* Set any controls you want here, ie: not closed doors, etc */
          {
             found = true;
@@ -560,15 +458,13 @@ void room_to_html( room_index * room, bool complete )
          fprintf( fp, "%s", " None.]</font><br />\n" );
       else
          fprintf( fp, "%s", "]</font><br />\n" );
-      web_colourconv( roomdesc, room->roomdesc );
-      fprintf( fp, "<font color=\"#999999\">%s</font><br />\n", roomdesc );
+      std::string roomdesc = web_colourconv( room->roomdesc );
+      fprintf( fp, "<font color=\"#999999\">%s</font><br />\n", roomdesc.c_str() );
 
       if( complete )
       {
-         list < obj_data * >::iterator iobj;
-         for( iobj = room->objects.begin(  ); iobj != room->objects.end(  ); ++iobj )
+         for( auto* obj : room->objects )
          {
-            obj_data *obj = *iobj;
             if( obj->extra_flags.test( ITEM_AUCTION ) )
                continue;
 
@@ -576,18 +472,14 @@ void room_to_html( room_index * room, bool complete )
                fprintf( fp, "<font color=\"#0000EE\">%s</font><br />\n", obj->objdesc );
          }
 
-         list < char_data * >::iterator ich;
-         for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
+         for( auto* rch : room->people )
          {
-            char_data *rch = *ich;
             if( rch->isnpc(  ) )
                fprintf( fp, "<font color=\"#FF00FF\">%s</font><br />\n", rch->long_descr );
             else
             {
-               char pctitle[MSL];
-
-               web_colourconv( pctitle, rch->pcdata->title );
-               fprintf( fp, "<font color=\"#FF00FF\">%s %s</font><br />\n", rch->name, pctitle );
+               std::string pctitle = web_colourconv( rch->pcdata->title );
+               fprintf( fp, "<font color=\"#FF00FF\">%s %s</font><br />\n", rch->name, pctitle.c_str() );
             }
          }
       }
@@ -600,24 +492,18 @@ void room_to_html( room_index * room, bool complete )
 
 CMDF( do_webroom )
 {
-   list < room_index * >::iterator rindex;
-   room_index *room;
    area_data *area;
    bool complete = false;
 
    if( !str_cmp( argument, "complete" ) )
       complete = true;
 
-   /*
-    * Limiting this to Bywater since I don't want the whole mud "webized" - silent return
-    */
+   // Limiting this to Bywater since I don't want the whole mud "webized" - silent return
    if( !( area = find_area( "bywater.are" ) ) )
       return;
 
-   for( rindex = area->rooms.begin(  ); rindex != area->rooms.end(  ); ++rindex )
+   for( auto* room : area->rooms )
    {
-      room = *rindex;
-
       if( room->flags.test( ROOM_AUCTION ) || room->flags.test( ROOM_PET_SHOP ) )
          continue;
 

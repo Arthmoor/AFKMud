@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <algorithm>
+#include <format>
 #include "mud.h"
 #include "mudcfg.h"
 #include "fight.h"
@@ -1662,7 +1663,6 @@ int skill_number( const string & argument )
 bool get_skill_help( char_data * ch, const string & argument )
 {
    skill_type *skill = nullptr;
-   char buf[MSL], target[MSL];
    int sn;
 
    if( ( sn = skill_number( argument ) ) >= 0 )
@@ -1672,39 +1672,36 @@ bool get_skill_help( char_data * ch, const string & argument )
    if( sn < 0 || !skill || skill->type == SKILL_HERB )
       return false;
 
-   target[0] = '\0';
+   std::string target = "";
    switch ( skill->target )
    {
       default:
          break;
 
       case TAR_CHAR_OFFENSIVE:
-         strlcpy( target, "<victim>", MSL );
+         target = "<victim>";
          break;
 
       case TAR_CHAR_SELF:
-         strlcpy( target, "<self>", MSL );
+         target = "<self>";
          break;
 
       case TAR_OBJ_INV:
-         strlcpy( target, "<object>", MSL );
+         target = "<object>";
          break;
    }
 
-   snprintf( buf, MSL, "cast '%s'", skill->name );
-   ch->printf( "Usage        : %s %s\r\n", skill->type == SKILL_SPELL ? buf : skill->name, target );
+   std::string buf = std::format( "cast '{}'", skill->name );
+   ch->print_fmt( "Usage        : {} {}\r\n", skill->type == SKILL_SPELL ? buf : skill->name, target );
 
    if( skill->affects.empty(  ) )
       ch->print( "Duration     : Instant\r\n" );
    else
    {
-      list < smaug_affect * >::iterator paf;
       bool found = false;
 
-      for( paf = skill->affects.begin(  ); paf != skill->affects.end(  ); ++paf )
+      for( auto* af : skill->affects )
       {
-         smaug_affect *af = *paf;
-
          // Make sure duration isn't null, and is not 0
          if( af->duration && af->duration[0] != '\0' && af->duration[0] != '0' )
          {
@@ -1730,13 +1727,13 @@ bool get_skill_help( char_data * ch, const string & argument )
 
          if( firstpass )
          {
-            snprintf( buf, MSL, "%s ", class_table[iClass]->who_name );
+            buf = std::format( "{} ", class_table[iClass]->who_name );
             firstpass = false;
          }
          else
-            snprintf( buf, MSL, ", %s ", class_table[iClass]->who_name );
+            buf = std::format( ", {} ", class_table[iClass]->who_name );
 
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%d", skill->skill_level[iClass] );
+         buf.append( std::to_string( skill->skill_level[iClass] ) );
          ch->print( buf );
       }
    }
@@ -1749,13 +1746,13 @@ bool get_skill_help( char_data * ch, const string & argument )
 
          if( firstpass )
          {
-            snprintf( buf, MSL, "%s ", race_table[iRace]->race_name );
+            buf = std::format( "{} ", race_table[iRace]->race_name );
             firstpass = false;
          }
          else
-            snprintf( buf, MSL, ", %s ", race_table[iRace]->race_name );
+            buf = std::format( ", {} ", race_table[iRace]->race_name );
 
-         snprintf( buf + strlen( buf ), MSL - strlen( buf ), "%d", skill->race_level[iRace] );
+         buf.append( std::to_string( skill->race_level[iRace] ) );
          ch->print( buf );
       }
    }
@@ -2385,7 +2382,7 @@ CMDF( do_slist )
  */
 CMDF( do_slookup )
 {
-   char buf[MSL];
+   std::string buf;
    int sn;
    int iClass, iRace;
    skill_type *skill = nullptr;
@@ -2517,44 +2514,35 @@ CMDF( do_slookup )
          ch->printf( "Participants: %d\r\n", ( int )skill->participants );
 
       int cnt = 0;
-      list < smaug_affect * >::iterator aff;
-      for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); )
+      for( auto* af : skill->affects )
       {
-         smaug_affect *af = ( *aff );
-
-         if( aff == skill->affects.begin(  ) )
+         if( cnt == 0 )
             ch->print( "\r\n" );
 
-         snprintf( buf, MSL, "Affect %d", ++cnt );
+         buf = std::format( "Affect {}", ++cnt );
          if( af->location )
          {
-            strlcat( buf, " modifies ", MSL );
-            strlcat( buf, a_types[af->location % REVERSE_APPLY], MSL );
-            strlcat( buf, " by '", MSL );
-            strlcat( buf, af->modifier, MSL );
+            buf.append( std::format( " modifies {} by '{}'", a_types[af->location % REVERSE_APPLY], af->modifier ) );
             if( af->bit != -1 )
-               strlcat( buf, "' and", MSL );
+               buf.append( "' and" );
             else
-               strlcat( buf, "'", MSL );
+               buf.append( "'" );
          }
          if( af->bit != -1 )
          {
-            strlcat( buf, " applies ", MSL );
-            strlcat( buf, aff_flags[af->bit], MSL );
+            buf.append( std::format( " applies {}", aff_flags[af->bit] ) );
          }
          if( af->duration[0] != '\0' && af->duration[0] != '0' )
          {
-            strlcat( buf, " for '", MSL );
-            strlcat( buf, af->duration, MSL );
-            strlcat( buf, "' rounds", MSL );
+            buf.append( std::format( " for '{}' rounds", af->duration ) );
          }
          if( af->location >= REVERSE_APPLY )
-            strlcat( buf, " (affects caster only)", MSL );
-         strlcat( buf, "\r\n", MSL );
+            buf.append( " (affects caster only)" );
+         buf.append( "\r\n" );
          ch->print( buf );
-         if( ++aff == skill->affects.end(  ) )
-            ch->print( "\r\n" );
       }
+      ch->print( "\r\n" );
+
       if( skill->hit_char && skill->hit_char[0] != '\0' )
          ch->printf( "Hitchar   : %s\r\n", skill->hit_char );
 
@@ -2601,12 +2589,11 @@ CMDF( do_slookup )
             ch->print( "--------------------------[CLASS USE]--------------------------\r\n" );
             for( iClass = 0; iClass < MAX_PC_CLASS; ++iClass )
             {
-               strlcpy( buf, class_table[iClass]->who_name, MSL );
-               snprintf( buf + 3, MSL - 3, " ) lvl: %3d max: %2d%%", skill->skill_level[iClass], skill->skill_adept[iClass] );
+               buf = std::format( "{} ) lvl: {:3} max: {:2}%", class_table[iClass]->who_name, skill->skill_level[iClass], skill->skill_adept[iClass] );
                if( iClass % 3 == 2 )
-                  strlcat( buf, "\r\n", MSL );
+                  buf.append( "\r\n" );
                else
-                  strlcat( buf, "  ", MSL );
+                  buf.append( "  " );
                ch->print( buf );
             }
          }
@@ -2615,13 +2602,13 @@ CMDF( do_slookup )
             ch->print( "\r\n--------------------------[RACE USE]--------------------------\r\n" );
             for( iRace = 0; iRace < MAX_PC_RACE; ++iRace )
             {
-               snprintf( buf, MSL, "%8.8s ) lvl: %3d max: %2d%%", race_table[iRace]->race_name, skill->race_level[iRace], skill->race_adept[iRace] );
+               buf = std::format( "{:.8} ) lvl: {:3} max: {:2}%", race_table[iRace]->race_name, skill->race_level[iRace], skill->race_adept[iRace] );
                if( !str_cmp( race_table[iRace]->race_name, "unused" ) )
-                  strlcpy( buf, "                           ", MSL );
+                  buf = "                           ";
                if( ( iRace > 0 ) && ( iRace % 2 == 1 ) )
-                  strlcat( buf, "\r\n", MSL );
+                  buf.append( "\r\n" );
                else
-                  strlcat( buf, "  ", MSL );
+                  buf.append( "  " );
                ch->print( buf );
             }
          }
@@ -2636,7 +2623,7 @@ CMDF( do_slookup )
  */
 CMDF( do_sset )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    int value, sn, i;
    bool fAll;
