@@ -10,7 +10,7 @@ Highplayers    1
 Highplayertime Sun Dec 10, 2006 1:14:17 AM PST~
 CheckImmHost   1
 Nameresolving  0
-Waitforauth    0
+Waitforauth    1
 Readallmail    115
 Readmailfree   101
 Writemailfree  2
@@ -24,12 +24,10 @@ Stunplrvsplr   65
 Stunregular    0
 Gougepvp       0
 Gougenontank   0
-Bashpvp        0
-Bashnontank    0
 Dodgemod       2
 Parrymod       2
 Tumblemod      4
-Damplrvsplr    25
+Damplrvsplr    100
 Damplrvsmob    100
 Dammobvsplr    100
 Dammobvsmob    100
