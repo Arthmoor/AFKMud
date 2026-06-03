@@ -298,11 +298,7 @@ void create_skyship( char_data * ch )
 
    /*
     * pick a random set of coordinates 
-    */
-   /*
     * and create skyship at the coords 
-    */
-   /*
     * skyship can be safely spawned using the same room as the PC calling it - Samson 
     */
    if( !skyship->to_room( ch->in_room ) )

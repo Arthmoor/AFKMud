@@ -5625,6 +5625,7 @@ bool check_dodge( char_data * ch, char_data * victim )
       victim->learn_from_failure( gsn_dodge );
       return false;
    }
+
    /*
     * Modified by Tarl 24 April 02 to reduce combat spam with GAG flag. 
     * And yes, I forgot the NPC checks here at first, too. :P 

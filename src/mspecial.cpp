@@ -45,8 +45,6 @@
 #include "roomindex.h"
 #include "weather.h"
 
-namespace fs = std::filesystem;
-
 SPELLF( spell_smaug );
 SPELLF( spell_cure_blindness );
 SPELLF( spell_cure_poison );
@@ -71,7 +69,7 @@ void free_specfuns( void )
 void load_specfuns( void )
 {
    FILE *fp;
-   fs::path filename;
+   std::filesystem::path filename;
    string sfun;
 
    speclist.clear(  );

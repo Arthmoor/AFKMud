@@ -647,7 +647,7 @@ char *strlower( const char *str )
    return strlow;
 }
 
-void strlower( string & str )
+void strlower( std::string & str )
 {
    transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::tolower );
 }
@@ -666,7 +666,7 @@ char *strupper( const char *str )
    return strup;
 }
 
-void strupper( string & str )
+void strupper( std::string & str )
 {
    transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::toupper );
 }

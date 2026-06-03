@@ -88,8 +88,6 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-namespace fs = std::filesystem;
-
 /* globals */
 liquid_data *liquid_table[MAX_LIQUIDS];
 list < mixture_data * >mixlist;
@@ -142,7 +140,7 @@ void save_liquids( void )
 {
    FILE *fp = nullptr;
    liquid_data *liq = nullptr;
-   fs::path filename;
+   std::filesystem::path filename;
    int i;
 
    filename = std::format( "{}liquids.dat", SYSTEM_DIR );
@@ -251,7 +249,7 @@ liquid_data *fread_liquid( FILE * fp )
 void load_liquids( void )
 {
    FILE *fp = nullptr;
-   fs::path filename;
+   std::filesystem::path filename;
    int x;
 
    file_version = 0;
@@ -323,7 +321,7 @@ void save_mixtures( void )
    list < mixture_data * >::iterator imix;
    FILE *fp = nullptr;
 
-   fs::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
+   std::filesystem::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: cannot open %s for writing", __func__, filename.c_str() );
@@ -423,7 +421,7 @@ void load_mixtures( void )
    mixlist.clear(  );
    file_version = 0;
 
-   fs::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
+   std::filesystem::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
       bug( "%s: cannot open %s for reading", __func__, filename.c_str() );
