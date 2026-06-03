@@ -41,36 +41,43 @@
 #include <iostream>
 #include <string>
 
-std::string resolve_address(std::string_view address) {
-   if (address == "::1" || address == "127.0.0.1") return "localhost";
+std::string resolve_address( std::string_view address )
+{
+   if( address == "::1" || address == "127.0.0.1" )
+      return "localhost";
 
    addrinfo hints{}, *res = nullptr;
    hints.ai_family = AF_UNSPEC;
    hints.ai_socktype = SOCK_STREAM;
    hints.ai_flags = AI_NUMERICHOST;
 
-   // Attempt to parse the address
-   if (getaddrinfo(address.data(), nullptr, &hints, &res) != 0) {
-      return std::string(address); // Fail: return original string
+   // Attempt to parse the address.
+   if( getaddrinfo( address.data(), nullptr, &hints, &res ) != 0 )
+   {
+      return std::string( address );
    }
 
    char host[NI_MAXHOST];
-   // Attempt reverse lookup
-   int rc = getnameinfo(res->ai_addr, res->ai_addrlen,
-                        host, sizeof(host), nullptr, 0, NI_NAMEREQD);
 
-   freeaddrinfo(res);
+   // Attempt reverse lookup.
+   int rc = getnameinfo( res->ai_addr, res->ai_addrlen, host, sizeof(host), nullptr, 0, NI_NAMEREQD );
 
-   if (rc == 0) return std::string(host); // Success: return hostname
-   return std::string(address);          // Fail: return original IP
+   freeaddrinfo( res );
+
+   if( rc == 0 )
+      return std::string( host ); // Success: return hostname.
+   return std::string( address ); // Fail: return original IP.
 }
-int main(int argc, char* argv[]) {
-   if (argc != 2) {
+
+int main( int argc, char* argv[] )
+{
+   if( argc != 2 )
+   {
       std::cerr << "bad.resolver.call" << std::endl;
       return 1;
    }
 
-   std::string result = resolve_address(argv[1]);
+   std::string result = resolve_address( argv[1] );
 
    std::cout << result << std::endl;
 

@@ -2559,8 +2559,6 @@ bool load_char_obj( descriptor_data * d, const std::string & name, bool preload,
    reset_colors( ch );
 
    std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name[0] ) ), capitalize( name ) );
-   log_string( ch->pcdata->filename );
-   log_string( strsave.c_str() );
    if( std::filesystem::exists( strsave ) && d->connected != CON_PLOADED )
    {
       if( preload )

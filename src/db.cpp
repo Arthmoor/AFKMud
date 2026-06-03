@@ -282,303 +282,263 @@ bool is_valid_filename( char_data * ch, const string & direct, const string & fi
 /*
  * Read a letter from a file.
  */
-char fread_letter( FILE * fp )
+char fread_letter( FILE* fp )
 {
-   char c;
+   int c;
 
-   do
+   while( ( c = std::getc( fp ) ) != EOF )
    {
-      if( feof( fp ) )
+      if( !std::isspace( static_cast<unsigned char>( c ) ) )
       {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-         {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
-         }
-         return '\0';
+         return static_cast<char>( c );
       }
-      c = getc( fp );
    }
-   while( isspace( c ) );
 
-   return c;
+   bug( "%s: EOF encountered on read.", __func__ );
+
+   if( fBootDb )
+   {
+      shutdown_mud( "Corrupt file somewhere." );
+      std::exit( EXIT_FAILURE );
+   }
+
+   return '\0';
+}
+
+static std::string internal_fread_flagstring( FILE* fp )
+{
+   int c;
+
+   while( ( c = std::getc( fp ) ) != EOF && std::isspace( static_cast<unsigned char>( c ) ) );
+
+   if( c == EOF )
+   {
+      bug( "%s: EOF encountered on read.", __func__ );
+      if( fBootDb )
+      {
+         shutdown_mud( "Corrupt file somewhere." );
+         std::exit( EXIT_FAILURE );
+      }
+      return "";
+   }
+
+   if( c == '~' )
+      return "";
+
+   std::string result;
+   result.reserve( 256 );
+   result.push_back( static_cast<char>( c ) );
+
+   while( ( c = std::getc( fp ) ) != EOF )
+   {
+      if( c == '~' )
+         return result;
+
+      if( c == '\n' )
+      {
+         result.push_back( '\n' );
+         result.push_back( '\r' );
+      }
+      else if( c != '\r' )
+      {
+         result.push_back( static_cast<char>( c ) );
+      }
+   }
+
+   bug( "%s: EOF encountered before ~", __func__ );
+   return result;
 }
 
 /*
  * Read a string of text based flags from file fp. Ending in ~
  */
-const char *fread_flagstring( FILE * fp )
+const char* fread_flagstring( FILE* fp )
 {
-   static char buf[MSL];
-   char *plast;
-   char c;
-   int ln;
+   static std::string buffer;
 
-   plast = buf;
-   buf[0] = '\0';
-   ln = 0;
+   buffer = internal_fread_flagstring( fp );
 
-   /*
-    * Skip blanks.
-    * Read first char.
-    */
-   do
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-         {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
-         }
-         return "";
-      }
-      c = getc( fp );
-   }
-   while( isspace( c ) );
-
-   if( ( *plast++ = c ) == '~' )
-      return "";
-
-   for( ;; )
-   {
-      if( ln >= ( MSL - 1 ) )
-      {
-         bug( "%s: string too long", __func__ );
-         *plast = '\0';
-         return buf;
-      }
-      switch ( *plast = getc( fp ) )
-      {
-         default:
-            ++plast;
-            ++ln;
-            break;
-
-         case EOF:
-            bug( "%s: EOF", __func__ );
-            if( fBootDb )
-               exit( 1 );
-            *plast = '\0';
-            return buf;
-
-         case '\n':
-            ++plast;
-            ++ln;
-            *plast++ = '\r';
-            ++ln;
-            break;
-
-         case '\r':
-            break;
-
-         case '~':
-            *plast = '\0';
-            return buf;
-      }
-   }
+   return buffer.c_str();
 }
 
-/* Read a string from file and allocate it to the shared string hash */
-char *fread_string( FILE * fp )
+// Read a string from file and allocate it to the shared string hash
+char* fread_string( FILE* fp )
 {
-   char buf[MSL];
+   std::string temp = internal_fread_flagstring( fp );
 
-   strlcpy( buf, fread_flagstring( fp ), MSL );
-
-   if( !str_cmp( buf, "" ) )
-      return nullptr;
-   return STRALLOC( buf );
+   return temp.empty() ? nullptr : STRALLOC( temp.c_str() );
 }
 
-/* Read a string from a file and assign it to a std::string */
-void fread_string( string & newstring, FILE * fp )
+// Read a string from a file and assign it to a std::string
+void fread_string( std::string & newstring, FILE* fp )
 {
-   char buf[MSL];
-
-   strlcpy( buf, fread_flagstring( fp ), MSL );
-   newstring = buf;
+   newstring = internal_fread_flagstring( fp );
 }
 
-/* Read a string from file fp using strdup (ie: no string hashing)
+/*
+ * Read a string from file fp using strdup (ie: no string hashing)
  * This will probably become obsolete after the std::string conversions are done.
  */
-char *fread_string_nohash( FILE * fp )
+char* fread_string_nohash( FILE* fp )
 {
-   char buf[MSL];
+   std::string temp = internal_fread_flagstring( fp );
 
-   strlcpy( buf, fread_flagstring( fp ), MSL );
-   return strdup( buf );
+   return temp.empty() ? nullptr : strdup( temp.c_str() );
 }
 
 /*
  * Read to end of line (for comments).
  */
-void fread_to_eol( FILE * fp )
+void fread_to_eol( FILE* fp )
 {
-   char c;
+   int c;
 
-   do
+   while( ( c = std::getc( fp ) ) != EOF )
    {
-      if( feof( fp ) )
+      if( c == '\n' || c == '\r' )
       {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
+         // Peek at the next character to see if we have a \r\n pair
+         int next = std::getc( fp );
+
+         // If the next character is the other half of a CRLF pair, consume it
+         if( next != EOF && next != c && ( next == '\n' || next == '\r' ) )
          {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
+            return;
+         }
+
+         // Otherwise, put the character back so the next read starts fresh
+         if( next != EOF )
+         {
+            std::ungetc( next, fp );
          }
          return;
       }
-      c = getc( fp );
    }
-   while( c != '\n' && c != '\r' );
 
-   do
+   bug( "%s: EOF encountered on read.", __func__ );
+
+   if( fBootDb )
    {
-      c = getc( fp );
+      shutdown_mud( "Corrupt file somewhere." );
+      std::exit( EXIT_FAILURE );
    }
-   while( c == '\n' || c == '\r' );
+}
 
-   ungetc( c, fp );
+static std::string internal_fread_line( FILE* fp )
+{
+   int c;
+
+   while( ( c = std::getc( fp ) ) != EOF && std::isspace( static_cast<unsigned char>( c ) ) );
+
+   if( c == EOF )
+   {
+      bug( "%s: EOF encountered on read.", __func__ );
+
+      if( fBootDb )
+      {
+         shutdown_mud( "Corrupt file somewhere." );
+         std::exit( EXIT_FAILURE );
+      }
+      return "";
+   }
+
+   std::string line;
+   line.push_back( static_cast<char>( c ) );
+
+   while( ( c = std::getc( fp ) ) != EOF && c != '\n' && c != '\r' )
+   {
+      line.push_back( static_cast<char>( c ) );
+   }
+
+   if( c == EOF )
+   {
+      bug( "%s: EOF encountered mid-line.", __func__ );
+
+      if( fBootDb )
+         std::exit( EXIT_FAILURE );
+   }
+
+   return line;
 }
 
 /*
  * Read to end of line into static buffer - Thoric
  */
-const char *fread_line( FILE * fp )
+const char* fread_line( FILE* fp )
 {
-   static char line[MSL];
-   char *pline;
-   char c;
-   int ln;
+   static std::string buffer;
 
-   pline = line;
-   line[0] = '\0';
-   ln = 0;
+   buffer = internal_fread_line( fp );
 
-   /*
-    * Skip blanks.
-    * Read first char.
-    */
-   do
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-         {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
-         }
-         return "";
-      }
-      c = getc( fp );
-   }
-   while( isspace( c ) );
-
-   ungetc( c, fp );
-
-   do
-   {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-            exit( 1 );
-         *pline = '\0';
-         return line;
-      }
-      c = getc( fp );
-      *pline++ = c;
-      ++ln;
-      if( ln >= ( MSL - 1 ) )
-      {
-         bug( "%s: line too long", __func__ );
-         break;
-      }
-   }
-   while( c != '\n' && c != '\r' );
-
-   do
-      c = getc( fp );
-   while( c == '\n' || c == '\r' );
-
-   ungetc( c, fp );
-   --pline;
-   *pline = '\0';
-   return line;
+   return buffer.c_str();
 }
 
-void fread_line( string & newstring, FILE * fp )
+void fread_line( std::string & newstring, FILE* fp )
 {
-   char buf[MSL];
-
-   strlcpy( buf, fread_line( fp ), MSL );
-   if( buf[strlen( buf ) - 1] == '\n' || buf[strlen( buf ) - 1] == '\r' )
-      buf[strlen( buf ) - 1] = '\0';
-   newstring = buf;
+   newstring = internal_fread_line( fp );
 }
 
 /*
  * Read one word (into static buffer).
  */
-char *fread_word( FILE * fp )
+char* fread_word( FILE* fp )
 {
-   static char word[MIL];
-   char *pword;
-   char cEnd;
+   static std::string word;
 
-   do
+   int c;
+
+   while( ( c = std::getc( fp ) ) != EOF && std::isspace( static_cast<unsigned char>( c ) ) );
+
+   if( c == EOF )
    {
-      if( feof( fp ) )
+      bug( "%s: EOF encountered on read.", __func__ );
+
+      if( fBootDb )
       {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
+         shutdown_mud( "Corrupt file somewhere." );
+         std::exit( EXIT_FAILURE );
+      }
+      word.clear();
+      return word.data();
+   }
+
+   word.clear();
+
+   char cEnd = ( c == '\'' || c == '"' ) ? static_cast<char>( c ) : ' ';
+
+   if( cEnd == ' ' )
+   {
+      word.push_back( static_cast<char>( c ) );
+   }
+
+   while( ( c = std::getc( fp ) ) != EOF )
+   {
+      if( cEnd == ' ' )
+      {
+         if( std::isspace( static_cast<unsigned char>( c ) ) )
          {
-            shutdown_mud( "Corrupt file somewhere." );
-            exit( 1 );
+            std::ungetc( c, fp );
+            break;
          }
-         word[0] = '\0';
-         return word;
       }
-      cEnd = getc( fp );
-   }
-   while( isspace( cEnd ) );
-
-   if( cEnd == '\'' || cEnd == '"' )
-      pword = word;
-   else
-   {
-      word[0] = cEnd;
-      pword = word + 1;
-      cEnd = ' ';
+      else
+      {
+         if( c == cEnd )
+            break;
+      }
+      word.push_back( static_cast<char>( c ) );
    }
 
-   for( ; pword < word + MIL; ++pword )
+   if( c == EOF && cEnd != ' ' )
    {
-      if( feof( fp ) )
-      {
-         bug( "%s: EOF encountered on read.", __func__ );
-         if( fBootDb )
-            exit( 1 );
-         *pword = '\0';
-         return word;
-      }
-      *pword = getc( fp );
-      if( cEnd == ' ' ? isspace( *pword ) : *pword == cEnd )
-      {
-         if( cEnd == ' ' )
-            ungetc( *pword, fp );
-         *pword = '\0';
-         return word;
-      }
+      bug( "%s: EOF encountered inside quoted string.", __func__ );
+
+      if( fBootDb )
+         std::exit( EXIT_FAILURE );
    }
-   bug( "%s: word too long", __func__ );
-   *--pword = '\0';
-   return word;
+
+   word.push_back('\0');
+   return word.data();
 }
 
 // FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
@@ -924,12 +884,10 @@ void fread_sysdata( FILE * fp )
  */
 bool load_systemdata( void )
 {
-   std::filesystem::path filename;
    FILE *fp;
-   bool found;
 
-   found = false;
-   filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
+   bool found = false;
+   std::filesystem::path filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
 
    if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
@@ -1534,15 +1492,11 @@ void boot_db( bool fCopyOver )
 
    log_string( "Initializing area reset events..." );
    {
-      list < area_data * >::iterator iarea;
-
       /*
        * Putting some random fuzz on this to scatter the times around more 
        */
-      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+      for( auto* area : arealist )
       {
-         area_data *area = *iarea;
-
          area->reset(  );
          area->last_resettime = current_time;
          add_event( number_range( ( area->reset_frequency * 60 ) / 2, 3 * ( area->reset_frequency * 60 ) / 2 ), ev_area_reset, area );
@@ -1624,7 +1578,7 @@ CMDF( do_basereport )
 
 CMDF( do_memory )
 {
-   string arg;
+   std::string arg;
    int hash;
 
    argument = one_argument( argument, arg );
@@ -1871,7 +1825,8 @@ void generate_backtrace( void )
 }
 #endif
 
-/* Reports a bug.
+/*
+ * Reports a bug.
  *
  * In the function call for this, you can specify the following:
  *
@@ -1998,7 +1953,8 @@ void log_printf( const char *fmt, ... )
    log_string_plus( LOG_NORMAL, LEVEL_LOG, buf );
 }
 
-/*  Dump command...This command creates a text file with the stats of every  *
+/*
+ *  Dump command...This command creates a text file with the stats of every  *
  *  mob, or object in the mud, depending on the argument given.              *
  *  Obviously, this will tend to create HUGE files, so it is recommended     *
  *  that it be only given to VERY high level imms, and preferably those      *
@@ -2094,11 +2050,8 @@ CMDF( do_dump )
             fprintf( fp, "ZONE: %s\n", obj->area->name );
             fprintf( fp, "%s", "AFFECTS:\n" );
 
-            list < affect_data * >::iterator paf;
-            for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
+            for( auto* af: obj->affects )
             {
-               affect_data *af = ( *paf );
-
                if( af->location == APPLY_AFFECT )
                   fprintf( fp, "%s by %s\n", a_types[af->location], aff_flags[af->modifier] );
                else if( af->location == APPLY_WEAPONSPELL
