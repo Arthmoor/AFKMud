@@ -46,17 +46,17 @@ Cygwin Support
 
 Cygwin support is largely touch and go. The C++ conversion leaves it somewhat up in the air as to whether it will decide to work properly or not. It has not been heavily tested, so don't be too surprised if after it's compiled it just refuses to behave.
 
-SQL, Multiport, and interport channels are not available in Cygwin. It simply lacks the proper tools to handle it.
+Multiport and interport channels are not available in Cygwin. It simply lacks the proper tools to handle it.
 
 FreeBSD Support
 ===============
 
-There should be no real reason why AFKMud 2.0+ should not work in FreeBSD. It might require some tweaking of the Makefile, and you'll need to be sure to use the gmake compiler, but aside from that the code itself should compile hassle free.
+There should be no real reason why AFKMud 3.0+ should not work in FreeBSD. It might require some tweaking of the Makefile, and you may need to use the gmake compiler, but aside from that the code itself should compile hassle free.
 
 OpenBSD Support
 ===============
 
-OpenBSD support has not been verified with 2.0+. It was shaky at best in 1.x. If you have any luck getting it to work, let us know. If it needed special attention,
+OpenBSD support has not been verified with 3.0+. It was shaky at best in 2.x and 1.x. If you have any luck getting it to work, let us know. If it needed special attention,
 let us know what changes to include and we'll try and see to it they show up in a future maintenance release.
 
 CPU, Memory, and Storage Requirements
@@ -175,3 +175,16 @@ First Immortal
 A pfile named "Admin" is included, with password "admin". Use this account to log in for the first time. You should then rename this player to something else and CHANGE THE PASSWORD.
 
 Alternatively, connect a new player and use the Admin player to advance the new one. When this is done, be sure to DELETE the Admin player.
+
+MUD Title Screen
+================
+
+Most MUDs like to have their own custom title screen to show when players log on. The file for making this is in the system directory, mudtitle.ans.
+
+This file needs to be created using ANSI control codes. It will NOT work with the MUD's inbuilt color coding system.
+
+The game comes with a really basic one so that it has at least something showing to know that it works.
+
+You should be careful when writing it as the contents will be loaded into a string buffer and then dumped straight into the player's socket connection without any processing, other than to make sure it doesn't explode the buffer.
+
+A layout size of 80x25 is recommended so it will fit on anyone's screen. Larger sizes will work but there is no guarantee that a user's client will accept it without it getting misaligned.
