@@ -469,8 +469,8 @@ CMDF( do_level )
    if( ch->level == 1 )
       lowlvl = 1;
    else
-      lowlvl = UMAX( 2, ch->level - 5 );
-   hilvl = URANGE( ch->level, ch->level + 5, MAX_LEVEL );
+      lowlvl = umax( 2, ch->level - 5 );
+   hilvl = urange( ch->level, ch->level + 5, MAX_LEVEL );
 
    ch->printf( "\r\n&[score]Experience required, levels %d to %d:\r\n______________________________________________\r\n\r\n", lowlvl, hilvl );
    std::string buf = std::format( " exp  (You have: {:11})", ch->exp );

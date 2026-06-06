@@ -857,11 +857,11 @@ void room_index::clean_resets(  )
 int generate_itemlevel( area_data * pArea, obj_index * pObjIndex )
 {
    int olevel;
-   int min = UMAX( pArea->low_soft_range, 1 );
-   int max = UMIN( pArea->hi_soft_range, min + 15 );
+   int min = umax( pArea->low_soft_range, 1 );
+   int max = umin( pArea->hi_soft_range, min + 15 );
 
    if( pObjIndex->level > 0 )
-      olevel = UMIN( pObjIndex->level, MAX_LEVEL );
+      olevel = umin( pObjIndex->level, MAX_LEVEL );
    else
       switch ( pObjIndex->item_type )
       {
@@ -1144,7 +1144,7 @@ void room_index::reset(  )
             pReset->sreset = false;
             if( !mob->to_room( pRoomIndex ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-            level = URANGE( 0, mob->level - 2, LEVEL_AVATAR );
+            level = urange( 0, mob->level - 2, LEVEL_AVATAR );
 
             // LOAD_PROG imported from Smaug 1.8b
             if( HAS_PROG( mob->pIndexData, LOAD_PROG ) )
@@ -1304,7 +1304,7 @@ void room_index::reset(  )
                         }
                         else
                            obj = pObjIndex->create_object( number_fuzzy( level ) );
-                        obj->level = URANGE( 0, obj->level, LEVEL_AVATAR );
+                        obj->level = urange( 0, obj->level, LEVEL_AVATAR );
                         obj = obj->to_char( mob );
 
                         if( tReset->command == 'E' )
@@ -1386,11 +1386,11 @@ void room_index::reset(  )
                                     else
                                        num = gReset->arg3;
 
-                                    obj = pObjIndex->create_object( number_fuzzy( UMAX( generate_itemlevel( area, pObjIndex ), to_obj->level ) ) );
+                                    obj = pObjIndex->create_object( number_fuzzy( umax( generate_itemlevel( area, pObjIndex ), to_obj->level ) ) );
                                     if( num > 1 )
                                        pObjIndex->count += ( num - 1 );
                                     obj->count = num;
-                                    obj->level = UMIN( obj->level, LEVEL_AVATAR );
+                                    obj->level = umin( obj->level, LEVEL_AVATAR );
                                     obj->count = gReset->arg3;
                                     obj->to_obj( to_obj );
                                     if( iNest > lastnest )
@@ -1493,7 +1493,7 @@ void room_index::reset(  )
                if( num > 1 )
                   pObjIndex->count += ( num - 1 );
                obj->count = num;
-               obj->level = UMIN( obj->level, LEVEL_AVATAR );
+               obj->level = umin( obj->level, LEVEL_AVATAR );
                // obj->cost = 0; <-- This goes all the way back to Smaug 1.4 at least. If this turns out to be a bad idea, put it back. - Samson 11/24/14
                if( pReset->arg4 != -1 && pReset->arg5 != -1 && pReset->arg6 != -1 )
                {
@@ -1668,11 +1668,11 @@ void room_index::reset(  )
                         else
                            num = tReset->arg3;
 
-                        obj = pObjIndex->create_object( number_fuzzy( UMAX( generate_itemlevel( area, pObjIndex ), to_obj->level ) ) );
+                        obj = pObjIndex->create_object( number_fuzzy( umax( generate_itemlevel( area, pObjIndex ), to_obj->level ) ) );
                         if( num > 1 )
                            pObjIndex->count += ( num - 1 );
                         obj->count = num;
-                        obj->level = UMIN( obj->level, LEVEL_AVATAR );
+                        obj->level = umin( obj->level, LEVEL_AVATAR );
                         obj->count = tReset->arg3;
                         obj->to_obj( to_obj );
                         if( iNest > lastnest )

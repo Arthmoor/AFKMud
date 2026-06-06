@@ -276,7 +276,7 @@ char_data *find_keeper( char_data * ch )
       return nullptr;
    }
 
-   int speakswell = UMIN( knows_language( keeper, ch->speaking, ch ), knows_language( ch, ch->speaking, keeper ) );
+   int speakswell = umin( knows_language( keeper, ch->speaking, ch ), knows_language( ch, ch->speaking, keeper ) );
 
    if( ( number_percent(  ) % 65 ) > speakswell )
    {
@@ -503,7 +503,7 @@ char_data *find_fixer( char_data * ch )
       return nullptr;
    }
 
-   int speakswell = UMIN( knows_language( keeper, ch->speaking, ch ), knows_language( ch, ch->speaking, keeper ) );
+   int speakswell = umin( knows_language( keeper, ch->speaking, ch ), knows_language( ch, ch->speaking, keeper ) );
 
    if( ( number_percent(  ) % 65 ) > speakswell )
    {

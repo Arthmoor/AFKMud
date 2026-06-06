@@ -125,7 +125,7 @@ class shell_cmd
 
    void set_level( short lvl )
    {
-      lvl = URANGE( 1, lvl, LEVEL_SUPREME );
+      lvl = urange( 1, lvl, LEVEL_SUPREME );
       _level = lvl;
    }
    short get_level(  )

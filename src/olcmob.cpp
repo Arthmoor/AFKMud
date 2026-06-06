@@ -774,40 +774,40 @@ void medit_parse( descriptor_data * d, std::string & arg )
 /*-------------------------------------------------------------------*/
 /*. Numerical responses .*/
       case MEDIT_HITPOINT:
-         victim->max_hit = URANGE( 1, std::stoi( arg ), 32700 );
+         victim->max_hit = urange( 1, std::stoi( arg ), 32700 );
          olc_log( d, "Changed hitpoints to %d", victim->max_hit );
          break;
 
       case MEDIT_MANA:
-         victim->max_mana = URANGE( 1, std::stoi( arg ), 30000 );
+         victim->max_mana = urange( 1, std::stoi( arg ), 30000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->max_mana = victim->max_mana;
          olc_log( d, "Changed mana to %d", victim->max_mana );
          break;
 
       case MEDIT_MOVE:
-         victim->max_move = URANGE( 1, std::stoi( arg ), 30000 );
+         victim->max_move = urange( 1, std::stoi( arg ), 30000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->max_move = victim->max_move;
          olc_log( d, "Changed moves to %d", victim->max_move );
          break;
 
       case MEDIT_SEX:
-         victim->sex = URANGE( 0, std::stoi( arg ), SEX_MAX - 1 );
+         victim->sex = urange( 0, std::stoi( arg ), SEX_MAX - 1 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->sex = victim->sex;
          olc_log( d, "Changed sex to %s", victim->sex == SEX_MALE ? "Male" : victim->sex == SEX_FEMALE ? "Female" : victim->sex == SEX_NEUTRAL ? "Neutral" : "Hermaphrodite" );
          break;
 
       case MEDIT_HITROLL:
-         victim->hitroll = URANGE( 0, std::stoi( arg ), 85 );
+         victim->hitroll = urange( 0, std::stoi( arg ), 85 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->hitroll = victim->hitroll;
          olc_log( d, "Changed hitroll to %d", victim->hitroll );
          break;
 
       case MEDIT_DAMROLL:
-         victim->damroll = URANGE( 0, std::stoi( arg ), 65 );
+         victim->damroll = urange( 0, std::stoi( arg ), 65 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->damroll = victim->damroll;
          olc_log( d, "Changed damroll to %d", victim->damroll );
@@ -815,58 +815,58 @@ void medit_parse( descriptor_data * d, std::string & arg )
 
       case MEDIT_DAMNUMDIE:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->damnodice = URANGE( 0, std::stoi( arg ), 100 );
+            victim->pIndexData->damnodice = urange( 0, std::stoi( arg ), 100 );
          olc_log( d, "Changed damnumdie to %d", victim->pIndexData->damnodice );
          break;
 
       case MEDIT_DAMSIZEDIE:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->damsizedice = URANGE( 0, std::stoi( arg ), 100 );
+            victim->pIndexData->damsizedice = urange( 0, std::stoi( arg ), 100 );
          olc_log( d, "Changed damsizedie to %d", victim->pIndexData->damsizedice );
          break;
 
       case MEDIT_DAMPLUS:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->damplus = URANGE( 0, std::stoi( arg ), 1000 );
+            victim->pIndexData->damplus = urange( 0, std::stoi( arg ), 1000 );
          olc_log( d, "Changed damplus to %d", victim->pIndexData->damplus );
          break;
 
       case MEDIT_HITPLUS:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
-            victim->pIndexData->hitplus = URANGE( 0, std::stoi( arg ), 32767 );
+            victim->pIndexData->hitplus = urange( 0, std::stoi( arg ), 32767 );
          olc_log( d, "Changed hitplus to %d", victim->pIndexData->hitplus );
          break;
 
       case MEDIT_AC:
-         victim->armor = URANGE( -300, std::stoi( arg ), 300 );
+         victim->armor = urange( -300, std::stoi( arg ), 300 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->ac = victim->armor;
          olc_log( d, "Changed armor to %d", victim->armor );
          break;
 
       case MEDIT_GOLD:
-         victim->gold = URANGE( -1, std::stoi( arg ), 2000000000 );
+         victim->gold = urange( -1, std::stoi( arg ), 2000000000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->gold = victim->gold;
          olc_log( d, "Changed gold to %d", victim->gold );
          break;
 
       case MEDIT_POS:
-         victim->position = URANGE( 0, std::stoi( arg ), POS_STANDING );
+         victim->position = urange( 0, std::stoi( arg ), POS_STANDING );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->position = victim->position;
          olc_log( d, "Changed position to %d", victim->position );
          break;
 
       case MEDIT_DEFPOS:
-         victim->defposition = URANGE( 0, std::stoi( arg ), POS_STANDING );
+         victim->defposition = urange( 0, std::stoi( arg ), POS_STANDING );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->defposition = victim->defposition;
          olc_log( d, "Changed default position to %d", victim->defposition );
          break;
 
       case MEDIT_MENTALSTATE:
-         victim->mental_state = URANGE( -100, std::stoi( arg ), 100 );
+         victim->mental_state = urange( -100, std::stoi( arg ), 100 );
          olc_log( d, "Changed mental state to %d", victim->mental_state );
          break;
 
@@ -874,12 +874,12 @@ void medit_parse( descriptor_data * d, std::string & arg )
          number = std::stoi( arg );
          if( victim->isnpc(  ) )
          {
-            victim->Class = URANGE( 0, number, MAX_NPC_CLASS - 1 );
+            victim->Class = urange( 0, number, MAX_NPC_CLASS - 1 );
             if( victim->has_actflag( ACT_PROTOTYPE ) )
                victim->pIndexData->Class = victim->Class;
             break;
          }
-         victim->Class = URANGE( 0, number, MAX_CLASS );
+         victim->Class = urange( 0, number, MAX_CLASS );
          olc_log( d, "Changed Class to %s", npc_class[victim->Class] );
          break;
 
@@ -887,12 +887,12 @@ void medit_parse( descriptor_data * d, std::string & arg )
          number = std::stoi( arg );
          if( victim->isnpc(  ) )
          {
-            victim->race = URANGE( 0, number, MAX_NPC_RACE - 1 );
+            victim->race = urange( 0, number, MAX_NPC_RACE - 1 );
             if( victim->has_actflag( ACT_PROTOTYPE ) )
                victim->pIndexData->race = victim->race;
             break;
          }
-         victim->race = URANGE( 0, number, MAX_RACE - 1 );
+         victim->race = urange( 0, number, MAX_RACE - 1 );
          olc_log( d, "Changed race to %s", npc_race[victim->race] );
          break;
 
@@ -992,14 +992,14 @@ void medit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case MEDIT_LEVEL:
-         victim->level = URANGE( 1, std::stoi( arg ), LEVEL_IMMORTAL + 5 );
+         victim->level = urange( 1, std::stoi( arg ), LEVEL_IMMORTAL + 5 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->level = victim->level;
          olc_log( d, "Changed level to %d", victim->level );
          break;
 
       case MEDIT_ALIGNMENT:
-         victim->alignment = URANGE( -1000, std::stoi( arg ), 1000 );
+         victim->alignment = urange( -1000, std::stoi( arg ), 1000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->alignment = victim->alignment;
          olc_log( d, "Changed alignment to %d", victim->alignment );

@@ -528,10 +528,10 @@ int rd_parse( char_data * ch, int level, char *pexp )
          total = ( total == rd_parse( ch, level, sexp[1] ) );
          break;
       case '{':
-         total = UMIN( total, rd_parse( ch, level, sexp[1] ) );
+         total = umin( total, rd_parse( ch, level, sexp[1] ) );
          break;
       case '}':
-         total = UMAX( total, rd_parse( ch, level, sexp[1] ) );
+         total = umax( total, rd_parse( ch, level, sexp[1] ) );
          break;
       case '^':
       {
@@ -563,7 +563,7 @@ bool saves_poison_death( int level, char_data * victim )
    int save;
 
    save = LEVEL_AVATAR + ( victim->level - level - victim->saving_poison_death ) * 5;
-   save = URANGE( 5, save, 95 );
+   save = urange( 5, save, 95 );
    return victim->chance( save );
 }
 
@@ -575,7 +575,7 @@ bool saves_wands( int level, char_data * victim )
       return true;
 
    save = LEVEL_AVATAR + ( victim->level - level - victim->saving_wand ) * 5;
-   save = URANGE( 5, save, 95 );
+   save = urange( 5, save, 95 );
    return victim->chance( save );
 }
 
@@ -584,7 +584,7 @@ bool saves_para_petri( int level, char_data * victim )
    int save;
 
    save = LEVEL_AVATAR + ( victim->level - level - victim->saving_para_petri ) * 5;
-   save = URANGE( 5, save, 95 );
+   save = urange( 5, save, 95 );
    return victim->chance( save );
 }
 
@@ -593,7 +593,7 @@ bool saves_breath( int level, char_data * victim )
    int save;
 
    save = LEVEL_AVATAR + ( victim->level - level - victim->saving_breath ) * 5;
-   save = URANGE( 5, save, 95 );
+   save = urange( 5, save, 95 );
    return victim->chance( save );
 }
 
@@ -607,7 +607,7 @@ bool saves_spell_staff( int level, char_data * victim )
    if( victim->isnpc(  ) && level > 10 )
       level -= 5;
    save = LEVEL_AVATAR + ( victim->level - level - victim->saving_spell_staff ) * 5;
-   save = URANGE( 5, save, 95 );
+   save = urange( 5, save, 95 );
    return victim->chance( save );
 }
 
@@ -1239,7 +1239,7 @@ CMDF( do_cast )
             return;
          }
 
-         mana = ch->isnpc(  )? 0 : UMAX( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
+         mana = ch->isnpc(  )? 0 : umax( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
 
          /*
           * Locate targets.
@@ -1260,7 +1260,7 @@ CMDF( do_cast )
          /*
           * multi-participant spells         -Thoric 
           */
-         ch->add_timer( TIMER_DO_FUN, UMIN( skill->beats / 10, 3 ), do_cast, 1 );
+         ch->add_timer( TIMER_DO_FUN, umin( skill->beats / 10, 3 ), do_cast, 1 );
          act( AT_MAGIC, "You begin to chant...", ch, nullptr, nullptr, TO_CHAR );
          act( AT_MAGIC, "$n begins to chant...", ch, nullptr, nullptr, TO_ROOM );
          strdup_printf( &ch->alloc_ptr, "%s %s", arg2.c_str(  ), target_name.c_str(  ) );
@@ -1277,7 +1277,7 @@ CMDF( do_cast )
                bug( "%s: SUB_TIMER_DO_ABORT: bad sn %d", __func__, sn );
                return;
             }
-            mana = ch->isnpc(  )? 0 : UMAX( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
+            mana = ch->isnpc(  )? 0 : umax( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
             if( !ch->is_immortal(  ) ) /* so imms dont lose mana */
                ch->mana -= mana / 3;
          }
@@ -1302,7 +1302,7 @@ CMDF( do_cast )
             bug( "%s: ch->alloc_ptr nullptr or bad sn (%d)", __func__, sn );
             return;
          }
-         mana = ch->isnpc(  )? 0 : UMAX( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
+         mana = ch->isnpc(  )? 0 : umax( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
          staticbuf = ch->alloc_ptr;
          target_name = one_argument( staticbuf, arg2 );
          DISPOSE( ch->alloc_ptr );
@@ -1783,7 +1783,7 @@ SPELLF( spell_midas_touch )
    obj->separate(  );   /* nice, alty :) */
 
    val = obj->cost / 2;
-   val = UMAX( 0, val );
+   val = umax( 0, val );
    ch->gold += val;
 
    if( obj->extracted(  ) )
@@ -1813,7 +1813,7 @@ SPELLF( spell_cure_poison )
       victim->set_color( AT_MAGIC );
       victim->print( "A warm feeling runs through your body.\r\n" );
       x = victim->mental_state < 0 ? -x : x;
-      victim->mental_state = URANGE( -25, victim->mental_state, 25 );
+      victim->mental_state = urange( -25, victim->mental_state, 25 );
       if( ch != victim )
       {
          act( AT_MAGIC, "A flush of health washes over $N.", ch, nullptr, victim, TO_NOTVICT );
@@ -2014,7 +2014,7 @@ SPELLF( spell_control_weather )
    int change;
    WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
-   change = URANGE( 5, number_range( 5, 15 ) + ( ch->level / 10 ), 15 );
+   change = urange( 5, number_range( 5, 15 ) + ( ch->level / 10 ), 15 );
 
    if( !str_cmp( target_name, "warmer" ) )
       IncreaseTemp( cell, change );
@@ -2063,7 +2063,7 @@ SPELLF( spell_create_water )
       return rSPELL_FAILED;
    }
 
-   water = UMIN( level * ( getPrecip( cell ) >= 0 ? 4 : 2 ), obj->value[0] - obj->value[1] );
+   water = umin( level * ( getPrecip( cell ) >= 0 ? 4 : 2 ), obj->value[0] - obj->value[1] );
 
    if( water > 0 )
    {
@@ -2372,7 +2372,7 @@ SPELLF( spell_energy_drain )
       return rSPELL_FAILED;
    }
 
-   ch->alignment = UMAX( -1000, ch->alignment - 200 );
+   ch->alignment = umax( -1000, ch->alignment - 200 );
    if( victim->level <= 1 )
       dam = victim->hit * 12;
    else
@@ -3152,7 +3152,7 @@ SPELLF( spell_acid_breath )
          }
       }
    }
-   hpch = UMAX( 10, ch->hit );
+   hpch = umax( 10, ch->hit );
    dam = number_range( hpch / 16 + 1, hpch / 8 );
    if( saves_breath( level, victim ) )
       dam /= 2;
@@ -3216,7 +3216,7 @@ SPELLF( spell_fire_breath )
       }
    }
 
-   hpch = UMAX( 10, ch->hit );
+   hpch = umax( 10, ch->hit );
    dam = number_range( hpch / 16 + 1, hpch / 8 );
    if( saves_breath( level, victim ) )
       dam /= 2;
@@ -3264,7 +3264,7 @@ SPELLF( spell_frost_breath )
       }
    }
 
-   hpch = UMAX( 10, ch->hit );
+   hpch = umax( 10, ch->hit );
    dam = number_range( hpch / 16 + 1, hpch / 8 );
    if( saves_breath( level, victim ) )
       dam /= 2;
@@ -3299,7 +3299,7 @@ SPELLF( spell_gas_breath )
 
       if( ch->isnpc(  ) ? !vch->isnpc(  ) : vch->isnpc(  ) )
       {
-         int hpch = UMAX( 10, ch->hit );
+         int hpch = umax( 10, ch->hit );
          int dam = number_range( hpch / 16 + 1, hpch / 8 );
          if( saves_breath( level, vch ) )
             dam /= 2;
@@ -3318,7 +3318,7 @@ SPELLF( spell_lightning_breath )
    char_data *victim = ( char_data * ) vo;
    int dam, hpch;
 
-   hpch = UMAX( 10, ch->hit );
+   hpch = umax( 10, ch->hit );
    dam = number_range( hpch / 16 + 1, hpch / 8 );
    if( saves_breath( level, victim ) )
       dam /= 2;
@@ -4307,7 +4307,7 @@ SPELLF( spell_affectchar )
                   return retcode;
                continue;
             }
-            victim->mental_state = URANGE( 30, victim->mental_state + 2, 100 );
+            victim->mental_state = urange( 30, victim->mental_state + 2, 100 );
             break;
 
          case AFF_BLIND:
@@ -4357,7 +4357,7 @@ SPELLF( spell_affectchar )
       }
       {
          int tmp = dice_parse( ch, level, saf->duration );
-         af.duration = UMIN( tmp, 32700 );
+         af.duration = umin( tmp, 32700 );
       }
       if( saf->location == APPLY_AFFECT || saf->location == APPLY_EXT_AFFECT )
       {
@@ -4375,17 +4375,17 @@ SPELLF( spell_affectchar )
          switch ( af.location )
          {
             case APPLY_HIT:
-               victim->hit = URANGE( 0, victim->hit + af.modifier, victim->max_hit );
+               victim->hit = urange( 0, victim->hit + af.modifier, victim->max_hit );
                victim->update_pos(  );
                if( victim->isnpc(  ) && victim->hit <= 0 )
                   damage( ch, victim, 5, TYPE_UNDEFINED );
                break;
             case APPLY_MANA:
-               victim->mana = URANGE( 0, victim->mana + af.modifier, victim->max_mana );
+               victim->mana = urange( 0, victim->mana + af.modifier, victim->max_mana );
                victim->update_pos(  );
                break;
             case APPLY_MOVE:
-               victim->move = URANGE( 0, victim->move + af.modifier, victim->max_move );
+               victim->move = urange( 0, victim->move + af.modifier, victim->max_move );
                victim->update_pos(  );
                break;
             default:
@@ -4419,7 +4419,7 @@ SPELLF( spell_attack )
       return rSPELL_FAILED;
    }
    if( skill->dice )
-      dam = UMAX( 0, dice_parse( ch, level, skill->dice ) );
+      dam = umax( 0, dice_parse( ch, level, skill->dice ) );
    else
       dam = dice( 1, level / 2 );
    if( saved )
@@ -4445,7 +4445,7 @@ SPELLF( spell_attack )
             act( AT_MAGIC, "$N absorbs your $t!", ch, skill->noun_damage, victim, TO_CHAR );
             act( AT_MAGIC, "You absorb $N's $t!", victim, skill->noun_damage, ch, TO_CHAR );
             act( AT_MAGIC, "$N absorbs $n's $t!", ch, skill->noun_damage, victim, TO_NOTVICT );
-            victim->hit = URANGE( 0, victim->hit + dam, victim->max_hit );
+            victim->hit = urange( 0, victim->hit + dam, victim->max_hit );
             victim->update_pos(  );
             if( !skill->affects.empty(  ) )
                retcode = spell_affectchar( sn, level, ch, victim );
@@ -4536,7 +4536,7 @@ SPELLF( spell_area_attack )
                   act( AT_MAGIC, "$N absorbs your $t!", ch, skill->noun_damage, vch, TO_CHAR );
                   act( AT_MAGIC, "You absorb $N's $t!", vch, skill->noun_damage, ch, TO_CHAR );
                   act( AT_MAGIC, "$N absorbs $n's $t!", ch, skill->noun_damage, vch, TO_NOTVICT );
-                  vch->hit = URANGE( 0, vch->hit + dam, vch->max_hit );
+                  vch->hit = urange( 0, vch->hit + dam, vch->max_hit );
                   vch->update_pos(  );
                   continue;
 
@@ -4768,7 +4768,7 @@ SPELLF( spell_obj_inv )
                return rSPELL_FAILED;
             }
 
-            water = UMIN( ( skill->dice ? dice_parse( ch, level, skill->dice ) : level ) * ( getPrecip( cell ) >= 0 ? 2 : 1 ), obj->value[0] - obj->value[1] );
+            water = umin( ( skill->dice ? dice_parse( ch, level, skill->dice ) : level ) * ( getPrecip( cell ) >= 0 ? 2 : 1 ), obj->value[0] - obj->value[1] );
 
             if( water > 0 )
             {
@@ -4999,7 +4999,7 @@ SPELLF( spell_create_mob )
       failed_casting( skill, ch, nullptr, nullptr );
       return rNONE;
    }
-   mob->level = UMIN( lvl, skill->dice ? dice_parse( ch, level, skill->dice ) : mob->level );
+   mob->level = umin( lvl, skill->dice ? dice_parse( ch, level, skill->dice ) : mob->level );
    mob->armor = interpolate( mob->level, 100, -100 );
 
    mob->max_hit = mob->level * 8 + number_range( mob->level * mob->level / 4, mob->level * mob->level );
@@ -5126,7 +5126,7 @@ SPELLF( spell_smaug )
                if( victim->is_affected( gsn_poison ) )
                {
                   victim->affect_strip( gsn_poison );
-                  victim->mental_state = URANGE( -100, victim->mental_state, -10 );
+                  victim->mental_state = urange( -100, victim->mental_state, -10 );
                   successful_casting( skill, ch, victim, nullptr );
                   return rNONE;
                }
@@ -6314,7 +6314,7 @@ SPELLF( spell_chain_lightning )
       if( !vch->isnpc(  ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
          continue;
 
-      int dam = dice( UMAX( 1, level - 1 ), 6 );
+      int dam = dice( umax( 1, level - 1 ), 6 );
 
       if( vch != ch && ( ch->isnpc(  ) ? !vch->isnpc(  ) : vch->isnpc(  ) ) )
          retcode = damage( ch, vch, dam, sn );

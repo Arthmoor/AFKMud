@@ -74,7 +74,7 @@ bool descriptor_data::process_compressed(  )
        */
       for( iStart = 0; iStart < len; iStart += nWrite )
       {
-         nBlock = UMIN( len - iStart, 4096 );
+         nBlock = umin( len - iStart, 4096 );
          if( ( nWrite = send( descriptor, mccp->out_compress_buf + iStart, nBlock, 0 ) ) < 0 )
          {
             if( errno == EAGAIN || errno == ENOSR )

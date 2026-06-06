@@ -278,13 +278,13 @@ CMDF( do_eat )
                   {
                      act( AT_POISON, "$n chokes and gags.", ch, nullptr, nullptr, TO_ROOM );
                      act( AT_POISON, "You choke and gag.", ch, nullptr, nullptr, TO_CHAR );
-                     ch->mental_state = URANGE( 20, ch->mental_state + 5, 100 );
+                     ch->mental_state = urange( 20, ch->mental_state + 5, 100 );
                   }
                   else
                   {
                      act( AT_POISON, "$n gags on $p.", ch, obj, nullptr, TO_ROOM );
                      act( AT_POISON, "You gag on $p.", ch, obj, nullptr, TO_CHAR );
-                     ch->mental_state = URANGE( 15, ch->mental_state + 5, 100 );
+                     ch->mental_state = urange( 15, ch->mental_state + 5, 100 );
                   }
 
                   af.type = gsn_poison;
@@ -662,7 +662,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       /*
        * Uses value[3] for level 
        */
-      if( !( tobj = pObjIndex->create_object( URANGE( 0, obj->value[3], MAX_LEVEL ) ) ) )
+      if( !( tobj = pObjIndex->create_object( urange( 0, obj->value[3], MAX_LEVEL ) ) ) )
       {
          bug( "%s: obj couldn't create obj vnum %d at level %d", __func__, obj->value[1], obj->value[3] );
          return;
@@ -730,7 +730,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          bug( "%s: obj points to invalid sn [%d]", __func__, obj->value[1] );
          return;
       }
-      obj_cast_spell( obj->value[1], URANGE( 1, ( obj->value[2] > 0 ) ? obj->value[2] : ch->level, MAX_LEVEL ), ch, ch, nullptr );
+      obj_cast_spell( obj->value[1], urange( 1, ( obj->value[2] > 0 ) ? obj->value[2] : ch->level, MAX_LEVEL ), ch, ch, nullptr );
       return;
    }
 
@@ -1117,7 +1117,7 @@ CMDF( do_smoke )
 
          ch->WAIT_STATE( skill->beats );
          if( skill->spell_fun )
-            obj_cast_spell( sn, UMIN( skill->min_level, ch->level ), ch, ch, nullptr );
+            obj_cast_spell( sn, umin( skill->min_level, ch->level ), ch, ch, nullptr );
          if( cpipe->extracted(  ) )
             return;
       }

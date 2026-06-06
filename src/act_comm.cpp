@@ -202,7 +202,7 @@ CMDF( do_ask )
    sbuf = argument;
    if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
    {
-      int speakswell = UMIN( knows_language( victim, ch->speaking, ch ), knows_language( ch, ch->speaking, victim ) );
+      int speakswell = umin( knows_language( victim, ch->speaking, ch ), knows_language( ch, ch->speaking, victim ) );
       if( speakswell < 75 )
          sbuf = translate( speakswell, argument, lang_names[speaking] );
    }
@@ -306,7 +306,7 @@ CMDF( do_say )
 
       if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
       {
-         int speakswell = UMIN( knows_language( vch, ch->speaking, ch ), knows_language( ch, ch->speaking, vch ) );
+         int speakswell = umin( knows_language( vch, ch->speaking, ch ), knows_language( ch, ch->speaking, vch ) );
 
          if( speakswell < 75 )
             sbuf = translate( speakswell, argument, lang_names[speaking] );
@@ -460,7 +460,7 @@ CMDF( do_whisper )
 
    if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
    {
-      int speakswell = UMIN( knows_language( victim, ch->speaking, ch ), knows_language( ch, ch->speaking, victim ) );
+      int speakswell = umin( knows_language( victim, ch->speaking, ch ), knows_language( ch, ch->speaking, victim ) );
 
       if( speakswell < 85 )
          act( AT_WHISPER, "$n whispers to you '$t'", ch, translate( speakswell, argument, lang_names[speaking] ).c_str(  ), victim, TO_VICT );
@@ -754,7 +754,7 @@ CMDF( do_tell )
    victim->position = POS_STANDING;
    if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
    {
-      int speakswell = UMIN( knows_language( victim, ch->speaking, ch ), knows_language( ch, ch->speaking, victim ) );
+      int speakswell = umin( knows_language( victim, ch->speaking, ch ), knows_language( ch, ch->speaking, victim ) );
 
       if( speakswell < 85 )
       {
@@ -918,7 +918,7 @@ CMDF( do_emote )
 
       if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
       {
-         int speakswell = UMIN( knows_language( vch, ch->speaking, ch ), knows_language( ch, ch->speaking, vch ) );
+         int speakswell = umin( knows_language( vch, ch->speaking, ch ), knows_language( ch, ch->speaking, vch ) );
 
          if( speakswell < 85 )
             sbuf = translate( speakswell, argument, lang_names[speaking] );
@@ -1039,7 +1039,7 @@ CMDF( do_gtell )
       {
          if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
          {
-            int speakswell = UMIN( knows_language( gch, ch->speaking, ch ), knows_language( ch, ch->speaking, gch ) );
+            int speakswell = umin( knows_language( gch, ch->speaking, ch ), knows_language( ch, ch->speaking, gch ) );
 
             if( speakswell < 85 )
             {
@@ -1248,7 +1248,7 @@ CMDF( do_languages )
        */
       prct = 5 + ( ch->get_curr_int(  ) / 6 ) + ( ch->get_curr_wis(  ) / 7 );
       ch->pcdata->learned[sn] += prct;
-      ch->pcdata->learned[sn] = UMIN( ch->pcdata->learned[sn], 99 );
+      ch->pcdata->learned[sn] = umin( ch->pcdata->learned[sn], 99 );
       ch->set_lang( lang );
       if( ch->pcdata->learned[sn] == prct )
          ch->printf( "You begin lessons in %s.\r\n", lang_names[lang] );
@@ -1400,9 +1400,9 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
                if( ch->sex >= SEX_MAX || ch->sex < 0 )
                   ch->sex = SEX_NEUTRAL;
                if( should_upper )
-                  buf.append( capitalize( he_she[URANGE( 0, ch->sex, SEX_MAX - 1 )] ) );
+                  buf.append( capitalize( he_she[urange( 0, ch->sex, SEX_MAX - 1 )] ) );
                else
-                  buf.append( he_she[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
+                  buf.append( he_she[urange( 0, ch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'E':
@@ -1410,9 +1410,9 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
                if( vch->sex >= SEX_MAX || vch->sex < 0 )
                   vch->sex = SEX_NEUTRAL;
                if( should_upper )
-                  buf.append( capitalize( he_she[URANGE( 0, vch->sex, SEX_MAX - 1 )] ) );
+                  buf.append( capitalize( he_she[urange( 0, vch->sex, SEX_MAX - 1 )] ) );
                else
-                  buf.append( he_she[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
+                  buf.append( he_she[urange( 0, vch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'm':
@@ -1420,9 +1420,9 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
                if( ch->sex >= SEX_MAX || ch->sex < 0 )
                   ch->sex = SEX_NEUTRAL;
                if( should_upper )
-                  buf.append( capitalize( him_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] ) );
+                  buf.append( capitalize( him_her[urange( 0, ch->sex, SEX_MAX - 1 )] ) );
                else
-                  buf.append( him_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
+                  buf.append( him_her[urange( 0, ch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'M':
@@ -1430,9 +1430,9 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
                if( vch->sex >= SEX_MAX || vch->sex < 0 )
                   vch->sex = SEX_NEUTRAL;
                if( should_upper )
-                  buf.append( capitalize( him_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] ) );
+                  buf.append( capitalize( him_her[urange( 0, vch->sex, SEX_MAX - 1 )] ) );
                else
-                  buf.append( him_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
+                  buf.append( him_her[urange( 0, vch->sex, SEX_MAX - 1 )] );
                break;
 
             case 's':
@@ -1440,9 +1440,9 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
                if( ch->sex >= SEX_MAX || ch->sex < 0 )
                   ch->sex = SEX_NEUTRAL;
                if( should_upper )
-                  buf.append( capitalize( his_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] ) );
+                  buf.append( capitalize( his_her[urange( 0, ch->sex, SEX_MAX - 1 )] ) );
                else
-                  buf.append( his_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
+                  buf.append( his_her[urange( 0, ch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'S':
@@ -1450,9 +1450,9 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
                if( vch->sex >= SEX_MAX || vch->sex < 0 )
                   vch->sex = SEX_NEUTRAL;
                if( should_upper )
-                  buf.append( capitalize( his_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] ) );
+                  buf.append( capitalize( his_her[urange( 0, vch->sex, SEX_MAX - 1 )] ) );
                else
-                  buf.append( his_her[URANGE( 0, vch->sex, SEX_MAX - 1 )] );
+                  buf.append( his_her[urange( 0, vch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'q':
@@ -1460,7 +1460,7 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
                break;
 
             case 'Q':
-               buf.append( ( to == ch ) ? "your" : his_her[URANGE( 0, ch->sex, SEX_MAX - 1 )] );
+               buf.append( ( to == ch ) ? "your" : his_her[urange( 0, ch->sex, SEX_MAX - 1 )] );
                break;
 
             case 'p':

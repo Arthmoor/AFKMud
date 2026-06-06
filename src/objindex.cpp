@@ -449,7 +449,7 @@ int calc_aff_ego( int location, int mod )
             return -2;
          if( mod > 20 && mod <= 75 )
             return ( 2000 * mod );
-         return ( UMAX( minego * -1, 1000 * mod ) );
+         return ( umax( minego * -1, 1000 * mod ) );
 
       case APPLY_HIT:
          if( mod > 50 )
@@ -458,7 +458,7 @@ int calc_aff_ego( int location, int mod )
             return ( 3000 * mod );
          if( mod > 10 && mod <= 20 )
             return ( 2000 * mod );
-         return ( UMAX( minego * -1, 1000 * mod ) );
+         return ( umax( minego * -1, 1000 * mod ) );
 
       case APPLY_MOVE:
          if( mod < 0 )

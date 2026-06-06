@@ -805,7 +805,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
 
          if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
          {
-            int speakswell = UMIN( knows_language( vch, ch->speaking, ch ), knows_language( ch, ch->speaking, vch ) );
+            int speakswell = umin( knows_language( vch, ch->speaking, ch ), knows_language( ch, ch->speaking, vch ) );
 
             if( speakswell < 85 )
                sbuf = translate( speakswell, argument, lang_names[speaking] );

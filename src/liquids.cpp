@@ -1426,7 +1426,7 @@ CMDF( do_drink )
 
             act( AT_POISON, "$n sputters and gags.", ch, nullptr, nullptr, TO_ROOM );
             act( AT_POISON, "You sputter and gag.", ch, nullptr, nullptr, TO_CHAR );
-            ch->mental_state = URANGE( 20, ch->mental_state + 5, 100 );
+            ch->mental_state = urange( 20, ch->mental_state + 5, 100 );
             af.type = gsn_poison;
             af.duration = obj->value[3];
             af.location = APPLY_NONE;
@@ -1506,7 +1506,7 @@ CMDF( do_drink )
 
             act( AT_POISON, "$n sputters and gags.", ch, nullptr, nullptr, TO_ROOM );
             act( AT_POISON, "You sputter and gag.", ch, nullptr, nullptr, TO_CHAR );
-            ch->mental_state = URANGE( 20, ch->mental_state + 5, 100 );
+            ch->mental_state = urange( 20, ch->mental_state + 5, 100 );
             af.type = gsn_poison;
             af.duration = obj->value[3];
             af.location = APPLY_NONE;

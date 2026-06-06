@@ -1150,8 +1150,8 @@ void obj_data::weapongen(  )
 
    weight = ( int )( weapon_type[v8].weight * materials[v9].weight );
    value[0] = value[6] = sysdata->initcond;
-   value[1] = UMAX( 1, v10 + materials[v9].wd );
-   value[2] = UMAX( 1, v10 * ( weapon_type[v8].wd + materials[v9].wd ) );
+   value[1] = umax( 1, v10 + materials[v9].wd );
+   value[2] = umax( 1, v10 * ( weapon_type[v8].wd + materials[v9].wd ) );
    value[3] = weapon_type[v8].damage;
    value[4] = weapon_type[v8].skill;
    cost = ( int )( weapon_type[v8].cost * materials[v9].cost );

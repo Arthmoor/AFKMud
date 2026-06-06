@@ -310,7 +310,7 @@ short obj_data::get_resistance(  )
    if( item_type == ITEM_ARMOR || item_type == ITEM_WEAPON )
       resist += ( value[0] / 2 ) - 2;
 
-   return URANGE( 10, resist, 99 );
+   return urange( 10, resist, 99 );
 }
 
 const std::string obj_data::oshort(  )
@@ -476,10 +476,10 @@ bool is_same_obj( obj_data * src, obj_data * dest )
  */
 const std::string hallucinated_object( int ms, bool fShort )
 {
-   int sms = URANGE( 1, ( ms + 10 ) / 5, 20 );
+   int sms = urange( 1, ( ms + 10 ) / 5, 20 );
 
    if( fShort )
-      switch ( number_range( 6 - URANGE( 1, sms / 2, 5 ), sms ) )
+      switch ( number_range( 6 - urange( 1, sms / 2, 5 ), sms ) )
       {
          default:
          case 1:
@@ -524,7 +524,7 @@ const std::string hallucinated_object( int ms, bool fShort )
             return "the key to life, the universe and everything";
       }
 
-   switch ( number_range( 6 - URANGE( 1, sms / 2, 5 ), sms ) )
+   switch ( number_range( 6 - urange( 1, sms / 2, 5 ), sms ) )
    {
       default:
       case 1:

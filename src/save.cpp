@@ -1660,7 +1660,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                /*
                 * Let no character be trusted higher than one below maxlevel -- Narn 
                 */
-               ch->trust = UMIN( ch->trust, MAX_LEVEL - 1 );
+               ch->trust = umin( ch->trust, MAX_LEVEL - 1 );
 
                if( ch->pcdata->played < std::chrono::hours::zero() )
                   ch->pcdata->played = std::chrono::hours::zero();

@@ -225,7 +225,7 @@ void load_ships( void )
       {
          ship->type = get_shiptype( value );
 
-         ship->type = URANGE( SHIP_NONE, ship->type, SHIP_WARSHIP );
+         ship->type = urange( SHIP_NONE, ship->type, SHIP_WARSHIP );
       }
       else if( key == "Hull" )
          ship->hull = atoi( value.c_str(  ) );

@@ -1829,7 +1829,7 @@ bool check_ability( char_data * ch, const std::string & command, const std::stri
     */
    if( skill_table[sn]->min_mana )
    {
-      mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->race_level[ch->race] ) );
+      mana = ch->isnpc(  )? 0 : umax( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->race_level[ch->race] ) );
 
       if( !ch->isnpc(  ) && ch->mana < mana )
       {
@@ -2054,7 +2054,7 @@ bool check_skill( char_data * ch, const std::string & command, const std::string
     */
    if( skill_table[sn]->min_mana )
    {
-      mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
+      mana = ch->isnpc(  )? 0 : umax( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
 
       if( !ch->isnpc(  ) && ch->mana < mana )
       {
@@ -2479,7 +2479,7 @@ CMDF( do_slookup )
          ch->printf( "Difficulty: %d\r\n", ( int )skill->difficulty );
 
       ch->printf( "Type: %s  Target: %s  Minpos: %s  Mana: %d  Beats: %d  Range: %d\r\n",
-                  skill_tname[skill->type], target_type[URANGE( TAR_IGNORE, skill->target, TAR_OBJ_INV )],
+                  skill_tname[skill->type], target_type[urange( TAR_IGNORE, skill->target, TAR_OBJ_INV )],
                   npc_position[skill->minimum_position], skill->min_mana, skill->beats, skill->range );
 
       ch->printf( "Guild: %d  Value: %d  Info: %d\r\n", skill->guild, skill->value, skill->info );
@@ -2930,31 +2930,31 @@ CMDF( do_sset )
       }
       if( !str_cmp( arg2, "minlevel" ) )
       {
-         skill->min_level = URANGE( 1, atoi( argument.c_str(  ) ), MAX_LEVEL );
+         skill->min_level = urange( 1, atoi( argument.c_str(  ) ), MAX_LEVEL );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "slot" ) )
       {
-         skill->slot = URANGE( 0, atoi( argument.c_str(  ) ), 30000 );
+         skill->slot = urange( 0, atoi( argument.c_str(  ) ), 30000 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "mana" ) )
       {
-         skill->min_mana = URANGE( 0, atoi( argument.c_str(  ) ), 2000 );
+         skill->min_mana = urange( 0, atoi( argument.c_str(  ) ), 2000 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "beats" ) )
       {
-         skill->beats = URANGE( 0, atoi( argument.c_str(  ) ), 120 );
+         skill->beats = urange( 0, atoi( argument.c_str(  ) ), 120 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "range" ) )
       {
-         skill->range = URANGE( 0, atoi( argument.c_str(  ) ), 20 );
+         skill->range = urange( 0, atoi( argument.c_str(  ) ), 20 );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3086,7 +3086,7 @@ CMDF( do_sset )
          if( Class >= MAX_PC_CLASS || Class < 0 )
             ch->printf( "%s is not a valid Class.\r\n", arg3.c_str(  ) );
          else
-            skill->skill_level[Class] = URANGE( 0, atoi( argument.c_str(  ) ), MAX_LEVEL );
+            skill->skill_level[Class] = urange( 0, atoi( argument.c_str(  ) ), MAX_LEVEL );
          return;
       }
 
@@ -3101,7 +3101,7 @@ CMDF( do_sset )
          if( race >= MAX_PC_RACE || race < 0 )
             ch->printf( "%s is not a valid race.\r\n", arg3.c_str(  ) );
          else
-            skill->race_level[race] = URANGE( 0, atoi( argument.c_str(  ) ), MAX_LEVEL );
+            skill->race_level[race] = urange( 0, atoi( argument.c_str(  ) ), MAX_LEVEL );
          return;
       }
 
@@ -3116,7 +3116,7 @@ CMDF( do_sset )
          if( Class >= MAX_PC_CLASS || Class < 0 )
             ch->printf( "%s is not a valid Class.\r\n", arg3.c_str(  ) );
          else
-            skill->skill_adept[Class] = URANGE( 0, atoi( argument.c_str(  ) ), 100 );
+            skill->skill_adept[Class] = urange( 0, atoi( argument.c_str(  ) ), 100 );
          return;
       }
 
@@ -3131,7 +3131,7 @@ CMDF( do_sset )
          if( race >= MAX_PC_RACE || race < 0 )
             ch->printf( "%s is not a valid race.\r\n", arg3.c_str(  ) );
          else
-            skill->race_adept[race] = URANGE( 0, atoi( argument.c_str(  ) ), 100 );
+            skill->race_adept[race] = urange( 0, atoi( argument.c_str(  ) ), 100 );
          return;
       }
 
@@ -3745,7 +3745,7 @@ CMDF( do_dig )
                   return;
             }
          }
-         ch->add_timer( TIMER_DO_FUN, UMIN( skill_table[gsn_dig]->beats / 10, 3 ), do_dig, 1 );
+         ch->add_timer( TIMER_DO_FUN, umin( skill_table[gsn_dig]->beats / 10, 3 ), do_dig, 1 );
          ch->alloc_ptr = strdup( arg.c_str(  ) );
          ch->print( "You begin digging...\r\n" );
          act( AT_PLAIN, "$n begins digging...", ch, nullptr, nullptr, TO_ROOM );
@@ -3891,7 +3891,7 @@ CMDF( do_search )
                return;
             }
          }
-         ch->add_timer( TIMER_DO_FUN, UMIN( skill_table[gsn_search]->beats / 10, 3 ), do_search, 1 );
+         ch->add_timer( TIMER_DO_FUN, umin( skill_table[gsn_search]->beats / 10, 3 ), do_search, 1 );
          ch->print( "You begin your search...\r\n" );
          act( AT_MAGIC, "$n begins searching the room.....", ch, nullptr, nullptr, TO_ROOM );
          ch->alloc_ptr = strdup( arg.c_str(  ) );
@@ -5531,7 +5531,7 @@ bool check_parry( char_data * ch, char_data * victim )
       /*
        * Tuan was here.  :) 
        */
-      chances = UMIN( 60, 2 * victim->level );
+      chances = umin( 60, 2 * victim->level );
    }
    else
    {
@@ -5583,7 +5583,7 @@ bool check_dodge( char_data * ch, char_data * victim )
       return false;
 
    if( victim->isnpc(  ) )
-      chances = UMIN( 60, 2 * victim->level );
+      chances = umin( 60, 2 * victim->level );
    else
       chances = ( victim->LEARNED( gsn_dodge ) / sysdata->dodge_mod );
 
@@ -5776,7 +5776,7 @@ CMDF( do_poison_weapon )
    /*
     * Set an object timer.  Don't want proliferation of poisoned weapons 
     */
-   obj->timer = UMIN( obj->level, ch->level );
+   obj->timer = umin( obj->level, ch->level );
 
    if( obj->extra_flags.test( ITEM_BLESS ) )
       obj->timer *= 2;
@@ -5837,7 +5837,7 @@ CMDF( do_scribe )
       return;
    }
 
-   mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
+   mana = ch->isnpc(  )? 0 : umax( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
 
    mana *= 5;
 
@@ -5936,7 +5936,7 @@ CMDF( do_brew )
       return;
    }
 
-   int mana = ch->isnpc(  )? 0 : UMAX( skill_table[sn]->min_mana,
+   int mana = ch->isnpc(  )? 0 : umax( skill_table[sn]->min_mana,
                                        100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
 
    mana *= 4;
@@ -6201,7 +6201,7 @@ CMDF( do_hitall )
       ch->print( "There's no one else here!\r\n" );
       return;
    }
-   ch->move = UMAX( 0, ch->move - nvict * 3 + nhit );
+   ch->move = umax( 0, ch->move - nvict * 3 + nhit );
    if( !nhit )
       ch->learn_from_failure( gsn_hitall );
 }
@@ -6269,7 +6269,7 @@ void map_scan( char_data * ch );
 CMDF( do_scan )
 {
    int maxdist = ch->level / 10;
-   maxdist = URANGE( 1, maxdist, 9 );
+   maxdist = urange( 1, maxdist, 9 );
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
    {
@@ -7063,7 +7063,7 @@ CMDF( do_assassinate )
    }
 
    ch->WAIT_STATE( skill_table[gsn_assassinate]->beats );
-   percent = number_percent(  ) + UMAX( 0, ( victim->level - ch->level ) * 2 );
+   percent = number_percent(  ) + umax( 0, ( victim->level - ch->level ) * 2 );
    if( ch->isnpc(  ) || percent < ch->pcdata->learned[gsn_assassinate] )
    {
       act( AT_ACTION, "You slip quietly up behind $N, plunging your", ch, nullptr, victim, TO_CHAR );
@@ -7558,7 +7558,7 @@ CMDF( do_charge )
       return;
    }
 
-   mana = UMAX( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
+   mana = umax( skill_table[sn]->min_mana, 100 / ( 2 + ch->level - skill_table[sn]->skill_level[ch->Class] ) );
 
    mana *= 3;
 
@@ -7703,8 +7703,8 @@ CMDF( do_tan )
    if( ch->Class == CLASS_RANGER )
       acbonus += 1;
 
-   acbonus = URANGE( 0, acbonus, 20 );
-   acapply = URANGE( 0, acapply, 20 );
+   acbonus = urange( 0, acbonus, 20 );
+   acapply = urange( 0, acapply, 20 );
 
    if( !str_cmp( itemtype, "shield" ) )
    {

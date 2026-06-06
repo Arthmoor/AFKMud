@@ -514,7 +514,7 @@ short char_data::get_curr_str(  )
    else
       max = 20;
 
-   return URANGE( 3, this->perm_str + this->mod_str, max );
+   return urange( 3, this->perm_str + this->mod_str, max );
 }
 
 /*
@@ -529,7 +529,7 @@ short char_data::get_curr_int(  )
    else
       max = 20;
 
-   return URANGE( 3, this->perm_int + this->mod_int, max );
+   return urange( 3, this->perm_int + this->mod_int, max );
 }
 
 /*
@@ -544,7 +544,7 @@ short char_data::get_curr_wis(  )
    else
       max = 20;
 
-   return URANGE( 3, this->perm_wis + this->mod_wis, max );
+   return urange( 3, this->perm_wis + this->mod_wis, max );
 }
 
 /*
@@ -559,7 +559,7 @@ short char_data::get_curr_dex(  )
    else
       max = 20;
 
-   return URANGE( 3, this->perm_dex + this->mod_dex, max );
+   return urange( 3, this->perm_dex + this->mod_dex, max );
 }
 
 /*
@@ -574,7 +574,7 @@ short char_data::get_curr_con(  )
    else
       max = 20;
 
-   return URANGE( 3, this->perm_con + this->mod_con, max );
+   return urange( 3, this->perm_con + this->mod_con, max );
 }
 
 /*
@@ -589,7 +589,7 @@ short char_data::get_curr_cha(  )
    else
       max = 20;
 
-   return URANGE( 3, this->perm_cha + this->mod_cha, max );
+   return urange( 3, this->perm_cha + this->mod_cha, max );
 }
 
 /*
@@ -604,7 +604,7 @@ short char_data::get_curr_lck(  )
    else
       max = 20;
 
-   return URANGE( 3, this->perm_lck + this->mod_lck, max );
+   return urange( 3, this->perm_lck + this->mod_lck, max );
 }
 
 /*
@@ -1172,7 +1172,7 @@ int char_data::can_carry_n(  )
     * Removed old formula, added something a bit more sensible here
     * Samson 4-12-98. Minimum of 15, (dex+str+level)-10 - penalty, or a max of 40. 
     */
-   return URANGE( 15, ( this->get_curr_dex(  ) + this->get_curr_str(  ) + this->level ) - 10 - penalty, 40 );
+   return urange( 15, ( this->get_curr_dex(  ) + this->get_curr_str(  ) + this->level ) - 10 - penalty, 40 );
 }
 
 /*
@@ -1567,7 +1567,7 @@ void char_data::modify_skill( int sn, int mod, bool fAdd )
       if( fAdd )
          this->pcdata->learned[sn] += mod;
       else
-         this->pcdata->learned[sn] = URANGE( 0, this->pcdata->learned[sn] + mod, this->GET_ADEPT( sn ) );
+         this->pcdata->learned[sn] = urange( 0, this->pcdata->learned[sn] + mod, this->GET_ADEPT( sn ) );
    }
 }
 
@@ -1706,7 +1706,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          this->sex = ( this->sex + mod ) % 3;
          if( this->sex < 0 )
             this->sex += 2;
-         this->sex = URANGE( 0, this->sex, 4 );
+         this->sex = urange( 0, this->sex, 4 );
          break;
       case APPLY_ATTACKS:
          this->numattacks += mod;
@@ -1815,21 +1815,21 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
 
       case APPLY_FULL:
          if( !this->isnpc(  ) )
-            this->pcdata->condition[COND_FULL] = URANGE( 0, this->pcdata->condition[COND_FULL] + mod, sysdata->maxcondval );
+            this->pcdata->condition[COND_FULL] = urange( 0, this->pcdata->condition[COND_FULL] + mod, sysdata->maxcondval );
          break;
 
       case APPLY_THIRST:
          if( !this->isnpc(  ) )
-            this->pcdata->condition[COND_THIRST] = URANGE( 0, this->pcdata->condition[COND_THIRST] + mod, sysdata->maxcondval );
+            this->pcdata->condition[COND_THIRST] = urange( 0, this->pcdata->condition[COND_THIRST] + mod, sysdata->maxcondval );
          break;
 
       case APPLY_DRUNK:
          if( !this->isnpc(  ) )
-            this->pcdata->condition[COND_DRUNK] = URANGE( 0, this->pcdata->condition[COND_DRUNK] + mod, sysdata->maxcondval );
+            this->pcdata->condition[COND_DRUNK] = urange( 0, this->pcdata->condition[COND_DRUNK] + mod, sysdata->maxcondval );
          break;
 
       case APPLY_MENTALSTATE:
-         this->mental_state = URANGE( -100, this->mental_state + mod, 100 );
+         this->mental_state = urange( -100, this->mental_state + mod, 100 );
          break;
 
       case APPLY_CONTAGIOUS:
@@ -2088,9 +2088,9 @@ void char_data::affect_join( affect_data * paf )
    {
       if( af->type == paf->type )
       {
-         paf->duration = UMIN( 32500, paf->duration + af->duration );
+         paf->duration = umin( 32500, paf->duration + af->duration );
          if( paf->modifier )
-            paf->modifier = UMIN( 5000, paf->modifier + af->modifier );
+            paf->modifier = umin( 5000, paf->modifier + af->modifier );
          else
             paf->modifier = af->modifier;
          this->affect_remove( af );
@@ -2166,7 +2166,7 @@ void char_data::set_numattacks(  )
          /*
           * 2.72 attacks at level 100 
           */
-         this->numattacks += ( float )( UMIN( 86, this->level ) * .02 );
+         this->numattacks += ( float )( umin( 86, this->level ) * .02 );
          break;
 
       case CLASS_CLERIC:
@@ -2184,7 +2184,7 @@ void char_data::set_numattacks(  )
          /*
           * 5.3 attacks at level 100 
           */
-         this->numattacks += ( float )( UMIN( 86, this->level ) * .05 );
+         this->numattacks += ( float )( umin( 86, this->level ) * .05 );
          break;
 
       case CLASS_ROGUE:
@@ -2302,7 +2302,7 @@ bool char_data::in_hard_range( area_data * tarea )
  */
 void char_data::better_mental_state( int mod )
 {
-   int c = URANGE( 0, abs( mod ), 20 );
+   int c = urange( 0, abs( mod ), 20 );
    int con = this->get_curr_con(  );
 
    if( this->is_immortal(  ) )
@@ -2314,9 +2314,9 @@ void char_data::better_mental_state( int mod )
    c += number_percent(  ) < con ? 1 : 0;
 
    if( this->mental_state < 0 )
-      this->mental_state = URANGE( -100, this->mental_state + c, 0 );
+      this->mental_state = urange( -100, this->mental_state + c, 0 );
    else if( this->mental_state > 0 )
-      this->mental_state = URANGE( 0, this->mental_state - c, 100 );
+      this->mental_state = urange( 0, this->mental_state - c, 100 );
 }
 
 /*
@@ -2324,7 +2324,7 @@ void char_data::better_mental_state( int mod )
  */
 void char_data::worsen_mental_state( int mod )
 {
-   int c = URANGE( 0, abs( mod ), 20 );
+   int c = urange( 0, abs( mod ), 20 );
    int con = this->get_curr_con(  );
 
    if( this->is_immortal(  ) )
@@ -2338,9 +2338,9 @@ void char_data::worsen_mental_state( int mod )
       return;
 
    if( this->mental_state < 0 )
-      this->mental_state = URANGE( -100, this->mental_state - c, 100 );
+      this->mental_state = urange( -100, this->mental_state - c, 100 );
    else if( this->mental_state > 0 )
-      this->mental_state = URANGE( -100, this->mental_state + c, 100 );
+      this->mental_state = urange( -100, this->mental_state + c, 100 );
    else
       this->mental_state -= c;
 }
@@ -2904,7 +2904,7 @@ void char_data::ClassSpecificStuff(  )
       return;
 
    if( IsDragon( this ) )
-      armor = UMIN( -150, armor );
+      armor = umin( -150, armor );
 
    this->set_numattacks(  );
 
@@ -3086,8 +3086,8 @@ void char_data::ClassSpecificStuff(  )
          this->set_immune( RIS_POISON );
          this->unset_resist( RIS_POISON );
       }
-      this->armor = 100 - UMIN( 150, this->level * 5 );
-      this->max_move = UMAX( this->max_move, ( 150 + ( this->level * 5 ) ) );
+      this->armor = 100 - umin( 150, this->level * 5 );
+      this->max_move = umax( this->max_move, ( 150 + ( this->level * 5 ) ) );
    }
 
    if( this->Class == CLASS_DRUID )
@@ -3751,9 +3751,9 @@ void advance_level( char_data * ch )
 
    add_prac = 4 + wis_app[ch->get_curr_wis(  )].practice;
 
-   add_hp = UMAX( 1, add_hp );
+   add_hp = umax( 1, add_hp );
 
-   add_mana = UMAX( 1, add_mana );
+   add_mana = umax( 1, add_mana );
 
    ch->max_hit += add_hp;
    ch->max_mana += add_mana;

@@ -416,7 +416,7 @@ void load_objects( area_data * tarea, FILE * fp )
       temp[2][0] = '\0';
       sscanf( ln, "%d %d %d %d %d %s %s %s", &x1, &x2, &x3, &x4, &x5, temp[0], temp[1], temp[2] );
       pObjIndex->weight = x1;
-      pObjIndex->weight = UMAX( 1, pObjIndex->weight );
+      pObjIndex->weight = umax( 1, pObjIndex->weight );
       pObjIndex->cost = x2;
       pObjIndex->ego = x3;
       pObjIndex->limit = x4;
@@ -1135,8 +1135,8 @@ void load_shops( FILE * fp )
          pShop->buy_type[iTrade] = fread_number( fp );
       pShop->profit_buy = fread_number( fp );
       pShop->profit_sell = fread_number( fp );
-      pShop->profit_buy = URANGE( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
-      pShop->profit_sell = URANGE( 0, pShop->profit_sell, pShop->profit_buy - 5 );
+      pShop->profit_buy = urange( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
+      pShop->profit_sell = urange( 0, pShop->profit_sell, pShop->profit_buy - 5 );
       pShop->open_hour = fread_number( fp );
       pShop->close_hour = fread_number( fp );
       fread_to_eol( fp );

@@ -2790,7 +2790,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
    /*
     * strength also determines frequency 
     */
-   int pullfact = URANGE( 1, 20 - ( abs( pull ) / 5 ), 20 );
+   int pullfact = urange( 1, 20 - ( abs( pull ) / 5 ), 20 );
 
    /*
     * strongest pull not ready yet... check for one that is 
@@ -2805,7 +2805,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
          if( pexit->pull && pexit->to_room )
          {
             pull = pexit->pull;
-            pullfact = URANGE( 1, 20 - ( abs( pull ) / 5 ), 20 );
+            pullfact = urange( 1, 20 - ( abs( pull ) / 5 ), 20 );
             if( ( pulse % pullfact ) == 0 )
             {
                found = true;

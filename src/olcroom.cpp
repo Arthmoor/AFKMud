@@ -691,7 +691,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
       case REDIT_FLAGS:
          if( is_number( arg ) )
          {
-            number = atoi( arg.c_str(  ) );
+            number = std::stoi( arg );
             if( number == 0 )
                break;
             else if( number < 0 || number >= ROOM_MAX )
@@ -723,7 +723,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_SECTOR:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          if( number < 0 || number >= SECT_MAX )
          {
             d->character->print( "Invalid choice!" );
@@ -736,26 +736,26 @@ void redit_parse( descriptor_data * d, std::string & arg )
          break;
 
       case REDIT_TUNNEL:
-         number = atoi( arg.c_str(  ) );
-         room->tunnel = URANGE( 0, number, 1000 );
+         number = std::stoi( arg );
+         room->tunnel = urange( 0, number, 1000 );
          olc_log( d, "Changed tunnel amount to %d", room->tunnel );
          break;
 
       case REDIT_TELEDELAY:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          room->tele_delay = number;
          olc_log( d, "Changed teleportation delay to %d", room->tele_delay );
          break;
 
       case REDIT_TELEVNUM:
-         number = atoi( arg.c_str(  ) );
-         room->tele_vnum = URANGE( 1, number, sysdata->maxvnum );
+         number = std::stoi( arg );
+         room->tele_vnum = urange( 1, number, sysdata->maxvnum );
          olc_log( d, "Changed teleportation vnum to %d", room->tele_vnum );
          break;
 
       case REDIT_LIGHT:
-         number = atoi( arg.c_str(  ) );
-         room->baselight = URANGE( -32000, number, 32000 );
+         number = std::stoi( arg );
+         room->baselight = urange( -32000, number, 32000 );
          olc_log( d, "Changed base lighting factor %d", room->baselight );
          break;
 
@@ -765,7 +765,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
             default:
                if( is_number( arg ) )
                {
-                  number = atoi( arg.c_str(  ) );
+                  number = std::stoi( arg );
                   pexit = room->get_exit_num( number );
                   if( pexit )
                   {
@@ -837,7 +837,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
       case REDIT_EXIT_ADD:
          if( is_number( arg ) )
          {
-            number = atoi( arg.c_str(  ) );
+            number = std::stoi( arg );
             if( number < DIR_NORTH || number > DIR_SOMEWHERE )
             {
                d->character->print( "Invalid direction, try again: " );
@@ -871,7 +871,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          {
             exit_data *xit;
 
-            number = atoi( arg.c_str(  ) );
+            number = std::stoi( arg );
             if( number < DIR_NORTH || number > DIR_SOMEWHERE )
             {
                d->character->print( "Invalid direction, try again: " );
@@ -908,7 +908,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_EXIT_ADD_VNUM:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          if( !( tmp = get_room_index( number ) ) )
          {
             d->character->print( "Non-existant room, try again: " );
@@ -932,7 +932,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
             d->character->print( "Exit must be specified in a number.\r\n" );
             redit_disp_exit_menu( d );
          }
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          pexit = room->get_exit_num( number );
          if( !pexit )
          {
@@ -945,7 +945,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_EXIT_VNUM:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          if( number < 0 || number > sysdata->maxvnum )
          {
             d->character->print( "Invalid room number, try again : " );
@@ -973,7 +973,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_EXIT_KEY:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          if( number < -1 || number > sysdata->maxvnum )
             d->character->print( "Invalid vnum, try again: " );
          else
@@ -985,7 +985,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_EXIT_FLAGS:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          if( number == 0 )
          {
             redit_disp_exit_edit( d );

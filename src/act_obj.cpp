@@ -2378,14 +2378,14 @@ CMDF( do_bury )
          return;
    }
 
-   if( obj->weight > ( UMAX( 5, ( ch->can_carry_w(  ) / 10 ) ) ) && !shovel )
+   if( obj->weight > ( umax( 5, ( ch->can_carry_w(  ) / 10 ) ) ) && !shovel )
    {
       ch->print( "You'd need a shovel to bury something that big.\r\n" );
       return;
    }
 
-   short move = ( obj->weight * 50 * ( shovel ? 1 : 5 ) ) / UMAX( 1, ch->can_carry_w(  ) );
-   move = URANGE( 2, move, 1000 );
+   short move = ( obj->weight * 50 * ( shovel ? 1 : 5 ) ) / umax( 1, ch->can_carry_w(  ) );
+   move = urange( 2, move, 1000 );
    if( move > ch->move )
    {
       ch->print( "You don't have the energy to bury something of that size.\r\n" );
@@ -2398,7 +2398,7 @@ CMDF( do_bury )
    act( AT_ACTION, "You solemnly bury $p...", ch, obj, nullptr, TO_CHAR );
    act( AT_ACTION, "$n solemnly buries $p...", ch, obj, nullptr, TO_ROOM );
    obj->extra_flags.set( ITEM_BURIED );
-   ch->WAIT_STATE( URANGE( 10, move / 2, 100 ) );
+   ch->WAIT_STATE( urange( 10, move / 2, 100 ) );
 }
 
 CMDF( do_sacrifice )

@@ -1785,14 +1785,14 @@ void accept_new( int ctrl )
 
    for( auto* d : dlist )
    {
-      maxdesc = UMAX( maxdesc, d->descriptor );
+      maxdesc = umax( maxdesc, d->descriptor );
       FD_SET( d->descriptor, &in_set );
       FD_SET( d->descriptor, &out_set );
       FD_SET( d->descriptor, &exc_set );
 
       if( d->ifd != -1 && d->ipid != -1 )
       {
-         maxdesc = UMAX( maxdesc, d->ifd );
+         maxdesc = umax( maxdesc, d->ifd );
          FD_SET( d->ifd, &in_set );
       }
    }

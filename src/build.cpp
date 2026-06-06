@@ -4422,7 +4422,7 @@ CMDF( do_redit )
          ch->print( "Usage: redit max_weight <value>\r\n" );
          return;
       }
-      location->max_weight = URANGE( 0, atoi( argument.c_str(  ) ), 100000 );
+      location->max_weight = urange( 0, std::stoi( argument ), 100000 );
       ch->print( "Max weight value set.\r\n" );
       return;
    }
@@ -4435,7 +4435,7 @@ CMDF( do_redit )
          ch->print( "Usage: redit tunnel <value>\r\n" );
          return;
       }
-      location->tunnel = URANGE( 0, atoi( argument.c_str(  ) ), 1000 );
+      location->tunnel = urange( 0, std::stoi( argument ), 1000 );
       ch->print( "Tunnel value set.\r\n" );
       return;
    }
@@ -4451,7 +4451,7 @@ CMDF( do_redit )
          ch->print( "Usage: redit light <value>\r\n" );
          return;
       }
-      location->baselight = URANGE( -32000, atoi( argument.c_str(  ) ), 32000 );
+      location->baselight = urange( -32000, std::stoi( argument ), 32000 );
       ch->print( "Light value set.\r\n" );
       return;
    }
@@ -5078,7 +5078,7 @@ CMDF( do_redit )
       }
       if( xit )
       {
-         xit->pull = URANGE( -100, atoi( argument.c_str(  ) ), 100 );
+         xit->pull = urange( -100, std::stoi( argument ), 100 );
          ch->print( "Done.\r\n" );
          return;
       }
@@ -5107,7 +5107,7 @@ CMDF( do_redit )
       }
       if( xit )
       {
-         xit->pull = URANGE( -100, -( atoi( argument.c_str(  ) ) ), 100 );
+         xit->pull = urange( -100, -( std::stoi( argument ) ), 100 );
          ch->print( "Done.\r\n" );
          return;
       }

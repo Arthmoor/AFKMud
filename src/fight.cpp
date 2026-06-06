@@ -117,7 +117,7 @@ void make_blood( char_data * ch )
       return;
    }
    obj->timer = number_range( 2, 4 );
-   obj->value[1] = number_range( 3, UMIN( 5, ch->level ) );
+   obj->value[1] = number_range( 3, umin( 5, ch->level ) );
    obj->to_room( ch->in_room, ch );
 }
 
@@ -251,19 +251,19 @@ int align_compute( char_data * ch, char_data * victim )
    align = ch->alignment;
 
    if( ch->IS_GOOD(  ) && victim->IS_GOOD(  ) )
-      change = ( victim->alignment / 200 ) * ( UMAX( 1, ( victim->level - ch->level ) ) );
+      change = ( victim->alignment / 200 ) * ( umax( 1, ( victim->level - ch->level ) ) );
 
    else if( ch->IS_EVIL(  ) && victim->IS_GOOD(  ) )
-      change = ( victim->alignment / 30 ) * ( UMAX( 1, ( victim->level - ch->level ) ) );
+      change = ( victim->alignment / 30 ) * ( umax( 1, ( victim->level - ch->level ) ) );
 
    else if( victim->IS_EVIL(  ) && ch->IS_GOOD(  ) )
-      change = ( victim->alignment / 30 ) * ( UMAX( 1, ( victim->level - ch->level ) ) );
+      change = ( victim->alignment / 30 ) * ( umax( 1, ( victim->level - ch->level ) ) );
 
    else if( ch->IS_EVIL(  ) && victim->IS_EVIL(  ) )
-      change = ( ( victim->alignment / 200 ) + 1 ) * ( UMAX( 1, ( victim->level - ch->level ) ) );
+      change = ( ( victim->alignment / 200 ) + 1 ) * ( umax( 1, ( victim->level - ch->level ) ) );
 
    else
-      change = ( victim->alignment / 200 ) * ( UMAX( 1, ( victim->level - ch->level ) ) );
+      change = ( victim->alignment / 200 ) * ( umax( 1, ( victim->level - ch->level ) ) );
 
    if( change == 0 )
    {
@@ -275,9 +275,7 @@ int align_compute( char_data * ch, char_data * victim )
 
    align -= change;
 
-   align = UMAX( align, -1000 );
-   align = UMIN( align, 1000 );
-
+   align = urange( -1000, align, 1000 );
    return align;
 }
 
@@ -887,7 +885,7 @@ int xp_compute( char_data * gch, char_data * victim )
     * Level based experience gain cap.  Cannot get more experience for
     * a kill than the amount for your current experience level   -Thoric
     */
-   return URANGE( 0, xp, exp_level( gchlev ) );
+   return urange( 0, xp, exp_level( gchlev ) );
 }
 
 /* Figures up a mob's exp value based on some obscure D&D formula.
@@ -1475,7 +1473,7 @@ void group_gain( char_data * ch, char_data * victim )
       if( !gch->isnpc(  ) )
       {
          ++members;
-         max_level = UMAX( max_level, gch->level );
+         max_level = umax( max_level, gch->level );
       }
    }
    if( members == 0 )
@@ -1872,9 +1870,9 @@ void check_killer( char_data * ch, char_data * victim )
           * * on 03-16-03.
           */
          if( victim->level < 1 )
-            level_ratio = URANGE( 1, ch->level, MAX_LEVEL );
+            level_ratio = urange( 1, ch->level, MAX_LEVEL );
          else
-            level_ratio = URANGE( 1, ch->level / victim->level, MAX_LEVEL );
+            level_ratio = urange( 1, ch->level / victim->level, MAX_LEVEL );
          if( ch->pcdata->clan )
             ++ch->pcdata->clan->mkills;
          ++ch->pcdata->mkills;
@@ -2017,7 +2015,7 @@ void check_killer( char_data * ch, char_data * victim )
          if( victim->pcdata->clan )
             ++victim->pcdata->clan->mdeaths;
          ++victim->pcdata->mdeaths;
-         level_ratio = URANGE( 1, ch->level / victim->level, LEVEL_AVATAR );
+         level_ratio = urange( 1, ch->level / victim->level, LEVEL_AVATAR );
          if( victim->pcdata->deity )
          {
             if( ch->race == victim->pcdata->deity->npcrace[0] )
@@ -2499,16 +2497,16 @@ void raw_kill( char_data * ch, char_data * victim )
    victim->damroll = 0;
    victim->hitroll = 0;
    victim->mental_state = -10;
-   victim->alignment = URANGE( -1000, victim->alignment, 1000 );
+   victim->alignment = urange( -1000, victim->alignment, 1000 );
    victim->saving_poison_death = race_table[victim->race]->saving_poison_death;
    victim->saving_wand = race_table[victim->race]->saving_wand;
    victim->saving_para_petri = race_table[victim->race]->saving_para_petri;
    victim->saving_breath = race_table[victim->race]->saving_breath;
    victim->saving_spell_staff = race_table[victim->race]->saving_spell_staff;
    victim->position = POS_RESTING;
-   victim->hit = UMAX( 1, victim->hit );
-   victim->mana = UMAX( 1, victim->mana );
-   victim->move = UMAX( 1, victim->move );
+   victim->hit = umax( 1, victim->hit );
+   victim->mana = umax( 1, victim->mana );
+   victim->move = umax( 1, victim->move );
    if( victim->pcdata->condition[COND_FULL] != -1 )
       victim->pcdata->condition[COND_FULL] = sysdata->maxcondval / 2;
    if( victim->pcdata->condition[COND_THIRST] != -1 )
@@ -2979,7 +2977,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       af.modifier = -2;
       af.bit = AFF_POISON;
       victim->affect_join( &af );
-      victim->mental_state = URANGE( 20, victim->mental_state + 2, 100 );
+      victim->mental_state = urange( 20, victim->mental_state + 2, 100 );
    }
 
    if( !npcvict && victim->level >= LEVEL_IMMORTAL && ch->level >= LEVEL_IMMORTAL && victim->hit < 1 )
@@ -3456,7 +3454,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    if( dt == gsn_circle )
       dam *= ( 1 + ( ch->level / 8 ) );
 
-   dam = UMAX( ( int )dam, 1 );
+   dam = umax( ( int )dam, 1 );
 
    plusris = 0;
 
@@ -3499,7 +3497,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
       int x, res, imm, sus, mod;
 
       if( plusris )
-         plusris = RIS_PLUS1 << UMIN( plusris, 7 );
+         plusris = RIS_PLUS1 << umin( plusris, 7 );
 
       /*
        * initialize values to handle a zero plusris 
@@ -4017,7 +4015,7 @@ CMDF( do_flee )
 
          if( wf && ch->pcdata->deity )
          {
-            int level_ratio = URANGE( 1, wf->level / ch->level, LEVEL_AVATAR );
+            int level_ratio = urange( 1, wf->level / ch->level, LEVEL_AVATAR );
 
             if( wf && wf->race == ch->pcdata->deity->npcrace[0] )
                ch->adjust_favor( 1, level_ratio );

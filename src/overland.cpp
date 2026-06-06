@@ -2028,10 +2028,10 @@ void display_map( char_data * ch )
       if( ch->has_aflag( AFF_WIZARDEYE ) )
          mod = sysdata->mapsize * 2;
 
-      startx = ( UMAX( ( short )( ch->map_x - ( mod * 1.5 ) ), ch->map_x - 37 ) );
-      starty = ( UMAX( ch->map_y - mod, ch->map_y - 14 ) );
-      endx = ( UMIN( ( short )( ch->map_x + ( mod * 1.5 ) ), ch->map_x + 37 ) );
-      endy = ( UMIN( ch->map_y + mod, ch->map_y + 14 ) );
+      startx = ( umax( ( short )( ch->map_x - ( mod * 1.5 ) ), ch->map_x - 37 ) );
+      starty = ( umax( ch->map_y - mod, ch->map_y - 14 ) );
+      endx = ( umin( ( short )( ch->map_x + ( mod * 1.5 ) ), ch->map_x + 37 ) );
+      endy = ( umin( ch->map_y + mod, ch->map_y + 14 ) );
    }
 
    if( ch->has_pcflag( PCFLAG_MAPEDIT ) && sector != SECT_EXIT )
@@ -2151,7 +2151,7 @@ void check_random_mobs( char_data * ch )
       return;
 
    if( number_percent(  ) < 6 )
-      vnum = random_mobs[terrain][UMIN( SECT_MAX - 1, number_range( 0, ch->level / 2 ) )];
+      vnum = random_mobs[terrain][umin( SECT_MAX - 1, number_range( 0, ch->level / 2 ) )];
 
    if( vnum == -1 )
       return;

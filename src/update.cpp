@@ -302,7 +302,7 @@ void gain_condition( char_data * ch, int iCond, int value )
    if( condition == -1 )
       return;
 
-   ch->pcdata->condition[iCond] = URANGE( 0, condition + value, sysdata->maxcondval );
+   ch->pcdata->condition[iCond] = urange( 0, condition + value, sysdata->maxcondval );
 
    if( ch->pcdata->condition[iCond] == 0 )
    {
@@ -453,7 +453,7 @@ void hallucinations( char_data * ch )
    {
       std::string t;
 
-      switch ( number_range( 1, UMIN( 21, ( ch->mental_state + 5 ) / 5 ) ) )
+      switch ( number_range( 1, umin( 21, ( ch->mental_state + 5 ) / 5 ) ) )
       {
          default:
          case 1:
@@ -1313,7 +1313,7 @@ void char_update( void )
          {
             act( AT_POISON, "$n shivers and suffers.", ch, nullptr, nullptr, TO_ROOM );
             act( AT_POISON, "You shiver and suffer.", ch, nullptr, nullptr, TO_CHAR );
-            ch->mental_state = URANGE( 20, ch->mental_state + ( ch->isnpc(  )? 2 : 4 ), 100 );
+            ch->mental_state = urange( 20, ch->mental_state + ( ch->isnpc(  )? 2 : 4 ), 100 );
             damage( ch, ch, 30, gsn_poison );
          }
          else if( ch->position == POS_INCAP )
@@ -1580,7 +1580,7 @@ void obj_update( void )
 
          obj->separate(  );
 
-         frac = URANGE( 1, frac, 5 );
+         frac = urange( 1, frac, 5 );
 
          obj->value[3] = frac;   /* Advances decay stage for resurrection spell */
          stralloc_printf( &obj->objdesc, corpse_descs[frac], bufptr );
@@ -1882,7 +1882,7 @@ void char_check( void )
                 * Changed level of damage at Brittany's request. -- Narn 
                 */
                dam = number_range( ch->max_hit / 100, ch->max_hit / 50 );
-               dam = UMAX( 1, dam );
+               dam = umax( 1, dam );
                if( number_bits( 3 ) == 0 )
                   ch->print( "You cough and choke as you try to breathe water!\r\n" );
                damage( ch, ch, dam, TYPE_UNDEFINED );
@@ -1928,7 +1928,7 @@ void char_check( void )
                   if( ch->move > 0 )
                   {
                      mov = number_range( ch->max_move / 20, ch->max_move / 5 );
-                     mov = UMAX( 1, mov );
+                     mov = umax( 1, mov );
 
                      if( ch->move - mov < 0 )
                         ch->move = 0;
@@ -1941,7 +1941,7 @@ void char_check( void )
                   else
                   {
                      dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
-                     dam = UMAX( 1, dam );
+                     dam = umax( 1, dam );
 
                      if( number_bits( 3 ) == 0 )
                         ch->print( "Struggling with exhaustion, you choke on a mouthful of water.\r\n" );
@@ -1988,7 +1988,7 @@ void char_check( void )
                   if( ch->move > 0 )
                   {
                      mov = number_range( ch->max_move / 20, ch->max_move / 5 );
-                     mov = UMAX( 1, mov );
+                     mov = umax( 1, mov );
 
                      if( !ch->isnpc(  ) && number_percent(  ) < ch->pcdata->learned[gsn_swim] )
                         ;
@@ -2010,7 +2010,7 @@ void char_check( void )
                   else
                   {
                      dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
-                     dam = UMAX( 1, dam );
+                     dam = umax( 1, dam );
 
                      if( number_bits( 3 ) == 0 )
                         ch->print( "Struggling with exhaustion, you choke on a mouthful of water.\r\n" );
@@ -2061,7 +2061,7 @@ void char_check( void )
                   if( ch->move > 0 )
                   {
                      mov = number_range( ch->max_move / 20, ch->max_move / 5 );
-                     mov = UMAX( 1, mov );
+                     mov = umax( 1, mov );
 
                      if( ch->move - mov < 0 )
                         ch->move = 0;
@@ -2074,7 +2074,7 @@ void char_check( void )
                   else
                   {
                      dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
-                     dam = UMAX( 1, dam );
+                     dam = umax( 1, dam );
 
                      if( number_bits( 3 ) == 0 )
                         ch->print( "Struggling with exhaustion, you choke on a mouthful of water.\r\n" );

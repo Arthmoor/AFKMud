@@ -2404,7 +2404,7 @@ void char_data::adjust_favor( int field, int mod )
    if( ( alignment - pcdata->deity->alignment > 650 || alignment - pcdata->deity->alignment < -650 ) && pcdata->deity->alignment != 0 )
    {
       pcdata->favor -= 2;
-      pcdata->favor = URANGE( -2500, pcdata->favor, 5000 );
+      pcdata->favor = urange( -2500, pcdata->favor, 5000 );
 
       if( pcdata->favor > pcdata->deity->affectednum[0] )
       {
@@ -2619,7 +2619,7 @@ void char_data::adjust_favor( int field, int mod )
          pcdata->favor += number_fuzzy( pcdata->deity->die_npcfoe[2] / mod );
          break;
    }
-   pcdata->favor = URANGE( -2500, pcdata->favor, 5000 );
+   pcdata->favor = urange( -2500, pcdata->favor, 5000 );
 
    if( pcdata->favor > pcdata->deity->affectednum[0] )
    {

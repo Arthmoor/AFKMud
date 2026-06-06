@@ -688,8 +688,8 @@ bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
    /*
     * this function assumes all the lows are always gonna be lower or equal to all the highs .. 
     */
-   int high = UMAX( r_area->hi_room, UMAX( r_area->hi_obj, r_area->hi_mob ) );
-   int low = UMIN( r_area->low_room, UMIN( r_area->low_obj, r_area->low_mob ) );
+   int high = umax( r_area->hi_room, umax( r_area->hi_obj, r_area->hi_mob ) );
+   int low = umin( r_area->low_room, umin( r_area->low_obj, r_area->low_mob ) );
 
    if( high > sysdata->maxvnum )
    {

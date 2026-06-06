@@ -604,12 +604,12 @@ CMDF( do_hlist )
       {
          if( !minfound )
          {
-            min = URANGE( minlimit, atoi( arg.c_str(  ) ), maxlimit );
+            min = urange( minlimit, std::stoi( arg ), maxlimit );
             minfound = true;
          }
          else if( !maxfound )
          {
-            max = URANGE( minlimit, atoi( arg.c_str(  ) ), maxlimit );
+            max = urange( minlimit, std::stoi( arg ), maxlimit );
             maxfound = true;
          }
          else

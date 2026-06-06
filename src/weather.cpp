@@ -730,14 +730,14 @@ void ApplyDeltaChanges( void )
             }
          }
          //Here we actually apply the changes making sure they stay within specific bounds
-         cell->temperature	   = URANGE( -30, cell->temperature + delta->temperature, 100 );
-         cell->pressure		   = URANGE( 0, cell->pressure + delta->pressure, 100 );
-         cell->cloudcover     = URANGE( 0, cell->cloudcover + delta->cloudcover, 100 );
-         cell->energy		   = URANGE( 0, cell->energy + delta->energy, 100 );
-         cell->humidity		   = URANGE( 0, cell->humidity + delta->humidity, 100 );
-         cell->precipitation  = URANGE( 0, cell->precipitation + delta->precipitation, 100 );
-         cell->windSpeedX	   = URANGE( -100, cell->windSpeedX + delta->windSpeedX, 100 );
-         cell->windSpeedY	   = URANGE( -100, cell->windSpeedY + delta->windSpeedY, 100 );
+         cell->temperature	   = urange( -30, cell->temperature + delta->temperature, 100 );
+         cell->pressure		   = urange( 0, cell->pressure + delta->pressure, 100 );
+         cell->cloudcover     = urange( 0, cell->cloudcover + delta->cloudcover, 100 );
+         cell->energy		   = urange( 0, cell->energy + delta->energy, 100 );
+         cell->humidity		   = urange( 0, cell->humidity + delta->humidity, 100 );
+         cell->precipitation  = urange( 0, cell->precipitation + delta->precipitation, 100 );
+         cell->windSpeedX	   = urange( -100, cell->windSpeedX + delta->windSpeedX, 100 );
+         cell->windSpeedY	   = urange( -100, cell->windSpeedY + delta->windSpeedY, 100 );
       }
    }
 }

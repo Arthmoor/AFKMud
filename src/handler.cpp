@@ -65,27 +65,25 @@ void init_memory( void *start, void *end, unsigned int size )
    memset( start, 0, ( int )( ( char * )end + size - ( char * )start ) );
 }
 
+// These 3 functions replace the UMIN, UMAX, and URANGE macros.
 int umin( int check, int ncheck )
 {
-   if( check < ncheck )
-      return check;
-   return ncheck;
+   return std::min( check, ncheck );
 }
 
 int umax( int check, int ncheck )
 {
-   if( check > ncheck )
-      return check;
-   return ncheck;
+   return std::max( check, ncheck );
 }
 
+/*
+ * NOTE: This function is all over the codebase and expects the smallest value in mincheck, the value to check in the middle, and the largest value in maxcheck.
+ * std::clamp takes its arguments in a different order so this function will mask that so that the calling functions in the rest of the MUD don't need to get rewritten.
+ * -- Samson 6/6/2026/
+*/
 int urange( int mincheck, int check, int maxcheck )
 {
-   if( check < mincheck )
-      return mincheck;
-   if( check > maxcheck )
-      return maxcheck;
-   return check;
+   return std::clamp( check, mincheck, maxcheck );
 }
 
 /* - Thoric
@@ -413,13 +411,13 @@ bool ms_find_obj( char_data * ch )
     * we're going to be nice and let nothing weird happen unless
     * you're a tad messed up
     */
-   drunk = UMAX( 1, drunk );
+   drunk = umax( 1, drunk );
    if( abs( ms ) + ( drunk / 3 ) < 30 )
       return false;
    if( ( number_percent(  ) + ( ms < 0 ? 15 : 5 ) ) > abs( ms ) / 2 + drunk / 4 )
       return false;
    if( ms > 15 )  /* range 1 to 20 -- feel free to add more */
-      switch ( number_range( UMAX( 1, ( ms / 5 - 15 ) ), ( ms + 4 ) / 5 ) )
+      switch ( number_range( umax( 1, ( ms / 5 - 15 ) ), ( ms + 4 ) / 5 ) )
       {
          default:
          case 1:
@@ -485,7 +483,7 @@ bool ms_find_obj( char_data * ch )
       }
    else
    {
-      int sub = URANGE( 1, abs( ms ) / 2 + drunk, 60 );
+      int sub = urange( 1, abs( ms ) / 2 + drunk, 60 );
       switch ( number_range( 1, sub / 10 ) )
       {
          default:

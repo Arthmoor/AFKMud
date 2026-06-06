@@ -560,7 +560,7 @@ CMDF( do_immhost )
          return;
       }
 
-      x = URANGE( 1, atoi( argument.c_str(  ) ), MAX_DOMAIN );
+      x = urange( 1, std::stoi( argument ), MAX_DOMAIN );
       --x;
 
       if( host->domain[x].empty(  ) )

@@ -568,7 +568,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
                sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
 
                pObjIndex->weight = x1;
-               pObjIndex->weight = UMAX( 1, pObjIndex->weight );
+               pObjIndex->weight = umax( 1, pObjIndex->weight );
                pObjIndex->cost = x2;
                pObjIndex->ego = x3;
                pObjIndex->level = x4;
@@ -953,8 +953,8 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
                   pShop->buy_type[iTrade] = fread_number( fp );
                pShop->profit_buy = fread_number( fp );
                pShop->profit_sell = fread_number( fp );
-               pShop->profit_buy = URANGE( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
-               pShop->profit_sell = URANGE( 0, pShop->profit_sell, pShop->profit_buy - 5 );
+               pShop->profit_buy = urange( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
+               pShop->profit_sell = urange( 0, pShop->profit_sell, pShop->profit_buy - 5 );
                pShop->open_hour = fread_number( fp );
                pShop->close_hour = fread_number( fp );
 

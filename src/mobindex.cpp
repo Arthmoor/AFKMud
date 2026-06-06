@@ -288,11 +288,11 @@ char_data *mob_index::create_mobile(  )
    /*
     * Saving throw calculations now ported from Sillymud - Samson 5-15-98 
     */
-   mob->saving_poison_death = UMAX( 20 - mob->level, 2 );
-   mob->saving_wand = UMAX( 20 - mob->level, 2 );
-   mob->saving_para_petri = UMAX( 20 - mob->level, 2 );
-   mob->saving_breath = UMAX( 20 - mob->level, 2 );
-   mob->saving_spell_staff = UMAX( 20 - mob->level, 2 );
+   mob->saving_poison_death = umax( 20 - mob->level, 2 );
+   mob->saving_wand = umax( 20 - mob->level, 2 );
+   mob->saving_para_petri = umax( 20 - mob->level, 2 );
+   mob->saving_breath = umax( 20 - mob->level, 2 );
+   mob->saving_spell_staff = umax( 20 - mob->level, 2 );
 
    if( height == 0 )
       mob->height = mob->calculate_race_height(  );

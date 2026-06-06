@@ -972,7 +972,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          pObjIndex->value[5] = x6;
 
          pObjIndex->weight = fread_number( fp );
-         pObjIndex->weight = UMAX( 1, pObjIndex->weight );
+         pObjIndex->weight = umax( 1, pObjIndex->weight );
          pObjIndex->cost = fread_number( fp );
          pObjIndex->ego = fread_number( fp );
 
@@ -1033,7 +1033,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          ungetc( letter, fp );
 
          pObjIndex->weight = fread_number( fp );
-         pObjIndex->weight = UMAX( 1, pObjIndex->weight );
+         pObjIndex->weight = umax( 1, pObjIndex->weight );
          pObjIndex->cost = fread_number( fp );
          pObjIndex->ego = fread_number( fp );
 
@@ -1814,8 +1814,8 @@ void load_stshops( FILE * fp )
          pShop->buy_type[iTrade] = fread_number( fp );
       pShop->profit_buy = fread_number( fp );
       pShop->profit_sell = fread_number( fp );
-      pShop->profit_buy = URANGE( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
-      pShop->profit_sell = URANGE( 0, pShop->profit_sell, pShop->profit_buy - 5 );
+      pShop->profit_buy = urange( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
+      pShop->profit_sell = urange( 0, pShop->profit_sell, pShop->profit_buy - 5 );
       pShop->open_hour = fread_number( fp );
       pShop->close_hour = fread_number( fp );
       fread_to_eol( fp );

@@ -469,7 +469,7 @@ class char_data
    }
    void WAIT_STATE( short npulse )
    {
-      ( wait = UMAX( wait, ( is_immortal(  )? 0 : npulse ) ) );
+      ( wait = umax( wait, ( is_immortal(  )? 0 : npulse ) ) );
    }
    bool IS_FLOATING(  )
    {
@@ -477,7 +477,7 @@ class char_data
    }
    int LEARNED( int sn )
    {
-      return ( isnpc(  )? 80 : URANGE( 0, pcdata->learned[sn], 101 ) );
+      return ( isnpc(  )? 80 : urange( 0, pcdata->learned[sn], 101 ) );
    }
 
    void CHECK_SUBRESTRICTED(  )

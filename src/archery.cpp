@@ -410,7 +410,7 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
       int x, res, imm, sus, mod;
 
       if( plusris )
-         plusris = RIS_PLUS1 << UMIN( plusris, 7 );
+         plusris = RIS_PLUS1 << umin( plusris, 7 );
 
       /*
        * initialize values to handle a zero plusris 
@@ -1232,7 +1232,7 @@ CMDF( do_fire )
    /*
     * modify maximum distance based on bow-type and ch's Class/str/etc 
     */
-   max_dist = URANGE( 1, bow->value[4], 10 );
+   max_dist = urange( 1, bow->value[4], 10 );
 
    if( bow->value[5] != arrow->value[4] )
    {
@@ -1299,7 +1299,7 @@ bool mob_fire( char_data * ch, const std::string & name )
    /*
     * modify maximum distance based on bow-type and ch's Class/str/etc 
     */
-   max_dist = URANGE( 1, bow->value[4], 10 );
+   max_dist = urange( 1, bow->value[4], 10 );
    ranged_attack( ch, name, bow, arrow, TYPE_HIT + arrow->value[3], max_dist );
    return true;
 }

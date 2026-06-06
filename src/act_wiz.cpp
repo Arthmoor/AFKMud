@@ -2891,9 +2891,9 @@ void fix_char( char_data * ch )
 
    ch->set_aflags( race_table[ch->race]->affected );
    ch->mental_state = -10;
-   ch->hit = UMAX( 1, ch->hit );
-   ch->mana = UMAX( 1, ch->mana );
-   ch->move = UMAX( 1, ch->move );
+   ch->hit = umax( 1, ch->hit );
+   ch->mana = umax( 1, ch->mana );
+   ch->move = umax( 1, ch->move );
    ch->armor = 100;
    ch->mod_str = 0;
    ch->mod_dex = 0;
@@ -2904,7 +2904,7 @@ void fix_char( char_data * ch )
    ch->mod_lck = 0;
    ch->damroll = 0;
    ch->hitroll = 0;
-   ch->alignment = URANGE( -1000, ch->alignment, 1000 );
+   ch->alignment = urange( -1000, ch->alignment, 1000 );
    ch->saving_breath = 0;
    ch->saving_wand = 0;
    ch->saving_para_petri = 0;
@@ -6619,8 +6619,8 @@ CMDF( do_showclass )
    {
       int x, y, cnt;
 
-      low = UMAX( 0, atoi( arg2.c_str(  ) ) );
-      hi = URANGE( low, atoi( argument.c_str(  ) ), MAX_LEVEL );
+      low = umax( 0, atoi( arg2.c_str(  ) ) );
+      hi = urange( low, atoi( argument.c_str(  ) ), MAX_LEVEL );
       for( x = low; x <= hi; ++x )
       {
          ch->pagerf( "&wLevel: &W%d     &wExperience required: &W%ld\r\n", x, exp_level( x ) );

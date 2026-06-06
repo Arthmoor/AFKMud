@@ -2055,7 +2055,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
 
       case OEDIT_LEVEL:
          number = std::stoi( arg );
-         obj->level = URANGE( 0, number, MAX_LEVEL );
+         obj->level = urange( 0, number, MAX_LEVEL );
          olc_log( d, "Changed object level to %d", obj->level );
          break;
 
@@ -2118,7 +2118,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             }
             else
             {
-               number -= 1;   /* Offset to accomodate 0 */
+               number -= 1;   /* Offset to accommodate 0 */
                TOGGLE_BIT( obj->value[3], 1 << number );
                olc_log( d, "%s the trapflag %s", IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
             }
@@ -2280,7 +2280,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                max_val = 32000;
                break;
          }
-         obj->value[2] = URANGE( min_val, number, max_val );
+         obj->value[2] = urange( min_val, number, max_val );
          olc_log( d, "Changed v2 to %d", obj->value[2] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[2] = obj->value[2];
@@ -2326,7 +2326,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                max_val = 32000;
                break;
          }
-         obj->value[3] = URANGE( min_val, number, max_val );
+         obj->value[3] = urange( min_val, number, max_val );
          olc_log( d, "Changed v3 to %d", obj->value[3] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[3] = obj->value[3];
@@ -2376,7 +2376,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                max_val = 32000;
                break;
          }
-         obj->value[4] = URANGE( min_val, number, max_val );
+         obj->value[4] = urange( min_val, number, max_val );
          olc_log( d, "Changed v4 to %d", obj->value[4] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[4] = obj->value[4];
@@ -2415,7 +2415,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             olc_log( d, "Error - can't change skeleton value on corpses." );
             break;
          }
-         obj->value[5] = URANGE( min_val, number, max_val );
+         obj->value[5] = urange( min_val, number, max_val );
          olc_log( d, "Changed v5 to %d", obj->value[5] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[5] = obj->value[5];
@@ -2438,7 +2438,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                max_val = 32000;
                break;
          }
-         obj->value[6] = URANGE( min_val, number, max_val );
+         obj->value[6] = urange( min_val, number, max_val );
          olc_log( d, "Changed v6 to %d", obj->value[6] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[6] = obj->value[6];
@@ -2460,7 +2460,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                max_val = 32000;
                break;
          }
-         obj->value[7] = URANGE( min_val, number, max_val );
+         obj->value[7] = urange( min_val, number, max_val );
          olc_log( d, "Changed v7 to %d", obj->value[7] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[7] = obj->value[7];
@@ -2485,7 +2485,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                max_val = 32000;
                break;
          }
-         obj->value[8] = URANGE( min_val, number, max_val );
+         obj->value[8] = urange( min_val, number, max_val );
          olc_log( d, "Changed v8 to %d", obj->value[8] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[8] = obj->value[8];
@@ -2512,7 +2512,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                max_val = 32000;
                break;
          }
-         obj->value[9] = URANGE( min_val, number, max_val );
+         obj->value[9] = urange( min_val, number, max_val );
          olc_log( d, "Changed v9 to %d", obj->value[9] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[9] = obj->value[9];
@@ -2539,7 +2539,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                max_val = 32000;
                break;
          }
-         obj->value[10] = URANGE( min_val, number, max_val );
+         obj->value[10] = urange( min_val, number, max_val );
          olc_log( d, "Changed v10 to %d", obj->value[10] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[10] = obj->value[10];
@@ -2719,7 +2719,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          npaf = new affect_data;
          npaf->type = -1;
          npaf->duration = -1;
-         npaf->location = URANGE( 0, paf->location, MAX_APPLY_TYPE );
+         npaf->location = urange( 0, paf->location, MAX_APPLY_TYPE );
          npaf->modifier = value;
          npaf->bit = 0;
 

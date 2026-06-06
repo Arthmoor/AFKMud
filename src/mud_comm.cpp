@@ -404,13 +404,13 @@ CMDF( do_mpmset )
 
    if( !str_cmp( arg2, "hitroll" ) )
    {
-      victim->hitroll = URANGE( 0, value, 85 );
+      victim->hitroll = urange( 0, value, 85 );
       return;
    }
 
    if( !str_cmp( arg2, "damroll" ) )
    {
-      victim->damroll = URANGE( 0, value, 65 );
+      victim->damroll = urange( 0, value, 65 );
       return;
    }
 
@@ -3221,11 +3221,11 @@ CMDF( do_mpfavor )
 
    favor = atoi( argument.c_str(  ) );
    if( plus )
-      victim->pcdata->favor = URANGE( -2500, victim->pcdata->favor + favor, 2500 );
+      victim->pcdata->favor = urange( -2500, victim->pcdata->favor + favor, 2500 );
    else if( minus )
-      victim->pcdata->favor = URANGE( -2500, victim->pcdata->favor - favor, 2500 );
+      victim->pcdata->favor = urange( -2500, victim->pcdata->favor - favor, 2500 );
    else
-      victim->pcdata->favor = URANGE( -2500, favor, 2500 );
+      victim->pcdata->favor = urange( -2500, favor, 2500 );
 }
 
 /*

@@ -1044,11 +1044,11 @@ void load_commands( void )
          cmd->position = pos;
       }
       else if( key == "Level" )
-         cmd->level = URANGE( 0, atoi( value.c_str(  ) ), MAX_LEVEL );
+         cmd->level = urange( 0, std::stoi( value ), MAX_LEVEL );
       else if( key == "Log" )
       {
          if( version < 2 )
-            cmd->log = atoi( value.c_str(  ) );
+            cmd->log = std::stoi( value );
          else
          {
             int lognum = get_logflag( value );
@@ -1365,7 +1365,7 @@ CMDF( do_restrict )
       }
       level = atoi( argument.c_str(  ) );
    }
-   level = UMAX( UMIN( ch->get_trust(  ), level ), 0 );
+   level = umax( umin( ch->get_trust(  ), level ), 0 );
 
    cmd = find_command( arg );
    if( !cmd )

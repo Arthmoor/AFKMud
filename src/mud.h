@@ -751,22 +751,17 @@ do                                               \
 
 #define log_string(txt)		( log_string_plus( LOG_NORMAL, LEVEL_LOG, (txt) ) )
 
-// FIXME: These 3 functions (in handler.cpp) and the 3 macros below should eventually be replaced with std::min, std::max, and std::clamp [This refactor will be painful, these macros are called all over the place]
-// Utility macros.
-int umin( int, int );
-int umax( int, int );
-int urange( int, int, int );
-
-#define UMIN( a, b )      ( umin( (a), (b) ) )
-#define UMAX( a, b )      ( umax( (a), (b) ) )
-#define URANGE(a, b, c )  ( urange( (a), (b), (c) ) )
-
 // These 2 macros are used for case changes on a particular character somewhere in a string.
 #define LOWER( c )        ( (c) >= 'A' && (c) <= 'Z' ? (c) + 'a' - 'A' : (c) )
 #define UPPER( c )        ( (c) >= 'a' && (c) <= 'z' ? (c) + 'A' - 'a' : (c) )
 
 // Safe fclose macro adopted from DOTD Codebase.
 #define FCLOSE(fp) fclose((fp)); (fp)=nullptr;
+
+// These 3 functions replace the UMIN, UMAX, and URANGE macros. Must be declared here because the headers use them.
+int umin( int, int );
+int umax( int, int );
+int urange( int, int, int );
 
 /*
  * Character data is used in pretty much everything. May as well globally include it here.
