@@ -34,15 +34,10 @@ class string_sort
 {
  public:
    string_sort(  );
-   bool operator(  ) ( const string &, const string & ) const;
+   bool operator(  ) ( const std::string &, const std::string & ) const;
 };
 
-#if defined(__APPLE__)
-//Just deciding to go with default std:less for MacOSX
-typedef map < string, int > SKILL_INDEX;
-#else
-typedef map < string, int, string_sort > SKILL_INDEX;
-#endif
+typedef std::map<std::string, int, string_sort> SKILL_INDEX;
 
 extern SKILL_INDEX skill_table__index;
 extern SKILL_INDEX skill_table__spell;
@@ -55,19 +50,19 @@ extern SKILL_INDEX skill_table__lore;
 class find__skill_prefix
 {
  public:
-   string value;
+   std::string value;
    char_data *actor;
 
-     find__skill_prefix( char_data *, const string & );
-   bool operator(  ) ( pair < string, int >compare );
+   find__skill_prefix( char_data *, const std::string & );
+   bool operator(  ) ( std::pair < std::string, int > compare );
 };
 
 class find__skill_exact
 {
  public:
-   string value;
+   std::string value;
    char_data *actor;
 
-     find__skill_exact( char_data *, const string & );
-   bool operator(  ) ( pair < string, int >compare );
+   find__skill_exact( char_data *, const std::string & );
+   bool operator(  ) ( std::pair < std::string, int > compare );
 };

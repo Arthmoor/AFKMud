@@ -34,7 +34,7 @@
 #include "pfiles.h"
 #include "roomindex.h"
 
-list < holiday_data * >daylist;
+std::list<holiday_data *> daylist;
 
 const int MAX_TZONE = 25;
 
@@ -126,7 +126,7 @@ CMDF( do_timezone )
  * Merged with the Timezone snippet by Ryan Jennings (Markanth) r-jenn@shaw.ca
  */
 // Returns a localized time string based on an index from tzone_table.
-std::string c_time( std::chrono::system_clock::time_point curtime, int tz )
+const std::string c_time( std::chrono::system_clock::time_point curtime, int tz )
 {
    // Select the time zone string.
    auto zone_id = ( tz >= 0 && tz < static_cast<int>( tzone_table.size() ) ) ? tzone_table[tz].iana_id : "GMT";
@@ -140,7 +140,7 @@ std::string c_time( std::chrono::system_clock::time_point curtime, int tz )
 }
 
 // Returns a compact localized time string.
-std::string mini_c_time( std::chrono::system_clock::time_point curtime, int tz )
+const std::string mini_c_time( std::chrono::system_clock::time_point curtime, int tz )
 {
    // Select the time zone string.
    auto zone_id = ( tz >= 0 && tz < static_cast<int>( tzone_table.size() ) ) ? tzone_table[tz].iana_id : "GMT";
@@ -310,7 +310,7 @@ void save_timedata( void )
 CMDF( do_time )
 {
    holiday_data *holiday;
-   const char *suf;
+   std::string suf;
    short day;
 
    if( !argument.empty(  ) && is_number( argument ) )
@@ -336,19 +336,19 @@ CMDF( do_time )
    else
       suf = "th";
 
-   ch->printf( "&YIt is %d o'clock %s, Day of %s, %d%s day in the Month of %s.\r\n"
-               "It is the %s season, in the year %d.\r\n"
-               "The mud started up at: %s\r\n"
-               "The system time      : %s\r\n",
+   ch->print_fmt( "&YIt is {} o'clock {}, Day of {}, {}{} day in the Month of {}.\r\n"
+               "It is the {} season, in the year {}.\r\n"
+               "The mud started up at: {}\r\n"
+               "The system time      : {}\r\n",
                ( time_info.hour % sysdata->hournoon == 0 ) ? sysdata->hournoon : time_info.hour % sysdata->hournoon,
                time_info.hour >= sysdata->hournoon ? "pm" : "am", day_name[( time_info.day ) % sysdata->daysperweek], day,
-               suf, month_name[time_info.month], season_name[time_info.season], time_info.year, str_boot_time.c_str(), c_time( current_time, -1 ).c_str() );
+               suf, month_name[time_info.month], season_name[time_info.season], time_info.year, str_boot_time, c_time( current_time, -1 ) );
 
-   ch->printf( "Your local time      : %s\r\n\r\n", c_time( current_time, ch->pcdata->timezone ).c_str() );
+   ch->print_fmt( "Your local time      : {}\r\n\r\n", c_time( current_time, ch->pcdata->timezone ).c_str() );
    holiday = get_holiday( time_info.month, day - 1 );
 
    if( holiday != nullptr )
-      ch->printf( "It's a holiday today: %s\r\n", holiday->get_name(  ).c_str(  ) );
+      ch->print_fmt( "It's a holiday today: {}\r\n", holiday->get_name(  ).c_str(  ) );
 
    if( !ch->isnpc(  ) )
    {
@@ -373,7 +373,7 @@ CMDF( do_time )
 
 void start_winter( void )
 {
-   map < int, room_index * >::iterator iroom;
+   std::map < int, room_index * >::iterator iroom;
 
    echo_to_all( "&cThe air takes on a chilling cold as winter sets in.", ECHOTAR_ALL );
    echo_to_all( "&cFreshwater bodies everywhere have frozen over.\r\n", ECHOTAR_ALL );
@@ -400,7 +400,7 @@ void start_winter( void )
 
 void start_spring( void )
 {
-   map < int, room_index * >::iterator iroom;
+   std::map < int, room_index * >::iterator iroom;
 
    echo_to_all( "&cThe chill recedes from the air as spring begins to take hold.", ECHOTAR_ALL );
    echo_to_all( "&cFreshwater bodies everywhere have thawed out.\r\n", ECHOTAR_ALL );
@@ -443,7 +443,7 @@ void season_update( void )
 
    if( time_info.season == SEASON_WINTER && winter_freeze == false )
    {
-      map < int, room_index * >::iterator iroom;
+      std::map < int, room_index * >::iterator iroom;
 
       winter_freeze = true;
 
@@ -520,12 +520,10 @@ holiday_data::~holiday_data(  )
 
 void free_holidays( void )
 {
-   list < holiday_data * >::iterator day;
-
-   for( day = daylist.begin(  ); day != daylist.end(  ); )
+   for( auto it = daylist.begin(  ); it != daylist.end(  ); )
    {
-      holiday_data *holiday = *day;
-      ++day;
+      holiday_data *holiday = *it;
+      ++it;
 
       deleteptr( holiday );
    }
@@ -546,26 +544,18 @@ void check_holiday( char_data * ch )
 
 holiday_data *get_holiday( short month, short day )
 {
-   list < holiday_data * >::iterator hld;
-
-   for( hld = daylist.begin(  ); hld != daylist.end(  ); ++hld )
+   for( auto* holiday : daylist )
    {
-      holiday_data *holiday = *hld;
-
       if( month + 1 == holiday->get_month(  ) && day + 1 == holiday->get_day(  ) )
          return holiday;
    }
    return nullptr;
 }
 
-holiday_data *get_holiday( const string & name )
+holiday_data *get_holiday( const std::string & name )
 {
-   list < holiday_data * >::iterator hld;
-
-   for( hld = daylist.begin(  ); hld != daylist.end(  ); ++hld )
+   for( auto* holiday : daylist )
    {
-      holiday_data *holiday = *hld;
-
       if( !str_cmp( name, holiday->get_name(  ) ) )
          return holiday;
    }
@@ -574,15 +564,11 @@ holiday_data *get_holiday( const string & name )
 
 CMDF( do_holidays )
 {
-   list < holiday_data * >::iterator day;
-
    ch->pager( "&RHoliday                &YMonth          &GDay\r\n" );
    ch->pager( "&g----------------------+----------------+---------------\r\n" );
 
-   for( day = daylist.begin(  ); day != daylist.end(  ); ++day )
+   for( auto* holiday : daylist )
    {
-      holiday_data *holiday = *day;
-
       ch->pagerf( "&G%-21s &g%-11s %-2d\r\n", holiday->get_name(  ).c_str(  ), month_name[holiday->get_month(  ) - 1], holiday->get_day(  ) );
    }
 }
@@ -591,7 +577,7 @@ CMDF( do_holidays )
 void load_holidays( void )
 {
    holiday_data *day = nullptr;
-   ifstream stream;
+   std::ifstream stream;
 
    daylist.clear(  );
 
@@ -604,7 +590,7 @@ void load_holidays( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -640,7 +626,7 @@ void load_holidays( void )
 /* Save the holidays to disk - Samson 5-6-99 */
 void save_holidays( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( HOLIDAY_FILE );
    if( !stream.is_open(  ) )
@@ -650,17 +636,14 @@ void save_holidays( void )
    }
    else
    {
-      list < holiday_data * >::iterator hday;
-      for( hday = daylist.begin(  ); hday != daylist.end(  ); ++hday )
+      for( auto* day : daylist )
       {
-         holiday_data *day = *hday;
-
-         stream << "#HOLIDAY" << endl;
-         stream << "Name     " << day->get_name(  ) << endl;
-         stream << "Announce " << day->get_announce(  ) << endl;
-         stream << "Month    " << day->get_month(  ) << endl;
-         stream << "Day      " << day->get_day(  ) << endl;
-         stream << "End" << endl << endl;
+         stream << "#HOLIDAY" << std::endl;
+         stream << "Name     " << day->get_name(  ) << std::endl;
+         stream << "Announce " << day->get_announce(  ) << std::endl;
+         stream << "Month    " << day->get_month(  ) << std::endl;
+         stream << "Day      " << day->get_day(  ) << std::endl;
+         stream << "End" << std::endl << std::endl;
       }
       stream.close(  );
    }
@@ -669,8 +652,7 @@ void save_holidays( void )
 /* Holiday OLC command - (c)Andrew Wilkie May-20-2005 */
 CMDF( do_setholiday )
 {
-   string arg, arg2;
-   holiday_data *day, *newday;
+   std::string arg, arg2;
    int count = 0, x = 0, value = 0;
 
    argument = one_argument( argument, arg );
@@ -687,11 +669,8 @@ CMDF( do_setholiday )
     */
    if( !str_cmp( arg2, "create" ) )
    {
-      list < holiday_data * >::iterator hld;
-      for( hld = daylist.begin(  ); hld != daylist.end(  ); ++hld )
+      for( auto* day : daylist )
       {
-         day = *hld;
-
          if( !str_cmp( arg, day->get_name(  ) ) )
          {
             ch->print( "A holiday with that name exists already!\r\n" );
@@ -705,7 +684,7 @@ CMDF( do_setholiday )
          return;
       }
 
-      newday = new holiday_data;
+      holiday_data *newday = new holiday_data;
       newday->set_name( arg );
       newday->set_day( time_info.day );
       newday->set_month( time_info.month );
@@ -722,6 +701,7 @@ CMDF( do_setholiday )
    /*
     * Anything match? 
     */
+   holiday_data *day;
    if( !( day = get_holiday( arg ) ) )
    {
       ch->print( "Which holiday was that?\r\n" );

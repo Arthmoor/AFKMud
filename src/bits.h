@@ -43,7 +43,7 @@
 
 const int MAX_xBITS = 32000;
 
-extern map < int, string > abits;
-extern map < int, string > qbits;
+extern std::map < int, std::string > abits;
+extern std::map < int, std::string > qbits;
 
 void remove_qbit( char_data *, int );

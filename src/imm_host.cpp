@@ -45,7 +45,7 @@ By Noplex with help from Senir and Samson
 #include "descriptor.h"
 #include "imm_host.h"
 
-list < immortal_host * >hostlist;
+std::list<immortal_host *> hostlist;
 
 immortal_host_log::immortal_host_log(  )
 {
@@ -62,12 +62,10 @@ immortal_host::immortal_host(  )
 
 immortal_host::~immortal_host(  )
 {
-   list < immortal_host_log * >::iterator hlog;
-
-   for( hlog = loglist.begin(  ); hlog != loglist.end(  ); )
+   for( auto it = loglist.begin(); it != loglist.end(); )
    {
-      immortal_host_log *ilog = *hlog;
-      ++hlog;
+      immortal_host_log *ilog = *it;
+      ++it;
 
       loglist.remove( ilog );
       deleteptr( ilog );
@@ -77,12 +75,10 @@ immortal_host::~immortal_host(  )
 
 void free_immhosts()
 {
-   list < immortal_host * >::iterator ihost;
-
-   for( ihost = hostlist.begin(  ); ihost != hostlist.end(  ); )
+   for( auto it = hostlist.begin(); it != hostlist.end(); )
    {
-      immortal_host *host = *ihost;
-      ++ihost;
+      immortal_host *host = *it;
+      ++it;
 
       hostlist.remove( host );
       deleteptr( host );
@@ -259,7 +255,6 @@ void load_imm_host( void )
 void save_imm_host( void )
 {
    FILE *fp;
-   list < immortal_host * >::iterator ihost;
 
    if( !( fp = fopen( IMM_HOST_FILE, "w" ) ) )
    {
@@ -267,9 +262,8 @@ void save_imm_host( void )
       return;
    }
 
-   for( ihost = hostlist.begin(  ); ihost != hostlist.end(  ); ++ihost )
+   for( auto* host : hostlist )
    {
-      immortal_host *host = *ihost;
       short dnum = 0;
 
       fprintf( fp, "%s", "\n#IMMORTAL\n" );
@@ -278,11 +272,8 @@ void save_imm_host( void )
       for( dnum = 0; dnum < MAX_DOMAIN && !host->domain[dnum].empty(  ); ++dnum )
          fprintf( fp, "Domain_Host %s~\n", host->domain[dnum].c_str(  ) );
 
-      list < immortal_host_log * >::iterator ilog;
-      for( ilog = host->loglist.begin(  ); ilog != host->loglist.end(  ); ++ilog )
+      for( auto* nlog : host->loglist )
       {
-         immortal_host_log *nlog = *ilog;
-
          fprintf( fp, "%s", "LOG\n" );
          fprintf( fp, "Log_Host    %s~\n", nlog->host.c_str(  ) );
          fprintf( fp, "Log_Date    %s~\n", nlog->date.c_str(  ) );
@@ -294,9 +285,9 @@ void save_imm_host( void )
    FCLOSE( fp );
 }
 
-bool check_immortal_domain( char_data * ch, const string & lhost )
+bool check_immortal_domain( char_data * ch, const std::string & lhost )
 {
-   list < immortal_host * >::iterator ihost;
+   std::list<immortal_host *>::iterator ihost;
    immortal_host *host = nullptr;
    bool found = false;
 
@@ -371,9 +362,9 @@ bool check_immortal_domain( char_data * ch, const string & lhost )
 CMDF( do_immhost )
 {
    immortal_host *host = nullptr;
-   list < immortal_host * >::iterator ihost;
-   list < immortal_host_log * >::iterator ilog;
-   string arg, arg2;
+   std::list<immortal_host *>::iterator ihost;
+   std::list<immortal_host_log *>::iterator ilog;
+   std::string arg, arg2;
    short x = 0;
 
    if( ch->isnpc(  ) || !ch->is_immortal(  ) )

@@ -32,13 +32,13 @@
 #include "mud.h"
 #include "realms.h"
 
-list < realm_data * >realmlist;
+std::list<realm_data *> realmlist;
 
 const char *realm_type_names[MAX_REALM] = {
    "None", "Quest", "PR", "QA", "Builder", "Coder", "Admin", "Owner"
 };
 
-int get_realm_type_name( const string & flag )
+int get_realm_type_name( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( realm_type_names ) / sizeof( realm_type_names[0] ) ); ++x )
       if( !str_cmp( flag, realm_type_names[x] ) )
@@ -55,7 +55,7 @@ realm_roster_data::~realm_roster_data(  )
 {
 }
 
-void add_realm_roster( realm_data * realm, const string & name )
+void add_realm_roster( realm_data * realm, const std::string & name )
 {
    realm_roster_data *roster;
 
@@ -65,14 +65,10 @@ void add_realm_roster( realm_data * realm, const string & name )
    realm->memberlist.push_back( roster );
 }
 
-void remove_realm_roster( realm_data * realm, const string & name )
+void remove_realm_roster( realm_data * realm, const std::string & name )
 {
-   list < realm_roster_data * >::iterator mem;
-
-   for( mem = realm->memberlist.begin(  ); mem != realm->memberlist.end(  ); ++mem )
+   for( auto* member : realm->memberlist )
    {
-      realm_roster_data *member = *mem;
-
       if( !str_cmp( name, member->name ) )
       {
          realm->memberlist.remove( member );
@@ -85,12 +81,10 @@ void remove_realm_roster( realm_data * realm, const string & name )
 /* For use during realm removal and memory cleanup */
 void remove_all_realm_rosters( realm_data * realm )
 {
-   list < realm_roster_data * >::iterator member;
-
-   for( member = realm->memberlist.begin(  ); member != realm->memberlist.end(  ); )
+   for( auto it = realm->memberlist.begin(  ); it != realm->memberlist.end(  ); )
    {
-      realm_roster_data *roster = *member;
-      ++member;
+      realm_roster_data *roster = *it;
+      ++it;
 
       realm->memberlist.remove( roster );
       deleteptr( roster );
@@ -112,14 +106,10 @@ realm_data::~realm_data(  )
 /*
  * Get pointer to realm structure from realm name.
  */
-realm_data *get_realm( const string & name )
+realm_data *get_realm( const std::string & name )
 {
-   list < realm_data * >::iterator rl;
-
-   for( rl = realmlist.begin(  ); rl != realmlist.end(  ); ++rl )
+   for( auto* realm : realmlist )
    {
-      realm_data *realm = *rl;
-
       if( !str_cmp( name, realm->name ) )
          return realm;
    }
@@ -128,12 +118,10 @@ realm_data *get_realm( const string & name )
 
 void free_realms( void )
 {
-   list < realm_data * >::iterator rl;
-
-   for( rl = realmlist.begin(  ); rl != realmlist.end(  ); )
+   for( auto it = realmlist.begin(  ); it != realmlist.end(  ); )
    {
-      realm_data *realm = *rl;
-      ++rl;
+      realm_data *realm = *it;
+      ++it;
 
       deleteptr( realm );
    }
@@ -141,16 +129,11 @@ void free_realms( void )
 
 void delete_realm( char_data * ch, realm_data * realm )
 {
-   list < char_data * >::iterator ich;
-   char filename[256];
-   string realmname = realm->name;
+   std::string realmname = realm->name;
+   std::filesystem::path filename = realm->filename;
 
-   strlcpy( filename, realm->filename.c_str(  ), 256 );
-
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto* vch : pclist )
    {
-      char_data *vch = *ich;
-
       if( !vch->pcdata->realm )
          continue;
 
@@ -167,12 +150,12 @@ void delete_realm( char_data * ch, realm_data * realm )
 
    if( !ch )
    {
-      if( !remove( filename ) )
+      if( std::filesystem::remove( filename ) )
          log_printf( "Realm data for %s destroyed - no members left.", realmname.c_str(  ) );
       return;
    }
 
-   if( !remove( filename ) )
+   if( std::filesystem::remove( filename ) )
    {
       ch->printf( "&RRealm data for %s has been destroyed.\r\n", realmname.c_str(  ) );
       log_printf( "Realm data for %s has been destroyed by %s.", realmname.c_str(  ), ch->name );
@@ -452,9 +435,6 @@ bool load_realm_file( const std::string realmfile )
 
 void verify_realms( void )
 {
-   list < realm_data * >::iterator irealm;
-   list < realm_roster_data * >::iterator member;
-
    log_string( "Cleaning up realm data..." );
    for( auto it = realmlist.begin(); it != realmlist.end(); )
    {
@@ -535,7 +515,7 @@ void load_realms( void )
 
 CMDF( do_setrealm )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    realm_data *realm;
 
    if( ch->isnpc(  ) || !ch->is_immortal(  ) )
@@ -856,7 +836,7 @@ CMDF( do_makerealm )
 CMDF( do_realmroster )
 {
    realm_data *realm;
-   string arg, arg2;
+   std::string arg, arg2;
    int total = 0;
 
    if( !IS_REALM_LEADER(ch) && !IS_ADMIN_REALM(ch) && !ch->is_imp(  ) )

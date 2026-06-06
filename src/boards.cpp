@@ -40,8 +40,8 @@
 #include "realms.h"
 #include "roomindex.h"
 
-list < board_data * >bdlist;
-list < project_data * >projlist;
+std::list<board_data *> bdlist;
+std::list<project_data *> projlist;
 
 void check_boards(  );
 
@@ -58,7 +58,7 @@ const char *note_flags[] = {
    "r1", "sticky", "closed", "hidden"
 };
 
-int get_note_flag( const string & note_flag )
+int get_note_flag( const std::string & note_flag )
 {
    for( int x = 0; x < MAX_NOTE_FLAGS; ++x )
       if( !str_cmp( note_flag, note_flags[x] ) )
@@ -66,7 +66,7 @@ int get_note_flag( const string & note_flag )
    return -1;
 }
 
-int get_board_flag( const string & board_flag )
+int get_board_flag( const std::string & board_flag )
 {
    for( int x = 0; x < MAX_BOARD_FLAGS; ++x )
       if( !str_cmp( board_flag, board_flags[x] ) )
@@ -75,9 +75,9 @@ int get_board_flag( const string & board_flag )
 }
 
 /* This is a simple function that keeps a string within a certain length. -- Xorith */
-string print_lngstr( const string & src, size_t size )
+std::string print_lngstr( const std::string & src, size_t size )
 {
-   string rstring;
+   std::string rstring;
 
    if( src.length(  ) > size )
    {
@@ -115,10 +115,10 @@ note_data::~note_data(  )
    for( auto it = rlist.begin(); it != rlist.end(); )
    {
       note_data *reply = *it;
+      ++it;
 
       rlist.remove( reply );
       deleteptr( reply );
-      it = rlist.erase( it );
    }
 }
 
@@ -141,9 +141,9 @@ board_data::~board_data(  )
    for( auto it = nlist.begin(); it != nlist.end(); )
    {
       note_data *pnote = *it;
+      ++it;
 
       deleteptr( pnote );
-      it = nlist.erase( it );
    }
    bdlist.remove( this );
 }
@@ -153,9 +153,9 @@ void pc_data::free_pcboards(  )
    for( auto it = boarddata.begin(); it != boarddata.end(); )
    {
       board_chardata *chbd = *it;
+      ++it;
 
       deleteptr( chbd );
-      it = boarddata.erase( it );
    }
 }
 
@@ -164,9 +164,9 @@ void free_boards( void )
    for( auto it = bdlist.begin(  ); it != bdlist.end(  ); )
    {
       board_data *board = *it;
+      ++it;
 
       deleteptr( board );
-      it = bdlist.erase( it );
    }
 }
 
@@ -321,7 +321,7 @@ board_data *get_board_by_obj( obj_data * obj )
 /* Gets a board by name, or a number. The number should be the board # given in do_board_list.
    If ch == nullptr, then it'll perform the search without checks. Otherwise, it'll perform the
    search and weed out boards that the ch can't view remotely. */
-board_data *get_board( char_data * ch, const string & name )
+board_data *get_board( char_data * ch, const std::string & name )
 {
    int count = 1;
 
@@ -356,7 +356,7 @@ board_data *find_board( char_data * ch )
    return nullptr;
 }
 
-board_chardata *get_chboard( char_data * ch, const string & board_name )
+board_chardata *get_chboard( char_data * ch, const std::string & board_name )
 {
    for( auto* board : ch->pcdata->boarddata )
    {
@@ -366,7 +366,7 @@ board_chardata *get_chboard( char_data * ch, const string & board_name )
    return nullptr;
 }
 
-board_chardata *create_chboard( char_data * ch, const string & board_name )
+board_chardata *create_chboard( char_data * ch, const std::string & board_name )
 {
    board_chardata *chboard;
 
@@ -487,13 +487,13 @@ void fwrite_note( note_data * pnote, FILE * fpout )
       for( auto it = pnote->rlist.begin(  ); it != pnote->rlist.end(  ); )
       {
          note_data *reply = *it;
+         ++it;
 
          if( !reply->sender || !reply->to_list || !reply->subject || !reply->text )
          {
             bug( "%s: Destroying a buggy reply on note '%s'!", __func__, pnote->subject );
             --pnote->reply_count;
             deleteptr( reply );
-            it = pnote->rlist.erase( it );
             continue;
          }
          if( count == MAX_REPLY )
@@ -521,13 +521,13 @@ void write_board( board_data * board )
    for( auto it = board->nlist.begin(  ); it != board->nlist.end(  ); )
    {
       note_data *pnote = *it;
+      ++it;
 
       if( !pnote->sender || !pnote->to_list || !pnote->subject || !pnote->text )
       {
          bug( "%s: Destroying a buggy note on the %s board!", __func__, board->name );
          --board->msg_count;
          deleteptr( pnote );
-         board->nlist.erase( it );
          continue;
       }
       fwrite_note( pnote, fp );
@@ -1359,12 +1359,8 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
    ch->printf( "&[board2]%s&D\r\n", pnote->text ? pnote->text : "--Error--" );
    if( !pnote->rlist.empty(  ) )
    {
-      list < note_data * >::iterator rp;
-
-      for( rp = pnote->rlist.begin(  ); rp != pnote->rlist.end(  ); ++rp )
+      for( auto* reply : pnote->rlist )
       {
-         note_data *reply = *rp;
-
          ch->print( "\r\n&[board]------------------------------------------------------------------------------&D\r\n" );
          ch->printf( "&[board3][&[board]Reply #&[board2]%d&[board3]] [&[board2]%s&[board3]]&D\r\n", count, mini_c_time( reply->date_stamp, ch->pcdata->timezone ).c_str() );
          ch->printf( "&[board]From:    &[board2]%-15s", reply->sender ? reply->sender : "--Error--" );
@@ -1387,7 +1383,7 @@ CMDF( do_note_set )
    board_data *board;
    short n_num = 0, i = 1;
    int value = -1;
-   string arg;
+   std::string arg;
 
    if( !( board = find_board( ch ) ) )
    {
@@ -1485,7 +1481,7 @@ CMDF( do_note_set )
 
    if( !str_cmp( arg, "flags" ) )
    {
-      string buf;
+      std::string buf;
       bool fMatch = false, fUnknown = false;
 
       ch->print( "&[board]Setting flags: &[board2]" );
@@ -1550,10 +1546,10 @@ CMDF( do_note_set )
 
 /* This handles anything in the CON_BOARD state. */
 CMDF( do_note_write );
-void board_parse( descriptor_data * d, const string & argument )
+void board_parse( descriptor_data * d, const std::string & argument )
 {
    char_data *ch;
-   string s1, s2, s3;
+   std::string s1, s2, s3;
 
    ch = d->character ? d->character : d->original;
 
@@ -1834,7 +1830,7 @@ CMDF( do_board_moderate )
 {
    board_data *board;
    short n_num = 0, i = 1;
-   string arg;
+   std::string arg;
 
    if( !( board = find_board( ch ) ) )
    {
@@ -1986,9 +1982,8 @@ CMDF( do_note_write )
 {
    board_data *board = nullptr;
    room_index *board_room;
-   string arg, buf;
+   std::string arg, buf, s1, s2, s3;
    int n_num = 0;
-   string s1, s2, s3;
 
    if( ch->isnpc(  ) )
       return;
@@ -2200,13 +2195,10 @@ CMDF( do_note_write )
 CMDF( do_note_read )
 {
    board_data *board = nullptr;
-   list < board_data * >::iterator bd;
-   list < note_data * >::iterator inote;
    note_data *pnote = nullptr;
    board_chardata *pboard = nullptr;
    int n_num = 0, i = 1;
-   string arg;
-   string s1, s2, s3;
+   std::string arg, s1, s2, s3;
 
    if( ch->isnpc(  ) )
       return;
@@ -2350,7 +2342,7 @@ CMDF( do_note_list )
    board_data *board = nullptr;
    board_chardata *chboard;
    int count = 0;
-   string buf, s1, s2, s3;
+   std::string buf, s1, s2, s3;
 
    s1 = ch->color_str( AT_BOARD );
    s2 = ch->color_str( AT_BOARD2 );
@@ -2441,7 +2433,7 @@ CMDF( do_note_remove )
 {
    board_data *board;
    note_data *pnote = nullptr;
-   string arg;
+   std::string arg;
    short n_num = 0, r_num = 0, i = 0;
 
    if( !( board = find_board( ch ) ) )
@@ -2477,8 +2469,8 @@ CMDF( do_note_remove )
       return;
    }
 
-   string::size_type pos = argument.find( "." );
-   if( pos == string::npos )
+   std::string::size_type pos = argument.find( "." );
+   if( pos == std::string::npos )
    {
       n_num = atoi( argument.c_str(  ) );
       r_num = -1;
@@ -2627,7 +2619,7 @@ CMDF( do_board_list )
          ch->print( "-- " );
          if( board->objvnum )
          {
-            string buf;
+            std::string buf;
 
             ch->printf( "%-5d ", board->objvnum );
             buf = std::format( "{}", board->objvnum );
@@ -2676,9 +2668,8 @@ CMDF( do_board_alert )
 {
    board_data *board = nullptr;
    board_chardata *chboard;
-   string arg;
+   std::string arg, s1, s2, s3;
    int bd_value = -1;
-   string s1, s2, s3;
    static const char* bd_alert_string[] = { "None Set", "Announce", "Ignoring" };
 
    s1 = ch->color_str( AT_BOARD );
@@ -2731,7 +2722,7 @@ CMDF( do_checkboards )
    board_chardata *chboard;
    obj_data *obj;
    int count = 0;
-   string s1, s2, s3;
+   std::string s1, s2, s3;
 
    s1 = ch->color_str( AT_BOARD );
    s2 = ch->color_str( AT_BOARD2 );
@@ -2773,7 +2764,7 @@ CMDF( do_checkboards )
 
       if( ch->is_immortal(  ) )
       {
-         string buf;
+         std::string buf;
 
          buf = std::format( "{}", board->objvnum );
          if( ( obj = ch->get_obj_world( buf ) ) && ( obj->in_room != nullptr ) )
@@ -2790,7 +2781,7 @@ CMDF( do_checkboards )
 CMDF( do_board_stat )
 {
    board_data *board;
-   string s1, s2, s3;
+   std::string s1, s2, s3;
 
    s1 = ch->color_str( AT_BOARD );
    s2 = ch->color_str( AT_BOARD2 );
@@ -2825,8 +2816,7 @@ CMDF( do_board_stat )
 CMDF( do_board_remove )
 {
    board_data *board;
-   string arg;
-   string s1, s2, s3;
+   std::string arg, s1, s2, s3;
 
    s1 = ch->color_str( AT_BOARD );
    s2 = ch->color_str( AT_BOARD2 );
@@ -2871,7 +2861,7 @@ CMDF( do_board_remove )
 CMDF( do_board_make )
 {
    board_data *board;
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -2913,9 +2903,8 @@ CMDF( do_board_make )
 CMDF( do_board_set )
 {
    board_data *board;
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3, s1, s2, s3;
    int value = -1;
-   string s1, s2, s3;
 
    s1 = ch->color_str( AT_BOARD );
    s2 = ch->color_str( AT_BOARD2 );
@@ -2954,7 +2943,7 @@ CMDF( do_board_set )
 
    if( !str_cmp( arg2, "flags" ) )
    {
-      string buf;
+      std::string buf;
 
       bool fMatch = false, fUnknown = false;
 
@@ -3178,7 +3167,7 @@ CMDF( do_board_set )
 
    if( !str_cmp( arg2, "raise" ) )
    {
-      list < board_data * >::iterator bd;
+      std::list<board_data *>::iterator bd;
 
       for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
       {
@@ -3201,7 +3190,7 @@ CMDF( do_board_set )
 
    if( !str_cmp( arg2, "lower" ) )
    {
-      list < board_data * >::iterator bd;
+      std::list<board_data *>::iterator bd;
 
       for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
       {
@@ -3496,10 +3485,10 @@ project_data::~project_data(  )
    for( auto it = nlist.begin(  ); it != nlist.end(  ); )
    {
       note_data *note = *it;
+      ++it;
 
       nlist.remove( note );
       deleteptr( note );
-      it = nlist.erase( it );
    }
    STRFREE( coder );
    DISPOSE( description );
@@ -3514,9 +3503,9 @@ void free_projects( void )
    for( auto it = projlist.begin(  ); it != projlist.end(  ); )
    {
       project_data *project = *it;
+      ++it;
 
       deleteptr( project );
-      it = projlist.erase( it );
    }
    return;
 }
@@ -3528,7 +3517,7 @@ void free_projects( void )
 CMDF( do_project )
 {
    project_data *pproject;
-   string arg;
+   std::string arg;
    int pcount, pnum;
 
    if( ch->isnpc(  ) )
@@ -3595,7 +3584,6 @@ CMDF( do_project )
 
    if( arg.empty(  ) || !str_cmp( arg, "list" ) )
    {
-      list < project_data * >::iterator pr;
       bool aflag = false, projects_available = false;
 
       if( !str_cmp( argument, "available" ) )
@@ -3613,10 +3601,8 @@ CMDF( do_project )
          ch->pager( "----|--------------------------------|-----------------\r\n" );
       }
       pcount = 0;
-      for( pr = projlist.begin(  ); pr != projlist.end(  ); ++pr )
+      for( auto* proj : projlist )
       {
-         project_data *proj = *pr;
-
          ++pcount;
          if( proj->status && !str_cmp( "Done", proj->status ) )
             continue;

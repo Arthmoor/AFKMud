@@ -38,7 +38,7 @@
 #include "roomindex.h"
 #include "shops.h"
 
-list < clan_data * >clanlist;
+std::list<clan_data *> clanlist;
 
 void save_shop( char_data * );
 
@@ -51,11 +51,9 @@ roster_data::~roster_data(  )
 {
 }
 
-void add_roster( clan_data * clan, const string & name, int Class, int level, int kills, int deaths )
+void add_roster( clan_data * clan, const std::string & name, int Class, int level, int kills, int deaths )
 {
-   roster_data *roster;
-
-   roster = new roster_data;
+   roster_data *roster = new roster_data;
    roster->name = name;
    roster->Class = Class;
    roster->level = level;
@@ -65,19 +63,18 @@ void add_roster( clan_data * clan, const string & name, int Class, int level, in
    clan->memberlist.push_back( roster );
 }
 
-void remove_roster( clan_data * clan, const string & name )
+void remove_roster( clan_data * clan, const std::string & name )
 {
-   list < roster_data * >::iterator mem;
-
    if( !clan )
    {
       bug( "%s: Invalid clan pointer!", __func__ );
       return;
    }
 
-   for( mem = clan->memberlist.begin(  ); mem != clan->memberlist.end(  ); ++mem )
+   for( auto it = clan->memberlist.begin(); it != clan->memberlist.end(); )
    {
-      roster_data *member = *mem;
+      roster_data *member = *it;
+      ++it;
 
       if( !str_cmp( name, member->name ) )
       {
@@ -90,15 +87,11 @@ void remove_roster( clan_data * clan, const string & name )
 
 void update_roster( char_data * ch )
 {
-   list < roster_data * >::iterator mem;
-
    if( ch->isnpc() || !ch->pcdata->clan )
       return;
 
-   for( mem = ch->pcdata->clan->memberlist.begin(  ); mem != ch->pcdata->clan->memberlist.end(  ); ++mem )
+   for( auto* member : ch->pcdata->clan->memberlist )
    {
-      roster_data *member = *mem;
-
       if( !str_cmp( ch->name, member->name ) )
       {
          member->level = ch->level;
@@ -119,18 +112,16 @@ void update_roster( char_data * ch )
 /* For use during clan removal and memory cleanup */
 void remove_all_rosters( clan_data * clan )
 {
-   list < roster_data * >::iterator member;
-
    if( !clan )
    {
       bug( "%s: Invalid clan pointer!", __func__ );
       return;
    }
 
-   for( member = clan->memberlist.begin(  ); member != clan->memberlist.end(  ); )
+   for( auto it = clan->memberlist.begin(); it != clan->memberlist.end(); )
    {
-      roster_data *roster = *member;
-      ++member;
+      roster_data *roster = *it;
+      ++it;
 
       clan->memberlist.remove( roster );
       deleteptr( roster );
@@ -152,14 +143,10 @@ clan_data::~clan_data(  )
 /*
  * Get pointer to clan structure from clan name.
  */
-clan_data *get_clan( const string & name )
+clan_data *get_clan( const std::string & name )
 {
-   list < clan_data * >::iterator cl;
-
-   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
+   for( auto* clan : clanlist )
    {
-      clan_data *clan = *cl;
-
       if( !str_cmp( name, clan->name ) )
          return clan;
    }
@@ -172,7 +159,6 @@ clan_data *get_clan( const string & name )
 void save_clan_storeroom( char_data * ch, clan_data * clan )
 {
    FILE *fp;
-   std::filesystem::path filename;
    short templvl;
 
    if( !clan )
@@ -187,7 +173,7 @@ void save_clan_storeroom( char_data * ch, clan_data * clan )
       return;
    }
 
-   filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
+   std::filesystem::path filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
@@ -207,12 +193,8 @@ void save_clan_storeroom( char_data * ch, clan_data * clan )
 
 void check_clan_storeroom( char_data * ch )
 {
-   list < clan_data * >::iterator cl;
-
-   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
+   for( auto* clan : clanlist )
    {
-      clan_data *clan = *cl;
-
       if( clan->storeroom == ch->in_room->vnum )
          save_clan_storeroom( ch, clan );
    }
@@ -220,7 +202,7 @@ void check_clan_storeroom( char_data * ch )
 
 void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
 {
-   list < clan_data * >::iterator cl;
+   std::list < clan_data * >::iterator cl;
    clan_data *clan = nullptr;
    bool cfound = false;
 
@@ -254,12 +236,10 @@ void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
 
 void free_clans( void )
 {
-   list < clan_data * >::iterator cl;
-
-   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); )
+   for( auto it = clanlist.begin(); it != clanlist.end(); )
    {
-      clan_data *clan = *cl;
-      ++cl;
+      clan_data *clan = *it;
+      ++it;
 
       deleteptr( clan );
    }
@@ -267,11 +247,11 @@ void free_clans( void )
 
 void delete_clan( char_data * ch, clan_data * clan )
 {
-   list < char_data * >::iterator ich;
+   std::list < char_data * >::iterator ich;
    room_index *room = nullptr;
    mob_index *mob = nullptr;
    std::filesystem::path filename, storeroom, record;
-   string clanname = clan->name;
+   std::string clanname = clan->name;
 
    filename = clan->filename;
    storeroom = std::format( "{}.vault", clan->filename );
@@ -413,11 +393,9 @@ void delete_clan( char_data * ch, clan_data * clan )
 
 void write_clan_list( void )
 {
-   list < clan_data * >::iterator cl;
    FILE *fpout;
-   std::filesystem::path filename;
 
-   filename = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
+   std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
    fpout = fopen( filename.c_str(), "w" );
    if( !fpout )
    {
@@ -425,24 +403,17 @@ void write_clan_list( void )
       return;
    }
 
-   for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
-   {
-      clan_data *clan = *cl;
-
+   for( auto* clan : clanlist )
       fprintf( fpout, "%s\n", clan->filename.c_str(  ) );
-   }
+
    fprintf( fpout, "%s", "$\n" );
    FCLOSE( fpout );
 }
 
 void fwrite_memberlist( FILE * fp, clan_data * clan )
 {
-   list < roster_data * >::iterator mem;
-
-   for( mem = clan->memberlist.begin(  ); mem != clan->memberlist.end(  ); ++mem )
+   for( auto* member : clan->memberlist )
    {
-      roster_data *member = *mem;
-
       auto joined = std::chrono::system_clock::to_time_t( member->joined );
 
       fprintf( fp, "%s", "#ROSTER\n" );
@@ -458,9 +429,7 @@ void fwrite_memberlist( FILE * fp, clan_data * clan )
 
 void fread_memberlist( clan_data * clan, FILE * fp )
 {
-   roster_data *roster;
-
-   roster = new roster_data;
+   roster_data *roster = new roster_data;
 
    for( ;; )
    {
@@ -537,7 +506,6 @@ const int CLAN_VERSION = 1;
 void save_clan( clan_data * clan )
 {
    FILE *fp;
-   std::filesystem::path filename;
 
    if( !clan )
    {
@@ -551,7 +519,7 @@ void save_clan( clan_data * clan )
       return;
    }
 
-   filename = std::format( "{}{}", CLAN_DIR, clan->filename );
+   std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, clan->filename );
 
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
@@ -857,17 +825,13 @@ void clean_clan( clan_data * clan )
  */
 bool load_clan_file( const char *clanfile )
 {
-   std::filesystem::path filename;
-   clan_data *clan;
    FILE *fp;
-   bool found;
 
-   clan = new clan_data;
-
+   clan_data *clan = new clan_data;
    clean_clan( clan );  /* Default settings so we don't get wierd ass stuff */
 
-   found = false;
-   filename = std::format( "{}{}", CLAN_DIR, clanfile );
+   bool found = false;
+   std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, clanfile );
 
    if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
@@ -957,11 +921,10 @@ bool load_clan_file( const char *clanfile )
          }
          FCLOSE( fp );
 
-         list < obj_data * >::iterator iobj;
-         for( iobj = supermob->carrying.begin(  ); iobj != supermob->carrying.end(  ); )
+         for( auto it = supermob->carrying.begin(); it != supermob->carrying.end(); )
          {
-            obj_data *tobj = *iobj;
-            ++iobj;
+            obj_data *tobj = *it;
+            ++it;
 
             tobj->from_char(  );
             if( tobj->ego >= sysdata->minego )
@@ -982,15 +945,13 @@ bool load_clan_file( const char *clanfile )
 
 void verify_clans( void )
 {
-   list < clan_data * >::iterator iclan;
-   list < roster_data * >::iterator member;
    bool change = false;
 
    log_string( "Cleaning up clan data..." );
-   for( iclan = clanlist.begin(  ); iclan != clanlist.end(  ); )
+   for( auto it = clanlist.begin(); it != clanlist.end(); )
    {
-      clan_data *clan = *iclan;
-      ++iclan;
+      clan_data *clan = *it;
+      ++it;
 
       if( clan->leader.empty(  ) && clan->number1.empty(  ) && clan->number2.empty(  ) )
       {
@@ -1112,10 +1073,10 @@ void verify_clans( void )
       if( change == true )
          log_printf( "Administration data for %s has changed.", clan->name.c_str(  ) );
 
-      for( member = clan->memberlist.begin(  ); member != clan->memberlist.end(  ); )
+      for( auto it2 = clan->memberlist.begin(); it2 != clan->memberlist.end(); )
       {
-         roster_data *roster = *member;
-         ++member;
+         roster_data *roster = *it2;
+         ++it2;
 
          if( !exists_player( roster->name ) )
          {
@@ -1135,13 +1096,12 @@ void load_clans( void )
 {
    FILE *fpList;
    const char *filename;
-   std::filesystem::path clanlistfile;
 
    clanlist.clear(  );
 
    log_string( "Loading clans..." );
 
-   clanlistfile = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
+   std::filesystem::path clanlistfile = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
 
    if( !( fpList = fopen( clanlistfile.c_str(), "r" ) ) )
    {
@@ -1212,7 +1172,7 @@ void check_clan_info( char_data * ch )
 
 CMDF( do_make )
 {
-   string arg;
+   std::string arg;
    obj_index *pObjIndex;
    obj_data *obj;
    clan_data *clan;
@@ -1534,9 +1494,9 @@ CMDF( do_outcast )
 CMDF( do_setclan );
 
 /* Subfunction of setclan for clan leaders and first officers - Samson 12-6-98 */
-void pcsetclan( char_data * ch, string argument )
+void pcsetclan( char_data * ch, std::string argument )
 {
-   string arg1;
+   std::string arg1;
    clan_data *clan;
 
    argument = one_argument( argument, arg1 );
@@ -1610,11 +1570,8 @@ void pcsetclan( char_data * ch, string argument )
       ch->pcdata->clan_name.clear(  );
       ch->pcdata->clan = nullptr;
 
-      list < char_data * >::iterator ich;
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+      for( auto* vch : pclist )
       {
-         char_data *vch = *ich;
-
          if( vch->pcdata->clan == clan )
          {
             vch->pcdata->clan_name.clear(  );
@@ -1732,7 +1689,7 @@ void pcsetclan( char_data * ch, string argument )
 
 CMDF( do_setclan )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    clan_data *clan;
 
    ch->set_color( AT_PLAIN );
@@ -2301,7 +2258,7 @@ CMDF( do_showclan )
 
 CMDF( do_makeclan )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    std::filesystem::path filename;
    clan_data *clan;
    roster_data *member;
@@ -2374,8 +2331,7 @@ CMDF( do_makeclan )
 CMDF( do_roster )
 {
    clan_data *clan;
-   list < roster_data * >::iterator mem;
-   string arg, arg2;
+   std::string arg, arg2;
    int total = 0;
 
    if( ch->isnpc(  ) )
@@ -2403,10 +2359,8 @@ CMDF( do_roster )
       ch->printf( "Membership roster for the %s %s\r\n\r\n", clan->name.c_str(  ), clan->clan_type == CLAN_GUILD ? "Guild" : "Clan" );
       ch->printf( "%-15.15s  %-15.15s %-6.6s %-6.6s %-6.6s %s\r\n", "Name", "Class", "Level", "Kills", "Deaths", "Joined on" );
       ch->print( "-------------------------------------------------------------------------------------\r\n" );
-      for( mem = clan->memberlist.begin(  ); mem != clan->memberlist.end(  ); ++mem )
+      for( auto* member : clan->memberlist )
       {
-         roster_data *member = *mem;
-
          ch->printf( "%-15.15s  %-15.15s %-6d %-6d %-6d %s\r\n",
                      member->name.c_str(  ), capitalize( npc_class[member->Class] ), member->level, member->kills, member->deaths,
                      c_time( member->joined, ch->pcdata->timezone ).c_str() );
@@ -2438,18 +2392,13 @@ CMDF( do_roster )
 CMDF( do_clans )
 {
    clan_data *pclan;
-   list < clan_data * >::iterator cl;
    int count = 0;
 
    if( argument.empty(  ) )
    {
-      ch->
-         print
-         ( "\r\n&RClan          Deity         Leader           Pkills:    Avatar      Other\r\n_________________________________________________________________________\r\n\r\n" );
-      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
+      ch->print( "\r\n&RClan          Deity         Leader           Pkills:    Avatar      Other\r\n_________________________________________________________________________\r\n\r\n" );
+      for( auto* clan: clanlist )
       {
-         clan_data *clan = *cl;
-
          if( clan->clan_type == CLAN_GUILD )
             continue;
          ch->printf( "&w%-13s %-13s %-13s", clan->name.c_str(  ), clan->deity.c_str(  ), clan->leader.c_str(  ) );
@@ -2459,9 +2408,7 @@ CMDF( do_clans )
       if( !count )
          ch->print( "&RThere are no Clans currently formed.\r\n" );
       else
-         ch->
-            print
-            ( "&R_________________________________________________________________________\r\n\r\nUse 'clans <clan>' for detailed information and a breakdown of victories.\r\n" );
+         ch->print( "&R_________________________________________________________________________\r\n\r\nUse 'clans <clan>' for detailed information and a breakdown of victories.\r\n" );
       return;
    }
 
@@ -2486,17 +2433,14 @@ CMDF( do_clans )
 CMDF( do_guilds )
 {
    clan_data *porder;
-   list < clan_data * >::iterator cl;
    int count = 0;
 
    if( argument.empty(  ) )
    {
-      ch->
-         print( "\r\n&gGuild            Deity          Leader           Mkills      Mdeaths\r\n____________________________________________________________________\r\n\r\n" );
-      for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
-      {
-         clan_data *clan = ( *cl );
+      ch->print( "\r\n&gGuild            Deity          Leader           Mkills      Mdeaths\r\n____________________________________________________________________\r\n\r\n" );
 
+      for( auto* clan : clanlist )
+      {
          if( clan->clan_type == CLAN_GUILD )
          {
             ch->printf( "&G%-16s %-14s %-14s   %-7d       %5d\r\n", clan->name.c_str(  ), clan->deity.c_str(  ), clan->leader.c_str(  ), clan->mkills, clan->mdeaths );
@@ -2527,8 +2471,6 @@ CMDF( do_guilds )
 
 CMDF( do_defeats )
 {
-   std::filesystem::path filename;
-
    if( ch->isnpc() || !ch->pcdata->clan )
    {
       ch->print( "Huh?\r\n" );
@@ -2537,7 +2479,7 @@ CMDF( do_defeats )
 
    if( ch->pcdata->clan->clan_type == CLAN_CLAN )
    {
-      filename = std::format( "{}{}.defeats", CLAN_DIR, ch->pcdata->clan->name );
+      std::filesystem::path filename = std::format( "{}{}.defeats", CLAN_DIR, ch->pcdata->clan->name );
       ch->set_pager_color( AT_PURPLE );
       if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
       {
@@ -2565,8 +2507,6 @@ CMDF( do_defeats )
 
 CMDF( do_victories )
 {
-   std::filesystem::path filename;
-
    if( ch->isnpc(  ) || !ch->pcdata->clan )
    {
       ch->print( "Huh?\r\n" );
@@ -2575,7 +2515,7 @@ CMDF( do_victories )
 
    if( ch->pcdata->clan->clan_type == CLAN_CLAN )
    {
-      filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
+      std::filesystem::path filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
       if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
       {
          FILE *fp = fopen( filename.c_str(), "w" );
@@ -2607,7 +2547,7 @@ CMDF( do_ident )
 
    bool idmob = false;
    char_data *mob = nullptr;
-   list < char_data * >::iterator ich;
+   std::list < char_data * >::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
       mob = *ich;
@@ -2641,7 +2581,7 @@ CMDF( do_ident )
    clan_data *clan = nullptr;
    if( mob->has_actflag( ACT_GUILDIDMOB ) )
    {
-      list < clan_data * >::iterator cl;
+      std::list < clan_data * >::iterator cl;
       for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
          clan = ( *cl );
@@ -2679,7 +2619,7 @@ CMDF( do_ident )
 
 CMDF( do_shove )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    int exit_dir;
    exit_data *pexit;
    char_data *victim;
@@ -2826,7 +2766,7 @@ CMDF( do_shove )
 
 CMDF( do_drag )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    int exit_dir;
    char_data *victim;
    exit_data *pexit;

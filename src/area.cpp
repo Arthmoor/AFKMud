@@ -48,9 +48,9 @@ extern int top_shop;
 extern int top_repair;
 extern FILE *fpArea;
 
-list < area_data * >arealist;
-list < area_data * >area_nsort;
-list < area_data * >area_vsort;
+std::list < area_data * >arealist;
+std::list < area_data * >area_nsort;
+std::list < area_data * >area_vsort;
 
 int recall( char_data *, int );
 void save_sysdata(  );
@@ -62,11 +62,10 @@ CMDF( do_areaconvert );
 
 area_data::~area_data(  )
 {
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
+   for( auto it = charlist.begin(); it != charlist.end(); )
    {
-      char_data *ech = *ich;
-      ++ich;
+      char_data *ech = *it;
+      ++it;
 
       if( ech->fighting )
          ech->stop_fighting( true );
@@ -93,11 +92,10 @@ area_data::~area_data(  )
       }
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
+   for( auto it = objlist.begin(); it != objlist.end(); )
    {
-      obj_data *eobj = *iobj;
-      ++iobj;
+      obj_data *eobj = *it;
+      ++it;
 
       /*
        * if obj is in area, or part of area. 
@@ -108,31 +106,28 @@ area_data::~area_data(  )
 
    wipe_resets(  );
 
-   list < room_index * >::iterator rid;
-   list < mob_index * >::iterator mid;
-   list < obj_index * >::iterator oid;
-   for( rid = rooms.begin(  ); rid != rooms.end(  ); )
+   for( auto it = rooms.begin(); it != rooms.end(); )
    {
-      room_index *room = *rid;
-      ++rid;
+      room_index *room = *it;
+      ++it;
 
       deleteptr( room );
    }
    rooms.clear(  );
 
-   for( mid = mobs.begin(  ); mid != mobs.end(  ); )
+   for( auto it = mobs.begin(); it != mobs.end(); )
    {
-      mob_index *mob = *mid;
-      ++mid;
+      mob_index *mob = *it;
+      ++it;
 
       deleteptr( mob );
    }
    mobs.clear(  );
 
-   for( oid = objects.begin(  ); oid != objects.end(  ); )
+   for( auto it = objects.begin(); it != objects.end(); )
    {
-      obj_index *obj = *oid;
-      ++oid;
+      obj_index *obj = *it;
+      ++it;
 
       deleteptr( obj );
    }
@@ -155,8 +150,8 @@ area_data::area_data(  )
 void area_data::fix_exits(  )
 {
    room_index *pRoomIndex;
-   list < room_index * >::iterator rindex;
-   list < exit_data * >::iterator iexit;
+   std::list < room_index * >::iterator rindex;
+   std::list < exit_data * >::iterator iexit;
 
    for( rindex = rooms.begin(  ); rindex != rooms.end(  ); ++rindex )
    {
@@ -201,7 +196,7 @@ void area_data::fix_exits(  )
  */
 void area_data::sort_name(  )
 {
-   list < area_data * >::iterator iarea;
+   std::list < area_data * >::iterator iarea;
 
    for( iarea = area_nsort.begin(  ); iarea != area_nsort.end(  ); ++iarea )
    {
@@ -222,7 +217,7 @@ void area_data::sort_name(  )
  */
 void area_data::sort_vnums(  )
 {
-   list < area_data * >::iterator iarea;
+   std::list < area_data * >::iterator iarea;
 
    for( iarea = area_vsort.begin(  ); iarea != area_vsort.end(  ); ++iarea )
    {
@@ -239,31 +234,19 @@ void area_data::sort_vnums(  )
 
 void area_data::reset(  )
 {
-   list < room_index * >::iterator iroom;
-
    if( rooms.empty(  ) )
       return;
 
-   for( iroom = rooms.begin(  ); iroom != rooms.end(  ); ++iroom )
-   {
-      room_index *room = *iroom;
-
+   for( auto* room : rooms )
       room->reset(  );
-   }
 }
 
 void area_data::wipe_resets(  )
 {
-   list < room_index * >::iterator iroom;
-
    if( !mud_down )
    {
-      for( iroom = rooms.begin(  ); iroom != rooms.end(  ); ++iroom )
-      {
-         room_index *room = *iroom;
-
+      for( auto* room : rooms )
          room->wipe_resets(  );
-      }
    }
 }
 
@@ -602,7 +585,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
             if( !str_cmp( word, "Continent" ) )
             {
                continent_data *continent = nullptr;
-               string value;
+               std::string value;
 
                fread_string( value, fp );
 
@@ -782,7 +765,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
             {
                if( !oldmob )
                {
-                  mob_index_table.insert( map < int, mob_index * >::value_type( pMobIndex->vnum, pMobIndex ) );
+                  mob_index_table.insert( std::map<int, mob_index *>::value_type( pMobIndex->vnum, pMobIndex ) );
                   tarea->mobs.push_back( pMobIndex );
                   ++top_mob_index;
                }
@@ -1003,7 +986,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
             if( !str_cmp( word, "Speaking" ) )
             {
-               string speaking, flag;
+               std::string speaking, flag;
                int value;
 
                speaking = fread_flagstring( fp );
@@ -1172,7 +1155,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
             {
                if( !oldobj )
                {
-                  obj_index_table.insert( map < int, obj_index * >::value_type( pObjIndex->vnum, pObjIndex ) );
+                  obj_index_table.insert( std::map<int, obj_index *>::value_type( pObjIndex->vnum, pObjIndex ) );
                   tarea->objects.push_back( pObjIndex );
                   ++top_obj_index;
                }
@@ -1459,7 +1442,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
             {
                if( !oldroom )
                {
-                  room_index_table.insert( map < int, room_index * >::value_type( pRoomIndex->vnum, pRoomIndex ) );
+                  room_index_table.insert( std::map<int, room_index *>::value_type( pRoomIndex->vnum, pRoomIndex ) );
                   tarea->rooms.push_back( pRoomIndex );
                   ++top_room;
                }
@@ -1611,13 +1594,10 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                   if( fBootDb )
                   {
                      int count = 0;
-                     list < reset_data * >::iterator rst;
 
                      bug( "%s: WARNING: resets already exist for this room.", __func__ );
-                     for( rst = pRoomIndex->resets.begin(  ); rst != pRoomIndex->resets.end(  ); ++rst )
+                     for( auto* rtmp : pRoomIndex->resets )
                      {
-                        reset_data *rtmp = *rst;
-
                         ++count;
                         if( !rtmp->resets.empty(  ) )
                            count += rtmp->resets.size(  );
@@ -1716,7 +1696,7 @@ void process_sorting( area_data * tarea, bool isproto )
       tarea->author = STRALLOC( "AFKMud" );
 }
 
-void load_area_file( const string & filename, bool isproto )
+void load_area_file( const std::string & filename, bool isproto )
 {
    area_data *tarea = nullptr;
    char *word;
@@ -1962,15 +1942,12 @@ bool mprog_write_prog( FILE * fpout, mud_prog_data * mprog )
    return false;
 }
 
-void save_reset_level( FILE * fpout, list < reset_data * >source, const int level )
+void save_reset_level( FILE * fpout, std::list<reset_data *> source, const int level )
 {
-   list < reset_data * >::iterator rst;
    int spaces = level * 2;
 
-   for( rst = source.begin(  ); rst != source.end(  ); ++rst )
+   for( auto* pReset : source )
    {
-      reset_data *pReset = *rst;
-
       switch ( UPPER( pReset->command ) ) /* extra arg1 arg2 arg3 */
       {
          default:
@@ -2128,12 +2105,9 @@ void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
                pRepair->fix_type[0], pRepair->fix_type[1], pRepair->fix_type[2], pRepair->profit_fix, pRepair->shop_type, pRepair->open_hour, pRepair->close_hour );
    }
 
-   list < mud_prog_data * >::iterator mprg;
-   for( mprg = pMobIndex->mudprogs.begin(  ); mprg != pMobIndex->mudprogs.end(  ); ++mprg )
-   {
-      mud_prog_data *mp = *mprg;
+   for( auto* mp : pMobIndex->mudprogs )
       mprog_write_prog( fpout, mp );
-   }
+
    fprintf( fpout, "%s", "#ENDMOBILE\n\n" );
 }
 
@@ -2206,13 +2180,8 @@ void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
             pObjIndex->limit, pObjIndex->layers,
             pObjIndex->socket[0] ? pObjIndex->socket[0] : "None", pObjIndex->socket[1] ? pObjIndex->socket[1] : "None", pObjIndex->socket[2] ? pObjIndex->socket[2] : "None" );
 
-   list < affect_data * >::iterator paf;
-   for( paf = pObjIndex->affects.begin(  ); paf != pObjIndex->affects.end(  ); ++paf )
-   {
-      affect_data *af = *paf;
-
+   for( auto* af : pObjIndex->affects )
       fwrite_afk_affect( fpout, af );
-   }
 
    switch ( pObjIndex->item_type )
    {
@@ -2240,20 +2209,12 @@ void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
          break;
    }
 
-   list < extra_descr_data * >::iterator ed;
-   for( ed = pObjIndex->extradesc.begin(  ); ed != pObjIndex->extradesc.end(  ); ++ed )
-   {
-      extra_descr_data *desc = *ed;
-
+   for( auto* desc : pObjIndex->extradesc )
       fwrite_afk_exdesc( fpout, desc );
-   }
 
-   list < mud_prog_data * >::iterator mprg;
-   for( mprg = pObjIndex->mudprogs.begin(  ); mprg != pObjIndex->mudprogs.end(  ); ++mprg )
-   {
-      mud_prog_data *mp = *mprg;
+   for( auto* mp : pObjIndex->mudprogs )
       mprog_write_prog( fpout, mp );
-   }
+
    fprintf( fpout, "%s", "#ENDOBJECT\n\n" );
 }
 
@@ -2266,22 +2227,20 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       room->flags.reset( ROOM_PROTOTYPE );
 
       // purge room of (prototyped) mobiles
-      list < char_data * >::iterator ich;
-      for( ich = room->people.begin(  ); ich != room->people.end(  ); )
+      for( auto it = room->people.begin(  ); it != room->people.end(  ); )
       {
-         char_data *victim = *ich;
-         ++ich;
+         char_data *victim = *it;
+         ++it;
 
          if( victim->isnpc(  ) && victim->has_actflag( ACT_PROTOTYPE ) )
             victim->extract( true );
       }
 
       // purge room of (prototyped) objects
-      list < obj_data * >::iterator iobj;
-      for( iobj = room->objects.begin(  ); iobj != room->objects.end(  ); )
+      for( auto it = room->objects.begin(  ); it != room->objects.end(  ); )
       {
-         obj_data *obj = *iobj;
-         ++iobj;
+         obj_data *obj = *it;
+         ++it;
 
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->extract(  );
@@ -2337,39 +2296,25 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       fprintf( fpout, "Nightdesc %s~\n", strip_cr( room->nitedesc ) );
 
    // Save the list of room index affects.
-   list < affect_data * >::iterator paf;
-   for( paf = room->permaffects.begin(  ); paf != room->permaffects.end(  ); ++paf )
-   {
-      affect_data *af = *paf;
-
+   for( auto* af : room->permaffects )
       fwrite_afk_affect( fpout, af );
-   }
 
-   list < exit_data * >::iterator ex;
-   for( ex = room->exits.begin(  ); ex != room->exits.end(  ); ++ex )
+   // Save the list of room exits.
+   for( auto* pexit : room->exits )
    {
-      exit_data *pexit = *ex;
-
       if( IS_EXIT_FLAG( pexit, EX_PORTAL ) ) // Don't fold portals
          continue;
 
       fwrite_afk_exit( fpout, pexit );
    }
 
-   list < extra_descr_data * >::iterator ed;
-   for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
-   {
-      extra_descr_data *desc = *ed;
-
+   // Save the list of extra descriptions.
+   for( auto* desc : room->extradesc )
       fwrite_afk_exdesc( fpout, desc );
-   }
 
-   list < mud_prog_data * >::iterator mprg;
-   for( mprg = room->mudprogs.begin(  ); mprg != room->mudprogs.end(  ); ++mprg )
-   {
-      mud_prog_data *mp = *mprg;
+   // Save the list of mudprogs.
+   for( auto* mp : room->mudprogs )
       mprog_write_prog( fpout, mp );
-   }
 
    // Recursive function that saves the nested resets.
    save_reset_level( fpout, room->resets, 0 );
@@ -2393,22 +2338,18 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
  */
 const int AREA_VERSION_WRITE = 1;
 
-void area_data::fold( const char *fname, bool install )
+void area_data::fold( const std::string & fname, bool install )
 {
-   string buf;
    FILE *fpout;
-   list < mob_index * >::iterator mindex;
-   list < obj_index * >::iterator oindex;
-   list < room_index * >::iterator rindex;
 
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving %s...", this->filename );
 
-   buf = std::format( "{}.bak", fname );
-   rename( fname, buf.c_str() );
-   if( !( fpout = fopen( fname, "w" ) ) )
+   std::filesystem::path buf = std::format( "{}.bak", fname );
+   std::filesystem::rename( fname, buf.c_str() );
+   if( !( fpout = fopen( fname.c_str(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( fname );
+      perror( fname.c_str() );
       return;
    }
 
@@ -2418,23 +2359,14 @@ void area_data::fold( const char *fname, bool install )
 
    fwrite_area_header( this, fpout );
 
-   for( mindex = mobs.begin(  ); mindex != mobs.end(  ); ++mindex )
-   {
-      mob_index *pMobIndex = *mindex;
+   for( auto* pMobIndex : mobs )
       fwrite_afk_mobile( fpout, pMobIndex, install );
-   }
 
-   for( oindex = objects.begin(  ); oindex != objects.end(  ); ++oindex )
-   {
-      obj_index *pObjIndex = *oindex;
+   for( auto* pObjIndex : objects )
       fwrite_afk_object( fpout, pObjIndex, install );
-   }
 
-   for( rindex = rooms.begin(  ); rindex != rooms.end(  ); ++rindex )
-   {
-      room_index *pRoomIndex = *rindex;
+   for( auto* pRoomIndex : rooms )
       fwrite_afk_room( fpout, pRoomIndex, install );
-   }
 
    fprintf( fpout, "%s", "#ENDAREA\n" );
    FCLOSE( fpout );
@@ -2442,12 +2374,10 @@ void area_data::fold( const char *fname, bool install )
 
 void close_all_areas( void )
 {
-   list < area_data * >::iterator iarea;
-
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); )
+   for( auto it = arealist.begin(); it != arealist.end(); )
    {
-      area_data *pArea = *iarea;
-      ++iarea;
+      area_data *pArea = *it;
+      ++it;
 
       deleteptr( pArea );
    }
@@ -2469,7 +2399,7 @@ CMDF( do_savearea )
       tarea = ch->pcdata->area;
    else if( ch->is_imp(  ) && !str_cmp( argument, "all" ) )
    {
-      list < area_data * >::iterator iarea;
+      std::list<area_data *>::iterator iarea;
 
       for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
       {
@@ -2511,13 +2441,12 @@ CMDF( do_savearea )
    }
    fname = std::format( "{}{}", BUILD_DIR, tarea->filename );
    ch->print( "&[immortal]Saving area...\r\n" );
-   tarea->fold( fname.c_str(), false );
+   tarea->fold( fname, false );
    ch->print( "&[immortal]Done.\r\n" );
 }
 
 CMDF( do_foldarea )
 {
-   area_data *tarea;
    ch->set_color( AT_IMMORT );
 
    if( argument.empty(  ) )
@@ -2528,12 +2457,8 @@ CMDF( do_foldarea )
 
    if( !str_cmp( argument, "all" ) )
    {
-      list < area_data * >::iterator iarea;
-
-      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+      for( auto* tarea : arealist )
       {
-         tarea = *iarea;
-
          if( !tarea->flags.test( AFLAG_PROTOTYPE ) )
             tarea->fold( tarea->filename, false );
       }
@@ -2541,6 +2466,7 @@ CMDF( do_foldarea )
       return;
    }
 
+   area_data *tarea;
    if( !( tarea = find_area( argument ) ) )
    {
       ch->print( "No such area exists.\r\n" );
@@ -2559,7 +2485,6 @@ CMDF( do_foldarea )
 
 void write_area_list( void )
 {
-   list < area_data * >::iterator iarea;
    FILE *fpout;
 
    fpout = fopen( AREA_LIST, "w" );
@@ -2569,10 +2494,8 @@ void write_area_list( void )
       return;
    }
 
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area : arealist )
    {
-      area_data *area = *iarea;
-
       if( !area->flags.test( AFLAG_PROTOTYPE ) )
          fprintf( fpout, "%s\n", area->filename );
    }
@@ -2585,16 +2508,13 @@ void write_area_list( void )
  * Last Modified : July 21, 1997
  * Fireblade
  */
-area_data *get_area( const string & name )
+area_data *get_area( const std::string & name )
 {
    if( name.empty(  ) )
       return nullptr;
 
-   list < area_data * >::iterator iarea;
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area : arealist )
    {
-      area_data *area = *iarea;
-
       if( hasname( area->name, name ) )
          return area;
    }
@@ -2602,14 +2522,10 @@ area_data *get_area( const string & name )
 }
 
 /* Locate an area by its filename first, then fall back to other means if not found */
-area_data *find_area( const string & filename )
+area_data *find_area( const std::string & filename )
 {
-   list < area_data * >::iterator iarea;
-
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area : arealist )
    {
-      area_data *area = *iarea;
-
       if( !str_cmp( area->filename, filename ) )
          return area;
    }
@@ -2655,7 +2571,7 @@ CMDF( do_adelete )
 
 void assign_area( char_data * ch )
 {
-   string taf;
+   std::string taf;
    area_data *tarea;
 
    if( ch->isnpc(  ) )
@@ -2749,7 +2665,7 @@ CMDF( do_aassign )
 CMDF( do_installarea )
 {
    area_data *tarea;
-   string arg1, arg2;
+   std::string arg1, arg2;
    std::filesystem::path oldfilename, buf;
    int num;
 
@@ -2790,11 +2706,8 @@ CMDF( do_installarea )
       /*
        * Fix up author if online 
        */
-      list < descriptor_data * >::iterator ds;
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
-
          if( d->character && d->character->pcdata && d->character->pcdata->area == tarea )
          {
             /*
@@ -2875,12 +2788,8 @@ CMDF( do_astat )
 /* check other areas for a conflict while ignoring the current area */
 bool check_for_area_conflicts( area_data * carea, int lo, int hi )
 {
-   list < area_data * >::iterator iarea;
-
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area: arealist )
    {
-      area_data *area = ( *iarea );
-
       if( area != carea && check_area_conflict( area, lo, hi ) )
          return true;
    }
@@ -2890,7 +2799,7 @@ bool check_for_area_conflicts( area_data * carea, int lo, int hi )
 CMDF( do_aset )
 {
    area_data *tarea;
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3;
    int vnum, value;
 
    ch->set_color( AT_IMMORT );
@@ -2942,15 +2851,13 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "filename" ) )
    {
-      char filename[256];
-
       if( !is_valid_filename( ch, "", argument ) )
          return;
 
-      strlcpy( filename, tarea->filename, 256 );
+      std::filesystem::path filename = tarea->filename;
       DISPOSE( tarea->filename );
       tarea->filename = strdup( argument.c_str(  ) );
-      rename( filename, tarea->filename );
+      std::filesystem::rename( filename, tarea->filename );
       write_area_list(  );
       ch->print( "Done.\r\n" );
       return;
@@ -3284,14 +3191,11 @@ CMDF( do_aset )
 /* Displays zone list. Will show proto, non-proto, or all. */
 void show_vnums( char_data * ch, short proto )
 {
-   list < area_data * >::iterator iarea;
    int count = 0;
 
    ch->pagerf( "&W%-15.15s %-40.40s %5.5s\r\n\r\n", "Filename", "Area Name", "Vnums" );
-   for( iarea = area_vsort.begin(  ); iarea != area_vsort.end(  ); ++iarea )
+   for( auto* area : area_vsort )
    {
-      area_data *area = *iarea;
-
       if( proto == 0 && !area->flags.test( AFLAG_PROTOTYPE ) )
       {
          ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d\r\n", area->filename, area->name, area->low_vnum, area->hi_vnum );
@@ -3336,7 +3240,7 @@ CMDF( do_zones )
 /* Similar to checkvnum, but will list the freevnums -- Xerves 3-11-01 */
 CMDF( do_freevnums )
 {
-   string arg1;
+   std::string arg1;
    int lohi[600]; /* Up to 300 areas, increase if you have more -- Xerves */
 
    argument = one_argument( argument, arg1 );
@@ -3377,11 +3281,8 @@ CMDF( do_freevnums )
 
    int x = 0;
    bool area_conflict = false;
-   list < area_data * >::iterator iarea;
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area : arealist )
    {
-      area_data *area = *iarea;
-
       area_conflict = check_area_conflict( area, low_range, high_range );
 
       if( area_conflict )
@@ -3429,7 +3330,7 @@ CMDF( do_freevnums )
 /* Check to make sure range of vnums is free - Scryn 2/27/96 */
 CMDF( do_check_vnums )
 {
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -3468,10 +3369,8 @@ CMDF( do_check_vnums )
    ch->set_color( AT_PLAIN );
 
    // FIXME: Can this use the area_conflict function?
-   list < area_data * >::iterator iarea;
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area : arealist )
    {
-      area_data *area = *iarea;
       bool area_conflict = false;
 
       if( low_range < area->low_vnum && area->low_vnum < high_range )
@@ -3498,8 +3397,6 @@ CMDF( do_check_vnums )
 CMDF( do_aexit )
 {
    area_data *tarea;
-   list < mapexit_data * >::iterator imexit;
-   list < continent_data * >::iterator c;
 
    if( argument.empty(  ) )
       tarea = ch->in_room->area;
@@ -3512,12 +3409,9 @@ CMDF( do_aexit )
       }
    }
 
-   list < room_index * >::iterator rindex;
    int trange = tarea->hi_vnum, lrange = tarea->low_vnum;
-   for( rindex = tarea->rooms.begin(  ); rindex != tarea->rooms.end(  ); ++rindex )
+   for( auto* room : tarea->rooms )
    {
-      room_index *room = *rindex;
-
       if( room->flags.test( ROOM_TELEPORT ) && ( room->tele_vnum < lrange || room->tele_vnum > trange ) )
       {
          ch->pagerf( "From: %-20.20s Room: %5d To: Room: %5d (Teleport)\r\n", tarea->filename, room->vnum, room->tele_vnum );
@@ -3541,30 +3435,25 @@ CMDF( do_aexit )
       }
    }
 
-   list < area_data * >::iterator iarea;
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area : arealist )
    {
-      area_data *area = *iarea;
-
       if( tarea == area )
          continue;
 
       trange = area->hi_vnum;
       lrange = area->low_vnum;
-      for( rindex = area->rooms.begin(  ); rindex != area->rooms.end(  ); ++rindex )
+      for( auto* room2 : area->rooms )
       {
-         room_index *room = *rindex;
-
-         if( room->flags.test( ROOM_TELEPORT ) )
+         if( room2->flags.test( ROOM_TELEPORT ) )
          {
-            if( room->tele_vnum >= tarea->low_vnum && room->tele_vnum <= tarea->hi_vnum )
-               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (Teleport)\r\n", area->filename, room->vnum, tarea->filename, room->tele_vnum );
+            if( room2->tele_vnum >= tarea->low_vnum && room2->tele_vnum <= tarea->hi_vnum )
+               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (Teleport)\r\n", area->filename, room2->vnum, tarea->filename, room2->tele_vnum );
          }
 
          for( int i = 0; i < MAX_DIR + 2; ++i )
          {
             exit_data *pexit;
-            if( !( pexit = room->get_exit( i ) ) )
+            if( !( pexit = room2->get_exit( i ) ) )
                continue;
 
             if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
@@ -3572,20 +3461,16 @@ CMDF( do_aexit )
 
             if( pexit->to_room->area == tarea )
             {
-               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (%s)\r\n", area->filename, room->vnum, pexit->to_room->area->filename, pexit->vnum, dir_name[i] );
+               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (%s)\r\n", area->filename, room2->vnum, pexit->to_room->area->filename, pexit->vnum, dir_name[i] );
             }
          }
       }
    }
 
-   for( c = continent_list.begin(  ); c != continent_list.end(  ); ++c )    
+   for( auto* continent : continent_list )
    {
-      continent_data *continent = *c;
-
-      for( imexit = continent->exits.begin(  ); imexit != continent->exits.end(  ); ++imexit )
+      for( auto* mexit : continent->exits )
       {
-         mapexit_data *mexit = *imexit;
-
          if( mexit->vnum >= tarea->low_vnum && mexit->vnum <= tarea->hi_vnum )
             ch->pagerf( "From Continent %s: %4dX %4dY To: Room: %5d\r\n", continent->name.c_str( ), mexit->herex, mexit->herey, mexit->vnum );
       }
@@ -3603,7 +3488,7 @@ CMDF( do_areas )
    /*
     * 0-2 = x arguments, 3 = old style 
     */
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -3665,11 +3550,8 @@ CMDF( do_areas )
    ch->pager( "\r\n   Author    |             Area                     | Recommended |  Enforced\r\n" );
    ch->pager( "-------------+--------------------------------------+-------------+-----------\r\n" );
 
-   list < area_data * >::iterator iarea;
-   for( iarea = area_nsort.begin(  ); iarea != area_nsort.end(  ); ++iarea )
+   for( auto* area : area_nsort )
    {
-      area_data *area = *iarea;
-
       // Hidden areas should not display on the list.
       if( area->flags.test( AFLAG_HIDDEN ) && !ch->is_immortal() )
          continue;

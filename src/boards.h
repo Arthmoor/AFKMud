@@ -71,8 +71,8 @@ class note_data
    note_data();
    ~note_data();
 
-   list<note_data*> rlist;
-   bitset<MAX_NOTE_FLAGS> flags; /* Note Flags */
+   std::list<note_data*> rlist;
+   std::bitset<MAX_NOTE_FLAGS> flags; /* Note Flags */
    note_data *parent;
    char *sender;
    char *to_list;
@@ -93,8 +93,8 @@ class board_data
    board_data();
    ~board_data();
 
-   list<note_data*> nlist; /* List of notes on the board */
-   bitset<MAX_BOARD_FLAGS> flags; /* Board Flags */
+   std::list<note_data*> nlist; /* List of notes on the board */
+   std::bitset<MAX_BOARD_FLAGS> flags; /* Board Flags */
    char *name; /* Name of Board */
    char *filename;   /* Filename for the board */
    char *desc; /* Short description of the board */
@@ -121,8 +121,8 @@ class project_data
    project_data();
    ~project_data();
 
-   list<note_data*> nlist; /* List of note logs for the project */
-   string realm_name; // Realm this project belongs to.
+   std::list<note_data*> nlist; /* List of note logs for the project */
+   std::string realm_name; // Realm this project belongs to.
    char *name;
    char *owner;
    char *coder;
@@ -142,7 +142,7 @@ class board_chardata
    board_chardata();
    ~board_chardata();
 
-   string board_name;
+   std::string board_name;
    std::chrono::system_clock::time_point last_read;
    short alert;
 };

@@ -48,14 +48,14 @@ class obj_index
    int set_ego(  );
    void oprog_read_programs( FILE * );
 
-     list < affect_data * >affects;
-     list < extra_descr_data * >extradesc;
-     list < struct mud_prog_data *>mudprogs; /* Mudprogs */
+   std::list<affect_data *> affects;
+   std::list<extra_descr_data *> extradesc;
+   std::list<struct mud_prog_data *> mudprogs; /* Mudprogs */
    obj_index *next;
    area_data *area;
-     bitset < MAX_PROG > progtypes; /* objprogs */
-     bitset < MAX_ITEM_FLAG > extra_flags;
-     bitset < MAX_WEAR_FLAG > wear_flags;
+   std::bitset<MAX_PROG> progtypes; /* objprogs */
+   std::bitset<MAX_ITEM_FLAG> extra_flags;
+   std::bitset<MAX_WEAR_FLAG> wear_flags;
    char *name;
    char *short_descr;
    char *objdesc;
@@ -73,6 +73,6 @@ class obj_index
    short layers;
 };
 
-extern map < int, obj_index * >obj_index_table;
+extern std::map<int, obj_index *> obj_index_table;
 obj_index *get_obj_index( int );
-obj_index *make_object( int, int, const string &, area_data * );
+obj_index *make_object( int, int, const std::string &, area_data * );

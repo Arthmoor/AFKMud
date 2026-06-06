@@ -34,9 +34,9 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-list < obj_data * >objlist;
+std::list<obj_data *> objlist;
 
-extern list < rel_data * >relationlist;
+extern std::list<rel_data *> relationlist;
 extern int top_affect;
 
 void clean_obj_queue(  );
@@ -45,18 +45,13 @@ void queue_extracted_obj( obj_data * );
 /* Deallocates the memory used by a single object after it's been extracted. */
 obj_data::~obj_data(  )
 {
-   list < affect_data * >::iterator paf;
-   list < rel_data * >::iterator RQ;
-   list < extra_descr_data * >::iterator ed;
-   list < mprog_act_list * >::iterator pd;
-
    /*
     * remove affects 
     */
-   for( paf = affects.begin(  ); paf != affects.end(  ); )
+   for( auto it = affects.begin(); it != affects.end(); )
    {
-      affect_data *aff = *paf;
-      ++paf;
+      affect_data *aff = *it;
+      ++it;
 
       affects.remove( aff );
       deleteptr( aff );
@@ -67,10 +62,10 @@ obj_data::~obj_data(  )
    /*
     * remove extra descriptions 
     */
-   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
+   for( auto it = extradesc.begin(); it != extradesc.end(); )
    {
-      extra_descr_data *desc = *ed;
-      ++ed;
+      extra_descr_data *desc = *it;
+      ++it;
 
       extradesc.remove( desc );
       deleteptr( desc );
@@ -78,19 +73,19 @@ obj_data::~obj_data(  )
    }
    extradesc.clear(  );
 
-   for( pd = mpact.begin(  ); pd != mpact.end(  ); )
+   for( auto it = mpact.begin(); it != mpact.end(); )
    {
-      mprog_act_list *actp = *pd;
-      ++pd;
+      mprog_act_list *actp = *it;
+      ++it;
 
       deleteptr( actp );
    }
    mpact.clear(  );
 
-   for( RQ = relationlist.begin(  ); RQ != relationlist.end(  ); )
+   for( auto it = relationlist.begin(); it != relationlist.end(); )
    {
-      rel_data *RQueue = *RQ;
-      ++RQ;
+      rel_data *RQueue = *it;
+      ++it;
 
       if( RQueue->Type == relOSET_ON )
       {
@@ -121,13 +116,11 @@ obj_data::obj_data(  )
 
 void extract_all_objs(  )
 {
-   list < obj_data * >::iterator iobj;
-
    clean_obj_queue(  );
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
+   for( auto it = objlist.begin(); it != objlist.end(); )
    {
-      obj_data *object = *iobj;
-      ++iobj;
+      obj_data *object = *it;
+      ++it;
 
       if( object->in_room )
          object->from_room(  );
@@ -204,7 +197,7 @@ void obj_data::fall( bool through )
           */
          if( !in_room->people.empty(  ) && number_percent(  ) > 15 )
          {
-            list < char_data * >::iterator ich;
+            std::list<char_data *>::iterator ich;
             char_data *vch = nullptr;
             int chcnt = 0;
 
@@ -385,13 +378,10 @@ const std::string obj_data::format_to_char( char_data * ch, bool fShort, int num
 
          if( !contents.empty(  ) )
          {
-            list < obj_data * >::iterator iobj;
             bool showdot = false;
 
-            for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
+            for( auto* obj : contents )
             {
-               obj_data *obj = *iobj;
-
                if( ( obj->item_type == ITEM_TRAP && ch->has_aflag( AFF_DETECTTRAPS ) ) || obj->item_type != ITEM_TRAP )
                {
                   showdot = true;
@@ -415,13 +405,10 @@ const std::string obj_data::format_to_char( char_data * ch, bool fShort, int num
 
          if( !contents.empty(  ) )
          {
-            list < obj_data * >::iterator iobj;
             bool showdot = false;
 
-            for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
+            for( auto* obj : contents )
             {
-               obj_data *obj = *iobj;
-
                if( ( obj->item_type == ITEM_TRAP && ch->has_aflag( AFF_DETECTTRAPS ) ) || obj->item_type != ITEM_TRAP )
                {
                   showdot = true;
@@ -584,9 +571,9 @@ const std::string hallucinated_object( int ms, bool fShort )
    return "Whoa!!!";
 }
 
-void show_list_to_char( char_data * ch, list < obj_data * >source, bool fShort, bool fShowNothing )
+void show_list_to_char( char_data * ch, std::list<obj_data *> source, bool fShort, bool fShowNothing )
 {
-   map < obj_data *, int >objmap;
+   std::map<obj_data *, int> objmap;
    int ms;
    bool found = false;
 
@@ -606,9 +593,9 @@ void show_list_to_char( char_data * ch, list < obj_data * >source, bool fShort, 
 
    ms = ( ch->mental_state ? ch->mental_state : 1 ) * ( ch->isnpc(  )? 1 : ( ch->pcdata->condition[COND_DRUNK] ? ( ch->pcdata->condition[COND_DRUNK] / 12 ) : 1 ) );
 
-   map < obj_data *, int >::iterator mobj;
+   std::map<obj_data *, int>::iterator mobj;
    objmap.clear(  );
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
       obj_data *obj = *iobj;
@@ -705,7 +692,7 @@ obj_data *obj_data::to_char( char_data * ch )
    int oweight = get_weight(  );
    int onum = get_number(  );
    int owear_loc = wear_loc;
-   bitset < MAX_ITEM_FLAG > oextra_flags = extra_flags;
+   std::bitset<MAX_ITEM_FLAG> oextra_flags = extra_flags;
 
    skipgroup = false;
    grouped = false;
@@ -741,7 +728,7 @@ obj_data *obj_data::to_char( char_data * ch )
    if( ch->isnpc(  ) && ch->pIndexData->pShop )
       skipgroup = true;
 
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    if( !skipgroup )
       for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
       {
@@ -912,7 +899,7 @@ void obj_data::from_room(  )
    map_y = -1;
    continent = nullptr;
 
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
       affect_data *af = *paf;
@@ -953,7 +940,7 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
 {
    short ocount = count;
    short oitem_type = item_type;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
 
    for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
@@ -969,10 +956,10 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
 
    pRoomIndex->weight += this->get_weight( );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = pRoomIndex->objects.begin(  ); iobj != pRoomIndex->objects.end(  ); ++iobj )
+   for( auto* otmp : pRoomIndex->objects )
    {
-      obj_data *oret, *otmp = *iobj;
+      obj_data *oret;
+
       if( ( oret = group_obj( otmp, this ) ) == otmp )
       {
          if( oitem_type == ITEM_FIRE )
@@ -1038,10 +1025,10 @@ obj_data *obj_data::to_obj( obj_data * obj_to )
    if( obj_to->in_room )
       obj_to->in_room->weight += this->get_weight( );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = obj_to->contents.begin(  ); iobj != obj_to->contents.end(  ); ++iobj )
+   for( auto* otmp : obj_to->contents )
    {
-      obj_data *oret, *otmp = *iobj;
+      obj_data *oret;
+
       if( ( oret = group_obj( otmp, this ) ) == otmp )
          return oret;
    }
@@ -1124,11 +1111,10 @@ void obj_data::extract(  )
    else if( in_obj )
       from_obj(  );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = contents.begin(  ); iobj != contents.end(  ); )
+   for( auto it = contents.begin(); it != contents.end(); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       obj->extract(  );
    }
@@ -1153,15 +1139,13 @@ int obj_data::get_number(  )
  */
 int obj_data::get_weight(  )
 {
-   list < obj_data * >::iterator iobj;
    int oweight = count * weight;
 
    if( item_type != ITEM_CONTAINER || !extra_flags.test( ITEM_MAGIC ) )
-      for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
-      {
-         obj_data *obj = *iobj;
+   {
+      for( auto* obj : contents )
          oweight += obj->get_weight(  );
-      }
+   }
    return oweight;
 }
 
@@ -1170,21 +1154,18 @@ int obj_data::get_weight(  )
  */
 int obj_data::get_real_weight(  )
 {
-   list < obj_data * >::iterator iobj;
    int oweight = count * weight;
 
-   for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
-   {
-      obj_data *obj = *iobj;
+   for( auto* obj : contents )
       oweight += obj->get_real_weight(  );
-   }
+
    return oweight;
 }
 
 /*
  * Return ascii name of an item type.
  */
-const string obj_data::item_type_name(  )
+const std::string obj_data::item_type_name(  )
 {
    if( item_type < 1 || item_type >= MAX_ITEM_TYPE )
    {
@@ -1202,10 +1183,8 @@ bool obj_data::is_trapped(  )
    if( contents.empty(  ) )
       return false;
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
+   for( auto* obj : contents )
    {
-      obj_data *obj = *iobj;
       if( obj->item_type == ITEM_TRAP )
          return true;
    }
@@ -1220,10 +1199,8 @@ obj_data *obj_data::get_trap(  )
    if( contents.empty(  ) )
       return nullptr;
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = contents.begin(  ); iobj != contents.end(  ); ++iobj )
+   for( auto* obj : contents )
    {
-      obj_data *obj = *iobj;
       if( obj->item_type == ITEM_TRAP )
          return obj;
    }
@@ -1236,11 +1213,8 @@ obj_data *obj_data::get_trap(  )
  */
 obj_data *get_objtype( char_data * ch, short type )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* obj : ch->carrying )
    {
-      obj_data *obj = *iobj;
       if( obj->item_type == type )
          return obj;
    }
@@ -1407,7 +1381,7 @@ void obj_data::separate(  )
 bool obj_data::empty( obj_data * destobj, room_index * destroom )
 {
    obj_data *otmp;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    char_data *ch = carried_by;
    bool movedsome = false;
 
@@ -1494,7 +1468,7 @@ void obj_data::remove_portal(  )
 
    exit_data *pexit;
    bool found = false;
-   list < exit_data * >::iterator iexit;
+   std::list<exit_data *>::iterator iexit;
    for( iexit = fromRoom->exits.begin(  ); iexit != fromRoom->exits.end(  ); ++iexit )
    {
       pexit = *iexit;
@@ -1622,7 +1596,7 @@ void obj_data::make_scraps(  )
 int obj_data::hitroll(  )
 {
    int tohit = 0;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
 
    for( paf = pIndexData->affects.begin(  ); paf != pIndexData->affects.end(  ); ++paf )
    {
@@ -1650,7 +1624,7 @@ int obj_data::hitroll(  )
  * like "Your long dark blade".  The object name isn't always appropriate
  * since it contains keywords that may not look proper.		-Thoric
  */
-const string obj_data::myobj(  )
+const std::string obj_data::myobj(  )
 {
    if( !str_prefix( "a ", short_descr ) )
       return short_descr + 2;
@@ -1783,7 +1757,7 @@ void obj_identify_output( char_data * ch, obj_data * obj )
          break;
    }
 
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
    {
       affect_data *af = *paf;

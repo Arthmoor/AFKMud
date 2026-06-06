@@ -40,47 +40,47 @@ class slay_data
     slay_data & operator=( const slay_data & ) = delete;
     slay_data(  );
 
-   void set_owner( const string & name )
+   void set_owner( const std::string & name )
    {
       owner = name;
    }
-   string get_owner(  )
+   std::string get_owner(  )
    {
       return owner;
    }
 
-   void set_type( const string & name )
+   void set_type( const std::string & name )
    {
       type = name;
    }
-   string get_type(  )
+   std::string get_type(  )
    {
       return type;
    }
 
-   void set_cmsg( const string & msg )
+   void set_cmsg( const std::string & msg )
    {
       cmsg = msg;
    }
-   string get_cmsg(  )
+   std::string get_cmsg(  )
    {
       return cmsg;
    }
 
-   void set_vmsg( const string & msg )
+   void set_vmsg( const std::string & msg )
    {
       vmsg = msg;
    }
-   string get_vmsg(  )
+   std::string get_vmsg(  )
    {
       return vmsg;
    }
 
-   void set_rmsg( const string & msg )
+   void set_rmsg( const std::string & msg )
    {
       rmsg = msg;
    }
-   string get_rmsg(  )
+   std::string get_rmsg(  )
    {
       return rmsg;
    }
@@ -95,10 +95,10 @@ class slay_data
    }
 
  private:
-   string owner;
-   string type;
-   string cmsg;
-   string vmsg;
-   string rmsg;
+   std::string owner;
+   std::string type;
+   std::string cmsg;
+   std::string vmsg;
+   std::string rmsg;
    int color;
 };

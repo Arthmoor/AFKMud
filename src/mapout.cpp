@@ -62,7 +62,7 @@ int num_rooms_avail( char_data * );
 int number_to_room_num( int );
 int exit_lookup( int, int );
 void draw_map( char_data *, room_index *, int, int );
-char *you_are_here( int, int, const string & );
+char *you_are_here( int, int, const std::string & );
 
 /* Local Variables & Structs */
 char text_rmap[MSL];
@@ -97,7 +97,8 @@ char *check_map( char *str )
    return newstr;
 }
 
-/* Be careful not to give
+/*
+ * Be careful not to give
  * this an existing map_index
  */
 map_index *make_new_map_index( int vnum )
@@ -221,7 +222,7 @@ void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
 
 CMDF( do_mapout )
 {
-   string arg;
+   std::string arg;
    obj_data *map_obj;   /* an obj made with map as an ed */
    obj_index *map_obj_index;  /*    obj_index for previous     */
    extra_descr_data *ed;   /*    the ed for it to go in     */

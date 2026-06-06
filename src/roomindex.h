@@ -40,7 +40,7 @@ class reset_data
  public:
      reset_data(  );
 
-     list < reset_data * >resets;   // Child resets associated with this reset
+   std::list<reset_data *> resets;   // Child resets associated with this reset
    obj_data *resetobj;
    char command;
    // Attention at the keyboard: Don't go setting these back to shorts. Charlana.are will drain your soul!
@@ -74,18 +74,18 @@ class exit_data
      exit_data(  );
     ~exit_data(  );
 
-   exit_data *rexit; // Reverse exit pointer
-   room_index *to_room; // Pointer to destination room
-     bitset < MAX_EXFLAG > flags;   // door states & other flags
-   char *keyword; // Keywords for exit or door
-   char *exitdesc;   // Description of exit
-   int vnum;   // Vnum of room exit leads to
-   int rvnum;  // Vnum of room in opposite dir
-   int key; // Key vnum
-   short vdir; // Physical "direction"
-   short pull; // pull of direction (current)
-   short pulltype;   // type of pull (current, wind)
-   short map_x;   // Coordinates to Overland Map - Samson 7-31-99
+   exit_data *rexit;       // Reverse exit pointer
+   room_index *to_room;    // Pointer to destination room
+   std::bitset<MAX_EXFLAG> flags; // door states & other flags
+   char *keyword;          // Keywords for exit or door
+   char *exitdesc;         // Description of exit
+   int vnum;               // Vnum of room exit leads to
+   int rvnum;              // Vnum of room in opposite dir
+   int key;                // Key vnum
+   short vdir;             // Physical "direction"
+   short pull;             // pull of direction (current)
+   short pulltype;         // type of pull (current, wind)
+   short map_x;            // Coordinates to Overland Map - Samson 7-31-99
    short map_y;
 };
 
@@ -102,8 +102,8 @@ class room_index
      room_index(  );
     ~room_index(  );
 
-   void olc_add_affect( char_data *, bool, string & );
-   void olc_remove_affect( char_data *, bool, const string & );
+   void olc_add_affect( char_data *, bool, std::string & );
+   void olc_remove_affect( char_data *, bool, const std::string & );
    void clean_room(  );
    void randomize_exits( short );
    exit_data *make_exit( room_index *, short );
@@ -111,7 +111,7 @@ class room_index
    exit_data *get_exit( short );
    exit_data *get_exit_to( short, int );
    exit_data *get_exit_num( short );
-   void echo( const string & );
+   void echo( const std::string & );
    void rprog_read_programs( FILE * );
    bool is_dark( char_data * );
    bool is_private(  );
@@ -124,21 +124,21 @@ class room_index
    void renumber_put_resets(  );
    void load_reset( FILE *, bool );
 
-     list < reset_data * >resets;   /* Things that get loaded in this room */
-     list < char_data * >people; /* People in the room  */
-     list < obj_data * >objects; /* Objects on the floor */
-     list < affect_data * >permaffects;   // Permanent affects on the room set via the area file or OLC
-     list < affect_data * >affects; /* Affects on the room */
-     list < exit_data * >exits;  /* Exits from the room */
-     list < extra_descr_data * >extradesc;   /* Extra descriptions */
-     list < struct mud_prog_data *>mudprogs; /* Mudprogs */
-     list < mprog_act_list *>mpact;   /* Mudprogs */
+   std::list<reset_data *> resets;   /* Things that get loaded in this room */
+   std::list<char_data *> people; /* People in the room  */
+   std::list<obj_data *> objects; /* Objects on the floor */
+   std::list<affect_data *> permaffects;   // Permanent affects on the room set via the area file or OLC
+   std::list<affect_data *> affects; /* Affects on the room */
+   std::list<exit_data *> exits;  /* Exits from the room */
+   std::list<extra_descr_data *> extradesc;   /* Extra descriptions */
+   std::list<struct mud_prog_data *> mudprogs; /* Mudprogs */
+   std::list<mprog_act_list *> mpact;   /* Mudprogs */
    room_index *next;
    area_data *area;
    reset_data *last_mob_reset;
    reset_data *last_obj_reset;
-     bitset < ROOM_MAX > flags;
-     bitset < MAX_PROG > progtypes; /* mudprogs */
+   std::bitset<ROOM_MAX> flags;
+   std::bitset<MAX_PROG> progtypes; /* mudprogs */
    char *name;
    char *roomdesc;   /* So that it can now be more easily grep'd - Samson 10-16-03 */
    char *nitedesc;   /* added NiteDesc -- Dracones */
@@ -156,11 +156,11 @@ class room_index
    unsigned short mpscriptpos;
 };
 
-extern map < int, room_index * >room_index_table;
+extern std::map<int, room_index *> room_index_table;
 
 room_index *get_room_index( int );
 room_index *make_room( int, area_data * );
-int get_dirnum( const string & );
+int get_dirnum( const std::string & );
 const char *rev_exit( short );
 
 #define EXIT(x, door)   ( (x)->in_room->get_exit( door ) )
@@ -176,4 +176,4 @@ struct teleport_data
    short timer;
 };
 
-extern list < teleport_data * >teleportlist;
+extern std::list<teleport_data *> teleportlist;

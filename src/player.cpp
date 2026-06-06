@@ -71,9 +71,9 @@ bool exists_player( const std::string & name )
 }
 
 /* Rank buffer code */
-string rankbuffer( char_data * ch )
+std::string rankbuffer( char_data * ch )
 {
-   ostringstream rbuf;
+   std::ostringstream rbuf;
 
    if( ch->is_immortal(  ) )
    {
@@ -364,15 +364,11 @@ void pc_data::load_zonedata( FILE * fp )
 /* Functions for use with area visiting code - Samson 7-11-00  */
 bool char_data::has_visited( area_data * area )
 {
-   list < string >::iterator zl;
-
    if( isnpc(  ) )
       return true;
 
-   for( zl = pcdata->zone.begin(  ); zl != pcdata->zone.end(  ); ++zl )
+   for( auto& zn : pcdata->zone )
    {
-      string zn = *zl;
-
       if( !str_cmp( area->name, zn ) )
          return true;
    }
@@ -381,16 +377,16 @@ bool char_data::has_visited( area_data * area )
 
 void char_data::update_visits( room_index * room )
 {
-   list < string >::iterator zl;
+   std::list<std::string>::iterator zl;
 
    if( isnpc(  ) || has_visited( room->area ) )
       return;
 
-   string zonename = room->area->name;
+   std::string zonename = room->area->name;
 
    for( zl = pcdata->zone.begin(  ); zl != pcdata->zone.end(  ); ++zl )
    {
-      string zn = *zl;
+      std::string zn = *zl;
 
       if( zn >= zonename )
       {
@@ -413,7 +409,6 @@ void char_data::remove_visit( room_index * room )
 /* Redone to use the sort methods in load_zonedata and update_visits by Samson 10-4-03 */
 CMDF( do_visits )
 {
-   list < string >::iterator zl;
    char_data *victim;
    int visits = 0;
 
@@ -427,10 +422,8 @@ CMDF( do_visits )
    {
       ch->pager( "You have visited the following areas:\r\n" );
       ch->pager( "-------------------------------------\r\n" );
-      for( zl = ch->pcdata->zone.begin(  ); zl != ch->pcdata->zone.end(  ); ++zl )
+      for( auto& zn : ch->pcdata->zone )
       {
-         string zn = *zl;
-
          ch->pagerf( "%s\r\n", zn.c_str(  ) );
          ++visits;
       }
@@ -457,10 +450,9 @@ CMDF( do_visits )
    }
    ch->pagerf( "%s has visited the following areas:\r\n", victim->name );
    ch->pager( "-------------------------------------------\r\n" );
-   for( zl = victim->pcdata->zone.begin(  ); zl != victim->pcdata->zone.end(  ); ++zl )
-   {
-      string zn = *zl;
 
+   for( auto& zn : victim->pcdata->zone )
+   {
       ch->pagerf( "%s\r\n", zn.c_str(  ) );
       ++visits;
    }
@@ -491,8 +483,7 @@ CMDF( do_level )
 /* 1997, Blodkai */
 CMDF( do_remains )
 {
-   string buf;
-   list < obj_data * >::iterator iobj;
+   std::string buf;
    bool found = false;
 
    if( ch->isnpc(  ) )
@@ -516,10 +507,8 @@ CMDF( do_remains )
 
    buf = "the corpse of ";
    buf.append( ch->name );
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   for( auto* obj : objlist )
    {
-      obj_data *obj = *iobj;
-
       if( obj->in_room && !str_cmp( buf, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
       {
          found = true;
@@ -725,7 +714,7 @@ CMDF( do_inventory )
 
 bool is_valid_wear_loc( char_data *ch, int wear_loc )
 {
-   bitset<MAX_BPART> body_parts;
+   std::bitset<MAX_BPART> body_parts;
 
    if( ch->has_bparts() )
       body_parts = ch->get_bparts();
@@ -852,10 +841,8 @@ CMDF( do_equipment )
          continue;
       }
 
-      list < obj_data * >::iterator iobj;
-      for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); ++iobj )
+      for( auto* obj : victim->carrying )
       {
-         obj_data *obj = *iobj;
          if( obj->wear_loc == iWear )
          {
             ++count;
@@ -919,7 +906,7 @@ CMDF( do_title )
       return;
    }
 
-   if( argument.find( '}' ) != string::npos )
+   if( argument.find( '}' ) != std::string::npos )
    {
       ch->print( "New title is not acceptable, blinking colors are not allowed.\r\n" );
       return;
@@ -1197,10 +1184,10 @@ CMDF( do_deadly )
    log_printf( "%s has become a pkiller!", ch->name );
 }
 
-const string output_person( char_data * ch, char_data * player )
+const std::string output_person( char_data * ch, char_data * player )
 {
-   string rank;
-   ostringstream stats, clan_name, outbuf;
+   std::string rank;
+   std::ostringstream stats, clan_name, outbuf;
 
    rank = rankbuffer( player );
    outbuf << color_align( rank, 20, ALIGN_CENTER );
@@ -1236,7 +1223,7 @@ const string output_person( char_data * ch, char_data * player )
 
    outbuf << " " << ch->color_str( AT_WHO4 ) << player->name << player->pcdata->title << clan_name.str(  );
 
-   outbuf << endl;
+   outbuf << std::endl;
 
    return outbuf.str(  );
 }
@@ -1244,9 +1231,9 @@ const string output_person( char_data * ch, char_data * player )
 /* Derived directly from the i3who code, which is a hybrid mix of Smaug, RM, and Dale who. */
 int afk_who( char_data * ch )
 {
-   vector < char_data * >players;
-   vector < char_data * >immortals;
-   vector < char_data * >::iterator iplr;
+   std::vector<char_data *> players;
+   std::vector<char_data *> immortals;
+   std::vector<char_data *>::iterator iplr;
    int pcount = 0;
 
    if( !ch )
@@ -1623,8 +1610,7 @@ CMDF( do_practice )
       }
 
       /*
-       * Guild checks - right now, cant practice guild skills - done on 
-       * induct/outcast
+       * Guild checks - right now, can't practice guild skills - done on induct/outcast
        */
       /*
        * if( !ch->isnpc() && !IS_GUILDED(ch) && skill_table[sn]->guild != CLASS_NONE )
@@ -2244,7 +2230,8 @@ CMDF( do_journal )
       }
    }
 
-   /* Read option. Players can read the desc on the journal by typing "look page1", but I thought about putting
+   /*
+    * Read option. Players can read the desc on the journal by typing "look page1", but I thought about putting
     * in this option anyway.
     */
    if( !str_cmp( arg1, "read" ) )

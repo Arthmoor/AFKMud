@@ -72,7 +72,7 @@ extern const char *liquid_types[];
 void medit_disp_aff_flags( descriptor_data * );
 void medit_disp_ris( descriptor_data * );
 void olc_log( descriptor_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
-int get_traptype( const string & );
+int get_traptype( const std::string & );
 bool can_omodify( char_data *, obj_data * );
 
 /* Internal functions */
@@ -611,9 +611,9 @@ CMDF( do_ooedit )
    }
 
    /*
-    * Make sure the object isnt already being edited 
+    * Make sure the object isn't already being edited
     */
-   list < descriptor_data * >::iterator ds;
+   std::list<descriptor_data *>::iterator ds;
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
       d = *ds;
@@ -643,7 +643,7 @@ CMDF( do_ooedit )
 CMDF( do_ocopy )
 {
    area_data *pArea;
-   string arg1;
+   std::string arg1;
    int ovnum, cvnum;
    obj_index *orig;
 
@@ -772,7 +772,7 @@ void oedit_disp_layer_menu( descriptor_data * d )
 void oedit_disp_extradesc_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   list < extra_descr_data * >::iterator ed;
+   std::list<extra_descr_data *>::iterator ed;
    extra_descr_data *edesc;
    int count = 0;
 
@@ -823,7 +823,7 @@ void oedit_disp_extra_choice( descriptor_data * d )
 void oedit_disp_prompt_apply_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    int counter = 0;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -1572,7 +1572,7 @@ void edit_object_affect( descriptor_data * d, int number )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
    int count = 0;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
 
    for( paf = obj->pIndexData->affects.begin(  ); paf != obj->pIndexData->affects.end(  ); ++paf )
    {
@@ -1607,7 +1607,7 @@ void edit_object_affect( descriptor_data * d, int number )
 void remove_affect_from_obj( obj_data * obj, int number )
 {
    int count = 0;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
 
    if( !obj->pIndexData->affects.empty(  ) )
    {
@@ -1649,7 +1649,7 @@ void remove_affect_from_obj( obj_data * obj, int number )
 extra_descr_data *oedit_find_extradesc( obj_data * obj, int number )
 {
    int count = 0;
-   list < extra_descr_data * >::iterator ed;
+   std::list<extra_descr_data *>::iterator ed;
    extra_descr_data *edesc;
 
    for( ed = obj->pIndexData->extradesc.begin(  ); ed != obj->pIndexData->extradesc.end(  ); ++ed )
@@ -1730,13 +1730,13 @@ CMDF( do_oedit_reset )
  * This function interprets the arguments that the character passed
  * to it based on which OLC mode you are in at the time
  */
-void oedit_parse( descriptor_data * d, string & arg )
+void oedit_parse( descriptor_data * d, std::string & arg )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
    affect_data *paf = ( affect_data * ) d->character->pcdata->spare_ptr;
    affect_data *npaf;
    extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
-   string arg1;
+   std::string arg1;
    int number = 0, max_val, min_val, value;
    /*
     * bool found; 
@@ -1905,7 +1905,7 @@ void oedit_parse( descriptor_data * d, string & arg )
 
       case OEDIT_TYPE:
          if( is_number( arg ) )
-            number = atoi( arg.c_str(  ) );
+            number = std::stoi( arg );
          else
             number = get_otype( arg );
 
@@ -1975,7 +1975,7 @@ void oedit_parse( descriptor_data * d, string & arg )
       case OEDIT_WEAR:
          if( is_number( arg ) )
          {
-            number = atoi( arg.c_str(  ) );
+            number = std::stoi( arg );
             if( number == 0 )
                break;
             else if( number < 0 || number >= MAX_WEAR_FLAG )
@@ -2009,7 +2009,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          return;
 
       case OEDIT_WEIGHT:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          obj->weight = number;
          olc_log( d, "Changed weight to %d", obj->weight );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
@@ -2017,7 +2017,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_COST:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          obj->cost = number;
          olc_log( d, "Changed cost to %d", obj->cost );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
@@ -2025,7 +2025,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_COSTPERDAY:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             obj->pIndexData->ego = number;
@@ -2048,13 +2048,13 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_TIMER:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          obj->timer = number;
          olc_log( d, "Changed timer to %d", obj->timer );
          break;
 
       case OEDIT_LEVEL:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          obj->level = URANGE( 0, number, MAX_LEVEL );
          olc_log( d, "Changed object level to %d", obj->level );
          break;
@@ -2064,7 +2064,7 @@ void oedit_parse( descriptor_data * d, string & arg )
           * Like they say, easy on the user, hard on the programmer :) 
           * Or did I just make that up....
           */
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( number )
          {
             case 0:
@@ -2108,7 +2108,7 @@ void oedit_parse( descriptor_data * d, string & arg )
       case OEDIT_TRAPFLAGS:
          if( is_number( arg ) )
          {
-            number = atoi( arg.c_str(  ) );
+            number = std::stoi( arg );
             if( number == 0 )
                break;
             else if( number < 0 || number > TRAPFLAG_MAX + 1 )
@@ -2142,7 +2142,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          return;
 
       case OEDIT_VALUE_0:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_LEVER:
@@ -2169,7 +2169,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_1:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_PILL:
@@ -2192,7 +2192,7 @@ void oedit_parse( descriptor_data * d, string & arg )
                break;
 
             case ITEM_CONTAINER:
-               number = atoi( arg.c_str(  ) );
+               number = std::stoi( arg );
                if( number < 0 || number > 31 )
                   oedit_disp_container_flags_menu( d );
                else
@@ -2220,7 +2220,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_2:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          /*
           * Some error checking done here 
           */
@@ -2287,7 +2287,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_3:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_PILL:
@@ -2335,7 +2335,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_4:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_SALVE:
@@ -2385,7 +2385,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_5:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_SALVE:
@@ -2422,7 +2422,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_6:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2445,7 +2445,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_7:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2467,7 +2467,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_8:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2494,7 +2494,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_9:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2521,7 +2521,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_VALUE_10:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( obj->item_type )
          {
             case ITEM_WEAPON:
@@ -2548,7 +2548,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_AFFECT_MENU:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
 
          switch ( arg[0] )
          {
@@ -2595,7 +2595,7 @@ void oedit_parse( descriptor_data * d, string & arg )
       case OEDIT_AFFECT_LOCATION:
          if( is_number( arg ) )
          {
-            number = atoi( arg.c_str(  ) );
+            number = std::stoi( arg );
             if( number == 0 )
             {
                /*
@@ -2647,7 +2647,7 @@ void oedit_parse( descriptor_data * d, string & arg )
             case APPLY_SUSCEPTIBLE:
                if( is_number( arg ) )
                {
-                  number = atoi( arg.c_str(  ) );
+                  number = std::stoi( arg );
                   if( number == 0 )
                   {
                      value = d->character->tempnum;
@@ -2681,7 +2681,7 @@ void oedit_parse( descriptor_data * d, string & arg )
             case APPLY_REMOVESPELL:
                if( is_number( arg ) )
                {
-                  number = atoi( arg.c_str(  ) );
+                  number = std::stoi( arg );
                   if( IS_VALID_SN( number ) )
                      value = number;
                   else
@@ -2702,7 +2702,7 @@ void oedit_parse( descriptor_data * d, string & arg )
                break;
 
             default:
-               value = atoi( arg.c_str(  ) );
+               value = std::stoi( arg );
                break;
          }
          /*
@@ -2739,7 +2739,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          /*
           * Unnecessary atm 
           */
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          if( number < 0 || number > 31 )
          {
             d->character->print( "Unknown flag, try again: " );
@@ -2748,7 +2748,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          return;
 
       case OEDIT_AFFECT_REMOVE:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          remove_affect_from_obj( obj, number );
          olc_log( d, "Removed affect #%d", number );
          oedit_disp_prompt_apply_menu( d );
@@ -2776,7 +2776,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          break;
 
       case OEDIT_EXTRADESC_CHOICE:
-         number = atoi( arg.c_str(  ) );
+         number = std::stoi( arg );
          switch ( number )
          {
             default:
@@ -2819,7 +2819,7 @@ void oedit_parse( descriptor_data * d, string & arg )
          return;
 
       case OEDIT_EXTRADESC_MENU:
-         switch ( UPPER( arg[0] ) )
+         switch ( UPPER( arg.front() ) )
          {
             case 'Q':
                break;

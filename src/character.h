@@ -70,25 +70,25 @@ class pc_data
    void fread_comment( FILE * );
    void fread_old_comment( FILE * );
 
-     map < string, string > alias_map; /* Command aliases */
-     map < int, string > qbits;  /* abit/qbit code */
-     list < class board_chardata *>boarddata;
-     list < class note_data *>comments;
-     list < string > zone; /* List of zones this PC has visited - Samson 7-11-00 */
-     list < string > ignore;  /* List of players to ignore */
-     vector < string > say_history;
-     vector < string > tell_history;
-   string bestowments;  // Special bestowed commands
-   string chan_listen;  // For dynamic channels - Samson 3-2-02
-   string clan_name; // Name of the clan/guild this person belongs to if any.
-   string realm_name; // Name of the immortal realm this person belongs to.
-   string deity_name;   // Name of the deity this person worships.
-   string lasthost;  // Stores host info so it doesn't have to depend on a descriptor, for things like finger.
-   string prevhost;  // Stores IP logged into prior to the lasthost field.
-   string homepage;  // The person's homepage in the big bad world out there.
-   string email;  // The person's email address.
-   string pwd; // The person's password
-   string authed_by; // The immortal who authorized this player's name.
+   std::map<std::string, std::string > alias_map; /* Command aliases */
+   std::map<int, std::string> qbits;  /* abit/qbit code */
+   std::list<class board_chardata *> boarddata;
+   std::list<class note_data *> comments;
+   std::list<std::string> zone; /* List of zones this PC has visited - Samson 7-11-00 */
+   std::list<std::string> ignore;  /* List of players to ignore */
+   std::vector<std::string> say_history;
+   std::vector<std::string> tell_history;
+   std::string bestowments;  // Special bestowed commands
+   std::string chan_listen;  // For dynamic channels - Samson 3-2-02
+   std::string clan_name; // Name of the clan/guild this person belongs to if any.
+   std::string realm_name; // Name of the immortal realm this person belongs to.
+   std::string deity_name;   // Name of the deity this person worships.
+   std::string lasthost;  // Stores host info so it doesn't have to depend on a descriptor, for things like finger.
+   std::string prevhost;  // Stores IP logged into prior to the lasthost field.
+   std::string homepage;  // The person's homepage in the big bad world out there.
+   std::string email;  // The person's email address.
+   std::string pwd; // The person's password
+   std::string authed_by; // The immortal who authorized this player's name.
    area_data *area;  /* For the area a PC has been assigned to build */
    class clan_data *clan;
    class realm_data *realm;
@@ -98,7 +98,7 @@ class pc_data
    class board_data *board;
    struct game_board_data *game_board;
  protected:
-     bitset < MAX_PCFLAG > flags;   /* Whether the player is deadly and whatever else we add. Also covers the old PLR_FLAGS */
+   std::bitset<MAX_PCFLAG> flags;   /* Whether the player is deadly and whatever else we add. Also covers the old PLR_FLAGS */
  public:
    void *spare_ptr;
    void *dest_buf;   /* This one is to assign to different things */
@@ -186,12 +186,12 @@ class char_data
    }
 
    void printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) ); // Legacy C style formatting.
-   void pager( const string & );
+   void pager( const std::string & );
    void pagerf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void print_room( std::string_view );
    void set_color( short );
    void set_pager_color( short );
-   void set_title( const string & );
+   void set_title( const std::string & );
    int calculate_race_height(  );
    int calculate_race_weight(  );
    short get_trust(  );
@@ -206,16 +206,16 @@ class char_data
    short get_curr_lck(  );
    bool can_take_proto(  );
    bool can_see( char_data *, bool );
-   char_data *get_char_room( const string & );
-   char_data *get_char_world( const string & );
-   room_index *find_location( const string & );
+   char_data *get_char_room( const std::string & );
+   char_data *get_char_world( const std::string & );
+   room_index *find_location( const std::string & );
    bool can_see_obj( obj_data *, bool );
    bool can_drop_obj( obj_data * );
    obj_data *get_obj_vnum( int );
-   obj_data *get_obj_carry( const string & );
-   obj_data *get_obj_wear( const string & );
-   obj_data *get_obj_here( const string & );
-   obj_data *get_obj_world( const string & );
+   obj_data *get_obj_carry( const std::string & );
+   obj_data *get_obj_wear( const std::string & );
+   obj_data *get_obj_here( const std::string & );
+   obj_data *get_obj_world( const std::string & );
    obj_data *get_eq( int );
    int can_carry_n(  );
    int can_carry_w(  );
@@ -263,8 +263,8 @@ class char_data
     * External references in other files 
     */
    bool char_died(  );
-   void music( const string &, int, bool );
-   void sound( const string &, int, bool );
+   void music( const std::string &, int, bool );
+   void sound( const std::string &, int, bool );
    void reset_sound(  );
    void reset_music(  );
    const char *color_str( short );
@@ -276,12 +276,12 @@ class char_data
    void stop_fighting( bool );
    void editor_desc_printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void start_editing( char * );
-   void start_editing( string );
+   void start_editing( std::string );
    void stop_editing(  );
    char *copy_buffer( bool );
-   string copy_buffer(  );
-   void set_editor_desc( const string & );
-   void edit_buffer( string & );
+   std::string copy_buffer(  );
+   void set_editor_desc( const std::string & );
+   void edit_buffer( std::string & );
    void note_attach(  );
    bool can_charm(  );
    void learn_from_failure( int );
@@ -297,8 +297,8 @@ class char_data
    bool has_actflag( int );
    void toggle_actflag( int );
    bool has_actflags(  );
-     bitset < MAX_ACT_FLAG > get_actflags(  );
-   void set_actflags( bitset < MAX_ACT_FLAG > );
+   std::bitset<MAX_ACT_FLAG> get_actflags(  );
+   void set_actflags( std::bitset<MAX_ACT_FLAG> );
    void set_file_actflags( FILE * );
 
    bool has_immune( int );
@@ -306,15 +306,15 @@ class char_data
    void unset_immune( int );
    void toggle_immune( int );
    bool has_immunes(  );
-     bitset < MAX_RIS_FLAG > get_immunes(  );
-   void set_immunes( bitset < MAX_RIS_FLAG > );
+   std::bitset<MAX_RIS_FLAG> get_immunes(  );
+   void set_immunes( std::bitset<MAX_RIS_FLAG> );
    void set_file_immunes( FILE * );
 
    bool has_noimmune( int );
    void set_noimmune( int );
    bool has_noimmunes(  );
-     bitset < MAX_RIS_FLAG > get_noimmunes(  );
-   void set_noimmunes( bitset < MAX_RIS_FLAG > );
+   std::bitset<MAX_RIS_FLAG> get_noimmunes(  );
+   void set_noimmunes( std::bitset<MAX_RIS_FLAG> );
    void set_file_noimmunes( FILE * );
 
    bool has_resist( int );
@@ -322,15 +322,15 @@ class char_data
    void unset_resist( int );
    void toggle_resist( int );
    bool has_resists(  );
-     bitset < MAX_RIS_FLAG > get_resists(  );
-   void set_resists( bitset < MAX_RIS_FLAG > );
+   std::bitset<MAX_RIS_FLAG> get_resists(  );
+   void set_resists( std::bitset<MAX_RIS_FLAG> );
    void set_file_resists( FILE * );
 
    bool has_noresist( int );
    void set_noresist( int );
    bool has_noresists(  );
-     bitset < MAX_RIS_FLAG > get_noresists(  );
-   void set_noresists( bitset < MAX_RIS_FLAG > );
+   std::bitset<MAX_RIS_FLAG> get_noresists(  );
+   void set_noresists( std::bitset<MAX_RIS_FLAG> );
    void set_file_noresists( FILE * );
 
    bool has_suscep( int );
@@ -338,15 +338,15 @@ class char_data
    void unset_suscep( int );
    void toggle_suscep( int );
    bool has_susceps(  );
-     bitset < MAX_RIS_FLAG > get_susceps(  );
-   void set_susceps( bitset < MAX_RIS_FLAG > );
+   std::bitset<MAX_RIS_FLAG> get_susceps(  );
+   void set_susceps( std::bitset<MAX_RIS_FLAG> );
    void set_file_susceps( FILE * );
 
    bool has_nosuscep( int );
    void set_nosuscep( int );
    bool has_nosusceps(  );
-     bitset < MAX_RIS_FLAG > get_nosusceps(  );
-   void set_nosusceps( bitset < MAX_RIS_FLAG > );
+   std::bitset<MAX_RIS_FLAG> get_nosusceps(  );
+   void set_nosusceps( std::bitset<MAX_RIS_FLAG> );
    void set_file_nosusceps( FILE * );
 
    bool has_absorb( int );
@@ -354,8 +354,8 @@ class char_data
    void unset_absorb( int );
    void toggle_absorb( int );
    bool has_absorbs(  );
-     bitset < MAX_RIS_FLAG > get_absorbs(  );
-   void set_absorbs( bitset < MAX_RIS_FLAG > );
+   std::bitset<MAX_RIS_FLAG> get_absorbs(  );
+   void set_absorbs( std::bitset< MAX_RIS_FLAG> );
    void set_file_absorbs( FILE * );
 
    bool has_attack( int );
@@ -363,8 +363,8 @@ class char_data
    void unset_attack( int );
    void toggle_attack( int );
    bool has_attacks(  );
-     bitset < MAX_ATTACK_TYPE > get_attacks(  );
-   void set_attacks( bitset < MAX_ATTACK_TYPE > );
+   std::bitset<MAX_ATTACK_TYPE> get_attacks(  );
+   void set_attacks( std::bitset<MAX_ATTACK_TYPE> );
    void set_file_attacks( FILE * );
 
    bool has_defense( int );
@@ -372,8 +372,8 @@ class char_data
    void unset_defense( int );
    void toggle_defense( int );
    bool has_defenses(  );
-     bitset < MAX_DEFENSE_TYPE > get_defenses(  );
-   void set_defenses( bitset < MAX_DEFENSE_TYPE > );
+   std::bitset<MAX_DEFENSE_TYPE> get_defenses(  );
+   void set_defenses( std::bitset<MAX_DEFENSE_TYPE> );
    void set_file_defenses( FILE * );
 
    bool has_aflag( int );
@@ -381,8 +381,8 @@ class char_data
    void unset_aflag( int );
    void toggle_aflag( int );
    bool has_aflags(  );
-     bitset < MAX_AFFECTED_BY > get_aflags(  );
-   void set_aflags( bitset < MAX_AFFECTED_BY > );
+   std::bitset<MAX_AFFECTED_BY> get_aflags(  );
+   void set_aflags( std::bitset<MAX_AFFECTED_BY> );
    void set_file_aflags( FILE * );
 
    bool has_noaflag( int );
@@ -390,8 +390,8 @@ class char_data
    void unset_noaflag( int );
    void toggle_noaflag( int );
    bool has_noaflags(  );
-     bitset < MAX_AFFECTED_BY > get_noaflags(  );
-   void set_noaflags( bitset < MAX_AFFECTED_BY > );
+   std::bitset<MAX_AFFECTED_BY> get_noaflags(  );
+   void set_noaflags( std::bitset<MAX_AFFECTED_BY> );
    void set_file_noaflags( FILE * );
 
    bool has_bpart( int );
@@ -399,8 +399,8 @@ class char_data
    void unset_bpart( int );
    void toggle_bpart( int );
    bool has_bparts(  );
-     bitset < MAX_BPART > get_bparts(  );
-   void set_bparts( bitset < MAX_BPART > );
+   std::bitset<MAX_BPART> get_bparts(  );
+   void set_bparts( std::bitset<MAX_BPART> );
    void set_file_bparts( FILE * );
    void set_bodypart_where_names( );
 
@@ -409,7 +409,7 @@ class char_data
    void unset_pcflag( int );
    void toggle_pcflag( int );
    bool has_pcflags(  );
-     bitset < MAX_PCFLAG > get_pcflags(  );
+   std::bitset<MAX_PCFLAG> get_pcflags(  );
    void set_file_pcflags( FILE * );
 
    bool has_lang( int );
@@ -417,8 +417,8 @@ class char_data
    void unset_lang( int );
    void toggle_lang( int );
    bool has_langs(  );
-     bitset < LANG_UNKNOWN > get_langs(  );
-   void set_langs( bitset < LANG_UNKNOWN > );
+   std::bitset<LANG_UNKNOWN> get_langs(  );
+   void set_langs( std::bitset<LANG_UNKNOWN> );
    void set_file_langs( FILE * );
 
    bool isnpc(  )
@@ -489,15 +489,15 @@ class char_data
       }
    }
 
-   map < int, string > abits; /* abit/qbit code */
-   list < char_data * >pets;
-   list < obj_data * >carrying;
-   list < affect_data * >affects;
-   list < timer_data * >timers;
-   list < class mprog_act_list *>mpact;  /* Mudprogs */
-   list < struct variable_data *>variables;  // Quest flags
-   vector < string > bodypart_where_names; /* Body part wear messages */
-   string spec_funname;
+   std::map<int, std::string> abits; /* abit/qbit code */
+   std::list<char_data *> pets;
+   std::list<obj_data *> carrying;
+   std::list<affect_data *> affects;
+   std::list<timer_data *> timers;
+   std::list<class mprog_act_list *> mpact;  /* Mudprogs */
+   std::list<struct variable_data *> variables;  // Quest flags
+   std::vector<std::string> bodypart_where_names; /* Body part wear messages */
+   std::string spec_funname;
    char_data *master;
    char_data *leader;
    char_data *reply;
@@ -523,20 +523,20 @@ class char_data
    DO_FUN *prev_cmd; /* mapping */
    SPEC_FUN *spec_fun;
  private:
-   bitset < MAX_ACT_FLAG > actflags;
-   bitset < MAX_AFFECTED_BY > affected_by;
-   bitset < MAX_AFFECTED_BY > no_affected_by;
-   bitset < MAX_ATTACK_TYPE > attacks;
-   bitset < MAX_DEFENSE_TYPE > defenses;
-   bitset < MAX_BPART > body_parts;
-   bitset < MAX_RIS_FLAG > resistant;
-   bitset < MAX_RIS_FLAG > no_resistant;
-   bitset < MAX_RIS_FLAG > immune;
-   bitset < MAX_RIS_FLAG > no_immune;
-   bitset < MAX_RIS_FLAG > susceptible;
-   bitset < MAX_RIS_FLAG > no_susceptible;
-   bitset < MAX_RIS_FLAG > absorb;  /* Absorption flag for RIS data - Samson 3-16-00 */
-   bitset < LANG_UNKNOWN > speaks;
+   std::bitset<MAX_ACT_FLAG> actflags;
+   std::bitset<MAX_AFFECTED_BY> affected_by;
+   std::bitset<MAX_AFFECTED_BY> no_affected_by;
+   std::bitset<MAX_ATTACK_TYPE> attacks;
+   std::bitset<MAX_DEFENSE_TYPE> defenses;
+   std::bitset<MAX_BPART> body_parts;
+   std::bitset<MAX_RIS_FLAG> resistant;
+   std::bitset<MAX_RIS_FLAG> no_resistant;
+   std::bitset<MAX_RIS_FLAG> immune;
+   std::bitset<MAX_RIS_FLAG> no_immune;
+   std::bitset<MAX_RIS_FLAG> susceptible;
+   std::bitset<MAX_RIS_FLAG> no_susceptible;
+   std::bitset<MAX_RIS_FLAG> absorb;  /* Absorption flag for RIS data - Samson 3-16-00 */
+   std::bitset<LANG_UNKNOWN> speaks;
  public:
    char *name;
    char *short_descr;
@@ -625,8 +625,8 @@ class char_data
    bool backtracking;   /* Unsafe landing flag   */
 };
 
-extern list < char_data * >charlist;
-extern list < char_data * >pclist;
+extern std::list<char_data *> charlist;
+extern std::list<char_data *> pclist;
 extern char_data *quitting_char;
 extern char_data *loading_char;
 extern char_data *saving_char;

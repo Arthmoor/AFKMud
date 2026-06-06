@@ -41,7 +41,7 @@
 #include "connhist.h"
 
 /* Globals */
-list < conn_data * >connlist;
+std::list<conn_data *> connlist;
 
 conn_data::conn_data(  )
 {
@@ -59,12 +59,10 @@ conn_data::~conn_data(  )
  */
 void free_connhistory( int arg )
 {
-   list < conn_data * >::iterator iconn;
-
-   for( iconn = connlist.begin(  ); iconn != connlist.end(  ); )
+   for( auto it = connlist.begin(  ); it != connlist.end(  ); )
    {
-      conn_data *con = *iconn;
-      ++iconn;
+      conn_data *con = *it;
+      ++it;
 
       deleteptr( con );
    }
@@ -93,7 +91,7 @@ int check_conn_entry( conn_data * conn )
 /* Loads the conn.hist file into memory */
 void load_connhistory( void )
 {
-   ifstream stream;
+   std::ifstream stream;
    conn_data *conn = nullptr;
    size_t conncount = 0;
 
@@ -157,8 +155,7 @@ void load_connhistory( void )
 /* Saves the conn.hist file */
 void save_connhistory( void )
 {
-   ofstream stream;
-   list < conn_data * >::iterator iconn;
+   std::ofstream stream;
 
    if( connlist.empty(  ) )
       return;
@@ -170,23 +167,21 @@ void save_connhistory( void )
       return;
    }
 
-   for( iconn = connlist.begin(  ); iconn != connlist.end(  ); ++iconn )
+   for( auto* conn : connlist )
    {
-      conn_data *conn = *iconn;
-
       /*
        * Only save OK conn entries 
        */
       if( ( check_conn_entry( conn ) ) == CHK_CONN_OK )
       {
-         stream << "#CONN" << endl;
-         stream << "User   " << conn->user << endl;
-         stream << "Host   " << conn->host << endl;
-         stream << "When   " << conn->when << endl;
-         stream << "Level  " << conn->level << endl;
-         stream << "Type   " << conn->type << endl;
-         stream << "Invis  " << conn->invis_lvl << endl;
-         stream << "End" << endl << endl;
+         stream << "#CONN" << std::endl;
+         stream << "User   " << conn->user << std::endl;
+         stream << "Host   " << conn->host << std::endl;
+         stream << "When   " << conn->when << std::endl;
+         stream << "Level  " << conn->level << std::endl;
+         stream << "Type   " << conn->type << std::endl;
+         stream << "Invis  " << conn->invis_lvl << std::endl;
+         stream << "End" << std::endl << std::endl;
       }
    }
    stream.close(  );
@@ -240,9 +235,7 @@ void update_connhistory( descriptor_data * d, int type )
 CMDF( do_logins )
 {
    int conn_count = 0;
-   list < conn_data * >::iterator iconn;
-   std::string user;
-   string typebuf;
+   std::string user, typebuf;
 
    if( !argument.empty(  ) && ( !str_cmp( argument, "clear" ) && ch->level >= CH_LVL_ADMIN ) )
    {
@@ -256,10 +249,8 @@ CMDF( do_logins )
     */
    ch->printf( "&c----[&WConnection History for %s&c]----&w\r\n", sysdata->mud_name.c_str(  ) );
 
-   for( iconn = connlist.begin(  ); iconn != connlist.end(  ); ++iconn )
+   for( auto* conn : connlist )
    {
-      conn_data *conn = *iconn;
-
       if( ( check_conn_entry( conn ) ) != CHK_CONN_OK )
          continue;
 

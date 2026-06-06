@@ -90,7 +90,7 @@
 
 /* globals */
 liquid_data *liquid_table[MAX_LIQUIDS];
-list < mixture_data * >mixlist;
+std::list<mixture_data *> mixlist;
 
 const char *liquid_types[LIQTYPE_TOP] = {
    "Beverage", "Alcohol", "Poison", "Unused"
@@ -315,10 +315,14 @@ void load_liquids( void )
    FCLOSE( fp );
 }
 
+// 1: ???
+// 2: ???
+// 3: ???
+const int MIX_VERSION = 3;
+
 /* save the mixtures to the mixture table -Nopey */
 void save_mixtures( void )
 {
-   list < mixture_data * >::iterator imix;
    FILE *fp = nullptr;
 
    std::filesystem::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
@@ -328,11 +332,9 @@ void save_mixtures( void )
       return;
    }
 
-   fprintf( fp, "%s", "#VERSION 3\n" );
-   for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
+   fprintf( fp, "#VERSION %d\n", MIX_VERSION );
+   for( auto* mix : mixlist )
    {
-      mixture_data *mix = *imix;
-
       fprintf( fp, "%s", "#MIXTURE\n" );
       fprintf( fp, "Name   %s~\n", mix->name.c_str(  ) );
       fprintf( fp, "Data   %d %d %d\n", mix->data[0], mix->data[1], mix->data[2] );
@@ -492,7 +494,7 @@ static int figure_liq_vnum( void )
 }
 
 /* lookup func for liquids      -Nopey */
-liquid_data *get_liq( const string & str )
+liquid_data *get_liq( const std::string & str )
 {
    int i;
 
@@ -528,14 +530,10 @@ liquid_data *get_liq_vnum( int vnum )
 }
 
 /* lookup func for mixtures - Nopey */
-mixture_data *get_mix( const string & str )
+mixture_data *get_mix( const std::string & str )
 {
-   list < mixture_data * >::iterator imix;
-
-   for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
+   for( auto* mix : mixlist )
    {
-      mixture_data *mix = *imix;
-
       if( !str_cmp( mix->name, str ) )
          return mix;
    }
@@ -544,12 +542,10 @@ mixture_data *get_mix( const string & str )
 
 void free_liquiddata( void )
 {
-   list < mixture_data * >::iterator mx;
-
-   for( mx = mixlist.begin(  ); mx != mixlist.end(  ); )
+   for( auto it = mixlist.begin(); it != mixlist.end(); )
    {
-      mixture_data *mix = *mx;
-      ++mx;
+      mixture_data *mix = *it;
+      ++it;
 
       deleteptr( mix );
    }
@@ -618,7 +614,7 @@ CMDF( do_showliquid )
 /* olc function for liquids   -Nopey */
 CMDF( do_setliquid )
 {
-   string arg;
+   std::string arg;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
    {
@@ -701,7 +697,7 @@ CMDF( do_setliquid )
    }
    else
    {
-      string arg2;
+      std::string arg2;
       liquid_data *liq = nullptr;
 
       argument = one_argument( argument, arg2 );
@@ -747,7 +743,7 @@ CMDF( do_setliquid )
       }
       else if( !str_cmp( arg2, "type" ) )
       {
-         string arg3;
+         std::string arg3;
          int i;
          bool found = false;
 
@@ -854,7 +850,7 @@ void displaymixture( char_data * ch, mixture_data * mix )
 CMDF( do_showmixture )
 {
    mixture_data *mix = nullptr;
-   list < mixture_data * >::iterator imx;
+   std::list<mixture_data *>::iterator imx;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
    {
@@ -894,7 +890,7 @@ CMDF( do_showmixture )
 /* olc funciton for mixtures  -Nopey */
 CMDF( do_setmixture )
 {
-   string arg;
+   std::string arg;
    liquid_data *liq = nullptr;
 
    if( !ch->is_immortal(  ) || ch->isnpc(  ) )
@@ -918,7 +914,6 @@ CMDF( do_setmixture )
    if( !str_cmp( arg, "list" ) )
    {
       mixture_data *mix = nullptr;
-      list < mixture_data * >::iterator imx;
 
       if( !argument.empty(  ) && ( ( mix = get_mix( argument ) ) != nullptr ) )
       {
@@ -939,12 +934,9 @@ CMDF( do_setmixture )
 
       ch->pager( "&G[&gType&G] &G[&gName&G]\r\n" );
       ch->pager( "-----------------------\r\n" );
-      for( imx = mixlist.begin(  ); imx != mixlist.end(  ); ++imx )
-      {
-         mixture_data *mx = *imx;
 
+      for( auto* mx : mixlist )
          ch->pagerf( "  %-8s %s\r\n", mx->object ? "Object" : "Liquids", mx->name.c_str(  ) );
-      }
 
       ch->pagerf( "\r\n&gUse 'showmixture [name]' to view individual mixtures.\r\n" );
       ch->pagerf( "&gUse 'showliquid' to view the liquidtable.&D\r\n" );
@@ -999,7 +991,7 @@ CMDF( do_setmixture )
    }
    else
    {
-      string arg2;
+      std::string arg2;
       mixture_data *mix = nullptr;
 
       if( arg.empty(  ) || !( mix = get_mix( arg ) ) )
@@ -1130,7 +1122,7 @@ CMDF( do_setmixture )
 /* mix a liquid with a liquid; return the final product - Nopey */
 liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
 {
-   list < mixture_data * >::iterator imix;
+   std::list<mixture_data *>::iterator imix;
    mixture_data *mix = nullptr;
    bool mix_found = false;
 
@@ -1168,7 +1160,7 @@ liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
 /* used to mix an object with a liquid to form another liquid; returns the result  -Nopey */
 liquid_data *liqobj_can_mix( obj_data * iObj, obj_data * oLiq )
 {
-   list < mixture_data * >::iterator imix;
+   std::list<mixture_data *>::iterator imix;
    mixture_data *mix = nullptr;
    bool mix_found = false;
 
@@ -1205,10 +1197,10 @@ liquid_data *liqobj_can_mix( obj_data * iObj, obj_data * oLiq )
    return nullptr;
 }
 
-/* the actual -mix- funciton  -Nopey */
+/* the actual -mix- function  -Nopey */
 CMDF( do_mix )
 {
-   string arg;
+   std::string arg;
    obj_data *iObj, *tObj = nullptr;
 
    argument = one_argument( argument, arg );
@@ -1288,7 +1280,7 @@ CMDF( do_mix )
 
 CMDF( do_drink )
 {
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -1301,7 +1293,7 @@ CMDF( do_drink )
    obj_data *obj = nullptr;
    if( arg.empty(  ) )
    {
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
 
       for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
       {
@@ -1575,7 +1567,7 @@ CMDF( do_drink )
 /* standard liquid functions - Nopey */
 CMDF( do_fill )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    obj_data *obj, *source;
    short dest_item, src_item1, src_item2, src_item3;
    int diff = 0;
@@ -1720,7 +1712,7 @@ CMDF( do_fill )
       obj->separate(  );
 
       bool found = false;
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
       for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
       {
          source = *iobj;
@@ -1843,12 +1835,8 @@ CMDF( do_fill )
 
                if( str_cmp( name, ch->name ) && !ch->is_immortal(  ) )
                {
-                  list < char_data * >::iterator ich;
-
-                  for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+                  for( auto* gch : pclist )
                   {
-                     char_data *gch = *ich;
-
                      if( is_same_group( ch, gch ) && !str_cmp( name, gch->name ) )
                      {
                         ch->print( "That's someone else's corpse.\r\n" );
@@ -1874,11 +1862,10 @@ CMDF( do_fill )
             obj->separate(  );
 
             bool found = false;
-            list < obj_data * >::iterator iobj;
-            for( iobj = source->contents.begin(  ); iobj != source->contents.end(  ); )
+            for( auto it = source->contents.begin(); it != source->contents.end(); )
             {
-               obj_data *otmp = ( *iobj );
-               ++iobj;
+               obj_data *otmp = *it;
+               ++it;
 
                if( !otmp->wear_flags.test( ITEM_TAKE )
                    || otmp->extra_flags.test( ITEM_NOFILL )
@@ -2041,10 +2028,9 @@ CMDF( do_fill )
 void make_puddle( char_data * ch, obj_data * cont )
 {
    obj_data *obj;
-   char buf[20];
    bool found = false;
    liquid_data *liq = nullptr;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
 
    for( iobj = ch->in_room->objects.begin(); iobj != ch->in_room->objects.begin(); ++iobj )
    {
@@ -2075,24 +2061,25 @@ void make_puddle( char_data * ch, obj_data * cont )
 
    liq = get_liq_vnum( obj->value[2] );
 
+   std::string buf;
    if( obj->value[1] > 15 )
-      strlcpy( buf, "large", 20 );
+      buf = "large";
    else if( obj->value[1] > 10 )
-      strlcpy( buf, "rather large", 20 );
+      buf = "rather large";
    else if( obj->value[1] > 5 )
-      strlcpy( buf, "rather small", 20 );
+      buf = "rather small";
    else
-      strlcpy( buf, "small", 20 );
+      buf = "small";
    stralloc_printf( &obj->name, "puddle %s", ( liq == nullptr ? "water" : liq->name.c_str() ) );
    stralloc_printf( &obj->short_descr, "A puddle of %s", ( liq == nullptr ? "water" : liq->name.c_str() ) );
-   stralloc_printf( &obj->objdesc, "This is a %s puddle of %s.", buf, ( liq == nullptr ? "water" : liq->name.c_str() ) );
+   stralloc_printf( &obj->objdesc, "This is a %s puddle of %s.", buf.c_str(), ( liq == nullptr ? "water" : liq->name.c_str() ) );
    return;
 }
 
 CMDF( do_empty )
 {
    obj_data *obj;
-   string arg1, arg2;
+   std::string arg1, arg2;
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );

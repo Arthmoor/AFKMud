@@ -71,9 +71,9 @@ class conn_data
      conn_data(  );
     ~conn_data(  );
 
-   string user;
-   string host;
-   string when;
+   std::string user;
+   std::string host;
+   std::string when;
    int type;
    int level;
    int invis_lvl;

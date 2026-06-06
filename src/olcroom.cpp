@@ -70,7 +70,7 @@ void redit_disp_exit_flag_menu( descriptor_data * );
 void redit_disp_flag_menu( descriptor_data * );
 void redit_disp_sector_menu( descriptor_data * );
 void redit_disp_menu( descriptor_data * );
-void redit_parse( descriptor_data *, string & );
+void redit_parse( descriptor_data *, std::string & );
 void cleanup_olc( descriptor_data * );
 bool can_rmodify( char_data *, room_index * );
 void oedit_disp_extra_choice( descriptor_data * );
@@ -107,7 +107,7 @@ CMDF( do_oredit )
    /*
     * Make sure the room isnt already being edited 
     */
-   list < descriptor_data * >::iterator ds;
+   std::list<descriptor_data *>::iterator ds;
    descriptor_data *d;
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
@@ -136,7 +136,7 @@ CMDF( do_oredit )
 
 CMDF( do_rcopy )
 {
-   string arg1;
+   std::string arg1;
 
    argument = one_argument( argument, arg1 );
    if( arg1.empty(  ) || argument.empty(  ) )
@@ -199,11 +199,8 @@ CMDF( do_rcopy )
    copy->tele_delay = orig->tele_delay;
    copy->tunnel = orig->tunnel;
 
-   list < extra_descr_data * >::iterator ced;
-   for( ced = orig->extradesc.begin(  ); ced != orig->extradesc.end(  ); ++ced )
+   for( auto* edesc : orig->extradesc )
    {
-      extra_descr_data *edesc = *ced;
-
       extra_descr_data *ed = new extra_descr_data;
       ed->keyword = edesc->keyword;
       if( !edesc->desc.empty(  ) )
@@ -212,11 +209,8 @@ CMDF( do_rcopy )
       ++top_ed;
    }
 
-   list < exit_data * >::iterator cxit;
-   for( cxit = orig->exits.begin(  ); cxit != orig->exits.end(  ); ++cxit )
+   for( auto* pexit : orig->exits )
    {
-      exit_data *pexit = *cxit;
-
       exit_data *xit = copy->make_exit( get_room_index( pexit->rvnum ), pexit->vdir );
       xit->keyword = QUICKLINK( pexit->keyword );
       if( pexit->exitdesc && pexit->exitdesc[0] != '\0' )
@@ -225,7 +219,7 @@ CMDF( do_rcopy )
       xit->flags = pexit->flags;
    }
 
-   room_index_table.insert( map < int, room_index * >::value_type( cvnum, copy ) );
+   room_index_table.insert( std::map<int, room_index *>::value_type( cvnum, copy ) );
    copy->area->rooms.push_back( copy );
    ++top_room;
    ch->print( "Room copied.\r\n" );
@@ -314,16 +308,12 @@ void olc_log( descriptor_data * d, const char *format, ... )
  */
 void redit_disp_extradesc_prompt_menu( descriptor_data * d )
 {
-   list < extra_descr_data * >::iterator ed;
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
    int counter = 0;
 
-   for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
-   {
-      extra_descr_data *edesc = *ed;
-
+   for( auto* edesc : room->extradesc )
       d->character->printf( "&g%2d&w) %-40.40s\r\n", ++counter, edesc->keyword.c_str(  ) );
-   }
+
    d->character->print( "\r\nWhich extra description do you want to edit? " );
 }
 
@@ -335,14 +325,9 @@ void redit_disp_extradesc_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    if( !room->extradesc.empty(  ) )
    {
-      list < extra_descr_data * >::iterator ed;
-
-      for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
-      {
-         extra_descr_data *edesc = *ed;
-
+      for( auto* edesc : room->extradesc )
          d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str(  ) );
-      }
+
       d->character->print( "\r\n" );
    }
 
@@ -358,15 +343,12 @@ void redit_disp_extradesc_menu( descriptor_data * d )
 void redit_disp_exit_menu( descriptor_data * d )
 {
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
-   list < exit_data * >::iterator iexit;
    int cnt = 0;
 
    OLC_MODE( d ) = REDIT_EXIT_MENU;
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
-   for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
+   for( auto* pexit : room->exits )
    {
-      exit_data *pexit = *iexit;
-
       d->character->printf( "&g%2d&w) %-10.10s to %-5d. Key: %d Keywords: %s Flags: %s\r\n",
                             ++cnt, dir_name[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
                             pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
@@ -383,16 +365,15 @@ void redit_disp_exit_menu( descriptor_data * d )
 
 void redit_disp_exit_edit( descriptor_data * d )
 {
-   char flags[MSL];
+   std::string flags;
    exit_data *pexit = ( exit_data * ) d->character->pcdata->spare_ptr;
 
-   flags[0] = '\0';
    for( int i = 0; i < MAX_EXFLAG; ++i )
    {
       if( IS_EXIT_FLAG( pexit, i ) )
       {
-         strlcat( flags, ex_flags[i], MSL );
-         strlcat( flags, " ", MSL );
+         flags.append( ex_flags[i] );
+         flags.append( " " );
       }
    }
 
@@ -402,7 +383,7 @@ void redit_disp_exit_edit( descriptor_data * d )
    d->character->printf( "&g2&w) To Vnum    : &c%d\r\n", pexit->to_room ? pexit->to_room->vnum : -1 );
    d->character->printf( "&g3&w) Key        : &c%d\r\n", pexit->key );
    d->character->printf( "&g4&w) Keyword    : &c%s\r\n", ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)" );
-   d->character->printf( "&g5&w) Flags      : &c%s\r\n", flags[0] != '\0' ? flags : "(none)" );
+   d->character->printf( "&g5&w) Flags      : &c%s\r\n", !flags.empty() ? flags.c_str() : "(none)" );
    d->character->printf( "&g6&w) Description: &c%s\r\n", ( pexit->exitdesc && pexit->exitdesc[0] != '\0' ) ? pexit->exitdesc : "(none)" );
    d->character->print( "&gQ&w) Quit\r\n" );
    d->character->print( "\r\nEnter choice: " );
@@ -421,7 +402,7 @@ void redit_disp_exit_dirs( descriptor_data * d )
 void redit_disp_exit_flag_menu( descriptor_data * d )
 {
    exit_data *pexit = ( exit_data * ) d->character->pcdata->spare_ptr;
-   char buf1[MSL];
+   std::string buf1;
    int i;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -431,15 +412,17 @@ void redit_disp_exit_flag_menu( descriptor_data * d )
          continue;
       d->character->printf( "&g%2d&w) %-20.20s\r\n", i + 1, ex_flags[i] );
    }
-   buf1[0] = '\0';
+
    for( i = 0; i < MAX_EXFLAG; ++i )
+   {
       if( IS_EXIT_FLAG( pexit, i ) )
       {
-         strlcat( buf1, ex_flags[i], MSL );
-         strlcat( buf1, " ", MSL );
+         buf1.append( ex_flags[i] );
+         buf1.append( " " );
       }
+   }
 
-   d->character->printf( "\r\nExit flags: &c%s&w\r\nEnter room flags, 0 to quit: ", buf1 );
+   d->character->printf( "\r\nExit flags: &c%s&w\r\nEnter room flags, 0 to quit: ", buf1.c_str() );
    OLC_MODE( d ) = REDIT_EXIT_FLAGS;
 }
 
@@ -509,12 +492,9 @@ void redit_disp_menu( descriptor_data * d )
 extra_descr_data *redit_find_extradesc( room_index * room, int number )
 {
    int count = 0;
-   list < extra_descr_data * >::iterator ed;
 
-   for( ed = room->extradesc.begin(  ); ed != room->extradesc.end(  ); ++ed )
+   for( auto* edesc : room->extradesc )
    {
-      extra_descr_data *edesc = *ed;
-
       if( ++count == number )
          return edesc;
    }
@@ -596,19 +576,19 @@ CMDF( do_redit_reset )
   The main loop
  **************************************************************************/
 
-void redit_parse( descriptor_data * d, string & arg )
+void redit_parse( descriptor_data * d, std::string & arg )
 {
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
    room_index *tmp;
    exit_data *pexit = ( exit_data * ) d->character->pcdata->spare_ptr;
    extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
-   string arg1;
+   std::string arg1;
    int number = 0;
 
    switch ( OLC_MODE( d ) )
    {
       case REDIT_MAIN_MENU:
-         switch ( arg[0] )
+         switch ( arg.front() )
          {
             case 'q':
             case 'Q':

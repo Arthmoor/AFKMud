@@ -107,7 +107,7 @@ bool will_fall( char_data * ch, int fall )
 /* Run command taken from DOTD codebase - Samson 2-25-99 */
 CMDF( do_run )
 {
-   string arg;
+   std::string arg;
    continent_data *from_cont;
    room_index *from_room;
    exit_data *pexit;
@@ -843,10 +843,11 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
     */
    if( to_room->tunnel > 0 )
    {
-      list < char_data * >::iterator ich;
+      std::list<char_data *>::iterator ich;
       int count = ch->mount ? 1 : 0;
 
       for( ich = to_room->people.begin(  ); ich != to_room->people.end(  ); ++ich )
+      {
          if( ++count >= to_room->tunnel )
          {
             if( ch->mount && count == to_room->tunnel )
@@ -856,6 +857,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
             check_sneaks( ch );
             return rSTOP;
          }
+      }
    }
 
    /*
@@ -1205,7 +1207,7 @@ CMDF( do_southwest )
    move_char( ch, ch->in_room->get_exit( DIR_SOUTHWEST ), 0, DIR_SOUTHWEST, false );
 }
 
-exit_data *find_door( char_data * ch, const string & arg, bool quiet )
+exit_data *find_door( char_data * ch, const std::string & arg, bool quiet )
 {
    exit_data *pexit = nullptr;
 
@@ -1215,7 +1217,7 @@ exit_data *find_door( char_data * ch, const string & arg, bool quiet )
    int door = get_dirnum( arg );
    if( door < 0 || door > MAX_DIR )
    {
-      list < exit_data * >::iterator iexit;
+      std::list<exit_data *>::iterator iexit;
       for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
       {
          pexit = *iexit;
@@ -1467,7 +1469,7 @@ CMDF( do_close )
  */
 obj_data *has_key( char_data * ch, int key )
 {
-   list < obj_data * >::iterator iobj;
+   std::list < obj_data * >::iterator iobj;
 
    for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
@@ -1477,7 +1479,7 @@ obj_data *has_key( char_data * ch, int key )
          return obj;
       else if( obj->item_type == ITEM_KEYRING )
       {
-         list < obj_data * >::iterator iobj2;
+         std::list < obj_data * >::iterator iobj2;
 
          for( iobj2 = obj->contents.begin(  ); iobj2 != obj->contents.end(  ); ++iobj2 )
          {
@@ -2565,11 +2567,10 @@ void teleport( char_data * ch, int room, int flags )
    /*
     * teleport everybody in the room 
     */
-   list < char_data * >::iterator ich;
-   for( ich = start->people.begin(  ); ich != start->people.end(  ); )
+   for( auto it = start->people.begin(  ); it != start->people.end(  ); )
    {
-      char_data *nch = *ich;
-      ++ich;
+      char_data *nch = *it;
+      ++it;
 
       teleportch( nch, dest, show );
    }
@@ -2579,12 +2580,10 @@ void teleport( char_data * ch, int room, int flags )
     */
    if( IS_SET( flags, TELE_TRANSALLPLUS ) )
    {
-      list < obj_data * >::iterator iobj;
-
-      for( iobj = start->objects.begin(  ); iobj != start->objects.end(  ); )
+      for( auto it = start->objects.begin(  ); it != start->objects.end(  ); )
       {
-         obj_data *obj = *iobj;
-         ++iobj;
+         obj_data *obj = *it;
+         ++it;
 
          obj->from_room(  );
          obj->to_room( dest, nullptr );
@@ -2601,7 +2600,7 @@ CMDF( do_climb )
 
    if( argument.empty(  ) )
    {
-      list < exit_data * >::iterator iexit;
+      std::list<exit_data *>::iterator iexit;
       for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
       {
          pexit = *iexit;
@@ -2634,7 +2633,7 @@ CMDF( do_enter )
 
    if( argument.empty(  ) )
    {
-      list < exit_data * >::iterator iexit;
+      std::list<exit_data *>::iterator iexit;
       for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
       {
          pexit = *iexit;
@@ -2690,7 +2689,7 @@ CMDF( do_leave )
 
    if( argument.empty(  ) )
    {
-      list < exit_data * >::iterator iexit;
+      std::list<exit_data *>::iterator iexit;
       for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
       {
          pexit = *iexit;
@@ -2774,7 +2773,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
     * Find the exit with the strongest force (if any) 
     */
    exit_data *xit = nullptr;
-   list < exit_data * >::iterator iexit;
+   std::list < exit_data * >::iterator iexit;
    for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
    {
       exit_data *pexit = *iexit;
@@ -2833,7 +2832,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
     */
    if( xit->to_room->tunnel > 0 )
    {
-      list < char_data * >::iterator ich;
+      std::list<char_data *>::iterator ich;
       int count = ch->mount ? 1 : 0;
 
       for( ich = xit->to_room->people.begin(  ); ich != xit->to_room->people.end(  ); ++ich )
@@ -3126,11 +3125,10 @@ ch_ret pullcheck( char_data * ch, int pulse )
     */
    if( moveobj )
    {
-      list < obj_data * >::iterator iobj;
-      for( iobj = room->objects.begin(  ); iobj != room->objects.end(  ); )
+      for( auto it = room->objects.begin(  ); it != room->objects.end(  ); )
       {
-         obj_data *obj = *iobj;
-         ++iobj;
+         obj_data *obj = *it;
+         ++it;
 
          if( obj->extra_flags.test( ITEM_BURIED ) || !obj->wear_flags.test( ITEM_TAKE ) )
             continue;

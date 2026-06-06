@@ -37,8 +37,6 @@
 #include <typeinfo>
 #include <vector>
 
-using namespace std;
-
 /* Used in basereport and world commands - don't remove these!
  * If you want to add your own, make a new set of defines and ADD the information.
  * Removing this is a violation of your license agreement.
@@ -52,7 +50,7 @@ using namespace std;
 #define mudstrlcat strlcat
 #define str_dup strdup
 
-// String and memory management parameters. Will one day be a thing of the past once all the char[] arrays are upgraded.
+// String and memory management parameters. Will one day be a thing of the past once all the char[] arrays that use them are upgraded.
 const int MSL = 8192; // MAX_STRING_LENGTH
 const int MIL = 2048; // MAX_INPUT_LENGTH
 
@@ -77,7 +75,7 @@ void init_memory( void *, void *, unsigned int );
 void bug( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
 // Function types. Samson. Stop. Don't do it! NO! You have to keep these things you idiot!
-typedef void DO_FUN( char_data * ch, string argument );
+typedef void DO_FUN( char_data * ch, std::string argument );
 typedef ch_ret SPELL_FUN( int sn, int level, char_data * ch, void *vo );
 typedef bool SPEC_FUN( char_data * ch );
 
@@ -85,7 +83,7 @@ typedef bool SPEC_FUN( char_data * ch );
  * "Oh God Samson, this is so HACKISH!" "Yes my son, but this preserves dlsym, which is good."
  * "*The masses bow down in worship to their God....*"
  */
-#define CMDF( name ) extern "C" void (name)( char_data *ch, string argument )
+#define CMDF( name ) extern "C" void (name)( char_data *ch, std::string argument )
 #define SPELLF( name ) extern "C" ch_ret (name)( int sn, int level, char_data *ch, void *vo )
 #define SPECF( name ) extern "C" bool (name)( char_data *ch )
 
@@ -287,8 +285,8 @@ extern short gsn_dragon_ride;
  // Extra description data for a room or object.
 struct extra_descr_data
 {
-   string keyword; // Keyword in look/examine
-   string desc;    // What to see
+   std::string keyword; // Keyword in look/examine
+   std::string desc;    // What to see
 };
 
 #include "mudcfg.h" // Contains definitions specific to your mud - will not be covered by patches. Samson 3-14-04
@@ -452,7 +450,7 @@ class affect_data
  public:
      affect_data(  );
 
-   std::bitset < MAX_RIS_FLAG > rismod;
+   std::bitset<MAX_RIS_FLAG> rismod;
    int bit;
    int duration;
    int modifier;
@@ -796,22 +794,6 @@ enum damage_types
    DAM_PIERCE, DAM_THRUST, DAM_MAX_TYPE
 };
 
-// Login Messages
-class lmsg_data
-{
- private:
-   lmsg_data( const lmsg_data & p );
-     lmsg_data & operator=( const lmsg_data & );
-
- public:
-     lmsg_data(  );
-    ~lmsg_data(  );
-
-   char *name;
-   char *text;
-   short type;
-};
-
 /*
  * Used to keep track of system settings and statistics - Thoric
  * Calculated values are derived when editing settings in do_cset - Samson
@@ -827,7 +809,7 @@ class system_data
     ~system_data(  );
 
    void *dlHandle;                               // libdl System Handle - Trax
-   std::bitset < SV_MAX > save_flags;            // Toggles for saving conditions.
+   std::bitset<SV_MAX> save_flags;               // Toggles for saving conditions.
    std::string time_of_max;                      // Time of max ever.
    std::string mud_name;                         // Name of mud.
    std::string admin_email;                      // Email address for admin. Not set by default. - Samson 10-17-98
@@ -958,8 +940,8 @@ class skill_type
      skill_type(  );
     ~skill_type(  );
 
-   list < class smaug_affect * >affects;   /* Spell affects, if any */
-   bitset < MAX_SF_FLAG > flags;  /* Flags */
+   std::list<class smaug_affect *> affects;   /* Spell affects, if any */
+   std::bitset<MAX_SF_FLAG> flags;  /* Flags */
    SPELL_FUN *spell_fun;   /* Spell pointer (for spells) */
    DO_FUN *skill_fun;   /* Skill pointer (for skills) */
    char *name; /* Name of skill */
@@ -1089,8 +1071,8 @@ extern bool fBootDb;
 extern char strArea[MIL];
 extern int falling;
 
-extern string target_name;
-extern string ranged_target_name;
+extern std::string target_name;
+extern std::string ranged_target_name;
 extern int numobjsloaded;
 extern int nummobsloaded;
 extern int physicalobjects;
@@ -1126,74 +1108,74 @@ void log_printf( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) 
 // act_comm.cpp
 bool is_same_group( char_data *, char_data * );
 int knows_language( char_data *, int, char_data * );
-void act( short, const string &, char_data *, const void *, const void *, int );
+void act( short, const std::string &, char_data *, const void *, const void *, int );
 void act_printf( short, char_data *, const void *, const void *, int, const char *, ... ) __attribute__ ( ( format( printf, 6, 7 ) ) );
 
 // act_info.cpp
 bool is_ignoring( char_data *, char_data * );
 
 // act_move.cpp
-exit_data *find_door( char_data *, const string &, bool );
+exit_data *find_door( char_data *, const std::string &, bool );
 ch_ret move_char( char_data *, exit_data *, int, int, bool );
 
 // act_wiz.cpp
-char_data *get_wizvictim( char_data *, const string &, bool );
-void echo_to_all( const string &, short );
+char_data *get_wizvictim( char_data *, const std::string &, bool );
+void echo_to_all( const std::string &, short );
 void echo_all_printf( short, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 
 // build.cpp
-int get_risflag( const string & );
-int get_defenseflag( const string & );
-int get_attackflag( const string & );
-int get_npc_sex( const string & );
-int get_npc_position( const string & );
-int get_npc_class( const string & );
-int get_npc_race( const string & );
-int get_pc_race( const string & );
-int get_pc_class( const string & );
-int get_actflag( const string & );
-int get_pcflag( const string & );
-int get_langnum( const string & );
-int get_langflag( const string & );
-int get_rflag( const string & );
-int get_exflag( const string & );
-int get_sectypes( const string & );
-int get_areaflag( const string & );
-int get_partflag( const string & );
-int get_magflag( const string & );
-int get_otype( const string & );
-int get_aflag( const string & );
-int get_atype( const string & );
-int get_oflag( const string & );
-int get_wflag( const string & );
-int get_saveflag( const string & );
-int get_logflag( const string & );
-int get_trapflag( const string & );
-int get_flag( const string &, const char **, size_t );
-int get_dir( const string & );
+int get_risflag( const std::string & );
+int get_defenseflag( const std::string & );
+int get_attackflag( const std::string & );
+int get_npc_sex( const std::string & );
+int get_npc_position( const std::string & );
+int get_npc_class( const std::string & );
+int get_npc_race( const std::string & );
+int get_pc_race( const std::string & );
+int get_pc_class( const std::string & );
+int get_actflag( const std::string & );
+int get_pcflag( const std::string & );
+int get_langnum( const std::string & );
+int get_langflag( const std::string & );
+int get_rflag( const std::string & );
+int get_exflag( const std::string & );
+int get_sectypes( const std::string & );
+int get_areaflag( const std::string & );
+int get_partflag( const std::string & );
+int get_magflag( const std::string & );
+int get_otype( const std::string & );
+int get_aflag( const std::string & );
+int get_atype( const std::string & );
+int get_oflag( const std::string & );
+int get_wflag( const std::string & );
+int get_saveflag( const std::string & );
+int get_logflag( const std::string & );
+int get_trapflag( const std::string & );
+int get_flag( const std::string &, const char **, size_t );
+int get_dir( const std::string & );
 char *flag_string( int, const char *flagarray[] );
 
 // calendar.cpp
-std::string c_time( std::chrono::system_clock::time_point, int );
-std::string mini_c_time( std::chrono::system_clock::time_point, int );
+const std::string c_time( std::chrono::system_clock::time_point, int );
+const std::string mini_c_time( std::chrono::system_clock::time_point, int );
 
 // comm.cpp
-bool check_parse_name( const string &, bool );
+bool check_parse_name( const std::string &, bool );
 void add_loginmsg( const char *, short, const char * );
 
 // commands.cpp
-int check_command_level( const string &, int );
+int check_command_level( const std::string &, int );
 void cmdf( char_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void funcf( char_data *, DO_FUN *, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
-void interpret( char_data *, string );
+void interpret( char_data *, std::string );
 void check_switches(  );
 void check_switch( char_data * );
 
 // db.cpp
 extern std::mt19937 global_rng; // Mersenne Twister algorithm for random numbers. Produces better results than the rand() and srand() functions.
-bool is_valid_filename( char_data *, const string &, const string & );
-void shutdown_mud( const string & );
-bool exists_file( const string & );
+bool is_valid_filename( char_data *, const std::string &, const std::string & );
+void shutdown_mud( const std::string & );
+bool exists_file( const std::string & );
 char fread_letter( FILE * );
 char *fread_string( FILE * );
 const char *fread_flagstring( FILE * );
@@ -1201,8 +1183,8 @@ char *fread_string_nohash( FILE * );
 void fread_to_eol( FILE * );
 const char *fread_line( FILE * );
 char *fread_word( FILE * );
-void fread_string( string &, FILE * );
-void fread_line( string &, FILE * );
+void fread_string( std::string &, FILE * );
+void fread_line( std::string &, FILE * );
 void log_printf_plus( short, short, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 int number_percent( void );
 int number_fuzzy( int );
@@ -1210,59 +1192,63 @@ int number_range( int, int );
 int number_door( void );
 int number_bits( int );
 int dice( int, int );
-void show_file( char_data *, const string & );
-void append_file( char_data *, const string &, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
-void append_to_file( const string &, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
-void log_string_plus( short, short, const string & );
+void append_file( char_data *, const std::string &, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
+void append_to_file( const std::string &, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
+void log_string_plus( short, short, const std::string & );
 void make_wizlist( void );
 
+// descriptor.cpp
+void show_file( char_data *, const std::string & );
+
 // editor.cpp
-bool hasname( const string &, const string & );
-void removename( string &, const string & );
-void addname( string &, const string & );
+bool hasname( std::string_view, std::string_view );
+void removename( std::string &, const std::string & );
+void addname( std::string &, const std::string & );
 void stralloc_printf( char **, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void strdup_printf( char **, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void smash_tilde( char * );
-void smash_tilde( string & );
-void hide_tilde( string & );
+void smash_tilde( std::string & );
+void hide_tilde( std::string & );
 const char *show_tilde( const char * );
-const string show_tilde( const string & );
-int str_cmp( const string &, const string & );
+const std::string show_tilde( const std::string & );
+int str_cmp( std::string_view, std::string_view );
 bool str_cmp( const char *, const char * );
-bool str_prefix( const string &, const string & );
+bool str_prefix( std::string_view, std::string_view );
 bool str_prefix( const char *, const char * );
 bool str_infix( const char *, const char * );
-bool str_infix( const string &, const string & );
+bool str_infix( std::string_view, std::string_view );
 bool str_suffix( const char *, const char * );
 char *capitalize( const char * );
-string capitalize( const string & );
+std::string capitalize( const std::string & );
 char *strlower( const char * );
-void strlower( string & );
+void strlower( std::string & );
 char *strupper( const char * );
-void strupper( string & );
-const char *aoran( const string & );
-void strip_tilde( string & );
-void strip_lspace( string & );
-void strip_tspace( string & );
-void strip_spaces( string & );
+void strupper( std::string & );
+const char *aoran( const std::string & );
+void strip_tilde( std::string & );
+void strip_lspace( std::string & );
+void strip_tspace( std::string & );
+void strip_spaces( std::string & );
 const char *strip_cr( const char * );
-string strip_cr( const string & );
+std::string strip_cr( const std::string & );
 const char *strip_crlf( const char * );
-void strip_whitespace( string & str );
-bool is_number( const string & );
+std::string strip_crlf( std::string_view );
+void strip_whitespace( std::string & );
+bool is_number( const std::string & );
 bool is_number( const char * );
-int number_argument( const string &, string & );
+int number_argument( std::string_view, std::string & );
 int number_argument( char *, char * );
 const char *one_argument( const char *, char * );
 char *one_argument( char *, char * );
-string one_argument( const string &, string & );
-string invert_string( const string & );
-const string add_percent( const string & );
-void string_erase( string & src, char find );
-void string_erase( string &, const string & );
-void string_replace( string &, const string &, const string & );
-vector < string > string_explode( const string &, char );
-const char *print_array_string( const char *flagarray[], size_t arraySize );
+std::string one_argument( const std::string &, std::string & );
+std::string invert_string( const std::string & );
+// const std::string add_percent( std::string );
+const std::string escape_formatting( std::string );
+void string_erase( std::string &, char );
+void string_erase( std::string &, std::string_view );
+void string_replace( std::string &, std::string_view, std::string_view );
+std::vector<std::string> string_explode( std::string_view, char );
+const char *print_array_string( const char *flagarray[], size_t );
 
 // fight.cpp
 ch_ret multi_hit( char_data *, char_data *, int );
@@ -1270,14 +1256,14 @@ ch_ret damage( char_data *, char_data *, double, int );
 
 // handler.cpp
 long exp_level( int );
-bool nifty_is_name_prefix( string, string );
+bool nifty_is_name_prefix( std::string, std::string );
 bool nifty_is_name_prefix( char *, char * );
-bool is_name2_prefix( const string &, string );
+bool is_name2_prefix( std::string_view, std::string );
 bool is_name2_prefix( const char *, char * );
-obj_data *get_obj_list( char_data *, const string &, list < obj_data * > );
+obj_data *get_obj_list( char_data *, const std::string &, std::list<obj_data *> );
 ch_ret check_for_trap( char_data *, obj_data *, int );
 ch_ret spring_trap( char_data *, obj_data * );
-obj_data *find_obj( char_data *, string, bool );
+obj_data *find_obj( char_data *, std::string, bool );
 bool ms_find_obj( char_data * );
 
 // hashstr.cpp
@@ -1296,16 +1282,16 @@ bool saves_para_petri( int, char_data * );
 bool saves_breath( int, char_data * );
 bool saves_spell_staff( int, char_data * );
 ch_ret obj_cast_spell( int, int, char_data *, char_data *, obj_data * );
-int dice_parse( char_data *, int, const string & );
+int dice_parse( char_data *, int, const std::string & );
 skill_type *get_skilltype( int );
 
 // mud_comm.cpp
-const string mprog_type_to_name( int );
+const std::string mprog_type_to_name( int );
 
 // mud_prog.cpp
 void mprog_entry_trigger( char_data * );
 void mprog_greet_trigger( char_data * );
-void progbug( const string &, char_data * );
+void progbug( const std::string &, char_data * );
 void progbugf( char_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void rset_supermob( room_index * );
 void release_supermob( void );
@@ -1314,35 +1300,35 @@ void release_supermob( void );
 bool is_same_char_map( char_data *, char_data * );
 bool is_same_obj_map( char_data *, obj_data * );
 void fix_maps( char_data *, char_data * );
-void enter_map( char_data *, exit_data *, int, int, const string & );
+void enter_map( char_data *, exit_data *, int, int, const std::string & );
 void leave_map( char_data *, char_data *, room_index * );
 void collect_followers( char_data *, room_index *, room_index * );
 
 // player.cpp
-const string condtxt( int, int );
-const string attribtext( int );
-bool exists_player( const string & );
+const std::string condtxt( int, int );
+const std::string attribtext( int );
+bool exists_player( const std::string & );
 
 // save.cpp
-void write_corpse( obj_data *, const string & );
+void write_corpse( obj_data *, const std::string & );
 
 // skills.cpp
 void disarm( char_data *, char_data * );
-int find_spell( char_data *, const string &, bool );
-int find_skill( char_data *, const string &, bool );
-int find_ability( char_data *, const string &, bool );
-int find_combat( char_data *, const string &, bool );
-int find_tongue( char_data *, const string &, bool );
-int find_lore( char_data *, const string &, bool );
-int skill_lookup( const string & );
-int herb_lookup( const string & );
+int find_spell( char_data *, const std::string &, bool );
+int find_skill( char_data *, const std::string &, bool );
+int find_ability( char_data *, const std::string &, bool );
+int find_combat( char_data *, const std::string &, bool );
+int find_tongue( char_data *, const std::string &, bool );
+int find_lore( char_data *, const std::string &, bool );
+int skill_lookup( const std::string & );
+int herb_lookup( const std::string & );
 int slot_lookup( int );
 CMDF( skill_notfound );
 
 // tables.cpp
-SPELL_FUN *spell_function( const string & );
-DO_FUN *skill_function( const string & );
-SPEC_FUN *m_spec_lookup( const string & );
+SPELL_FUN *spell_function( const std::string & );
+DO_FUN *skill_function( const std::string & );
+SPEC_FUN *m_spec_lookup( const std::string & );
 
 // update.cpp
 void gain_condition( char_data *, int, int );
@@ -1352,7 +1338,7 @@ void weather_update( void );
 // This used to be the old ext_flagstring converted to C++ and using strings so it can't overflow the temporary buffer.
 template < size_t N > const char *bitset_string( std::bitset < N > bits, const char *flagarray[] )
 {
-   static string s;
+   static std::string s;
 
    s.clear();
 
@@ -1373,7 +1359,7 @@ template < size_t N > const char *bitset_string( std::bitset < N > bits, const c
 // Loosely resembles Remcon's WEXTKEY macro from his LoP codebase.
 template < size_t N > void flag_set( FILE * fp, std::bitset < N > &field, const char *flagarray[] )
 {
-   string flags, flag;
+   std::string flags, flag;
 
    flags = fread_flagstring( fp );
    while( flags[0] != '\0' )
@@ -1392,7 +1378,7 @@ template < size_t N > void flag_set( FILE * fp, std::bitset < N > &field, const 
 // Just like the above, only doesn't read from a file. Just sets the flags from the specified string.
 template < size_t N > void flag_string_set( std::string & original, std::bitset < N > &field, const char *flagarray[] )
 {
-   string flag;
+   std::string flag;
 
    while( !original.empty(  ) )
    {
@@ -1409,12 +1395,8 @@ template < size_t N > void flag_string_set( std::string & original, std::bitset 
 
 template < class N > extra_descr_data * get_extra_descr( const std::string & name, N * target )
 {
-   list < extra_descr_data * >::iterator ied;
-
-   for( ied = target->extradesc.begin(  ); ied != target->extradesc.end(  ); ++ied )
+   for( auto* ed : target->extradesc )
    {
-      extra_descr_data *ed = *ied;
-
       if( is_name2_prefix( name, ed->keyword ) )
       {
          if( !ed->desc.empty(  ) )
@@ -1427,13 +1409,10 @@ template < class N > extra_descr_data * get_extra_descr( const std::string & nam
 template < class N > extra_descr_data * set_extra_descr( N * target, const std::string & name )
 {
    extra_descr_data *desc = nullptr;
-   list < extra_descr_data * >::iterator ied;
 
-   for( ied = target->extradesc.begin(  ); ied != target->extradesc.end(  ); ++ied )
+   for( auto* ed : target->extradesc )
    {
-      extra_descr_data *ed = *ied;
-
-      if( ed->keyword.find( name ) != string::npos )
+      if( ed->keyword.find( name ) != std::string::npos )
       {
          desc = ed;
          break;
@@ -1451,7 +1430,7 @@ template < class N > extra_descr_data * set_extra_descr( N * target, const std::
 }
 
 // Read a number from a file. Used to be several clones in db.cpp for each type. Now there is only one.
-template <typename T> T fread_numeric(FILE *fp)
+template <typename T> T fread_numeric( FILE *fp )
 {
    static_assert( std::is_arithmetic<T>::value, "fread_numeric requires an arithmetic type (int, float, etc)." );
 
@@ -1490,7 +1469,7 @@ template <typename T> T fread_numeric(FILE *fp)
       {
          double divisor = 10.0;
          c = std::getc( fp );
-         while( std::isdigit( c ))
+         while( std::isdigit( c ) )
          {
             number += (c - '0') / divisor;
             divisor *= 10.0;
@@ -1512,7 +1491,7 @@ template <typename T> T fread_numeric(FILE *fp)
       std::ungetc( c, fp );
    }
 
-   return static_cast<T>(number);
+   return static_cast<T>( number );
 }
 
 // Add any new types as needed here.

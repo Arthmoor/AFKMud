@@ -41,16 +41,12 @@
 
 bool is_inolc( descriptor_data * );
 board_data *find_board( char_data * );
-board_data *get_board( char_data *, const string & );
+board_data *get_board( char_data *, const std::string & );
 
-lang_data *get_lang( const string & name )
+lang_data *get_lang( const std::string & name )
 {
-   list < lang_data * >::iterator lng;
-
-   for( lng = langlist.begin(  ); lng != langlist.end(  ); ++lng )
+   for( auto* lang: langlist )
    {
-      lang_data *lang = *lng;
-
       if( !str_cmp( lang->name, name ) )
          return lang;
    }
@@ -60,7 +56,7 @@ lang_data *get_lang( const string & name )
 // Rewritten by Xorith for more C++
 std::string translate( int percent, const std::string & in, const std::string & name )
 {
-   lang_data* lng = get_lang(name);
+   lang_data* lng = get_lang( name );
 
    if( percent > 99 || name == "common" || ( !lng && !( lng = get_lang( "default" ) ) ) )
    {
@@ -134,7 +130,7 @@ std::string translate( int percent, const std::string & in, const std::string & 
  */
 CMDF( do_ask )
 {
-   string arg, sbuf;
+   std::string arg, sbuf;
    char_data *victim;
    int speaking = -1;
 
@@ -173,7 +169,7 @@ CMDF( do_ask )
       return;
    }
 
-   bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
+   std::bitset<MAX_ACT_FLAG> actflags = ch->get_actflags(  );
    if( ch->isnpc(  ) )
       ch->unset_actflag( ACT_SECRETIVE );
 
@@ -223,9 +219,9 @@ CMDF( do_ask )
    mprog_targetted_speech_trigger( argument, ch, victim );
 }
 
-void update_sayhistory( char_data * ch, char_data * vch, const string & msg )
+void update_sayhistory( char_data * ch, char_data * vch, const std::string & msg )
 {
-   string message;
+   std::string message;
 
    if( vch->isnpc() )
       return;
@@ -277,15 +273,13 @@ CMDF( do_say )
    // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
    strip_spaces( argument );
 
-   bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
+   std::bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
    if( ch->isnpc(  ) )
       ch->unset_actflag( ACT_SECRETIVE );
 
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* vch : ch->in_room->people )
    {
-      char_data *vch = *ich;
-      string sbuf = argument;
+      std::string sbuf = argument;
 
       if( vch == ch )
          continue;
@@ -359,7 +353,7 @@ CMDF( do_say )
 
 CMDF( do_whisper )
 {
-   string arg;
+   std::string arg;
    char_data *victim;
    int position;
    int speaking = -1, lang;
@@ -548,10 +542,10 @@ CMDF( do_beep )
    ch->printf( "You beep %s.\r\n", PERS( victim, ch, true ) );
 }
 
-void update_tellhistory( char_data * vch, char_data * ch, const string & msg, bool self )
+void update_tellhistory( char_data * vch, char_data * ch, const std::string & msg, bool self )
 {
    char_data *tch;
-   string message;
+   std::string message;
 
    if( self )
    {
@@ -579,7 +573,7 @@ void update_tellhistory( char_data * vch, char_data * ch, const string & msg, bo
 
 CMDF( do_tell )
 {
-   string arg;
+   std::string arg;
    char_data *victim;
    int position;
    char_data *switched_victim = nullptr;
@@ -827,7 +821,7 @@ CMDF( do_reply )
 
    if( !( find_board( ch ) ) )
    {
-      string arg; /* Placed this here since it's only used here -- X */
+      std::string arg; /* Placed this here since it's only used here -- X */
 
       if( ( is_number( one_argument( argument, arg ) ) ) && ( get_board( ch, arg ) ) )
       {
@@ -861,7 +855,6 @@ CMDF( do_reply )
 
 CMDF( do_emote )
 {
-   char_data *vch;
    int speaking = -1;
 
    for( int lang = 0; lang < LANG_UNKNOWN; ++lang )
@@ -894,15 +887,13 @@ CMDF( do_emote )
       return;
    }
 
-   bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
+   std::bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
    if( ch->isnpc(  ) )
       ch->unset_actflag( ACT_SECRETIVE );
 
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* vch : ch->in_room->people )
    {
-      vch = *ich;
-      string sbuf = argument;
+      std::string sbuf = argument;
 
       /*
        * Check to see if a player on a map is at the same coords as the recipient 
@@ -942,7 +933,7 @@ CMDF( do_emote )
 }
 
 /* 0 = bug 1 = idea 2 = typo */
-void tybuid( char_data * ch, const string & argument, int type )
+void tybuid( char_data * ch, const std::string & argument, int type )
 {
    static const char *tybuid_name[] = { "bug", "idea", "typo" };
    static const char *tybuid_file[] = { PBUG_FILE, IDEA_FILE, TYPO_FILE };
@@ -1042,11 +1033,8 @@ CMDF( do_gtell )
    /*
     * Note use of send_to_char, so gtell works on sleepers.
     */
-   list < char_data * >::iterator ich;
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto* gch : pclist )
    {
-      char_data *gch = *ich;
-
       if( is_same_group( gch, ch ) )
       {
          if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
@@ -1184,13 +1172,12 @@ CMDF( do_speak )
 
 CMDF( do_languages )
 {
-   string arg;
+   std::string arg;
    int lang;
 
    argument = one_argument( argument, arg );
    if( !arg.empty(  ) && !str_prefix( arg, "learn" ) && !ch->is_immortal(  ) && !ch->isnpc(  ) )
    {
-      char_data *sch = nullptr;
       int sn, prct, prac;
       bool found = false;
 
@@ -1228,7 +1215,8 @@ CMDF( do_languages )
       /*
        * Bug fix - Samson 12-25-98 
        */
-      list < char_data * >::iterator ich;
+      char_data *sch;
+      std::list<char_data *>::iterator ich;
       for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
       {
          sch = *ich;
@@ -1299,12 +1287,12 @@ const char *MORPHNAME( char_data * ch )
       return NAME( ch );
 }
 
-string act_string( const string & format, char_data * to, char_data * ch, const void *arg1, const void *arg2, int flags )
+std::string act_string( const std::string & format, char_data * to, char_data * ch, const void *arg1, const void *arg2, int flags )
 {
    const char *he_she[] = { "it", "he", "she", "it" };
    const char *him_her[] = { "it", "him", "her", "it" };
    const char *his_her[] = { "its", "his", "her", "its" };
-   string buf;
+   std::string buf;
    bool should_upper = false;
    char_data *vch = ( char_data * ) arg2;
    obj_data *obj1 = ( obj_data * ) arg1;
@@ -1320,7 +1308,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
       DONT_UPPER = false;
 
    // No $ token in the string, return now with the contents as is.
-   if( format.find( '$', 0 ) == string::npos )
+   if( format.find( '$', 0 ) == std::string::npos )
    {
       buf = format;
 
@@ -1330,7 +1318,7 @@ string act_string( const string & format, char_data * to, char_data * ch, const 
       return buf;
    }
 
-   string::const_iterator ptr = format.begin(  );
+   std::string::const_iterator ptr = format.begin(  );
    while( ptr != format.end(  ) )
    {
       if( *ptr == '.' || *ptr == '?' || *ptr == '!' )
@@ -1523,9 +1511,9 @@ void act_printf( short AType, char_data * ch, const void *arg1, const void *arg2
    act( AType, format, ch, arg1, arg2, type );
 }
 
-void act( short AType, const string & format, char_data * ch, const void *arg1, const void *arg2, int type )
+void act( short AType, const std::string & format, char_data * ch, const void *arg1, const void *arg2, int type )
 {
-   string txt;
+   std::string txt;
    char_data *to;
    char_data *third = ( char_data * ) arg1;
    char_data *vch = ( char_data * ) arg2;
@@ -1550,7 +1538,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
    // Do some proper type checking here..  Sort of.  We base it on the $* params.
    // This is kinda lame really, but I suppose in some weird sense it beats having
    // to pass like 8 different nullptr parameters every time we need to call act()..
-   string::const_iterator ptr = format.begin(  );
+   std::string::const_iterator ptr = format.begin(  );
    while( ptr != format.end(  ) )
    {
       if( *ptr == '$' )
@@ -1663,15 +1651,11 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
 
    if( MOBtrigger && type != TO_CHAR && type != TO_VICT && to )
    {
-      list < obj_data * >::iterator iobj;
-
       txt = act_string( format, nullptr, ch, arg1, arg2, STRING_IMM );
       if( HAS_PROG( to->in_room, ACT_PROG ) )
          rprog_act_trigger( txt, to->in_room, ch, obj1, vch, obj2 );
-      for( iobj = to->in_room->objects.begin(  ); iobj != to->in_room->objects.end(  ); ++iobj )
+      for( auto* to_obj : to->in_room->objects )
       {
-         obj_data *to_obj = *iobj;
-
          if( HAS_PROG( to_obj->pIndexData, ACT_PROG ) )
             oprog_act_trigger( txt, to_obj, ch, obj1, vch, obj2 );
       }
@@ -1691,7 +1675,7 @@ void act( short AType, const string & format, char_data * ch, const void *arg1, 
    }
 
    // Strange as this may seem with changing "to" to the current iterated character, it seems to work. - Samson 1-9-04
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = to->in_room->people.begin(  ); ich != to->in_room->people.end(  ); )
    {
       to = *ich;

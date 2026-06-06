@@ -32,7 +32,7 @@
 #include "mud.h"
 #include "event.h"
 
-list < event_info * >eventlist;
+std::list<event_info *> eventlist;
 long events_served = 0;
 
 void free_event( event_info * e )

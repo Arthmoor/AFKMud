@@ -55,8 +55,8 @@ class immortal_host_log
      immortal_host_log(  );
     ~immortal_host_log(  );
 
-   string host;
-   string date;
+   std::string host;
+   std::string date;
 };
 
 class immortal_host
@@ -69,7 +69,7 @@ class immortal_host
      immortal_host(  );
     ~immortal_host(  );
 
-     list < immortal_host_log * >loglist;
-   string domain[MAX_DOMAIN];
-   string name;
+   std::list<immortal_host_log *> loglist;
+   std::string domain[MAX_DOMAIN];
+   std::string name;
 };

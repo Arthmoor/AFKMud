@@ -167,7 +167,7 @@ short gsn_tan;
 short gsn_dragon_ride;
 
 /* Global Skill Numbers */
-void ASSIGN_GSN( short gsn, const string & name )
+void ASSIGN_GSN( short gsn, const std::string & name )
 {
    if( ( gsn = skill_lookup( name ) ) == -1 )
       log_printf( "%s: Skill %s not found.\n", __func__, name.c_str( ) );

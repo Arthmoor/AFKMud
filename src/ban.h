@@ -50,7 +50,7 @@ class IPADDR
       decimal_t _decimal;
 
    public:
-      IPADDR( const string& ip );
+      IPADDR( const std::string & ip );
       IPADDR( decimal_t d );
 
       const decimal_t & decimal() const;
@@ -67,7 +67,7 @@ class CIDR
    IPADDR::decimal_t _upper;
 
  public:
-   CIDR( const string& cidr );
+   CIDR( const std::string & cidr );
    CIDR(){ };
 
    bool overlaps( const CIDR & ) const;
@@ -112,8 +112,8 @@ class ban_data
      ban_data(  );
     ~ban_data(  );
 
-   string name;      // Name of the person being banned.
-   string ipaddress; // Single IP x.x.x.x or CIDR in the form of x.x.x.x/y
+   std::string name;      // Name of the person being banned.
+   std::string ipaddress; // Single IP x.x.x.x or CIDR in the form of x.x.x.x/y
    std::chrono::system_clock::time_point expires;   // Time this ban expires. -1 indicates it won't.
    short type;       // The ban type.
 };

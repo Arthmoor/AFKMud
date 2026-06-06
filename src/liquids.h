@@ -103,9 +103,9 @@ class liquid_data
      liquid_data(  );
     ~liquid_data(  );
 
-   string name;
-   string shortdesc;
-   string color;
+   std::string name;
+   std::string shortdesc;
+   std::string color;
    int mod[MAX_CONDS];
    int vnum;
    int type;
@@ -121,7 +121,7 @@ class mixture_data
      mixture_data(  );
     ~mixture_data(  );
 
-   string name;
+   std::string name;
    int data[3];
    bool object;
 };
@@ -129,4 +129,4 @@ class mixture_data
 extern liquid_data *liquid_table[MAX_LIQUIDS];
 
 liquid_data *get_liq_vnum( int );
-liquid_data *get_liq( const string & );
+liquid_data *get_liq( const std::string & );

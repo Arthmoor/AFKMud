@@ -148,7 +148,7 @@ const char *moon_map[] = {
 
 void look_sky( char_data * ch )
 {
-   string buf;
+   std::string buf;
    int starpos, sunpos, moonpos, moonphase, i, linenum;
    WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
@@ -286,46 +286,46 @@ void look_sky( char_data * ch )
  */
 void show_visible_affects_to_char( char_data * victim, char_data * ch )
 {
-   char name[MSL];
+   std::string name;
 
    if( victim->isnpc(  ) )
-      strlcpy( name, victim->short_descr, MSL );
+      name = victim->short_descr;
    else
-      strlcpy( name, victim->name, MSL );
-   name[0] = toupper( name[0] );
+      name = victim->name;
+   name[0] = std::toupper( name.front() );
 
    if( victim->has_aflag( AFF_SANCTUARY ) )
    {
       if( victim->IS_GOOD(  ) )
-         ch->printf( "&W%s glows with an aura of divine radiance.\r\n", name );
+         ch->print_fmt( "&W{} glows with an aura of divine radiance.\r\n", name );
       else if( victim->IS_EVIL(  ) )
-         ch->printf( "&z%s shimmers beneath an aura of dark energy.\r\n", name );
+         ch->print_fmt( "&z{} shimmers beneath an aura of dark energy.\r\n", name );
       else
-         ch->printf( "&w%s is shrouded in flowing shadow and light.\r\n", name );
+         ch->print_fmt( "&w{} is shrouded in flowing shadow and light.\r\n", name );
    }
    if( victim->has_aflag( AFF_BLADEBARRIER ) )
-      ch->printf( "&w%s is surrounded by a spinning barrier of sharp blades.\r\n", name );
+      ch->print_fmt( "&w{} is surrounded by a spinning barrier of sharp blades.\r\n", name );
    if( victim->has_aflag( AFF_FIRESHIELD ) )
-      ch->printf( "&[fire]%s is engulfed within a blaze of mystical flame.\r\n", name );
+      ch->print_fmt( "&[fire]{} is engulfed within a blaze of mystical flame.\r\n", name );
    if( victim->has_aflag( AFF_SHOCKSHIELD ) )
-      ch->printf( "&B%s is surrounded by cascading torrents of energy.\r\n", name );
+      ch->print_fmt( "&B{} is surrounded by cascading torrents of energy.\r\n", name );
    if( victim->has_aflag( AFF_ACIDMIST ) )
-      ch->printf( "&G%s is visible through a cloud of churning mist.\r\n", name );
+      ch->print_fmt( "&G{} is visible through a cloud of churning mist.\r\n", name );
    if( victim->has_aflag( AFF_VENOMSHIELD ) )
-      ch->printf( "&g%s is enshrouded in a choking cloud of gas.\r\n", name );
+      ch->print_fmt( "&g{} is enshrouded in a choking cloud of gas.\r\n", name );
    if( victim->has_aflag( AFF_HASTE ) )
-      ch->printf( "&Y%s appears to be slightly blurred.\r\n", name );
+      ch->print_fmt( "&Y{} appears to be slightly blurred.\r\n", name );
    if( victim->has_aflag( AFF_SLOW ) )
-      ch->printf( "&[magic]%s appears to be moving very slowly.\r\n", name );
+      ch->print_fmt( "&[magic]{} appears to be moving very slowly.\r\n", name );
    /*
     * Scryn 8/13
     */
    if( victim->has_aflag( AFF_ICESHIELD ) )
-      ch->printf( "&C%s is ensphered by shards of glistening ice.\r\n", name );
+      ch->print_fmt( "&C{} is ensphered by shards of glistening ice.\r\n", name );
    if( victim->has_aflag( AFF_CHARM ) )
-      ch->printf( "&[magic]%s follows %s around everywhere.\r\n", name, victim->master == ch ? "you" : victim->master->name );
+      ch->print_fmt( "&[magic]{} follows %s around everywhere.\r\n", name, victim->master == ch ? "you" : victim->master->name );
    if( !victim->isnpc(  ) && !victim->desc && victim->switched && victim->switched->has_aflag( AFF_POSSESS ) )
-      ch->printf( "&[magic]%s appears to be in a deep trance...\r\n", PERS( victim, ch, false ) );
+      ch->print_fmt( "&[magic]{} appears to be in a deep trance...\r\n", PERS( victim, ch, false ) );
 }
 
 void show_condition( char_data * ch, char_data * victim )
@@ -398,7 +398,7 @@ void show_condition( char_data * ch, char_data * victim )
 /* Gave a reason buffer to PCFLAG_AFK -Whir - 8/31/98 */
 void show_char_to_char_0( char_data * victim, char_data * ch, int num )
 {
-   string buf = "";
+   std::string buf = "";
 
    if( !ch->can_see( victim, true ) )
       return;
@@ -842,12 +842,12 @@ bool is_same_mob( char_data * i, char_data * j )
 
 void show_char_to_char( char_data * ch )
 {
-   map < char_data *, int >chmap;
-   map < char_data *, int >::iterator mch;
+   std::map<char_data *, int> chmap;
+   std::map<char_data *, int>::iterator mch;
    bool found = false;
 
    chmap.clear(  );
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
       char_data *rch = *ich;
@@ -899,7 +899,7 @@ bool check_blind( char_data * ch )
 /*
  * Returns classical DIKU door direction based on text in arg	-Thoric
  */
-int get_door( const string & arg )
+int get_door( const std::string & arg )
 {
    int door;
 
@@ -930,7 +930,7 @@ int get_door( const string & arg )
 
 CMDF( do_exits )
 {
-   string buf;
+   std::string buf;
 
    bool fAuto = !str_cmp( argument, "auto" );
 
@@ -948,11 +948,8 @@ CMDF( do_exits )
    buf = ( fAuto ? "[Exits:" : "Obvious exits:\r\n" );
 
    bool found = false;
-   list < exit_data * >::iterator iexit;
-   for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
+   for( auto* pexit : ch->in_room->exits )
    {
-      exit_data *pexit = *iexit;
-
       /*
        * Immortals see all exits, even secret ones 
        */
@@ -1052,11 +1049,8 @@ void print_compass( char_data * ch )
    int exit_info[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
    static const char *exit_colors[] = { "&w", "&Y", "&C", "&b", "&w", "&R" };
 
-   list < exit_data * >::iterator iexit;
-   for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
+   for( auto* pexit : ch->in_room->exits )
    {
-      exit_data *pexit = *iexit;
-
       if( !pexit->to_room || IS_EXIT_FLAG( pexit, EX_HIDDEN ) || ( IS_EXIT_FLAG( pexit, EX_SECRET ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) ) )
          continue;
       if( IS_EXIT_FLAG( pexit, EX_WINDOW ) )
@@ -1070,6 +1064,7 @@ void print_compass( char_data * ch )
       else
          exit_info[pexit->vdir] = 1;
    }
+
    ch->printf( "\r\n&[rmname]%-50s         %s%s    %s%s    %s%s\r\n",
                ch->in_room->name, exit_colors[exit_info[DIR_NORTHWEST]],
                exit_info[DIR_NORTHWEST] ? "NW" : "- ", exit_colors[exit_info[DIR_NORTH]], exit_info[DIR_NORTH] ? "N" : "-",
@@ -1177,12 +1172,10 @@ CMDF( do_showmap )
 
 CMDF( do_look )
 {
-   string arg, arg1, arg2;
+   std::string arg, arg1, arg2;
    extra_descr_data *ed = nullptr;
-   list < exit_data * >::iterator iexit;
    char_data *victim;
    obj_data *obj;
-   list < obj_data * >::iterator iobj;
    room_index *original;
    int number, cnt;
 
@@ -1397,10 +1390,8 @@ CMDF( do_look )
             break;
 
          case ITEM_PORTAL:
-            for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
+            for( auto* pexit : ch->in_room->exits )
             {
-               exit_data *pexit = *iexit;
-
                if( pexit->vdir == DIR_PORTAL && IS_EXIT_FLAG( pexit, EX_PORTAL ) )
                {
                   if( pexit->to_room->is_private(  ) && ch->level < sysdata->level_override_private )
@@ -1467,6 +1458,7 @@ CMDF( do_look )
     * finally fixed the annoying look 2.obj desc bug  -Thoric 
     */
    number = number_argument( arg1, arg );
+   std::list<obj_data *>::iterator iobj;
    for( cnt = 0, iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
       obj = *iobj;
@@ -1969,7 +1961,7 @@ CMDF( do_examine )
 
 CMDF( do_compare )
 {
-   string arg1;
+   std::string arg1;
    obj_data *obj1, *obj2 = nullptr;
    int value1, value2;
    const char *msg;
@@ -1989,7 +1981,7 @@ CMDF( do_compare )
 
    if( argument.empty(  ) )
    {
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
       for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
       {
          obj2 = *iobj;
@@ -2063,13 +2055,9 @@ CMDF( do_oldwhere )
 
    if( argument.empty(  ) )
    {
-      list < descriptor_data * >::iterator ds;
-
       ch->pagerf( "\r\nPlayers near you in %s:\r\n", ch->in_room->area->name );
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
-
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
              && ( victim = d->character ) != nullptr && !victim->isnpc(  ) && victim->in_room
              && victim->in_room->area == ch->in_room->area && ch->can_see( victim, true ) && !is_ignoring( victim, ch )
@@ -2093,7 +2081,7 @@ CMDF( do_oldwhere )
    }
    else
    {
-      list < char_data * >::iterator ich;
+      std::list<char_data *>::iterator ich;
       for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
       {
          victim = *ich;
@@ -2218,8 +2206,8 @@ CMDF( do_wimpy )
 /* Upgraded yet again to OS independent SHA-256 encryption - Samson 1-7-06 */
 CMDF( do_password )
 {
-   string arg1;
-   string pwdnew;
+   std::string arg1;
+   std::string pwdnew;
 
    if( ch->isnpc(  ) )
       return;
@@ -2385,7 +2373,7 @@ CMDF( do_config )
          return;
       }
 
-      string arg = argument.substr( 1, argument.length(  ) );
+      std::string arg = argument.substr( 1, argument.length(  ) );
 
       if( !str_prefix( arg, "autoexit" ) )
          bit = PCFLAG_AUTOEXIT;
@@ -2648,7 +2636,7 @@ void load_motd( char_data * ch, const char *name )
 /* Handles editing the MOTDs on the server, independent of helpfiles now - Samson 12-31-00 */
 CMDF( do_motdedit )
 {
-   string arg1;
+   std::string arg1;
 
    if( ch->isnpc(  ) )
    {
@@ -2793,14 +2781,13 @@ void pc_data::load_ignores( FILE * fp )
  */
 CMDF( do_ignore )
 {
-   list < string >::iterator ign;
    char_data *victim;
 
    if( ch->isnpc(  ) )
       return;
 
    /*
-    * If no arguements, then list players currently ignored 
+    * If no arguments, then list players currently ignored
     */
    if( argument.empty(  ) )
    {
@@ -2815,11 +2802,8 @@ CMDF( do_ignore )
       }
 
       ch->print( "&[ignore]" );
-      for( ign = ch->pcdata->ignore.begin(  ); ign != ch->pcdata->ignore.end(  ); ++ign )
-      {
-         string temp = *ign;
+      for( auto& temp : ch->pcdata->ignore )
          ch->printf( "\t  - %s\r\n", temp.c_str(  ) );
-      }
       return;
    }
 
@@ -2828,10 +2812,10 @@ CMDF( do_ignore )
     */
    else if( !str_cmp( argument, "none" ) )
    {
-      for( ign = ch->pcdata->ignore.begin(  ); ign != ch->pcdata->ignore.end(  ); )
+      for( auto it = ch->pcdata->ignore.begin(  ); it != ch->pcdata->ignore.end(  ); )
       {
-         string ig = *ign;
-         ++ign;
+         std::string ig = *it;
+         ++it;
 
          ch->pcdata->ignore.remove( ig );
       }
@@ -2850,8 +2834,6 @@ CMDF( do_ignore )
 
    else
    {
-      size_t i;
-
       std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
       std::filesystem::path fname2 = std::format( "{}/{}", GOD_DIR, capitalize( argument ) );
 
@@ -2874,12 +2856,13 @@ CMDF( do_ignore )
       /*
        * Loop through the linked list of ignored players, keep track of how many are being ignored 
        */
-      for( ign = ch->pcdata->ignore.begin(  ), i = 0; ign != ch->pcdata->ignore.end(  ); ++ign, ++i )
+      size_t i = 0;
+      for( auto& temp : ch->pcdata->ignore )
       {
-         string temp = *ign;
+         ++i;
 
          /*
-          * If the argument matches a name in list remove it 
+          * If the argument matches a name in list remove it.
           */
          if( !str_cmp( temp, capitalize( argument ) ) )
          {
@@ -2920,7 +2903,7 @@ CMDF( do_ignore )
        */
       if( i < sysdata->maxign )
       {
-         string inew = capitalize( argument );
+         std::string inew = capitalize( argument );
          ch->pcdata->ignore.push_back( inew );
          ch->printf( "&[ignore]You now ignore %s.\r\n", inew.c_str(  ) );
          return;
@@ -2940,8 +2923,6 @@ CMDF( do_ignore )
  */
 bool is_ignoring( char_data * ch, char_data * ign_ch )
 {
-   list < string >::iterator temp;
-
    if( !ch )   /* Paranoid bug check, you never know. */
    {
       bug( "%s: nullptr CH!", __func__ );
@@ -2954,10 +2935,8 @@ bool is_ignoring( char_data * ch, char_data * ign_ch )
    if( ch->isnpc(  ) || ign_ch->isnpc(  ) )
       return false;
 
-   for( temp = ch->pcdata->ignore.begin(  ); temp != ch->pcdata->ignore.end(  ); ++temp )
+   for( auto& ign : ch->pcdata->ignore )
    {
-      string ign = *temp;
-
       if( !str_cmp( ign, ign_ch->name ) )
          return true;
    }

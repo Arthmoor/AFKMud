@@ -41,20 +41,20 @@
 #include "skill_index.h"
 #include "smaugaffect.h"
 
-ch_ret ranged_attack( char_data *, string, obj_data *, obj_data *, short, short );
+ch_ret ranged_attack( char_data *, std::string, obj_data *, obj_data *, short, short );
 bool check_pos( char_data *, short );
 SPELLF( spell_smaug );
 SPELLF( spell_notfound );
 SPELLF( spell_null );
 int ris_save( char_data *, int, int );
-bool validate_spec_fun( const string & );
+bool validate_spec_fun( const std::string & );
 bool is_safe( char_data *, char_data * );
 bool check_illegal_pk( char_data *, char_data * );
 bool legal_loot( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
 void failed_casting( class skill_type *, char_data *, char_data *, obj_data * );
 void check_mount_objs( char_data *, bool );
-int get_door( const string & );
+int get_door( const std::string & );
 void check_killer( char_data *, char_data * );
 void raw_kill( char_data *, char_data * );
 void death_cry( char_data * );
@@ -339,14 +339,12 @@ skill_type::skill_type(  )
 
 skill_type::~skill_type(  )
 {
-   list < smaug_affect * >::iterator aff;
-
    if( !affects.empty(  ) )
    {
-      for( aff = affects.begin(  ); aff != affects.end(  ); )
+      for( auto it = affects.begin(  ); it != affects.end(  ); )
       {
-         smaug_affect *af = *aff;
-         ++aff;
+         smaug_affect *af = *it;
+         ++it;
 
          affects.remove( af );
          deleteptr( af );
@@ -377,7 +375,7 @@ skill_type::~skill_type(  )
    DISPOSE( helptext );
 }
 
-int get_skillflag( const string & flag )
+int get_skillflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( spell_flag ) / sizeof( spell_flag[0] ) ); ++x )
       if( !str_cmp( flag, spell_flag[x] ) )
@@ -391,21 +389,21 @@ string_sort::string_sort( void )
 {
 }
 
-bool string_sort::operator(  ) ( const string & left, const string & right ) const
+bool string_sort::operator(  ) ( const std::string & left, const std::string & right ) const
 {
    return ( left.compare( right ) < 0 );
 }
 
 // Used to find skills using their prefix
-find__skill_prefix::find__skill_prefix( char_data * p_actor, const string & p_value )
+find__skill_prefix::find__skill_prefix( char_data * p_actor, const std::string & p_value )
 {
    actor = p_actor;
    value = p_value;
 }
 
-bool find__skill_prefix::operator(  ) ( pair < string, int >compare )
+bool find__skill_prefix::operator(  ) ( std::pair < std::string, int > compare )
 {
-   string key;
+   std::string key;
    int sn;
 
    key = compare.first;
@@ -418,15 +416,15 @@ bool find__skill_prefix::operator(  ) ( pair < string, int >compare )
 }
 
 // Used to find skills using the exact name.
-find__skill_exact::find__skill_exact( char_data * p_actor, const string & p_value )
+find__skill_exact::find__skill_exact( char_data * p_actor, const std::string & p_value )
 {
    actor = p_actor;
    value = p_value;
 }
 
-bool find__skill_exact::operator(  ) ( pair < string, int >compare )
+bool find__skill_exact::operator(  ) ( std::pair < std::string, int > compare )
 {
-   string key;
+   std::string key;
    int sn;
 
    key = compare.first;
@@ -439,7 +437,7 @@ bool find__skill_exact::operator(  ) ( pair < string, int >compare )
 }
 
 // Skill Search Functions
-int search_skill_prefix( SKILL_INDEX index, const string & key )
+int search_skill_prefix( SKILL_INDEX index, const std::string & key )
 {
    SKILL_INDEX::iterator fnd, it, end;
 
@@ -451,7 +449,7 @@ int search_skill_prefix( SKILL_INDEX index, const string & key )
    return fnd->second;
 }
 
-int search_skill_prefix( SKILL_INDEX index, const string & key, char_data * actor )
+int search_skill_prefix( SKILL_INDEX index, const std::string & key, char_data * actor )
 {
    SKILL_INDEX::iterator fnd, it, end;
 
@@ -467,7 +465,7 @@ int search_skill_prefix( SKILL_INDEX index, const string & key, char_data * acto
    return fnd->second;
 }
 
-int search_skill_exact( SKILL_INDEX index, const string & key )
+int search_skill_exact( SKILL_INDEX index, const std::string & key )
 {
    SKILL_INDEX::iterator fnd;
 
@@ -476,7 +474,7 @@ int search_skill_exact( SKILL_INDEX index, const string & key )
    return fnd->second;
 }
 
-int search_skill_exact( SKILL_INDEX index, const string & key, char_data * actor )
+int search_skill_exact( SKILL_INDEX index, const std::string & key, char_data * actor )
 {
    SKILL_INDEX::iterator fnd, it, end;
 
@@ -492,7 +490,7 @@ int search_skill_exact( SKILL_INDEX index, const string & key, char_data * actor
    return fnd->second;
 }
 
-int search_skill( SKILL_INDEX index, const string & key )
+int search_skill( SKILL_INDEX index, const std::string & key )
 {
    int sn;
 
@@ -501,7 +499,7 @@ int search_skill( SKILL_INDEX index, const string & key )
    return search_skill_prefix( index, key );
 }
 
-int search_skill( SKILL_INDEX index, const string & key, char_data * actor )
+int search_skill( SKILL_INDEX index, const std::string & key, char_data * actor )
 {
    int sn;
 
@@ -510,7 +508,7 @@ int search_skill( SKILL_INDEX index, const string & key, char_data * actor )
    return search_skill_prefix( index, key, actor );
 }
 
-int find_spell( char_data * ch, const string & name, bool know )
+int find_spell( char_data * ch, const std::string & name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__spell, name );
@@ -518,7 +516,7 @@ int find_spell( char_data * ch, const string & name, bool know )
       return search_skill( skill_table__spell, name, ch );
 }
 
-int find_skill( char_data * ch, const string & name, bool know )
+int find_skill( char_data * ch, const std::string & name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__skill, name );
@@ -526,7 +524,7 @@ int find_skill( char_data * ch, const string & name, bool know )
       return search_skill( skill_table__skill, name, ch );
 }
 
-int find_combat( char_data * ch, const string & name, bool know )
+int find_combat( char_data * ch, const std::string & name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__combat, name );
@@ -534,7 +532,7 @@ int find_combat( char_data * ch, const string & name, bool know )
       return search_skill( skill_table__combat, name, ch );
 }
 
-int find_ability( char_data * ch, const string & name, bool know )
+int find_ability( char_data * ch, const std::string & name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__racial, name );
@@ -542,7 +540,7 @@ int find_ability( char_data * ch, const string & name, bool know )
       return search_skill( skill_table__racial, name, ch );
 }
 
-int find_tongue( char_data * ch, const string & name, bool know )
+int find_tongue( char_data * ch, const std::string & name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__tongue, name );
@@ -550,7 +548,7 @@ int find_tongue( char_data * ch, const string & name, bool know )
       return search_skill( skill_table__tongue, name, ch );
 }
 
-int find_lore( char_data * ch, const string & name, bool know )
+int find_lore( char_data * ch, const std::string & name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__lore, name );
@@ -561,7 +559,7 @@ int find_lore( char_data * ch, const string & name, bool know )
 /*
  * Lookup a skill by name, only stopping at skills the player has.
  */
-int ch_slookup( char_data * ch, const string & name )
+int ch_slookup( char_data * ch, const std::string & name )
 {
    int sn;
 
@@ -597,7 +595,7 @@ int ch_slookup( char_data * ch, const string & name )
  * to do so aside from the find_* functions above.
  * If you want more fine-grained lookups this is the place to put them.
  */
-int skill_lookup( const string & name )
+int skill_lookup( const std::string & name )
 {
    int sn;
 
@@ -627,7 +625,7 @@ skill_type *get_skilltype( int sn )
 /*
  * Lookup an herb by name.
  */
-int herb_lookup( const string & name )
+int herb_lookup( const std::string & name )
 {
    for( int sn = 0; sn < top_herb; ++sn )
    {
@@ -678,7 +676,6 @@ CMDF( do_slotlookup )
 void remap_slot_numbers( void )
 {
    skill_type *skill;
-   list < smaug_affect * >::iterator aff;
 
    log_string( "Remapping slots to sns..." );
 
@@ -686,10 +683,8 @@ void remap_slot_numbers( void )
    {
       if( ( skill = skill_table[sn] ) != nullptr )
       {
-         for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); ++aff )
+         for( auto* af : skill->affects )
          {
-            smaug_affect *af = *aff;
-
             if( af->location == APPLY_WEAPONSPELL
                 || af->location == APPLY_WEARSPELL || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL )
             {
@@ -720,7 +715,7 @@ int skill_comp( skill_type ** sk1, skill_type ** sk2 )
 
 void update_skill_index( skill_type * skill, int sn )
 {
-   string buf = strlower( skill->name );
+   std::string buf = strlower( skill->name );
 
    skill_table__index[buf] = sn;
 
@@ -774,7 +769,7 @@ void sort_skill_table(  )
    }
 }
 
-int get_skill( const string & skilltype )
+int get_skill( const std::string & skilltype )
 {
    if( !str_cmp( skilltype, "Racial" ) )
       return SKILL_RACIAL;
@@ -875,11 +870,8 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
       fprintf( fpout, "Teachers     %s~\n", skill->teachers );
 
    int modifier;
-   list < smaug_affect * >::iterator aff;
-   for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); ++aff )
+   for( auto* af : skill->affects )
    {
-      smaug_affect *af = *aff;
-
       if( af->location == APPLY_AFFECT )
          af->location = APPLY_EXT_AFFECT;
       fprintf( fpout, "Affect       '%s' %d ", af->duration, af->location );
@@ -918,7 +910,7 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
  */
 const int SKILLVERSION = 5;
 /* Updated to 1 for position text - Samson 4-26-00 */
-/* Updated to 2 for bitset flags - Samson 7-10-04 */
+/* Updated to 2 for std::bitset flags - Samson 7-10-04 */
 /* Updated to 3 for AFF_NONE insertion - Samson 7-27-04 */
 /* Updated to 4 for bug corrections - Samson 1-28-06 */
 // Updated to 5 because Samson got stupid. Again. *ugh* - Samson 8/11/07
@@ -1443,7 +1435,7 @@ void free_skills( void )
 /*
  * Dummy function - Unused parameter should be left alone, as-is.
  */
-void skill_notfound( char_data * ch, string argument )
+void skill_notfound( char_data * ch, std::string argument )
 {
    ch->print( "Huh?\r\n" );
 }
@@ -1587,7 +1579,7 @@ CMDF( do_viewskills )
    }
 }
 
-int get_ssave( const string & name )
+int get_ssave( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( spell_saves ) / sizeof( spell_saves[0] ); ++x )
       if( !str_cmp( name, spell_saves[x] ) )
@@ -1595,7 +1587,7 @@ int get_ssave( const string & name )
    return -1;
 }
 
-int get_starget( const string & name )
+int get_starget( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( target_type ) / sizeof( target_type[0] ); ++x )
       if( !str_cmp( name, target_type[x] ) )
@@ -1603,7 +1595,7 @@ int get_starget( const string & name )
    return -1;
 }
 
-int get_sflag( const string & name )
+int get_sflag( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( spell_flag ) / sizeof( spell_flag[0] ); ++x )
       if( !str_cmp( name, spell_flag[x] ) )
@@ -1611,7 +1603,7 @@ int get_sflag( const string & name )
    return -1;
 }
 
-int get_sdamage( const string & name )
+int get_sdamage( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( spell_damage ) / sizeof( spell_damage[0] ); ++x )
       if( !str_cmp( name, spell_damage[x] ) )
@@ -1619,7 +1611,7 @@ int get_sdamage( const string & name )
    return -1;
 }
 
-int get_saction( const string & name )
+int get_saction( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( spell_action ) / sizeof( spell_action[0] ); ++x )
       if( !str_cmp( name, spell_action[x] ) )
@@ -1627,7 +1619,7 @@ int get_saction( const string & name )
    return -1;
 }
 
-int get_ssave_effect( const string & name )
+int get_ssave_effect( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( spell_save_effect ) / sizeof( spell_save_effect[0] ); ++x )
       if( !str_cmp( name, spell_save_effect[x] ) )
@@ -1635,7 +1627,7 @@ int get_ssave_effect( const string & name )
    return -1;
 }
 
-int get_spower( const string & name )
+int get_spower( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( spell_power ) / sizeof( spell_power[0] ); ++x )
       if( !str_cmp( name, spell_power[x] ) )
@@ -1643,7 +1635,7 @@ int get_spower( const string & name )
    return -1;
 }
 
-int get_sclass( const string & name )
+int get_sclass( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( spell_class ) / sizeof( spell_class[0] ); ++x )
       if( !str_cmp( name, spell_class[x] ) )
@@ -1651,7 +1643,7 @@ int get_sclass( const string & name )
    return -1;
 }
 
-int skill_number( const string & argument )
+int skill_number( const std::string & argument )
 {
    int sn;
 
@@ -1660,7 +1652,7 @@ int skill_number( const string & argument )
    return -1;
 }
 
-bool get_skill_help( char_data * ch, const string & argument )
+bool get_skill_help( char_data * ch, const std::string & argument )
 {
    skill_type *skill = nullptr;
    int sn;
@@ -1804,7 +1796,7 @@ bool can_use_skill( char_data * ch, int percent, int gsn )
    return check;
 }
 
-bool check_ability( char_data * ch, const string & command, const string & argument )
+bool check_ability( char_data * ch, const std::string & command, const std::string & argument )
 {
    int sn, mana;
 
@@ -2001,12 +1993,10 @@ bool check_ability( char_data * ch, const string & command, const string & argum
 
       if( skill_table[sn]->target == TAR_CHAR_OFFENSIVE && victim != ch && !victim->char_died(  ) )
       {
-         list < char_data * >::iterator ich;
-
-         for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+         for( auto it = ch->in_room->people.begin(); it != ch->in_room->people.end(); )
          {
-            char_data *vch = *ich;
-            ++ich;
+            char_data *vch = *it;
+            ++it;
 
             if( victim == vch && !victim->fighting && victim->master != ch )
             {
@@ -2033,7 +2023,7 @@ bool check_ability( char_data * ch, const string & command, const string & argum
  * Each different section of the skill table is sorted alphabetically
  * Only match skills player knows - Thoric
  */
-bool check_skill( char_data * ch, const string & command, const string & argument )
+bool check_skill( char_data * ch, const std::string & command, const std::string & argument )
 {
    int sn, mana;
 
@@ -2228,12 +2218,10 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
 
       if( skill_table[sn]->target == TAR_CHAR_OFFENSIVE && victim != ch && !victim->char_died(  ) )
       {
-         list < char_data * >::iterator ich;
-
-         for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+         for( auto it = ch->in_room->people.begin(); it != ch->in_room->people.end(); )
          {
-            char_data *vch = *ich;
-            ++ich;
+            char_data *vch = *it;
+            ++it;
 
             if( victim == vch && !victim->fighting && victim->master != ch )
             {
@@ -2261,8 +2249,7 @@ bool check_skill( char_data * ch, const string & command, const string & argumen
 CMDF( do_slist )
 {
    int sn, i, lFound;
-   string arg1, arg2;
-   char skn[MIL];
+   std::string arg1, arg2;
    int lowlev, hilev;
    short lasttype = SKILL_SPELL;
    int cl = ch->Class;
@@ -2341,7 +2328,7 @@ CMDF( do_slist )
    for( i = lowlev; i <= hilev; ++i )
    {
       lFound = 0;
-      strlcpy( skn, "Spell", MIL );
+      std::string skn = "Spell";
       for( sn = 0; sn < num_skills; ++sn )
       {
          if( !skill_table[sn]->name )
@@ -2350,7 +2337,7 @@ CMDF( do_slist )
          if( skill_table[sn]->type != lasttype )
          {
             lasttype = skill_table[sn]->type;
-            strlcpy( skn, skill_tname[lasttype], MIL );
+            skn = skill_tname[lasttype];
          }
 
          if( ch->pcdata->learned[sn] <= 0 && SPELL_FLAG( skill_table[sn], SF_SECRETSKILL ) )
@@ -2370,7 +2357,7 @@ CMDF( do_slist )
             }
 
             ch->pagerf( "%7s: %20.20s \t Current: %-3d Max: %-3d  MinPos: %s \r\n",
-                        skn, skill_table[sn]->name, ch->pcdata->learned[sn], skill_table[sn]->skill_adept[xx], npc_position[skill_table[sn]->minimum_position] );
+                        skn.c_str(), skill_table[sn]->name, ch->pcdata->learned[sn], skill_table[sn]->skill_adept[xx], npc_position[skill_table[sn]->minimum_position] );
          }
       }
    }
@@ -2850,7 +2837,7 @@ CMDF( do_sset )
       }
       if( !str_cmp( arg2, "flags" ) )
       {
-         string arg3;
+         std::string arg3;
          int x;
 
          while( !argument.empty(  ) )
@@ -2991,7 +2978,6 @@ CMDF( do_sset )
       }
       if( !str_cmp( arg2, "rmaffect" ) )
       {
-         list < smaug_affect * >::iterator aff;
          int num = atoi( argument.c_str(  ) );
          int cnt = 0;
 
@@ -3000,9 +2986,11 @@ CMDF( do_sset )
             ch->print( "This spell has no special affects to remove.\r\n" );
             return;
          }
-         for( aff = skill->affects.begin(  ); aff != skill->affects.end(  ); ++aff )
+
+         for( auto it = skill->affects.begin(); it != skill->affects.end(); )
          {
-            smaug_affect *af = *aff;
+            smaug_affect *af = *it;
+            ++it;
 
             if( ++cnt == num )
             {
@@ -3015,12 +3003,13 @@ CMDF( do_sset )
          ch->print( "Not found.\r\n" );
          return;
       }
+
       /*
        * affect <location> <modifier> <duration> <bitvector>
        */
       if( !str_cmp( arg2, "affect" ) )
       {
-         string location, modifier, duration;
+         std::string location, modifier, duration;
          int loc, bit, tmpbit;
          smaug_affect *aff;
 
@@ -3088,7 +3077,7 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "level" ) )
       {
-         string arg3;
+         std::string arg3;
          int Class;
 
          argument = one_argument( argument, arg3 );
@@ -3103,7 +3092,7 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "racelevel" ) )
       {
-         string arg3;
+         std::string arg3;
          int race;
 
          argument = one_argument( argument, arg3 );
@@ -3118,7 +3107,7 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "adept" ) )
       {
-         string arg3;
+         std::string arg3;
          int Class;
 
          argument = one_argument( argument, arg3 );
@@ -3133,7 +3122,7 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "raceadept" ) )
       {
-         string arg3;
+         std::string arg3;
          int race;
 
          argument = one_argument( argument, arg3 );
@@ -3379,7 +3368,7 @@ CMDF( do_grapple )
 {
    char_data *victim;
    affect_data af;
-   string arg;
+   std::string arg;
    short percent;
 
    if( !ch->IS_PKILL( ) && !ch->is_immortal() )
@@ -3566,9 +3555,9 @@ CMDF( do_gouge )
 
 CMDF( do_detrap )
 {
-   string arg;
+   std::string arg;
    obj_data *trap, *obj = nullptr;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    int percent;
    bool found = false;
 
@@ -3687,7 +3676,7 @@ CMDF( do_detrap )
 
 CMDF( do_dig )
 {
-   string arg;
+   std::string arg;
    exit_data *pexit;
 
    switch ( ch->substate )
@@ -3788,10 +3777,11 @@ CMDF( do_dig )
     * not having a shovel makes it harder to succeed 
     */
    bool shovel = false;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
       obj_data *obj = *iobj;
+
       if( obj->item_type == ITEM_SHOVEL )
       {
          shovel = true;
@@ -3836,6 +3826,7 @@ CMDF( do_dig )
    for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
       obj = *iobj;
+
       /*
        * twice as hard to find something without a shovel 
        */
@@ -3864,7 +3855,7 @@ CMDF( do_dig )
 
 CMDF( do_search )
 {
-   string arg;
+   std::string arg;
    obj_data *container;
 
    int door = -1;
@@ -3926,7 +3917,7 @@ CMDF( do_search )
 
    bool found = false;
    ch->substate = SUB_NONE;
-   list < obj_data * >startlist;
+   std::list<obj_data *> startlist;
    if( arg.empty(  ) )
    {
       startlist = ch->in_room->objects;
@@ -3973,10 +3964,8 @@ CMDF( do_search )
    }
    else
    {
-      list < obj_data * >::iterator iobj;
-      for( iobj = startlist.begin(  ); iobj != startlist.end(  ); ++iobj )
+      for( auto* obj : startlist )
       {
-         obj_data *obj = *iobj;
          if( obj->extra_flags.test( ITEM_HIDDEN ) && can_use_skill( ch, percent, gsn_search ) )
          {
             obj->separate(  );
@@ -3994,7 +3983,7 @@ CMDF( do_search )
 
 CMDF( do_steal )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim, *mst;
    obj_data *obj;
    int percent;
@@ -4158,7 +4147,7 @@ CMDF( do_steal )
 /* Heavily modified with Shard stuff, including the critical pierce - Samson 5-22-99 */
 CMDF( do_backstab )
 {
-   string arg;
+   std::string arg;
    char_data *victim;
    obj_data *obj;
    affect_data af;
@@ -4244,7 +4233,7 @@ CMDF( do_backstab )
  * the fact that the thief is sneaking.  There is also a
  * chance that the mob will not even notice thief has missed
  * the backstab.  A sleeping mob has better chance of being
- * paralysised and has no chance for missing backstab.
+ * paralyzed and has no chance for missing backstab.
  * Chance to paralysis and not be seen is modified by thieves
  * dexterity - Open [Former Shard coder]
  */
@@ -5112,7 +5101,7 @@ CMDF( do_cleave )
 
 CMDF( do_pick )
 {
-   string arg;
+   std::string arg;
 
    if( ch->isnpc(  ) && ch->has_aflag( AFF_CHARM ) )
    {
@@ -5142,11 +5131,8 @@ CMDF( do_pick )
    /*
     * look for guards 
     */
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* gch: ch->in_room->people )
    {
-      char_data *gch = *ich;
-
       if( gch->isnpc(  ) && gch->IS_AWAKE(  ) && ch->level + 5 < gch->level )
       {
          act( AT_PLAIN, "$N is standing too close to the lock.", ch, nullptr, gch, TO_CHAR );
@@ -5701,11 +5687,12 @@ CMDF( do_poison_weapon )
     * Now we have a valid weapon...check to see if we have the powder. 
     */
    obj_data *pobj = nullptr, *wobj = nullptr;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    bool pfound = false;
    for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
       pobj = *iobj;
+
       if( pobj->pIndexData->vnum == OBJ_VNUM_BLACK_POWDER )
       {
          pfound = true;
@@ -5725,6 +5712,7 @@ CMDF( do_poison_weapon )
    for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
       wobj = *iobj;
+
       if( wobj->item_type == ITEM_DRINK_CON && wobj->value[1] > 0 && wobj->value[2] == 0 )
       {
          wfound = true;
@@ -5960,10 +5948,8 @@ CMDF( do_brew )
    }
 
    bool found = false;
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
+   for( auto* fire : ch->in_room->objects )
    {
-      obj_data *fire = *iobj;
       if( fire->item_type == ITEM_FIRE )
       {
          found = true;
@@ -6188,11 +6174,10 @@ CMDF( do_hitall )
    }
 
    percent = ch->LEARNED( gsn_hitall );
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+   for( auto it = ch->in_room->people.begin(  ); it != ch->in_room->people.end(  ); )
    {
-      char_data *vch = *ich;
-      ++ich;
+      char_data *vch = *it;
+      ++it;
 
       if( is_same_group( ch, vch ) || !is_legal_kill( ch, vch ) || !ch->can_see( vch, false ) || is_safe( ch, vch ) )
          continue;
@@ -6250,16 +6235,13 @@ static const char *rng_desc[] = {
 
 static void scanroom( char_data * ch, room_index * room, int dir, int maxdist, int dist )
 {
-   list < char_data * >::iterator ich;
-   for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
+   for( auto* tch : room->people )
    {
-      char_data *tch = *ich;
-
       if( ch->can_see( tch, false ) && !is_ignoring( tch, ch ) )
          ch->printf( "%-30s : %s %s\r\n", tch->isnpc(  )? tch->short_descr : tch->name, rng_desc[dist], dist == 0 ? "" : dir_desc[dir] );
    }
 
-   list < exit_data * >::iterator ex;
+   std::list<exit_data *>::iterator ex;
    exit_data *pexit = nullptr;
    for( ex = room->exits.begin(  ); ex != room->exits.end(  ); ++ex )
    {
@@ -6297,11 +6279,8 @@ CMDF( do_scan )
 
    scanroom( ch, ch->in_room, -1, 1, 0 );
 
-   list < exit_data * >::iterator iexit;
-   for( iexit = ch->in_room->exits.begin(  ); iexit != ch->in_room->exits.end(  ); ++iexit )
+   for( auto* pexit : ch->in_room->exits )
    {
-      exit_data *pexit = *iexit;
-
       if( IS_EXIT_FLAG( pexit, EX_DIG ) || IS_EXIT_FLAG( pexit, EX_CLOSED )
           || IS_EXIT_FLAG( pexit, EX_FORTIFIED ) || IS_EXIT_FLAG( pexit, EX_HEAVY )
           || IS_EXIT_FLAG( pexit, EX_MEDIUM ) || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) || IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
@@ -6586,10 +6565,8 @@ CMDF( do_cook )
    }
 
    bool found = false;
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
+   for( auto* fire : ch->in_room->objects )
    {
-      obj_data *fire = *iobj;
       if( fire->item_type == ITEM_FIRE )
       {
          found = true;
@@ -7262,7 +7239,8 @@ CMDF( do_forage )
    }
 }
 
-/* The mob vnum definition here should always be the first in the series.
+/*
+ * The mob vnum definition here should always be the first in the series.
  * Keep them grouped or you'll have unpredictable results.
  */
 CMDF( do_woodcall )
@@ -7644,7 +7622,7 @@ CMDF( do_charge )
 CMDF( do_tan )
 {
    obj_data *corpse = nullptr, *hide = nullptr;
-   string itemname, itemtype, hidetype;
+   std::string itemname, itemtype, hidetype;
    int percent = 0, acapply = 0, acbonus = 0, lev = 0;
 
    if( ch->isnpc(  ) && !ch->has_actflag( ACT_POLYSELF ) )
@@ -7987,11 +7965,11 @@ CMDF( do_throw )
    /*
     * handle the ranged attack
     */
-   string name = obj->name;
+   std::string name = obj->name;
    ranged_attack( ch, argument, nullptr, obj, TYPE_HIT + obj->value[3], ( short )( ( ch->perm_str / 4 ) * .5 ) );
 
    obj_data *item = nullptr;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
       obj = *iobj;

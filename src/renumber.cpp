@@ -85,7 +85,6 @@ int find_translation( int vnum, renumber_data * r_data )
 
 void translate_exits( char_data * ch, area_data * area, renumber_areas * r_area )
 {
-   list < mapexit_data * >::iterator imexit;
    int new_vnum;
    room_index *room;
    int old_vnum;
@@ -95,11 +94,8 @@ void translate_exits( char_data * ch, area_data * area, renumber_areas * r_area 
       if( !( room = get_room_index( i ) ) )
          continue;
 
-      list < exit_data * >::iterator iexit;
-      for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
+      for( auto* pexit: room->exits )
       {
-         exit_data *pexit = ( *iexit );
-
          /*
           * translate the exit destination, if it was moved 
           */
@@ -141,10 +137,8 @@ void translate_exits( char_data * ch, area_data * area, renumber_areas * r_area 
 
       if( area->continent )
       {
-         for( imexit = area->continent->exits.begin(  ); imexit != area->continent->exits.end(  ); ++imexit )
+         for( auto* mexit : area->continent->exits )
          {
-            mapexit_data *mexit = ( *imexit );
-
             new_vnum = find_translation( mexit->vnum, r_area->r_room );
             if( new_vnum != NOT_FOUND )
             {
@@ -327,7 +321,7 @@ void warn_progs( char_data * ch, int low, int high, area_data * area, renumber_a
    obj_index *obj;
    mob_index *mob;
    mud_prog_data *mprog;
-   list < mud_prog_data * >::iterator mpg;
+   std::list<mud_prog_data *>::iterator mpg;
    int i;
 
    for( i = area->low_vnum; i <= area->hi_vnum; ++i )
@@ -370,7 +364,8 @@ void warn_progs( char_data * ch, int low, int high, area_data * area, renumber_a
    }
 }
 
-/* this is the function that actualy does the renumbering of "area" according
+/*
+ * This is the function that actually does the renumbering of "area" according
  * to the renumber data in "r_area". "ch" is to show messages.
  */
 void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, bool verbose )
@@ -379,27 +374,26 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    room_index *room;
    mob_index *mob;
    obj_index *obj;
-   list < mob_index * >mob_list;
-   list < obj_index * >obj_list;
-   list < room_index * >room_list;
+   std::list<mob_index *> mob_list;
+   std::list<obj_index *> obj_list;
+   std::list<room_index *> room_list;
 
    int high = area->hi_vnum, low = area->low_vnum;
 
    ch->pager( "(Room) Renumbering...\r\n" );
 
    /*
-    * what we do here is, for each list (room/obj/mob) first we
-    * * take each element out of the hash array, change the vnum,
-    * * and move it to our own list. after everything's moved out
-    * * we put it in again. this is to avoid problems in situations
-    * * where where room A is being moved to position B, but theres
-    * * already a room B wich is also being moved to position C.
-    * * a straightforward approach would result in us moving A to
-    * * position B first, and then again to position C, and room
-    * * B being lost inside the hash array, still there, but not
-    * * foundable (its "covered" by A because they'd have the same vnum). 
+    * What we do here is, for each list (room/obj/mob) first we
+    * take each element out of the hash array, change the vnum,
+    * and move it to our own list. after everything's moved out
+    * we put it in again. this is to avoid problems in situations
+    * where where room A is being moved to position B, but there's
+    * already a room B which is also being moved to position C.
+    * a straightforward approach would result in us moving A to
+    * position B first, and then again to position C, and room
+    * B being lost inside the hash array, still there, but not
+    * findable (its "covered" by A because they'd have the same vnum).
     */
-
    room_list.clear();
    for( r_data = r_area->r_room; r_data; r_data = r_data->next )
    {
@@ -416,7 +410,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       /*
        * remove it from the hash list 
        */
-      map < int, room_index * >::iterator mroom;
+      std::map<int, room_index *>::iterator mroom;
       if( ( mroom = room_index_table.find( r_data->old_vnum ) ) != room_index_table.end(  ) )
          room_index_table.erase( mroom );
 
@@ -434,7 +428,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    /*
     * now move everything back into the hash array 
     */
-   list < room_index * >::iterator iroom;
+   std::list<room_index *>::iterator iroom;
    for( iroom = room_list.begin(  ); iroom != room_list.end(  ); ++iroom )
    {
       room = *iroom;
@@ -442,11 +436,11 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       /*
        * add it to the hash list again
        */
-      room_index_table.insert( map < int, room_index * >::value_type( room->vnum, room ) );
+      room_index_table.insert( std::map<int, room_index *>::value_type( room->vnum, room ) );
    }
 
    /*
-    * if nothing was moved, dont change this 
+    * if nothing was moved, don't change this
     */
    if( r_area->r_room != nullptr )
    {
@@ -487,7 +481,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       /*
        * remove it from the hash list 
        */
-      map < int, mob_index * >::iterator mmob;
+      std::map<int, mob_index *>::iterator mmob;
       if( ( mmob = mob_index_table.find( r_data->old_vnum ) ) != mob_index_table.end(  ) )
          mob_index_table.erase( mmob );
 
@@ -502,7 +496,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       mob_list.push_back( mob );
    }
 
-   list < mob_index * >::iterator imob;
+   std::list<mob_index *>::iterator imob;
    for( imob = mob_list.begin(  ); imob != mob_list.end(  ); ++imob )
    {
       mob = *imob;
@@ -510,7 +504,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       /*
        * add it to the hash list again 
        */
-      mob_index_table.insert( map < int, mob_index * >::value_type( mob->vnum, mob ) );
+      mob_index_table.insert( std::map<int, mob_index *>::value_type( mob->vnum, mob ) );
    }
 
    if( r_area->r_mob )
@@ -537,7 +531,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       /*
        * remove it from the hash list 
        */
-      map < int, obj_index * >::iterator mobj;
+      std::map<int, obj_index *>::iterator mobj;
       if( ( mobj = obj_index_table.find( r_data->old_vnum ) ) != obj_index_table.end(  ) )
          obj_index_table.erase( mobj );
 
@@ -552,7 +546,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       obj_list.push_back( obj );
    }
 
-   list < obj_index * >::iterator iobj;
+   std::list<obj_index *>::iterator iobj;
    for( iobj = obj_list.begin(  ); iobj != obj_list.end(  ); ++iobj )
    {
       obj = *iobj;
@@ -560,7 +554,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       /*
        * add it to the hash list again 
        */
-      obj_index_table.insert( map < int, obj_index * >::value_type( obj->vnum, obj ) );
+      obj_index_table.insert( std::map<int, obj_index *>::value_type( obj->vnum, obj ) );
    }
 
    if( r_area->r_obj )
@@ -585,20 +579,12 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    {
       room = *iroom;
 
-      list < reset_data * >::iterator rst;
-      for( rst = room->resets.begin(  ); rst != room->resets.end(  ); ++rst )
+      for( auto* preset : room->resets )
       {
-         reset_data *preset = *rst;
-
          translate_reset( preset, r_area );
 
-         list < reset_data * >::iterator dst;
-         for( dst = preset->resets.begin(  ); dst != preset->resets.end(  ); ++dst )
-         {
-            reset_data *treset = *rst;
-
+         for( auto* treset: preset->resets )
             translate_reset( treset, r_area );
-         }
       }
    }
 
@@ -668,7 +654,7 @@ renumber_data *gather_one_list( short type, int low, int high, int new_base, boo
    return root.next;
 }
 
-/* this function actualy gathers all the renumber data for an area */
+/* this function actually gathers all the renumber data for an area */
 renumber_areas *gather_renumber_data( area_data * area, int new_base, bool fill_gaps )
 {
    renumber_areas *r_area;
@@ -715,11 +701,8 @@ bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
    /*
     * in do_check_vnums they use first_bsort, first_asort but.. i dunno.. 
     */
-   list < area_data * >::iterator iarea;
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area : arealist )
    {
-      area_data *area = ( *iarea );
-
       if( tarea == area )
          continue;
 
@@ -749,7 +732,7 @@ CMDF( do_renumber )
 {
    renumber_areas *r_area;
    area_data *area;
-   string arg1;
+   std::string arg1;
    int new_base;
    bool fill_gaps, verbose;
 

@@ -55,13 +55,13 @@ class area_data
    void sort_name(  );
    void sort_vnums(  );
    void reset(  );
-   void fold( const char *, bool );
+   void fold( const std::string &, bool );
    void wipe_resets(  );
 
-   list < room_index * >rooms;    // The list of room indexes for this area
-   list < mob_index * >mobs;      // The list of mob indexes for this area
-   list < obj_index * >objects;   // The list of object indexes for this area
-   bitset < AFLAG_MAX > flags;
+   std::list<room_index *> rooms;    // The list of room indexes for this area
+   std::list<mob_index *> mobs;      // The list of mob indexes for this area
+   std::list<obj_index *> objects;   // The list of object indexes for this area
+   std::bitset<AFLAG_MAX> flags;
 
    class continent_data *continent; // Continent data structure this area is associated with.
    char *name;
@@ -98,14 +98,14 @@ class area_data
 
 area_data *create_area(  );
 void write_area_list(  );
-area_data *get_area( const string & ); /* FB */
-area_data *find_area( const string & );
-void load_area_file( const string &, bool );
+area_data *get_area( const std::string & ); /* FB */
+area_data *find_area( const std::string & );
+void load_area_file( const std::string &, bool );
 void boot_log( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
-extern list < area_data * >arealist;
-extern list < area_data * >area_nsort;
-extern list < area_data * >area_vsort;
+extern std::list < area_data * >arealist;
+extern std::list < area_data * >area_nsort;
+extern std::list < area_data * >area_vsort;
 extern int weath_unit;
 extern int rand_factor;
 extern int climate_factor;

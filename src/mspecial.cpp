@@ -56,7 +56,7 @@ int IsUndead( char_data * );
 void wear_obj( char_data *, obj_data *, bool, int );
 void damage_obj( obj_data * );
 
-list < string > speclist;
+std::list<std::string> speclist;
 
 void free_specfuns( void )
 {
@@ -64,17 +64,16 @@ void free_specfuns( void )
 }
 
 /* Simple load function - no OLC support for now.
- * This is probably something you DONT want builders playing with.
+ * This is probably something you DON'T want builders playing with.
  */
 void load_specfuns( void )
 {
    FILE *fp;
-   std::filesystem::path filename;
-   string sfun;
+   std::string sfun;
 
    speclist.clear(  );
 
-   filename = std::format( "{}specfuns.dat", SYSTEM_DIR );
+   std::filesystem::path filename = std::format( "{}specfuns.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
       bug( "%s: FATAL - cannot load specfuns.dat, exiting.", __func__ );
@@ -102,14 +101,10 @@ void load_specfuns( void )
 }
 
 /* Simple validation function to be sure a function can be used on mobs */
-bool validate_spec_fun( const string & name )
+bool validate_spec_fun( const std::string & name )
 {
-   list < string >::iterator spec;
-
-   for( spec = speclist.begin(  ); spec != speclist.end(  ); ++spec )
+   for( auto& specfun : speclist )
    {
-      string specfun = *spec;
-
       if( !str_cmp( specfun, name ) )
          return true;
    }
@@ -118,7 +113,7 @@ bool validate_spec_fun( const string & name )
 
 char_data *spec_find_victim( char_data * ch, bool combat )
 {
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    char_data *chosen = nullptr;
    int count = 0;
 
@@ -173,7 +168,7 @@ bool summon_if_hating( char_data * ch )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   char name[MIL];
+   std::string name;
    one_argument( ch->hating->name, name );
 
    /*
@@ -181,7 +176,7 @@ bool summon_if_hating( char_data * ch )
     */
    char_data *victim;
    bool found = false;
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
       victim = *ich;
@@ -208,16 +203,16 @@ bool summon_if_hating( char_data * ch )
       return false;
 
    if( !victim->isnpc(  ) )
-      cmdf( ch, "cast summon 0.%s", name );
+      cmdf( ch, "cast summon 0.%s", name.c_str() );
    else
-      cmdf( ch, "cast summon %s", name );
+      cmdf( ch, "cast summon %s", name.c_str() );
    return true;
 }
 
 /*
  * Core procedure for dragons.
  */
-bool dragon( char_data * ch, const string & spellname )
+bool dragon( char_data * ch, const std::string & spellname )
 {
    if( ch->position != POS_FIGHTING && ch->position != POS_EVASIVE && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
       return false;
@@ -381,7 +376,7 @@ SPECF( spec_cast_adept )
 SPECF( spec_cast_cleric )
 {
    char_data *victim = nullptr;
-   string spell;
+   std::string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -465,7 +460,7 @@ SPECF( spec_cast_cleric )
 SPECF( spec_cast_mage )
 {
    char_data *victim = nullptr;
-   string spell;
+   std::string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -564,7 +559,7 @@ SPECF( spec_cast_mage )
 SPECF( spec_cast_undead )
 {
    char_data *victim = nullptr;
-   string spell;
+   std::string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -656,11 +651,8 @@ SPECF( spec_guard )
    int max_evil = 300;
    char_data *ech = nullptr;
 
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* victim : ch->in_room->people )
    {
-      char_data *victim = *ich;
-
       if( victim->fighting && victim->who_fighting(  ) != ch && victim->alignment < max_evil )
       {
          max_evil = victim->alignment;
@@ -682,11 +674,10 @@ SPECF( spec_janitor )
    if( !ch->IS_AWAKE(  ) )
       return false;
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
+   for( auto it = ch->in_room->objects.begin(); it != ch->in_room->objects.end(); )
    {
-      obj_data *trash = *iobj;
-      ++iobj;
+      obj_data *trash = *it;
+      ++it;
 
       if( !trash->wear_flags.test( ITEM_TAKE ) || trash->extra_flags.test( ITEM_BURIED ) )
          continue;
@@ -743,11 +734,8 @@ SPECF( spec_thief )
    if( ch->position != POS_STANDING )
       return false;
 
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* victim : ch->in_room->people )
    {
-      char_data *victim = *ich;
-
       if( victim->isnpc(  ) || victim->is_immortal(  ) || number_bits( 2 ) != 0 || !ch->can_see( victim, false ) )
          continue;
 
@@ -841,29 +829,29 @@ void sayhello( char_data * ch, char_data * t )
             break;
          case 10:
          {
-            char buf2[80];
+            std::string buf2;
             WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( time_info.hour < sysdata->hoursunrise )
-               strlcpy( buf2, "evening", 80 );
+               buf2 = "evening";
             else if( time_info.hour < sysdata->hournoon )
-               strlcpy( buf2, "morning", 80 );
+               buf2 = "morning";
             else if( time_info.hour < sysdata->hoursunset )
-               strlcpy( buf2, "afternoon", 80 );
+               buf2 = "afternoon";
             else
-               strlcpy( buf2, "evening", 80 );
+               buf2 = "evening";
 
             if( getCloudCover( cell ) > 0 )
-               cmdf( ch, "say Nice %s to go for a walk, %s, I hate it.", buf2, t->name );
+               cmdf( ch, "say Nice %s to go for a walk, %s, I hate it.", buf2.c_str(), t->name );
             else if( isRaining( getPrecip( cell ) ) || isRainingSteadily( getPrecip( cell ) ) || isDownpour( getPrecip( cell ) ) || isRaingingHeavily( getPrecip( cell ) ) || isPouring( getPrecip( cell ) ) || isRainingCatsAndDogs( getPrecip( cell ) ) || isTorrentialDownpour( getPrecip( cell ) ) )
             {
                if( getTemp( cell ) <= 32 )
-                  cmdf( ch, "say What a wonderful miserable %s, %s!", buf2, t->name );
+                  cmdf( ch, "say What a wonderful miserable %s, %s!", buf2.c_str(), t->name );
                else
-                  cmdf( ch, "say I hope %s's rain never clears up.. don't you %s?", buf2, t->name );
+                  cmdf( ch, "say I hope %s's rain never clears up.. don't you %s?", buf2.c_str(), t->name );
             }
             else
-               cmdf( ch, "say Such a terrible %s, don't you think?", buf2 );
+               cmdf( ch, "say Such a terrible %s, don't you think?", buf2.c_str() );
             break;
          }
       }
@@ -918,28 +906,28 @@ void sayhello( char_data * ch, char_data * t )
             break;
          case 10:
          {
-            char buf2[80];
+            std::string buf2;
             WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( time_info.hour < sysdata->hoursunrise )
-               strlcpy( buf2, "evening", 80 );
+               buf2 = "evening";
             else if( time_info.hour < sysdata->hournoon )
-               strlcpy( buf2, "morning", 80 );
+               buf2 = "morning";
             else if( time_info.hour < sysdata->hoursunset )
-               strlcpy( buf2, "afternoon", 80 );
+               buf2 = "afternoon";
             else
-               strlcpy( buf2, "evening", 80 );
+               buf2 = "evening";
             if( getCloudCover( cell ) > 0 )
-               cmdf( ch, "say Nice %s to go for a walk, %s.", buf2, t->name );
+               cmdf( ch, "say Nice %s to go for a walk, %s.", buf2.c_str(), t->name );
             else if( isRaining( getPrecip( cell ) ) || isRainingSteadily( getPrecip( cell ) ) || isDownpour( getPrecip( cell ) ) || isRaingingHeavily( getPrecip( cell ) ) || isPouring( getPrecip( cell ) ) || isRainingCatsAndDogs( getPrecip( cell ) ) || isTorrentialDownpour( getPrecip( cell ) ) )
             {
                if( getTemp( cell ) <= 32 )
-                  cmdf( ch, "say How can you be out on such a miserable %s, %s!", buf2, t->name );
+                  cmdf( ch, "say How can you be out on such a miserable %s, %s!", buf2.c_str(), t->name );
                else
-                  cmdf( ch, "say I hope %s's rain clears up.. don't you %s?", buf2, t->name );
+                  cmdf( ch, "say I hope %s's rain clears up.. don't you %s?", buf2.c_str(), t->name );
             }
             else
-               cmdf( ch, "say Such a pleasant %s, don't you think?", buf2 );
+               cmdf( ch, "say Such a pleasant %s, don't you think?", buf2.c_str() );
             break;
          }
       }
@@ -950,11 +938,8 @@ void greet_people( char_data * ch )
 {
    if( ch->has_actflag( ACT_GREET ) )
    {
-      list < char_data * >::iterator ich;
-      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+      for( auto* tch : ch->in_room->people )
       {
-         char_data *tch = *ich;
-
          if( !tch->isnpc(  ) && ch->can_see( tch, false ) && number_range( 1, 8 ) == 1 )
          {
             if( tch->level > ch->level )
@@ -970,12 +955,12 @@ void greet_people( char_data * ch )
 
 bool callforhelp( char_data * ch, SPEC_FUN * spec )
 {
-   list < char_data * >::iterator ich;
    short count = 0;
 
-   for( ich = charlist.begin(  ); ich != charlist.end(  ) && count <= 2; ++ich )
+   for( auto* vch : charlist )
    {
-      char_data *vch = *ich;
+      if( count > 2 )
+         break;
 
       if( ch != vch && !vch->hunting && spec == vch->spec_fun )
       {
@@ -991,12 +976,8 @@ bool callforhelp( char_data * ch, SPEC_FUN * spec )
 
 char_data *race_align_hatee( char_data * ch )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* vch : ch->in_room->people )
    {
-      char_data *vch = *ich;
-
       if( ch->can_see( vch, false )
           && ( ( vch->IS_EVIL(  ) && ch->IS_GOOD(  ) ) || ( vch->IS_GOOD(  ) && ch->IS_EVIL(  ) )
                || ( IsUndead( vch ) && !IsUndead( ch ) ) || ( !IsUndead( vch ) && IsUndead( ch ) ) ) )
@@ -1062,11 +1043,10 @@ SPECF( spec_fido )
    if( !ch->IS_AWAKE(  ) )
       return false;
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
+   for( auto it = ch->in_room->objects.begin(); it != ch->in_room->objects.end(); )
    {
-      obj_data *corpse = *iobj;
-      ++iobj;
+      obj_data *corpse = *it;
+      ++it;
 
       if( corpse->item_type != ITEM_CORPSE_NPC )
          continue;
@@ -1078,11 +1058,10 @@ SPECF( spec_fido )
       }
       act( AT_ACTION, "$n savagely devours a corpse.", ch, nullptr, nullptr, TO_ROOM );
 
-      list < obj_data * >::iterator iobj2;
-      for( iobj2 = corpse->contents.begin(  ); iobj2 != corpse->contents.end(  ); )
+      for( auto it2 = corpse->contents.begin(); it != corpse->contents.end(); )
       {
-         obj_data *obj = *iobj2;
-         ++iobj2;
+         obj_data *obj = *it2;
+         ++it2;
 
          obj->from_obj(  );
          obj->to_room( ch->in_room, ch );
@@ -1192,11 +1171,10 @@ SPECF( spec_RustMonster )
    if( !ch->IS_AWAKE(  ) )
       return false;
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
+   for( auto it = ch->in_room->objects.begin(); it != ch->in_room->objects.end(); )
    {
-      obj_data *eat = *iobj;
-      ++iobj;
+      obj_data *eat = *it;
+      ++it;
 
       if( !eat->wear_flags.test( ITEM_TAKE ) || eat->extra_flags.test( ITEM_BURIED ) || eat->item_type == ITEM_CORPSE_PC )
          continue;
@@ -1213,11 +1191,10 @@ SPECF( spec_RustMonster )
       {
          act( AT_ACTION, "$n savagely devours a corpse.", ch, nullptr, nullptr, TO_ROOM );
 
-         list < obj_data * >::iterator iobj2;
-         for( iobj2 = eat->contents.begin(  ); iobj2 != eat->contents.end(  ); )
+         for( auto it2 = eat->contents.begin(); it2 != eat->contents.end(); )
          {
-            obj_data *obj = *iobj2;
-            ++iobj2;
+            obj_data *obj = *it2;
+            ++it2;
 
             obj->from_obj(  );
             obj->to_room( ch->in_room, ch );
@@ -1232,17 +1209,16 @@ SPECF( spec_RustMonster )
 }
 
 /*****
- * A wanderer (nomad) that arm's itself and discards what it doesnt.. Kinda fun
+ * A wanderer (nomad) that arm's itself and discards what it doesn't.. Kinda fun
  * to watch. I wrote this for an area that repops alot of armor on the ground
  * Adds a little spice to the area. Basically a modified janitor. Started off as
  * an easy project. Thanks to Mark Zagorski <mwz0615@ksu.edu> for pointing out I 
- * had a reduntancy if I had two mobs that in rooms that only led to each other
+ * had a redundancy if I had two mobs that in rooms that only led to each other
  * they would throw the piece of armor back and forth. He also suggested 
- * damaging the armor when thrown. [Imorted from Smaug 1.8]
+ * damaging the armor when thrown. [Imported from Smaug 1.8]
  *****/
 SPECF( spec_wanderer )
 {
-   obj_data *trash;
    room_index *was_in_room;
    exit_data *pexit = nullptr;
    int door, schance = 50;
@@ -1265,11 +1241,10 @@ SPECF( spec_wanderer )
       /****
        * Look for objects on the ground and pick it up
        ****/
-      list < obj_data * >::iterator iobj;
-      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
+      for( auto it = ch->in_room->objects.begin(); it != ch->in_room->objects.end(); )
       {
-         trash = *iobj;
-         ++iobj;
+         obj_data *trash = *it;
+         ++it;
 
          if( !trash->wear_flags.test( ITEM_TAKE ) || trash->extra_flags.test( ITEM_BURIED ) )
             continue;
@@ -1306,10 +1281,8 @@ SPECF( spec_wanderer )
             found = false;
             if( !thrown )
             {
-               list < obj_data * >::iterator iobj2;
-               for( iobj2 = ch->carrying.begin(  ); iobj2 != ch->carrying.end(  ); ++iobj2 )
+               for( auto* obj2 : ch->carrying )
                {
-                  obj_data *obj2 = *iobj2;
                   if( obj2->wear_loc == WEAR_NONE )
                   {
                      interpret( ch, "say Hmm, I can't use this." );
@@ -1334,10 +1307,8 @@ SPECF( spec_wanderer )
 
                if( ( pexit = ch->in_room->get_exit( door ) ) != nullptr && pexit->to_room && !IS_EXIT_FLAG( pexit, EX_CLOSED ) && !pexit->to_room->flags.test( ROOM_NODROP ) )
                {
-                  list < char_data * >::iterator ich;
-                  for( ich = pexit->to_room->people.begin(  ); ich != pexit->to_room->people.end(  ); ++ich )
+                  for( auto* vch : pexit->to_room->people )
                   {
-                     char_data *vch = *ich;
                      if( vch->spec_fun == spec_wanderer )
                      {
                         noexit = true;
@@ -1383,7 +1354,7 @@ SPECF( spec_wanderer )
 bool cast_ranger( char_data * ch )
 {
    char_data *victim = nullptr;
-   string spell;
+   std::string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -1470,7 +1441,7 @@ SPECF( spec_ranger )
 bool cast_paladin( char_data * ch )
 {
    char_data *victim = nullptr;
-   string spell;
+   std::string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -1540,7 +1511,7 @@ SPECF( spec_paladin )
 SPECF( spec_druid )
 {
    char_data *victim = nullptr;
-   string spell;
+   std::string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -1610,7 +1581,7 @@ SPECF( spec_druid )
 bool cast_antipaladin( char_data * ch )
 {
    char_data *victim = nullptr;
-   string spell;
+   std::string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )
@@ -1686,7 +1657,7 @@ SPECF( spec_antipaladin )
 SPECF( spec_bard )
 {
    char_data *victim = nullptr;
-   string spell;
+   std::string spell;
    int sn;
 
    if( !ch->IS_AWAKE(  ) )

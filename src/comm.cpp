@@ -84,7 +84,7 @@ void run_events( std::chrono::system_clock::time_point );
  */
 void boot_db( bool );
 void accept_new( int );
-void bid( char_data *, char_data *, const string & );
+void bid( char_data *, char_data *, const std::string & );
 void check_auth_state( char_data * );
 
 #ifdef MULTIPORT
@@ -270,6 +270,7 @@ void open_mud_log()
    FCLOSE( error_log );
 }
 
+// Called in init_socket
 struct SocketGuard
 {
    int fd = -1;
@@ -406,12 +407,9 @@ void close_mud( void )
 
    if( !DONTSAVE )
    {
-      list < descriptor_data * >::iterator ds;
-
       log_string( "Saving players...." );
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
          char_data *vch = ( d->character ? d->character : d->original );
 
          if( !vch )
@@ -448,11 +446,8 @@ static void SegVio( int signum )
 
    if( !pclist.empty(  ) )
    {
-      list < char_data * >::iterator ich;
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+      for( auto* ch : pclist )
       {
-         char_data *ch = *ich;
-
          if( ch && ch->name && ch->in_room )
             log_printf( "%-20s in room: %d", ch->name, ch->in_room->vnum );
       }
@@ -492,7 +487,6 @@ static void SigUser2( int signum )
 static void SigChld( int signum )
 {
    int pid, status;
-   list < descriptor_data * >::iterator ds;
 
    while( 1 )
    {
@@ -503,10 +497,8 @@ static void SigChld( int signum )
       if( pid == 0 )
          break;
 
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
-
          if( d->connected == CON_FORKED && d->process == pid )
          {
             if( compilelock )
@@ -527,17 +519,13 @@ static void SigChld( int signum )
 
 static void SigTerm( int signum )
 {
-   list < char_data * >::iterator ich;
-
    echo_to_all( "&RATTENTION!! Message from game server: &YEmergency shutdown called.\a", ECHOTAR_ALL );
    echo_to_all( "&YExecuting emergency shutdown procedure.", ECHOTAR_ALL );
    log_string( "Message from server: Executing emergency shutdown procedure." );
    shutdown_mud( "Emergency Shutdown" );
 
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto* vch : pclist )
    {
-      char_data *vch = *ich;
-
       /*
        * One of two places this gets changed 
        */
@@ -597,7 +585,7 @@ static void caught_alarm( int signum )
 /*
  * Parse a name for acceptability.
  */
-bool check_parse_name( const string & name, bool newchar )
+bool check_parse_name( const std::string & name, bool newchar )
 {
    /*
     * Names checking should really only be done on new characters, otherwise
@@ -615,7 +603,7 @@ bool check_parse_name( const string & name, bool newchar )
       return false;
 
    // Alphanumeric checks
-   string::const_iterator ptr = name.begin(  );
+   std::string::const_iterator ptr = name.begin(  );
    while( ptr != name.end(  ) )
    {
       if( !isalpha( *ptr ) )
@@ -626,11 +614,8 @@ bool check_parse_name( const string & name, bool newchar )
    /*
     * Mob names illegal for newbies now - Samson 7-24-00 
     */
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* vch : charlist )
    {
-      char_data *vch = *ich;
-
       if( vch->isnpc(  ) )
       {
          if( hasname( vch->name, name ) && newchar )
@@ -807,15 +792,13 @@ void process_input( void )
 
 void process_output( void )
 {
-   list < descriptor_data * >::iterator ds;
-
    /*
     * Output.
     */
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
+   for( auto it = dlist.begin(  ); it != dlist.end(  ); )
    {
-      descriptor_data *d = *ds;
-      ++ds;
+      descriptor_data *d = *it;
+      ++it;
 
       // True if the disconnect flag is set. Hasta la vista baby!
       if( d->disconnect )
@@ -928,8 +911,6 @@ void game_loop( void )
  */
 void cleanup_memory( void )
 {
-   int hash;
-
    fprintf( stdout, "%s", "Quote List.\n" );
    free_quotes(  );
 
@@ -995,11 +976,11 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Commands.\n" );
    free_commands(  );
 
-   #ifdef MULTIPORT
+#ifdef MULTIPORT
    // Shell Commands
    fprintf( stdout, "%s", "Shell Commands.\n" );
    free_shellcommands(  );
-   #endif
+#endif
 
    // Socials
    fprintf( stdout, "%s", "Socials.\n" );
@@ -1102,7 +1083,7 @@ void cleanup_memory( void )
 
    fprintf( stdout, "%s", "Checking string hash for leftovers.\n" );
    {
-      for( hash = 0; hash < 1024; ++hash )
+      for( int hash = 0; hash < 1024; ++hash )
          hash_dump( hash );
    }
 

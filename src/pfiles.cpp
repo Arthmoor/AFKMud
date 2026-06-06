@@ -40,27 +40,27 @@ int num_quotes;   /* for quotes */
 #define QUOTE_FILE "quotes.dat"
 
 void prune_sales(  );
-void remove_from_auth( const string & );
+void remove_from_auth( const std::string & );
 void rare_update(  );
 void save_timedata(  );
-void adjust_pfile( const string & );
+void adjust_pfile( const std::string & );
 
 /* Globals */
 std::chrono::system_clock::time_point new_pfile_time_t;
-short num_pfiles; /* Count up number of pfiles */
-short deleted = 0;
-short pexempt = 0;
+int num_pfiles; /* Count up number of pfiles */
+int deleted = 0;
+int pexempt = 0;
 
 struct quote_data
 {
    quote_data(  );
    ~quote_data(  );
 
-   string quote;
+   std::string quote;
    int number;
 };
 
-list < quote_data * >quotelist;
+std::list<quote_data *> quotelist;
 
 quote_data::quote_data(  )
 {
@@ -74,12 +74,10 @@ quote_data::~quote_data(  )
 
 void free_quotes( void )
 {
-   list < quote_data * >::iterator qt;
-
-   for( qt = quotelist.begin(  ); qt != quotelist.end(  ); )
+   for( auto it = quotelist.begin(  ); it != quotelist.end(  ); )
    {
-      quote_data *quote = *qt;
-      ++qt;
+      quote_data *quote = *it;
+      ++it;
 
       deleteptr( quote );
    }
@@ -87,12 +85,8 @@ void free_quotes( void )
 
 quote_data *get_quote( int q )
 {
-   list < quote_data * >::iterator iquote;
-
-   for( iquote = quotelist.begin(  ); iquote != quotelist.end(  ); ++iquote )
+   for( auto* quote : quotelist )
    {
-      quote_data *quote = *iquote;
-
       if( quote->number == q )
          return quote;
    }
@@ -101,7 +95,7 @@ quote_data *get_quote( int q )
 
 void save_quotes( void )
 {
-   ofstream stream;
+   std::ofstream stream;
    int q = 0;
 
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, QUOTE_FILE );
@@ -113,12 +107,9 @@ void save_quotes( void )
       return;
    }
 
-   list < quote_data * >::iterator iquote;
-   for( iquote = quotelist.begin(  ); iquote != quotelist.end(  ); ++iquote )
+   for( auto* quote : quotelist )
    {
-      quote_data *quote = *iquote;
-
-      stream << "Quote: " << quote->quote << '~' << endl;
+      stream << "Quote: " << quote->quote << '~' << std::endl;
       quote->number = ++q;
    }
    stream.close(  );
@@ -138,7 +129,7 @@ void save_quotes( void )
 void load_quotes( void )
 {
    quote_data *quote;
-   ifstream stream;
+   std::ifstream stream;
 
    quotelist.clear(  );
    num_quotes = 0;
@@ -153,7 +144,7 @@ void load_quotes( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -189,9 +180,9 @@ void load_quotes( void )
    stream.close(  );
 }
 
-string add_linebreak( const string & str )
+std::string add_linebreak( const std::string & str )
 {
-   string newstr = str;
+   std::string newstr = str;
 
    if( newstr.empty(  ) )
       return "";
@@ -214,7 +205,7 @@ string add_linebreak( const string & str )
 CMDF( do_quoteset )
 {
    quote_data *quote;
-   string arg;
+   std::string arg;
    int q;
 
    if( argument.empty(  ) )
@@ -228,7 +219,7 @@ CMDF( do_quoteset )
 
    if( !str_cmp( argument, "list" ) )
    {
-      list < quote_data * >::iterator qt;
+      std::list<quote_data *>::iterator qt;
 
       if( num_quotes == 0 )
       {
@@ -311,7 +302,7 @@ CMDF( do_quotes )
 CMDF( do_pcrename )
 {
    char_data *victim;
-   string arg1;
+   std::string arg1;
 
    argument = one_argument( argument, arg1 );
    smash_tilde( argument );
@@ -641,7 +632,7 @@ void pfile_scan( bool count )
          deity->worshippers = 0;
    }
 
-   short cou = 0;
+   int cou = 0;
    for( char c = 'a'; c <= 'z'; ++c )
    {
       std::filesystem::path directory_path = std::format ("{}{}", PLAYER_DIR, c );

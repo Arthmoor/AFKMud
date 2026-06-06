@@ -39,8 +39,8 @@ const int BFS_MARK = ROOM_TRACK;
 
 void start_hunting( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
-bool mob_fire( char_data *, const string & );
-char_data *scan_for_vic( char_data *, exit_data *, const string & );
+bool mob_fire( char_data *, const std::string & );
+char_data *scan_for_vic( char_data *, exit_data *, const std::string & );
 void stop_hating( char_data * );
 void stop_hunting( char_data * );
 void stop_fearing( char_data * );
@@ -156,7 +156,7 @@ int find_first_step( room_index * src, room_index * target, int maxdist )
     * first, enqueue the first steps, saving which direction we're going. 
     */
    int curr_dir;
-   list < exit_data * >::iterator iexit;
+   std::list<exit_data *>::iterator iexit;
    for( iexit = src->exits.begin(  ); iexit != src->exits.end(  ); ++iexit )
    {
       exit_data *pexit = *iexit;
@@ -225,7 +225,7 @@ CMDF( do_track )
 
    bool found = false;
    char_data *vict = nullptr;
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
    {
       vict = *ich;
@@ -312,8 +312,6 @@ CMDF( do_track )
 
 void found_prey( char_data * ch, char_data * victim )
 {
-   char victname[MSL];
-
    if( !victim )
    {
       bug( "%s: null victim", __func__ );
@@ -326,8 +324,6 @@ void found_prey( char_data * ch, char_data * victim )
       return;
    }
 
-   strlcpy( victname, victim->name, MSL );
-
    if( !ch->can_see( victim, false ) )
    {
       if( number_percent(  ) < 90 )
@@ -337,7 +333,7 @@ void found_prey( char_data * ch, char_data * victim )
          switch ( number_bits( 3 ) )
          {
             case 0:
-               cmdf( ch, "say Don't make me find you, %s!", victname );
+               cmdf( ch, "say Don't make me find you, %s!", victim->name );
                break;
             case 1:
                act( AT_ACTION, "$n sniffs around the room for $N.", ch, nullptr, victim, TO_NOTVICT );
@@ -346,7 +342,7 @@ void found_prey( char_data * ch, char_data * victim )
                interpret( ch, "say I can smell your blood!" );
                break;
             case 2:
-               cmdf( ch, "yell I'm going to tear %s apart!", victname );
+               cmdf( ch, "yell I'm going to tear %s apart!", victim->name );
                break;
             case 3:
                interpret( ch, "say Just wait until I find you..." );
@@ -368,13 +364,13 @@ void found_prey( char_data * ch, char_data * victim )
          {
             case 0:
                interpret( ch, "say C'mon out, you coward!" );
-               cmdf( ch, "yell %s is a bloody coward!", victname );
+               cmdf( ch, "yell %s is a bloody coward!", victim->name );
                break;
             case 1:
-               cmdf( ch, "say Let's take this outside, %s", victname );
+               cmdf( ch, "say Let's take this outside, %s", victim->name );
                break;
             case 2:
-               cmdf( ch, "yell %s is a yellow-bellied wimp!", victname );
+               cmdf( ch, "yell %s is a yellow-bellied wimp!", victim->name );
                break;
             case 3:
                act( AT_ACTION, "$n takes a few swipes at $N.", ch, nullptr, victim, TO_NOTVICT );
@@ -393,13 +389,13 @@ void found_prey( char_data * ch, char_data * victim )
       switch ( number_bits( 2 ) )
       {
          case 0:
-            cmdf( ch, "yell Your blood is mine, %s!", victname );
+            cmdf( ch, "yell Your blood is mine, %s!", victim->name );
             break;
          case 1:
-            cmdf( ch, "say Alas, we meet again, %s!", victname );
+            cmdf( ch, "say Alas, we meet again, %s!", victim->name );
             break;
          case 2:
-            cmdf( ch, "say What do you want on your tombstone, %s?", victname );
+            cmdf( ch, "say What do you want on your tombstone, %s?", victim->name );
             break;
          case 3:
             act( AT_ACTION, "$n lunges at $N from out of nowhere!", ch, nullptr, victim, TO_NOTVICT );
@@ -436,11 +432,8 @@ void hunt_vic( char_data * ch )
     * make sure the char still exists 
     */
    bool found = false;
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* tmp : charlist )
    {
-      char_data *tmp = *ich;
-
       if( ch->hunting->who == tmp )
       {
          found = true;

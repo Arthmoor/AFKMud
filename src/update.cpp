@@ -64,7 +64,7 @@ int get_terrain( short, short, short );
 bool map_wander( char_data *, short, short, short );
 void clean_auctions(  );
 void set_supermob( obj_data * );
-bool check_social( char_data *, const string &, const string & );
+bool check_social( char_data *, const std::string &, const std::string & );
 void auth_update(  );
 void environment_update(  );
 bool will_fall( char_data *, int );
@@ -429,7 +429,7 @@ void drunk_randoms( char_data * ch )
       check_social( ch, "fart", "" );
    else if( drunk > ( 10 + ( ch->get_curr_con(  ) / 5 ) ) && number_percent(  ) < ( 2 * drunk / 18 ) )
    {
-      list < char_data * >::iterator ich;
+      std::list<char_data *>::iterator ich;
       char_data *rvch = nullptr;
 
       for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
@@ -451,7 +451,7 @@ void hallucinations( char_data * ch )
 {
    if( ch->mental_state >= 30 && number_bits( 5 - ( ch->mental_state >= 50 ) - ( ch->mental_state >= 75 ) ) == 0 )
    {
-      const char *t;
+      std::string t;
 
       switch ( number_range( 1, UMIN( 21, ( ch->mental_state + 5 ) / 5 ) ) )
       {
@@ -526,13 +526,10 @@ void hallucinations( char_data * ch )
 
 void affect_update( char_data * ch )
 {
-   list < affect_data * >::iterator paf;
-   skill_type *skill;
-
-   for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); )
+   for( auto it = ch->affects.begin(  ); it != ch->affects.end(  ); )
    {
-      affect_data *aff = *paf;
-      ++paf;
+      affect_data *aff = *it;
+      ++it;
 
       if( aff->duration > 0 )
          --aff->duration;
@@ -540,7 +537,7 @@ void affect_update( char_data * ch )
          ;
       else
       {
-         skill = get_skilltype( aff->type );
+            skill_type *skill = get_skilltype( aff->type );
          if( aff->type > 0 && skill && skill->msg_off )
             ch->printf( "&[wearoff]%s\r\n", skill->msg_off );
          ch->affect_remove( aff );
@@ -562,11 +559,10 @@ void mobile_update( void )
    /*
     * Examine all mobs.
     */
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
+   for( auto it = charlist.begin(  ); it != charlist.end(  ); )
    {
-      char_data *ch = *ich;
-      ++ich;
+      char_data *ch = *it;
+      ++it;
 
       if( ch->char_died(  ) )
          continue;
@@ -791,11 +787,8 @@ void mobile_update( void )
          obj_data *obj_best = nullptr;
          int max = 1;
 
-         list < obj_data * >::iterator iobj;
-         for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
+         for( auto* obj : ch->in_room->objects )
          {
-            obj_data *obj = *iobj;
-
             if( obj->extra_flags.test( ITEM_PROTOTYPE ) && !ch->has_actflag( ACT_PROTOTYPE ) )
                continue;
             if( obj->wear_flags.test( ITEM_TAKE ) && obj->cost > max && !obj->extra_flags.test( ITEM_BURIED ) && !obj->extra_flags.test( ITEM_HIDDEN ) )
@@ -942,11 +935,8 @@ void mobile_update( void )
             continue;
 
          bool found = false;
-         list < char_data * >::iterator ich2;
-         for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
+         for( auto* rch : ch->in_room->people )
          {
-            char_data *rch = *ich2;
-
             if( is_fearing( ch, rch ) )
             {
                switch ( number_bits( 2 ) )
@@ -978,12 +968,10 @@ void mobile_update( void )
 /* Anything that should be updating based on time should go here - like hunger/thirst for one */
 void char_calendar_update( void )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); )
+   for( auto it = pclist.begin(  ); it != pclist.end(  ); )
    {
-      char_data *ch = *ich;
-      ++ich;
+      char_data *ch = *it;
+      ++it;
 
       if( ch->char_died(  ) )
          continue;
@@ -1035,14 +1023,13 @@ void char_calendar_update( void )
  */
 void char_update( void )
 {
-   list < char_data * >::iterator ich;
    char_data *ch_save = nullptr;
    short save_count = 0;
 
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
+   for( auto it = charlist.begin(  ); it != charlist.end(  ); )
    {
-      char_data *ch = *ich;
-      ++ich;
+      char_data *ch = *it;
+      ++it;
 
       if( ch->char_died(  ) )
          continue;
@@ -1119,12 +1106,10 @@ void char_update( void )
       /* Expire variables */
       if( !ch->variables.empty() )
       {
-         list < variable_data * >::iterator ivar;
-
-         for( ivar = ch->variables.begin(); ivar != ch->variables.end(); )
+         for( auto it2 = ch->variables.begin(); it2 != ch->variables.end(); )
          {
-            variable_data *vd = *ivar;
-            ++ivar;
+            variable_data *vd = *it2;
+            ++it2;
 
             if( vd->timer > 0 && --vd->timer == 0 )
             {
@@ -1343,14 +1328,13 @@ void char_update( void )
           */
          if( ch->has_aflag( AFF_RECURRINGSPELL ) )
          {
-            list < affect_data * >::iterator paf;
             skill_type *skill;
             bool found = false, died = false;
 
-            for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); )
+            for( auto it2 = ch->affects.begin(  ); it2 != ch->affects.end(  ); )
             {
-               affect_data *aff = *paf;
-               ++paf;
+               affect_data *aff = *it2;
+               ++it2;
 
                if( aff->location == APPLY_RECURRINGSPELL )
                {
@@ -1811,11 +1795,10 @@ void char_check( void )
       if( ch->char_died(  ) )
          continue;
 
-      list < timer_data * >::iterator chtimer;
-      for( chtimer = ch->timers.begin(  ); chtimer != ch->timers.end(  ); )
+      for( auto it2 = ch->timers.begin(  ); it2 != ch->timers.end(  ); )
       {
-         timer_data *timer = *chtimer;
-         ++chtimer;
+         timer_data *timer = *it2;
+         ++it2;
 
          if( ch->fighting && timer->type == TIMER_DO_FUN )
          {
@@ -1921,10 +1904,8 @@ void char_check( void )
          if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->has_aflag( AFF_FLOATING ) )
          {
             bool boat = false;
-            list < obj_data * >::iterator iobj;
-            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+            for( auto* obj : ch->carrying )
             {
-               obj_data *obj = *iobj;
                if( obj->item_type == ITEM_BOAT )
                {
                   boat = true;
@@ -1982,12 +1963,9 @@ void char_check( void )
          if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_FLOATING ) && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->mount )
          {
             bool boat = false;
-            list < obj_data * >::iterator iobj;
 
-            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+            for( auto* obj : ch->carrying )
             {
-               obj_data *obj = *iobj;
-
                if( obj->item_type == ITEM_BOAT )
                {
                   boat = true;
@@ -2059,11 +2037,8 @@ void char_check( void )
          if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_FLOATING ) && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->mount )
          {
             bool boat = false;
-            list < obj_data * >::iterator iobj;
-            for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+            for( auto* obj : ch->carrying )
             {
-               obj_data *obj = *iobj;
-
                if( obj->item_type == ITEM_BOAT )
                {
                   boat = true;
@@ -2146,13 +2121,12 @@ void aggr_update( void )
           */
          continue;
 
-      list < char_data * >::iterator ich;
-      for( ich = wch->in_room->people.begin(  ); ich != wch->in_room->people.end(  ); )
+      for( auto it2 = wch->in_room->people.begin(  ); it2 != wch->in_room->people.end(  ); )
       {
          char_data *victim = nullptr;
          int count = 0;
-         char_data *ch = *ich;
-         ++ich;
+         char_data *ch = *it2;
+         ++it2;
 
          if( !ch->isnpc(  ) || ch->fighting || ch->has_aflag( AFF_CHARM ) || !ch->IS_AWAKE(  )
              || ( ch->has_actflag( ACT_WIMPY ) && wch->IS_AWAKE(  ) ) || !ch->can_see( wch, false ) )
@@ -2174,11 +2148,10 @@ void aggr_update( void )
           *
           * Depending on flags set, the mob may attack another mob
           */
-         list < char_data * >::iterator ich2;
-         for( ich2 = wch->in_room->people.begin(  ); ich2 != wch->in_room->people.end(  ); )
+         for( auto it3 = wch->in_room->people.begin(  ); it3 != wch->in_room->people.end(  ); )
          {
-            char_data *vch = *ich2;
-            ++ich2;
+            char_data *vch = *it3;
+            ++it3;
 
             if( ( !vch->isnpc(  ) || ch->has_actflag( ACT_META_AGGR ) || vch->has_actflag( ACT_ANNOYING ) )
                 && vch->level < LEVEL_IMMORTAL && ( !ch->has_actflag( ACT_WIMPY ) || !vch->IS_AWAKE(  ) ) && ch->can_see( vch, false ) )
@@ -2235,23 +2208,20 @@ void aggr_update( void )
 
 void mob_act_update(  )
 {
-   list < char_data * >::iterator ach;
-
    /*
     * check mobprog act queue
     */
-   for( ach = mob_act_list.begin(  ); ach != mob_act_list.end(  ); )
+   for( auto it = mob_act_list.begin(  ); it != mob_act_list.end(  ); )
    {
-      char_data *pch = *ach;
-      ++ach;
+      char_data *pch = *it;
+      ++it;
 
       if( !pch->char_died(  ) && pch->mpactnum > 0 )
       {
-         list < mprog_act_list * >::iterator mal;
-         for( mal = pch->mpact.begin(  ); mal != pch->mpact.end(  ); )
+         for( auto it2 = pch->mpact.begin(); it2 != pch->mpact.end(); )
          {
-            mprog_act_list *tmp_act = *mal;
-            ++mal;
+            mprog_act_list *tmp_act = *it2;
+            ++it2;
 
             if( tmp_act->obj && tmp_act->obj->extracted(  ) )
                tmp_act->obj = nullptr;
@@ -2268,15 +2238,13 @@ void mob_act_update(  )
 
 void tele_update( void )
 {
-   list < teleport_data * >::iterator tele;
-
    if( teleportlist.empty(  ) )
       return;
 
-   for( tele = teleportlist.begin(  ); tele != teleportlist.end(  ); )
+   for( auto it = teleportlist.begin(  ); it != teleportlist.end(  ); )
    {
-      teleport_data *tport = *tele;
-      ++tele;
+      teleport_data *tport = *it;
+      ++it;
 
       if( --tport->timer <= 0 )
       {
@@ -2298,7 +2266,6 @@ void tele_update( void )
  */
 void time_update( void )
 {
-   list < descriptor_data * >::iterator ds;
    int n = number_bits( 2 );
    const char *echo = NULL;
    int echo_color = AT_GREY;
@@ -2311,9 +2278,8 @@ void time_update( void )
    if( time_info.hour == sysdata->hourdaybegin || time_info.hour == sysdata->hoursunrise
        || time_info.hour == sysdata->hournoon || time_info.hour == sysdata->hoursunset || time_info.hour == sysdata->hournightbegin )
    {
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
          WeatherCell *cell = getWeatherCell( d->character->in_room->area );
 
          if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && !INDOOR_SECTOR( d->character->in_room->sector_type ) && d->character->IS_AWAKE(  ) )
@@ -2436,17 +2402,6 @@ void time_update( void )
     * Save game world time - Samson 1-21-99 
     */
    save_timedata(  );
-}
-
-void subtract_times( struct timeval *endtime, struct timeval *starttime )
-{
-   endtime->tv_sec -= starttime->tv_sec;
-   endtime->tv_usec -= starttime->tv_usec;
-   while( endtime->tv_usec < 0 )
-   {
-      endtime->tv_usec += 1000000;
-      --endtime->tv_sec;
-   }
 }
 
 /*

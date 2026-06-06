@@ -33,7 +33,7 @@
 #include "polymorph.h"
 #include "raceclass.h"
 
-list < morph_data * >morphlist;
+std::list<morph_data *> morphlist;
 int morph_vnum = 0;
 
 /*
@@ -145,7 +145,7 @@ bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
 /*
  * Find a morph you can use -- Shaddai
  */
-morph_data *find_morph( char_data * ch, const string & target, bool is_cast )
+morph_data *find_morph( char_data * ch, const std::string & target, bool is_cast )
 {
    if( target.empty(  ) )
       return nullptr;
@@ -159,6 +159,9 @@ morph_data *find_morph( char_data * ch, const string & target, bool is_cast )
    }
    return nullptr;
 }
+
+// 1: Initial version.
+const int MORPHFILEVER = 1;
 
 /* 
  * Write one morph structure to a file. It doesn't print the variable to file
@@ -785,7 +788,7 @@ CMDF( do_morphset )
    else if( !str_prefix( "obj", arg2 ) )
    {
       int oindex;
-      string temp;
+      std::string temp;
 
       if( arg2.length(  ) <= 3 )
       {
@@ -836,7 +839,7 @@ CMDF( do_morphset )
    else if( !str_prefix( arg2, "objuse" ) )
    {
       int oindex;
-      string temp;
+      std::string temp;
 
       if( arg2.length(  ) <= 6 )
       {
@@ -1321,7 +1324,7 @@ void send_morph_message( char_data * ch, morph_data * morph, bool is_morph )
 }
 
 /*
- * Create new player morph, a scailed down version of original morph
+ * Create new player morph, a scaled down version of original morph
  * so if morph gets changed stats don't get messed up.
  */
 char_morph *make_char_morph( morph_data * morph )
@@ -1554,6 +1557,7 @@ void do_unmorph( char_data * ch )
    ch->mod_dex -= morph->dex;
    ch->mod_cha -= morph->cha;
    ch->mod_lck -= morph->lck;
+   ch->mod_con -= morph->con; /* Was missing. Caught by Matteo2303 */
    ch->saving_breath -= morph->saving_breath;
    ch->saving_para_petri -= morph->saving_para_petri;
    ch->saving_poison_death -= morph->saving_poison_death;
@@ -2148,12 +2152,8 @@ CMDF( do_morphcreate )
 
 void unmorph_all( morph_data * morph )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto* vch : pclist )
    {
-      char_data *vch = *ich;
-
       if( vch->morph == nullptr || vch->morph->morph == nullptr || vch->morph->morph != morph )
          continue;
       do_unmorph_char( vch );
@@ -2195,12 +2195,10 @@ morph_data::~morph_data(  )
 
 void free_morphs( void )
 {
-   list < morph_data * >::iterator morph;
-
-   for( morph = morphlist.begin(  ); morph != morphlist.end(  ); )
+   for( auto it = morphlist.begin(  ); it != morphlist.end(  ); )
    {
-      morph_data *poly = *morph;
-      ++morph;
+      morph_data *poly = *it;
+      ++it;
 
       deleteptr( poly );
    }
@@ -2514,7 +2512,7 @@ CMDF( do_imm_morph )
 {
    morph_data *morph;
    char_data *victim = nullptr;
-   string arg;
+   std::string arg;
    int vnum;
 
    if( ch->isnpc(  ) )

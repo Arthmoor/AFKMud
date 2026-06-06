@@ -34,9 +34,10 @@
 
 #pragma once
 
-extern list < string > speclist;
+extern std::list<std::string> speclist;
 
-/* Any spec_fun added here needs to be added to specfuns.dat as well.
+/*
+ * Any spec_fun added here needs to be added to specfuns.dat as well.
  * If you don't know what that means, ask Samson to take care of it.
  */
 

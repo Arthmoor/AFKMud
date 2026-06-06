@@ -41,13 +41,13 @@
 #include "treasure.h"
 
 extern int top_affect;
-list < rel_data * >relationlist;
+std::list<rel_data *> relationlist;
 
 void build_wizinfo( void );   /* For mset realm option - Samson 6-6-99 */
 CMDF( do_rstat );
 CMDF( do_mstat );
 CMDF( do_ostat );
-bool validate_spec_fun( const string & );
+bool validate_spec_fun( const std::string & );
 int mob_xp( char_data * );
 std::string sprint_reset( reset_data *, short & );
 void assign_area( char_data * );
@@ -327,9 +327,9 @@ const char *mprog_flags[] = {
 
 /* Bamfin parsing code by Altrag, installed by Samson 12-10-97
    Allows use of $n where the player's name would be */
-string bamf_print( const string & fmt, char_data * ch )
+std::string bamf_print( const std::string & fmt, char_data * ch )
 {
-   string bamf = fmt;
+   std::string bamf = fmt;
 
    string_replace( bamf, "$n", ch->name );
    string_replace( bamf, "$N", ch->name );
@@ -343,7 +343,6 @@ string bamf_print( const string & fmt, char_data * ch )
  */
 void RelCreate( relation_type tp, void *actor, void *subject )
 {
-   list < rel_data * >::iterator tmp;
    rel_data *rel;
 
    if( tp < relMSET_ON || tp > relOSET_ON )
@@ -362,6 +361,7 @@ void RelCreate( relation_type tp, void *actor, void *subject )
       return;
    }
 
+   std::list<rel_data *>::iterator tmp;
    for( tmp = relationlist.begin(  ); tmp != relationlist.end(  ); ++tmp )
    {
       rel = *tmp;
@@ -401,10 +401,10 @@ void RelDestroy( relation_type tp, void *actor, void *subject )
       return;
    }
 
-   list < rel_data * >::iterator rq;
-   for( rq = relationlist.begin(  ); rq != relationlist.end(  ); ++rq )
+   for( auto it = relationlist.begin(); it != relationlist.end(); )
    {
-      rel_data *rel = *rq;
+      rel_data *rel = *it;
+      ++it;
 
       if( rel->Type == tp && rel->Actor == actor && rel->Subject == subject )
       {
@@ -418,23 +418,33 @@ void RelDestroy( relation_type tp, void *actor, void *subject )
 char *flag_string( int bitvector, const char *flagarray[] )
 {
    static char buf[MSL];
-   int x;
-
    buf[0] = '\0';
-   for( x = 0; x < 32; ++x )
-      if( IS_SET( bitvector, 1 << x ) )
+
+   size_t len = 0;
+   bool first = true;
+
+   for( int x = 0; x < 32; ++x )
+   {
+      if( IS_SET( bitvector, ( 1 << x ) ) )
       {
-         strlcat( buf, flagarray[x], MSL );
-         /*
-          * don't catenate a blank if the last char is blank  --Gorog 
-          */
-         if( buf[0] != '\0' && ' ' != buf[strlen( buf ) - 1] )
-            strlcat( buf, " ", MSL );
+         if( flagarray[x] && flagarray[x][0] != '\0' )
+         {
+            size_t flag_len = strlen( flagarray[x] );
+
+            if( len + flag_len + 2 < MSL )
+            {
+               if( !first )
+               {
+                  buf[len++] = ' ';
+               }
+               memcpy( buf + len, flagarray[x], flag_len );
+               len += flag_len;
+               buf[len] = '\0';
+               first = false;
+            }
+         }
       }
-
-   if( ( x = strlen( buf ) ) > 0 )
-      buf[--x] = '\0';
-
+   }
    return buf;
 }
 
@@ -542,7 +552,7 @@ bool can_mmodify( char_data * ch, char_data * mob )
    return false;
 }
 
-int get_saveflag( const string & name )
+int get_saveflag( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( save_flag ) / sizeof( save_flag[0] ); ++x )
       if( !str_cmp( name, save_flag[x] ) )
@@ -550,7 +560,7 @@ int get_saveflag( const string & name )
    return -1;
 }
 
-int get_logflag( const string & flag )
+int get_logflag( const std::string & flag )
 {
    for( int x = 0; x <= LOG_ALL; ++x )
       if( !str_cmp( flag, log_flag[x] ) )
@@ -558,7 +568,7 @@ int get_logflag( const string & flag )
    return -1;
 }
 
-int get_npc_sex( const string & sex )
+int get_npc_sex( const std::string & sex )
 {
    for( int x = 0; x < SEX_MAX; ++x )
       if( !str_cmp( sex, npc_sex[x] ) )
@@ -566,7 +576,7 @@ int get_npc_sex( const string & sex )
    return -1;
 }
 
-int get_style( const string & style )
+int get_style( const std::string & style )
 {
    for( int x = 0; x <= STYLE_EVASIVE; ++x )
       if( !str_cmp( style, styles[x] ) )
@@ -574,7 +584,7 @@ int get_style( const string & style )
    return -1;
 }
 
-int get_npc_position( const string & position )
+int get_npc_position( const std::string & position )
 {
    for( int x = 0; x < POS_MAX; ++x )
       if( !str_cmp( position, npc_position[x] ) )
@@ -582,7 +592,7 @@ int get_npc_position( const string & position )
    return -1;
 }
 
-int get_sectypes( const string & sector )
+int get_sectypes( const std::string & sector )
 {
    for( int x = 0; x < SECT_MAX; ++x )
       if( !str_cmp( sector, sect_types[x] ) )
@@ -590,7 +600,7 @@ int get_sectypes( const string & sector )
    return -1;
 }
 
-int get_pc_class( const string & Class )
+int get_pc_class( const std::string & Class )
 {
    for( int x = 0; x < MAX_PC_CLASS; ++x )
       if( !str_cmp( Class, class_table[x]->who_name ) )
@@ -598,7 +608,7 @@ int get_pc_class( const string & Class )
    return -1;
 }
 
-int get_npc_class( const string & Class )
+int get_npc_class( const std::string & Class )
 {
    for( int x = 0; x < MAX_NPC_CLASS; ++x )
       if( !str_cmp( Class, npc_class[x] ) )
@@ -606,7 +616,7 @@ int get_npc_class( const string & Class )
    return -1;
 }
 
-int get_pc_race( const string & type )
+int get_pc_race( const std::string & type )
 {
    for( int i = 0; i < MAX_PC_RACE; ++i )
       if( !str_cmp( type, race_table[i]->race_name ) )
@@ -614,7 +624,7 @@ int get_pc_race( const string & type )
    return -1;
 }
 
-int get_otype( const string & type )
+int get_otype( const std::string & type )
 {
    for( size_t x = 0; x < ( sizeof( o_types ) / sizeof( o_types[0] ) ); ++x )
       if( !str_cmp( type, o_types[x] ) )
@@ -622,7 +632,7 @@ int get_otype( const string & type )
    return -1;
 }
 
-int get_aflag( const string & flag )
+int get_aflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( aff_flags ) / sizeof( aff_flags[0] ) ); ++x )
       if( !str_cmp( flag, aff_flags[x] ) )
@@ -630,7 +640,7 @@ int get_aflag( const string & flag )
    return -1;
 }
 
-int get_traptype( const string & flag )
+int get_traptype( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( trap_types ) / sizeof( trap_types[0] ) ); ++x )
       if( !str_cmp( flag, trap_types[x] ) )
@@ -638,7 +648,7 @@ int get_traptype( const string & flag )
    return -1;
 }
 
-int get_trapflag( const string & flag )
+int get_trapflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( trap_flags ) / sizeof( trap_flags[0] ) ); ++x )
       if( !str_cmp( flag, trap_flags[x] ) )
@@ -646,7 +656,7 @@ int get_trapflag( const string & flag )
    return -1;
 }
 
-int get_atype( const string & type )
+int get_atype( const std::string & type )
 {
    for( size_t x = 0; x < ( sizeof( a_types ) / sizeof( a_types[0] ) ); ++x )
       if( !str_cmp( type, a_types[x] ) )
@@ -654,7 +664,7 @@ int get_atype( const string & type )
    return -1;
 }
 
-int get_npc_race( const string & type )
+int get_npc_race( const std::string & type )
 {
    for( int x = 0; x < MAX_NPC_RACE; ++x )
       if( !str_cmp( type, npc_race[x] ) )
@@ -662,7 +672,7 @@ int get_npc_race( const string & type )
    return -1;
 }
 
-int get_wearloc( const string & type )
+int get_wearloc( const std::string & type )
 {
    for( size_t x = 0; x < ( sizeof( wear_locs ) / sizeof( wear_locs[0] ) ); ++x )
       if( !str_cmp( type, wear_locs[x] ) )
@@ -670,7 +680,7 @@ int get_wearloc( const string & type )
    return -1;
 }
 
-int get_exflag( const string & flag )
+int get_exflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( ex_flags ) / sizeof( ex_flags[0] ) ); ++x )
       if( !str_cmp( flag, ex_flags[x] ) )
@@ -678,7 +688,7 @@ int get_exflag( const string & flag )
    return -1;
 }
 
-int get_pulltype( const string & type )
+int get_pulltype( const std::string & type )
 {
    size_t x;
 
@@ -708,7 +718,7 @@ int get_pulltype( const string & type )
 }
 
 // This is part of a rather slick way to set flags on things during file I/O
-int get_flag( const string & flag, const char *flagarray[], size_t max )
+int get_flag( const std::string & flag, const char *flagarray[], size_t max )
 {
    if( flag.empty(  ) || !flagarray )
       return -1;
@@ -719,7 +729,7 @@ int get_flag( const string & flag, const char *flagarray[], size_t max )
    return -1;
 }
 
-int get_rflag( const string & flag )
+int get_rflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( r_flags ) / sizeof( r_flags[0] ) ); ++x )
       if( !str_cmp( flag, r_flags[x] ) )
@@ -727,7 +737,7 @@ int get_rflag( const string & flag )
    return -1;
 }
 
-int get_mpflag( const string & flag )
+int get_mpflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( mprog_flags ) / sizeof( mprog_flags[0] ) ); ++x )
       if( !str_cmp( flag, mprog_flags[x] ) )
@@ -735,7 +745,7 @@ int get_mpflag( const string & flag )
    return -1;
 }
 
-int get_oflag( const string & flag )
+int get_oflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( o_flags ) / sizeof( o_flags[0] ) ); ++x )
       if( !str_cmp( flag, o_flags[x] ) )
@@ -743,7 +753,7 @@ int get_oflag( const string & flag )
    return -1;
 }
 
-int get_areaflag( const string & flag )
+int get_areaflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( area_flags ) / sizeof( area_flags[0] ) ); ++x )
       if( !str_cmp( flag, area_flags[x] ) )
@@ -751,7 +761,7 @@ int get_areaflag( const string & flag )
    return -1;
 }
 
-int get_wflag( const string & flag )
+int get_wflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( w_flags ) / sizeof( w_flags[0] ) ); ++x )
       if( !str_cmp( flag, w_flags[x] ) )
@@ -759,7 +769,7 @@ int get_wflag( const string & flag )
    return -1;
 }
 
-int get_actflag( const string & flag )
+int get_actflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( act_flags ) / sizeof( act_flags[0] ) ); ++x )
       if( !str_cmp( flag, act_flags[x] ) )
@@ -767,7 +777,7 @@ int get_actflag( const string & flag )
    return -1;
 }
 
-int get_pcflag( const string & flag )
+int get_pcflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( pc_flags ) / sizeof( pc_flags[0] ) ); ++x )
       if( !str_cmp( flag, pc_flags[x] ) )
@@ -775,7 +785,7 @@ int get_pcflag( const string & flag )
    return -1;
 }
 
-int get_risflag( const string & flag )
+int get_risflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( ris_flags ) / sizeof( ris_flags[0] ) ); ++x )
       if( !str_cmp( flag, ris_flags[x] ) )
@@ -783,7 +793,7 @@ int get_risflag( const string & flag )
    return -1;
 }
 
-int get_trigflag( const string & flag )
+int get_trigflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( trig_flags ) / sizeof( trig_flags[0] ) ); ++x )
       if( !str_cmp( flag, trig_flags[x] ) )
@@ -791,7 +801,7 @@ int get_trigflag( const string & flag )
    return -1;
 }
 
-int get_partflag( const string & flag )
+int get_partflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( part_flags ) / sizeof( part_flags[0] ) ); ++x )
       if( !str_cmp( flag, part_flags[x] ) )
@@ -799,7 +809,7 @@ int get_partflag( const string & flag )
    return -1;
 }
 
-int get_attackflag( const string & flag )
+int get_attackflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( attack_flags ) / sizeof( attack_flags[0] ) ); ++x )
       if( !str_cmp( flag, attack_flags[x] ) )
@@ -807,7 +817,7 @@ int get_attackflag( const string & flag )
    return -1;
 }
 
-int get_defenseflag( const string & flag )
+int get_defenseflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( defense_flags ) / sizeof( defense_flags[0] ) ); ++x )
       if( !str_cmp( flag, defense_flags[x] ) )
@@ -815,7 +825,7 @@ int get_defenseflag( const string & flag )
    return -1;
 }
 
-int get_containerflag( const string & flag )
+int get_containerflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( container_flags ) / sizeof( container_flags[0] ) ); ++x )
       if( !str_cmp( flag, container_flags[x] ) )
@@ -823,7 +833,7 @@ int get_containerflag( const string & flag )
    return -1;
 }
 
-int get_furnitureflag( const string & flag )
+int get_furnitureflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( furniture_flags ) / sizeof( furniture_flags[0] ) ); ++x )
       if( !str_cmp( flag, furniture_flags[x] ) )
@@ -831,7 +841,7 @@ int get_furnitureflag( const string & flag )
    return -1;
 }
 
-int get_langnum( const string & flag )
+int get_langnum( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( lang_names ) / sizeof( lang_names[0] ) ); ++x )
       if( !str_cmp( flag, lang_names[x] ) )
@@ -891,7 +901,7 @@ void goto_char( char_data * ch, char_data * wch )
       act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, nullptr, nullptr, TO_CANSEE );
 }
 
-void goto_obj( char_data * ch, obj_data * obj, const string & argument )
+void goto_obj( char_data * ch, obj_data * obj, const std::string & argument )
 {
    room_index *location;
 
@@ -953,7 +963,7 @@ void goto_obj( char_data * ch, obj_data * obj, const string & argument )
 
 CMDF( do_goto )
 {
-   string arg;
+   std::string arg;
    room_index *location;
    char_data *wch;
    obj_data *obj;
@@ -974,7 +984,7 @@ CMDF( do_goto )
    if( !str_cmp( arg, "map" ) )
    {
       continent_data *continent;
-      string arg1, arg2;
+      std::string arg1, arg2;
       short x, y;
 
       argument = one_argument( argument, arg1 );
@@ -1128,12 +1138,12 @@ CMDF( do_goto )
 
 CMDF( do_mset )
 {
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3;
    int num, size, plus, value, minattr, maxattr;
    char char1, char2;
    char_data *victim, *tmpmob;
    bool lockvic;
-   string origarg = argument;
+   std::string origarg = argument;
 
    ch->set_color( AT_PLAIN );
 
@@ -2777,11 +2787,11 @@ CMDF( do_mset )
 
 CMDF( do_oset )
 {
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3;
    obj_data *obj, *tmpobj;
    extra_descr_data *ed;
    bool lockobj;
-   string origarg = argument;
+   std::string origarg = argument;
 
    int value, tmp;
 
@@ -3435,7 +3445,7 @@ CMDF( do_oset )
    if( !str_cmp( arg2, "effect" ) )
    {
       affect_data *paf;
-      bitset < MAX_RIS_FLAG > risabit;
+      std::bitset < MAX_RIS_FLAG > risabit;
       short loc;
       bool found = false;
 
@@ -3468,7 +3478,7 @@ CMDF( do_oset )
       }
       else if( loc == APPLY_RESISTANT || loc == APPLY_IMMUNE || loc == APPLY_SUSCEPTIBLE || loc == APPLY_ABSORB )
       {
-         string flag;
+         std::string flag;
 
          while( !arg3.empty(  ) )
          {
@@ -3514,8 +3524,8 @@ CMDF( do_oset )
       {
          if( loc != APPLY_WEARSPELL && loc != APPLY_REMOVESPELL && loc != APPLY_STRIPSN && loc != APPLY_WEAPONSPELL )
          {
-            list < char_data * >::iterator ich;
-            list < obj_data * >::iterator iobj;
+            std::list < char_data * >::iterator ich;
+            std::list < obj_data * >::iterator iobj;
 
             for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
             {
@@ -3541,7 +3551,6 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "rmaffect" ) )
    {
-      list < affect_data * >::iterator paf;
       short loc, count;
 
       if( argument.empty(  ) )
@@ -3560,13 +3569,12 @@ CMDF( do_oset )
 
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
-         obj_index *pObjIndex;
+         obj_index *pObjIndex = obj->pIndexData;
 
-         pObjIndex = obj->pIndexData;
-         for( paf = pObjIndex->affects.begin(  ); paf != pObjIndex->affects.end(  ); )
+         for( auto it = pObjIndex->affects.begin(); it != pObjIndex->affects.end(); )
          {
-            affect_data *aff = *paf;
-            ++paf;
+            affect_data *aff = *it;
+            ++it;
 
             if( ++count == loc )
             {
@@ -3583,29 +3591,21 @@ CMDF( do_oset )
 
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
-         obj_index *pObjIndex;
+         obj_index *pObjIndex = obj->pIndexData;;
 
-         pObjIndex = obj->pIndexData;
-         for( paf = pObjIndex->affects.begin(  ); paf != pObjIndex->affects.end(  ); )
+         for( auto it = pObjIndex->affects.begin(); it != pObjIndex->affects.end(); )
          {
-            affect_data *aff = *paf;
-            ++paf;
+            affect_data *aff = *it;
+            ++it;
 
             if( ++count == loc )
             {
                pObjIndex->affects.remove( aff );
 
-               list < char_data * >::iterator ich;
-               list < obj_data * >::iterator iobj;
-
-               for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+               for( auto* vch : charlist )
                {
-                  char_data *vch = *ich;
-
-                  for( iobj = vch->carrying.begin(  ); iobj != vch->carrying.end(  ); ++iobj )
+                  for( auto* eq : vch->carrying )
                   {
-                     obj_data *eq = *iobj;
-
                      if( eq->pIndexData == obj->pIndexData && eq->wear_loc != WEAR_NONE )
                         vch->affect_modify( aff, false );
                   }
@@ -3621,10 +3621,10 @@ CMDF( do_oset )
       }
       else
       {
-         for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); )
+         for( auto it = obj->affects.begin(); it != obj->affects.end(); )
          {
-            affect_data *aff = *paf;
-            ++paf;
+            affect_data *aff = *it;
+            ++it;
 
             if( ++count == loc )
             {
@@ -4122,7 +4122,7 @@ CMDF( do_oset )
 /*
  * Returns value 0 - 9 based on directional text.
  */
-int get_dir( const string & txt )
+int get_dir( const std::string & txt )
 {
    int edir;
    char c1, c2;
@@ -4248,12 +4248,12 @@ int get_dir( const string & txt )
 
 CMDF( do_redit )
 {
-   string arg, arg2, arg3;
+   std::string arg, arg2, arg3;
    room_index *location, *tmp;
    extra_descr_data *ed;
    exit_data *xit, *texit;
    int value = 0, edir = 0, ekey, evnum;
-   string origarg = argument;
+   std::string origarg = argument;
 
    ch->set_color( AT_PLAIN );
    if( !ch->desc )
@@ -4950,7 +4950,7 @@ CMDF( do_redit )
       exit_data *bxit, *rxit;
       room_index *tmploc;
       int vnum, exnum;
-      string rvnum;
+      std::string rvnum;
       bool numnotdir;
 
       argument = one_argument( argument, arg2 );
@@ -5244,7 +5244,7 @@ CMDF( do_rdig )
 /* rgrid command by Dracones - From Smaug 1.8 */
 CMDF( do_rgrid )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    room_index *location, *ch_location, *tmp;
    area_data *pArea;
    int vnum, maxnum, x, y, z;
@@ -5408,7 +5408,7 @@ CMDF( do_rgrid )
 
 CMDF( do_ocreate )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    obj_index *pObjIndex;
    area_data *pArea;
    obj_data *obj;
@@ -5491,7 +5491,7 @@ CMDF( do_ocreate )
 
 CMDF( do_mcreate )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    mob_index *pMobIndex;
    area_data *pArea;
    char_data *mob;
@@ -5577,7 +5577,7 @@ CMDF( do_mcreate )
 CMDF( do_rlist )
 {
    room_index *room;
-   string arg1;
+   std::string arg1;
    int lrange, trange, vnum;
 
    ch->set_pager_color( AT_PLAIN );
@@ -5598,7 +5598,7 @@ CMDF( do_rlist )
 CMDF( do_olist )
 {
    obj_index *obj;
-   string arg1;
+   std::string arg1;
    int lrange, trange, vnum;
 
    ch->set_pager_color( AT_PLAIN );
@@ -5619,7 +5619,7 @@ CMDF( do_olist )
 CMDF( do_mlist )
 {
    mob_index *mob;
-   string arg1;
+   std::string arg1;
    int lrange, trange, vnum;
 
    ch->set_pager_color( AT_PLAIN );
@@ -5641,7 +5641,7 @@ CMDF( do_mlist )
 /* Command online renamed to 'show' via cedit - Samson 9-8-98 */
 CMDF( do_vlist )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    area_data *tarea = nullptr;
 
    argument = one_argument( argument, arg );
@@ -5732,7 +5732,7 @@ CMDF( do_vlist )
    do_vlist( ch, "" );
 }
 
-void mpedit( char_data * ch, mud_prog_data * mprg, int mptype, const string & argument )
+void mpedit( char_data * ch, mud_prog_data * mprg, int mptype, const std::string & argument )
 {
    if( mptype != -1 )
    {
@@ -5753,10 +5753,10 @@ void mpedit( char_data * ch, mud_prog_data * mprg, int mptype, const string & ar
  */
 CMDF( do_mpedit )
 {
-   string arg1, arg2, arg3, arg4;
+   std::string arg1, arg2, arg3, arg4;
    char_data *victim;
    mud_prog_data *mprog;
-   list < mud_prog_data * >::iterator mprg;
+   std::list < mud_prog_data * >::iterator mprg;
    int value, mptype = -1, cnt;
 
    ch->set_color( AT_PLAIN );
@@ -6035,10 +6035,10 @@ CMDF( do_mpedit )
 
 CMDF( do_opedit )
 {
-   string arg1, arg2, arg3, arg4;
+   std::string arg1, arg2, arg3, arg4;
    obj_data *obj;
    mud_prog_data *mprog;
-   list < mud_prog_data * >::iterator mprg;
+   std::list < mud_prog_data * >::iterator mprg;
    int value, mptype = -1, cnt;
 
    ch->set_color( AT_PLAIN );
@@ -6298,9 +6298,9 @@ CMDF( do_opedit )
 
 CMDF( do_rpedit )
 {
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3;
    mud_prog_data *mprog;
-   list < mud_prog_data * >::iterator mprg;
+   std::list < mud_prog_data * >::iterator mprg;
    int value, mptype = -1, cnt;
 
    ch->set_color( AT_PLAIN );
@@ -6551,7 +6551,7 @@ void mpcopy( mud_prog_data * source, mud_prog_data * destination )
 
 CMDF( do_opcopy )
 {
-   string sobj, prog, num, dobj;
+   std::string sobj, prog, num, dobj;
    obj_data *source = nullptr, *destination = nullptr;
    int value = -1, optype = -1, cnt = 0;
    bool COPY = false;
@@ -6654,7 +6654,7 @@ CMDF( do_opcopy )
       return;
    }
 
-   list < mud_prog_data * >::iterator sp;
+   std::list < mud_prog_data * >::iterator sp;
    if( COPY )
    {
       for( sp = source->pIndexData->mudprogs.begin(  ); sp != source->pIndexData->mudprogs.end(  ); ++sp )
@@ -6708,9 +6708,9 @@ CMDF( do_opcopy )
 
 CMDF( do_mpcopy )
 {
-   string smob, prog, num, dmob;
+   std::string smob, prog, num, dmob;
    char_data *source = nullptr, *destination = nullptr;
-   list < mud_prog_data * >::iterator sp;
+   std::list < mud_prog_data * >::iterator sp;
    int value = -1, mptype = -1, cnt = 0;
    bool COPY = false;
 
@@ -6870,9 +6870,9 @@ CMDF( do_mpcopy )
 
 CMDF( do_rpcopy )
 {
-   string sroom, prog, num, droom;
+   std::string sroom, prog, num, droom;
    room_index *source = nullptr, *destination = nullptr;
-   list < mud_prog_data * >::iterator sp;
+   std::list < mud_prog_data * >::iterator sp;
    int value = -1, mptype = -1, cnt = 0;
    bool COPY = false;
 
@@ -7098,12 +7098,8 @@ bool check_area_conflict( area_data * area, int low_range, int hi_range )
 // Runs the entire list, easier to call in places that have to check them all
 bool check_area_conflicts( int lo, int hi )
 {
-   list < area_data * >::iterator iarea;
-
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto* area : arealist )
    {
-      area_data *area = *iarea;
-
       if( check_area_conflict( area, lo, hi ) )
          return true;
    }
@@ -7115,7 +7111,7 @@ bool check_area_conflicts( int lo, int hi )
  */
 CMDF( do_vassign )
 {
-   string arg1, arg2, arg3, filename;
+   std::string arg1, arg2, arg3, filename;
    int lo, hi;
    char_data *victim, *mob;
    room_index *room;

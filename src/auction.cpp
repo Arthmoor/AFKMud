@@ -41,13 +41,13 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-list < sale_data * >salelist;
+std::list<sale_data *> salelist;
 
-void bid( char_data *, char_data *, const string & );
+void bid( char_data *, char_data *, const std::string & );
 
 void save_sales( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( SALES_FILE );
    if( !stream.is_open(  ) )
@@ -57,19 +57,16 @@ void save_sales( void )
    }
    else
    {
-      list < sale_data * >::iterator sl;
-      for( sl = salelist.begin(  ); sl != salelist.end(  ); ++sl )
+      for( auto* sale : salelist )
       {
-         sale_data *sale = *sl;
-
-         stream << "#SALE" << endl;
-         stream << "Aucmob    " << sale->get_aucmob(  ) << endl;
-         stream << "Seller    " << sale->get_seller(  ) << endl;
-         stream << "Buyer     " << sale->get_buyer(  ) << endl;
-         stream << "Item      " << sale->get_item(  ) << endl;
-         stream << "Bid       " << sale->get_bid(  ) << endl;
-         stream << "Collected " << sale->get_collected(  ) << endl;
-         stream << "End" << endl << endl;
+         stream << "#SALE" << std::endl;
+         stream << "Aucmob    " << sale->get_aucmob(  ) << std::endl;
+         stream << "Seller    " << sale->get_seller(  ) << std::endl;
+         stream << "Buyer     " << sale->get_buyer(  ) << std::endl;
+         stream << "Item      " << sale->get_item(  ) << std::endl;
+         stream << "Bid       " << sale->get_bid(  ) << std::endl;
+         stream << "Collected " << sale->get_collected(  ) << std::endl;
+         stream << "End" << std::endl << std::endl;
       }
       stream.close(  );
    }
@@ -88,7 +85,7 @@ sale_data::~sale_data(  )
       save_sales(  );
 }
 
-void add_sale( const string & aucmob, const string & seller, const string & buyer, const string & item, int bidamt, bool collected )
+void add_sale( const std::string & aucmob, const std::string & seller, const std::string & buyer, const std::string & item, int bidamt, bool collected )
 {
    sale_data *sale = new sale_data;
 
@@ -105,25 +102,19 @@ void add_sale( const string & aucmob, const string & seller, const string & buye
 
 void free_sales( void )
 {
-   list < sale_data * >::iterator sl;
-
-   for( sl = salelist.begin(  ); sl != salelist.end(  ); )
+   for( auto it = salelist.begin(); it != salelist.end(); )
    {
-      sale_data *sale = *sl;
-      ++sl;
+      sale_data *sale = *it;
+      ++it;
 
       deleteptr( sale );
    }
 }
 
-sale_data *check_sale( const string & aucmob, const string & pcname, const string & objname )
+sale_data *check_sale( const std::string & aucmob, const std::string & pcname, const std::string & objname )
 {
-   list < sale_data * >::iterator sl;
-
-   for( sl = salelist.begin(  ); sl != salelist.end(  ); ++sl )
+   for( auto* sale : salelist )
    {
-      sale_data *sale = *sl;
-
       if( !str_cmp( aucmob, sale->get_aucmob(  ) ) )
       {
          if( !str_cmp( pcname, sale->get_seller(  ) ) )
@@ -138,13 +129,10 @@ sale_data *check_sale( const string & aucmob, const string & pcname, const strin
 
 void sale_count( char_data * ch )
 {
-   list < sale_data * >::iterator sl;
    short salecount = 0;
 
-   for( sl = salelist.begin(  ); sl != salelist.end(  ); ++sl )
+   for( auto* sale : salelist )
    {
-      sale_data *sale = *sl;
-
       if( !str_cmp( sale->get_seller(  ), ch->name ) )
          ++salecount;
    }
@@ -158,13 +146,11 @@ void sale_count( char_data * ch )
 
 CMDF( do_saleslist )
 {
-   list < sale_data * >::iterator sl;
    short salecount = 0;
 
-   for( sl = salelist.begin(  ); sl != salelist.end(  ); ++sl )
+   for( auto* sale : salelist )
    {
-      sale_data *sale = *sl;
-      const string seller = sale->get_seller(  );
+      const std::string seller = sale->get_seller(  );
 
       if( !str_cmp( seller, ch->name ) || ch->is_imp(  ) )
       {
@@ -181,12 +167,10 @@ CMDF( do_saleslist )
 
 void prune_sales( void )
 {
-   list < sale_data * >::iterator sl;
-
-   for( sl = salelist.begin(  ); sl != salelist.end(  ); )
+   for( auto it = salelist.begin(); it != salelist.end(); )
    {
-      sale_data *sale = *sl;
-      ++sl;
+      sale_data *sale = *it;
+      ++it;
 
       if( !exists_player( sale->get_buyer(  ) ) && !exists_player( sale->get_seller(  ) ) )
       {
@@ -210,7 +194,7 @@ void prune_sales( void )
 void load_sales( void )
 {
    sale_data *sale = nullptr;
-   ifstream stream;
+   std::ifstream stream;
 
    salelist.clear(  );
 
@@ -223,7 +207,7 @@ void load_sales( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -321,11 +305,10 @@ void read_aucvault( const char *dirname, const char *filename )
       }
       FCLOSE( fp );
 
-      list < obj_data * >::iterator iobj;
-      for( iobj = supermob->carrying.begin(  ); iobj != supermob->carrying.end(  ); )
+      for( auto it = supermob->carrying.begin(  ); it != supermob->carrying.end(  ); )
       {
-         obj_data *tobj = *iobj;
-         ++iobj;
+         obj_data *tobj = *it;
+         ++it;
 
          if( tobj->year == 0 )
          {
@@ -359,7 +342,7 @@ void load_aucvaults( void )
    }
 }
 
-void save_aucvault( char_data * ch, const string & aucmob )
+void save_aucvault( char_data * ch, const std::string & aucmob )
 {
    room_index *aucvault;
    FILE *fp;
@@ -393,11 +376,8 @@ void save_aucvault( char_data * ch, const string & aucmob )
 
 char_data *find_auctioneer( char_data * ch )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* auc : ch->in_room->people )
    {
-      char_data *auc = *ich;
       if( auc->isnpc(  ) && ( auc->has_actflag( ACT_AUCTION ) || auc->has_actflag( ACT_GUILDAUC ) ) )
          return auc;
    }
@@ -550,7 +530,6 @@ int parsebet( const int currentbet, const char *s )
 void talk_auction( const char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 void talk_auction( const char *fmt, ... )
 {
-   list < descriptor_data * >::iterator ds;
    char buf[MSL];
    va_list args;
 
@@ -558,9 +537,8 @@ void talk_auction( const char *fmt, ... )
    vsnprintf( buf, MSL, fmt, args );
    va_end( args );
 
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
       char_data *original = d->original ? d->original : d->character;   /* if switched */
 
       if( d->connected == CON_PLAYING && hasname( original->pcdata->chan_listen, "auction" )
@@ -570,10 +548,10 @@ void talk_auction( const char *fmt, ... )
 }
 
 /* put an item on auction, or see the stats on the current item or bet */
-void bid( char_data * ch, char_data * buyer, const string & argument )
+void bid( char_data * ch, char_data * buyer, const std::string & argument )
 {
    obj_data *obj;
-   string arg, arg1, arg2;
+   std::string arg, arg1, arg2;
 
    arg = argument;
    arg = one_argument( arg, arg1 );
@@ -830,7 +808,7 @@ void bid( char_data * ch, char_data * buyer, const string & argument )
 
 CMDF( do_bid )
 {
-   string buf;
+   std::string buf;
 
    if( ch->is_immortal(  ) )
    {
@@ -928,7 +906,7 @@ CMDF( do_identify )
    clan_data *clan = nullptr;
    if( auc->has_actflag( ACT_GUILDAUC ) )
    {
-      list < clan_data * >::iterator cl;
+      std::list<clan_data *>::iterator cl;
 
       for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
@@ -999,14 +977,13 @@ CMDF( do_collect )
 
    if( !str_cmp( argument, "money" ) )
    {
-      list < sale_data * >::iterator sl;
       double totalfee = 0, totalnet = 0, fee, net;
       bool getsome = false;
 
-      for( sl = salelist.begin(  ); sl != salelist.end(  ); )
+      for( auto it = salelist.begin(); it != salelist.end(); )
       {
-         sale_data *sold = *sl;
-         ++sl;
+         sale_data *sold = *it;
+         ++it;
 
          if( str_cmp( sold->get_seller(  ), ch->name ) )
             continue;
@@ -1045,7 +1022,7 @@ CMDF( do_collect )
       clan_data *clan = nullptr;
       if( auc->has_actflag( ACT_GUILDAUC ) )
       {
-         list < clan_data * >::iterator cl;
+         std::list < clan_data * >::iterator cl;
 
          for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
          {
@@ -1099,7 +1076,7 @@ CMDF( do_collect )
       clan_data *clan = nullptr;
       if( auc->has_actflag( ACT_GUILDAUC ) )
       {
-         list < clan_data * >::iterator cl;
+         std::list < clan_data * >::iterator cl;
 
          for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
          {
@@ -1163,7 +1140,7 @@ CMDF( do_collect )
    obj->bid = 0;
 }
 
-void auction_value( char_data * ch, char_data * auc, const string & argument )
+void auction_value( char_data * ch, char_data * auc, const std::string & argument )
 {
    room_index *aucvault, *original;
    obj_data *obj;
@@ -1215,11 +1192,11 @@ void auction_value( char_data * ch, char_data * auc, const string & argument )
    ch->printf( "&[auction]%s : Offered by %s. Minimum bid: %d\r\n", obj->short_descr, obj->seller, obj->bid );
 }
 
-void auction_buy( char_data * ch, char_data * auc, const string & argument )
+void auction_buy( char_data * ch, char_data * auc, const std::string & argument )
 {
    room_index *aucvault, *original;
    obj_data *obj;
-   ostringstream buf;
+   std::ostringstream buf;
 
    if( argument.empty(  ) )
    {
@@ -1302,9 +1279,9 @@ void auction_buy( char_data * ch, char_data * auc, const string & argument )
    bid( auc, ch, buf.str(  ) );
 }
 
-void auction_sell( char_data * ch, char_data * auc, string & argument )
+void auction_sell( char_data * ch, char_data * auc, std::string & argument )
 {
-   string arg;
+   std::string arg;
    room_index *aucvault;
    obj_data *obj;
 
@@ -1392,10 +1369,8 @@ void auction_sell( char_data * ch, char_data * auc, string & argument )
       return;
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = aucvault->objects.begin(  ); iobj != aucvault->objects.end(  ); ++iobj )
+   for( auto* sobj : aucvault->objects )
    {
-      obj_data *sobj = *iobj;
       if( sobj && sobj->pIndexData->vnum == obj->pIndexData->vnum )
       {
          act( AT_TELL, "$n tells you '$p is already being offered. Come back later.'", auc, obj, ch, TO_VICT );
@@ -1404,10 +1379,9 @@ void auction_sell( char_data * ch, char_data * auc, string & argument )
    }
 
    short sellcount = 0;
-   for( iobj = aucvault->objects.begin(  ); iobj != aucvault->objects.end(  ); ++iobj )
+   for( auto* sobj2 : aucvault->objects )
    {
-      obj_data *sobj = *iobj;
-      if( sobj && !str_cmp( sobj->seller, ch->name ) )
+      if( sobj2 && !str_cmp( sobj2->seller, ch->name ) )
          ++sellcount;
    }
 
@@ -1453,11 +1427,8 @@ void sweep_house( room_index * aucroom )
       return;
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = aucvault->objects.begin(  ); iobj != aucvault->objects.end(  ); ++iobj )
+   for( auto* aucobj : aucvault->objects )
    {
-      obj_data *aucobj = *iobj;
-
       if( ( aucobj->day == time_info.day && aucobj->month == time_info.month && aucobj->year == time_info.year ) || ( time_info.year - aucobj->year > 1 ) )
       {
          clan_data *clan = nullptr;
@@ -1469,7 +1440,7 @@ void sweep_house( room_index * aucroom )
 
          if( aucmob->has_actflag( ACT_GUILDAUC ) )
          {
-            list < clan_data * >::iterator cl;
+            std::list<clan_data *>::iterator cl;
 
             for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
             {
@@ -1511,7 +1482,7 @@ void sweep_house( room_index * aucroom )
 /* Sweep old crap from auction houses on daily basis (game time)- Samson 11-1-99 */
 void clean_auctions( void )
 {
-   map < int, room_index * >::iterator iroom;
+   std::map < int, room_index * >::iterator iroom;
 
    for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {

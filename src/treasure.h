@@ -64,7 +64,7 @@ struct armorgenT
    float cost; /* Base value or cost */
    short minlevel;   /* Minimum mob level before this armor type will drop */
    short maxlevel;   /* Maximum mob level this armor type will drop for */
-   string flags;   /* Default flag set */
+   std::string flags;   /* Default flag set */
 };
 
 /* Weapon types for Weapon Generator */
@@ -77,7 +77,7 @@ struct weaponT
    float cost; /* Base cost/value */
    short skill;   /* Skill type */
    short damage;  /* Damage type */
-   string flags;   /* Default flag set */
+   std::string flags;   /* Default flag set */
 };
 
 struct weapontable
@@ -104,11 +104,11 @@ class rune_data
      rune_data(  );
     ~rune_data(  );
 
-   void set_name( const string & name )
+   void set_name( const std::string & name )
    {
       _name = name;
    }
-   const string& get_name(  )
+   const std::string & get_name(  )
    {
       return _name;
    }
@@ -127,7 +127,7 @@ class rune_data
    }
 
  private:
-   string _name;
+   std::string _name;
    short _rarity; /* Common, Rare, Ultrarare */
 
  public:
@@ -145,11 +145,11 @@ class runeword_data
      runeword_data(  );
     ~runeword_data(  );
 
-   void set_name( const string & name )
+   void set_name( const std::string & name )
    {
       _name = name;
    }
-   string get_name(  )
+   std::string get_name(  )
    {
       return _name;
    }
@@ -158,11 +158,11 @@ class runeword_data
       return _name.c_str(  );
    }
 
-   void set_rune1( const string & rune1 )
+   void set_rune1( const std::string & rune1 )
    {
       _rune1 = rune1;
    }
-   string get_rune1(  )
+   std::string get_rune1(  )
    {
       return _rune1;
    }
@@ -171,11 +171,11 @@ class runeword_data
       return _rune1.c_str(  );
    }
 
-   void set_rune2( const string & rune2 )
+   void set_rune2( const std::string & rune2 )
    {
       _rune2 = rune2;
    }
-   string get_rune2(  )
+   std::string get_rune2(  )
    {
       return _rune2;
    }
@@ -184,11 +184,11 @@ class runeword_data
       return _rune2.c_str(  );
    }
 
-   void set_rune3( const string & rune3 )
+   void set_rune3( const std::string & rune3 )
    {
       _rune3 = rune3;
    }
-   string get_rune3(  )
+   std::string get_rune3(  )
    {
       return _rune3;
    }
@@ -207,10 +207,10 @@ class runeword_data
    }
 
  private:
-   string _name;  /* The runeword name */
-   string _rune1; /* 1st required rune */
-   string _rune2; /* 2nd required rune */
-   string _rune3; /* 3rd required rune - nullptr if not required */
+   std::string _name;  /* The runeword name */
+   std::string _rune1; /* 1st required rune */
+   std::string _rune2; /* 2nd required rune */
+   std::string _rune3; /* 3rd required rune - nullptr if not required */
    short _type;   /* Weapon(1) or Armor(0) ? */
 
  public:

@@ -44,13 +44,13 @@ class mapexit_data
      mapexit_data(  );
     ~mapexit_data(  );
 
-   string tomap;     // Target map name if the exit goes to another continent.
-   int vnum;         // Target vnum if it goes to a regular zone.
-   short herex;      // Coordinates the entrance is at. This should never hold negative values.
+   std::string tomap; // Target map name if the exit goes to another continent.
+   int vnum;          // Target vnum if it goes to a regular zone.
+   short herex;       // Coordinates the entrance is at. This should never hold negative values.
    short herey;
-   short therex;     // Coordinates the entrance goes to. Value of -1 means it goes to a standard room.
+   short therex;      // Coordinates the entrance goes to. Value of -1 means it goes to a standard room.
    short therey;
-   short prevsector; // Previous sector type to restore with when an exit is deleted.
+   short prevsector;  // Previous sector type to restore with when an exit is deleted.
 };
 
 class landmark_data
@@ -63,11 +63,11 @@ class landmark_data
      landmark_data(  );
     ~landmark_data(  );
 
-   string description;  // Description of the landmark.
-   int distance;        // Distance the landmark is visible from.
-   short map_x;         // X coordinate of landmark.
-   short map_y;         // Y coordinate of landmark.
-   bool Isdesc;         // If true is room desc. If not is landmark.
+   std::string description;  // Description of the landmark.
+   int distance;             // Distance the landmark is visible from.
+   short map_x;              // X coordinate of landmark.
+   short map_y;              // Y coordinate of landmark.
+   bool Isdesc;              // If true is room desc. If not is landmark.
 };
 
 class landing_data
@@ -80,7 +80,7 @@ class landing_data
      landing_data(  );
     ~landing_data(  );
 
-   string area;
+   std::string area;
    int cost;
    short map_x;
    short map_y;
@@ -97,9 +97,9 @@ class continent_data
     ~continent_data(  );
 
    void save( );                                      // Saves continent data after editing.
-   void fread_mapexit( ifstream & );
-   void fread_landmark( ifstream & );
-   void fread_landing_site( ifstream & );
+   void fread_mapexit( std::ifstream & );
+   void fread_landmark( std::ifstream & );
+   void fread_landing_site( std::ifstream & );
    void free_exits( );
    void free_landmarks( );
    void free_landing_sites( );
@@ -114,24 +114,24 @@ class continent_data
    landmark_data *check_landmark( short, short );        // Check to see if the actor is close to a landmark.
    mapexit_data *check_mapexit( short, short );          // Check to see if the actor is on the coordinates of an exit.
    landing_data *check_landing_site( short, short );     // Check to see if the actor is at a landing site.
-   void add_mapexit( const string &, short, short, short, short, int );
-   void modify_mapexit( mapexit_data *, const string &, short, short, short, short, int );
+   void add_mapexit( const std::string &, short, short, short, short, int );
+   void modify_mapexit( mapexit_data *, const std::string &, short, short, short, short, int );
    void delete_mapexit( mapexit_data * );
    int floodfill( short, short, short, char );        // Used for large scale terrain changing in OLC.
    int unfloodfill( void );
 
-   list < class mapexit_data *>exits;         // List of exists for this map.
-   list < class landmark_data *>landmarks;    // List of landmarks for this map.
-   list < class landing_data *>landing_sites; // List of landing sites for this map.
-   class area_data *area;                     // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
+   std::list<class mapexit_data *> exits;         // List of exists for this map.
+   std::list<class landmark_data *> landmarks;    // List of landmarks for this map.
+   std::list<class landing_data *> landing_sites; // List of landing sites for this map.
+   class area_data *area;                         // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
 
-   string name;                               // The name of the continent. Used for lookups and to associate the continent with an area file.
-   string mapfile;                            // .png file where the map data will be loaded from.
-   string areafile;                           // The area file associated with this map where all of its mobs, objs, and special rooms will go.
-   string filename;                           // The map's filename. Used during online editing.
-   unsigned char grid[MAX_X][MAX_Y];          // Grid of sector types. Not stored in the continent's data file. This is loaded indirectly through the .png file.
-   int vnum;                                  // VNUM for the master room that controls this map.
-   bool nogrid;                               // If this is set to true, the continent will have no map grid. This allows continents to be treated as planes. For places like the Astral Plane etc.
+   std::string name;                              // The name of the continent. Used for lookups and to associate the continent with an area file.
+   std::string mapfile;                           // .png file where the map data will be loaded from.
+   std::string areafile;                          // The area file associated with this map where all of its mobs, objs, and special rooms will go.
+   std::string filename;                          // The map's filename. Used during online editing.
+   unsigned char grid[MAX_X][MAX_Y];              // Grid of sector types. Not stored in the continent's data file. This is loaded indirectly through the .png file.
+   int vnum;                                      // VNUM for the master room that controls this map.
+   bool nogrid;                                   // If this is set to true, the continent will have no map grid. This allows continents to be treated as planes. For places like the Astral Plane etc.
 };
 
 extern const char *sect_types[];
@@ -150,9 +150,9 @@ struct sect_color_type
    short graph3;
 };
 
-extern list < continent_data * >continent_list;
+extern std::list<continent_data *> continent_list;
 
-continent_data *find_continent_by_name( const string & );
+continent_data *find_continent_by_name( const std::string & );
 continent_data *find_continent_by_room( room_index * );
 continent_data *find_continent_by_room_vnum( int );
 continent_data *pick_random_continent( void );

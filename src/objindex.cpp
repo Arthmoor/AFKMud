@@ -31,7 +31,7 @@
 #include "objindex.h"
 #include "mud_prog.h"
 
-map < int, obj_index * >obj_index_table;
+std::map<int, obj_index *> obj_index_table;
 
 extern int top_affect;
 
@@ -42,29 +42,21 @@ obj_index::~obj_index(  )
    /*
     * Remove references to object index 
     */
-   list < obj_data * >::iterator iobj;
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); )
+   for( auto it = objlist.begin(  ); it != objlist.end(  ); )
    {
-      obj_data *o = *iobj;
-      ++iobj;
+      obj_data *o = *it;
+      ++it;
 
       if( o->pIndexData == this )
          o->extract(  );
    }
 
-   list < char_data * >::iterator ich;
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto* ch : pclist )
    {
-      char_data *ch = *ich;
-
       if( ch->substate == SUB_OBJ_EXTRA && ch->pcdata->dest_buf )
       {
-         list < extra_descr_data * >::iterator ex;
-
-         for( ex = extradesc.begin(  ); ex != extradesc.end(  ); ++ex )
+         for( auto* ed : extradesc )
          {
-            extra_descr_data *ed = *ex;
-
             if( ed == ch->pcdata->dest_buf )
             {
                ch->print( "You suddenly forget which object you were editing!\r\n" );
@@ -76,12 +68,8 @@ obj_index::~obj_index(  )
       }
       else if( ch->substate == SUB_MPROG_EDIT && ch->pcdata->dest_buf )
       {
-         list < mud_prog_data * >::iterator mpg;
-
-         for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
+         for( auto* mp : mudprogs )
          {
-            mud_prog_data *mp = *mpg;
-
             if( mp == ch->pcdata->dest_buf )
             {
                ch->print( "You suddenly forget which object you were working on.\r\n" );
@@ -94,11 +82,10 @@ obj_index::~obj_index(  )
       }
    }
 
-   list < extra_descr_data * >::iterator ed;
-   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
+   for( auto it = extradesc.begin(  ); it != extradesc.end(  ); )
    {
-      extra_descr_data *desc = *ed;
-      ++ed;
+      extra_descr_data *desc = *it;
+      ++it;
 
       extradesc.remove( desc );
       deleteptr( desc );
@@ -106,11 +93,10 @@ obj_index::~obj_index(  )
    }
    extradesc.clear(  );
 
-   list < affect_data * >::iterator paf;
-   for( paf = affects.begin(  ); paf != affects.end(  ); )
+   for( auto it = affects.begin(  ); it != affects.end(  ); )
    {
-      affect_data *aff = *paf;
-      ++paf;
+      affect_data *aff = *it;
+      ++it;
 
       affects.remove( aff );
       deleteptr( aff );
@@ -118,11 +104,10 @@ obj_index::~obj_index(  )
    }
    affects.clear(  );
 
-   list < mud_prog_data * >::iterator mpg;
-   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
+   for( auto it = mudprogs.begin(  ); it != mudprogs.end(  ); )
    {
-      mud_prog_data *mprog = *mpg;
-      ++mpg;
+      mud_prog_data *mprog = *it;
+      ++it;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
@@ -137,7 +122,7 @@ obj_index::~obj_index(  )
    STRFREE( socket[1] );
    STRFREE( socket[2] );
 
-   map < int, obj_index * >::iterator mobj;
+   std::map<int, obj_index *>::iterator mobj;
    if( ( mobj = obj_index_table.find( vnum ) ) != obj_index_table.end(  ) )
       obj_index_table.erase( mobj );
    --top_obj_index;
@@ -170,11 +155,10 @@ void obj_index::clean_obj(  )
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
       value[x] = 0;
 
-   list < affect_data * >::iterator paf;
-   for( paf = affects.begin(  ); paf != affects.end(  ); )
+   for( auto it = affects.begin(  ); it != affects.end(  ); )
    {
-      affect_data *aff = *paf;
-      ++paf;
+      affect_data *aff = *it;
+      ++it;
 
       affects.remove( aff );
       deleteptr( aff );
@@ -185,11 +169,10 @@ void obj_index::clean_obj(  )
    /*
     * remove extra descriptions 
     */
-   list < extra_descr_data * >::iterator ed;
-   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
+   for( auto it = extradesc.begin(  ); it != extradesc.end(  ); )
    {
-      extra_descr_data *desc = *ed;
-      ++ed;
+      extra_descr_data *desc = *it;
+      ++it;
 
       extradesc.remove( desc );
       deleteptr( desc );
@@ -197,11 +180,10 @@ void obj_index::clean_obj(  )
    }
    extradesc.clear(  );
 
-   list < mud_prog_data * >::iterator mpg;
-   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
+   for( auto it = mudprogs.begin(  ); it != mudprogs.end(  ); )
    {
-      mud_prog_data *mprog = *mpg;
-      ++mpg;
+      mud_prog_data *mprog = *it;
+      ++it;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
@@ -215,7 +197,7 @@ void obj_index::clean_obj(  )
  */
 obj_index *get_obj_index( int vnum )
 {
-   map < int, obj_index * >::iterator iobj;
+   std::map<int, obj_index *>::iterator iobj;
 
    if( vnum < 0 )
       vnum = 0;
@@ -662,16 +644,13 @@ int calc_aff_ego( int location, int mod )
 
 int obj_index::set_ego(  )
 {
-   list < affect_data * >::iterator paf;
    int oego = 0, calc = 0, minego = ( sysdata->minego * 1000 );
 
    if( extra_flags.test( ITEM_DEATHROT ) )
       return 0;
 
-   for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
+   for( auto* af : affects )
    {
-      affect_data *af = *paf;
-
       calc = calc_aff_ego( af->location, af->modifier );
       if( calc == -2 )
       {
@@ -738,7 +717,7 @@ int obj_index::set_ego(  )
  * Create a new INDEX object (for online building)		-Thoric
  * Option to clone an existing index object.
  */
-obj_index *make_object( int vnum, int cvnum, const string & name, area_data * area )
+obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data * area )
 {
    obj_index *cObjIndex = nullptr;
 
@@ -796,10 +775,8 @@ obj_index *make_object( int vnum, int cvnum, const string & name, area_data * ar
       pObjIndex->limit = cObjIndex->limit;
       pObjIndex->extradesc = cObjIndex->extradesc;
 
-      list < extra_descr_data * >::iterator ced;
-      for( ced = cObjIndex->extradesc.begin(  ); ced != cObjIndex->extradesc.end(  ); ++ced )
+      for( auto* ed : cObjIndex->extradesc )
       {
-         extra_descr_data *ed = *ced;
          extra_descr_data *ned = new extra_descr_data;
 
          ned->keyword = ed->keyword;
@@ -808,10 +785,8 @@ obj_index *make_object( int vnum, int cvnum, const string & name, area_data * ar
          ++top_ed;
       }
 
-      list < affect_data * >::iterator cpaf;
-      for( cpaf = cObjIndex->affects.begin(  ); cpaf != cObjIndex->affects.end(  ); ++cpaf )
+      for( auto* af : cObjIndex->affects )
       {
-         affect_data *af = *cpaf;
          affect_data *paf = new affect_data;
 
          paf->type = af->type;
@@ -825,7 +800,7 @@ obj_index *make_object( int vnum, int cvnum, const string & name, area_data * ar
       }
    }
 
-   obj_index_table.insert( map < int, obj_index * >::value_type( vnum, pObjIndex ) );
+   obj_index_table.insert( std::map<int, obj_index *>::value_type( vnum, pObjIndex ) );
    area->objects.push_back( pObjIndex );
    ++top_obj_index;
 
@@ -882,7 +857,7 @@ void obj_index::oprog_read_programs( FILE * fp )
 
 CMDF( do_ofind )
 {
-   map < int, obj_index * >::iterator iobj = obj_index_table.begin(  );
+   std::map<int, obj_index *>::iterator iobj = obj_index_table.begin(  );
    bool fAll = !str_cmp( argument, "all" );
    int nMatch = 0;
 

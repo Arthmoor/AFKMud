@@ -426,7 +426,7 @@ CMDF( do_quaff )
 
 CMDF( do_recite )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    obj_data *scroll, *obj;
    ch_ret retcode;
@@ -602,11 +602,8 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          maxd = 5;
 
       room->randomize_exits( maxd );
-      list < char_data * >::iterator ich;
-      for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
+      for( auto* rch : room->people )
       {
-         char_data *rch = *ich;
-
          rch->print( "You hear a loud rumbling sound.\r\n" );
          rch->print( "Something seems different...\r\n" );
       }
@@ -625,7 +622,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       log_printf( "%s hit a DEATH TRIGGER in room %d!", ch->name, ch->in_room->vnum );
 
       /*
-       * Personaly I figured if we wanted it to be a full DT we could just have it send them into a DT. 
+       * Personally I figured if we wanted it to be a full DT we could just have it send them into a DT.
        */
       raw_kill( ch, ch );
       return;
@@ -743,7 +740,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
    if( IS_SET( obj->value[0], TRIG_CONTAINER ) )
    {
       obj_data *container = nullptr;
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
       bool found = false;
 
       room = get_room_index( obj->value[1] );
@@ -891,7 +888,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
 
       if( IS_SET( obj->value[0], TRIG_OPEN ) && IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
-         list < char_data * >::iterator ich;
+         std::list<char_data *>::iterator ich;
 
          REMOVE_EXIT_FLAG( pexit, EX_CLOSED );
          for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
@@ -919,7 +916,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
 
       if( IS_SET( obj->value[0], TRIG_CLOSE ) && !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
-         list < char_data * >::iterator ich;
+         std::list<char_data *>::iterator ich;
 
          SET_EXIT_FLAG( pexit, EX_CLOSED );
          for( ich = room->people.begin(  ); ich != room->people.end(  ); ++ich )
@@ -1025,14 +1022,8 @@ CMDF( do_rap )
       act( AT_ACTION, "$n raps loudly on the $d.", ch, nullptr, keyword, TO_ROOM );
       if( ( to_room = pexit->to_room ) != nullptr && ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
       {
-         list < char_data * >::iterator ich;
-
-         for( ich = to_room->people.begin(  ); ich != to_room->people.end(  ); ++ich )
-         {
-            char_data *rch = *ich;
-
+         for( auto* rch : to_room->people )
             act( AT_ACTION, "Someone raps loudly from the other side of the $d.", rch, nullptr, pexit_rev->keyword, TO_CHAR );
-         }
       }
    }
    else
@@ -1145,12 +1136,8 @@ CMDF( do_smoke )
 
 obj_data *find_tinder( char_data *ch )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* tinder : ch->carrying )
    {
-      obj_data *tinder = *iobj;
-
       if( ( tinder->item_type == ITEM_TINDER ) && ch->can_see_obj( tinder, false ) )
          return tinder;
    }
@@ -1160,7 +1147,7 @@ obj_data *find_tinder( char_data *ch )
 CMDF( do_extinguish )
 {
    obj_data *obj;
-	string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
    if( arg.empty() )
@@ -1229,8 +1216,8 @@ CMDF( do_light )
 
    obj->separate();
 
-	switch ( obj->item_type )
-	{
+   switch ( obj->item_type )
+   {
       default:
          ch->print( "You can't light that.\r\n" );
          return;
@@ -1277,7 +1264,7 @@ CMDF( do_light )
  */
 CMDF( do_apply )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    obj_data *salve, *obj;
    ch_ret retcode;
@@ -1478,7 +1465,7 @@ CMDF( do_invoke )
 CMDF( do_mark )
 {
    obj_data *obj;
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -1539,7 +1526,7 @@ CMDF( do_mark )
 CMDF( do_connect )
 {
    obj_data *first_ob, *second_ob, *new_ob;
-   string arg1;
+   std::string arg1;
 
    argument = one_argument( argument, arg1 );
 
@@ -1632,7 +1619,7 @@ CMDF( do_junk )
 
 /* Donate command installed by Samson 2-6-98 
    Coded by unknown author. Players can donate items for others to use. */
-/* Slight bug corrected, objects weren't being seperated from each other - Whir 3-25-98 */
+/* Slight bug corrected, objects weren't being separated from each other - Whir 3-25-98 */
 CMDF( do_donate )
 {
    obj_data *obj;

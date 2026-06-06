@@ -35,7 +35,7 @@ variable_data::variable_data()
    init_memory( &this->varflags, &this->timer, sizeof( this->timer ) );
 }
 
-variable_data::variable_data( int vtype, int vvnum, const string& vtag )
+variable_data::variable_data( int vtype, int vvnum, const std::string & vtag )
 {
    this->type = vtype;
    this->vnum = vvnum;
@@ -54,14 +54,10 @@ variable_data::~variable_data(  )
 /*
  * Return the specified tag from a character
  */
-variable_data *get_tag( char_data * ch, const string& tag, int vnum )
+variable_data *get_tag( char_data * ch, const std::string & tag, int vnum )
 {
-   list < variable_data * >::iterator ivd;
-
-   for( ivd = ch->variables.begin(  ); ivd != ch->variables.end(  ); ++ivd )
+   for( auto* vd : ch->variables )
    {
-      variable_data *vd = *ivd;
-
       if( ( !vnum || vnum == vd->vnum ) && !str_cmp( tag, vd->tag ) )
          return vd;
    }
@@ -71,18 +67,17 @@ variable_data *get_tag( char_data * ch, const string& tag, int vnum )
 /*
  * Remove the specified tag from a character
  */
-bool remove_tag( char_data * ch, const string& tag, int vnum )
+bool remove_tag( char_data * ch, const std::string & tag, int vnum )
 {
-   list < variable_data * >::iterator ivd;
    bool deleted = false;
 
    if( ch->variables.empty(  ) )
       return false;
 
-   for( ivd = ch->variables.begin(  ); ivd != ch->variables.end(  ); )
+   for( auto it = ch->variables.begin(  ); it != ch->variables.end(  ); )
    {
-      ++ivd;
-      variable_data *vd = *ivd;
+      variable_data *vd = *it;
+      ++it;
 
       if( ( !vnum || vnum == vd->vnum ) && !str_cmp( tag, vd->tag ) )
       {
@@ -104,7 +99,7 @@ bool remove_tag( char_data * ch, const string& tag, int vnum )
 int tag_char( char_data * ch, variable_data * var, bool replace )
 {
    variable_data *vd = nullptr;
-   list < variable_data * >::iterator ivd;
+   std::list<variable_data *>::iterator ivd;
    bool found = false;
 
    for( ivd = ch->variables.begin(  ); ivd != ch->variables.end(  ); ++ivd )
@@ -140,9 +135,9 @@ int tag_char( char_data * ch, variable_data * var, bool replace )
    return 0;
 }
 
-bool is_valid_tag( const string& tagname )
+bool is_valid_tag( const std::string & tagname )
 {
-   string::const_iterator ptr = tagname.begin();
+   std::string::const_iterator ptr = tagname.begin();
 
    if( !isalpha( tagname[0] ) )
       return false;
@@ -176,12 +171,11 @@ bool is_valid_tag( const string& tagname )
  */
 CMDF( do_mptag )
 {
-   string::const_iterator ptr;
+   std::string::const_iterator ptr;
    char_data *victim;
    variable_data *vd;
    const char *p;
-   char tmp[MSL];
-   string arg1, arg2;
+   std::string arg1, arg2;
    int vnum = 0, exp = 0;
    bool error = false;
 
@@ -221,8 +215,8 @@ CMDF( do_mptag )
 
    if( ( p = strchr( arg2.c_str(  ), ':' ) ) != nullptr ) 
    {
-      strlcpy( tmp, p, MSL );
-      vnum = atoi( tmp );
+      std::string tmp = p;
+      vnum = std::stoi( tmp );
    }
    else
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;
@@ -265,7 +259,7 @@ CMDF( do_mprmtag )
    char_data *victim;
    const char *p;
    char tmp[MSL];
-   string arg1, arg2;
+   std::string arg1, arg2;
    int vnum = 0;
 
    if( ( !ch->isnpc(  ) && ch->get_trust(  ) < LEVEL_GREATER ) || ch->is_affected( AFF_CHARM ) )
@@ -312,11 +306,11 @@ CMDF( do_mprmtag )
  */
 CMDF( do_mpflag )
 {
-   string::const_iterator ptr;
-   string::size_type x;
+   std::string::const_iterator ptr;
+   std::string::size_type x;
    char_data *victim;
    variable_data *vd;
-   string arg1, arg2, arg3, p;
+   std::string arg1, arg2, arg3, p;
    int vnum = 0, exp = 0, def = 0, flag = 0;
    bool error = false;
 
@@ -359,7 +353,7 @@ CMDF( do_mpflag )
       return;
    }
 
-   if( ( x = arg2.find_first_of( '!' ) ) == string::npos )
+   if( ( x = arg2.find_first_of( '!' ) ) == std::string::npos )
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;
    else
    {
@@ -415,11 +409,11 @@ CMDF( do_mpflag )
  */
 CMDF( do_mprmflag )
 {
-   string::const_iterator ptr;
-   string::size_type x;
+   std::string::const_iterator ptr;
+   std::string::size_type x;
    char_data *victim;
    variable_data *vd;
-   string arg1, arg2, arg3, p;
+   std::string arg1, arg2, arg3, p;
    int vnum = 0;
    bool error = false;
 
@@ -445,7 +439,7 @@ CMDF( do_mprmflag )
       return;
    }
 
-   if( ( x = arg2.find_first_of( '!' ) ) == string::npos )
+   if( ( x = arg2.find_first_of( '!' ) ) == std::string::npos )
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;
    else
    {
@@ -492,12 +486,8 @@ CMDF( do_mprmflag )
 
 void fwrite_variables( char_data * ch, FILE * fp )
 {
-   list < variable_data * >::iterator ivd;
-
-   for( ivd = ch->variables.begin(  ); ivd != ch->variables.end(  ); ++ivd )
+   for( auto* vd : ch->variables )
    {
-      variable_data *vd = *ivd;
-
       auto vc_time = std::chrono::system_clock::to_time_t( vd->c_time );
       auto vm_time = std::chrono::system_clock::to_time_t( vd->m_time );
       auto vr_time = std::chrono::system_clock::to_time_t( vd->r_time );
@@ -596,10 +586,10 @@ void fread_variable( char_data * ch, FILE * fp )
          case 'F':
             if( !str_cmp( word, "Flags" ) )
             {
-               string varbits;
+               std::string varbits;
 
                fread_string( varbits, fp );
-               pvd->varflags = bitset<MAX_VAR_BITS>( varbits );
+               pvd->varflags = std::bitset<MAX_VAR_BITS>( varbits );
 
                break;
             }

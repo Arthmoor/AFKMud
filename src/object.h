@@ -46,8 +46,8 @@ class obj_data
     */
    void fall( bool );
    short get_resistance(  );
-   const string oshort(  );
-   const string format_to_char( char_data *, bool, int );
+   const std::string oshort(  );
+   const std::string format_to_char( char_data *, bool, int );
    obj_data *to_char( char_data * );
    void from_char(  );
    int apply_ac( int );
@@ -59,7 +59,7 @@ class obj_data
    int get_number(  );
    int get_weight(  );
    int get_real_weight(  );
-   const string item_type_name(  );
+   const std::string item_type_name(  );
    bool is_trapped(  );
    obj_data *get_trap(  );
    bool extracted(  );
@@ -72,7 +72,7 @@ class obj_data
    bool in_magic_container(  );
    void make_scraps(  );
    int hitroll(  );
-   const string myobj(  );
+   const std::string myobj(  );
 
    /*
     * External refs in other files 
@@ -80,16 +80,16 @@ class obj_data
    void armorgen(  );
    void weapongen(  );
 
-   list < obj_data * >contents;   /* Objects this object contains */
-   list < affect_data * >affects;
-   list < extra_descr_data * >extradesc;
-   list < class mprog_act_list *>mpact;   /* Mudprogs */
+   std::list<obj_data *> contents;   /* Objects this object contains */
+   std::list<affect_data *> affects;
+   std::list<extra_descr_data *> extradesc;
+   std::list<class mprog_act_list *> mpact;   /* Mudprogs */
    obj_data *in_obj;
    obj_index *pIndexData;
    room_index *in_room;
    char_data *carried_by;
-   bitset < MAX_ITEM_FLAG > extra_flags;
-   bitset < MAX_WEAR_FLAG > wear_flags;
+   std::bitset<MAX_ITEM_FLAG> extra_flags;
+   std::bitset<MAX_WEAR_FLAG> wear_flags;
    class continent_data *continent;  /* Which map is it on? - Samson 8-21-99 */
    char *name;
    char *short_descr;
@@ -121,11 +121,11 @@ class obj_data
 
 obj_data *get_objtype( char_data *, short );
 void obj_identify_output( char_data *, obj_data * );
-void show_list_to_char( char_data *, list < obj_data * >, bool, bool );
-void fwrite_obj( char_data *, list < obj_data * >, clan_data *, FILE *, int, bool );
+void show_list_to_char( char_data *, std::list<obj_data *>, bool, bool );
+void fwrite_obj( char_data *, std::list<obj_data *>, clan_data *, FILE *, int, bool );
 void fread_obj( char_data *, FILE *, short );
 obj_data *group_obj( obj_data * obj, obj_data * obj2 );
 
-extern list < obj_data * >objlist;
+extern std::list<obj_data *> objlist;
 extern obj_data *save_equipment[MAX_WEAR][MAX_LAYERS];
 extern obj_data *mob_save_equipment[MAX_WEAR][MAX_LAYERS];

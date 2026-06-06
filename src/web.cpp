@@ -122,8 +122,8 @@ std::string web_colourconv( std::string_view txt )
 void web_who(  )
 {
    FILE *webwho = nullptr;
-   list < descriptor_data * >::iterator ds;
-   ostringstream webbuf, buf1, buf2;
+   std::list<descriptor_data *>::iterator ds;
+   std::ostringstream webbuf, buf1, buf2;
    std::string rank, outbuf, stats, clan_name;
    int pcount = 0, amount, xx = 0, yy = 0;
 
@@ -266,10 +266,9 @@ void web_who(  )
 
 void web_arealist(  )
 {
+   FILE *fp;
    const char *print_string =
       "<tr><td><font color=\"red\">%s   </font></td><td><font color=\"yellow\">%s</font></td><td><font color=\"green\">%d - %d   </font></td><td><font color=\"blue\">%d - %d</font></td></tr>\n";
-   list < area_data * >::iterator pArea;
-   FILE *fp;
 
    if( !( fp = fopen( AREALIST_FILE, "w" ) ) )
    {
@@ -280,10 +279,8 @@ void web_arealist(  )
    fprintf( fp,
             "<table><tr><td><font color=\"red\">Author   </font></td><td><font color=\"yellow\">Area</font></td><td><font color=\"green\">Recommened   </font></td><td><font color=\"blue\">Enforced</font></td></tr>\n" );
 
-   for( pArea = area_nsort.begin(  ); pArea != area_nsort.end(  ); ++pArea )
+   for( auto* area : area_nsort )
    {
-      area_data *area = *pArea;
-
       if( !area->flags.test( AFLAG_PROTOTYPE ) )
          fprintf( fp, print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    }

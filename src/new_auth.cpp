@@ -43,12 +43,12 @@
 #include "descriptor.h"
 #include "new_auth.h"
 
-char_data *get_waiting_desc( char_data *, const string & );
+char_data *get_waiting_desc( char_data *, const std::string & );
 CMDF( do_reserve );
 CMDF( do_destroy );
 bool can_use_mprog( char_data * );
 
-list < auth_data * >authlist;
+std::list<auth_data *> authlist;
 
 NameManager & NameManager::instance()
 {
@@ -253,7 +253,7 @@ void clean_auth_list (void )
 
 void save_auth_list( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( AUTH_FILE );
    if( !stream.is_open(  ) )
@@ -265,26 +265,24 @@ void save_auth_list( void )
 
    for( auto* auth: authlist )
    {
-      stream << "#AUTH" << endl;
-      stream << "Name     " << auth->name << endl;
-      stream << "State    " << auth->state << endl;
+      stream << "#AUTH" << std::endl;
+      stream << "Name     " << auth->name << std::endl;
+      stream << "State    " << auth->state << std::endl;
       if( !auth->authed_by.empty(  ) )
-         stream << "AuthedBy " << auth->authed_by << endl;
+         stream << "AuthedBy " << auth->authed_by << std::endl;
       if( !auth->change_by.empty(  ) )
-         stream << "Change   " << auth->change_by << endl;
-      stream << "End" << endl << endl;
+         stream << "Change   " << auth->change_by << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
 }
 
 void clear_auth_list( void )
 {
-   list < auth_data * >::iterator auth;
-
-   for( auth = authlist.begin(  ); auth != authlist.end(  ); )
+   for( auto it = authlist.begin(); it != authlist.end(); )
    {
-      auth_data *nauth = *auth;
-      ++auth;
+      auth_data *nauth = *it;
+      ++it;
 
       if( !exists_player( nauth->name ) )
          deleteptr( nauth );
@@ -294,7 +292,7 @@ void clear_auth_list( void )
 
 void load_auth_list( void )
 {
-   ifstream stream;
+   std::ifstream stream;
    auth_data *auth = nullptr;
 
    authlist.clear(  );
@@ -308,7 +306,7 @@ void load_auth_list( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -363,7 +361,7 @@ int get_auth_state( char_data * ch )
    return state;
 }
 
-auth_data *get_auth_name( const string & name )
+auth_data *get_auth_name( const std::string & name )
 {
    for( auto* auth : authlist )
    {
@@ -389,7 +387,7 @@ void add_to_auth( char_data * ch )
    }
 }
 
-void remove_from_auth( const string & name )
+void remove_from_auth( const std::string & name )
 {
    auth_data *old_name;
 
@@ -441,7 +439,7 @@ void check_auth_state( char_data * ch )
 /* 
  * Check if the name prefix uniquely identifies a char descriptor
  */
-char_data *get_waiting_desc( char_data * ch, const string & name )
+char_data *get_waiting_desc( char_data * ch, const std::string & name )
 {
    char_data *ret_char = nullptr;
    static size_t number_of_hits;
@@ -471,9 +469,9 @@ char_data *get_waiting_desc( char_data * ch, const string & name )
 /* new auth */
 CMDF( do_authorize )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim = nullptr;
-   list < auth_data * >::iterator auth;
+   std::list<auth_data *>::iterator auth;
    auth_data *nauth = nullptr;
    int level;
    bool authed, changename, pending;
@@ -827,7 +825,7 @@ void auth_update( void )
 /* Gutted to append to an external file now rather than load the pile into memory at boot - Samson 11-21-03 */
 CMDF( do_reserve )
 {
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 

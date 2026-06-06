@@ -48,9 +48,9 @@ extern int num_logins;
 
 void quotes( char_data * );
 void set_alarm( long );
-bool write_to_descriptor_old( int, const char * );
+bool write_to_descriptor_old( int, std::string_view );
 void update_room_reset( char_data *, bool );
-void music_to_char( const string &, int, char_data *, bool );
+void music_to_char( const std::string &, int, char_data *, bool );
 void reset_sound( char_data * );
 void reset_music( char_data * );
 void save_timedata(  );
@@ -68,7 +68,6 @@ void fwrite_afk_affect( FILE *, affect_data * );
  */
 void save_mobile( FILE * fp, char_data * mob )
 {
-   list < affect_data * >::iterator paf;
    skill_type *skill = nullptr;
 
    if( !mob->isnpc(  ) || !fp )
@@ -117,10 +116,8 @@ void save_mobile( FILE * fp, char_data * mob )
    if( mob->has_aflags(  ) )
       fprintf( fp, "AffectedBy   %s~\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
 
-   for( paf = mob->affects.begin(  ); paf != mob->affects.end(  ); ++paf )
+   for( auto* af : mob->affects )
    {
-      affect_data *af = *paf;
-
       if( af->type >= 0 && !( skill = get_skilltype( af->type ) ) )
          continue;
 
@@ -143,8 +140,7 @@ void save_mobile( FILE * fp, char_data * mob )
 
 void save_world( void )
 {
-   map < int, room_index * >::iterator iroom;
-   std::filesystem::path filename;
+   std::map<int, room_index *>::iterator iroom;
 
    log_string( "Preserving world state...." );
 
@@ -162,7 +158,7 @@ void save_world( void )
 
          FILE *objfp;
 
-         filename = std::format( "{}{}", HOTBOOT_DIR, pRoomIndex->vnum );
+         std::filesystem::path filename = std::format( "{}{}", HOTBOOT_DIR, pRoomIndex->vnum );
          if( !( objfp = fopen( filename.c_str(), "w" ) ) )
          {
             bug( "%s: fopen %d", __func__, pRoomIndex->vnum );
@@ -177,7 +173,7 @@ void save_world( void )
 
    FILE *mobfp;
 
-   filename = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
    if( !( mobfp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "%s: fopen mob file", __func__ );
@@ -185,11 +181,8 @@ void save_world( void )
    }
    else
    {
-      list < char_data * >::iterator ich;
-      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+      for( auto* rch : charlist )
       {
-         char_data *rch = *ich;
-
          if( !rch->isnpc(  ) || rch == supermob || rch->has_actflag( ACT_PROTOTYPE ) || rch->has_actflag( ACT_PET ) )
             continue;
          else
@@ -467,11 +460,10 @@ char_data *load_mobile( FILE * fp )
 void read_obj_file( const char *dirname, const char *filename )
 {
    FILE *fp;
-   std::filesystem::path fname;
    room_index *room;
 
    int vnum = atoi( filename );
-   fname = std::format( "{}{}", dirname, filename );
+   std::filesystem::path fname = std::format( "{}{}", dirname, filename );
 
    if( !( room = get_room_index( vnum ) ) )
    {
@@ -522,11 +514,10 @@ void read_obj_file( const char *dirname, const char *filename )
       FCLOSE( fp );
       std::filesystem::remove( fname );
 
-      list < obj_data * >::iterator iobj;
-      for( iobj = supermob->carrying.begin(  ); iobj != supermob->carrying.end(  ); )
+      for( auto it = supermob->carrying.begin(); it != supermob->carrying.end(); )
       {
-         obj_data *tobj = *iobj;
-         ++iobj;
+         obj_data *tobj = *it;
+         ++it;
 
          if( tobj->extra_flags.test( ITEM_ONMAP ) )
          {
@@ -570,12 +561,11 @@ void load_obj_files( )
 void load_world( void )
 {
    FILE *mobfp;
-   std::filesystem::path file1;
    char *word;
    int done = 0;
    bool mobfile = false;
 
-   file1 = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
+   std::filesystem::path file1 = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
    if( !( mobfp = fopen( file1.c_str(), "r" ) ) )
    {
       bug( "%s: fopen mob file", __func__ );
@@ -617,9 +607,9 @@ void load_world( void )
 /* Warm reboot stuff, gotta make sure to thank Erwin for this :) */
 CMDF( do_hotboot )
 {
-   list < descriptor_data * >::iterator ds;
+   std::list<descriptor_data *>::iterator ds;
    bool debugging = false;
-   ofstream stream;
+   std::ofstream stream;
 
 #ifdef MULTIPORT
    if( compilelock )
@@ -713,18 +703,18 @@ CMDF( do_hotboot )
       }
       else
       {
-         stream << "#DESCRIPTOR" << endl;
-         stream << "PlayerName    " << och->name << endl;
-         stream << "DescNumber    " << d->descriptor << endl;
-         stream << "CanCompress   " << d->can_compress << endl;
-         stream << "IsCompressing " << d->is_compressing << endl;
-         stream << "MSSPDetected  " << d->msp_detected << endl;
-         stream << "InRoomVnum    " << och->in_room->vnum << endl;
-         stream << "ClientPort    " << d->client_port << endl;
-         stream << "Idle          " << d->idle << endl;
-         stream << "HostName      " << d->hostname << endl;
-         stream << "ClientName    " << d->client << endl; 
-         stream << "End" << endl << endl;
+         stream << "#DESCRIPTOR" << std::endl;
+         stream << "PlayerName    " << och->name << std::endl;
+         stream << "DescNumber    " << d->descriptor << std::endl;
+         stream << "CanCompress   " << d->can_compress << std::endl;
+         stream << "IsCompressing " << d->is_compressing << std::endl;
+         stream << "MSSPDetected  " << d->msp_detected << std::endl;
+         stream << "InRoomVnum    " << och->in_room->vnum << std::endl;
+         stream << "ClientPort    " << d->client_port << std::endl;
+         stream << "Idle          " << d->idle << std::endl;
+         stream << "HostName      " << d->hostname << std::endl;
+         stream << "ClientName    " << d->client << std::endl;
+         stream << "End" << std::endl << std::endl;
 
          if( !debugging )
          {
@@ -743,8 +733,8 @@ CMDF( do_hotboot )
       }
    }
 
-   stream << "#MAXPLAYERS " << sysdata->maxplayers << endl << endl;
-   stream << "#END" << endl << endl;
+   stream << "#MAXPLAYERS " << sysdata->maxplayers << std::endl << std::endl;
+   stream << "#END" << std::endl << std::endl;
    stream.close();
 
    log_string( "Saving world time...." );
@@ -795,8 +785,8 @@ CMDF( do_hotboot )
 /* Recover from a hotboot - load players */
 void hotboot_recover( void )
 {
-   ifstream stream;
-   string playername;
+   std::ifstream stream;
+   std::string playername;
    descriptor_data *d = nullptr;
    bool fOld;
    int rvnum = 0;
@@ -812,7 +802,7 @@ void hotboot_recover( void )
    std::filesystem::remove( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;

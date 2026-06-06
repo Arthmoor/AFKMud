@@ -31,13 +31,11 @@
 #include "mud.h"
 #include "commands.h"
 #include "help.h"
-#include "raceclass.h"
-#include "smaugaffect.h"
 
-bool get_skill_help( char_data *, const string & );
-int skill_number( const string & );
+bool get_skill_help( char_data *, const std::string & );
+int skill_number( const std::string & );
 
-list < help_data * >helplist;
+std::list<help_data *> helplist;
 
 int top_help;
 
@@ -54,12 +52,10 @@ help_data::~help_data(  )
 
 void free_helps( void )
 {
-   list < help_data * >::iterator pHelp;
-
-   for( pHelp = helplist.begin(  ); pHelp != helplist.end(  ); )
+   for( auto it = helplist.begin(); it != helplist.end(); )
    {
-      help_data *help = *pHelp;
-      ++pHelp;
+      help_data *help = *it;
+      ++it;
 
       deleteptr( help );
    }
@@ -73,7 +69,7 @@ void free_helps( void )
  */
 void add_help( help_data * pHelp )
 {
-   list < help_data * >::iterator tHelp;
+   std::list<help_data *>::iterator tHelp;
    bool added = false;
 
    for( tHelp = helplist.begin(  ); tHelp != helplist.end(  ); ++tHelp )
@@ -88,7 +84,7 @@ void add_help( help_data * pHelp )
       }
       else  // Yipee! Another crappy ass hack to get past the compiler with!
       {
-         string pH, H;
+         std::string pH, H;
 
          one_argument( pHelp->keyword, pH );
          one_argument( help->keyword, H );
@@ -108,9 +104,13 @@ void add_help( help_data * pHelp )
    ++top_help;
 }
 
+// Version 0: File with \xa2 delimiter.
+// Version 1: Back to tilde delimiter because the /xa2 trick doesn't work right.
+const int HELP_VERSION = 1;
+
 void save_helps( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( HELP_FILE );
 
@@ -120,18 +120,21 @@ void save_helps( void )
       return;
    }
 
-   list < help_data * >::iterator ihlp;
-   for( ihlp = helplist.begin(  ); ihlp != helplist.end(  ); ++ihlp )
+   stream << "#VERSION " << HELP_VERSION << std::endl;
+   for( auto* hlp : helplist )
    {
-      help_data *hlp = *ihlp;
+      stream << "#HELP" << std::endl;
+      stream << "Level    " << hlp->level << std::endl;
+      stream << "WebInvis " << hlp->webinvis << std::endl;
+      stream << "Keywords " << hlp->keyword << std::endl;
 
-      stream << "#HELP" << endl;
-      stream << "Level    " << hlp->level << endl;
-      stream << "WebInvis " << hlp->webinvis << endl;
-      stream << "Keywords " << hlp->keyword << endl;
-      stream << "Related  " << hlp->related << endl;
-      stream << "Text     " << hlp->text << '\xa2' << endl;
-      stream << "End" << endl << endl;
+      // Stop whitespace pollution of the Related field. - Samson 6-5-2026.
+      strip_spaces( hlp->related );
+      if( !hlp->related.empty() )
+         stream << "Related  " << hlp->related << std::endl;
+
+      stream << "Text     " << hlp->text << '~' << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
 }
@@ -139,10 +142,11 @@ void save_helps( void )
 void load_helps( void )
 {
    help_data *help = nullptr;
-   ifstream stream;
+   std::ifstream stream;
 
    helplist.clear(  );
    top_help = 0;
+   int file_ver = 0;
 
    stream.open( HELP_FILE );
    if( !stream.is_open(  ) )
@@ -153,7 +157,7 @@ void load_helps( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MSL];
 
       stream >> key;
@@ -162,7 +166,14 @@ void load_helps( void )
       if( key.empty(  ) )
          continue;
 
-      if( key == "#HELP" )
+      if( key == "#VERSION" )
+      {
+         stream.getline( buf, MSL );
+         value = buf;
+         strip_whitespace( value );
+         file_ver = atoi( value.c_str() );
+      }
+      else if( key == "#HELP" )
          help = new help_data;
 
       else if( key == "Keywords" )
@@ -170,7 +181,7 @@ void load_helps( void )
          stream.getline( buf, MSL );
          value = buf;
          strip_whitespace( value );
-         std::transform(value.begin(), value.end(), value.begin(), (int(*)(int)) toupper);
+         std::transform( value.begin(), value.end(), value.begin(), (int(*)(int)) std::toupper );
          help->keyword = value;
       }
 
@@ -179,7 +190,13 @@ void load_helps( void )
          stream.getline( buf, MSL );
          value = buf;
          strip_whitespace( value );
-         std::transform(value.begin(), value.end(), value.begin(), (int(*)(int)) toupper);
+
+         // Needed to correct data bloat in the helps.dat file caused by whitespace pollution. - Samson 6-5-2026
+         if( value.find_first_not_of( " \t\r\n" ) == std::string::npos )
+            value = "";
+         else
+            std::transform( value.begin(), value.end(), value.begin(), (int(*)(int)) std::toupper );
+
          help->related = value;
       }
 
@@ -203,10 +220,21 @@ void load_helps( void )
 
       else if( key == "Text" )
       {
-         stream.getline( buf, MSL, '\xa2' );
-         value = buf;
-         strip_lspace( value );
-         help->text = value;
+         std::string text_buffer;
+         char c;
+         char delimiter = ( file_ver == 0 ) ? (char)0xA2 : '~';
+
+         while( stream.get(c) )
+         {
+            if( c == delimiter )
+               break;
+            text_buffer += c;
+         }
+
+         stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+
+         strip_lspace( text_buffer );
+         help->text = text_buffer;
       }
 
       else if( key == "End" )
@@ -231,17 +259,15 @@ void load_helps( void )
  * Moved into a separate function so it can be used for other things
  * ie: online help editing - Thoric
  */
-help_data *get_help( char_data * ch, string argument )
+help_data *get_help( char_data * ch, std::string argument )
 {
-   string argall, argone, argnew;
-   list < help_data * >::iterator hlp;
-   help_data *pHelp;
+   std::string argall, argone, argnew;
    int lev;
 
    if( argument.empty(  ) )
       argument = "summary";
 
-   if( isdigit( argument[0] ) )
+   if( isdigit( argument.front() ) )
    {
       lev = number_argument( argument, argnew );
       argument = argnew;
@@ -260,12 +286,10 @@ help_data *get_help( char_data * ch, string argument )
          argall.append( 1, ' ' );
       argall.append( argone );
    }
-   std::transform(argall.begin(), argall.end(), argall.begin(), (int(*)(int)) toupper);
+   std::transform( argall.begin(), argall.end(), argall.begin(), (int(*)(int)) std::toupper );
 
-   for( hlp = helplist.begin(  ); hlp != helplist.end(  ); ++hlp )
+   for( auto* pHelp : helplist )
    {
-      pHelp = *hlp;
-
       if( pHelp->level > ch->get_trust(  ) )
          continue;
       if( lev != -2 && pHelp->level != lev )
@@ -284,8 +308,7 @@ help_data *get_help( char_data * ch, string argument )
 CMDF( do_help )
 {
    help_data *pHelp;
-   list < help_data * >::iterator tHelp;
-   string keyword, oneword, lastmatch;
+   std::string keyword, oneword, lastmatch;
    short matched = 0, checked = 0, totalmatched = 0, found = 0;
 
    ch->set_pager_color( AT_HELP );
@@ -303,10 +326,8 @@ CMDF( do_help )
       ch->pager( "&BSuggested Help Files:&D\r\n" );
       lastmatch = " ";
 
-      for( tHelp = helplist.begin(  ); tHelp != helplist.end(  ); ++tHelp )
+      for( auto* help : helplist )
       {
-         help_data *help = *tHelp;
-
          matched = 0;
          if( help->keyword.empty(  ) || help->level > ch->get_trust(  ) )
             continue;
@@ -422,8 +443,8 @@ CMDF( do_hedit )
 
    if( !( pHelp = get_help( ch, argument ) ) )  /* new help */
    {
-      list < help_data * >::iterator iHelp;
-      string argnew, narg = argument;
+      std::list<help_data *>::iterator iHelp;
+      std::string argnew, narg = argument;
       int lev;
       bool new_help = true;
 
@@ -467,7 +488,7 @@ CMDF( do_hedit )
 CMDF( do_hset )
 {
    help_data *pHelp;
-   string arg1, arg2;
+   std::string arg1, arg2;
 
    smash_tilde( argument );
    argument = one_argument( argument, arg1 );
@@ -555,8 +576,7 @@ CMDF( do_hset )
 CMDF( do_hlist )
 {
    int min, max, minlimit, maxlimit, cnt;
-   string arg;
-   list < help_data * >::iterator ihelp;
+   std::string arg;
    bool minfound, maxfound;
    char *idx = nullptr;
 
@@ -610,10 +630,10 @@ CMDF( do_hlist )
 
    ch->set_pager_color( AT_HELP );
    ch->pagerf( "Help Topics in level range %d to %d:\r\r\n\n", min, max );
-   for( cnt = 0, ihelp = helplist.begin(  ); ihelp != helplist.end(  ); ++ihelp )
-   {
-      help_data *help = *ihelp;
 
+   cnt = 0;
+   for( auto* help : helplist )
+   {
       if( help->level >= min && help->level <= max && ( !idx || hasname( help->keyword, idx ) ) )
       {
          ch->pagerf( "  %3d %s\r\n", help->level, help->keyword.c_str(  ) );
@@ -668,8 +688,8 @@ CMDF( do_helpcheck )
 
       for( char x = 0; x < 126; ++x )
       {
-         const vector < cmd_type * >&cmd_list = command_table[x];
-         vector < cmd_type * >::const_iterator icmd;
+         const std::vector<cmd_type *>& cmd_list = command_table[x];
+         std::vector<cmd_type *>::const_iterator icmd;
 
          for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
          {

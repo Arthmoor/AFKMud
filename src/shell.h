@@ -70,7 +70,7 @@ class shell_cmd
      shell_cmd(  );
     ~shell_cmd(  );
 
-     bitset < MAX_CMD_FLAG > flags; /* Added for Checking interpret stuff -Shaddai */
+   std::bitset<MAX_CMD_FLAG> flags; /* Added for Checking interpret stuff -Shaddai */
 
    void set_func( DO_FUN * fun )
    {
@@ -81,11 +81,11 @@ class shell_cmd
       return _do_fun;
    }
 
-   void set_name( const string & name )
+   void set_name( const std::string & name )
    {
       _name = name;
    }
-   string get_name(  )
+   std::string get_name(  )
    {
       return _name;
    }
@@ -94,11 +94,11 @@ class shell_cmd
       return _name.c_str(  );
    }
 
-   void set_func_name( const string & name )
+   void set_func_name( const std::string & name )
    {
       _func_name = name;
    }
-   string get_func_name(  )
+   std::string get_func_name(  )
    {
       if( _func_name.empty(  ) )
          return "";
@@ -111,7 +111,7 @@ class shell_cmd
       return _func_name.c_str(  );
    }
 
-   void set_position( const string & pos )
+   void set_position( const std::string & pos )
    {
       short newpos = get_npc_position( pos );
       if( newpos < 0 || newpos > POS_MAX )
@@ -146,13 +146,13 @@ class shell_cmd
    }
 
  private:
-   string _name;
-   string _func_name;   /* Added to hold the func name and dump some functions totally - Trax */
+   std::string _name;
+   std::string _func_name; // Added to hold the func name and dump some functions totally - Trax
    DO_FUN *_do_fun;
    short _position;
    short _level;
    short _log;
 };
 
-extern list < shell_cmd * >shellcmdlist;
-shell_cmd *find_shellcommand( const string & );
+extern std::list<shell_cmd *> shellcmdlist;
+shell_cmd *find_shellcommand( const std::string & );

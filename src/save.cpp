@@ -49,7 +49,7 @@ extern FILE *fpArea;
  * Externals
  */
 void reset_colors( char_data * );
-board_data *get_board( char_data *, const string & );
+board_data *get_board( char_data *, const std::string & );
 void fwrite_morph_data( char_data *, FILE * );
 void fread_morph_data( char_data *, FILE * );
 void fread_variable( char_data *, FILE * );
@@ -65,25 +65,25 @@ bool is_valid_wear_loc( char_data *, int );
  * Increment with every major format change.
  */
 const int SAVEVERSION = 24;
-/* Updated to version 4 after addition of alias code - Samson 3-23-98 */
-/* Updated to version 5 after installation of color code - Samson */
-/* Updated to version 6 for rare item tracking support - Samson */
-/* DOTD pfiles saved as version 7 */
-/* Updated to version 8 for text based data saving - Samson */
-/* Updated to version 9 for new exp tables - Samson 4-30-99 */
-/* Updated to version 10 after weapon code updates - Samson 1-15-00 */
-/* Updated to version 11 for mv + 50 boost - Samson 4-25-00 */
-/* Updated to version 12 for mana recalcs - Samson 1-19-01 */
-/* Updated to version 13 to force activation of MSP/MXP for old players - Samson 8-21-01 */
-/* Updated to version 14 to force activation of MXP Prompt line - Samson 2-27-02 */
-/* Updated to version 15 for new exp system - Samson 12-15-02 */
-/* Updated to 16 to award stat gains for old characters - Samson 12-16-02 */
-/* Updated to 17 for yet another try at an xp system that doesn't suck - Samson 12-22-02 */
-/* Updated to 18 for the reorganized format - Samson 5-16-04 */
-/* 19 skipped */
-/* Updated to 20: Starting version for official support of AFKMud 2.0 pfiles */
-/* Updated to 21 because Samson was stupid and acted hastily before finalizing the bitset conversions 7-8-04 */
-/* Updated to 22 for sha256 password conversion */
+// Updated to version 4 after addition of alias code. - Samson 3-23-98
+// Updated to version 5 after installation of color code. - Samson
+// Updated to version 6 for rare item tracking support. - Samson
+// DOTD pfiles saved as version 7.
+// Updated to version 8 for text based data saving. - Samson
+// Updated to version 9 for new exp tables. - Samson 4-30-99
+// Updated to version 10 after weapon code updates. - Samson 1-15-00
+// Updated to version 11 for mv + 50 boost. - Samson 4-25-00
+// Updated to version 12 for mana recalcs. - Samson 1-19-01
+// Updated to version 13 to force activation of MSP/MXP for old players. - Samson 8-21-01
+// Updated to version 14 to force activation of MXP Prompt line. - Samson 2-27-02
+// Updated to version 15 for new exp system. - Samson 12-15-02
+// Updated to 16 to award stat gains for old characters. - Samson 12-16-02
+// Updated to 17 for yet another try at an xp system that doesn't suck. - Samson 12-22-02
+// Updated to 18 for the reorganized format. - Samson 5-16-04
+// 19 skipped. Nobody remembers why.
+// Updated to 20: Starting version for official support of AFKMud 2.0 pfiles.
+// Updated to 21 because Samson was stupid and acted hastily before finalizing the std::bitset conversions. 7-8-04
+// Updated to 22 for sha256 password conversion.
 // Updated to 23 - Site data in the save requires the tilde now which pfiles won't have yet.
 // Updated to 24 - Map coordinates now only store the X and Y. Which map the player is on is determined by the room they're in.
 
@@ -107,8 +107,6 @@ static obj_data *rgObjNest[MAX_NEST];
  */
 void char_data::de_equip(  )
 {
-   list < obj_data * >::iterator iobj;
-
    for( int x = 0; x < MAX_WEAR; ++x )
    {
       for( int y = 0; y < MAX_LAYERS; ++y )
@@ -120,10 +118,8 @@ void char_data::de_equip(  )
       }
    }
 
-   for( iobj = carrying.begin(  ); iobj != carrying.end(  ); ++iobj )
+   for( auto* obj : carrying )
    {
-      obj_data *obj = *iobj;
-
       if( obj->wear_loc > -1 && obj->wear_loc < MAX_WEAR )
       {
          if( char_ego(  ) >= obj->ego )
@@ -370,10 +366,8 @@ void fwrite_char( char_data * ch, FILE * fp )
       }
    }
 
-   list < affect_data * >::iterator paf;
-   for( paf = ch->affects.begin(  ); paf != ch->affects.end(  ); ++paf )
+   for( auto* af : ch->affects )
    {
-      affect_data *af = *paf;
       skill_type *skill = nullptr;
 
       if( af->type >= 0 && !( skill = get_skilltype( af->type ) ) )
@@ -415,7 +409,7 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, " %d", ch->pcdata->beacon[x] );
    fprintf( fp, "%s", "\n" );
 
-   map < string, string >::iterator pal;
+   std::map<std::string, std::string >::iterator pal;
    for( pal = ch->pcdata->alias_map.begin(  ); pal != ch->pcdata->alias_map.end(  ); ++pal )
    {
       if( pal->second.empty(  ) )
@@ -425,12 +419,10 @@ void fwrite_char( char_data * ch, FILE * fp )
 
    if( !ch->pcdata->boarddata.empty(  ) )
    {
-      list < board_chardata * >::iterator bd;
-
-      for( bd = ch->pcdata->boarddata.begin(  ); bd != ch->pcdata->boarddata.end(  ); )
+      for( auto it = ch->pcdata->boarddata.begin(  ); it != ch->pcdata->boarddata.end(  ); )
       {
-         board_chardata *chbd = *bd;
-         ++bd;
+         board_chardata *chbd = *it;
+         ++it;
 
          /*
           * Ugh.. is it worth saving that extra board_chardata field on pcdata? 
@@ -452,7 +444,7 @@ void fwrite_char( char_data * ch, FILE * fp )
 
    if( !ch->pcdata->qbits.empty(  ) )
    {
-      map < int, string >::iterator bit;
+      std::map<int, std::string>::iterator bit;
 
       for( bit = ch->pcdata->qbits.begin(  ); bit != ch->pcdata->qbits.end(  ); ++bit )
          fprintf( fp, "Qbit         %d %s~\n", bit->first, bit->second.c_str(  ) );
@@ -463,20 +455,16 @@ void fwrite_char( char_data * ch, FILE * fp )
 /*
  * Write an object list, with contents.
  */
-void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FILE * fp, int iNest, bool hotboot )
+void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan, FILE * fp, int iNest, bool hotboot )
 {
-   list < obj_data * >::iterator iobj;
-
    if( iNest >= MAX_NEST )
    {
       bug( "%s: iNest hit MAX_NEST %d", __func__, iNest );
       return;
    }
 
-   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
+   for( auto* obj : source )
    {
-      obj_data *obj = *iobj;
-
       if( !obj )
       {
          bug( "%s: nullptr obj", __func__ );
@@ -638,11 +626,8 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
             break;
       }
 
-      list < affect_data * >::iterator paf;
-      for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
+      for( auto* af : obj->affects )
       {
-         affect_data *af = *paf;
-
          /*
           * Save extra object affects - Thoric
           */
@@ -666,11 +651,8 @@ void fwrite_obj( char_data * ch, list < obj_data * >source, clan_data * clan, FI
                          || af->location == APPLY_RECURRINGSPELL ) && IS_VALID_SN( af->modifier ) ) ? skill_table[af->modifier]->slot : af->modifier, af->location, af->bit );
       }
 
-      list < extra_descr_data * >::iterator ed;
-      for( ed = obj->extradesc.begin(  ); ed != obj->extradesc.end(  ); ++ed )
+      for( auto* desc : obj->extradesc )
       {
-         extra_descr_data *desc = *ed;
-
          if( !desc->desc.empty(  ) )
             fprintf( fp, "ExtraDescr   %s~ %s~\n", desc->keyword.c_str(  ), desc->desc.c_str(  ) );
          else
@@ -737,12 +719,10 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
 
    if( !mob->carrying.empty(  ) )
    {
-      list < obj_data * >::iterator iobj;
-
-      for( iobj = mob->carrying.begin(  ); iobj != mob->carrying.end(  ); )
+      for( auto it = mob->carrying.begin(  ); it != mob->carrying.end(  ); )
       {
-         obj_data *obj = *iobj;
-         ++iobj;
+         obj_data *obj = *it;
+         ++it;
 
          if( obj->ego >= sysdata->minego )
             obj->extract(  );
@@ -833,14 +813,8 @@ void char_data::save(  )
 
       if( sysdata->save_pets && !pets.empty(  ) )
       {
-         list < char_data * >::iterator ipet;
-
-         for( ipet = pets.begin(  ); ipet != pets.end(  ); ++ipet )
-         {
-            char_data *pet = *ipet;
-
+         for( auto* pet : pets )
             fwrite_mobile( pet, fp, false );
-         }
       }
       fwrite_variables( this, fp );
       pcdata->fwrite_comments( fp );
@@ -1022,7 +996,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "Alias" ) )
             {
-               string alias, cmd;
+               std::string alias, cmd;
 
                fread_string( alias, fp );
                fread_string( cmd, fp );
@@ -1392,9 +1366,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "Position" ) )
             {
-               int position;
-
-               position = get_npc_position( fread_flagstring( fp ) );
+               int position = get_npc_position( fread_flagstring( fp ) );
 
                if( position < 0 || position >= POS_MAX )
                {
@@ -1422,8 +1394,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'Q':
             if( !str_cmp( word, "Qbit" ) )
             {
-               map < int, string >::iterator bit;
-               string desc;
+               std::map<int, std::string>::iterator bit;
+               std::string desc;
 
                int number = fread_number( fp );
                fread_string( desc, fp );
@@ -1527,9 +1499,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'S':
             if( !str_cmp( word, "Sex" ) )
             {
-               int sex;
-
-               sex = get_npc_sex( fread_flagstring( fp ) );
+               int sex = get_npc_sex( fread_flagstring( fp ) );
 
                if( sex < 0 || sex >= SEX_MAX )
                {
@@ -1697,8 +1667,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( !ch->pcdata->chan_listen.empty(  ) )
                {
-                  string channels = ch->pcdata->chan_listen;
-                  string arg;
+                  std::string channels = ch->pcdata->chan_listen;
+                  std::string arg;
 
                   while( !channels.empty(  ) )
                   {
@@ -2558,7 +2528,7 @@ bool load_char_obj( descriptor_data * d, const std::string & name, bool preload,
     */
    reset_colors( ch );
 
-   std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name[0] ) ), capitalize( name ) );
+   std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name.front() ) ), capitalize( name ) );
    if( std::filesystem::exists( strsave ) && d->connected != CON_PLOADED )
    {
       if( preload )
@@ -2688,7 +2658,7 @@ bool load_char_obj( descriptor_data * d, const std::string & name, bool preload,
 }
 
 /* Rewritten corpse saver - Samson */
-void write_corpse( obj_data * corpse, const string & name )
+void write_corpse( obj_data * corpse, const std::string & name )
 {
    FILE *fp;
 

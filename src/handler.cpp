@@ -108,15 +108,15 @@ long exp_level( int level )
  *
  * Rewritten by Xorith
  */
-string one_argument2( string arg, string & newArg )
+std::string one_argument2( std::string arg, std::string & newArg )
 {
-   string retValue = "";
+   std::string retValue = "";
 
    // Check to see if we start with a double quote
    if( arg[0] == '"' )
    {
-      string::size_type nextIndex = arg.find( '"', 1 );
-      if( nextIndex != string::npos )
+      std::string::size_type nextIndex = arg.find( '"', 1 );
+      if( nextIndex != std::string::npos )
       {
          newArg = arg.substr( 1, nextIndex - 1 );
          // make sure we strip spaces from the return value 
@@ -131,8 +131,8 @@ string one_argument2( string arg, string & newArg )
    // Check for single-quote
    if( arg[0] == '\'' )
    {
-      string::size_type nextIndex = arg.find( '\'', 1 );
-      if( nextIndex != string::npos )
+      std::string::size_type nextIndex = arg.find( '\'', 1 );
+      if( nextIndex != std::string::npos )
       {
          newArg = arg.substr( 1, nextIndex - 1 );
          // make sure we strip spaces from the return value 
@@ -145,12 +145,12 @@ string one_argument2( string arg, string & newArg )
    }
 
    // See which is closest - the next whitespace or hyphen
-   string::size_type nextHyphenIndex = arg.find( '-', 0 );
-   string::size_type nextSpaceIndex = arg.find( ' ', 0 );
+   std::string::size_type nextHyphenIndex = arg.find( '-', 0 );
+   std::string::size_type nextSpaceIndex = arg.find( ' ', 0 );
 
-   if( nextHyphenIndex != string::npos )
+   if( nextHyphenIndex != std::string::npos )
    {
-      if( nextSpaceIndex == string::npos || ( nextHyphenIndex < nextSpaceIndex && ( nextHyphenIndex + 1 != nextSpaceIndex ) ) )
+      if( nextSpaceIndex == std::string::npos || ( nextHyphenIndex < nextSpaceIndex && ( nextHyphenIndex + 1 != nextSpaceIndex ) ) )
       {
          newArg = arg.substr( 0, nextHyphenIndex );
          retValue = arg.substr( nextHyphenIndex + 1 );
@@ -158,7 +158,7 @@ string one_argument2( string arg, string & newArg )
       }
    }
 
-   if( nextSpaceIndex != string::npos )
+   if( nextSpaceIndex != std::string::npos )
    {
       newArg = arg.substr( 0, nextSpaceIndex );
       // make sure we strip spaces from the return value 
@@ -215,9 +215,9 @@ char *one_argument2( char *argument, char *arg_first )
 }
 
 // Son, you just got promoted. You are now what hasname in editor.cpp is calling.
-bool is_name2_prefix( const std::string & str, std::string namelist )
+bool is_name2_prefix( std::string_view str, std::string namelist )
 {
-   string name;
+   std::string name;
 
    for( ;; )
    {
@@ -233,7 +233,7 @@ bool is_name2_prefix( const std::string & str, std::string namelist )
 
 bool nifty_is_name_prefix( std::string str, std::string namelist )
 {
-   string name;
+   std::string name;
    bool valid = false;
 
    if( str.empty(  ) || namelist.empty(  ) )
@@ -365,10 +365,10 @@ bool obj_data::extracted(  )
 /*
  * Find an obj in a list.
  */
-obj_data *get_obj_list( char_data * ch, const string & argument, list < obj_data * >source )
+obj_data *get_obj_list( char_data * ch, const std::string & argument, std::list<obj_data *> source )
 {
-   string arg;
-   list < obj_data * >::iterator iobj;
+   std::string arg;
+   std::list<obj_data *>::iterator iobj;
 
    int number = number_argument( argument, arg );
    int count = 0;
@@ -517,9 +517,9 @@ bool ms_find_obj( char_data * ch )
  * Generic get obj function that supports optional containers.	-Thoric
  * currently only used for "eat" and "quaff".
  */
-obj_data *find_obj( char_data * ch, string argument, bool carryonly )
+obj_data *find_obj( char_data * ch, std::string argument, bool carryonly )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    obj_data *obj = nullptr;
 
    argument = one_argument( argument, arg1 );
@@ -702,11 +702,10 @@ ch_ret check_for_trap( char_data * ch, obj_data * obj, int flag )
    if( obj->contents.empty(  ) )
       return rNONE;
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); )
+   for( auto it = obj->contents.begin(); it != obj->contents.end(); )
    {
-      obj_data *check = *iobj;
-      ++iobj;
+      obj_data *check = *it;
+      ++it;
 
       if( check->item_type == ITEM_TRAP && IS_SET( check->value[3], flag ) )
       {
@@ -729,10 +728,11 @@ ch_ret check_room_for_traps( char_data * ch, int flag )
       return rNONE;
 
    ch_ret retcode = rNONE;
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
+   for( auto it = ch->in_room->objects.begin(); it != ch->in_room->objects.end(); )
    {
-      obj_data *check = *iobj;
+      obj_data *check = *it;
+      ++it;
+
       if( check->item_type == ITEM_TRAP && IS_SET( check->value[3], flag ) )
       {
          retcode = spring_trap( ch, check );

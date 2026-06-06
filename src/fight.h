@@ -37,5 +37,5 @@ struct fighting_data
 struct hunt_hate_fear
 {
    char_data *who;
-   char *name;
+   std::string name;
 };

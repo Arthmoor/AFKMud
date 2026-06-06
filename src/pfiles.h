@@ -29,4 +29,4 @@
 #pragma once
 
 extern std::chrono::system_clock::time_point new_pfile_time_t;
-extern short num_pfiles;
+extern int num_pfiles;

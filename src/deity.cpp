@@ -37,13 +37,11 @@
 #include "raceclass.h"
 #include "roomindex.h"
 
-namespace fs = std::filesystem;
-
 bool check_pets( char_data *, mob_index * );
 room_index *recall_room( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 
-list < deity_data * >deitylist;
+std::list < deity_data * >deitylist;
 
 deity_data::deity_data(  )
 {
@@ -57,26 +55,20 @@ deity_data::~deity_data(  )
 
 void free_deities( void )
 {
-   list < deity_data * >::iterator dt;
-
-   for( dt = deitylist.begin(  ); dt != deitylist.end(  ); )
+   for( auto it = deitylist.begin(  ); it != deitylist.end(  ); )
    {
-      deity_data *deity = *dt;
-      ++dt;
+      deity_data *deity = *it;
+      ++it;
 
       deleteptr( deity );
    }
 }
 
 /* Get pointer to deity structure from deity name */
-deity_data *get_deity( const string & name )
+deity_data *get_deity( const std::string & name )
 {
-   list < deity_data * >::iterator ideity;
-
-   for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
+   for( auto* deity : deitylist )
    {
-      deity_data *deity = *ideity;
-
       if( !str_cmp( name, deity->name ) )
          return deity;
    }
@@ -92,22 +84,17 @@ bool IS_DEVOTED( char_data *ch )
 
 void write_deity_list( void )
 {
-   list < deity_data * >::iterator ideity;
    FILE *fpout;
-   fs::path filename;
 
-   filename = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
+   std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
    fpout = fopen( filename.c_str(), "w" );
    if( !fpout )
       bug( "%s: FATAL: cannot open deity.lst for writing!", __func__ );
    else
    {
-      for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
-      {
-         deity_data *deity = *ideity;
-
+      for( auto* deity : deitylist )
          fprintf( fpout, "%s\n", deity->filename.c_str(  ) );
-      }
+
       fprintf( fpout, "%s", "$\n" );
       FCLOSE( fpout );
    }
@@ -121,7 +108,7 @@ const int DEITY_VERSION = 3;
 void save_deity( deity_data * deity )
 {
    FILE *fp;
-   fs::path filename;
+   std::filesystem::path filename;
 
    if( !deity )
    {
@@ -208,14 +195,8 @@ void save_deity( deity_data * deity )
 
 CMDF( do_savedeities )
 {
-   list < deity_data * >::iterator ideity;
-
-   for( ideity = deitylist.begin(  ); ideity != deitylist.end(  ); ++ideity )
-   {
-      deity_data *deity = *ideity;
-
+   for( auto* deity : deitylist )
       save_deity( deity );
-   }
 }
 
 /* Adjani, versions, with help from the ever-patient Xorith. 1-31-04 */
@@ -367,7 +348,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
              */
             if( !str_cmp( word, "Classes" ) )
             {
-               string Class, flag;
+               std::string Class, flag;
                int value;
 
                Class = fread_flagstring( fp );
@@ -756,7 +737,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
              */
             if( !str_cmp( word, "Races" ) )
             {
-               string race, flag;
+               std::string race, flag;
                int value;
 
                race = fread_flagstring( fp );
@@ -981,14 +962,12 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 /* Load a deity file */
 bool load_deity_file( const char *deityfile )
 {
-   fs::path filename;
    deity_data *deity;
    FILE *fp;
-   bool found;
    int filever = 0;
 
-   found = false;
-   filename = std::format( "{}{}", DEITY_DIR, deityfile );
+   bool found = false;
+   std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deityfile );
 
    if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
@@ -1046,13 +1025,12 @@ void load_deity( void )
 {
    FILE *fpList;
    const char *filename;
-   fs::path deitylistfile;
 
    deitylist.clear(  );
 
    log_string( "Loading deities..." );
 
-   deitylistfile = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
+   std::filesystem::path deitylistfile = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
    if( !( fpList = fopen( deitylistfile.c_str(), "r" ) ) )
    {
       perror( deitylistfile.c_str() );
@@ -1080,7 +1058,7 @@ void load_deity( void )
 
 CMDF( do_setdeity )
 {
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3;
    deity_data *deity;
    int value;
 
@@ -1150,13 +1128,8 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "delete" ) )
    {
-      fs::path filename;
-
-      list < char_data * >::iterator ich;
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+      for( auto* vch : pclist )
       {
-         char_data *vch = *ich;
-
          if( vch->pcdata->deity == deity )
          {
             std::string buf = std::format( "&R\r\nYour deity, {}, has met its demise!\r\n", vch->pcdata->deity_name );
@@ -1181,11 +1154,11 @@ CMDF( do_setdeity )
          }
       }
 
-      filename = std::format( "{}{}", DEITY_DIR, deity->filename.c_str(  ) );
+      std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deity->filename.c_str(  ) );
       deleteptr( deity );
       ch->printf( "&YDeity information for %s deleted.\r\n", arg1.c_str(  ) );
 
-      if( fs::remove( filename ) )
+      if( std::filesystem::remove( filename ) )
          ch->printf( "&RDeity file for %s destroyed.\r\n", arg1.c_str(  ) );
 
       write_deity_list(  );
@@ -1268,13 +1241,11 @@ CMDF( do_setdeity )
 
    if( !str_cmp( arg2, "filename" ) )
    {
-      fs::path filename;
-
       if( !is_valid_filename( ch, DEITY_DIR, argument ) )
          return;
 
-      filename = std::format( "{}{}", DEITY_DIR, deity->filename );
-      if( fs::remove( filename ) )
+      std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deity->filename );
+      if( std::filesystem::remove( filename ) )
          ch->print( "Old deity file deleted.\r\n" );
       deity->filename = argument;
       ch->print( "Done.\r\n" );
@@ -2384,7 +2355,7 @@ CMDF( do_deities )
 
    if( argument.empty(  ) )
    {
-      list < deity_data * >::iterator dt;
+      std::list<deity_data *>::iterator dt;
 
       ch->pager( "&gFor detailed information on a deity, try 'deities <deity>' or 'help deities'\r\n" );
       ch->pager( "Deity           Worshippers\r\n" );
@@ -2425,12 +2396,10 @@ Fields are:
 */
 void char_data::adjust_favor( int field, int mod )
 {
-   int oldfavor;
-
    if( isnpc(  ) || !pcdata->deity )
       return;
 
-   oldfavor = pcdata->favor;
+   int oldfavor = pcdata->favor;
 
    if( ( alignment - pcdata->deity->alignment > 650 || alignment - pcdata->deity->alignment < -650 ) && pcdata->deity->alignment != 0 )
    {
@@ -2817,7 +2786,7 @@ CMDF( do_supplicate )
 
    if( !str_cmp( argument, "corpse" ) )
    {
-      string buf2 = "the corpse of ";
+      std::string buf2 = "the corpse of ";
       buf2.append( ch->name );
 
       if( ch->pcdata->favor < ch->pcdata->deity->scorpse )
@@ -2833,11 +2802,8 @@ CMDF( do_supplicate )
       }
 
       bool found = false;
-      list < obj_data * >::iterator iobj;
-      for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+      for( auto* obj : objlist )
       {
-         obj_data *obj = *iobj;
-
          if( obj->in_room && !str_cmp( buf2, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
          {
             found = true;

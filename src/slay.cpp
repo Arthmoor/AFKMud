@@ -112,7 +112,7 @@ void load_slays( )
          char delim = '~';
 
          if( file_ver == 1 )
-            delim = '\xa2'; // This was a stupid idea and it needs to be undone now.
+            delim = (char)0xA2; // This was a stupid idea and it needs to be undone now.
 
          if( sv == "Type" ) current_slay->set_type( read_line() );
          else if( sv == "Owner" ) current_slay->set_owner( read_line() );
@@ -125,6 +125,11 @@ void load_slays( )
    }
 }
 
+// 0: Original format with tilde delmiter.
+// 1: Modified to use that stupid \xa2 thing as a delimiter.
+// 2: Back to the tilde since the \xa2 delimiter was not reliable.
+const int SLAY_VERSION = 2;
+
 /* Online slay editing, save the slay table to disk - Samson 8-3-98 */
 void save_slays( )
 {
@@ -136,7 +141,7 @@ void save_slays( )
       return;
    }
 
-   stream << "#VERSION 2\n";
+   stream << "#VERSION " << SLAY_VERSION << "\n";
 
    for( const auto& slay : slaylist )
    {
@@ -173,7 +178,7 @@ void save_slays( )
 CMDF( do_slay )
 {
    char_data *victim;
-   string who;
+   std::string who;
    bool found = false;
 
    if( ch->isnpc(  ) )
@@ -249,7 +254,7 @@ CMDF( do_slay )
    }
 }
 
-slay_data *get_slay( const string & name )
+slay_data *get_slay( const std::string & name )
 {
    for( const auto& slay : slaylist )
    {
@@ -298,7 +303,7 @@ CMDF( do_makeslay )
 /* Set slay values online - Samson 8-3-98 */
 CMDF( do_setslay )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    slay_data *slay;
 
    if( ch->isnpc(  ) )

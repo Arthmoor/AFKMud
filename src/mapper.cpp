@@ -184,7 +184,7 @@ std::string get_exits( char_data* ch )
    std::string result = "[Exits:";
    bool found = false;
 
-   for( const auto* pexit : ch->in_room->exits )
+   for( auto* pexit : ch->in_room->exits )
    {
       bool is_immort = ch->is_immortal();
 

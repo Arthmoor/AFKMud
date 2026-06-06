@@ -38,8 +38,8 @@ class wizinfo_data
     wizinfo_data(  );
    ~wizinfo_data(  );
 
-   string name;
-   string email;
-   string realm;
+   std::string name;
+   std::string email;
+   std::string realm;
    short level;
 };

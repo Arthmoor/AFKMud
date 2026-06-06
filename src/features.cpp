@@ -202,7 +202,7 @@ void descriptor_data::send_msp_startup(  )
  *
  * More detailed information at https://www.zuggsoft.com/zmud/msp.htm
 */
-void char_data::sound( const string & fname, int volume, bool toroom )
+void char_data::sound( const std::string & fname, int volume, bool toroom )
 {
    const char *type = "mud";
    int repeats = 1, priority = 50;
@@ -225,12 +225,8 @@ void char_data::sound( const string & fname, int volume, bool toroom )
    }
    else
    {
-      list < char_data * >::iterator ich;
-
-      for( ich = in_room->people.begin(  ); ich != in_room->people.end(  ); ++ich )
+      for( auto* vch : in_room->people )
       {
-         char_data *vch = *ich;
-
          if( !vch->MSP_ON(  ) )
             continue;
 
@@ -254,7 +250,7 @@ void char_data::sound( const string & fname, int volume, bool toroom )
  *
  * more detailed information at: https://www.zuggsoft.com/zmud/msp.htm
 */
-void char_data::music( const string & fname, int volume, bool toroom )
+void char_data::music( const std::string & fname, int volume, bool toroom )
 {
    const char *type = "mud";
    int repeats = 1, continu = 1;
@@ -276,12 +272,8 @@ void char_data::music( const string & fname, int volume, bool toroom )
    }
    else
    {
-      list < char_data * >::iterator ich;
-
-      for( ich = in_room->people.begin(  ); ich != in_room->people.end(  ); ++ich )
+      for( auto* vch : in_room->people )
       {
-         char_data *vch = *ich;
-
          if( !vch->MSP_ON(  ) )
             return;
 
@@ -310,10 +302,10 @@ void char_data::reset_music(  )
 /* sound support -haus */
 CMDF( do_mpsoundaround )
 {
-   string target, vol;
+   std::string target, vol;
    int volume;
    char_data *victim;
-   bitset < MAX_ACT_FLAG > actflags;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) )
    {
@@ -365,10 +357,10 @@ CMDF( do_mpsoundaround )
 /* prints message only to victim */
 CMDF( do_mpsoundat )
 {
-   string target, vol;
+   std::string target, vol;
    int volume;
    char_data *victim;
-   bitset < MAX_ACT_FLAG > actflags;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) )
    {
@@ -420,9 +412,9 @@ CMDF( do_mpsoundat )
 /* prints message to room at large. */
 CMDF( do_mpsound )
 {
-   string vol;
+   std::string vol;
    int volume;
-   bitset < MAX_ACT_FLAG > actflags;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) )
    {
@@ -466,7 +458,7 @@ CMDF( do_mpsound )
 /* prints sound to everyone in the zone - yes, this COULD get rather bad if people go nuts with it */
 CMDF( do_mpsoundzone )
 {
-   string vol;
+   std::string vol;
 
    if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) )
    {
@@ -502,14 +494,11 @@ CMDF( do_mpsoundzone )
       return;
    }
 
-   bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
+   std::bitset<MAX_ACT_FLAG> actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
 
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* vch : charlist )
    {
-      char_data *vch = *ich;
-
       if( vch->in_room && vch->in_room->area == ch->in_room->area )
          vch->sound( argument, volume, false );
    }
@@ -519,10 +508,10 @@ CMDF( do_mpsoundzone )
 /* Music stuff, same as above, at zMUD coders' request -- Blodkai */
 CMDF( do_mpmusicaround )
 {
-   string target, vol;
+   std::string target, vol;
    int volume;
    char_data *victim;
-   bitset < MAX_ACT_FLAG > actflags;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) )
    {
@@ -574,10 +563,10 @@ CMDF( do_mpmusicaround )
 
 CMDF( do_mpmusic )
 {
-   string target, vol;
+   std::string target, vol;
    int volume;
    char_data *victim;
-   bitset < MAX_ACT_FLAG > actflags;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) )
    {
@@ -628,10 +617,10 @@ CMDF( do_mpmusic )
 
 CMDF( do_mpmusicat )
 {
-   string target, vol;
+   std::string target, vol;
    int volume;
    char_data *victim;
-   bitset < MAX_ACT_FLAG > actflags;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) )
    {

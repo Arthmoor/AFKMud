@@ -40,8 +40,8 @@ class lcnv_data
  public:
      lcnv_data(  );
 
-   string old;
-   string lnew;
+   std::string old;
+   std::string lnew;
 };
 
 class lang_data
@@ -54,10 +54,10 @@ class lang_data
      lang_data(  );
     ~lang_data(  );
 
-     list < lcnv_data * >prelist;
-     list < lcnv_data * >cnvlist;
-   string name;
-   string alphabet;
+   std::list<lcnv_data *> prelist;
+   std::list<lcnv_data *> cnvlist;
+   std::string name;
+   std::string alphabet;
 };
 
-extern list < lang_data * >langlist;
+extern std::list<lang_data *> langlist;

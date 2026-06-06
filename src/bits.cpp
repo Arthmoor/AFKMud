@@ -46,8 +46,8 @@
 #include "bits.h"
 
 /* These are the ends of the linked lists that store the mud's library of valid bits. */
-map < int, string > abits;
-map < int, string > qbits;
+std::map<int, std::string> abits;
+std::map<int, std::string> qbits;
 
 /* QBITS save, ABITS do not save. There are enough of each to give a range
    of them to builders the same as their vnums. They are identifiable by mobs
@@ -64,9 +64,9 @@ void free_questbits( void )
 /* Write out the abit and qbit files */
 void save_bits( void )
 {
-   map < int, string > start_bit;
-   map < int, string >::iterator bit;
-   ofstream stream;
+   std::map<int, std::string> start_bit;
+   std::map<int, std::string>::iterator bit;
+   std::ofstream stream;
    std::filesystem::path filename;
 
    /*
@@ -93,7 +93,7 @@ void save_bits( void )
       }
 
       for( bit = start_bit.begin(  ); bit != start_bit.end(  ); ++bit )
-         stream << bit->first << " " << bit->second << endl;
+         stream << bit->first << " " << bit->second << std::endl;
       stream.close(  );
    }
 }
@@ -184,11 +184,10 @@ void load_oldbits( void )
 
 void load_abits( void )
 {
-   ifstream stream;
-   std::filesystem::path filename;
+   std::ifstream stream;
 
    log_string( "...abits" );
-   filename = std::format( "{}abits.lst", SYSTEM_DIR );
+   std::filesystem::path filename = std::format( "{}abits.lst", SYSTEM_DIR );
    stream.open( filename );
 
    if( !stream.is_open(  ) )
@@ -214,11 +213,10 @@ void load_abits( void )
 
 void load_qbits( void )
 {
-   ifstream stream;
-   std::filesystem::path filename;
+   std::ifstream stream;
 
    log_string( "...qbits" );
-   filename = std::format( "{}qbits.lst", SYSTEM_DIR );
+   std::filesystem::path filename = std::format( "{}qbits.lst", SYSTEM_DIR );
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
@@ -229,7 +227,7 @@ void load_qbits( void )
    do
    {
       int number;
-      string desc;
+      std::string desc;
       char line[MSL];
 
       stream >> number;
@@ -243,12 +241,10 @@ void load_qbits( void )
 
 void load_bits( void )
 {
-   std::filesystem::path filename;
-
    abits.clear(  );
    qbits.clear(  );
 
-   filename = std::format( "{}abit.lst", SYSTEM_DIR );
+   std::filesystem::path filename = std::format( "{}abit.lst", SYSTEM_DIR );
    if( std::filesystem::exists( filename ) )
    {
       load_oldbits(  );
@@ -297,14 +293,13 @@ void set_qbit( char_data * ch, int number )
 /* Take an abit off a character */
 void remove_abit( char_data * ch, int number )
 {
-   map < int, string >::iterator bit;
-
    if( number < 0 || number > MAX_xBITS )
       return;
 
    if( ch->abits.empty(  ) )
       return;
 
+   std::map<int, std::string>::iterator bit;
    if( ( bit = ch->abits.find( number ) ) != ch->abits.end(  ) )
       ch->abits.erase( bit );
 }
@@ -312,8 +307,6 @@ void remove_abit( char_data * ch, int number )
 /* Take a qbit off a character */
 void remove_qbit( char_data * ch, int number )
 {
-   map < int, string >::iterator bit;
-
    if( ch->isnpc(  ) )
       return;
 
@@ -323,6 +316,7 @@ void remove_qbit( char_data * ch, int number )
    if( ch->pcdata->qbits.empty(  ) )
       return;
 
+   std::map<int, std::string>::iterator bit;
    if( ( bit = ch->pcdata->qbits.find( number ) ) != ch->pcdata->qbits.end(  ) )
       ch->pcdata->qbits.erase( bit );
 }
@@ -331,7 +325,7 @@ void remove_qbit( char_data * ch, int number )
 CMDF( do_showabit )
 {
    int number;
-   map < int, string >::iterator bit;
+   std::map<int, std::string>::iterator bit;
 
    if( abits.empty(  ) )
    {
@@ -364,7 +358,7 @@ CMDF( do_showabit )
 CMDF( do_showqbit )
 {
    int number;
-   map < int, string >::iterator bit;
+   std::map<int, std::string>::iterator bit;
 
    if( qbits.empty(  ) )
    {
@@ -397,9 +391,9 @@ CMDF( do_showqbit )
 /* Set the description for a particular abit */
 CMDF( do_setabit )
 {
-   map < int, string >::iterator bit;
+   std::map<int, std::string>::iterator bit;
    int number;
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -459,9 +453,9 @@ CMDF( do_setabit )
 /* Set the description for a particular qbit */
 CMDF( do_setqbit )
 {
-   map < int, string >::iterator bit;
+   std::map< int, std::string>::iterator bit;
    int number;
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -520,7 +514,7 @@ CMDF( do_setqbit )
 /* Imm command to toggle an abit on a character or to list the abits already on a character */
 CMDF( do_abit )
 {
-   string buf;
+   std::string buf;
    char_data *victim;
 
    argument = one_argument( argument, buf );
@@ -541,8 +535,6 @@ CMDF( do_abit )
 
    if( buf.empty(  ) )
    {
-      map < int, string >::iterator bit;
-
       if( victim->abits.empty(  ) )
       {
          ch->print( "They have no abits set on them.\r\n" );
@@ -551,6 +543,7 @@ CMDF( do_abit )
 
       ch->printf( "&RABITS for %s:\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
 
+      std::map<int, std::string>::iterator bit;
       for( bit = victim->abits.begin(  ); bit != victim->abits.end(  ); ++bit )
          ch->printf( "&Y%4.4d: &G%s\r\n", bit->first, bit->second.c_str(  ) );
    }
@@ -588,7 +581,7 @@ CMDF( do_abit )
 CMDF( do_qbit )
 {
    char_data *victim;
-   string buf;
+   std::string buf;
 
    argument = one_argument( argument, buf );
 
@@ -614,8 +607,6 @@ CMDF( do_qbit )
 
    if( buf.empty(  ) )
    {
-      map < int, string >::iterator bit;
-
       if( victim->pcdata->qbits.empty(  ) )
       {
          ch->print( "They do not have any qbits.\r\n" );
@@ -624,6 +615,7 @@ CMDF( do_qbit )
 
       ch->printf( "&RQBITS for %s:\r\n", victim->name );
 
+      std::map<int, std::string>::iterator bit;
       for( bit = victim->pcdata->qbits.begin(  ); bit != victim->pcdata->qbits.end(  ); ++bit )
          ch->printf( "&Y%4.4d: &G%s\r\n", bit->first, bit->second.c_str(  ) );
    }
@@ -665,7 +657,7 @@ CMDF( do_qbit )
  */
 CMDF( do_mpaset )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    int number;
 
@@ -714,7 +706,7 @@ CMDF( do_mpaset )
  */
 CMDF( do_mpqset )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    int number;
 

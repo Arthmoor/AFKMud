@@ -140,7 +140,7 @@ const char *fuss_r_flags[] = {
    "noquit", "telenofly", "_track_", "noyell", "nowhere", "notrack"
 };
 
-int get_fuss_sectypes( const string & sector )
+int get_fuss_sectypes( const std::string & sector )
 {
    for( int x = 0; x < SECT_MAX; ++x )
       if( !str_cmp( sector, fuss_sec_flags[x] ) )
@@ -148,7 +148,7 @@ int get_fuss_sectypes( const string & sector )
    return -1;
 }
 
-int get_fuss_npc_race( const string & type )
+int get_fuss_npc_race( const std::string & type )
 {
    for( int x = 0; x < MAX_NPC_RACE; ++x )
       if( !str_cmp( type, fuss_npc_race[x] ) )
@@ -156,7 +156,7 @@ int get_fuss_npc_race( const string & type )
    return -1;
 }
 
-int get_fuss_npc_class( const string & type )
+int get_fuss_npc_class( const std::string & type )
 {
    for( int x = 0; x < MAX_NPC_CLASS; ++x )
       if( !str_cmp( type, fuss_npc_class[x] ) )
@@ -234,7 +234,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
             {
                if( !oldroom )
                {
-                  room_index_table.insert( map < int, room_index * >::value_type( pRoomIndex->vnum, pRoomIndex ) );
+                  room_index_table.insert( std::map<int, room_index *>::value_type( pRoomIndex->vnum, pRoomIndex ) );
                   tarea->rooms.push_back( pRoomIndex );
                   ++top_room;
                }
@@ -342,11 +342,8 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
 
                int vnum = fread_number( fp );
 
-               list < area_data * >::iterator iarea;
-               for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+               for( auto* area : arealist )
                {
-                  area_data *area = *iarea;
-
                   if( !str_cmp( area->filename, tarea->filename ) )
                      continue;
 
@@ -408,13 +405,10 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
                   if( fBootDb )
                   {
                      int count = 0;
-                     list < reset_data * >::iterator rst;
 
                      bug( "%s: WARNING: resets already exist for this room.", __func__ );
-                     for( rst = pRoomIndex->resets.begin(  ); rst != pRoomIndex->resets.end(  ); ++rst )
+                     for( auto* rtmp : pRoomIndex->resets )
                      {
-                        reset_data *rtmp = *rst;
-
                         ++count;
                         if( !rtmp->resets.empty(  ) )
                            count += rtmp->resets.size(  );
@@ -463,7 +457,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
             {
                if( !oldobj )
                {
-                  obj_index_table.insert( map < int, obj_index * >::value_type( pObjIndex->vnum, pObjIndex ) );
+                  obj_index_table.insert( std::map<int, obj_index *>::value_type( pObjIndex->vnum, pObjIndex ) );
                   tarea->objects.push_back( pObjIndex );
                   ++top_obj_index;
                }
@@ -639,11 +633,8 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
 
                int vnum = fread_number( fp );
 
-               list < area_data * >::iterator iarea;
-               for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+               for( auto* area : arealist )
                {
-                  area_data *area = *iarea;
-
                   if( !str_cmp( area->filename, tarea->filename ) )
                      continue;
 
@@ -751,7 +742,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
             {
                if( !oldmob )
                {
-                  mob_index_table.insert( map < int, mob_index * >::value_type( pMobIndex->vnum, pMobIndex ) );
+                  mob_index_table.insert( std::map<int, mob_index *>::value_type( pMobIndex->vnum, pMobIndex ) );
                   tarea->mobs.push_back( pMobIndex );
                   ++top_mob_index;
                }
@@ -985,7 +976,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
             if( !str_cmp( word, "Speaking" ) )
             {
-               string speaking, flag;
+               std::string speaking, flag;
                int value;
 
                speaking = fread_flagstring( fp );
@@ -1099,11 +1090,8 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                int vnum = fread_number( fp );
 
-               list < area_data * >::iterator iarea;
-               for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+               for( auto* area : arealist )
                {
-                  area_data *area = *iarea;
-
                   if( !str_cmp( area->filename, tarea->filename ) )
                      continue;
 

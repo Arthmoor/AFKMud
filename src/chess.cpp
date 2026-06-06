@@ -26,6 +26,7 @@
  *                              Chess Module                                *
  ****************************************************************************/
 
+#include <format>
 #include "mud.h"
 #include "chess.h"
 
@@ -106,42 +107,42 @@ game_board_data::game_board_data(  )
    this->type = TYPE_LOCAL;
 }
 
-char *print_big_board( game_board_data * board )
+std::string print_big_board( game_board_data * board )
 {
-   static char retbuf[MSL * 2];
-   char buf[MSL], buf2[MSL];
-   char s1[16], s2[16];
+   std::string buf, buf2;
    int x, y;
 
-   snprintf( s1, 16, "&Y&W" );
-   snprintf( s2, 16, "&z&z" );
+   std::string s1 = "&Y&W";
+   std::string s2 = "&z&z";
 
-   snprintf( retbuf, MSL * 2, WHITE_FOREGROUND "\r\n&g     1      2      3      4      5      6      7      8\r\n" );
+   std::string retbuf = WHITE_FOREGROUND "\r\n&g     1      2      3      4      5      6      7      8\r\n";
 
    for( x = 0; x < 8; ++x )
    {
-      strlcat( retbuf, "  ", MSL * 2 );
+      retbuf += "  ";
       for( y = 0; y < 8; ++y )
       {
-         snprintf( buf, MSL, "%s%s",
+         buf = std::format( "{}{}",
                    x % 2 == 0 ? ( y % 2 == 0 ? BLACK_BACKGROUND : WHITE_BACKGROUND ) :
                    ( y % 2 == 0 ? WHITE_BACKGROUND : BLACK_BACKGROUND ), big_pieces[board->board[x][y]][0] );
-         snprintf( buf2, MSL, buf, IS_WHITE( board->board[x][y] ) ? s1 : s2 );
-         strcat( retbuf, buf2 );
+         buf2 = buf;
+         buf2.append( IS_WHITE( board->board[x][y] ) ? s1 : s2 );
+         retbuf.append( buf2 );
       }
-      strlcat( retbuf, BLACK_BACKGROUND "\r\n", MSL * 2 );
+      retbuf.append( BLACK_BACKGROUND "\r\n" );
 
-      snprintf( buf, MSL, WHITE_FOREGROUND "&g%c ", 'A' + x );
-      strlcat( retbuf, buf, MSL * 2 );
+      buf = std::format( WHITE_FOREGROUND "&g{} ", static_cast<char>( 'A' + x ) );
+      retbuf.append( buf );
       for( y = 0; y < 8; ++y )
       {
-         snprintf( buf, MSL, "%s%s",
+         buf = std::format( "{}{}",
                    x % 2 == 0 ? ( y % 2 == 0 ? BLACK_BACKGROUND : WHITE_BACKGROUND ) :
                    ( y % 2 == 0 ? WHITE_BACKGROUND : BLACK_BACKGROUND ), big_pieces[board->board[x][y]][1] );
-         snprintf( buf2, MSL, buf, IS_WHITE( board->board[x][y] ) ? s1 : s2 );
-         strlcat( retbuf, buf2, MSL * 2 );
+         buf2 = buf;
+         buf2.append( IS_WHITE( board->board[x][y] ) ? s1 : s2 );
+         retbuf.append( buf2 );
       }
-      strlcat( retbuf, BLACK_BACKGROUND "\r\n", MSL * 2 );
+      retbuf.append( BLACK_BACKGROUND "\r\n" );
    }
 
    return retbuf;
@@ -722,19 +723,27 @@ void free_game( game_board_data * board )
 
 void free_all_chess_games( void )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto it = pclist.begin(); it != pclist.end(); )
    {
-      char_data *ch = *ich;
+      char_data *ch = *it;
+      ++it;
 
       free_game( ch->pcdata->game_board );
    }
 }
 
+void send_to_opp( const std::string & arg, char_data * ch, char_data * opp )
+{
+   if( opp )
+   {
+      if( ch->pcdata->game_board->type == TYPE_LOCAL )
+         opp->printf( "%s\r\n", arg.c_str() );
+   }
+}
+
 CMDF( do_chess )
 {
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -746,15 +755,13 @@ CMDF( do_chess )
 
    if( !str_cmp( arg, "begin" ) )
    {
-      game_board_data *board;
-
       if( ch->pcdata->game_board )
       {
          ch->print( "You are already in a chess match.\r\n" );
          return;
       }
 
-      board = new game_board_data;
+      game_board_data *board = new game_board_data;
       ch->pcdata->game_board = board;
       ch->pcdata->game_board->player1 = ch->name;
       ch->print( "You have started a game of chess.\r\n" );
@@ -765,7 +772,7 @@ CMDF( do_chess )
    {
       game_board_data *board = nullptr;
       char_data *vch;
-      string arg2;
+      std::string arg2;
 
       if( ch->pcdata->game_board )
       {
@@ -883,9 +890,8 @@ CMDF( do_chess )
 
    if( !str_prefix( arg, "move" ) )
    {
-      char buf[MIL];
       char_data *opp;
-      string opp_name;
+      std::string opp_name;
       char a, b;
       int x, y, dx, dy, ret;
 
@@ -986,20 +992,13 @@ CMDF( do_chess )
             opp_name = ch->pcdata->game_board->player1;
       }
 
-#define SEND_TO_OPP(arg,opp) \
-      if( opp ) \
-      { \
-         if( ch->pcdata->game_board->type == TYPE_LOCAL ) \
-            (opp)->printf( "%s\r\n", (arg).c_str() ); \
-      }
-
+      std::string buf;
       switch ( ret )
       {
          case MOVE_OK:
             ch->print( "Ok.\r\n" );
-            snprintf( buf, MIL, "%s has moved.\r\n", ch->name );
-            arg = buf;
-            SEND_TO_OPP( arg, opp );
+            buf = std::format( "{} has moved.\r\n", ch->name );
+            send_to_opp( buf, ch, opp );
             break;
 
          case MOVE_INVALID:
@@ -1012,16 +1011,14 @@ CMDF( do_chess )
 
          case MOVE_TAKEN:
             ch->print( "You take the enemy's piece.\r\n" );
-            snprintf( buf, MIL, "%s has taken one of your pieces!", ch->name );
-            arg = buf;
-            SEND_TO_OPP( arg, opp );
+            buf = std::format( "{} has taken one of your pieces!", ch->name );
+            send_to_opp( buf, ch, opp );
             break;
 
          case MOVE_CHECKMATE:
             ch->print( "That move would result in a checkmate.\r\n" );
-            snprintf( buf, MIL, "%s has attempted a move that would result in checkmate.", ch->name );
-            arg = buf;
-            SEND_TO_OPP( arg, opp );
+            buf = std::format( "{} has attempted a move that would result in checkmate.", ch->name );
+            send_to_opp( buf, ch, opp );
             break;
 
          case MOVE_OFFBOARD:
@@ -1034,9 +1031,8 @@ CMDF( do_chess )
 
          case MOVE_CHECK:
             ch->print( "That move would result in a check.\r\n" );
-            snprintf( buf, MIL, "%s has made a move that would result in a check.", ch->name );
-            arg = buf;
-            SEND_TO_OPP( arg, opp );
+            buf = std::format( "{} has made a move that would result in a check.", ch->name );
+            send_to_opp( buf, ch, opp );
             break;
 
          case MOVE_WRONGCOLOR:
@@ -1051,7 +1047,6 @@ CMDF( do_chess )
             bug( "%s: Unknown return value", __func__ );
             break;
       }
-#undef SEND_TO_OPP
       return;
    }
    ch->print( "Usage: chess <begin|cease|status|board|move|join>\r\n" );

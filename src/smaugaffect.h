@@ -110,4 +110,4 @@ enum spell_save_effects
    SE_NONE, SE_NEGATE, SE_EIGHTHDAM, SE_QUARTERDAM, SE_HALFDAM, SE_3QTRDAM, SE_REFLECT, SE_ABSORB
 };
 
-extern list<smaug_affect*> saflist;
+extern std::list<smaug_affect*> saflist;

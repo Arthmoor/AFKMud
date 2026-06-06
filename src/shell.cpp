@@ -49,7 +49,7 @@ void unlink_command( cmd_type * );
 
 /* Global variables - Samson */
 bool compilelock = false;  /* Reboot/shutdown commands locked during compiles */
-list < shell_cmd * >shellcmdlist;
+std::list<shell_cmd *> shellcmdlist;
 
 extern std::string lastplayercmd;
 extern bool bootlock;
@@ -226,7 +226,7 @@ bool copy_file( char_data * ch, const std::string & filename )
 }
 
 /* The guts of the compiler code, make any changes to the compiler options here - Samson 4-8-98 */
-void compile_code( char_data * ch, const string & argument )
+void compile_code( char_data * ch, const std::string & argument )
 {
    if( !str_cmp( argument, "clean" ) )
    {
@@ -915,7 +915,7 @@ void add_shellcommand( shell_cmd * command )
    command->set_name( buf );
 
    bool inserted = false;
-   list < shell_cmd * >::iterator scmd;
+   std::list<shell_cmd *>::iterator scmd;
    for( scmd = shellcmdlist.begin(  ); scmd != shellcmdlist.end(  ); ++scmd )
    {
       shell_cmd *shellcmd = *scmd;
@@ -955,7 +955,7 @@ shell_cmd *find_shellcommand( const string & command )
 void load_shellcommands( void )
 {
    shell_cmd *scmd = nullptr;
-   ifstream stream;
+   std::ifstream stream;
    int version = 0;
 
    shellcmdlist.clear(  );
@@ -969,7 +969,7 @@ void load_shellcommands( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -1045,7 +1045,7 @@ const int SHELLCMDVERSION = 3;
 /* Updated to 3 for command flags - Samson 7-9-00 */
 void save_shellcommands( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( SHELL_COMMAND_FILE );
    if( !stream.is_open(  ) )
@@ -1252,7 +1252,7 @@ CMDF( do_shelledit )
 
 bool shell_hook( char_data * ch, const string & command, string & argument )
 {
-   list < shell_cmd * >::iterator icmd;
+   std::list<shell_cmd *>::iterator icmd;
    shell_cmd *cmd = nullptr;
    std::string logline;
    bool found = false;

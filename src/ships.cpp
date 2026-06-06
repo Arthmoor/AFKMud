@@ -39,8 +39,6 @@
 
 void check_sneaks( char_data * );
 
-const int SHIPFILEVERSION = 1;
-
 const char *ship_type[] = {
    "None", "Skiff", "Coaster", "Caravel", "Galleon", "Warship"
 };
@@ -49,9 +47,9 @@ const char *ship_flags[] = {
    "anchored", "onmap", "airship"
 };
 
-list < ship_data * >shiplist;
+std::list<ship_data *> shiplist;
 
-int get_shiptype( const string & type )
+int get_shiptype( const std::string & type )
 {
    for( int x = 0; x < SHIP_MAX; ++x )
       if( !str_cmp( type, ship_type[x] ) )
@@ -59,7 +57,7 @@ int get_shiptype( const string & type )
    return -1;
 }
 
-int get_shipflag( const string & flag )
+int get_shipflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( ship_flags ) / sizeof( ship_flags[0] ) ); ++x )
       if( !str_cmp( flag, ship_flags[x] ) )
@@ -69,26 +67,18 @@ int get_shipflag( const string & flag )
 
 ship_data *ship_lookup_by_vnum( int vnum )
 {
-   list < ship_data * >::iterator iship;
-
-   for( iship = shiplist.begin(  ); iship != shiplist.end(  ); ++iship )
+   for( auto* ship : shiplist )
    {
-      ship_data *ship = *iship;
-
       if( ship->vnum == vnum )
          return ship;
    }
    return nullptr;
 }
 
-ship_data *ship_lookup( const string & name )
+ship_data *ship_lookup( const std::string & name )
 {
-   list < ship_data * >::iterator iship;
-
-   for( iship = shiplist.begin(  ); iship != shiplist.end(  ); ++iship )
+   for( auto* ship : shiplist )
    {
-      ship_data *ship = *iship;
-
       if( !str_cmp( name, ship->name ) )
          return ship;
    }
@@ -97,7 +87,6 @@ ship_data *ship_lookup( const string & name )
 
 CMDF( do_shiplist )
 {
-   list < ship_data * >::iterator iship;
    int count = 1;
 
    if( shiplist.empty(  ) )
@@ -108,10 +97,8 @@ CMDF( do_shiplist )
 
    ch->print( "&RNumbr Ship Name          Ship Type        Owner           Hull Status\r\n" );
    ch->print( "&r===== =========          =========        =====           ===========\r\n" );
-   for( iship = shiplist.begin(  ); iship != shiplist.end(  ); ++iship )
+   for( auto* ship : shiplist )
    {
-      ship_data *ship = *iship;
-
       ch->printf( "&Y&W%4d&b&w>&g %-15s&Y    %-15s &G %-15s &Y%d/%d&g\r\n",
                   count, capitalize( ship->name ).c_str(  ), ship_type[ship->type], ship->owner.c_str(  ), ship->hull, ship->max_hull );
       count += 1;
@@ -154,10 +141,12 @@ ship_data::~ship_data(  )
    shiplist.remove( this );
 }
 
+// 1: Initial version.
+const int SHIPFILEVERSION = 1;
+
 void save_ships( void )
 {
-   ofstream stream;
-   list < ship_data * >::iterator iship;
+   std::ofstream stream;
 
    stream.open( SHIP_FILE );
    if( !stream.is_open(  ) )
@@ -167,31 +156,29 @@ void save_ships( void )
       return;
    }
 
-   for( iship = shiplist.begin(  ); iship != shiplist.end(  ); ++iship )
+   stream << "#VERSION  " << SHIPFILEVERSION << std::endl;
+   for( auto* ship : shiplist )
    {
-      ship_data *ship = *iship;
-
-      stream << "#SHIP" << endl;
-      stream << "Version   " << SHIPFILEVERSION << endl;
-      stream << "Name      " << ship->name << endl;
-      stream << "Owner     " << ship->owner << endl;
-      stream << "Flags     " << bitset_string( ship->flags, ship_flags ) << endl;
-      stream << "Vnum      " << ship->vnum << endl;
-      stream << "Room      " << ship->room << endl;
-      stream << "Type      " << ship_type[ship->type] << endl;
-      stream << "Hull      " << ship->hull << endl;
-      stream << "Max_hull  " << ship->max_hull << endl;
-      stream << "Fuel      " << ship->fuel << endl;
-      stream << "Max_fuel  " << ship->max_fuel << endl;
-      stream << "Coordinates " << ship->map_x << " " << ship->map_y << endl;
-      stream << "End" << endl << endl;
+      stream << "#SHIP" << std::endl;
+      stream << "Name      " << ship->name << std::endl;
+      stream << "Owner     " << ship->owner << std::endl;
+      stream << "Flags     " << bitset_string( ship->flags, ship_flags ) << std::endl;
+      stream << "Vnum      " << ship->vnum << std::endl;
+      stream << "Room      " << ship->room << std::endl;
+      stream << "Type      " << ship_type[ship->type] << std::endl;
+      stream << "Hull      " << ship->hull << std::endl;
+      stream << "Max_hull  " << ship->max_hull << std::endl;
+      stream << "Fuel      " << ship->fuel << std::endl;
+      stream << "Max_fuel  " << ship->max_fuel << std::endl;
+      stream << "Coordinates " << ship->map_x << " " << ship->map_y << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
 }
 
 void load_ships( void )
 {
-   ifstream stream;
+   std::ifstream stream;
    ship_data *ship = nullptr;
    int file_ver = 0;
 
@@ -206,7 +193,7 @@ void load_ships( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -222,7 +209,7 @@ void load_ships( void )
 
       if( key == "#SHIP" )
          ship = new ship_data;
-      else if( key == "Version" )
+      else if( key == "#VERSION" )
          file_ver = atoi( value.c_str(  ) );
       else if( key == "Name" )
          ship->name = value;
@@ -250,7 +237,7 @@ void load_ships( void )
          ship->max_fuel = atoi( value.c_str(  ) );
       else if( key == "Coordinates" && file_ver < 1 )
       {
-         string coord;
+         std::string coord;
 
          // Eat this first one.
          value = one_argument( value, coord );
@@ -262,7 +249,7 @@ void load_ships( void )
       }
       else if( key == "Coordinates" && file_ver >= 1 )
       {
-         string coord;
+         std::string coord;
 
          value = one_argument( value, coord );
          ship->map_x = atoi( coord.c_str(  ) );
@@ -280,12 +267,10 @@ void load_ships( void )
 
 void free_ships( void )
 {
-   list < ship_data * >::iterator sh;
-
-   for( sh = shiplist.begin(  ); sh != shiplist.end(  ); )
+   for( auto it = shiplist.begin(  ); it != shiplist.end(  ); )
    {
-      ship_data *ship = *sh;
-      ++sh;
+      ship_data *ship = *it;
+      ++it;
 
       deleteptr( ship );
    }
@@ -295,7 +280,7 @@ void free_ships( void )
 CMDF( do_shipset )
 {
    ship_data *ship;
-   string arg, mod;
+   std::string arg, mod;
 
    argument = one_argument( argument, arg );
    if( arg.empty(  ) )
@@ -423,7 +408,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "coords" ) )
    {
-      string arg3;
+      std::string arg3;
 
       argument = one_argument( argument, arg3 );
 
@@ -442,7 +427,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "flags" ) )
    {
-      string arg3;
+      std::string arg3;
       int value;
 
       while( !argument.empty(  ) )
@@ -929,12 +914,9 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
    if( to_room->tunnel > 0 )
    {
       int count = 0;
-      list < ship_data * >::iterator other;
 
-      for( other = shiplist.begin(  ); other != shiplist.end(  ); ++other )
+      for( auto* shp : shiplist )
       {
-         ship_data *shp = *other;
-
          if( shp->room == to_room->vnum )
             ++count;
 

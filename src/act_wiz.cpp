@@ -56,16 +56,16 @@ void build_wizinfo(  );
 void save_sysdata(  );
 void write_race_file( int );
 int calc_thac0( char_data *, char_data *, int );   /* For mstat */
-void remove_member( const string &, const string & ); /* For do_destroy */
+void remove_member( const std::string &, const std::string & ); /* For do_destroy */
 CMDF( do_oldwhere );
 CMDF( do_help );
 CMDF( do_mfind );
 CMDF( do_ofind );
 CMDF( do_bestow );
-void rent_adjust_pfile( const string & );
+void rent_adjust_pfile( const std::string & );
 bool in_arena( char_data * );
 void check_stored_objects( char_data *, int );
-void remove_from_auth( const string & );
+void remove_from_auth( const std::string & );
 void calc_season(  );
 void ostat_plus( char_data *, obj_data *, bool );
 void advance_level( char_data * );
@@ -92,7 +92,7 @@ int MAX_PC_RACE;
 std::chrono::system_clock::time_point last_restore_all_time;
 
 /* Used to check and see if you should be using a command on a certain person - Samson 5-1-04 */
-char_data *get_wizvictim( char_data * ch, const string & argument, bool nonpc )
+char_data *get_wizvictim( char_data * ch, const std::string & argument, bool nonpc )
 {
    char_data *victim = nullptr;
 
@@ -118,12 +118,11 @@ char_data *get_wizvictim( char_data * ch, const string & argument, bool nonpc )
 
 /* Password resetting command, added by Samson 2-11-98
    Code courtesy of John Strange - Triad Mud */
-/* Upgraded for OS independed SHA-256 encryption - Samson 1-7-06 */
+/* Upgraded for OS independent SHA-256 encryption - Samson 1-7-06 */
 CMDF( do_newpassword )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
-   string pwdnew;
 
    if( ch->isnpc(  ) )
       return;
@@ -163,7 +162,7 @@ CMDF( do_newpassword )
       return;
    }
 
-   pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
+   std::string pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
 
    victim->pcdata->pwd = pwdnew;
    victim->save(  );
@@ -210,12 +209,8 @@ CMDF( do_highfive )
 
    if( victim->level > LEVEL_TRUEIMM && ch->level > LEVEL_TRUEIMM )
    {
-      list < char_data * >::iterator ich;
-
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+      for( auto* vch : pclist )
       {
-         char_data *vch = ( *ich );
-
          if( vch == ch )
             act( AT_IMMORT, "The whole world rumbles as you highfive $N!", ch, nullptr, victim, TO_CHAR );
          else if( vch == victim )
@@ -310,7 +305,7 @@ CMDF( do_retire )
 CMDF( do_delay )
 {
    char_data *victim;
-   string arg;
+   std::string arg;
    int delay;
 
    ch->set_color( AT_IMMORT );
@@ -401,11 +396,8 @@ CMDF( do_disconnect )
       return;
    }
 
-   list < descriptor_data * >::iterator ds;
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-
       if( d->descriptor == desc )
       {
          victim = d->original ? d->original : d->character;
@@ -445,16 +437,13 @@ void echo_all_printf( short tar, const char *str, ... )
    echo_to_all( argument, tar );
 }
 
-void echo_to_all( const string & argument, short tar )
+void echo_to_all( const std::string & argument, short tar )
 {
    if( argument.empty(  ) )
       return;
 
-   list < descriptor_data * >::iterator ds;
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-
       /*
        * Added showing echoes to players who are editing, so they won't
        * * miss out on important info like upcoming reboots. --Narn 
@@ -481,7 +470,7 @@ void echo_to_all( const string & argument, short tar )
 
 CMDF( do_echo )
 {
-   string arg;
+   std::string arg;
    int target;
 
    ch->set_color( AT_IMMORT );
@@ -498,7 +487,7 @@ CMDF( do_echo )
       return;
    }
 
-   string parg = argument;
+   std::string parg = argument;
    argument = one_argument( argument, arg );
    if( !str_cmp( arg, "PC" ) || !str_cmp( arg, "player" ) )
       target = ECHOTAR_PC;
@@ -580,7 +569,7 @@ void transfer_char( char_data * ch, char_data * victim, room_index * location )
 
 CMDF( do_transfer )
 {
-   string arg1;
+   std::string arg1;
    room_index *location;
    char_data *victim;
 
@@ -609,12 +598,8 @@ CMDF( do_transfer )
 
    if( !str_cmp( arg1, "all" ) )
    {
-      list < descriptor_data * >::iterator ds;
-
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
-
          if( d->connected == CON_PLAYING && d->character != ch && d->character->in_room && d->newstate != 2 && ch->can_see( d->character, true ) )
             transfer_char( ch, d->character, location );
       }
@@ -639,7 +624,7 @@ CMDF( do_transfer )
    transfer_char( ch, victim, location );
 }
 
-void location_action( char_data * ch, const string & argument, room_index * location, continent_data *target_cont, short x, short y )
+void location_action( char_data * ch, const std::string & argument, room_index * location, continent_data *target_cont, short x, short y )
 {
    continent_data *orig_cont = ch->continent;
    short origx = ch->map_x;
@@ -719,11 +704,8 @@ void location_action( char_data * ch, const string & argument, room_index * loca
     * See if 'ch' still exists before continuing!
     * Handles 'at XXXX quit' case.
     */
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* wch : charlist )
    {
-      char_data *wch = ( *ich );
-
       if( wch == ch && !ch->char_died(  ) )
       {
          ch->from_room(  );
@@ -737,7 +719,7 @@ void location_action( char_data * ch, const string & argument, room_index * loca
 /*  Added atmob and atobj to reduce lag associated with at
  *  --Shaddai
  */
-void atmob( char_data * ch, char_data * wch, const string & argument )
+void atmob( char_data * ch, char_data * wch, const std::string & argument )
 {
    if( is_ignoring( wch, ch ) )
    {
@@ -747,7 +729,7 @@ void atmob( char_data * ch, char_data * wch, const string & argument )
    location_action( ch, argument, wch->in_room, wch->continent, wch->map_x, wch->map_y );
 }
 
-void atobj( char_data * ch, obj_data * obj, const string & argument )
+void atobj( char_data * ch, obj_data * obj, const std::string & argument )
 {
    location_action( ch, argument, obj->in_room, obj->continent, obj->map_x, obj->map_y );
 }
@@ -755,7 +737,7 @@ void atobj( char_data * ch, obj_data * obj, const string & argument )
 /* Smaug 1.02a at command restored by Samson 8-14-98 */
 CMDF( do_at )
 {
-   string arg;
+   std::string arg;
    room_index *location;
    char_data *wch;
    obj_data *obj;
@@ -795,7 +777,7 @@ CMDF( do_at )
 
 CMDF( do_rat )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    room_index *location, *original;
    int Start, End, vnum;
 
@@ -848,16 +830,13 @@ CMDF( do_rstat )
 
    if( !str_cmp( argument, "exits" ) )
    {
-      list < exit_data * >::iterator ex;
       location = ch->in_room;
 
       ch->printf( "&wExits for room '&G%s.&w' vnum &G%d&w\r\n", location->name, location->vnum );
 
       int cnt = 0;
-      for( ex = location->exits.begin(  ); ex != location->exits.end(  ); ++ex )
+      for( auto* pexit : location->exits )
       {
-         exit_data *pexit = *ex;
-
          ch->printf( "%2d) &G%2s&w to &G%-5d&w.  Key: &G%d  &wKeywords: '&G%s&w'  &wFlags: &G%s&w.\r\n",
                      ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0, pexit->key, pexit->keyword, bitset_string( pexit->flags, ex_flags ) );
 
@@ -910,13 +889,9 @@ CMDF( do_rstat )
 
    if( !location->extradesc.empty(  ) )
    {
-      list < extra_descr_data * >::iterator ex;
-
       ch->print( "\r\nExtra description keywords:\r\n&G" );
-      for( ex = location->extradesc.begin(  ); ex != location->extradesc.end(  ); ++ex )
+      for( auto* ed : location->extradesc )
       {
-         extra_descr_data *ed = *ex;
-
          ch->print( ed->keyword );
          ch->print( " " );
       }
@@ -930,42 +905,28 @@ CMDF( do_rstat )
    {
       ch->print( "\r\n" );
 
-      list < affect_data * >::iterator paf;
-      for( paf = location->permaffects.begin(  ); paf != location->permaffects.end(  ); ++paf )
-      {
-         affect_data *af = *paf;
-
+      for( auto* af : location->permaffects )
          ch->showaffect( af );
-      }
    }
 
    if( ch->in_room->progtypes.none(  ) )
       ch->print( "Roomprogs: &GNone&w\r\n" );
    else
    {
-      list < mud_prog_data * >::iterator mprg;
-
       ch->print( "Roomprogs: &G" );
 
-      for( mprg = ch->in_room->mudprogs.begin(  ); mprg != ch->in_room->mudprogs.end(  ); ++mprg )
-      {
-         mud_prog_data *mprog = *mprg;
-
+      for( auto* mprog : ch->in_room->mudprogs )
          ch->printf( "%s ", mprog_type_to_name( mprog->type ).c_str(  ) );
-      }
+
       ch->print( "&w\r\n" );
    }
 
    // Don't bother if nobody is in it
    if( !location->people.empty() )
    {
-      list < char_data * >::iterator ich;
-
       ch->print( "\r\nCharacters/Mobiles in the room:\r\n" );
-      for( ich = location->people.begin(  ); ich != location->people.end(  ); ++ich )
+      for( auto* rch : location->people )
       {
-         char_data *rch = *ich;
-
          if( ch->can_see( rch, false ) )
             ch->printf( "(&G%d&w)&G%s&w\r\n", ( rch->isnpc(  ) ? rch->pIndexData->vnum : 0 ), rch->name );
       }
@@ -974,13 +935,9 @@ CMDF( do_rstat )
    // Don't bother if there are no objects
    if( !location->objects.empty() )
    {
-      list < obj_data * >::iterator iobj;
-
       ch->print( "\r\nObjects in the room:\r\n" );
-      for( iobj = location->objects.begin(  ); iobj != location->objects.end(  ); ++iobj )
+      for( auto* obj : location->objects )
       {
-         obj_data *obj = *iobj;
-
          if( ch->can_see_obj( obj, false ) )
             ch->printf( "(&G%d&w)&G%s&w\r\n", obj->pIndexData->vnum, obj->name );
       }
@@ -991,14 +948,11 @@ CMDF( do_rstat )
    if( !location->exits.empty(  ) )
    {
       int cnt = 0;
-      list < exit_data * >::iterator ex;
 
       ch->print( "\r\n------------------- EXITS -------------------\r\n" );
 
-      for( ex = location->exits.begin(  ); ex != location->exits.end(  ); ++ex )
+      for( auto* pexit : location->exits )
       {
-         exit_data *pexit = *ex;
-
          ch->printf( "%2d) &G%-2s &wto &G%-5d  &wKey: &G%-5d  &wKeywords: &G%-12s&w  Flags: &G%s&w\r\n",
                      ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
                      pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
@@ -1081,13 +1035,9 @@ CMDF( do_ostat )
 
    if( !obj->pIndexData->extradesc.empty(  ) )
    {
-      list < extra_descr_data * >::iterator ex;
-
       ch->print( "|Primary description keywords:   " );
-      for( ex = obj->pIndexData->extradesc.begin(  ); ex != obj->pIndexData->extradesc.end(  ); ++ex )
+      for( auto* ed : obj->pIndexData->extradesc )
       {
-         extra_descr_data *ed = *ex;
-
          ch->print( ed->keyword );
          ch->print( " " );
       }
@@ -1095,13 +1045,9 @@ CMDF( do_ostat )
 
    if( !obj->extradesc.empty(  ) )
    {
-      list < extra_descr_data * >::iterator ex;
-
       ch->print( "|Secondary description keywords: " );
-      for( ex = obj->extradesc.begin(  ); ex != obj->extradesc.end(  ); ++ex )
+      for( auto* ed : obj->extradesc )
       {
-         extra_descr_data *ed = *ex;
-
          ch->print( ed->keyword );
          ch->print( " " );
       }
@@ -1111,16 +1057,11 @@ CMDF( do_ostat )
       ch->print( "|Objprogs     : &GNone&w\r\n" );
    else
    {
-      list < mud_prog_data * >::iterator mprg;
-
       ch->print( "|Objprogs     : &G" );
 
-      for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
-      {
-         mud_prog_data *mprog = *mprg;
-
+      for( auto* mprog : obj->pIndexData->mudprogs )
          ch->printf( "%s ", mprog_type_to_name( mprog->type ).c_str(  ) );
-      }
+
       ch->print( "&w\r\n" );
    }
 
@@ -1132,7 +1073,7 @@ CMDF( do_ostat )
    ch->print( "\r\n" );
 
    affect_data *af;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
    {
       af = *paf;
@@ -1155,8 +1096,6 @@ CMDF( do_moblog )
 
 CMDF( do_vstat )
 {
-   variable_data *vd;
-   list < variable_data * >::iterator ivd;
    char_data *victim;
 
    if( argument.empty(  ) )
@@ -1183,10 +1122,8 @@ CMDF( do_vstat )
     * Flags:
     * Data:
     */
-   for( ivd = victim->variables.begin(  ); ivd != victim->variables.end(  ); ++ivd )
+   for( auto* vd : victim->variables )
    {
-      vd = *ivd;
-
       ch->pagerf( "  &cVnum: &W%-10d &cTag: &W%-15s &cTimer: &W%d\r\n", vd->vnum, vd->tag.c_str(  ), vd->timer );
       ch->pager( "  &cType: " );
 
@@ -1221,7 +1158,7 @@ CMDF( do_mstat )
    char_data *victim;
    skill_type *skill;
    int iLang = 0;
-   string lbuf;
+   std::string lbuf;
 
    if( !( victim = ch->get_char_world( argument ) ) )
    {
@@ -1314,14 +1251,11 @@ CMDF( do_mstat )
       ch->printf( "|Suscepts    : &G%s&w\r\n", !victim->has_susceps(  )? "(NONE)" : bitset_string( victim->get_susceps(  ), ris_flags ) );
       ch->printf( "|Absorbs     : &G%s&w\r\n", !victim->has_absorbs(  )? "(NONE)" : bitset_string( victim->get_absorbs(  ), ris_flags ) );
 
-      list < affect_data * >::iterator paf;
-      for( paf = victim->affects.begin(  ); paf != victim->affects.end(  ); ++paf )
+      for( auto* aff : victim->affects )
       {
-         affect_data *aff = *paf;
-
          if( ( skill = get_skilltype( aff->type ) ) != nullptr )
          {
-            string mod;
+            std::string mod;
 
             if( aff->location == APPLY_AFFECT || aff->location == APPLY_EXT_AFFECT )
                mod = aff_flags[aff->modifier];
@@ -1340,14 +1274,9 @@ CMDF( do_mstat )
 
       if( !victim->variables.empty(  ) )
       {
-         variable_data *vd;
-         list < variable_data * >::iterator ivd;
-
          ch->pager( "&cVariables  : &w" );
-         for( ivd = victim->variables.begin(  ); ivd != victim->variables.end(  ); ++ivd )
+         for( auto* vd : victim->variables )
          {
-            vd = *ivd;
-
             ch->pagerf( "%s:%d", vd->tag.c_str(  ), vd->vnum );
 
             switch( vd->type )
@@ -1450,27 +1379,19 @@ CMDF( do_mstat )
          ch->print( "|Mobprogs    : &GNone&w\r\n" );
       else
       {
-         list < mud_prog_data * >::iterator mprg;
-
          ch->print( "|Mobprogs    : &G" );
 
-         for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
-         {
-            mud_prog_data *mprog = *mprg;
-
+         for( auto* mprog : victim->pIndexData->mudprogs )
             ch->printf( "%s ", mprog_type_to_name( mprog->type ).c_str(  ) );
-         }
+
          ch->print( "&w\r\n" );
       }
 
-      list < affect_data * >::iterator paf;
-      for( paf = victim->affects.begin(  ); paf != victim->affects.end(  ); ++paf )
+      for( auto* af : victim->affects )
       {
-         affect_data *af = *paf;
-
          if( ( skill = get_skilltype( af->type ) ) != nullptr )
          {
-            string mod;
+            std::string mod;
 
             if( af->location == APPLY_AFFECT
                 || af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_ABSORB || af->location == APPLY_SUSCEPTIBLE )
@@ -1491,7 +1412,7 @@ CMDF( do_mstat )
 CMDF( do_stat )
 {
    char_data *victim;
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 
@@ -1563,9 +1484,9 @@ CMDF( do_stat )
  * Oftype: Object find Type
  * Find object matching a certain type
  *****/
-void find_oftype( char_data * ch, const string & argument )
+void find_oftype( char_data * ch, const std::string & argument )
 {
-   map < int, obj_index * >::iterator iobj = obj_index_table.begin(  );
+   std::map<int, obj_index *>::iterator iobj = obj_index_table.begin(  );
    int nMatch, type;
 
    ch->set_pager_color( AT_PLAIN );
@@ -1603,7 +1524,7 @@ void find_oftype( char_data * ch, const string & argument )
 /* Consolidated find command 3-21-98 (SLAY DWIP) */
 CMDF( do_find )
 {
-   string arg, arg2;
+   std::string arg, arg2;
 
    argument = one_argument( argument, arg );
    argument = one_argument( argument, arg2 );
@@ -1652,11 +1573,8 @@ CMDF( do_mwhere )
    }
 
    bool found = false;
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* victim : charlist )
    {
-      char_data *victim = *ich;
-
       if( victim->isnpc(  ) && victim->in_room && hasname( victim->name, argument ) )
       {
          found = true;
@@ -1675,7 +1593,7 @@ CMDF( do_mwhere )
 /* Trimmed size, added vict info, put lipstick on the pig -- Blod */
 CMDF( do_bodybag )
 {
-   string arg1, arg2, buf2;
+   std::string arg1, arg2, buf2;
    bool found = false, bag = false;
 
    argument = one_argument( argument, arg1 );
@@ -1698,11 +1616,8 @@ CMDF( do_bodybag )
 
    ch->pagerf( "\r\n&P%s remains of %s ... ", bag ? "Retrieving" : "Searching for", capitalize( arg1 ).c_str(  ) );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   for( auto* obj : objlist )
    {
-      obj_data *obj = *iobj;
-
       if( obj->in_room && !str_cmp( buf2, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
       {
          ch->pager( "\r\n" );
@@ -1730,7 +1645,7 @@ CMDF( do_bodybag )
 
    found = false;
    char_data *owner;
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
       owner = *ich;
@@ -1756,7 +1671,7 @@ CMDF( do_bodybag )
 /* New owhere by Altrag, 03/14/96 */
 CMDF( do_owhere )
 {
-   string arg, arg1, buf;
+   std::string arg, arg1, buf;
    obj_data *obj;
    bool found;
    int icnt = 0;
@@ -1810,7 +1725,7 @@ CMDF( do_owhere )
    }
 
    found = false;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
       obj = *iobj;
@@ -1851,13 +1766,10 @@ CMDF( do_pwhere )
 
    if( argument.empty(  ) )
    {
-      list < descriptor_data * >::iterator ds;
-
       ch->pager( "&[people]Players you can see online:\r\n" );
       found = false;
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
          char_data *victim;
 
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
@@ -1875,14 +1787,10 @@ CMDF( do_pwhere )
    }
    else
    {
-      list < char_data * >::iterator ich;
-
       ch->pager( "You search high and low and find:\r\n" );
       found = false;
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+      for( auto* victim : pclist )
       {
-         char_data *victim = *ich;
-
          if( victim->in_room && ch->can_see( victim, true ) && hasname( victim->name, argument ) )
          {
             found = true;
@@ -1895,7 +1803,7 @@ CMDF( do_pwhere )
    }
 }
 
-void where_mobile( char_data * ch, const string & argument )
+void where_mobile( char_data * ch, const std::string & argument )
 {
    ch->set_color( AT_PLAIN );
 
@@ -1915,11 +1823,8 @@ void where_mobile( char_data * ch, const string & argument )
 
    int mobcnt = 0;
    bool found = false;
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* victim : charlist )
    {
-      char_data *victim = *ich;
-
       if( victim->isnpc(  ) && victim->in_room && victim->pIndexData->vnum == vnum )
       {
          found = true;
@@ -1937,7 +1842,7 @@ void where_mobile( char_data * ch, const string & argument )
 /* Consolidated Where command - Samson 3-21-98 */
 CMDF( do_where )
 {
-   string arg;
+   std::string arg;
 
    if( ch->level < LEVEL_SAVIOR )
    {
@@ -1971,7 +1876,7 @@ CMDF( do_where )
 
    if( !str_cmp( arg, "obj" ) || !str_cmp( arg, "o" ) )
    {
-      string buf;
+      std::string buf;
       obj_index *pObjIndex;
       int icnt = 0;
       bool found = false;
@@ -1992,11 +1897,8 @@ CMDF( do_where )
          return;
       }
 
-      list < obj_data * >::iterator iobj;
-      for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+      for( auto* obj : objlist )
       {
-         obj_data *obj = *iobj;
-
          if( obj->pIndexData->vnum != vnum )
             continue;
          found = true;
@@ -2129,7 +2031,7 @@ CMDF( do_shutdown )
 CMDF( do_snoop )
 {
    char_data *victim;
-   list < descriptor_data * >::iterator ds;
+   std::list<descriptor_data *>::iterator ds;
    descriptor_data *d;
 
    ch->set_color( AT_IMMORT );
@@ -2280,9 +2182,9 @@ CMDF( do_return )
    ch->desc = nullptr;
 }
 
-void objinvoke( char_data * ch, string & argument )
+void objinvoke( char_data * ch, std::string & argument )
 {
-   string arg, arg2;
+   std::string arg, arg2;
    obj_index *pObjIndex;
    obj_data *obj;
    int vnum, level, quantity;
@@ -2335,8 +2237,8 @@ void objinvoke( char_data * ch, string & argument )
 
    if( !is_number( arg ) )
    {
-      string arg3;
-      map < int, obj_index * >::iterator iobj = obj_index_table.begin(  );
+      std::string arg3;
+      std::map<int, obj_index *>::iterator iobj = obj_index_table.begin(  );
       int cnt = 0, count = number_argument( arg, arg3 );
 
       vnum = -1;
@@ -2432,7 +2334,7 @@ void objinvoke( char_data * ch, string & argument )
    ch->printf( "&Y(&W#%d &Y- &W%s &Y- &Wlvl %d&Y)\r\n", pObjIndex->vnum, pObjIndex->name, obj->level );
 }
 
-void mobinvoke( char_data * ch, string & argument )
+void mobinvoke( char_data * ch, std::string & argument )
 {
    mob_index *pMobIndex;
    char_data *victim;
@@ -2448,12 +2350,12 @@ void mobinvoke( char_data * ch, string & argument )
 
    if( !is_number( argument ) )
    {
-      string arg2;
+      std::string arg2;
       int cnt = 0;
       int count = number_argument( argument, arg2 );
 
       vnum = -1;
-      map < int, mob_index * >::iterator imob = mob_index_table.begin(  );
+      std::map<int, mob_index *>::iterator imob = mob_index_table.begin(  );
       while( imob != mob_index_table.end(  ) )
       {
          pMobIndex = imob->second;
@@ -2524,7 +2426,7 @@ void mobinvoke( char_data * ch, string & argument )
 /* Shard-like load command spliced off of ROT codebase - Samson 3-21-98 */
 CMDF( do_load )
 {
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
    if( arg.empty(  ) )
@@ -2562,11 +2464,11 @@ CMDF( do_purge )
       /*
        * 'purge' 
        */
-      list < char_data * >::iterator ich;
-      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+      for( auto it = ch->in_room->people.begin(  ); it != ch->in_room->people.end(  ); )
       {
-         char_data *victim = *ich;
-         ++ich;
+         char_data *victim = *it;
+         ++it;
+
          bool found = false;
 
          /*
@@ -2576,7 +2478,7 @@ CMDF( do_purge )
             continue;
 
          char_data *tch = nullptr;
-         list < char_data * >::iterator ich2;
+         std::list<char_data *>::iterator ich2;
          for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
          {
             tch = *ich2;
@@ -2606,15 +2508,15 @@ CMDF( do_purge )
             victim->extract( true );
       }
 
-      list < obj_data * >::iterator iobj;
-      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
+      for( auto it = ch->in_room->objects.begin(  ); it != ch->in_room->objects.end(  ); )
       {
-         obj_data *obj = *iobj;
-         ++iobj;
+         obj_data *obj = *it;
+         ++it;
+
          bool found = false;
 
          char_data *tch = nullptr;
-         list < char_data * >::iterator ich2;
+         std::list<char_data *>::iterator ich2;
          for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
          {
             tch = *ich2;
@@ -2664,10 +2566,8 @@ CMDF( do_purge )
     */
    if( obj )
    {
-      list < char_data * >::iterator ich2;
-      for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
+      for( auto* tch : ch->in_room->people )
       {
-         char_data *tch = *ich2;
          if( !tch->isnpc(  ) && tch->pcdata->dest_buf == obj )
          {
             ch->print( "You cannot purge something being edited.\r\n" );
@@ -2700,10 +2600,8 @@ CMDF( do_purge )
       return;
    }
 
-   list < char_data * >::iterator ich2;
-   for( ich2 = ch->in_room->people.begin(  ); ich2 != ch->in_room->people.end(  ); ++ich2 )
+   for( auto* tch : ch->in_room->people )
    {
-      char_data *tch = *ich2;
       if( !tch->isnpc(  ) && tch->pcdata->dest_buf == victim )
       {
          ch->print( "You cannot purge something being edited.\r\n" );
@@ -2723,7 +2621,7 @@ CMDF( do_purge )
    victim->extract( true );
 }
 
-void destroy_immdata( char_data * ch, const char *vicname )
+void destroy_immdata( char_data * ch, const std::string & vicname )
 {
    std::error_code ec;
    std::string areafile;
@@ -2740,10 +2638,10 @@ void destroy_immdata( char_data * ch, const char *vicname )
 
    areafile = std::format( "{}.are", vicname );
 
-   list < area_data * >::iterator iarea;
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+   for( auto it = arealist.begin(  ); it != arealist.end(  ); )
    {
-      area_data *area = *iarea;
+      area_data *area = *it;
+      ++it;
 
       if( !str_cmp( area->filename, areafile ) )
       {
@@ -2810,11 +2708,10 @@ CMDF( do_balzhur )
    interpret( victim, "help M_BALZHUR_" );
    victim->print( "&WYou awake after a long period of time...\r\n" );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
+   for( auto it = victim->carrying.begin(  ); it != victim->carrying.end(  ); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       obj->extract(  );
    }
@@ -2822,7 +2719,7 @@ CMDF( do_balzhur )
 
 CMDF( do_advance )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    int level, iLevel;
 
@@ -2958,7 +2855,7 @@ CMDF( do_advance )
  */
 void fix_char( char_data * ch )
 {
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
 
    ch->de_equip(  );
 
@@ -3051,11 +2948,8 @@ void fix_char( char_data * ch )
    ch->carry_weight = 0;
    ch->carry_number = 0;
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* obj : ch->carrying )
    {
-      obj_data *obj = *iobj;
-
       if( obj->wear_loc == WEAR_NONE )
          ch->carry_number += obj->get_number(  );
       if( !obj->extra_flags.test( ITEM_MAGIC ) )
@@ -3119,11 +3013,10 @@ CMDF( do_immortalize )
    interpret( victim, "help M_GODLVL1_" );
    victim->print( "&WYou awake... all your possessions are gone.\r\n" );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
+   for( auto it = victim->carrying.begin(  ); it != victim->carrying.end(  ); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       obj->extract(  );
    }
@@ -3179,7 +3072,7 @@ CMDF( do_immortalize )
 
 CMDF( do_trust )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    int level;
 
@@ -3214,7 +3107,7 @@ CMDF( do_trust )
 /* Command to silently sneak something into someone's inventory - for immortals only */
 CMDF( do_stash )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    obj_data *obj;
 
@@ -3359,7 +3252,7 @@ CMDF( do_stash )
  */
 CMDF( do_immget )
 {
-   string arg, arg1, arg2, arg3, who;
+   std::string arg, arg1, arg2, arg3, who;
    char_data *vch = nullptr;
    bool silently = false, found = false;
    int number, count, vnum;
@@ -3414,7 +3307,7 @@ CMDF( do_immget )
 
    count = 0;
    obj_data *obj = nullptr;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
    {
       obj = *iobj;
@@ -3602,7 +3495,7 @@ CMDF( do_scatter )
 
 CMDF( do_strew )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    room_index *pRoomIndex;
 
@@ -3650,11 +3543,10 @@ CMDF( do_strew )
       act( AT_MAGIC, "You speak a single word, sending $N's possessions flying!", ch, nullptr, victim, TO_CHAR );
       act( AT_MAGIC, "$n speaks a single word, sending your possessions flying!", ch, nullptr, victim, TO_VICT );
 
-      list < obj_data * >::iterator iobj;
-      for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
+      for( auto it = victim->carrying.begin(  ); it != victim->carrying.end(  ); )
       {
-         obj_data *obj_lose = *iobj;
-         ++iobj;
+         obj_data *obj_lose = *it;
+         ++it;
 
          obj_lose->from_char(  );
          obj_lose->to_room( pRoomIndex, nullptr );
@@ -3688,11 +3580,10 @@ CMDF( do_strip )
    act( AT_OBJECT, "Searching $N ...", ch, nullptr, victim, TO_CHAR );
 
    int count = 0;
-   list < obj_data * >::iterator iobj;
-   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
+   for( auto it = victim->carrying.begin(  ); it != victim->carrying.end(  ); )
    {
-      obj_data *obj_lose = *iobj;
-      ++iobj;
+      obj_data *obj_lose = *it;
+      ++it;
 
       obj_lose->from_char(  );
       obj_lose->to_char( ch );
@@ -3707,7 +3598,7 @@ inline constexpr auto RESTORE_INTERVAL = std::chrono::hours(18);
 CMDF( do_restore )
 {
    deity_data *deity = nullptr;
-   string arg;
+   std::string arg;
 
    ch->set_color( AT_IMMORT );
 
@@ -3759,11 +3650,11 @@ CMDF( do_restore )
       ch->pcdata->restore_time = current_time;
       ch->save(  );
       ch->print( "Ok.\r\n" );
-      list < char_data * >::iterator ich;
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); )
+
+      for( auto it = pclist.begin(  ); it != pclist.end(  ); )
       {
-         char_data *vch = *ich;
-         ++ich;
+         char_data *vch = *it;
+         ++it;
 
          if( !vch->is_immortal(  ) && !vch->CAN_PKILL(  ) && !in_arena( vch ) )
          {
@@ -4110,7 +4001,7 @@ CMDF( do_notell )
 CMDF( do_notitle )
 {
    char_data *victim;
-   string buf;
+   std::string buf;
 
    ch->set_color( AT_IMMORT );
 
@@ -4279,11 +4170,8 @@ CMDF( do_peace )
    act( AT_IMMORT, "$n booms, 'PEACE!'", ch, nullptr, nullptr, TO_ROOM );
    act( AT_IMMORT, "You boom, 'PEACE!'", ch, nullptr, nullptr, TO_CHAR );
 
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* rch : ch->in_room->people )
    {
-      char_data *rch = *ich;
-
       if( rch->fighting )
       {
          rch->stop_fighting( true );
@@ -4348,7 +4236,7 @@ CMDF( do_noresolve )
       ch->print( "&YName resolving enabled.\r\n" );
 }
 
-/* Output of command reformmated by Samson 2-8-98, and again on 4-7-98 */
+/* Output of command reformatted by Samson 2-8-98, and again on 4-7-98 */
 CMDF( do_users )
 {
    ch->set_pager_color( AT_PLAIN );
@@ -4357,11 +4245,9 @@ CMDF( do_users )
    ch->pager( "----+-------------------+----+--------------+-----------------+----------------\r\n" );
 
    int count = 0;
-   list < descriptor_data * >::iterator ds;
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-      const char *st;
+      std::string st;
 
       switch ( d->connected )
       {
@@ -4443,7 +4329,7 @@ CMDF( do_users )
          if( ch->is_imp(  ) || ( d->character && ch->can_see( d->character, true ) && !is_ignoring( d->character, ch ) ) )
          {
             ++count;
-            ch->pagerf( " %3d| %-17s |%4d| %-12s | %-15s | %s\r\n", d->descriptor, st, d->idle / 4,
+            ch->pagerf( " %3d| %-17s |%4d| %-12s | %-15s | %s\r\n", d->descriptor, st.c_str(), d->idle / 4,
                         d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->ipaddress.c_str(), d->hostname.c_str(  ) );
          }
       }
@@ -4463,7 +4349,7 @@ CMDF( do_users )
 
 CMDF( do_invis )
 {
-   string arg;
+   std::string arg;
    short level;
 
    ch->set_color( AT_IMMORT );
@@ -4573,7 +4459,7 @@ CMDF( do_loadup )
       return;
    }
 
-   list < descriptor_data * >::iterator ds;
+   std::list<descriptor_data *>::iterator ds;
    for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
    {
       d = *ds;
@@ -4585,6 +4471,7 @@ CMDF( do_loadup )
          return;
       }
    }
+
    d = nullptr;
    argument[0] = UPPER( argument[0] );
    fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
@@ -4634,9 +4521,9 @@ CMDF( do_loadup )
  /*
   * Rewrite by Xorith. 12/1/03
   */
-string extract_area_names( char_data * ch )
+std::string extract_area_names( char_data * ch )
 {
-   string tbuf, tarea, area_names;
+   std::string tbuf, tarea, area_names;
 
    if( !ch || ch->isnpc(  ) )
       return "";
@@ -4651,7 +4538,7 @@ string extract_area_names( char_data * ch )
 
    while( !tbuf.empty(  ) )
    {
-      if( tarea.find( ".are" ) != string::npos )
+      if( tarea.find( ".are" ) != std::string::npos )
       {
          if( area_names.empty(  ) )
             area_names.append( tarea );
@@ -4670,7 +4557,7 @@ string extract_area_names( char_data * ch )
  */
 void remove_area_names( char_data * ch )
 {
-   string buf, tarea;
+   std::string buf, tarea;
 
    if( !ch || ch->isnpc(  ) || ch->pcdata->bestowments.empty(  ) )
       return;
@@ -4682,7 +4569,7 @@ void remove_area_names( char_data * ch )
 
    while( !buf.empty(  ) )
    {
-      if( tarea.find( ".are" ) != string::npos )
+      if( tarea.find( ".are" ) != std::string::npos )
          removename( ch->pcdata->bestowments, tarea );
       buf = one_argument( buf, tarea );
    }
@@ -4695,7 +4582,7 @@ void remove_area_names( char_data * ch )
 /* Function revamped by Xorith on 12/1/03 */
 CMDF( do_bestowarea )
 {
-   string arg, buf;
+   std::string arg, buf;
    char_data *victim;
 
    ch->set_color( AT_IMMORT );
@@ -4766,7 +4653,7 @@ CMDF( do_bestowarea )
 
    if( !str_cmp( arg, "none" ) )
    {
-      if( victim->pcdata->bestowments.empty(  ) || victim->pcdata->bestowments.find( ".are" ) == string::npos )
+      if( victim->pcdata->bestowments.empty(  ) || victim->pcdata->bestowments.find( ".are" ) == std::string::npos )
       {
          ch->printf( "%s has no areas bestowed!\r\n", victim->name );
          return;
@@ -4779,7 +4666,7 @@ CMDF( do_bestowarea )
 
    while( !argument.empty(  ) )
    {
-      if( arg.find( ".are" ) == string::npos )
+      if( arg.find( ".are" ) == std::string::npos )
       {
          ch->printf( "'%s' is not a valid area to bestow.\r\n", arg.c_str(  ) );
          ch->print( "You can only bestow an area name\r\n" );
@@ -4997,7 +4884,7 @@ CMDF( do_promote )
  */
 CMDF( do_form_password )
 {
-   string pwcheck;
+   std::string pwcheck;
 
    ch->set_color( AT_IMMORT );
 
@@ -5057,7 +4944,7 @@ CMDF( do_destroy )
       return;
    }
 
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
    {
       victim = *ich;
@@ -5072,7 +4959,7 @@ CMDF( do_destroy )
 
    if( !found )
    {
-      list < descriptor_data * >::iterator ds;
+      std::list<descriptor_data *>::iterator ds;
       descriptor_data *d = nullptr;
       bool dfound = false;
 
@@ -5177,10 +5064,10 @@ target in them. Private rooms are not violated.
 /* Expand the name of a character into a string that identifies THAT
    character within a room. E.g. the second 'guard' -> 2. guard
 */
-const string name_expand( char_data * ch )
+const std::string name_expand( char_data * ch )
 {
-   string name;
-   ostringstream expanded;
+   std::string name;
+   std::ostringstream expanded;
 
    if( !ch->isnpc(  ) )
       return ch->name;
@@ -5195,11 +5082,8 @@ const string name_expand( char_data * ch )
     * ... and back to ->people it is folks! -- Samson
     */
    int count = 1;
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* rch : ch->in_room->people )
    {
-      char_data *rch = *ich;
-
       if( rch == ch )
          continue;
 
@@ -5212,7 +5096,7 @@ const string name_expand( char_data * ch )
 
 CMDF( do_for )
 {
-   string range;
+   std::string range;
    bool fGods = false, fMortals = false, fMobs = false, fEverywhere = false, found;
 
    ch->set_color( AT_IMMORT );
@@ -5258,11 +5142,10 @@ CMDF( do_for )
    ch->set_color( AT_PLAIN );
    if( strchr( argument.c_str(  ), '#' ) )   /* replace # ? */
    {
-      list < char_data * >::iterator ich;
-      for( ich = charlist.begin(  ); ich != charlist.end(  ); )
+      for( auto it = charlist.begin(  ); it != charlist.end(  ); )
       {
-         char_data *p = *ich;
-         ++ich;
+         char_data *p = *it;
+         ++it;
 
          /*
           * In case someone DOES try to AT MOBS SLAY # 
@@ -5284,12 +5167,12 @@ CMDF( do_for )
           */
          if( found ) /* p is 'appropriate' */
          {
-            string command = argument; // Buffer to process
-            string target = name_expand( p );   // Target for the command
-            string::size_type pos = 0;
+            std::string command = argument; // Buffer to process
+            std::string target = name_expand( p );   // Target for the command
+            std::string::size_type pos = 0;
 
             // String replacement loop since string_replace() won't accept a char argument
-            while( ( pos = command.find( '#', pos ) ) != string::npos )
+            while( ( pos = command.find( '#', pos ) ) != std::string::npos )
             {
                command.replace( pos, 1, target );
                pos += target.size(  );
@@ -5311,7 +5194,7 @@ CMDF( do_for )
    }
    else  /* just for every room with the appropriate people in it */
    {
-      map < int, room_index * >::iterator iroom;
+      std::map<int, room_index *>::iterator iroom;
 
       for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom ) /* run through all the buckets */
       {
@@ -5333,11 +5216,8 @@ CMDF( do_for )
           * ->people to ->first_person -- TRI
           * ... and back to ->people it is! -- Samson
           */
-         list < char_data * >::iterator ich;
-         for( ich = room->people.begin(  ); ich != room->people.end(  ) && !found; ++ich )
+         for( auto* p : room->people )
          {
-            char_data *p = *ich;
-
             if( p == ch )  /* do not execute on oneself */
                continue;
 
@@ -5373,7 +5253,7 @@ CMDF( do_for )
 CMDF( do_hell )
 {
    char_data *victim;
-   string arg;
+   std::string arg;
    short htime;
    bool h_d = false;
 
@@ -5524,11 +5404,8 @@ CMDF( do_vsearch )
    }
 
    int obj_counter = 1;
-   list < obj_data * >::iterator iobj;
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   for( auto* obj : objlist )
    {
-      obj_data *obj = *iobj;
-
       if( !ch->can_see_obj( obj, true ) || !( argi == obj->pIndexData->vnum ) )
          continue;
 
@@ -5593,10 +5470,10 @@ void update_timers( void )
    sysdata->pulseenvironment = 15 * sysdata->pulsepersec;
 }
 
-/* Redone cset command, with more in-game changable parameters - Samson 2-19-02 */
+/* Redone cset command, with more in-game changeable parameters - Samson 2-19-02 */
 CMDF( do_cset )
 {
-   string arg;
+   std::string arg;
    int value = -1;
 
    if( argument.empty(  ) )
@@ -5676,7 +5553,7 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "password" ) )
    {
-      string pwdnew;
+      std::string pwdnew;
 
       if( argument.length(  ) < 5 )
       {
@@ -6377,7 +6254,7 @@ void free_all_classes( void )
 
 bool load_class_file( const char *fname )
 {
-   string buf;
+   std::string buf;
    class_type *Class;
    int cl = -1, tlev = 0, file_ver = 0;
    FILE *fp;
@@ -6698,7 +6575,7 @@ void write_class_list(  )
  */
 CMDF( do_showclass )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    class_type *Class;
    int cl = 0, low, hi;
 
@@ -6766,7 +6643,7 @@ CMDF( do_showclass )
 /*
  * Create a new Class online - Shaddai
  */
-bool create_new_class( int Class, const string & argument )
+bool create_new_class( int Class, const std::string & argument )
 {
    if( Class >= MAX_CLASS || class_table[Class] == nullptr )
       return false;
@@ -6798,7 +6675,7 @@ bool create_new_class( int Class, const string & argument )
  */
 CMDF( do_setclass )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    class_type *Class;
    int cl = 0, value, i;
 
@@ -6850,15 +6727,13 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "create" ) )
    {
-      string filename;
-
       if( MAX_PC_CLASS >= MAX_CLASS )
       {
          ch->print( "You need to up MAX_CLASS in mud and make clean.\r\n" );
          return;
       }
 
-      filename = std::format( "{}.class", arg1 );
+      std::filesystem::path filename = std::format( "{}.class", arg1 );
       if( !is_valid_filename( ch, CLASS_DIR, filename ) )
          return;
 
@@ -7134,7 +7009,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "ntitle" ) )
    {
-      string arg3;
+      std::string arg3;
       int x;
 
       argument = one_argument( argument, arg3 );
@@ -7157,7 +7032,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "mtitle" ) )
    {
-      string arg3;
+      std::string arg3;
       int x;
 
       argument = one_argument( argument, arg3 );
@@ -7180,7 +7055,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "ftitle" ) )
    {
-      string arg3, arg4;
+      std::string arg3, arg4;
       int x;
 
       argument = one_argument( argument, arg3 );
@@ -7204,7 +7079,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "htitle" ) )
    {
-      string arg3, arg4;
+      std::string arg3, arg4;
       int x;
 
       argument = one_argument( argument, arg3 );
@@ -7737,7 +7612,7 @@ void write_race_list(  )
 /*
  * Create an instance of a new race. - Shaddai
  */
-bool create_new_race( int race, const string & argument )
+bool create_new_race( int race, const std::string & argument )
 {
    if( race >= MAX_RACE || race_table[race] == nullptr )
       return false;
@@ -8385,11 +8260,8 @@ CMDF( do_forgefind )
    ch->pager( "\r\n" );
 
    bool found = false;
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* smith : charlist )
    {
-      char_data *smith = *ich;
-
       if( smith->has_actflag( ACT_SMITH ) || smith->has_actflag( ACT_GUILDFORGE ) )
       {
          found = true;
@@ -8398,92 +8270,4 @@ CMDF( do_forgefind )
    }
    if( !found )
       ch->print( "You didn't find any forges.\r\n" );
-}
-
-/* Send login messages to characters - big modification to the original */
-/* login message stuff from the housing module - Edmond - June 02       */
-extern list < lmsg_data *> login_messages;
-CMDF( do_message )
-{
-   std::string name, arg1, arg2;
-   short type = 0;
-
-   if( argument.empty() )
-   {
-      ch->print( "Leave a login message for who?\r\n" );
-      return;
-   }
-
-   argument = one_argument( argument, name );
-   argument = one_argument( argument, arg1 );
-   argument = one_argument( argument, arg2 );
-
-   if( !str_cmp( name, "list" ) && ch->get_trust( ) >= LEVEL_GREATER )
-   {
-      for( auto* lmsg : login_messages )
-      {
-         ch->printf( "&CName: &c%-20s &CType: &c%d\r\n", capitalize(lmsg->name), lmsg->type );
-
-         if( lmsg->text )
-            ch->printf( "&CText:\r\n  &c%s\r\n", lmsg->text );
-
-         ch->print( "\r\n" );
-      }
-      ch->print( "Ok.\r\n" );
-      return;
-   }
-
-   std::filesystem::path checkname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name.front() ) ), capitalize( name ) );
-
-   if( exists_player( name ) )
-   {
-      for( auto* temp : pclist )
-      {
-         if( !str_cmp( name, temp->name ) && temp->desc )
-         {
-            ch->print( "They are online, wouldn't tells be just as easy?\r\n" );
-            return;
-         }
-      }
-
-      if( !str_cmp( arg1, "type" ) )
-      {
-         if( is_number( arg2 ) )
-         {
-            type = atoi( arg2.c_str() );
-
-            if( type > MAX_MSG )
-            {
-               ch->print( "Invalid login message.\r\n" );
-               return;
-            }
-            argument.clear();
-         }
-         else
-         {
-            ch->print( "Which type?\r\n" );
-            return;
-         }
-      }
-
-      if( !type && argument.empty() )
-      {
-         ch->print( "Send them what message?\r\n" );
-         return;
-      }
-
-      add_loginmsg( name.c_str(), type, argument.c_str() );
-      ch->printf( "You have sent %s the following message:\r\n", capitalize(name).c_str() );
-
-      if( type == 0 )
-         ch->print( argument );
-      else
-         ch->print( login_msg[type] );
-      ch->print( "\r\n" );
-   }
-   else
-   {
-      ch->print( "That player does not exist.\r\n" );
-      return;
-   }
 }

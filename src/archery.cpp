@@ -87,12 +87,8 @@ bool can_use_skill( char_data *, int, int );
 
 obj_data *find_quiver( char_data * ch )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* obj : ch->carrying )
    {
-      obj_data *obj = *iobj;
-
       if( ch->can_see_obj( obj, false ) )
       {
          if( obj->item_type == ITEM_QUIVER && !IS_SET( obj->value[1], CONT_CLOSED ) )
@@ -104,12 +100,8 @@ obj_data *find_quiver( char_data * ch )
 
 obj_data *find_projectile( char_data * ch, obj_data * quiver )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = quiver->contents.begin(  ); iobj != quiver->contents.end(  ); ++iobj )
+   for( auto* obj : quiver->contents )
    {
-      obj_data *obj = *iobj;
-
       if( ch->can_see_obj( obj, false ) )
       {
          if( obj->item_type == ITEM_PROJECTILE )
@@ -570,7 +562,7 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
     */
    if( wield && !victim->has_immune( RIS_MAGIC ) && !victim->in_room->flags.test( ROOM_NO_MAGIC ) )
    {
-      list < affect_data * >::iterator paf;
+      std::list<affect_data *>::iterator paf;
 
       for( paf = wield->pIndexData->affects.begin(  ); paf != wield->pIndexData->affects.end(  ); ++paf )
       {
@@ -759,7 +751,7 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
  * Basically the same guts as do_scan() from above (please keep them in
  * sync) used to find the victim we're firing at.	-Thoric
  */
-char_data *scan_for_vic( char_data * ch, exit_data * pexit, const string & name )
+char_data *scan_for_vic( char_data * ch, exit_data * pexit, const std::string & name )
 {
    char_data *victim;
    room_index *was_in_room;
@@ -848,9 +840,9 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, const string & name 
 /*
  * Generic use ranged attack function			-Thoric & Tricops
  */
-ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_data * projectile, short dt, short range )
+ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, obj_data * projectile, short dt, short range )
 {
-   string arg, arg1, temp;
+   std::string arg, arg1, temp;
 
    if( !argument.empty(  ) && argument[0] == '\'' )
    {
@@ -1101,7 +1093,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
        */
       if( !victim )
       {
-         list < char_data * >::iterator ich;
+         std::list<char_data *>::iterator ich;
          for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
          {
             vch = *ich;
@@ -1201,7 +1193,7 @@ ch_ret ranged_attack( char_data * ch, string argument, obj_data * weapon, obj_da
 /* Bowfire code -- actual firing function */
 CMDF( do_fire )
 {
-   string arg;
+   std::string arg;
    char_data *victim = nullptr;
    obj_data *arrow, *bow;
    short max_dist;
@@ -1244,7 +1236,7 @@ CMDF( do_fire )
 
    if( bow->value[5] != arrow->value[4] )
    {
-      string msg = "You have nothing to fire...\r\n";
+      std::string msg = "You have nothing to fire...\r\n";
 
       switch ( bow->value[5] )
       {
@@ -1284,7 +1276,7 @@ CMDF( do_fire )
  * Attempt to fire at a victim.
  * Returns false if no attempt was made
  */
-bool mob_fire( char_data * ch, const string & name )
+bool mob_fire( char_data * ch, const std::string & name )
 {
    obj_data *arrow, *bow;
    short max_dist;

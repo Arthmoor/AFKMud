@@ -102,7 +102,7 @@ msspinfo::msspinfo()
 
 void save_mssp_info( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( MSSP_FILE );
    if( !stream.is_open(  ) )
@@ -112,51 +112,51 @@ void save_mssp_info( void )
    }
    else
    {
-      stream << "#MSSP_INFO" << endl;
-      stream << "Hostname          " << mssp_info->hostname << endl;
-      stream << "IP                " << mssp_info->ip << endl;
-      stream << "Contact           " << mssp_info->contact << endl;
-      stream << "Icon              " << mssp_info->icon << endl;
-      stream << "Language          " << mssp_info->language << endl;
-      stream << "Location          " << mssp_info->location << endl;
-      stream << "Family            " << mssp_info->family << endl;
-      stream << "Genre             " << mssp_info->genre << endl;
-      stream << "GamePlay          " << mssp_info->gamePlay << endl;
-      stream << "GameSystem        " << mssp_info->gameSystem << endl;
-      stream << "Intermud          " << mssp_info->intermud << endl;
-      stream << "Status            " << mssp_info->status << endl;
-      stream << "SubGenre          " << mssp_info->subgenre << endl;
-      stream << "Created           " << mssp_info->created << endl;
-      stream << "MinAge            " << mssp_info->minAge << endl;
-      stream << "Worlds            " << mssp_info->worlds << endl;
-      stream << "Ansi              " << mssp_info->ansi << endl;
-      stream << "MCCP              " << mssp_info->mccp << endl;
-      stream << "MCP               " << mssp_info->mcp << endl;
-      stream << "MSP               " << mssp_info->msp << endl;
-      stream << "SSL               " << mssp_info->ssl << endl;
-      stream << "MXP               " << mssp_info->mxp << endl;
-      stream << "Pueblo            " << mssp_info->pueblo << endl;
-      stream << "Vt100             " << mssp_info->vt100 << endl;
-      stream << "Xterm256          " << mssp_info->xterm256 << endl;
-      stream << "Pay2Play          " << mssp_info->pay2play << endl;
-      stream << "Pay4Perks         " << mssp_info->pay4perks << endl;
-      stream << "HiringBuilders    " << mssp_info->hiringBuilders << endl;
-      stream << "HiringCoders      " << mssp_info->hiringCoders << endl;
-      stream << "AdultMaterial     " << mssp_info->adultMaterial << endl;
-      stream << "Multiclassing     " << mssp_info->multiclassing << endl;
-      stream << "NewbieFriendly    " << mssp_info->newbieFriendly << endl;
-      stream << "PlayerCities      " << mssp_info->playerCities << endl;
-      stream << "PlayerClans       " << mssp_info->playerClans << endl;
-      stream << "PlayerCrafting    " << mssp_info->playerCrafting << endl;
-      stream << "PlayerGuilds      " << mssp_info->playerGuilds << endl;
-      stream << "EquipmentSystem   " << mssp_info->equipmentSystem << endl;
-      stream << "Multiplaying      " << mssp_info->multiplaying << endl;
-      stream << "PlayerKilling     " << mssp_info->playerKilling << endl;
-      stream << "QuestSystem       " << mssp_info->questSystem << endl;
-      stream << "RolePlaying       " << mssp_info->roleplaying << endl;
-      stream << "TrainingSystem    " << mssp_info->trainingSystem << endl;
-      stream << "WorldOriginality  " << mssp_info->worldOriginality << endl;
-      stream << "End" << endl << endl;
+      stream << "#MSSP_INFO" << std::endl;
+      stream << "Hostname          " << mssp_info->hostname << std::endl;
+      stream << "IP                " << mssp_info->ip << std::endl;
+      stream << "Contact           " << mssp_info->contact << std::endl;
+      stream << "Icon              " << mssp_info->icon << std::endl;
+      stream << "Language          " << mssp_info->language << std::endl;
+      stream << "Location          " << mssp_info->location << std::endl;
+      stream << "Family            " << mssp_info->family << std::endl;
+      stream << "Genre             " << mssp_info->genre << std::endl;
+      stream << "GamePlay          " << mssp_info->gamePlay << std::endl;
+      stream << "GameSystem        " << mssp_info->gameSystem << std::endl;
+      stream << "Intermud          " << mssp_info->intermud << std::endl;
+      stream << "Status            " << mssp_info->status << std::endl;
+      stream << "SubGenre          " << mssp_info->subgenre << std::endl;
+      stream << "Created           " << mssp_info->created << std::endl;
+      stream << "MinAge            " << mssp_info->minAge << std::endl;
+      stream << "Worlds            " << mssp_info->worlds << std::endl;
+      stream << "Ansi              " << mssp_info->ansi << std::endl;
+      stream << "MCCP              " << mssp_info->mccp << std::endl;
+      stream << "MCP               " << mssp_info->mcp << std::endl;
+      stream << "MSP               " << mssp_info->msp << std::endl;
+      stream << "SSL               " << mssp_info->ssl << std::endl;
+      stream << "MXP               " << mssp_info->mxp << std::endl;
+      stream << "Pueblo            " << mssp_info->pueblo << std::endl;
+      stream << "Vt100             " << mssp_info->vt100 << std::endl;
+      stream << "Xterm256          " << mssp_info->xterm256 << std::endl;
+      stream << "Pay2Play          " << mssp_info->pay2play << std::endl;
+      stream << "Pay4Perks         " << mssp_info->pay4perks << std::endl;
+      stream << "HiringBuilders    " << mssp_info->hiringBuilders << std::endl;
+      stream << "HiringCoders      " << mssp_info->hiringCoders << std::endl;
+      stream << "AdultMaterial     " << mssp_info->adultMaterial << std::endl;
+      stream << "Multiclassing     " << mssp_info->multiclassing << std::endl;
+      stream << "NewbieFriendly    " << mssp_info->newbieFriendly << std::endl;
+      stream << "PlayerCities      " << mssp_info->playerCities << std::endl;
+      stream << "PlayerClans       " << mssp_info->playerClans << std::endl;
+      stream << "PlayerCrafting    " << mssp_info->playerCrafting << std::endl;
+      stream << "PlayerGuilds      " << mssp_info->playerGuilds << std::endl;
+      stream << "EquipmentSystem   " << mssp_info->equipmentSystem << std::endl;
+      stream << "Multiplaying      " << mssp_info->multiplaying << std::endl;
+      stream << "PlayerKilling     " << mssp_info->playerKilling << std::endl;
+      stream << "QuestSystem       " << mssp_info->questSystem << std::endl;
+      stream << "RolePlaying       " << mssp_info->roleplaying << std::endl;
+      stream << "TrainingSystem    " << mssp_info->trainingSystem << std::endl;
+      stream << "WorldOriginality  " << mssp_info->worldOriginality << std::endl;
+      stream << "End" << std::endl << std::endl;
 
       stream.close(  );
    }
@@ -167,7 +167,7 @@ void save_mssp_info( void )
  */
 void load_mssp_data( void )
 {
-   ifstream stream;
+   std::ifstream stream;
 
    stream.open( MSSP_FILE );
    if( !stream.is_open(  ) )
@@ -180,7 +180,7 @@ void load_mssp_data( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MSL];
 
       stream >> key;
@@ -608,8 +608,8 @@ void show_mssp( char_data * ch )
 
 CMDF( do_setmssp )
 {
-   string arg1;
-   string *strptr = nullptr;
+   std::string arg1;
+   std::string *strptr = nullptr;
    bool *ynptr = nullptr;
 
    if( argument.empty() )
@@ -848,6 +848,7 @@ CMDF( do_setmssp )
       do_setmssp( ch, "" );
 }
 
+// FIXME: Update to C++23 - follow example in character.cpp
 void write_to_descriptor_printf( descriptor_data * desc, const char *fmt, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void write_to_descriptor_printf( descriptor_data * desc, const char *fmt, ... )
 {
@@ -862,6 +863,7 @@ void write_to_descriptor_printf( descriptor_data * desc, const char *fmt, ... )
     desc->write( buf );
 }
 
+// FIXME: Update to C++23 - follow example in character.cpp
 void mssp_reply( descriptor_data * d, const char *var, const char *fmt, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 void mssp_reply( descriptor_data * d, const char *var, const char *fmt, ... )
 {
@@ -888,13 +890,10 @@ void mssp_reply( descriptor_data * d, const char *var, const char *fmt, ... )
 
 short player_count( void )
 {
-   list < descriptor_data * >::iterator ds;
    short count = 0;
 
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-
       if( d->connected >= CON_PLAYING )
          ++count;
    }

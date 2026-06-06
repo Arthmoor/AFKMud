@@ -52,8 +52,8 @@ class chan_history
      chan_history(  );
     ~chan_history(  );
 
-   string name;
-   char *format;
+   std::string name;
+   std::string format;
    std::chrono::system_clock::time_point timestamp;
    int level;
    int invis;
@@ -69,12 +69,12 @@ class mud_channel
      mud_channel(  );
     ~mud_channel(  );
 
-     bitset < CHAN_MAXFLAG > flags;
-   string name;
-   string colorname;
-   list < chan_history * > history;
+   std::bitset<CHAN_MAXFLAG> flags;
+   std::string name;
+   std::string colorname;
+   std::list<chan_history *> history;
    int level;
    int type;
 };
 
-mud_channel *find_channel( const string & );
+mud_channel *find_channel( const std::string & );

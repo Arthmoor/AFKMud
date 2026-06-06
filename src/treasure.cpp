@@ -41,9 +41,9 @@
 int ncommon, nrare, nurare;
 extern int top_affect;
 
-list < rune_data * >runelist;
-list < runeword_data * >rwordlist;
-vector < weapontable * >w_table;
+std::list<rune_data *> runelist;
+std::list<runeword_data *> rwordlist;
+std::vector<weapontable *> w_table;
 
 /* AGH! *BONK BONK BONK* Why didn't any of us think of THIS before!? So much NICER!
  * This table is also used in generating weapons.
@@ -162,7 +162,7 @@ weapontable::weapontable(  )
 
 void save_weapontable(  )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( WTYPE_FILE );
    if( !stream.is_open(  ) )
@@ -173,23 +173,23 @@ void save_weapontable(  )
 
    for( int x = 0; x < TWTP_MAX; ++x )
    {
-      stream << "#WTYPE" << endl;
-      stream << "Type    " << weapon_type[x].type << endl;
-      stream << "Name    " << weapon_type[x].name << endl;
-      stream << "BaseDam " << weapon_type[x].wd << endl;
-      stream << "Weight  " << weapon_type[x].weight << endl;
-      stream << "Cost    " << weapon_type[x].cost << endl;
-      stream << "Skill   " << weapon_type[x].skill << endl;
-      stream << "DamType " << weapon_type[x].damage << endl;
-      stream << "Flags   " << weapon_type[x].flags << endl;
-      stream << "End" << endl << endl;
+      stream << "#WTYPE" << std::endl;
+      stream << "Type    " << weapon_type[x].type << std::endl;
+      stream << "Name    " << weapon_type[x].name << std::endl;
+      stream << "BaseDam " << weapon_type[x].wd << std::endl;
+      stream << "Weight  " << weapon_type[x].weight << std::endl;
+      stream << "Cost    " << weapon_type[x].cost << std::endl;
+      stream << "Skill   " << weapon_type[x].skill << std::endl;
+      stream << "DamType " << weapon_type[x].damage << std::endl;
+      stream << "Flags   " << weapon_type[x].flags << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
 }
 
 void load_weapontable(  )
 {
-   ifstream stream;
+   std::ifstream stream;
    weapontable *wt = nullptr;
 
    w_table.clear(  );
@@ -203,7 +203,7 @@ void load_weapontable(  )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -284,26 +284,24 @@ runeword_data::~runeword_data(  )
 
 void free_runedata( void )
 {
-   list < rune_data * >::iterator rn;
-   for( rn = runelist.begin(  ); rn != runelist.end(  ); )
+   for( auto it = runelist.begin(  ); it != runelist.end(  ); )
    {
-      rune_data *rune = *rn;
-      ++rn;
+      rune_data *rune = *it;
+      ++it;
 
       deleteptr( rune );
    }
 
-   list < runeword_data * >::iterator rw;
-   for( rw = rwordlist.begin(  ); rw != rwordlist.end(  ); )
+   for( auto it = rwordlist.begin(  ); it != rwordlist.end(  ); )
    {
-      runeword_data *rword = *rw;
-      ++rw;
+      runeword_data *rword = *it;
+      ++it;
 
       deleteptr( rword );
    }
 }
 
-short get_rarity( const string & name )
+short get_rarity( const std::string & name )
 {
    for( unsigned int x = 0; x < sizeof( rarity ) / sizeof( rarity[0] ); ++x )
       if( !str_cmp( name, rarity[x] ) )
@@ -313,14 +311,11 @@ short get_rarity( const string & name )
 
 runeword_data *pick_runeword(  )
 {
-   list < runeword_data * >::iterator irword;
    int wordpick = number_range( 1, rwordlist.size(  ) );
    int counter = 1;
 
-   for( irword = rwordlist.begin(  ); irword != rwordlist.end(  ); ++irword, ++counter )
+   for( auto* rword : rwordlist )
    {
-      runeword_data *rword = *irword;
-
       if( counter == wordpick )
          return rword;
    }
@@ -329,7 +324,7 @@ runeword_data *pick_runeword(  )
 
 void load_runewords( void )
 {
-   ifstream stream;
+   std::ifstream stream;
    runeword_data *rword = nullptr;
 
    rwordlist.clear(  );
@@ -345,7 +340,7 @@ void load_runewords( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -372,7 +367,7 @@ void load_runewords( void )
          rword->set_rune3( value );
       else if( key == "Stat1" )
       {
-         string rstat;
+         std::string rstat;
 
          value = one_argument( value, rstat );
          rword->stat1[0] = atoi( rstat.c_str(  ) );
@@ -381,7 +376,7 @@ void load_runewords( void )
       }
       else if( key == "Stat2" )
       {
-         string rstat;
+         std::string rstat;
 
          value = one_argument( value, rstat );
          rword->stat2[0] = atoi( rstat.c_str(  ) );
@@ -390,7 +385,7 @@ void load_runewords( void )
       }
       else if( key == "Stat3" )
       {
-         string rstat;
+         std::string rstat;
 
          value = one_argument( value, rstat );
          rword->stat3[0] = atoi( rstat.c_str(  ) );
@@ -399,7 +394,7 @@ void load_runewords( void )
       }
       else if( key == "Stat4" )
       {
-         string rstat;
+         std::string rstat;
 
          value = one_argument( value, rstat );
          rword->stat4[0] = atoi( rstat.c_str(  ) );
@@ -409,7 +404,7 @@ void load_runewords( void )
       else if( key == "End" )
       {
          bool found = false;
-         list < runeword_data * >::iterator rw;
+         std::list<runeword_data *>::iterator rw;
 
          for( rw = rwordlist.begin(  ); rw != rwordlist.end(  ); ++rw )
          {
@@ -434,7 +429,7 @@ void load_runewords( void )
 
 void load_runes( void )
 {
-   ifstream stream;
+   std::ifstream stream;
    rune_data *rune = nullptr;
 
    runelist.clear(  );
@@ -450,7 +445,7 @@ void load_runes( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -471,7 +466,7 @@ void load_runes( void )
          rune->set_rarity( atoi( value.c_str(  ) ) );
       else if( key == "Stat1" )
       {
-         string rstat;
+         std::string rstat;
 
          value = one_argument( value, rstat );
          rune->stat1[0] = atoi( rstat.c_str(  ) );
@@ -480,7 +475,7 @@ void load_runes( void )
       }
       else if( key == "Stat2" )
       {
-         string rstat;
+         std::string rstat;
 
          value = one_argument( value, rstat );
          rune->stat2[0] = atoi( rstat.c_str(  ) );
@@ -490,7 +485,7 @@ void load_runes( void )
       else if( key == "End" )
       {
          bool found = false;
-         list < rune_data * >::iterator rn;
+         std::list<rune_data *>::iterator rn;
 
          for( rn = runelist.begin(  ); rn != runelist.end(  ); ++rn )
          {
@@ -532,7 +527,7 @@ void load_runes( void )
 
 void save_runes( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( RUNE_FILE );
    if( !stream.is_open(  ) )
@@ -541,29 +536,22 @@ void save_runes( void )
       return;
    }
 
-   list < rune_data * >::iterator irune;
-   for( irune = runelist.begin(  ); irune != runelist.end(  ); ++irune )
+   for( auto* rune : runelist )
    {
-      rune_data *rune = *irune;
-
-      stream << "#RUNE" << endl;
-      stream << "Name     " << rune->get_name(  ) << endl;
-      stream << "Rarity   " << rune->get_rarity(  ) << endl;
-      stream << "Stat1    " << rune->stat1[0] << " " << rune->stat1[1] << endl;
-      stream << "Stat2    " << rune->stat2[0] << " " << rune->stat2[1] << endl;
-      stream << "End" << endl << endl;
+      stream << "#RUNE" << std::endl;
+      stream << "Name     " << rune->get_name(  ) << std::endl;
+      stream << "Rarity   " << rune->get_rarity(  ) << std::endl;
+      stream << "Stat1    " << rune->stat1[0] << " " << rune->stat1[1] << std::endl;
+      stream << "Stat2    " << rune->stat2[0] << " " << rune->stat2[1] << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
 }
 
-rune_data *check_rune( const string & name )
+rune_data *check_rune( const std::string & name )
 {
-   list < rune_data * >::iterator irune;
-
-   for( irune = runelist.begin(  ); irune != runelist.end(  ); ++irune )
+   for( auto* rune : runelist )
    {
-      rune_data *rune = *irune;
-
       if( !str_cmp( rune->get_name(  ), name ) )
          return rune;
    }
@@ -597,7 +585,7 @@ CMDF( do_makerune )
    rune->set_rarity( RUNE_COMMON );
 
    bool found = false;
-   list < rune_data * >::iterator rn;
+   std::list<rune_data *>::iterator rn;
    for( rn = runelist.begin(  ); rn != runelist.end(  ); ++rn )
    {
       rune_data *r = *rn;
@@ -646,7 +634,7 @@ CMDF( do_destroyrune )
 
 CMDF( do_setrune )
 {
-   string arg, arg2, arg3;
+   std::string arg, arg2, arg3;
    rune_data *rune;
 
    if( ch->isnpc(  ) )
@@ -908,11 +896,8 @@ CMDF( do_showrunes )
 
    if( argument.empty(  ) )
    {
-      list < rune_data * >::iterator irune;
-      for( irune = runelist.begin(  ); irune != runelist.end(  ); ++irune )
+      for( auto* rune : runelist )
       {
-         rune_data *rune = *irune;
-
          ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %d\r\n", rune->get_cname(  ), rarity[rune->get_rarity(  )],
                      a_types[rune->stat1[0]], rune->stat1[1], a_types[rune->stat2[0]], rune->stat2[1] );
          ++total;
@@ -921,11 +906,8 @@ CMDF( do_showrunes )
    }
    else
    {
-      list < rune_data * >::iterator irune;
-      for( irune = runelist.begin(  ); irune != runelist.end(  ); ++irune )
+      for( auto* rune : runelist )
       {
-         rune_data *rune = *irune;
-
          if( !str_prefix( argument, rune->get_name(  ) ) )
          {
             ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %-6d\r\n", rune->get_cname(  ), rarity[rune->get_rarity(  )],
@@ -953,11 +935,8 @@ CMDF( do_runewords )
 
    if( argument.empty(  ) )
    {
-      list < runeword_data * >::iterator irword;
-      for( irword = rwordlist.begin(  ); irword != rwordlist.end(  ); ++irword )
+      for( auto* rword : rwordlist )
       {
-         runeword_data *rword = *irword;
-
          ch->pagerf( "%-17.17s %-6.6s %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d\r\n",
                      rword->get_cname(  ), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
                      a_types[rword->stat1[0]], rword->stat1[1], a_types[rword->stat2[0]], rword->stat2[1],
@@ -968,12 +947,8 @@ CMDF( do_runewords )
    }
    else
    {
-      list < runeword_data * >::iterator irword;
-
-      for( irword = rwordlist.begin(  ); irword != rwordlist.end(  ); ++irword )
+      for( auto* rword : rwordlist )
       {
-         runeword_data *rword = *irword;
-
          if( !str_prefix( argument, rword->get_name(  ) ) )
          {
             ch->pagerf( "%-10.10s %-6.6s %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d\r\n",
@@ -1025,7 +1000,7 @@ obj_data *generate_rune( short level )
 
    bool found = false;
    rune_data *rune = nullptr;
-   list < rune_data * >::iterator rn;
+   std::list<rune_data *>::iterator rn;
    for( rn = runelist.begin(  ); rn != runelist.end(  ); ++rn )
    {
       rune = *rn;
@@ -1135,8 +1110,7 @@ obj_data *generate_gem( short level )
 void obj_data::weapongen(  )
 {
    affect_data *paf;
-   list < affect_data * >::iterator paff;
-   string eflags, flag;
+   std::string eflags, flag;
    int v8, v9, v10, ovalue;
    bool protoflag = false;
 
@@ -1194,6 +1168,7 @@ void obj_data::weapongen(  )
          extra_flags.set( ovalue );
    }
 
+   std::list<affect_data *>::iterator paff;
    for( paff = affects.begin(  ); paff != affects.end(  ); )
    {
       affect_data *aff = *paff;
@@ -1279,9 +1254,7 @@ void obj_data::weapongen(  )
 
 void obj_data::armorgen(  )
 {
-   affect_data *paf;
-   list < affect_data * >::iterator paff;
-   string eflags, flag;
+   std::string eflags, flag;
    int v3, v4, ovalue;
    bool protoflag = false;
 
@@ -1346,6 +1319,7 @@ void obj_data::armorgen(  )
          extra_flags.set( ovalue );
    }
 
+   std::list<affect_data *>::iterator paff;
    for( paff = affects.begin(  ); paff != affects.end(  ); )
    {
       affect_data *aff = *paff;
@@ -1388,7 +1362,7 @@ void obj_data::armorgen(  )
    {
       extra_flags.set( ITEM_MAGIC );
 
-      paf = new affect_data;
+      affect_data *paf = new affect_data;
       paf->type = -1;
       paf->duration = -1;
       paf->location = APPLY_SAVING_SPELL; /* Save vs Spell */
@@ -1697,7 +1671,7 @@ void make_scroll( obj_data * newitem )
    if( runeword )
    {
       extra_descr_data *ed = new extra_descr_data;
-      string typedesc;
+      std::string typedesc;
 
       ed->keyword = "parchment scroll";
       if( runeword->get_type(  ) == 0 )
@@ -2322,7 +2296,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
 CMDF( do_rttest )
 {
    obj_data *corpse;
-   string arg;
+   std::string arg;
    int mlvl, times, x;
 
    if( !ch->is_imp(  ) )
@@ -2396,7 +2370,7 @@ void add_rword_affect( obj_data * item, int v1, int v2 )
 
 void check_runewords( char_data * ch, obj_data * item )
 {
-   list < runeword_data * >::iterator irword;
+   std::list<runeword_data *>::iterator irword;
 
    // Runewords must contain at least 2 runes, so if these first 2 checks fail, bail out. 
    if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
@@ -2487,12 +2461,11 @@ void check_runewords( char_data * ch, obj_data * item )
 
 void add_rune_affect( char_data * ch, obj_data * item, obj_data * rune )
 {
-   affect_data *paf;
-
-   paf = new affect_data;
+   affect_data *paf = new affect_data;
    paf->type = -1;
    paf->duration = -1;
    paf->bit = 0;
+
    if( item->item_type == ITEM_WEAPON || item->item_type == ITEM_MISSILE_WEAPON )
       paf->location = rune->value[0];
    else
@@ -2512,6 +2485,7 @@ void add_rune_affect( char_data * ch, obj_data * item, obj_data * rune )
       else
          paf->modifier = rune->value[3];
    }
+
    item->affects.push_back( paf );
    rune->separate(  );
    rune->from_char(  );
@@ -2522,7 +2496,7 @@ void add_rune_affect( char_data * ch, obj_data * item, obj_data * rune )
 
 CMDF( do_socket )
 {
-   string arg;
+   std::string arg;
    obj_data *rune, *item;
 
    if( ch->isnpc(  ) )
@@ -2637,7 +2611,7 @@ CMDF( do_socket )
    ch->printf( "%s cannot be socketed. Only weapons, body armors, and shields are valid.\r\n", item->short_descr );
 }
 
-int get_ore( const string & ore )
+int get_ore( const std::string & ore )
 {
    if( !str_cmp( ore, "iron" ) )
       return ORE_IRON;
@@ -2687,7 +2661,7 @@ CMDF( do_forge )
    /*
     * Check to see what sort of flunky the smith is 
     */
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    char_data *smith = nullptr;
    bool msmith = false, gsmith = false;
 
@@ -2752,7 +2726,7 @@ CMDF( do_forge )
    /*
     * Finally, the argument funness. 
     */
-   string arg, item_type, arg3;
+   std::string arg, item_type, arg3;
    argument = one_argument( argument, arg );
    argument = one_argument( argument, item_type );
    argument = one_argument( argument, arg3 );
@@ -2879,11 +2853,8 @@ CMDF( do_forge )
     * See how much of the specified ore the PC has 
     */
    int orecount = 0, consume = 0;
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* oreobj : ch->carrying )
    {
-      obj_data *oreobj = *iobj;
-
       if( oreobj->pIndexData->vnum == ore_vnum )
          orecount += oreobj->count;
    }
@@ -3293,11 +3264,8 @@ CMDF( do_forge )
           */
          if( !ch->pcdata->clan )
          {
-            list < clan_data * >::iterator cl;
-            for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
+            for( auto* clan : clanlist )
             {
-               clan_data *clan = *cl;
-
                if( clan->forge == smith->pIndexData->vnum )
                {
                   clan->balance += ( int )( 0.2 * cost );
@@ -3316,10 +3284,10 @@ CMDF( do_forge )
    /*
     * Had to be modified and such. Wasn't doing anything as a while statement - Samson 
     */
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
+   for( auto it = ch->carrying.begin(  ); it != ch->carrying.end(  ); )
    {
-      obj_data *item = *iobj;
-      ++iobj;
+      obj_data *item = *it;
+      ++it;
 
       if( item->pIndexData->vnum == ore_vnum && consume > 0 )
       {

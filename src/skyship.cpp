@@ -33,13 +33,13 @@
 #include "mobindex.h"
 #include "overland.h"
 
-void continent_data::fread_landing_site( ifstream & stream )
+void continent_data::fread_landing_site( std::ifstream & stream )
 {
    landing_data *landing_site = new landing_data;
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -55,7 +55,7 @@ void continent_data::fread_landing_site( ifstream & stream )
 
       if( key == "Coordinates" )
       {
-         string coord;
+         std::string coord;
 
          value = one_argument( value, coord );
          landing_site->map_x = atoi( coord.c_str(  ) );
@@ -139,7 +139,6 @@ void land_skyship( char_data * ch, char_data * skyship, bool arrived )
 void fly_skyship( char_data * ch, char_data * skyship )
 {
    char_data *pair;
-   double dist, angle;
    int speed = 10;   /* Speed of the skyships on the overland */
 
    /*
@@ -168,8 +167,8 @@ void fly_skyship( char_data * ch, char_data * skyship )
    /*
     * up up and away 
     */
-   dist = distance( skyship->map_x, skyship->map_y, skyship->dcoordx, skyship->dcoordy );
-   angle = calc_angle( skyship->map_x, skyship->map_y, skyship->dcoordx, skyship->dcoordy, &dist );
+   double dist = distance( skyship->map_x, skyship->map_y, skyship->dcoordx, skyship->dcoordy );
+   double angle = calc_angle( skyship->map_x, skyship->map_y, skyship->dcoordx, skyship->dcoordy, &dist );
 
    if( angle == -1 )
       skyship->heading = -1;
@@ -380,12 +379,8 @@ CMDF( do_call )
 
 landing_data *continent_data::check_landing_site( short x, short y )
 {
-   list < landing_data * >::iterator ilanding;
-
-   for( ilanding = this->landing_sites.begin(  ); ilanding != landing_sites.end(  ); ++ilanding )
+   for( auto* landing : this->landing_sites )
    {
-      landing_data *landing = *ilanding;
-
       if( landing->map_x == x && landing->map_y == y )
          return landing;
    }
@@ -397,7 +392,6 @@ landing_data *continent_data::check_landing_site( short x, short y )
  */
 CMDF( do_fly )
 {
-   list < landing_data * >::iterator ilanding;
    char_data *skyship = nullptr;
    landing_data *lsite = nullptr;
    int cost = 0;
@@ -436,10 +430,8 @@ CMDF( do_fly )
 
    lsite = ch->continent->check_landing_site( ch->map_x, ch->map_y );
 
-   for( ilanding = ch->continent->landing_sites.begin(  ); ilanding != ch->continent->landing_sites.end(  ); ++ilanding )
+   for( auto* landing : ch->continent->landing_sites )
    {
-      landing_data *landing = *ilanding;
-
       if( !landing->area.empty(  ) && !str_prefix( argument, landing->area ) )
       {
          if( lsite && !str_cmp( landing->area, lsite->area ) )
@@ -545,28 +537,19 @@ void continent_data::delete_landing_site( landing_data * landing )
 /* Support command to list all landing sites currently loaded */
 CMDF( do_landing_sites )
 {
-   list < continent_data * >::iterator cont;
-   list < landing_data * >::iterator ilanding;
-
    ch->pager( "Continent | Coordinates | Area             | Cost     \r\n" );
    ch->pager( "------------------------------------------------------\r\n" );
 
-   for( cont = continent_list.begin(  ); cont != continent_list.end(  ); ++cont )
+   for( auto* continent : continent_list )
    {
-      continent_data *continent = *cont;
-
       if( continent->landing_sites.empty(  ) && continent->nogrid == false )
       {
          ch->pagerf( "%s: No landing sites defined.\r\n", continent->name.c_str( ) );
          continue;
       }
 
-      for( ilanding = continent->landing_sites.begin(  ); ilanding != continent->landing_sites.end(  ); ++ilanding )
-      {
-         landing_data *landing = *ilanding;
-
+      for( auto* landing : continent->landing_sites )
          ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", continent->name.c_str(  ), landing->map_x, landing->map_y, landing->area.c_str(  ), landing->cost );
-      }
    }
 }
 
@@ -574,7 +557,7 @@ CMDF( do_landing_sites )
 CMDF( do_setlanding )
 {
    landing_data *landing = nullptr;
-   string arg;
+   std::string arg;
 
    if( ch->isnpc(  ) )
    {

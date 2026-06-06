@@ -49,8 +49,38 @@
 #include "shell.h"
 #endif
 
+#define DNS_FILE SYSTEM_DIR "dns.dat"
+
+struct dns_data
+{
+   dns_data(  );
+   ~dns_data(  );
+
+   std::string ip;
+   std::string name;
+   std::chrono::system_clock::time_point time;
+};
+
+// Login Messages
+class lmsg_data
+{
+private:
+   lmsg_data( const lmsg_data & p );
+   lmsg_data & operator=( const lmsg_data & );
+
+public:
+   lmsg_data(  );
+   ~lmsg_data(  );
+
+   char *name;
+   char *text;
+   short type;
+};
+
 int maxdesc, newdesc;
-list < descriptor_data * >dlist;
+std::list<descriptor_data *> dlist;
+std::list<dns_data *> dnslist;
+std::list<lmsg_data *> login_messages;
 
 extern const char *alarm_section;
 extern fd_set in_set;
@@ -65,17 +95,17 @@ extern bool compilelock;
 
 void send_mssp_data( descriptor_data * );
 void set_alarm( long );
-auth_data *get_auth_name( const string & );
+auth_data *get_auth_name( const std::string & );
 void save_sysdata(  );
 void save_auth_list(  );
 void check_holiday( char_data * );
 void update_connhistory( descriptor_data *, int ); /* connhist.c */
 void check_auth_state( char_data * );
-void oedit_parse( descriptor_data *, string & );
-void medit_parse( descriptor_data *, string & );
-void redit_parse( descriptor_data *, string & );
-void board_parse( descriptor_data *, const string & );
-bool check_immortal_domain( char_data *, const string & );
+void oedit_parse( descriptor_data *, std::string & );
+void medit_parse( descriptor_data *, std::string & );
+void redit_parse( descriptor_data *, std::string & );
+void board_parse( descriptor_data *, const std::string & );
+bool check_immortal_domain( char_data *, const std::string & );
 void scan_rares( char_data * );
 void break_camp( char_data * );
 void setup_newbie( char_data *, bool );
@@ -167,20 +197,6 @@ CMDF( do_trdata )
       clear_trdata(  );
 }
 
-#define DNS_FILE SYSTEM_DIR "dns.dat"
-
-struct dns_data
-{
-   dns_data(  );
-   ~dns_data(  );
-
-   std::string ip;
-   std::string name;
-   std::chrono::system_clock::time_point time;
-};
-
-list < dns_data * >dnslist;
-
 descriptor_data::~descriptor_data(  )
 {
    if( can_compress && is_compressing )
@@ -215,12 +231,10 @@ mccp_data::mccp_data(  )
 
 void free_all_descs( void )
 {
-   list < descriptor_data * >::iterator ds;
-
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); )
+   for( auto it = dlist.begin(); it != dlist.end(); )
    {
-      descriptor_data *d = *ds;
-      ++ds;
+      descriptor_data *d = *it;
+      ++it;
 
       dlist.remove( d );
       deleteptr( d );
@@ -318,8 +332,6 @@ lmsg_data::lmsg_data(  )
    init_memory( &name, &type, sizeof( type ) );
 }
 
-list < lmsg_data *> login_messages;
-
 void fread_loginmsg( FILE * fp )
 {
    lmsg_data *lmsg = nullptr;
@@ -383,11 +395,10 @@ void fread_loginmsg( FILE * fp )
 void load_loginmsg(  )
 {
    FILE *fp;
-   std::filesystem::path filename;
 
    login_messages.clear();
 
-   filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
    if( ( fp = fopen( filename.c_str(), "r" ) ) == nullptr )
    {
       bug( "%s: Cannot open login message file.", __func__ );
@@ -480,16 +491,13 @@ void add_loginmsg( const char *name, short type, const char *argument )
 
 void check_loginmsg( char_data * ch )
 {
-   list < lmsg_data * >::iterator imsg;
-
-
    if( !ch || ch->isnpc() )
       return;
 
-   for( imsg = login_messages.begin(  ); imsg != login_messages.end(  ); )
+   for( auto it = login_messages.begin(); it != login_messages.end(); )
    {
-      lmsg_data *lmsg = *imsg;
-      ++imsg;
+      lmsg_data *lmsg = *it;
+      ++it;
 
       if( !str_cmp( lmsg->name, ch->name ) )
       {
@@ -598,12 +606,11 @@ bool check_bad_desc( int desc )
  * Added block checking to prevent random booting of the descriptor. Thanks go
  * out to Rustry for his suggestions. -Orion
  */
-bool write_to_descriptor_old( int desc, const char* txt )
+bool write_to_descriptor_old( int desc, std::string_view text )
 {
-   if( !txt || *txt == '\0' )
+   if( text.empty() )
       return true;
 
-   std::string_view text{txt};
    size_t offset = 0;
 
    while( offset < text.size() )
@@ -645,14 +652,12 @@ bool write_to_descriptor_old( int desc, const char* txt )
  * This function handles both compressed and uncompressed sending.
  * Updated to run with the block checks by Orion... if it doesn't work, blame him.;P -Orion
  */
-bool descriptor_data::write( const string & txt )
+bool descriptor_data::write( std::string_view text )
 {
-   if( txt.empty() )
+   if( text.empty() )
       return true;
 
-   std::string_view text_to_send{txt};
-
-   size_t length = txt.length();
+   size_t length = text.size();
    size_t mccpsaved = length;
 
    // Won't send more then it has to so make sure we check if its under length.
@@ -684,8 +689,8 @@ bool descriptor_data::write( const string & txt )
    if( mccp->out_compress )
    {
       auto& z = *mccp->out_compress;
-      z.next_in = reinterpret_cast<unsigned char*>( const_cast<char*>( text_to_send.data() ) );
-      z.avail_in = static_cast<uInt>( text_to_send.size() );
+      z.next_in = reinterpret_cast<unsigned char*>( const_cast<char*>( text.data() ) );
+      z.avail_in = static_cast<uInt>( text.size() );
 
       while( z.avail_in > 0 )
       {
@@ -733,10 +738,10 @@ bool descriptor_data::write( const string & txt )
 
    // If you end up down here, then text is being sent uncompressed.
    size_t offset = 0;
-   while( offset < text_to_send.size() )
+   while( offset < text.size() )
    {
-      size_t nBlock = std::min( text_to_send.size() - offset, size_t{4096} );
-      int nWrite = send_chunk( text_to_send.data() + offset, nBlock );
+      size_t nBlock = std::min( text.size() - offset, size_t{4096} );
+      int nWrite = send_chunk( text.data() + offset, nBlock );
 
       if( nWrite == -1 )
          return false;
@@ -1128,7 +1133,7 @@ void descriptor_data::read_from_buffer( )
 /*
  * Append onto an output buffer.
  */
-void descriptor_data::write_to_buffer( std::string_view txt )
+void descriptor_data::write_to_buffer( std::string_view text )
 {
    if( MPSilent )
       return;
@@ -1139,7 +1144,7 @@ void descriptor_data::write_to_buffer( std::string_view txt )
    if( this->outbuf.empty(  ) && !this->fcommand )
       this->outbuf = "\r\n";
 
-   this->outbuf.append( txt );
+   this->outbuf.append( text );
 }
 
 // FIXME: Switch to std::format logic. Use character.cpp as an example.
@@ -1156,28 +1161,28 @@ void descriptor_data::buffer_printf( const char *fmt, ... )
 }
 
 /* Writes to a descriptor, usually best used when there's no character to send to ( like logins ) */
-void descriptor_data::send_color( std::string_view txt )
+void descriptor_data::send_color( std::string_view text )
 {
-   if( txt.empty(  ) || !this->descriptor )
+   if( text.empty(  ) || !this->descriptor )
       return;
 
-   this->write_to_buffer( colorize( txt, this ) );
+   this->write_to_buffer( colorize( text, this ) );
 }
 
-void descriptor_data::pager( const string & txt )
+void descriptor_data::pager( const std::string & text )
 {
    if( this->pagebuf.empty(  ) && !this->fcommand )
       this->pagebuf = "\r\n";
 
-   this->pagebuf.append( txt );
+   this->pagebuf.append( text );
 }
 
-void descriptor_data::set_pager_input( const string & argument )
+void descriptor_data::set_pager_input( const std::string & argument )
 {
-   string arg = argument;
+   std::string arg = argument;
 
    strip_lspace( arg );
-   this->pagecmd = arg[0];
+   this->pagecmd = arg.front();
 }
 
 bool descriptor_data::pager_output(  )
@@ -1224,7 +1229,7 @@ bool descriptor_data::pager_output(  )
    }
 
    // This is going to get seriously messed up if people use the wrong line termination.
-   vector < string > pagelines = string_explode( this->pagebuf, '\n' );
+   std::vector<std::string> pagelines = string_explode( this->pagebuf, '\n' );
 
    if( end > pagelines.size() )
       end = pagelines.size();
@@ -1283,11 +1288,38 @@ void descriptor_data::send_greeting(  )
    }
 }
 
+/*
+ * Dump a text file to a player, a line at a time		-Thoric
+ */
+// NOTE: Must be passed directly to d->write() because the colorize function eats ANSI codes and such. - Samson 6/4/2026.
+void show_file( char_data * ch, const std::string & filename )
+{
+   if( !ch || !ch->desc )
+      return;
+
+   std::ifstream fp{ filename };
+   if( !fp.is_open() )
+      return;
+
+   std::string line;
+   std::string output;
+
+   while( std::getline( fp, line ) )
+   {
+      if( !line.empty() && line.back() == '\r' )
+         line.pop_back();
+
+      output += line + "\r\n";
+   }
+
+   // Write the formatted content directly to the descriptor.
+   output.insert( 0, "\033[H" );
+   ch->desc->write( output );
+}
+
 void descriptor_data::show_title(  )
 {
-   char_data *ch;
-
-   ch = character;
+   char_data *ch = character;
 
    if( !ch->has_pcflag( PCFLAG_NOINTRO ) )
       show_file( ch, ANSITITLE_FILE );
@@ -1322,8 +1354,6 @@ dns_data::~dns_data(  )
 
 void free_dns_list( void )
 {
-   list < dns_data * >::iterator dns;
-
    for( auto it = dnslist.begin(  ); it != dnslist.end(  ); )
    {
       dns_data *ip = *it;
@@ -1335,7 +1365,7 @@ void free_dns_list( void )
 
 void save_dns( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( DNS_FILE );
    if( !stream.is_open(  ) )
@@ -1347,11 +1377,11 @@ void save_dns( void )
    {
       for( auto* ip : dnslist )
       {
-         stream << "#CACHE" << endl;
-         stream << "IP   " << ip->ip << endl;
-         stream << "Name " << ip->name << endl;
-         stream << "Time " << ip->time << endl;
-         stream << "End" << endl << endl;
+         stream << "#CACHE" << std::endl;
+         stream << "IP   " << ip->ip << std::endl;
+         stream << "Name " << ip->name << std::endl;
+         stream << "Time " << ip->time << std::endl;
+         stream << "End" << std::endl << std::endl;
       }
       stream.close(  );
    }
@@ -1375,7 +1405,7 @@ void prune_dns( void )
    save_dns(  );
 }
 
-void add_dns( const string & dhost, const string & address )
+void add_dns( const std::string & dhost, const std::string & address )
 {
    dns_data *cache;
 
@@ -1388,7 +1418,7 @@ void add_dns( const string & dhost, const string & address )
    save_dns(  );
 }
 
-std::string in_dns_cache( const string & ip )
+std::string in_dns_cache( const std::string & ip )
 {
    for( auto* dns : dnslist )
    {
@@ -1401,7 +1431,7 @@ std::string in_dns_cache( const string & ip )
 void load_dns( void )
 {
    dns_data *cache = nullptr;
-   ifstream stream;
+   std::ifstream stream;
 
    dnslist.clear(  );
 
@@ -1410,7 +1440,7 @@ void load_dns( void )
    {
       do
       {
-         string key, value;
+         std::string key, value;
          char buf[MIL];
 
          stream >> key;
@@ -1534,7 +1564,7 @@ void descriptor_data::process_dns(  )
 }
 
 /* DNS Resolver hook. Code written by Trax of Forever's End */
-void descriptor_data::resolve_dns( const string & ip )
+void descriptor_data::resolve_dns( const std::string & ip )
 {
    int fds[2];
    pid_t pid;
@@ -1683,7 +1713,7 @@ void new_descriptor( int new_desc )
 
    if( !sysdata->NO_NAME_RESOLVING )
    {
-      string buf = in_dns_cache( dnew->ipaddress );
+      std::string buf = in_dns_cache( dnew->ipaddress );
 
       if( buf.empty(  ) )
          dnew->resolve_dns( dnew->ipaddress );
@@ -2015,11 +2045,8 @@ void close_socket( descriptor_data * d, bool force )
    /*
     * stop snooping everyone else 
     */
-   list < descriptor_data * >::iterator ds;
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* s : dlist )
    {
-      descriptor_data *s = *ds;
-
       if( s->snoop_by == d )
          s->snoop_by = nullptr;
    }
@@ -2170,14 +2197,10 @@ void show_status( char_data * ch )
 /*
  * Look for link-dead player to reconnect.
  */
-short descriptor_data::check_reconnect( const string & name, bool fConn )
+short descriptor_data::check_reconnect( const std::string & name, bool fConn )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto* ch : pclist )
    {
-      char_data *ch = *ich;
-
       if( ( !fConn || !ch->desc ) && ch->pcdata->filename && !str_cmp( name, ch->pcdata->filename ) )
       {
          if( fConn && ch->switched )
@@ -2232,20 +2255,14 @@ short descriptor_data::check_reconnect( const string & name, bool fConn )
 /*
  * Check if already playing.
  */
-short descriptor_data::check_playing( const string & name, bool kick )
+short descriptor_data::check_playing( const std::string & name, bool kick )
 {
-   list < descriptor_data * >::iterator ds;
-   char_data *ch;
-   int cstate;
-
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
-
       if( d != this && ( d->character || d->original ) && !str_cmp( name, d->original ? d->original->pcdata->filename : d->character->pcdata->filename ) )
       {
-         cstate = d->connected;
-         ch = d->original ? d->original : d->character;
+         int cstate = d->connected;
+         char_data *ch = d->original ? d->original : d->character;
          if( !ch->name
              || ( cstate != CON_PLAYING && cstate != CON_EDITING && cstate != CON_DELETE
                   && cstate != CON_ROLL_STATS && cstate != CON_PRIZENAME && cstate != CON_CONFIRMPRIZENAME
@@ -2474,11 +2491,9 @@ CMDF( do_shatest )
  * Function modified from original form on varying dates - Samson
  * Password encryption sections upgraded to use SHA-256 Encryption - Samson 7-10-00
  */
-void descriptor_data::nanny( string & argument )
+void descriptor_data::nanny( std::string & argument )
 {
-   char buf[MSL];
    char_data *ch;
-   string pwdnew;
    bool fOld;
    short chk;
 
@@ -2724,6 +2739,7 @@ void descriptor_data::nanny( string & argument )
          }
 
       case CON_GET_OLD_PASSWORD:
+      {
          write_to_buffer( "\r\n" );
 
          if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
@@ -2753,10 +2769,10 @@ void descriptor_data::nanny( string & argument )
          if( chk == 1 )
             return;
 
-         strlcpy( buf, ch->pcdata->filename, MSL );
+         std::string filename = ch->pcdata->filename;
          character->desc = nullptr;
          deleteptr( character );
-         fOld = load_char_obj( this, buf, false, false );
+         fOld = load_char_obj( this, filename, false, false );
          if( !fOld )
          {
             log_printf( "Bad player file %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
@@ -2772,6 +2788,7 @@ void descriptor_data::nanny( string & argument )
          log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, hostname.c_str(  ) );
          show_title(  );
          break;
+      }
 
       case CON_CONFIRM_NEW_NAME:
          switch ( argument[0] )
@@ -2800,6 +2817,7 @@ void descriptor_data::nanny( string & argument )
          break;
 
       case CON_GET_NEW_PASSWORD:
+      {
          write_to_buffer( "\r\n" );
 
          if( argument.length(  ) < 5 )
@@ -2814,11 +2832,12 @@ void descriptor_data::nanny( string & argument )
             return;
          }
 
-         pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
+         std::string pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
          ch->pcdata->pwd = pwdnew;
          write_to_buffer( "\r\nPlease retype the password to confirm: " );
          connected = CON_CONFIRM_NEW_PASSWORD;
          break;
+      }
 
       case CON_CONFIRM_NEW_PASSWORD:
          write_to_buffer( "\r\n" );
@@ -2949,7 +2968,7 @@ void descriptor_data::nanny( string & argument )
 
             if( donate != nullptr && ch->level > 1 )  /* No more deleting to remove goodies from play */
             {
-               list < obj_data * >::iterator iobj;
+               std::list<obj_data *>::iterator iobj;
 
                for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
                {
@@ -3364,15 +3383,98 @@ void descriptor_data::nanny( string & argument )
 
 CMDF( do_cache )
 {
-   list < dns_data * >::iterator idns;
-
    ch->pager( "&YCached DNS Information\r\n" );
    ch->pager( "IP               | Address\r\n" );
    ch->pager( "------------------------------------------------------------------------------\r\n" );
-   for( idns = dnslist.begin(  ); idns != dnslist.end(  ); ++idns )
-   {
-      dns_data *dns = *idns;
+   for( auto* dns : dnslist )
       ch->pagerf( "&w%16.16s  &g%s\r\n", dns->ip.c_str(  ), dns->name.c_str(  ) );
-   }
+
    ch->pagerf( "\r\n&W%zu IPs in the cache.\r\n", dnslist.size(  ) );
+}
+
+/* Send login messages to characters - big modification to the original */
+/* login message stuff from the housing module - Edmond - June 02       */
+CMDF( do_message )
+{
+   std::string name, arg1, arg2;
+   short type = 0;
+
+   if( argument.empty() )
+   {
+      ch->print( "Leave a login message for who?\r\n" );
+      return;
+   }
+
+   argument = one_argument( argument, name );
+   argument = one_argument( argument, arg1 );
+   argument = one_argument( argument, arg2 );
+
+   if( !str_cmp( name, "list" ) && ch->get_trust( ) >= LEVEL_GREATER )
+   {
+      for( auto* lmsg : login_messages )
+      {
+         ch->printf( "&CName: &c%-20s &CType: &c%d\r\n", capitalize(lmsg->name), lmsg->type );
+
+         if( lmsg->text )
+            ch->printf( "&CText:\r\n  &c%s\r\n", lmsg->text );
+
+         ch->print( "\r\n" );
+      }
+      ch->print( "Ok.\r\n" );
+      return;
+   }
+
+   std::filesystem::path checkname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name.front() ) ), capitalize( name ) );
+
+   if( exists_player( name ) )
+   {
+      for( auto* temp : pclist )
+      {
+         if( !str_cmp( name, temp->name ) && temp->desc )
+         {
+            ch->print( "They are online, wouldn't tells be just as easy?\r\n" );
+            return;
+         }
+      }
+
+      if( !str_cmp( arg1, "type" ) )
+      {
+         if( is_number( arg2 ) )
+         {
+            type = atoi( arg2.c_str() );
+
+            if( type > MAX_MSG )
+            {
+               ch->print( "Invalid login message.\r\n" );
+               return;
+            }
+            argument.clear();
+         }
+         else
+         {
+            ch->print( "Which type?\r\n" );
+            return;
+         }
+      }
+
+      if( !type && argument.empty() )
+      {
+         ch->print( "Send them what message?\r\n" );
+         return;
+      }
+
+      add_loginmsg( name.c_str(), type, argument.c_str() );
+      ch->printf( "You have sent %s the following message:\r\n", capitalize(name).c_str() );
+
+      if( type == 0 )
+         ch->print( argument );
+      else
+         ch->print( login_msg[type] );
+      ch->print( "\r\n" );
+   }
+   else
+   {
+      ch->print( "That player does not exist.\r\n" );
+      return;
+   }
 }

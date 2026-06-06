@@ -32,9 +32,9 @@
 
 SPELLF( spell_notfound );
 
-list < lang_data * >langlist;
+std::list<lang_data *> langlist;
 
-SPEC_FUN *m_spec_lookup( const string & name )
+SPEC_FUN *m_spec_lookup( const std::string & name )
 {
    void *funHandle;
    const char *error;
@@ -59,7 +59,7 @@ SPEC_FUN *m_spec_lookup( const string & name )
    return ( SPEC_FUN * ) funHandle;
 }
 
-SPELL_FUN *spell_function( const string & name )
+SPELL_FUN *spell_function( const std::string & name )
 {
    void *funHandle;
    const char *error;
@@ -84,7 +84,7 @@ SPELL_FUN *spell_function( const string & name )
    return ( SPELL_FUN * ) funHandle;
 }
 
-DO_FUN *skill_function( const string & name )
+DO_FUN *skill_function( const std::string & name )
 {
    void *funHandle;
    const char *error;
@@ -121,7 +121,7 @@ lang_data::lang_data(  )
 
 lang_data::~lang_data(  )
 {
-   list < lcnv_data * >::iterator lcnv;
+   std::list<lcnv_data *>::iterator lcnv;
 
    for( lcnv = prelist.begin(  ); lcnv != prelist.end(  ); )
    {
@@ -145,12 +145,10 @@ lang_data::~lang_data(  )
 
 void free_tongues( void )
 {
-   list < lang_data * >::iterator ln;
-
-   for( ln = langlist.begin(  ); ln != langlist.end(  ); )
+   for( auto it = langlist.begin(  ); it != langlist.end(  ); )
    {
-      lang_data *lang = *ln;
-      ++ln;
+      lang_data *lang = *it;
+      ++it;
 
       deleteptr( lang );
    }

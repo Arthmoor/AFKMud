@@ -44,10 +44,10 @@ class ship_data
      ship_data(  );
     ~ship_data(  );
 
-   string name;
-   string owner;
+   std::string name;
+   std::string owner;
    class continent_data *continent;
-   bitset < MAX_SHIP_FLAG > flags;
+   std::bitset<MAX_SHIP_FLAG> flags;
    int fuel;
    int max_fuel;
    int hull;
@@ -64,6 +64,6 @@ enum ship_types
    SHIP_NONE, SHIP_SKIFF, SHIP_COASTER, SHIP_CARAVEL, SHIP_GALLEON, SHIP_WARSHIP, SHIP_MAX
 };
 
-extern list < ship_data * >shiplist;
+extern std::list<ship_data *> shiplist;
 
 #define SHIP_FILE SYSTEM_DIR "ships.dat"  /* For ships */

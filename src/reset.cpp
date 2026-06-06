@@ -321,7 +321,7 @@ void add_obj_reset( room_index * room, char cm, obj_data * obj, int v2, int v3 )
    else
       room->add_reset( cm, obj->pIndexData->vnum, v2, v3, 100, 100, 100, 100, -2, -2, -2, -2 );
 
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
    {
       obj_data *inobj = *iobj;
@@ -343,12 +343,10 @@ void add_obj_reset( room_index * room, char cm, obj_data * obj, int v2, int v3 )
 
 void delete_reset( reset_data * pReset )
 {
-   list < reset_data * >::iterator rst;
-
-   for( rst = pReset->resets.begin(  ); rst != pReset->resets.end(  ); )
+   for( auto it = pReset->resets.begin(); it != pReset->resets.end(); )
    {
-      reset_data *tReset = *rst;
-      ++rst;
+      reset_data *tReset = *it;
+      ++it;
 
       pReset->resets.remove( tReset );
       delete_reset( tReset );
@@ -378,15 +376,12 @@ void instaroom( char_data * ch, room_index * pRoom, bool dodoors )
       }
       if( added )
       {
-         list < obj_data * >::iterator iobj;
-         for( iobj = rch->carrying.begin(  ); iobj != rch->carrying.end(  ); ++iobj )
+         for( auto* tobj : rch->carrying )
          {
-            obj_data *obj = *iobj;
-
-            if( obj->wear_loc == WEAR_NONE )
-               add_obj_reset( pRoom, 'G', obj, 1, 100 ); // we want obj to load 100% of the time in mob inv, not 0%. - Parsival 2017-1214
+            if( tobj->wear_loc == WEAR_NONE )
+               add_obj_reset( pRoom, 'G', tobj, 1, 100 ); // we want obj to load 100% of the time in mob inv, not 0%. - Parsival 2017-1214
             else
-               add_obj_reset( pRoom, 'E', obj, 1, obj->wear_loc );
+               add_obj_reset( pRoom, 'E', tobj, 1, tobj->wear_loc );
          }
       }
    }
@@ -491,7 +486,7 @@ CMDF( do_instazone )
    ch->print( "Area resets installed.\r\n" );
 }
 
-reset_data *find_oreset( room_index * room, const string & oname )
+reset_data *find_oreset( room_index * room, const std::string & oname )
 {
    obj_index *pobj;
    std::string arg;
@@ -540,8 +535,6 @@ CMDF( do_reset )
    // Yeah, I know, this function is mucho ugly... but...
    if( !str_cmp( arg, "delete" ) )
    {
-      list < reset_data * >::iterator rst;
-      reset_data *pReset;
       int num, nfind = 0;
 
       if( argument.empty(  ) )
@@ -557,12 +550,10 @@ CMDF( do_reset )
       }
       num = atoi( argument.c_str(  ) );
 
-      for( rst = ch->in_room->resets.begin(  ); rst != ch->in_room->resets.end(  ); )
+      for( auto it = ch->in_room->resets.begin(); it != ch->in_room->resets.end(); )
       {
-         list < reset_data * >::iterator dst;
-         reset_data *tReset;
-         pReset = *rst;
-         ++rst;
+         reset_data *pReset = *it;
+         ++it;
 
          ++nfind;
          if( nfind == num )
@@ -573,12 +564,10 @@ CMDF( do_reset )
             return;
          }
 
-         for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); )
+         for( auto it2 = pReset->resets.begin(); it2 != pReset->resets.end(); )
          {
-            list < reset_data * >::iterator gst;
-            reset_data *gReset;
-            tReset = *dst;
-            ++dst;
+            reset_data *tReset = *it2;
+            ++it2;
 
             ++nfind;
             if( nfind == num )
@@ -589,10 +578,10 @@ CMDF( do_reset )
                return;
             }
 
-            for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); )
+            for( auto it3 = tReset->resets.begin(); it3 != tReset->resets.end(); )
             {
-               gReset = *gst;
-               ++gst;
+               reset_data *gReset = *it3;
+               ++it3;
 
                ++nfind;
                if( nfind == num )
@@ -612,8 +601,6 @@ CMDF( do_reset )
    // Yeah, I know, this function is mucho ugly... but...
    if( !str_cmp( arg, "percent" ) )
    {
-      list < reset_data * >::iterator rst;
-      reset_data *pReset;
       int num, value = 100, nfind = 0;
 
       argument = one_argument( argument, arg );
@@ -642,12 +629,10 @@ CMDF( do_reset )
       }
       value = atoi( argument.c_str(  ) );
 
-      for( rst = ch->in_room->resets.begin(  ); rst != ch->in_room->resets.end(  ); )
+      for( auto it = ch->in_room->resets.begin(); it != ch->in_room->resets.end(); )
       {
-         list < reset_data * >::iterator dst;
-         reset_data *tReset;
-         pReset = *rst;
-         ++rst;
+         reset_data *pReset = *it;
+         ++it;
 
          ++nfind;
          if( nfind == num )
@@ -662,11 +647,10 @@ CMDF( do_reset )
             return;
          }
 
-         for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); )
+         for( auto it2 = pReset->resets.begin(); it2 != pReset->resets.end(); )
          {
-            list < reset_data * >::iterator gst;
-            tReset = *dst;
-            ++dst;
+            reset_data *tReset = *it2;
+            ++it2;
 
             ++nfind;
             if( nfind == num )
@@ -675,7 +659,7 @@ CMDF( do_reset )
                return;
             }
 
-            for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); ++gst )
+            for( auto it3 = tReset->resets.begin(); it3 != tReset->resets.end(); )
             {
                ++nfind;
                if( nfind == num )
@@ -719,7 +703,7 @@ CMDF( do_reset )
    if( !str_cmp( arg, "trap" ) )
    {
       reset_data *pReset = nullptr;
-      string arg2, oname;
+      std::string arg2, oname;
       int type, chrg, flags = 0, vnum, min, max;
 
       argument = one_argument( argument, arg2 );

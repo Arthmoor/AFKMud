@@ -59,16 +59,16 @@ telnet://northwind.kilnar.com:5555/    +
 #include "roomindex.h"
 #include "shops.h"
 
-void auction_sell( char_data *, char_data *, string & );
-void auction_buy( char_data *, char_data *, const string & );
-void auction_value( char_data *, char_data *, const string & );
+void auction_sell( char_data *, char_data *, std::string & );
+void auction_buy( char_data *, char_data *, const std::string & );
+void auction_value( char_data *, char_data *, const std::string & );
 bool can_wear_obj( char_data *, obj_data * );
 bool can_mmodify( char_data *, char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 char_data *find_auctioneer( char_data * );
 
-list < shop_data * >shoplist;
-list < repair_data * >repairlist;
+std::list<shop_data *> shoplist;
+std::list<repair_data *> repairlist;
 
 void fwrite_mobile( char_data *, FILE *, bool );
 char_data *fread_mobile( FILE *, bool );
@@ -180,7 +180,7 @@ void load_shopkeepers( void )
 char_data *find_keeper( char_data * ch )
 {
    char_data *keeper = nullptr;
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    shop_data *pShop;
 
    pShop = nullptr;
@@ -296,7 +296,7 @@ char_data *find_keeper( char_data * ch )
 CMDF( do_setprice )
 {
    char_data *keeper;
-   string arg1;
+   std::string arg1;
    obj_data *obj;
    bool found = false;
 
@@ -342,7 +342,7 @@ CMDF( do_setprice )
    }
 
    clan_data *clan = nullptr;
-   list < clan_data * >::iterator cl;
+   std::list<clan_data *>::iterator cl;
    for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
    {
       clan = *cl;
@@ -404,7 +404,7 @@ CMDF( do_setprice )
 char_data *find_fixer( char_data * ch )
 {
    char_data *keeper = nullptr;
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    repair_data *rShop = nullptr;
 
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
@@ -640,7 +640,7 @@ int get_repaircost( char_data * keeper, obj_data * obj )
 CMDF( do_buy )
 {
    char_data *auc;
-   string arg;
+   std::string arg;
    double maxgold;
 
    if( ch->isnpc(  ) )
@@ -760,7 +760,7 @@ CMDF( do_buy )
 
       if( keeper->has_actflag( ACT_GUILDVENDOR ) )
       {
-         list < clan_data * >::iterator cl;
+         std::list<clan_data *>::iterator cl;
 
          for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
          {
@@ -1051,7 +1051,7 @@ CMDF( do_sell )
 
    if( keeper->has_actflag( ACT_GUILDVENDOR ) )
    {
-      list < clan_data * >::iterator cl;
+      std::list<clan_data *>::iterator cl;
 
       for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
@@ -1204,7 +1204,7 @@ CMDF( do_value )
 /*
  * Repair a single object. Used when handling "repair all" - Gorog
  */
-void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const string & arg, const string & fixstr, const string & fixstr2 )
+void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const std::string & arg, const std::string & fixstr, const std::string & fixstr2 )
 {
    int cost;
    bool found = false;
@@ -1233,7 +1233,7 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const s
    clan_data *clan = nullptr;
    if( keeper->has_actflag( ACT_GUILDREPAIR ) )
    {
-      list < clan_data * >::iterator cl;
+      std::list<clan_data *>::iterator cl;
 
       for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
@@ -1303,7 +1303,7 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const s
 CMDF( do_repair )
 {
    char_data *keeper;
-   string fixstr, fixstr2;
+   std::string fixstr, fixstr2;
 
    if( argument.empty(  ) )
    {
@@ -1348,7 +1348,7 @@ CMDF( do_repair )
    repair_one_obj( ch, keeper, obj, argument, fixstr, fixstr2 );
 }
 
-void appraise_all( char_data * ch, char_data * keeper, const string & fixstr )
+void appraise_all( char_data * ch, char_data * keeper, const std::string & fixstr )
 {
    int cost = 0, total = 0;
 
@@ -1388,7 +1388,7 @@ CMDF( do_appraise )
    char_data *keeper;
    obj_data *obj;
    int cost;
-   string fixstr;
+   std::string fixstr;
 
    if( argument.empty(  ) )
    {
@@ -1527,7 +1527,7 @@ CMDF( do_shopset )
    shop_data *shop;
    char_data *keeper;
    mob_index *mob, *mob2;
-   string arg1, arg2;
+   std::string arg1, arg2;
    int value;
 
    argument = one_argument( argument, arg1 );
@@ -1863,7 +1863,7 @@ CMDF( do_repairset )
    repair_data *repair;
    char_data *keeper;
    mob_index *mob, *mob2;
-   string arg1, arg2;
+   std::string arg1, arg2;
    int value;
 
    argument = one_argument( argument, arg1 );
@@ -2089,7 +2089,7 @@ CMDF( do_repairshops )
 /* Modifications to original source by Samson. Updated to include support for guild/clan bank accounts */
 
 /* You can add this or just put it in the do_bank code. I don't really know
-   why I made a seperate function for this, but I did. If you do add it,
+   why I made a separate function for this, but I did. If you do add it,
    don't forget to declare it - Minas */
 
 /* Finds banker mobs in a room. */
@@ -2129,7 +2129,7 @@ CMDF( do_deposit )
    clan_data *clan = nullptr;
    if( banker->has_actflag( ACT_GUILDBANK ) )
    {
-      list < clan_data * >::iterator cl;
+      std::list<clan_data *>::iterator cl;
 
       for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
@@ -2214,7 +2214,7 @@ CMDF( do_withdraw )
    clan_data *clan = nullptr;
    if( banker->has_actflag( ACT_GUILDBANK ) )
    {
-      list < clan_data * >::iterator cl;
+      std::list<clan_data *>::iterator cl;
 
       for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {
@@ -2319,7 +2319,7 @@ CMDF( do_balance )
    clan_data *clan = nullptr;
    if( banker->has_actflag( ACT_GUILDBANK ) )
    {
-      list < clan_data * >::iterator cl;
+      std::list<clan_data *>::iterator cl;
 
       for( cl = clanlist.begin(  ); cl != clanlist.end(  ); ++cl )
       {

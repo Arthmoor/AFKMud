@@ -44,7 +44,7 @@
 
 /* Begin wizinfo stuff - Samson 6-6-99 */
 
-list < wizinfo_data * >wizinfolist;
+std::list<wizinfo_data *> wizinfolist;
 
 wizinfo_data::wizinfo_data(  )
 {
@@ -57,9 +57,9 @@ wizinfo_data::~wizinfo_data(  )
 }
 
 /* Construct wizinfo list from god dir info - Samson 6-6-99 */
-void add_to_wizinfo( const string & name, wizinfo_data * wiz )
+void add_to_wizinfo( const std::string & name, wizinfo_data * wiz )
 {
-   list < wizinfo_data * >::iterator wizinfo;
+   std::list<wizinfo_data *>::iterator wizinfo;
 
    wiz->name = name;
    if( wiz->email.empty(  ) )
@@ -80,14 +80,12 @@ void add_to_wizinfo( const string & name, wizinfo_data * wiz )
 
 void clear_wizinfo( void )
 {
-   list < wizinfo_data * >::iterator wiz;
-
    if( !fBootDb )
    {
-      for( wiz = wizinfolist.begin(  ); wiz != wizinfolist.end(  ); )
+      for( auto it = wizinfolist.begin(); it != wizinfolist.end(); )
       {
-         wizinfo_data *winfo = *wiz;
-         ++wiz;
+         wizinfo_data *winfo = *it;
+         ++it;
 
          deleteptr( winfo );
       }
@@ -133,16 +131,12 @@ void build_wizinfo( void )
  */
 CMDF( do_wizinfo )
 {
-   list < wizinfo_data * >::iterator wiz;
-
    ch->pager( "&cContact Information for the Immortals:\r\n\r\n" );
    ch->pager( "&cName         Email Address                     Realm\r\n" );
    ch->pager( "&c------------+---------------------------------+----------------\r\n" );
 
-   for( wiz = wizinfolist.begin(  ); wiz != wizinfolist.end(  ); ++wiz )
+   for( auto* wi : wizinfolist )
    {
-      wizinfo_data *wi = *wiz;
-
       // Allows an argument to show only a certain realm
       // --Cynshard
       if( !argument.empty(  ) )
@@ -327,12 +321,10 @@ CMDF( do_finger )
 
       if( sysdata->save_pets )
       {
-         list < char_data * >::iterator pet;
-
-         for( pet = victim->pets.begin(  ); pet != victim->pets.end(  ); )
+         for( auto it = victim->pets.begin(); it != victim->pets.end(); )
          {
-            char_data *cpet = *pet;
-            ++pet;
+            char_data *cpet = *it;
+            ++it;
 
             cpet->extract( true );
          }
@@ -394,7 +386,7 @@ CMDF( do_email )
 
 CMDF( do_homepage )
 {
-   string buf;
+   std::string buf;
 
    if( ch->isnpc(  ) )
       return;

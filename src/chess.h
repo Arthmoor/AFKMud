@@ -33,8 +33,8 @@ struct game_board_data
    ~game_board_data(  );
    game_board_data(  );
 
-   string player1;
-   string player2;
+   std::string player1;
+   std::string player2;
    int board[8][8];
    int turn;
    int type;

@@ -36,9 +36,7 @@
 struct environment_data
 {
    environment_data(  );
-   /*
-    * No destructor needed 
-    */
+   // No destructor needed
 
    class continent_data *cont;
    short direction;
@@ -51,7 +49,7 @@ struct environment_data
    short intensity;
 };
 
-list < environment_data * >envlist;
+std::list<environment_data *> envlist;
 
 enum env_types
 {
@@ -89,18 +87,16 @@ void free_env( environment_data * env )
 
 void free_envs( void )
 {
-   list < environment_data * >::iterator en;
-
-   for( en = envlist.begin(  ); en != envlist.end(  ); )
+   for( auto it = envlist.begin(); it != envlist.end(); )
    {
-      environment_data *env = *en;
-      ++en;
+      environment_data *env = *it;
+      ++it;
 
       free_env( env );
    }
 }
 
-int get_env_type( const string & type )
+int get_env_type( const std::string & type )
 {
    for( int x = 0; x < ENV_MAX; ++x )
       if( !str_cmp( type, env_name[x] ) )
@@ -110,12 +106,10 @@ int get_env_type( const string & type )
 
 void environment_pulse_update( void )
 {
-   list < environment_data * >::iterator en;
-
-   for( en = envlist.begin(  ); en != envlist.end(  ); )
+   for( auto it = envlist.begin(); it != envlist.end(); )
    {
-      environment_data *env = *en;
-      ++en;
+      environment_data *env = *it;
+      ++it;
 
       switch ( env->type )
       {
@@ -173,12 +167,8 @@ void environment_pulse_update( void )
 
 void environment_actual_update( void )
 {
-   list < descriptor_data * >::iterator ds;
-
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      list < environment_data * >::iterator ev;
-      descriptor_data *d = *ds;
       int atx, aty;
 
       if( d->connected != CON_PLAYING )
@@ -195,10 +185,8 @@ void environment_actual_update( void )
       atx = ch->map_x;
       aty = ch->map_y;
 
-      for( ev = envlist.begin(  ); ev != envlist.end(  ); ++ev )
+      for( auto* en : envlist )
       {
-         environment_data *en = *ev;
-
          if( distance( atx, aty, en->map_x, en->map_y ) > en->radius )
             continue;
 
@@ -210,14 +198,10 @@ void environment_actual_update( void )
             case ENV_FIRE:
                if( number_range( 0, 3 ) == 2 )
                {
-                  list < obj_data * >::iterator iobj;
-                  obj_data *obj;
                   bool firefound = false;
 
-                  for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
+                  for( auto* fire : ch->in_room->objects )
                   {
-                     obj_data *fire = *iobj;
-
                      if( fire->pIndexData->vnum != OBJ_VNUM_OVFIRE )
                         continue;
 
@@ -230,6 +214,8 @@ void environment_actual_update( void )
 
                   if( !firefound )
                   {
+                     obj_data *obj;
+
                      ch->print( "&RScorching flames erupt all around!\r\n" );
                      if( !( obj = get_obj_index( OBJ_VNUM_OVFIRE )->create_object( 1 ) ) )
                         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -364,7 +350,7 @@ void environment_update( void )
 
 CMDF( do_makeenv )
 {
-   string etype, arg2, arg;
+   std::string etype, arg2, arg;
    int chosenradius;
    int door, atype, intensity = 0;
    int atx = -1, aty = -1;
@@ -464,12 +450,9 @@ CMDF( do_makeenv )
 CMDF( do_env )
 {
    int count = 0;
-   list < environment_data * >::iterator env;
 
-   for( env = envlist.begin(  ); env != envlist.end(  ); ++env )
+   for( auto* en : envlist )
    {
-      environment_data *en = *env;
-
       ++count;
       if( en->type == ENV_QUAKE )
       {
@@ -492,7 +475,6 @@ CMDF( do_env )
 
 bool survey_environment( char_data * ch )
 {
-   list < environment_data * >::iterator env;
    double dist, angle, eta;
    int dir = -1, iMes;
    bool found = false;
@@ -502,10 +484,8 @@ bool survey_environment( char_data * ch )
 
    ch->print( "&WAn imp appears with an ear-splitting BANG!\r\n" );
 
-   for( env = envlist.begin(  ); env != envlist.end(  ); ++env )
+   for( auto* en : envlist )
    {
-      environment_data *en = *env;
-
       if( ch->continent != en->cont )
          continue;
 

@@ -212,12 +212,10 @@ void make_corpse( char_data * ch, char_data * killer )
     */
    corpse->value[6] = ch->race;
 
-   obj_data *obj;
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
+   for( auto it = ch->carrying.begin(); it != ch->carrying.end(); )
    {
-      obj = ( *iobj );
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       /*
        * don't put perm player eq in the corpse
@@ -424,8 +422,8 @@ bool is_wielding_poisoned( char_data * ch )
 CMDF( do_gfighting )
 {
    char_data *victim;
-   list < char_data * >::iterator ich;
-   string arg1, arg2;
+   std::list<char_data *>::iterator ich;
+   std::string arg1, arg2;
    bool pmobs = false, phating = false, phunting = false;
    int low = 1, high = MAX_LEVEL, count = 0;
 
@@ -458,12 +456,8 @@ CMDF( do_gfighting )
    ch->pagerf( "\r\n&cGlobal %s conflict:\r\n", pmobs ? "mob" : "character" );
    if( !pmobs && !phating && !phunting )
    {
-      list < descriptor_data * >::iterator ds;
-
-      for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+      for( auto* d : dlist )
       {
-         descriptor_data *d = *ds;
-
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
              && ( victim = d->character ) != nullptr && !victim->isnpc(  ) && victim->in_room
              && ch->can_see( victim, false ) && victim->fighting && victim->level >= low && victim->level <= high )
@@ -787,12 +781,10 @@ bool is_safe( char_data * ch, char_data * victim )
 
 void align_zap( char_data * ch )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
+   for( auto it = ch->carrying.begin(); it != ch->carrying.end(); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       if( obj->wear_loc == WEAR_NONE )
          continue;
@@ -1460,7 +1452,7 @@ void group_gain( char_data * ch, char_data * victim )
       return;
 
    int members = 0, max_level = 0;
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
    {
       char_data *gch = ( *ich );
@@ -2180,11 +2172,8 @@ void char_data::stop_fighting( bool fBoth )
    if( !fBoth )   /* major short cut here by Thoric */
       return;
 
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* fch : charlist )
    {
-      char_data *fch = ( *ich );
-
       if( fch->who_fighting(  ) == this )
       {
          cancel_event( ev_violence, fch );
@@ -2483,11 +2472,10 @@ void raw_kill( char_data * ch, char_data * victim )
       return;
    }
 
-   list < affect_data * >::iterator paf;
-   for( paf = victim->affects.begin(  ); paf != victim->affects.end(  ); )
+   for( auto it = victim->affects.begin(); it != victim->affects.end(); )
    {
-      affect_data *aff = ( *paf );
-      ++paf;
+      affect_data *aff = *it;
+      ++it;
 
       victim->affect_remove( aff );
    }
@@ -2753,8 +2741,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          {
             if( victim->hunting->who != ch )
             {
-               STRFREE( victim->hunting->name );
-               victim->hunting->name = QUICKLINK( ch->name );
+               victim->hunting->name = ch->name;
                victim->hunting->who = ch;
             }
          }
@@ -2766,8 +2753,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       {
          if( victim->hating->who != ch )
          {
-            STRFREE( victim->hating->name );
-            victim->hating->name = QUICKLINK( ch->name );
+            victim->hating->name = ch->name;
             victim->hating->who = ch;
          }
       }
@@ -3582,12 +3568,8 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    }
    if( wield )
    {
-      list < affect_data * >::iterator paf;
-
-      for( paf = wield->affects.begin(  ); paf != wield->affects.end(  ); ++paf )
+      for( auto* af : wield->affects )
       {
-         affect_data *af = *paf;
-
          if( af->location == APPLY_RACE_SLAYER )
          {
             if( ( af->modifier == victim->race )
@@ -3633,7 +3615,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
     */
    if( wield && !victim->has_immune( RIS_MAGIC ) && !victim->in_room->flags.test( ROOM_NO_MAGIC ) )
    {
-      list < affect_data * >::iterator paf;
+      std::list<affect_data *>::iterator paf;
 
       for( paf = wield->pIndexData->affects.begin(  ); paf != wield->pIndexData->affects.end(  ); ++paf )
       {
@@ -3699,7 +3681,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
  */
 ch_ret multi_hit( char_data * ch, char_data * victim, int dt )
 {
-   float x = 0.0;
+   double x = 0.0;
    int hchance;
    ch_ret retcode;
 

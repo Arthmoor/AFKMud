@@ -41,7 +41,7 @@
 #include "ships.h"
 #include "weather.h"
 
-list < continent_data *>continent_list;
+std::list<continent_data *> continent_list;
 
 void set_alarm( long );
 bool survey_environment( char_data * );
@@ -70,12 +70,10 @@ landmark_data::~landmark_data(  )
 
 void continent_data::free_exits( void )
 {
-   list < mapexit_data * >::iterator en;
-
-   for( en = this->exits.begin(  ); en != this->exits.end(  ); )
+   for( auto it = this->exits.begin(); it != this->exits.end(); )
    {
-      mapexit_data *mexit = *en;
-      ++en;
+      mapexit_data *mexit = *it;
+      ++it;
 
       deleteptr( mexit );
    }
@@ -83,12 +81,10 @@ void continent_data::free_exits( void )
 
 void continent_data::free_landmarks( void )
 {
-   list < landmark_data * >::iterator land;
-
-   for( land = this->landmarks.begin(  ); land != this->landmarks.end(  ); )
+   for( auto it = this->landmarks.begin(); it != this->landmarks.end(); )
    {
-      landmark_data *landmark = *land;
-      ++land;
+      landmark_data *landmark = *it;
+      ++it;
 
       deleteptr( landmark );
    }
@@ -96,12 +92,10 @@ void continent_data::free_landmarks( void )
 
 void continent_data::free_landing_sites( void )
 {
-   list < landing_data * >::iterator lands;
-
-   for( lands = this->landing_sites.begin(  ); lands != landing_sites.end(  ); )
+   for( auto it = this->landing_sites.begin(); it != this->landing_sites.end(); )
    {
-      landing_data *landing = *lands;
-      ++lands;
+      landing_data *landing = *it;
+      ++it;
 
       deleteptr( landing );
    }
@@ -130,12 +124,10 @@ continent_data::~continent_data(  )
 
 void free_continents( void )
 {
-   list < continent_data * >::iterator cont;
-
-   for( cont = continent_list.begin(  ); cont != continent_list.end(  ); )
+   for( auto it = continent_list.begin(); it != continent_list.end(); )
    {
-      continent_data *continent = *cont;
-      ++cont;
+      continent_data *continent = *it;
+      ++it;
 
       deleteptr( continent );
    }
@@ -259,7 +251,6 @@ void continent_data::save_png_file( )
 
 void write_continent_list( void )
 {
-   list < continent_data * >::iterator cont;
    FILE *fpout;
 
    fpout = fopen( CONT_LIST, "w" );
@@ -269,23 +260,20 @@ void write_continent_list( void )
       return;
    }
 
-   for( cont = continent_list.begin(  ); cont != continent_list.end(  ); ++cont )
-   {
-      continent_data *continent = *cont;
-
+   for( auto* continent : continent_list )
       fprintf( fpout, "%s\n", continent->filename.c_str( ) );
-   }
+
    fprintf( fpout, "%s", "$\n" );
    FCLOSE( fpout );
 }
 
-void continent_data::fread_landmark( ifstream & stream )
+void continent_data::fread_landmark( std::ifstream & stream )
 {
    landmark_data *landmark = new landmark_data;
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -300,7 +288,7 @@ void continent_data::fread_landmark( ifstream & stream )
 
       if( key == "Coordinates" )
       {
-         string coord;
+         std::string coord;
 
          value = one_argument( value, coord );
          landmark->map_x = atoi( coord.c_str(  ) );
@@ -328,7 +316,7 @@ void continent_data::fread_landmark( ifstream & stream )
    shutdown_mud( "Corrupt continent file." );
 }
 
-void continent_data::fread_mapexit( ifstream & stream )
+void continent_data::fread_mapexit( std::ifstream & stream )
 {
    mapexit_data *mexit;
 
@@ -336,7 +324,7 @@ void continent_data::fread_mapexit( ifstream & stream )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -353,7 +341,7 @@ void continent_data::fread_mapexit( ifstream & stream )
          mexit->tomap = value;
       else if( key == "Here" )
       {
-         string coord;
+         std::string coord;
 
          value = one_argument( value, coord );
          mexit->herex = atoi( coord.c_str(  ) );
@@ -362,7 +350,7 @@ void continent_data::fread_mapexit( ifstream & stream )
       }
       else if( key == "There" )
       {
-         string coord;
+         std::string coord;
 
          value = one_argument( value, coord );
          mexit->therex = atoi( coord.c_str(  ) );
@@ -387,9 +375,9 @@ void continent_data::fread_mapexit( ifstream & stream )
    shutdown_mud( "Corrupt continent file." );
 }
 
-void load_continent( const string & continent_file )
+void load_continent( const std::string & continent_file )
 {
-   ifstream stream;
+   std::ifstream stream;
    continent_data *continent = nullptr;
    int file_version = 0;
 
@@ -405,7 +393,7 @@ void load_continent( const string & continent_file )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -497,14 +485,10 @@ void load_continents( const int AREA_FILE_ALARM )
 // This is called in db.cpp during startup after the area files have been loaded.
 void validate_overland_data( void )
 {
-   list < continent_data * >::iterator cont;
    int error_count = 0;
 
-   for( cont = continent_list.begin(  ); cont != continent_list.end(  ); )
+   for( auto* continent : continent_list )
    {
-      continent_data *continent = *cont;
-      ++cont;
-
       if( continent->nogrid == false )
       {
          if( !get_room_index( continent->vnum ) )
@@ -533,10 +517,7 @@ void validate_overland_data( void )
 
 void continent_data::save( )
 {
-   ofstream stream;
-   list < mapexit_data * >::iterator ex;
-   list < landmark_data * >::iterator lm;
-   list < landing_data * >::iterator ld;
+   std::ofstream stream;
 
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving continent data for %s...", this->filename.c_str( ) );
 
@@ -552,59 +533,53 @@ void continent_data::save( )
       return;
    }
 
-   stream << "#CONTINENT" << endl;
-   stream << "Version   " << CONTINENT_FILE_VERSION << endl;
-   stream << "Name      " << this->name << endl;
+   stream << "#CONTINENT" << std::endl;
+   stream << "Version   " << CONTINENT_FILE_VERSION << std::endl;
+   stream << "Name      " << this->name << std::endl;
 
    if( this->nogrid == true )
-      stream << "NoGrid    " << this->nogrid << endl;
+      stream << "NoGrid    " << this->nogrid << std::endl;
    else
    {
-      stream << "Vnum      " << this->vnum << endl;
-      stream << "Mapfile   " << this->mapfile << endl;
+      stream << "Vnum      " << this->vnum << std::endl;
+      stream << "Mapfile   " << this->mapfile << std::endl;
    }
 
-   stream << "Areafile  " << this->areafile << endl << endl;
+   stream << "Areafile  " << this->areafile << std::endl << std::endl;
 
    if( this->nogrid == false )
    {
-      for( ex = this->exits.begin(  ); ex != this->exits.end(  ); ++ex )
+      for( auto* mexit : this->exits )
       {
-         mapexit_data *mexit = *ex;
-
-         stream << "#ENTRANCE" << endl;
-         stream << "ToMap      " << mexit->tomap << endl;
-         stream << "Vnum       " << mexit->vnum << endl;
-         stream << "Here       " << mexit->herex << " " << mexit->herey << endl;
-         stream << "There      " << mexit->therex << " " << mexit->therey << endl;
-         stream << "Prevsector " << mexit->prevsector << endl;
-         stream << "End" << endl << endl;
+         stream << "#ENTRANCE" << std::endl;
+         stream << "ToMap      " << mexit->tomap << std::endl;
+         stream << "Vnum       " << mexit->vnum << std::endl;
+         stream << "Here       " << mexit->herex << " " << mexit->herey << std::endl;
+         stream << "There      " << mexit->therex << " " << mexit->therey << std::endl;
+         stream << "Prevsector " << mexit->prevsector << std::endl;
+         stream << "End" << std::endl << std::endl;
       }
 
-      for( lm = this->landmarks.begin(  ); lm != this->landmarks.end(  ); ++lm )
+      for( auto* landmark : this->landmarks )
       {
-         landmark_data *landmark = *lm;
-
-         stream << "#LANDMARK" << endl;
-         stream << "Coordinates " << landmark->map_x << " " << landmark->map_y << " " << landmark->distance << endl;
-         stream << "Description " << landmark->description << endl;
-         stream << "Isdesc      " << landmark->Isdesc << endl;
-         stream << "End" << endl << endl;
+         stream << "#LANDMARK" << std::endl;
+         stream << "Coordinates " << landmark->map_x << " " << landmark->map_y << " " << landmark->distance << std::endl;
+         stream << "Description " << landmark->description << std::endl;
+         stream << "Isdesc      " << landmark->Isdesc << std::endl;
+         stream << "End" << std::endl << std::endl;
       }
 
-      for( ld = this->landing_sites.begin(  ); ld != this->landing_sites.end(  ); ++ld )
+      for( auto* landing : this->landing_sites )
       {
-         landing_data *landing = *ld;
-
-         stream << "#LANDING_SITE" << endl;
-         stream << "Coordinates " << landing->map_x << " " << landing->map_y << endl;
-         stream << "Area        " << landing->area << endl;
-         stream << "Cost        " << landing->cost << endl;
-         stream << "End" << endl << endl;
+         stream << "#LANDING_SITE" << std::endl;
+         stream << "Coordinates " << landing->map_x << " " << landing->map_y << std::endl;
+         stream << "Area        " << landing->area << std::endl;
+         stream << "Cost        " << landing->cost << std::endl;
+         stream << "End" << std::endl << std::endl;
       }      
    }
 
-   stream << "#END" << endl;
+   stream << "#END" << std::endl;
    stream.close();
 
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Data for %s saved.", this->filename.c_str( ) );
@@ -1018,14 +993,11 @@ int const random_mobs[SECT_MAX][25] = {
 // Pick a continent at random. For whatever silly reasons one might want to do that.
 continent_data *pick_random_continent( void )
 {
-   list < continent_data * >::iterator c;
-   map < int, continent_data * > choices;
+   std::map<int, continent_data *> choices;
    int num_conts = 0, pick;
 
-   for( c = continent_list.begin(  ); c != continent_list.end(  ); ++c )
+   for( auto* continent : continent_list )
    {
-      continent_data *continent = *c;
-
       choices[num_conts] = continent;
       num_conts++;
    }
@@ -1039,14 +1011,11 @@ continent_data *pick_random_continent( void )
 }
 
 // Find an existing continent by its name. Used during boot, and to find targets for exits.
-continent_data *find_continent_by_name( const string & name )
+continent_data *find_continent_by_name( const std::string & name )
 {
-   list < continent_data * >::iterator c;
 
-   for( c = continent_list.begin(  ); c != continent_list.end(  ); ++c )
+   for( auto* continent : continent_list )
    {
-      continent_data *continent = *c;
-
       if( !str_cmp( name, continent->name ) )
          return continent;
    }
@@ -1055,14 +1024,10 @@ continent_data *find_continent_by_name( const string & name )
 }
 
 // Used in OLC when creating a map and associating an area file with it.
-continent_data *find_continent_by_areafile( const string & name )
+continent_data *find_continent_by_areafile( const std::string & name )
 {
-   list < continent_data * >::iterator c;
-
-   for( c = continent_list.begin(  ); c != continent_list.end(  ); ++c )
+   for( auto* continent : continent_list )
    {
-      continent_data *continent = *c;
-
       if( !str_cmp( name, continent->areafile ) )
          return continent;
    }
@@ -1071,14 +1036,10 @@ continent_data *find_continent_by_areafile( const string & name )
 }
 
 // Used in OLC when creating a map and associating a png file with it.
-continent_data *find_continent_by_pngfile( const string & name )
+continent_data *find_continent_by_pngfile( const std::string & name )
 {
-   list < continent_data * >::iterator c;
-
-   for( c = continent_list.begin(  ); c != continent_list.end(  ); ++c )
+   for( auto* continent : continent_list )
    {
-      continent_data *continent = *c;
-
       if( !str_cmp( name, continent->mapfile ) )
          return continent;
    }
@@ -1089,8 +1050,8 @@ continent_data *find_continent_by_pngfile( const string & name )
 // Find a map based on what continent a room is part of, via it's area.
 continent_data *find_continent_by_room( room_index * room )
 {
-   list < area_data * >::iterator a;
-   list < continent_data * >::iterator c;
+   std::list<area_data *>::iterator a;
+   std::list<continent_data *>::iterator c;
    area_data *area;
    bool foundarea = false;
 
@@ -1122,12 +1083,8 @@ continent_data *find_continent_by_room( room_index * room )
 // Finds the map the player is on by its room vnum. The room vnum is specified in the continent file.
 continent_data *find_continent_by_room_vnum( int rvnum )
 {
-   list < continent_data * >::iterator c;
-
-   for( c = continent_list.begin(  ); c != continent_list.end(  ); ++c )
+   for( auto* continent : continent_list )
    {
-      continent_data *continent = *c;
-
       if( continent->vnum == rvnum )
          return continent;
    }
@@ -1158,17 +1115,11 @@ short continent_data::get_terrain( short x, short y )
 
 CMDF( do_continents )
 {
-   list < continent_data * >::iterator c;
-
    ch->pager( "Continent      | #Exits | #Landmarks | #Landing Sites\r\n" );
    ch->pager( "-----------------------------------------------------\r\n" );
 
-   for( c = continent_list.begin(  ); c != continent_list.end(  ); ++c )
-   {
-      continent_data *continent = *c;
-
+   for( auto* continent : continent_list )
       ch->pagerf( "%-15s  %-4zu     %-4zu         %-4zu\r\n", continent->name.c_str( ), continent->exits.size(), continent->landmarks.size(), continent->landing_sites.size() );
-   }
 }
 
 /* Used with the survey command to calculate distance to the landmark.
@@ -1367,12 +1318,8 @@ void fix_maps( char_data * ch, char_data * victim )
 /* Overland landmark stuff starts here */
 landmark_data *continent_data::check_landmark( short x, short y )
 {
-   list < landmark_data * >::iterator imark;
-
-   for( imark = this->landmarks.begin(  ); imark != this->landmarks.end(  ); ++imark )
+   for( auto* landmark : this->landmarks )
    {
-      landmark_data *landmark = *imark;
-
       if( landmark->map_x == x && landmark->map_y == y )
          return landmark;
    }
@@ -1404,8 +1351,6 @@ void continent_data::delete_landmark( landmark_data * landmark )
 /* Landmark survey module - idea snarfed from Medievia and adapted to Smaug by Samson - 8-19-00 */
 CMDF( do_survey )
 {
-   list < landmark_data * >::iterator imark;
-   continent_data *continent;
    double dist, angle;
    int dir = -1, iMes = 0;
    bool found = false, env = false;
@@ -1413,12 +1358,8 @@ CMDF( do_survey )
    if( !ch )
       return;
 
-   continent = ch->continent;
-
-   for( imark = continent->landmarks.begin(  ); imark != continent->landmarks.end(  ); ++imark )
+   for( auto* landmark : ch->continent->landmarks )
    {
-      landmark_data *landmark = *imark;
-
       if( landmark->Isdesc )
          continue;
 
@@ -1499,8 +1440,8 @@ CMDF( do_survey )
 /* Support command to list all landmarks currently loaded */
 CMDF( do_landmarks )
 {
-   list < continent_data * >::iterator cont;
-   list < landmark_data * >::iterator imark;
+   std::list<continent_data *>::iterator cont;
+   std::list<landmark_data *>::iterator imark;
 
    ch->pager( "Continent | Coordinates | Distance | Description\r\n" );
    ch->pager( "-----------------------------------------------------------\r\n" );
@@ -1528,7 +1469,7 @@ CMDF( do_landmarks )
 CMDF( do_setmark )
 {
    landmark_data *landmark = nullptr;
-   string arg;
+   std::string arg;
 
 #ifdef MULTIPORT
    if( mud_port == MAINPORT )
@@ -1680,19 +1621,15 @@ CMDF( do_setmark )
 /* Overland exit stuff starts here */
 mapexit_data *continent_data::check_mapexit( short x, short y )
 {
-   list < mapexit_data * >::iterator iexit;
-
-   for( iexit = this->exits.begin(  ); iexit != this->exits.end(  ); ++iexit )
+   for( auto* mexit : this->exits )
    {
-      mapexit_data *mexit = *iexit;
-
       if( mexit->herex == x && mexit->herey == y )
          return mexit;
    }
    return nullptr;
 }
 
-void continent_data::modify_mapexit( mapexit_data * mexit, const string & tomap, short hereX, short hereY, short thereX, short thereY, int mvnum )
+void continent_data::modify_mapexit( mapexit_data * mexit, const std::string & tomap, short hereX, short hereY, short thereX, short thereY, int mvnum )
 {
    if( !mexit )
    {
@@ -1708,7 +1645,7 @@ void continent_data::modify_mapexit( mapexit_data * mexit, const string & tomap,
    mexit->vnum = mvnum;
 }
 
-void continent_data::add_mapexit( const string & tomap, short hereX, short hereY, short thereX, short thereY, int mvnum )
+void continent_data::add_mapexit( const std::string & tomap, short hereX, short hereY, short thereX, short thereY, int mvnum )
 {
    mapexit_data *mexit;
 
@@ -1738,7 +1675,7 @@ void continent_data::delete_mapexit( mapexit_data * mexit )
 /* OLC command to add/delete/edit overland exit information */
 CMDF( do_setexit )
 {
-   string arg;
+   std::string arg;
    room_index *location;
    mapexit_data *mexit = nullptr;
    int vnum;
@@ -1815,7 +1752,7 @@ CMDF( do_setexit )
    if( !str_cmp( arg, "map" ) )
    {
       continent_data *newmap;
-      string arg2, arg3;
+      std::string arg2, arg3;
       short x, y = -1;
 
       if( !ch->continent )
@@ -1892,7 +1829,7 @@ CMDF( do_setexit )
 
 /* The guts of the map display code. Streamlined to only change color codes when it needs to.
  * If you are also using my newly updated Custom Color code you'll get even better performance
- * out of it since that code replaced the stock Smaug color tag convertor, which shaved a few
+ * out of it since that code replaced the stock Smaug color tag converter, which shaved a few
  * microseconds off the time it takes to display a full immortal map :)
  * Don't believe me? Check this out:
  * 
@@ -1912,7 +1849,7 @@ CMDF( do_setexit )
  */
 void new_map_to_char( char_data * ch, short startx, short starty, short endx, short endy, int radius )
 {
-   string secbuf;
+   std::string secbuf;
 
    if( startx < 0 )
       startx = 0;
@@ -1945,11 +1882,9 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
 
          short sector = ch->continent->get_terrain( x, y );
          bool other = false, npc = false, object = false, group = false, aship = false;
-         list < char_data * >::iterator ich;
-         for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
-         {
-            char_data *rch = *ich;
 
+         for( auto* rch : ch->in_room->people )
+         {
             if( x == rch->map_x && y == rch->map_y && rch != ch && ( rch->map_x != ch->map_x || rch->map_y != ch->map_y ) )
             {
                if( rch->has_pcflag( PCFLAG_WIZINVIS ) && rch->pcdata->wizinvis > ch->level )
@@ -1973,11 +1908,8 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
             }
          }
 
-         list < obj_data * >::iterator iobj;
-         for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
+         for( auto* obj : ch->in_room->objects )
          {
-            obj_data *obj = *iobj;
-
             // Nolocate flags should block the $. Useful for road signs and such.
             if( x == obj->map_x && y == obj->map_y && !is_same_obj_map( ch, obj ) && !obj->extra_flags.test( ITEM_NOLOCATE ) )
             {
@@ -1986,11 +1918,8 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
             }
          }
 
-         list < ship_data * >::iterator sh;
-         for( sh = shiplist.begin(  ); sh != shiplist.end(  ); ++sh )
+         for( auto* ship : shiplist )
          {
-            ship_data *ship = *sh;
-
             if( x == ship->map_x && y == ship->map_y && ship->room == ch->in_room->vnum )
             {
                aship = true;
@@ -2260,7 +2189,6 @@ void map_scan( char_data * ch )
 {
    int mod = sysdata->mapsize;
    bool found = false;
-   list < char_data * >::iterator ich;
 
    if( !ch )
       return;
@@ -2296,10 +2224,8 @@ void map_scan( char_data * ch )
     */
    interpret( ch, "look" );
 
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* gch : ch->in_room->people )
    {
-      char_data *gch = *ich;
-
       /*
        * No need in scanning for yourself. 
        */
@@ -2398,11 +2324,10 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
       return;
    }
 
-   list < char_data * >::iterator ich;
-   for( ich = from->people.begin(  ); ich != from->people.end(  ); )
+   for( auto it = from->people.begin(); it != from->people.end(); )
    {
-      char_data *fch = *ich;
-      ++ich;
+      char_data *fch = *it;
+      ++it;
 
       if( fch != ch && fch->master == ch && ( fch->position == POS_STANDING || fch->position == POS_MOUNTED ) )
       {
@@ -2423,13 +2348,9 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
  */
 ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
 {
-   list < ship_data * >::iterator sh;
-
    // Cheap ass hack for now - better than nothing though
-   for( sh = shiplist.begin(  ); sh != shiplist.end(  ); ++sh )
+   for( auto* ship : shiplist )
    {
-      ship_data *ship = *sh;
-
       if( ship->continent == ch->continent && ship->map_x == x && ship->map_y == y )
       {
          if( !str_cmp( ch->name, ship->owner ) )
@@ -2458,11 +2379,8 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
    }
 
    bool boat = false;
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* obj : ch->carrying )
    {
-      obj_data *obj = *iobj;
-
       if( obj->item_type == ITEM_BOAT )
       {
          boat = true;
@@ -2529,7 +2447,7 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
 
          if( ch->isnpc(  ) )
          {
-            list < exit_data * >::iterator ex;
+            std::list<exit_data *>::iterator ex;
             exit_data *pexit;
             bool found = false;
 
@@ -2883,7 +2801,7 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
  * A cheap hack has been employed for the continent overhaul to use "-1" as a string argument
  * if you're coming from a regular room exit.
  */
-void enter_map( char_data * ch, exit_data * pexit, int x, int y, const string & tomap )
+void enter_map( char_data * ch, exit_data * pexit, int x, int y, const std::string & tomap )
 {
    room_index *maproom = nullptr, *original;
    continent_data *continent = nullptr;
@@ -3006,7 +2924,7 @@ void leave_map( char_data * ch, char_data * victim, room_index * target )
 /* Imm command to jump to a different set of coordinates on the same map */
 CMDF( do_coords )
 {
-   string arg;
+   std::string arg;
    int x, y;
 
    if( ch->isnpc(  ) )
@@ -3258,7 +3176,7 @@ CMDF( do_mapcreate )
  */
 CMDF( do_mapedit )
 {
-   string arg1;
+   std::string arg1;
    int value;
 
 #ifdef MULTIPORT
@@ -3314,7 +3232,7 @@ CMDF( do_mapedit )
    if( !str_cmp( arg1, "delete" ) )
    {
       continent_data *continent;
-      string arg2;
+      std::string arg2;
 
       argument = one_argument( argument, arg2 );
       
@@ -3401,7 +3319,7 @@ CMDF( do_mapedit )
    {
       room_index *room;
       area_data *area;
-      string arg2;
+      std::string arg2;
       int vnum;
 
       argument = one_argument( argument, arg2 );
@@ -3442,7 +3360,7 @@ CMDF( do_mapedit )
 
    if( !str_cmp( arg1, "png" ) )
    {
-      string arg2;
+      std::string arg2;
 
       argument = one_argument( argument, arg2 );
       continent_data *continent = find_continent_by_name( arg2 );

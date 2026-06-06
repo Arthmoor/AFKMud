@@ -28,7 +28,6 @@
 
 #pragma once
 
-const int MORPHFILEVER = 1;
 #define MORPH_FILE "morph.dat"   /* For morph data */
 
 /*
@@ -51,17 +50,17 @@ class morph_data
      morph_data(  );
     ~morph_data(  );
 
-     bitset < MAX_AFFECTED_BY > affected_by; /* New affected_by added */
-     bitset < MAX_AFFECTED_BY > no_affected_by; /* Prevents affects from being added */
-     bitset < MAX_CLASS > Class; /* Classes not allowed to use this */
-     bitset < MAX_RACE > race;   /* Races not allowed to use this */
-     bitset < MAX_RIS_FLAG > no_immune;   /* Prevents Immunities */
-     bitset < MAX_RIS_FLAG > no_resistant;   /* Prevents resistances */
-     bitset < MAX_RIS_FLAG > no_suscept;  /* Prevents Susceptibilities */
-     bitset < MAX_RIS_FLAG > immune;   /* Immunities added */
-     bitset < MAX_RIS_FLAG > resistant;   /* Resistances added */
-     bitset < MAX_RIS_FLAG > suscept;  /* Suscepts added */
-     bitset < MAX_RIS_FLAG > absorb;   /* Absorbs added - Samson 3-16-00 */
+   std::bitset<MAX_AFFECTED_BY> affected_by; /* New affected_by added */
+   std::bitset<MAX_AFFECTED_BY> no_affected_by; /* Prevents affects from being added */
+   std::bitset<MAX_CLASS> Class; /* Classes not allowed to use this */
+   std::bitset<MAX_RACE>race;   /* Races not allowed to use this */
+   std::bitset<MAX_RIS_FLAG> no_immune;   /* Prevents Immunities */
+   std::bitset<MAX_RIS_FLAG> no_resistant;   /* Prevents resistances */
+   std::bitset<MAX_RIS_FLAG> no_suscept;  /* Prevents Susceptibilities */
+   std::bitset<MAX_RIS_FLAG> immune;   /* Immunities added */
+   std::bitset<MAX_RIS_FLAG> resistant;   /* Resistances added */
+   std::bitset<MAX_RIS_FLAG> suscept;  /* Suscepts added */
+   std::bitset<MAX_RIS_FLAG> absorb;   /* Absorbs added - Samson 3-16-00 */
    char *damroll;
    char *deity;
    char *description;
@@ -128,15 +127,15 @@ class char_morph
    ~char_morph(  );
 
    morph_data *morph;
-     bitset < MAX_AFFECTED_BY > affected_by; /* New affected_by added */
-     bitset < MAX_AFFECTED_BY > no_affected_by; /* Prevents affects from being added */
-     bitset < MAX_RIS_FLAG > no_immune;   /* Prevents Immunities */
-     bitset < MAX_RIS_FLAG > no_resistant;   /* Prevents resistances */
-     bitset < MAX_RIS_FLAG > no_suscept;  /* Prevents Susceptibilities */
-     bitset < MAX_RIS_FLAG > resistant;   /* Resistances added */
-     bitset < MAX_RIS_FLAG > suscept;  /* Suscepts added */
-     bitset < MAX_RIS_FLAG > immune;   /* Immunities added */
-     bitset < MAX_RIS_FLAG > absorb;   /* Absorbs added */
+   std::bitset<MAX_AFFECTED_BY> affected_by; /* New affected_by added */
+   std::bitset<MAX_AFFECTED_BY> no_affected_by; /* Prevents affects from being added */
+   std::bitset<MAX_RIS_FLAG> no_immune;   /* Prevents Immunities */
+   std::bitset<MAX_RIS_FLAG> no_resistant;   /* Prevents resistances */
+   std::bitset<MAX_RIS_FLAG> no_suscept;  /* Prevents Susceptibilities */
+   std::bitset<MAX_RIS_FLAG> resistant;   /* Resistances added */
+   std::bitset<MAX_RIS_FLAG> suscept;  /* Suscepts added */
+   std::bitset<MAX_RIS_FLAG> immune;   /* Immunities added */
+   std::bitset<MAX_RIS_FLAG> absorb;   /* Absorbs added */
    int timer;  /* How much time is left */
    short ac;
    short cha;

@@ -38,9 +38,9 @@ struct help_data
    help_data(  );
    ~help_data(  );
 
-   string keyword;
-   string related;
-   string text;
+   std::string keyword;
+   std::string related;
+   std::string text;
    short level;
    short webinvis;
 };

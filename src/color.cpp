@@ -67,8 +67,6 @@
 #include "mud.h"
 #include "descriptor.h"
 
-namespace fs = std::filesystem;
-
 const char *pc_displays[MAX_COLORS] = {
    "black", "dred", "dgreen", "orange",        // 3
    "dblue", "purple", "cyan", "grey",          // 7
@@ -209,10 +207,9 @@ void reset_colors( char_data * ch )
 {
    if( !ch->isnpc(  ) )
    {
-      fs::path filename;
+      std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, "default" );
 
-      filename = std::format( "{}{}", COLOR_DIR, "default" );
-      if( fs::exists( filename ) )
+      if( std::filesystem::exists( filename ) )
       {
          FILE *fp;
          int max_colors = 0;
@@ -260,7 +257,7 @@ CMDF( do_color )
 {
    bool dMatch, cMatch;
    short count = 0, y = 0;
-   string arg, arg2;
+   std::string arg, arg2;
 
    dMatch = false;
    cMatch = false;
@@ -282,7 +279,7 @@ CMDF( do_color )
    if( !str_cmp( arg, "savetheme" ) && ch->is_imp(  ) )
    {
       FILE *fp;
-      fs::path filename;
+      std::filesystem::path filename;
 
       if( argument.empty(  ) )
       {
@@ -317,7 +314,7 @@ CMDF( do_color )
    if( !str_cmp( arg, "theme" ) )
    {
       FILE *fp;
-      fs::path filename;
+      std::filesystem::path filename;
       int max_colors = 0;
 
       if( argument.empty(  ) )
@@ -935,10 +932,10 @@ std::string color_align( const std::string & argument, int size, int align )
  */
 std::string colorize( std::string_view txt, descriptor_data * d )
 {
-   std::string result;
-
    if( txt.empty() || !d )
       return txt.data();
+
+   std::string result;
 
    result.reserve( txt.length() );
 

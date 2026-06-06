@@ -50,11 +50,11 @@ class cmd_type
      cmd_type(  );
     ~cmd_type(  );
 
-   string name;
-   string fun_name;  /* Added to hold the func name and dump some functions totally - Trax */
+   std::string name;
+   std::string fun_name;  /* Added to hold the func name and dump some functions totally - Trax */
    void *fileHandle;
    DO_FUN *do_fun;
-     bitset < MAX_CMD_FLAG > flags; /* Added for Checking interpret stuff -Shaddai */
+   std::bitset<MAX_CMD_FLAG> flags; /* Added for Checking interpret stuff -Shaddai */
    short position;
    short level;
    short log;
@@ -73,16 +73,16 @@ class social_type
      social_type(  );
     ~social_type(  );
 
-   string name;
-   string char_no_arg;
-   string others_no_arg;
-   string char_found;
-   string others_found;
-   string vict_found;
-   string char_auto;
-   string others_auto;
-   string obj_self;
-   string obj_others;
+   std::string name;
+   std::string char_no_arg;
+   std::string others_no_arg;
+   std::string char_found;
+   std::string others_found;
+   std::string vict_found;
+   std::string char_auto;
+   std::string others_auto;
+   std::string obj_self;
+   std::string obj_others;
    short minposition;
 };
 
@@ -90,9 +90,9 @@ class social_type
  * Cmd flag names --Shaddai
  */
 extern const char *cmd_flags[];
-extern vector < vector < cmd_type * > >command_table;
-extern map < string, social_type * >social_table;
+extern std::vector<std::vector<cmd_type *>> command_table;
+extern std::map<std::string, social_type *> social_table;
 
-cmd_type *find_command( const string & );
-social_type *find_social( const string & );
-int get_cmdflag( const string & );
+cmd_type *find_command( const std::string & );
+social_type *find_social( const std::string & );
+int get_cmdflag( const std::string & );

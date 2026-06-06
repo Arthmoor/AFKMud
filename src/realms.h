@@ -52,7 +52,7 @@ class realm_roster_data
      realm_roster_data(  );
     ~realm_roster_data(  );
 
-   string name;
+   std::string name;
    std::chrono::system_clock::time_point joined;
 };
 
@@ -66,24 +66,24 @@ class realm_data
      realm_data(  );
     ~realm_data(  );
 
-   list < realm_roster_data * >memberlist;
-   string filename;  // Realm filename
-   string name;      // Realm name
-   string realmdesc; // A brief description of the Realm
-   string leader;    // Head Realm leader
-   string badge;     // Realm badge on who/where/to_room
-   string leadrank;  // Leader's rank
-   int board;        // Vnum of Realm board
-   short type;       // See realm type defines
-   short members;    // Number of members
+   std::list<realm_roster_data *> memberlist;
+   std::string filename;  // Realm filename. Specifies the full path on disk.
+   std::string name;      // Realm name
+   std::string realmdesc; // A brief description of the Realm
+   std::string leader;    // Head Realm leader
+   std::string badge;     // Realm badge on who/where/to_room
+   std::string leadrank;  // Leader's rank
+   int board;             // Vnum of Realm board
+   short type;            // See realm type defines
+   short members;         // Number of members
 };
 
-extern list < realm_data * >realmlist;
+extern std::list<realm_data *> realmlist;
 
-void add_realm_roster( realm_data *, const string & );
-void remove_realm_roster( realm_data *, const string & );
+void add_realm_roster( realm_data *, const std::string & );
+void remove_realm_roster( realm_data *, const std::string & );
 void save_realm( realm_data * );
 void delete_realm( char_data *, realm_data * );
 void verify_realms(  );
 void free_realms( );
-realm_data *get_realm( const string & );
+realm_data *get_realm( const std::string & );

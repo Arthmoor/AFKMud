@@ -42,15 +42,15 @@ class race_type
      race_type(  );
     ~race_type(  );
 
-     vector < string > bodypart_where_names; /* Body part wear messages */
-     bitset < MAX_AFFECTED_BY > affected; /* Default affect bitvectors  */
-     bitset < MAX_ATTACK_TYPE > attacks;
-     bitset < MAX_DEFENSE_TYPE > defenses;
-     bitset < MAX_BPART > body_parts;  /* Bodyparts this race has */
-     bitset < LANG_UNKNOWN > language; /* Default racial language - can have multiples */
-     bitset < MAX_RIS_FLAG > resist;   /* Bugfix: Samson 5-7-99 */
-     bitset < MAX_RIS_FLAG > suscept;  /* Bugfix: Samson 5-7-99 */
-     bitset < MAX_CLASS > allowed_classes; /* Flags for allowed classes */
+   std::vector<std::string> bodypart_where_names; /* Body part wear messages */
+   std::bitset<MAX_AFFECTED_BY> affected; /* Default affect bitvectors  */
+   std::bitset<MAX_ATTACK_TYPE> attacks;
+   std::bitset<MAX_DEFENSE_TYPE> defenses;
+   std::bitset<MAX_BPART> body_parts;  /* Bodyparts this race has */
+   std::bitset<LANG_UNKNOWN> language; /* Default racial language - can have multiples */
+   std::bitset<MAX_RIS_FLAG> resist;   /* Bugfix: Samson 5-7-99 */
+   std::bitset<MAX_RIS_FLAG> suscept;  /* Bugfix: Samson 5-7-99 */
+   std::bitset<MAX_CLASS> allowed_classes; /* Flags for allowed classes */
    char *race_name;  /* Race name */
    short str_plus;   /* Str bonus/penalty    */
    short dex_plus;   /* Dex      "        */
@@ -92,9 +92,9 @@ class class_type
      class_type(  );
     ~class_type(  );
 
-     bitset < MAX_AFFECTED_BY > affected;
-     bitset < MAX_RIS_FLAG > resist;
-     bitset < MAX_RIS_FLAG > suscept;
+   std::bitset<MAX_AFFECTED_BY> affected;
+   std::bitset<MAX_RIS_FLAG> resist;
+   std::bitset<MAX_RIS_FLAG> suscept;
    char *who_name;   /* Name for 'who' */
    float thac0_gain; /* Thac0 amount gained per level - Dwip 5-11-01 */
    int weapon; /* Vnum of Weapon given at creation */

@@ -65,25 +65,25 @@ class descriptor_data
     * Internal to descriptor.cpp 
     */
    void init(  );
-   bool write( const string & );
+   bool write( std::string_view );
    bool read(  );
    bool flush_buffer( bool );
    void read_from_buffer(  );
    void write_to_buffer( std::string_view );
    void buffer_printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void send_color( std::string_view );
-   void pager( const string & );
+   void pager( const std::string & );
    void show_stats( char_data * );
    void send_greeting(  );
    void show_title(  );
    void process_dns(  );
-   void resolve_dns( const string & );
+   void resolve_dns( const std::string & );
    void prompt(  );
-   void set_pager_input( const string & );
+   void set_pager_input( const std::string & );
    bool pager_output(  );
-   short check_reconnect( const string &, bool );
-   short check_playing( const string &, bool );
-   void nanny( string & );
+   short check_reconnect( const std::string &, bool );
+   short check_playing( const std::string &, bool );
+   void nanny( std::string & );
    bool is_idle_timeout( );
 
    /*
@@ -95,13 +95,13 @@ class descriptor_data
    // bool check_total_bans(  );
    void send_msp_startup(  );
 
-   string ipaddress;
-   string hostname;
-   string outbuf;
-   string pagebuf;
-   string incomm;
-   string inlast;
-   string client; /* Client detection */
+   std::string ipaddress;
+   std::string hostname;
+   std::string outbuf;
+   std::string pagebuf;
+   std::string incomm;
+   std::string inlast;
+   std::string client; /* Client detection */
    descriptor_data *snoop_by;
    char_data *character;
    char_data *original;
@@ -128,7 +128,7 @@ class descriptor_data
    bool disconnect;
 };
 
-extern list < descriptor_data * >dlist;
+extern std::list<descriptor_data*> dlist;
 void free_all_descs(  );
-bool load_char_obj( descriptor_data *, const string &, bool, bool );
+bool load_char_obj( descriptor_data *, const std::string &, bool, bool );
 void close_socket( descriptor_data *, bool );

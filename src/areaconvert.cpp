@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                     Stock Zone Reader and Convertor                      *
+ *                     Stock Zone Reader and Converter                      *
  ****************************************************************************/
 
 /* Converts stock Smaug version 0 thru 3 areas into AFKMud format - Samson 12-21-01 */
@@ -265,11 +265,8 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       tmpBootDb = fBootDb;
       fBootDb = false;
 
-      list < area_data * >::iterator iarea;
-      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+      for( auto* area : arealist )
       {
-         area_data *area = *iarea;
-
          if( !str_cmp( area->filename, tarea->filename ) )
             continue;
 
@@ -611,7 +608,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          }  /* End of standard Smaug zone */
          else  /* A SmaugWiz zone */
          {
-            string speaking, flag;
+            std::string speaking, flag;
             int value;
 
             ln = fread_line( fp );
@@ -790,7 +787,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
       if( !oldmob )
       {
-         mob_index_table.insert( map < int, mob_index * >::value_type( vnum, pMobIndex ) );
+         mob_index_table.insert( std::map<int, mob_index *>::value_type( vnum, pMobIndex ) );
          tarea->mobs.push_back( pMobIndex );
          ++top_mob_index;
       }
@@ -840,11 +837,8 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       tmpBootDb = fBootDb;
       fBootDb = false;
 
-      list < area_data * >::iterator iarea;
-      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+      for( auto* area : arealist )
       {
-         area_data *area = *iarea;
-
          if( !str_cmp( area->filename, tarea->filename ) )
             continue;
 
@@ -1170,7 +1164,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
       if( !oldobj )
       {
-         obj_index_table.insert( map < int, obj_index * >::value_type( pObjIndex->vnum, pObjIndex ) );
+         obj_index_table.insert( std::map<int, obj_index *>::value_type( pObjIndex->vnum, pObjIndex ) );
          tarea->objects.push_back( pObjIndex );
          ++top_obj_index;
       }
@@ -1218,11 +1212,8 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
       tmpBootDb = fBootDb;
       fBootDb = false;
 
-      list < area_data * >::iterator iarea;
-      for( iarea = arealist.begin(  ); iarea != arealist.end(  ); ++iarea )
+      for( auto* area : arealist )
       {
-         area_data *area = *iarea;
-
          if( !str_cmp( area->filename, tarea->filename ) )
             continue;
 
@@ -1577,7 +1568,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
       if( !oldroom )
       {
-         room_index_table.insert( map < int, room_index * >::value_type( pRoomIndex->vnum, pRoomIndex ) );
+         room_index_table.insert( std::map<int, room_index *>::value_type( pRoomIndex->vnum, pRoomIndex ) );
          tarea->rooms.push_back( pRoomIndex );
          ++top_room;
       }
@@ -1798,13 +1789,8 @@ void load_stresets( area_data * tarea, FILE * fp )
 
    if( !not01 )
    {
-      list < room_index * >::iterator iroom;
-      for( iroom = tarea->rooms.begin(  ); iroom != tarea->rooms.end(  ); ++iroom )
-      {
-         pRoomIndex = *iroom;
-
-         pRoomIndex->renumber_put_resets(  );
-      }
+      for( auto* pRoomIndex2 : tarea->rooms )
+         pRoomIndex2->renumber_put_resets(  );
    }
 }
 
@@ -1870,7 +1856,7 @@ void load_strepairs( FILE * fp )
    }
 }
 
-void load_stock_area_file( const string & filename, bool manual )
+void load_stock_area_file( const std::string & filename, bool manual )
 {
    area_data *tarea = nullptr;
    char *word;
@@ -2232,7 +2218,7 @@ CMDF( do_areaconvert )
    area_data *tarea = nullptr;
    int tmp;
    bool manual, forced = false;
-   string arg;
+   std::string arg;
 
    argument = one_argument( argument, arg );
 

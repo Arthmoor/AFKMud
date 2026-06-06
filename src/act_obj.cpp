@@ -166,7 +166,7 @@ void get_obj( char_data * ch, obj_data * obj, obj_data * container )
 
 CMDF( do_get )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    obj_data *obj, *container;
    short number = 0;
    bool found;
@@ -252,7 +252,7 @@ CMDF( do_get )
       {
          short cnt = 0;
          bool fAll;
-         string chk;
+         std::string chk;
 
          if( ch->in_room->flags.test( ROOM_DONATION ) )
          {
@@ -277,7 +277,7 @@ CMDF( do_get )
           * 'get all' or 'get all.obj' 
           */
          found = false;
-         list < obj_data * >::iterator iobj;
+         std::list<obj_data *>::iterator iobj;
          for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
          {
             obj = *iobj;
@@ -410,10 +410,8 @@ CMDF( do_get )
             if( !str_cmp( name, ch->name ) && !ch->is_immortal(  ) )
             {
                bool fGroup = false;
-               list < char_data * >::iterator ich;
-               for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+               for( auto* gch : pclist )
                {
-                  char_data *gch = *ich;
 
                   if( is_same_group( ch, gch ) && !str_cmp( name, gch->name ) )
                   {
@@ -478,7 +476,7 @@ CMDF( do_get )
       {
          int cnt = 0;
          bool fAll;
-         string chk;
+         std::string chk;
 
          /*
           * 'get all container' or 'get all.obj container' 
@@ -504,7 +502,7 @@ CMDF( do_get )
          }
 
          found = false;
-         list < obj_data * >::iterator iobj;
+         std::list<obj_data *>::iterator iobj;
          for( iobj = container->contents.begin(  ); iobj != container->contents.end(  ); )
          {
             obj = *iobj;
@@ -575,7 +573,7 @@ CMDF( do_get )
 
 CMDF( do_put )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    obj_data *container, *obj = nullptr;
    short count;
    int number = 0;
@@ -762,7 +760,7 @@ CMDF( do_put )
       bool found = false;
       int cnt = 0;
       bool fAll;
-      string chk;
+      std::string chk;
 
       if( !str_cmp( arg1, "all" ) )
          fAll = true;
@@ -782,7 +780,7 @@ CMDF( do_put )
       /*
        * 'put all container' or 'put all.obj container' 
        */
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
       for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
       {
          obj = *iobj;
@@ -863,7 +861,7 @@ CMDF( do_put )
 
 CMDF( do_drop )
 {
-   string arg;
+   std::string arg;
    obj_data *obj;
    bool found;
    int number = 0;
@@ -902,7 +900,7 @@ CMDF( do_drop )
       return;
    }
 
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    if( number > 0 )
    {
       /*
@@ -1010,7 +1008,7 @@ CMDF( do_drop )
    else
    {
       int cnt = 0;
-      string chk;
+      std::string chk;
       bool fAll;
 
       if( !str_cmp( arg, "all" ) )
@@ -1036,7 +1034,7 @@ CMDF( do_drop )
          return;
       }
       found = false;
-      list < obj_data * >droplist;
+      std::list<obj_data *> droplist;
       droplist.clear(  );
       for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
       {
@@ -1109,12 +1107,10 @@ CMDF( do_drop )
             // Drop all command with rare items in it will spawn an evil infinite loop so we handle that here now.
             if( droplist.size(  ) > 0 )
             {
-               list < obj_data * >::iterator dobj;
-
-               for( dobj = droplist.begin(  ); dobj != droplist.end(  ); )
+               for( auto it = droplist.begin(  ); it != droplist.end(  ); )
                {
-                  obj_data *drop = *dobj;
-                  ++dobj;
+                  obj_data *drop = *it;
+                  ++it;
 
                   drop->from_room(  );
                   drop->to_char( ch );
@@ -1135,7 +1131,7 @@ CMDF( do_drop )
 
 CMDF( do_give )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    obj_data *obj;
 
@@ -1392,13 +1388,11 @@ bool can_dual( char_data * ch )
 // FIX ME - The entire layering system is seriously screwed up
 bool can_layer( char_data * ch, obj_data * obj, short wear_loc )
 {
-   list < obj_data * >::iterator iobj;
    short bitlayers = 0;
    short objlayers = obj->pIndexData->layers;
 
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* otmp : ch->carrying )
    {
-      obj_data *otmp = *iobj;
       if( otmp->wear_loc == wear_loc )
       {
          if( !otmp->pIndexData->layers )
@@ -1494,7 +1488,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 {
    obj_data *tmpobj = nullptr;
    int bit, tmp;
-   bitset<MAX_BPART> body_parts;
+   std::bitset<MAX_BPART> body_parts;
 
    if( obj->extra_flags.test( ITEM_PERSONAL ) && str_cmp( ch->name, obj->owner ) )
    {
@@ -2233,7 +2227,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 
 CMDF( do_wear )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    obj_data *obj;
    int wear_bit;
 
@@ -2253,7 +2247,7 @@ CMDF( do_wear )
 
    if( !str_cmp( arg1, "all" ) )
    {
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
 
       for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
       {
@@ -2299,7 +2293,7 @@ CMDF( do_remove )
 
    if( !str_cmp( argument, "all" ) )   /* SB Remove all */
    {
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
       for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
       {
          obj = *iobj;
@@ -2338,10 +2332,8 @@ CMDF( do_bury )
       return;
 
    bool shovel = false;
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* tobj : ch->carrying )
    {
-      obj_data *tobj = *iobj;
       if( tobj->item_type == ITEM_SHOVEL )
       {
          shovel = true;
@@ -2411,7 +2403,7 @@ CMDF( do_bury )
 
 CMDF( do_sacrifice )
 {
-   string name;
+   std::string name;
    obj_data *obj;
 
    if( argument.empty(  ) || !str_cmp( argument, ch->name ) )
@@ -2508,18 +2500,16 @@ CMDF( do_brandish )
 
    if( staff->value[2] > 0 )
    {
-      list < char_data * >::iterator ich;
-
       if( !oprog_use_trigger( ch, staff, nullptr, nullptr ) )
       {
          act( AT_MAGIC, "$n brandishes $p.", ch, staff, nullptr, TO_ROOM );
          act( AT_MAGIC, "You brandish $p.", ch, staff, nullptr, TO_CHAR );
       }
 
-      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+      for( auto it = ch->in_room->people.begin(  ); it != ch->in_room->people.end(  ); )
       {
-         char_data *vch = *ich;
-         ++ich;
+         char_data *vch = *it;
+         ++it;
 
          if( vch->has_pcflag( PCFLAG_WIZINVIS ) && vch->pcdata->wizinvis > ch->level )
             continue;

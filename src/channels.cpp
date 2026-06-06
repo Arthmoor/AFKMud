@@ -39,11 +39,11 @@
 std::string translate( int, const std::string &, const std::string & );
 #if !defined(__CYGWIN__)
 #ifdef MULTIPORT
-void mud_message( char_data *, mud_channel *, const string & );
+void mud_message( char_data *, mud_channel *, const std::string & );
 #endif
 #endif
 
-list < mud_channel * >chanlist;
+std::list<mud_channel *> chanlist;
 
 const char *chan_types[] = {
    "Global", "Zone", "Guild", "Room", "PK", "Log"
@@ -55,22 +55,19 @@ const char *chan_flags[] = {
 
 chan_history::~chan_history(  )
 {
-   DISPOSE( this->format );
 }
 
 chan_history::chan_history(  )
 {
-   init_memory( &this->format, &this->invis, sizeof( this->invis ) );
+   init_memory( &this->level, &this->invis, sizeof( this->invis ) );
 }
 
 void purge_channel_history( mud_channel *channel )
 {
-   list < chan_history * >::iterator ihist;
-
-   for( ihist = channel->history.begin(  ); ihist != channel->history.end(  ); )
+   for( auto it = channel->history.begin(); it != channel->history.end(); )
    {
-      chan_history *entry = *ihist;
-      ++ihist;
+      chan_history *entry = *it;
+      ++it;
 
       deleteptr( entry );
    }
@@ -89,7 +86,7 @@ mud_channel::~mud_channel(  )
    chanlist.remove( this );
 }
 
-int get_chantypes( const string & name )
+int get_chantypes( const std::string & name )
 {
    for( size_t x = 0; x < sizeof( chan_types ) / sizeof( chan_types[0] ); ++x )
       if( !str_cmp( name, chan_types[x] ) )
@@ -97,7 +94,7 @@ int get_chantypes( const string & name )
    return -1;
 }
 
-int get_chanflag( const string & flag )
+int get_chanflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( chan_flags ) / sizeof( chan_flags[0] ) ); ++x )
       if( !str_cmp( flag, chan_flags[x] ) )
@@ -110,7 +107,7 @@ void load_mudchannels( void )
 {
    mud_channel *channel = nullptr;
    int filever = 0;
-   ifstream stream;
+   std::ifstream stream;
 
    log_string( "Loading channels..." );
 
@@ -125,7 +122,7 @@ void load_mudchannels( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -167,11 +164,12 @@ void load_mudchannels( void )
    stream.close(  );
 }
 
+// 1: Initial version.
 const int CHANNEL_VERSION = 1;
+
 void save_mudchannels( void )
 {
-   list < mud_channel * >::iterator chan;
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( CHANNEL_FILE );
    if( !stream.is_open(  ) )
@@ -181,35 +179,30 @@ void save_mudchannels( void )
    }
    else
    {
-      stream << "#VERSION " << CHANNEL_VERSION << endl;
+      stream << "#VERSION " << CHANNEL_VERSION << std::endl;
 
-      for( chan = chanlist.begin(  ); chan != chanlist.end(  ); ++chan )
+      for( auto* channel : chanlist )
       {
-         mud_channel *channel = *chan;
-
          if( !channel->name.empty(  ) )
          {
-            stream << "#CHANNEL" << endl;
-            stream << "ChanName      " << channel->name << endl;
-            stream << "ChanColorname " << channel->colorname << endl;
-            stream << "ChanLevel     " << channel->level << endl;
-            stream << "ChanType      " << channel->type << endl;
+            stream << "#CHANNEL" << std::endl;
+            stream << "ChanName      " << channel->name << std::endl;
+            stream << "ChanColorname " << channel->colorname << std::endl;
+            stream << "ChanLevel     " << channel->level << std::endl;
+            stream << "ChanType      " << channel->type << std::endl;
             if( channel->flags.any(  ) )
-               stream << "ChanFlags     " << bitset_string( channel->flags, chan_flags ) << endl;
-            stream << "End" << endl << endl;
+               stream << "ChanFlags     " << bitset_string( channel->flags, chan_flags ) << std::endl;
+            stream << "End" << std::endl << std::endl;
          }
       }
       stream.close(  );
    }
 }
 
-mud_channel *find_channel( const string & name )
+mud_channel *find_channel( const std::string & name )
 {
-   list < mud_channel * >::iterator chan;
-
-   for( chan = chanlist.begin(  ); chan != chanlist.end(  ); ++chan )
+   for( auto* channel : chanlist )
    {
-      mud_channel *channel = *chan;
       if( !str_prefix( name, channel->name ) )
          return channel;
    }
@@ -246,7 +239,7 @@ CMDF( do_makechannel )
 CMDF( do_setchannel )
 {
    mud_channel *channel;
-   string arg, arg2;
+   std::string arg, arg2;
 
    if( argument.empty(  ) )
    {
@@ -330,7 +323,7 @@ CMDF( do_setchannel )
 
    if( !str_cmp( arg2, "flags" ) )
    {
-      string arg3;
+      std::string arg3;
       int value;
 
       if( argument.empty(  ) )
@@ -371,12 +364,10 @@ CMDF( do_setchannel )
 
 void free_mudchannels( void )
 {
-   list < mud_channel * >::iterator chan;
-
-   for( chan = chanlist.begin(  ); chan != chanlist.end(  ); )
+   for( auto it = chanlist.begin(); it != chanlist.end(); )
    {
-      mud_channel *channel = *chan;
-      ++chan;
+      mud_channel *channel = *it;
+      ++it;
 
       deleteptr( channel );
    }
@@ -404,23 +395,17 @@ CMDF( do_destroychannel )
 
 CMDF( do_showchannels )
 {
-   list < mud_channel * >::iterator chan;
-
    ch->print( "&WName               &YLevel &cColor      &BType       &GFlags\r\n" );
    ch->print( "&W----------------------------------------------------------\r\n" );
-   for( chan = chanlist.begin(  ); chan != chanlist.end(  ); ++chan )
-   {
-      mud_channel *channel = *chan;
 
-      ch->printf( "&W%-18s &Y%-4d  &c%-10s &B%-10s &G%s\r\n", capitalize( channel->name ).c_str(  ),
-                  channel->level, channel->colorname.c_str(  ), chan_types[channel->type], bitset_string( channel->flags, chan_flags ) );
-   }
+   for( auto* channel : chanlist )
+      ch->print_fmt( "&W{:<18} &Y{:<4}  &c{:<10} &B{:<10} &G{}\r\n", capitalize( channel->name ), channel->level, channel->colorname, chan_types[channel->type], bitset_string( channel->flags, chan_flags ) );
 }
 
 CMDF( do_listen )
 {
    mud_channel *channel;
-   list < mud_channel * >::iterator chan;
+   std::list<mud_channel *>::iterator chan;
 
    if( ch->isnpc(  ) )
    {
@@ -504,8 +489,6 @@ CMDF( do_listen )
 /* Revised channel display by Zarius */
 CMDF( do_channels )
 {
-   list < mud_channel * >::iterator chan;
-
    if( ch->isnpc(  ) )
    {
       ch->print( "NPCs cannot list channels.\r\n" );
@@ -517,13 +500,12 @@ CMDF( do_channels )
 
    ch->print( "&WChannel        On/Off&D\r\n" );
    ch->print( "&B-----------------------&D\r\n" );
-   for( chan = chanlist.begin(  ); chan != chanlist.end(  ); ++chan )
-   {
-      mud_channel *channel = *chan;
 
+   for( auto* channel : chanlist )
+   {
       if( ch->level >= channel->level )
       {
-         ch->printf( "&w%-17s%s&D\r\n", capitalize( channel->name ).c_str(  ), ( hasname( ch->pcdata->chan_listen, channel->name ) ) ? "&GOn" : "&ROff" );
+         ch->print_fmt( "&w{:<17}{}&D\r\n", capitalize( channel->name ), ( hasname( ch->pcdata->chan_listen, channel->name ) ) ? "&GOn" : "&ROff" );
       }
    }
    ch->print( "\r\n" );
@@ -531,31 +513,28 @@ CMDF( do_channels )
 
 void show_channel_history( char_data * ch, mud_channel * channel )
 {
-   const char *name;
-   list < chan_history * >::iterator ihist;
+   std::string name;
 
-   ch->printf( "&cThe last %d %s messages:\r\n", MAX_CHANHISTORY, channel->name.c_str(  ) );
+   ch->print_fmt( "&cThe last {} {} messages:\r\n", MAX_CHANHISTORY, channel->name );
 
-   for( ihist = channel->history.begin(  ); ihist != channel->history.end(  ); ++ihist )
+   for( auto* entry : channel->history )
    {
-      chan_history *entry = *ihist;
-
       switch( entry->level )
       {
          case 0:
-            name = entry->name.c_str();
+            name = entry->name;
             break;
 
          case 1:
             if( ch->has_aflag( AFF_DETECT_INVIS ) || ch->has_pcflag( PCFLAG_HOLYLIGHT ) )
-               name = entry->name.c_str();
+               name = entry->name;
             else
                name = "Someone";
             break;
 
          case 2:
             if( ch->level >= entry->invis )
-               name = entry->name.c_str();
+               name = entry->name;
             else
                name = "Someone";
             break;
@@ -563,15 +542,18 @@ void show_channel_history( char_data * ch, mud_channel * channel )
          default:
             name = "Someone";
       }
-      ch->printf( entry->format, mini_c_time( entry->timestamp, ch->pcdata->timezone ).c_str(), name );
+      // ch->printf( entry->format, mini_c_time( entry->timestamp, ch->pcdata->timezone ).c_str(), name.c_str() );
+      std::string formatted_message = std::vformat( entry->format, std::make_format_args( mini_c_time( entry->timestamp, ch->pcdata->timezone ), name ) );
+      ch->print( formatted_message );
    }
 }
 
 /* Channel history. Records the last MAX_CHANHISTORY messages to channels which keep historys */
-void update_channel_history( char_data * ch, mud_channel * channel, const string & argument, bool emote )
+void update_channel_history( char_data * ch, mud_channel * channel, const std::string & argument, bool emote )
 {
    int type = 0;
-   const string newarg = add_percent( argument );
+   // const std::string newarg = add_percent( argument );
+   const std::string newarg = escape_formatting( argument );
 
    chan_history *entry = new chan_history;
 
@@ -582,7 +564,8 @@ void update_channel_history( char_data * ch, mud_channel * channel, const string
    else
       entry->name = ch->name;
 
-   strdup_printf( &entry->format, "   &R[%%s] &G%%s%s %s\r\n", emote ? "" : ":", newarg.c_str(  ) );
+   entry->format = std::format( "  &R[{{}}] &G{{}}{} {}\r\n", emote ? "" : ":", newarg );
+   // strdup_printf( &entry->format, "   &R[%%s] &G%%s%s %s\r\n", emote ? "" : ":", newarg.c_str(  ) );
 
    entry->timestamp = current_time;
 
@@ -607,7 +590,7 @@ void update_channel_history( char_data * ch, mud_channel * channel, const string
 }
 
 /* Duplicate of to_channel from act_comm.c modified for dynamic channels */
-void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
+void send_tochannel( char_data * ch, mud_channel * channel, std::string & argument )
 {
    int speaking = -1;
 
@@ -675,10 +658,10 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
    // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
    strip_spaces( argument );
 
-   string arg, word;
+   std::string arg, word;
    char_data *victim = nullptr;
    social_type *social = nullptr;
-   string socbuf_char, socbuf_vict, socbuf_other;
+   std::string socbuf_char, socbuf_vict, socbuf_other;
 
    arg = argument;
    arg = one_argument( arg, word );
@@ -687,7 +670,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
    {
       if( !arg.empty(  ) )
       {
-         string name;
+         std::string name;
 
          one_argument( arg, name );
 
@@ -763,11 +746,8 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
    if( channel->flags.test( CHAN_KEEPHISTORY ) )
       update_channel_history( ch, channel, argument, emote );
 
-   list < char_data * >::iterator ich;
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
+   for( auto* vch : pclist )
    {
-      char_data *vch = *ich;
-
       /*
        * Hackish solution to stop that damned "someone chat" bug - Matarael 17.3.2002 
        */
@@ -780,8 +760,8 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
 
       if( vch->desc->connected == CON_PLAYING && hasname( vch->pcdata->chan_listen, channel->name ) )
       {
-         string sbuf = argument;
-         string lbuf;  /* invis level string + buf */
+         std::string sbuf = argument;
+         std::string lbuf;  /* invis level string + buf */
 
          if( vch->level < channel->level )
             continue;
@@ -870,7 +850,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
          }
          fix_maps( vch, ch );
 
-         string buf;
+         std::string buf;
          if( !social && !emote )
          {
             buf = std::format( "&[{}]$n {}s '$t&[{}]'", channel->colorname, channel->name, channel->colorname );
@@ -924,12 +904,11 @@ void send_tochannel( char_data * ch, mud_channel * channel, string & argument )
             ch->map_y = -1;
          }
       }
-   }
+   } // End for loop.
 }
 
-void to_channel( const string & argument, const string & xchannel, int level )
+void to_channel( const std::string & argument, const std::string & xchannel, int level )
 {
-   list < descriptor_data * >::iterator ds;
    mud_channel *channel;
 
    if( dlist.empty(  ) || argument.empty(  ) )
@@ -944,9 +923,8 @@ void to_channel( const string & argument, const string & xchannel, int level )
    if( channel->flags.test( CHAN_KEEPHISTORY ) )
       update_channel_history( nullptr, channel, argument, false );
 
-   for( ds = dlist.begin(  ); ds != dlist.end(  ); ++ds )
+   for( auto* d : dlist )
    {
-      descriptor_data *d = *ds;
       char_data *vch = d->original ? d->original : d->character;
 
       if( !vch )
@@ -963,16 +941,14 @@ void to_channel( const string & argument, const string & xchannel, int level )
 
       if( d->connected == CON_PLAYING && vch->level >= channel->level && hasname( vch->pcdata->chan_listen, channel->name ) )
       {
-         string buf;
-
-         buf = std::format( "{}: {}\r\n", capitalize( channel->name ), argument );
+         std::string buf = std::format( "{}: {}\r\n", capitalize( channel->name ), argument );
          vch->set_color( AT_LOG );
          vch->print( buf );
       }
    }
 }
 
-bool local_channel_hook( char_data * ch, const string & command, string & argument )
+bool local_channel_hook( char_data * ch, const std::string & command, std::string & argument )
 {
    mud_channel *channel;
 

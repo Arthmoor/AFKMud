@@ -28,6 +28,7 @@
 
 #include <algorithm>
 #include <format>
+#include <ranges>
 #include "mud.h"
 #include "descriptor.h"
 
@@ -67,9 +68,9 @@ void strdup_printf( char **pointer, const char *fmt, ... )
  * So... yeah. U dun goof'd.
  * Fixing it by turning this into a wrapper for is_name2_prefix cause there's a mountain of code using this.
  */
-bool hasname( const std::string & list, const std::string & member )
+bool hasname( std::string_view list, std::string_view member )
 {
-   if( is_name2_prefix( member, list ) )
+   if( is_name2_prefix( member, list.data() ) )
       return true;
 
    return false;
@@ -100,13 +101,13 @@ void removename( std::string & list, const std::string & member )
       std::string die = " " + member;
       std::string::size_type pos = list.find( die );
 
-      if( pos != string::npos )
+      if( pos != std::string::npos )
          list.erase( pos, die.length( ) );
       else
       {
          pos = list.find( member );
 
-         if( pos != string::npos && pos == 0 )
+         if( pos != std::string::npos && pos == 0 )
             list.erase( pos, member.length( ) );
       }
    }
@@ -226,13 +227,13 @@ const char *one_argument( const char *argument, char *arg_first )
 /*
  * Given a string like 14.foo, return 14 and 'foo'
  */
-int number_argument( const string & argument, string & arg )
+int number_argument( std::string_view argument, std::string & arg )
 {
    int number;
-   string pdot;
-   string::size_type x;
+   std::string pdot;
+   std::string::size_type x;
 
-   if( ( x = argument.find_first_of( "." ) ) == string::npos )
+   if( ( x = argument.find_first_of( "." ) ) == std::string::npos )
    {
       arg = argument;
       return 1;
@@ -273,24 +274,28 @@ int number_argument( char *argument, char *arg )
 // >0 = astr > bstr
 // Case insensitive.
 // -- Justice
-int str_cmp( const std::string & astr, const std::string & bstr )
+int str_cmp( std::string_view astr, std::string_view bstr )
 {
-   std::string::const_iterator a1, a2, b1, b2;
+   auto it1 = astr.begin();
+   auto it2 = bstr.begin();
 
-   a1 = astr.begin(  );
-   a2 = astr.end(  );
-
-   b1 = bstr.begin(  );
-   b2 = bstr.end(  );
-
-   while( a1 != a2 && b1 != b2 )
+   while( it1 != astr.end() && it2 != bstr.end() )
    {
-      if( std::toupper( *a1 ) != std::toupper( *b1 ) )
-         return ( std::toupper( *a1 ) < std::toupper( *b1 ) ? -1 : 1 );
-      ++a1;
-      ++b1;
+      unsigned char ca = std::toupper( static_cast<unsigned char>(*it1) );
+      unsigned char cb = std::toupper( static_cast<unsigned char>(*it2) );
+
+      if( ca < cb )
+         return -1;
+      if( ca > cb )
+         return 1;
+
+      ++it1;
+      ++it2;
    }
-   return ( bstr.size(  ) == astr.size(  ) ? 0 : ( astr.size(  ) < bstr.size(  ) ? -1 : 1 ) );
+
+   if( astr.size() == bstr.size() )
+      return 0;
+   return( astr.size() < bstr.size() ) ? -1 : 1;
 }
 
 /*
@@ -329,27 +334,14 @@ bool str_cmp( const char *astr, const char *bstr )
 // Returns false if it is.
 // If that's confusing, that's how this function's traditional usage has always been.
 // Thanks to Justice for providing this.
-bool str_prefix( const string & astr, const string & bstr )
+bool str_prefix( std::string_view astr, std::string_view bstr )
 {
-   string::const_iterator a1, a2, b1, b2;
-
-   if( astr.size(  ) > bstr.size(  ) || bstr.empty(  ) )
+   if( astr.size() > bstr.size() )
       return true;
 
-   a1 = astr.begin(  );
-   a2 = astr.end(  );
+   auto [it1, it2] = std::ranges::mismatch( astr, bstr, [](unsigned char a, unsigned char b ) { return std::tolower(a) == std::tolower(b); } );
 
-   b1 = bstr.begin(  );
-   b2 = bstr.end(  );
-
-   while( a1 != a2 && b1 != b2 )
-   {
-      if( std::toupper( *a1 ) != std::toupper( *b1 ) )
-         return true;
-      ++a1;
-      ++b1;
-   }
-   return false;
+   return it1 != astr.end();
 }
 
 bool str_prefix( const char *needle, const char *haystack )
@@ -375,9 +367,9 @@ bool str_prefix( const char *needle, const char *haystack )
 
 // Is astr a part of any portion of bstr?
 // Return value compatible with historical functions.
-bool str_infix( const string & astr, const string & bstr )
+bool str_infix( std::string_view astr, std::string_view bstr )
 {
-   if( bstr.find( astr ) != string::npos )
+   if( bstr.find( astr ) != std::string::npos )
       return false;
    return true;
 }
@@ -405,7 +397,8 @@ bool str_infix( const char *astr, const char *bstr )
    return true;
 }
 
-/* FIXME: This sucks. Mind drawing a blank on how to make a std::string version.
+/*
+ * FIXME: This sucks. Mind drawing a blank on how to make a std::string version.
  * Compare strings, case insensitive, for suffix matching.
  * Return true if astr not a suffix of bstr
  *   (compatibility with historical functions).
@@ -423,48 +416,49 @@ bool str_suffix( const char *astr, const char *bstr )
 }
 
 // Strips off trailing tildes on lines from files which will no longer need them - Samson 3-1-05
-void strip_tilde( string & line )
+void strip_tilde( std::string & line )
 {
-   string_erase( line, '~' );
+   std::erase( line, '~' );
 }
 
-/* Strips off leading spaces and tabs in strings.
- * Useful mainly for input file streams because they suck so much.
+/*
+ * Strips off leading spaces and tabs in strings.
+ * Useful mainly for input file streams.
  * Samson 10-16-04
  */
-void strip_lspace( string & line )
+void strip_lspace( std::string & line )
 {
-   string::size_type space;
+   std::string::size_type space;
 
    space = line.find_first_not_of( " \t" );
-   if( space == string::npos )
+   if( space == std::string::npos )
       space = 0;
    line = line.substr( space, line.length(  ) );
 }
 
-/* Strips off trailing spaces in strings. */
-void strip_tspace( string & line )
+// Strips off trailing spaces in strings.
+void strip_tspace( std::string & line )
 {
-   string::size_type space;
+   std::string::size_type space;
 
    space = line.find_last_not_of( " \t" );
-   if( space != string::npos )
+   if( space != std::string::npos )
       line = line.substr( 0, space + 1 );
 }
 
-/* Strip both leading and trailing spaces from a string */
-void strip_spaces( string & line )
+// Strip both leading and trailing spaces from a string
+void strip_spaces( std::string & line )
 {
-   strip_lspace( line );
    strip_tspace( line );
+   strip_lspace( line );
 }
 
-string strip_cr( const string & str )
+std::string strip_cr( const std::string & str )
 {
-   string newstr = str;
-   string::size_type x;
+   std::string newstr = str;
+   std::string::size_type x;
 
-   while( ( x = newstr.find( '\r' ) ) != string::npos )
+   while( ( x = newstr.find( '\r' ) ) != std::string::npos )
       newstr = newstr.erase( x, 1 );
    return newstr;
 }
@@ -487,16 +481,13 @@ const char *strip_cr( const char *str )
    return newstr;
 }
 
-string strip_crlf( string str )
+// Strip off carriage returns and line feeds.
+std::string strip_crlf( std::string_view str )
 {
-   string newstr = str;
-   string::size_type x;
+   std::string newstr = str.data();
 
-   while( ( x = newstr.find( '\r' ) ) != string::npos )
-      newstr = newstr.erase( x, 1 );
-
-   while( ( x = newstr.find( '\n' ) ) != string::npos )
-      newstr = newstr.erase( x, 1 );
+   std::erase( newstr, '\r' );
+   std::erase( newstr, '\n' );
 
    return newstr;
 }
@@ -517,19 +508,20 @@ const char *strip_crlf( const char *str )
 }
 
 // Strips off any leading and trailing spaces, plus any stray tabs, carriage returns, or newlines.
-void strip_whitespace( string & str )
+void strip_whitespace( std::string & str )
 {
    str = strip_crlf( str );
    strip_spaces( str );
 }
 
-/* invert_string( original, inverted );
+/*
+ * invert_string( original, inverted );
  * Author: Xorith
  * Date: 6-18-05
  */
-string invert_string( const string & orig )
+std::string invert_string( const std::string & orig )
 {
-   string result = "";
+   std::string result = "";
    size_t j = 0;
 
    if( orig.empty(  ) )
@@ -542,16 +534,26 @@ string invert_string( const string & orig )
 }
 
 /* Provided by Remcon to stop crashes with channel history */
-const string add_percent( const string & str )
+const std::string add_percent( std::string str )
 {
-   string newstr = str;
-
-   if( newstr.empty(  ) )
+   if( str.empty() )
       return "";
 
-   string_replace( newstr, "%", "%%" );
+   string_replace( str, "%", "%%" );
 
-   return newstr;
+   return str;
+}
+
+// The std::format version of the above.
+const std::string escape_formatting( std::string str )
+{
+   if( str.empty() )
+      return "";
+
+   string_replace( str, "{", "{{" );
+   string_replace( str, "}", "}}" );
+
+   return str;
 }
 
 /*
@@ -562,8 +564,7 @@ char *capitalize( const char *str )
 {
    static char buf[MSL];
    char *dest = buf;
-   enum
-   { Normal, Color } state = Normal;
+   enum{ Normal, Color } state = Normal;
    bool bFirst = true;
    char c;
 
@@ -596,14 +597,13 @@ char *capitalize( const char *str )
  * Returns an initial-capped string.
  * Rewritten by FearItself@AvP
  */
-string capitalize( const string & str )
+std::string capitalize( const std::string & str )
 {
-   string strcap;
+   std::string strcap;
    const char *src = str.c_str(  );
    char buf[MSL];
    char *dest = buf;
-   enum
-   { Normal, Color } state = Normal;
+   enum{ Normal, Color } state = Normal;
    bool bFirst = true;
    char c;
 
@@ -649,7 +649,7 @@ char *strlower( const char *str )
 
 void strlower( std::string & str )
 {
-   transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::tolower );
+   std::transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::tolower );
 }
 
 /*
@@ -668,7 +668,7 @@ char *strupper( const char *str )
 
 void strupper( std::string & str )
 {
-   transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::toupper );
+   std::transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::toupper );
 }
 
 /*
@@ -688,7 +688,7 @@ bool isavowel( char letter )
 /*
  * Shove either "a " or "an " onto the beginning of a string - Thoric
  */
-const char *aoran( const string & str )
+const char *aoran( const std::string & str )
 {
    static char temp[MSL];
 
@@ -717,7 +717,7 @@ void smash_tilde( char *str )
          *str = '-';
 }
 
-void smash_tilde( string & str )
+void smash_tilde( std::string & str )
 {
    string_replace( str, "~", "-" );
 }
@@ -726,19 +726,19 @@ void smash_tilde( string & str )
  * Encodes the tildes in a string. - Thoric
  * Used for player-entered strings that go into disk files.
  */
-void hide_tilde( string & str )
+void hide_tilde( std::string & str )
 {
-   if( str.find( '~' ) == string::npos )
+   if( str.find( '~' ) == std::string::npos )
       return;
 
    string_replace( str, "~", ( char * )HIDDEN_TILDE );
 }
 
-const string show_tilde( const string & str )
+const std::string show_tilde( const std::string & str )
 {
-   string newstr = str;
+   std::string newstr = str;
 
-   if( str.find( HIDDEN_TILDE ) == string::npos )
+   if( str.find( HIDDEN_TILDE ) == std::string::npos )
       return newstr;
 
    string_replace( newstr, ( char * )HIDDEN_TILDE, "~" );   // <-- Stupid C++ making me use ugly casting.
@@ -748,7 +748,7 @@ const string show_tilde( const string & str )
 const char *show_tilde( const char *str )
 {
    static char buf[MSL];
-   string src = str, newstr;
+   std::string src = str, newstr;
 
    newstr = show_tilde( src );
    strlcpy( buf, newstr.c_str(  ), MSL );
@@ -758,91 +758,87 @@ const char *show_tilde( const char *str )
 
 // The purpose of this is to emulate PHP's explode() function. Take a string, and split it up into a vector using the delimiter value as a marker.
 // Thanks to David Haley and Davion@MudBytes for assisting in getting this working.
-vector < string > string_explode( const string & src, char delimiter )
+std::vector<std::string> string_explode( std::string_view src, char delimiter )
 {
-   vector < string > exploded;
+   std::vector<std::string> exploded;
 
-   string::size_type curPos = 0;
-   string::size_type delimPos;
+   auto chunks = src | std::views::split( delimiter );
 
-   while( ( delimPos = src.find( delimiter, curPos ) ) != string::npos )
+   for( auto&& chunk : chunks )
    {
-      string substr = src.substr( curPos, ( delimPos - curPos ) + 1 );
+      std::string line{ std::string_view( chunk ) };
 
-      exploded.push_back( substr );
-      curPos = delimPos + 1;
+      if( line.empty() )
+         continue;
+
+      line += delimiter;
+
+      exploded.emplace_back( std::move( line ) );
    }
 
-   // Grab remainder
-   if( curPos < src.size(  ) )
-      exploded.push_back( src.substr( curPos, src.size(  ) - curPos ) );
    return exploded;
 }
 
 // Since C++ wants to screw with me on this, I'll overload it instead. HA!
-void string_erase( string & src, char find )
+void string_erase( std::string & src, char find )
 {
-   string::size_type pos = 0;
-
-   if( !find )
-   {
-      bug( "%s: Cannot search for an empty character!", __func__ );
-      return;
-   }
-
-   // If it's not here, bail.
-   if( src.find( find ) == string::npos )
-      return;
-
-   while( ( pos = src.find( find, pos ) ) != string::npos )
-      src.erase( pos, 1 );
+   std::erase( src, find );
 }
 
-void string_erase( string & src, const string & find )
+void string_erase( std::string & src, std::string_view find )
 {
-   string::size_type pos = 0;
-
-   if( find.empty(  ) )
+   if( find.empty() )
    {
       bug( "%s: Cannot search for an empty string!", __func__ );
       return;
    }
 
-   while( ( pos = src.find( find, pos ) ) != string::npos )
-      src.erase( pos, find.size(  ) );
+   std::string::size_type pos = 0;
+   const std::string::size_type find_len = find.size();
+
+   while( ( pos = src.find( find, pos ) ) != std::string::npos )
+   {
+      src.erase( pos, find_len );
+   }
 }
 
-void string_replace( string & src, const string & find, const string & replace )
+void string_replace( std::string & src, std::string_view find, std::string_view replace )
 {
-   string::size_type pos = 0;
-
-   if( find.empty(  ) )
+   if( find.empty() )
    {
       bug( "%s: Cannot search for an empty string!", __func__ );
       return;
    }
 
-   // Bail out if the search string isn't present.
-   if( src.find( find ) == string::npos )
+   size_t pos = src.find( find );
+   if( pos == std::string::npos )
       return;
 
-   // If the replacement string is emtpy, they really wanted an erase. Call string_erase.
-   if( replace.empty(  ) )
+   if( replace.empty() )
+   {
       string_erase( src, find );
-   else
-   {
-      while( ( pos = src.find( find, pos ) ) != string::npos )
-      {
-         src.replace( pos, find.size(  ), replace );
-         pos += replace.size(  );
-      }
+      return;
    }
+
+   std::string result;
+   result.reserve( src.size() + ( replace.size() > find.size() ? (src.size() / 2) : 0 ) );
+
+   size_t last_pos = 0;
+   while( ( pos = src.find( find, last_pos ) ) != std::string::npos )
+   {
+      result.append( src, last_pos, pos - last_pos );
+      result.append( replace );
+      last_pos = pos + find.size();
+   }
+   result.append( src, last_pos, std::string_view::npos );
+
+   src = std::move( result );
 }
 
 /*
  * Return true if an argument is completely numeric.
  */
-bool is_number( const string & arg )
+bool is_number( const std::string & arg )
 {
    size_t x;
    bool first = true;
@@ -893,7 +889,7 @@ bool is_number( const char *arg )
 // I r lazy and just want a good way to output the contents of the various string arrays.
 const char *print_array_string( const char *flagarray[], size_t arraySize )
 {
-   static string s;
+   static std::string s;
    int columns = 0;
 
    s.clear();
@@ -922,7 +918,7 @@ struct editor_data
    editor_data(  );
    ~editor_data(  );
 
-   string desc;
+   std::string desc;
    char line[max_buf_lines][81];
    short numlines;
    short on_line;
@@ -946,7 +942,7 @@ void editor_print_info( char_data * ch, editor_data * edd, short max_size )
                "Buffer size: %4d   Max size: %4d\r\n", !edd->desc.empty(  )? edd->desc.c_str(  ) : "(Null description)", edd->numlines, edd->on_line, edd->size, max_size );
 }
 
-void char_data::set_editor_desc( const string & new_desc )
+void char_data::set_editor_desc( const std::string & new_desc )
 {
    if( !pcdata->editor )
       return;
@@ -954,6 +950,7 @@ void char_data::set_editor_desc( const string & new_desc )
    pcdata->editor->desc = new_desc;
 }
 
+// FIXME: Switch to std::format logic. Use character.cpp as an example.
 void char_data::editor_desc_printf( const char *desc_fmt, ... )
 {
    char buf[MSL * 2];   /* umpf.. */
@@ -981,7 +978,7 @@ void char_data::stop_editing(  )
    desc->connected = CON_PLAYING;
 }
 
-void char_data::start_editing( string data )
+void char_data::start_editing( std::string data )
 {
    editor_data *edit;
    short lines, size, lpos;
@@ -1117,7 +1114,7 @@ void char_data::start_editing( char *data )
    desc->connected = CON_EDITING;
 }
 
-string char_data::copy_buffer(  )
+std::string char_data::copy_buffer(  )
 {
    char buf[MSL], tmp[100];
    short i, len;
@@ -1140,7 +1137,7 @@ string char_data::copy_buffer(  )
       smash_tilde( tmp );
       strlcat( buf, tmp, MSL );
    }
-   string newbuf = buf;
+   std::string newbuf = buf;
    return newbuf;
 }
 
@@ -1181,11 +1178,11 @@ char *char_data::copy_buffer( bool hash )
 /*
  * Simple but nice and handy line editor. - Thoric
  */
-void char_data::edit_buffer( string & argument )
+void char_data::edit_buffer( std::string & argument )
 {
    descriptor_data *d;
    editor_data *edit;
-   string cmd;
+   std::string cmd;
    char buf[MIL];
    int x, line;
    bool esave = false;
@@ -1256,7 +1253,7 @@ void char_data::edit_buffer( string & argument )
 
       if( !str_cmp( cmd, "r" ) )
       {
-         string word1, word2, sptr, lwptr;
+         std::string word1, word2, sptr, lwptr;
          int lineln;
 
          sptr = one_argument( argument, word1 );

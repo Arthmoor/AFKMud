@@ -43,8 +43,8 @@
 #include "roomindex.h"
 #include "variables.h"
 
-list < char_data * >charlist;
-list < char_data * >pclist;
+std::list<char_data *> charlist;
+std::list<char_data *> pclist;
 
 void clean_char_queue(  );
 void stop_hating( char_data * );
@@ -55,7 +55,7 @@ void queue_extracted_char( char_data *, bool );
 room_index *check_room( char_data *, room_index * );
 void update_room_reset( char_data *, bool );
 
-extern list < rel_data * >relationlist;
+extern std::list<rel_data *> relationlist;
 
 pc_data::~pc_data(  )
 {
@@ -129,29 +129,26 @@ char_data::~char_data(  )
 
    deleteptr( this->morph );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = this->carrying.begin(  ); iobj != this->carrying.end(  ); )
+   for( auto it = this->carrying.begin(); it != this->carrying.end(); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       obj->extract(  );
    }
 
-   list < affect_data * >::iterator paf;
-   for( paf = affects.begin(  ); paf != affects.end(  ); )
+   for( auto it = affects.begin(); it != affects.end(); )
    {
-      affect_data *aff = *paf;
-      ++paf;
+      affect_data *aff = *it;
+      ++it;
 
       this->affect_remove( aff );
    }
 
-   list < timer_data * >::iterator chtimer;
-   for( chtimer = timers.begin(  ); chtimer != timers.end(  ); )
+   for( auto it = timers.begin(); it != timers.end(); )
    {
-      timer_data *ctimer = *chtimer;
-      ++chtimer;
+      timer_data *ctimer = *it;
+      ++it;
 
       this->extract_timer( ctimer );
    }
@@ -176,31 +173,28 @@ char_data::~char_data(  )
       deleteptr( this->pcdata );
    }
 
-   list < mprog_act_list * >::iterator pd;
-   for( pd = this->mpact.begin(  ); pd != this->mpact.end(  ); )
+   for( auto it = this->mpact.begin(); it != this->mpact.end(); )
    {
-      mprog_act_list *actp = *pd;
-      ++pd;
+      mprog_act_list *actp = *it;
+      ++it;
 
       this->mpact.remove( actp );
       deleteptr( actp );
    }
 
-   list < variable_data * >::iterator ivd;
-   for( ivd = this->variables.begin(  ); ivd != this->variables.end(  ); )
+   for( auto it = this->variables.begin(); it != this->variables.end(); )
    {
-      variable_data *vd = *ivd;
-      ++ivd;
+      variable_data *vd = *it;
+      ++it;
 
       this->variables.remove( vd );
       deleteptr( vd );
    }
 
-   list < char_data * >::iterator ich;
-   for( ich = this->pets.begin(  ); ich != this->pets.end(  ); )
+   for( auto it = this->pets.begin(); it != this->pets.end(); )
    {
-      char_data *mob = *ich;
-      ++ich;
+      char_data *mob = *it;
+      ++it;
 
       mob->extract( true );
       deleteptr( mob );
@@ -248,11 +242,10 @@ void extract_all_chars( void )
 {
    clean_char_queue(  );
 
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); )
+   for( auto it = charlist.begin(); it != charlist.end(); )
    {
-      char_data *character = *ich;
-      ++ich;
+      char_data *character = *it;
+      ++it;
 
       character->extract( true );
    }
@@ -324,7 +317,7 @@ void char_data::print_room( std::string_view txt )
    }
 }
 
-void char_data::pager( const string & txt )
+void char_data::pager( const std::string & txt )
 {
    char_data *ch;
 
@@ -405,9 +398,9 @@ void char_data::set_pager_color( short AType )
    this->desc->pagecolor = this->pcdata->colors[AType];
 }
 
-void char_data::set_title( const string & title )
+void char_data::set_title( const std::string & title )
 {
-   char buf[75];
+   std::string buf;
 
    if( this->isnpc(  ) )
    {
@@ -417,14 +410,13 @@ void char_data::set_title( const string & title )
 
    if( isalpha( title[0] ) || isdigit( title[0] ) )
    {
-      buf[0] = ' ';
-      strlcpy( buf + 1, title.c_str(  ), 74 );
+      buf = " " + title;
    }
    else
-      strlcpy( buf, title.c_str(  ), 75 );
+      buf = title;
 
    STRFREE( this->pcdata->title );
-   this->pcdata->title = STRALLOC( buf );
+   this->pcdata->title = STRALLOC( buf.c_str() );
 }
 
 int char_data::calculate_race_height(  )
@@ -695,9 +687,9 @@ bool char_data::can_see( char_data * victim, bool override )
 /*
  * Find a char in the room.
  */
-char_data *char_data::get_char_room( const string & argument )
+char_data *char_data::get_char_room( const std::string & argument )
 {
-   string arg;
+   std::string arg;
    int vnum = -1, count = 0;
    int number = number_argument( argument, arg );
 
@@ -707,7 +699,7 @@ char_data *char_data::get_char_room( const string & argument )
    if( this->get_trust(  ) >= LEVEL_SAVIOR && is_number( arg ) )
       vnum = atoi( arg.c_str(  ) );
 
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = this->in_room->people.begin(  ); ich != this->in_room->people.end(  ); ++ich )
    {
       char_data *rch = *ich;
@@ -748,9 +740,9 @@ char_data *char_data::get_char_room( const string & argument )
 /*
  * Find a char in the world.
  */
-char_data *char_data::get_char_world( const string & argument )
+char_data *char_data::get_char_world( const std::string & argument )
 {
-   string arg;
+   std::string arg;
    int number = number_argument( argument, arg );
 
    if( !str_cmp( arg, "self" ) )
@@ -769,7 +761,7 @@ char_data *char_data::get_char_world( const string & argument )
     * check the room for an exact match [for certain values of exact in the case of mobs]
     */
    int count = 0;
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = this->in_room->people.begin(  ); ich != this->in_room->people.end(  ); ++ich )
    {
       char_data *wch = *ich;
@@ -854,7 +846,7 @@ char_data *char_data::get_char_world( const string & argument )
    return nullptr;
 }
 
-room_index *char_data::find_location( const string & arg )
+room_index *char_data::find_location( const std::string & arg )
 {
    char_data *victim;
    obj_data *obj;
@@ -947,12 +939,8 @@ bool char_data::can_drop_obj( obj_data * obj )
  */
 obj_data *char_data::get_obj_vnum( int vnum )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = this->carrying.begin(  ); iobj != this->carrying.end(  ); ++iobj )
+   for( auto* obj : this->carrying )
    {
-      obj_data *obj = *iobj;
-
       if( this->can_see_obj( obj, false ) && obj->pIndexData->vnum == vnum )
          return obj;
    }
@@ -962,11 +950,11 @@ obj_data *char_data::get_obj_vnum( int vnum )
 /*
  * Find an obj in player's inventory.
  */
-obj_data *char_data::get_obj_carry( const string & argument )
+obj_data *char_data::get_obj_carry( const std::string & argument )
 {
-   string arg;
+   std::string arg;
    obj_data *obj;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    int number, count, vnum;
 
    number = number_argument( argument, arg );
@@ -1007,11 +995,11 @@ obj_data *char_data::get_obj_carry( const string & argument )
 /*
  * Find an obj in player's equipment.
  */
-obj_data *char_data::get_obj_wear( const string & argument )
+obj_data *char_data::get_obj_wear( const std::string & argument )
 {
-   string arg;
+   std::string arg;
    obj_data *obj;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    int number, count, vnum;
 
    number = number_argument( argument, arg );
@@ -1053,7 +1041,7 @@ obj_data *char_data::get_obj_wear( const string & argument )
 /*
  * Find an obj in the room or in inventory.
  */
-obj_data *char_data::get_obj_here( const string & argument )
+obj_data *char_data::get_obj_here( const std::string & argument )
 {
    obj_data *obj;
 
@@ -1072,11 +1060,11 @@ obj_data *char_data::get_obj_here( const string & argument )
 /*
  * Find an obj in the world.
  */
-obj_data *char_data::get_obj_world( const string & argument )
+obj_data *char_data::get_obj_world( const std::string & argument )
 {
-   string arg;
+   std::string arg;
    obj_data *obj;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    int number, count, vnum;
 
    if( ( obj = this->get_obj_here( argument ) ) != nullptr )
@@ -1132,12 +1120,9 @@ obj_data *char_data::get_obj_world( const string & argument )
 obj_data *char_data::get_eq( int iWear )
 {
    obj_data *maxobj = nullptr;
-   list < obj_data * >::iterator iobj;
 
-   for( iobj = this->carrying.begin(  ); iobj != this->carrying.end(  ); ++iobj )
+   for( auto* obj : this->carrying )
    {
-      obj_data *obj = *iobj;
-
       if( obj->wear_loc == iWear )
       {
          if( !obj->pIndexData->layers )
@@ -1252,7 +1237,7 @@ void char_data::equip( obj_data * obj, int iWear )
       this->carry_weight -= obj->get_weight(  );
 
    affect_data *af;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    for( paf = obj->pIndexData->affects.begin(  ); paf != obj->pIndexData->affects.end(  ); ++paf )
    {
       af = *paf;
@@ -1298,7 +1283,7 @@ void char_data::unequip( obj_data * obj )
    obj->wear_loc = -1;
 
    affect_data *af;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    for( paf = obj->pIndexData->affects.begin(  ); paf != obj->pIndexData->affects.end(  ); ++paf )
    {
       af = *paf;
@@ -1478,7 +1463,7 @@ void char_data::update_aris(  )
     * Add in effect from spells 
     */
    affect_data *af;
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    for( paf = this->affects.begin(  ); paf != this->affects.end(  ); ++paf )
    {
       af = *paf;
@@ -1489,11 +1474,8 @@ void char_data::update_aris(  )
    /*
     * Add in effects from equipment 
     */
-   list < obj_data * >::iterator iobj;
-   for( iobj = this->carrying.begin(  ); iobj != this->carrying.end(  ); ++iobj )
+   for( auto* obj : this->carrying )
    {
-      obj_data *obj = *iobj;
-
       if( obj->wear_loc != WEAR_NONE )
       {
          for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); ++paf )
@@ -1681,7 +1663,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       mod = 0 - mod;
    }
 
-   // Only reaches this pont when an affect is being added.
+   // Only reaches this point when an affect is being added.
    switch ( location )
    {
       default:
@@ -2072,12 +2054,10 @@ void char_data::affect_remove( affect_data * paf )
  */
 void char_data::affect_strip( int sn )
 {
-   list < affect_data * >::iterator paf;
-
-   for( paf = this->affects.begin(  ); paf != this->affects.end(  ); )
+   for( auto it = this->affects.begin(); it != this->affects.end(); )
    {
-      affect_data *aff = *paf;
-      ++paf;
+      affect_data *aff = *it;
+      ++it;
 
       if( aff->type == sn )
          this->affect_remove( aff );
@@ -2089,12 +2069,8 @@ void char_data::affect_strip( int sn )
  */
 bool char_data::is_affected( int sn )
 {
-   list < affect_data * >::iterator paf;
-
-   for( paf = this->affects.begin(  ); paf != this->affects.end(  ); ++paf )
+   for( auto* af : this->affects )
    {
-      affect_data *af = *paf;
-
       if( af->type == sn )
          return true;
    }
@@ -2108,12 +2084,8 @@ bool char_data::is_affected( int sn )
  */
 void char_data::affect_join( affect_data * paf )
 {
-   list < affect_data * >::iterator paf_old;
-
-   for( paf_old = this->affects.begin(  ); paf_old != this->affects.end(  ); ++paf_old )
+   for( auto* af : this->affects )
    {
-      affect_data *af = *paf_old;
-
       if( af->type == paf->type )
       {
          paf->duration = UMIN( 32500, paf->duration + af->duration );
@@ -2133,7 +2105,7 @@ void char_data::affect_join( affect_data * paf )
  */
 void char_data::showaffect( affect_data * paf )
 {
-   string buf;
+   std::string buf;
    int i;
 
    if( !paf )
@@ -2255,12 +2227,8 @@ int char_data::char_ego(  )
 
 timer_data *char_data::get_timerptr( short type )
 {
-   list < timer_data * >::iterator cht;
-
-   for( cht = this->timers.begin(  ); cht != this->timers.end(  ); ++cht )
+   for( auto* ct : this->timers )
    {
-      timer_data *ct = *cht;
-
       if( ct->type == type )
          return ct;
    }
@@ -2383,7 +2351,6 @@ void char_data::worsen_mental_state( int mod )
 void char_data::from_room(  )
 {
    obj_data *obj;
-   list < affect_data * >::iterator paf;
 
    if( !this->in_room )
    {
@@ -2405,6 +2372,7 @@ void char_data::from_room(  )
     * Character's affect on the room
     */
    affect_data *af;
+   std::list<affect_data *>::iterator paf;
    for( paf = this->affects.begin(  ); paf != this->affects.end(  ); ++paf )
    {
       af = *paf;
@@ -2443,7 +2411,6 @@ void char_data::from_room(  )
 bool char_data::to_room( room_index * pRoomIndex )
 {
    obj_data *obj;
-   list < affect_data * >::iterator paf;
 
    // Ok, asshole code, lets see you get past this!
    if( !pRoomIndex || !get_room_index( pRoomIndex->vnum ) )
@@ -2489,6 +2456,7 @@ bool char_data::to_room( room_index * pRoomIndex )
     * Room's affect on the character
     */
    affect_data *af;
+   std::list<affect_data *>::iterator paf;
    if( !this->char_died(  ) )
    {
       for( paf = pRoomIndex->affects.begin(  ); paf != pRoomIndex->affects.end(  ); ++paf )
@@ -2519,17 +2487,12 @@ bool char_data::to_room( room_index * pRoomIndex )
     */
    if( pRoomIndex->flags.test( ROOM_TELEPORT ) && pRoomIndex->tele_delay > 0 )
    {
-      teleport_data *teleport;
-      list < teleport_data * >::iterator tele;
-
-      for( tele = teleportlist.begin(  ); tele != teleportlist.end(  ); ++tele )
+      for( auto* teleport2 : teleportlist )
       {
-         teleport = *tele;
-
-         if( teleport->room == pRoomIndex )
+         if( teleport2->room == pRoomIndex )
             return true;
       }
-      teleport = new teleport_data;
+      teleport_data *teleport = new teleport_data;
       teleport->room = pRoomIndex;
       teleport->timer = pRoomIndex->tele_delay;
       teleportlist.push_back( teleport );
@@ -3304,11 +3267,8 @@ void die_follower( char_data * ch )
 
    ch->leader = nullptr;
 
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* fch : charlist )
    {
-      char_data *fch = ( *ich );
-
       if( fch->master == ch )
          unbind_follower( fch, ch );
 
@@ -3336,12 +3296,10 @@ bool circle_follow( char_data * ch, char_data * victim )
 /* Check a char for ITEM_MUSTMOUNT eq and remove it - Samson 3-18-01 */
 void check_mount_objs( char_data * ch, bool fell )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
+   for( auto it = ch->carrying.begin(); it != ch->carrying.end(); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       if( obj->wear_loc == WEAR_NONE )
          continue;
@@ -3374,8 +3332,6 @@ void check_mount_objs( char_data * ch, bool fell )
  */
 void retrieve_corpse( char_data * ch, char_data * healer )
 {
-   string buf;
-   list < obj_data * >::iterator iobj;
    bool found = false;
 
    /*
@@ -3384,11 +3340,10 @@ void retrieve_corpse( char_data * ch, char_data * healer )
    if( ch->isnpc(  ) )
       return;
 
-   buf = std::format( "the corpse of {}", ch->name );
+   std::string buf = std::format( "the corpse of {}", ch->name );
 
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   for( auto* obj : objlist )
    {
-      obj_data *obj = *iobj;
       obj_data *outer_obj;
 
       if( str_cmp( buf, obj->short_descr ) )
@@ -3473,11 +3428,10 @@ void char_data::extract( bool fPull )
     */
    queue_extracted_char( this, fPull );
 
-   list < rel_data * >::iterator RQ;
-   for( RQ = relationlist.begin(  ); RQ != relationlist.end(  ); )
+   for( auto it = relationlist.begin(); it != relationlist.end(); )
    {
-      rel_data *RQueue = *RQ;
-      ++RQ;
+      rel_data *RQueue = *it;
+      ++it;
 
       if( fPull && RQueue->Type == relMSET_ON )
       {
@@ -3512,11 +3466,8 @@ void char_data::extract( bool fPull )
       update_room_reset( this, true );
       this->unset_actflag( ACT_MOUNTED );
 
-      list < char_data * >::iterator ich;
-      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+      for( auto* wch : charlist )
       {
-         char_data *wch = *ich;
-
          if( wch->mount == this )
          {
             wch->mount = nullptr;
@@ -3547,11 +3498,8 @@ void char_data::extract( bool fPull )
     */
    if( !mud_down )
    {
-      list < char_data * >::iterator ich;
-      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+      for( auto* wch : charlist )
       {
-         char_data *wch = *ich;
-
          if( !wch->isnpc(  ) )
             continue;
 
@@ -3566,11 +3514,10 @@ void char_data::extract( bool fPull )
       }
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = this->carrying.begin(  ); iobj != this->carrying.end(  ); )
+   for( auto it = this->carrying.begin(); it != this->carrying.end(); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       if( obj->ego >= sysdata->minego && this->in_room->flags.test( ROOM_DEATH ) )
          obj->pIndexData->count += obj->count;
@@ -3652,11 +3599,8 @@ void char_data::extract( bool fPull )
 
    if( !mud_down )
    {
-      list < char_data * >::iterator ich;
-      for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+      for( auto* wch : charlist )
       {
-         char_data *wch = *ich;
-
          if( wch->reply == this )
             wch->reply = nullptr;
       }
@@ -3714,7 +3658,7 @@ void start_hunting( char_data * ch, char_data * victim )
       stop_hunting( ch );
 
    ch->hunting = new hunt_hate_fear;
-   ch->hunting->name = QUICKLINK( victim->name );
+   ch->hunting->name = victim->name;
    ch->hunting->who = victim;
 }
 
@@ -3724,7 +3668,7 @@ void start_hating( char_data * ch, char_data * victim )
       stop_hating( ch );
 
    ch->hating = new hunt_hate_fear;
-   ch->hating->name = QUICKLINK( victim->name );
+   ch->hating->name = victim->name;
    ch->hating->who = victim;
 }
 
@@ -3734,35 +3678,26 @@ void start_fearing( char_data * ch, char_data * victim )
       stop_fearing( ch );
 
    ch->fearing = new hunt_hate_fear;
-   ch->fearing->name = QUICKLINK( victim->name );
+   ch->fearing->name = victim->name;
    ch->fearing->who = victim;
 }
 
 void stop_hunting( char_data * ch )
 {
    if( ch->hunting )
-   {
-      STRFREE( ch->hunting->name );
       deleteptr( ch->hunting );
-   }
 }
 
 void stop_hating( char_data * ch )
 {
    if( ch->hating )
-   {
-      STRFREE( ch->hating->name );
       deleteptr( ch->hating );
-   }
 }
 
 void stop_fearing( char_data * ch )
 {
    if( ch->fearing )
-   {
-      STRFREE( ch->fearing->name );
       deleteptr( ch->fearing );
-   }
 }
 
 /*
@@ -3770,10 +3705,9 @@ void stop_fearing( char_data * ch )
  */
 void advance_level( char_data * ch )
 {
-   string buf;
    int add_hp, add_mana, add_prac, manamod = 0, manahighdie, manaroll;
 
-   buf = std::format( "the {}", title_table[ch->Class][ch->level][ch->sex] );
+   std::string buf = std::format( "the {}", title_table[ch->Class][ch->level][ch->sex] );
    ch->set_title( buf );
 
    /*
@@ -3918,7 +3852,7 @@ void char_data::set_actflag( int value )
    {
       this->actflags.set( value );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -3930,7 +3864,7 @@ void char_data::unset_actflag( int value )
    {
       this->actflags.reset( value );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -3947,7 +3881,7 @@ void char_data::toggle_actflag( int value )
    {
       this->actflags.flip( value );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -3960,18 +3894,18 @@ bool char_data::has_actflags(  )
    return false;
 }
 
-bitset < MAX_ACT_FLAG > char_data::get_actflags(  )
+std::bitset<MAX_ACT_FLAG> char_data::get_actflags(  )
 {
    return this->actflags;
 }
 
-void char_data::set_actflags( bitset < MAX_ACT_FLAG > bits )
+void char_data::set_actflags( std::bitset<MAX_ACT_FLAG> bits )
 {
    try
    {
       this->actflags = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -3983,7 +3917,7 @@ void char_data::set_file_actflags( FILE * fp )
    {
       flag_set( fp, this->actflags, act_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4000,7 +3934,7 @@ void char_data::set_immune( int ris )
    {
       this->immune.set( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4012,7 +3946,7 @@ void char_data::unset_immune( int ris )
    {
       this->immune.reset( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4024,7 +3958,7 @@ void char_data::toggle_immune( int ris )
    {
       this->immune.flip( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4037,18 +3971,18 @@ bool char_data::has_immunes(  )
    return false;
 }
 
-bitset < MAX_RIS_FLAG > char_data::get_immunes(  )
+std::bitset<MAX_RIS_FLAG> char_data::get_immunes(  )
 {
    return this->immune;
 }
 
-void char_data::set_immunes( bitset < MAX_RIS_FLAG > bits )
+void char_data::set_immunes( std::bitset<MAX_RIS_FLAG> bits )
 {
    try
    {
       this->immune = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4060,7 +3994,7 @@ void char_data::set_file_immunes( FILE * fp )
    {
       flag_set( fp, this->immune, ris_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4077,7 +4011,7 @@ void char_data::set_noimmune( int ris )
    {
       this->no_immune.set( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4090,18 +4024,18 @@ bool char_data::has_noimmunes(  )
    return false;
 }
 
-bitset < MAX_RIS_FLAG > char_data::get_noimmunes(  )
+std::bitset<MAX_RIS_FLAG> char_data::get_noimmunes(  )
 {
    return this->no_immune;
 }
 
-void char_data::set_noimmunes( bitset < MAX_RIS_FLAG > bits )
+void char_data::set_noimmunes( std::bitset<MAX_RIS_FLAG> bits )
 {
    try
    {
       this->no_immune = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4113,7 +4047,7 @@ void char_data::set_file_noimmunes( FILE * fp )
    {
       flag_set( fp, this->no_immune, ris_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4130,7 +4064,7 @@ void char_data::set_resist( int ris )
    {
       this->resistant.set( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4142,7 +4076,7 @@ void char_data::unset_resist( int ris )
    {
       this->resistant.reset( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4154,7 +4088,7 @@ void char_data::toggle_resist( int ris )
    {
       this->resistant.flip( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4167,18 +4101,18 @@ bool char_data::has_resists(  )
    return false;
 }
 
-bitset < MAX_RIS_FLAG > char_data::get_resists(  )
+std::bitset<MAX_RIS_FLAG> char_data::get_resists(  )
 {
    return this->resistant;
 }
 
-void char_data::set_resists( bitset < MAX_RIS_FLAG > bits )
+void char_data::set_resists( std::bitset<MAX_RIS_FLAG> bits )
 {
    try
    {
       this->resistant = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4190,7 +4124,7 @@ void char_data::set_file_resists( FILE * fp )
    {
       flag_set( fp, this->resistant, ris_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4207,7 +4141,7 @@ void char_data::set_noresist( int ris )
    {
       this->no_resistant.set( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4220,18 +4154,18 @@ bool char_data::has_noresists(  )
    return false;
 }
 
-bitset < MAX_RIS_FLAG > char_data::get_noresists(  )
+std::bitset<MAX_RIS_FLAG> char_data::get_noresists(  )
 {
    return this->no_resistant;
 }
 
-void char_data::set_noresists( bitset < MAX_RIS_FLAG > bits )
+void char_data::set_noresists( std::bitset<MAX_RIS_FLAG> bits )
 {
    try
    {
       this->no_resistant = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4243,7 +4177,7 @@ void char_data::set_file_noresists( FILE * fp )
    {
       flag_set( fp, this->no_resistant, ris_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4260,7 +4194,7 @@ void char_data::set_suscep( int ris )
    {
       this->susceptible.set( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4272,7 +4206,7 @@ void char_data::unset_suscep( int ris )
    {
       this->susceptible.reset( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4284,7 +4218,7 @@ void char_data::toggle_suscep( int ris )
    {
       this->susceptible.flip( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4297,18 +4231,18 @@ bool char_data::has_susceps(  )
    return false;
 }
 
-bitset < MAX_RIS_FLAG > char_data::get_susceps(  )
+std::bitset<MAX_RIS_FLAG> char_data::get_susceps(  )
 {
    return this->susceptible;
 }
 
-void char_data::set_susceps( bitset < MAX_RIS_FLAG > bits )
+void char_data::set_susceps( std::bitset<MAX_RIS_FLAG> bits )
 {
    try
    {
       this->susceptible = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4320,7 +4254,7 @@ void char_data::set_file_susceps( FILE * fp )
    {
       flag_set( fp, this->susceptible, ris_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4337,7 +4271,7 @@ void char_data::set_nosuscep( int ris )
    {
       this->no_susceptible.set( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4350,18 +4284,18 @@ bool char_data::has_nosusceps(  )
    return false;
 }
 
-bitset < MAX_RIS_FLAG > char_data::get_nosusceps(  )
+std::bitset<MAX_RIS_FLAG> char_data::get_nosusceps(  )
 {
    return this->no_susceptible;
 }
 
-void char_data::set_nosusceps( bitset < MAX_RIS_FLAG > bits )
+void char_data::set_nosusceps( std::bitset<MAX_RIS_FLAG> bits )
 {
    try
    {
       this->no_susceptible = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4373,7 +4307,7 @@ void char_data::set_file_nosusceps( FILE * fp )
    {
       flag_set( fp, this->no_susceptible, ris_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4390,7 +4324,7 @@ void char_data::set_absorb( int ris )
    {
       this->absorb.set( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4402,7 +4336,7 @@ void char_data::unset_absorb( int ris )
    {
       this->absorb.reset( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4414,7 +4348,7 @@ void char_data::toggle_absorb( int ris )
    {
       this->absorb.flip( ris );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4427,18 +4361,18 @@ bool char_data::has_absorbs(  )
    return false;
 }
 
-bitset < MAX_RIS_FLAG > char_data::get_absorbs(  )
+std::bitset<MAX_RIS_FLAG> char_data::get_absorbs(  )
 {
    return this->absorb;
 }
 
-void char_data::set_absorbs( bitset < MAX_RIS_FLAG > bits )
+void char_data::set_absorbs( std::bitset<MAX_RIS_FLAG> bits )
 {
    try
    {
       this->absorb = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4450,7 +4384,7 @@ void char_data::set_file_absorbs( FILE * fp )
    {
       flag_set( fp, this->absorb, ris_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4467,7 +4401,7 @@ void char_data::set_attack( int attack )
    {
       this->attacks.set( attack );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4479,7 +4413,7 @@ void char_data::unset_attack( int attack )
    {
       this->attacks.reset( attack );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4491,7 +4425,7 @@ void char_data::toggle_attack( int attack )
    {
       this->attacks.flip( attack );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4504,18 +4438,18 @@ bool char_data::has_attacks(  )
    return false;
 }
 
-bitset < MAX_ATTACK_TYPE > char_data::get_attacks(  )
+std::bitset<MAX_ATTACK_TYPE> char_data::get_attacks(  )
 {
    return this->attacks;
 }
 
-void char_data::set_attacks( bitset < MAX_ATTACK_TYPE > bits )
+void char_data::set_attacks( std::bitset<MAX_ATTACK_TYPE> bits )
 {
    try
    {
       this->attacks = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4527,7 +4461,7 @@ void char_data::set_file_attacks( FILE * fp )
    {
       flag_set( fp, this->attacks, attack_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4544,7 +4478,7 @@ void char_data::set_defense( int defense )
    {
       this->defenses.set( defense );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4556,7 +4490,7 @@ void char_data::unset_defense( int defense )
    {
       this->defenses.reset( defense );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4568,7 +4502,7 @@ void char_data::toggle_defense( int defense )
    {
       this->defenses.flip( defense );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4581,18 +4515,18 @@ bool char_data::has_defenses(  )
    return false;
 }
 
-bitset < MAX_DEFENSE_TYPE > char_data::get_defenses(  )
+std::bitset<MAX_DEFENSE_TYPE> char_data::get_defenses(  )
 {
    return this->defenses;
 }
 
-void char_data::set_defenses( bitset < MAX_DEFENSE_TYPE > bits )
+void char_data::set_defenses( std::bitset<MAX_DEFENSE_TYPE> bits )
 {
    try
    {
       this->defenses = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4604,7 +4538,7 @@ void char_data::set_file_defenses( FILE * fp )
    {
       flag_set( fp, this->defenses, defense_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4621,7 +4555,7 @@ void char_data::set_aflag( int sn )
    {
       this->affected_by.set( sn );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4633,7 +4567,7 @@ void char_data::unset_aflag( int sn )
    {
       this->affected_by.reset( sn );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4645,7 +4579,7 @@ void char_data::toggle_aflag( int sn )
    {
       this->affected_by.flip( sn );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4658,18 +4592,18 @@ bool char_data::has_aflags(  )
    return false;
 }
 
-bitset < MAX_AFFECTED_BY > char_data::get_aflags(  )
+std::bitset<MAX_AFFECTED_BY> char_data::get_aflags(  )
 {
    return this->affected_by;
 }
 
-void char_data::set_aflags( bitset < MAX_AFFECTED_BY > bits )
+void char_data::set_aflags( std::bitset<MAX_AFFECTED_BY> bits )
 {
    try
    {
       this->affected_by = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4681,7 +4615,7 @@ void char_data::set_file_aflags( FILE * fp )
    {
       flag_set( fp, this->affected_by, aff_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4698,7 +4632,7 @@ void char_data::set_noaflag( int sn )
    {
       no_affected_by.set( sn );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4710,7 +4644,7 @@ void char_data::unset_noaflag( int sn )
    {
       no_affected_by.reset( sn );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4722,7 +4656,7 @@ void char_data::toggle_noaflag( int sn )
    {
       this->no_affected_by.flip( sn );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4735,18 +4669,18 @@ bool char_data::has_noaflags(  )
    return false;
 }
 
-bitset < MAX_AFFECTED_BY > char_data::get_noaflags(  )
+std::bitset<MAX_AFFECTED_BY> char_data::get_noaflags(  )
 {
    return this->no_affected_by;
 }
 
-void char_data::set_noaflags( bitset < MAX_AFFECTED_BY > bits )
+void char_data::set_noaflags( std::bitset<MAX_AFFECTED_BY> bits )
 {
    try
    {
       this->no_affected_by = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4758,7 +4692,7 @@ void char_data::set_file_noaflags( FILE * fp )
    {
       flag_set( fp, this->no_affected_by, aff_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4775,7 +4709,7 @@ void char_data::set_bpart( int part )
    {
       this->body_parts.set( part );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4789,7 +4723,7 @@ void char_data::unset_bpart( int part )
    {
       this->body_parts.reset( part );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4803,7 +4737,7 @@ void char_data::toggle_bpart( int part )
    {
       this->body_parts.flip( part );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4818,18 +4752,18 @@ bool char_data::has_bparts(  )
    return false;
 }
 
-bitset < MAX_BPART > char_data::get_bparts(  )
+std::bitset < MAX_BPART > char_data::get_bparts(  )
 {
    return this->body_parts;
 }
 
-void char_data::set_bparts( bitset < MAX_BPART > bits )
+void char_data::set_bparts( std::bitset<MAX_BPART> bits )
 {
    try
    {
       this->body_parts = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4843,7 +4777,7 @@ void char_data::set_file_bparts( FILE * fp )
    {
       flag_set( fp, this->body_parts, part_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -4987,7 +4921,7 @@ void char_data::set_pcflag( int bit )
       {
          this->pcdata->flags.set( bit );
       }
-      catch( exception & e )
+      catch( std::exception & e )
       {
          bug( "Flag exception caught: %s", e.what(  ) );
       }
@@ -5004,7 +4938,7 @@ void char_data::unset_pcflag( int bit )
       {
          this->pcdata->flags.reset( bit );
       }
-      catch( exception & e )
+      catch( std::exception & e )
       {
          bug( "Flag exception caught: %s", e.what(  ) );
       }
@@ -5021,7 +4955,7 @@ void char_data::toggle_pcflag( int bit )
       {
          this->pcdata->flags.flip( bit );
       }
-      catch( exception & e )
+      catch( std::exception & e )
       {
          bug( "Flag exception caught: %s", e.what(  ) );
       }
@@ -5043,7 +4977,7 @@ bool char_data::has_pcflags(  )
    }
 }
 
-bitset < MAX_PCFLAG > char_data::get_pcflags(  )
+std::bitset < MAX_PCFLAG > char_data::get_pcflags(  )
 {
    if( this->isnpc(  ) )
    {
@@ -5066,7 +5000,7 @@ void char_data::set_file_pcflags( FILE * fp )
    {
       flag_set( fp, this->pcdata->flags, pc_flags );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -5087,7 +5021,7 @@ void char_data::set_lang( int lang )
       {
          this->speaks.set( lang );
       }
-      catch( exception & e )
+      catch( std::exception & e )
       {
          bug( "Flag exception caught: %s", e.what(  ) );
       }
@@ -5100,7 +5034,7 @@ void char_data::unset_lang( int lang )
    {
       this->speaks.reset( lang );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -5112,7 +5046,7 @@ void char_data::toggle_lang( int lang )
    {
       this->speaks.flip( lang );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -5125,18 +5059,18 @@ bool char_data::has_langs(  )
    return false;
 }
 
-bitset < LANG_UNKNOWN > char_data::get_langs(  )
+std::bitset<LANG_UNKNOWN> char_data::get_langs(  )
 {
    return speaks;
 }
 
-void char_data::set_langs( bitset < LANG_UNKNOWN > bits )
+void char_data::set_langs( std::bitset<LANG_UNKNOWN> bits )
 {
    try
    {
       speaks = bits;
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -5148,7 +5082,7 @@ void char_data::set_file_langs( FILE * fp )
    {
       flag_set( fp, speaks, lang_names );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "Flag exception caught: %s", e.what(  ) );
    }
@@ -5257,7 +5191,7 @@ CMDF( do_follow )
 
 CMDF( do_order )
 {
-   string arg, argbuf;
+   std::string arg, argbuf;
 
    argbuf = argument;
    argument = one_argument( argument, arg );
@@ -5304,11 +5238,10 @@ CMDF( do_order )
    }
 
    bool found = false;
-   list < char_data * >::iterator ich;
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+   for( auto it = ch->in_room->people.begin(); it != ch->in_room->people.end(); )
    {
-      char_data *och = *ich;
-      ++ich;
+      char_data *och = *it;
+      ++it;
 
       if( och->has_aflag( AFF_CHARM ) && och->master == ch && ( fAll || och == victim ) && !och->is_immortal() )
       {

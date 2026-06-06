@@ -46,23 +46,23 @@ class mob_index
    char_data *create_mobile(  );
    void mprog_read_programs( FILE * fp );
 
-   string spec_funname;
-     list < struct mud_prog_data *>mudprogs; /* Mudprogs */
+   std::string spec_funname;
+   std::list<struct mud_prog_data *> mudprogs; /* Mudprogs */
    area_data *area;
    SPEC_FUN *spec_fun;
    struct shop_data *pShop;
    struct repair_data *rShop;
-     bitset < MAX_PROG > progtypes;
-     bitset < MAX_ACT_FLAG > actflags;
-     bitset < MAX_AFFECTED_BY > affected_by;
-     bitset < MAX_ATTACK_TYPE > attacks;
-     bitset < MAX_DEFENSE_TYPE > defenses;
-     bitset < MAX_BPART > body_parts;
-     bitset < MAX_RIS_FLAG > resistant;
-     bitset < MAX_RIS_FLAG > immune;
-     bitset < MAX_RIS_FLAG > susceptible;
-     bitset < MAX_RIS_FLAG > absorb;   /* Samson 3-16-00 */
-     bitset < LANG_UNKNOWN > speaks;
+   std::bitset<MAX_PROG> progtypes;
+   std::bitset<MAX_ACT_FLAG> actflags;
+   std::bitset<MAX_AFFECTED_BY> affected_by;
+   std::bitset<MAX_ATTACK_TYPE> attacks;
+   std::bitset<MAX_DEFENSE_TYPE> defenses;
+   std::bitset<MAX_BPART> body_parts;
+   std::bitset<MAX_RIS_FLAG> resistant;
+   std::bitset<MAX_RIS_FLAG> immune;
+   std::bitset<MAX_RIS_FLAG> susceptible;
+   std::bitset<MAX_RIS_FLAG> absorb;   /* Samson 3-16-00 */
+   std::bitset<LANG_UNKNOWN> speaks;
    char *player_name;
    char *short_descr;
    char *long_descr;
@@ -109,7 +109,7 @@ class mob_index
    short saving_spell_staff;
 };
 
-extern map < int, mob_index * >mob_index_table;
+extern std::map<int, mob_index *> mob_index_table;
 mob_index *get_mob_index( int );
-mob_index *make_mobile( int, int, const string &, area_data * );
+mob_index *make_mobile( int, int, const std::string &, area_data * );
 int interpolate( int, int, int );

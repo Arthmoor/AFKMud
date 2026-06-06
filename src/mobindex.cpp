@@ -35,7 +35,7 @@
 int race_bodyparts( char_data * );
 int mob_xp( char_data * );
 
-map < int, mob_index * >mob_index_table;
+std::map<int, mob_index *> mob_index_table;
 
 extern int top_shop;
 extern int top_repair;
@@ -44,7 +44,7 @@ mob_index::~mob_index(  )
 {
    area->mobs.remove( this );
 
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
    for( ich = charlist.begin(  ); ich != charlist.end(  ); )
    {
       char_data *ch = *ich;
@@ -63,7 +63,7 @@ mob_index::~mob_index(  )
          ch->extract( true );
       else if( ch->substate == SUB_MPROG_EDIT && ch->pcdata->dest_buf )
       {
-         list < mud_prog_data * >::iterator mpg;
+         std::list<mud_prog_data *>::iterator mpg;
 
          for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
          {
@@ -81,7 +81,7 @@ mob_index::~mob_index(  )
       }
    }
 
-   list < mud_prog_data * >::iterator mpg;
+   std::list<mud_prog_data *>::iterator mpg;
    for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
    {
       mud_prog_data *mprog = *mpg;
@@ -111,7 +111,7 @@ mob_index::~mob_index(  )
    STRFREE( long_descr );
    STRFREE( chardesc );
 
-   map < int, mob_index * >::iterator imob;
+   std::map<int, mob_index *>::iterator imob;
    if( ( imob = mob_index_table.find( vnum ) ) != mob_index_table.end(  ) )
       mob_index_table.erase( imob );
    --top_mob_index;
@@ -137,11 +137,10 @@ void mob_index::clean_mob(  )
    rShop = nullptr;
    progtypes.reset(  );
 
-   list < mud_prog_data * >::iterator mpg;
-   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
+   for( auto it = mudprogs.begin(); it != mudprogs.end(); )
    {
-      mud_prog_data *mprog = *mpg;
-      ++mpg;
+      mud_prog_data *mprog = *it;
+      ++it;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
@@ -185,7 +184,7 @@ void mob_index::clean_mob(  )
  */
 mob_index *get_mob_index( int vnum )
 {
-   map < int, mob_index * >::iterator imob;
+   std::map<int, mob_index *>::iterator imob;
 
    if( vnum < 0 )
       vnum = 0;
@@ -210,7 +209,7 @@ int interpolate( int level, int value_00, int value_32 )
 /*
  * Create an instance of a mobile.
  */
-/* Modified for mob randomizations by Whir - 4-5-98 */
+/* Modified for mob randomization by Whir - 4-5-98 */
 char_data *mob_index::create_mobile(  )
 {
    char_data *mob;
@@ -332,7 +331,7 @@ char_data *mob_index::create_mobile(  )
 
    /*
     * Exp modification added by Samson - 5-15-98
-    * * Moved here because of the new exp autocalculations : Samson 5-18-01 
+    * * Moved here because of the new exp autocalculations : Samson 5-18-01
     * * Need to flush all the old values because the old code had a bug in it on top of everything else.
     */
    if( exp < 1 )
@@ -364,7 +363,7 @@ char_data *mob_index::create_mobile(  )
  * Create a new INDEX mobile (for online building) - Thoric
  * Option to clone an existing index mobile.
  */
-mob_index *make_mobile( int vnum, int cvnum, const string & name, area_data * area )
+mob_index *make_mobile( int vnum, int cvnum, const std::string & name, area_data * area )
 {
    mob_index *cMobIndex = nullptr;
 
@@ -489,7 +488,7 @@ mob_index *make_mobile( int vnum, int cvnum, const string & name, area_data * ar
       pMobIndex->speaking = cMobIndex->speaking;
    }
 
-   mob_index_table.insert( map < int, mob_index * >::value_type( vnum, pMobIndex ) );
+   mob_index_table.insert( std::map<int, mob_index *>::value_type( vnum, pMobIndex ) );
    area->mobs.push_back( pMobIndex );
    ++top_mob_index;
 
@@ -546,7 +545,7 @@ void mob_index::mprog_read_programs( FILE * fp )
 
 CMDF( do_mfind )
 {
-   map < int, mob_index * >::iterator imob = mob_index_table.begin(  );
+   std::map<int, mob_index *>::iterator imob = mob_index_table.begin(  );
    int nMatch;
    bool fAll;
 

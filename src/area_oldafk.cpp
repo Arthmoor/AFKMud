@@ -41,7 +41,7 @@ extern int top_shop;
 extern int top_repair;
 
 void save_sysdata(  );
-int get_continent( const string & );
+int get_continent( const std::string & );
 void validate_treasure_settings( area_data * );
 
 /*
@@ -51,7 +51,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
 {
    mob_index *pMobIndex;
    int x1, x2, x3, x4, x5, x6, x7, value;
-   string flag;
+   std::string flag;
 
    if( !tarea )
    {
@@ -192,7 +192,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
 
       flag_set( fp, pMobIndex->speaks, lang_names );
 
-      string speaking = fread_flagstring( fp );
+      std::string speaking = fread_flagstring( fp );
 
       speaking = one_argument( speaking, flag );
       value = get_langnum( flag );
@@ -265,7 +265,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
 
       if( !oldmob )
       {
-         mob_index_table.insert( map < int, mob_index * >::value_type( pMobIndex->vnum, pMobIndex ) );
+         mob_index_table.insert( std::map<int, mob_index *>::value_type( pMobIndex->vnum, pMobIndex ) );
          tarea->mobs.push_back( pMobIndex );
          ++top_mob_index;
       }
@@ -279,7 +279,6 @@ void load_objects( area_data * tarea, FILE * fp )
 {
    obj_index *pObjIndex;
    char letter;
-   char temp[3][MSL];
    int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
 
    if( !tarea )
@@ -408,6 +407,7 @@ void load_objects( area_data * tarea, FILE * fp )
       pObjIndex->value[9] = x10;
       pObjIndex->value[10] = x11;
 
+      char temp[3][MSL];
       ln = fread_line( fp );
       x1 = x2 = x3 = x5 = 0;
       x4 = 9999;
@@ -592,7 +592,7 @@ void load_objects( area_data * tarea, FILE * fp )
 
       if( !oldobj )
       {
-         obj_index_table.insert( map < int, obj_index * >::value_type( pObjIndex->vnum, pObjIndex ) );
+         obj_index_table.insert( std::map<int, obj_index *>::value_type( pObjIndex->vnum, pObjIndex ) );
 
          if( pObjIndex->ego > 90 )
             pObjIndex->ego = -2;
@@ -835,14 +835,8 @@ void load_resets( area_data * tarea, FILE * fp )
    }
    if( !not01 )
    {
-      list < room_index * >::iterator iroom;
-
-      for( iroom = tarea->rooms.begin(  ); iroom != tarea->rooms.end(  ); ++iroom )
-      {
-         pRoomIndex = *iroom;
-
-         pRoomIndex->renumber_put_resets(  );
-      }
+      for( auto* pRoomIndex2 : tarea->rooms )
+         pRoomIndex2->renumber_put_resets(  );
    }
 }
 
@@ -853,7 +847,7 @@ void load_rooms( area_data * tarea, FILE * fp )
 {
    room_index *pRoomIndex;
    const char *ln;
-   int area_number, count = 0, value;
+   int area_number, value;
 
    for( ;; )
    {
@@ -911,13 +905,11 @@ void load_rooms( area_data * tarea, FILE * fp )
       {
          if( fBootDb )
          {
-            list < reset_data * >::iterator rst;
+            int count = 0;
 
             bug( "%s: WARNING: resets already exist for this room.", __func__ );
-            for( rst = pRoomIndex->resets.begin(  ); rst != pRoomIndex->resets.end(  ); ++rst )
+            for( auto* rtmp : pRoomIndex->resets )
             {
-               reset_data *rtmp = *rst;
-
                ++count;
                if( !rtmp->resets.empty(  ) )
                   count += rtmp->resets.size(  );
@@ -1114,7 +1106,7 @@ void load_rooms( area_data * tarea, FILE * fp )
 
       if( !oldroom )
       {
-         room_index_table.insert( map < int, room_index * >::value_type( pRoomIndex->vnum, pRoomIndex ) );
+         room_index_table.insert( std::map<int, room_index *>::value_type( pRoomIndex->vnum, pRoomIndex ) );
 
          tarea->rooms.push_back( pRoomIndex );
          ++top_room;
@@ -1279,7 +1271,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       else if( !str_cmp( word, "CONTINENT" ) )
       {
          continent_data *continent = nullptr;
-         string value = fread_string( fpArea );
+         std::string value = fread_string( fpArea );
 
          if( !( continent = find_continent_by_name( value ) ) )
          {

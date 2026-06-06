@@ -37,11 +37,10 @@ void note_to_char( char_data *, note_data *, board_data *, short );
 
 void pc_data::free_comments(  )
 {
-   list < note_data * >::iterator note;
-
-   for( note = comments.begin(  ); note != comments.end(  ); )
+   for( auto it = comments.begin(  ); it != comments.end(  ); )
    {
-      note_data *comment = *note;
+      note_data *comment = *it;
+      ++it;
 
       comments.remove( comment );
       deleteptr( comment );
@@ -81,7 +80,7 @@ void comment_remove( char_data * ch, note_data * pnote )
 
 CMDF( do_comment )
 {
-   string arg;
+   std::string arg;
    note_data *pnote;
    char_data *victim;
    int vnum;
@@ -168,11 +167,8 @@ CMDF( do_comment )
       }
 
       vnum = 0;
-      list < note_data * >::iterator inote;
-      for( inote = victim->pcdata->comments.begin(  ); inote != victim->pcdata->comments.end(  ); ++inote )
+      for( auto* note : victim->pcdata->comments )
       {
-         note_data *note = *inote;
-
          ++vnum;
          ch->printf( "%2d) %-10s [%s] %s\r\n", vnum, note->sender ? note->sender : "--Error--",
                      mini_c_time( note->date_stamp, -1 ).c_str(), note->subject ? note->subject : "--Error--" );
@@ -223,11 +219,8 @@ CMDF( do_comment )
       }
 
       vnum = 0;
-      list < note_data * >::iterator inote;
-      for( inote = victim->pcdata->comments.begin(  ); inote != victim->pcdata->comments.end(  ); ++inote )
+      for( auto* note : victim->pcdata->comments )
       {
-         note_data *note = *inote;
-
          ++vnum;
          if( fAll || vnum == atoi( argument.c_str(  ) ) )
          {
@@ -352,11 +345,8 @@ CMDF( do_comment )
       }
 
       vnum = 0;
-      list < note_data * >::iterator inote;
-      for( inote = victim->pcdata->comments.begin(  ); inote != victim->pcdata->comments.end(  ); ++inote )
+      for( auto* note : victim->pcdata->comments )
       {
-         note_data *note = *inote;
-
          ++vnum;
          if( ( LEVEL_KL <= ch->get_trust(  ) ) && ( vnum == atoi( argument.c_str(  ) ) ) )
          {
@@ -378,15 +368,11 @@ CMDF( do_comment )
 
 void pc_data::fwrite_comments( FILE * fp )
 {
-   list < note_data * >::iterator inote;
-
    if( comments.empty(  ) )
       return;
 
-   for( inote = comments.begin(  ); inote != comments.end(  ); ++inote )
+   for( auto* note : comments )
    {
-      note_data *note = *inote;
-
       fprintf( fp, "%s", "#COMMENT2\n" ); /* Set to COMMENT2 as to tell from older comments */
       fwrite_note( note, fp );
    }

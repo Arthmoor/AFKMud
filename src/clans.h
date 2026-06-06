@@ -70,7 +70,7 @@ class clan_data
      clan_data(  );
     ~clan_data(  );
 
-     list < roster_data * >memberlist;
+   std::list<roster_data *> memberlist;
    std::string filename;  // Clan filename
    std::string name;      // Clan name
    std::string motto;     // Clan motto
@@ -118,14 +118,14 @@ class clan_data
    bool gettwo;           // true if they need to have the code provide a new number2
 };
 
-extern list < clan_data * >clanlist;
+extern std::list<clan_data *> clanlist;
 
-void add_roster( clan_data *, const string &, int, int, int, int );
+void add_roster( clan_data *, const std::string &, int, int, int, int );
 void update_roster( char_data * );
-void remove_roster( clan_data *, const string & );
+void remove_roster( clan_data *, const std::string & );
 void save_clan( clan_data * );
 void save_clan_storeroom( char_data *, clan_data * );
 void delete_clan( char_data *, clan_data * );
 void verify_clans(  );
 void free_clans(  );
-clan_data *get_clan( const string & );
+clan_data *get_clan( const std::string & );

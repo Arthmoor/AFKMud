@@ -81,7 +81,7 @@ class wizent
  public:
    wizent( ) : level( 0 ) {}
 
-   string name;
+   std::string name;
    short level;
 };
 
@@ -169,7 +169,7 @@ void load_mixtures(  );
 void load_imm_host(  );
 void load_dns(  );
 void load_mudchannels(  );
-void to_channel( const string &, const string &, int );
+void to_channel( const std::string &, const std::string &, int );
 void load_runes(  );
 void load_clans(  );
 void load_realms(  );
@@ -201,7 +201,7 @@ affect_data::affect_data(  )
    init_memory( &rismod, &type, sizeof( type ) );
 }
 
-void shutdown_mud( const string & reason )
+void shutdown_mud( const std::string & reason )
 {
    FILE *fp;
 
@@ -212,7 +212,7 @@ void shutdown_mud( const string & reason )
    }
 }
 
-bool exists_file( const string & name )
+bool exists_file( const std::string & name )
 {
    std::filesystem::path filename = name;
 
@@ -228,10 +228,8 @@ bool exists_file( const string & name )
       return false;
 }
 
-bool is_valid_filename( char_data * ch, const string & direct, const string & filename )
+bool is_valid_filename( char_data * ch, const std::string & direct, const std::string & filename )
 {
-   std::filesystem::path newfilename;
-
    /*
     * Length restrictions 
     */
@@ -256,7 +254,7 @@ bool is_valid_filename( char_data * ch, const string & direct, const string & fi
    /*
     * If that filename is already being used lets not allow it now to be on the safe side 
     */
-   newfilename = std::format( "{}{}", direct, filename );
+   std::filesystem::path newfilename = std::format( "{}{}", direct, filename );
    if( std::filesystem::exists( newfilename ) )
    {
       ch->printf( "%s is already an existing filename.\r\n", newfilename.c_str() );
@@ -607,9 +605,7 @@ const int SYSFILEVER = 1;
 void save_sysdata( void )
 {
    FILE *fp;
-   std::filesystem::path filename;
-
-   filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
+   std::filesystem::path filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
 
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
@@ -938,14 +934,14 @@ bool load_systemdata( void )
  */
 void fix_exits( void )
 {
-   map < int, room_index * >::iterator iroom;
+   std::map<int, room_index *>::iterator iroom;
+   std::list<exit_data *>::iterator iexit;
    room_index *pRoomIndex;
 
    for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {
       pRoomIndex = iroom->second;
 
-      list < exit_data * >::iterator iexit;
       for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); )
       {
          exit_data *pexit = *iexit;
@@ -970,7 +966,6 @@ void fix_exits( void )
    {
       pRoomIndex = iroom->second;
 
-      list < exit_data * >::iterator iexit;
       for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); ++iexit )
       {
          exit_data *pexit = *iexit;
@@ -991,7 +986,7 @@ void fix_exits( void )
 /*
  * Wizlist builder - Thoric
  */
-void add_to_wizlist( const string & name, int level )
+void add_to_wizlist( const std::string & name, int level )
 {
    auto wiz = std::make_unique<wizent>();
 
@@ -1567,7 +1562,7 @@ void boot_db( bool fCopyOver )
 /* Removal of this function constitutes a license violation */
 CMDF( do_basereport )
 {
-   ch->printf( "&RCodebase revision: %s %s - %s\r\n", CODENAME, CODEVERSION, COPYRIGHT );
+   ch->print_fmt( "&RCodebase revision: {} {} - {}\r\n", CODENAME, CODEVERSION, COPYRIGHT );
    ch->print( "&YContributors: Samson, Dwip, Whir, Cyberfox, Karangi, Rathian, Cam, Raine, and Tarl.\r\n" );
    ch->print( "&BDevelopment site: smaugmuds.afkmods.com\r\n" );
    ch->print( "&GThis function is included as a means to verify license compliance.\r\n" );
@@ -1615,7 +1610,8 @@ CMDF( do_memory )
       hash = -1;
    if( !str_cmp( arg, "hash" ) )
    {
-      ch->printf( "Hash statistics:\r\n%s", hash_stats(  ).c_str() );
+      ch->print( "Hash statistics:\r\n" );
+      ch->print( hash_stats() );
       if( hash != -1 )
          hash_dump( hash );
    }
@@ -1692,39 +1688,19 @@ int dice( int number, int size )
 
 CMDF( do_randtest )
 {
-   ch->printf( "Utterly random number   : %lu\r\n", global_rng( ) );
-   ch->printf( "number_range 4350 - 4449: %d\r\n", number_range( 4350, 4449 ) );
-   ch->printf( "number_percent          : %d\r\n", number_percent(  ) );
-   ch->printf( "number_door             : %d\r\n", number_door(  ) );
-   ch->printf( "number_bits 5           : %d\r\n", number_bits( 5 ) );
-   ch->printf( "3d35 ( 3 35 sided dice ): %d\r\n", dice( 3, 35 ) );
-}
-
-/*
- * Dump a text file to a player, a line at a time		-Thoric
- */
-void show_file( char_data * ch, const std::string & filename )
-{
-   std::ifstream fp{ filename };
-
-   if( !fp.is_open() )
-      return;
-
-   ch->pager("\r\n");
-
-   std::string line;
-   while( std::getline( fp, line ) )
-   {
-      line += "\r\n";
-      ch->pager( line );
-   }
+   ch->print_fmt( "Utterly random number   : {}\r\n", global_rng( ) );
+   ch->print_fmt( "number_range 4350 - 4449: {}\r\n", number_range( 4350, 4449 ) );
+   ch->print_fmt( "number_percent          : {}\r\n", number_percent(  ) );
+   ch->print_fmt( "number_door             : {}\r\n", number_door(  ) );
+   ch->print_fmt( "number_bits 5           : {}\r\n", number_bits( 5 ) );
+   ch->print_fmt( "3d35 ( 3 35 sided dice ): {}\r\n", dice( 3, 35 ) );
 }
 
 /*
  * Append a string to a file.
  */
 // FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
-void append_file( char_data * ch, const string & file, const char *fmt, ... )
+void append_file( char_data * ch, const std::string & file, const char *fmt, ... )
 {
    FILE *fp;
    va_list arg;
@@ -1756,7 +1732,7 @@ void append_file( char_data * ch, const string & file, const char *fmt, ... )
  * Append a string to a file.
  */
 // FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
-void append_to_file( const string & file, const char *fmt, ... )
+void append_to_file( const std::string & file, const char *fmt, ... )
 {
    FILE *fp;
    va_list arg;
@@ -1790,7 +1766,7 @@ void append_to_file( const string & file, const char *fmt, ... )
  * If your OS does not have the appropriate library then bug() will still work, you just won't get the traces.
  */
 #if defined(HAVE_CXXABI)
-std::string demangle( const std::string& name )
+std::string demangle( const std::string & name )
 {
    int status = -1;
 
@@ -1804,22 +1780,22 @@ std::string demangle( const std::string& name )
 void generate_backtrace( void )
 {
    std::stacktrace trace = std::stacktrace::current();
-   ostringstream lines;
+   std::ostringstream lines;
 
-   lines << endl << "Obtained " << trace.size() << " stack frames:" << endl << endl;
+   lines << std::endl << "Obtained " << trace.size() << " stack frames:" << std::endl << std::endl;
 
    for( const auto& frame : trace )
    {
-      string::size_type pos = frame.source_file().find_last_of( "/", frame.source_file().length() );
-      string file_name;
+      std::string::size_type pos = frame.source_file().find_last_of( "/", frame.source_file().length() );
+      std::string file_name;
 
-      if( pos != string::npos )
+      if( pos != std::string::npos )
          file_name = frame.source_file().substr( pos + 1 );
       else
          file_name = frame.source_file();
 
       std::string func_name = demangle( frame.description() );
-      lines << frame.description() << " -> " << file_name << ":" << frame.source_line() << endl;
+      lines << frame.description() << " -> " << file_name << ":" << frame.source_line() << std::endl;
    }
    log_string( lines.str( ) );
 }
@@ -1885,7 +1861,7 @@ void bug( const char *str, ... )
 /*
  * Writes a string to the log, extended version - Thoric
  */
-void log_string_plus( short log_type, short level, const string & str )
+void log_string_plus( short log_type, short level, const std::string & str )
 {
    auto seconds_only = std::chrono::floor<std::chrono::seconds>( current_time );
    auto local_time = std::chrono::zoned_time{ std::chrono::current_zone(), seconds_only };

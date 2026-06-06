@@ -48,8 +48,8 @@ void raw_kill( char_data *, char_data * );
 double damage_risa( char_data *, double, int );
 void damage_obj( obj_data * );
 int recall( char_data *, int );
-int get_trigflag( const string & );
-morph_data *get_morph( const string & );
+int get_trigflag( const std::string & );
+morph_data *get_morph( const std::string & );
 morph_data *get_morph_vnum( int );
 void start_hunting( char_data *, char_data * );
 void start_hating( char_data *, char_data * );
@@ -73,7 +73,7 @@ bool can_use_mprog( char_data * ch )
 
 CMDF( do_mpmset )
 {
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3;
    char_data *victim;
    int value, minattr, maxattr;
 
@@ -1023,7 +1023,7 @@ CMDF( do_mpmset )
 
 CMDF( do_mposet )
 {
-   string arg1, arg2, arg3;
+   std::string arg1, arg2, arg3;
    obj_data *obj;
    int value, tmp;
 
@@ -1322,7 +1322,6 @@ CMDF( do_mposet )
 
    if( !str_cmp( arg2, "rmaffect" ) )
    {
-      list < affect_data * >::iterator paf;
       short loc, count;
 
       if( argument.empty(  ) )
@@ -1340,10 +1339,10 @@ CMDF( do_mposet )
 
       count = 0;
 
-      for( paf = obj->affects.begin(  ); paf != obj->affects.end(  ); )
+      for( auto it = obj->affects.begin(); it != obj->affects.end(); )
       {
-         affect_data *aff = *paf;
-         ++paf;
+         affect_data *aff = *it;
+         ++it;
 
          if( ++count == loc )
          {
@@ -1519,7 +1518,7 @@ CMDF( do_mposet )
    progbugf( ch, "MpOset: Invalid field: %s", arg2.c_str(  ) );
 }
 
-const string mprog_type_to_name( int type )
+const std::string mprog_type_to_name( int type )
 {
    switch ( type )
    {
@@ -1614,7 +1613,7 @@ const string mprog_type_to_name( int type )
    }
 }
 
-/* A trivial rehack of do_mstat.  This doesnt show all the data, but just
+/* A trivial rehack of do_mstat.  This doesn't show all the data, but just
  * enough to identify the mob and give its basic condition.  It does however,
  * show the MUDprograms which are set.
  */
@@ -1656,13 +1655,8 @@ CMDF( do_mpstat )
    ch->printf( "Lv: %d.  Class: %d.  Align: %d.  AC: %d.  Gold: %d.  Exp: %d.\r\n",
                victim->level, victim->Class, victim->alignment, victim->GET_AC(  ), victim->gold, victim->exp );
 
-   list < mud_prog_data * >::iterator mprg;
-   for( mprg = victim->pIndexData->mudprogs.begin(  ); mprg != victim->pIndexData->mudprogs.end(  ); ++mprg )
-   {
-      mud_prog_data *prg = *mprg;
-
+   for( auto* prg : victim->pIndexData->mudprogs )
       ch->printf( "%d%s>%s %s\r\n%s\r\n", ++cnt, ( prg->fileprog ? "(FILEPROG) " : "" ), mprog_type_to_name( prg->type ).c_str(  ), prg->arglist, prg->comlist );
-   }
 }
 
 /* Opstat - Scryn 8/12*/
@@ -1692,13 +1686,8 @@ CMDF( do_opstat )
    ch->printf( "Name: %s.  Vnum: %d.\r\n", obj->name, obj->pIndexData->vnum );
    ch->printf( "Short description: %s.\r\n", obj->short_descr );
 
-   list < mud_prog_data * >::iterator mprg;
-   for( mprg = obj->pIndexData->mudprogs.begin(  ); mprg != obj->pIndexData->mudprogs.end(  ); ++mprg )
-   {
-      mud_prog_data *mprog = *mprg;
-
+   for( auto* mprog : obj->pIndexData->mudprogs )
       ch->printf( "%d >%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
-   }
 }
 
 /* Rpstat - Scryn 8/12 */
@@ -1727,19 +1716,14 @@ CMDF( do_rpstat )
 
    ch->printf( "Name: %s.  Vnum: %d.\r\n", location->name, location->vnum );
 
-   list < mud_prog_data * >::iterator mprg;
-   for( mprg = location->mudprogs.begin(  ); mprg != location->mudprogs.end(  ); ++mprg )
-   {
-      mud_prog_data *mprog = *mprg;
-
+   for( auto* mprog : location->mudprogs )
       ch->printf( "%d >%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
-   }
 }
 
 /* Woowoo - Blodkai, November 1997 */
 CMDF( do_mpasupress )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    int rnds;
 
@@ -1844,7 +1828,7 @@ CMDF( do_mpjunk )
    }
    else
    {
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
       for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
       {
          obj = *iobj;
@@ -1872,18 +1856,15 @@ CMDF( do_mpasound )
       return;
    }
 
-   bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
+   std::bitset<MAX_ACT_FLAG> actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
    /*
     * DONT_UPPER prevents argument[0] from being captilized. --Shaddai 
     */
    DONT_UPPER = true;
-   list < exit_data * >::iterator iexit;
    room_index *was_in_room = ch->in_room;
-   for( iexit = was_in_room->exits.begin(  ); iexit != was_in_room->exits.end(  ); ++iexit )
+   for( auto* pexit : was_in_room->exits )
    {
-      exit_data *pexit = *iexit;
-
       if( pexit->to_room && pexit->to_room != was_in_room )
       {
          ch->from_room(  );
@@ -1904,8 +1885,8 @@ CMDF( do_mpasound )
 CMDF( do_mpechoaround )
 {
    char_data *victim;
-   string arg;
-   bitset < MAX_ACT_FLAG > actflags;
+   std::string arg;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !can_use_mprog( ch ) )
       return;
@@ -1934,8 +1915,8 @@ CMDF( do_mpechoaround )
 CMDF( do_mpechoat )
 {
    char_data *victim;
-   string arg;
-   bitset < MAX_ACT_FLAG > actflags;
+   std::string arg;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !can_use_mprog( ch ) )
       return;
@@ -1970,7 +1951,7 @@ CMDF( do_mpechoat )
 /* prints message to room at large. */
 CMDF( do_mpecho )
 {
-   bitset < MAX_ACT_FLAG > actflags;
+   std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !can_use_mprog( ch ) )
       return;
@@ -2017,7 +1998,7 @@ CMDF( do_mpmload )
 
 CMDF( do_mpoload )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    obj_data *obj;
    int level, timer = 0;
 
@@ -2083,7 +2064,7 @@ CMDF( do_mpoload )
 /* Just a hack of do_pardon from act_wiz.c -- Blodkai, 6/15/97 */
 CMDF( do_mppardon )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
 
    if( !can_use_mprog( ch ) )
@@ -2141,21 +2122,19 @@ CMDF( do_mppurge )
          return;
       }
 
-      list < char_data * >::iterator ich;
-      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+      for( auto it = ch->in_room->people.begin(); it != ch->in_room->people.end(); )
       {
-         char_data *victim = *ich;
-         ++ich;
+         char_data *victim = *it;
+         ++it;
 
          if( victim->isnpc(  ) && victim != ch )
             victim->extract( true );
       }
 
-      list < obj_data * >::iterator iobj;
-      for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); )
+      for( auto it = ch->in_room->objects.begin(); it != ch->in_room->objects.end(); )
       {
-         obj_data *obj = *iobj;
-         ++iobj;
+         obj_data *obj = *it;
+         ++it;
 
          obj->extract(  );
       }
@@ -2267,7 +2246,7 @@ CMDF( do_mpgoto )
 /* lets the mobile do a command at another location. Very useful */
 CMDF( do_mpat )
 {
-   string arg;
+   std::string arg;
    room_index *location, *original;
 
    if( !can_use_mprog( ch ) )
@@ -2304,7 +2283,7 @@ CMDF( do_mpat )
 /* allow a mobile to advance a player's level... very dangerous */
 CMDF( do_mpadvance )
 {
-   string arg;
+   std::string arg;
    char_data *victim;
    int level, iLevel;
 
@@ -2371,10 +2350,10 @@ CMDF( do_mpadvance )
    specified location */
 CMDF( do_mptransfer )
 {
-   string arg1;
+   std::string arg1;
    room_index *location;
    char_data *victim;
-   list < char_data * >::iterator ich;
+   std::list<char_data *>::iterator ich;
 
    if( !can_use_mprog( ch ) )
       return;
@@ -2454,7 +2433,7 @@ CMDF( do_mptransfer )
  */
 CMDF( do_mpbodybag )
 {
-   string arg;
+   std::string arg;
    char_data *victim;
 
    if( !can_use_mprog( ch ) )
@@ -2482,11 +2461,8 @@ CMDF( do_mpbodybag )
 
    std::string buf = std::format( "the corpse of {}", arg );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   for( auto* obj : objlist )
    {
-      obj_data *obj = *iobj;
-
       if( obj->in_room && !str_cmp( buf, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
       {
          obj->from_room(  );
@@ -2509,7 +2485,7 @@ CMDF( do_mpmorph )
 {
    char_data *victim;
    morph_data *morph;
-   string arg1;
+   std::string arg1;
 
    if( !can_use_mprog( ch ) )
       return;
@@ -2578,14 +2554,13 @@ CMDF( do_mpechozone )   /* Blod, late 97 */
    if( !can_use_mprog( ch ) )
       return;
 
-   bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
+   std::bitset<MAX_ACT_FLAG> actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
    DONT_UPPER = true;
-   list < char_data * >::iterator ich;
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); )
+   for( auto it = pclist.begin(); it != pclist.end(); )
    {
-      char_data *vch = *ich;
-      ++ich;
+      char_data *vch = *it;
+      ++it;
 
       if( vch->in_room->area == ch->in_room->area && vch->IS_AWAKE(  ) )
       {
@@ -2609,7 +2584,7 @@ CMDF( do_mpechozone )   /* Blod, late 97 */
  */
 CMDF( do_mp_practice )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    int sn, max, adept;
    char *skillname;
@@ -2687,7 +2662,7 @@ CMDF( do_mp_practice )
 
 CMDF( do_mpstrew )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    room_index *pRoomIndex;
    int rvnum, vnum;
@@ -2724,7 +2699,7 @@ CMDF( do_mpstrew )
    }
 
    obj_data *obj_lose;
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    if( !str_cmp( argument, "inventory" ) )
    {
       for( ;; )
@@ -3074,7 +3049,7 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
  */
 CMDF( do_mp_damage )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
 
    if( !can_use_mprog( ch ) )
@@ -3093,12 +3068,10 @@ CMDF( do_mp_damage )
     */
    if( !str_cmp( arg1, "all" ) )
    {
-      list < char_data * >::iterator ich;
-
-      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+      for( auto it = ch->in_room->people.begin(); it != ch->in_room->people.end(); )
       {
-         victim = *ich;
-         ++ich;
+         victim = *it;
+         ++it;
 
          if( victim != ch && ch->can_see( victim, false ) ) /* Could go either way */
             funcf( ch, do_mp_damage, "'%s' %s", victim->name, argument.c_str(  ) );
@@ -3164,7 +3137,7 @@ CMDF( do_mp_log )
  */
 CMDF( do_mp_restore )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    int hp;
 
@@ -3207,7 +3180,7 @@ CMDF( do_mp_restore )
  */
 CMDF( do_mpfavor )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
    int favor;
    bool plus = false, minus = false;
@@ -3264,7 +3237,7 @@ CMDF( do_mpfavor )
  */
 CMDF( do_mp_open_passage )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    room_index *targetRoom, *fromRoom;
    int targetRoomVnum, fromRoomVnum, exit_num = 0;
    exit_data *pexit;
@@ -3378,7 +3351,7 @@ CMDF( do_mp_fill_in )
  */
 CMDF( do_mp_close_passage )
 {
-   string arg1;
+   std::string arg1;
    room_index *fromRoom;
    int fromRoomVnum, exit_num = 0;
    exit_data *pexit;
@@ -3455,7 +3428,7 @@ CMDF( do_mpnothing )
  */
 CMDF( do_mpdream )
 {
-   string arg1;
+   std::string arg1;
    char_data *victim;
 
    if( !can_use_mprog( ch ) )
@@ -3475,7 +3448,7 @@ CMDF( do_mpdream )
 
 CMDF( do_mpdelay )
 {
-   string arg;
+   std::string arg;
    char_data *victim;
    int delay;
 
@@ -3524,12 +3497,8 @@ CMDF( do_mppeace )
 
    if( argument.empty(  ) || !str_cmp( argument, "all" ) )
    {
-      list < char_data * >::iterator ich;
-
-      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+      for( auto* rch : ch->in_room->people )
       {
-         char_data *rch = *ich;
-
          if( rch->fighting )
          {
             rch->stop_fighting( true );
@@ -3561,7 +3530,7 @@ CMDF( do_mppeace )
 
 CMDF( do_mpsindhae )
 {
-   string arg;
+   std::string arg;
    obj_index *pObjIndex, *prizeindex = nullptr;
    char_data *victim;
 
@@ -3642,7 +3611,7 @@ CMDF( do_mpsindhae )
    prizebuf.append( Class );
 
    bool found = false;
-   map < int, obj_index * >::iterator mobj = obj_index_table.begin(  );
+   std::map<int, obj_index *>::iterator mobj = obj_index_table.begin(  );
    for( mobj = obj_index_table.begin(); mobj != obj_index_table.end(); ++mobj )
    {
       pObjIndex = mobj->second;
@@ -3666,11 +3635,8 @@ CMDF( do_mpsindhae )
       return;
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   for( auto* temp : objlist )
    {
-      obj_data *temp = *iobj;
-
       if( temp->pIndexData->vnum == prizeindex->vnum && !str_cmp( temp->owner, victim->name ) )
       {
          progbugf( ch, "mpsindhae: victim already has %s prize", argument.c_str(  ) );
@@ -3819,11 +3785,10 @@ char_data *make_doppleganger( char_data * ch )
 /* Equip the doppleganger with everything the PC has - Samson 10-11-99 */
 void equip_doppleganger( char_data * ch, char_data * mob )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* obj : ch->carrying )
    {
-      obj_data *newobj, *obj = *iobj;
+      obj_data *newobj;
+
       if( obj->wear_loc != WEAR_NONE )
       {
          newobj = obj->clone(  );
@@ -3880,7 +3845,7 @@ CMDF( do_mpdoppleganger )
 /* Rewritten by Whir. Thanks to Vor/Casteele for help 2-1-98 */
 /* Racial bonus calculations moved to this function and removed from comm.c - Samson 2-2-98 */
 /* Updated to AD&D standards by Samson 9-5-98 */
-/* Changed to use internal random number generator instead of OS dependant random() function - Samson 9-5-98 */
+/* Changed to use internal random number generator instead of OS dependent random() function - Samson 9-5-98 */
 void name_stamp_stats( char_data * ch )
 {
    ch->perm_str = 6 + dice( 2, 6 );
@@ -4080,11 +4045,10 @@ CMDF( do_mpredo )
 
    log_printf( "%s is restarting creation from end room.\r\n", victim->name );
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
+   for( auto it = victim->carrying.begin(); it != victim->carrying.end(); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       obj->extract(  );
    }
@@ -4099,7 +4063,7 @@ CMDF( do_mpredo )
 CMDF( do_mpraceset )
 {
    char_data *victim;
-   string arg1;
+   std::string arg1;
    race_type *race;
    class_type *Class;
    char *classname;
@@ -4344,10 +4308,10 @@ CMDF( do_mpstatreroll )
    victim->desc->connected = CON_ROLL_STATS;
 }
 
-/* Copy of mptransfer with a do_look attatched - Samson 4-14-98 */
+/* Copy of mptransfer with a do_look attached - Samson 4-14-98 */
 CMDF( do_mptrlook )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    room_index *location;
    char_data *victim;
 
@@ -4368,7 +4332,7 @@ CMDF( do_mptrlook )
     */
    if( !str_cmp( arg1, "all" ) )
    {
-      list < char_data * >::iterator ich;
+      std::list<char_data *>::iterator ich;
 
       for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
       {
@@ -4432,7 +4396,7 @@ CMDF( do_mptrlook )
 /* New mob hate, hunt, and fear code courtesy Rjael of Saltwind MUD Installed by Samson 4-14-98 */
 CMDF( do_mphate )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    int vnum = -1;
 
@@ -4495,11 +4459,8 @@ CMDF( do_mphate )
       }
    }
 
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* mob : charlist )
    {
-      char_data *mob = *ich;
-
       if( !mob->isnpc(  ) || !mob->in_room || !mob->pIndexData->vnum )
          continue;
 
@@ -4510,7 +4471,7 @@ CMDF( do_mphate )
 
 CMDF( do_mphunt )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    int vnum = -1;
 
@@ -4573,11 +4534,8 @@ CMDF( do_mphunt )
       }
    }
 
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* mob : charlist )
    {
-      char_data *mob = *ich;
-
       if( !mob->isnpc(  ) || !mob->in_room || !mob->pIndexData->vnum )
          continue;
 
@@ -4588,7 +4546,7 @@ CMDF( do_mphunt )
 
 CMDF( do_mpfear )
 {
-   string arg1, arg2;
+   std::string arg1, arg2;
    char_data *victim;
    int vnum = -1;
 
@@ -4651,11 +4609,8 @@ CMDF( do_mpfear )
       }
    }
 
-   list < char_data * >::iterator ich;
-   for( ich = charlist.begin(  ); ich != charlist.end(  ); ++ich )
+   for( auto* mob : charlist )
    {
-      char_data *mob = *ich;
-
       if( !mob->isnpc(  ) || !mob->in_room || !mob->pIndexData->vnum )
          continue;
 

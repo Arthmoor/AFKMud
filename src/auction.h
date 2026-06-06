@@ -50,38 +50,38 @@ class sale_data
  public:
      sale_data(  );
     ~sale_data(  );
-   void set_aucmob( const string & name )
+   void set_aucmob( const std::string & name )
    {
       aucmob = name;
    }
-   string get_aucmob(  )
+   std::string get_aucmob(  )
    {
       return aucmob;
    }
 
-   void set_seller( const string & name )
+   void set_seller( const std::string & name )
    {
       seller = name;
    }
-   string get_seller(  )
+   std::string get_seller(  )
    {
       return seller;
    }
 
-   void set_buyer( const string & name )
+   void set_buyer( const std::string & name )
    {
       buyer = name;
    }
-   string get_buyer(  )
+   std::string get_buyer(  )
    {
       return buyer;
    }
 
-   void set_item( const string & name )
+   void set_item( const std::string & name )
    {
       item = name;
    }
-   string get_item(  )
+   std::string get_item(  )
    {
       return item;
    }
@@ -105,10 +105,10 @@ class sale_data
    }
 
  private:
-   string aucmob;
-   string seller;
-   string buyer;
-   string item;
+   std::string aucmob;
+   std::string seller;
+   std::string buyer;
+   std::string item;
    int bid;
    bool collected;
 };

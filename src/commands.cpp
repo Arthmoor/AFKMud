@@ -38,7 +38,8 @@
 #include "mud_prog.h"
 #include "roomindex.h"
 
-vector < vector < cmd_type * > >command_table;
+std::vector<std::vector<cmd_type *>> command_table;
+std::map<std::string, social_type *> social_table;
 
 extern std::string lastplayercmd;
 
@@ -50,18 +51,18 @@ bool fLogAll = false;
 /*
  * Externals
  */
-bool check_ability( char_data *, const string &, const string & );
-bool check_skill( char_data *, const string &, const string & );
+bool check_ability( char_data *, const std::string &, const std::string & );
+bool check_skill( char_data *, const std::string &, const std::string & );
 #ifdef MULTIPORT
-bool shell_hook( char_data *, const string &, string & );
+bool shell_hook( char_data *, const std::string &, std::string & );
 void shellcommands( char_data *, short );
 #endif
-bool local_channel_hook( char_data *, const string &, string & );
-string extract_area_names( char_data * );
+bool local_channel_hook( char_data *, const std::string &, std::string & );
+std::string extract_area_names( char_data * );
 bool can_use_mprog( char_data * );
-bool mprog_command_trigger( char_data *, const string & );
-bool oprog_command_trigger( char_data *, const string & );
-bool rprog_command_trigger( char_data *, const string & );
+bool mprog_command_trigger( char_data *, const std::string & );
+bool oprog_command_trigger( char_data *, const std::string & );
+bool rprog_command_trigger( char_data *, const std::string & );
 
 const char *cmd_flags[] = {
    "possessed", "polymorphed", "action", "nospam", "ghost", "mudprog",
@@ -71,7 +72,7 @@ const char *cmd_flags[] = {
 /*
  * For use with cedit --Shaddai
  */
-int get_cmdflag( const string & flag )
+int get_cmdflag( const std::string & flag )
 {
    for( size_t x = 0; x < ( sizeof( cmd_flags ) / sizeof( cmd_flags[0] ) ); ++x )
       if( !str_cmp( flag.c_str(  ), cmd_flags[x] ) )
@@ -81,14 +82,8 @@ int get_cmdflag( const string & flag )
 
 void check_switches(  )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = pclist.begin(  ); ich != pclist.end(  ); ++ich )
-   {
-      char_data *ch = *ich;
-
+   for( auto* ch : pclist )
       check_switch( ch );
-   }
 }
 
 CMDF( do_switch );
@@ -99,8 +94,8 @@ void check_switch( char_data * ch )
 
    for( char x = 0; x < 126; ++x )
    {
-      const vector < cmd_type * >&cmd_list = command_table[x];
-      vector < cmd_type * >::const_iterator icmd;
+      const std::vector < cmd_type * >&cmd_list = command_table[x];
+      std::vector < cmd_type * >::const_iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -121,7 +116,7 @@ void check_switch( char_data * ch )
    interpret( ch->switched, "return" );
 }
 
-int check_command_level( const string & arg, int check )
+int check_command_level( const std::string & arg, int check )
 {
    cmd_type *cmd = find_command( arg );
 
@@ -175,9 +170,9 @@ std::chrono::microseconds end_timer( std::chrono::steady_clock::time_point & sta
    return elapsed;
 }
 
-bool check_social( char_data * ch, const string & command, const string & argument )
+bool check_social( char_data * ch, const std::string & command, const std::string & argument )
 {
-   string arg;
+   std::string arg;
    social_type *social;
    char_data *victim = nullptr;
 
@@ -384,10 +379,10 @@ bool check_pos( char_data * ch, short position )
    return true;
 }
 
-bool check_alias( char_data * ch, const string & command, const string & argument )
+bool check_alias( char_data * ch, const std::string & command, const std::string & argument )
 {
-   map < string, string >::iterator al;
-   string arg;
+   std::map < std::string, std::string >::iterator al;
+   std::string arg;
 
    if( ch->isnpc(  ) )
       return false;
@@ -460,8 +455,8 @@ void interpret( char_data * ch, std::string argument )
           */
          for( char x = 0; x < 126; ++x )
          {
-            const vector < cmd_type * >&cmd_list = command_table[x];
-            vector < cmd_type * >::const_iterator icmd;
+            const std::vector < cmd_type * >&cmd_list = command_table[x];
+            std::vector < cmd_type * >::const_iterator icmd;
 
             for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
             {
@@ -556,8 +551,8 @@ void interpret( char_data * ch, std::string argument )
        */
       trust = ch->get_trust(  );
 
-      const vector < cmd_type * >&cmd_list = command_table[LOWER( command[0] ) % 126];
-      vector < cmd_type * >::const_iterator icmd;
+      const std::vector < cmd_type * >&cmd_list = command_table[LOWER( command[0] ) % 126];
+      std::vector < cmd_type * >::const_iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -673,9 +668,8 @@ void interpret( char_data * ch, std::string argument )
     */
    if( ( ( chtimer = ch->get_timerptr( TIMER_DO_FUN ) ) != nullptr ) && ( !found || !cmd->flags.test( CMD_NOABORT ) ) )
    {
-      int tempsub;
+      int tempsub = ch->substate;
 
-      tempsub = ch->substate;
       ch->substate = SUB_TIMER_DO_ABORT;
       ( chtimer->do_fun ) ( ch, "" );
       if( ch->char_died(  ) )
@@ -765,8 +759,8 @@ void interpret( char_data * ch, std::string argument )
    ch->last_cmd = cmd->do_fun;   /* Usurped in hopes of using it for the spamguard instead */
    if( !str_cmp( cmd->name, "slay" ) )
    {
-      string tmpargument = argument;
-      string tmparg;
+      std::string tmpargument = argument;
+      std::string tmparg;
 
       tmpargument = one_argument( tmpargument, tmparg );
 
@@ -785,7 +779,7 @@ void interpret( char_data * ch, std::string argument )
       ( *cmd->do_fun ) ( ch, argument );
       time_used = end_timer( time_start );
    }
-   catch( exception & e )
+   catch( std::exception & e )
    {
       bug( "&YCommand exception: '%s' on command: %s %s&D", e.what(  ), cmd->name.c_str(  ), argument.c_str(  ) );
    }
@@ -861,8 +855,8 @@ void free_commands( void )
 {
    for( char x = 0; x < 126; ++x )
    {
-      vector < cmd_type * >&cmd_list = command_table[x];
-      vector < cmd_type * >::iterator icmd;
+      std::vector < cmd_type * >&cmd_list = command_table[x];
+      std::vector < cmd_type * >::iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -886,8 +880,8 @@ void unlink_command( cmd_type * command )
       return;
    }
 
-   vector < cmd_type * >&cmd_list = command_table[command->name[0] % 126];
-   vector < cmd_type * >::iterator icmd;
+   std::vector < cmd_type * >&cmd_list = command_table[command->name[0] % 126];
+   std::vector < cmd_type * >::iterator icmd;
 
    for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
    {
@@ -921,14 +915,14 @@ void add_command( cmd_type * command )
    // Force all commands to be lowercase names
    strlower( command->name );
 
-   vector < cmd_type * >&cmd_list = command_table[command->name[0] % 126];
+   std::vector < cmd_type * >&cmd_list = command_table[command->name[0] % 126];
    cmd_list.push_back( command );
 }
 
-cmd_type *find_command( const string & command )
+cmd_type *find_command( const std::string & command )
 {
-   vector < cmd_type * >::const_iterator icmd;
-   const vector < cmd_type * >&cmd_list = command_table[command[0] % 126];
+   std::vector < cmd_type * >::const_iterator icmd;
+   const std::vector < cmd_type * >&cmd_list = command_table[command[0] % 126];
 
    for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
    {
@@ -950,7 +944,7 @@ const int CMDVERSION = 3;
 /* Updated to 3 for command flags - Samson 7-9-00 */
 void save_commands( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( COMMAND_FILE );
    if( !stream.is_open(  ) )
@@ -960,12 +954,12 @@ void save_commands( void )
       return;
    }
 
-   stream << "#VERSION " << CMDVERSION << endl;
+   stream << "#VERSION " << CMDVERSION << std::endl;
 
    for( char x = 0; x < 126; ++x )
    {
-      const vector < cmd_type * >&cmd_list = command_table[x];
-      vector < cmd_type * >::const_iterator icmd;
+      const std::vector<cmd_type *> &cmd_list = command_table[x];
+      std::vector<cmd_type *>::const_iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -976,19 +970,19 @@ void save_commands( void )
             bug( "%s: blank command in command table", __func__ );
             continue;
          }
-         stream << "#COMMAND" << endl;
-         stream << "Name        " << command->name << endl;
+         stream << "#COMMAND" << std::endl;
+         stream << "Name        " << command->name << std::endl;
          /*
           * Modded to use new field - Trax 
           */
          if( !command->fun_name.empty(  ) )
-            stream << "Code        " << command->fun_name << endl;
-         stream << "Position    " << npc_position[command->position] << endl;
-         stream << "Level       " << command->level << endl;
-         stream << "Log         " << log_flag[command->log] << endl;
+            stream << "Code        " << command->fun_name << std::endl;
+         stream << "Position    " << npc_position[command->position] << std::endl;
+         stream << "Level       " << command->level << std::endl;
+         stream << "Log         " << log_flag[command->log] << std::endl;
          if( command->flags.any(  ) )
-            stream << "Flags       " << bitset_string( command->flags, cmd_flags ) << endl;
-         stream << "End" << endl << endl;
+            stream << "Flags       " << bitset_string( command->flags, cmd_flags ) << std::endl;
+         stream << "End" << std::endl << std::endl;
       }
    }
    stream.close(  );
@@ -996,7 +990,7 @@ void save_commands( void )
 
 void load_commands( void )
 {
-   ifstream stream;
+   std::ifstream stream;
    cmd_type *cmd = nullptr;
    int version = 0;
 
@@ -1012,7 +1006,7 @@ void load_commands( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -1085,7 +1079,7 @@ void load_commands( void )
 CMDF( do_cedit )
 {
    cmd_type *command;
-   string arg1, arg2;
+   std::string arg1, arg2;
 
    ch->set_color( AT_IMMORT );
 
@@ -1347,7 +1341,7 @@ CMDF( do_cedit )
 
 CMDF( do_restrict )
 {
-   string arg;
+   std::string arg;
    short level;
    cmd_type *cmd;
 
@@ -1397,9 +1391,9 @@ CMDF( do_restrict )
    log_printf( "%s restricting %s to level %d", ch->name, cmd->name.c_str(  ), level );
 }
 
-string extract_command_names( char_data * ch )
+std::string extract_command_names( char_data * ch )
 {
-   string tbuf, tcomm, comm_names;
+   std::string tbuf, tcomm, comm_names;
 
    if( !ch || ch->isnpc(  ) )
       return "";
@@ -1429,7 +1423,7 @@ string extract_command_names( char_data * ch )
 
 CMDF( do_bestow )
 {
-   string arg, buf;
+   std::string arg, buf;
    char_data *victim;
    cmd_type *cmd;
 
@@ -1550,7 +1544,7 @@ CMDF( do_bestow )
 CMDF( do_force )
 {
    cmd_type *cmd = nullptr;
-   string arg, arg2, command;
+   std::string arg, arg2, command;
 
    ch->set_color( AT_IMMORT );
 
@@ -1581,11 +1575,10 @@ CMDF( do_force )
          return;
       }
 
-      list < char_data * >::iterator ich;
-      for( ich = pclist.begin(  ); ich != pclist.end(  ); )
+      for( auto it = pclist.begin(); it != pclist.end(); )
       {
-         char_data *vch = *ich;
-         ++ich;
+         char_data *vch = *it;
+         ++it;
 
          if( vch->get_trust(  ) < ch->get_trust(  ) )
          {
@@ -1639,7 +1632,7 @@ CMDF( do_force )
 CMDF( do_mpforce )
 {
    cmd_type *cmd = nullptr;
-   string arg, arg2;
+   std::string arg, arg2;
 
    if( !can_use_mprog( ch ) )
       return;
@@ -1657,12 +1650,10 @@ CMDF( do_mpforce )
 
    if( !str_cmp( arg, "all" ) )
    {
-      list < char_data * >::iterator ich;
-
-      for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
+      for( auto it = ch->in_room->people.begin(  ); it != ch->in_room->people.end(  ); )
       {
-         char_data *vch = *ich;
-         ++ich;
+         char_data *vch = *it;
+         ++it;
 
          if( vch->get_trust(  ) < ch->get_trust(  ) && ch->can_see( vch, false ) )
          {
@@ -1706,13 +1697,13 @@ CMDF( do_mpforce )
          return;
       }
 
-      string lbuf = arg2 + " " + argument;
+      std::string lbuf = arg2 + " " + argument;
       interpret( victim, lbuf );
    }
 }
 
 /* Nearly rewritten by Xorith to be more smooth and nice and all that jazz. *grin* */
-/* Modified again. I added booleans for sorted and all option checking. It occured to me
+/* Modified again. I added booleans for sorted and all option checking. It occurred to me
    that calling str_cmp three times within the loop is probably costing us a bit in performance. 
    Also added column headers to make the information more obvious, and changed it to print - instead of a 0
    for no level requirement on commands, just for visual appeal. -- Xorith */
@@ -1746,8 +1737,8 @@ CMDF( do_commands )
 
    for( char x = 0; x < 126; ++x )
    {
-      const vector < cmd_type * >&cmd_list = command_table[x];
-      vector < cmd_type * >::const_iterator icmd;
+      const std::vector < cmd_type * >&cmd_list = command_table[x];
+      std::vector < cmd_type * >::const_iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -1815,8 +1806,8 @@ CMDF( do_wizhelp )
 
          for( char x = 0; x < 126; ++x )
          {
-            const vector < cmd_type * >&cmd_list = command_table[x];
-            vector < cmd_type * >::const_iterator icmd;
+            const std::vector < cmd_type * >&cmd_list = command_table[x];
+            std::vector < cmd_type * >::const_iterator icmd;
 
             for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
             {
@@ -1859,8 +1850,8 @@ CMDF( do_wizhelp )
 
    for( char x = 0; x < 126; ++x )
    {
-      const vector < cmd_type * >&cmd_list = command_table[x];
-      vector < cmd_type * >::const_iterator icmd;
+      const std::vector < cmd_type * >&cmd_list = command_table[x];
+      std::vector < cmd_type * >::const_iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -1933,13 +1924,13 @@ CMDF( do_timecmd )
 
 CMDF( do_alias )
 {
-   map < string, string >::iterator al;
-   string arg;
+   std::map<std::string, std::string>::iterator al;
+   std::string arg;
 
    if( ch->isnpc(  ) )
       return;
 
-   if( argument.find( '~' ) != string::npos )
+   if( argument.find( '~' ) != std::string::npos )
    {
       ch->print( "Command not acceptable, cannot use the ~ character.\r\n" );
       return;
@@ -1980,9 +1971,9 @@ CMDF( do_alias )
    ch->pcdata->alias_map[arg] = argument;
 }
 
-social_type *find_social( const string & command )
+social_type *find_social( const std::string & command )
 {
-   map < string, social_type * >::iterator isoc;
+   std::map<std::string, social_type *>::iterator isoc;
 
    if( ( isoc = social_table.find( command ) ) != social_table.end(  ) )
       return isoc->second;
@@ -1990,7 +1981,6 @@ social_type *find_social( const string & command )
    return nullptr;
 }
 
-map < string, social_type * >social_table;
 social_type::social_type(  )
 {
    init_memory( &minposition, &minposition, sizeof( minposition ) );
@@ -2007,7 +1997,7 @@ social_type::~social_type(  )
 
 void free_socials( void )
 {
-   map < string, social_type * >::iterator isoc;
+   std::map < std::string, social_type * >::iterator isoc;
 
    for( isoc = social_table.begin(  ); isoc != social_table.end(  ); ++isoc )
    {
@@ -2067,7 +2057,7 @@ void add_social( social_type * social )
  */
 void save_socials( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( SOCIAL_FILE );
    if( !stream.is_open(  ) )
@@ -2077,7 +2067,7 @@ void save_socials( void )
       return;
    }
 
-   map < string, social_type * >::iterator isoc;
+   std::map<std::string, social_type *>::iterator isoc;
    for( isoc = social_table.begin(  ); isoc != social_table.end(  ); ++isoc )
    {
       social_type *social = isoc->second;
@@ -2088,37 +2078,37 @@ void save_socials( void )
          continue;
       }
 
-      stream << "#SOCIAL" << endl;
-      stream << "Name        " << social->name << endl;
+      stream << "#SOCIAL" << std::endl;
+      stream << "Name        " << social->name << std::endl;
       if( !social->char_no_arg.empty(  ) )
-         stream << "CharNoArg   " << social->char_no_arg << endl;
+         stream << "CharNoArg   " << social->char_no_arg << std::endl;
       else
          bug( "%s: nullptr char_no_arg in social_table for %s", __func__, social->name.c_str(  ) );
       if( !social->others_no_arg.empty(  ) )
-         stream << "OthersNoArg " << social->others_no_arg << endl;
+         stream << "OthersNoArg " << social->others_no_arg << std::endl;
       if( !social->char_found.empty(  ) )
-         stream << "CharFound   " << social->char_found << endl;
+         stream << "CharFound   " << social->char_found << std::endl;
       if( !social->others_found.empty(  ) )
-         stream << "OthersFound " << social->others_found << endl;
+         stream << "OthersFound " << social->others_found << std::endl;
       if( !social->vict_found.empty(  ) )
-         stream << "VictFound   " << social->vict_found << endl;
+         stream << "VictFound   " << social->vict_found << std::endl;
       if( !social->char_auto.empty(  ) )
-         stream << "CharAuto    " << social->char_auto << endl;
+         stream << "CharAuto    " << social->char_auto << std::endl;
       if( !social->others_auto.empty(  ) )
-         stream << "OthersAuto  " << social->others_auto << endl;
+         stream << "OthersAuto  " << social->others_auto << std::endl;
       if( !social->obj_self.empty(  ) )
-         stream << "ObjSelf     " << social->obj_self << endl;
+         stream << "ObjSelf     " << social->obj_self << std::endl;
       if( !social->obj_others.empty(  ) )
-         stream << "ObjOthers   " << social->obj_others << endl;
-      stream << "MinPosition " << npc_position[social->minposition] << endl;
-      stream << "End" << endl << endl;
+         stream << "ObjOthers   " << social->obj_others << std::endl;
+      stream << "MinPosition " << npc_position[social->minposition] << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
 }
 
 void load_socials( void )
 {
-   ifstream stream;
+   std::ifstream stream;
    social_type *social = nullptr;
 
    social_table.clear(  );
@@ -2132,7 +2122,7 @@ void load_socials( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MIL];
 
       stream >> key;
@@ -2192,7 +2182,7 @@ void load_socials( void )
 CMDF( do_sedit )
 {
    social_type *social;
-   string arg1, arg2;
+   std::string arg1, arg2;
 
    ch->set_color( AT_SOCIAL );
 
@@ -2414,7 +2404,7 @@ CMDF( do_socials )
    else
       ch->pager( "&[plain]Socials -- All\r\n" );
 
-   map < string, social_type * >::iterator isoc;
+   std::map < std::string, social_type * >::iterator isoc;
    for( isoc = social_table.begin(  ); isoc != social_table.end(  ); ++isoc )
    {
       social = isoc->second;

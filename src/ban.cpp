@@ -42,14 +42,14 @@
 #include "event.h"
 
 /* Global Variables */
-list < ban_data * >banlist;
+std::list<ban_data *> banlist;
 
 // Begin code from libemail
 IPADDR::IPADDR( decimal_t d )
 {
 }
 
-IPADDR::IPADDR( const string & ip )
+IPADDR::IPADDR( const std::string & ip )
 {
    struct in_addr addr;
 
@@ -70,13 +70,13 @@ const char * IPADDR::str() const
    return inet_ntoa( addr );
 }
 
-CIDR::CIDR( const string & cidr )
+CIDR::CIDR( const std::string & cidr )
 {
-   string ip, pow;
+   std::string ip, pow;
 
-   string::size_type pos = cidr.find_first_of( "/", 0 );
+   std::string::size_type pos = cidr.find_first_of( "/", 0 );
 
-   if( pos != string::npos )
+   if( pos != std::string::npos )
    {
       ip = cidr.substr( 0, pos );
       pow = cidr.substr( pos + 1, cidr.length() );
@@ -115,12 +115,10 @@ ban_data::~ban_data(  )
 
 void free_bans( void )
 {
-   list < ban_data * >::iterator ban;
-
-   for( ban = banlist.begin(  ); ban != banlist.end(  ); )
+   for( auto it = banlist.begin(); it != banlist.end(); )
    {
-      ban_data *pban = *ban;
-      ++ban;
+      ban_data *pban = *it;
+      ++it;
 
       deleteptr( pban );
    }
@@ -129,7 +127,7 @@ void free_bans( void )
 void load_banlist( void )
 {
    ban_data *ban = nullptr;
-   ifstream stream;
+   std::ifstream stream;
 
    banlist.clear(  );
 
@@ -142,7 +140,7 @@ void load_banlist( void )
 
    do
    {
-      string key, value;
+      std::string key, value;
       char buf[MSL];
 
       stream >> key;
@@ -187,7 +185,7 @@ void load_banlist( void )
 
 void save_banlist( void )
 {
-   ofstream stream;
+   std::ofstream stream;
 
    stream.open( BAN_LIST );
    if( !stream.is_open(  ) )
@@ -200,12 +198,12 @@ void save_banlist( void )
    {
       auto exp_time = std::chrono::system_clock::to_time_t( ban->expires );
 
-      stream << "#BAN" << endl;
-      stream << "Name       " << ban->name << endl;
-      stream << "IP         " << ban->ipaddress << endl;
-      stream << "Expires    " << exp_time << endl;
-      stream << "Type       " << ban->type << endl;
-      stream << "End" << endl << endl;
+      stream << "#BAN" << std::endl;
+      stream << "Name       " << ban->name << std::endl;
+      stream << "IP         " << ban->ipaddress << std::endl;
+      stream << "Expires    " << exp_time << std::endl;
+      stream << "Type       " << ban->type << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
 }
@@ -217,23 +215,21 @@ void check_ban_expirations( void )
    for( auto it = banlist.begin(); it != banlist.end(); )
    {
       ban_data *ban = *it;
+      ++it;
 
       // Check if the ban is NOT permanent AND has passed the current time
       if( ban->expires != PERMANENT_BAN && current_time > ban->expires )
       {
          deleteptr( ban );
-         it = banlist.erase( it );
          some_expired = true;
       }
-      else
-         ++it;
    }
 
    if( some_expired )
       save_banlist();
 }
 
-bool is_valid_ip( const string& ipaddress )
+bool is_valid_ip( const std::string & ipaddress )
 {
    struct sockaddr_in sa;
 
@@ -244,13 +240,13 @@ bool is_valid_ip( const string& ipaddress )
    return false;
 }
 
-bool is_valid_cidr( const string& cidr )
+bool is_valid_cidr( const std::string & cidr )
 {
-   string::size_type x;
-   string ipaddress, cidr_string;
+   std::string::size_type x;
+   std::string ipaddress, cidr_string;
    int cidr_int;
 
-   if( ( x = cidr.find( '/' ) ) != string::npos && x > 0 )
+   if( ( x = cidr.find( '/' ) ) != std::string::npos && x > 0 )
    {
       ipaddress = cidr.substr( 0, x );
       cidr_string = cidr.substr( x + 1, cidr.length(  ) );
@@ -267,7 +263,7 @@ bool is_valid_cidr( const string& cidr )
    return false;
 }
 
-bool is_ip_range( const string& ip_address, const string& cidr_address )
+bool is_ip_range( const std::string & ip_address, const std::string & cidr_address )
 {
    // Are we checking a valid IP?
    if( !is_valid_ip( ip_address ) )
@@ -294,7 +290,7 @@ bool is_ip_range( const string& ip_address, const string& cidr_address )
    return false;
 }
 
-bool is_ip_match( const string& ipaddress, const string& stored_ip )
+bool is_ip_match( const std::string & ipaddress, const std::string & stored_ip )
 {
    // Are we checking a valid IP?
    if( !is_valid_ip( ipaddress ) )
@@ -382,7 +378,7 @@ bool is_banned( descriptor_data *d )
    return false;
 }
 
-ban_data *get_ban( const string & name )
+ban_data *get_ban( const std::string & name )
 {
    for( auto* ban : banlist )
    {
@@ -399,7 +395,7 @@ CMDF( do_ban )
 {
    ban_data *ban = nullptr;
    char_data *victim = nullptr;
-   string arg1, arg2;
+   std::string arg1, arg2;
 
    if( argument.empty() )
    {
@@ -595,7 +591,6 @@ CMDF( do_ban )
       save_banlist();
 
       // Boot off any players matching the IP or range that was just banned
-      list < char_data * >::iterator ich;
       for( auto* vch : pclist )
       {
          if( vch->desc && is_banned( vch->desc ) )

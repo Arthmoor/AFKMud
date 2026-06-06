@@ -63,20 +63,20 @@ class holiday_data
      holiday_data(  );
     ~holiday_data(  );
 
-   void set_name( const string & newname )
+   void set_name( const std::string & newname )
    {
       name = newname;
    }
-   string get_name(  )
+   std::string get_name(  )
    {
       return name;
    }
 
-   void set_announce( const string & text )
+   void set_announce( const std::string & text )
    {
       announce = text;
    }
-   string get_announce(  )
+   std::string get_announce(  )
    {
       return announce;
    }
@@ -100,8 +100,8 @@ class holiday_data
    }
 
  private:
-   string name;   /* Name of the holiday */
-   string announce;  /* Message to announce the holiday with */
+   std::string name;   /* Name of the holiday */
+   std::string announce;  /* Message to announce the holiday with */
    short month;   /* Month the holiday falls in */
    short day;  /* Day the holiday falls on */
 };

@@ -37,8 +37,8 @@
 #include "overland.h"
 #include "roomindex.h"
 
-map < int, room_index * >room_index_table;
-list < teleport_data * >teleportlist;
+std::map<int, room_index *> room_index_table;
+std::list<teleport_data *> teleportlist;
 
 extern int top_exit;
 extern int top_reset;
@@ -46,7 +46,7 @@ extern int top_affect;
 
 reset_data *make_reset( char, int, int, int, int, int, int, int, int, int, int, int );
 void delete_reset( reset_data * );
-void name_generator( string & );
+void name_generator( std::string & );
 void pick_name( std::string &, const std::string & );
 void fix_exits(  );
 
@@ -73,12 +73,10 @@ const short rev_dir[] = {
 
 void free_teleports( void )
 {
-   list < teleport_data * >::iterator tele;
-
-   for( tele = teleportlist.begin(  ); tele != teleportlist.end(  ); )
+   for( auto it = teleportlist.begin(  ); it != teleportlist.end(  ); )
    {
-      teleport_data *teleport = *tele;
-      ++tele;
+      teleport_data *teleport = *it;
+      ++it;
 
       teleportlist.remove( teleport );
       deleteptr( teleport );
@@ -94,8 +92,8 @@ reset_data::reset_data(  )
 room_index::~room_index(  )
 {
    area->rooms.remove( this );
+   std::list<char_data *>::iterator ich;
 
-   list < char_data * >::iterator ich;
    for( ich = people.begin(  ); ich != people.end(  ); )
    {
       char_data *ch = *ich;
@@ -129,12 +127,8 @@ room_index::~room_index(  )
       }
       else if( ch->substate == SUB_ROOM_EXTRA && ch->pcdata->dest_buf )
       {
-         list < extra_descr_data * >::iterator ex;
-
-         for( ex = extradesc.begin(  ); ex != extradesc.end(  ); ++ex )
+         for( auto* ed : extradesc )
          {
-            extra_descr_data *ed = *ex;
-
             if( ed == ch->pcdata->dest_buf )
             {
                ch->print( "The room is no more.\r\n" );
@@ -147,11 +141,10 @@ room_index::~room_index(  )
       }
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = objects.begin(  ); iobj != objects.end(  ); )
+   for( auto it = objects.begin(  ); it != objects.end(  ); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       obj->extract(  );
    }
@@ -159,11 +152,10 @@ room_index::~room_index(  )
 
    wipe_resets(  );
 
-   list < extra_descr_data * >::iterator ed;
-   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
+   for( auto it = extradesc.begin(  ); it != extradesc.end(  ); )
    {
-      extra_descr_data *desc = *ed;
-      ++ed;
+      extra_descr_data *desc = *it;
+      ++it;
 
       extradesc.remove( desc );
       deleteptr( desc );
@@ -171,7 +163,7 @@ room_index::~room_index(  )
    }
    extradesc.clear(  );
 
-   list < exit_data * >::iterator ex;
+   std::list<exit_data *>::iterator ex;
    if( !mud_down )
    {
       for( ex = exits.begin(  ); ex != exits.end(  ); ++ex )
@@ -198,7 +190,7 @@ room_index::~room_index(  )
       }
    }
 
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    for( paf = affects.begin(  ); paf != affects.end(  ); )
    {
       affect_data *af = *paf;
@@ -228,22 +220,20 @@ room_index::~room_index(  )
    }
    exits.clear(  );
 
-   list < mprog_act_list * >::iterator pd;
-   for( pd = mpact.begin(  ); pd != mpact.end(  ); )
+   for( auto it = mpact.begin(  ); it != mpact.end(  ); )
    {
-      mprog_act_list *rpact = *pd;
-      ++pd;
+      mprog_act_list *rpact = *it;
+      ++it;
 
       mpact.remove( rpact );
       deleteptr( rpact );
    }
    mpact.clear(  );
 
-   list < mud_prog_data * >::iterator mpg;
-   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
+   for( auto it = mudprogs.begin(  ); it != mudprogs.end(  ); )
    {
-      mud_prog_data *mprog = *mpg;
-      ++mpg;
+      mud_prog_data *mprog = *it;
+      ++it;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
@@ -254,7 +244,7 @@ room_index::~room_index(  )
    DISPOSE( roomdesc );
    DISPOSE( nitedesc );
 
-   map < int, room_index * >::iterator mroom;
+   std::map<int, room_index *>::iterator mroom;
    if( ( mroom = room_index_table.find( vnum ) ) != room_index_table.end(  ) )
       room_index_table.erase( mroom );
    --top_room;
@@ -272,18 +262,13 @@ room_index::room_index(  )
  */
 void room_index::clean_room(  )
 {
-   mud_prog_data *mprog;
-   list < mud_prog_data * >::iterator mpg;
-   list < extra_descr_data * >::iterator ed;
-   list < exit_data * >::iterator iexit;
-
    DISPOSE( roomdesc );
    DISPOSE( nitedesc );
    STRFREE( name );
-   for( ed = extradesc.begin(  ); ed != extradesc.end(  ); )
+   for( auto it = extradesc.begin(  ); it != extradesc.end(  ); )
    {
-      extra_descr_data *desc = *ed;
-      ++ed;
+      extra_descr_data *desc = *it;
+      ++it;
 
       extradesc.remove( desc );
       deleteptr( desc );
@@ -291,26 +276,27 @@ void room_index::clean_room(  )
    }
    extradesc.clear(  );
 
-   for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
+   for( auto it = mudprogs.begin(  ); it != mudprogs.end(  ); )
    {
-      mprog = *mpg;
-      ++mpg;
+      mud_prog_data *mprog = *it;
+      ++it;
 
       mudprogs.remove( mprog );
       deleteptr( mprog );
    }
    mudprogs.clear(  );
 
-   for( iexit = exits.begin(  ); iexit != exits.end(  ); )
+   for( auto it = exits.begin(  ); it != exits.end(  ); )
    {
-      exit_data *pexit = *iexit;
+      exit_data *pexit = *it;
+      ++it;
 
       extract_exit( pexit );
       --top_exit;
    }
    exits.clear(  );
 
-   list < affect_data * >::iterator paf;
+   std::list<affect_data *>::iterator paf;
    for( paf = affects.begin(  ); paf != affects.end(  ); )
    {
       affect_data *af = *paf;
@@ -424,7 +410,7 @@ exit_data *room_index::make_exit( room_index * to_room, short door )
       }
    }
 
-   list < exit_data * >::iterator iexit;
+   std::list<exit_data *>::iterator iexit;
    for( iexit = exits.begin(  ); iexit != exits.end(  ); ++iexit )
    {
       exit_data *texit = *iexit;
@@ -494,13 +480,10 @@ void room_index::extract_exit( exit_data * pexit )
 
 void room_index::wipe_coord_resets( short x, short y )
 {
-   reset_data *pReset;
-   list < reset_data * >::iterator rst;
-
-   for( rst = resets.begin(  ); rst != resets.end(  ); )
+   for( auto it = resets.begin(  ); it != resets.end(  ); )
    {
-      pReset = *rst;
-      ++rst;
+      reset_data *pReset = *it;
+      ++it;
 
       if( pReset->arg5 == x && pReset->arg6 == y )
       {
@@ -512,13 +495,10 @@ void room_index::wipe_coord_resets( short x, short y )
 
 void room_index::wipe_resets(  )
 {
-   reset_data *pReset;
-   list < reset_data * >::iterator rst;
-
-   for( rst = resets.begin(  ); rst != resets.end(  ); )
+   for( auto it = resets.begin(  ); it != resets.end(  ); )
    {
-      pReset = *rst;
-      ++rst;
+      reset_data *pReset = *it;
+      ++it;
 
       resets.remove( pReset );
       delete_reset( pReset );
@@ -551,7 +531,7 @@ room_index *make_room( int vnum, area_data * area )
    pRoomIndex->weight = 0;
    pRoomIndex->max_weight = 100000;
 
-   room_index_table.insert( map < int, room_index * >::value_type( vnum, pRoomIndex ) );
+   room_index_table.insert( std::map<int, room_index *>::value_type( vnum, pRoomIndex ) );
    area->rooms.push_back( pRoomIndex );
    ++top_room;
 
@@ -642,10 +622,8 @@ bool room_index::is_private(  )
    return false;
 }
 
-void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const string & argument )
+void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const std::string & argument )
 {
-   list < affect_data * >::iterator paf;
-   affect_data *aff = nullptr;
    short loc;
 
    if( argument.empty(  ) )
@@ -667,10 +645,10 @@ void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const stri
    short count = 0;
    if( !indexaffect )
    {
-      for( paf = affects.begin(  ); paf != affects.end(  ); )
+      for( auto it = affects.begin(  ); it != affects.end(  ); )
       {
-         aff = *paf;
-         ++paf;
+         affect_data *aff = *it;
+         ++it;
 
          if( ++count == loc )
          {
@@ -684,10 +662,10 @@ void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const stri
    }
    else
    {
-      for( paf = permaffects.begin(  ); paf != permaffects.end(  ); )
+      for( auto it = permaffects.begin(  ); it != permaffects.end(  ); )
       {
-         aff = *paf;
-         ++paf;
+         affect_data *aff = *it;
+         ++it;
 
          if( ++count == loc )
          {
@@ -705,11 +683,10 @@ void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const stri
 /*
  * Crash fix and name support by Shaddai 
  */
-void room_index::olc_add_affect( char_data * ch, bool indexaffect, string & argument )
+void room_index::olc_add_affect( char_data * ch, bool indexaffect, std::string & argument )
 {
-   affect_data *paf;
-   string arg2;
-   bitset < MAX_RIS_FLAG > risabit;
+   std::string arg2;
+   std::bitset<MAX_RIS_FLAG> risabit;
    int value = -1;
    short loc;
    bool found = false;
@@ -735,7 +712,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, string & argu
 
    if( loc == APPLY_AFFECT )
    {
-      string arg3;
+      std::string arg3;
 
       argument = one_argument( argument, arg3 );
       if( loc == APPLY_AFFECT )
@@ -750,7 +727,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, string & argu
    }
    else if( loc == APPLY_RESISTANT || loc == APPLY_IMMUNE || loc == APPLY_SUSCEPTIBLE || loc == APPLY_ABSORB )
    {
-      string flag;
+      std::string flag;
 
       while( !argument.empty(  ) )
       {
@@ -783,7 +760,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, string & argu
    if( !found )
       return;
 
-   paf = new affect_data;
+   affect_data *paf = new affect_data;
    paf->type = -1;
    paf->duration = -1;
    paf->location = loc;
@@ -841,7 +818,7 @@ void room_index::room_affect( affect_data * paf, bool fAdd )
  */
 room_index *get_room_index( int vnum )
 {
-   map < int, room_index * >::iterator iroom;
+   std::map<int, room_index *>::iterator iroom;
 
    if( vnum < 0 )
       vnum = 0;
@@ -855,16 +832,10 @@ room_index *get_room_index( int vnum )
    return nullptr;
 }
 
-void room_index::echo( const string & argument )
+void room_index::echo( const std::string & argument )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = people.begin(  ); ich != people.end(  ); ++ich )
-   {
-      char_data *victim = *ich;
-
+   for( auto* victim : people )
       victim->printf( "%s\r\n", argument.c_str(  ) );
-   }
 }
 
 /*
@@ -872,13 +843,10 @@ void room_index::echo( const string & argument )
  */
 void room_index::clean_resets(  )
 {
-   reset_data *pReset;
-   list < reset_data * >::iterator rst;
-
-   for( rst = resets.begin(  ); rst != resets.end(  ); )
+   for( auto it = resets.begin(  ); it != resets.end(  ); )
    {
-      pReset = *rst;
-      ++rst;
+      reset_data *pReset = *it;
+      ++it;
 
       delete_reset( pReset );
       --top_reset;
@@ -928,15 +896,12 @@ int generate_itemlevel( area_data * pArea, obj_index * pObjIndex )
 /*
  * Count occurrences of an obj in a list.
  */
-int count_obj_list( reset_data * pReset, obj_index * pObjIndex, list < obj_data * >source )
+int count_obj_list( reset_data * pReset, obj_index * pObjIndex, std::list<obj_data *> source )
 {
-   list < obj_data * >::iterator iobj;
    int nMatch = 0;
 
-   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
+   for( auto* obj : source )
    {
-      obj_data *obj = *iobj;
-
       if( obj->pIndexData == pObjIndex )
       {
          if( pReset->command == 'M' || pReset->command == 'O' )
@@ -957,12 +922,8 @@ int count_obj_list( reset_data * pReset, obj_index * pObjIndex, list < obj_data 
  */
 obj_data *get_obj_type( obj_index * pObjIndex )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = objlist.begin(  ); iobj != objlist.end(  ); ++iobj )
+   for( auto* obj : objlist )
    {
-      obj_data *obj = *iobj;
-
       if( obj->pIndexData == pObjIndex )
          return obj;
    }
@@ -972,12 +933,8 @@ obj_data *get_obj_type( obj_index * pObjIndex )
 /* Find an object in a room so we can check it's dependents. Used by 'O' resets. */
 obj_data *get_obj_room( obj_index * pObjIndex, room_index * pRoomIndex )
 {
-   list < obj_data * >::iterator iobj;
-
-   for( iobj = pRoomIndex->objects.begin(  ); iobj != pRoomIndex->objects.end(  ); ++iobj )
+   for( auto* obj : pRoomIndex->objects )
    {
-      obj_data *obj = *iobj;
-
       if( obj->pIndexData == pObjIndex )
          return obj;
    }
@@ -1072,17 +1029,13 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, in
    return pReset;
 }
 
-/* Setup put nesting levels, regardless of whether or not the resets will
-   actually reset, or if they're bugged. */
+/* Setup put nesting levels, regardless of whether or not the resets will actually reset, or if they're bugged. */
 void room_index::renumber_put_resets(  )
 {
    reset_data *lastobj = nullptr;
-   list < reset_data * >::iterator rst, dst;
 
-   for( rst = resets.begin(  ); rst != resets.end(  ); ++rst )
+   for( auto* pReset : resets )
    {
-      reset_data *pReset = *rst;
-
       switch ( pReset->command )
       {
          default:
@@ -1090,10 +1043,8 @@ void room_index::renumber_put_resets(  )
 
          case 'O':
             lastobj = pReset;
-            for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); ++dst )
+            for( auto* tReset : pReset->resets )
             {
-               reset_data *tReset = *dst;
-
                switch ( tReset->command )
                {
                   default:
@@ -1123,7 +1074,7 @@ void room_index::renumber_put_resets(  )
  */
 void room_index::reset(  )
 {
-   map < int, obj_data * >nestmap;
+   std::map<int, obj_data *> nestmap;
    char_data *mob;
    obj_data *obj, *lastobj, *to_obj;
    room_index *pRoomIndex = nullptr;
@@ -1140,11 +1091,8 @@ void room_index::reset(  )
       return;
    level = 0;
 
-   list < reset_data * >::iterator rst;
-   for( rst = resets.begin(  ); rst != resets.end(  ); ++rst )
+   for( auto* pReset : resets )
    {
-      reset_data *pReset = *rst;
-
       ++onreset;
       switch ( pReset->command )
       {
@@ -1282,11 +1230,8 @@ void room_index::reset(  )
 
             if( !pReset->resets.empty(  ) )
             {
-               list < reset_data * >::iterator dst;
-               for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); ++dst )
+               for( auto* tReset : pReset->resets )
                {
-                  reset_data *tReset = *dst;
-
                   ++onreset;
                   switch ( tReset->command )
                   {
@@ -1378,10 +1323,8 @@ void room_index::reset(  )
 
                         if( !tReset->resets.empty(  ) )
                         {
-                           list < reset_data * >::iterator gst;
-                           for( gst = tReset->resets.begin(  ); gst != tReset->resets.end(  ); ++gst )
+                           for( auto* gReset : tReset->resets )
                            {
-                              reset_data *gReset = *gst;
                               int iNest;
                               to_obj = lastobj;
                               ++onreset;
@@ -1587,12 +1530,10 @@ void room_index::reset(  )
 
             if( !pReset->resets.empty(  ) )
             {
-               list < reset_data * >::iterator dst;
-               for( dst = pReset->resets.begin(  ); dst != pReset->resets.end(  ); ++dst )
+               for( auto* tReset : pReset->resets )
                {
                   int iNest;
 
-                  reset_data *tReset = *dst;
                   to_obj = lastobj;
                   ++onreset;
 
@@ -2119,7 +2060,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
       renumber_put_resets(  );
 }
 
-int get_dirnum( const string & flag )
+int get_dirnum( const std::string & flag )
 {
    size_t x;
 

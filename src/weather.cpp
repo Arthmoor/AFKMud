@@ -69,7 +69,7 @@ WeatherCell::WeatherCell()
    init_memory( &this->climate, &this->windSpeedY, sizeof( this->windSpeedY ) );
 }
 
-int get_hemisphere( const string & type )
+int get_hemisphere( const std::string & type )
 {
    unsigned int x;
 
@@ -79,7 +79,7 @@ int get_hemisphere( const string & type )
    return -1;
 }
 
-int get_climate( const string & type )
+int get_climate( const std::string & type )
 {
    unsigned int x;
 
@@ -139,7 +139,7 @@ bool ExceedsThreshold( int initial, int delta, int threshold )
    return ( ( initial < threshold ) && ( initial + delta >= threshold ) );
 }
 
-//Used to determin whether a field drops below a certain point, see Weather messages for examples.
+//Used to determine whether a field drops below a certain point, see Weather messages for examples.
 bool DropsBelowThreshold( int initial, int delta, int threshold )
 { 
    return ( ( initial >= threshold ) && ( initial + delta < threshold ) ); 
@@ -148,20 +148,15 @@ bool DropsBelowThreshold( int initial, int delta, int threshold )
 //Send a message to a player in the area, assuming they are outside, and awake.
 void WeatherMessage( const char *txt, int x, int y )
 {
-   list < area_data * >::iterator iarea;
-   list < descriptor_data * >::iterator ds;
 
-   for( iarea = arealist.begin(  ); iarea != arealist.end(  ); )
+   for( auto* pArea : arealist )
    {
-      area_data *pArea = *iarea;
-      ++iarea;
-
       if( pArea->weatherx == x && pArea->weathery == y )
       {
-         for( ds = dlist.begin(  ); ds != dlist.end(  ); )
+         for( auto it = dlist.begin(  ); it != dlist.end(  ); )
          {
-            descriptor_data *d = *ds;
-            ++ds;
+            descriptor_data *d = *it;
+            ++it;
 
             if( d->connected == CON_PLAYING )
             {
@@ -2267,8 +2262,8 @@ void RandomizeCells( void )
    }
 }
 
-const int weatherVersion = 1;
-int version;
+// 1: The initial version.
+const int WEATHER_VERSION = 1;
 
 void save_weathermap( void )
 {
@@ -2283,7 +2278,7 @@ void save_weathermap( void )
       return;
    }
 
-   fprintf( fp, "#VERSION %d\n\n", weatherVersion );
+   fprintf( fp, "#VERSION %d\n\n", WEATHER_VERSION );
 
    for ( y = 0; y < WEATHER_SIZE_Y; y++)
    {
@@ -2303,7 +2298,7 @@ void save_weathermap( void )
    FCLOSE( fp );
 }
 
-void fread_cell( FILE * fp, int x, int y )
+void fread_cell( FILE * fp, int x, int y, int file_ver )
 {
    bool fMatch = false;
 
@@ -2329,7 +2324,7 @@ void fread_cell( FILE * fp, int x, int y )
          case 'C':
             if( !str_cmp( word, "Climate" ) )
             {
-               if( version >= 1 )
+               if( file_ver >= 1 )
                {
                   std::string climate;
 
@@ -2357,7 +2352,7 @@ void fread_cell( FILE * fp, int x, int y )
          case 'H':
             if( !str_cmp( word, "Hemisphere" ) )
             {
-               if( version >= 1 )
+               if( file_ver >= 1 )
                {
                   std::string hemisphere;
 
@@ -2408,7 +2403,7 @@ bool load_weathermap( void )
    FILE *fp = NULL;
    int x, y;
 
-   version = 0;
+   int file_ver = 0;
 
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, WEATHER_FILE );
    if( !( fp = fopen( filename.c_str(), "r" ) ) )
@@ -2437,7 +2432,7 @@ bool load_weathermap( void )
       word = fread_word( fp );
       if( !str_cmp( word, "VERSION" ) ) 
       { 
-         version = fread_number( fp );
+         file_ver = fread_number( fp );
          continue;
       }
 
@@ -2445,7 +2440,7 @@ bool load_weathermap( void )
       { 
          x = fread_number( fp );
          y = fread_number( fp );
-         fread_cell( fp, x, y );
+         fread_cell( fp, x, y, file_ver );
          continue;
       }
       else if( !str_cmp( word, "END" ) )

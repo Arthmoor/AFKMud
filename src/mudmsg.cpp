@@ -174,7 +174,7 @@ void mud_send_message( const char *arg )
    }
 }
 
-void mud_message( char_data * ch, mud_channel * channel, const string & arg )
+void mud_message( char_data * ch, mud_channel * channel, const std::string & arg )
 {
    int invis;
    bool isinvis = ch->isnpc(  )? ch->has_actflag( ACT_MOBINVIS ) : ch->has_pcflag( PCFLAG_WIZINVIS );
@@ -187,11 +187,11 @@ void mud_message( char_data * ch, mud_channel * channel, const string & arg )
    mud_send_message( tbuf.c_str() );
 }
 
-void recv_text_handler( string & str )
+void recv_text_handler( std::string & str )
 {
    mud_channel *channel = nullptr;
    char_data *ch = nullptr;
-   string arg1, arg2, arg3, arg4, arg5, chname;
+   std::string arg1, arg2, arg3, arg4, arg5, chname;
    int ilevel = -1, clevel = -1;
    bool isnpc, isinvis;
 
@@ -249,7 +249,7 @@ void mud_recv_message( void )
 
    while( ( ret = msgrcv( qid, &qbuf, MAX_MSGBUF_LENGTH, mud_port, IPC_NOWAIT ) ) > 0 )
    {
-      string txt = qbuf.mtext;
+      std::string txt = qbuf.mtext;
       recv_text_handler( txt );
    }
 

@@ -45,7 +45,7 @@ extern bool compilelock;
 #endif
 extern bool bootlock;
 
-auth_data *get_auth_name( const string & );
+auth_data *get_auth_name( const std::string & );
 void check_pfiles( time_t );
 void update_connhistory( descriptor_data *, int );
 void show_stateflags( char_data * );
@@ -54,18 +54,16 @@ void quotes( char_data * );
 /* Removes rare items the player cannot maintain. */
 void rare_purge( char_data * ch, obj_data * obj )
 {
-   list < obj_data * >::iterator iobj;
-
-   if( obj->ego >= sysdata->minego )
-      obj->extract(  );
-
-   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); )
+   for( auto it = obj->contents.begin(  ); it != obj->contents.end(  ); )
    {
-      obj_data *tobj = *iobj;
-      ++iobj;
+      obj_data *tobj = *it;
+      ++it;
 
       rare_purge( ch, tobj );
    }
+
+   if( obj->ego >= sysdata->minego )
+      obj->extract(  );
 }
 
 // Looks for any -1 rent items. These cannot be kept past rent/quit/camp.
@@ -80,11 +78,10 @@ void inventory_scan( char_data * ch, obj_data * obj )
       obj->extract(  );
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); )
+   for( auto it = obj->contents.begin(  ); it != obj->contents.end(  ); )
    {
-      obj_data *tobj = *iobj;
-      ++iobj;
+      obj_data *tobj = *it;
+      ++it;
 
       inventory_scan( ch, tobj );
    }
@@ -92,11 +89,10 @@ void inventory_scan( char_data * ch, obj_data * obj )
 
 void expire_items( char_data * ch )
 {
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
+   for( auto it = ch->carrying.begin(  ); it != ch->carrying.end(  ); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       // If the player is less powerful than the object, it has a chance of simply disappearing without notice.
       if( ch->char_ego(  ) < obj->ego && number_bits( 3 ) > 4 )
@@ -153,11 +149,10 @@ void char_leaving( char_data * ch, int howleft )
          update_connhistory( ch->desc, CONNTYPE_QUIT );
    }
 
-   list < obj_data * >::iterator iobj;
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); )
+   for( auto it = ch->carrying.begin(  ); it != ch->carrying.end(  ); )
    {
-      obj_data *obj = *iobj;
-      ++iobj;
+      obj_data *obj = *it;
+      ++it;
 
       inventory_scan( ch, obj );
    }
@@ -167,12 +162,10 @@ void char_leaving( char_data * ch, int howleft )
 
    if( sysdata->save_pets )
    {
-      list < char_data * >::iterator pet;
-
-      for( pet = ch->pets.begin(  ); pet != ch->pets.end(  ); )
+      for( auto it = ch->pets.begin(  ); it != ch->pets.end(  ); )
       {
-         char_data *cpet = *pet;
-         ++pet;
+         char_data *cpet = *it;
+         ++it;
 
          cpet->extract( true );
       }
@@ -267,12 +260,8 @@ CMDF( do_quit )
    Code courtesy of the Smaug mailing list - Installed by Samson */
 char_data *find_innkeeper( char_data * ch )
 {
-   list < char_data * >::iterator ich;
-
-   for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); ++ich )
+   for( auto* innkeeper : ch->in_room->people )
    {
-      char_data *innkeeper = *ich;
-
       if( innkeeper->has_actflag( ACT_INNKEEPER ) )
          return innkeeper;
    }
@@ -471,11 +460,12 @@ CMDF( do_camp )
       return;
    }
 
-   list < obj_data * >::iterator iobj;
+   std::list<obj_data *>::iterator iobj;
    bool fbed = false, fgear = false, flint = false;
    for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
    {
       obj_data *obj = *iobj;
+
       if( obj->item_type == ITEM_CAMPGEAR )
       {
          if( obj->value[0] == 1 )
@@ -498,6 +488,7 @@ CMDF( do_camp )
    for( iobj = ch->in_room->objects.begin(  ); iobj != ch->in_room->objects.end(  ); ++iobj )
    {
       obj_data *campfire = *iobj;
+
       if( campfire->item_type == ITEM_FIRE )
       {
          if( ch->has_pcflag( PCFLAG_ONMAP ) )
@@ -539,12 +530,8 @@ int thief_raid( char_data * ch, obj_data * obj, int robbed )
          obj->extract(  );
          robbed = 1;
       }
-      list < obj_data * >::iterator iobj;
-      for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
-      {
-         obj_data *tobj = *iobj;
+      for( auto* tobj : obj->contents )
          thief_raid( ch, tobj, robbed );
-      }
    }
    return robbed;
 }
@@ -559,12 +546,10 @@ int bandit_raid( char_data * ch, obj_data * obj, int robbed )
       obj->extract(  );
       robbed = 1;
    }
-   list < obj_data * >::iterator iobj;
-   for( iobj = obj->contents.begin(  ); iobj != obj->contents.end(  ); ++iobj )
-   {
-      obj_data *tobj = *iobj;
+
+   for( auto* tobj : obj->contents )
       bandit_raid( ch, tobj, robbed );
-   }
+
    return robbed;
 }
 
@@ -576,7 +561,7 @@ void break_camp( char_data * ch )
 
    if( robchance > 85 )
    {
-      list < obj_data * >::iterator iobj;
+      std::list<obj_data *>::iterator iobj;
       if( robchance < 98 )
       {
          log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves raided %s's camp!", ch->name );
@@ -620,13 +605,11 @@ void adjust_pfile( const std::string & name )
          log_printf( "Skipping rare item adjustments for %s, player is online.", temp->name );
          if( temp->is_immortal(  ) )   /* Get the rare items off the immortals */
          {
-            list < obj_data * >::iterator iobj;
-
             log_printf( "Immortal: Removing rare items from %s.", temp->name );
-            for( iobj = temp->carrying.begin(  ); iobj != temp->carrying.end(  ); )
+            for( auto it = temp->carrying.begin(); it != temp->carrying.end(); )
             {
-               obj_data *tobj = *iobj;
-               ++iobj;
+               obj_data *tobj = *it;
+               ++it;
 
                rare_purge( temp, tobj );
             }
@@ -675,12 +658,10 @@ void adjust_pfile( const std::string & name )
 
       if( sysdata->save_pets )
       {
-         list < char_data * >::iterator pet;
-
-         for( pet = ch->pets.begin(  ); pet != ch->pets.end(  ); )
+         for( auto it =  ch->pets.begin(); it !=  ch->pets.end(); )
          {
-            char_data *cpet = *pet;
-            ++pet;
+            char_data *cpet = *it;
+            ++it;
 
             cpet->extract( true );
          }
@@ -712,14 +693,13 @@ void adjust_pfile( const std::string & name )
 int scan_pfiles( const std::string & dirname, const std::string & filename, bool updating )
 {
    FILE *fpChar;
-   ostringstream path;
    int adjust = 0;
 
-   path << dirname << '/' << filename;
+   std::filesystem::path fname = std::format( "{}/{}", dirname, filename );
 
-   if( !( fpChar = fopen( path.str().c_str(), "r" ) ) )
+   if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
    {
-      perror( path.str().c_str() );
+      perror( fname.c_str() );
       return 0;
    }
 
