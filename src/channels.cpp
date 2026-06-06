@@ -199,7 +199,7 @@ void save_mudchannels( void )
    }
 }
 
-mud_channel *find_channel( const std::string & name )
+mud_channel *find_channel( std::string_view name )
 {
    for( auto* channel : chanlist )
    {
@@ -907,7 +907,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
    } // End for loop.
 }
 
-void to_channel( const std::string & argument, const std::string & xchannel, int level )
+void to_channel( std::string_view argument, std::string_view xchannel, int level )
 {
    mud_channel *channel;
 
@@ -921,7 +921,7 @@ void to_channel( const std::string & argument, const std::string & xchannel, int
       return;
 
    if( channel->flags.test( CHAN_KEEPHISTORY ) )
-      update_channel_history( nullptr, channel, argument, false );
+      update_channel_history( nullptr, channel, std::string( argument ), false );
 
    for( auto* d : dlist )
    {

@@ -1137,7 +1137,7 @@ void load_boards( void )
 
          if( ( note_fp = fopen( notefile.c_str(), "r" ) ) != nullptr )
          {
-            log_string( notefile );
+            log_string( notefile.c_str() );
             while( ( pnote = read_old_note( note_fp ) ) != nullptr )
             {
                board->nlist.push_back( pnote );
@@ -1166,7 +1166,7 @@ void load_boards( void )
          notefile = std::format( "{}{}.board", BOARD_DIR, board->filename );
          if( ( note_fp = fopen( notefile.c_str(), "r" ) ) != nullptr )
          {
-            log_string( notefile );
+            log_string( notefile.c_str() );
             while( ( pnote = read_note( note_fp ) ) != nullptr )
             {
                board->nlist.push_back( pnote );

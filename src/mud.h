@@ -749,8 +749,6 @@ do                                               \
 #define PERS(ch, looker, from) ( (looker)->can_see( (ch), (from) ) ? \
       ( (ch)->isnpc() ? (ch)->short_descr : (ch)->name ) : "Someone" )
 
-#define log_string(txt)		( log_string_plus( LOG_NORMAL, LEVEL_LOG, (txt) ) )
-
 // These 2 macros are used for case changes on a particular character somewhere in a string.
 #define LOWER( c )        ( (c) >= 'A' && (c) <= 'Z' ? (c) + 'a' - 'A' : (c) )
 #define UPPER( c )        ( (c) >= 'a' && (c) <= 'z' ? (c) + 'A' - 'a' : (c) )
@@ -1189,7 +1187,8 @@ int number_bits( int );
 int dice( int, int );
 void append_file( char_data *, const std::string &, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 void append_to_file( const std::string &, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
-void log_string_plus( short, short, const std::string & );
+void log_string_plus( short, short, std::string_view );
+void log_string( std::string_view );
 void make_wizlist( void );
 
 // descriptor.cpp

@@ -169,7 +169,7 @@ void load_mixtures(  );
 void load_imm_host(  );
 void load_dns(  );
 void load_mudchannels(  );
-void to_channel( const std::string &, const std::string &, int );
+void to_channel( std::string_view, std::string_view, int );
 void load_runes(  );
 void load_clans(  );
 void load_realms(  );
@@ -1861,7 +1861,7 @@ void bug( const char *str, ... )
 /*
  * Writes a string to the log, extended version - Thoric
  */
-void log_string_plus( short log_type, short level, const std::string & str )
+void log_string_plus( short log_type, short level, std::string_view str )
 {
    auto seconds_only = std::chrono::floor<std::chrono::seconds>( current_time );
    auto local_time = std::chrono::zoned_time{ std::chrono::current_zone(), seconds_only };
@@ -1869,10 +1869,10 @@ void log_string_plus( short log_type, short level, const std::string & str )
    std::string timestamp = std::format( "{0:%F %T}", local_time );
    std::cerr << std::format( "{} :: {}\n", timestamp, str );
 
-   std::string newstr = str;
+   std::string_view newstr = str;
    if( newstr.starts_with( "Log " ) )
    {
-      newstr = newstr.substr( 4 );
+      newstr.remove_prefix( 4 );
    }
 
    switch ( log_type )
@@ -1927,6 +1927,11 @@ void log_printf( const char *fmt, ... )
    va_end( args );
 
    log_string_plus( LOG_NORMAL, LEVEL_LOG, buf );
+}
+
+void log_string( std::string_view txt )
+{
+   log_string_plus( LOG_NORMAL, LEVEL_LOG, txt );
 }
 
 /*

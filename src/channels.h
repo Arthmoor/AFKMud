@@ -77,4 +77,4 @@ class mud_channel
    int type;
 };
 
-mud_channel *find_channel( const std::string & );
+mud_channel *find_channel( std::string_view );
