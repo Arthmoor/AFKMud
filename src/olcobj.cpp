@@ -1748,7 +1748,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          /*
           * switch to whichever mode the user selected, display prompt or menu 
           */
-         switch ( UPPER( arg[0] ) )
+         switch ( to_upper( arg.front() ) )
          {
             case 'Q':
                cleanup_olc( d );
@@ -2819,7 +2819,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case OEDIT_EXTRADESC_MENU:
-         switch ( UPPER( arg.front() ) )
+         switch ( to_upper( arg.front() ) )
          {
             case 'Q':
                break;

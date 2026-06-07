@@ -382,8 +382,8 @@ mob_index *make_mobile( int vnum, int cvnum, const std::string & name, area_data
    {
       stralloc_printf( &pMobIndex->short_descr, "A newly created %s", name.c_str(  ) );
       stralloc_printf( &pMobIndex->long_descr, "Some god abandoned a newly created %s here.\r\n", name.c_str(  ) );
-      pMobIndex->short_descr[0] = LOWER( pMobIndex->short_descr[0] );
-      pMobIndex->long_descr[0] = UPPER( pMobIndex->long_descr[0] );
+      pMobIndex->short_descr[0] = to_lower( pMobIndex->short_descr[0] );
+      pMobIndex->long_descr[0] = to_upper( pMobIndex->long_descr[0] );
       pMobIndex->actflags.reset(  );
       pMobIndex->actflags.set( ACT_IS_NPC );
       pMobIndex->actflags.set( ACT_PROTOTYPE );

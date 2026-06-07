@@ -342,7 +342,7 @@ void fread_loginmsg( FILE * fp )
    {
       const char *word = feof( fp ) ? "End" : fread_word( fp );
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );
@@ -1198,7 +1198,7 @@ bool descriptor_data::pager_output(  )
    ch = this->original ? this->original : this->character;
    pclines = umax( ch->pcdata->pagerlen, 5 );
 
-   switch ( LOWER( this->pagecmd ) )
+   switch ( to_lower( this->pagecmd ) )
    {
       default:
          start = this->pageindex;
@@ -1939,7 +1939,7 @@ void descriptor_data::prompt(  )
                std::string name = ( ch == v ) ? "You" : ( v->isnpc() ? v->short_descr : v->name );
 
                if( !name.empty() )
-                  name[0] = toupper( name[0] );
+                  name[0] = to_upper( name[0] );
                output += name;
             }
             break;
@@ -2544,10 +2544,10 @@ void descriptor_data::nanny( std::string & argument )
           * Old players can keep their characters. -- Alty 
           */
          strlower( argument );   // Modification to force proper name display
-         argument[0] = UPPER( argument[0] ); /* Samson 5-22-98 */
+         argument[0] = to_upper( argument[0] ); /* Samson 5-22-98 */
          if( !check_parse_name( argument, ( newstate != 0 ) ) )
          {
-            write_to_buffer( "You have chosen a name which is unnacceptable.\r\n" );
+            write_to_buffer( "You have chosen a name which is unacceptable.\r\n" );
             write_to_buffer( "Acceptable names cannot be:\r\n\r\n" );
             write_to_buffer( "- Nonsensical, unpronounceable or ridiculous.\r\n" );
             write_to_buffer( "- Profane or derogatory as interpreted in any language.\r\n" );

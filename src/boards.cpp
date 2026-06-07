@@ -604,7 +604,7 @@ board_data *read_board( FILE * fp )
          word = "#END";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );
@@ -715,7 +715,7 @@ board_data *read_old_board( FILE * fp )
          word = "End";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );
@@ -821,7 +821,7 @@ note_data *read_note( FILE * fp )
          word = "#END";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );
@@ -1005,7 +1005,7 @@ note_data *read_old_note( FILE * fp )
          continue;
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );
@@ -3353,7 +3353,7 @@ project_data *read_project( FILE * fp )
          word = "End";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );

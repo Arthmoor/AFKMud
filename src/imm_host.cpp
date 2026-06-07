@@ -99,7 +99,7 @@ immortal_host_log *fread_imm_host_log( FILE * fp )
          word = "LEnd";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );
@@ -142,7 +142,7 @@ immortal_host *fread_imm_host( FILE * fp )
          word = "ZEnd";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );

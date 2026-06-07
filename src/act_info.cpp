@@ -292,7 +292,7 @@ void show_visible_affects_to_char( char_data * victim, char_data * ch )
       name = victim->short_descr;
    else
       name = victim->name;
-   name[0] = std::toupper( name.front() );
+   name[0] = to_upper( name.front() );
 
    if( victim->has_aflag( AFF_SANCTUARY ) )
    {
@@ -391,7 +391,7 @@ void show_condition( char_data * ch, char_data * victim )
          strlcat( buf, " are DYING.\r\n", MSL );
    }
 
-   buf[0] = UPPER( buf[0] );
+   buf[0] = to_upper( buf[0] );
    ch->print( buf );
 }
 

@@ -132,11 +132,11 @@ void load_mobiles( area_data * tarea, FILE * fp )
       {
          pMobIndex->chardesc = STRALLOC( desc );
          if( str_prefix( "namegen", desc ) )
-            pMobIndex->chardesc[0] = UPPER( pMobIndex->chardesc[0] );
+            pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
       }
 
       if( pMobIndex->long_descr != nullptr && str_prefix( "namegen", pMobIndex->long_descr ) )
-         pMobIndex->long_descr[0] = UPPER( pMobIndex->long_descr[0] );
+         pMobIndex->long_descr[0] = to_upper( pMobIndex->long_descr[0] );
 
       flag_set( fp, pMobIndex->actflags, act_flags );
       flag_set( fp, pMobIndex->affected_by, aff_flags );
@@ -362,7 +362,7 @@ void load_objects( area_data * tarea, FILE * fp )
          pObjIndex->action_desc = STRALLOC( desc2 );
 
       if( pObjIndex->objdesc != nullptr )
-         pObjIndex->objdesc[0] = UPPER( pObjIndex->objdesc[0] );
+         pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
 
       value = get_otype( fread_flagstring( fp ) );
       if( value < 0 )

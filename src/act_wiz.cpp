@@ -4473,7 +4473,6 @@ CMDF( do_loadup )
    }
 
    d = nullptr;
-   argument[0] = UPPER( argument[0] );
    fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
 
    if( !std::filesystem::exists( fname ) || !std::filesystem::is_regular_file( fname ) || !check_parse_name( capitalize( argument ).c_str(  ), false ) )
@@ -6278,7 +6277,7 @@ bool load_class_file( const char *fname )
          word = "End";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );
@@ -6998,7 +6997,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "mana" ) )
    {
-      if( UPPER( argument[0] ) == 'Y' )
+      if( to_upper( argument.front() ) == 'Y' )
          Class->fMana = true;
       else
          Class->fMana = false;
@@ -7272,7 +7271,7 @@ bool load_race_file( const char *fname )
          word = "End";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );

@@ -2317,7 +2317,7 @@ void fread_cell( FILE * fp, int x, int y, int file_ver )
       std::string flag;
       int value = 0;
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );

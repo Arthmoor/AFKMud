@@ -972,7 +972,7 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, in
 {
    reset_data *pReset;
 
-   letter = UPPER( letter );
+   letter = to_upper( letter );
    pReset = make_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11 );
    pReset->sreset = true;
 

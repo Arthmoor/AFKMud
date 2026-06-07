@@ -760,7 +760,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          break;
 
       case REDIT_EXIT_MENU:
-         switch ( UPPER( arg[0] ) )
+         switch ( to_upper( arg.front() ) )
          {
             default:
                if( is_number( arg ) )
@@ -791,7 +791,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          break;
 
       case REDIT_EXIT_EDIT:
-         switch ( UPPER( arg[0] ) )
+         switch ( to_upper( arg.front() ) )
          {
             default:
             case 'Q':
@@ -1017,7 +1017,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_EXTRADESC_CHOICE:
-         switch ( UPPER( arg[0] ) )
+         switch ( to_upper( arg.front() ) )
          {
             default:
             case 'Q':
@@ -1065,7 +1065,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_EXTRADESC_MENU:
-         switch ( UPPER( arg[0] ) )
+         switch ( to_upper( arg.front() ) )
          {
             case 'Q':
                break;

@@ -1314,7 +1314,7 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
 
       buf.append( "\r\n" );
       if( !DONT_UPPER )
-         buf[0] = UPPER( buf[0] );
+         buf[0] = to_upper( buf[0] );
       return buf;
    }
 
@@ -1489,7 +1489,7 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
 
    buf.append( "\r\n" );
    if( !DONT_UPPER )
-      buf[0] = UPPER( buf[0] );
+      buf[0] = to_upper( buf[0] );
    return buf;
 }
 

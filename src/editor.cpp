@@ -652,6 +652,17 @@ void strlower( std::string & str )
    std::transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::tolower );
 }
 
+// These two replace the old LOWER and UPPER macros.
+char to_lower( char c )
+{
+   return static_cast<char>( std::tolower( static_cast<unsigned char>(c) ) );
+}
+
+char to_upper( char c )
+{
+   return static_cast<char>( std::toupper( static_cast<unsigned char>(c) ) );
+}
+
 /*
  * Returns an uppercase string.
  */

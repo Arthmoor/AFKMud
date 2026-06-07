@@ -873,7 +873,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          word = "End";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             log_printf( "%s: no match: %s", __func__, word );
@@ -1838,7 +1838,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
          word = "End";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );
@@ -2305,7 +2305,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
       else
          word = feof( fp ) ? "EndVendor" : fread_word( fp );
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );

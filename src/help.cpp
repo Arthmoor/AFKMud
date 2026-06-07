@@ -345,7 +345,7 @@ CMDF( do_help )
             {
                if( !oneword[checked] || !argument[checked] )
                   break;
-               if( LOWER( oneword[checked] ) == LOWER( argument[checked] ) )
+               if( to_lower( oneword[checked] ) == to_lower( argument[checked] ) )
                   ++matched;
             }
 

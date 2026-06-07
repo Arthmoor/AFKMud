@@ -523,7 +523,7 @@ void fread_variable( char_data * ch, FILE * fp )
          word = "End";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             log_printf( "%s: no match: %s", __func__, word );

@@ -701,7 +701,7 @@ void fread_sysdata( FILE * fp )
    {
       const char *word = feof( fp ) ? "End" : fread_word( fp );
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );

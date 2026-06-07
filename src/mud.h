@@ -728,10 +728,6 @@ do                                               \
 #define PERS(ch, looker, from) ( (looker)->can_see( (ch), (from) ) ? \
       ( (ch)->isnpc() ? (ch)->short_descr : (ch)->name ) : "Someone" )
 
-// These 2 macros are used for case changes on a particular character somewhere in a string.
-#define LOWER( c )        ( (c) >= 'A' && (c) <= 'Z' ? (c) + 'a' - 'A' : (c) )
-#define UPPER( c )        ( (c) >= 'a' && (c) <= 'z' ? (c) + 'A' - 'a' : (c) )
-
 // Safe fclose macro adopted from DOTD Codebase.
 #define FCLOSE(fp) fclose((fp)); (fp)=nullptr;
 
@@ -1197,6 +1193,8 @@ char *strlower( const char * );
 void strlower( std::string & );
 char *strupper( const char * );
 void strupper( std::string & );
+char to_lower( char );
+char to_upper( char );
 const char *aoran( const std::string & );
 void strip_tilde( std::string & );
 void strip_lspace( std::string & );

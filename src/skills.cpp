@@ -652,7 +652,7 @@ int herb_lookup( const std::string & name )
    {
       if( !herb_table[sn] || !herb_table[sn]->name )
          return -1;
-      if( LOWER( name[0] ) == LOWER( herb_table[sn]->name[0] ) && !str_prefix( name, herb_table[sn]->name ) )
+      if( to_lower( name.front() ) == to_lower( herb_table[sn]->name[0] ) && !str_prefix( name, herb_table[sn]->name ) )
          return sn;
    }
    return -1;
@@ -1017,7 +1017,7 @@ skill_type *fread_skill( FILE * fp, int version )
          word = "End";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );

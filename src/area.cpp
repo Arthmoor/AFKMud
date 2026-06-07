@@ -851,7 +851,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
                {
                   pMobIndex->chardesc = STRALLOC( desc );
                   if( str_prefix( "namegen", desc ) )
-                     pMobIndex->chardesc[0] = UPPER( pMobIndex->chardesc[0] );
+                     pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
                }
                break;
             }
@@ -1948,17 +1948,17 @@ void save_reset_level( FILE * fpout, std::list<reset_data *> source, const int l
 
    for( auto* pReset : source )
    {
-      switch ( UPPER( pReset->command ) ) /* extra arg1 arg2 arg3 */
+      switch ( to_upper( pReset->command ) ) /* extra arg1 arg2 arg3 */
       {
          default:
-            bug( "%s: Invalid reset type %c", __func__, UPPER( pReset->command ) );
+            bug( "%s: Invalid reset type %c", __func__, to_upper( pReset->command ) );
             break;
 
          case '*':
             break;
 
          case 'Z':  // RT room object - no sub-resets
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
+            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ),
                      pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6,
                      pReset->arg7, pReset->arg8, pReset->arg9, pReset->arg10, pReset->arg11 );
             break;
@@ -1966,37 +1966,37 @@ void save_reset_level( FILE * fpout, std::list<reset_data *> source, const int l
          case 'M':
          case 'O':
          case 'Y':  // RT give - has no sub-resets
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
+            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ),
                      pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7 );
             break;
 
          case 'W':  // RT put - has no sub-resets
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
+            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ),
                      pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7, pReset->arg8, pReset->arg9 );
             break;
 
          case 'P':
          case 'E':
             if( pReset->command == 'E' )
-               fprintf( fpout, "%*.sReset %c %d %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
+               fprintf( fpout, "%*.sReset %c %d %d %d %d\n", spaces, "", to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
             else
-               fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
+               fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
             break;
 
          case 'G':
          case 'R':
-            fprintf( fpout, "%*.sReset %c %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3 );
+            fprintf( fpout, "%*.sReset %c %d %d %d\n", spaces, "", to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3 );
             break;
 
          case 'X':  // RT equipped - has no sub-resets
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ),
+            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ),
                      pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7, pReset->arg8 );
             break;
 
          case 'T':
          case 'H':
          case 'D':
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", UPPER( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
+            fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
             break;
       }  /* end of switch on command */
 

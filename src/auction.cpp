@@ -433,7 +433,7 @@ int advatoi( const char *s )
    while( isdigit( s[0] ) )
       number = ( number * 10 ) + ( *s++ - '0' );
 
-   switch ( UPPER( s[0] ) )
+   switch ( to_upper( s[0] ) )
    {
       case 'K':
          number *= ( multiplier = 1000 );

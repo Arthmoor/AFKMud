@@ -551,8 +551,8 @@ void interpret( char_data * ch, std::string argument )
        */
       trust = ch->get_trust(  );
 
-      const std::vector < cmd_type * >&cmd_list = command_table[LOWER( command[0] ) % 126];
-      std::vector < cmd_type * >::const_iterator icmd;
+      const std::vector<cmd_type *> &cmd_list = command_table[to_lower( command.front() ) % 126];
+      std::vector<cmd_type *>::const_iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -741,7 +741,7 @@ void interpret( char_data * ch, std::string argument )
     * So we can check commands for things like Posses and Polymorph
     * *  But still keep the online editing ability.  -- Shaddai
     * *  Send back the message to print out, so we have the option
-    * *  this function might be usefull elsewhere.  Also using the
+    * *  this function might be useful elsewhere.  Also using the
     * *  send_to_char_color so we can colorize the strings if need be. --Shaddai
     */
    buf = check_cmd_flags( ch, cmd );
@@ -788,7 +788,7 @@ void interpret( char_data * ch, std::string argument )
       bug( "&YUnknown command exception on command: %s %s&D", cmd->name.c_str(  ), argument.c_str(  ) );
    }
 
-   // tmptime is in miliseconds, up to a cap of 19 seconds.
+   // tmptime is in milliseconds, up to a cap of 19 seconds.
    auto tmptime = std::min( static_cast<long long>( time_used.count() ), 19000000LL );
 
    /*
@@ -855,8 +855,8 @@ void free_commands( void )
 {
    for( char x = 0; x < 126; ++x )
    {
-      std::vector < cmd_type * >&cmd_list = command_table[x];
-      std::vector < cmd_type * >::iterator icmd;
+      std::vector<cmd_type *> &cmd_list = command_table[x];
+      std::vector<cmd_type *>::iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -880,8 +880,8 @@ void unlink_command( cmd_type * command )
       return;
    }
 
-   std::vector < cmd_type * >&cmd_list = command_table[command->name[0] % 126];
-   std::vector < cmd_type * >::iterator icmd;
+   std::vector<cmd_type *> &cmd_list = command_table[command->name[0] % 126];
+   std::vector<cmd_type *>::iterator icmd;
 
    for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
    {
@@ -921,8 +921,8 @@ void add_command( cmd_type * command )
 
 cmd_type *find_command( const std::string & command )
 {
-   std::vector < cmd_type * >::const_iterator icmd;
-   const std::vector < cmd_type * >&cmd_list = command_table[command[0] % 126];
+   std::vector<cmd_type *>::const_iterator icmd;
+   const std::vector<cmd_type *> &cmd_list = command_table[command[0] % 126];
 
    for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
    {

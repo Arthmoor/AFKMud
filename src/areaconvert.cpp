@@ -342,11 +342,11 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
       {
          pMobIndex->chardesc = STRALLOC( desc );
-         pMobIndex->chardesc[0] = UPPER( pMobIndex->chardesc[0] );
+         pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
       }
 
       if( pMobIndex->long_descr != nullptr )
-         pMobIndex->long_descr[0] = UPPER( pMobIndex->long_descr[0] );
+         pMobIndex->long_descr[0] = to_upper( pMobIndex->long_descr[0] );
       {
          char *sact, *saff;
          char flag[MIL];
@@ -916,7 +916,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          pObjIndex->action_desc = STRALLOC( desc );
 
       if( pObjIndex->objdesc != nullptr )
-         pObjIndex->objdesc[0] = UPPER( pObjIndex->objdesc[0] );
+         pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
       {
          const char *sotype;
          char *eflags, *wflags;

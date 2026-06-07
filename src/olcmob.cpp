@@ -526,7 +526,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
    switch ( OLC_MODE( d ) )
    {
       case MEDIT_NPC_MAIN_MENU:
-         switch ( UPPER( arg[0] ) )
+         switch ( to_upper( arg.front() ) )
          {
             case 'Q':
                cleanup_olc( d );

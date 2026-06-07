@@ -635,7 +635,7 @@ bool process_spell_components( char_data * ch, int sn )
    skill_type *skill = get_skilltype( sn );
    char *comp = skill->components;
    char *check;
-   char arg[MIL];
+   char arg[MIL]; // Leave this one be as it throws a fit over what's going on in that switch statement down there.
    bool consume, fail, found;
    int val, value;
    obj_data *obj;
@@ -696,7 +696,7 @@ bool process_spell_components( char_data * ch, int sn )
       }
       value = atoi( check );
       obj = nullptr;
-      switch ( UPPER( arg[0] ) )
+      switch ( to_upper( arg[0] ) )
       {
          default:
             break;

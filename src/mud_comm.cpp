@@ -1859,7 +1859,7 @@ CMDF( do_mpasound )
    std::bitset<MAX_ACT_FLAG> actflags = ch->get_actflags(  );
    ch->unset_actflag( ACT_SECRETIVE );
    /*
-    * DONT_UPPER prevents argument[0] from being captilized. --Shaddai 
+    * DONT_UPPER prevents argument[0] from being capitalized. --Shaddai
     */
    DONT_UPPER = true;
    room_index *was_in_room = ch->in_room;

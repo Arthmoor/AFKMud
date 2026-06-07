@@ -740,8 +740,8 @@ obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data
       pObjIndex->socket[0] = STRALLOC( "None" );
       pObjIndex->socket[1] = STRALLOC( "None" );
       pObjIndex->socket[2] = STRALLOC( "None" );
-      pObjIndex->short_descr[0] = LOWER( pObjIndex->short_descr[0] );
-      pObjIndex->objdesc[0] = UPPER( pObjIndex->objdesc[0] );
+      pObjIndex->short_descr[0] = to_lower( pObjIndex->short_descr[0] );
+      pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
       pObjIndex->item_type = ITEM_TRASH;
       pObjIndex->extra_flags.reset(  );
       pObjIndex->extra_flags.set( ITEM_PROTOTYPE );

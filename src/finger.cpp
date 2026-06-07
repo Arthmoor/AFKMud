@@ -226,7 +226,7 @@ CMDF( do_finger )
       d->init(  );
       d->connected = CON_PLOADED;
 
-      argument[0] = UPPER( argument[0] );
+      argument[0] = to_upper( argument[0] );
 
       loaded = load_char_obj( d, argument, false, false );  /* Remove second false if compiler complains */
       charlist.push_back( d->character );

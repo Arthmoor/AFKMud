@@ -699,7 +699,7 @@ CMDF( do_name )
    }
 
    strlower( argument );
-   argument[0] = UPPER( argument[0] );
+   argument[0] = to_upper( argument[0] );
 
    if( !check_parse_name( argument, true ) )
    {

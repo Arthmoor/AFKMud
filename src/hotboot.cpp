@@ -274,7 +274,7 @@ char_data *load_mobile( FILE * fp )
          word = "EndMobile";
       }
 
-      switch ( UPPER( word[0] ) )
+      switch ( to_upper( word[0] ) )
       {
          default:
             bug( "%s: no match: %s", __func__, word );

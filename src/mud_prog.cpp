@@ -1878,7 +1878,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
             else
                strcpy( t, "someone" );
             if( !actor->isnpc(  ) )
-               *t = UPPER( *t );
+               *t = to_upper( *t );
          }
          else
             strcpy( t, "someone" );
@@ -1910,7 +1910,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
             if( mob->can_see( vict, false ) )
                one_argument( vict->name, t );
             if( !vict->isnpc(  ) )
-               *t = UPPER( *t );
+               *t = to_upper( *t );
          }
          else
             strcpy( t, "someone" );
@@ -1946,7 +1946,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
             }
             if( !rndm->isnpc(  ) )
             {
-               *t = UPPER( *t );
+               *t = to_upper( *t );
             }
          }
          else
@@ -2866,13 +2866,13 @@ bool mprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
          strcpy( temp1, mprg->arglist );
          list = temp1;
          for( i = 0; i < strlen( list ); ++i )
-            list[i] = LOWER( list[i] );
+            list[i] = to_lower( list[i] );
 
          strcpy( temp2, arg.c_str(  ) );
          dupl = temp2;
 
          for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = LOWER( dupl[i] );
+            dupl[i] = to_lower( dupl[i] );
          {
             j = 0;
             for( i = 0; i < strlen( list ); ++i )
@@ -2917,12 +2917,12 @@ bool mprog_wordlist_check( const std::string & arg, char_data * mob, char_data *
          strcpy( temp1, mprg->arglist );
          list = temp1;
          for( i = 0; i < strlen( list ); ++i )
-            list[i] = LOWER( list[i] );
+            list[i] = to_lower( list[i] );
 
          strcpy( temp2, arg.c_str(  ) );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = LOWER( dupl[i] );
+            dupl[i] = to_lower( dupl[i] );
 
          if( ( list[0] == 'p' ) && ( list[1] == ' ' ) )
          {
@@ -2970,12 +2970,12 @@ bool oprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
          strcpy( temp1, mprg->arglist );
          list = temp1;
          for( i = 0; i < strlen( list ); ++i )
-            list[i] = LOWER( list[i] );
+            list[i] = to_lower( list[i] );
 
          strcpy( temp2, arg.c_str(  ) );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = LOWER( dupl[i] );
+            dupl[i] = to_lower( dupl[i] );
 
          j = 0;
          for( i = 0; i < strlen( list ); ++i )
@@ -3017,12 +3017,12 @@ bool oprog_wordlist_check( const std::string & arg, char_data * mob, char_data *
          strcpy( temp1, mprg->arglist );
          list = temp1;
          for( i = 0; i < strlen( list ); ++i )
-            list[i] = LOWER( list[i] );
+            list[i] = to_lower( list[i] );
 
          strcpy( temp2, arg.c_str(  ) );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = LOWER( dupl[i] );
+            dupl[i] = to_lower( dupl[i] );
 
          if( ( list[0] == 'p' ) && ( list[1] == ' ' ) )
          {
@@ -3077,12 +3077,12 @@ bool rprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
          strcpy( temp1, mprg->arglist );
          list = temp1;
          for( i = 0; i < strlen( list ); ++i )
-            list[i] = LOWER( list[i] );
+            list[i] = to_lower( list[i] );
 
          strcpy( temp2, arg.c_str(  ) );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = LOWER( dupl[i] );
+            dupl[i] = to_lower( dupl[i] );
 
          j = 0;
          for( i = 0; i < strlen( list ); ++i )
@@ -3129,12 +3129,12 @@ bool rprog_wordlist_check( const std::string & arg, char_data * mob, char_data *
          strcpy( temp1, mprg->arglist );
          list = temp1;
          for( i = 0; i < strlen( list ); ++i )
-            list[i] = LOWER( list[i] );
+            list[i] = to_lower( list[i] );
 
          strcpy( temp2, arg.c_str(  ) );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = LOWER( dupl[i] );
+            dupl[i] = to_lower( dupl[i] );
 
          if( ( list[0] == 'p' ) && ( list[1] == ' ' ) )
          {
