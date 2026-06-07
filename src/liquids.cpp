@@ -2165,7 +2165,7 @@ CMDF( do_empty )
             {
                act( AT_ACTION, "You empty $p.", ch, obj, nullptr, TO_CHAR );
                act( AT_ACTION, "$n empties $p.", ch, obj, nullptr, TO_ROOM );
-               if( IS_SAVE_FLAG( SV_EMPTY ) )
+               if( sysdata->save_flags.test( SV_EMPTY ) )
                   ch->save(  );
             }
             else
@@ -2204,7 +2204,7 @@ CMDF( do_empty )
             {
                act( AT_ACTION, "You empty $p into $P.", ch, obj, dest, TO_CHAR );
                act( AT_ACTION, "$n empties $p into $P.", ch, obj, dest, TO_ROOM );
-               if( !dest->carried_by && IS_SAVE_FLAG( SV_EMPTY ) )
+               if( !dest->carried_by && sysdata->save_flags.test( SV_EMPTY ) )
                   ch->save(  );
             }
             else

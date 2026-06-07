@@ -1158,14 +1158,14 @@ void char_update( void )
                act( AT_ACTION, "$n enters a state of suspended animation.", ch, nullptr, nullptr, TO_ROOM );
                ch->print( "You have entered a state of suspended animation.\r\n" );
                ch->set_pcflag( PCFLAG_IDLING ); /* Samson 5-8-99 */
-               if( IS_SAVE_FLAG( SV_IDLE ) )
+               if( sysdata->save_flags.test( SV_IDLE ) )
                   ch->save(  );
             }
          }
 
          if( ch->timer > 24 )
             interpret( ch, "quit auto" );
-         else if( ch == ch_save && IS_SAVE_FLAG( SV_AUTO ) && ++save_count < 10 )
+         else if( ch == ch_save && sysdata->save_flags.test( SV_AUTO ) && ++save_count < 10 )
             /*
              * save max of 15 per tick 
              */
@@ -1452,7 +1452,7 @@ void char_update( void )
 
          if( ch->timer > 24 )
             interpret( ch, "quit auto" );
-         else if( ch == ch_save && IS_SAVE_FLAG( SV_AUTO ) && ++save_count < 10 )   /* save max of 10 per tick */
+         else if( ch == ch_save && sysdata->save_flags.test( SV_AUTO ) && ++save_count < 10 )   /* save max of 10 per tick */
             ch->save(  );
       }
    }

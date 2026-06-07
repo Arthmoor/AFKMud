@@ -2510,7 +2510,7 @@ void raw_kill( char_data * ch, char_data * victim )
    if( victim->pcdata->condition[COND_THIRST] != -1 )
       victim->pcdata->condition[COND_THIRST] = sysdata->maxcondval / 2;
 
-   if( IS_SAVE_FLAG( SV_DEATH ) )
+   if( sysdata->save_flags.test( SV_DEATH ) )
       victim->save(  );
 }
 
@@ -3156,7 +3156,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             interpret( ch, "sacrifice corpse" );
       }
 
-      if( IS_SAVE_FLAG( SV_KILL ) )
+      if( sysdata->save_flags.test( SV_KILL ) )
          ch->save(  );
       return rVICT_DIED;
    }

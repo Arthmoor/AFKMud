@@ -1224,7 +1224,7 @@ void char_data::equip( obj_data * obj, int iWear )
          obj->from_char(  );
       obj->to_room( in_room, this );
       oprog_zap_trigger( this, obj );
-      if( IS_SAVE_FLAG( SV_ZAPDROP ) && !this->char_died(  ) )
+      if( sysdata->save_flags.test( SV_ZAPDROP ) && !this->char_died(  ) )
          this->save(  );
       return;
    }

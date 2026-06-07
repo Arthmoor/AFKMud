@@ -3179,10 +3179,10 @@ CMDF( do_stash )
 
       act( AT_ACTION, "You stash some coins on $N.", ch, nullptr, victim, TO_CHAR );
 
-      if( IS_SAVE_FLAG( SV_GIVE ) && !ch->char_died(  ) )
+      if( sysdata->save_flags.test( SV_GIVE ) && !ch->char_died(  ) )
          ch->save(  );
 
-      if( IS_SAVE_FLAG( SV_RECEIVE ) && !victim->char_died(  ) )
+      if( sysdata->save_flags.test( SV_RECEIVE ) && !victim->char_died(  ) )
          victim->save(  );
 
       return;
@@ -3236,10 +3236,10 @@ CMDF( do_stash )
    act( AT_ACTION, "You stash $p on $N.", ch, obj, victim, TO_CHAR );
    obj = obj->to_char( victim );
 
-   if( IS_SAVE_FLAG( SV_GIVE ) && !ch->char_died(  ) )
+   if( sysdata->save_flags.test( SV_GIVE ) && !ch->char_died(  ) )
       ch->save(  );
 
-   if( IS_SAVE_FLAG( SV_RECEIVE ) && !victim->char_died(  ) )
+   if( sysdata->save_flags.test( SV_RECEIVE ) && !victim->char_died(  ) )
       victim->save(  );
 }
 

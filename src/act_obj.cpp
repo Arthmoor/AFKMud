@@ -245,7 +245,7 @@ CMDF( do_get )
 
          if( ch->char_died(  ) )
             return;
-         if( IS_SAVE_FLAG( SV_GET ) )
+         if( sysdata->save_flags.test( SV_GET ) )
             ch->save(  );
       }
       else
@@ -311,7 +311,7 @@ CMDF( do_get )
 
                if( ch->char_died(  ) || ch->carry_number >= ch->can_carry_n(  ) || ch->carry_weight >= ch->can_carry_w(  ) || ( number && cnt >= number ) )
                {
-                  if( IS_SAVE_FLAG( SV_GET ) && !ch->char_died(  ) )
+                  if( sysdata->save_flags.test( SV_GET ) && !ch->char_died(  ) )
                      ch->save(  );
                   return;
                }
@@ -325,7 +325,7 @@ CMDF( do_get )
             else
                ch->printf( "I see no %s here.\r\n", chk.c_str(  ) );
          }
-         else if( IS_SAVE_FLAG( SV_GET ) )
+         else if( sysdata->save_flags.test( SV_GET ) )
             ch->save(  );
       }
    }
@@ -469,7 +469,7 @@ CMDF( do_get )
          check_for_trap( ch, container, TRAP_GET );
          if( ch->char_died(  ) )
             return;
-         if( IS_SAVE_FLAG( SV_GET ) )
+         if( sysdata->save_flags.test( SV_GET ) )
             ch->save(  );
       }
       else
@@ -531,7 +531,7 @@ CMDF( do_get )
                {
                   if( container->item_type == ITEM_CORPSE_PC )
                      write_corpse( container, container->short_descr + 14 );
-                  if( found && IS_SAVE_FLAG( SV_GET ) )
+                  if( found && sysdata->save_flags.test( SV_GET ) )
                      ch->save(  );
                   return;
                }
@@ -565,7 +565,7 @@ CMDF( do_get )
           */
          if( container->item_type == ITEM_CORPSE_PC )
             write_corpse( container, container->short_descr + 14 );
-         if( found && IS_SAVE_FLAG( SV_GET ) )
+         if( found && sysdata->save_flags.test( SV_GET ) )
             ch->save(  );
       }
    }
@@ -621,7 +621,7 @@ CMDF( do_put )
       return;
    }
 
-   if( !container->carried_by && IS_SAVE_FLAG( SV_PUT ) )
+   if( !container->carried_by && sysdata->save_flags.test( SV_PUT ) )
       save_char = true;
 
    if( container->extra_flags.test( ITEM_COVERING ) )
@@ -939,7 +939,7 @@ CMDF( do_drop )
          act( AT_ACTION, "$n drops some gold.", ch, nullptr, nullptr, TO_ROOM );
          create_money( number )->to_room( ch->in_room, ch );
          ch->print( "You let the gold slip from your hand.\r\n" );
-         if( IS_SAVE_FLAG( SV_DROP ) )
+         if( sysdata->save_flags.test( SV_DROP ) )
             ch->save(  );
          return;
       }
@@ -1125,7 +1125,7 @@ CMDF( do_drop )
          }
       }
    }
-   if( IS_SAVE_FLAG( SV_DROP ) )
+   if( sysdata->save_flags.test( SV_DROP ) )
       ch->save(  );  /* duping protector */
 }
 
@@ -1191,9 +1191,9 @@ CMDF( do_give )
       act( AT_ACTION, "$n gives $N some gold.", ch, nullptr, victim, TO_NOTVICT );
       act( AT_ACTION, "You give $N some gold.", ch, nullptr, victim, TO_CHAR );
       mprog_bribe_trigger( victim, ch, amount );
-      if( IS_SAVE_FLAG( SV_GIVE ) && !ch->char_died(  ) )
+      if( sysdata->save_flags.test( SV_GIVE ) && !ch->char_died(  ) )
          ch->save(  );
-      if( IS_SAVE_FLAG( SV_RECEIVE ) && !victim->char_died(  ) )
+      if( sysdata->save_flags.test( SV_RECEIVE ) && !victim->char_died(  ) )
          victim->save(  );
       return;
    }
@@ -1274,9 +1274,9 @@ CMDF( do_give )
       ch->save(  );
       return;
    }
-   if( IS_SAVE_FLAG( SV_GIVE ) && !ch->char_died(  ) )
+   if( sysdata->save_flags.test( SV_GIVE ) && !ch->char_died(  ) )
       ch->save(  );
-   if( IS_SAVE_FLAG( SV_RECEIVE ) && !victim->char_died(  ) )
+   if( sysdata->save_flags.test( SV_RECEIVE ) && !victim->char_died(  ) )
       victim->save(  );
 
    if( victim->has_actflag( ACT_GUILDVENDOR ) )
