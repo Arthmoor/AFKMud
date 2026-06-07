@@ -37,7 +37,8 @@
 #include <typeinfo>
 #include <vector>
 
-/* Used in basereport and world commands - don't remove these!
+/*
+ * Used in basereport and world commands - don't remove these!
  * If you want to add your own, make a new set of defines and ADD the information.
  * Removing this is a violation of your license agreement.
  */
@@ -318,19 +319,6 @@ enum wind_conditions
 {
    WIND_STILL, WIND_CALM, WIND_NORMAL, WIND_BREEZY, WIND_WINDY
 };
-
-#define GET_TEMP_UNIT(weather)   ((weather->temp + 3*weath_unit - 1)/weath_unit)
-#define GET_PRECIP_UNIT(weather) ((weather->precip + 3*weath_unit - 1)/weath_unit)
-#define GET_WIND_UNIT(weather)   ((weather->wind + 3*weath_unit - 1)/weath_unit)
-
-#define IS_RAINING(weather)      (GET_PRECIP_UNIT(weather)>PRECIP_NORMAL)
-#define IS_WINDY(weather)        (GET_WIND_UNIT(weather)>WIND_NORMAL)
-#define IS_CLOUDY(weather)       (GET_PRECIP_UNIT(weather)>1)
-#define IS_TCOLD(weather)        (GET_TEMP_UNIT(weather)==TEMP_COLD)
-#define IS_COOL(weather)         (GET_TEMP_UNIT(weather)==TEMP_COOL)
-#define IS_HOT(weather)          (GET_TEMP_UNIT(weather)==TEMP_HOT)
-#define IS_WARM(weather)         (GET_TEMP_UNIT(weather)==TEMP_WARM)
-#define IS_SNOWING(weather)      (IS_RAINING(weather) && IS_COOL(weather))
 
 struct time_info_data
 {
