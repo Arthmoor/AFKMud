@@ -2553,6 +2553,18 @@ maximum penalty will only be half that of the other clan types.
       return false;
 }
 
+// Description macro replacement.
+const char* PERS( char_data * ch, char_data * looker, bool from )
+{
+   if( looker->can_see( ch, from ) )
+   {
+      if( ch->isnpc() )
+         return ch->short_descr;
+      return ch->name;
+   }
+   return "Someone";
+}
+
 int IsHumanoid( char_data * ch )
 {
    switch ( ch->race )

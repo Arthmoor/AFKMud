@@ -630,3 +630,4 @@ extern std::list<char_data *> pclist;
 extern char_data *quitting_char;
 extern char_data *loading_char;
 extern char_data *saving_char;
+const char* PERS( char_data *, char_data *, bool );

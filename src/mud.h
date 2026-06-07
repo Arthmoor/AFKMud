@@ -724,10 +724,6 @@ do                                               \
 } while(0)
 #endif
 
-// Description macro.
-#define PERS(ch, looker, from) ( (looker)->can_see( (ch), (from) ) ? \
-      ( (ch)->isnpc() ? (ch)->short_descr : (ch)->name ) : "Someone" )
-
 // Safe fclose macro adopted from DOTD Codebase.
 #define FCLOSE(fp) fclose((fp)); (fp)=nullptr;
 
