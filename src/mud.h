@@ -724,10 +724,6 @@ do                                               \
 } while(0)
 #endif
 
-#define IS_VALID_SN(sn)		( (sn) >=0 && (sn) < MAX_SKILL && skill_table[(sn)] && skill_table[(sn)]->name )
-#define IS_VALID_HERB(sn)	( (sn) >=0 && (sn) < MAX_HERB	&& herb_table[(sn)] && herb_table[(sn)]->name )
-#define IS_VALID_DISEASE(sn)	( (sn) >=0 && (sn) < MAX_DISEASE && disease_table[(sn)] && disease_table[(sn)]->name )
-
 // Description macro.
 #define PERS(ch, looker, from) ( (looker)->can_see( (ch), (from) ) ? \
       ( (ch)->isnpc() ? (ch)->short_descr : (ch)->name ) : "Someone" )
@@ -1290,6 +1286,9 @@ bool exists_player( const std::string & );
 void write_corpse( obj_data *, const std::string & );
 
 // skills.cpp
+bool IS_VALID_SN( int );
+bool IS_VALID_HERB( int );
+bool IS_VALID_DISEASE( int );
 void disarm( char_data *, char_data * );
 int find_spell( char_data *, const std::string &, bool );
 int find_skill( char_data *, const std::string &, bool );

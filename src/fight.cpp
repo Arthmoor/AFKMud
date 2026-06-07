@@ -42,8 +42,6 @@
 #include "roomindex.h"
 #include "smaugaffect.h"
 
-namespace fs = std::filesystem;
-
 extern std::string lastplayercmd;
 obj_data *used_weapon;  /* Used to figure out which weapon later */
 bool dual_flip = false;
@@ -3060,7 +3058,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
                ;
             else
             {
-               fs::path filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
+               std::filesystem::path filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
 
                append_to_file( filename.c_str(), "&P(%2d) %-12s &wvs &P(%2d) %s &P%s ... &w%s",
                                ch->level, ch->name, victim->level, !victim->CAN_PKILL(  )? "&W<Peaceful>" :
@@ -3071,7 +3069,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          if( !victim->isnpc() && !victim->is_immortal() && victim->pcdata->clan
              && victim->pcdata->clan->clan_type == CLAN_CLAN && ch != victim && !ch->isnpc() )
          {
-            fs::path filename = std::format( "{}{}.defeats", CLAN_DIR, victim->pcdata->clan->name );
+            std::filesystem::path filename = std::format( "{}{}.defeats", CLAN_DIR, victim->pcdata->clan->name );
 
             if( ch->pcdata && ch->pcdata->clan && ch->pcdata->clan->name == victim->pcdata->clan->name )
                ;

@@ -556,6 +556,27 @@ int find_lore( char_data * ch, const std::string & name, bool know )
       return search_skill( skill_table__lore, name, ch );
 }
 
+bool IS_VALID_SN( int sn )
+{
+   if( sn >= 0 && sn < MAX_SKILL && skill_table[sn] && skill_table[sn]->name )
+      return true;
+   return false;
+}
+
+bool IS_VALID_HERB( int sn )
+{
+   if( sn >= 0 && sn < MAX_HERB && herb_table[sn] && herb_table[sn]->name )
+      return true;
+   return false;
+}
+
+bool IS_VALID_DISEASE( int sn )
+{
+   if( sn >= 0 && sn < MAX_DISEASE && disease_table[sn] && disease_table[sn]->name )
+      return true;
+   return false;
+}
+
 /*
  * Lookup a skill by name, only stopping at skills the player has.
  */
