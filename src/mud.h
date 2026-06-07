@@ -632,16 +632,6 @@ do                                                                      \
    }                                                                    \
 } while(0)
 
-#define RECREATE(result,type,number)                                    \
-do                                                                      \
-{                                                                       \
-   if(!((result) = (type *)realloc((result), sizeof(type) * (number)))) \
-   {                                                                    \
-      log_printf( "Realloc failure @ %s:%d\n", __FILE__, __LINE__ );    \
-      abort();                                                          \
-   }                                                                    \
-} while(0)
-
 // WARNING! This macro should only be used on things explicitly handled by CREATE or RECREATE!
 #define OLD_DISPOSE(point)                  \
 do                                          \
