@@ -2282,7 +2282,7 @@ void time_update( void )
       {
          WeatherCell *cell = getWeatherCell( d->character->in_room->area );
 
-         if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && !INDOOR_SECTOR( d->character->in_room->sector_type ) && d->character->IS_AWAKE(  ) )
+         if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && !is_indoor_sector( d->character->in_room->sector_type ) && d->character->IS_AWAKE(  ) )
          {
             if( time_info.hour == sysdata->hourdaybegin )
             {

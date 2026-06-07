@@ -724,11 +724,6 @@ do                                               \
 } while(0)
 #endif
 
-#define INDOOR_SECTOR(sect) ( (sect) == SECT_INDOORS ||     \
-                              (sect) == SECT_UNDERWATER ||  \
-                              (sect) == SECT_OCEANFLOOR ||  \
-                              (sect) == SECT_UNDERGROUND )
-
 #define IS_VALID_SN(sn)		( (sn) >=0 && (sn) < MAX_SKILL && skill_table[(sn)] && skill_table[(sn)]->name )
 #define IS_VALID_HERB(sn)	( (sn) >=0 && (sn) < MAX_HERB	&& herb_table[(sn)] && herb_table[(sn)]->name )
 #define IS_VALID_DISEASE(sn)	( (sn) >=0 && (sn) < MAX_DISEASE && disease_table[(sn)] && disease_table[(sn)]->name )
@@ -1316,6 +1311,9 @@ SPEC_FUN *m_spec_lookup( const std::string & );
 void gain_condition( char_data *, int, int );
 void update_handler( void );
 void weather_update( void );
+
+// weather.cpp
+bool is_indoor_sector( int );
 
 // This used to be the old ext_flagstring converted to C++ and using strings so it can't overflow the temporary buffer.
 template < size_t N > const char *bitset_string( std::bitset < N > bits, const char *flagarray[] )

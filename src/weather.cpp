@@ -89,6 +89,13 @@ int get_climate( const std::string & type )
    return -1;
 }
 
+bool is_indoor_sector( int sector_type )
+{
+   if( sector_type == SECT_INDOORS || sector_type == SECT_UNDERWATER || sector_type == SECT_OCEANFLOOR || sector_type == SECT_UNDERGROUND )
+      return false;
+   return true;
+}
+
 /*
 *	This is the Weather Map. It is a grid of cells representing X-mile square
 *	areas of weather
@@ -161,7 +168,7 @@ void WeatherMessage( const char *txt, int x, int y )
             if( d->connected == CON_PLAYING )
             {
                if( d->character && ( d->character->in_room->area == pArea ) && d->character->IS_OUTSIDE()
-                  && !INDOOR_SECTOR( d->character->in_room->sector_type ) && d->character->IS_AWAKE() )
+                  && !is_indoor_sector( d->character->in_room->sector_type ) && d->character->IS_AWAKE() )
                   d->character->print( txt );
             }
          }
@@ -3227,7 +3234,7 @@ CMDF( do_weather )
       return;
    }
 
-   if( !ch->IS_OUTSIDE() && INDOOR_SECTOR( ch->in_room->sector_type ) )
+   if( !ch->IS_OUTSIDE() && is_indoor_sector( ch->in_room->sector_type ) )
    {
       ch->print( "You need to be outside to do that!\r\n" );
       return;

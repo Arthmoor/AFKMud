@@ -1866,7 +1866,7 @@ SPELLF( spell_call_lightning )
    bool ch_died = false;
    WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) && !ch->has_actflag( ACT_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || is_indoor_sector( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) && !ch->has_actflag( ACT_ONMAP ) )
    {
       ch->print( "You must be outdoors to cast this spell.\r\n" );
       return rSPELL_FAILED;
@@ -5567,7 +5567,7 @@ SPELLF( spell_warsteed )
    mob_index *temp;
    char_data *mob;
 
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || is_indoor_sector( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->print( "You must be outdoors to cast this spell.\r\n" );
       return rSPELL_FAILED;
@@ -5610,7 +5610,7 @@ SPELLF( spell_warmount )
    mob_index *temp;
    char_data *mob;
 
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || is_indoor_sector( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->print( "You must be outdoors to cast this spell.\r\n" );
       return rSPELL_FAILED;
@@ -5778,7 +5778,7 @@ SPELLF( spell_calm )
 
 SPELLF( spell_gust_of_wind )
 {
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || is_indoor_sector( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->print( "You must be outdoors to cast this spell.\r\n" );
       return rSPELL_FAILED;
@@ -5813,7 +5813,7 @@ SPELLF( spell_gust_of_wind )
 
 SPELLF( spell_sunray )
 {
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || is_indoor_sector( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->print( "You must be outdoors to cast this spell.\r\n" );
       return rSPELL_FAILED;
@@ -5876,7 +5876,7 @@ SPELLF( spell_creeping_doom )
    mob_index *temp;
    char_data *mob;
 
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || is_indoor_sector( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->print( "You must be outdoors to cast this spell.\r\n" );
       return rSPELL_FAILED;

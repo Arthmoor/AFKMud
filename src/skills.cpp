@@ -7153,7 +7153,7 @@ CMDF( do_forage )
       return;
    }
 
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || is_indoor_sector( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->print( "You must be outdoors to use this skill.\r\n" );
       return;
@@ -7256,7 +7256,7 @@ CMDF( do_woodcall )
       return;
    }
 
-   if( ( !ch->IS_OUTSIDE(  ) || INDOOR_SECTOR( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
+   if( ( !ch->IS_OUTSIDE(  ) || is_indoor_sector( ch->in_room->sector_type ) ) && !ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       ch->print( "You must be outdoors to use this skill.\r\n" );
       return;
