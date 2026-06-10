@@ -1,7 +1,7 @@
-Miscelaneous blocks
--------------------
+Miscellaneous Blocks
+--------------------
 
-Last Modified by Samson, Nov. 26, 2014
+Last Modified by Samson, Jun. 10, 2026
 
 =========================================================================================================
 
@@ -13,7 +13,7 @@ The syntax of an #EXIT block is:
 
 #EXIT
 -----
-String literal. Required to marke the beginning of the block.
+String literal. Required to mark the beginning of the block.
 
 Direction     <string>~
 -----------------------

@@ -38,7 +38,7 @@ get a final weight.
 
 <Cost Mod> - Multiplied by the value of the weapon or armor to get a final cost.
 
-<Mob Level> - Used by the random treasure system. Balancer to keep very good
+<Mob Level> - Used by the random treasure system. Balanced to keep very good
 materials out of low level hands.
 
 The materials themselves are:

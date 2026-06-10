@@ -6,7 +6,7 @@ Version 3.02 - Samson: Updated for current codebase standards on Nov. 26, 2014.
 Further typo and logic fixes provided by RazorZero 9/23/03
 Modified by Kilroy of The Obsidian Palace 6/13/2003
 Modified by Kilroy of The Obsidian Palace 5/9/2002
-part 2.2 Contibuted to by Kilroy of OP & Dwip of Alsherok 5/9/2002
+part 2.2 Contributed to by Kilroy of OP & Dwip of Alsherok 5/9/2002
 
 Keep in mind that adding an additional continent will increase your
 RAM and disk usage. You should check to see that your site quotas

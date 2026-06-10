@@ -4,7 +4,7 @@ explanation. - Kayle
 
 First off, You're going to need a bit of a plan. The release version of the weather map is
 set up to be a 3 by 3 square map, giving it 9 cells. Modify WEATHER_SIZE_X and 
-WEATHER_SIZE_Y in weather.h to accomodate the size you want your map to be. 
+WEATHER_SIZE_Y in weather.h to accommodate the size you want your map to be.
 
 Then, Each Cell that will be assigned an area is going to need to be set up. You do this by 
 cycling through each cell (preferrably after you've figured out how you want your worlds 
@@ -88,7 +88,7 @@ rainforest, savanna, desert, steppe, chapparal, grasslands, deciduous_forest,
 taiga, tundra, alpine, and arctic.
  
 Now, a brief explanation will follow for each, but these flags cause the
-system to force changes into cells with each update, to keep weather consistant
+system to force changes into cells with each update, to keep weather consistent
 with what is supposed to be within that cell.
  
 Rain Forest - This climate will produce a lot of rain and high heats, not quite
@@ -107,7 +107,7 @@ of this climate would be the Mongolian Steppes in Eurasia.
  
 Chapparal - This is another semiarid climate, with long dry summers and shorter
 wet winters. The primary example of this is the Mediterranean Coast, or a bit
-of Southern California.¢
+of Southern California.~
 End
 
 #HELP
@@ -144,7 +144,7 @@ difference.
 Arctic - Cold. Always Frozen. Almost the exact opposite of a desert. Could
 technically be considered a desert by the definition of the word. These
 climates produce below freezing temperatures almost year round. Antarctica
-would be the best example of an Arctic climate.¢
+would be the best example of an Arctic climate.~
 End
 
 #HELP
@@ -168,7 +168,7 @@ a given cell, based on x and y. These two values should always
 be numbers.
  
 Max for both values are stored in the code, and are unchangeable
-from within the game world.¢
+from within the game world.~
 End
 
 #HELP
@@ -180,7 +180,7 @@ Text     Syntax: showweather <x> <y>
  
 This code will display the current state of the specified weather cell.
 X and Y should always be numbers. The max for both values is stored in
-the code, and are unchangeable from within the game world.¢
+the code, and are unchangeable from within the game world.~
 End
 
 

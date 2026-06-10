@@ -1,8 +1,8 @@
 === The #OBJECT block
 
-Last Modified by Samson, Nov. 26, 2014
+Last Modified by Samson, Jun. 10, 2026
 
-Objects add life to an otherwise boring place. Afterall, people came to this place to loot!
+Objects add life to an otherwise boring place. After all, people came to this place to loot!
 A well constructed area should have several objects available in it. Whether they are available
 as loot, used by the Mobiles in the area, or just purely decorative, is entirely up to you.
 
@@ -396,7 +396,7 @@ Item type: trap
 Item type: campgear
    value[0] Type of camping gear:
      1 - Bedroll. Used to sleep on while camped.
-     2 - Gear. Miscelaneous things such as utensils etc.
+     2 - Gear. Miscellaneous things such as utensils etc.
      3 - Firewood. Required to light the campfire.
 
 Item type: ore
@@ -413,7 +413,7 @@ Item type: ore
     10 - Dwarven Steel
     11 - Elven Steel
 
-     * - Magical ore found only in Arthmoor's palace.
+     * - Magical ore found only in Arthmoor's Palace.
 
    value[1] Purity of the ore from 1-100%, affects cost/skill roll for forging weapons and armor.
 

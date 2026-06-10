@@ -88,7 +88,7 @@ All items:
 17  - Armor Class             | 1k/point, max 12
 18  - Hitroll                 | 2k/point, max +6, -2k/-point
 19  - Damroll                 | 3k/point, max +6, -3k/-point
-20  - Save vs Paralyzation    | 3k/-point, -2k/point
+20  - Save vs Paralysis       | 3k/-point, -2k/point
 21  - Save vs Rods            | 3k/-point, -2k/point
 22  - Save vs Poison          | 3k/-point, -2k/point
 23  - Save vs Breath          | 3k/-point, -2k/point

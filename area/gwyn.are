@@ -969,7 +969,7 @@ Gender    male~
 Position  standing~
 DefPos    standing~
 Short     Master Kyr~
-Long      Master Kyr sits crosslegged on the mat in apparent meditation.
+Long      Master Kyr sits cross-legged on the mat in apparent meditation.
 ~
 Desc      An impish rogue in his youth, Kyr Lighthand seems to have settled down
 upon reaching middle-aged status, devoting himself completely to the
@@ -1383,7 +1383,7 @@ say your current location. For new players, you will find yourself at the
 say healer in Gwyn al'Fer. Your corpse will be automatically transported to
 say you so you do not need to fear having to look for your corpse. All your
 say belongings will be in the corpse. However, once you have reached level
-say 11+, you will no longer have this priviledge. Your corpse will be left
+say 11+, you will no longer have this privilege. Your corpse will be left
 say behind where you were killed and you either have to retrieve it or
 say SUPPLICATE the corpse if you have chosen a deity and have enough favour
 say points to do so. There are also certain EFFECTS of death to take note of.
@@ -1499,7 +1499,7 @@ Bodyparts head heart~
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   emote gestures airily for you to sit, swishing his silk hankerchief in the air.
+Comlist   emote gestures airily for you to sit, swishing his silk handkerchief in the air.
 say Salutations, young one. I shall tell you of MISCELLANEOUS information.
 say Might be helpful in your journeys, after all.
 ~
@@ -1845,7 +1845,7 @@ Short     Mistress Khirana~
 Long      Mistress Khirana sits upon the marble block and looks at you inquiringly.
 ~
 Desc      Her hair cascades in light coppery waves around her shoulders, framing an
-impish face and grass-green eyes somehow reminiscient of Master Kyr and
+impish face and grass-green eyes somehow reminiscent of Master Kyr and
 Mistress Khirelle. She seems to be in her early twenties. Running her
 slender fingers through her hair, she flashes you a confident smile.
 ~
@@ -2196,11 +2196,11 @@ DefPos    standing~
 Short     Atheia~
 Long      Atheia the Pixie flits about here and awaits her pupils.
 ~
-Desc      A member of one of the tinest races in the Lands, Atheia stands at a
+Desc      A member of one of the tiniest races in the Lands, Atheia stands at a
 mere three feet tall. Like her elven cousins, her ears are pointed, and
 her eyes shine with an otherworldly light. However, delicate veins in
 a woven tracery on an iridescent surface spreading from her back mark
-the unique gift of her race - flight. Her mothwings are a boon to her
+the unique gift of her race - flight. Her moth wings are a boon to her
 race, granting them the agility and speed they depend on to survive.
 ~
 Nattacks  0.000000
@@ -3881,7 +3881,7 @@ say move greater distances before needing to stop and rest.
 Progtype  speech_prog~
 Arglist   mounts~
 Comlist   say There are many types of mounts available in the world, the most common
-say being horses. Mounts are especially useful when it comes to travelling
+say being horses. Mounts are especially useful when it comes to traveling
 say on the OVERLAND as they have more movement points. Mounts can be bought
 say from stables and pet shops in most of the major cities. To be able to
 say use a mount, you will need to have learned the skill 'mount'. For more
@@ -4018,7 +4018,7 @@ say benefit of newcomers to the world.
 #MUDPROG
 Progtype  speech_prog~
 Arglist   ANSI~
-Comlist   say ANSI will allow you to see the world in color. Alot of things look
+Comlist   say ANSI will allow you to see the world in color. A lot of things look
 say better when viewed in color, but especially the OVERLAND. Without
 say color, terrain symbols would look the same to you. If your connection
 say supports ANSI, you should turn it on to experience the world as it
@@ -4921,7 +4921,7 @@ Stats     1 0 -2 9999 0 None None None
 AffData save_spell -1 -1 -1 0
 #EXDESC
 ExDescKey    lantern wisdom light abecedarium~
-ExDesc       This is one of the various types of lightsources available in the Lands.
+ExDesc       This is one of the various types of light sources available in the Lands.
 It comes in handy especially at night or in dark places. As you journey
 onward you will find better equipment, but this will serve you for now.
 ~
@@ -5386,7 +5386,7 @@ Spells       'magic missile'
 ExDescKey    wand abecedarium~
 ExDesc       This is one of the many wands available in the Lands. To use it,
 simply hold it and type ZAP <target>. Wands do not necessarily
-advertise the spells they hold, but this one is labelled in
+advertise the spells they hold, but this one is labeled in
 neat script, "Magic missile".
 ~
 #ENDEXDESC
@@ -6522,7 +6522,7 @@ Flags     nomob indoors~
 Stats     0 0 0 0 100000
 Desc      You come to a circular chamber, with an archway leading back south into
 the main foyer. Comfortable velvet cushions are scattered about on soft
-multicoloured carpets, creating an inviting and cosy environment for
+multicoloured carpets, creating an inviting and cozy environment for
 young adventurers to meet and trade stories and information. A map of the
 Abecedarium is loosely pinned on the wall next to the message board.
 ~
@@ -6818,7 +6818,7 @@ Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      As you enter, the first things to catch your eye are the many hunting
 trophies hung on the walls. In fact, you stand on a thick bearskin rug.
-On one side, a sizeable teak closet stands against the wall, with a
+On one side, a sizable teak closet stands against the wall, with a
 neatly made bed beside it. A table is placed nearby, and a meal has
 been laid out on it.
 ~
@@ -7691,7 +7691,7 @@ Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      As you walk down the stairs, you accidentally slip on the smooth glassy
 steps. Bumping roughly down, you try to recover your balance, but cannot
-get a grip on the smooth bannisters. In a matter of moments, you hurtle
+get a grip on the smooth banisters. In a matter of moments, you hurtle
 downward awkwardly, slamming onto the ground at the bottom. Unfortunately,
 you seem to have landed badly. The last thing you know is the sensation
 of your neck snapping and the ugly sound of cracking bones.
@@ -7721,7 +7721,7 @@ Name      The Red Dragon Inn~
 Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
-Desc      You enter into a cosy little inn. There is a small table at the south
+Desc      You enter into a cozy little inn. There is a small table at the south
 end of the main hall. Beside the table, you notice a corridor leading
 off somewhere, partly obscured by a beaded curtain. You surmise that
 that corridor must lead to the inn rooms. To the north, the main door
@@ -7782,7 +7782,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You stand before a great archway which shimmers with magical energy.
 Outside to the west is Reonn, the protected reserve for newcomers to
-the world. While travelling on the overland, you will see a sampling of
+the world. While traveling on the overland, you will see a sampling of
 many of the terrain types you will experience while playing. Ordinarily
 while on the overland you will encounter random monsters, some of which
 may be aggressive. This will not happen on the island, it is protected
@@ -8007,7 +8007,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      The unbroken thickness of the forest is pierced by a narrow
 trail leading deep into the woods. It is barely wide enough
-for you to walk down, but appears to be regulary travelled
+for you to walk down, but appears to be regularly traveled
 by someone or something. The birds and other small animals
 that inhabit the woods scatter at your approach.
 ~
@@ -8466,7 +8466,7 @@ Stats     0 0 0 0 100000
 Desc      The Bank of Gwyn is quite a small building, forcing you to stand
 unpleasantly close to the owner of the bank, a grouchy gnome known as
 Kedaoa. Embedded in the far wall is a steel vault door that only a very
-small person could climb through. Obviously, the meagre wealth of the bank
+small person could climb through. Obviously, the meager wealth of the bank
 is locked away, far from your reach.  The remainder of the room is taken
 up by accounting ledgers, and a small desk, with a massive feather pen
 sitting next to an ink jar. The sheer size of the feather astounds you, as

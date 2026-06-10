@@ -1,8 +1,8 @@
 === The #MOBILE block
 
-Last Modified by Samson, Nov. 26, 2014
+Last Modified by Samson, Jun. 10, 2026
 
-Mobiles add life to an otherwise boring place. Afterall, you need people to talk to!
+Mobiles add life to an otherwise boring place. After all, you need people to talk to!
 A well constructed area should have several mobiles populating it. Whether they are there
 for people to kill, talk to, or get quests from, is entirely up to you.
 
@@ -129,7 +129,7 @@ The first set of statistical values for this mobile.
 
 Stats2 <#1> <#2> <#3> <#4> <#5> <#6> <#7>
 -----------------------------------------
-The second set of statisical values for this mobile.
+The second set of statistical values for this mobile.
 
 #1 = Level. The mobile's base level from 1 to 110 ( unmodified code ).
    This level value is used as the basis for many automated statistical calculations.
@@ -480,8 +480,8 @@ If it is left out, the file will be assumed to be corrupt.
 
 ===========================================================================================
 
-An example of a finished mobile, with an attatched mobprogram:
-(Mudprogs are covered in a seperate file)
+An example of a finished mobile, with an attached mobprogram:
+(Mudprogs are covered in a separate file)
 
 #MOBILE
 Vnum      1203
@@ -494,7 +494,7 @@ DefPos    standing~
 Short     Krusty~
 Long      A spectral iguana roams the immortal halls.
 ~
-Desc      Wavering in and out of this diemsion and the afterlife, this spectral
+Desc      Wavering in and out of this dimension and the afterlife, this spectral
 iguana is all that remains of Samson's once lively pet iguana.
 Considerably larger and meaner looking in undeath, the iguana is
 nearly 50 feet in length, and instead of the normal green color

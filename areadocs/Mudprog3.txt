@@ -108,7 +108,7 @@ In my inventory...
    They aren't here.
    
    <1000hp 1000m 1000mv> kiss sword
-   You're truely nuts, you know this right?
+   You're truly nuts, you know this right?
    
    <1000hp 1000m 1000mv> grip sword
    They aren't here.

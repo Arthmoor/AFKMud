@@ -72,7 +72,7 @@ Runewords:
 
 Runewords can be viewed and edited by way of the file runeword.dat.
 This file is set up similarly to runes.dat:
-[This is a ficticious runeword btw]
+[This is a fictitious runeword btw]
 
 #RWORD
 Name   &WSlayer&D

@@ -1,9 +1,9 @@
 === The #ROOM block
 
-Last Modified by Samson, Nov. 26, 2014
+Last Modified by Samson, Jun. 10, 2026
 
 "If you build it, they will come." - Field of Dreams
-An appropriate quote for this section. Without rooms, people will have nowwhere to go.
+An appropriate quote for this section. Without rooms, people will have nowhere to go.
 Without rooms, you can't have a place for mobiles or objects to exist.
 In short, without rooms you have basically nothing. You have no world to explore!
 
@@ -53,20 +53,20 @@ ice          | 3    | Solid sheets of ice.
 indoors      | 1    | Building interiors. Cannot use dig command.
 jungle       | 2    | Jungles
 landing      | 1    | Overland landing site. Should not be used for normal rooms.
-lava         | 2    | Lava. Does damage on enterance. See below.
+lava         | 2    | Lava. Does damage on entrance. See below.
 mountain     | 5    | Mountainous terrain.
 ocean        | 1    | Surface of the ocean. Need boat to enter.
 oceanfloor   | 4    | Bottom of the ocean. Need aquabreath to avoid damage.
 quicksand    | 10   | Impassable swamp for overland. Should not be used for normal rooms.
 road         | 1    | Non-city roads.
 river        | 3    | Rivers. Need boat to enter.
-scrub        | 2    | Sparse vegitation.
+scrub        | 2    | Sparse vegetation.
 shore        | 3    | Beaches and the like.
 stone        | 10   | Impassable mountains for overland. Should not be used for normal rooms.
 swamp        | 3    | Swampy terrain.
 trail        | 1    | Small trails.
 tree         | 10   | Impassable forest for overland. Should not be used for normal rooms.
-tundra       | 2    | Tundra.  Does damage on enterance.  See below.
+tundra       | 2    | Tundra.  Does damage on entrance.  See below.
 underground  | 3    | Underground caves.
 underwater   | 5    | Underwater.  Need aquabreath to avoid damage.
 wall         | 10   | Impassable wall for overland. Should not be used for normal rooms.
@@ -76,7 +76,7 @@ water_noswim | 2    | Water. Boat required to enter.
 Note that indoors, underground, underwater, and oceanfloors do not prevent the display of
 weather messages and the like. To do that, the indoors room flag is required.
 
-Lava and tundra sectors do damage to characters enterting them.
+Lava and tundra sectors do damage to characters entering them.
 This damage is 20 if not protected, 10 if resistant to fire and cold respectively, and 0 if immune.
 
 Flags       <string>~
@@ -519,7 +519,7 @@ ExDescKey    bookshelves bookshelf book books~
 ExDesc       These bookshelves, made from the substance known as darksteel, stand from 
 floor to ceiling.  Many books and tomes sit upon the shelves, all with metal 
 and gemstone-studded covers.  The books include such titles as The Art of War,
-The Prince, and various tomes dealing with castle construction, seige warfare,
+The Prince, and various tomes dealing with castle construction, siege warfare,
 logistics, battlefield tactics, and various tactics used by the different 
 races of the world, including some you have never heard of.
 ~

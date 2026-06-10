@@ -105,7 +105,7 @@ OBJECT the trap is on, or the ROOM the trap is in, (for room and door traps).
  
 (See listings in values.txt for trap flags and types.)
 
-Use of both the 'D' and 'R' commands on the same room will yield unpredicatable
+Use of both the 'D' and 'R' commands on the same room will yield unpredictable
 results.
 
 The 'S' is needed at the end of the resets section.
@@ -148,7 +148,7 @@ Everything beyond <close-hour> to the end of the line is taken to be a comment.
 Note that there is no room number for a shop. Just load the shopkeeper mobile
 into the room of your choice, and make it a sentinel. Or, for a roving
 shopkeeper, just make it non-sentinel. It is also extremely advisable to make
-your shopkeepers immortal, and pacifist. This way palyers can't come up with
+your shopkeepers immortal, and pacifist. This way players can't come up with
 interesting ways to kill the shop owners and steal the items.
 
 The objects a shopkeeper sells are exactly those loaded by 'G' reset commands

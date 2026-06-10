@@ -27,7 +27,7 @@ Specfun   spec_cast_mage~
 Short     &W&wAn &Pillithid &wtraveller~
 Long      A travelling mindflayer zooms through the reaches of the astral plane.
 ~
-Desc      &W&wTall, thin, and &ppurple&w, this &Pillithid &wtraveller is making his way
+Desc      &W&wTall, thin, and &ppurple&w, this &Pillithid &wtraveler is making his way
 &W&wto an unknown location. Peering at you briefly, what appears to be
 &W&wa veral grin appears on his face as he considers the prospect of an
 &W&wearly brunch.
@@ -57,7 +57,7 @@ Long      A githyanki antipaladin is here, looking for something.
 Desc      &W&wA member of a race that originated from a group of humans enslaved and
 bred by illithids, this being could easily pass for his ancestors. The
 &W&wonly difference is the &Gyellowish &wtint to his skin. Travelling the
-&W&wastral plane, he scans the horizen looking for &Pmindflayers &wto slay.
+&W&wastral plane, he scans the horizon looking for &Pmindflayers &wto slay.
 &W&wSighting you, he moves in, obviously welcoming the new sport.
 ~
 Nattacks  0.000000
@@ -85,7 +85,7 @@ Short     Tiamat~
 Long      Tiamat, the five-headed dragon, stands here gazing at you.
 ~
 Desc      &W&wBefore you stands the biggest dragon you have ever seen. Looming over
-&W&wyou, &WTiamat &wglances in your direction almost questioning your prescence
+&W&wyou, &WTiamat &wglances in your direction almost questioning your presence
 &W&wwithin her area. You shiver in fear, and wonder if you should leave 
 &W&wbefore she takes offense.
 ~
@@ -232,10 +232,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
 A &zmurky &ggreen &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -278,10 +278,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -322,10 +322,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -366,10 +366,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -410,10 +410,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -454,10 +454,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -498,10 +498,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Yg&Oolde&Yn yellow &Yp&Ooo&Yl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -544,10 +544,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -588,10 +588,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -632,10 +632,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Ysandy &Obrown &Yp&Ooo&Yl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -678,10 +678,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -722,10 +722,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -766,10 +766,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -810,10 +810,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
 A &rm&Oudd&ry &Obrown &rp&Ooo&rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -856,10 +856,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -900,10 +900,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -944,10 +944,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -988,10 +988,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1032,10 +1032,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1076,10 +1076,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1120,10 +1120,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Phot pink pool &Bshimmers &Where.
@@ -1166,10 +1166,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1210,10 +1210,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Gs&glim&Gy &ggreen &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -1256,10 +1256,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1295,10 +1295,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1339,10 +1339,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 An &bsh&wado&bwy &wgrey &wp&boo&wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -1385,10 +1385,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1429,10 +1429,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Ob&Yurnishe&Od &Yo&Orang&Ye &Op&Yoo&Ol &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -1475,10 +1475,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1519,10 +1519,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1563,10 +1563,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1607,10 +1607,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1651,10 +1651,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1695,10 +1695,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1739,10 +1739,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1783,10 +1783,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1827,10 +1827,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
 &wA &Wch&zec&Wke&zre&wd&w &Wp&zoo&Wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -1873,10 +1873,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -1917,10 +1917,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &cdeep &ppurple &Pp&poo&Pl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -1963,10 +1963,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2007,10 +2007,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2051,10 +2051,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2095,10 +2095,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2139,10 +2139,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2183,10 +2183,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
 &wAn &binky&w &zblack&w &bp&zoo&bl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -2229,10 +2229,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2273,10 +2273,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2317,10 +2317,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 &wAn angry &Yfiery &Rred&w portal stands before you, daring you to enter.
@@ -2363,10 +2363,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2407,10 +2407,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2451,10 +2451,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Rshimmering&w portal opens into the depths of the &YChaos Gate&w here.
@@ -2497,10 +2497,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2541,10 +2541,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2585,10 +2585,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 &W&wA &rr&Ra&Yi&gn&bb&Bo&pw&w-colored &Wpool &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -2631,10 +2631,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &zblack void&w swirls dangerously here.&D
@@ -2677,10 +2677,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2721,10 +2721,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2765,10 +2765,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2809,10 +2809,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2853,10 +2853,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2897,10 +2897,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -2941,10 +2941,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 An &Ci&Wc&Cy &Wwhite &Wp&Coo&Wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -2987,10 +2987,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
 &wA &Gsea&w &ggreen&w &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -3033,10 +3033,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3077,10 +3077,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
 A &zdark grey p&woo&zl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -3123,10 +3123,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3167,10 +3167,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3211,10 +3211,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3255,10 +3255,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3299,10 +3299,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3343,10 +3343,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3387,10 +3387,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3431,10 +3431,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3475,10 +3475,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3519,10 +3519,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3563,10 +3563,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
 A &Rb&rlood&Ry &Rcrimson &Rp&roo&Rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -3629,10 +3629,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3673,10 +3673,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3717,10 +3717,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Gf&gores&Gt &Ggreen &gp&Goo&gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -3763,10 +3763,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3827,10 +3827,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3871,10 +3871,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Broyal &Cblue &Bp&Coo&Bl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -3917,10 +3917,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -3961,10 +3961,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4005,10 +4005,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4049,10 +4049,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4093,10 +4093,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4137,10 +4137,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4181,10 +4181,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4225,10 +4225,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Ws&zi&Wlv&zer&Wy &Cblue &Cp&Woo&Cl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -4271,10 +4271,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4315,10 +4315,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4359,10 +4359,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
 A &Wbright &Rred &rp&Roo&rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
@@ -4405,10 +4405,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4449,10 +4449,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4493,10 +4493,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4567,10 +4567,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4611,10 +4611,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4655,10 +4655,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT
@@ -4699,10 +4699,10 @@ Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
 Stats     0 0 0 0
-Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travellers are the only scenery
+Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
-&Prealities &wcollide into &wmishapen &pmasses &wof &Benergy &wconstantly
-&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtowards the center of &wall &Rtime&w. Only infinity
+&Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
+&W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 ~
 #EXIT

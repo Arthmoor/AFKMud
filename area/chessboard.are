@@ -186,7 +186,7 @@ DefPos    standing~
 Short     The Curser~
 Long      The Curser is here, muttering incomprehensible obscenities to the air.
 ~
-Desc      It is short stocky guy dressed in clashing colors, spewing gutteral sounds
+Desc      It is short stocky guy dressed in clashing colors, spewing guttural sounds
 and interjections continuously.
 ~
 Nattacks  0.000000
@@ -3455,7 +3455,7 @@ Flags     nomob indoors~
 Stats     0 0 0 0 100000
 Desc      As you step through the mirror you feel a tingling sensation run
 through your body.  Much to your surprise you are standing on dusty
-clifftop overlooking a magnificient ocean.  The sun seems to be frozen
+clifftop overlooking a magnificent ocean.  The sun seems to be frozen
 just over the horizon, turning the ocean into a swirling plain of gold
 and black reflections.  A warm and gentle breeze brushes your face.
 You hear the roar of the waves crashing rhythmically on the rocks below,

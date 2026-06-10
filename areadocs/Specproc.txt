@@ -5,7 +5,7 @@ Last modified by Samson, 6/19/03
 
 The following is a list of special procedures available for mobiles.
 The procs do tend to take up a significant number of clock cycles on the 
-server, so try to restirct their use to only the special mobs, DON'T go
+server, so try to restrict their use to only the special mobs, DON'T go
 around planting these on every mob that matches the class!
 
 spec_janitor: Mob picks up items on the ground.
@@ -155,7 +155,7 @@ spec_bard: The mob will cast from the following pool of bard spells:
 	blindness
 	lightning bolt
 
-spec_breath_acid: Gives the mob acid breating ability. Used primarily by dragons.
+spec_breath_acid: Gives the mob acid breathing ability. Used primarily by dragons.
 
 spec_breath_fire: ditto for fire breathing
 
