@@ -54,7 +54,6 @@ class obj_index
    std::bitset<MAX_PROG> progtypes; /* objprogs */
    std::bitset<MAX_ITEM_FLAG> extra_flags;
    std::bitset<MAX_WEAR_FLAG> wear_flags;
-   // obj_index *next;
    area_data *area;
    char *name;
    char *short_descr;

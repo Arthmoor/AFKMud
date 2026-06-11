@@ -45,7 +45,9 @@ CMDF( do_morphstat );
 
 char_morph::char_morph(  )
 {
-   init_memory( &morph, &cast_allowed, sizeof( cast_allowed ) );
+   init_memory( &timer, &cast_allowed, sizeof( cast_allowed ) );
+
+   morph = nullptr;
 }
 
 char_morph::~char_morph(  )
@@ -2170,7 +2172,7 @@ void unmorph_all( morph_data * morph )
 
 morph_data::morph_data(  )
 {
-   init_memory( &affected_by, &cast_allowed, sizeof( cast_allowed ) );
+   init_memory( &damroll, &cast_allowed, sizeof( cast_allowed ) );
 }
 
 /* 

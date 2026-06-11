@@ -48,10 +48,6 @@ class mob_index
 
    std::string spec_funname;
    std::list<struct mud_prog_data *> mudprogs; /* Mudprogs */
-   area_data *area;
-   SPEC_FUN *spec_fun;
-   struct shop_data *pShop;
-   struct repair_data *rShop;
    std::bitset<MAX_PROG> progtypes;
    std::bitset<MAX_ACT_FLAG> actflags;
    std::bitset<MAX_AFFECTED_BY> affected_by;
@@ -63,6 +59,10 @@ class mob_index
    std::bitset<MAX_RIS_FLAG> susceptible;
    std::bitset<MAX_RIS_FLAG> absorb;   /* Samson 3-16-00 */
    std::bitset<LANG_UNKNOWN> speaks;
+   area_data *area;
+   SPEC_FUN *spec_fun;
+   struct shop_data *pShop;
+   struct repair_data *rShop;
    char *player_name;
    char *short_descr;
    char *long_descr;

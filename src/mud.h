@@ -614,6 +614,7 @@ if( !strcasecmp( word, (literal) ) )   \
 #define SET_EXIT_FLAG(var, bit)    (var)->flags.set((bit))
 #define REMOVE_EXIT_FLAG(var, bit) (var)->flags.reset((bit))
 
+// Memory allocation macros. Your days are numbered...
 #if defined(__FreeBSD__)
 #define DISPOSE(point)                      \
 do                                          \

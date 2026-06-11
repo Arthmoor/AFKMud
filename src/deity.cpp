@@ -45,7 +45,7 @@ std::list < deity_data * >deitylist;
 
 deity_data::deity_data(  )
 {
-   init_memory( &race_allowed, &dig_corpse, sizeof( dig_corpse ) );
+   init_memory( &element, &dig_corpse, sizeof( dig_corpse ) );
 }
 
 deity_data::~deity_data(  )

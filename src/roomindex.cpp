@@ -252,9 +252,7 @@ room_index::~room_index(  )
 
 room_index::room_index(  )
 {
-   init_memory( &next, &mpscriptpos, sizeof( mpscriptpos ) );
-   people.clear(  );
-   objects.clear(  );
+   init_memory( &area, &mpscriptpos, sizeof( mpscriptpos ) );
 }
 
 /*

@@ -74,9 +74,9 @@ class exit_data
      exit_data(  );
     ~exit_data(  );
 
+   std::bitset<MAX_EXFLAG> flags; // door states & other flags
    exit_data *rexit;       // Reverse exit pointer
    room_index *to_room;    // Pointer to destination room
-   std::bitset<MAX_EXFLAG> flags; // door states & other flags
    char *keyword;          // Keywords for exit or door
    char *exitdesc;         // Description of exit
    int vnum;               // Vnum of room exit leads to
@@ -133,12 +133,11 @@ class room_index
    std::list<extra_descr_data *> extradesc;   /* Extra descriptions */
    std::list<struct mud_prog_data *> mudprogs; /* Mudprogs */
    std::list<mprog_act_list *> mpact;   /* Mudprogs */
-   room_index *next;
+   std::bitset<ROOM_MAX> flags;
+   std::bitset<MAX_PROG> progtypes; /* mudprogs */
    area_data *area;
    reset_data *last_mob_reset;
    reset_data *last_obj_reset;
-   std::bitset<ROOM_MAX> flags;
-   std::bitset<MAX_PROG> progtypes; /* mudprogs */
    char *name;
    char *roomdesc;   /* So that it can now be more easily grep'd - Samson 10-16-03 */
    char *nitedesc;   /* added NiteDesc -- Dracones */
@@ -162,12 +161,6 @@ room_index *get_room_index( int );
 room_index *make_room( int, area_data * );
 int get_dirnum( std::string_view );
 std::string rev_exit( short );
-
-/*
-#define EXIT(x, door)   ( (x)->in_room->get_exit( door ) )
-#define CAN_GO(x, door) ( EXIT((x),(door)) && (EXIT((x),(door))->to_room != nullptr )  \
-                          && !IS_EXIT_FLAG( EXIT((x), (door)), EX_CLOSED ) )
-*/
 
 template <typename T>
 bool CAN_GO( const T* x, int door )
