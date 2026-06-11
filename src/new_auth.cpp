@@ -40,6 +40,7 @@
 #include <filesystem>
 #include <fstream>
 #include <unordered_map>
+#include <unordered_set>
 #include "mud.h"
 #include "descriptor.h"
 #include "mud_prog.h"
@@ -50,6 +51,7 @@ CMDF( do_destroy );
 bool can_use_mprog( char_data * );
 
 std::list<auth_data *> authlist;
+std::unordered_set<std::string> reserved_names;
 
 struct NameGenLists
 {
@@ -699,6 +701,64 @@ CMDF( do_authorize )
       ch->print( "No such player pending authorization.\r\n" );
 }
 
+/*
+ * Parse a name for acceptability.
+ */
+bool check_parse_name( std::string name, bool newchar )
+{
+   /*
+    * Names checking should really only be done on new characters, otherwise
+    * we could end up with people who can't access their characters. Would
+    * have also provided for that new area havoc mentioned below, while still
+    * disallowing current area mobnames. I personally think that if we can
+    * have more than one mob with the same keyword, then may as well have
+    * players too though, so I don't mind that removal.  -- Alty
+    */
+
+   /*
+    * Length restrictions.
+    */
+   if( name.length() < 3 || name.length() > 12 )
+      return false;
+
+   // Alphanumeric checks
+   std::string::const_iterator ptr = name.begin();
+   while( ptr != name.end() )
+   {
+      if( !isalpha( *ptr ) )
+         return false;
+      ++ptr;
+   }
+
+   /*
+    * Mob names illegal for newbies now - Samson 7-24-00
+    */
+   for( auto* vch : charlist )
+   {
+      if( vch->isnpc() )
+      {
+         if( hasname( vch->name, name ) && newchar )
+            return false;
+      }
+   }
+
+   // Check reserved names in-memory (case-insensitive)
+   strlower( name );
+
+   if( reserved_names.contains( name ) && newchar )
+      return false;
+
+   /*
+    * Check for inverse naming as well
+    */
+   std::string invname = invert_string( name );
+
+   if( reserved_names.contains( invname ) && newchar )
+      return false;
+
+   return true;
+}
+
 /* new auth */
 CMDF( do_name )
 {
@@ -832,40 +892,79 @@ void auth_update( void )
    }
 }
 
+void load_reserved_names( )
+{
+   reserved_names.clear();
+
+   std::ifstream file( std::filesystem::path{RESERVED_LIST} );
+   if( !file.is_open() )
+      return;
+
+   std::string line;
+   while( std::getline( file, line ) )
+   {
+      if( !line.empty() )
+      {
+         strlower( line );
+         reserved_names.insert( line );
+      }
+   }
+}
+
+void save_reserved_names( )
+{
+   std::ofstream file( std::filesystem::path{RESERVED_LIST}, std::ios::trunc );
+   if( !file.is_open() )
+      return;
+
+   for( const auto& name : reserved_names )
+   {
+      file << name << "\n";
+   }
+}
+
 /* Modified to require an "add" or "remove" argument in addition to name - Samson 10-18-98 */
-/* Gutted to append to an external file now rather than load the pile into memory at boot - Samson 11-21-03 */
 CMDF( do_reserve )
 {
    std::string arg;
-
    argument = one_argument( argument, arg );
 
-   if( arg.empty(  ) )
+   if( arg.empty() )
    {
       ch->print( "To add a name: reserve <name> add\r\n" );
-      ch->print( "To remove a name: Someone with shell access has to do this now.\r\n" );
+      ch->print( "To remove a name: reserve <name> remove\r\n" );
       return;
    }
+
+   strlower( arg );
 
    if( !str_cmp( argument, "add" ) )
    {
-      /*
-       * This grep idea was borrowed from SunderMud.
-       * * Reserved names list was getting much too large to load into memory.
-       * * Placed last so as to avoid problems from any of the previous conditions causing a problem in shell.
-       */
-      // FIXME: This may have been a good idea in the late 1990s, but not today.
-      std::string buf = std::format( "grep -i -x {} ../system/reserved.lst > /dev/null", arg );
-
-      if( system( buf.c_str() ) == 0 )
+      if( reserved_names.contains( arg ) )
       {
-         ch->printf( "%s is already a reserved name.\r\n", arg.c_str(  ) );
+         ch->print_fmt( "{} is already a reserved name.\r\n", arg );
          return;
       }
 
-      append_to_file( RESERVED_LIST, "{}", arg );
+      reserved_names.insert( arg );
+      save_reserved_names( );
       ch->print( "Name reserved.\r\n" );
       return;
    }
-   ch->print( "Invalid argument.\r\n" );
+
+   if( !str_cmp( argument, "remove" ) )
+   {
+      if( !reserved_names.contains( arg ) )
+      {
+         ch->print_fmt( "{} is not a reserved name.\r\n", arg );
+         return;
+      }
+
+      reserved_names.erase( arg );
+      save_reserved_names( );
+      ch->print( "Reserved name removed.\r\n" );
+      return;
+   }
+
+   ch->print( "Invalid argument. Use 'add' or 'remove'.\r\n" );
 }

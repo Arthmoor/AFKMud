@@ -71,6 +71,7 @@ void stop_hating( char_data * );
 void stop_hunting( char_data * );
 void stop_fearing( char_data * );
 void check_clan_storeroom( char_data * );
+bool check_parse_name( std::string, bool );
 
 /*
  * Global variables.
@@ -4461,7 +4462,7 @@ CMDF( do_loadup )
    d = nullptr;
    fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
 
-   if( !std::filesystem::exists( fname ) || !std::filesystem::is_regular_file( fname ) || !check_parse_name( capitalize( argument ), false ) )
+   if( !std::filesystem::exists( fname ) || !std::filesystem::is_regular_file( fname ) || !check_parse_name( argument, false ) )
    {
       ch->print( "&YNo such player exists.\r\n" );
       return;
@@ -4923,7 +4924,7 @@ CMDF( do_destroy )
       return;
    }
 
-   if( !check_parse_name( capitalize( argument ), false ) )
+   if( !check_parse_name( argument, false ) )
    {
       ch->print( "That's not a valid player file name!\r\n" );
       return;

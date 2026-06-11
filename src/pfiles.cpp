@@ -43,6 +43,7 @@ void remove_from_auth( std::string_view );
 void rare_update(  );
 void save_timedata(  );
 void adjust_pfile( const std::string & );
+bool check_parse_name( std::string, bool );
 
 /* Globals */
 std::chrono::system_clock::time_point new_pfile_time_t;

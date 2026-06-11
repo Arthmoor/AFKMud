@@ -116,6 +116,7 @@ void mprog_login_trigger( char_data * );
 void rprog_login_trigger( char_data * );
 CMDF( do_help );
 CMDF( do_destroy );
+bool check_parse_name( std::string, bool );
 
 /* Terminal detection stuff start */
 constexpr unsigned char IS            = '\x00';

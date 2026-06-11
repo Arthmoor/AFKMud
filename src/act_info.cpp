@@ -63,6 +63,7 @@ void display_map( char_data * );
 void draw_map( char_data *, std::string_view );
 
 bool is_valid_wear_loc( char_data *, int );
+bool check_parse_name( std::string, bool );
 
 const char *where_names[] = {
    "<used as light>     ",
@@ -2875,7 +2876,7 @@ CMDF( do_ignore )
          return;
       }
 
-      if( !check_parse_name( capitalize( argument ), false ) )
+      if( !check_parse_name( argument, false ) )
       {
          ch->print( "That's not a valid name to ignore!\r\n" );
          return;

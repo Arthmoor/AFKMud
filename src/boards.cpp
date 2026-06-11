@@ -44,6 +44,7 @@ std::list<board_data *> bdlist;
 std::list<project_data *> projlist;
 
 void check_boards(  );
+bool check_parse_name( std::string, bool );
 
 /* Global */
 std::chrono::system_clock::time_point board_expire_time_t;
@@ -1679,7 +1680,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
             std::filesystem::path buf;
 
             buf = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
-            if( !std::filesystem::exists( buf ) || !check_parse_name( capitalize( argument ), false ) )
+            if( !std::filesystem::exists( buf ) || !check_parse_name( argument, false ) )
             {
                ch->printf( "%sNo such player named '%s%s%s'.\r\nTo whom is this note addressed?   &D", s1.c_str(), s2.c_str(), argument.c_str(  ), s1.c_str() );
                return;

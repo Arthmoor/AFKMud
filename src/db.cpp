@@ -193,6 +193,7 @@ std::string check_hash( const char * );
 std::string hash_stats( );
 void init_auction( );
 void load_name_generator( );
+void load_reserved_names( );
 
 affect_data::affect_data(  )
 {
@@ -1367,6 +1368,9 @@ void boot_db( bool fCopyOver )
    log_string( "Loading overland map data..." );
    load_continents( AREA_FILE_ALARM );
    log_string( "...done loading overland data." );
+
+   log_string( "Loading reserved names list." );
+   load_reserved_names( );
 
    log_string( "Loading namegen file..." );
    load_name_generator( );

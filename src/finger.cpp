@@ -42,6 +42,8 @@
 #include "finger.h"
 #include "roomindex.h"
 
+bool check_parse_name( std::string, bool );
+
 /* Begin wizinfo stuff - Samson 6-6-99 */
 
 std::list<wizinfo_data *> wizinfolist;
@@ -205,7 +207,7 @@ CMDF( do_finger )
 
       std::filesystem::path fingload = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
       // Bug fix here provided by Senir to stop /dev/null crash
-      if( !std::filesystem::exists( fingload ) || !check_parse_name( capitalize( argument ), false ) )
+      if( !std::filesystem::exists( fingload ) || !check_parse_name( argument, false ) )
       {
          ch->print_fmt( "&YNo such player named '%s'.\r\n", argument.c_str(  ) );
          return;

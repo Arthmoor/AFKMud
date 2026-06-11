@@ -1081,7 +1081,6 @@ const std::string c_time( std::chrono::system_clock::time_point, int );
 const std::string mini_c_time( std::chrono::system_clock::time_point, int );
 
 // comm.cpp
-bool check_parse_name( const std::string &, bool );
 void add_loginmsg( const char *, short, const char * );
 
 // commands.cpp
