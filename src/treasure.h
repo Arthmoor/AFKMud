@@ -30,17 +30,18 @@
 
 #pragma once
 
-#define RUNE_FILE SYSTEM_DIR "runes.dat"
-#define RUNEWORD_FILE SYSTEM_DIR "runeword.dat"
-#define WTYPE_FILE SYSTEM_DIR "weapontypes.dat"
-#define ATYPE_FILE SYSTEM_DIR "armortypes.dat"
-#define MAT_FILE SYSTEM_DIR "materials.dat"
+inline constexpr std::string_view RUNE_FILE = "../system/runes.dat";
+inline constexpr std::string_view RUNEWORD_FILE = "../system/runeword.dat";
+inline constexpr std::string_view WTYPE_FILE = "../system/weapontypes.dat";
+inline constexpr std::string_view ATYPE_FILE = "../system/armortypes.dat";
+inline constexpr std::string_view MAT_FILE = "../system/materials.dat";
 
 enum rune_rarities
 {
    RUNE_COMMON, RUNE_RARE, RUNE_ULTRARARE
 };
 
+/* Materials for Armor Generator and Weapon Generator */
 /* Materials for Armor Generator and Weapon Generator */
 struct armorgenM
 {
@@ -104,17 +105,13 @@ class rune_data
      rune_data(  );
     ~rune_data(  );
 
-   void set_name( const std::string & name )
+   void set_name( std::string_view name )
    {
       _name = name;
    }
    const std::string & get_name(  )
    {
       return _name;
-   }
-   const char *get_cname(  )
-   {
-      return _name.c_str(  );
    }
 
    void set_rarity( short rarity )
@@ -145,7 +142,7 @@ class runeword_data
      runeword_data(  );
     ~runeword_data(  );
 
-   void set_name( const std::string & name )
+   void set_name( std::string_view name )
    {
       _name = name;
    }
@@ -153,12 +150,7 @@ class runeword_data
    {
       return _name;
    }
-   const char *get_cname(  )
-   {
-      return _name.c_str(  );
-   }
-
-   void set_rune1( const std::string & rune1 )
+   void set_rune1( std::string_view rune1 )
    {
       _rune1 = rune1;
    }
@@ -166,12 +158,8 @@ class runeword_data
    {
       return _rune1;
    }
-   const char *get_crune1(  )
-   {
-      return _rune1.c_str(  );
-   }
 
-   void set_rune2( const std::string & rune2 )
+   void set_rune2( std::string_view rune2 )
    {
       _rune2 = rune2;
    }
@@ -179,22 +167,14 @@ class runeword_data
    {
       return _rune2;
    }
-   const char *get_crune2(  )
-   {
-      return _rune2.c_str(  );
-   }
 
-   void set_rune3( const std::string & rune3 )
+   void set_rune3( std::string_view rune3 )
    {
       _rune3 = rune3;
    }
    std::string get_rune3(  )
    {
       return _rune3;
-   }
-   const char *get_crune3(  )
-   {
-      return _rune3.c_str(  );
    }
 
    void set_type( short type )
@@ -226,7 +206,7 @@ extern const struct armorgenM materials[];
 extern const char *weapon_quality[];
 
 // Refer to the tables in treasure.c to see what these affect.
-const int TMAT_MAX = 14;
-const int TATP_MAX = 17;
-const int TWTP_MAX = 14;
-const int TQUAL_MAX = 5;
+constexpr int TMAT_MAX = 14;
+constexpr int TATP_MAX = 17;
+constexpr int TWTP_MAX = 14;
+constexpr int TQUAL_MAX = 5;

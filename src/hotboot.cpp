@@ -50,7 +50,7 @@ void quotes( char_data * );
 void set_alarm( long );
 bool write_to_descriptor_old( int, std::string_view );
 void update_room_reset( char_data *, bool );
-void music_to_char( const std::string &, int, char_data *, bool );
+void music_to_char( std::string_view, int, char_data *, bool );
 void reset_sound( char_data * );
 void reset_music( char_data * );
 void save_timedata(  );
@@ -457,13 +457,11 @@ char_data *load_mobile( FILE * fp )
    }
 }
 
-void read_obj_file( const char *dirname, const char *filename )
+void read_obj_file( int vnum )
 {
    FILE *fp;
    room_index *room;
-
-   int vnum = atoi( filename );
-   std::filesystem::path fname = std::format( "{}{}", dirname, filename );
+   std::filesystem::path fname = std::format( "{}{}", HOTBOOT_DIR, vnum );
 
    if( !( room = get_room_index( vnum ) ) )
    {
@@ -536,7 +534,7 @@ void read_obj_file( const char *dirname, const char *filename )
       release_supermob(  );
    }
    else
-      log_string( "Cannot open obj file" );
+      log_printf( "Cannot open obj file: %d", vnum );
 }
 
 void load_obj_files( )
@@ -552,7 +550,8 @@ void load_obj_files( )
       {
          const std::string filename = entry.path().filename().string();
 
-         read_obj_file( HOTBOOT_DIR, filename.c_str() );
+         int vnum = std::stoi( filename );
+         read_obj_file( vnum );
       }
    }
    set_alarm( 0 );
@@ -666,13 +665,12 @@ CMDF( do_hotboot )
 
    log_printf( "Hotboot initiated by %s.", ch->name );
 
-   stream.open( HOTBOOT_FILE );
+   stream.open( std::filesystem::path( HOTBOOT_FILE ) );
 
    if( !stream.is_open(  ) )
    {
       ch->print( "Hotboot file not writeable, aborted.\r\n" );
-      bug( "%s: Could not write to hotboot file: %s. Hotboot aborted.", __func__, HOTBOOT_FILE );
-      perror( "do_copyover:fopen" );
+      bug( "%s: Could not write to hotboot file. Hotboot aborted.", __func__ );
       return;
    }
 
@@ -762,7 +760,7 @@ CMDF( do_hotboot )
    close_db(  );
 #endif
    dlclose( sysdata->dlHandle );
-   execl( EXE_FILE, "afkmud", buf.c_str(), "hotboot", buf2.c_str(), buf3.c_str(), ( char * )nullptr );
+   execl( EXE_FILE.data(), "afkmud", buf.c_str(), "hotboot", buf2.c_str(), buf3.c_str(), ( char * )nullptr );
 
    /*
     * Failed - successful exec will not return
@@ -791,7 +789,7 @@ void hotboot_recover( void )
    bool fOld;
    int rvnum = 0;
 
-   stream.open( HOTBOOT_FILE );
+   stream.open( std::filesystem::path( HOTBOOT_FILE ) );
    if( !stream.is_open(  ) )   /* there are some descriptors open which will hang forever then ? */
    {
       perror( "hotboot_recover: fopen" );

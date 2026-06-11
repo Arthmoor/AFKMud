@@ -96,7 +96,7 @@ void free_envs( void )
    }
 }
 
-int get_env_type( const std::string & type )
+int get_env_type( std::string_view type )
 {
    for( int x = 0; x < ENV_MAX; ++x )
       if( !str_cmp( type, env_name[x] ) )

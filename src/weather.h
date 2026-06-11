@@ -50,28 +50,28 @@
  */
 
 //Change these values to expand or contract your weather map according to your world size.
-const int WEATHER_SIZE_X      = 3; //number of cells wide
-const int WEATHER_SIZE_Y      = 3; //number of cells tall
+constexpr int WEATHER_SIZE_X      = 3; //number of cells wide
+constexpr int WEATHER_SIZE_Y      = 3; //number of cells tall
 
 //Hemisphere defines.
-const int HEMISPHERE_NORTH    = 0;
-const int HEMISPHERE_SOUTH    = 1;
-const int HEMISPHERE_MAX      = 2;
+constexpr int HEMISPHERE_NORTH    = 0;
+constexpr int HEMISPHERE_SOUTH    = 1;
+constexpr int HEMISPHERE_MAX      = 2;
 
 //Climate defines - Add more if you want, but make sure you add appropriate data to the
 // system itself in EnforceClimateConditions()
-const int CLIMATE_RAINFOREST  = 0;
-const int CLIMATE_SAVANNA     = 1;
-const int CLIMATE_DESERT      = 2;
-const int CLIMATE_STEPPE      = 3;
-const int CLIMATE_CHAPPARAL   = 4;
-const int CLIMATE_GRASSLANDS  = 5;
-const int CLIMATE_DECIDUOUS   = 6;
-const int CLIMATE_TAIGA       = 7;
-const int CLIMATE_TUNDRA      = 8;
-const int CLIMATE_ALPINE      = 9;
-const int CLIMATE_ARCTIC      = 10;
-const int MAX_CLIMATE         = 11;
+constexpr int CLIMATE_RAINFOREST  = 0;
+constexpr int CLIMATE_SAVANNA     = 1;
+constexpr int CLIMATE_DESERT      = 2;
+constexpr int CLIMATE_STEPPE      = 3;
+constexpr int CLIMATE_CHAPPARAL   = 4;
+constexpr int CLIMATE_GRASSLANDS  = 5;
+constexpr int CLIMATE_DECIDUOUS   = 6;
+constexpr int CLIMATE_TAIGA       = 7;
+constexpr int CLIMATE_TUNDRA      = 8;
+constexpr int CLIMATE_ALPINE      = 9;
+constexpr int CLIMATE_ARCTIC      = 10;
+constexpr int MAX_CLIMATE         = 11;
 
 class WeatherCell
 {
@@ -105,7 +105,7 @@ class WeatherCell
 };
 
 // File that stores Weather Information 
-#define WEATHER_FILE "weathermap.dat"
+inline constexpr std::string_view WEATHER_FILE = "weathermap.dat";
 
 //So it can be utilized from other parts of the code
 extern WeatherCell weatherMap[WEATHER_SIZE_X][WEATHER_SIZE_Y];

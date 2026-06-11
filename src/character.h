@@ -51,6 +51,9 @@ class pc_data
    pc_data( const pc_data & p );
      pc_data & operator=( const pc_data & );
 
+ protected:
+   std::bitset<MAX_PCFLAG> flags;   /* Whether the player is deadly and whatever else we add. Also covers the old PLR_FLAGS */
+
  public:
      friend class char_data;
 
@@ -70,7 +73,7 @@ class pc_data
    void fread_comment( FILE * );
    void fread_old_comment( FILE * );
 
-   std::map<std::string, std::string > alias_map; /* Command aliases */
+   std::map<std::string, std::string> alias_map; /* Command aliases */
    std::map<int, std::string> qbits;  /* abit/qbit code */
    std::list<class board_chardata *> boarddata;
    std::list<class note_data *> comments;
@@ -89,6 +92,14 @@ class pc_data
    std::string email;  // The person's email address.
    std::string pwd; // The person's password
    std::string authed_by; // The immortal who authorized this player's name.
+   std::string filename;   /* For the safe mset name -Shaddai */
+   std::chrono::system_clock::time_point release_date; /* Auto-helling.. Altrag */
+   std::chrono::system_clock::time_point motd;   /* Last time they read an MOTD - Samson 12-31-00 */
+   std::chrono::system_clock::time_point imotd;  /* Last time they read an IMOTD for immortals - 12-31-00 */
+   std::chrono::system_clock::time_point logon;  /* When they last logged on */
+   std::chrono::hours played;                    /* Total hours they have in the game so far */
+   std::chrono::system_clock::time_point save_time;
+   std::chrono::system_clock::time_point restore_time;   /* The last time the char did a restore all */
    area_data *area;  /* For the area a PC has been assigned to build */
    class clan_data *clan;
    class realm_data *realm;
@@ -97,14 +108,11 @@ class pc_data
    class note_data *pnote;
    class board_data *board;
    struct game_board_data *game_board;
- protected:
-   std::bitset<MAX_PCFLAG> flags;   /* Whether the player is deadly and whatever else we add. Also covers the old PLR_FLAGS */
  public:
    void *spare_ptr;
    void *dest_buf;   /* This one is to assign to different things */
    char *bamfin;
    char *bamfout;
-   char *filename;   /* For the safe mset name -Shaddai */
    char *rank;
    char *title;
    char *helled_by;
@@ -114,13 +122,6 @@ class pc_data
    char *subprompt;  /* Substate prompt */
    char *afkbuf;  /* afk reason buffer - Samson 8-31-98 */
    char *motd_buf;   /* A temp buffer for editing MOTDs - 12-31-00 */
-   std::chrono::system_clock::time_point release_date; /* Auto-helling.. Altrag */
-   std::chrono::system_clock::time_point motd;   /* Last time they read an MOTD - Samson 12-31-00 */
-   std::chrono::system_clock::time_point imotd;  /* Last time they read an IMOTD for immortals - 12-31-00 */
-   std::chrono::system_clock::time_point logon;  /* When they last logged on */
-   std::chrono::hours played;                    /* Total hours they have in the game so far */
-   std::chrono::system_clock::time_point save_time;
-   std::chrono::system_clock::time_point restore_time;   /* The last time the char did a restore all */
    int pkills; /* Number of pkills on behalf of clan */
    int pdeaths;   /* Number of times pkilled (legally)  */
    int mkills; /* Number of mobs killed        */
@@ -184,14 +185,21 @@ class char_data
    {
       this->print( std::format( fmt, std::forward<Args>(args)...) );
    }
-
    void printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) ); // Legacy C style formatting.
-   void pager( const std::string & );
+
+   void pager( std::string_view );
+
+   template<typename... Args>
+   void pager_fmt( std::format_string<Args...> fmt, Args&&... args )
+   {
+      this->pager( std::format( fmt, std::forward<Args>(args)...) );
+   }
    void pagerf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
+
    void print_room( std::string_view );
    void set_color( short );
    void set_pager_color( short );
-   void set_title( const std::string & );
+   void set_title( std::string_view );
    int calculate_race_height(  );
    int calculate_race_weight(  );
    short get_trust(  );
@@ -206,16 +214,16 @@ class char_data
    short get_curr_lck(  );
    bool can_take_proto(  );
    bool can_see( char_data *, bool );
-   char_data *get_char_room( const std::string & );
-   char_data *get_char_world( const std::string & );
-   room_index *find_location( const std::string & );
+   char_data *get_char_room( std::string_view );
+   char_data *get_char_world( std::string_view );
+   room_index *find_location( std::string_view );
    bool can_see_obj( obj_data *, bool );
    bool can_drop_obj( obj_data * );
    obj_data *get_obj_vnum( int );
-   obj_data *get_obj_carry( const std::string & );
-   obj_data *get_obj_wear( const std::string & );
-   obj_data *get_obj_here( const std::string & );
-   obj_data *get_obj_world( const std::string & );
+   obj_data *get_obj_carry( std::string_view );
+   obj_data *get_obj_wear( std::string_view );
+   obj_data *get_obj_here( std::string_view );
+   obj_data *get_obj_world( std::string_view );
    obj_data *get_eq( int );
    int can_carry_n(  );
    int can_carry_w(  );
@@ -263,8 +271,8 @@ class char_data
     * External references in other files 
     */
    bool char_died(  );
-   void music( const std::string &, int, bool );
-   void sound( const std::string &, int, bool );
+   void music( std::string_view, int, bool );
+   void sound( std::string_view, int, bool );
    void reset_sound(  );
    void reset_music(  );
    const char *color_str( short );
@@ -280,7 +288,7 @@ class char_data
    void stop_editing(  );
    char *copy_buffer( bool );
    std::string copy_buffer(  );
-   void set_editor_desc( const std::string & );
+   void set_editor_desc( std::string_view );
    void edit_buffer( std::string & );
    void note_attach(  );
    bool can_charm(  );
@@ -630,4 +638,4 @@ extern std::list<char_data *> pclist;
 extern char_data *quitting_char;
 extern char_data *loading_char;
 extern char_data *saving_char;
-const char* PERS( char_data *, char_data *, bool );
+const std::string PERS( char_data *, char_data *, bool );

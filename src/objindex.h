@@ -28,7 +28,7 @@
 
 #pragma once
 
-const int MAX_OBJ_VALUE = 11; // This should always be one more than you actually have
+constexpr int MAX_OBJ_VALUE = 11; // This should always be one more than you actually have
 
 /*
  * Prototype for an object.
@@ -51,11 +51,11 @@ class obj_index
    std::list<affect_data *> affects;
    std::list<extra_descr_data *> extradesc;
    std::list<struct mud_prog_data *> mudprogs; /* Mudprogs */
-   obj_index *next;
-   area_data *area;
    std::bitset<MAX_PROG> progtypes; /* objprogs */
    std::bitset<MAX_ITEM_FLAG> extra_flags;
    std::bitset<MAX_WEAR_FLAG> wear_flags;
+   // obj_index *next;
+   area_data *area;
    char *name;
    char *short_descr;
    char *objdesc;

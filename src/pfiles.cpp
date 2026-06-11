@@ -37,10 +37,9 @@
 #include "realms.h"
 
 int num_quotes;   /* for quotes */
-#define QUOTE_FILE "quotes.dat"
 
 void prune_sales(  );
-void remove_from_auth( const std::string & );
+void remove_from_auth( std::string_view );
 void rare_update(  );
 void save_timedata(  );
 void adjust_pfile( const std::string & );
@@ -288,7 +287,7 @@ void quotes( char_data * ch )
    quote = get_quote( q );
    if( !quote )
    {
-      bug( "Missing quote #%d ?!?", q );
+      bug( "%s: Missing quote #%d ?!?", __func__, q );
       return;
    }
    ch->printf( "&W\r\n%s&d\r\n", quote->quote.c_str(  ) );
@@ -381,8 +380,7 @@ CMDF( do_pcrename )
 
    STRFREE( victim->name );
    victim->name = STRALLOC( capitalize( argument ).c_str(  ) );
-   STRFREE( victim->pcdata->filename );
-   victim->pcdata->filename = STRALLOC( capitalize( argument ).c_str(  ) );
+   victim->pcdata->filename = capitalize( argument );
    if( !std::filesystem::remove( oldname ) )
    {
       log_printf( "Error: Couldn't delete file %s in do_rename.", oldname.c_str() );
@@ -701,8 +699,11 @@ bool is_safe_target( const std::filesystem::path & target_dir )
 }
 
 // This should enforce using a specific filename found in BACKUP_DIR so that the admin has to input that to the do_pfiles() command.
-bool restore_pfiles( const std::string & archive_filename, const std::filesystem::path & target_dir )
+bool restore_pfiles( std::string_view a_file )
 {
+   std::filesystem::path target_dir = PLAYER_DIR;
+   std::filesystem::path archive_filename = a_file;
+
    // Construct the path and ensure it's inside BACKUP_DIR
    std::filesystem::path archive_path = std::filesystem::path( BACKUP_DIR ) / archive_filename;
 
@@ -748,8 +749,10 @@ bool restore_pfiles( const std::string & archive_filename, const std::filesystem
 }
 
 // Old backups will accumulate daily. So let's clean those up.
-void cleanup_old_backups( const std::filesystem::path & backup_dir, int days_to_keep )
+void cleanup_old_backups( int days_to_keep )
 {
+   std::filesystem::path backup_dir = BACKUP_DIR;
+
    for( const auto& entry : std::filesystem::directory_iterator( backup_dir ) )
    {
       auto ftime = std::filesystem::last_write_time( entry );
@@ -763,8 +766,11 @@ void cleanup_old_backups( const std::filesystem::path & backup_dir, int days_to_
 }
 
 // Generate a backup file whenever the pfiles are being pruned.
-void create_backup_archive( const std::filesystem::path & player_dir, const std::filesystem::path & backup_dir )
+void create_backup_archive( void )
 {
+   std::filesystem::path player_dir = PLAYER_DIR;
+   std::filesystem::path backup_dir = BACKUP_DIR;
+
    std::string timestamp = std::format( "{:%Y%m%d_%H%M%S}", std::chrono::floor<std::chrono::seconds>( current_time ) );
 
    std::filesystem::create_directories( backup_dir );
@@ -807,10 +813,10 @@ CMDF( do_pfiles )
        * Makes a backup copy of existing pfiles just in case - Samson
        */
       // Clears out any backup archives that are older than 30 days. Which should be more than enough time.
-      cleanup_old_backups( BACKUP_DIR, 30 ); // FIXME: Make this a sysdata setting once testing is complete.
+      cleanup_old_backups( 30 ); // FIXME: Make this a sysdata setting once testing is complete.
 
       // Generate the archive for this operation.
-      create_backup_archive( PLAYER_DIR, BACKUP_DIR );
+      create_backup_archive( );
 
       pfile_scan( false );
       rare_update(  );
@@ -849,13 +855,13 @@ CMDF( do_pfiles )
          return;
       }
 
-      if( restore_pfiles( arg2, PLAYER_DIR ) )
+      if( restore_pfiles( arg2 ) )
       {
-         ch->printf( "Successfully restored from %s.\r\n", arg2.c_str() );
+         ch->print_fmt( "Successfully restored from {}.\r\n", arg2 );
       }
       else
       {
-         ch->printf( "Error: Could not restore. Check if the filename is correct and exists in %s.\r\n", BACKUP_DIR );
+         ch->print_fmt( "Error: Could not restore. Check if the filename is correct and exists in {}.\r\n", BACKUP_DIR );
       }
       return;
    }
@@ -884,10 +890,10 @@ void check_pfiles( time_t reset )
           * Makes a backup copy of existing pfiles just in case - Samson 
           */
          // Clears out any backup archives that are older than 30 days. Which should be more than enough time.
-         cleanup_old_backups( BACKUP_DIR, 30 ); // FIXME: Make this a sysdata setting once testing is complete.
+         cleanup_old_backups( 30 ); // FIXME: Make this a sysdata setting once testing is complete.
 
          // Generate the archive for this operation.
-         create_backup_archive( PLAYER_DIR, BACKUP_DIR );
+         create_backup_archive( );
 
          new_pfile_time_t = current_time + std::chrono::hours( 24 );
          save_timedata(  );

@@ -27,13 +27,13 @@
  ****************************************************************************/
 
 #include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include "mud.h"
 #include "commands.h"
 #include "help.h"
 
-bool get_skill_help( char_data *, const std::string & );
-int skill_number( const std::string & );
+bool get_skill_help( char_data *, std::string_view );
 
 std::list<help_data *> helplist;
 
@@ -112,7 +112,7 @@ void save_helps( void )
 {
    std::ofstream stream;
 
-   stream.open( HELP_FILE );
+   stream.open( std::filesystem::path( HELP_FILE ) );
 
    if( !stream.is_open(  ) )
    {
@@ -148,7 +148,7 @@ void load_helps( void )
    top_help = 0;
    int file_ver = 0;
 
-   stream.open( HELP_FILE );
+   stream.open( std::filesystem::path( HELP_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_printf( "No help file found." );

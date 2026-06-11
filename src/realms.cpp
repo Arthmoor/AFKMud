@@ -38,7 +38,7 @@ const char *realm_type_names[MAX_REALM] = {
    "None", "Quest", "PR", "QA", "Builder", "Coder", "Admin", "Owner"
 };
 
-int get_realm_type_name( const std::string & flag )
+int get_realm_type_name( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( realm_type_names ) / sizeof( realm_type_names[0] ) ); ++x )
       if( !str_cmp( flag, realm_type_names[x] ) )
@@ -48,14 +48,13 @@ int get_realm_type_name( const std::string & flag )
 
 realm_roster_data::realm_roster_data(  )
 {
-   init_memory( &joined, &joined, sizeof( joined ) );
 }
 
 realm_roster_data::~realm_roster_data(  )
 {
 }
 
-void add_realm_roster( realm_data * realm, const std::string & name )
+void add_realm_roster( realm_data * realm, std::string_view name )
 {
    realm_roster_data *roster;
 
@@ -65,7 +64,7 @@ void add_realm_roster( realm_data * realm, const std::string & name )
    realm->memberlist.push_back( roster );
 }
 
-void remove_realm_roster( realm_data * realm, const std::string & name )
+void remove_realm_roster( realm_data * realm, std::string_view name )
 {
    for( auto* member : realm->memberlist )
    {
@@ -106,7 +105,7 @@ realm_data::~realm_data(  )
 /*
  * Get pointer to realm structure from realm name.
  */
-realm_data *get_realm( const std::string & name )
+realm_data *get_realm( std::string_view name )
 {
    for( auto* realm : realmlist )
    {
@@ -125,6 +124,27 @@ void free_realms( void )
 
       deleteptr( realm );
    }
+}
+
+bool IS_REALM_LEADER( char_data * ch )
+{
+   if( !ch->isnpc() && ch->pcdata->realm && !str_cmp( ch->name, ch->pcdata->realm->leader ) )
+      return true;
+   return false;
+}
+
+bool IS_ADMIN_REALM( char_data * ch )
+{
+   if( !ch->isnpc() && ch->pcdata->realm && ( ch->pcdata->realm->type == REALM_ADMIN || ch->pcdata->realm->type == REALM_OWNER ) )
+      return true;
+   return false;
+}
+
+bool IS_OWNER_REALM( char_data * ch )
+{
+   if( !ch->isnpc() && ch->pcdata->realm && ch->pcdata->realm->type == REALM_OWNER )
+      return true;
+   return false;
 }
 
 void delete_realm( char_data * ch, realm_data * realm )

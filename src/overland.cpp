@@ -47,7 +47,6 @@ void set_alarm( long );
 bool survey_environment( char_data * );
 void web_arealist(  );
 
-const int CONTINENT_FILE_VERSION = 1;
 extern const char *alarm_section;
 
 mapexit_data::mapexit_data(  )
@@ -253,7 +252,7 @@ void write_continent_list( void )
 {
    FILE *fpout;
 
-   fpout = fopen( CONT_LIST, "w" );
+   fpout = fopen( CONT_LIST.data(), "w" );
    if( !fpout )
    {
       bug( "%s -> %s:%d: cannot open continent.lst for writing!", __func__, __FILE__, __LINE__ );
@@ -375,7 +374,7 @@ void continent_data::fread_mapexit( std::ifstream & stream )
    shutdown_mud( "Corrupt continent file." );
 }
 
-void load_continent( const std::string & continent_file )
+void load_continent( std::string_view continent_file )
 {
    std::ifstream stream;
    continent_data *continent = nullptr;
@@ -386,7 +385,6 @@ void load_continent( const std::string & continent_file )
 
    if( !stream.is_open(  ) )
    {
-      perror( file_name.c_str() );
       bug( "%s -> %s:%d: error loading file (can't open) %s", __func__, __FILE__, __LINE__, file_name.c_str() );
       return;
    }
@@ -454,9 +452,9 @@ void load_continents( const int AREA_FILE_ALARM )
 
    if( !( fpList = fopen( list_file.c_str(), "r" ) ) )
    {
-      perror( CONT_LIST );
-      shutdown_mud( "Boot_db: Unable to open continent list" );
-      exit( 1 );
+      bug( "%s: Cannot open continent list file.", __func__ );
+      shutdown_mud( "Boot_db: Unable to open continent list." );
+      std::exit( EXIT_FAILURE );
    }
 
    continent_list.clear( );
@@ -469,9 +467,9 @@ void load_continents( const int AREA_FILE_ALARM )
          break;
       }
 
-      std::filesystem::path continent_file = fread_word( fpList );
+      std::string continent_file = fread_word( fpList );
 
-      if( !continent_file.empty() && continent_file.string()[0] == '$' )
+      if( !continent_file.empty() && continent_file[0] == '$' )
          break;
 
       set_alarm( AREA_FILE_ALARM );
@@ -514,6 +512,9 @@ void validate_overland_data( void )
    else
       log_string( "Overland map data has invalid settings that need to be corrected. See the above bug messages." );
 }
+
+// 1: Initial version.
+constexpr int CONTINENT_FILE_VERSION = 1;
 
 void continent_data::save( )
 {
@@ -1011,7 +1012,7 @@ continent_data *pick_random_continent( void )
 }
 
 // Find an existing continent by its name. Used during boot, and to find targets for exits.
-continent_data *find_continent_by_name( const std::string & name )
+continent_data *find_continent_by_name( std::string_view name )
 {
 
    for( auto* continent : continent_list )
@@ -1024,7 +1025,7 @@ continent_data *find_continent_by_name( const std::string & name )
 }
 
 // Used in OLC when creating a map and associating an area file with it.
-continent_data *find_continent_by_areafile( const std::string & name )
+continent_data *find_continent_by_areafile( std::string_view name )
 {
    for( auto* continent : continent_list )
    {
@@ -1036,7 +1037,7 @@ continent_data *find_continent_by_areafile( const std::string & name )
 }
 
 // Used in OLC when creating a map and associating a png file with it.
-continent_data *find_continent_by_pngfile( const std::string & name )
+continent_data *find_continent_by_pngfile( std::string_view name )
 {
    for( auto* continent : continent_list )
    {
@@ -1358,6 +1359,12 @@ CMDF( do_survey )
    if( !ch )
       return;
 
+   if( !ch->continent )
+   {
+      ch->print( "You cannot survey from a regular area.\r\n" );
+      return;
+   }
+
    for( auto* landmark : ch->continent->landmarks )
    {
       if( landmark->Isdesc )
@@ -1629,7 +1636,7 @@ mapexit_data *continent_data::check_mapexit( short x, short y )
    return nullptr;
 }
 
-void continent_data::modify_mapexit( mapexit_data * mexit, const std::string & tomap, short hereX, short hereY, short thereX, short thereY, int mvnum )
+void continent_data::modify_mapexit( mapexit_data * mexit, std::string_view tomap, short hereX, short hereY, short thereX, short thereY, int mvnum )
 {
    if( !mexit )
    {
@@ -1645,7 +1652,7 @@ void continent_data::modify_mapexit( mapexit_data * mexit, const std::string & t
    mexit->vnum = mvnum;
 }
 
-void continent_data::add_mapexit( const std::string & tomap, short hereX, short hereY, short thereX, short thereY, int mvnum )
+void continent_data::add_mapexit( std::string_view tomap, short hereX, short hereY, short thereX, short thereY, int mvnum )
 {
    mapexit_data *mexit;
 
@@ -2672,9 +2679,9 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
    if( !running )
    {
       if( ch->mount )
-         act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_NOTVICT, "$n %s %s upon $N.", txt, dir_name[dir] );
+         act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_NOTVICT, "$n {} {} upon $N.", txt, dir_name[dir] );
       else
-         act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "$n %s $T.", txt );
+         act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "$n {} $T.", txt );
    }
 
    if( !ch->is_immortal(  ) ) /* Imms don't get charged movement */
@@ -2736,14 +2743,14 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
       }
    }
 
-   const char *dtxt = rev_exit( dir );
+   std::string dtxt = rev_exit( dir );
 
    if( !running )
    {
       if( ch->mount )
-         act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_ROOM, "$n %s from %s upon $N.", txt, dtxt );
+         act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_ROOM, "$n {} from {} upon $N.", txt, dtxt );
       else
-         act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n %s from %s.", txt, dtxt );
+         act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n {} from {}.", txt, dtxt );
    }
 
    size_t chars = from_room->people.size(  );
@@ -2801,7 +2808,7 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
  * A cheap hack has been employed for the continent overhaul to use "-1" as a string argument
  * if you're coming from a regular room exit.
  */
-void enter_map( char_data * ch, exit_data * pexit, int x, int y, const std::string & tomap )
+void enter_map( char_data * ch, exit_data * pexit, int x, int y, std::string_view tomap )
 {
    room_index *maproom = nullptr, *original;
    continent_data *continent = nullptr;
@@ -2826,7 +2833,7 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, const std::stri
          maproom = get_room_index( continent->vnum );
       else
       {
-         bug( "%s -> %s:%d: Invalid target map specified: %s", __func__, __FILE__, __LINE__, tomap.c_str( ) );
+         bug( "%s -> %s:%d: Invalid target map specified: %s", __func__, __FILE__, __LINE__, tomap.data() );
          return;
       }
    }

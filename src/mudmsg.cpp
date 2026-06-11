@@ -39,7 +39,7 @@
 #include "channels.h"
 #include "roomindex.h"
 
-void send_tochannel( char_data *, mud_channel *, string & );
+void send_tochannel( char_data *, mud_channel *, std::string & );
 void free_zonedata( char_data * );
 
 /* License:
@@ -96,7 +96,7 @@ void free_zonedata( char_data * );
  * to use this can reach. So if you have muds in different home directories don't
  * bother unless you happen to own the whole system.
  */
-#define IPC_KEY_FILE "/home/afkmud/mudmsgkeyDONTDELETEME"
+constexpr std::string_view IPC_KEY_FILE = "/home/afkmud/mudmsgkeyDONTDELETEME";
 
 /* the ports the other muds run on, you can include this port too if you want
  * and the code will skip it automatically, terminate with -1
@@ -128,7 +128,7 @@ int open_queue( void )
 
    qstat.msg_qnum = 0;
    if( qid == -2 )
-      keyval = ftok( IPC_KEY_FILE, 'm' );
+      keyval = ftok( IPC_KEY_FILE.data(), 'm' );
 
    if( msgctl( qid, IPC_STAT, &qstat ) != -1 )
    {
@@ -219,7 +219,7 @@ void recv_text_handler( std::string & str )
 
    if( !isnpc )
    {
-      ch->name = STRALLOC( capitalize( chname.c_str(  ) ) );
+      ch->name = STRALLOC( capitalize( chname ).c_str() );
       ch->pcdata = new pc_data;
       ch->pcdata->wizinvis = ilevel;
       if( isinvis )
@@ -228,7 +228,7 @@ void recv_text_handler( std::string & str )
    else
    {
       ch->set_actflag( ACT_IS_NPC );
-      ch->short_descr = STRALLOC( capitalize( chname.c_str(  ) ) );
+      ch->short_descr = STRALLOC( capitalize( chname ).c_str() );
       ch->mobinvis = ilevel;
    }
    ch->level = clevel;

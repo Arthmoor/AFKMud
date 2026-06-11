@@ -32,7 +32,6 @@
 #include <sstream>
 #include "mud.h"
 #include "area.h"
-#include "auction.h"
 #include "clans.h"
 #include "descriptor.h"
 #include "event.h"
@@ -40,36 +39,36 @@
 #include "mud_prog.h"
 #include "objindex.h"
 #include "roomindex.h"
+// Had to move this down here because the C++ committee has too many wild hairs up their buts about how variadic functions work.
+#include "auction.h"
+
+auction_data *auction; // Global auction pointer.
 
 std::list<sale_data *> salelist;
-
-void bid( char_data *, char_data *, const std::string & );
 
 void save_sales( void )
 {
    std::ofstream stream;
 
-   stream.open( SALES_FILE );
+   stream.open( std::filesystem::path( SALES_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( SALES_FILE );
+      bug( "%s: Cannot open sales file.", __func__ );
+      return;
    }
-   else
+
+   for( auto* sale : salelist )
    {
-      for( auto* sale : salelist )
-      {
-         stream << "#SALE" << std::endl;
-         stream << "Aucmob    " << sale->get_aucmob(  ) << std::endl;
-         stream << "Seller    " << sale->get_seller(  ) << std::endl;
-         stream << "Buyer     " << sale->get_buyer(  ) << std::endl;
-         stream << "Item      " << sale->get_item(  ) << std::endl;
-         stream << "Bid       " << sale->get_bid(  ) << std::endl;
-         stream << "Collected " << sale->get_collected(  ) << std::endl;
-         stream << "End" << std::endl << std::endl;
-      }
-      stream.close(  );
+      stream << "#SALE" << std::endl;
+      stream << "Aucmob    " << sale->get_aucmob(  ) << std::endl;
+      stream << "Seller    " << sale->get_seller(  ) << std::endl;
+      stream << "Buyer     " << sale->get_buyer(  ) << std::endl;
+      stream << "Item      " << sale->get_item(  ) << std::endl;
+      stream << "Bid       " << sale->get_bid(  ) << std::endl;
+      stream << "Collected " << sale->get_collected(  ) << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
+   stream.close(  );
 }
 
 sale_data::sale_data(  )
@@ -85,7 +84,7 @@ sale_data::~sale_data(  )
       save_sales(  );
 }
 
-void add_sale( const std::string & aucmob, const std::string & seller, const std::string & buyer, const std::string & item, int bidamt, bool collected )
+void add_sale( std::string_view aucmob, std::string_view seller, std::string_view buyer, std::string_view item, int bidamt, bool collected )
 {
    sale_data *sale = new sale_data;
 
@@ -111,7 +110,7 @@ void free_sales( void )
    }
 }
 
-sale_data *check_sale( const std::string & aucmob, const std::string & pcname, const std::string & objname )
+sale_data *check_sale( std::string_view aucmob, std::string_view pcname, std::string_view objname )
 {
    for( auto* sale : salelist )
    {
@@ -198,7 +197,7 @@ void load_sales( void )
 
    salelist.clear(  );
 
-   stream.open( SALES_FILE );
+   stream.open( std::filesystem::path( SALES_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_string( "No sales file found." );
@@ -232,9 +231,9 @@ void load_sales( void )
       else if( key == "Item" )
          sale->set_item( value );
       else if( key == "Bid" )
-         sale->set_bid( atoi( value.c_str(  ) ) );
+         sale->set_bid( std::stoi( value ) );
       else if( key == "Collected" )
-         sale->set_collected( atoi( value.c_str(  ) ) );
+         sale->set_collected( std::stoi( value ) );
       else if( key == "End" )
          salelist.push_back( sale );
       else
@@ -245,7 +244,7 @@ void load_sales( void )
    prune_sales(  );
 }
 
-void read_aucvault( const char *dirname, const char *filename )
+void read_aucvault( std::string_view dirname, std::string_view filename )
 {
    room_index *aucvault;
    char_data *aucmob;
@@ -253,7 +252,7 @@ void read_aucvault( const char *dirname, const char *filename )
 
    if( !( aucmob = supermob->get_char_world( filename ) ) )
    {
-      bug( "%s: Um. Missing mob for %s's auction vault.", __func__, filename );
+      bug( "%s: Um. Missing mob for %s's auction vault.", __func__, filename.data() );
       return;
    }
 
@@ -268,7 +267,7 @@ void read_aucvault( const char *dirname, const char *filename )
    std::filesystem::path fname = std::format( "{}{}", dirname, filename );
    if( ( fp = fopen( fname.c_str(), "r" ) ) != nullptr )
    {
-      log_printf( "Loading auction house vault: %s", filename );
+      log_printf( "Loading auction house vault: %s", filename.data() );
       rset_supermob( aucvault );
 
       for( ;; )
@@ -342,7 +341,7 @@ void load_aucvaults( void )
    }
 }
 
-void save_aucvault( char_data * ch, const std::string & aucmob )
+void save_aucvault( char_data * ch, std::string_view aucmob )
 {
    room_index *aucvault;
    FILE *fp;
@@ -473,6 +472,19 @@ int advatoi( const char *s )
    return number;
 }
 
+// Because people on the C++ committee are raging assholes, this had to be split from the inline function over in auction.h.
+void send_auction_broadcast( std::string_view buf )
+{
+   for( auto* d : dlist )
+   {
+      char_data *original = d->original ? d->original : d->character;   // if switched
+
+      if( d->connected == CON_PLAYING && hasname( original->pcdata->chan_listen, "auction" )
+         && !original->in_room->flags.test( ROOM_SILENCE ) && !original->in_room->area->flags.test( AFLAG_SILENCE ) && original->level > 1 )
+         act_printf( AT_AUCTION, original, nullptr, nullptr, TO_CHAR, "Auction: {}", buf );
+   }
+}
+
 /*
   This function allows the following kinds of bets to be made:
 
@@ -523,32 +535,8 @@ int parsebet( const int currentbet, const char *s )
    return 0;
 }
 
-/*
- * this function sends raw argument over the AUCTION: channel
- * I am not too sure if this method is right..
- */
-void talk_auction( const char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
-void talk_auction( const char *fmt, ... )
-{
-   char buf[MSL];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL, fmt, args );
-   va_end( args );
-
-   for( auto* d : dlist )
-   {
-      char_data *original = d->original ? d->original : d->character;   /* if switched */
-
-      if( d->connected == CON_PLAYING && hasname( original->pcdata->chan_listen, "auction" )
-         && !original->in_room->flags.test( ROOM_SILENCE ) && !original->in_room->area->flags.test( AFLAG_SILENCE ) && original->level > 1 )
-         act_printf( AT_AUCTION, original, nullptr, nullptr, TO_CHAR, "Auction: %s", buf );
-   }
-}
-
 /* put an item on auction, or see the stats on the current item or bet */
-void bid( char_data * ch, char_data * buyer, const std::string & argument )
+void bid( char_data * ch, char_data * buyer, std::string_view argument )
 {
    obj_data *obj;
    std::string arg, arg1, arg2;
@@ -606,7 +594,7 @@ void bid( char_data * ch, char_data * buyer, const std::string & argument )
 
          aucvault = get_room_index( auction->seller->in_room->vnum + 1 );
 
-         talk_auction( "Sale of %s has been stopped by an Immortal.", auction->item->short_descr );
+         talk_auction( "Sale of {} has been stopped by an Immortal.", auction->item->short_descr );
 
          auction->item->to_room( aucvault, auction->seller );
          /*
@@ -694,7 +682,7 @@ void bid( char_data * ch, char_data * buyer, const std::string & argument )
          auction->bet = newbet;
          auction->going = 0;
 
-         talk_auction( "A bid of %d gold has been received on %s.\r\n", newbet, auction->item->short_descr );
+         talk_auction( "A bid of {} gold has been received on {}.\r\n", newbet, auction->item->short_descr );
 
          return;
       }
@@ -789,7 +777,7 @@ void bid( char_data * ch, char_data * buyer, const std::string & argument )
             if( auction->starting > 0 )
                auction->bet = auction->starting;
 
-            talk_auction( "Bidding begins on %s at %d gold.", obj->short_descr, auction->starting );
+            talk_auction( "Bidding begins on {} at {} gold.", obj->short_descr, auction->starting );
 
             /*
              * Setup the auction event 
@@ -804,6 +792,20 @@ void bid( char_data * ch, char_data * buyer, const std::string & argument )
       if( !ch->is_immortal(  ) )
          ch->WAIT_STATE( sysdata->pulseviolence );
    }
+}
+
+// Called when the MUD starts.
+void init_auction( void )
+{
+   auction = new auction_data;
+   auction->item = nullptr;
+}
+
+// Called when the MUD shuts down.
+void clear_auction( void )
+{
+   if( auction->item )
+      bid( supermob, nullptr, "stop" );
 }
 
 CMDF( do_bid )
@@ -884,13 +886,13 @@ CMDF( do_identify )
 
    if( !obj || ( obj->buyer != nullptr && str_cmp( obj->buyer, "" ) ) )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       return;
    }
 
    if( !str_cmp( obj->seller, "" ) || !obj->seller )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       bug( "%s: Object with no seller - %s", __func__, obj->short_descr );
       return;
    }
@@ -923,7 +925,7 @@ CMDF( do_identify )
       ;
    else
    {
-      act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "$n charges you %.0f gold for the identification.", idcost );
+      act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "$n charges you {:0.0f} gold for the identification.", idcost );
       ch->gold -= ( int )idcost;
       if( found && clan->bank )
       {
@@ -990,7 +992,7 @@ CMDF( do_collect )
 
          if( !sold->get_collected(  ) && str_cmp( sold->get_buyer(  ), "The Code" ) )
          {
-            act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "%s has not collected %s yet.", sold->get_buyer(  ).c_str(  ), sold->get_item(  ).c_str(  ) );
+            act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "{} has not collected {} yet.", sold->get_buyer(  ), sold->get_item(  ) );
             continue;
          }
 
@@ -999,7 +1001,7 @@ CMDF( do_collect )
          fee = ( sold->get_bid(  ) * 0.05 );
          net = sold->get_bid(  ) - fee;
 
-         act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "$n sold %s to %s for %d gold.", sold->get_item(  ).c_str(  ), sold->get_buyer(  ).c_str(  ), sold->get_bid(  ) );
+         act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "$n sold {} to {} for {} gold.", sold->get_item(  ), sold->get_buyer(  ), sold->get_bid(  ) );
 
          totalfee += fee;
          totalnet += net;
@@ -1013,7 +1015,7 @@ CMDF( do_collect )
          return;
       }
 
-      act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "$n collects his fee of %.0f, and hands you %.0f gold.", totalfee, totalnet );
+      act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "$n collects his fee of {:0.0f}, and hands you {:0.0f} gold.", totalfee, totalnet );
       act( AT_AUCTION, "$n collects his fees and hands $N some gold.", auc, nullptr, ch, TO_NOTVICT );
 
       ch->gold += ( int )totalnet;
@@ -1055,7 +1057,7 @@ CMDF( do_collect )
 
    if( !obj )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a %s being sold.'", argument.c_str(  ) );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being sold.'", argument );
       return;
    }
 
@@ -1094,7 +1096,7 @@ CMDF( do_collect )
       {
          ch->gold -= ( int )fee;
          ch->save(  );
-         act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "$n charges you a fee of %.0f for $s services.", fee );
+         act_printf( AT_AUCTION, auc, nullptr, ch, TO_VICT, "$n charges you a fee of {:0.0f} for $s services.", fee );
          if( found && clan->bank )
          {
             clan->balance += ( int )fee;
@@ -1106,7 +1108,7 @@ CMDF( do_collect )
 
    if( str_cmp( obj->buyer, ch->name ) )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'But you didn't win the bidding on %s!'", obj->short_descr );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'But you didn't win the bidding on {}!'", obj->short_descr );
       return;
    }
 
@@ -1140,7 +1142,7 @@ CMDF( do_collect )
    obj->bid = 0;
 }
 
-void auction_value( char_data * ch, char_data * auc, const std::string & argument )
+void auction_value( char_data * ch, char_data * auc, std::string_view argument )
 {
    room_index *aucvault, *original;
    obj_data *obj;
@@ -1179,20 +1181,20 @@ void auction_value( char_data * ch, char_data * auc, const std::string & argumen
 
    if( !obj || ( obj->buyer != nullptr && str_cmp( obj->buyer, "" ) ) )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       return;
    }
 
    if( !str_cmp( obj->seller, "" ) || obj->seller == nullptr )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       bug( "%s: Object with no seller - %s", __func__, obj->short_descr );
       return;
    }
-   ch->printf( "&[auction]%s : Offered by %s. Minimum bid: %d\r\n", obj->short_descr, obj->seller, obj->bid );
+   ch->print_fmt( "&[auction]{} : Offered by {}. Minimum bid: {}\r\n", obj->short_descr, obj->seller, obj->bid );
 }
 
-void auction_buy( char_data * ch, char_data * auc, const std::string & argument )
+void auction_buy( char_data * ch, char_data * auc, std::string_view argument )
 {
    room_index *aucvault, *original;
    obj_data *obj;
@@ -1238,20 +1240,20 @@ void auction_buy( char_data * ch, char_data * auc, const std::string & argument 
 
    if( !obj )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       return;
    }
 
    if( !str_cmp( obj->seller, "" ) || obj->seller == nullptr )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a %s being offered.'", argument.c_str(  ) );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       bug( "%s: Object with no seller - %s", __func__, obj->short_descr );
       return;
    }
 
    if( obj->buyer != nullptr && str_cmp( obj->buyer, "" ) )
    {
-      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'That item has already been sold to %s.'", obj->buyer );
+      act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'That item has already been sold to {}.'", obj->buyer );
       return;
    }
 
@@ -1400,7 +1402,7 @@ void auction_sell( char_data * ch, char_data * auc, std::string & argument )
    act( AT_AUCTION, "$n offers $p up for auction.", ch, obj, nullptr, TO_ROOM );
    act( AT_AUCTION, "You put $p up for auction.", ch, obj, nullptr, TO_CHAR );
 
-   talk_auction( "%s accepts %s at a minimum bid of %d.", auc->short_descr, obj->short_descr, obj->bid );
+   talk_auction( "{} accepts {} at a minimum bid of {}.", auc->short_descr, obj->short_descr, obj->bid );
 
    obj->day = time_info.day;
    obj->month = time_info.month;
@@ -1466,14 +1468,14 @@ void sweep_house( room_index * aucroom )
             aucmob->from_room(  );
             if( !aucmob->to_room( aucroom ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-            talk_auction( "%s has turned %s over to %s.", aucmob->short_descr, aucobj->short_descr, clan->name.c_str(  ) );
+            talk_auction( "{} has turned {} over to {}.", aucmob->short_descr, aucobj->short_descr, clan->name.c_str(  ) );
          }
          else
          {
             aucobj->extra_flags.set( ITEM_DONATION );
             aucobj->from_char(  );
             aucobj->to_room( get_room_index( ROOM_VNUM_DONATION ), nullptr );
-            talk_auction( "%s donated %s to charity.", aucmob->short_descr, aucobj->short_descr );
+            talk_auction( "{} donated {} to charity.", aucmob->short_descr, aucobj->short_descr );
          }
       }
    }
@@ -1482,7 +1484,7 @@ void sweep_house( room_index * aucroom )
 /* Sweep old crap from auction houses on daily basis (game time)- Samson 11-1-99 */
 void clean_auctions( void )
 {
-   std::map < int, room_index * >::iterator iroom;
+   std::map<int, room_index *>::iterator iroom;
 
    for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
    {

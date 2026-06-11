@@ -57,7 +57,7 @@ End
 #SLAY
 Type      die
 Owner     Any
-Color     25
+Color     8
 Cmessage  &R
 
         diediediediediediediediediediediedie
@@ -125,7 +125,7 @@ End
 #SLAY
 Type      balzhur
 Owner     Any
-Color     25
+Color     8
 Cmessage  You have opened the gates of Hell and called Balzhur to slay $N!
 
                                        &R.                                  &D

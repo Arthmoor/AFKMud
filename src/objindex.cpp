@@ -130,7 +130,7 @@ obj_index::~obj_index(  )
 
 obj_index::obj_index(  )
 {
-   init_memory( &next, &layers, sizeof( layers ) );
+   init_memory( &area, &layers, sizeof( layers ) );
 }
 
 /*
@@ -876,13 +876,13 @@ CMDF( do_ofind )
       if( fAll || hasname( pObjIndex->name, argument ) )
       {
          ++nMatch;
-         ch->pagerf( "[%5d] %s\r\n", pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
+         ch->pager_fmt( "[{:5}] {}\r\n", pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
       }
       ++iobj;
    }
 
    if( nMatch )
-      ch->pagerf( "Number of matches: %d\n", nMatch );
+      ch->pager_fmt( "Number of matches: {}\n", nMatch );
    else
       ch->print( "Nothing like that in hell, earth, or heaven.\r\n" );
 }

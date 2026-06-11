@@ -55,15 +55,15 @@ bool MPSilent;
 
 /* Defines by Narn for new mudprog parsing, used as 
    return values from mprog_do_command. */
-const int COMMANDOK = 1;
-const int IFTRUE = 2;
-const int IFFALSE = 3;
-const int ORTRUE = 4;
-const int ORFALSE = 5;
-const int FOUNDELSE = 6;
-const int FOUNDENDIF = 7;
-const int IFIGNORED = 8;
-const int ORIGNORED = 9;
+constexpr int COMMANDOK = 1;
+constexpr int IFTRUE = 2;
+constexpr int IFFALSE = 3;
+constexpr int ORTRUE = 4;
+constexpr int ORFALSE = 5;
+constexpr int FOUNDELSE = 6;
+constexpr int FOUNDENDIF = 7;
+constexpr int IFIGNORED = 8;
+constexpr int ORIGNORED = 9;
 
 bool in_arena( char_data * );
 
@@ -225,7 +225,7 @@ void free_prog_actlists( void )
 }
 
 /* This routine reads in scripts of MUDprograms from a file */
-int mprog_name_to_type( const std::string & name )
+int mprog_name_to_type( std::string_view name )
 {
    if( !str_cmp( name, "in_file_prog" ) )
       return IN_FILE_PROG;
@@ -364,7 +364,7 @@ char *mprog_next_command( char *clist )
  *  still have trailing spaces so be careful when editing since:
  *  "guard" and "guard " are not equal.
  */
-bool mprog_seval( const char *lhs, const char *opr, const char *rhs, char_data * mob )
+bool mprog_seval( std::string_view lhs, std::string_view opr, std::string_view rhs, char_data * mob )
 {
    if( !str_cmp( opr, "==" ) )
       return ( !str_cmp( lhs, rhs ) );
@@ -375,11 +375,11 @@ bool mprog_seval( const char *lhs, const char *opr, const char *rhs, char_data *
    if( !str_cmp( opr, "!/" ) )
       return ( str_infix( rhs, lhs ) );
 
-   progbugf( mob, "%s: Improper MOBprog operator '%s'", __func__, opr );
+   progbugf( mob, "{}: Improper MOBprog operator '{}'", __func__, opr );
    return 0;
 }
 
-bool mprog_veval( int lhs, const char *opr, int rhs, char_data * mob )
+bool mprog_veval( int lhs, std::string_view opr, int rhs, char_data * mob )
 {
    if( !str_cmp( opr, "==" ) )
       return ( lhs == rhs );
@@ -402,10 +402,12 @@ bool mprog_veval( int lhs, const char *opr, int rhs, char_data * mob )
    return 0;
 }
 
+// I don't want to touch this define because this whole function scares the crap out of me and I don't want to break it.
 #define isoperator(c) ((c)=='='||(c)=='<'||(c)=='>'||(c)=='!'||(c)=='&'||(c)=='|')
-const int MAX_IF_ARGS = 6;
+constexpr int MAX_IF_ARGS = 6;
 
-/* This function performs the evaluation of the if checks.  It is
+/*
+ * This function performs the evaluation of the if checks.  It is
  * here that you can add any ifchecks which you so desire. Hopefully
  * it is clear from what follows how one would go about adding your
  * own. The syntax for an if check is: ifcheck ( arg ) [opr val]
@@ -1806,7 +1808,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
    }
 
    /*
-    * Ok... all the ifchecks are done, so if we didnt find ours then something
+    * Ok... all the ifchecks are done, so if we didn't find ours then something
     * odd happened.  So report the bug and abort the MUDprogram (return error)
     */
    progbug( "Unknown ifcheck", mob );
@@ -1814,7 +1816,6 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
 }
 
 #undef isoperator
-#undef MAX_IF_ARGS
 
 /* This routine handles the variables for command expansion.
  * If you want to add any go right ahead, it should be fairly
@@ -2815,12 +2816,12 @@ void mpsleep_update( void )
    }
 }
 
-bool mprog_keyword_check( const std::string & argu, const char *argl )
+bool mprog_keyword_check( std::string_view argu, const char *argl )
 {
    char word[MIL], arg1[MIL], arg2[MIL];
    char *arg, *arglist, *start, *end;
 
-   strcpy( arg1, argu.c_str(  ) );
+   strcpy( arg1, argu.data() );
    arg = strlower( arg1 );
 
    strcpy( arg2, argl );
@@ -2852,7 +2853,7 @@ bool mprog_keyword_check( const std::string & argu, const char *argl )
  *  on a certain percent, or trigger on a keyword or word phrase.
  *  To see how this works, look at the various trigger routines..
  */
-bool mprog_and_wordlist_check( const std::string & arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
+bool mprog_and_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
 {
    char temp1[MSL], temp2[MIL], word[MIL];
    char *list, *start, *dupl, *end;
@@ -2868,7 +2869,7 @@ bool mprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
          for( i = 0; i < strlen( list ); ++i )
             list[i] = to_lower( list[i] );
 
-         strcpy( temp2, arg.c_str(  ) );
+         strcpy( temp2, arg.data() );
          dupl = temp2;
 
          for( i = 0; i < strlen( dupl ); ++i )
@@ -2903,7 +2904,7 @@ bool mprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
    return executed;
 }
 
-bool mprog_wordlist_check( const std::string & arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
+bool mprog_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
 {
    char temp1[MSL], temp2[MIL], word[MIL];
    char *list, *start, *dupl, *end;
@@ -2919,7 +2920,7 @@ bool mprog_wordlist_check( const std::string & arg, char_data * mob, char_data *
          for( i = 0; i < strlen( list ); ++i )
             list[i] = to_lower( list[i] );
 
-         strcpy( temp2, arg.c_str(  ) );
+         strcpy( temp2, arg.data() );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
             dupl[i] = to_lower( dupl[i] );
@@ -2956,7 +2957,7 @@ bool mprog_wordlist_check( const std::string & arg, char_data * mob, char_data *
    return executed;
 }
 
-bool oprog_and_wordlist_check( const std::string & arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, obj_data * iobj )
+bool oprog_and_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, obj_data * iobj )
 {
    char temp1[MSL], temp2[MIL], word[MIL];
    char *list, *start, *dupl, *end;
@@ -2972,7 +2973,7 @@ bool oprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
          for( i = 0; i < strlen( list ); ++i )
             list[i] = to_lower( list[i] );
 
-         strcpy( temp2, arg.c_str(  ) );
+         strcpy( temp2, arg.data() );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
             dupl[i] = to_lower( dupl[i] );
@@ -3003,7 +3004,7 @@ bool oprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
    return executed;
 }
 
-bool oprog_wordlist_check( const std::string & arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, obj_data * iobj )
+bool oprog_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, obj_data * iobj )
 {
    char temp1[MSL], temp2[MIL], word[MIL];
    char *list, *start, *dupl, *end;
@@ -3019,7 +3020,7 @@ bool oprog_wordlist_check( const std::string & arg, char_data * mob, char_data *
          for( i = 0; i < strlen( list ); ++i )
             list[i] = to_lower( list[i] );
 
-         strcpy( temp2, arg.c_str(  ) );
+         strcpy( temp2, arg.data() );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
             dupl[i] = to_lower( dupl[i] );
@@ -3060,7 +3061,7 @@ bool oprog_wordlist_check( const std::string & arg, char_data * mob, char_data *
    return executed;
 }
 
-bool rprog_and_wordlist_check( const std::string & arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, room_index * room )
+bool rprog_and_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, room_index * room )
 {
    char temp1[MSL], temp2[MIL], word[MIL];
    char *list, *start, *dupl, *end;
@@ -3079,7 +3080,7 @@ bool rprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
          for( i = 0; i < strlen( list ); ++i )
             list[i] = to_lower( list[i] );
 
-         strcpy( temp2, arg.c_str(  ) );
+         strcpy( temp2, arg.data() );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
             dupl[i] = to_lower( dupl[i] );
@@ -3112,7 +3113,7 @@ bool rprog_and_wordlist_check( const std::string & arg, char_data * mob, char_da
    return executed;
 }
 
-bool rprog_wordlist_check( const std::string & arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, room_index * room )
+bool rprog_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, room_index * room )
 {
    char temp1[MSL], temp2[MIL], word[MIL];
    char *list, *start, *dupl, *end;
@@ -3131,7 +3132,7 @@ bool rprog_wordlist_check( const std::string & arg, char_data * mob, char_data *
          for( i = 0; i < strlen( list ); ++i )
             list[i] = to_lower( list[i] );
 
-         strcpy( temp2, arg.c_str(  ) );
+         strcpy( temp2, arg.data() );
          dupl = temp2;
          for( i = 0; i < strlen( dupl ); ++i )
             dupl[i] = to_lower( dupl[i] );
@@ -3227,7 +3228,7 @@ void mob_act_add( char_data * mob )
  * make sure you remember to modify the variable names to the ones in the
  * trigger calls.
  */
-void mprog_act_trigger( const std::string & buf, char_data * mob, char_data * ch, obj_data * obj, char_data * victim, obj_data * target )
+void mprog_act_trigger( std::string_view buf, char_data * mob, char_data * ch, obj_data * obj, char_data * victim, obj_data * target )
 {
    mprog_act_list *tmp_act;
    bool found = false;
@@ -3266,7 +3267,7 @@ void mprog_act_trigger( const std::string & buf, char_data * mob, char_data * ch
    }
 }
 
-bool mprog_keyword_trigger( const std::string & txt, char_data * actor )
+bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
 {
    bool rValue = false;
 
@@ -3577,7 +3578,7 @@ void mprog_sell_trigger( char_data * mob, char_data * ch, obj_data * obj )
    }
 }
 
-void mprog_tell_trigger( const std::string & txt, char_data * actor )
+void mprog_tell_trigger( std::string_view txt, char_data * actor )
 {
    for( auto* vmob : actor->in_room->people )
    {
@@ -3590,7 +3591,7 @@ void mprog_tell_trigger( const std::string & txt, char_data * actor )
    }
 }
 
-void mprog_and_tell_trigger( const std::string & txt, char_data * actor )
+void mprog_and_tell_trigger( std::string_view txt, char_data * actor )
 {
    for( auto it = actor->in_room->people.begin(); it != actor->in_room->people.end(); )
    {
@@ -3612,7 +3613,7 @@ void mprog_and_tell_trigger( const std::string & txt, char_data * actor )
    }
 }
 
-bool mprog_command_trigger( char_data * actor, const std::string & txt )
+bool mprog_command_trigger( char_data * actor, std::string_view txt )
 {
    for( auto* vmob : actor->in_room->people )
    {
@@ -3703,7 +3704,7 @@ void mprog_hour_trigger( char_data * mob )
 }
 
 /* Added by Tarl 7-21-00 */
-void mprog_and_speech_trigger( const std::string & txt, char_data * actor )
+void mprog_and_speech_trigger( std::string_view txt, char_data * actor )
 {
    for( auto it = actor->in_room->people.begin(); it != actor->in_room->people.end(); )
    {
@@ -3727,7 +3728,7 @@ void mprog_and_speech_trigger( const std::string & txt, char_data * actor )
    }
 }
 
-void mprog_targetted_speech_trigger( const std::string & txt, char_data * actor, char_data * victim )
+void mprog_targetted_speech_trigger( std::string_view txt, char_data * actor, char_data * victim )
 {
    if( victim->isnpc(  ) && HAS_PROG( victim->pIndexData, SPEECH_PROG ) )
    {
@@ -3737,7 +3738,7 @@ void mprog_targetted_speech_trigger( const std::string & txt, char_data * actor,
    }
 }
 
-void mprog_speech_trigger( const std::string & txt, char_data * actor )
+void mprog_speech_trigger( std::string_view txt, char_data * actor )
 {
    for( auto it = actor->in_room->people.begin(); it != actor->in_room->people.end(); )
    {
@@ -3791,7 +3792,7 @@ void oprog_script_trigger( obj_data * obj )
    }
 }
 
-bool oprog_command_trigger( char_data * ch, const std::string & txt )
+bool oprog_command_trigger( char_data * ch, std::string_view txt )
 {
    /*
     * supermob is set and released in oprog_wordlist_check 
@@ -3825,7 +3826,7 @@ void rprog_script_trigger( room_index * room )
    }
 }
 
-bool rprog_command_trigger( char_data * ch, const std::string & txt )
+bool rprog_command_trigger( char_data * ch, std::string_view txt )
 {
    if( HAS_PROG( ch->in_room, CMD_PROG ) )
    {
@@ -3947,7 +3948,7 @@ void oprog_greet_trigger( char_data * ch )
    }
 }
 
-void oprog_and_speech_trigger( const std::string & txt, char_data * ch )
+void oprog_and_speech_trigger( std::string_view txt, char_data * ch )
 {
    for( auto it = ch->in_room->objects.begin(); it != ch->in_room->objects.end(); )
    {
@@ -3963,7 +3964,7 @@ void oprog_and_speech_trigger( const std::string & txt, char_data * ch )
    }
 }
 
-void oprog_speech_trigger( const std::string & txt, char_data * ch )
+void oprog_speech_trigger( std::string_view txt, char_data * ch )
 {
    for( auto it = ch->in_room->objects.begin(); it != ch->in_room->objects.end(); )
    {
@@ -4166,7 +4167,7 @@ void oprog_push_trigger( char_data * ch, obj_data * obj )
 }
 
 void obj_act_add( obj_data * obj );
-void oprog_act_trigger( const std::string & buf, obj_data * mobj, char_data * ch, obj_data * obj, char_data * victim, obj_data * target )
+void oprog_act_trigger( std::string_view buf, obj_data * mobj, char_data * ch, obj_data * obj, char_data * victim, obj_data * target )
 {
    if( HAS_PROG( mobj->pIndexData, ACT_PROG ) )
    {
@@ -4230,7 +4231,7 @@ void rprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
  * Triggers follow
  */
 void room_act_add( room_index * room );
-void rprog_act_trigger( const std::string & buf, room_index * room, char_data * ch, obj_data * obj, char_data * victim, obj_data * target )
+void rprog_act_trigger( std::string_view buf, room_index * room, char_data * ch, obj_data * obj, char_data * victim, obj_data * target )
 {
    if( HAS_PROG( room, ACT_PROG ) )
    {
@@ -4330,7 +4331,7 @@ void rprog_death_trigger( char_data * ch )
    }
 }
 
-void rprog_and_speech_trigger( const std::string & txt, char_data * ch )
+void rprog_and_speech_trigger( std::string_view txt, char_data * ch )
 {
    if( HAS_PROG( ch->in_room, SPEECH_AND_PROG ) )
    {
@@ -4341,7 +4342,7 @@ void rprog_and_speech_trigger( const std::string & txt, char_data * ch )
    }
 }
 
-void rprog_speech_trigger( const std::string & txt, char_data * ch )
+void rprog_speech_trigger( std::string_view txt, char_data * ch )
 {
    if( HAS_PROG( ch->in_room, SPEECH_PROG ) )
    {
@@ -4464,21 +4465,9 @@ void oprog_month_trigger( obj_data * obj )
    }
 }
 
-// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
-void progbugf( char_data * mob, const char *fmt, ... )
-{
-   char buf[MSL * 2];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 2, fmt, args );
-   va_end( args );
-
-   progbug( buf, mob );
-}
-
 /* Written by Jenny, Nov 29/95 */
-void progbug( const std::string & str, char_data * mob )
+// A printf style version is in mud_prog.h
+void progbug( std::string_view str, char_data * mob )
 {
    int vnum = mob->pIndexData ? mob->pIndexData->vnum : 0;
 
@@ -4493,10 +4482,10 @@ void progbug( const std::string & str, char_data * mob )
        * was set to indicate the object or room, so we just need to show
        * the description in the bug message.
        */
-      bug( "%s, %s.", str.c_str(  ), mob->chardesc == nullptr ? "(unknown)" : mob->chardesc );
+      bug( "%s, %s.", str.data(), mob->chardesc == nullptr ? "(unknown)" : mob->chardesc );
    }
    else
-      bug( "%s, Mob #%d.", str.c_str(  ), vnum );
+      bug( "%s, Mob #%d.", str.data(), vnum );
 }
 
 // A much simpler version than the old mess - Samson 8/2/05

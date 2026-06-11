@@ -394,7 +394,7 @@ size_t get_line( std::string_view desc, size_t max_len )
    size_t byte_idx = 0;
 
    /*
-    * Calculate end point in string without color
+    * Calculate end point in string without color.
     */
    while( byte_idx < desc.length() && visual_len <= max_len )
    {
@@ -410,7 +410,7 @@ size_t get_line( std::string_view desc, size_t max_len )
             byte_idx += consumed; // Tokens (like color codes) have a visual length of 0 so we don't add to byte_idx.
          else
          {
-            // Not a valid color token, treat as normal char
+            // Not a valid color token, treat as normal char.
             ++visual_len;
             ++byte_idx;
          }
@@ -433,12 +433,12 @@ size_t get_line( std::string_view desc, size_t max_len )
    return ( break_idx == std::string_view::npos ) ? byte_idx : break_idx + 1;
 }
 
-std::string get_next_line_for_map( std::string_view & remaining, size_t width, char_data * ch, const char * original_text, bool & alldesc )
+std::string get_next_line_for_map( std::string_view & remaining, size_t width, char_data * ch, std::string_view original_text, bool & alldesc )
 {
    int len = get_line( remaining.data(), width );
    std::string_view line = ( len > 0 ) ? remaining.substr( 0, len ) : remaining;
 
-   std::string_view color = whatColor( original_text, line.data() );
+   std::string color = whatColor( original_text, line );
    std::string result = ( color.empty() ? ch->color_str( AT_RMDESC ) : std::string( color ) );
    result += line;
 
@@ -450,13 +450,13 @@ std::string get_next_line_for_map( std::string_view & remaining, size_t width, c
 }
 
 /* Display the map to the player */
-void show_map( char_data* ch, char* text )
+void show_map( char_data* ch, std::string_view text )
 {
    if( !ch )
       return;
 
    std::string output;
-   std::string_view remaining_text{text ? text : ""};
+   std::string_view remaining_text = ( !text.empty() ? text : "" );
    bool alldesc = remaining_text.empty();
 
    if( ch->has_pcflag( PCFLAG_AUTOEXIT ) )
@@ -542,5 +542,5 @@ void draw_map( char_data* ch, std::string_view desc )
    dmap[x][y].tegn = '@';
    dmap[x][y].sector = -1;
 
-   show_map( ch, formatted_desc.data() );
+   show_map( ch, formatted_desc );
 }

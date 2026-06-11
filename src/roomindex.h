@@ -103,7 +103,7 @@ class room_index
     ~room_index(  );
 
    void olc_add_affect( char_data *, bool, std::string & );
-   void olc_remove_affect( char_data *, bool, const std::string & );
+   void olc_remove_affect( char_data *, bool, std::string_view );
    void clean_room(  );
    void randomize_exits( short );
    exit_data *make_exit( room_index *, short );
@@ -111,7 +111,7 @@ class room_index
    exit_data *get_exit( short );
    exit_data *get_exit_to( short, int );
    exit_data *get_exit_num( short );
-   void echo( const std::string & );
+   void echo( std::string_view );
    void rprog_read_programs( FILE * );
    bool is_dark( char_data * );
    bool is_private(  );
@@ -160,12 +160,25 @@ extern std::map<int, room_index *> room_index_table;
 
 room_index *get_room_index( int );
 room_index *make_room( int, area_data * );
-int get_dirnum( const std::string & );
-const char *rev_exit( short );
+int get_dirnum( std::string_view );
+std::string rev_exit( short );
 
+/*
 #define EXIT(x, door)   ( (x)->in_room->get_exit( door ) )
 #define CAN_GO(x, door) ( EXIT((x),(door)) && (EXIT((x),(door))->to_room != nullptr )  \
                           && !IS_EXIT_FLAG( EXIT((x), (door)), EX_CLOSED ) )
+*/
+
+template <typename T>
+bool CAN_GO( const T* x, int door )
+{
+   if( !x || !x->in_room )
+      return false;
+
+   auto exit = x->in_room->get_exit( door );
+
+   return exit != nullptr && exit->to_room != nullptr && !IS_EXIT_FLAG( exit, EX_CLOSED );
+}
 
 /*
  * Delayed teleport type.

@@ -39,132 +39,130 @@
  */
 #include <filesystem>
 #include <fstream>
+#include <unordered_map>
 #include "mud.h"
 #include "descriptor.h"
+#include "mud_prog.h"
 #include "new_auth.h"
 
-char_data *get_waiting_desc( char_data *, const std::string & );
 CMDF( do_reserve );
 CMDF( do_destroy );
 bool can_use_mprog( char_data * );
 
 std::list<auth_data *> authlist;
 
-NameManager & NameManager::instance()
+struct NameGenLists
 {
-   static NameManager instance;
-   return instance;
+   std::vector<std::string> start;
+   std::vector<std::string> middle;
+   std::vector<std::string> end;
+};
+
+NameGenLists main_namegen;
+std::unordered_map<std::string, std::vector<std::string>> cached_name_lists;
+
+bool is_valid_line( std::string & line )
+{
+   line.erase( std::remove( line.begin(), line.end(), '\r' ), line.end() );
+   return !line.empty() && line[0] != '/';
 }
 
-void NameManager::load_list( const std::string & filename )
+void load_name_generator( void )
 {
-   if( list_cache.contains( filename ) )
-      return;
-
-   std::ifstream infile( filename );
-   if( !infile.is_open() )
-      return;
-
-   std::vector<std::string> names;
-   std::string line;
-   bool collecting = false;
-
-   while( std::getline( infile, line ) )
+   std::ifstream infile{std::filesystem::path(NAMEGEN_FILE)};
+   if( infile )
    {
-      if( !line.empty() && line.back() == '\r' )
-         line.pop_back();
-      if( line == "[start]" )
+      std::string line;
+      std::vector<std::string>* current_list = nullptr;
+
+      while( std::getline( infile, line ) )
       {
-         collecting = true;
-         continue;
+         if( line == "[start]" )
+            current_list = &main_namegen.start;
+         else if( line == "[middle]" )
+            current_list = &main_namegen.middle;
+         else if( line == "[end]" )
+            current_list = &main_namegen.end;
+         else if( line == "[finish]" )
+            break;
+         else if( current_list && is_valid_line( line ) )
+         {
+            current_list->push_back( line );
+         }
       }
-      if( line == "[finish]" )
-         break;
-      if( collecting && !line.empty() && line[0] != '/' )
-         names.push_back( line );
+      log_string( "Namegen file loaded." );
    }
-   list_cache[filename] = std::move( names );
-}
-
-std::string NameManager::get_random( const std::string & filename )
-{
-   if( list_cache[filename].empty() )
-      return "Unknown";
-
-   const auto& list = list_cache[filename];
-   std::uniform_int_distribution<size_t> dist( 0, list.size() - 1 );
-   return list[dist(global_rng)];
-}
-
-std::string NameManager::generate( const std::string & filename )
-{
-   if( !generator_cache.contains( filename ) )
-      return "Unknown";
-
-   const auto& p = generator_cache[filename];
-   if( p.starts.empty() || p.middles.empty() || p.ends.empty() )
-      return "Unknown";
-
-   std::uniform_int_distribution<size_t> d_s( 0, p.starts.size() - 1 );
-   std::uniform_int_distribution<size_t> d_m( 0, p.middles.size() - 1 );
-   std::uniform_int_distribution<size_t> d_e( 0, p.ends.size() - 1 );
-
-   return p.starts[d_s(global_rng)] + p.middles[d_m(global_rng)] + p.ends[d_e(global_rng)];
-}
-
-void NameManager::load_generator( const std::string & filename )
-{
-   if( generator_cache.contains( filename ) )
-      return;
-
-   std::ifstream infile( filename );
-   if( !infile.is_open() )
-      return;
-
-   std::string line;
-   std::vector<std::string>* current = nullptr;
-   NameParts parts;
-
-   while( std::getline( infile, line ) )
+   else
    {
-      if( !line.empty() && line.back() == '\r' ) line.pop_back();
-      if( line.empty() || line[0] == '/' )
-         continue;
-
-      if( line == "[start]" )
-      {
-         current = &parts.starts;
-         continue;
-      }
-      if( line == "[middle]" )
-      {
-         current = &parts.middles;
-         continue;
-      }
-      if( line == "[end]" )
-      {
-         current = &parts.ends;
-         continue;
-      }
-      if( line == "[finish]" )
-         break;
-
-      if( current )
-         current->push_back( line );
+      log_string( "Can't find NAMEGEN file." );
    }
-   generator_cache[filename] = std::move( parts );
 }
 
 void name_generator( std::string & argument )
 {
-   argument += NameManager::instance().generate( NAMEGEN_FILE );
+   if( !main_namegen.start.empty() && !main_namegen.middle.empty() && !main_namegen.end.empty() )
+   {
+      argument += pick_random( main_namegen.start );
+      argument += pick_random( main_namegen.middle );
+      argument += pick_random( main_namegen.end );
+   }
+   else
+   {
+      log_string( "name_generator: Main name generator lists are empty." );
+   }
 }
 
 /* Added by Tarl 5 Dec 02 to allow picking names from a file. Used for the namegen code in reset.cpp */
 // Tarl, your baby got a modernized update! - Samson 6/1/2026.
-void pick_name( std::string & argument, const std::string & filename )
+void pick_name( std::string & argument, std::filesystem::path filename )
 {
-   argument += NameManager::instance().get_random( filename );
+   std::string file_key = filename.string();
+
+   auto it = cached_name_lists.find( file_key );
+   if( it == cached_name_lists.end() )
+   {
+      std::ifstream infile( filename );
+      if( !infile )
+      {
+         log_printf( "Can't find %s", filename.c_str() );
+         return;
+      }
+
+      std::vector<std::string> names;
+      std::string line;
+      bool collecting = false;
+
+      while( std::getline( infile, line ) )
+      {
+         if( line == "[start]" )
+         {
+            collecting = true;
+            continue;
+         }
+         if( line == "[finish]" )
+            break;
+
+         if( collecting && is_valid_line( line ) )
+         {
+            names.push_back( line );
+         }
+      }
+
+      if( !names.empty() )
+      {
+         auto inserted = cached_name_lists.emplace( file_key, std::move( names ) );
+         it = inserted.first;
+      }
+      else
+      {
+         return;
+      }
+   }
+
+   if( it != cached_name_lists.end() && !it->second.empty() )
+   {
+      argument += pick_random( it->second );
+   }
 }
 
 CMDF( do_name_generator )
@@ -172,7 +170,7 @@ CMDF( do_name_generator )
    std::string name;
 
    name_generator( name );
-   ch->printf( "%s\r\n", name.c_str(  ) );
+   ch->print_fmt( "{}\r\n", name );
 }
 
 auth_data::auth_data(  )
@@ -196,7 +194,22 @@ void free_all_auths( void )
    }
 }
 
-void clean_auth_list (void )
+/* new auth -- Rantic */
+bool NOT_AUTHED( char_data * ch )
+{
+   if( get_auth_state( ch ) != AUTH_AUTHED && ch->has_pcflag( PCFLAG_UNAUTHED ) )
+      return true;
+   return false;
+}
+
+bool IS_WAITING_FOR_AUTH( char_data * ch )
+{
+   if( ch->desc && get_auth_state( ch ) == AUTH_ONLINE && ch->has_pcflag( PCFLAG_UNAUTHED ) )
+      return true;
+   return false;
+}
+
+void clean_auth_list( void )
 {
    // Capture current time at the start of the function
    const auto now = std::chrono::system_clock::now();
@@ -255,11 +268,10 @@ void save_auth_list( void )
 {
    std::ofstream stream;
 
-   stream.open( AUTH_FILE );
+   stream.open( std::filesystem::path( AUTH_FILE ) );
    if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open auth.dat for writing.", __func__ );
-      perror( AUTH_FILE );
       return;
    }
 
@@ -297,7 +309,7 @@ void load_auth_list( void )
 
    authlist.clear(  );
 
-   stream.open( AUTH_FILE );
+   stream.open( std::filesystem::path( AUTH_FILE ) );
    if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open auth.dat", __func__ );
@@ -361,7 +373,7 @@ int get_auth_state( char_data * ch )
    return state;
 }
 
-auth_data *get_auth_name( const std::string & name )
+auth_data *get_auth_name( std::string_view name )
 {
    for( auto* auth : authlist )
    {
@@ -387,7 +399,7 @@ void add_to_auth( char_data * ch )
    }
 }
 
-void remove_from_auth( const std::string & name )
+void remove_from_auth( std::string_view name )
 {
    auth_data *old_name;
 
@@ -439,7 +451,7 @@ void check_auth_state( char_data * ch )
 /* 
  * Check if the name prefix uniquely identifies a char descriptor
  */
-char_data *get_waiting_desc( char_data * ch, const std::string & name )
+char_data *get_waiting_desc( char_data * ch, std::string_view name )
 {
    char_data *ret_char = nullptr;
    static size_t number_of_hits;
@@ -451,7 +463,7 @@ char_data *get_waiting_desc( char_data * ch, const std::string & name )
       {
          if( ++number_of_hits > 1 )
          {
-            ch->printf( "%s does not uniquely identify a char.\r\n", name.c_str(  ) );
+            ch->print_fmt( "{} does not uniquely identify a char.\r\n", name );
             return nullptr;
          }
          ret_char = d->character;   /* return current char on exit */
@@ -732,9 +744,8 @@ CMDF( do_name )
    std::filesystem::remove( fname );  /* cronel, for auth */
 
    STRFREE( ch->name );
-   ch->name = STRALLOC( argument.c_str(  ) );
-   STRFREE( ch->pcdata->filename );
-   ch->pcdata->filename = STRALLOC( argument.c_str(  ) );
+   ch->name = STRALLOC( capitalize( argument ).c_str(  ) );
+   ch->pcdata->filename = capitalize( argument );
    ch->print( "Your name has been changed and is being submitted for approval.\r\n" );
    auth_name->name = argument;
    auth_name->state = AUTH_ONLINE;
@@ -760,19 +771,19 @@ CMDF( do_mpapplyb )
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpapplyb - bad syntax" );
+      progbug( "Mpapplyb - bad syntax", ch );
       return;
    }
 
    if( !( victim = ch->get_char_room( argument ) ) )
    {
-      progbugf( ch, "Mpapplyb - no such player %s in room.", argument.c_str(  ) );
+      progbugf( ch, "Mpapplyb - no such player {} in room.", argument );
       return;
    }
 
    if( !victim->desc )
    {
-      progbugf( ch, "Mpapplyb - linkdead target %s.", victim->name );
+      progbugf( ch, "Mpapplyb - linkdead target: {}.", victim->name );
       return;
    }
 
@@ -782,9 +793,9 @@ CMDF( do_mpapplyb )
    if( NOT_AUTHED( victim ) )
    {
       log_printf_plus( LOG_AUTH, level, "%s [%s] New player entering the game.\r\n", victim->name, victim->desc->hostname.c_str(  ) );
-      victim->printf( "\r\nYou are now entering the game...\r\n"
+      victim->print_fmt( "\r\nYou are now entering the game...\r\n"
                       "However, your character has not been authorized yet and can not\r\n"
-                      "advance past level 5 until then. Your character will be saved,\r\n" "but not allowed to fully indulge in %s.\r\n", sysdata->mud_name.c_str(  ) );
+                      "advance past level 5 until then. Your character will be saved,\r\n" "but not allowed to fully indulge in {}.\r\n", sysdata->mud_name );
    }
 }
 
@@ -852,7 +863,7 @@ CMDF( do_reserve )
          return;
       }
 
-      append_to_file( RESERVED_LIST, "%s", arg.c_str(  ) );
+      append_to_file( RESERVED_LIST, "{}", arg );
       ch->print( "Name reserved.\r\n" );
       return;
    }

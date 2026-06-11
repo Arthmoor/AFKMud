@@ -114,7 +114,7 @@ CMDF( do_oredit )
       d = *ds;
 
       if( d->connected == CON_REDIT )
-         if( d->olc && OLC_VNUM( d ) == room->vnum )
+         if( d->olc && d->olc->number == room->vnum )
          {
             ch->printf( "That room is currently being edited by %s.\r\n", d->character->name );
             return;
@@ -125,8 +125,8 @@ CMDF( do_oredit )
 
    d = ch->desc;
    d->olc = new olc_data;
-   OLC_VNUM( d ) = room->vnum;
-   OLC_CHANGE( d ) = false;
+   d->olc->number = room->vnum;
+   d->olc->changed = false;
    d->character->pcdata->dest_buf = room;
    d->connected = CON_REDIT;
    redit_disp_menu( d );
@@ -336,7 +336,7 @@ void redit_disp_extradesc_menu( descriptor_data * d )
    d->character->print( "&gQ&w) Quit\r\n" );
    d->character->print( "\r\nEnter choice: " );
 
-   OLC_MODE( d ) = REDIT_EXTRADESC_MENU;
+   d->olc->mode = REDIT_EXTRADESC_MENU;
 }
 
 /* For exits */
@@ -345,7 +345,7 @@ void redit_disp_exit_menu( descriptor_data * d )
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
    int cnt = 0;
 
-   OLC_MODE( d ) = REDIT_EXIT_MENU;
+   d->olc->mode = REDIT_EXIT_MENU;
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( auto* pexit : room->exits )
    {
@@ -377,7 +377,7 @@ void redit_disp_exit_edit( descriptor_data * d )
       }
    }
 
-   OLC_MODE( d ) = REDIT_EXIT_EDIT;
+   d->olc->mode = REDIT_EXIT_EDIT;
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    d->character->printf( "&g1&w) Direction  : &c%s\r\n", dir_name[pexit->vdir] );
    d->character->printf( "&g2&w) To Vnum    : &c%d\r\n", pexit->to_room ? pexit->to_room->vnum : -1 );
@@ -423,7 +423,7 @@ void redit_disp_exit_flag_menu( descriptor_data * d )
    }
 
    d->character->printf( "\r\nExit flags: &c%s&w\r\nEnter room flags, 0 to quit: ", buf1.c_str() );
-   OLC_MODE( d ) = REDIT_EXIT_FLAGS;
+   d->olc->mode = REDIT_EXIT_FLAGS;
 }
 
 /* For room flags */
@@ -441,7 +441,7 @@ void redit_disp_flag_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->printf( "\r\nRoom flags: &c%s&w\r\nEnter room flags, 0 to quit : ", bitset_string( room->flags, r_flags ) );
-   OLC_MODE( d ) = REDIT_FLAGS;
+   d->olc->mode = REDIT_FLAGS;
 }
 
 /* for sector type */
@@ -458,7 +458,7 @@ void redit_disp_sector_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter sector type : " );
-   OLC_MODE( d ) = REDIT_SECTOR;
+   d->olc->mode = REDIT_SECTOR;
 }
 
 /* the main menu */
@@ -481,12 +481,12 @@ void redit_disp_menu( descriptor_data * d )
                          "&gB&w) Extra descriptions menu\r\n"
                          "&gQ&w) Quit\r\n"
                          "Enter choice : ",
-                         OLC_NUM( d ), room->area ? room->area->name : "None????",
+                         d->olc->number, room->area ? room->area->name : "None????",
                          room->name, room->roomdesc,
                          room->nitedesc ? room->nitedesc : "None Set\r\n", bitset_string( room->flags, r_flags ),
                          sect_types[room->sector_type], room->tunnel, room->tele_delay, room->tele_vnum, room->light );
 
-   OLC_MODE( d ) = REDIT_MAIN_MENU;
+   d->olc->mode = REDIT_MAIN_MENU;
 }
 
 extra_descr_data *redit_find_extradesc( room_index * room, int number )
@@ -566,7 +566,7 @@ CMDF( do_redit_reset )
          ch->substate = SUB_NONE;
          ch->desc->connected = CON_REDIT;
          oedit_disp_extra_choice( ch->desc );
-         OLC_MODE( ch->desc ) = REDIT_EXTRADESC_CHOICE;
+         ch->desc->olc->mode = REDIT_EXTRADESC_CHOICE;
          olc_log( ch->desc, "Edit description for exdesc %s", ed->keyword.c_str(  ) );
          return;
    }
@@ -585,7 +585,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
    std::string arg1;
    int number = 0;
 
-   switch ( OLC_MODE( d ) )
+   switch ( d->olc->mode )
    {
       case REDIT_MAIN_MENU:
          switch ( arg.front() )
@@ -597,11 +597,11 @@ void redit_parse( descriptor_data * d, std::string & arg )
 
             case '1':
                d->character->print( "Enter room name:-\r\n| " );
-               OLC_MODE( d ) = REDIT_NAME;
+               d->olc->mode = REDIT_NAME;
                break;
 
             case '2':
-               OLC_MODE( d ) = REDIT_DESC;
+               d->olc->mode = REDIT_DESC;
                d->character->substate = SUB_ROOM_DESC;
                d->character->last_cmd = do_redit_reset;
 
@@ -613,7 +613,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
                break;
 
             case '3':
-               OLC_MODE( d ) = REDIT_NDESC;
+               d->olc->mode = REDIT_NDESC;
                d->character->substate = SUB_ROOM_DESC_NITE;
                d->character->last_cmd = do_redit_reset;
 
@@ -634,22 +634,22 @@ void redit_parse( descriptor_data * d, std::string & arg )
 
             case '6':
                d->character->print( "How many people can fit in the room? " );
-               OLC_MODE( d ) = REDIT_TUNNEL;
+               d->olc->mode = REDIT_TUNNEL;
                break;
 
             case '7':
                d->character->print( "How long before people are teleported out? " );
-               OLC_MODE( d ) = REDIT_TELEDELAY;
+               d->olc->mode = REDIT_TELEDELAY;
                break;
 
             case '8':
                d->character->print( "Where are they teleported to? " );
-               OLC_MODE( d ) = REDIT_TELEVNUM;
+               d->olc->mode = REDIT_TELEVNUM;
                break;
 
             case '9':
                d->character->print( "What is the base lighting factor? " );
-               OLC_MODE( d ) = REDIT_LIGHT;
+               d->olc->mode = REDIT_LIGHT;
                break;
 
             case 'A':
@@ -777,11 +777,11 @@ void redit_parse( descriptor_data * d, std::string & arg )
                redit_disp_exit_menu( d );
                return;
             case 'A':
-               OLC_MODE( d ) = REDIT_EXIT_ADD;
+               d->olc->mode = REDIT_EXIT_ADD;
                redit_disp_exit_dirs( d );
                return;
             case 'R':
-               OLC_MODE( d ) = REDIT_EXIT_DELETE;
+               d->olc->mode = REDIT_EXIT_DELETE;
                d->character->print( "Delete which exit? " );
                return;
             case 'Q':
@@ -799,27 +799,27 @@ void redit_parse( descriptor_data * d, std::string & arg )
                redit_disp_exit_menu( d );
                return;
             case '1':
-               OLC_MODE( d ) = REDIT_EXIT_DIR;
+               d->olc->mode = REDIT_EXIT_DIR;
                redit_disp_exit_dirs( d );
                return;
             case '2':
-               OLC_MODE( d ) = REDIT_EXIT_VNUM;
+               d->olc->mode = REDIT_EXIT_VNUM;
                d->character->print( "Which room does this exit go to? " );
                return;
             case '3':
-               OLC_MODE( d ) = REDIT_EXIT_KEY;
+               d->olc->mode = REDIT_EXIT_KEY;
                d->character->print( "What is the vnum of the key to this exit? " );
                return;
             case '4':
-               OLC_MODE( d ) = REDIT_EXIT_KEYWORD;
+               d->olc->mode = REDIT_EXIT_KEYWORD;
                d->character->print( "What is the keyword to this exit? " );
                return;
             case '5':
-               OLC_MODE( d ) = REDIT_EXIT_FLAGS;
+               d->olc->mode = REDIT_EXIT_FLAGS;
                redit_disp_exit_flag_menu( d );
                return;
             case '6':
-               OLC_MODE( d ) = REDIT_EXIT_DESC;
+               d->olc->mode = REDIT_EXIT_DESC;
                d->character->print( "Description:\r\n] " );
                return;
          }
@@ -862,7 +862,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
             }
             d->character->tempnum = number;
          }
-         OLC_MODE( d ) = REDIT_EXIT_ADD_VNUM;
+         d->olc->mode = REDIT_EXIT_ADD_VNUM;
          d->character->print( "Which room does this exit go to? " );
          return;
 
@@ -903,7 +903,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
             }
             pexit->vdir = number;
          }
-         OLC_MODE( d ) = REDIT_EXIT_EDIT;
+         d->olc->mode = REDIT_EXIT_EDIT;
          redit_disp_exit_edit( d );
          return;
 
@@ -922,7 +922,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
 
          olc_log( d, "Added %s exit to %d", dir_name[pexit->vdir], pexit->vnum );
 
-         OLC_MODE( d ) = REDIT_EXIT_EDIT;
+         d->olc->mode = REDIT_EXIT_EDIT;
          redit_disp_exit_edit( d );
          return;
 
@@ -1033,12 +1033,12 @@ void redit_parse( descriptor_data * d, std::string & arg )
                return;
 
             case '1':
-               OLC_MODE( d ) = REDIT_EXTRADESC_KEY;
+               d->olc->mode = REDIT_EXTRADESC_KEY;
                d->character->print( "Keywords, seperated by spaces: " );
                return;
 
             case '2':
-               OLC_MODE( d ) = REDIT_EXTRADESC_DESCRIPTION;
+               d->olc->mode = REDIT_EXTRADESC_DESCRIPTION;
                d->character->substate = SUB_ROOM_EXTRA;
                d->character->last_cmd = do_redit_reset;
 
@@ -1061,7 +1061,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          olc_log( d, "Changed exkey %s to %s", ed->keyword.c_str(  ), arg.c_str(  ) );
          ed->keyword = arg;
          oedit_disp_extra_choice( d );
-         OLC_MODE( d ) = REDIT_EXTRADESC_CHOICE;
+         d->olc->mode = REDIT_EXTRADESC_CHOICE;
          return;
 
       case REDIT_EXTRADESC_MENU:
@@ -1078,11 +1078,11 @@ void redit_parse( descriptor_data * d, std::string & arg )
                olc_log( d, "Added new exdesc" );
 
                oedit_disp_extra_choice( d );
-               OLC_MODE( d ) = REDIT_EXTRADESC_CHOICE;
+               d->olc->mode = REDIT_EXTRADESC_CHOICE;
                return;
 
             case 'R':
-               OLC_MODE( d ) = REDIT_EXTRADESC_DELETE;
+               d->olc->mode = REDIT_EXTRADESC_DELETE;
                d->character->print( "Delete which extra description? " );
                return;
 
@@ -1096,7 +1096,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
                   }
                   d->character->pcdata->spare_ptr = ed;
                   oedit_disp_extra_choice( d );
-                  OLC_MODE( d ) = REDIT_EXTRADESC_CHOICE;
+                  d->olc->mode = REDIT_EXTRADESC_CHOICE;
                }
                else
                   redit_disp_extradesc_menu( d );
@@ -1116,13 +1116,13 @@ void redit_parse( descriptor_data * d, std::string & arg )
     * Don't log on the flags cause it does that above 
     */
    /*
-    * if ( OLC_MODE(d) != REDIT_FLAGS )
+    * if ( d->olc->mode != REDIT_FLAGS )
     * olc_log( d, arg ); 
     */
 
    /*
     * If we get this far, something has be changed.
     */
-   OLC_CHANGE( d ) = true;
+   d->olc->changed = true;
    redit_disp_menu( d );
 }

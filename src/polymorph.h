@@ -28,7 +28,7 @@
 
 #pragma once
 
-#define MORPH_FILE "morph.dat"   /* For morph data */
+inline constexpr std::string_view MORPH_FILE = "morph.dat";   /* For morph data */
 
 /*
  * Structure for a morph -- Shaddai
@@ -37,8 +37,8 @@
  *  Morph structs.
  */
 
-const int ONLY_PKILL = 1;
-const int ONLY_PEACEFULL = 2;
+constexpr int ONLY_PKILL = 1;
+constexpr int ONLY_PEACEFULL = 2;
 
 class morph_data
 {
@@ -163,5 +163,4 @@ class char_morph
 
 int do_morph_char( char_data *, morph_data * );
 void do_unmorph_char( char_data * );
-
-#define MORPHPERS(ch, looker, from) ( (looker)->can_see( (ch), (from) ) ? (ch)->morph->morph->short_desc : "Someone" )
+const std::string MORPHPERS( char_data *, char_data *, bool );

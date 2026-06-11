@@ -494,13 +494,13 @@ static int figure_liq_vnum( void )
 }
 
 /* lookup func for liquids      -Nopey */
-liquid_data *get_liq( const std::string & str )
+liquid_data *get_liq( std::string_view str )
 {
-   int i;
+   int i = 0;
 
    if( is_number( str ) )
    {
-      i = atoi( str.c_str(  ) );
+      i = std::stoi( std::string{str} );
 
       return get_liq_vnum( i );
    }
@@ -530,7 +530,7 @@ liquid_data *get_liq_vnum( int vnum )
 }
 
 /* lookup func for mixtures - Nopey */
-mixture_data *get_mix( const std::string & str )
+mixture_data *get_mix( std::string_view str )
 {
    for( auto* mix : mixlist )
    {

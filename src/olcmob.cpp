@@ -119,7 +119,7 @@ CMDF( do_omedit )
       d = *ds;
 
       if( d->connected == CON_MEDIT )
-         if( d->olc && OLC_VNUM( d ) == victim->pIndexData->vnum )
+         if( d->olc && d->olc->number == victim->pIndexData->vnum )
          {
             ch->printf( "That mob is currently being edited by %s.\r\n", d->character->name );
             return;
@@ -130,13 +130,13 @@ CMDF( do_omedit )
 
    d = ch->desc;
    d->olc = new olc_data;
-   OLC_VNUM( d ) = victim->pIndexData->vnum;
+   d->olc->number = victim->pIndexData->vnum;
    /*
-    * medit_setup( d, OLC_VNUM(d) ); 
+    * medit_setup( d, d->olc->number );
     */
    d->character->pcdata->dest_buf = victim;
    d->connected = CON_MEDIT;
-   OLC_CHANGE( d ) = false;
+   d->olc->changed = false;
    medit_disp_menu( d );
 
    act( AT_ACTION, "$n starts using OLC.", ch, nullptr, nullptr, TO_ROOM );
@@ -210,7 +210,7 @@ void medit_disp_positions( descriptor_data * d )
 {
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < POS_MAX; ++i )
-      d->character->printf( "&g%2d&w) %s\r\n", i, capitalize( npc_position[i] ) );
+      d->character->print_fmt( "&g{:2}&w) {}\r\n", i, capitalize( npc_position[i] ) );
    d->character->print( "Enter position number : " );
 }
 
@@ -221,7 +221,7 @@ void medit_disp_sex( descriptor_data * d )
 {
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < SEX_MAX; ++i )
-      d->character->printf( "&g%2d&w) %s\r\n", i, capitalize( npc_sex[i] ) );
+      d->character->print_fmt( "&g{:2}&w) {}\r\n", i, capitalize( npc_sex[i] ) );
    d->character->print( "\r\nEnter gender number : " );
 }
 
@@ -273,7 +273,7 @@ void medit_disp_ris( descriptor_data * d )
 
    if( d->connected == CON_OEDIT )
    {
-      switch ( OLC_MODE( d ) )
+      switch ( d->olc->mode )
       {
          default:
             break;
@@ -285,7 +285,7 @@ void medit_disp_ris( descriptor_data * d )
    }
    else if( d->connected == CON_MEDIT )
    {
-      switch ( OLC_MODE( d ) )
+      switch ( d->olc->mode )
       {
          default:
             break;
@@ -370,7 +370,7 @@ void medit_disp_aff_flags( descriptor_data * d )
          d->character->print( "\r\n" );
    }
 
-   if( OLC_MODE( d ) == OEDIT_AFFECT_MODIFIER )
+   if( d->olc->mode == OEDIT_AFFECT_MODIFIER )
    {
       char buf[MSL];
 
@@ -473,7 +473,7 @@ void medit_disp_menu( descriptor_data * d )
    ch->printf( "&gQ&w) Quit\r\n" );
    ch->print( "Enter choice : " );
 
-   OLC_MODE( d ) = MEDIT_NPC_MAIN_MENU;
+   d->olc->mode = MEDIT_NPC_MAIN_MENU;
 }
 
 /*
@@ -523,7 +523,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
    int number = 0;
    std::string arg1;
 
-   switch ( OLC_MODE( d ) )
+   switch ( d->olc->mode )
    {
       case MEDIT_NPC_MAIN_MENU:
          switch ( to_upper( arg.front() ) )
@@ -532,23 +532,23 @@ void medit_parse( descriptor_data * d, std::string & arg )
                cleanup_olc( d );
                return;
             case '1':
-               OLC_MODE( d ) = MEDIT_SEX;
+               d->olc->mode = MEDIT_SEX;
                medit_disp_sex( d );
                return;
             case '2':
-               OLC_MODE( d ) = MEDIT_NAME;
+               d->olc->mode = MEDIT_NAME;
                d->character->print( "\r\nEnter name: " );
                return;
             case '3':
-               OLC_MODE( d ) = MEDIT_S_DESC;
+               d->olc->mode = MEDIT_S_DESC;
                d->character->print( "\r\nEnter short description: " );
                return;
             case '4':
-               OLC_MODE( d ) = MEDIT_L_DESC;
+               d->olc->mode = MEDIT_L_DESC;
                d->character->print( "\r\nEnter long description: " );
                return;
             case '5':
-               OLC_MODE( d ) = MEDIT_D_DESC;
+               d->olc->mode = MEDIT_D_DESC;
                d->character->substate = SUB_MOB_DESC;
                d->character->last_cmd = do_medit_reset;
 
@@ -559,95 +559,95 @@ void medit_parse( descriptor_data * d, std::string & arg )
                d->character->start_editing( victim->chardesc );
                return;
             case '6':
-               OLC_MODE( d ) = MEDIT_CLASS;
+               d->olc->mode = MEDIT_CLASS;
                medit_disp_classes( d );
                return;
             case '7':
-               OLC_MODE( d ) = MEDIT_RACE;
+               d->olc->mode = MEDIT_RACE;
                medit_disp_races( d );
                return;
             case '8':
-               OLC_MODE( d ) = MEDIT_LEVEL;
+               d->olc->mode = MEDIT_LEVEL;
                d->character->print( "\r\nEnter level: " );
                return;
             case '9':
-               OLC_MODE( d ) = MEDIT_ALIGNMENT;
+               d->olc->mode = MEDIT_ALIGNMENT;
                d->character->print( "\r\nEnter alignment: " );
                return;
             case 'A':
-               OLC_MODE( d ) = MEDIT_THACO;
+               d->olc->mode = MEDIT_THACO;
                d->character->print( "\r\nUse 21 to have the mud autocalculate Thac0\r\nEnter Thac0: " );
                return;
             case 'B':
-               OLC_MODE( d ) = MEDIT_EXP;
+               d->olc->mode = MEDIT_EXP;
                d->character->print( "\r\nUse -1 to have the mud autocalculate Exp\r\nEnter Exp: " );
                return;
             case 'C':
-               OLC_MODE( d ) = MEDIT_DAMNUMDIE;
+               d->olc->mode = MEDIT_DAMNUMDIE;
                d->character->print( "\r\nEnter number of damage dice: " );
                return;
             case 'D':
-               OLC_MODE( d ) = MEDIT_DAMSIZEDIE;
+               d->olc->mode = MEDIT_DAMSIZEDIE;
                d->character->print( "\r\nEnter size of damage dice: " );
                return;
             case 'E':
-               OLC_MODE( d ) = MEDIT_DAMPLUS;
+               d->olc->mode = MEDIT_DAMPLUS;
                d->character->print( "\r\nEnter amount to add to damage: " );
                return;
             case 'F':
-               OLC_MODE( d ) = MEDIT_HITPLUS;
+               d->olc->mode = MEDIT_HITPLUS;
                d->character->print( "\r\nEnter amount to add to hitpoints: " );
                return;
             case 'G':
-               OLC_MODE( d ) = MEDIT_GOLD;
+               d->olc->mode = MEDIT_GOLD;
                d->character->print( "\r\nEnter amount of gold mobile carries: " );
                return;
             case 'H':
-               OLC_MODE( d ) = MEDIT_SPEC;
+               d->olc->mode = MEDIT_SPEC;
                medit_disp_spec( d );
                return;
             case 'I':
-               OLC_MODE( d ) = MEDIT_RESISTANT;
+               d->olc->mode = MEDIT_RESISTANT;
                medit_disp_ris( d );
                return;
             case 'J':
-               OLC_MODE( d ) = MEDIT_IMMUNE;
+               d->olc->mode = MEDIT_IMMUNE;
                medit_disp_ris( d );
                return;
             case 'K':
-               OLC_MODE( d ) = MEDIT_SUSCEPTIBLE;
+               d->olc->mode = MEDIT_SUSCEPTIBLE;
                medit_disp_ris( d );
                return;
             case 'L':
-               OLC_MODE( d ) = MEDIT_ABSORB;
+               d->olc->mode = MEDIT_ABSORB;
                medit_disp_ris( d );
                return;
             case 'M':
-               OLC_MODE( d ) = MEDIT_POS;
+               d->olc->mode = MEDIT_POS;
                medit_disp_positions( d );
                return;
             case 'N':
-               OLC_MODE( d ) = MEDIT_DEFPOS;
+               d->olc->mode = MEDIT_DEFPOS;
                medit_disp_positions( d );
                return;
             case 'O':
-               OLC_MODE( d ) = MEDIT_ATTACK;
+               d->olc->mode = MEDIT_ATTACK;
                medit_disp_attack_menu( d );
                return;
             case 'P':
-               OLC_MODE( d ) = MEDIT_DEFENSE;
+               d->olc->mode = MEDIT_DEFENSE;
                medit_disp_defense_menu( d );
                return;
             case 'R':
-               OLC_MODE( d ) = MEDIT_PARTS;
+               d->olc->mode = MEDIT_PARTS;
                medit_disp_parts( d );
                return;
             case 'S':
-               OLC_MODE( d ) = MEDIT_NPC_FLAGS;
+               d->olc->mode = MEDIT_NPC_FLAGS;
                medit_disp_mob_flags( d );
                return;
             case 'T':
-               OLC_MODE( d ) = MEDIT_AFF_FLAGS;
+               d->olc->mode = MEDIT_AFF_FLAGS;
                medit_disp_aff_flags( d );
                return;
             default:
@@ -1199,9 +1199,9 @@ void medit_parse( descriptor_data * d, std::string & arg )
 
 /*. END OF CASE 
    If we get here, we have probably changed something, and now want to
-   return to main menu.  Use OLC_CHANGE as a 'has changed' flag .*/
+   return to main menu.  Use d->olc->changed as a 'has changed' flag .*/
 
-   OLC_CHANGE( d ) = true;
+   d->olc->changed = true;
    medit_disp_menu( d );
 }
 

@@ -41,11 +41,9 @@
 #include <stacktrace>
 #include "mud.h"
 #include "area.h"
-#include "auction.h"
 #include "bits.h"
 #include "connhist.h"
 #include "event.h"
-#include "new_auth.h"
 #include "mobindex.h"
 #include "mud_prog.h"
 #include "objindex.h"
@@ -108,8 +106,6 @@ int nummobsloaded;
 int numobjsloaded;
 int physicalobjects;
 int last_pkroom;
-
-auction_data *auction;  /* auctions */
 
 /*
  * Locals.
@@ -195,40 +191,41 @@ void validate_overland_data(  );
 void make_webwiz(  );
 std::string check_hash( const char * );
 std::string hash_stats( );
+void init_auction( );
+void load_name_generator( );
 
 affect_data::affect_data(  )
 {
    init_memory( &rismod, &type, sizeof( type ) );
 }
 
-void shutdown_mud( const std::string & reason )
+void shutdown_mud( std::string_view reason )
 {
    FILE *fp;
 
-   if( ( fp = fopen( SHUTDOWN_FILE, "a" ) ) != nullptr )
+   if( ( fp = fopen( SHUTDOWN_FILE.data(), "a" ) ) != nullptr )
    {
-      fprintf( fp, "%s\n", reason.c_str(  ) );
+      fprintf( fp, "%s\n", reason.data() );
       FCLOSE( fp );
    }
 }
 
-bool exists_file( const std::string & name )
+bool exists_file( std::string_view name )
 {
-   std::filesystem::path filename = name;
-
    /*
     * Stands to reason that if there ain't a name to look at, it damn well don't exist! 
     */
    if( name.empty(  ) )
       return false;
 
+   std::filesystem::path filename = name;
    if( std::filesystem::exists( filename ) )
       return true;
-   else
-      return false;
+
+   return false;
 }
 
-bool is_valid_filename( char_data * ch, const std::string & direct, const std::string & filename )
+bool is_valid_filename( char_data * ch, std::string_view direct, std::string_view filename )
 {
    /*
     * Length restrictions 
@@ -238,14 +235,14 @@ bool is_valid_filename( char_data * ch, const std::string & direct, const std::s
       if( filename.empty(  ) )
          ch->print( "Empty filename is not valid.\r\n" );
       else
-         ch->printf( "%s: Filename is too short.\r\n", filename.c_str(  ) );
+         ch->print_fmt( "{}: Filename is too short.\r\n", filename );
       return false;
    }
 
    /*
     * Illegal characters 
     */
-   if( strstr( filename.c_str(  ), ".." ) || strstr( filename.c_str(  ), "/" ) || strstr( filename.c_str(  ), "\\" ) )
+   if( filename.contains( ".." ) || filename.contains( "/" ) || filename.contains( "\\" ) )
    {
       ch->print( "A filename may not contain a '..', '/', or '\\' in it.\r\n" );
       return false;
@@ -257,7 +254,7 @@ bool is_valid_filename( char_data * ch, const std::string & direct, const std::s
    std::filesystem::path newfilename = std::format( "{}{}", direct, filename );
    if( std::filesystem::exists( newfilename ) )
    {
-      ch->printf( "%s is already an existing filename.\r\n", newfilename.c_str() );
+      ch->print_fmt( "{} is already an existing filename.\r\n", newfilename.string() );
       return false;
    }
 
@@ -555,7 +552,7 @@ void boot_log( const char *str, ... )
 
    log_printf( "[*****] BOOT: %s", buf );
 
-   if( ( fp = fopen( BOOTLOG_FILE, "a" ) ) != nullptr )
+   if( ( fp = fopen( BOOTLOG_FILE.data(), "a" ) ) != nullptr )
    {
       fprintf( fp, "%s\n", buf );
       FCLOSE( fp );
@@ -564,7 +561,8 @@ void boot_log( const char *str, ... )
 
 /* Build list of in progress areas. Do not load areas.
  * define AREA_READ if you want it to build area names rather than reading
- * them out of the area files. -- Altrag */
+ * them out of the area files. -- Altrag
+ */
 /* The above info is obsolete - this will now simply load whatever is in the
  * BUILD_DIR and assume it to be a valid prototype zone. -- Samson 2-13-04
  */
@@ -986,7 +984,7 @@ void fix_exits( void )
 /*
  * Wizlist builder - Thoric
  */
-void add_to_wizlist( const std::string & name, int level )
+void add_to_wizlist( std::string_view name, int level )
 {
    auto wiz = std::make_unique<wizent>();
 
@@ -1054,7 +1052,7 @@ void make_wizlist( )
    wizlist.sort( []( const std::unique_ptr<wizent>& a, const std::unique_ptr<wizent>& b ) { return a->level > b->level; } );
 
    // Open WIZLIST_FILE file for writing.
-   std::ofstream out( WIZLIST_FILE, std::ios::trunc );
+   std::ofstream out( std::filesystem::path( WIZLIST_FILE ), std::ios::trunc );
 
    // Center the top banner with the MUD's name.
    out << std::format( "{:^78}\n", std::format( "The Immortal Masters of {}", sysdata->mud_name ) );
@@ -1213,7 +1211,7 @@ void boot_db( bool fCopyOver )
 #endif
 
    log_string( "Verifying existence of login greeting..." );
-   std::filesystem::path lbuf = std::format( "{}greeting.dat", MOTD_DIR );
+   std::filesystem::path lbuf = GREETING_FILE;
    if( !std::filesystem::exists( lbuf ) )
    {
       bug( "%s: Login greeting not found!", __func__ );
@@ -1299,8 +1297,8 @@ void boot_db( bool fCopyOver )
    saving_char = nullptr;
    last_pkroom = 1;
 
-   auction = new auction_data;
-   auction->item = nullptr;
+   log_string( "Initializing global auction item." );
+   init_auction();
 
    for( wear = 0; wear < MAX_WEAR; ++wear )
       for( x = 0; x < MAX_LAYERS; ++x )
@@ -1370,8 +1368,8 @@ void boot_db( bool fCopyOver )
    load_continents( AREA_FILE_ALARM );
    log_string( "...done loading overland data." );
 
-   log_string( "Loading name generator data..." );
-   NameManager::instance().load_generator( NAMEGEN_FILE );
+   log_string( "Loading namegen file..." );
+   load_name_generator( );
 
    /*
     * Read in all the area files.
@@ -1383,11 +1381,11 @@ void boot_db( bool fCopyOver )
       area_nsort.clear(  );
       area_vsort.clear(  );
       log_string( "Reading in area files..." );
-      if( !( fpList = fopen( AREA_LIST, "r" ) ) )
+      if( !( fpList = fopen( AREA_LIST.data(), "r" ) ) )
       {
-         perror( AREA_LIST );
-         shutdown_mud( "Boot_db: Unable to open area list" );
-         exit( 1 );
+         log_printf( "Cannot open area.lst file.");
+         shutdown_mud( "Boot_db: Unable to open area list." );
+         std::exit( EXIT_FAILURE );
       }
 
       // Why were these never initialized before?!?
@@ -1594,26 +1592,29 @@ CMDF( do_memory )
    ch->printf( "&wMySQL Connection Active:  &W%s\r\n\r\n", ( db && db->ping() ) ? "YES" : ( db ? db->get_error().c_str() : "NO" ) );
 #endif
 
-   if( !str_cmp( arg, "check" ) )
+   if( !arg.empty() )
    {
-      ch->print( check_hash( argument.c_str(  ) ).c_str() );
-      return;
-   }
-   if( !str_cmp( arg, "showhigh" ) )
-   {
-      show_high_hash( atoi( argument.c_str(  ) ) );
-      return;
-   }
-   if( !argument.empty(  ) )
-      hash = atoi( argument.c_str(  ) );
-   else
-      hash = -1;
-   if( !str_cmp( arg, "hash" ) )
-   {
-      ch->print( "Hash statistics:\r\n" );
-      ch->print( hash_stats() );
-      if( hash != -1 )
-         hash_dump( hash );
+      if( !str_cmp( arg, "check" ) )
+      {
+         ch->print( check_hash( argument.c_str(  ) ).c_str() );
+         return;
+      }
+      if( !str_cmp( arg, "showhigh" ) )
+      {
+         show_high_hash( atoi( argument.c_str(  ) ) );
+         return;
+      }
+      if( !argument.empty(  ) )
+         hash = atoi( argument.c_str(  ) );
+      else
+         hash = -1;
+      if( !str_cmp( arg, "hash" ) )
+      {
+         ch->print( "Hash statistics:\r\n" );
+         ch->print( hash_stats() );
+         if( hash != -1 )
+            hash_dump( hash );
+      }
    }
 }
 
@@ -1694,67 +1695,6 @@ CMDF( do_randtest )
    ch->print_fmt( "number_door             : {}\r\n", number_door(  ) );
    ch->print_fmt( "number_bits 5           : {}\r\n", number_bits( 5 ) );
    ch->print_fmt( "3d35 ( 3 35 sided dice ): {}\r\n", dice( 3, 35 ) );
-}
-
-/*
- * Append a string to a file.
- */
-// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
-void append_file( char_data * ch, const std::string & file, const char *fmt, ... )
-{
-   FILE *fp;
-   va_list arg;
-   char str[MSL];
-
-   va_start( arg, fmt );
-   vsnprintf( str, MSL, fmt, arg );
-   va_end( arg );
-
-   if( ch->isnpc(  ) || str[0] == '\0' )
-      return;
-
-   if( strlen( str ) < 1 || str[strlen( str ) - 1] != '\n' )
-      strlcat( str, "\n", MSL );
-
-   if( !( fp = fopen( file.c_str(  ), "a" ) ) )
-   {
-      perror( file.c_str(  ) );
-      ch->print( "Could not open the file!\r\n" );
-   }
-   else
-   {
-      fprintf( fp, "[%5d] %s: %s\n", ch->in_room ? ch->in_room->vnum : 0, ch->name, str );
-      FCLOSE( fp );
-   }
-}
-
-/*
- * Append a string to a file.
- */
-// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
-void append_to_file( const std::string & file, const char *fmt, ... )
-{
-   FILE *fp;
-   va_list arg;
-   char str[MSL];
-
-   va_start( arg, fmt );
-   vsnprintf( str, MSL, fmt, arg );
-   va_end( arg );
-
-   if( str[0] == '\0' )
-      return;
-
-   if( strlen( str ) < 1 || str[strlen( str ) - 1] != '\n' )
-      strlcat( str, "\n", MSL );
-
-   if( !( fp = fopen( file.c_str(  ), "a" ) ) )
-      perror( file.c_str(  ) );
-   else
-   {
-      fprintf( fp, "%s\n", str );
-      FCLOSE( fp );
-   }
 }
 
 /*

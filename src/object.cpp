@@ -1642,15 +1642,15 @@ void obj_identify_output( char_data * ch, obj_data * obj )
    skill_type *sktmp;
 
    ch->set_color( AT_OBJECT );
-   ch->printf( "Object: %s\r\n", obj->short_descr );
+   ch->print_fmt( "Object: {}\r\n", obj->short_descr );
    if( ch->level >= LEVEL_IMMORTAL )
-      ch->printf( "Vnum: %d\r\n", obj->pIndexData->vnum );
-   ch->printf( "Keywords: %s\r\n", obj->name );
-   ch->printf( "Type: %s\r\n", obj->item_type_name(  ).c_str(  ) );
-   ch->printf( "Wear Flags : %s\r\n", bitset_string( obj->wear_flags, w_flags ) );
-   ch->printf( "Layers     : %d\r\n", obj->pIndexData->layers );
-   ch->printf( "Extra Flags: %s\r\n", bitset_string( obj->extra_flags, o_flags ) );
-   ch->printf( "Weight: %d  Value: %d  Ego: %d\r\n", obj->weight, obj->cost, obj->ego );
+      ch->print_fmt( "Vnum: {}\r\n", obj->pIndexData->vnum );
+   ch->print_fmt( "Keywords: {}\r\n", obj->name );
+   ch->print_fmt( "Type: {}\r\n", obj->item_type_name(  ).c_str(  ) );
+   ch->print_fmt( "Wear Flags : {}\r\n", bitset_string( obj->wear_flags, w_flags ) );
+   ch->print_fmt( "Layers     : {}\r\n", obj->pIndexData->layers );
+   ch->print_fmt( "Extra Flags: {}\r\n", bitset_string( obj->extra_flags, o_flags ) );
+   ch->print_fmt( "Weight: {}  Value: {}  Ego: {}\r\n", obj->weight, obj->cost, obj->ego );
    ch->set_color( AT_MAGIC );
 
    switch ( obj->item_type )
@@ -1659,7 +1659,7 @@ void obj_identify_output( char_data * ch, obj_data * obj )
          break;
 
       case ITEM_CONTAINER:
-         ch->printf( "%s appears to be %s.\r\n", capitalize( obj->short_descr ),
+         ch->print_fmt( "{} appears to be {}.\r\n", capitalize( obj->short_descr ),
                      obj->value[0] < 76 ? "of a small capacity" :
                      obj->value[0] < 150 ? "of a small to medium capacity" :
                      obj->value[0] < 300 ? "of a medium capacity" :
@@ -1669,91 +1669,91 @@ void obj_identify_output( char_data * ch, obj_data * obj )
       case ITEM_PILL:
       case ITEM_SCROLL:
       case ITEM_POTION:
-         ch->printf( "Level %d spells of:", obj->value[0] );
+         ch->print_fmt( "Level {} spells of:", obj->value[0] );
 
          if( obj->value[1] >= 0 && ( sktmp = get_skilltype( obj->value[1] ) ) != nullptr )
-            ch->printf( " '%s'", sktmp->name );
+            ch->print_fmt( " '{}'", sktmp->name );
 
          if( obj->value[2] >= 0 && ( sktmp = get_skilltype( obj->value[2] ) ) != nullptr )
-            ch->printf( " '%s'", sktmp->name );
+            ch->print_fmt( " '{}'", sktmp->name );
 
          if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != nullptr )
-            ch->printf( " '%s'", sktmp->name );
+            ch->print_fmt( " '{}'", sktmp->name );
 
          ch->print( ".\r\n" );
          break;
 
       case ITEM_SALVE:
-         ch->printf( "Has %d of %d applications of level %d", obj->value[2], obj->value[1], obj->value[0] );
+         ch->print_fmt( "Has {} of {} applications of level {}", obj->value[2], obj->value[1], obj->value[0] );
          if( obj->value[4] >= 0 && ( sktmp = get_skilltype( obj->value[4] ) ) != nullptr )
-            ch->printf( " '%s'", sktmp->name );
+            ch->print_fmt( " '{}'", sktmp->name );
 
          if( obj->value[5] >= 0 && ( sktmp = get_skilltype( obj->value[5] ) ) != nullptr )
-            ch->printf( " '%s'", sktmp->name );
+            ch->print_fmt( " '{}'", sktmp->name );
 
          ch->print( ".\r\n" );
          break;
 
       case ITEM_WAND:
       case ITEM_STAFF:
-         ch->printf( "Has %d of %d charges of level %d", obj->value[2], obj->value[1], obj->value[0] );
+         ch->print_fmt( "Has {} of {} charges of level {}", obj->value[2], obj->value[1], obj->value[0] );
 
          if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != nullptr )
-            ch->printf( " '%s'", sktmp->name );
+            ch->print_fmt( " '{}'", sktmp->name );
 
          ch->print( ".\r\n" );
          break;
 
       case ITEM_WEAPON:
-         ch->printf( "Damage is %d to %d (average %d)%s\r\n",
+         ch->print_fmt( "Damage is {} to {} (average {}){}\r\n",
                      obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2, obj->extra_flags.test( ITEM_POISONED ) ? ", and is poisonous." : "." );
-         ch->printf( "Skill needed: %s\r\n", weapon_skills[obj->value[4]] );
-         ch->printf( "Damage type:  %s\r\n", attack_table[obj->value[3]] );
-         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
+         ch->print_fmt( "Skill needed: {}\r\n", weapon_skills[obj->value[4]] );
+         ch->print_fmt( "Damage type:  {}\r\n", attack_table[obj->value[3]] );
+         ch->print_fmt( "Current condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ) );
          if( obj->value[7] > 0 )
-            ch->printf( "Available sockets: %d\r\n", obj->value[7] );
+            ch->print_fmt( "Available sockets: {}\r\n", obj->value[7] );
          if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
-            ch->printf( "Socket 1: %s Rune\r\n", obj->socket[0] );
+            ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
          if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
-            ch->printf( "Socket 2: %s Rune\r\n", obj->socket[1] );
+            ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
          if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
-            ch->printf( "Socket 3: %s Rune\r\n", obj->socket[2] );
+            ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
          break;
 
       case ITEM_MISSILE_WEAPON:
-         ch->printf( "Bonus damage added to projectiles is %d to %d (average %d).\r\n", obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2 );
-         ch->printf( "Skill needed:      %s\r\n", weapon_skills[obj->value[4]] );
-         ch->printf( "Projectiles fired: %s\r\n", projectiles[obj->value[5]] );
-         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
+         ch->print_fmt( "Bonus damage added to projectiles is {} to {} (average {}).\r\n", obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2 );
+         ch->print_fmt( "Skill needed:      {}\r\n", weapon_skills[obj->value[4]] );
+         ch->print_fmt( "Projectiles fired: {}\r\n", projectiles[obj->value[5]] );
+         ch->print_fmt( "Current condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ) );
          if( obj->value[7] > 0 )
-            ch->printf( "Available sockets: %d\r\n", obj->value[7] );
+            ch->print_fmt( "Available sockets: {}\r\n", obj->value[7] );
          if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
-            ch->printf( "Socket 1: %s Rune\r\n", obj->socket[0] );
+            ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
          if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
-            ch->printf( "Socket 2: %s Rune\r\n", obj->socket[1] );
+            ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
          if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
-            ch->printf( "Socket 3: %s Rune\r\n", obj->socket[2] );
+            ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
          break;
 
       case ITEM_PROJECTILE:
-         ch->printf( "Damage is %d to %d (average %d)%s\r\n",
+         ch->print_fmt( "Damage is {} to {} (average {}){}\r\n",
                      obj->value[1], obj->value[2], ( obj->value[1] + obj->value[2] ) / 2, obj->extra_flags.test( ITEM_POISONED ) ? ", and is poisonous." : "." );
-         ch->printf( "Damage type: %s\r\n", attack_table[obj->value[3]] );
-         ch->printf( "Projectile type: %s\r\n", projectiles[obj->value[4]] );
-         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[5], obj->value[0] ).c_str(  ) );
+         ch->print_fmt( "Damage type: {}\r\n", attack_table[obj->value[3]] );
+         ch->print_fmt( "Projectile type: {}\r\n", projectiles[obj->value[4]] );
+         ch->print_fmt( "Current condition: {}\r\n", condtxt( obj->value[5], obj->value[0] ) );
          break;
 
       case ITEM_ARMOR:
-         ch->printf( "Current AC value: %d\r\n", obj->value[1] );
-         ch->printf( "Current condition: %s\r\n", condtxt( obj->value[1], obj->value[0] ).c_str(  ) );
+         ch->print_fmt( "Current AC value: {}\r\n", obj->value[1] );
+         ch->print_fmt( "Current condition: {}\r\n", condtxt( obj->value[1], obj->value[0] ) );
          if( obj->value[2] > 0 )
-            ch->printf( "Available sockets: %d\r\n", obj->value[2] );
+            ch->print_fmt( "Available sockets: {}\r\n", obj->value[2] );
          if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
-            ch->printf( "Socket 1: %s Rune\r\n", obj->socket[0] );
+            ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
          if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
-            ch->printf( "Socket 2: %s Rune\r\n", obj->socket[1] );
+            ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
          if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
-            ch->printf( "Socket 3: %s Rune\r\n", obj->socket[2] );
+            ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
          break;
    }
 

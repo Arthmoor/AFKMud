@@ -28,7 +28,7 @@
 
 #pragma once
 
-#define DEITY_LIST "deity.lst"   /* List of deities     */
+inline constexpr std::string_view DEITY_LIST = "deity.lst";   /* List of deities     */
 
 class deity_data
 {
@@ -94,5 +94,5 @@ class deity_data
 
 extern std::list<deity_data *> deitylist;
 void save_deity( deity_data * );
-deity_data *get_deity( const std::string & );
+deity_data *get_deity( std::string_view );
 bool IS_DEVOTED( char_data * );

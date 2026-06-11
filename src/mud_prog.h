@@ -42,22 +42,17 @@
 extern char_data *supermob;
 extern obj_data *supermob_obj;
 
-/*
- * MudProg macros. - Thoric
- */
-#define HAS_PROG( what, prog ) (what)->progtypes.test((prog))
-
 /* Ifstate defines, used to create and access ifstate array in mprog_driver. */
-const int MAX_IFS = 20; /* should always be generous */
-const int IN_IF = 0;
-const int IN_ELSE = 1;
-const int DO_IF = 2;
-const int DO_ELSE = 3;
+constexpr int MAX_IFS = 20; /* should always be generous */
+constexpr int IN_IF = 0;
+constexpr int IN_ELSE = 1;
+constexpr int DO_IF = 2;
+constexpr int DO_ELSE = 3;
 
-const int MAX_PROG_NEST = 20;
+constexpr int MAX_PROG_NEST = 20;
 
 void oprog_greet_trigger( char_data * );
-void oprog_speech_trigger( const std::string &, char_data * );
+void oprog_speech_trigger( std::string_view, char_data * );
 void oprog_random_trigger( obj_data * );
 void oprog_month_trigger( obj_data * );
 void oprog_remove_trigger( char_data *, obj_data * );
@@ -70,57 +65,57 @@ void oprog_examine_trigger( char_data *, obj_data * );
 void oprog_zap_trigger( char_data *, obj_data * );
 void oprog_pull_trigger( char_data *, obj_data * );
 void oprog_push_trigger( char_data *, obj_data * );
-void oprog_and_speech_trigger( const std::string &, char_data * );
+void oprog_and_speech_trigger( std::string_view, char_data * );
 void oprog_wear_trigger( char_data *, obj_data * );
 bool oprog_use_trigger( char_data *, obj_data *, char_data *, obj_data * );
-void oprog_act_trigger( const std::string &, obj_data *, char_data *, obj_data *, char_data *, obj_data * );
-void rprog_act_trigger( const std::string &, room_index *, char_data *, obj_data *, char_data *, obj_data * );
+void oprog_act_trigger( std::string_view, obj_data *, char_data *, obj_data *, char_data *, obj_data * );
+void rprog_act_trigger( std::string_view, room_index *, char_data *, obj_data *, char_data *, obj_data * );
 void rprog_leave_trigger( char_data * );
 void rprog_enter_trigger( char_data * );
 void rprog_sleep_trigger( char_data * );
 void rprog_rest_trigger( char_data * );
 void rprog_rfight_trigger( char_data * );
 void rprog_death_trigger( char_data * );
-void rprog_speech_trigger( const std::string &, char_data * );
+void rprog_speech_trigger( std::string_view, char_data * );
 void rprog_random_trigger( char_data * );
 void rprog_time_trigger( char_data * );
 void rprog_month_trigger( char_data * );
 void rprog_hour_trigger( char_data * );
-void rprog_and_speech_trigger( const std::string &, char_data * );
+void rprog_and_speech_trigger( std::string_view, char_data * );
 void rprog_login_trigger( char_data * );
 void rprog_void_trigger( char_data * );
 void mprog_hitprcnt_trigger( char_data *, char_data * );
 void mprog_fight_trigger( char_data *, char_data * );
 void mprog_death_trigger( char_data *, char_data * );
-bool mprog_keyword_trigger( const std::string &, char_data * );
+bool mprog_keyword_trigger( std::string_view, char_data * );
 void mprog_bribe_trigger( char_data *, char_data *, int );
 void mprog_give_trigger( char_data *, char_data *, obj_data * );
-bool mprog_wordlist_check( const std::string &, char_data *, char_data *, obj_data *, char_data *, obj_data *, int );
-void mprog_act_trigger( const std::string &, char_data *, char_data *, obj_data *, char_data *, obj_data * );
+bool mprog_wordlist_check( std::string_view, char_data *, char_data *, obj_data *, char_data *, obj_data *, int );
+void mprog_act_trigger( std::string_view, char_data *, char_data *, obj_data *, char_data *, obj_data * );
 void mprog_random_trigger( char_data * );
 void mprog_script_trigger( char_data * );
 void mprog_hour_trigger( char_data * );
 void mprog_time_trigger( char_data * );
 void mprog_month_trigger( char_data * );
-void mprog_targetted_speech_trigger( const std::string &, char_data *, char_data * );
-void mprog_speech_trigger( const std::string &, char_data * );
-void mprog_and_speech_trigger( const std::string &, char_data * );
-void mprog_tell_trigger( const std::string &, char_data * );
-void mprog_and_tell_trigger( const std::string &, char_data * );
-int mprog_name_to_type( const std::string & );
+void mprog_targetted_speech_trigger( std::string_view, char_data *, char_data * );
+void mprog_speech_trigger( std::string_view, char_data * );
+void mprog_and_speech_trigger( std::string_view, char_data * );
+void mprog_tell_trigger( std::string_view, char_data * );
+void mprog_and_tell_trigger( std::string_view, char_data * );
+int mprog_name_to_type( std::string_view );
 
 /* mud prog defines */
-const int ERROR_PROG = -1;
-const int IN_FILE_PROG = -2;
+constexpr int ERROR_PROG = -1;
+constexpr int IN_FILE_PROG = -2;
 
 /*
  * For backwards compatibility
  */
-const int RDEATH_PROG = DEATH_PROG;
-const int ENTER_PROG = ENTRY_PROG;
-const int RFIGHT_PROG = FIGHT_PROG;
-const int RGREET_PROG = GREET_PROG;
-const int OGREET_PROG = GREET_PROG;
+constexpr int RDEATH_PROG = DEATH_PROG;
+constexpr int ENTER_PROG = ENTRY_PROG;
+constexpr int RFIGHT_PROG = FIGHT_PROG;
+constexpr int RGREET_PROG = GREET_PROG;
+constexpr int OGREET_PROG = GREET_PROG;
 
 /* Mob program structures */
 class mprog_act_list
@@ -157,6 +152,27 @@ struct mud_prog_data
    bool triggered;
    bool fileprog;
 };
+
+extern std::list<room_index *> room_act_list;
+extern std::list<obj_data *> obj_act_list;
+extern std::list<char_data *> mob_act_list;
+
+/*
+ * MudProg macros. - Thoric [A template now, but who's counting :P]
+ */
+template <typename T, typename P>
+inline bool HAS_PROG( T* what, P prog )
+{
+   return what->progtypes.test( prog );
+}
+
+template <typename... Args>
+void progbugf( char_data * mob, std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   progbug( formatted, mob );
+}
 
 template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N * prog_target )
 {
@@ -220,7 +236,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
    char MUDProgfile[256];
    FILE *progfile;
 
-   snprintf( MUDProgfile, 256, "%s%s", PROG_DIR, f );
+   snprintf( MUDProgfile, 256, "%s%s", PROG_DIR.data(), f );
 
    if( !( progfile = fopen( MUDProgfile, "r" ) ) )
    {
@@ -314,7 +330,3 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
    }
    FCLOSE( progfile );
 }
-
-extern std::list<room_index *> room_act_list;
-extern std::list<obj_data *> obj_act_list;
-extern std::list<char_data *> mob_act_list;

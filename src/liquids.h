@@ -83,7 +83,7 @@
 #pragma once
 
 /* hard-coded max liquids */
-const int MAX_LIQUIDS = 100;
+constexpr int MAX_LIQUIDS = 100;
 
 /* globals */
 extern int top_liquid;
@@ -129,4 +129,4 @@ class mixture_data
 extern liquid_data *liquid_table[MAX_LIQUIDS];
 
 liquid_data *get_liq_vnum( int );
-liquid_data *get_liq( const std::string & );
+liquid_data *get_liq( std::string_view );

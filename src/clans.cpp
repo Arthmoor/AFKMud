@@ -51,7 +51,7 @@ roster_data::~roster_data(  )
 {
 }
 
-void add_roster( clan_data * clan, const std::string & name, int Class, int level, int kills, int deaths )
+void add_roster( clan_data * clan, std::string_view name, int Class, int level, int kills, int deaths )
 {
    roster_data *roster = new roster_data;
    roster->name = name;
@@ -63,7 +63,7 @@ void add_roster( clan_data * clan, const std::string & name, int Class, int leve
    clan->memberlist.push_back( roster );
 }
 
-void remove_roster( clan_data * clan, const std::string & name )
+void remove_roster( clan_data * clan, std::string_view name )
 {
    if( !clan )
    {
@@ -140,10 +140,45 @@ clan_data::~clan_data(  )
    clanlist.remove( this );
 }
 
+bool IS_CLANNED( char_data * ch )
+{
+   if( !ch->isnpc() && ch->pcdata->clan && ch->pcdata->clan->clan_type != CLAN_GUILD )
+      return true;
+   return false;
+}
+
+bool IS_GUILDED( char_data * ch )
+{
+   if( !ch->isnpc() && ch->pcdata->clan && ch->pcdata->clan->clan_type == CLAN_GUILD )
+      return true;
+   return false;
+}
+
+bool IS_LEADER( char_data * ch )
+{
+   if( !ch->isnpc() && ch->pcdata->clan && !str_cmp( ch->name, ch->pcdata->clan->leader ) )
+      return true;
+   return false;
+}
+
+bool IS_NUMBER1( char_data * ch )
+{
+   if( !ch->isnpc() && ch->pcdata->clan && !str_cmp( ch->name, ch->pcdata->clan->number1 ) )
+      return true;
+   return false;
+}
+
+bool IS_NUMBER2( char_data * ch )
+{
+   if( !ch->isnpc() && ch->pcdata->clan && !str_cmp( ch->name, ch->pcdata->clan->number2 ) )
+      return true;
+   return false;
+}
+
 /*
  * Get pointer to clan structure from clan name.
  */
-clan_data *get_clan( const std::string & name )
+clan_data *get_clan( std::string_view name )
 {
    for( auto* clan : clanlist )
    {
@@ -523,63 +558,62 @@ void save_clan( clan_data * clan )
 
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( filename.c_str() );
+      bug( "%s: Cannot open clan file %s for writing.", __func__, filename.c_str() );
+      return;
    }
-   else
-   {
-      fprintf( fp, "%s", "#CLAN\n" );
-      fprintf( fp, "Version      %d\n", CLAN_VERSION );
-      fprintf( fp, "Name         %s~\n", clan->name.c_str(  ) );
-      fprintf( fp, "Filename     %s~\n", clan->filename.c_str(  ) );
-      fprintf( fp, "Motto        %s~\n", clan->motto.c_str(  ) );
-      fprintf( fp, "Description  %s~\n", clan->clandesc.c_str(  ) );
-      fprintf( fp, "Deity        %s~\n", clan->deity.c_str(  ) );
-      fprintf( fp, "Leader       %s~\n", clan->leader.c_str(  ) );
-      fprintf( fp, "NumberOne    %s~\n", clan->number1.c_str(  ) );
-      fprintf( fp, "NumberTwo    %s~\n", clan->number2.c_str(  ) );
-      fprintf( fp, "Badge        %s~\n", clan->badge.c_str(  ) );
-      fprintf( fp, "Leadrank     %s~\n", clan->leadrank.c_str(  ) );
-      fprintf( fp, "Onerank      %s~\n", clan->onerank.c_str(  ) );
-      fprintf( fp, "Tworank      %s~\n", clan->tworank.c_str(  ) );
-      fprintf( fp, "PKills       %d %d %d %d %d %d %d %d %d %d\n",
-               clan->pkills[0], clan->pkills[1], clan->pkills[2],
-               clan->pkills[3], clan->pkills[4], clan->pkills[5], clan->pkills[6], clan->pkills[7], clan->pkills[8], clan->pkills[9] );
-      fprintf( fp, "PDeaths      %d %d %d %d %d %d %d %d %d %d\n",
-               clan->pdeaths[0], clan->pdeaths[1], clan->pdeaths[2],
-               clan->pdeaths[3], clan->pdeaths[4], clan->pdeaths[5], clan->pdeaths[6], clan->pdeaths[7], clan->pdeaths[8], clan->pdeaths[9] );
-      fprintf( fp, "MKills       %d\n", clan->mkills );
-      fprintf( fp, "MDeaths      %d\n", clan->mdeaths );
-      fprintf( fp, "IllegalPK    %d\n", clan->illegal_pk );
-      fprintf( fp, "Type         %d\n", clan->clan_type );
-      fprintf( fp, "Class        %d\n", clan->Class );
-      fprintf( fp, "Favour       %d\n", clan->favour );
-      fprintf( fp, "Members      %d\n", clan->members );
-      fprintf( fp, "MemLimit     %d\n", clan->mem_limit );
-      fprintf( fp, "Alignment    %d\n", clan->alignment );
-      fprintf( fp, "Board        %d\n", clan->board );
-      fprintf( fp, "ClanObjOne   %d\n", clan->clanobj1 );
-      fprintf( fp, "ClanObjTwo   %d\n", clan->clanobj2 );
-      fprintf( fp, "ClanObjThree %d\n", clan->clanobj3 );
-      fprintf( fp, "ClanObjFour  %d\n", clan->clanobj4 );
-      fprintf( fp, "ClanObjFive  %d\n", clan->clanobj5 );
-      fprintf( fp, "Recall       %d\n", clan->recall );
-      fprintf( fp, "Storeroom    %d\n", clan->storeroom );
-      fprintf( fp, "GuardOne     %d\n", clan->guard1 );
-      fprintf( fp, "GuardTwo     %d\n", clan->guard2 );
-      fprintf( fp, "Tithe	   %d\n", clan->tithe );
-      fprintf( fp, "Balance	   %d\n", clan->balance );
-      fprintf( fp, "Idmob	   %d\n", clan->idmob );
-      fprintf( fp, "Inn		   %d\n", clan->inn );
-      fprintf( fp, "Shopkeeper   %d\n", clan->shopkeeper );
-      fprintf( fp, "Auction	   %d\n", clan->auction );
-      fprintf( fp, "Bank	   %d\n", clan->bank );
-      fprintf( fp, "Repair	   %d\n", clan->repair );
-      fprintf( fp, "Forge	   %d\n", clan->forge );
-      fprintf( fp, "%s", "End\n\n" );
-      fwrite_memberlist( fp, clan );
-      fprintf( fp, "%s", "#END\n" );
-   }
+
+   fprintf( fp, "%s", "#CLAN\n" );
+   fprintf( fp, "Version      %d\n", CLAN_VERSION );
+   fprintf( fp, "Name         %s~\n", clan->name.c_str(  ) );
+   fprintf( fp, "Filename     %s~\n", clan->filename.c_str(  ) );
+   fprintf( fp, "Motto        %s~\n", clan->motto.c_str(  ) );
+   fprintf( fp, "Description  %s~\n", clan->clandesc.c_str(  ) );
+   fprintf( fp, "Deity        %s~\n", clan->deity.c_str(  ) );
+   fprintf( fp, "Leader       %s~\n", clan->leader.c_str(  ) );
+   fprintf( fp, "NumberOne    %s~\n", clan->number1.c_str(  ) );
+   fprintf( fp, "NumberTwo    %s~\n", clan->number2.c_str(  ) );
+   fprintf( fp, "Badge        %s~\n", clan->badge.c_str(  ) );
+   fprintf( fp, "Leadrank     %s~\n", clan->leadrank.c_str(  ) );
+   fprintf( fp, "Onerank      %s~\n", clan->onerank.c_str(  ) );
+   fprintf( fp, "Tworank      %s~\n", clan->tworank.c_str(  ) );
+   fprintf( fp, "PKills       %d %d %d %d %d %d %d %d %d %d\n",
+            clan->pkills[0], clan->pkills[1], clan->pkills[2],
+            clan->pkills[3], clan->pkills[4], clan->pkills[5], clan->pkills[6], clan->pkills[7], clan->pkills[8], clan->pkills[9] );
+   fprintf( fp, "PDeaths      %d %d %d %d %d %d %d %d %d %d\n",
+            clan->pdeaths[0], clan->pdeaths[1], clan->pdeaths[2],
+            clan->pdeaths[3], clan->pdeaths[4], clan->pdeaths[5], clan->pdeaths[6], clan->pdeaths[7], clan->pdeaths[8], clan->pdeaths[9] );
+   fprintf( fp, "MKills       %d\n", clan->mkills );
+   fprintf( fp, "MDeaths      %d\n", clan->mdeaths );
+   fprintf( fp, "IllegalPK    %d\n", clan->illegal_pk );
+   fprintf( fp, "Type         %d\n", clan->clan_type );
+   fprintf( fp, "Class        %d\n", clan->Class );
+   fprintf( fp, "Favour       %d\n", clan->favour );
+   fprintf( fp, "Members      %d\n", clan->members );
+   fprintf( fp, "MemLimit     %d\n", clan->mem_limit );
+   fprintf( fp, "Alignment    %d\n", clan->alignment );
+   fprintf( fp, "Board        %d\n", clan->board );
+   fprintf( fp, "ClanObjOne   %d\n", clan->clanobj1 );
+   fprintf( fp, "ClanObjTwo   %d\n", clan->clanobj2 );
+   fprintf( fp, "ClanObjThree %d\n", clan->clanobj3 );
+   fprintf( fp, "ClanObjFour  %d\n", clan->clanobj4 );
+   fprintf( fp, "ClanObjFive  %d\n", clan->clanobj5 );
+   fprintf( fp, "Recall       %d\n", clan->recall );
+   fprintf( fp, "Storeroom    %d\n", clan->storeroom );
+   fprintf( fp, "GuardOne     %d\n", clan->guard1 );
+   fprintf( fp, "GuardTwo     %d\n", clan->guard2 );
+   fprintf( fp, "Tithe	   %d\n", clan->tithe );
+   fprintf( fp, "Balance	   %d\n", clan->balance );
+   fprintf( fp, "Idmob	   %d\n", clan->idmob );
+   fprintf( fp, "Inn		   %d\n", clan->inn );
+   fprintf( fp, "Shopkeeper   %d\n", clan->shopkeeper );
+   fprintf( fp, "Auction	   %d\n", clan->auction );
+   fprintf( fp, "Bank	   %d\n", clan->bank );
+   fprintf( fp, "Repair	   %d\n", clan->repair );
+   fprintf( fp, "Forge	   %d\n", clan->forge );
+   fprintf( fp, "%s", "End\n\n" );
+   fwrite_memberlist( fp, clan );
+   fprintf( fp, "%s", "#END\n" );
+
    FCLOSE( fp );
 }
 
@@ -770,7 +804,7 @@ void fread_clan( clan_data * clan, FILE * fp )
    }
 }
 
-/* Sets up a bunch of default values for new clans or during loadup so we don't get wierd stuff - Samson 7-16-00 */
+/* Sets up a bunch of default values for new clans or during loadup so we don't get weird stuff - Samson 7-16-00 */
 void clean_clan( clan_data * clan )
 {
    clan->memberlist.clear(  );
@@ -1105,8 +1139,8 @@ void load_clans( void )
 
    if( !( fpList = fopen( clanlistfile.c_str(), "r" ) ) )
    {
-      perror( clanlistfile.c_str() );
-      exit( 1 );
+      bug( "%s: Cannot open clan list file.", __func__ );
+      std::exit( EXIT_FAILURE );
    }
 
    for( ;; )
@@ -1123,7 +1157,7 @@ void load_clans( void )
    }
    FCLOSE( fpList );
    verify_clans(  ); /* Check against pfiles to see if clans should still exist */
-   log_string( "Done clans" );
+   log_string( "Done loading clans." );
 }
 
 void check_clan_info( char_data * ch )
@@ -1359,7 +1393,7 @@ CMDF( do_induct )
 }
 
 /* Can the character outcast the victim? */
-bool can_outcast( clan_data * clan, char_data * ch, char_data * victim )
+bool can_outcast( const clan_data * clan, const char_data * ch, const char_data * victim )
 {
    if( !clan || !ch || !victim )
       return false;
@@ -1485,7 +1519,7 @@ CMDF( do_outcast )
    else
       add_loginmsg( victim->name, 6, nullptr );
 
-   echo_all_printf( ECHOTAR_PK, "&[guildtalk]%s has been outcast from %s!", victim->name, clan->name.c_str(  ) );
+   echo_all_printf( ECHOTAR_PK, "&[guildtalk]{} has been outcast from {}!", victim->name, clan->name );
    remove_roster( clan, victim->name );
    victim->save(  );
    save_clan( clan );
@@ -1578,7 +1612,7 @@ void pcsetclan( char_data * ch, std::string argument )
             vch->pcdata->clan = nullptr;
          }
       }
-      echo_all_printf( ECHOTAR_ALL, "&[guildtalk]%s has dissolved %s!", ch->name, clan->name.c_str(  ) );
+      echo_all_printf( ECHOTAR_ALL, "&[guildtalk]{} has dissolved {}!", ch->name, clan->name );
       log_printf( "%s has dissolved %s", ch->name, clan->name.c_str(  ) );
       delete_clan( ch, clan );
       write_clan_list(  );
@@ -1805,7 +1839,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "board" ) )
    {
-      clan->board = atoi( argument.c_str(  ) );
+      clan->board = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1813,7 +1847,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj1" ) )
    {
-      clan->clanobj1 = atoi( argument.c_str(  ) );
+      clan->clanobj1 = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1821,7 +1855,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj2" ) )
    {
-      clan->clanobj2 = atoi( argument.c_str(  ) );
+      clan->clanobj2 = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1829,7 +1863,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj3" ) )
    {
-      clan->clanobj3 = atoi( argument.c_str(  ) );
+      clan->clanobj3 = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1837,7 +1871,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj4" ) )
    {
-      clan->clanobj4 = atoi( argument.c_str(  ) );
+      clan->clanobj4 = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1845,7 +1879,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "obj5" ) )
    {
-      clan->clanobj5 = atoi( argument.c_str(  ) );
+      clan->clanobj5 = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1853,7 +1887,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "guard1" ) )
    {
-      clan->guard1 = atoi( argument.c_str(  ) );
+      clan->guard1 = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1861,7 +1895,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "guard2" ) )
    {
-      clan->guard2 = atoi( argument.c_str(  ) );
+      clan->guard2 = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1869,7 +1903,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "recall" ) )
    {
-      clan->recall = atoi( argument.c_str(  ) );
+      clan->recall = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1877,7 +1911,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "storage" ) )
    {
-      clan->storeroom = atoi( argument.c_str(  ) );
+      clan->storeroom = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1885,7 +1919,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "tithe" ) )
    {
-      int value = atoi( argument.c_str(  ) );
+      int value = std::stoi( argument );
 
       if( value < 0 || value > 100 )
       {
@@ -1900,7 +1934,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "balance" ) )
    {
-      int value = atoi( argument.c_str(  ) );
+      int value = std::stoi( argument );
 
       if( value < 0 || value > 2000000000 )
       {
@@ -1918,9 +1952,9 @@ CMDF( do_setclan )
       mob_index *mob = nullptr;
       int value = 0;
 
-      if( atoi( argument.c_str(  ) ) != 0 )
+      if( std::stoi( argument ) > 0 && std::stoi( argument ) < sysdata->maxvnum )
       {
-         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+         if( !( mob = get_mob_index( std::stoi( argument ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -1938,9 +1972,9 @@ CMDF( do_setclan )
       mob_index *mob = nullptr;
       int value = 0;
 
-      if( atoi( argument.c_str(  ) ) != 0 )
+      if( std::stoi( argument ) > 0 && std::stoi( argument ) < sysdata->maxvnum )
       {
-         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+         if( !( mob = get_mob_index( std::stoi( argument ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -1958,9 +1992,9 @@ CMDF( do_setclan )
       mob_index *mob = nullptr;
       int value = 0;
 
-      if( atoi( argument.c_str(  ) ) != 0 )
+      if( std::stoi( argument ) > 0 && std::stoi( argument ) < sysdata->maxvnum )
       {
-         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+         if( !( mob = get_mob_index( std::stoi( argument ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -1978,9 +2012,9 @@ CMDF( do_setclan )
       mob_index *mob = nullptr;
       int value = 0;
 
-      if( atoi( argument.c_str(  ) ) != 0 )
+      if( std::stoi( argument ) > 0 && std::stoi( argument ) < sysdata->maxvnum )
       {
-         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+         if( !( mob = get_mob_index( std::stoi( argument ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -1998,9 +2032,9 @@ CMDF( do_setclan )
       mob_index *mob = nullptr;
       int value = 0;
 
-      if( atoi( argument.c_str(  ) ) != 0 )
+      if( std::stoi( argument ) > 0 && std::stoi( argument ) < sysdata->maxvnum )
       {
-         if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+         if( !( mob = get_mob_index( std::stoi( argument ) ) ) )
          {
             ch->print( "That mobile does not exist.\r\n" );
             return;
@@ -2018,9 +2052,9 @@ CMDF( do_setclan )
       room_index *room = nullptr;
       int value = 0;
 
-      if( atoi( argument.c_str(  ) ) != 0 )
+      if( std::stoi( argument ) > 0 && std::stoi( argument ) < sysdata->maxvnum )
       {
-         if( !( room = get_room_index( atoi( argument.c_str(  ) ) ) ) )
+         if( !( room = get_room_index( std::stoi( argument ) ) ) )
          {
             ch->print( "That room does not exist.\r\n" );
             return;
@@ -2350,23 +2384,22 @@ CMDF( do_roster )
    argument = one_argument( argument, arg );
    if( !( clan = get_clan( arg ) ) )
    {
-      ch->printf( "No such guild or clan known as %s\r\n", arg.c_str(  ) );
+      ch->print_fmt( "No such guild or clan known as %s\r\n", arg );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      ch->printf( "Membership roster for the %s %s\r\n\r\n", clan->name.c_str(  ), clan->clan_type == CLAN_GUILD ? "Guild" : "Clan" );
-      ch->printf( "%-15.15s  %-15.15s %-6.6s %-6.6s %-6.6s %s\r\n", "Name", "Class", "Level", "Kills", "Deaths", "Joined on" );
+      ch->print_fmt( "Membership roster for the {} {}\r\n\r\n", clan->name, clan->clan_type == CLAN_GUILD ? "Guild" : "Clan" );
+      ch->print_fmt( "{:<15.15}  {:<15.15} {:<6.6} {:<6.6} {:<6.6} {}\r\n", "Name", "Class", "Level", "Kills", "Deaths", "Joined on" );
       ch->print( "-------------------------------------------------------------------------------------\r\n" );
       for( auto* member : clan->memberlist )
       {
-         ch->printf( "%-15.15s  %-15.15s %-6d %-6d %-6d %s\r\n",
-                     member->name.c_str(  ), capitalize( npc_class[member->Class] ), member->level, member->kills, member->deaths,
-                     c_time( member->joined, ch->pcdata->timezone ).c_str() );
+         ch->print_fmt( "{:<15.15}  {:<15.15} {:<6} {:<6} {:6} {}\r\n",
+                     member->name, capitalize( npc_class[member->Class] ), member->level, member->kills, member->deaths, c_time( member->joined, ch->pcdata->timezone ) );
          ++total;
       }
-      ch->printf( "\r\nThere are %d member%s in %s\r\n", total, total == 1 ? "" : "s", clan->name.c_str(  ) );
+      ch->print_fmt( "\r\nThere are {} member{} in {}\r\n", total, total == 1 ? "" : "s", clan->name );
       return;
    }
 
@@ -2380,7 +2413,7 @@ CMDF( do_roster )
       }
       remove_roster( clan, argument );
       save_clan( clan );
-      ch->printf( "%s has been removed from the roster for %s\r\n", argument.c_str(  ), clan->name.c_str(  ) );
+      ch->print_fmt( "{} has been removed from the roster for {}\r\n", argument, clan->name );
       return;
    }
    do_roster( ch, "" );
@@ -2604,7 +2637,7 @@ CMDF( do_ident )
          act( AT_TELL, "$n tells you 'You cannot afford to identify that!'", mob, nullptr, ch, TO_VICT );
          return;
       }
-      act_printf( AT_TELL, mob, nullptr, ch, TO_VICT, "$n charges you %.0f gold for the identification.", idcost );
+      act_printf( AT_TELL, mob, nullptr, ch, TO_VICT, "$n charges you {:0.0f} gold for the identification.", idcost );
       ch->gold -= ( int )idcost;
       if( found && clan->bank )
       {
@@ -2613,7 +2646,7 @@ CMDF( do_ident )
       }
    }
 
-   act_printf( AT_LBLUE, mob, nullptr, ch, TO_VICT, "$n tells you 'Information on a %s:'", obj->short_descr );
+   act_printf( AT_LBLUE, mob, nullptr, ch, TO_VICT, "$n tells you 'Information on a {}:'", obj->short_descr );
    obj_identify_output( ch, obj );
 }
 

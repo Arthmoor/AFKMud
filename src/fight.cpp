@@ -523,7 +523,7 @@ CMDF( do_gfighting )
 /*
  * Weapon types, haus
  */
-int weapon_prof_bonus_check( char_data * ch, obj_data * wield, int &gsn_ptr )
+int weapon_prof_bonus_check( char_data * ch, obj_data * wield, int & gsn_ptr )
 {
    int bonus = 0;
 
@@ -619,7 +619,7 @@ int calc_thac0( char_data * ch, char_data * victim, int dist )
 }
 
 /*
- * Calculate damage based on resistances, immunities and suceptibilities
+ * Calculate damage based on resistances, immunities and susceptibilities
  *					-Thoric
  */
 double ris_damage( char_data * ch, double dam, int ris )
@@ -698,7 +698,7 @@ bool is_safe( char_data * ch, char_data * victim )
 
    if( victim->has_actflag( ACT_IMMORTAL ) )
    {
-      ch->printf( "&[magic]%s is protected by the Gods and cannot be killed!\r\n", capitalize( victim->short_descr ) );
+      ch->print_fmt( "&[magic]{} is protected by the Gods and cannot be killed!\r\n", capitalize( victim->short_descr ) );
       return true;
    }
 
@@ -710,7 +710,7 @@ bool is_safe( char_data * ch, char_data * victim )
 
    if( victim->has_actflag( ACT_PACIFIST ) ) /* Gorog */
    {
-      ch->printf( "&[magic]%s is a pacifist and will not fight.\r\n", capitalize( victim->short_descr ) );
+      ch->print_fmt( "&[magic]{} is a pacifist and will not fight.\r\n", capitalize( victim->short_descr ) );
       return true;
    }
 
@@ -727,7 +727,7 @@ bool is_safe( char_data * ch, char_data * victim )
    {
       if( check_illegal_pk( ch, victim->master ) )
       {
-         ch->printf( "You may not engage %s's followers in combat.\r\n", victim->master->name );
+         ch->print_fmt( "You may not engage {}'s followers in combat.\r\n", victim->master->name );
          return true;
       }
 
@@ -747,7 +747,7 @@ bool is_safe( char_data * ch, char_data * victim )
    {
       if( check_illegal_pk( ch->master, victim->master ) )
       {
-         ch->master->printf( "&RYou cannot have your followers engage %s's followers in combat.\r\n", victim->master->name );
+         ch->master->print_fmt( "&RYou cannot have your followers engage {}'s followers in combat.\r\n", victim->master->name );
          return true;
       }
    }
@@ -2616,7 +2616,7 @@ void damage_obj( obj_data * obj )
 
 /* Added checks for the 3 new dam types, and removed DAM_PEA - Grimm
  * Removed excess duplication, added hack and lash RISA types - Samson 1-9-00
- * This function also affects simple_damage in mud_comm.c - Samson 4-11-04
+ * This function also affects simple_damage in mud_comm.cpp - Samson 4-11-04
  */
 double damage_risa( char_data * victim, double dam, int dt )
 {
@@ -2959,7 +2959,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       victim->hit = 1;
 
    /*
-    * Make sure newbies dont die 
+    * Make sure newbies don't die
     */
    if( !victim->isnpc(  ) && victim->level == 1 && victim->hit < 1 )
       victim->hit = 1;
@@ -3060,9 +3060,9 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             {
                std::filesystem::path filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
 
-               append_to_file( filename.c_str(), "&P(%2d) %-12s &wvs &P(%2d) %s &P%s ... &w%s",
-                               ch->level, ch->name, victim->level, !victim->CAN_PKILL(  )? "&W<Peaceful>" :
-                               victim->pcdata->clan ? victim->pcdata->clan->badge.c_str(  ) : "&P(&WUnclanned&P)", victim->name, ch->in_room->area->name );
+               append_to_file( filename.c_str(), "&P({:2}) {:<12} &wvs &P({:2}) {} &P{} ... &w{}",
+                               ch->level, ch->name, victim->level, !victim->CAN_PKILL(  ) ? "&W<Peaceful>" :
+                               victim->pcdata->clan ? victim->pcdata->clan->badge : "&P(&WUnclanned&P)", victim->name, ch->in_room->area->name );
             }
          }
 
@@ -3074,9 +3074,9 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             if( ch->pcdata && ch->pcdata->clan && ch->pcdata->clan->name == victim->pcdata->clan->name )
                ;
             else
-               append_to_file( filename.c_str(), "&P(%2d) %-12s &wdefeated by &P(%2d) %s &P%s ... &w%s",
+               append_to_file( filename.c_str(), "&P({:2}) {:<12} &wdefeated by &P({:2}) {} &P{} ... &w{}",
                      victim->level, victim->name, ch->level, !ch->CAN_PKILL( ) ? "&W<Peaceful>" :
-                     ch->pcdata->clan ? ch->pcdata->clan->badge.c_str() : "&P(&WUnclanned&P)", ch->name, victim->in_room->area->name );
+                     ch->pcdata->clan ? ch->pcdata->clan->badge : "&P(&WUnclanned&P)", ch->name, victim->in_room->area->name );
          }
 
          /*
@@ -4003,7 +4003,7 @@ CMDF( do_flee )
          else
          {
             if( ch->level < LEVEL_AVATAR )
-               act_printf( AT_FLEE, ch, nullptr, nullptr, TO_CHAR, "You flee head over heels from combat, losing %.0f experience.", los );
+               act_printf( AT_FLEE, ch, nullptr, nullptr, TO_CHAR, "You flee head over heels from combat, losing {:0.0f} experience.", los );
             else
                act( AT_FLEE, "You flee head over heels from combat!", ch, nullptr, nullptr, TO_CHAR );
             ch->gain_exp( 0 - los );
@@ -4037,7 +4037,7 @@ CMDF( do_flee )
    }
    los = ( exp_level( ch->level + 1 ) - exp_level( ch->level ) ) * 0.01;
    if( ch->level < LEVEL_AVATAR )
-      act_printf( AT_FLEE, ch, nullptr, nullptr, TO_CHAR, "You attempt to flee from combat, losing %.0f experience.\r\n", los );
+      act_printf( AT_FLEE, ch, nullptr, nullptr, TO_CHAR, "You attempt to flee from combat, losing {:0.0f} experience.\r\n", los );
    else
       act( AT_FLEE, "You attempt to flee from combat, but can't escape!", ch, nullptr, nullptr, TO_CHAR );
    ch->gain_exp( 0 - los );

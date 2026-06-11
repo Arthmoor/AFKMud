@@ -47,15 +47,16 @@
 #include <format>
 #include "mud.h"
 #include "descriptor.h"
+#include "mud_prog.h"
 #include "roomindex.h"
 
-const unsigned char will_compress2_str[] = { IAC, WILL, TELOPT_COMPRESS2, '\0' };
-const unsigned char start_compress2_str[] = { IAC, SB, TELOPT_COMPRESS2, IAC, SE, '\0' };
-const unsigned char will_msp_str[] = { IAC, WILL, TELOPT_MSP, '\0' };
-const unsigned char start_msp_str[] = { IAC, SB, TELOPT_MSP, IAC, SE, '\0' };
+const std::array<unsigned char, 4> will_compress2_str = { IAC, WILL, TELOPT_COMPRESS2, '\0' };
+const std::array<unsigned char, 6> start_compress2_str = { IAC, SB, TELOPT_COMPRESS2, IAC, SE, '\0' };
+const std::array<unsigned char, 4> will_msp_str = { IAC, WILL, TELOPT_MSP, '\0' };
+const std::array<unsigned char, 6> start_msp_str = { IAC, SB, TELOPT_MSP, IAC, SE, '\0' };
 
 // Begin MCCP Information
-bool descriptor_data::process_compressed(  )
+bool descriptor_data::process_compressed( )
 {
    int iStart = 0, nBlock, nWrite, len;
 
@@ -63,18 +64,19 @@ bool descriptor_data::process_compressed(  )
       return true;
 
    /*
-    * Try to write out some data.. 
+    * Try to write out some data..
     */
    len = mccp->out_compress->next_out - mccp->out_compress_buf;
 
    if( len > 0 )
    {
       /*
-       * we have some data to write 
+       * we have some data to write
        */
       for( iStart = 0; iStart < len; iStart += nWrite )
       {
          nBlock = umin( len - iStart, 4096 );
+
          if( ( nWrite = send( descriptor, mccp->out_compress_buf + iStart, nBlock, 0 ) ) < 0 )
          {
             if( errno == EAGAIN || errno == ENOSR )
@@ -89,10 +91,10 @@ bool descriptor_data::process_compressed(  )
       if( iStart )
       {
          /*
-          * We wrote "iStart" bytes 
+          * We wrote "iStart" bytes
           */
          if( iStart < len )
-            memmove( mccp->out_compress_buf, mccp->out_compress_buf + iStart, len - iStart );
+            std::memmove( mccp->out_compress_buf, mccp->out_compress_buf + iStart, len - iStart );
 
          mccp->out_compress->next_out = mccp->out_compress_buf + len - iStart;
       }
@@ -100,40 +102,37 @@ bool descriptor_data::process_compressed(  )
    return true;
 }
 
-bool descriptor_data::compressStart(  )
+bool descriptor_data::compressStart( )
 {
-   z_stream *s;
-
    if( mccp->out_compress || is_compressing )
       return true;
 
-   CREATE( s, z_stream, 1 );
-   CREATE( mccp->out_compress_buf, unsigned char, COMPRESS_BUF_SIZE );
+   auto s = std::make_unique<z_stream>();
+   auto out_compress_buf = std::make_unique<unsigned char[]>( COMPRESS_BUF_SIZE );
 
    s->next_in = nullptr;
    s->avail_in = 0;
 
-   s->next_out = mccp->out_compress_buf;
+   s->next_out = out_compress_buf.get();
    s->avail_out = COMPRESS_BUF_SIZE;
 
    s->zalloc = Z_NULL;
    s->zfree = Z_NULL;
    s->opaque = nullptr;
 
-   if( deflateInit( s, 9 ) != Z_OK )
-   {
-      OLD_DISPOSE( mccp->out_compress_buf );
-      OLD_DISPOSE( s );
+   if( deflateInit( s.get(), 9 ) != Z_OK )
       return false;
-   }
 
-   this->write( (const char*)start_compress2_str );
-   mccp->out_compress = s;
+   this->write( std::string_view{ reinterpret_cast<const char*>(start_compress2_str.data()), start_compress2_str.size() } );
+
+   mccp->out_compress = s.release();
+   mccp->out_compress_buf = out_compress_buf.release();
+
    is_compressing = true;
    return true;
 }
 
-bool descriptor_data::compressEnd(  )
+bool descriptor_data::compressEnd( )
 {
    unsigned char dummy[1];
 
@@ -147,8 +146,13 @@ bool descriptor_data::compressEnd(  )
       process_compressed();   /* try to send any residual data */
 
    deflateEnd( mccp->out_compress );
-   OLD_DISPOSE( mccp->out_compress_buf );
-   OLD_DISPOSE( mccp->out_compress );
+
+   delete[] mccp->out_compress_buf;
+   mccp->out_compress_buf = nullptr;
+
+   delete mccp->out_compress;
+   mccp->out_compress = nullptr;
+
    is_compressing = false;
    return true;
 }
@@ -181,13 +185,12 @@ CMDF( do_compress )
       ch->print( "&ROk, compression disabled.\r\n" );
    }
 }
+// End MCCP Information
 
-/* End MCCP Information */
-/* Start MSP Information */
-
+// Start MSP Information
 void descriptor_data::send_msp_startup(  )
 {
-   write_to_buffer( (const char*)start_msp_str );
+   write_to_buffer( std::string_view{ reinterpret_cast<const char*>( start_msp_str.data() ), start_msp_str.size() } );
 }
 
 /* Trigger sound to character
@@ -202,26 +205,25 @@ void descriptor_data::send_msp_startup(  )
  *
  * More detailed information at https://www.zuggsoft.com/zmud/msp.htm
 */
-void char_data::sound( const std::string & fname, int volume, bool toroom )
+void char_data::sound( std::string_view fname, int volume, bool toroom )
 {
    const char *type = "mud";
    int repeats = 1, priority = 50;
-   std::string url;
 
    if( sysdata->http.empty(  ) )
       return;
 
-   url = std::format( "{}/sounds/", sysdata->http );
+   std::string url = std::format( "{}/sounds/", sysdata->http );
 
    if( !toroom )
    {
       if( !MSP_ON(  ) )
          return;
 
-      if( url[0] != '\0' )
-         printf( "!!SOUND(%s V=%d L=%d P=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type, url.c_str() );
+      if( !url.empty() )
+         print_fmt( "!!SOUND({} V={} L={} P={} T={} U={})\r\n", fname, volume, repeats, priority, type, url );
       else
-         printf( "!!SOUND(%s V=%d L=%d P=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type );
+         print_fmt( "!!SOUND({} V={} L={} P={} T={})\r\n", fname, volume, repeats, priority, type );
    }
    else
    {
@@ -230,10 +232,10 @@ void char_data::sound( const std::string & fname, int volume, bool toroom )
          if( !vch->MSP_ON(  ) )
             continue;
 
-         if( url[0] != '\0' )
-            vch->printf( "!!SOUND(%s V=%d L=%d P=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type, url.c_str() );
+         if( !url.empty() )
+            vch->print_fmt( "!!SOUND({} V={} L={} P={} T={} U={})\r\n", fname, volume, repeats, priority, type, url );
          else
-            vch->printf( "!!SOUND(%s V=%d L=%d P=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, priority, type );
+            vch->print_fmt( "!!SOUND({} V={} L={} P={} T={})\r\n", fname, volume, repeats, priority, type );
       }
    }
 }
@@ -243,14 +245,14 @@ void char_data::sound( const std::string & fname, int volume, bool toroom )
  * "fname" is the name of the music file to be played
  * "vol" is the volume level to play the music at    
  * "repeats" is the number of times to play the music file
- * "continu" specifies whether the file should be restarted if requested again
+ * "continu" specifies whether the file should be restarted if requested again [Yes, the 'e' being dropped here is intentional]
  * "type" is the sound Class 
  * "URL" is the optional download URL for the sound file
  * "ch" is the character to play the music for 
  *
  * more detailed information at: https://www.zuggsoft.com/zmud/msp.htm
 */
-void char_data::music( const std::string & fname, int volume, bool toroom )
+void char_data::music( std::string_view fname, int volume, bool toroom )
 {
    const char *type = "mud";
    int repeats = 1, continu = 1;
@@ -266,9 +268,9 @@ void char_data::music( const std::string & fname, int volume, bool toroom )
          return;
 
       if( url[0] != '\0' )
-         printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type, url.c_str() );
+         print_fmt( "!!MUSIC({} V={} L={} C={} T={} U={})\r\n", fname, volume, repeats, continu, type, url );
       else
-         printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type );
+         print_fmt( "!!MUSIC({} V={} L={} C={} T={})\r\n", fname, volume, repeats, continu, type );
    }
    else
    {
@@ -277,10 +279,10 @@ void char_data::music( const std::string & fname, int volume, bool toroom )
          if( !vch->MSP_ON(  ) )
             return;
 
-         if( url[0] != '\0' )
-            vch->printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s U=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type, url.c_str() );
+         if( !url.empty() )
+            vch->print_fmt( "!!MUSIC({} V={} L={} C={} T={} U={})\r\n", fname, volume, repeats, continu, type, url );
          else
-            vch->printf( "!!MUSIC(%s V=%d L=%d C=%d T=%s)\r\n", fname.c_str(  ), volume, repeats, continu, type );
+            vch->print_fmt( "!!MUSIC({} V={} L={} C={} T={})\r\n", fname, volume, repeats, continu, type );
       }
    }
 }
@@ -317,7 +319,7 @@ CMDF( do_mpsoundaround )
 
    if( !( victim = ch->get_char_room( target ) ) )
    {
-      progbugf( ch, "%s", "Mpsoundaround - No victim specified" );
+      progbug( "Mpsoundaround - No victim specified", ch );
       return;
    }
 
@@ -325,13 +327,13 @@ CMDF( do_mpsoundaround )
 
    if( vol.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpsoundaround - No volume level specified" );
+      progbug( "Mpsoundaround - No volume level specified", ch );
       return;
    }
 
    if( !is_number( vol ) )
    {
-      progbugf( ch, "%s", "mpsoundaround - non-numerical volume level specified" );
+      progbug( "mpsoundaround - non-numerical volume level specified", ch );
       return;
    }
 
@@ -339,13 +341,13 @@ CMDF( do_mpsoundaround )
 
    if( volume < 1 || volume > 100 )
    {
-      progbugf( ch, "mpsoundaround - invalid volume %d. range is 1 to 100", volume );
+      progbugf( ch, "mpsoundaround - invalid volume {}. range is 1 to 100", volume );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "mpsoundaround - no sound file specified" );
+      progbug( "mpsoundaround - no sound file specified", ch );
       return;
    }
    actflags = ch->get_actflags(  );
@@ -372,7 +374,7 @@ CMDF( do_mpsoundat )
 
    if( !( victim = ch->get_char_room( target ) ) )
    {
-      progbugf( ch, "%s", "mpsoundat - No victim specified" );
+      progbug( "mpsoundat - No victim specified", ch );
       return;
    }
 
@@ -380,13 +382,13 @@ CMDF( do_mpsoundat )
 
    if( vol.empty(  ) )
    {
-      progbugf( ch, "%s", "mpsoundat - No volume level specified" );
+      progbug( "mpsoundat - No volume level specified", ch );
       return;
    }
 
    if( !is_number( vol ) )
    {
-      progbugf( ch, "%s", "mpsoundat - non-numerical volume level specified" );
+      progbug( "mpsoundat - non-numerical volume level specified", ch );
       return;
    }
 
@@ -394,13 +396,13 @@ CMDF( do_mpsoundat )
 
    if( volume < 1 || volume > 100 )
    {
-      progbugf( ch, "mpsoundat - invalid volume %d. range is 1 to 100", volume );
+      progbugf( ch, "mpsoundat - invalid volume {}. range is 1 to 100", volume );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "mpsoundat - no sound file specified" );
+      progbug( "mpsoundat - no sound file specified", ch );
       return;
    }
    actflags = ch->get_actflags(  );
@@ -426,13 +428,13 @@ CMDF( do_mpsound )
 
    if( vol.empty(  ) )
    {
-      progbugf( ch, "%s", "mpsound - No volume level specified" );
+      progbug( "mpsound - No volume level specified", ch );
       return;
    }
 
    if( !is_number( vol ) )
    {
-      progbugf( ch, "%s", "mpsound - non-numerical volume level specified" );
+      progbug( "mpsound - non-numerical volume level specified", ch );
       return;
    }
 
@@ -440,13 +442,13 @@ CMDF( do_mpsound )
 
    if( volume < 1 || volume > 100 )
    {
-      progbugf( ch, "mpsound - invalid volume %d. range is 1 to 100", volume );
+      progbugf( ch, "mpsound - invalid volume {}. range is 1 to 100", volume );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "mpsound - no sound file specified" );
+      progbug( "mpsound - no sound file specified", ch );
       return;
    }
    actflags = ch->get_actflags(  );
@@ -470,13 +472,13 @@ CMDF( do_mpsoundzone )
 
    if( vol.empty(  ) )
    {
-      progbugf( ch, "%s", "mpsoundzone - No volume level specified" );
+      progbug( "mpsoundzone - No volume level specified", ch );
       return;
    }
 
    if( !is_number( vol ) )
    {
-      progbugf( ch, "%s", "mpsoundzone - non-numerical volume level specified" );
+      progbug( "mpsoundzone - non-numerical volume level specified", ch );
       return;
    }
 
@@ -484,13 +486,13 @@ CMDF( do_mpsoundzone )
 
    if( volume < 1 || volume > 100 )
    {
-      progbugf( ch, "mpsoundzone - invalid volume %d. range is 1 to 100", volume );
+      progbugf( ch, "mpsoundzone - invalid volume {}. range is 1 to 100", volume );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "mpsoundzone - no sound file specified" );
+      progbug( "mpsoundzone - no sound file specified", ch );
       return;
    }
 
@@ -523,7 +525,7 @@ CMDF( do_mpmusicaround )
 
    if( !( victim = ch->get_char_room( target ) ) )
    {
-      progbugf( ch, "%s", "mpmusicaround - No victim specified" );
+      progbug( "mpmusicaround - No victim specified", ch );
       return;
    }
 
@@ -531,13 +533,13 @@ CMDF( do_mpmusicaround )
 
    if( vol.empty(  ) )
    {
-      progbugf( ch, "%s", "mpmusicaround - No volume level specified" );
+      progbug( "mpmusicaround - No volume level specified", ch );
       return;
    }
 
    if( !is_number( vol ) )
    {
-      progbugf( ch, "%s", "mpmusicaround - non-numerical volume level specified" );
+      progbug( "mpmusicaround - non-numerical volume level specified", ch );
       return;
    }
 
@@ -545,13 +547,13 @@ CMDF( do_mpmusicaround )
 
    if( volume < 1 || volume > 100 )
    {
-      progbugf( ch, "mpmusicaround - invalid volume %d. range is 1 to 100", volume );
+      progbugf( ch, "mpmusicaround - invalid volume {}. range is 1 to 100", volume );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "mpmusicaround - no sound file specified" );
+      progbug( "mpmusicaround - no sound file specified", ch );
       return;
    }
 
@@ -578,7 +580,7 @@ CMDF( do_mpmusic )
 
    if( !( victim = ch->get_char_room( target ) ) )
    {
-      progbugf( ch, "%s", "mpmusic - No victim specified" );
+      progbug( "mpmusic - No victim specified", ch );
       return;
    }
 
@@ -586,13 +588,13 @@ CMDF( do_mpmusic )
 
    if( vol.empty(  ) )
    {
-      progbugf( ch, "%s", "mpmusic - No volume level specified" );
+      progbug( "mpmusic - No volume level specified", ch );
       return;
    }
 
    if( !is_number( vol ) )
    {
-      progbugf( ch, "%s", "mpmusic - non-numerical volume level specified" );
+      progbug( "mpmusic - non-numerical volume level specified", ch );
       return;
    }
 
@@ -600,13 +602,13 @@ CMDF( do_mpmusic )
 
    if( volume < 1 || volume > 100 )
    {
-      progbugf( ch, "mpmusic - invalid volume %d. range is 1 to 100", volume );
+      progbugf( ch, "mpmusic - invalid volume {}. range is 1 to 100", volume );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "mpmusic - no sound file specified" );
+      progbug( "mpmusic - no sound file specified", ch );
       return;
    }
    actflags = ch->get_actflags(  );
@@ -632,7 +634,7 @@ CMDF( do_mpmusicat )
 
    if( !( victim = ch->get_char_room( target ) ) )
    {
-      progbugf( ch, "%s", "mpmusicat - No victim specified" );
+      progbug( "mpmusicat - No victim specified", ch );
       return;
    }
 
@@ -640,13 +642,13 @@ CMDF( do_mpmusicat )
 
    if( vol.empty(  ) )
    {
-      progbugf( ch, "%s", "mpmusicat - No volume level specified" );
+      progbug( "mpmusicat - No volume level specified", ch );
       return;
    }
 
    if( !is_number( vol ) )
    {
-      progbugf( ch, "%s", "mpmusicat - non-numerical volume level specified" );
+      progbug( "mpmusicat - non-numerical volume level specified", ch );
       return;
    }
 
@@ -654,13 +656,13 @@ CMDF( do_mpmusicat )
 
    if( volume < 1 || volume > 100 )
    {
-      progbugf( ch, "mpmusicat - invalid volume %d. range is 1 to 100", volume );
+      progbugf( ch, "mpmusicat - invalid volume {}. range is 1 to 100", volume );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      progbugf( ch, "%s", "mpmusicat - no sound file specified" );
+      progbug( "mpmusicat - no sound file specified", ch );
       return;
    }
    actflags = ch->get_actflags(  );
@@ -668,5 +670,4 @@ CMDF( do_mpmusicat )
    victim->music( argument, volume, false );
    ch->set_actflags( actflags );
 }
-
-/* End MSP Information */
+// End MSP Information

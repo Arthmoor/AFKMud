@@ -84,12 +84,12 @@ class obj_data
    std::list<affect_data *> affects;
    std::list<extra_descr_data *> extradesc;
    std::list<class mprog_act_list *> mpact;   /* Mudprogs */
+   std::bitset<MAX_ITEM_FLAG> extra_flags;
+   std::bitset<MAX_WEAR_FLAG> wear_flags;
    obj_data *in_obj;
    obj_index *pIndexData;
    room_index *in_room;
    char_data *carried_by;
-   std::bitset<MAX_ITEM_FLAG> extra_flags;
-   std::bitset<MAX_WEAR_FLAG> wear_flags;
    class continent_data *continent;  /* Which map is it on? - Samson 8-21-99 */
    char *name;
    char *short_descr;

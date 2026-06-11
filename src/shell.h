@@ -28,37 +28,37 @@
 
 #pragma once
 
-#define SHELL_COMMAND_FILE "../system/shellcommands.dat"
+inline constexpr std::string_view SHELL_COMMAND_FILE = "../system/shellcommands.dat";
 
-/* Change this line to the home directory for the server - Samson */
-#define HOST_DIR 	"/home/afkmud/"
+/* Change this line to the home directory for the server account that runs the MUD - Samson */
+inline constexpr std::string_view HOST_DIR = "/home/afkmud/";
 
 /* Change this line to the name of your compiled binary - Samson */
-#define BINARYFILE "afkmud"
+inline constexpr std::string_view BINARYFILE = "afkmud";
 
 /* Change each of these to reflect your directory structure - Samson */
 
-#define CODEZONEDIR	HOST_DIR "afkmud/area/"  /* Used in do_copyzone - Samson 8-22-98 */
-#define BUILDZONEDIR	HOST_DIR "dist2/area/"  /* Used in do_copyzone - Samson 4-7-98 */
-#define MAINZONEDIR	HOST_DIR "dist/area/"   /* Used in do_copyzone - Samson 4-7-98 */
-#define TESTCODEDIR     HOST_DIR "afkmud/src/"   /* Used in do_copycode - Samson 4-7-98 */
-#define BUILDCODEDIR    HOST_DIR "dist2/src/"   /* Used in do_copycode - Samson 8-22-98 */
-#define MAINCODEDIR	HOST_DIR "dist/src/" /* Used in do_copycode - Samson 4-7-98 */
-#define CODESYSTEMDIR   HOST_DIR "afkmud/system/"   /* Used in do_copysocial - Samson 5-2-98 */
-#define BUILDSYSTEMDIR  HOST_DIR "dist2/system/"   /* Used in do_copysocial - Samson 5-2-98 */
-#define MAINSYSTEMDIR   HOST_DIR "dist/system/" /* Used in do_copysocial - Samson 5-2-98 */
-#define CODECLASSDIR	HOST_DIR "afkmud/classes/"  /* Used in do_copyclass - Samson 9-17-98 */
-#define BUILDCLASSDIR	HOST_DIR "dist2/classes/"  /* Used in do_copyclass - Samson 9-17-98 */
-#define MAINCLASSDIR	HOST_DIR "dist/classes/"   /* Used in do_copyclass - Samson 9-17-98 */
-#define CODERACEDIR	HOST_DIR "afkmud/races/" /* Used in do_copyrace - Samson 10-13-98 */
-#define BUILDRACEDIR	HOST_DIR "dist2/races/" /* Used in do_copyrace - Samson 10-13-98 */
-#define MAINRACEDIR	HOST_DIR "dist/races/"  /* Used in do_copyrace - Samson 10-13-98 */
-#define CODEDEITYDIR	HOST_DIR "afkmud/deity/" /* Used in do_copydeity - Samson 10-13-98 */
-#define BUILDDEITYDIR	HOST_DIR "dist2/deity/" /* Used in do_copydeity - Samson 10-13-98 */
-#define MAINDEITYDIR	HOST_DIR "dist/deity/"  /* Used in do_copydeity - Samson 10-13-98 */
-#define MAINMAPDIR	HOST_DIR "dist/maps/"   /* Used in do_copymap - Samson 8-2-99 */
-#define BUILDMAPDIR	HOST_DIR "dist2/maps/"  /* Used in do_copymap - Samson 8-2-99 */
-#define CODEMAPDIR	HOST_DIR "afkmud/maps/"  /* Used in do_copymap - Samson 8-2-99 */
+inline constexpr std::string_view CODEZONEDIR = "/home/afkmud/afkmud/area/";     /* Used in do_copyzone - Samson 8-22-98 */
+inline constexpr std::string_view BUILDZONEDIR = "/home/afkmud/dist2/area/";     /* Used in do_copyzone - Samson 4-7-98 */
+inline constexpr std::string_view MAINZONEDIR = "/home/afkmud/dist/area/";       /* Used in do_copyzone - Samson 4-7-98 */
+inline constexpr std::string_view TESTCODEDIR = "/home/afkmud/afkmud/src/";      /* Used in do_copycode - Samson 4-7-98 */
+inline constexpr std::string_view BUILDCODEDIR = "/home/afkmud/dist2/src/";      /* Used in do_copycode - Samson 8-22-98 */
+inline constexpr std::string_view MAINCODEDIR = "/home/afkmud/dist/src/";        /* Used in do_copycode - Samson 4-7-98 */
+inline constexpr std::string_view CODESYSTEMDIR = "/home/afkmud/afkmud/system/"; /* Used in do_copysocial - Samson 5-2-98 */
+inline constexpr std::string_view BUILDSYSTEMDIR = "/home/afkmud/dist2/system/"; /* Used in do_copysocial - Samson 5-2-98 */
+inline constexpr std::string_view MAINSYSTEMDIR = "/home/afkmud/dist/system/";   /* Used in do_copysocial - Samson 5-2-98 */
+inline constexpr std::string_view CODECLASSDIR = "/home/afkmud/afkmud/classes/"; /* Used in do_copyclass - Samson 9-17-98 */
+inline constexpr std::string_view BUILDCLASSDIR = "/home/afkmud/dist2/classes/"; /* Used in do_copyclass - Samson 9-17-98 */
+inline constexpr std::string_view MAINCLASSDIR = "/home/afkmud/dist/classes/";   /* Used in do_copyclass - Samson 9-17-98 */
+inline constexpr std::string_view CODERACEDIR = "/home/afkmud/afkmud/races/";    /* Used in do_copyrace - Samson 10-13-98 */
+inline constexpr std::string_view BUILDRACEDIR = "/home/afkmud/dist2/races/";    /* Used in do_copyrace - Samson 10-13-98 */
+inline constexpr std::string_view MAINRACEDIR = "/home/afkmud/dist/races/";      /* Used in do_copyrace - Samson 10-13-98 */
+inline constexpr std::string_view CODEDEITYDIR = "/home/afkmud/afkmud/deity/";   /* Used in do_copydeity - Samson 10-13-98 */
+inline constexpr std::string_view BUILDDEITYDIR = "/home/afkmud/dist2/deity/";   /* Used in do_copydeity - Samson 10-13-98 */
+inline constexpr std::string_view MAINDEITYDIR = "/home/afkmud/dist/deity/";     /* Used in do_copydeity - Samson 10-13-98 */
+inline constexpr std::string_view MAINMAPDIR = "/home/afkmud/dist/maps/";        /* Used in do_copymap - Samson 8-2-99 */
+inline constexpr std::string_view BUILDMAPDIR = "/home/afkmud/dist2/maps/";      /* Used in do_copymap - Samson 8-2-99 */
+inline constexpr std::string_view CODEMAPDIR = "/home/afkmud/afkmud/maps/";      /* Used in do_copymap - Samson 8-2-99 */
 
 class shell_cmd
 {
@@ -81,7 +81,7 @@ class shell_cmd
       return _do_fun;
    }
 
-   void set_name( const std::string & name )
+   void set_name( std::string_view name )
    {
       _name = name;
    }
@@ -94,7 +94,7 @@ class shell_cmd
       return _name.c_str(  );
    }
 
-   void set_func_name( const std::string & name )
+   void set_func_name( std::string_view name )
    {
       _func_name = name;
    }
@@ -111,7 +111,7 @@ class shell_cmd
       return _func_name.c_str(  );
    }
 
-   void set_position( const std::string & pos )
+   void set_position( std::string_view pos )
    {
       short newpos = get_npc_position( pos );
       if( newpos < 0 || newpos > POS_MAX )
@@ -133,7 +133,7 @@ class shell_cmd
       return _level;
    }
 
-   void set_log( const string & log )
+   void set_log( std::string_view log )
    {
       short newlog = get_logflag( log );
       if( newlog < 0 || newlog > LOG_ALL )
@@ -155,4 +155,4 @@ class shell_cmd
 };
 
 extern std::list<shell_cmd *> shellcmdlist;
-shell_cmd *find_shellcommand( const std::string & );
+shell_cmd *find_shellcommand( std::string_view );

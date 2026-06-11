@@ -42,21 +42,16 @@
  * If you want to add your own, make a new set of defines and ADD the information.
  * Removing this is a violation of your license agreement.
  */
-#define CODENAME "AFKMud"
-#define CODEVERSION "3.0.0"
-#define COPYRIGHT "Copyright The Alsherok Team 1997-2026. All rights reserved."
-
-// Backward compatibility for snippets and such.
-#define mudstrlcpy strlcpy
-#define mudstrlcat strlcat
-#define str_dup strdup
+inline constexpr std::string_view CODENAME    = "AFKMud";
+inline constexpr std::string_view CODEVERSION = "3.0.0";
+inline constexpr std::string_view COPYRIGHT   = "Copyright The Alsherok Team 1997-2026. All rights reserved.";
 
 // String and memory management parameters. Will one day be a thing of the past once all the char[] arrays that use them are upgraded.
-const int MSL = 8192; // MAX_STRING_LENGTH
-const int MIL = 2048; // MAX_INPUT_LENGTH
+constexpr int MSL = 8192; // MAX_STRING_LENGTH
+constexpr int MIL = 2048; // MAX_INPUT_LENGTH
 
 // No idea what the purpose in doing this is, but BERR appears to be something Smaug made up and it's better defined this way.
-const short BERR = 255;
+constexpr short BERR = 255;
 
 // Not sure why Smaug did this to begin with but it's widely used as a return type everywhere.
 typedef int ch_ret;
@@ -93,47 +88,47 @@ typedef bool SPEC_FUN( char_data * ch );
  * It seems to have once been related to the number of pulses per second but does not appear bound to that now due to having been quadrupled.
  * It also has no need to be a define vs a proper constant value.
  */
-const float DUR_CONV = 93.333333333333333333333333; /* Original value: 23.333333333333333333333333... - Quadrupled for time changes */
+constexpr float DUR_CONV = 93.333333333333333333333333; /* Original value: 23.333333333333333333333333... - Quadrupled for time changes */
 
 /*
  * Hidden tilde char generated with alt155 on the number pad.
  * The code blocks the use of these symbols by default, so this should be quite safe. Samson 3-14-04
  */
-const char HIDDEN_TILDE = '\xa2';
+constexpr char HIDDEN_TILDE = '\xa2';
 
 // 32bit bitvector defines
-const int BV00 = ( 1 << 0 );
-const int BV01 = ( 1 << 1 );
-const int BV02 = ( 1 << 2 );
-const int BV03 = ( 1 << 3 );
-const int BV04 = ( 1 << 4 );
-const int BV05 = ( 1 << 5 );
-const int BV06 = ( 1 << 6 );
-const int BV07 = ( 1 << 7 );
-const int BV08 = ( 1 << 8 );
-const int BV09 = ( 1 << 9 );
-const int BV10 = ( 1 << 10 );
-const int BV11 = ( 1 << 11 );
-const int BV12 = ( 1 << 12 );
-const int BV13 = ( 1 << 13 );
-const int BV14 = ( 1 << 14 );
-const int BV15 = ( 1 << 15 );
-const int BV16 = ( 1 << 16 );
-const int BV17 = ( 1 << 17 );
-const int BV18 = ( 1 << 18 );
-const int BV19 = ( 1 << 19 );
-const int BV20 = ( 1 << 20 );
-const int BV21 = ( 1 << 21 );
-const int BV22 = ( 1 << 22 );
-const int BV23 = ( 1 << 23 );
-const int BV24 = ( 1 << 24 );
-const int BV25 = ( 1 << 25 );
-const int BV26 = ( 1 << 26 );
-const int BV27 = ( 1 << 27 );
-const int BV28 = ( 1 << 28 );
-const int BV29 = ( 1 << 29 );
-const int BV30 = ( 1 << 30 );
-const int BV31 = ( 1 << 31 );
+constexpr int BV00 = ( 1 << 0 );
+constexpr int BV01 = ( 1 << 1 );
+constexpr int BV02 = ( 1 << 2 );
+constexpr int BV03 = ( 1 << 3 );
+constexpr int BV04 = ( 1 << 4 );
+constexpr int BV05 = ( 1 << 5 );
+constexpr int BV06 = ( 1 << 6 );
+constexpr int BV07 = ( 1 << 7 );
+constexpr int BV08 = ( 1 << 8 );
+constexpr int BV09 = ( 1 << 9 );
+constexpr int BV10 = ( 1 << 10 );
+constexpr int BV11 = ( 1 << 11 );
+constexpr int BV12 = ( 1 << 12 );
+constexpr int BV13 = ( 1 << 13 );
+constexpr int BV14 = ( 1 << 14 );
+constexpr int BV15 = ( 1 << 15 );
+constexpr int BV16 = ( 1 << 16 );
+constexpr int BV17 = ( 1 << 17 );
+constexpr int BV18 = ( 1 << 18 );
+constexpr int BV19 = ( 1 << 19 );
+constexpr int BV20 = ( 1 << 20 );
+constexpr int BV21 = ( 1 << 21 );
+constexpr int BV22 = ( 1 << 22 );
+constexpr int BV23 = ( 1 << 23 );
+constexpr int BV24 = ( 1 << 24 );
+constexpr int BV25 = ( 1 << 25 );
+constexpr int BV26 = ( 1 << 26 );
+constexpr int BV27 = ( 1 << 27 );
+constexpr int BV28 = ( 1 << 28 );
+constexpr int BV29 = ( 1 << 29 );
+constexpr int BV30 = ( 1 << 30 );
+constexpr int BV31 = ( 1 << 31 );
 // 32 USED! DO NOT ADD MORE! SB
 
 /*
@@ -461,10 +456,10 @@ enum act_strings
    STRING_NONE, STRING_IMM
 };
 
-const int PT_WATER = 100;
-const int PT_AIR = 200;
-const int PT_EARTH = 300;
-const int PT_FIRE = 400;
+constexpr int PT_WATER = 100;
+constexpr int PT_AIR = 200;
+constexpr int PT_EARTH = 300;
+constexpr int PT_FIRE = 400;
 
 /*
  * Push/pull types for exits - Thoric
@@ -504,7 +499,7 @@ enum pc_flags
    PCFLAG_PRIVACY, PCFLAG_NOTELL, PCFLAG_CHECKBOARD, PCFLAG_NOQUOTE,
    PCFLAG_AUTOASSIST, PCFLAG_SHOVEDRAG, PCFLAG_AUTOEXIT, PCFLAG_AUTOLOOT,
    PCFLAG_AUTOSAC, PCFLAG_BLANK, PCFLAG_BRIEF, PCFLAG_AUTOMAP,
-   PCFLAG_TELNET_GA, PCFLAG_HOLYLIGHT, PCFLAG_WIZINVIS, PCFLAG_ROOMVNUM, PCFLAG_SILENCE,
+   PCFLAG_unused, PCFLAG_HOLYLIGHT, PCFLAG_WIZINVIS, PCFLAG_ROOMVNUM, PCFLAG_SILENCE,
    PCFLAG_NO_EMOTE, PCFLAG_BOARDED, PCFLAG_NO_TELL, PCFLAG_LOG, PCFLAG_DENY, PCFLAG_FREEZE,
    PCFLAG_EXEMPT, PCFLAG_ONSHIP, PCFLAG_LITTERBUG, PCFLAG_ANSI, PCFLAG_MSP, PCFLAG_AUTOGOLD,
    PCFLAG_GHOST, PCFLAG_AFK, PCFLAG_NO_URL, PCFLAG_NO_EMAIL, PCFLAG_SMARTSAC,
@@ -519,54 +514,55 @@ enum pc_flags
  * All files are read in completely at bootup.
  * Most output files (bug, idea, typo, shutdown) are append-only.
  */
-#define AREA_CONVERT_DIR "../areaconvert/"   // Directory for manually converting areas.
-#define MAP_DIR          "../maps/"          // Overland maps
-#define PLAYER_DIR       "../player/"        // Player files
-#define GOD_DIR          "../gods/"          // God Info Dir
-#define BACKUP_DIR       "../backups"        // Backup folder for pfiles when the pfile pruning is active.
-#define BUILD_DIR        "../building/"      // Online building save dir
-#define SYSTEM_DIR       "../system/"        // Main system files
-#define PROG_DIR         "../mudprogs/"      // External MUDProg files
-#define CORPSE_DIR       "../corpses/"       // Player corpses
-#define CLASS_DIR        "../classes/"       // Classes
-#define RACE_DIR         "../races/"         // Races
-#define DEITY_DIR        "../deity/"         // Deities
-#define MOTD_DIR         "../motd/"          // Where the message of the day files are stored.
-#define HOTBOOT_DIR      "../hotboot/"       // For storing objects across hotboots.
-#define AUC_DIR          "../aucvaults/"     // Where auction sales data is stored.
-#define BOARD_DIR        "../boards/"        // Board directory.
-#define COLOR_DIR        "../color/"         // Custom color theme files.
-#define WEB_DIR          "../web/"           // HTML static files.
-#define EXE_FILE         "../src/afkmud"     // The binary file for the game. Used when executing a hotboot.
+inline constexpr std::string_view AREA_CONVERT_DIR = "../areaconvert/";   // Directory for manually converting areas.
+inline constexpr std::string_view AUC_DIR          = "../aucvaults/";     // Where auction sales data is stored.
+inline constexpr std::string_view BACKUP_DIR       = "../backups";        // Backup folder for pfiles when the pfile pruning is active.
+inline constexpr std::string_view BOARD_DIR        = "../boards/";        // Board directory.
+inline constexpr std::string_view BUILD_DIR        = "../building/";      // Online building save dir
+inline constexpr std::string_view CLASS_DIR        = "../classes/";       // Classes
+inline constexpr std::string_view COLOR_DIR        = "../color/";         // Custom color theme files.
+inline constexpr std::string_view CORPSE_DIR       = "../corpses/";       // Player corpses
+inline constexpr std::string_view DEITY_DIR        = "../deity/";         // Deities
+inline constexpr std::string_view GOD_DIR          = "../gods/";          // God Info Dir
+inline constexpr std::string_view HOTBOOT_DIR      = "../hotboot/";       // For storing objects across hotboots.
+inline constexpr std::string_view MAP_DIR          = "../maps/";          // Overland maps
+inline constexpr std::string_view MOTD_DIR         = "../motd/";          // Where the message of the day files are stored.
+inline constexpr std::string_view PLAYER_DIR       = "../player/";        // Player files
+inline constexpr std::string_view PROG_DIR         = "../mudprogs/";      // External MUDProg files
+inline constexpr std::string_view RACE_DIR         = "../races/";         // Races
+inline constexpr std::string_view SYSTEM_DIR       = "../system/";        // Main system files
 
-#define HOTBOOT_FILE     SYSTEM_DIR "copyover.dat"  // Stores descriptor information for hotboos.
-#define MOB_FILE         "mobs.dat"                 // For storing mobs across hotboots.
-#define AREA_LIST        "area.lst"                 // List of areas.
-#define CLASS_LIST       "class.lst"                // List of classes.
-#define RACE_LIST        "race.lst"                 // List of races.
-#define SHUTDOWN_FILE    "shutdown.txt"             // For 'shutdown'. Logs the reason why it happened (hopefully).
-#define IMM_HOST_FILE    SYSTEM_DIR "immortal.host" // For stopping hackers. Or something.
-#define ANSITITLE_FILE   SYSTEM_DIR "mudtitle.ans"  // The ANSI screen shown to users logging in.
-#define BOOTLOG_FILE     SYSTEM_DIR "boot.txt"      // Boot up error file.
-#define PBUG_FILE        SYSTEM_DIR "pbugs.txt"     // For 'bug' command.
-#define IDEA_FILE        SYSTEM_DIR "ideas.txt"     // For 'idea' command.
-#define TYPO_FILE        SYSTEM_DIR "typos.txt"     // For 'typo' command.
-#define FIXED_FILE       SYSTEM_DIR "fixed.txt"     // For 'fixed' command.
-#define LOG_FILE         SYSTEM_DIR "log.txt"       // For talking in logged rooms.
-#define MOBLOG_FILE      SYSTEM_DIR "moblog.txt"    // For mplog messages.
-#define WIZLIST_FILE     SYSTEM_DIR "WIZLIST"       // Wizlist - Used with 'who' command, and 'wizlist' command.
-#define SKILL_FILE       SYSTEM_DIR "skills.dat"    // Skill table. Holds all the data on every skill in the game.
-#define HERB_FILE        SYSTEM_DIR "herbs.dat"     // Herb table.
-#define TONGUE_FILE      SYSTEM_DIR "tongues.dat"   // Tongue tables.
-#define SOCIAL_FILE      SYSTEM_DIR "socials.dat"   // Socials
-#define COMMAND_FILE     SYSTEM_DIR "commands.dat"  // Commands
-#define WEBWHO_FILE      WEB_DIR "WEBWHO"           // HTML Who output file.
-#define WEBWIZ_FILE      WEB_DIR "WEBWIZ"           // HTML wizlist file.
-#define AREALIST_FILE    WEB_DIR "AREALIST"         // HTML areas listing.
-#define MOTD_FILE        MOTD_DIR "motd.dat"        // Message of the day. Seen by all players when logging in.
-#define IMOTD_FILE       MOTD_DIR "imotd.dat"       // Message of the day for immortals when logging in.
-#define SPEC_MOTD        MOTD_DIR "specmotd.dat"    // Special MOTD - cannot be ignored on login by anyone.
-#define LOGIN_MSG       "login.msg"                 // List of login msgs,
+inline constexpr std::string_view EXE_FILE         = "../src/afkmud";     // The binary file for the game. Used when executing a hotboot.
+
+inline constexpr std::string_view ANSITITLE_FILE   = "../system/mudtitle.ans";  // The ANSI screen shown to users logging in.
+inline constexpr std::string_view AREA_LIST        = "area.lst";                // List of areas.
+inline constexpr std::string_view AREALIST_FILE    = "../web/AREALIST";         // HTML areas listing.
+inline constexpr std::string_view BOOTLOG_FILE     = "../system/boot.txt";      // Boot up error file.
+inline constexpr std::string_view CLASS_LIST       = "class.lst";               // List of classes.
+inline constexpr std::string_view COMMAND_FILE     = "../system/commands.dat";  // Commands
+inline constexpr std::string_view FIXED_FILE       = "../system/fixed.txt";     // For 'fixed' command.
+inline constexpr std::string_view GREETING_FILE    = "../motd/greeting.dat";    // The MUD's standard greeting file, seen by everyone logging in.
+inline constexpr std::string_view HERB_FILE        = "../system/herbs.dat";     // Herb table.
+inline constexpr std::string_view HOTBOOT_FILE     = "../system/copyover.dat";  // Stores descriptor information for hotboots.
+inline constexpr std::string_view IDEA_FILE        = "../system/ideas.txt";     // For 'idea' command.
+inline constexpr std::string_view IMM_HOST_FILE    = "../system/immortal.host"; // For stopping hackers. Or something.
+inline constexpr std::string_view IMOTD_FILE       = "../motd/imotd.dat";       // Message of the day for immortals when logging in.
+inline constexpr std::string_view LOG_FILE         = "../system/log.txt";       // For talking in logged rooms.
+inline constexpr std::string_view LOGIN_MSG        = "login.msg";               // List of login msgs,
+inline constexpr std::string_view MOB_FILE         = "mobs.dat";                // For storing mobs across hotboots.
+inline constexpr std::string_view MOBLOG_FILE      = "../system/moblog.txt";    // For mplog messages.
+inline constexpr std::string_view MOTD_FILE        = "../motd/motd.dat";        // Message of the day. Seen by all players when logging in.
+inline constexpr std::string_view PBUG_FILE        = "../system/pbugs.txt";     // For 'bug' command.
+inline constexpr std::string_view RACE_LIST        = "race.lst";                // List of races.
+inline constexpr std::string_view SHUTDOWN_FILE    = "shutdown.txt";            // For 'shutdown'. Logs the reason why it happened (hopefully).
+inline constexpr std::string_view SKILL_FILE       = "../system/skills.dat";    // Skill table. Holds all the data on every skill in the game.
+inline constexpr std::string_view SOCIAL_FILE      = "../system/socials.dat";   // Socials
+inline constexpr std::string_view SPEC_MOTD        = "../motd/specmotd.dat";    // Special MOTD - cannot be ignored on login by anyone.
+inline constexpr std::string_view TONGUE_FILE      = "../system/tongues.dat";   // Tongue tables.
+inline constexpr std::string_view TYPO_FILE        = "../system/typos.txt";     // For 'typo' command.
+inline constexpr std::string_view WEBWHO_FILE      = "../web/WEBWHO";           // HTML Who output file.
+inline constexpr std::string_view WEBWIZ_FILE      = "../web/WEBWIZ";           // HTML wizlist file.
+inline constexpr std::string_view WIZLIST_FILE     = "../system/WIZLIST";       // Wizlist - Used with 'who' command, and 'wizlist' command.
 
 // This damn thing is used in so many places it was about time to just move it here - Samson 10-4-03
 #define KEY( literal, field, value ) \
@@ -614,34 +610,9 @@ if( !strcasecmp( word, (literal) ) )   \
 #define REMOVE_BIT(var, bit)	((var) &= ~(bit))
 #define TOGGLE_BIT(var, bit)	((var) ^= (bit))
 
-#define IS_SAVE_FLAG(bit)  sysdata->save_flags.test((bit))
-
 #define IS_EXIT_FLAG(var, bit)     (var)->flags.test((bit))
 #define SET_EXIT_FLAG(var, bit)    (var)->flags.set((bit))
 #define REMOVE_EXIT_FLAG(var, bit) (var)->flags.reset((bit))
-
-// Memory allocation macros.
-#define CREATE(result, type, number)                                    \
-do                                                                      \
-{                                                                       \
-   if (!((result) = (type *) calloc ((number), sizeof(type))))          \
-   {                                                                    \
-      perror("calloc failure");                                         \
-      fprintf(stderr, "Calloc failure @ %s:%d\n", __FILE__, __LINE__ ); \
-      abort();                                                          \
-   }                                                                    \
-} while(0)
-
-// WARNING! This macro should only be used on things explicitly handled by CREATE or RECREATE!
-#define OLD_DISPOSE(point)                  \
-do                                          \
-{                                           \
-   if( (point) )                            \
-   {                                        \
-      free( (point) );                      \
-      (point) = nullptr;                    \
-   }                                        \
-} while(0)
 
 #if defined(__FreeBSD__)
 #define DISPOSE(point)                      \
@@ -715,7 +686,8 @@ do                                               \
 #endif
 
 // Safe fclose macro adopted from DOTD Codebase.
-#define FCLOSE(fp) fclose((fp)); (fp)=nullptr;
+// Now updated to protect against being inside unguarded if/else blocks. - Samson 6/7/2026.
+#define FCLOSE(fp) do { if ((fp)) { fclose((fp)); (fp) = nullptr; } } while(0)
 
 // These 3 functions replace the UMIN, UMAX, and URANGE macros. Must be declared here because the headers use them.
 int umin( int, int );
@@ -902,7 +874,7 @@ class skill_type
    char *spell_fun_name;   /* Spell function name - Trax */
    char *skill_fun_name;   /* Skill function name - Trax */
    char *noun_damage;   /* Damage message    */
-   char *msg_off; /* Wear off message     */
+   char *msg_off;    /* Wear off message     */
    char *hit_char;   /* Success message to caster  */
    char *hit_vict;   /* Success message to victim  */
    char *hit_room;   /* Success message to room */
@@ -1014,7 +986,6 @@ extern bool MPSilent;
 extern bool mud_down;
 extern bool DONTSAVE;
 
-extern const unsigned char echo_off_str[];
 extern int top_area;
 extern int top_mob_index;
 extern int top_obj_index;
@@ -1056,57 +1027,52 @@ extern int top_ed;
  * As it stands, some of this didn't need to be globally aware, so there's even less.
  */
 
-// Formatted log output - 3-07-02
-void log_printf( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
-
 // act_comm.cpp
 bool is_same_group( char_data *, char_data * );
 int knows_language( char_data *, int, char_data * );
-void act( short, const std::string &, char_data *, const void *, const void *, int );
-void act_printf( short, char_data *, const void *, const void *, int, const char *, ... ) __attribute__ ( ( format( printf, 6, 7 ) ) );
+void act( short, std::string_view, char_data *, const void *, const void *, int );
 
 // act_info.cpp
 bool is_ignoring( char_data *, char_data * );
 
 // act_move.cpp
-exit_data *find_door( char_data *, const std::string &, bool );
+exit_data *find_door( char_data *, std::string_view, bool );
 ch_ret move_char( char_data *, exit_data *, int, int, bool );
 
 // act_wiz.cpp
-char_data *get_wizvictim( char_data *, const std::string &, bool );
-void echo_to_all( const std::string &, short );
-void echo_all_printf( short, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
+char_data *get_wizvictim( char_data *, std::string_view, bool );
+void echo_to_all( std::string_view, short );
 
 // build.cpp
-int get_risflag( const std::string & );
-int get_defenseflag( const std::string & );
-int get_attackflag( const std::string & );
-int get_npc_sex( const std::string & );
-int get_npc_position( const std::string & );
-int get_npc_class( const std::string & );
-int get_npc_race( const std::string & );
-int get_pc_race( const std::string & );
-int get_pc_class( const std::string & );
-int get_actflag( const std::string & );
-int get_pcflag( const std::string & );
-int get_langnum( const std::string & );
-int get_langflag( const std::string & );
-int get_rflag( const std::string & );
-int get_exflag( const std::string & );
-int get_sectypes( const std::string & );
-int get_areaflag( const std::string & );
-int get_partflag( const std::string & );
-int get_magflag( const std::string & );
-int get_otype( const std::string & );
-int get_aflag( const std::string & );
-int get_atype( const std::string & );
-int get_oflag( const std::string & );
-int get_wflag( const std::string & );
-int get_saveflag( const std::string & );
-int get_logflag( const std::string & );
-int get_trapflag( const std::string & );
-int get_flag( const std::string &, const char **, size_t );
-int get_dir( const std::string & );
+int get_risflag( std::string_view );
+int get_defenseflag( std::string_view );
+int get_attackflag( std::string_view );
+int get_npc_sex( std::string_view );
+int get_npc_position( std::string_view );
+int get_npc_class( std::string_view );
+int get_npc_race( std::string_view );
+int get_pc_race( std::string_view );
+int get_pc_class( std::string_view );
+int get_actflag( std::string_view );
+int get_pcflag( std::string_view );
+int get_langnum( std::string_view );
+int get_langflag( std::string_view );
+int get_rflag( std::string_view );
+int get_exflag( std::string_view );
+int get_sectypes( std::string_view );
+int get_areaflag( std::string_view );
+int get_partflag( std::string_view );
+int get_magflag( std::string_view );
+int get_otype( std::string_view );
+int get_aflag( std::string_view );
+int get_atype( std::string_view );
+int get_oflag( std::string_view );
+int get_wflag( std::string_view );
+int get_saveflag( std::string_view );
+int get_logflag( std::string_view );
+int get_trapflag( std::string_view );
+int get_flag( std::string_view, const char **, size_t );
+int get_dir( std::string_view );
 char *flag_string( int, const char *flagarray[] );
 
 // calendar.cpp
@@ -1118,7 +1084,7 @@ bool check_parse_name( const std::string &, bool );
 void add_loginmsg( const char *, short, const char * );
 
 // commands.cpp
-int check_command_level( const std::string &, int );
+int check_command_level( std::string_view, int );
 void cmdf( char_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void funcf( char_data *, DO_FUN *, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 void interpret( char_data *, std::string );
@@ -1127,9 +1093,9 @@ void check_switch( char_data * );
 
 // db.cpp
 extern std::mt19937 global_rng; // Mersenne Twister algorithm for random numbers. Produces better results than the rand() and srand() functions.
-bool is_valid_filename( char_data *, const std::string &, const std::string & );
-void shutdown_mud( const std::string & );
-bool exists_file( const std::string & );
+bool is_valid_filename( char_data *, std::string_view, std::string_view );
+void shutdown_mud( std::string_view );
+bool exists_file( std::string_view );
 char fread_letter( FILE * );
 char *fread_string( FILE * );
 const char *fread_flagstring( FILE * );
@@ -1139,21 +1105,20 @@ const char *fread_line( FILE * );
 char *fread_word( FILE * );
 void fread_string( std::string &, FILE * );
 void fread_line( std::string &, FILE * );
-void log_printf_plus( short, short, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 int number_percent( void );
 int number_fuzzy( int );
 int number_range( int, int );
 int number_door( void );
 int number_bits( int );
 int dice( int, int );
-void append_file( char_data *, const std::string &, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
-void append_to_file( const std::string &, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
+void log_printf( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
+void log_printf_plus( short, short, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 void log_string_plus( short, short, std::string_view );
 void log_string( std::string_view );
 void make_wizlist( void );
 
 // descriptor.cpp
-void show_file( char_data *, const std::string & );
+void show_file( char_data *, std::string_view );
 
 // editor.cpp
 bool hasname( std::string_view, std::string_view );
@@ -1166,39 +1131,33 @@ void smash_tilde( std::string & );
 void hide_tilde( std::string & );
 const char *show_tilde( const char * );
 const std::string show_tilde( const std::string & );
-int str_cmp( std::string_view, std::string_view );
-bool str_cmp( const char *, const char * );
+bool str_cmp( std::string_view, std::string_view );
 bool str_prefix( std::string_view, std::string_view );
-bool str_prefix( const char *, const char * );
-bool str_infix( const char *, const char * );
 bool str_infix( std::string_view, std::string_view );
 bool str_suffix( const char *, const char * );
-char *capitalize( const char * );
-std::string capitalize( const std::string & );
+std::string capitalize( std::string_view );
 char *strlower( const char * );
 void strlower( std::string & );
 char *strupper( const char * );
 void strupper( std::string & );
 char to_lower( char );
 char to_upper( char );
-const char *aoran( const std::string & );
+const char *aoran( std::string_view );
 void strip_tilde( std::string & );
 void strip_lspace( std::string & );
 void strip_tspace( std::string & );
 void strip_spaces( std::string & );
 const char *strip_cr( const char * );
 std::string strip_cr( const std::string & );
-const char *strip_crlf( const char * );
 std::string strip_crlf( std::string_view );
 void strip_whitespace( std::string & );
-bool is_number( const std::string & );
-bool is_number( const char * );
+bool is_number( std::string_view );
 int number_argument( std::string_view, std::string & );
 int number_argument( char *, char * );
 const char *one_argument( const char *, char * );
 char *one_argument( char *, char * );
-std::string one_argument( const std::string &, std::string & );
-std::string invert_string( const std::string & );
+std::string one_argument( std::string_view, std::string & );
+std::string invert_string( std::string_view );
 // const std::string add_percent( std::string );
 const std::string escape_formatting( std::string );
 void string_erase( std::string &, char );
@@ -1217,7 +1176,7 @@ bool nifty_is_name_prefix( std::string, std::string );
 bool nifty_is_name_prefix( char *, char * );
 bool is_name2_prefix( std::string_view, std::string );
 bool is_name2_prefix( const char *, char * );
-obj_data *get_obj_list( char_data *, const std::string &, std::list<obj_data *> );
+obj_data *get_obj_list( char_data *, std::string_view, std::list<obj_data *> );
 ch_ret check_for_trap( char_data *, obj_data *, int );
 ch_ret spring_trap( char_data *, obj_data * );
 obj_data *find_obj( char_data *, std::string, bool );
@@ -1248,8 +1207,7 @@ const std::string mprog_type_to_name( int );
 // mud_prog.cpp
 void mprog_entry_trigger( char_data * );
 void mprog_greet_trigger( char_data * );
-void progbug( const std::string &, char_data * );
-void progbugf( char_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
+void progbug( std::string_view, char_data * );
 void rset_supermob( room_index * );
 void release_supermob( void );
 
@@ -1257,38 +1215,38 @@ void release_supermob( void );
 bool is_same_char_map( char_data *, char_data * );
 bool is_same_obj_map( char_data *, obj_data * );
 void fix_maps( char_data *, char_data * );
-void enter_map( char_data *, exit_data *, int, int, const std::string & );
+void enter_map( char_data *, exit_data *, int, int, std::string_view );
 void leave_map( char_data *, char_data *, room_index * );
 void collect_followers( char_data *, room_index *, room_index * );
 
 // player.cpp
 const std::string condtxt( int, int );
 const std::string attribtext( int );
-bool exists_player( const std::string & );
+bool exists_player( std::string_view );
 
 // save.cpp
-void write_corpse( obj_data *, const std::string & );
+void write_corpse( obj_data *, std::string_view );
 
 // skills.cpp
 bool IS_VALID_SN( int );
 bool IS_VALID_HERB( int );
 bool IS_VALID_DISEASE( int );
 void disarm( char_data *, char_data * );
-int find_spell( char_data *, const std::string &, bool );
-int find_skill( char_data *, const std::string &, bool );
-int find_ability( char_data *, const std::string &, bool );
-int find_combat( char_data *, const std::string &, bool );
-int find_tongue( char_data *, const std::string &, bool );
-int find_lore( char_data *, const std::string &, bool );
-int skill_lookup( const std::string & );
-int herb_lookup( const std::string & );
+int find_spell( char_data *, std::string_view, bool );
+int find_skill( char_data *, std::string_view, bool );
+int find_ability( char_data *, std::string_view, bool );
+int find_combat( char_data *, std::string_view, bool );
+int find_tongue( char_data *, std::string_view, bool );
+int find_lore( char_data *, std::string_view, bool );
+int skill_lookup( std::string_view );
+int herb_lookup( std::string_view );
 int slot_lookup( int );
 CMDF( skill_notfound );
 
 // tables.cpp
-SPELL_FUN *spell_function( const std::string & );
-DO_FUN *skill_function( const std::string & );
-SPEC_FUN *m_spec_lookup( const std::string & );
+SPELL_FUN *spell_function( std::string_view );
+DO_FUN *skill_function( std::string_view );
+SPEC_FUN *m_spec_lookup( std::string_view );
 
 // update.cpp
 void gain_condition( char_data *, int, int );
@@ -1356,7 +1314,7 @@ template < size_t N > void flag_string_set( std::string & original, std::bitset 
    }
 }
 
-template < class N > extra_descr_data * get_extra_descr( const std::string & name, N * target )
+template < class N > extra_descr_data * get_extra_descr( std::string_view name, N * target )
 {
    for( auto* ed : target->extradesc )
    {
@@ -1461,7 +1419,75 @@ template <typename T> T fread_numeric( FILE *fp )
 inline short fread_short( FILE *fp )  { return fread_numeric<short>( fp ); }
 inline int   fread_number( FILE *fp ) { return fread_numeric<int>( fp ); }
 inline long  fread_long( FILE *fp )   { return fread_numeric<long>( fp ); }
-inline float fread_float( FILE *fp )  { return fread_numeric<float>(fp); }
+inline float fread_float( FILE *fp )  { return fread_numeric<float>( fp ); }
+
+/*
+ * Append a string to a file.
+ */
+template<typename... Args>
+void append_to_file( std::string_view file, std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string str = std::format( fmt, std::forward<Args>(args)... );
+
+   // Discard null and zero-length messages.
+   if( str.empty() )
+      return;
+
+   if( str.back() != '\n' )
+      str += '\n';
+
+   if( FILE* fp = fopen( file.data(), "a" ) )
+   {
+      fprintf( fp, "%s", str.c_str() );
+      FCLOSE(fp);
+   }
+}
+
+/*
+ * Append a string to a file.
+ */
+template<typename... Args>
+void append_file( int vnum, std::string_view name, std::string_view file, std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string str = std::format( fmt, std::forward<Args>(args)... );
+
+   // Discard null and zero-length messages.
+   if( str.empty() )
+      return;
+
+   if( str.back() != '\n' )
+      str += '\n';
+
+   if( FILE* fp = fopen( file.data(), "a" ) )
+   {
+      fprintf( fp, "[%5d] %s: %s", vnum, name.data(), str.c_str() );
+      FCLOSE( fp );
+   }
+}
+
+template <typename... Args>
+void act_printf( short AType, char_data *ch, const void *arg1, const void *arg2, int type, std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   // Discard null and zero-length messages.
+   if( formatted.empty() )
+      return;
+
+   act( AType, formatted, ch, arg1, arg2, type );
+}
+
+template <typename... Args>
+void echo_all_printf( short tar, std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   // Discard null and zero-length messages.
+   if( formatted.empty() )
+      return;
+
+   echo_to_all( formatted, tar );
+}
 
 // Thanks to David Haley for this little trick. A nifty little template that behaves like DISPOSE used to.
 template < typename T > void deleteptr( T * &ptr )

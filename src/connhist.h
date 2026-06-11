@@ -39,14 +39,14 @@
 
 /* Max number of connections to keep in the history.
  * Don't set this too high... */
-const size_t MAX_CONNHISTORY = 30;
+constexpr size_t MAX_CONNHISTORY = 30;
 
 /* Change this for your codebase! Currently set for AFKMud */
-const int CH_LVL_ADMIN = LEVEL_ADMIN;
+constexpr int CH_LVL_ADMIN = LEVEL_ADMIN;
 
 /* Path to the conn.hst file */
 /* default is: ../system/conn.hst */
-#define CH_FILE SYSTEM_DIR "conn.hst"
+inline constexpr std::string_view CH_FILE = "../system/conn.hst";
 
 /* ConnType's for Connection History
  * Be sure to add new types into the update_connhistory function! */

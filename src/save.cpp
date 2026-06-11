@@ -49,7 +49,7 @@ extern FILE *fpArea;
  * Externals
  */
 void reset_colors( char_data * );
-board_data *get_board( char_data *, const std::string & );
+board_data *get_board( char_data *, std::string_view );
 void fwrite_morph_data( char_data *, FILE * );
 void fread_morph_data( char_data *, FILE * );
 void fread_variable( char_data *, FILE * );
@@ -2479,7 +2479,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
 /*
  * Load a char and inventory into a new ch structure.
  */
-bool load_char_obj( descriptor_data * d, const std::string & name, bool preload, bool copyover )
+bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bool copyover )
 {
    FILE *fp;
    bool found = false;
@@ -2507,7 +2507,7 @@ bool load_char_obj( descriptor_data * d, const std::string & name, bool preload,
 
    d->character = ch;
    ch->desc = d;
-   ch->pcdata->filename = STRALLOC( name.c_str(  ) );
+   ch->pcdata->filename = capitalize( name );
    if( !d->hostname.empty() )
       ch->pcdata->lasthost = d->hostname;
    else
@@ -2532,9 +2532,9 @@ bool load_char_obj( descriptor_data * d, const std::string & name, bool preload,
    if( std::filesystem::exists( strsave ) && d->connected != CON_PLOADED )
    {
       if( preload )
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Preloading player data for: %s", ch->pcdata->filename );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Preloading player data for: %s", ch->pcdata->filename.c_str() );
       else
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%ldK)", ch->pcdata->filename, static_cast<long>( std::filesystem::file_size( strsave ) / 1024 ) );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%ldK)", ch->pcdata->filename.c_str(), static_cast<long>( std::filesystem::file_size( strsave ) / 1024 ) );
    }
    /*
     * else no player file 
@@ -2565,7 +2565,7 @@ bool load_char_obj( descriptor_data * d, const std::string & name, bool preload,
 
          if( letter != '#' )
          {
-            bug( "%s: # not found. %s", __func__, name.c_str(  ) );
+            bug( "%s: # not found. %s", __func__, strsave.c_str(  ) );
             break;
          }
 
@@ -2621,12 +2621,12 @@ bool load_char_obj( descriptor_data * d, const std::string & name, bool preload,
          if( d->msp_detected )
             ch->set_pcflag( PCFLAG_MSP );
       }
-      ch->name = STRALLOC( name.c_str(  ) );
+      ch->name = STRALLOC( name.data(  ) );
    }
    else
    {
       if( !ch->name )
-         ch->name = STRALLOC( name.c_str(  ) );
+         ch->name = STRALLOC( name.data(  ) );
 
       if( ch->is_immortal(  ) )
       {
@@ -2658,7 +2658,7 @@ bool load_char_obj( descriptor_data * d, const std::string & name, bool preload,
 }
 
 /* Rewritten corpse saver - Samson */
-void write_corpse( obj_data * corpse, const std::string & name )
+void write_corpse( obj_data * corpse, std::string_view name )
 {
    FILE *fp;
 
@@ -2726,7 +2726,7 @@ void load_corpses( void )
       if( filename.empty() || filename[0] == '.' )
          continue;
 
-      snprintf( strArea, MIL, "%s%s", CORPSE_DIR, filename.c_str() );
+      snprintf( strArea, MIL, "%s%s", CORPSE_DIR.data(), filename.c_str() );
       fprintf( stderr, "Corpse -> %s\n", strArea );
       if( !( fpArea = fopen( strArea, "r" ) ) )
       {

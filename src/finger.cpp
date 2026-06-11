@@ -57,7 +57,7 @@ wizinfo_data::~wizinfo_data(  )
 }
 
 /* Construct wizinfo list from god dir info - Samson 6-6-99 */
-void add_to_wizinfo( const std::string & name, wizinfo_data * wiz )
+void add_to_wizinfo( std::string_view name, wizinfo_data * wiz )
 {
    std::list<wizinfo_data *>::iterator wizinfo;
 
@@ -185,7 +185,7 @@ CMDF( do_finger )
    {
       if( victim->has_pcflag( PCFLAG_PRIVACY ) && !ch->is_immortal(  ) )
       {
-         ch->printf( "%s has privacy enabled.\r\n", victim->name );
+         ch->print_fmt( "%s has privacy enabled.\r\n", victim->name );
          return;
       }
 
@@ -207,7 +207,7 @@ CMDF( do_finger )
       // Bug fix here provided by Senir to stop /dev/null crash
       if( !std::filesystem::exists( fingload ) || !check_parse_name( capitalize( argument ), false ) )
       {
-         ch->printf( "&YNo such player named '%s'.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "&YNo such player named '%s'.\r\n", argument.c_str(  ) );
          return;
       }
 
@@ -272,33 +272,33 @@ CMDF( do_finger )
 
       ch->print( "&w          Finger Info\r\n" );
       ch->print( "          -----------\r\n" );
-      ch->printf( "&wName    : &G%-20s &wMUD Age: &G%d\r\n", victim->name, victim->get_age(  ) );
-      ch->printf( "&wBirthday: &GDay of %s, %d%s day in the Month of %s, in the year %d.\r\n",
+      ch->print_fmt( "&wName    : &G{:<20} &wMUD Age: &G{}\r\n", victim->name, victim->get_age(  ) );
+      ch->print_fmt( "&wBirthday: &GDay of {}, {}{} day in the Month of {}, in the year {}.\r\n",
                   day_name[victim->pcdata->day % 13], day, suf, month_name[victim->pcdata->month], victim->pcdata->year );
-      ch->printf( "&wLevel   : &G%-20d &w  Class: &G%s\r\n", victim->level, capitalize( victim->get_class(  ) ) );
-      ch->printf( "&wSex     : &G%-20s &w  Race : &G%s\r\n", npc_sex[victim->sex], capitalize( victim->get_race(  ) ) );
-      ch->printf( "&wTitle   :&G%s\r\n", victim->pcdata->title );
-      ch->printf( "&wHomepage: &G%s\r\n", !victim->pcdata->homepage.empty(  )? show_tilde( victim->pcdata->homepage ).c_str(  ) : "Not specified" );
-      ch->printf( "&wEmail   : &G%s\r\n", !victim->pcdata->email.empty(  )? victim->pcdata->email.c_str(  ) : "Not specified" );
+      ch->print_fmt( "&wLevel   : &G{:<20} &w  Class: &G{}\r\n", victim->level, capitalize( victim->get_class(  ) ) );
+      ch->print_fmt( "&wSex     : &G{:<20} &w  Race : &G{}\r\n", npc_sex[victim->sex], capitalize( victim->get_race(  ) ) );
+      ch->print_fmt( "&wTitle   : &G{}\r\n", victim->pcdata->title );
+      ch->print_fmt( "&wHomepage: &G{}\r\n", !victim->pcdata->homepage.empty(  )? show_tilde( victim->pcdata->homepage ) : "Not specified" );
+      ch->print_fmt( "&wEmail   : &G{}\r\n", !victim->pcdata->email.empty(  )? victim->pcdata->email : "Not specified" );
       if( !loaded )
-         ch->printf( "&wLast on : &G%s\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone ).c_str() );
+         ch->print_fmt( "&wLast on : &G{}\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone ) );
       else
-         ch->printf( "&wLast on : &G%s\r\n", time_str.c_str() );
+         ch->print_fmt( "&wLast on : &G{}\r\n", time_str );
       if( ch->is_immortal(  ) )
       {
          ch->print( "&wImmortal Information\r\n" );
          ch->print( "--------------------\r\n" );
-         ch->printf( "&wRealm         : &G%s\r\n", victim->pcdata->realm_name.c_str() );
-         ch->printf( "&wHost Info     : &G%s\r\n", victim->pcdata->lasthost.c_str(  ) );
-         ch->printf( "&wIP Info       : &G%s\r\n", victim->desc ? victim->desc->ipaddress.c_str() : "Unknown" );
-         ch->printf( "&wPrev IP Info  : &G%s\r\n", victim->pcdata->prevhost.c_str(  ) );
+         ch->print_fmt( "&wRealm         : &G{}\r\n", victim->pcdata->realm_name );
+         ch->print_fmt( "&wHost Info     : &G{}\r\n", victim->pcdata->lasthost );
+         ch->print_fmt( "&wIP Info       : &G{}\r\n", victim->desc ? victim->desc->ipaddress : "Unknown" );
+         ch->print_fmt( "&wPrev IP Info  : &G{}\r\n", victim->pcdata->prevhost );
 
          std::string time_played = std::format( "{}", victim->time_played( ) );
-         ch->printf( "&wTime played   : &G%s hours\r\n", time_played.c_str() );
+         ch->print_fmt( "&wTime played   : &G{} hours\r\n", time_played );
 
-         ch->printf( "&wAuthorized by : &G%s\r\n",
-                     !victim->pcdata->authed_by.empty(  ) ? victim->pcdata->authed_by.c_str(  ) : ( sysdata->WAIT_FOR_AUTH ? "Not Authed" : "The Code" ) );
-         ch->printf( "&wPrivacy Status: &G%s\r\n", victim->has_pcflag( PCFLAG_PRIVACY ) ? "Enabled" : "Disabled" );
+         ch->print_fmt( "&wAuthorized by : &G{}\r\n",
+                     !victim->pcdata->authed_by.empty(  ) ? victim->pcdata->authed_by : ( sysdata->WAIT_FOR_AUTH ? "Not Authed" : "The Code" ) );
+         ch->print_fmt( "&wPrivacy Status: &G{}\r\n", victim->has_pcflag( PCFLAG_PRIVACY ) ? "Enabled" : "Disabled" );
          if( victim->level < ch->level )
          {
             level = check_command_level( "comment", LEVEL_IMMORTAL );
@@ -306,7 +306,7 @@ CMDF( do_finger )
                cmdf( ch, "comment list %s", victim->name );
          }
       }
-      ch->printf( "&wBio:\r\n&G%s\r\n", victim->pcdata->bio ? victim->pcdata->bio : "Not created" );
+      ch->print_fmt( "&wBio:\r\n&G{}\r\n", victim->pcdata->bio ? victim->pcdata->bio : "Not created" );
    }
 
    if( loaded )

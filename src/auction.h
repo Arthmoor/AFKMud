@@ -28,7 +28,7 @@
 
 #pragma once
 
-#define SALES_FILE AUC_DIR "sales.dat"
+inline constexpr std::string_view SALES_FILE = "../aucvaults/sales.dat";
 
 struct auction_data
 {
@@ -50,7 +50,7 @@ class sale_data
  public:
      sale_data(  );
     ~sale_data(  );
-   void set_aucmob( const std::string & name )
+   void set_aucmob( std::string_view name )
    {
       aucmob = name;
    }
@@ -59,7 +59,7 @@ class sale_data
       return aucmob;
    }
 
-   void set_seller( const std::string & name )
+   void set_seller( std::string_view name )
    {
       seller = name;
    }
@@ -68,7 +68,7 @@ class sale_data
       return seller;
    }
 
-   void set_buyer( const std::string & name )
+   void set_buyer( std::string_view name )
    {
       buyer = name;
    }
@@ -77,7 +77,7 @@ class sale_data
       return buyer;
    }
 
-   void set_item( const std::string & name )
+   void set_item( std::string_view name )
    {
       item = name;
    }
@@ -114,3 +114,28 @@ class sale_data
 };
 
 extern auction_data *auction;
+void save_aucvault( char_data *, std::string_view );
+void add_sale( std::string_view, std::string_view, std::string_view, std::string_view, int, bool );
+void send_auction_broadcast( std::string_view );
+
+/*
+ * this function sends raw argument over the AUCTION: channel
+ * I am not too sure if this method is right..
+ */
+inline void talk_auction( std::string_view fmt, auto&&... args )
+{
+   std::string buf;
+
+   try
+   {
+      buf = std::vformat( fmt, std::make_format_args( args... ) );
+   }
+   catch( const std::exception & e )
+   {
+      // In case someone bodged a call to this that isn't formatted right.
+      bug( "%s: Auction formatting error: %s", __func__, e.what() );
+      return;
+   }
+
+   send_auction_broadcast( buf );
+}

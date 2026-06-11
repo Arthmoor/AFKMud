@@ -367,51 +367,51 @@ CMDF( do_color )
 
    if( !str_cmp( arg, "ansitest" ) )
    {
-      ch->desc->buffer_printf( "%sBlack\r\n", ANSI_BLACK );
-      ch->desc->buffer_printf( "%sDark Red\r\n", ANSI_DRED );
-      ch->desc->buffer_printf( "%sDark Green\r\n", ANSI_DGREEN );
-      ch->desc->buffer_printf( "%sOrange/Brown\r\n", ANSI_ORANGE );
-      ch->desc->buffer_printf( "%sDark Blue\r\n", ANSI_DBLUE );
-      ch->desc->buffer_printf( "%sPurple\r\n", ANSI_PURPLE );
-      ch->desc->buffer_printf( "%sCyan\r\n", ANSI_CYAN );
-      ch->desc->buffer_printf( "%sGrey\r\n", ANSI_GREY );
-      ch->desc->buffer_printf( "%sDark Grey\r\n", ANSI_DGREY );
-      ch->desc->buffer_printf( "%sRed\r\n", ANSI_RED );
-      ch->desc->buffer_printf( "%sGreen\r\n", ANSI_GREEN );
-      ch->desc->buffer_printf( "%sYellow\r\n", ANSI_YELLOW );
-      ch->desc->buffer_printf( "%sBlue\r\n", ANSI_BLUE );
-      ch->desc->buffer_printf( "%sPink\r\n", ANSI_PINK );
-      ch->desc->buffer_printf( "%sLight Blue\r\n", ANSI_LBLUE );
-      ch->desc->buffer_printf( "%sWhite\r\n", ANSI_WHITE );
-      ch->desc->buffer_printf( "%sBlinking Black\r\n", BLINK_BLACK );
-      ch->desc->buffer_printf( "%sBlinking Dark Red\r\n", BLINK_DRED );
-      ch->desc->buffer_printf( "%sBlinking Dark Green\r\n", BLINK_DGREEN );
-      ch->desc->buffer_printf( "%sBlinking Orange/Brown\r\n", BLINK_ORANGE );
-      ch->desc->buffer_printf( "%sBlinking Dark Blue\r\n", BLINK_DBLUE );
-      ch->desc->buffer_printf( "%sBlinking Purple\r\n", BLINK_PURPLE );
-      ch->desc->buffer_printf( "%sBlinking Cyan\r\n", BLINK_CYAN );
-      ch->desc->buffer_printf( "%sBlinking Grey\r\n", BLINK_GREY );
-      ch->desc->buffer_printf( "%sBlinking Dark Grey\r\n", BLINK_DGREY );
-      ch->desc->buffer_printf( "%sBlinking Red\r\n", BLINK_RED );
-      ch->desc->buffer_printf( "%sBlinking Green\r\n", BLINK_GREEN );
-      ch->desc->buffer_printf( "%sBlinking Yellow\r\n", BLINK_YELLOW );
-      ch->desc->buffer_printf( "%sBlinking Blue\r\n", BLINK_BLUE );
-      ch->desc->buffer_printf( "%sBlinking Pink\r\n", BLINK_PINK );
-      ch->desc->buffer_printf( "%sBlinking Light Blue\r\n", BLINK_LBLUE );
-      ch->desc->buffer_printf( "%sBlinking White\r\n", BLINK_WHITE );
+      ch->desc->buffer_printf( "{}Black\r\n", ANSI_BLACK );
+      ch->desc->buffer_printf( "{}Dark Red\r\n", ANSI_DRED );
+      ch->desc->buffer_printf( "{}Dark Green\r\n", ANSI_DGREEN );
+      ch->desc->buffer_printf( "{}Orange/Brown\r\n", ANSI_ORANGE );
+      ch->desc->buffer_printf( "{}Dark Blue\r\n", ANSI_DBLUE );
+      ch->desc->buffer_printf( "{}Purple\r\n", ANSI_PURPLE );
+      ch->desc->buffer_printf( "{}Cyan\r\n", ANSI_CYAN );
+      ch->desc->buffer_printf( "{}Grey\r\n", ANSI_GREY );
+      ch->desc->buffer_printf( "{}Dark Grey\r\n", ANSI_DGREY );
+      ch->desc->buffer_printf( "{}Red\r\n", ANSI_RED );
+      ch->desc->buffer_printf( "{}Green\r\n", ANSI_GREEN );
+      ch->desc->buffer_printf( "{}Yellow\r\n", ANSI_YELLOW );
+      ch->desc->buffer_printf( "{}Blue\r\n", ANSI_BLUE );
+      ch->desc->buffer_printf( "{}Pink\r\n", ANSI_PINK );
+      ch->desc->buffer_printf( "{}Light Blue\r\n", ANSI_LBLUE );
+      ch->desc->buffer_printf( "{}White\r\n", ANSI_WHITE );
+      ch->desc->buffer_printf( "{}Blinking Black\r\n", BLINK_BLACK );
+      ch->desc->buffer_printf( "{}Blinking Dark Red\r\n", BLINK_DRED );
+      ch->desc->buffer_printf( "{}Blinking Dark Green\r\n", BLINK_DGREEN );
+      ch->desc->buffer_printf( "{}Blinking Orange/Brown\r\n", BLINK_ORANGE );
+      ch->desc->buffer_printf( "{}Blinking Dark Blue\r\n", BLINK_DBLUE );
+      ch->desc->buffer_printf( "{}Blinking Purple\r\n", BLINK_PURPLE );
+      ch->desc->buffer_printf( "{}Blinking Cyan\r\n", BLINK_CYAN );
+      ch->desc->buffer_printf( "{}Blinking Grey\r\n", BLINK_GREY );
+      ch->desc->buffer_printf( "{}Blinking Dark Grey\r\n", BLINK_DGREY );
+      ch->desc->buffer_printf( "{}Blinking Red\r\n", BLINK_RED );
+      ch->desc->buffer_printf( "{}Blinking Green\r\n", BLINK_GREEN );
+      ch->desc->buffer_printf( "{}Blinking Yellow\r\n", BLINK_YELLOW );
+      ch->desc->buffer_printf( "{}Blinking Blue\r\n", BLINK_BLUE );
+      ch->desc->buffer_printf( "{}Blinking Pink\r\n", BLINK_PINK );
+      ch->desc->buffer_printf( "{}Blinking Light Blue\r\n", BLINK_LBLUE );
+      ch->desc->buffer_printf( "{}Blinking White\r\n", BLINK_WHITE );
       ch->desc->write_to_buffer( ANSI_RESET );
 
-      ch->desc->buffer_printf( "%s%sBlack Background\r\n", ANSI_WHITE, BACK_BLACK );
-      ch->desc->buffer_printf( "%s%sDark Red Background\r\n", ANSI_BLACK, BACK_DRED );
-      ch->desc->buffer_printf( "%s%sDark Green Background\r\n", ANSI_BLACK, BACK_DGREEN );
-      ch->desc->buffer_printf( "%s%sOrange/Brown Background\r\n", ANSI_BLACK, BACK_ORANGE );
-      ch->desc->buffer_printf( "%s%sDark Blue Background\r\n", ANSI_BLACK, BACK_DBLUE );
-      ch->desc->buffer_printf( "%s%sPurple Background\r\n", ANSI_BLACK, BACK_PURPLE );
-      ch->desc->buffer_printf( "%s%sCyan Background\r\n", ANSI_BLACK, BACK_CYAN );
-      ch->desc->buffer_printf( "%s%sGrey Background\r\n", ANSI_BLACK, BACK_GREY );
-      ch->desc->buffer_printf( "%s%sItalics%s\r\n", ANSI_GREY, ANSI_ITALIC, ANSI_RESET );
-      ch->desc->buffer_printf( "%sStrikeout%s\r\n", ANSI_STRIKEOUT, ANSI_RESET );
-      ch->desc->buffer_printf( "%sUnderline\r\n", ANSI_UNDERLINE );
+      ch->desc->buffer_printf( "{}{}Black Background\r\n", ANSI_WHITE, BACK_BLACK );
+      ch->desc->buffer_printf( "{}{}Dark Red Background\r\n", ANSI_BLACK, BACK_DRED );
+      ch->desc->buffer_printf( "{}{}Dark Green Background\r\n", ANSI_BLACK, BACK_DGREEN );
+      ch->desc->buffer_printf( "{}{}Orange/Brown Background\r\n", ANSI_BLACK, BACK_ORANGE );
+      ch->desc->buffer_printf( "{}{}Dark Blue Background\r\n", ANSI_BLACK, BACK_DBLUE );
+      ch->desc->buffer_printf( "{}{}Purple Background\r\n", ANSI_BLACK, BACK_PURPLE );
+      ch->desc->buffer_printf( "{}{}Cyan Background\r\n", ANSI_BLACK, BACK_CYAN );
+      ch->desc->buffer_printf( "{}{}Grey Background\r\n", ANSI_BLACK, BACK_GREY );
+      ch->desc->buffer_printf( "{}{}Italics{}\r\n", ANSI_GREY, ANSI_ITALIC, ANSI_RESET );
+      ch->desc->buffer_printf( "{}Strikeout{}\r\n", ANSI_STRIKEOUT, ANSI_RESET );
+      ch->desc->buffer_printf( "{}Underline\r\n", ANSI_UNDERLINE );
       ch->desc->write_to_buffer( ANSI_RESET );
       return;
    }
@@ -916,8 +916,8 @@ std::string color_align( const std::string & argument, int size, int align )
       {
          int left = space / 2;
          int right = space - left;
-         std::string pad_left(left, ' ');
-         std::string pad_right(right, ' ');
+         std::string pad_left( left, ' ' );
+         std::string pad_right( right, ' ' );
          return pad_left + argument + pad_right;
       }
       default:
@@ -958,7 +958,7 @@ std::string colorize( std::string_view txt, descriptor_data * d )
 
          // Handle color tokens
          size_t consumed = 0;
-         std::string translation = colorcode( std::string_view( txt ).substr( i ), d, consumed );
+         std::string translation = colorcode( txt.substr( i ), d, consumed );
 
          if( consumed > 0 )
          {

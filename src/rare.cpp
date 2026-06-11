@@ -45,7 +45,7 @@ extern bool compilelock;
 #endif
 extern bool bootlock;
 
-auth_data *get_auth_name( const std::string & );
+auth_data *get_auth_name( std::string_view );
 void check_pfiles( time_t );
 void update_connhistory( descriptor_data *, int );
 void show_stateflags( char_data * );
@@ -808,15 +808,15 @@ int scan_pfiles( const std::string & dirname, const std::string & filename, bool
    return adjust;
 }
 
-void corpse_scan( const std::string & dirname, const std::string & filename )
+void corpse_scan( std::string_view filename )
 {
    FILE *fpChar;
 
-   std::filesystem::path fname = std::format( "{}/{}", dirname, filename );
+   std::filesystem::path fname = std::format( "{}/{}", CORPSE_DIR, filename );
 
    if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
    {
-      perror( fname.c_str() );
+      log_printf( "Cannot open corpse file: %s", fname.c_str() );
       return;
    }
 
@@ -872,7 +872,7 @@ void corpse_scan( const std::string & dirname, const std::string & filename )
          {
             vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == nullptr )
-               bug( "%s: %s's corpse has bad obj vnum.", __func__, filename.c_str() );
+               bug( "%s: %s's corpse has bad obj vnum.", __func__, fname.c_str() );
             else
             {
                int ego = 0;
@@ -882,7 +882,7 @@ void corpse_scan( const std::string & dirname, const std::string & filename )
                if( ego >= sysdata->minego )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", filename.c_str(), counter, vnum );
+                  log_printf( "%s: Counted %d of Vnum %d", fname.c_str(), counter, vnum );
                }
             }
          }
@@ -974,15 +974,15 @@ void mobfile_scan( void )
    FCLOSE( fpChar );
 }
 
-void objfile_scan( const char *dirname, const char *filename )
+void objfile_scan( std::string_view filename )
 {
    FILE *fpChar;
 
-   std::filesystem::path fname = std::format( "{}{}", dirname, filename );
+   std::filesystem::path fname = std::format( "{}{}", HOTBOOT_DIR, filename );
 
    if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
    {
-      perror( fname.c_str() );
+      log_printf( "Cannot open object file: %s", fname.c_str() );
       return;
    }
 
@@ -1092,7 +1092,7 @@ void load_equipment_totals( bool fCopyOver )
       if( filename.empty() || filename[0] == '.' )
          continue;
 
-      corpse_scan( CORPSE_DIR, filename.c_str() );
+      corpse_scan( filename );
    }
 
    if( fCopyOver )
@@ -1110,7 +1110,7 @@ void load_equipment_totals( bool fCopyOver )
          if( filename.empty() || filename[0] == '.' )
             continue;
 
-         objfile_scan( HOTBOOT_DIR, filename.c_str() );
+         objfile_scan( filename );
       }
    }
 }

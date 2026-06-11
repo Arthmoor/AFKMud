@@ -553,8 +553,8 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
 
    if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
    {
-      act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n %s $p.", pull ? "pulls" : "pushes" );
-      act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You %s $p.", pull ? "pull" : "push" );
+      act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n {} $p.", pull ? "pulls" : "pushes" );
+      act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You {} $p.", pull ? "pull" : "push" );
    }
 
    if( !IS_SET( obj->value[0], TRIG_AUTORETURN ) )

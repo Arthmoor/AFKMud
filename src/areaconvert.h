@@ -28,9 +28,9 @@
 
 #pragma once
 
-const int AREA_STOCK_VERSION = 3;       // The current top version for stock Smaug 1.8b files
-const int AREA_SMAUGWIZ_VERSION = 1000; // The current top version for SmaugWiz files
-const int AREA_FUSS_VERSION = 1;        // The current top version for SmaugFUSS files
+constexpr int AREA_STOCK_VERSION = 3;       // The current top version for stock Smaug 1.8b files
+constexpr int AREA_SMAUGWIZ_VERSION = 1000; // The current top version for SmaugWiz files
+constexpr int AREA_FUSS_VERSION = 1;        // The current top version for SmaugFUSS files
 
 /* Extended bitvector material is now kept only for legacy purposes to convert old areas. */
 typedef struct extended_bitvector EXT_BV;
@@ -38,15 +38,12 @@ typedef struct extended_bitvector EXT_BV;
 /*
  * Defines for extended bitvectors
  */
-#ifndef INTBITS
-const int INTBITS = 32;
-#endif
-const int XBM = 31;  /* extended bitmask   ( INTBITS - 1 )  */
-const int RSV = 5;   /* right-shift value  ( sqrt(XBM+1) )  */
-const int XBI = 4;   /* integers in an extended bitvector   */
-const int MAX_BITS = XBI * INTBITS;
+constexpr int int_bits = 32; // Can't use INT_MAX here because of XBI. EXT_BV is built around being 32 bits anyway so here we are.
 
-#define xIS_SET(var, bit) ((var).bits[(bit) >> RSV] & 1 << ((bit) & XBM))
+constexpr int XBM = 31;  /* extended bitmask   ( INTBITS - 1 )  */
+constexpr int RSV = 5;   /* right-shift value  ( sqrt(XBM+1) )  */
+constexpr int XBI = 4;   /* integers in an extended bitvector   */
+constexpr int MAX_BITS = XBI * int_bits;
 
 /*
  * Structure for extended bitvectors -- Thoric
@@ -65,3 +62,9 @@ extern int top_reset;
 extern int top_shop;
 extern int top_repair;
 extern FILE *fpArea;
+
+template <typename T>
+bool xIS_SET( const T& var, int bit )
+{
+   return ( var.bits[bit >> RSV] & ( 1 << ( bit & XBM ) ) ) != 0;
+}

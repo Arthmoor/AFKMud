@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <dlfcn.h> // For libdl - Trax
+#include <filesystem>
 #include "mud.h"
 #include "language.h"
 
@@ -34,13 +35,13 @@ SPELLF( spell_notfound );
 
 std::list<lang_data *> langlist;
 
-SPEC_FUN *m_spec_lookup( const std::string & name )
+SPEC_FUN *m_spec_lookup( std::string_view name )
 {
    void *funHandle;
    const char *error;
 
    // Perform the symbol lookup
-   funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
+   funHandle = dlsym( sysdata->dlHandle, name.data() );
 
    // Check the returned error if this came back NULL
    if( funHandle == NULL )
@@ -48,24 +49,24 @@ SPEC_FUN *m_spec_lookup( const std::string & name )
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
-         bug( "%s: Error locating %s in symbol table. %s", __func__, name.c_str( ), error );
+         bug( "%s: Error locating %s in symbol table. %s", __func__, name.data(), error );
          return nullptr;
 
          // Edge case. Apparently a symbol can be valid but point to a NULL. This catches those.
-         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.c_str( ) );
+         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.data() );
          return nullptr;
       }
    }
    return ( SPEC_FUN * ) funHandle;
 }
 
-SPELL_FUN *spell_function( const std::string & name )
+SPELL_FUN *spell_function( std::string_view name )
 {
    void *funHandle;
    const char *error;
 
    // Perform the symbol lookup
-   funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
+   funHandle = dlsym( sysdata->dlHandle, name.data() );
 
    // Check the returned error if this came back NULL
    if( funHandle == NULL )
@@ -73,24 +74,24 @@ SPELL_FUN *spell_function( const std::string & name )
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
-         bug( "%s: Error locating %s in symbol table. %s", __func__, name.c_str( ), error );
+         bug( "%s: Error locating %s in symbol table. %s", __func__, name.data(), error );
          return ( SPELL_FUN * ) spell_notfound;
 
          // Edge case. Apparently a symbol can be valid but point to a NULL. This catches those.
-         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.c_str( ) );
+         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.data() );
          return ( SPELL_FUN * ) spell_notfound;
       }
    }
    return ( SPELL_FUN * ) funHandle;
 }
 
-DO_FUN *skill_function( const std::string & name )
+DO_FUN *skill_function( std::string_view name )
 {
    void *funHandle;
    const char *error;
 
    // Perform the symbol lookup
-   funHandle = dlsym( sysdata->dlHandle, name.c_str(  ) );
+   funHandle = dlsym( sysdata->dlHandle, name.data() );
 
    // Check the returned error if this came back NULL
    if( funHandle == NULL )
@@ -98,11 +99,11 @@ DO_FUN *skill_function( const std::string & name )
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
-         bug( "%s: Error locating %s in symbol table. %s", __func__, name.c_str( ), error );
+         bug( "%s: Error locating %s in symbol table. %s", __func__, name.data(), error );
          return ( DO_FUN * ) skill_notfound;
 
          // Edge case. Apparently a symbol can be valid but point to a NULL. This catches those.
-         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.c_str( ) );
+         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.data() );
          return ( DO_FUN * ) skill_notfound;
       }
    }
@@ -187,7 +188,8 @@ void load_tongues(  )
    char *word;
    char letter;
 
-   if( !( fp = fopen( TONGUE_FILE, "r" ) ) )
+   std::filesystem::path filename = TONGUE_FILE;
+   if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
       perror( "Load_tongues" );
       return;

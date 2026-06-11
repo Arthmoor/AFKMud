@@ -567,13 +567,13 @@ CMDF( do_mfind )
       if( fAll || hasname( pMobIndex->player_name, argument ) )
       {
          ++nMatch;
-         ch->pagerf( "[%5d] %s\r\n", pMobIndex->vnum, capitalize( pMobIndex->short_descr ) );
+         ch->pager_fmt( "[{:5}] {}\r\n", pMobIndex->vnum, capitalize( pMobIndex->short_descr ) );
       }
       ++imob;
    }
 
    if( nMatch )
-      ch->pagerf( "Number of matches: %d\n", nMatch );
+      ch->pager_fmt( "Number of matches: {}\r\n", nMatch );
    else
       ch->print( "Nothing like that exists.\r\n" );
 }
@@ -622,5 +622,5 @@ CMDF( do_mdelete )
    }
 
    deleteptr( mob );
-   ch->printf( "Mob %d has been deleted.\r\n", vnum );
+   ch->print_fmt( "Mob {} has been deleted.\r\n", vnum );
 }

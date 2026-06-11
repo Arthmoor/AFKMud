@@ -51,18 +51,18 @@ bool fLogAll = false;
 /*
  * Externals
  */
-bool check_ability( char_data *, const std::string &, const std::string & );
-bool check_skill( char_data *, const std::string &, const std::string & );
+bool check_ability( char_data *, std::string_view, std::string_view );
+bool check_skill( char_data *, std::string_view, std::string_view );
 #ifdef MULTIPORT
-bool shell_hook( char_data *, const std::string &, std::string & );
+bool shell_hook( char_data *, std::string_view, std::string & );
 void shellcommands( char_data *, short );
 #endif
-bool local_channel_hook( char_data *, const std::string &, std::string & );
+bool local_channel_hook( char_data *, std::string_view, std::string & );
 std::string extract_area_names( char_data * );
 bool can_use_mprog( char_data * );
-bool mprog_command_trigger( char_data *, const std::string & );
-bool oprog_command_trigger( char_data *, const std::string & );
-bool rprog_command_trigger( char_data *, const std::string & );
+bool mprog_command_trigger( char_data *, std::string_view );
+bool oprog_command_trigger( char_data *, std::string_view );
+bool rprog_command_trigger( char_data *, std::string_view );
 
 const char *cmd_flags[] = {
    "possessed", "polymorphed", "action", "nospam", "ghost", "mudprog",
@@ -72,10 +72,10 @@ const char *cmd_flags[] = {
 /*
  * For use with cedit --Shaddai
  */
-int get_cmdflag( const std::string & flag )
+int get_cmdflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( cmd_flags ) / sizeof( cmd_flags[0] ) ); ++x )
-      if( !str_cmp( flag.c_str(  ), cmd_flags[x] ) )
+      if( !str_cmp( flag, cmd_flags[x] ) )
          return x;
    return -1;
 }
@@ -94,8 +94,8 @@ void check_switch( char_data * ch )
 
    for( char x = 0; x < 126; ++x )
    {
-      const std::vector < cmd_type * >&cmd_list = command_table[x];
-      std::vector < cmd_type * >::const_iterator icmd;
+      const std::vector<cmd_type *> &cmd_list = command_table[x];
+      std::vector<cmd_type *>::const_iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -116,7 +116,7 @@ void check_switch( char_data * ch )
    interpret( ch->switched, "return" );
 }
 
-int check_command_level( const std::string & arg, int check )
+int check_command_level( std::string_view arg, int check )
 {
    cmd_type *cmd = find_command( arg );
 
@@ -170,7 +170,7 @@ std::chrono::microseconds end_timer( std::chrono::steady_clock::time_point & sta
    return elapsed;
 }
 
-bool check_social( char_data * ch, const std::string & command, const std::string & argument )
+bool check_social( char_data * ch, std::string_view command, const std::string & argument )
 {
    std::string arg;
    social_type *social;
@@ -379,20 +379,20 @@ bool check_pos( char_data * ch, short position )
    return true;
 }
 
-bool check_alias( char_data * ch, const std::string & command, const std::string & argument )
+bool check_alias( char_data * ch, std::string_view command, std::string_view argument )
 {
-   std::map < std::string, std::string >::iterator al;
+   std::map<std::string, std::string>::iterator al;
    std::string arg;
 
    if( ch->isnpc(  ) )
       return false;
 
-   al = ch->pcdata->alias_map.find( command );
+   al = ch->pcdata->alias_map.find( std::string{command} );
 
    if( al == ch->pcdata->alias_map.end(  ) )
       return false;
 
-   arg = ch->pcdata->alias_map[command];
+   arg = ch->pcdata->alias_map[std::string{command}];
 
    if( ch->pcdata->cmd_recurse == -1 || ++ch->pcdata->cmd_recurse > 50 )
    {
@@ -405,7 +405,10 @@ bool check_alias( char_data * ch, const std::string & command, const std::string
    }
 
    if( !argument.empty(  ) )
-      arg.append( " " + argument );
+   {
+      arg.append( " " );
+      arg.append( argument );
+   }
    interpret( ch, arg );
    return true;
 }
@@ -484,9 +487,9 @@ void interpret( char_data * ch, std::string argument )
    if( !cmd )
    {
       /*
-       * Changed the order of these ifchecks to prevent crashing. 
+       * The argument is a std::string, it only makes sense to check for it being empty.
        */
-      if( argument.empty(  ) || !str_cmp( argument, "" ) )
+      if( argument.empty(  ) )
       {
          bug( "%s: null argument!", __func__ );
          return;
@@ -919,7 +922,7 @@ void add_command( cmd_type * command )
    cmd_list.push_back( command );
 }
 
-cmd_type *find_command( const std::string & command )
+cmd_type *find_command( std::string_view command )
 {
    std::vector<cmd_type *>::const_iterator icmd;
    const std::vector<cmd_type *> &cmd_list = command_table[command[0] % 126];
@@ -946,11 +949,10 @@ void save_commands( void )
 {
    std::ofstream stream;
 
-   stream.open( COMMAND_FILE );
+   stream.open( std::filesystem::path( COMMAND_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open commands.dat for writing", __func__ );
-      perror( COMMAND_FILE );
+      bug( "%s: Cannot open commands.dat for writing.", __func__ );
       return;
    }
 
@@ -997,7 +999,7 @@ void load_commands( void )
    command_table.clear(  );
    command_table.resize( 126 );
 
-   stream.open( COMMAND_FILE );
+   stream.open( std::filesystem::path( COMMAND_FILE ) );
    if( !stream.is_open(  ) )
    {
       bug( "%s: No command file found.", __func__ );
@@ -1642,7 +1644,7 @@ CMDF( do_mpforce )
 
    if( arg2.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpforce - Bad syntax: Missing command" );
+      progbug( "Mpforce - Bad syntax: Missing command", ch );
       return;
    }
 
@@ -1659,7 +1661,7 @@ CMDF( do_mpforce )
          {
             if( cmd && cmd->flags.test( CMD_NOFORCE ) )
             {
-               progbugf( ch, "Mpforce: Attempted to force all to %s - command is flagged noforce", arg2.c_str(  ) );
+               progbugf( ch, "Mpforce: Attempted to force all to {} - command is flagged noforce", arg2 );
                return;
             }
             interpret( vch, argument );
@@ -1672,19 +1674,19 @@ CMDF( do_mpforce )
 
       if( !( victim = ch->get_char_room( arg ) ) )
       {
-         progbugf( ch, "Mpforce - No such victim %s", arg.c_str(  ) );
+         progbugf( ch, "Mpforce - No such victim {}", arg );
          return;
       }
 
       if( victim == ch )
       {
-         progbugf( ch, "%s", "Mpforce - Forcing oneself" );
+         progbug( "Mpforce - Forcing oneself", ch );
          return;
       }
 
       if( !victim->isnpc(  ) && ( !victim->desc ) && victim->is_immortal(  ) )
       {
-         progbugf( ch, "Mpforce - Attempting to force link dead immortal %s", victim->name );
+         progbugf( ch, "Mpforce - Attempting to force link dead immortal {}", victim->name );
          return;
       }
 
@@ -1693,7 +1695,7 @@ CMDF( do_mpforce )
        */
       if( cmd && cmd->flags.test( CMD_NOFORCE ) )
       {
-         progbugf( ch, "Mpforce: Attempted to force %s to %s - command is flagged noforce", victim->name, cmd->name.c_str(  ) );
+         progbugf( ch, "Mpforce: Attempted to force {} to {} - command is flagged noforce", victim->name, cmd->name );
          return;
       }
 
@@ -1971,11 +1973,11 @@ CMDF( do_alias )
    ch->pcdata->alias_map[arg] = argument;
 }
 
-social_type *find_social( const std::string & command )
+social_type *find_social( std::string_view command )
 {
    std::map<std::string, social_type *>::iterator isoc;
 
-   if( ( isoc = social_table.find( command ) ) != social_table.end(  ) )
+   if( ( isoc = social_table.find( std::string{command} ) ) != social_table.end(  ) )
       return isoc->second;
 
    return nullptr;
@@ -2059,11 +2061,10 @@ void save_socials( void )
 {
    std::ofstream stream;
 
-   stream.open( SOCIAL_FILE );
+   stream.open( std::filesystem::path( SOCIAL_FILE ) );
    if( !stream.is_open(  ) )
    {
       bug( "%s", "Cannot open socials.dat for writting" );
-      perror( SOCIAL_FILE );
       return;
    }
 
@@ -2113,7 +2114,7 @@ void load_socials( void )
 
    social_table.clear(  );
 
-   stream.open( SOCIAL_FILE );
+   stream.open( std::filesystem::path( SOCIAL_FILE ) );
    if( !stream.is_open(  ) )
    {
       bug( "%s: Cannot open socials.dat", __func__ );

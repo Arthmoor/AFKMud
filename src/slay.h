@@ -30,7 +30,7 @@
 
 /* Capability to create, edit and delete slaytypes added to original code by Samson 8-3-98 */
 
-#define SLAY_FILE SYSTEM_DIR "slay.dat"  /* Slay data file for online editing - Samson 8-3-98 */
+inline constexpr std::string_view SLAY_FILE = "../system/slay.dat";  /* Slay data file for online editing - Samson 8-3-98 */
 
 /* Improved data structure for online slay editing - Samson 8-3-98 */
 class slay_data
@@ -40,7 +40,7 @@ class slay_data
     slay_data & operator=( const slay_data & ) = delete;
     slay_data(  );
 
-   void set_owner( const std::string & name )
+   void set_owner( std::string_view name )
    {
       owner = name;
    }
@@ -49,7 +49,7 @@ class slay_data
       return owner;
    }
 
-   void set_type( const std::string & name )
+   void set_type( std::string_view name )
    {
       type = name;
    }
@@ -58,7 +58,7 @@ class slay_data
       return type;
    }
 
-   void set_cmsg( const std::string & msg )
+   void set_cmsg( std::string_view msg )
    {
       cmsg = msg;
    }
@@ -67,7 +67,7 @@ class slay_data
       return cmsg;
    }
 
-   void set_vmsg( const std::string & msg )
+   void set_vmsg( std::string_view msg )
    {
       vmsg = msg;
    }
@@ -76,7 +76,7 @@ class slay_data
       return vmsg;
    }
 
-   void set_rmsg( const std::string & msg )
+   void set_rmsg( std::string_view msg )
    {
       rmsg = msg;
    }

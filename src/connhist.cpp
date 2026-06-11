@@ -34,6 +34,7 @@
  * Stores connection data in an array so that it can be reviewed later.
  *
  */
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include "mud.h"
@@ -68,7 +69,7 @@ void free_connhistory( int arg )
    }
 
    if( arg == 1 )
-      unlink( CH_FILE );
+      std::filesystem::remove( CH_FILE );
 }
 
 /* Checks an entry for validity. Removes an invalid entry. */
@@ -97,7 +98,7 @@ void load_connhistory( void )
 
    connlist.clear(  );
 
-   stream.open( CH_FILE );
+   stream.open( std::filesystem::path( CH_FILE ) );
    if( !stream.is_open(  ) )
       return;
 
@@ -160,10 +161,10 @@ void save_connhistory( void )
    if( connlist.empty(  ) )
       return;
 
-   stream.open( CH_FILE );
+   stream.open( std::filesystem::path( CH_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Error opening '%s'", __func__, CH_FILE );
+      bug( "%s: Error opening '%s'", __func__, CH_FILE.data() );
       return;
    }
 

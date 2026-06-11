@@ -32,10 +32,10 @@
 
 variable_data::variable_data()
 {
-   init_memory( &this->varflags, &this->timer, sizeof( this->timer ) );
+   init_memory( &this->vardata, &this->timer, sizeof( this->timer ) );
 }
 
-variable_data::variable_data( int vtype, int vvnum, const std::string & vtag )
+variable_data::variable_data( int vtype, int vvnum, std::string_view vtag )
 {
    this->type = vtype;
    this->vnum = vvnum;
@@ -54,7 +54,7 @@ variable_data::~variable_data(  )
 /*
  * Return the specified tag from a character
  */
-variable_data *get_tag( char_data * ch, const std::string & tag, int vnum )
+variable_data *get_tag( char_data * ch, std::string_view tag, int vnum )
 {
    for( auto* vd : ch->variables )
    {
@@ -67,7 +67,7 @@ variable_data *get_tag( char_data * ch, const std::string & tag, int vnum )
 /*
  * Remove the specified tag from a character
  */
-bool remove_tag( char_data * ch, const std::string & tag, int vnum )
+bool remove_tag( char_data * ch, std::string_view tag, int vnum )
 {
    bool deleted = false;
 
@@ -135,19 +135,17 @@ int tag_char( char_data * ch, variable_data * var, bool replace )
    return 0;
 }
 
-bool is_valid_tag( const std::string & tagname )
+bool is_valid_tag( std::string_view tagname )
 {
-   std::string::const_iterator ptr = tagname.begin();
-
-   if( !isalpha( tagname[0] ) )
+   if( tagname.empty() || !std::isalpha( static_cast<unsigned char>( tagname[0] ) ) )
       return false;
 
-   while( ptr != tagname.end() )
+   for( char c : tagname )
    {
-      if( !isalnum( *ptr ) && *ptr != '_' )
+      if ( !std::isalnum( static_cast<unsigned char>( c ) ) && c != '_' )
          return false;
-      ++ptr;
    }
+
    return true;
 }
 

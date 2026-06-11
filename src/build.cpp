@@ -47,7 +47,7 @@ void build_wizinfo( void );   /* For mset realm option - Samson 6-6-99 */
 CMDF( do_rstat );
 CMDF( do_mstat );
 CMDF( do_ostat );
-bool validate_spec_fun( const std::string & );
+bool validate_spec_fun( std::string_view );
 int mob_xp( char_data * );
 std::string sprint_reset( reset_data *, short & );
 void assign_area( char_data * );
@@ -552,7 +552,7 @@ bool can_mmodify( char_data * ch, char_data * mob )
    return false;
 }
 
-int get_saveflag( const std::string & name )
+int get_saveflag( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( save_flag ) / sizeof( save_flag[0] ); ++x )
       if( !str_cmp( name, save_flag[x] ) )
@@ -560,7 +560,7 @@ int get_saveflag( const std::string & name )
    return -1;
 }
 
-int get_logflag( const std::string & flag )
+int get_logflag( std::string_view flag )
 {
    for( int x = 0; x <= LOG_ALL; ++x )
       if( !str_cmp( flag, log_flag[x] ) )
@@ -568,7 +568,7 @@ int get_logflag( const std::string & flag )
    return -1;
 }
 
-int get_npc_sex( const std::string & sex )
+int get_npc_sex( std::string_view sex )
 {
    for( int x = 0; x < SEX_MAX; ++x )
       if( !str_cmp( sex, npc_sex[x] ) )
@@ -576,7 +576,7 @@ int get_npc_sex( const std::string & sex )
    return -1;
 }
 
-int get_style( const std::string & style )
+int get_style( std::string_view style )
 {
    for( int x = 0; x <= STYLE_EVASIVE; ++x )
       if( !str_cmp( style, styles[x] ) )
@@ -584,7 +584,7 @@ int get_style( const std::string & style )
    return -1;
 }
 
-int get_npc_position( const std::string & position )
+int get_npc_position( std::string_view position )
 {
    for( int x = 0; x < POS_MAX; ++x )
       if( !str_cmp( position, npc_position[x] ) )
@@ -592,7 +592,7 @@ int get_npc_position( const std::string & position )
    return -1;
 }
 
-int get_sectypes( const std::string & sector )
+int get_sectypes( std::string_view sector )
 {
    for( int x = 0; x < SECT_MAX; ++x )
       if( !str_cmp( sector, sect_types[x] ) )
@@ -600,7 +600,7 @@ int get_sectypes( const std::string & sector )
    return -1;
 }
 
-int get_pc_class( const std::string & Class )
+int get_pc_class( std::string_view Class )
 {
    for( int x = 0; x < MAX_PC_CLASS; ++x )
       if( !str_cmp( Class, class_table[x]->who_name ) )
@@ -608,7 +608,7 @@ int get_pc_class( const std::string & Class )
    return -1;
 }
 
-int get_npc_class( const std::string & Class )
+int get_npc_class( std::string_view Class )
 {
    for( int x = 0; x < MAX_NPC_CLASS; ++x )
       if( !str_cmp( Class, npc_class[x] ) )
@@ -616,7 +616,7 @@ int get_npc_class( const std::string & Class )
    return -1;
 }
 
-int get_pc_race( const std::string & type )
+int get_pc_race( std::string_view type )
 {
    for( int i = 0; i < MAX_PC_RACE; ++i )
       if( !str_cmp( type, race_table[i]->race_name ) )
@@ -624,7 +624,7 @@ int get_pc_race( const std::string & type )
    return -1;
 }
 
-int get_otype( const std::string & type )
+int get_otype( std::string_view type )
 {
    for( size_t x = 0; x < ( sizeof( o_types ) / sizeof( o_types[0] ) ); ++x )
       if( !str_cmp( type, o_types[x] ) )
@@ -632,7 +632,7 @@ int get_otype( const std::string & type )
    return -1;
 }
 
-int get_aflag( const std::string & flag )
+int get_aflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( aff_flags ) / sizeof( aff_flags[0] ) ); ++x )
       if( !str_cmp( flag, aff_flags[x] ) )
@@ -640,7 +640,7 @@ int get_aflag( const std::string & flag )
    return -1;
 }
 
-int get_traptype( const std::string & flag )
+int get_traptype( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( trap_types ) / sizeof( trap_types[0] ) ); ++x )
       if( !str_cmp( flag, trap_types[x] ) )
@@ -648,7 +648,7 @@ int get_traptype( const std::string & flag )
    return -1;
 }
 
-int get_trapflag( const std::string & flag )
+int get_trapflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( trap_flags ) / sizeof( trap_flags[0] ) ); ++x )
       if( !str_cmp( flag, trap_flags[x] ) )
@@ -656,7 +656,7 @@ int get_trapflag( const std::string & flag )
    return -1;
 }
 
-int get_atype( const std::string & type )
+int get_atype( std::string_view type )
 {
    for( size_t x = 0; x < ( sizeof( a_types ) / sizeof( a_types[0] ) ); ++x )
       if( !str_cmp( type, a_types[x] ) )
@@ -664,7 +664,7 @@ int get_atype( const std::string & type )
    return -1;
 }
 
-int get_npc_race( const std::string & type )
+int get_npc_race( std::string_view type )
 {
    for( int x = 0; x < MAX_NPC_RACE; ++x )
       if( !str_cmp( type, npc_race[x] ) )
@@ -672,7 +672,7 @@ int get_npc_race( const std::string & type )
    return -1;
 }
 
-int get_wearloc( const std::string & type )
+int get_wearloc( std::string_view type )
 {
    for( size_t x = 0; x < ( sizeof( wear_locs ) / sizeof( wear_locs[0] ) ); ++x )
       if( !str_cmp( type, wear_locs[x] ) )
@@ -680,7 +680,7 @@ int get_wearloc( const std::string & type )
    return -1;
 }
 
-int get_exflag( const std::string & flag )
+int get_exflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( ex_flags ) / sizeof( ex_flags[0] ) ); ++x )
       if( !str_cmp( flag, ex_flags[x] ) )
@@ -688,7 +688,7 @@ int get_exflag( const std::string & flag )
    return -1;
 }
 
-int get_pulltype( const std::string & type )
+int get_pulltype( std::string_view type )
 {
    size_t x;
 
@@ -718,7 +718,7 @@ int get_pulltype( const std::string & type )
 }
 
 // This is part of a rather slick way to set flags on things during file I/O
-int get_flag( const std::string & flag, const char *flagarray[], size_t max )
+int get_flag( std::string_view flag, const char *flagarray[], size_t max )
 {
    if( flag.empty(  ) || !flagarray )
       return -1;
@@ -729,7 +729,7 @@ int get_flag( const std::string & flag, const char *flagarray[], size_t max )
    return -1;
 }
 
-int get_rflag( const std::string & flag )
+int get_rflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( r_flags ) / sizeof( r_flags[0] ) ); ++x )
       if( !str_cmp( flag, r_flags[x] ) )
@@ -737,7 +737,7 @@ int get_rflag( const std::string & flag )
    return -1;
 }
 
-int get_mpflag( const std::string & flag )
+int get_mpflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( mprog_flags ) / sizeof( mprog_flags[0] ) ); ++x )
       if( !str_cmp( flag, mprog_flags[x] ) )
@@ -745,7 +745,7 @@ int get_mpflag( const std::string & flag )
    return -1;
 }
 
-int get_oflag( const std::string & flag )
+int get_oflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( o_flags ) / sizeof( o_flags[0] ) ); ++x )
       if( !str_cmp( flag, o_flags[x] ) )
@@ -753,7 +753,7 @@ int get_oflag( const std::string & flag )
    return -1;
 }
 
-int get_areaflag( const std::string & flag )
+int get_areaflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( area_flags ) / sizeof( area_flags[0] ) ); ++x )
       if( !str_cmp( flag, area_flags[x] ) )
@@ -761,7 +761,7 @@ int get_areaflag( const std::string & flag )
    return -1;
 }
 
-int get_wflag( const std::string & flag )
+int get_wflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( w_flags ) / sizeof( w_flags[0] ) ); ++x )
       if( !str_cmp( flag, w_flags[x] ) )
@@ -769,7 +769,7 @@ int get_wflag( const std::string & flag )
    return -1;
 }
 
-int get_actflag( const std::string & flag )
+int get_actflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( act_flags ) / sizeof( act_flags[0] ) ); ++x )
       if( !str_cmp( flag, act_flags[x] ) )
@@ -777,7 +777,7 @@ int get_actflag( const std::string & flag )
    return -1;
 }
 
-int get_pcflag( const std::string & flag )
+int get_pcflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( pc_flags ) / sizeof( pc_flags[0] ) ); ++x )
       if( !str_cmp( flag, pc_flags[x] ) )
@@ -785,7 +785,7 @@ int get_pcflag( const std::string & flag )
    return -1;
 }
 
-int get_risflag( const std::string & flag )
+int get_risflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( ris_flags ) / sizeof( ris_flags[0] ) ); ++x )
       if( !str_cmp( flag, ris_flags[x] ) )
@@ -793,7 +793,7 @@ int get_risflag( const std::string & flag )
    return -1;
 }
 
-int get_trigflag( const std::string & flag )
+int get_trigflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( trig_flags ) / sizeof( trig_flags[0] ) ); ++x )
       if( !str_cmp( flag, trig_flags[x] ) )
@@ -801,7 +801,7 @@ int get_trigflag( const std::string & flag )
    return -1;
 }
 
-int get_partflag( const std::string & flag )
+int get_partflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( part_flags ) / sizeof( part_flags[0] ) ); ++x )
       if( !str_cmp( flag, part_flags[x] ) )
@@ -809,7 +809,7 @@ int get_partflag( const std::string & flag )
    return -1;
 }
 
-int get_attackflag( const std::string & flag )
+int get_attackflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( attack_flags ) / sizeof( attack_flags[0] ) ); ++x )
       if( !str_cmp( flag, attack_flags[x] ) )
@@ -817,7 +817,7 @@ int get_attackflag( const std::string & flag )
    return -1;
 }
 
-int get_defenseflag( const std::string & flag )
+int get_defenseflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( defense_flags ) / sizeof( defense_flags[0] ) ); ++x )
       if( !str_cmp( flag, defense_flags[x] ) )
@@ -825,7 +825,7 @@ int get_defenseflag( const std::string & flag )
    return -1;
 }
 
-int get_containerflag( const std::string & flag )
+int get_containerflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( container_flags ) / sizeof( container_flags[0] ) ); ++x )
       if( !str_cmp( flag, container_flags[x] ) )
@@ -833,7 +833,7 @@ int get_containerflag( const std::string & flag )
    return -1;
 }
 
-int get_furnitureflag( const std::string & flag )
+int get_furnitureflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( furniture_flags ) / sizeof( furniture_flags[0] ) ); ++x )
       if( !str_cmp( flag, furniture_flags[x] ) )
@@ -841,7 +841,7 @@ int get_furnitureflag( const std::string & flag )
    return -1;
 }
 
-int get_langnum( const std::string & flag )
+int get_langnum( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( lang_names ) / sizeof( lang_names[0] ) ); ++x )
       if( !str_cmp( flag, lang_names[x] ) )
@@ -2054,7 +2054,7 @@ CMDF( do_mset )
       if( victim->isnpc(  ) )
          ch->editor_desc_printf( "Description of mob, vnum %d (%s).", victim->pIndexData->vnum, victim->name );
       else
-         ch->editor_desc_printf( "Description of player %s.", capitalize( victim->name ) );
+         ch->editor_desc_printf( "Description of player %s.", capitalize( victim->name ).c_str() );
       ch->start_editing( victim->chardesc );
       return;
    }
@@ -4122,7 +4122,7 @@ CMDF( do_oset )
 /*
  * Returns value 0 - 9 based on directional text.
  */
-int get_dir( const std::string & txt )
+int get_dir( std::string_view txt )
 {
    int edir;
    char c1, c2;

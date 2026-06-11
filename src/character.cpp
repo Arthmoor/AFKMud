@@ -62,7 +62,6 @@ pc_data::~pc_data(  )
    if( this->pnote )
       deleteptr( this->pnote );
 
-   STRFREE( this->filename );
    STRFREE( this->prompt );
    STRFREE( this->fprompt );
    DISPOSE( this->bamfin );   /* no hash */
@@ -317,7 +316,7 @@ void char_data::print_room( std::string_view txt )
    }
 }
 
-void char_data::pager( const std::string & txt )
+void char_data::pager( std::string_view txt )
 {
    char_data *ch;
 
@@ -398,25 +397,33 @@ void char_data::set_pager_color( short AType )
    this->desc->pagecolor = this->pcdata->colors[AType];
 }
 
-void char_data::set_title( const std::string & title )
+void char_data::set_title( std::string_view title )
 {
-   std::string buf;
-
    if( this->isnpc(  ) )
    {
       bug( "%s: NPC %s", __func__, this->name );
       return;
    }
 
-   if( isalpha( title[0] ) || isdigit( title[0] ) )
+   if( title.empty() )
    {
-      buf = " " + title;
+      STRFREE( pcdata->title );
+      pcdata->title = STRALLOC( "" );
+      return;
+   }
+
+   if( std::isalpha( static_cast<unsigned char>( title[0] ) ) || std::isdigit( static_cast<unsigned char>( title[0] ) ) )
+   {
+      std::string buf = " ";
+      buf += title;
+      STRFREE( pcdata->title );
+      pcdata->title = STRALLOC( buf.c_str() );
    }
    else
-      buf = title;
-
-   STRFREE( this->pcdata->title );
-   this->pcdata->title = STRALLOC( buf.c_str() );
+   {
+      STRFREE( pcdata->title );
+      pcdata->title = STRALLOC( std::string( title ).c_str() );
+   }
 }
 
 int char_data::calculate_race_height(  )
@@ -687,7 +694,7 @@ bool char_data::can_see( char_data * victim, bool override )
 /*
  * Find a char in the room.
  */
-char_data *char_data::get_char_room( const std::string & argument )
+char_data *char_data::get_char_room( std::string_view argument )
 {
    std::string arg;
    int vnum = -1, count = 0;
@@ -740,7 +747,7 @@ char_data *char_data::get_char_room( const std::string & argument )
 /*
  * Find a char in the world.
  */
-char_data *char_data::get_char_world( const std::string & argument )
+char_data *char_data::get_char_world( std::string_view argument )
 {
    std::string arg;
    int number = number_argument( argument, arg );
@@ -753,7 +760,7 @@ char_data *char_data::get_char_world( const std::string & argument )
     */
    int vnum;
    if( this->get_trust(  ) >= LEVEL_SAVIOR && is_number( arg ) )
-      vnum = atoi( arg.c_str(  ) );
+      vnum = std::stoi( arg );
    else
       vnum = -1;
 
@@ -846,21 +853,21 @@ char_data *char_data::get_char_world( const std::string & argument )
    return nullptr;
 }
 
-room_index *char_data::find_location( const std::string & arg )
+room_index *char_data::find_location( std::string_view arg )
 {
-   char_data *victim;
-   obj_data *obj;
+   int room_vnum = 0;
+   auto [ptr, ec] = std::from_chars( arg.data(), arg.data() + arg.size(), room_vnum );
 
-   if( is_number( arg ) )
-      return get_room_index( atoi( arg.c_str(  ) ) );
+   if( ec == std::errc{} && ptr == arg.data() + arg.size() )
+      return get_room_index( room_vnum );
 
    if( !str_cmp( arg, "pk" ) )   /* "Goto pk", "at pk", etc */
       return get_room_index( last_pkroom );
 
-   if( ( victim = this->get_char_world( arg ) ) != nullptr )
+   if( auto* victim = this->get_char_world( arg ) )
       return victim->in_room;
 
-   if( ( obj = this->get_obj_world( arg ) ) != nullptr )
+   if( auto* obj = this->get_obj_world( arg ) )
       return obj->in_room;
 
    return nullptr;
@@ -950,7 +957,7 @@ obj_data *char_data::get_obj_vnum( int vnum )
 /*
  * Find an obj in player's inventory.
  */
-obj_data *char_data::get_obj_carry( const std::string & argument )
+obj_data *char_data::get_obj_carry( std::string_view argument )
 {
    std::string arg;
    obj_data *obj;
@@ -995,7 +1002,7 @@ obj_data *char_data::get_obj_carry( const std::string & argument )
 /*
  * Find an obj in player's equipment.
  */
-obj_data *char_data::get_obj_wear( const std::string & argument )
+obj_data *char_data::get_obj_wear( std::string_view argument )
 {
    std::string arg;
    obj_data *obj;
@@ -1041,7 +1048,7 @@ obj_data *char_data::get_obj_wear( const std::string & argument )
 /*
  * Find an obj in the room or in inventory.
  */
-obj_data *char_data::get_obj_here( const std::string & argument )
+obj_data *char_data::get_obj_here( std::string_view argument )
 {
    obj_data *obj;
 
@@ -1060,7 +1067,7 @@ obj_data *char_data::get_obj_here( const std::string & argument )
 /*
  * Find an obj in the world.
  */
-obj_data *char_data::get_obj_world( const std::string & argument )
+obj_data *char_data::get_obj_world( std::string_view argument )
 {
    std::string arg;
    obj_data *obj;
@@ -2554,7 +2561,7 @@ maximum penalty will only be half that of the other clan types.
 }
 
 // Description macro replacement.
-const char* PERS( char_data * ch, char_data * looker, bool from )
+const std::string PERS( char_data * ch, char_data * looker, bool from )
 {
    if( looker->can_see( ch, from ) )
    {
@@ -3577,7 +3584,7 @@ void char_data::extract( bool fPull )
       {
          act( AT_MAGIC, "$n mutters a few incantations, waves $s hands and points $s finger.", wch, nullptr, nullptr, TO_ROOM );
          act( AT_MAGIC, "$n appears from some strange swirling mists!", this, nullptr, nullptr, TO_ROOM );
-         act_printf( AT_MAGIC, wch, nullptr, nullptr, TO_ROOM, "$n says 'Welcome back to the land of the living, %s.'", capitalize( name ) );
+         act_printf( AT_MAGIC, wch, nullptr, nullptr, TO_ROOM, "$n says 'Welcome back to the land of the living, {}.'", capitalize( name ) );
          if( this->level < 10 )
          {
             retrieve_corpse( this, wch );
@@ -3776,13 +3783,13 @@ void advance_level( char_data * ch )
 
    if( ch->level == LEVEL_AVATAR )
    {
-      echo_all_printf( ECHOTAR_ALL, "&[immortal]%s has attained the rank of Avatar!", ch->name );
+      echo_all_printf( ECHOTAR_ALL, "&[immortal]{} has attained the rank of Avatar!", ch->name );
       STRFREE( ch->pcdata->rank );
       ch->pcdata->rank = STRALLOC( "Avatar" );
       interpret( ch, "help M_ADVHERO_" );
    }
    if( ch->level < LEVEL_IMMORTAL )
-      ch->printf( "&WYour gain is: %d hp, %d mana, %d prac.\r\n", add_hp, add_mana, add_prac );
+      ch->print_fmt( "&WYour gain is: {} hp, {} mana, {} prac.\r\n", add_hp, add_mana, add_prac );
 
    ch->ClassSpecificStuff(  );   /* Brought over from DOTD code - Samson 4-6-99 */
    ch->save(  );

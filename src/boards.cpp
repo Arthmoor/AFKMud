@@ -58,7 +58,7 @@ const char *note_flags[] = {
    "r1", "sticky", "closed", "hidden"
 };
 
-int get_note_flag( const std::string & note_flag )
+int get_note_flag( std::string_view note_flag )
 {
    for( int x = 0; x < MAX_NOTE_FLAGS; ++x )
       if( !str_cmp( note_flag, note_flags[x] ) )
@@ -66,7 +66,7 @@ int get_note_flag( const std::string & note_flag )
    return -1;
 }
 
-int get_board_flag( const std::string & board_flag )
+int get_board_flag( std::string_view board_flag )
 {
    for( int x = 0; x < MAX_BOARD_FLAGS; ++x )
       if( !str_cmp( board_flag, board_flags[x] ) )
@@ -74,8 +74,32 @@ int get_board_flag( const std::string & board_flag )
    return -1;
 }
 
+bool IS_BOARD_FLAG( const board_data * board, int flag )
+{
+   if( board->flags.test( flag ) )
+      return true;
+   return false;
+}
+
+void TOGGLE_BOARD_FLAG( board_data * board, int flag )
+{
+   board->flags.flip( flag );
+}
+
+bool IS_NOTE_FLAG( const note_data * note, int flag )
+{
+   if( note->flags.test( flag ) )
+      return true;
+   return false;
+}
+
+void TOGGLE_NOTE_FLAG( note_data * note, int flag )
+{
+   note->flags.flip( flag );
+}
+
 /* This is a simple function that keeps a string within a certain length. -- Xorith */
-std::string print_lngstr( const std::string & src, size_t size )
+std::string print_lngstr( std::string_view src, size_t size )
 {
    std::string rstring;
 
@@ -318,10 +342,12 @@ board_data *get_board_by_obj( obj_data * obj )
    return nullptr;
 }
 
-/* Gets a board by name, or a number. The number should be the board # given in do_board_list.
-   If ch == nullptr, then it'll perform the search without checks. Otherwise, it'll perform the
-   search and weed out boards that the ch can't view remotely. */
-board_data *get_board( char_data * ch, const std::string & name )
+/*
+ * Gets a board by name, or a number. The number should be the board # given in do_board_list.
+ * If ch == nullptr, then it'll perform the search without checks. Otherwise, it'll perform the
+ * search and weed out boards that the ch can't view remotely.
+ */
+board_data *get_board( char_data * ch, std::string_view name )
 {
    int count = 1;
 
@@ -334,7 +360,7 @@ board_data *get_board( char_data * ch, const std::string & name )
          if( board->objvnum > 0 && !can_remove( ch, board ) && !ch->is_immortal(  ) )
             continue;
       }
-      if( count == atoi( name.c_str(  ) ) )
+      if( count == std::stoi( name.data() ) )
          return board;
       if( !str_cmp( board->name, name ) )
          return board;
@@ -396,15 +422,16 @@ void char_data::note_attach(  )
    pcdata->pnote = pcnote;
 }
 
+// 1: Initial version.
 const int BOARDFILEVER = 1;
+
 void write_boards( void )
 {
    FILE *fpout;
 
-   if( !( fpout = fopen( BOARD_DIR BOARD_FILE, "w" ) ) )
+   if( !( fpout = fopen( std::filesystem::path( BOARD_FILE ).c_str(), "w" ) ) )
    {
-      perror( BOARD_DIR BOARD_FILE );
-      bug( "%s: Unable to open %s%s for writing!", __func__, BOARD_DIR, BOARD_FILE );
+      bug( "%s: Unable to open %s%s for writing!", __func__, BOARD_DIR.data(), BOARD_FILE.data() );
       return;
    }
 
@@ -1116,9 +1143,9 @@ void load_boards( void )
 
    bdlist.clear(  );
 
-   if( !( board_fp = fopen( BOARD_DIR BOARD_FILE, "r" ) ) )
+   if( !( board_fp = fopen( std::filesystem::path( BOARD_FILE ).c_str(), "r" ) ) )
    {
-      if( !( board_fp = fopen( BOARD_DIR OLD_BOARD_FILE, "r" ) ) )
+      if( !( board_fp = fopen( std::filesystem::path( OLD_BOARD_FILE ).c_str(), "r" ) ) )
          return;
       oldboards = true;
       log_string( "Converting older boards..." );
@@ -2085,11 +2112,11 @@ CMDF( do_note_write )
       n_num = atoi( argument.c_str(  ) );
 
    ch->pcdata->board = board;
-   buf = std::format( "{}", ROOM_VNUM_BOARD );
+   buf = std::format( "{}", ROOM_VNUM_LIMBO );
    board_room = ch->find_location( buf );
    if( !board_room )
    {
-      bug( "%s: Missing board room: Vnum %d", __func__, ROOM_VNUM_BOARD );
+      bug( "%s: Missing board room: Vnum %d", __func__, ROOM_VNUM_LIMBO );
       return;
    }
    ch->printf( "%sTyping '%s/a%s' at any time will abort the note.&D\r\n", s3.c_str(), s2.c_str(), s3.c_str() );
@@ -2352,18 +2379,18 @@ CMDF( do_note_list )
    {
       if( argument.empty(  ) )
       {
-         ch->printf( "%sLists the note on a board.\r\n%sSyntax: %sreview %s<%sboard%s>&D\r\n", s1.c_str(), s3.c_str(), s1.c_str(), s3.c_str(), s2.c_str(), s3.c_str() );
+         ch->print_fmt( "{}Lists the note on a board.\r\n{}Syntax: {}review {}<{}board{}>&D\r\n", s1, s3, s1, s3, s2, s3 );
          return;
       }
 
       if( !( board = get_board( ch, argument ) ) )
       {
-         ch->printf( "%sNo board found!&D\r\n", s1.c_str() );
+         ch->print_fmt( "{}No board found!&D\r\n", s1 );
          return;
       }
    }
    else
-      ch->printf( "%sUsing current board in room: %s%s&D\r\n", s1.c_str(), s2.c_str(), board->name );
+      ch->print_fmt( "{}Using current board in room: {}{}&D\r\n", s1, s2, board->name );
 
    if( !can_read( ch, board ) )
    {
@@ -2374,8 +2401,8 @@ CMDF( do_note_list )
    chboard = get_chboard( ch, board->name );
 
    buf = std::format( "{}--[ {}Notes on {}{}{} ]--", s3, s1, s2, board->name, s3 );
-   ch->printf( "\r\n%s\r\n", color_align( buf, 80, ALIGN_CENTER ).c_str() );
-   act_printf( AT_GREY, ch, nullptr, nullptr, TO_ROOM, "&w$n reviews the notes on the &W%s&w board.", board->name );
+   ch->print_fmt( "\r\n{}\r\n", color_align( buf, 80, ALIGN_CENTER ) );
+   act_printf( AT_GREY, ch, nullptr, nullptr, TO_ROOM, "&w$n reviews the notes on the &W{}&w board.", board->name );
 
    if( total_notes( ch, board ) == 0 )
    {
@@ -2383,7 +2410,7 @@ CMDF( do_note_list )
       return;
    }
    else
-      ch->printf( "%sNum   %s%-17s %-11s %s&D\r\n", s1.c_str(), IS_BOARD_FLAG( board, BOARD_PRIVATE ) ? "" : "Replies ", "Date", "Author", "Subject" );
+      ch->print_fmt( "{}Num   {}{:<17} {:<11} {}&D\r\n", s1, IS_BOARD_FLAG( board, BOARD_PRIVATE ) ? "" : "Replies ", "Date", "Author", "Subject" );
 
    count = 0;
    for( auto* note : board->nlist )
@@ -2410,21 +2437,19 @@ CMDF( do_note_list )
 
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
-         ch->printf( "%s%2d%s) %s %s[%s%-15s%s] %s%-11s %s&D\r\n", s2.c_str(), count, s3.c_str(),
-                     unread.c_str(), s3.c_str(), s2.c_str(),
-                     mini_c_time( note->date_stamp, ch->pcdata->timezone ).c_str(), s3.c_str(), s2.c_str(),
-                     note->sender ? note->sender : "--Error--", note->subject ? print_lngstr( note->subject, 37 ).c_str(  ) : "" );
+         ch->print_fmt( "{}{:2}{}) {} {}[{}{:<15}{}] {}{:<11} {}&D\r\n", s2, count, s3, unread, s3, s2,
+                     mini_c_time( note->date_stamp, ch->pcdata->timezone ), s3, s2,
+                     note->sender ? note->sender : "--Error--", note->subject ? print_lngstr( note->subject, 37 ) : "" );
       }
       else
       {
-         ch->printf( "%s%2d%s) %s %s[ %s%3d%s ] [%s%-15s%s] %s%-11s %-20s&D\r\n", s2.c_str(), count, s3.c_str(),
-                     unread.c_str(), s3.c_str(), s2.c_str(),
-                     note->reply_count, s3.c_str(), s2.c_str(), mini_c_time( note->date_stamp, ch->pcdata->timezone ).c_str(), s3.c_str(), s2.c_str(),
-                     note->sender ? note->sender : "--Error--", note->subject ? print_lngstr( note->subject, 45 ).c_str(  ) : "" );
+         ch->print_fmt( "{}{:2}{}) {} {}[ {}{:3}{} ] [{}{:<15}{}] {}{:<11} {:<20}&D\r\n", s2, count, s3, unread, s3, s2,
+                     note->reply_count, s3, s2, mini_c_time( note->date_stamp, ch->pcdata->timezone ), s3, s2,
+                     note->sender ? note->sender : "--Error--", note->subject ? print_lngstr( note->subject, 45 ) : "" );
       }
    }
-   ch->printf( "\r\n%sThere %s %s%d%s message%s on this board.&D\r\n", s1.c_str(), count == 1 ? "is" : "are", s2.c_str(), count, s1.c_str(), count == 1 ? "" : "s" );
-   ch->printf( "%sA &C*%s denotes unread messages, while &Y-&[board] indicates a closed note.&D\r\n", s1.c_str(), s1.c_str() );
+   ch->print_fmt( "\r\n{}There {} {}{}{} message{} on this board.&D\r\n", s1, count == 1 ? "is" : "are", s2, count, s1, count == 1 ? "" : "s" );
+   ch->print_fmt( "{}A &C*{} denotes unread messages, while &Y-&[board] indicates a closed note.&D\r\n", s1, s1 );
    if( can_remove( ch, board ) )
       ch->print( "&[board]A &R#&[board] denotes a hidden message.&D\r\n" );
 }
@@ -3259,7 +3284,7 @@ void write_projects( void )
 {
    FILE *fpout;
 
-   fpout = fopen( PROJECTS_FILE, "w" );
+   fpout = fopen( std::filesystem::path( PROJECTS_FILE ).c_str(), "w" );
    if( !fpout )
    {
       bug( "%s: FATAL: cannot open projects.txt for writing!", __func__ );
@@ -3461,7 +3486,7 @@ void load_projects( void ) /* Copied load_boards structure for simplicity */
 
    projlist.clear(  );
 
-   if( !( fp = fopen( PROJECTS_FILE, "r" ) ) )
+   if( !( fp = fopen( std::filesystem::path( PROJECTS_FILE ).c_str(), "r" ) ) )
       return;
 
    while( ( project = read_project( fp ) ) != nullptr )
@@ -3511,7 +3536,13 @@ void free_projects( void )
 }
 
 // Hacky looking ugly define, but fuck having to type all this out all the time.
-#define IS_PROJECT_ADMIN(ch, proj) ( IS_ADMIN_REALM((ch)) || (IS_REALM_LEADER((ch)) && !str_cmp( (ch)->pcdata->realm_name, (proj)->realm_name )) )
+// That's why we use functions instead. You still didn't have to type this out all the time...
+bool IS_PROJECT_ADMIN( char_data * ch, project_data * proj )
+{
+   if( IS_ADMIN_REALM( ch ) || ( IS_REALM_LEADER( ch ) && !str_cmp( ch->pcdata->realm_name, proj->realm_name ) ) )
+      return true;
+   return false;
+}
 
 /* Last thing left to revampitize -- Xorith */
 CMDF( do_project )

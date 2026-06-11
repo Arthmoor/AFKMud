@@ -29,6 +29,7 @@
 
 /* This code is still in the development stages and probably has bugs - be warned */
 
+#include <filesystem>
 #include <fstream>
 #include "mud.h"
 #include "area.h"
@@ -49,7 +50,7 @@ const char *ship_flags[] = {
 
 std::list<ship_data *> shiplist;
 
-int get_shiptype( const std::string & type )
+int get_shiptype( std::string_view type )
 {
    for( int x = 0; x < SHIP_MAX; ++x )
       if( !str_cmp( type, ship_type[x] ) )
@@ -57,7 +58,7 @@ int get_shiptype( const std::string & type )
    return -1;
 }
 
-int get_shipflag( const std::string & flag )
+int get_shipflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( ship_flags ) / sizeof( ship_flags[0] ) ); ++x )
       if( !str_cmp( flag, ship_flags[x] ) )
@@ -75,7 +76,7 @@ ship_data *ship_lookup_by_vnum( int vnum )
    return nullptr;
 }
 
-ship_data *ship_lookup( const std::string & name )
+ship_data *ship_lookup( std::string_view name )
 {
    for( auto* ship : shiplist )
    {
@@ -99,8 +100,8 @@ CMDF( do_shiplist )
    ch->print( "&r===== =========          =========        =====           ===========\r\n" );
    for( auto* ship : shiplist )
    {
-      ch->printf( "&Y&W%4d&b&w>&g %-15s&Y    %-15s &G %-15s &Y%d/%d&g\r\n",
-                  count, capitalize( ship->name ).c_str(  ), ship_type[ship->type], ship->owner.c_str(  ), ship->hull, ship->max_hull );
+      ch->print_fmt( "&Y&W{:4}&b&w>&g {:<15}&Y    {:<15} &G {:<15} &Y{}/{}&g\r\n",
+                  count, capitalize( ship->name ), ship_type[ship->type], ship->owner, ship->hull, ship->max_hull );
       count += 1;
    }
 }
@@ -133,7 +134,7 @@ CMDF( do_shipstat )
 
 ship_data::ship_data(  )
 {
-   init_memory( &flags, &map_y, sizeof( map_y ) );
+   init_memory( &continent, &map_y, sizeof( map_y ) );
 }
 
 ship_data::~ship_data(  )
@@ -142,16 +143,15 @@ ship_data::~ship_data(  )
 }
 
 // 1: Initial version.
-const int SHIPFILEVERSION = 1;
+constexpr int SHIPFILEVERSION = 1;
 
 void save_ships( void )
 {
    std::ofstream stream;
 
-   stream.open( SHIP_FILE );
+   stream.open( std::filesystem::path( SHIP_FILE ) );
    if( !stream.is_open(  ) )
    {
-      perror( SHIP_FILE );
       bug( "%s: can't open ship file", __func__ );
       return;
    }
@@ -184,7 +184,7 @@ void load_ships( void )
 
    shiplist.clear(  );
 
-   stream.open( SHIP_FILE );
+   stream.open( std::filesystem::path( SHIP_FILE ) );
    if( !stream.is_open(  ) )
    {
       bug( "%s: Unable to open ships file.", __func__ );
@@ -210,7 +210,7 @@ void load_ships( void )
       if( key == "#SHIP" )
          ship = new ship_data;
       else if( key == "#VERSION" )
-         file_ver = atoi( value.c_str(  ) );
+         file_ver = std::stoi( value );
       else if( key == "Name" )
          ship->name = value;
       else if( key == "Owner" )
@@ -218,9 +218,9 @@ void load_ships( void )
       else if( key == "Flags" )
          flag_string_set( value, ship->flags, ship_flags );
       else if( key == "Vnum" )
-         ship->vnum = atoi( value.c_str(  ) );
+         ship->vnum = std::stoi( value );
       else if( key == "Room" )
-         ship->room = atoi( value.c_str(  ) );
+         ship->room = std::stoi( value );
       else if( key == "Type" )
       {
          ship->type = get_shiptype( value );
@@ -228,13 +228,13 @@ void load_ships( void )
          ship->type = urange( SHIP_NONE, ship->type, SHIP_WARSHIP );
       }
       else if( key == "Hull" )
-         ship->hull = atoi( value.c_str(  ) );
+         ship->hull = std::stoi( value );
       else if( key == "Max_hull" )
-         ship->max_hull = atoi( value.c_str(  ) );
+         ship->max_hull = std::stoi( value );
       else if( key == "Fuel" )
-         ship->fuel = atoi( value.c_str(  ) );
+         ship->fuel = std::stoi( value );
       else if( key == "Max_fuel" )
-         ship->max_fuel = atoi( value.c_str(  ) );
+         ship->max_fuel = std::stoi( value );
       else if( key == "Coordinates" && file_ver < 1 )
       {
          std::string coord;
@@ -243,18 +243,18 @@ void load_ships( void )
          value = one_argument( value, coord );
 
          value = one_argument( value, coord );
-         ship->map_x = atoi( coord.c_str(  ) );
+         ship->map_x = std::stoi( coord );
 
-         ship->map_y = atoi( value.c_str(  ) );
+         ship->map_y = std::stoi( value );
       }
       else if( key == "Coordinates" && file_ver >= 1 )
       {
          std::string coord;
 
          value = one_argument( value, coord );
-         ship->map_x = atoi( coord.c_str(  ) );
+         ship->map_x = std::stoi( coord );
 
-         ship->map_y = atoi( value.c_str(  ) );
+         ship->map_y = std::stoi( value );
       }
       else if( key == "End" )
          shiplist.push_back( ship );
@@ -567,7 +567,7 @@ ch_ret process_shipexit( char_data * ch, short x, short y, int dir )
             return rSTOP;
 
          if( !str_cmp( ch->name, ship->owner ) )
-            act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
+            act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "{} sails off to the $T.", ship->name );
 
          ch->on_ship->room = toroom->vnum;
 
@@ -683,7 +683,7 @@ ch_ret process_shipexit( char_data * ch, short x, short y, int dir )
       ship->fuel -= move;
 
    if( !str_cmp( ch->name, ship->owner ) )
-      act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
+      act_printf( AT_ACTION, ch, nullptr, dir_name[dir], TO_ROOM, "{} sails off to the $T.", ship->name );
 
    ch->map_x = x;
    ch->map_y = y;
@@ -692,8 +692,8 @@ ch_ret process_shipexit( char_data * ch, short x, short y, int dir )
 
    if( !str_cmp( ch->name, ship->owner ) )
    {
-      const char *txt = rev_exit( dir );
-      act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
+      std::string txt = rev_exit( dir );
+      act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "{} sails in from the {}.", ship->name, txt );
    }
 
    size_t chars = from_room->people.size(  );
@@ -945,7 +945,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       return global_retcode;
 
    if( !str_cmp( ch->name, ship->owner ) )
-      act_printf( AT_ACTION, ch, nullptr, dir_name[door], TO_ROOM, "%s sails off to the $T.", ship->name.c_str(  ) );
+      act_printf( AT_ACTION, ch, nullptr, dir_name[door], TO_ROOM, "{} sails off to the $T.", ship->name );
 
    ch->from_room(  );
    if( ch->mount )
@@ -967,9 +967,9 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
 
    if( !str_cmp( ch->name, ship->owner ) )
    {
-      const char *txt = rev_exit( door );
+      std::string txt = rev_exit( door );
 
-      act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "%s sails in from the %s.", ship->name.c_str(  ), txt );
+      act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "{} sails in from the {}.", ship->name, txt );
    }
 
    size_t chars = from_room->people.size(  );

@@ -363,7 +363,7 @@ bool obj_data::extracted(  )
 /*
  * Find an obj in a list.
  */
-obj_data *get_obj_list( char_data * ch, const std::string & argument, std::list<obj_data *> source )
+obj_data *get_obj_list( char_data * ch, std::string_view argument, std::list<obj_data *> source )
 {
    std::string arg;
    std::list<obj_data *>::iterator iobj;
@@ -634,8 +634,8 @@ ch_ret spring_trap( char_data * ch, obj_data * obj )
    if( dam <= 0 )
       dam = number_range( 1, 6 ) + lev;
 
-   act_printf( AT_HITME, ch, nullptr, nullptr, TO_CHAR, "You are %s!", txt );
-   act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n is %s.", txt );
+   act_printf( AT_HITME, ch, nullptr, nullptr, TO_CHAR, "You are {}!", txt );
+   act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n is {}.", txt );
    --obj->value[0];
    if( obj->value[0] <= 0 )
       obj->extract(  );

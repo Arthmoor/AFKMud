@@ -32,7 +32,7 @@
 const int MAX_X = 1000;
 const int MAX_Y = 1000;
 
-#define CONT_LIST MAP_DIR "continent.lst"
+inline constexpr std::string_view CONT_LIST = "../maps/continent.lst";
 
 class mapexit_data
 {
@@ -114,8 +114,8 @@ class continent_data
    landmark_data *check_landmark( short, short );        // Check to see if the actor is close to a landmark.
    mapexit_data *check_mapexit( short, short );          // Check to see if the actor is on the coordinates of an exit.
    landing_data *check_landing_site( short, short );     // Check to see if the actor is at a landing site.
-   void add_mapexit( const std::string &, short, short, short, short, int );
-   void modify_mapexit( mapexit_data *, const std::string &, short, short, short, short, int );
+   void add_mapexit( std::string_view, short, short, short, short, int );
+   void modify_mapexit( mapexit_data *, std::string_view, short, short, short, short, int );
    void delete_mapexit( mapexit_data * );
    int floodfill( short, short, short, char );        // Used for large scale terrain changing in OLC.
    int unfloodfill( void );
@@ -123,12 +123,11 @@ class continent_data
    std::list<class mapexit_data *> exits;         // List of exists for this map.
    std::list<class landmark_data *> landmarks;    // List of landmarks for this map.
    std::list<class landing_data *> landing_sites; // List of landing sites for this map.
-   class area_data *area;                         // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
-
    std::string name;                              // The name of the continent. Used for lookups and to associate the continent with an area file.
    std::string mapfile;                           // .png file where the map data will be loaded from.
    std::string areafile;                          // The area file associated with this map where all of its mobs, objs, and special rooms will go.
    std::string filename;                          // The map's filename. Used during online editing.
+   class area_data *area;                         // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
    unsigned char grid[MAX_X][MAX_Y];              // Grid of sector types. Not stored in the continent's data file. This is loaded indirectly through the .png file.
    int vnum;                                      // VNUM for the master room that controls this map.
    bool nogrid;                                   // If this is set to true, the continent will have no map grid. This allows continents to be treated as planes. For places like the Astral Plane etc.
@@ -152,7 +151,7 @@ struct sect_color_type
 
 extern std::list<continent_data *> continent_list;
 
-continent_data *find_continent_by_name( const std::string & );
+continent_data *find_continent_by_name( std::string_view );
 continent_data *find_continent_by_room( room_index * );
 continent_data *find_continent_by_room_vnum( int );
 continent_data *pick_random_continent( void );

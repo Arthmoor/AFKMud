@@ -32,7 +32,7 @@
 #include "mud.h"
 #include "descriptor.h"
 
-// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
+// FIXME: Tagging this for removal once all calls using it have been converted to std::string
 void stralloc_printf( char **pointer, const char *fmt, ... )
 {
    char buf[MSL * 4];
@@ -46,7 +46,7 @@ void stralloc_printf( char **pointer, const char *fmt, ... )
    *pointer = STRALLOC( buf );
 }
 
-// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
+// FIXME: Tagging this for removal once all calls using it have been converted to std::string
 void strdup_printf( char **pointer, const char *fmt, ... )
 {
    char buf[MSL * 4];
@@ -117,7 +117,7 @@ void removename( std::string & list, const std::string & member )
 }
 
 // Pick off one argument from a string and return the rest.
-std::string one_argument( const std::string & argument, std::string & first )
+std::string one_argument( std::string_view argument, std::string & first )
 {
    std::string::size_type start, stop, stop2;
    char find;
@@ -133,7 +133,7 @@ std::string one_argument( const std::string & argument, std::string & first )
       return "";
 
    // Strip leading spaces
-   if( argument[0] == ' ' )
+   if( argument.front() == ' ' )
    {
       start = argument.find_first_not_of( ' ' );
 
@@ -180,7 +180,7 @@ std::string one_argument( const std::string & argument, std::string & first )
       return "";
 
    // Return leftovers.
-   return argument.substr( stop2 );
+   return std::string{argument.substr( stop2 )};
 }
 
 char *one_argument( char *argument, char *arg_first )
@@ -268,64 +268,23 @@ int number_argument( char *argument, char *arg )
    return 1;
 }
 
-// Compare: astr ><= bstr.
-// <0 = astr < bstr
-//  0 = astr == bstr
-// >0 = astr > bstr
-// Case insensitive.
-// -- Justice
-int str_cmp( std::string_view astr, std::string_view bstr )
+// Historical compatibility: Returns FALSE when they match, TRUE when they don't. Blame the Smaug devs.
+bool str_cmp( std::string_view astr, std::string_view bstr )
 {
-   auto it1 = astr.begin();
-   auto it2 = bstr.begin();
-
-   while( it1 != astr.end() && it2 != bstr.end() )
-   {
-      unsigned char ca = std::toupper( static_cast<unsigned char>(*it1) );
-      unsigned char cb = std::toupper( static_cast<unsigned char>(*it2) );
-
-      if( ca < cb )
-         return -1;
-      if( ca > cb )
-         return 1;
-
-      ++it1;
-      ++it2;
-   }
-
-   if( astr.size() == bstr.size() )
-      return 0;
-   return( astr.size() < bstr.size() ) ? -1 : 1;
-}
-
-/*
- * Compare strings, case insensitive.
- * Return true if different
- *   (compatibility with historical functions).
- */
-bool str_cmp( const char *astr, const char *bstr )
-{
-   // If neither one exists, then they're equal
-   if( !astr && !bstr )
+   // If neither one exists, then they're equal.
+   if( astr.empty() && bstr.empty() )
       return false;
 
-   if( !astr )
-   {
-      bug( "%s: null astr.", __func__ );
-      if( bstr )
-         log_printf_plus( LOG_DEBUG, LEVEL_ADMIN, "astr: (null)  bstr: %s", bstr );
-      return true;
-   }
+   auto case_insensitive_equals = []( std::string_view a, std::string_view b ) {
+      return std::ranges::equal(a, b, [](char c1, char c2) {
+         return std::tolower( static_cast<unsigned char>(c1) ) == std::tolower( static_cast<unsigned char>(c2) );
+      });
+   };
 
-   if( !bstr )
-   {
-      bug( "%s: null bstr.", __func__ );
-      if( astr )
-         log_printf_plus( LOG_DEBUG, LEVEL_ADMIN, "astr: %s  bstr: (null)", astr );
-      return true;
-   }
+   if( case_insensitive_equals( astr, bstr ) )
+      return false; // They match.
 
-   return strcasecmp( astr, bstr );
+   return true; // They do not match.
 }
 
 // Checks to see if astr is a prefix ( beginning part of ) bstr.
@@ -344,56 +303,15 @@ bool str_prefix( std::string_view astr, std::string_view bstr )
    return it1 != astr.end();
 }
 
-bool str_prefix( const char *needle, const char *haystack )
-{
-   if( !needle )
-   {
-      bug( "%s: null needle.", __func__ );
-      return true;
-   }
-
-   if( !haystack )
-   {
-      bug( "%s: null haystack.", __func__ );
-      return true;
-   }
-
-   if( strlen( needle ) > strlen( haystack ) )
-      return true;
-
-   // Something Quixadhal suggested - OS functions for this are faster.
-   return strncasecmp( needle, haystack, strlen( needle ) );
-}
-
-// Is astr a part of any portion of bstr?
-// Return value compatible with historical functions.
-bool str_infix( std::string_view astr, std::string_view bstr )
-{
-   if( bstr.find( astr ) != std::string::npos )
-      return false;
-   return true;
-}
-
 /*
  * Compare strings, case insensitive, for match anywhere.
  * Returns true if astr not part of bstr.
  *   (compatibility with historical functions).
  */
-bool str_infix( const char *astr, const char *bstr )
+bool str_infix( std::string_view astr, std::string_view bstr )
 {
-   int sstr1, sstr2, ichar;
-   char c0;
-
-   if( ( c0 = tolower( astr[0] ) ) == '\0' )
+   if( bstr.find( astr ) != std::string::npos )
       return false;
-
-   sstr1 = strlen( astr );
-   sstr2 = strlen( bstr );
-
-   for( ichar = 0; ichar <= sstr2 - sstr1; ++ichar )
-      if( c0 == tolower( bstr[ichar] ) && !str_prefix( astr, bstr + ichar ) )
-         return false;
-
    return true;
 }
 
@@ -492,21 +410,6 @@ std::string strip_crlf( std::string_view str )
    return newstr;
 }
 
-const char *strip_crlf( const char *str )
-{
-   static char newstr[MSL];
-   int i, j = 0;
-
-   if( !str || str[0] == '\0' )
-      return "";
-
-   for( i = 0; str[i] != '\0'; ++i )
-      if( str[i] != '\r' && str[i] != '\n' )
-         newstr[j++] = str[i];
-   newstr[j] = '\0';
-   return newstr;
-}
-
 // Strips off any leading and trailing spaces, plus any stray tabs, carriage returns, or newlines.
 void strip_whitespace( std::string & str )
 {
@@ -519,13 +422,14 @@ void strip_whitespace( std::string & str )
  * Author: Xorith
  * Date: 6-18-05
  */
-std::string invert_string( const std::string & orig )
+std::string invert_string( std::string_view orig )
 {
-   std::string result = "";
+   std::string result;
+   result.reserve( orig.size() );
    size_t j = 0;
 
    if( orig.empty(  ) )
-      return orig;
+      return "";
 
    for( size_t i = orig.length(  ) - 1; j < orig.length(  ); --i, ++j )
       result += orig[i];
@@ -560,77 +464,41 @@ const std::string escape_formatting( std::string str )
  * Returns an initial-capped string.
  * Rewritten by FearItself@AvP
  */
-char *capitalize( const char *str )
+std::string capitalize( std::string_view str )
 {
-   static char buf[MSL];
-   char *dest = buf;
-   enum{ Normal, Color } state = Normal;
-   bool bFirst = true;
-   char c;
+   std::string result;
+   result.reserve( str.size() );
 
-   while( ( c = *str++ ) )
+   enum { Normal, Color } state = Normal;
+   bool first_alpha_found = true;
+
+   for( unsigned char c : str )
    {
-      if( state == Normal )
-      {
-         if( c == '&' || c == '{' || c == '}' )
-         {
-            state = Color;
-         }
-         else if( isalpha( c ) )
-         {
-            c = bFirst ? toupper( c ) : tolower( c );
-            bFirst = false;
-         }
-      }
-      else
+      if( state == Color )
       {
          state = Normal;
       }
-      *dest++ = c;
-   }
-   *dest = c;
-
-   return buf;
-}
-
-/*
- * Returns an initial-capped string.
- * Rewritten by FearItself@AvP
- */
-std::string capitalize( const std::string & str )
-{
-   std::string strcap;
-   const char *src = str.c_str(  );
-   char buf[MSL];
-   char *dest = buf;
-   enum{ Normal, Color } state = Normal;
-   bool bFirst = true;
-   char c;
-
-   while( ( c = *src++ ) )
-   {
-      if( state == Normal )
+      else if( c == '&' || c == '{' || c == '}' )
       {
-         if( c == '&' || c == '{' || c == '}' )
+         state = Color;
+      }
+      else if( std::isalpha(c) )
+      {
+         if( first_alpha_found )
          {
-            state = Color;
+            c = static_cast<unsigned char>( std::toupper(c) );
+            first_alpha_found = false;
          }
-         else if( isalpha( c ) )
+         else
          {
-            c = bFirst ? toupper( c ) : tolower( c );
-            bFirst = false;
+            c = static_cast<unsigned char>( std::tolower(c) );
          }
       }
-      else
-      {
-         state = Normal;
-      }
-      *dest++ = c;
-   }
-   *dest = c;
 
-   strcap = buf;
-   return strcap;
+      result.push_back( static_cast<char>(c) );
+   }
+
+   return result;
 }
 
 /*
@@ -687,34 +555,32 @@ void strupper( std::string & str )
  */
 bool isavowel( char letter )
 {
-   char c;
-
-   c = tolower( letter );
-   if( c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' )
-      return true;
-   else
-      return false;
+   char c = std::tolower( static_cast<unsigned char>( letter ) );
+   return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
 }
 
 /*
  * Shove either "a " or "an " onto the beginning of a string - Thoric
  */
-const char *aoran( const std::string & str )
+const char *aoran( std::string_view str )
 {
-   static char temp[MSL];
-
-   if( str.empty(  ) )
+   if( str.empty() )
    {
-      bug( "%s: nullptr str", __func__ );
+      bug( "%s: empty str", __func__ );
       return "";
    }
 
-   if( isavowel( str[0] ) || ( str.length(  ) > 1 && tolower( str[0] ) == 'y' && !isavowel( str[1] ) ) )
-      strlcpy( temp, "an ", MSL );
+   std::string temp;
+
+   char first_lower = std::tolower( static_cast<unsigned char>( str[0] ) );
+   char second_lower = ( str.length() > 1 ) ? std::tolower( static_cast<unsigned char>( str[1] ) ) : '\0';
+
+   if( isavowel( str[0] ) || ( first_lower == 'y' && !isavowel( second_lower ) ) )
+      temp = std::format( "an {}", str );
    else
-      strlcpy( temp, "a ", MSL );
-   strlcat( temp, str.c_str(  ), MSL );
-   return temp;
+      temp = std::format( "a {}", str );
+
+   return temp.c_str();
 }
 
 /*
@@ -849,52 +715,23 @@ void string_replace( std::string & src, std::string_view find, std::string_view 
 /*
  * Return true if an argument is completely numeric.
  */
-bool is_number( const std::string & arg )
+bool is_number( std::string_view arg )
 {
-   size_t x;
-   bool first = true;
-
-   if( arg.empty(  ) )
+   if( arg.empty() )
       return false;
 
-   for( x = 0; x < arg.length(  ); ++x )
+   // Check for negative numbers.
+   if( arg[0] == '-' )
    {
-      if( first && arg[x] == '-' )
-      {
-         first = false;
-         continue;
-      }
+      arg.remove_prefix(1);
 
-      if( !isdigit( arg[x] ) )
+      // A lone '-' is not a number.
+      if( arg.empty() )
          return false;
-      first = false;
    }
-   return true;
-}
 
-/*
- * Return TRUE if an argument is completely numeric.
- */
-bool is_number( const char *arg )
-{
-   bool first = true;
-
-   if( *arg == '\0' )
-      return false;
-
-   for( ; *arg != '\0'; ++arg )
-   {
-      if( first && *arg == '-' )
-      {
-         first = false;
-         continue;
-      }
-
-      if( !isdigit( *arg ) )
-         return false;
-      first = false;
-   }
-   return true;
+   // Ensure all remaining characters are digits.
+   return std::ranges::all_of( arg, [](unsigned char c ) { return std::isdigit(c); } );
 }
 
 // I r lazy and just want a good way to output the contents of the various string arrays.
@@ -953,7 +790,7 @@ void editor_print_info( char_data * ch, editor_data * edd, short max_size )
                "Buffer size: %4d   Max size: %4d\r\n", !edd->desc.empty(  )? edd->desc.c_str(  ) : "(Null description)", edd->numlines, edd->on_line, edd->size, max_size );
 }
 
-void char_data::set_editor_desc( const std::string & new_desc )
+void char_data::set_editor_desc( std::string_view new_desc )
 {
    if( !pcdata->editor )
       return;

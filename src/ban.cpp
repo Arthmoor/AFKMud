@@ -34,6 +34,7 @@
 
 #include <arpa/inet.h>
 #include <cmath>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include "mud.h"
@@ -131,10 +132,10 @@ void load_banlist( void )
 
    banlist.clear(  );
 
-   stream.open( BAN_LIST );
+   stream.open( std::filesystem::path( BAN_LIST ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Can't open %s", __func__, BAN_LIST );
+      bug( "%s: Cannot open banlist file.", __func__ );
       return;
    }
 
@@ -187,10 +188,10 @@ void save_banlist( void )
 {
    std::ofstream stream;
 
-   stream.open( BAN_LIST );
+   stream.open( std::filesystem::path( BAN_LIST ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Can't write to %s", __func__, BAN_LIST );
+      bug( "%s: Cannot write to banlist file.", __func__ );
       return;
    }
 
@@ -337,14 +338,14 @@ void send_ban_notice( descriptor_data *d, ban_data *ban )
    if( duration > std::chrono::days(1) )
    {
       if( is_name_ban )
-         d->buffer_printf( "You are banned from this MUD for %ld days.\r\n", days.count() );
+         d->buffer_printf( "You are banned from this MUD for {} days.\r\n", days.count() );
       else
          d->write( std::format( "Your site has been banned from this MUD for {} days.\r\n", days.count() ) );
    }
    else if( duration > std::chrono::seconds(0) )
    {
       if( is_name_ban )
-         d->buffer_printf( "You are banned from this MUD for %ld hours.\r\n", hours.count() );
+         d->buffer_printf( "You are banned from this MUD for {} hours.\r\n", hours.count() );
       else
          d->write( std::format( "Your site has been banned from this MUD for {} hours.\r\n", hours.count() ) );
    }

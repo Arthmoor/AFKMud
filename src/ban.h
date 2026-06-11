@@ -33,7 +33,7 @@
  */
 #pragma once
 
-#define BAN_LIST SYSTEM_DIR "ban.lst" // List of bans
+inline constexpr std::string_view BAN_LIST = "../system/ban.lst"; // List of bans.
 
 enum ban_types
 {

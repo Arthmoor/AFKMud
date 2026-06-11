@@ -33,8 +33,9 @@
 class string_sort
 {
  public:
+   using is_transparent = void;
    string_sort(  );
-   bool operator(  ) ( const std::string &, const std::string & ) const;
+   bool operator(  ) ( std::string_view, std::string_view ) const;
 };
 
 typedef std::map<std::string, int, string_sort> SKILL_INDEX;
@@ -53,8 +54,8 @@ class find__skill_prefix
    std::string value;
    char_data *actor;
 
-   find__skill_prefix( char_data *, const std::string & );
-   bool operator(  ) ( std::pair < std::string, int > compare );
+   find__skill_prefix( char_data *, std::string_view );
+   bool operator(  ) ( std::pair < std::string_view, int > compare );
 };
 
 class find__skill_exact
@@ -63,6 +64,6 @@ class find__skill_exact
    std::string value;
    char_data *actor;
 
-   find__skill_exact( char_data *, const std::string & );
-   bool operator(  ) ( std::pair < std::string, int > compare );
+   find__skill_exact( char_data *, std::string_view );
+   bool operator(  ) ( std::pair < std::string_view, int > compare );
 };

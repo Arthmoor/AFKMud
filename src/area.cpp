@@ -60,6 +60,11 @@ area_data *fread_smaugfuss_area( FILE * );
 bool load_oldafk_area( FILE *, area_data *, int );
 CMDF( do_areaconvert );
 
+area_data::area_data(  )
+{
+   init_memory( &continent, &tg_armor, sizeof( tg_armor ) );
+}
+
 area_data::~area_data(  )
 {
    for( auto it = charlist.begin(); it != charlist.end(); )
@@ -140,11 +145,6 @@ area_data::~area_data(  )
    arealist.remove( this );
    area_nsort.remove( this );
    area_vsort.remove( this );
-}
-
-area_data::area_data(  )
-{
-   init_memory( &continent, &tg_armor, sizeof( tg_armor ) );
 }
 
 void area_data::fix_exits(  )
@@ -2487,7 +2487,7 @@ void write_area_list( void )
 {
    FILE *fpout;
 
-   fpout = fopen( AREA_LIST, "w" );
+   fpout = fopen( AREA_LIST.data(), "w" );
    if( !fpout )
    {
       bug( "%s: cannot open area.lst for writing!", __func__ );
@@ -2508,7 +2508,7 @@ void write_area_list( void )
  * Last Modified : July 21, 1997
  * Fireblade
  */
-area_data *get_area( const std::string & name )
+area_data *get_area( std::string_view name )
 {
    if( name.empty(  ) )
       return nullptr;
@@ -2522,7 +2522,7 @@ area_data *get_area( const std::string & name )
 }
 
 /* Locate an area by its filename first, then fall back to other means if not found */
-area_data *find_area( const std::string & filename )
+area_data *find_area( std::string_view filename )
 {
    for( auto* area : arealist )
    {
@@ -3477,7 +3477,8 @@ CMDF( do_aexit )
    }
 }
 
-/* Revised version of do_areas, orgininally written by Fireblade 4/27/97,
+/*
+ * Revised version of do_areas, orgininally written by Fireblade 4/27/97,
  * rewritten by Dwip to fix horrid argument bugs 4/14/02.  Happy 5 year
  * anniversary, do_areas! :)
  */

@@ -62,6 +62,9 @@ class area_data
    std::list<mob_index *> mobs;      // The list of mob indexes for this area
    std::list<obj_index *> objects;   // The list of object indexes for this area
    std::bitset<AFLAG_MAX> flags;
+   std::chrono::system_clock::time_point creation_date;            // Timestamp for when this area was first created. Samson 1/20/07
+   std::chrono::system_clock::time_point install_date;             // Timestamp for when this area was "live" installed. Samson 1/20/07
+   std::chrono::system_clock::time_point last_resettime;           // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
 
    class continent_data *continent; // Continent data structure this area is associated with.
    char *name;
@@ -69,9 +72,6 @@ class area_data
    char *author;                    /* Scryn */
    char *credits;
    char *resetmsg;                  /* Rennard */
-   std::chrono::system_clock::time_point creation_date;            // Timestamp for when this area was first created. Samson 1/20/07
-   std::chrono::system_clock::time_point install_date;             // Timestamp for when this area was "live" installed. Samson 1/20/07
-   std::chrono::system_clock::time_point last_resettime;           // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
    int low_vnum;
    int hi_vnum;
    int low_soft_range;
@@ -98,14 +98,14 @@ class area_data
 
 area_data *create_area(  );
 void write_area_list(  );
-area_data *get_area( const std::string & ); /* FB */
-area_data *find_area( const std::string & );
+area_data *get_area( std::string_view ); /* FB */
+area_data *find_area( std::string_view );
 void load_area_file( const std::string &, bool );
 void boot_log( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
-extern std::list < area_data * >arealist;
-extern std::list < area_data * >area_nsort;
-extern std::list < area_data * >area_vsort;
+extern std::list<area_data *> arealist;
+extern std::list<area_data *> area_nsort;
+extern std::list<area_data *> area_vsort;
 extern int weath_unit;
 extern int rand_factor;
 extern int climate_factor;

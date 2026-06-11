@@ -43,7 +43,7 @@ By Noplex with help from Senir and Samson
 
 #pragma once
 
-const int MAX_DOMAIN = 10;
+constexpr int MAX_DOMAIN = 10;
 
 class immortal_host_log
 {

@@ -28,19 +28,13 @@
 
 #pragma once
 
-#define CLAN_DIR "../clans/"  /* Clan data dir     */
-#define CLAN_LIST "clan.lst"  /* List of clans     */
+inline constexpr std::string_view CLAN_DIR = "../clans/";  // Clan data dir.
+inline constexpr std::string_view CLAN_LIST = "clan.lst";  // List of clans.
 
 enum clan_types
 {
    CLAN_CLAN, CLAN_GUILD
 };
-
-#define IS_CLANNED(ch) (!(ch)->isnpc() && (ch)->pcdata->clan && (ch)->pcdata->clan->clan_type != CLAN_GUILD )
-#define IS_GUILDED(ch) (!(ch)->isnpc() && (ch)->pcdata->clan && (ch)->pcdata->clan->clan_type == CLAN_GUILD )
-#define IS_LEADER(ch)  ( !(ch)->isnpc() && (ch)->pcdata->clan && !str_cmp( (ch)->name, (ch)->pcdata->clan->leader  ) )
-#define IS_NUMBER1(ch) ( !(ch)->isnpc() && (ch)->pcdata->clan && !str_cmp( (ch)->name, (ch)->pcdata->clan->number1 ) )
-#define IS_NUMBER2(ch) ( !(ch)->isnpc() && (ch)->pcdata->clan && !str_cmp( (ch)->name, (ch)->pcdata->clan->number2 ) )
 
 class roster_data
 {
@@ -120,12 +114,17 @@ class clan_data
 
 extern std::list<clan_data *> clanlist;
 
-void add_roster( clan_data *, const std::string &, int, int, int, int );
+void add_roster( clan_data *, std::string_view, int, int, int, int );
 void update_roster( char_data * );
-void remove_roster( clan_data *, const std::string & );
+void remove_roster( clan_data *, std::string_view );
 void save_clan( clan_data * );
 void save_clan_storeroom( char_data *, clan_data * );
 void delete_clan( char_data *, clan_data * );
 void verify_clans(  );
 void free_clans(  );
-clan_data *get_clan( const std::string & );
+clan_data *get_clan( std::string_view );
+bool IS_CLANNED( char_data * );
+bool IS_GUILDED( char_data * );
+bool IS_LEADER( char_data * );
+bool IS_NUMBER1( char_data * );
+bool IS_NUMBER2( char_data * );

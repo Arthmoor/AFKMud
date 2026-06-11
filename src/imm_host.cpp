@@ -204,9 +204,9 @@ void load_imm_host( void )
 
    hostlist.clear(  );
 
-   if( !( fp = fopen( IMM_HOST_FILE, "r" ) ) )
+   if( !( fp = fopen( IMM_HOST_FILE.data(), "r" ) ) )
    {
-      bug( "%s: could not open immhost file for reading", __func__ );
+      bug( "%s: could not open immhost file for reading.", __func__ );
       return;
    }
 
@@ -256,9 +256,9 @@ void save_imm_host( void )
 {
    FILE *fp;
 
-   if( !( fp = fopen( IMM_HOST_FILE, "w" ) ) )
+   if( !( fp = fopen( IMM_HOST_FILE.data(), "w" ) ) )
    {
-      bug( "%s: could not open immhost file for writing", __func__ );
+      bug( "%s: could not open immhost file for writing.", __func__ );
       return;
    }
 
@@ -285,7 +285,7 @@ void save_imm_host( void )
    FCLOSE( fp );
 }
 
-bool check_immortal_domain( char_data * ch, const std::string & lhost )
+bool check_immortal_domain( char_data * ch, std::string_view lhost )
 {
    std::list<immortal_host *>::iterator ihost;
    immortal_host *host = nullptr;

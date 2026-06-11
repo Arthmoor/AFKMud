@@ -172,7 +172,7 @@ const char *stock_sect[] = {
    "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "r16"
 };
 
-/* Extended bitvector matierial is now kept only for legacy purposes to convert old areas. */
+/* Extended bitvector material is now kept only for legacy purposes to convert old areas. */
 
 /*
  * Read an extended bitvector from a file. - Thoric

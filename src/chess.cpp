@@ -107,6 +107,29 @@ game_board_data::game_board_data(  )
    this->type = TYPE_LOCAL;
 }
 
+bool IS_WHITE( int x )
+{
+   if( x >= WHITE_PAWN && x <= WHITE_KING )
+      return true;
+   return false;
+}
+
+bool IS_BLACK( int x )
+{
+   if( x >= BLACK_PAWN && x <= BLACK_KING )
+      return true;
+   return false;
+}
+
+bool SAME_COLOR( game_board_data * board, int x1, int y1, int x2, int y2 )
+{
+   if( IS_WHITE( board->board[x1][y1] ) && IS_WHITE( board->board[x2][y2] ) )
+      return true;
+   if( IS_BLACK( board->board[x1][y1] ) && IS_BLACK( board->board[x2][y2] ) )
+      return true;
+   return false;
+}
+
 std::string print_big_board( game_board_data * board )
 {
    std::string buf, buf2;
@@ -166,10 +189,6 @@ bool find_piece( game_board_data * board, int *x, int *y, int piece )
       return true;
    return false;
 }
-
-#define SAME_COLOR(x1,y1,x2,y2)	\
-    ((IS_WHITE(board->board[x1][y1]) && IS_WHITE(board->board[x2][y2])) || \
-    (IS_BLACK(board->board[x1][y1]) && IS_BLACK(board->board[x2][y2])))
 
 bool king_in_check( game_board_data * board, int piece )
 {
@@ -236,7 +255,7 @@ bool king_in_check( game_board_data * board, int piece )
    for( l = x + 1; l < 8; ++l )
       if( board->board[l][y] != NO_PIECE )
       {
-         if( SAME_COLOR( x, y, l, y ) )
+         if( SAME_COLOR( board, x, y, l, y ) )
             break;
          if( board->board[l][y] == BLACK_QUEEN || board->board[l][y] == WHITE_QUEEN || board->board[l][y] == BLACK_ROOK || board->board[l][y] == WHITE_ROOK )
             return true;
@@ -245,7 +264,7 @@ bool king_in_check( game_board_data * board, int piece )
    for( l = x - 1; l >= 0; --l )
       if( board->board[l][y] != NO_PIECE )
       {
-         if( SAME_COLOR( x, y, l, y ) )
+         if( SAME_COLOR( board, x, y, l, y ) )
             break;
          if( board->board[l][y] == BLACK_QUEEN || board->board[l][y] == WHITE_QUEEN || board->board[l][y] == BLACK_ROOK || board->board[l][y] == WHITE_ROOK )
             return true;
@@ -254,7 +273,7 @@ bool king_in_check( game_board_data * board, int piece )
    for( m = y + 1; m < 8; ++m )
       if( board->board[x][m] != NO_PIECE )
       {
-         if( SAME_COLOR( x, y, x, m ) )
+         if( SAME_COLOR( board, x, y, x, m ) )
             break;
          if( board->board[x][m] == BLACK_QUEEN || board->board[x][m] == WHITE_QUEEN || board->board[x][m] == BLACK_ROOK || board->board[x][m] == WHITE_ROOK )
             return true;
@@ -263,7 +282,7 @@ bool king_in_check( game_board_data * board, int piece )
    for( m = y - 1; m >= 0; --m )
       if( board->board[x][m] != NO_PIECE )
       {
-         if( SAME_COLOR( x, y, x, m ) )
+         if( SAME_COLOR( board, x, y, x, m ) )
             break;
          if( board->board[x][m] == BLACK_QUEEN || board->board[x][m] == WHITE_QUEEN || board->board[x][m] == BLACK_ROOK || board->board[x][m] == WHITE_ROOK )
             return true;
@@ -275,7 +294,7 @@ bool king_in_check( game_board_data * board, int piece )
    for( l = x + 1, m = y + 1; l < 8 && m < 8; ++l, ++m )
       if( board->board[l][m] != NO_PIECE )
       {
-         if( SAME_COLOR( x, y, l, m ) )
+         if( SAME_COLOR( board, x, y, l, m ) )
             break;
          if( board->board[l][m] == BLACK_QUEEN || board->board[l][m] == WHITE_QUEEN || board->board[l][m] == BLACK_BISHOP || board->board[l][m] == WHITE_BISHOP )
             return true;
@@ -284,7 +303,7 @@ bool king_in_check( game_board_data * board, int piece )
    for( l = x - 1, m = y + 1; l >= 0 && m < 8; --l, ++m )
       if( board->board[l][m] != NO_PIECE )
       {
-         if( SAME_COLOR( x, y, l, m ) )
+         if( SAME_COLOR( board, x, y, l, m ) )
             break;
          if( board->board[l][m] == BLACK_QUEEN || board->board[l][m] == WHITE_QUEEN || board->board[l][m] == BLACK_BISHOP || board->board[l][m] == WHITE_BISHOP )
             return true;
@@ -293,7 +312,7 @@ bool king_in_check( game_board_data * board, int piece )
    for( l = x + 1, m = y - 1; l < 8 && m >= 0; ++l, --m )
       if( board->board[l][m] != NO_PIECE )
       {
-         if( SAME_COLOR( x, y, l, m ) )
+         if( SAME_COLOR( board, x, y, l, m ) )
             break;
          if( board->board[l][m] == BLACK_QUEEN || board->board[l][m] == WHITE_QUEEN || board->board[l][m] == BLACK_BISHOP || board->board[l][m] == WHITE_BISHOP )
             return true;
@@ -302,7 +321,7 @@ bool king_in_check( game_board_data * board, int piece )
    for( l = x - 1, m = y - 1; l >= 0 && m >= 0; --l, --m )
       if( board->board[l][m] != NO_PIECE )
       {
-         if( SAME_COLOR( x, y, l, m ) )
+         if( SAME_COLOR( board, x, y, l, m ) )
             break;
          if( board->board[l][m] == BLACK_QUEEN || board->board[l][m] == WHITE_QUEEN || board->board[l][m] == BLACK_BISHOP || board->board[l][m] == WHITE_BISHOP )
             return true;
@@ -496,7 +515,7 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
          {
             if( board->board[dx][dy] == NO_PIECE )
                return MOVE_OK;
-            else if( SAME_COLOR( x, y, dx, dy ) )
+            else if( SAME_COLOR( board, x, y, dx, dy ) )
                return MOVE_SAMECOLOR;
             else
                return MOVE_BLOCKED;
@@ -505,7 +524,7 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
          {
             if( board->board[dx][dy] == NO_PIECE )
                return MOVE_INVALID;
-            else if( SAME_COLOR( x, y, dx, dy ) )
+            else if( SAME_COLOR( board, x, y, dx, dy ) )
                return MOVE_SAMECOLOR;
             else if( board->board[dx][dy] != BLACK_KING && board->board[dx][dy] != WHITE_KING )
                return MOVE_TAKEN;
@@ -549,7 +568,7 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
          if( board->board[dx][dy] == NO_PIECE )
             return MOVE_OK;
 
-         if( !SAME_COLOR( x, y, dx, dy ) )
+         if( !SAME_COLOR( board, x, y, dx, dy ) )
             return MOVE_TAKEN;
 
          return MOVE_SAMECOLOR;
@@ -565,7 +584,7 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
          {
             if( board->board[dx][dy] == NO_PIECE )
                return MOVE_OK;
-            if( SAME_COLOR( x, y, dx, dy ) )
+            if( SAME_COLOR( board, x, y, dx, dy ) )
                return MOVE_SAMECOLOR;
             return MOVE_TAKEN;
          }
@@ -608,7 +627,7 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
          if( board->board[dx][dy] == NO_PIECE )
             return MOVE_OK;
 
-         if( !SAME_COLOR( x, y, dx, dy ) )
+         if( !SAME_COLOR( board, x, y, dx, dy ) )
             return MOVE_TAKEN;
 
          return MOVE_SAMECOLOR;
@@ -648,7 +667,7 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
          if( board->board[dx][dy] == NO_PIECE )
             return MOVE_OK;
 
-         if( !SAME_COLOR( x, y, dx, dy ) )
+         if( !SAME_COLOR( board, x, y, dx, dy ) )
             return MOVE_TAKEN;
 
          return MOVE_SAMECOLOR;
@@ -674,7 +693,7 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
          board->board[dx][dy] = sp;
          if( board->board[dx][dy] == NO_PIECE )
             return MOVE_OK;
-         if( SAME_COLOR( x, y, dx, dy ) )
+         if( SAME_COLOR( board, x, y, dx, dy ) )
             return MOVE_SAMECOLOR;
          return MOVE_TAKEN;
       }
@@ -689,8 +708,6 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
 
    return MOVE_OK;
 }
-
-#undef SAME_COLOR
 
 void init_chess( void )
 {
@@ -732,12 +749,12 @@ void free_all_chess_games( void )
    }
 }
 
-void send_to_opp( const std::string & arg, char_data * ch, char_data * opp )
+void send_to_opp( std::string_view arg, char_data * ch, char_data * opp )
 {
    if( opp )
    {
       if( ch->pcdata->game_board->type == TYPE_LOCAL )
-         opp->printf( "%s\r\n", arg.c_str() );
+         opp->print_fmt( "{}\r\n", arg );
    }
 }
 

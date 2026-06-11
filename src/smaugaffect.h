@@ -49,41 +49,17 @@ class smaug_affect
    short location;
 };
 
-#define SPELL_FLAG(skill, flag) ( (skill)->flags.test(flag) )
-
-#define SPELL_DAMAGE(skill)	( ((skill)->info      ) & 7 )
-#define SPELL_ACTION(skill)	( ((skill)->info >>  3) & 7 )
-#define SPELL_CLASS(skill)	( ((skill)->info >>  6) & 7 )
-#define SPELL_POWER(skill)	( ((skill)->info >>  9) & 3 )
-#define SPELL_SAVE(skill)	( ((skill)->info >> 11) & 7 )
-#define SET_SDAM(skill, val)	( (skill)->info =  ((skill)->info & SDAM_MASK) + ((val) & 7) )
-#define SET_SACT(skill, val)	( (skill)->info =  ((skill)->info & SACT_MASK) + (((val) & 7) << 3) )
-#define SET_SCLA(skill, val)	( (skill)->info =  ((skill)->info & SCLA_MASK) + (((val) & 7) << 6) )
-#define SET_SPOW(skill, val)	( (skill)->info =  ((skill)->info & SPOW_MASK) + (((val) & 3) << 9) )
-#define SET_SSAV(skill, val)	( (skill)->info =  ((skill)->info & SSAV_MASK) + (((val) & 7) << 11) )
-
-/* RIS by gsn lookups. -- Altrag.
-   Will need to add some || stuff for spells that need a special GSN. */
-
-#define IS_FIRE(dt)		( IS_VALID_SN(dt) && SPELL_DAMAGE(skill_table[(dt)]) == SD_FIRE )
-#define IS_COLD(dt)		( IS_VALID_SN(dt) && SPELL_DAMAGE(skill_table[(dt)]) == SD_COLD )
-#define IS_ACID(dt)		( IS_VALID_SN(dt) && SPELL_DAMAGE(skill_table[(dt)]) == SD_ACID )
-#define IS_ELECTRICITY(dt)	( IS_VALID_SN(dt) && SPELL_DAMAGE(skill_table[(dt)]) == SD_ELECTRICITY )
-#define IS_ENERGY(dt)		( IS_VALID_SN(dt) && SPELL_DAMAGE(skill_table[(dt)]) == SD_ENERGY )
-#define IS_DRAIN(dt)		( IS_VALID_SN(dt) && SPELL_DAMAGE(skill_table[(dt)]) == SD_DRAIN )
-#define IS_POISON(dt)		( IS_VALID_SN(dt) && SPELL_DAMAGE(skill_table[(dt)]) == SD_POISON )
+constexpr int ALL_BITS = INT_MAX;
+constexpr int SDAM_MASK = ALL_BITS & ~(BV00 | BV01 | BV02);
+constexpr int SACT_MASK = ALL_BITS & ~(BV03 | BV04 | BV05);
+constexpr int SCLA_MASK = ALL_BITS & ~(BV06 | BV07 | BV08);
+constexpr int SPOW_MASK = ALL_BITS & ~(BV09 | BV10);
+constexpr int SSAV_MASK = ALL_BITS & ~(BV11 | BV12 | BV13);
 
 enum save_types
 {
    SS_NONE, SS_POISON_DEATH, SS_ROD_WANDS, SS_PARA_PETRI, SS_BREATH, SS_SPELL_STAFF
 };
-
-const int ALL_BITS = INT_MAX;
-#define SDAM_MASK		ALL_BITS & ~(BV00 | BV01 | BV02)
-#define SACT_MASK		ALL_BITS & ~(BV03 | BV04 | BV05)
-#define SCLA_MASK		ALL_BITS & ~(BV06 | BV07 | BV08)
-#define SPOW_MASK		ALL_BITS & ~(BV09 | BV10)
-#define SSAV_MASK		ALL_BITS & ~(BV11 | BV12 | BV13)
 
 enum spell_dam_types
 {
@@ -111,3 +87,21 @@ enum spell_save_effects
 };
 
 extern std::list<smaug_affect*> saflist;
+bool SPELL_FLAG( const skill_type *, int );
+int SPELL_DAMAGE( const skill_type * );
+int SPELL_ACTION( const skill_type * );
+int SPELL_CLASS( const skill_type * );
+int SPELL_POWER( const skill_type * );
+int SPELL_SAVE( const skill_type * );
+
+/*
+ * RIS by gsn lookups. -- Altrag.
+ * Will need to add some || stuff for spells that need a special GSN.
+ */
+bool IS_FIRE( int );
+bool IS_COLD( int );
+bool IS_ACID( int );
+bool IS_ELECTRICITY( int );
+bool IS_ENERGY( int );
+bool IS_DRAIN( int );
+bool IS_POISON( int );

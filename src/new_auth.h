@@ -28,11 +28,9 @@
 
 #pragma once
 
-#include <unordered_map>
-
-#define AUTH_FILE SYSTEM_DIR "auth.dat"
-#define RESERVED_LIST SYSTEM_DIR "reserved.lst" // List of reserved names
-#define NAMEGEN_FILE SYSTEM_DIR "namegen.txt"   // Used for the name generator
+inline constexpr std::string_view AUTH_FILE = "../system/auth.dat";
+inline constexpr std::string_view RESERVED_LIST = "../system/reserved.lst"; // List of reserved names
+inline constexpr std::string_view NAMEGEN_FILE = "../system/namegen.txt";   // Used for the name generator
 
 /* New auth stuff --Rantic */
 enum auth_types
@@ -41,32 +39,6 @@ enum auth_types
 };
 
 int get_auth_state( char_data * ch );
-
-/* new auth -- Rantic */
-#define NOT_AUTHED(ch) ( get_auth_state((ch)) != AUTH_AUTHED && (ch)->has_pcflag( PCFLAG_UNAUTHED ) )
-#define IS_WAITING_FOR_AUTH(ch) ( (ch)->desc && get_auth_state((ch)) == AUTH_ONLINE && (ch)->has_pcflag( PCFLAG_UNAUTHED ) )
-
-struct NameParts
-{
-   std::vector<std::string> starts;
-   std::vector<std::string> middles;
-   std::vector<std::string> ends;
-};
-
-class NameManager
-{
- public:
-   static NameManager & instance();
-   void load_list( const std::string & filename );
-   std::string get_random( const std::string & filename );
-   void load_generator( const std::string & filename );
-   std::string generate( const std::string & filename );
-
- private:
-   std::unordered_map<std::string, std::vector<std::string>> list_cache;
-   std::unordered_map<std::string, NameParts> generator_cache;
-   NameManager() = default;
-};
 
 class auth_data
 {
@@ -83,3 +55,12 @@ class auth_data
    std::string change_by; // Name of immortal requesting name change
    short state;           // Current state of authed
 };
+
+bool NOT_AUTHED( char_data * );
+
+template <typename T>
+const T& pick_random( const std::vector<T>& vec )
+{
+   std::uniform_int_distribution<size_t> dist( 0, vec.size() - 1 );
+   return vec[dist(global_rng)];
+}

@@ -69,7 +69,7 @@ WeatherCell::WeatherCell()
    init_memory( &this->climate, &this->windSpeedY, sizeof( this->windSpeedY ) );
 }
 
-int get_hemisphere( const std::string & type )
+int get_hemisphere( std::string_view type )
 {
    unsigned int x;
 
@@ -79,7 +79,7 @@ int get_hemisphere( const std::string & type )
    return -1;
 }
 
-int get_climate( const std::string & type )
+int get_climate( std::string_view type )
 {
    unsigned int x;
 

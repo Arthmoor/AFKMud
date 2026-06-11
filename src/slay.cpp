@@ -45,6 +45,7 @@ Send any comments, flames, bug-reports, suggestions, requests, etc...
 to the above email address.
 ----------------------------------------------------------------------- */
 
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <memory>
@@ -68,11 +69,11 @@ void free_slays( void )
 /* Load the slay file */
 void load_slays( )
 {
-   std::ifstream stream( SLAY_FILE );
+   std::ifstream stream( std::filesystem::path{SLAY_FILE} );
 
    if( !stream )
    {
-      log_printf( "No slay file found: %s", SLAY_FILE );
+      log_printf( "No slay file found: %s", SLAY_FILE.data() );
       return;
    }
 
@@ -128,12 +129,12 @@ void load_slays( )
 // 0: Original format with tilde delmiter.
 // 1: Modified to use that stupid \xa2 thing as a delimiter.
 // 2: Back to the tilde since the \xa2 delimiter was not reliable.
-const int SLAY_VERSION = 2;
+constexpr int SLAY_VERSION = 2;
 
 /* Online slay editing, save the slay table to disk - Samson 8-3-98 */
 void save_slays( )
 {
-   std::ofstream stream( SLAY_FILE );
+   std::ofstream stream( std::filesystem::path{SLAY_FILE} );
 
    if( !stream )
    {
@@ -198,7 +199,7 @@ CMDF( do_slay )
 
       for( const auto& slay : slaylist )
       {
-         ch->pagerf( "&G%-27s &g%s\r\n", slay->get_type(  ).c_str(  ), slay->get_owner(  ).c_str(  ) );
+         ch->pager_fmt( "&G{:<27} &g{}\r\n", slay->get_type(  ), slay->get_owner(  ) );
       }
       ch->print( "\r\n&gTyping just 'slay <player>' will work too...\r\n" );
       return;
@@ -254,7 +255,7 @@ CMDF( do_slay )
    }
 }
 
-slay_data *get_slay( const std::string & name )
+slay_data *get_slay( std::string_view name )
 {
    for( const auto& slay : slaylist )
    {
@@ -296,7 +297,7 @@ CMDF( do_makeslay )
    slay->set_vmsg( "$n chops you up into little pieces!" );
    slay->set_rmsg( "$n brutally slays $N!" );
    slaylist.push_back( std::move( slay ) );
-   ch->printf( "New slaytype %s added. Set to default values.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "New slaytype {} added. Set to default values.\r\n", argument );
    save_slays(  );
 }
 
@@ -459,12 +460,12 @@ CMDF( do_showslay )
       return;
    }
 
-   ch->printf( "\r\nSlaytype: %s\r\n", slay->get_type(  ).c_str(  ) );
-   ch->printf( "Owner:    %s\r\n", slay->get_owner(  ).c_str(  ) );
-   ch->printf( "Color:    %d\r\n", slay->get_color(  ) );
-   ch->printf( "&RCmessage: \r\n%s", slay->get_cmsg(  ).c_str(  ) );
-   ch->printf( "\r\n&YVmessage: \r\n%s", slay->get_vmsg(  ).c_str(  ) );
-   ch->printf( "\r\n&GRmessage: \r\n%s", slay->get_rmsg(  ).c_str(  ) );
+   ch->print_fmt( "\r\nSlaytype: {}\r\n", slay->get_type(  ) );
+   ch->print_fmt( "Owner:    {}\r\n", slay->get_owner(  ) );
+   ch->print_fmt( "Color:    {}\r\n", slay->get_color(  ) );
+   ch->print_fmt( "&RCmessage: \r\n{}", slay->get_cmsg(  ) );
+   ch->print_fmt( "\r\n&YVmessage: \r\n{}", slay->get_vmsg(  ) );
+   ch->print_fmt( "\r\n&GRmessage: \r\n{}", slay->get_rmsg(  ) );
 }
 
 /* Of course, to create means you need to be able to destroy as well :P - Samson 8-3-98 */
@@ -491,6 +492,6 @@ CMDF( do_destroyslay )
    }
 
    deleteptr( pslay );
-   ch->printf( "Slaytype \"%s\" has beed deleted.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "Slaytype \"{}%s\" has beed deleted.\r\n", argument );
    save_slays(  );
 }

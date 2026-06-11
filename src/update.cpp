@@ -52,7 +52,7 @@ extern bool bootlock;
 int IsRideable( char_data * );
 void unbind_follower( char_data *, char_data * );
 void save_timedata(  );
-void calc_season(  );   /* Samson - See calendar.c */
+void calc_season(  );   /* Samson - See calendar.cpp */
 void room_act_update(  );
 void obj_act_update(  );
 void mpsleep_update(  );
@@ -64,7 +64,7 @@ int get_terrain( short, short, short );
 bool map_wander( char_data *, short, short, short );
 void clean_auctions(  );
 void set_supermob( obj_data * );
-bool check_social( char_data *, const std::string &, const std::string & );
+bool check_social( char_data *, std::string_view, const std::string & );
 void auth_update(  );
 void environment_update(  );
 bool will_fall( char_data *, int );

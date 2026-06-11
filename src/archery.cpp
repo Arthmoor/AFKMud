@@ -172,8 +172,8 @@ CMDF( do_draw )
    }
 
    ch->WAIT_STATE( sysdata->pulseviolence );
-   act_printf( AT_ACTION, ch, quiver, nullptr, TO_ROOM, "$n draws %s from $p.", arrow->short_descr );
-   act_printf( AT_ACTION, ch, quiver, nullptr, TO_CHAR, "You draw %s from $p.", arrow->short_descr );
+   act_printf( AT_ACTION, ch, quiver, nullptr, TO_ROOM, "$n draws {} from $p.", arrow->short_descr );
+   act_printf( AT_ACTION, ch, quiver, nullptr, TO_CHAR, "You draw {} from $p.", arrow->short_descr );
    arrow->from_obj(  );
    arrow->to_char( ch );
 
@@ -751,7 +751,7 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
  * Basically the same guts as do_scan() from above (please keep them in
  * sync) used to find the victim we're firing at.	-Thoric
  */
-char_data *scan_for_vic( char_data * ch, exit_data * pexit, const std::string & name )
+char_data *scan_for_vic( char_data * ch, exit_data * pexit, std::string_view name )
 {
    char_data *victim;
    room_index *was_in_room;
@@ -1063,7 +1063,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
    /*
     * reverse direction text from move_char 
     */
-   const char *dtxt = rev_exit( pexit->vdir );
+   std::string dtxt = rev_exit( pexit->vdir );
    int dist = 0;
 
    while( dist <= range )
@@ -1078,13 +1078,13 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
           * whadoyahknow, the door's closed 
           */
          if( projectile )
-            ch->printf( "&wYou see your %s pierce a door in the distance to the %s.", projectile->myobj(  ).c_str(  ), dir_name[dir] );
+            ch->print_fmt( "&wYou see your {} pierce a door in the distance to the {}.", projectile->myobj(  ), dir_name[dir] );
          else
-            ch->printf( "&wYou see your %s hit a door in the distance to the %s.", stxt, dir_name[dir] );
+            ch->print_fmt( "&wYou see your {} hit a door in the distance to the {}.", stxt, dir_name[dir] );
          if( projectile )
-            act_printf( AT_GREY, ch, projectile, nullptr, TO_ROOM, "$p flies in from %s and implants itself solidly in the %sern door.", dtxt, dir_name[dir] );
+            act_printf( AT_GREY, ch, projectile, nullptr, TO_ROOM, "$p flies in from {} and implants itself solidly in the {}ern door.", dtxt, dir_name[dir] );
          else
-            act_printf( AT_GREY, ch, nullptr, nullptr, TO_ROOM, "%s flies in from %s and implants itself solidly in the %sern door.", aoran( stxt ), dtxt, dir_name[dir] );
+            act_printf( AT_GREY, ch, nullptr, nullptr, TO_ROOM, "{} flies in from {} and implants itself solidly in the {}ern door.", aoran( stxt ), dtxt, dir_name[dir] );
          break;
       }
 
@@ -1119,9 +1119,9 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
       if( victim && ch->in_room == victim->in_room )
       {
          if( projectile )
-            act( AT_GREY, "$p flies in from $T.", ch, projectile, dtxt, TO_ROOM );
+            act( AT_GREY, "$p flies in from $T.", ch, projectile, dtxt.c_str(), TO_ROOM );
          else
-            act( AT_GREY, "$t flies in from $T.", ch, aoran( stxt ), dtxt, TO_ROOM );
+            act( AT_GREY, "$t flies in from $T.", ch, aoran( stxt ), dtxt.c_str(), TO_ROOM );
 
          /*
           * get back before the action starts 
@@ -1140,7 +1140,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
          if( projectile )
          {
             act( AT_GREY, "Your $t falls harmlessly to the ground to the $T.", ch, projectile->myobj(  ).c_str(  ), dir_name[dir], TO_CHAR );
-            act( AT_GREY, "$p flies in from $T and falls harmlessly to the ground here.", ch, projectile, dtxt, TO_ROOM );
+            act( AT_GREY, "$p flies in from $T and falls harmlessly to the ground here.", ch, projectile, dtxt.c_str(), TO_ROOM );
             if( projectile->in_obj )
                projectile->from_obj(  );
             if( projectile->carried_by )
@@ -1150,7 +1150,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
          else
          {
             act( AT_MAGIC, "Your $t fizzles out harmlessly to the $T.", ch, stxt, dir_name[dir], TO_CHAR );
-            act( AT_MAGIC, "$t flies in from $T and fizzles out harmlessly.", ch, aoran( stxt ), dtxt, TO_ROOM );
+            act( AT_MAGIC, "$t flies in from $T and fizzles out harmlessly.", ch, aoran( stxt ), dtxt.c_str(), TO_ROOM );
          }
          break;
       }
@@ -1175,9 +1175,9 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
          break;
       }
       if( projectile )
-         act( AT_GREY, "$p flies in from $T.", ch, projectile, dtxt, TO_ROOM );
+         act( AT_GREY, "$p flies in from $T.", ch, projectile, dtxt.c_str(), TO_ROOM );
       else
-         act( AT_MAGIC, "$t flies in from $T.", ch, aoran( stxt ), dtxt, TO_ROOM );
+         act( AT_MAGIC, "$t flies in from $T.", ch, aoran( stxt ), dtxt.c_str(), TO_ROOM );
       ++dist;
    }
 
@@ -1276,7 +1276,7 @@ CMDF( do_fire )
  * Attempt to fire at a victim.
  * Returns false if no attempt was made
  */
-bool mob_fire( char_data * ch, const std::string & name )
+bool mob_fire( char_data * ch, std::string_view name )
 {
    obj_data *arrow, *bow;
    short max_dist;
@@ -1300,6 +1300,6 @@ bool mob_fire( char_data * ch, const std::string & name )
     * modify maximum distance based on bow-type and ch's Class/str/etc 
     */
    max_dist = urange( 1, bow->value[4], 10 );
-   ranged_attack( ch, name, bow, arrow, TYPE_HIT + arrow->value[3], max_dist );
+   ranged_attack( ch, std::string{name}, bow, arrow, TYPE_HIT + arrow->value[3], max_dist );
    return true;
 }

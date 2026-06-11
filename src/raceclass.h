@@ -28,8 +28,8 @@
 
 #pragma once
 
-const int CLASSFILEVER = 2;
-const int RACEFILEVER = 1;
+constexpr int CLASSFILEVER = 2;
+constexpr int RACEFILEVER = 1;
 
 /* race dedicated stuff */
 class race_type

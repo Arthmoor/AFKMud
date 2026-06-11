@@ -45,7 +45,7 @@
 #include "sha256.h"
 #include "weather.h"
 
-#define HISTORY_FILE SYSTEM_DIR "history.txt"   /* Used in do_history - Samson 2-12-98 */
+constexpr std::string_view HISTORY_FILE = "../system/history.txt"; // Used in do_history - Samson 2-12-98
 
 /*
  * Keep players from defeating examine progs -Druid
@@ -107,14 +107,8 @@ StarMap was written by Nebseni of Clandestine MUD and ported to Smaug
 by Desden, el Chaman Tibetano.
 */
 
-// Must remain a define - crash at initialization otherwise
-#define NUM_DAYS sysdata->dayspermonth
-/* Match this to the number of days per month; this is the moon cycle */
-// Must remain a define - crash at initialization otherwise
-#define NUM_MONTHS sysdata->monthsperyear
-/* Match this to the number of months defined in month_name[].  */
-const int MAP_WIDTH = 72;
-const int MAP_HEIGHT = 8;
+constexpr int MAP_WIDTH = 72;
+constexpr int MAP_HEIGHT = 8;
 /* Should be the string length and number of the constants below.*/
 
 const char *star_map[] = {
@@ -161,11 +155,11 @@ void look_sky( char_data * ch )
    }
 
    sunpos = ( MAP_WIDTH * ( sysdata->hoursperday - time_info.hour ) / sysdata->hoursperday );
-   moonpos = ( sunpos + time_info.day * MAP_WIDTH / NUM_DAYS ) % MAP_WIDTH;
+   moonpos = ( sunpos + time_info.day * MAP_WIDTH / sysdata->dayspermonth ) % MAP_WIDTH;
 
    if( ( moonphase = ( ( ( ( MAP_WIDTH + moonpos - sunpos ) % MAP_WIDTH ) + ( MAP_WIDTH / 16 ) ) * 8 ) / MAP_WIDTH ) > 4 )
       moonphase -= 8;
-   starpos = ( sunpos + MAP_WIDTH * time_info.month / NUM_MONTHS ) % MAP_WIDTH;
+   starpos = ( sunpos + MAP_WIDTH * time_info.month / sysdata->monthsperyear ) % MAP_WIDTH;
 
    /*
     * The left end of the star_map will be straight overhead at midnight during month 0 
@@ -330,7 +324,7 @@ void show_visible_affects_to_char( char_data * victim, char_data * ch )
 
 void show_condition( char_data * ch, char_data * victim )
 {
-   char buf[MSL];
+   std::string buf;
    int percent;
 
    if( victim->max_hit > 0 )
@@ -340,55 +334,55 @@ void show_condition( char_data * ch, char_data * victim )
 
    if( victim != ch )
    {
-      strlcpy( buf, PERS( victim, ch, false ), MSL );
+      buf = PERS( victim, ch, false );
       if( percent >= 100 )
-         strlcat( buf, " is in perfect health.\r\n", MSL );
+         buf += " is in perfect health.\r\n";
       else if( percent >= 90 )
-         strlcat( buf, " is slightly scratched.\r\n", MSL );
+         buf += " is slightly scratched.\r\n";
       else if( percent >= 80 )
-         strlcat( buf, " has a few bruises.\r\n", MSL );
+         buf += " has a few bruises.\r\n";
       else if( percent >= 70 )
-         strlcat( buf, " has some cuts.\r\n", MSL );
+         buf += " has some cuts.\r\n";
       else if( percent >= 60 )
-         strlcat( buf, " has several wounds.\r\n", MSL );
+         buf += " has several wounds.\r\n";
       else if( percent >= 50 )
-         strlcat( buf, " has many nasty wounds.\r\n", MSL );
+         buf += " has many nasty wounds.\r\n";
       else if( percent >= 40 )
-         strlcat( buf, " is bleeding freely.\r\n", MSL );
+         buf += " is bleeding freely.\r\n";
       else if( percent >= 30 )
-         strlcat( buf, " is covered in blood.\r\n", MSL );
+         buf += " is covered in blood.\r\n";
       else if( percent >= 20 )
-         strlcat( buf, " is leaking guts.\r\n", MSL );
+         buf += " is leaking guts.\r\n";
       else if( percent >= 10 )
-         strlcat( buf, " is almost dead.\r\n", MSL );
+         buf += " is almost dead.\r\n";
       else
-         strlcat( buf, " is DYING.\r\n", MSL );
+         buf += " is DYING.\r\n";
    }
    else
    {
-      strlcpy( buf, "You", MSL );
+      buf = "You";
       if( percent >= 100 )
-         strlcat( buf, " are in perfect health.\r\n", MSL );
+         buf += " are in perfect health.\r\n";
       else if( percent >= 90 )
-         strlcat( buf, " are slightly scratched.\r\n", MSL );
+         buf += " are slightly scratched.\r\n";
       else if( percent >= 80 )
-         strlcat( buf, " have a few bruises.\r\n", MSL );
+         buf += " have a few bruises.\r\n";
       else if( percent >= 70 )
-         strlcat( buf, " have some cuts.\r\n", MSL );
+         buf += " have some cuts.\r\n";
       else if( percent >= 60 )
-         strlcat( buf, " have several wounds.\r\n", MSL );
+         buf += " have several wounds.\r\n";
       else if( percent >= 50 )
-         strlcat( buf, " have many nasty wounds.\r\n", MSL );
+         buf += " have many nasty wounds.\r\n";
       else if( percent >= 40 )
-         strlcat( buf, " are bleeding freely.\r\n", MSL );
+         buf += " are bleeding freely.\r\n";
       else if( percent >= 30 )
-         strlcat( buf, " are covered in blood.\r\n", MSL );
+         buf += " are covered in blood.\r\n";
       else if( percent >= 20 )
-         strlcat( buf, " are leaking guts.\r\n", MSL );
+         buf += " are leaking guts.\r\n";
       else if( percent >= 10 )
-         strlcat( buf, " are almost dead.\r\n", MSL );
+         buf += " are almost dead.\r\n";
       else
-         strlcat( buf, " are DYING.\r\n", MSL );
+         buf += " are DYING.\r\n";
    }
 
    buf[0] = to_upper( buf[0] );
@@ -698,9 +692,9 @@ void show_race_line( char_data * ch, char_data * victim )
       feet = victim->height / 12;
       inches = victim->height % 12;
       if( ch->is_immortal(  ) )
-         ch->printf( "%s is a level %d %s %s.\r\n", victim->name, victim->level, npc_race[victim->race], npc_class[victim->Class] );
+         ch->print_fmt( "{} is a level {} {} {}.\r\n", victim->name, victim->level, npc_race[victim->race], npc_class[victim->Class] );
 
-      ch->printf( "%s is %d'%d\" and weighs %d pounds.\r\n", PERS( victim, ch, false ), feet, inches, victim->weight );
+      ch->print_fmt( "{} is {}'{}\" and weighs {} pounds.\r\n", PERS( victim, ch, false ), feet, inches, victim->weight );
       return;
    }
 
@@ -708,8 +702,8 @@ void show_race_line( char_data * ch, char_data * victim )
    {
       feet = victim->height / 12;
       inches = victim->height % 12;
-      ch->printf( "You are a level %d %s %s.\r\n", victim->level, npc_race[victim->race], npc_class[victim->Class] );
-      ch->printf( "You are %d'%d\" and weigh %d pounds.\r\n", feet, inches, victim->weight );
+      ch->print_fmt( "You are a level {} {} {}.\r\n", victim->level, npc_race[victim->race], npc_class[victim->Class] );
+      ch->print_fmt( "You are {}'{}\" and weigh {} pounds.\r\n", feet, inches, victim->weight );
       return;
    }
 }
@@ -899,7 +893,7 @@ bool check_blind( char_data * ch )
 /*
  * Returns classical DIKU door direction based on text in arg	-Thoric
  */
-int get_door( const std::string & arg )
+int get_door( std::string_view arg )
 {
    int door;
 
@@ -1081,11 +1075,9 @@ void print_compass( char_data * ch )
                exit_colors[exit_info[DIR_SOUTH]], exit_info[DIR_SOUTH] ? "S" : "-", exit_colors[exit_info[DIR_SOUTHEAST]], exit_info[DIR_SOUTHEAST] ? "SE" : " -" );
 }
 
-char *roomdesc( char_data * ch )
+const std::string roomdesc( char_data * ch )
 {
-   static char rdesc[MSL];
-
-   rdesc[0] = '\0';
+   std::string rdesc;
 
    /*
     * view desc or nitedesc --  Dracones 
@@ -1095,18 +1087,18 @@ char *roomdesc( char_data * ch )
       if( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset )
       {
          if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
-            strlcat( rdesc, ch->in_room->roomdesc, MSL );
+            rdesc = ch->in_room->roomdesc;
       }
       else
       {
          if( ch->in_room->nitedesc && ch->in_room->nitedesc[0] != '\0' )
-            strlcat( rdesc, ch->in_room->nitedesc, MSL );
+            rdesc = ch->in_room->nitedesc;
          else if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
-            strlcat( rdesc, ch->in_room->roomdesc, MSL );
+            rdesc = ch->in_room->roomdesc;
       }
    }
-   if( rdesc[0] == '\0' )
-      strlcpy( rdesc, "(Not set)", MSL );
+   if( rdesc.empty() )
+      rdesc = "(Not set)";
    return rdesc;
 }
 
@@ -2090,7 +2082,7 @@ CMDF( do_oldwhere )
              && !victim->has_aflag( AFF_SNEAK ) && ch->can_see( victim, true ) && hasname( victim->name, argument ) )
          {
             found = true;
-            ch->pagerf( "&[people]%-28s &[rmname]%s\r\n", PERS( victim, ch, true ), victim->in_room->name );
+            ch->pagerf( "&[people]%-28s &[rmname]%s\r\n", PERS( victim, ch, true ).c_str(), victim->in_room->name );
             break;
          }
       }
@@ -2256,7 +2248,10 @@ CMDF( do_wizlist )
    show_file( ch, WIZLIST_FILE );
 }
 
-#define PCFYN( ch, flag ) ( (ch)->has_pcflag((flag)) ? " &z(&GON&z)&D" : "&z(&ROFF&z)&D" )
+const char *PCFYN( char_data * ch, int flag )
+{
+   return( ch->has_pcflag( flag ) ? " &z(&GON&z)&D" : "&z(&ROFF&z)&D" );
+}
 
 /*
  * Contributed by Grodyn.
@@ -2312,7 +2307,6 @@ CMDF( do_config )
          ch->printf( "           &wNoTell       &z: %3s\r\n", PCFYN( ch, PCFLAG_NOTELL ) );
 
       ch->print( "\r\n&g&uMisc:&d      " );
-      ch->printf( "&wTelnet_GA    &z: %3s\t", PCFYN( ch, PCFLAG_TELNET_GA ) );
       ch->printf( "&wGroupwho     &z: %3s\t", PCFYN( ch, PCFLAG_GROUPWHO ) );
       ch->printf( "&wNoIntro      &z: %3s\r\n", PCFYN( ch, PCFLAG_NOINTRO ) );
       ch->printf( "           &wMSP          &z: %3s\t", PCFYN( ch, PCFLAG_MSP ) );
@@ -2397,8 +2391,6 @@ CMDF( do_config )
          bit = PCFLAG_BLANK;
       else if( !str_prefix( arg, "brief" ) )
          bit = PCFLAG_BRIEF;
-      else if( !str_prefix( arg, "telnetga" ) )
-         bit = PCFLAG_TELNET_GA;
       else if( !str_prefix( arg, "msp" ) )
          bit = PCFLAG_MSP;
       else if( !str_prefix( arg, "ansi" ) )
@@ -2505,20 +2497,20 @@ CMDF( do_history )
 /* Statistical display for the mud, added by Samson 1-31-98 */
 CMDF( do_world )
 {
-   ch->print( "&cBase source code: Smaug 1.4a\r\n" );
-   ch->printf( "Current source revision: %s %s\r\n", CODENAME, CODEVERSION );
+   ch->print( "&cBase source code: Smaug 1.8b\r\n" );
+   ch->print_fmt( "Current source revision: {} {}\r\n", CODENAME, CODEVERSION );
    ch->print( "The MUD first came online on: Thu Sep 4 1997\r\n" );
-   ch->printf( "The MUD last rebooted on: %s\r\n", str_boot_time.c_str() );
-   ch->printf( "The system time is      : %s\r\n", c_time( current_time, -1 ).c_str() );
-   ch->printf( "Your local time is      : %s\r\n", c_time( current_time, ch->pcdata->timezone ).c_str() );
-   ch->printf( "\r\nTotal number of zones in the world: %d\r\n", top_area );
-   ch->printf( "Total number of rooms in the world: %d\r\n", top_room );
-   ch->printf( "\r\nNumber of distinct mobs in the world: %d\r\n", top_mob_index );
-   ch->printf( "Number of mobs loaded into the world: %d\r\n", nummobsloaded );
-   ch->printf( "\r\nNumber of distinct objects in the world: %d\r\n", top_obj_index );
-   ch->printf( "Number of objects loaded into the world: %d\r\n", numobjsloaded );
-   ch->printf( "\r\nCurrent number of registered players: %d\r\n", num_pfiles );
-   ch->printf( "All time high number of players on at one time: %d\r\n", sysdata->alltimemax );
+   ch->print_fmt( "The MUD last rebooted on: {}\r\n", str_boot_time );
+   ch->print_fmt( "The system time is      : {}\r\n", c_time( current_time, -1 ) );
+   ch->print_fmt( "Your local time is      : {}\r\n", c_time( current_time, ch->pcdata->timezone ) );
+   ch->print_fmt( "\r\nTotal number of zones in the world: {}\r\n", top_area );
+   ch->print_fmt( "Total number of rooms in the world: {}\r\n", top_room );
+   ch->print_fmt( "\r\nNumber of distinct mobs in the world: {}\r\n", top_mob_index );
+   ch->print_fmt( "Number of mobs loaded into the world: {}\r\n", nummobsloaded );
+   ch->print_fmt( "\r\nNumber of distinct objects in the world: {}\r\n", top_obj_index );
+   ch->print_fmt( "Number of objects loaded into the world: {}\r\n", numobjsloaded );
+   ch->print_fmt( "\r\nCurrent number of registered players: {}\r\n", num_pfiles );
+   ch->print_fmt( "All time high number of players on at one time: {}\r\n", sysdata->alltimemax );
 }
 
 /* Reason buffer added to AFK. See also show_char_to_char_0. -Whir - 8/31/98 */
@@ -2590,30 +2582,30 @@ CMDF( do_motd )
 }
 
 /* Saves MOTDs to disk - Samson 12-31-00 */
-void save_motd( const char *name, const char *str )
+void save_motd( std::string_view name, std::string_view str )
 {
    FILE *fp;
 
-   if( !( fp = fopen( name, "w" ) ) )
+   if( !( fp = fopen( name.data(), "w" ) ) )
    {
       bug( "%s: fopen", __func__ );
-      perror( name );
+      perror( name.data() );
    }
    else
-      fprintf( fp, "%s", str );
+      fprintf( fp, "%s", str.data() );
    FCLOSE( fp );
 }
 
-void load_motd( char_data * ch, const char *name )
+void load_motd( char_data * ch, std::string_view name )
 {
    FILE *fp;
    char buf[MSL];
    int num = 0;
 
-   if( !( fp = fopen( name, "r" ) ) )
+   if( !( fp = fopen( name.data(), "r" ) ) )
    {
       bug( "%s: Cannot open", __func__ );
-      perror( name );
+      perror( name.data() );
    }
 
    while( !feof( fp ) )

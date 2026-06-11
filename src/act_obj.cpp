@@ -1187,7 +1187,7 @@ CMDF( do_give )
       ch->gold -= amount;
       victim->gold += amount;
 
-      act_printf( AT_ACTION, ch, nullptr, victim, TO_VICT, "$n gives you %d coin%s.", amount, amount == 1 ? "" : "s" );
+      act_printf( AT_ACTION, ch, nullptr, victim, TO_VICT, "$n gives you {} coin{}.", amount, amount == 1 ? "" : "s" );
       act( AT_ACTION, "$n gives $N some gold.", ch, nullptr, victim, TO_NOTVICT );
       act( AT_ACTION, "You give $N some gold.", ch, nullptr, victim, TO_CHAR );
       mprog_bribe_trigger( victim, ch, amount );
@@ -1408,71 +1408,87 @@ bool can_layer( char_data * ch, obj_data * obj, short wear_loc )
    return false;
 }
 
-bool can_wear_obj( char_data * ch, obj_data * obj )
+// Hey, nobody said I can't be lazy and reuse the macro's name :P
+bool CWO( const char_data * ch, const obj_data * obj, int Class, int flag )
 {
-#define CWO(c,s) ( ch->Class == (c) && obj->extra_flags.test( (s) ) )
+   if( ch->Class == Class && obj->extra_flags.test( flag ) )
+      return true;
+   return false;
+}
 
-   if( CWO( CLASS_MAGE, ITEM_ANTI_MAGE ) )
-      return false;
-   if( CWO( CLASS_WARRIOR, ITEM_ANTI_WARRIOR ) )
-      return false;
-   if( CWO( CLASS_CLERIC, ITEM_ANTI_CLERIC ) )
-      return false;
-   if( CWO( CLASS_ROGUE, ITEM_ANTI_ROGUE ) )
-      return false;
-   if( CWO( CLASS_DRUID, ITEM_ANTI_DRUID ) )
-      return false;
-   if( CWO( CLASS_RANGER, ITEM_ANTI_RANGER ) )
-      return false;
-   if( CWO( CLASS_PALADIN, ITEM_ANTI_PALADIN ) )
-      return false;
-   if( CWO( CLASS_MONK, ITEM_ANTI_MONK ) )
-      return false;
-   if( CWO( CLASS_NECROMANCER, ITEM_ANTI_NECRO ) )
-      return false;
-   if( CWO( CLASS_ANTIPALADIN, ITEM_ANTI_APAL ) )
-      return false;
-   if( CWO( CLASS_BARD, ITEM_ANTI_BARD ) )
-      return false;
-#undef CWO
+// Same here...
+bool CWC( const char_data * ch, const obj_data * obj, int Class, int flag )
+{
+   if( ch->Class != Class && obj->extra_flags.test( flag ) )
+      return true;
+   return false;
+}
 
-#define CWC(c,s) ( ch->Class != (c) && obj->extra_flags.test( (s) ) )
+// Oh, and here too.
+bool CWS( const char_data * ch, const obj_data * obj, int Class, int flag )
+{
+   if( ch->sex != Class && obj->extra_flags.test( flag ) )
+      return true;
+   return false;
+}
 
-   if( CWC( CLASS_CLERIC, ITEM_ONLY_CLERIC ) )
+bool can_wear_obj( const char_data * ch, const obj_data * obj )
+{
+   if( CWO( ch, obj, CLASS_MAGE, ITEM_ANTI_MAGE ) )
       return false;
-   if( CWC( CLASS_MAGE, ITEM_ONLY_MAGE ) )
+   if( CWO( ch, obj, CLASS_WARRIOR, ITEM_ANTI_WARRIOR ) )
       return false;
-   if( CWC( CLASS_ROGUE, ITEM_ONLY_ROGUE ) )
+   if( CWO( ch, obj, CLASS_CLERIC, ITEM_ANTI_CLERIC ) )
       return false;
-   if( CWC( CLASS_WARRIOR, ITEM_ONLY_WARRIOR ) )
+   if( CWO( ch, obj, CLASS_ROGUE, ITEM_ANTI_ROGUE ) )
       return false;
-   if( CWC( CLASS_BARD, ITEM_ONLY_BARD ) )
+   if( CWO( ch, obj, CLASS_DRUID, ITEM_ANTI_DRUID ) )
       return false;
-   if( CWC( CLASS_DRUID, ITEM_ONLY_DRUID ) )
+   if( CWO( ch, obj, CLASS_RANGER, ITEM_ANTI_RANGER ) )
       return false;
-   if( CWC( CLASS_MONK, ITEM_ONLY_MONK ) )
+   if( CWO( ch, obj, CLASS_PALADIN, ITEM_ANTI_PALADIN ) )
       return false;
-   if( CWC( CLASS_RANGER, ITEM_ONLY_RANGER ) )
+   if( CWO( ch, obj, CLASS_MONK, ITEM_ANTI_MONK ) )
       return false;
-   if( CWC( CLASS_PALADIN, ITEM_ONLY_PALADIN ) )
+   if( CWO( ch, obj, CLASS_NECROMANCER, ITEM_ANTI_NECRO ) )
       return false;
-   if( CWC( CLASS_NECROMANCER, ITEM_ONLY_NECRO ) )
+   if( CWO( ch, obj, CLASS_ANTIPALADIN, ITEM_ANTI_APAL ) )
       return false;
-   if( CWC( CLASS_ANTIPALADIN, ITEM_ONLY_APAL ) )
+   if( CWO( ch, obj, CLASS_BARD, ITEM_ANTI_BARD ) )
       return false;
-#undef CWC
 
-#define CWS(c,s) ( ch->sex == (c) && obj->extra_flags.test( (s) ) )
+   if( CWC( ch, obj, CLASS_CLERIC, ITEM_ONLY_CLERIC ) )
+      return false;
+   if( CWC( ch, obj, CLASS_MAGE, ITEM_ONLY_MAGE ) )
+      return false;
+   if( CWC( ch, obj, CLASS_ROGUE, ITEM_ONLY_ROGUE ) )
+      return false;
+   if( CWC( ch, obj, CLASS_WARRIOR, ITEM_ONLY_WARRIOR ) )
+      return false;
+   if( CWC( ch, obj, CLASS_BARD, ITEM_ONLY_BARD ) )
+      return false;
+   if( CWC( ch, obj, CLASS_DRUID, ITEM_ONLY_DRUID ) )
+      return false;
+   if( CWC( ch, obj, CLASS_MONK, ITEM_ONLY_MONK ) )
+      return false;
+   if( CWC( ch, obj, CLASS_RANGER, ITEM_ONLY_RANGER ) )
+      return false;
+   if( CWC( ch, obj, CLASS_PALADIN, ITEM_ONLY_PALADIN ) )
+      return false;
+   if( CWC( ch, obj, CLASS_NECROMANCER, ITEM_ONLY_NECRO ) )
+      return false;
+   if( CWC( ch, obj, CLASS_ANTIPALADIN, ITEM_ONLY_APAL ) )
+      return false;
 
-   if( CWS( SEX_NEUTRAL, ITEM_ANTI_NEUTER ) )
+   if( CWS( ch, obj, SEX_NEUTRAL, ITEM_ANTI_NEUTER ) )
       return false;
-   if( CWS( SEX_MALE, ITEM_ANTI_MEN ) )
+   if( CWS( ch, obj, SEX_MALE, ITEM_ANTI_MEN ) )
       return false;
-   if( CWS( SEX_FEMALE, ITEM_ANTI_WOMEN ) )
+   if( CWS( ch, obj, SEX_FEMALE, ITEM_ANTI_WOMEN ) )
       return false;
-   if( CWS( SEX_HERMAPHRODYTE, ITEM_ANTI_HERMA ) )
+   if( CWS( ch, obj, SEX_HERMAPHRODYTE, ITEM_ANTI_HERMA ) )
       return false;
-#undef CWS
+
    return true;
 }
 
@@ -2465,7 +2481,7 @@ CMDF( do_sacrifice )
       ch->printf( "%s gives you one gold coin for your sacrifice.\r\n", name.c_str(  ) );
    }
 
-   act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n sacrifices $p to %s.", name.c_str(  ) );
+   act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n sacrifices $p to {}.", name );
    oprog_sac_trigger( ch, obj );
    if( obj->extracted(  ) )
       return;

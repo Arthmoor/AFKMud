@@ -28,6 +28,7 @@
  *             Also contains the random treasure creation code              *
  ****************************************************************************/
 
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include "mud.h"
@@ -164,7 +165,7 @@ void save_weapontable(  )
 {
    std::ofstream stream;
 
-   stream.open( WTYPE_FILE );
+   stream.open( std::filesystem::path( WTYPE_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_string( "Couldn't write to weapontypes file." );
@@ -194,7 +195,7 @@ void load_weapontable(  )
 
    w_table.clear(  );
 
-   stream.open( WTYPE_FILE );
+   stream.open( std::filesystem::path( WTYPE_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_string( "Couldn't read from weapontypes file." );
@@ -264,7 +265,7 @@ CMDF( do_wtload )
 
 rune_data::rune_data(  )
 {
-   init_memory( &stat1, &stat2, sizeof( stat2 ) );
+   init_memory( &_rarity, &stat2, sizeof( stat2 ) );
 }
 
 rune_data::~rune_data(  )
@@ -301,7 +302,7 @@ void free_runedata( void )
    }
 }
 
-short get_rarity( const std::string & name )
+short get_rarity( std::string_view name )
 {
    for( unsigned int x = 0; x < sizeof( rarity ) / sizeof( rarity[0] ); ++x )
       if( !str_cmp( name, rarity[x] ) )
@@ -331,7 +332,7 @@ void load_runewords( void )
 
    log_string( "Loading runewords..." );
 
-   stream.open( RUNEWORD_FILE );
+   stream.open( std::filesystem::path( RUNEWORD_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_string( "No runeword file found." );
@@ -436,7 +437,7 @@ void load_runes( void )
 
    log_string( "Loading runes..." );
 
-   stream.open( RUNE_FILE );
+   stream.open( std::filesystem::path( RUNE_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_string( "No rune file found." );
@@ -529,7 +530,7 @@ void save_runes( void )
 {
    std::ofstream stream;
 
-   stream.open( RUNE_FILE );
+   stream.open( std::filesystem::path( RUNE_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_string( "Couldn't write to rune file." );
@@ -548,7 +549,7 @@ void save_runes( void )
    stream.close(  );
 }
 
-rune_data *check_rune( const std::string & name )
+rune_data *check_rune( std::string_view name )
 {
    for( auto* rune : runelist )
    {
@@ -656,7 +657,7 @@ CMDF( do_setrune )
 
    if( !( rune = check_rune( arg ) ) )
    {
-      ch->printf( "No rune named %s exists.\r\n", arg.c_str(  ) );
+      ch->print_fmt( "No rune named {} exists.\r\n", arg );
       return;
    }
 
@@ -666,12 +667,12 @@ CMDF( do_setrune )
 
       if( ( newrune = check_rune( arg3 ) ) != nullptr )
       {
-         ch->printf( "A rune named %s already exists. Choose a new name.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "A rune named {} already exists. Choose a new name.\r\n", arg3 );
          return;
       }
       rune->set_name( arg3 );
       save_runes(  );
-      ch->printf( "Rune %s has been renamed as %s\r\n", arg.c_str(  ), arg3.c_str(  ) );
+      ch->print_fmt( "Rune {} has been renamed as {}\r\n", arg, arg3 );
       return;
    }
 
@@ -681,12 +682,12 @@ CMDF( do_setrune )
 
       if( value < 0 || value > RUNE_ULTRARARE )
       {
-         ch->printf( "%s is an invalid rarity.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "{} is an invalid rarity.\r\n", arg3 );
          return;
       }
       rune->set_rarity( value );
       save_runes(  );
-      ch->printf( "%s rune is now %s rarity.\r\n", rune->get_cname(  ), rarity[value] );
+      ch->print_fmt( "{} rune is now {} rarity.\r\n", rune->get_name(  ), rarity[value] );
       return;
    }
 
@@ -696,7 +697,7 @@ CMDF( do_setrune )
 
       if( value < 0 )
       {
-         ch->printf( "%s is an invalid stat to apply.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "{} is an invalid stat to apply.\r\n", arg3 );
          return;
       }
 
@@ -718,7 +719,7 @@ CMDF( do_setrune )
          rune->stat1[0] = value;
          rune->stat1[1] = val2;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
+         ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
          return;
       }
 
@@ -728,13 +729,13 @@ CMDF( do_setrune )
 
          if( val2 < 0 || val2 >= MAX_RIS_FLAG )
          {
-            ch->printf( "%s is an invalid RISA flag.\r\n", argument.c_str(  ) );
+            ch->print_fmt( "{} is an invalid RISA flag.\r\n", argument );
             return;
          }
          rune->stat1[0] = value;
          rune->stat1[1] = val2;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
+         ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
          return;
       }
 
@@ -744,13 +745,13 @@ CMDF( do_setrune )
 
          if( !IS_VALID_SN( val2 ) )
          {
-            ch->printf( "Invalid skill/spell: %s", argument.c_str(  ) );
+            ch->print_fmt( "Invalid skill/spell: {}", argument );
             return;
          }
          rune->stat1[0] = value;
          rune->stat1[1] = skill_table[val2]->slot;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
+         ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
          return;
       }
 
@@ -762,7 +763,7 @@ CMDF( do_setrune )
       rune->stat1[0] = value;
       rune->stat1[1] = atoi( argument.c_str(  ) );
       save_runes(  );
-      ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
+      ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
       return;
    }
 
@@ -772,7 +773,7 @@ CMDF( do_setrune )
 
       if( value < 0 )
       {
-         ch->printf( "%s is an invalid stat to apply.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "{} is an invalid stat to apply.\r\n", arg3 );
          return;
       }
 
@@ -788,13 +789,13 @@ CMDF( do_setrune )
 
          if( val2 < 0 || val2 >= MAX_AFFECTED_BY )
          {
-            ch->printf( "%s is an invalid affect.\r\n", argument.c_str(  ) );
+            ch->print_fmt( "{} is an invalid affect.\r\n", argument );
             return;
          }
          rune->stat2[0] = value;
          rune->stat2[1] = val2;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
+         ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
          return;
       }
 
@@ -804,13 +805,13 @@ CMDF( do_setrune )
 
          if( val2 < 0 || val2 >= MAX_RIS_FLAG )
          {
-            ch->printf( "%s is an invalid RISA flag.\r\n", argument.c_str(  ) );
+            ch->print_fmt( "{} is an invalid RISA flag.\r\n", argument );
             return;
          }
          rune->stat2[0] = value;
          rune->stat2[1] = val2;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
+         ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
          return;
       }
 
@@ -820,13 +821,13 @@ CMDF( do_setrune )
 
          if( !IS_VALID_SN( val2 ) )
          {
-            ch->printf( "Invalid skill/spell: %s", argument.c_str(  ) );
+            ch->print_fmt( "Invalid skill/spell: {}", argument );
             return;
          }
          rune->stat2[0] = value;
          rune->stat2[1] = skill_table[val2]->slot;
          save_runes(  );
-         ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
+         ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
          return;
       }
 
@@ -838,7 +839,7 @@ CMDF( do_setrune )
       rune->stat2[0] = value;
       rune->stat2[1] = atoi( argument.c_str(  ) );
       save_runes(  );
-      ch->printf( "%s rune now confers: %s %s\r\n", rune->get_cname(  ), arg3.c_str(  ), argument.c_str(  ) );
+      ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
       return;
    }
 }
@@ -857,7 +858,7 @@ CMDF( do_loadrune )
 
    if( !( rune = check_rune( argument ) ) )
    {
-      ch->printf( "%s does not exist.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "{} does not exist.\r\n", argument );
       return;
    }
 
@@ -867,15 +868,15 @@ CMDF( do_loadrune )
       ch->print( "&RGeneric rune item is MISSING! Report to Samson.\r\n" );
       return;
    }
-   stralloc_printf( &obj->name, "%s rune", rune->get_cname(  ) );
-   stralloc_printf( &obj->short_descr, "%s Rune", rune->get_cname(  ) );
-   stralloc_printf( &obj->objdesc, "A magical %s Rune lies here pulsating.", rune->get_cname(  ) );
+   stralloc_printf( &obj->name, "%s rune", rune->get_name(  ).c_str() );
+   stralloc_printf( &obj->short_descr, "%s Rune", rune->get_name(  ).c_str() );
+   stralloc_printf( &obj->objdesc, "A magical %s Rune lies here pulsating.", rune->get_name(  ).c_str() );
    obj->value[0] = rune->stat1[0];
    obj->value[1] = rune->stat1[1];
    obj->value[2] = rune->stat2[0];
    obj->value[3] = rune->stat2[1];
    obj->to_char( ch );
-   ch->printf( "You now have a %s Rune.\r\n", rune->get_cname(  ) );
+   ch->printf( "You now have a %s Rune.\r\n", rune->get_name(  ).c_str() );
 }
 
 /* Edited by Tarl 2 April 02 for alphabetical display */
@@ -898,11 +899,11 @@ CMDF( do_showrunes )
    {
       for( auto* rune : runelist )
       {
-         ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %d\r\n", rune->get_cname(  ), rarity[rune->get_rarity(  )],
+         ch->pager_fmt( "{:<6.6} {:<10.10} {:<15.15} {:<6} {:<15.15} {}\r\n", rune->get_name(  ), rarity[rune->get_rarity(  )],
                      a_types[rune->stat1[0]], rune->stat1[1], a_types[rune->stat2[0]], rune->stat2[1] );
          ++total;
       }
-      ch->pagerf( "%d total runes displayed.\r\n", total );
+      ch->pager_fmt( "{} total runes displayed.\r\n", total );
    }
    else
    {
@@ -910,12 +911,12 @@ CMDF( do_showrunes )
       {
          if( !str_prefix( argument, rune->get_name(  ) ) )
          {
-            ch->pagerf( "%-6.6s %-10.10s %-15.15s %-6d %-15.15s %-6d\r\n", rune->get_cname(  ), rarity[rune->get_rarity(  )],
+            ch->pager_fmt( "{:<6.6} {:<10.10} {:<15.15} {:<6} {:<15.15} {:<6}\r\n", rune->get_name(  ), rarity[rune->get_rarity(  )],
                         a_types[rune->stat1[0]], rune->stat1[1], a_types[rune->stat2[0]], rune->stat2[1] );
             ++total;
          }
       }
-      ch->pagerf( "%d total runes displayed.\r\n", total );
+      ch->pager_fmt( "{} total runes displayed.\r\n", total );
    }
 }
 
@@ -938,7 +939,7 @@ CMDF( do_runewords )
       for( auto* rword : rwordlist )
       {
          ch->pagerf( "%-17.17s %-6.6s %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d\r\n",
-                     rword->get_cname(  ), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
+                     rword->get_name(  ).c_str(), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
                      a_types[rword->stat1[0]], rword->stat1[1], a_types[rword->stat2[0]], rword->stat2[1],
                      a_types[rword->stat3[0]], rword->stat3[1], a_types[rword->stat4[0]], rword->stat4[1] );
          ++total;
@@ -952,7 +953,7 @@ CMDF( do_runewords )
          if( !str_prefix( argument, rword->get_name(  ) ) )
          {
             ch->pagerf( "%-10.10s %-6.6s %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d\r\n",
-                        rword->get_cname(  ), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
+                        rword->get_name(  ).c_str(), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
                         a_types[rword->stat1[0]], rword->stat1[1], a_types[rword->stat2[0]], rword->stat2[1],
                         a_types[rword->stat3[0]], rword->stat3[1], a_types[rword->stat4[0]], rword->stat4[1] );
             ++total;
@@ -1039,9 +1040,9 @@ obj_data *generate_rune( short level )
       return nullptr;
    }
 
-   stralloc_printf( &newrune->name, "%s rune", rune->get_cname(  ) );
-   stralloc_printf( &newrune->short_descr, "%s Rune", rune->get_cname(  ) );
-   stralloc_printf( &newrune->objdesc, "A magical %s Rune lies here pulsating.", rune->get_cname(  ) );
+   stralloc_printf( &newrune->name, "%s rune", rune->get_name(  ).c_str() );
+   stralloc_printf( &newrune->short_descr, "%s Rune", rune->get_name(  ).c_str() );
+   stralloc_printf( &newrune->objdesc, "A magical %s Rune lies here pulsating.", rune->get_name(  ).c_str() );
    newrune->value[0] = rune->stat1[0];
    newrune->value[1] = rune->stat1[1];
    newrune->value[2] = rune->stat2[0];
@@ -2341,10 +2342,10 @@ CMDF( do_rttest )
 
 void rword_descrips( char_data * ch, obj_data * item, runeword_data * rword )
 {
-   ch->printf( "&YAs you attach the rune, your %s glows radiantly and becomes %s!\r\n", item->short_descr, rword->get_cname(  ) );
-   stralloc_printf( &item->name, "%s %s", item->name, rword->get_cname(  ) );
-   stralloc_printf( &item->short_descr, "%s", rword->get_cname(  ) );
-   stralloc_printf( &item->objdesc, "%s lies here on the ground.", rword->get_cname(  ) );
+   ch->print_fmt( "&YAs you attach the rune, your {} glows radiantly and becomes {}!\r\n", item->short_descr, rword->get_name(  ) );
+   stralloc_printf( &item->name, "%s %s", item->name, rword->get_name(  ).c_str() );
+   stralloc_printf( &item->short_descr, "%s", rword->get_name(  ).c_str() );
+   stralloc_printf( &item->objdesc, "%s lies here on the ground.", rword->get_name(  ).c_str() );
 }
 
 void add_rword_affect( obj_data * item, int v1, int v2 )
@@ -2611,7 +2612,7 @@ CMDF( do_socket )
    ch->printf( "%s cannot be socketed. Only weapons, body armors, and shields are valid.\r\n", item->short_descr );
 }
 
-int get_ore( const std::string & ore )
+int get_ore( std::string_view ore )
 {
    if( !str_cmp( ore, "iron" ) )
       return ORE_IRON;
@@ -2649,13 +2650,14 @@ int get_ore( const std::string & ore )
    return -1;
 }
 
-/* Written by Samson - 6/2/00
-   Rewritten by Dwip - 12/12/02 (Happy Birthday, me!)
-   Re-rewritten by Tarl 13/12/02 (Happy belated Birthday, Dwip ;)
-   Forge command stuff.  Eliminates the need for forgemob. 
-   Utilizes the new armorgen code, and greatly expands the types
-   of things makable with forge.
-*/
+/*
+ * Written by Samson - 6/2/00
+ * Rewritten by Dwip - 12/12/02 (Happy Birthday, me!)
+ * Re-rewritten by Tarl 13/12/02 (Happy belated Birthday, Dwip ;)
+ * Forge command stuff.  Eliminates the need for forgemob.
+ * Utilizes the new armorgen code, and greatly expands the types
+ *  of things makable with forge.
+ */
 CMDF( do_forge )
 {
    /*
@@ -2755,7 +2757,7 @@ CMDF( do_forge )
    ore_type = get_ore( arg );
    if( ore_type == -1 )
    {
-      ch->printf( "%s isn't a valid ore type.\r\n", arg.c_str(  ) );
+      ch->print_fmt( "{} isn't a valid ore type.\r\n", arg );
       return;
    }
 
@@ -2861,7 +2863,7 @@ CMDF( do_forge )
 
    if( orecount < 1 )
    {
-      ch->printf( "You have no %s ore to forge an item with!\r\n", arg.c_str(  ) );
+      ch->print_fmt( "You have no {} ore to forge an item with!\r\n", arg );
       return;
    }
 
@@ -2959,7 +2961,7 @@ CMDF( do_forge )
 
    if( consume == 0 )
    {
-      ch->printf( "%s is not a valid item type to forge.\r\n", item_type.c_str(  ) );
+      ch->print_fmt( "{} is not a valid item type to forge.\r\n", item_type );
       return;
    }
 
@@ -3234,7 +3236,7 @@ CMDF( do_forge )
 
    if( armor == 0 && weapon == 0 )
    {
-      ch->printf( "%s is not a valid item type to forge.\r\n", arg3.c_str(  ) );
+      ch->print_fmt( "{} is not a valid item type to forge.\r\n", arg3 );
       return;
    }
 
@@ -3251,7 +3253,7 @@ CMDF( do_forge )
 
       if( ch->gold < cost )
       {
-         act_printf( AT_TELL, smith, nullptr, ch, TO_VICT, "$n tells you 'It will cost %d gold to forge this, but you cannot afford it!", cost );
+         act_printf( AT_TELL, smith, nullptr, ch, TO_VICT, "$n tells you 'It will cost {} gold to forge this, but you cannot afford it!", cost );
          return;
       }
       else
@@ -3393,7 +3395,7 @@ CMDF( do_forge )
          break;
    }
    if( msmith || gsmith )
-      ch->printf( "%s forges you %s, at a cost of %d gold.\r\n", smith->short_descr, item->short_descr, cost );
+      ch->print_fmt( "{} forges you {}, at a cost of {} gold.\r\n", smith->short_descr, item->short_descr, cost );
    else
-      ch->printf( "You've forged yourself %s!\r\n", aoran( item->short_descr ) );
+      ch->print_fmt( "You've forged yourself {}!\r\n", aoran( item->short_descr ) );
 }

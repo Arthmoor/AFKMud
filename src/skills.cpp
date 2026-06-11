@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <algorithm>
+#include <filesystem>
 #include <format>
 #include "mud.h"
 #include "mudcfg.h"
@@ -47,14 +48,14 @@ SPELLF( spell_smaug );
 SPELLF( spell_notfound );
 SPELLF( spell_null );
 int ris_save( char_data *, int, int );
-bool validate_spec_fun( const std::string & );
+bool validate_spec_fun( std::string_view );
 bool is_safe( char_data *, char_data * );
 bool check_illegal_pk( char_data *, char_data * );
 bool legal_loot( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
 void failed_casting( class skill_type *, char_data *, char_data *, obj_data * );
 void check_mount_objs( char_data *, bool );
-int get_door( const std::string & );
+int get_door( std::string_view );
 void check_killer( char_data *, char_data * );
 void raw_kill( char_data *, char_data * );
 void death_cry( char_data * );
@@ -375,7 +376,117 @@ skill_type::~skill_type(  )
    DISPOSE( helptext );
 }
 
-int get_skillflag( const std::string & flag )
+bool SPELL_FLAG( const skill_type * skill, int flag )
+{
+   if( skill->flags.test(flag) )
+      return true;
+   return false;
+}
+
+int SPELL_DAMAGE( const skill_type * skill )
+{
+   return( skill->info & 7 );
+}
+
+int SPELL_ACTION( const skill_type * skill )
+{
+   return( ( skill->info >> 3 ) & 7 );
+}
+
+int SPELL_CLASS( const skill_type * skill )
+{
+   return( ( skill->info >> 6 ) & 7 );
+}
+
+int SPELL_POWER( const skill_type * skill )
+{
+   return( ( skill->info >> 9 ) & 3 );
+}
+
+int SPELL_SAVE( const skill_type * skill )
+{
+   return( ( skill->info >> 11 ) & 7 );
+}
+
+void SET_SDAM( skill_type * skill, int val )
+{
+   skill->info = ( skill->info & SDAM_MASK ) + ( val & 7 );
+}
+
+void SET_SACT( skill_type * skill, int val )
+{
+   skill->info = ( skill->info & SACT_MASK ) + ( ( val & 7 ) << 3 );
+}
+
+void SET_SCLA( skill_type * skill, int val )
+{
+   skill->info = ( skill->info & SCLA_MASK ) + ( ( val & 7 ) << 6 );
+}
+
+void SET_SPOW( skill_type * skill, int val )
+{
+   skill->info = ( skill->info & SPOW_MASK ) + ( ( val & 3 ) << 9 );
+}
+
+void SET_SSAV( skill_type * skill, int val )
+{
+   skill->info = ( skill->info & SSAV_MASK ) + ( ( val & 7 ) << 11 );
+}
+
+/*
+ * RIS by gsn lookups. -- Altrag.
+ * Will need to add some || stuff for spells that need a special GSN.
+ */
+bool IS_FIRE( int dt )
+{
+   if( IS_VALID_SN( dt ) && SPELL_DAMAGE( skill_table[dt] ) == SD_FIRE )
+      return true;
+   return false;
+}
+
+bool IS_COLD( int dt )
+{
+   if( IS_VALID_SN( dt ) && SPELL_DAMAGE( skill_table[dt] ) == SD_COLD )
+      return true;
+   return false;
+}
+
+bool IS_ACID( int dt )
+{
+   if( IS_VALID_SN(dt) && SPELL_DAMAGE( skill_table[dt] ) == SD_ACID )
+      return true;
+   return false;
+}
+
+bool IS_ELECTRICITY( int dt )
+{
+   if( IS_VALID_SN(dt) && SPELL_DAMAGE( skill_table[dt] ) == SD_ELECTRICITY )
+      return true;
+   return false;
+}
+
+bool IS_ENERGY( int dt )
+{
+   if( IS_VALID_SN(dt) && SPELL_DAMAGE( skill_table[dt] ) == SD_ENERGY )
+      return true;
+   return false;
+}
+
+bool IS_DRAIN( int dt )
+{
+   if( IS_VALID_SN(dt) && SPELL_DAMAGE( skill_table[dt] ) == SD_DRAIN )
+      return true;
+   return false;
+}
+
+bool IS_POISON( int dt )
+{
+   if( IS_VALID_SN(dt) && SPELL_DAMAGE( skill_table[dt] ) == SD_POISON )
+      return true;
+   return false;
+}
+
+int get_skillflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( spell_flag ) / sizeof( spell_flag[0] ) ); ++x )
       if( !str_cmp( flag, spell_flag[x] ) )
@@ -389,19 +500,19 @@ string_sort::string_sort( void )
 {
 }
 
-bool string_sort::operator(  ) ( const std::string & left, const std::string & right ) const
+bool string_sort::operator(  ) ( std::string_view left, std::string_view right ) const
 {
    return ( left.compare( right ) < 0 );
 }
 
 // Used to find skills using their prefix
-find__skill_prefix::find__skill_prefix( char_data * p_actor, const std::string & p_value )
+find__skill_prefix::find__skill_prefix( char_data * p_actor, std::string_view p_value )
 {
    actor = p_actor;
    value = p_value;
 }
 
-bool find__skill_prefix::operator(  ) ( std::pair < std::string, int > compare )
+bool find__skill_prefix::operator(  ) ( std::pair < std::string_view, int > compare )
 {
    std::string key;
    int sn;
@@ -416,13 +527,13 @@ bool find__skill_prefix::operator(  ) ( std::pair < std::string, int > compare )
 }
 
 // Used to find skills using the exact name.
-find__skill_exact::find__skill_exact( char_data * p_actor, const std::string & p_value )
+find__skill_exact::find__skill_exact( char_data * p_actor, std::string_view p_value )
 {
    actor = p_actor;
    value = p_value;
 }
 
-bool find__skill_exact::operator(  ) ( std::pair < std::string, int > compare )
+bool find__skill_exact::operator(  ) ( std::pair < std::string_view, int > compare )
 {
    std::string key;
    int sn;
@@ -437,7 +548,7 @@ bool find__skill_exact::operator(  ) ( std::pair < std::string, int > compare )
 }
 
 // Skill Search Functions
-int search_skill_prefix( SKILL_INDEX index, const std::string & key )
+int search_skill_prefix( SKILL_INDEX index, std::string_view key )
 {
    SKILL_INDEX::iterator fnd, it, end;
 
@@ -449,7 +560,7 @@ int search_skill_prefix( SKILL_INDEX index, const std::string & key )
    return fnd->second;
 }
 
-int search_skill_prefix( SKILL_INDEX index, const std::string & key, char_data * actor )
+int search_skill_prefix( SKILL_INDEX index, std::string_view key, char_data * actor )
 {
    SKILL_INDEX::iterator fnd, it, end;
 
@@ -465,7 +576,7 @@ int search_skill_prefix( SKILL_INDEX index, const std::string & key, char_data *
    return fnd->second;
 }
 
-int search_skill_exact( SKILL_INDEX index, const std::string & key )
+int search_skill_exact( SKILL_INDEX index, std::string_view key )
 {
    SKILL_INDEX::iterator fnd;
 
@@ -474,7 +585,7 @@ int search_skill_exact( SKILL_INDEX index, const std::string & key )
    return fnd->second;
 }
 
-int search_skill_exact( SKILL_INDEX index, const std::string & key, char_data * actor )
+int search_skill_exact( SKILL_INDEX index, std::string_view key, char_data * actor )
 {
    SKILL_INDEX::iterator fnd, it, end;
 
@@ -490,7 +601,7 @@ int search_skill_exact( SKILL_INDEX index, const std::string & key, char_data * 
    return fnd->second;
 }
 
-int search_skill( SKILL_INDEX index, const std::string & key )
+int search_skill( SKILL_INDEX index, std::string_view key )
 {
    int sn;
 
@@ -499,7 +610,7 @@ int search_skill( SKILL_INDEX index, const std::string & key )
    return search_skill_prefix( index, key );
 }
 
-int search_skill( SKILL_INDEX index, const std::string & key, char_data * actor )
+int search_skill( SKILL_INDEX index, std::string_view key, char_data * actor )
 {
    int sn;
 
@@ -508,7 +619,7 @@ int search_skill( SKILL_INDEX index, const std::string & key, char_data * actor 
    return search_skill_prefix( index, key, actor );
 }
 
-int find_spell( char_data * ch, const std::string & name, bool know )
+int find_spell( char_data * ch, std::string_view name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__spell, name );
@@ -516,7 +627,7 @@ int find_spell( char_data * ch, const std::string & name, bool know )
       return search_skill( skill_table__spell, name, ch );
 }
 
-int find_skill( char_data * ch, const std::string & name, bool know )
+int find_skill( char_data * ch, std::string_view name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__skill, name );
@@ -524,7 +635,7 @@ int find_skill( char_data * ch, const std::string & name, bool know )
       return search_skill( skill_table__skill, name, ch );
 }
 
-int find_combat( char_data * ch, const std::string & name, bool know )
+int find_combat( char_data * ch, std::string_view name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__combat, name );
@@ -532,7 +643,7 @@ int find_combat( char_data * ch, const std::string & name, bool know )
       return search_skill( skill_table__combat, name, ch );
 }
 
-int find_ability( char_data * ch, const std::string & name, bool know )
+int find_ability( char_data * ch, std::string_view name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__racial, name );
@@ -540,7 +651,7 @@ int find_ability( char_data * ch, const std::string & name, bool know )
       return search_skill( skill_table__racial, name, ch );
 }
 
-int find_tongue( char_data * ch, const std::string & name, bool know )
+int find_tongue( char_data * ch, std::string_view name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__tongue, name );
@@ -548,7 +659,7 @@ int find_tongue( char_data * ch, const std::string & name, bool know )
       return search_skill( skill_table__tongue, name, ch );
 }
 
-int find_lore( char_data * ch, const std::string & name, bool know )
+int find_lore( char_data * ch, std::string_view name, bool know )
 {
    if( !ch || ch->isnpc(  ) || !know )
       return search_skill( skill_table__lore, name );
@@ -556,31 +667,10 @@ int find_lore( char_data * ch, const std::string & name, bool know )
       return search_skill( skill_table__lore, name, ch );
 }
 
-bool IS_VALID_SN( int sn )
-{
-   if( sn >= 0 && sn < MAX_SKILL && skill_table[sn] && skill_table[sn]->name )
-      return true;
-   return false;
-}
-
-bool IS_VALID_HERB( int sn )
-{
-   if( sn >= 0 && sn < MAX_HERB && herb_table[sn] && herb_table[sn]->name )
-      return true;
-   return false;
-}
-
-bool IS_VALID_DISEASE( int sn )
-{
-   if( sn >= 0 && sn < MAX_DISEASE && disease_table[sn] && disease_table[sn]->name )
-      return true;
-   return false;
-}
-
 /*
  * Lookup a skill by name, only stopping at skills the player has.
  */
-int ch_slookup( char_data * ch, const std::string & name )
+int ch_slookup( char_data * ch, std::string_view name )
 {
    int sn;
 
@@ -616,7 +706,7 @@ int ch_slookup( char_data * ch, const std::string & name )
  * to do so aside from the find_* functions above.
  * If you want more fine-grained lookups this is the place to put them.
  */
-int skill_lookup( const std::string & name )
+int skill_lookup( std::string_view name )
 {
    int sn;
 
@@ -646,7 +736,7 @@ skill_type *get_skilltype( int sn )
 /*
  * Lookup an herb by name.
  */
-int herb_lookup( const std::string & name )
+int herb_lookup( std::string_view name )
 {
    for( int sn = 0; sn < top_herb; ++sn )
    {
@@ -714,6 +804,27 @@ void remap_slot_numbers( void )
          }
       }
    }
+}
+
+bool IS_VALID_SN( int sn )
+{
+   if( sn >= 0 && sn < MAX_SKILL && skill_table[sn] && skill_table[sn]->name )
+      return true;
+   return false;
+}
+
+bool IS_VALID_HERB( int sn )
+{
+   if( sn >= 0 && sn < MAX_HERB && herb_table[sn] && herb_table[sn]->name )
+      return true;
+   return false;
+}
+
+bool IS_VALID_DISEASE( int sn )
+{
+   if( sn >= 0 && sn < MAX_DISEASE && disease_table[sn] && disease_table[sn]->name )
+      return true;
+   return false;
 }
 
 /*
@@ -940,9 +1051,9 @@ void save_skill_table( void )
    int x;
    FILE *fpout;
 
-   if( !( fpout = fopen( SKILL_FILE, "w" ) ) )
+   std::filesystem::path filename = SKILL_FILE;
+   if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
-      perror( SKILL_FILE );
       bug( "%s: Cannot open skills.dat for writing", __func__ );
       return;
    }
@@ -969,9 +1080,9 @@ void save_herb_table(  )
    int x;
    FILE *fpout;
 
-   if( !( fpout = fopen( HERB_FILE, "w" ) ) )
+   std::filesystem::path filename = HERB_FILE;
+   if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
-      perror( HERB_FILE );
       bug( "%s: Cannot open herbs.dat for writing", __func__ );
       return;
    }
@@ -1318,7 +1429,8 @@ void load_skill_table( void )
    FILE *fp;
    int version = 0;
 
-   if( ( fp = fopen( SKILL_FILE, "r" ) ) != nullptr )
+   std::filesystem::path filename = SKILL_FILE;
+   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
       fpArea = fp;
       num_skills = 0;
@@ -1371,9 +1483,8 @@ void load_skill_table( void )
    }
    else
    {
-      perror( SKILL_FILE );
       bug( "%s: Cannot open skills.dat", __func__ );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
 }
 
@@ -1382,7 +1493,7 @@ void load_herb_table(  )
    FILE *fp;
    int version = 0;
 
-   if( ( fp = fopen( HERB_FILE, "r" ) ) != nullptr )
+   if( ( fp = fopen( HERB_FILE.data(), "r" ) ) != nullptr )
    {
       top_herb = 0;
       for( ;; )
@@ -1435,7 +1546,7 @@ void load_herb_table(  )
    else
    {
       bug( "%s: Cannot open herbs.dat", __func__ );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
 }
 
@@ -1600,7 +1711,7 @@ CMDF( do_viewskills )
    }
 }
 
-int get_ssave( const std::string & name )
+int get_ssave( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( spell_saves ) / sizeof( spell_saves[0] ); ++x )
       if( !str_cmp( name, spell_saves[x] ) )
@@ -1608,7 +1719,7 @@ int get_ssave( const std::string & name )
    return -1;
 }
 
-int get_starget( const std::string & name )
+int get_starget( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( target_type ) / sizeof( target_type[0] ); ++x )
       if( !str_cmp( name, target_type[x] ) )
@@ -1616,7 +1727,7 @@ int get_starget( const std::string & name )
    return -1;
 }
 
-int get_sflag( const std::string & name )
+int get_sflag( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( spell_flag ) / sizeof( spell_flag[0] ); ++x )
       if( !str_cmp( name, spell_flag[x] ) )
@@ -1624,7 +1735,7 @@ int get_sflag( const std::string & name )
    return -1;
 }
 
-int get_sdamage( const std::string & name )
+int get_sdamage( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( spell_damage ) / sizeof( spell_damage[0] ); ++x )
       if( !str_cmp( name, spell_damage[x] ) )
@@ -1632,7 +1743,7 @@ int get_sdamage( const std::string & name )
    return -1;
 }
 
-int get_saction( const std::string & name )
+int get_saction( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( spell_action ) / sizeof( spell_action[0] ); ++x )
       if( !str_cmp( name, spell_action[x] ) )
@@ -1640,7 +1751,7 @@ int get_saction( const std::string & name )
    return -1;
 }
 
-int get_ssave_effect( const std::string & name )
+int get_ssave_effect( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( spell_save_effect ) / sizeof( spell_save_effect[0] ); ++x )
       if( !str_cmp( name, spell_save_effect[x] ) )
@@ -1648,7 +1759,7 @@ int get_ssave_effect( const std::string & name )
    return -1;
 }
 
-int get_spower( const std::string & name )
+int get_spower( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( spell_power ) / sizeof( spell_power[0] ); ++x )
       if( !str_cmp( name, spell_power[x] ) )
@@ -1656,7 +1767,7 @@ int get_spower( const std::string & name )
    return -1;
 }
 
-int get_sclass( const std::string & name )
+int get_sclass( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( spell_class ) / sizeof( spell_class[0] ); ++x )
       if( !str_cmp( name, spell_class[x] ) )
@@ -1664,7 +1775,7 @@ int get_sclass( const std::string & name )
    return -1;
 }
 
-int skill_number( const std::string & argument )
+int skill_number( std::string_view argument )
 {
    int sn;
 
@@ -1673,7 +1784,7 @@ int skill_number( const std::string & argument )
    return -1;
 }
 
-bool get_skill_help( char_data * ch, const std::string & argument )
+bool get_skill_help( char_data * ch, std::string_view argument )
 {
    skill_type *skill = nullptr;
    int sn;
@@ -1817,7 +1928,7 @@ bool can_use_skill( char_data * ch, int percent, int gsn )
    return check;
 }
 
-bool check_ability( char_data * ch, const std::string & command, const std::string & argument )
+bool check_ability( char_data * ch, std::string_view command, std::string_view argument )
 {
    int sn, mana;
 
@@ -2034,7 +2145,7 @@ bool check_ability( char_data * ch, const std::string & command, const std::stri
 
    ch->prev_cmd = ch->last_cmd;  /* haus, for automapping */
    ch->last_cmd = skill_table[sn]->skill_fun;
-   ( *skill_table[sn]->skill_fun ) ( ch, argument );
+   ( *skill_table[sn]->skill_fun ) ( ch, std::string{argument} );
 
    return true;
 }
@@ -2044,7 +2155,7 @@ bool check_ability( char_data * ch, const std::string & command, const std::stri
  * Each different section of the skill table is sorted alphabetically
  * Only match skills player knows - Thoric
  */
-bool check_skill( char_data * ch, const std::string & command, const std::string & argument )
+bool check_skill( char_data * ch, std::string_view command, std::string_view argument )
 {
    int sn, mana;
 
@@ -2259,7 +2370,7 @@ bool check_skill( char_data * ch, const std::string & command, const std::string
 
    ch->prev_cmd = ch->last_cmd;  /* haus, for automapping */
    ch->last_cmd = skill_table[sn]->skill_fun;
-   ( *skill_table[sn]->skill_fun ) ( ch, argument );
+   ( *skill_table[sn]->skill_fun ) ( ch, std::string{argument} );
 
    return true;
 }
@@ -3483,7 +3594,7 @@ CMDF( do_grapple )
    af.bit = AFF_GRAPPLE;
    ch->affect_to_char( &af );
 
-   ch->printf( "You manage to grab hold of %s!\r\n", capitalize( victim->name ) );
+   ch->print_fmt( "You manage to grab hold of {}!\r\n", capitalize( victim->name ) );
    act( AT_ACTION, "$n grabs hold of you!", ch, nullptr, victim, TO_VICT );
    act( AT_ACTION, "$n begins grappling with $N!", ch, nullptr, victim, TO_NOTVICT );
    check_illegal_pk( ch, victim );
@@ -4777,7 +4888,7 @@ CMDF( do_bash )
    if( victim->has_actflag( ACT_HUGE ) || victim->has_aflag( AFF_GROWTH ) )
       if( !IsGiant( ch ) && !ch->has_aflag( AFF_GROWTH ) )
       {
-         ch->printf( "%s is MUCH too large to bash!\r\n", PERS( victim, ch, false ) );
+         ch->print_fmt( "{} is MUCH too large to bash!\r\n", PERS( victim, ch, false ) );
          return;
       }
 
@@ -7946,8 +8057,8 @@ CMDF( do_tan )
    else if( hide->item_type == ITEM_DRINK_CON )
       hide->value[0] = acapply + 10;
 
-   act_printf( AT_PLAIN, ch, corpse, nullptr, TO_CHAR, "You carve %s from $p.", hide->name );
-   act_printf( AT_PLAIN, ch, corpse, nullptr, TO_ROOM, "$n carves %s from $p.", hide->name );
+   act_printf( AT_PLAIN, ch, corpse, nullptr, TO_CHAR, "You carve {} from $p.", hide->name );
+   act_printf( AT_PLAIN, ch, corpse, nullptr, TO_ROOM, "$n carves {} from $p.", hide->name );
 
    /*
     * Tanning won't destroy what the corpse was carrying - Samson 11-20-99 

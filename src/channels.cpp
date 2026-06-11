@@ -26,6 +26,7 @@
  *                          Dynamic Channel System                          *
  ****************************************************************************/
 
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include "mud.h"
@@ -36,7 +37,7 @@
 #include "objindex.h"
 #include "roomindex.h"
 
-std::string translate( int, const std::string &, const std::string & );
+std::string translate( int, std::string_view, std::string_view );
 #if !defined(__CYGWIN__)
 #ifdef MULTIPORT
 void mud_message( char_data *, mud_channel *, const std::string & );
@@ -86,7 +87,7 @@ mud_channel::~mud_channel(  )
    chanlist.remove( this );
 }
 
-int get_chantypes( const std::string & name )
+int get_chantypes( std::string_view name )
 {
    for( size_t x = 0; x < sizeof( chan_types ) / sizeof( chan_types[0] ); ++x )
       if( !str_cmp( name, chan_types[x] ) )
@@ -94,7 +95,7 @@ int get_chantypes( const std::string & name )
    return -1;
 }
 
-int get_chanflag( const std::string & flag )
+int get_chanflag( std::string_view flag )
 {
    for( size_t x = 0; x < ( sizeof( chan_flags ) / sizeof( chan_flags[0] ) ); ++x )
       if( !str_cmp( flag, chan_flags[x] ) )
@@ -113,7 +114,7 @@ void load_mudchannels( void )
 
    chanlist.clear(  );
 
-   stream.open( CHANNEL_FILE );
+   stream.open( std::filesystem::path( CHANNEL_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_string( "No channel file found." );
@@ -171,32 +172,30 @@ void save_mudchannels( void )
 {
    std::ofstream stream;
 
-   stream.open( CHANNEL_FILE );
+   stream.open( std::filesystem::path( CHANNEL_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( CHANNEL_FILE );
+      bug( "%s: Cannot write to channel file.", __func__ );
+      return;
    }
-   else
-   {
-      stream << "#VERSION " << CHANNEL_VERSION << std::endl;
 
-      for( auto* channel : chanlist )
+   stream << "#VERSION " << CHANNEL_VERSION << std::endl;
+
+   for( auto* channel : chanlist )
+   {
+      if( !channel->name.empty(  ) )
       {
-         if( !channel->name.empty(  ) )
-         {
-            stream << "#CHANNEL" << std::endl;
-            stream << "ChanName      " << channel->name << std::endl;
-            stream << "ChanColorname " << channel->colorname << std::endl;
-            stream << "ChanLevel     " << channel->level << std::endl;
-            stream << "ChanType      " << channel->type << std::endl;
-            if( channel->flags.any(  ) )
-               stream << "ChanFlags     " << bitset_string( channel->flags, chan_flags ) << std::endl;
-            stream << "End" << std::endl << std::endl;
-         }
+         stream << "#CHANNEL" << std::endl;
+         stream << "ChanName      " << channel->name << std::endl;
+         stream << "ChanColorname " << channel->colorname << std::endl;
+         stream << "ChanLevel     " << channel->level << std::endl;
+         stream << "ChanType      " << channel->type << std::endl;
+         if( channel->flags.any(  ) )
+            stream << "ChanFlags     " << bitset_string( channel->flags, chan_flags ) << std::endl;
+         stream << "End" << std::endl << std::endl;
       }
-      stream.close(  );
    }
+   stream.close(  );
 }
 
 mud_channel *find_channel( std::string_view name )
@@ -589,7 +588,7 @@ void update_channel_history( char_data * ch, mud_channel * channel, const std::s
    }
 }
 
-/* Duplicate of to_channel from act_comm.c modified for dynamic channels */
+/* Duplicate of to_channel from act_comm.cpp modified for dynamic channels */
 void send_tochannel( char_data * ch, mud_channel * channel, std::string & argument )
 {
    int speaking = -1;
@@ -721,24 +720,23 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
 
    if( social )
    {
-      act_printf( AT_PLAIN, ch, argument.c_str(  ), victim, TO_CHAR, "&W[&[%s]%s&W] &[%s]%s",
-                  channel->colorname.c_str(  ), capitalize( channel->name ).c_str(  ), channel->colorname.c_str(  ), socbuf_char.c_str(  ) );
+      act_printf( AT_PLAIN, ch, argument.c_str(), victim, TO_CHAR, "&W[&[{}]{}&W] &[{}]{}", channel->colorname, capitalize( channel->name ), channel->colorname, socbuf_char );
    }
    else if( emote )
    {
-      ch->printf( "&W[&[%s]%s&W] &[%s]%s %s\r\n",
-                  channel->colorname.c_str(  ), capitalize( channel->name ).c_str(  ), channel->colorname.c_str(  ), ch->name, argument.c_str(  ) );
+      ch->print_fmt( "&W[&[{}]{}&W] &[{}]{} {}\r\n",
+                  channel->colorname, capitalize( channel->name ), channel->colorname, ch->name, argument );
    }
    else
    {
       if( ch->has_pcflag( PCFLAG_WIZINVIS ) )
-         ch->printf( "&[%s](%d) You %s '%s'\r\n", channel->colorname.c_str(  ), ( !ch->isnpc(  ) ? ch->pcdata->wizinvis : ch->mobinvis ), channel->name.c_str(  ), argument.c_str(  ) );
+         ch->print_fmt( "&[{}]({}) You {} '{}'\r\n", channel->colorname, ( !ch->isnpc(  ) ? ch->pcdata->wizinvis : ch->mobinvis ), channel->name, argument );
       else
-         ch->printf( "&[%s]You %s '%s'\r\n", channel->colorname.c_str(  ), channel->name.c_str(  ), argument.c_str(  ) );
+         ch->print_fmt( "&[{}]You {} '{}'\r\n", channel->colorname, channel->name, argument );
    }
 
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
-      append_to_file( LOG_FILE, "%s: %s (%s)", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ), channel->name.c_str(  ) );
+      append_to_file( LOG_FILE, "{}: {} ({})", ch->isnpc(  )? ch->short_descr : ch->name, argument, channel->name );
 
    /*
     * Channel history. Records the last MAX_CHANHISTORY messages to channels which keep historys 
@@ -869,13 +867,13 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
          {
             if( vch == victim )
             {
-               act_printf( AT_PLAIN, ch, nullptr, vch, TO_VICT, "&W[&[%s]%s&W] &[%s]%s",
-                           channel->colorname.c_str(  ), capitalize( channel->name ).c_str(  ), channel->colorname.c_str(  ), socbuf_vict.c_str(  ) );
+               act_printf( AT_PLAIN, ch, nullptr, vch, TO_VICT, "&W[&[{}]{}&W] &[{}]{}",
+                           channel->colorname, capitalize( channel->name ), channel->colorname, socbuf_vict );
             }
             else
             {
-               act_printf( AT_PLAIN, ch, vch, victim, TO_THIRD, "&W[&[%s]%s&W] &[%s]%s", channel->colorname.c_str(  ),
-                           capitalize( channel->name ).c_str(  ), channel->colorname.c_str(  ), socbuf_other.c_str(  ) );
+               act_printf( AT_PLAIN, ch, vch, victim, TO_THIRD, "&W[&[{}]{}&W] &[{}]{}", channel->colorname,
+                           capitalize( channel->name ), channel->colorname, socbuf_other );
             }
          }
 
@@ -948,7 +946,7 @@ void to_channel( std::string_view argument, std::string_view xchannel, int level
    }
 }
 
-bool local_channel_hook( char_data * ch, const std::string & command, std::string & argument )
+bool local_channel_hook( char_data * ch, std::string_view command, std::string & argument )
 {
    mud_channel *channel;
 

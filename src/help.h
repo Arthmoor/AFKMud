@@ -28,7 +28,7 @@
 
 #pragma once
 
-#define HELP_FILE SYSTEM_DIR "helps.dat"  // Data file where helps are stored now.
+inline constexpr std::string_view HELP_FILE = "../system/helps.dat";  // Data file where helps are stored now.
 
 /*
  * Help table types.

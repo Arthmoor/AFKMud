@@ -44,6 +44,7 @@
 #include <fstream>
 #include "mud.h"
 #include "bits.h"
+#include "mud_prog.h"
 
 /* These are the ends of the linked lists that store the mud's library of valid bits. */
 std::map<int, std::string> abits;
@@ -672,19 +673,19 @@ CMDF( do_mpaset )
 
    if( arg1.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpaset: missing victim" );
+      progbug( "Mpaset: missing victim", ch );
       return;
    }
 
    if( arg2.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpaset: missing bit" );
+      progbug( "Mpaset: missing bit", ch );
       return;
    }
 
    if( !( victim = ch->get_char_room( arg1 ) ) )
    {
-      progbugf( ch, "Mpaset: victim %s not in room", arg1.c_str(  ) );
+      progbugf( ch, "Mpaset: victim {} not in room", arg1 );
       return;
    }
 
@@ -721,25 +722,25 @@ CMDF( do_mpqset )
 
    if( arg1.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpqset: missing victim" );
+      progbug( "Mpqset: missing victim", ch );
       return;
    }
 
    if( arg2.empty(  ) )
    {
-      progbugf( ch, "%s", "Mpqset: missing bit" );
+      progbug( "Mpqset: missing bit", ch );
       return;
    }
 
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
-      progbugf( ch, "Mpqset: victim %s not in game", arg1.c_str(  ) );
+      progbugf( ch, "Mpqset: victim {} not in game", arg1 );
       return;
    }
 
    if( victim->isnpc(  ) )
    {
-      progbugf( ch, "Mpqset: setting Qbit on NPC %s", victim->short_descr );
+      progbugf( ch, "Mpqset: setting Qbit on NPC {}", victim->short_descr );
       return;
    }
 

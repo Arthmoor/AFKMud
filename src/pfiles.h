@@ -30,3 +30,4 @@
 
 extern std::chrono::system_clock::time_point new_pfile_time_t;
 extern int num_pfiles;
+inline constexpr std::string_view QUOTE_FILE = "quotes.dat";

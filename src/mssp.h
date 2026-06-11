@@ -110,14 +110,14 @@ struct msspinfo
    bool playerGuilds;
 };    
 
-#define MSSP_FILE SYSTEM_DIR "mssp.dat"
+inline constexpr std::string_view MSSP_FILE = "../system/mssp.dat";
 
-const int MSSP_MINAGE = 0;
-const int MSSP_MAXAGE = 21;
+constexpr int MSSP_MINAGE = 0;
+constexpr int MSSP_MAXAGE = 21;
 
-const int MSSP_MINCREATED = 2001;
-const int MSSP_MAXCREATED = 2100;
+constexpr int MSSP_MINCREATED = 2001;
+constexpr int MSSP_MAXCREATED = 2100;
 
-const int MSSP_MAXVAL = 20000;
-const int MAX_MSSP_VAR1 = 4;
-const int MAX_MSSP_VAR2 = 3;
+constexpr int MSSP_MAXVAL = 20000;
+constexpr int MAX_MSSP_VAR1 = 4;
+constexpr int MAX_MSSP_VAR2 = 3;

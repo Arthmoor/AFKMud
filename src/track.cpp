@@ -35,21 +35,15 @@ const int BFS_ALREADY_THERE = -2;
 const int BFS_NO_PATH = -3;
 const int BFS_MARK = ROOM_TRACK;
 
-#define TRACK_THROUGH_DOORS
-
 void start_hunting( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
-bool mob_fire( char_data *, const std::string & );
-char_data *scan_for_vic( char_data *, exit_data *, const std::string & );
+bool mob_fire( char_data *, std::string_view );
+char_data *scan_for_vic( char_data *, exit_data *, std::string_view );
 void stop_hating( char_data * );
 void stop_hunting( char_data * );
 void stop_fearing( char_data * );
 int IsHumanoid( char_data * );
 
-/* You can define or not define TRACK_THOUGH_DOORS, above, depending on
- whether or not you want track to find paths which lead through closed
- or hidden doors.
- */
 struct bfs_data
 {
    room_index *room;
@@ -59,18 +53,9 @@ struct bfs_data
 
 static bfs_data *queue_head = nullptr, *queue_tail = nullptr, *room_queue = nullptr;
 
-/* Utility macros */
-#define MARK(room)	( (room)->flags.set( BFS_MARK ) )
-#define UNMARK(room)	( (room)->flags.reset( BFS_MARK ) )
-#define IS_MARKED(room)	( (room)->flags.test( BFS_MARK ) )
-
 bool valid_edge( exit_data * pexit )
 {
-   if( pexit->to_room && !IS_MARKED( pexit->to_room )
-#ifndef TRACK_THROUGH_DOORS
-       && !IS_EXIT_FLAG( pexit, EX_CLOSED )
-#endif
-       )
+   if( pexit->to_room && !pexit->to_room->flags.test( BFS_MARK ) && !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       return true;
    else
       return false;
@@ -128,7 +113,7 @@ void clean_room_queue( void )
 
    for( curr = room_queue; curr; curr = curr_next )
    {
-      UNMARK( curr->room );
+      curr->room->flags.reset( BFS_MARK );
       curr_next = curr->next;
       deleteptr( curr );
    }
@@ -150,7 +135,7 @@ int find_first_step( room_index * src, room_index * target, int maxdist )
       return BFS_NO_PATH;
 
    room_enqueue( src );
-   MARK( src );
+   src->flags.set( BFS_MARK );
 
    /*
     * first, enqueue the first steps, saving which direction we're going. 
@@ -164,7 +149,7 @@ int find_first_step( room_index * src, room_index * target, int maxdist )
       if( valid_edge( pexit ) )
       {
          curr_dir = pexit->vdir;
-         MARK( pexit->to_room );
+         pexit->to_room->flags.set( BFS_MARK );
          room_enqueue( pexit->to_room );
          bfs_enqueue( pexit->to_room, curr_dir );
       }
@@ -195,7 +180,7 @@ int find_first_step( room_index * src, room_index * target, int maxdist )
             if( valid_edge( pexit ) )
             {
                curr_dir = pexit->vdir;
-               MARK( pexit->to_room );
+               pexit->to_room->flags.set( BFS_MARK );
                room_enqueue( pexit->to_room );
                bfs_enqueue( pexit->to_room, queue_head->dir );
             }

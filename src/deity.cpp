@@ -65,7 +65,7 @@ void free_deities( void )
 }
 
 /* Get pointer to deity structure from deity name */
-deity_data *get_deity( const std::string & name )
+deity_data *get_deity( std::string_view name )
 {
    for( auto* deity : deitylist )
    {
@@ -89,15 +89,16 @@ void write_deity_list( void )
    std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
    fpout = fopen( filename.c_str(), "w" );
    if( !fpout )
-      bug( "%s: FATAL: cannot open deity.lst for writing!", __func__ );
-   else
    {
-      for( auto* deity : deitylist )
-         fprintf( fpout, "%s\n", deity->filename.c_str(  ) );
-
-      fprintf( fpout, "%s", "$\n" );
-      FCLOSE( fpout );
+      bug( "%s: FATAL: cannot open deity.lst for writing!", __func__ );
+      return;
    }
+
+   for( auto* deity : deitylist )
+      fprintf( fpout, "%s\n", deity->filename.c_str(  ) );
+
+   fprintf( fpout, "%s", "$\n" );
+   FCLOSE( fpout );
 }
 
 /* Save a deity's data to its data file */
@@ -126,71 +127,69 @@ void save_deity( deity_data * deity )
 
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( filename.c_str() );
+      bug( "%s: Cannot write to deity file %s.", __func__, filename.c_str() );
+      return;
    }
-   else
-   {
-      fprintf( fp, "#VERSION %d\n", DEITY_VERSION );  /* Adjani, 1-31-04 */
-      fprintf( fp, "%s", "#DEITY\n" );
-      fprintf( fp, "Filename        %s~\n", deity->filename.c_str(  ) );
-      fprintf( fp, "Name            %s~\n", deity->name.c_str(  ) );
-      fprintf( fp, "Description     %s~\n", strip_cr( deity->deitydesc ).c_str(  ) );
-      fprintf( fp, "Alignment       %d\n", deity->alignment );
-      fprintf( fp, "Worshippers     %d\n", deity->worshippers );
-      fprintf( fp, "Flee            %d\n", deity->flee );
-      fprintf( fp, "Flee_npcraces   %d %d %d\n", deity->flee_npcrace[0], deity->flee_npcrace[1], deity->flee_npcrace[2] );
-      fprintf( fp, "Flee_npcfoes    %d %d %d\n", deity->flee_npcfoe[0], deity->flee_npcfoe[1], deity->flee_npcfoe[2] );
-      fprintf( fp, "Kill            %d\n", deity->kill );
-      fprintf( fp, "Kill_magic      %d\n", deity->kill_magic );
-      fprintf( fp, "Kill_npcraces   %d %d %d\n", deity->kill_npcrace[0], deity->kill_npcrace[1], deity->kill_npcrace[2] );
-      fprintf( fp, "Kill_npcfoes    %d %d %d\n", deity->kill_npcfoe[0], deity->kill_npcfoe[1], deity->kill_npcfoe[2] );
-      fprintf( fp, "Sac             %d\n", deity->sac );
-      fprintf( fp, "Bury_corpse     %d\n", deity->bury_corpse );
-      fprintf( fp, "Aid_spell       %d\n", deity->aid_spell );
-      fprintf( fp, "Aid             %d\n", deity->aid );
-      fprintf( fp, "Steal           %d\n", deity->steal );
-      fprintf( fp, "Backstab        %d\n", deity->backstab );
-      fprintf( fp, "Die             %d\n", deity->die );
-      fprintf( fp, "Die_npcraces    %d %d %d\n", deity->die_npcrace[0], deity->die_npcrace[1], deity->die_npcrace[2] );
-      fprintf( fp, "Die_npcfoes     %d %d %d\n", deity->die_npcfoe[0], deity->die_npcfoe[1], deity->die_npcfoe[2] );
-      fprintf( fp, "Spell_aid       %d\n", deity->spell_aid );
-      fprintf( fp, "Dig_corpse      %d\n", deity->dig_corpse );
-      fprintf( fp, "Scorpse         %d\n", deity->scorpse );
-      fprintf( fp, "Savatar         %d\n", deity->savatar );
-      fprintf( fp, "Smount          %d\n", deity->smount ); /* Added by Tarl 24 Feb 02 */
-      fprintf( fp, "Sminion         %d\n", deity->sminion );   /* Added by Tarl 24 Feb 02 */
-      fprintf( fp, "Sdeityobj       %d\n", deity->sdeityobj );
-      fprintf( fp, "Sdeityobj2      %d\n", deity->sdeityobj2 );   /* Added by Tarl 02 Mar 02 */
-      fprintf( fp, "Srecall         %d\n", deity->srecall );
-      fprintf( fp, "Sex             %s~\n", deity->sex < 0 ? "none" : npc_sex[deity->sex] ); /* Adjani, 2-18-04 */
-      fprintf( fp, "Elements        %s %s %s\n", ris_flags[deity->element[0]], ris_flags[deity->element[1]], ris_flags[deity->element[2]] );
-      fprintf( fp, "Affects         %s %s %s\n", aff_flags[deity->affected[0]], aff_flags[deity->affected[1]], aff_flags[deity->affected[2]] );
-      fprintf( fp, "Suscepts        %s %s %s\n", ris_flags[deity->suscept[0]], ris_flags[deity->suscept[1]], ris_flags[deity->suscept[2]] );
-      fprintf( fp, "Classes         %s~\n", deity->class_allowed.none(  )? "all" : bitset_string( deity->class_allowed, npc_class ) );
-      fprintf( fp, "Races           %s~\n", deity->race_allowed.none(  )? "all" : bitset_string( deity->race_allowed, npc_race ) );
-      fprintf( fp, "Npcrace         %s~\n", deity->npcrace[0] == -1 ? "none" : npc_race[deity->npcrace[0]] );  /* Adjani, 2-18-04 */
-      fprintf( fp, "Npcrace2        %s~\n", deity->npcrace[1] == -1 ? "none" : npc_race[deity->npcrace[1]] );
-      fprintf( fp, "Npcrace3        %s~\n", deity->npcrace[2] == -1 ? "none" : npc_race[deity->npcrace[2]] );
-      fprintf( fp, "Npcfoe          %s~\n", deity->npcfoe[0] == -1 ? "none" : npc_race[deity->npcfoe[0]] ); /* Adjani, 2-18-04 */
-      fprintf( fp, "Npcfoe2         %s~\n", deity->npcfoe[1] == -1 ? "none" : npc_race[deity->npcfoe[1]] );
-      fprintf( fp, "Npcfoe3         %s~\n", deity->npcfoe[2] == -1 ? "none" : npc_race[deity->npcfoe[2]] );
-      fprintf( fp, "Susceptnums     %d %d %d\n", deity->susceptnum[0], deity->susceptnum[1], deity->susceptnum[2] );
-      fprintf( fp, "Elementnums     %d %d %d\n", deity->elementnum[0], deity->elementnum[1], deity->elementnum[2] );
-      fprintf( fp, "Affectednums    %d %d %d\n", deity->affectednum[0], deity->affectednum[1], deity->affectednum[2] );
-      fprintf( fp, "Spells          %d %d %d\n", deity->spell[0], deity->spell[1], deity->spell[2] ); /* Added by Tarl 24 Mar 02 */
-      fprintf( fp, "Sspells         %d %d %d\n", deity->sspell[0], deity->sspell[1], deity->sspell[2] ); /* Added by Tarl 24 Mar 02 */
-      fprintf( fp, "Objstat         %d\n", deity->objstat );
-      fprintf( fp, "Recallroom      %d\n", deity->recallroom );   /* Samson */
-      fprintf( fp, "Avatar          %d\n", deity->avatar ); /* Restored by Samson */
-      fprintf( fp, "Mount           %d\n", deity->mount );  /* Added by Tarl 24 Feb 02 */
-      fprintf( fp, "Minion          %d\n", deity->minion ); /* Added by Tarl 24 Feb 02 */
-      fprintf( fp, "Deityobj        %d\n", deity->deityobj );  /* Restored by Samson */
-      fprintf( fp, "Deityobj2       %d\n", deity->deityobj2 ); /* Added by Tarl 02 Mar 02 */
-      fprintf( fp, "%s", "End\n\n" );
-      fprintf( fp, "%s", "#END\n" );
-      FCLOSE( fp );
-   }
+
+   fprintf( fp, "#VERSION %d\n", DEITY_VERSION );  /* Adjani, 1-31-04 */
+   fprintf( fp, "%s", "#DEITY\n" );
+   fprintf( fp, "Filename        %s~\n", deity->filename.c_str(  ) );
+   fprintf( fp, "Name            %s~\n", deity->name.c_str(  ) );
+   fprintf( fp, "Description     %s~\n", strip_cr( deity->deitydesc ).c_str(  ) );
+   fprintf( fp, "Alignment       %d\n", deity->alignment );
+   fprintf( fp, "Worshippers     %d\n", deity->worshippers );
+   fprintf( fp, "Flee            %d\n", deity->flee );
+   fprintf( fp, "Flee_npcraces   %d %d %d\n", deity->flee_npcrace[0], deity->flee_npcrace[1], deity->flee_npcrace[2] );
+   fprintf( fp, "Flee_npcfoes    %d %d %d\n", deity->flee_npcfoe[0], deity->flee_npcfoe[1], deity->flee_npcfoe[2] );
+   fprintf( fp, "Kill            %d\n", deity->kill );
+   fprintf( fp, "Kill_magic      %d\n", deity->kill_magic );
+   fprintf( fp, "Kill_npcraces   %d %d %d\n", deity->kill_npcrace[0], deity->kill_npcrace[1], deity->kill_npcrace[2] );
+   fprintf( fp, "Kill_npcfoes    %d %d %d\n", deity->kill_npcfoe[0], deity->kill_npcfoe[1], deity->kill_npcfoe[2] );
+   fprintf( fp, "Sac             %d\n", deity->sac );
+   fprintf( fp, "Bury_corpse     %d\n", deity->bury_corpse );
+   fprintf( fp, "Aid_spell       %d\n", deity->aid_spell );
+   fprintf( fp, "Aid             %d\n", deity->aid );
+   fprintf( fp, "Steal           %d\n", deity->steal );
+   fprintf( fp, "Backstab        %d\n", deity->backstab );
+   fprintf( fp, "Die             %d\n", deity->die );
+   fprintf( fp, "Die_npcraces    %d %d %d\n", deity->die_npcrace[0], deity->die_npcrace[1], deity->die_npcrace[2] );
+   fprintf( fp, "Die_npcfoes     %d %d %d\n", deity->die_npcfoe[0], deity->die_npcfoe[1], deity->die_npcfoe[2] );
+   fprintf( fp, "Spell_aid       %d\n", deity->spell_aid );
+   fprintf( fp, "Dig_corpse      %d\n", deity->dig_corpse );
+   fprintf( fp, "Scorpse         %d\n", deity->scorpse );
+   fprintf( fp, "Savatar         %d\n", deity->savatar );
+   fprintf( fp, "Smount          %d\n", deity->smount ); /* Added by Tarl 24 Feb 02 */
+   fprintf( fp, "Sminion         %d\n", deity->sminion );   /* Added by Tarl 24 Feb 02 */
+   fprintf( fp, "Sdeityobj       %d\n", deity->sdeityobj );
+   fprintf( fp, "Sdeityobj2      %d\n", deity->sdeityobj2 );   /* Added by Tarl 02 Mar 02 */
+   fprintf( fp, "Srecall         %d\n", deity->srecall );
+   fprintf( fp, "Sex             %s~\n", deity->sex < 0 ? "none" : npc_sex[deity->sex] ); /* Adjani, 2-18-04 */
+   fprintf( fp, "Elements        %s %s %s\n", ris_flags[deity->element[0]], ris_flags[deity->element[1]], ris_flags[deity->element[2]] );
+   fprintf( fp, "Affects         %s %s %s\n", aff_flags[deity->affected[0]], aff_flags[deity->affected[1]], aff_flags[deity->affected[2]] );
+   fprintf( fp, "Suscepts        %s %s %s\n", ris_flags[deity->suscept[0]], ris_flags[deity->suscept[1]], ris_flags[deity->suscept[2]] );
+   fprintf( fp, "Classes         %s~\n", deity->class_allowed.none(  )? "all" : bitset_string( deity->class_allowed, npc_class ) );
+   fprintf( fp, "Races           %s~\n", deity->race_allowed.none(  )? "all" : bitset_string( deity->race_allowed, npc_race ) );
+   fprintf( fp, "Npcrace         %s~\n", deity->npcrace[0] == -1 ? "none" : npc_race[deity->npcrace[0]] );  /* Adjani, 2-18-04 */
+   fprintf( fp, "Npcrace2        %s~\n", deity->npcrace[1] == -1 ? "none" : npc_race[deity->npcrace[1]] );
+   fprintf( fp, "Npcrace3        %s~\n", deity->npcrace[2] == -1 ? "none" : npc_race[deity->npcrace[2]] );
+   fprintf( fp, "Npcfoe          %s~\n", deity->npcfoe[0] == -1 ? "none" : npc_race[deity->npcfoe[0]] ); /* Adjani, 2-18-04 */
+   fprintf( fp, "Npcfoe2         %s~\n", deity->npcfoe[1] == -1 ? "none" : npc_race[deity->npcfoe[1]] );
+   fprintf( fp, "Npcfoe3         %s~\n", deity->npcfoe[2] == -1 ? "none" : npc_race[deity->npcfoe[2]] );
+   fprintf( fp, "Susceptnums     %d %d %d\n", deity->susceptnum[0], deity->susceptnum[1], deity->susceptnum[2] );
+   fprintf( fp, "Elementnums     %d %d %d\n", deity->elementnum[0], deity->elementnum[1], deity->elementnum[2] );
+   fprintf( fp, "Affectednums    %d %d %d\n", deity->affectednum[0], deity->affectednum[1], deity->affectednum[2] );
+   fprintf( fp, "Spells          %d %d %d\n", deity->spell[0], deity->spell[1], deity->spell[2] ); /* Added by Tarl 24 Mar 02 */
+   fprintf( fp, "Sspells         %d %d %d\n", deity->sspell[0], deity->sspell[1], deity->sspell[2] ); /* Added by Tarl 24 Mar 02 */
+   fprintf( fp, "Objstat         %d\n", deity->objstat );
+   fprintf( fp, "Recallroom      %d\n", deity->recallroom );   /* Samson */
+   fprintf( fp, "Avatar          %d\n", deity->avatar ); /* Restored by Samson */
+   fprintf( fp, "Mount           %d\n", deity->mount );  /* Added by Tarl 24 Feb 02 */
+   fprintf( fp, "Minion          %d\n", deity->minion ); /* Added by Tarl 24 Feb 02 */
+   fprintf( fp, "Deityobj        %d\n", deity->deityobj );  /* Restored by Samson */
+   fprintf( fp, "Deityobj2       %d\n", deity->deityobj2 ); /* Added by Tarl 02 Mar 02 */
+   fprintf( fp, "%s", "End\n\n" );
+   fprintf( fp, "%s", "#END\n" );
+   FCLOSE( fp );
 }
 
 CMDF( do_savedeities )
@@ -960,7 +959,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 }
 
 /* Load a deity file */
-bool load_deity_file( const char *deityfile )
+bool load_deity_file( std::string_view deityfile )
 {
    deity_data *deity;
    FILE *fp;
@@ -1024,7 +1023,6 @@ bool load_deity_file( const char *deityfile )
 void load_deity( void )
 {
    FILE *fpList;
-   const char *filename;
 
    deitylist.clear(  );
 
@@ -1033,13 +1031,13 @@ void load_deity( void )
    std::filesystem::path deitylistfile = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
    if( !( fpList = fopen( deitylistfile.c_str(), "r" ) ) )
    {
-      perror( deitylistfile.c_str() );
-      exit( 1 );
+      log_string( "Cannot open deity list file." );
+      std::exit( EXIT_FAILURE );
    }
 
    for( ;; )
    {
-      filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
+      const char* filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
 
       if( filename[0] == '\0' )
       {

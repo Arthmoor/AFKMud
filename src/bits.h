@@ -41,9 +41,9 @@
    to get a note from you at scion@divineright.org. Thanks! -- Scion
 */
 
-const int MAX_xBITS = 32000;
+constexpr int MAX_xBITS = 32000;
 
-extern std::map < int, std::string > abits;
-extern std::map < int, std::string > qbits;
+extern std::map<int, std::string> abits;
+extern std::map<int, std::string> qbits;
 
 void remove_qbit( char_data *, int );

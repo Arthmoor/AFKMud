@@ -47,7 +47,7 @@ extern int top_affect;
 reset_data *make_reset( char, int, int, int, int, int, int, int, int, int, int, int );
 void delete_reset( reset_data * );
 void name_generator( std::string & );
-void pick_name( std::string &, const std::string & );
+void pick_name( std::string &, std::filesystem::path );
 void fix_exits(  );
 
 obj_data *generate_random( reset_data *, char_data * );
@@ -622,10 +622,8 @@ bool room_index::is_private(  )
    return false;
 }
 
-void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const std::string & argument )
+void room_index::olc_remove_affect( char_data * ch, bool indexaffect, std::string_view argument )
 {
-   short loc;
-
    if( argument.empty(  ) )
    {
       if( !indexaffect )
@@ -635,14 +633,14 @@ void room_index::olc_remove_affect( char_data * ch, bool indexaffect, const std:
       return;
    }
 
-   loc = atoi( argument.c_str(  ) );
+   int loc = std::stoi( std::string{argument} );
    if( loc < 1 )
    {
-      ch->print( "Invalid number.\r\n" );
+      ch->print( "Invalid number - cannot be less than 1.\r\n" );
       return;
    }
 
-   short count = 0;
+   int count = 0;
    if( !indexaffect )
    {
       for( auto it = affects.begin(  ); it != affects.end(  ); )
@@ -832,10 +830,10 @@ room_index *get_room_index( int vnum )
    return nullptr;
 }
 
-void room_index::echo( const std::string & argument )
+void room_index::echo( std::string_view argument )
 {
    for( auto* victim : people )
-      victim->printf( "%s\r\n", argument.c_str(  ) );
+      victim->print_fmt( "{}\r\n", argument );
 }
 
 /*
@@ -1171,20 +1169,22 @@ void room_index::reset(  )
              * Samson shows up out of the blue 21 years later and overhauls the whole system to get rid of the icky C buffers. 6-1-2026.
              */
             std::string namegen_tag = "";
-            std::string file = "";
+            std::filesystem::path file = "";
 
             if( namegenCheckString.find( "namegen_gr" ) != std::string::npos )
             {
                namegen_tag = "namegen_gr";
-               file = SYSTEM_DIR + std::string( mob->sex == SEX_FEMALE ? "namegen_gr_female.txt" : "namegen_gr_other.txt" );
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_gr_female.txt" : "namegen_gr_other.txt" ) );
             }
             else if( namegenCheckString.find( "namegen_ven" ) != std::string::npos )
             {
-               namegen_tag = "namegen_ven"; file = SYSTEM_DIR + std::string( mob->sex == SEX_FEMALE ? "namegen_ven_female.txt" : "namegen_ven_other.txt" );
+               namegen_tag = "namegen_ven";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_ven_female.txt" : "namegen_ven_other.txt" ) );
             }
             else if( namegenCheckString.find( "namegen_orc" ) != std::string::npos )
             {
-               namegen_tag = "namegen_orc"; file = SYSTEM_DIR + std::string ( mob->sex == SEX_FEMALE ? "namegen_orc_female.txt" : "namegen_orc_other.txt" );
+               namegen_tag = "namegen_orc";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_orc_female.txt" : "namegen_orc_other.txt" ) );
             }
             else if( namegenCheckString.find( "namegen" ) != std::string::npos )
             {
@@ -1201,7 +1201,7 @@ void room_index::reset(  )
                }
                else
                {
-                  pick_name( nameg, file.c_str() );
+                  pick_name( nameg, file );
                }
 
                STRFREE( mob->name );
@@ -2060,7 +2060,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
       renumber_put_resets(  );
 }
 
-int get_dirnum( const std::string & flag )
+int get_dirnum( std::string_view flag )
 {
    size_t x;
 
@@ -2075,7 +2075,7 @@ int get_dirnum( const std::string & flag )
    return -1;
 }
 
-const char *rev_exit( short vdir )
+std::string rev_exit( short vdir )
 {
    switch ( vdir )
    {

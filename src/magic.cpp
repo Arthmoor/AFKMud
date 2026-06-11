@@ -54,7 +54,7 @@ int recall( char_data *, int );
 bool circle_follow( char_data *, char_data * );
 void add_follower( char_data *, char_data * );
 void stop_follower( char_data * );
-morph_data *find_morph( char_data *, const std::string &, bool );
+morph_data *find_morph( char_data *, std::string_view, bool );
 void raw_kill( char_data *, char_data * );
 ch_ret check_room_for_traps( char_data *, int );
 room_index *recall_room( char_data * );
@@ -63,7 +63,7 @@ void bind_follower( char_data *, char_data *, int, int );
 int IsUndead( char_data * );
 int IsDragon( char_data * );
 
-bool EqWBits( char_data * ch, int bit )
+bool EqWBits( const char_data * ch, int bit )
 {
    for( auto* obj : ch->carrying )
    {
@@ -2451,7 +2451,7 @@ SPELLF( spell_identify )
    char_data *victim;
    skill_type *sktmp;
    skill_type *skill = get_skilltype( sn );
-   char *name;
+   std::string name;
 
    if( target_name.empty(  ) )
    {
@@ -2484,16 +2484,16 @@ SPELLF( spell_identify )
       else
          name = victim->name;
 
-      ch->printf( "%s appears to be between level %d and %d.\r\n", name, victim->level - ( victim->level % 5 ), victim->level - ( victim->level % 5 ) + 5 );
+      ch->print_fmt( "{} appears to be between level {} and {}.\r\n", name, victim->level - ( victim->level % 5 ), victim->level - ( victim->level % 5 ) + 5 );
 
       if( victim->isnpc(  ) && victim->morph )
-         ch->printf( "%s appears to truly be %s.\r\n", name, ( ch->level > victim->level + 10 ) ? victim->name : "someone else" );
+         ch->print_fmt( "{} appears to truly be {}.\r\n", name, ( ch->level > victim->level + 10 ) ? victim->name : "someone else" );
 
-      ch->printf( "%s looks like %s, and follows the ways of the %s.\r\n", name, aoran( victim->get_race(  ) ), victim->get_class(  ) );
+      ch->print_fmt( "{} looks like {}, and follows the ways of the {}.\r\n", name, aoran( victim->get_race(  ) ), victim->get_class(  ) );
 
       if( ( ch->chance( 50 ) && ch->level >= victim->level + 10 ) || ch->is_immortal(  ) )
       {
-         ch->printf( "%s appears to be affected by: ", name );
+         ch->print_fmt( "{} appears to be affected by: ", name );
 
          if( victim->affects.empty(  ) )
          {
@@ -2511,18 +2511,18 @@ SPELLF( spell_identify )
             if( victim->affects.begin(  ) != affidx )
             {
                if( paf != affidx && ( sktmp = get_skilltype( af->type ) ) != nullptr )
-                  ch->printf( "%s, ", sktmp->name );
+                  ch->print_fmt( "{}, ", sktmp->name );
 
                if( paf == affidx && ( sktmp = get_skilltype( af->type ) ) != nullptr )
                {
-                  ch->printf( "and %s.\r\n", sktmp->name );
+                  ch->print_fmt( "and {}.\r\n", sktmp->name );
                   return rNONE;
                }
             }
             else
             {
                if( ( sktmp = get_skilltype( af->type ) ) != nullptr )
-                  ch->printf( "%s.\r\n", sktmp->name );
+                  ch->print_fmt( "{}.\r\n", sktmp->name );
                else
                   ch->print( "\r\n" );
                return rNONE;
@@ -2532,7 +2532,7 @@ SPELLF( spell_identify )
    }
    else
    {
-      ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
+      ch->print_fmt( "You can't find {}!\r\n", target_name );
       return rSPELL_FAILED;
    }
    return rNONE;
@@ -2671,10 +2671,10 @@ SPELLF( spell_locate_object )
             found--;
             continue;
          }
-         ch->pagerf( "%s carried by %s.\r\n", obj->oshort(  ).c_str(  ), PERS( in_obj->carried_by, ch, false ) );
+         ch->pager_fmt( "{} carried by {}.\r\n", obj->oshort(  ), PERS( in_obj->carried_by, ch, false ) );
       }
       else
-         ch->pagerf( "%s in %s.\r\n", obj->oshort(  ).c_str(  ), in_obj->in_room == nullptr ? "somewhere" : in_obj->in_room->name );
+         ch->pager_fmt( "{} in {}.\r\n", obj->oshort(  ), in_obj->in_room == nullptr ? "somewhere" : in_obj->in_room->name );
    }
 
    if( !found )
@@ -4159,7 +4159,7 @@ SPELLF( spell_dream )
       ch->print( "What do you want them to dream about?\r\n" );
       return rSPELL_FAILED;
    }
-   victim->printf( "&[tell]You have dreams about %s telling you '%s'.\r\n", PERS( ch, victim, false ), target_name.c_str(  ) );
+   victim->print_fmt( "&[tell]You have dreams about {} telling you '{}'.\r\n", PERS( ch, victim, false ), target_name );
    successful_casting( get_skilltype( sn ), ch, victim, nullptr );
    return rNONE;
 }

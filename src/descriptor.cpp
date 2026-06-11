@@ -34,7 +34,6 @@
 #include <format>
 #include <fstream>
 #include "mud.h"
-#include "auction.h"
 #include "ban.h"
 #include "channels.h"
 #include "commands.h"
@@ -48,8 +47,7 @@
 #ifdef MULTIPORT
 #include "shell.h"
 #endif
-
-#define DNS_FILE SYSTEM_DIR "dns.dat"
+#include "auction.h"
 
 struct dns_data
 {
@@ -95,7 +93,7 @@ extern bool compilelock;
 
 void send_mssp_data( descriptor_data * );
 void set_alarm( long );
-auth_data *get_auth_name( const std::string & );
+auth_data *get_auth_name( std::string_view );
 void save_sysdata(  );
 void save_auth_list(  );
 void check_holiday( char_data * );
@@ -105,7 +103,7 @@ void oedit_parse( descriptor_data *, std::string & );
 void medit_parse( descriptor_data *, std::string & );
 void redit_parse( descriptor_data *, std::string & );
 void board_parse( descriptor_data *, const std::string & );
-bool check_immortal_domain( char_data *, const std::string & );
+bool check_immortal_domain( char_data *, std::string_view );
 void scan_rares( char_data * );
 void break_camp( char_data * );
 void setup_newbie( char_data *, bool );
@@ -120,19 +118,18 @@ CMDF( do_help );
 CMDF( do_destroy );
 
 /* Terminal detection stuff start */
-#define  IS                 '\x00'
-#define  TERMINAL_TYPE      '\x18'
-#define  SEND	          '\x01'
+constexpr unsigned char IS            = '\x00';
+constexpr unsigned char TERMINAL_TYPE = '\x18';
+constexpr unsigned char SEND          = '\x01';
 
-const unsigned char term_call_back_str[] = { IAC, SB, TERMINAL_TYPE, IS };
-const unsigned char req_termtype_str[] = { IAC, SB, TERMINAL_TYPE, SEND, IAC, SE, '\0' };
-const unsigned char do_term_type[] = { IAC, DO, TERMINAL_TYPE, '\0' };
+const std::array<unsigned char, 4> term_call_back_str = { IAC, SB, TERMINAL_TYPE, IS };
+const std::array<unsigned char, 7> req_termtype_str = { IAC, SB, TERMINAL_TYPE, SEND, IAC, SE, '\0' };
+const std::array<unsigned char, 4> do_term_type = { IAC, DO, TERMINAL_TYPE, '\0' };
 
 /* Terminal detection stuff end */
 
-const unsigned char echo_off_str[] = { IAC, WILL, TELOPT_ECHO, '\0' };
-const unsigned char echo_on_str[] = { IAC, WONT, TELOPT_ECHO, '\0' };
-const unsigned char go_ahead_str[] = { IAC, GA, '\0' };
+const std::array<unsigned char, 4> echo_off_str = { IAC, WILL, TELOPT_ECHO, '\0' };
+const std::array<unsigned char, 4> echo_on_str = { IAC, WONT, TELOPT_ECHO, '\0' };
 
 long tr_saved;
 long tr_in;
@@ -829,7 +826,7 @@ bool descriptor_data::flush_buffer( bool fPrompt )
          if( character && character->name )
          {
             if( original && original->name )
-               snoop_by->buffer_printf( "%s (%s)", character->name, original->name );
+               snoop_by->buffer_printf( "{} ({})", character->name, original->name );
             else
                snoop_by->write_to_buffer( character->name );
          }
@@ -859,9 +856,6 @@ bool descriptor_data::flush_buffer( bool fPrompt )
          prompt(  );
       else
          write_to_buffer( ANSI_RESET );
-
-      if( ch->has_pcflag( PCFLAG_TELNET_GA ) )
-         write_to_buffer( (const char*)go_ahead_str );
    }
 
    /*
@@ -884,7 +878,7 @@ bool descriptor_data::flush_buffer( bool fPrompt )
           * Show original snooped names. -- Altrag 
           */
          if( original && original->name )
-            snoop_by->buffer_printf( "%s (%s)", character->name, original->name );
+            snoop_by->buffer_printf( "{} ({})", character->name, original->name );
          else
             snoop_by->write_to_buffer( character->name );
       }
@@ -922,7 +916,7 @@ void descriptor_data::read_from_buffer( )
    {
       if( static_cast<unsigned char>( inbuf[i] ) == IAC )
       {
-         if( std::memcmp( &inbuf[i], term_call_back_str, sizeof( term_call_back_str ) ) == 0 )
+         if( std::memcmp( &inbuf[i], term_call_back_str.data(), term_call_back_str.size() ) == 0 )
          {
             char tmp[100]{};
             size_t pos = i;
@@ -1008,7 +1002,7 @@ void descriptor_data::read_from_buffer( )
          else if( c == TERMINAL_TYPE )
          {
             if( static_cast<unsigned char>( inbuf[idx - 1] ) == WILL )
-               this->write_to_buffer( (const char*)req_termtype_str );
+               this->write_to_buffer( std::string_view{ reinterpret_cast<const char*>( req_termtype_str.data() ), req_termtype_str.size() } );
          }
       }
       else if( c == '\b' && k > 0 )
@@ -1018,8 +1012,8 @@ void descriptor_data::read_from_buffer( )
       }
       /*
        * Note to the future curious: Leave this alone. Extended ascii isn't standardized yet.
-       * * You'd think being the 21st century and all that this wouldn't be the case, but you can
-       * * thank the bastards in Redmond for this.
+       * You'd think being the 21st century and all that this wouldn't be the case, but you can
+       * thank the bastards in Redmond for this.
        */
       else if( isascii(c) && isprint(c) )
       {
@@ -1147,19 +1141,6 @@ void descriptor_data::write_to_buffer( std::string_view text )
    this->outbuf.append( text );
 }
 
-// FIXME: Switch to std::format logic. Use character.cpp as an example.
-void descriptor_data::buffer_printf( const char *fmt, ... )
-{
-   char buf[MSL * 4];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 4, fmt, args );
-   va_end( args );
-
-   this->write_to_buffer( buf );
-}
-
 /* Writes to a descriptor, usually best used when there's no character to send to ( like logins ) */
 void descriptor_data::send_color( std::string_view text )
 {
@@ -1169,7 +1150,7 @@ void descriptor_data::send_color( std::string_view text )
    this->write_to_buffer( colorize( text, this ) );
 }
 
-void descriptor_data::pager( const std::string & text )
+void descriptor_data::pager( std::string_view text )
 {
    if( this->pagebuf.empty(  ) && !this->fcommand )
       this->pagebuf = "\r\n";
@@ -1177,9 +1158,9 @@ void descriptor_data::pager( const std::string & text )
    this->pagebuf.append( text );
 }
 
-void descriptor_data::set_pager_input( const std::string & argument )
+void descriptor_data::set_pager_input( std::string_view argument )
 {
-   std::string arg = argument;
+   std::string arg = std::string{argument};
 
    strip_lspace( arg );
    this->pagecmd = arg.front();
@@ -1257,11 +1238,6 @@ bool descriptor_data::pager_output(  )
    if( ( ret = this->write( "(C)ontinue, (N)on-stop, (R)efresh, (B)ack, (Q)uit: [C] " ) ) == false )
       return false;
 
-   /*
-    * Telnet GA bit here suggested by Garil 
-    */
-   if( ch->has_pcflag( PCFLAG_TELNET_GA ) )
-      this->write_to_buffer( (const char*)go_ahead_str );
    if( ch->has_pcflag( PCFLAG_ANSI ) )
    {
       ret = this->write( ch->color_str( this->pagecolor ) );
@@ -1271,7 +1247,7 @@ bool descriptor_data::pager_output(  )
 
 void descriptor_data::send_greeting(  )
 {
-   std::filesystem::path filename = std::format( "{}greeting.dat", MOTD_DIR );
+   std::filesystem::path filename = GREETING_FILE;
 
    // Read the file directly into a std::string
    if( std::ifstream in{ filename, std::ios::in | std::ios::binary } )
@@ -1292,12 +1268,12 @@ void descriptor_data::send_greeting(  )
  * Dump a text file to a player, a line at a time		-Thoric
  */
 // NOTE: Must be passed directly to d->write() because the colorize function eats ANSI codes and such. - Samson 6/4/2026.
-void show_file( char_data * ch, const std::string & filename )
+void show_file( char_data * ch, std::string_view filename )
 {
    if( !ch || !ch->desc )
       return;
 
-   std::ifstream fp{ filename };
+   std::ifstream fp{ filename.data() };
    if( !fp.is_open() )
       return;
 
@@ -1331,13 +1307,13 @@ void descriptor_data::show_title(  )
 void descriptor_data::show_stats( char_data * ch )
 {
    ch->set_color( AT_SKILL );
-   buffer_printf( "\r\n1. Str: %d\r\n", ch->perm_str );
-   buffer_printf( "2. Int: %d\r\n", ch->perm_int );
-   buffer_printf( "3. Wis: %d\r\n", ch->perm_wis );
-   buffer_printf( "4. Dex: %d\r\n", ch->perm_dex );
-   buffer_printf( "5. Con: %d\r\n", ch->perm_con );
-   buffer_printf( "6. Cha: %d\r\n", ch->perm_cha );
-   buffer_printf( "7. Lck: %d\r\n\r\n", ch->perm_lck );
+   buffer_printf( "\r\n1. Str: {}\r\n", ch->perm_str );
+   buffer_printf( "2. Int: {}\r\n", ch->perm_int );
+   buffer_printf( "3. Wis: {}\r\n", ch->perm_wis );
+   buffer_printf( "4. Dex: {}\r\n", ch->perm_dex );
+   buffer_printf( "5. Con: {}\r\n", ch->perm_con );
+   buffer_printf( "6. Cha: {}\r\n", ch->perm_cha );
+   buffer_printf( "7. Lck: {}\r\n\r\n", ch->perm_lck );
    ch->set_color( AT_ACTION );
    write_to_buffer( "Choose an attribute to raise by +1\r\n" );
 }
@@ -1367,24 +1343,22 @@ void save_dns( void )
 {
    std::ofstream stream;
 
-   stream.open( DNS_FILE );
+   stream.open( std::filesystem::path( DNS_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: stream.open()", __func__ );
-      perror( DNS_FILE );
+      bug( "%s: Cannot open DND cache file.", __func__ );
+      return;
    }
-   else
+
+   for( auto* ip : dnslist )
    {
-      for( auto* ip : dnslist )
-      {
-         stream << "#CACHE" << std::endl;
-         stream << "IP   " << ip->ip << std::endl;
-         stream << "Name " << ip->name << std::endl;
-         stream << "Time " << ip->time << std::endl;
-         stream << "End" << std::endl << std::endl;
-      }
-      stream.close(  );
+      stream << "#CACHE" << std::endl;
+      stream << "IP   " << ip->ip << std::endl;
+      stream << "Name " << ip->name << std::endl;
+      stream << "Time " << ip->time << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
+   stream.close(  );
 }
 
 void prune_dns( void )
@@ -1405,7 +1379,7 @@ void prune_dns( void )
    save_dns(  );
 }
 
-void add_dns( const std::string & dhost, const std::string & address )
+void add_dns( std::string_view dhost, std::string_view address )
 {
    dns_data *cache;
 
@@ -1418,7 +1392,7 @@ void add_dns( const std::string & dhost, const std::string & address )
    save_dns(  );
 }
 
-std::string in_dns_cache( const std::string & ip )
+std::string in_dns_cache( std::string_view ip )
 {
    for( auto* dns : dnslist )
    {
@@ -1435,7 +1409,7 @@ void load_dns( void )
 
    dnslist.clear(  );
 
-   stream.open( DNS_FILE );
+   stream.open( std::filesystem::path( DNS_FILE ) );
    if( stream.is_open(  ) )
    {
       do
@@ -1737,17 +1711,17 @@ void new_descriptor( int new_desc )
    /*
     * Terminal detect 
     */
-   dnew->write_to_buffer( (const char*)do_term_type );
+   dnew->write_to_buffer( std::string_view{ reinterpret_cast<const char*>( do_term_type.data() ), do_term_type.size() } );
 
    /*
     * MCCP Compression 
     */
-   dnew->write_to_buffer( (const char*)will_compress2_str );
+   dnew->write_to_buffer( std::string_view{ reinterpret_cast<const char*>( will_compress2_str.data() ), will_compress2_str.size() } );
 
    /*
     * Mud Sound Protocol 
     */
-   dnew->write_to_buffer( (const char*)will_msp_str );
+   dnew->write_to_buffer( std::string_view{ reinterpret_cast<const char*>( will_msp_str.data() ), will_msp_str.size() } );
 
    /*
     * Send the greeting. No longer handled kludgely by a global variable.
@@ -2072,7 +2046,7 @@ void close_socket( descriptor_data * d, bool force )
    {
       // Put this check here because seeing that they lost link after quitting/renting was annoying. We already know this.
       if( ch->in_room )
-         log_printf_plus( LOG_COMM, ch->level, "Closing link to %s.", ch->pcdata->filename );
+         log_printf_plus( LOG_COMM, ch->level, "Closing link to %s.", ch->pcdata->filename.c_str() );
 
       /*
        * Link dead auth -- Rantic 
@@ -2197,11 +2171,11 @@ void show_status( char_data * ch )
 /*
  * Look for link-dead player to reconnect.
  */
-short descriptor_data::check_reconnect( const std::string & name, bool fConn )
+short descriptor_data::check_reconnect( std::string_view name, bool fConn )
 {
    for( auto* ch : pclist )
    {
-      if( ( !fConn || !ch->desc ) && ch->pcdata->filename && !str_cmp( name, ch->pcdata->filename ) )
+      if( ( !fConn || !ch->desc ) && !ch->pcdata->filename.empty() && !str_cmp( name, ch->pcdata->filename ) )
       {
          if( fConn && ch->switched )
          {
@@ -2255,7 +2229,7 @@ short descriptor_data::check_reconnect( const std::string & name, bool fConn )
 /*
  * Check if already playing.
  */
-short descriptor_data::check_playing( const std::string & name, bool kick )
+short descriptor_data::check_playing( std::string_view name, bool kick )
 {
    for( auto* d : dlist )
    {
@@ -2269,7 +2243,7 @@ short descriptor_data::check_playing( const std::string & name, bool kick )
                   && cstate != CON_PRIZEKEY && cstate != CON_CONFIRMPRIZEKEY && cstate != CON_RAISE_STAT ) )
          {
             write_to_buffer( "Already connected - try again.\r\n" );
-            log_printf_plus( LOG_COMM, ch->level, "%s already connected.", ch->pcdata->filename );
+            log_printf_plus( LOG_COMM, ch->level, "%s already connected.", ch->pcdata->filename.c_str() );
             return BERR;
          }
          if( !kick )
@@ -2476,14 +2450,14 @@ void display_motd( char_data * ch )
 
       show_file( ch, SPEC_MOTD );
    }
-   ch->desc->buffer_printf( "\r\nWelcome to %s...\r\n", sysdata->mud_name.c_str(  ) );
+   ch->desc->buffer_printf( "\r\nWelcome to {}...\r\n", sysdata->mud_name );
    char_to_game( ch );
 }
 
 CMDF( do_shatest )
 {
-   ch->printf( "%s\r\n", argument.c_str(  ) );
-   ch->printf( "%s\r\n", sha256_crypt( argument ).c_str(  ) );
+   ch->print_fmt( "{}\r\n", argument );
+   ch->print_fmt( "{}\r\n", sha256_crypt( argument ) );
 }
 
 /*
@@ -2619,7 +2593,7 @@ void descriptor_data::nanny( std::string & argument )
          if( !character )
          {
             log_printf( "Bad player file %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
-            buffer_printf( "Your playerfile is corrupt...Please notify %s\r\n", sysdata->admin_email.c_str(  ) );
+            buffer_printf( "Your playerfile is corrupt...Please notify {}\r\n", sysdata->admin_email );
             close_socket( this, false );
             return;
          }
@@ -2712,7 +2686,7 @@ void descriptor_data::nanny( std::string & argument )
              * Old player 
              */
             write_to_buffer( "\r\nEnter your password: " );
-            write_to_buffer( (const char*)echo_off_str );
+            write_to_buffer( std::string_view{ reinterpret_cast<const char*>( echo_off_str.data() ), echo_off_str.size() } );
             connected = CON_GET_OLD_PASSWORD;
             return;
          }
@@ -2733,7 +2707,7 @@ void descriptor_data::nanny( std::string & argument )
             argument = capitalize( argument );  /* Samson 5-22-98 */
             STRFREE( ch->name );
             ch->name = STRALLOC( argument.c_str(  ) );
-            buffer_printf( "Did I get that right, %s (Y/N)? ", argument.c_str(  ) );
+            buffer_printf( "Did I get that right, {} (Y/N)? ", argument );
             connected = CON_CONFIRM_NEW_NAME;
             return;
          }
@@ -2753,7 +2727,7 @@ void descriptor_data::nanny( std::string & argument )
             return;
          }
 
-         write_to_buffer( (const char*)echo_on_str );
+         write_to_buffer( std::string_view{ reinterpret_cast<const char*>( echo_on_str.data() ), echo_on_str.size() } );
 
          if( check_playing( ch->pcdata->filename, true ) )
             return;
@@ -2776,7 +2750,7 @@ void descriptor_data::nanny( std::string & argument )
          if( !fOld )
          {
             log_printf( "Bad player file %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
-            buffer_printf( "Your playerfile is corrupt...Please notify %s\r\n", sysdata->admin_email.c_str(  ) );
+            buffer_printf( "Your playerfile is corrupt...Please notify {}\r\n", sysdata->admin_email );
             close_socket( this, false );
             return;
          }
@@ -2795,7 +2769,7 @@ void descriptor_data::nanny( std::string & argument )
          {
             case 'y':
             case 'Y':
-               buffer_printf( "\r\nMake sure to use a password that won't be easily guessed by someone else." "\r\nPick a good password for %s: %s", ch->name, echo_off_str );
+               buffer_printf( "\r\nMake sure to use a password that won't be easily guessed by someone else." "\r\nPick a good password for {}: {}", ch->name, std::string_view{ reinterpret_cast<const char*>( echo_off_str.data() ), echo_off_str.size() } );
                connected = CON_GET_NEW_PASSWORD;
                break;
 
@@ -2854,13 +2828,13 @@ void descriptor_data::nanny( std::string & argument )
          {
             write_to_buffer( "This is a restricted access port. Only immortals and their test players are allowed.\r\n" );
             write_to_buffer( "Enter access code: " );
-            write_to_buffer( (const char*)echo_off_str );
+            write_to_buffer( std::string_view{ reinterpret_cast<const char*>( echo_off_str.data() ), echo_off_str.size() } );
             connected = CON_GET_PORT_PASSWORD;
             return;
          }
 #endif
 
-         write_to_buffer( (const char*)echo_on_str );
+         write_to_buffer( std::string_view{ reinterpret_cast<const char*>( echo_on_str.data() ), echo_on_str.size() } );
 
          write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game." );
          write_to_buffer( "\r\nWhat is your sex? " );
@@ -2881,7 +2855,7 @@ void descriptor_data::nanny( std::string & argument )
             close_socket( this, false );
             return;
          }
-         write_to_buffer( (const char*)echo_on_str );
+         write_to_buffer( std::string_view{ reinterpret_cast<const char*>( echo_on_str.data() ), echo_on_str.size() } );
          write_to_buffer( "\r\nPlease note: You will be able to pick race and class after entering the game." );
          write_to_buffer( "\r\nWhat is your sex? " );
          write_to_buffer( "\r\n(M)ale, (F)emale, (N)euter, or (H)ermaphrodite ?" );
@@ -2955,7 +2929,7 @@ void descriptor_data::nanny( std::string & argument )
          if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
          {
             write_to_buffer( "Wrong password entered, deletion cancelled.\r\n" );
-            write_to_buffer( (const char*)echo_on_str );
+            write_to_buffer( std::string_view{ reinterpret_cast<const char*>( echo_on_str.data() ), echo_on_str.size() } );
             connected = CON_PLAYING;
             return;
          }
@@ -2964,7 +2938,7 @@ void descriptor_data::nanny( std::string & argument )
             room_index *donate = get_room_index( ROOM_VNUM_DONATION );
 
             write_to_buffer( "\r\nYou've deleted your character!!!\r\n" );
-            log_printf( "Player: %s has deleted.", capitalize( ch->name ) );
+            log_printf( "Player: %s has deleted.", capitalize( ch->name ).c_str() );
 
             if( donate != nullptr && ch->level > 1 )  /* No more deleting to remove goodies from play */
             {
@@ -3227,12 +3201,12 @@ void descriptor_data::nanny( std::string & argument )
 
             case '1':
                if( ch->perm_str >= 18 + race_table[ch->race]->str_plus )
-                  buffer_printf( "You cannot raise your strength beyond %d\r\n", ch->perm_str );
+                  buffer_printf( "You cannot raise your strength beyond {}\r\n", ch->perm_str );
                else
                {
                   ch->tempnum -= 1;
                   ch->perm_str += 1;
-                  buffer_printf( "You've raised your strength to %d!\r\n", ch->perm_str );
+                  buffer_printf( "You've raised your strength to {}!\r\n", ch->perm_str );
                }
                if( ch->tempnum < 1 )
                   connected = CON_PLAYING;
@@ -3242,12 +3216,12 @@ void descriptor_data::nanny( std::string & argument )
 
             case '2':
                if( ch->perm_int >= 18 + race_table[ch->race]->int_plus )
-                  buffer_printf( "You cannot raise your intelligence beyond %d\r\n", ch->perm_int );
+                  buffer_printf( "You cannot raise your intelligence beyond {}\r\n", ch->perm_int );
                else
                {
                   ch->tempnum -= 1;
                   ch->perm_int += 1;
-                  buffer_printf( "You've raised your intelligence to %d!\r\n", ch->perm_int );
+                  buffer_printf( "You've raised your intelligence to {}!\r\n", ch->perm_int );
                }
                if( ch->tempnum < 1 )
                   connected = CON_PLAYING;
@@ -3257,12 +3231,12 @@ void descriptor_data::nanny( std::string & argument )
 
             case '3':
                if( ch->perm_wis >= 18 + race_table[ch->race]->wis_plus )
-                  buffer_printf( "You cannot raise your wisdom beyond %d\r\n", ch->perm_wis );
+                  buffer_printf( "You cannot raise your wisdom beyond {}\r\n", ch->perm_wis );
                else
                {
                   ch->tempnum -= 1;
                   ch->perm_wis += 1;
-                  buffer_printf( "You've raised your wisdom to %d!\r\n", ch->perm_wis );
+                  buffer_printf( "You've raised your wisdom to {}!\r\n", ch->perm_wis );
                }
                if( ch->tempnum < 1 )
                   connected = CON_PLAYING;
@@ -3272,12 +3246,12 @@ void descriptor_data::nanny( std::string & argument )
 
             case '4':
                if( ch->perm_dex >= 18 + race_table[ch->race]->dex_plus )
-                  buffer_printf( "You cannot raise your dexterity beyond %d\r\n", ch->perm_dex );
+                  buffer_printf( "You cannot raise your dexterity beyond {}\r\n", ch->perm_dex );
                else
                {
                   ch->tempnum -= 1;
                   ch->perm_dex += 1;
-                  buffer_printf( "You've raised your dexterity to %d!\r\n", ch->perm_dex );
+                  buffer_printf( "You've raised your dexterity to {}!\r\n", ch->perm_dex );
                }
                if( ch->tempnum < 1 )
                   connected = CON_PLAYING;
@@ -3287,12 +3261,12 @@ void descriptor_data::nanny( std::string & argument )
 
             case '5':
                if( ch->perm_con >= 18 + race_table[ch->race]->con_plus )
-                  buffer_printf( "You cannot raise your constitution beyond %d\r\n", ch->perm_con );
+                  buffer_printf( "You cannot raise your constitution beyond {}\r\n", ch->perm_con );
                else
                {
                   ch->tempnum -= 1;
                   ch->perm_con += 1;
-                  buffer_printf( "You've raised your constitution to %d!\r\n", ch->perm_con );
+                  buffer_printf( "You've raised your constitution to {}!\r\n", ch->perm_con );
                }
                if( ch->tempnum < 1 )
                   connected = CON_PLAYING;
@@ -3302,12 +3276,12 @@ void descriptor_data::nanny( std::string & argument )
 
             case '6':
                if( ch->perm_cha >= 18 + race_table[ch->race]->cha_plus )
-                  buffer_printf( "You cannot raise your charisma beyond %d\r\n", ch->perm_cha );
+                  buffer_printf( "You cannot raise your charisma beyond {}\r\n", ch->perm_cha );
                else
                {
                   ch->tempnum -= 1;
                   ch->perm_cha += 1;
-                  buffer_printf( "You've raised your charisma to %d!\r\n", ch->perm_cha );
+                  buffer_printf( "You've raised your charisma to {}!\r\n", ch->perm_cha );
                }
                if( ch->tempnum < 1 )
                   connected = CON_PLAYING;
@@ -3317,12 +3291,12 @@ void descriptor_data::nanny( std::string & argument )
 
             case '7':
                if( ch->perm_lck >= 18 + race_table[ch->race]->lck_plus )
-                  buffer_printf( "You cannot raise your luck beyond %d\r\n", ch->perm_lck );
+                  buffer_printf( "You cannot raise your luck beyond {}\r\n", ch->perm_lck );
                else
                {
                   ch->tempnum -= 1;
                   ch->perm_lck += 1;
-                  buffer_printf( "You've raised your luck to %d!\r\n", ch->perm_lck );
+                  buffer_printf( "You've raised your luck to {}!\r\n", ch->perm_lck );
                }
                if( ch->tempnum < 1 )
                   connected = CON_PLAYING;
@@ -3346,13 +3320,13 @@ void descriptor_data::nanny( std::string & argument )
             case 'n':
             case 'N':
                name_stamp_stats( ch );
-               buffer_printf( "\r\nStr: %s\r\n", attribtext( ch->perm_str ).c_str(  ) );
-               buffer_printf( "Int: %s\r\n", attribtext( ch->perm_int ).c_str(  ) );
-               buffer_printf( "Wis: %s\r\n", attribtext( ch->perm_wis ).c_str(  ) );
-               buffer_printf( "Dex: %s\r\n", attribtext( ch->perm_dex ).c_str(  ) );
-               buffer_printf( "Con: %s\r\n", attribtext( ch->perm_con ).c_str(  ) );
-               buffer_printf( "Cha: %s\r\n", attribtext( ch->perm_cha ).c_str(  ) );
-               buffer_printf( "Lck: %s\r\n", attribtext( ch->perm_lck ).c_str(  ) );
+               buffer_printf( "\r\nStr: {}\r\n", attribtext( ch->perm_str ) );
+               buffer_printf( "Int: {}\r\n", attribtext( ch->perm_int ) );
+               buffer_printf( "Wis: {}\r\n", attribtext( ch->perm_wis ) );
+               buffer_printf( "Dex: {}\r\n", attribtext( ch->perm_dex ) );
+               buffer_printf( "Con: {}\r\n", attribtext( ch->perm_con ) );
+               buffer_printf( "Cha: {}\r\n", attribtext( ch->perm_cha ) );
+               buffer_printf( "Lck: {}\r\n", attribtext( ch->perm_lck ) );
                write_to_buffer( "\r\nKeep these stats? (Y/N)" );
                return;
 
@@ -3374,7 +3348,7 @@ void descriptor_data::nanny( std::string & argument )
 
             show_file( ch, SPEC_MOTD );
          }
-         buffer_printf( "\r\nWelcome to %s...\r\n", sysdata->mud_name.c_str(  ) );
+         buffer_printf( "\r\nWelcome to {}...\r\n", sysdata->mud_name );
          char_to_game( ch );
       }
          break;
@@ -3413,10 +3387,10 @@ CMDF( do_message )
    {
       for( auto* lmsg : login_messages )
       {
-         ch->printf( "&CName: &c%-20s &CType: &c%d\r\n", capitalize(lmsg->name), lmsg->type );
+         ch->print_fmt( "&CName: &c{:<20} &CType: &c{}\r\n", capitalize( lmsg->name ), lmsg->type );
 
          if( lmsg->text )
-            ch->printf( "&CText:\r\n  &c%s\r\n", lmsg->text );
+            ch->print_fmt( "&CText:\r\n  &c{}\r\n", lmsg->text );
 
          ch->print( "\r\n" );
       }
@@ -3464,7 +3438,7 @@ CMDF( do_message )
       }
 
       add_loginmsg( name.c_str(), type, argument.c_str() );
-      ch->printf( "You have sent %s the following message:\r\n", capitalize(name).c_str() );
+      ch->print_fmt( "You have sent {} the following message:\r\n", capitalize( name ) );
 
       if( type == 0 )
          ch->print( argument );

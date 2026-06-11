@@ -98,8 +98,8 @@ enum dir_types
    DIR_NORTHEAST, DIR_NORTHWEST, DIR_SOUTHEAST, DIR_SOUTHWEST, DIR_SOMEWHERE
 };
 
-const int MAX_DIR = DIR_SOUTHWEST;  /* max for normal walking */
-const int DIR_PORTAL = DIR_SOMEWHERE;  /* portal direction    */
+constexpr int MAX_DIR = DIR_SOUTHWEST;  /* max for normal walking */
+constexpr int DIR_PORTAL = DIR_SOMEWHERE;  /* portal direction    */
 
 /*
  * ACT bits for mobs.
@@ -251,7 +251,7 @@ enum apply_types
    APPLY_ATTACKS, APPLY_EXTRAGOLD, APPLY_ALLSTATS, MAX_APPLY_TYPE // 91 ( counting MAX_APPLY_TYPE )
 };
 
-const int REVERSE_APPLY = 1000;
+constexpr int REVERSE_APPLY = 1000;
 
 /*
  * Room flags.           Holy cow!  Talked about stripped away..
@@ -386,104 +386,104 @@ enum traps
  * Values for containers (value[1]).
  * Used in #OBJECTS.
  */
-const int CONT_CLOSEABLE = BV00;
-const int CONT_PICKPROOF = BV01;
-const int CONT_CLOSED = BV02;
-const int CONT_LOCKED = BV03;
-const int CONT_EATKEY = BV04;
+constexpr int CONT_CLOSEABLE = BV00;
+constexpr int CONT_PICKPROOF = BV01;
+constexpr int CONT_CLOSED = BV02;
+constexpr int CONT_LOCKED = BV03;
+constexpr int CONT_EATKEY = BV04;
 
-const int MAX_CONT_FLAG = 5;  /* This needs to be equal to the number of container flags for the OLC menu editor */
+constexpr int MAX_CONT_FLAG = 5;  /* This needs to be equal to the number of container flags for the OLC menu editor */
 
 /* Lever/dial/switch/button/pullchain flags */
 // New flags should be set up to show their stats in olcobj.cpp - Samson
-const int TRIG_UP = BV00;
-const int TRIG_UNLOCK = BV01;
-const int TRIG_LOCK = BV02;
-const int TRIG_D_NORTH = BV03;
-const int TRIG_D_SOUTH = BV04;
-const int TRIG_D_EAST = BV05;
-const int TRIG_D_WEST = BV06;
-const int TRIG_D_UP = BV07;
-const int TRIG_D_DOWN = BV08;
-const int TRIG_DOOR = BV09;
-const int TRIG_CONTAINER = BV10;
-const int TRIG_OPEN = BV11;
-const int TRIG_CLOSE = BV12;
-const int TRIG_PASSAGE = BV13;
-const int TRIG_OLOAD = BV14;
-const int TRIG_MLOAD = BV15;
-const int TRIG_TELEPORT = BV16;
-const int TRIG_TELEPORTALL = BV17;
-const int TRIG_TELEPORTPLUS = BV18;
-const int TRIG_DEATH = BV19;
-const int TRIG_CAST = BV20;
-const int TRIG_SHOWROOMDESC = BV21;
-const int TRIG_RAND4 = BV22;
-const int TRIG_RAND6 = BV23;
-const int TRIG_AUTORETURN = BV24;
+constexpr int TRIG_UP = BV00;
+constexpr int TRIG_UNLOCK = BV01;
+constexpr int TRIG_LOCK = BV02;
+constexpr int TRIG_D_NORTH = BV03;
+constexpr int TRIG_D_SOUTH = BV04;
+constexpr int TRIG_D_EAST = BV05;
+constexpr int TRIG_D_WEST = BV06;
+constexpr int TRIG_D_UP = BV07;
+constexpr int TRIG_D_DOWN = BV08;
+constexpr int TRIG_DOOR = BV09;
+constexpr int TRIG_CONTAINER = BV10;
+constexpr int TRIG_OPEN = BV11;
+constexpr int TRIG_CLOSE = BV12;
+constexpr int TRIG_PASSAGE = BV13;
+constexpr int TRIG_OLOAD = BV14;
+constexpr int TRIG_MLOAD = BV15;
+constexpr int TRIG_TELEPORT = BV16;
+constexpr int TRIG_TELEPORTALL = BV17;
+constexpr int TRIG_TELEPORTPLUS = BV18;
+constexpr int TRIG_DEATH = BV19;
+constexpr int TRIG_CAST = BV20;
+constexpr int TRIG_SHOWROOMDESC = BV21;
+constexpr int TRIG_RAND4 = BV22;
+constexpr int TRIG_RAND6 = BV23;
+constexpr int TRIG_AUTORETURN = BV24;
 
-const int MAX_TRIGFLAG = 25;  /* Make equal to the number of trigger flags for OLC menu editor */
+constexpr int MAX_TRIGFLAG = 25;  /* Make equal to the number of trigger flags for OLC menu editor */
 
-const int TELE_SHOWDESC = BV00;
-const int TELE_TRANSALL = BV01;
-const int TELE_TRANSALLPLUS = BV02;
+constexpr int TELE_SHOWDESC = BV00;
+constexpr int TELE_TRANSALL = BV01;
+constexpr int TELE_TRANSALLPLUS = BV02;
 
 /*
  * Sitting/Standing/Sleeping/Sitting on/in/at Objects - Xerves
  * Used for furniture (value[2]) in the #OBJECTS Section
  */
-const int SIT_ON = BV00;
-const int SIT_IN = BV01;
-const int SIT_AT = BV02;
+constexpr int SIT_ON = BV00;
+constexpr int SIT_IN = BV01;
+constexpr int SIT_AT = BV02;
 
-const int STAND_ON = BV03;
-const int STAND_IN = BV04;
-const int STAND_AT = BV05;
+constexpr int STAND_ON = BV03;
+constexpr int STAND_IN = BV04;
+constexpr int STAND_AT = BV05;
 
-const int SLEEP_ON = BV06;
-const int SLEEP_IN = BV07;
-const int SLEEP_AT = BV08;
+constexpr int SLEEP_ON = BV06;
+constexpr int SLEEP_IN = BV07;
+constexpr int SLEEP_AT = BV08;
 
-const int REST_ON = BV09;
-const int REST_IN = BV10;
-const int REST_AT = BV11;
+constexpr int REST_ON = BV09;
+constexpr int REST_IN = BV10;
+constexpr int REST_AT = BV11;
 
-const int MAX_FURNFLAG = 12;
+constexpr int MAX_FURNFLAG = 12;
 
 /*
  * Pipe flags
  */
-const int PIPE_TAMPED = BV01;
-const int PIPE_LIT = BV02;
-const int PIPE_HOT = BV03;
-const int PIPE_DIRTY = BV04;
-const int PIPE_FILTHY = BV05;
-const int PIPE_GOINGOUT = BV06;
-const int PIPE_BURNT = BV07;
-const int PIPE_FULLOFASH = BV08;
+constexpr int PIPE_TAMPED = BV01;
+constexpr int PIPE_LIT = BV02;
+constexpr int PIPE_HOT = BV03;
+constexpr int PIPE_DIRTY = BV04;
+constexpr int PIPE_FILTHY = BV05;
+constexpr int PIPE_GOINGOUT = BV06;
+constexpr int PIPE_BURNT = BV07;
+constexpr int PIPE_FULLOFASH = BV08;
 
-const int TRAP_ROOM = BV00;
-const int TRAP_OBJ = BV01;
-const int TRAP_ENTER_ROOM = BV02;
-const int TRAP_LEAVE_ROOM = BV03;
-const int TRAP_OPEN = BV04;
-const int TRAP_CLOSE = BV05;
-const int TRAP_GET = BV06;
-const int TRAP_PUT = BV07;
-const int TRAP_PICK = BV08;
-const int TRAP_UNLOCK = BV09;
-const int TRAP_N = BV10;
-const int TRAP_S = BV11;
-const int TRAP_E = BV12;
-const int TRAP_W = BV13;
-const int TRAP_U = BV14;
-const int TRAP_D = BV15;
-const int TRAP_EXAMINE = BV16;
-const int TRAP_NE = BV17;
-const int TRAP_NW = BV18;
-const int TRAP_SE = BV19;
-const int TRAP_SW = BV20;
-const int TRAPFLAG_MAX = 20;
+constexpr int TRAP_ROOM = BV00;
+constexpr int TRAP_OBJ = BV01;
+constexpr int TRAP_ENTER_ROOM = BV02;
+constexpr int TRAP_LEAVE_ROOM = BV03;
+constexpr int TRAP_OPEN = BV04;
+constexpr int TRAP_CLOSE = BV05;
+constexpr int TRAP_GET = BV06;
+constexpr int TRAP_PUT = BV07;
+constexpr int TRAP_PICK = BV08;
+constexpr int TRAP_UNLOCK = BV09;
+constexpr int TRAP_N = BV10;
+constexpr int TRAP_S = BV11;
+constexpr int TRAP_E = BV12;
+constexpr int TRAP_W = BV13;
+constexpr int TRAP_U = BV14;
+constexpr int TRAP_D = BV15;
+constexpr int TRAP_EXAMINE = BV16;
+constexpr int TRAP_NE = BV17;
+constexpr int TRAP_NW = BV18;
+constexpr int TRAP_SE = BV19;
+constexpr int TRAP_SW = BV20;
+constexpr int TRAPFLAG_MAX = 20;
 
 extern const char *log_flag[];   /* Used in cedit display and command saving */
 extern const char *mag_flags[];  /* Used during bootup */
@@ -523,128 +523,117 @@ class olc_data
    bool changed;
 };
 
-/*. Descriptor access macros .*/
-#define OLC_MODE(d) 	((d)->olc->mode)  /* Parse input mode  */
-#define OLC_NUM(d) 	((d)->olc->number)   /* Room/Obj VNUM  */
-#define OLC_VNUM(d)	OLC_NUM(d)
-#define OLC_VAL(d) 	((d)->olc->value) /* Scratch variable  */
-#define OLC_OBJ(d)	(obj)
-#define OLC_DESC(d) 	((d)->olc->desc)  /* Extra description */
-#define OLC_AFF(d)	((d)->olc->paf)   /* Affect data       */
-#define OLC_CHANGE(d)	((d)->olc->changed)  /* Changed flag      */
-#define OLC_EXIT(d)     ((d)->olc->xit)   /* An Exit     */
-
 /*. Add/Remove save list types	.*/
-const int OLC_SAVE_ROOM = 0;
-const int OLC_SAVE_OBJ = 1;
-const int OLC_SAVE_ZONE = 2;
-const int OLC_SAVE_MOB = 3;
-const int OLC_SAVE_SHOP = 4;
+constexpr int OLC_SAVE_ROOM = 0;
+constexpr int OLC_SAVE_OBJ = 1;
+constexpr int OLC_SAVE_ZONE = 2;
+constexpr int OLC_SAVE_MOB = 3;
+constexpr int OLC_SAVE_SHOP = 4;
 
 /* Submodes of OEDIT connectedness */
-const int OEDIT_MAIN_MENU = 1;
-const int OEDIT_EDIT_NAMELIST = 2;
-const int OEDIT_SHORTDESC = 3;
-const int OEDIT_LONGDESC = 4;
-const int OEDIT_ACTDESC = 5;
-const int OEDIT_TYPE = 6;
-const int OEDIT_EXTRAS = 7;
-const int OEDIT_WEAR = 8;
-const int OEDIT_WEIGHT = 9;
-const int OEDIT_COST = 10;
-const int OEDIT_COSTPERDAY = 11;
-const int OEDIT_TIMER = 12;
-const int OEDIT_VALUE_0 = 13;
-const int OEDIT_VALUE_1 = 14;
-const int OEDIT_VALUE_2 = 15;
-const int OEDIT_VALUE_3 = 16;
-const int OEDIT_VALUE_4 = 17;
-const int OEDIT_VALUE_5 = 18;
-const int OEDIT_EXTRADESC_KEY = 19;
-const int OEDIT_TRAPFLAGS = 20;
+constexpr int OEDIT_MAIN_MENU = 1;
+constexpr int OEDIT_EDIT_NAMELIST = 2;
+constexpr int OEDIT_SHORTDESC = 3;
+constexpr int OEDIT_LONGDESC = 4;
+constexpr int OEDIT_ACTDESC = 5;
+constexpr int OEDIT_TYPE = 6;
+constexpr int OEDIT_EXTRAS = 7;
+constexpr int OEDIT_WEAR = 8;
+constexpr int OEDIT_WEIGHT = 9;
+constexpr int OEDIT_COST = 10;
+constexpr int OEDIT_COSTPERDAY = 11;
+constexpr int OEDIT_TIMER = 12;
+constexpr int OEDIT_VALUE_0 = 13;
+constexpr int OEDIT_VALUE_1 = 14;
+constexpr int OEDIT_VALUE_2 = 15;
+constexpr int OEDIT_VALUE_3 = 16;
+constexpr int OEDIT_VALUE_4 = 17;
+constexpr int OEDIT_VALUE_5 = 18;
+constexpr int OEDIT_EXTRADESC_KEY = 19;
+constexpr int OEDIT_TRAPFLAGS = 20;
 
-const int OEDIT_EXTRADESC_DESCRIPTION = 22;
-const int OEDIT_EXTRADESC_MENU = 23;
-const int OEDIT_LEVEL = 24;
-const int OEDIT_LAYERS = 25;
-const int OEDIT_AFFECT_MENU = 26;
-const int OEDIT_AFFECT_LOCATION = 27;
-const int OEDIT_AFFECT_MODIFIER = 28;
-const int OEDIT_AFFECT_REMOVE = 29;
-const int OEDIT_AFFECT_RIS = 30;
-const int OEDIT_EXTRADESC_CHOICE = 31;
-const int OEDIT_EXTRADESC_DELETE = 32;
-const int OEDIT_VALUE_6 = 33;
-const int OEDIT_VALUE_7 = 34;
-const int OEDIT_VALUE_8 = 35;
-const int OEDIT_VALUE_9 = 36;
-const int OEDIT_VALUE_10 = 37;
+constexpr int OEDIT_EXTRADESC_DESCRIPTION = 22;
+constexpr int OEDIT_EXTRADESC_MENU = 23;
+constexpr int OEDIT_LEVEL = 24;
+constexpr int OEDIT_LAYERS = 25;
+constexpr int OEDIT_AFFECT_MENU = 26;
+constexpr int OEDIT_AFFECT_LOCATION = 27;
+constexpr int OEDIT_AFFECT_MODIFIER = 28;
+constexpr int OEDIT_AFFECT_REMOVE = 29;
+constexpr int OEDIT_AFFECT_RIS = 30;
+constexpr int OEDIT_EXTRADESC_CHOICE = 31;
+constexpr int OEDIT_EXTRADESC_DELETE = 32;
+constexpr int OEDIT_VALUE_6 = 33;
+constexpr int OEDIT_VALUE_7 = 34;
+constexpr int OEDIT_VALUE_8 = 35;
+constexpr int OEDIT_VALUE_9 = 36;
+constexpr int OEDIT_VALUE_10 = 37;
 
 /* Submodes of REDIT connectedness */
-const int REDIT_MAIN_MENU = 1;
-const int REDIT_NAME = 2;
-const int REDIT_DESC = 3;
-const int REDIT_FLAGS = 4;
-const int REDIT_SECTOR = 5;
-const int REDIT_EXIT_MENU = 6;
+constexpr int REDIT_MAIN_MENU = 1;
+constexpr int REDIT_NAME = 2;
+constexpr int REDIT_DESC = 3;
+constexpr int REDIT_FLAGS = 4;
+constexpr int REDIT_SECTOR = 5;
+constexpr int REDIT_EXIT_MENU = 6;
 
-const int REDIT_EXIT_DIR = 8;
-const int REDIT_EXIT_VNUM = 9;
-const int REDIT_EXIT_DESC = 10;
-const int REDIT_EXIT_KEYWORD = 11;
-const int REDIT_EXIT_KEY = 12;
-const int REDIT_EXIT_FLAGS = 13;
-const int REDIT_EXTRADESC_MENU = 14;
-const int REDIT_EXTRADESC_KEY = 15;
-const int REDIT_EXTRADESC_DESCRIPTION = 16;
-const int REDIT_TUNNEL = 17;
-const int REDIT_TELEDELAY = 18;
-const int REDIT_TELEVNUM = 19;
-const int REDIT_EXIT_EDIT = 20;
-const int REDIT_EXIT_ADD = 21;
-const int REDIT_EXIT_DELETE = 22;
-const int REDIT_EXIT_ADD_VNUM = 23;
-const int REDIT_EXTRADESC_DELETE = 24;
-const int REDIT_EXTRADESC_CHOICE = 25;
-const int REDIT_NDESC = 26;
-const int REDIT_LIGHT = 27;
+constexpr int REDIT_EXIT_DIR = 8;
+constexpr int REDIT_EXIT_VNUM = 9;
+constexpr int REDIT_EXIT_DESC = 10;
+constexpr int REDIT_EXIT_KEYWORD = 11;
+constexpr int REDIT_EXIT_KEY = 12;
+constexpr int REDIT_EXIT_FLAGS = 13;
+constexpr int REDIT_EXTRADESC_MENU = 14;
+constexpr int REDIT_EXTRADESC_KEY = 15;
+constexpr int REDIT_EXTRADESC_DESCRIPTION = 16;
+constexpr int REDIT_TUNNEL = 17;
+constexpr int REDIT_TELEDELAY = 18;
+constexpr int REDIT_TELEVNUM = 19;
+constexpr int REDIT_EXIT_EDIT = 20;
+constexpr int REDIT_EXIT_ADD = 21;
+constexpr int REDIT_EXIT_DELETE = 22;
+constexpr int REDIT_EXIT_ADD_VNUM = 23;
+constexpr int REDIT_EXTRADESC_DELETE = 24;
+constexpr int REDIT_EXTRADESC_CHOICE = 25;
+constexpr int REDIT_NDESC = 26;
+constexpr int REDIT_LIGHT = 27;
 
 /*. Submodes of MEDIT connectedness 	.*/
-const int MEDIT_NPC_MAIN_MENU = 0;
-const int MEDIT_NAME = 1;
-const int MEDIT_S_DESC = 2;
-const int MEDIT_L_DESC = 3;
-const int MEDIT_D_DESC = 4;
-const int MEDIT_NPC_FLAGS = 5;
-const int MEDIT_AFF_FLAGS = 6;
+constexpr int MEDIT_NPC_MAIN_MENU = 0;
+constexpr int MEDIT_NAME = 1;
+constexpr int MEDIT_S_DESC = 2;
+constexpr int MEDIT_L_DESC = 3;
+constexpr int MEDIT_D_DESC = 4;
+constexpr int MEDIT_NPC_FLAGS = 5;
+constexpr int MEDIT_AFF_FLAGS = 6;
 
-const int MEDIT_SEX = 8;
-const int MEDIT_HITROLL = 9;
-const int MEDIT_DAMROLL = 10;
-const int MEDIT_DAMNUMDIE = 11;
-const int MEDIT_DAMSIZEDIE = 12;
-const int MEDIT_DAMPLUS = 13;
-const int MEDIT_HITPLUS = 14;
-const int MEDIT_AC = 15;
-const int MEDIT_GOLD = 16;
-const int MEDIT_POS = 17;
-const int MEDIT_DEFPOS = 18;
-const int MEDIT_ATTACK = 19;
-const int MEDIT_DEFENSE = 20;
-const int MEDIT_LEVEL = 21;
-const int MEDIT_ALIGNMENT = 22;
-const int MEDIT_THACO = 23;
-const int MEDIT_EXP = 24;
-const int MEDIT_SPEC = 25;
-const int MEDIT_RESISTANT = 26;
-const int MEDIT_IMMUNE = 27;
-const int MEDIT_SUSCEPTIBLE = 28;
-const int MEDIT_ABSORB = 29;
-const int MEDIT_MENTALSTATE = 30;
+constexpr int MEDIT_SEX = 8;
+constexpr int MEDIT_HITROLL = 9;
+constexpr int MEDIT_DAMROLL = 10;
+constexpr int MEDIT_DAMNUMDIE = 11;
+constexpr int MEDIT_DAMSIZEDIE = 12;
+constexpr int MEDIT_DAMPLUS = 13;
+constexpr int MEDIT_HITPLUS = 14;
+constexpr int MEDIT_AC = 15;
+constexpr int MEDIT_GOLD = 16;
+constexpr int MEDIT_POS = 17;
+constexpr int MEDIT_DEFPOS = 18;
+constexpr int MEDIT_ATTACK = 19;
+constexpr int MEDIT_DEFENSE = 20;
+constexpr int MEDIT_LEVEL = 21;
+constexpr int MEDIT_ALIGNMENT = 22;
+constexpr int MEDIT_THACO = 23;
+constexpr int MEDIT_EXP = 24;
+constexpr int MEDIT_SPEC = 25;
+constexpr int MEDIT_RESISTANT = 26;
+constexpr int MEDIT_IMMUNE = 27;
+constexpr int MEDIT_SUSCEPTIBLE = 28;
+constexpr int MEDIT_ABSORB = 29;
+constexpr int MEDIT_MENTALSTATE = 30;
 
-const int MEDIT_PARTS = 32;
-const int MEDIT_HITPOINT = 33;
-const int MEDIT_MANA = 34;
-const int MEDIT_MOVE = 35;
-const int MEDIT_CLASS = 36;
-const int MEDIT_RACE = 37;
+constexpr int MEDIT_PARTS = 32;
+constexpr int MEDIT_HITPOINT = 33;
+constexpr int MEDIT_MANA = 34;
+constexpr int MEDIT_MOVE = 35;
+constexpr int MEDIT_CLASS = 36;
+constexpr int MEDIT_RACE = 37;

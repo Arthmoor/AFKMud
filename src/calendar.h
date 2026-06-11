@@ -41,12 +41,12 @@ enum seasons
 };
 
 /* Hunger/Thirst modifiers */
-const int WINTER_HUNGER = 1;
-const int SUMMER_THIRST = 1;
-const int SUMMER_THIRST_DESERT = 2;
+constexpr int WINTER_HUNGER = 1;
+constexpr int SUMMER_THIRST = 1;
+constexpr int SUMMER_THIRST_DESERT = 2;
 
 /* Holiday chart */
-#define HOLIDAY_FILE SYSTEM_DIR "holidays.dat"
+inline constexpr std::string_view HOLIDAY_FILE = "../system/holidays.dat";
 
 extern const char *day_name[];
 extern const char *month_name[];
@@ -63,7 +63,7 @@ class holiday_data
      holiday_data(  );
     ~holiday_data(  );
 
-   void set_name( const std::string & newname )
+   void set_name( std::string_view newname )
    {
       name = newname;
    }
@@ -72,7 +72,7 @@ class holiday_data
       return name;
    }
 
-   void set_announce( const std::string & text )
+   void set_announce( std::string_view text )
    {
       announce = text;
    }

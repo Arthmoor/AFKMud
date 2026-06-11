@@ -29,6 +29,8 @@
 
 #pragma once
 
+inline constexpr std::string_view SHIP_FILE = "../system/ships.dat";
+
 enum ship_flag_settings
 {
    SHIP_ANCHORED, SHIP_ONMAP, SHIP_AIRSHIP, MAX_SHIP_FLAG
@@ -46,8 +48,8 @@ class ship_data
 
    std::string name;
    std::string owner;
-   class continent_data *continent;
    std::bitset<MAX_SHIP_FLAG> flags;
+   class continent_data *continent;
    int fuel;
    int max_fuel;
    int hull;
@@ -65,5 +67,3 @@ enum ship_types
 };
 
 extern std::list<ship_data *> shiplist;
-
-#define SHIP_FILE SYSTEM_DIR "ships.dat"  /* For ships */

@@ -41,9 +41,22 @@
 
 bool is_inolc( descriptor_data * );
 board_data *find_board( char_data * );
-board_data *get_board( char_data *, const std::string & );
+board_data *get_board( char_data *, std::string_view );
 
-lang_data *get_lang( const std::string & name )
+std::string NAME( char_data * ch )
+{
+   return( ch->isnpc() ? ch->short_descr : ch->name );
+}
+
+std::string MORPHNAME( char_data * ch )
+{
+   if( ch->morph && ch->morph->morph && ch->morph->morph->short_desc != nullptr )
+      return ch->morph->morph->short_desc;
+
+   return( ch->isnpc() ? ch->short_descr : ch->name );
+}
+
+lang_data *get_lang( std::string_view name )
 {
    for( auto* lang: langlist )
    {
@@ -54,13 +67,13 @@ lang_data *get_lang( const std::string & name )
 }
 
 // Rewritten by Xorith for more C++
-std::string translate( int percent, const std::string & in, const std::string & name )
+std::string translate( int percent, std::string_view in, std::string_view name )
 {
    lang_data* lng = get_lang( name );
 
    if( percent > 99 || name == "common" || ( !lng && !( lng = get_lang( "default" ) ) ) )
    {
-      return in;
+      return std::string{in};
    }
 
    std::string retVal;
@@ -214,12 +227,12 @@ CMDF( do_ask )
    act( AT_SAY, "$n asks you '$t'", ch, sbuf.c_str(  ), victim, TO_VICT );
 
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
-      append_to_file( LOG_FILE, "%s: %s", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ) );
+      append_to_file( LOG_FILE, "{}: {}", ch->isnpc(  )? ch->short_descr : ch->name, argument );
 
    mprog_targetted_speech_trigger( argument, ch, victim );
 }
 
-void update_sayhistory( char_data * ch, char_data * vch, const std::string & msg )
+void update_sayhistory( char_data * ch, char_data * vch, std::string_view msg )
 {
    std::string message;
 
@@ -326,7 +339,7 @@ CMDF( do_say )
       update_sayhistory( ch, ch, argument );
 
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
-      append_to_file( LOG_FILE, "%s: %s", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ) );
+      append_to_file( LOG_FILE, "{}: {}", ch->isnpc(  )? ch->short_descr : ch->name, argument );
 
    mprog_speech_trigger( argument, ch );
    if( ch->char_died(  ) )
@@ -477,7 +490,7 @@ CMDF( do_whisper )
       act( AT_WHISPER, "$n whispers something to $N.", ch, argument.c_str(  ), victim, TO_NOTVICT );
 
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
-      append_to_file( LOG_FILE, "%s: %s (whisper to) %s.", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ),
+      append_to_file( LOG_FILE, "{}: {} (whisper to) {}.", ch->isnpc(  )? ch->short_descr : ch->name, argument,
                       victim->isnpc(  )? victim->short_descr : victim->name );
 
    if( victim->isnpc(  ) )
@@ -525,7 +538,7 @@ CMDF( do_beep )
 
    if( victim->has_pcflag( PCFLAG_NO_BEEP ) )
    {
-      ch->printf( "%s is not allowed to receive beeps!\r\n", victim->name );
+      ch->print_fmt( "{} is not allowed to receive beeps!\r\n", victim->name );
       return;
    }
 
@@ -534,15 +547,15 @@ CMDF( do_beep )
     */
    if( victim->has_pcflag( PCFLAG_NOBEEP ) )
    {
-      ch->printf( "%s is not accepting beeps at this time.\r\n", victim->name );
+      ch->print_fmt( "{} is not accepting beeps at this time.\r\n", victim->name );
       return;
    }
 
-   victim->printf( "%s is beeping you!\a\r\n", PERS( ch, victim, true ) );
-   ch->printf( "You beep %s.\r\n", PERS( victim, ch, true ) );
+   victim->print_fmt( "{} is beeping you!\a\r\n", PERS( ch, victim, true ) );
+   ch->print_fmt( "You beep {}.\r\n", PERS( victim, ch, true ) );
 }
 
-void update_tellhistory( char_data * vch, char_data * ch, const std::string & msg, bool self )
+void update_tellhistory( char_data * vch, char_data * ch, std::string_view msg, bool self )
 {
    char_data *tch;
    std::string message;
@@ -803,7 +816,7 @@ CMDF( do_tell )
    victim->reply = ch;
 
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
-      append_to_file( LOG_FILE, "%s: %s (tell to) %s.", ch->isnpc(  )? ch->short_descr : ch->name, argument.c_str(  ), victim->isnpc(  )? victim->short_descr : victim->name );
+      append_to_file( LOG_FILE, "{}: {} (tell to) {}.", ch->isnpc(  ) ? ch->short_descr : ch->name, argument, victim->isnpc(  ) ? victim->short_descr : victim->name );
 
    if( victim->isnpc(  ) )
    {
@@ -929,14 +942,14 @@ CMDF( do_emote )
    }
    ch->set_actflags( actflags );
    if( ch->in_room->flags.test( ROOM_LOGSPEECH ) )
-      append_to_file( LOG_FILE, "%s %s (emote)", ch->isnpc(  ) ? ch->short_descr : ch->name, argument.c_str(  ) );
+      append_to_file( LOG_FILE, "{} {} (emote)", ch->isnpc(  ) ? ch->short_descr : ch->name, argument );
 }
 
 /* 0 = bug 1 = idea 2 = typo */
-void tybuid( char_data * ch, const std::string & argument, int type )
+void tybuid( char_data * ch, std::string_view argument, int type )
 {
    static const char *tybuid_name[] = { "bug", "idea", "typo" };
-   static const char *tybuid_file[] = { PBUG_FILE, IDEA_FILE, TYPO_FILE };
+   static const char *tybuid_file[] = { PBUG_FILE.data(), IDEA_FILE.data(), TYPO_FILE.data() };
 
    ch->set_color( AT_PLAIN );
 
@@ -971,7 +984,7 @@ void tybuid( char_data * ch, const std::string & argument, int type )
    }
 
    std::string t = std::format( "{:%a %b %d, %Y %I:%M:%S %p}", current_time );
-   append_file( ch, tybuid_file[type], "(%s:  %s", t.c_str(), argument.c_str(  ) );
+   append_file( ch->in_room ? ch->in_room->vnum : 0, ch->name, tybuid_file[type], "({}:  {}", t, argument );
    ch->printf( "Thank you! Your %s has been recorded.\r\n", tybuid_name[type] );
 }
 
@@ -1277,17 +1290,7 @@ CMDF( do_languages )
    ch->print( "\r\n" );
 }
 
-#define NAME(ch)        ( ch->isnpc() ? ch->short_descr : ch->name )
-
-const char *MORPHNAME( char_data * ch )
-{
-   if( ch->morph && ch->morph->morph && ch->morph->morph->short_desc != nullptr )
-      return ch->morph->morph->short_desc;
-   else
-      return NAME( ch );
-}
-
-std::string act_string( const std::string & format, char_data * to, char_data * ch, const void *arg1, const void *arg2, int flags )
+std::string act_string( std::string_view format, char_data * to, char_data * ch, const void *arg1, const void *arg2, int flags )
 {
    const char *he_she[] = { "it", "he", "she", "it" };
    const char *him_her[] = { "it", "him", "her", "it" };
@@ -1318,7 +1321,7 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
       return buf;
    }
 
-   std::string::const_iterator ptr = format.begin(  );
+   std::string_view::const_iterator ptr = format.begin(  );
    while( ptr != format.end(  ) )
    {
       if( *ptr == '.' || *ptr == '?' || *ptr == '!' )
@@ -1493,62 +1496,47 @@ std::string act_string( const std::string & format, char_data * to, char_data * 
    return buf;
 }
 
-#undef NAME
-
-void act_printf( short AType, char_data * ch, const void *arg1, const void *arg2, int type, const char *str, ... )
-{
-   va_list arg;
-   char format[MSL * 2];
-
-   // Discard null and zero-length messages.
-   if( !str || str[0] == '\0' )
-      return;
-
-   va_start( arg, str );
-   vsnprintf( format, MSL * 2, str, arg );
-   va_end( arg );
-
-   act( AType, format, ch, arg1, arg2, type );
-}
-
-void act( short AType, const std::string & format, char_data * ch, const void *arg1, const void *arg2, int type )
+void act( short AType, std::string_view format, char_data *ch, const void *arg1, const void *arg2, int type )
 {
    std::string txt;
-   char_data *to;
-   char_data *third = ( char_data * ) arg1;
-   char_data *vch = ( char_data * ) arg2;
-   obj_data *obj1 = ( obj_data * ) arg1;
-   obj_data *obj2 = ( obj_data * ) arg2;
-   const int ACTF_NONE = 0;
-   const int ACTF_TXT  = BV00;
-   const int ACTF_CH   = BV01;
-   const int ACTF_OBJ  = BV02;
+   char_data *to = nullptr;
+
+   // Safely cast the const void* pointers
+   auto *third = const_cast<char_data*>(static_cast<const char_data*>(arg1));
+   auto *vch = const_cast<char_data*>(static_cast<const char_data*>(arg2));
+   auto *obj1 = const_cast<obj_data*>(static_cast<const obj_data*>(arg1));
+   auto *obj2 = const_cast<obj_data*>(static_cast<const obj_data*>(arg2));
+
+   constexpr int ACTF_NONE = 0;
+   constexpr int ACTF_TXT  = BV00;
+   constexpr int ACTF_CH   = BV01;
+   constexpr int ACTF_OBJ  = BV02;
    int flags1 = ACTF_NONE, flags2 = ACTF_NONE;
 
    // Discard null and zero-length messages.
-   if( format.empty(  ) )
+   if( format.empty() )
       return;
 
    if( !ch )
    {
-      bug( "%s: null ch. (%s)", __func__, format.c_str(  ) );
+      bug( "%s: null ch. (%s)", __func__, format.data() );
       return;
    }
 
    // Do some proper type checking here..  Sort of.  We base it on the $* params.
    // This is kinda lame really, but I suppose in some weird sense it beats having
    // to pass like 8 different nullptr parameters every time we need to call act()..
-   std::string::const_iterator ptr = format.begin(  );
-   while( ptr != format.end(  ) )
+   for( auto ptr = format.begin(); ptr != format.end(); ++ptr )
    {
       if( *ptr == '$' )
       {
-         ++ptr;
+         if( ++ptr == format.end() )
+            break;
 
          switch ( *ptr )
          {
             default:
-               bug( "Act: bad code %c for format %s.", *ptr, format.c_str(  ) );
+               bug( "Act: bad code %c for format %s.", *ptr, format.data() );
                break;
 
             case 't':
@@ -1563,18 +1551,10 @@ void act( short AType, const std::string & format, char_data * ch, const void *a
                obj2 = nullptr;
                break;
 
-            case 'n':
-            case 'e':
-            case 'm':
-            case 's':
-            case 'q':
+            case 'n': case 'e': case 'm': case 's': case 'q':
                break;
 
-            case 'N':
-            case 'E':
-            case 'M':
-            case 'S':
-            case 'Q':
+            case 'N': case 'E': case 'M': case 'S': case 'Q':
                flags2 |= ACTF_CH;
                obj2 = nullptr;
                break;
@@ -1589,33 +1569,38 @@ void act( short AType, const std::string & format, char_data * ch, const void *a
                break;
          }
       }
-      ++ptr;
    }
 
    if( flags1 != ACTF_NONE && flags1 != ACTF_TXT && flags1 != ACTF_CH && flags1 != ACTF_OBJ )
    {
-      bug( "%s: arg1 has more than one type in format %s. Setting all nullptr.", __func__, format.c_str(  ) );
+      bug( "%s: arg1 has more than one type in format %s. Setting all nullptr.", __func__, format.data() );
       obj1 = nullptr;
    }
 
    if( flags2 != ACTF_NONE && flags2 != ACTF_TXT && flags2 != ACTF_CH && flags2 != ACTF_OBJ )
    {
-      bug( "%s: arg2 has more than one type in format %s. Setting all nullptr.", __func__, format.c_str(  ) );
+      bug( "%s: arg2 has more than one type in format %s. Setting all nullptr.", __func__, format.data() );
       vch = nullptr;
       obj2 = nullptr;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: nullptr ch->in_room! (%s:%s)", __func__, ch->name, format.c_str(  ) );
+      bug( "%s: nullptr ch->in_room! (%s:%s)", __func__, ch->name, format.data() );
       return;
    }
    else if( type == TO_CHAR )
+   {
       to = ch;
+   }
    else if( type == TO_THIRD )
+   {
       to = third;
+   }
    else
-      to = ( *ch->in_room->people.begin(  ) );
+   {
+      to = ch->in_room->people.front();
+   }
 
    // ACT_SECRETIVE handling
    if( ch->has_actflag( ACT_SECRETIVE ) && type != TO_CHAR )
@@ -1626,22 +1611,22 @@ void act( short AType, const std::string & format, char_data * ch, const void *a
       if( !vch )
       {
          bug( "%s: null vch with TO_VICT.", __func__ );
-         log_printf( "%s (%s)", ch->name, format.c_str(  ) );
+         log_printf( "%s (%s)", ch->name, format.data() );
          return;
       }
       if( !vch->in_room )
       {
          bug( "%s: vch in nullptr room!", __func__ );
-         log_printf( "%s -> %s (%s)", ch->name, vch->name, format.c_str(  ) );
+         log_printf( "%s -> %s (%s)", ch->name, vch->name, format.data() );
          return;
       }
 
       if( is_ignoring( ch, vch ) )
       {
          /*
-          * continue unless speaker is an immortal 
+          * continue unless speaker is an immortal
           */
-         if( !vch->is_immortal(  ) || ch->level > vch->level )
+         if( !vch->is_immortal() || ch->level > vch->level )
             return;
          else
             ch->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", vch->name );
@@ -1661,38 +1646,32 @@ void act( short AType, const std::string & format, char_data * ch, const void *a
       }
    }
 
-   /*
-    * Anyone feel like telling me the point of looping through the whole
-    * room when we're only sending to one char anyways..? -- Alty 
-    *
-    * Because, silly, now we can use this sweet little bit of code to make
-    * sure that messages to people on the maps go where they need to :P - Samson 
-    */
    if( !to )
    {
       bug( "%s: nullptr TARGET - CANNOT CONTINUE", __func__ );
       return;
    }
 
-   // Strange as this may seem with changing "to" to the current iterated character, it seems to work. - Samson 1-9-04
-   std::list<char_data *>::iterator ich;
-   for( ich = to->in_room->people.begin(  ); ich != to->in_room->people.end(  ); )
+   /*
+    * Anyone feel like telling me the point of looping through the whole
+    * room when we're only sending to one char anyways..? -- Alty
+    *
+    * Because, silly, now we can use this sweet little bit of code to make
+    * sure that messages to people on the maps go where they need to :P - Samson
+    */
+   for( auto* iterated_char : to->in_room->people )
    {
-      to = *ich;
-      ++ich;
+      to = iterated_char; // Strange as this may seem with changing "to" to the current iterated character, it seems to work. - Samson 1-9-04
 
-      if( ( !to->desc && ( to->isnpc(  ) && !HAS_PROG( to->pIndexData, ACT_PROG ) ) ) || !to->IS_AWAKE(  ) )
+      if( ( !to->desc && ( to->isnpc() && !HAS_PROG( to->pIndexData, ACT_PROG ) ) ) || !to->IS_AWAKE() )
          continue;
 
-      // OasisOLC II check - Tagith 
+      // OasisOLC II check - Tagith
       if( to->desc && is_inolc( to->desc ) )
          continue;
 
-      if( type == TO_CHAR )
-      {
-         if( to != ch )
-            continue;
-      }
+      if( type == TO_CHAR && to != ch )
+         continue;
 
       if( type == TO_THIRD && to != third )
          continue;
@@ -1702,53 +1681,30 @@ void act( short AType, const std::string & format, char_data * ch, const void *a
 
       if( type == TO_ROOM )
       {
-         if( to == ch )
-            continue;
-
-         if( is_ignoring( ch, to ) )
-            continue;
-
-         if( !is_same_char_map( ch, to ) )
+         if( to == ch || is_ignoring( ch, to ) || !is_same_char_map( ch, to ) )
             continue;
       }
 
       if( type == TO_NOTVICT )
       {
-         if( to == ch || to == vch )
-            continue;
-
-         if( is_ignoring( ch, to ) )
-            continue;
-
-         if( vch != nullptr && is_ignoring( vch, to ) )
-            continue;
-
-         if( !is_same_char_map( ch, to ) )
+         if( to == ch || to == vch || is_ignoring( ch, to ) ||
+            ( vch != nullptr && is_ignoring( vch, to ) ) || !is_same_char_map( ch, to ) )
             continue;
       }
 
       if( type == TO_CANSEE )
       {
-         if( to == ch )
+         if( to == ch || is_ignoring( ch, to ) || !is_same_char_map( ch, to ) )
             continue;
 
-         if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_WIZINVIS ) )
+         if( ch->is_immortal() && ch->has_pcflag( PCFLAG_WIZINVIS ) )
          {
             if( to->level < ch->pcdata->wizinvis )
                continue;
          }
-
-         if( is_ignoring( ch, to ) )
-            continue;
-
-         if( !is_same_char_map( ch, to ) )
-            continue;
       }
 
-      if( to->is_immortal(  ) )
-         txt = act_string( format, to, ch, arg1, arg2, STRING_IMM );
-      else
-         txt = act_string( format, to, ch, arg1, arg2, STRING_NONE );
+      txt = to->is_immortal() ? act_string( format, to, ch, arg1, arg2, STRING_IMM ) : act_string( format, to, ch, arg1, arg2, STRING_NONE );
 
       if( to->desc )
       {
@@ -1757,7 +1713,7 @@ void act( short AType, const std::string & format, char_data * ch, const void *a
       }
       if( MOBtrigger )
       {
-         // Note: use original string, not string with ANSI. -- Alty 
+         // Note: use original string, not string with ANSI. -- Alty
          mprog_act_trigger( txt, to, ch, obj1, vch, obj2 );
       }
    }

@@ -32,23 +32,14 @@
 
 #pragma once
 
-#define BOARD_FILE "boards.lst"  /* New board file */
-#define OLD_BOARD_FILE "boards.txt" /* Old board file */
-#define PROJECTS_FILE SYSTEM_DIR "projects.txt" /* For projects    */
+inline constexpr std::string_view BOARD_FILE = "../boards/boards.lst";      // New board file.
+inline constexpr std::string_view OLD_BOARD_FILE = "../boards/boards.txt";  // Old board file.
+inline constexpr std::string_view PROJECTS_FILE = "../system/projects.txt"; // For projects.
 
-#define IS_BOARD_FLAG( board, flag )     (board)->flags.test((flag))
-#define TOGGLE_BOARD_FLAG( board, flag ) (board)->flags.flip((flag))
-
-#define IS_NOTE_FLAG( note, flag )     (note)->flags.test((flag))
-#define TOGGLE_NOTE_FLAG( note, flag ) (note)->flags.flip((flag))
-
-const int MAX_REPLY = 10;         // How many messages in each level?
-const int MAX_BOARD_EXPIRE = 180; // Max days notes have to live.
-const int BD_IGNORE = 2;
-const int BD_ANNOUNCE = 1;
-
-/* As a safety precaution, players who are writing a note are moved here... */
-#define ROOM_VNUM_BOARD ROOM_VNUM_LIMBO
+constexpr int MAX_REPLY = 10;         // How many messages in each level?
+constexpr int MAX_BOARD_EXPIRE = 180; // Max days notes have to live.
+constexpr int BD_IGNORE = 2;
+constexpr int BD_ANNOUNCE = 1;
 
 enum bflags
 {
@@ -73,13 +64,13 @@ class note_data
 
    std::list<note_data*> rlist;
    std::bitset<MAX_NOTE_FLAGS> flags; /* Note Flags */
+   std::chrono::system_clock::time_point date_stamp;   /* Global Board Use */
+   std::chrono::system_clock::time_point expire;  /* Global Board Use */
    note_data *parent;
    char *sender;
    char *to_list;
    char *subject;
    char *text;
-   std::chrono::system_clock::time_point date_stamp;   /* Global Board Use */
-   std::chrono::system_clock::time_point expire;  /* Global Board Use */
    short reply_count;   /* Keep a count of our replies */
 };
 
@@ -95,6 +86,7 @@ class board_data
 
    std::list<note_data*> nlist; /* List of notes on the board */
    std::bitset<MAX_BOARD_FLAGS> flags; /* Board Flags */
+   std::chrono::system_clock::time_point expire;  /* The time when the note will expire. */
    char *name; /* Name of Board */
    char *filename;   /* Filename for the board */
    char *desc; /* Short description of the board */
@@ -102,7 +94,6 @@ class board_data
    char *posters; /* Posers */
    char *moderators; /* Moderators of this board */
    char *group;   /* In-Game organization that 'owns' the board */
-   std::chrono::system_clock::time_point expire;  /* The time when the note will expire. */
    int objvnum;   /* Object Vnum of a physical board */
    short read_level; /* Minimum Level to read this board */
    short post_level; /* Minimum Level to post this board */
@@ -123,12 +114,12 @@ class project_data
 
    std::list<note_data*> nlist; /* List of note logs for the project */
    std::string realm_name; // Realm this project belongs to.
+   std::chrono::system_clock::time_point date_stamp;
    char *name;
    char *owner;
    char *coder;
    char *status;
    char *description;
-   std::chrono::system_clock::time_point date_stamp;
    bool taken;        // Has someone taken project?
 };
 

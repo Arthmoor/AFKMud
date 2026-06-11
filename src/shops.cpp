@@ -60,9 +60,9 @@ telnet://northwind.kilnar.com:5555/    +
 #include "shops.h"
 
 void auction_sell( char_data *, char_data *, std::string & );
-void auction_buy( char_data *, char_data *, const std::string & );
-void auction_value( char_data *, char_data *, const std::string & );
-bool can_wear_obj( char_data *, obj_data * );
+void auction_buy( char_data *, char_data *, std::string_view );
+void auction_value( char_data *, char_data *, std::string_view );
+bool can_wear_obj( const char_data *, const obj_data * );
 bool can_mmodify( char_data *, char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 char_data *find_auctioneer( char_data * );
@@ -213,7 +213,7 @@ char_data *find_keeper( char_data * ch )
 
    if( ch->who_fighting(  ) )
    {
-      ch->printf( "%s doesn't seem to want to get involved.\r\n", PERS( keeper, ch, false ) );
+      ch->print_fmt( "{} doesn't seem to want to get involved.\r\n", PERS( keeper, ch, false ) );
       return nullptr;
    }
 
@@ -440,7 +440,7 @@ char_data *find_fixer( char_data * ch )
     */
    if( !ch->isnpc(  ) && ch->who_fighting(  ) )
    {
-      ch->printf( "%s doesn't seem to want to get involved.\r\n", PERS( keeper, ch, false ) );
+      ch->print_fmt( "{} doesn't seem to want to get involved.\r\n", PERS( keeper, ch, false ) );
       return nullptr;
    }
 
@@ -843,8 +843,8 @@ CMDF( do_buy )
       }
       else
       {
-         act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n buys %d $p%s.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
-         act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You buy %d $p%s.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
+         act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n buys {} $p{}.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
+         act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You buy {} $p{}.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
          act( AT_ACTION, "$N puts them into a bag and hands it to you.", ch, nullptr, keeper, TO_CHAR );
       }
 
@@ -854,7 +854,7 @@ CMDF( do_buy )
          double pct = cost * x;
          cost = cost - pct;
 
-         ch->printf( "Your bargaining skills have reduced the price by %d gold!\r\n", ( int )pct );
+         ch->print_fmt( "Your bargaining skills have reduced the price by {} gold!\r\n", ( int )pct );
       }
       else
       {
@@ -1113,7 +1113,7 @@ CMDF( do_sell )
 
    if( found && clan->bank && cost >= clan->balance )
    {
-      act_printf( AT_TELL, keeper, obj, ch, TO_VICT, "$n tells you, '$p is worth more than %s can afford...'", clan->name.c_str(  ) );
+      act_printf( AT_TELL, keeper, obj, ch, TO_VICT, "$n tells you, '$p is worth more than {} can afford...'", clan->name );
       return;
    }
    else
@@ -1127,7 +1127,7 @@ CMDF( do_sell )
 
    obj->separate(  );
    act( AT_ACTION, "$n sells $p.", ch, obj, nullptr, TO_ROOM );
-   act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You sell $p for %d gold piece%s.", cost, cost == 1 ? "" : "s" );
+   act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You sell $p for {} gold piece{}.", cost, cost == 1 ? "" : "s" );
    ch->gold += cost;
 
    if( obj->item_type == ITEM_TRASH )
@@ -1197,14 +1197,14 @@ CMDF( do_value )
       act( AT_ACTION, "$n looks uninterested in $p.", keeper, obj, ch, TO_VICT );
       return;
    }
-   act_printf( AT_TELL, keeper, obj, ch, TO_VICT, "$n tells you 'I'd give you %d gold coins for $p.'", cost );
+   act_printf( AT_TELL, keeper, obj, ch, TO_VICT, "$n tells you 'I'd give you {} gold coins for $p.'", cost );
    ch->reply = keeper;
 }
 
 /*
  * Repair a single object. Used when handling "repair all" - Gorog
  */
-void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const std::string & arg, const std::string & fixstr, const std::string & fixstr2 )
+void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, std::string_view arg, std::string_view fixstr, std::string_view fixstr2 )
 {
    int cost;
    bool found = false;
@@ -1253,15 +1253,18 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, const s
    /*
     * "repair all" gets a 10% surcharge - Gorog 
     */
-   if( ( cost = strcmp( "all", arg.c_str(  ) )? cost : 11 * cost / 10 ) > ch->gold )
+   if( !str_cmp( arg, "all" ) )
+      cost = cost + ( cost * 0.1 );
+
+   if( cost > ch->gold )
    {
-      act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR, "$N tells you, 'It will cost %d piece%s of gold to %s %s...'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ), obj->short_descr );
+      act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR, "$N tells you, 'It will cost {} piece{} of gold to {} {}...'", cost, cost == 1 ? "" : "s", fixstr, obj->short_descr );
       act( AT_TELL, "$N tells you, 'Which I see you can't afford.'", ch, nullptr, keeper, TO_CHAR );
    }
    else
    {
-      act_printf( AT_ACTION, ch, obj, keeper, TO_ROOM, "$n gives $p to $N, who quickly %s it.", fixstr2.c_str(  ) );
-      act_printf( AT_ACTION, ch, obj, keeper, TO_CHAR, "$N charges you %d gold piece%s to %s $p.", cost, cost == 1 ? "" : "s", fixstr.c_str(  ) );
+      act_printf( AT_ACTION, ch, obj, keeper, TO_ROOM, "$n gives $p to $N, who quickly {} it.", fixstr2 );
+      act_printf( AT_ACTION, ch, obj, keeper, TO_CHAR, "$N charges you {} gold piece{} to {} $p.", cost, cost == 1 ? "" : "s", fixstr );
       ch->gold -= cost;
 
       if( found && clan->bank )
@@ -1348,7 +1351,7 @@ CMDF( do_repair )
    repair_one_obj( ch, keeper, obj, argument, fixstr, fixstr2 );
 }
 
-void appraise_all( char_data * ch, char_data * keeper, const std::string & fixstr )
+void appraise_all( char_data * ch, char_data * keeper, std::string_view fixstr )
 {
    int cost = 0, total = 0;
 
@@ -1369,7 +1372,7 @@ void appraise_all( char_data * ch, char_data * keeper, const std::string & fixst
          else
          {
             act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR,
-                        "$N tells you, 'It will cost %d piece%s of gold to %s %s'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ), obj->short_descr );
+                        "$N tells you, 'It will cost {} piece{} of gold to {} {}'", cost, cost == 1 ? "" : "s", fixstr, obj->short_descr );
             total += cost;
          }
       }
@@ -1378,8 +1381,8 @@ void appraise_all( char_data * ch, char_data * keeper, const std::string & fixst
    if( total > 0 )
    {
       ch->print( "\r\n" );
-      act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR, "$N tells you, 'It will cost %d piece%s of gold in total.'", total, cost == 1 ? "" : "s" );
-      act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR, "$N tells you, 'Remember there is a 10%% surcharge for repair all.'" );
+      act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR, "$N tells you, 'It will cost {} piece{} of gold in total.'", total, cost == 1 ? "" : "s" );
+      act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR, "$N tells you, 'Remember there is a 10% surcharge for repair all.'" );
    }
 }
 
@@ -1438,7 +1441,7 @@ CMDF( do_appraise )
       return;
    }
 
-   act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR, "$N tells you, 'It will cost %d piece%s of gold to %s that...'", cost, cost == 1 ? "" : "s", fixstr.c_str(  ) );
+   act_printf( AT_TELL, ch, nullptr, keeper, TO_CHAR, "$N tells you, 'It will cost {} piece{} of gold to {} that...'", cost, cost == 1 ? "" : "s", fixstr );
    if( cost > ch->gold )
       act( AT_TELL, "$N tells you, 'Which I see you can't afford.'", ch, nullptr, keeper, TO_CHAR );
 }
@@ -2187,8 +2190,8 @@ CMDF( do_deposit )
    else
       ch->pcdata->balance += amount;
 
-   ch->printf( "&[gold]You deposit %d gold.\r\n", amount );
-   act_printf( AT_GOLD, ch, nullptr, nullptr, TO_ROOM, "$n deposits %d gold.", amount );
+   ch->print_fmt( "&[gold]You deposit {} gold.\r\n", amount );
+   act_printf( AT_GOLD, ch, nullptr, nullptr, TO_ROOM, "$n deposits {} gold.", amount );
    ch->sound( "gold.wav", 100, false );
    ch->save(  );  /* Prevent money duplication for clan accounts - Samson */
 }
@@ -2293,8 +2296,8 @@ CMDF( do_withdraw )
       ch->pcdata->balance -= amount;
 
    ch->gold += amount;
-   ch->printf( "&[gold]You withdraw %d gold.\r\n", amount );
-   act_printf( AT_GOLD, ch, nullptr, nullptr, TO_ROOM, "$n withdraws %d gold.", amount );
+   ch->print_fmt( "&[gold]You withdraw {} gold.\r\n", amount );
+   act_printf( AT_GOLD, ch, nullptr, nullptr, TO_ROOM, "$n withdraws {} gold.", amount );
    ch->sound( "gold.wav", 100, false );
    ch->save(  );  /* Prevent money duplication for clan accounts - Samson */
 }

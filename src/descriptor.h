@@ -28,14 +28,17 @@
 
 #include <zlib.h>
 
-const int MAX_INBUF_SIZE = 4096;
+inline constexpr std::string_view DNS_FILE = "../system/dns.dat";
 
-const int TELOPT_COMPRESS2 = 86;
-const int COMPRESS_BUF_SIZE = MSL;
+constexpr int MAX_INBUF_SIZE = 4096;
 
-extern const unsigned char will_compress2_str[];
-extern const unsigned char start_compress2_str[];
-extern const unsigned char will_msp_str[];
+constexpr int TELOPT_COMPRESS2 = 86;
+constexpr int COMPRESS_BUF_SIZE = MSL;
+
+extern const std::array<unsigned char, 4> echo_off_str;
+extern const std::array<unsigned char, 4> will_compress2_str;
+extern const std::array<unsigned char, 6> start_compress2_str;
+extern const std::array<unsigned char, 4> will_msp_str;
 
 struct mccp_data
 {
@@ -48,8 +51,8 @@ struct mccp_data
    unsigned char *out_compress_buf;
 };
 
-const int TELOPT_MSP = 90; /* Mud Sound Protocol */
-const int MSP_DEFAULT = -99;
+constexpr int TELOPT_MSP = 90; /* Mud Sound Protocol */
+constexpr int MSP_DEFAULT = -99;
 
 class descriptor_data
 {
@@ -70,19 +73,25 @@ class descriptor_data
    bool flush_buffer( bool );
    void read_from_buffer(  );
    void write_to_buffer( std::string_view );
-   void buffer_printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
+
+   template<typename... Args>
+   void buffer_printf( std::format_string<Args...> fmt, Args&&... args )
+   {
+      this->write_to_buffer( std::format( fmt, std::forward<Args>(args)...) );
+   }
+
    void send_color( std::string_view );
-   void pager( const std::string & );
+   void pager( std::string_view );
    void show_stats( char_data * );
    void send_greeting(  );
    void show_title(  );
    void process_dns(  );
    void resolve_dns( const std::string & );
    void prompt(  );
-   void set_pager_input( const std::string & );
+   void set_pager_input( std::string_view );
    bool pager_output(  );
-   short check_reconnect( const std::string &, bool );
-   short check_playing( const std::string &, bool );
+   short check_reconnect( std::string_view, bool );
+   short check_playing( std::string_view, bool );
    void nanny( std::string & );
    bool is_idle_timeout( );
 
@@ -130,5 +139,5 @@ class descriptor_data
 
 extern std::list<descriptor_data*> dlist;
 void free_all_descs(  );
-bool load_char_obj( descriptor_data *, const std::string &, bool, bool );
+bool load_char_obj( descriptor_data *, std::string_view, bool, bool );
 void close_socket( descriptor_data *, bool );

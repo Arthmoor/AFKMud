@@ -28,7 +28,6 @@
 
 #include "mud.h"
 #include "area.h"
-#include "auction.h"
 #include "descriptor.h"
 #include "event.h"
 #include "mud_prog.h"
@@ -36,6 +35,8 @@
 #if defined(SQL)
 #include "sql.h"
 #endif
+// Had to move this down here because the C++ committee has too many wild hairs up their buts about how variadic functions work.
+#include "auction.h"
 
 SPELLF( spell_smaug );
 SPELLF( spell_energy_drain );
@@ -48,9 +49,6 @@ SPELLF( spell_spiral_blast );
 SPELLF( spell_dispel_magic );
 SPELLF( spell_dispel_evil );
 CMDF( do_ageattack );
-void talk_auction( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
-void save_aucvault( char_data *, const std::string & );
-void add_sale( const std::string &, const std::string &, const std::string &, const std::string &, int, bool );
 void fly_skyship( char_data *, char_data * );
 void purge_skyship( char_data *, char_data * );
 void check_pfiles( time_t );
@@ -478,7 +476,7 @@ void ev_auction( void *data )
       case 1: /* going once */
       case 2: /* going twice */
       {
-         talk_auction( "%s: going %s for %d.", auction->item->short_descr, ( ( auction->going == 1 ) ? "once" : "twice" ), auction->bet );
+         talk_auction( "{}: going {} for {}.", auction->item->short_descr, ( ( auction->going == 1 ) ? "once" : "twice" ), auction->bet );
 
          add_event( sysdata->auctionseconds, ev_auction, nullptr );
       }
@@ -496,8 +494,8 @@ void ev_auction( void *data )
 
             aucvault = get_room_index( auction->seller->in_room->vnum + 1 );
 
-            talk_auction( "%s sold to %s for %d gold.", auction->item->short_descr,
-                          auction->buyer->isnpc(  )? auction->buyer->short_descr : auction->buyer->name, auction->bet );
+            talk_auction( "{} sold to {} for {} gold.", auction->item->short_descr,
+                          auction->buyer->isnpc(  ) ? auction->buyer->short_descr : auction->buyer->name, auction->bet );
 
             if( auction->item->buyer ) /* Set final buyer for item - Samson 6-23-99 */
             {
@@ -531,8 +529,8 @@ void ev_auction( void *data )
          {
             aucvault = get_room_index( auction->seller->in_room->vnum + 1 );
 
-            talk_auction( "No bids received for %s - removed from auction.\r\n", auction->item->short_descr );
-            talk_auction( "%s has been returned to the auction house.\r\n", auction->item->short_descr );
+            talk_auction( "No bids received for {} - removed from auction.\r\n", auction->item->short_descr );
+            talk_auction( "{} has been returned to the auction house.\r\n", auction->item->short_descr );
 
             auction->item->to_room( aucvault, auction->seller );
             save_aucvault( auction->seller, auction->seller->short_descr );
@@ -561,7 +559,7 @@ void ev_reboot_count( void *data )
    }
 
    if( reboot_counter > 2 )
-      echo_all_printf( ECHOTAR_ALL, "&YGame reboot in %d minutes.", reboot_counter );
+      echo_all_printf( ECHOTAR_ALL, "&YGame reboot in {} minutes.", reboot_counter );
    if( reboot_counter == 2 )
       echo_to_all( "&RGame reboot in 2 minutes.", ECHOTAR_ALL );
    if( reboot_counter == 1 )

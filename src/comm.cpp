@@ -35,7 +35,6 @@
 #include <thread>
 #include "mud.h"
 #include "descriptor.h"
-#include "auction.h"
 #include "clans.h"
 #include "connhist.h"
 #include "mud_prog.h"
@@ -45,6 +44,7 @@
 #include "realms.h"
 #include "roomindex.h"
 #include "shops.h"
+#include "web.h"
 
 /*
  * Global variables.
@@ -84,7 +84,6 @@ void run_events( std::chrono::system_clock::time_point );
  */
 void boot_db( bool );
 void accept_new( int );
-void bid( char_data *, char_data *, const std::string & );
 void check_auth_state( char_data * );
 
 #ifdef MULTIPORT
@@ -143,11 +142,12 @@ void free_continents(  );
 void free_helps(  );
 void free_wizlist_data( );
 void free_wizlist_web_data( );
+void clear_auction( );
 #if defined(SQL)
  void close_db(  );
 #endif
 
-const char *directory_table[] = {
+inline constexpr std::array<std::string_view, 21> directory_table = {
    AREA_CONVERT_DIR, PLAYER_DIR, GOD_DIR, BACKUP_DIR, BUILD_DIR, SYSTEM_DIR,
    PROG_DIR, CORPSE_DIR, CLASS_DIR, RACE_DIR, MOTD_DIR, HOTBOOT_DIR, AUC_DIR,
    BOARD_DIR, COLOR_DIR, MAP_DIR, DEITY_DIR, WEB_DIR, SHOP_DIR, CLAN_DIR,
@@ -173,7 +173,7 @@ void directory_check( void )
       if( !std::filesystem::create_directory( buf ) )
       {
          fprintf( stderr, "FATAL ERROR :: Unable to create required directory: ../log\n" );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
    }
 
@@ -182,12 +182,12 @@ void directory_check( void )
       if( !std::filesystem::exists( directory_table[x] ) )
       {
          buf = directory_table[x];
-         log_printf( "Creating required directory: %s", directory_table[x] );
+         log_printf( "Creating required directory: %s", directory_table[x].data() );
 
          if( !std::filesystem::create_directory( buf ) )
          {
-            log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", directory_table[x] );
-            exit( 1 );
+            log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", directory_table[x].data() );
+            std::exit( EXIT_FAILURE );
          }
       }
 
@@ -203,7 +203,7 @@ void directory_check( void )
                if( !std::filesystem::create_directory( dirname ) )
                {
                   log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", dirname.c_str() );
-                  exit( 1 );
+                  std::exit( EXIT_FAILURE );
                }
             }
          }
@@ -213,7 +213,7 @@ void directory_check( void )
    if( chdir( "../area" ) == -1 )
    {
       fprintf( stderr, "FATAL ERROR :: Unable to change directories during directory check! Cannot continue." );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
 
    // Made it? Sweet. Drop the check file so we don't do this on every last reboot.
@@ -221,7 +221,7 @@ void directory_check( void )
    if( !outfile )
    {
       fprintf( stderr, "FATAL ERROR :: Unable to generate DIR_CHECK_PASSED\n" );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
    outfile.close();
 
@@ -402,9 +402,6 @@ void init_mud( bool fCopyOver, int gameport )
  */
 void close_mud( void )
 {
-   if( auction->item )
-      bid( supermob, nullptr, "stop" );
-
    if( !DONTSAVE )
    {
       log_string( "Saving players...." );
@@ -1053,7 +1050,7 @@ void cleanup_memory( void )
 
    // Get rid of auction pointer MUST BE AFTER OBJECTS DESTROYED
    fprintf( stdout, "%s", "Auction.\n" );
-   deleteptr( auction );
+   clear_auction(  );
 
    // Title table
    fprintf( stdout, "%s", "Title table.\n" );

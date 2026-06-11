@@ -37,19 +37,10 @@
 #include "clans.h"
 #include "descriptor.h"
 #include "roomindex.h"
+#include "web.h"
 
-#define WEB_ROOMS "../public_html/"
-
-// Structure used to build wizlist
-class wizentweb
-{
-public:
-   wizentweb( ) : level( 0 ) {}
-
-   std::string name;
-   std::string http;
-   short level;
-};
+std::string rankbuffer( char_data * );
+extern int num_logins;
 
 std::list<std::unique_ptr<wizentweb>> wizlistweb;
 
@@ -57,9 +48,6 @@ void free_wizlist_web_data()
 {
    wizlistweb.clear();
 }
-
-std::string rankbuffer( char_data * );
-extern int num_logins;
 
 std::string web_colourconv( std::string_view txt )
 {
@@ -127,7 +115,7 @@ void web_who(  )
    std::string rank, outbuf, stats, clan_name;
    int pcount = 0, amount, xx = 0, yy = 0;
 
-   if( !( webwho = fopen( WEBWHO_FILE, "w" ) ) )
+   if( !( webwho = fopen( WEBWHO_FILE.data(), "w" ) ) )
    {
       bug( "%s: Unable to open webwho file for writing!", __func__ );
       return;
@@ -270,7 +258,7 @@ void web_arealist(  )
    const char *print_string =
       "<tr><td><font color=\"red\">%s   </font></td><td><font color=\"yellow\">%s</font></td><td><font color=\"green\">%d - %d   </font></td><td><font color=\"blue\">%d - %d</font></td></tr>\n";
 
-   if( !( fp = fopen( AREALIST_FILE, "w" ) ) )
+   if( !( fp = fopen( AREALIST_FILE.data(), "w" ) ) )
    {
       bug( "%s: Unable to open arealist file for writing!", __func__ );
       return;
@@ -291,7 +279,7 @@ void web_arealist(  )
 /*
  * Wizlist builder! - Thoric [Web version]
  */
-void add_to_webwizlist( const std::string & name, const std::string & http, int level )
+void add_to_webwizlist( std::string_view name, std::string_view http, int level )
 {
    auto wiz = std::make_unique<wizentweb>();
 
@@ -379,7 +367,7 @@ void make_webwiz( )
    wizlistweb.sort( []( const std::unique_ptr<wizentweb>& a, const std::unique_ptr<wizentweb>& b ) { return a->level > b->level; } );
 
    // Open WEBWIZ_FILE file for writing.
-   std::ofstream out( WEBWIZ_FILE, std::ios::trunc );
+   std::ofstream out( std::filesystem::path{WEBWIZ_FILE}, std::ios::trunc );
 
    // Center the top banner with the MUD's name.
    out << std::format( "{:^78}\n", std::format( "The Immortal Masters of {}", sysdata->mud_name ) );
@@ -455,8 +443,8 @@ void room_to_html( room_index * room, bool complete )
          fprintf( fp, "%s", " None.]</font><br />\n" );
       else
          fprintf( fp, "%s", "]</font><br />\n" );
-      std::string roomdesc = web_colourconv( room->roomdesc );
-      fprintf( fp, "<font color=\"#999999\">%s</font><br />\n", roomdesc.c_str() );
+      std::string room_desc = web_colourconv( room->roomdesc );
+      fprintf( fp, "<font color=\"#999999\">%s</font><br />\n", room_desc.c_str() );
 
       if( complete )
       {

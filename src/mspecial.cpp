@@ -101,7 +101,7 @@ void load_specfuns( void )
 }
 
 /* Simple validation function to be sure a function can be used on mobs */
-bool validate_spec_fun( const std::string & name )
+bool validate_spec_fun( std::string_view name )
 {
    for( auto& specfun : speclist )
    {
@@ -212,7 +212,7 @@ bool summon_if_hating( char_data * ch )
 /*
  * Core procedure for dragons.
  */
-bool dragon( char_data * ch, const std::string & spellname )
+bool dragon( char_data * ch, std::string_view spellname )
 {
    if( ch->position != POS_FIGHTING && ch->position != POS_EVASIVE && ch->position != POS_DEFENSIVE && ch->position != POS_AGGRESSIVE && ch->position != POS_BERSERK )
       return false;

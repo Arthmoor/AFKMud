@@ -486,7 +486,7 @@ CMDF( do_instazone )
    ch->print( "Area resets installed.\r\n" );
 }
 
-reset_data *find_oreset( room_index * room, const std::string & oname )
+reset_data *find_oreset( room_index * room, std::string_view oname )
 {
    obj_index *pobj;
    std::string arg;
@@ -714,16 +714,16 @@ CMDF( do_reset )
          flags = TRAP_ROOM;
 
          argument = one_argument( argument, arg );
-         type = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         type = is_number( arg ) ? std::stoi( arg ) : -1;
 
          argument = one_argument( argument, arg );
-         chrg = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         chrg = is_number( arg ) ? std::stoi( arg ) : -1;
 
          argument = one_argument( argument, arg );
-         min = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         min = is_number( arg ) ? std::stoi( arg ) : -1;
 
          argument = one_argument( argument, arg );
-         max = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         max = is_number( arg ) ? std::stoi( arg ) : -1;
       }
       else if( !str_cmp( arg2, "obj" ) )
       {
@@ -737,16 +737,16 @@ CMDF( do_reset )
          flags = TRAP_OBJ;
 
          argument = one_argument( argument, arg );
-         type = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         type = is_number( arg ) ? std::stoi( arg ) : -1;
 
          argument = one_argument( argument, arg );
-         chrg = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         chrg = is_number( arg ) ? std::stoi( arg ) : -1;
 
          argument = one_argument( argument, arg );
-         min = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         min = is_number( arg ) ? std::stoi( arg ) : -1;
 
          argument = one_argument( argument, arg );
-         max = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+         max = is_number( arg ) ? std::stoi( arg ) : -1;
       }
       else
       {

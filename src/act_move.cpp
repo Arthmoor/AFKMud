@@ -216,13 +216,12 @@ CMDF( do_run )
 ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bool running )
 {
    room_index *in_room, *to_room, *from_room;
-   const char *txt, *dtxt;
+   std::string txt, dtxt;
    ch_ret retcode;
    short door;
    bool drunk = false, brief = false;
 
    retcode = rNONE;
-   txt = nullptr;
 
    if( ch->has_pcflag( PCFLAG_ONSHIP ) && ch->on_ship != nullptr )
    {
@@ -867,7 +866,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       if( fall )
          txt = "falls";
-      else if( !txt )
+      else if( txt.empty() )
       {
          if( ch->mount )
          {
@@ -910,9 +909,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       if( !running )
       {
          if( ch->mount )
-            act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_NOTVICT, "$n %s %s upon $N.", txt, dir_name[door] );
+            act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_NOTVICT, "$n {} {} upon $N.", txt, dir_name[door] );
          else
-            act_printf( AT_ACTION, ch, nullptr, dir_name[door], TO_ROOM, "$n %s $T.", txt );
+            act_printf( AT_ACTION, ch, nullptr, dir_name[door], TO_ROOM, "$n {} $T.", txt );
       }
    }
 
@@ -982,9 +981,9 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       if( !running )
       {
          if( ch->mount )
-            act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_ROOM, "$n %s from %s upon $N.", txt, dtxt );
+            act_printf( AT_ACTION, ch, nullptr, ch->mount, TO_ROOM, "$n {} from {} upon $N.", txt, dtxt );
          else
-            act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n %s from %s.", txt, dtxt );
+            act_printf( AT_ACTION, ch, nullptr, nullptr, TO_ROOM, "$n {} from {}.", txt, dtxt );
       }
    }
 
@@ -1207,7 +1206,7 @@ CMDF( do_southwest )
    move_char( ch, ch->in_room->get_exit( DIR_SOUTHWEST ), 0, DIR_SOUTHWEST, false );
 }
 
-exit_data *find_door( char_data * ch, const std::string & arg, bool quiet )
+exit_data *find_door( char_data * ch, std::string_view arg, bool quiet )
 {
    exit_data *pexit = nullptr;
 
@@ -1226,14 +1225,14 @@ exit_data *find_door( char_data * ch, const std::string & arg, bool quiet )
             return pexit;
       }
       if( !quiet )
-         ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
+         ch->print_fmt( "You see no {} here.\r\n", arg );
       return nullptr;
    }
 
    if( !( pexit = ch->in_room->get_exit( door ) ) )
    {
       if( !quiet )
-         ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
+         ch->print_fmt( "You see no {} here.\r\n", arg );
       return nullptr;
    }
 
@@ -1242,7 +1241,7 @@ exit_data *find_door( char_data * ch, const std::string & arg, bool quiet )
 
    if( IS_EXIT_FLAG( pexit, EX_SECRET ) )
    {
-      ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
+      ch->print_fmt( "You see no {} here.\r\n", arg );
       return nullptr;
    }
 
@@ -1350,22 +1349,22 @@ CMDF( do_open )
        */
       if( obj->item_type != ITEM_CONTAINER )
       {
-         ch->printf( "%s is not a container.\r\n", capitalize( obj->short_descr ) );
+         ch->print_fmt( "{} is not a container.\r\n", capitalize( obj->short_descr ) );
          return;
       }
       if( !IS_SET( obj->value[1], CONT_CLOSED ) )
       {
-         ch->printf( "%s is already open.\r\n", capitalize( obj->short_descr ) );
+         ch->print_fmt( "{} is already open.\r\n", capitalize( obj->short_descr ) );
          return;
       }
       if( !IS_SET( obj->value[1], CONT_CLOSEABLE ) )
       {
-         ch->printf( "%s cannot be opened or closed.\r\n", capitalize( obj->short_descr ) );
+         ch->print_fmt( "{} cannot be opened or closed.\r\n", capitalize( obj->short_descr ) );
          return;
       }
       if( IS_SET( obj->value[1], CONT_LOCKED ) )
       {
-         ch->printf( "%s is locked.\r\n", capitalize( obj->short_descr ) );
+         ch->print_fmt( "{} is locked.\r\n", capitalize( obj->short_descr ) );
          return;
       }
       REMOVE_BIT( obj->value[1], CONT_CLOSED );
@@ -1374,7 +1373,7 @@ CMDF( do_open )
       check_for_trap( ch, obj, TRAP_OPEN );
       return;
    }
-   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "You see no {} here.\r\n", argument );
 }
 
 CMDF( do_close )
@@ -1398,7 +1397,7 @@ CMDF( do_close )
 
       if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
       {
-         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "You see no {} here.\r\n", argument );
          return;
       }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
@@ -1436,17 +1435,17 @@ CMDF( do_close )
        */
       if( obj->item_type != ITEM_CONTAINER )
       {
-         ch->printf( "%s is not a container.\r\n", capitalize( obj->short_descr ) );
+         ch->print_fmt( "{} is not a container.\r\n", capitalize( obj->short_descr ) );
          return;
       }
       if( IS_SET( obj->value[1], CONT_CLOSED ) )
       {
-         ch->printf( "%s is already closed.\r\n", capitalize( obj->short_descr ) );
+         ch->print_fmt( "{} is already closed.\r\n", capitalize( obj->short_descr ) );
          return;
       }
       if( !IS_SET( obj->value[1], CONT_CLOSEABLE ) )
       {
-         ch->printf( "%s cannot be opened or closed.\r\n", capitalize( obj->short_descr ) );
+         ch->print_fmt( "{} cannot be opened or closed.\r\n", capitalize( obj->short_descr ) );
          return;
       }
       SET_BIT( obj->value[1], CONT_CLOSED );
@@ -1455,7 +1454,7 @@ CMDF( do_close )
       check_for_trap( ch, obj, TRAP_CLOSE );
       return;
    }
-   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "You see no {} here.\r\n", argument );
 }
 
 /*
@@ -1469,21 +1468,14 @@ CMDF( do_close )
  */
 obj_data *has_key( char_data * ch, int key )
 {
-   std::list < obj_data * >::iterator iobj;
-
-   for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
+   for( auto* obj : ch->carrying )
    {
-      obj_data *obj = *iobj;
-
       if( obj->pIndexData->vnum == key || ( obj->item_type == ITEM_KEY && obj->value[0] == key ) )
          return obj;
       else if( obj->item_type == ITEM_KEYRING )
       {
-         std::list < obj_data * >::iterator iobj2;
-
-         for( iobj2 = obj->contents.begin(  ); iobj2 != obj->contents.end(  ); ++iobj2 )
+         for( auto* obj2 : obj->contents )
          {
-            obj_data *obj2 = *iobj2;
             if( obj2->pIndexData->vnum == key || obj2->value[0] == key )
                return obj2;
          }
@@ -1887,9 +1879,11 @@ CMDF( do_bashdoor )
    }
 }
 
-/* Orginal furniture taken from Russ Walsh's Rot copyright 1996-1997
-   Furniture 1.0 is provided by Xerves
-   Allows you to stand/sit/rest/sleep on/at/in objects -- Xerves */
+/*
+ * Original furniture taken from Russ Walsh's Rot copyright 1996-1997
+ * Furniture 1.0 is provided by Xerves
+ *  Allows you to stand/sit/rest/sleep on/at/in objects -- Xerves
+ */
 CMDF( do_stand )
 {
    obj_data *obj = nullptr;
@@ -2744,7 +2738,7 @@ CMDF( do_leave )
  * and added the ability for an exit to have a "pull" or a "push" force
  * and to handle different types much beyond a simple water current.
  *
- * This check is called by violence_update().  I'm not sure if this is the
+ * This check is called by ev_violence(). I'm not sure if this is the
  * best way to do it, or if it should be handled by a special queue.
  *
  * Future additions to this code may include equipment being blown away in
@@ -2761,7 +2755,8 @@ ch_ret pullcheck( char_data * ch, int pulse )
    bool move = false, moveobj = true, showroom = true;
    int resistance;
    const char *tochar = nullptr, *toroom = nullptr, *objmsg = nullptr;
-   const char *destrm = nullptr, *destob = nullptr, *dtxt = "somewhere";
+   const char *destrm = nullptr, *destob = nullptr;
+   std::string dtxt = "somewhere";
 
    if( !( room = ch->in_room ) )
    {
@@ -2773,7 +2768,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
     * Find the exit with the strongest force (if any) 
     */
    exit_data *xit = nullptr;
-   std::list < exit_data * >::iterator iexit;
+   std::list<exit_data *>::iterator iexit;
    for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
    {
       exit_data *pexit = *iexit;
@@ -3093,7 +3088,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
        * display an appropriate entrance message 
        */
       if( destrm && !xit->to_room->people.empty(  ) )
-         act( AT_PLAIN, destrm, ( *xit->to_room->people.begin(  ) ), nullptr, dtxt, TO_ROOM );
+         act( AT_PLAIN, destrm, ( *xit->to_room->people.begin(  ) ), nullptr, dtxt.c_str(), TO_ROOM );
 
       /*
        * move the char 
@@ -3169,9 +3164,9 @@ ch_ret pullcheck( char_data * ch, int pulse )
          if( ( abs( pull ) * 10 ) > resistance )
          {
             if( objmsg && !room->people.empty(  ) )
-               act( AT_PLAIN, objmsg, ( *room->people.begin(  ) ), obj, dir_name[xit->vdir], TO_ROOM );
+               act( AT_PLAIN, objmsg, ( room->people.front(  ) ), obj, dir_name[xit->vdir], TO_ROOM );
             if( destob && !xit->to_room->people.empty(  ) )
-               act( AT_PLAIN, destob, ( *xit->to_room->people.begin(  ) ), obj, dtxt, TO_ROOM );
+               act( AT_PLAIN, destob, ( xit->to_room->people.front(  ) ), obj, dtxt.c_str(), TO_ROOM );
             obj->from_room(  );
             obj->to_room( xit->to_room, nullptr );
          }

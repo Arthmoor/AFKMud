@@ -28,8 +28,8 @@
 
 #pragma once
 
-#define REALM_DIR  "../realms/" // Realm data dir
-#define REALM_LIST "realm.lst"  // List of realms
+inline constexpr std::string_view REALM_DIR = "../realms/";  // Realm data dir
+inline constexpr std::string_view REALM_LIST = "realm.lst";  // List of realms
 
 enum realm_types
 {
@@ -37,10 +37,6 @@ enum realm_types
 };
 
 extern const char *realm_type_names[MAX_REALM];
-
-#define IS_REALM_LEADER(ch)  ( !(ch)->isnpc() && (ch)->pcdata->realm && !str_cmp( (ch)->name, (ch)->pcdata->realm->leader ) )
-#define IS_ADMIN_REALM(ch)   ( !(ch)->isnpc() && (ch)->pcdata->realm && ( (ch)->pcdata->realm->type == REALM_ADMIN || (ch)->pcdata->realm->type == REALM_OWNER ) )
-#define IS_OWNER_REALM(ch)   ( !(ch)->isnpc() && (ch)->pcdata->realm && (ch)->pcdata->realm->type == REALM_OWNER )
 
 class realm_roster_data
 {
@@ -80,10 +76,13 @@ class realm_data
 
 extern std::list<realm_data *> realmlist;
 
-void add_realm_roster( realm_data *, const std::string & );
-void remove_realm_roster( realm_data *, const std::string & );
+void add_realm_roster( realm_data *, std::string_view );
+void remove_realm_roster( realm_data *, std::string_view );
 void save_realm( realm_data * );
 void delete_realm( char_data *, realm_data * );
 void verify_realms(  );
 void free_realms( );
-realm_data *get_realm( const std::string & );
+realm_data *get_realm( std::string_view );
+bool IS_REALM_LEADER( char_data * );
+bool IS_ADMIN_REALM( char_data * );
+bool IS_OWNER_REALM( char_data * );

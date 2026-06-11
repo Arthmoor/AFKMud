@@ -28,8 +28,8 @@
 
 #pragma once
 
-const int MAX_CHANHISTORY = 20;
-#define CHANNEL_FILE SYSTEM_DIR "channels.dat"
+constexpr int MAX_CHANHISTORY = 20;
+inline constexpr std::string_view CHANNEL_FILE = "../system/channels.dat";
 
 enum channel_types
 {

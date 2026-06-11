@@ -28,7 +28,7 @@
 
 #pragma once
 
-#define SHOP_DIR "../shops/"  /* Clan/PC shopkeepers - Samson 7-16-00 */
+inline constexpr std::string_view SHOP_DIR = "../shops/";  /* Clan/PC shopkeepers - Samson 7-16-00 */
 
 /*
  * Shop types.

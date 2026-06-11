@@ -52,9 +52,9 @@ class cmd_type
 
    std::string name;
    std::string fun_name;  /* Added to hold the func name and dump some functions totally - Trax */
+   std::bitset<MAX_CMD_FLAG> flags; /* Added for Checking interpret stuff -Shaddai */
    void *fileHandle;
    DO_FUN *do_fun;
-   std::bitset<MAX_CMD_FLAG> flags; /* Added for Checking interpret stuff -Shaddai */
    short position;
    short level;
    short log;
@@ -93,6 +93,6 @@ extern const char *cmd_flags[];
 extern std::vector<std::vector<cmd_type *>> command_table;
 extern std::map<std::string, social_type *> social_table;
 
-cmd_type *find_command( const std::string & );
-social_type *find_social( const std::string & );
-int get_cmdflag( const std::string & );
+cmd_type *find_command( std::string_view );
+social_type *find_social( std::string_view );
+int get_cmdflag( std::string_view );

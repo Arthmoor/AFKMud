@@ -23,24 +23,21 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                           Room Mapper Module                             *
+ *                            Web Support Code                              *
  ****************************************************************************/
 
 #pragma once
 
-/* Defines for ASCII Room Automapper */
-constexpr int MAPX = 10;
-constexpr int MAPY = 8;
+inline constexpr std::string_view WEB_DIR   = "../web/";           // HTML static files.
+inline constexpr std::string_view WEB_ROOMS = "../public_html/";
 
-/* You can change MAXDEPTH to 1 if the diagonal directions are confusing */
-constexpr int MAXDEPTH = 2;
-
-/* Structure for the map itself */
-struct map_type
+// Structure used to build wizlist
+class wizentweb
 {
-   char tegn;  // Character to print at this map coord
-   int vnum;   // Room this coord represents
-   int depth;  // Recursive depth this coord was found at
-   int sector; // Sector type of the map space
-   bool can_see;
+public:
+   wizentweb( ) : level( 0 ) {}
+
+   std::string name;
+   std::string http;
+   short level;
 };

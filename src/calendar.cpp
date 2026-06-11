@@ -228,12 +228,10 @@ void fread_timedata( FILE * fp )
 /* Load time information from saved file - Samson 1-21-99 */
 bool load_timedata( void )
 {
-   std::filesystem::path filename;
    FILE *fp;
-   bool found;
 
-   found = false;
-   filename = std::format( "{}time.dat", SYSTEM_DIR );
+   bool found = false;
+   std::filesystem::path filename = std::format( "{}time.dat", SYSTEM_DIR );
 
    if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
@@ -280,9 +278,8 @@ bool load_timedata( void )
 void save_timedata( void )
 {
    FILE *fp;
-   std::filesystem::path filename;
 
-   filename = std::format( "{}time.dat", SYSTEM_DIR );
+   std::filesystem::path filename = std::format( "{}time.dat", SYSTEM_DIR );
 
    if( ( fp = fopen( filename.c_str(), "w" ) ) == nullptr )
    {
@@ -315,11 +312,11 @@ CMDF( do_time )
 
    if( !argument.empty(  ) && is_number( argument ) )
    {
-      time_t intime = atol( argument.c_str(  ) );
+      time_t intime = std::stol( argument );
 
       std::chrono::system_clock::time_point str_time = std::chrono::system_clock::from_time_t( intime );
 
-      ch->printf( "&w%ld = &g%s\r\n", intime, mini_c_time( str_time, ch->pcdata->timezone ).c_str() );
+      ch->print_fmt( "&w{} = &g{}\r\n", intime, mini_c_time( str_time, ch->pcdata->timezone ) );
       return;
    }
 
@@ -373,7 +370,7 @@ CMDF( do_time )
 
 void start_winter( void )
 {
-   std::map < int, room_index * >::iterator iroom;
+   std::map<int, room_index *>::iterator iroom;
 
    echo_to_all( "&cThe air takes on a chilling cold as winter sets in.", ECHOTAR_ALL );
    echo_to_all( "&cFreshwater bodies everywhere have frozen over.\r\n", ECHOTAR_ALL );
@@ -400,7 +397,7 @@ void start_winter( void )
 
 void start_spring( void )
 {
-   std::map < int, room_index * >::iterator iroom;
+   std::map<int, room_index *>::iterator iroom;
 
    echo_to_all( "&cThe chill recedes from the air as spring begins to take hold.", ECHOTAR_ALL );
    echo_to_all( "&cFreshwater bodies everywhere have thawed out.\r\n", ECHOTAR_ALL );
@@ -438,12 +435,12 @@ void season_update( void )
    if( day != nullptr )
    {
       if( time_info.day + 1 == day->get_day(  ) && time_info.hour == 0 )
-         echo_all_printf( ECHOTAR_ALL, "&[immortal]%s", day->get_announce(  ).c_str(  ) );
+         echo_all_printf( ECHOTAR_ALL, "&[immortal]{}", day->get_announce(  ) );
    }
 
    if( time_info.season == SEASON_WINTER && winter_freeze == false )
    {
-      std::map < int, room_index * >::iterator iroom;
+      std::map<int, room_index *>::iterator iroom;
 
       winter_freeze = true;
 
@@ -552,7 +549,7 @@ holiday_data *get_holiday( short month, short day )
    return nullptr;
 }
 
-holiday_data *get_holiday( const std::string & name )
+holiday_data *get_holiday( std::string_view name )
 {
    for( auto* holiday : daylist )
    {
@@ -581,7 +578,7 @@ void load_holidays( void )
 
    daylist.clear(  );
 
-   stream.open( HOLIDAY_FILE );
+   stream.open( std::filesystem::path( HOLIDAY_FILE ) );
    if( !stream.is_open(  ) )
    {
       log_string( "No holiday file found." );
@@ -628,25 +625,23 @@ void save_holidays( void )
 {
    std::ofstream stream;
 
-   stream.open( HOLIDAY_FILE );
+   stream.open( std::filesystem::path( HOLIDAY_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( HOLIDAY_FILE );
+      bug( "%s: Cannot write to holiday file.", __func__ );
+      return;
    }
-   else
+
+   for( auto* day : daylist )
    {
-      for( auto* day : daylist )
-      {
-         stream << "#HOLIDAY" << std::endl;
-         stream << "Name     " << day->get_name(  ) << std::endl;
-         stream << "Announce " << day->get_announce(  ) << std::endl;
-         stream << "Month    " << day->get_month(  ) << std::endl;
-         stream << "Day      " << day->get_day(  ) << std::endl;
-         stream << "End" << std::endl << std::endl;
-      }
-      stream.close(  );
+      stream << "#HOLIDAY" << std::endl;
+      stream << "Name     " << day->get_name(  ) << std::endl;
+      stream << "Announce " << day->get_announce(  ) << std::endl;
+      stream << "Month    " << day->get_month(  ) << std::endl;
+      stream << "Day      " << day->get_day(  ) << std::endl;
+      stream << "End" << std::endl << std::endl;
    }
+   stream.close(  );
 }
 
 /* Holiday OLC command - (c)Andrew Wilkie May-20-2005 */

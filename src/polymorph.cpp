@@ -26,6 +26,7 @@
  *                          Shaddai's Polymorph                             *
  ****************************************************************************/
 
+#include <filesystem>
 #include <format>
 #include "mud.h"
 #include "deity.h"
@@ -55,7 +56,7 @@ char_morph::~char_morph(  )
  * Given the Morph's name, returns the pointer to the morph structure.
  * --Shaddai
  */
-morph_data *get_morph( const std::string & arg )
+morph_data *get_morph( std::string_view arg )
 {
    if( arg.empty(  ) )
       return nullptr;
@@ -145,7 +146,7 @@ bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
 /*
  * Find a morph you can use -- Shaddai
  */
-morph_data *find_morph( char_data * ch, const std::string & target, bool is_cast )
+morph_data *find_morph( char_data * ch, std::string_view target, bool is_cast )
 {
    if( target.empty(  ) )
       return nullptr;
@@ -160,8 +161,15 @@ morph_data *find_morph( char_data * ch, const std::string & target, bool is_cast
    return nullptr;
 }
 
+const std::string MORPHPERS( char_data * ch, char_data * looker, bool from )
+{
+   if( looker->can_see( ch, from ) )
+      return ch->morph->morph->short_desc;
+   return "Someone";
+}
+
 // 1: Initial version.
-const int MORPHFILEVER = 1;
+constexpr int MORPHFILEVER = 1;
 
 /* 
  * Write one morph structure to a file. It doesn't print the variable to file
@@ -309,10 +317,10 @@ void save_morphs( void )
 {
    FILE *fp;
 
-   if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "w" ) ) )
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MORPH_FILE );
+   if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( SYSTEM_DIR MORPH_FILE );
+      bug( "%s: Cannot open morph data file.", __func__ );
       return;
    }
 
@@ -1983,10 +1991,10 @@ void load_morphs( void )
    FILE *fp = nullptr;
    bool my_continue = true;
 
-   if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "r" ) ) )
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MORPH_FILE );
+   if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( SYSTEM_DIR MORPH_FILE );
+      bug( "%s: Cannot open morph data file.", __func__ );
       return;
    }
 

@@ -619,7 +619,7 @@ CMDF( do_ooedit )
       d = *ds;
 
       if( d->connected == CON_OEDIT )
-         if( d->olc && OLC_VNUM( d ) == obj->pIndexData->vnum )
+         if( d->olc && d->olc->number == obj->pIndexData->vnum )
          {
             ch->printf( "That object is currently being edited by %s.\r\n", d->character->name );
             return;
@@ -630,9 +630,9 @@ CMDF( do_ooedit )
 
    d = ch->desc;
    d->olc = new olc_data;
-   OLC_VNUM( d ) = obj->pIndexData->vnum;
-   OLC_CHANGE( d ) = false;
-   OLC_VAL( d ) = 0;
+   d->olc->number = obj->pIndexData->vnum;
+   d->olc->changed = false;
+   d->olc->value = 0;
    d->character->pcdata->dest_buf = obj;
    d->connected = CON_OEDIT;
    oedit_disp_menu( d );
@@ -753,7 +753,7 @@ void oedit_disp_layer_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
 
-   OLC_MODE( d ) = OEDIT_LAYERS;
+   d->olc->mode  = OEDIT_LAYERS;
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    d->character->print( "Choose which layer, or combination of layers fits best: \r\n\r\n" );
    d->character->printf( "[&c%s&w] &g1&w) Nothing Layers\r\n", ( obj->pIndexData->layers == 0 ) ? "X" : " " );
@@ -803,7 +803,7 @@ void oedit_disp_extradesc_menu( descriptor_data * d )
    d->character->print( "&gQ&w) Quit\r\n" );
    d->character->print( "\r\nEnter choice: " );
 
-   OLC_MODE( d ) = OEDIT_EXTRADESC_MENU;
+   d->olc->mode  = OEDIT_EXTRADESC_MENU;
 }
 
 void oedit_disp_extra_choice( descriptor_data * d )
@@ -816,7 +816,7 @@ void oedit_disp_extra_choice( descriptor_data * d )
    d->character->print( "&gQ&w) Quit\r\n" );
    d->character->print( "\r\nChange which option? " );
 
-   OLC_MODE( d ) = OEDIT_EXTRADESC_CHOICE;
+   d->olc->mode  = OEDIT_EXTRADESC_CHOICE;
 }
 
 /* Ask for *which* apply to edit and prompt for some other options */
@@ -847,7 +847,7 @@ void oedit_disp_prompt_apply_menu( descriptor_data * d )
    d->character->print( " &gQ&w) Quit\r\n" );
 
    d->character->print( "\r\nEnter option or affect#: " );
-   OLC_MODE( d ) = OEDIT_AFFECT_MENU;
+   d->olc->mode  = OEDIT_AFFECT_MENU;
 }
 
 /*. Ask for liquid type .*/
@@ -871,7 +871,7 @@ void oedit_liquid_type( descriptor_data * d )
    }
 
    d->character->print( "\r\n&wEnter drink type: " );
-   OLC_MODE( d ) = OEDIT_VALUE_2;
+   d->olc->mode  = OEDIT_VALUE_2;
 }
 
 /*
@@ -895,7 +895,7 @@ void oedit_disp_affect_menu( descriptor_data * d )
          d->character->print( "\r\n" );
    }
    d->character->print( "\r\nEnter apply type (0 to quit): " );
-   OLC_MODE( d ) = OEDIT_AFFECT_LOCATION;
+   d->olc->mode  = OEDIT_AFFECT_LOCATION;
 }
 
 /*
@@ -1028,11 +1028,11 @@ void oedit_disp_trapflags( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter <= TRAPFLAG_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter + 1, capitalize( trap_flags[counter] ) );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter + 1, capitalize( trap_flags[counter] ) );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nTrap flags: &c%s&w\r\nEnter trap flag, 0 to quit:  ", flag_string( obj->value[3], trap_flags ) );
+   d->character->print_fmt( "\r\nTrap flags: &c{}&w\r\nEnter trap flag, 0 to quit:  ", flag_string( obj->value[3], trap_flags ) );
 }
 
 /*
@@ -1096,7 +1096,7 @@ void oedit_disp_spells_menu( descriptor_data * d )
 void oedit_disp_val0_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_0;
+   d->olc->mode  = OEDIT_VALUE_0;
 
    switch ( obj->item_type )
    {
@@ -1159,7 +1159,7 @@ void oedit_disp_val0_menu( descriptor_data * d )
 void oedit_disp_val1_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_1;
+   d->olc->mode  = OEDIT_VALUE_1;
 
    switch ( obj->item_type )
    {
@@ -1236,7 +1236,7 @@ void oedit_disp_val1_menu( descriptor_data * d )
 void oedit_disp_val2_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_2;
+   d->olc->mode  = OEDIT_VALUE_2;
 
    switch ( obj->item_type )
    {
@@ -1279,7 +1279,7 @@ void oedit_disp_val2_menu( descriptor_data * d )
 void oedit_disp_val3_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_3;
+   d->olc->mode  = OEDIT_VALUE_3;
 
    switch ( obj->item_type )
    {
@@ -1307,7 +1307,7 @@ void oedit_disp_val3_menu( descriptor_data * d )
 
       case ITEM_TRAP:
          oedit_disp_trapflags( d );
-         OLC_MODE( d ) = OEDIT_TRAPFLAGS;
+         d->olc->mode  = OEDIT_TRAPFLAGS;
          break;
 
       default:
@@ -1319,7 +1319,7 @@ void oedit_disp_val3_menu( descriptor_data * d )
 void oedit_disp_val4_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_4;
+   d->olc->mode  = OEDIT_VALUE_4;
 
    switch ( obj->item_type )
    {
@@ -1362,7 +1362,7 @@ void oedit_disp_val4_menu( descriptor_data * d )
 void oedit_disp_val5_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_5;
+   d->olc->mode  = OEDIT_VALUE_5;
 
    switch ( obj->item_type )
    {
@@ -1395,7 +1395,7 @@ void oedit_disp_val5_menu( descriptor_data * d )
 void oedit_disp_val6_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_6;
+   d->olc->mode  = OEDIT_VALUE_6;
 
    switch ( obj->item_type )
    {
@@ -1412,7 +1412,7 @@ void oedit_disp_val6_menu( descriptor_data * d )
 void oedit_disp_val7_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_7;
+   d->olc->mode  = OEDIT_VALUE_7;
 
    switch ( obj->item_type )
    {
@@ -1429,7 +1429,7 @@ void oedit_disp_val7_menu( descriptor_data * d )
 void oedit_disp_val8_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_8;
+   d->olc->mode  = OEDIT_VALUE_8;
 
    switch ( obj->item_type )
    {
@@ -1446,7 +1446,7 @@ void oedit_disp_val8_menu( descriptor_data * d )
 void oedit_disp_val9_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_9;
+   d->olc->mode  = OEDIT_VALUE_9;
 
    switch ( obj->item_type )
    {
@@ -1463,7 +1463,7 @@ void oedit_disp_val9_menu( descriptor_data * d )
 void oedit_disp_val10_menu( descriptor_data * d )
 {
    obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   OLC_MODE( d ) = OEDIT_VALUE_10;
+   d->olc->mode  = OEDIT_VALUE_10;
 
    switch ( obj->item_type )
    {
@@ -1500,11 +1500,11 @@ void oedit_disp_extra_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_ITEM_FLAG; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter + 1, capitalize( o_flags[counter] ) );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter + 1, capitalize( o_flags[counter] ) );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nObject flags: &c%s&w\r\nEnter object extra flag (0 to quit): ", bitset_string( obj->extra_flags, o_flags ) );
+   d->character->print_fmt( "\r\nObject flags: &c{}&w\r\nEnter object extra flag (0 to quit): ", bitset_string( obj->extra_flags, o_flags ) );
 }
 
 /*
@@ -1521,11 +1521,11 @@ void oedit_disp_wear_menu( descriptor_data * d )
       if( counter == ITEM_DUAL_WIELD )
          continue;
 
-      d->character->printf( "&g%2d&w) %-20.20s ", counter + 1, capitalize( w_flags[counter] ) );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter + 1, capitalize( w_flags[counter] ) );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nWear flags: &c%s&w\r\nEnter wear flag, 0 to quit:  ", bitset_string( obj->wear_flags, w_flags ) );
+   d->character->print_fmt( "\r\nWear flags: &c{}&w\r\nEnter wear flag, 0 to quit:  ", bitset_string( obj->wear_flags, w_flags ) );
 }
 
 /* display main menu */
@@ -1562,7 +1562,7 @@ void oedit_disp_menu( descriptor_data * d )
 
    d->character->print( "&gP&w) Affect menu\r\n" "&gR&w) Extra descriptions menu\r\n" "&gQ&w) Quit\r\n" "Enter choice : " );
 
-   OLC_MODE( d ) = OEDIT_MAIN_MENU;
+   d->olc->mode  = OEDIT_MAIN_MENU;
 }
 
 /***************************************************************************
@@ -1581,7 +1581,7 @@ void edit_object_affect( descriptor_data * d, int number )
       if( count == number )
       {
          d->character->pcdata->spare_ptr = af;
-         OLC_VAL( d ) = true;
+         d->olc->value = true;
          oedit_disp_affect_menu( d );
          return;
       }
@@ -1595,7 +1595,7 @@ void edit_object_affect( descriptor_data * d, int number )
       if( count == number )
       {
          d->character->pcdata->spare_ptr = af;
-         OLC_VAL( d ) = true;
+         d->olc->value = true;
          oedit_disp_affect_menu( d );
          return;
       }
@@ -1697,7 +1697,7 @@ CMDF( do_oedit_reset )
          ch->pcdata->spare_ptr = ed;
          ch->substate = SUB_NONE;
          ch->desc->connected = CON_OEDIT;
-         OLC_MODE( ch->desc ) = OEDIT_EXTRADESC_CHOICE;
+         ch->desc->olc->mode = OEDIT_EXTRADESC_CHOICE;
          oedit_disp_extra_choice( ch->desc );
          return;
 
@@ -1720,7 +1720,7 @@ CMDF( do_oedit_reset )
          ch->pcdata->dest_buf = obj;
          ch->desc->connected = CON_OEDIT;
          ch->substate = SUB_NONE;
-         OLC_MODE( ch->desc ) = OEDIT_MAIN_MENU;
+         ch->desc->olc->mode = OEDIT_MAIN_MENU;
          oedit_disp_menu( ch->desc );
          return;
    }
@@ -1742,7 +1742,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
     * bool found; 
     */
 
-   switch ( OLC_MODE( d ) )
+   switch ( d->olc->mode  )
    {
       case OEDIT_MAIN_MENU:
          /*
@@ -1755,51 +1755,51 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                return;
             case '1':
                d->character->print( "Enter namelist : " );
-               OLC_MODE( d ) = OEDIT_EDIT_NAMELIST;
+               d->olc->mode  = OEDIT_EDIT_NAMELIST;
                break;
             case '2':
                d->character->print( "Enter short desc : " );
-               OLC_MODE( d ) = OEDIT_SHORTDESC;
+               d->olc->mode  = OEDIT_SHORTDESC;
                break;
             case '3':
                d->character->print( "Enter long desc :-\r\n| " );
-               OLC_MODE( d ) = OEDIT_LONGDESC;
+               d->olc->mode  = OEDIT_LONGDESC;
                break;
             case '4':
                d->character->print( "Enter action desc :-\r\n" );
-               OLC_MODE( d ) = OEDIT_ACTDESC;
+               d->olc->mode  = OEDIT_ACTDESC;
                break;
             case '5':
                oedit_disp_type_menu( d );
-               OLC_MODE( d ) = OEDIT_TYPE;
+               d->olc->mode  = OEDIT_TYPE;
                break;
             case '6':
                oedit_disp_extra_menu( d );
-               OLC_MODE( d ) = OEDIT_EXTRAS;
+               d->olc->mode  = OEDIT_EXTRAS;
                break;
             case '7':
                oedit_disp_wear_menu( d );
-               OLC_MODE( d ) = OEDIT_WEAR;
+               d->olc->mode  = OEDIT_WEAR;
                break;
             case '8':
                d->character->print( "Enter weight : " );
-               OLC_MODE( d ) = OEDIT_WEIGHT;
+               d->olc->mode  = OEDIT_WEIGHT;
                break;
             case '9':
                d->character->print( "Enter cost : " );
-               OLC_MODE( d ) = OEDIT_COST;
+               d->olc->mode  = OEDIT_COST;
                break;
             case 'A':
                d->character->print( "Enter cost per day : " );
-               OLC_MODE( d ) = OEDIT_COSTPERDAY;
+               d->olc->mode  = OEDIT_COSTPERDAY;
                break;
             case 'B':
                d->character->print( "Enter timer : " );
-               OLC_MODE( d ) = OEDIT_TIMER;
+               d->olc->mode  = OEDIT_TIMER;
                break;
             case 'C':
                d->character->print( "Enter level : " );
-               OLC_MODE( d ) = OEDIT_LEVEL;
+               d->olc->mode  = OEDIT_LEVEL;
                break;
             case 'D':
                if( obj->wear_flags.test( ITEM_WEAR_BODY )
@@ -1809,7 +1809,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                    || obj->wear_flags.test( ITEM_WEAR_HANDS ) || obj->wear_flags.test( ITEM_WEAR_LEGS ) || obj->wear_flags.test( ITEM_WEAR_WAIST ) )
                {
                   oedit_disp_layer_menu( d );
-                  OLC_MODE( d ) = OEDIT_LAYERS;
+                  d->olc->mode  = OEDIT_LAYERS;
                }
                else
                   d->character->print( "The wear location of this object is not layerable.\r\n" );
@@ -2574,7 +2574,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                else
                {
                   d->character->print( "Remove which affect? " );
-                  OLC_MODE( d ) = OEDIT_AFFECT_REMOVE;
+                  d->olc->mode  = OEDIT_AFFECT_REMOVE;
                }
                return;
 
@@ -2615,7 +2615,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             return;
          }
          paf->location = number;
-         OLC_MODE( d ) = OEDIT_AFFECT_MODIFIER;
+         d->olc->mode  = OEDIT_AFFECT_MODIFIER;
          /*
           * Insert all special affect handling here ie: non numerical stuff 
           */
@@ -2708,11 +2708,11 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          /*
           * Link it in 
           */
-         if( !value || OLC_VAL( d ) == true )
+         if( !value || d->olc->value == true )
          {
             paf->modifier = value;
             olc_log( d, "Modified affect to: %s by %d", a_types[paf->location], value );
-            OLC_VAL( d ) = false;
+            d->olc->value = false;
             oedit_disp_prompt_apply_menu( d );
             return;
          }
@@ -2781,17 +2781,17 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          {
             default:
             case 0:
-               OLC_MODE( d ) = OEDIT_EXTRADESC_MENU;
+               d->olc->mode  = OEDIT_EXTRADESC_MENU;
                oedit_disp_extradesc_menu( d );
                return;
 
             case 1:
-               OLC_MODE( d ) = OEDIT_EXTRADESC_KEY;
+               d->olc->mode  = OEDIT_EXTRADESC_KEY;
                d->character->print( "Enter keywords, speperated by spaces: " );
                return;
 
             case 2:
-               OLC_MODE( d ) = OEDIT_EXTRADESC_DESCRIPTION;
+               d->olc->mode  = OEDIT_EXTRADESC_DESCRIPTION;
                d->character->substate = SUB_OBJ_EXTRA;
                d->character->last_cmd = do_oedit_reset;
 
@@ -2837,7 +2837,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                return;
 
             case 'R':
-               OLC_MODE( d ) = OEDIT_EXTRADESC_DELETE;
+               d->olc->mode  = OEDIT_EXTRADESC_DELETE;
                d->character->print( "Delete which extra description? " );
                return;
 
@@ -2866,6 +2866,6 @@ void oedit_parse( descriptor_data * d, std::string & arg )
    /*
     * . If we get here, we have changed something .
     */
-   OLC_CHANGE( d ) = true; /*. Has changed flag . */
+   d->olc->changed = true; /*. Has changed flag . */
    oedit_disp_menu( d );
 }
