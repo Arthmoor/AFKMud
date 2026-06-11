@@ -46,40 +46,37 @@
 #include "roomindex.h"
 #include "shops.h"
 
-const int NOT_FOUND = -1;
-enum
-{ REN_ROOM, REN_OBJ, REN_MOB };
+constexpr int NOT_FOUND = -1;
+
+enum { REN_ROOM, REN_OBJ, REN_MOB };
 
 struct renumber_data
 {
-   renumber_data *next;
    int old_vnum;
    int new_vnum;
 };
 
 struct renumber_areas
 {
-   renumber_data *r_obj;
-   renumber_data *r_mob;
-   renumber_data *r_room;
-   int low_obj, hi_obj;
-   int low_mob, hi_mob;
-   int low_room, hi_room;
+   std::vector<renumber_data> r_obj;
+   std::vector<renumber_data> r_mob;
+   std::vector<renumber_data> r_room;
+   int low_obj = 0, hi_obj = 0;
+   int low_mob = 0, hi_mob = 0;
+   int low_room = 0, hi_room = 0;
 };
 
 /* from db.c */
 void save_sysdata(  );
 
-/* returns the new vnum for the old vnum "vnum" according to the info in r_data */
-int find_translation( int vnum, renumber_data * r_data )
+/* returns the new vnum using std::ranges */
+int find_translation( int vnum, const std::vector<renumber_data>& r_data )
 {
-   renumber_data *r_temp;
+   auto it = std::ranges::find_if( r_data, [vnum](const auto& r) { return r.old_vnum == vnum; });
 
-   for( r_temp = r_data; r_temp; r_temp = r_temp->next )
-   {
-      if( r_temp->old_vnum == vnum )
-         return r_temp->new_vnum;
-   }
+   if( it != r_data.end() )
+      return it->new_vnum;
+
    return NOT_FOUND;
 }
 
@@ -154,29 +151,30 @@ void translate_exits( char_data * ch, area_data * area, renumber_areas * r_area 
 void translate_reset( reset_data * reset, renumber_areas * r_data )
 {
    /*
-    * a list based approach to fixing the resets. instead of having a bunch of several instances of very 
-    * similar code, i just made this array that tells the code what to do. it's pretty straightforward 
+    * a list based approach to fixing the resets. instead of having a bunch of several instances of very
+    * similar code, i just made this array that tells the code what to do. it's pretty straightforward
     */
    const char *action_table[] = { "Mm1r3", "Oo1r3", "Ho1", "Po2o4", "Go1", "Eo1", "Dr1", "Rr1", "Wo8", "Zr7", nullptr };
    const char *p;
-   renumber_data *r_table;
+   const std::vector<renumber_data> *r_table = nullptr;
    int *parg, new_vnum, i;
 
    /*
-    * T is a special case 
+    * T is a special case
     */
    if( reset->command == 'T' )
    {
       if( IS_SET( reset->arg1, TRAP_ROOM ) )
-         r_table = r_data->r_room;
+         r_table = &(r_data->r_room);
       else if( IS_SET( reset->arg1, TRAP_OBJ ) )
-         r_table = r_data->r_obj;
+         r_table = &(r_data->r_obj);
       else
       {
          bug( "%s: Invalid 'T' reset found.", __func__ );
          return;
       }
-      new_vnum = find_translation( reset->arg4, r_table );
+
+      new_vnum = find_translation( reset->arg4, *r_table );
       if( new_vnum != NOT_FOUND )
          reset->arg4 = new_vnum;
       return;
@@ -190,11 +188,11 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
          while( *p )
          {
             if( *p == 'm' )
-               r_table = r_data->r_mob;
+               r_table = &(r_data->r_mob);
             else if( *p == 'o' )
-               r_table = r_data->r_obj;
+               r_table = &(r_data->r_obj);
             else if( *p == 'r' )
-               r_table = r_data->r_room;
+               r_table = &(r_data->r_room);
             else
             {
                bug( "%s: Invalid action found in action table.", __func__ );
@@ -217,7 +215,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
             }
             ++p;
 
-            new_vnum = find_translation( *parg, r_table );
+            new_vnum = find_translation( *parg, *r_table );
             if( new_vnum != NOT_FOUND )
                *parg = new_vnum;
          }
@@ -283,7 +281,7 @@ void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_are
    }
 }
 
-void warn_in_prog( char_data * ch, int low, int high, const char *where, int vnum, mud_prog_data * mprog, renumber_areas * r_area )
+void warn_in_prog( char_data * ch, int low, int high, std::string_view where, int vnum, mud_prog_data * mprog, renumber_areas * r_area )
 {
    char *p, *start_number, cTmp;
    int num;
@@ -303,9 +301,9 @@ void warn_in_prog( char_data * ch, int low, int high, const char *where, int vnu
          if( num >= low && num <= high )
          {
             ch->
-               pagerf
-               ( "Warning! %s prog in %s vnum %d might contain a reference to %d.\r\n(Translation: Room %d, Obj %d, Mob %d)\r\n",
-                 mprog_type_to_name( mprog->type ).c_str(  ), where, vnum, num, find_translation( num, r_area->r_room ),
+               pager_fmt
+               ( "Warning! {} prog in {} vnum {} might contain a reference to {}.\r\n(Translation: Room {}, Obj {}, Mob {})\r\n",
+                 mprog_type_to_name( mprog->type ), where, vnum, num, find_translation( num, r_area->r_room ),
                  find_translation( num, r_area->r_obj ), find_translation( num, r_area->r_mob ) );
          }
          if( *p == '\0' )
@@ -368,9 +366,11 @@ void warn_progs( char_data * ch, int low, int high, area_data * area, renumber_a
  * This is the function that actually does the renumbering of "area" according
  * to the renumber data in "r_area". "ch" is to show messages.
  */
+/* This is the function that actually does the renumbering of "area" according
+ * to the renumber data in "r_area". "ch" is to show messages.
+ */
 void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, bool verbose )
 {
-   renumber_data *r_data;
    room_index *room;
    mob_index *mob;
    obj_index *obj;
@@ -395,41 +395,41 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
     * findable (its "covered" by A because they'd have the same vnum).
     */
    room_list.clear();
-   for( r_data = r_area->r_room; r_data; r_data = r_data->next )
+   for( const auto& r_data : r_area->r_room )
    {
       if( verbose )
-         ch->pagerf( "(Room) %d -> %d\r\n", r_data->old_vnum, r_data->new_vnum );
+         ch->pagerf( "(Room) %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
 
-      room = get_room_index( r_data->old_vnum );
+      room = get_room_index( r_data.old_vnum );
       if( !room )
       {
-         bug( "%s: nullptr room %d", __func__, r_data->old_vnum );
+         bug( "%s: nullptr room %d", __func__, r_data.old_vnum );
          continue;
       }
 
       /*
-       * remove it from the hash list 
+       * remove it from the hash list
        */
       std::map<int, room_index *>::iterator mroom;
-      if( ( mroom = room_index_table.find( r_data->old_vnum ) ) != room_index_table.end(  ) )
+      if( ( mroom = room_index_table.find( r_data.old_vnum ) ) != room_index_table.end( ) )
          room_index_table.erase( mroom );
 
       /*
-       * change the vnum 
+       * change the vnum
        */
-      room->vnum = r_data->new_vnum;
+      room->vnum = r_data.new_vnum;
 
       /*
-       * move it to the temporary list 
+       * move it to the temporary list
        */
       room_list.push_back( room );
    }
 
    /*
-    * now move everything back into the hash array 
+    * now move everything back into the hash array
     */
    std::list<room_index *>::iterator iroom;
-   for( iroom = room_list.begin(  ); iroom != room_list.end(  ); ++iroom )
+   for( iroom = room_list.begin( ); iroom != room_list.end( ); ++iroom )
    {
       room = *iroom;
 
@@ -442,72 +442,72 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    /*
     * if nothing was moved, don't change this
     */
-   if( r_area->r_room != nullptr )
+   if( !r_area->r_room.empty() )
    {
       area->low_vnum = r_area->low_room;
       area->hi_vnum = r_area->hi_room;
    }
 
-   mob_list.clear(  );
+   mob_list.clear( );
    ch->pager( "(Mobs) Renumbering...\r\n" );
-   for( r_data = r_area->r_mob; r_data; r_data = r_data->next )
+   for( const auto& r_data : r_area->r_mob )
    {
       if( verbose )
-         ch->pagerf( "(Mobs) %d -> %d\r\n", r_data->old_vnum, r_data->new_vnum );
+         ch->pagerf( "(Mobs) %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
 
-      mob = get_mob_index( r_data->old_vnum );
+      mob = get_mob_index( r_data.old_vnum );
       if( !mob )
       {
-         bug( "%s: nullptr mob %d", __func__, r_data->old_vnum );
+         bug( "%s: nullptr mob %d", __func__, r_data.old_vnum );
          continue;
       }
 
       /*
-       * fix references to this mob from shops while renumbering this mob 
+       * fix references to this mob from shops while renumbering this mob
        */
       if( mob->pShop )
       {
          if( verbose )
-            ch->pagerf( "(Mobs) Fixing shop for mob %d -> %d\r\n", r_data->old_vnum, r_data->new_vnum );
-         mob->pShop->keeper = r_data->new_vnum;
+            ch->pagerf( "(Mobs) Fixing shop for mob %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
+         mob->pShop->keeper = r_data.new_vnum;
       }
       if( mob->rShop )
       {
          if( verbose )
-            ch->pagerf( "(Mobs) Fixing repair shop for mob %d -> %d\r\n", r_data->old_vnum, r_data->new_vnum );
-         mob->rShop->keeper = r_data->new_vnum;
+            ch->pagerf( "(Mobs) Fixing repair shop for mob %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
+         mob->rShop->keeper = r_data.new_vnum;
       }
 
       /*
-       * remove it from the hash list 
+       * remove it from the hash list
        */
       std::map<int, mob_index *>::iterator mmob;
-      if( ( mmob = mob_index_table.find( r_data->old_vnum ) ) != mob_index_table.end(  ) )
+      if( ( mmob = mob_index_table.find( r_data.old_vnum ) ) != mob_index_table.end( ) )
          mob_index_table.erase( mmob );
 
       /*
-       * change the vnum 
+       * change the vnum
        */
-      mob->vnum = r_data->new_vnum;
+      mob->vnum = r_data.new_vnum;
 
       /*
-       * move to private list 
+       * move to private list
        */
       mob_list.push_back( mob );
    }
 
    std::list<mob_index *>::iterator imob;
-   for( imob = mob_list.begin(  ); imob != mob_list.end(  ); ++imob )
+   for( imob = mob_list.begin( ); imob != mob_list.end( ); ++imob )
    {
       mob = *imob;
 
       /*
-       * add it to the hash list again 
+       * add it to the hash list again
        */
       mob_index_table.insert( std::map<int, mob_index *>::value_type( mob->vnum, mob ) );
    }
 
-   if( r_area->r_mob )
+   if( !r_area->r_mob.empty() )
    {
       if( r_area->low_mob < r_area->low_room )
          area->low_vnum = r_area->low_mob;
@@ -517,47 +517,47 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
 
    ch->pager( "(Objs) Renumbering...\r\n" );
    obj_list.clear();
-   for( r_data = r_area->r_obj; r_data; r_data = r_data->next )
+   for( const auto& r_data : r_area->r_obj )
    {
       if( verbose )
-         ch->pagerf( "(Objs) %d -> %d\r\n", r_data->old_vnum, r_data->new_vnum );
-      obj = get_obj_index( r_data->old_vnum );
+         ch->pagerf( "(Objs) %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
+      obj = get_obj_index( r_data.old_vnum );
       if( !obj )
       {
-         bug( "%s: nullptr obj %d", __func__, r_data->old_vnum );
+         bug( "%s: nullptr obj %d", __func__, r_data.old_vnum );
          continue;
       }
 
       /*
-       * remove it from the hash list 
+       * remove it from the hash list
        */
       std::map<int, obj_index *>::iterator mobj;
-      if( ( mobj = obj_index_table.find( r_data->old_vnum ) ) != obj_index_table.end(  ) )
+      if( ( mobj = obj_index_table.find( r_data.old_vnum ) ) != obj_index_table.end( ) )
          obj_index_table.erase( mobj );
 
       /*
-       * change the vnum 
+       * change the vnum
        */
-      obj->vnum = r_data->new_vnum;
+      obj->vnum = r_data.new_vnum;
 
       /*
-       * to our list 
+       * to our list
        */
       obj_list.push_back( obj );
    }
 
    std::list<obj_index *>::iterator iobj;
-   for( iobj = obj_list.begin(  ); iobj != obj_list.end(  ); ++iobj )
+   for( iobj = obj_list.begin( ); iobj != obj_list.end( ); ++iobj )
    {
       obj = *iobj;
 
       /*
-       * add it to the hash list again 
+       * add it to the hash list again
        */
       obj_index_table.insert( std::map<int, obj_index *>::value_type( obj->vnum, obj ) );
    }
 
-   if( r_area->r_obj )
+   if( !r_area->r_obj.empty() )
    {
       if( r_area->low_obj < r_area->low_room && r_area->low_obj < r_area->low_mob )
          area->low_vnum = r_area->low_obj;
@@ -575,7 +575,7 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
 
    ch->pager( "... fixing resets...\r\n" );
 
-   for( iroom = area->rooms.begin(  ); iroom != area->rooms.end(  ); ++iroom )
+   for( iroom = area->rooms.begin( ); iroom != area->rooms.end( ); ++iroom )
    {
       room = *iroom;
 
@@ -595,18 +595,12 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    }
 }
 
-/* this function builds a list of renumber data for a type (obj, room, or mob) */
-renumber_data *gather_one_list( short type, int low, int high, int new_base, bool fill_gaps, int *max_vnum )
+/* this function builds a vector of renumber data for a type */
+std::vector<renumber_data> gather_one_list( short type, int low, int high, int new_base, bool fill_gaps, int *max_vnum )
 {
-   renumber_data *r_data, root;
+   std::vector<renumber_data> r_data;
    bool found;
-   room_index *room;
-   obj_index *obj;
-   mob_index *mob;
    int i, highest, cur_vnum;
-
-   memset( &root, 0, sizeof( renumber_data ) );
-   r_data = &root;
 
    cur_vnum = new_base;
    highest = -1;
@@ -618,20 +612,17 @@ renumber_data *gather_one_list( short type, int low, int high, int new_base, boo
          default:
             break;
          case REN_ROOM:
-            room = get_room_index( i );
-            if( room != nullptr )
+            if( get_room_index( i ) != nullptr )
                found = true;
-            break;
+         break;
          case REN_OBJ:
-            obj = get_obj_index( i );
-            if( obj != nullptr )
+            if( get_obj_index( i ) != nullptr )
                found = true;
-            break;
+         break;
          case REN_MOB:
-            mob = get_mob_index( i );
-            if( mob != nullptr )
+            if( get_mob_index( i ) != nullptr )
                found = true;
-            break;
+         break;
       }
 
       if( found )
@@ -639,28 +630,23 @@ renumber_data *gather_one_list( short type, int low, int high, int new_base, boo
          if( cur_vnum > highest )
             highest = cur_vnum;
          if( cur_vnum != i )
-         {
-            CREATE( r_data->next, renumber_data, 1 );
-            r_data = r_data->next;
-            r_data->old_vnum = i;
-            r_data->new_vnum = cur_vnum;
-         }
+            r_data.push_back( { i, cur_vnum } );
+
          ++cur_vnum;
       }
       else if( !fill_gaps )
          ++cur_vnum;
    }
    *max_vnum = highest;
-   return root.next;
+   return r_data;
 }
 
 /* this function actually gathers all the renumber data for an area */
 renumber_areas *gather_renumber_data( area_data * area, int new_base, bool fill_gaps )
 {
-   renumber_areas *r_area;
    int max;
 
-   r_area = new renumber_areas;
+   auto r_area = std::make_unique<renumber_areas>();
 
    r_area->r_mob = gather_one_list( REN_MOB, area->low_vnum, area->hi_vnum, new_base, fill_gaps, &max );
    r_area->low_mob = new_base;
@@ -674,7 +660,7 @@ renumber_areas *gather_renumber_data( area_data * area, int new_base, bool fill_
    r_area->low_room = new_base;
    r_area->hi_room = max;
 
-   return r_area;
+   return r_area.release();
 }
 
 bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
@@ -715,19 +701,6 @@ bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
    return false;
 }
 
-/* disposes of a list of renumber data items */
-void free_renumber_data( renumber_data * r_data )
-{
-   renumber_data *r_next;
-
-   while( r_data != nullptr )
-   {
-      r_next = r_data->next;
-      OLD_DISPOSE( r_data );
-      r_data = r_next;
-   }
-}
-
 CMDF( do_renumber )
 {
    renumber_areas *r_area;
@@ -736,18 +709,18 @@ CMDF( do_renumber )
    int new_base;
    bool fill_gaps, verbose;
 
-   if( ch->isnpc(  ) )
+   if( ch->isnpc( ) )
    {
       ch->print( "Yeah, right.\r\n" );
       return;
    }
 
    /*
-    * parse the first two parameters 
-    * first, area 
+    * parse the first two parameters
+    * first, area
     */
    argument = one_argument( argument, arg1 );
-   if( arg1.empty(  ) )
+   if( arg1.empty( ) )
    {
       ch->print( "What area do you want to renumber?\r\n" );
       return;
@@ -756,15 +729,15 @@ CMDF( do_renumber )
    area = find_area( arg1 );
    if( area == nullptr )
    {
-      ch->printf( "No such area '%s'.\r\n", arg1.c_str(  ) );
+      ch->print_fmt( "No such area '{}'.\r\n", arg1 );
       return;
    }
 
    /*
-    * and new vnum base 
+    * and new vnum base
     */
    argument = one_argument( argument, arg1 );
-   if( arg1.empty(  ) )
+   if( arg1.empty( ) )
    {
       ch->print( "What will be the new vnum base for this area?\r\n" );
       return;
@@ -772,21 +745,21 @@ CMDF( do_renumber )
 
    if( !is_number( arg1 ) )
    {
-      ch->printf( "Sorry, '%s' is not a valid vnum base number!\r\n", arg1.c_str(  ) );
+      ch->print_fmt( "Sorry, '{}' is not a valid vnum base number!\r\n", arg1 );
       return;
    }
 
-   new_base = atoi( arg1.c_str(  ) );
+   new_base = std::stoi( arg1 );
 
    /*
-    * parse the flags 
+    * parse the flags
     */
    fill_gaps = false;
    verbose = false;
    for( ;; )
    {
       argument = one_argument( argument, arg1 );
-      if( arg1.empty(  ) )
+      if( arg1.empty( ) )
          break;
       else if( !str_prefix( arg1, "fillgaps" ) )
          fill_gaps = true;
@@ -794,13 +767,13 @@ CMDF( do_renumber )
          verbose = true;
       else
       {
-         ch->printf( "Invalid flag '%s'.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "Invalid flag '{}'.\r\n", arg1 );
          return;
       }
    }
 
    /*
-    * sanity check 
+    * sanity check
     */
    if( new_base == area->low_vnum && !fill_gaps )
    {
@@ -810,7 +783,7 @@ CMDF( do_renumber )
    }
 
    /*
-    * some restrictions 
+    * some restrictions
     */
    if( ch->level < LEVEL_SAVIOR )
    {
@@ -828,17 +801,18 @@ CMDF( do_renumber )
    }
 
    /*
-    * get the renumber data 
+    * get the renumber data
     */
    r_area = gather_renumber_data( area, new_base, fill_gaps );
 
    /*
-    * one more restriction 
+    * one more restriction
     */
    if( ch->level == LEVEL_SAVIOR )
    {
       if( r_area->low_room < ch->pcdata->low_vnum || r_area->hi_room > ch->pcdata->hi_vnum ||
-          r_area->low_obj < ch->pcdata->low_vnum || r_area->hi_obj > ch->pcdata->hi_vnum || r_area->low_mob < ch->pcdata->low_vnum || r_area->hi_mob > ch->pcdata->hi_vnum )
+         r_area->low_obj < ch->pcdata->low_vnum || r_area->hi_obj > ch->pcdata->hi_vnum ||
+         r_area->low_mob < ch->pcdata->low_vnum || r_area->hi_mob > ch->pcdata->hi_vnum )
       {
          ch->print( "The renumbered area would be outside your assigned vnum range.\r\n" );
 
@@ -849,11 +823,11 @@ CMDF( do_renumber )
    }
 
    /*
-    * OOO! A new sanity check :) - Samson 10-7-02 
+    * OOO! A new sanity check :) - Samson 10-7-02
     */
    if( new_base >= sysdata->maxvnum )
    {
-      ch->printf( "%d is beyond the maximum allowed vnum of %d\r\n", new_base, sysdata->maxvnum );
+      ch->print_fmt( "{} is beyond the maximum allowed vnum of {}\r\n", new_base, sysdata->maxvnum );
 
       // Bugfix - Memory leak if r_area was valid.
       deleteptr( r_area );
@@ -861,7 +835,7 @@ CMDF( do_renumber )
    }
 
    /*
-    * no overwriting of dest vnums 
+    * no overwriting of dest vnums
     */
    if( check_vnums( ch, area, r_area ) )
    {
@@ -871,9 +845,10 @@ CMDF( do_renumber )
    }
 
    /*
-    * another sanity check :) 
+    * another sanity check :)
+    * Updated to use .empty() instead of checking for nullptr on raw pointers.
     */
-   if( r_area == nullptr || ( r_area->r_obj == nullptr && r_area->r_mob == nullptr && r_area->r_room == nullptr ) )
+   if( !r_area || ( r_area->r_obj.empty() && r_area->r_mob.empty() && r_area->r_room.empty() ) )
    {
       ch->print( "No changes to make.\r\n" );
       deleteptr( r_area );
@@ -881,27 +856,21 @@ CMDF( do_renumber )
    }
 
    /*
-    * ok, do it! 
+    * ok, do it!
     */
-   ch->pagerf( "Renumbering area '%s' to new base %d, filling gaps: %s\r\n", area->filename, new_base, fill_gaps ? "yes" : "no" );
+   ch->pager_fmt( "Renumbering area '{}' to new base {}, filling gaps: %s\r\n", area->filename, new_base, fill_gaps ? "yes" : "no" );
    renumber_area( ch, area, r_area, verbose );
    ch->pager( "Done.\r\n" );
 
    if( area->hi_vnum > sysdata->maxvnum )
    {
       sysdata->maxvnum = area->hi_vnum + 1;
-      save_sysdata(  );
-      ch->pagerf( "Maximum vnum was raised to %d by this operation.\r\n", sysdata->maxvnum );
+      save_sysdata( );
+      ch->pager_fmt( "Maximum vnum was raised to {} by this operation.\r\n", sysdata->maxvnum );
    }
 
    /*
-    * clean up and goodbye 
+    * clean up and goodbye
     */
-   if( r_area->r_room != nullptr )
-      free_renumber_data( r_area->r_room );
-   if( r_area->r_obj != nullptr )
-      free_renumber_data( r_area->r_obj );
-   if( r_area->r_mob != nullptr )
-      free_renumber_data( r_area->r_mob );
    deleteptr( r_area );
 }
