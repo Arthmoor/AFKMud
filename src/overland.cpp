@@ -32,6 +32,7 @@
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <unordered_map>
 #include "mud.h"
 #include "area.h"
 #include "mobindex.h"
@@ -1853,29 +1854,69 @@ CMDF( do_setexit )
  * Problem? It crashes the damn game with MSL set to 4096, so I raised it to 8192.
  *
  * Proper solution: Converted the buffer to std::string and now, in theory, it could be as large as the memory on your server.
+ *
+ * And now we've finally done something to improve performance even further and reduce the number of heap allocations reprocessing the output string.
+ * Samson 6/11/2026.
+ *
+ * TODO: Future plans - Generate a version of this that would work with GMCP enabled clients like Mudlet and use Unicode symbols in it for the terrain.
  */
 void new_map_to_char( char_data * ch, short startx, short starty, short endx, short endy, int radius )
 {
+   if( !ch || !ch->in_room )
+      return;
+
+   startx = urange( 0, startx, MAX_X - 1 );
+   starty = urange( 0, starty, MAX_Y - 1 );
+   endx = urange( 0, endx, MAX_X - 1 );
+   endy = urange( 0, endy, MAX_Y - 1 );
+
+   // Pre-allocate buffer to prevent reallocations on the heap. They slow things down by quite a bit.
    std::string secbuf;
-
-   if( startx < 0 )
-      startx = 0;
-
-   if( starty < 0 )
-      starty = 0;
-
-   if( endx >= MAX_X )
-      endx = MAX_X - 1;
-
-   if( endy >= MAX_Y )
-      endy = MAX_Y - 1;
-
-   short lastsector = -1;
+   secbuf.reserve( ( ( endx - startx + 1 ) * ( endy - starty + 1 ) ) * 16 );
    secbuf.append( "\r\n" );
 
-   for( short y = starty; y < endy + 1; ++y )
+   // Pre-cache entities at specific coordinates for O(1) retrieval during drawing. This provides even more performance in dealing with other people near you.
+   struct MapEntity {
+      std::vector<char_data*> people;
+      std::vector<obj_data*> objects;
+      std::vector<ship_data*> ships;
+   };
+
+   // Allocate the grid dynamically based on the current viewport size to save memory.
+   short width = ( endx - startx + 1 );
+   short height = ( endy - starty + 1 );
+   std::vector<MapEntity> grid( width * height );
+
+   auto get_grid_index = [startx, starty, width](short x, short y) -> int {
+      return (x - startx) + (y - starty) * width;
+   };
+
+   // Populate grid for people in the room.
+   for( auto* rch : ch->in_room->people ) {
+      if( rch->map_x >= startx && rch->map_x <= endx && rch->map_y >= starty && rch->map_y <= endy ) {
+         grid[get_grid_index(rch->map_x, rch->map_y)].people.push_back(rch);
+      }
+   }
+
+   // Populate grid for objects in the room.
+   for( auto* obj : ch->in_room->objects ) {
+      if( obj->map_x >= startx && obj->map_x <= endx && obj->map_y >= starty && obj->map_y <= endy ) {
+         grid[get_grid_index(obj->map_x, obj->map_y)].objects.push_back(obj);
+      }
+   }
+
+   // Populate grid for ships.
+   for( auto* ship : shiplist ) {
+      if( ship->room == ch->in_room->vnum && ship->map_x >= startx && ship->map_x <= endx && ship->map_y >= starty && ship->map_y <= endy ) {
+         grid[get_grid_index(ship->map_x, ship->map_y)].ships.push_back(ship);
+      }
+   }
+
+   short lastsector = -1;
+
+   for( short y = starty; y <= endy; ++y )
    {
-      for( short x = startx; x < endx + 1; ++x )
+      for( short x = startx; x <= endx; ++x )
       {
          if( distance( ch->map_x, ch->map_y, x, y ) > radius )
          {
@@ -1890,7 +1931,10 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
          short sector = ch->continent->get_terrain( x, y );
          bool other = false, npc = false, object = false, group = false, aship = false;
 
-         for( auto* rch : ch->in_room->people )
+         const auto& tile_entities = grid[get_grid_index(x, y)];
+
+         // Process pre-cached people
+         for( auto* rch : tile_entities.people )
          {
             if( x == rch->map_x && y == rch->map_y && rch != ch && ( rch->map_x != ch->map_x || rch->map_y != ch->map_y ) )
             {
@@ -1899,7 +1943,7 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
                else
                {
                   other = true;
-                  if( rch->isnpc(  ) )
+                  if( rch->isnpc() )
                      npc = true;
                   lastsector = -1;
                }
@@ -1915,7 +1959,8 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
             }
          }
 
-         for( auto* obj : ch->in_room->objects )
+         // Process pre-cached objects.
+         for( auto* obj : tile_entities.objects )
          {
             // Nolocate flags should block the $. Useful for road signs and such.
             if( x == obj->map_x && y == obj->map_y && !is_same_obj_map( ch, obj ) && !obj->extra_flags.test( ITEM_NOLOCATE ) )
@@ -1925,9 +1970,10 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
             }
          }
 
-         for( auto* ship : shiplist )
+         // Process pre-cached ships
+         for( auto* ship : tile_entities.ships )
          {
-            if( x == ship->map_x && y == ship->map_y && ship->room == ch->in_room->vnum )
+            if( x == ship->map_x && y == ship->map_y )
             {
                aship = true;
                lastsector = -1;
@@ -1961,7 +2007,9 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
          if( !other && !object && !aship )
          {
             if( lastsector == sector )
+            {
                secbuf.append( sect_show[sector].symbol );
+            }
             else
             {
                lastsector = sector;
@@ -2051,39 +2099,39 @@ void display_map( char_data * ch )
 
    if( !ch->inflight && !ch->in_room->flags.test( ROOM_WATCHTOWER ) )
    {
-      ch->printf( "&GTravelling on the continent of %s.\r\n", ch->continent->name.c_str( ) );
+      ch->print_fmt( "&GTraveling on the continent of {}.\r\n", ch->continent->name );
       landmark = ch->continent->check_landmark( ch->map_x, ch->map_y );
 
       if( landmark && landmark->Isdesc )
-         ch->printf( "&G%s\r\n", !landmark->description.empty(  ) ? landmark->description.c_str(  ) : "" );
+         ch->print_fmt( "&G{}\r\n", !landmark->description.empty(  ) ? landmark->description : "" );
       else
-         ch->printf( "&G%s\r\n", impass_message[sector] );
+         ch->print_fmt( "&G{}\r\n", impass_message[sector] );
    }
    else if( ch->in_room->flags.test( ROOM_WATCHTOWER ) )
    {
-      ch->printf( "&YYou are overlooking the continent of %s.\r\n", ch->continent->name.c_str( ) );
+      ch->print_fmt( "&YYou are overlooking the continent of {}.\r\n", ch->continent->name );
       ch->print( "The view from this watchtower is amazing!\r\n" );
    }
    else
-      ch->printf( "&GRiding a skyship over the continent of %s.\r\n", ch->continent->name.c_str( ) );
+      ch->print_fmt( "&GRiding a skyship over the continent of {}.\r\n", ch->continent->name );
 
    if( ch->is_immortal(  ) )
    {
-      ch->printf( "&GSector type: %s. Coordinates: %dX, %dY\r\n", sect_types[sector], ch->map_x, ch->map_y );
+      ch->print_fmt( "&GSector type: {}. Coordinates: {}X, {}Y\r\n", sect_types[sector], ch->map_x, ch->map_y );
 
       landing = ch->continent->check_landing_site( ch->map_x, ch->map_y );
 
       if( landing )
-         ch->printf( "&CLanding site for %s.\r\n", !landing->area.empty(  ) ? landing->area.c_str(  ) : "<NOT SET>" );
+         ch->print_fmt( "&CLanding site for {}.\r\n", !landing->area.empty(  ) ? landing->area : "<NOT SET>" );
 
       if( landmark && !landmark->Isdesc )
       {
-         ch->printf( "&BLandmark present: %s\r\n", !landmark->description.empty(  ) ? landmark->description.c_str(  ) : "<NO DESCRIPTION>" );
-         ch->printf( "&BVisibility distance: %d.\r\n", landmark->distance );
+         ch->print_fmt( "&BLandmark present: {}\r\n", !landmark->description.empty(  ) ? landmark->description : "<NO DESCRIPTION>" );
+         ch->print_fmt( "&BVisibility distance: {}.\r\n", landmark->distance );
       }
 
       if( ch->has_pcflag( PCFLAG_MAPEDIT ) )
-         ch->printf( "&YYou are currently creating %s sectors.&z\r\n", sect_types[ch->pcdata->secedit] );
+         ch->print_fmt( "&YYou are currently creating {} sectors.&z\r\n", sect_types[ch->pcdata->secedit] );
    }
 }
 
