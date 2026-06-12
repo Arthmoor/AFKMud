@@ -316,18 +316,12 @@ bool str_infix( std::string_view astr, std::string_view bstr )
 }
 
 /*
- * FIXME: This sucks. Mind drawing a blank on how to make a std::string version.
- * Compare strings, case insensitive, for suffix matching.
  * Return true if astr not a suffix of bstr
  *   (compatibility with historical functions).
  */
-bool str_suffix( const char *astr, const char *bstr )
+bool str_suffix( std::string_view astr, std::string_view bstr )
 {
-   int sstr1, sstr2;
-
-   sstr1 = strlen( astr );
-   sstr2 = strlen( bstr );
-   if( sstr1 <= sstr2 && !str_cmp( astr, bstr + sstr2 - sstr1 ) )
+   if( astr.length() <= bstr.length() && !str_cmp( astr, bstr.substr( bstr.length() - astr.length() ) ) )
       return false;
    else
       return true;
