@@ -370,8 +370,7 @@ CMDF( do_get )
 
          case ITEM_CORPSE_PC:
          {
-            char name[MIL];
-            char *pd;
+            std::string name, pd;
 
             if( ch->isnpc(  ) )
             {
@@ -380,10 +379,10 @@ CMDF( do_get )
             }
 
             pd = container->short_descr;
-            pd = one_argument( pd, name );
-            pd = one_argument( pd, name );
-            pd = one_argument( pd, name );
-            pd = one_argument( pd, name );
+            pd = one_argument( pd, name ); // an
+            pd = one_argument( pd, name ); // animated
+            pd = one_argument( pd, name ); // corpse
+            pd = one_argument( pd, name ); // <name>
 
             if( container->extra_flags.test( ITEM_CLANCORPSE ) && !ch->isnpc(  ) && ( ch->get_timer( TIMER_PKILLED ) > 0 ) && str_cmp( name, ch->name ) )
             {

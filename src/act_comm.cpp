@@ -1479,9 +1479,10 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
                   buf.append( "door" );
                else
                {
-                  char fname[MIL];
+                  std::string fname;
 
-                  one_argument( ( char * )arg2, fname );
+                  one_argument( reinterpret_cast<const char*>( arg2 ), fname );
+
                   buf.append( fname );
                }
                break;
