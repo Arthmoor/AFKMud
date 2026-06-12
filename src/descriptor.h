@@ -33,7 +33,7 @@ inline constexpr std::string_view DNS_FILE = "../system/dns.dat";
 constexpr int MAX_INBUF_SIZE = 4096;
 
 constexpr int TELOPT_COMPRESS2 = 86;
-constexpr int COMPRESS_BUF_SIZE = MSL;
+constexpr int COMPRESS_BUF_SIZE = 8192; // Can no longer rely on being equal to MSL since that is being phased out.
 
 extern const std::array<unsigned char, 4> echo_off_str;
 extern const std::array<unsigned char, 4> will_compress2_str;
@@ -47,8 +47,8 @@ struct mccp_data
     * No destructor needed 
     */
 
-   z_stream *out_compress;
-   unsigned char *out_compress_buf;
+   z_stream *out_compress = nullptr;
+   unsigned char *out_compress_buf = nullptr;
 };
 
 constexpr int TELOPT_MSP = 90; /* Mud Sound Protocol */
@@ -110,31 +110,31 @@ class descriptor_data
    std::string pagebuf;
    std::string incomm;
    std::string inlast;
-   std::string client; /* Client detection */
-   descriptor_data *snoop_by;
-   char_data *character;
-   char_data *original;
-   olc_data *olc; /* Tagith - Oasis OLC */
-   struct mccp_data *mccp; /* Mud Client Compression Protocol */
-   char inbuf[MAX_INBUF_SIZE];
-   int pageindex; // Location of index value for pager vector<>
-   int client_port;
-   int descriptor;
-   int newstate;
-   int repeat;
-   int ifd;
-   pid_t ipid;
-   pid_t process; /* Samson 4-16-98 - For new command shell code */
-   short connected;
-   short idle;
-   char pagecmd;
-   char pagecolor;
-   unsigned char prevcolor;
-   bool fcommand;
-   bool msp_detected;
-   bool can_compress;
-   bool is_compressing;
-   bool disconnect;
+   std::string client;                    // Client detection
+   std::vector<char> inbuf;
+   descriptor_data *snoop_by = nullptr;
+   char_data *character = nullptr;
+   char_data *original = nullptr;
+   olc_data *olc = nullptr;               // Tagith - Oasis OLC
+   struct mccp_data *mccp = nullptr;      // Mud Client Compression Protocol
+   int pageindex = 0;                         // Location of index value for pager vector<>
+   int client_port = 0;
+   int descriptor = 0;
+   int newstate = 0;
+   int repeat = 0;
+   int ifd = 0;
+   pid_t ipid = 0;
+   pid_t process = 0; /* Samson 4-16-98 - For new command shell code */
+   short connected = 0;
+   short idle = 0;
+   char pagecmd = '\0';
+   char pagecolor = '\0';
+   unsigned char prevcolor ='\0';
+   bool fcommand = false;
+   bool msp_detected = false;
+   bool can_compress = false;
+   bool is_compressing = false;
+   bool disconnect = false;
 };
 
 extern std::list<descriptor_data*> dlist;

@@ -210,16 +210,8 @@ descriptor_data::~descriptor_data(  )
       bug( "%s: }RALERT! Closing socket 0! BAD BAD BAD!", __func__ );
 }
 
-descriptor_data::descriptor_data(  )
+descriptor_data::descriptor_data(  ) : inbuf( MAX_INBUF_SIZE, 0 )
 {
-   init_memory( &snoop_by, &disconnect, sizeof( disconnect ) );
-   hostname.clear(  );
-   ipaddress.clear( );
-   outbuf.clear(  );
-   pagebuf.clear(  );
-   incomm.clear(  );
-   inlast.clear(  );
-   client.clear(  );
 }
 
 mccp_data::mccp_data(  )
@@ -756,8 +748,8 @@ bool descriptor_data::read( )
    if( !this->incomm.empty() )
       return true;
 
-   size_t iStart = std::strlen( this->inbuf );
-   const size_t buffer_limit = sizeof( this->inbuf ) - 10;
+   size_t iStart = std::strlen( this->inbuf.data() );
+   const size_t buffer_limit = this->inbuf.size() - 10;
 
    if( iStart >= buffer_limit )
    {
@@ -768,7 +760,7 @@ bool descriptor_data::read( )
 
    while( true )
    {
-      ssize_t nRead = recv( this->descriptor, this->inbuf + iStart, buffer_limit - iStart, 0 );
+      ssize_t nRead = recv( this->descriptor, this->inbuf.data() + iStart, buffer_limit - iStart, 0 );
 
       if( nRead > 0 )
       {
@@ -919,7 +911,7 @@ void descriptor_data::read_from_buffer( )
       {
          if( std::memcmp( &inbuf[i], term_call_back_str.data(), term_call_back_str.size() ) == 0 )
          {
-            char tmp[100]{};
+            char tmp[100];
             size_t pos = i;
             size_t p_idx = i + sizeof( term_call_back_str );
             size_t x = 0;
@@ -967,7 +959,7 @@ void descriptor_data::read_from_buffer( )
       if( this->can_compress && !this->is_compressing )
          this->compressStart();
 
-      unsigned char c = static_cast<unsigned char>( inbuf[idx]) ;
+      unsigned char c = static_cast<unsigned char>( inbuf[idx] );
 
       if( c == IAC )
          iac = 1;
@@ -1121,7 +1113,7 @@ void descriptor_data::read_from_buffer( )
       ++shift_i;
 
    size_t move_len = MAX_INBUF_SIZE - shift_i;
-   std::memmove( inbuf, &inbuf[shift_i], move_len );
+   std::memmove( inbuf.data(), &inbuf[shift_i], move_len );
    std::memset( &inbuf[move_len], 0, shift_i );
 }
 
