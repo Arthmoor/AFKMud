@@ -11,7 +11,6 @@ Ranges          101 115 101 115
 ResetMsg        The area resets around you with a crunch.~
 ResetFreq       5
 Flags           nocamp noteleport~
-Climate         2 2 2
 Treasure        20 74 85 93 20 50 60 75
 #ENDAREADATA
 

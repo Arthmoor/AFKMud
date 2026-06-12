@@ -12,7 +12,6 @@ ResetMsg        A light breeze stirs up the air around you.~
 ResetFreq       999
 Flags           nobeacon~
 Treasure        20 74 85 93 20 50 60 75
-Climate         2 2 2
 #ENDAREADATA
 
 #MOBILE

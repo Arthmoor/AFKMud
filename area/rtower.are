@@ -11,7 +11,6 @@ Dates           963014400 963014400
 ResetMsg        &BA wave of soft blue light radiates through your surroundings...~
 ResetFreq       5
 Flags           nopkill nocamp noportal nosummon noteleport~
-Climate         1 1 0
 Treasure        20 74 85 93 20 50 60 75
 #ENDAREADATA
 

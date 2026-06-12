@@ -12,7 +12,6 @@ ResetMsg        The pieces on the chessboard line up and prepare for another rou
 ResetFreq       20
 Flags           nocamp noportal nosummon noteleport~
 Treasure        20 74 85 93 20 50 60 75
-Climate         2 2 2
 #ENDAREADATA
 
 #MOBILE

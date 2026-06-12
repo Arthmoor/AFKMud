@@ -11,7 +11,6 @@ Dates           895000000 895000000
 ResetMsg        Masses of energy spiral past you.~
 ResetFreq       30
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport nobeacon~
-Climate         2 2 2
 Treasure        20 74 85 93 20 50 60 75
 #ENDAREADATA
 

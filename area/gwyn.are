@@ -11,7 +11,6 @@ Ranges          0 10 0 115
 ResetMsg        Glittering sparkles of divine favour shower over everyone...~
 ResetFreq       5
 Flags           noastral noportal nosummon noscry noteleport~
-Climate         2 2 2
 Treasure        20 74 85 93 20 50 60 75
 #ENDAREADATA
 

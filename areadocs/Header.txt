@@ -128,29 +128,6 @@ Weapons are generated based on the values above, and if you exceed 100% in any
 of the previous 4 settings, weapons will not be generated at all for this area.
 Further, weapons can also randomly be assigned item sockets for rune insertion.
 
-Climate     <value1> <value2> <value3>
---------------------------------------
-Numerical values indicating climate factors which have been set on the area.
-These values affect the severity of weather within the zone. More information on
-this will be available when we understand it all better. Or better yet, refer to
-the online helpfiles. They probably explain it fairly well.
-
-The <value1> setting is the temperature range, <value2> is the precipitation,
-and <value3> is the wind. Refer to the following tables.
-
-Value1 | Temperature   Value2 | Precipitation   Value3 | Wind
---------------------   ----------------------   ----------------
-    0  | Cold               0 | Arid                 0 | Still
-    1  | Cool               1 | Dry                  1 | Calm
-    2  | Normal             2 | Normal               2 | Normal 
-    3  | Warm               3 | Damp                 3 | Breezy
-    4  | Hot                4 | Wet                  4 | Windy
-
-Neighbor     <string>~
-----------------------
-The name of a neighboring area which affects this area's weather patterns.
-There can be multiple neighbor lines in an area header.
-
 ====================================================================================
 
 Below is an example of a completed header section:
@@ -168,5 +145,4 @@ ResetMsg        A strange pulsing sound reverberates in the background...~
 ResetFreq       240
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport~
 Treasure        20 74 85 93 20 50 60 75
-Climate         2 2 2
 #ENDAREADATA

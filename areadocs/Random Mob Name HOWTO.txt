@@ -12,47 +12,90 @@ one or more files, the format of which will be described later.
 
 Code Alterations:
 
-In the AFKMud codebase, under the src directory you'll see the file reset.c
+In the AFKMud codebase, under the src directory you'll see the file roomindex.cpp
 
-On approximately line 1569 you will see the following code snippet. 
+On approximately line 1149 you will see the following code snippet.
 
 
-   /* Added by Tarl 4 Dec 02 so that if a mob is 'flagged' namegen in
-          his name, it will auto assign a random name to it. Similarly,
-          occurances of namegen in the long_descr and description will be
-          replaced with the name. */
-   
-   namegenCheckString = STRALLOC( mob->name );
-   namegenCheckString = one_argument(namegenCheckString, namegenCheck);
-   
-   /* Modified by Tarl 5 Dec 02 to add extra namegen options. ie, namegen_gr will pick a name
-      suitable for Graecian mobs.
+            /*
+             * Added by Tarl 4 Dec 02 so that if a mob is 'flagged' namegen in
+             * his name, it will auto assign a random name to it. Similarly,
+             * occurrences of namegen in the long_descr and description will be
+             * replaced with the name.
+             */
+            std::string namegenCheckString = ( mob->name ? mob->name : "" );
 
-      To add more, edit the line below this, and add an if-check similar to the one starting
-      with if (!strcasecmp( namegenCheck, "namegen_gr") ) */
-      
-   if ( ( !strcasecmp(namegenCheck, "namegen") ) || ( !strcasecmp(namegenCheck, "namegen_gr") )
-      || ( !strcasecmp(namegenCheck, "namegen_ven") ) || ( !strcasecmp(namegenCheck, "namegen_orc") ) )
-      {
+            /*
+             * Modified by Tarl 5 Dec 02 to add extra namegen options. ie, namegen_gr will pick a name
+             * suitable for Graecian mobs.
+             *
+             * To add more, edit the line below this, and add an if-check similar to the one starting
+             * with if( namegenCheckString.find( "namegen_gr" ) != string::npos )
+             *
+             * And then Samson shows up and cleans up the code, kills off the memory leaks, and life was good.
+             * Or something like that anyway. Merry Christmas 2005!
+             *
+             * Samson shows up out of the blue 21 years later and overhauls the whole system to get rid of the icky C buffers. 6-1-2026.
+             */
+            std::string namegen_tag = "";
+            std::filesystem::path file = "";
 
-      <snipped>
+            if( namegenCheckString.find( "namegen_gr" ) != std::string::npos )
+            {
+               namegen_tag = "namegen_gr";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_gr_female.txt" : "namegen_gr_other.txt" ) );
+            }
+            else if( namegenCheckString.find( "namegen_ven" ) != std::string::npos )
+            {
+               namegen_tag = "namegen_ven";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_ven_female.txt" : "namegen_ven_other.txt" ) );
+            }
+            else if( namegenCheckString.find( "namegen_orc" ) != std::string::npos )
+            {
+               namegen_tag = "namegen_orc";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_orc_female.txt" : "namegen_orc_other.txt" ) );
+            }
+            else if( namegenCheckString.find( "namegen" ) != std::string::npos )
+            {
+               namegen_tag = "namegen";
+            }
 
-  if (!strcasecmp( namegenCheck, "namegen_gr") ) {
-    namePicked = TRUE;
-    if (mob->sex == 2) {
-       sprintf(file, "%s%s", SYSTEM_DIR, "namegen_gr_female.txt");
-    } else {
-       sprintf(file, "%s%s", SYSTEM_DIR, "namegen_gr_other.txt");
-    }
-  }
-  if (!strcasecmp( namegenCheck, "namegen_ven") ) {
-    namePicked = TRUE;
-    if (mob->sex == 2) {
-       sprintf(file, "%s%s", SYSTEM_DIR, "namegen_ven_female.txt");
-    } else {
-       sprintf(file, "%s%s", SYSTEM_DIR, "namegen_ven_other.txt");
-    }
-  }
+            if( !namegen_tag.empty() )
+            {
+               std::string nameg = "";
+
+               if( file.empty() )
+               {
+                  name_generator( nameg );
+               }
+               else
+               {
+                  pick_name( nameg, file );
+               }
+
+               STRFREE( mob->name );
+               STRFREE( mob->short_descr );
+
+               std::string new_keywords = namegenCheckString + " " + nameg;
+               mob->name = STRALLOC( new_keywords.c_str() );
+               mob->short_descr = STRALLOC( nameg.c_str() );
+
+               if( mob->long_descr )
+               {
+                  std::string long_desc = mob->long_descr;
+                  string_replace( long_desc, namegen_tag, nameg );
+                  STRFREE( mob->long_descr );
+                  mob->long_descr = STRALLOC( long_desc.c_str() );
+               }
+
+               if( mob->chardesc )
+               {
+                  std::string char_desc = mob->chardesc;
+                  string_replace( char_desc, namegen_tag, nameg );
+                  STRFREE( mob->chardesc );
+                  mob->chardesc = STRALLOC( char_desc.c_str() );
+               }
+            } // End Namegen code.
 
 
 Most of the following instructions are documented as comments in the code, so feel free to skip over them
@@ -62,25 +105,38 @@ In order to add a new random mobile name section, you need to edit the if check 
 option that is suitable for you. Please note that this string is required to start with namegen_ 
 An example of adding a new section called namegen_example is shown below:
 
- if ( ( !strcasecmp(namegenCheck, "namegen") ) || ( !strcasecmp(namegenCheck, "namegen_gr") )
-      || ( !strcasecmp(namegenCheck, "namegen_ven") ) || ( !strcasecmp(namegenCheck, "namegen_orc") ) 
-      || ( !strcasecmp(namegenCheck, "namegen_example") ) )
-      {
+            if( namegenCheckString.find( "namegen_gr" ) != std::string::npos )
+            {
+               namegen_tag = "namegen_gr";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_gr_female.txt" : "namegen_gr_other.txt" ) );
+            }
+            else if( namegenCheckString.find( "namegen_ven" ) != std::string::npos )
+            {
+               namegen_tag = "namegen_ven";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_ven_female.txt" : "namegen_ven_other.txt" ) );
+            }
+            else if( namegenCheckString.find( "namegen_orc" ) != std::string::npos )
+            {
+               namegen_tag = "namegen_orc";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_orc_female.txt" : "namegen_orc_other.txt" ) );
+            }
+            else if( namegenCheckString.find( "namegen" ) != std::string::npos )
+            {
+               namegen_tag = "namegen";
+            }
 
-
-
-Next, you will have to add an if check similar to the ones beginning with: if (!strcasecmp( namegenCheck, "namegen_gr") ) {
+Next, you will have to add an if check similar to the ones beginning with: if( namegenCheckString.find( "namegen_gr" ) != std::string::npos )
 
 We base our random names on the sex of our mobiles, but you may choose to remove this check, or to alter it to
 some other attribute. The important parts of the if check that are required are the following:
 
-namePicked = TRUE; 
-sprintf(file, "%s%s", SYSTEM_DIR, "namegen_ven_female.txt"); 
+               namegen_tag = "namegen_ven";
+               file = std::format( "{}{}", SYSTEM_DIR, ( mob->sex == SEX_FEMALE ? "namegen_ven_female.txt" : "namegen_ven_other.txt" ) );
 
-namegen_ven_female.txt should be replaced with the filename of your random names, for more information on the format of this file,
-please see below.
+namegen_ven_female.txt and namegen_ven_other.txt should be replaced with the filenames of your random names.
+For more information on the format of this file, please see below.
 
-Thats all the code alterations that are required.
+That's all the code alterations that are required.
 
 Random Name File Format
 
@@ -114,18 +170,18 @@ file would have many more combinations.)
 
 This file should be located in the system/ directory.
 
-Thats it for the file format section.
+That's it for the file format section.
 
 
 
 Mobile Setup
 
-In order to tell a mobile to utilise the random name code, mobs should be mset name namegen_example
+In order to tell a mobile to utilize the random name code, mobs should be mset name namegen_example
 
-Similarly, any occurances of the word namegen (note that this should really be namegen, not namegen_example) in the short and long 
+Similarly, any occurrences of the word namegen (note that this should really be namegen, not namegen_example) in the short and long
 descriptions of the mobile will be replaced with the mobiles new name.
 
-Thats it for the mobile setup section.
+That's it for the mobile setup section.
 
 You should now have randomly named mobiles in your MUD. 
 
@@ -133,3 +189,21 @@ Thank you for using the AFKMud codebase, and if you have any problems with eithe
 post on the forums located via https://smaugmuds.afkmods.com/
 
 Tarl.
+
+================
+
+Samson here, in 2026:
+
+The code currently has support written for the following filenames to generate region specific naming:
+
+namegen_gr_female.txt
+namegen_gr_other.txt
+namegen_ven_female.txt
+namegen_ven_other.txt
+namegen_orc_female.txt
+namegen_orc_other.txt
+
+Unfortunately they have been lost to the dustbin of history. Or perhaps never existed. This name generation code was a feature
+added to the codebase very late in development and didn't get much attention even then.
+
+We are going to leave the code support for processing them in place in case you want to have a go at supporting this in your MUD.
