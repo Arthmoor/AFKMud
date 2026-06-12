@@ -833,7 +833,6 @@ const int TYPE_PERSONAL = 3000;  /* allows for 1000 herb types    */
 const int TYPE_RACIAL = 4000;    /* allows for 1000 personal types */
 const int TYPE_DISEASE = 5000;   /* allows for 1000 racial types  */
 
-
 // Target types.
 enum target_types
 {
@@ -1134,7 +1133,7 @@ const std::string show_tilde( const std::string & );
 bool str_cmp( std::string_view, std::string_view );
 bool str_prefix( std::string_view, std::string_view );
 bool str_infix( std::string_view, std::string_view );
-bool str_suffix( const char *, const char * );
+bool str_suffix( std::string_view, std::string_view );
 std::string capitalize( std::string_view );
 char *strlower( const char * );
 void strlower( std::string & );
