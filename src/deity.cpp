@@ -36,6 +36,7 @@
 #include "objindex.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 bool check_pets( char_data *, mob_index * );
 room_index *recall_room( char_data * );

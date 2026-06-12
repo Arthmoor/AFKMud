@@ -38,6 +38,7 @@
 #include "overland.h"
 #include "roomindex.h"
 #include "shops.h"
+#include "smaugaffect.h"
 #include "weather.h"
 
 int top_area;

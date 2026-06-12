@@ -51,6 +51,7 @@
 #include "pfiles.h"
 #include "roomindex.h"
 #include "shops.h"
+#include "smaugaffect.h"
 #include "weather.h"
 
 #if defined(SQL)
@@ -1883,7 +1884,7 @@ void log_string( std::string_view txt )
  *  mob, or object in the mud, depending on the argument given.              *
  *  Obviously, this will tend to create HUGE files, so it is recommended     *
  *  that it be only given to VERY high level imms, and preferably those      *
- *  with shell access, so that they may clean it out, when they are done     *
+ *  with shell access, so that they may clean it out when they are done      *
  *  with it.
  */
 CMDF( do_dump )
@@ -1893,7 +1894,7 @@ CMDF( do_dump )
 
    if( !ch->is_imp(  ) )
    {
-      ch->print( "Sorry, only an Implementor may use this command!\r\n" );
+      ch->print( "Sorry, only an Implementer may use this command!\r\n" );
       return;
    }
 

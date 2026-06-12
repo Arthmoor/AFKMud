@@ -29,11 +29,12 @@
 #include "mud.h"
 #include "fight.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
-const int BFS_ERROR = -1;
-const int BFS_ALREADY_THERE = -2;
-const int BFS_NO_PATH = -3;
-const int BFS_MARK = ROOM_TRACK;
+constexpr int BFS_ERROR = -1;
+constexpr int BFS_ALREADY_THERE = -2;
+constexpr int BFS_NO_PATH = -3;
+constexpr int BFS_MARK = ROOM_TRACK;
 
 void start_hunting( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );

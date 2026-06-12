@@ -28,8 +28,9 @@
 
 #include "mud.h"
 #include "area.h"
-#include "objindex.h"
 #include "mud_prog.h"
+#include "objindex.h"
+#include "smaugaffect.h"
 
 std::map<int, obj_index *> obj_index_table;
 

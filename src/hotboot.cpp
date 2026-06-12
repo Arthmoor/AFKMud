@@ -37,6 +37,7 @@
 #include "mud_prog.h"
 #include "overland.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 #ifdef MULTIPORT
 extern bool compilelock;

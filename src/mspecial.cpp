@@ -43,6 +43,7 @@
 #include "mspecial.h"
 #include "objindex.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 #include "weather.h"
 
 SPELLF( spell_smaug );

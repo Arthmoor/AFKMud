@@ -42,6 +42,7 @@
 #include "raceclass.h"
 #include "realms.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 extern FILE *fpArea;
 

@@ -33,6 +33,7 @@
 #include "objindex.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 void check_clan_storeroom( char_data * );
 void check_clan_shop( char_data *, char_data *, obj_data * );

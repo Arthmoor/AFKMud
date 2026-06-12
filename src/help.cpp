@@ -32,6 +32,7 @@
 #include "mud.h"
 #include "commands.h"
 #include "help.h"
+#include "smaugaffect.h"
 
 bool get_skill_help( char_data *, std::string_view );
 

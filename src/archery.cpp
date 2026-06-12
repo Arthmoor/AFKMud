@@ -74,6 +74,7 @@ Additional portions by Samson.
 #include "mud.h"
 #include "objindex.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 int weapon_prof_bonus_check( char_data *, obj_data *, int & );
 SPELLF( spell_attack );

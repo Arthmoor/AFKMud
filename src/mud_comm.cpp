@@ -40,6 +40,7 @@
 #include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 extern int top_affect;
 

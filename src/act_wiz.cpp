@@ -47,6 +47,7 @@
 #include "raceclass.h"
 #include "roomindex.h"
 #include "sha256.h"
+#include "smaugaffect.h"
 #include "variables.h"
 
 /* External functions */

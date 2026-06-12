@@ -35,6 +35,7 @@
 #include "objindex.h"
 #include "polymorph.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 extern int cur_qobjs;
 extern int cur_qchars;

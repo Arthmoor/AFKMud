@@ -32,6 +32,7 @@
 #include "objindex.h"
 #include "overland.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 ch_ret move_ship( char_data *, exit_data *, int ); /* Movement if your on a ship */
 ch_ret check_room_for_traps( char_data *, int );

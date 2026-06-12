@@ -63,6 +63,7 @@
 #include "mud_prog.h"
 #include "objindex.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 #include "treasure.h"
 
 /* External functions */

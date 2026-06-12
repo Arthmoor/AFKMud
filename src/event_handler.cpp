@@ -32,6 +32,7 @@
 #include "event.h"
 #include "mud_prog.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 #if defined(SQL)
 #include "sql.h"
 #endif

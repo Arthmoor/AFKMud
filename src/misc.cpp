@@ -35,6 +35,7 @@
 #include "mobindex.h"
 #include "objindex.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 ch_ret check_room_for_traps( char_data *, int );
 void teleport( char_data *, int, int );

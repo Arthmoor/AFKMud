@@ -37,6 +37,7 @@
 #include "raceclass.h"
 #include "roomindex.h"
 #include "shops.h"
+#include "smaugaffect.h"
 
 std::list<clan_data *> clanlist;
 

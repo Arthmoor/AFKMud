@@ -41,6 +41,7 @@
 #include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 #include "variables.h"
 
 std::list<char_data *> charlist;

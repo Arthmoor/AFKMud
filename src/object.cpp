@@ -33,6 +33,7 @@
 #include "object.h"
 #include "objindex.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 
 std::list<obj_data *> objlist;
 

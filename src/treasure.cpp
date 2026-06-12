@@ -37,6 +37,7 @@
 #include "mobindex.h"
 #include "objindex.h"
 #include "roomindex.h"
+#include "smaugaffect.h"
 #include "treasure.h"
 
 int ncommon, nrare, nurare;
