@@ -61,53 +61,42 @@
 
 #pragma once
 
+// More details on what these fields expect are available at https://tintin.mudhalla.net/protocols/mssp/
 struct msspinfo
 {
    msspinfo();
 
-   std::string hostname;
-   std::string ip;
-   std::string contact;
-   std::string icon;
-   std::string language;
-   std::string location;
-   std::string family;
-   std::string genre;
-   std::string gamePlay;
-   std::string gameSystem;
-   std::string intermud;
-   std::string status;
-   std::string subgenre;
-   std::string equipmentSystem;
-   std::string multiplaying;
-   std::string playerKilling;
-   std::string questSystem;
-   std::string roleplaying;
-   std::string trainingSystem;
-   std::string worldOriginality;
-   short created;
-   short minAge;
-   short worlds;
-   bool ansi;
-   bool mccp;
-   bool mcp;
-   bool msp;
-   bool ssl;
-   bool mxp;
-   bool pueblo;
-   bool vt100;
-   bool xterm256;
-   bool pay2play;
-   bool pay4perks;
-   bool hiringBuilders;
-   bool hiringCoders;
-   bool adultMaterial;
-   bool multiclassing;
-   bool newbieFriendly;
-   bool playerCities;
-   bool playerClans;
-   bool playerCrafting;
-   bool playerGuilds;
+   std::string hostname;         // DNS address of the MUD.
+   std::string ip;               // IPv4 address of the MUD.
+   std::string ipv6;             // IPv6 address of the MUD.
+   std::string contact;          // Contact email for someone at the MUD.
+   std::string icon;             // URL of a square image to represent the MUD. Must be a square image equal to or larger than 64x64, and no bigger than 256KB.
+   std::string language;         // What language the MUD is presented in.
+   std::string location;         // Two or three letter country code, such as "US", "GB", "DE", etc.
+   std::string family;           // Codebase family the MUD belongs to. Usually means the major branch like Diku or LP.
+   std::string genre;            // The genre of the MUD. ie: Fantasy, Sci-Fi, etc.
+   std::string subgenre;         // The subtype of the genre, such as "Medieval Fantasy".
+   std::string gamePlay;         // The general gameplay style of the game. Such as "Hack & Slash" or "Roleplaying".
+   std::string gameSystem;       // The general ruleset used by the MUD, such as "D&D".
+   std::string intermud;         // Type of InterMUD chat system the MUD has. Should be sent empty if it has none.
+   std::string status;           // Current status of the game.
+   short ssl = 0;                // Port number for encrypted connections. If zero, will not be sent. Must be >= 1024 to be valid.
+   short created = 0;            // The year the MUD was created.
+   short minAge = 0;             // Minimum age required to play the MUD. If zero, will not be sent.
+   bool ansi = true;             // Does the MUD support ANSI color?
+   bool mccp = true;             // Does the MUD support MUD Client Compression Protocol?
+   bool mcp = false;             // Does the MUD support MCP? (No, it doesn't, because the codebase has no support for it)
+   bool msp = true;              // Does the MUD support the MUD Sound Protocol?
+   bool mxp = false;             // Does the MUD support MXP? (No, it doesn't, because the codebase has no support for it)
+   bool pueblo = false;
+   bool vt100 = false;
+   bool xterm256 = false;
+   bool pay2play = false;
+   bool pay4perks = false;
+   bool hiringBuilders = false;
+   bool hiringCoders = false;
+   bool adultMaterial = false;
+   bool newbieFriendly = true;
 };    
 
 inline constexpr std::string_view MSSP_FILE = "../system/mssp.dat";

@@ -74,31 +74,21 @@ void free_mssp_info( void )
 
 msspinfo::msspinfo()
 {
-   init_memory( &this->created, &this->playerGuilds, sizeof( this->playerGuilds ) );
-
    this->hostname = "localhost";
    this->ip = "127.0.0.1";
    this->contact = "admin@example.com";
    this->language = "English";
-   this->location = "United States";
+   this->location = "USA";
    this->family = "DikuMUD";
    this->genre = "Fantasy";
-   this->gamePlay = "Hack and Slash";
+   this->subgenre = "Medieval Fantasy";
+   this->gamePlay = "Adventure, Hack and Slash";
    this->gameSystem = "D&D";
    this->status = "Closed";
-   this->subgenre = "Medieval Fantasy";
    this->created = 2009;
-   this->worlds = 1;
    this->ansi = true;
    this->mccp = true;
    this->msp = true;
-   this->playerClans = true;
-   this->playerCrafting = true;
-   this->playerGuilds = true;
-   this->equipmentSystem = "Both";
-   this->playerKilling = "Restricted";
-   this->trainingSystem = "Both";
-   this->worldOriginality = "All Stock";
 }
 
 void save_mssp_info( void )
@@ -115,6 +105,7 @@ void save_mssp_info( void )
    stream << "#MSSP_INFO" << std::endl;
    stream << "Hostname          " << mssp_info->hostname << std::endl;
    stream << "IP                " << mssp_info->ip << std::endl;
+   stream << "IPv6              " << mssp_info->ipv6 << std::endl;
    stream << "Contact           " << mssp_info->contact << std::endl;
    stream << "Icon              " << mssp_info->icon << std::endl;
    stream << "Language          " << mssp_info->language << std::endl;
@@ -128,7 +119,6 @@ void save_mssp_info( void )
    stream << "SubGenre          " << mssp_info->subgenre << std::endl;
    stream << "Created           " << mssp_info->created << std::endl;
    stream << "MinAge            " << mssp_info->minAge << std::endl;
-   stream << "Worlds            " << mssp_info->worlds << std::endl;
    stream << "Ansi              " << mssp_info->ansi << std::endl;
    stream << "MCCP              " << mssp_info->mccp << std::endl;
    stream << "MCP               " << mssp_info->mcp << std::endl;
@@ -143,19 +133,7 @@ void save_mssp_info( void )
    stream << "HiringBuilders    " << mssp_info->hiringBuilders << std::endl;
    stream << "HiringCoders      " << mssp_info->hiringCoders << std::endl;
    stream << "AdultMaterial     " << mssp_info->adultMaterial << std::endl;
-   stream << "Multiclassing     " << mssp_info->multiclassing << std::endl;
    stream << "NewbieFriendly    " << mssp_info->newbieFriendly << std::endl;
-   stream << "PlayerCities      " << mssp_info->playerCities << std::endl;
-   stream << "PlayerClans       " << mssp_info->playerClans << std::endl;
-   stream << "PlayerCrafting    " << mssp_info->playerCrafting << std::endl;
-   stream << "PlayerGuilds      " << mssp_info->playerGuilds << std::endl;
-   stream << "EquipmentSystem   " << mssp_info->equipmentSystem << std::endl;
-   stream << "Multiplaying      " << mssp_info->multiplaying << std::endl;
-   stream << "PlayerKilling     " << mssp_info->playerKilling << std::endl;
-   stream << "QuestSystem       " << mssp_info->questSystem << std::endl;
-   stream << "RolePlaying       " << mssp_info->roleplaying << std::endl;
-   stream << "TrainingSystem    " << mssp_info->trainingSystem << std::endl;
-   stream << "WorldOriginality  " << mssp_info->worldOriginality << std::endl;
    stream << "End" << std::endl << std::endl;
 
    stream.close(  );
@@ -221,14 +199,6 @@ void load_mssp_data( void )
          strip_lspace( value );
 
          mssp_info->created = atoi( value.c_str() );
-      }
-      else if( key == "EquipmentSystem" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->equipmentSystem = value;
       }
       else if( key == "Family" )
       {
@@ -326,6 +296,14 @@ void load_mssp_data( void )
 
          mssp_info->ip = value;
       }
+      else if( key == "IPv6" )
+      {
+         stream.getline( buf, MSL );
+         value = buf;
+         strip_lspace( value );
+
+         mssp_info->ip = value;
+      }
       else if( key == "MCCP" )
       {
          stream.getline( buf, MSL );
@@ -357,22 +335,6 @@ void load_mssp_data( void )
          strip_lspace( value );
 
          mssp_info->msp = atoi( value.c_str() );
-      }
-      else if( key == "Multiclassing" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->multiclassing = atoi( value.c_str() );
-      }
-      else if( key == "Multiplaying" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->multiplaying = atoi( value.c_str() );
       }
       else if( key == "MXP" )
       {
@@ -406,70 +368,6 @@ void load_mssp_data( void )
 
          mssp_info->pay4perks = atoi( value.c_str() );
       }
-      else if( key == "PlayerCities" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->playerCities = atoi( value.c_str() );
-      }
-      else if( key == "PlayerClans" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->playerClans = atoi( value.c_str() );
-      }
-      else if( key == "PlayerCrafting" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->playerCrafting = atoi( value.c_str() );
-      }
-      else if( key == "PlayerGuilds" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->playerGuilds = atoi( value.c_str() );
-      }
-      else if( key == "PlayerKilling" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->playerKilling = value;
-      }
-      else if( key == "Pueblo" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->pueblo = atoi( value.c_str() );
-      }
-      else if( key == "QuestSystem" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->questSystem = value;
-      }
-      else if( key == "RolePlaying" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->roleplaying = value;
-      }
       else if( key == "SSL" )
       {
          stream.getline( buf, MSL );
@@ -494,14 +392,6 @@ void load_mssp_data( void )
 
          mssp_info->subgenre = value;
       }
-      else if( key == "TrainingSystem" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->trainingSystem = value;
-      }
       else if( key == "Vt100" )
       {
          stream.getline( buf, MSL );
@@ -509,22 +399,6 @@ void load_mssp_data( void )
          strip_lspace( value );
 
          mssp_info->vt100 = atoi( value.c_str() );
-      }
-      else if( key == "WorldOriginality" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->worldOriginality = value;
-      }
-      else if( key == "Worlds" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->worlds = atoi( value.c_str() );
       }
       else if( key == "Xterm256" )
       {
@@ -578,7 +452,6 @@ void show_mssp( char_data * ch )
    ch->print_fmt( "&zSubGenre          &W{}\r\n", mssp_info->subgenre );
    ch->print_fmt( "&zCreated           &W{}\r\n", mssp_info->created );
    ch->print_fmt( "&zMinAge            &W{}\r\n", mssp_info->minAge );
-   ch->print_fmt( "&zWorlds            &W{}\r\n", mssp_info->worlds );
    ch->print_fmt( "&zAnsi              &W{}\r\n", MSSP_YN( mssp_info->ansi ) );
    ch->print_fmt( "&zMCCP              &W{}\r\n", MSSP_YN( mssp_info->mccp ) );
    ch->print_fmt( "&zMCP               &W{}\r\n", MSSP_YN( mssp_info->mcp ) );
@@ -593,19 +466,7 @@ void show_mssp( char_data * ch )
    ch->print_fmt( "&zHiringBuilders    &W{}\r\n", MSSP_YN( mssp_info->hiringBuilders ) );
    ch->print_fmt( "&zHiringCoders      &W{}\r\n", MSSP_YN( mssp_info->hiringCoders ) );
    ch->print_fmt( "&zAdultMaterial     &W{}\r\n", MSSP_YN( mssp_info->adultMaterial ) );
-   ch->print_fmt( "&zMulticlassing     &W{}\r\n", MSSP_YN( mssp_info->multiclassing ) );
    ch->print_fmt( "&zNewbieFriendly    &W{}\r\n", MSSP_YN( mssp_info->newbieFriendly ) );
-   ch->print_fmt( "&zPlayerCities      &W{}\r\n", MSSP_YN( mssp_info->playerCities ) );
-   ch->print_fmt( "&zPlayerClans       &W{}\r\n", MSSP_YN( mssp_info->playerClans ) );
-   ch->print_fmt( "&zPlayerCrafting    &W{}\r\n", MSSP_YN( mssp_info->playerCrafting ) );
-   ch->print_fmt( "&zPlayerGuilds      &W{}\r\n", MSSP_YN( mssp_info->playerGuilds ) );
-   ch->print_fmt( "&zEquipmentSystem   &W{}\r\n", mssp_info->equipmentSystem );
-   ch->print_fmt( "&zMultiplaying      &W{}\r\n", mssp_info->multiplaying );
-   ch->print_fmt( "&zPlayerKilling     &W{}\r\n", mssp_info->playerKilling );
-   ch->print_fmt( "&zQuestSystem       &W{}\r\n", mssp_info->questSystem );
-   ch->print_fmt( "&zRolePlaying       &W{}\r\n", mssp_info->roleplaying );
-   ch->print_fmt( "&zTrainingSystem    &W{}\r\n", mssp_info->trainingSystem );
-   ch->print_fmt( "&zWorldOriginality  &W{}\r\n", mssp_info->worldOriginality );
 }
 
 CMDF( do_setmssp )
@@ -678,12 +539,13 @@ CMDF( do_setmssp )
       ynptr = &mssp_info->ansi;
    else if( !str_cmp( arg1, "mccp" ) )
       ynptr = &mssp_info->mccp;
+/* Uncomment this only if you have added MCP support to the codebase.
    else if( !str_cmp( arg1, "mcp" ) )
       ynptr = &mssp_info->mcp;
+*/
    else if( !str_cmp( arg1, "msp" ) )
       ynptr = &mssp_info->msp;
-   else if( !str_cmp( arg1, "ssl" ) )
-      ynptr = &mssp_info->ssl;
+/* Only uncomment these if you add support for them to the codebase.
    else if( !str_cmp( arg1, "mxp" ) )
       ynptr = &mssp_info->mxp;
    else if( !str_cmp( arg1, "pueblo" ) )
@@ -692,6 +554,7 @@ CMDF( do_setmssp )
       ynptr = &mssp_info->vt100;
    else if( !str_cmp( arg1, "xterm256" ) )
       ynptr = &mssp_info->xterm256;
+*/
    else if( !str_cmp( arg1, "pay2play" ) )
       ynptr = &mssp_info->pay2play;
    else if( !str_cmp( arg1, "pay4perks" ) )
@@ -702,18 +565,8 @@ CMDF( do_setmssp )
       ynptr = &mssp_info->hiringCoders;
    else if( !str_cmp( arg1, "adult_material" ) )
       ynptr = &mssp_info->adultMaterial;
-   else if( !str_cmp( arg1, "multiclassing" ) )
-      ynptr = &mssp_info->multiclassing;
    else if( !str_cmp( arg1, "newbie_friendly" ) )
       ynptr = &mssp_info->newbieFriendly;
-   else if( !str_cmp( arg1, "player_cities" ) )
-      ynptr = &mssp_info->playerCities;
-   else if( !str_cmp( arg1, "player_clans" ) )
-      ynptr = &mssp_info->playerClans;
-   else if( !str_cmp( arg1, "player_crafting" ) )
-      ynptr = &mssp_info->playerCrafting;
-   else if( !str_cmp( arg1, "player_guilds" ) )
-      ynptr = &mssp_info->playerGuilds;
 
    if( ynptr != nullptr )
    {
@@ -731,22 +584,7 @@ CMDF( do_setmssp )
       return;
    }
 
-   if( !str_cmp( arg1, "worlds" ) )
-   {
-      int value = atoi( argument.c_str() );
-
-      if( !is_number( argument ) || ( value < 0 ) || ( value > MSSP_MAXVAL ) )
-      {
-         ch->printf( "The value for %s must be between 0 and %d\r\n", arg1.c_str(), MSSP_MAXVAL );
-         return;
-      }
-      mssp_info->worlds = value;
-
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
-      save_mssp_info(  );
-      return;
-   }
-   else if( !str_cmp( arg1, "created" ) )
+   if( !str_cmp( arg1, "created" ) )
    {
       int value;
 
@@ -758,74 +596,6 @@ CMDF( do_setmssp )
          return;
       }
       mssp_info->created = value;
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
-      save_mssp_info(  );
-      return;
-   }
-   else if( !str_cmp( arg1, "multiplaying" ) || !str_cmp( arg1, "player_killing" ) ) 
-   {
-      if( str_cmp( argument, "None" ) && str_cmp( argument, "Restricted" ) && str_cmp( argument, "Full" ) ) 
-      {
-         ch->printf( "Valid choices for %s are: None, Restricted or Full\r\n", arg1.c_str() );
-         return; 
-      }
-      if( !str_cmp( arg1, "multiplaying" ) )
-         mssp_info->multiplaying = argument;
-      else
-         mssp_info->playerKilling = argument;
-
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
-      save_mssp_info(  );
-      return;
-   }
-   else if( !str_cmp( arg1, "training_system" ) || !str_cmp( arg1, "equipment_system" ) )
-   {
-      if( str_cmp( argument, "None" ) && str_cmp( argument, "Level" ) && str_cmp( argument, "Skill" ) && str_cmp( argument, "Both" ) )
-      {
-         ch->printf( "Valid choices for %s are: None, Level, Skill or Both\r\n", arg1.c_str() );
-         return;
-      }
-      if( !str_cmp( arg1, "training_system" ) )
-         mssp_info->trainingSystem = argument;
-      else
-         mssp_info->equipmentSystem = argument;
-
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
-      save_mssp_info(  );
-      return;
-   }
-   else if( !str_cmp( arg1, "quest_system" ) )
-   {
-      if( str_cmp( argument, "None" ) && str_cmp( argument, "Immortal Run" ) && str_cmp( argument, "Automated" ) && str_cmp( argument, "Integrated" ) )
-      {
-         ch->printf( "Valid choices for %s are: None, Immortal Run, Automated or Integrated\r\n", arg1.c_str() );
-         return;
-      }
-      mssp_info->questSystem = argument;
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
-      save_mssp_info(  );
-      return;
-   }
-   else if( !str_cmp( arg1, "roleplaying" ) )
-   {
-      if( str_cmp( argument, "None" ) && str_cmp( argument, "Accepted" ) && str_cmp( argument, "Encouraged" ) && str_cmp( argument, "Enforced" ) )
-      {
-         ch->printf( "Valid choices for %s are: None, Accepted, Encouraged or Enforced\r\n", arg1.c_str() );
-         return;
-      }
-      mssp_info->roleplaying = argument;
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
-      save_mssp_info(  );
-      return;
-   }
-   else if( !str_cmp( arg1, "world_originality" ) )
-   {
-      if( str_cmp( argument, "All Stock" ) && str_cmp( argument, "Mostly Stock" ) && str_cmp( argument, "Mostly Original" ) && str_cmp( argument, "All Original" ) )
-      {
-         ch->printf( "Valid choices for %s are: All Stock, Mostly Stock, Mostly Original or All Original\r\n", arg1.c_str() );
-         return;
-      }
-      mssp_info->worldOriginality = argument;
       ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
       save_mssp_info(  );
       return;
@@ -843,6 +613,22 @@ CMDF( do_setmssp )
       }
       mssp_info->minAge = value;
       ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
+      save_mssp_info(  );
+      return;
+   }
+   else if( !str_cmp( arg1, "ssl" ) )
+   {
+      int value;
+
+      value = atoi( argument.c_str() );
+
+      if( !is_number( argument ) || ( value < 1024 ) || ( value > 65535 ) )
+      {
+         ch->print( "The value for ssl must be between 1024 and 65535.\r\n" );
+         return;
+      }
+      mssp_info->ssl = value;
+      ch->print_fmt( "MSSP value, {} has been changed to: {}\r\n", arg1, argument );
       save_mssp_info(  );
       return;
    }
@@ -930,32 +716,42 @@ void send_mssp_data( descriptor_data * d )
 
    d->write( "\r\nMSSP-REPLY-START\r\n" );
 
-   mssp_reply( d, "HOSTNAME", "{}", mssp_info->hostname );
-   mssp_reply( d, "IP", "{}", mssp_info->ip );
-   mssp_reply( d, "PORT", "{}", mud_port );
-   mssp_reply( d, "UPTIME", "{}", mud_start_time );
-   mssp_reply( d, "PLAYERS", "{}", player_count( ) );
-   mssp_reply( d, "CODEBASE", "{} {}", CODENAME, CODEVERSION );
-   mssp_reply( d, "CONTACT", "{}", mssp_info->contact );
-   mssp_reply( d, "CREATED", "{}", mssp_info->created );
-   mssp_reply( d, "ICON", "{}", mssp_info->icon );
-   mssp_reply( d, "LANGUAGE", "{}", mssp_info->language );
-   mssp_reply( d, "LOCATION", "{}", mssp_info->location );
-   mssp_reply( d, "MINIMUM AGE", "{}", mssp_info->minAge );
    mssp_reply( d, "NAME", "{}", sysdata->mud_name );
    mssp_reply( d, "WEBSITE", "{}", show_tilde( sysdata->http ) );
+   mssp_reply( d, "HOSTNAME", "{}", mssp_info->hostname );
+   mssp_reply( d, "IP", "{}", mssp_info->ip );
+
+   if( !mssp_info->ipv6.empty() )
+      mssp_reply( d, "IPV6", "{}", mssp_info->ipv6 );
+
+   mssp_reply( d, "PORT", "{}", mud_port );
+   mssp_reply( d, "CONTACT", "{}", mssp_info->contact );
+   mssp_reply( d, "CREATED", "{}", mssp_info->created );
+   mssp_reply( d, "CODEBASE", "{} {}", CODENAME, CODEVERSION );
+   mssp_reply( d, "PLAYERS", "{}", player_count( ) );
+   mssp_reply( d, "UPTIME", "{}", mud_start_time );
+
+   if( !mssp_info->icon.empty() )
+      mssp_reply( d, "ICON", "{}", mssp_info->icon );
+
+   mssp_reply( d, "LANGUAGE", "{}", mssp_info->language );
+   mssp_reply( d, "LOCATION", "{}", mssp_info->location );
+
+   if( mssp_info->minAge > 0 )
+      mssp_reply( d, "MINIMUM AGE", "{}", mssp_info->minAge );
+
    mssp_reply( d, "FAMILY", "{}", mssp_info->family );
    mssp_reply( d, "GENRE", "{}", mssp_info->genre );
+   mssp_reply( d, "SUBGENRE", "{}", mssp_info->subgenre );
    mssp_reply( d, "GAMEPLAY", "{}", mssp_info->gamePlay );
    mssp_reply( d, "GAMESYSTEM", "{}", mssp_info->gameSystem );
-   mssp_reply( d, "INTERMUD", "{}", mssp_info->intermud );
+
+   if( !mssp_info->intermud.empty() )
+      mssp_reply( d, "INTERMUD", "{}", mssp_info->intermud );
+
    mssp_reply( d, "STATUS", "{}", mssp_info->status );
-   mssp_reply( d, "SUBGENRE", "{}", mssp_info->subgenre );
-   mssp_reply( d, "WORLDS", "{}", mssp_info->worlds );
    mssp_reply( d, "AREAS", "{}", top_area );
    mssp_reply( d, "ROOMS", "{}", top_room );
-   mssp_reply( d, "RESETS", "{}", top_reset );
-   mssp_reply( d, "EXITS", "{}", top_exit );
    mssp_reply( d, "MOBILES", "{}", top_mob_index );
    mssp_reply( d, "OBJECTS", "{}", top_obj_index );
    mssp_reply( d, "MUDPROGS", "{}", top_prog );
@@ -970,31 +766,22 @@ void send_mssp_data( descriptor_data * d )
    mssp_reply( d, "SKILLS", "{}", num_skills );
    mssp_reply( d, "ANSI", "{}", mssp_info->ansi );
    mssp_reply( d, "MCCP", "{}", mssp_info->mccp );
-   mssp_reply( d, "MCP", "{}", mssp_info->mcp );
+   mssp_reply( d, "MCP", "{}", 0 ); // Hardcoded 0 response because this codebase doesn't support MCP.
    mssp_reply( d, "MSP", "{}", mssp_info->msp );
-   mssp_reply( d, "SSL", "{}", mssp_info->ssl );
-   mssp_reply( d, "MXP", "{}", mssp_info->mxp );
-   mssp_reply( d, "PUEBLO", "{}", mssp_info->pueblo );
-   mssp_reply( d, "VT100", "{}", mssp_info->vt100 );
-   mssp_reply( d, "XTERM 256 COLORS", "{}", mssp_info->xterm256 );
+
+   if( mssp_info->ssl > 1024 )
+      mssp_reply( d, "SSL", "{}", mssp_info->ssl );
+
+   mssp_reply( d, "MXP", "{}", 0 ); // Hardcoded 0 response because this codebase doesn't support MXP. Or any of the next 3 either.
+   mssp_reply( d, "PUEBLO", "{}", 0 );
+   mssp_reply( d, "VT100", "{}", 0 );
+   mssp_reply( d, "XTERM 256 COLORS", "{}", 0 );
    mssp_reply( d, "PAY TO PLAY", "{}", mssp_info->pay2play );
    mssp_reply( d, "PAY FOR PERKS", "{}", mssp_info->pay4perks );
    mssp_reply( d, "HIRING BUILDERS", "{}", mssp_info->hiringBuilders );
    mssp_reply( d, "HIRING CODERS", "{}", mssp_info->hiringCoders );
    mssp_reply( d, "ADULT MATERIAL", "{}", mssp_info->adultMaterial );
-   mssp_reply( d, "MULTICLASSING", "{}", mssp_info->multiclassing );
    mssp_reply( d, "NEWBIE FRIENDLY", "{}", mssp_info->newbieFriendly );
-   mssp_reply( d, "PLAYER CITIES", "{}", mssp_info->playerCities );
-   mssp_reply( d, "PLAYER CLANSS", "{}", mssp_info->playerClans );
-   mssp_reply( d, "PLAYER CRAFTING", "{}", mssp_info->playerCrafting );
-   mssp_reply( d, "PLAYER GUILDS", "{}", mssp_info->playerGuilds );
-   mssp_reply( d, "EQUIPMENT SYSTEM", "{}", mssp_info->equipmentSystem );
-   mssp_reply( d, "MULTIPLAYING", "{}", mssp_info->multiplaying );
-   mssp_reply( d, "PLAYERKILLING", "{}", mssp_info->playerKilling );
-   mssp_reply( d, "QUEST SYSTEM", "{}", mssp_info->questSystem );
-   mssp_reply( d, "ROLEPLAYING", "{}", mssp_info->roleplaying );
-   mssp_reply( d, "TRAINING SYSTEM", "{}", mssp_info->trainingSystem );
-   mssp_reply( d, "WORLD ORIGINALITY", "{}", mssp_info->worldOriginality );
 
    d->write( "MSSP-REPLY-END\r\n" );
 }
