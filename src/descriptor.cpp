@@ -44,6 +44,7 @@
 #include "raceclass.h"
 #include "roomindex.h"
 #include "sha256.h"
+#include "sha512.h"
 #ifdef MULTIPORT
 #include "shell.h"
 #endif
@@ -2425,14 +2426,49 @@ void display_motd( char_data * ch )
 
 CMDF( do_shatest )
 {
+   if( argument.empty() )
+   {
+      ch->print( "You need to provide something to test hashes with!\r\n" );
+      return;
+   }
+
    ch->print_fmt( "{}\r\n", argument );
-   ch->print_fmt( "{}\r\n", sha256_crypt( argument ) );
+   ch->print_fmt( "SHA-256: {}\r\n", sha256_crypt( argument ) );
+   ch->print_fmt( "SHA-512: {}\r\n", password_hash( argument ) );
+}
+
+CMDF( do_hashverify )
+{
+   std::string arg;
+
+   if( argument.empty() )
+   {
+      ch->print( "You need to provide a test string and a hashed string to compare.\r\n" );
+      return;
+   }
+
+   argument = one_argument( argument, arg );
+
+   if( arg.empty() || argument.empty() )
+   {
+      ch->print( "You need to provide a test string and a hashed string to compare.\r\n" );
+      return;
+   }
+
+   ch->print_fmt( "String to test: {}\r\n", arg );
+   ch->print_fmt( "Hash to compare to: {}\r\n", argument );
+
+   if( !password_verify( arg, argument ) )
+      ch->print_fmt( "&Y{}&D does not match the hash.\r\n", arg );
+   else
+      ch->print_fmt( "&Y{}&D matches the hash.\r\n", arg );
 }
 
 /*
  * Deal with sockets that haven't logged in yet.
  * Function modified from original form on varying dates - Samson
  * Password encryption sections upgraded to use SHA-256 Encryption - Samson 7-10-00
+ * Password encryption sections have been further upgraded to SHA-512 - Samson 6/14/2026
  */
 void descriptor_data::nanny( std::string & argument )
 {
@@ -2685,11 +2721,24 @@ void descriptor_data::nanny( std::string & argument )
       {
          write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
+         if( !ch->pcdata->pwd.contains( "$" ) ) // No dollar signs. Was encrypted with SHA-256
+         {
+            if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
+            {
+               write_to_buffer( "Wrong password, disconnecting.\r\n" );
+               /*
+               * clear descriptor pointer to get rid of bug message in log
+               */
+               character->desc = nullptr;
+               close_socket( this, false );
+               return;
+            }
+         }
+         else if( !password_verify( argument, ch->pcdata->pwd ) ) // SHA-512 Encryption
          {
             write_to_buffer( "Wrong password, disconnecting.\r\n" );
             /*
-             * clear descriptor pointer to get rid of bug message in log 
+             * clear descriptor pointer to get rid of bug message in log
              */
             character->desc = nullptr;
             close_socket( this, false );
@@ -2729,6 +2778,13 @@ void descriptor_data::nanny( std::string & argument )
             ch->position = POS_STANDING;
 
          log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, hostname.c_str(  ) );
+
+         if( !ch->pcdata->pwd.contains( "$" ) )
+         {
+            ch->pcdata->pwd = password_hash( argument ); // Update encryption method.
+            ch->save();
+         }
+
          show_title(  );
          break;
       }
@@ -2775,7 +2831,7 @@ void descriptor_data::nanny( std::string & argument )
             return;
          }
 
-         std::string pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
+         std::string pwdnew = password_hash( argument ); // SHA-512 Encryption
          ch->pcdata->pwd = pwdnew;
          write_to_buffer( "\r\nPlease retype the password to confirm: " );
          connected = CON_CONFIRM_NEW_PASSWORD;
@@ -2785,7 +2841,7 @@ void descriptor_data::nanny( std::string & argument )
       case CON_CONFIRM_NEW_PASSWORD:
          write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
+         if( !password_verify( argument, ch->pcdata->pwd ) ) // SHA-512 Encryption
          {
             write_to_buffer( "Passwords don't match.\r\nRetype password: " );
             connected = CON_GET_NEW_PASSWORD;
@@ -2814,7 +2870,7 @@ void descriptor_data::nanny( std::string & argument )
       case CON_GET_PORT_PASSWORD:
          write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument ), sysdata->password ) )
+         if( !password_verify( argument, sysdata->password ) ) // SHA-512 Encryption
          {
             write_to_buffer( "Invalid access code.\r\n" );
             /*
@@ -2895,7 +2951,7 @@ void descriptor_data::nanny( std::string & argument )
       case CON_DELETE:
          write_to_buffer( "\r\n" );
 
-         if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
+         if( !password_verify( argument, ch->pcdata->pwd ) ) // SHA-512 Encryption
          {
             write_to_buffer( "Wrong password entered, deletion cancelled.\r\n" );
             write_to_buffer( std::string_view{ reinterpret_cast<const char*>( echo_on_str.data() ), echo_on_str.size() } );
